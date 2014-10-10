@@ -15,89 +15,128 @@
  * limitations under the License.
  */
 MODEL({
-   name: 'SplitDAO',
+  name: 'SplitDAO',
 
-   extendsModel: 'AbstractDAO',
+  extendsModel: 'ProxyDAO',
 
-   properties: [
-      {
-         model_: 'StringProperty',
-         name: 'activeQuery'
+  properties: [
+    {
+      name:  'model',
+      label: 'Model',
+      type:  'Model',
+      hidden: true,
+      required: true
+    },
+    {
+      name: 'remote',
+      type: 'DAO',
+      mode: "read-only",
+      hidden: true,
+      required: true
+    },
+    {
+      name: 'syncManager',
+      factory: function() {
+        return this.X.SyncManager.create({
+          srcDAO: this.remove,
+          dstDAO: this.delegate,
+        });
       },
-      {
-         name:  'model',
-         label: 'Model',
-         type:  'Model',
-         hidden: true,
-         required: true
+      hidden: true
+    },
+    {
+      name: 'remoteFlags',
+      factory: function() {
+        return {};
       },
-      {
-         name: 'local',
-         type: 'DAO',
-         mode: "read-only",
-         hidden: true,
-         required: true
-      },
-      {
-         name: 'remote',
-         type: 'DAO',
-         mode: "read-only",
-         hidden: true,
-         required: true
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+    },
+
+    put: function(obj, sink) {
+      var self = this;
+      this.remote.put(obj, {
+        put: function(obj) {
+          self.delegate.put(obj, sink);
+          self.notify_('put', [obj]);
+        },
+        error: ( sink && sink.error ) ? sink.error.bind(sink) : function(){}
+      });
+    },
+
+    remove: function(obj, sink) {
+      var self = this;
+      this.remove.remove(obj, {
+        remove: function(obj) {
+          self.delegate.remove(obj, sink);
+          self.notify_('remove', [obj]);
+        },
+        error: ( sink && sink.error ) ? sink.error.bind(sink) : function(){}
+      });
+    },
+
+    find: function(key, sink) {
+      var delegate = this.delegate;
+      var remove = this.remove;
+
+      this.delegate.find(key, {
+        put: function(obj) {
+          sink && sink.put && sink.put(obj);
+        },
+        error: function() {
+          remote.find(key, {
+            put: function(obj) {
+              sink && sink.put && sink.put(obj);
+              delegate.put(obj);
+              self.notify_('put', [obj]);
+            },
+            error: (sink && sink.error) ? sink.error.bind(sink) : function(){}
+          });
+        }
+      });
+    },
+
+    select: function(sink, options) {
+      var key = [
+        'limit=' + options.limit,
+        'skip=' + options.skip,
+        'query=' + (options.query ? options.query.toSQL() : ''),
+        'order=' + (options.order ? options.order.toSQL() : '')
+      ];
+
+      if ( CountExpr.isInstance(sink) ) {
+        return this.remote.select(sink, options);
       }
-   ],
 
-   methods: {
-      init: function() {
-        this.SUPER();
-      },
+      if ( ! this.remoteFlags[key] ) {
+        this.remoteFlags[key] = true;
 
-      put: function(value, sink) {
-         this.local.put(value, sink);
-      },
-
-      remove: function(query, sink) {
-         this.local.remove(query, sink);
-      },
-
-      find: function(key, sink) {
-         // Assumes 'local' has all of the data
-         this.local.find(key, sink);
-      },
-
-      select: function(sink, options) {
-         var query = ( options.query && options.query.toSQL() ) || "";
-
-         if ( query !== this.activeQuery ) {
-            this.activeQuery = query;
-            console.log('new Query');
-
-            var buf = this.buf = MDAO.create({model: this.model});
-
-            // Add an index for the specified sort order if one is provided
-            if ( options && options.order ) this.buf.addIndex(options.order);
-
-            this.local.select(buf, options.query ? {query: options.query} : {})((function() {
-               buf.select(sink, options);
-               this.remote.select(buf, options)(function() {
-                 // Notify listeners that the DAO's data has changed
-                 if ( buf === this.buf ) this.notify_('put');
-               });
-            }).bind(this));
-         } else {
-            this.buf.select(sink, options);
-         }
+        this.remote.select({
+          put: (function(obj) {
+            this.delegate.find(obj.id, {
+              put: (function(existing) {
+                var modified = this.syncManager.modifiedProperty.name;
+                if ( obj[modified].compareTo(existing[modified]) > 0 )
+                  this.delegate.put(obj);
+              }).bind(this),
+              error: (function() {
+                this.delegate.put(obj);
+              }).bind(this)
+            });
+          }).bind(this),
+          eof: (function() {
+            delete this.remoteFlags[key];
+          }).bind(this),
+          error: (function() {
+            delete this.remoteFlags[key];
+          }).bind(this)
+        }, options);
       }
-   }
+      return this.delegate.select(sink, options);
+    }
+  }
 });
-
-
-
-/*
-var dao = ProxyDAO.create({delegate: []});
-dao.listen(console.log);
-
-dao.put("foo");
-dao.put("bar")
-
-*/
