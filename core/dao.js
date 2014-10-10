@@ -3655,6 +3655,96 @@ MODEL({
   }
 });
 
+MODEL({
+  name: 'SlidingWindowDAODecorator',
+  extendsModel: 'ProxyDAO',
+  help: 'A DAO decorator which reduces network calls by caching a chunk of data around a given query for a period of time.',
+  properties: [
+    {
+      name: 'queryCache',
+      factory: function() { return {}; }
+    },
+    {
+      name: 'queryTTL',
+      help: 'Time to keep each query alive in ms',
+      defaultValue: 10000
+    },
+    {
+      name: 'windowSize',
+      defaultValue: 20
+    }
+  ],
+  methods: {
+    select: function(sink, options) {
+      if ( CountExpr.isInstance(sink) ) return this.delegate.select(sink, options);
+
+      if ( ! this.timeout_ ) this.timeout_ = this.X.setTimeout(this.purge, this.queryTTL);
+
+      var query = options && options.query;
+      var order = options && options.order;
+      var skip = options.skip;
+      var limit = options.limit;
+
+      var key = [
+        'query=' + (query ? query.toSQL() : ''),
+        'order=' + (order ? order.toSQL() : '')
+      ];
+      var cached = this.queryCache[key];
+
+      var future = afuture();
+
+      var self = this;
+      if ( cached &&
+           cached[1] <= skip &&
+           cached[2] >= skip + limit ) {
+        cached[3] = Date.now();
+        cached[0].select(sink, {
+          skip: skip - cached[1],
+          limit: limit
+        })(function() {
+          future.set(sink);
+        });
+        return future.get;
+      }
+
+      if ( cached ) delete this.queryCache[key];
+
+      cached = [
+        [].dao,
+        Math.max(0, skip - this.windowSize / 2),
+        skip + limit + this.windowSize / 2,
+        Date.now()
+      ];
+
+      this.queryCache[key] = cached;
+
+      this.delegate.select(cached[0], {
+        query: query,
+        order: order,
+        skip: cached[1],
+        limit: cached[2] - cached[1]
+      })(function() {
+        cached[0].select(sink, {
+          skip: skip - cached[1],
+          limit: limit
+        })(function(s) { future.set(s); });
+      });
+      return future.get;
+    }
+  },
+  listeners: [
+    {
+      name: 'purge',
+      code: function() {
+        this.timeout_ = undefined
+        var keys = Object.keys(this.queryCache);
+        var threshold = Date.now()  - this.queryTTL;
+        for ( var i = 0, key; key = keys[i]; i++ )
+          if ( this.queryCache[key][3] < threshold ) delete this.queryCache[key];
+      }
+    }
+  ]
+});
 
 // Experimental, convert all functions into sinks
 Function.prototype.put    = function() { this.apply(this, arguments); };
