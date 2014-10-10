@@ -87,7 +87,7 @@ MODEL({
     asend: function(decorator, delegate, args) {
       var ret = args[0];
       args[0] = function(response, xhr) {
-        if ( xhr.status === 401 || xhr.status === 403 ) {
+        if ( xhr.status === 401 ) {
           decorator.authAgent.refresh(function() {
             ret(response, xhr);
           });
