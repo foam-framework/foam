@@ -54,7 +54,6 @@ MODEL({
               console.log('* ', obj.keywords);
               dao.delegate.local.put(obj);
             }, 10);
-            */
           }
           sink.put.apply(sink, arguments);
         }

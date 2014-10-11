@@ -26,8 +26,12 @@ var FObject = {
 
   TYPE: 'FObject',
 
+  create_: function() {
+    return Object.create(this);
+  },
+
   create: function(args, opt_X) {
-    var o = Object.create(this);
+    var o = this.create_(this);
     o.instance_ = {};
     if ( opt_X ) o.__ctx__ = opt_X;
     if ( typeof args === 'object' ) o.copyFrom(args);

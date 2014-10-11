@@ -126,6 +126,9 @@ var BootstrapModel = {
     cls.model_ = this;
     cls.name_  = this.name;
     cls.TYPE   = this.name;
+    var s = '(function() { var XXX = function() { }; XXX.prototype = this; return function() { return new XXX(); }; })'.replace(/XXX/g, this.name);
+    // TODO(kgr): This should work and let us know the Model of objects in the memory profiler but it doesn't work.
+    // cls.create_ = eval(s).call(cls);
 
     /** Add a method to 'cls' and set it's name. **/
     function addMethod(name, method) {
@@ -317,7 +320,7 @@ var BootstrapModel = {
       ( this.prototype_ = this.buildPrototype() );
   },
 
-  create: function(args, __ctx__) { return this.getPrototype().create(args, __ctx__); },
+  create: function(args, opt_X) { return this.getPrototype().create(args, opt_X); },
 
   isSubModel: function(model) {
 		/* Returns true if the given instance extends this $$DOC{ref:'Model'} or a descendant of this. */
