@@ -126,9 +126,14 @@ var BootstrapModel = {
     cls.model_ = this;
     cls.name_  = this.name;
     cls.TYPE   = this.name;
-    var s = '(function() { var XXX = function() { }; XXX.prototype = this; return function() { return new XXX(); }; })'.replace(/XXX/g, this.name);
-    // TODO(kgr): This should work and let us know the Model of objects in the memory profiler but it doesn't work.
-    // cls.create_ = eval(s).call(cls);
+
+    // Install a custom constructor so that Objects are named properly
+    // in the JS memory profiler.
+    // Doesn't work for Model because of some Bootstrap ordering issues.
+    if ( this.name !== 'Model' ) {
+      var s = '(function() { var XXX = function() { }; XXX.prototype = this; return function() { return new XXX(); }; })'.replace(/XXX/g, this.name);
+      cls.create_ = eval(s).call(cls);
+    }
 
     /** Add a method to 'cls' and set it's name. **/
     function addMethod(name, method) {
