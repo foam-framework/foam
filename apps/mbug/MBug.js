@@ -36,11 +36,9 @@ MODEL({
           maxLimit: 25
         });
 
-        /*
         Y.issueDAO = Y.KeywordDAO.create({
           delegate: Y.issueDAO
         });
-        */
 
         var pc = Y.AppController.create({
           name: project.projectName,

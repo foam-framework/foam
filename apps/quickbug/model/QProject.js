@@ -378,17 +378,6 @@ MODEL({
               return '<div id="' + id + '">' + value + '</div>';
             }
           },
-          /*
-    {
-      model_: 'StringArrayProperty',
-      name: 'keywords',
-      preSet: function(_, a) {
-        for ( var i = 0 ; i < a.length ; i++ ) a[i] = a[i].intern();
-        a.sort();
-        return a;
-      }
-    },
-    */
           {
             name: 'labels',
             shortName: 'l',
