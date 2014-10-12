@@ -132,7 +132,7 @@ var BootstrapModel = {
     // Doesn't work for Model because of some Bootstrap ordering issues.
     if ( this.name !== 'Model' ) {
       var s = '(function() { var XXX = function() { }; XXX.prototype = this; return function() { return new XXX(); }; })'.replace(/XXX/g, this.name);
-      cls.create_ = eval(s).call(cls);
+      try { cls.create_ = eval(s).call(cls); } catch (e) { }
     }
 
     /** Add a method to 'cls' and set it's name. **/
