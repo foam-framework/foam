@@ -84,13 +84,13 @@ MODEL({
           $$owner{model_: 'CCView'}
 
           <div class="separator separator1"></div>
-          $$content{model_: 'mdTextFieldView', label: 'Comment', onKeyMode: true }
-
-          <div class="separator separator1"></div>
           $$cc{model_: 'CCView'}
 
           <div class="separator separator1"></div>
           $$labels{model_: 'IssueLabelView'}
+
+          <div class="separator separator1"></div>
+          $$content{model_: 'mdTextFieldView', label: 'Comment', onKeyMode: true }
 
           $$comments{ viewModel: { model_: 'DAOListView', mode: 'read-only', rowView: 'CommentView' } }
         </div>
