@@ -1,5 +1,5 @@
 <%
-var ab = this.__ctx__.ActionButtonCView.xbind({
+var ab = X.ActionButtonCView.xbind({
   background: 'white',
   color:      '#4b4b4b',
   radius:     20
@@ -22,7 +22,7 @@ var bulletListB          = ab.create({action: RichTextView.BULLET_LIST,         
 var decreaseIndentationB = ab.create({action: RichTextView.DECREASE_INDENTATION, data: this.view.bodyView });
 var increaseIndentationB = ab.create({action: RichTextView.INCREASE_INDENTATION, data: this.view.bodyView });
 var blockQuoteB          = ab.create({action: RichTextView.BLOCK_QUOTE,          data: this.view.bodyView });
-var sendB                = this.__ctx__.ActionButtonCView.create({
+var sendB                = X.ActionButtonCView.create({
     action: this.model_.SEND,
     data:   this,
     color: 'white',
