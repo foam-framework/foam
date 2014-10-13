@@ -270,7 +270,8 @@ MODEL({
       name: 'back',
       isEnabled: function() { return true; },
       label: '',
-      iconUrl: 'images/ic_arrow_back_24dp.png'
+      iconUrl: 'images/ic_arrow_back_24dp.png',
+      action: function() { this.__ctx__.stack.back(); }
     },
     {
       name: 'moreActions',
