@@ -420,6 +420,7 @@ MODEL({
    ]
 });
 
+
 MODEL({
   name: 'MenuView',
   extendsModel: 'View',
@@ -466,6 +467,7 @@ MODEL({
   ]
 });
 
+
 MODEL({
   name: 'MenuLabelCitationView',
   extendsModel: 'DetailView',
@@ -475,6 +477,7 @@ MODEL({
     */}
    ]
 });
+
 
 var openComposeView = function(email) {
   var X = mgmail.controller.__ctx__;
