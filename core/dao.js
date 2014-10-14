@@ -3697,7 +3697,6 @@ MODEL({
       if ( cached &&
            cached[1] <= skip &&
            cached[2] >= skip + limit ) {
-        cached[3] = Date.now();
         cached[0].select(sink, {
           skip: skip - cached[1],
           limit: limit
