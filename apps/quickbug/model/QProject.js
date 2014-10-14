@@ -96,7 +96,7 @@ MODEL({
     },
     {
       name: 'IssueMDAO',
-      factory: function() {
+      lazyFactory: function() {
         var dao  = this.__ctx__.MDAO.create({model: this.__ctx__.QIssue});
         var auto = this.__ctx__.AutoIndex.create(dao);
 
@@ -108,7 +108,7 @@ MODEL({
     },
     {
       name: 'IssueIDBDAO',
-      factory: function() {
+      lazyFactory: function() {
         return this.__ctx__.EasyDAO.create({
           model: this.__ctx__.QIssue,
           name: this.projectName + '_' + this.__ctx__.QIssue.plural,
@@ -168,22 +168,29 @@ MODEL({
     {
       name: 'IssueNetworkDAO',
       factory: function() {
-        return this.__ctx__.IssueRestDAO.create({
-          url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
-          IssueCommentDAO: this.IssueCommentNetworkDAO,
-          model: this.__ctx__.QIssue,
-          batchSize: 500
+        return this.__ctx__.SlidingWindowDAODecorator.create({
+          delegate: this.__ctx__.IssueRestDAO.create({
+            url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
+            IssueCommentDAO: this.IssueCommentNetworkDAO,
+            model: this.__ctx__.QIssue,
+            batchSize: 500
+          })
         });
       },
       postSet: function(_, v) {
-        this.IssueCommentDAO.IssueNetworkDAO = v;
+        this.IssueCommentDAO.IssueNetworkDAO = v.delegate;
       },
       transient: true
     },
     {
       name: 'IssueDAO',
       lazyFactory: function() {
-        return this.IssueCachingDAO;
+        return this.__ctx__.KeywordDAO.create({
+          delegate: this.__ctx__.SplitDAO.create({
+            delegate: this.IssueCachingDAO,
+            remote: this.IssueNetworkDAO
+          })
+        });
       },
       transient: true
     },
@@ -244,7 +251,7 @@ MODEL({
       }
     },
     {
-      name: 'syncManager'
+      name: 'syncManagerFactory'
     },
     {
       name: 'syncManagerFuture',
@@ -832,15 +839,20 @@ MODEL({
           this.syncManagerFuture.set(manager);
           manager.start();
         }.bind(this));
-
-        if ( this.projectName !== 'chromium' ) {
-          this.defaultSortChoices = [
-            [ DESC(this.__ctx__.QIssue.MODIFIED),      'Last modified' ],
-            [ this.__ctx__.QIssue.PRIORITY, 'Priority' ],
-            [ DESC(this.__ctx__.QIssue.ID),            'Issue ID' ]
-          ];
-        }
       }
+
+      if ( this.projectName !== 'chromium' ) {
+        this.defaultSortChoices = [
+          [ DESC(this.__ctx__.QIssue.MODIFIED),      'Last modified' ],
+          [ this.__ctx__.QIssue.PRIORITY, 'Priority' ],
+          [ DESC(this.__ctx__.QIssue.ID),            'Issue ID' ]
+        ];
+      }
+
+      this.__ctx__.registerModel(this.__ctx__.SyncManager.xbind({
+        queryParser: this.__ctx__.QueryParser,
+        modifiedProperty: this.__ctx__.QIssue.MODIFIED
+      }), 'SyncManager');
     },
 
     /** Open a Browser in a Window for a Chome Packaged App. **/
