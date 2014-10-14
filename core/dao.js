@@ -3116,6 +3116,7 @@ MODEL({
     pipe: function() {},
     where: function() { return this; },
     limit: function() { return this; },
+    skip: function() { return this; }
   }
 });
 
@@ -3676,9 +3677,7 @@ MODEL({
   ],
   methods: {
     select: function(sink, options) {
-      if ( CountExpr.isInstance(sink) ) return this.delegate.select(sink, options);
-
-      if ( ! this.timeout_ ) this.timeout_ = this.X.setTimeout(this.purge, this.queryTTL);
+      if ( ! this.timeout_ ) this.timeout_ = this.__ctx__.setTimeout(this.purge, this.queryTTL);
 
       var query = options && options.query;
       var order = options && options.order;
@@ -3689,45 +3688,59 @@ MODEL({
         'query=' + (query ? query.toSQL() : ''),
         'order=' + (order ? order.toSQL() : '')
       ];
+
+
+      if ( Expr.isInstance(sink) ) {
+        var shortcircuit = true;
+        var mysink = sink.deepClone();
+        key.push(sink.model_.name);
+      } else {
+        mysink = [].sink;
+      }
+
       var cached = this.queryCache[key];
+
+      // If the cached version
+      if ( ! cached ||
+           ! ( skip == undefined || cached[1] <= skip ) ||
+           ! ( limit == undefined || cached[2] >= skip + limit ) ) {
+        delete this.queryCache[key];
+        skip = skip || 0;
+        cached = [
+          afuture(),
+          Math.max(0, skip - this.windowSize / 2),
+          limit == undefined ? undefined : (skip + limit + this.windowSize / 2),
+          Date.now()
+        ];
+        this.queryCache[key] = cached;
+
+        this.delegate.select(mysink, {
+          query: query,
+          order: order,
+          skip: cached[1],
+          limit: ( limit === undefined ) ? undefined : ( cached[2] - cached[1] )
+        })(function() {
+          cached[0].set(mysink);
+        });
+      }
 
       var future = afuture();
 
-      var self = this;
-      if ( cached &&
-           cached[1] <= skip &&
-           cached[2] >= skip + limit ) {
-        cached[0].select(sink, {
-          skip: skip - cached[1],
-          limit: limit
-        })(function() {
+      if ( shortcircuit ) {
+        cached[0].get(function(mysink) {
+          sink.copyFrom(mysink);
           future.set(sink);
         });
-        return future.get;
+      } else {
+        cached[0].get(function(mysink) {
+          mysink.select(sink, {
+            skip: ( skip == undefined ) ? undefined : ( skip - cached[1] ),
+            limit: ( limit == undefined ) ? undefined : limit
+          })(function() {
+            future.set(sink);
+          });
+        });
       }
-
-      if ( cached ) delete this.queryCache[key];
-
-      cached = [
-        [].dao,
-        Math.max(0, skip - this.windowSize / 2),
-        skip + limit + this.windowSize / 2,
-        Date.now()
-      ];
-
-      this.queryCache[key] = cached;
-
-      this.delegate.select(cached[0], {
-        query: query,
-        order: order,
-        skip: cached[1],
-        limit: cached[2] - cached[1]
-      })(function() {
-        cached[0].select(sink, {
-          skip: skip - cached[1],
-          limit: limit
-        })(function(s) { future.set(s); });
-      });
       return future.get;
     }
   },

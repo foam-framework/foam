@@ -151,9 +151,7 @@ MODEL({
 
       isEnabled: function() {
         var enabled = this.enabled;
-        var isSyncing = this.isSyncing;
-
-        return ! this.enabled && ! isSyncing;
+        return ! this.enabled;
       },
       action: function() { this.enabled = true; this.sync(); }
     },
@@ -218,6 +216,8 @@ MODEL({
 
     sync: function(ret) {
       var self = this;
+      if ( this.isSyncing ) return;
+
       aseq(
         function(ret) {
           if ( Date.now() - self.lastSync.getTime() > self.maxSyncAge )
