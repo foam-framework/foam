@@ -112,6 +112,7 @@ MODEL({
   }
 });
 
+
 MODEL({
   name: 'PositionedCViewView',
   extendsModel: 'AbstractCViewView',
@@ -156,6 +157,7 @@ MODEL({
   ]
 });
 
+
 MODEL({
   name: 'CViewView',
   extendsModel: 'AbstractCViewView',
@@ -172,6 +174,7 @@ MODEL({
     }
   ]
 });
+
 
 // Should CViews' have a cparent?
 MODEL({
@@ -572,7 +575,11 @@ MODEL({
     },
 
     initCView: function() {
-      this.addChild(this.pressCircle);
+      // Don't add pressCircle as a child because we want to control
+      // its paint order, but still set it up as though we had added it.
+      // this.addChild(this.pressCircle);
+      this.pressCircle.view = this.view;
+      this.pressCircle.addListener(this.view.paint);
 
       if ( this.__ctx__.gestureManager ) {
         // TODO: Glow animations on touch.
@@ -613,11 +620,15 @@ MODEL({
       }
 
       this.SUPER();
-      this.paintChildren();
       c.restore();
     },
     paintSelf: function() {
       var c = this.canvas;
+
+      c.save();
+      this.pressCircle.paint();
+      c.restore();
+
       if ( this.font ) c.font = this.font;
 
       c.globalAlpha  = this.alpha;
