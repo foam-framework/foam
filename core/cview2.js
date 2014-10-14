@@ -430,11 +430,16 @@ MODEL({
       defaultValueFn: function() { return this.action.iconUrl; }
     },
     {
+      name: 'pressCircleColor',
+      defaultValue: 'rgb(241, 250, 65)'
+    },
+    {
       name: 'pressCircle',
       factory: function() { return Circle2.create({
         alpha: 0,
         r: 10,
-        color: 'rgb(241, 250, 65)'
+        border: this.pressCircleColor,
+        color: this.pressCircleColor
       });}
     },
     {
@@ -601,7 +606,7 @@ MODEL({
 
         c.beginPath();
         c.arc(this.x+this.radius, this.y+this.radius, this.radius-1, 0, Math.PI*2, false);
-        c.strokeStyle = this.background;
+        c.strokeStyle = this.pressCircle.r >= this.radius-1 ? this.pressCircle.background : this.background;
         c.lineWidth = 1;
         c.stroke();
         c.clip();

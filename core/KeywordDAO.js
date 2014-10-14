@@ -20,7 +20,46 @@ MODEL({
 
   extendsModel: 'ProxyDAO',
 
+  properties: [
+    {
+      name: 'idMap',
+      factory: function() { return {}; }
+    }
+    /*
+      TODO: add a DAO for persisting keyword mappings
+    {
+      name: 'keywordsDAO'
+    }
+    */
+  ],
+
   methods: {
+    init: function() {
+      this.SUPER();
+
+      var keywords = this;
+      var oldF     = DefaultQuery.getPrototype().f;
+
+      DefaultQuery.getPrototype().f = function(obj) {
+        return keywords.match(obj.id, this.arg1) || oldF.call(this, obj);
+      };
+    },
+
+    addKeyword: function(id, keyword) {
+      // console.log('******* addKeyword: ', id, keyword);
+      var map = this.idMap[id] || ( this.idMap[id] = {} );
+      map[keyword] = true;
+    },
+
+    removeKeywords: function(id) {
+      delete this.idMap[id];
+    },
+
+    match: function(id, keyword) {
+      var map = this.idMap[id];
+      return map && map[keyword];
+    },
+
     select: function(sink, options) {
       var query = options && options.query;
 
@@ -28,20 +67,12 @@ MODEL({
 
       var arg1;
 
-      var dao = this;
+      var keywords = this;
 
       var newSink = {
         __proto__: sink,
         put: function(obj) {
-          if ( ! query.f(obj) ) {
-            console.log('******* KEYWORD MATCH: ', obj.id, query.toString(), arg1);
-            dao.__ctx__.setTimeout(function() {
-              obj = obj.model_.create(obj);
-              obj.keywords = obj.keywords.clone().binaryInsert(arg1);
-              console.log('* ', obj.keywords);
-              dao.delegate.put(obj);
-            }, 1000);
-          }
+          if ( ! query.f(obj) ) keywords.addKeyword(obj.id, arg1);
           sink.put.apply(sink, arguments);
         }
       };
@@ -56,12 +87,15 @@ MODEL({
       var newQuery = query.partialEval();
       delete DefaultQuery.getPrototype()['partialEval'];
 
-      var newOptions = {
-        __proto__: options,
-        query: newQuery
-      };
+      var newOptions = { __proto__: options, query: newQuery };
 
       return this.delegate.select(newSink, newOptions);
-    }
+    },
+
+    remove: function(query, sink) {
+      var key = obj[this.model.ids[0]] != undefined ? obj[this.model.ids[0]] : obj;
+      this.removeKeywords(key);
+      this.delegate.remove(query, sink);
+    },
   }
 });

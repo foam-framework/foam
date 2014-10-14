@@ -643,6 +643,7 @@ var DAOProperty = Model.create({
 
 
 var ModelProperty = Model.create({
+  name: 'ModelProperty',
   extendsModel: 'Property',
 
   help: "Describes a Model property.",
@@ -671,6 +672,7 @@ var ModelProperty = Model.create({
 
 
 var ViewProperty = Model.create({
+  name: 'ViewProperty',
   extendsModel: 'Property',
 
   help: "Describes a View-Factory property.",

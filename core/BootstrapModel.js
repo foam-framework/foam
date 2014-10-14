@@ -127,6 +127,14 @@ var BootstrapModel = {
     cls.name_  = this.name;
     cls.TYPE   = this.name;
 
+    // Install a custom constructor so that Objects are named properly
+    // in the JS memory profiler.
+    // Doesn't work for Model because of some Bootstrap ordering issues.
+    if ( this.name !== 'Model' ) {
+      var s = '(function() { var XXX = function() { }; XXX.prototype = this; return function() { return new XXX(); }; })'.replace(/XXX/g, this.name);
+      try { cls.create_ = eval(s).call(cls); } catch (e) { }
+    }
+
     /** Add a method to 'cls' and set it's name. **/
     function addMethod(name, method) {
       if ( cls.__proto__[name] ) {
@@ -317,7 +325,7 @@ var BootstrapModel = {
       ( this.prototype_ = this.buildPrototype() );
   },
 
-  create: function(args, __ctx__) { return this.getPrototype().create(args, __ctx__); },
+  create: function(args, opt_X) { return this.getPrototype().create(args, opt_X); },
 
   isSubModel: function(model) {
 		/* Returns true if the given instance extends this $$DOC{ref:'Model'} or a descendant of this. */

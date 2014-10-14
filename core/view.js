@@ -978,6 +978,7 @@ MODEL({
         top: 0;
         visibility: hidden;
         z-index: 999;
+        -webkit-transform: translate3d(0, 0, 2px);
       }
       .tooltip.animated {
         transition: top 0.5s ease-in-out;
