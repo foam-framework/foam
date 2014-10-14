@@ -288,10 +288,15 @@ MODEL({
     },
   ],
   templates: [
+    function CSS() {/*
+      .actionButtonCView-moreActions {
+        margin-right: 10px;
+      }
+    */},
     function toHTML() {/*
       <div id="<%= this.id %>" class="email-view">
         <div class="header">
-          $$back{className: 'backButton'}
+          $$back{className: 'backButton', radius:22}
           $$subject{mode: 'read-only', className: 'subject'}
           $$archive{iconUrl: 'icons/ic_archive_white_24dp.png'}
           $$moveToInbox{iconUrl: 'icons/ic_inbox_white_24dp.png'}
