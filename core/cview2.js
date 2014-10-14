@@ -433,16 +433,15 @@ MODEL({
       defaultValueFn: function() { return this.action.iconUrl; }
     },
     {
-      name: 'pressCircleColor',
+      name: 'haloColor',
       defaultValue: 'rgb(241, 250, 65)'
     },
     {
-      name: 'pressCircle',
+      name: 'halo',
       factory: function() { return Circle2.create({
         alpha: 0,
         r: 10,
-        border: this.pressCircleColor,
-        color: this.pressCircleColor
+        color: this.haloColor
       });}
     },
     {
@@ -500,18 +499,18 @@ MODEL({
         if ( evt.type === 'touchstart' ) {
           var rect = this.$.getBoundingClientRect();
           var t = evt.touches[0];
-          this.pressCircle.x = t.pageX - rect.left;
-          this.pressCircle.y = t.pageY - rect.top;
+          this.halo.x = t.pageX - rect.left;
+          this.halo.y = t.pageY - rect.top;
         } else {
-          this.pressCircle.x = evt.offsetX;
-          this.pressCircle.y = evt.offsetY;
+          this.halo.x = evt.offsetX;
+          this.halo.y = evt.offsetY;
         }
-        this.pressCircle.r = 5;
+        this.halo.r = 5;
         this.__ctx__.animate(150, function() {
-          this.pressCircle.x = this.width/2;
-          this.pressCircle.y = this.height/2;
-          this.pressCircle.r = Math.min(28, Math.min(this.width, this.height)/2-1);
-          this.pressCircle.alpha = 1;
+          this.halo.x = this.width/2;
+          this.halo.y = this.height/2;
+          this.halo.r = Math.min(28, Math.min(this.width, this.height)/2);
+          this.halo.alpha = 1;
         }.bind(this), Movement.easeIn(1))();
       }
     },
@@ -522,7 +521,7 @@ MODEL({
         this.down_ = false;
         this.__ctx__.animate(
           300,
-          function() { this.pressCircle.alpha = 0; }.bind(this))();
+          function() { this.halo.r -= 2; this.halo.alpha = 0; }.bind(this))();
       }
     }
   ],
@@ -575,11 +574,11 @@ MODEL({
     },
 
     initCView: function() {
-      // Don't add pressCircle as a child because we want to control
+      // Don't add halo as a child because we want to control
       // its paint order, but still set it up as though we had added it.
-      // this.addChild(this.pressCircle);
-      this.pressCircle.view = this.view;
-      this.pressCircle.addListener(this.view.paint);
+      // this.addChild(this.halo);
+      this.halo.view = this.view;
+      this.halo.addListener(this.view.paint);
 
       if ( this.__ctx__.gestureManager ) {
         // TODO: Glow animations on touch.
@@ -603,30 +602,32 @@ MODEL({
         this.__ctx__.gestureManager.uninstall(this.tapGesture);
       }
     },
-    paint: function() {
+    erase: function() {
       var c = this.canvas;
-      c.save();
-      c.globalAlpha = this.alpha;
-
       if ( this.radius ) {
+        if ( this.halo.r < this.radius-1 ) {
+          c.beginPath();
+          c.arc(this.x+this.radius, this.y+this.radius, this.radius-1, 0, Math.PI*2, false);
+          c.fillStyle = this.background;
+          c.lineWidth = 1;
+          c.fill();
+        }
+      } else {
         this.canvas.clearRect(0, 0, this.width, this.height);
-
-        c.beginPath();
-        c.arc(this.x+this.radius, this.y+this.radius, this.radius-1, 0, Math.PI*2, false);
-        c.strokeStyle = this.pressCircle.r >= this.radius-1 ? this.pressCircle.background : this.background;
-        c.lineWidth = 1;
-        c.stroke();
-        c.clip();
+        this.canvas.fillStyle = this.background;
+        this.canvas.fillRect(0, 0, this.width, this.height);
       }
-
-      this.SUPER();
-      c.restore();
     },
     paintSelf: function() {
       var c = this.canvas;
 
       c.save();
-      this.pressCircle.paint();
+      if ( this.radius ) {
+        c.beginPath();
+        c.arc(this.x+this.radius, this.y+this.radius, this.radius, 0, Math.PI*2, false);
+        c.clip();
+      }
+      this.halo.paint();
       c.restore();
 
       if ( this.font ) c.font = this.font;
@@ -700,6 +701,7 @@ MODEL({
   ]
 });
 
+
 MODEL({name: 'MotionBlur', methods: {
   paint: function() {
     this.SUPER();
@@ -740,6 +742,7 @@ MODEL({name: 'Shadow', methods: {
     this.SUPER();
   }
 }});
+
 
 MODEL({
   name: 'CanvasScrollView',
