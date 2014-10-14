@@ -425,7 +425,7 @@ select[name=pri], select[name=status] {
 .swipeAltHeader li {
   font-size: 14px;
   opacity: 0.8;
-  line-height: 48px;
+  line-height: 46px;
   padding-bottom: 14px;
 }
 
