@@ -288,6 +288,11 @@ MODEL({
     },
   ],
   templates: [
+    function CSS() {/*
+      .actionButtonCView-moreActions {
+        margin-right: 10px;
+      }
+    */},
     function toHTML() {/*
       <div id="<%= this.id %>" class="email-view">
         <div class="header">
