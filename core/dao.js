@@ -3704,10 +3704,11 @@ MODEL({
            ! ( skip == undefined || cached[1] <= skip ) ||
            ! ( limit == undefined || cached[2] >= skip + limit ) ) {
         delete this.queryCache[key];
+        skip = skip || 0;
         cached = [
           afuture(),
           Math.max(0, skip - this.windowSize / 2),
-          skip + limit + this.windowSize / 2,
+          limit == undefined ? undefined : (skip + limit + this.windowSize / 2),
           Date.now()
         ];
         this.queryCache[key] = cached;
@@ -3716,7 +3717,7 @@ MODEL({
           query: query,
           order: order,
           skip: cached[1],
-          limit: cached[2] - cached[1]
+          limit: ( limit === undefined ) ? undefined : ( cached[2] - cached[1] )
         })(function() {
           cached[0].set(mysink);
         });
