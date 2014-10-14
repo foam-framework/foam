@@ -50,7 +50,7 @@ function subWindow(w, opt_name, isBackground) {
   var installedModels = new WeakMap();
 
   var map = {
-    registerModel: function(model, opt_name) {
+    registerModel: function(model, opt_name) { // TODO: only modify cls (the proto) not this!
       if ( model.getPrototype && model.getPrototype().installInDocument && ! installedModels.has(model) ) {
         // TODO(kgr): If Traits have CSS then it will get installed more than once.
         for ( m = model ; m ; m = m.extendsModel && m.getPrototype().__proto__.model_ ) {
@@ -118,13 +118,15 @@ function registerModel(model, opt_name) {
   }
   */
   var thisX = this;
-
   var thisModel = this === GLOBAL ? model : {
-    __proto__: model,
+    __proto__: model, // TODO: only modify cls (the proto) not this!
       create: function(args, opt_X) {
         return this.__proto__.create(args, thisX);
       }
   };
+
+  // TODO: only modify cls (the proto) not this!
+  // Register both ModName (the proto) and ModNameModel (the unadulterated definition)
 
   Object.defineProperty(
     this,

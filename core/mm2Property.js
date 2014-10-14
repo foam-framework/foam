@@ -608,6 +608,7 @@ Model.model_ = Model;
 Property = Model.create(Property);
 
 // Property properties are still Bootstrap Models, so upgrade them.
+ // TODO: only modify cls (the proto) not this!
 for ( var i = 0 ; i < Property.properties.length ; i++ )
   Property[Property.properties[i].name.constantize()] =
     Property.properties[i] = Property.create(Property.properties[i]);

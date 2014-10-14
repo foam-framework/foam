@@ -514,7 +514,7 @@ MODEL({
       */
       // TODO: it would be more efficient to replace SimpleValue with ConstantValue
       // TODO: rename SimpleValue to just Value and make it a Trait?
-      var o = this.model_[name];
+      var o = this.model_[name]; // TODO: only modify cls (the proto) not this!
       if ( ! o ) throw 'Unknown View Name: ' + name;
 
       if ( Action.isInstance(o) )

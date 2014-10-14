@@ -109,6 +109,16 @@ var BootstrapModel = {
     if ( this.extendsModel && ! GLOBAL[this.extendsModel] ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
 
     var extendsModel = this.extendsModel && GLOBAL[this.extendsModel];
+//    if (this.extendsModel && GLOBAL[this.extendsModel]) {
+//      extendsModel = GLOBAL[this.extendsModel];
+//    } else {
+//      if (this.name != 'Model') {
+//        var modelModel = GLOBAL['Model'];
+//        if (!modelModel.TYPE.startsWith('BootstrapModel')) extendsModel = modelModel;
+//      }
+//    }
+//    console.log("Bootstrap model buildPrototype: ", this.name, this.extendsModel, extendsModel? extendsModel.id: "na");
+// recursion problem... clone() of a documentation property is causing create of a doc prop, which causes a clone, create, clone, create... since we never get to store the finished proto.
 
     if ( this.traits ) for ( var i = 0 ; i < this.traits.length ; i++ ) {
       var trait = this.traits[i];
@@ -126,6 +136,14 @@ var BootstrapModel = {
     cls.model_ = this;
     cls.name_  = this.name;
     cls.TYPE   = this.name;
+
+    // HACK
+//    if (   this.name === "Documentation"
+//        || this.name === "Template"
+//        || this.name === "Arg"
+//       ){
+//      this.prototype_ = cls;
+//    }
 
     // Install a custom constructor so that Objects are named properly
     // in the JS memory profiler.
@@ -154,6 +172,11 @@ var BootstrapModel = {
     });
 
     // build properties
+    // TODO: We're grabbing base copies of properties defined here, to get inherited
+    // settings for each prop we define, if there's a base definition to get. This
+    // implementation looks like it only dives down one level (relying on an
+    // amalgamated list). Replace with getFeature(p.name) and assert the
+    // type matches. Do this for each type of feature below.
     if ( this.properties ) {
       for ( var i = 0 ; i < this.properties.length ; i++ ) {
         var p = this.properties[i];
@@ -161,22 +184,23 @@ var BootstrapModel = {
           var superProp = extendsModel.getProperty(p.name);
           if ( superProp ) {
             p = superProp.clone().copyFrom(p);
-            this.properties[i] = p;
-            this[p.name.constantize()] = p;
+            this.properties[i] = p; // TODO: only modify cls (the proto) not this!
+            this[p.name.constantize()] = p; // TODO: only modify cls (the proto) not this!
           }
         }
         cls.defineProperty(p);
       }
-      this.propertyMap_ = null;
+      this.propertyMap_ = null; // TODO: only modify cls (the proto) not this!
     }
 
     // Copy parent Model's Property Contants to this Model.
+    // TODO: protos should inherit these through javascript inheritance
     if ( extendsModel ) {
       for ( var i = 0 ; i < extendsModel.properties.length ; i++ ) {
         var p = extendsModel.properties[i];
         var name = p.name.constantize();
 
-        if ( ! this[name] ) this[name] = p;
+        if ( ! this[name] ) this[name] = p; // TODO: only modify cls (the proto) not this!
       }
     }
 
@@ -190,6 +214,7 @@ var BootstrapModel = {
     // this.mixins && Object_forEach(this.mixins, function(m) { /* TODO: something */ });
 
     // add action
+    // use getFeature to account for inheritance beyond one level
     if ( this.actions ) {
       for ( var i = 0 ; i < this.actions.length ; i++ ) {
         (function(a) {
@@ -197,7 +222,7 @@ var BootstrapModel = {
             var superAction = extendsModel.getAction(a.name);
             if ( superAction ) {
               a = superAction.clone().copyFrom(a);
-              this.actions[i] = a;
+              this.actions[i] = a; // TODO: only modify cls (the proto) not this!
             }
           }
           addMethod(a.name, function(opt_x) { a.callIfEnabled(opt_x || this.__ctx__, this); });
@@ -291,14 +316,17 @@ var BootstrapModel = {
     });
 
     // copy parent model's properties and actions into this model
+    // TODO: don't do this, allow javascript inheritance to do its thing.
+    // Putting this back in as a performance enhancement at the cost
+    // of space and more rebuilding if a model definition changes.
     if ( extendsModel ) {
       for ( var i = extendsModel.properties.length-1 ; i >= 0 ; i-- ) {
         var p = extendsModel.properties[i];
         if ( ! ( this.getProperty && this.getPropertyWithoutCache_(p.name) ) )
-          this.properties.unshift(p);
+          this.properties.unshift(p); // TODO: only modify cls (the proto) not this!
       }
-      this.propertyMap_ = null;
-      this.actions = extendsModel.actions.concat(this.actions);
+      this.propertyMap_ = null; // TODO: only modify cls (the proto) not this!
+      this.actions = extendsModel.actions.concat(this.actions); // TODO: only modify cls (the proto) not this!
     }
 
     // build primary key getter and setter
@@ -336,6 +364,7 @@ var BootstrapModel = {
     }
   },
 
+  //TODO: use getFeature
   getPropertyWithoutCache_: function(name) { /* Internal use only. */
     for ( var i = 0 ; i < this.properties.length ; i++ ) {
       var p = this.properties[i];
@@ -346,6 +375,7 @@ var BootstrapModel = {
     return null;
   },
 
+  //TODO: use getFeature... maybe add caching to getFeature if possible?
   getProperty: function(name) { /* Returns the requested $$DOC{ref:'Property'} of this instance. */
     // NOTE: propertyMap_ is invalidated in a few places
     // when properties[] is updated.
@@ -365,6 +395,7 @@ var BootstrapModel = {
     return this.propertyMap_[name];
   },
 
+  //TODO: use getFeature
   getAction: function(name) { /* Returns the requested $$DOC{ref:'Action'} of this instance. */
     for ( var i = 0 ; i < this.actions.length ; i++ )
       if ( this.actions[i].name === name ) return this.actions[i];

@@ -188,7 +188,7 @@ var Model = {
       type: 'Array[String]',
       view: 'StringArrayView',
       defaultValueFn: function() {
-        var id = this.getProperty('id');
+        var id = this.getProperty? this.getProperty('id') : "";
         if ( id ) return ['id'];
         return this.properties.length ? [this.properties[0].name] : [];
       },
@@ -256,7 +256,7 @@ var Model = {
           }
 
           // create property constant
-          this[p.name.constantize()] = newValue[i];
+          this[p.name.constantize()] = newValue[i]; // TODO: only modify cls (the proto) not this!
         }
 
         this.propertyMap_ = null;
@@ -293,7 +293,7 @@ var Model = {
           }
 
           // create property constant
-          this[p.name.constantize()] = newValue[i];
+          this[p.name.constantize()] = newValue[i]; // TODO: only modify cls (the proto) not this!
         }
 
         return newValue;
@@ -462,7 +462,7 @@ var Model = {
           }
 
           // create property constant
-          this[p.name.constantize()] = newValue[i];
+          this[p.name.constantize()] = newValue[i]; // TODO: only modify cls (the proto) not this!
         }
 
         return newValue;

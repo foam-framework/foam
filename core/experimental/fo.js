@@ -462,7 +462,7 @@ var featureDAO = [
     return string.hashCode();
   }],
   ['Model', 'Method', function isInstance(obj) {
-    return obj && obj.model_ && this.isSubModel(obj.model_);
+    return obj && obj.model_ && obj.model_.getPrototype && this.isSubModel(obj.model_);
   }],
   ['FObject', 'Method', function toString() {
     return this.model_.name + "Prototype"
