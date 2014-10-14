@@ -296,7 +296,7 @@ MODEL({
     function toHTML() {/*
       <div id="<%= this.id %>" class="email-view">
         <div class="header">
-          BACK $$back{className: 'backButton'} FORTH
+          $$back{className: 'backButton', radius:22}
           $$subject{mode: 'read-only', className: 'subject'}
           $$archive{iconUrl: 'icons/ic_archive_white_24dp.png'}
           $$moveToInbox{iconUrl: 'icons/ic_inbox_white_24dp.png'}
