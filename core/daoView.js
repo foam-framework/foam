@@ -996,6 +996,139 @@ MODEL({
   ]
 });
 
+MODEL({
+  name: 'SimpleScrollView',
+  extendsModel: 'AbstractDAOView',
+  traits: ['VerticalScrollNativeTrait'],
+  properties: [
+    {
+      name: 'floating$',
+      getter: function() { return this.__ctx__.$(this.floatingID); }
+    },
+    {
+      name: 'container$',
+      getter: function() { return this.__ctx__.$(this.containerID); }
+    },
+    'floatingID',
+    'containerID',
+    { name: 'scrollerID', getter: function() { return this.id; } },
+    {
+      model_: 'IntProperty',
+      name: 'rows',
+      defaultValue: 8
+    },
+    {
+      model_: 'IntProperty',
+      name: 'count'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'rowSize',
+      defaultValue: 87
+    },
+    {
+      model_: 'IntProperty',
+      name: 'scrollTop',
+    },
+    {
+      model_: 'ViewProperty',
+      name: 'rowView'
+    },
+    {
+      name: 'views',
+      factory: function() { return []; }
+    },
+    {
+      name: 'objs',
+      factory: function() { return []; }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'offset',
+      preSet: function(_, v) {
+        return Math.min(v, (this.count * this.rowSize) - this.rows * 2 * this.rowSize);
+      },
+    },
+    {
+      name: 'dao',
+      lazyFactory: function() { return NullDAO.create({}) }
+    }
+  ],
+  methods: {
+    init: function(SUPER, X, args) {
+      var self = this;
+      SUPER(args);
+
+      X.dynamic(function() { self.count; },
+                function() {
+                  if ( ! self.$ ) return;
+                  self.container$.style.height = (self.count * self.rowSize) + 'px';
+                });
+
+      X.dynamic(function() { self.objs; self.offset; },
+                function() { self.render(); });
+    },
+  },
+  listeners: [
+    {
+      name: 'onScroll',
+      code: function() {
+        this.scrollTop = this.scroller$.scrollTop;
+        this.onDAOUpdate();
+      }
+    },
+    {
+      name: 'onDAOUpdate',
+      code: function() {
+        var self = this;
+
+        this.dao.select(COUNT())(function(c) {
+          self.count = c.count;
+        });
+
+        var skip = Math.min(
+          Math.max(
+            Math.floor((this.scrollTop / this.rowSize) - (this.rows / 2)),
+            0),
+          Math.max(
+            this.count - this.rows * 2,
+            0));
+        var limit = this.rows * 2;
+        var self = this;
+        this.dao.skip(skip).limit(limit).select()((function(a) {
+          this.objs = a;
+          this.offset = skip * this.rowSize;
+        }).bind(this));
+      }
+    },
+    {
+      name: 'render',
+      code: function() {
+        if ( ! this.$ ) return;
+        for ( var i = 0; i < this.objs.length; i++ ) {
+          if ( ! this.views[i] ) {
+            this.views[i] = this.rowView({ data: this.objs[i] }, this.__ctx__);
+            this.floating$.insertAdjacentHTML('beforeend', this.views[i].toHTML());
+            this.views[i].initHTML();
+          } else {
+            this.views[i].data = this.objs[i];
+          }
+        }
+        this.floating$.style.webkitTransform = 'translate3d(0,' + this.offset + 'px,0)';
+      }
+    }
+  ],
+  templates: [
+    function toHTML() {/*
+      <div id="<%= this.id %>" style="overflow-y: scroll; height: 100%">
+        <div id="<%= this.containerID = this.nextID() %>" style="position:relative;height:<%= this.count * this.rowSize %>px">
+          <div id="<%= this.floatingID = this.nextID() %>" style="position:absolute;-webkit-transform:translate3d(0,0,0)"></div>
+        </div>
+      </div>
+    */}
+  ]
+});
+
 
 MODEL({
   name: 'PredicatedView',
