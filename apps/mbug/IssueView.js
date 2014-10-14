@@ -69,16 +69,12 @@ MODEL({
           </div>
           <div class="choice">
             <img src="images/ic_keep_24dp.png" class="status-icon">
-            <%
-              // $$ syntax doesn't support embedded functions (yet), so define it here.
-              var objToChoice = function(o) { return [o.status, o.status]; };
-            %>
             $$status{
                 model_: 'PopupChoiceView',
                 iconUrl: 'images/ic_arrow_drop_down_24dp.png',
                 showValue: true,
                 dao: this.__ctx__.StatusDAO,
-                objToChoice: objToChoice
+                objToChoice: function(o) { return [o.status, o.status]; }
               }
           </div>
 
