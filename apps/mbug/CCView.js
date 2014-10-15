@@ -47,7 +47,7 @@ MODEL({
       }
     */},
     function toInnerHTML() {/*
-      <%= this.__ctx__.IssueOwnerAvatarView.create({ data: this.data }) %>
+      <%= this.__ctx__.MDMonogramStringView.create({ data: this.data }) %>
       <div class="owner-name">{{ this.data }}</div>
       <span class="removeRow">$$removeRow</span>
     */}
@@ -60,7 +60,7 @@ MODEL({
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
     <div id="%%id" class="CitationView">
-      $$name{model_: 'IssueOwnerAvatarView'}
+      $$name{model_: 'MDMonogramStringView'}
       <div class="owner-name">{{ this.data.name }}</div>
     </div>
   */} ]

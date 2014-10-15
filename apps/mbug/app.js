@@ -54,7 +54,7 @@ window.onload = function() {
             arequire('AddRowView'),
             arequire('AutocompleteListView'),
             arequire('mdTextFieldView'),
-            arequire('IssueOwnerAvatarView'),
+            arequire('MDMonogramStringView'),
             arequire('IssueCitationView'),
             arequire('CommentView'),
             arequire('ChangeProjectView'),
