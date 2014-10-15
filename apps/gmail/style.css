@@ -1,3 +1,15 @@
+.mdui-app-controller .header {
+  background: #e51c23;
+}
+
+.header canvas {
+  background: #e51c23;
+}
+
+.email-view .header {
+  background: #e51c23;
+}
+
 table {
   border-spacing: 0;
 }
@@ -28,7 +40,7 @@ a {
 .actionButton {
   padding: 8px;
   vertical-align: middle;
-  background: #3e50b4;
+  background: #e51c23;
   border: none;
   -webkit-box-shadow: none;
   box-shadown: none;
@@ -59,7 +71,7 @@ a {
 }
 
 .popupChoiceList li.selected {
-  color: #3e50b4;
+  color: #e51c23;
 }
 
 .star {
@@ -182,7 +194,7 @@ select[name=pri], select[name=status] {
 }
 
 ul.swipeAltHeader {
-  background: #3e50b4;
+  background: #e51c23;
   box-shadow: 0 1px 1px rgba(0,0,0,.25);
   color: white;
   height: 48px;
@@ -212,7 +224,7 @@ ul.swipeAltHeader {
 }
 
 .email-view .header {
-  background: #3e50b4;
+  background: #e51c23;
   position: fixed;
   width: 100%;
   top: 0;
@@ -269,7 +281,7 @@ ul.swipeAltHeader {
 }
 
 .email-compose-view .header {
-  background: #3e50b4;
+  background: #e51c23;
   position: fixed;
   width: 100%;
   top: 0;

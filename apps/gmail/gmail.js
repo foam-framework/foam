@@ -136,7 +136,7 @@ MODEL({
       }
 
       .project-citation .project-name.selected {
-        color: #3e50b4;
+        color: #e51c23;
       }
     */},
     function toInnerHTML() {/*
@@ -554,7 +554,7 @@ MODEL({
       }
 
       .menuView div:hover {
-        background-color: #3e50b4;
+        background-color: #e51c23;
         color: white;
       }
    */}
