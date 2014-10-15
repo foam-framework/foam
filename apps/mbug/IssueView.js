@@ -26,6 +26,11 @@ MODEL({
     }
   ],
   templates: [
+    function CSS() {/*
+      .content-view {
+        margin-top: -24px; 
+      }
+    */},
     function headerToHTML() {/*
       <div class="header">
         <div class="toolbar">
@@ -88,7 +93,7 @@ MODEL({
           $$labels{model_: 'IssueLabelView'}
 
           <div class="separator separator1"></div>
-          $$content{model_: 'mdTextFieldView', label: 'Comment', onKeyMode: true }
+          $$content{model_: 'mdTextFieldView', label: 'Comment', onKeyMode: true, extraClassName: 'content-view' }
 
           $$comments{ viewModel: { model_: 'DAOListView', mode: 'read-only', rowView: 'CommentView' } }
         </div>
