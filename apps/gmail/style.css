@@ -2,11 +2,19 @@
   background: #e51c23;
 }
 
+.mdui-app-controller.searchMode .header .search {
+  background: #e51c23;
+}
+
 .header canvas {
   background: #e51c23;
 }
 
 .email-view .header {
+  background: #e51c23;
+}
+
+input[name=q] {
   background: #e51c23;
 }
 
