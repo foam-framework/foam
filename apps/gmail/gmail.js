@@ -64,6 +64,96 @@ queryParser.expr = alt(
 
 
 MODEL({
+  name: 'MenuView',
+
+  extendsModel: 'DetailView',
+
+  templates: [
+    function CSS() {/*
+      .change-project-view {
+        margin: 0;
+        padding: 0;
+        box-shadow: 1px 0 1px rgba(0,0,0,.1);
+        font-size: 14px;
+        font-weight: 500;
+        background: white;
+      }
+
+      .change-project-view .header {
+        width: 100%;
+        height: 172px;
+        margin-bottom: 0;
+        background-image: url('images/projectBackground.png');
+      }
+
+      .change-project-view {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background: white;
+      }
+
+      .change-project-view span[name=email] {
+        color: white;
+        display: block;
+        margin-top: 40;
+        padding-left: 16px;
+        font-weight: 500;
+        font-size: 16px;
+      }
+
+      .change-project-view .projectList {
+        flex: 1;
+        overflow-y: auto;
+        padding: 8px 0;
+      }
+
+      .change-project-view .owner-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 32px;
+        margin: 16px;
+      }
+
+      .project-citation {
+        margin-top: 0;
+        height: 48px;
+      }
+
+      .project-citation img {
+        margin-right: 0;
+        width: 24px;
+        height: 24px;
+        margin: 12px 16px;
+        vertical-align: middle;
+      }
+
+      .project-citation .project-name {
+        color: rgba(0,0,0,.8);
+        font-size: 14px;
+        margin-left: 16px;
+        vertical-align: middle;
+      }
+
+      .project-citation .project-name.selected {
+        color: #3e50b4;
+      }
+    */},
+    function toInnerHTML() {/*
+      <div class="header">
+        $$email{model_: 'IssueOwnerAvatarView'}
+        $$email{mode: 'display-only'}
+        <br><br>
+      </div>
+      <div class="folderList">
+      </div>
+    </div>
+    */}
+  ]
+});
+
+
+MODEL({
   name: 'MGmail',
   description: 'Mobile Gmail',
   traits: ['PositionedDOMViewTrait'],
@@ -178,8 +268,8 @@ MODEL({
         editableCitationViews: true,
         sortChoices: [
           [ DESC(EMail.TIMESTAMP), 'Newest First' ],
-          [ EMail.TIMESTAMP, 'Oldest First' ],
-          [ EMail.SUBJECT, 'Subject' ],
+          [ EMail.TIMESTAMP,       'Oldest First' ],
+          [ EMail.SUBJECT,         'Subject' ],
         ],
         menuFactory: function() {
           return this.__ctx__.MenuView.create({
@@ -268,10 +358,9 @@ MODEL({
   actions: [
     {
       name: 'back',
-      isEnabled: function() { return true; },
+      isAvailable: function() { return true; },
       label: '',
-      iconUrl: 'images/ic_arrow_back_24dp.png',
-      action: function() { this.__ctx__.stack.back(); }
+      iconUrl: 'images/ic_arrow_back_24dp.png'
     },
     {
       name: 'moreActions',
@@ -296,7 +385,7 @@ MODEL({
     function toHTML() {/*
       <div id="<%= this.id %>" class="email-view">
         <div class="header">
-          $$back{className: 'backButton', radius:22}
+          $$back{radius: 22, className: 'backButton'}
           $$subject{mode: 'read-only', className: 'subject'}
           $$archive{iconUrl: 'icons/ic_archive_white_24dp.png'}
           $$moveToInbox{iconUrl: 'icons/ic_inbox_white_24dp.png'}
