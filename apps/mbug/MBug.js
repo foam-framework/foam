@@ -277,29 +277,6 @@ MODEL({
   ],
 
   templates: [
-    function toInnerHTML() {/*
-      <div class="header">
-        $$email{model_: 'IssueOwnerAvatarView'}
-        $$email{mode: 'display-only'}
-        <br><br>
-      </div>
-      <div class="projectList">
-      <%
-         var projects = this.data.preferredProjects;
-
-         if ( projects.indexOf('chromium') == -1 ) projects.push('chromium');
-         if ( projects.indexOf('foam-framework') == -1 ) projects.push('foam-framework');
-
-         projects.forEach(function(project) { %>
-        <% if ( ' chromium-os chromedriver cinc crwm chrome-os-partner ee-testers-external '.indexOf(' ' + project + ' ') != -1 ) return; %>
-        <div id="<%= self.on('click', function() { self.__ctx__.stack.back(); self.__ctx__.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
-          <%= ImageView.create({backupImage: 'images/defaultlogo.png', data: self.__ctx__.baseURL + project + '/logo'}) %>
-          <span class="project-name <%= self.__ctx__.projectName === project ? 'selected' : '' %>"><%= project %></span>
-        </div>
-        <% }); %>
-        </div>
-    </div>
-    */},
     function CSS() {/*
       .change-project-view {
         margin: 0;
@@ -369,6 +346,29 @@ MODEL({
       .project-citation .project-name.selected {
         color: #3e50b4;
       }
-  */}
+    */},
+    function toInnerHTML() {/*
+      <div class="header">
+        $$email{model_: 'IssueOwnerAvatarView'}
+        $$email{mode: 'display-only'}
+        <br><br>
+      </div>
+      <div class="projectList">
+      <%
+         var projects = this.data.preferredProjects;
+
+         if ( projects.indexOf('chromium') == -1 ) projects.push('chromium');
+         if ( projects.indexOf('foam-framework') == -1 ) projects.push('foam-framework');
+
+         projects.forEach(function(project) { %>
+        <% if ( ' chromium-os chromedriver cinc crwm chrome-os-partner ee-testers-external '.indexOf(' ' + project + ' ') != -1 ) return; %>
+        <div id="<%= self.on('click', function() { self.__ctx__.stack.back(); self.__ctx__.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
+          <%= ImageView.create({backupImage: 'images/defaultlogo.png', data: self.__ctx__.baseURL + project + '/logo'}) %>
+          <span class="project-name <%= self.__ctx__.projectName === project ? 'selected' : '' %>"><%= project %></span>
+        </div>
+        <% }); %>
+        </div>
+    </div>
+    */}
  ]
 });
