@@ -245,6 +245,9 @@ MODEL({
         font-size: 14px;
         font-weight: 500;
         background: white;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
       }
 
       .change-project-view .header {
@@ -252,13 +255,6 @@ MODEL({
         height: 172px;
         margin-bottom: 0;
         background-image: url('images/projectBackground.png');
-      }
-
-      .change-project-view {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        background: white;
       }
 
       .change-project-view span[name=email] {
