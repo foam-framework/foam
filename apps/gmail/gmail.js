@@ -342,6 +342,57 @@ MODEL({
     }
   ],
   templates: [
+    function CSS() {/*
+      .email-citation {
+        display: flex;
+        border-bottom: solid #B5B5B5 1px;
+        padding: 10px 14px 10px 6px;
+      }
+
+      .email-citation.unread {
+        font-weight: bold;
+      }
+
+      .email-citation .from {
+        display: block;
+        font-size: 17px;
+        line-height: 24px;
+        white-space: nowrap;
+        overflow-x:hidden;
+        text-overflow: ellipsis;
+        flex-grow: 1;
+      }
+
+      .email-citation .timestamp {
+        font-size: 12px;
+        color: rgb(17, 85, 204);
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .email-citation .subject {
+        display: block;
+        font-size: 13px;
+        line-height: 17px;
+        overflow-x:hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .email-citation .snippet {
+        color: rgb(119, 119, 119);
+        display: block;
+        font-size: 13px;
+        height: 20px;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .email-citation .monogram-string-view {
+        margin: auto 6px auto 0;
+      }
+    */},
     function toHTML() {/*
       <%
         var id = this.setClass('unread', function() { return self.data && self.data.unread; }, this.id);
@@ -370,57 +421,6 @@ MODEL({
           </div>
         </div>
       </div>
-    */},
-    function CSS() {/*
-    .email-citation {
-      display: flex;
-      border-bottom: solid #B5B5B5 1px;
-      padding: 10px 14px 10px 6px;
-    }
-
-    .email-citation.unread {
-      font-weight: bold;
-    }
-
-    .email-citation .from {
-      display: block;
-      font-size: 17px;
-      line-height: 24px;
-      white-space: nowrap;
-      overflow-x:hidden;
-      text-overflow: ellipsis;
-      flex-grow: 1;
-    }
-
-    .email-citation .timestamp {
-      font-size: 12px;
-      color: rgb(17, 85, 204);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .email-citation .subject {
-      display: block;
-      font-size: 13px;
-      line-height: 17px;
-      overflow-x:hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .email-citation .snippet {
-      color: rgb(119, 119, 119);
-      display: block;
-      font-size: 13px;
-      height: 20px;
-      overflow-x: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .email-citation .monogram-string-view {
-      margin: auto 6px auto 0;
-    }
     */}
    ]
 });
