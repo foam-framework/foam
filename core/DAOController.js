@@ -203,9 +203,7 @@ MODEL({
       label: 'Create',
       help:  'Create a new record.',
 
-      isAvailable: function() { return true; },
-      isEnabled:   function() { return true; },
-      action:      function() {
+      action: function() {
         var self = this;
         this.dao.put(this.data, {
           put: function(value) {
