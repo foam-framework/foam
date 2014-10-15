@@ -244,8 +244,8 @@ ul.swipeAltHeader {
 
 .email-view .content {
   margin-top: 62px;
-  margin-left: 6px;
-  margin-right: 6px;
+  margin-left: 18px;
+  margin-right: 18px;
   word-break: break-word;
 }
 
@@ -264,7 +264,7 @@ ul.swipeAltHeader {
 
 .email-view .body {
   white-space: pre-wrap;
-  margin-top: 6px;
+  margin-top: 20px;
   display: block;
 }
 
