@@ -38,9 +38,9 @@ MODEL({
       this.SUPER();
 
       var keywords = this;
-      var oldF     = DefaultQuery.getPrototype().f;
+      var oldF     = DefaultQuery.f;
 
-      DefaultQuery.getPrototype().f = function(obj) {
+      DefaultQuery.f = function(obj) {
         return keywords.match(obj.id, this.arg1) || oldF.call(this, obj);
       };
     },
@@ -78,14 +78,14 @@ MODEL({
       };
 
       // TODO(kgr): This is a bit hackish, replace with visitor support
-      DefaultQuery.getPrototype().partialEval = function() {
+      DefaultQuery.partialEval = function() {
         var q = DefaultQuery.create(this);
         // console.log('**** ', this.arg1);
         arg1 = this.arg1.intern();
         return q;
       };
       var newQuery = query.partialEval();
-      delete DefaultQuery.getPrototype()['partialEval'];
+      delete DefaultQuery['partialEval'];
 
       var newOptions = { __proto__: options, query: newQuery };
 

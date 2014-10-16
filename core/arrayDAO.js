@@ -20,10 +20,11 @@
 
   var pmap = {};
   for ( var key in AbstractDAO.methods ) {
-    pmap[AbstractDAO.methods[key].name] = AbstractDAO.methods[key].code;
+    pmap[AbstractDAOModel.methods[key].name] = AbstractDAOModel.methods[key].code;
   }
-
+console.log("Setting up Array...");
   defineProperties(Array.prototype, pmap);
+console.log(Array.prototype);
 })();
 
 defineLazyProperty(Array.prototype, 'daoListeners_', function() {
@@ -65,9 +66,9 @@ Object.defineProperty(Array.prototype, 'sink', {
 });
 
 defineProperties(Array.prototype, {
-  listen:   AbstractDAO.getPrototype().listen,
-  unlisten: AbstractDAO.getPrototype().unlisten,
-  notify_:  AbstractDAO.getPrototype().notify_,
+  listen:   AbstractDAO.listen,
+  unlisten: AbstractDAO.unlisten,
+  notify_:  AbstractDAO.notify_,
 /*
   listen:   function() { },
   unlisten: function() { },

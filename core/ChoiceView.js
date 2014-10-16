@@ -360,7 +360,7 @@ MODEL({
       }
 
       this.$.innerHTML = out.join('');
-      View.getPrototype().initHTML.call(this);
+      View.initHTML.call(this);
     },
 
     initHTML: function() {
@@ -436,7 +436,7 @@ MODEL({
       });
 
       this.$.innerHTML = out;
-      View.getPrototype().initHTML.call(this);
+      View.initHTML.call(this);
     },
 
     initHTML: function() {

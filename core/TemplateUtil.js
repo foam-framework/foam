@@ -107,7 +107,7 @@ var TemplateCompiler = {
 
   push: function() { this.out.push.apply(this.out, arguments); },
 
-  header: 'var self = this; var X = this.__ctx__; var escapeHTML = View.getPrototype().strToHTML; var out = opt_out ? opt_out : TemplateOutput.create(this);' +
+  header: 'var self = this; var X = this.__ctx__; var escapeHTML = View.strToHTML; var out = opt_out ? opt_out : TemplateOutput.create(this);' +
     "out('",
 
   footer: "');" +

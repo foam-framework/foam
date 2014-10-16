@@ -51,12 +51,12 @@ function subWindow(w, opt_name, isBackground) {
 
   var map = {
     registerModel: function(model, opt_name) { // TODO: only modify cls (the proto) not this!
-      if ( model.getPrototype && model.getPrototype().installInDocument && ! installedModels.has(model) ) {
+      if ( model.getPrototype && model.installInDocument && ! installedModels.has(model) ) {
         // TODO(kgr): If Traits have CSS then it will get installed more than once.
-        for ( m = model ; m ; m = m.extendsModel && m.getPrototype().__proto__.model_ ) {
+        for ( m = model ; m ; m = m.extendsModel && m.__proto__.model_ ) {
           // console.log('installing model: ', model.name);
           installedModels.set(m, true);
-          m.getPrototype().installInDocument(this, document);
+          m.installInDocument(this, document);
         }
       }
       return GLOBAL.registerModel.call(this, model, opt_name);
@@ -119,21 +119,29 @@ function registerModel(model, opt_name) {
   */
   var thisX = this;
   var thisModel = this === GLOBAL ? model : {
-    __proto__: model, // TODO: only modify cls (the proto) not this!
+    __proto__: model,
       create: function(args, opt_X) {
         return this.__proto__.create(args, thisX);
       }
   };
 
-  // TODO: only modify cls (the proto) not this!
   // Register both ModName (the proto) and ModNameModel (the unadulterated definition)
-
+  Object.defineProperty(
+    this,
+    opt_name? opt_name + "Model" : model.name + "Model",
+    {
+      get: function() {
+        return ( this === thisX ) ? thisModel : this.registerModel(model);
+      },
+      configurable: true
+    }
+  );
   Object.defineProperty(
     this,
     opt_name || model.name,
     {
       get: function() {
-        return ( this === thisX ) ? thisModel : this.registerModel(model);
+        return ( this === thisX ) ? thisModel.getPrototype() : this.registerModel(model).getPrototype();
       },
       configurable: true
     }

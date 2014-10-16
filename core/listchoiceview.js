@@ -173,7 +173,7 @@ MODEL({
         this.selectedElement = selectedAsList[0];
       }
 
-      View.getPrototype().initHTML.call(this);
+      View.initHTML.call(this);
     },
 
     getValue: function() {

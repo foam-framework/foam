@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var Property = {
+var PropertyModel = {
   __proto__: BootstrapModel,
 
   name:  'Property',
@@ -588,8 +588,7 @@ var Property = {
   toString: function() { return "Property"; }
 };
 
-
-Model.methods = {
+ModelModel.methods = {
   getPropertyWithoutCache_: BootstrapModel.getPropertyWithoutCache_,
   getProperty:              BootstrapModel.getProperty,
   getAction:                BootstrapModel.getAction,
@@ -602,14 +601,16 @@ Model.methods = {
 
 // This is the coolest line of code that I've ever written
 // or ever will write. Oct. 4, 2011 -- KGR
-Model = Model.create(Model);
-Model.model_ = Model;
+ModelModel = ModelModel.create(ModelModel);
+Model = ModelModel.getPrototype();
+//Model.__proto__ = FObject;
+Model.model_ = ModelModel;
+//Model.create = BootstrapModel.create;
 
-Property = Model.create(Property);
+PropertyModel = Model.create(PropertyModel);
+var Property = PropertyModel.getPrototype();
 
 // Property properties are still Bootstrap Models, so upgrade them.
- // TODO: only modify cls (the proto) not this!
-for ( var i = 0 ; i < Property.properties.length ; i++ )
-  Property[Property.properties[i].name.constantize()] =
-    Property.properties[i] = Property.create(Property.properties[i]);
-
+for ( var i = 0 ; i < PropertyModel.properties.length ; i++ ) {
+  PropertyModel.properties[i] = Property.create(PropertyModel.properties[i]);
+}

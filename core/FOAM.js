@@ -117,14 +117,29 @@ function MODEL(m) {
     return;
   }
 
-  UNUSED_MODELS[m.name] = true;
-  Object.defineProperty(GLOBAL, m.name, {
-    get: function () {
+  var getBody = function() {
+    if (UNUSED_MODELS[m.name]) {
       USED_MODELS[m.name] = true;
       delete UNUSED_MODELS[m.name];
       Object.defineProperty(GLOBAL, m.name, {value: null, configurable: true});
+      Object.defineProperty(GLOBAL, m.name+"Model", {value: null, configurable: true});
       registerModel(JSONUtil.mapToObj(__ctx__, m, Model));
+    }
+  }
+
+  // either ModelName or ModelNameModel access will trigger the registerModel
+  UNUSED_MODELS[m.name] = true;
+  Object.defineProperty(GLOBAL, m.name, {
+    get: function () {
+      getBody();
       return this[m.name];
+    },
+    configurable: true
+  });
+  Object.defineProperty(GLOBAL, m.name+"Model", {
+    get: function () {
+      getBody();
+      return this[m.name+"Model"];
     },
     configurable: true
   });
@@ -189,7 +204,7 @@ function arequire(modelName, opt_X) {
       args.push(aseq(
         aevalTemplate(model.templates[i]),
         (function(t) { return function(ret, m) {
-          model.getPrototype()[t.name] = m;
+          model[t.name] = m;
           ret();
         };})(t)
       ));

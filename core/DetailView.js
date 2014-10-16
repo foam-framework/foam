@@ -185,7 +185,7 @@ MODEL({
 
       if ( ! this.model ) throw "DetailView: either 'data' or 'model' must be specified.";
 
-      return (this.model.getPrototype().toDetailHTML || this.defaultToHTML).call(this);
+      return (this.model.toDetailHTML || this.defaultToHTML).call(this);
     },
 
     defaultToHTML: function() {

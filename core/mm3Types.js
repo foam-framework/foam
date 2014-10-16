@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var StringProperty = Model.create({
+var StringPropertyModel = Model.create({
   extendsModel: 'Property',
 
   name:  'StringProperty',
@@ -61,9 +61,10 @@ var StringProperty = Model.create({
     }
   ]
 });
+var StringProperty = StringPropertyModel.getPrototype();
 
 
-var BooleanProperty = Model.create({
+var BooleanPropertyModel = Model.create({
   extendsModel: 'Property',
 
   name:  'BooleanProperty',
@@ -113,7 +114,7 @@ var BooleanProperty = Model.create({
 
   ]
 });
-
+var BooleanProperty = BooleanPropertyModel.getPrototype();
 
 /*
   preSet: function (d) {
@@ -127,7 +128,7 @@ var BooleanProperty = Model.create({
 */
 
 
-var DateProperty = Model.create({
+var DatePropertyModel = Model.create({
   extendsModel: 'Property',
 
   name:  'DateProperty',
@@ -186,9 +187,9 @@ var DateProperty = Model.create({
     }
   ]
 });
+var DateProperty = DatePropertyModel.getPrototype();
 
-
-var DateTimeProperty = Model.create({
+var DateTimePropertyModel = Model.create({
   extendsModel: 'DateProperty',
 
   name:  'DateTimeProperty',
@@ -216,9 +217,9 @@ var DateTimeProperty = Model.create({
     }
   ]
 });
+var DateTimeProperty = DateTimePropertyModel.getPrototype();
 
-
-var IntProperty = Model.create({
+var IntPropertyModel = Model.create({
   extendsModel: 'Property',
 
   name:  'IntProperty',
@@ -270,8 +271,9 @@ var IntProperty = Model.create({
     }
   ]
 });
+var IntProperty = IntPropertyModel.getPrototype();
 
-var FloatProperty = Model.create({
+var FloatPropertyModel = Model.create({
   extendsModel: 'Property',
 
   name:  'FloatProperty',
@@ -317,9 +319,10 @@ var FloatProperty = Model.create({
     }
   ]
 });
+var FloatProperty = FloatPropertyModel.getPrototype();
 
 
-var FunctionProperty = Model.create({
+var FunctionPropertyModel = Model.create({
   extendsModel: 'Property',
 
   name:  'FunctionProperty',
@@ -375,9 +378,10 @@ var FunctionProperty = Model.create({
     }
   ]
 });
+var FunctionProperty = FunctionPropertyModel.getPrototype();
 
 
-var ArrayProperty = Model.create({
+var ArrayPropertyModel = Model.create({
   extendsModel: 'Property',
 
   name:  'ArrayProperty',
@@ -474,9 +478,10 @@ var ArrayProperty = Model.create({
     }
   ]
 });
+var ArrayProperty = ArrayPropertyModel.getPrototype();
 
 
-var ReferenceProperty = Model.create({
+var ReferencePropertyModel = Model.create({
   extendsModel: 'Property',
 
   name:  'ReferenceProperty',
@@ -527,9 +532,10 @@ var ReferenceProperty = Model.create({
     }
   ]
 });
+var ReferenceProperty = ReferencePropertyModel.getPrototype();
 
 
-var StringArrayProperty = Model.create({
+var StringArrayPropertyModel = Model.create({
   extendsModel: 'Property',
 
   name:  'StringArrayProperty',
@@ -586,9 +592,10 @@ var StringArrayProperty = Model.create({
     }
   ]
 });
+var StringArrayProperty = StringArrayPropertyModel.getPrototype();
 
 
-var DAOProperty = Model.create({
+var DAOPropertyModel = Model.create({
   extendsModel: 'Property',
 
   name: 'DAOProperty',
@@ -640,9 +647,9 @@ var DAOProperty = Model.create({
     }
   ]
 });
+var DAOProperty = DAOPropertyModel.getPrototype();
 
-
-var ModelProperty = Model.create({
+var ModelPropertyModel = Model.create({
   name: 'ModelProperty',
   extendsModel: 'Property',
 
@@ -669,9 +676,10 @@ var ModelProperty = Model.create({
     }
   ]
 });
+var ModelProperty = ModelPropertyModel.getPrototype();
 
 
-var ViewProperty = Model.create({
+var ViewPropertyModel = Model.create({
   name: 'ViewProperty',
   extendsModel: 'Property',
 
@@ -705,9 +713,10 @@ var ViewProperty = Model.create({
     }
   ]
 });
+var ViewProperty = ViewPropertyModel.getPrototype();
 
 
-var ReferenceArrayProperty = Model.create({
+var ReferenceArrayPropertyModel = Model.create({
   name: 'ReferenceArrayProperty',
   extendsModel: 'ReferenceProperty',
 
@@ -730,11 +739,14 @@ var ReferenceArrayProperty = Model.create({
     }
   ]
 });
+var ReferenceArrayProperty = ReferenceArrayPropertyModel.getPrototype();
 
+var EMailPropertyModel = StringPropertyModel;
 var EMailProperty = StringProperty;
+var URLPropertyModel = StringPropertyModel;
 var URLProperty = StringProperty;
 
-var DocumentationProperty = Model.create({
+var DocumentationPropertyModel = Model.create({
   extendsModel: 'Property',
   name: 'DocumentationProperty',
   help: 'Describes the documentation properties found on Models, Properties, Actions, Methods, etc.',
@@ -783,6 +795,8 @@ var DocumentationProperty = Model.create({
    }
   ]
 });
+var DocumentationProperty = DocumentationPropertyModel.getPrototype();
+
 
 MODEL({
   name: 'EnumPropertyTrait',
@@ -806,3 +820,81 @@ MODEL({
   traits: ['EnumPropertyTrait'],
   extendsModel: 'StringProperty'
 });
+
+
+MODEL({
+  name: 'Documentation',
+
+  tableProperties: [
+    'name'
+  ],
+
+  documentation: {
+    model_: 'Documentation',
+    body: function() {/*
+      <p>The $$DOC{ref:'Documentation'} model is used to store documentation text to
+      describe the use of other models. Set the $$DOC{ref:'Model.documentation'} property
+      of your model and specify the body text:</p>
+      <ul>
+        <li><p>Fully define the Documentation model:</p><p>documentation:
+        { model_: 'Documentation', body: function() { \/\* your doc text \*\/} }</p>
+        </li>
+        <li><p>Define as a function:</p><p>documentation:
+            function() { \/\* your doc text \*\/} </p>
+        </li>
+        <li><p>Define as a one-line string:</p><p>documentation:
+            "your doc text" </p>
+        </li>
+      </ul>
+    */}
+  },
+
+  properties: [
+    {
+      name:  'name',
+      type:  'String',
+      required: true,
+      displayWidth: 30,
+      displayHeight: 1,
+      defaultValue: 'documentation',
+      help: 'The Document\'s unique name.',
+      documentation: "An optional name for the document. Documentation is normally referenced by the name of the containing Model."
+    },
+    {
+      name:  'label',
+      type:  'String',
+      required: true,
+      displayWidth: 30,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'The Document\'s title or descriptive label.',
+      documentation: "A human readable title to display. Used for books of documentation and chapters."
+    },
+    {
+      name: 'body',
+      type: 'Template',
+      defaultValue: '',
+      help: 'The main content of the document.',
+      documentation: "The main body text of the document. Any valid template can be used, including the $$DOC{ref:'DocView'} specific $$DOC{ref:'DocView',text:'$$DOC{\"ref\"}'} and $$DOC{ref:'DocView',text:'$$THISDATA{}'} tags.",
+      preSet: function(_, template) {
+          return TemplateUtil.templateMemberExpander(template, this.__ctx__);
+      }
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'chapters',
+      type: 'Array[Document]',
+      subtype: 'Documentation',
+      view: 'ArrayView',
+      factory: function() { return []; },
+      defaultValue: [],
+      help: 'Sub-documents comprising the full body of this document.',
+      documentation: "Optional sub-documents to be included in this document. A viewer may choose to provide an index or a table of contents.",
+    },
+
+  ]
+
+});
+
+// HACK to get around property-template bootstrap ordering issues
+TemplateUtil.modelExpandTemplates(PropertyModel, PropertyModel.templates);

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-Model.properties = Model.properties.concat(
+ModelModel.properties = ModelModel.properties.concat(
   [
     {
       name: 'protoparser',
@@ -103,7 +103,7 @@ Model.properties = Model.properties.concat(
 // the value of 'methods' is not copied over from the original Model definition
 // into the bootstrapped one.  So we need to re-set the methods property here
 // before re-creating Model.
-Model.methods = {
+ModelModel.methods = {
   getPropertyWithoutCache_: BootstrapModel.getPropertyWithoutCache_,
   getProperty:              BootstrapModel.getProperty,
   getAction:                BootstrapModel.getAction,
@@ -118,6 +118,7 @@ Model.methods = {
 // that it has been mutated.  Normally Model.create() is for reading model
 // definitions and creating new models (like EMail or Issue).  But for
 // re-creating Model we need to rebuild it's prototype.
-Model = Model.getPrototype().create(Model);
-Model.model_ = Model;
-Model.create = BootstrapModel.create;
+ModelModel = Model.create(ModelModel);
+Model = ModelModel.getPrototype();
+Model.model_ = ModelModel;
+//Model.create = BootstrapModel.create;

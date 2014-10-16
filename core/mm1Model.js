@@ -48,7 +48,7 @@ var DocumentationBootstrap = {
 
 
 
-var Model = {
+var ModelModel = {
   __proto__: BootstrapModel,
 
   name:  'Model',
@@ -188,7 +188,8 @@ var Model = {
       type: 'Array[String]',
       view: 'StringArrayView',
       defaultValueFn: function() {
-        var id = this.getProperty? this.getProperty('id') : "";
+//        var id = this.getProperty? this.getProperty('id') : "";
+        var id = this.model_.getProperty('id');
         if ( id ) return ['id'];
         return this.properties.length ? [this.properties[0].name] : [];
       },
@@ -215,7 +216,7 @@ var Model = {
       view: 'StringArrayView',
       displayWidth: 70,
       factory: function() {
-        return this.properties.map(function(o) { return o.name; });
+        return this.model_.getAllProperties().map(function(o) { return o.name; });
       },
       help: 'Properties to be displayed in table view. Defaults to all properties.',
 			documentation: function() { /* Indicates the $$DOC{ref:'Property',usePlural:true} to display when viewing a list of instances
@@ -242,7 +243,7 @@ var Model = {
       defaultValue: [],
       help: 'Properties associated with the entity.',
       preSet: function(oldValue, newValue) {
-        if ( ! Property ) return;
+        if ( ! Property ) return newValue;
         // Convert Maps to Properties if required
         for ( var i = 0 ; i < newValue.length ; i++ ) {
           var p = newValue[i];
@@ -254,9 +255,8 @@ var Model = {
           } else if ( typeof p.model_ === 'string' ) {
             p = newValue[i] = FOAM(p);
           }
-
           // create property constant
-          this[p.name.constantize()] = newValue[i]; // TODO: only modify cls (the proto) not this!
+          //this[p.name.constantize()] = newValue[i]; // TODO: only modify cls (the proto) not this!
         }
 
         this.propertyMap_ = null;
@@ -280,7 +280,7 @@ var Model = {
       defaultValue: [],
       help: 'Actions associated with the entity.',
       preSet: function(_, newValue) {
-        if ( ! Action ) return;
+        if ( ! Action ) return newValue;
 
         // Convert Maps to Properties if required
         for ( var i = 0 ; i < newValue.length ; i++ ) {
@@ -313,7 +313,7 @@ var Model = {
       defaultValue: [],
       help: 'Methods associated with the entity.',
       preSet: function(_, newValue) {
-        if ( ! Method ) return;
+        if ( ! Method ) return newValue;
 
         if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.__ctx__, newValue, Method);
 
@@ -449,7 +449,7 @@ var Model = {
       defaultValue: [],
       help: 'Relationships of this model to other models.',
       preSet: function(_, newValue) {
-        if ( ! Relationship ) return;
+        if ( ! Relationship ) return newValue;
 
         // Convert Maps to Relationships if required
         for ( var i = 0 ; i < newValue.length ; i++ ) {

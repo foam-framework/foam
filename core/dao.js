@@ -2096,7 +2096,7 @@ var ModelDAO = {
         this.namespace[obj.name] = obj;
 
         FOAM.putFactory(this.namespace, obj.name + "Proto", function() {
-          return this.namespace[obj.name].getPrototype();
+          return this.namespace[obj.name];
         });
 
         FOAM.putFactory(this.namespace, obj.name + 'DAO', function() {

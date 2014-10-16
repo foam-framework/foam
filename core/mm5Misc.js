@@ -581,14 +581,14 @@ MODEL({
 });
 
 (function() {
-  for ( var i = 0 ; i < Model.templates.length ; i++ )
-    Model.templates[i] = JSONUtil.mapToObj(__ctx__, Model.templates[i]);
+  for ( var i = 0 ; i < ModelModel.templates.length ; i++ )
+    ModelModel.templates[i] = JSONUtil.mapToObj(__ctx__, ModelModel.templates[i]);
 
   (function() {
-    var a = Model.properties;
+    var a = ModelModel.properties;
     for ( var i = 0 ; i < a.length ; i++ ) {
       if ( ! Property.isInstance(a[i]) ) {
-        a[i] = Property.getPrototype().create(a[i]);
+        a[i] = Property.create(a[i]);
       }
     }
   })();

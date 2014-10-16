@@ -17,15 +17,15 @@
 // TODO: remove these three redundant definitions when
 // meta-weirdness fixed
 
-Property.getPrototype().partialEval = function() { return this; };
+Property.partialEval = function() { return this; };
 
-Property.getPrototype().toSQL = function() { return this.name; };
+Property.toSQL = function() { return this.name; };
 
-Property.getPrototype().toMQL = function() { return this.name; };
+Property.toMQL = function() { return this.name; };
 
-Property.getPrototype().f = function(obj) { return obj[this.name]; };
+Property.f = function(obj) { return obj[this.name]; };
 
-Property.getPrototype().compare = function(o1, o2) {
+Property.compare = function(o1, o2) {
   return this.compareProperty(this.f(o1), this.f(o2));
 };
 
@@ -103,7 +103,7 @@ MODEL({
 });
 
 
-var TRUE = (FOAM({
+MODEL({
   model_: 'Model',
   name: 'TRUE',
   extendsModel: 'Expr',
@@ -116,10 +116,10 @@ var TRUE = (FOAM({
     toMQL:    function() { return ''; },
     f:        function() { return true; }
   }
-})).create();
+});
 
 
-var FALSE = (FOAM({
+MODEL({
   model_: 'Model',
   name: 'FALSE',
   extendsModel: 'Expr',
@@ -131,9 +131,9 @@ var FALSE = (FOAM({
     toMQL: function(out) { return '<false>'; },
     f:     function() { return false; }
   }
-})).create();
+});
 
-var IDENTITY = (FOAM({
+MODEL({
   model_: 'Model',
   name: 'IDENTITY',
   extendsModel: 'Expr',
@@ -144,7 +144,7 @@ var IDENTITY = (FOAM({
     f: function(obj) { return obj; },
     toString: function() { return 'IDENTITY'; }
   }
-})).create();
+});
 
 /** An n-ary function. **/
 MODEL({

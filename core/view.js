@@ -142,7 +142,7 @@ var DOM = {
     // This is because of a bug that the model.properties isn't populated
     // with the parent model's properties until after the prototype is
     // created.  TODO: remove after FO
-    model.getPrototype();
+   // mod();
 
     for ( var i = 0 ; i < e.attributes.length ; i++ ) {
       var a   = e.attributes[i];
@@ -2316,7 +2316,7 @@ MODEL({
 
   methods: {
     toHTML: function() {
-      return (this.model.getPrototype().toSummaryHTML || this.defaultToHTML).call(this);
+      return (this.model.toSummaryHTML || this.defaultToHTML).call(this);
     },
 
     defaultToHTML: function() {

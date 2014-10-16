@@ -105,7 +105,7 @@ var FObject = {
     // Add shortcut create() method to Models which allows them to be
     // used as constructors.  Don't do this for the Model though
     // because we need the regular behavior there.
-    if ( this.model_ == Model && this.name != 'Model' )
+    if ( this.model_ == ModelModel && this.name != 'Model' )
       this.create = BootstrapModel.create;
   },
 
@@ -156,6 +156,10 @@ var FObject = {
 
   equals: function(other) { return this.compareTo(other) == 0; },
 
+  isInstance: function(obj) { /* Returns true if the given instance extends this $$DOC{ref:'Model'}. */
+    return obj && obj.model_ && this.model_ && this.model_.isSubModel(obj.model_);
+  },
+
   compareTo: function(other) {
     var ps = this.model_.properties;
 
@@ -196,6 +200,8 @@ var FObject = {
   defineProperty: function(prop) {
     var name = prop.name;
     prop.name$_ = name + '$';
+
+    this[prop.name.constantize()] = prop;
 
     // TODO: add caching
     if ( ! this.__lookupGetter__(prop.name$_) ) {
@@ -385,9 +391,9 @@ var FObject = {
       }
     }
 */
-
+    // Check submodel properties too
     if ( src && this.model_ ) {
-      var ps = this.model_.properties;
+      var ps = this.model_.getAllProperties(); // this.model_.properties;
       for ( var i = 0 ; i < ps.length ; i++ ) {
         var prop = ps[i];
 
@@ -500,11 +506,29 @@ var FObject = {
 
     if (this.id != "Model") {
       var superModel = (this.extendsModel.length > 0 && this.__ctx__[this.extendsModel].id)? this.__ctx__[this.extendsModel] : this.__ctx__["Model"];
-      console.log("getAll: ", this.extendsModel, superModel);
       superModel.getAllFeatures().map(function(subFeat) {
           var subName = subFeat.name.toUpperCase();
           if (!featureList.mapFind(function(myFeat) { // merge in features we don't already have
             return myFeat && myFeat.name && myFeat.name.toUpperCase() === subName;
+          })) {
+            featureList.push(subFeat);
+          }
+      });
+    }
+    return featureList;
+  },
+
+  // getAllFeatures accounts for inheritance through extendsModel
+  getAllProperties: function() {
+    var featureList = this.properties;
+
+    if ((this.name && this.name !== "Model") || (this.id && this.id !== "Model")) {
+      ctx__ = this.__ctx__? this.__ctx__ : GLOBAL;
+      var superModel = (this.extendsModel && this.extendsModel.length > 0 && ctx__[this.extendsModel+"Model"].id)? ctx__[this.extendsModel+"Model"] : ctx__["ModelModel"];
+      superModel.getAllProperties().map(function(subFeat) {
+          var subName = subFeat.name;
+          if (!featureList.mapFind(function(myFeat) { // merge in features we don't already have
+            return myFeat && myFeat.name && myFeat.name === subName;
           })) {
             featureList.push(subFeat);
           }

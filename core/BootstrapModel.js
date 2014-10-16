@@ -103,12 +103,12 @@ var BootstrapModel = {
         GLOBAL.registerModel(model);
       }
 
-      return GLOBAL[name];
+      return GLOBAL[name+"Model"];
     }
 
-    if ( this.extendsModel && ! GLOBAL[this.extendsModel] ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
+    if ( this.extendsModel && ! GLOBAL[this.extendsModel+"Model"] ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
 
-    var extendsModel = this.extendsModel && GLOBAL[this.extendsModel];
+    var extendsModel = this.extendsModel && GLOBAL[this.extendsModel+"Model"];
 //    if (this.extendsModel && GLOBAL[this.extendsModel]) {
 //      extendsModel = GLOBAL[this.extendsModel];
 //    } else {
@@ -122,7 +122,7 @@ var BootstrapModel = {
 
     if ( this.traits ) for ( var i = 0 ; i < this.traits.length ; i++ ) {
       var trait = this.traits[i];
-      var traitModel = GLOBAL[trait];
+      var traitModel = GLOBAL[trait+"Model"];
 
       if ( traitModel ) {
         extendsModel = addTraitToModel(traitModel, extendsModel);
@@ -180,28 +180,21 @@ var BootstrapModel = {
     if ( this.properties ) {
       for ( var i = 0 ; i < this.properties.length ; i++ ) {
         var p = this.properties[i];
-        if ( extendsModel ) {
-          var superProp = extendsModel.getProperty(p.name);
+        var extendsMerger = function(curModel) {
+          if (!curModel) return;
+          var extModel = curModel.extendsModel && GLOBAL[curModel.extendsModel+"Model"];
+          extendsMerger(extModel);
+
+          // since we recursed first, we will build up p starting from the base model
+          var superProp = curModel.getProperty(p.name);
           if ( superProp ) {
             p = superProp.clone().copyFrom(p);
-            this.properties[i] = p; // TODO: only modify cls (the proto) not this!
-            this[p.name.constantize()] = p; // TODO: only modify cls (the proto) not this!
           }
         }
+        extendsMerger(extendsModel);
         cls.defineProperty(p);
       }
-      this.propertyMap_ = null; // TODO: only modify cls (the proto) not this!
-    }
-
-    // Copy parent Model's Property Contants to this Model.
-    // TODO: protos should inherit these through javascript inheritance
-    if ( extendsModel ) {
-      for ( var i = 0 ; i < extendsModel.properties.length ; i++ ) {
-        var p = extendsModel.properties[i];
-        var name = p.name.constantize();
-
-        if ( ! this[name] ) this[name] = p; // TODO: only modify cls (the proto) not this!
-      }
+      //this.propertyMap_ = null; // TODO: only modify cls (the proto) not this!
     }
 
     // templates
@@ -214,17 +207,22 @@ var BootstrapModel = {
     // this.mixins && Object_forEach(this.mixins, function(m) { /* TODO: something */ });
 
     // add action
-    // use getFeature to account for inheritance beyond one level
+    // TODO: merge with prop loop above
     if ( this.actions ) {
       for ( var i = 0 ; i < this.actions.length ; i++ ) {
         (function(a) {
-          if ( extendsModel ) {
-            var superAction = extendsModel.getAction(a.name);
-            if ( superAction ) {
-              a = superAction.clone().copyFrom(a);
-              this.actions[i] = a; // TODO: only modify cls (the proto) not this!
+          var extendsMerger = function(curModel) {
+            if (!curModel) return;
+            var extModel = curModel.extendsModel && GLOBAL[curModel.extendsModel+"Model"];
+            extendsMerger(extModel);
+
+            // since we recursed first, we will build up a starting from the base model
+            var action = curModel.getAction(a.name);
+            if ( action ) {
+              a = action.clone().copyFrom(a);
             }
           }
+          extendsMerger(extendsModel);
           addMethod(a.name, function(opt_x) { a.callIfEnabled(opt_x || this.__ctx__, this); });
         }.bind(this))(this.actions[i]);
       }
@@ -247,7 +245,7 @@ var BootstrapModel = {
 
       //           this[r.name.constantize()] = r;
       var name = r.name.constantize();
-      if ( ! self[name] ) self[name] = r;
+      if ( ! cls[name] ) cls[name] = r;
       defineLazyProperty(cls, r.name, function() {
         var m = this.__ctx__[r.relatedModel];
         var dao = this.__ctx__[m.name + 'DAO'] || this.__ctx__[m.plural];
@@ -287,7 +285,7 @@ var BootstrapModel = {
               (isMerged === true) ? undefined : isMerged, this.__ctx__);
           }
 
-          Object.defineProperty(this, name, { value: l});
+          Object.defineProperty(cls, name, { value: l});
 
           return l;
         },
@@ -314,20 +312,6 @@ var BootstrapModel = {
     this.topics && Object_forEach(this.topics, function(t) {
       // TODO: something
     });
-
-    // copy parent model's properties and actions into this model
-    // TODO: don't do this, allow javascript inheritance to do its thing.
-    // Putting this back in as a performance enhancement at the cost
-    // of space and more rebuilding if a model definition changes.
-    if ( extendsModel ) {
-      for ( var i = extendsModel.properties.length-1 ; i >= 0 ; i-- ) {
-        var p = extendsModel.properties[i];
-        if ( ! ( this.getProperty && this.getPropertyWithoutCache_(p.name) ) )
-          this.properties.unshift(p); // TODO: only modify cls (the proto) not this!
-      }
-      this.propertyMap_ = null; // TODO: only modify cls (the proto) not this!
-      this.actions = extendsModel.actions.concat(this.actions); // TODO: only modify cls (the proto) not this!
-    }
 
     // build primary key getter and setter
     if ( this.properties.length > 0 && ! cls.__lookupGetter__('id') ) {
@@ -394,6 +378,8 @@ var BootstrapModel = {
 
     return this.propertyMap_[name];
   },
+
+  getAllProperties: FObject.getAllProperties,
 
   //TODO: use getFeature
   getAction: function(name) { /* Returns the requested $$DOC{ref:'Action'} of this instance. */
