@@ -86,19 +86,19 @@ function outProtobufPrimitive(type, tag, value, out) {
   }
 }
 
-Property.getPrototype().outProtobuf = function(obj, out) {
+Property.outProtobuf = function(obj, out) {
   if (this.f(obj) === "") return;
   outProtobufPrimitive(this.type, this.prototag, this.f(obj), out);
 };
 
-ArrayProperty.getPrototype().outProtobuf = function(obj, out) {
+ArrayProperty.outProtobuf = function(obj, out) {
   var values = this.f(obj);
   for (var i = 0, value; value = values[i]; i++) {
     outProtobufPrimitive(this.subType, this.prototag, value, out);
   }
 };
 
-IntProperty.getPrototype().outProtobuf = function(obj, out) {
+IntProperty.outProtobuf = function(obj, out) {
   out(this.prototag << 3);
   var value = this.f(obj);
   // Hack for handling large numbers that we can't handle in JS.

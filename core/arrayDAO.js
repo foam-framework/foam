@@ -19,10 +19,10 @@
   // Copy AbstractDAO methods in Array prototype
 
   var pmap = {};
-  for ( var key in AbstractDAO.methods ) {
+  for ( var key in AbstractDAOModel.methods ) {
     pmap[AbstractDAOModel.methods[key].name] = AbstractDAOModel.methods[key].code;
   }
-console.log("Setting up Array...");
+console.log("Setting up Array...", pmap);
   defineProperties(Array.prototype, pmap);
 console.log(Array.prototype);
 })();
