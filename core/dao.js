@@ -16,8 +16,7 @@
  */
 
 // ???: Is there any point in making this an Interface, or just a Concrete Model
-MODEL({
-  model_: 'Interface',
+var FlowControl = Interface.create({
 
   package: 'dao',
   name: 'FlowControl',
@@ -58,9 +57,7 @@ MODEL({
 });
 
 
-MODEL({
-  model_: 'Interface',
-
+var Sink = Interface.create({
   package: 'dao',
   name: 'Sink',
   description: 'Data Sink',
@@ -107,9 +104,7 @@ MODEL({
 });
 
 
-MODEL({
-  model_: 'Interface',
-
+var Predicate = Interface.create({
   name: 'Predicate',
   description: 'A boolean Predicate.',
 
@@ -126,9 +121,7 @@ MODEL({
 });
 
 
-MODEL({
-  model_: 'Interface',
-
+var Comparator = Interface.create({
   name: 'Comparator',
   description: 'A strategy for comparing pairs of Objects.',
 
@@ -148,8 +141,7 @@ MODEL({
 
 // 'options': Map including 'query', 'order', and 'limit', all optional
 
-MODEL({
-  model_: 'Interface',
+var DAO = Interface.create({
 
   package: 'dao',
   name: 'DAO',

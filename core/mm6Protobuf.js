@@ -119,6 +119,6 @@ ModelModel.methods = {
 // definitions and creating new models (like EMail or Issue).  But for
 // re-creating Model we need to rebuild it's prototype.
 ModelModel = Model.create(ModelModel);
+ModelModel.model_ = ModelModel; // break the link with the old ModelModel
 Model = ModelModel.getPrototype();
 Model.model_ = ModelModel;
-//Model.create = BootstrapModel.create;

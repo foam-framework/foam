@@ -201,7 +201,10 @@ var FObject = {
     var name = prop.name;
     prop.name$_ = name + '$';
 
-    this[prop.name.constantize()] = prop;
+    //TODO: add support to change the constantized name and resolve conflicts like X or $
+    var constName = prop.name.constantize();
+    if (constName === name) constName += '_';
+    this[constName] = prop;
 
     // TODO: add caching
     if ( ! this.__lookupGetter__(prop.name$_) ) {

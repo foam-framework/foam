@@ -894,7 +894,14 @@ MODEL({
     {
       name:  'model',
       type:  'Model',
-      required: true
+      required: true,
+      preSet: function(old, nu) { /* Check that we have a Model definition and not a prototype */
+        if ((nu.model_ !== GLOBAL['ModelModel']) || (nu === GLOBAL['Model'])) {
+          console.warn("MDAO was passed a prototype, not model definition.", nu);
+          return nu.model_;
+        }
+        return nu;
+      }
     },
     {
       model_: 'BooleanProperty',

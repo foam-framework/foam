@@ -36,23 +36,21 @@ MODEL({
     {
       name: 'dao',
       factory: function() {
-        var newDAO = this.__ctx__.MDAO.create({model:Model});
+        var newDAO = this.__ctx__.MDAO.create({model:this.__ctx__.ModelModel});
 
         // This is to make sure getPrototype is called, even if the model object
         // has been created without a .create or .getPrototype having been called
         // yet.
         for ( var key in UNUSED_MODELS ) {
-          this.__ctx__[key].getPrototype && this.__ctx__[key].getPrototype();
+          this.__ctx__[key];
         }
         for ( var key in USED_MODELS ) {
-          this.__ctx__[key].getPrototype && this.__ctx__[key].getPrototype();
+          this.__ctx__[key];
         }     
 
         // All models are now in USED_MODELS
         for ( var key in USED_MODELS ) {
-          var m = this.__ctx__[key];
-          if ( ! m.getPrototype ) continue;
-          m.getPrototype();
+          var m = this.__ctx__[key+"Model"];
           newDAO.put(m);
         };
 

@@ -602,10 +602,9 @@ ModelModel.methods = {
 // This is the coolest line of code that I've ever written
 // or ever will write. Oct. 4, 2011 -- KGR
 ModelModel = ModelModel.create(ModelModel);
+ModelModel.model_ = ModelModel; // break the link with the old ModelModel
 Model = ModelModel.getPrototype();
-//Model.__proto__ = FObject;
 Model.model_ = ModelModel;
-//Model.create = BootstrapModel.create;
 
 PropertyModel = Model.create(PropertyModel);
 var Property = PropertyModel.getPrototype();
