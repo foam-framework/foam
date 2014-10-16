@@ -43,9 +43,9 @@ MODEL({
       isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
-        this.$.width = this.canvasWidth();
-        this.$.style.width = this.styleWidth();
-        this.$.height = this.canvasHeight();
+        this.$.width        = this.canvasWidth();
+        this.$.style.width  = this.styleWidth();
+        this.$.height       = this.canvasHeight();
         this.$.style.height = this.styleHeight();
         this.paint();
       }
@@ -70,9 +70,9 @@ MODEL({
                      this.resize);
     },
 
-    styleWidth: function() { return (this.width) + 'px'; },
-    canvasWidth: function() { return this.width * this.scalingRatio; },
-    styleHeight: function() { return (this.height) + 'px'; },
+    styleWidth:   function() { return (this.width) + 'px'; },
+    canvasWidth:  function() { return this.width * this.scalingRatio; },
+    styleHeight:  function() { return (this.height) + 'px'; },
     canvasHeight: function() { return this.height * this.scalingRatio; },
 
     toString: function() { return 'CViewView(' + this.cview + ')'; },
@@ -81,6 +81,7 @@ MODEL({
       var className = this.className ? ' class="' + this.className + '"' : '';
       return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + '"></canvas>';
     },
+
     initHTML: function() {
       if ( ! this.$ ) return;
 
@@ -167,7 +168,7 @@ MODEL({
       name: 'cview',
       postSet: function(_, cview) {
         this.__ctx__.dynamic(function() {
-          this.width = cview.x + cview.width;
+          this.width  = cview.x + cview.width;
           this.height = cview.y + cview.height;
         }.bind(this));
       }
@@ -541,7 +542,11 @@ MODEL({
         this.image_.onload = function() {
           if ( ! this.iconWidth  ) this.iconWidth  = this.image_.width;
           if ( ! this.iconHeight ) this.iconHeight = this.image_.height;
-          if ( this.canvas ) this.paint();
+          if ( this.canvas ) {
+            this.canvas.save();
+            this.paint();
+            this.canvas.restore();
+          }
         }.bind(this);
 
         this.image_.src = this.iconUrl;
@@ -555,12 +560,13 @@ MODEL({
       Events.dynamic(
         function() { self.action.isAvailable.call(self.data, self.action); },
         function() {
-          if ( self.action.isAvailable.call(self.data, self.action) &&
-               self.oldWidth_ && self.oldHeight_ ) {
-            self.x = self.oldX_;
-            self.y = self.oldY_;
-            self.width = self.oldWidth_;
-            self.height = self.oldHeight_;
+          if ( self.action.isAvailable.call(self.data, self.action) ) {
+            if ( self.oldWidth_ && self.oldHeight_ ) {
+              self.x = self.oldX_;
+              self.y = self.oldY_;
+              self.width = self.oldWidth_;
+              self.height = self.oldHeight_;
+            }
           } else if ( self.width || self.height ) {
             self.oldX_ = self.x;
             self.oldY_ = self.y;
@@ -574,9 +580,7 @@ MODEL({
         });
     },
 
-    tapClick: function() {
-      this.onClick();
-    },
+    tapClick: function() { this.onClick(); },
 
     initCView: function() {
       // Don't add halo as a child because we want to control
@@ -601,12 +605,14 @@ MODEL({
       this.$.addEventListener('touchleave',  this.onMouseUp);
       this.$.addEventListener('touchcancel', this.onMouseUp);
     },
+
     destroy: function() {
       this.SUPER();
       if ( this.__ctx__.gestureManager ) {
         this.__ctx__.gestureManager.uninstall(this.tapGesture);
       }
     },
+
     erase: function() {
       var c = this.canvas;
       if ( this.radius ) {
@@ -623,6 +629,7 @@ MODEL({
         this.canvas.fillRect(0, 0, this.width, this.height);
       }
     },
+
     paintSelf: function() {
       var c = this.canvas;
 

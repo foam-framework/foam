@@ -1,35 +1,24 @@
 /**
  * Material Design GMail.
  **/
-EMail.ARCHIVE.iconUrl = 'icons/ic_archive_black_24dp.png';
-EMail.ARCHIVE.label = '';
 
-EMail.TRASH.iconUrl = 'icons/ic_delete_black_24dp.png';
-EMail.TRASH.label = '';
+Object_forEach({
+  ARCHIVE:       'archive',
+  TRASH:         'delete',
+  REPLY:         'reply',
+  REPLY_ALL:     'reply_all',
+  SPAM:          'report',
+  FORWARD:       'forward',
+  STAR:          'star',
+  MOVE_TO_INBOX: 'inbox',
+  SEND:          'send',
+  MARK_UNREAD:   'markunread'
+}, function(image, name) {
+  var action = EMail[name];
+  action.iconUrl = 'icons/ic_' + image + '_black_24dp.png';
+  action.label   = '';
+});
 
-EMail.REPLY.iconUrl = 'icons/ic_reply_black_24dp.png';
-EMail.REPLY.label = '';
-
-EMail.REPLY_ALL.iconUrl = 'icons/ic_reply_all_black_24dp.png';
-EMail.REPLY_ALL.label = '';
-
-EMail.SPAM.iconUrl = 'icons/ic_report_black_24dp.png';
-EMail.SPAM.label = '';
-
-EMail.FORWARD.iconUrl = 'icons/ic_forward_black_24dp.png';
-EMail.FORWARD.label = '';
-
-EMail.STAR.iconUrl = 'icons/ic_star_black_24dp.png';
-EMail.STAR.label = '';
-
-EMail.MOVE_TO_INBOX.iconUrl = 'icons/ic_inbox_black_24dp.png';
-EMail.MOVE_TO_INBOX.label = '';
-
-EMail.SEND.iconUrl = 'icons/ic_send_black_24dp.png';
-EMail.SEND.label = '';
-
-EMail.MARK_UNREAD.iconUrl = 'icons/ic_markunread_black_24dp.png';
-EMail.MARK_UNREAD.label = '';
 
 /** Modify the default QueryParser so that label ids are looked up in the EMailLabels DAO. **/
 var queryParser = {
@@ -61,6 +50,104 @@ queryParser.expr = alt(
   sym('labelMatch'),
   queryParser.export('expr')
 );
+
+
+MODEL({
+  name: 'MenuView',
+
+  extendsModel: 'DetailView',
+
+  properties: [
+    { name: 'preferredWidth', defaultValue: 304 },
+    { name: 'className',      defaultValue: 'menu-view' },
+  ],
+
+  templates: [
+    function CSS() {/*
+      .menu-view {
+        margin: 0;
+        padding: 0;
+        box-shadow: 1px 0 1px rgba(0,0,0,.1);
+        font-size: 14px;
+        font-weight: 500;
+        background: white;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      .menu-view .header {
+        width: 100%;
+        height: 172px;
+        margin-bottom: 0;
+        background-image: url('images/projectBackground.png');
+      }
+
+      .menu-view {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background: white;
+      }
+
+      .menu-view span[name=email] {
+        color: white;
+        display: block;
+        margin-top: 40;
+        padding-left: 16px;
+        font-weight: 500;
+        font-size: 16px;
+      }
+
+      .menu-view .projectList {
+        flex: 1;
+        overflow-y: auto;
+        padding: 8px 0;
+      }
+
+      .menu-view .monogram-string-view {
+        width: 64px;
+        height: 64px;
+        border-radius: 32px;
+        margin: 16px;
+      }
+
+      .project-citation {
+        margin-top: 0;
+        height: 48px;
+      }
+
+      .project-citation img {
+        margin-right: 0;
+        width: 24px;
+        height: 24px;
+        margin: 12px 16px;
+        vertical-align: middle;
+      }
+
+      .project-citation .project-name {
+        color: rgba(0,0,0,.8);
+        font-size: 14px;
+        margin-left: 16px;
+        vertical-align: middle;
+      }
+
+      .project-citation .project-name.selected {
+        color: #e51c23;
+      }
+    */},
+    function toInnerHTML() {/*
+      <div class="header">
+        $$email{model_: 'MDMonogramStringView'}
+        $$email{mode: 'display-only'}
+        <br><br>
+      </div>
+      <div class="folderList">
+      </div>
+    </div>
+    */}
+  ]
+});
 
 
 MODEL({
@@ -123,6 +210,12 @@ MODEL({
         Events.follow(this.width$, v.width$);
         Events.follow(this.height$, v.height$);
       }
+    },
+    {
+      // TODO: Populate this somehow
+      name: 'email',
+      description: 'Email address of current user.',
+      defaultValue: 'me@somewhere.com'
     }
   ],
 
@@ -178,8 +271,8 @@ MODEL({
         editableCitationViews: true,
         sortChoices: [
           [ DESC(EMail.TIMESTAMP), 'Newest First' ],
-          [ EMail.TIMESTAMP, 'Oldest First' ],
-          [ EMail.SUBJECT, 'Subject' ],
+          [ EMail.TIMESTAMP,       'Oldest First' ],
+          [ EMail.SUBJECT,         'Subject' ],
         ],
         menuFactory: function() {
           return this.__ctx__.MenuView.create({
@@ -268,10 +361,9 @@ MODEL({
   actions: [
     {
       name: 'back',
-      isEnabled: function() { return true; },
+      isAvailable: function() { return true; },
       label: '',
-      iconUrl: 'images/ic_arrow_back_24dp.png',
-      action: function() { this.__ctx__.stack.back(); }
+      iconUrl: 'images/ic_arrow_back_24dp.png'
     },
     {
       name: 'moreActions',
@@ -296,7 +388,7 @@ MODEL({
     function toHTML() {/*
       <div id="<%= this.id %>" class="email-view">
         <div class="header">
-          $$back{className: 'backButton', radius:22}
+          $$back{radius: 22, className: 'backButton'}
           $$subject{mode: 'read-only', className: 'subject'}
           $$archive{iconUrl: 'icons/ic_archive_white_24dp.png'}
           $$moveToInbox{iconUrl: 'icons/ic_inbox_white_24dp.png'}
@@ -465,7 +557,7 @@ MODEL({
       }
 
       .menuView div:hover {
-        background-color: #3e50b4;
+        background-color: #e51c23;
         color: white;
       }
    */}
