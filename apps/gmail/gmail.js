@@ -14,9 +14,7 @@ Object_forEach({
   SEND:          'send',
   MARK_UNREAD:   'markunread'
 }, function(image, name) {
-  var action = EMail[name];
-  action.iconUrl = 'icons/ic_' + image + '_black_24dp.png';
-  action.label   = '';
+  EMail[name].copyFrom({iconUrl: 'icons/ic_' + image + '_black_24dp.png', label: ''});
 });
 
 
