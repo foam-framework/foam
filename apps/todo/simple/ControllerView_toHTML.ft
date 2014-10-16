@@ -1,3 +1,0 @@
-$$toggle $$input $$filteredDAO <br>
-$$activeCount{mode: 'read-only'} item<%# this.value.value.activeCount == 1 ? '' : 's' %> left
-$$query $$clear

@@ -8,7 +8,7 @@ The place to start with any FOAM application is with a first draft of your data 
 
 The app we're going to build here is shamelessly borrowed from the [AngularJS tutorial](https://docs.angularjs.org/tutorial). It is a simple catalog app the shows a collection of smartphones. It has two views: one for the list of phones and the other for the details of one phone.
 
-You can see the finished app running live [here]({{ site.baseurl }}/apps/phonecat/Cat.html).
+You can see the finished app running live [here]({{ site.baseurl }}/foam/apps/phonecat/Cat.html).
 
 ## Defining the Model
 

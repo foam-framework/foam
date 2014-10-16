@@ -1,6 +1,0 @@
-<div id="<%= this.id %>">
-<b>Preferred projects:</b>
-$$preferredProjects
-<br>
-<b>Default project:</b> %%defaultProjectView
-</div>
