@@ -124,14 +124,23 @@ function registerModel(model, opt_name) {
         return this.__proto__.create(args, thisX);
       }
   };
-
+  var thisProto = // delay evaluation of prototype to avoid bootstrap problems by returning function
+    this === GLOBAL ?
+      function() { return model.getPrototype() } 
+    : function() { return {
+      __proto__: model.getPrototype(),
+      create: function(args, opt_X) {
+        return this.__proto__.create(args, thisX);
+    }}
+  };
+  
   // Register both ModName (the proto) and ModNameModel (the unadulterated definition)
   Object.defineProperty(
     this,
     opt_name? opt_name + "Model" : model.name + "Model",
     {
       get: function() {
-        return ( this === thisX ) ? thisModel : this.registerModel(model);
+        return ( this === thisX ) ? thisModel : this.registerModel(model).model;
       },
       configurable: true
     }
@@ -141,13 +150,13 @@ function registerModel(model, opt_name) {
     opt_name || model.name,
     {
       get: function() {
-        return ( this === thisX ) ? thisModel.getPrototype() : this.registerModel(model).getPrototype();
+        return ( this === thisX ) ? thisProto() : this.registerModel(model).proto();
       },
       configurable: true
     }
   );
 
-  return thisModel;
+  return {model: thisModel, proto: thisProto};
 };
 
 var registerFactory = function(model, factory) {

@@ -16,7 +16,7 @@
  */
 
 // Force installation of features.
-MementoMgr.getPrototype();
+//MementoMgr.getPrototype();
 
 MementoMgr.BACK.iconUrl = 'images/back.png';
 MementoMgr.FORTH.iconUrl = 'images/forth.png';

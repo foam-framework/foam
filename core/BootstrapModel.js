@@ -117,8 +117,7 @@ var BootstrapModel = {
 //        if (!modelModel.TYPE.startsWith('BootstrapModel')) extendsModel = modelModel;
 //      }
 //    }
-//    console.log("Bootstrap model buildPrototype: ", this.name, this.extendsModel, extendsModel? extendsModel.id: "na");
-// recursion problem... clone() of a documentation property is causing create of a doc prop, which causes a clone, create, clone, create... since we never get to store the finished proto.
+//    console.log("Bootstrap model buildPrototype: ", this.name, this.extendsModel, extendsModel? 
 
     if ( this.traits ) for ( var i = 0 ; i < this.traits.length ; i++ ) {
       var trait = this.traits[i];

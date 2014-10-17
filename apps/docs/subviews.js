@@ -225,7 +225,11 @@ MODEL({
       help: 'The Model for which to display documentation.',
       documentation: "The $$DOC{ref:'Model'} for which to display $$DOC{ref:'Documentation'}.",
       postSet: function() {
-        this.updateHTML();
+				if ( !this.data.isInstance(this.__ctx__.ModelModel) 
+					 || this.data === this.__ctx__.Model) {
+							console.warn("DocModelView data must be a model definition. Try appending 'Model' to the name you specified.");
+				}
+				this.updateHTML();
         this.generateFeatureDAO();
       }
     },
@@ -257,7 +261,7 @@ MODEL({
       // be a global search problem.
       this.loadFeaturesOfModel(this.data, []);
 
-//      this.debugLogFeatureDAO();
+      this.debugLogFeatureDAO();
 
     },
     loadFeaturesOfModel: function(model, previousExtenderTrackers) {
@@ -328,7 +332,7 @@ MODEL({
 
     function toInnerHTML()    {/*
 <%    this.destroy(); %>
-<%    if (this.data && DocumentationBook.isSubModel(this.data)) {  %>
+<%    if (this.data && DocumentationBookModel.isSubModel(this.data)) {  %>
         $$THISDATA{ model_: 'DocBookView', data: this.data.documentation }
 <%    } else if (this.data) {  %>
         <div class="introduction">
@@ -752,7 +756,7 @@ MODEL({
         }
         model = this.__ctx__.documentViewParentModel.get(); // ".feature" or "."
       } else {
-        model = this.__ctx__[args[0]];
+        model = this.__ctx__[args[0]+"Model"];
       }
 
       if (!model) {

@@ -187,12 +187,12 @@ MODEL({
 
       // when the hash changes set the documentViewParentModel and this.selection
       window.addEventListener('hashchange', function() {
-        this.DetailContext.documentViewParentModel.set(this.SearchContext[location.hash.substring(1)]);
+        this.DetailContext.documentViewParentModel.set(this.SearchContext[location.hash.substring(1)+"Model"]);
         this.selection = this.DetailContext.documentViewParentModel.get();
       }.bind(this));
 
       // initialization from hash
-      this.DetailContext.documentViewParentModel.set(this.SearchContext[location.hash.substring(1)]);
+      this.DetailContext.documentViewParentModel.set(this.SearchContext[location.hash.substring(1)+"Model"]);
       // init this.selection
       this.selection = this.DetailContext.documentViewParentModel.get();
 
