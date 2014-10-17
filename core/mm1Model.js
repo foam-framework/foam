@@ -305,6 +305,36 @@ var Model = {
 
     },
     {
+      name: 'constants',
+      type: 'Array[Constant]',
+      subType: 'Constant',
+      view: 'ArrayView',
+      factory: function() { return []; },
+      defaultValue: [],
+      help: 'Constants associated with the entity.',
+      preSet: function(_, newValue) {
+        if ( ! Constant ) return;
+
+        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.__ctx__, newValue, Constant);
+
+        // convert a map of values to an array of Constant objects
+        var constants = [];
+
+        for ( var key in newValue ) {
+          var oldValue = newValue[key];
+
+          var constant = Constant.create({
+            name:  key,
+            value: oldValue
+          });
+
+          constants.push(constant);
+        }
+
+        return constants;
+      }
+    },
+    {
       name: 'methods',
       type: 'Array[Method]',
       subType: 'Method',
@@ -334,6 +364,9 @@ var Model = {
             method.args = oldValue.toString().match(/^function[ _$\w]*\(([ ,\w]*)/)[1].split(',').map(function(name) {
               return Arg.create({name: name.trim()});
             });
+          } else {
+            console.warn('Constant defined as Method: ', this.name + '.' + key);
+            debugger;
           }
 
           methods.push(method);

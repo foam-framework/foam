@@ -374,6 +374,61 @@ MODEL({
 
 
 MODEL({
+  name: 'Constant',
+  plural: 'constants',
+
+  tableProperties: [
+    'name',
+    'value',
+    'description'
+  ],
+
+  documentation: function() {/*
+  */},
+
+  properties: [
+    {
+      name:  'name',
+      type:  'String',
+      required: true,
+      displayWidth: 30,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'The coding identifier for the entity.',
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
+         */}
+    },
+    {
+      name: 'description',
+      type: 'String',
+      displayWidth: 70,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'A brief description of this method.',
+      documentation: function() { /* A human readable description of the $$DOC{ref:'.'}.
+         */}
+
+    },
+    {
+      model_: 'DocumentationProperty',
+      name: 'documentation',
+    },
+    {
+      name: 'value',
+      help: 'The value of the constant..'
+    },
+    {
+      name:  'type',
+      defaultValue: '',
+      help: 'Type of the constant.',
+    },
+  ]
+});
+
+
+MODEL({
   name: 'Method',
   plural: 'Methods',
 
@@ -848,6 +903,7 @@ MODEL({
   ]
 
 });
+
 
 MODEL({
   name: 'Documentation',

@@ -452,7 +452,8 @@ Object.defineProperty(Array.prototype, 'remove', {
 Object.defineProperty(Object.prototype, 'forEach', {
   value: function(fn) {
     for ( var key in this ) if (this.hasOwnProperty(key)) fn(this[key], key);
-}});*/
+}});
+*/
 
 // Workaround for crbug.com/258552
 function Object_forEach(obj, fn) {

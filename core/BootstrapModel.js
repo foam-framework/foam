@@ -30,6 +30,7 @@
  * the end of metamodel.js once the real Model is created.
  **/
 
+this.Constant = null;
 this.Method = null;
 this.Action = null;
 this.Relationship = null;
@@ -202,6 +203,17 @@ var BootstrapModel = {
           }
           addMethod(a.name, function(opt_x) { a.callIfEnabled(opt_x || this.__ctx__, this); });
         }.bind(this))(this.actions[i]);
+      }
+    }
+
+    // add constants
+    for ( var key in this.constants ) {
+      var c = this.constants[key];
+      if ( Constant && Constant.isInstance(c) ) {
+        // TODO(kgr): only add to Proto when Model cleanup done.
+        cls[c.name] = this[c.name] = c.value;
+      } else {
+        debugger;
       }
     }
 

@@ -408,11 +408,13 @@ MODEL({
     }
   ],
 
-  methods: {
-    // TODO: Model as Topics
+  constants: {
+    // TODO?: Model as Topics
     ON_HIDE: ['onHide'], // Indicates that the View has been hidden
-    ON_SHOW: ['onShow'], // Indicates that the View is now being reshown
+    ON_SHOW: ['onShow']  // Indicates that the View is now being reshown
+  },
 
+  methods: {
     toView_: function() { return this; },
 
     deepPublish: function(topic) {
@@ -1650,11 +1652,13 @@ MODEL({
     'autocompleteView'
   ],
 
-  methods: {
+  constants: {
     /** Escape topic published when user presses 'escape' key to abort edits. **/
     // TODO: Model as a 'Topic'
-    ESCAPE: ['escape'],
+    ESCAPE: ['escape']
+  },
 
+  methods: {
     installInDocument: function(__ctx__, document) {
       console.log('Installing TextFieldView in Document.');
     },
