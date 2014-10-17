@@ -57,7 +57,7 @@ a {
   background: #3e50b4;
   flex-shrink: 0;
   padding: 0;
-  height: 48px;
+  height: 50px;
 }
 
 .mdui-app-controller .header .default {
@@ -67,7 +67,7 @@ a {
 }
 
 .mdui-app-controller.searchMode .header {
-  height: 56px;
+  height: 50px;
 }
 
 .mdui-app-controller.searchMode .header .default {
@@ -80,7 +80,7 @@ a {
 
 .mdui-app-controller.searchMode .header .search {
   display: inherit;
-  height: 56px;
+  height: 50px;
   width: 100%;
   background: #3e50b4;
   z-index: 2;
@@ -132,7 +132,7 @@ input[name=q]::-webkit-input-placeholder {
 }
 
 .backButton {
-  margin-top: 6px;
+  margin: 3px 6px 2px 4px;
 }
 
 .header canvas {

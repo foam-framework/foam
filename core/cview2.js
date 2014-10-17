@@ -443,6 +443,11 @@ MODEL({
         alpha: 0,
         r: 10,
         color: this.haloColor
+        /* This gives a ring halo:
+        color: 'rgba(0,0,0,0)',
+        borderWidth: 12,
+        border: this.haloColor
+        */
       });}
     },
     {
