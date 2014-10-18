@@ -1659,10 +1659,6 @@ MODEL({
   },
 
   methods: {
-    installInDocument: function(__ctx__, document) {
-      console.log('Installing TextFieldView in Document.');
-    },
-
     toHTML: function() {
       return this.mode === 'read-write' ?
         this.toReadWriteHTML() :

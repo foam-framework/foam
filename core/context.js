@@ -51,6 +51,7 @@ function subWindow(w, opt_name, isBackground) {
 
   var map = {
     registerModel: function(model, opt_name) {
+      // TODO(kgr): This causes the prototype to be created prematurely, so needs to be fixed.
       if ( model.getPrototype && model.getPrototype().installInDocument && ! installedModels.has(model) ) {
         // TODO(kgr): If Traits have CSS then it will get installed more than once.
         for ( m = model ; m ; m = m.extendsModel && m.getPrototype().__proto__.model_ ) {
