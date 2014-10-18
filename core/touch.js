@@ -75,6 +75,7 @@ MODEL({
   ]
 });
 
+
 MODEL({
   name: 'TouchManager',
 
@@ -82,13 +83,15 @@ MODEL({
     { name: 'touches', factory: function() { return {}; } }
   ],
 
-  methods: {
+  constants: {
     TOUCH_START: ['touch-start'],
-    TOUCH_END: ['touch-end'],
-    TOUCH_MOVE: ['touch-move'],
+    TOUCH_END:   ['touch-end'],
+    TOUCH_MOVE:  ['touch-move']
+  },
 
-    init: function() {
-      this.SUPER();
+  methods: {
+    init: function(SUPER) {
+      SUPER();
       if ( this.__ctx__.document ) this.install(this.__ctx__.document);
     },
 

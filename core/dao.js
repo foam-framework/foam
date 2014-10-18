@@ -3256,14 +3256,16 @@ MODEL({
     }
   ],
 
-  methods: {
+  constants: {
     // Aliases for daoType
     ALIASES: {
       IDB:   'IDBDAO',
       LOCAL: 'StorageDAO', // Switches to 'ChromeStorageDAO' for Chrome Apps
       SYNC:  'StorageDAO'  // Switches to 'ChromeSyncStorageDAO' for Chrome Apps
-    },
+    }
+  },
 
+  methods: {
     init: function(args) {
       /*
         <p>On initialization, the $$DOC{ref:'.'} creates an appropriate chain of
