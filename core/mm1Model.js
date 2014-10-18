@@ -293,7 +293,7 @@ var ModelModel = {
           }
 
           // create property constant
-          this[p.name.constantize()] = newValue[i]; // TODO: only modify cls (the proto) not this!
+          //this[p.name.constantize()] = newValue[i]; // TODO: only modify cls (the proto) not this!
         }
 
         return newValue;
@@ -462,7 +462,7 @@ var ModelModel = {
           }
 
           // create property constant
-          this[p.name.constantize()] = newValue[i]; // TODO: only modify cls (the proto) not this!
+          //this[p.name.constantize()] = newValue[i]; // TODO: only modify cls (the proto) not this!
         }
 
         return newValue;

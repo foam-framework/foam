@@ -92,7 +92,7 @@ MODEL({
 });
 
 
-GeneratedQIssue.properties.forEach(function(p) {
+IssueModel.properties.forEach(function(p) {
   if ( ! p["tableFormatter"] ) {
     p["tableFormatter"] = function(v) {
       return v || '----';

@@ -1199,4 +1199,4 @@ var exports = [
 console.log(
    exports.map(function(m) {
       var model = generateModel(m);
-      return 'var Generated' + model.name + ' = FOAM(' + model.toJSON() + ');'; }).join('\n\n'));
+      return 'MODEL(' + model.toJSON() + ');'; }).join('\n\n'));

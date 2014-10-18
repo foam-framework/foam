@@ -223,6 +223,9 @@ var BootstrapModel = {
           }
           extendsMerger(extendsModel);
           addMethod(a.name, function(opt_x) { a.callIfEnabled(opt_x || this.__ctx__, this); });
+		      var name = a.name.constantize();
+		      if ( ! cls[name] ) cls[name] = a;
+					
         }.bind(this))(this.actions[i]);
       }
     }
