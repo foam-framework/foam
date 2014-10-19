@@ -343,7 +343,7 @@ console.log('***************** building: ', this.name);
   create: function(args, opt_X) { return this.getPrototype().create(args, opt_X); },
 
   isSubModel: function(model) {
-		/* Returns true if the given instance extends this $$DOC{ref:'Model'} or a descendant of this. */
+    /* Returns true if the given instance extends this $$DOC{ref:'Model'} or a descendant of this. */
     try {
       return model && ( model === this || this.isSubModel(model.getPrototype().__proto__.model_) );
     } catch (x) {
@@ -394,8 +394,8 @@ console.log('***************** building: ', this.name);
   },
 
   isInstance: function(obj) { /* Returns true if the given instance extends this $$DOC{ref:'Model'}. */
-		return obj && obj.model_ && this.isSubModel(obj.model_); 
-	},
+    return obj && obj.model_ && this.isSubModel(obj.model_); 
+  },
 
   toString: function() { return "BootstrapModel(" + this.name + ")"; }
 };
