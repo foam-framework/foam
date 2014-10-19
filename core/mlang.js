@@ -36,7 +36,7 @@ Property.getPrototype().compare = function(o1, o2) {
 MODEL({
   name: 'Expr',
 
-  package: 'foam.mlang',
+  // package: 'foam.mlang',
 
   documentation: 'Parent model for all mLang expressions. Contains default implementations for many methods.',
 

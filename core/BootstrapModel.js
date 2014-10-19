@@ -95,7 +95,6 @@ var BootstrapModel = {
   TYPE: 'BootstrapModel <startup only, error if you see this>',
 
   buildPrototype: function() { /* Internal use only. */
-console.log('***************** building: ', this.name);
     function addTraitToModel(traitModel, parentModel) {
       var name = parentModel.name + '_ExtendedWith_' + traitModel.name;
       if ( ! GLOBAL[name] ) {
