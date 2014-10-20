@@ -650,7 +650,6 @@ function superMethodDecorator(mName, f) {
 function contextMethodDecorator(f) {
   return function() {
     var args = argsToArray(arguments);
-    args.unshift(this.X);
     return f.apply(this, args);
   };
 }
@@ -662,11 +661,6 @@ Method.getPrototype().generateFunction = function() {
   if ( this.args.length ) {
     if ( this.args[0].name == 'SUPER' ) {
       f = superMethodDecorator(this.name, f);
-      if ( this.args.length > 1 && this.args[1].name == 'X' ) {
-        f = contextMethodDecorator(f);
-      }
-    } else if ( this.args[0].name == 'X' ) {
-      f = contextMethodDecorator(f);
     }
   }
 
