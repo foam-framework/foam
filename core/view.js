@@ -2468,6 +2468,10 @@ MODEL({
 
       var self = this;
 
+      this.on('click', function() {
+        self.action.callIfEnabled(self.X, self.data);
+      }, this.id);
+
       this.setAttribute('disabled', function() {
         self.closeTooltip();
         return self.action.isEnabled.call(self.data, self.action) ? undefined : 'disabled';
@@ -2495,18 +2499,7 @@ MODEL({
       }
 
       return out;
-    },
-
-    initInnerHTML: function() {
-      this.SUPER();
-
-      var self = this;
-      this.on('click', function() {
-        self.action.callIfEnabled(self.X, self.data);
-      }, this.id);
-
     }
-
   }
 });
 
