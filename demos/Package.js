@@ -37,8 +37,10 @@ MODEL({
 
 });
 
+/*
 var a = demo.account.Account.create();
 
 // Both Pass
 a.setStatus(true);
 a.deposit(100);
+*/

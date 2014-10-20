@@ -108,14 +108,7 @@ var USED_MODELS = {};
 
 // Lazy Model Definition - Only creates Model when first referenced
 function MODEL(m) {
-  // Templates need to access document.currentScript in order to know
-  // where to load the template from, so the instantiation of Models
-  // with templates can't be delayed (yet).
-  if ( m.templates ) {
-    registerModel.call(this, JSONUtil.mapToObj(X, m, Model));
-    USED_MODELS[m.name] = true;
-    return;
-  }
+  if ( document && document.currentScript ) m.sourcePath = document.currentScript.src;
 
   UNUSED_MODELS[m.name] = true;
   Object.defineProperty(GLOBAL, m.name, {

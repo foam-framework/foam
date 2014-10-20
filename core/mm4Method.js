@@ -325,7 +325,7 @@ MODEL({
     {
       model_: 'DocumentationProperty',
       name: 'documentation'
-    },
+    }
   ],
 
   methods: {

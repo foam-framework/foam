@@ -94,6 +94,11 @@ var Model = {
 
   properties: [
     {
+      name:  'sourcePath',
+      help: 'Source location of this Model.',
+      defaultValue: ''
+    },
+    {
       name:  'package',
       help: 'Java class package.',
       defaultValue: '',
@@ -356,12 +361,13 @@ var Model = {
             code: oldValue
           });
 
-          // TODO(kgr): this happens when constants are stored as methods. Give constants their own
           // Model Feature object.
           if ( typeof oldValue == 'function' ) {
-            method.args = oldValue.toString().match(/^function[ _$\w]*\(([ ,\w]*)/)[1].split(',').map(function(name) {
-              return Arg.create({name: name.trim()});
-            });
+            if ( Arg ) {
+              method.args = oldValue.toString().match(/^function[ _$\w]*\(([ ,\w]*)/)[1].split(',').map(function(name) {
+                return Arg.create({name: name.trim()});
+              });
+            }
           } else {
             console.warn('Constant defined as Method: ', this.name + '.' + key);
             debugger;

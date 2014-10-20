@@ -124,6 +124,7 @@ function registerPackagePath(/* String */ path) {
 function registerPackage(/* String */ name) {
   if ( ! this[name] ) {
     this[name] = {
+      __proto__: this,
       X: this
     };
   }

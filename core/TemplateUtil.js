@@ -190,6 +190,7 @@ var TemplateUtil = {
       };
    },
 
+   // TODO: add docs to explain what this method does.
    templateMemberExpander: function(t, opt_X) {
      // Load templates from an external file
      // if their 'template' property isn't set
@@ -212,7 +213,7 @@ var TemplateUtil = {
        // console.log('loading: '+ this.name + ' ' + t.name);
 
        var future = afuture();
-       var path = document.currentScript.src;
+       var path = this.sourcePath;
 
        t.futureTemplate = future.get;
        path = path.substring(0, path.lastIndexOf('/')+1);
@@ -250,7 +251,7 @@ var TemplateUtil = {
          // console.log('loading: '+ self.name + ' ' + t.name);
 
          var future = afuture();
-         var path = document.currentScript.src;
+         var path = this.sourcePath;
 
          t.futureTemplate = future.get;
          path = path.substring(0, path.lastIndexOf('/')+1);
