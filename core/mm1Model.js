@@ -341,7 +341,7 @@ var Model = {
       defaultValue: [],
       help: 'Methods associated with the entity.',
       preSet: function(_, newValue) {
-        if ( ! Method ) return;
+        if ( ! Method ) return newValue;
 
         if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Method);
 
