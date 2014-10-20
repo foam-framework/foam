@@ -130,10 +130,10 @@ MODEL({
       return this.refresh_(ret, opt_forceInteractive);
     },
 
-    setJsonpFuture: function(__ctx__, future) {
+    setJsonpFuture: function(X, future) {
       var agent = this;
       future.set((function() {
-        var factory = __ctx__.OAuthXhrFactory.create({
+        var factory = X.OAuthXhrFactory.create({
           authAgent: agent,
           responseType: "json"
         });
@@ -153,9 +153,9 @@ MODEL({
   }
 });
 
-function deferJsonP(__ctx__) {
+function deferJsonP(X) {
   var future = afuture();
-  __ctx__.ajsonp = function() {
+  X.ajsonp = function() {
     var args = arguments;
     return function(ret) {
       future.get(function(f) {
@@ -362,7 +362,7 @@ MODEL({
   help: 'OAuth2 strategy that uses the redirect.',
   methods: {
     refreshNow_: function(ret) {
-      var location = this.__ctx__.window.location;
+      var location = this.X.window.location;
       var token = location.hash.match(/token=([^&]*)/);
       token = token && token[1];
       if ( token ) {
@@ -381,7 +381,7 @@ MODEL({
           'redirect_uri=' + encodeURIComponent(redirect),
           'scope=' + encodeURIComponent(this.scopes.join(' '))
         ];
-        this.__ctx__.window.location = this.endpoint + 'auth?' + params.join('&');
+        this.X.window.location = this.endpoint + 'auth?' + params.join('&');
       }
     }
   }

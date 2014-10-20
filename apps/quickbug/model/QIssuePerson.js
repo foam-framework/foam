@@ -25,7 +25,7 @@ MODEL({
   ],
   methods: {
     autocomplete: function(data) {
-      var src = this.__ctx__.PersonDAO;
+      var src = this.X.PersonDAO;
       var dao = src.where(
         data ?
           STARTS_WITH_IC(IssuePerson.NAME, data) :

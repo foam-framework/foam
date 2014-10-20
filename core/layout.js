@@ -54,9 +54,9 @@ MODEL({
     initHTML: function() {
       this.SUPER();
       var self = this;
-      this.__ctx__.dynamic(function() { self.x; self.y; self.z; },
+      this.X.dynamic(function() { self.x; self.y; self.z; },
                      this.position);
-      this.__ctx__.dynamic(function() { self.width; self.height; },
+      this.X.dynamic(function() { self.width; self.height; },
                      this.resize);
       this.$.style.position = 'absolute';
       this.position();
@@ -115,7 +115,7 @@ MODEL({
         var self = this;
         v.x = 0;
         v.y = 0;
-        this.__ctx__.dynamic(function() { self.width; self.height; },
+        this.X.dynamic(function() { self.width; self.height; },
                        function() {
                          v.width = self.width;
                          v.height = self.height;
@@ -196,7 +196,7 @@ MODEL({
     init: function() {
       this.SUPER();
       var self = this;
-      this.__ctx__.dynamic(function() { self.width; self.height; self.direction; self.slideAmount; self.reverse },
+      this.X.dynamic(function() { self.width; self.height; self.direction; self.slideAmount; self.reverse },
                      this.layout);
     },
     toHTML: function() {
@@ -240,7 +240,7 @@ MODEL({
       };
 
       window.setTimeout(function() {
-        self.latch = this.__ctx__.animate(opt_time, fn, opt_interp, function() {
+        self.latch = this.X.animate(opt_time, fn, opt_interp, function() {
           if ( self.view ) {
             self.view.destroy();
             self.$.removeChild(self.view.$);
@@ -309,7 +309,7 @@ MODEL({
     init: function() {
       this.SUPER();
       var self = this;
-      this.__ctx__.dynamic(function() { self.width; self.height; self.slideAmount; }, this.layout);
+      this.X.dynamic(function() { self.width; self.height; self.slideAmount; }, this.layout);
     },
     updateHTML: function() {
       this.children = [];
@@ -347,7 +347,7 @@ MODEL({
                              this.width);
 
         if ( this.$ ) {
-          var overlay = this.__ctx__.$(this.id + '-slider');
+          var overlay = this.X.$(this.id + '-slider');
           overlay.style.webkitTransform = 'translate3d(0,0,0px)';
           overlay.style.width = this.width + 'px';
           overlay.style.height = this.height + 'px';

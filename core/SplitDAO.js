@@ -37,7 +37,7 @@ MODEL({
     {
       name: 'syncManager',
       factory: function() {
-        return this.__ctx__.SyncManager.create({
+        return this.X.SyncManager.create({
           srcDAO: this.remote,
           dstDAO: this.delegate,
         });

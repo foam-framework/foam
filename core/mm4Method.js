@@ -181,14 +181,14 @@ MODEL({
     }
   ],
   methods: {
-    callIfEnabled: function(__ctx__, that) { /* doesn't appear in docs. Bootstrappy issue. */
-      if ( this.isEnabled.call(that, this) ) this.action.call(that, __ctx__, this);
+    callIfEnabled: function(X, that) { /* doesn't appear in docs. Bootstrappy issue. */
+      if ( this.isEnabled.call(that, this) ) this.action.call(that, X, this);
     }
   }
 });
 
-Action.getPrototype().callIfEnabled = function(__ctx__, that) {
-  if ( this.isEnabled.call(that, this) ) this.action.call(that, __ctx__, this);
+Action.getPrototype().callIfEnabled = function(X, that) {
+  if ( this.isEnabled.call(that, this) ) this.action.call(that, X, this);
 };
 
 
@@ -514,7 +514,7 @@ MODEL({
         var multilineComment = /^\s*function\s*\([\$\s\w\,]*?\)\s*{\s*\/\*([\s\S]*?)\*\/[\s\S]*$|^\s*\/\*([\s\S]*?)\*\/([\s\S]*)/.exec(this.code.toString());
         if ( multilineComment ) {
           var bodyFn = multilineComment[1];
-          this.documentation = this.__ctx__.Documentation.create({
+          this.documentation = this.X.Documentation.create({
                 name: this.name,
                 body: bodyFn
           })
@@ -650,7 +650,7 @@ function superMethodDecorator(mName, f) {
 function contextMethodDecorator(f) {
   return function() {
     var args = argsToArray(arguments);
-    args.unshift(this.__ctx__);
+    args.unshift(this.X);
     return f.apply(this, args);
   };
 }
@@ -960,7 +960,7 @@ MODEL({
       help: 'The main content of the document.',
       documentation: "The main body text of the document. Any valid template can be used, including the $$DOC{ref:'DocView'} specific $$DOC{ref:'DocView',text:'$$DOC{\"ref\"}'} and $$DOC{ref:'DocView',text:'$$THISDATA{}'} tags.",
       preSet: function(_, template) {
-          return TemplateUtil.templateMemberExpander(template, this.__ctx__);
+          return TemplateUtil.templateMemberExpander(template, this.X);
       }
     },
     {

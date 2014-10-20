@@ -53,7 +53,7 @@ MODEL({
       defaultValue: false,
       postSet: function(_, value) {
         if ( value ) {
-          this.addDecorator(this.__ctx__.SearchBorder.create({
+          this.addDecorator(this.X.SearchBorder.create({
             model: this.model,
             data: this.data
           }));
@@ -67,7 +67,7 @@ MODEL({
       name:  'new',
       help:  'Create a new record.',
       action: function() {
-        var createView = this.__ctx__.DAOCreateController.create({
+        var createView = this.X.DAOCreateController.create({
           model: this.model,
           dao:   this.dao,
           showActions: true
@@ -75,7 +75,7 @@ MODEL({
 
         createView.parentController = this;
 
-        this.__ctx__.stack.pushView(createView, 'New');
+        this.X.stack.pushView(createView, 'New');
       }
     },
     {
@@ -88,12 +88,12 @@ MODEL({
         this.selection = this.daoView.selection;
 
         var obj = this.selection;
-        var actions = this.__ctx__.DAOUpdateController.actions.slice(0);
+        var actions = this.X.DAOUpdateController.actions.slice(0);
 
         for ( var i = 0 ; i < this.model.actions.length ; i++ ) {
           var action = this.model.actions[i];
 
-          var newAction = this.__ctx__.Action.create(action);
+          var newAction = this.X.Action.create(action);
           newAction.action = function (oldAction) {
             return function() {
               oldAction.call(obj);
@@ -104,14 +104,14 @@ MODEL({
         }
 
         console.log(["selection: ", this.selection]);
-        var updateView = this.__ctx__.DAOUpdateController.create({
+        var updateView = this.X.DAOUpdateController.create({
           data:  this.selection/*.deepClone()*/,
           model: this.model,
           dao:   this.dao,
           showActions: true
         });
 
-        this.__ctx__.stack.pushView(updateView, 'Edit');
+        this.X.stack.pushView(updateView, 'Edit');
       }
     },
     {
@@ -164,8 +164,8 @@ MODEL({
         var obj = this.daoView.selection;
         if ( ! obj ) return;
 
-        this.__ctx__.stack.setPreview(
-          this.__ctx__.SummaryView.create({
+        this.X.stack.setPreview(
+          this.X.SummaryView.create({
             model: this.model,
             data: this.daoView.selection
           }));
@@ -208,7 +208,7 @@ MODEL({
         this.dao.put(this.data, {
           put: function(value) {
             console.log("Created: ", value);
-            self.__ctx__.stack.back();
+            self.X.stack.back();
           },
           error: function() {
             console.error("Error creating value: ", arguments);
@@ -220,7 +220,7 @@ MODEL({
       name:  'cancel',
       help:  'Cancel creation.',
 
-      action: function() { this.__ctx__.stack.back(); }
+      action: function() { this.X.stack.back(); }
     },
     {
       name:  'help',
@@ -228,8 +228,8 @@ MODEL({
 
       action: function() {
         var model = this.data.model_;
-        var helpView = this.__ctx__.HelpView.create(model);
-        this.__ctx__.stack.pushView(helpView);
+        var helpView = this.X.HelpView.create(model);
+        this.X.stack.pushView(helpView);
       }
     }
   ],
@@ -270,7 +270,7 @@ MODEL({
         this.dao.put(this.data, {
           put: function(value) {
             console.log("Created: ", value);
-            self.__ctx__.stack.back();
+            self.X.stack.back();
           },
           error: function() {
             console.error("Error creating value: ", arguments);
@@ -290,7 +290,7 @@ MODEL({
       help:  'Cancel update.',
 
       action: function() {
-        this.__ctx__.stack.back();
+        this.X.stack.back();
       }
     },
     {
@@ -299,8 +299,8 @@ MODEL({
 
       action: function() {
         var model = this.data.model_;
-        var helpView = this.__ctx__.HelpView.create(model);
-        this.__ctx__.stack.pushView(helpView);
+        var helpView = this.X.HelpView.create(model);
+        this.X.stack.pushView(helpView);
       }
     }
   ],
@@ -309,7 +309,7 @@ MODEL({
     init: function() {
       this.SUPER();
 
-      this.view = this.__ctx__.AlternateView.create({
+      this.view = this.X.AlternateView.create({
         selection: 'GUI',
         data: this.data,
         views: [

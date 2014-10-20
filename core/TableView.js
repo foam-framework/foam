@@ -36,7 +36,7 @@ MODEL({
     {
       name:  'model',
       type:  'Model',
-      defaultValueFn: function() { return this.__ctx__.model; }
+      defaultValueFn: function() { return this.X.model; }
     },
     {
       model_: 'StringArrayProperty',
@@ -94,7 +94,7 @@ MODEL({
       name: 'scrollbar',
       type: 'ScrollCView',
       factory: function() {
-        var sb = this.__ctx__.ScrollCView.create({height:800, width: 24, x: 1, y: 0, size: 200, extent: 10});
+        var sb = this.X.ScrollCView.create({height:800, width: 24, x: 1, y: 0, size: 200, extent: 10});
 
 //        if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
 
@@ -209,7 +209,7 @@ MODEL({
         this.$.insertAdjacentHTML('beforebegin', v.toHTML());
 
         var y = findViewportXY(this.$)[1];
-        var screenHeight = this.__ctx__.document.firstElementChild.offsetHeight;
+        var screenHeight = this.X.document.firstElementChild.offsetHeight;
         var popupHeight = toNum(v.$.offsetHeight);
         if ( screenHeight-y-popupHeight < 10 ) {
           v.$.style.maxHeight = ( screenHeight - y - 10 ) + 'px';
@@ -287,8 +287,8 @@ MODEL({
               sb.value - Math.round(e.wheelDelta / 20)));
         };
 
-        if ( this.__ctx__.gestureManager ) {
-          this.__ctx__.gestureManager.install(this.__ctx__.GestureTarget.create({
+        if ( this.X.gestureManager ) {
+          this.X.gestureManager.install(this.X.GestureTarget.create({
             containerID: this.id,
             handler: this,
             getElement: function() { return this.container.$.parentElement; },
@@ -440,8 +440,8 @@ MODEL({
       this.on('mousedown', function(e) {
         var self   = this;
         var startX = e.x;
-        var col1   = self.__ctx__.$(id).parentElement;
-        var col2   = self.__ctx__.$(id).parentElement.nextSibling;
+        var col1   = self.X.$(id).parentElement;
+        var col2   = self.X.$(id).parentElement.nextSibling;
         var w1     = toNum(col1.width);
         var w2     = prop2 ? toNum(col2.width) : 0;
 
@@ -468,12 +468,12 @@ MODEL({
               prop2.tableWidth = col2.width;
             }
           }
-          this.__ctx__.document.removeEventListener('mousemove', onMouseMove);
-          this.__ctx__.document.removeEventListener('mouseup',   onMouseUp);
+          this.X.document.removeEventListener('mousemove', onMouseMove);
+          this.X.document.removeEventListener('mouseup',   onMouseUp);
         }).bind(this);
 
-        this.__ctx__.document.addEventListener('mousemove', onMouseMove);
-        this.__ctx__.document.addEventListener('mouseup',   onMouseUp);
+        this.X.document.addEventListener('mousemove', onMouseMove);
+        this.X.document.addEventListener('mouseup',   onMouseUp);
       }, id);
 
       return '<div id="' + id + '" class="columnResizeHandle" style="top:0;z-index:9;cursor:ew-resize;position:absolute;right:-3px;width:6px;height:100%"><div>';

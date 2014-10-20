@@ -103,12 +103,12 @@ function subWindow(w, opt_name, isBackground) {
   }
 
   var X = this.sub(map, opt_name);
-  w.__ctx__ = X;
+  w.X = X;
   return X;
 }
 
 // Using the existence of 'process' to determine that we're running in Node.
-var __ctx__ = this.subWindow(window, 'DEFAULT WINDOW', typeof process === 'object').sub({IN_WINDOW: false});
+var X = this.subWindow(window, 'DEFAULT WINDOW', typeof process === 'object').sub({IN_WINDOW: false});
 
 function registerPackagePath(/* String */ path) {
   if ( ! path ) return this;
@@ -133,7 +133,7 @@ function registerPackage(/* String */ name) {
 
 function registerModel(model, opt_name) {
   /*
-  if ( model.__ctx__ === this ) {
+  if ( model.X === this ) {
     this[model.name] = model;
 
     return model;

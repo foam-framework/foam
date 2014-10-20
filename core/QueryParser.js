@@ -157,7 +157,7 @@ var QueryParserFactory = function(model) {
 
     number: function(v) { return parseInt(v); },
 
-    me: function() { return this.ME || this.__ctx__.ME || ""; },
+    me: function() { return this.ME || this.X.ME || ""; },
 
     has: function(v) { return NEQ(v[1], ''); },
 

@@ -19,7 +19,7 @@ var GLOBAL = GLOBAL || this;
 var Context = {
     subCtx: function(opt_map) {
        var ctx = opt_map || {};
-       ctx.__proto__ = this; // TODO: should this be $__ctx__
+       ctx.__proto__ = this; // TODO: should this be $X
        return ctx;;
     },
     subCtxForWindow: function(window, opt_map) {
@@ -67,12 +67,12 @@ var Context = {
     /** Run the supplied function in this Context. **/
     xwith: function(fn) {
        var ret;
-       var oldX = __ctx__;
-       LOBBY.$__ctx__ = this;
+       var oldX = X;
+       LOBBY.$X = this;
        try {
           ret = fn();
        } catch (x) {
-          LOBBY.$__ctx__ = oldX;
+          LOBBY.$X = oldX;
        }
 
        return ret;
@@ -81,9 +81,9 @@ var Context = {
 
 
 var LOBBY = {
-   // $__ctx__ psedo-property represents the current Context.
-   get $__ctx__() { return LOBBY.__proto__; },
-   set $__ctx__(x) { LOBBY.__proto__ = x; },
+   // $X psedo-property represents the current Context.
+   get $X() { return LOBBY.__proto__; },
+   set $X(x) { LOBBY.__proto__ = x; },
 
    // Enter into a window context.
    $Window: function(window) {
@@ -94,11 +94,11 @@ var LOBBY = {
       LOBBY.__proto__ = Context.subCtxForGlobal(window);
    },
    $subCtx: function(opt_map) {
-     LOBBY.$__ctx__ = LOBBY.subCtx(opt_map);
+     LOBBY.$X = LOBBY.subCtx(opt_map);
    },
-   subCtx: function(opt_map) { return LOBBY.$__ctx__.subCtx(opt_map); },
-   xfn: function(fn) { return LOBBY.$__ctx__.xfn(fn); },
-   xwith: function(fn) { return LOBBY.$__ctx__.xwith(fn); }
+   subCtx: function(opt_map) { return LOBBY.$X.subCtx(opt_map); },
+   xfn: function(fn) { return LOBBY.$X.xfn(fn); },
+   xwith: function(fn) { return LOBBY.$X.xwith(fn); }
 };
 
 
@@ -107,16 +107,16 @@ LOBBY.$Window(window);
 
 // Everything should be run in the LOBBY
 with ( LOBBY ) {
-  console.log($__ctx__); // the current Context
+  console.log($X); // the current Context
 
   // create and enter explicit subContext
-  $__ctx__ = $__ctx__.subCtx({
+  $X = $X.subCtx({
      a: 3
   });
   setInterval(function() { log(a); }, 1000);
 
   // create and enter implicit subContext
-  $__ctx__ = subCtx({
+  $X = subCtx({
      a: 4
   });
   setInterval(function() { log(a); }, 1000);

@@ -44,8 +44,8 @@ MODEL({
     {
       name: 'persistentContext',
       factory: function() {
-        return this.__ctx__.PersistentContext.create({
-          dao: this.__ctx__.IDBDAO.create({ model: this.__ctx__.Binding }),
+        return this.X.PersistentContext.create({
+          dao: this.X.IDBDAO.create({ model: this.X.Binding }),
           context: this
         });
       }
@@ -54,7 +54,7 @@ MODEL({
     {
       name: 'QProjectDAO',
       factory: function() {
-        return this.__ctx__.EasyDAO.create({
+        return this.X.EasyDAO.create({
           model: QProject,
           cache: true
         });
@@ -64,7 +64,7 @@ MODEL({
     {
       name: 'ProjectNetworkDAO',
       factory: function() {
-        var dao = this.__ctx__.RestDAO.create({
+        var dao = this.X.RestDAO.create({
           url: 'https://www.googleapis.com/projecthosting/v2/projects/',
           model: Project
         });
@@ -84,14 +84,14 @@ MODEL({
             if ( json.issuesConfig.statuses ) {
               for ( i = 0; i < json.issuesConfig.statuses.length; i++ ) {
                 json.issuesConfig.statuses[i] =
-                  this.__ctx__.QIssueStatus.create(json.issuesConfig.statuses[i]);
+                  this.X.QIssueStatus.create(json.issuesConfig.statuses[i]);
               }
             }
 
             if ( json.issuesConfig.labels ) {
               for ( i = 0; i < json.issuesConfig.labels.length; i++ ) {
                 json.issuesConfig.labels[i] =
-                  this.__ctx__.QIssueLabel.create(json.issuesConfig.labels[i]);
+                  this.X.QIssueLabel.create(json.issuesConfig.labels[i]);
               }
             }
           }
@@ -106,7 +106,7 @@ MODEL({
       name: 'ProjectDAO',
       factory: function() {
         var self = this;
-        var cache = this.__ctx__.IDBDAO.create({
+        var cache = this.X.IDBDAO.create({
           model: Project,
           useSimpleSerialization: false
         });
@@ -179,7 +179,7 @@ MODEL({
     },
 
     initOAuth: function(opt_clientId, opt_clientSecret) {
-      var jsonpFuture = deferJsonP(this.__ctx__);
+      var jsonpFuture = deferJsonP(this.X);
 
       var self = this;
       this.persistentContext.bindObject('authAgent2', EasyOAuth2.xbind({
@@ -190,21 +190,21 @@ MODEL({
       }), {
         scopes: self.scopes
       })(function(oauth2) {
-        oauth2.setJsonpFuture(self.__ctx__, jsonpFuture);
+        oauth2.setJsonpFuture(self.X, jsonpFuture);
       });
     },
 
     refreshUser: function() {
       var self = this;
       this.userFuture.get(function(user) {
-        self.__ctx__.ajsonp("https://www.googleapis.com/oauth2/v1/userinfo", ["alt=json"])(
+        self.X.ajsonp("https://www.googleapis.com/oauth2/v1/userinfo", ["alt=json"])(
           function(response) {
             if ( response ) {
               user.email = response.email;
             }
           });
 
-        self.__ctx__.ajsonp("https://www.googleapis.com/projecthosting/v2/users/me")(
+        self.X.ajsonp("https://www.googleapis.com/projecthosting/v2/users/me")(
           function(response) {
             response && user.copyFrom(response);
           });
@@ -222,7 +222,7 @@ MODEL({
       this.ProjectDAO.find(projectName, {
         __proto__: sink,
         put: function(project) {
-          var p = (opt_X || (self.__ctx__.sub())).QProject.create({qbug: self, project: project});
+          var p = (opt_X || (self.X.sub())).QProject.create({qbug: self, project: project});
 
           self.projects_[projectName] = p;
 
@@ -266,7 +266,7 @@ MODEL({
     {
       name: 'onUserUpdate',
       code: function() {
-        this.__ctx__.ME = this.user.email;
+        this.X.ME = this.user.email;
       }
     }
   ]

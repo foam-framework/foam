@@ -71,14 +71,14 @@ MODEL({
 
       // TODO: Generify this and move it to a helper function.
       // When mLangs have compareTo this will be much easier.
-      if ( GtExpr.isInstance(query) && query.arg1 === this.__ctx__.QIssue.MODIFIED ) {
+      if ( GtExpr.isInstance(query) && query.arg1 === this.X.QIssue.MODIFIED ) {
         updatedMin = query.arg2.arg1.getTime();
         query = TRUE
       } else if ( AndExpr.isInstance(query) ) {
         for ( var j = 0; j < query.args.length; j++ ) {
           var arg = query.args[j];
 
-          if ( GtExpr.isInstance(arg) && arg.arg1 === this.__ctx__.QIssue.MODIFIED ) {
+          if ( GtExpr.isInstance(arg) && arg.arg1 === this.X.QIssue.MODIFIED ) {
             candidates.push([arg.arg2.arg1.getTime(), [[query, j]]]);
           }
         }
@@ -92,7 +92,7 @@ MODEL({
             for ( j = 0; j < arg.args.length; j++ ) {
               var subarg = arg.args[j];
 
-              if ( GtExpr.isInstance(subarg) && subarg.arg1 === this.__ctx__.QIssue.MODIFIED ) {
+              if ( GtExpr.isInstance(subarg) && subarg.arg1 === this.X.QIssue.MODIFIED ) {
                 for ( var k = 0; k < candidates.length; k++ ) {
                   if ( candidates[k][0] === subarg.arg2.arg1.getTime() ) {
                     candidates[k][1].push([arg, j]);
@@ -103,7 +103,7 @@ MODEL({
                 }
               }
             }
-          } else if ( GtExpr.isInstance(arg) && arg.arg1 === this.__ctx__.QIssue.MODIFIED ) {
+          } else if ( GtExpr.isInstance(arg) && arg.arg1 === this.X.QIssue.MODIFIED ) {
             for ( k = 0; k < candidates.length; k++ ) {
               if ( candidates[k][0] === arg.arg2.arg1.getTime() ) {
                 candidates[k][1].push([query, i]);
@@ -165,7 +165,7 @@ MODEL({
               return;
             }
             var star = issue.starred ? '/star' : '/unstar';
-            self.__ctx__.ajsonp(self.url + '/' + issue.id + star, undefined, 'POST')(ret);
+            self.X.ajsonp(self.url + '/' + issue.id + star, undefined, 'POST')(ret);
           }),
         function(ret, existing) {
           aif(!existing,
@@ -248,7 +248,7 @@ MODEL({
 
       var id;
 
-      if ( EqExpr.isInstance(query) && query.arg1 === this.__ctx__.QIssueComment.ISSUE_ID ) {
+      if ( EqExpr.isInstance(query) && query.arg1 === this.X.QIssueComment.ISSUE_ID ) {
         id = query.arg2.arg1;
         query = TRUE
       }
@@ -261,12 +261,12 @@ MODEL({
             for ( var j = 0; j < arg.args.length; j++ ) {
               var subarg = arg.args[j];
 
-              if ( EqExpr.isInstance(subarg) && subarg.arg1 === this.__ctx__.QIssue.ISSUE_ID ) {
+              if ( EqExpr.isInstance(subarg) && subarg.arg1 === this.X.QIssue.ISSUE_ID ) {
                 if ( id && subarg.arg2.arg1 === id ) id = subarg.arg2.arg1;
                 arg.args[j] = TRUE;
               }
             }
-          } else if ( EqExpr.isInstance(arg) && arg.arg1 === this.__ctx__.QIssue.ISSUE_ID ) {
+          } else if ( EqExpr.isInstance(arg) && arg.arg1 === this.X.QIssue.ISSUE_ID ) {
             id = arg.arg2.arg1;
             query.args[i] = TRUE;
           }

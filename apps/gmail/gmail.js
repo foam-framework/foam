@@ -160,7 +160,7 @@ MODEL({
       name: 'controller',
       subType: 'AppController',
       postSet: function(_, controller) {
-        var view = controller.__ctx__.DetailView.create({data: controller});
+        var view = controller.X.DetailView.create({data: controller});
         this.stack.setTopView(FloatingView.create({ view: view }));
       }
     },
@@ -169,19 +169,19 @@ MODEL({
       name: 'emailDao',
       type: 'DAO',
       factory: function() {
-        return this.__ctx__.LimitedLiveCachingDAO.create({
+        return this.X.LimitedLiveCachingDAO.create({
           cacheLimit: 10,
-          src: this.__ctx__.GMailToEMailDAO.create({
-            delegate: this.__ctx__.GMailMessageDAO.create({})
-//            delegate: this.__ctx__.StoreAndForwardDAO.create({
-//              delegate: this.__ctx__.GMailMessageDAO.create({})
+          src: this.X.GMailToEMailDAO.create({
+            delegate: this.X.GMailMessageDAO.create({})
+//            delegate: this.X.StoreAndForwardDAO.create({
+//              delegate: this.X.GMailMessageDAO.create({})
 //            })
           }),
-          cache: this.__ctx__.CachingDAO.create({
-              src: this.__ctx__.IDBDAO.create({
-                  model: this.__ctx__.EMail
+          cache: this.X.CachingDAO.create({
+              src: this.X.IDBDAO.create({
+                  model: this.X.EMail
               }),
-              cache: this.__ctx__.MDAO.create({ model: this.__ctx__.EMail })
+              cache: this.X.MDAO.create({ model: this.X.EMail })
           })
         });
       }
@@ -190,16 +190,16 @@ MODEL({
       name: 'labelDao',
       type: 'DAO',
       factory: function() {
-        return this.__ctx__.CachingDAO.create({
-          src: this.__ctx__.GMailRestDAO.create({ model: GMailLabel }),
-          cache: this.__ctx__.MDAO.create({ model: GMailLabel }),
+        return this.X.CachingDAO.create({
+          src: this.X.GMailRestDAO.create({ model: GMailLabel }),
+          cache: this.X.MDAO.create({ model: GMailLabel }),
         });
       }
     },
     {
       name: 'stack',
       subType: 'StackView',
-      factory: function() { return this.__ctx__.StackView.create(); },
+      factory: function() { return this.X.StackView.create(); },
       postSet: function(old, v) {
         if ( old ) {
           Events.unfollow(this.width$, old.width$);
@@ -219,12 +219,12 @@ MODEL({
 
   methods: {
     init: function() {
-      this.__ctx__ = this.__ctx__.sub({
-        touchManager: this.__ctx__.TouchManager.create({})
+      this.X = this.X.sub({
+        touchManager: this.X.TouchManager.create({})
       }, 'MGMAIL CONTEXT');
-      this.__ctx__.gestureManager = this.__ctx__.GestureManager.create({});
+      this.X.gestureManager = this.X.GestureManager.create({});
 
-      this.oauth = this.__ctx__.EasyOAuth2.create({
+      this.oauth = this.X.EasyOAuth2.create({
         clientId: "945476427475-oaso9hq95r8lnbp2rruo888rl3hmfuf8.apps.googleusercontent.com",
         clientSecret: "GTkp929u268_SXAiHitESs-1",
         scopes: [
@@ -232,7 +232,7 @@ MODEL({
         ]
       });
 
-      this.__ctx__.registerModel(XHR.xbind({
+      this.X.registerModel(XHR.xbind({
         authAgent: this.oauth,
         retries: 3,
         delay: 10
@@ -246,7 +246,7 @@ MODEL({
     initHTML: function() {
       this.stack.initHTML();
 
-      var Y = this.__ctx__.sub({
+      var Y = this.X.sub({
         stack: this.stack,
         EMailDAO: this.emailDao,
         mgmail: this, // TODO: this doesn't actually work.
@@ -273,9 +273,9 @@ MODEL({
           [ EMail.SUBJECT,         'Subject' ],
         ],
         menuFactory: function() {
-          return this.__ctx__.MenuView.create({
-            topSystemLabelView: this.__ctx__.DAOListView.create({
-              dao: this.__ctx__.mgmail.labelDao
+          return this.X.MenuView.create({
+            topSystemLabelView: this.X.DAOListView.create({
+              dao: this.X.mgmail.labelDao
                   .where(EQ(GMailLabel.TYPE, 'system'))
                   .orderBy(
                     toTop('INBOX'),
@@ -285,8 +285,8 @@ MODEL({
                   .limit(3),
               rowView: 'MenuLabelCitationView',
             }),
-            bottomSystemLabelView: this.__ctx__.DAOListView.create({
-              dao: this.__ctx__.mgmail.labelDao
+            bottomSystemLabelView: this.X.DAOListView.create({
+              dao: this.X.mgmail.labelDao
                   .where(AND(EQ(GMailLabel.TYPE, 'system'),
                              NEQ(GMailLabel.ID, 'INBOX'),
                              NEQ(GMailLabel.ID, 'STARRED'),
@@ -297,8 +297,8 @@ MODEL({
                            toTop('TRASH')),
               rowView: 'MenuLabelCitationView',
             }),
-            userLabelView: this.__ctx__.DAOListView.create({
-              dao: this.__ctx__.mgmail.labelDao.where(NEQ(GMailLabel.TYPE, 'system')).orderBy(GMailLabel.NAME),
+            userLabelView: this.X.DAOListView.create({
+              dao: this.X.mgmail.labelDao.where(NEQ(GMailLabel.TYPE, 'system')).orderBy(GMailLabel.NAME),
               rowView: 'MenuLabelCitationView',
             }),
           });
@@ -313,10 +313,10 @@ MODEL({
     },
     openEmail: function(email) {
       email = email.clone();
-      var v = this.controller.__ctx__.FloatingView.create({
-        view: this.controller.__ctx__.EMailView.create({data: email})
+      var v = this.controller.X.FloatingView.create({
+        view: this.controller.X.EMailView.create({data: email})
       });
-      email.markRead(this.controller.__ctx__);
+      email.markRead(this.controller.X);
       this.stack.pushView(v, '');
     },
     changeLabel: function(label) {
@@ -337,14 +337,14 @@ MODEL({
       name: 'compose',
       label: '+',
       action: function() {
-        var view = this.__ctx__.FloatingView.create({
-          view: this.__ctx__.EMailComposeView.create({
-            data: this.__ctx__.EMail.create({
+        var view = this.X.FloatingView.create({
+          view: this.X.EMailComposeView.create({
+            data: this.X.EMail.create({
               labels: ['DRAFT']
             })
           })
         });
-        this.__ctx__.stack.pushView(view, undefined, undefined, 'fromRight');
+        this.X.stack.pushView(view, undefined, undefined, 'fromRight');
       }
     }
   ]
@@ -369,11 +369,11 @@ MODEL({
       isEnabled: function() { return true; },
       iconUrl: 'icons/ic_more_horiz_white_24dp.png',
       action: function() {
-        var actionSheet = this.__ctx__.ActionSheetView.create({
+        var actionSheet = this.X.ActionSheetView.create({
           data: this.data,
           actions: this.data.model_.actions,
         });
-        this.__ctx__.stack.slideView(actionSheet);
+        this.X.stack.slideView(actionSheet);
       },
     },
   ],
@@ -486,7 +486,7 @@ MODEL({
     function toHTML() {/*
       <%
         var id = this.setClass('unread', function() { return self.data && self.data.unread; }, this.id);
-        this.on('click', function() { this.__ctx__.mgmail.openEmail(this.data); }, this.id);
+        this.on('click', function() { this.X.mgmail.openEmail(this.data); }, this.id);
       %>
 
       <div id="<%= id %>" %%cssClassAttr() >
@@ -540,7 +540,7 @@ MODEL({
       <div class="menuView">
         %%topSystemLabelView
         <br>
-        <div id="<%= this.on('click', function() { this.__ctx__.mgmail.changeLabel(); }) %>">All Mail</div>
+        <div id="<%= this.on('click', function() { this.X.mgmail.changeLabel(); }) %>">All Mail</div>
         %%userLabelView
         <br>
         %%bottomSystemLabelView
@@ -568,14 +568,14 @@ MODEL({
   extendsModel: 'DetailView',
   templates: [
     function toHTML() {/*
-      <div id="<%= this.on('click', function() { this.__ctx__.mgmail.changeLabel(this.data); }) %>">$$name{mode: 'read-only'}</div>
+      <div id="<%= this.on('click', function() { this.X.mgmail.changeLabel(this.data); }) %>">$$name{mode: 'read-only'}</div>
     */}
    ]
 });
 
 
 var openComposeView = function(email) {
-  var X = mgmail.controller.__ctx__;
+  var X = mgmail.controller.X;
   var view = X.FloatingView.create({
     view: X.EMailComposeView.create({
       data: email,

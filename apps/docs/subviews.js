@@ -35,7 +35,7 @@ MODEL({
     <p>Views that wish to use DOC reference tags should extend this model. To display the
     $$DOC{ref:'Model.documentation'} of a model, use a $$DOC{ref:'DocModelView'} or
     $$DOC{ref:'DocBodyView'}.</p>
-    <p>Documentation views require that a this.__ctx__.documentViewParentModel $$DOC{ref:'SimpleValue'}
+    <p>Documentation views require that a this.X.documentViewParentModel $$DOC{ref:'SimpleValue'}
     be present on the context. The supplied model is used as the base for resolving documentation
     references. If you are viewing the documentation for a Model, it will be that Model. If you
     are viewing a feature's documentation (a $$DOC{ref:'Method'}, $$DOC{ref:'Property'}, etc.)
@@ -45,11 +45,11 @@ MODEL({
   */},
 
   methods: {
-    init: function() { /* <p>Warns if this.__ctx__.documentViewParentModel is missing.</p>
+    init: function() { /* <p>Warns if this.X.documentViewParentModel is missing.</p>
       */
       this.SUPER();
-      if (!this.__ctx__.documentViewParentModel) {
-        console.warn("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.__ctx__.NAME);
+      if (!this.X.documentViewParentModel) {
+        console.warn("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
       }
     },
 
@@ -58,7 +58,7 @@ MODEL({
       <p>Creates $$DOC{ref:'DocRefView'} reference views from $$DOC{ref:'.',text:'$$DOC'}
           tags in documentation templates.</p>
       */
-      var X = ( opt_args && opt_args.X ) || this.__ctx__;
+      var X = ( opt_args && opt_args.X ) || this.X;
       var v = X.DocRefView.create(opt_args);
       this.addChild(v);
       return v;
@@ -68,7 +68,7 @@ MODEL({
       <p>Creates subviews from the $$DOC{ref:'.',text:'$$THISDATA'} tag, using
         an explicitly defined "model_: $$DOC{ref:'Model.name'}" in opt_args.</p>
       */
-      var X = ( opt_args && opt_args.X ) || this.__ctx__;
+      var X = ( opt_args && opt_args.X ) || this.X;
       var v = X[opt_args.model_].create({ args: opt_args }); // we only support model_ in explicit mode
       if (!opt_args.data) { // explicit data is honored
         if (this.data) { // TODO: when refactoring $$THISDATA below, figure out what we can assume about this.data being present
@@ -110,7 +110,7 @@ MODEL({
   documentation: function() { /*
       <p>Stores inheritance information for a $$DOC{ref:'Model'}. One
       instance per extending $$DOC{ref:'Model'} is stored in the
-      this.__ctx__.docModelViewFeatureDAO (starting with the data of
+      this.X.docModelViewFeatureDAO (starting with the data of
       $$DOC{ref:'DocModelView'}, and following the .extendsModel chain
       down to and including $$DOC{ref:'Model'}.
       </p>
@@ -146,7 +146,7 @@ MODEL({
   help: 'Stores inheritance information for a feature of a Model',
   documentation: function() { /*
       <p>Stores inheritance information for a feature of a $$DOC{ref:'Model'}
-          in the this.__ctx__.docModelViewFeatureDAO.
+          in the this.X.docModelViewFeatureDAO.
       </p>
       <p>See $$DOC{ref:'DocModelView'}.
       </p>
@@ -192,7 +192,7 @@ MODEL({
       documentation: "Helper to look up the inheritance level of $$DOC{ref:'.model'}",
       getter: function() {
         var modelTracker = [];
-        this.__ctx__.docModelViewModelDAO.where(EQ(DocModelInheritanceTracker.MODEL, this.model))
+        this.X.docModelViewModelDAO.where(EQ(DocModelInheritanceTracker.MODEL, this.model))
             .select(modelTracker);
         this.instance_.inheritanceLevel = modelTracker[0];
 //console.log("Getting inheritanceLevel ", this.model, modelTracker[0]);
@@ -234,10 +234,10 @@ MODEL({
   methods: {
 
     init: function() {
-      this.__ctx__ = this.__ctx__.sub();
+      this.X = this.X.sub();
       // we want our own copy of these, since an enclosing view might have put its own copies in X
-      this.__ctx__.docModelViewFeatureDAO = [].dao; // this.__ctx__.MDAO.create({model:DocFeatureInheritanceTracker});
-      this.__ctx__.docModelViewModelDAO = [].dao; // this.__ctx__.MDAO.create({model:DocModelInheritanceTracker});
+      this.X.docModelViewFeatureDAO = [].dao; // this.X.MDAO.create({model:DocFeatureInheritanceTracker});
+      this.X.docModelViewModelDAO = [].dao; // this.X.MDAO.create({model:DocModelInheritanceTracker});
 
       this.SUPER();
 
@@ -248,8 +248,8 @@ MODEL({
       /* Builds a feature DAO to sort out inheritance and overriding of
         $$DOC{ref:'Property',usePlural:true}, $$DOC{ref:'Method',usePlural:true},
         and other features. */
-      this.__ctx__.docModelViewFeatureDAO.removeAll();
-      this.__ctx__.docModelViewModelDAO.removeAll();
+      this.X.docModelViewFeatureDAO.removeAll();
+      this.X.docModelViewModelDAO.removeAll();
 
       // Run through the features in the Model definition in this.data,
       // and load them into the feature DAO. Passing [] assumes we don't
@@ -268,31 +268,31 @@ MODEL({
         */
       var self = this;
 
-      var newModelTr = this.__ctx__.DocModelInheritanceTracker.create();
+      var newModelTr = this.X.DocModelInheritanceTracker.create();
       newModelTr.model = model.id;
 
       model.getAllMyFeatures().forEach(function(feature) {
 
         // all features we hit are declared (or overridden) in this model
-        var featTr = self.__ctx__.DocFeatureInheritanceTracker.create({
+        var featTr = self.X.DocFeatureInheritanceTracker.create({
               isDeclared:true,
               feature: feature,
               model: newModelTr.model });
-        self.__ctx__.docModelViewFeatureDAO.put(featTr);
+        self.X.docModelViewFeatureDAO.put(featTr);
 
         // for the models that extend this model, make sure they have
         // the feature too, if they didn't already have it declared (overridden).
         previousExtenderTrackers.forEach(function(extModelTr) {
-          self.__ctx__.docModelViewFeatureDAO
+          self.X.docModelViewFeatureDAO
                 .where(AND(EQ(DocFeatureInheritanceTracker.MODEL, extModelTr.model),
                            EQ(DocFeatureInheritanceTracker.NAME, feature.name)))
                 .select(COUNT())(function(c) {
                     if (c.count <= 0) {
-                      var featTrExt = self.__ctx__.DocFeatureInheritanceTracker.create({
+                      var featTrExt = self.X.DocFeatureInheritanceTracker.create({
                           isDeclared: false,
                           feature: feature,
                           model: extModelTr.model });
-                      self.__ctx__.docModelViewFeatureDAO.put(featTrExt);
+                      self.X.docModelViewFeatureDAO.put(featTrExt);
                     }
                 });
         });
@@ -307,19 +307,19 @@ MODEL({
         // inheritance level will bubble back up the stack once we know where the bottom is
         var extend = model.extendsModel? model.extendsModel : 'Model';
         newModelTr.inheritanceLevel = 1 + this.loadFeaturesOfModel(
-                          this.__ctx__[extend], previousExtenderTrackers);
+                          this.X[extend], previousExtenderTrackers);
       }
 
       // the tracker is now complete
-      this.__ctx__.docModelViewModelDAO.put(newModelTr);
+      this.X.docModelViewModelDAO.put(newModelTr);
       return newModelTr.inheritanceLevel;
     },
 
     debugLogFeatureDAO: function() {
       /* For debugging purposes, prints out the state of the FeatureDAO. */
 
-      console.log("Features DAO: ", this.__ctx__.docModelViewFeatureDAO);
-      console.log("Model    DAO: ", this.__ctx__.docModelViewModelDAO);
+      console.log("Features DAO: ", this.X.docModelViewFeatureDAO);
+      console.log("Model    DAO: ", this.X.docModelViewModelDAO);
     }
 
   },
@@ -443,8 +443,8 @@ MODEL({
   methods: {
     renderDocSourceHTML: function() {
       // only update if we have all required data
-      if (this.docSource.body && this.__ctx__.documentViewParentModel
-          && this.__ctx__.documentViewParentModel.model_ && this.data.model_) {
+      if (this.docSource.body && this.X.documentViewParentModel
+          && this.X.documentViewParentModel.model_ && this.data.model_) {
         // The first time this method is hit, replace it with the one that will
         // compile the template, then call that. Future calls go direct to lazyCompile's
         // returned function. You could also implement this the same way lazyCompile does...
@@ -471,7 +471,7 @@ MODEL({
       name: 'data',
       help: 'The Model from which to extract documentation.',
       postSet: function() {
-        this.__ctx__[this.model_.extendsModel].DATA.postSet.call(this); // TODO: implement this.SUPER() for these
+        this.X[this.model_.extendsModel].DATA.postSet.call(this); // TODO: implement this.SUPER() for these
         this.parentModel = this.data;
       }
     },
@@ -528,7 +528,7 @@ MODEL({
       name: 'ref',
       help: 'Shortcut to set reference by string.',
       postSet: function() {
-        this.docRef = this.__ctx__.DocRef.create({ ref: this.ref });
+        this.docRef = this.X.DocRef.create({ ref: this.ref });
       },
       documentation: function() { /*
         The target reference in string form. Use this instead of setting
@@ -540,7 +540,7 @@ MODEL({
       help: 'The reference object.',
       preSet: function(old,nu) { // accepts a string ref, or an DocRef object
         if (typeof nu === 'string') {
-          return this.__ctx__.DocRef.create({ ref: nu });
+          return this.X.DocRef.create({ ref: nu });
         } else {
           return nu;
         }
@@ -634,8 +634,8 @@ MODEL({
     {
       name: 'onClick',
       code: function(evt) {
-        if (this.docRef && this.docRef.valid && this.__ctx__.documentViewRequestNavigation) {
-          this.__ctx__.documentViewRequestNavigation(this.docRef);
+        if (this.docRef && this.docRef.valid && this.X.documentViewRequestNavigation) {
+          this.X.documentViewRequestNavigation(this.docRef);
         }
       }
     }
@@ -709,13 +709,13 @@ MODEL({
   methods: {
     init: function() {
       /* Warns if documentViewParentModel is missing from the context. */
-      if (!this.__ctx__.documentViewParentModel) {
-        //console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.__ctx__.NAME);
+      if (!this.X.documentViewParentModel) {
+        //console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
       } else {
       // TODO: view lifecycle management. The view that created this ref doesn't know
       // when to kill it, so the addListener on the context keeps this alive forever.
       // Revisit when we can cause a removeListener at the appropriate time.
-        //        this.__ctx__.documentViewParentModel.addListener(this.onParentModelChanged);
+        //        this.X.documentViewParentModel.addListener(this.onParentModelChanged);
       }
     },
 
@@ -728,7 +728,7 @@ MODEL({
       <li>A double-dot after the $$DOC{ref:'Model'}: Skip the feature lookup and find instances directly on
             the $$DOC{ref:'Model'} definition (<code>MyModel..documentation.chapters.chapName</code>)</li>
     </ul>
-    <p>Note that the first name is a Model definition (can be looked up by this.__ctx__[modelName]),
+    <p>Note that the first name is a Model definition (can be looked up by this.X[modelName]),
      while the second name is an instance of a feature on that Model, and subsequent
      names are sub-objects on those instances.</p>
   */
@@ -747,12 +747,12 @@ MODEL({
 
       // if model not specified, use parentModel
       if (args[0].length <= 0) {
-        if (!this.__ctx__.documentViewParentModel) {
+        if (!this.X.documentViewParentModel) {
           return; // abort
         }
-        model = this.__ctx__.documentViewParentModel.get(); // ".feature" or "."
+        model = this.X.documentViewParentModel.get(); // ".feature" or "."
       } else {
-        model = this.__ctx__[args[0]];
+        model = this.X[args[0]];
       }
 
       if (!model) {

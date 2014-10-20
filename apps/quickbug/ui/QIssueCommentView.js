@@ -4,7 +4,7 @@ var QIssueCommentView = FOAM({
   extendsModel: 'DetailView',
 
   properties: [
-    { name: 'model', factory: function() { return this.__ctx__.QIssueComment; } }
+    { name: 'model', factory: function() { return this.X.QIssueComment; } }
   ],
 
   methods: {

@@ -60,27 +60,27 @@ MODEL({
         }
         return '-status=' + os.join(',');
       },
-      postSet: function(_, value) { this.__ctx__.openPredicate = value; }
+      postSet: function(_, value) { this.X.openPredicate = value; }
     },
     {
       name: 'LabelDAO',
       help: 'DAO of known labels.',
       factory: function() {
-        var dao = MDAO.create({model: this.__ctx__.QIssueLabel});
+        var dao = MDAO.create({model: this.X.QIssueLabel});
         this.project.issuesConfig && this.project.issuesConfig.labels.select(dao);
         return dao;
       },
-      postSet: function(_, value) { this.__ctx__.LabelDAO = value; }
+      postSet: function(_, value) { this.X.LabelDAO = value; }
     },
     {
       name: 'StatusDAO',
       help: 'DAO of known statuses.',
       factory: function() {
-        var dao = MDAO.create({model: this.__ctx__.QIssueStatus});
+        var dao = MDAO.create({model: this.X.QIssueStatus});
         this.project.issuesConfig && this.project.issuesConfig.statuses.select(dao);
         return dao;
       },
-      postSet: function(_, value) { this.__ctx__.StatusDAO = value; }
+      postSet: function(_, value) { this.X.StatusDAO = value; }
     },
     {
       name: 'PersonDAO',
@@ -91,16 +91,16 @@ MODEL({
         return dao;
       },
       postSet: function(_, value)  {
-        this.__ctx__.PersonDAO = value;
+        this.X.PersonDAO = value;
       }
     },
     {
       name: 'IssueMDAO',
       factory: function() {
-        var dao  = this.__ctx__.MDAO.create({model: this.__ctx__.QIssue});
-        var auto = this.__ctx__.AutoIndex.create(dao);
+        var dao  = this.X.MDAO.create({model: this.X.QIssue});
+        var auto = this.X.AutoIndex.create(dao);
 
-        auto.addIndex(this.__ctx__.QIssue.STATUS);
+        auto.addIndex(this.X.QIssue.STATUS);
         dao.addRawIndex(auto);
 
         return dao;
@@ -109,9 +109,9 @@ MODEL({
     {
       name: 'IssueIDBDAO',
       factory: function() {
-        return this.__ctx__.EasyDAO.create({
-          model: this.__ctx__.QIssue,
-          name: this.projectName + '_' + this.__ctx__.QIssue.plural,
+        return this.X.EasyDAO.create({
+          model: this.X.QIssue,
+          name: this.projectName + '_' + this.X.QIssue.plural,
           migrationRules: [
             MigrationRule.create({
               modelName: 'QIssue',
@@ -130,22 +130,22 @@ MODEL({
       name: 'IssueCachingDAO',
       lazyFactory: function() {
         console.log('Creating IssueCachingDAO.');
-        return this.__ctx__.CachingDAO.create({cache: this.IssueMDAO, src: this.IssueIDBDAO});
+        return this.X.CachingDAO.create({cache: this.IssueMDAO, src: this.IssueIDBDAO});
       },
       transient: true
     },
     {
       name: 'IssueCommentNetworkDAO',
       factory: function() {
-        return this.__ctx__.LazyCacheDAO.create({
-          model: this.__ctx__.QIssueComment,
+        return this.X.LazyCacheDAO.create({
+          model: this.X.QIssueComment,
           cacheOnSelect: true,
           cache: IDBDAO.create({
-            model: this.__ctx__.QIssueComment,
-            name: this.projectName + '_' + this.__ctx__.QIssueComment.plural,
+            model: this.X.QIssueComment,
+            name: this.projectName + '_' + this.X.QIssueComment.plural,
             useSimpleSerialization: false }).addIndex(QIssueComment.ISSUE_ID),
-          delegate: this.__ctx__.QIssueCommentNetworkDAO.create({
-            model: this.__ctx__.QIssueComment,
+          delegate: this.X.QIssueCommentNetworkDAO.create({
+            model: this.X.QIssueComment,
             url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
           })
         });
@@ -154,24 +154,24 @@ MODEL({
     {
       name: 'IssueCommentDAO',
       factory: function() {
-        return this.__ctx__.QIssueCommentUpdateDAO.create({
+        return this.X.QIssueCommentUpdateDAO.create({
           delegate: this.IssueCommentNetworkDAO
         });
       },
       postSet: function(_, v) {
-        if ( ! this.__ctx__.IssueCommentDAO )
-          this.__ctx__.QIssueCommentDAO = ProxyDAO.create({ delegate: v });
+        if ( ! this.X.IssueCommentDAO )
+          this.X.QIssueCommentDAO = ProxyDAO.create({ delegate: v });
         else
-          this.__ctx__.QIssueCommentDAO.delegate = v;
+          this.X.QIssueCommentDAO.delegate = v;
       }
     },
     {
       name: 'IssueNetworkDAO',
       factory: function() {
-        return this.__ctx__.IssueRestDAO.create({
+        return this.X.IssueRestDAO.create({
           url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
           IssueCommentDAO: this.IssueCommentNetworkDAO,
-          model: this.__ctx__.QIssue,
+          model: this.X.QIssue,
           batchSize: 500
         });
       },
@@ -190,7 +190,7 @@ MODEL({
     {
       name: 'bookmarkDAO',
       factory: function() {
-        var newDAO = this.__ctx__.EasyDAO.create({
+        var newDAO = this.X.EasyDAO.create({
           model:   Bookmark,
           name:    this.projectName + '_' + Bookmark.plural,
           cache:   true,
@@ -200,7 +200,7 @@ MODEL({
 
         // Migrate bookmarks from old DAO to new SyncStorage.
         // TODO: Remove this code after a couple versions when all data has been translated.
-        var oldDAO = this.__ctx__.EasyDAO.create({
+        var oldDAO = this.X.EasyDAO.create({
           model:   Bookmark,
           name:    this.projectName + '_' + Bookmark.plural,
           cache:   true
@@ -227,15 +227,15 @@ MODEL({
     },
     {
       name: 'timer',
-      factory: function() { return this.__ctx__.Timer.create(); },
+      factory: function() { return this.X.Timer.create(); },
       transient: true
     },
     {
       name: 'persistentContext',
       factory: function() {
-        return this.__ctx__.PersistentContext.create({
-          dao: this.__ctx__.IDBDAO.create({
-            model: this.__ctx__.Binding,
+        return this.X.PersistentContext.create({
+          dao: this.X.IDBDAO.create({
+            model: this.X.Binding,
             name: 'QProject-' + this.projectName + '-Bindings'
           }),
           predicate: NOT_TRANSIENT,
@@ -254,9 +254,9 @@ MODEL({
       name: 'defaultSortChoices',
       factory: function() {
         return [
-          [ DESC(this.__ctx__.QIssue.MODIFIED),      'Last modified' ],
-          [ this.__ctx__.QIssue.PRI, 'Priority' ],
-          [ DESC(this.__ctx__.QIssue.ID),            'Issue ID' ]
+          [ DESC(this.X.QIssue.MODIFIED),      'Last modified' ],
+          [ this.X.QIssue.PRI, 'Priority' ],
+          [ DESC(this.X.QIssue.ID),            'Issue ID' ]
         ];
       }
     },
@@ -288,7 +288,7 @@ MODEL({
         this.IssueMDAO.select(COUNT())(function (c) { this.issueCount = c.count; }.bind(this));
 
         var self = this;
-        this.IssueMDAO.select(GROUP_BY(this.__ctx__.QIssue.CC, COUNT()))(function(g) {
+        this.IssueMDAO.select(GROUP_BY(this.X.QIssue.CC, COUNT()))(function(g) {
           Object.keys(g.groups).forEach(function(key) {
             self.PersonDAO.find(key, { error: function() {
               self.PersonDAO.put(IssuePerson.create({ name: key }));
@@ -337,7 +337,7 @@ MODEL({
         return propertyLabels_[l] = false;
       }
 
-      this.__ctx__.registerModel(Model.create({
+      this.X.registerModel(Model.create({
         extendsModel: 'GeneratedQIssue',
 
         name: 'QIssue',
@@ -711,18 +711,18 @@ MODEL({
             convertArray('iteration');
             convertArray('week');
 
-            var comment = this.__ctx__.QIssueComment.create({
+            var comment = this.X.QIssueComment.create({
               issueId: this.id,
               content: other.content,
-              updates: this.__ctx__.QIssueCommentUpdate.create(diff)
+              updates: this.X.QIssueCommentUpdate.create(diff)
             });
 
             out(comment);
           },
           newComment: function() {
-            return this.__ctx__.QIssueComment.create({
+            return this.X.QIssueComment.create({
               issueId: this.id,
-              updates: this.__ctx__.QIssueCommentUpdate.create({
+              updates: this.X.QIssueCommentUpdate.create({
                 labels: this.labels.clone(),
                 owner: this.owner,
                 blockedOn: this.blockedOn.clone(),
@@ -745,9 +745,9 @@ MODEL({
         ]
       }));
 
-      this.__ctx__.QIssue.getPrototype();
+      this.X.QIssue.getPrototype();
 
-      this.__ctx__.QIssue.properties.forEach(function(p) {
+      this.X.QIssue.properties.forEach(function(p) {
         if ( ! p["tableFormatter"] ) {
           p["tableFormatter"] = function(v) {
             return v || '----';
@@ -755,12 +755,12 @@ MODEL({
         }
       });
 
-      this.__ctx__.QIssue.LABELS.toMQL = function() { return 'label'; };
-      this.__ctx__.QIssue.AUTHOR.toMQL = function() { return 'reporter'; };
+      this.X.QIssue.LABELS.toMQL = function() { return 'label'; };
+      this.X.QIssue.AUTHOR.toMQL = function() { return 'reporter'; };
 
-      this.__ctx__.QueryParser = {
-        __ctx__: this.__ctx__,
-        __proto__: QueryParserFactory(this.__ctx__.QIssue),
+      this.X.QueryParser = {
+        X: this.X,
+        __proto__: QueryParserFactory(this.X.QIssue),
 
         isOpen: literal_ic('is:open'),
 
@@ -772,7 +772,7 @@ MODEL({
 
       }.addActions({
         isOpen: function(v) {
-          return this.__ctx__.QueryParser.parseString(this.__ctx__.openPredicate);
+          return this.X.QueryParser.parseString(this.X.openPredicate);
         },
         stars: function(v) {
           return GTE({
@@ -789,7 +789,7 @@ MODEL({
             a.push(v[0] + '-' + v[i]);
           }
 
-          return IN(this.__ctx__.QIssue.LABELS, a).partialEval();
+          return IN(this.X.QIssue.LABELS, a).partialEval();
           /*
             var or = OR();
             var values = v[2];
@@ -801,14 +801,14 @@ MODEL({
         },
 
         summary: function(v) {
-          return this.__ctx__.DefaultQuery.create({arg1: v});
+          return this.X.DefaultQuery.create({arg1: v});
         }
       });
 
 
-      this.__ctx__.QueryParser.expr = alt(
+      this.X.QueryParser.expr = alt(
         sym('isOpen'),
-        this.__ctx__.QueryParser.export('expr'),
+        this.X.QueryParser.export('expr'),
         sym('stars'),
         sym('labelMatch'),
         sym('summary')
@@ -816,17 +816,17 @@ MODEL({
 
       this.SUPER(args);
 
-      if ( ! this.__ctx__.DontSyncProjectData ) {
+      if ( ! this.X.DontSyncProjectData ) {
         this.IssueDAO.listen(this.onDAOUpdate);
 
         this.persistentContext.bindObject('syncManager', SyncManager.xbind({
           syncInterval: 60*5,
           batchSize: 500,
         }), {
-          queryParser: this.__ctx__.QueryParser,
+          queryParser: this.X.QueryParser,
           srcDAO: this.IssueNetworkDAO,
           dstDAO: this.IssueCachingDAO,
-          modifiedProperty: this.__ctx__.QIssue.MODIFIED
+          modifiedProperty: this.X.QIssue.MODIFIED
         })(function(manager) {
           this.syncManager = manager;
           this.syncManagerFuture.set(manager);
@@ -835,9 +835,9 @@ MODEL({
 
         if ( this.projectName !== 'chromium' ) {
           this.defaultSortChoices = [
-            [ DESC(this.__ctx__.QIssue.MODIFIED),      'Last modified' ],
-            [ this.__ctx__.QIssue.PRIORITY, 'Priority' ],
-            [ DESC(this.__ctx__.QIssue.ID),            'Issue ID' ]
+            [ DESC(this.X.QIssue.MODIFIED),      'Last modified' ],
+            [ this.X.QIssue.PRIORITY, 'Priority' ],
+            [ DESC(this.X.QIssue.ID),            'Issue ID' ]
           ];
         }
       }
@@ -865,7 +865,7 @@ MODEL({
             arequire('QIssueTileView')
           )(function () {
             $addWindow(window);
-            var Y = self.__ctx__.subWindow(window, 'Browser Window');
+            var Y = self.X.subWindow(window, 'Browser Window');
             var b = Y.ChromeAppBrowser.create({project: self});
             Y.touchManager = Y.TouchManager.create({});
             window.browser = b; // for debugging
@@ -889,7 +889,7 @@ MODEL({
 
     /** Create a Browser for use in a hosted app. **/
     createBrowser: function(window) {
-      var b = this.__ctx__.Browser.create({project: this, window: window});
+      var b = this.X.Browser.create({project: this, window: window});
       window.browser = b;
       return b;
     },
@@ -902,7 +902,7 @@ MODEL({
           var window = w.contentWindow;
           w.contentWindow.onload = function() {
             $addWindow(window);
-            var Y = self.__ctx__.subWindow(window, 'Sync Config')
+            var Y = self.X.subWindow(window, 'Sync Config')
             var b = Y.DetailView.create({
               model: Y.SyncManager,
               title: '<img style="vertical-align:bottom;" src="images/refresh.png"> Sync Config: ' + self.projectName,

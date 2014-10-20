@@ -4,7 +4,7 @@ MODEL({
   properties: [
     {
       name: 'browser',
-      defaultValueFn: function() { return this.__ctx__.browser; }
+      defaultValueFn: function() { return this.X.browser; }
     },
     {
       name: 'location',

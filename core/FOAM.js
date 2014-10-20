@@ -33,7 +33,7 @@ function $removeWindow(w) {
 }
 
 /** Replacement for getElementById **/
-// TODO(kgr): remove this is deprecated, use __ctx__.$ instead()
+// TODO(kgr): remove this is deprecated, use X.$ instead()
 var $ = function (id) {
   for ( var i = 0 ; i < $documents.length ; i++ ) {
     if ( document.FOAM_OBJECTS && document.FOAM_OBJECTS[id] )
@@ -46,7 +46,7 @@ var $ = function (id) {
   return undefined;
 };
 /** Replacement for getElementByClassName **/
-// TODO(kgr): remove this is deprecated, use __ctx__.$$ instead()
+// TODO(kgr): remove this is deprecated, use X.$$ instead()
 var $$ = function (cls) {
   for ( var i = 0 ; i < $documents.length ; i++ ) {
     var ret = $documents[i].getElementsByClassName(cls);
@@ -58,7 +58,7 @@ var $$ = function (cls) {
 
 
 var FOAM = function(map, opt_X) {
-   var obj = JSONUtil.mapToObj(opt_X || __ctx__, map);
+   var obj = JSONUtil.mapToObj(opt_X || X, map);
    return obj;
 };
 
@@ -112,7 +112,7 @@ function MODEL(m) {
   // where to load the template from, so the instantiation of Models
   // with templates can't be delayed (yet).
   if ( m.templates ) {
-    registerModel.call(this, JSONUtil.mapToObj(__ctx__, m, Model));
+    registerModel.call(this, JSONUtil.mapToObj(X, m, Model));
     USED_MODELS[m.name] = true;
     return;
   }
@@ -123,7 +123,7 @@ function MODEL(m) {
       USED_MODELS[m.name] = true;
       delete UNUSED_MODELS[m.name];
       Object.defineProperty(GLOBAL, m.name, {value: null, configurable: true});
-      registerModel(JSONUtil.mapToObj(__ctx__, m, Model));
+      registerModel(JSONUtil.mapToObj(X, m, Model));
       return this[m.name];
     },
     configurable: true
@@ -132,7 +132,7 @@ function MODEL(m) {
 
 
 FOAM.browse = function(model, opt_dao, opt_X) {
-   var Y = opt_X || __ctx__.sub(undefined, "FOAM BROWSER");
+   var Y = opt_X || X.sub(undefined, "FOAM BROWSER");
 
    if ( typeof model === 'string' ) model = Y[model];
 
@@ -174,8 +174,8 @@ FOAM.lookup = function(key, opt_X) {
 
 
 function arequire(modelName, opt_X) {
-  var __ctx__ = opt_X || GLOBAL;
-  var model = FOAM.lookup(modelName, __ctx__);
+  var X = opt_X || GLOBAL;
+  var model = FOAM.lookup(modelName, X);
 
   /** This is so that if the model is arequire'd concurrently the
    *  initialization isn't done more than once.

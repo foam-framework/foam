@@ -99,7 +99,7 @@ function asendjson(path) {
         xhr.asend(ret, data);
       },
       function(ret, resp) {
-        resp = JSONUtil.parse(__ctx__, resp);
+        resp = JSONUtil.parse(X, resp);
         ret(resp);
       })(ret);
   };

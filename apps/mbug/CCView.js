@@ -4,7 +4,7 @@ MODEL({
   properties: [
     {
       name: 'srcDAO',
-      factory: function() { return this.__ctx__.PersonDAO; }
+      factory: function() { return this.X.PersonDAO; }
     },
     {
       name: 'queryFactory',
@@ -47,7 +47,7 @@ MODEL({
       }
     */},
     function toInnerHTML() {/*
-      <%= this.__ctx__.MDMonogramStringView.create({ data: this.data }) %>
+      <%= this.X.MDMonogramStringView.create({ data: this.data }) %>
       <div class="owner-name">{{ this.data }}</div>
       <span class="removeRow">$$removeRow</span>
     */}
