@@ -96,9 +96,7 @@ var Model = {
     {
       name:  'package',
       help: 'Java class package.',
-      defaultValueFn: function() {
-        return this.extendsModel ? GLOBAL[this.extendsModel].package : '';
-      },
+      defaultValue: '',
       documentation: function() { /* When running FOAM in a Java environment, specifies the
         package in which to declare the Java class built from this $$DOC{ref:'Model'}.*/}
     },
