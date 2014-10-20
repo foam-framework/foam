@@ -241,7 +241,7 @@ MODEL({
     }
   ],
 
-  methods: {
+  constants: {
     MIN_COLUMN_SIZE: 5, // If column is resized below this size, then remove the column instead of shrinking it
 
     ROW_SELECTED: ['escape'],
@@ -250,8 +250,10 @@ MODEL({
     // TODO: add 'Constants' to Model
     CLICK: "click", // event topic
 
-    DOUBLE_CLICK: "double-click", // event topic
+    DOUBLE_CLICK: "double-click" // event topic
+  },
 
+  methods: {
     toHTML: function() {
       // TODO: I don't think this should be height:100%, but needs to be
       // fixed somehow.
@@ -372,7 +374,7 @@ MODEL({
 
         str.push('>', prop.tableLabel, arrow);
 
-        if ( this.columnResizeEnabled ) 
+        if ( this.columnResizeEnabled )
           str.push(this.columnResizerToHTML(
             prop,
             model.getProperty(properties[i+1])));
