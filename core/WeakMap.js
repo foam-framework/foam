@@ -17,19 +17,21 @@
 
 // WeakMap Polyfill, doesn't implement the full interface, just the parts that we use
 // TODO: Use defineProperty to make hidden property
-function WeakMap() {
-  var id = '__WEAK_MAP__' + this.$UID;
+if ( ! window.WeakMap ) {
+  function WeakMap() {
+    var id = '__WEAK_MAP__' + this.$UID;
 
-  function del(key) { delete key[id]; }
-  function get(key) { return key[id]; }
-  function set(key, value) { key[id] = value; }
-  function has(key) { return !!key[id]; }
+    function del(key) { delete key[id]; }
+    function get(key) { return key[id]; }
+    function set(key, value) { key[id] = value; }
+    function has(key) { return !!key[id]; }
 
-  return {
-    __proto__: this,
-    "delete": del,
-    get: get,
-    set: set,
-    has: has
-  };
+    return {
+      __proto__: this,
+      "delete": del,
+      get: get,
+      set: set,
+      has: has
+    };
+  }
 }
