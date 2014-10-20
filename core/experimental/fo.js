@@ -220,7 +220,7 @@ function bootstrap(scope) {
     create: function(args, opt_X) {
       var obj = Object.create(this);
       obj.instance_ = {};
-      if ( opt_X ) obj.__ctx__ = opt_X;
+      if ( opt_X ) obj.X = opt_X;
 
       if ( args instanceof Object ) obj.copyFrom(args);
 
@@ -737,8 +737,8 @@ var featureDAO = [
   ['FObject', 'IdFeature'],
   [null, 'Model', { name: 'ContextFeature' }],
   ['ContextFeature', 'Method', function install(model, proto) {
-    proto.define('__ctx__', {
-      value: __ctx__,
+    proto.define('X', {
+      value: X,
       writable: true
     });
   }],

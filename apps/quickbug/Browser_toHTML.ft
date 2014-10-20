@@ -1,5 +1,5 @@
 <%
-  var X = this.__ctx__;
+  var X = this.X;
   var manifest = chrome.runtime.getManifest();
   var browserLink  = X.ActionLink.create(  {action: this.model_.LAUNCH_BROWSER, data: this});
   var linkButton   = X.ActionButton.create({action: this.model_.LINK,           data: this});

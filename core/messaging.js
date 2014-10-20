@@ -160,7 +160,7 @@ MODEL({
 
   methods: {
     put: function(obj, sink) {
-      var xhr = this.__ctx__.XHR.create();
+      var xhr = this.X.XHR.create();
       xhr.asend(function(response, xhr) {
         if ( xhr.status >= 200 && xhr.status < 300 ) {
           sink && sink.put && sink.put(response);

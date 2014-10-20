@@ -107,7 +107,7 @@ var TemplateCompiler = {
 
   push: function() { this.out.push.apply(this.out, arguments); },
 
-  header: 'var self = this; var X = this.__ctx__; var escapeHTML = View.strToHTML; var out = opt_out ? opt_out : TemplateOutput.create(this);' +
+  header: 'var self = this; var X = this.X; var escapeHTML = View.strToHTML; var out = opt_out ? opt_out : TemplateOutput.create(this);' +
     "out('",
 
   footer: "');" +
@@ -194,17 +194,17 @@ var TemplateUtil = {
      // Load templates from an external file
      // if their 'template' property isn't set
      var i = 0;
-     var __ctx__ = opt_X? opt_X : window.__ctx__;
+     var X = opt_X? opt_X : window.X;
      if ( typeof t === 'function' ) {
-       t = docTemplate = __ctx__.Template.create({
+       t = docTemplate = X.Template.create({
          name: t.name,
          // ignore first argument, which should be 'opt_out'
          args: t.toString().match(/\((.*)\)/)[1].split(',').slice(1).filter(function(a) {
-           return __ctx__.Arg.create({name: a});
+           return X.Arg.create({name: a});
          }),
          template: multiline(t)});
      } else if ( typeof t === 'string' ) {
-       t = docTemplate = __ctx__.Template.create({
+       t = docTemplate = X.Template.create({
          name: 'body',
          template: t
        });
@@ -222,7 +222,7 @@ var TemplateUtil = {
        xhr.open("GET", path);
        xhr.asend(function(data) {
          t.template = data;
-         future.set(__ctx__.Template.create(t));
+         future.set(X.Template.create(t));
          t.futureTemplate = undefined;
        });
      } else if ( typeof t.template === 'function' ) {
@@ -271,9 +271,9 @@ var TemplateUtil = {
          // yet defined at bootstrap time. Use a Template object definition with a bare
          // string template body in those cases.
          if (typeof Template != "undefined")
-           t = templates[i] = JSONUtil.mapToObj(self.__ctx__, t, Template);
+           t = templates[i] = JSONUtil.mapToObj(self.X, t, Template);
          else
-           t = templates[i] = JSONUtil.mapToObj(self.__ctx__, t); // safe for bootstrap, but won't do anything in that case.
+           t = templates[i] = JSONUtil.mapToObj(self.X, t); // safe for bootstrap, but won't do anything in that case.
        }
        i++;
      }.bind(self))

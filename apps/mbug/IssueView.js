@@ -74,7 +74,7 @@ MODEL({
                 model_: 'PopupChoiceView',
                 iconUrl: 'images/ic_arrow_drop_down_24dp.png',
                 showValue: true,
-                dao: this.__ctx__.StatusDAO,
+                dao: this.X.StatusDAO,
                 objToChoice: function(o) { return [o.status, o.status]; }
               })
             %>

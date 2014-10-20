@@ -33,7 +33,7 @@ var FObject = {
   create: function(args, opt_X) {
     var o = this.create_(this);
     o.instance_ = {};
-    if ( opt_X ) o.__ctx__ = opt_X;
+    if ( opt_X ) o.X = opt_X;
     if ( typeof args === 'object' ) o.copyFrom(args);
 
     o.init(args);
@@ -44,12 +44,12 @@ var FObject = {
   xbind: function(map) {
     return {
       __proto__: this,
-      create: function(args, __ctx__) {
+      create: function(args, X) {
         args = args || {};
         for ( var key in map ) {
           if ( ! args.hasOwnProperty(key) ) args[key] = map[key];
         }
-        return this.__proto__.create(args, __ctx__);
+        return this.__proto__.create(args, X);
       },
       xbind: function(m2) {
         for ( var key in map ) {
@@ -61,7 +61,7 @@ var FObject = {
   },
 
   /** Context defaults to the global namespace by default. **/
-  __ctx__: __ctx__,
+  X: X,
 
   selectProperties_: function(name, p) {
     if ( this.hasOwnProperty(name) ) return this[name];
@@ -109,8 +109,8 @@ var FObject = {
       this.create = BootstrapModel.create;
   },
 
-  installInDocument: function(__ctx__, document) {
-    if ( Object.hasOwnProperty.call(this, 'CSS') ) __ctx__.addStyle(this.CSS());
+  installInDocument: function(X, document) {
+    if ( Object.hasOwnProperty.call(this, 'CSS') ) X.addStyle(this.CSS());
   },
 
   defineFOAMGetter: function(name, getter) {
@@ -343,7 +343,7 @@ var FObject = {
   clone: function() {
     var c = Object.create(this.__proto__);
     c.instance_ = {};
-    c.__ctx__ = this.__ctx__;
+    c.X = this.X;
     for ( var key in this.instance_ ) {
       var value = this[key];
       // The commented out (original) implementation was causing
@@ -493,10 +493,10 @@ var FObject = {
     var feature = this.getMyFeature(featureName);
 
     if (this.id != "Model" && !feature) {
-      if (this.extendsModel.length > 0 && this.__ctx__[this.extendsModel]) {
-        return this.__ctx__[this.extendsModel].getFeature(featureName);
+      if (this.extendsModel.length > 0 && this.X[this.extendsModel]) {
+        return this.X[this.extendsModel].getFeature(featureName);
       } else {
-        return this.__ctx__["Model"].getFeature(featureName);
+        return this.X["Model"].getFeature(featureName);
       }
     } else {
       return feature;
@@ -508,7 +508,7 @@ var FObject = {
     var featureList = this.getAllMyFeatures();
 
     if (this.id != "Model") {
-      var superModel = (this.extendsModel.length > 0 && this.__ctx__[this.extendsModel].id)? this.__ctx__[this.extendsModel] : this.__ctx__["Model"];
+      var superModel = (this.extendsModel.length > 0 && this.X[this.extendsModel].id)? this.X[this.extendsModel] : this.X["Model"];
       superModel.getAllFeatures().map(function(subFeat) {
           var subName = subFeat.name.toUpperCase();
           if (!featureList.mapFind(function(myFeat) { // merge in features we don't already have
@@ -526,7 +526,7 @@ var FObject = {
     var featureList = this.properties;
 
     if ((this.name && this.name !== "Model") || (this.id && this.id !== "Model")) {
-      ctx__ = this.__ctx__? this.__ctx__ : GLOBAL;
+      ctx__ = this.X? this.X : GLOBAL;
       var superModel = (this.extendsModel && this.extendsModel.length > 0 && ctx__[this.extendsModel+"Model"].id)? ctx__[this.extendsModel+"Model"] : ctx__["ModelModel"];
       superModel.getAllProperties().map(function(subFeat) {
           var subName = subFeat.name;

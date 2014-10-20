@@ -1,12 +1,12 @@
 var metricsSrv = analytics.getService('Quick Bug').getTracker('UA-47217230-3');
 
-__ctx__ = bootCORE(Application.create({
+X = bootCORE(Application.create({
   name: 'QuickBug',
   version: 120,
   chromeAppVersion: '1.18'
 }));
 
-__ctx__ = __ctx__.subWindow(window, 'BACKGROUND WINDOW', true);
+X = X.subWindow(window, 'BACKGROUND WINDOW', true);
 
 ametric = function(name, afunc) {
   var metric;
@@ -22,7 +22,7 @@ ametric = function(name, afunc) {
 var qb;
 // Forwards its arguments to QBug.launchBrowser(), if any.
 function launch() {
-  if ( ! qb ) qb = __ctx__.QBug.create();
+  if ( ! qb ) qb = X.QBug.create();
   qb.launchBrowser.apply(qb, arguments);
 }
 

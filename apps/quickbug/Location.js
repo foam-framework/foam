@@ -69,7 +69,7 @@ MODEL({
       defaultValue: '',
       toURL: function(q) {
         // Replace short-names will fullnames that quickbug will understand
-        return (this.__ctx__.QueryParser.parseString(q) || TRUE).partialEval().toMQL().replace(/summary:/g, '');
+        return (this.X.QueryParser.parseString(q) || TRUE).partialEval().toMQL().replace(/summary:/g, '');
       }
     },
     {
@@ -145,13 +145,13 @@ MODEL({
       model_: 'LocationProperty',
       name: 'y',
       toMemento: function(y) { return y.name; },
-      fromMemento: function(name) { return this.__ctx__.QIssue.getProperty(name); }
+      fromMemento: function(name) { return this.X.QIssue.getProperty(name); }
     },
     {
       model_: 'LocationProperty',
       name: 'x',
       toMemento: function(x) { return x.name; },
-      fromMemento: function(name) { return this.__ctx__.QIssue.getProperty(name); }
+      fromMemento: function(name) { return this.X.QIssue.getProperty(name); }
     },
     {
       model_: 'LocationProperty',
@@ -167,8 +167,8 @@ MODEL({
   methods: {
     getPropertyIC: function(propName) {
       propName = propName.toLowerCase();
-      for ( var i = 0 ; i < this.__ctx__.QIssue.properties.length ; i++ ) {
-        var prop = this.__ctx__.QIssue.properties[i];
+      for ( var i = 0 ; i < this.X.QIssue.properties.length ; i++ ) {
+        var prop = this.X.QIssue.properties[i];
 
         if ( prop.name.toLowerCase() === propName ) return prop;
 

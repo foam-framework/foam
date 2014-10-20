@@ -275,13 +275,13 @@ MODEL({
       if ( ! e ) return;
       var parent = e.parentElement;
       while ( parent ) {
-        var overflow = this.__ctx__.window.getComputedStyle(parent).overflow;
+        var overflow = this.X.window.getComputedStyle(parent).overflow;
         if ( overflow === 'scroll' || overflow === 'auto' ) {
           break;
         }
         parent = parent.parentElement;
       }
-      parent = parent || this.__ctx__.window;
+      parent = parent || this.X.window;
 
       if ( e.offsetTop < parent.scrollTop ) { // Scroll up
         e.scrollIntoView(true);
@@ -378,7 +378,7 @@ MODEL({
     {
       name: 'onMouseOver',
       code: function(e) {
-        if ( this.timer_ ) this.__ctx__.clearTimeout(this.timer_);
+        if ( this.timer_ ) this.X.clearTimeout(this.timer_);
         this.prev = ( this.prev === undefined ) ? this.data : this.prev;
         this.index = e.target.value;
       }
@@ -386,8 +386,8 @@ MODEL({
     {
       name: 'onMouseOut',
       code: function(e) {
-        if ( this.timer_ ) this.__ctx__.clearTimeout(this.timer_);
-        this.timer_ = this.__ctx__.setTimeout(function() {
+        if ( this.timer_ ) this.X.clearTimeout(this.timer_);
+        this.timer_ = this.X.setTimeout(function() {
           this.data = this.prev || '';
           this.prev = undefined;
         }.bind(this), 1);
@@ -484,7 +484,7 @@ MODEL({
       labelFn: function() { return this.linkLabel; },
       action: function() {
         var self = this;
-        var view = this.__ctx__.ChoiceListView.create({
+        var view = this.X.ChoiceListView.create({
           className: 'popupChoiceList',
           data: this.data,
           choices: this.choices,
@@ -492,16 +492,16 @@ MODEL({
         });
 
         var pos = findViewportXY(this.$.querySelector('.action'));
-        var e = this.__ctx__.document.body.insertAdjacentHTML('beforeend', view.toHTML());
-        var s = this.__ctx__.window.getComputedStyle(view.$);
+        var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
+        var s = this.X.window.getComputedStyle(view.$);
 
         function mouseMove(evt) {
           if ( ! view.$.contains(evt.target) ) remove();
         }
 
         function remove() {
-          self.__ctx__.document.removeEventListener('touchstart', remove);
-          self.__ctx__.document.removeEventListener('mousemove',  mouseMove);
+          self.X.document.removeEventListener('touchstart', remove);
+          self.X.document.removeEventListener('mousemove',  mouseMove);
           if ( view.$ ) view.$.remove();
         }
 
@@ -510,16 +510,16 @@ MODEL({
         view.data$.addListener(EventService.framed(function() {
           self.data = view.data;
           remove();
-        }, this.__ctx__));
+        }, this.X));
 
         view.$.style.top = (pos[1]-2) + 'px';
         view.$.style.left = (pos[0]-toNum(s.width)+30) + 'px';
-        view.$.style.maxHeight = (Math.max(200, this.__ctx__.window.innerHeight-pos[1]-10)) + 'px';
+        view.$.style.maxHeight = (Math.max(200, this.X.window.innerHeight-pos[1]-10)) + 'px';
         view.initHTML();
 
-        this.__ctx__.document.addEventListener('touchstart',  remove);
+        this.X.document.addEventListener('touchstart',  remove);
         view.$.addEventListener('click',                remove);
-        this.__ctx__.document.addEventListener('mousemove',   mouseMove);
+        this.X.document.addEventListener('mousemove',   mouseMove);
       }
     }
   ],
@@ -535,7 +535,7 @@ MODEL({
         // Remove any previous data$ listener for this popup.
         if ( this.updateListener ) this.data$.removeListener(this.updateListener);
         this.updateListener = function() {
-          var e = this.__ctx__.$(id);
+          var e = this.X.$(id);
           if ( e ) e.innerHTML = this.choice[1];
         }.bind(this);
         this.data$.addListener(this.updateListener);

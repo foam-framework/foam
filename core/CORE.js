@@ -27,7 +27,7 @@ MODEL({
 
 // Builds a context with the basic level services installed for a given app.
 function bootCORE(app) {
-  var Y = this.__ctx__.sub({
+  var Y = this.X.sub({
     DAOVersionDAO: IDBDAO.create({ model: DAOVersion }),
     App: app
   }, app.name + ' CONTEXT');

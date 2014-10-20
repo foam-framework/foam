@@ -3,7 +3,7 @@ MODEL({
   extendsModel: 'DetailView',
 
   properties: [
-    { name: 'model', factory: function() { return this.__ctx__.QIssueComment; } },
+    { name: 'model', factory: function() { return this.X.QIssueComment; } },
     { model_: 'BooleanPropety', name: 'saving', defaultValue: false },
     { name: 'issue' },
     { name: 'errorView', factory: function() { return TextFieldView.create({ mode: 'read-only' }); } },
@@ -12,9 +12,9 @@ MODEL({
 
   methods: {
     makeUpdatesView: function() {
-      return this.__ctx__.PropertyView.create({
+      return this.X.PropertyView.create({
         innerView: 'QIssueCommentUpdateDetailView',
-        prop: this.__ctx__.QIssueComment.UPDATES
+        prop: this.X.QIssueComment.UPDATES
       });
       return view;
     }
@@ -50,7 +50,7 @@ MODEL({
         convertArray('cc');
 
         var comment = this.data.clone();
-        comment.updates = this.__ctx__.QIssueCommentUpdate.create(diff);
+        comment.updates = this.X.QIssueCommentUpdate.create(diff);
 
         // TODO: UI feedback while saving.
 
@@ -72,7 +72,7 @@ MODEL({
     {
       name: 'discard',
       isEnabled: function() { return ! this.saving; },
-      action: function() { this.__ctx__.browser.location.id = ''; }
+      action: function() { this.X.browser.location.id = ''; }
     }
   ]
 });

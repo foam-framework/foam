@@ -175,7 +175,7 @@ MODEL({
       // If being added to HTML directly, then needs to create own Canvas as parent.
       // Calling addChild() will set this.parent = canvas.
       if ( ! this.parent ) {
-        this.parent = this.__ctx__.Canvas.create();
+        this.parent = this.X.Canvas.create();
 
         this.x$.addListener(this.resizeParent);
         this.y$.addListener(this.resizeParent);
@@ -193,7 +193,7 @@ MODEL({
 
       parent.addChild(this);
       parent.initHTML();
-      this.__ctx__.dynamic(
+      this.X.dynamic(
         function() { self.background; }, function() {
           parent.background = self.background;
         });
@@ -1040,7 +1040,7 @@ MODEL({
     },
     {
       name: 'mouse',
-      factory: function() { return this.__ctx__.Mouse.create(); }
+      factory: function() { return this.X.Mouse.create(); }
     }
   ],
 

@@ -5,8 +5,8 @@
       </td>
     </tr>
     <tr><th>Status:</th><td class="inplace" colspan="2">
-        <% var Y = this.__ctx__.sub(); Y.registerModel(StatusAutocompleteView, 'AutocompleteView'); %>
-        $$status{ __ctx__: Y }
+        <% var Y = this.X.sub(); Y.registerModel(StatusAutocompleteView, 'AutocompleteView'); %>
+        $$status{ X: Y }
       </td>
     </tr>
     <tr><th>Owner:</th><td class="inplace">
@@ -20,8 +20,8 @@
     <tr><th class="vt">Labels:<br>
       </th>
       <td class="labelediting" colspan="2">
-        <% Y = this.__ctx__.sub(); Y.registerModel(LabelAutocompleteView, 'AutocompleteView'); %>
-        $$labels{ __ctx__: Y }
+        <% Y = this.X.sub(); Y.registerModel(LabelAutocompleteView, 'AutocompleteView'); %>
+        $$labels{ X: Y }
       </td>
     </tr>
 <% if ( false ) { /* disabled until the API supports changing blockedOn */ %>

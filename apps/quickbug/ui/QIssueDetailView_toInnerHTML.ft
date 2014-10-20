@@ -53,7 +53,7 @@
                   %%blockingView
                 </div>
                 <br>
-                <% if ( STARTS_WITH(this.__ctx__.QIssue.LABELS, 'Restrict-View-Google').f(this.data) ) { %>
+                <% if ( STARTS_WITH(this.X.QIssue.LABELS, 'Restrict-View-Google').f(this.data) ) { %>
                 <div class="issue_restrictions">
                   <div class="restrictions_header">
                     <img src="images/restrict.png"> Restricted

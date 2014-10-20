@@ -52,9 +52,9 @@ MODEL({
         });
         
         this.inheritedFeaturesDAO = [].dao;
-        this.__ctx__.docModelViewFeatureDAO
+        this.X.docModelViewFeatureDAO
           .where(
-                AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.__ctx__.documentViewParentModel.get().id),
+                AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.X.documentViewParentModel.get().id),
                         EQ(DocFeatureInheritanceTracker.IS_DECLARED, false)),
                     CONTAINS(DocFeatureInheritanceTracker.TYPE, this.featureType()))
                 )
@@ -98,8 +98,8 @@ MODEL({
             <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
             <h2>Inherited <%=this.featureName()%>:</h2>
 <%
-            var fullView = this.__ctx__.DAOListView.create({ rowView: this.rowView, model: Property });
-            var collapsedView = this.__ctx__.DocFeatureCollapsedView.create();
+            var fullView = this.X.DAOListView.create({ rowView: this.rowView, model: Property });
+            var collapsedView = this.X.DocFeatureCollapsedView.create();
             %>
             <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'CollapsibleView', data: this.inheritedFeaturesDAO, collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
     <%    } %>
@@ -177,7 +177,7 @@ MODEL({
       this.SUPER();
 
       this.overridesDAO = [];
-      this.__ctx__.docModelViewFeatureDAO
+      this.X.docModelViewFeatureDAO
           .where(
                 AND(EQ(DocFeatureInheritanceTracker.NAME, this.data.name),
                     EQ(DocFeatureInheritanceTracker.IS_DECLARED, true))

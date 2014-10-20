@@ -8,7 +8,7 @@ MODEL({
       isEnabled: function() { return true; },
       label: '',
       iconUrl: 'images/ic_arrow_back_24dp.png',
-      action: function() { this.__ctx__.stack.back(); }
+      action: function() { this.X.stack.back(); }
     },
   ],
 

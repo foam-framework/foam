@@ -1,5 +1,5 @@
 <%
-var starView = PropertyView.create({prop: this.__ctx__.QIssue.STARRED, data: this.issue});
+var starView = PropertyView.create({prop: this.X.QIssue.STARRED, data: this.issue});
 var f = function() { this.browser.location.id = this.issue.id; };
 %>
 <div draggable="true"

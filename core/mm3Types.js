@@ -405,7 +405,7 @@ var ArrayPropertyModel = Model.create({
     {
       name: 'preSet',
       defaultValue: function(_, a, prop) {
-        var m = this.__ctx__[prop.subType] || GLOBAL[prop.subType];
+        var m = this.X[prop.subType] || GLOBAL[prop.subType];
 
         if ( ! m ) return a;
 
@@ -671,7 +671,7 @@ var ModelPropertyModel = Model.create({
           else
             value = prop.defaultValue;
         }
-        return FOAM.lookup(value, this.__ctx__);
+        return FOAM.lookup(value, this.X);
       }
     }
   ]
@@ -877,7 +877,7 @@ MODEL({
       help: 'The main content of the document.',
       documentation: "The main body text of the document. Any valid template can be used, including the $$DOC{ref:'DocView'} specific $$DOC{ref:'DocView',text:'$$DOC{\"ref\"}'} and $$DOC{ref:'DocView',text:'$$THISDATA{}'} tags.",
       preSet: function(_, template) {
-          return TemplateUtil.templateMemberExpander(template, this.__ctx__);
+          return TemplateUtil.templateMemberExpander(template, this.X);
       }
     },
     {

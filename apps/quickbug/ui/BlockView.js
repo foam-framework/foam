@@ -10,9 +10,9 @@ MODEL({
   properties: [
     {
       name: 'issueDAO',
-      scope: '__ctx__',
-      // TODO: should be renamed from IssueDAO to issueDAO in __ctx__
-      defaultValueFn: function() { return this.__ctx__.IssueDAO; }
+      scope: 'X',
+      // TODO: should be renamed from IssueDAO to issueDAO in X
+      defaultValueFn: function() { return this.X.IssueDAO; }
     },
     {
       name: 'property',
@@ -38,7 +38,7 @@ MODEL({
 
       for ( var i = 0 ; i < this.ids.length ; i++ ) {
         var issue = this.ids[i];
-        var view = this.__ctx__.IssueLink.create({
+        var view = this.X.IssueLink.create({
           issue: issue,
           property: this.property,
           maxDepth: this.maxDepth

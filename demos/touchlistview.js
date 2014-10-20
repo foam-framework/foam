@@ -165,7 +165,7 @@ cview.write(document);
 
 view.dao = dao;
 
-var Y = this.__ctx__.subWindow(window);
+var Y = this.X.subWindow(window);
 Y.registerModel(MomentumTouch, 'FOAMTouch');
 Y.registerModel(MomentumTouchManager, 'TouchManager');
 

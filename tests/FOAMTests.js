@@ -17,12 +17,12 @@ MODEL({
         },
         self.initHTMLFuture.get,
         function(ret) {
-          self.childView.testScope = self.data.__ctx__;
+          self.childView.testScope = self.data.X;
           self.childView.initHTML();
           ret();
         },
         childrenFuture.get
-      )(this.__ctx__.asyncCallback);
+      )(this.X.asyncCallback);
     },
     initHTML: function() {
       this.SUPER();
@@ -38,8 +38,8 @@ MODEL({
   properties: [
     {
       name: 'testScope',
-      help: 'I am the context in which the child tests will be run. Defaults to this.__ctx__.',
-      defaultValueFn: function() { return this.__ctx__; }
+      help: 'I am the context in which the child tests will be run. Defaults to this.X.',
+      defaultValueFn: function() { return this.X; }
     }
   ],
 
@@ -68,8 +68,8 @@ MODEL({
           // Prevent the test from recursing; we'll take care of that in this view.
           t.runChildTests = false;
           afuncs.push(function(ret) {
-            var Y = self.__ctx__.sub({ asyncCallback: ret });
-            t.__ctx__ = self.testScope;
+            var Y = self.X.sub({ asyncCallback: ret });
+            t.X = self.testScope;
             var view = Y.DemoView.create({ data: t });
             self.$.insertAdjacentHTML('beforeend', view.toHTML());
             view.initHTML(); // Actually calls atest().
@@ -78,11 +78,11 @@ MODEL({
         }
       })(function() {
         // When the select is all done, we fire our collection of afuncs, eventually calling
-        // back to this.__ctx__.asyncCallback.
+        // back to this.X.asyncCallback.
         if ( afuncs.length ) {
-          aseq.apply(self, afuncs)(self.__ctx__.asyncCallback);
+          aseq.apply(self, afuncs)(self.X.asyncCallback);
         } else {
-          self.__ctx__.asyncCallback();
+          self.X.asyncCallback();
         }
       });
     }
@@ -100,7 +100,7 @@ function asendjson(path) {
         xhr.asend(ret, data);
       },
       function(ret, resp) {
-        resp = JSONUtil.parse(__ctx__, resp);
+        resp = JSONUtil.parse(X, resp);
         ret(resp);
       })(ret);
   };
@@ -124,11 +124,11 @@ var baseDAO = CachingDAO.create({
 });
 
 setTimeout(function() {
-  window.__ctx__.UnitTestDAO = baseDAO;
+  window.X.UnitTestDAO = baseDAO;
   //baseDAO.where(EQ(UnitTest.PARENT_TEST, '')).select(dao.sink)(function(a) { console.log(a); });
 
-  var __ctx__ = window.__ctx__.sub({ asyncCallback: function() { console.log('done'); } });
-  var view = __ctx__.TestsView.create({
+  var X = window.X.sub({ asyncCallback: function() { console.log('done'); } });
+  var view = X.TestsView.create({
     dao: baseDAO.where(EQ(UnitTest.PARENT_TEST, ''))
   });
   document.body.insertAdjacentHTML('beforeend', view.toHTML());

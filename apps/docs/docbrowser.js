@@ -30,27 +30,27 @@ MODEL({
     {
       name: 'searchView',
       factory: function() {
-        return this.__ctx__.TextFieldView.create({ data$: this.search$, onKeyMode: true });
+        return this.X.TextFieldView.create({ data$: this.search$, onKeyMode: true });
       }
     },
     {
       name: 'dao',
       factory: function() {
-        var newDAO = this.__ctx__.MDAO.create({model:this.__ctx__.ModelModel});
+        var newDAO = this.X.MDAO.create({model:this.X.ModelModel});
 
         // This is to make sure getPrototype is called, even if the model object
         // has been created without a .create or .getPrototype having been called
         // yet.
         for ( var key in UNUSED_MODELS ) {
-          this.__ctx__[key];
+          this.X[key];
         }
         for ( var key in USED_MODELS ) {
-          this.__ctx__[key];
+          this.X[key];
         }     
 
         // All models are now in USED_MODELS
         for ( var key in USED_MODELS ) {
-          var m = this.__ctx__[key+"Model"];
+          var m = this.X[key+"Model"];
           newDAO.put(m);
         };
 
@@ -69,7 +69,7 @@ MODEL({
     {
       name: 'filteredDAOView',
       factory: function() {
-        return this.__ctx__.DAOListView.create({ data$: this.filteredDAO$, rowView: 'ModelDescriptionRowView' });
+        return this.X.DAOListView.create({ data$: this.filteredDAO$, rowView: 'ModelDescriptionRowView' });
       }
     }
   ]
@@ -99,8 +99,8 @@ MODEL({
   methods: {
     init: function() {
       // set up context // TODO: template is compile before we create subcontext
-      this.__ctx__ = this.__ctx__.sub({name:'ModelDescriptionRowView_X'});
-      this.__ctx__.documentationViewParentModel = SimpleValue.create();
+      this.X = this.X.sub({name:'ModelDescriptionRowView_X'});
+      this.X.documentationViewParentModel = SimpleValue.create();
 
       this.SUPER();
     }
@@ -157,15 +157,15 @@ MODEL({
       /* This is a method documentation comment: spawn and populate sub contexts. */
 
       // search context uses a selection value to indicate the chosen Model to display
-      this.SearchContext = this.__ctx__.sub({}, 'searchX');
+      this.SearchContext = this.X.sub({}, 'searchX');
       this.SearchContext.selection$ = this.SearchContext.SimpleValue.create(); // holds a Model definition
 
       // detail context needs a documentViewParentModel to indicate what model it is rooted at
-      this.DetailContext = this.__ctx__.sub({}, 'detailX');
+      this.DetailContext = this.X.sub({}, 'detailX');
       this.DetailContext.documentViewParentModel = this.DetailContext.SimpleValue.create();
       Events.follow(this.SearchContext.selection$, this.DetailContext.documentViewParentModel);
 
-      this.__ctx__.documentViewRequestNavigation = function(ref) {
+      this.X.documentViewRequestNavigation = function(ref) {
         if (ref.valid) {
           // TODO: navigate to feature sub-view as well
           this.DetailContext.documentViewParentModel.set(ref.resolvedModelChain[0]);
@@ -196,8 +196,8 @@ MODEL({
       // init this.selection
       this.selection = this.DetailContext.documentViewParentModel.get();
 
-      var testArg = this.__ctx__.Arg.create({name: 'testy'});
-      testArg.documentation = this.__ctx__.Documentation.create({
+      var testArg = this.X.Arg.create({name: 'testy'});
+      testArg.documentation = this.X.Documentation.create({
         body: function() { /*
           Argument $$DOC{ref:'.'} documentation.
           */ }

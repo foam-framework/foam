@@ -3,7 +3,7 @@ MODEL({
   extendsModel: 'DetailView',
 
   properties: [
-    { name: 'model', factory: function() { return this.__ctx__.QIssueCommentUpdate; } }
+    { name: 'model', factory: function() { return this.X.QIssueCommentUpdate; } }
   ],
 
   templates: [

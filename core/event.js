@@ -115,7 +115,7 @@ var EventService = {
    **/
   // TODO: execute immediately from within a requestAnimationFrame
   framed: function(listener, opt_X) {
-    opt_X = opt_X || this.__ctx__;
+    opt_X = opt_X || this.X;
 //    if ( ! opt_X ) debugger;
 //    if ( opt_X.isBackground ) debugger;
 
@@ -161,7 +161,7 @@ var EventService = {
   },
 
   delay: function(delay, listener, opt_X) {
-    opt_X = opt_X || this.__ctx__;
+    opt_X = opt_X || this.X;
     return function() {
       var args = argsToArray(arguments);
 

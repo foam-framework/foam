@@ -25,7 +25,7 @@ MODEL({
 
     <p>After the test has finished running, its $$DOC{ref: ".passed"} and $$DOC{ref: ".failed"} properties count the number of assertions that passed and failed in this <em>subtree</em> (that is, including the children, if run).</p>
 
-    <p>Before the children are run, if $$DOC{ref: ".failed"} is nonzero, $$DOC{ref: ".atest"} will check for <tt>this.__ctx__.onTestFailure</tt>. If this function is defined, it will be called with the <tt>UnitTest</tt> object as the first argument. This makes it easy for test runners to hook in their error reporting.</p>
+    <p>Before the children are run, if $$DOC{ref: ".failed"} is nonzero, $$DOC{ref: ".atest"} will check for <tt>this.X.onTestFailure</tt>. If this function is defined, it will be called with the <tt>UnitTest</tt> object as the first argument. This makes it easy for test runners to hook in their error reporting.</p>
 
     <p>Test failure is abstracted by the $$DOC{ref: ".hasFailed"} method; this method should always be used, since other subclasses have different definitions of failure.</p>
   */},
@@ -164,7 +164,7 @@ MODEL({
 
         <p>Run with the parent test if $$DOC{ref: ".runChildTests"} are set.</p>
 
-        <p>If this relationship is in use, <tt>this.__ctx__.UnitTestDAO</tt> must be defined. Test runners will generally want to select all (enabled) tests for <tt>this.__ctx__.UnitTestDAO</tt>, but filter only the parentless, top-level tests to execute, letting this relationship handle the children.</p>
+        <p>If this relationship is in use, <tt>this.X.UnitTestDAO</tt> must be defined. Test runners will generally want to select all (enabled) tests for <tt>this.X.UnitTestDAO</tt>, but filter only the parentless, top-level tests to execute, letting this relationship handle the children.</p>
       */},
       relatedModel: 'UnitTest',
       relatedProperty: 'parentTest'
@@ -193,14 +193,14 @@ MODEL({
       // Copy the test methods into the context.=
       // The context becomes "this" inside the tests.
       // The UnitTest object itself becomes this.test inside tests.
-      this.__ctx__ = this.__ctx__.sub({}, this.name);
-      this.__ctx__.log    = this.log.bind(this);
-      this.__ctx__.jlog   = this.jlog.bind(this);
-      this.__ctx__.assert = this.assert.bind(this);
-      this.__ctx__.fail   = this.fail.bind(this);
-      this.__ctx__.ok     = this.ok.bind(this);
-      this.__ctx__.append = this.append.bind(this);
-      this.__ctx__.test   = this;
+      this.X = this.X.sub({}, this.name);
+      this.X.log    = this.log.bind(this);
+      this.X.jlog   = this.jlog.bind(this);
+      this.X.assert = this.assert.bind(this);
+      this.X.fail   = this.fail.bind(this);
+      this.X.ok     = this.ok.bind(this);
+      this.X.append = this.append.bind(this);
+      this.X.test   = this;
 
       this.results = '';
 
@@ -215,11 +215,11 @@ MODEL({
 
       afuncs.push(function(ret) {
         oldLog = console.log;
-        console.log = self.log.bind(self.__ctx__);
+        console.log = self.log.bind(self.X);
         ret();
       });
 
-      afuncs.push(this.async ? code.bind(this.__ctx__) : code.abind(this.__ctx__));
+      afuncs.push(this.async ? code.bind(this.X) : code.abind(this.X));
 
       afuncs.push(function(ret) {
         console.log = oldLog;
@@ -235,7 +235,7 @@ MODEL({
             var afuncsInner = [];
             innerTests.forEach(function(test) {
               afuncsInner.push(function(ret) {
-                test.__ctx__ = self.__ctx__.sub();
+                test.X = self.X.sub();
                 test.atest()(ret);
               });
             });
@@ -250,7 +250,7 @@ MODEL({
 
       afuncs.push(function(ret) {
         self.hasRun = true;
-        self.__ctx__.onTestFailure && self.hasFailed() && self.__ctx__.onTestFailure(self);
+        self.X.onTestFailure && self.hasFailed() && self.X.onTestFailure(self);
         ret();
       });
 
@@ -450,12 +450,12 @@ MODEL({
   ]/*,
   methods: {
     dao: function() {
-      var m = this.__ctx__[this.relatedModel];
-      return this.__ctx__[m.name + 'DAO'];
+      var m = this.X[this.relatedModel];
+      return this.X[m.name + 'DAO'];
     },
     JOIN: function(sink, opt_where) {
-      var m = this.__ctx__[this.relatedModel];
-      var dao = this.__ctx__[m.name + 'DAO'] || this.__ctx__[m.plural];
+      var m = this.X[this.relatedModel];
+      var dao = this.X[m.name + 'DAO'] || this.X[m.plural];
       return MAP(JOIN(
         dao.where(opt_where || TRUE),
         m.getProperty(this.relatedProperty),
@@ -582,7 +582,7 @@ MODEL({
 
 (function() {
   for ( var i = 0 ; i < ModelModel.templates.length ; i++ )
-    ModelModel.templates[i] = JSONUtil.mapToObj(__ctx__, ModelModel.templates[i]);
+    ModelModel.templates[i] = JSONUtil.mapToObj(X, ModelModel.templates[i]);
 
   (function() {
     var a = ModelModel.properties;

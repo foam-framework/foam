@@ -212,7 +212,7 @@ MODEL({
       str += this.endForm();
 
       if ( this.showRelationships ) {
-        var view = this.__ctx__.RelationshipsView.create({
+        var view = this.X.RelationshipsView.create({
           data: this.data
         });
         view.data$ = this.data$;
@@ -275,7 +275,7 @@ MODEL({
     },
     {
       name: 'stack',
-      defaultValueFn: function() { return this.__ctx__.stack; }
+      defaultValueFn: function() { return this.X.stack; }
     },
     {
       name: 'view'
@@ -355,7 +355,7 @@ MODEL({
       this.view = this.viewModel({
         dao: this.data[this.relationship.name],
         model: this.relationship.relatedModel
-      }, this.__ctx__);
+      }, this.X);
       if ( this.$ ) {
         this.updateHTML();
       }
@@ -374,7 +374,7 @@ MODEL({
     function toHTML() {/*
       <%
         for ( var i = 0, relationship; relationship = this.model.relationships[i]; i++ ) {
-          out(this.__ctx__.RelationshipView.create({
+          out(this.X.RelationshipView.create({
             data$: this.data$,
             relationship: relationship
           }));

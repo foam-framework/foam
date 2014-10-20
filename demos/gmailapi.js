@@ -6,13 +6,13 @@ var auth = EasyOAuth2.create({
   ]
 });
 
-__ctx__.registerModel(XHR.xbind({
+X.registerModel(XHR.xbind({
   authAgent: auth,
   retries: 3,
   delay: 10
 }), 'XHR');
 
-var dao = __ctx__.GMailMessageDAO.create({});
+var dao = X.GMailMessageDAO.create({});
 /*
 var view = TableView.create({
   dao: dao,

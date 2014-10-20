@@ -32,7 +32,7 @@ MODEL({
 
   properties: [
     {
-      name: '__ctx__',
+      name: 'X',
       preSet: function(_, x) { return x.sub({stack: this, browser: this}); }
     },
     'project',
@@ -46,7 +46,7 @@ MODEL({
     },
     {
       name: 'location',
-      factory: function() { return this.__ctx__.Location.create(); }
+      factory: function() { return this.X.Location.create(); }
     },
     {
       name: 'memento',
@@ -77,20 +77,20 @@ MODEL({
     {
       name: 'IssueDAO',
       factory: function() {
-        return this.__ctx__.QIssueSplitDAO.create({
+        return this.X.QIssueSplitDAO.create({
           local: this.project.IssueDAO,
-          model: this.__ctx__.QIssue,
+          model: this.X.QIssue,
           remote: this.project.IssueNetworkDAO
         });
 
         return this.project.IssueDAO;
         return WaitCursorDAO.create({
           delegate: this.project.IssueDAO,
-          window:   this.__ctx__.window
+          window:   this.X.window
         });
       },
       postSet: function(_, v) {
-        this.__ctx__.IssueDAO = v;
+        this.X.IssueDAO = v;
       }
     },
     {
@@ -102,7 +102,7 @@ MODEL({
       name: 'bookmarksMenu',
       factory: function() {
         var self = this;
-        var Y = this.__ctx__.sub({
+        var Y = this.X.sub({
           ChoiceListView: Model.create({
             name: 'ChoiceListView',
             extendsModel: 'ChoiceListView',
@@ -157,7 +157,7 @@ MODEL({
     },
     {
       name: 'timer',
-      factory: function() { return this.__ctx__.Timer.create(); }
+      factory: function() { return this.X.Timer.create(); }
     },
     {
       mode_: 'IntProperty',
@@ -237,7 +237,7 @@ MODEL({
     },
     {
       name: 'mementoMgr',
-      factory: function() { return this.__ctx__.MementoMgr.create({memento: this.memento$}); }
+      factory: function() { return this.X.MementoMgr.create({memento: this.memento$}); }
     }
   ],
 
@@ -267,7 +267,7 @@ MODEL({
           } else {
             // Let the timer run for a bit longer so that people can see
             // that it's doing something.
-            this.__ctx__.setTimeout(this.timer.stop.bind(this.timer), 1000);
+            this.X.setTimeout(this.timer.stop.bind(this.timer), 1000);
           }
         }.bind(this));
       }
@@ -286,8 +286,8 @@ MODEL({
       isMerged: 1,
       code: function(evt) {
         this.search(AND(
-          this.__ctx__.QueryParser.parseString(this.location.can) || TRUE,
-          this.__ctx__.QueryParser.parseString(this.location.q) || TRUE
+          this.X.QueryParser.parseString(this.location.can) || TRUE,
+          this.X.QueryParser.parseString(this.location.q) || TRUE
         ).partialEval());
         metricsSrv.sendEvent('Browser', 'Query');
       }
@@ -353,10 +353,10 @@ MODEL({
           return;
         }
 
-        var view = this.__ctx__.ToolbarView.create({
+        var view = this.X.ToolbarView.create({
           horizontal: false,
           data: this,
-          document: this.__ctx__.document
+          document: this.X.document
         });
 
         view.addChild(StaticHTML.create({ content: '<b>Projects</b>' }));
@@ -411,7 +411,7 @@ MODEL({
       help: 'Create Bookmark',
       action: function() {
         var anchor = this.addBookmarkView.$;
-        var view   = this.__ctx__.AddBookmarkDialog.create({
+        var view   = this.X.AddBookmarkDialog.create({
           dao: this.bookmarkDAO,
           data: Bookmark.create({url: this.memento})
         });
@@ -443,10 +443,10 @@ MODEL({
           return;
         }
 
-        var view = this.__ctx__.ToolbarView.create({
+        var view = this.X.ToolbarView.create({
           horizontal: false,
           data: this,
-          document: this.__ctx__.document
+          document: this.X.document
         });
 
         var self = this;
@@ -482,15 +482,15 @@ MODEL({
 
       this.memento = '';
 
-      this.location.y = this.__ctx__.QIssue.OWNER;
-      this.location.x = this.__ctx__.QIssue.STATUS;
+      this.location.y = this.X.QIssue.OWNER;
+      this.location.x = this.X.QIssue.STATUS;
 
       this.searchField.data$.addListener(this.onSearch);
       Events.follow(this.location.q$, this.searchField.data$);
 
       Events.follow(this.project.issueCount$, this.issueCount$);
 
-      this.__ctx__.dynamic(
+      this.X.dynamic(
         function() { this.issueCount; this.selectedIssueCount; }.bind(this),
         function() {
           this.countField.data =
@@ -524,7 +524,7 @@ MODEL({
         this.refreshImg.$.style.webkitTransform = 'rotate(' + timer.i + 'deg)';
       }.bind(this));
 
-      this.__ctx__.document.addEventListener('mousemove', (function(evt) {
+      this.X.document.addEventListener('mousemove', (function(evt) {
         if ( this.currentPreview && ! this.currentPreview.$.contains(evt.target) && ! this.view.$.contains(evt.target) ) {
           this.preview(null);
         }
@@ -532,7 +532,7 @@ MODEL({
 
       this.searchChoice.choice = this.searchChoice.choices[1];
 
-      this.__ctx__.document.addEventListener('keyup', this.keyPress);
+      this.X.document.addEventListener('keyup', this.keyPress);
 
       this.IssueDAO.listen(this.onDAOUpdate);
       this.onDAOUpdate();
@@ -559,7 +559,7 @@ MODEL({
       if ( opt_templateName ) {
         for ( var i = 0, prompt; prompt = this.project.project.issuesConfig.prompts[i]; i++ ) {
           if ( prompt.name !== opt_templateName ) continue;
-          var data = this.__ctx__.QIssue.create({
+          var data = this.X.QIssue.create({
             labels: prompt.labels,
             status: prompt.status,
             summary: prompt.title,
@@ -570,7 +570,7 @@ MODEL({
       }
 
       if ( ! data ) {
-          data = this.__ctx__.QIssue.create({
+          data = this.X.QIssue.create({
             description: multiline(function(){/*What steps will reproduce the problem?
 1.
 2.
@@ -589,7 +589,7 @@ Please use labels and text to provide additional information.
       apar(
         arequire('QIssueCreateView')
       )(function() {
-        var v = self.__ctx__.QIssueCreateView.create({
+        var v = self.X.QIssueCreateView.create({
           data: data,
           mode: 'read-write'
         });
@@ -613,7 +613,7 @@ Please use labels and text to provide additional information.
             arequire('QIssueCommentAuthorView'),
             arequire('QIssueCommentUpdateView')
           )(function() {
-            var v = self.__ctx__.QIssueDetailView.create({
+            var v = self.X.QIssueDetailView.create({
               data:             obj,
               mode:             'read-write',
               url:              self.url,
@@ -669,15 +669,15 @@ Please use labels and text to provide additional information.
           var HEIGHT = 400;
           var screenHeight = self.view.$.ownerDocument.defaultView.innerHeight;
 
-          var v = self.__ctx__.QIssueDetailView.create({
+          var v = self.X.QIssueDetailView.create({
             data: obj,
             QIssueCommentDAO: self.project.issueCommentDAO(id),
             QIssueDAO: self.IssueDAO,
             mode: 'read-only',
             url: self.url
-          }).addDecorator(self.__ctx__.QIssuePreviewBorder.create());
+          }).addDecorator(self.X.QIssuePreviewBorder.create());
 
-          var popup = self.currentPreview = self.__ctx__.PopupView.create({
+          var popup = self.currentPreview = self.X.PopupView.create({
             x: e.x + 25,
             y: Math.min(
               screenHeight-HEIGHT-180,
@@ -714,7 +714,7 @@ Please use labels and text to provide additional information.
     },
 
     updateZoom: function() {
-      this.__ctx__.document.body.style.zoom = this.zoom;
+      this.X.document.body.style.zoom = this.zoom;
       this.layout();
     },
 
@@ -728,7 +728,7 @@ Please use labels and text to provide additional information.
     },
 
     openURL: function(url) {
-      this.__ctx__.document.location = url;
+      this.X.document.location = url;
     }
   },
 
@@ -753,7 +753,7 @@ MODEL({
         var after = url.substring(question + 1);
         url = before + '?no_qbug=1&' + after;
       }
-      this.__ctx__.window.open(url);
+      this.X.window.open(url);
     }
   }
 

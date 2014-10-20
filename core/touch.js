@@ -89,7 +89,7 @@ MODEL({
 
     init: function() {
       this.SUPER();
-      if ( this.__ctx__.document ) this.install(this.__ctx__.document);
+      if ( this.X.document ) this.install(this.X.document);
     },
 
     // TODO: Problems if the innermost element actually being touched is removed from the DOM.
@@ -114,7 +114,7 @@ MODEL({
     },
 
     touchStart: function(i, t, e) {
-      this.touches[i] = this.__ctx__.InputPoint.create({
+      this.touches[i] = this.X.InputPoint.create({
         id: i,
         type: 'touch',
         x: t.pageX,
@@ -128,7 +128,7 @@ MODEL({
 
       // On touchMoves only, set the lastTime.
       // This is used by momentum scrolling to find the speed at release.
-      this.touches[i].lastTime = this.__ctx__.performance.now();
+      this.touches[i].lastTime = this.X.performance.now();
 
       this.publish(this.TOUCH_MOVE, this.touches[i]);
     },
@@ -389,7 +389,7 @@ MODEL({
       // Compute and return the instantaneous velocity, which is
       // the primary axis delta divided by the time it took.
       // Our unit for velocity is pixels/millisecond.
-      var now = this.__ctx__.performance.now();
+      var now = this.X.performance.now();
       var lastTime = this.tickRunning ? this.lastTime : point.lastTime;
       var velocity = (this.isVertical ? point.dy : point.dx) / (now - point.lastTime);
       if ( this.tickRunning ) this.lastTime = now;
@@ -427,7 +427,7 @@ MODEL({
             this.sendEndEvent(obj);
           } else {
             this.tickRunning = true;
-            this.lastTime = this.__ctx__.performance.now();
+            this.lastTime = this.X.performance.now();
             this.tick(obj);
           }
         } else {
@@ -444,7 +444,7 @@ MODEL({
 
         var xy = this.isVertical ? 'y' : 'x';
 
-        var now = this.__ctx__.performance.now();
+        var now = this.X.performance.now();
         var elapsed = now - this.lastTime;
         this.lastTime = now;
 
@@ -491,7 +491,7 @@ MODEL({
     {
       name: 'scroller$',
       documentation: 'A convenience that returns the scroller\'s DOM element.',
-      getter: function() { return this.__ctx__.$(this.scrollerID); }
+      getter: function() { return this.X.$(this.scrollerID); }
     },
     {
       name: 'scrollGesture',
@@ -503,7 +503,7 @@ MODEL({
           console.warn('VerticalScrollNativeTrait attached to View without a scrollerID property set.');
           return '';
         }
-        return this.__ctx__.GestureTarget.create({
+        return this.X.GestureTarget.create({
           containerID: this.scrollerID,
           handler: this,
           gesture: 'verticalScrollNative'
@@ -515,14 +515,14 @@ MODEL({
   methods: {
     initHTML: function() {
       this.SUPER();
-      this.__ctx__.gestureManager.install(this.scrollGesture);
+      this.X.gestureManager.install(this.scrollGesture);
       /* Checks for this.onScroll. If found, will attach a scroll event listener for it. */
       if ( this.onScroll )
         this.scroller$.addEventListener('scroll', this.onScroll);
     },
     destroy: function() {
       this.SUPER();
-      this.__ctx__.gestureManager.uninstall(this.scrollGesture);
+      this.X.gestureManager.uninstall(this.scrollGesture);
       if ( this.onScroll && this.scroller$ )
         this.scroller$.removeEventListener('scroll', this.onScroll)
     }
@@ -744,7 +744,7 @@ MODEL({
     {
       name: 'getElement',
       help: 'Function to retrieve the element this gesture is attached to. Defaults to $(containerID).',
-      defaultValue: function() { return this.__ctx__.$(this.containerID); }
+      defaultValue: function() { return this.X.$(this.containerID); }
     },
     {
       name: 'handler',
@@ -812,14 +812,14 @@ MODEL({
     init: function() {
       this.SUPER();
       // TODO: Mousewheel and mouse down/up events.
-      this.__ctx__.touchManager.subscribe(this.__ctx__.touchManager.TOUCH_START, this.onTouchStart);
-      this.__ctx__.touchManager.subscribe(this.__ctx__.touchManager.TOUCH_MOVE,  this.onTouchMove);
-      this.__ctx__.touchManager.subscribe(this.__ctx__.touchManager.TOUCH_END,   this.onTouchEnd);
-      this.__ctx__.document.addEventListener('mousedown', this.onMouseDown);
-      this.__ctx__.document.addEventListener('mousemove', this.onMouseMove);
-      this.__ctx__.document.addEventListener('mouseup', this.onMouseUp);
-      this.__ctx__.document.addEventListener('wheel', this.onWheel);
-      this.__ctx__.document.addEventListener('contextmenu', this.onContextMenu);
+      this.X.touchManager.subscribe(this.X.touchManager.TOUCH_START, this.onTouchStart);
+      this.X.touchManager.subscribe(this.X.touchManager.TOUCH_MOVE,  this.onTouchMove);
+      this.X.touchManager.subscribe(this.X.touchManager.TOUCH_END,   this.onTouchEnd);
+      this.X.document.addEventListener('mousedown', this.onMouseDown);
+      this.X.document.addEventListener('mousemove', this.onMouseMove);
+      this.X.document.addEventListener('mouseup', this.onMouseUp);
+      this.X.document.addEventListener('wheel', this.onWheel);
+      this.X.document.addEventListener('contextmenu', this.onContextMenu);
     },
 
     install: function(target) {
@@ -861,7 +861,7 @@ MODEL({
       // Start at the innermost element and work our way up,
       // checking against targetsByID. We go all the way up
       // to the document, since we want every relevant handler.
-      var e = this.__ctx__.document.elementFromPoint(x, y);
+      var e = this.X.document.elementFromPoint(x, y);
       while ( e ) {
         if ( e.id && this.targetsByID[e.id] ) {
           var ts = this.targetsByID[e.id];
@@ -1021,8 +1021,8 @@ MODEL({
           // Wheel is already active. Just update.
           this.points.wheel.x -= event.deltaX;
           this.points.wheel.y -= event.deltaY;
-          this.__ctx__.window.clearTimeout(this.wheelTimer);
-          this.wheelTimer = this.__ctx__.window.setTimeout(this.onWheelDone, this.scrollWheelTimeout);
+          this.X.window.clearTimeout(this.wheelTimer);
+          this.wheelTimer = this.X.window.setTimeout(this.onWheelDone, this.scrollWheelTimeout);
         } else {
           // Do nothing if we're currently recognizing something else.
           if ( this.recognized || Object.keys(this.points).length > 0) return;
@@ -1057,7 +1057,7 @@ MODEL({
                 return gt.handler;
               }));
               this.recognized = this.gestures[gesture];
-              this.wheelTimer = this.__ctx__.window.setTimeout(this.onWheelDone,
+              this.wheelTimer = this.X.window.setTimeout(this.onWheelDone,
                   this.scrollWheelTimeout);
               break;
             }

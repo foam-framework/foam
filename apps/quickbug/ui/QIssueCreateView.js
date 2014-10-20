@@ -5,7 +5,7 @@ MODEL({
   properties: [
     {
       name: 'model',
-      factory: function() { return this.__ctx__.QIssue; }
+      factory: function() { return this.X.QIssue; }
     },
     {
       model_: 'BooleanProperty',
@@ -24,11 +24,11 @@ MODEL({
         var self = this;
         this.saving = true;
         this.errorView.data = "";
-        this.__ctx__.IssueDAO.put(this.data, {
+        this.X.IssueDAO.put(this.data, {
           put: function(obj) {
             self.saving = false;
-            self.__ctx__.browser.location.createMode = false;
-            self.__ctx__.browser.location.id = obj.id;
+            self.X.browser.location.createMode = false;
+            self.X.browser.location.id = obj.id;
           },
           error: function() {
             self.saving = false;
@@ -42,7 +42,7 @@ MODEL({
       label: 'Discard',
       isEnabled: function() { return ! this.saving },
       action: function() {
-        this.__ctx__.browser.location.createMode = false;
+        this.X.browser.location.createMode = false;
       }
     },
   ],
@@ -57,14 +57,14 @@ MODEL({
       <tr><td>Summary:</td><td>$$summary</td></tr>
       <tr><td>Description:</td><td>$$description</td></tr>
       <tr><td>Status:</td><td>
-        <% var Y = this.__ctx__.sub(); Y.registerModel(StatusAutocompleteView, 'AutocompleteView'); %>
-        $$status{ __ctx__: Y }
+        <% var Y = this.X.sub(); Y.registerModel(StatusAutocompleteView, 'AutocompleteView'); %>
+        $$status{ X: Y }
       </td></tr>
       <tr><td>Owner:</td><td>$$owner</td></tr>
       <tr><td>Cc:</td><td>$$cc</td></tr>
       <tr><td>Labels:</td><td>
-        <% Y = this.__ctx__.sub(); Y.registerModel(LabelAutocompleteView, 'AutocompleteView'); %>
-        $$labels{ __ctx__: Y, model_: 'GriddedStringArrayView' }
+        <% Y = this.X.sub(); Y.registerModel(LabelAutocompleteView, 'AutocompleteView'); %>
+        $$labels{ X: Y, model_: 'GriddedStringArrayView' }
       </td></tr>
       </tbody>
       </table>
