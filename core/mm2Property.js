@@ -557,19 +557,18 @@ var PropertyModel = {
       return this.compareProperty(this.f(o1), this.f(o2));
     },
     toSQL: function() { return this.name; },
-    toMQL: function() { return this.name; }
-  },
+    toMQL: function() { return this.name; },
+    getProperty: function(name) {
+      console.assert(false, 'Property.getProperty called - Why am I here? It never seems to be called.');
+      for ( var i = 0 ; i < this.properties.length ; i++ ) {
+        var p = this.properties[i];
 
-  getProperty: function(name) {
-    console.assert(false, 'Property.getProperty called - Why am I here? It never seems to be called.');
-    for ( var i = 0 ; i < this.properties.length ; i++ ) {
-      var p = this.properties[i];
+        if ( p.name === name ) return p;
+      }
 
-      if ( p.name === name ) return p;
+      document.writeln("couldn't find: " + name);
+      return null;
     }
-
-    document.writeln("couldn't find: " + name);
-    return null;
   },
 
   templates: [
@@ -613,3 +612,5 @@ var Property = PropertyModel.getPrototype();
 for ( var i = 0 ; i < PropertyModel.properties.length ; i++ ) {
   PropertyModel.properties[i] = Property.create(PropertyModel.properties[i]);
 }
+
+bootstrapModelsToInit_.push(PropertyModel);

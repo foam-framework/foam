@@ -186,6 +186,7 @@ MODEL({
     }
   }
 });
+bootstrapModelsToInit_.push(ActionModel);
 
 Action.callIfEnabled = function(X, that) {
   if ( this.isEnabled.call(that, this) ) this.action.call(that, X, this);
@@ -371,6 +372,7 @@ MODEL({
     }
   ]
 });
+bootstrapModelsToInit_.push(ArgModel);
 
 
 MODEL({
@@ -621,6 +623,7 @@ MODEL({
     }
   ]
 });
+bootstrapModelsToInit_.push(MethodModel);
 
 Method.decorateFunction = function(f) {
   for ( var i = 0 ; i < this.args.length ; i++ ) {
@@ -800,6 +803,7 @@ MODEL({
   ]
 
 });
+bootstrapModelsToInit_.push(InterfaceModel);
 
 
 MODEL({
@@ -897,5 +901,5 @@ MODEL({
   ]
 
 });
-
+bootstrapModelsToInit_.push(TemplateModel);
 

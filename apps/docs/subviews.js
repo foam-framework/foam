@@ -225,10 +225,12 @@ MODEL({
       help: 'The Model for which to display documentation.',
       documentation: "The $$DOC{ref:'Model'} for which to display $$DOC{ref:'Documentation'}.",
       postSet: function() {
-        if ( !this.data.isInstance(this.X.ModelModel)
+        if ( !this.data.model_
+           || this.X.ModelModel !== this.data.model_
            || this.data === this.X.Model) {
 							console.warn("DocModelView data must be a model definition. Try appending 'Model' to the name you specified.");
-				}
+              debugger;
+        }
 				this.updateHTML();
         this.generateFeatureDAO();
       }

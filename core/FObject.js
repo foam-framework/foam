@@ -31,6 +31,7 @@ var FObject = {
   },
 
   create: function(args, opt_X) {
+ //   console.log("Creating: "+this.name_);
     var o = this.create_(this);
     o.instance_ = {};
     if ( opt_X ) o.X = opt_X;
@@ -157,8 +158,14 @@ var FObject = {
   equals: function(other) { return this.compareTo(other) == 0; },
 
   isInstance: function(obj) { /* Returns true if the given instance extends this $$DOC{ref:'Model'}. */
-    return obj && obj.model_ && this.model_ && this.model_.isSubModel(obj.model_);
-  },
+    if (this === ModelModel || (this.model_ && this.model_ !== this.X.ModelModel)) {
+      // we're either ModelModel (and model_ === ModelModel) or model_ is a definition
+      return obj && obj.model_ && this.model_ && this.model_.isSubModel(obj.model_);
+    } else {
+      // or this must be a model definition, so omit model_ (which is just ModelModel)
+      return obj && obj.model_ && this && this.isSubModel(obj.model_);
+    }
+},
 
   compareTo: function(other) {
     var ps = this.model_.properties;

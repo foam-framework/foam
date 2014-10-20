@@ -606,3 +606,7 @@ var ModelModel = {
 
   toString: function() { return "Model"; }
 };
+
+// Put bootstrap models here, to initialize their model_ property when finished with ModelModel.
+var bootstrapModelsToInit_ = [];
+

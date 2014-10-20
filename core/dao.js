@@ -18,7 +18,7 @@
 // ???: Is there any point in making this an Interface, or just a Concrete Model
 var FlowControl = Interface.create({
 
-  package: 'dao',
+  //package: 'dao',
   name: 'FlowControl',
   description: 'DAO FLow Control.  Used to control select() behavior.',
 
@@ -58,7 +58,7 @@ var FlowControl = Interface.create({
 
 
 var Sink = Interface.create({
-  package: 'dao',
+  //package: 'dao',
   name: 'Sink',
   description: 'Data Sink',
 
@@ -142,7 +142,7 @@ var Comparator = Interface.create({
 // 'options': Map including 'query', 'order', and 'limit', all optional
 
 var DAO = Interface.create({
-  package: 'dao',
+  //package: 'dao',
 
   name: 'DAO',
   description: 'Data Access Object',

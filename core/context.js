@@ -131,55 +131,63 @@ function registerPackage(/* String */ name) {
 }
 
 function registerModel(model, opt_name) {
-  /*
-  if ( model.X === this ) {
-    this[model.name] = model;
+  // Register both ModName (the proto) and ModNameModel (the unadulterated definition)
+  registerModelOnly_(model, opt_name);
+  registerProtoOnly_(model, opt_name);
+};
 
-    return model;
-  }
-  */
+var registerModelOnly_ = function(model, opt_name) {
+console.log("Register Model: "+model.name+" X:"+this.NAME);
   var thisX = this.registerPackagePath(model.package);
 
   var thisModel = thisX === GLOBAL ? model : {
     __proto__: model,
       create: function(args, opt_X) {
+ //       console.log("XModel create: "+this.name_);
         return this.__proto__.create(args, thisX);
       }
   };
-  var thisProto = // delay evaluation of prototype to avoid bootstrap problems by returning function
-    this === GLOBAL ?
-      function() { return model.getPrototype() } 
-    : function() { return {
-      __proto__: model.getPrototype(),
-      create: function(args, opt_X) {
-        return this.__proto__.create(args, thisX);
-    }}
-  };
-  
-  // Register both ModName (the proto) and ModNameModel (the unadulterated definition)
   Object.defineProperty(
     this,
     opt_name? opt_name + "Model" : model.name + "Model",
     {
       get: function() {
-        return ( this === thisX ) ? thisModel : this.registerModel(model).model;
+        return ( this === thisX ) ? thisModel : this.registerModelOnly_(model);
       },
       configurable: true
     }
   );
+  return thisModel;
+}
+var registerProtoOnly_ = function(model, opt_name) {
+console.log("Register Proto: "+model.name+" X:"+this.NAME);
+  var thisX = this.registerPackagePath(model.package);
+
+  var thisProto = // delay evaluation of prototype to avoid bootstrap problems by returning function
+    this === GLOBAL ?
+      function() { return model.getPrototype() }
+    : function() { return {
+      __proto__: model.getPrototype(),
+      create: function(args, opt_X) {
+//        console.log("XProto create: "+this.name_);
+        return this.__proto__.create(args, thisX);
+    }}
+  };
+
   Object.defineProperty(
     this,
     opt_name || model.name,
     {
       get: function() {
-        return ( this === thisX ) ? thisProto() : this.registerModel(model).proto();
+        return ( this === thisX ) ? thisProto() : this.registerProtoOnly_(model)();
       },
       configurable: true
     }
   );
 
-  return {model: thisModel, proto: thisProto};
-};
+  return thisProto;
+}
+
 
 var registerFactory = function(model, factory) {
   // TODO

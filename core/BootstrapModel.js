@@ -95,21 +95,25 @@ var BootstrapModel = {
   TYPE: 'BootstrapModel <startup only, error if you see this>',
 
   buildPrototype: function() { /* Internal use only. */
+    console.log("Buildproto: "+this.name);
+
+    var X = GLOBAL;
+
     function addTraitToModel(traitModel, parentModel) {
       var name = parentModel.name + '_ExtendedWith_' + traitModel.name;
-      if ( ! GLOBAL[name] ) {
+      if ( ! X[name] ) {
         var model = traitModel.deepClone();
         model.name = name;
         model.extendsModel = parentModel.name;
-        GLOBAL.registerModel(model);
+        X.registerModel(model);
       }
 
-      return GLOBAL[name+"Model"];
+      return X[name+"Model"];
     }
 
-    if ( this.extendsModel && ! GLOBAL[this.extendsModel+"Model"] ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
+    if ( this.extendsModel && ! X[this.extendsModel+"Model"] ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
 
-    var extendsModel = this.extendsModel && GLOBAL[this.extendsModel+"Model"];
+    var extendsModel = this.extendsModel && X[this.extendsModel+"Model"];
 //    if (this.extendsModel && GLOBAL[this.extendsModel]) {
 //      extendsModel = GLOBAL[this.extendsModel];
 //    } else {
@@ -122,7 +126,7 @@ var BootstrapModel = {
 
     if ( this.traits ) for ( var i = 0 ; i < this.traits.length ; i++ ) {
       var trait = this.traits[i];
-      var traitModel = GLOBAL[trait+"Model"];
+      var traitModel = X[trait+"Model"];
 
       if ( traitModel ) {
         extendsModel = addTraitToModel(traitModel, extendsModel);
@@ -136,14 +140,6 @@ var BootstrapModel = {
     cls.model_ = this;
     cls.name_  = this.name;
     cls.TYPE   = this.name;
-
-    // HACK
-//    if (   this.name === "Documentation"
-//        || this.name === "Template"
-//        || this.name === "Arg"
-//       ){
-//      this.prototype_ = cls;
-//    }
 
     // Install a custom constructor so that Objects are named properly
     // in the JS memory profiler.
@@ -182,7 +178,7 @@ var BootstrapModel = {
         var p = this.properties[i];
         var extendsMerger = function(curModel) {
           if (!curModel) return;
-          var extModel = curModel.extendsModel && GLOBAL[curModel.extendsModel+"Model"];
+          var extModel = curModel.extendsModel && X[curModel.extendsModel+"Model"];
           extendsMerger(extModel);
 
           // since we recursed first, we will build up p starting from the base model
@@ -213,7 +209,7 @@ var BootstrapModel = {
         (function(a) {
           var extendsMerger = function(curModel) {
             if (!curModel) return;
-            var extModel = curModel.extendsModel && GLOBAL[curModel.extendsModel+"Model"];
+            var extModel = curModel.extendsModel && X[curModel.extendsModel+"Model"];
             extendsMerger(extModel);
 
             // since we recursed first, we will build up a starting from the base model
@@ -247,7 +243,7 @@ var BootstrapModel = {
     // add methods
     for ( var key in this.methods ) {
       var m = this.methods[key];
-      if ( Method && Method.isInstance(m) ) {
+      if ( X.Method && X.Method.isInstance(m) ) {
         addMethod(m.name, m.generateFunction());
       } else {
         addMethod(key, m);

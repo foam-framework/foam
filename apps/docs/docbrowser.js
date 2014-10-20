@@ -186,15 +186,17 @@ MODEL({
       this.SearchContext.selection$.addListener(this.onSelectionChange);
 
       // when the hash changes set the documentViewParentModel and this.selection
-      window.addEventListener('hashchange', function() {
-        this.DetailContext.documentViewParentModel.set(this.SearchContext[location.hash.substring(1)+"Model"]);
+      var changeSelectionFunc = function() {
+        var modelName = location.hash.substring(1);
+        if (modelName === "") modelName = 'Model';
+        modelName += 'Model';
+        this.DetailContext.documentViewParentModel.set(this.SearchContext[modelName]);
         this.selection = this.DetailContext.documentViewParentModel.get();
-      }.bind(this));
+      }.bind(this);
+      window.addEventListener('hashchange', changeSelectionFunc);
 
       // initialization from hash
-      this.DetailContext.documentViewParentModel.set(this.SearchContext[location.hash.substring(1)+"Model"]);
-      // init this.selection
-      this.selection = this.DetailContext.documentViewParentModel.get();
+      changeSelectionFunc();
 
       var testArg = this.X.Arg.create({name: 'testy'});
       testArg.documentation = this.X.Documentation.create({

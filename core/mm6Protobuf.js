@@ -122,3 +122,13 @@ ModelModel = Model.create(ModelModel);
 ModelModel.model_ = ModelModel; // break the link with the old ModelModel
 Model = ModelModel.getPrototype();
 Model.model_ = ModelModel;
+
+// reset each boostrap model's model_
+// TODO: should we bother to regenerate the prototype?
+bootstrapModelsToInit_.forEach(function(m) {
+  var modelName = m.name;
+  GLOBAL[modelName+"Model"] = Model.create(m);
+  USED_MODELS[m.name] = true;
+
+})
+

@@ -62,6 +62,7 @@ var StringPropertyModel = Model.create({
   ]
 });
 var StringProperty = StringPropertyModel.getPrototype();
+bootstrapModelsToInit_.push(StringPropertyModel);
 
 
 var BooleanPropertyModel = Model.create({
@@ -115,6 +116,7 @@ var BooleanPropertyModel = Model.create({
   ]
 });
 var BooleanProperty = BooleanPropertyModel.getPrototype();
+bootstrapModelsToInit_.push(BooleanPropertyModel);
 
 /*
   preSet: function (d) {
@@ -188,6 +190,7 @@ var DatePropertyModel = Model.create({
   ]
 });
 var DateProperty = DatePropertyModel.getPrototype();
+bootstrapModelsToInit_.push(DatePropertyModel);
 
 var DateTimePropertyModel = Model.create({
   extendsModel: 'DateProperty',
@@ -218,6 +221,7 @@ var DateTimePropertyModel = Model.create({
   ]
 });
 var DateTimeProperty = DateTimePropertyModel.getPrototype();
+bootstrapModelsToInit_.push(DateTimePropertyModel);
 
 var IntPropertyModel = Model.create({
   extendsModel: 'Property',
@@ -272,6 +276,7 @@ var IntPropertyModel = Model.create({
   ]
 });
 var IntProperty = IntPropertyModel.getPrototype();
+bootstrapModelsToInit_.push(IntPropertyModel);
 
 var FloatPropertyModel = Model.create({
   extendsModel: 'Property',
@@ -320,6 +325,7 @@ var FloatPropertyModel = Model.create({
   ]
 });
 var FloatProperty = FloatPropertyModel.getPrototype();
+bootstrapModelsToInit_.push(FloatPropertyModel);
 
 
 var FunctionPropertyModel = Model.create({
@@ -379,6 +385,7 @@ var FunctionPropertyModel = Model.create({
   ]
 });
 var FunctionProperty = FunctionPropertyModel.getPrototype();
+bootstrapModelsToInit_.push(FunctionPropertyModel);
 
 
 var ArrayPropertyModel = Model.create({
@@ -479,6 +486,7 @@ var ArrayPropertyModel = Model.create({
   ]
 });
 var ArrayProperty = ArrayPropertyModel.getPrototype();
+bootstrapModelsToInit_.push(ArrayPropertyModel);
 
 
 var ReferencePropertyModel = Model.create({
@@ -533,6 +541,7 @@ var ReferencePropertyModel = Model.create({
   ]
 });
 var ReferenceProperty = ReferencePropertyModel.getPrototype();
+bootstrapModelsToInit_.push(ReferencePropertyModel);
 
 
 var StringArrayPropertyModel = Model.create({
@@ -593,6 +602,7 @@ var StringArrayPropertyModel = Model.create({
   ]
 });
 var StringArrayProperty = StringArrayPropertyModel.getPrototype();
+bootstrapModelsToInit_.push(StringArrayPropertyModel);
 
 
 var DAOPropertyModel = Model.create({
@@ -648,6 +658,7 @@ var DAOPropertyModel = Model.create({
   ]
 });
 var DAOProperty = DAOPropertyModel.getPrototype();
+bootstrapModelsToInit_.push(DAOPropertyModel);
 
 var ModelPropertyModel = Model.create({
   name: 'ModelProperty',
@@ -677,6 +688,7 @@ var ModelPropertyModel = Model.create({
   ]
 });
 var ModelProperty = ModelPropertyModel.getPrototype();
+bootstrapModelsToInit_.push(ModelPropertyModel);
 
 
 var ViewPropertyModel = Model.create({
@@ -714,6 +726,7 @@ var ViewPropertyModel = Model.create({
   ]
 });
 var ViewProperty = ViewPropertyModel.getPrototype();
+bootstrapModelsToInit_.push(ViewPropertyModel);
 
 
 var ReferenceArrayPropertyModel = Model.create({
@@ -740,6 +753,7 @@ var ReferenceArrayPropertyModel = Model.create({
   ]
 });
 var ReferenceArrayProperty = ReferenceArrayPropertyModel.getPrototype();
+bootstrapModelsToInit_.push(ReferenceArrayPropertyModel);
 
 var EMailPropertyModel = StringPropertyModel;
 var EMailProperty = StringProperty;
@@ -796,6 +810,7 @@ var DocumentationPropertyModel = Model.create({
   ]
 });
 var DocumentationProperty = DocumentationPropertyModel.getPrototype();
+bootstrapModelsToInit_.push(DocumentationPropertyModel);
 
 
 MODEL({
@@ -814,12 +829,14 @@ MODEL({
     }
   ]
 });
+bootstrapModelsToInit_.push(EnumPropertyTraitModel);
 
 MODEL({
   name: 'StringEnumProperty',
   traits: ['EnumPropertyTrait'],
   extendsModel: 'StringProperty'
 });
+bootstrapModelsToInit_.push(StringEnumPropertyModel);
 
 
 MODEL({
@@ -895,6 +912,7 @@ MODEL({
   ]
 
 });
+bootstrapModelsToInit_.push(DocumentationModel);
 
 // HACK to get around property-template bootstrap ordering issues
 TemplateUtil.modelExpandTemplates(PropertyModel, PropertyModel.templates);

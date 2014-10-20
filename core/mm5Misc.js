@@ -290,6 +290,7 @@ MODEL({
     }
   }
 });
+bootstrapModelsToInit_.push(UnitTestModel);
 
 MODEL({
   name: 'RegressionTest',
@@ -346,6 +347,7 @@ MODEL({
     }
   }
 });
+bootstrapModelsToInit_.push(RegressionTestModel);
 
 MODEL({
   name: 'UITest',
@@ -365,6 +367,7 @@ MODEL({
     }
   ]
 });
+bootstrapModelsToInit_.push(UITestModel);
 
 
 MODEL({
@@ -465,6 +468,7 @@ MODEL({
     }
   }*/
 });
+bootstrapModelsToInit_.push(RelationshipModel);
 
 
 MODEL({
@@ -581,6 +585,7 @@ MODEL({
     }
   ]
 });
+bootstrapModelsToInit_.push(IssueModel);
 
 (function() {
   for ( var i = 0 ; i < ModelModel.templates.length ; i++ )
