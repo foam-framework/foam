@@ -1055,17 +1055,17 @@ MODEL({
     }
   ],
   methods: {
-    init: function(SUPER, X, args) {
+    init: function(SUPER, args) {
       var self = this;
       SUPER(args);
 
-      X.dynamic(function() { self.count; },
+      this.X.dynamic(function() { self.count; },
                 function() {
                   if ( ! self.$ ) return;
                   self.container$.style.height = (self.count * self.rowSize) + 'px';
                 });
 
-      X.dynamic(function() { self.objs; self.offset; },
+      this.X.dynamic(function() { self.objs; self.offset; },
                 function() { self.render(); });
     },
   },
