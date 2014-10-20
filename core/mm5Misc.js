@@ -179,10 +179,12 @@ MODEL({
     }
   ],
 
-  methods:{
+  constants: {
     // Lock to prevent more than one top-level Test from running at once.
-    LOCK: {},
+    LOCK: {}
+  },
 
+  methods:{
     // Run test asynchronously as an afunc.
     atest: function() {
       var self = this;
