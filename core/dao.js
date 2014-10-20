@@ -19,7 +19,6 @@
 MODEL({
   model_: 'Interface',
 
-  package: 'dao',
   name: 'FlowControl',
   description: 'DAO FLow Control.  Used to control select() behavior.',
 
@@ -61,7 +60,6 @@ MODEL({
 MODEL({
   model_: 'Interface',
 
-  package: 'dao',
   name: 'Sink',
   description: 'Data Sink',
 
@@ -151,7 +149,6 @@ MODEL({
 MODEL({
   model_: 'Interface',
 
-  package: 'dao',
   name: 'DAO',
   description: 'Data Access Object',
   extends: ['Sink'],
