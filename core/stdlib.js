@@ -87,7 +87,8 @@ String.prototype.labelize = function() {
 
 // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
 String.prototype.constantize = function() {
-    return this.replace(/[a-z_][^a-z_]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase();
+  // TODO: add property to specify constantization. For now catch special case to avoid conflict with context this.X.
+  return this === "x"? "X_" : this.replace(/[a-z_][^a-z_]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase();
 };
 
 /** Give all objects a Unique ID. **/
@@ -452,7 +453,8 @@ Object.defineProperty(Array.prototype, 'remove', {
 Object.defineProperty(Object.prototype, 'forEach', {
   value: function(fn) {
     for ( var key in this ) if (this.hasOwnProperty(key)) fn(this[key], key);
-}});*/
+}});
+*/
 
 // Workaround for crbug.com/258552
 function Object_forEach(obj, fn) {

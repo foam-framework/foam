@@ -26,6 +26,11 @@ MODEL({
     }
   ],
   templates: [
+    function CSS() {/*
+      .content-view {
+        margin-top: -24px; 
+      }
+    */},
     function headerToHTML() {/*
       <div class="header">
         <div class="toolbar">
@@ -69,15 +74,13 @@ MODEL({
           </div>
           <div class="choice">
             <img src="images/ic_keep_24dp.png" class="status-icon">
-            <%=
-              this.createTemplateView('STATUS', {
+            $$status{
                 model_: 'PopupChoiceView',
                 iconUrl: 'images/ic_arrow_drop_down_24dp.png',
                 showValue: true,
                 dao: this.X.StatusDAO,
                 objToChoice: function(o) { return [o.status, o.status]; }
-              })
-            %>
+              }
           </div>
 
           <div class="separator separator1"></div>
@@ -90,7 +93,7 @@ MODEL({
           $$labels{model_: 'IssueLabelView'}
 
           <div class="separator separator1"></div>
-          $$content{model_: 'mdTextFieldView', label: 'Comment', onKeyMode: true }
+          $$content{model_: 'mdTextFieldView', label: 'Comment', onKeyMode: true, extraClassName: 'content-view' }
 
           $$comments{ viewModel: { model_: 'DAOListView', mode: 'read-only', rowView: 'CommentView' } }
         </div>

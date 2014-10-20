@@ -55,6 +55,36 @@ MODEL({
       }
    ],
 
+  constants: {
+      DEFAULT_LABEL_COLORS: [
+        { b: "#f1f5ec", f: "#006633"},
+        { b: "#dee5f2", f: "#5a6986"},
+        { b: "#e0ecff", f: "#206cff"},
+        { b: "#dfe2ff", f: "#0000cc"},
+        { b: "#e0d5f9", f: "#5229a3"},
+        { b: "#fde9f4", f: "#854f61"},
+        { b: "#ffe3e3", f: "#cc0000"},
+        { b: "#fff0e1", f: "#ec7000"},
+        { b: "#fadcb3", f: "#b36d00"},
+        { b: "#f3e7b3", f: "#ab8b00"},
+        { b: "#ffffd4", f: "#636330"},
+        { b: "#f9ffef", f: "#64992c"},
+        { b: "#f1f5ec", f: "#006633"},
+        { b: "#5a6986", f: "#dee5f2"},
+        { b: "#206cff", f: "#e0ecff"},
+        { b: "#0000cc", f: "#dfe2ff"},
+        { b: "#5229a3", f: "#e0d5f9"},
+        { b: "#854f61", f: "#fde9f4"},
+        { b: "#cc0000", f: "#ffe3e3"},
+        { b: "#ec7000", f: "#fff0e1"},
+        { b: "#b36d00", f: "#fadcb3"},
+        { b: "#ab8b00", f: "#f3e7b3"},
+        { b: "#636330", f: "#ffffd4"},
+        { b: "#64992c", f: "#f9ffef"},
+        { b: "#006633", f: "#f1f5ec"}
+     ]
+  },
+
    methods: {
       // TODO: deprecate
       getValue: function() {
@@ -163,37 +193,10 @@ MODEL({
          default:
           return { b: '#dddddd', f: '#666666' };
          }
-      },
-
-      DEFAULT_LABEL_COLORS: [
-        { b: "#f1f5ec", f: "#006633"},
-        { b: "#dee5f2", f: "#5a6986"},
-        { b: "#e0ecff", f: "#206cff"},
-        { b: "#dfe2ff", f: "#0000cc"},
-        { b: "#e0d5f9", f: "#5229a3"},
-        { b: "#fde9f4", f: "#854f61"},
-        { b: "#ffe3e3", f: "#cc0000"},
-        { b: "#fff0e1", f: "#ec7000"},
-        { b: "#fadcb3", f: "#b36d00"},
-        { b: "#f3e7b3", f: "#ab8b00"},
-        { b: "#ffffd4", f: "#636330"},
-        { b: "#f9ffef", f: "#64992c"},
-        { b: "#f1f5ec", f: "#006633"},
-        { b: "#5a6986", f: "#dee5f2"},
-        { b: "#206cff", f: "#e0ecff"},
-        { b: "#0000cc", f: "#dfe2ff"},
-        { b: "#5229a3", f: "#e0d5f9"},
-        { b: "#854f61", f: "#fde9f4"},
-        { b: "#cc0000", f: "#ffe3e3"},
-        { b: "#ec7000", f: "#fff0e1"},
-        { b: "#b36d00", f: "#fadcb3"},
-        { b: "#ab8b00", f: "#f3e7b3"},
-        { b: "#636330", f: "#ffffd4"},
-        { b: "#64992c", f: "#f9ffef"},
-        { b: "#006633", f: "#f1f5ec"}
-     ]
+      }
    }
 });
+
 
 var CustomLabelColorMapGrammar = {
   __proto__: grammar,

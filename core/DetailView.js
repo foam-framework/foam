@@ -246,7 +246,7 @@ MODEL({
         try {
           child.data = this.data;
         } catch (x) {
-          console.log("error: ", prop.name, " ", x);
+          console.log('error: ', prop.name, ' ', x);
         }
       }
     }

@@ -109,6 +109,27 @@ function subWindow(w, opt_name, isBackground) {
 // Using the existence of 'process' to determine that we're running in Node.
 var X = this.subWindow(window, 'DEFAULT WINDOW', typeof process === 'object').sub({IN_WINDOW: false});
 
+function registerPackagePath(/* String */ path) {
+  if ( ! path ) return this;
+  if ( path ) console.log('path: ', path);
+  var p = path.split('.');
+  var s = this;
+  for ( var i = 0 ; i < p.length ; i++ ) {
+    s = s.registerPackage(p[i]);
+  }
+  return s;
+}
+
+function registerPackage(/* String */ name) {
+  if ( ! this[name] ) {
+    this[name] = {
+      X: this
+    };
+  }
+
+  return this[name];
+}
+
 function registerModel(model, opt_name) {
   /*
   if ( model.X === this ) {
@@ -117,8 +138,9 @@ function registerModel(model, opt_name) {
     return model;
   }
   */
-  var thisX = this;
-  var thisModel = this === GLOBAL ? model : {
+  var thisX = this.registerPackagePath(model.package);
+
+  var thisModel = thisX === GLOBAL ? model : {
     __proto__: model,
       create: function(args, opt_X) {
         return this.__proto__.create(args, thisX);

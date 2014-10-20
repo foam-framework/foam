@@ -408,11 +408,13 @@ MODEL({
     }
   ],
 
-  methods: {
-    // TODO: Model as Topics
+  constants: {
+    // TODO?: Model as Topics
     ON_HIDE: ['onHide'], // Indicates that the View has been hidden
-    ON_SHOW: ['onShow'], // Indicates that the View is now being reshown
+    ON_SHOW: ['onShow']  // Indicates that the View is now being reshown
+  },
 
+  methods: {
     toView_: function() { return this; },
 
     deepPublish: function(topic) {
@@ -1650,15 +1652,13 @@ MODEL({
     'autocompleteView'
   ],
 
-  methods: {
+  constants: {
     /** Escape topic published when user presses 'escape' key to abort edits. **/
     // TODO: Model as a 'Topic'
-    ESCAPE: ['escape'],
+    ESCAPE: ['escape']
+  },
 
-    installInDocument: function(X, document) {
-      console.log('Installing TextFieldView in Document.');
-    },
-
+  methods: {
     toHTML: function() {
       return this.mode === 'read-write' ?
         this.toReadWriteHTML() :
@@ -3136,11 +3136,13 @@ MODEL({
       // TODO: Stop re-rendering if it's slow or causes flicker or whatever.
 
       this.slider = this.$.children[0];
-      this.width = this.$.clientWidth;
+      this.width  = this.$.clientWidth;
 
       var str = [];
       for ( var i = 0 ; i < this.views.length ; i++ ) {
-        str.push('<div class="swipeAltInner">');
+        // Hide all views except the first one.  They'll be shown after they're resized.
+        // This prevents all views from overlapping on startup.
+        str.push('<div class="swipeAltInner"' + ( i ? ' style="visibility:hidden;"' : '' ) + '>');
         str.push(this.views[i].view.toHTML());
         str.push('</div>');
       }
@@ -3157,6 +3159,8 @@ MODEL({
         self.views.forEach(function(choice) {
           choice.view.initHTML();
         });
+        var vs = self.slider.querySelectorAll('.swipeAltInner');
+        for ( var i = 0 ; i < vs.length ; i++ ) vs[i].style.visibility = '';
       }, 0);
     },
 
@@ -3180,7 +3184,7 @@ MODEL({
   listeners: [
     {
       name: 'resize',
-      isMerged: 300,
+      isMerged: 100,
       code: function() {
         // When the orientation of the screen has changed, update the
         // left and width values of the inner elements and slider.
@@ -3196,6 +3200,7 @@ MODEL({
 
           for ( var i = 0 ; i < self.slider.children.length ; i++ ) {
             self.slider.children[i].style.left = (i * 100) + '%';
+            self.slider.children[i].style.visibility = '';
           }
 
           window.cancelAnimationFrame(frame);

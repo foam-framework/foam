@@ -671,7 +671,6 @@ Please use labels and text to provide additional information.
 
           var v = self.X.QIssueDetailView.create({
             data: obj,
-            QIssueCommentDAO: self.project.issueCommentDAO(id),
             QIssueDAO: self.IssueDAO,
             mode: 'read-only',
             url: self.url

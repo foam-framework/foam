@@ -43,9 +43,9 @@ MODEL({
       isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
-        this.$.width = this.canvasWidth();
-        this.$.style.width = this.styleWidth();
-        this.$.height = this.canvasHeight();
+        this.$.width        = this.canvasWidth();
+        this.$.style.width  = this.styleWidth();
+        this.$.height       = this.canvasHeight();
         this.$.style.height = this.styleHeight();
         this.paint();
       }
@@ -70,9 +70,9 @@ MODEL({
                      this.resize);
     },
 
-    styleWidth: function() { return (this.width) + 'px'; },
-    canvasWidth: function() { return this.width * this.scalingRatio; },
-    styleHeight: function() { return (this.height) + 'px'; },
+    styleWidth:   function() { return (this.width) + 'px'; },
+    canvasWidth:  function() { return this.width * this.scalingRatio; },
+    styleHeight:  function() { return (this.height) + 'px'; },
     canvasHeight: function() { return this.height * this.scalingRatio; },
 
     toString: function() { return 'CViewView(' + this.cview + ')'; },
@@ -81,6 +81,7 @@ MODEL({
       var className = this.className ? ' class="' + this.className + '"' : '';
       return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + '"></canvas>';
     },
+
     initHTML: function() {
       if ( ! this.$ ) return;
 
@@ -111,6 +112,7 @@ MODEL({
     }
   }
 });
+
 
 MODEL({
   name: 'PositionedCViewView',
@@ -156,6 +158,7 @@ MODEL({
   ]
 });
 
+
 MODEL({
   name: 'CViewView',
   extendsModel: 'AbstractCViewView',
@@ -172,6 +175,7 @@ MODEL({
     }
   ]
 });
+
 
 // Should CViews' have a cparent?
 MODEL({
@@ -430,16 +434,20 @@ MODEL({
       defaultValueFn: function() { return this.action.iconUrl; }
     },
     {
-      name: 'pressCircleColor',
+      name: 'haloColor',
       defaultValue: 'rgb(241, 250, 65)'
     },
     {
-      name: 'pressCircle',
+      name: 'halo',
       factory: function() { return Circle2.create({
         alpha: 0,
         r: 10,
-        border: this.pressCircleColor,
-        color: this.pressCircleColor
+        color: this.haloColor
+        /* This gives a ring halo:
+        color: 'rgba(0,0,0,0)',
+        borderWidth: 12,
+        border: this.haloColor
+        */
       });}
     },
     {
@@ -497,18 +505,18 @@ MODEL({
         if ( evt.type === 'touchstart' ) {
           var rect = this.$.getBoundingClientRect();
           var t = evt.touches[0];
-          this.pressCircle.x = t.pageX - rect.left;
-          this.pressCircle.y = t.pageY - rect.top;
+          this.halo.x = t.pageX - rect.left;
+          this.halo.y = t.pageY - rect.top;
         } else {
-          this.pressCircle.x = evt.offsetX;
-          this.pressCircle.y = evt.offsetY;
+          this.halo.x = evt.offsetX;
+          this.halo.y = evt.offsetY;
         }
-        this.pressCircle.r = 5;
+        this.halo.r = 5;
         this.X.animate(150, function() {
-          this.pressCircle.x = this.width/2;
-          this.pressCircle.y = this.height/2;
-          this.pressCircle.r = Math.min(28, Math.min(this.width, this.height)/2-1);
-          this.pressCircle.alpha = 1;
+          this.halo.x = this.width/2;
+          this.halo.y = this.height/2;
+          this.halo.r = Math.min(28, Math.min(this.width, this.height)/2);
+          this.halo.alpha = 1;
         }.bind(this), Movement.easeIn(1))();
       }
     },
@@ -519,7 +527,7 @@ MODEL({
         this.down_ = false;
         this.X.animate(
           300,
-          function() { this.pressCircle.alpha = 0; }.bind(this))();
+          function() { this.halo.r -= 2; this.halo.alpha = 0; }.bind(this))();
       }
     }
   ],
@@ -534,7 +542,11 @@ MODEL({
         this.image_.onload = function() {
           if ( ! this.iconWidth  ) this.iconWidth  = this.image_.width;
           if ( ! this.iconHeight ) this.iconHeight = this.image_.height;
-          if ( this.canvas ) this.paint();
+          if ( this.canvas ) {
+            this.canvas.save();
+            this.paint();
+            this.canvas.restore();
+          }
         }.bind(this);
 
         this.image_.src = this.iconUrl;
@@ -548,12 +560,13 @@ MODEL({
       Events.dynamic(
         function() { self.action.isAvailable.call(self.data, self.action); },
         function() {
-          if ( self.action.isAvailable.call(self.data, self.action) &&
-               self.oldWidth_ && self.oldHeight_ ) {
-            self.x = self.oldX_;
-            self.y = self.oldY_;
-            self.width = self.oldWidth_;
-            self.height = self.oldHeight_;
+          if ( self.action.isAvailable.call(self.data, self.action) ) {
+            if ( self.oldWidth_ && self.oldHeight_ ) {
+              self.x = self.oldX_;
+              self.y = self.oldY_;
+              self.width = self.oldWidth_;
+              self.height = self.oldHeight_;
+            }
           } else if ( self.width || self.height ) {
             self.oldX_ = self.x;
             self.oldY_ = self.y;
@@ -567,12 +580,14 @@ MODEL({
         });
     },
 
-    tapClick: function() {
-      this.onClick();
-    },
+    tapClick: function() { this.onClick(); },
 
     initCView: function() {
-      this.addChild(this.pressCircle);
+      // Don't add halo as a child because we want to control
+      // its paint order, but still set it up as though we had added it.
+      // this.addChild(this.halo);
+      this.halo.view = this.view;
+      this.halo.addListener(this.view.paint);
 
       if ( this.X.gestureManager ) {
         // TODO: Glow animations on touch.
@@ -590,34 +605,43 @@ MODEL({
       this.$.addEventListener('touchleave',  this.onMouseUp);
       this.$.addEventListener('touchcancel', this.onMouseUp);
     },
+
     destroy: function() {
       this.SUPER();
       if ( this.X.gestureManager ) {
         this.X.gestureManager.uninstall(this.tapGesture);
       }
     },
-    paint: function() {
+
+    erase: function() {
       var c = this.canvas;
-      c.save();
-      c.globalAlpha = this.alpha;
-
       if ( this.radius ) {
+        if ( this.halo.r < this.radius-1 ) {
+          c.beginPath();
+          c.arc(this.x+this.radius, this.y+this.radius, this.radius-1, 0, Math.PI*2, false);
+          c.fillStyle = this.background;
+          c.lineWidth = 1;
+          c.fill();
+        }
+      } else {
         this.canvas.clearRect(0, 0, this.width, this.height);
-
-        c.beginPath();
-        c.arc(this.x+this.radius, this.y+this.radius, this.radius-1, 0, Math.PI*2, false);
-        c.strokeStyle = this.pressCircle.r >= this.radius-1 ? this.pressCircle.background : this.background;
-        c.lineWidth = 1;
-        c.stroke();
-        c.clip();
+        this.canvas.fillStyle = this.background;
+        this.canvas.fillRect(0, 0, this.width, this.height);
       }
-
-      this.SUPER();
-      this.paintChildren();
-      c.restore();
     },
+
     paintSelf: function() {
       var c = this.canvas;
+
+      c.save();
+      if ( this.radius ) {
+        c.beginPath();
+        c.arc(this.x+this.radius, this.y+this.radius, this.radius, 0, Math.PI*2, false);
+        c.clip();
+      }
+      this.halo.paint();
+      c.restore();
+
       if ( this.font ) c.font = this.font;
 
       c.globalAlpha  = this.alpha;
@@ -689,6 +713,7 @@ MODEL({
   ]
 });
 
+
 MODEL({name: 'MotionBlur', methods: {
   paint: function() {
     this.SUPER();
@@ -729,6 +754,7 @@ MODEL({name: 'Shadow', methods: {
     this.SUPER();
   }
 }});
+
 
 MODEL({
   name: 'CanvasScrollView',

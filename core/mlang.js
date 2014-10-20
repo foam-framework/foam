@@ -36,7 +36,7 @@ Property.compare = function(o1, o2) {
 MODEL({
   name: 'Expr',
 
-  package: 'foam.mlang',
+  // package: 'foam.mlang',
 
   documentation: 'Parent model for all mLang expressions. Contains default implementations for many methods.',
 
@@ -310,8 +310,10 @@ MODEL({
         out = this.args[i].minterm(index, term) && out;
       }
       return out;
-    },
+    }
+  },
 
+  constants: {
     PARTIAL_AND_RULES: [
       [ 'EqExpr', 'EqExpr',
         function(e1, e2) {
@@ -480,8 +482,10 @@ MODEL({
         out = this.args[i].minterm(index, term) || out;
       }
       return out;
-    },
+    }
+  },
 
+  constants: {
     PARTIAL_OR_RULES: [
       [ 'InExpr', 'EqExpr',
         function(e1, e2) {

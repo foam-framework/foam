@@ -126,18 +126,6 @@ MODEL({
 
 
 MODEL({
-  name: 'ColoredBackgroundTrait',
-  methods: {
-    colors: 'e8ad62 9b26af 6639b6 4184f3 02a8f3 00bbd3 009587 0e9c57 9e9c57 8ac249 ccdb38 ffea3a f3b300 ff9700 ff5621 785447'.split(' '),
-    generateColor: function(data) {
-      return '#' + this.colors[Math.abs(data.hashCode()) % this.colors.length];
-    },
-    generateColorStyle: function(data) { return ' style="background:' + this.generateColor(data) + ';"'; }
-  }
-});
-
-
-MODEL({
   name: 'PriorityView',
   extendsModel: 'View',
   properties: [
@@ -189,40 +177,12 @@ MODEL({
 
 
 MODEL({
-  name: 'IssueOwnerAvatarView',
-
-  extendsModel: 'View',
-  traits: ['ColoredBackgroundTrait'],
-
-  properties: [
-    { name: 'data', postSet: function() { this.updateHTML(); } },
-  ],
-  methods: {
-    generateColor: function(data) {
-      return data ? this.SUPER(data) : 'url(images/silhouette.png)';
-    },
-    updateHTML: function() {
-      if ( this.$ ) this.$.style.background = this.generateColor(this.data);
-      this.SUPER();
-    },
-  },
-  templates: [
-    function toInnerHTML() {/* {{{this.data[0] && this.data[0].toUpperCase()}}} */},
-    // TODO: replace use of data-tip with Tooltip Model
-    function toHTML() {/*
-      <div id="<%= this.id %>" data-tip="<%= this.data %>" class="owner-avatar" style="background:<%= this.generateColor(this.data) %>"><%= this.toInnerHTML() %></div>
-    */}
-  ]
-});
-
-
-MODEL({
   name: 'IssueCitationView',
   extendsModel: 'DetailView',
   templates: [
     function toHTML() {/*
       <div id="<%= this.on('click', function() { this.X.mbug.editIssue(this.data); }) %>" class="issue-citation">
-        $$owner{model_: "IssueOwnerAvatarView"}
+        $$owner{model_: 'MDMonogramStringView'}
         <div class="middle">
           $$id{mode: 'read-only', className: 'id'}
         <% if ( this.data.pri ) { %>
@@ -251,7 +211,7 @@ MODEL({
     <div class="separator"></div>
     <div id="<%= this.id %>" class="comment-view">
        <span class="owner">
-         <%= IssueOwnerAvatarView.create({data: this.data.author.name}) %>
+         <%= MDMonogramStringView.create({data: this.data.author.name}) %>
        </span>
        <span class="content">
          Commented by $$author<br>
@@ -277,29 +237,6 @@ MODEL({
   ],
 
   templates: [
-    function toInnerHTML() {/*
-      <div class="header">
-        $$email{model_: 'IssueOwnerAvatarView'}
-        $$email{mode: 'display-only'}
-        <br><br>
-      </div>
-      <div class="projectList">
-      <%
-         var projects = this.data.preferredProjects;
-
-         if ( projects.indexOf('chromium') == -1 ) projects.push('chromium');
-         if ( projects.indexOf('foam-framework') == -1 ) projects.push('foam-framework');
-
-         projects.forEach(function(project) { %>
-        <% if ( ' chromium-os chromedriver cinc crwm chrome-os-partner ee-testers-external '.indexOf(' ' + project + ' ') != -1 ) return; %>
-        <div id="<%= self.on('click', function() { self.X.stack.back(); self.X.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
-          <%= ImageView.create({backupImage: 'images/defaultlogo.png', data: self.X.baseURL + project + '/logo'}) %>
-          <span class="project-name <%= self.X.projectName === project ? 'selected' : '' %>"><%= project %></span>
-        </div>
-        <% }); %>
-        </div>
-    </div>
-    */},
     function CSS() {/*
       .change-project-view {
         margin: 0;
@@ -308,6 +245,9 @@ MODEL({
         font-size: 14px;
         font-weight: 500;
         background: white;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
       }
 
       .change-project-view .header {
@@ -315,13 +255,6 @@ MODEL({
         height: 172px;
         margin-bottom: 0;
         background-image: url('images/projectBackground.png');
-      }
-
-      .change-project-view {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        background: white;
       }
 
       .change-project-view span[name=email] {
@@ -339,7 +272,7 @@ MODEL({
         padding: 8px 0;
       }
 
-      .change-project-view .owner-avatar {
+      .change-project-view .monogram-string-view {
         width: 64px;
         height: 64px;
         border-radius: 32px;
@@ -369,6 +302,29 @@ MODEL({
       .project-citation .project-name.selected {
         color: #3e50b4;
       }
-  */}
+    */},
+    function toInnerHTML() {/*
+      <div class="header">
+        $$email{model_: 'MDMonogramStringView'}
+        $$email{mode: 'display-only'}
+        <br><br>
+      </div>
+      <div class="projectList">
+      <%
+         var projects = this.data.preferredProjects;
+
+         if ( projects.indexOf('chromium') == -1 ) projects.push('chromium');
+         if ( projects.indexOf('foam-framework') == -1 ) projects.push('foam-framework');
+
+         projects.forEach(function(project) { %>
+        <% if ( ' chromium-os chromedriver cinc crwm chrome-os-partner ee-testers-external '.indexOf(' ' + project + ' ') != -1 ) return; %>
+        <div id="<%= self.on('click', function() { self.X.stack.back(); self.X.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
+          <%= ImageView.create({backupImage: 'images/defaultlogo.png', data: self.X.baseURL + project + '/logo'}) %>
+          <span class="project-name <%= self.X.projectName === project ? 'selected' : '' %>"><%= project %></span>
+        </div>
+        <% }); %>
+        </div>
+    </div>
+    */}
  ]
 });

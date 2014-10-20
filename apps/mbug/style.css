@@ -12,21 +12,6 @@
   margin-top: 16px;
 }
 
-.owner-avatar {
-  align-items: center;
-  border-radius: 20px;
-  border: 1px solid rgba(0,0,0,.1);
-  color: #fff;
-  display: inline-flex;
-  flex-grow: 0;
-  font-size: 20px;
-  height: 40px;
-  justify-content: center;
-  margin-right: 16px;
-  overflow: hidden;
-  width: 40px;
-}
-
 .issue-citation .middle {
   flex: 1;
   margin-right: 10px;
@@ -425,7 +410,7 @@ select[name=pri], select[name=status] {
 .swipeAltHeader li {
   font-size: 14px;
   opacity: 0.8;
-  line-height: 48px;
+  line-height: 46px;
   padding-bottom: 14px;
 }
 

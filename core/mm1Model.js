@@ -87,7 +87,7 @@ var ModelModel = {
   */ },
 
   tableProperties: [
-    'name', 'label', 'plural'
+    'package', 'name', 'label', 'plural'
   ],
 
   ids: [ 'name' ],
@@ -96,19 +96,17 @@ var ModelModel = {
     {
       name:  'package',
       help: 'Java class package.',
-      defaultValueFn: function() {
-        return this.extendsModel ? GLOBAL[this.extendsModel].package : '';
-      },
-			documentation: function() { /* When running FOAM in a Java environment, specifies the
-				package in which to declare the Java class built from this $$DOC{ref:'Model'}.*/}
+      defaultValue: '',
+      documentation: function() { /* When running FOAM in a Java environment, specifies the
+        package in which to declare the Java class built from this $$DOC{ref:'Model'}.*/}
     },
     {
       name:  'abstract',
       type: 'boolean',
       defaultValue: false,
       help: 'If the java class is abstract.',
-			documentation: function() { /* When running FOAM in a Java environment, specifies whether the
-				Java class built from this $$DOC{ref:'Model'} should be declared abstract.*/}
+      documentation: function() { /* When running FOAM in a Java environment, specifies whether the
+        Java class built from this $$DOC{ref:'Model'} should be declared abstract.*/}
     },
     {
       name:  'name',
@@ -118,12 +116,12 @@ var ModelModel = {
       displayHeight: 1,
       defaultValue: '',
       help: 'The coding identifier for the entity.',
-			documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
-				$$DOC{ref:'Model.name'} should generally only contain identifier-safe characters.
-			  $$DOC{ref:'Model'} definition names should use CamelCase starting with a capital letter, while
-			  $$DOC{ref:'Property',usePlural:true}, $$DOC{ref:'Method',usePlural:true}, and other features
-			  defined inside a $$DOC{ref:'Model'} should use camelCase staring with a lower case letter.
-				 */}
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'Model.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'Model'} definition names should use CamelCase starting with a capital letter, while
+        $$DOC{ref:'Property',usePlural:true}, $$DOC{ref:'Method',usePlural:true}, and other features
+        defined inside a $$DOC{ref:'Model'} should use camelCase staring with a lower case letter.
+         */}
     },
     {
       name: 'label',
@@ -132,9 +130,9 @@ var ModelModel = {
       displayHeight: 1,
       defaultValueFn: function() { return this.name.labelize(); },
       help: 'The display label for the entity.',
-			documentation: function() { /* A human readable label for the $$DOC{ref:'Model'}. May
-				contain spaces or other odd characters.
-				 */}
+      documentation: function() { /* A human readable label for the $$DOC{ref:'Model'}. May
+        contain spaces or other odd characters.
+         */}
     },
     {
       name: 'javaClassName',
@@ -143,8 +141,8 @@ var ModelModel = {
       displayHeight: 1,
       defaultValueFn: function() { return (this.abstract ? 'Abstract' : '') + this.name; },
       help: 'The Java classname of this Model.',
-			documentation: function() { /* When running FOAM in a Java environment, specifies the name of the
-				Java class to be built from this $$DOC{ref:'Model'}.*/}
+      documentation: function() { /* When running FOAM in a Java environment, specifies the name of the
+        Java class to be built from this $$DOC{ref:'Model'}.*/}
     },
     {
       name: 'extendsModel',
@@ -153,15 +151,15 @@ var ModelModel = {
       displayHeight: 1,
       defaultValue: '',
       help: 'The parent model of this model.',
-			documentation: function() { /*
-				<p>Specifies the $$DOC{ref:'Model.name'} of the $$DOC{ref:'Model'} that
-				this model should inherit from. Like object-oriented inheritance, this $$DOC{ref:'Model'} will gain the
-			  $$DOC{ref:'Property',usePlural:true}, $$DOC{ref:'Method',usePlural:true}, and other features
-			  defined inside the $$DOC{ref:'Model'} you extend.</p>
-				<p>You may override features by redefining them in your $$DOC{ref:'Model'}.</p>
-				<p>Like most inheritance schemes, instances of your $$DOC{ref:'Model'} may be used in place of
-				instances of the $$DOC{ref:'Model'} you extend.</p>
-				 */}
+      documentation: function() { /*
+        <p>Specifies the $$DOC{ref:'Model.name'} of the $$DOC{ref:'Model'} that
+        this model should inherit from. Like object-oriented inheritance, this $$DOC{ref:'Model'} will gain the
+        $$DOC{ref:'Property',usePlural:true}, $$DOC{ref:'Method',usePlural:true}, and other features
+        defined inside the $$DOC{ref:'Model'} you extend.</p>
+        <p>You may override features by redefining them in your $$DOC{ref:'Model'}.</p>
+        <p>Like most inheritance schemes, instances of your $$DOC{ref:'Model'} may be used in place of
+        instances of the $$DOC{ref:'Model'} you extend.</p>
+         */}
     },
     {
       name: 'plural',
@@ -170,16 +168,16 @@ var ModelModel = {
       displayHeight: 1,
       defaultValueFn: function() { return this.name + 's'; },
       help: 'The plural form of this model\'s name.',
-			documentation: function() { /* The plural form of $$DOC{ref:'Model.name'}, for use in documentation
-				and other human-readable areas. */}
+      documentation: function() { /* The plural form of $$DOC{ref:'Model.name'}, for use in documentation
+        and other human-readable areas. */}
     },
     {
       name: 'version',
       type: 'int',
       defaultValue: 1,
       help: 'Version number of model.',
-			documentation: function() { /* For backwards compatibility, major changes should be marked by
-			  incrementing the version number. */}
+      documentation: function() { /* For backwards compatibility, major changes should be marked by
+        incrementing the version number. */}
 
     },
     {
@@ -194,11 +192,11 @@ var ModelModel = {
         return this.properties.length ? [this.properties[0].name] : [];
       },
       help: 'Properties which make up unique id.',
-			documentation: function() { /* An optional list of names of $$DOC{ref:'Property',usePlural:true} from
-				this $$DOC{ref:'Model'}, which can be used together as a primary key. The $$DOC{ref:'Property',usePlural:true},
-				when combined, should uniquely identify an instance of your $$DOC{ref:'Model'}.
-				$$DOC{ref:'DAO',usePlural:true} that support indexing can use this as a suggestion on how to index
-				instances of your $$DOC{ref:'Model'}. */}
+      documentation: function() { /* An optional list of names of $$DOC{ref:'Property',usePlural:true} from
+        this $$DOC{ref:'Model'}, which can be used together as a primary key. The $$DOC{ref:'Property',usePlural:true},
+        when combined, should uniquely identify an instance of your $$DOC{ref:'Model'}.
+        $$DOC{ref:'DAO',usePlural:true} that support indexing can use this as a suggestion on how to index
+        instances of your $$DOC{ref:'Model'}. */}
 
     },
     {
@@ -207,8 +205,8 @@ var ModelModel = {
       view: 'StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Traits to mix-into this Model.',
-			documentation: function() { /* Traits allow you to mix extra features into your $$DOC{ref:'Model'}
-			 	through composition, avoiding inheritance where unecesssary. */}
+      documentation: function() { /* Traits allow you to mix extra features into your $$DOC{ref:'Model'}
+         through composition, avoiding inheritance where unecesssary. */}
     },
     {
       name: 'tableProperties',
@@ -219,8 +217,8 @@ var ModelModel = {
         return this.model_.getAllProperties().map(function(o) { return o.name; });
       },
       help: 'Properties to be displayed in table view. Defaults to all properties.',
-			documentation: function() { /* Indicates the $$DOC{ref:'Property',usePlural:true} to display when viewing a list of instances
-			  of this $$DOC{ref:'Model'} in a table or other $$DOC{ref:'Property'} viewer. */}
+      documentation: function() { /* Indicates the $$DOC{ref:'Property',usePlural:true} to display when viewing a list of instances
+        of this $$DOC{ref:'Model'} in a table or other $$DOC{ref:'Property'} viewer. */}
     },
     {
       name: 'searchProperties',
@@ -231,8 +229,8 @@ var ModelModel = {
         return this.tableProperties;
       },
       help: 'Properties display in a search view. Defaults to table properties.',
-			documentation: function() { /* Indicates the $$DOC{ref:'Property',usePlural:true} to display when viewing
-			  of this $$DOC{ref:'Model'} in a search view. */}
+      documentation: function() { /* Indicates the $$DOC{ref:'Property',usePlural:true} to display when viewing
+        of this $$DOC{ref:'Model'} in a search view. */}
     },
     {
       name: 'properties',
@@ -263,13 +261,13 @@ var ModelModel = {
 
         return newValue;
       },
-			documentation: function() { /*
-				<p>The $$DOC{ref:'Property',usePlural:true} of a $$DOC{ref:'Model'} act as data members
-					and connection points. A $$DOC{ref:'Property'} can store a modelled value, and bind
-				  to other $$DOC{ref:'Property',usePlural:true} for easy reactive programming.</p>
-				<p>Note that, like $$DOC{ref:'Model'} being a $$DOC{ref:'Model'} itself, the
-					$$DOC{ref:'Model.properties'} feature of all models is itself a $$DOC{ref:'Property'}.
-				*/}
+      documentation: function() { /*
+        <p>The $$DOC{ref:'Property',usePlural:true} of a $$DOC{ref:'Model'} act as data members
+          and connection points. A $$DOC{ref:'Property'} can store a modelled value, and bind
+          to other $$DOC{ref:'Property',usePlural:true} for easy reactive programming.</p>
+        <p>Note that, like $$DOC{ref:'Model'} being a $$DOC{ref:'Model'} itself, the
+          $$DOC{ref:'Model.properties'} feature of all models is itself a $$DOC{ref:'Property'}.
+        */}
     },
     {
       name: 'actions',
@@ -298,11 +296,41 @@ var ModelModel = {
 
         return newValue;
       },
-			documentation: function() { /*
-				<p>$$DOC{ref:'Action',usePlural:true} implement a behavior and attach a label, icon, and typically a
-				button-like $$DOC{ref:'View'} or menu item to activate the behavior.</p>
-				*/}
+      documentation: function() { /*
+        <p>$$DOC{ref:'Action',usePlural:true} implement a behavior and attach a label, icon, and typically a
+        button-like $$DOC{ref:'View'} or menu item to activate the behavior.</p>
+        */}
 
+    },
+    {
+      name: 'constants',
+      type: 'Array[Constant]',
+      subType: 'Constant',
+      view: 'ArrayView',
+      factory: function() { return []; },
+      defaultValue: [],
+      help: 'Constants associated with the entity.',
+      preSet: function(_, newValue) {
+        if ( ! Constant ) return;
+
+        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Constant);
+
+        // convert a map of values to an array of Constant objects
+        var constants = [];
+
+        for ( var key in newValue ) {
+          var oldValue = newValue[key];
+
+          var constant = Constant.create({
+            name:  key,
+            value: oldValue
+          });
+
+          constants.push(constant);
+        }
+
+        return constants;
+      }
     },
     {
       name: 'methods',
@@ -334,6 +362,9 @@ var ModelModel = {
             method.args = oldValue.toString().match(/^function[ _$\w]*\(([ ,\w]*)/)[1].split(',').map(function(name) {
               return Arg.create({name: name.trim()});
             });
+          } else {
+            console.warn('Constant defined as Method: ', this.name + '.' + key);
+            debugger;
           }
 
           methods.push(method);
@@ -341,25 +372,25 @@ var ModelModel = {
 
         return methods;
       },
-			documentation: function() { /*
+      documentation: function() { /*
         <p>$$DOC{ref:'Method',usePlural:true} contain code that runs in the instance's scope, so code
-				in your $$DOC{ref:'Method'} has access to the other $$DOC{ref:'Property',usePlural:true} and
-				features of your $$DOC{ref:'Model'}.</p>
-				<ul>
-					<li><code>this.propertyName</code> gives the value of a $$DOC{ref:'Property'}</li>
-					<li><code>this.propertyName$</code> is the binding point for the $$DOC{ref:'Property'}. Assignment
-							will bind bi-directionally, or <code>Events.follow(src, dst)</code> will bind from
-							src to dst.</li>
-					<li><code>this.methodName</code> calls another $$DOC{ref:'Method'} of this
-									$$DOC{ref:'Model'}</li>
-					<li><code>this.SUPER()</code> calls the $$DOC{ref:'Method'} implementation from the
-										base $$DOC{ref:'Model'} (specified in $$DOC{ref:'Model.extendsModel'}). Calling
-										<code>this.SUPER()</code> is extremely important in your <code>init()</code>
-							     	$$DOC{ref:'Method'}, if you provide one.</li>
-				</ul>
-				<p>In JSON, $$DOC{ref:'Model.methods'} may be specified as a dictionary:</p>
-				<p><code>methods: { methodName: function(arg1) {  ...your code here... }, anotherMethod: ... }</code></p>
-				*/}
+        in your $$DOC{ref:'Method'} has access to the other $$DOC{ref:'Property',usePlural:true} and
+        features of your $$DOC{ref:'Model'}.</p>
+        <ul>
+          <li><code>this.propertyName</code> gives the value of a $$DOC{ref:'Property'}</li>
+          <li><code>this.propertyName$</code> is the binding point for the $$DOC{ref:'Property'}. Assignment
+              will bind bi-directionally, or <code>Events.follow(src, dst)</code> will bind from
+              src to dst.</li>
+          <li><code>this.methodName</code> calls another $$DOC{ref:'Method'} of this
+                  $$DOC{ref:'Model'}</li>
+          <li><code>this.SUPER()</code> calls the $$DOC{ref:'Method'} implementation from the
+                    base $$DOC{ref:'Model'} (specified in $$DOC{ref:'Model.extendsModel'}). Calling
+                    <code>this.SUPER()</code> is extremely important in your <code>init()</code>
+                     $$DOC{ref:'Method'}, if you provide one.</li>
+        </ul>
+        <p>In JSON, $$DOC{ref:'Model.methods'} may be specified as a dictionary:</p>
+        <p><code>methods: { methodName: function(arg1) {  ...your code here... }, anotherMethod: ... }</code></p>
+        */}
     },
     {
       name: 'listeners',
@@ -374,14 +405,14 @@ var ModelModel = {
       defaultValue: [],
       help: 'Event listeners associated with the entity.',
       documentation: function() { /*
-				<p>The $$DOC{ref:'Model.listeners'} $$DOC{ref:'Property'} contains a list of $$DOC{ref:'Method',usePlural:true},
-				  but is separate and differs from the $$DOC{ref:'Model.methods'} $$DOC{ref:'Property'} in how the scope
-				  is handled. For a listener, <code>this</code> is bound to your instance, so when the listener is
-				  invoked by an event from elsewhere in the system it can still access the features of its $$DOC{ref:'Model'}
-				  instance.</p>
-				<p>In javascript, listeners are connected using
-					<code>OtherProperty.addListener(myModelInstance.myListener);</code></p>
-			*/}
+        <p>The $$DOC{ref:'Model.listeners'} $$DOC{ref:'Property'} contains a list of $$DOC{ref:'Method',usePlural:true},
+          but is separate and differs from the $$DOC{ref:'Model.methods'} $$DOC{ref:'Property'} in how the scope
+          is handled. For a listener, <code>this</code> is bound to your instance, so when the listener is
+          invoked by an event from elsewhere in the system it can still access the features of its $$DOC{ref:'Model'}
+          instance.</p>
+        <p>In javascript, listeners are connected using
+          <code>OtherProperty.addListener(myModelInstance.myListener);</code></p>
+      */}
     },
     /*
       {
@@ -406,12 +437,12 @@ var ModelModel = {
       },
       //         defaultValueFn: function() { return []; },
       help: 'Templates associated with this entity.',
-			documentation: function() { /*
-				The $$DOC{ref:'Template',usePlural:true} to process and install into instances of this
-				$$DOC{ref:'Model'}. $$DOC{ref:'View',usePlural:true} created inside each $$DOC{ref:'Template'}
-				using the $$DOC{ref:'.templates',text:'$$propertyName{args}'} view creation tag become available
-				as <code>myInstance.propertyNameView</code>.
-				*/}
+      documentation: function() { /*
+        The $$DOC{ref:'Template',usePlural:true} to process and install into instances of this
+        $$DOC{ref:'Model'}. $$DOC{ref:'View',usePlural:true} created inside each $$DOC{ref:'Template'}
+        using the $$DOC{ref:'.templates',text:'$$propertyName{args}'} view creation tag become available
+        as <code>myInstance.propertyNameView</code>.
+        */}
     },
     {
       name: 'models',
@@ -421,11 +452,11 @@ var ModelModel = {
       factory: function() { return []; },
       defaultValue: [],
       help: 'Sub-models embedded within this model.',
-			documentation: function() { /*
-				$$DOC{ref:'Model',usePlural:true} may be nested inside one another to better organize them.
-				$$DOC{ref:'Model',usePlural:true} declared this way do not gain special access to their containing
-				$$DOC{ref:'Model'}, but are only accessible through their container.
-				*/}
+      documentation: function() { /*
+        $$DOC{ref:'Model',usePlural:true} may be nested inside one another to better organize them.
+        $$DOC{ref:'Model',usePlural:true} declared this way do not gain special access to their containing
+        $$DOC{ref:'Model'}, but are only accessible through their container.
+        */}
     },
     {
       name: 'tests',
@@ -436,10 +467,10 @@ var ModelModel = {
       factory: function() { return []; },
       defaultValue: [],
       help: 'Unit tests associated with this model.',
-			documentation: function() { /*
-				  Create $$DOC{ref:'UnitTest',usePlural:true} that should run to test the functionality of this
-					$$DOC{ref:'Model'} here.
-				*/}
+      documentation: function() { /*
+          Create $$DOC{ref:'UnitTest',usePlural:true} that should run to test the functionality of this
+          $$DOC{ref:'Model'} here.
+        */}
     },
     {
       name: 'relationships',
@@ -467,13 +498,13 @@ var ModelModel = {
 
         return newValue;
       },
-			documentation: function() { /*
+      documentation: function() { /*
           <p>$$DOC{ref:'Relationship',usePlural:true} indicate a parent-child relation between instances of
-				  this $$DOC{ref:'Model'} and the indicated $$DOC{ref:'Model',usePlural:true}, through the indicated
-				  $$DOC{ref:'Property',usePlural:true}. If your $$DOC{ref:'Model',usePlural:true} build a tree
-				  structure of instances, they could likely benefit from a declared $$DOC{ref:'Relationship'}.
+          this $$DOC{ref:'Model'} and the indicated $$DOC{ref:'Model',usePlural:true}, through the indicated
+          $$DOC{ref:'Property',usePlural:true}. If your $$DOC{ref:'Model',usePlural:true} build a tree
+          structure of instances, they could likely benefit from a declared $$DOC{ref:'Relationship'}.
           </p>
-				*/}
+        */}
     },
     {
       name: 'issues',
@@ -483,10 +514,10 @@ var ModelModel = {
       factory: function() { return []; },
       defaultValue: [],
       help: 'Issues associated with this model.',
-			documentation: function() { /*
-				  Bug tracking inside the FOAM system can attach $$DOC{ref:'Issue',usePlural:true} directly to the
-				  affected $$DOC{ref:'Model',usePlural:true}.
-				*/}
+      documentation: function() { /*
+          Bug tracking inside the FOAM system can attach $$DOC{ref:'Issue',usePlural:true} directly to the
+          affected $$DOC{ref:'Model',usePlural:true}.
+        */}
     },
     {
       name: 'help',
@@ -497,10 +528,10 @@ var ModelModel = {
       view: 'TextAreaView',
       defaultValue: '',
       help: 'Help text associated with the entity.',
-			documentation: function() { /*
-				  This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'Model'} or
-					$$DOC{ref:'Property'}, through field labels or tooltips.
-				*/}
+      documentation: function() { /*
+          This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'Model'} or
+          $$DOC{ref:'Property'}, through field labels or tooltips.
+        */}
 
     },
     DocumentationBootstrap,
@@ -512,9 +543,9 @@ var ModelModel = {
       view: 'TextAreaView',
       defaultValue: '',
       help: 'Internal documentation associated with this entity.',
-			documentation: function() { /*
-				  Internal documentation or implementation-specific 'todo' notes.
-				*/}
+      documentation: function() { /*
+          Internal documentation or implementation-specific 'todo' notes.
+        */}
 
     },
     {
@@ -527,7 +558,7 @@ var ModelModel = {
       view: 'FunctionView',
       defaultValue: '',
       help: 'Factory to create the action object for creating this object',
-			documentation: function() { /* Factory to create the action object for creating this object	*/}
+      documentation: function() { /* Factory to create the action object for creating this object  */}
     },
     {
       name: 'deleteActionFactory',
@@ -539,7 +570,7 @@ var ModelModel = {
       view: 'FunctionView',
       defaultValue: '',
       help: 'Factory to create the action object for deleting this object',
-		  	documentation: function() { /* Factory to create the action object for deleting this object	*/}
+        documentation: function() { /* Factory to create the action object for deleting this object  */}
     }
   ],
 

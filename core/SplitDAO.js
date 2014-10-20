@@ -38,7 +38,7 @@ MODEL({
       name: 'syncManager',
       factory: function() {
         return this.X.SyncManager.create({
-          srcDAO: this.remove,
+          srcDAO: this.remote,
           dstDAO: this.delegate,
         });
       },

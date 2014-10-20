@@ -971,11 +971,11 @@ var WarpedCanvas = {
         this.x = mx + Math.cos(t) * r;
         this.y = my + Math.sin(t) * r;
       },
-      moveTo: function(x, y) { this.warp(x, y); c.moveTo(this.x, this.y); this.X = x; this.Y = y; },
+      moveTo: function(x, y) { this.warp(x, y); c.moveTo(this.x, this.y); this.pX = x; this.pY = y; },
       lineTo: function(x2, y2) {
         var N = 100;
-        var x1 = this.X;
-        var y1 = this.Y;
+        var x1 = this.pX;
+        var y1 = this.pY;
         var dx = (x2 - x1)/N;
         var dy = (y2 - y1)/N;
         var x = x1, y = y1;
@@ -985,8 +985,8 @@ var WarpedCanvas = {
           this.warp(x, y);
           c.lineTo(this.x, this.y);
         }
-        this.X = x2;
-        this.Y = y2;
+        this.pX = x2;
+        this.pY = y2;
       },
       line: function(x1, y1, x2, y2) {
         c.beginPath();

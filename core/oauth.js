@@ -47,7 +47,7 @@ var OAuthXhr = {
           self.xhr.asend(ret, payload);
         },
         function(ret) {
-          if (self.xhr.status == 401 || self.xhr.status == 403) {
+          if ( self.xhr.status == 401 ) {
             if (attempts >= 2) {
               finished = true;
               ret();

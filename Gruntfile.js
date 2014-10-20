@@ -64,6 +64,8 @@ module.exports = function(grunt) {
           'core/mm6Protobuf.js',
           'core/value.js',
           'core/view.js',
+          'core/layout.js',
+          'core/daoView.js',
           'core/ChoiceView.js',
           'core/DetailView.js',
           'core/TableView.js',
@@ -78,7 +80,9 @@ module.exports = function(grunt) {
           'core/async.js',
           'core/oam.js',
           'core/visitor.js',
+          'core/messaging.js',
           'core/dao.js',
+          'core/arrayDAO.js',
           'core/ClientDAO.js',
           'core/diff.js',
           'core/SplitDAO.js',
@@ -94,9 +98,10 @@ module.exports = function(grunt) {
           'core/glang.js',
           'core/oauth.js',
           'apps/mailreader/view.js',
-          'lib/email/email.js',
           'apps/mailreader/email.js',
-          'core/turntable.js'
+          'lib/email/email.js',
+          'core/turntable.js',
+          'core/CORE.js'
         ]
       }
     },
@@ -104,7 +109,8 @@ module.exports = function(grunt) {
     uglify: {
       foam: {
         src:  'build/foam.js',
-        dest: 'build/foam.min.js'
+        dest: 'build/foam.min.js',
+        preserveComments: 'all'
       }
     },
 

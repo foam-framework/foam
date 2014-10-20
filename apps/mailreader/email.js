@@ -54,7 +54,7 @@ MODEL({
         }
     ],
 
-    methods: {
+    constants: {
         // TODO:  Not an exhaustive list
         SystemLabels: {
           ALL:       '^all',
@@ -69,8 +69,10 @@ MODEL({
           STARRED:   '^t', // 't' originall stood for TODO
           TRASH:     '^k',
           UNREAD:    '^u'
-        },
+        }
+    },
 
+    methods: {
         RENDERABLE_SYSTEM_LABELS: lazyEval(function() {
           var result = {};
           var SystemLabels = this.SystemLabels;

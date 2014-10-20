@@ -49,10 +49,10 @@ var PropertyModel = {
       displayHeight: 1,
       defaultValue: '',
       help: 'The coding identifier for the property.',
-			documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
-				$$DOC{ref:'.name'} should generally only contain identifier-safe characters.
-			  $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
-				 */}
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
+         */}
 
     },
     {
@@ -63,9 +63,9 @@ var PropertyModel = {
       displayHeight: 1,
       defaultValueFn: function() { return this.name.labelize(); },
       help: 'The display label for the property.',
-			documentation: function() { /* A human readable label for the $$DOC{ref:'.'}. May
-				contain spaces or other odd characters.
-				 */}			
+      documentation: function() { /* A human readable label for the $$DOC{ref:'.'}. May
+        contain spaces or other odd characters.
+         */}      
     },
     {
       name: 'tableLabel',
@@ -74,10 +74,10 @@ var PropertyModel = {
       displayHeight: 1,
       defaultValueFn: function() { return this.name.labelize(); },
       help: 'The table display label for the entity.',
-			documentation: function() { /* A human readable label for the $$DOC{ref:'Model'} for use in tables. May
-				contain spaces or other odd characters.
-				 */}			
-			
+      documentation: function() { /* A human readable label for the $$DOC{ref:'Model'} for use in tables. May
+        contain spaces or other odd characters.
+         */}      
+      
     },
     {
       name: 'type',
@@ -106,9 +106,9 @@ var PropertyModel = {
       },
       defaultValue: 'String',
       help: 'The type of the property.',
-			documentation: function() { /* <p>The type of the $$DOC{ref:'.'}, either a primitive type or
-					a $$DOC{ref:'Model'}.</p> <p>Primitives include:</p>
-			<ul>
+      documentation: function() { /* <p>The type of the $$DOC{ref:'.'}, either a primitive type or
+          a $$DOC{ref:'Model'}.</p> <p>Primitives include:</p>
+      <ul>
           <li>Array</li>
           <li>Boolean</li>
           <li>Color</li>
@@ -125,8 +125,8 @@ var PropertyModel = {
           <li>String</li>
           <li>String[]</li>
           <li>URL</li>
-			</ul>
-				 */}			
+      </ul>
+         */}      
     },
     {
       name: 'javaType',
@@ -134,8 +134,8 @@ var PropertyModel = {
       required: false,
       defaultValueFn: function() { return this.type; },
       help: 'The java type that represents the type of this property.',
-			documentation: function() { /* When running FOAM in a Java environment, specifies the Java type
-			  or class to use. */}
+      documentation: function() { /* When running FOAM in a Java environment, specifies the Java type
+        or class to use. */}
     },
     {
       name: 'javascriptType',
@@ -143,8 +143,8 @@ var PropertyModel = {
       required: false,
       defaultValueFn: function() { return this.type; },
       help: 'The javascript type that represents the type of this property.',
-			documentation: function() { /* When running FOAM in a javascript environment, specifies the javascript
-				 type to use. */}
+      documentation: function() { /* When running FOAM in a javascript environment, specifies the javascript
+         type to use. */}
     },
     {
       name: 'shortName',
@@ -162,9 +162,9 @@ var PropertyModel = {
       view: 'StringArrayView',
       defaultValue: [],
       help: 'Alternate names for this property.',
-			documentation: function() { /* 
-				Aliases can be used as synonyms for this $$DOC{ref:'Property'} in code or to look it up by name. 
-			*/}
+      documentation: function() { /* 
+        Aliases can be used as synonyms for this $$DOC{ref:'Property'} in code or to look it up by name. 
+      */}
     },
     {
       name: 'mode',
@@ -174,11 +174,11 @@ var PropertyModel = {
         create: function() { return ChoiceView.create({choices:[
           "read-only", "read-write", "final"
         ]}); } },
-				documentation: function() { /* 
-					To restrict modification to a $$DOC{ref:'Property'}, the $$DOC{ref:'.mode'} can be set to read-only
-					to block changes, or to final to block overriding this $$DOC{ref:'Property'} in descendents of
-					the $$DOC{ref:'Model'} that owns this $$DOC{ref:'Property'}.
-				*/}
+        documentation: function() { /* 
+          To restrict modification to a $$DOC{ref:'Property'}, the $$DOC{ref:'.mode'} can be set to read-only
+          to block changes, or to final to block overriding this $$DOC{ref:'Property'} in descendents of
+          the $$DOC{ref:'Model'} that owns this $$DOC{ref:'Property'}.
+        */}
     },
     {
       name: 'subType',
@@ -187,9 +187,9 @@ var PropertyModel = {
       displayWidth: 30,
       // todo: keyView of Models
       help: 'The type of the property.',
-			documentation: function() { /* 
-				In array types, the $$DOC{ref:'.subType'} indicates the type that the array contains.
-			*/}
+      documentation: function() { /* 
+        In array types, the $$DOC{ref:'.subType'} indicates the type that the array contains.
+      */}
     },
     {
       name: 'units',
@@ -199,9 +199,9 @@ var PropertyModel = {
       displayHeight: 1,
       defaultValue: '',
       help: 'The units of the property.',
-			documentation: function() { /* 
-				The units of the $$DOC{ref:'Property'}.
-			*/}
+      documentation: function() { /* 
+        The units of the $$DOC{ref:'Property'}.
+      */}
     },
     {
       name: 'required',
@@ -209,10 +209,10 @@ var PropertyModel = {
       view: 'BooleanView',
       defaultValue: true,
       help: 'Indicates if the property is a required field.',
-			documentation: function() { /* 
-				Indicates whether the $$DOC{ref:'Property'} is required for its owner $$DOC{ref:'Model'} to
-				function properly.
-			*/}
+      documentation: function() { /* 
+        Indicates whether the $$DOC{ref:'Property'} is required for its owner $$DOC{ref:'Model'} to
+        function properly.
+      */}
     },
     {
       name: 'hidden',
@@ -220,11 +220,11 @@ var PropertyModel = {
       view: 'BooleanView',
       defaultValue: false,
       help: 'Indicates if the property is hidden.',
-			documentation: function() { /* 
-				Indicates whether the $$DOC{ref:'Property'} is for internal use and should be hidden from
-				the user when viewing tables or other views of $$DOC{ref:'Model'} 
-				$$DOC{ref:'Property',usePlural:true}.
-			*/}
+      documentation: function() { /* 
+        Indicates whether the $$DOC{ref:'Property'} is for internal use and should be hidden from
+        the user when viewing tables or other views of $$DOC{ref:'Model'} 
+        $$DOC{ref:'Property',usePlural:true}.
+      */}
     },
     {
       name: 'transient',
@@ -232,10 +232,10 @@ var PropertyModel = {
       view: 'BooleanView',
       defaultValue: false,
       help: 'Indicates if the property is transient.',
-			documentation: function() { /* 
-				Indicates whether the $$DOC{ref:'Property'} is transient, and should not be saved permanently
-				or serialized.
-			*/}
+      documentation: function() { /* 
+        Indicates whether the $$DOC{ref:'Property'} is transient, and should not be saved permanently
+        or serialized.
+      */}
     },
     {
       name: 'displayWidth',
@@ -244,9 +244,9 @@ var PropertyModel = {
       displayHeight: 1,
       defaultValue: '30',
       help: 'The display width of the property.',
-			documentation: function() { /* 
-				A width suggestion for views that automatically render the $$DOC{ref:'Property'}.
-			*/}
+      documentation: function() { /* 
+        A width suggestion for views that automatically render the $$DOC{ref:'Property'}.
+      */}
     },
     {
       name: 'displayHeight',
@@ -255,38 +255,38 @@ var PropertyModel = {
       displayHeight: 1,
       defaultValue: 1,
       help: 'The display height of the property.',
-			documentation: function() { /* 
-				A height suggestion for views that automatically render the $$DOC{ref:'Property'}.
-			*/}
+      documentation: function() { /* 
+        A height suggestion for views that automatically render the $$DOC{ref:'Property'}.
+      */}
     },
     {
       name: 'view',
       type: 'view',
       defaultValue: 'TextFieldView',
       help: 'View component for the property.',
-			documentation: function() { /* 
-				The default $$DOC{ref:'View'} to use when rendering the $$DOC{ref:'Property'}.
-			*/}
+      documentation: function() { /* 
+        The default $$DOC{ref:'View'} to use when rendering the $$DOC{ref:'Property'}.
+      */}
     },
     {
 //      model_: 'FunctionProperty',
       name: 'detailViewPreRow',
       defaultValue: function() { return ""; },
       help: 'Inject HTML before row in DetailView.',
-			documentation: function() { /* 
-				An optional function to 
-				inject HTML before the row in $$DOC{ref:'DetailView'}.
-			*/}
+      documentation: function() { /* 
+        An optional function to 
+        inject HTML before the row in $$DOC{ref:'DetailView'}.
+      */}
     },
     {
 //      model_: 'FunctionProperty',
       name: 'detailViewPostRow',
       defaultValue: function() { return ""; },
       help: 'Inject HTML before row in DetailView.',
-			documentation: function() { /* 
-				An optional function to 
-				inject HTML after the row in $$DOC{ref:'DetailView'}.
-			*/}
+      documentation: function() { /* 
+        An optional function to 
+        inject HTML after the row in $$DOC{ref:'DetailView'}.
+      */}
     },
     {
       name: 'defaultValue',
@@ -299,10 +299,10 @@ var PropertyModel = {
         if ( nu && this.defaultValueFn ) this.defaultValueFn = undefined;
       },
       help: 'The property\'s default value.',
-			documentation: function() { /* 
-				An optional function to 
-				inject HTML before the row in $$DOC{ref:'DetailView'}.
-			*/}
+      documentation: function() { /* 
+        An optional function to 
+        inject HTML before the row in $$DOC{ref:'DetailView'}.
+      */}
     },
     {
       name: 'defaultValueFn',
@@ -318,10 +318,10 @@ var PropertyModel = {
         if ( nu && this.defaultValue ) this.defaultValue = undefined;
       },
       help: 'The property\'s default value function.',
-			documentation: function() { /* 
-				Optional function that is evaluated when a default value is required. Will unset any
-				$$DOC{ref:'.defaultValue'} that has been set.
-			*/}
+      documentation: function() { /* 
+        Optional function that is evaluated when a default value is required. Will unset any
+        $$DOC{ref:'.defaultValue'} that has been set.
+      */}
     },
     {
       name: 'dynamicValue',
@@ -334,12 +334,12 @@ var PropertyModel = {
       view: 'FunctionView',
       defaultValue: '',
       help: "A dynamic function which computes the property's value.",
-			documentation: function() { /* 
-				Allows the value of this $$DOC{ref:'Property'} to be calculated dynamically. 
+      documentation: function() { /* 
+        Allows the value of this $$DOC{ref:'Property'} to be calculated dynamically. 
         Other $$DOC{ref:'Property',usePlural:true} and bindable objects used inside the function will be
-				automatically bound and the function re-evaluated when a dependency changes.
-			*/}
-			
+        automatically bound and the function re-evaluated when a dependency changes.
+      */}
+      
     },
     {
       name: 'factory',
@@ -351,11 +351,11 @@ var PropertyModel = {
       view: 'FunctionView',
       defaultValue: '',
       help: 'Factory for creating initial value when new object instantiated.',
-			documentation: function() { /* 
-				An optional function that creates the instance used to store the $$DOC{ref:'Property'} value.
-				This is useful when the $$DOC{ref:'Property'} type is a complex $$DOC{ref:'Model'} that requires
-				construction parameters.
-			*/}
+      documentation: function() { /* 
+        An optional function that creates the instance used to store the $$DOC{ref:'Property'} value.
+        This is useful when the $$DOC{ref:'Property'} type is a complex $$DOC{ref:'Model'} that requires
+        construction parameters.
+      */}
     },
     {
       name: 'lazyFactory',
@@ -363,10 +363,10 @@ var PropertyModel = {
       required: false,
       view: 'FunctionView',
       help: 'Factory for creating the initial value. Only called when the property is accessed for the first time.',
-			documentation: function() { /* 
-				Like the $$DOC{ref:'.factory'} function, but only evaulated when this $$DOC{ref:'Property'} is 
-				accessed for the first time.
-			*/}
+      documentation: function() { /* 
+        Like the $$DOC{ref:'.factory'} function, but only evaulated when this $$DOC{ref:'Property'} is 
+        accessed for the first time.
+      */}
     },
     {
       name: 'getter',
@@ -377,11 +377,11 @@ var PropertyModel = {
       view: 'FunctionView',
       defaultValue: '',
       help: 'The property\'s default value function.',
-			documentation: function() { /* 
-				For advanced use. Supplying a $$DOC{ref:'.getter'} allows you to completely re-implement the $$DOC{ref:'Property'}
-				storage mechanism, to calculcate the value, or cache, or pre-process the value as it is requested.
-				In most cases you can just supply a $$DOC{ref:'.preSet'} or $$DOC{ref:'.postSet'} instead.
-			*/}
+      documentation: function() { /* 
+        For advanced use. Supplying a $$DOC{ref:'.getter'} allows you to completely re-implement the $$DOC{ref:'Property'}
+        storage mechanism, to calculcate the value, or cache, or pre-process the value as it is requested.
+        In most cases you can just supply a $$DOC{ref:'.preSet'} or $$DOC{ref:'.postSet'} instead.
+      */}
     },
     {
       name: 'preSet',
@@ -392,10 +392,10 @@ var PropertyModel = {
       view: 'FunctionView',
       defaultValue: '',
       help: 'An adapter function called before normal setter logic.',
-			documentation: function() { /* 
-				Allows you to modify the incoming value before it is set. Parameters <code>(old, nu)</code> are
-				supplied with the old and new value. Return the value you want to be set.
-			*/}
+      documentation: function() { /* 
+        Allows you to modify the incoming value before it is set. Parameters <code>(old, nu)</code> are
+        supplied with the old and new value. Return the value you want to be set.
+      */}
     },
     {
       name: 'postSet',
@@ -406,11 +406,11 @@ var PropertyModel = {
       view: 'FunctionView',
       defaultValue: '',
       help: 'A function called after normal setter logic, but before property change event fired.',
-			documentation: function() { /* 
-				Allows you to react after the value of the $$DOC{ref:'Property'} has been set, 
-				but before property change event is fired.
-				Parameters <code>(old, nu)</code> are supplied with the old and new value.
-			*/}
+      documentation: function() { /* 
+        Allows you to react after the value of the $$DOC{ref:'Property'} has been set, 
+        but before property change event is fired.
+        Parameters <code>(old, nu)</code> are supplied with the old and new value.
+      */}
     },
     {
       name: 'setter',
@@ -421,11 +421,11 @@ var PropertyModel = {
       view: 'FunctionView',
       defaultValue: '',
       help: 'The property\'s default value function.',
-			documentation: function() { /* 
-				For advanced use. Supplying a $$DOC{ref:'.setter'} allows you to completely re-implement the $$DOC{ref:'Property'}
-				storage mechanism, to calculcate the value, or cache, or pre-process the value as it is set.
-				In most cases you can just supply a $$DOC{ref:'.preSet'} or $$DOC{ref:'.postSet'} instead.
-			*/}
+      documentation: function() { /* 
+        For advanced use. Supplying a $$DOC{ref:'.setter'} allows you to completely re-implement the $$DOC{ref:'Property'}
+        storage mechanism, to calculcate the value, or cache, or pre-process the value as it is set.
+        In most cases you can just supply a $$DOC{ref:'.preSet'} or $$DOC{ref:'.postSet'} instead.
+      */}
     },
     {
       name: 'tableFormatter',
@@ -471,10 +471,10 @@ var PropertyModel = {
       view: 'TextAreaView',
       defaultValue: '',
       help: 'Help text associated with the property.',
-			documentation: function() { /* 
-				  This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'Property'},
-				  through field labels or tooltips.
-				*/}  
+      documentation: function() { /* 
+          This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'Property'},
+          through field labels or tooltips.
+        */}  
     },
     DocumentationBootstrap,
     {
@@ -520,8 +520,8 @@ var PropertyModel = {
       subType: 'Autocompleter',
       help: 'Name or model for the autocompleter for this property.',
       documentation: function() { /*
-				Name or $$DOC{ref:'Model'} for the $$DOC{ref:'Autocompleter'} for this $$DOC{ref:'Property'}. 
-		  */}
+        Name or $$DOC{ref:'Model'} for the $$DOC{ref:'Autocompleter'} for this $$DOC{ref:'Property'}. 
+      */}
     },
     {
       name: 'install',
@@ -534,10 +534,10 @@ var PropertyModel = {
       defaultValue: '',
       help: "A function which installs additional features into the Model's prototype.",
       documentation: function() { /*
-				A function which installs additional features into our $$DOC{ref:'Model'} prototype.
-				This allows extra language dependent features or accessors to be added to instances
-				for use in code.
-		  */}
+        A function which installs additional features into our $$DOC{ref:'Model'} prototype.
+        This allows extra language dependent features or accessors to be added to instances
+        for use in code.
+      */}
     },
     {
       name: 'exclusive',
@@ -546,8 +546,8 @@ var PropertyModel = {
       defaultValue: true,
       help: 'Indicates if the property can only have a single value.',
       documentation: function() { /*
-				Indicates if the $$DOC{ref:'Property'} can only have a single value.
-		  */}
+        Indicates if the $$DOC{ref:'Property'} can only have a single value.
+      */}
     }
   ],
 

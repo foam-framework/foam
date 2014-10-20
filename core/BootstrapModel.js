@@ -30,6 +30,7 @@
  * the end of metamodel.js once the real Model is created.
  **/
 
+this.Constant = null;
 this.Method = null;
 this.Action = null;
 this.Relationship = null;
@@ -225,8 +226,21 @@ var BootstrapModel = {
           addMethod(a.name, function(opt_x) { a.callIfEnabled(opt_x || this.X, this); });
 		      var name = a.name.constantize();
 		      if ( ! cls[name] ) cls[name] = a;
-					
+
         }.bind(this))(this.actions[i]);
+      }
+    }
+
+    // add constants
+    for ( var key in this.constants ) {
+      var c = this.constants[key];
+      if ( Constant && Constant.isInstance(c) ) {
+        // TODO(kgr): only add to Proto when Model cleanup done.
+        Object.defineProperty(cls, c.name, {value: c.value});
+        Object.defineProperty(this, c.name, {value: c.value});
+        // cls[c.name] = this[c.name] = c.value;
+      } else {
+        debugger;
       }
     }
 
@@ -342,7 +356,7 @@ var BootstrapModel = {
   create: function(args, opt_X) { return this.getPrototype().create(args, opt_X); },
 
   isSubModel: function(model) {
-		/* Returns true if the given instance extends this $$DOC{ref:'Model'} or a descendant of this. */
+    /* Returns true if the given instance extends this $$DOC{ref:'Model'} or a descendant of this. */
     try {
       return model && ( model === this || this.isSubModel(model.getPrototype().__proto__.model_) );
     } catch (x) {
@@ -398,8 +412,8 @@ var BootstrapModel = {
   },
 
   isInstance: function(obj) { /* Returns true if the given instance extends this $$DOC{ref:'Model'}. */
-		return obj && obj.model_ && this.isSubModel(obj.model_); 
-	},
+    return obj && obj.model_ && this.isSubModel(obj.model_); 
+  },
 
   toString: function() { return "BootstrapModel(" + this.name + ")"; }
 };
