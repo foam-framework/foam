@@ -23,7 +23,6 @@ MODEL({
       name: "deposit",
       code: function (amount) {
         this.balance += amount;
-
         this.reportDeposit(this.id, amount, this.balance);
 
         return this.balance;
@@ -43,6 +42,8 @@ MODEL({
 
 
 MODEL({
+  name: 'AccountTest',
+
   requires: [
 //    'demo.bank.Account as A',
     'Account as A'
@@ -54,10 +55,8 @@ MODEL({
 
   exports: [
     'reportDeposit',
-    'as BankAccount'
+    'as Bank' // exports 'this'
   ],
-
-  name: 'AccountTest',
 
   methods: {
     reportDeposit: function (id, amount, bal) {

@@ -41,14 +41,19 @@ var FObject = {
     // Add exports to Context
     if ( this.model_.exports && this.model_.exports.length ) {
       if ( ! this.exports_ ) {
-        this.exports_ = this.model_.exports.map(function(e) { var s = e.split(' as '); return [s[0], s[1] || s[0]]; });
+        this.exports_ = this.model_.exports.map(function(e) {
+          var s = e.split('as ');
+          s[0] = s[0].trim();
+          return [s[0], s[1] || s[0]];
+        });
       }
       var map = {};
       for ( var i = 0 ; i < this.exports_.length ; i++ ) {
-        var e = this.exports_[0];
-        var v = o[e[0]];
+        var e = this.exports_[i];
+        var v = e[0] ? o[e[0]] : o; // if key isn't provided, export 'this'
         if ( typeof v === 'function' ) v = v.bind(o);
         map[e[1]] = v;
+        console.log('Binding: ', e[1]);
       }
       // TODO(kgr): We really need two X's, the one that this uses and the one that sub-Objects are created with
       o.X = o.X.sub(map).sub(); // Second sub() protects from changes
