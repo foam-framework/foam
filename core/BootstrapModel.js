@@ -155,25 +155,35 @@ var BootstrapModel = {
     });
 
     // build imports
-    if ( this.imports ) {
-      for ( var i = 0 ; i < this.imports.length ; i++ ) {
-        var imp = this.imports[i].split(' as ');
-        var m    = imp[0];
-        var path = m.split('.');
-        var key  = imp[1] || path[path.length-1];
+    Object_forEach(this.imports, function(i) {
+      var imp  = i.split(' as ');
+      var m    = imp[0];
+      var path = m.split('.');
+      var key  = imp[1] || path[path.length-1];
 
-        Object.defineProperty(cls, key, {
-          get: function() {
-            var x = this.X;
-            for ( var j = 0 ; j < path.length ; j++ ) {
-              x = x[path[j]];
-              if ( ! x ) return;
-            }
-            return x;
+      Object.defineProperty(cls, key, {
+        get: function() {
+          var x = this.X;
+          for ( var j = 0 ; j < path.length ; j++ ) {
+            x = x[path[j]];
+            if ( ! x ) return;
           }
-        });
-      }
-    }
+          return x;
+        }
+      });
+    });
+
+    // build ximports
+    Object_forEach(this.ximports, function(i) {
+      var imp   = i.split(' as ');
+      var key   = imp[0];
+      var alias = imp[1] || imp[0];
+
+      Object.defineProperty(cls, alias, {
+        get: function() { return this.X[key]; },
+        set: function(v) { this.X[key] = v; } // ???: Should these be settable?
+      });
+    });
 
     // build properties
     if ( this.properties ) {

@@ -212,6 +212,14 @@ var Model = {
       documentation: function() { /* List of model imports.  Format: Model-Path [as Alias]. */}
     },
     {
+      name: 'ximports',
+      type: 'Array[String]',
+      view: 'StringArrayView',
+      defaultValueFn: function() { return []; },
+      help: 'Context imports.',
+      documentation: function() { /* List of context imports.  Format: Key [as Alias]. */}
+    },
+    {
       name: 'traits',
       type: 'Array[String]',
       view: 'StringArrayView',

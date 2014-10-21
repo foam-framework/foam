@@ -42,6 +42,10 @@ MODEL({
     'Account as A'
   ],
 
+  ximports: [
+    'log'
+  ],
+
   name: 'AccountTest',
 
   methods: {
@@ -50,12 +54,12 @@ MODEL({
 
       a.setStatus(true);
       a.deposit(100);
-      console.log(a.toJSON());
+      this.log(a.toJSON());
     }
   }
 });
 
-AccountTest.create().test();
+X.AccountTest.create().test();
 
 /*
 var a = demo.account.Account.create();
