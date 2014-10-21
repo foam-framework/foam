@@ -154,8 +154,8 @@ var BootstrapModel = {
       cls.model_[m.name] = cls[m.name] = JSONUtil.mapToObj(X, m, Model);
     });
 
-    // build imports
-    Object_forEach(this.imports, function(i) {
+    // build requires
+    Object_forEach(this.requires, function(i) {
       var imp  = i.split(' as ');
       var m    = imp[0];
       var path = m.split('.');
@@ -173,8 +173,8 @@ var BootstrapModel = {
       });
     });
 
-    // build ximports
-    Object_forEach(this.ximports, function(i) {
+    // build imports
+    Object_forEach(this.imports, function(i) {
       var imp   = i.split(' as ');
       var key   = imp[0];
       var alias = imp[1] || imp[0];
