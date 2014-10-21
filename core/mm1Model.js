@@ -204,6 +204,14 @@ var Model = {
 
     },
     {
+      name: 'imports',
+      type: 'Array[String]',
+      view: 'StringArrayView',
+      defaultValueFn: function() { return []; },
+      help: 'Model imports.',
+      documentation: function() { /* List of model imports.  Format: Model-Path [as Alias]. */}
+    },
+    {
       name: 'traits',
       type: 'Array[String]',
       view: 'StringArrayView',

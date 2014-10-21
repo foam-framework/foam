@@ -154,6 +154,27 @@ var BootstrapModel = {
       cls.model_[m.name] = cls[m.name] = JSONUtil.mapToObj(X, m, Model);
     });
 
+    // build imports
+    if ( this.imports ) {
+      for ( var i = 0 ; i < this.imports.length ; i++ ) {
+        var imp = this.imports[i].split(' as ');
+        var m    = imp[0];
+        var path = m.split('.');
+        var key  = imp[1] || path[path.length-1];
+
+        Object.defineProperty(cls, key, {
+          get: function() {
+            var x = this.X;
+            for ( var j = 0 ; j < path.length ; j++ ) {
+              x = x[path[j]];
+              if ( ! x ) return;
+            }
+            return x;
+          }
+        });
+      }
+    }
+
     // build properties
     if ( this.properties ) {
       for ( var i = 0 ; i < this.properties.length ; i++ ) {
