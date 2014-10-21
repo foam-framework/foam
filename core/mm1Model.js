@@ -228,6 +228,14 @@ var Model = {
       documentation: function() { /* List of context exports.  Format: Property [as Alias]. */}
     },
     {
+      name: 'implements',
+      type: 'Array[String]',
+      view: 'StringArrayView',
+      defaultValueFn: function() { return []; },
+      help: 'Interfaces implemented by this Model.',
+      documentation: function() { /*  */}
+    },
+    {
       name: 'traits',
       type: 'Array[String]',
       view: 'StringArrayView',
