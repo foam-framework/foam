@@ -702,7 +702,7 @@ MODEL({
         $$DOC{ref:'.toInnerHTML'}. */
       if ( ! this.$ ) return;
 
-      this.invokeDestructors();
+      this.destroy();
       this.$.innerHTML = this.toInnerHTML();
       this.initInnerHTML();
     },
