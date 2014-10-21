@@ -506,7 +506,8 @@ MODEL({
     createRelationshipView: function(r, opt_args) {
       return this.X.RelationshipView.create({
         relationship: r,
-      }).copyFrom(opt_args);
+        args: opt_args
+      });
     },
 
     createTemplateView: function(name, opt_args) {

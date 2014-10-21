@@ -334,6 +334,9 @@ MODEL({
       required: true
     },
     {
+      name: 'args'
+    },
+    {
       model_: 'ViewProperty',
       name: 'viewModel',
       defaultValue: 'DAOController'
@@ -350,12 +353,16 @@ MODEL({
   ],
 
   methods: {
+    init: function(SUPER, args) {
+      SUPER(args);
+      if ( this.args && this.args.model_ ) this.viewModel = this.args.model_
+    },
     updateView: function() {
       if ( this.view ) this.view.destroy();
       this.view = this.viewModel({
         dao: this.data[this.relationship.name],
         model: this.relationship.relatedModel
-      }, this.X);
+      }, this.X).copyFrom(this.args);
       if ( this.$ ) {
         this.updateHTML();
       }
