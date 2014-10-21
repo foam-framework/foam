@@ -53,7 +53,6 @@ var FObject = {
         var v = e[0] ? o[e[0]] : o; // if key isn't provided, export 'this'
         if ( typeof v === 'function' ) v = v.bind(o);
         map[e[1]] = v;
-        console.log('Binding: ', e[1]);
       }
       // TODO(kgr): We really need two X's, the one that this uses and the one that sub-Objects are created with
       o.X = o.X.sub(map).sub(); // Second sub() protects from changes
