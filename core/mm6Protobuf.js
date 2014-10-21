@@ -114,12 +114,6 @@ Model.properties = Model.properties.concat(
 //  isInstance:               BootstrapModel.isInstance
 //};
 
-// Fix up action
-//Action.methods = Action.methods;
-
-//Arg.templates = Arg.templates;
-//Arg.methods = Arg.methods;
-
 
 // We use getPrototype() because we need to re-create the Model prototype now
 // that it has been mutated.  Normally Model.create() is for reading model
@@ -129,9 +123,14 @@ Model = Model.getPrototype().create(Model);
 Model.model_ = Model;
 Model.create = BootstrapModel.create;
 
+// Go back over each model so far, assigning the new Model to remove any reference
+// to the bootstrap Model, then FOAMalize any features that were missed due to
+// the model for that feature type ("Method", "Documentation", etc.) being
+// missing previously. This time the preSet for each should be fully operational.
 function recopyModelFeatures(m) {
   m.model_ = Model;
 
+  // the preSet for each of these does the work
   m.methods = m.methods;
   m.templates = m.templates;
   m.relationships = m.relationships;
