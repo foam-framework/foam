@@ -179,6 +179,12 @@ var BootstrapModel = {
 
         if ( ! this[name] ) this[name] = p;
       }
+      for ( i = 0 ; i < extendsModel.relationships.length ; i++ ) {
+        var r = extendsModel.relationships[i];
+        var name = r.name.constantize();
+
+        if ( ! this[name] ) this[name] = r;
+      }
     }
 
     // templates
