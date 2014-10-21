@@ -14,20 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// TODO: remove these three redundant definitions when
-// meta-weirdness fixed
-
-//Property.getPrototype().partialEval = function() { return this; };
-
-//Property.getPrototype().toSQL = function() { return this.name; };
-
-//Property.getPrototype().toMQL = function() { return this.name; };
-
-//Property.getPrototype().f = function(obj) { return obj[this.name]; };
-
-//Property.getPrototype().compare = function(o1, o2) {
-//  return this.compareProperty(this.f(o1), this.f(o2));
-//};
 
 
 // TODO: add type-checking in partialEval
