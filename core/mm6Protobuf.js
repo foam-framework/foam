@@ -103,16 +103,17 @@ Model.properties = Model.properties.concat(
 // the value of 'methods' is not copied over from the original Model definition
 // into the bootstrapped one.  So we need to re-set the methods property here
 // before re-creating Model.
-Model.methods = {
-  getPropertyWithoutCache_: BootstrapModel.getPropertyWithoutCache_,
-  getProperty:              BootstrapModel.getProperty,
-  getAction:                BootstrapModel.getAction,
-  hashCode:                 BootstrapModel.hashCode,
-  buildPrototype:           BootstrapModel.buildPrototype,
-  getPrototype:             BootstrapModel.getPrototype,
-  isSubModel:               BootstrapModel.isSubModel,
-  isInstance:               BootstrapModel.isInstance
-};
+//Model.methods = {
+//  getPropertyWithoutCache_: BootstrapModel.getPropertyWithoutCache_,
+//  getProperty:              BootstrapModel.getProperty,
+//  getAction:                BootstrapModel.getAction,
+//  hashCode:                 BootstrapModel.hashCode,
+//  buildPrototype:           BootstrapModel.buildPrototype,
+//  getPrototype:             BootstrapModel.getPrototype,
+//  isSubModel:               BootstrapModel.isSubModel,
+//  isInstance:               BootstrapModel.isInstance
+//};
+
 
 // We use getPrototype() because we need to re-create the Model prototype now
 // that it has been mutated.  Normally Model.create() is for reading model
@@ -121,3 +122,29 @@ Model.methods = {
 Model = Model.getPrototype().create(Model);
 Model.model_ = Model;
 Model.create = BootstrapModel.create;
+
+// Go back over each model so far, assigning the new Model to remove any reference
+// to the bootstrap Model, then FOAMalize any features that were missed due to
+// the model for that feature type ("Method", "Documentation", etc.) being
+// missing previously. This time the preSet for each should be fully operational.
+function recopyModelFeatures(m) {
+  m.model_ = Model;
+
+  // the preSet for each of these does the work
+  m.methods = m.methods;
+  m.templates = m.templates;
+  m.relationships = m.relationships;
+  m.properties = m.properties;
+  m.actions = m.actions;
+  m.listeners = m.listeners;
+  m.models = m.models;
+  m.tests = m.tests;
+  m.issues = m.issues;
+}
+
+for ( var key in UNUSED_MODELS ) {
+  recopyModelFeatures(GLOBAL[key]);
+}
+for ( var key in USED_MODELS ) {
+  recopyModelFeatures(GLOBAL[key]);
+}

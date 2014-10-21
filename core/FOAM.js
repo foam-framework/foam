@@ -123,6 +123,7 @@ function MODEL(m) {
   });
 }
 
+var CLASS = MODEL;
 
 FOAM.browse = function(model, opt_dao, opt_X) {
    var Y = opt_X || X.sub(undefined, "FOAM BROWSER");

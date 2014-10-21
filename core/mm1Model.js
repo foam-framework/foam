@@ -204,6 +204,30 @@ var Model = {
 
     },
     {
+      name: 'requires',
+      type: 'Array[String]',
+      view: 'StringArrayView',
+      defaultValueFn: function() { return []; },
+      help: 'Model imports.',
+      documentation: function() { /* List of model imports.  Format: Model-Path [as Alias]. */}
+    },
+    {
+      name: 'imports',
+      type: 'Array[String]',
+      view: 'StringArrayView',
+      defaultValueFn: function() { return []; },
+      help: 'Context imports.',
+      documentation: function() { /* List of context imports.  Format: Key [as Alias]. */}
+    },
+    {
+      name: 'exports',
+      type: 'Array[String]',
+      view: 'StringArrayView',
+      defaultValueFn: function() { return []; },
+      help: 'Context exports.',
+      documentation: function() { /* List of context exports.  Format: Property [as Alias]. */}
+    },
+    {
       name: 'traits',
       type: 'Array[String]',
       view: 'StringArrayView',
@@ -283,7 +307,7 @@ var Model = {
       defaultValue: [],
       help: 'Actions associated with the entity.',
       preSet: function(_, newValue) {
-        if ( ! Action ) return;
+        if ( ! Action ) return newValue;
 
         // Convert Maps to Properties if required
         for ( var i = 0 ; i < newValue.length ; i++ ) {
@@ -316,7 +340,7 @@ var Model = {
       defaultValue: [],
       help: 'Constants associated with the entity.',
       preSet: function(_, newValue) {
-        if ( ! Constant ) return;
+        if ( ! Constant ) return newValue;
 
         if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Constant);
 
@@ -486,7 +510,7 @@ var Model = {
       defaultValue: [],
       help: 'Relationships of this model to other models.',
       preSet: function(_, newValue) {
-        if ( ! Relationship ) return;
+        if ( ! Relationship ) return newValue;
 
         // Convert Maps to Relationships if required
         for ( var i = 0 ; i < newValue.length ; i++ ) {
