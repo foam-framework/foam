@@ -4,6 +4,8 @@ MODEL({
   xpackage: 'demo.account',
   name: 'Account',
 
+  imports: [ 'reportDeposit' ],
+
   properties: [
     { name: 'id'      },
     { name: 'status'  },
@@ -22,6 +24,8 @@ MODEL({
       code: function (amount) {
         this.balance += amount;
 
+        this.reportDeposit(this.id, amount, this.balance);
+
         return this.balance;
       }
     },
@@ -37,6 +41,7 @@ MODEL({
 
 });
 
+
 MODEL({
   requires: [
 //    'demo.bank.Account as A',
@@ -44,14 +49,22 @@ MODEL({
   ],
 
   imports: [
-    'log as l'
+    'log as l' 
+  ],
+
+  exports: [
+    'reportDeposit',
+    'as BankAccount'
   ],
 
   name: 'AccountTest',
 
   methods: {
+    reportDeposit: function (id, amount, bal) {
+      this.l('Deposit: ', id, amount, bal);
+    },
     test: function() {
-      var a = this.A.create();
+      var a = this.A.create({id: 42});
 
       a.setStatus(true);
       a.deposit(100);
@@ -60,6 +73,7 @@ MODEL({
     }
   }
 });
+
 
 X.AccountTest.create().test();
 
