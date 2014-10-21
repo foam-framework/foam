@@ -1,7 +1,7 @@
 DEBUG = true;
 
 MODEL({
-  package: 'demo.account',
+  xpackage: 'demo.account',
   name: 'Account',
 
   properties: [
@@ -36,6 +36,26 @@ MODEL({
   ]
 
 });
+
+MODEL({
+  imports: [
+    'Account as A'
+  ],
+
+  name: 'AccountTest',
+
+  methods: {
+    test: function() {
+      var a = this.A.create();
+
+      a.setStatus(true);
+      a.deposit(100);
+      console.log(a.toJSON());
+    }
+  }
+});
+
+AccountTest.create().test();
 
 /*
 var a = demo.account.Account.create();
