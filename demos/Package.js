@@ -1,6 +1,6 @@
 DEBUG = true;
 
-MODEL({
+CLASS({
   xpackage: 'demo.account',
   name: 'Account',
 
@@ -37,12 +37,11 @@ MODEL({
       }
     }
   ]
-
 });
 
 
-MODEL({
-  name: 'AccountTest',
+CLASS({
+  name: 'AccountTester',
 
   requires: [
 //    'demo.bank.Account as A',
@@ -74,7 +73,7 @@ MODEL({
 });
 
 
-X.AccountTest.create().test();
+X.AccountTester.create().test();
 
 /*
 var a = demo.account.Account.create();
