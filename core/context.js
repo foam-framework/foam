@@ -148,7 +148,7 @@ console.log("Register Model: "+model.name+" X:"+this.NAME);
       }
   };
   Object.defineProperty(
-    this,
+    thisX,
     opt_name? opt_name + "Model" : model.name + "Model",
     {
       get: function() {
@@ -162,23 +162,30 @@ console.log("Register Model: "+model.name+" X:"+this.NAME);
 var registerProtoOnly_ = function(model, opt_name) {
 console.log("Register Proto: "+model.name+" X:"+this.NAME);
   var thisX = this.registerPackagePath(model.package);
+  var protoCache;
 
   var thisProto = // delay evaluation of prototype to avoid bootstrap problems by returning function
     this === GLOBAL ?
       function() { return model.getPrototype() }
-    : function() { return {
-      __proto__: model.getPrototype(),
-      create: function(args, opt_X) {
-//        console.log("XProto create: "+this.name_);
-        return this.__proto__.create(args, thisX);
-    }}
-  };
+    : function() {
+        if (!protoCache)
+        { console.log("Build protocache " + model.name);
+          protoCache = {
+            __proto__: model.getPrototype(),
+            create: function(args, opt_X) {
+              return this.__proto__.create(args, thisX);
+          }};
+        }
+        return protoCache;
+      };
 
   Object.defineProperty(
-    this,
+    thisX,
     opt_name || model.name,
     {
       get: function() {
+if (this !== thisX)
+  console.log("Mismatch! Reg Proto GET "+model.name+" from "+this.NAME+", reg'd from "+thisX.NAME);
         return ( this === thisX ) ? thisProto() : this.registerProtoOnly_(model)();
       },
       configurable: true
