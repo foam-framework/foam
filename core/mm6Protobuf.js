@@ -103,16 +103,23 @@ Model.properties = Model.properties.concat(
 // the value of 'methods' is not copied over from the original Model definition
 // into the bootstrapped one.  So we need to re-set the methods property here
 // before re-creating Model.
-Model.methods = {
-  getPropertyWithoutCache_: BootstrapModel.getPropertyWithoutCache_,
-  getProperty:              BootstrapModel.getProperty,
-  getAction:                BootstrapModel.getAction,
-  hashCode:                 BootstrapModel.hashCode,
-  buildPrototype:           BootstrapModel.buildPrototype,
-  getPrototype:             BootstrapModel.getPrototype,
-  isSubModel:               BootstrapModel.isSubModel,
-  isInstance:               BootstrapModel.isInstance
-};
+//Model.methods = {
+//  getPropertyWithoutCache_: BootstrapModel.getPropertyWithoutCache_,
+//  getProperty:              BootstrapModel.getProperty,
+//  getAction:                BootstrapModel.getAction,
+//  hashCode:                 BootstrapModel.hashCode,
+//  buildPrototype:           BootstrapModel.buildPrototype,
+//  getPrototype:             BootstrapModel.getPrototype,
+//  isSubModel:               BootstrapModel.isSubModel,
+//  isInstance:               BootstrapModel.isInstance
+//};
+
+// Fix up action
+//Action.methods = Action.methods;
+
+//Arg.templates = Arg.templates;
+//Arg.methods = Arg.methods;
+
 
 // We use getPrototype() because we need to re-create the Model prototype now
 // that it has been mutated.  Normally Model.create() is for reading model
@@ -121,3 +128,24 @@ Model.methods = {
 Model = Model.getPrototype().create(Model);
 Model.model_ = Model;
 Model.create = BootstrapModel.create;
+
+function recopyModelFeatures(m) {
+  m.model_ = Model;
+
+  m.methods = m.methods;
+  m.templates = m.templates;
+  m.relationships = m.relationships;
+  m.properties = m.properties;
+  m.actions = m.actions;
+  m.listeners = m.listeners;
+  m.models = m.models;
+  m.tests = m.tests;
+  m.issues = m.issues;
+}
+
+for ( var key in UNUSED_MODELS ) {
+  recopyModelFeatures(GLOBAL[key]);
+}
+for ( var key in USED_MODELS ) {
+  recopyModelFeatures(GLOBAL[key]);
+}
