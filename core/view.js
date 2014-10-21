@@ -504,7 +504,8 @@ MODEL({
     },
 
     createRelationshipView: function(r, opt_args) {
-      return this.X.RelationshipView.create({
+      var X = ( opt_args && opt_args.X ) || this.X;
+      return X.RelationshipView.create({
         relationship: r,
         args: opt_args
       });
