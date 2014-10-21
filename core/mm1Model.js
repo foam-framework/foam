@@ -204,7 +204,7 @@ var Model = {
 
     },
     {
-      name: 'imports',
+      name: 'requires',
       type: 'Array[String]',
       view: 'StringArrayView',
       defaultValueFn: function() { return []; },
@@ -212,12 +212,20 @@ var Model = {
       documentation: function() { /* List of model imports.  Format: Model-Path [as Alias]. */}
     },
     {
-      name: 'ximports',
+      name: 'imports',
       type: 'Array[String]',
       view: 'StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Context imports.',
       documentation: function() { /* List of context imports.  Format: Key [as Alias]. */}
+    },
+    {
+      name: 'exports',
+      type: 'Array[String]',
+      view: 'StringArrayView',
+      defaultValueFn: function() { return []; },
+      help: 'Context exports.',
+      documentation: function() { /* List of context exports.  Format: Property [as Alias]. */}
     },
     {
       name: 'traits',

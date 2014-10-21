@@ -38,12 +38,13 @@ MODEL({
 });
 
 MODEL({
-  imports: [
+  requires: [
+//    'demo.bank.Account as A',
     'Account as A'
   ],
 
-  ximports: [
-    'log'
+  imports: [
+    'log as l'
   ],
 
   name: 'AccountTest',
@@ -54,7 +55,8 @@ MODEL({
 
       a.setStatus(true);
       a.deposit(100);
-      this.log(a.toJSON());
+      // this.X.log(a.toJSON());
+      this.l(a.toJSON());
     }
   }
 });
