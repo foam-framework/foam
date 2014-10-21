@@ -187,9 +187,9 @@ MODEL({
   }
 });
 
-Action.getPrototype().callIfEnabled = function(X, that) {
-  if ( this.isEnabled.call(that, this) ) this.action.call(that, X, this);
-};
+//Action.getPrototype().callIfEnabled = function(X, that) {
+//  if ( this.isEnabled.call(that, this) ) this.action.call(that, X, this);
+//};
 
 
 /* Not used yet
@@ -622,6 +622,7 @@ MODEL({
   ]
 });
 
+// initialize to empty object for the two methods added below
 Method.getPrototype().decorateFunction = function(f) {
   for ( var i = 0 ; i < this.args.length ; i++ ) {
     var arg = this.args[i];
@@ -665,6 +666,10 @@ Method.getPrototype().generateFunction = function() {
   }
 
   return DEBUG ? this.decorateFunction(f) : f;
+};
+Method.methods = {
+  decorateFunction: Method.getPrototype().decorateFunction,
+  generateFunction: Method.getPrototype().generateFunction
 };
 
 
