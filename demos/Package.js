@@ -41,6 +41,7 @@ CLASS({
 
 
 CLASS({
+  package: 'demo',
   name: 'AccountTester',
 
   requires: [
@@ -73,7 +74,7 @@ CLASS({
 });
 
 
-X.AccountTester.create().test();
+// X.AccountTester.create().test();
 
 /*
 var a = demo.account.Account.create();
