@@ -50,7 +50,7 @@ CLASS({
   ],
 
   imports: [
-    'log as l' 
+    'log as l'
   ],
 
   exports: [
@@ -76,8 +76,8 @@ CLASS({
 
 CLASS({
   name: 'Child',
-  
-  imports: [ 'log'],
+
+  imports: [ 'log', 'x as x$' ],
 
   properties: [
     {
@@ -86,14 +86,13 @@ CLASS({
         this.log('x ', oldValue, ' -> ', newValue);
       }
     }
-  ],
-  methods: { init: function(SUPER) { SUPER(); this.x$ = this.X.x; } }
+  ]
 });
 
 CLASS({
   name: 'Parent',
-  
-  imports: [ 'Child' ],
+
+  requires: [ 'Child' ],
   exports: [ 'x$ as x' ],
   properties: [ 'x' ],
   methods: {

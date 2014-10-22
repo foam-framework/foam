@@ -38,6 +38,19 @@ var FObject = {
 
     o.init(args);
 
+    if ( this.model_.imports && this.model_.imports.length ) {
+      if ( ! this.imports_ ) {
+        this.imports_ = this.model_.imports.map(function(e) {
+          var s = e.split(' as ');
+          return [s[0], s[1] || s[0]];
+        });
+      }
+      for ( var i = 0 ; i < this.imports_.length ; i++ ) {
+        var im = this.imports_[i];
+        o[im[1]] = o.X[im[0]];
+      }
+    }
+
     // Add exports to Context
     if ( this.model_.exports && this.model_.exports.length ) {
       if ( ! this.exports_ ) {
