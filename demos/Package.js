@@ -74,6 +74,41 @@ CLASS({
 });
 
 
+CLASS({
+  name: 'Child',
+  
+  imports: [ 'log'],
+
+  properties: [
+    {
+      name: 'x',
+      postSet: function(oldValue, newValue) {
+        this.log('x ', oldValue, ' -> ', newValue);
+      }
+    }
+  ],
+  methods: { init: function(SUPER) { SUPER(); this.x$ = this.X.x; } }
+});
+
+CLASS({
+  name: 'Parent',
+  
+  imports: [ 'Child' ],
+  exports: [ 'x$ as x' ],
+  properties: [ 'x' ],
+  methods: {
+    test: function() {
+      var c = this.Child.create();
+      this.x = 1;
+      this.x = 2;
+      this.x = 3;
+    }
+  }
+});
+
+var p = Parent.create();
+p.test();
+
 // X.AccountTester.create().test();
 
 /*
