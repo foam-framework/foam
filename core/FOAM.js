@@ -96,14 +96,19 @@ var USED_MODELS   = {};
 
   }
 
-  function defineModel(o, name, model) {
-    
+  function bindModelToX(model, Y) {
+    return Y === GLOBAL ? model : {
+      __proto__: model,
+      create: function(args, opt_X) {
+        return this.__proto__.create(args, opt_X || Y);
+      }
+    };
   }
 
   function packagePath_(root, parent, path, i) {
     console.log('path_ ', i);
     if ( i == path.length ) return parent;
-    
+
     var head = path[i];
     if ( ! parent[head] ) {
       var map = { __root__: root };
@@ -115,27 +120,56 @@ var USED_MODELS   = {};
 
     return packagePath_(root, parent[head], path, i+1);
   }
-    
+
   function packagePath(X, path) {
     return path ? packagePath_(X, X, path.split('.'), 0) : X;
   }
 
-  X.XpackagePath = packagePath;
-  X.XregisterModel = function (model, opt_name) {
+  /** opt_name includes path **/
+  function registerModel(o, model, opt_name) {
+    var name    = model.name;
+    var package = model.package;
 
-  };
+    if ( opt_name ) {
+      var a = opt_name.split('.');
+      name = a.pop();
+      package = a.join('.');
+    }
 
-  /*
-  X.MODEL = X.CLASS = function(m) {
-
+    defineLocalProperty(
+      packagePath(o, package),
+      name,
+      function(o) { return bindModelToX(model, o.__root__ || o); });
   }
-  */
+
+  X.XpackagePath   = packagePath;
+  X.XregisterModel = registerModel;
+
+  X.XMODEL = X.XCLASS = function(m) {
+    if ( document && document.currentScript ) m.sourcePath = document.currentScript.src;
+
+    var fullName = m.package ? m.package + "." + m.name : m.name;
+    UNUSED_MODELS[fullName] = true;
+
+    var path = packagePath(this, model.package);
+    Object.defineProperty(path, m.name, {
+      get: function () {
+        USED_MODELS[fullName] = true;
+        delete UNUSED_MODELS[fullName];
+        Object.defineProperty(path, m.name, {value: null, configurable: true});
+        registerModel(this, JSONUtil.mapToObj(X, m, Model));
+        return this[m.name];
+      },
+      configurable: true
+    });
+  }
 })(this);
 
 var X1 = this.sub({}, 'X1');
 var X2 = X1.sub({}, 'X2');
 var abc = XpackagePath(X1, 'a.b.c');
 X2.a;
+
 
 // Lazy Model Definition - Only creates Model when first referenced
 function MODEL(m) {
