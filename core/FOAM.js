@@ -78,40 +78,18 @@ FOAM.putFactory = function(ctx, name, factory) {
   });
 };
 
-/*
-// Simple Immediate Model Definition
-var MODEL = function(m) {
-  var model = Model.create(m);
-
-  GLOBAL[model.name] = model;
-}
-*/
-
-/*
-// Lazy Model Definition - Only creates Model when first referenced
-var MODEL = function(m) {
-  Object.defineProperty(GLOBAL, m.name, {
-    get: function () {
-      // console.log('bounceFactory: ', m.name);
-      Object.defineProperty(GLOBAL, m.name, {value: null});
-      var model = JSONUtil.mapToObj(m, Model);
-      Object.defineProperty(GLOBAL, m.name, {value: model});
-      return model;
-    },
-    configurable: true
-  });
-}
-*/
-
 var UNUSED_MODELS = {};
 var USED_MODELS   = {};
 
-/*
+// Package + Model Definition Support
 (function(X) {
-  var _X_;
 
-  function bind_X_(f) {
-
+  function defineLocalProperty(o, name, factory) {
+    var value = factory(o, name);
+    Object.defineProperty(o, name, { get: function() {
+      return o == this ? value : defineLocalProperty(this, name, factory);
+    } });
+    return value;
   }
 
   function defineLazyModel(o, name, model) {
@@ -119,39 +97,45 @@ var USED_MODELS   = {};
   }
 
   function defineModel(o, name, model) {
-
+    
   }
 
-  X.defineM
-})(this);
-*/
-
-function packagePath(X, path) {
-  function path_(X, path, i) {
+  function packagePath_(root, parent, path, i) {
     console.log('path_ ', i);
-    if ( i == path.length ) return X;
-
+    if ( i == path.length ) return parent;
+    
     var head = path[i];
-    if ( ! X[head] ) {
-      var map = {};
+    if ( ! parent[head] ) {
+      var map = { __root__: root };
 
-      if ( i == 0 ) {
-        Object.defineProperty(X, head, { get: function() {
-          _X_ = this;
-          return map;
-        }});
-      } else {
-        X[head] = map;
-      }
-
-      path_(map, path, i+1);
+      defineLocalProperty(parent, head, function(o) {
+        return o == parent ? map : { __proto__: map, __root__: o.__root__ || o };
+      });
     }
 
-    return X[head];
+    return packagePath_(root, parent[head], path, i+1);
+  }
+    
+  function packagePath(X, path) {
+    return path ? packagePath_(X, X, path.split('.'), 0) : X;
   }
 
-  return path ? path_(X, path.split('.'), 0) : X;
-}
+  X.XpackagePath = packagePath;
+  X.XregisterModel = function (model, opt_name) {
+
+  };
+
+  /*
+  X.MODEL = X.CLASS = function(m) {
+
+  }
+  */
+})(this);
+
+var X1 = this.sub({}, 'X1');
+var X2 = X1.sub({}, 'X2');
+var abc = XpackagePath(X1, 'a.b.c');
+X2.a;
 
 // Lazy Model Definition - Only creates Model when first referenced
 function MODEL(m) {
@@ -160,7 +144,7 @@ function MODEL(m) {
 
   if ( document && document.currentScript ) m.sourcePath = document.currentScript.src;
 
-  var path = packagePath(GLOBAL, m.path);
+  var path = this; // packagePath(GLOBAL, m.path);
 
   UNUSED_MODELS[m.name] = true;
   Object.defineProperty(GLOBAL, m.name, {

@@ -133,13 +133,6 @@ function registerPackage(/* String */ name) {
 }
 
 function registerModel(model, opt_name) {
-  /*
-  if ( model.X === this ) {
-    this[model.name] = model;
-
-    return model;
-  }
-  */
   var thisX = this.registerPackagePath(model.package);
 
   var thisModel = thisX === GLOBAL ? model : {
