@@ -70,6 +70,7 @@ MODEL({
         font-weight: 500;
         background: white;
         display: flex;
+        display: -webkit-flex;
         flex-direction: column;
         height: 100%;
       }
@@ -83,6 +84,7 @@ MODEL({
 
       .menu-view {
         display: flex;
+        display: -webkit-flex;
         flex-direction: column;
         height: 100%;
         background: white;
@@ -99,6 +101,7 @@ MODEL({
 
       .menu-view .projectList {
         flex: 1;
+        -webkit-flex: 1;
         overflow-y: auto;
         padding: 8px 0;
       }
@@ -394,9 +397,9 @@ MODEL({
           $$moreActions
         </div>
         <div class="content">
-          <div style="display: -webkit-flex">
+          <div style="display: flex; display: -webkit-flex">
             $$from{model_: 'MDMonogramStringView'}
-            <div style='-webkit-flex: 1'>
+            <div style='flex: 1; -webkit-flex: 1'>
               $$from{mode: 'read-only', className: 'from', escapeHTML: true}
               <div class='details'>
                 $$to{mode: 'read-only'}
@@ -452,6 +455,7 @@ MODEL({
         overflow-x:hidden;
         text-overflow: ellipsis;
         flex-grow: 1;
+        -webkit-flex-grow: 1;
       }
 
       .email-citation .timestamp {
@@ -459,6 +463,7 @@ MODEL({
         color: rgb(17, 85, 204);
         white-space: nowrap;
         flex-shrink: 0;
+        -webkit-flex-shrink: 0;
       }
 
       .email-citation .subject {
@@ -492,13 +497,13 @@ MODEL({
 
       <div id="<%= id %>" %%cssClassAttr() >
         $$from{model_: 'MDMonogramStringView'}
-        <div style="-webkit-flex: 1">
-          <div style="display: -webkit-flex">
+        <div style="flex: 1; -webkit-flex: 1">
+          <div style="display: flex; display: -webkit-flex">
             $$from{mode: 'read-only', className: 'from', escapeHTML: true}
             $$timestamp{ model_: 'RelativeDateTimeFieldView', mode: 'read-only', className: 'timestamp' }
           </div>
-          <div style="display: -webkit-flex">
-            <div style='-webkit-flex-grow: 1'>
+          <div style="display: flex; display: -webkit-flex">
+            <div style='flex-grow: 1; -webkit-flex-grow: 1'>
               $$subject{mode: 'read-only', className: 'subject'}
               $$snippet{mode: 'read-only', className: 'snippet'}
               $$labels{mode: 'read-only', className: 'labels'}

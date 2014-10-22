@@ -39,6 +39,7 @@ a {
   color: #fff;
   display: inline-flex;
   display: -webkit-inline-flex;
+  flex-grow: 0;
   -webkit-flex-grow: 0;
   font-size: 20px;
   height: 40px;
@@ -68,10 +69,12 @@ a {
 }
 
 .mdui-app-controller .header .default {
+  flex: 1.0;
   -webkit-box-flex: 1.0;
   display: flex;
   display: -webkit-flex;
   margin: 4px;
+  flex-grow: 1.0;
   -webkit-flex-grow: 1.0;
 }
 
@@ -107,6 +110,7 @@ a {
   align-self: center;
   -webkit-align-self: center;
   color: white;
+  flex: 1.0;
   -webkit-box-flex: 1.0;
   font-size: 20px;
   font-weight: 500;
@@ -115,6 +119,7 @@ a {
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
+  flex-grow: 1.0;
   -webkit-flex-grow: 1.0;
 }
 

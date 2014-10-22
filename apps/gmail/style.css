@@ -118,6 +118,7 @@ select[name=sortOrder] {
 
 .swipeAltOuter {
   -webkit-flex-grow: 1;
+  flex-grow: 1;
 }
 
 .swipeAltInner {
@@ -128,6 +129,7 @@ span[name=projectName] {
   align-self: center;
   -webkit-align-self: center;
   color: white;
+  flex: 1.0;
   -webkit-box-flex: 1.0;
   vertical-align: middle;
   font-size: 20px;
@@ -283,6 +285,7 @@ ul.swipeAltHeader {
   padding: 0px 16px;
   text-overflow: ellipsis;
   white-space: nowrap;
+  flex: 1;
   -webkit-box-flex: 1.0;
 }
 
@@ -332,6 +335,7 @@ ul.swipeAltHeader {
   padding: 0px 16px;
   text-overflow: ellipsis;
   white-space: nowrap;
+  flex: 1;
   -webkit-box-flex: 1.0;
 }
 
