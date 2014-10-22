@@ -66,15 +66,17 @@ var Model = {
       a model that extends $$DOC{ref:'Model'}.</li>
 
       <li>The definition of your model is a $$DOC{ref:'Model'} instance
-      (with YourModel.TYPE === "Model"), while instances
-      of your model have your new type (myInstance.TYPE === "YourModel"). This
+      (with YourModel.model_ === Model), while instances
+      of your model have your new type (myInstance.model_ === YourModel). This
       differs from other object-oriented systems where the definition of a class
       and instances of the class are completely separate entities. In FOAM everything
       is a $$DOC{ref:'Model'}, including itself. TODO: refine/expand on this.</li>
 
       <li>In javascript code, <code>YourModel.create(...)</code> creates an instance of
       your model. This is context dependent, so generally you will be calling
-      <code>this.X.YourModel.create({...})</code>.</li>
+      <code>this.X.YourModel.create({...})</code>. If this is too much typing, you
+      can create aliases for other $$DOC{ref:'Model',usePlural:true} in the
+      $$DOC{ref:'Model.imports'} property. </li>
 
       <li>Creating a subcontext and replacing X.YourModel with a different model (such as
       YourTestModelMock created specifically for testing) will give you seamless dependency
@@ -99,11 +101,24 @@ var Model = {
       defaultValue: ''
     },
     {
-      name:  'package',
-      help: 'Java class package.',
+      name: 'package',
+      help: 'Package that this Model belongs to.',
       defaultValue: '',
-      documentation: function() { /* When running FOAM in a Java environment, specifies the
-        package in which to declare the Java class built from this $$DOC{ref:'Model'}.*/}
+      documentation: function() { /*
+        <p>The package (or namespace) in which the $$DOC{ref:'Model'} belongs. The
+        dot-separated package name is prepended to the $$DOC{ref:'Model'} name.</p>
+        <p>For example: </p>
+        <p><code>MODEL ({ name: 'Train', package: 'com.company.modules' });<br/>
+                 ...<br/>
+                 // when creating an instance of the model (your $$DOC{ref:'DevDocumentation_Context', text:'context'}
+                        is this.X):
+                 this.X.com.company.modules.Train.create();
+        </code></p>
+        <p>Use $$DOC{ref:'Model.imports'} to avoid typing the package name repeatedly.</p>
+        <p>When running FOAM in a Java environment, specifies the
+        package in which to declare the Java class built from this $$DOC{ref:'Model'}.
+        </p>
+        */}
     },
     {
       name:  'abstract',
