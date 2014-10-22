@@ -17,7 +17,7 @@ There is nothing to build.  Just load any of the various .html demos.
 
   * [Website](http://foam-framework.github.io/foam/)
 
-  * [Demos](http://foam-framework.github.io/foam/demos/DemoCat.html)
+  * [Demos](http://foam-framework.github.io/foam/foam/demos/DemoCat.html)
 
 ## Testing
 
