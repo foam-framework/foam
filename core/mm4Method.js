@@ -692,8 +692,7 @@ MODEL({
     {
       name:  'package',
       help: 'Interface package.',
-      documentation: function() { /* When running FOAM in a Java environment, specifies the
-         package in which to declare the Java class built from this $$DOC{ref:'.'}.*/}
+      documentation: Model.PACKAGE.documentation.clone()
     },
     {
       name: 'extends',

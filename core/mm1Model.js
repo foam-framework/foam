@@ -105,14 +105,14 @@ var Model = {
       help: 'Package that this Model belongs to.',
       defaultValue: '',
       documentation: function() { /*
-        <p>The package (or namespace) in which the $$DOC{ref:'Model'} belongs. The
-        dot-separated package name is prepended to the $$DOC{ref:'Model'} name.</p>
+        <p>The package (or namespace) in which the $$DOC{ref:'.'} belongs. The
+        dot-separated package name is prepended to the $$DOC{ref:'.'} name.</p>
         <p>For example: </p>
         <p><code>MODEL ({ name: 'Train', package: 'com.company.modules' });<br/>
                  ...<br/>
                  // when creating an instance of the model (your $$DOC{ref:'DevDocumentation_Context', text:'context'}
-                        is this.X):
-                 this.X.com.company.modules.Train.create();
+                        is this.X):<br/>
+                 this.X.com.company.modules.Train.create();<br/>
         </code></p>
         <p>Use $$DOC{ref:'Model.imports'} to avoid typing the package name repeatedly.</p>
         <p>When running FOAM in a Java environment, specifies the
@@ -290,7 +290,7 @@ var Model = {
       view: 'StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Interfaces implemented by this Model.',
-      documentation: function() { /*  */}
+      documentation: function() { /* $$DOC{ref:'Interface',usePlural:true} implemented by this $$DOC{ref:'Model'} .*/}
     },
     {
       name: 'traits',

@@ -55,7 +55,7 @@ function subWindow(w, opt_name, isBackground) {
       if ( model.getPrototype && model.getPrototype().installInDocument ) {
         // TODO(kgr): If Traits have CSS then it will get installed more than once.
         for ( m = model ; m ; m = m.extendsModel && m.getPrototype().__proto__.model_ && ! installedModels.has(m) ) {
-          console.log('installing model: ', model.name, model.$UID);
+//          console.log('installing model: ', model.name, model.$UID);
           installedModels.set(m, true);
           m.getPrototype().installInDocument(this, document);
         }
