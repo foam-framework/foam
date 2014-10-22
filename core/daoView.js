@@ -20,12 +20,24 @@ MODEL({
 
   extendsModel: 'View',
 
+  documentation: function() { /*
+     <p>For $$DOC{ref:'View',usePlural:true} that take data items from a $$DOC{ref:'DAO'}
+     and display them all, $$DOC{ref:'.'} provides the basic interface. Set or bind
+     either $$DOC{ref:'.data'} or $$DOC{ref:'.dao'} to your source $$DOC{ref:'DAO'}.</p>
+     <p>Call $$DOC{ref:'.onDAOUpdate'} to indicate a data change that should be
+      re-rendered.</p>
+  */},
+
   properties: [
     {
       name: 'data',
       postSet: function(oldDAO, dao) {
         if ( this.dao !== dao ) this.dao = dao;
-      }
+      },
+      documentation: function() { /*
+          Sets the $$DOC{ref:'DAO'} to render items from. Use $$DOC{ref:'.data'}
+          or $$DOC{ref:'.dao'} interchangeably.
+      */}
     },
     {
       model_: 'DAOProperty',
@@ -38,16 +50,21 @@ MODEL({
           this.data = dao;
           this.X.daoViewCurrentDAO = dao;
         }
-      }
+      },
+      documentation: function() { /*
+          Sets the $$DOC{ref:'DAO'} to render items from. Use $$DOC{ref:'.data'}
+          or $$DOC{ref:'.dao'} interchangeably.
+      */}
     }
   ],
 
   methods: {
-    init: function() {
+    init: function() { /* $$DOC{ref:'AbstractDAOView'} sub-contexts. */
       this.SUPER();
-      this.X = this.X.sub({ daoViewCurrentDAO: this.dao });
+      this.X = this.X.sub({ daoViewCurrentDAO: this.dao }); // TODO: do this before SUPER?
     },
-    onDAOUpdate: function() {}
+    onDAOUpdate: function() { /* Implement this $$DOC{ref:'Method'} in
+          sub-models to respond to changes in $$DOC{ref:'.dao'}. */ }
   }
 });
 
