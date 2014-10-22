@@ -106,7 +106,25 @@ var MODEL = function(m) {
 var UNUSED_MODELS = {};
 var USED_MODELS   = {};
 
-var _X_;
+/*
+(function(X) {
+  var _X_;
+
+  function bind_X_(f) {
+
+  }
+
+  function defineLazyModel(o, name, model) {
+
+  }
+
+  function defineModel(o, name, model) {
+
+  }
+
+  X.defineM
+})(this);
+*/
 
 function packagePath(X, path) {
   function path_(X, path, i) {
