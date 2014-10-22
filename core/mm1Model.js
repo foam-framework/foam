@@ -209,7 +209,21 @@ var Model = {
       view: 'StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Model imports.',
-      documentation: function() { /* List of model imports.  Format: Model-Path [as Alias]. */}
+      documentation: function() { /*
+          <p>List of model imports, as strings of the form:
+            <code>'Model-Path [as Alias]'</code>.</p>
+          <p>Aliases are created on your instances that reference the full
+            path of the model, taking it from your this.X
+            $$DOC{ref:'DevDocumentation_Context', text:'context'}.</p>
+          <p>For example:</p>
+          <p><code>requires: [ 'mypackage.DataLayer.BigDAO',
+                   'mypackage.UI.SmallTextView as TextView' ]<br/>
+                   ...<br/>
+                   // in your Model's methods: <br/>
+                  this.BigDAO.create();   // equivalent to this.X.mypackage.DataLayer.BigDAO.create()<br/>
+                  this.TextView.create(); // equivalent to this.X.mypackage.UI.SmallTextView.create()<br/>
+                  </code></p>
+        */}
     },
     {
       name: 'imports',
@@ -217,7 +231,20 @@ var Model = {
       view: 'StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Context imports.',
-      documentation: function() { /* List of context imports.  Format: Key [as Alias]. */}
+      documentation: function() { /*
+          <p>List of context items to import, as strings of the form:
+          <code>Key [as Alias]</code>.</p>
+          <p>Imported items are installed into your $$DOC{ref:'Model'}
+          as pseudo-properties, using their $$DOC{ref:'Model.name', text:'name'}
+          or the alias specified here.</p>
+          <p><code>imports: [ 'productList.selectedItem',
+                   'productList.selectionDAO as selectedProductDAO' ]<br/>
+                   ...<br/>
+                   // in your Model's methods: <br/>
+                  this.selectedItem.get();          // equivalent to this.X.productList.selectedItem.get()<br/>
+                  this.selectedProductDAO.select(); // equivalent to this.X.productList.selectionDAO.select()<br/>
+                  </code></p>
+        */}
     },
     {
       name: 'exports',
@@ -225,7 +252,22 @@ var Model = {
       view: 'StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Context exports.',
-      documentation: function() { /* List of context exports.  Format: Property [as Alias]. */}
+      documentation: function() { /*
+          <p>List of $$DOC{ref:'Property',usePlural:true} to export to your sub-context,
+           as strings of the form:
+          <code>PropertyName [as Alias]</code>.</p>
+          <p>Properties you wish to share with other instances you create
+            (like sub-$$DOC{ref:'View',usePlural:true} or $$DOC{ref:'DAO',usePlural:true})
+            can be exported automatically by listing them here. Your this.X is replaced with
+            a sub-context, so parent contexts in instances that have created do not
+            see exported properties.</p>
+          <p><code>exports: [ 'myProperty', 'name as parentName' ]<br/>
+                  ...<br/>
+                  // in your Model's methods: <br/>
+                  this.selectedItem.get();          // equivalent to this.X.productList.selectedItem.get()<br/>
+                  this.selectedProductDAO.select(); // equivalent to this.X.productList.selectionDAO.select()<br/>
+                  </code></p>
+        */}
     },
     {
       name: 'implements',
