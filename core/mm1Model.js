@@ -66,15 +66,17 @@ var Model = {
       a model that extends $$DOC{ref:'Model'}.</li>
 
       <li>The definition of your model is a $$DOC{ref:'Model'} instance
-      (with YourModel.TYPE === "Model"), while instances
-      of your model have your new type (myInstance.TYPE === "YourModel"). This
+      (with YourModel.model_ === Model), while instances
+      of your model have your new type (myInstance.model_ === YourModel). This
       differs from other object-oriented systems where the definition of a class
       and instances of the class are completely separate entities. In FOAM everything
       is a $$DOC{ref:'Model'}, including itself. TODO: refine/expand on this.</li>
 
       <li>In javascript code, <code>YourModel.create(...)</code> creates an instance of
       your model. This is context dependent, so generally you will be calling
-      <code>this.X.YourModel.create({...})</code>.</li>
+      <code>this.X.YourModel.create({...})</code>. If this is too much typing, you
+      can create aliases for other $$DOC{ref:'Model',usePlural:true} in the
+      $$DOC{ref:'Model.imports'} property. </li>
 
       <li>Creating a subcontext and replacing X.YourModel with a different model (such as
       YourTestModelMock created specifically for testing) will give you seamless dependency
@@ -99,11 +101,24 @@ var Model = {
       defaultValue: ''
     },
     {
-      name:  'package',
-      help: 'Java class package.',
+      name: 'package',
+      help: 'Package that this Model belongs to.',
       defaultValue: '',
-      documentation: function() { /* When running FOAM in a Java environment, specifies the
-        package in which to declare the Java class built from this $$DOC{ref:'Model'}.*/}
+      documentation: function() { /*
+        <p>The package (or namespace) in which the $$DOC{ref:'Model'} belongs. The
+        dot-separated package name is prepended to the $$DOC{ref:'Model'} name.</p>
+        <p>For example: </p>
+        <p><code>MODEL ({ name: 'Train', package: 'com.company.modules' });<br/>
+                 ...<br/>
+                 // when creating an instance of the model (your $$DOC{ref:'DevDocumentation_Context', text:'context'}
+                        is this.X):
+                 this.X.com.company.modules.Train.create();
+        </code></p>
+        <p>Use $$DOC{ref:'Model.imports'} to avoid typing the package name repeatedly.</p>
+        <p>When running FOAM in a Java environment, specifies the
+        package in which to declare the Java class built from this $$DOC{ref:'Model'}.
+        </p>
+        */}
     },
     {
       name:  'abstract',
@@ -209,7 +224,21 @@ var Model = {
       view: 'StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Model imports.',
-      documentation: function() { /* List of model imports.  Format: Model-Path [as Alias]. */}
+      documentation: function() { /*
+          <p>List of model imports, as strings of the form:
+            <code>'Model-Path [as Alias]'</code>.</p>
+          <p>Aliases are created on your instances that reference the full
+            path of the model, taking it from your this.X
+            $$DOC{ref:'DevDocumentation_Context', text:'context'}.</p>
+          <p>For example:</p>
+          <p><code>requires: [ 'mypackage.DataLayer.BigDAO',
+                   'mypackage.UI.SmallTextView as TextView' ]<br/>
+                   ...<br/>
+                   // in your Model's methods: <br/>
+                  this.BigDAO.create();   // equivalent to this.X.mypackage.DataLayer.BigDAO.create()<br/>
+                  this.TextView.create(); // equivalent to this.X.mypackage.UI.SmallTextView.create()<br/>
+                  </code></p>
+        */}
     },
     {
       name: 'imports',
@@ -217,7 +246,20 @@ var Model = {
       view: 'StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Context imports.',
-      documentation: function() { /* List of context imports.  Format: Key [as Alias]. */}
+      documentation: function() { /*
+          <p>List of context items to import, as strings of the form:
+          <code>Key [as Alias]</code>.</p>
+          <p>Imported items are installed into your $$DOC{ref:'Model'}
+          as pseudo-properties, using their $$DOC{ref:'Model.name', text:'name'}
+          or the alias specified here.</p>
+          <p><code>imports: [ 'productList.selectedItem',
+                   'productList.selectionDAO as selectedProductDAO' ]<br/>
+                   ...<br/>
+                   // in your Model's methods: <br/>
+                  this.selectedItem.get();          // equivalent to this.X.productList.selectedItem.get()<br/>
+                  this.selectedProductDAO.select(); // equivalent to this.X.productList.selectionDAO.select()<br/>
+                  </code></p>
+        */}
     },
     {
       name: 'exports',
@@ -225,7 +267,22 @@ var Model = {
       view: 'StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Context exports.',
-      documentation: function() { /* List of context exports.  Format: Property [as Alias]. */}
+      documentation: function() { /*
+          <p>List of $$DOC{ref:'Property',usePlural:true} to export to your sub-context,
+           as strings of the form:
+          <code>PropertyName [as Alias]</code>.</p>
+          <p>Properties you wish to share with other instances you create
+            (like sub-$$DOC{ref:'View',usePlural:true} or $$DOC{ref:'DAO',usePlural:true})
+            can be exported automatically by listing them here. Your this.X is replaced with
+            a sub-context, so parent contexts in instances that have created do not
+            see exported properties.</p>
+          <p><code>exports: [ 'myProperty', 'name as parentName' ]<br/>
+                  ...<br/>
+                  // in your Model's methods: <br/>
+                  this.selectedItem.get();          // equivalent to this.X.productList.selectedItem.get()<br/>
+                  this.selectedProductDAO.select(); // equivalent to this.X.productList.selectionDAO.select()<br/>
+                  </code></p>
+        */}
     },
     {
       name: 'implements',

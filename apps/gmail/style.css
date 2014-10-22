@@ -84,6 +84,7 @@ a {
 
 .star {
   flex-shrink: 0;
+  -webkit-flex-shrink: 0;
   height: 24px;
   opacity: 0.76;
   vertical-align: middle;
@@ -110,11 +111,13 @@ a {
 
 select[name=sortOrder] {
   align-self: center;
+  -webkit-align-self: center;
   margin: 20px;
 }
 
 
 .swipeAltOuter {
+  -webkit-flex-grow: 1;
   flex-grow: 1;
 }
 
@@ -124,8 +127,10 @@ select[name=sortOrder] {
 
 span[name=projectName] {
   align-self: center;
+  -webkit-align-self: center;
   color: white;
   flex: 1.0;
+  -webkit-box-flex: 1.0;
   vertical-align: middle;
   font-size: 20px;
   font-weight: 500;
@@ -239,6 +244,7 @@ ul.swipeAltHeader {
   z-index: 2;
   box-shadow: 0 1px 1px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.15);
   display: flex;
+  display: -webkit-flex;
 }
 
 .email-view .header .actionButton {
@@ -280,6 +286,7 @@ ul.swipeAltHeader {
   text-overflow: ellipsis;
   white-space: nowrap;
   flex: 1;
+  -webkit-box-flex: 1.0;
 }
 
 .email-view .body {
@@ -296,6 +303,7 @@ ul.swipeAltHeader {
   z-index: 2;
   box-shadow: 0 1px 1px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.15);
   display: flex;
+  display: -webkit-flex;
 }
 
 .email-compose-view .header .actionButton {
@@ -328,6 +336,7 @@ ul.swipeAltHeader {
   text-overflow: ellipsis;
   white-space: nowrap;
   flex: 1;
+  -webkit-box-flex: 1.0;
 }
 
 .email-compose-view .richtext {

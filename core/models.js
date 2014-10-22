@@ -161,6 +161,20 @@ MODEL({
 MODEL({
   name: 'Binding',
 
+  documentation: function() {/*
+      <p>Used when creating $$DOC{ref:'PersistentContext',usePlural:true}.</p>
+
+      <p><code>var persistentContext = PersistentContext.create({<br/>
+       dao: IDBDAO.create({model: Binding}),<br/>
+        predicate: NOT_TRANSIENT,<br/>
+        context: GLOBAL<br/>
+       });<br/>
+      ...<br/>
+      persistentContext.bindObject('userInfo', UserInfo, {});<br/>
+      </code></p>
+
+    */},
+
   properties: [
     // TODO: add support for named sub-contexts
     {
@@ -183,6 +197,11 @@ MODEL({
 MODEL({
   name: 'PersistentContext',
 
+  documentation: function() {/*
+    <p>Persists a set of Objects. Despite the name, this has nothing to do with
+    $$DOC{ref:'DevDocumentation_Context', text:'Contexts'}.</p>
+  */},
+
   properties: [
     {
       name:  'dao',
@@ -203,11 +222,12 @@ MODEL({
   ],
 
   methods: {
-    /**
-     * Manage persistene for an object.
-     * Resave it in the DAO whenever it first propertyChange events.
-     **/
+
     manage: function(name, obj, version) {
+      /*
+       <p>Manage persistence for an object. Resave it in
+       the DAO whenever it fires propertyChange events.</p>
+       */
       obj.addListener(EventService.merged((function() {
         console.log('PersistentContext', 'updating', name);
         this.dao.put(this.X.Binding.create({

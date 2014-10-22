@@ -55,7 +55,8 @@ MODEL({
         that may rely on sub-contexting for dependency injection or to confgure
         the $$DOC{ref:'View',usePlural:true} that you create, without requiring any
         knowledge or intervention on your part. When in doubt, never use a global. Always
-        <code>this.X</code>.
+        <code>this.X</code>, or use $$DOC{ref:'Model.imports',text:'imports'}
+        and $$DOC{ref:'Model.exports',text:'exports'}.
     */},
     chapters: [
       {
@@ -251,8 +252,18 @@ MODEL({
           <code>Events.unfollow(src,dst)</code> or
           <code>Events.unlink(obj1, obj2)</code> respectively.
         */}
+      },
+      {
+        name: 'animation',
+        label: 'Animation',
+        model_: 'Documentation',
+        body: function() {/*
+          <p>// TODO</p>
+        */}
       }
 
     ]
   }
 });
+
+
