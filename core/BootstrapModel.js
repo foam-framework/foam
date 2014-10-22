@@ -173,34 +173,52 @@ var BootstrapModel = {
       });
     });
 
-    // build imports
+    if ( ! this.properties ) this.properties = [];
+    var props = this.properties;
+
+    // build imports as psedo-properties
     Object_forEach(this.imports, function(i) {
+      function findProp(name) {
+        for ( var i = 0 ; i < props.length ; i++ ) {
+          if ( props[i].name == name ) return i;
+        }
+
+        return -1;
+      }
       var imp   = i.split(' as ');
       var key   = imp[0];
       var alias = imp[1] || imp[0];
 
-      Object.defineProperty(cls, alias, {
-        get: function() { return this.X[key]; },
-        set: function(v) { this.X[key] = v; } // ???: Should these be settable?
-      });
+      if ( alias.length && alias.charAt(alias.length-1) == '$' )
+        alias = alias.slice(0, alias.length-1);
+
+      var i = findProp(alias);
+
+      if ( i == -1 ) {
+        props.push(Property.create({
+          name: alias,
+          transient: true,
+          hidden: true
+        }));
+      } else {
+        var p = props[i];
+      }
     });
 
     // build properties
-    if ( this.properties ) {
-      for ( var i = 0 ; i < this.properties.length ; i++ ) {
-        var p = this.properties[i];
-        if ( extendsModel ) {
-          var superProp = extendsModel.getProperty(p.name);
-          if ( superProp ) {
-            p = superProp.clone().copyFrom(p);
-            this.properties[i] = p;
-            this[p.name.constantize()] = p;
-          }
+    for ( var i = 0 ; i < props.length ; i++ ) {
+      var p = props[i];
+      if ( extendsModel ) {
+        var superProp = extendsModel.getProperty(p.name);
+        if ( superProp ) {
+          p = superProp.clone().copyFrom(p);
+          props[i] = p;
+          this[p.name.constantize()] = p;
         }
-        cls.defineProperty(p);
       }
-      this.propertyMap_ = null;
+      cls.defineProperty(p);
     }
+    this.propertyMap_ = null;
 
     // Copy parent Model's Property Contants to this Model.
     if ( extendsModel ) {
@@ -430,7 +448,7 @@ var BootstrapModel = {
   },
 
   isInstance: function(obj) { /* Returns true if the given instance extends this $$DOC{ref:'Model'}. */
-    return obj && obj.model_ && this.isSubModel(obj.model_); 
+    return obj && obj.model_ && this.isSubModel(obj.model_);
   },
 
   toString: function() { return "BootstrapModel(" + this.name + ")"; }

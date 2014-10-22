@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-
+// TODO: refactor the documentation viewer so we just create instances of
+// DocumentationBook and not submodels.
 MODEL({
   name: 'DocumentationBook',
   label: 'Documentation Book',
@@ -154,4 +155,104 @@ MODEL({
     ]
   },
 
+});
+
+MODEL({
+  name: 'DevDocumentation_Events',
+  extendsModel: 'DocumentationBook',
+  label: 'Events and Binding Documentation',
+  help: 'Events and Binding Documentation',
+
+  documentation: {
+    label: "The FOAM Event and Binding System",
+
+    body: function() {/*
+      <p>Events and Data Binding are critical concepts in FOAM. Any property or
+      object can listen for and respond to events, or trigger events to other
+      objects that may be listening to it. Data Binding automatically progagates
+      value changes (including changes to the contents of a $$DOC{ref:'DAO'}) to
+      bound objects, rippling values through the system without requiring any code
+      to move information from one step to the next.</p>
+    */},
+    chapters: [
+      {
+        name: 'intro',
+        label: 'What are Events in FOAM?',
+        model_: 'Documentation',
+        body: function() {/*
+          <p>FOAM uses a publish/subscribe system for events between objects. Listeners
+          must subscribe (or 'listen') to a particular sender object, and are notified
+          when a published event is sent.</p>
+          <p>The most common type of event is a property change, which is used to notify
+          a bound object of a change in its source. As property change events ripple through
+          the system, reactive programming emerges.</p>
+          <p>Animation is also handled by the event system, and by merging repeated events
+          (such as multiple value changes during a single animation frame), the event system
+          efficiently handles very large sets of frequently triggered events.</p>
+        */}
+      },
+      {
+        name: 'pubSub',
+        label: 'Publishing and Subscribing',
+        model_: 'Documentation',
+        body: function() {/*
+          <p>To publish an event, simply invent a topic name. The topic is the type of
+          event, and used to filter listeners so they only receive notification when
+          the topic they are interested in is triggered. Example topics would include
+          'property', 'keydown', 'remove', 'selected', or whatever is relevant to your
+          $$DOC{ref:'Model'} and its listeners. </p>
+          <p>Every object in FOAM can send and receive events, so there is no need to
+          register your intent to publish. When the event happens, just call
+          <code>this.publish('topicName', opt_args)</code> and any listeners will be immediately
+          notified. If you don't want to wait around for them, the asynchronous version
+          <code>this.publishAsync('topicName', opt_args)</code> will return immediately and notify
+          the listeners later.</p>
+          <p>Listeners receive the optional arguments, if provided. Property changes, for
+          instance, will send the old and new values for the listener to reference.</p>
+        */}
+      },
+      {
+        name: 'binding',
+        label: 'Binding',
+        model_: 'Documentation',
+        body: function() {/*
+          <p>Binding takes care of the publishing and subscribing for you. Just use
+          <code>Events.follow(src,dst)</code> to bind
+          a source value to a target value, and changes to the source will automatically
+          be applied to the target:</p>
+          <p><code>
+            var source = this.X.SimpleValue.create();<br/>
+            var target = this.X.SimpleValue.create();<br/>
+            source.set(3);<br/>
+            // source is now 3, target is undefined<br/>
+            Events.follow(source, target);<br/>
+            // source is still 3, target is now 3<br/>
+            source.set(5);<br/>
+            // both source and target are now 5<br/>
+            target.set(2);<br/>
+            // source is still 5, target is 2 since the binding is one-way only.<br/>
+          </code></p>
+          <p>Linking two values with <code>Events.link(obj1, obj2)</code>
+          creates a bi-directional binding, so that updates
+          to either of the values will propagate to the other:</p>
+          <p><code>
+            var source = this.X.SimpleValue.create();<br/>
+            var target = this.X.SimpleValue.create();<br/>
+            source.set(3);<br/>
+            // source is now 3, target is undefined<br/>
+            Events.link(source, target);<br/>
+            // source is still 3, target is now 3<br/>
+            source.set(5);<br/>
+            // both source and target are now 5<br/>
+            target.set(2);<br/>
+            // both source and target are now 2<br/>
+          </code></p>
+          <p>When a binding is no longer needed, clean it up with
+          <code>Events.unfollow(src,dst)</code> or
+          <code>Events.unlink(obj1, obj2)</code> respectively.
+        */}
+      }
+
+    ]
+  }
 });

@@ -41,6 +41,7 @@ CLASS({
 
 
 CLASS({
+  package: 'demo',
   name: 'AccountTester',
 
   requires: [
@@ -49,7 +50,7 @@ CLASS({
   ],
 
   imports: [
-    'log as l' 
+    'log as l'
   ],
 
   exports: [
@@ -73,7 +74,41 @@ CLASS({
 });
 
 
-X.AccountTester.create().test();
+CLASS({
+  name: 'Child',
+
+  imports: [ 'log', 'x as x$' ],
+
+  properties: [
+    {
+      name: 'x',
+      postSet: function(oldValue, newValue) {
+        this.log('x ', oldValue, ' -> ', newValue);
+      }
+    }
+  ]
+});
+
+CLASS({
+  name: 'Parent',
+
+  requires: [ 'Child' ],
+  exports: [ 'x$ as x' ],
+  properties: [ 'x' ],
+  methods: {
+    test: function() {
+      var c = this.Child.create();
+      this.x = 1;
+      this.x = 2;
+      this.x = 3;
+    }
+  }
+});
+
+var p = Parent.create();
+p.test();
+
+// X.AccountTester.create().test();
 
 /*
 var a = demo.account.Account.create();

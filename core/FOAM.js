@@ -104,11 +104,63 @@ var MODEL = function(m) {
 */
 
 var UNUSED_MODELS = {};
-var USED_MODELS = {};
+var USED_MODELS   = {};
+
+/*
+(function(X) {
+  var _X_;
+
+  function bind_X_(f) {
+
+  }
+
+  function defineLazyModel(o, name, model) {
+
+  }
+
+  function defineModel(o, name, model) {
+
+  }
+
+  X.defineM
+})(this);
+*/
+
+function packagePath(X, path) {
+  function path_(X, path, i) {
+    console.log('path_ ', i);
+    if ( i == path.length ) return X;
+
+    var head = path[i];
+    if ( ! X[head] ) {
+      var map = {};
+
+      if ( i == 0 ) {
+        Object.defineProperty(X, head, { get: function() {
+          _X_ = this;
+          return map;
+        }});
+      } else {
+        X[head] = map;
+      }
+
+      path_(map, path, i+1);
+    }
+
+    return X[head];
+  }
+
+  return path ? path_(X, path.split('.'), 0) : X;
+}
 
 // Lazy Model Definition - Only creates Model when first referenced
 function MODEL(m) {
+
+//  var thisX = this.registerPackagePath(model.package);
+
   if ( document && document.currentScript ) m.sourcePath = document.currentScript.src;
+
+  var path = packagePath(GLOBAL, m.path);
 
   UNUSED_MODELS[m.name] = true;
   Object.defineProperty(GLOBAL, m.name, {
