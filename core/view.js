@@ -504,9 +504,11 @@ MODEL({
     },
 
     createRelationshipView: function(r, opt_args) {
-      return this.X.RelationshipView.create({
+      var X = ( opt_args && opt_args.X ) || this.X;
+      return X.RelationshipView.create({
         relationship: r,
-      }).copyFrom(opt_args);
+        args: opt_args
+      });
     },
 
     createTemplateView: function(name, opt_args) {
@@ -700,7 +702,7 @@ MODEL({
         $$DOC{ref:'.toInnerHTML'}. */
       if ( ! this.$ ) return;
 
-      this.invokeDestructors();
+      this.destroy();
       this.$.innerHTML = this.toInnerHTML();
       this.initInnerHTML();
     },

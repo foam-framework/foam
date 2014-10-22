@@ -552,7 +552,8 @@ var Property = {
   ],
 
   methods: {
-    f: function(obj) { return obj[this.name] || obj; },
+    partialEval: function() { return this; },
+    f: function(obj) { return obj[this.name] },
     compare: function(o1, o2) {
       return this.compareProperty(this.f(o1), this.f(o2));
     },
@@ -611,4 +612,6 @@ Property = Model.create(Property);
 for ( var i = 0 ; i < Property.properties.length ; i++ )
   Property[Property.properties[i].name.constantize()] =
     Property.properties[i] = Property.create(Property.properties[i]);
+
+USED_MODELS['Property'] = Property;
 
