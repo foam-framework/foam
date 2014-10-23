@@ -62,6 +62,17 @@ function subWindow(w, opt_name, isBackground) {
       }
       return GLOBAL.registerModel.call(this, model, opt_name);
     },
+    registerModel_: function(model) {
+      // TODO(kgr): This causes the prototype to be created prematurely, so needs to be fixed.
+      if ( model.getPrototype && model.getPrototype().installInDocument ) {
+        // TODO(kgr): If Traits have CSS then it will get installed more than once.
+        for ( m = model ; m ; m = m.extendsModel && m.getPrototype().__proto__.model_ && ! installedModels.has(m) ) {
+//          console.log('installing model: ', model.name, model.$UID);
+          installedModels.set(m, true);
+          m.getPrototype().installInDocument(this, document);
+        }
+      }
+    },
     addStyle: function(css) {
       var s = document.createElement('style');
       s.innerHTML = css;
@@ -110,30 +121,8 @@ function subWindow(w, opt_name, isBackground) {
 // Using the existence of 'process' to determine that we're running in Node.
 var X = this.subWindow(window, 'DEFAULT WINDOW', typeof process === 'object').sub({IN_WINDOW: false});
 
-function registerPackagePath(/* String */ path) {
-  if ( ! path ) return this;
-  if ( path ) console.log('path: ', path);
-  var p = path.split('.');
-  var s = this;
-  for ( var i = 0 ; i < p.length ; i++ ) {
-    s = s.registerPackage(p[i]);
-  }
-  return s;
-}
-
-function registerPackage(/* String */ name) {
-  if ( ! this[name] ) {
-    this[name] = {
-      __proto__: this,
-      X: this
-    };
-  }
-
-  return this[name];
-}
-
 function registerModel(model, opt_name) {
-  var thisX = this.registerPackagePath(model.package);
+  var thisX = this;
 
   var thisModel = thisX === GLOBAL ? model : {
     __proto__: model,
