@@ -33,7 +33,7 @@ var FObject = {
   create: function(args, opt_X) {
     var o = this.create_(this);
     o.instance_ = {};
-    o.X = { __proto__: (opt_X || X) };
+    o.X = this.model_.exports && this.model_.exports.length ? { __proto__: (opt_X || X) } : opt_X || X;
 
     if ( this.model_.imports && this.model_.imports.length ) {
       if ( ! this.imports_ ) {
