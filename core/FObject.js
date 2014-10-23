@@ -33,10 +33,7 @@ var FObject = {
   create: function(args, opt_X) {
     var o = this.create_(this);
     o.instance_ = {};
-    if ( opt_X ) o.X = opt_X;
-    if ( typeof args === 'object' ) o.copyFrom(args);
-
-    o.init(args);
+    o.X = { __proto__: (opt_X || X) };
 
     if ( this.model_.imports && this.model_.imports.length ) {
       if ( ! this.imports_ ) {
@@ -50,6 +47,10 @@ var FObject = {
         o[im[1]] = o.X[im[0]];
       }
     }
+
+    if ( typeof args === 'object' ) o.copyFrom(args);
+
+    o.init(args);
 
     // Add exports to Context
     if ( this.model_.exports && this.model_.exports.length ) {
@@ -68,7 +69,7 @@ var FObject = {
         map[e[1]] = v;
       }
       // TODO(kgr): We really need two X's, the one that this uses and the one that sub-Objects are created with
-      o.X = o.X.sub(map).sub(); // Second sub() protects from changes
+      o.X.__proto__ = o.X.__proto__.sub(map).sub(); // Second sub() protects from changes
     }
 
     return o;
@@ -548,6 +549,3 @@ var FObject = {
   }
 
 };
-
-
-
