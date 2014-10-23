@@ -145,20 +145,23 @@ var USED_MODELS   = {};
   X.XpackagePath   = packagePath;
   X.XregisterModel = registerModel;
 
-  X.XMODEL = X.XCLASS = function(m) {
+  X.MODEL = X.CLASS = function(m) {
     if ( document && document.currentScript ) m.sourcePath = document.currentScript.src;
 
     var fullName = m.package ? m.package + "." + m.name : m.name;
     UNUSED_MODELS[fullName] = true;
 
-    var path = packagePath(this, model.package);
+    var path = packagePath(this, m.package);
     Object.defineProperty(path, m.name, {
       get: function () {
         USED_MODELS[fullName] = true;
         delete UNUSED_MODELS[fullName];
         Object.defineProperty(path, m.name, {value: null, configurable: true});
-        registerModel(this, JSONUtil.mapToObj(X, m, Model));
-        return this[m.name];
+        m = JSONUtil.mapToObj(X, m, Model);
+        defineLocalProperty(path, m.name, function(o) {
+          return bindModelToX(m, o.__root__ || o);
+        });
+        return path[m.name];
       },
       configurable: true
     });
@@ -170,30 +173,6 @@ var X2 = X1.sub({}, 'X2');
 var abc = XpackagePath(X1, 'a.b.c');
 X2.a;
 
-
-// Lazy Model Definition - Only creates Model when first referenced
-function MODEL(m) {
-
-//  var thisX = this.registerPackagePath(model.package);
-
-  if ( document && document.currentScript ) m.sourcePath = document.currentScript.src;
-
-  var path = this; // packagePath(GLOBAL, m.path);
-
-  UNUSED_MODELS[m.name] = true;
-  Object.defineProperty(GLOBAL, m.name, {
-    get: function () {
-      USED_MODELS[m.name] = true;
-      delete UNUSED_MODELS[m.name];
-      Object.defineProperty(GLOBAL, m.name, {value: null, configurable: true});
-      registerModel(JSONUtil.mapToObj(X, m, Model));
-      return this[m.name];
-    },
-    configurable: true
-  });
-}
-
-var CLASS = MODEL;
 
 FOAM.browse = function(model, opt_dao, opt_X) {
    var Y = opt_X || X.sub(undefined, "FOAM BROWSER");
