@@ -33,7 +33,7 @@ var FObject = {
   create: function(args, opt_X) {
     var o = this.create_(this);
     o.instance_ = {};
-    if ( opt_X ) o.X = opt_X;
+    o.X = { __proto__: (opt_X || X) };
 
     if ( this.model_.imports && this.model_.imports.length ) {
       if ( ! this.imports_ ) {
@@ -69,7 +69,7 @@ var FObject = {
         map[e[1]] = v;
       }
       // TODO(kgr): We really need two X's, the one that this uses and the one that sub-Objects are created with
-      o.X = o.X.sub(map).sub(); // Second sub() protects from changes
+      o.X.__proto__ = o.X.__proto__.sub(map).sub(); // Second sub() protects from changes
     }
 
     return o;
