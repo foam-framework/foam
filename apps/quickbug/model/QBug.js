@@ -223,7 +223,6 @@ MODEL({
         __proto__: sink,
         put: function(project) {
           var p = (opt_X || (self.X.sub())).QProject.create({qbug: self, project: project});
-
           self.projects_[projectName] = p;
 
           sink.put(p);
