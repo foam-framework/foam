@@ -98,6 +98,8 @@ MODEL({ name: 'History', properties: [ 'op', 'a2' ] });
 MODEL({
   name: 'Calc',
 
+  requires: [ 'MainButtonsView', 'SecondaryButtonsView', 'TertiaryButtonsView', 'HistoryView', 'CalcView' ],
+
   templates: [ function CSS() {/*
     body {
       font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
