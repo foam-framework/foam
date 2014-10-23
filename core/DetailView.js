@@ -274,12 +274,17 @@ MODEL({
   name: 'UpdateDetailView',
   extendsModel: 'DetailView',
 
+  imports: [
+    'DAO as dao'
+  ],
+
   properties: [
     {
       name: 'originalData'
     },
     {
       name: 'data',
+      preSet: function(_, v) { if ( v ) return v.deepClone(); },
       postSet: function(_, data) {
         this.originalData = data.deepClone();
         if ( ! this.model && data && data.model_ ) this.model = data.model_;
@@ -335,6 +340,11 @@ MODEL({
       name:  'back',
       isAvailable: function() { this.version; return this.originalData.equals(this.data); },
       action: function() { this.stack.back(); }
+    },
+    {
+      name: 'reset',
+      isAvailable: function() { this.version; return ! this.originalData.equals(this.data); },
+      action: function() { this.data.copyFrom(this.originalData); }
     }
   ]
 });
