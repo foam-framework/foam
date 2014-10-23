@@ -480,7 +480,9 @@ MODEL({
     },
 
     where: function(query) {
-      return filteredDAO(query, this);
+      // only use X if we are an invalid instance without a this.X
+      return (this.X || X).FilteredDAO.create({query: query, delegate: this});
+      //return filteredDAO(query, this);
     },
 
     limit: function(count) {
@@ -1066,6 +1068,52 @@ function filteredDAO(query, dao) {
     }
   };
 }
+MODEL({
+  name: 'FilteredDAO',
+  extendsModel: 'ProxyDAO',
+
+  documentation: function() {/*
+        <p>Used by .where() clauses to lazily filter results.</p>
+      */},
+
+  properties: [
+    {
+      name: 'query',
+      required: true
+    }
+  ],
+  methods: {
+    select: function(sink, options) {
+      return this.delegate.select(sink, options ? {
+        __proto__: options,
+        query: options.query ?
+          AND(this.query, options.query) :
+          this.query
+      } : {query: this.query});
+    },
+    removeAll: function(sink, options) {
+      return this.delegate.removeAll(sink, options ? {
+        __proto__: options,
+        query: options.query ?
+          AND(this.query, options.query) :
+          this.query
+      } : {query: this.query});
+    },
+    listen: function(sink, options) {
+      return this.delegate.listen(sink, options ? {
+        __proto__: options,
+        query: options.query ?
+          AND(this.query, options.query) :
+          this.query
+      } : {query: this.query});
+    },
+    toString: function() {
+      return this.delegate + '.where(' + this.query + ')';
+    }
+  }
+
+});
+
 
 
 function orderedDAO(comparator, dao) {

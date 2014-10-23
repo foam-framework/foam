@@ -1959,7 +1959,8 @@ MODEL({
       }
     },
     where: function(query) {
-      return filteredDAO(query, this);
+      return (this.X || X).FilteredDAO.create({query: query, delegate: this});
+      //return filteredDAO(query, this);
     },
     limit: function(count) {
       return limitedDAO(count, this);
