@@ -494,9 +494,7 @@ MODEL({
     },
 
     orderBy: function() {
-      return orderedDAO(arguments.length == 1 ?
-                        arguments[0] :
-                        argsToArray(arguments), this);
+      return (this.X || X).OrderedDAO.create({ comparator: arguments.length == 1 ? arguments[0] : argsToArray(arguments), delegate: this });
     },
 
     unlisten: function(sink) {
@@ -1033,7 +1031,7 @@ MODEL({
 });
 
 
-// TODO: filter notifications also
+// deprecated. Use FilteredDAO model instead.
 function filteredDAO(query, dao) {
   if ( query === TRUE ) return dao;
 
@@ -1115,7 +1113,7 @@ MODEL({
 });
 
 
-
+// Deprecated. Use OrderedDAO model instead.
 function orderedDAO(comparator, dao) {
   //  comparator = toCompare(comparator);
   //  if ( comparator.compare ) comparator = comparator.compare.bind(comparator);
@@ -1137,6 +1135,38 @@ function orderedDAO(comparator, dao) {
     }
   };
 }
+MODEL({
+  name: 'OrderedDAO',
+  extendsModel: 'ProxyDAO',
+
+  documentation: function() {/*
+        <p>Used by .orderBy() clauses to lazily order results.</p>
+      */},
+
+  properties: [
+    {
+      name: 'comparator',
+      required: true
+    }
+  ],
+  methods: {
+    select: function(sink, options) {
+      if ( options ) {
+        if ( ! options.order )
+          options = { __proto__: options, order: this.comparator };
+      } else {
+        options = {order: this.comparator};
+      }
+
+      return this.delegate.select(sink, options);
+    },
+    toString: function() {
+      return this.delegate + '.where(' + this.comparator + ')';
+    }
+  }
+
+});
+
 
 
 function limitedDAO(count, dao) {
