@@ -81,90 +81,99 @@ FOAM.putFactory = function(ctx, name, factory) {
 var UNUSED_MODELS = {};
 var USED_MODELS   = {};
 
-function packagePath(X, path) {
+// Package + Model Definition Support
+(function() {
+
+  function defineLocalProperty(o, name, factory) {
+    var value = factory(o, name);
+    Object.defineProperty(o, name, { get: function() {
+      return o == this || true ? value : defineLocalProperty(this, name, factory);
+    } });
+    return value;
+  }
+
+  function defineLazyModel(o, name, model) {
+
+  }
+
+  function bindModelToX(model, Y) {
+    return Y === GLOBAL ? model : {
+      __proto__: model,
+      create: function(args, opt_X) {
+        return this.__proto__.create(args, opt_X || Y);
+      }
+    };
+  }
+
   function packagePath_(root, parent, path, i) {
     if ( i == path.length ) return parent;
-    
+
     var head = path[i];
     if ( ! parent[head] ) {
       var map = { __this__: root };
-      
+
       defineLocalProperty(parent, head, function(o) {
         return o == parent ? map : { __proto__: map, __this__: o.__this__ || o };
       });
     }
-    
+
     return packagePath_(root, parent[head], path, i+1);
   }
 
-  return path ? packagePath_(X, X, path.split('.'), 0) : X;
-}
-
-function registerModel(/* this = X, */ model, opt_name) {
-  function contextualizeModel(X, path, name, model) {
-    // Model which creates Objects with Context X
-    var xModel = {
-      __proto__: model,
-      create: function(args, opt_X) {
-        return this.__proto__.create(args, X);
-      }
-    };
-    Object.defineProperty(path, name, { get: function() {
-      var THIS = this.__this__ || this;
-      return THIS == X ? xModel : THIS.registerModel(model, name); 
-    } });
+  function packagePath(X, path) {
+    return path ? packagePath_(X, X, path.split('.'), 0) : X;
   }
 
-  var name    = model.name;
-  var package = model.package;
-  
-  if ( opt_name ) {
-    var a = opt_name.split('.');
-    name = a.pop();
-    package = a.join('.');
+  /** opt_name includes path **/
+  function registerModel(o, model, opt_name) {
+    var name    = model.name;
+    var package = model.package;
+
+    if ( opt_name ) {
+      var a = opt_name.split('.');
+      name = a.pop();
+      package = a.join('.');
+    }
+
+    defineLocalProperty(
+      packagePath(o, package),
+      name,
+      function(o) { return bindModelToX(model, o.__this__ || o); });
   }
 
-  var path = packagePath(this, package);
+//  X.XpackagePath   = packagePath;
+//  X.XregisterModel = registerModel;
 
-  contextualizeModel(this, path, name, model)
+  this.MODEL = this.CLASS = function(m) {
+    if ( document && document.currentScript ) m.sourcePath = document.currentScript.src;
 
-  this.registerModel_(model);
+//     var fullName = m.package ? m.package + "." + m.name : m.name;
+    var fullName = m.name;
+    UNUSED_MODELS[fullName] = true;
 
-  return path[name];
-}
-
-
-function MODEL(m) {
-
-  /** Lazily create and register Model first time it's accessed. **/
-  function registerModelLatch(path, m) {
-    UNUSED_MODELS[m.name] = true;
-
+    var path = packagePath(this, m.package);
+    if ( path !== this ) debugger;
     Object.defineProperty(path, m.name, {
       get: function () {
-        USED_MODELS[m.name] = true;
-        delete UNUSED_MODELS[m.name];
-        Object.defineProperty(this, m.name, {value: null, configurable: true});
-        return registerModel(JSONUtil.mapToObj(X, m, Model));
+        USED_MODELS[fullName] = true;
+        delete UNUSED_MODELS[fullName];
+        Object.defineProperty(GLOBAL, m.name, {value: null, configurable: true});
+
+      Object.defineProperty(GLOBAL, m.name, {value: null, configurable: true});
+      GLOBAL.registerModel(JSONUtil.mapToObj(X, m, Model));
+
+/*
+        m = JSONUtil.mapToObj(X, m, Model);
+        defineLocalProperty(GLOBAL, m.name, function(o) {
+          return bindModelToX(m, o.__this__ || o);
+        });
+*/
+        return this[m.name];
       },
       configurable: true
     });
   }
-
-  if ( document && document.currentScript ) m.sourcePath = document.currentScript.src;
-  
-  registerModelLatch(packagePath(GLOBAL, m.package), m);
-}
-
-var CLASS = MODEL;
-
-function registerModel_(m) {
-  // NOP
-}
-
-function registerModel(model, opt_name) {
-
-}
+})(this);
 
 
 FOAM.browse = function(model, opt_dao, opt_X) {
