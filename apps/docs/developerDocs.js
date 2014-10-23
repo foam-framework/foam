@@ -143,7 +143,7 @@ MODEL({
           <p>You've defined a $$DOC{ref:'Model'} or two, but what happens then? You can pull
           a copy of your $$DOC{ref:'Model'} from the root context with <code>X['MyModelName']</code>
           or <code>X.MyModelName</code>, and create an instance of it with
-          <code>X.MyModelName.create({args})</code>.</p>
+          <code>X.MyModelName.create({args})</code>. But what kind of object did you pull?</p>
           <p>When you declare a $$DOC{ref:'Model'}, inheritance follows your
           $$DOC{ref:'Model.extendsModel'} choice until it hits $$DOC{ref:'Model'} or
           you omit $$DOC{ref:'Model.extendsModel'} (which defaults to $$DOC{ref:'Model'}).
@@ -407,6 +407,70 @@ MODEL({
         model_: 'Documentation',
         body: function() {/*
           <p>// TODO</p>
+        */}
+      }
+
+    ]
+  }
+});
+
+MODEL({
+  name: 'DevDocumentation_Views',
+  extendsModel: 'DocumentationBook',
+  label: 'Views Documentation',
+  help: 'Views Documentation',
+
+  documentation: {
+    label: "FOAM Views",
+
+    body: function() {/*
+      <p>A $$DOC{ref:'View'} in FOAM is simply a $$DOC{ref:'Model'} designed to nest
+      inside other $$DOC{ref:'View',usePlural:true} and perform layout if necessary.
+      The currently available $$DOC{ref:'View',usePlural:true} are DOM based for browser
+      use, and have some HTML centric properties. You'll find the hardest part of your
+      $$DOC{ref:'View'} experience in tweaking your CSS.</p>
+
+    */},
+    chapters: [
+      {
+        name: 'html',
+        label: 'HTML Views',
+        model_: 'Documentation',
+        body: function() {/*
+          <p>Some peculiarities of rendering into the DOM include connecting of DOM
+          listeners. You should implement at a minimum $$DOC{ref:'View.toInnerHTML'}() (or
+          $$DOC{ref:'View.toHTML'}() if you want to create the outermost element, as well).</p>
+          <p>When rendering, call $$DOC{ref:'View.toHTML'}(), insert the result into the DOM, then
+          call $$DOC{ref:'View.initHTML'}() to finish connecting it up.</p>
+        */}
+      },
+      {
+        name: 'templates',
+        label: 'Templates in Views',
+        model_: 'Documentation',
+        body: function() {/*
+          <p>$$DOC{ref:'Template',usePlural:true} provide a convenient way of
+          expressing blocks of HTML in your $$DOC{ref:'View',usePlural:true}.
+
+          </p>
+          <p>Use the $$DOC{ref:'.',text:'$$'}propertyName{...} tag syntax to insert sub-views
+          based on a $$DOC{ref:'Property'},
+          or just call <code>&lt;%= this.mySubViewProperty.toHTML() %&gt;</code> to
+          inject some HTML directly. Remember to call $$DOC{ref:'View.initHTML'}()
+          afterwards.</p>
+        */}
+      },
+      {
+        name: 'detailView',
+        label: 'Automatic View Creation',
+        model_: 'Documentation',
+        body: function() {/*
+          <p>$$DOC{ref:'DetailView',usePlural:true} in FOAM feed from a $$DOC{ref:'DetailView.data'}
+          $$DOC{ref:'Property'}, by default using introspection to examine all the
+          $$DOC{ref:'Property',usePlural:true} of the $$DOC{ref:'Model'} provided
+          and display them.</p>
+          <p>A $$DOC{ref:'PropertyView'} is created to process each $$DOC{ref:'Property'},
+          and it picks the appropriate $$DOC{ref:'View'} model.
         */}
       }
 
