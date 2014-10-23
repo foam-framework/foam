@@ -34,9 +34,6 @@ var FObject = {
     var o = this.create_(this);
     o.instance_ = {};
     if ( opt_X ) o.X = opt_X;
-    if ( typeof args === 'object' ) o.copyFrom(args);
-
-    o.init(args);
 
     if ( this.model_.imports && this.model_.imports.length ) {
       if ( ! this.imports_ ) {
@@ -50,6 +47,10 @@ var FObject = {
         o[im[1]] = o.X[im[0]];
       }
     }
+
+    if ( typeof args === 'object' ) o.copyFrom(args);
+
+    o.init(args);
 
     // Add exports to Context
     if ( this.model_.exports && this.model_.exports.length ) {
@@ -548,6 +549,3 @@ var FObject = {
   }
 
 };
-
-
-
