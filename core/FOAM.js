@@ -100,7 +100,7 @@ var USED_MODELS   = {};
     return Y === GLOBAL ? model : {
       __proto__: model,
       create: function(args, opt_X) {
-        return this.__proto__.create(args, opt_X || Y);
+        return this.__proto__.create(args, /*opt_X || */Y);
       }
     };
   }
@@ -165,7 +165,29 @@ var USED_MODELS   = {};
       configurable: true
     });
   }
-})(this);
+})/*(this)*/;
+
+function MODEL(m) {
+
+//  var thisX = this.registerPackagePath(model.package);
+
+  if ( document && document.currentScript ) m.sourcePath = document.currentScript.src;
+
+  var path = this; // packagePath(GLOBAL, m.path);
+
+  UNUSED_MODELS[m.name] = true;
+  Object.defineProperty(GLOBAL, m.name, {
+    get: function () {
+      USED_MODELS[m.name] = true;
+      delete UNUSED_MODELS[m.name];
+      Object.defineProperty(GLOBAL, m.name, {value: null, configurable: true});
+      registerModel(JSONUtil.mapToObj(X, m, Model));
+      return this[m.name];
+    },
+    configurable: true
+  });
+}
+var CLASS = MODEL;
 
 
 FOAM.browse = function(model, opt_dao, opt_X) {

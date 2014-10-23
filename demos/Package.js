@@ -1,7 +1,7 @@
 DEBUG = true;
 
 CLASS({
-  xpackage: 'demo.account',
+  package: 'demo.bank',
   name: 'Account',
 
   imports: [ 'reportDeposit' ],
@@ -45,8 +45,7 @@ CLASS({
   name: 'AccountTester',
 
   requires: [
-//    'demo.bank.Account as A',
-    'Account as A'
+    'demo.bank.Account as A'
   ],
 
   imports: [
@@ -64,6 +63,7 @@ CLASS({
     },
     test: function() {
       var a = this.A.create({id: 42});
+      debugger;
 
       a.setStatus(true);
       a.deposit(100);
@@ -108,7 +108,7 @@ CLASS({
 var p = Parent.create();
 p.test();
 
-// X.AccountTester.create().test();
+X.demo.AccountTester.create().test();
 
 /*
 var a = demo.account.Account.create();
