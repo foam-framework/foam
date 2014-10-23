@@ -34,6 +34,154 @@ MODEL({
 });
 
 
+
+MODEL({
+  name: 'DevDocumentation_Welcome',
+  extendsModel: 'DocumentationBook',
+  label: 'Welcome to FOAM',
+  help: 'Welcome to FOAM',
+
+  documentation: {
+    label: "Welcome to FOAM",
+
+    body: function() {/*
+      <p>Congratulations on choosing the Feature Oriented Active Modeler. This
+      guide will walk you through the first steps of getting to know FOAM, and
+      how concepts from traditional programming languages map into FOAM.</p>
+    */},
+
+    chapters: [
+      {
+        name: 'intro',
+        label: 'What is FOAM, exactly?',
+        model_: 'Documentation',
+        body: function() {/*
+          <p>FOAM is a modeling system to describe data and how it behaves, and
+          from that generate entire apps. Data can be
+          items from a database, $$DOC{ref:'View',usePlural:true} in a UI, or moves
+          that a chess piece can make. If it's a thing that can be described with
+          attributes and behaviors, it can be a $$DOC{ref:'Model'}.</p>
+          <p>To share functionality between similar $$DOC{ref:'Model',usePlural:true}, you
+          can inherit the features of another $$DOC{ref:'Model'} by
+          $$DOC{ref:'Model.extendsModel',text:'extending'} it, or merge other
+          $$DOC{ref:'Model',usePlural:true} in as $$DOC{ref:'Model.traits'}.</p>
+          <p>$$DOC{ref:'Model',usePlural:true} are starting to sound a lot like
+          object-oriented classes, and in fact when generating Java code FOAM will
+          produce Java Classes from your Models. In Javascript you get a __proto__
+          set on your instances, which is the equivalent of a class. $$DOC{ref:'Model',usePlural:true}
+          are a superset of classes, however, and can do much more.</p>
+          <p>The power of FOAM is how easily the pieces can be slotted together:
+          <ul>
+            <li>A generic two-pane controller can run an email app or a bug tracker without
+            any changes: just swap out the Data Access Object ($$DOC{ref:'DAO'}) and the
+            $$DOC{ref:'Model',usePlural:true} for the data items.</li>
+            <li>Throw your $$DOC{ref:'DAO'} into a $$DOC{ref:'DAOListView'} and the
+            user can browse the collection. Want a grid? Throw in a $$DOC{ref:'GridView'}
+            instead. Not sure which? Let your $$DOC{ref:'Model'} pick the view at run
+            time.</li>
+            <li>Need to communicate something to or from a child object, but don't
+            want to be burdened with knowing what type it is or if it exists?
+            $$DOC{ref:'Model.exports',text:'Export'} your value to your
+            $$DOC{ref:'DevDocumentation_Context', text:'context'},
+            and a reference gets propagated to objects you create.
+            $$DOC{ref:'DevDocumentation_Events..documentation.chapters.binding',text:'Bind'}
+            it to a property and you'll get value changes automatically propagated.</li>
+            <li>Need to cache data from your back end? Throw a $$DOC{ref:'CachingDAO'}
+            on top of your $$DOC{ref:'RestDAO'}. Want to swap the whole thing out at
+            run time? Hide it behind a $$DOC{ref:'ProxyDAO'}
+            and your app won't know the difference.  </li>
+          </ul></p>
+        */}
+      },
+      {
+        name: 'models',
+        label: 'Why Model?',
+        model_: 'Documentation',
+        body: function() {/*
+          <p>Traditional object-oriented classes are useful abstractions that provide
+          structure to code, keeping data and the code to manage it in one place.
+          But how does one add meta-data to a class? Javadocs uses special comments
+          hacked in with a special parser, outside of the core language. Runtime-accessible
+          meta-data is limited or non-existent.</p>
+          <p>$$DOC{ref:'Model'}, on the other hand, describes a set of features that
+          each object in the system will have. Each feature, such as $$DOC{ref:'Model.properties'},
+          $$DOC{ref:'Model.methods'}, or even $$DOC{ref:'Model.documentation'} is also
+          described by a $$DOC{ref:'Model'} ($$DOC{ref:'Property'},
+          $$DOC{ref:'Method'}, and $$DOC{ref:'Documentation'} respectively), and
+          in fact the definition of $$DOC{ref:'Model'}
+          itself is an instance of $$DOC{ref:'Model'}.</p>
+          <p>For instance:
+          <ul>
+            <li>$$DOC{ref:'Property'} has a $$DOC{ref:'Property.name'} like everything else,
+            but also $$DOC{ref:'Property.hidden'} and $$DOC{ref:'Property.view'} properties
+            to indicate how it should be displayed.</li>
+            <li>$$DOC{ref:'Method'} has $$DOC{ref:'Method.code'} as one might expect, but also
+            the list of $$DOC{ref:'Method.args',text:'arguments'},
+            with further details available for each, describing everything needed to generate
+            the method in different languages.</li>
+            <li>There are also $$DOC{ref:'Action',usePlural:true}, $$DOC{ref:'Relationship',usePlural:true},
+            and a slew of other features that $$DOC{ref:'Model'} provides to allow you
+            to describe your data and the relations between them.</li>
+          </ul>
+          </p>
+          <p>With all that meta-information available, many avenues open up:
+          code generation, database persistence, serialization, and data display
+          can all be automated, to the point where modeling your new data and plugging
+          it into an old app creates a new experience for the user with little effort
+          from the developer.</p>
+          <p>Since each part of a $$DOC{ref:'Model'} is itself a $$DOC{ref:'Model'},
+          $$DOC{ref:'Model'} definitions themselves are easy to store in a $$DOC{ref:'DAO'}
+          and pull in features as they need them. This enables dynamic loading, or
+          providing features and code to the client based on run-time decisions.</p>
+        */}
+      },
+      {
+        name: 'modelsAtRuntime',
+        label: 'Models in Action',
+        model_: 'Documentation',
+        body: function() {/*
+          <p>You've defined a $$DOC{ref:'Model'} or two, but what happens then? You can pull
+          a copy of your $$DOC{ref:'Model'} from the root context with <code>X['MyModelName']</code>
+          or <code>X.MyModelName</code>, and create an instance of it with
+          <code>X.MyModelName.create({args})</code>.</p>
+          <p>When you declare a $$DOC{ref:'Model'}, inheritance follows your
+          $$DOC{ref:'Model.extendsModel'} choice until it hits $$DOC{ref:'Model'} or
+          you omit $$DOC{ref:'Model.extendsModel'} (which defaults to $$DOC{ref:'Model'}).
+          At each step, new $$DOC{ref:'Property',usePlural:true} or other features are
+          added on, as one would expect from inheritance. When you examine the "MyBase"
+          object from your context, you see all the inherited features. Calling create()
+          instantiates those features on an instance object, where you can assign values
+          or call methods.</p>
+          <p><img src='images/Model_runtime1.png'/></p>
+          <p>But what are "MyBase" and "MySub" in the above diagram? In object-oriented
+          languages they are typically special class definitions that exist outside
+          the heap where instances live. In pure Javascript, they would be __proto__
+          objects.</p>
+          <p>In FOAM, those $$DOC{ref:'Model'} definitions are actually instances of
+          $$DOC{ref:'Model'}, including $$DOC{ref:'Model'} itself:</p>
+          <p><img src='images/Model_runtime2.png'/></p>
+          <p>So not only are your $$DOC{ref:'Model',usePlural:true} inheriting from
+          $$DOC{ref:'Model'}, but they are instances of it too. Features are also
+          instantiated inside your $$DOC{ref:'Model',usePlural:true}. The $$DOC{ref:'Property',usePlural:true}
+          are shown in the diagram above. When building instances of your $$DOC{ref:'Model'}
+          the lists of inherited $$DOC{ref:'Property',usePlural:true} and other features
+          are merged to form the complete list of features your instance is built with.</p>
+
+          <p>Note the red arrows on the left. $$DOC{ref:'Model'} creates itself, and the
+          $$DOC{ref:'Property',usePlural:true} list is a $$DOC{ref:'Property'}.
+          How do they create themselves before they are defined? The answer is to cheat
+          during the bootstrap process. Temporary placeholders are filled in to build up
+          $$DOC{ref:'Model'} and its components, and replaced with the final versions
+          at the end of the process.</p>
+        */}
+      }
+
+    ]
+  }
+});
+
+
+
 MODEL({
   name: 'DevDocumentation_Context',
   extendsModel: 'DocumentationBook',

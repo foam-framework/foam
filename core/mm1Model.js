@@ -55,38 +55,41 @@ var Model = {
   plural:'Models',
   help:  "Describes the attributes and properties of an entity.",
 
-  documentation: function() { /*
-    <p>In FOAM, $$DOC{ref:'Model'} is the basic unit for describing data and behavior.
-    $$DOC{ref:'Model'} itself is a $$DOC{ref:'Model'}, since it defines what can be defined,
-    but does so within the rules it is defining.</p>
+  documentation: {
+    body: function() { /*
+      <p>In FOAM, $$DOC{ref:'Model'} is the basic unit for describing data and behavior.
+      $$DOC{ref:'Model'} itself is a $$DOC{ref:'Model'}, since it defines what can be defined,
+      but does so within the rules it is defining.</p>
 
-    <p>For the developer, this means:</p>
-    <ul>
-      <li>Your own models will extend $$DOC{ref:'Model'}, or extend
-      a model that extends $$DOC{ref:'Model'}.</li>
-
-      <li>The definition of your model is a $$DOC{ref:'Model'} instance
-      (with YourModel.model_ === Model), while instances
-      of your model have your new type (myInstance.model_ === YourModel). This
-      differs from other object-oriented systems where the definition of a class
-      and instances of the class are completely separate entities. In FOAM everything
-      is a $$DOC{ref:'Model'}, including itself. TODO: refine/expand on this.</li>
-
-      <li>In javascript code, <code>YourModel.create(...)</code> creates an instance of
+      <p>In javascript code, <code>YourModel.create(...)</code> creates an instance of
       your model. This is context dependent, so generally you will be calling
       <code>this.X.YourModel.create({...})</code>. If this is too much typing, you
       can create aliases for other $$DOC{ref:'Model',usePlural:true} in the
-      $$DOC{ref:'Model.imports'} property. </li>
+      $$DOC{ref:'Model.imports'} property. </p>
 
-      <li>Creating a subcontext and replacing X.YourModel with a different model (such as
-      YourTestModelMock created specifically for testing) will give you seamless dependency
-      injection. See the
-      $$DOC{ref:'DevDocumentation_Context..documentation.chapters.intro', text:'Context documentation'}
-      for more information.</li>
-    </ul>
+      <p>Note:
+      <ul>
+        <li>Your own models will extend $$DOC{ref:'Model'}, or extend
+        a model that extends $$DOC{ref:'Model'}.</li>
 
+        <li>The definition of your model is a $$DOC{ref:'Model'} instance
+        (with YourModel.model_ === Model), while instances
+        of your model have your new type (myInstance.model_ === YourModel). This
+        differs from other object-oriented systems where the definition of a class
+        and instances of the class are completely separate entities. In FOAM everything
+        is a $$DOC{ref:'Model'}, including itself.</li>
 
-  */ },
+        <li>Creating a subcontext and replacing X.YourModel with a different model (such as
+        YourTestModelMock created specifically for testing) will give you seamless dependency
+        injection. See the
+        $$DOC{ref:'DevDocumentation_Context..documentation.chapters.intro', text:'Context documentation'}
+        for more information.</li>
+      </ul>
+      </p>
+      <p>For more information about how $$DOC{ref:'Model',usePlural:true} are instantiated,
+      see $$DOC{ref:'DevDocumentation_Welcome..documentation.chapters.modelsAtRuntime',text:'Welcome to Models at Runtime'}.
+    */ }
+  },
 
   tableProperties: [
     'package', 'name', 'label', 'plural'
