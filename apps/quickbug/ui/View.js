@@ -39,7 +39,7 @@ var VersionParser = {
 
 function createVersionComparator() {
   var m = {};
-  
+
   function toKey(o) {
     return m[o] || ( m[o] = VersionParser.parseString(o) );
   }

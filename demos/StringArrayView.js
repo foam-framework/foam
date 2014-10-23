@@ -57,7 +57,7 @@ MODEL({
     }
   ],
   templates: [
-    function toDetailHTML() {/* <div id="%%id"> $$f1 </div> */} 
+    function toDetailHTML() {/* <div id="%%id"> $$f1 </div> */}
   ]
 });
 

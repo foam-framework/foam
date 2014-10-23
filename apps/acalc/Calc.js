@@ -274,7 +274,7 @@ MODEL({
     { name: 'degreesMode', defaultValue: false },
     { name: 'a1', defaultValue: 0 },
     { name: 'a2', defaultValue: '' },
-    { name: 'editable', defaultValue: true }, 
+    { name: 'editable', defaultValue: true },
     {
       name: 'op',
       defaultValue: DEFAULT_OP

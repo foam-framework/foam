@@ -28,7 +28,7 @@ MODEL({
   templates: [
     function CSS() {/*
       .content-view {
-        margin-top: -24px; 
+        margin-top: -24px;
       }
     */},
     function headerToHTML() {/*

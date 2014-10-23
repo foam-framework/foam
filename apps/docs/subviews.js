@@ -53,8 +53,8 @@ MODEL({
       }
     },
 
-    
-    createReferenceView: function(opt_args) { /* 
+
+    createReferenceView: function(opt_args) { /*
       <p>Creates $$DOC{ref:'DocRefView'} reference views from $$DOC{ref:'.',text:'$$DOC'}
           tags in documentation templates.</p>
       */

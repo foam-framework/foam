@@ -146,7 +146,7 @@ var EMailThreadingDAO = FOAM({
         if ( options.limit ) convoptions.limit = options.limit;
         if ( options.order ) convoptions.order = options.order;
       }
-        
+
       this.emailDao.select(DISTINCT(EMail.CONV_ID, []), queryoptions)((function(convs) {
         this.threadDao.where(IN(Conversation.ID, Object.keys(convs.values)))
           .select(sink, convoptions)(function(s) {

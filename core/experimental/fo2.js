@@ -43,7 +43,7 @@ var rootFeatureSet = [
 
 
   ['TextFieldView', 'Method', function toHTML() {
-    return 
+    return
   }],
 
 /*

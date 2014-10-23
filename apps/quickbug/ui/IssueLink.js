@@ -45,18 +45,18 @@ MODEL({
 
         if ( self.maxDepth > 1 ) {
           var ids = issue[self.property.name];
-          
+
           if ( ids.length ) {
             var subView = self.X.BlockView.create({
               property: self.property,
               maxDepth: self.maxDepth-1,
               ids:      ids
             });
-            
+
             self.$.insertAdjacentHTML(
               'afterend',
               '<div style="margin-left:10px;">' + subView.toHTML() + '</div>');
-            
+
             subView.initHTML();
           }
         }

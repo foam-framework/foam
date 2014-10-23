@@ -50,7 +50,7 @@ MODEL({
         this.filteredDAO.select(COUNT())(function(c) {
           self.isEmpty = c.count <= 0;
         });
-        
+
         this.inheritedFeaturesDAO = [].dao;
         this.X.docModelViewFeatureDAO
           .where(

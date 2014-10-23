@@ -46,7 +46,7 @@ MODEL({
         }
         for ( var key in USED_MODELS ) {
           this.X[key].getPrototype && this.X[key].getPrototype();
-        }     
+        }
 
         // All models are now in USED_MODELS
         for ( var key in USED_MODELS ) {

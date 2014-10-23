@@ -31,7 +31,7 @@ var dao = EasyDAO.create({
   daoType: 'MDAO',
   cache: false
 });
-  
+
 dao.put(Contact.create({ first: "Harry", last:   "Chandler", email: "Harry@Chandler.com" }));
 dao.put(Contact.create({ first: "Austin", last:   "Nelson", email: "Austin@Nelson.com" }));
 dao.put(Contact.create({ first: "Ruby", last:   "Romero", email: "Ruby@Romero.com" }));
@@ -123,7 +123,7 @@ MODEL({
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(obj.last[0], 36, 44);
-      
+
       ctx.font = '16px Roboto';
       ctx.fillStyle = "#444";
       ctx.textAlign = 'left';
