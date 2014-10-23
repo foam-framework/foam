@@ -232,6 +232,13 @@ function arequire(modelName, opt_X) {
       ));
     }
 
+    // Also arequire required Models.
+    for ( var i = 0 ; i < model.requires.length ; i++ ) {
+      var r = model.requires[i];
+      var m = r.split(' as ');
+      args.push(arequire(m[0]));
+    }
+
     model.required__ = amemo(aseq(
       apar.apply(apar, args),
       aconstant(model)));
