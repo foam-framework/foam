@@ -82,12 +82,12 @@ var UNUSED_MODELS = {};
 var USED_MODELS   = {};
 
 // Package + Model Definition Support
-(function(X) {
+(function() {
 
   function defineLocalProperty(o, name, factory) {
     var value = factory(o, name);
     Object.defineProperty(o, name, { get: function() {
-      return o == this ? value : defineLocalProperty(this, name, factory);
+      return o == this || true ? value : defineLocalProperty(this, name, factory);
     } });
     return value;
   }
@@ -100,7 +100,7 @@ var USED_MODELS   = {};
     return Y === GLOBAL ? model : {
       __proto__: model,
       create: function(args, opt_X) {
-        return this.__proto__.create(args, /*opt_X || */Y);
+        return this.__proto__.create(args, opt_X || Y);
       }
     };
   }
@@ -110,10 +110,10 @@ var USED_MODELS   = {};
 
     var head = path[i];
     if ( ! parent[head] ) {
-      var map = { __root__: root };
+      var map = { __this__: root };
 
       defineLocalProperty(parent, head, function(o) {
-        return o == parent ? map : { __proto__: map, __root__: o.__root__ || o };
+        return o == parent ? map : { __proto__: map, __this__: o.__this__ || o };
       });
     }
 
@@ -138,56 +138,42 @@ var USED_MODELS   = {};
     defineLocalProperty(
       packagePath(o, package),
       name,
-      function(o) { return bindModelToX(model, o.__root__ || o); });
+      function(o) { return bindModelToX(model, o.__this__ || o); });
   }
 
-  X.XpackagePath   = packagePath;
-  X.XregisterModel = registerModel;
+//  X.XpackagePath   = packagePath;
+//  X.XregisterModel = registerModel;
 
-  X.MODEL = X.CLASS = function(m) {
+  this.MODEL = this.CLASS = function(m) {
     if ( document && document.currentScript ) m.sourcePath = document.currentScript.src;
 
-    var fullName = m.package ? m.package + "." + m.name : m.name;
+//     var fullName = m.package ? m.package + "." + m.name : m.name;
+    var fullName = m.name;
     UNUSED_MODELS[fullName] = true;
 
     var path = packagePath(this, m.package);
+    if ( path !== this ) debugger;
     Object.defineProperty(path, m.name, {
       get: function () {
         USED_MODELS[fullName] = true;
         delete UNUSED_MODELS[fullName];
-        Object.defineProperty(path, m.name, {value: null, configurable: true});
+        Object.defineProperty(GLOBAL, m.name, {value: null, configurable: true});
+
+      Object.defineProperty(GLOBAL, m.name, {value: null, configurable: true});
+      GLOBAL.registerModel(JSONUtil.mapToObj(X, m, Model));
+
+/*
         m = JSONUtil.mapToObj(X, m, Model);
-        defineLocalProperty(path, m.name, function(o) {
-          return bindModelToX(m, o.__root__ || o);
+        defineLocalProperty(GLOBAL, m.name, function(o) {
+          return bindModelToX(m, o.__this__ || o);
         });
-        return path[m.name];
+*/
+        return this[m.name];
       },
       configurable: true
     });
   }
-})/*(this)*/;
-
-function MODEL(m) {
-
-//  var thisX = this.registerPackagePath(model.package);
-
-  if ( document && document.currentScript ) m.sourcePath = document.currentScript.src;
-
-  var path = this; // packagePath(GLOBAL, m.path);
-
-  UNUSED_MODELS[m.name] = true;
-  Object.defineProperty(GLOBAL, m.name, {
-    get: function () {
-      USED_MODELS[m.name] = true;
-      delete UNUSED_MODELS[m.name];
-      Object.defineProperty(GLOBAL, m.name, {value: null, configurable: true});
-      registerModel(JSONUtil.mapToObj(X, m, Model));
-      return this[m.name];
-    },
-    configurable: true
-  });
-}
-var CLASS = MODEL;
+})(this);
 
 
 FOAM.browse = function(model, opt_dao, opt_X) {
