@@ -62,7 +62,7 @@ MODEL({
       this.position();
       this.resize();
     },
-    transform: function() { 
+    transform: function() {
       return 'translate3d(' +
         this.x + 'px,' +
         this.y + 'px,' +

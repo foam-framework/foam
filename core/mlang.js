@@ -785,7 +785,7 @@ MODEL({
 
   extendsModel: 'BINARY',
 
-  //documentation: 'Checks 
+  //documentation: 'Checks
 
   methods: {
     toSQL: function() { return this.arg1.toSQL() + " like '%' + " + this.arg2.toSQL() + "+ '%'"; },

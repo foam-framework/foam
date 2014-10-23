@@ -92,7 +92,7 @@ var JSONParser = SkipGrammar.create({
     repeat(notChar('}')), // TODO(kgr): this is a very cheap/limited hack, replace with real JS grammar.
 //    repeat(sym('value'), ';'), // TODO(kgr): replace with 'statement'.
     '}')
- 
+
 }.addActions({
   obj: function(v) {
     var m = {};

@@ -106,7 +106,7 @@ MODEL({
   properties: [
     { model_: 'IntProperty', name: 'maxAttempts', defaultValue: 3 }
   ],
- 
+
  methods: {
     asend: function(decorator, delegate, args) {
       var originalRet = args[0];
