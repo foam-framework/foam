@@ -106,7 +106,6 @@ var USED_MODELS   = {};
   }
 
   function packagePath_(root, parent, path, i) {
-    console.log('path_ ', i);
     if ( i == path.length ) return parent;
 
     var head = path[i];
@@ -167,11 +166,6 @@ var USED_MODELS   = {};
     });
   }
 })(this);
-
-var X1 = this.sub({}, 'X1');
-var X2 = X1.sub({}, 'X2');
-var abc = XpackagePath(X1, 'a.b.c');
-X2.a;
 
 
 FOAM.browse = function(model, opt_dao, opt_X) {

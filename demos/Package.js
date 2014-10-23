@@ -117,3 +117,8 @@ var a = demo.account.Account.create();
 a.setStatus(true);
 a.deposit(100);
 */
+
+var X1 = this.sub({}, 'X1');
+var X2 = X1.sub({}, 'X2');
+var abc = XpackagePath(X1, 'a.b.c');
+X2.a;
