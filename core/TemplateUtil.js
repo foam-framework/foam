@@ -145,7 +145,7 @@ var TemplateUtil = {
      return function() {
        if ( ! delegate ) {
          if ( ! t.template )
-           throw 'Must arequire() template model before use for ' + t.name;
+           throw 'Must arequire() template model before use for ' + this.TYPE + '.' + t.name;
          delegate = TemplateUtil.compile(Template.isInstance(t) ? t : Template.create(t));
        }
 
