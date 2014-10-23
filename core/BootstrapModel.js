@@ -154,6 +154,7 @@ var BootstrapModel = {
       cls.model_[m.name] = cls[m.name] = JSONUtil.mapToObj(X, m, Model);
     });
 
+    if ( extendsModel ) this.requires = this.requires.concat(extendsModel.requires);
     // build requires
     Object_forEach(this.requires, function(i) {
       var imp  = i.split(' as ');
@@ -176,6 +177,7 @@ var BootstrapModel = {
     if ( ! this.properties ) this.properties = [];
     var props = this.properties;
 
+    if ( extendsModel ) this.imports = this.imports.concat(extendsModel.imports);
     // build imports as psedo-properties
     Object_forEach(this.imports, function(i) {
       function findProp(name) {
@@ -204,6 +206,9 @@ var BootstrapModel = {
         var p = props[i];
       }
     });
+
+    if ( extendsModel ) this.exports = this.exports.concat(extendsModel.exports);
+
 
     // build properties
     for ( var i = 0 ; i < props.length ; i++ ) {
