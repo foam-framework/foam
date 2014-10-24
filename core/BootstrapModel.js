@@ -97,23 +97,24 @@ var BootstrapModel = {
   buildPrototype: function() { /* Internal use only. */
     function addTraitToModel(traitModel, parentModel) {
       var name = parentModel.name + '_ExtendedWith_' + traitModel.name;
-      if ( ! GLOBAL[name] ) {
+
+      if ( ! FOAM.lookup(name) ) {
         var model = traitModel.deepClone();
         model.name = name;
         model.extendsModel = parentModel.name;
         GLOBAL.registerModel(model);
       }
 
-      return GLOBAL[name];
+      return FOAM.lookup(name);
     }
 
-    if ( this.extendsModel && ! GLOBAL[this.extendsModel] ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
+    if ( this.extendsModel && ! FOAM.lookup(this.extendsModel) ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
 
-    var extendsModel = this.extendsModel && GLOBAL[this.extendsModel];
+    var extendsModel = this.extendsModel && FOAM.lookup(this.extendsModel);
 
     if ( this.traits ) for ( var i = 0 ; i < this.traits.length ; i++ ) {
-      var trait = this.traits[i];
-      var traitModel = GLOBAL[trait];
+      var trait      = this.traits[i];
+      var traitModel = FOAM.lookup(trait);
 
       if ( traitModel ) {
         extendsModel = addTraitToModel(traitModel, extendsModel);
