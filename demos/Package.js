@@ -1,5 +1,7 @@
 DEBUG = true;
 
+CLASS = XMODEL;
+
 CLASS({
   package: 'demo.bank',
   name: 'Account',
@@ -41,7 +43,7 @@ CLASS({
 
 
 CLASS({
-  package: 'demo',
+  package: 'demo.bank',
   name: 'AccountTester',
 
   requires: [
@@ -63,7 +65,6 @@ CLASS({
     },
     test: function() {
       var a = this.A.create({id: 42});
-      debugger;
 
       a.setStatus(true);
       a.deposit(100);
@@ -73,6 +74,9 @@ CLASS({
   }
 });
 
+var a = X.demo.bank.AccountTester.create();
+debugger;
+a.test();
 
 CLASS({
   name: 'Child',
@@ -108,17 +112,15 @@ CLASS({
 var p = Parent.create();
 p.test();
 
-X.demo.AccountTester.create().test();
 
-/*
-var a = demo.account.Account.create();
+// X = X.sub({}, 'ROOT');
+// X.AccountTester.create().test();
+// var a = demo.account.Account.create();
 
-// Both Pass
-a.setStatus(true);
-a.deposit(100);
-*/
 
 var X1 = this.sub({}, 'X1');
 var X2 = X1.sub({}, 'X2');
-var abc = XpackagePath(X1, 'a.b.c');
+var abc = packagePath(X1, 'a.b.c');
 X2.a;
+
+console.log('done');

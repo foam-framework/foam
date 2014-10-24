@@ -87,7 +87,7 @@ var USED_MODELS   = {};
   function defineLocalProperty(o, name, factory) {
     var value = factory(o, name);
     Object.defineProperty(o, name, { get: function() {
-      return o == this || true ? value : defineLocalProperty(this, name, factory);
+      return o == this ? value : defineLocalProperty(this, name, factory);
     } });
     return value;
   }
@@ -144,7 +144,7 @@ var USED_MODELS   = {};
 //  X.XpackagePath   = packagePath;
 //  X.XregisterModel = registerModel;
 
-  this.MODEL = this.CLASS = function(m) {
+  this.MODEL = function(m) {
     if ( document && document.currentScript ) m.sourcePath = document.currentScript.src;
 
 //     var fullName = m.package ? m.package + "." + m.name : m.name;
@@ -222,6 +222,11 @@ function arequire(modelName, opt_X) {
   var X = opt_X || GLOBAL;
   var model = FOAM.lookup(modelName, X);
 
+  if ( ! model ) {
+    console.warn('Unknown Model in arequire: ', modelName);
+    return aconstant(undefined);
+  }
+
   /** This is so that if the model is arequire'd concurrently the
    *  initialization isn't done more than once.
    **/
@@ -262,14 +267,13 @@ var FOAM_POWERED = '<a style="text-decoration:none;" href="https://github.com/fo
 <font color="#555555" > POWERED</font></font></a>';
 
 
-
-function XpackagePath(X, path) {
+function packagePath(X, path) {
   function packagePath_(root, parent, path, i) {
 
     function defineLocalProperty(o, name, factory) {
       var value = factory(o, name);
       Object.defineProperty(o, name, { get: function() {
-        return o == this || true ? value : defineLocalProperty(this, name, factory);
+        return o == this ? value : defineLocalProperty(this, name, factory);
       } });
       return value;
     }
@@ -291,19 +295,36 @@ function XpackagePath(X, path) {
   return path ? packagePath_(X, X, path.split('.'), 0) : X;
 }
 
-function XregisterModel(/* this = X, */ model, opt_name) {
-  function contextualizeModel(X, path, name, model) {
+
+function XregisterModel(model, opt_name) {
+
+  var root = this;
+
+  function contextualizeModel(path, model, name) {
+    if ( ! model.getPrototype ) debugger;
+
+//    console.log('contextulizeModel: ', model.name, ' in ', this.toString());
+
     // Model which creates Objects with Context X
-    var xModel = {
+    var xModel = root == GLOBAL || root == X ? model : {
       __proto__: model,
       create: function(args, opt_X) {
-        return this.__proto__.create(args, X);
+        return model.create(args, root);
       }
     };
-    Object.defineProperty(path, name, { get: function() {
-      var THIS = this.__this__ || this;
-      return THIS == X ? xModel : THIS.registerModel(model, name); 
-    } });
+
+    Object.defineProperty(
+      path,
+      name,
+      {
+        get: function() {
+          var THIS = this.__this__ || this;
+          if ( THIS === root ) return xModel;
+          THIS.XregisterModel(model, name);
+          return THIS[name];
+        },
+        configurable: true
+      });
   }
 
   var name    = model.name;
@@ -315,13 +336,11 @@ function XregisterModel(/* this = X, */ model, opt_name) {
     package = a.join('.');
   }
 
-  var path = packagePath(this, package);
+  var path = packagePath(root, package); // TODO: make root.
 
-  contextualizeModel(this, path, name, model)
+  contextualizeModel(path, model, name)
 
   this.registerModel_(model);
-
-  return path[name];
 }
 
 
@@ -335,8 +354,9 @@ function XMODEL(m) {
       get: function () {
         USED_MODELS[m.name] = true;
         delete UNUSED_MODELS[m.name];
-        Object.defineProperty(this, m.name, {value: null, configurable: true});
-        return registerModel(JSONUtil.mapToObj(X, m, Model));
+        Object.defineProperty(path, m.name, {value: null, configurable: true});
+        GLOBAL.XregisterModel(JSONUtil.mapToObj(X, m, Model));
+        return this[m.name];
       },
       configurable: true
     });
@@ -345,8 +365,15 @@ function XMODEL(m) {
   if ( document && document.currentScript ) m.sourcePath = document.currentScript.src;
   
   registerModelLatch(packagePath(GLOBAL, m.package), m);
+//  packagePath(GLOBAL, m.package)[m.name] = JSONUtil.mapToObj(X, m, Model); // Works
+//  XregisterModel(JSONUtil.mapToObj(X, m, Model)); // Works
 }
 
 function registerModel_(m) {
   // NOP
+}
+
+
+function INTERFACE() {
+
 }
