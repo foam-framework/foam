@@ -201,7 +201,7 @@ function packagePath(X, path) {
 }
 
 
-function XregisterModel(model, opt_name) {
+function registerModel(model, opt_name) {
 
   var root = this;
 
@@ -225,7 +225,7 @@ function XregisterModel(model, opt_name) {
         get: function() {
           var THIS = this.__this__ || this;
           if ( THIS === root ) return xModel;
-          THIS.XregisterModel(model, name);
+          THIS.registerModel(model, name);
           return THIS[name];
         },
         configurable: true
@@ -260,7 +260,7 @@ function CLASS(m) {
         USED_MODELS[m.name] = true;
         delete UNUSED_MODELS[m.name];
         Object.defineProperty(path, m.name, {value: null, configurable: true});
-        GLOBAL.XregisterModel(JSONUtil.mapToObj(X, m, Model));
+        GLOBAL.registerModel(JSONUtil.mapToObj(X, m, Model));
         return this[m.name];
       },
       configurable: true
@@ -270,8 +270,6 @@ function CLASS(m) {
   if ( document && document.currentScript ) m.sourcePath = document.currentScript.src;
 
   registerModelLatch(packagePath(GLOBAL, m.package), m);
-//  packagePath(GLOBAL, m.package)[m.name] = JSONUtil.mapToObj(X, m, Model); // Works
-//  XregisterModel(JSONUtil.mapToObj(X, m, Model)); // Works
 }
 
 var MODEL = CLASS;
