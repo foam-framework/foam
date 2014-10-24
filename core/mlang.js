@@ -1959,18 +1959,19 @@ MODEL({
       }
     },
     where: function(query) {
-      return (this.X || X).FilteredDAO.create({query: query, delegate: this});
+      return (this.X || X).FilteredDAO_.create({query: query, delegate: this});
       //return filteredDAO(query, this);
     },
     limit: function(count) {
-      return limitedDAO(count, this);
+      return (this.X || X).LimitedDAO_.create({count:count, delegate:this});
+			//return limitedDAO(count, this);
     },
     skip: function(skip) {
-      return skipDAO(skip, this);
+      return (this.X || X).SkipDAO_.create({skip:skip, delegate:this});
+			//return skipDAO(skip, this);
     },
-
     orderBy: function() {
-      return orderedDAO(arguments.length == 1 ? arguments[0] : argsToArray(arguments), this);
+      return (this.X || X).OrderedDAO_.create({ comparator: arguments.length == 1 ? arguments[0] : argsToArray(arguments), delegate: this });
     },
     listen: function() {},
     unlisten: function() {},

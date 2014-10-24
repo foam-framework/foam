@@ -2444,7 +2444,11 @@ MODEL({
     },
     {
       name: 'label',
-      defaultValueFn: function() { return this.action.label; }
+      defaultValueFn: function() {
+        return this.data ?
+            this.action.labelFn.call(this.data, this.action) :
+            this.action.label;
+      }
     },
     {
       name: 'iconUrl',
@@ -2497,7 +2501,7 @@ MODEL({
       }
 
       if ( this.showLabel ) {
-        out += this.data ? this.action.labelFn.call(this.data, this.action) : this.action.label;
+        out += this.label;
       }
 
       return out;
@@ -2536,7 +2540,7 @@ MODEL({
       }
 
       if ( this.action.showLabel ) {
-        return this.data ? this.action.labelFn.call(this.data, this.action) : this.action.label;
+        return this.label;
       }
     }
   }

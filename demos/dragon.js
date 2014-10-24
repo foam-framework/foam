@@ -60,9 +60,11 @@ MODEL({
     }
   ],
 
-  methods: {
-    colours: ['#33f','#f00','#fc0','#33f','#3c0'],
+  constants: {
+    colours: ['#33f','#f00','#fc0','#33f','#3c0']
+  },
 
+  methods: {
     dot: function(r) {
       var c = this.canvas;
       c.beginPath();

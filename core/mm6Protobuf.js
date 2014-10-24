@@ -131,20 +131,22 @@ function recopyModelFeatures(m) {
   m.model_ = Model;
 
   // the preSet for each of these does the work
-  m.methods = m.methods;
-  m.templates = m.templates;
+  m.methods       = m.methods;
+  m.templates     = m.templates;
   m.relationships = m.relationships;
-  m.properties = m.properties;
-  m.actions = m.actions;
-  m.listeners = m.listeners;
-  m.models = m.models;
-  m.tests = m.tests;
-  m.issues = m.issues;
+  m.properties    = m.properties;
+  m.actions       = m.actions;
+  m.listeners     = m.listeners;
+  m.models        = m.models;
+  m.tests         = m.tests;
+  m.issues        = m.issues;
 }
 
+/*
 for ( var key in UNUSED_MODELS ) {
   recopyModelFeatures(GLOBAL[key]);
 }
+*/
 for ( var key in USED_MODELS ) {
   recopyModelFeatures(GLOBAL[key]);
 }
