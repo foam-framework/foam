@@ -95,18 +95,28 @@ var Model = {
     'package', 'name', 'label', 'plural'
   ],
 
-  ids: [ 'name' ],
-
   properties: [
+    {
+      name: 'id'
+    },
     {
       name:  'sourcePath',
       help: 'Source location of this Model.',
       defaultValue: ''
     },
     {
+      name:  'abstract',
+      type: 'boolean',
+      defaultValue: false,
+      help: 'If the java class is abstract.',
+      documentation: function() { /* When running FOAM in a Java environment, specifies whether the
+        Java class built from this $$DOC{ref:'Model'} should be declared abstract.*/}
+    },
+    {
       name: 'package',
       help: 'Package that this Model belongs to.',
       defaultValue: '',
+      postSet: function(_, p) { return this.id = p ? p + '.' + this.name : this.name; },
       documentation: function() { /*
         <p>The package (or namespace) in which the $$DOC{ref:'.'} belongs. The
         dot-separated package name is prepended to the $$DOC{ref:'.'} name.</p>
@@ -124,16 +134,9 @@ var Model = {
         */}
     },
     {
-      name:  'abstract',
-      type: 'boolean',
-      defaultValue: false,
-      help: 'If the java class is abstract.',
-      documentation: function() { /* When running FOAM in a Java environment, specifies whether the
-        Java class built from this $$DOC{ref:'Model'} should be declared abstract.*/}
-    },
-    {
       name:  'name',
       type:  'String',
+      postSet: function(_, n) { return this.id = this.package ? this.package + '.' + n : n; },
       required: true,
       displayWidth: 30,
       displayHeight: 1,
