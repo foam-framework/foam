@@ -3920,7 +3920,7 @@ MODEL({
           sink.eof && sink.eof.apply(arguments);
           future.set(sink);
         }
-      });
+      }, options);
       return future.get;
     },
     find: function(id, sink) {
