@@ -471,20 +471,22 @@ MODEL({
 
     where: function(query) {
       // only use X if we are an invalid instance without a this.X
-      return (this.X || X).FilteredDAO.create({query: query, delegate: this});
+      return (this.X || X).FilteredDAO_.create({query: query, delegate: this});
       //return filteredDAO(query, this);
     },
 
     limit: function(count) {
-      return limitedDAO(count, this);
+      return (this.X || X).LimitedDAO_.create({count:count, delegate:this});
+			//return limitedDAO(count, this);
     },
 
     skip: function(skip) {
-      return skipDAO(skip, this);
+      return (this.X || X).SkipDAO_.create({skip:skip, delegate:this});
+			//return skipDAO(skip, this);
     },
 
     orderBy: function() {
-      return (this.X || X).OrderedDAO.create({ comparator: arguments.length == 1 ? arguments[0] : argsToArray(arguments), delegate: this });
+      return (this.X || X).OrderedDAO_.create({ comparator: arguments.length == 1 ? arguments[0] : argsToArray(arguments), delegate: this });
     },
 
     unlisten: function(sink) {
@@ -1021,7 +1023,7 @@ MODEL({
 });
 
 
-// deprecated. Use FilteredDAO model instead.
+// deprecated. Use FilteredDAO_ model instead.
 function filteredDAO(query, dao) {
   if ( query === TRUE ) return dao;
 
@@ -1057,11 +1059,11 @@ function filteredDAO(query, dao) {
   };
 }
 MODEL({
-  name: 'FilteredDAO',
+  name: 'FilteredDAO_',
   extendsModel: 'ProxyDAO',
 
   documentation: function() {/*
-        <p>Used by .where() clauses to lazily filter results.</p>
+        <p>Internal use only.</p>
       */},
 
   properties: [
@@ -1103,7 +1105,7 @@ MODEL({
 });
 
 
-// Deprecated. Use OrderedDAO model instead.
+// Deprecated. Use OrderedDAO_ model instead.
 function orderedDAO(comparator, dao) {
   //  comparator = toCompare(comparator);
   //  if ( comparator.compare ) comparator = comparator.compare.bind(comparator);
@@ -1126,11 +1128,11 @@ function orderedDAO(comparator, dao) {
   };
 }
 MODEL({
-  name: 'OrderedDAO',
+  name: 'OrderedDAO_',
   extendsModel: 'ProxyDAO',
 
   documentation: function() {/*
-        <p>Used by .orderBy() clauses to lazily order results.</p>
+        <p>Internal use only.</p>
       */},
 
   properties: [
@@ -1158,7 +1160,7 @@ MODEL({
 });
 
 
-
+// deprecated. Use a LimitedDAO_ instance instead.
 function limitedDAO(count, dao) {
   return {
     __proto__: dao,
@@ -1184,8 +1186,45 @@ function limitedDAO(count, dao) {
     }
   };
 }
+MODEL({
+  name: 'LimitedDAO_',
+  extendsModel: 'ProxyDAO',
 
+  documentation: function() {/*
+        <p>Internal use only.</p>
+      */},
 
+  properties: [
+    {
+      name: 'count',
+      required: true
+    }
+  ],
+  methods: {
+    select: function(sink, options) {
+      if ( options ) {
+        if ( 'limit' in options ) {
+          options = {
+            __proto__: options,
+            limit: Math.min(this.count, options.limit)
+          };
+        } else {
+          options = { __proto__: options, limit: this.count };
+        }
+      }
+      else {
+        options = { limit: this.count };
+      }
+
+      return this.delegate.select(sink, options);
+    },
+    toString: function() {
+      return this.delegate + '.limit(' + this.count + ')';
+    }
+  }
+});
+
+// deprecated. Use a SkipDAO_ instance instead.
 function skipDAO(skip, dao) {
   if ( skip !== Math.floor(skip) ) console.warn('skip() called with non-integer value: ' + skip);
   return {
@@ -1207,7 +1246,42 @@ function skipDAO(skip, dao) {
     }
   };
 }
+MODEL({
+  name: 'SkipDAO_',
+  extendsModel: 'ProxyDAO',
 
+  documentation: function() {/*
+        <p>Internal use only.</p>
+      */},
+
+  properties: [
+    {
+      name: 'skip',
+      required: true,
+			postSet: function() {
+			  if ( this.skip !== Math.floor(this.skip) ) 
+					console.warn('skip() called with non-integer value: ' + this.skip);
+			}
+    }
+  ],
+  methods: {
+    select: function(sink, options) {
+      if ( options ) {
+        options = {
+          __proto__: options,
+          skip: this.skip
+        };
+      } else {
+        options = { __proto__: options, skip: this.skip };
+      }
+
+      return this.delegate.select(sink, options);
+    },
+    toString: function() {
+      return this.delegate + '.skip(' + this.skip + ')';
+    }
+  }
+});
 
 function atxn(afunc) {
   return function(ret) {
