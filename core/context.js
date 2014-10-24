@@ -50,18 +50,6 @@ function subWindow(w, opt_name, isBackground) {
   var installedModels = new WeakMap();
 
   var map = {
-    registerModel: function(model, opt_name) {
-      // TODO(kgr): This causes the prototype to be created prematurely, so needs to be fixed.
-      if ( model.getPrototype && model.getPrototype().installInDocument ) {
-        // TODO(kgr): If Traits have CSS then it will get installed more than once.
-        for ( m = model ; m ; m = m.extendsModel && m.getPrototype().__proto__.model_ && ! installedModels.has(m) ) {
-//          console.log('installing model: ', model.name, model.$UID);
-          installedModels.set(m, true);
-          m.getPrototype().installInDocument(this, document);
-        }
-      }
-      return GLOBAL.registerModel.call(this, model, opt_name);
-    },
     registerModel_: function(model) {
       // TODO(kgr): This causes the prototype to be created prematurely, so needs to be fixed.
       if ( model.getPrototype && model.getPrototype().installInDocument ) {
@@ -120,30 +108,6 @@ function subWindow(w, opt_name, isBackground) {
 
 // Using the existence of 'process' to determine that we're running in Node.
 var X = this.subWindow(window, 'DEFAULT WINDOW', typeof process === 'object').sub({IN_WINDOW: false}, 'TOP-X');
-
-function registerModel(model, opt_name) {
-  var thisX = this;
-
-  var thisModel = thisX === GLOBAL ? model : {
-    __proto__: model,
-      create: function(args, opt_X) {
-        return this.__proto__.create(args, thisX);
-      }
-  };
-
-  Object.defineProperty(
-    thisX,
-    opt_name || model.name,
-    {
-      get: function() {
-        return ( this === thisX ) ? thisModel : this.registerModel(model);
-      },
-      configurable: true
-    }
-  );
-
-  return thisModel;
-};
 
 var registerFactory = function(model, factory) {
   // TODO

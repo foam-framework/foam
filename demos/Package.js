@@ -1,7 +1,5 @@
 DEBUG = true;
 
-CLASS = XMODEL;
-
 CLASS({
   package: 'demo.bank',
   name: 'Account',
@@ -75,7 +73,6 @@ CLASS({
 });
 
 var a = X.demo.bank.AccountTester.create();
-debugger;
 a.test();
 
 CLASS({
