@@ -613,5 +613,5 @@ for ( var i = 0 ; i < Property.properties.length ; i++ )
   Property[Property.properties[i].name.constantize()] =
     Property.properties[i] = Property.create(Property.properties[i]);
 
-USED_MODELS['Property'] = Property;
+USED_MODELS.Property = Property;
 

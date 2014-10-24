@@ -70,8 +70,8 @@ MODEL({
     ]
 });
 
-for ( var key in UNUSED_MODELS ) { window[key].getPrototype && window[key].getPrototype(); }
-for ( var key in USED_MODELS ) window[key].getPrototype && window[key].getPrototype();
+for ( var id in   USED_MODELS ) { var m = FOAM.lookup(id); if ( m.getPrototype ) m.getPrototype(); }
+for ( var id in UNUSED_MODELS ) { var m = FOAM.lookup(id); if ( m.getPrototype ) m.getPrototype(); }
 
 var header = $('header');
 var footer = $('footer');
@@ -141,15 +141,15 @@ layout();
         dao.put(f);
       }
     }
-    for ( var key in USED_MODELS ) {
-      var m = window[key];
+    for ( var id in USED_MODELS ) {
+      var m = FOAM.lookup(id);
       if ( ! m.getPrototype ) continue;
       m.getPrototype();
 
       var f = Feature.create(m);
       f.model = '- GLOBAL -';
-      f.type = 'Model';
-      f.obj = m;
+      f.type  = 'Model';
+      f.obj   = m;
       dao.put(f);
 
       importFeatures(m, m.properties, 'Property');
