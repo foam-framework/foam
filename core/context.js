@@ -119,7 +119,7 @@ function subWindow(w, opt_name, isBackground) {
 }
 
 // Using the existence of 'process' to determine that we're running in Node.
-var X = this.subWindow(window, 'DEFAULT WINDOW', typeof process === 'object').sub({IN_WINDOW: false});
+var X = this.subWindow(window, 'DEFAULT WINDOW', typeof process === 'object').sub({IN_WINDOW: false}, 'TOP-X');
 
 function registerModel(model, opt_name) {
   var thisX = this;
