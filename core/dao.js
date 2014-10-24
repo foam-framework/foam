@@ -3904,20 +3904,24 @@ MODEL({
   extendsModel: 'ProxyDAO',
   methods: {
     select: function(sink, options) {
+      sink = sink || [].sink;
       var X = this.X;
-      return this.delegate.select({
+      var future = afuture();
+      this.delegate.select({
         put: function(o) {
           o = o.clone();
           o.X = X;
-          sink && sink.put && sink.put(o);
+          sink.put && sink.put(o);
         },
         error: function() {
-          sink && sink.error && sink.error.apply(sink, arguments);
+          sink.error && sink.error.apply(sink, arguments);
         },
         eof: function() {
-          sink && sink.eof && sink.eof.apply(arguments);
+          sink.eof && sink.eof.apply(arguments);
+          future.set(sink);
         }
-      });
+      }, options);
+      return future.get;
     },
     find: function(id, sink) {
       var X = this.X;

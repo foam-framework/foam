@@ -1,5 +1,4 @@
 <foam>
-
   <object model="UnitTest">
     <property name="name">Super Test</property>
     <property name="description">Test SUPER support.</property>
@@ -1821,21 +1820,25 @@ a message
     </property>
   </object>
   <object model="UnitTest">
-    <property name="name">ContextualizingDAO</property>
-    <property name="description">Test basic functionality of the ContextualizingDAO.</property>
-    <property name="tag">
-      <i>dao</i>
+    <property name="name">Contextualizing DAO Test.</property>
+    <property name="description">Test functionality of ContextualizingDAO.</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
     </property>
     <property name="async">true</property>
-    <property name="code" type="function">function(ret) {
+    <property name="code" type="function">function (ret) {
       var Y = this.X.sub({
         a: true
       });
-      var model = Model.create({ name: 'MyType', properties: ['id'] });
-      var dao = MDAO.create({ model: model });
+      MODEL({
+        name: 'MyType',
+        properties: ['id']
+      });
+      var dao = MDAO.create({ model: MyType });
       var objs = [
-        model.create({ id: 1 }),
-        model.create({ id: 2 })
+        MyType.create({ id: 1 }),
+        MyType.create({ id: 2 })
       ];
 
       objs.select(dao);
@@ -1862,7 +1865,7 @@ a message
           }
           ret();
         }).bind(this))(ret);
-      }
+    }
     </property>
   </object>
 </foam>
