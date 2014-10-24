@@ -3805,6 +3805,41 @@ MODEL({
   ]
 });
 
+MODEL({
+  name: 'ContextualizingDAO',
+  extendsModel: 'ProxyDAO',
+  methods: {
+    select: function(sink, options) {
+      var X = this.X;
+      return this.delegate.select({
+        put: function(o) {
+          o = o.clone();
+          o.X = X;
+          sink && sink.put && sink.put(o);
+        },
+        error: function() {
+          sink && sink.error && sink.error.apply(sink, arguments);
+        },
+        eof: function() {
+          sink && sink.eof && sink.eof.apply(arguments);
+        }
+      });
+    },
+    find: function(id, sink) {
+      var X = this.X;
+      this.delegate.find(id, {
+        put: function(o) {
+          o.X = X;
+          sink && sink.put && sink.put(o);
+        },
+        error: function() {
+          sink && sink.error && sink.error.apply(sink, arguments);
+        }
+      });
+    }
+  }
+});
+
 // Experimental, convert all functions into sinks
 Function.prototype.put    = function() { this.apply(this, arguments); };
 Function.prototype.remove = function() { this.apply(this, arguments); };

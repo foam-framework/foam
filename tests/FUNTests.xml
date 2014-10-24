@@ -1820,4 +1820,49 @@ a message
       v1.data$ = v2.data$;
     </property>
   </object>
+  <object model="UnitTest">
+    <property name="name">ContextualizingDAO</property>
+    <property name="description">Test basic functionality of the ContextualizingDAO.</property>
+    <property name="tag">
+      <i>dao</i>
+    </property>
+    <property name="async">true</property>
+    <property name="code" type="function">function(ret) {
+      var Y = this.X.sub({
+        a: true
+      });
+      var model = Model.create({ name: 'MyType', properties: ['id'] });
+      var dao = MDAO.create({ model: model });
+      var objs = [
+        model.create({ id: 1 }),
+        model.create({ id: 2 })
+      ];
+
+      objs.select(dao);
+
+      dao = Y.ContextualizingDAO.create({ delegate: dao });
+
+      aseq(
+        (function(ret) {
+          dao.select()((function(a) {
+          for ( var i = 0; i &lt; a.length ; i++ )
+            this.assert(a[i].X.a, 'Selected objects have the correct context.');
+            ret();
+          }).bind(this));
+        }).bind(this),
+        (function(ret) {
+          dao.find(1, (function(a) {
+            this.assert(a.X.a, 'Objects fetched with .find have the correct context.');
+            ret();
+          }).bind(this));
+        }).bind(this),
+        (function(ret) {
+          for ( var i = 0; i &lt; objs.length ; i++ ) {
+            this.assert(!objs[i].X.a, 'Original objects are unchanged.');
+          }
+          ret();
+        }).bind(this))(ret);
+      }
+    </property>
+  </object>
 </foam>
