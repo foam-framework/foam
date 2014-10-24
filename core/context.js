@@ -47,18 +47,15 @@ function subWindow(w, opt_name, isBackground) {
   if ( ! w ) return this.sub();
 
   var document = this.subDocument ? this.subDocument(w.document) : w.document;
-  var installedModels = new WeakMap();
+  var installedModels = document.installedModels || ( document.installedModels = {});
 
   var map = {
     registerModel_: function(model) {
-      // TODO(kgr): This causes the prototype to be created prematurely, so needs to be fixed.
-      if ( model.getPrototype && model.getPrototype().installInDocument ) {
-        // TODO(kgr): If Traits have CSS then it will get installed more than once.
-        for ( m = model ; m ; m = m.extendsModel && m.getPrototype().__proto__.model_ && ! installedModels.has(m) ) {
-//          console.log('installing model: ', model.name, model.$UID);
-          installedModels.set(m, true);
-          m.getPrototype().installInDocument(this, document);
-        }
+      // TODO(kgr): If Traits have CSS then it will get installed more than once.
+      for ( m = model ; m && m.getPrototype ; m = m.extendsModel ) {
+        if ( installedModels[m.name] ) return;
+        installedModels[m.name] = true;
+        m.getPrototype().installInDocument(this, document);
       }
     },
     addStyle: function(css) {

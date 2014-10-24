@@ -274,8 +274,11 @@ function CLASS(m) {
 
 var MODEL = CLASS;
 
-function INTERFACE() {
-  // TODO(kgr): implement
+function INTERFACE(imodel) {
+  // Unless in DEBUG mode, just discard interfaces as they're only used for type checking.
+  // if ( ! DEBUG ) return;
+  var i = JSONUtil.mapToObj(X, imodel, Interface);
+  packagePath(GLOBAL, i.package)[i.name] = i;
 }
 
 
