@@ -16,9 +16,7 @@
  */
 
 // ???: Is there any point in making this an Interface, or just a Concrete Model
-MODEL({
-  model_: 'Interface',
-
+INTERFACE({
   name: 'FlowControl',
   description: 'DAO FLow Control.  Used to control select() behavior.',
 
@@ -57,9 +55,7 @@ MODEL({
 });
 
 
-MODEL({
-  model_: 'Interface',
-
+INTERFACE({
   name: 'Sink',
   description: 'Data Sink',
 
@@ -105,9 +101,7 @@ MODEL({
 });
 
 
-MODEL({
-  model_: 'Interface',
-
+INTERFACE({
   name: 'Predicate',
   description: 'A boolean Predicate.',
 
@@ -124,9 +118,7 @@ MODEL({
 });
 
 
-MODEL({
-  model_: 'Interface',
-
+INTERFACE({
   name: 'Comparator',
   description: 'A strategy for comparing pairs of Objects.',
 
@@ -146,9 +138,7 @@ MODEL({
 
 // 'options': Map including 'query', 'order', and 'limit', all optional
 
-MODEL({
-  model_: 'Interface',
-
+INTERFACE({
   name: 'DAO',
   description: 'Data Access Object',
   extends: ['Sink'],
