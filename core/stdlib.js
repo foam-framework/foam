@@ -87,6 +87,8 @@ String.prototype.labelize = function() {
 
 // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
 String.prototype.constantize = function() {
+  // special-case X to avoid conflicts with the Context
+  if ( this == 'x' ) return 'X_';
   // TODO: add property to specify constantization. For now catch special case to avoid conflict with context this.X.
   return this === "x"? "X_" : this.replace(/[a-z_][^a-z_]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase();
 };
@@ -609,10 +611,10 @@ Object.defineProperty(Array.prototype, 'mapCall', {
   }
 });
 
-if (window.XMLHttpRequest) {
+if ( window.XMLHttpRequest ) {
   /**
-      * Add an afunc send to XMLHttpRequest
-  */
+   * Add an afunc send to XMLHttpRequest
+   */
   XMLHttpRequest.prototype.asend = function(ret, opt_data) {
     var xhr = this;
     xhr.onerror = function() {
