@@ -261,7 +261,6 @@ var BootstrapModel = {
         return;
       }
       props[prop][asValue ? 'exportValueKey' : 'exportKey'] = alias;
-      debugger;
     });
 
     // templates
