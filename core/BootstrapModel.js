@@ -178,16 +178,17 @@ var BootstrapModel = {
     if ( ! this.properties ) this.properties = [];
     var props = this.properties;
 
+    function findProp(name) {
+      for ( var i = 0 ; i < props.length ; i++ ) {
+        if ( props[i].name == name ) return i;
+      }
+      
+      return -1;
+    }
+
     if ( extendsModel ) this.imports = this.imports.concat(extendsModel.imports);
     // build imports as psedo-properties
     Object_forEach(this.imports, function(i) {
-      function findProp(name) {
-        for ( var i = 0 ; i < props.length ; i++ ) {
-          if ( props[i].name == name ) return i;
-        }
-
-        return -1;
-      }
       var imp   = i.split(' as ');
       var key   = imp[0];
       var alias = imp[1] || imp[0];
@@ -199,17 +200,16 @@ var BootstrapModel = {
 
       if ( i == -1 ) {
         props.push(Property.create({
-          name: alias,
+          name:      alias,
           transient: true,
-          hidden: true
+          hidden:    true
         }));
-      } else {
+      }/*
+         TODO(kgr): Do I need to do anything in this case?
+         else {
         var p = props[i];
-      }
+      }*/
     });
-
-    if ( extendsModel ) this.exports = this.exports.concat(extendsModel.exports);
-
 
     // build properties
     for ( var i = 0 ; i < props.length ; i++ ) {
@@ -241,6 +241,28 @@ var BootstrapModel = {
         if ( ! this[name] ) this[name] = r;
       }
     }
+
+    // Handle 'exports'
+    if ( extendsModel ) this.exports = this.exports.concat(extendsModel.exports);
+
+    Object_forEach(this.exports, function(e) {
+      var exp = e.split(' as ');
+
+      if ( exp.length == 0 ) return;
+
+      var key   = exp[0];
+      var alias = exp[1] || exp[0];
+      var asValue = key.charAt(key.length-1) == '$';
+      console.log('asValue: ', asValue, '   ', key);
+      if ( asValue ) key = key.slice(0, key.length-1);
+      var prop  = findProp(key);
+      if ( prop == -1 ) {
+        console.warn('Unknown export: "'+ cls.TYPE + '.' + key + '"');
+        return;
+      }
+      props[prop][asValue ? 'exportValueKey' : 'exportKey'] = alias;
+      debugger;
+    });
 
     // templates
     this.templates && Object_forEach(this.templates, function(t) {

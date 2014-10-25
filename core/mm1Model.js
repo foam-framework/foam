@@ -150,6 +150,15 @@ var Model = {
          */}
     },
     {
+      name: 'exportKey',
+      type: 'String',
+      required: false,
+      hidden: true,
+      defaultValue: '',
+      help: 'Key to export value as, if exported.',
+      documentation: function() {/* */}
+    },
+    {
       name: 'label',
       type: 'String',
       displayWidth: 70,

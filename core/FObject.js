@@ -33,7 +33,13 @@ var FObject = {
   create: function(args, opt_X) {
     var o = this.create_(this);
     o.instance_ = {};
-    o.X = this.model_.exports && this.model_.exports.length ? { __proto__: (opt_X || X) } : opt_X || X;
+    o.X = opt_X || X;
+
+    // X.__this__ is a sub-context which contains exports and is used by
+    // children.
+    // TODO(kgr): does __this__ need to be local?
+    // if ( this.model_.exports && this.model_.exports.length )
+    //  o.X = o.X.sub({__this__: {}));
 
     if ( this.model_.imports && this.model_.imports.length ) {
       if ( ! this.imports_ ) {
@@ -49,10 +55,11 @@ var FObject = {
     }
 
     if ( typeof args === 'object' ) o.copyFrom(args);
-
+    o.X.__exports__ = {};
     o.init(args);
 
     // Add exports to Context
+    // TODO(kgr): have exports_ only contain methods and $ values
     if ( this.model_.exports && this.model_.exports.length ) {
       if ( ! this.exports_ ) {
         this.exports_ = this.model_.exports.map(function(e) {
@@ -61,16 +68,20 @@ var FObject = {
           return [s[0], s[1] || s[0]];
         });
       }
-      var map = {};
       for ( var i = 0 ; i < this.exports_.length ; i++ ) {
         var e = this.exports_[i];
         var v = e[0] ? o[e[0]] : o; // if key isn't provided, export 'this'
-        if ( typeof v === 'function' ) v = v.bind(o);
-        map[e[1]] = v;
+        if ( typeof v === 'function' ) {
+          v = v.bind(o);
+          this.X[e[1]] = v;
+        }
+//        map[e[1]] = v;
       }
       // TODO(kgr): We really need two X's, the one that this uses and the one that sub-Objects are created with
-      o.X.__proto__ = o.X.__proto__.sub(map).sub(); // Second sub() protects from changes
+//      o.X.__proto__ = o.X.__proto__.sub(map).sub(); // Second sub() protects from changes
     }
+
+    if ( o.exportKey ) map[o.exportKey] = o;
 
     return o;
   },
@@ -111,21 +122,22 @@ var FObject = {
 
   init: function(_) {
     if ( ! this.model_ ) return;
+    
+    var ps;
 
-    var ps = this.selectProperties_('factoryProperties_', 'factory');
+    ps = this.selectProperties_('factoryProperties_', 'factory');
     for ( var i = 0 ; i < ps.length ; i++ ) {
       var prop = ps[i];
-
-      // I'm not sure why I added this next line, but it isn't used
-      // so I've disabled it.  There is no 'init' property on Property
-      // but maybe it would be a good idea.
-      //     if ( prop.init ) prop.init.call(this);
 
       // If a value was explicitly provided in the create args
       // then don't call the factory if it exists.
       // if ( ! this.instance_[prop.name] ) this[prop.name] = prop.factory.call(this);
       if ( ! this.hasOwnProperty(prop.name) ) this[prop.name] = prop.factory.call(this);
+
+      if ( this.exportKey )      this.X[this.exportKey]      = this[prop.name];
+      if ( this.exportValueKey ) this.X[this.exportValueKey] = this[prop.name + '$'];
     }
+
 
     ps = this.selectProperties_('dynamicValueProperties_', 'dynamicValue');
     ps.forEach(function(prop) {
@@ -136,6 +148,23 @@ var FObject = {
         dynamicValue.bind(this),
         function(value) { this[name] = value; }.bind(this));
     }.bind(this));
+
+
+    // TODO(kgr): exclude values which were handled in the above lists already
+    ps = this.selectProperties_('exportKeyProperties_', 'exportKey');
+    for ( var i = 0 ; i < ps.length ; i++ ) {
+      var prop = ps[i];
+
+      this.X[prop.exportKey] = this[prop.name];
+    }
+
+
+    ps = this.selectProperties_('exportValueKeyProperties_', 'exportValueKey');
+    for ( var i = 0 ; i < ps.length ; i++ ) {
+      var prop = ps[i];
+
+      this.X[prop.exportValueKey] = this[prop.name + '$'];
+    }
 
     // Add shortcut create() method to Models which allows them to be
     // used as constructors.  Don't do this for the Model though
