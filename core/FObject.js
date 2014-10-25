@@ -55,9 +55,9 @@ var FObject = {
     }
 
     if ( typeof args === 'object' ) o.copyFrom(args);
-    o.X.__exports__ = {};
     o.init(args);
 
+    // TODO(kgr): move export block below to init();
     // Add exports to Context
     // TODO(kgr): have exports_ only contain methods and $ values
     if ( this.model_.exports && this.model_.exports.length ) {
