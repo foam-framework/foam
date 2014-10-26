@@ -46,7 +46,7 @@ function sub(opt_args, opt_name) {
 function subWindow(w, opt_name, isBackground) {
   if ( ! w ) return this.sub();
 
-  var document = this.subDocument ? this.subDocument(w.document) : w.document;
+  var document        = this.subDocument ? this.subDocument(w.document) : w.document;
   var installedModels = document.installedModels || ( document.installedModels = {});
 
   var map = {
@@ -54,8 +54,8 @@ function subWindow(w, opt_name, isBackground) {
       // TODO(kgr): If Traits have CSS then it will get installed more than once.
       // TODO(kgr): Add package support.
       for ( m = model ; m && m.getPrototype ; m = m.extendsModel && this[m.extendsModel] ) {
-        if ( installedModels[m.name] ) return;
-        installedModels[m.name] = true;
+        if ( installedModels[m.id] ) return;
+        installedModels[m.id] = true;
         m.getPrototype().installInDocument(this, document);
       }
     },

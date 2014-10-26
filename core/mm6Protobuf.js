@@ -147,6 +147,6 @@ for ( var key in UNUSED_MODELS ) {
   recopyModelFeatures(GLOBAL[key]);
 }
 */
-for ( var key in USED_MODELS ) {
-  recopyModelFeatures(GLOBAL[key]);
+for ( var id in USED_MODELS ) {
+  recopyModelFeatures(FOAM.lookup(id));
 }

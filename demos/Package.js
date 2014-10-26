@@ -33,7 +33,26 @@ CLASS({
       code: function (amount) {
         this.balance -= amount;
 
-        return this.bal;
+        return this.balance;
+      }
+    }
+  ]
+});
+
+
+CLASS({
+  package: 'demo.bank',
+  name: 'SavingsAccount',
+  extendsModel: 'demo.bank.Account',
+
+  methods: [
+    {
+      name: "withdraw",
+      code: function (amount) {
+        // charge a fee
+        this.balance -= 0.05;
+
+        return this.SUPER(amount);
       }
     }
   ]
@@ -45,7 +64,8 @@ CLASS({
   name: 'AccountTester',
 
   requires: [
-    'demo.bank.Account as A'
+    'demo.bank.Account as A',
+    'demo.bank.SavingsAccount'
   ],
 
   imports: [
@@ -63,17 +83,24 @@ CLASS({
     },
     test: function() {
       var a = this.A.create({id: 42});
-
       a.setStatus(true);
       a.deposit(100);
-      // this.X.log(a.toJSON());
+      a.withdraw(10);
       this.l(a.toJSON());
+
+
+      var s = this.SavingsAccount.create({id: 43});
+      s.setStatus(true);
+      s.deposit(100);
+      s.withdraw(10);
+      this.l(s.toJSON());
     }
   }
 });
 
 var a = X.demo.bank.AccountTester.create();
 a.test();
+
 
 CLASS({
   name: 'Child',

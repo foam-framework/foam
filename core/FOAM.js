@@ -78,8 +78,9 @@ FOAM.putFactory = function(ctx, name, factory) {
   });
 };
 
+
+var   USED_MODELS = {};
 var UNUSED_MODELS = {};
-var USED_MODELS   = {};
 
 FOAM.browse = function(model, opt_dao, opt_X) {
    var Y = opt_X || X.sub(undefined, "FOAM BROWSER");
@@ -253,12 +254,14 @@ function CLASS(m) {
 
   /** Lazily create and register Model first time it's accessed. **/
   function registerModelLatch(path, m) {
-    UNUSED_MODELS[m.name] = true;
+    var id = m.package ? m.package + '.' + m.name : m.name;
+
+    UNUSED_MODELS[id] = true;
 
     Object.defineProperty(path, m.name, {
       get: function () {
-        USED_MODELS[m.name] = true;
-        delete UNUSED_MODELS[m.name];
+        USED_MODELS[id] = true;
+        delete UNUSED_MODELS[id];
         Object.defineProperty(path, m.name, {value: null, configurable: true});
         GLOBAL.registerModel(JSONUtil.mapToObj(X, m, Model));
         return this[m.name];

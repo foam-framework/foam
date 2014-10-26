@@ -97,23 +97,24 @@ var BootstrapModel = {
   buildPrototype: function() { /* Internal use only. */
     function addTraitToModel(traitModel, parentModel) {
       var name = parentModel.name + '_ExtendedWith_' + traitModel.name;
-      if ( ! GLOBAL[name] ) {
+
+      if ( ! FOAM.lookup(name) ) {
         var model = traitModel.deepClone();
         model.name = name;
         model.extendsModel = parentModel.name;
         GLOBAL.registerModel(model);
       }
 
-      return GLOBAL[name];
+      return FOAM.lookup(name);
     }
-		
-    if ( this.extendsModel && ! GLOBAL[this.extendsModel] ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
 
-    var extendsModel = this.extendsModel && GLOBAL[this.extendsModel];
+    if ( this.extendsModel && ! FOAM.lookup(this.extendsModel) ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
+
+    var extendsModel = this.extendsModel && FOAM.lookup(this.extendsModel);
 
     if ( this.traits ) for ( var i = 0 ; i < this.traits.length ; i++ ) {
-      var trait = this.traits[i];
-      var traitModel = GLOBAL[trait];
+      var trait      = this.traits[i];
+      var traitModel = FOAM.lookup(trait);
 
       if ( traitModel ) {
         extendsModel = addTraitToModel(traitModel, extendsModel);
@@ -177,16 +178,17 @@ var BootstrapModel = {
     if ( ! this.properties ) this.properties = [];
     var props = this.properties;
 
+    function findProp(name) {
+      for ( var i = 0 ; i < props.length ; i++ ) {
+        if ( props[i].name == name ) return i;
+      }
+      
+      return -1;
+    }
+
     if ( extendsModel ) this.imports = this.imports.concat(extendsModel.imports);
     // build imports as psedo-properties
     Object_forEach(this.imports, function(i) {
-      function findProp(name) {
-        for ( var i = 0 ; i < props.length ; i++ ) {
-          if ( props[i].name == name ) return i;
-        }
-
-        return -1;
-      }
       var imp   = i.split(' as ');
       var key   = imp[0];
       var alias = imp[1] || imp[0];
@@ -198,17 +200,16 @@ var BootstrapModel = {
 
       if ( i == -1 ) {
         props.push(Property.create({
-          name: alias,
+          name:      alias,
           transient: true,
-          hidden: true
+          hidden:    true
         }));
-      } else {
+      }/*
+         TODO(kgr): Do I need to do anything in this case?
+         else {
         var p = props[i];
-      }
+      }*/
     });
-
-    if ( extendsModel ) this.exports = this.exports.concat(extendsModel.exports);
-
 
     // build properties
     for ( var i = 0 ; i < props.length ; i++ ) {
@@ -240,6 +241,27 @@ var BootstrapModel = {
         if ( ! this[name] ) this[name] = r;
       }
     }
+
+    // Handle 'exports'
+    if ( extendsModel ) this.exports = this.exports.concat(extendsModel.exports);
+
+    Object_forEach(this.exports, function(e) {
+      var exp = e.split(' as ');
+
+      if ( exp.length == 0 ) return;
+
+      var key   = exp[0];
+      var alias = exp[1] || exp[0];
+      var asValue = key.charAt(key.length-1) == '$';
+      console.log('asValue: ', asValue, '   ', key);
+      if ( asValue ) key = key.slice(0, key.length-1);
+      var prop  = findProp(key);
+      if ( prop == -1 ) {
+        console.warn('Unknown export: "'+ cls.TYPE + '.' + key + '"');
+        return;
+      }
+      props[prop][asValue ? 'exportValueKey' : 'exportKey'] = alias;
+    });
 
     // templates
     this.templates && Object_forEach(this.templates, function(t) {

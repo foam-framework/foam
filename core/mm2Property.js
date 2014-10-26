@@ -56,6 +56,24 @@ var Property = {
 
     },
     {
+      name: 'exportKey',
+      type: 'String',
+      required: false,
+      hidden: true,
+      defaultValue: '',
+      help: 'Key to export value as, if exported.',
+      documentation: function() {/* */}
+    },
+    {
+      name: 'exportValueKey',
+      type: 'String',
+      required: false,
+      hidden: true,
+      defaultValue: '',
+      help: 'Key to export value$ as, if exported.',
+      documentation: function() {/* */}
+    },
+    {
       name: 'label',
       type: 'String',
       required: false,
@@ -613,5 +631,5 @@ for ( var i = 0 ; i < Property.properties.length ; i++ )
   Property[Property.properties[i].name.constantize()] =
     Property.properties[i] = Property.create(Property.properties[i]);
 
-USED_MODELS['Property'] = Property;
+USED_MODELS.Property = Property;
 
