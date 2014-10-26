@@ -59,7 +59,7 @@ var Model = {
     body: function() { /*
       <p>In FOAM, $$DOC{ref:'Model'} is the basic unit for describing data and behavior.
       $$DOC{ref:'Model'} itself is a $$DOC{ref:'Model'}, since it defines what can be defined,
-      but does so within the rules it is defining.</p>
+      but also defines itself.</p>
 
       <p>In javascript code, <code>YourModel.create(...)</code> creates an instance of
       your model. This is context dependent, so generally you will be calling
@@ -69,14 +69,11 @@ var Model = {
 
       <p>Note:
       <ul>
-        <li>Your own models will extend $$DOC{ref:'Model'}, or extend
-        a model that extends $$DOC{ref:'Model'}.</li>
-
         <li>The definition of your model is a $$DOC{ref:'Model'} instance
         (with YourModel.model_ === Model), while instances
         of your model have your new type (myInstance.model_ === YourModel). This
         differs from other object-oriented systems where the definition of a class
-        and instances of the class are completely separate entities. In FOAM everything
+        and instances of the class are completely separate entities. In FOAM every class definition
         is a $$DOC{ref:'Model'}, including itself.</li>
 
         <li>Creating a subcontext and replacing X.YourModel with a different model (such as

@@ -9,7 +9,9 @@ p {
 li {
   padding-bottom: 0.5em;
 }
-
+h1 {
+	padding-bottom: 0.5em;
+}
 
 
 div.contentPanes {
