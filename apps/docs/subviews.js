@@ -111,8 +111,7 @@ MODEL({
       <p>Stores inheritance information for a $$DOC{ref:'Model'}. One
       instance per extending $$DOC{ref:'Model'} is stored in the
       this.X.docModelViewFeatureDAO (starting with the data of
-      $$DOC{ref:'DocModelView'}, and following the .extendsModel chain
-      down to and including $$DOC{ref:'Model'}.
+      $$DOC{ref:'DocModelView'}, and following the .extendsModel chain.
       </p>
       <p>See $$DOC{ref:'DocModelView'}.
       </p>
@@ -122,7 +121,7 @@ MODEL({
     {
       name: 'inheritanceLevel',
       help: 'The inheritance level of model.',
-      documentation: "The inheritance level of $$DOC{ref:'.model'} (0 = $$DOC{ref:'Model'})",
+      documentation: "The inheritance level of $$DOC{ref:'.model'} (0 = root, no extendsModel specified)",
       defaultValue: 0
     },
     {
@@ -299,15 +298,14 @@ MODEL({
       });
 
       // Check if we extend something, or we are just Model (the base case)
-      if (model.id === 'Model') {
+      if (!model.extendsModel) {
         newModelTr.inheritanceLevel = 0;
       } else {
         // add the tracker we're building to the list, for updates from our base models
         previousExtenderTrackers.push(newModelTr);
         // inheritance level will bubble back up the stack once we know where the bottom is
-        var extend = model.extendsModel? model.extendsModel : 'Model';
         newModelTr.inheritanceLevel = 1 + this.loadFeaturesOfModel(
-                          this.X[extend], previousExtenderTrackers);
+                          this.X[model.extendsModel], previousExtenderTrackers);
       }
 
       // the tracker is now complete
@@ -335,8 +333,6 @@ MODEL({
           <h1><%=this.data.name%></h1>
 <%        if (this.data.extendsModel) { %>
             <h2>Extends $$DOC{ref: this.data.extendsModel }</h2>
-<%        } else { %>
-            <h2>Extends $$DOC{ref: 'Model' }</h2>
 <%        } %>
 <%        if (this.data.model_ && this.data.model_.id && this.data.model_.id != "Model") { %>
             <h2>Implements $$DOC{ref: this.data.model_.id }</h2>
@@ -666,25 +662,6 @@ MODEL({
       */}
     },
     {
-      name: 'resolvedName',
-      dynamicValue: function() {
-        var fullname = "";
-        newResolvedModelChain.forEach(function(m) {
-          if (m.name)
-            fullname.concat(m.name);
-          else if (m.id)
-            fullname.concat(m.id);
-        });
-        return fullname;
-      },
-      documentation: function() { /*
-        The rebuilt version of $$DOC{ref:'.ref'}, by asking each part of the
-        $$DOC{ref:'.resolvedModelChain'} for its name or id. This may not correspond
-        to the actual value of $$DOC{ref:'.ref'} and can be used for debugging
-        if reference resolution is not behaving as expected.
-      */}
-    },
-    {
       name: 'ref',
       help: 'The reference to link. Must be of the form "Model", "Model.feature", or ".feature"',
       postSet: function() {
@@ -717,6 +694,22 @@ MODEL({
       // Revisit when we can cause a removeListener at the appropriate time.
         //        this.X.documentViewParentModel.addListener(this.onParentModelChanged);
       }
+    },
+    resolvedName: function() {
+			/*
+        The rebuilt version of $$DOC{ref:'.ref'}, by asking each part of the
+        $$DOC{ref:'.resolvedModelChain'} for its name or id. This may not correspond
+        to the actual value of $$DOC{ref:'.ref'} and can be used for debugging
+        if reference resolution is not behaving as expected.
+			*/
+      var fullname = "";
+      this.resolvedModelChain.forEach(function(m) {
+        if (m.name)
+          fullname.concat(m.name);
+        else if (m.id)
+          fullname.concat(m.id);
+      });
+      return fullname;
     },
 
     resolveReference: function(reference) {
@@ -752,13 +745,19 @@ MODEL({
         }
         model = this.X.documentViewParentModel.get(); // ".feature" or "."
       } else {
+				// resolve path and model
         model = this.X[args[0]];
+				while (args.length > 0 && model && !model.model_) { // if no .model_, it's a package
+					args = args.slice(1); // remove package part
+	        model = this.X[args[0]];
+				};
       }
+			//TODO: do something with the package parts, resolve package refs with no model
 
       if (!model) {
         return;
       }
-
+			
       newResolvedModelChain.push(model);
 
       // Check for a feature, and check inherited features too

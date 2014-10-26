@@ -23,6 +23,8 @@ MODEL({
   plural: 'DocumentationBooks',
   help: 'A documentation object that exists outside of a specific model.',
 
+	// package: 'developerDocs',
+
   documentation: function() {/*
     <p>To create a body of documentation for general reference (a topic not
     connected to a specific model), create a model that extends $$DOC{ref:'.'}.
@@ -40,6 +42,8 @@ MODEL({
   extendsModel: 'DocumentationBook',
   label: 'Welcome to FOAM',
   help: 'Welcome to FOAM',
+
+	// package: 'developerDocs',
 
   documentation: {
     label: "Welcome to FOAM",
@@ -112,7 +116,7 @@ MODEL({
           itself is an instance of $$DOC{ref:'Model'}.</p>
           <p>For instance:
           <ul>
-            <li>$$DOC{ref:'Property'} has a $$DOC{ref:'Property.name'} like everything else,
+            <li>$$DOC{ref:'Property'} has a $$DOC{ref:'Property.name'} as one would expect,
             but also $$DOC{ref:'Property.hidden'} and $$DOC{ref:'Property.view'} properties
             to indicate how it should be displayed.</li>
             <li>$$DOC{ref:'Method'} has $$DOC{ref:'Method.code'} as one might expect, but also
@@ -131,7 +135,8 @@ MODEL({
           from the developer.</p>
           <p>Since each part of a $$DOC{ref:'Model'} is itself a $$DOC{ref:'Model'},
           $$DOC{ref:'Model'} definitions themselves are easy to store in a $$DOC{ref:'DAO'}
-          and pull in features as they need them. This enables dynamic loading, or
+          and pull in features as they need them. This enables dynamic loading (if your
+					chosen language supports it, like Javascript), or
           providing features and code to the client based on run-time decisions.</p>
         */}
       },
@@ -145,8 +150,8 @@ MODEL({
           or <code>X.MyModelName</code>, and create an instance of it with
           <code>X.MyModelName.create({args})</code>. But what kind of object did you pull?</p>
           <p>When you declare a $$DOC{ref:'Model'}, inheritance follows your
-          $$DOC{ref:'Model.extendsModel'} choice until it hits $$DOC{ref:'Model'} or
-          you omit $$DOC{ref:'Model.extendsModel'} (which defaults to $$DOC{ref:'Model'}).
+          $$DOC{ref:'Model.extendsModel'} property down through the chain until
+          you omit $$DOC{ref:'Model.extendsModel'}.
           At each step, new $$DOC{ref:'Property',usePlural:true} or other features are
           added on, as one would expect from inheritance. When you examine the "MyBase"
           object from your context, you see all the inherited features. Calling create()
@@ -160,9 +165,10 @@ MODEL({
           <p>In FOAM, those $$DOC{ref:'Model'} definitions are actually instances of
           $$DOC{ref:'Model'}, including $$DOC{ref:'Model'} itself:</p>
           <p><img src='images/Model_runtime2.png'/></p>
-          <p>So not only are your $$DOC{ref:'Model',usePlural:true} inheriting from
-          $$DOC{ref:'Model'}, but they are instances of it too. Features are also
-          instantiated inside your $$DOC{ref:'Model',usePlural:true}. The $$DOC{ref:'Property',usePlural:true}
+          <p>So your $$DOC{ref:'Model',usePlural:true} are instances of $$DOC{ref:'Model'}.
+					Features are also
+          instantiated inside your $$DOC{ref:'Model',usePlural:true}. 
+					The $$DOC{ref:'Property',usePlural:true}
           are shown in the diagram above. When building instances of your $$DOC{ref:'Model'}
           the lists of inherited $$DOC{ref:'Property',usePlural:true} and other features
           are merged to form the complete list of features your instance is built with.</p>
@@ -187,6 +193,8 @@ MODEL({
   extendsModel: 'DocumentationBook',
   label: 'Context Documentation',
   help: 'Context Documentation',
+
+	// package: 'developerDocs',
 
   documentation: {
     label: "Contexts",
@@ -312,6 +320,8 @@ MODEL({
   label: 'Events and Binding Documentation',
   help: 'Events and Binding Documentation',
 
+	// package: 'developerDocs',
+
   documentation: {
     label: "The FOAM Event and Binding System",
 
@@ -420,6 +430,8 @@ MODEL({
   label: 'Views Documentation',
   help: 'Views Documentation',
 
+	// package: 'developerDocs',
+
   documentation: {
     label: "FOAM Views",
 
@@ -451,13 +463,15 @@ MODEL({
         body: function() {/*
           <p>$$DOC{ref:'Template',usePlural:true} provide a convenient way of
           expressing blocks of HTML in your $$DOC{ref:'View',usePlural:true}.
-
+				  $$DOC{ref:'Template',usePlural:true} are compiled into $$DOC{ref:'Method',usePlural:true}.
+					A $$DOC{ref:'View.toInnerHTML'} or $$DOC{ref:'View.toHTML'} $$DOC{ref:'Template'} is a
+					common use.
           </p>
           <p>Use the $$DOC{ref:'.',text:'$$'}propertyName{...} tag syntax to insert sub-views
           based on a $$DOC{ref:'Property'},
           or just call <code>&lt;%= this.mySubViewProperty.toHTML() %&gt;</code> to
           inject some HTML directly. Remember to call $$DOC{ref:'View.initHTML'}()
-          afterwards.</p>
+          afterwards.</p>	
         */}
       },
       {
@@ -470,7 +484,20 @@ MODEL({
           $$DOC{ref:'Property',usePlural:true} of the $$DOC{ref:'Model'} provided
           and display them.</p>
           <p>A $$DOC{ref:'PropertyView'} is created to process each $$DOC{ref:'Property'},
-          and it picks the appropriate $$DOC{ref:'View'} model.
+          and it picks the appropriate $$DOC{ref:'View'} model.</p>
+        */}
+      },
+      {
+        name: 'css',
+        label: 'CSS in Views',
+        model_: 'Documentation',
+        body: function() {/*
+          <p>You can attach CSS directly to your $$DOC{ref:'View'} by implementing the
+					$$DOC{ref:'View.CSS'}() $$DOC{ref:'Method'} or $$DOC{ref:'Template'}. When the view
+					is instantiated, the CSS is installed into the document, ready for rendering.
+					$$DOC{ref:'View',usePlural:true} can control their individual style attributes
+					by setting $$DOC{ref:'View.extraClassName'} inside a submodel, or at run time by
+					setting $$DOC{ref:'View.className'}.</p>
         */}
       }
 

@@ -106,7 +106,7 @@ var BootstrapModel = {
 
       return GLOBAL[name];
     }
-
+		
     if ( this.extendsModel && ! GLOBAL[this.extendsModel] ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
 
     var extendsModel = this.extendsModel && GLOBAL[this.extendsModel];
