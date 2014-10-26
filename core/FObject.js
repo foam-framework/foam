@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+var xxxx = 0;
 var prefix = '';
 
 /**
@@ -57,30 +57,6 @@ var FObject = {
     if ( typeof args === 'object' ) o.copyFrom(args);
     o.init(args);
 
-    // TODO(kgr): move export block below to init();
-    // Add exports to Context
-    // TODO(kgr): have exports_ only contain methods and $ values
-    if ( this.model_.exports && this.model_.exports.length ) {
-      if ( ! this.exports_ ) {
-        this.exports_ = this.model_.exports.map(function(e) {
-          var s = e.split('as ');
-          s[0] = s[0].trim();
-          return [s[0], s[1] || s[0]];
-        });
-      }
-      for ( var i = 0 ; i < this.exports_.length ; i++ ) {
-        var e = this.exports_[i];
-        var v = e[0] ? o[e[0]] : o; // if key isn't provided, export 'this'
-        if ( typeof v === 'function' ) {
-          v = v.bind(o);
-          this.X[e[1]] = v;
-        }
-//        map[e[1]] = v;
-      }
-      // TODO(kgr): We really need two X's, the one that this uses and the one that sub-Objects are created with
-//      o.X.__proto__ = o.X.__proto__.sub(map).sub(); // Second sub() protects from changes
-    }
-
     if ( o.exportKey ) map[o.exportKey] = o;
 
     return o;
@@ -110,12 +86,12 @@ var FObject = {
   X: X,
 
   selectProperties_: function(name, p) {
-    if ( this.hasOwnProperty(name) ) return this[name];
+    if ( Object.hasOwnProperty.call(this.model_, name) ) return this.model_[name];
 
     var a = [];
     var ps = this.model_.properties;
     for ( var i = 0 ; i < ps.length ; i++ ) if ( ps[i][p] ) a.push(ps[i]);
-    this[name] = a;
+    this.model_[name] = a;
 
     return a;
   },
@@ -164,6 +140,24 @@ var FObject = {
       var prop = ps[i];
 
       this.X[prop.exportValueKey] = this[prop.name + '$'];
+    }
+
+    // Add non-property exports to Context
+    if ( this.model_.exports && this.model_.exports.length ) {
+      if ( ! this.model_.exports_ ) {
+        this.model_.exports_ = this.model_.exports.map(function(e) {
+          var s = e.split(' as ');
+          s[0] = s[0].trim();
+          return [s[0], s[1] || s[0]];
+        }).filter(function (s) {
+          return typeof this[s[0]] === 'function';
+        }.bind(this));
+      }
+      for ( var i = 0 ; i < this.model_.exports_.length ; i++ ) {
+        var e = this.model_.exports_[i];
+        var v = this[e[0]].bind(this);
+        this.X[e[1]] = v;
+      }
     }
 
     // Add shortcut create() method to Models which allows them to be

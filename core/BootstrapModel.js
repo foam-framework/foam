@@ -253,11 +253,11 @@ var BootstrapModel = {
       var key   = exp[0];
       var alias = exp[1] || exp[0];
       var asValue = key.charAt(key.length-1) == '$';
-      console.log('asValue: ', asValue, '   ', key);
       if ( asValue ) key = key.slice(0, key.length-1);
       var prop  = findProp(key);
       if ( prop == -1 ) {
-        console.warn('Unknown export: "'+ cls.TYPE + '.' + key + '"');
+        // TODO: this isn't an error if we're export 'this' or a method, add check before reporting.
+        // console.warn('Unknown export: "'+ cls.TYPE + '.' + key + '"');
         return;
       }
       props[prop][asValue ? 'exportValueKey' : 'exportKey'] = alias;
