@@ -221,14 +221,33 @@ MODEL({
   properties: [
     {
       name: 'data',
-      help: 'The Model for which to display documentation.',
-      documentation: "The $$DOC{ref:'Model'} for which to display $$DOC{ref:'Documentation'}.",
+      help: 'The reference for which to display documentation.',
+      documentation: "The reference to the $$DOC{ref:'Model'} for which to display $$DOC{ref:'Documentation'}.",
       postSet: function() {
-        this.updateHTML();
-        this.generateFeatureDAO();
+        this.data.addListener(this.onRefChange);
       }
     },
+    {
+      name: 'sourceModel',
+      documentation: "The $$DOC{ref:'Model'} for which to display $$DOC{ref:'Documentation'}, resolved from $$DOC{ref:'.data'}",
+      postSet: function() {
+        if (this.X.docModelViewFeatureDAO && this.sourceModel) {
+          this.processModelChange();
+        }
+      }
+    }
+
   ],
+
+  listeners: {
+    onRefChange: function() {
+      if (this.data.valid) {
+        this.sourceModel = this.data.resolvedModelChain[0]
+      } else {
+        this.sourceModel = undefined;
+      }
+    }
+  },
 
   methods: {
 
@@ -240,8 +259,33 @@ MODEL({
 
       this.SUPER();
 
+      // we had a source set before we were inited
+      if (this.sourceModel) {
+        this.processModelChange();
+      }
     },
 
+    processModelChange: function() {
+      this.generateFeatureDAO();
+      this.updateHTML();
+
+    },
+
+    initInnerHTML: function(SUPER) {
+      /* If a feature is present in the this.X.documentViewRef $$DOC{ref:'DocRef'},
+        scroll to that location on the page. Otherwise scroll to the top. */
+      SUPER();
+
+      if (this.X.documentViewRef && this.X.documentViewRef.valid) {
+        var feature = this.X.documentViewRef.resolvedModelChain[1];
+        if (feature && feature.name) {
+          element = $("scrollTarget_"+feature.name)
+          if (element) element.scrollIntoView(true);
+        } else {
+          this.$.scrollIntoView(true);
+        }
+      }
+    },
 
     generateFeatureDAO: function() {
       /* Builds a feature DAO to sort out inheritance and overriding of
@@ -254,7 +298,7 @@ MODEL({
       // and load them into the feature DAO. Passing [] assumes we don't
       // care about other models that extend this one. Finding such would
       // be a global search problem.
-      this.loadFeaturesOfModel(this.data, []);
+      this.loadFeaturesOfModel(this.sourceModel, []);
 
 //      this.debugLogFeatureDAO();
 
@@ -326,39 +370,39 @@ MODEL({
 
     function toInnerHTML()    {/*
 <%    this.destroy(); %>
-<%    if (this.data && DocumentationBook.isSubModel(this.data)) {  %>
-        $$THISDATA{ model_: 'DocBookView', data: this.data.documentation }
-<%    } else if (this.data) {  %>
+<%    if (this.sourceModel && DocumentationBook.isSubModel(this.sourceModel)) {  %>
+        $$THISDATA{ model_: 'DocBookView', data: this.sourceModel.documentation }
+<%    } else if (this.sourceModel) {  %>
         <div class="introduction">
-          <h1><%=this.data.name%></h1>
-<%        if (this.data.extendsModel) { %>
-            <h2>Extends $$DOC{ref: this.data.extendsModel }</h2>
+          <h1><%=this.sourceModel.name%></h1>
+<%        if (this.sourceModel.extendsModel) { %>
+            <h2>Extends $$DOC{ref: this.sourceModel.extendsModel }</h2>
 <%        } %>
-<%        if (this.data.model_ && this.data.model_.id && this.data.model_.id != "Model") { %>
-            <h2>Implements $$DOC{ref: this.data.model_.id }</h2>
+<%        if (this.sourceModel.model_ && this.sourceModel.model_.id && this.sourceModel.model_.id != "Model") { %>
+            <h2>Implements $$DOC{ref: this.sourceModel.model_.id }</h2>
 <%        } %>
-          $$data{ model_: 'DocModelBodyView' }
+          $$sourceModel{ model_: 'DocModelBodyView' }
         </div>
         <div class="members">
-          $$data{ model_: 'DocPropertiesView' }
+          $$sourceModel{ model_: 'DocPropertiesView' }
         </div>
         <div class="members">
-          $$data{ model_: 'DocMethodsView' }
+          $$sourceModel{ model_: 'DocMethodsView' }
         </div>
         <div class="members">
-          $$data{ model_: 'DocActionsView' }
+          $$sourceModel{ model_: 'DocActionsView' }
         </div>
         <div class="members">
-          $$data{ model_: 'DocListenersView' }
+          $$sourceModel{ model_: 'DocListenersView' }
         </div>
         <div class="members">
-          $$data{ model_: 'DocTemplatesView' }
+          $$sourceModel{ model_: 'DocTemplatesView' }
         </div>
         <div class="members">
-          $$data{ model_: 'DocRelationshipsView' }
+          $$sourceModel{ model_: 'DocRelationshipsView' }
         </div>
         <div class="members">
-          $$data{ model_: 'DocIssuesView' }
+          $$sourceModel{ model_: 'DocIssuesView' }
         </div>
 <%    } %>
     */}
@@ -662,6 +706,15 @@ MODEL({
       */}
     },
     {
+      name: 'resolvedRef',
+      defaultValue: "",
+      documentation: function() { /*
+          The fully qualified name of the resolved reference, in the
+          same format as $$DOC{ref:'.ref'}. It may match $$DOC{ref:'.ref'},
+          if it was fully qualified (began with package, or Model name if no package).
+      */}
+    },
+    {
       name: 'ref',
       help: 'The reference to link. Must be of the form "Model", "Model.feature", or ".feature"',
       postSet: function() {
@@ -695,22 +748,6 @@ MODEL({
         //        this.X.documentViewParentModel.addListener(this.onParentModelChanged);
       }
     },
-    resolvedName: function() {
-			/*
-        The rebuilt version of $$DOC{ref:'.ref'}, by asking each part of the
-        $$DOC{ref:'.resolvedModelChain'} for its name or id. This may not correspond
-        to the actual value of $$DOC{ref:'.ref'} and can be used for debugging
-        if reference resolution is not behaving as expected.
-			*/
-      var fullname = "";
-      this.resolvedModelChain.forEach(function(m) {
-        if (m.name)
-          fullname.concat(m.name);
-        else if (m.id)
-          fullname.concat(m.id);
-      });
-      return fullname;
-    },
 
     resolveReference: function(reference) {
   /* <p>Resolving a reference has a few special cases at the start:</p>
@@ -727,7 +764,9 @@ MODEL({
   */
 
       this.resolvedModelChain = [];
+      this.resolvedRef = "";
       var newResolvedModelChain = [];
+      var newResolvedRef = "";
 
       this.valid = false;
 
@@ -748,7 +787,8 @@ MODEL({
 				// resolve path and model
         model = this.X[args[0]];
 				while (args.length > 0 && model && !model.model_) { // if no .model_, it's a package
-					args = args.slice(1); // remove package part
+          newResolvedRef += args[0];
+          args = args.slice(1); // remove package part
 	        model = this.X[args[0]];
 				};
       }
@@ -759,27 +799,25 @@ MODEL({
       }
 			
       newResolvedModelChain.push(model);
+      if (newResolvedRef !== "") newResolvedRef += ".";
+      newResolvedRef += model.name;
 
       // Check for a feature, and check inherited features too
       if (args.length > 1 && args[1].length > 0)
       {
         // feature specified "Model.feature" or ".feature"
         foundObject = model.getFeature(args[1]);
-
-//        if (!foundObject && args[1] === "documentation") {
-//          // special case for links into documentation books
-//          foundObject = model.documentation;
-//        }
-
         if (!foundObject) {
           return;
         } else {
           newResolvedModelChain.push(foundObject);
+          newResolvedRef += "." + args[1];
         }
       } else if (args.length > 2) {
         // Allows MyModel..instance, skipping the feature lookup and going straight to named instances on the Model def itself
         // In particular, this allows DocumentationBook..documentation.chapters.chapName
         foundObject = model;
+        newResolvedRef += "."; // remember the extra dot
       }
 
       // allow further specification of sub properties or lists
@@ -811,6 +849,7 @@ MODEL({
               return false;
             } else {
               newResolvedModelChain.push(foundObject);
+              newResolvedRef += "." + arg;
               return true;
             }
           })) {
@@ -824,6 +863,7 @@ MODEL({
 //      });
 
       this.resolvedModelChain = newResolvedModelChain;
+      this.resolvedRef = newResolvedRef;
       this.valid = true;
     },
   },
