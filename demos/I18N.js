@@ -22,6 +22,43 @@ MODEL({
         es:      'Provincia',
         fr:      'Province'
       })
+    },
+    {
+      name: 'number',
+      label: lm({
+        en: 'Number',
+        es: 'N\u00FAmero',
+        fr: 'Nombre'
+      }),
+      view: {
+        model_: 'ChoiceListView',
+        choices: [
+          [
+            'One',
+            lm({
+              en: 'One',
+              es: 'Uno',
+              fr: 'Une'
+            })
+          ],
+          [
+            'Two',
+            lm({
+              en: 'Two',
+              es: 'Dos',
+              fr: 'Deux'
+            })
+          ],
+          [
+            'Three',
+            lm({
+              en: 'Three',
+              es: 'Tres',
+              fr: 'Trois'
+            })
+          ]
+        ]
+      }
     }
   ]
 });
