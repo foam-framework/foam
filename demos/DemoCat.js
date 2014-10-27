@@ -166,7 +166,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
     description: 'Simple I18N Example.',
     keywords: ['i18n'],
     src: 'I18N.js',
-    ximage: ''
+    image: 'I18N.png'
   },
   {
     name: 'Crop Circles',
