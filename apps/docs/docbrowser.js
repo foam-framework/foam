@@ -194,6 +194,7 @@ MODEL({
       }.bind(this));
 
       // initialization from hash
+			if (location.hash === '#' || location.hash.length === 0) location.hash = 'DevDocumentation_Welcome';
       this.DetailContext.documentViewParentModel.set(this.SearchContext[location.hash.substring(1)]);
       // init this.selection
       this.selection = this.DetailContext.documentViewParentModel.get();
