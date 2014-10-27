@@ -420,6 +420,15 @@ MODEL({
       name: 'rowView',
       help: 'Override this to specify the view to use to display each feature.',
       factory: function() { return 'DocMethodArgumentRowView'; }
+    },
+    {
+      name:  'dao',
+      model_: 'DAOProperty',
+      defaultValue: [],
+      postSet: function() {
+        /* TODO: For some reason a blank Arg is always present */
+        this.filteredDAO = this.dao.where(NOT(EQ(Arg.NAME, "")));
+      }
     }
   ],
 
@@ -431,14 +440,14 @@ MODEL({
       return "Arguments";
     },
     featureType: function() {
-      return "Argument";
+      return "Arg";
     },
   },
 
   templates: [
     function toInnerHTML()    {/*
     <%    this.destroy();
-          if (this.isEmpty) { %>
+          if (!this.hasFeatures) { %>
     <%    } else { %>
             <h4><%=this.featureName()%>:</h4>
             <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</div>
@@ -481,7 +490,7 @@ MODEL({
   templates: [
     function toInnerHTML()    {/*<%
           this.destroy();
-          if (!this.isEmpty) {
+          if (this.hasFeatures) {
             %>(<span>$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</span>)<%
           } else {
             %>()<%
@@ -530,7 +539,7 @@ MODEL({
   templates: [
     function toInnerHTML()    {/*
     <%    this.destroy();
-          if (this.isEmpty) { %>
+          if (!this.hasFeatures) { %>
     <%    } else { %>
             <h2><%=this.featureName()%>:</h2>
             <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
