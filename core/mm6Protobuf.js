@@ -150,3 +150,4 @@ for ( var key in UNUSED_MODELS ) {
 for ( var id in USED_MODELS ) {
   recopyModelFeatures(FOAM.lookup(id));
 }
+USED_MODELS['Model'] = Model;

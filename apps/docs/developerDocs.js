@@ -52,6 +52,13 @@ MODEL({
       <p>Congratulations on choosing the Feature Oriented Active Modeler. This
       guide will walk you through the first steps of getting to know FOAM, and
       how concepts from traditional programming languages map into FOAM.</p>
+			<p>Also see the other overviews:
+			<ul>
+				<li>$$DOC{ref:'DevDocumentation_Context',text:'Context and Dependency Injection'}</li>
+				<li>$$DOC{ref:'DevDocumentation_Events',text:'Reactive Events and Binding'}</li>
+				<li>$$DOC{ref:'DevDocumentation_Views',text:'Views and HTML'}</li>
+			</ul>
+			</p>
     */},
 
     chapters: [
@@ -106,8 +113,13 @@ MODEL({
           structure to code, keeping data and the code to manage it in one place.
           But how does one add meta-data to a class? Javadocs uses special comments
           hacked in with a special parser, outside of the core language. Runtime-accessible
-          meta-data is limited or non-existent.</p>
-          <p>$$DOC{ref:'Model'}, on the other hand, describes a set of features that
+          meta-data is limited or non-existent.
+					</p>
+					<p>With all this time spent creating ways to embed metadata into code, and still being 
+					stuck with the same old code, why not reverse the paradigm? FOAM puts metadata first,
+					with the code (and even programming language) being subordinate.
+					</p>
+          <p>$$DOC{ref:'Model'} describes a set of features that
           each object in the system will have. Each feature, such as $$DOC{ref:'Model.properties'},
           $$DOC{ref:'Model.methods'}, or even $$DOC{ref:'Model.documentation'} is also
           described by a $$DOC{ref:'Model'} ($$DOC{ref:'Property'},
@@ -129,13 +141,13 @@ MODEL({
           </ul>
           </p>
           <p>With all that meta-information available, many avenues open up:
-          code generation, database persistence, serialization, and data display
+          code generation, database persistence, serialization, data display and layout
           can all be automated, to the point where modeling your new data and plugging
-          it into an old app creates a new experience for the user with little effort
+          it into an old app creates a completely new experience for the user with little effort
           from the developer.</p>
           <p>Since each part of a $$DOC{ref:'Model'} is itself a $$DOC{ref:'Model'},
-          $$DOC{ref:'Model'} definitions themselves are easy to store in a $$DOC{ref:'DAO'}
-          and pull in features as they need them. This enables dynamic loading (if your
+          $$DOC{ref:'Model'} definitions themselves are easy to store in a $$DOC{ref:'DAO'},
+          pulling in features as they need them. This enables dynamic loading (if your
 					chosen language supports it, like Javascript), or
           providing features and code to the client based on run-time decisions.</p>
         */}
@@ -200,9 +212,10 @@ MODEL({
     label: "Contexts",
 
     body: function() {/*
-      <p>Contexts provide a way to control the global environment at
-        run time. You can replace $$DOC{ref:'Model'} definitions, make variables,
-        and spawn sub-contexts to limit what your sub-instances can see.
+      <p>Contexts are collections of external variables that provide a way to control the 
+				global environment at
+        run time. You can replace $$DOC{ref:'Model'} definitions, make values or references,
+        and spawn sub-contexts to limit what your child instances can see.
         </p>
         <p>Even if you don't create sub-contexts in your $$DOC{ref:'Model'}, you
         should always use your current context when creating instances:
@@ -212,7 +225,15 @@ MODEL({
         the $$DOC{ref:'View',usePlural:true} that you create, without requiring any
         knowledge or intervention on your part. When in doubt, never use a global. Always
         <code>this.X</code>, or use $$DOC{ref:'Model.imports',text:'imports'}
-        and $$DOC{ref:'Model.exports',text:'exports'}.
+        and $$DOC{ref:'Model.exports',text:'exports'}.</p>
+				<p>Contexts form a tree structure, with each $$DOC{ref:'Model'} that creates child
+				instances having the option to branch. Each sub-context branch sees everything the parent
+			  context contains, but can't add or remove things from the parent. If in doubt, 
+			  sub-context! (Note that $$DOC{ref:'Model.exports'} will sub-context for you).</p>
+			  <p>While you can't change the existence of parent values from a sub-context, you can
+			  modify the contents. This means you can communicate information back up to parents
+			  without knowing what those parents are, only that they created a particular value
+			  on the context they passed on.</p>
     */},
     chapters: [
       {
@@ -239,11 +260,23 @@ MODEL({
             myMethod: function() {<br/>
             var subX = this.X.sub({name:'mySubContext'}); // create subcontext<br/>
             subX.greatValue = subX.SimpleValue.create();  // a simple value in sub context<br/>
-            }
+<br/>
+						// this view is passed subX as its context.<br/>
+					  myVProp = subX.DetailView.create(); <br/>
+					<br/>
+ 				 		// We're sub-contexting again! This locks out change access to subX.<br/>
+						// The view has no way to modify our subX,<br/>
+					  // but inherits all the contents. It will see this.X.greatValue, and be able<br/>
+					  // to modify the value to pass information back to us, but can't change the existence<br/>
+					  // of greatValue. It can add new things to its context, but they won't be<br/>
+					  // part of subX.<br/>
+						myOtherVProp = subX.sub().DetailView.create();<br/>
+            }<br/>
           </code></p>
-
-          <p>You can also replace $$DOC{ref:'Model'} definitions in a sub-context.
-          </p>
+					<p>Whether you replace your this.X with a sub-context or manually manage multiple 
+					sub-contexts in variables is up to you. Replacing this.X is convenient, but sometimes
+					you need sets of children to see different things, and branching multiple sub-contexts
+					may work better.</p>
 
         */}
       },
