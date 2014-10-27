@@ -7,7 +7,8 @@ MODEL({
       label: lm({
         en: 'Color',
         'en-uk': 'Colour',
-        sp: 'De Color',
+        'en-ca': 'Colour',
+        es: 'De Color',
         fr: 'Couleur'
       })
     },
@@ -17,7 +18,8 @@ MODEL({
         en:      'State',
         'en-ja': 'Parish',
         'en-ca': 'Province',
-        sp:      'Provincia',
+        'en-uk': 'County',
+        es:      'Provincia',
         fr:      'Province'
       })
     }
@@ -25,5 +27,12 @@ MODEL({
 });
 
 var t = Test.create();
-var v = DetailView.create({data: t, title: 'Title' });
-t.write(document);
+var v = DetailView.create({
+  data: t,
+  title: lm({
+    en: 'Edit Test',
+    es: 'Editar Prueba',
+    fr: 'Modifier Essai'
+  })
+});
+v.write(document);
