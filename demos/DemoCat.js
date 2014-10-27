@@ -161,6 +161,14 @@ var demos = JSONUtil.arrayToObjArray(X, [
     image: 'TraitGraphics.png'
   },
   {
+    name: 'Internationalization',
+    path: 'I18N.html',
+    description: 'Simple I18N Example.',
+    keywords: ['i18n'],
+    src: 'I18N.js',
+    ximage: ''
+  },
+  {
     name: 'Crop Circles',
     path: 'CropCircle.html',
     description: 'Crop Circle inspired fractals graphics. Can take 10-20 seconds to load on slow machines. Each fractal is implemented in only one line of code.  Just started: needs animation and a graphical live-coding system.',
