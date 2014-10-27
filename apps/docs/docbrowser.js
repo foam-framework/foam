@@ -254,24 +254,190 @@ MODEL({
   name: 'DocBrowserView',
   extendsModel: 'DetailView',
 
-  methods: {
-    initHTML: function() {
-      this.data.modelListView.initHTML();
-      this.data.selectionView.initHTML();
-    }
-  },
+//  methods: {
+//    initHTML: function() {
+//      this.data.modelListView.initHTML();
+//      this.data.selectionView.initHTML();
+//    }
+//  },
+
+//  templates: [
+//    function toHTML()    {/*
+//      <div id="%%id">
+//        <h1>FOAM Documentation Browser</h1>
+//        <div class="contentPanes">
+//          <div class="listPane"><%=this.data.modelListView.toHTML()%></div>
+//          <div class="detailPane"><%=this.data.selectionView.toHTML()%></div>
+//        </div>
+//      </div>
+//    */}
+//  ]
 
   templates: [
-    function toHTML()    {/*
-      <div id="%%id">
-        <h1>FOAM Documentation Browser</h1>
-        <div class="contentPanes">
-          <div class="listPane"><%=this.data.modelListView.toHTML()%></div>
-          <div class="detailPane"><%=this.data.selectionView.toHTML()%></div>
+    function CSS() {/*
+      body {
+        margin: 0px;
+        font-family: 'Roboto', sans-serif;
+        font-size: inherit;
+
+        background-color: #e0e0e0;
+        position: relative;
+      }
+
+      .docbrowser-header {
+        height: 90px;
+        position: relative;
+        color: #fff;
+        z-index: 1;
+      }
+
+      .docbrowser-header-inner {
+        background-color: #5555FF;
+        position: absolute;
+        height: 120px;
+        width: 100%;
+      }
+
+      .docbrowser-header-flex-container {
+        display: flex;
+        justify-content: space-around;
+        margin: 0 50px;
+      }
+      .docbrowser-header-contents {
+        flex-grow: 1;
+        max-width: 1280px;
+
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .docbrowser-title {
+        font-weight: lighter;
+        font-size: 250%;
+        margin-top: 20px;
+      }
+      .docbrowser-tabs {
+        font-size: 120%;
+        font-weight: lighter;
+        margin-top: 40px;
+        margin-right: 20px;
+      }
+      .docbrowser-tab {
+        margin-left: 50px;
+      }
+      .docbrowser-tab.enabled {
+        font-weight: normal;
+      }
+
+      .outer-container {
+        margin: 0 30px;
+        z-index: 2;
+        position: relative;
+      }
+      .outer-flex-container {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 60px;
+        width: 100%;
+        height: 83%;
+      }
+      .inner-container {
+        background-color: #fff;
+        border: 1px solid #888;
+        border-radius: 12px;
+        flex-grow: 1;
+        max-width: 1280px;
+        padding: 15px;
+        box-shadow: 0px 5px 5px #888888;
+      }
+
+      input {
+        font-family: inherit;
+        font-size: inherit;
+      }
+
+      p {
+        padding-bottom: 0.5em;
+      }
+      li {
+        padding-bottom: 0.5em;
+      }
+
+      div.contentPanes {
+        height: 90%;
+        width: 100%;
+        overflow: hidden;
+        margin:0px;
+      }
+
+      div.listPane {
+        float: left;
+        max-width: 300px;
+        width: 20%;
+        height: 100%;
+        padding: 1em;
+      }
+
+      div.detailPane {
+        float: left;
+        overflow-y: scroll;
+        width: 70%;
+        height: 100%;
+        padding: 1em;
+      }
+
+      div.members {
+        padding-left: 2em;
+      }
+      div.memberList {
+        padding-left: 2em;
+      }
+
+      div.inherited {
+        color: #666666;
+      }
+
+      span.docLink {
+        color: #000077;
+        text-decoration: underline;
+      }
+
+      span.docLinkNoDocumentation {
+        color: #770000;
+        text-decoration: underline;
+      }
+
+      .light {
+        color: #444;
+      }
+    */},
+    function toHTML() {/*
+      <div id="<%= this.id %>">
+        <div class="docbrowser-header">
+          <div class="docbrowser-header-inner">
+            <div class="docbrowser-header-flex-container">
+              <div class="docbrowser-header-contents">
+                <div class="docbrowser-title">FOAM Documentation</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="<%= this.id %>-outer-container" class="outer-container">
+          <div class="outer-flex-container">
+            <div id="<%= this.id %>-inner-container" class="inner-container">
+              <div class="contentPanes">
+                <div class="listPane"><%=this.data.modelListView.toHTML()%></div>
+                <div class="detailPane"><%=this.data.selectionView.toHTML()%></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     */}
   ]
+
+
 });
 
 

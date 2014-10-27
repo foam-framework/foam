@@ -420,15 +420,6 @@ MODEL({
       name: 'rowView',
       help: 'Override this to specify the view to use to display each feature.',
       factory: function() { return 'DocMethodArgumentRowView'; }
-    },
-    {
-      name:  'dao',
-      model_: 'DAOProperty',
-      defaultValue: [],
-      postSet: function() {
-        /* TODO: For some reason a blank Arg is always present */
-        this.filteredDAO = this.dao.where(NOT(EQ(Arg.NAME, "")));
-      }
     }
   ],
 
