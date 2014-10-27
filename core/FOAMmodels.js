@@ -18,6 +18,7 @@
 var files = [
   ['firefox', function() { return navigator.userAgent.indexOf('Firefox') != -1; }],
   ['safari', function() { return navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1; }],
+  'i18n',
   'stdlib',
   ['WeakMap', function() { return ! this['WeakMap']; }],
   'io',
