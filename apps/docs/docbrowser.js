@@ -165,13 +165,17 @@ MODEL({
       // detail context needs a documentViewParentModel to indicate what model it is rooted at
       this.DetailContext = this.X.sub({}, 'detailX');
       this.DetailContext.documentViewParentModel = this.DetailContext.SimpleValue.create();
-      Events.follow(this.SearchContext.selection$, this.DetailContext.documentViewParentModel);
+      this.DetailContext.documentViewRef = this.DetailContext.DocRef.create();
+      //Events.follow(this.SearchContext.selection$, this.DetailContext.documentViewParentModel);
 
       this.X.documentViewRequestNavigation = function(ref) {
         if (ref.valid) {
           // TODO: navigate to feature sub-view as well
-          this.DetailContext.documentViewParentModel.set(ref.resolvedModelChain[0]);
           this.selection = ref.resolvedModelChain[0]; // TODO: tighten up this update chain
+          this.DetailContext.documentViewParentModel.set(ref.resolvedModelChain[0]);
+          this.DetailContext.documentViewRef.ref = ref.resolvedRef;
+          this.SearchContext.selection$.set(this.DetailContext.documentViewParentModel.get());
+          location.hash = "#" + ref.resolvedRef;
         }
       }.bind(this);
 
@@ -179,25 +183,25 @@ MODEL({
       this.SUPER();
       /////////////////////////// this.init v
 
-      // Push selection value out to the context so others can use it
-      this.selection$ = this.SearchContext.selection$;
-
-      // hack in URL support: (TODO: clean this up)
-
-      // When search.selection changes set the hash
-      this.SearchContext.selection$.addListener(this.onSelectionChange);
-
       // when the hash changes set the documentViewParentModel and this.selection
       window.addEventListener('hashchange', function() {
-        this.DetailContext.documentViewParentModel.set(this.SearchContext[location.hash.substring(1)]);
-        this.selection = this.DetailContext.documentViewParentModel.get();
+        this.DetailContext.documentViewRef.ref = location.hash.substring(1);
+        if (this.DetailContext.documentViewRef.valid) {
+          this.DetailContext.documentViewParentModel.set(
+               this.DetailContext.documentViewRef.resolvedModelChain[0]);
+          this.SearchContext.selection$.set(this.DetailContext.documentViewParentModel.get());
+
+        }
       }.bind(this));
 
       // initialization from hash
-			if (location.hash === '#' || location.hash.length === 0) location.hash = 'DevDocumentation_Welcome';
-      this.DetailContext.documentViewParentModel.set(this.SearchContext[location.hash.substring(1)]);
-      // init this.selection
-      this.selection = this.DetailContext.documentViewParentModel.get();
+      if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) location.hash = 'DevDocumentation_Welcome';
+      this.DetailContext.documentViewRef.ref = location.hash.substring(1);
+      if (this.DetailContext.documentViewRef.valid) {
+        this.DetailContext.documentViewParentModel.set(
+             this.DetailContext.documentViewRef.resolvedModelChain[0]);
+        this.SearchContext.selection$.set(this.DetailContext.documentViewParentModel.get());
+      }
 
       var testArg = this.X.Arg.create({name: 'testy'});
       testArg.documentation = this.X.Documentation.create({
@@ -215,11 +219,10 @@ MODEL({
 
   listeners: [
     {
-      name: 'onSelectionChange',
+      name: 'onReadyToScroll',
       code: function(evt) {
-        location.hash = "#" + this.SearchContext.selection$.value.name;
 
-     }
+      }
     }
   ],
 
@@ -228,13 +231,7 @@ MODEL({
       name: 'modelList',
       factory: function() {
         return this.SearchContext.ModelListController.create();
-      },
-      documentation: {
-        model_: 'Documentation',
-        body: function() { /*
-          Hello $$DOC{ref:'DocBrowserController.modelList'}. property doc!
-          */ },
-      },
+      }
     },
     {
       name: 'modelListView',
@@ -244,22 +241,11 @@ MODEL({
       }
     },
     {
-      name: 'selection',
-    },
-    {
       name: 'selectionView',
       factory: function() {
-        return this.DetailContext.DocModelView.create({ model: Model, data$: this.selection$ });
+        return this.DetailContext.DocModelView.create({ model: Model, data: this.DetailContext.documentViewRef });
       }
     },
-  ],
-  relationships: [
-    {
-      name: 'listOview',
-      label: 'some other things',
-      relatedModel: 'ControllerView',
-      relatedProperty: 'modelListView'
-    }
   ]
 
 });
