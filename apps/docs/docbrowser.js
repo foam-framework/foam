@@ -255,12 +255,12 @@ MODEL({
   name: 'DocBrowserView',
   extendsModel: 'DetailView',
 
-//  methods: {
-//    initHTML: function() {
-//      this.data.modelListView.initHTML();
-//      this.data.selectionView.initHTML();
-//    }
-//  },
+	methods: {
+	 initHTML: function() {
+	   this.data.modelListView.initHTML();
+	   this.data.selectionView.initHTML();
+	 }
+	},
 
 //  templates: [
 //    function toHTML()    {/*
