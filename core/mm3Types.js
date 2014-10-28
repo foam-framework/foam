@@ -693,9 +693,49 @@ var ViewProperty = Model.create({
         if ( typeof f.create === 'function' ) return f.create.bind(f);
         if ( typeof f.model_ === 'string' ) return function(d, opt_X) {
           return FOAM(f, opt_X || this.X).copyFrom(d);
-        };
+        }
 
         console.error('******* Unknown view factory: ', f);
+        return f;
+      }
+    },
+    {
+      name: 'defaultValue',
+      preSet: function(_, f) { return ViewProperty.PRE_SET.defaultValue.call(this, null, f); }
+    }
+  ]
+});
+
+
+var FactoryProperty = Model.create({
+  name: 'FactoryProperty',
+  extendsModel: 'Property',
+
+  help: "Describes a Factory property.",
+
+  properties: [
+    {
+      name: 'preSet',
+      doc: "Can be specified as either a function, a Model, a Model path, or a JSON object.",
+      defaultValue: function(_, f) {
+        // A Factory Function
+        if ( typeof f === 'function' ) return f;
+
+        // A String Path to a Model
+        if ( typeof f === 'string' ) return function(map, opt_X) {
+          return FOAM.lookup(f, opt_X || this.X).create(map);
+        }.bind(this);
+
+        // An actual Model
+        if ( Model.isInstance(f) ) return f.create.bind(f);
+
+        // A JSON Model Factory: { factory_ : 'ModelName', arg1: value1, ... }
+        if ( f.factory_ ) return function(map, opt_X) {
+          var X = opt_X || this.X;
+          return FOAM(f.factory_, X).create(map, X);
+        }.bind(this);
+
+        console.error('******* Invalid Factory: ', f);
         return f;
       }
     },
