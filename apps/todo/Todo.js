@@ -55,10 +55,10 @@
 				view: { model_: 'TextFieldView', placeholder: 'What needs to be done?' }
 			},
 			{ name: 'dao' },
-			{ name: 'filteredDAO',		model_: 'DAOProperty', view: { model_: 'DAOListView' } },
+			{ name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListView' } },
 			{ name: 'completedCount', model_: 'IntProperty' },
-			{ name: 'activeCount',		model_: 'IntProperty', postSet: function(_, c) { this.toggle = !c; }},
-			{ name: 'toggle',				 model_: 'BooleanProperty', postSet: function(_, n) {
+			{ name: 'activeCount',    model_: 'IntProperty', postSet: function(_, c) { this.toggle = !c; }},
+			{ name: 'toggle',         model_: 'BooleanProperty', postSet: function(_, n) {
 				if ( n == this.activeCount > 0 ) {
 					this.dao.update(SET(Todo.COMPLETED, n));
 				}
@@ -73,9 +73,9 @@
 		actions: [
 			{
 				name: 'clear',
-				labelFn:	 function() { return 'Clear completed (' + this.completedCount + ')'; },
+				labelFn:   function() { return 'Clear completed (' + this.completedCount + ')'; },
 				isEnabled: function() { return this.completedCount; },
-				action:		function() { this.dao.where(Todo.COMPLETED).removeAll(); }
+				action:	   function() { this.dao.where(Todo.COMPLETED).removeAll(); }
 			}
 		],
 		listeners: [
@@ -85,7 +85,7 @@
 				code: function() {
 					this.dao.select(GROUP_BY(Todo.COMPLETED, COUNT()))(function (q) {
 						this.completedCount = q.groups[true];
-						this.activeCount		= q.groups[false];
+						this.activeCount = q.groups[false];
 					}.bind(this));
 				}
 			}
@@ -101,11 +101,11 @@
 		},
 		templates: [
 			function CSS() {/*
-			#filters .selected { font-weight: bold; }
-			#filters li { margin: 4px; }
-			.actionButton-clear:disabled { display: none; }
+				#filters .selected { font-weight: bold; }
+				#filters li { margin: 4px; }
+				.actionButton-clear:disabled { display: none; }
 			*/},
-										function toDetailHTML() {/*
+			function toDetailHTML() {/*
 			<section id="todoapp">
 				<header id="header">
 					<h1>todos</h1>
