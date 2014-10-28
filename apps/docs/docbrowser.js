@@ -26,11 +26,12 @@ MODEL({
   properties: [
     {
       name: 'search',
+			postSet: function() { console.log("Search change: "+this.search); }
     },
     {
       name: 'searchView',
       factory: function() {
-        return this.X.TextFieldView.create({ data$: this.search$, onKeyMode: true });
+        return this.X.TextFieldView.create({ data$: this.search$, onKeyMode: true, displayWidth: 20 });
       }
     },
     {
@@ -129,8 +130,8 @@ MODEL({
   templates: [
     function toHTML() {/*
       <div id="%%id">
-        <div><%=this.data.searchView.toHTML()%></div>
-        <div style="height:90%;overflow-y:scroll">
+        <div class="search-field-container"><%=this.data.searchView.toHTML()%></div>
+        <div class="list-container">
           <div><%=this.data.filteredDAOView.toHTML()%></div>
         </div>
       </div>
@@ -364,7 +365,7 @@ MODEL({
       }
 
       div.contentPanes {
-        height: 90%;
+				height: 90%;
         width: 100%;
         overflow: hidden;
         margin:0px;
@@ -372,21 +373,29 @@ MODEL({
 
       div.listPane {
         float: left;
-        max-width: 300px;
         width: 20%;
-        height: 100%;
         padding: 1em;
       }
 
       div.detailPane {
-        float: left;
+        float: right;
         overflow-y: scroll;
         width: 70%;
         height: 100%;
         padding: 1em;
       }
-
-      div.members {
+			
+			div.search-field-container {
+			
+			}
+			
+			div.list-container {
+				height: 90%;
+			  overflow-y:scroll;
+				overflow-x:hidden;
+			}
+				
+			div.members {
         padding-left: 2em;
       }
       div.memberList {
