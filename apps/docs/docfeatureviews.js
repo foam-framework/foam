@@ -532,7 +532,7 @@ MODEL({
     <%    this.destroy();
           if (!this.hasFeatures) { %>
     <%    } else { %>
-            <h2><%=this.featureName()%>:</h2>
+        
             <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
     <%    } %>
     */}

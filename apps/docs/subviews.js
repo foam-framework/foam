@@ -375,12 +375,22 @@ MODEL({
 <%    } else if (this.sourceModel) {  %>
         <div class="introduction">
           <h1><%=this.sourceModel.name%></h1>
+          <div class="model-info-block">
+<%        if (this.sourceModel.sourcePath) { %>
+            <p class="note">Loaded from <a href='<%=this.sourceModel.sourcePath%>'><%=this.sourceModel.sourcePath%></a></p>
+<%        } else { %>
+            <p class="note">No source path available.</p>
+<%        } %>
+<%        if (this.sourceModel.package) { %>
+            <p class="important">Package <%=this.sourceModel.package%></p>
+<%        } %>
 <%        if (this.sourceModel.extendsModel) { %>
-            <h2>Extends $$DOC{ref: this.sourceModel.extendsModel }</h2>
+            <p class="important">Extends $$DOC{ref: this.sourceModel.extendsModel }</p>
 <%        } %>
 <%        if (this.sourceModel.model_ && this.sourceModel.model_.id && this.sourceModel.model_.id != "Model") { %>
-            <h2>Implements $$DOC{ref: this.sourceModel.model_.id }</h2>
+            <p class="important">Implements $$DOC{ref: this.sourceModel.model_.id }</p>
 <%        } %>
+          </div>
           $$sourceModel{ model_: 'DocModelBodyView' }
         </div>
         <div class="members">
@@ -784,22 +794,22 @@ MODEL({
         }
         model = this.X.documentViewParentModel.get(); // ".feature" or "."
       } else {
-				// resolve path and model
+        // resolve path and model
         model = this.X[args[0]];
-				while (args.length > 0 && model && !model.model_) { // if no .model_, it's a package
-          newResolvedRef += args[0];
+        while (args.length > 0 && model && !model.model_) { // if no .model_, it's a package
+          newResolvedRef += args[0] + ".";
           args = args.slice(1); // remove package part
-	        model = this.X[args[0]];
-				};
+          model = model[args[0]];
+        };
       }
-			//TODO: do something with the package parts, resolve package refs with no model
+      //TODO: do something with the package parts, resolve package refs with no model
 
       if (!model) {
         return;
       }
-			
+      
       newResolvedModelChain.push(model);
-      if (newResolvedRef !== "") newResolvedRef += ".";
+//      if (newResolvedRef !== "") newResolvedRef += ".";
       newResolvedRef += model.name;
 
       // Check for a feature, and check inherited features too

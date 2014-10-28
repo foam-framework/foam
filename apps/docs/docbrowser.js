@@ -26,12 +26,12 @@ MODEL({
   properties: [
     {
       name: 'search',
-			postSet: function() { console.log("Search change: "+this.search); }
+      postSet: function() { console.log("Search change: "+this.search); }
     },
     {
       name: 'searchView',
       factory: function() {
-        return this.X.TextFieldView.create({ data$: this.search$, onKeyMode: true, displayWidth: 20 });
+        return this.X.mdTextFieldView.create({ data$: this.search$, label:'Search', onKeyMode: true, displayWidth: 20 });
       }
     },
     {
@@ -43,15 +43,17 @@ MODEL({
         // has been created without a .create or .getPrototype having been called
         // yet.
         for ( var key in UNUSED_MODELS ) {
-          this.X[key].getPrototype && this.X[key].getPrototype();
+          var modl = FOAM.lookup(key, this.X);
+          modl.getPrototype && modl.getPrototype();
         }
         for ( var key in USED_MODELS ) {
-          this.X[key].getPrototype && this.X[key].getPrototype();
+          var modl = FOAM.lookup(key, this.X);
+          modl.getPrototype && modl.getPrototype();
         }
 
         // All models are now in USED_MODELS
         for ( var key in USED_MODELS ) {
-          var m = this.X[key];
+          var m = FOAM.lookup(key, this.X);
           if ( ! m.getPrototype ) continue;
           m.getPrototype();
           newDAO.put(m);
@@ -66,7 +68,7 @@ MODEL({
 
       dynamicValue: function() {
         return this.dao.orderBy(this.order)
-            .where(CONTAINS_IC(Model.NAME, this.search));
+            .where(OR(CONTAINS_IC(Model.NAME, this.search), CONTAINS_IC(Model.PACKAGE, this.search)));
       }
     },
     {
@@ -87,16 +89,18 @@ MODEL({
     {
       name: 'data',
       help: 'The Model to describe',
-      preSet: function(old,nu) {
-        if (old) Events.unfollow(old.name$, this.modelName$);
-        Events.follow(nu.name$, this.modelName$);
-        return nu;
+      postSet: function() {
+        this.modelRef = this.data.package? this.data.package + "." + this.data.name : this.data.name;
+        this.modelName = this.data.package? "["+this.data.package + "]&nbsp;" + this.data.name : this.data.name;
       }
     },
     {
       name: 'modelName',
-      help: 'The Model to describe'
+      help: 'The Model package and name.'
     },
+    {
+      name: 'modelRef'
+    }
   ],
 
   methods: {
@@ -110,7 +114,7 @@ MODEL({
   },
   templates: [ // TODO: the data gets set on the modelNameView... screws it up
     function toInnerHTML() {/*
-      <h3>$$modelName{model_:'DocRefView', ref$: this.modelName$}</h3>
+      <p class="browse-list-entry">$$modelName{model_:'DocRefView', ref$: this.modelRef$, text$: this.modelName$}</p>
     */}
   ]
 });
@@ -171,8 +175,7 @@ MODEL({
 
       this.X.documentViewRequestNavigation = function(ref) {
         if (ref.valid) {
-          // TODO: navigate to feature sub-view as well
-          this.selection = ref.resolvedModelChain[0]; // TODO: tighten up this update chain
+          this.selection = ref.resolvedModelChain[0];
           this.DetailContext.documentViewParentModel.set(ref.resolvedModelChain[0]);
           this.DetailContext.documentViewRef.ref = ref.resolvedRef;
           this.SearchContext.selection$.set(this.DetailContext.documentViewParentModel.get());
@@ -186,6 +189,7 @@ MODEL({
 
       // when the hash changes set the documentViewParentModel and this.selection
       window.addEventListener('hashchange', function() {
+        if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) location.hash = 'developerDocs.Welcome';
         this.DetailContext.documentViewRef.ref = location.hash.substring(1);
         if (this.DetailContext.documentViewRef.valid) {
           this.DetailContext.documentViewParentModel.set(
@@ -196,8 +200,9 @@ MODEL({
       }.bind(this));
 
       // initialization from hash
-      if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) location.hash = 'DevDocumentation_Welcome';
+      if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) location.hash = 'developerDocs.Welcome';
       this.DetailContext.documentViewRef.ref = location.hash.substring(1);
+      console.log("ref init", this.DetailContext.documentViewRef);
       if (this.DetailContext.documentViewRef.valid) {
         this.DetailContext.documentViewParentModel.set(
              this.DetailContext.documentViewRef.resolvedModelChain[0]);
@@ -255,12 +260,12 @@ MODEL({
   name: 'DocBrowserView',
   extendsModel: 'DetailView',
 
-	methods: {
-	 initHTML: function() {
-	   this.data.modelListView.initHTML();
-	   this.data.selectionView.initHTML();
-	 }
-	},
+  methods: {
+   initHTML: function() {
+     this.data.modelListView.initHTML();
+     this.data.selectionView.initHTML();
+   }
+  },
 
 //  templates: [
 //    function toHTML()    {/*
@@ -350,6 +355,7 @@ MODEL({
         max-width: 1280px;
         padding: 15px;
         box-shadow: 0px 5px 5px #888888;
+        display:flex;
       }
 
       input {
@@ -364,57 +370,92 @@ MODEL({
         padding-bottom: 0.5em;
       }
 
-      div.contentPanes {
-				height: 90%;
-        width: 100%;
-        overflow: hidden;
-        margin:0px;
-      }
-
       div.listPane {
-        float: left;
-        width: 20%;
+        min-width: 200px;
+        flex-basis: 200px;
+        order: 1;
         padding: 1em;
+        flex-grow: 0;
+        overflow-x: hidden;
+
+        display: flex;
+        flex-direction: column;
       }
 
       div.detailPane {
-        float: right;
+        order: 2;
+        flex-grow: 10;
         overflow-y: scroll;
-        width: 70%;
-        height: 100%;
         padding: 1em;
       }
-			
-			div.search-field-container {
-			
-			}
-			
-			div.list-container {
-				height: 90%;
-			  overflow-y:scroll;
-				overflow-x:hidden;
-			}
-				
-			div.members {
+      
+      div.detailPane div.chapters h2 {
+        font-size: 110%;
+      }
+      
+      div.search-field-container {
+        flex-grow: 0;
+        order: 1;
+      }
+      
+      div.list-container {
+        order: 2;
+        flex-grow: 1;
+        overflow-y:scroll;
+        overflow-x:hidden;
+      }
+      div.list-container span.docLink {
+        border-bottom: none;
+      }
+        
+      div.members {
         padding-left: 2em;
       }
       div.memberList {
         padding-left: 2em;
       }
-
-      div.inherited {
-        color: #666666;
+      
+      div.chapters div.memberList {
+        padding-left: 0;
       }
 
+      div.inherited {
+        color: #333333;
+      }
+      
+      p.browse-list-entry {
+        font-size:100%;
+        font-weight: bold;
+        line-height: 150%
+      }
+      
       span.docLink {
+        cursor: pointer;
         color: #000077;
-        text-decoration: underline;
+        border-bottom: 0.1em dotted #999;
       }
 
       span.docLinkNoDocumentation {
         color: #770000;
-        text-decoration: underline;
+        
       }
+
+      div.model-info-block {
+        padding: 1em;
+        background-color: #eeeeee;
+        margin: 1em;
+        border-radius: 1em;
+        box-shadow: 0px 5px 5px #888888;
+      
+      }
+      div.model-info-block p.note {
+        font-size:105%;
+      }
+      div.model-info-block p.important {
+        font-size:105%;
+        font-weight:bold;
+      }
+      
 
       .light {
         color: #444;
@@ -426,7 +467,7 @@ MODEL({
           <div class="docbrowser-header-inner">
             <div class="docbrowser-header-flex-container">
               <div class="docbrowser-header-contents">
-                <div class="docbrowser-title">FOAM Documentation</div>
+                <div class="docbrowser-title">FOAM API Reference</div>
               </div>
             </div>
           </div>
@@ -435,10 +476,8 @@ MODEL({
         <div id="<%= this.id %>-outer-container" class="outer-container">
           <div class="outer-flex-container">
             <div id="<%= this.id %>-inner-container" class="inner-container">
-              <div class="contentPanes">
                 <div class="listPane"><%=this.data.modelListView.toHTML()%></div>
                 <div class="detailPane"><%=this.data.selectionView.toHTML()%></div>
-              </div>
             </div>
           </div>
         </div>

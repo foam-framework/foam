@@ -79,12 +79,12 @@ var Model = {
         <li>Creating a subcontext and replacing X.YourModel with a different model (such as
         YourTestModelMock created specifically for testing) will give you seamless dependency
         injection. See the
-        $$DOC{ref:'DevDocumentation_Context..documentation.chapters.intro', text:'Context documentation'}
+        $$DOC{ref:'developerDocs.Context..documentation.chapters.intro', text:'Context documentation'}
         for more information.</li>
       </ul>
       </p>
       <p>For more information about how $$DOC{ref:'Model',usePlural:true} are instantiated,
-      see $$DOC{ref:'DevDocumentation_Welcome..documentation.chapters.modelsAtRuntime',text:'Welcome to Models at Runtime'}.
+      see $$DOC{ref:'developerDocs.Welcome..documentation.chapters.modelsAtRuntime',text:'Welcome to Models at Runtime'}.
     */ }
   },
 
@@ -120,7 +120,7 @@ var Model = {
         <p>For example: </p>
         <p><code>MODEL ({ name: 'Train', package: 'com.company.modules' });<br/>
                  ...<br/>
-                 // when creating an instance of the model (your $$DOC{ref:'DevDocumentation_Context', text:'context'}
+                 // when creating an instance of the model (your $$DOC{ref:'developerDocs.Context', text:'context'}
                         is this.X):<br/>
                  this.X.com.company.modules.Train.create();<br/>
         </code></p>
@@ -241,7 +241,7 @@ var Model = {
             <code>'Model-Path [as Alias]'</code>.</p>
           <p>Aliases are created on your instances that reference the full
             path of the model, taking it from your this.X
-            $$DOC{ref:'DevDocumentation_Context', text:'context'}.</p>
+            $$DOC{ref:'developerDocs.Context', text:'context'}.</p>
           <p>For example:</p>
           <p><code>requires: [ 'mypackage.DataLayer.BigDAO',
                    'mypackage.UI.SmallTextView as TextView' ]<br/>
