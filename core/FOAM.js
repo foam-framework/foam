@@ -226,7 +226,13 @@ function registerModel(model, opt_name) {
         get: function() {
           var THIS = this.__this__ || this;
           if ( THIS === root ) return xModel;
-          THIS.registerModel(model, name);
+          // TODO(kgr): this is a quick hack to allow models in packages, make better
+          // THIS.registerModel(model, name);
+          if ( THIS.registerModel )
+            THIS.registerModel(model, name);
+          else
+            X.registerModel.call(THIS, model, name);
+          // End Hack
           return THIS[name];
         },
         configurable: true
@@ -246,7 +252,9 @@ function registerModel(model, opt_name) {
 
   contextualizeModel(path, model, name)
 
-  this.registerModel_(model);
+  // TODO(kgr): this is a quick hack to allow models in packages, make better
+  this.registerModel_ && this.registerModel_(model);
+  //this.registerModel_(model);
 }
 
 
