@@ -110,7 +110,7 @@ MODEL({
   },
   templates: [ // TODO: the data gets set on the modelNameView... screws it up
     function toInnerHTML() {/*
-      <h3>$$modelName{model_:'DocRefView', ref$: this.modelName$}</h3>
+      <p class="browse-list-entry">$$modelName{model_:'DocRefView', ref$: this.modelName$}</p>
     */}
   ]
 });
@@ -350,6 +350,7 @@ MODEL({
         max-width: 1280px;
         padding: 15px;
         box-shadow: 0px 5px 5px #888888;
+				display:flex;
       }
 
       input {
@@ -364,33 +365,33 @@ MODEL({
         padding-bottom: 0.5em;
       }
 
-      div.contentPanes {
-				height: 90%;
-        width: 100%;
-        overflow: hidden;
-        margin:0px;
-      }
-
       div.listPane {
-        float: left;
-        width: 20%;
+				min-width: 200px;
+				flex-basis: 200px;
+				order: 1;
         padding: 1em;
+				flex-grow: 0;
+				overflow-x: hidden;
+
+				display: flex;
+			  flex-direction: column;
       }
 
       div.detailPane {
-        float: right;
+        order: 2;
+				flex-grow: 10;
         overflow-y: scroll;
-        width: 70%;
-        height: 100%;
         padding: 1em;
       }
 			
 			div.search-field-container {
-			
+				flex-grow: 0;
+				order: 1;
 			}
 			
 			div.list-container {
-				height: 90%;
+				order: 2;
+				flex-grow: 1;
 			  overflow-y:scroll;
 				overflow-x:hidden;
 			}
@@ -405,15 +406,20 @@ MODEL({
       div.inherited {
         color: #666666;
       }
-
+			
+			p.browse-list-entry {
+				font-size:125%;
+				font-weight: bold;
+			}
+			
       span.docLink {
         color: #000077;
-        text-decoration: underline;
+        border-bottom: 1px dashed #999;
       }
 
       span.docLinkNoDocumentation {
         color: #770000;
-        text-decoration: underline;
+        border-bottom: 1px dashed #999;
       }
 
       .light {
@@ -435,10 +441,8 @@ MODEL({
         <div id="<%= this.id %>-outer-container" class="outer-container">
           <div class="outer-flex-container">
             <div id="<%= this.id %>-inner-container" class="inner-container">
-              <div class="contentPanes">
                 <div class="listPane"><%=this.data.modelListView.toHTML()%></div>
                 <div class="detailPane"><%=this.data.selectionView.toHTML()%></div>
-              </div>
             </div>
           </div>
         </div>
