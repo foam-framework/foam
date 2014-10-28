@@ -26,7 +26,7 @@ MODEL({
   properties: [
     {
       name: 'search',
-			postSet: function() { console.log("Search change: "+this.search); }
+      postSet: function() { console.log("Search change: "+this.search); }
     },
     {
       name: 'searchView',
@@ -90,17 +90,17 @@ MODEL({
       name: 'data',
       help: 'The Model to describe',
       postSet: function() {
-      	this.modelRef = this.data.package? this.data.package + "." + this.data.name : this.data.name;
-      	this.modelName = this.data.package? "["+this.data.package + "]&nbsp;" + this.data.name : this.data.name;
+        this.modelRef = this.data.package? this.data.package + "." + this.data.name : this.data.name;
+        this.modelName = this.data.package? "["+this.data.package + "]&nbsp;" + this.data.name : this.data.name;
       }
     },
     {
       name: 'modelName',
       help: 'The Model package and name.'
     },
-		{
-			name: 'modelRef'
-		}
+    {
+      name: 'modelRef'
+    }
   ],
 
   methods: {
@@ -189,7 +189,7 @@ MODEL({
 
       // when the hash changes set the documentViewParentModel and this.selection
       window.addEventListener('hashchange', function() {
-	      if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) location.hash = 'developerDocs.Welcome';
+        if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) location.hash = 'developerDocs.Welcome';
         this.DetailContext.documentViewRef.ref = location.hash.substring(1);
         if (this.DetailContext.documentViewRef.valid) {
           this.DetailContext.documentViewParentModel.set(
@@ -202,7 +202,7 @@ MODEL({
       // initialization from hash
       if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) location.hash = 'developerDocs.Welcome';
       this.DetailContext.documentViewRef.ref = location.hash.substring(1);
-			console.log("ref init", this.DetailContext.documentViewRef);
+      console.log("ref init", this.DetailContext.documentViewRef);
       if (this.DetailContext.documentViewRef.valid) {
         this.DetailContext.documentViewParentModel.set(
              this.DetailContext.documentViewRef.resolvedModelChain[0]);
@@ -260,12 +260,12 @@ MODEL({
   name: 'DocBrowserView',
   extendsModel: 'DetailView',
 
-	methods: {
-	 initHTML: function() {
-	   this.data.modelListView.initHTML();
-	   this.data.selectionView.initHTML();
-	 }
-	},
+  methods: {
+   initHTML: function() {
+     this.data.modelListView.initHTML();
+     this.data.selectionView.initHTML();
+   }
+  },
 
 //  templates: [
 //    function toHTML()    {/*
@@ -355,7 +355,7 @@ MODEL({
         max-width: 1280px;
         padding: 15px;
         box-shadow: 0px 5px 5px #888888;
-				display:flex;
+        display:flex;
       }
 
       input {
@@ -371,67 +371,67 @@ MODEL({
       }
 
       div.listPane {
-				min-width: 200px;
-				flex-basis: 200px;
-				order: 1;
+        min-width: 200px;
+        flex-basis: 200px;
+        order: 1;
         padding: 1em;
-				flex-grow: 0;
-				overflow-x: hidden;
+        flex-grow: 0;
+        overflow-x: hidden;
 
-				display: flex;
-			  flex-direction: column;
+        display: flex;
+        flex-direction: column;
       }
 
       div.detailPane {
         order: 2;
-				flex-grow: 10;
+        flex-grow: 10;
         overflow-y: scroll;
         padding: 1em;
       }
-			
-			div.detailPane div.chapters h2 {
-				font-size: 110%;
-			}
-			
-			div.search-field-container {
-				flex-grow: 0;
-				order: 1;
-			}
-			
-			div.list-container {
-				order: 2;
-				flex-grow: 1;
-			  overflow-y:scroll;
-				overflow-x:hidden;
-			}
-			div.list-container span.docLink {
-				border-bottom: none;
-			}
-				
-			div.members {
+      
+      div.detailPane div.chapters h2 {
+        font-size: 110%;
+      }
+      
+      div.search-field-container {
+        flex-grow: 0;
+        order: 1;
+      }
+      
+      div.list-container {
+        order: 2;
+        flex-grow: 1;
+        overflow-y:scroll;
+        overflow-x:hidden;
+      }
+      div.list-container span.docLink {
+        border-bottom: none;
+      }
+        
+      div.members {
         padding-left: 2em;
       }
       div.memberList {
         padding-left: 2em;
       }
-			
-			div.chapters div.memberList {
-				padding-left: 0;
-			}
+      
+      div.chapters div.memberList {
+        padding-left: 0;
+      }
 
       div.inherited {
         color: #333333;
       }
-			
-			p.browse-list-entry {
-				font-size:100%;
-				font-weight: bold;
-				line-height: 150%
-			}
-			
+      
+      p.browse-list-entry {
+        font-size:100%;
+        font-weight: bold;
+        line-height: 150%
+      }
+      
       span.docLink {
         cursor: pointer;
-				color: #000077;
+        color: #000077;
         border-bottom: 0.1em dotted #999;
       }
 
@@ -440,22 +440,22 @@ MODEL({
         
       }
 
-			div.model-info-block {
-				padding: 1em;
-				background-color: #eeeeee;
-				margin: 1em;
-				border-radius: 1em;
+      div.model-info-block {
+        padding: 1em;
+        background-color: #eeeeee;
+        margin: 1em;
+        border-radius: 1em;
         box-shadow: 0px 5px 5px #888888;
-			
-			}
-			div.model-info-block p.note {
-				font-size:105%;
-			}
-			div.model-info-block p.important {
-				font-size:105%;
-				font-weight:bold;
-			}
-			
+      
+      }
+      div.model-info-block p.note {
+        font-size:105%;
+      }
+      div.model-info-block p.important {
+        font-size:105%;
+        font-weight:bold;
+      }
+      
 
       .light {
         color: #444;

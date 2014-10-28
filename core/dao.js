@@ -477,12 +477,12 @@ MODEL({
 
     limit: function(count) {
       return (this.X || X).LimitedDAO_.create({count:count, delegate:this});
-			//return limitedDAO(count, this);
+      //return limitedDAO(count, this);
     },
 
     skip: function(skip) {
       return (this.X || X).SkipDAO_.create({skip:skip, delegate:this});
-			//return skipDAO(skip, this);
+      //return skipDAO(skip, this);
     },
 
     orderBy: function() {
@@ -1258,10 +1258,10 @@ MODEL({
     {
       name: 'skip',
       required: true,
-			postSet: function() {
-			  if ( this.skip !== Math.floor(this.skip) ) 
-					console.warn('skip() called with non-integer value: ' + this.skip);
-			}
+      postSet: function() {
+        if ( this.skip !== Math.floor(this.skip) ) 
+          console.warn('skip() called with non-integer value: ' + this.skip);
+      }
     }
   ],
   methods: {
