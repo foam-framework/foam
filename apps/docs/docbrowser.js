@@ -384,6 +384,10 @@ MODEL({
         padding: 1em;
       }
 			
+			div.detailPane div.chapters h2 {
+				font-size: 110%;
+			}
+			
 			div.search-field-container {
 				flex-grow: 0;
 				order: 1;
@@ -394,6 +398,9 @@ MODEL({
 				flex-grow: 1;
 			  overflow-y:scroll;
 				overflow-x:hidden;
+			}
+			div.list-container span.docLink {
+				border-bottom: none;
 			}
 				
 			div.members {
@@ -414,13 +421,14 @@ MODEL({
 			}
 			
       span.docLink {
-        color: #000077;
-        border-bottom: 1px dashed #999;
+        cursor: pointer;
+				color: #000077;
+        border-bottom: 0.1em dotted #999;
       }
 
       span.docLinkNoDocumentation {
         color: #770000;
-        border-bottom: 1px dashed #999;
+        
       }
 
       .light {
