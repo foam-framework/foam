@@ -23,7 +23,7 @@ MODEL({
   plural: 'DocumentationBooks',
   help: 'A documentation object that exists outside of a specific model.',
 
-	// package: 'developerDocs',
+	//package: 'developerDocs',
 
   documentation: function() {/*
     <p>To create a body of documentation for general reference (a topic not
@@ -38,12 +38,12 @@ MODEL({
 
 
 MODEL({
-  name: 'DevDocumentation_Welcome',
+  name: 'Welcome',
   extendsModel: 'DocumentationBook',
   label: 'Welcome to FOAM',
   help: 'Welcome to FOAM',
 
-	// package: 'developerDocs',
+	package: 'developerDocs',
 
   documentation: {
     label: "Welcome to FOAM",
@@ -54,9 +54,9 @@ MODEL({
       how concepts from traditional programming languages map into FOAM.</p>
 			<p>Also see the other overviews:
 			<ul>
-				<li>$$DOC{ref:'DevDocumentation_Context',text:'Context and Dependency Injection'}</li>
-				<li>$$DOC{ref:'DevDocumentation_Events',text:'Reactive Events and Binding'}</li>
-				<li>$$DOC{ref:'DevDocumentation_Views',text:'Views and HTML'}</li>
+				<li>$$DOC{ref:'developerDocs.Context',text:'Context and Dependency Injection'}</li>
+				<li>$$DOC{ref:'developerDocs.Events',text:'Reactive Events and Binding'}</li>
+				<li>$$DOC{ref:'developerDocs.Views',text:'Views and HTML'}</li>
 			</ul>
 			</p>
     */},
@@ -93,9 +93,9 @@ MODEL({
             <li>Need to communicate something to or from a child object, but don't
             want to be burdened with knowing what type it is or if it exists?
             $$DOC{ref:'Model.exports',text:'Export'} your value to your
-            $$DOC{ref:'DevDocumentation_Context', text:'context'},
+            $$DOC{ref:'developerDocs.Context', text:'context'},
             and a reference gets propagated to objects you create.
-            $$DOC{ref:'DevDocumentation_Events..documentation.chapters.binding',text:'Bind'}
+            $$DOC{ref:'developerDocs.Events..documentation.chapters.binding',text:'Bind'}
             it to a property and you'll get value changes automatically propagated.</li>
             <li>Need to cache data from your back end? Throw a $$DOC{ref:'CachingDAO'}
             on top of your $$DOC{ref:'RestDAO'}. Want to swap the whole thing out at
@@ -201,12 +201,12 @@ MODEL({
 
 
 MODEL({
-  name: 'DevDocumentation_Context',
+  name: 'Context',
   extendsModel: 'DocumentationBook',
   label: 'Context Documentation',
   help: 'Context Documentation',
 
-	// package: 'developerDocs',
+	package: 'developerDocs',
 
   documentation: {
     label: "Contexts",
@@ -249,7 +249,7 @@ MODEL({
           see. Dependency injection frameworks were invented as a workaround for this
           problem, and singletons are avoided.
           </p>
-          <p>A $$DOC{ref:'DevDocumentation_Context',text:'Context'} solves this problem
+          <p>A $$DOC{ref:'developerDocs.Context',text:'Context'} solves this problem
           by wrapping the global namespace and instances into an object, <code>this.X</code>,
           and allowing code
           to create copies with specific changes that can be passed on to
@@ -348,12 +348,12 @@ MODEL({
 });
 
 MODEL({
-  name: 'DevDocumentation_Events',
+  name: 'Events',
   extendsModel: 'DocumentationBook',
   label: 'Events and Binding Documentation',
   help: 'Events and Binding Documentation',
 
-	// package: 'developerDocs',
+	package: 'developerDocs',
 
   documentation: {
     label: "The FOAM Event and Binding System",
@@ -458,12 +458,12 @@ MODEL({
 });
 
 MODEL({
-  name: 'DevDocumentation_Views',
+  name: 'Views',
   extendsModel: 'DocumentationBook',
   label: 'Views Documentation',
   help: 'Views Documentation',
 
-	// package: 'developerDocs',
+	package: 'developerDocs',
 
   documentation: {
     label: "FOAM Views",

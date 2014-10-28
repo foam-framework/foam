@@ -199,7 +199,7 @@ MODEL({
 
   documentation: function() {/*
     <p>Persists a set of Objects. Despite the name, this has nothing to do with
-    $$DOC{ref:'DevDocumentation_Context', text:'Contexts'}.</p>
+    $$DOC{ref:'developerDocs.Context', text:'Contexts'}.</p>
   */},
 
   properties: [

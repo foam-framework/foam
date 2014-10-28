@@ -43,15 +43,17 @@ MODEL({
         // has been created without a .create or .getPrototype having been called
         // yet.
         for ( var key in UNUSED_MODELS ) {
-          this.X[key].getPrototype && this.X[key].getPrototype();
+          var modl = FOAM.lookup(key, this.X);
+          modl.getPrototype && modl.getPrototype();
         }
         for ( var key in USED_MODELS ) {
-          this.X[key].getPrototype && this.X[key].getPrototype();
+          var modl = FOAM.lookup(key, this.X);
+          modl.getPrototype && modl.getPrototype();
         }
 
         // All models are now in USED_MODELS
         for ( var key in USED_MODELS ) {
-          var m = this.X[key];
+          var m = FOAM.lookup(key, this.X);
           if ( ! m.getPrototype ) continue;
           m.getPrototype();
           newDAO.put(m);
@@ -66,7 +68,7 @@ MODEL({
 
       dynamicValue: function() {
         return this.dao.orderBy(this.order)
-            .where(CONTAINS_IC(Model.NAME, this.search));
+            .where(OR(CONTAINS_IC(Model.NAME, this.search), CONTAINS_IC(Model.PACKAGE, this.search)));
       }
     },
     {
@@ -87,16 +89,18 @@ MODEL({
     {
       name: 'data',
       help: 'The Model to describe',
-      preSet: function(old,nu) {
-        if (old) Events.unfollow(old.name$, this.modelName$);
-        Events.follow(nu.name$, this.modelName$);
-        return nu;
+      postSet: function() {
+      	this.modelRef = this.data.package? this.data.package + "." + this.data.name : this.data.name;
+      	this.modelName = this.data.package? "["+this.data.package + "]&nbsp;" + this.data.name : this.data.name;
       }
     },
     {
       name: 'modelName',
-      help: 'The Model to describe'
+      help: 'The Model package and name.'
     },
+		{
+			name: 'modelRef'
+		}
   ],
 
   methods: {
@@ -110,7 +114,7 @@ MODEL({
   },
   templates: [ // TODO: the data gets set on the modelNameView... screws it up
     function toInnerHTML() {/*
-      <p class="browse-list-entry">$$modelName{model_:'DocRefView', ref$: this.modelName$}</p>
+      <p class="browse-list-entry">$$modelName{model_:'DocRefView', ref$: this.modelRef$, text$: this.modelName$}</p>
     */}
   ]
 });
@@ -171,8 +175,7 @@ MODEL({
 
       this.X.documentViewRequestNavigation = function(ref) {
         if (ref.valid) {
-          // TODO: navigate to feature sub-view as well
-          this.selection = ref.resolvedModelChain[0]; // TODO: tighten up this update chain
+          this.selection = ref.resolvedModelChain[0];
           this.DetailContext.documentViewParentModel.set(ref.resolvedModelChain[0]);
           this.DetailContext.documentViewRef.ref = ref.resolvedRef;
           this.SearchContext.selection$.set(this.DetailContext.documentViewParentModel.get());
@@ -186,6 +189,7 @@ MODEL({
 
       // when the hash changes set the documentViewParentModel and this.selection
       window.addEventListener('hashchange', function() {
+	      if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) location.hash = 'developerDocs.Welcome';
         this.DetailContext.documentViewRef.ref = location.hash.substring(1);
         if (this.DetailContext.documentViewRef.valid) {
           this.DetailContext.documentViewParentModel.set(
@@ -196,8 +200,9 @@ MODEL({
       }.bind(this));
 
       // initialization from hash
-      if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) location.hash = 'DevDocumentation_Welcome';
+      if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) location.hash = 'developerDocs.Welcome';
       this.DetailContext.documentViewRef.ref = location.hash.substring(1);
+			console.log("ref init", this.DetailContext.documentViewRef);
       if (this.DetailContext.documentViewRef.valid) {
         this.DetailContext.documentViewParentModel.set(
              this.DetailContext.documentViewRef.resolvedModelChain[0]);
@@ -445,7 +450,7 @@ MODEL({
           <div class="docbrowser-header-inner">
             <div class="docbrowser-header-flex-container">
               <div class="docbrowser-header-contents">
-                <div class="docbrowser-title">FOAM Documentation</div>
+                <div class="docbrowser-title">FOAM API Reference</div>
               </div>
             </div>
           </div>

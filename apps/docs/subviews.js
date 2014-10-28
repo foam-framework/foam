@@ -787,9 +787,9 @@ MODEL({
 				// resolve path and model
         model = this.X[args[0]];
 				while (args.length > 0 && model && !model.model_) { // if no .model_, it's a package
-          newResolvedRef += args[0];
+          newResolvedRef += args[0] + ".";
           args = args.slice(1); // remove package part
-	        model = this.X[args[0]];
+	        model = model[args[0]];
 				};
       }
 			//TODO: do something with the package parts, resolve package refs with no model
@@ -799,7 +799,7 @@ MODEL({
       }
 			
       newResolvedModelChain.push(model);
-      if (newResolvedRef !== "") newResolvedRef += ".";
+//      if (newResolvedRef !== "") newResolvedRef += ".";
       newResolvedRef += model.name;
 
       // Check for a feature, and check inherited features too
