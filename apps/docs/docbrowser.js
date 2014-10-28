@@ -31,7 +31,7 @@ MODEL({
     {
       name: 'searchView',
       factory: function() {
-        return this.X.TextFieldView.create({ data$: this.search$, onKeyMode: true, displayWidth: 20 });
+        return this.X.mdTextFieldView.create({ data$: this.search$, label:'Search', onKeyMode: true, displayWidth: 20 });
       }
     },
     {
@@ -408,8 +408,9 @@ MODEL({
       }
 			
 			p.browse-list-entry {
-				font-size:125%;
+				font-size:100%;
 				font-weight: bold;
+				line-height: 150%
 			}
 			
       span.docLink {
