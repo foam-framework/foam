@@ -103,6 +103,18 @@ a.test();
 
 
 CLASS({
+  package: 'demo.bank.Account',
+  name: 'AccountInnerModel',
+
+  properties: [ 'a', 'b', 'c' ],
+});
+
+var im = X.demo.bank.Account.AccountInnerModel.create({a:1, b:2, c:3});
+console.log(im.toJSON());
+
+
+
+CLASS({
   name: 'Child',
 
   imports: [ 'log', 'x as x$' ],
