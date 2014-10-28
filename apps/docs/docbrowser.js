@@ -409,6 +409,10 @@ MODEL({
       div.memberList {
         padding-left: 2em;
       }
+			
+			div.chapters div.memberList {
+				padding-left: 0;
+			}
 
       div.inherited {
         color: #666666;
