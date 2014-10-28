@@ -5233,6 +5233,16 @@ MODEL({
   ]
 });
 
-
-
-
+MODEL({
+  name: 'SimpleDynamicViewTrait',
+  properties: [
+    { name: 'data', postSet: function() { this.updateHTML(); } }
+  ],
+  methods: {
+    updateHTML: function() {
+      if ( ! this.$ ) return;
+      this.$.outerHTML = this.toHTML();
+      this.initHTML();
+    }
+  }
+});
