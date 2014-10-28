@@ -887,7 +887,7 @@ MODEL({
       this.SUPER(args);
 
       if ( this.args && this.args.model_ ) {
-        var model = this.X[this.args.model_];
+        var model = FOAM.lookup(this.args.model_, this.X);
         console.assert( model, 'Unknown View: ' + this.args.model_);
         var view = model.create(this.prop);
         delete this.args.model_;
@@ -5233,6 +5233,16 @@ MODEL({
   ]
 });
 
-
-
-
+MODEL({
+  name: 'SimpleDynamicViewTrait',
+  properties: [
+    { name: 'data', postSet: function() { this.updateHTML(); } }
+  ],
+  methods: {
+    updateHTML: function() {
+      if ( ! this.$ ) return;
+      this.$.outerHTML = this.toHTML();
+      this.initHTML();
+    }
+  }
+});

@@ -165,7 +165,7 @@ MODEL({
           $$DOC{ref:'Model.extendsModel'} property down through the chain until
           you omit $$DOC{ref:'Model.extendsModel'}.
           At each step, new $$DOC{ref:'Property',usePlural:true} or other features are
-          added on, as one would expect from inheritance. When you examine the "MyBase"
+          added on, as one would expect from inheritance. When you examine the "MySub"
           object from your context, you see all the inherited features. Calling create()
           instantiates those features on an instance object, where you can assign values
           or call methods.</p>
