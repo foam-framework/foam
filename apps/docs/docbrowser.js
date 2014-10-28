@@ -420,7 +420,7 @@ MODEL({
 			}
 
       div.inherited {
-        color: #666666;
+        color: #333333;
       }
 			
 			p.browse-list-entry {
@@ -439,6 +439,23 @@ MODEL({
         color: #770000;
         
       }
+
+			div.model-info-block {
+				padding: 1em;
+				background-color: #eeeeee;
+				margin: 1em;
+				border-radius: 1em;
+        box-shadow: 0px 5px 5px #888888;
+			
+			}
+			div.model-info-block p.note {
+				font-size:105%;
+			}
+			div.model-info-block p.important {
+				font-size:105%;
+				font-weight:bold;
+			}
+			
 
       .light {
         color: #444;

@@ -375,12 +375,20 @@ MODEL({
 <%    } else if (this.sourceModel) {  %>
         <div class="introduction">
           <h1><%=this.sourceModel.name%></h1>
+					<div class="model-info-block">
+<%        if (this.sourceModel.sourcePath) { %>
+            <p class="note">Loaded from <a href='<%=this.sourceModel.sourcePath%>'><%=this.sourceModel.sourcePath%></a></p>
+<%        } %>
+<%        if (this.sourceModel.package) { %>
+            <p class="important">Package <%=this.sourceModel.package%></p>
+<%        } %>
 <%        if (this.sourceModel.extendsModel) { %>
-            <h2>Extends $$DOC{ref: this.sourceModel.extendsModel }</h2>
+            <p class="important">Extends $$DOC{ref: this.sourceModel.extendsModel }</p>
 <%        } %>
 <%        if (this.sourceModel.model_ && this.sourceModel.model_.id && this.sourceModel.model_.id != "Model") { %>
-            <h2>Implements $$DOC{ref: this.sourceModel.model_.id }</h2>
+            <p class="important">Implements $$DOC{ref: this.sourceModel.model_.id }</p>
 <%        } %>
+					</div>
           $$sourceModel{ model_: 'DocModelBodyView' }
         </div>
         <div class="members">
