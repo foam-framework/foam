@@ -253,9 +253,10 @@ MODEL({
     init: function() {
       this.X = this.X.sub();
       // we want our own copy of these, since an enclosing view might have put its own copies in X
-      this.X.docModelViewFeatureDAO = //[].dao;
-         this.X.MDAO.create({model:this.X.DocFeatureInheritanceTracker, autoIndex:true});
-      this.X.docModelViewModelDAO = this.X.MDAO.create({model:this.X.DocModelInheritanceTracker, autoIndex:true});
+      this.X.docModelViewFeatureDAO = [].dao;
+         //this.X.MDAO.create({model:this.X.DocFeatureInheritanceTracker, autoIndex:true});
+      this.X.docModelViewModelDAO = [].dao; 
+          //this.X.MDAO.create({model:this.X.DocModelInheritanceTracker, autoIndex:true});
 
       this.SUPER();
 
@@ -310,12 +311,11 @@ MODEL({
         </p>
         */
       var self = this;
-
       var newModelTr = this.X.DocModelInheritanceTracker.create();
       newModelTr.model = model.id;
 
       model.getAllMyFeatures().forEach(function(feature) {
-
+ 
         // all features we hit are declared (or overridden) in this model
         var featTr = self.X.DocFeatureInheritanceTracker.create({
               isDeclared:true,

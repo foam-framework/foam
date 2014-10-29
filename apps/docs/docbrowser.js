@@ -399,6 +399,7 @@ MODEL({
       
       div.search-field-container {
         flex-grow: 0;
+        flex-shrink: 0;
         order: 1;
       }
       
