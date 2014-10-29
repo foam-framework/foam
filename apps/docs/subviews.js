@@ -253,8 +253,9 @@ MODEL({
     init: function() {
       this.X = this.X.sub();
       // we want our own copy of these, since an enclosing view might have put its own copies in X
-      this.X.docModelViewFeatureDAO = [].dao; // this.X.MDAO.create({model:DocFeatureInheritanceTracker});
-      this.X.docModelViewModelDAO = [].dao; // this.X.MDAO.create({model:DocModelInheritanceTracker});
+      this.X.docModelViewFeatureDAO = //[].dao;
+         this.X.MDAO.create({model:this.X.DocFeatureInheritanceTracker, autoIndex:true});
+      this.X.docModelViewModelDAO = this.X.MDAO.create({model:this.X.DocModelInheritanceTracker, autoIndex:true});
 
       this.SUPER();
 
@@ -359,8 +360,15 @@ MODEL({
     debugLogFeatureDAO: function() {
       /* For debugging purposes, prints out the state of the FeatureDAO. */
 
+      var features = [];
       console.log("Features DAO: ", this.X.docModelViewFeatureDAO);
+      this.X.docModelViewFeatureDAO.select(features);
+      console.log(features);
+
+      var modelss = [];
       console.log("Model    DAO: ", this.X.docModelViewModelDAO);
+      this.X.docModelViewModelDAO.select(modelss);
+      console.log(modelss);
     }
 
   },
