@@ -1,21 +1,21 @@
 .mdui-app-controller .header {
-  background: #e51c23;
+  background: #db4437;
 }
 
 .mdui-app-controller.searchMode .header .search {
-  background: #e51c23;
+  background: #db4437;
 }
 
 .header canvas {
-  background: #e51c23;
+  background: #db4437;
 }
 
 .email-view .header {
-  background: #e51c23;
+  background: #db4437;
 }
 
 input[name=q] {
-  background: #e51c23;
+  background: #db4437;
 }
 
 table {
@@ -48,7 +48,7 @@ a {
 .actionButton {
   padding: 8px;
   vertical-align: middle;
-  background: #e51c23;
+  background: #db4437;
   border: none;
   -webkit-box-shadow: none;
   box-shadown: none;
@@ -207,7 +207,7 @@ select[name=pri], select[name=status] {
 }
 
 ul.swipeAltHeader {
-  background: #e51c23;
+  background: #db4437;
   box-shadow: 0 1px 1px rgba(0,0,0,.25);
   color: white;
   height: 48px;
@@ -237,7 +237,7 @@ ul.swipeAltHeader {
 }
 
 .email-view .header {
-  background: #e51c23;
+  background: #db4437;
   position: fixed;
   width: 100%;
   top: 0;
@@ -296,7 +296,7 @@ ul.swipeAltHeader {
 }
 
 .email-compose-view .header {
-  background: #e51c23;
+  background: #db4437;
   position: fixed;
   width: 100%;
   top: 0;
