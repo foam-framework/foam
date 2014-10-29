@@ -194,7 +194,6 @@ MODEL({
         this.X.docModelViewModelDAO.where(EQ(DocModelInheritanceTracker.MODEL, this.model))
             .select(modelTracker);
         this.instance_.inheritanceLevel = modelTracker[0];
-//console.log("Getting inheritanceLevel ", this.model, modelTracker[0]);
         return this.instance_.inheritanceLevel;
       }
     }
