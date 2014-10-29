@@ -189,8 +189,10 @@ MODEL({
 
       // when the hash changes set the documentViewParentModel and this.selection
       window.addEventListener('hashchange', function() {
-        if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) location.hash = 'developerDocs.Welcome';
-        
+        if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) {
+          location.hash = 'developerDocs.Welcome';
+          return;
+        }
         // don't respond if we are already at the location desired
         if (location.hash.substring(1) === this.DetailContext.documentViewRef.ref) return;
         
