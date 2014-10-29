@@ -133,11 +133,9 @@ MODEL({
 
   templates: [
     function toHTML() {/*
-      <div id="%%id">
-        <div class="search-field-container"><%=this.data.searchView.toHTML()%></div>
-        <div class="list-container">
-          <div><%=this.data.filteredDAOView.toHTML()%></div>
-        </div>
+      <div class="search-field-container"><%=this.data.searchView.toHTML()%></div>
+      <div class="list-container">
+        <div><%=this.data.filteredDAOView.toHTML()%></div>
       </div>
     */}
   ]
