@@ -448,11 +448,9 @@ MODEL({
 
       div.model-info-block {
         padding: 1em;
-        background-color: #eeeeee;
-        margin: 1em;
-        border-radius: 1em;
-        box-shadow: 0px 5px 5px #888888;
-      
+        margin: 1em 0 1em 0;
+        border-top: 0.1em solid black;
+        border-bottom: 0.1em solid black;
       }
       div.model-info-block p.note {
         font-size:105%;

@@ -439,7 +439,7 @@ MODEL({
 
   documentation: function() {/*
     <p>A $$DOC{ref:'Method'} represents a callable piece of code with
-    $$DOC{ref:'args',text:'arguments'} and an optional return value.
+    $$DOC{ref:'.args',text:'arguments'} and an optional return value.
     </p>
     <p>$$DOC{ref:'Method',usePlural:true} contain code that runs in the instance's scope, so code
     in your $$DOC{ref:'Method'} has access to the other $$DOC{ref:'Property',usePlural:true} and
