@@ -359,7 +359,7 @@ MODEL({
         flex-direction: column;
         
         flex-shrink: 1;
-        flex-basis: 2000;
+        flex-basis: 10000px;
       }
       .outer-flex-container {
         display: flex;
