@@ -57,6 +57,10 @@ MODEL({
 
   extendsModel: 'View',
 
+  requires: [
+    'GMailUserInfo'
+  ],
+
   properties: [
     {
       name: 'controller',
@@ -113,9 +117,21 @@ MODEL({
     },
     {
       // TODO: Populate this somehow
-      name: 'email',
-      description: 'Email address of current user.',
-      defaultValue: 'me@somewhere.com'
+      name: 'profile',
+      description: 'Profile information of current user.',
+      factory: function() {
+        var xhr = this.X.XHR.create({ responseType: 'json' });
+        aseq(
+          function(ret) {
+            xhr.asend(ret, 'https://www.googleapis.com/oauth2/v1/userinfo');
+          }
+        )(function(resp) {
+          var user = this.GMailUserInfo.create();
+          user.fromJSON(resp);
+          this.profile = user;
+        }.bind(this));
+        return '';
+      }
     }
   ],
 
@@ -130,6 +146,8 @@ MODEL({
         clientId: "945476427475-oaso9hq95r8lnbp2rruo888rl3hmfuf8.apps.googleusercontent.com",
         clientSecret: "GTkp929u268_SXAiHitESs-1",
         scopes: [
+          "https://www.googleapis.com/auth/userinfo.profile",
+          "https://www.googleapis.com/auth/userinfo.email",
           "https://mail.google.com/"
         ]
       });
@@ -251,6 +269,19 @@ MODEL({
       }
     }
   ]
+});
+
+
+MODEL({
+  name: 'GMailUserInfo',
+  properties: ['email', 'name', 'avatarUrl'],
+  methods: {
+    fromJSON: function(obj) {
+      this.email = obj.email;
+      this.name = obj.name;
+      this.avatarUrl = obj.picture + '?sz=50';
+    }
+  }
 });
 
 
@@ -426,6 +457,7 @@ MODEL({
   name: 'MenuView',
   extendsModel: 'View',
   traits: ['PositionedDOMViewTrait'],
+  imports: ['mgmail'],
   properties: [
     {
       name: 'topSystemLabelView',
@@ -438,12 +470,17 @@ MODEL({
     },
     {
       name: 'preferredWidth',
-      defaultValue: 200
+      defaultValue: 280
     }
   ],
   templates: [
     function toInnerHTML() {/*
       <div class="menuView">
+        <div class="menuHeader">
+          <%= this.X.ImageView.create({ data: this.mgmail.profile.avatarUrl }) %><br>
+          <%= this.X.TextFieldView.create({ mode: 'read-only', extraClassName: 'name', data: this.mgmail.profile.name }) %><br>
+          <%= this.X.TextFieldView.create({ mode: 'read-only', extraClassName: 'email', data: this.mgmail.profile.email }) %>
+        </div>
         %%topSystemLabelView
         <hr>
         %%bottomSystemLabelView
@@ -465,9 +502,26 @@ MODEL({
         background: white;
       }
 
-      .menuView div:hover {
-        background-color: #e51c23;
+      .menuHeader {
+        background: #db4437;
         color: white;
+        padding: 10px 0 8px 15px;
+      }
+      .menuHeader:hover {
+        background: #db4437 !important;
+      }
+
+      .menuHeader img {
+        border-radius: 50%;
+        margin-bottom: 15px;
+      }
+
+      .menuHeader .name {
+        font-weight: bold;
+      }
+
+      .menuView div:hover {
+        background: #e0e0e0;
       }
    */}
   ]
