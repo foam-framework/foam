@@ -292,6 +292,14 @@ MODEL({
 
         background-color: #e0e0e0;
         position: relative;
+        
+      }
+
+      .outermost {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
       }
 
       .docbrowser-header {
@@ -299,6 +307,7 @@ MODEL({
         position: relative;
         color: #fff;
         z-index: 1;
+        flex-shrink: 0;
       }
 
       .docbrowser-header-inner {
@@ -306,15 +315,18 @@ MODEL({
         position: absolute;
         height: 120px;
         width: 100%;
+        flex-shrink: 0;
       }
 
       .docbrowser-header-flex-container {
         display: flex;
+        flex-shrink: 0;
         justify-content: space-around;
         margin: 0 50px;
       }
       .docbrowser-header-contents {
         flex-grow: 1;
+        flex-shrink: 0;
         max-width: 1280px;
 
         display: flex;
@@ -343,19 +355,28 @@ MODEL({
         margin: 0 30px;
         z-index: 2;
         position: relative;
+        display:flex;
+        flex-direction: column;
+        
+        flex-shrink: 1;
+        flex-basis: 2000;
       }
       .outer-flex-container {
         display: flex;
+        flex-direction: column;
         justify-content: space-around;
         margin-bottom: 60px;
         width: 100%;
-        height: 83%;
+        flex-grow: 1;
+ //       height: 83%;
       }
       .inner-container {
         background-color: #fff;
         border: 1px solid #888;
         border-radius: 12px;
-        flex-grow: 1;
+        flex-grow: 1000;
+        flex-shrink: 1;
+        flex-basis: 1px;
         max-width: 1280px;
         padding: 15px;
         box-shadow: 0px 5px 5px #888888;
@@ -465,7 +486,7 @@ MODEL({
       }
     */},
     function toHTML() {/*
-      <div id="<%= this.id %>">
+      <div class="outermost" id="<%= this.id %>">
         <div class="docbrowser-header">
           <div class="docbrowser-header-inner">
             <div class="docbrowser-header-flex-container">
