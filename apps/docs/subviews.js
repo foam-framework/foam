@@ -286,7 +286,7 @@ MODEL({
           element = $("scrollTarget_"+feature.name)
           if (element) element.scrollIntoView(true);
         } else {
-          this.$.scrollIntoView(true);
+          if (this.$) this.$.scrollIntoView(true);
         }
       }
     },

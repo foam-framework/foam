@@ -206,7 +206,6 @@ MODEL({
       // initialization from hash
       if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) location.hash = 'developerDocs.Welcome';
       this.DetailContext.documentViewRef.ref = location.hash.substring(1);
-      console.log("ref init", this.DetailContext.documentViewRef);
       if (this.DetailContext.documentViewRef.valid) {
         this.DetailContext.documentViewParentModel.set(
              this.DetailContext.documentViewRef.resolvedModelChain[0]);
