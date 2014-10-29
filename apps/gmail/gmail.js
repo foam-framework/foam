@@ -51,107 +51,6 @@ queryParser.expr = alt(
 
 
 MODEL({
-  name: 'MenuView',
-
-  extendsModel: 'DetailView',
-
-  properties: [
-    { name: 'preferredWidth', defaultValue: 304 },
-    { name: 'className',      defaultValue: 'menu-view' },
-  ],
-
-  templates: [
-    function CSS() {/*
-      .menu-view {
-        margin: 0;
-        padding: 0;
-        box-shadow: 1px 0 1px rgba(0,0,0,.1);
-        font-size: 14px;
-        font-weight: 500;
-        background: white;
-        display: flex;
-        display: -webkit-flex;
-        flex-direction: column;
-        height: 100%;
-      }
-
-      .menu-view .header {
-        width: 100%;
-        height: 172px;
-        margin-bottom: 0;
-        background-image: url('images/projectBackground.png');
-      }
-
-      .menu-view {
-        display: flex;
-        display: -webkit-flex;
-        flex-direction: column;
-        height: 100%;
-        background: white;
-      }
-
-      .menu-view span[name=email] {
-        color: white;
-        display: block;
-        margin-top: 40;
-        padding-left: 16px;
-        font-weight: 500;
-        font-size: 16px;
-      }
-
-      .menu-view .projectList {
-        flex: 1;
-        -webkit-flex: 1;
-        overflow-y: auto;
-        padding: 8px 0;
-      }
-
-      .menu-view .monogram-string-view {
-        width: 64px;
-        height: 64px;
-        border-radius: 32px;
-        margin: 16px;
-      }
-
-      .project-citation {
-        margin-top: 0;
-        height: 48px;
-      }
-
-      .project-citation img {
-        margin-right: 0;
-        width: 24px;
-        height: 24px;
-        margin: 12px 16px;
-        vertical-align: middle;
-      }
-
-      .project-citation .project-name {
-        color: rgba(0,0,0,.8);
-        font-size: 14px;
-        margin-left: 16px;
-        vertical-align: middle;
-      }
-
-      .project-citation .project-name.selected {
-        color: #e51c23;
-      }
-    */},
-    function toInnerHTML() {/*
-      <div class="header">
-        $$email{model_: 'MDMonogramStringView'}
-        $$email{mode: 'display-only'}
-        <br><br>
-      </div>
-      <div class="folderList">
-      </div>
-    </div>
-    */}
-  ]
-});
-
-
-MODEL({
   name: 'MGmail',
   description: 'Mobile Gmail',
   traits: ['PositionedDOMViewTrait'],
@@ -194,8 +93,8 @@ MODEL({
       type: 'DAO',
       factory: function() {
         return this.X.CachingDAO.create({
-          src: this.X.GMailRestDAO.create({ model: GMailLabel }),
-          cache: this.X.MDAO.create({ model: GMailLabel }),
+          src: this.X.GMailRestDAO.create({ model: FOAMGMailLabel, modelName: 'labels' }),
+          cache: this.X.MDAO.create({ model: FOAMGMailLabel }),
         });
       }
     },
@@ -279,7 +178,8 @@ MODEL({
           return this.X.MenuView.create({
             topSystemLabelView: this.X.DAOListView.create({
               dao: this.X.mgmail.labelDao
-                  .where(EQ(GMailLabel.TYPE, 'system'))
+                  //.where(EQ(FOAMGMailLabel.TYPE, 'system'))
+                  .where(EQ(FOAMGMailLabel.getProperty('type'), 'system'))
                   .orderBy(
                     toTop('INBOX'),
                     toTop('STARRED'),
@@ -290,25 +190,25 @@ MODEL({
             }),
             bottomSystemLabelView: this.X.DAOListView.create({
               dao: this.X.mgmail.labelDao
-                  .where(AND(EQ(GMailLabel.TYPE, 'system'),
-                             NEQ(GMailLabel.ID, 'INBOX'),
-                             NEQ(GMailLabel.ID, 'STARRED'),
-                             NEQ(GMailLabel.ID, 'UNREAD'),
-                             NEQ(GMailLabel.ID, 'DRAFT')))
+                  .where(AND(EQ(FOAMGMailLabel.getProperty('type'), 'system'),
+                             NEQ(FOAMGMailLabel.ID, 'INBOX'),
+                             NEQ(FOAMGMailLabel.ID, 'STARRED'),
+                             NEQ(FOAMGMailLabel.ID, 'UNREAD'),
+                             NEQ(FOAMGMailLabel.ID, 'DRAFT')))
                   .orderBy(toTop('SENT'),
                            toTop('SPAM'),
                            toTop('TRASH')),
               rowView: 'MenuLabelCitationView',
             }),
             userLabelView: this.X.DAOListView.create({
-              dao: this.X.mgmail.labelDao.where(NEQ(GMailLabel.TYPE, 'system')).orderBy(GMailLabel.NAME),
+              dao: this.X.mgmail.labelDao.where(NEQ(FOAMGMailLabel.getProperty('type'), 'system')).orderBy(FOAMGMailLabel.NAME),
               rowView: 'MenuLabelCitationView',
             }),
           });
         }
       });
       var self = this;
-      this.labelDao.where(EQ(GMailLabel.ID, 'INBOX')).select({
+      this.labelDao.where(EQ(FOAMGMailLabel.ID, 'INBOX')).select({
         put: function(inbox) {
           self.changeLabel(inbox);
         }
@@ -545,11 +445,16 @@ MODEL({
     function toInnerHTML() {/*
       <div class="menuView">
         %%topSystemLabelView
-        <br>
-        <div id="<%= this.on('click', function() { this.X.mgmail.changeLabel(); }) %>">All Mail</div>
-        %%userLabelView
-        <br>
+        <hr>
         %%bottomSystemLabelView
+        <hr>
+        <%= MenuLabelCitationView.create({
+          data: this.X.FOAMGMailLabel.create({
+            id: 'All Mail',
+            name: 'All Mail'
+          })
+        }) %>
+        %%userLabelView
       </div>
     */},
     function CSS() {/*
@@ -573,10 +478,18 @@ MODEL({
   name: 'MenuLabelCitationView',
   extendsModel: 'DetailView',
   templates: [
+    function CSS() {/*
+      .label-row {
+        height: 35px;
+        line-height: 35px;
+        padding-left: 15px;
+      }
+    */},
     function toHTML() {/*
-      <div id="<%= this.on('click', function() { this.X.mgmail.changeLabel(this.data); }) %>">$$name{mode: 'read-only'}</div>
+      <div id="%%id" class="label-row">$$name{mode: 'read-only'}</div>
+      <% this.on('click', function() { this.X.mgmail.changeLabel(this.data); }, this.id); %>
     */}
-   ]
+  ]
 });
 
 
