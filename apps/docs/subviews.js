@@ -241,7 +241,12 @@ MODEL({
   listeners: {
     onRefChange: function() {
       if (this.data.valid) {
-        this.sourceModel = this.data.resolvedModelChain[0]
+        if (this.sourceModel !== this.data.resolvedModelChain[0]) {
+          this.sourceModel = this.data.resolvedModelChain[0];
+        } else {
+          // even without a model change, we might have a feature change to scroll to
+          this.scrollToFeature();
+        }
       } else {
         this.sourceModel = undefined;
       }
@@ -259,26 +264,24 @@ MODEL({
           //this.X.MDAO.create({model:this.X.DocModelInheritanceTracker, autoIndex:true});
 
       this.SUPER();
-
-      // we had a source set before we were inited
-      if (this.sourceModel) {
-        this.processModelChange();
-      }
     },
 
     processModelChange: function() {
       this.generateFeatureDAO();
       this.updateHTML();
-
     },
 
     initInnerHTML: function(SUPER) {
       /* If a feature is present in the this.X.documentViewRef $$DOC{ref:'DocRef'},
         scroll to that location on the page. Otherwise scroll to the top. */
       SUPER();
+      
+      this.scrollToFeature();
+    },
 
-      if (this.X.documentViewRef && this.X.documentViewRef.valid) {
-        var feature = this.X.documentViewRef.resolvedModelChain[1];
+    scrollToFeature: function() {
+      if (this.data && this.data.valid) {
+        var feature = this.data.resolvedModelChain[1];
         if (feature && feature.name) {
           element = $("scrollTarget_"+feature.name)
           if (element) element.scrollIntoView(true);
