@@ -15,34 +15,25 @@
  * limitations under the License.
  */
 
-var Person = FOAM({
-  model_: 'Model',
-
+MODEL({
   name: 'Person',
-
-  properties: [
-    { name: 'name' }
-  ]
+  properties: [ 'name' ]
 });
 
-var PersonView = FOAM({
-  model_: 'Model',
+MODEL({
+  name: 'PersonView',
 
   extendsModel: 'DetailView',
 
   templates: [
     {
       name: 'toHTML',
-      template: '<span id="<%= this.id %>">Hello ' +
-        '<% var v = this.createView(Person.NAME); v.mode = "read-only"; %>' +
-        '<%= v.toHTML() %></span>'
-    }
+      template: '<span>Hello $$name{mode: "read-only"}</span>'
+   }
   ]
 });
 
 var value = Person.create({ name: 'Adam' });
-var view = PersonView.create({ model: Person });
+var view  = PersonView.create({ model: Person, data: value });
 
-document.body.innerHTML = view.toHTML();
-view.value.set(value);
-view.initHTML();
+view.write(document);
