@@ -110,8 +110,8 @@ var FObject = {
       // if ( ! this.instance_[prop.name] ) this[prop.name] = prop.factory.call(this);
       if ( ! this.hasOwnProperty(prop.name) ) this[prop.name] = prop.factory.call(this);
 
-      if ( this.exportKey )      this.X[this.exportKey]      = this[prop.name];
-      if ( this.exportValueKey ) this.X[this.exportValueKey] = this[prop.name + '$'];
+      if ( prop.exportKey )      this.X[this.exportKey]      = this[prop.name];
+      if ( prop.exportValueKey ) this.X[this.exportValueKey] = this[prop.name + '$'];
     }
 
 
