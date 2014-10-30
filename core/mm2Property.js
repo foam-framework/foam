@@ -147,6 +147,14 @@ var Property = {
          */}
     },
     {
+      name: 'protobufType',
+      type: 'String',
+      required: false,
+      help: 'The protobuf type that represents the type of this property.',
+      defaultValueFn: function() { return this.type.toLowerCase(); },
+      documentation: function() {/* When generating protobuf definitions, specifies the type to use for the field this represents. */}
+    },
+    {
       name: 'javaType',
       type: 'String',
       required: false,
