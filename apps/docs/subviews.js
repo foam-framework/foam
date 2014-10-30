@@ -223,7 +223,16 @@ MODEL({
       help: 'The reference for which to display documentation.',
       documentation: "The reference to the $$DOC{ref:'Model'} for which to display $$DOC{ref:'Documentation'}.",
       postSet: function() {
-        this.data.addListener(this.onRefChange);
+        if (this.data.valid) {
+          if (this.sourceModel !== this.data.resolvedModelChain[0]) {
+            this.sourceModel = this.data.resolvedModelChain[0];
+          } else {
+            // even without a model change, we might have a feature change to scroll to
+            this.scrollToFeature();
+          }
+        } else {
+          this.sourceModel = undefined;
+        }
       }
     },
     {
@@ -238,20 +247,6 @@ MODEL({
 
   ],
 
-  listeners: {
-    onRefChange: function() {
-      if (this.data.valid) {
-        if (this.sourceModel !== this.data.resolvedModelChain[0]) {
-          this.sourceModel = this.data.resolvedModelChain[0];
-        } else {
-          // even without a model change, we might have a feature change to scroll to
-          this.scrollToFeature();
-        }
-      } else {
-        this.sourceModel = undefined;
-      }
-    }
-  },
 
   methods: {
 
