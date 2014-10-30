@@ -131,7 +131,7 @@ var BootstrapModel = {
     // Install a custom constructor so that Objects are named properly
     // in the JS memory profiler.
     // Doesn't work for Model because of some Bootstrap ordering issues.
-    if ( this.name !== 'Model' ) {
+    if ( this.name !== 'Model' && ! ( window.chrome && chrome.runtime && chrome.runtime.id ) ) {
       var s = '(function() { var XXX = function() { }; XXX.prototype = this; return function() { return new XXX(); }; })'.replace(/XXX/g, this.name);
       try { cls.create_ = eval(s).call(cls); } catch (e) { }
     }
