@@ -736,6 +736,7 @@ MODEL({
   name: 'GestureTarget',
   help: 'Created by each view that wants to receive gestures.',
   properties: [
+    { name: 'id' },
     {
       name: 'gesture',
       help: 'The name of the gesture to be tracked.'
@@ -758,32 +759,49 @@ MODEL({
 
 MODEL({
   name: 'GestureManager',
+  requires: [
+    'DragGesture',
+    'PinchTwistGesture',
+    'ScrollGesture',
+    'TapGesture',
+    'GestureTarget',
+    'EasyDAO'
+  ],
+  imports: [
+    'document',
+    'touchManager'
+  ],
   properties: [
     {
       name: 'gestures',
       factory: function() {
         return {
-          verticalScroll: ScrollGesture.create(),
-          verticalScrollMomentum: ScrollGesture.create({ momentumEnabled: true }),
-          verticalScrollNative: ScrollGesture.create({ nativeScrolling: true }),
-          horizontalScroll: ScrollGesture.create({ direction: 'horizontal' }),
-          horizontalScrollMomentum: ScrollGesture.create({ direction: 'horizontal', momentumEnabled: true }),
-          horizontalScrollNative: ScrollGesture.create({ direction: 'horizontal', nativeScrolling: true }),
-          tap: TapGesture.create(),
-          drag: DragGesture.create(),
-          pinchTwist: PinchTwistGesture.create()
+          verticalScroll: this.ScrollGesture.create(),
+          verticalScrollMomentum: this.ScrollGesture.create({ momentumEnabled: true }),
+          verticalScrollNative: this.ScrollGesture.create({ nativeScrolling: true }),
+          horizontalScroll: this.ScrollGesture.create({ direction: 'horizontal' }),
+          horizontalScrollMomentum: this.ScrollGesture.create({ direction: 'horizontal', momentumEnabled: true }),
+          horizontalScrollNative: this.ScrollGesture.create({ direction: 'horizontal', nativeScrolling: true }),
+          tap: this.TapGesture.create(),
+          drag: this.DragGesture.create(),
+          pinchTwist: this.PinchTwistGesture.create()
         };
       }
     },
     {
       name: 'targets',
-      help: 'GestureTargets that are waiting for gestures',
-      factory: function() { return []; }
-    },
-    {
-      name: 'targetsByID',
-      documentation: 'All gesture targets stored by the ID of their containing DOM element.',
-      factory: function() { return {}; }
+      documentation: 'MDAO of gesture targets, indexed by the ID of their containing DOM element.',
+      factory: function() {
+        var dao = this.EasyDAO.create({
+          model: this.GestureTarget,
+          name: 'GestureTargetDAO',
+          seqNo: true,
+          seqProperty: this.GestureTarget.ID,
+          daoType: 'MDAO'
+        });
+        dao.addIndex(this.GestureTarget.CONTAINER_ID);
+        return dao;
+      }
     },
     {
       name: 'active',
@@ -815,65 +833,59 @@ MODEL({
     init: function() {
       this.SUPER();
       // TODO: Mousewheel and mouse down/up events.
-      this.X.touchManager.subscribe(this.X.touchManager.TOUCH_START, this.onTouchStart);
-      this.X.touchManager.subscribe(this.X.touchManager.TOUCH_MOVE,  this.onTouchMove);
-      this.X.touchManager.subscribe(this.X.touchManager.TOUCH_END,   this.onTouchEnd);
-      this.X.document.addEventListener('mousedown', this.onMouseDown);
-      this.X.document.addEventListener('mousemove', this.onMouseMove);
-      this.X.document.addEventListener('mouseup', this.onMouseUp);
-      this.X.document.addEventListener('wheel', this.onWheel);
-      this.X.document.addEventListener('contextmenu', this.onContextMenu);
+      this.touchManager.subscribe(this.touchManager.TOUCH_START, this.onTouchStart);
+      this.touchManager.subscribe(this.touchManager.TOUCH_MOVE,  this.onTouchMove);
+      this.touchManager.subscribe(this.touchManager.TOUCH_END,   this.onTouchEnd);
+      this.document.addEventListener('mousedown', this.onMouseDown);
+      this.document.addEventListener('mousemove', this.onMouseMove);
+      this.document.addEventListener('mouseup', this.onMouseUp);
+      this.document.addEventListener('wheel', this.onWheel);
+      this.document.addEventListener('contextmenu', this.onContextMenu);
     },
 
     install: function(target) {
-      // Check for dupes first. Nothing sophisticated, just checking if the
-      // GestureTarget is === to any already registered. There are no
-      // circumstances where double-registering an identical target is good.
-      for ( var i = 0 ; i < this.targets.length ; i++ ) {
-        if ( this.targets[i] === target ) {
-          console.warn('duplicate gesture target installation - not cleaning up?');
-          return;
-        }
-      }
-
-      this.targets.push(target);
-      if ( ! this.targetsByID[target.containerID] )
-        this.targetsByID[target.containerID] = [];
-      this.targetsByID[target.containerID].push(target);
+      if ( target.containerID )
+        this.targets.put(target);
+      else console.warn('no container ID on touch target');
     },
     uninstall: function(target) {
-      this.targets.deleteI(target);
-      if ( this.targetsByID[target.containerID] ) {
-        this.targetsByID[target.containerID].deleteI(target);
-        if ( this.targetsByID[target.containerID].length === 0 ) {
-          delete this.targetsByID[target.containerID];
-        }
-      }
+      this.targets.remove(target);
     },
 
-    debug_tag: function() {
-      this.targets.forEach(function(x) { x.seen = true; });
-    },
-    debug_sweep: function() {
-      this.targets.forEach(function(x) { if ( x.seen ) { console.log(x); } });
+    purge: function() {
+      // Run through the targets DAO looking for any that don't exist on the DOM.
+      var arr = [];
+      this.targets.select(arr);
+      var count = 0;
+      for ( var i = 0 ; i < arr.length ; i++ ) {
+        if ( ! this.document.getElementById(arr[i].containerID) ) {
+          this.targets.remove(arr[i]);
+          count++;
+        }
+      }
+      console.log('Purged ' + count + ' targets');
+      return count;
     },
 
     // Only allows gestures that match the optional predicate.
     // If it is not set, any gesture will match.
     activateContainingGestures: function(x, y, opt_predicate) {
       // Start at the innermost element and work our way up,
-      // checking against targetsByID. We go all the way up
+      // checking against targets. We go all the way up
       // to the document, since we want every relevant handler.
       var e = this.X.document.elementFromPoint(x, y);
       while ( e ) {
-        if ( e.id && this.targetsByID[e.id] ) {
-          var ts = this.targetsByID[e.id];
-          for ( var i = 0 ; i < ts.length ; i++ ) {
-            var t = ts[i];
-            var g = this.gestures[t.gesture];
-            if ( g && ( ! opt_predicate || opt_predicate(g) ) ) {
-              if ( ! this.active[g.name] ) this.active[g.name] = [];
-              this.active[g.name].push(t);
+        if ( e.id ) {
+          var sink = [];
+          this.targets.where(EQ(this.GestureTarget.CONTAINER_ID, e.id)).select(sink);
+          if ( sink.length ) {
+            for ( var i = 0 ; i < sink.length ; i++ ) {
+              var t = sink[i];
+              var g = this.gestures[t.gesture];
+              if ( g && ( ! opt_predicate || opt_predicate(g) ) ) {
+                if ( ! this.active[g.name] ) this.active[g.name] = [];
+                this.active[g.name].push(t);
+              }
             }
           }
         }

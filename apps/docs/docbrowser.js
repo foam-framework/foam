@@ -133,11 +133,9 @@ MODEL({
 
   templates: [
     function toHTML() {/*
-      <div id="%%id">
-        <div class="search-field-container"><%=this.data.searchView.toHTML()%></div>
-        <div class="list-container">
-          <div><%=this.data.filteredDAOView.toHTML()%></div>
-        </div>
+      <div class="search-field-container"><%=this.data.searchView.toHTML()%></div>
+      <div class="list-container">
+        <div><%=this.data.filteredDAOView.toHTML()%></div>
       </div>
     */}
   ]
@@ -189,8 +187,10 @@ MODEL({
 
       // when the hash changes set the documentViewParentModel and this.selection
       window.addEventListener('hashchange', function() {
-        if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) location.hash = 'developerDocs.Welcome';
-        
+        if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) {
+          location.hash = 'developerDocs.Welcome';
+          return;
+        }
         // don't respond if we are already at the location desired
         if (location.hash.substring(1) === this.DetailContext.documentViewRef.ref) return;
         
@@ -206,7 +206,6 @@ MODEL({
       // initialization from hash
       if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) location.hash = 'developerDocs.Welcome';
       this.DetailContext.documentViewRef.ref = location.hash.substring(1);
-      console.log("ref init", this.DetailContext.documentViewRef);
       if (this.DetailContext.documentViewRef.valid) {
         this.DetailContext.documentViewParentModel.set(
              this.DetailContext.documentViewRef.resolvedModelChain[0]);
@@ -292,6 +291,14 @@ MODEL({
 
         background-color: #e0e0e0;
         position: relative;
+        
+      }
+
+      .outermost {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
       }
 
       .docbrowser-header {
@@ -299,6 +306,7 @@ MODEL({
         position: relative;
         color: #fff;
         z-index: 1;
+        flex-shrink: 0;
       }
 
       .docbrowser-header-inner {
@@ -306,15 +314,18 @@ MODEL({
         position: absolute;
         height: 120px;
         width: 100%;
+        flex-shrink: 0;
       }
 
       .docbrowser-header-flex-container {
         display: flex;
+        flex-shrink: 0;
         justify-content: space-around;
         margin: 0 50px;
       }
       .docbrowser-header-contents {
         flex-grow: 1;
+        flex-shrink: 0;
         max-width: 1280px;
 
         display: flex;
@@ -343,19 +354,28 @@ MODEL({
         margin: 0 30px;
         z-index: 2;
         position: relative;
+        display:flex;
+        flex-direction: column;
+        
+        flex-shrink: 1;
+        flex-basis: 10000px;
       }
       .outer-flex-container {
         display: flex;
+        flex-direction: column;
         justify-content: space-around;
         margin-bottom: 60px;
         width: 100%;
-        height: 83%;
+        flex-grow: 1;
+ //       height: 83%;
       }
       .inner-container {
         background-color: #fff;
         border: 1px solid #888;
         border-radius: 12px;
-        flex-grow: 1;
+        flex-grow: 1000;
+        flex-shrink: 1;
+        flex-basis: 1px;
         max-width: 1280px;
         padding: 15px;
         box-shadow: 0px 5px 5px #888888;
@@ -399,6 +419,7 @@ MODEL({
       
       div.search-field-container {
         flex-grow: 0;
+        flex-shrink: 0;
         order: 1;
       }
       
@@ -446,11 +467,9 @@ MODEL({
 
       div.model-info-block {
         padding: 1em;
-        background-color: #eeeeee;
-        margin: 1em;
-        border-radius: 1em;
-        box-shadow: 0px 5px 5px #888888;
-      
+        margin: 1em 0 1em 0;
+        border-top: 0.1em solid black;
+        border-bottom: 0.1em solid black;
       }
       div.model-info-block p.note {
         font-size:105%;
@@ -466,7 +485,7 @@ MODEL({
       }
     */},
     function toHTML() {/*
-      <div id="<%= this.id %>">
+      <div class="outermost" id="<%= this.id %>">
         <div class="docbrowser-header">
           <div class="docbrowser-header-inner">
             <div class="docbrowser-header-flex-container">

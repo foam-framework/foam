@@ -46,6 +46,7 @@ window.onload = function() {
     arequire('GMailDraft'),
     arequire('GMailHistory'),
     arequire('GMailLabel'),
+    arequire('FOAMGMailLabel'),
     arequire('GMailMessage'),
     arequire('GMailThread'),
     arequire('EMailView'),

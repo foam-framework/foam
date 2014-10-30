@@ -49,6 +49,9 @@ MODEL({
     { model_: 'BooleanProperty', name: 'sliderOpen', defaultValue: false },
     'slideLatch'
   ],
+  constants: {
+    EASE_ACCELERATION: 0.9
+  },
   methods: {
     init: function() {
       this.SUPER();
@@ -104,7 +107,7 @@ MODEL({
         self.slideLatch = Movement.animate(
           300,
           function() { self.overlaySlider.slideAmount = 1 },
-          undefined,
+          Movement.easeOut(self.EASE_ACCELERATION),
           function() {
             self.slideLatch = '';
           })();
@@ -156,7 +159,7 @@ MODEL({
           this.slideLatch = Movement.animate(
             300,
             function() { self.overlaySlider.slideAmount = 0; },
-            undefined,
+            Movement.easeIn(this.EASE_ACCELERATION),
             function() {
               self.slideLatch = '';
               self.overlaySlider.view = '';

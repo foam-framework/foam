@@ -406,12 +406,12 @@ var BootstrapModel = {
         cls.__defineSetter__('id', function(val) { this[primaryKey[0]] = val; });
       } else if (primaryKey.length > 1) {
         cls.__defineGetter__('id', function() {
-          return primaryKey.map(function(key) { return this[key]; }); });
+          return primaryKey.map(function(key) { return this[key]; }.bind(this)); });
         cls.__defineSetter__('id', function(val) {
-          primaryKey.map(function(key, i) { this[key] = val[i]; }); });
+          primaryKey.map(function(key, i) { this[key] = val[i]; }.bind(this)); });
       }
     }
-
+    
     return cls;
   },
 

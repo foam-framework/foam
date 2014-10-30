@@ -241,7 +241,12 @@ MODEL({
   listeners: {
     onRefChange: function() {
       if (this.data.valid) {
-        this.sourceModel = this.data.resolvedModelChain[0]
+        if (this.sourceModel !== this.data.resolvedModelChain[0]) {
+          this.sourceModel = this.data.resolvedModelChain[0];
+        } else {
+          // even without a model change, we might have a feature change to scroll to
+          this.scrollToFeature();
+        }
       } else {
         this.sourceModel = undefined;
       }
@@ -253,35 +258,35 @@ MODEL({
     init: function() {
       this.X = this.X.sub();
       // we want our own copy of these, since an enclosing view might have put its own copies in X
-      this.X.docModelViewFeatureDAO = [].dao; // this.X.MDAO.create({model:DocFeatureInheritanceTracker});
-      this.X.docModelViewModelDAO = [].dao; // this.X.MDAO.create({model:DocModelInheritanceTracker});
+      this.X.docModelViewFeatureDAO = [].dao;
+         //this.X.MDAO.create({model:this.X.DocFeatureInheritanceTracker, autoIndex:true});
+      this.X.docModelViewModelDAO = [].dao; 
+          //this.X.MDAO.create({model:this.X.DocModelInheritanceTracker, autoIndex:true});
 
       this.SUPER();
-
-      // we had a source set before we were inited
-      if (this.sourceModel) {
-        this.processModelChange();
-      }
     },
 
     processModelChange: function() {
       this.generateFeatureDAO();
       this.updateHTML();
-
     },
 
     initInnerHTML: function(SUPER) {
       /* If a feature is present in the this.X.documentViewRef $$DOC{ref:'DocRef'},
         scroll to that location on the page. Otherwise scroll to the top. */
       SUPER();
+      
+      this.scrollToFeature();
+    },
 
-      if (this.X.documentViewRef && this.X.documentViewRef.valid) {
-        var feature = this.X.documentViewRef.resolvedModelChain[1];
+    scrollToFeature: function() {
+      if (this.data && this.data.valid) {
+        var feature = this.data.resolvedModelChain[1];
         if (feature && feature.name) {
           element = $("scrollTarget_"+feature.name)
           if (element) element.scrollIntoView(true);
         } else {
-          this.$.scrollIntoView(true);
+          if (this.$) this.$.scrollIntoView(true);
         }
       }
     },
@@ -309,12 +314,11 @@ MODEL({
         </p>
         */
       var self = this;
-
       var newModelTr = this.X.DocModelInheritanceTracker.create();
       newModelTr.model = model.id;
 
       model.getAllMyFeatures().forEach(function(feature) {
-
+ 
         // all features we hit are declared (or overridden) in this model
         var featTr = self.X.DocFeatureInheritanceTracker.create({
               isDeclared:true,
@@ -359,8 +363,15 @@ MODEL({
     debugLogFeatureDAO: function() {
       /* For debugging purposes, prints out the state of the FeatureDAO. */
 
+      var features = [];
       console.log("Features DAO: ", this.X.docModelViewFeatureDAO);
+      this.X.docModelViewFeatureDAO.select(features);
+      console.log(features);
+
+      var modelss = [];
       console.log("Model    DAO: ", this.X.docModelViewModelDAO);
+      this.X.docModelViewModelDAO.select(modelss);
+      console.log(modelss);
     }
 
   },
