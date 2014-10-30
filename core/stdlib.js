@@ -15,118 +15,76 @@
  * limitations under the License.
  */
 
-var DEBUG = false;
-
-var DEBUG_STACK = DEBUG ?
-  function() { return new Error().stack; } :
-  function() { return 'Set DEBUG = true in stdlib.js for stacktrace.'; } ;
-
-var GLOBAL = GLOBAL || this;
-
-/** Create a memoized version of a function. **/
-function memoize(f) {
-  var cache = {};
-
-  return function() {
-    var key = argsToArray(arguments).toString();
-    if ( ! cache.hasOwnProperty(key) ) {
-      cache[key] = f.apply(this, arguments);
+var __features__ = [
+  // First Axiom is used to Boot the remaining Axioms
+  [ '__features__', function(__features__) {
+    var __roles__ = { Role$: function(c, r, f) { __roles__[f.name] = f; } };
+    function Let$(c, r, f) { c[r] = f; }
+    function lookup(key) {
+      if ( ! key ) return this;
+      if ( ! ( typeof key === 'string' ) ) return key;
+      
+      var path = key.split('.');
+      var root = this
+      for ( var i = 0 ; i < path.length ; i++ ) root = root[path[i]];
+      
+      return root;
     }
-    return cache[key];
-  };
-}
-
-
-if ( ! String.prototype.startsWith ) {
-  // This implementation is very slow for some reason
-  String.prototype.startsWith = function (a) { return 0 == this.lastIndexOf(a, 0); };
-  /*
-    But this one isn't any faster.
-  String.prototype.startsWith = function (a) {
-    if ( a.length > this.length ) return false;
-    var l = a.length;
-    for ( var i = 0 ; i < l ; i++ ) if ( this.charCodeAt(i) !== a.charCodeAt(i) ) return false;
-    return true;
-  };
-  */
-}
-
-if ( ! String.prototype.startsWithIC ) {
-  String.prototype.startsWithIC = function(a) {
-    if ( a.length > this.length ) return false;
-    var l = a.length;
-    for ( var i = 0 ; i < l; i++ ) {
-      if ( this[i].toUpperCase() !== a[i].toUpperCase() ) return false;
+    
+    for ( var i = 1 ; i < __features__.length ; i++ ) {
+      var a = __features__[i], c = lookup(a[0]), r = a[1], f = a[2];
+      
+      console.log('Feature: ', r, f.name || f);
+      (__roles__[r] || Let$)(c, r, f);
     }
-    return true;
-  };
-}
-
-String.prototype.indexOfIC = function(a) {
-  if ( a.length > this.length ) return -1;
-  return this.toUpperCase().indexOf(a.toUpperCase());
-};
-
-String.prototype.equals = function(other) {
-  return this.compareTo(other) === 0;
-};
-
-String.prototype.equalsIC = function(other) {
-  return other && this.toUpperCase() === other.toUpperCase();
-};
-
-String.prototype.capitalize = function() {
-  return this.charAt(0).toUpperCase() + this.slice(1);
-};
-
-String.prototype.labelize = function() {
-  return this.replace(/[a-z][A-Z]/g, function (a) {
-    return a.charAt(0) + ' ' + a.charAt(1);
-  }).capitalize();
-};
-
-// switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
-String.prototype.constantize = function() {
-  // special-case X to avoid conflicts with the Context
-  if ( this == 'x' ) return 'X_';
-  // TODO: add property to specify constantization. For now catch special case to avoid conflict with context this.X.
-  return this === "x"? "X_" : this.replace(/[a-z_][^a-z_]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase();
-};
-
-/** Give all objects a Unique ID. **/
-Object.defineProperty(Object.prototype, '$UID', {
-  get: (function() {
+  }],  
+  // Concept,         Role,         Individual
+  [                 , 'prototype',  this ],
+  [                 , 'GLOBAL',     this['GLOBAL'] || this ],
+  [                 , 'DEBUG',      false ],
+  [                 , 'Role$',      function Property$(c, r, f) { Object.defineProperty(c, f[0], f[1]); }],
+  [                 , 'Role$',      function Method$(c, r, f) {
+    if ( c == Object ) {
+      Object.defineProperty(Object.prototype, f.name, { value: f, writable: true });
+    } else {
+      c.prototype[f.name] = f;
+    }
+  }],
+  [                 , 'Role$',      function Poly$(c, r, f) { if ( ! c.prototype.hasOwnProperty(f.name) ) c.prototype[f.name] = f; }],
+  [ Object          , 'Property$',  ['$UID', { get: (function() {
     var id = 1;
-
+    return function() { return this.$UID__ || (this.$UID__ = id++); };
+  })()}]],
+  [                 , 'Method$',    function memoize(f) {
+    var cache = {};
     return function() {
-      return this.$UID__ || (this.$UID__ = id++);
+      var key = argsToArray(arguments).toString();
+      if ( ! cache.hasOwnProperty(key) ) cache[key] = f.apply(this, arguments);
+      return cache[key];
     };
-  })()
-});
-
-Object.defineProperty(Object.prototype, 'clone', {
-  value: function() { return this; },
-  writable: true
-});
-
-// Fallback to shallow clone() if deepClone() missing.
-Object.defineProperty(Object.prototype, 'deepClone', {
-  value: function() { return this.clone(); },
-  writable: true
-});
-
-Object.defineProperty(String.prototype, 'clone', {
-  value: function() { return this.toString(); },
-  writable: true
-});
-
-Object.defineProperty(Number.prototype, 'clone', {
-  value: function() { return +this; },
-  writable: true
-});
-
-Object.defineProperty(Object.prototype, 'become', {
-  value: function(other) {
+  }],
+  // Create a function which always returns the supplied constant value.
+  [                 , 'Method$',    function constantFn(v) { return function() { return v; }; } ],
+  [ String          , 'Method$',    function indexOfIC(a) { return ( a.length > this.length ) ? -1 : this.toUpperCase().indexOf(a.toUpperCase()); }],
+  [ String          , 'Method$',    function equals(other) { return this.compareTo(other) === 0; }],
+  [ String          , 'Method$',    function equalsIC(other) { return other && this.toUpperCase() === other.toUpperCase(); }],
+  [ String          , 'Method$',    function capitalize() { return this.charAt(0).toUpperCase() + this.slice(1); }],
+  [ String          , 'Method$',    function capitalize() { return this.charAt(0).toUpperCase() + this.slice(1); }],
+  [ String          , 'Method$',    function labelize() {
+    return this.replace(/[a-z][A-Z]/g, function (a) { return a.charAt(0) + ' ' + a.charAt(1); }).capitalize();
+  }],
+  [ String          , 'Method$',    function constantize() {
+    // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
+    // special-case X to avoid conflicts with the Context
+    if ( this == 'x' ) return 'X_';
+    // TODO: add property to specify constantization. For now catch special case to avoid conflict with context this.X.
+    return this === "x"? "X_" : this.replace(/[a-z_][^a-z_]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase();
+  }],
+  [ String          , 'Method$',    function clone() { return this.toString(); }],
+  [ Object          , 'Method$',    function clone() { return this; }],
+  [ Number          , 'Method$',    function clone() { return +this; }],
+  [ Object          , 'Method$',    function deepClone() { return this.clone(); }],
+  [ Object          , 'Method$',    function become(other) {
     var local = Object.getOwnPropertyNames(this);
     for ( var i = 0; i < local.length; i++ ) {
       delete this[local[i]];
@@ -134,98 +92,294 @@ Object.defineProperty(Object.prototype, 'become', {
 
     var remote = Object.getOwnPropertyNames(other);
     for ( i = 0; i < remote.length; i++ ) {
-      Object.defineProperty(this, remote[i],
-                            Object.getOwnPropertyDescriptor(other, remote[i]));
+      Object.defineProperty(
+        this,
+        remote[i],
+        Object.getOwnPropertyDescriptor(other, remote[i]));
     }
     this.__proto__ = other.__proto__;
-  }
-});
-
-/** Create a function which always returns the supplied constant value. **/
-function constantFn(v) { return function() { return v; }; }
-
-
-/**
- * Replace Function.bind with a version
- * which is ~10X faster for the common case
- * where you're only binding 'this'.
- **/
-Function.prototype.bind = (function() {
-  var oldBind    = Function.prototype.bind;
-  var simpleBind = function(f, self) {
-    var ret = function() { return f.apply(self, arguments); };
-    ret.toString = function() {
-      return f.toString();
+  }],
+  [                 , 'Method$', function argsToArray(args) {
+    var array = new Array(args.length);
+    for ( var i = 0; i < args.length; i++ ) array[i] = args[i];
+    return array;
+  }],
+  [                 , 'Method$', function StringComparator(s1, s2) {
+    if ( s1 == s2 ) return 0;
+    return s1 < s2 ? -1 : 1;
+  }],
+  [                 , 'Method$', function toCompare(c) {
+    if ( Array.isArray(c) ) return CompoundComparator.apply(null, c);
+    
+    return c.compare ? c.compare.bind(c) : c;
+  }],
+  [                 , 'Method$', function CompoundComparator() {
+    var args = argsToArray(arguments);
+    var cs = [];
+    
+    // Convert objects with .compare() methods to compare functions.
+    for ( var i = 0 ; i < args.length ; i++ )
+      cs[i] = toCompare(args[i]);
+    
+    var f = function(o1, o2) {
+      for ( var i = 0 ; i < cs.length ; i++ ) {
+        var r = cs[i](o1, o2);
+        if ( r != 0 ) return r;
+      }
+      return 0;
     };
-    return ret;
-  };
+    
+    f.toSQL = function() { return args.map(function(s) { return s.toSQL(); }).join(','); };
+    f.toMQL = function() { return args.map(function(s) { return s.toMQL(); }).join(' '); };
+    f.toString = f.toSQL;
+    
+    return f;
+  }],
+  [                 , 'Method$', function randomAct() {
+    var totalWeight = 0.0;
+    for ( var i = 0 ; i < arguments.length ; i += 2 ) totalWeight += arguments[i];
+    
+    var r = Math.random();
+    
+    for ( var i = 0, weight = 0 ; i < arguments.length ; i += 2 ) {
+      weight += arguments[i];
+      if ( r <= weight / totalWeight ) {
+        arguments[i+1]();
+        return;
+      }
+    }
+  }],
+  // Workaround for crbug.com/258552
+  [                 , 'Method$', function Object_forEach(obj, fn) {
+    for (var key in obj) if (obj.hasOwnProperty(key)) fn(obj[key], key);
+  }],
+  [                 , 'Method$', function predicatedSink(predicate, sink) {
+    if ( predicate === TRUE || ! sink ) return sink;
+    
+    return {
+      __proto__: sink,
+      $UID: sink.$UID,
+      put: function(obj, s, fc) {
+        if ( sink.put && ( ! obj || predicate.f(obj) ) ) sink.put(obj, s, fc);
+      },
+      remove: function(obj, s, fc) {
+        if ( sink.remove && ( ! obj || predicate.f(obj) ) ) sink.remove(obj, s, fc);
+      },
+      toString: function() { return 'PredicatedSink(' + sink.$UID + ', ' + predicate + ', ' + sink + ')';
+                             
+                           }/*,
+                              eof: function() {
+                              sink && sink.eof && sink.eof();
+                              }*/
+    };
+  }],
+  [                 , 'Method$', function limitedSink(count, sink) {
+    var i = 0;
+    return {
+      __proto__: sink,
+      put: function(obj, s, fc) {
+        if ( i++ >= count && fc ) {
+          fc.stop();
+        } else {
+          sink.put(obj, s, fc);
+        }
+      }/*,
+         eof: function() {
+         sink.eof && sink.eof();
+         }*/
+    };
+  }],
+  [                 , 'Method$', function skipSink(skip, sink) {
+    var i = 0;
+    return {
+      __proto__: sink,
+      put: function(obj, s, fc) {
+        if ( i++ >= skip ) sink.put(obj, s, fc);
+      }
+    };
+  }],
+  [                 , 'Method$', function orderedSink(comparator, sink) {
+    comparator = toCompare(comparator);
+    return {
+      __proto__: sink,
+      i: 0,
+      arr: [],
+      put: function(obj, s, fc) {
+        this.arr.push(obj);
+      },
+      eof: function() {
+        this.arr.sort(comparator);
+        this.arr.select(sink);
+      }
+    };
+  }],
+  [                 , 'Method$', function defineLazyProperty(target, name, definitionFn) {
+    Object.defineProperty(target, name, {
+      get: function() {
+        var definition = definitionFn.call(this);
+        Object.defineProperty(this, name, definition);
+        return definition.get ?
+          definition.get.call(this) :
+          definition.value;
+      },
+      configurable: true
+    });
+  }],
+  // Function for returning multi-line strings from commented functions.
+  // Ex. var str = multiline(function() { /* multi-line string here */ });
+  [                 , 'Method$', function multiline(f) {
+    var s = f.toString();
+    var start = s.indexOf('/*');
+    var end   = s.lastIndexOf('*/');
+    return s.substring(start+2, end);
+  }],
+  // Computes the XY coordinates of the given node
+  // relative to the containing elements.
+  // TODO: findViewportXY works better... but do we need to find parent?
+  [                 , 'Method$', function findPageXY(node) {
+    var x = 0;
+    var y = 0;
+    var parent;
+    
+    while ( node ) {
+      parent = node;
+      x += node.offsetLeft;
+      y += node.offsetTop;
+      node = node.offsetParent;
+    }
+    
+    return [x, y, parent];
+  }],
+  // Computes the XY coordinates of the given node
+  // relative to the viewport.
+  [                 , 'Method$', function findViewportXY(node) {
+    var rect = node.getBoundingClientRect();
+    return [rect.left, rect.top];
+  }],
+  /**
+   * Replace Function.bind with a version
+   * which is ~10X faster for the common case
+   * where you're only binding 'this'.
+   **/
+  [ Function        , 'Method$',    (function() {
+    var oldBind    = Function.prototype.bind;
+    var simpleBind = function(f, self) {
+      var ret = function() { return f.apply(self, arguments); };
+      ret.toString = function bind() {
+        return f.toString();
+      };
+      return ret;
+    };
+    
+    return function(arg) {
+      return arguments.length == 1 ?
+        simpleBind(this, arg) :
+        oldBind.apply(this, argsToArray(arguments));
+    };
+  })()],
+  [ Date            , 'Method$',    function toRelativeDateString(){
+    var seconds = Math.floor((Date.now() - this.getTime())/1000);
+    
+    if ( seconds < 60 ) return 'moments ago';
+    
+    var minutes = Math.floor((seconds)/60);
+    
+    if ( minutes == 1 ) return '1 minute ago';
+    
+    if ( minutes < 60 ) return minutes + ' minutes ago';
+    
+    var hours = Math.floor(minutes/60);
+    if ( hours == 1 ) return '1 hour ago';
+    
+    if ( hours < 24 ) return hours + ' hours ago';
+    
+    var days = Math.floor(hours / 24);
+    if ( days == 1 ) return '1 day ago';
+    
+    if ( days < 7 ) return days + ' days ago';
+    
+    if ( days < 365 ) {
+      var year = 1900+this.getYear();
+      var noyear = this.toDateString().replace(" " + year, "");
+      return noyear.substring(4);
+    }
 
-  return function(arg) {
-    return arguments.length == 1 ?
-      simpleBind(this, arg) :
-      oldBind.apply(this, argsToArray(arguments));
-  };
-})();
+    return this.toDateString().substring(4);
+  }],
+  [ Date            , 'Method$',    function compareTo(o){
+    if ( o === this ) return 0;
+    if ( ! o ) return 1;
+    var d = this.getTime() - o.getTime();
+    return d == 0 ? 0 : d > 0 ? 1 : -1;
+  }],
+  [ Date            , 'Method$',    function toMQL() {
+    return this.getFullYear() + '/' + (this.getMonth() + 1) + '/' + this.getDate();
+  }],
+  [ String          , 'Method$',    function compareTo() {
+    return ( o == this ) ? 0 : this < o ? -1 : 1;
+  }],
+  [ Number          , 'Method$',    function compareTo() {
+    return ( o == this ) ? 0 : this < o ? -1 : 1;
+  }],
+  [ Boolean         , 'Method$',    function compareTo() {
+    return (this.valueOf() ? 1 : 0) - (o ? 1 : 0);
+  }],
+  /*
+  [ String          , 'Method$',    function }],
+  [ String          , 'Method$',    function }],
+  [ String          , 'Method$',    function }],
+  [ String          , 'Method$',    function }],
+  [ String          , 'Method$',    function }],
+  [ String          , 'Method$',    function }],
+  [ String          , 'Method$',    function }],
+  [ String, 'Method$', function 
+  }],
+  [ String, 'Method$', function 
+  }],
+  [ String, 'Method$', function 
+  }],
+  [ String, 'Method$', function 
+  }],
+  */
+  [ String          , 'Poly$',   function startsWithIC(a) {
+    if ( a.length > this.length ) return false;
+    var l = a.length;
+    for ( var i = 0 ; i < l; i++ ) {
+      if ( this[i].toUpperCase() !== a[i].toUpperCase() ) return false;
+    }
+    return true;
+  }],      
+  [ String          , 'Poly$',   function startsWith(a) {
+    // This implementation is very slow for some reason
+    return 0 == this.lastIndexOf(a, 0);
+    /*
+      But this one isn't any faster.
+      String.prototype.startsWith = function (a) {
+      if ( a.length > this.length ) return false;
+      var l = a.length;
+      for ( var i = 0 ; i < l ; i++ ) if ( this.charCodeAt(i) !== a.charCodeAt(i) ) return false;
+      return true;
+      };
+    */
+  }],      
+];
+
+__features__[0][1](__features__);
+
+/*  ???:
+  Allow Role to be a function?
+  Make processFeature be a feature.
+*/
 
 
-Date.prototype.toRelativeDateString = function() {
-  var seconds = Math.floor((Date.now() - this.getTime())/1000);
+var DEBUG_STACK = DEBUG ?
+  function() { return new Error().stack; } :
+  function() { return 'Set DEBUG = true in stdlib.js for stacktrace.'; } ;
 
-  if ( seconds < 60 ) return 'moments ago';
-
-  var minutes = Math.floor((seconds)/60);
-
-  if ( minutes == 1 ) return '1 minute ago';
-
-  if ( minutes < 60 ) return minutes + ' minutes ago';
-
-  var hours = Math.floor(minutes/60);
-  if ( hours == 1 ) return '1 hour ago';
-
-  if ( hours < 24 ) return hours + ' hours ago';
-
-  var days = Math.floor(hours / 24);
-  if ( days == 1 ) return '1 day ago';
-
-  if ( days < 7 ) return days + ' days ago';
-
-  if ( days < 365 ) {
-    var year = 1900+this.getYear();
-    var noyear = this.toDateString().replace(" " + year, "");
-    return noyear.substring(4);
-  }
-
-  return this.toDateString().substring(4);
-};
-
-// Define extensions to built-in prototypes as non-enumerable properties so
-// that they don't mess up with Array or Object iteration code.
-// (Which needs to be fixed anyway.)
-
-Date.prototype.compareTo = function(o) {
-  if ( o === this ) return 0;
-  if ( ! o ) return 1;
-  var d = this.getTime() - o.getTime();
-  return d == 0 ? 0 : d > 0 ? 1 : -1;
-};
-
-Date.prototype.toMQL = function() {
-  return this.getFullYear() + '/' + (this.getMonth() + 1) + '/' + this.getDate();
-};
-
-String.prototype.compareTo = function(o) {
-  if ( o == this ) return 0;
-  return this < o ? -1 : 1;
-};
-
-Number.prototype.compareTo = function(o) {
-  if ( o == this ) return 0;
-  return this < o ? -1 : 1;
-};
 
 // Number.isFinite polyfill
 // http://people.mozilla.org/~jorendorff/es6-draft.html#sec-number.isfinite
-if (typeof Number.isFinite !== 'function') {
+if ( typeof Number.isFinite !== 'function' ) {
     Number.isFinite = function isFinite(value) {
         // 1. If Type(number) is not Number, return false.
         if (typeof value !== 'number') {
@@ -239,27 +393,6 @@ if (typeof Number.isFinite !== 'function') {
         return true;
     };
 }
-
-Boolean.prototype.compareTo = function(o) {
-  return (this.valueOf() ? 1 : 0) - (o ? 1 : 0);
-};
-
-var argsToArray = function(args) {
-  var array = new Array(args.length);
-  for ( var i = 0; i < args.length; i++ ) array[i] = args[i];
-  return array;
-};
-
-var StringComparator = function(s1, s2) {
-  if ( s1 == s2 ) return 0;
-  return s1 < s2 ? -1 : 1;
-};
-
-var toCompare = function(c) {
-  if ( Array.isArray(c) ) return CompoundComparator.apply(null, c);
-
-  return c.compare ? c.compare.bind(c) : c;
-};
 
 // binaryInsert into a sorted array, removing duplicates
 Object.defineProperty(Array.prototype, 'binaryInsert', {
@@ -458,10 +591,6 @@ Object.defineProperty(Object.prototype, 'forEach', {
 }});
 */
 
-// Workaround for crbug.com/258552
-function Object_forEach(obj, fn) {
-  for (var key in obj) if (obj.hasOwnProperty(key)) fn(obj[key], key);
-}
 
 /*
 Object.defineProperty(Object.prototype, 'put', {
@@ -472,72 +601,6 @@ Object.defineProperty(Object.prototype, 'put', {
   writable: true
 });
 */
-
-function predicatedSink(predicate, sink) {
-  if ( predicate === TRUE || ! sink ) return sink;
-
-  return {
-    __proto__: sink,
-    $UID: sink.$UID,
-    put: function(obj, s, fc) {
-      if ( sink.put && ( ! obj || predicate.f(obj) ) ) sink.put(obj, s, fc);
-    },
-    remove: function(obj, s, fc) {
-      if ( sink.remove && ( ! obj || predicate.f(obj) ) ) sink.remove(obj, s, fc);
-    },
-    toString: function() { return 'PredicatedSink(' + sink.$UID + ', ' + predicate + ', ' + sink + ')';
-
-    }/*,
-    eof: function() {
-      sink && sink.eof && sink.eof();
-    }*/
-  };
-}
-
-
-function limitedSink(count, sink) {
-  var i = 0;
-  return {
-    __proto__: sink,
-    put: function(obj, s, fc) {
-      if ( i++ >= count && fc ) {
-        fc.stop();
-      } else {
-        sink.put(obj, s, fc);
-      }
-    }/*,
-    eof: function() {
-      sink.eof && sink.eof();
-    }*/
-  };
-}
-
-function skipSink(skip, sink) {
-  var i = 0;
-  return {
-    __proto__: sink,
-    put: function(obj, s, fc) {
-      if ( i++ >= skip ) sink.put(obj, s, fc);
-    }
-  };
-}
-
-function orderedSink(comparator, sink) {
-  comparator = toCompare(comparator);
-  return {
-    __proto__: sink,
-    i: 0,
-    arr: [],
-    put: function(obj, s, fc) {
-      this.arr.push(obj);
-    },
-    eof: function() {
-      this.arr.sort(comparator);
-      this.arr.select(sink);
-    }
-  };
-}
-
 
 console.log.json = function() {
    var args = [];
@@ -631,19 +694,6 @@ RegExp.quote = function(str) {
   return (str+'').replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1');
 };
 
-function defineLazyProperty(target, name, definitionFn) {
-  Object.defineProperty(target, name, {
-    get: function() {
-      var definition = definitionFn.call(this);
-      Object.defineProperty(this, name, definition);
-      return definition.get ?
-        definition.get.call(this) :
-        definition.value;
-    },
-    configurable: true
-  });
-}
-
 var FeatureSet = {
   create: function() {
     var obj = Object.create(this);
@@ -703,38 +753,3 @@ var FeatureSet = {
     return this.version_;
   }
 };
-
-
-// Function for returning multi-line strings from commented functions.
-// Ex. var str = multiline(function() { /* multi-line string here */ });
-function multiline(f) {
-  var s = f.toString();
-  var start = s.indexOf('/*');
-  var end   = s.lastIndexOf('*/');
-  return s.substring(start+2, end);
-}
-
-// Computes the XY coordinates of the given node
-// relative to the containing elements.
-// TODO: findViewportXY works better... but do we need to find parent?
-function findPageXY(node) {
-  var x = 0;
-  var y = 0;
-  var parent;
-
-  while ( node ) {
-    parent = node;
-    x += node.offsetLeft;
-    y += node.offsetTop;
-    node = node.offsetParent;
-  }
-
-  return [x, y, parent];
-}
-
-// Computes the XY coordinates of the given node
-// relative to the viewport.
-function findViewportXY(node) {
-  var rect = node.getBoundingClientRect();
-  return [rect.left, rect.top];
-}
