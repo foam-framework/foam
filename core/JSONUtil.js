@@ -102,10 +102,18 @@ var JSONUtil = {
         if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(obj[key]);
       }
       */
-//if (obj.model_ && obj.model_ === "DocumentationProperty") debugger;
-      if ( opt_defaultModel && ! obj.model_ ) return opt_defaultModel.create(obj);
 
-      return X[obj.model_] ? X[obj.model_].create(obj) : obj;
+      var finishedModel = ( opt_defaultModel && ! obj.model_ ) ? opt_defaultModel.create(obj) :
+            (X[obj.model_] ? X[obj.model_].create(obj) : obj);
+
+      if ((obj.model_ && obj.model_ === 'Model') || (! obj.model_ && opt_defaultModel === X.Model))
+      {
+        // save a copy of the pure definition
+        finishedModel.definition_ = ( opt_defaultModel && ! obj.model_ ) ? opt_defaultModel.create(obj) :
+            (X[obj.model_] ? X[obj.model_].create(obj) : obj)
+      }
+
+      return finishedModel;
     }
 
     return obj;

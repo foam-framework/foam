@@ -97,6 +97,9 @@ var Model = {
       name: 'id'
     },
     {
+      name: 'definition_'
+    },
+    {
       name:  'sourcePath',
       help: 'Source location of this Model.',
       defaultValue: ''

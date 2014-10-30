@@ -95,6 +95,15 @@ var BootstrapModel = {
   name_: 'BootstrapModel <startup only, error if you see this>',
 
   buildPrototype: function() { /* Internal use only. */
+
+    // save our pure state
+    //this.definition_ = this.clone();
+//    this.properties.forEach(function(myProp) {
+//      // copy each property's contents
+
+//    });
+
+
     function addTraitToModel(traitModel, parentModel) {
       var name = parentModel.name + '_ExtendedWith_' + traitModel.name;
 

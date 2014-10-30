@@ -130,14 +130,6 @@ MODEL({
       help: 'The model name.',
       documentation: "The $$DOC{ref:'Model'} name."
     },
-//    {
-//      name: 'features',
-//      help: 'The features of the model.',
-//      documentation: "The features of $$DOC{ref:'.model'}, indicating whether the feature is declared in the $$DOC{ref:'Model'}.",
-//      factory: function() {
-//        return [].dao;
-//      }
-//    },
   ]
 });
 
@@ -309,11 +301,14 @@ MODEL({
         <p>Returns the inheritance level of model (0 = $$DOC{ref:'Model'}).
         </p>
         */
+      var modelDef = model.definition_?  model.definition_: model;
+      //console.log(model, model.definition_);
+
       var self = this;
       var newModelTr = this.X.DocModelInheritanceTracker.create();
-      newModelTr.model = model.id;
+      newModelTr.model = modelDef.name;
 
-      model.getAllMyFeatures().forEach(function(feature) {
+      modelDef.getAllMyFeatures().forEach(function(feature) {
  
         // all features we hit are declared (or overridden) in this model
         var featTr = self.X.DocFeatureInheritanceTracker.create({
@@ -340,7 +335,8 @@ MODEL({
         });
       });
 
-      // Check if we extend something, or we are just Model (the base case)
+      // Check if we extend something. Use model instead of modelDef, in case we
+      // have traits that injected themselves into our inheritance heirarchy.
       if (!model.extendsModel) {
         newModelTr.inheritanceLevel = 0;
       } else {

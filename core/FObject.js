@@ -445,11 +445,17 @@ var FObject = {
 */
 
     if ( src && this.model_ ) {
+//      var isModelDef = this.model_.name === 'Model';
+//      if (isModelDef) this.definition_ = { __proto__: FObject };
       var ps = this.model_.properties;
       for ( var i = 0 ; i < ps.length ; i++ ) {
         var prop = ps[i];
-
-        if ( src.hasOwnProperty(prop.name) ) this[prop.name] = src[prop.name];
+        if ( src.hasOwnProperty(prop.name) ) {
+          this[prop.name] = src[prop.name];
+//          if (isModelDef) {
+//            this.definition_[prop.name] = src[prop.name];
+//          }
+        }
         if ( src.hasOwnProperty(prop.name$_) ) this[prop.name$_] = src[prop.name$_];
       }
     }
