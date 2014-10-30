@@ -153,6 +153,7 @@ MODEL({
     <p>Though you'd often want to link to related models, like $$DOC{ref:'DocModelBodyView'}, or even specific features on them, like $$DOC{ref:'DocModelView.data', text:'DocModelView&apos;s data property'}.</p>
     <p>Reference to a method argument: $$DOC{ref:'DocBrowserController.testMethod.args.testy'}</p>
     <p>This won't work since 'properties' here will resolve to the DocBrowserController.PROPERTIES feature: $$DOC{ref:'DocBrowserController.properties.modelListView'}. Only use direct access for layers below Model.feature.</p>
+    <p>Linking to a $$DOC{ref:'Model'} property value of a $$DOC{ref:'Model'} (rather than a feature): $$DOC{ref:'DocBrowserController..documentation'} </p>
   */},
 
   models: [
@@ -225,8 +226,8 @@ MODEL({
       this.DetailContext.documentViewRef.set(this.DetailContext.DocRef.create({ref:location.hash.substring(1)}));
       if (this.DetailContext.documentViewRef.get().valid) {
         this.DetailContext.documentViewParentModel.set(
-             this.DetailContext.documentViewRef.get().resolvedModelChain[0]);
-        this.SearchContext.selection$.set(this.DetailContext.documentViewParentModel.get());
+             this.DetailContext.documentViewRef.get().resolvedRoot);
+        this.SearchContext.selection$.set(this.DetailContext.documentViewParentModel.get().resolvedModelChain[0]); // selection wants a Model object
 
       }
     },
@@ -234,9 +235,9 @@ MODEL({
     requestNavigation: function(ref) {
       if (ref.valid) {
         this.selection = ref.resolvedModelChain[0];
-        this.DetailContext.documentViewParentModel.set(ref.resolvedModelChain[0]);
+        this.DetailContext.documentViewParentModel.set(ref.resolvedRoot);
         this.DetailContext.documentViewRef.set(ref);
-        this.SearchContext.selection$.set(this.DetailContext.documentViewParentModel.get());
+        this.SearchContext.selection$.set(this.DetailContext.documentViewParentModel.get().resolvedModelChain[0]); // selection wants a Model object
         location.hash = "#" + ref.resolvedRef;
       }
     }

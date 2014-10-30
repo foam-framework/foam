@@ -54,7 +54,7 @@ MODEL({
         this.inheritedFeaturesDAO = [].dao;
         this.X.docModelViewFeatureDAO
           .where(
-                AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.X.documentViewParentModel.get().id),
+                AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.X.documentViewParentModel.get().resolvedModelChain[0].id),
                         EQ(DocFeatureInheritanceTracker.IS_DECLARED, false)),
                     CONTAINS(DocFeatureInheritanceTracker.TYPE, this.featureType()))
                 )
@@ -602,7 +602,7 @@ MODEL({
   templates: [
     function toInnerHTML() {/*
       <div id="scrollTarget_<%=this.data.id%>">
-        <h3>$$data{model_:DocFeatureSubmodelRefView}</h3>
+        <h3>$$data{model_:this.X.DocFeatureSubmodelRefView}</h3>
         <%=this.renderDocSourceHTML()%>
       </div>
     */}
