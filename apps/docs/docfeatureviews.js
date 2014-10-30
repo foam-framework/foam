@@ -207,14 +207,40 @@ MODEL({
       <div id="scrollTarget_<%=this.data.name%>">
         <h3><%=this.data.name%></h3>
         <%=this.renderDocSourceHTML()%>
-        <p>Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureModelRefView', data: this.overridesDAO, model: DocFeatureInheritanceTracker }</p>
+        <p>Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureOverridesRefView', data: this.overridesDAO, model: DocFeatureInheritanceTracker }</p>
       </div>
     */}
   ]
 });
 
 MODEL({
-  name: 'DocFeatureModelRefView',
+  name: 'DocFeatureOverridesRefView',
+  extendsModel: 'DocRefView',
+  label: 'Documentation Feature Overrides Reference Link View',
+  help: "The view of a documentation reference link based on a Model's overrides.",
+
+  documentation: function() { /*
+    <p>An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
+    for notes on usage.</p>
+    */},
+
+  properties: [
+    {
+      name: 'data',
+      help: 'Shortcut to set reference by Model name.',
+      postSet: function() {
+        this.ref = this.data.model + "." + this.data.name;
+        this.text = this.data.model + " / ";
+      },
+      documentation: function() { /*
+        The target reference Model definition. Use this instead of setting
+        $$DOC{ref:'.docRef'}, if you are referencing a $$DOC{ref:'Model'}.
+        */}
+    },
+  ],
+});
+MODEL({
+  name: 'DocFeatureSubmodelRefView',
   extendsModel: 'DocRefView',
   label: 'Documentation Feature Model Link Reference View',
   help: 'The view of a documentation reference link based on a Model.',
@@ -229,8 +255,7 @@ MODEL({
       name: 'data',
       help: 'Shortcut to set reference by Model name.',
       postSet: function() {
-        this.ref = this.data.model + "." + this.data.name;
-        this.text = this.data.model + " / ";
+        this.ref = "."+this.data.name;
       },
       documentation: function() { /*
         The target reference Model definition. Use this instead of setting
@@ -406,7 +431,7 @@ MODEL({
         <h3><%=this.data.name%> $$THISDATA{ model_: 'DocMethodArgumentsSmallView' }</h3>
         <div class="memberList">$$THISDATA{ model_: 'DocMethodArgumentsView' }</div>
         <%=this.renderDocSourceHTML()%>
-        <p>Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureModelRefView', data: this.overridesDAO, model: Model }</p>
+        <p>Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureOverridesRefView', data: this.overridesDAO, model: Model }</p>
       </div>
     */}
   ]
@@ -537,6 +562,49 @@ MODEL({
         
             <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
     <%    } %>
+    */}
+  ]
+});
+
+
+MODEL({
+  name: 'DocInnerModelsView',
+  extendsModel: 'DocFeaturesView',
+  help: 'Displays the documentation of the given inner Models.',
+
+  properties: [
+    {
+      name: 'rowView',
+      help: 'Override this to specify the view to use to display each feature.',
+      factory: function() { return 'DocInnerModelsRowView'; }
+    }
+  ],
+
+  methods: {
+    getGroupFromTarget: function(target) {
+      return target.models$;
+    },
+    featureName: function() {
+      return "Inner Models";
+    },
+    featureType: function() {
+      return "Model";
+    },
+  }
+
+});
+
+MODEL({
+  name: 'DocInnerModelsRowView',
+  extendsModel: 'DocFeatureRowView',
+  help: 'A view for each item in a list of documented Methods, including arguments.',
+
+  templates: [
+    function toInnerHTML() {/*
+      <div id="scrollTarget_<%=this.data.id%>">
+        <h3>$$data{model_:DocFeatureSubmodelRefView}</h3>
+        <%=this.renderDocSourceHTML()%>
+      </div>
     */}
   ]
 });

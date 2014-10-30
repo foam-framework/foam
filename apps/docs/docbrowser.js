@@ -155,6 +155,26 @@ MODEL({
     <p>This won't work since 'properties' here will resolve to the DocBrowserController.PROPERTIES feature: $$DOC{ref:'DocBrowserController.properties.modelListView'}. Only use direct access for layers below Model.feature.</p>
   */},
 
+  models: [
+    {
+      model_: 'Model',
+      name: 'NamedInnerModel',
+      documentation: function() { /* Docs for named inner model. $$DOC{ref:"."} */ },
+      models: [
+        {
+          model_: 'Model',
+          name: 'InnyInner',
+          documentation: function() { /* Inny Inner! $$DOC{ref:"."} */ },
+        }
+      ]
+
+    },
+//    {
+//      model_: 'Model',
+
+//    }
+  ],
+
   methods: {
     init: function() {
       /* This is a method documentation comment: spawn and populate sub contexts. */
@@ -477,7 +497,7 @@ MODEL({
           <div class="docbrowser-header-inner">
             <div class="docbrowser-header-flex-container">
               <div class="docbrowser-header-contents">
-                <div class="docbrowser-title">FOAM API Reference</div>
+                <div class="docbrowser-title"><img src="images/browsertitle-lg.png" alt="FOAM API Reference"/></div>
               </div>
             </div>
           </div>

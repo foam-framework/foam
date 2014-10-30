@@ -399,6 +399,9 @@ MODEL({
           $$sourceModel{ model_: 'DocModelBodyView' }
         </div>
         <div class="members">
+          $$sourceModel{ model_: 'DocInnerModelsView' }
+        </div>
+        <div class="members">
           $$sourceModel{ model_: 'DocPropertiesView' }
         </div>
         <div class="members">
