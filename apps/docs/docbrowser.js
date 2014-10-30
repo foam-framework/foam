@@ -421,6 +421,8 @@ MODEL({
         flex-grow: 0;
         flex-shrink: 0;
         order: 1;
+        padding: 0;
+        margin-left: -15;
       }
       
       div.list-container {
