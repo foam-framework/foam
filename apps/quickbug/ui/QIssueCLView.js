@@ -8,7 +8,7 @@ var QIssueCLView = FOAM({
     { name: 'dao' }
   ],
 
-  methods: {
+  constants: {
     patterns: [
       [
         /https:\/\/codereview.chromium.org\/(\d+)/,
@@ -26,10 +26,11 @@ var QIssueCLView = FOAM({
         /<a href="\/p\/((\w|-)+)\/source\/detail\?r=(\w+)">revision (\w+)<\/a>/,
         function(r) { console.assert(false, 'Bad pattern: /source/detail'); }
       ],
-    ],
-    toHTML: function() {
-      return '<div id="' + this.id + '"></div>';
-    },
+    ]
+  },
+
+  methods: {
+    toHTML: function() { return '<div id="' + this.id + '"></div>' },
     initHTML: function() {
       var self = this;
       var out = '';
@@ -51,9 +52,7 @@ var QIssueCLView = FOAM({
             }
           }
         }
-      }})(function() {
-        if ( self.$ ) self.$.innerHTML = out;
-      });
+      }})(function() { if ( self.$ ) self.$.innerHTML = out; });
     }
   }
 
