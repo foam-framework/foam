@@ -590,7 +590,29 @@ MODEL({
     featureType: function() {
       return "Model";
     },
-  }
+  },
+
+  templates: [
+    function toInnerHTML()    {/*
+    <%    this.destroy();
+          if (!this.hasFeatures && !this.hasInheritedFeatures) { %>
+
+    <%    } else {
+            if (this.hasFeatures) { %>
+              <h2><%=this.featureName()%>:</h2>
+              <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
+      <%    }
+            if (this.hasInheritedFeatures) { %>
+              <h2>Inherited <%=this.featureName()%>:</h2>
+      <%
+              var fullView = this.X.DAOListView.create({ rowView: this.rowView, model: Property });
+              var collapsedView = this.X.DocFeatureCollapsedView.create();
+              %>
+              <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'CollapsibleView', data: this.inheritedFeaturesDAO, collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
+      <%    } %>
+    <%    } %>
+    */}
+  ]
 
 });
 
