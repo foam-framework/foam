@@ -34,7 +34,7 @@ var __features__ = [
     for ( var i = 1 ; i < __features__.length ; i++ ) {
       var a = __features__[i], c = lookup(a[0]), r = a[1], f = a[2];
       
-      console.log('Feature: ', r, f.name || f);
+//      console.log('Feature: ', r, f.name || f);
       (__roles__[r] || Let$)(c, r, f);
     }
   }],  
