@@ -399,6 +399,10 @@ var ArrayProperty = Model.create({
       help: 'The FOAM sub-type of this property.'
     },
     {
+      name: 'protobufType',
+      defaultValueFn: function() { return this.subType; }
+    },
+    {
       name: 'preSet',
       defaultValue: function(_, a, prop) {
         var m = this.X[prop.subType] || GLOBAL[prop.subType];
