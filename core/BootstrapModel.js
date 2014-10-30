@@ -92,7 +92,7 @@ var BootstrapModel = {
 
   __proto__: PropertyChangeSupport,
 
-  TYPE: 'BootstrapModel <startup only, error if you see this>',
+  name_: 'BootstrapModel <startup only, error if you see this>',
 
   buildPrototype: function() { /* Internal use only. */
     function addTraitToModel(traitModel, parentModel) {
@@ -127,7 +127,6 @@ var BootstrapModel = {
     var cls    = Object.create(proto);
     cls.model_ = this;
     cls.name_  = this.name;
-    cls.TYPE   = this.name;
 
     // Install a custom constructor so that Objects are named properly
     // in the JS memory profiler.
@@ -257,7 +256,7 @@ var BootstrapModel = {
       var prop  = findProp(key);
       if ( prop == -1 ) {
         // TODO: this isn't an error if we're export 'this' or a method, add check before reporting.
-        // console.warn('Unknown export: "'+ cls.TYPE + '.' + key + '"');
+        // console.warn('Unknown export: "'+ cls.name_ + '.' + key + '"');
         return;
       }
       props[prop][asValue ? 'exportValueKey' : 'exportKey'] = alias;

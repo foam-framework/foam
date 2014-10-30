@@ -179,7 +179,7 @@ layout();
     var searchSubject = TextSearchView.create({width:44, label: 'Search',
       property: { __proto__: Feature.NAME, f: function(o) { return o.toJSON(); } }});
     var byModel = GroupBySearchView.create({width: 33, size: 15, dao: dao, property: Feature.MODEL});
-    var byType = GroupBySearchView.create({width: 33, size: 8, dao: dao, property: Feature.TYPE});
+    var byType = GroupBySearchView.create({width: 33, size: 8, dao: dao, property: Feature.name_});
     var byName = GroupBySearchView.create({width: 33, size: 8, dao: dao, property: Feature.NAME});
     Object.defineProperty(byModel, 'updateChoice', {value: (function(_, _, _, choice) {
        if ( choice ) {

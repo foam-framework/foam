@@ -522,7 +522,7 @@ MODEL({
      *        possible values: 'put', 'remove'
      **/
     notify_: function(fName, args) {
-      // console.log(this.TYPE, ' ***** notify ', fName, ' args: ', args, ' listeners: ', this.daoListeners_);
+      // console.log(this.name_, ' ***** notify ', fName, ' args: ', args, ' listeners: ', this.daoListeners_);
       for( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
         var l = this.daoListeners_[i];
         var fn = l[fName];
@@ -639,7 +639,7 @@ MODEL({
     },
 
     toString: function() {
-      return this.TYPE + '(' + this.delegate + ')';
+      return this.name_ + '(' + this.delegate + ')';
     }
   }
 });

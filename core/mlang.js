@@ -154,7 +154,7 @@ MODEL({
 
   methods: {
     toString: function() {
-      var s = this.TYPE + '(';
+      var s = this.name_ + '(';
       for ( var i = 0 ; i < this.args.length ; i++ ) {
         var a = this.args[i];
         s += a.toString();
@@ -367,7 +367,7 @@ MODEL({
         if ( e2.model_.name == RULES[i][0] && e1.model_.name == RULES[i][1] ) return RULES[i][2](e2, e1);
       }
 
-      console.log('************** Unknown partialAnd combination: ', e1.TYPE, e2.TYPE);
+      console.log('************** Unknown partialAnd combination: ', e1.name_, e2.name_);
 
       return null;
     },
@@ -515,7 +515,7 @@ MODEL({
         if ( e2.model_.name == RULES[i][0] && e1.model_.name == RULES[i][1] ) return RULES[i][2](e2, e1);
       }
 
-      console.log('************** Unknown partialOr combination: ', e1.TYPE, e2.TYPE);
+      console.log('************** Unknown partialOr combination: ', e1.name_, e2.name_);
 
       return null;
     },

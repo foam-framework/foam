@@ -24,7 +24,7 @@ var prefix = '';
 var FObject = {
   __proto__: PropertyChangeSupport,
 
-  TYPE: 'FObject',
+  name_: 'FObject',
 
   create_: function() {
     return Object.create(this);
