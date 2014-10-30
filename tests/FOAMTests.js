@@ -44,7 +44,30 @@ MODEL({
       this.SUPER();
       this.initHTMLFuture.set();
     }
-  }
+  },
+
+  templates: [
+    function toHTML() {/*
+      <%
+        var test = this.data;
+        this.childView = this.X.sub({ asyncCallback: this.childrenCallback }).TestsView.create({
+            dao: test.tests
+        });
+      %>
+      <h3>{{test.name}}</h3>
+      <% if ( test.description ) { %>
+         <div class="description">
+           {{test.description}}
+         </div>
+         <br>
+      <% } %>
+      <div>Code:</div>
+      <pre><div class="code">{{test.code}}</div></pre>
+      $$results{ X: this.X.sub({ asyncCallback: this.resultsCallback }) }
+      <blockquote><%= this.childView.toHTML() %></blockquote>
+      <br>
+    */}
+  ]
 });
 
 MODEL({
@@ -79,14 +102,12 @@ MODEL({
       var self = this;
       this.dao.select({
         put: function(test) {
-          // Clone the test, so that passes, fails and regression updates don't write into the MDAO.
-          var t = test.clone();
           // Prevent the test from recursing; we'll take care of that in this view.
-          t.runChildTests = false;
+          test.runChildTests = false;
           afuncs.push(function(ret) {
             var Y = self.X.sub({ asyncCallback: ret });
-            t.X = self.testScope;
-            var view = Y.DemoView.create({ data: t });
+            test.X = self.testScope;
+            var view = Y.DemoView.create({ data: test });
             self.$.insertAdjacentHTML('beforeend', view.toHTML());
             view.initHTML(); // Actually calls atest().
             // The subviews will eventually call the ret().
@@ -125,29 +146,42 @@ function asendjson(path) {
 // This fetches all the tests up front.
 var clientDAO = ClientDAO.create({
   asend: asendjson(window.location.origin + '/api'),
-  model: UnitTest
-}).where(AND(EQ(UnitTest.DISABLED, false), CONTAINS(UnitTest.TAGS, 'web')));
+  model: Model
+});
 
 // If the query string contains ?ui=1, filter to only UI tests.
+var TEST_FILTER = AND(CONTAINS(UnitTest.TAGS, 'web'), EQ(UnitTest.DISABLED, false));
 if ( window.location.search.indexOf('ui=1') >= 0 ) {
   console.warn('ui found');
-  clientDAO = clientDAO.where(CONTAINS(UnitTest.TAGS, 'ui'));
+  TEST_FILTER = AND(TEST_FILTER, CONTAINS(UnitTest.TAGS, 'ui'));
 }
 
 var baseDAO = CachingDAO.create({
-  cache: MDAO.create({ model: UnitTest }),
+  cache: MDAO.create({ model: Model }),
   src: clientDAO
 });
 
 setTimeout(function() {
-  window.X.UnitTestDAO = baseDAO;
-  //baseDAO.where(EQ(UnitTest.PARENT_TEST, '')).select(dao.sink)(function(a) { console.log(a); });
-
-  var X = window.X.sub({ asyncCallback: function() { console.log('done'); } });
-  var view = X.TestsView.create({
-    dao: baseDAO.where(EQ(UnitTest.PARENT_TEST, ''))
+  // Select all the models from the model DAO.
+  // TODO: This is fine while there's only one, but this should be sure
+  // to wait for each model's tests to complete before moving on to the next.
+  baseDAO.select({
+    put: function(model) {
+      if ( model.tests && model.tests.length ) {
+        var X = window.X.sub({
+          asyncCallback: function() {
+            console.log('done tests for ' + model.name);
+          },
+          childTestsFilter: TEST_FILTER,
+          testUpdateListener: function(){ debugger; baseDAO.put(model); }
+        });
+        var view = X.TestsView.create({
+          dao: model.tests.dao.where(TEST_FILTER)
+        });
+        document.body.insertAdjacentHTML('beforeend', view.toHTML());
+        view.initHTML();
+      }
+    }
   });
-  document.body.insertAdjacentHTML('beforeend', view.toHTML());
-  view.initHTML();
 }, 500);
 

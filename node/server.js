@@ -57,7 +57,6 @@ module.exports.launchServer = function(opts) {
           //   May eventually be useful for authentication, authorization, etc.
           if (msg.method == 'select') {
             dao.select.apply(dao, msg.params)(function(sink) {
-              debugger;
               send(res, 200, JSONUtil.stringify(sink));
             });
           } else if (msg.method == 'removeAll') {

@@ -76,7 +76,7 @@ MODEL({
         var content = fs.readFileSync(this.name, { encoding: 'utf-8' });
         XMLUtil.parse(content).select(this);
       } else {
-        console.error('XMLFileDAO could not find file "' + this.name + '"');
+        console.warn('XMLFileDAO could not find file "' + this.name + '"');
       }
 
       this.addRawIndex({
