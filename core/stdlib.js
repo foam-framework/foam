@@ -315,13 +315,13 @@ var __features__ = [
   [ Date            , 'Method$',    function toMQL() {
     return this.getFullYear() + '/' + (this.getMonth() + 1) + '/' + this.getDate();
   }],
-  [ String          , 'Method$',    function compareTo() {
+  [ String          , 'Method$',    function compareTo(o) {
     return ( o == this ) ? 0 : this < o ? -1 : 1;
   }],
-  [ Number          , 'Method$',    function compareTo() {
+  [ Number          , 'Method$',    function compareTo(o) {
     return ( o == this ) ? 0 : this < o ? -1 : 1;
   }],
-  [ Boolean         , 'Method$',    function compareTo() {
+  [ Boolean         , 'Method$',    function compareTo(o) {
     return (this.valueOf() ? 1 : 0) - (o ? 1 : 0);
   }],
   /*
