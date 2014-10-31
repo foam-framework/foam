@@ -355,7 +355,7 @@ MODEL({
       }
     },
     {
-      model_: 'View2Property',
+      model_: 'ViewFactoryProperty',
       name: 'rowView',
       defaultValue: 'DetailView'
     },

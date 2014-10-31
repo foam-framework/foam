@@ -747,8 +747,8 @@ var FactoryProperty = Model.create({
 });
 
 
-var View2Property = Model.create({
-  name: 'View2Property',
+var ViewFactoryProperty = Model.create({
+  name: 'ViewFactoryProperty',
   extendsModel: 'FactoryProperty',
 
   help: 'Describes a View Factory property.',
