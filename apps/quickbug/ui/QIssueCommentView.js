@@ -1,5 +1,4 @@
-var QIssueCommentView = FOAM({
-  model_: 'Model',
+MODEL({
   name: 'QIssueCommentView',
   extendsModel: 'DetailView',
 
@@ -8,15 +7,13 @@ var QIssueCommentView = FOAM({
   ],
 
   methods: {
-    updateSubViews: function() {
-      this.SUPER();
+    updateSubViews: function(SUPER) {
+      SUPER();
       if ( this.$ && this.data === 0 ) {
         this.$.style.borderTop = 'none';
       }
     }
   },
 
-  templates: [
-    { name: 'toHTML' }
-  ]
+  templates: [ { name: 'toHTML' } ]
 });

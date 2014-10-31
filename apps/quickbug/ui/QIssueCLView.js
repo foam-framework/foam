@@ -1,6 +1,4 @@
-var QIssueCLView = FOAM({
-  model_: 'Model',
-
+MODEL({
   name: 'QIssueCLView',
   extendsModel: 'View',
 

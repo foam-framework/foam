@@ -605,12 +605,13 @@ Please use labels and text to provide additional information.
       this.IssueDAO.find(id, {
         put: function(obj) {
           apar(
+            arequire('CursorView'),
             arequire('AddBookmarkDialog'),
             arequire('QIssueDetailView'),
-            arequire('CursorView'),
             arequire('QIssueCommentCreateView'),
             arequire('QIssueCommentView'),
             arequire('QIssueCommentAuthorView'),
+            arequire('QIssueCommentUpdateDetailView'),
             arequire('QIssueCommentUpdateView')
           )(function() {
             var v = self.X.QIssueDetailView.create({

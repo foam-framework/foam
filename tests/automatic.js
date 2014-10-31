@@ -22,9 +22,8 @@ var path = require('path');
 var startTime = process.hrtime();
 
 // Create an XMLFileDAO against FUNTests.xml
-var rawDAO = XMLFileDAO.create({ name: path.join(__dirname, 'FUNTests.xml'), model: UnitTest });
-global.X.UnitTestDAO = rawDAO;
-var dao = rawDAO.where(AND(EQ(UnitTest.DISABLED, false), CONTAINS(UnitTest.TAGS, 'node')));
+var modelDAO = XMLFileDAO.create({ name: path.join(__dirname, 'FUNTests.xml'), model: Model });
+X.childTestsFilter = AND(EQ(UnitTest.DISABLED, false), CONTAINS(UnitTest.TAGS, 'node'));
 
 // Now lets fetch the top-level tests and start executing them.
 // We'll let them hand down to their children as they go, too.
@@ -54,23 +53,26 @@ function testsComplete() {
   process.exit( failCount > 0 ? 1 : 0 );
 }
 
-dao.select({ put: function(t) { allTests.push(t.clone()); } })(function() {
+modelDAO.select({
+  put: function(m) {
+    m.tests && m.tests.dao.where(X.childTestsFilter).select({
+      put: function(t){ allTests.push(t.clone()); }
+    });
+  }
+})(function() {
   var afuncs = [];
-  allTests.dao.where(EQ(UnitTest.PARENT_TEST, '')).select({
-    put: function(test) {
-      console.log('found ' + test.name);
-      afuncs.push(function(ret){
-        try {
-          test.atest()(ret);
-        } catch (e) {
-          console.error('Error while executing ' + test.name + ': \n' + e.stack);
-          ret();
-        }
-      });
-    },
-    eof: function() {
-      aseq.apply(null, afuncs)(testsComplete);
-    }
+  allTests.dao.forEach(function(test) {
+    console.log('found ' + test.name);
+    afuncs.push(function(ret){
+      try {
+        test.atest()(ret);
+      } catch (e) {
+        console.error('Error while executing ' + test.name + ': \n' + e.stack);
+        ret();
+      }
+    });
   });
+
+  aseq.apply(null, afuncs)(testsComplete);
 });
 

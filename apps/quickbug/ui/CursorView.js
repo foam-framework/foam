@@ -62,8 +62,8 @@ MODEL({
   ],
 
   methods: {
-    init: function() {
-      this.SUPER();
+    init: function(SUPER) {
+      SUPER();
 
       var self = this;
       var i = 1;
@@ -88,8 +88,8 @@ MODEL({
   extendsModel: 'DetailView',
 
   methods: {
-    initHTML: function() {
-      this.SUPER();
+    initHTML: function(SUPER) {
+      SUPER();
       this.$.focus();
     }
   },
