@@ -1,4 +1,6 @@
 MODEL({
+  requires: ['PhoneCitationView', 'PhoneDetailView'],
+
   name: 'Controller',
   properties: [
     {
