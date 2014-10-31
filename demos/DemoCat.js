@@ -280,29 +280,6 @@ var demos = JSONUtil.arrayToObjArray(X, [
 ], Demo).dao;
 
 
-MODEL({ name: 'DemoView', extendsModel: 'DetailView', templates: [
-  function CSS() {/*
-    .thumbnail {
-       margin-bottom: 40px;
-    }
-  */},
-  function toHTML() {/*
-      <li class="thumbnail">
-        <a href="%%data.path" class="thumb">$$name{mode: 'read-only'}</a>
-        <br>
-        <% if ( this.data.image ) { %> <br><a href="%%data.path"><img width=250 height=250 src="democat/%%data.image"></a> <% } %>
-        <p>$$description{mode: 'read-only', escapeHTML: false}</p>
-        <b>Keywords:</b> <%= this.data.keywords.join(', ') %><br>
-        <b>Source:</b> <a href="%%data.src">here</a><br>
-        <% if ( VIDEO_PATH && this.data.video ) { %>
-        <b>Video:</b> <a href="<%= VIDEO_PATH + this.data.video%>"><img style="vertical-align:middle;" width=30 height=30 src="democat/movie-clip-icon.png"></a>
-        <% } %>
-        <br>
-      </li>
-  */}
-]});
-
-
 MODEL({
   name: 'Controller',
   properties: [
@@ -331,14 +308,34 @@ MODEL({
 });
 
 
+//             <p><foam f="description" mode="read-only" escapeHTML="false"/></p>
+
 MODEL({
   name: 'ControllerView',
   extendsModel: 'DetailView',
   templates: [
+    function CSS() {/*
+      .thumbnail {
+        margin-bottom: 40px;
+      }
+    */},
     function toHTML() {/*
         &nbsp;&nbsp; Search: $$search
-        <p>
-        $$filteredDAO{className: 'demos', tagName: 'ul'}
+        <p/>
+        <foam f="filteredDAO" className="demos" tagName="ul">
+          <li class="thumbnail">
+            <a href="%%data.path" class="thumb">$$name{mode: 'read-only'}</a>
+            <br/>
+            <% if ( this.data.image ) { %> <br><a href="%%data.path"><img width=250 height=250 src="democat/%%data.image"></a> <% } %>
+            <p>$$description{mode: 'read-only', escapeHTML: false}</p>
+            <b>Keywords:</b> <%= this.data.keywords.join(', ') %><br/>
+            <b>Source:</b> <a href="%%data.src">here</a><br/>
+            <% if ( VIDEO_PATH && this.data.video ) { %>
+            <b>Video:</b> <a href="<%= VIDEO_PATH + this.data.video%>"><img style="vertical-align:middle;" width=30 height=30 src="democat/movie-clip-icon.png"></a>
+            <% } %>
+            <br/>
+          </li>
+        </foam>
     */}
  ]
 });
