@@ -48,6 +48,19 @@ MODEL({
         var self = this;
 
         this.filteredDAO.select(COUNT())(function(c) {
+          self.hasDAOContent = c.count > 0;
+        });
+
+        this.selfFeaturesDAO = [].dao;
+        this.X.docModelViewFeatureDAO
+          .where(
+                AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.X.documentViewParentModel.get().resolvedModelChain[0].id),
+                        EQ(DocFeatureInheritanceTracker.IS_DECLARED, true)),
+                    CONTAINS(DocFeatureInheritanceTracker.TYPE, this.featureType()))
+                )
+          .select(MAP(DocFeatureInheritanceTracker.FEATURE, this.selfFeaturesDAO));
+        
+        this.selfFeaturesDAO.select(COUNT())(function(c) {
           self.hasFeatures = c.count > 0;
         });
 
@@ -67,6 +80,14 @@ MODEL({
       }
     },
     {
+      name:  'selfFeaturesDAO',
+      model_: 'DAOProperty',
+      documentation: function() { /*
+          Returns the list of features (matching this feature type) that are
+          declared or overridden in this $$DOC{ref:'Model'}
+      */}
+    },
+    {
       name:  'inheritedFeaturesDAO',
       model_: 'DAOProperty',
       documentation: function() { /*
@@ -75,18 +96,34 @@ MODEL({
       */}
     },
     {
+      name: 'hasDAOContents',
+      defaultValue: false,
+      postSet: function(_, nu) {
+        this.updateHTML();
+      },
+      documentation: function() { /*
+          True if the $$DOC{ref:'.filteredDAO'} is not empty.
+      */}
+    },
+    {
       name: 'hasFeatures',
       defaultValue: false,
       postSet: function(_, nu) {
         this.updateHTML();
-      }
+      },
+      documentation: function() { /*
+          True if the $$DOC{ref:'.selfFeaturesDAO'} is not empty.
+      */}
     },
     {
       name: 'hasInheritedFeatures',
       defaultValue: false,
       postSet: function(_, nu) {
         this.updateHTML();
-      }
+      },
+      documentation: function() { /*
+          True if the $$DOC{ref:'.inheritedFeaturesDAO'} is not empty.
+      */}
     },
     {
       name: 'rowView',
@@ -107,7 +144,7 @@ MODEL({
     <%    } else {
             if (this.hasFeatures) { %>
               <h2><%=this.featureName()%>:</h2>
-              <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
+              <div class="memberList">$$selfFeaturesDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.selfFeaturesDAO, model: Property }</div>
       <%    }
             if (this.hasInheritedFeatures) { %>
               <h2>Inherited <%=this.featureName()%>:</h2>
@@ -190,7 +227,7 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-
+      // TODO: do this on postSet instead of pipe?
       this.overridesDAO = [];
       this.X.docModelViewFeatureDAO
           .where(
@@ -465,7 +502,7 @@ MODEL({
   templates: [
     function toInnerHTML()    {/*
     <%    this.destroy();
-          if (!this.hasFeatures) { %>
+          if (!this.hasDAOContent) { %>
     <%    } else { %>
             <h4><%=this.featureName()%>:</h4>
             <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</div>
@@ -508,7 +545,7 @@ MODEL({
   templates: [
     function toInnerHTML()    {/*<%
           this.destroy();
-          if (this.hasFeatures) {
+          if (this.hasDAOContent) {
             %>(<span>$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</span>)<%
           } else {
             %>()<%
@@ -557,7 +594,7 @@ MODEL({
   templates: [
     function toInnerHTML()    {/*
     <%    this.destroy();
-          if (!this.hasFeatures) { %>
+          if (!this.hasDAOContent) { %>
     <%    } else { %>
         
             <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
@@ -600,7 +637,7 @@ MODEL({
     <%    } else {
             if (this.hasFeatures) { %>
               <h2><%=this.featureName()%>:</h2>
-              <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
+              <div class="memberList">$$selfFeaturesDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.selfFeaturesDAO, model: Property }</div>
       <%    }
             if (this.hasInheritedFeatures) { %>
               <h2>Inherited <%=this.featureName()%>:</h2>

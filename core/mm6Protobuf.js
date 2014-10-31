@@ -140,6 +140,10 @@ function recopyModelFeatures(m) {
   m.models        = m.models;
   m.tests         = m.tests;
   m.issues        = m.issues;
+  
+  if (m.definition_) {
+    recopyModelFeatures(m.definition_);
+  }
 }
 
 /*

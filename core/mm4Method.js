@@ -181,7 +181,7 @@ MODEL({
     }
   ],
   methods: {
-    callIfEnabled: function(X, that) { /* doesn't appear in docs. Bootstrappy issue. */
+    callIfEnabled: function(X, that) { /* Executes this action if $$DOC{ref:'.isEnabled'} is allows it. */
       if ( this.isEnabled.call(that, this) ) this.action.call(that, X, this);
     }
   }

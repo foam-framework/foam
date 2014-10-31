@@ -302,19 +302,25 @@ MODEL({
         </p>
         */
       var modelDef = model.definition_?  model.definition_: model;
-      //console.log(model, model.definition_);
 
       var self = this;
       var newModelTr = this.X.DocModelInheritanceTracker.create();
       newModelTr.model = modelDef.name;
 
       modelDef.getAllMyFeatures().forEach(function(feature) {
- 
+  
         // all features we hit are declared (or overridden) in this model
         var featTr = self.X.DocFeatureInheritanceTracker.create({
               isDeclared:true,
               feature: feature,
               model: newModelTr.model });
+        // HACK special case since listeners are changed into Methods
+        if (feature.model_.id === 'Method') {
+          // check listeners list
+          if (modelDef.listeners.lastIndexOf(feature) !== -1 ) {
+            featTr.type = 'Listener';
+          }
+        }
         self.X.docModelViewFeatureDAO.put(featTr);
 
         // for the models that extend this model, make sure they have
