@@ -50,8 +50,8 @@ var __features__ = [
       c.prototype[f.name] = f;
     }
   }],
-  [                 , 'Role$',      function Poly$(c, r, f) { if ( ! c.prototype.hasOwnProperty(f.name) ) c.prototype[f.name] = f; }],
-  [ Object          , 'Property$',  ['$UID', { get: (function() {
+  [                 , 'Role$',      function Poly$(c, r, f) { if ( ! c.hasOwnProperty(f.name) ) c.prototype[f.name] = f; }],
+  [ Object.prototype,'Property$',  ['$UID', { get: (function() {
     var id = 1;
     return function() { return this.$UID__ || (this.$UID__ = id++); };
   })()}]],
