@@ -118,7 +118,7 @@ FOAM.lookup = function(key, opt_X) {
 
   var path = key.split('.');
   var root = opt_X || GLOBAL;
-  for ( var i = 0 ; i < path.length ; i++ ) root = root[path[i]];
+  for ( var i = 0 ; root && i < path.length ; i++ ) root = root[path[i]];
 
   return root;
 };
