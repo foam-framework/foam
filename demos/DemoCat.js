@@ -3,19 +3,12 @@ var VIDEO_PATH = 'https://x20web.corp.google.com/~kgr/power/videos/DemoDen/';
 MODEL({
   name: 'Demo',
   properties: [
-    {
-      name: 'name'
-    },
-    {
-      name: 'path'
-    },
-    {
-      model_: 'StringProperty',
-      name: 'description'
-    },
-    {
-      name: 'keywords'
-    },
+    'name',
+    'path',
+    'keywords',
+    'image',
+    'video',
+    'description',
     {
       name: 'src',
       defaultValueFn: function() {
@@ -23,12 +16,6 @@ MODEL({
         var path = window.location.href.substring(0, i);
         return 'view-source: ' + path + this.path;
       }
-    },
-    {
-      name: 'image'
-    },
-    {
-      name: 'video'
     }
   ]
 });
@@ -298,9 +285,8 @@ MODEL({
     }
   ],
   methods: {
-    init: function() {
-      this.SUPER();
-
+    init: function(SUPER) {
+      SUPER();
       var i = window.location.href.indexOf('?q=');
       if ( i != -1 ) this.search = window.location.href.substring(i+3);
     }
@@ -312,11 +298,7 @@ MODEL({
   name: 'ControllerView',
   extendsModel: 'DetailView',
   templates: [
-    function CSS() {/*
-      .thumbnail {
-        margin-bottom: 40px;
-      }
-    */},
+    function CSS() {/* .thumbnail { margin-bottom: 40px; } */},
     function toHTML() {/*
         &nbsp;&nbsp; Search: $$search
         <p>
