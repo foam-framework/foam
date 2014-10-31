@@ -27,13 +27,69 @@
  *    $$feature(<whitespace>|<): output the View or Action for the current Value
  */
 
+var FOAMTagParser = {
+  __proto__: XMLParser,
+
+  START: sym('tag'),
+
+  tag: seq(
+    literal_ic('<foam'),
+    sym('whitespace'),
+    repeat(sym('attribute'), sym('whitespace')),
+    sym('whitespace'),
+    alt(sym('closed'), sym('matching'))
+  ),
+
+  closed: literal('/>'),
+
+  matching: seq1(1,
+    '>',
+    str(repeat(alt(
+      sym('tag'),
+      sym('text'))
+    )),
+    literal_ic('</foam>')
+  ),
+
+  label: str(plus(notChars(' =/\t\r\n<>\'"'))),
+
+  text: str(plus(not(literal_ic('</foam')))),
+
+  value: str(seq1(1, '"', repeat(notChar('"')), '"')),
+
+  whitespace: repeat(alt(' ', '\t', '\r', '\n'))
+
+}.addActions({
+  tag: function(xs) {
+    var obj = {
+      attrs: {},
+      children: xs[4] || [],
+      toString: function() {
+        var out = '<foam ';
+        for ( key in this.attrs ) { out += key + '="' + this.attrs[key] + '" '; }
+        if ( this.children.length ) {
+          out += this.children.join();
+          out += '</foam>';
+        } else {
+          out += '/>';
+        }
+        return out;
+      }
+    };
+    xs[2].forEach(function(attr) { obj.attrs[attr[0]] = attr[2]; });
+    debugger;
+    return obj;
+  }
+});
+
+
 var TemplateParser = {
   __proto__: grammar,
 
   START: sym('markup'),
 
   markup: repeat0(alt(
-    sym('tag'),
+//    sym('foamTag'),
     sym('create child'),
     sym('simple value'),
     sym('live value tag'),
@@ -45,6 +101,8 @@ var TemplateParser = {
     sym('single quote'),
     sym('text')
   )),
+
+  'foamTag': FOAMTagParser.export('tag'),
 
   'create child': seq('$$', repeat(notChars(' $\n<{')),
                       optional(JSONParser.export('objAsString'))),
@@ -66,6 +124,7 @@ var TemplateParser = {
   'single quote': literal("'"),
   text: anyChar
 };
+
 
 var TemplateOutput = {
   /**
@@ -99,6 +158,7 @@ var TemplateOutput = {
   }
 };
 
+
 var TemplateCompiler = {
   __proto__: TemplateParser,
 
@@ -113,25 +173,28 @@ var TemplateCompiler = {
     "return out.toString();"
 
 }.addActions({
-   markup: function (v) {
-     var ret = this.header + this.out.join('') + this.footer;
-     this.out = [];
-     return ret;
-   },
-   'create child': function(v) {
-     var name = v[1].join('').constantize();
-     this.push("', self.createTemplateView('", name, "'",
-               v[2] ? ', ' + v[2] : '',
-               "),\n'");
-   },
-   'simple value': function(v) { this.push("',\n self.", v[1].join(''), ",\n'"); },
-   'raw values tag': function (v) { this.push("',\n", v[1].join(''), ",\n'"); },
-   'values tag': function (v) { this.push("',\nescapeHTML(", v[1].join(''), "),\n'"); },
-   'live value tag': function (v) { this.push("',\nself.dynamicTag('span', function() { return ", v[1].join(''), "; }.bind(this)),\n'"); },
-   'code tag': function (v) { this.push("');\n", v[1].join(''), ";out('"); },
-   'single quote': function () { this.push("\\'"); },
-   newline: function () { this.push("\\n"); },
-   text: function(v) { this.push(v); }
+  markup: function (v) {
+    var ret = this.header + this.out.join('') + this.footer;
+    this.out = [];
+    return ret;
+  },
+  'create child': function(v) {
+    var name = v[1].join('').constantize();
+    this.push("', self.createTemplateView('", name, "'",
+              v[2] ? ', ' + v[2] : '',
+              "),\n'");
+  },
+  foamTag: function(v) {
+    return this.push(v.toString());
+  },
+  'simple value': function(v) { this.push("',\n self.", v[1].join(''), ",\n'"); },
+  'raw values tag': function (v) { this.push("',\n", v[1].join(''), ",\n'"); },
+  'values tag': function (v) { this.push("',\nescapeHTML(", v[1].join(''), "),\n'"); },
+  'live value tag': function (v) { this.push("',\nself.dynamicTag('span', function() { return ", v[1].join(''), "; }.bind(this)),\n'"); },
+  'code tag': function (v) { this.push("');\n", v[1].join(''), ";out('"); },
+  'single quote': function () { this.push("\\'"); },
+  newline: function () { this.push("\\n"); },
+  text: function(v) { this.push(v); }
 });
 
 
