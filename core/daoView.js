@@ -354,7 +354,20 @@ MODEL({
         if ( this.dao && ! hidden ) this.onDAOUpdate();
       }
     },
-    { name: 'rowView', defaultValue: 'DetailView' },
+    {
+      name: 'rowView',
+      defaultValue: 'DetailView',
+      preSet: function(_, v) {
+        var m = FOAM.lookup(v, this.X);
+
+        return m ?
+          v :
+          Model.create({
+            name: 'InnerDetailView' + this.$UID,
+            extendsModel: 'DetailView',
+            templates:[{name: 'toHTML', template: v}]})
+      }
+    },
     {
       name: 'mode',
       defaultValue: 'read-write',
@@ -368,10 +381,7 @@ MODEL({
       name: 'useSelection',
       help: 'Backward compatibility for selection mode. Create a X.selection$ value in your context instead.',
       postSet: function(old, nu) {
-        if (this.useSelection && !this.X.selection$)
-        {
-           this.X.selection$ = this.X.SimpleValue.create();
-        }
+        if ( this.useSelection && !this.X.selection$ ) this.X.selection$ = this.X.SimpleValue.create();
         this.selection$ = this.X.selection$;
       }
     },
@@ -443,7 +453,7 @@ MODEL({
       this.painting = true;
 
       var out = [];
-      var rowView = FOAM.lookup(this.rowView, this.X);
+      var rowView = Model.isInstance(this.rowView) ? this.rowView : FOAM.lookup(this.rowView, this.X);
 
       this.children = [];
       this.initializers_ = [];

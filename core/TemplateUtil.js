@@ -53,7 +53,7 @@ var FOAMTagParser = {
 
   label: str(plus(notChars(' =/\t\r\n<>\'"'))),
 
-  text: str(plus(not(literal_ic('</foam')))),
+  text: str(plus(not(literal_ic('</foam'), anyChar))),
 
   value: str(seq1(1, '"', repeat(notChar('"')), '"')),
 
@@ -63,12 +63,13 @@ var FOAMTagParser = {
   tag: function(xs) {
     var obj = {
       attrs: {},
-      children: xs[4] || [],
+      body: xs[4] || '',
       toString: function() {
         var out = '<foam ';
         for ( key in this.attrs ) { out += key + '="' + this.attrs[key] + '" '; }
-        if ( this.children.length ) {
-          out += this.children.join();
+        if ( this.body.length ) {
+          out += '>';
+          out += this.body;
           out += '</foam>';
         } else {
           out += '/>';
@@ -77,7 +78,6 @@ var FOAMTagParser = {
       }
     };
     xs[2].forEach(function(attr) { obj.attrs[attr[0]] = attr[2]; });
-    debugger;
     return obj;
   }
 });
@@ -89,7 +89,7 @@ var TemplateParser = {
   START: sym('markup'),
 
   markup: repeat0(alt(
-//    sym('foamTag'),
+    sym('foamTag'),
     sym('create child'),
     sym('simple value'),
     sym('live value tag'),
@@ -184,8 +184,27 @@ var TemplateCompiler = {
               v[2] ? ', ' + v[2] : '',
               "),\n'");
   },
-  foamTag: function(v) {
-    return this.push(v.toString());
+  foamTag: function(t) {
+    if ( t.attrs.f ) {
+      var name = t.attrs.f.constantize();
+      var attrs = t.attrs.clone();
+      delete attrs['f'];
+      if ( t.body ) {
+        attrs.rowView = t.body;
+      }
+      this.push("', self.createTemplateView('", name, "',");
+      /*
+      for ( var key in attrs ) {
+        this.push(key);
+        this.push(':"');
+        this.push(attrs[key]);
+        this.push('",');
+      }
+      */
+      this.push(JSON.stringify(attrs));
+      this.push("),\n'");
+    }
+//    return this.push('FOAM TAG');
   },
   'simple value': function(v) { this.push("',\n self.", v[1].join(''), ",\n'"); },
   'raw values tag': function (v) { this.push("',\n", v[1].join(''), ",\n'"); },
