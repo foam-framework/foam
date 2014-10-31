@@ -355,18 +355,9 @@ MODEL({
       }
     },
     {
+      model_: 'View2Property',
       name: 'rowView',
-      defaultValue: 'DetailView',
-      preSet: function(_, v) {
-        var m = FOAM.lookup(v, this.X);
-
-        return m ?
-          v :
-          Model.create({
-            name: 'InnerDetailView' + this.$UID,
-            extendsModel: 'DetailView',
-            templates:[{name: 'toHTML', template: v}]})
-      }
+      defaultValue: 'DetailView'
     },
     {
       name: 'mode',
@@ -453,8 +444,6 @@ MODEL({
       this.painting = true;
 
       var out = [];
-      var rowView = Model.isInstance(this.rowView) ? this.rowView : FOAM.lookup(this.rowView, this.X);
-
       this.children = [];
       this.initializers_ = [];
 
@@ -464,7 +453,7 @@ MODEL({
       }
       d.select({put: function(o) {
         if ( this.mode === 'read-write' ) o = o.model_.create(o, this.X); //.clone();
-        var view = rowView.create({data: o, model: o.model_}, this.X);
+        var view = this.rowView({data: o, model: o.model_}, this.X);
         // TODO: Something isn't working with the Context, fix
         view.DAO = this.dao;
         if ( this.mode === 'read-write' ) {

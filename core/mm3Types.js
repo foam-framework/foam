@@ -715,7 +715,7 @@ var FactoryProperty = Model.create({
   name: 'FactoryProperty',
   extendsModel: 'Property',
 
-  help: "Describes a Factory property.",
+  help: 'Describes a Factory property.',
 
   properties: [
     {
@@ -742,10 +742,54 @@ var FactoryProperty = Model.create({
         console.error('******* Invalid Factory: ', f);
         return f;
       }
-    },
+    }
+  ]
+});
+
+
+var View2Property = Model.create({
+  name: 'View2Property',
+  extendsModel: 'FactoryProperty',
+
+  help: 'Describes a View Factory property.',
+
+  properties: [
     {
-      name: 'defaultValue',
-      preSet: function(_, f) { return ViewProperty.PRE_SET.defaultValue.call(this, null, f); }
+      name: 'preSet',
+      doc: "Can be specified as either a function, a Model, a Model path, or a JSON object.",
+      defaultValue: function(_, f) {
+        // A Factory Function
+        if ( typeof f === 'function' ) return f;
+
+        // A String Path to a Model
+        if ( typeof f === 'string' ) {
+          // if not a valid model path then treat as a template
+          if ( /[^0-9a-zA-Z$_.]/.exec(f) ) {
+            var viewModel = Model.create({
+              name: 'InnerDetailView' + this.$UID,
+              extendsModel: 'DetailView',
+              templates:[{name: 'toHTML', template: f}]
+            });
+            return viewModel.create.bind(viewModel);
+          }
+
+          return function(map, opt_X) {
+            return FOAM.lookup(f, opt_X || this.X).create(map);
+          }.bind(this);
+        }
+
+        // An actual Model
+        if ( Model.isInstance(f) ) return f.create.bind(f);
+
+        // A JSON Model Factory: { factory_ : 'ModelName', arg1: value1, ... }
+        if ( f.factory_ ) return function(map, opt_X) {
+          var X = opt_X || this.X;
+          return FOAM(f.factory_, X).create(map, X);
+        }.bind(this);
+
+        console.error('******* Invalid Factory: ', f);
+        return f;
+      }
     }
   ]
 });
