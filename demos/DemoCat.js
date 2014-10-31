@@ -3,12 +3,7 @@ var VIDEO_PATH = 'https://x20web.corp.google.com/~kgr/power/videos/DemoDen/';
 MODEL({
   name: 'Demo',
   properties: [
-    'name',
-    'path',
-    'keywords',
-    'image',
-    'video',
-    'description',
+    'name', 'path', 'keywords', 'image', 'video', 'description',
     {
       name: 'src',
       defaultValueFn: function() {
@@ -270,10 +265,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
 MODEL({
   name: 'Controller',
   properties: [
-    {
-      name: 'search',
-      view: { model_: 'TextFieldView', onKeyMode: true },
-    },
+    { name: 'search', view: { model_: 'TextFieldView', onKeyMode: true } },
     { name: 'dao', defaultValue: demos },
     {
       name: 'filteredDAO',
