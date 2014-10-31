@@ -337,6 +337,3 @@ MODEL({
     */}
  ]
 });
-
-
-X.DemoView; // Install CSS, shouldn't be required.  TODO: Fix
