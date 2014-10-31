@@ -57,7 +57,7 @@ var FObject = {
     if ( typeof args === 'object' ) o.copyFrom(args);
     o.init(args);
 
-    if ( o.exportKey ) map[o.exportKey] = o;
+    if ( o.exportKey ) o.X[o.exportKey] = o;
 
     return o;
   },
@@ -98,7 +98,7 @@ var FObject = {
 
   init: function(_) {
     if ( ! this.model_ ) return;
-    
+
     var ps;
 
     ps = this.selectProperties_('factoryProperties_', 'factory');
