@@ -290,16 +290,10 @@ MODEL({
       var i = window.location.href.indexOf('?q=');
       if ( i != -1 ) this.search = window.location.href.substring(i+3);
     }
-  }
-});
-
-
-MODEL({
-  name: 'ControllerView',
-  extendsModel: 'DetailView',
+  },
   templates: [
     function CSS() {/* .thumbnail { margin-bottom: 40px; } */},
-    function toHTML() {/*
+    function toDetailHTML() {/*
         &nbsp;&nbsp; Search: $$search
         <p>
         <foam f="filteredDAO" className="demos" tagName="ul">
@@ -317,5 +311,5 @@ MODEL({
           </li>
         </foam>
     */}
- ]
+  ]
 });

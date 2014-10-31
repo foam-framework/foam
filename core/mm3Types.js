@@ -770,6 +770,10 @@ var ViewFactoryProperty = Model.create({
               extendsModel: 'DetailView',
               templates:[{name: 'toHTML', template: f}]
             });
+
+            // TODO(kgr): this isn't right because compiling the View
+            // template is async.  Should create a FutureView to handle this.
+            arequireModel(viewModel);
             return viewModel.create.bind(viewModel);
           }
 
