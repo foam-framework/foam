@@ -25,8 +25,6 @@
  *    \<new-line>: ignored
  *    %%value(<whitespace>|<): output a single value to the template output
  *    $$feature(<whitespace>|<): output the View or Action for the current Value
- *
- * TODO: add support for arguments
  */
 
 var TemplateParser = {
@@ -35,6 +33,7 @@ var TemplateParser = {
   START: sym('markup'),
 
   markup: repeat0(alt(
+    sym('tag'),
     sym('create child'),
     sym('simple value'),
     sym('live value tag'),
