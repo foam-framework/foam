@@ -25,8 +25,6 @@
  *    \<new-line>: ignored
  *    %%value(<whitespace>|<): output a single value to the template output
  *    $$feature(<whitespace>|<): output the View or Action for the current Value
- *
- * TODO: add support for arguments
  */
 
 var TemplateParser = {
