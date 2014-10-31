@@ -33,6 +33,7 @@ var TemplateParser = {
   START: sym('markup'),
 
   markup: repeat0(alt(
+    sym('tag'),
     sym('create child'),
     sym('simple value'),
     sym('live value tag'),
