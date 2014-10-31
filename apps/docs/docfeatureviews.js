@@ -47,6 +47,14 @@ MODEL({
       postSet: function() {
         var self = this;
 
+        if (!this.X.documentViewParentModel) {
+          console.warn("this.X.documentViewParentModel non-existent");
+        } else if (!this.X.documentViewParentModel.get()) {
+          console.warn("this.X.documentViewParentModel not set");
+        } else if (!this.X.documentViewParentModel.get().valid) {
+          console.warn("this.X.documentViewParentModel not valid");
+        }
+
         this.filteredDAO.select(COUNT())(function(c) {
           self.hasDAOContent = c.count > 0;
         });
@@ -168,7 +176,7 @@ MODEL({
       console.assert(false, 'DocFeaturesView.featureName: implement me!');
     },
     featureType: function() {
-      // implement this to return the type name (i.e. "Property", "Method", etc.)
+      // implement this to return Model property name (i.e. "properties", "methods", etc.)
       console.assert(false, 'DocFeaturesView.featureType: implement me!');
     }
   }
@@ -326,7 +334,7 @@ MODEL({
       return "Properties";
     },
     featureType: function() {
-      return "Property";
+      return "properties";
     }
   }
 
@@ -345,7 +353,7 @@ MODEL({
       return "Relationships";
     },
     featureType: function() {
-      return "Relationship";
+      return "relationships";
     },
   }
 
@@ -365,7 +373,7 @@ MODEL({
       return "Actions";
     },
     featureType: function() {
-      return "Action";
+      return "actions";
     },
   }
 
@@ -384,7 +392,7 @@ MODEL({
       return "Listeners";
     },
     featureType: function() {
-      return "Listener";
+      return "listeners";
     },
   }
 
@@ -403,7 +411,7 @@ MODEL({
       return "Templates";
     },
     featureType: function() {
-      return "Template";
+      return "templates";
     },
   }
 
@@ -423,7 +431,7 @@ MODEL({
       return "Issues";
     },
     featureType: function() {
-      return "Issue";
+      return "issues";
     },
   }
 
@@ -451,7 +459,7 @@ MODEL({
       return "Methods";
     },
     featureType: function() {
-      return "Method";
+      return "methods";
     },
   }
 
@@ -495,7 +503,7 @@ MODEL({
       return "Arguments";
     },
     featureType: function() {
-      return "Arg";
+      return "args";
     },
   },
 
@@ -587,7 +595,7 @@ MODEL({
       return "Chapters";
     },
     featureType: function() {
-      return "Documentation";
+      return "documentation";
     },
   },
 
@@ -625,7 +633,7 @@ MODEL({
       return "Inner Models";
     },
     featureType: function() {
-      return "Model";
+      return "models";
     },
   },
 

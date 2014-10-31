@@ -170,7 +170,6 @@ MODEL({
       documentation: "A reference to the actual feature.",
       postSet: function() {
         this.name = this.feature.name;
-        this.type = this.feature.model_.id;
       }
     },
     {
@@ -302,45 +301,43 @@ MODEL({
         </p>
         */
       var modelDef = model.definition_?  model.definition_: model;
-
       var self = this;
       var newModelTr = this.X.DocModelInheritanceTracker.create();
-      newModelTr.model = modelDef.name;
+      newModelTr.model = model.name;
 
-      modelDef.getAllMyFeatures().forEach(function(feature) {
+      this.X.Model.properties.forEach(function(modProp) {
+        var modPropVal = modelDef[modProp.name];
+        if (Array.isArray(modPropVal)) { // we only care to check inheritance on the array properties
+          modPropVal.forEach(function(feature) {
   
-        // all features we hit are declared (or overridden) in this model
-        var featTr = self.X.DocFeatureInheritanceTracker.create({
-              isDeclared:true,
-              feature: feature,
-              model: newModelTr.model });
-        // HACK special case since listeners are changed into Methods
-        if (feature.model_.id === 'Method') {
-          // check listeners list
-          if (modelDef.listeners.lastIndexOf(feature) !== -1 ) {
-            featTr.type = 'Listener';
-          }
+            // all features we hit are declared (or overridden) in this model
+            var featTr = self.X.DocFeatureInheritanceTracker.create({
+                  isDeclared:true,
+                  feature: feature,
+                  model: newModelTr.model,
+                  type: modProp.name });          
+            self.X.docModelViewFeatureDAO.put(featTr);
+
+            // for the models that extend this model, make sure they have
+            // the feature too, if they didn't already have it declared (overridden).
+            previousExtenderTrackers.forEach(function(extModelTr) {
+              self.X.docModelViewFeatureDAO
+                    .where(AND(EQ(DocFeatureInheritanceTracker.MODEL, extModelTr.model),
+                               EQ(DocFeatureInheritanceTracker.NAME, feature.name)))
+                    .select(COUNT())(function(c) {
+                        if (c.count <= 0) {
+                          var featTrExt = self.X.DocFeatureInheritanceTracker.create({
+                              isDeclared: false,
+                              feature: feature,
+                              model: extModelTr.model,
+                              type: modProp.name });
+                          self.X.docModelViewFeatureDAO.put(featTrExt);
+                        }
+                    });
+            });
+          });
         }
-        self.X.docModelViewFeatureDAO.put(featTr);
-
-        // for the models that extend this model, make sure they have
-        // the feature too, if they didn't already have it declared (overridden).
-        previousExtenderTrackers.forEach(function(extModelTr) {
-          self.X.docModelViewFeatureDAO
-                .where(AND(EQ(DocFeatureInheritanceTracker.MODEL, extModelTr.model),
-                           EQ(DocFeatureInheritanceTracker.NAME, feature.name)))
-                .select(COUNT())(function(c) {
-                    if (c.count <= 0) {
-                      var featTrExt = self.X.DocFeatureInheritanceTracker.create({
-                          isDeclared: false,
-                          feature: feature,
-                          model: extModelTr.model });
-                      self.X.docModelViewFeatureDAO.put(featTrExt);
-                    }
-                });
-        });
       });
-
       // Check if we extend something. Use model instead of modelDef, in case we
       // have traits that injected themselves into our inheritance heirarchy.
       if (!model.extendsModel) {

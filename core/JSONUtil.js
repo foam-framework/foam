@@ -103,30 +103,8 @@ var JSONUtil = {
       }
       */
 
-      var finishedModel = ( opt_defaultModel && ! obj.model_ ) ? opt_defaultModel.create(obj) :
+      return ( opt_defaultModel && ! obj.model_ ) ? opt_defaultModel.create(obj) :
             (X[obj.model_] ? X[obj.model_].create(obj) : obj);
-
-      if ((obj.model_ && obj.model_ === 'Model') || (! obj.model_ && opt_defaultModel === X.Model))
-      {
-        // clone feature lists to avoid sharing the reference in the copy and original
-        if (Array.isArray(obj.methods))       obj.methods       = [].concat(obj.methods);
-        if (Array.isArray(obj.templates))     obj.templates     = [].concat(obj.templates);
-        if (Array.isArray(obj.relationships)) obj.relationships = [].concat(obj.relationships);
-        if (Array.isArray(obj.properties))    obj.properties    = [].concat(obj.properties);
-        if (Array.isArray(obj.actions))       obj.actions       = [].concat(obj.actions);
-        if (Array.isArray(obj.listeners))     obj.listeners     = [].concat(obj.listeners);
-        if (Array.isArray(obj.models))        obj.models        = [].concat(obj.models);
-        if (Array.isArray(obj.tests))         obj.tests         = [].concat(obj.tests);
-        if (Array.isArray(obj.issues))        obj.issues        = [].concat(obj.issues);
-  
-        // save a copy of the pure definition
-        finishedModel.definition_ = 
-            ( opt_defaultModel && ! obj.model_ ) ? 
-                opt_defaultModel.create(obj) :
-                (X[obj.model_] ? X[obj.model_].create(obj) : obj)
-      }
-
-      return finishedModel;
     }
 
     return obj;
