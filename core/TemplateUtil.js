@@ -192,7 +192,6 @@ var TemplateCompiler = {
       if ( t.body ) {
         attrs.rowView = t.body;
       }
-      console.log('************** NAME: ', name);
       this.push("', self.createTemplateView('", name, "',");
       /*
       for ( var key in attrs ) {

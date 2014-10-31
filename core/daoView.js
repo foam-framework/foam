@@ -381,10 +381,7 @@ MODEL({
       name: 'useSelection',
       help: 'Backward compatibility for selection mode. Create a X.selection$ value in your context instead.',
       postSet: function(old, nu) {
-        if (this.useSelection && !this.X.selection$)
-        {
-           this.X.selection$ = this.X.SimpleValue.create();
-        }
+        if ( this.useSelection && !this.X.selection$ ) this.X.selection$ = this.X.SimpleValue.create();
         this.selection$ = this.X.selection$;
       }
     },

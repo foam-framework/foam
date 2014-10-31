@@ -308,8 +308,6 @@ MODEL({
 });
 
 
-//             <p><foam f="description" mode="read-only" escapeHTML="false"/></p>
-
 MODEL({
   name: 'ControllerView',
   extendsModel: 'DetailView',
@@ -321,19 +319,19 @@ MODEL({
     */},
     function toHTML() {/*
         &nbsp;&nbsp; Search: $$search
-        <p/>
+        <p>
         <foam f="filteredDAO" className="demos" tagName="ul">
           <li class="thumbnail">
             <a href="%%data.path" class="thumb">$$name{mode: 'read-only'}</a>
-            <br/>
+            <br>
             <% if ( this.data.image ) { %> <br><a href="%%data.path"><img width=250 height=250 src="democat/%%data.image"></a> <% } %>
             <p>$$description{mode: 'read-only', escapeHTML: false}</p>
-            <b>Keywords:</b> <%= this.data.keywords.join(', ') %><br/>
-            <b>Source:</b> <a href="%%data.src">here</a><br/>
+            <b>Keywords:</b> <%= this.data.keywords.join(', ') %><br>
+            <b>Source:</b> <a href="%%data.src">here</a><br>
             <% if ( VIDEO_PATH && this.data.video ) { %>
             <b>Video:</b> <a href="<%= VIDEO_PATH + this.data.video%>"><img style="vertical-align:middle;" width=30 height=30 src="democat/movie-clip-icon.png"></a>
             <% } %>
-            <br/>
+            <br>
           </li>
         </foam>
     */}
