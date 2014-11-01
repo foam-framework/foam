@@ -26,7 +26,6 @@ MODEL({
   properties: [
     {
       name: 'search',
-      postSet: function() { console.log("Search change: "+this.search); }
     },
     {
       name: 'searchView',
@@ -145,7 +144,6 @@ MODEL({
 
 MODEL({
   name: 'DocBrowserController',
-  extendsModel: 'Model',
 
   documentation: function() {  /*
     <p>Some documentation for the $$DOC{ref:'.'} model.</p>
@@ -155,7 +153,28 @@ MODEL({
     <p>Though you'd often want to link to related models, like $$DOC{ref:'DocModelBodyView'}, or even specific features on them, like $$DOC{ref:'DocModelView.data', text:'DocModelView&apos;s data property'}.</p>
     <p>Reference to a method argument: $$DOC{ref:'DocBrowserController.testMethod.args.testy'}</p>
     <p>This won't work since 'properties' here will resolve to the DocBrowserController.PROPERTIES feature: $$DOC{ref:'DocBrowserController.properties.modelListView'}. Only use direct access for layers below Model.feature.</p>
+    <p>Linking to a $$DOC{ref:'Model'} property value of a $$DOC{ref:'Model'} (rather than a feature): $$DOC{ref:'DocBrowserController..documentation'} </p>
   */},
+
+  models: [
+    {
+      model_: 'Model',
+      name: 'NamedInnerModel',
+      documentation: function() { /* Docs for named inner model. $$DOC{ref:"."} */ },
+      models: [
+        {
+          model_: 'Model',
+          name: 'InnyInner',
+          documentation: function() { /* Inny Inner! $$DOC{ref:"."} */ },
+        }
+      ]
+
+    },
+//    {
+//      model_: 'Model',
+
+//    }
+  ],
 
   methods: {
     init: function() {
@@ -168,49 +187,20 @@ MODEL({
       // detail context needs a documentViewParentModel to indicate what model it is rooted at
       this.DetailContext = this.X.sub({}, 'detailX');
       this.DetailContext.documentViewParentModel = this.DetailContext.SimpleValue.create();
-      this.DetailContext.documentViewRef = this.DetailContext.DocRef.create();
+      this.DetailContext.documentViewRef = this.DetailContext.SimpleValue.create();// this.DetailContext.DocRef.create();
       //Events.follow(this.SearchContext.selection$, this.DetailContext.documentViewParentModel);
 
-      this.X.documentViewRequestNavigation = function(ref) {
-        if (ref.valid) {
-          this.selection = ref.resolvedModelChain[0];
-          this.DetailContext.documentViewParentModel.set(ref.resolvedModelChain[0]);
-          this.DetailContext.documentViewRef.ref = ref.resolvedRef;
-          this.SearchContext.selection$.set(this.DetailContext.documentViewParentModel.get());
-          location.hash = "#" + ref.resolvedRef;
-        }
-      }.bind(this);
+      this.X.documentViewRequestNavigation = this.requestNavigation.bind(this);
 
       /////////////////////////// Context setup ^
       this.SUPER();
       /////////////////////////// this.init v
 
       // when the hash changes set the documentViewParentModel and this.selection
-      window.addEventListener('hashchange', function() {
-        if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) {
-          location.hash = 'developerDocs.Welcome';
-          return;
-        }
-        // don't respond if we are already at the location desired
-        if (location.hash.substring(1) === this.DetailContext.documentViewRef.ref) return;
-        
-        this.DetailContext.documentViewRef.ref = location.hash.substring(1);
-        if (this.DetailContext.documentViewRef.valid) {
-          this.DetailContext.documentViewParentModel.set(
-               this.DetailContext.documentViewRef.resolvedModelChain[0]);
-          this.SearchContext.selection$.set(this.DetailContext.documentViewParentModel.get());
-
-        }
-      }.bind(this));
+      window.addEventListener('hashchange', this.setReferenceFromHash.bind(this));
 
       // initialization from hash
-      if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) location.hash = 'developerDocs.Welcome';
-      this.DetailContext.documentViewRef.ref = location.hash.substring(1);
-      if (this.DetailContext.documentViewRef.valid) {
-        this.DetailContext.documentViewParentModel.set(
-             this.DetailContext.documentViewRef.resolvedModelChain[0]);
-        this.SearchContext.selection$.set(this.DetailContext.documentViewParentModel.get());
-      }
+      this.setReferenceFromHash();
 
       var testArg = this.X.Arg.create({name: 'testy'});
       testArg.documentation = this.X.Documentation.create({
@@ -223,7 +213,35 @@ MODEL({
 
     testMethod: function(a1, b2) {
       return a1 + b2;
+    },
+
+    setReferenceFromHash: function() {
+      if (location.hash === '#' || location.hash === '#undefined' || location.hash.length === 0) {
+        location.hash = 'developerDocs.Welcome';
+        return;
+      }
+      // don't respond if we are already at the location desired
+      if (location.hash.substring(1) === this.DetailContext.documentViewRef.get().ref) return;
+
+      this.DetailContext.documentViewRef.set(this.DetailContext.DocRef.create({ref:location.hash.substring(1)}));
+      if (this.DetailContext.documentViewRef.get().valid) {
+        this.DetailContext.documentViewParentModel.set(
+             this.DetailContext.documentViewRef.get().resolvedRoot);
+        this.SearchContext.selection$.set(this.DetailContext.documentViewParentModel.get().resolvedModelChain[0]); // selection wants a Model object
+
+      }
+    },
+
+    requestNavigation: function(ref) {
+      if (ref.valid) {
+        this.selection = ref.resolvedModelChain[0];
+        this.DetailContext.documentViewParentModel.set(ref.resolvedRoot);
+        this.DetailContext.documentViewRef.set(ref);
+        this.SearchContext.selection$.set(this.DetailContext.documentViewParentModel.get().resolvedModelChain[0]); // selection wants a Model object
+        location.hash = "#" + ref.resolvedRef;
+      }
     }
+
   },
 
   listeners: [
@@ -252,7 +270,7 @@ MODEL({
     {
       name: 'selectionView',
       factory: function() {
-        return this.DetailContext.DocModelView.create({ model: Model, data: this.DetailContext.documentViewRef });
+        return this.DetailContext.DocModelView.create({ model: Model, data$: this.DetailContext.documentViewRef });
       }
     },
   ]
@@ -269,18 +287,6 @@ MODEL({
      this.data.selectionView.initHTML();
    }
   },
-
-//  templates: [
-//    function toHTML()    {/*
-//      <div id="%%id">
-//        <h1>FOAM Documentation Browser</h1>
-//        <div class="contentPanes">
-//          <div class="listPane"><%=this.data.modelListView.toHTML()%></div>
-//          <div class="detailPane"><%=this.data.selectionView.toHTML()%></div>
-//        </div>
-//      </div>
-//    */}
-//  ]
 
   templates: [
     function CSS() {/*
@@ -421,6 +427,8 @@ MODEL({
         flex-grow: 0;
         flex-shrink: 0;
         order: 1;
+        padding: 0;
+        margin-left: -15;
       }
       
       div.list-container {
@@ -490,7 +498,7 @@ MODEL({
           <div class="docbrowser-header-inner">
             <div class="docbrowser-header-flex-container">
               <div class="docbrowser-header-contents">
-                <div class="docbrowser-title">FOAM API Reference</div>
+                <div class="docbrowser-title"><img src="images/browsertitle-lg.png" alt="FOAM API Reference"/></div>
               </div>
             </div>
           </div>

@@ -23,21 +23,21 @@ var __features__ = [
     function lookup(key) {
       if ( ! key ) return this;
       if ( ! ( typeof key === 'string' ) ) return key;
-      
+
       var path = key.split('.');
       var root = this
       for ( var i = 0 ; i < path.length ; i++ ) root = root[path[i]];
-      
+
       return root;
     }
-    
+
     for ( var i = 1 ; i < __features__.length ; i++ ) {
       var a = __features__[i], c = lookup(a[0]), r = a[1], f = a[2];
-      
-      console.log('Feature: ', r, f.name || f);
+
+//      console.log('Feature: ', r, f.name || f);
       (__roles__[r] || Let$)(c, r, f);
     }
-  }],  
+  }],
   // Concept,         Role,         Individual
   [                 , 'prototype',  this ],
   [                 , 'GLOBAL',     this['GLOBAL'] || this ],
@@ -51,7 +51,7 @@ var __features__ = [
     }
   }],
   [                 , 'Role$',      function Poly$(c, r, f) { if ( ! c.prototype.hasOwnProperty(f.name) ) c.prototype[f.name] = f; }],
-  [ Object          , 'Property$',  ['$UID', { get: (function() {
+  [ Object.prototype, 'Property$',  ['$UID', { get: (function() {
     var id = 1;
     return function() { return this.$UID__ || (this.$UID__ = id++); };
   })()}]],
@@ -110,17 +110,17 @@ var __features__ = [
   }],
   [                 , 'Method$', function toCompare(c) {
     if ( Array.isArray(c) ) return CompoundComparator.apply(null, c);
-    
+
     return c.compare ? c.compare.bind(c) : c;
   }],
   [                 , 'Method$', function CompoundComparator() {
     var args = argsToArray(arguments);
     var cs = [];
-    
+
     // Convert objects with .compare() methods to compare functions.
     for ( var i = 0 ; i < args.length ; i++ )
       cs[i] = toCompare(args[i]);
-    
+
     var f = function(o1, o2) {
       for ( var i = 0 ; i < cs.length ; i++ ) {
         var r = cs[i](o1, o2);
@@ -128,19 +128,19 @@ var __features__ = [
       }
       return 0;
     };
-    
+
     f.toSQL = function() { return args.map(function(s) { return s.toSQL(); }).join(','); };
     f.toMQL = function() { return args.map(function(s) { return s.toMQL(); }).join(' '); };
     f.toString = f.toSQL;
-    
+
     return f;
   }],
   [                 , 'Method$', function randomAct() {
     var totalWeight = 0.0;
     for ( var i = 0 ; i < arguments.length ; i += 2 ) totalWeight += arguments[i];
-    
+
     var r = Math.random();
-    
+
     for ( var i = 0, weight = 0 ; i < arguments.length ; i += 2 ) {
       weight += arguments[i];
       if ( r <= weight / totalWeight ) {
@@ -155,7 +155,7 @@ var __features__ = [
   }],
   [                 , 'Method$', function predicatedSink(predicate, sink) {
     if ( predicate === TRUE || ! sink ) return sink;
-    
+
     return {
       __proto__: sink,
       $UID: sink.$UID,
@@ -166,7 +166,7 @@ var __features__ = [
         if ( sink.remove && ( ! obj || predicate.f(obj) ) ) sink.remove(obj, s, fc);
       },
       toString: function() { return 'PredicatedSink(' + sink.$UID + ', ' + predicate + ', ' + sink + ')';
-                             
+
                            }/*,
                               eof: function() {
                               sink && sink.eof && sink.eof();
@@ -240,14 +240,14 @@ var __features__ = [
     var x = 0;
     var y = 0;
     var parent;
-    
+
     while ( node ) {
       parent = node;
       x += node.offsetLeft;
       y += node.offsetTop;
       node = node.offsetParent;
     }
-    
+
     return [x, y, parent];
   }],
   // Computes the XY coordinates of the given node
@@ -270,7 +270,7 @@ var __features__ = [
       };
       return ret;
     };
-    
+
     return function(arg) {
       return arguments.length == 1 ?
         simpleBind(this, arg) :
@@ -279,25 +279,25 @@ var __features__ = [
   })()],
   [ Date            , 'Method$',    function toRelativeDateString(){
     var seconds = Math.floor((Date.now() - this.getTime())/1000);
-    
+
     if ( seconds < 60 ) return 'moments ago';
-    
+
     var minutes = Math.floor((seconds)/60);
-    
+
     if ( minutes == 1 ) return '1 minute ago';
-    
+
     if ( minutes < 60 ) return minutes + ' minutes ago';
-    
+
     var hours = Math.floor(minutes/60);
     if ( hours == 1 ) return '1 hour ago';
-    
+
     if ( hours < 24 ) return hours + ' hours ago';
-    
+
     var days = Math.floor(hours / 24);
     if ( days == 1 ) return '1 day ago';
-    
+
     if ( days < 7 ) return days + ' days ago';
-    
+
     if ( days < 365 ) {
       var year = 1900+this.getYear();
       var noyear = this.toDateString().replace(" " + year, "");
@@ -315,13 +315,13 @@ var __features__ = [
   [ Date            , 'Method$',    function toMQL() {
     return this.getFullYear() + '/' + (this.getMonth() + 1) + '/' + this.getDate();
   }],
-  [ String          , 'Method$',    function compareTo() {
+  [ String          , 'Method$',    function compareTo(o) {
     return ( o == this ) ? 0 : this < o ? -1 : 1;
   }],
-  [ Number          , 'Method$',    function compareTo() {
+  [ Number          , 'Method$',    function compareTo(o) {
     return ( o == this ) ? 0 : this < o ? -1 : 1;
   }],
-  [ Boolean         , 'Method$',    function compareTo() {
+  [ Boolean         , 'Method$',    function compareTo(o) {
     return (this.valueOf() ? 1 : 0) - (o ? 1 : 0);
   }],
   /*
@@ -332,13 +332,13 @@ var __features__ = [
   [ String          , 'Method$',    function }],
   [ String          , 'Method$',    function }],
   [ String          , 'Method$',    function }],
-  [ String, 'Method$', function 
+  [ String, 'Method$', function
   }],
-  [ String, 'Method$', function 
+  [ String, 'Method$', function
   }],
-  [ String, 'Method$', function 
+  [ String, 'Method$', function
   }],
-  [ String, 'Method$', function 
+  [ String, 'Method$', function
   }],
   */
   [ String          , 'Poly$',   function startsWithIC(a) {
@@ -375,7 +375,7 @@ var __features__ = [
       return true;
       };
     */
-  }],      
+  }],
 ];
 
 __features__[0][1](__features__);

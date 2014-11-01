@@ -104,6 +104,7 @@ MODEL({
 });
 
 
+
 MODEL({
   name: 'DocModelInheritanceTracker',
   help: 'Stores inheritance information for a Model',
@@ -223,7 +224,16 @@ MODEL({
       help: 'The reference for which to display documentation.',
       documentation: "The reference to the $$DOC{ref:'Model'} for which to display $$DOC{ref:'Documentation'}.",
       postSet: function() {
-        this.data.addListener(this.onRefChange);
+        if (this.data.valid) {
+          if (this.sourceModel !== this.data.resolvedModelChain[0]) {
+            this.sourceModel = this.data.resolvedModelChain[0];
+          } else {
+            // even without a model change, we might have a feature change to scroll to
+            this.scrollToFeature();
+          }
+        } else {
+          this.sourceModel = undefined;
+        }
       }
     },
     {
@@ -238,20 +248,6 @@ MODEL({
 
   ],
 
-  listeners: {
-    onRefChange: function() {
-      if (this.data.valid) {
-        if (this.sourceModel !== this.data.resolvedModelChain[0]) {
-          this.sourceModel = this.data.resolvedModelChain[0];
-        } else {
-          // even without a model change, we might have a feature change to scroll to
-          this.scrollToFeature();
-        }
-      } else {
-        this.sourceModel = undefined;
-      }
-    }
-  },
 
   methods: {
 
@@ -404,6 +400,9 @@ MODEL({
           $$sourceModel{ model_: 'DocModelBodyView' }
         </div>
         <div class="members">
+          $$sourceModel{ model_: 'DocInnerModelsView' }
+        </div>
+        <div class="members">
           $$sourceModel{ model_: 'DocPropertiesView' }
         </div>
         <div class="members">
@@ -504,7 +503,7 @@ MODEL({
     renderDocSourceHTML: function() {
       // only update if we have all required data
       if (this.docSource.body && this.X.documentViewParentModel
-          && this.X.documentViewParentModel.model_ && this.data.model_) {
+          && this.X.documentViewParentModel.get().valid && this.data.model_) {
         // The first time this method is hit, replace it with the one that will
         // compile the template, then call that. Future calls go direct to lazyCompile's
         // returned function. You could also implement this the same way lazyCompile does...
@@ -735,6 +734,15 @@ MODEL({
       */}
     },
     {
+      name: 'resolvedRoot',
+      defaultValue: "",
+      documentation: function() { /*
+          The a $$DOC{ref:'DocRef'} based on the fully qualified package and
+          outer model names of this resolved reference. Does not contain features
+          and ends with this.resolvedModelChain[0].
+      */}
+    },
+    {
       name: 'ref',
       help: 'The reference to link. Must be of the form "Model", "Model.feature", or ".feature"',
       postSet: function() {
@@ -782,36 +790,44 @@ MODEL({
      while the second name is an instance of a feature on that Model, and subsequent
      names are sub-objects on those instances.</p>
   */
-
-      this.resolvedModelChain = [];
-      this.resolvedRef = "";
-      var newResolvedModelChain = [];
-      var newResolvedRef = "";
-
       this.valid = false;
 
       if (!reference) return;
 
-      // parse "Model.feature" or "Model" or ".feature" with implicit Model==this.data
       args = reference.split('.');
       var foundObject;
       var model;
 
       // if model not specified, use parentModel
       if (args[0].length <= 0) {
-        if (!this.X.documentViewParentModel) {
+        if (!this.X.documentViewParentModel || !this.X.documentViewParentModel.get().valid) {
           return; // abort
         }
-        model = this.X.documentViewParentModel.get(); // ".feature" or "."
+
+        // fill in root to make reference absolute, and try again
+        return this.resolveReference(this.X.documentViewParentModel.get().resolvedRef + reference);
+
       } else {
         // resolve path and model
         model = this.X[args[0]];
-        while (args.length > 0 && model && !model.model_) { // if no .model_, it's a package
-          newResolvedRef += args[0] + ".";
-          args = args.slice(1); // remove package part
-          model = model[args[0]];
-        };
       }
+
+      this.resolvedModelChain = [];
+      this.resolvedRef = "";
+      var newResolvedModelChain = [];
+      var newResolvedRef = "";
+      var newResolvedRoot = "";
+
+      // Strip off package or contining Model until we are left with the last
+      // resolving Model name in the chain (including inner models).
+      // Ex: package.subpackage.ParentModel.InnerModel.feature => InnerModel
+      while (args.length > 0 && model && model[args[1]] && model[args[1]].model_) {
+        newResolvedRef += args[0] + ".";
+        newResolvedRoot += args[0] + ".";
+        args = args.slice(1); // remove package/outerModel part
+        model = model[args[0]];
+      };
+
       //TODO: do something with the package parts, resolve package refs with no model
 
       if (!model) {
@@ -819,8 +835,8 @@ MODEL({
       }
       
       newResolvedModelChain.push(model);
-//      if (newResolvedRef !== "") newResolvedRef += ".";
       newResolvedRef += model.name;
+      newResolvedRoot += model.name;
 
       // Check for a feature, and check inherited features too
       if (args.length > 1 && args[1].length > 0)
@@ -884,6 +900,12 @@ MODEL({
 
       this.resolvedModelChain = newResolvedModelChain;
       this.resolvedRef = newResolvedRef;
+      this.resolvedRoot = this.X.DocRef.create({
+          resolvedModelChain: [ this.resolvedModelChain[0] ],
+          resolvedRef: newResolvedRoot,
+          valid: true,
+          resolvedRoot: undefined // otherwise it would be the same as 'this'
+      });
       this.valid = true;
     },
   },

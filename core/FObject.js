@@ -57,7 +57,7 @@ var FObject = {
     if ( typeof args === 'object' ) o.copyFrom(args);
     o.init(args);
 
-    if ( o.exportKey ) map[o.exportKey] = o;
+    if ( o.exportKey ) o.X[o.exportKey] = o;
 
     return o;
   },
@@ -98,7 +98,7 @@ var FObject = {
 
   init: function(_) {
     if ( ! this.model_ ) return;
-    
+
     var ps;
 
     ps = this.selectProperties_('factoryProperties_', 'factory');
@@ -110,8 +110,8 @@ var FObject = {
       // if ( ! this.instance_[prop.name] ) this[prop.name] = prop.factory.call(this);
       if ( ! this.hasOwnProperty(prop.name) ) this[prop.name] = prop.factory.call(this);
 
-      if ( this.exportKey )      this.X[this.exportKey]      = this[prop.name];
-      if ( this.exportValueKey ) this.X[this.exportValueKey] = this[prop.name + '$'];
+      if ( prop.exportKey )      this.X[this.exportKey]      = this[prop.name];
+      if ( prop.exportValueKey ) this.X[this.exportValueKey] = this[prop.name + '$'];
     }
 
 
@@ -168,7 +168,21 @@ var FObject = {
   },
 
   installInDocument: function(X, document) {
-    if ( Object.hasOwnProperty.call(this, 'CSS') ) X.addStyle(this.CSS());
+    for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
+      var t = this.model_.templates[i];
+      if ( t.name == 'CSS' ) {
+        // TODO(kgr): the futureTemplate should be changed to always be there
+        // so that we don't need two cases.
+        if ( t.futureTemplate ) {
+          t.futureTemplate(function() {
+            X.addStyle(this.CSS());
+          }.bind(this));
+        } else {
+          X.addStyle(this.CSS());
+        }
+        return;
+      }
+    }
   },
 
   defineFOAMGetter: function(name, getter) {

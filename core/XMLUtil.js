@@ -21,7 +21,7 @@ var XMLParser = {
 
   tag: seq(
       '<',
-      sym('label'),
+      sym('tagName'),
       sym('whitespace'),
       repeat(sym('attribute'), sym('whitespace')),
       sym('whitespace'),
@@ -30,10 +30,12 @@ var XMLParser = {
         sym('tag'),
         sym('text')
       )),
-      '</', sym('label'), '>'
+      '</', sym('tagName'), '>'
     ),
 
   label: str(plus(notChars(' =/\t\r\n<>\'"'))),
+
+  tagName: sym('label'),
 
   text: str(plus(notChar('<'))),
 

@@ -1,5 +1,4 @@
-var QIssueCommentAuthorView = FOAM({
-  model_: 'Model',
+MODEL({
   name: 'QIssueCommentAuthorView',
   extendsModel: 'DetailView',
 
@@ -8,14 +7,12 @@ var QIssueCommentAuthorView = FOAM({
   ],
 
   methods: {
-    updateSubViews: function() {
-      this.SUPER();
+    updateSubViews: function(SUPER) {
+      SUPER();
       if ( ! this.$ ) return;
       this.$.firstElementChild.href = this.data.htmlLink;
     }
   },
 
-  templates: [
-    { name: 'toHTML' }
-  ]
+  templates: [ { name: 'toHTML' } ]
 });

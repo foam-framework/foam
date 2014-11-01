@@ -141,8 +141,7 @@ function not(p, opt_else) {
   opt_else = prep(opt_else);
   var f = function(ps) {
     return this.parse(p,ps) ? undefined :
-      opt_else ? this.parse(opt_else, ps) :
-      ps;
+      opt_else ? this.parse(opt_else, ps) : ps;
   };
 
   f.toString = function() { return 'not(' + p + ')'; };
