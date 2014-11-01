@@ -348,6 +348,20 @@ var __features__ = [
       if ( this[i].toUpperCase() !== a[i].toUpperCase() ) return false;
     }
     return true;
+  }],
+  // Number.isFinite polyfill
+  // http://people.mozilla.org/~jorendorff/es6-draft.html#sec-number.isfinite
+  [ Number          , 'Poly$',   function isFinite(value) {
+    // 1. If Type(number) is not Number, return false.
+    if (typeof value !== 'number') {
+      return false;
+    }
+    // 2. If number is NaN, +∞, or −∞, return false.
+    if (value !== value || value === Infinity || value === -Infinity) {
+      return false;
+    }
+    // 3. Otherwise, return true.
+    return true;
   }],      
   [ String          , 'Poly$',   function startsWith(a) {
     // This implementation is very slow for some reason
@@ -376,23 +390,6 @@ var DEBUG_STACK = DEBUG ?
   function() { return new Error().stack; } :
   function() { return 'Set DEBUG = true in stdlib.js for stacktrace.'; } ;
 
-
-// Number.isFinite polyfill
-// http://people.mozilla.org/~jorendorff/es6-draft.html#sec-number.isfinite
-if ( typeof Number.isFinite !== 'function' ) {
-    Number.isFinite = function isFinite(value) {
-        // 1. If Type(number) is not Number, return false.
-        if (typeof value !== 'number') {
-            return false;
-        }
-        // 2. If number is NaN, +∞, or −∞, return false.
-        if (value !== value || value === Infinity || value === -Infinity) {
-            return false;
-        }
-        // 3. Otherwise, return true.
-        return true;
-    };
-}
 
 // binaryInsert into a sorted array, removing duplicates
 Object.defineProperty(Array.prototype, 'binaryInsert', {
