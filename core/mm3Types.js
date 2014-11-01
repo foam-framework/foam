@@ -753,6 +753,12 @@ var ViewFactoryProperty = Model.create({
 
   help: 'Describes a View Factory property.',
 
+  /* Doesn't work yet!
+  constants: {
+    VIEW_CACHE: {}
+  },
+  */
+
   properties: [
     {
       name: 'preSet',
@@ -765,15 +771,21 @@ var ViewFactoryProperty = Model.create({
         if ( typeof f === 'string' ) {
           // if not a valid model path then treat as a template
           if ( /[^0-9a-zA-Z$_.]/.exec(f) ) {
-            var viewModel = Model.create({
-              name: 'InnerDetailView' + this.$UID,
-              extendsModel: 'DetailView',
-              templates:[{name: 'toHTML', template: f}]
-            });
-
-            // TODO(kgr): this isn't right because compiling the View
-            // template is async.  Should create a FutureView to handle this.
-            arequireModel(viewModel);
+            // Cache the creation of an DetailView so that we don't
+            // keep recompiling the template
+            var VIEW_CACHE = ViewFactoryProperty.VIEW_CACHE ||
+              ( ViewFactoryProperty.VIEW_CACHE = {} );
+            var viewModel = VIEW_CACHE[f];
+            if ( ! viewModel ) {
+                viewModel = VIEW_CACHE[f] = Model.create({
+                  name: 'InnerDetailView' + this.$UID,
+                  extendsModel: 'DetailView',
+                  templates:[{name: 'toHTML', template: f}]
+                });
+              // TODO(kgr): this isn't right because compiling the View
+              // template is async.  Should create a FutureView to handle this.
+              arequireModel(viewModel);
+            }
             return viewModel.create.bind(viewModel);
           }
 
