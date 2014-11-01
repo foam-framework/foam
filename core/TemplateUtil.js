@@ -189,18 +189,8 @@ var TemplateCompiler = {
       var name = t.attrs.f.constantize();
       var attrs = t.attrs.clone();
       delete attrs['f'];
-      if ( t.body ) {
-        attrs.rowView = t.body;
-      }
+      if ( t.body ) attrs.rowView = t.body;
       this.push("', self.createTemplateView('", name, "',");
-      /*
-      for ( var key in attrs ) {
-        this.push(key);
-        this.push(':"');
-        this.push(attrs[key]);
-        this.push('",');
-      }
-      */
       this.push(JSON.stringify(attrs));
       this.push("),\n'");
     }
