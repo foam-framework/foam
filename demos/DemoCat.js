@@ -270,7 +270,7 @@ MODEL({
     {
       name: 'filteredDAO',
       model_: 'DAOProperty',
-      view: { model_: 'DAOListView', rowView: 'DemoView', mode: 'read-only' },
+      view: { model_: 'DAOListView', mode: 'read-only' },
       dynamicValue: function() {
         return this.dao.where(CONTAINS_IC(SEQ(Demo.NAME, Demo.DESCRIPTION, Demo.KEYWORDS), this.search));
       }
