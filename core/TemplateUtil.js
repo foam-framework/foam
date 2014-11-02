@@ -27,13 +27,21 @@
  *    $$feature(<whitespace>|<): output the View or Action for the current Value
  */
 
-var FOAMTagParser = {
+var TagParser = {
   __proto__: grammar,
+
+  create: function(tagName) {
+    return {
+      __proto__: this,
+      tagName: literal_ic(tagName)
+    };
+  },
 
   START: sym('tag'),
 
   tag: seq(
-    literal_ic('<foam'),
+    '<',
+    sym('tagName'),
     sym('whitespace'),
     repeat(sym('attribute'), sym('whitespace')),
     sym('whitespace'),
@@ -48,12 +56,18 @@ var FOAMTagParser = {
       sym('tag'),
       sym('text'))
     )),
-    literal_ic('</foam>')
+    sym('endTag')
+  ),
+
+  endTag: seq1(1,
+    '</',
+    sym('tagName'),
+    '>'
   ),
 
   label: str(plus(notChars(' =/\t\r\n<>\'"'))),
 
-  text: str(plus(not(literal_ic('</foam'), anyChar))),
+  text: str(plus(not(sym('endTag'), anyChar))),
 
   attribute: seq(sym('label'), '=', sym('value')),
 
@@ -64,8 +78,9 @@ var FOAMTagParser = {
 }.addActions({
   tag: function(xs) {
     var obj = {
+      tag: xs[1],
       attrs: {},
-      body: xs[4] || '',
+      body: xs[5] || '',
       toString: function() {
         var out = '<foam ';
         for ( key in this.attrs ) { out += key + '="' + this.attrs[key] + '" '; }
@@ -79,7 +94,7 @@ var FOAMTagParser = {
         return out;
       }
     };
-    xs[2].forEach(function(attr) { obj.attrs[attr[0]] = attr[2]; });
+    xs[3].forEach(function(attr) { obj.attrs[attr[0]] = attr[2]; });
     return obj;
   }
 });
@@ -104,7 +119,7 @@ var TemplateParser = {
     sym('text')
   )),
 
-  'foamTag': FOAMTagParser.export('tag'),
+  'foamTag': TagParser.create('foam').export('tag'),
 
   'create child': seq('$$', repeat(notChars(' $\n<{')),
                       optional(JSONParser.export('objAsString'))),
