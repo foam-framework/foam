@@ -28,7 +28,7 @@
  */
 
 var FOAMTagParser = {
-  __proto__: XMLParser,
+  __proto__: grammar,
 
   START: sym('tag'),
 
@@ -54,6 +54,8 @@ var FOAMTagParser = {
   label: str(plus(notChars(' =/\t\r\n<>\'"'))),
 
   text: str(plus(not(literal_ic('</foam'), anyChar))),
+
+  attribute: seq(sym('label'), '=', sym('value')),
 
   value: str(seq1(1, '"', repeat(notChar('"')), '"')),
 
