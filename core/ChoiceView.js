@@ -496,7 +496,24 @@ MODEL({
         var s = this.X.window.getComputedStyle(view.$);
 
         function mouseMove(evt) {
-          if ( ! view.$.contains(evt.target) ) remove();
+          // Containment is not sufficient.
+          // It makes the popup too eager to close since the mouse can start
+          // slightly outside the box. We need to check the coordinates, and
+          // only close it when it's not upwards and leftwards of the box edges,
+          // ie. to pretend the popup reaches the top and right of the window.
+          if ( view.$.contains(evt.target) ) return;
+
+          var margin = 50;
+          var left = view.$.offsetLeft - margin;
+          var right = view.$.offsetWidth + left + 2*margin;
+          var top = view.$.offsetTop - margin;
+          var bottom = view.$.offsetHeight + top + 2*margin;
+
+          if ( (left < evt.pageX && evt.pageX < right) &&
+              (top < evt.pageY && evt.pageY < bottom) )
+            return;
+
+          remove();
         }
 
         function remove() {
