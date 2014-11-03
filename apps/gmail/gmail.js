@@ -534,13 +534,21 @@ MODEL({
   templates: [
     function CSS() {/*
       .label-row {
-        height: 35px;
-        line-height: 35px;
+        height: 42px;
+        line-height: 42px;
         padding-left: 15px;
+        display: flex;
+        align-items: center;
+      }
+      .label-row img {
+        height: 24px;
+        width: 24px;
+        opacity: 0.6;
+        margin-right: 25px;
       }
     */},
     function toHTML() {/*
-      <div id="%%id" class="label-row">$$name{mode: 'read-only'}</div>
+      <div id="%%id" class="label-row">$$iconUrl $$name{mode: 'read-only'}</div>
       <% this.on('click', function() { this.X.mgmail.changeLabel(this.data); }, this.id); %>
     */}
   ]
