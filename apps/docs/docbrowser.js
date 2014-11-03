@@ -20,6 +20,7 @@ var touchManager = TouchManager.create({});
 touchManager.install(document);
 var gestureManager = GestureManager.create();
 
+DEBUG = true;
 
 MODEL({
   name: 'ModelListController',

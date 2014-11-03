@@ -97,7 +97,12 @@ var BootstrapModel = {
   buildPrototype: function() { /* Internal use only. */
 
     // save our pure state
-    BootstrapModel.saveDefinition(this);
+    // Note: Only documentation browser uses this, and it will be replaced
+    // by the new Feature Oriented bootstrapping process, so only use the
+    // extra memory in DEBUG mode.
+    if (DEBUG) {
+      BootstrapModel.saveDefinition(this);
+    }
 
     function addTraitToModel(traitModel, parentModel) {
       var name = parentModel.name + '_ExtendedWith_' + traitModel.name;
