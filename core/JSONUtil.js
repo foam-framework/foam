@@ -103,17 +103,8 @@ var JSONUtil = {
       }
       */
 
-      var finishedModel = ( opt_defaultModel && ! obj.model_ ) ? opt_defaultModel.create(obj) :
+      return ( opt_defaultModel && ! obj.model_ ) ? opt_defaultModel.create(obj) :
             (X[obj.model_] ? X[obj.model_].create(obj) : obj);
-
-      if ((obj.model_ && obj.model_ === 'Model') || (! obj.model_ && opt_defaultModel === X.Model))
-      {
-        // save a copy of the pure definition
-        finishedModel.definition_ = ( opt_defaultModel && ! obj.model_ ) ? opt_defaultModel.create(obj) :
-            (X[obj.model_] ? X[obj.model_].create(obj) : obj)
-      }
-
-      return finishedModel;
     }
 
     return obj;

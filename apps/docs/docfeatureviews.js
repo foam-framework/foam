@@ -47,7 +47,28 @@ MODEL({
       postSet: function() {
         var self = this;
 
+        if (!this.X.documentViewParentModel) {
+          console.warn("this.X.documentViewParentModel non-existent");
+        } else if (!this.X.documentViewParentModel.get()) {
+          console.warn("this.X.documentViewParentModel not set");
+        } else if (!this.X.documentViewParentModel.get().valid) {
+          console.warn("this.X.documentViewParentModel not valid");
+        }
+
         this.filteredDAO.select(COUNT())(function(c) {
+          self.hasDAOContent = c.count > 0;
+        });
+
+        this.selfFeaturesDAO = [].dao;
+        this.X.docModelViewFeatureDAO
+          .where(
+                AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.X.documentViewParentModel.get().resolvedModelChain[0].id),
+                        EQ(DocFeatureInheritanceTracker.IS_DECLARED, true)),
+                    CONTAINS(DocFeatureInheritanceTracker.TYPE, this.featureType()))
+                )
+          .select(MAP(DocFeatureInheritanceTracker.FEATURE, this.selfFeaturesDAO));
+        
+        this.selfFeaturesDAO.select(COUNT())(function(c) {
           self.hasFeatures = c.count > 0;
         });
 
@@ -67,6 +88,14 @@ MODEL({
       }
     },
     {
+      name:  'selfFeaturesDAO',
+      model_: 'DAOProperty',
+      documentation: function() { /*
+          Returns the list of features (matching this feature type) that are
+          declared or overridden in this $$DOC{ref:'Model'}
+      */}
+    },
+    {
       name:  'inheritedFeaturesDAO',
       model_: 'DAOProperty',
       documentation: function() { /*
@@ -75,18 +104,34 @@ MODEL({
       */}
     },
     {
+      name: 'hasDAOContents',
+      defaultValue: false,
+      postSet: function(_, nu) {
+        this.updateHTML();
+      },
+      documentation: function() { /*
+          True if the $$DOC{ref:'.filteredDAO'} is not empty.
+      */}
+    },
+    {
       name: 'hasFeatures',
       defaultValue: false,
       postSet: function(_, nu) {
         this.updateHTML();
-      }
+      },
+      documentation: function() { /*
+          True if the $$DOC{ref:'.selfFeaturesDAO'} is not empty.
+      */}
     },
     {
       name: 'hasInheritedFeatures',
       defaultValue: false,
       postSet: function(_, nu) {
         this.updateHTML();
-      }
+      },
+      documentation: function() { /*
+          True if the $$DOC{ref:'.inheritedFeaturesDAO'} is not empty.
+      */}
     },
     {
       name: 'rowView',
@@ -107,7 +152,7 @@ MODEL({
     <%    } else {
             if (this.hasFeatures) { %>
               <h2><%=this.featureName()%>:</h2>
-              <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
+              <div class="memberList">$$selfFeaturesDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.selfFeaturesDAO, model: Property }</div>
       <%    }
             if (this.hasInheritedFeatures) { %>
               <h2>Inherited <%=this.featureName()%>:</h2>
@@ -131,7 +176,7 @@ MODEL({
       console.assert(false, 'DocFeaturesView.featureName: implement me!');
     },
     featureType: function() {
-      // implement this to return the type name (i.e. "Property", "Method", etc.)
+      // implement this to return Model property name (i.e. "properties", "methods", etc.)
       console.assert(false, 'DocFeaturesView.featureType: implement me!');
     }
   }
@@ -190,7 +235,7 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-
+      // TODO: do this on postSet instead of pipe?
       this.overridesDAO = [];
       this.X.docModelViewFeatureDAO
           .where(
@@ -289,7 +334,7 @@ MODEL({
       return "Properties";
     },
     featureType: function() {
-      return "Property";
+      return "properties";
     }
   }
 
@@ -308,7 +353,7 @@ MODEL({
       return "Relationships";
     },
     featureType: function() {
-      return "Relationship";
+      return "relationships";
     },
   }
 
@@ -328,7 +373,7 @@ MODEL({
       return "Actions";
     },
     featureType: function() {
-      return "Action";
+      return "actions";
     },
   }
 
@@ -347,7 +392,7 @@ MODEL({
       return "Listeners";
     },
     featureType: function() {
-      return "Listener";
+      return "listeners";
     },
   }
 
@@ -366,7 +411,7 @@ MODEL({
       return "Templates";
     },
     featureType: function() {
-      return "Template";
+      return "templates";
     },
   }
 
@@ -386,7 +431,7 @@ MODEL({
       return "Issues";
     },
     featureType: function() {
-      return "Issue";
+      return "issues";
     },
   }
 
@@ -414,7 +459,7 @@ MODEL({
       return "Methods";
     },
     featureType: function() {
-      return "Method";
+      return "methods";
     },
   }
 
@@ -458,14 +503,14 @@ MODEL({
       return "Arguments";
     },
     featureType: function() {
-      return "Arg";
+      return "args";
     },
   },
 
   templates: [
     function toInnerHTML()    {/*
     <%    this.destroy();
-          if (!this.hasFeatures) { %>
+          if (!this.hasDAOContent) { %>
     <%    } else { %>
             <h4><%=this.featureName()%>:</h4>
             <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</div>
@@ -508,7 +553,7 @@ MODEL({
   templates: [
     function toInnerHTML()    {/*<%
           this.destroy();
-          if (this.hasFeatures) {
+          if (this.hasDAOContent) {
             %>(<span>$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</span>)<%
           } else {
             %>()<%
@@ -550,14 +595,14 @@ MODEL({
       return "Chapters";
     },
     featureType: function() {
-      return "Documentation";
+      return "documentation";
     },
   },
 
   templates: [
     function toInnerHTML()    {/*
     <%    this.destroy();
-          if (!this.hasFeatures) { %>
+          if (!this.hasDAOContent) { %>
     <%    } else { %>
         
             <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
@@ -588,7 +633,7 @@ MODEL({
       return "Inner Models";
     },
     featureType: function() {
-      return "Model";
+      return "models";
     },
   },
 
@@ -600,7 +645,7 @@ MODEL({
     <%    } else {
             if (this.hasFeatures) { %>
               <h2><%=this.featureName()%>:</h2>
-              <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
+              <div class="memberList">$$selfFeaturesDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.selfFeaturesDAO, model: Property }</div>
       <%    }
             if (this.hasInheritedFeatures) { %>
               <h2>Inherited <%=this.featureName()%>:</h2>
