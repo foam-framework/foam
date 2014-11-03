@@ -31,6 +31,7 @@ var files = [
   'parse',
   'event',
   'JSONUtil',
+  'HTMLParser',
   'XMLUtil',
   'context',
   'FOAM',

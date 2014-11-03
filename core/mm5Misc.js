@@ -145,29 +145,16 @@ MODEL({
       documentation: 'A list of tags for this test. Gives the environment(s) in which a test can be run. Currently in use: node, web.'
     },
     {
-      name: 'parentTest',
-      documentation: 'The parent property used to define the $$DOC{ref: ".tests"} relationship.'
+      model_: 'ArrayProperty',
+      name: 'tests',
+      label: 'Tests',
+      documentation: 'An array of child tests. Will be run in order after the parent test.'
     },
     {
       name: 'runChildTests',
       documentation: 'Whether the nested child tests should be run when this test is. Defaults to <tt>true</tt>, but some test runners set it to <tt>false</tt> so they can integrate with displaying the results.',
       transient: true,
       defaultValue: true
-    }
-  ],
-
-  relationships: [
-    {
-      name: 'tests',
-      documentation: function() {/*
-        <p>Sub-tests of this test.</p>
-
-        <p>Run with the parent test if $$DOC{ref: ".runChildTests"} are set.</p>
-
-        <p>If this relationship is in use, <tt>this.X.UnitTestDAO</tt> must be defined. Test runners will generally want to select all (enabled) tests for <tt>this.X.UnitTestDAO</tt>, but filter only the parentless, top-level tests to execute, letting this relationship handle the children.</p>
-      */},
-      relatedModel: 'UnitTest',
-      relatedProperty: 'parentTest'
     }
   ],
 
@@ -231,7 +218,8 @@ MODEL({
       if ( this.runChildTests ) {
         // TODO: This is horrendous, but I can't see a better way.
         // It would nest quite neatly if there were afunc DAO ops.
-        var future = this.tests.select([].sink);
+        var query = this.X.childTestsFilter || TRUE;
+        var future = this.tests.dao.where(query).select([].sink);
         afuncs.push(function(ret) {
           future(function(innerTests) {
             var afuncsInner = [];
@@ -314,17 +302,6 @@ MODEL({
       transient: true,
       defaultValue: false,
       documentation: 'Set after $$DOC{ref: ".atest"}: <tt>true</tt> if $$DOC{ref: ".master"} and $$DOC{ref: ".results"} match, <tt>false</tt> if they don\'t.'
-    }
-  ],
-
-  actions: [
-    {
-      name: 'update',
-      isEnabled: function() { return ! this.results.equals(this.master); },
-      documentation: 'Bound to a button in the <tt>tests/FOAMTests.html</tt> test page, called when the user wants to promote the new live $$DOC{ref: ".results"} to $$DOC{ref: ".master"}.',
-      action: function() {
-        this.master = this.results;
-      }
     }
   ],
 

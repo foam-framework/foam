@@ -399,6 +399,10 @@ var ArrayProperty = Model.create({
       help: 'The FOAM sub-type of this property.'
     },
     {
+      name: 'protobufType',
+      defaultValueFn: function() { return this.subType; }
+    },
+    {
       name: 'preSet',
       defaultValue: function(_, a, prop) {
         var m = this.X[prop.subType] || GLOBAL[prop.subType];
@@ -711,7 +715,7 @@ var FactoryProperty = Model.create({
   name: 'FactoryProperty',
   extendsModel: 'Property',
 
-  help: "Describes a Factory property.",
+  help: 'Describes a Factory property.',
 
   properties: [
     {
@@ -738,10 +742,70 @@ var FactoryProperty = Model.create({
         console.error('******* Invalid Factory: ', f);
         return f;
       }
-    },
+    }
+  ]
+});
+
+
+var ViewFactoryProperty = Model.create({
+  name: 'ViewFactoryProperty',
+  extendsModel: 'FactoryProperty',
+
+  help: 'Describes a View Factory property.',
+
+  /* Doesn't work yet!
+  constants: {
+    VIEW_CACHE: {}
+  },
+  */
+
+  properties: [
     {
-      name: 'defaultValue',
-      preSet: function(_, f) { return ViewProperty.PRE_SET.defaultValue.call(this, null, f); }
+      name: 'preSet',
+      doc: "Can be specified as either a function, a Model, a Model path, or a JSON object.",
+      defaultValue: function(_, f) {
+        // A Factory Function
+        if ( typeof f === 'function' ) return f;
+
+        // A String Path to a Model
+        if ( typeof f === 'string' ) {
+          // if not a valid model path then treat as a template
+          if ( /[^0-9a-zA-Z$_.]/.exec(f) ) {
+            // Cache the creation of an DetailView so that we don't
+            // keep recompiling the template
+            var VIEW_CACHE = ViewFactoryProperty.VIEW_CACHE ||
+              ( ViewFactoryProperty.VIEW_CACHE = {} );
+            var viewModel = VIEW_CACHE[f];
+            if ( ! viewModel ) {
+                viewModel = VIEW_CACHE[f] = Model.create({
+                  name: 'InnerDetailView' + this.$UID,
+                  extendsModel: 'DetailView',
+                  templates:[{name: 'toHTML', template: f}]
+                });
+              // TODO(kgr): this isn't right because compiling the View
+              // template is async.  Should create a FutureView to handle this.
+              arequireModel(viewModel);
+            }
+            return viewModel.create.bind(viewModel);
+          }
+
+          return function(map, opt_X) {
+            return FOAM.lookup(f, opt_X || this.X).create(map);
+          }.bind(this);
+        }
+
+        // An actual Model
+        if ( Model.isInstance(f) ) return f.create.bind(f);
+
+        // A JSON Model Factory: { factory_ : 'ModelName', arg1: value1, ... }
+        if ( f.factory_ ) return function(map, opt_X) {
+          var X = opt_X || this.X;
+          return FOAM(f.factory_, X).create(map, X);
+        }.bind(this);
+
+        console.error('******* Invalid Factory: ', f);
+        return f;
+      }
     }
   ]
 });

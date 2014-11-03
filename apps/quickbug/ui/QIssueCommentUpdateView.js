@@ -1,5 +1,4 @@
-var QIssueCommentUpdateView = FOAM({
-  model_: 'Model',
+MODEL({
   name: 'QIssueCommentUpdateView',
   extendsModel: 'DetailView',
 

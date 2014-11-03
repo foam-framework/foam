@@ -118,7 +118,7 @@ FOAM.lookup = function(key, opt_X) {
 
   var path = key.split('.');
   var root = opt_X || GLOBAL;
-  for ( var i = 0 ; i < path.length ; i++ ) root = root[path[i]];
+  for ( var i = 0 ; root && i < path.length ; i++ ) root = root[path[i]];
 
   return root;
 };
@@ -136,9 +136,14 @@ function arequire(modelName, opt_X) {
   /** This is so that if the model is arequire'd concurrently the
    *  initialization isn't done more than once.
    **/
-  if ( ! model ) console.log(modelName, 'not found');
+  if ( ! model ) { console.log(modelName, 'not found'); return; }
+
+  return arequireModel(model);
+}
+
+function arequireModel(model) {
   if ( ! model.required__ ) {
-    // TODO: eventually this should just call the arequire() method on the Model
+    // TODO(kgr): eventually this should just call the arequire() method on the Model
     var args = [];
     if ( model.templates ) for ( var i = 0 ; i < model.templates.length ; i++ ) {
       var t = model.templates[i];

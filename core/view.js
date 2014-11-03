@@ -4765,7 +4765,7 @@ MODEL({
 MODEL({
   name: 'RegressionTestResultView',
   label: 'Regression Test Result View',
-  help: 'Displays the output of a RegressionTest, either master or live.',
+  documentation: 'Displays the output of a $$DOC{.ref:"RegressionTest"}, either master or live.',
 
   extendsModel: 'UnitTestResultView',
 
@@ -4792,18 +4792,12 @@ MODEL({
     {
       name: 'update',
       label: 'Update Master',
-      help: 'Overwrite the old master output with the new. Be careful that the new result is legit!',
+      documentation: 'Overwrite the old master output with the new. Be careful that the new result is legit!',
       isEnabled: function() { return this.test.regression; },
       action: function() {
         this.test.master = this.test.results;
-        this.X.daoViewCurrentDAO.put(this.test, {
-          put: function() {
-            this.test.regression = false;
-          }.bind(this),
-          error: function(e) {
-            console.error('Error saving update: ' + e);
-          }
-        });
+        this.test.regression = false;
+        if ( this.X.testUpdateListener ) this.X.testUpdateListener();
       }
     }
   ],

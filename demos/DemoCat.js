@@ -3,19 +3,7 @@ var VIDEO_PATH = 'https://x20web.corp.google.com/~kgr/power/videos/DemoDen/';
 MODEL({
   name: 'Demo',
   properties: [
-    {
-      name: 'name'
-    },
-    {
-      name: 'path'
-    },
-    {
-      model_: 'StringProperty',
-      name: 'description'
-    },
-    {
-      name: 'keywords'
-    },
+    'name', 'path', 'keywords', 'image', 'video', 'description',
     {
       name: 'src',
       defaultValueFn: function() {
@@ -23,12 +11,6 @@ MODEL({
         var path = window.location.href.substring(0, i);
         return 'view-source: ' + path + this.path;
       }
-    },
-    {
-      name: 'image'
-    },
-    {
-      name: 'video'
     }
   ]
 });
@@ -280,68 +262,46 @@ var demos = JSONUtil.arrayToObjArray(X, [
 ], Demo).dao;
 
 
-MODEL({ name: 'DemoView', extendsModel: 'DetailView', templates: [
-  function CSS() {/*
-    .thumbnail {
-       margin-bottom: 40px;
-    }
-  */},
-  function toHTML() {/*
-      <li class="thumbnail">
-        <a href="%%data.path" class="thumb">$$name{mode: 'read-only'}</a>
-        <br>
-        <% if ( this.data.image ) { %> <br><a href="%%data.path"><img width=250 height=250 src="democat/%%data.image"></a> <% } %>
-        <p>$$description{mode: 'read-only', escapeHTML: false}</p>
-        <b>Keywords:</b> <%= this.data.keywords.join(', ') %><br>
-        <b>Source:</b> <a href="%%data.src">here</a><br>
-        <% if ( VIDEO_PATH && this.data.video ) { %>
-        <b>Video:</b> <a href="<%= VIDEO_PATH + this.data.video%>"><img style="vertical-align:middle;" width=30 height=30 src="democat/movie-clip-icon.png"></a>
-        <% } %>
-        <br>
-      </li>
-  */}
-]});
-
-
 MODEL({
   name: 'Controller',
   properties: [
-    {
-      name: 'search',
-      view: { model_: 'TextFieldView', onKeyMode: true },
-    },
+    { name: 'search', view: { model_: 'TextFieldView', onKeyMode: true } },
     { name: 'dao', defaultValue: demos },
     {
       name: 'filteredDAO',
       model_: 'DAOProperty',
-      view: { model_: 'DAOListView', rowView: 'DemoView', mode: 'read-only' },
+      view: { model_: 'DAOListView', mode: 'read-only' },
       dynamicValue: function() {
         return this.dao.where(CONTAINS_IC(SEQ(Demo.NAME, Demo.DESCRIPTION, Demo.KEYWORDS), this.search));
       }
     }
   ],
   methods: {
-    init: function() {
-      this.SUPER();
-
+    init: function(SUPER) {
+      SUPER();
       var i = window.location.href.indexOf('?q=');
       if ( i != -1 ) this.search = window.location.href.substring(i+3);
     }
-  }
-});
-
-
-MODEL({
-  name: 'ControllerView',
-  extendsModel: 'DetailView',
+  },
   templates: [
-    function toHTML() {/*
+    function CSS() {/* .thumbnail { margin-bottom: 40px; } */},
+    function toDetailHTML() {/*
         &nbsp;&nbsp; Search: $$search
         <p>
-        $$filteredDAO{className: 'demos', tagName: 'ul'}
+        <foam f="filteredDAO" className="demos" tagName="ul">
+          <li class="thumbnail">
+            <a href="%%data.path" class="thumb">$$name{mode: 'read-only'}</a>
+            <br>
+            <% if ( this.data.image ) { %> <br><a href="%%data.path"><img width=250 height=250 src="democat/%%data.image"></a> <% } %>
+            <p>$$description{mode: 'read-only', escapeHTML: false}</p>
+            <b>Keywords:</b> <%= this.data.keywords.join(', ') %><br>
+            <b>Source:</b> <a href="%%data.src">here</a><br>
+            <% if ( VIDEO_PATH && this.data.video ) { %>
+            <b>Video:</b> <a href="<%= VIDEO_PATH + this.data.video%>"><img style="vertical-align:middle;" width=30 height=30 src="democat/movie-clip-icon.png"></a>
+            <% } %>
+            <br>
+          </li>
+        </foam>
     */}
- ]
+  ]
 });
-
-
-X.DemoView; // Install CSS, shouldn't be required.  TODO: Fix

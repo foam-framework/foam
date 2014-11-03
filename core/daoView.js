@@ -354,7 +354,11 @@ MODEL({
         if ( this.dao && ! hidden ) this.onDAOUpdate();
       }
     },
-    { name: 'rowView', defaultValue: 'DetailView' },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'rowView',
+      defaultValue: 'DetailView'
+    },
     {
       name: 'mode',
       defaultValue: 'read-write',
@@ -368,10 +372,7 @@ MODEL({
       name: 'useSelection',
       help: 'Backward compatibility for selection mode. Create a X.selection$ value in your context instead.',
       postSet: function(old, nu) {
-        if (this.useSelection && !this.X.selection$)
-        {
-           this.X.selection$ = this.X.SimpleValue.create();
-        }
+        if ( this.useSelection && !this.X.selection$ ) this.X.selection$ = this.X.SimpleValue.create();
         this.selection$ = this.X.selection$;
       }
     },
@@ -443,8 +444,6 @@ MODEL({
       this.painting = true;
 
       var out = [];
-      var rowView = FOAM.lookup(this.rowView, this.X);
-
       this.children = [];
       this.initializers_ = [];
 
@@ -454,7 +453,7 @@ MODEL({
       }
       d.select({put: function(o) {
         if ( this.mode === 'read-write' ) o = o.model_.create(o, this.X); //.clone();
-        var view = rowView.create({data: o, model: o.model_}, this.X);
+        var view = this.rowView({data: o, model: o.model_}, this.X);
         // TODO: Something isn't working with the Context, fix
         view.DAO = this.dao;
         if ( this.mode === 'read-write' ) {
