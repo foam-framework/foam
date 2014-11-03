@@ -88,7 +88,7 @@ MODEL({
             $$DOC{ref:'Model',usePlural:true} for the data items.</li>
             <li>Throw your $$DOC{ref:'DAO'} into a $$DOC{ref:'DAOListView'} and the
             user can browse the collection. Want a grid? Throw in a $$DOC{ref:'GridView'}
-            instead. Not sure which? Let your $$DOC{ref:'Model'} pick the view at run
+            instead. Not sure which? Let $$DOC{ref:'DetailView'} pick the view at run
             time.</li>
             <li>Need to communicate something to or from a child object, but don't
             want to be burdened with knowing what type it is or if it exists?

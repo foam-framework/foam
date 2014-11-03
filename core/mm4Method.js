@@ -451,10 +451,23 @@ MODEL({
           src to dst.</li>
       <li><code>this.methodName</code> calls another $$DOC{ref:'Method'} of this
               $$DOC{ref:'Model'}</li>
-      <li><code>this.SUPER()</code> calls the $$DOC{ref:'Method'} implementation from the
-                base $$DOC{ref:'Model'} (specified in $$DOC{ref:'Model.extendsModel'}). Calling
-                <code>this.SUPER()</code> is extremely important in your <code>init()</code>
-                $$DOC{ref:'Method'}, if you provide one.</li>
+      <li><p><code>this.SUPER()</code> calls the $$DOC{ref:'Method'} implementation from the
+                base $$DOC{ref:'Model'} (specified in $$DOC{ref:'Model.extendsModel'}).</p>
+                <ul>
+                  <li>
+                      <p>Calling
+                      <code>this.SUPER()</code> is extremely important in your <code>init()</code>
+                      $$DOC{ref:'Method'}, if you provide one.</p>
+                      <p>You can also specify <code>SUPER</code> as the
+                      first argument of your Javascript function, and it will be populated with the
+                      correct base function automatically:</p>
+                      <p><code>function(SUPER, other_arg) {<br/>
+                                  &nbsp;&nbsp; SUPER(other_arg); // calls super, argument is optional depending on what your base method takes.<br/>
+                                  &nbsp;&nbsp; ...<br/></code>
+                      </p>
+                    </li>
+                  </ul>
+                </li>
     </ul>
   */},
 
@@ -542,7 +555,7 @@ MODEL({
       name: 'returnTypeRequired',
       defaultValue: true,
       documentation: function() { /*
-          Indicates whether the return type is checked. TODO: ???
+          Indicates whether the return type is checked.
         */}
     },
     {
@@ -572,7 +585,8 @@ MODEL({
       help: 'As a listener, should this be animated?',
       defaultValue: false,
       documentation: function() { /*
-          For a listener $$DOC{ref:'Method'}, indicates that this should be animated.
+          For a listener $$DOC{ref:'Method'}, indicates that this listener is animated,
+          and events should be merged to trigger only once per frame.
         */}
 
     },

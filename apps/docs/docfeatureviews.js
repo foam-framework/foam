@@ -531,7 +531,7 @@ MODEL({
   templates: [
     function toInnerHTML() {/*
       <h5><%=this.data.name%></h5>
-      <%=this.renderDocSourceHTML()%>
+      <p><%=this.renderDocSourceHTML()%></p>
     */}
   ]
 });
@@ -674,7 +674,7 @@ MODEL({
     function toInnerHTML() {/*
       <div id="scrollTarget_<%=this.data.id%>">
         <h3>$$data{model_:this.X.DocFeatureSubmodelRefView}</h3>
-        <%=this.renderDocSourceHTML()%>
+        <p><%=this.renderDocSourceHTML()%></p>
       </div>
     */}
   ]

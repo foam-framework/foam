@@ -540,7 +540,7 @@ MODEL({
     function toInnerHTML()    {/*
       <%    this.destroy(); %>
       <%    if (this.data) {  %>
-              <%=this.renderDocSourceHTML()%>
+              <p><%=this.renderDocSourceHTML()%></p>
       <%    } %>
     */}
   ],
@@ -560,7 +560,7 @@ MODEL({
       <%    this.destroy(); %>
       <%    if (this.data) {  %>
               <h2><%=this.data.name%></h2>
-              <%=this.renderDocSourceHTML()%>
+              <p><%=this.renderDocSourceHTML()%></p>
       <%    } %>
     */}
   ]
