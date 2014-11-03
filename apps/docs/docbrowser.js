@@ -224,10 +224,10 @@ MODEL({
       // don't respond if we are already at the location desired
       if (location.hash.substring(1) === this.DetailContext.documentViewRef.get().ref) return;
 
-      this.DetailContext.documentViewRef.set(this.DetailContext.DocRef.create({ref:location.hash.substring(1)}));
-      if (this.DetailContext.documentViewRef.get().valid) {
-        this.DetailContext.documentViewParentModel.set(
-             this.DetailContext.documentViewRef.get().resolvedRoot);
+      var newRef = this.DetailContext.DocRef.create({ref:location.hash.substring(1)});
+      if (newRef.valid) {
+        this.DetailContext.documentViewParentModel.set(newRef.resolvedRoot);
+        this.DetailContext.documentViewRef.set(newRef);
         this.SearchContext.selection$.set(this.DetailContext.documentViewParentModel.get().resolvedModelChain[0]); // selection wants a Model object
 
       }

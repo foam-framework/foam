@@ -292,7 +292,6 @@ MODEL({
       this.loadFeaturesOfModel(this.sourceModel, []);
 
 //      this.debugLogFeatureDAO();
-
     },
     loadFeaturesOfModel: function(model, previousExtenderTrackers) {
       /* <p>Recursively load features of this $$DOC{ref:'Model'} and

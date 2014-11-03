@@ -36,17 +36,15 @@ MODEL({
       name:  'dao',
       model_: 'DAOProperty',
       defaultValue: [],
-      postSet: function() {
-        this.filteredDAO = this.dao; //this.dao.where(EQ(Property.HIDDEN, FALSE));
-
+      onDAOUpdate: function() {
+        this.filteredDAO = this.dao;
       }
     },
     {
       name:  'filteredDAO',
       model_: 'DAOProperty',
-      postSet: function() {
+      onDAOUpdate: function() {
         var self = this;
-
         if (!this.X.documentViewParentModel) {
           console.warn("this.X.documentViewParentModel non-existent");
         } else if (!this.X.documentViewParentModel.get()) {
@@ -67,10 +65,6 @@ MODEL({
                     CONTAINS(DocFeatureInheritanceTracker.TYPE, this.featureType()))
                 )
           .select(MAP(DocFeatureInheritanceTracker.FEATURE, this.selfFeaturesDAO));
-        
-        this.selfFeaturesDAO.select(COUNT())(function(c) {
-          self.hasFeatures = c.count > 0;
-        });
 
         this.inheritedFeaturesDAO = [].dao;
         this.X.docModelViewFeatureDAO
@@ -81,9 +75,7 @@ MODEL({
                 )
           .select(MAP(DocFeatureInheritanceTracker.FEATURE, this.inheritedFeaturesDAO));
 
-        this.inheritedFeaturesDAO.select(COUNT())(function(c) {
-          self.hasInheritedFeatures = c.count > 0;
-        });
+        this.updateHTML();
 
       }
     },
@@ -93,7 +85,13 @@ MODEL({
       documentation: function() { /*
           Returns the list of features (matching this feature type) that are
           declared or overridden in this $$DOC{ref:'Model'}
-      */}
+      */},
+      onDAOUpdate: function() {
+        var self = this;
+        this.selfFeaturesDAO.select(COUNT())(function(c) {
+          self.hasFeatures = c.count > 0;
+        });
+      }
     },
     {
       name:  'inheritedFeaturesDAO',
@@ -101,7 +99,13 @@ MODEL({
       documentation: function() { /*
           Returns the list of features (matching this feature type) that are
           inherited but not declared or overridden in this $$DOC{ref:'Model'}
-      */}
+      */},
+      onDAOUpdate: function() {
+        var self = this;
+        this.inheritedFeaturesDAO.select(COUNT())(function(c) {
+          self.hasInheritedFeatures = c.count > 0;
+        });
+      }
     },
     {
       name: 'hasDAOContents',
@@ -199,7 +203,7 @@ MODEL({
       name:  'dao',
       model_: 'DAOProperty',
       defaultValue: [],
-      postSet: function() {
+      onDAOUpdate: function() {
         var self = this;
         this.dao.select(COUNT())(function(c) {
           self.count = c.count;
@@ -320,7 +324,7 @@ MODEL({
     {
       name:  'dao', // filter out hidden properties
       model_: 'DAOProperty',
-      postSet: function() {
+      onDAOUpdate: function() {
         this.filteredDAO = this.dao.where(EQ(Property.HIDDEN, FALSE));
       }
     }
