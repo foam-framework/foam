@@ -103,8 +103,9 @@ var JSONUtil = {
       }
       */
 
-      return ( opt_defaultModel && ! obj.model_ ) ? opt_defaultModel.create(obj) :
-            (X[obj.model_] ? X[obj.model_].create(obj) : obj);
+      if ( opt_defaultModel && ! obj.model_ ) return opt_defaultModel.create(obj);
+
+      return X[obj.model_] ? X[obj.model_].create(obj) : obj;
     }
 
     return obj;
