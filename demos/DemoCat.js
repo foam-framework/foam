@@ -259,6 +259,14 @@ var demos = JSONUtil.arrayToObjArray(X, [
     src: '../apps/docs/',
     image: '../../apps/docs/images/Model_runtime2.png'
   },
+  {
+    name: 'FOAM Demo Catalog',
+    path: 'DemoCat.html',
+    description: 'A FOAM Demo browser.  The demo you\'re currently running.',
+    keywords: ['docs', 'demo'],
+    src: 'DemoCat.js',
+    image: 'DemoCat.png'
+  },
 ], Demo).dao;
 
 
