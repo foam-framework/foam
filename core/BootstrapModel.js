@@ -95,6 +95,15 @@ var BootstrapModel = {
   name_: 'BootstrapModel <startup only, error if you see this>',
 
   buildPrototype: function() { /* Internal use only. */
+
+    // save our pure state
+    // Note: Only documentation browser uses this, and it will be replaced
+    // by the new Feature Oriented bootstrapping process, so only use the
+    // extra memory in DEBUG mode.
+    if (DEBUG) {
+      BootstrapModel.saveDefinition(this);
+    }
+
     function addTraitToModel(traitModel, parentModel) {
       var name = parentModel.name + '_ExtendedWith_' + traitModel.name;
 
@@ -418,6 +427,37 @@ var BootstrapModel = {
     return this.prototype_ && this.prototype_.model_ == this ?
       this.prototype_ :
       ( this.prototype_ = this.buildPrototype() );
+  },
+
+  saveDefinition: function(self) {
+    self.definition_ = {};
+    // TODO: introspect Model, copy the other non-array properties of Model
+    // DocumentationBootstrap's getter gets called here, which causes a .create() and an infinite loop
+//       Model.properties.forEach(function(prop) {
+//         var propVal = self[prop.name];
+//         if (propVal) {
+//           if (Array.isArray(propVal)) {
+//             // force array copy, so we don't share changes made later
+//             self.definition_[prop.name] = [].concat(propVal);
+//           } else {
+//             self.definition_[prop.name] = propVal;
+//           }        
+//         }
+//       }.bind(self));
+    
+    // TODO: remove these once the above loop works
+    // clone feature lists to avoid sharing the reference in the copy and original
+    if (Array.isArray(self.methods))       self.definition_.methods       = [].concat(self.methods);
+    if (Array.isArray(self.templates))     self.definition_.templates     = [].concat(self.templates);
+    if (Array.isArray(self.relationships)) self.definition_.relationships = [].concat(self.relationships);
+    if (Array.isArray(self.properties))    self.definition_.properties    = [].concat(self.properties);
+    if (Array.isArray(self.actions))       self.definition_.actions       = [].concat(self.actions);
+    if (Array.isArray(self.listeners))     self.definition_.listeners     = [].concat(self.listeners);
+    if (Array.isArray(self.models))        self.definition_.models        = [].concat(self.models);
+    if (Array.isArray(self.tests))         self.definition_.tests         = [].concat(self.tests);
+    if (Array.isArray(self.issues))        self.definition_.issues        = [].concat(self.issues);
+
+    self.definition_.__proto__ = FObject;
   },
 
   create: function(args, opt_X) { return this.getPrototype().create(args, opt_X); },

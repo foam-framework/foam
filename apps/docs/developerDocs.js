@@ -449,7 +449,8 @@ MODEL({
         label: 'Animation',
         model_: 'Documentation',
         body: function() {/*
-          <p>// TODO</p>
+          <p>FOAM includes an animation building system that naturally extends the
+          event system. See event.js:Movement.</p>
         */}
       }
 

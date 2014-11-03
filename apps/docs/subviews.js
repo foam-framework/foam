@@ -130,14 +130,6 @@ MODEL({
       help: 'The model name.',
       documentation: "The $$DOC{ref:'Model'} name."
     },
-//    {
-//      name: 'features',
-//      help: 'The features of the model.',
-//      documentation: "The features of $$DOC{ref:'.model'}, indicating whether the feature is declared in the $$DOC{ref:'Model'}.",
-//      factory: function() {
-//        return [].dao;
-//      }
-//    },
   ]
 });
 
@@ -178,7 +170,6 @@ MODEL({
       documentation: "A reference to the actual feature.",
       postSet: function() {
         this.name = this.feature.name;
-        this.type = this.feature.model_.id;
       }
     },
     {
@@ -309,38 +300,47 @@ MODEL({
         <p>Returns the inheritance level of model (0 = $$DOC{ref:'Model'}).
         </p>
         */
+      var modelDef = model.definition_?  model.definition_: model;
       var self = this;
       var newModelTr = this.X.DocModelInheritanceTracker.create();
-      newModelTr.model = model.id;
+      newModelTr.model = model.name;
 
-      model.getAllMyFeatures().forEach(function(feature) {
- 
-        // all features we hit are declared (or overridden) in this model
-        var featTr = self.X.DocFeatureInheritanceTracker.create({
-              isDeclared:true,
-              feature: feature,
-              model: newModelTr.model });
-        self.X.docModelViewFeatureDAO.put(featTr);
+      this.X.Model.properties.forEach(function(modProp) {
+        var modPropVal = modelDef[modProp.name];
+        if (Array.isArray(modPropVal)) { // we only care to check inheritance on the array properties
+          modPropVal.forEach(function(feature) {
+            if (feature.name) { // only look at actual objects
+              // all features we hit are declared (or overridden) in this model
+              var featTr = self.X.DocFeatureInheritanceTracker.create({
+                    isDeclared:true,
+                    feature: feature,
+                    model: newModelTr.model,
+                    type: modProp.name });
+              self.X.docModelViewFeatureDAO.put(featTr);
 
-        // for the models that extend this model, make sure they have
-        // the feature too, if they didn't already have it declared (overridden).
-        previousExtenderTrackers.forEach(function(extModelTr) {
-          self.X.docModelViewFeatureDAO
-                .where(AND(EQ(DocFeatureInheritanceTracker.MODEL, extModelTr.model),
-                           EQ(DocFeatureInheritanceTracker.NAME, feature.name)))
-                .select(COUNT())(function(c) {
-                    if (c.count <= 0) {
-                      var featTrExt = self.X.DocFeatureInheritanceTracker.create({
-                          isDeclared: false,
-                          feature: feature,
-                          model: extModelTr.model });
-                      self.X.docModelViewFeatureDAO.put(featTrExt);
-                    }
-                });
-        });
+              // for the models that extend this model, make sure they have
+              // the feature too, if they didn't already have it declared (overridden).
+              previousExtenderTrackers.forEach(function(extModelTr) {
+                self.X.docModelViewFeatureDAO
+                      .where(AND(EQ(DocFeatureInheritanceTracker.MODEL, extModelTr.model),
+                                 EQ(DocFeatureInheritanceTracker.NAME, feature.name)))
+                      .select(COUNT())(function(c) {
+                          if (c.count <= 0) {
+                            var featTrExt = self.X.DocFeatureInheritanceTracker.create({
+                                isDeclared: false,
+                                feature: feature,
+                                model: extModelTr.model,
+                                type: modProp.name });
+                            self.X.docModelViewFeatureDAO.put(featTrExt);
+                          }
+                      });
+              });
+            }
+          });
+        }
       });
-
-      // Check if we extend something, or we are just Model (the base case)
+      // Check if we extend something. Use model instead of modelDef, in case we
+      // have traits that injected themselves into our inheritance heirarchy.
       if (!model.extendsModel) {
         newModelTr.inheritanceLevel = 0;
       } else {

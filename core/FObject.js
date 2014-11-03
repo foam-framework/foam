@@ -462,7 +462,6 @@ var FObject = {
       var ps = this.model_.properties;
       for ( var i = 0 ; i < ps.length ; i++ ) {
         var prop = ps[i];
-
         if ( src.hasOwnProperty(prop.name) ) this[prop.name] = src[prop.name];
         if ( src.hasOwnProperty(prop.name$_) ) this[prop.name$_] = src[prop.name$_];
       }
