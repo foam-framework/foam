@@ -519,6 +519,9 @@ MODEL({
           and display them.</p>
           <p>A $$DOC{ref:'PropertyView'} is created to process each $$DOC{ref:'Property'},
           and it picks the appropriate $$DOC{ref:'View'} model.</p>
+          <p>Often a $$DOC{ref:'Property.view'} will be specified as part of a
+          $$DOC{ref:'Property'} definition. This instructs $$DOC{ref:'DetailView'}
+          exactly which type of $$DOC{ref:'View'} to use.</p>
         */}
       },
       {
@@ -527,7 +530,7 @@ MODEL({
         model_: 'Documentation',
         body: function() {/*
           <p>You can attach CSS directly to your $$DOC{ref:'View'} by implementing the
-          $$DOC{ref:'View.CSS'}() $$DOC{ref:'Method'} or $$DOC{ref:'Template'}. When the view
+          .CSS() $$DOC{ref:'Method'} or $$DOC{ref:'Template'}. When the view
           is instantiated, the CSS is installed into the document, ready for rendering.
           $$DOC{ref:'View',usePlural:true} can control their individual style attributes
           by setting $$DOC{ref:'View.extraClassName'} inside a submodel, or at run time by
