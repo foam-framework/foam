@@ -185,11 +185,9 @@ MODEL({
       this.SearchContext = this.X.sub({}, 'searchX');
       this.SearchContext.selection$ = this.SearchContext.SimpleValue.create(); // holds a Model definition
 
-      // detail context needs a documentViewParentModel to indicate what model it is rooted at
+      // detail context needs a documentViewRef.get().resolvedRoot to indicate what model it is rooted at
       this.DetailContext = this.X.sub({}, 'detailX');
-      this.DetailContext.documentViewParentModel = this.DetailContext.SimpleValue.create();
       this.DetailContext.documentViewRef = this.DetailContext.SimpleValue.create();// this.DetailContext.DocRef.create();
-      //Events.follow(this.SearchContext.selection$, this.DetailContext.documentViewParentModel);
 
       this.X.documentViewRequestNavigation = this.requestNavigation.bind(this);
 
@@ -197,7 +195,7 @@ MODEL({
       this.SUPER();
       /////////////////////////// this.init v
 
-      // when the hash changes set the documentViewParentModel and this.selection
+      // when the hash changes set the documentViewRef and this.selection
       window.addEventListener('hashchange', this.setReferenceFromHash.bind(this));
 
       // initialization from hash
@@ -226,9 +224,8 @@ MODEL({
 
       var newRef = this.DetailContext.DocRef.create({ref:location.hash.substring(1)});
       if (newRef.valid) {
-        this.DetailContext.documentViewParentModel.set(newRef.resolvedRoot);
         this.DetailContext.documentViewRef.set(newRef);
-        this.SearchContext.selection$.set(this.DetailContext.documentViewParentModel.get().resolvedModelChain[0]); // selection wants a Model object
+        this.SearchContext.selection$.set(newRef.resolvedRoot.resolvedModelChain[0]); // selection wants a Model object
 
       }
     },
@@ -236,9 +233,8 @@ MODEL({
     requestNavigation: function(ref) {
       if (ref.valid) {
         this.selection = ref.resolvedModelChain[0];
-        this.DetailContext.documentViewParentModel.set(ref.resolvedRoot);
         this.DetailContext.documentViewRef.set(ref);
-        this.SearchContext.selection$.set(this.DetailContext.documentViewParentModel.get().resolvedModelChain[0]); // selection wants a Model object
+        this.SearchContext.selection$.set(ref.resolvedRoot.resolvedModelChain[0]); // selection wants a Model object
         location.hash = "#" + ref.resolvedRef;
       }
     }

@@ -59,13 +59,19 @@ var Model = {
     body: function() { /*
       <p>In FOAM, $$DOC{ref:'Model'} is the basic unit for describing data and behavior.
       $$DOC{ref:'Model'} itself is a $$DOC{ref:'Model'}, since it defines what can be defined,
-      but also defines itself.</p>
+      but also defines itself. See
+      $$DOC{ref:'developerDocs.Welcome..documentation.chapters.modelsAtRuntime', text: 'Models in Action'}
+      for more details.</p>
 
-      <p>In javascript code, <code>YourModel.create(...)</code> creates an instance of
-      your model. This is context dependent, so generally you will be calling
-      <code>this.X.YourModel.create({...})</code>. If this is too much typing, you
-      can create aliases for other $$DOC{ref:'Model',usePlural:true} in the
-      $$DOC{ref:'Model.imports'} property. </p>
+
+      <p>To create an instance of a $$DOC{ref:'Model'}, add it in your
+      $$DOC{ref:'Model.requires'} list, then, in Javascript:</p>
+      <p>
+        <code>this.YourModel.create({ propName: val... })</code> creates an instance.
+      </p>
+      Under the covers, $$DOC{ref:'Model.requires'} is creating an alias for the
+      $$DOC{ref:'Model'} instance that exists in your context. You can access it
+      directly at <code>this.X.yourPackage.YourModel.create({...})</code>.</p>
 
       <p>Note:
       <ul>
@@ -271,6 +277,9 @@ var Model = {
                   this.selectedItem.get();          // equivalent to this.X.productList.selectedItem.get()<br/>
                   this.selectedProductDAO.select(); // equivalent to this.X.productList.selectionDAO.select()<br/>
                   </code></p>
+          <p>If you have $$DOC{ref:'.exports',text:'exported'} properties from a
+          $$DOC{ref:'Model'} in a parent context, you can import those items and give
+          them aliases for convenient access without the <code>this.X</code>.
         */}
     },
     {
@@ -284,15 +293,25 @@ var Model = {
            as strings of the form:
           <code>PropertyName [as Alias]</code>.</p>
           <p>Properties you wish to share with other instances you create
-            (like sub-$$DOC{ref:'View',usePlural:true} or $$DOC{ref:'DAO',usePlural:true})
+            (like sub-$$DOC{ref:'View',usePlural:true})
             can be exported automatically by listing them here. Your this.X is replaced with
-            a sub-context, so parent contexts in instances that have created do not
-            see exported properties.</p>
-          <p><code>exports: [ 'myProperty', 'name as parentName' ]<br/>
-                  ...<br/>
-                  // in your Model's methods: <br/>
-                  this.selectedItem.get();          // equivalent to this.X.productList.selectedItem.get()<br/>
-                  this.selectedProductDAO.select(); // equivalent to this.X.productList.selectionDAO.select()<br/>
+            a sub-context, so your parent context does not see exported properties.</p>
+          <p><code>MODEL({ name: firstModel<br/>
+               &nbsp;&nbsp;   exports: [ 'myProperty', 'name as parentName' ],<br/>
+               &nbsp;&nbsp;   properties: [<br/>
+               &nbsp;&nbsp;     {<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp;     name: 'proper',<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp;     view: { model_: 'DetailView',<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp; methods: { toHTML: function() {<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         // our context is provided by firstModel, so:<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         this.X.myProperty = 4; // we can see exported myProperty<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         out.print(this.X.parentName); // aliased, links back to our name<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp;     }}},<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp;     ...<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp;     { name: 'myProperty' },<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp;     { name: 'name' }<br/>
+                 &nbsp;&nbsp; ]<br/>
+                 &nbsp;&nbsp; ...<br/>
                   </code></p>
         */}
     },

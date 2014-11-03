@@ -35,7 +35,7 @@ MODEL({
     <p>Views that wish to use DOC reference tags should extend this model. To display the
     $$DOC{ref:'Model.documentation'} of a model, use a $$DOC{ref:'DocModelView'} or
     $$DOC{ref:'DocBodyView'}.</p>
-    <p>Documentation views require that a this.X.documentViewParentModel $$DOC{ref:'SimpleValue'}
+    <p>Documentation views require that a this.X.documentViewRef $$DOC{ref:'SimpleValue'}
     be present on the context. The supplied model is used as the base for resolving documentation
     references. If you are viewing the documentation for a Model, it will be that Model. If you
     are viewing a feature's documentation (a $$DOC{ref:'Method'}, $$DOC{ref:'Property'}, etc.)
@@ -45,11 +45,11 @@ MODEL({
   */},
 
   methods: {
-    init: function() { /* <p>Warns if this.X.documentViewParentModel is missing.</p>
+    init: function() { /* <p>Warns if this.X.documentViewRef is missing.</p>
       */
       this.SUPER();
-      if (!this.X.documentViewParentModel) {
-        console.warn("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
+      if (!this.X.documentViewRef) {
+        console.warn("*** Warning: DocView ",this," can't find documentViewRef in its context "+this.X.NAME);
       }
     },
 
@@ -501,8 +501,8 @@ MODEL({
   methods: {
     renderDocSourceHTML: function() {
       // only update if we have all required data
-      if (this.docSource.body && this.X.documentViewParentModel
-          && this.X.documentViewParentModel.get().valid && this.data.model_) {
+      if (this.docSource.body && this.X.documentViewRef
+          && this.X.documentViewRef.get().resolvedRoot.valid && this.data.model_) {
         // The first time this method is hit, replace it with the one that will
         // compile the template, then call that. Future calls go direct to lazyCompile's
         // returned function. You could also implement this the same way lazyCompile does...
@@ -708,7 +708,7 @@ MODEL({
   documentation: function() { /*
     <p>A link to another place in the documentation. See $$DOC{ref:'DocView'}
     for notes on usage.</p>
-    <p>Every reference must have documentViewParentModel set on the context.
+    <p>Every reference must have documentViewRef set on the context.
       This indicates the starting point of the reference for relative name
       resolution.</p>
     */},
@@ -765,22 +765,22 @@ MODEL({
 
   methods: {
     init: function() {
-      /* Warns if documentViewParentModel is missing from the context. */
-      if (!this.X.documentViewParentModel) {
-        //console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
+      /* Warns if documentViewRef is missing from the context. */
+      if (!this.X.documentViewRef) {
+        //console.log("*** Warning: DocView ",this," can't find documentViewRef in its context "+this.X.NAME);
       } else {
       // TODO: view lifecycle management. The view that created this ref doesn't know
       // when to kill it, so the addListener on the context keeps this alive forever.
       // Revisit when we can cause a removeListener at the appropriate time.
-        //        this.X.documentViewParentModel.addListener(this.onParentModelChanged);
+        //        this.X.documentViewRef.addListener(this.onParentModelChanged);
       }
     },
 
     resolveReference: function(reference) {
   /* <p>Resolving a reference has a few special cases at the start:</p>
     <ul>
-      <li>Beginning with ".": relative to $$DOC{ref:'Model'} in X.documentViewParentModel</li>
-      <li>Containing only ".": the $$DOC{ref:'Model'} in X.documentViewParentModel</li>
+      <li>Beginning with ".": relative to $$DOC{ref:'Model'} in X.documentViewRef</li>
+      <li>Containing only ".": the $$DOC{ref:'Model'} in X.documentViewRef</li>
       <li>The name after the first ".": a feature of the $$DOC{ref:'Model'} accessible by "getFeature('name')"</li>
       <li>A double-dot after the $$DOC{ref:'Model'}: Skip the feature lookup and find instances directly on
             the $$DOC{ref:'Model'} definition (<code>MyModel..documentation.chapters.chapName</code>)</li>
@@ -799,12 +799,12 @@ MODEL({
 
       // if model not specified, use parentModel
       if (args[0].length <= 0) {
-        if (!this.X.documentViewParentModel || !this.X.documentViewParentModel.get().valid) {
+        if (!this.X.documentViewRef || !this.X.documentViewRef.get().resolvedRoot.valid) {
           return; // abort
         }
 
         // fill in root to make reference absolute, and try again
-        return this.resolveReference(this.X.documentViewParentModel.get().resolvedRef + reference);
+        return this.resolveReference(this.X.documentViewRef.get().resolvedRoot.resolvedRef + reference);
 
       } else {
         // resolve path and model

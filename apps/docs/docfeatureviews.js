@@ -45,12 +45,12 @@ MODEL({
       model_: 'DAOProperty',
       onDAOUpdate: function() {
         var self = this;
-        if (!this.X.documentViewParentModel) {
-          console.warn("this.X.documentViewParentModel non-existent");
-        } else if (!this.X.documentViewParentModel.get()) {
-          console.warn("this.X.documentViewParentModel not set");
-        } else if (!this.X.documentViewParentModel.get().valid) {
-          console.warn("this.X.documentViewParentModel not valid");
+        if (!this.X.documentViewRef) {
+          console.warn("this.X.documentViewRef non-existent");
+        } else if (!this.X.documentViewRef.get()) {
+          console.warn("this.X.documentViewRef not set");
+        } else if (!this.X.documentViewRef.get().valid) {
+          console.warn("this.X.documentViewRef not valid");
         }
 
         this.filteredDAO.select(COUNT())(function(c) {
@@ -60,7 +60,7 @@ MODEL({
         this.selfFeaturesDAO = [].dao;
         this.X.docModelViewFeatureDAO
           .where(
-                AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.X.documentViewParentModel.get().resolvedModelChain[0].id),
+                AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.X.documentViewRef.get().resolvedRoot.resolvedModelChain[0].id),
                         EQ(DocFeatureInheritanceTracker.IS_DECLARED, true)),
                     CONTAINS(DocFeatureInheritanceTracker.TYPE, this.featureType()))
                 )
@@ -69,7 +69,7 @@ MODEL({
         this.inheritedFeaturesDAO = [].dao;
         this.X.docModelViewFeatureDAO
           .where(
-                AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.X.documentViewParentModel.get().resolvedModelChain[0].id),
+                AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.X.documentViewRef.get().resolvedRoot.resolvedModelChain[0].id),
                         EQ(DocFeatureInheritanceTracker.IS_DECLARED, false)),
                     CONTAINS(DocFeatureInheritanceTracker.TYPE, this.featureType()))
                 )
@@ -255,7 +255,7 @@ MODEL({
     function toInnerHTML() {/*
       <div id="scrollTarget_<%=this.data.name%>">
         <h3><%=this.data.name%></h3>
-        <%=this.renderDocSourceHTML()%>
+        <p><%=this.renderDocSourceHTML()%></p>
         <p>Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureOverridesRefView', data: this.overridesDAO, model: DocFeatureInheritanceTracker }</p>
       </div>
     */}
@@ -479,7 +479,7 @@ MODEL({
       <div id="scrollTarget_<%=this.data.name%>">
         <h3><%=this.data.name%> $$THISDATA{ model_: 'DocMethodArgumentsSmallView' }</h3>
         <div class="memberList">$$THISDATA{ model_: 'DocMethodArgumentsView' }</div>
-        <%=this.renderDocSourceHTML()%>
+        <p><%=this.renderDocSourceHTML()%></p>
         <p>Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureOverridesRefView', data: this.overridesDAO, model: Model }</p>
       </div>
     */}
