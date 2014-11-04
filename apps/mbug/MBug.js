@@ -82,7 +82,7 @@ MODEL({
     },
     toHTML: function() { return this.stack.toHTML(); },
     projectContext: function() {
-      return this.X.sub({
+      return this.qbug.X.sub({
         mbug:              this,
         baseURL:           this.qbug.baseURL,
         user:              this.qbug.user,
