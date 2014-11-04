@@ -140,13 +140,10 @@ function recopyModelFeatures(m) {
   m.models        = m.models;
   m.tests         = m.tests;
   m.issues        = m.issues;
+  
+  BootstrapModel.saveDefinition(m); // keep copies of the updated lists
 }
 
-/*
-for ( var key in UNUSED_MODELS ) {
-  recopyModelFeatures(GLOBAL[key]);
-}
-*/
 for ( var id in USED_MODELS ) {
   recopyModelFeatures(FOAM.lookup(id));
 }

@@ -437,7 +437,7 @@ MODEL({
       /*
         Escape the string to make it HTML safe.
         */
-      return str.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return XMLUtil.escape(str.toString())
     },
 
     cssClassAttr: function() {

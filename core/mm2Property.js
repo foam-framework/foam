@@ -292,6 +292,7 @@ var Property = {
       help: 'View component for the property.',
       documentation: function() { /*
         The default $$DOC{ref:'View'} to use when rendering the $$DOC{ref:'Property'}.
+        Specify a string or an object with model_ and other properties specified.
       */}
     },
     {

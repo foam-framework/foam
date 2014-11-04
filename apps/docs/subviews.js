@@ -35,7 +35,7 @@ MODEL({
     <p>Views that wish to use DOC reference tags should extend this model. To display the
     $$DOC{ref:'Model.documentation'} of a model, use a $$DOC{ref:'DocModelView'} or
     $$DOC{ref:'DocBodyView'}.</p>
-    <p>Documentation views require that a this.X.documentViewParentModel $$DOC{ref:'SimpleValue'}
+    <p>Documentation views require that a this.X.documentViewRef $$DOC{ref:'SimpleValue'}
     be present on the context. The supplied model is used as the base for resolving documentation
     references. If you are viewing the documentation for a Model, it will be that Model. If you
     are viewing a feature's documentation (a $$DOC{ref:'Method'}, $$DOC{ref:'Property'}, etc.)
@@ -45,11 +45,11 @@ MODEL({
   */},
 
   methods: {
-    init: function() { /* <p>Warns if this.X.documentViewParentModel is missing.</p>
+    init: function() { /* <p>Warns if this.X.documentViewRef is missing.</p>
       */
       this.SUPER();
-      if (!this.X.documentViewParentModel) {
-        console.warn("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
+      if (!this.X.documentViewRef) {
+        console.warn("*** Warning: DocView ",this," can't find documentViewRef in its context "+this.X.NAME);
       }
     },
 
@@ -130,14 +130,6 @@ MODEL({
       help: 'The model name.',
       documentation: "The $$DOC{ref:'Model'} name."
     },
-//    {
-//      name: 'features',
-//      help: 'The features of the model.',
-//      documentation: "The features of $$DOC{ref:'.model'}, indicating whether the feature is declared in the $$DOC{ref:'Model'}.",
-//      factory: function() {
-//        return [].dao;
-//      }
-//    },
   ]
 });
 
@@ -178,7 +170,6 @@ MODEL({
       documentation: "A reference to the actual feature.",
       postSet: function() {
         this.name = this.feature.name;
-        this.type = this.feature.model_.id;
       }
     },
     {
@@ -301,7 +292,6 @@ MODEL({
       this.loadFeaturesOfModel(this.sourceModel, []);
 
 //      this.debugLogFeatureDAO();
-
     },
     loadFeaturesOfModel: function(model, previousExtenderTrackers) {
       /* <p>Recursively load features of this $$DOC{ref:'Model'} and
@@ -309,38 +299,47 @@ MODEL({
         <p>Returns the inheritance level of model (0 = $$DOC{ref:'Model'}).
         </p>
         */
+      var modelDef = model.definition_?  model.definition_: model;
       var self = this;
       var newModelTr = this.X.DocModelInheritanceTracker.create();
-      newModelTr.model = model.id;
+      newModelTr.model = model.name;
 
-      model.getAllMyFeatures().forEach(function(feature) {
- 
-        // all features we hit are declared (or overridden) in this model
-        var featTr = self.X.DocFeatureInheritanceTracker.create({
-              isDeclared:true,
-              feature: feature,
-              model: newModelTr.model });
-        self.X.docModelViewFeatureDAO.put(featTr);
+      this.X.Model.properties.forEach(function(modProp) {
+        var modPropVal = modelDef[modProp.name];
+        if (Array.isArray(modPropVal)) { // we only care to check inheritance on the array properties
+          modPropVal.forEach(function(feature) {
+            if (feature.name) { // only look at actual objects
+              // all features we hit are declared (or overridden) in this model
+              var featTr = self.X.DocFeatureInheritanceTracker.create({
+                    isDeclared:true,
+                    feature: feature,
+                    model: newModelTr.model,
+                    type: modProp.name });
+              self.X.docModelViewFeatureDAO.put(featTr);
 
-        // for the models that extend this model, make sure they have
-        // the feature too, if they didn't already have it declared (overridden).
-        previousExtenderTrackers.forEach(function(extModelTr) {
-          self.X.docModelViewFeatureDAO
-                .where(AND(EQ(DocFeatureInheritanceTracker.MODEL, extModelTr.model),
-                           EQ(DocFeatureInheritanceTracker.NAME, feature.name)))
-                .select(COUNT())(function(c) {
-                    if (c.count <= 0) {
-                      var featTrExt = self.X.DocFeatureInheritanceTracker.create({
-                          isDeclared: false,
-                          feature: feature,
-                          model: extModelTr.model });
-                      self.X.docModelViewFeatureDAO.put(featTrExt);
-                    }
-                });
-        });
+              // for the models that extend this model, make sure they have
+              // the feature too, if they didn't already have it declared (overridden).
+              previousExtenderTrackers.forEach(function(extModelTr) {
+                self.X.docModelViewFeatureDAO
+                      .where(AND(EQ(DocFeatureInheritanceTracker.MODEL, extModelTr.model),
+                                 EQ(DocFeatureInheritanceTracker.NAME, feature.name)))
+                      .select(COUNT())(function(c) {
+                          if (c.count <= 0) {
+                            var featTrExt = self.X.DocFeatureInheritanceTracker.create({
+                                isDeclared: false,
+                                feature: feature,
+                                model: extModelTr.model,
+                                type: modProp.name });
+                            self.X.docModelViewFeatureDAO.put(featTrExt);
+                          }
+                      });
+              });
+            }
+          });
+        }
       });
-
-      // Check if we extend something, or we are just Model (the base case)
+      // Check if we extend something. Use model instead of modelDef, in case we
+      // have traits that injected themselves into our inheritance heirarchy.
       if (!model.extendsModel) {
         newModelTr.inheritanceLevel = 0;
       } else {
@@ -502,8 +501,8 @@ MODEL({
   methods: {
     renderDocSourceHTML: function() {
       // only update if we have all required data
-      if (this.docSource.body && this.X.documentViewParentModel
-          && this.X.documentViewParentModel.get().valid && this.data.model_) {
+      if (this.docSource.body && this.X.documentViewRef
+          && this.X.documentViewRef.get().resolvedRoot.valid && this.data.model_) {
         // The first time this method is hit, replace it with the one that will
         // compile the template, then call that. Future calls go direct to lazyCompile's
         // returned function. You could also implement this the same way lazyCompile does...
@@ -541,7 +540,7 @@ MODEL({
     function toInnerHTML()    {/*
       <%    this.destroy(); %>
       <%    if (this.data) {  %>
-              <%=this.renderDocSourceHTML()%>
+              <p><%=this.renderDocSourceHTML()%></p>
       <%    } %>
     */}
   ],
@@ -561,7 +560,7 @@ MODEL({
       <%    this.destroy(); %>
       <%    if (this.data) {  %>
               <h2><%=this.data.name%></h2>
-              <%=this.renderDocSourceHTML()%>
+              <p><%=this.renderDocSourceHTML()%></p>
       <%    } %>
     */}
   ]
@@ -709,7 +708,7 @@ MODEL({
   documentation: function() { /*
     <p>A link to another place in the documentation. See $$DOC{ref:'DocView'}
     for notes on usage.</p>
-    <p>Every reference must have documentViewParentModel set on the context.
+    <p>Every reference must have documentViewRef set on the context.
       This indicates the starting point of the reference for relative name
       resolution.</p>
     */},
@@ -766,22 +765,22 @@ MODEL({
 
   methods: {
     init: function() {
-      /* Warns if documentViewParentModel is missing from the context. */
-      if (!this.X.documentViewParentModel) {
-        //console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
+      /* Warns if documentViewRef is missing from the context. */
+      if (!this.X.documentViewRef) {
+        //console.log("*** Warning: DocView ",this," can't find documentViewRef in its context "+this.X.NAME);
       } else {
       // TODO: view lifecycle management. The view that created this ref doesn't know
       // when to kill it, so the addListener on the context keeps this alive forever.
       // Revisit when we can cause a removeListener at the appropriate time.
-        //        this.X.documentViewParentModel.addListener(this.onParentModelChanged);
+        //        this.X.documentViewRef.addListener(this.onParentModelChanged);
       }
     },
 
     resolveReference: function(reference) {
   /* <p>Resolving a reference has a few special cases at the start:</p>
     <ul>
-      <li>Beginning with ".": relative to $$DOC{ref:'Model'} in X.documentViewParentModel</li>
-      <li>Containing only ".": the $$DOC{ref:'Model'} in X.documentViewParentModel</li>
+      <li>Beginning with ".": relative to $$DOC{ref:'Model'} in X.documentViewRef</li>
+      <li>Containing only ".": the $$DOC{ref:'Model'} in X.documentViewRef</li>
       <li>The name after the first ".": a feature of the $$DOC{ref:'Model'} accessible by "getFeature('name')"</li>
       <li>A double-dot after the $$DOC{ref:'Model'}: Skip the feature lookup and find instances directly on
             the $$DOC{ref:'Model'} definition (<code>MyModel..documentation.chapters.chapName</code>)</li>
@@ -800,12 +799,12 @@ MODEL({
 
       // if model not specified, use parentModel
       if (args[0].length <= 0) {
-        if (!this.X.documentViewParentModel || !this.X.documentViewParentModel.get().valid) {
+        if (!this.X.documentViewRef || !this.X.documentViewRef.get().resolvedRoot.valid) {
           return; // abort
         }
 
         // fill in root to make reference absolute, and try again
-        return this.resolveReference(this.X.documentViewParentModel.get().resolvedRef + reference);
+        return this.resolveReference(this.X.documentViewRef.get().resolvedRoot.resolvedRef + reference);
 
       } else {
         // resolve path and model

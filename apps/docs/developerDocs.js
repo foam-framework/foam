@@ -88,7 +88,7 @@ MODEL({
             $$DOC{ref:'Model',usePlural:true} for the data items.</li>
             <li>Throw your $$DOC{ref:'DAO'} into a $$DOC{ref:'DAOListView'} and the
             user can browse the collection. Want a grid? Throw in a $$DOC{ref:'GridView'}
-            instead. Not sure which? Let your $$DOC{ref:'Model'} pick the view at run
+            instead. Not sure which? Let $$DOC{ref:'DetailView'} pick the view at run
             time.</li>
             <li>Need to communicate something to or from a child object, but don't
             want to be burdened with knowing what type it is or if it exists?
@@ -449,7 +449,8 @@ MODEL({
         label: 'Animation',
         model_: 'Documentation',
         body: function() {/*
-          <p>// TODO</p>
+          <p>FOAM includes an animation building system that naturally extends the
+          event system. See event.js:Movement.</p>
         */}
       }
 
@@ -518,6 +519,9 @@ MODEL({
           and display them.</p>
           <p>A $$DOC{ref:'PropertyView'} is created to process each $$DOC{ref:'Property'},
           and it picks the appropriate $$DOC{ref:'View'} model.</p>
+          <p>Often a $$DOC{ref:'Property.view'} will be specified as part of a
+          $$DOC{ref:'Property'} definition. This instructs $$DOC{ref:'DetailView'}
+          exactly which type of $$DOC{ref:'View'} to use.</p>
         */}
       },
       {
@@ -526,7 +530,7 @@ MODEL({
         model_: 'Documentation',
         body: function() {/*
           <p>You can attach CSS directly to your $$DOC{ref:'View'} by implementing the
-          $$DOC{ref:'View.CSS'}() $$DOC{ref:'Method'} or $$DOC{ref:'Template'}. When the view
+          .CSS() $$DOC{ref:'Method'} or $$DOC{ref:'Template'}. When the view
           is instantiated, the CSS is installed into the document, ready for rendering.
           $$DOC{ref:'View',usePlural:true} can control their individual style attributes
           by setting $$DOC{ref:'View.extraClassName'} inside a submodel, or at run time by
