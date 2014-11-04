@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2013 Google Inc. All Rights Reserved.
+ * Copyright 2014 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,7 +117,7 @@ FOAM.lookup = function(key, opt_X) {
   if ( ! ( typeof key === 'string' ) ) return key;
 
   var path = key.split('.');
-  var root = opt_X || GLOBAL;
+  var root = opt_X || X;
   for ( var i = 0 ; root && i < path.length ; i++ ) root = root[path[i]];
 
   return root;
@@ -125,7 +125,7 @@ FOAM.lookup = function(key, opt_X) {
 
 
 function arequire(modelName, opt_X) {
-  var X = opt_X || GLOBAL;
+  var X = opt_X || X;
   var model = FOAM.lookup(modelName, X);
 
   if ( ! model ) {
@@ -217,10 +217,10 @@ function registerModel(model, opt_name) {
 //    console.log('contextulizeModel: ', model.name, ' in ', this.toString());
 
     // Model which creates Objects with Context X
-    var xModel = root == GLOBAL || root == X ? model : {
+    var xModel = root == X ? model : {
       __proto__: model,
       create: function(args, opt_X) {
-        return model.create(args, root);
+        return model.create(args, opt_X || root);
       }
     };
 
@@ -231,13 +231,7 @@ function registerModel(model, opt_name) {
         get: function() {
           var THIS = this.__this__ || this;
           if ( THIS === root ) return xModel;
-          // TODO(kgr): this is a quick hack to allow models in packages, make better
-          // THIS.registerModel(model, name);
-          if ( THIS.registerModel )
-            THIS.registerModel(model, name);
-          else
-            X.registerModel.call(THIS, model, name);
-          // End Hack
+          THIS.registerModel(model, name);
           return THIS[name];
         },
         configurable: true
@@ -257,9 +251,7 @@ function registerModel(model, opt_name) {
 
   contextualizeModel(path, model, name)
 
-  // TODO(kgr): this is a quick hack to allow models in packages, make better
-  this.registerModel_ && this.registerModel_(model);
-  //this.registerModel_(model);
+  this.registerModel_(model);
 }
 
 
@@ -271,12 +263,15 @@ function CLASS(m) {
 
     UNUSED_MODELS[id] = true;
 
+    // TODO(adamvy): Remove this once we no longer have code depending on models to being in the global scope.
+    Object.defineProperty(GLOBAL, m.name, { get: function() { return path[m.name]; }, configurable: true });
+
     Object.defineProperty(path, m.name, {
       get: function () {
         USED_MODELS[id] = true;
         delete UNUSED_MODELS[id];
         Object.defineProperty(path, m.name, {value: null, configurable: true});
-        GLOBAL.registerModel(JSONUtil.mapToObj(X, m, Model));
+        X.registerModel(JSONUtil.mapToObj(X, m, Model));
         return this[m.name];
       },
       configurable: true
@@ -285,7 +280,7 @@ function CLASS(m) {
 
   if ( document && document.currentScript ) m.sourcePath = document.currentScript.src;
 
-  registerModelLatch(packagePath(GLOBAL, m.package), m);
+  registerModelLatch(packagePath(X, m.package), m);
 }
 
 var MODEL = CLASS;
@@ -294,7 +289,7 @@ function INTERFACE(imodel) {
   // Unless in DEBUG mode, just discard interfaces as they're only used for type checking.
   // if ( ! DEBUG ) return;
   var i = JSONUtil.mapToObj(X, imodel, Interface);
-  packagePath(GLOBAL, i.package)[i.name] = i;
+  packagePath(X, i.package)[i.name] = i;
 }
 
 
