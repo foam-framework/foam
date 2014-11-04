@@ -4880,8 +4880,8 @@ MODEL({
       'will always be visible.',
 
   properties: [
-    'mainView',
-    'panelView',
+    { model_: 'ViewFactoryProperty', name: 'mainView' },
+    { model_: 'ViewFactoryProperty', name: 'panelView' },
     {
       name: 'minWidth',
       defaultValueFn: function() {
@@ -4963,21 +4963,24 @@ MODEL({
 
   methods: {
     toHTML: function() {
+      var mainView  = this.mainView();
+      var panelView = this.panelView();
+
+      this.addChildren(mainView, panelView);
+
       return '<div id="' + this.id + '" ' +
           'style="display: inline-block; position: relative" class="SliderPanel">' +
           '<div id="' + this.id + '-main">' +
-              this.mainView.toHTML() +
+              mainView.toHTML() +
           '</div>' +
           '<div id="' + this.id + '-panel" style="position: absolute; top: 0; left: 0">' +
           '   <div id="' + this.id + '-shadow" class="shadow"></div>' +
-              this.panelView.toHTML() +
+              panelView.toHTML() +
           '</div>' +
           '</div>';
     },
 
     initHTML: function() {
-      this.SUPER();
-
       // Mousedown and touch events on the sliding panel itself.
       // Mousemove and mouseup on the whole window, so that you can drag the
       // cursor off the slider and have it still following until you release the mouse.
@@ -4992,24 +4995,17 @@ MODEL({
       // Resize first, then init the outer view, and finally the panel view.
       this.X.window.addEventListener('resize', this.onResize);
       this.onResize();
-      this.mainView.initHTML();
-      this.panelView.initHTML();
+      this.initChildren(); // We didn't call SUPER(), so we have to do this here.
     },
     snap: function() {
       // TODO: Calculate the animation time based on how far the panel has to move
       Movement.animate(500, function() {
         this.panelX = this.dir_ > 0 ? 0 : 1000;
       }.bind(this))();
-     },
-     main$: function() {
-      return this.X.$(this.id + '-main');
     },
-    panel$: function() {
-      return this.X.$(this.id + '-panel');
-    },
-    shadow$: function() {
-      return this.X.$(this.id + '-shadow');
-    }
+    main$: function() { return this.X.$(this.id + '-main'); },
+    panel$: function() { return this.X.$(this.id + '-panel'); },
+    shadow$: function() { return this.X.$(this.id + '-shadow'); }
   },
 
   listeners: [
