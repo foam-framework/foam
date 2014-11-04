@@ -194,8 +194,21 @@ var TemplateCompiler = {
       this.push("', self.createTemplateView('", name, "',");
       this.push(JSON.stringify(attrs));
       this.push("),\n'");
+    } else if ( t.attrs.model ) {
+      var modelName = t.attrs.model;
+      var attrs = t.attrs.clone();
+      delete attrs['model'];
+
+      for ( var i = 0 ; i < t.children.length ; i++ ) {
+        var c = t.children[i];
+        if ( typeof c !== 'string' ) attrs[c.tag] = c.innerHTML();
+      }
+
+      this.push("', X.", modelName, '.create(');
+      this.push(JSON.stringify(attrs));
+      this.push("),\n'");
+
     }
-//    return this.push('FOAM TAG');
   },
   'simple value': function(v) { this.push("',\n self.", v[1].join(''), ",\n'"); },
   'raw values tag': function (v) { this.push("',\n", v[1].join(''), ",\n'"); },
