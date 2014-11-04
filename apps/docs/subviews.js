@@ -267,16 +267,28 @@ MODEL({
     },
 
     scrollToFeature: function() {
-      if (this.data && this.data.valid) {
-        var feature = this.data.resolvedModelChain[1];
-        if (feature && feature.name) {
-          element = $("scrollTarget_"+feature.name)
-          if (element) element.scrollIntoView(true);
-        } else {
-          if (this.$) this.$.scrollIntoView(true);
+      var self = this;
+      if (self.data && self.data.valid) {
+        if (! // if we don't find an element to scroll to:
+          self.data.resolvedModelChain.slice(1).reverse().some(function(feature) {
+            if (feature && feature.name) {
+              element = $("scrollTarget_"+feature.name);
+              console.log("Looking for "+"scrollTarget_"+feature.name);
+              if (element) {
+                console.log("Scrolling to "+"scrollTarget_"+feature.name);
+                element.scrollIntoView(true);
+                return true;
+              }
+              else return false;
+            }
+          })
+        ) {
+          // if we didn't find an element to scroll, use main view
+          if (self.$) self.$.scrollIntoView(true);
         }
       }
     },
+
 
     generateFeatureDAO: function() {
       /* Builds a feature DAO to sort out inheritance and overriding of
@@ -448,7 +460,7 @@ MODEL({
     function toInnerHTML()    {/*
 <%    this.destroy(); %>
 <%    if (this.data) {  %>
-        <div class="introduction">
+        <div id="scrollTarget_<%=this.data.id%>" class="introduction">
           <h2><%=this.data.label%></h2>
           $$data{ model_: 'DocModelBodyView', data: "", docSource: this.data }
         </div>

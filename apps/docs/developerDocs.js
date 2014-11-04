@@ -527,8 +527,9 @@ MODEL({
         model_: 'Documentation',
         body: function() {/*
           <p>You can attach CSS directly to your $$DOC{ref:'View'} by implementing the
-          .CSS() $$DOC{ref:'Method'} or $$DOC{ref:'Template'}. When the view
-          is instantiated, the CSS is installed into the document, ready for rendering.
+          .CSS() $$DOC{ref:'Method'} or $$DOC{ref:'Template'}. When the view's
+          $$DOC{ref:'Model'} is accessed, the CSS is installed into the document, ready
+          for rendering.
           $$DOC{ref:'View',usePlural:true} can control their individual style attributes
           by setting $$DOC{ref:'View.extraClassName'} inside a submodel, or at run time by
           setting $$DOC{ref:'View.className'}.</p>
