@@ -53,7 +53,7 @@ function subWindow(w, opt_name, isBackground) {
     registerModel_: function(model) {
       // TODO(kgr): If Traits have CSS then it will get installed more than once.
       // TODO(kgr): Add package support.
-      for ( m = model ; m && m.getPrototype ; m = m.extendsModel && this[m.extendsModel] ) {
+      for ( var m = model ; m && m.getPrototype ; m = m.extendsModel && this[m.extendsModel] ) {
         if ( installedModels[m.id] ) return;
         installedModels[m.id] = true;
         m.getPrototype().installInDocument(this, document);
