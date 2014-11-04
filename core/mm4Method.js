@@ -985,8 +985,31 @@ MODEL({
       defaultValue: [],
       help: 'Sub-documents comprising the full body of this document.',
       documentation: "Optional sub-documents to be included in this document. A viewer may choose to provide an index or a table of contents.",
-    },
-
+      preSet: function(old,nu) {
+        var self = this;
+        var foamalized = [];
+        // create models if necessary
+        nu.forEach(function(chapter) {
+          if (chapter && typeof self.X.Documentation != "undefined" && self.X.Documentation // a source has to exist (otherwise we'll return undefined below)
+              && (  !chapter.model_ // but we don't know if the user set model_
+                 || !chapter.model_.getPrototype // model_ could be a string
+                 || !self.X.Documentation.isInstance(chapter) // check for correct type
+              ) ) {
+            // So in this case we have something in documentation, but it's not of the
+            // "Documentation" model type, so FOAMalize it.
+            if (chapter.body) {
+              foamalized.push(self.X.Documentation.create( chapter ));
+            } else {
+              foamalized.push(self.X.Documentation.create({ body: chapter }));
+            }
+          } else {
+            foamalized.push(chapter);
+          }
+        });
+        return foamalized;
+      },
+      //postSet: function() { console.log("post ",this.chapters); }
+    }
   ]
 
 });

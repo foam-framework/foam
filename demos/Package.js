@@ -101,16 +101,16 @@ CLASS({
 var a = X.demo.bank.AccountTester.create();
 a.test();
 
+// TODO: Re-enable when models as packages works again.
+//CLASS({
+//  package: 'demo.bank.Account',
+//  name: 'AccountInnerModel',
 
-CLASS({
-  package: 'demo.bank.Account',
-  name: 'AccountInnerModel',
-
-  properties: [ 'a', 'b', 'c' ],
-});
-
-var im = X.demo.bank.Account.AccountInnerModel.create({a:1, b:2, c:3});
-console.log(im.toJSON());
+//  properties: [ 'a', 'b', 'c' ],
+//});
+//
+//var im = X.demo.bank.Account.AccountInnerModel.create({a:1, b:2, c:3});
+//console.log(im.toJSON());
 
 
 
@@ -141,6 +141,7 @@ CLASS({
       this.x = 1;
       this.x = 2;
       this.x = 3;
+
     }
   }
 });

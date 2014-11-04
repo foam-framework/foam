@@ -35,11 +35,7 @@ var FObject = {
     o.instance_ = {};
     o.X = opt_X || X;
 
-    // X.__this__ is a sub-context which contains exports and is used by
-    // children.
-    // TODO(kgr): does __this__ need to be local?
-    // if ( this.model_.exports && this.model_.exports.length )
-    //  o.X = o.X.sub({__this__: {}));
+    o.X = o.X.sub({});
 
     if ( this.model_.imports && this.model_.imports.length ) {
       if ( ! this.imports_ ) {
