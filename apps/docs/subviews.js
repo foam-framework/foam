@@ -273,9 +273,7 @@ MODEL({
           self.data.resolvedModelChain.slice(1).reverse().some(function(feature) {
             if (feature && feature.name) {
               element = $("scrollTarget_"+feature.name);
-              console.log("Looking for "+"scrollTarget_"+feature.name);
               if (element) {
-                console.log("Scrolling to "+"scrollTarget_"+feature.name);
                 element.scrollIntoView(true);
                 return true;
               }
