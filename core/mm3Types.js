@@ -736,7 +736,9 @@ var FactoryProperty = Model.create({
         // A JSON Model Factory: { factory_ : 'ModelName', arg1: value1, ... }
         if ( f.factory_ ) return function(map, opt_X) {
           var X = opt_X || this.X;
-          return FOAM(f.factory_, X).create(map, X);
+          var m = FOAM.lookup(f.factory_, X);
+          console.assert(m, 'Unknown Factory Model: ' + f.factory_);
+          return m.create(f, X);
         }.bind(this);
 
         console.error('******* Invalid Factory: ', f);
@@ -800,8 +802,12 @@ var ViewFactoryProperty = Model.create({
         // A JSON Model Factory: { factory_ : 'ModelName', arg1: value1, ... }
         if ( f.factory_ ) return function(map, opt_X) {
           var X = opt_X || this.X;
-          return FOAM(f.factory_, X).create(map, X);
+          var m = FOAM.lookup(f.factory_, X);
+          console.assert(m, 'Unknown ViewFactory Model: ' + f.factory_);
+          return m.create(f, X);
         }.bind(this);
+
+        if ( View.isInstance(f) ) return constantFn(f);
 
         console.error('******* Invalid Factory: ', f);
         return f;
