@@ -458,6 +458,7 @@ MODEL({
   extendsModel: 'View',
   traits: ['PositionedDOMViewTrait'],
   imports: ['mgmail'],
+  exports: ['counts'],
   properties: [
     {
       name: 'topSystemLabelView',
@@ -471,6 +472,14 @@ MODEL({
     {
       name: 'preferredWidth',
       defaultValue: 280
+    },
+    {
+      name: 'counts',
+      factory: function() {
+        var sink = GROUP_BY(EMail.LABELS, COUNT());
+        this.mgmail.emailDao.select(sink);
+        return sink;
+      }
     }
   ],
   templates: [
@@ -485,7 +494,7 @@ MODEL({
         <hr>
         %%bottomSystemLabelView
         <hr>
-        <%= MenuLabelCitationView.create({
+        <%= this.X.MenuLabelCitationView.create({
           data: this.X.FOAMGMailLabel.create({
             id: 'All Mail',
             name: 'All Mail'
@@ -531,6 +540,34 @@ MODEL({
 MODEL({
   name: 'MenuLabelCitationView',
   extendsModel: 'DetailView',
+  requires: ['SimpleValue'],
+  imports: ['counts'],
+  properties: [
+    {
+      name: 'count',
+      view: 'LabelCountView'
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+      var v = this.SimpleValue.create();
+      if ( this.counts.groups && this.counts.groups[this.data.name] ) {
+        this.link();
+      } else {
+        this.counts.addListener(this.link);
+      }
+    }
+  },
+  listeners: [
+    {
+      name: 'link',
+      code: function() {
+        Events.link(this.counts.groups[this.data.name].count$, this.count$);
+      }
+    }
+  ],
   templates: [
     function CSS() {/*
       .label-row {
@@ -545,15 +582,58 @@ MODEL({
         width: 24px;
         opacity: 0.6;
         margin-right: 25px;
+        flex-grow: 0;
+        flex-shrink: 0;
+      }
+      .label-row .label {
+        flex-grow: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .label-row .count {
+        flex-shrink: 0;
+        flex-grow: 0;
+        text-align: center;
+        width: 40px;
       }
     */},
     function toHTML() {/*
-      <div id="%%id" class="label-row">$$iconUrl $$name{mode: 'read-only'}</div>
+      <div id="%%id" class="label-row">
+        $$iconUrl
+        $$label{mode: 'read-only', extraClassName: 'label' }
+        $$count
+      </div>
       <% this.on('click', function() { this.X.mgmail.changeLabel(this.data); }, this.id); %>
     */}
   ]
 });
 
+MODEL({
+  name: 'LabelCountView',
+  extendsModel: 'View',
+  properties: [
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        this.updateHTML();
+      }
+    },
+    {
+      name: 'extraClassName',
+      defaultValue: 'count'
+    }
+  ],
+  templates: [
+    function toInnerHTML() {/*
+      <% if ( this.data > 99 ) { %>
+        99+
+      <% } else { %>
+        %%data
+      <% } %>
+    */}
+  ]
+});
 
 var openComposeView = function(email) {
   var X = mgmail.controller.X;
