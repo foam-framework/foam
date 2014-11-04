@@ -72,14 +72,14 @@ XMLParser.addActions({
 var XMLUtil = {
 
   escape: function(str) {
-    return str && str
+    return str && str.toString()
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
   },
 
   unescape: function(str) {
-    return str && str
+    return str && str.toString()
         .replace(/&lt;/g, '<')
         .replace(/&gt;/g, '>')
         .replace(/&amp;/g, '&');
