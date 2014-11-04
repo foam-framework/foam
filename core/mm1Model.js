@@ -153,12 +153,14 @@ var Model = {
          */}
     },
     {
-      name: 'exportKey',
-      type: 'String',
+      name: 'exportKeys',
+      type: 'Array',
+      subType: 'String',
       required: false,
       hidden: true,
       defaultValue: '',
-      help: 'Key to export value as, if exported.',
+      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; }, 
+      help: 'Keys to export this object as in its sub-context.',
       documentation: function() {/* */}
     },
     {

@@ -56,22 +56,26 @@ var Property = {
 
     },
     {
-      name: 'exportKey',
-      type: 'String',
+      name: 'exportKeys',
+      type: 'Array',
+      subType: 'String',
       required: false,
       hidden: true,
       defaultValue: '',
-      help: 'Key to export value as, if exported.',
-      documentation: function() {/* */}
+      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; }, 
+      help: 'Keys to export value as.',
+      documentation: function() {/* If set, when the an object with this property is initialized the value of this property on the object will be exported into the objects sub-context. */}
     },
     {
-      name: 'exportValueKey',
-      type: 'String',
+      name: 'exportValueKeys',
+      type: 'Array',
+      subType: 'String',
       required: false,
       hidden: true,
       defaultValue: '',
-      help: 'Key to export value$ as, if exported.',
-      documentation: function() {/* */}
+      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; }, 
+      help: 'Keys to export value$ as.',
+      documentation: function() {/* Same as $$DOC{ ref: 'Property.exportKeys' }, expect it exports the property Value (name$) of the property rather than the raw value of the property. */}
     },
     {
       name: 'label',

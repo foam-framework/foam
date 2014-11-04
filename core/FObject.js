@@ -57,7 +57,9 @@ var FObject = {
     if ( typeof args === 'object' ) o.copyFrom(args);
     o.init(args);
 
-    if ( o.exportKey ) o.X[o.exportKey] = o;
+    if ( o.model_.exportKeys ) {
+      for ( var i = 0; i < o.model_.exportKeys.length; i ++ ) o.X[o.exportKeys[i]] = o;
+    }
 
     return o;
   },
@@ -101,6 +103,12 @@ var FObject = {
 
     var ps;
 
+    function exportKeys(X, keys, value) {
+      if ( ! keys ) return;
+      for ( var i = 0 ; i < keys.length ; i++ )
+        X[keys[i]] = value;
+    }
+
     ps = this.selectProperties_('factoryProperties_', 'factory');
     for ( var i = 0 ; i < ps.length ; i++ ) {
       var prop = ps[i];
@@ -110,8 +118,8 @@ var FObject = {
       // if ( ! this.instance_[prop.name] ) this[prop.name] = prop.factory.call(this);
       if ( ! this.hasOwnProperty(prop.name) ) this[prop.name] = prop.factory.call(this);
 
-      if ( prop.exportKey )      this.X[this.exportKey]      = this[prop.name];
-      if ( prop.exportValueKey ) this.X[this.exportValueKey] = this[prop.name + '$'];
+      exportKeys(this.X, prop.exportKeys, this[prop.name]);
+      exportKeys(this.X, prop.exportValueKeys, this[prop.name + '$']);
     }
 
 
@@ -127,19 +135,19 @@ var FObject = {
 
 
     // TODO(kgr): exclude values which were handled in the above lists already
-    ps = this.selectProperties_('exportKeyProperties_', 'exportKey');
+    ps = this.selectProperties_('exportKeyProperties_', 'exportKeys');
     for ( var i = 0 ; i < ps.length ; i++ ) {
       var prop = ps[i];
 
-      this.X[prop.exportKey] = this[prop.name];
+      exportKeys(this.X, prop.exportKeys, this[prop.name]);
     }
 
 
-    ps = this.selectProperties_('exportValueKeyProperties_', 'exportValueKey');
+    ps = this.selectProperties_('exportValueKeyProperties_', 'exportValueKeys');
     for ( var i = 0 ; i < ps.length ; i++ ) {
       var prop = ps[i];
 
-      this.X[prop.exportValueKey] = this[prop.name + '$'];
+      exportKeys(this.X, prop.exportValueKeys, this[prop.name + '$']);
     }
 
     // Add non-property exports to Context

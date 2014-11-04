@@ -268,7 +268,8 @@ var BootstrapModel = {
         // console.warn('Unknown export: "'+ cls.name_ + '.' + key + '"');
         return;
       }
-      props[prop][asValue ? 'exportValueKey' : 'exportKey'] = alias;
+      var subProp = asValue ? 'exportValueKeys' : 'exportKeys';
+      props[prop][subProp] = (props[prop][subProp] || []).concat(alias);
     });
 
     // templates
