@@ -27,13 +27,13 @@
  *    $$feature(<whitespace>|<): output the View or Action for the current Value
  */
 
-var TagParser = {
+var FOAMTagParser = {
   __proto__: grammar,
 
-  create: function(tagName) {
+  create: function() {
     return {
       __proto__: this,
-      tagName: literal_ic(tagName)
+      html:      HTMLParser.create().export('START')
     };
   },
 
@@ -41,62 +41,41 @@ var TagParser = {
 
   tag: seq(
     '<',
-    sym('tagName'),
+    literal_ic('foam'),
     sym('whitespace'),
-    repeat(sym('attribute'), sym('whitespace')),
+    sym('attributes'),
     sym('whitespace'),
     alt(sym('closed'), sym('matching'))
   ),
 
   closed: literal('/>'),
 
-  matching: seq1(1,
-    '>',
-    str(repeat(alt(
-      sym('tag'),
-      sym('text'))
-    )),
-    sym('endTag')
-  ),
+  matching: seq1(1,'>', sym('html'), sym('endTag')),
 
-  endTag: seq1(1,
-    '</',
-    sym('tagName'),
-    '>'
-  ),
+  endTag: seq1(1, '</', literal_ic('foam'), '>'),
 
   label: str(plus(notChars(' =/\t\r\n<>\'"'))),
 
-  text: str(plus(not(sym('endTag'), anyChar))),
+  attributes: repeat(sym('attribute'), sym('whitespace')),
 
   attribute: seq(sym('label'), '=', sym('value')),
 
-  value: str(seq1(1, '"', repeat(notChar('"')), '"')),
+  value: str(alt(
+    plus(alt(range('a','z'), range('A', 'Z'), range('0', '9'))),
+    seq1(1, '"', repeat(notChar('"')), '"')
+  )),
 
   whitespace: repeat(alt(' ', '\t', '\r', '\n'))
 
 }.addActions({
-  tag: function(xs) {
-    var obj = {
-      tag: xs[1],
-      attrs: {},
-      body: xs[5] || '',
-      toString: function() {
-        var out = '<foam ';
-        for ( key in this.attrs ) { out += key + '="' + this.attrs[key] + '" '; }
-        if ( this.body.length ) {
-          out += '>';
-          out += this.body;
-          out += '</foam>';
-        } else {
-          out += '/>';
-        }
-        return out;
-      }
-    };
-    xs[3].forEach(function(attr) { obj.attrs[attr[0]] = attr[2]; });
-    return obj;
-  }
+  attributes: function(xs) {
+    var attrs = {};
+    xs.forEach(function(attr) { attrs[attr[0]] = attr[2]; });
+    return attrs;
+  },
+  tag:      function(xs) { return Tag.create(xs[1], xs[3], xs[5]); },
+  closed:   function()   { return []; },
+  matching: function(xs) { return xs.children; }
 });
 
 
@@ -119,7 +98,7 @@ var TemplateParser = {
     sym('text')
   )),
 
-  'foamTag': TagParser.create('foam').export('tag'),
+  'foamTag': FOAMTagParser.create().export('START'),
 
   'create child': seq('$$', repeat(notChars(' $\n<{')),
                       optional(JSONParser.export('objAsString'))),
@@ -206,7 +185,8 @@ var TemplateCompiler = {
       var name = t.attrs.f.constantize();
       var attrs = t.attrs.clone();
       delete attrs['f'];
-      if ( t.body ) attrs.rowView = t.body;
+      if ( t.children.length ) attrs.rowView = t.innerHTML();
+
       this.push("', self.createTemplateView('", name, "',");
       this.push(JSON.stringify(attrs));
       this.push("),\n'");
