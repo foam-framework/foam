@@ -45,7 +45,7 @@ MODEL({
       name:  'data',
       postSet: function(_, data) {
         if ( ! this.model && data && data.model_ ) this.model = data.model_;
-        this.onValueChange();
+        this.onValueChange_();
       },
       documentation: function() {/*
         <p>The $$DOC{ref:'Model'} to view. The $$DOC{ref:'Property',usePlural:true}
@@ -108,21 +108,6 @@ MODEL({
     }
   ],
 
-  listeners: [
-    {
-      name: 'onValueChange',
-      code: function() {
-        // TODO: Allow overriding of listeners
-        this.onValueChange_.apply(this, arguments);
-        if ( this.$ ) this.updateSubViews();
-      },
-      documentation: function() {/*
-        <p>Triggers sub-views to update their values without destroying any of them.
-        </p>
-      */}
-    }
-  ],
-
   methods: {
     // Template Method
     onValueChange_: function() { /* Override with value update code. */ },
@@ -136,14 +121,17 @@ MODEL({
          See $$DOC{ref:'View.createTemplateView'}. */
       var o = this.viewModel()[name];
       if ( o ) {
+        var v;
+
         if ( Action.isInstance(o) )
-          var v = this.createActionView(o, opt_args);
+          v = this.createActionView(o, opt_args);
         else if ( Relationship.isInstance(o) )
           v = this.createRelationshipView(o, opt_args);
         else
           v = this.createView(o, opt_args);
 
         v.data$ = this.data$;
+
         return v;
       }
 
@@ -222,7 +210,9 @@ MODEL({
 
         if ( prop.hidden ) continue;
 
-        str += this.rowToHTML(prop, this.createView(prop));
+        var view = this.createView(prop);
+        view.data$ = this.data$;
+        str += this.rowToHTML(prop, view);
       }
 
       str += this.endForm();
@@ -239,32 +229,6 @@ MODEL({
       str += '</div>';
 
       return str;
-    },
-
-    initHTML: function() {
-      /* After sub-view creation, connects sub-views for updates. */
-      this.SUPER();
-
-      // hooks sub-views upto sub-models
-      this.updateSubViews();
-    },
-
-    updateSubViews: function() {
-      /* Connects sub-views for updates. */
-      if ( this.data === '' ) return;
-
-      for ( var i = 0 ; i < this.children.length ; i++ ) {
-        var child = this.children[i];
-        var prop  = child.prop;
-
-        if ( ! prop ) continue;
-
-        try {
-          child.data = this.data;
-        } catch (x) {
-          console.log('error: ', prop.name, ' ', x);
-        }
-      }
     }
   }
 });
