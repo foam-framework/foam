@@ -593,7 +593,7 @@ MODEL({
 
   methods: {
     getGroupFromTarget: function(target) {
-      return target.chapters$;
+      return target.documentation.chapters$;
     },
     featureName: function() {
       return "Chapters";
@@ -607,9 +607,8 @@ MODEL({
     function toInnerHTML()    {/*
     <%    this.destroy();
           if (!this.hasDAOContent) { %>
-    <%    } else { %>
-        
-            <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
+    <%    } else { %>       
+            <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: this.X.Documentation }</div>
     <%    } %>
     */}
   ]

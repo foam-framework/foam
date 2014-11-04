@@ -37,11 +37,10 @@ MODEL({
     $$DOC{ref:'DocBodyView'}.</p>
     <p>Documentation views require that a this.X.documentViewRef $$DOC{ref:'SimpleValue'}
     be present on the context. The supplied model is used as the base for resolving documentation
-    references. If you are viewing the documentation for a Model, it will be that Model. If you
-    are viewing a feature's documentation (a $$DOC{ref:'Method'}, $$DOC{ref:'Property'}, etc.)
-    it will be the Model that contains that feature.</p>
+    references. If you are viewing the documentation for a Model, it will be a
+    reference to that Model.</p>
     <p>See $$DOC{ref:'DocumentationBook'} for information on creating documentaion
-    that is not directly associated with a $$DOC{ref:'Model'}.
+    that is not directly associated with a $$DOC{ref:'Model'}.</p>
   */},
 
   methods: {
@@ -52,7 +51,6 @@ MODEL({
         console.warn("*** Warning: DocView ",this," can't find documentViewRef in its context "+this.X.NAME);
       }
     },
-
 
     createReferenceView: function(opt_args) { /*
       <p>Creates $$DOC{ref:'DocRefView'} reference views from $$DOC{ref:'.',text:'$$DOC'}
@@ -69,7 +67,7 @@ MODEL({
         an explicitly defined "model_: $$DOC{ref:'Model.name'}" in opt_args.</p>
       */
       var X = ( opt_args && opt_args.X ) || this.X;
-      var v = X[opt_args.model_].create({ args: opt_args }); // we only support model_ in explicit mode
+      var v = X[opt_args.model_].create( opt_args ); // we only support model_ in explicit mode
       if (!opt_args.data) { // explicit data is honored
         if (this.data) { // TODO: when refactoring $$THISDATA below, figure out what we can assume about this.data being present
           v.data = this.data;
@@ -385,8 +383,9 @@ MODEL({
 
     function toInnerHTML()    {/*
 <%    this.destroy(); %>
-<%    if (this.sourceModel && DocumentationBook.isSubModel(this.sourceModel)) {  %>
-        $$THISDATA{ model_: 'DocBookView', data: this.sourceModel.documentation }
+<%    if (   this.sourceModel.model_ && this.sourceModel.model_.id
+          && this.sourceModel.model_.id === 'DocumentationBook') {   %>
+        $$THISDATA{ model_: 'DocBookView', data: this.sourceModel }
 <%    } else if (this.sourceModel) {  %>
         <div class="introduction">
           <h1><%=this.sourceModel.name%></h1>
@@ -443,27 +442,34 @@ MODEL({
   extendsModel: 'DocView',
   help: 'Displays the documentation of the given book.',
 
-  properties: [
+  properties: [ 
     {
       name: 'data',
       help: 'The documentation to display.',
       postSet: function() {
-        this.updateHTML();
+        this.documentation = this.data;
       }
     },
+    {
+      name: 'documentation',
+      help: 'The documentation to display.',
+      postSet: function() {
+        this.updateHTML();
+      }
+    }
   ],
 
   templates: [
 
     function toInnerHTML()    {/*
 <%    this.destroy(); %>
-<%    if (this.data) {  %>
-        <div id="scrollTarget_<%=this.data.id%>" class="introduction">
-          <h2><%=this.data.label%></h2>
-          $$data{ model_: 'DocModelBodyView', data: "", docSource: this.data }
+<%    if (this.documentation) {  %>
+        <div id="scrollTarget_<%=this.documentation.name%>" class="introduction">
+          <h2><%=this.documentation.label%></h2>
+          $$THISDATA{ model_: 'DocModelBodyView', data: this }
         </div>
         <div class="chapters">
-          $$data{ model_: 'DocChaptersView', data: this.data }
+          $$THISDATA{ model_: 'DocChaptersView', data: this }
         </div>
 <%    } %>
     */}

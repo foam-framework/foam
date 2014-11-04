@@ -59,6 +59,11 @@ MODEL({
           newDAO.put(m);
         };
 
+        // load up books
+        for (var key in this.X.developerDocs) {
+          newDAO.put(this.X.developerDocs[key]);
+        }
+
         return newDAO;
       }
     },
@@ -180,6 +185,9 @@ MODEL({
   methods: {
     init: function() {
       /* This is a method documentation comment: spawn and populate sub contexts. */
+
+      // load developer guides
+      RegisterDevDocs(this.X);
 
       // search context uses a selection value to indicate the chosen Model to display
       this.SearchContext = this.X.sub({}, 'searchX');
