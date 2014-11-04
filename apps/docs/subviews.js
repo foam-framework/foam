@@ -858,15 +858,17 @@ MODEL({
       // instance of a feature definition here
       if (Model.isInstance(model) && args.length > 1)
       {
-        // feature specified "Model.feature" or ".feature"
-        foundObject = model.getFeature(args[1]);
-        if (!foundObject) {
-          return;
-        } else {
-          newResolvedModelChain.push(foundObject);
-          newResolvedRef += "." + args[1];
+        if (args[1].length > 0) {
+          // feature specified "Model.feature" or ".feature"
+          foundObject = model.getFeature(args[1]);
+          if (!foundObject) {
+            return;
+          } else {
+            newResolvedModelChain.push(foundObject);
+            newResolvedRef += "." + args[1];
+          }
+          remainingArgs = args.slice(2);
         }
-        remainingArgs = args.slice(2);
       } else {
         foundObject = model;
         remainingArgs = args.slice(1);
