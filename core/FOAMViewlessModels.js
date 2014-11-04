@@ -27,6 +27,7 @@ var files = [
   'event',
   'JSONUtil',
   'XMLUtil',
+  'HTMLParser',
   'context',
   'FOAM',
   'JSONParser',
