@@ -255,58 +255,9 @@ MODEL({
           to create copies with specific changes that can be passed on to
           the instances you create.
           </p>
-          <p>For example:</p>
-          <p><code>
-            myMethod: function() {<br/>
-            var subX = this.X.sub({name:'mySubContext'}); // create subcontext<br/>
-            subX.greatValue = subX.SimpleValue.create();  // a simple value in sub context<br/>
-<br/>
-            // this view is passed subX as its context.<br/>
-            myVProp = subX.DetailView.create(); <br/>
-          <br/>
-              // We're sub-contexting again! This locks out change access to subX.<br/>
-            // The view has no way to modify our subX,<br/>
-            // but inherits all the contents. It will see this.X.greatValue, and be able<br/>
-            // to modify the value to pass information back to us, but can't change the existence<br/>
-            // of greatValue. It can add new things to its context, but they won't be<br/>
-            // part of subX.<br/>
-            myOtherVProp = subX.sub().DetailView.create();<br/>
-            }<br/>
-          </code></p>
-          <p>Whether you replace your this.X with a sub-context or manually manage multiple 
-          sub-contexts in variables is up to you. Replacing this.X is convenient, but sometimes
-          you need sets of children to see different things, and branching multiple sub-contexts
-          may work better.</p>
-
-        */}
-      },
-      {
-        name: 'dependencyInjection',
-        label: 'Dependency Injection',
-        model_: 'Documentation',
-        body: function() {/*
-          <p>The goal of dependency injection is to transparently replace implementation
-          as needed. Uses include:</p>
-          <ul>
-              <li>Picking the most appropriate implementation at run time</li>
-              <li>Replacing a production implementation with a mock or fake</li>
-              <li>Decoupling dependencies without added layers of interface inheritance</li>
-          </ul>
-          <p>With control over you Context, you get all this for free. To replace the
-          implementation of a $$DOC{ref:'Model'}, just reassign it in your subcontext:
-          <p><code>
-            init: function() {<br/>
-            this.X = this.X.sub(); // replace our own context<br/>
-            this.SUPER(); // always call this.SUPER() in your init()!<br/>
-            this.X.DetailView = this.X.MyOtherView; // swap in different view<br/>
-            ...<br/>
-            var actuallyMyOtherView = this.X.DetailView.create();<br/>
-            }
-          </code></p>
-          Not only does this cause your own calls to create() to use the new $$DOC{ref:'DetailView'}
-          replacement, but anything you create that happens to create a $$DOC{ref:'DetailView'}
-          will get MyOtherView instead.
-          </p>
+          <p><img src="images/context1.png" alt="context diagram" /></p>
+          <p>Sub-contexting creates passthroughs for all the items in the original
+          context, appearing identical.</p>
         */}
       },
       {
@@ -324,6 +275,14 @@ MODEL({
           that value. If you create a value in a subcontext, however, the parent
           will not see the value.
           </p>
+          <p><img src="images/context2.png" alt="context value replacement"/></p>
+          <p>Setting the contents of a value (such as <code>Y.parent.set()</code>
+          above) will change
+          the value that everyone sees from the original context, since you are
+          reading the reference from the context and stuffing a value into it. When
+          setting the reference itself to a new object, the sub-context changes and
+          the parent is unchanged.
+          </p>
           <p>The basic rule of thumb is that any $$DOC{ref:'Model'} that wants
           to change the contents of its context should sub-context first.
           Calling <code>this.X = this.X.sub();</code> in your init() $$DOC{ref:'Method'},
@@ -339,6 +298,44 @@ MODEL({
             this.searchX.selection = this.searchX.SimpleValue.create();<br/>
             this.detailX.DetailView = this.X.BetterDetailView;<br/>
              </code></p>
+          </p>
+        */}
+      },
+      {
+        name: 'dependencyInjection',
+        label: 'Dependency Injection',
+        model_: 'Documentation',
+        body: function() {/*
+          <p>The goal of dependency injection is to transparently replace implementation
+          as needed. Uses include:</p>
+          <ul>
+              <li>Picking the most appropriate implementation at run time</li>
+              <li>Replacing a production implementation with a mock or fake</li>
+              <li>Decoupling dependencies without added layers of interface inheritance</li>
+          </ul>
+          <p>With control over you Context, you get all this for free. To replace the
+          implementation of a $$DOC{ref:'Model'}, just reassign it in your subcontext:
+          </p>
+          <p><img src="images/context3.png" alt="context dependency injection"/></p>
+          <p>Now code running inside a model instance created with context Y will
+          have <code>MockController</code> instead of <code>Controller</code>,
+          but not be aware of the change.</p>
+          <code>
+            Y.Value.create();<br/>
+            ...<br/>
+            // inside Value:<br/>
+            methods: {<br/>
+      &nbsp;&nbsp;        manageValue: function() {<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;          // When created with context Y, this actually creates a MockController.<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;          // If passed the original context instead, it would create a Controller.<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;          var controller = this.X.Controller.create();<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;          controller.callMethodsAsNormal();<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;          ...<br/>
+            }}<br/>
+          </code></p>
+          <p>This model replacement continues into sub-contexts you create, so if
+          the MockController instance created any models, it would pass the modified
+          context along to them (possibly after doing some replacements of its own).
           </p>
         */}
       },
