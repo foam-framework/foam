@@ -185,7 +185,11 @@ var TemplateCompiler = {
       var name = t.attrs.f.constantize();
       var attrs = t.attrs.clone();
       delete attrs['f'];
-      if ( t.children.length ) attrs.rowView = t.innerHTML();
+
+      for ( var i = 0 ; i < t.children.length ; i++ ) {
+        var c = t.children[i];
+        if ( typeof c !== 'string' ) attrs[c.tag] = c.innerHTML();
+      }
 
       this.push("', self.createTemplateView('", name, "',");
       this.push(JSON.stringify(attrs));
