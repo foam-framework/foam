@@ -18,12 +18,12 @@
 /** Like XMLParser, but more forgiving of unmatched tags. **/
 // TODO(kgr): have XMLParser use Tag also
 var Tag = {
-  create: function(tagName, opt_attrs) {
+  create: function(tagName, opt_attrs, opt_children) {
     return {
       __proto__: this,
       tag:      tagName,
       attrs:    opt_attrs || {},
-      children: []
+      children: opt_children || []
     };
   },
   toString: function() { return this.toHTML(); },
@@ -32,13 +32,18 @@ var Tag = {
     for ( key in this.attrs ) { out += ' ' + key + '="' + this.attrs[key] + '"'; }
     if ( this.children.length ) {
       out += '>';
-      for ( var i = 0 ; i < this.children.length ; i++ ) {
-        var c = this.children[i];
-        out += c.toHTML ? c.toHTML() : c.toString();
-      }
+      out += this.innerHTML();
       out += '</' + this.tag + '>';
     } else {
       out += '>';
+    }
+    return out;
+  },
+  innerHTML: function() {
+    var out = '';
+    for ( var i = 0 ; i < this.children.length ; i++ ) {
+      var c = this.children[i];
+      out += c.toHTML ? c.toHTML() : c.toString();
     }
     return out;
   },
@@ -71,15 +76,12 @@ var HTMLParser = {
 
   peek: function() { return this.stack[this.stack.length-1]; },
 
-  START: repeat((function() {
-    var html = sym('html');
-    return function(ps) { return this.result ? undefined : this.parse(html, ps); };
-  })()),
+  START: sym('html'),
 
-  html: alt(
+  html: repeat(alt(
     sym('text'),
-    sym('startTag'),
-    sym('endTag')),
+    sym('endTag'),
+    sym('startTag'))),
 
   startTag: seq(
       '<',
@@ -88,9 +90,16 @@ var HTMLParser = {
       sym('attributes'),
       sym('whitespace'),
       optional('/'),
-      '>'),
+    '>'),
 
-  endTag: seq('</', sym('tagName'), '>'),
+  endTag: (function() {
+    var endTag_ = sym('endTag_');
+    return function(ps) {
+      return this.stack.length > 1 ? this.parse(endTag_, ps) : undefined;
+    };
+  })(),
+
+  endTag_: seq1(1, '</', sym('tagName'), '>'),
 
   attributes: repeat(sym('attribute'), sym('whitespace')),
 
@@ -104,15 +113,12 @@ var HTMLParser = {
 
   value: str(alt(
     plus(alt(range('a','z'), range('A', 'Z'), range('0', '9'))),
-    seq1(1, '"', repeat(notChar('"')), '"'),
-    seq1(1, "'", repeat(notChar("'")), "'")
+    seq1(1, '"', repeat(notChar('"')), '"')
   )),
 
   whitespace: repeat(alt(' ', '\t', '\r', '\n'))
 }.addActions({
-  START: function(xs) {
-    return this.result;
-  },
+  START: function(xs) { return this.stack[0]; },
   attributes: function(xs) {
     var attrs = {};
     xs.forEach(function(attr) { attrs[attr[0]] = attr[2]; });
@@ -120,7 +126,6 @@ var HTMLParser = {
   },
   startTag: function(xs) {
     var tag = xs[1];
-    console.log('startTag: ', tag);
     // < tagName ws attributes ws / >
     // 0 1       2  3          4  5 6
     var obj = Tag.create(tag, xs[3]);
@@ -128,24 +133,39 @@ var HTMLParser = {
     if ( xs[5] != '/' ) this.stack.push(obj);
     return obj;
   },
-  text: function(xs) {
-    if ( ! this.peek() ) return;
-    this.peek().children.push(xs);
-  },
+  text: function(xs) { this.peek().children.push(xs); },
   endTag: function(xs) {
-    var tag = xs[1];
-    console.log('endTag: ', tag);
+    var tag = xs;
     var stack = this.stack;
     while ( true ) {
       var top = stack.pop();
       if ( top.tag == tag ) return;
       var peek = this.peek();
-      if ( ! peek ) {
-        this.result = top;
-        return;
-      }
       peek.children = peek.children.concat(top.children);
       top.children = [];
     }
   }
 });
+
+/*
+// TODO: move tests to UnitTests
+function test(html) {
+  console.log('\n\nparsing: ', html);
+  var p = HTMLParser.create();
+  var res = p.parseString(html);
+  if ( res ) {
+    console.log('Result: ', res.toString());
+  } else {
+    console.log('error');
+  }
+}
+
+test('<ba>foo</ba>');
+test('<p>');
+test('foo');
+test('foo bar');
+test('foo</end>');
+test('<b>foo</b></foam>');
+test('<pA a="1">foo</pA>');
+test('<pA a="1" b="2">foo<b>bold</b></pA>');
+*/
