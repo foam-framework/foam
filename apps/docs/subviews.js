@@ -691,7 +691,7 @@ MODEL({
         if (this.docRef && this.docRef.valid) {
           mostSpecificObject = this.docRef.resolvedModelChain[this.docRef.resolvedModelChain.length-1];
           return !( mostSpecificObject.documentation
-                   || (mostSpecificObject.model_ && mostSpecificObject.model_.isSubModel(Documentation)));
+                   || (mostSpecificObject.model_ && X.Documentation.isSubModel(mostSpecificObject.model_)));
         }
       }.bind(this), this.id);
     }
