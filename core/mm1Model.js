@@ -60,7 +60,7 @@ var Model = {
       <p>In FOAM, $$DOC{ref:'Model'} is the basic unit for describing data and behavior.
       $$DOC{ref:'Model'} itself is a $$DOC{ref:'Model'}, since it defines what can be defined,
       but also defines itself. See
-      $$DOC{ref:'developerDocs.Welcome..documentation.chapters.modelsAtRuntime', text: 'Models in Action'}
+      $$DOC{ref:'developerDocs.Welcome.chapters.modelsAtRuntime', text: 'Models in Action'}
       for more details.</p>
 
 
@@ -85,12 +85,12 @@ var Model = {
         <li>Creating a subcontext and replacing X.YourModel with a different model (such as
         YourTestModelMock created specifically for testing) will give you seamless dependency
         injection. See the
-        $$DOC{ref:'developerDocs.Context..documentation.chapters.intro', text:'Context documentation'}
+        $$DOC{ref:'developerDocs.Context.chapters.intro', text:'Context documentation'}
         for more information.</li>
       </ul>
       </p>
       <p>For more information about how $$DOC{ref:'Model',usePlural:true} are instantiated,
-      see $$DOC{ref:'developerDocs.Welcome..documentation.chapters.modelsAtRuntime',text:'Welcome to Models at Runtime'}.
+      see $$DOC{ref:'developerDocs.Welcome.chapters.modelsAtRuntime',text:'Welcome to Models at Runtime'}.
     */ }
   },
 

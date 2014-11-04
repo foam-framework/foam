@@ -159,7 +159,7 @@ MODEL({
     <p>Though you'd often want to link to related models, like $$DOC{ref:'DocModelBodyView'}, or even specific features on them, like $$DOC{ref:'DocModelView.data', text:'DocModelView&apos;s data property'}.</p>
     <p>Reference to a method argument: $$DOC{ref:'DocBrowserController.testMethod.args.testy'}</p>
     <p>This won't work since 'properties' here will resolve to the DocBrowserController.PROPERTIES feature: $$DOC{ref:'DocBrowserController.properties.modelListView'}. Only use direct access for layers below Model.feature.</p>
-    <p>Linking to a $$DOC{ref:'Model'} property value of a $$DOC{ref:'Model'} (rather than a feature): $$DOC{ref:'DocBrowserController..documentation'} </p>
+    <p>Linking to a $$DOC{ref:'Model'} property value of a $$DOC{ref:'Model'} (rather than a feature): $$DOC{ref:'DocBrowserController'} </p>
   */},
 
   models: [

@@ -799,7 +799,7 @@ MODEL({
       <li>Containing only ".": the $$DOC{ref:'Model'} in X.documentViewRef</li>
       <li>The name after the first ".": a feature of the $$DOC{ref:'Model'} accessible by "getFeature('name')"</li>
       <li>A double-dot after the $$DOC{ref:'Model'}: Skip the feature lookup and find instances directly on
-            the $$DOC{ref:'Model'} definition (<code>MyModel..documentation.chapters.chapName</code>)</li>
+            the $$DOC{ref:'Model'} definition (<code>MyModel.chapters.chapName</code>)</li>
     </ul>
     <p>Note that the first name is a Model definition (can be looked up by this.X[modelName]),
      while the second name is an instance of a feature on that Model, and subsequent
@@ -854,7 +854,9 @@ MODEL({
       newResolvedRoot += model.name;
 
       // Check for a feature, and check inherited features too
-      if (args.length > 1 && args[1].length > 0)
+      // If we have a Model definition, we make the jump from definition to an
+      // instance of a feature definition here
+      if (Model.isInstance(model) && args.length > 1)
       {
         // feature specified "Model.feature" or ".feature"
         foundObject = model.getFeature(args[1]);
@@ -864,18 +866,15 @@ MODEL({
           newResolvedModelChain.push(foundObject);
           newResolvedRef += "." + args[1];
         }
-      } else if (args.length > 2) {
-        // Allows MyModel..instance, skipping the feature lookup and going straight to named instances on the Model def itself
-        // In particular, this allows DocumentationBook..documentation.chapters.chapName
+        remainingArgs = args.slice(2);
+      } else {
         foundObject = model;
-        newResolvedRef += "."; // remember the extra dot
+        remainingArgs = args.slice(1);
       }
 
       // allow further specification of sub properties or lists
-      if (foundObject && args.length > 2)
+      if (foundObject && remainingArgs.length > 0)
       {
-        remainingArgs = args.slice(2);
-
         if (!remainingArgs.every(function (arg) {
             var newObject;
 

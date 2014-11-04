@@ -105,7 +105,7 @@ var RegisterDevDocs = function(opt_X) {
               $$DOC{ref:'Model.exports',text:'Export'} your value to your
               $$DOC{ref:'developerDocs.Context', text:'context'},
               and a reference gets propagated to objects you create.
-              $$DOC{ref:'developerDocs.Events..documentation.chapters.binding',text:'Bind'}
+              $$DOC{ref:'developerDocs.Events.chapters.binding',text:'Bind'}
               it to a property and you'll get value changes automatically propagated.</li>
               <li>Need to cache data from your back end? Throw a $$DOC{ref:'CachingDAO'}
               on top of your $$DOC{ref:'RestDAO'}. Want to swap the whole thing out at
