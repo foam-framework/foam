@@ -26,11 +26,18 @@ global.document = global;
 
 // Loading all FOAM models.
 var modelsfiles =
-    fs.readFileSync(path.join(FOAM_BOOT_DIR, 'FOAMViewlessModels.js'));
+    fs.readFileSync(path.join(FOAM_BOOT_DIR, 'FOAMmodels.js'));
 vm.runInThisContext(modelsfiles);
 
 for (var loadingLoopIndex = 0; loadingLoopIndex < files.length; loadingLoopIndex++) {
-  var filename = files[loadingLoopIndex] + '.js';
+  var filename = files[loadingLoopIndex];
+
+  if ( Array.isArray(filename) ) {
+    if ( filename[1]() ) filename = filename[0];
+    else continue;
+  }
+
+  var filename = filename + '.js';
   var filedata = fs.readFileSync(path.join(FOAM_BOOT_DIR, filename));
   vm.runInThisContext(filedata, filename);
 }
