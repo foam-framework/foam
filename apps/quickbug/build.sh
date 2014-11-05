@@ -14,6 +14,7 @@ cat \
   ../../core/parse.js \
   ../../core/event.js \
   ../../core/JSONUtil.js \
+  ../../core/HTMLParser.js \
   ../../core/XMLUtil.js \
   ../../core/context.js \
   ../../core/FOAM.js \

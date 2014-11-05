@@ -271,7 +271,8 @@ function CLASS(m) {
         USED_MODELS[id] = true;
         delete UNUSED_MODELS[id];
         Object.defineProperty(path, m.name, {value: null, configurable: true});
-        X.registerModel(JSONUtil.mapToObj(X, m, Model));
+        // TODO: Workaround for apps that redefine the top level X
+        _ROOT_X.registerModel(JSONUtil.mapToObj(X, m, Model));
         return this[m.name];
       },
       configurable: true

@@ -30,6 +30,12 @@ MODEL({
 
   extendsModel: 'View',
 
+  requires: [
+    'AlternateView',
+    'CursorView',
+    'RelationshipView'
+  ],
+
   properties: [
     {
       name: 'X',

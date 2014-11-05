@@ -2840,6 +2840,7 @@ MODEL({
       help: "View's label."
     },
     {
+      model_: 'ViewFactoryProperty',
       name: 'view',
       type: 'view',
       defaultValue: 'DetailView',
@@ -2855,18 +2856,7 @@ MODEL({
   extendsModel: 'View',
 
   properties: [
-    {
-      name: 'data',
-      postSet: function(_, data) {
-        if ( this.choice ) {
-          if ( this.view ) {
-            this.view.data = data;
-          } else {
-            this.installSubView();
-          }
-        }
-      }
-    },
+    'data',
     {
       name: 'dao',
       getter: function() { return this.data; },
@@ -2880,8 +2870,22 @@ MODEL({
     },
     {
       name: 'choice',
-      postSet: function(oldValue, viewChoice) {
-        if ( this.$ && oldValue != viewChoice ) this.installSubView();
+      postSet: function(_, v) {
+        this.view = v.view;
+      },
+      hidden: true
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'view',
+      defaultValue: 'View',
+      postSet: function(old, v) { 
+        if ( ! this.$ ) return;
+        this.removeChild(old);
+        var view = v({ data$: this.data$ });
+        this.addChild(view);
+        this.viewContainer.innerHTML = view.toHTML();
+        view.initHTML();
       },
       hidden: true
     },
@@ -2902,99 +2906,40 @@ MODEL({
       }
     },
     {
+      model_: 'ViewFactoryProperty',
       name: 'headerView',
-      help: 'Optional View to be displayed in header.',
-      defaultValue: null
+      defaultValue: 'View'
     },
     {
-      name: 'view'
+      model_: 'DOMElementProperty',
+      name: 'viewContainer'
     }
   ],
 
-  listeners: [
-    {
-      name: 'installSubView',
-      isFramed: true,
-      code: function(evt) {
-        var viewChoice = this.choice;
-        var view = typeof(viewChoice.view) === 'function' ?
-          viewChoice.view(this.data.model_, this.data$) :
-          this.X[viewChoice.view].create({
-            model: this.data.model_,
-            data:  this.data
-          });
-
-        // TODO: some views are broken and don't have model_, remove
-        // first guard when fixed.
-        if ( view.model_ && view.model_.getProperty('dao') ) view.dao = this.dao;
-
-        this.$.innerHTML = view.toHTML();
-        view.initHTML();
-        // TODO: this line might need some work
-        view.data = this.data;
-
-        this.view = view;
-      }
-    }
-  ],
-
-  methods: {
-    init: function() {
-      this.SUPER();
-
-      this.choice = this.views[0];
-    },
-
-    toHTML: function() {
-      var str  = [];
-      var viewChoice = this.views[0];
-
-      str.push('<div class="AltViewOuter column" style="margin-bottom:5px;">');
-      str.push('<div class="altViewButtons rigid">');
-      if ( this.headerView ) {
-        str.push(this.headerView.toHTML());
-        this.addChild(this.headerView);
-      }
-      for ( var i = 0 ; i < this.views.length ; i++ ) {
-        var choice = this.views[i];
-        var listener = function (choice) {
-          this.choice = choice;
-          return false;
-        }.bind(this, choice);
-
-        var id = this.nextID();
-
-        this.addPropertyListener('choice', function(choice, id) {
-          DOM.setClass($(id), 'mode_button_active', this.choice === choice);
-        }.bind(this, choice, id));
-
-        var cls = 'buttonify';
-        if ( i == 0 ) cls += ' capsule_left';
-        if ( i == this.views.length - 1 ) cls += ' capsule_right';
-        if ( choice == this.choice ) cls += ' mode_button_active';
-        str.push('<a class="' + cls + '" id="' + this.on('click', listener, id) + '">' + choice.label + '</a>');
-        if ( choice.label == this.selected ) viewChoice = choice
-      }
-      str.push('</div>');
-      str.push('<br/>');
-      str.push('<div class="altView column" id="' + this.id + '"> </div>');
-      str.push('</div>');
-
-      return str.join('');
-    },
-
-    initHTML: function() {
-      this.SUPER();
-
-      this.choice = this.choice || this.views[0];
-      this.installSubView();
-    }
-  }
+  templates: [
+    function choiceButton(_, i, length, choice) {/*
+      <%
+        var id = this.on('click', function() { self.choice = choice; });
+        this.setClass('mdoe_button_active', function() { return self.choice === choice; }, id);
+      %>
+      <a id="<%= id %>" class="buttonify<%= i == 0 ? ' capsule_left' : '' %><%=
+                                           i == length - 1 ? ' capsule_right' : '' %>"><%= choice.label %></a>
+    */},
+    function toHTML() {/*
+      <div id="<%= this.id %>" class="AltViewOuter column" style="margin-bottom:5px;">
+        <div class="altViewButtons rigid">
+          <%= this.headerView() %>
+          <% for ( var i = 0, choice; choice = this.views[i]; i++ ) {
+               this.choiceButton(out, i, this.views.length, choice);
+           } %>
+        </div>
+        <br/>
+        <div class="altView column" id="<%= this.viewContainer = this.nextID() %>"><%= this.view({ data$: this.data$ }) %></div>
+      </div>
+    */}
+  ]
 });
 
-
-// TODO: Currently this view is "eager": it renders all the child views.
-// It could be made more lazy , and therefore more memory-efficient.
 MODEL({
   name: 'SwipeAltView',
   extendsModel: 'View',
@@ -3002,11 +2947,11 @@ MODEL({
   properties: [
     {
       name: 'views',
-      type: 'Array[ViewChoice]',
+      type: 'Array',
       subType: 'ViewChoice',
       view: 'ArrayView',
       factory: function() { return []; },
-      help: 'Child views'
+      help: 'View Choices'
     },
     {
       name: 'index',
@@ -3018,7 +2963,7 @@ MODEL({
         return nu;
       },
       postSet: function(oldValue, viewChoice) {
-        this.views[oldValue].view.deepPublish(this.ON_HIDE);
+        this.views[oldValue].view().deepPublish(this.ON_HIDE);
         // ON_SHOW is called after the animation is done.
         this.snapToCurrent(Math.abs(oldValue - viewChoice));
       },
@@ -3042,7 +2987,7 @@ MODEL({
       help: 'Generic data field for the views. Proxied to all the child views.',
       postSet: function(old, nu) {
         this.views.forEach(function(c) {
-          c.view.data = nu;
+          c.view().data = nu;
         });
       }
     },
@@ -3086,9 +3031,9 @@ MODEL({
       var self = this;
       this.views.forEach(function(choice, index) {
         if ( index != self.index )
-          choice.view.deepPublish(self.ON_HIDE);
+          choice.view().deepPublish(self.ON_HIDE);
       });
-      this.views[this.index].view.deepPublish(this.ON_SHOW);
+      this.views[this.index].view().deepPublish(this.ON_SHOW);
     },
 
     // The general structure of the carousel is:
@@ -3117,7 +3062,7 @@ MODEL({
       str.push('<div class="swipeAltSlider" style="width: 100%">');
       str.push('<div class="swipeAltInner" style="left: 0px">');
 
-      str.push(viewChoice.view.toHTML());
+      str.push(viewChoice.view().toHTML());
 
       str.push('</div>');
       str.push('</div>');
@@ -3142,7 +3087,7 @@ MODEL({
         // Hide all views except the first one.  They'll be shown after they're resized.
         // This prevents all views from overlapping on startup.
         str.push('<div class="swipeAltInner"' + ( i ? ' style="visibility:hidden;"' : '' ) + '>');
-        str.push(this.views[i].view.toHTML());
+        str.push(this.views[i].view().toHTML());
         str.push('</div>');
       }
 
@@ -3156,7 +3101,7 @@ MODEL({
       window.setTimeout(function() {
         self.resize();
         self.views.forEach(function(choice) {
-          choice.view.initHTML();
+          choice.view().initHTML();
         });
         var vs = self.slider.querySelectorAll('.swipeAltInner');
         for ( var i = 0 ; i < vs.length ; i++ ) vs[i].style.visibility = '';
@@ -3166,7 +3111,7 @@ MODEL({
     destroy: function() {
       this.SUPER();
       this.X.gestureManager.uninstall(this.swipeGesture);
-      this.views.forEach(function(c) { c.view.destroy(); });
+      this.views.forEach(function(c) { c.view().destroy(); });
     },
 
     snapToCurrent: function(sizeOfMove) {
@@ -3175,7 +3120,7 @@ MODEL({
       Movement.animate(time, function(evt) {
         self.x = self.index * self.width;
       }, Movement.ease(150/time, 150/time), function() {
-        self.views[self.index].view.deepPublish(self.ON_SHOW);
+        self.views[self.index].view().deepPublish(self.ON_SHOW);
       })();
     }
   },
