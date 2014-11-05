@@ -362,7 +362,7 @@ var __features__ = [
     }
     // 3. Otherwise, return true.
     return true;
-  }],      
+  }],
   [ String          , 'Poly$',   function startsWith(a) {
     // This implementation is very slow for some reason
     return 0 == this.lastIndexOf(a, 0);
@@ -750,3 +750,13 @@ var FeatureSet = {
     return this.version_;
   }
 };
+
+
+function defineLocalProperty(cls, name, factory) {
+  Object.defineProperty(cls, name, { get: function() {
+    if ( this == cls ) return null;
+    var value = factory.call(this);
+    Object.defineProperty(this, name, { value: value });
+    return value;
+  } });
+}
