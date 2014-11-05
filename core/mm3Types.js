@@ -920,3 +920,14 @@ MODEL({
   traits: ['EnumPropertyTrait'],
   extendsModel: 'StringProperty'
 });
+
+MODEL({
+  name: 'DOMElementProperty',
+  extendsModel: 'StringProperty',
+  properties: [
+    {
+      name: 'getter',
+      defaultValue: function(name) { return this.X.$(this.instance_[name]); }
+    }
+  ]
+});
