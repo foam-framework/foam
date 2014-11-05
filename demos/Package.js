@@ -82,14 +82,14 @@ CLASS({
       this.l('Deposit: ', id, amount, bal);
     },
     test: function() {
-      var a = this.A.create({id: 42});
+      var a = this.A.create({id: 42}, this.X);
       a.setStatus(true);
       a.deposit(100);
       a.withdraw(10);
       this.l(a.toJSON());
 
 
-      var s = this.SavingsAccount.create({id: 43});
+      var s = this.SavingsAccount.create({id: 43}, this.X);
       s.setStatus(true);
       s.deposit(100);
       s.withdraw(10);
@@ -98,7 +98,7 @@ CLASS({
   }
 });
 
-var a = X.demo.bank.AccountTester.create();
+var a = X.demo.bank.AccountTester.create({},X);
 a.test();
 
 // TODO: Re-enable when models as packages works again.
