@@ -649,7 +649,7 @@ Method.getPrototype().decorateFunction = function(f) {
   return returnType ?
     function() {
       var ret = f.apply(this, arguments);
-      console.assert(typeof ret !== returnType, 'return type expected to be ' + returnType + ', but was ' + (typeof ret) + ': ' + ret);
+      console.assert(typeof ret === returnType, 'return type expected to be ' + returnType + ', but was ' + (typeof ret) + ': ' + ret);
       return ret;
     } : f ;
 };
