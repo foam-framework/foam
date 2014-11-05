@@ -31,7 +31,7 @@ MODEL({
         fr: 'Nombre'
       }),
       view: {
-        model_: 'ChoiceListView',
+        factory_: 'ChoiceListView',
         choices: [
           [
             'One',

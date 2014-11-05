@@ -911,6 +911,11 @@ MODEL({
       if ( typeof viewName === 'string' ) return this.X[viewName].create(prop);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
       if ( viewName.model_ ) { var v = viewName.model_.create(viewName).copyFrom(prop); v.id = this.nextID(); return v; }
+      if ( viewName.factory_ ) {
+        var v = FOAM.lookup(viewName.factory_).create(viewName).copyFrom(prop);
+        v.id = this.nextID();
+        return v;
+      }
       if ( typeof viewName === 'function' ) return viewName(prop, this);
 
       return viewName.create(prop);
@@ -1626,11 +1631,7 @@ MODEL({
       model_: 'StringProperty',
       name: 'mode',
       defaultValue: 'read-write',
-      view: {
-        create: function() { return ChoiceView.create({choices:[
-          "read-only", "read-write", "final"
-        ]}); }
-      }
+      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] }
     },
     {
       name: 'domValue',

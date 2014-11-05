@@ -5,18 +5,18 @@ MODEL({
   properties: [
     {
       name: 'search',
-      view: { model_: 'TextFieldView', onKeyMode: true },
+      view: { factory_: 'TextFieldView', onKeyMode: true },
     },
     {
       name: 'order',
       defaultValue: Phone.NAME,
-      view: { model_: 'ChoiceView', choices: [ [ Phone.NAME, 'Alphabetical' ], [ Phone.AGE, 'Newest' ] ] },
+      view: { factory_: 'ChoiceView', choices: [ [ Phone.NAME, 'Alphabetical' ], [ Phone.AGE, 'Newest' ] ] },
     },
     { name: 'dao', defaultValue: phones },
     {
       name: 'filteredDAO',
       model_: 'DAOProperty',
-      view: { model_: 'DAOListView', rowView: 'PhoneCitationView', mode: 'read-only' },
+      view: { factory_: 'DAOListView', rowView: 'PhoneCitationView', mode: 'read-only' },
       dynamicValue: function() {
         return this.dao.orderBy(this.order).where(CONTAINS_IC(SEQ(Phone.NAME, Phone.SNIPPET), this.search));
       }

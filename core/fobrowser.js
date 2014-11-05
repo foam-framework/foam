@@ -46,14 +46,15 @@ MODEL({
            type: 'String',
            required: true,
            view: {
-              create: function() { return ChoiceView.create({choices: [
-                 'Property',
-                 'Method',
-                 'Listener',
-                 'Template',
-                 'Issue',
-                 'Test'
-              ]});}
+             factory_: 'ChoiceView',
+             choices: [
+               'Property',
+               'Method',
+               'Listener',
+               'Template',
+               'Issue',
+               'Test'
+             ]
            },
            defaultValue: 'Property',
            help: 'Type of a feature.'

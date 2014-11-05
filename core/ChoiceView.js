@@ -192,7 +192,7 @@ MODEL({
       name: 'orientation',
       defaultValue: 'horizontal',
       view: {
-        model_: 'ChoiceView',
+        factory_: 'ChoiceView',
         choices: [
           [ 'horizontal', 'Horizontal' ],
           [ 'vertical',   'Vertical'   ]

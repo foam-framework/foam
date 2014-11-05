@@ -649,11 +649,12 @@ MODEL({
       defaultValue: 'Line',
       // TODO: fix the view, it's not storabe
       view: {
-        create: function() { return ChoiceView.create({choices: [
+        factory_: 'ChoiceView',
+        choices: [
           'Bar',
           'Line',
           'Point'
-        ]});}
+        ]
       }
     },
     {

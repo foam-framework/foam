@@ -18,12 +18,7 @@ MODEL({
       model_: 'ArrayProperty',
       name: 'p2',
       subType: 'Bookmark',
-      view: function() {
-        return ArrayView.create({
-          model: 'Bookmark',
-          daoView: DAOListView.create()
-        });
-      }
+      view: { factory_: 'ArrayView', model: 'Bookmark', daoView: 'DAOListView' }
     }
   ]
 });

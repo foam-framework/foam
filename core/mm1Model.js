@@ -303,7 +303,7 @@ var Model = {
                &nbsp;&nbsp;   properties: [<br/>
                &nbsp;&nbsp;     {<br/>
                  &nbsp;&nbsp;&nbsp;&nbsp;     name: 'proper',<br/>
-                 &nbsp;&nbsp;&nbsp;&nbsp;     view: { model_: 'DetailView',<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp;     view: { factory_: 'DetailView',<br/>
                  &nbsp;&nbsp;&nbsp;&nbsp; methods: { toHTML: function() {<br/>
                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         // our context is provided by firstModel, so:<br/>
                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         this.X.myProperty = 4; // we can see exported myProperty<br/>

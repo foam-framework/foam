@@ -1695,12 +1695,7 @@ MODEL({
       name:  'type',
       label: 'Filesystem Type',
       type:  'String',
-      view: {
-        create: function() { return ChoiceView.create({choices: [
-          'Persistent',
-          'Temporary'
-        ]});}
-      },
+      view: { factory_: 'ChoiceView', choices: ['Persistent', 'Temporary'] },
       defaultValue: 'Persistent'
     }
   ],
@@ -3489,7 +3484,7 @@ MODEL({
   name: 'StoreAndForwardOperation',
   properties: [
     { model_: 'IntProperty', name: 'id' },
-    { model_: 'StringProperty', name: 'method', view: { model_: 'ChoiceView', choices: ['put', 'remove'] } },
+    { model_: 'StringProperty', name: 'method', view: { factory_: 'ChoiceView', choices: ['put', 'remove'] } },
     { name: 'obj' },
   ]
 });

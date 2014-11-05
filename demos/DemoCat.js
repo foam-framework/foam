@@ -273,12 +273,12 @@ var demos = JSONUtil.arrayToObjArray(X, [
 MODEL({
   name: 'Controller',
   properties: [
-    { name: 'search', view: { model_: 'TextFieldView', onKeyMode: true } },
+    { name: 'search', view: { factory_: 'TextFieldView', onKeyMode: true } },
     { name: 'dao', defaultValue: demos },
     {
       name: 'filteredDAO',
       model_: 'DAOProperty',
-      view: { model_: 'DAOListView', mode: 'read-only' },
+      view: { factory_: 'DAOListView', mode: 'read-only' },
       dynamicValue: function() {
         return this.dao.where(CONTAINS_IC(SEQ(Demo.NAME, Demo.DESCRIPTION, Demo.KEYWORDS), this.search));
       }
