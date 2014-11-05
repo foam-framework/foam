@@ -102,7 +102,7 @@ MODEL({
       name: 'scrollMode',
       type: 'String',
       defaultValue: 'Bars',
-      view: { model_: 'ChoiceView', choices: [ 'Bars', 'Warp' ] }
+      view: { factory_: 'ChoiceView', choices: [ 'Bars', 'Warp' ] }
     },
     {
       name: 'model',
@@ -362,11 +362,7 @@ MODEL({
     {
       name: 'mode',
       defaultValue: 'read-write',
-      view: {
-        create: function() { return ChoiceView.create({choices:[
-          "read-only", "read-write", "final"
-        ]}); }
-      }
+      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] }
     },
     {
       name: 'useSelection',
@@ -703,11 +699,7 @@ MODEL({
       name: 'mode',
       defaultValue: 'read-write',
       documentation: 'Indicates whether this view should be read-write or read-only. In read-write mode, listens for changes to every visible row, and updates the DAO if they change.',
-      view: {
-        create: function() { return ChoiceView.create({choices:[
-          "read-only", "read-write", "final"
-        ]}); }
-      }
+      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] }
     },
     {
       name: 'oldVisibleTop',

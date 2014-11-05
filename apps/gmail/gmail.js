@@ -194,34 +194,26 @@ MODEL({
         ],
         menuFactory: function() {
           return this.X.MenuView.create({
-            topSystemLabelView: this.X.DAOListView.create({
-              dao: this.X.mgmail.labelDao
-                  //.where(EQ(FOAMGMailLabel.TYPE, 'system'))
-                  .where(EQ(FOAMGMailLabel.getProperty('type'), 'system'))
-                  .orderBy(
-                    toTop('INBOX'),
-                    toTop('STARRED'),
-                    toTop('DRAFT')
-                  )
-                  .limit(3),
-              rowView: 'MenuLabelCitationView',
-            }),
-            bottomSystemLabelView: this.X.DAOListView.create({
-              dao: this.X.mgmail.labelDao
-                  .where(AND(EQ(FOAMGMailLabel.getProperty('type'), 'system'),
-                             NEQ(FOAMGMailLabel.ID, 'INBOX'),
-                             NEQ(FOAMGMailLabel.ID, 'STARRED'),
-                             NEQ(FOAMGMailLabel.ID, 'UNREAD'),
-                             NEQ(FOAMGMailLabel.ID, 'DRAFT')))
-                  .orderBy(toTop('SENT'),
-                           toTop('SPAM'),
-                           toTop('TRASH')),
-              rowView: 'MenuLabelCitationView',
-            }),
-            userLabelView: this.X.DAOListView.create({
-              dao: this.X.mgmail.labelDao.where(NEQ(FOAMGMailLabel.getProperty('type'), 'system')).orderBy(FOAMGMailLabel.NAME),
-              rowView: 'MenuLabelCitationView',
-            }),
+            topSystemLabelDAO: this.X.mgmail.labelDao
+                .where(EQ(FOAMGMailLabel.getProperty('type'), 'system'))
+                .orderBy(
+                  toTop('INBOX'),
+                  toTop('STARRED'),
+                  toTop('DRAFT')
+                )
+                .limit(3),
+            bottomSystemLabelDAO: this.X.mgmail.labelDao
+                .where(AND(EQ(FOAMGMailLabel.getProperty('type'), 'system'),
+                           NEQ(FOAMGMailLabel.ID, 'INBOX'),
+                           NEQ(FOAMGMailLabel.ID, 'STARRED'),
+                           NEQ(FOAMGMailLabel.ID, 'UNREAD'),
+                           NEQ(FOAMGMailLabel.ID, 'DRAFT')))
+                .orderBy(toTop('SENT'),
+                         toTop('SPAM'),
+                         toTop('TRASH')),
+            userLabelDAO: this.X.mgmail.labelDao
+                .where(NEQ(FOAMGMailLabel.getProperty('type'), 'system'))
+                .orderBy(FOAMGMailLabel.NAME)
           });
         }
       });
@@ -457,17 +449,26 @@ MODEL({
   name: 'MenuView',
   extendsModel: 'View',
   traits: ['PositionedDOMViewTrait'],
+  requires: [
+    'MenuLabelCitationView',
+    'FOAMGMailLabel',
+    'ImageView',
+    'TextFieldView'
+  ],
   imports: ['mgmail'],
   exports: ['counts'],
   properties: [
     {
-      name: 'topSystemLabelView',
+      name: 'topSystemLabelDAO',
+      view: { factory_: 'DAOListView', rowView: 'MenuLabelCitationView' }
     },
     {
-      name: 'bottomSystemLabelView',
+      name: 'bottomSystemLabelDAO',
+      view: { factory_: 'DAOListView', rowView: 'MenuLabelCitationView' }
     },
     {
-      name: 'userLabelView',
+      name: 'userLabelDAO',
+      view: { factory_: 'DAOListView', rowView: 'MenuLabelCitationView' }
     },
     {
       name: 'preferredWidth',
@@ -486,21 +487,21 @@ MODEL({
     function toInnerHTML() {/*
       <div class="menuView">
         <div class="menuHeader">
-          <%= this.X.ImageView.create({ data: this.mgmail.profile.avatarUrl }) %><br>
-          <%= this.X.TextFieldView.create({ mode: 'read-only', extraClassName: 'name', data: this.mgmail.profile.name }) %><br>
-          <%= this.X.TextFieldView.create({ mode: 'read-only', extraClassName: 'email', data: this.mgmail.profile.email }) %>
+          <%= this.ImageView.create({ data: this.mgmail.profile.avatarUrl }) %><br>
+          <%= this.TextFieldView.create({ mode: 'read-only', extraClassName: 'name', data: this.mgmail.profile.name }) %><br>
+          <%= this.TextFieldView.create({ mode: 'read-only', extraClassName: 'email', data: this.mgmail.profile.email }) %>
         </div>
-        %%topSystemLabelView
+        $$topSystemLabelDAO
         <hr>
-        %%bottomSystemLabelView
+        $$bottomSystemLabelDAO
         <hr>
-        <%= this.X.MenuLabelCitationView.create({
-          data: this.X.FOAMGMailLabel.create({
+        <%= this.MenuLabelCitationView.create({
+          data: this.FOAMGMailLabel.create({
             id: 'All Mail',
             name: 'All Mail'
           })
         }) %>
-        %%userLabelView
+        $$userLabelDAO
       </div>
     */},
     function CSS() {/*
@@ -545,7 +546,7 @@ MODEL({
   properties: [
     {
       name: 'count',
-      view: 'LabelCountView'
+      view: { factory_: 'TextFieldView', mode: 'read-only', extraClassName: 'count' }
     }
   ],
 
@@ -609,31 +610,6 @@ MODEL({
   ]
 });
 
-MODEL({
-  name: 'LabelCountView',
-  extendsModel: 'View',
-  properties: [
-    {
-      name: 'data',
-      postSet: function(old, nu) {
-        this.updateHTML();
-      }
-    },
-    {
-      name: 'extraClassName',
-      defaultValue: 'count'
-    }
-  ],
-  templates: [
-    function toInnerHTML() {/*
-      <% if ( this.data > 99 ) { %>
-        99+
-      <% } else { %>
-        %%data
-      <% } %>
-    */}
-  ]
-});
 
 var openComposeView = function(email) {
   var X = mgmail.controller.X;

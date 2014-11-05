@@ -37,7 +37,7 @@ MODEL({
     {
       name: 'link',
       displayWidth: 19,
-      view: { model_: 'TextFieldView', placeholder: 'Type or paste link.' },
+      view: { factory_: 'TextFieldView', placeholder: 'Type or paste link.' },
       preSet: function(_, value) {
         value = value.trim();
         // Disallow javascript URL's
@@ -201,10 +201,7 @@ MODEL({
       name:  'mode',
       type:  'String',
       defaultValue: 'read-write',
-      view: {
-        create: function() { return ChoiceView.create({choices:[
-          "read-only", "read-write", "final"
-        ]}); } }
+      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] }
     },
     {
       name:  'data',

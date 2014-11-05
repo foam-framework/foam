@@ -471,12 +471,13 @@ MODEL({
     {
       name: 'severity',
       view: {
-        create: function() { return ChoiceView.create({choices: [
+        factory_: 'ChoiceView',
+        choices: [
           'Feature',
           'Minor',
           'Major',
           'Question'
-        ]});}
+        ]
       },
       defaultValue: 'String',
       documentation: function() { /* The severity of the issue. */ },
@@ -487,12 +488,13 @@ MODEL({
       type: 'String',
       required: true,
       view: {
-        create: function() { return ChoiceView.create({choices: [
+        factory_: 'ChoiceView',
+        choices: [
           'Open',
           'Accepted',
           'Complete',
           'Closed'
-        ]});}
+        ]
       },
       defaultValue: 'String',
       documentation: function() { /* The status of the $$DOC{ref:'Issue'}. */ },

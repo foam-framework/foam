@@ -35,10 +35,10 @@ MODEL({
         this.dao.put(Todo.create({text: text}));
         this.propertyChange('input', text, '');
       },
-      view: { model_: 'TextFieldView', placeholder: 'What needs to be done?' }
+      view: { factory_: 'TextFieldView', placeholder: 'What needs to be done?' }
     },
     { name: 'dao' },
-    { name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListView' } },
+    { name: 'filteredDAO',    model_: 'DAOProperty', view: 'DAOListView' },
     { name: 'completedCount', model_: 'IntProperty' },
     { name: 'activeCount',    model_: 'IntProperty', postSet: function(_, c) { this.toggle = !c; }},
     { name: 'toggle',         model_: 'BooleanProperty', postSet: function(_, n) {
@@ -48,7 +48,7 @@ MODEL({
       name: 'query',
       postSet: function(_, q) { this.filteredDAO = this.dao.where(q); },
       defaultValue: TRUE,
-      view: { model_: 'ChoiceListView', choices: [ [ TRUE, 'All' ], [ NOT(Todo.COMPLETED), 'Active' ], [ Todo.COMPLETED, 'Completed' ] ] }
+      view: { factory_: 'ChoiceListView', choices: [ [ TRUE, 'All' ], [ NOT(Todo.COMPLETED), 'Active' ], [ Todo.COMPLETED, 'Completed' ] ] }
     } ],
   actions: [{
     name: 'clear',
