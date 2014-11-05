@@ -241,7 +241,7 @@ var TemplateUtil = {
    compile: window.chrome && window.chrome.app && window.chrome.app.runtime ?
      function() {
        return function() {
-         return "Models must be arequired()'ed for Templates to be compiled in Packaged Apps.";
+         return this.name_ + " wasn't required.  Models must be arequired()'ed for Templates to be compiled in Packaged Apps.";
        };
      } :
      function(t) {
