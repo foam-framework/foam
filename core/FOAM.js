@@ -177,6 +177,15 @@ var FOAM_POWERED = '<a style="text-decoration:none;" href="https://github.com/fo
 <font color="#3333FF">F</font><font color="#FF0000">O</font><font color="#FFCC00">A</font><font color="#33CC00">M</font>\
 <font color="#555555" > POWERED</font></font></a>';
 
+/*
+Should replace the version below, but doesn't work.
+function packagePath(X, path) {
+  function packagePath_(Y, path, i) {
+    return i == path.length ? Y : packagePath_(Y[path[i]] || ( Y[path[i]] = {} ), path, i+1);
+  }
+  return path ? packagePath_(X, path.split('.'), 0) : X;
+}
+*/
 
 function packagePath(X, path) {
   function packagePath_(root, parent, path, i) {
@@ -205,7 +214,6 @@ function packagePath(X, path) {
 
   return path ? packagePath_(X, X, path.split('.'), 0) : X;
 }
-
 
 function registerModel(model, opt_name) {
 
