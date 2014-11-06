@@ -58,7 +58,11 @@ MODEL({
   extendsModel: 'View',
 
   requires: [
-    'GMailUserInfo'
+    'GMailUserInfo',
+    'ContactDAO'
+  ],
+  exports: [
+    'contactDao'
   ],
 
   properties: [
@@ -79,9 +83,6 @@ MODEL({
           cacheLimit: 10,
           src: this.X.GMailToEMailDAO.create({
             delegate: this.X.GMailMessageDAO.create({})
-//            delegate: this.X.StoreAndForwardDAO.create({
-//              delegate: this.X.GMailMessageDAO.create({})
-//            })
           }),
           cache: this.X.CachingDAO.create({
               src: this.X.IDBDAO.create({
@@ -100,6 +101,13 @@ MODEL({
           src: this.X.GMailRestDAO.create({ model: FOAMGMailLabel, modelName: 'labels' }),
           cache: this.X.MDAO.create({ model: FOAMGMailLabel }),
         });
+      }
+    },
+    {
+      name: 'contactDao',
+      type: 'DAO',
+      factory: function() {
+        return this.ContactDAO();
       }
     },
     {

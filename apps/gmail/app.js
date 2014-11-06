@@ -108,6 +108,11 @@ window.onload = function() {
     arequire('ScrollViewRow'),
     arequire('RelativeDateTimeFieldView'),
     arequire('DateTimeFieldView'),
+    arequire('Contact'),
+    arequire('ContactDAO'),
+    arequire('ContactSmallTileView'),
+    arequire('ContactListTileView'),
+    arequire('ContactView'),
     arequire('ImageBooleanView'))(function() {
       var w = Y.Window.create({ window: window });
       mgmail = Y.MGmail.create({});

@@ -75,6 +75,8 @@ cat \
   ../../lib/mdui/view.js \
   ../../lib/gmail/ImportedModels.js \
   ../../lib/gmail/dao.js \
+  ../../lib/contacts/dao.js \
+  ../../lib/contacts/view.js \
   gmail.js \
   compose.js \
   > "$BUILD_DIR/foam.js"

@@ -30,9 +30,9 @@ MODEL({
           $$subject{mode: 'read-only', className: 'subject'}
         </div>
         <div class="content">
-        $$to{placeholder: 'To'} <br>
-        $$cc{placeholder: 'Cc'} <br>
-        $$bcc{placeholder: 'Bcc'} <br>
+        $$to{ model_: 'ContactView', placeholder: 'To'} <br>
+        $$cc{ model_: 'ContactView', placeholder: 'Cc'} <br>
+        $$bcc{ model_: 'ContactView', placeholder: 'Bcc'} <br>
         $$subject{ placeholder: 'Subject' }
         $$body{model_: 'ToolbarRichTextView', height: 300, placeholder: 'Message'}
         </div>
@@ -41,3 +41,64 @@ MODEL({
     */}
   ]
 });
+
+MODEL({
+  name: 'ContactView',
+  extendsModel: 'ListValueView',
+  imports: [
+    'ContactAvatarDAO'
+  ],
+  requires: [
+    'ArrayTileView',
+    'AutocompleteListView',
+    'Contact',
+    'ContactListTileView',
+    'ContactSmallTileView',
+    'DefaultObjectDAO',
+  ],
+  properties: [
+    {
+      name: 'name',
+      documentation: 'Set to the name of the property of interest by PropertyView.'
+    },
+    {
+      name: 'inputView',
+      factory: function() {
+        return this.ListInputView.create({
+          name: this.name,
+          dao: this.ContactAvatarDAO,
+          property: this.Contact.EMAIL,
+          placeholder: this.name.capitalize(),
+          searchProperties: [
+            this.Contact.EMAIL,
+            this.Contact.FIRST,
+            this.Contact.LAST,
+            this.Contact.TITLE
+          ],
+          autocompleteView: this.AutocompleteListView.create({
+            innerView: this.ContactListTileView,
+            count: 8
+          })
+        });
+      }
+    },
+    {
+      name: 'valueView',
+      factory: function() {
+        return this.ArrayTileView({
+          dao: this.DefaultObjectDAO({
+            delegate: this.ContactAvatarDAO,
+            factory: function(q) {
+              var obj = this.Contact({});
+              obj[q.arg1.name] = q.arg2.arg1;
+              return obj;
+            }
+          }),
+          property: this.Contact.EMAIL,
+          tileView: this.ContactSmallTileView
+        });
+      }
+    }
+  ]
+});
+
