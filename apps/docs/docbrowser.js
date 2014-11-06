@@ -59,6 +59,13 @@ MODEL({
           newDAO.put(m);
         };
 
+        // Add in non-model things like Interfaces
+        for ( var key in NONMODEL_INSTANCES ) {
+          var m = FOAM.lookup(key, this.X);
+          newDAO.put(m);
+        };
+
+
         // load up books
         for (var key in this.X.developerDocs) {
           newDAO.put(this.X.developerDocs[key]);

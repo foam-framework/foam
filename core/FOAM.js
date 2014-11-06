@@ -81,6 +81,7 @@ FOAM.putFactory = function(ctx, name, factory) {
 
 var   USED_MODELS = {};
 var UNUSED_MODELS = {};
+var NONMODEL_INSTANCES = {}; // for things such as interfaces
 
 FOAM.browse = function(model, opt_dao, opt_X) {
    var Y = opt_X || X.sub(undefined, "FOAM BROWSER");
@@ -272,6 +273,9 @@ function INTERFACE(imodel) {
   // if ( ! DEBUG ) return;
   var i = JSONUtil.mapToObj(X, imodel, Interface);
   packagePath(X, i.package)[i.name] = i;
+
+  var id = i.package ? i.package + '.' + i.name : i.name;
+  NONMODEL_INSTANCES[id] = true;
 }
 
 
