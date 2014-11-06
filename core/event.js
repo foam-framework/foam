@@ -31,10 +31,8 @@ var EventService = {
   /** If listener thows this exception, it will be removed. **/
   UNSUBSCRIBE_EXCEPTION: 'unsubscribe',
 
-
   /** Used as topic suffix to specify broadcast to all sub-topics. **/
   WILDCARD: "*",
-
 
   /** Create a "one-time" listener which unsubscribes itself after its first invocation. **/
   oneTime: function(listener) {
@@ -45,7 +43,6 @@ var EventService = {
     };
   },
 
-
   /** Log all listener invocations to console. **/
   consoleLog: function(listener) {
     return function() {
@@ -55,7 +52,6 @@ var EventService = {
       listener.apply(this, args);
     };
   },
-
 
   /**
    * Merge all notifications occuring in the specified time window into a single notification.
@@ -68,13 +64,11 @@ var EventService = {
     var delay = opt_delay || 16;
 
     return function() {
-      var STACK        = null;
       var triggered    = false;
       var unsubscribed = false;
       var lastArgs     = null;
 
       var f = function() {
-        STACK = DEBUG_STACK();
         lastArgs = arguments;
 
         if ( unsubscribed ) throw EventService.UNSUBSCRIBE_EXCEPTION;
@@ -108,7 +102,6 @@ var EventService = {
     }();
   },
 
-
   /**
    * Merge all notifications occuring until the next animation frame.
    * Only the last notification is delivered.
@@ -120,13 +113,11 @@ var EventService = {
 //    if ( opt_X.isBackground ) debugger;
 
     return function() {
-      var STACK        = null;
       var triggered    = false;
       var unsubscribed = false;
       var lastArgs     = null;
 
       var f = function() {
-        STACK = DEBUG_STACK();
         lastArgs = arguments;
 
         if ( unsubscribed ) throw EventService.UNSUBSCRIBE_EXCEPTION;
@@ -175,7 +166,6 @@ var EventService = {
     return true;
   },
 
-
   /**
    * Publish a notification to the specified topic.
    *
@@ -191,7 +181,6 @@ var EventService = {
       0;
   },
 
-
   /** Publish asynchronously. **/
   publishAsync: function (topic) {
     var args = argsToArray(arguments);
@@ -199,7 +188,6 @@ var EventService = {
 
     setTimeout( function() { me.publish.apply(me, args); }, 0);
   },
-
 
   /**
    * Publishes a message to this object and all of its children.
@@ -209,7 +197,6 @@ var EventService = {
   deepPublish: function(topic) {
     return this.publish.apply(this, arguments);
   },
-
 
   /**
    * Publish a message supplied by a factory function.
@@ -225,7 +212,6 @@ var EventService = {
     return 0;
   },
 
-
   /** Subscribe to notifications for the specified topic. **/
   subscribe: function (topic, listener) {
     if ( ! this.subs_ ) this.subs_ = {};
@@ -233,14 +219,12 @@ var EventService = {
     this.sub_(this.subs_, 0, topic, listener);
   },
 
-
   /** Unsubscribe a listener from the specified topic. **/
   unsubscribe: function (topic, listener) {
     if ( ! this.subs_ ) return;
 
     this.unsub_(this.subs_, 0, topic, listener);
   },
-
 
   /** Unsubscribe all listeners from this service. **/
   unsubscribeAll: function () {
@@ -272,7 +256,6 @@ var EventService = {
 
     return count;
   },
-
 
   sub_: function(map, topicIndex, topic, listener) {
     if ( topicIndex == topic.length ) {
@@ -308,7 +291,6 @@ var EventService = {
     }
     return Object.keys(map).length == 0;
   },
-
 
   /** @return true if the message was delivered without error. **/
   notifyListener_: function(topic, listener, msg) {
@@ -351,14 +333,12 @@ var EventService = {
     return count;
   },
 
-
   // convenience method to turn 'arguments' into a real array
   appendArguments: function (a, args, start) {
     for ( var i = start ; i < args.length ; i++ ) a.push(args[i]);
 
     return a;
   }
-
 };
 
 
@@ -426,7 +406,6 @@ var PropertyChangeSupport = {
     var name = prop + 'Value___';
     return Object.hasOwnProperty.call(this, name) ? this[name] : ( this[name] = PropertyValue.create(this, prop) );
   }
-
 };
 
 
@@ -732,7 +711,6 @@ var Movement = {
     var interp = opt_interp || Movement.linear;
 
     return function() {
-      var STACK     = DEBUG_STACK();
       var ranges    = [];
       var timer;
 

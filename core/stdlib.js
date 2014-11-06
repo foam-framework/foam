@@ -386,11 +386,6 @@ __features__[0][1](__features__);
 */
 
 
-var DEBUG_STACK = DEBUG ?
-  function() { return new Error().stack; } :
-  function() { return 'Set DEBUG = true in stdlib.js for stacktrace.'; } ;
-
-
 // binaryInsert into a sorted array, removing duplicates
 Object.defineProperty(Array.prototype, 'binaryInsert', {
   value: function(item) {
