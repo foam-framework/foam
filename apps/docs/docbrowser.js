@@ -454,6 +454,7 @@ MODEL({
       }
         
       div.members {
+        margin-top: 1em;
         padding-left: 2em;
       }
       div.memberList {
@@ -499,6 +500,32 @@ MODEL({
         font-weight:bold;
       }
       
+      .feature-row {
+        //border-top: 0.1em solid grey;
+        margin-top: 1em;
+        margin-bottom: 1em;
+      }
+
+      p.inheritance-info {
+        font-size: 90%;
+        padding-left: 1em;
+      }
+
+      .feature-type-heading {
+        font-weight: bold;
+        font-size: 150%;
+      }
+      .feature-heading {
+        font-weight: bold;
+        font-size: 125%;
+      }
+      .feature-sub-heading {
+        font-weight: bold;
+        font-size: 100%;
+      }
+      .feature-type {
+        float:right;
+      }
 
       .light {
         color: #444;
