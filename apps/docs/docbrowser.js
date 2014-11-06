@@ -454,6 +454,7 @@ MODEL({
       }
         
       div.members {
+        margin-top: 1em;
         padding-left: 2em;
       }
       div.memberList {
