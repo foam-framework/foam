@@ -898,6 +898,7 @@ MODEL({
       view.copyFrom(this.args);
       view.parent = this.parent;
       view.prop = this.prop;
+
       // TODO(kgr): re-enable when improved
       // if ( this.prop.description || this.prop.help ) view.tooltip = this.prop.description || this.prop.help;
 
