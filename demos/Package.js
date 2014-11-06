@@ -88,7 +88,6 @@ CLASS({
       a.withdraw(10);
       this.l(a.toJSON());
 
-
       var s = this.SavingsAccount({id: 43});
       s.setStatus(true);
       s.deposit(100);
@@ -137,7 +136,7 @@ CLASS({
   properties: [ 'x' ],
   methods: {
     test: function() {
-      var c = this.Child.create();
+      var c = this.Child();
       this.x = 1;
       this.x = 2;
       this.x = 3;
