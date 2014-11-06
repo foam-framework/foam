@@ -23,9 +23,11 @@ var DocumentationBootstrap = {
   help: 'Documentation associated with this entity.',
   documentation: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation.",
   setter: function(nu) {
+    if ( ! DEBUG ) return;
     this.instance_.documentation = nu;
   },
   getter: function() {
+    if ( ! DEBUG ) return '';
     var doc = this.instance_.documentation;
     if (doc && typeof Documentation != "undefined" && Documentation // a source has to exist (otherwise we'll return undefined below)
         && (  !doc.model_ // but we don't know if the user set model_
