@@ -95,7 +95,7 @@ MODEL({
           <div class="separator separator1"></div>
           $$content{model_: 'mdTextFieldView', label: 'Comment', onKeyMode: true, extraClassName: 'content-view' }
 
-          $$comments{ viewModel: { model_: 'DAOListView', mode: 'read-only', rowView: 'CommentView' } }
+          $$comments{ model_: 'DAOListView', mode: 'read-only', rowView: 'CommentView' }
         </div>
       </div>
     */},
