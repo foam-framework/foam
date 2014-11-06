@@ -161,7 +161,7 @@ var Model = {
       required: false,
       hidden: true,
       defaultValue: '',
-      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; }, 
+      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; },
       help: 'Keys to export this object as in its sub-context.',
       documentation: function() {/* */}
     },
@@ -488,12 +488,14 @@ var Model = {
           // Model Feature object.
           if ( typeof oldValue == 'function' ) {
             if ( Arg ) {
-              method.args = oldValue.toString().
-                match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
-                split(',').filter(function(name) { return name; }).
-                map(function(name) {
-                  return Arg.create({name: name.trim()});
-                });
+              var str = oldValue.toString();
+              if ( DEBUG || str.indexOf('SUPER') != -1 ) {
+                method.args = str.
+                  match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
+                  split(',').
+                  filter(function(name) { return name; }).
+                  map(function(name) { return Arg.create({name: name.trim()}); });
+              }
             }
           } else {
             console.warn('Constant defined as Method: ', this.name + '.' + key);
