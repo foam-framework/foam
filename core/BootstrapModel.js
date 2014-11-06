@@ -171,15 +171,15 @@ var BootstrapModel = {
       var path = m.split('.');
       var key  = imp[1] || path[path.length-1];
 
-      Object.defineProperty(cls, key, {
-        get: function() {
-          var x = this.X;
-          for ( var j = 0 ; j < path.length ; j++ ) {
-            x = x[path[j]];
-            if ( ! x ) return;
-          }
-          return x;
-        }
+      defineLocalProperty(cls, key, function() {
+        var model = FOAM.lookup(m, this.X);
+        var proto = model.getPrototype();
+        var self  = this;
+        var f     = function(args, opt_X) {
+          return proto.create(args, opt_X || self.X);
+        };
+        f.__proto__ = model;
+        return f;
       });
     });
 
@@ -190,7 +190,7 @@ var BootstrapModel = {
       for ( var i = 0 ; i < props.length ; i++ ) {
         if ( props[i].name == name ) return i;
       }
-      
+
       return -1;
     }
 
@@ -420,7 +420,7 @@ var BootstrapModel = {
           primaryKey.map(function(key, i) { this[key] = val[i]; }.bind(this)); });
       }
     }
-    
+
     return cls;
   },
 
@@ -442,10 +442,10 @@ var BootstrapModel = {
 //             self.definition_[prop.name] = [].concat(propVal);
 //           } else {
 //             self.definition_[prop.name] = propVal;
-//           }        
+//           }
 //         }
 //       }.bind(self));
-    
+
     // TODO: remove these once the above loop works
     // clone feature lists to avoid sharing the reference in the copy and original
     if (Array.isArray(self.methods))       self.definition_.methods       = [].concat(self.methods);

@@ -57,7 +57,7 @@ MODEL({
           self.hasDAOContent = c.count > 0;
         });
 
-        this.selfFeaturesDAO = [].dao;
+        this.selfFeaturesDAO = [].sink;
         this.X.docModelViewFeatureDAO
           .where(
                 AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.X.documentViewRef.get().resolvedRoot.resolvedModelChain[0].id),
@@ -66,7 +66,7 @@ MODEL({
                 )
           .select(MAP(DocFeatureInheritanceTracker.FEATURE, this.selfFeaturesDAO));
 
-        this.inheritedFeaturesDAO = [].dao;
+        this.inheritedFeaturesDAO = [].sink;
         this.X.docModelViewFeatureDAO
           .where(
                 AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.X.documentViewRef.get().resolvedRoot.resolvedModelChain[0].id),

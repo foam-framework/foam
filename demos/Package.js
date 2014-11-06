@@ -82,14 +82,14 @@ CLASS({
       this.l('Deposit: ', id, amount, bal);
     },
     test: function() {
-      var a = this.A.create({id: 42}, this.X);
+      var a = this.A({id: 42});
       a.setStatus(true);
       a.deposit(100);
       a.withdraw(10);
       this.l(a.toJSON());
 
 
-      var s = this.SavingsAccount.create({id: 43}, this.X);
+      var s = this.SavingsAccount({id: 43});
       s.setStatus(true);
       s.deposit(100);
       s.withdraw(10);

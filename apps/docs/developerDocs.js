@@ -539,8 +539,42 @@ var RegisterDevDocs = function(opt_X) {
     })
   );
 
+  bookList.push(
+    X.DocumentationBook.create({
+      name: 'ArrayDAO',
+      package: 'developerDocs',
+      label: "Javascript Arrays as Data Access Objects",
+
+        body: function() {/*
+          <p>To provide a convenient way to interact with Javascript libraries and
+          for quick coding, Javascript arrays are augmented with $$DOC{ref:'DAO'}
+          methods in FOAM. This means you can pass an array as a $$DOC{ref:'Sink'}
+          to receive output from a $$DOC{ref:'DAO.select',text:'.select(outArray)'},
+          or query an array to find objects.</p>
+          <p><code>// Select from a DAO into an array<br/>
+                   var myArray = [];<br/>
+                   myDao.orderBy(myModel.PROPERTY).select(myArray);<br/>
+                   // Select from an array into another DAO<br/>
+                   myArray.limit(1).select(myOtherDao);<br/>
+          </code></p>
+          <p>Note that by default the added behavior aims to be fast, and so does not
+          check for duplicates. Changing modes does not affect the existing contents
+          of the array, it merely affects future insertion operations.To switch the
+          array between fast and strict modes, access
+          the <code>.sink</code> and <code>.dao</code> properties:<p>
+          <p><code>var myArray = []; // defaults to fast mode<br/>
+                   myArray.dao; // myArray will now check for duplicates<br/>
+                   ...</br>
+                   myArray.sink; // switch back to fast mode. The contents are unchanged.<br/>
+          </code></p>
+        */}
+    })
+  );
+
   bookList.forEach(function(book) {
     X.developerDocs[book.name] = book;
   });
 
 };
+
+

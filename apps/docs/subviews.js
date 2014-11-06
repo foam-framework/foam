@@ -142,14 +142,17 @@ MODEL({
       </p>
   */},
 
-  ids: [ 'name', 'model' ],
+  ids: [ 'primaryKey' ],
 
   properties: [
     {
       name: 'name',
       help: 'The feature name.',
       documentation: "The feature name. This could be a $$DOC{ref:'Method'}, $$DOC{ref:'Property'}, or other feature. Feature names are assumed to be unique within the containing $$DOC{ref:'Model'}.",
-      defaultValue: ""
+      defaultValue: "",
+      postSet: function() {
+        this.primaryKey = this.model + ":::" + this.name;
+      }
     },
     {
       name: 'isDeclared',
@@ -173,7 +176,14 @@ MODEL({
     {
       name: 'model',
       help: 'The name of the Model to which the feature belongs.',
-      documentation: "The name of the $$DOC{ref:'Model'} to which the feature belongs."
+      documentation: "The name of the $$DOC{ref:'Model'} to which the feature belongs.",
+      postSet: function() {
+        this.primaryKey = this.model + ":::" + this.name;
+      }
+    },
+    {
+      name: 'primaryKey',
+      defaultValue: ''
     },
     {
       name: 'inheritanceLevel',
@@ -243,10 +253,10 @@ MODEL({
     init: function() {
       this.X = this.X.sub();
       // we want our own copy of these, since an enclosing view might have put its own copies in X
-      this.X.docModelViewFeatureDAO = [].dao;
-         //this.X.MDAO.create({model:this.X.DocFeatureInheritanceTracker, autoIndex:true});
-      this.X.docModelViewModelDAO = [].dao; 
-          //this.X.MDAO.create({model:this.X.DocModelInheritanceTracker, autoIndex:true});
+      this.X.docModelViewFeatureDAO = //[].dao;
+         this.X.MDAO.create({model:this.X.DocFeatureInheritanceTracker, autoIndex:true});
+      this.X.docModelViewModelDAO = //[].dao;
+         this.X.MDAO.create({model:this.X.DocModelInheritanceTracker, autoIndex:true});
 
       this.SUPER();
     },
@@ -329,8 +339,8 @@ MODEL({
               // the feature too, if they didn't already have it declared (overridden).
               previousExtenderTrackers.forEach(function(extModelTr) {
                 self.X.docModelViewFeatureDAO
-                      .where(AND(EQ(DocFeatureInheritanceTracker.MODEL, extModelTr.model),
-                                 EQ(DocFeatureInheritanceTracker.NAME, feature.name)))
+                      .where(EQ(DocFeatureInheritanceTracker.PRIMARY_KEY,
+                                extModelTr.model+":::"+feature.name))
                       .select(COUNT())(function(c) {
                           if (c.count <= 0) {
                             var featTrExt = self.X.DocFeatureInheritanceTracker.create({
@@ -390,6 +400,11 @@ MODEL({
         <div class="introduction">
           <h1><%=this.sourceModel.name%></h1>
           <div class="model-info-block">
+<%        if (this.sourceModel.model_ && this.sourceModel.model_.id && this.sourceModel.model_.id != "Model") { %>
+            <p class="important">Implements $$DOC{ref: this.sourceModel.model_.id }</p>
+<%        } else { %>
+            <p class="important">$$DOC{ref:'Model'} definition</p>
+<%        } %>
 <%        if (this.sourceModel.sourcePath) { %>
             <p class="note">Loaded from <a href='<%=this.sourceModel.sourcePath%>'><%=this.sourceModel.sourcePath%></a></p>
 <%        } else { %>
@@ -400,9 +415,6 @@ MODEL({
 <%        } %>
 <%        if (this.sourceModel.extendsModel) { %>
             <p class="important">Extends $$DOC{ref: this.sourceModel.extendsModel }</p>
-<%        } %>
-<%        if (this.sourceModel.model_ && this.sourceModel.model_.id && this.sourceModel.model_.id != "Model") { %>
-            <p class="important">Implements $$DOC{ref: this.sourceModel.model_.id }</p>
 <%        } %>
           </div>
           $$sourceModel{ model_: 'DocModelBodyView' }
