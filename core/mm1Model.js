@@ -487,7 +487,7 @@ var Model = {
 
           // Model Feature object.
           if ( typeof oldValue == 'function' ) {
-            if ( DEBUG && Arg ) {
+            if ( Arg ) {
               method.args = oldValue.toString().
                 match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
                 split(',').filter(function(name) { return name; }).
