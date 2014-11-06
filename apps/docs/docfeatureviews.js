@@ -152,14 +152,14 @@ MODEL({
     function toInnerHTML()    {/*
     <%    this.destroy();
           if (!this.hasFeatures && !this.hasInheritedFeatures) { %>
-            <h2>No <%=this.featureName()%>.</h2>
+            <p class="feature-type-heading">No <%=this.featureName()%>.</p>
     <%    } else {
             if (this.hasFeatures) { %>
-              <h2><%=this.featureName()%>:</h2>
+              <p class="feature-type-heading"><%=this.featureName()%>:</p>
               <div class="memberList">$$selfFeaturesDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.selfFeaturesDAO, model: Property }</div>
       <%    }
             if (this.hasInheritedFeatures) { %>
-              <h2>Inherited <%=this.featureName()%>:</h2>
+              <p class="feature-type-heading">Inherited <%=this.featureName()%>:</p>
       <%
               var fullView = this.X.DAOListView.create({ rowView: this.rowView, model: Property });
               var collapsedView = this.X.DocFeatureCollapsedView.create();
@@ -233,7 +233,16 @@ MODEL({
       name: 'overridesDAO',
       model_: 'DAOProperty',
       defaultValue: []
+    },
+    {
+      name: 'extraClassName',
+      defaultValue: 'feature-row'
+    },
+    {
+      name: 'tagName',
+      defaultValue: 'div'
     }
+
   ],
 
   methods: {
@@ -254,9 +263,9 @@ MODEL({
   templates: [
     function toInnerHTML() {/*
       <div id="scrollTarget_<%=this.data.name%>">
-        <h3><%=this.data.name%></h3>
+        <p class="feature-heading"><%=this.data.name%></p>
         <p><%=this.renderDocSourceHTML()%></p>
-        <p>Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureOverridesRefView', data: this.overridesDAO, model: DocFeatureInheritanceTracker }</p>
+        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureOverridesRefView', data: this.overridesDAO, model: DocFeatureInheritanceTracker }</p>
       </div>
     */}
   ]
@@ -327,6 +336,10 @@ MODEL({
       onDAOUpdate: function() {
         this.filteredDAO = this.dao.where(EQ(Property.HIDDEN, FALSE));
       }
+    },
+    {
+      name: 'rowView',
+      factory: function() { return 'DocPropertyRowView'; }
     }
   ],
 
@@ -343,6 +356,24 @@ MODEL({
   }
 
 });
+
+MODEL({
+  name: 'DocPropertyRowView',
+  extendsModel: 'DocFeatureRowView',
+  help: 'A view for documentation of each item in a list of properties.',
+
+  templates: [
+    function toInnerHTML() {/*
+      <div id="scrollTarget_<%=this.data.name%>">
+        <p><span class="feature-heading"><%=this.data.name%></span>
+           <span class="feature-type">(<%=this.data.type%>)</span></p>
+        <p><%=this.renderDocSourceHTML()%></p>
+        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureOverridesRefView', data: this.overridesDAO, model: DocFeatureInheritanceTracker }</p>
+      </div>
+    */}
+  ]
+});
+
 
 MODEL({
   name: 'DocRelationshipsView',
@@ -477,10 +508,10 @@ MODEL({
   templates: [
     function toInnerHTML() {/*
       <div id="scrollTarget_<%=this.data.name%>">
-        <h3><%=this.data.name%> $$THISDATA{ model_: 'DocMethodArgumentsSmallView' }</h3>
+        <p class="feature-heading"><%=this.data.name%> $$THISDATA{ model_: 'DocMethodArgumentsSmallView' }</p>
         <div class="memberList">$$THISDATA{ model_: 'DocMethodArgumentsView' }</div>
         <p><%=this.renderDocSourceHTML()%></p>
-        <p>Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureOverridesRefView', data: this.overridesDAO, model: Model }</p>
+        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureOverridesRefView', data: this.overridesDAO, model: Model }</p>
       </div>
     */}
   ]
@@ -516,7 +547,7 @@ MODEL({
     <%    this.destroy();
           if (!this.hasDAOContent) { %>
     <%    } else { %>
-            <h4><%=this.featureName()%>:</h4>
+            <p class="feature-sub-heading"><%=this.featureName()%>:</p>
             <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</div>
     <%    } %>
     */}
@@ -530,7 +561,7 @@ MODEL({
 
   templates: [
     function toInnerHTML() {/*
-      <h5><%=this.data.name%></h5>
+      <p class="feature-sub-heading"><%=this.data.name%></p>
       <p><%=this.renderDocSourceHTML()%></p>
     */}
   ]
@@ -647,11 +678,11 @@ MODEL({
 
     <%    } else {
             if (this.hasFeatures) { %>
-              <h2><%=this.featureName()%>:</h2>
+              <p class="feature-type-heading"><%=this.featureName()%>:</p>
               <div class="memberList">$$selfFeaturesDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.selfFeaturesDAO, model: Property }</div>
       <%    }
             if (this.hasInheritedFeatures) { %>
-              <h2>Inherited <%=this.featureName()%>:</h2>
+              <p class="feature-type-heading">Inherited <%=this.featureName()%>:</p>
       <%
               var fullView = this.X.DAOListView.create({ rowView: this.rowView, model: Property });
               var collapsedView = this.X.DocFeatureCollapsedView.create();
@@ -672,7 +703,7 @@ MODEL({
   templates: [
     function toInnerHTML() {/*
       <div id="scrollTarget_<%=this.data.id%>">
-        <h3>$$data{model_:this.X.DocFeatureSubmodelRefView}</h3>
+        <p class="feature-heading">$$data{model_:this.X.DocFeatureSubmodelRefView}</p>
         <p><%=this.renderDocSourceHTML()%></p>
       </div>
     */}
