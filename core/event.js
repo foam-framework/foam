@@ -375,7 +375,6 @@ var PropertyChangeSupport = {
     return [ this.PROPERTY_TOPIC, property ];
   },
 
-
   /** Indicate that a specific property has changed. **/
   propertyChange: function (property, oldValue, newValue) {
     // don't bother firing event if there are no listeners
@@ -397,12 +396,10 @@ var PropertyChangeSupport = {
     this.publish(propertyTopic, oldValue, newValue);
   },
 
-
   /** Indicates that one or more unspecified properties have changed. **/
   globalChange: function () {
     this.publish(this.propertyTopic(this.WILDCARD), null, null);
   },
-
 
   addListener: function(listener) {
     console.assert(listener, 'Listener cannot be null.');
@@ -410,63 +407,24 @@ var PropertyChangeSupport = {
     this.addPropertyListener(null, listener);
   },
 
-
   removeListener: function(listener) {
     this.removePropertyListener(null, listener);
   },
-
 
   /** @arg property the name of the property to listen to or 'null' to listen to all properties. **/
   addPropertyListener: function(property, listener) {
     this.subscribe(this.propertyTopic(property), listener);
   },
 
-
   removePropertyListener: function(property, listener) {
     this.unsubscribe(this.propertyTopic(property), listener);
   },
 
-
   /** Create a Value for the specified property. **/
   propertyValue: function(prop) {
     if ( ! prop ) throw 'Property Name required for propertyValue().';
-
-    var obj  = this;
     var name = prop + 'Value___';
-    var proxy;
-
-    return Object.hasOwnProperty.call(obj, name) ? obj[name] : ( obj[name] = {
-      $UID: obj.$UID + "." + prop,
-
-      get: function() { return obj[prop]; },
-
-      set: function(val) { obj[prop] = val; },
-
-      asDAO: function() {
-        console.warn('ProperytValue.asDAO() deprecated.  Use property$Proxy instead.');
-        if ( ! proxy ) {
-          proxy = ProxyDAO.create({delegate: this.get()});
-
-          this.addListener(function() { proxy.delegate = this.get(); }.bind(this));
-        }
-
-        return proxy;
-      },
-
-      get value() { return this.get(); },
-
-      set value(val) { this.set(val); },
-
-      addListener: function(listener) {
-        obj.addPropertyListener(prop, listener);
-      },
-
-      removeListener: function(listener) {
-        obj.removePropertyListener(prop, listener);
-      },
-
-      toString: function () { return 'PropertyValue(' + prop + ')'; }
-    } );
+    return Object.hasOwnProperty.call(this, name) ? this[name] : ( this[name] = PropertyValue.create(this, prop) );
   }
 
 };
@@ -482,6 +440,37 @@ var FunctionStack = {
     };
   }
 };
+
+
+var PropertyValue = {
+  create: function(obj, prop) {
+    return { __proto__: this, $UID: obj.$UID + '.' + prop, obj: obj, prop: prop };
+  },
+
+  get: function() { return this.obj[this.prop]; },
+
+  set: function(val) { this.obj[this.prop] = val; },
+
+  asDAO: function() {
+    console.warn('ProperytValue.asDAO() deprecated.  Use property$Proxy instead.');
+    if ( ! this.proxy ) {
+      this.proxy = ProxyDAO.create({delegate: this.get()});
+      this.addListener(function() { proxy.delegate = this.get(); }.bind(this));
+    }
+    return this.proxy;
+  },
+
+  get value() { return this.get(); },
+
+  set value(val) { this.set(val); },
+
+  addListener: function(listener) { this.obj.addPropertyListener(this.prop, listener); },
+
+  removeListener: function(listener) { this.obj.removePropertyListener(this.prop, listener); },
+
+  toString: function () { return 'PropertyValue(' + this.prop + ')'; }
+};
+
 
 
 /** Static support methods for working with Events. **/
