@@ -61,9 +61,9 @@ MODEL({
 
 - FOAM uses multi-line comments in templates as a hack for multi-line strings in Javascript.
 - Inside a template, `this` is bound to the view itself, **not the `Phone` object**.
-- The phone object is `this.data` instead.
-- The `$$foo` syntax puts a child view at this location. `imageUrl` has its `view` set to `ImageView`, so `$$imageUrl` will render an `ImageView` in the first link tag.
-- `$$name{mode: 'read-only'}` will put the child view for the `name` property (defaults to `TextFieldView`) in the second link tag. `mode: 'read-only'` on a `TextFieldView` is simply text.
+- The `Phone` object is `this.data` instead.
+- The `$$foo` syntax puts a child view at this location. `imageUrl` has its `view` set to `ImageView`, so `$$imageUrl` will render an `ImageView` inside the first link tag.
+- `$$name{mode: 'read-only'}` will put the child view for the `name` property (defaults to `TextFieldView`) in the second link tag, creating the view with its `mode` property set to `'read-only'`. `mode: 'read-only'` on a `TextFieldView` is simply text in a `<span>`.
 - Similarly for `$$snippet{mode: 'read-only'}`.
 
 Now reload your app and see that... it's a complete mess. That's because `PhoneCitationView` is putting in `<li>` tags but they're not in a `<ul>`, and the custom CSS for the app is not being loaded.

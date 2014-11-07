@@ -29,10 +29,12 @@ MODEL({
 });
 {% endhighlight %}
 
-Most of these properties are straightforward. Some are notable:
+Note that providing just the name of a property (`'age'`, `'snippet'`, `'battery'` and so on) is equivalent to `{ name: 'age' }`.
+
+Most of these properties are straightforward, just the data about each phone. Some are notable:
 
 - `id` is not required, but it's generally a good idea for objects which will be stored in a DAO to have an `id` property. Many DAOs require a primary key, and they will use `id` if it exists.
-    - If you want to specify the primary key, define `ids: ['name', 'birthdate']` on the model.
+    - If you want to specify the primary key for a model, define `ids: ['name', 'birthdate']` on the model.
     - If you define `ids`, those values together form the primary key.
     - If you don't have `ids`, but do have an `id` property, DAOs will use that.
     - Failing that, they use the first property in the `properties` array.

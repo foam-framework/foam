@@ -10,8 +10,8 @@ At the top level of our app, we have a Controller, which is responsible for conn
 
 The Controller knows nothing about how the app is laid out visually, it just creates the different components and binds them together.
 
-- A `TextFieldView` for the search box
-- A `ChoiceView` for the sort order drop-down
+- A `TextFieldView` for the search box.
+- A `ChoiceView` for the sort order drop-down.
 - A `DAOListView` for the list of phones.
 
 Let's look into the code, which should go in a new file, `$PROJECT/Controller.js`:
@@ -63,9 +63,9 @@ Let's explain a few pieces of this code in detail.
     - `phones.js` creates a global array called `phones`. We set the `defaultValue` of our `dao` property to this global value. Remember that Arrays implement the DAO interface.
 - `filteredDAO` is the interesting DAO. This is the one that actually drives the main view on the page, which gets filtered by the search and ordered by the sort order.
     - Its view is `DAOListView`. This view shows a vertical list of rows, one for each entry in the DAO it is bound to. The view for each row is `PhoneCitationView`, which we'll define shortly.
-    - `dynamicValue` takes a function that is run through `Events.dynamic`. This essentially creates spreadsheet cells: `Events.dynamic` registers listeners on each of the inputs in the function. When any of them changes, the function will be run again and the value updated.
+    - `dynamicValue` takes a function that is run through `Events.dynamic`. This essentially creates spreadsheet cells: `Events.dynamic` registers listeners on each of the inputs in the function. When any of them changes, the function will be run again and the value of `filteredDAO` updated.
         - Here, those inputs include `this.order` and `this.search`.
-        - The return value becomes the value of `this.filteredDAO`, which is a sorted and filtered version of the master `this.dao`.
+        - The return value becomes the value of `this.filteredDAO`, which will be a sorted and filtered version of the master `this.dao`.
     - `CONTAINS_IC` checks if the string on the left (`SEQ(Phone.NAME, Phone.SNIPPET)`) contains the string on the right (`this.search`), ignoring case.
         - `SEQ` combines its arguments all into one string.
     - More on the DAO interface can be found below.
@@ -112,7 +112,7 @@ With this, the catalog page will be usable, though ugly. Update `index.html` to 
 
 If you load that up in your browser, you'll see that it's not exactly pretty, but that searching and sorting work properly.
 
-The `<foam>` tag is a convenience for loading a given model and inserting it into the DOM.
+The `<foam>` tag is a convenience for loading a given model and view, and inserting it into the DOM.
 
 Next we'll add custom templates in [part 4]({{ site.baseurl }}/tutorial/4-templates).
 
