@@ -93,7 +93,7 @@ MODEL({
           $$labels{model_: 'IssueLabelView'}
 
           <div class="separator separator1"></div>
-          $$content{model_: 'mdTextFieldView', label: 'Comment', onKeyMode: true, extraClassName: 'content-view' }
+          $$content{model_: 'mdTextFieldView', label: 'Add Comment', onKeyMode: true, extraClassName: 'content-view' }
           $$comments{
             model_: 'DAOListView',
             dao: this.data.comments.orderBy(DESC(QIssueComment.PUBLISHED)),
