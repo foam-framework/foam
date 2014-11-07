@@ -94,8 +94,11 @@ MODEL({
 
           <div class="separator separator1"></div>
           $$content{model_: 'mdTextFieldView', label: 'Comment', onKeyMode: true, extraClassName: 'content-view' }
-
-          $$comments{ model_: 'DAOListView', mode: 'read-only', rowView: 'CommentView' }
+          $$comments{
+            model_: 'DAOListView',
+            dao: this.data.comments.orderBy(DESC(QIssueComment.PUBLISHED)),
+            mode: 'read-only',
+            rowView: 'CommentView' }
         </div>
       </div>
     */},
