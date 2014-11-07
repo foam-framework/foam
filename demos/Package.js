@@ -82,14 +82,13 @@ CLASS({
       this.l('Deposit: ', id, amount, bal);
     },
     test: function() {
-      var a = this.A.create({id: 42});
+      var a = this.A({id: 42});
       a.setStatus(true);
       a.deposit(100);
       a.withdraw(10);
       this.l(a.toJSON());
 
-
-      var s = this.SavingsAccount.create({id: 43});
+      var s = this.SavingsAccount({id: 43});
       s.setStatus(true);
       s.deposit(100);
       s.withdraw(10);
@@ -98,7 +97,7 @@ CLASS({
   }
 });
 
-var a = X.demo.bank.AccountTester.create();
+var a = X.demo.bank.AccountTester.create({},X);
 a.test();
 
 // TODO: Re-enable when models as packages works again.
@@ -137,7 +136,7 @@ CLASS({
   properties: [ 'x' ],
   methods: {
     test: function() {
-      var c = this.Child.create();
+      var c = this.Child();
       this.x = 1;
       this.x = 2;
       this.x = 3;

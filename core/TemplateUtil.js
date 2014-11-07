@@ -244,7 +244,7 @@ var TemplateUtil = {
    compile: window.chrome && window.chrome.app && window.chrome.app.runtime ?
      function() {
        return function() {
-         return "Models must be arequired()'ed for Templates to be compiled in Packaged Apps.";
+         return this.name_ + " wasn't required.  Models must be arequired()'ed for Templates to be compiled in Packaged Apps.";
        };
      } :
      function(t) {
@@ -377,14 +377,30 @@ var aeval = function(src) {
 
 
 var aevalTemplate = function(t) {
+  var doEval = function(t) {
+    var code = TemplateCompiler.parseString(t.template);
+
+    try {
+      var args = ['opt_out'];
+      for ( var i = 0 ; i < t.args.length ; i++ ) {
+        args.push(t.args[i].name);
+      }
+      return aeval('function(' + args.join(',') + '){' + code + '}');
+    } catch (err) {
+      console.log('Template Error: ', err);
+      console.log(code);
+      return aconstant(function(){return 'TemplateError: Check console.';});
+    }
+  }
+
   if ( t.template ) {
-    return aeval('function (opt_out) {' + TemplateCompiler.parseString(t.template) + '}');
+    return doEval(t);
   }
 
   return aseq(
     t.futureTemplate,
     function(ret, t) {
-      aeval('function (opt_out) {' + TemplateCompiler.parseString(t.template) + '}')(ret);
+      doEval(t)(ret);
     });
 };
 

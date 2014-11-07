@@ -19,7 +19,7 @@ MODEL({
   extendsModel: 'View',
 
   documentation:function() {/*
-    <p>When a view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'DetailView'}
+    When a view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'DetailView'}
     is the place to start. Either using $$DOC{ref:'DetailView'} directly, implementing
     a .toDetailHTML() $$DOC{ref:'Method'} in your model, or extending
     $$DOC{ref:'DetailView'} to add custom formatting.
@@ -34,12 +34,21 @@ MODEL({
     $$DOC{ref:'Template'} to render their contents instead of
     $$DOC{ref:'DetailView.defaultToHTML'}.
     </p>
+    <p>For each $$DOC{ref:'Property'} in the $$DOC{ref:'.data'} instance specified,
+    a $$DOC{ref:'PropertyView'} is created that selects the appropriate $$DOC{ref:'View'}
+    to construct.
+
   */},
 
   properties: [
     {
       name: 'className',
-      defaultValue: 'detailView'
+      defaultValue: 'detailView',
+      documentation: function() {/*
+          The CSS class names to use for HTML $$DOC{ref:'View',usePlural:true}.
+          Separate class names with spaces. Each instance of a $$DOC{ref:'DetailView'}
+          may have different classes specified.
+      */}
     },
     {
       name:  'data',
@@ -48,7 +57,7 @@ MODEL({
         this.onValueChange_();
       },
       documentation: function() {/*
-        <p>The $$DOC{ref:'Model'} to view. The $$DOC{ref:'Property',usePlural:true}
+        The $$DOC{ref:'Model'} to view. The $$DOC{ref:'Property',usePlural:true}
         of this $$DOC{ref:'Model'} instance will be examined and a $$DOC{ref:'PropertyView'}
         created for each with editors for the current value.
         </p>
@@ -56,7 +65,7 @@ MODEL({
         property, from which $$DOC{ref:'PropertyView'} will extract its named
         $$DOC{ref:'Property'}
         and bind the property to the sub-view $$DOC{ref:'DetailView.data'}.
-        </p>
+
       */}
     },
     {
@@ -70,13 +79,13 @@ MODEL({
         }
       },
       documentation: function() {/*
-        <p>The $$DOC{ref:'.model'} is extracted from $$DOC{ref:'.data'}, or can be
+        The $$DOC{ref:'.model'} is extracted from $$DOC{ref:'.data'}, or can be
         set in advance when the type of $$DOC{ref:'.data'} is known. The $$DOC{ref:'Model'}
         is used to set up the structure of the $$DOC{ref:'DetailView'}, by examining the
         $$DOC{ref:'Property',usePlural:true}. Changing the $$DOC{ref:'.data'} out
         for another instance of the same $$DOC{ref:'Model'} will refresh the contents
         of the sub-views without destroying and re-creating them.
-        </p>
+
       */}
     },
     {
@@ -92,8 +101,8 @@ MODEL({
       name: 'mode',
       defaultValue: 'read-write',
       documentation: function() {/*
-        <p>The editing mode. To disable editing set to 'read-only'.
-        </p>
+        The editing mode. To disable editing set to 'read-only'.
+
       */}
     },
     {
@@ -101,9 +110,9 @@ MODEL({
       name: 'showRelationships',
       defaultValue: false,
       documentation: function() {/*
-        <p>Set true to create sub-views to display $$DOC{ref:'Relationship',usePlural:true}
+        Set true to create sub-views to display $$DOC{ref:'Relationship',usePlural:true}
         for the $$DOC{ref:'.model'}.
-        </p>
+
       */}
     }
   ],
@@ -147,8 +156,8 @@ MODEL({
         '';
     },
 
-    startForm: function() { return '<table>'; },
-    endForm: function() { return '</table>'; },
+    startForm: function() { /* HTML formatter */ return '<table>'; },
+    endForm: function() { /* HTML formatter */ return '</table>'; },
 
     startColumns: function() { /* HTML formatter */ return '<tr><td colspan=2><table valign=top><tr><td valign=top><table>'; },
     nextColumn:   function() { /* HTML formatter */ return '</table></td><td valign=top><table valign=top>'; },
@@ -180,10 +189,10 @@ MODEL({
 
     // If the Model supplies a toDetailHTML method, then use it instead.
     toHTML: function() {
-      /* <p>Overridden to create the complete HTML content for the $$DOC{ref:'View'}.</p>
+      /* Overridden to create the complete HTML content for the $$DOC{ref:'View'}.</p>
          <p>$$DOC{ref:'Model',usePlural:true} may specify a .toDetailHTML() $$DOC{ref:'Method'} or
          $$DOC{ref:'Template'} to render their contents instead of the
-          $$DOC{ref:'DetailView.defaultToHTML'} we supply here.</p>
+          $$DOC{ref:'DetailView.defaultToHTML'} we supply here.
 
         */
 

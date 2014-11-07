@@ -628,7 +628,7 @@ MODEL({
               tableView.addChild(view);
               return view.toHTML();
             },
-            view: { model_: 'CSSImageBooleanView', className: 'star-image' },
+            view: { factory_: 'CSSImageBooleanView', className: 'star-image' },
             help: 'Whether the authenticated user has starred this issue.'
           },
           {

@@ -115,9 +115,9 @@ var FObject = {
       if ( ! this.hasOwnProperty(prop.name) ) this[prop.name] = prop.factory.call(this);
 
       exportKeys(this.X, prop.exportKeys, this[prop.name]);
-      exportKeys(this.X, prop.exportValueKeys, this[prop.name + '$']);
+      if ( prop.exportValueKeys && prop.exportValueKeys.length )
+        exportKeys(this.X, prop.exportValueKeys, this[prop.name + '$']);
     }
-
 
     ps = this.selectProperties_('dynamicValueProperties_', 'dynamicValue');
     ps.forEach(function(prop) {

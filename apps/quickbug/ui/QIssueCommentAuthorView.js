@@ -14,5 +14,9 @@ MODEL({
     }
   },
 
-  templates: [ { name: 'toHTML' } ]
+  templates: [ { name: 'toHTML', template: function() {/*
+    <span id="<%= this.id %>" class="qissuecommentauthor">
+      <a>$$name{ mode: 'read-only' }</a>
+    </span>
+  */} } ]
 });

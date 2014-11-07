@@ -47,12 +47,13 @@ var ApplicationPower = Model.create({
          type: 'String',
          // todo: curry arguments
          view: {
-            create: function() { return ChoiceView.create({choices: [
-              'Foreground',
-              'Open',
-              'Background',
-              'Closed'
-           ]});}
+           factory_: 'ChoiceView',
+           choices: [
+             'Foreground',
+             'Open',
+             'Background',
+             'Closed'
+           ]
          },
          defaultValue: 'Closed',
          help: 'The state of this application.'

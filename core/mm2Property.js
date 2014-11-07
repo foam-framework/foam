@@ -107,7 +107,8 @@ var Property = {
       required: true,
       // todo: curry arguments
       view: {
-        create: function() { return ChoiceView.create({choices: [
+        factory_: 'ChoiceView',
+        choices: [
           'Array',
           'Boolean',
           'Color',
@@ -124,7 +125,7 @@ var Property = {
           'String',
           'String[]',
           'URL'
-        ]});}
+        ]
       },
       defaultValue: 'String',
       help: 'The type of the property.',
@@ -200,15 +201,12 @@ var Property = {
       name: 'mode',
       type: 'String',
       defaultValue: 'read-write',
-      view: {
-        create: function() { return ChoiceView.create({choices:[
-          "read-only", "read-write", "final"
-        ]}); } },
-        documentation: function() { /*
-          To restrict modification to a $$DOC{ref:'Property'}, the $$DOC{ref:'.mode'} can be set to read-only
-          to block changes, or to final to block overriding this $$DOC{ref:'Property'} in descendents of
-          the $$DOC{ref:'Model'} that owns this $$DOC{ref:'Property'}.
-        */}
+      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] },
+      documentation: function() { /*
+        To restrict modification to a $$DOC{ref:'Property'}, the $$DOC{ref:'.mode'} can be set to read-only
+        to block changes, or to final to block overriding this $$DOC{ref:'Property'} in descendents of
+        the $$DOC{ref:'Model'} that owns this $$DOC{ref:'Property'}.
+      */}
     },
     {
       name: 'subType',
@@ -290,13 +288,14 @@ var Property = {
       */}
     },
     {
+      model_: 'ViewFactoryProperty',
       name: 'view',
       type: 'view',
       defaultValue: 'TextFieldView',
       help: 'View component for the property.',
       documentation: function() { /*
         The default $$DOC{ref:'View'} to use when rendering the $$DOC{ref:'Property'}.
-        Specify a string or an object with model_ and other properties specified.
+        Specify a string or an object with factory_ and other properties specified.
       */}
     },
     {

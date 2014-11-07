@@ -81,6 +81,7 @@ FOAM.putFactory = function(ctx, name, factory) {
 
 var   USED_MODELS = {};
 var UNUSED_MODELS = {};
+var NONMODEL_INSTANCES = {}; // for things such as interfaces
 
 FOAM.browse = function(model, opt_dao, opt_X) {
    var Y = opt_X || X.sub(undefined, "FOAM BROWSER");
@@ -179,36 +180,14 @@ var FOAM_POWERED = '<a style="text-decoration:none;" href="https://github.com/fo
 
 
 function packagePath(X, path) {
-  function packagePath_(root, parent, path, i) {
-
-    function defineLocalProperty(o, name, factory) {
-      var value = factory(o, name);
-      Object.defineProperty(o, name, { get: function() {
-        return o == this ? value : defineLocalProperty(this, name, factory);
-      } });
-      return value;
-    }
-
-    if ( i == path.length ) return parent;
-
-    var head = path[i];
-    if ( ! parent[head] ) {
-      var map = { __this__: root };
-
-      defineLocalProperty(parent, head, function(o) {
-        return o == parent ? map : { __proto__: map, __this__: o.__this__ || o };
-      });
-    }
-
-    return packagePath_(root, parent[head], path, i+1);
+  function packagePath_(Y, path, i) {
+    return i == path.length ? Y : packagePath_(Y[path[i]] || ( Y[path[i]] = {} ), path, i+1);
   }
-
-  return path ? packagePath_(X, X, path.split('.'), 0) : X;
+  return path ? packagePath_(X, path.split('.'), 0) : X;
 }
 
 
 function registerModel(model, opt_name) {
-
   var root = this;
 
   function contextualizeModel(path, model, name) {
@@ -247,9 +226,12 @@ function registerModel(model, opt_name) {
     package = a.join('.');
   }
 
-  var path = packagePath(root, package); // TODO: make root.
-
-  contextualizeModel(path, model, name)
+  if ( package ) {
+    var path = packagePath(root, package);
+    Object.defineProperty(path, name, { value: model, configurable: true });
+  } else {
+    contextualizeModel(root, model, name)
+  }
 
   this.registerModel_(model);
 }
@@ -271,7 +253,8 @@ function CLASS(m) {
         USED_MODELS[id] = true;
         delete UNUSED_MODELS[id];
         Object.defineProperty(path, m.name, {value: null, configurable: true});
-        X.registerModel(JSONUtil.mapToObj(X, m, Model));
+        // TODO: Workaround for apps that redefine the top level X
+        _ROOT_X.registerModel(JSONUtil.mapToObj(X, m, Model));
         return this[m.name];
       },
       configurable: true
@@ -290,6 +273,9 @@ function INTERFACE(imodel) {
   // if ( ! DEBUG ) return;
   var i = JSONUtil.mapToObj(X, imodel, Interface);
   packagePath(X, i.package)[i.name] = i;
+
+  var id = i.package ? i.package + '.' + i.name : i.name;
+  NONMODEL_INSTANCES[id] = true;
 }
 
 

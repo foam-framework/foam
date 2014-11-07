@@ -362,7 +362,7 @@ var __features__ = [
     }
     // 3. Otherwise, return true.
     return true;
-  }],      
+  }],
   [ String          , 'Poly$',   function startsWith(a) {
     // This implementation is very slow for some reason
     return 0 == this.lastIndexOf(a, 0);
@@ -384,11 +384,6 @@ __features__[0][1](__features__);
   Allow Role to be a function?
   Make processFeature be a feature.
 */
-
-
-var DEBUG_STACK = DEBUG ?
-  function() { return new Error().stack; } :
-  function() { return 'Set DEBUG = true in stdlib.js for stacktrace.'; } ;
 
 
 // binaryInsert into a sorted array, removing duplicates
@@ -750,3 +745,13 @@ var FeatureSet = {
     return this.version_;
   }
 };
+
+
+function defineLocalProperty(cls, name, factory) {
+  Object.defineProperty(cls, name, { get: function() {
+    if ( this == cls ) return null;
+    var value = factory.call(this);
+    Object.defineProperty(this, name, { value: value });
+    return value;
+  } });
+}

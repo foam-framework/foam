@@ -19,13 +19,15 @@ var BinaryProtoGrammar;
 var DocumentationBootstrap = {
   name: 'documentation',
   type: 'Documentation',
-  view: 'DetailView',
+  view: function() { return DetailView.create({model: Documentation}); },
   help: 'Documentation associated with this entity.',
   documentation: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation.",
   setter: function(nu) {
+    if ( ! DEBUG ) return;
     this.instance_.documentation = nu;
   },
   getter: function() {
+    if ( ! DEBUG ) return '';
     var doc = this.instance_.documentation;
     if (doc && typeof Documentation != "undefined" && Documentation // a source has to exist (otherwise we'll return undefined below)
         && (  !doc.model_ // but we don't know if the user set model_
@@ -159,7 +161,7 @@ var Model = {
       required: false,
       hidden: true,
       defaultValue: '',
-      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; }, 
+      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; },
       help: 'Keys to export this object as in its sub-context.',
       documentation: function() {/* */}
     },
@@ -303,7 +305,7 @@ var Model = {
                &nbsp;&nbsp;   properties: [<br/>
                &nbsp;&nbsp;     {<br/>
                  &nbsp;&nbsp;&nbsp;&nbsp;     name: 'proper',<br/>
-                 &nbsp;&nbsp;&nbsp;&nbsp;     view: { model_: 'DetailView',<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp;     view: { factory_: 'DetailView',<br/>
                  &nbsp;&nbsp;&nbsp;&nbsp; methods: { toHTML: function() {<br/>
                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         // our context is provided by firstModel, so:<br/>
                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         this.X.myProperty = 4; // we can see exported myProperty<br/>
@@ -486,12 +488,14 @@ var Model = {
           // Model Feature object.
           if ( typeof oldValue == 'function' ) {
             if ( Arg ) {
-              method.args = oldValue.toString().
-                match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
-                split(',').filter(function(name) { return name; }).
-                map(function(name) {
-                  return Arg.create({name: name.trim()});
-                });
+              var str = oldValue.toString();
+              if ( DEBUG || str.indexOf('SUPER') != -1 ) {
+                method.args = str.
+                  match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
+                  split(',').
+                  filter(function(name) { return name; }).
+                  map(function(name) { return Arg.create({name: name.trim()}); });
+              }
             }
           } else {
             console.warn('Constant defined as Method: ', this.name + '.' + key);

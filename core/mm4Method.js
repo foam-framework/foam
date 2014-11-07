@@ -36,7 +36,6 @@ MODEL({
     </p>
   */},
 
-
   properties: [
     {
       name:  'name',
@@ -409,7 +408,6 @@ MODEL({
       help: 'A brief description of this method.',
       documentation: function() { /* A human readable description of the $$DOC{ref:'.'}.
          */}
-
     },
     {
       model_: 'DocumentationProperty',
@@ -521,6 +519,7 @@ MODEL({
       view: 'FunctionView',
       help: 'Javascript code to implement this method.',
       postSet: function() {
+        if ( ! DEBUG ) return;
         // check for documentation in a multiline comment at the beginning of the code
         // accepts "/* comment */ function() {...." or "function() { /* comment */ ..."
         // TODO: technically unicode letters are valid in javascript identifiers, which we are not catching here for function arguments.
@@ -528,11 +527,10 @@ MODEL({
         if ( multilineComment ) {
           var bodyFn = multilineComment[1];
           this.documentation = this.X.Documentation.create({
-                name: this.name,
-                body: bodyFn
+            name: this.name,
+            body: bodyFn
           })
         }
-
       },
       documentation: function() { /*
           <p>The code to execute for the $$DOC{ref:'Method'} call.</p>
@@ -588,7 +586,6 @@ MODEL({
           For a listener $$DOC{ref:'Method'}, indicates that this listener is animated,
           and events should be merged to trigger only once per frame.
         */}
-
     },
   ],
 
@@ -649,7 +646,7 @@ Method.getPrototype().decorateFunction = function(f) {
   return returnType ?
     function() {
       var ret = f.apply(this, arguments);
-      console.assert(typeof ret !== returnType, 'return type expected to be ' + returnType + ', but was ' + (typeof ret) + ': ' + ret);
+      console.assert(typeof ret === returnType, 'return type expected to be ' + returnType + ', but was ' + (typeof ret) + ': ' + ret);
       return ret;
     } : f ;
 };
@@ -816,7 +813,6 @@ MODEL({
         '}'
     }
   ]
-
 });
 
 
@@ -913,7 +909,6 @@ MODEL({
        help: 'Sub-templates of this template.'
        }*/
   ]
-
 });
 
 
@@ -985,7 +980,8 @@ MODEL({
       defaultValue: [],
       help: 'Sub-documents comprising the full body of this document.',
       documentation: "Optional sub-documents to be included in this document. A viewer may choose to provide an index or a table of contents.",
-      preSet: function(old,nu) {
+      preSet: function(old, nu) {
+        if ( ! DEBUG ) return;
         var self = this;
         var foamalized = [];
         // create models if necessary
@@ -1011,7 +1007,6 @@ MODEL({
       //postSet: function() { console.log("post ",this.chapters); }
     }
   ]
-
 });
 
 // HACK to get around property-template bootstrap ordering issues

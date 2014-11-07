@@ -763,6 +763,10 @@ var ViewFactoryProperty = Model.create({
 
   properties: [
     {
+      name: 'defaultValue',
+      preSet: function(_, f) { return ViewFactoryProperty.PRE_SET.defaultValue.call(this, null, f); }
+    },
+    {
       name: 'preSet',
       doc: "Can be specified as either a function, a Model, a Model path, or a JSON object.",
       defaultValue: function(_, f) {
@@ -915,4 +919,15 @@ MODEL({
   name: 'StringEnumProperty',
   traits: ['EnumPropertyTrait'],
   extendsModel: 'StringProperty'
+});
+
+MODEL({
+  name: 'DOMElementProperty',
+  extendsModel: 'StringProperty',
+  properties: [
+    {
+      name: 'getter',
+      defaultValue: function(name) { return this.X.$(this.instance_[name]); }
+    }
+  ]
 });

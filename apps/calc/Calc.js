@@ -78,7 +78,7 @@ MODEL({
     {
       model_: 'ArrayProperty',
       name: 'history',
-      view: { model_: 'DAOListView', rowView: 'HistoryView' },
+      view: { factory_: 'DAOListView', rowView: 'HistoryView' },
       factory: function() { return [].sink; }
     }
   ],
