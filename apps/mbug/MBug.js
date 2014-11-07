@@ -53,10 +53,8 @@ MODEL({
             return this.X.ChangeProjectView.create({data: project.user});
           }
         });
-        var view = FloatingView.create({
-          view: Y.DetailView.create({data: pc})
-        });
-        this.stack.setTopView(view);
+        this.stack.setTopView(pc.X.DetailView.create({data: pc}));
+        project.X = pc.X;
       }
     },
     {
@@ -77,7 +75,7 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X.touchManager = this.X.TouchManager.create({});
+      this.X.touchManager   = this.X.TouchManager.create({});
       this.X.gestureManager = this.X.GestureManager.create({});
     },
     toHTML: function() { return this.stack.toHTML(); },
