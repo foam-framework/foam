@@ -186,6 +186,9 @@ var TemplateCompiler = {
       var attrs = t.attrs.clone();
       delete attrs['f'];
 
+      // ???(kgr): Not sure if this is the best way.
+      // if ( this.data || this.X.data ) attrs.data = this.data || this.X.data;
+
       for ( var i = 0 ; i < t.children.length ; i++ ) {
         var c = t.children[i];
         if ( typeof c !== 'string' ) attrs[c.tag] = c.innerHTML();
