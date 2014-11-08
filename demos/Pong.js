@@ -163,7 +163,7 @@ MODEL({
 
       this.ball.x$.addListener(this.onBallMove);
 
-      var collider = Collider.create({pong: this});
+      var collider = Collider.create();
       collider.add(this.ball, this.lPaddle, this.rPaddle);
       collider.start();
 
