@@ -41,12 +41,6 @@ MODEL({
       defaultValue: 300
     },
     {
-      name: 'table',
-      factory: function() {
-        return CView2.create({background: 'lightgray', width: this.WIDTH, height: this.HEIGHT});
-      }
-    },
-    {
       name: 'ball',
       factory: function() { return Ball.create({color: 'white', r: 20}); }
     },
@@ -59,14 +53,22 @@ MODEL({
       factory: function() { return Paddle.create(); }
     },
     {
-      model_: 'IntProperty',
-      name: 'lScore',
-      postSet: function(_, s) { return s % 100; }
+      name: 'table',
+      factory: function() {
+        return CView2.create({background: 'lightgray', width: this.WIDTH, height: this.HEIGHT}).addChildren(
+          CView2.create({x: this.WIDTH/2-5, width:10, height: this.HEIGHT, background: 'white'}),
+          this.ball,
+          this.lPaddle,
+          this.rPaddle);
+      }
     },
     {
       model_: 'IntProperty',
-      name: 'rScore',
-      postSet: function(_, s) { return s % 100; }
+      name: 'lScore'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'rScore'
     }
   ],
 
@@ -75,21 +77,29 @@ MODEL({
       name: 'onBallMove',
       isFramed: true,
       code: function() {
+        // Bounce off of top wall
         if ( this.ball.y - this.ball.r <= 0 ) {
           this.ball.vy = Math.abs(this.ball.vy);
         }
+        // Bounce off of bottom wall
         if ( this.ball.y + this.ball.r >= this.HEIGHT ) {
           this.ball.vy = -Math.abs(this.ball.vy);
         }
+        // Bounce off of left wall
         if ( this.ball.x <= 0 ) {
           this.rScore++;
           this.ball.x = 150;
           this.ball.vx *= -1;
         }
+        // Bounce off of right wall
         if ( this.ball.x >= this.WIDTH ) {
           this.lScore++;
           this.ball.x = this.WIDTH - 150;
           this.ball.vx *= -1;
+        }
+        // Reset scores
+        if ( this.lScore == 100 || this.rScore == 100 ) {
+          this.lScore = this.rScore = 0;
         }
       }
     }
@@ -154,12 +164,6 @@ MODEL({
       this.ball.x  = this.ball.y  = 100;
       this.ball.y  = this.rPaddle.y;
       this.ball.vx = this.ball.vy = 10;
-
-      this.table.addChildren(
-        CView2.create({x: this.WIDTH/2-5, width:10, height: this.HEIGHT, background: 'white'}),
-        this.ball,
-        this.lPaddle,
-        this.rPaddle);
 
       this.ball.x$.addListener(this.onBallMove);
 
