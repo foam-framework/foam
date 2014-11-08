@@ -142,6 +142,7 @@ function arequire(modelName, opt_X) {
   return arequireModel(model);
 }
 
+
 function arequireModel(model) {
   if ( ! model.required__ ) {
     // TODO(kgr): eventually this should just call the arequire() method on the Model

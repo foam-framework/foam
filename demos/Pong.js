@@ -25,6 +25,7 @@ MODEL({
 
 MODEL({
   name: 'Pong',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -132,18 +133,14 @@ MODEL({
         font-size: 70px;
       }
     */},
-    function toDetailHTML() {/*
-      <div id="%%id">$$lScore{mode: 'read-only'} $$rScore{mode: 'read-only'} <br> %%data.table</div>
+    function toHTML() {/*
+      <div id="%%id">$$lScore{mode: 'read-only'} $$rScore{mode: 'read-only'} <br> %%table</div>
     */}
   ],
 
   methods: {
-    toHTML: function() {
-      this.view = DetailView.create({data: this});
-      return this.view.toHTML();
-    },
-    initHTML: function() {
-      this.view.initHTML();
+    initHTML: function(SUPER) {
+      SUPER();
       this.lPaddle.x = 25+this.lPaddle.r;
       this.rPaddle.x = this.WIDTH-25-this.rPaddle.r;
       this.lPaddle.y = this.rPaddle.y = (this.HEIGHT-this.rPaddle.height)/2;
