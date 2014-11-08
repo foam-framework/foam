@@ -27,6 +27,10 @@ MODEL({
   name: 'Pong',
   extendsModel: 'View',
 
+  constants: {
+    PADDLE_SPEED: 10
+  },
+
   properties: [
     {
       name: 'WIDTH',
@@ -95,22 +99,22 @@ MODEL({
     {
       name: 'lUp',
       keyboardShortcuts: [ 81 /* q */ ],
-      action: function() { this.lPaddle.y -= 10; }
+      action: function() { this.lPaddle.y -= this.PADDLE_SPEED; }
     },
     {
       name: 'lDown',
       keyboardShortcuts: [ 65 /* a */ ],
-      action: function() { this.lPaddle.y += 10; }
+      action: function() { this.lPaddle.y += this.PADDLE_SPEED; }
     },
     {
       name: 'rUp',
       keyboardShortcuts: [ 38 /* up arrow */ ],
-      action: function() { this.rPaddle.y -= 10; }
+      action: function() { this.rPaddle.y -= this.PADDLE_SPEED; }
     },
     {
       name: 'rDown',
       keyboardShortcuts: [ 40 /* down arrow */ ],
-      action: function() { this.rPaddle.y += 10; }
+      action: function() { this.rPaddle.y += this.PADDLE_SPEED; }
     }
   ],
 
