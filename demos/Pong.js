@@ -155,23 +155,22 @@ MODEL({
   methods: {
     initHTML: function(SUPER) {
       SUPER();
+
+      // Position Paddles
       this.lPaddle.x = 25+this.lPaddle.r;
       this.rPaddle.x = this.WIDTH-25-this.rPaddle.r;
       this.lPaddle.y = this.rPaddle.y = (this.HEIGHT-this.rPaddle.height)/2;
 
-      Movement.inertia(this.ball);
-
+      // Setup Ball
       this.ball.x  = this.ball.y  = 100;
       this.ball.y  = this.rPaddle.y;
       this.ball.vx = this.ball.vy = 10;
 
       this.ball.x$.addListener(this.onBallMove);
 
-      var collider = Collider.create();
-      collider.add(this.ball, this.lPaddle, this.rPaddle);
-      collider.start();
-
-      this.table.paint();
+      // Setup Physics
+      Collider.create().add(this.ball, this.lPaddle, this.rPaddle).start();
+      Movement.inertia(this.ball);
     }
   }
 });
