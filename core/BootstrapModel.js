@@ -39,9 +39,7 @@ this.Relationship = null;
  * Override a method, making calling the overridden method possible by
  * calling this.SUPER();
  **/
-/* Begin Rhino Compatible Version */
-// The try/catch prevents JIT-ing of this method, but it is still faster than
-// the alternate version
+
 function override(cls, methodName, method) {
   var super_ = cls[methodName];
 
@@ -70,22 +68,6 @@ function override(cls, methodName, method) {
 
   cls[methodName] = f;
 }
-/* End Rhino Compatible Version */
-
-/* Begin Non-Rhino Version */
-/*
-function override(cls, methodName, method) {
-  method.super_ = cls[methodName];
-  cls[methodName] = method;
-}
-
-Object.defineProperty(FObject, 'SUPER', {
-  get: function() {
-    return arguments.callee.caller.super_.bind(this);
-  }
-});
-*/
-/* End Non-Rhino Version */
 
 
 var BootstrapModel = {

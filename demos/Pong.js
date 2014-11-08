@@ -153,8 +153,8 @@ MODEL({
   ],
 
   methods: {
-    initHTML: function(SUPER) {
-      SUPER();
+    initHTML: function() {
+      this.SUPER();
 
       // Position Paddles
       this.lPaddle.x = 25+this.lPaddle.r;

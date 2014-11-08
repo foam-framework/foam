@@ -459,8 +459,8 @@ MODEL({
                       <p>You can also specify <code>SUPER</code> as the
                       first argument of your Javascript function, and it will be populated with the
                       correct base function automatically:</p>
-                      <p><code>function(SUPER, other_arg) {<br/>
-                                  &nbsp;&nbsp; SUPER(other_arg); // calls super, argument is optional depending on what your base method takes.<br/>
+                      <p><code>function(other_arg) {<br/>
+                                  &nbsp;&nbsp; this.SUPER(other_arg); // calls super, argument is optional depending on what your base method takes.<br/>
                                   &nbsp;&nbsp; ...<br/></code>
                       </p>
                     </li>
@@ -651,33 +651,12 @@ Method.getPrototype().decorateFunction = function(f) {
     } : f ;
 };
 
-function superMethodDecorator(mName, f) {
-  return function() {
-    var args = argsToArray(arguments);
-    args.unshift(this.__proto__.__proto__[mName].bind(this));
-    return f.apply(this, args);
-  };
-}
-
-function contextMethodDecorator(f) {
-  return function() {
-    var args = argsToArray(arguments);
-    return f.apply(this, args);
-  };
-}
-
-
 Method.getPrototype().generateFunction = function() {
   var f = this.code;
 
-  if ( this.args.length ) {
-    if ( this.args[0].name == 'SUPER' ) {
-      f = superMethodDecorator(this.name, f);
-    }
-  }
-
   return DEBUG ? this.decorateFunction(f) : f;
 };
+
 Method.methods = {
   decorateFunction: Method.getPrototype().decorateFunction,
   generateFunction: Method.getPrototype().generateFunction

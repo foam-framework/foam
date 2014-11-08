@@ -285,8 +285,8 @@ MODEL({
     }
   ],
   methods: {
-    init: function(SUPER) {
-      SUPER();
+    init: function() {
+      this.SUPER();
       var i = window.location.href.indexOf('?q=');
       if ( i != -1 ) this.search = window.location.href.substring(i+3);
     }

@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 MODEL({
   name: 'DetailView',
   extendsModel: 'View',
@@ -353,8 +354,8 @@ MODEL({
   ],
 
   methods: {
-    init: function(SUPER, args) {
-      SUPER(args);
+    init: function(args) {
+      this.SUPER(args);
       if ( this.args && this.args.model_ ) this.viewModel = this.args.model_
     },
     updateView: function() {

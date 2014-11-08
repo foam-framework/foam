@@ -7,8 +7,8 @@ MODEL({
   ],
 
   methods: {
-    updateSubViews: function(SUPER) {
-      SUPER();
+    updateSubViews: function() {
+      this.SUPER();
       if ( this.$ && this.data === 0 ) {
         this.$.style.borderTop = 'none';
       }

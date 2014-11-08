@@ -487,15 +487,13 @@ var Model = {
 
           // Model Feature object.
           if ( typeof oldValue == 'function' ) {
-            if ( Arg ) {
+            if ( Arg && DEBUG ) {
               var str = oldValue.toString();
-              if ( DEBUG || str.indexOf('SUPER') != -1 ) {
-                method.args = str.
-                  match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
-                  split(',').
-                  filter(function(name) { return name; }).
-                  map(function(name) { return Arg.create({name: name.trim()}); });
-              }
+              method.args = str.
+                match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
+                split(',').
+                filter(function(name) { return name; }).
+                map(function(name) { return Arg.create({name: name.trim()}); });
             }
           } else {
             console.warn('Constant defined as Method: ', this.name + '.' + key);

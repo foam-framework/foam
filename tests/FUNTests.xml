@@ -1132,7 +1132,7 @@ person: Andy
         <property name="code" type="function">function anonymous() {
       MODEL({name: 'A', methods: { foo: function() { console.log('a'); } }});
       MODEL({name: 'B', extendsModel: 'A', methods: { foo: function() { console.log('b.fore'); this.SUPER(); console.log('b.after'); } }});
-      MODEL({name: 'B2', extendsModel: 'A', methods: { foo: function(SUPER) { console.log('b2.fore'); SUPER(); console.log('b2.after'); } }});
+      MODEL({name: 'B2', extendsModel: 'A', methods: { foo: function() { console.log('b2.fore'); this.SUPER(); console.log('b2.after'); } }});
 
       var a  = A.create();
       var b  = B.create();

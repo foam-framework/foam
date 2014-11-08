@@ -1063,18 +1063,20 @@ MODEL({
     }
   ],
   methods: {
-    init: function(SUPER, args) {
+    init: function(args) {
       var self = this;
-      SUPER(args);
+      this.SUPER(args);
 
-      this.X.dynamic(function() { self.count; },
-                function() {
-                  if ( ! self.$ ) return;
-                  self.container$.style.height = (self.count * self.rowSize) + 'px';
-                });
-
-      this.X.dynamic(function() { self.objs; self.offset; },
-                function() { self.render(); });
+      this.X.dynamic(
+        function() { self.count; },
+        function() {
+          if ( ! self.$ ) return;
+          self.container$.style.height = (self.count * self.rowSize) + 'px';
+        });
+      
+      this.X.dynamic(
+        function() { self.objs; self.offset; },
+        function() { self.render(); });
     },
   },
   listeners: [

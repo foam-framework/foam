@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var xxxx = 0;
-var prefix = '';
 
 /**
  * The Prototype for all Generated Prototypes.
