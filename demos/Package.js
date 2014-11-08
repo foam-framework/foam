@@ -140,7 +140,6 @@ CLASS({
       this.x = 1;
       this.x = 2;
       this.x = 3;
-
     }
   }
 });

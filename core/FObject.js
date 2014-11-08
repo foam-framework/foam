@@ -97,12 +97,15 @@ var FObject = {
   init: function(_) {
     if ( ! this.model_ ) return;
 
+    this.X = this.X.sub();
+
     var ps;
 
     function exportKeys(X, keys, value) {
       if ( ! keys ) return;
-      for ( var i = 0 ; i < keys.length ; i++ )
-        X[keys[i]] = value;
+      for ( var i = 0 ; i < keys.length ; i++ ) {
+        X.set(keys[i], value);
+      }
     }
 
     ps = this.selectProperties_('factoryProperties_', 'factory');
@@ -115,6 +118,7 @@ var FObject = {
       if ( ! this.hasOwnProperty(prop.name) ) this[prop.name] = prop.factory.call(this);
 
       exportKeys(this.X, prop.exportKeys, this[prop.name]);
+
       if ( prop.exportValueKeys && prop.exportValueKeys.length )
         exportKeys(this.X, prop.exportValueKeys, this[prop.name + '$']);
     }
