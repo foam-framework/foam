@@ -114,6 +114,24 @@ MODEL({
   ],
 
   templates: [
+    function CSS() {/*
+      span[name="lScore"] {
+        color: white;
+        position: absolute;
+        top: 20;
+        left: 300;
+        font-family: sans-serif;
+        font-size: 70px;
+      }
+      span[name="rScore"] {
+        color: white;
+        position: absolute;
+        top: 20;
+        left: 450;
+        font-family: sans-serif;
+        font-size: 70px;
+      }
+    */},
     function toDetailHTML() {/*
       <div id="%%id">$$lScore{mode: 'read-only'} $$rScore{mode: 'read-only'} <br> %%data.table</div>
     */}
