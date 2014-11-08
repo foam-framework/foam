@@ -593,9 +593,11 @@ MODEL({
         white-space: nowrap;
       }
       .label-row .count {
-        flex-shrink: 0;
         flex-grow: 0;
+        flex-shrink: 0;
+        margin-right: 10px;
         text-align: center;
+        text-align: right;
         width: 40px;
       }
     */},
