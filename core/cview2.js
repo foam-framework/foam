@@ -202,6 +202,13 @@ MODEL({
     {
       name:  'view',
       type:  'Canvas2',
+      postSet: function(_, view) {
+        for ( var key in this.children ) {
+          var child = this.children[key];
+          child.view = view;
+          child.addListener(view.paint);
+        }
+      },
       hidden: true
     },
     {
@@ -305,8 +312,10 @@ MODEL({
 
     addChild: function(child) {
       this.children.push(child);
-      child.view = this.view;
-      child.addListener(this.view.paint);
+      if ( this.view ) {
+        child.view = this.view;
+        child.addListener(this.view.paint);
+      }
       // child.parent = this;
       return this;
     },
