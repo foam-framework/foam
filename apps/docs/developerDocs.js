@@ -170,7 +170,9 @@ var RegisterDevDocs = function(opt_X) {
             <p>You've defined a $$DOC{ref:'Model'} or two, but what happens then? You can pull
             a copy of your $$DOC{ref:'Model'} from the root context with <code>X['MyModelName']</code>
             or <code>X.MyModelName</code>, and create an instance of it with
-            <code>X.MyModelName.create({args})</code>. But what kind of object did you pull?</p>
+            <code>X.MyModelName.create({args},X)</code>. But what kind of object did you pull?
+            </p>
+
             <p>When you declare a $$DOC{ref:'Model'}, inheritance follows your
             $$DOC{ref:'Model.extendsModel'} property down through the chain until
             you omit $$DOC{ref:'Model.extendsModel'}.
@@ -180,6 +182,7 @@ var RegisterDevDocs = function(opt_X) {
             instantiates those features on an instance object, where you can assign values
             or call methods.</p>
             <p><img src='images/Model_runtime1.png'/></p>
+
             <p>But what are "MyBase" and "MySub" in the above diagram? In object-oriented
             languages they are typically special class definitions that exist outside
             the heap where instances live. In pure Javascript, they would be __proto__
@@ -187,6 +190,7 @@ var RegisterDevDocs = function(opt_X) {
             <p>In FOAM, those $$DOC{ref:'Model'} definitions are actually instances of
             $$DOC{ref:'Model'}, including $$DOC{ref:'Model'} itself:</p>
             <p><img src='images/Model_runtime2.png'/></p>
+
             <p>So your $$DOC{ref:'Model',usePlural:true} are instances of $$DOC{ref:'Model'}.
             Features are also
             instantiated inside your $$DOC{ref:'Model',usePlural:true}.
@@ -196,7 +200,8 @@ var RegisterDevDocs = function(opt_X) {
             are merged to form the complete list of features your instance is built with.</p>
 
             <p>Note the red arrows on the left. $$DOC{ref:'Model'} creates itself, and the
-            $$DOC{ref:'Property',usePlural:true} list is a $$DOC{ref:'Property'}.
+            $$DOC{ref:'Property',usePlural:true} list is a $$DOC{ref:'Property'} listed in
+            the $$DOC{ref:'Property',usePlural:true} list!
             How do they create themselves before they are defined? The answer is to cheat
             during the bootstrap process. Temporary placeholders are filled in to build up
             $$DOC{ref:'Model'} and its components, and replaced with the final versions
