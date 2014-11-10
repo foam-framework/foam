@@ -1626,70 +1626,93 @@ MODEL({
 
   extendsModel: 'View',
 
+  documentation: function() { /*
+      The default $$DOC{ref:'View'} for a string. Supports autocomplete
+      when an autocompleter is installed in $$DOC{ref:'.autocompleter'}.
+  */},
+
   properties: [
     {
       model_: 'StringProperty',
       name: 'name',
-      defaultValue: 'field'
+      defaultValue: 'field',
+      documentation: function() { /* The name of the field. */}
     },
     {
       model_: 'IntProperty',
       name: 'displayWidth',
-      defaultValue: 30
+      defaultValue: 30,
+      documentation: function() { /* The width to fix the HTML text box. */}
     },
     {
       model_: 'IntProperty',
       name: 'displayHeight',
-      defaultValue: 1
+      defaultValue: 1,
+      documentation: function() { /* The height to fix the HTML text box. */}
     },
     {
       model_: 'StringProperty',
       name: 'type',
-      defaultValue: 'text'
+      defaultValue: 'text',
+      documentation: function() { /* The type of field to create. */}
     },
     {
       model_: 'StringProperty',
       name: 'placeholder',
-      defaultValue: undefined
+      defaultValue: undefined,
+      documentation: function() { /* Placeholder to use when empty. */}
     },
     {
       model_: 'BooleanProperty',
       name: 'onKeyMode',
-      help: 'If true, value is updated on each keystroke.'
+      help: 'If true, value is updated on each keystroke.',
+      documentation: function() { /* If true, value is updated on each keystroke. */}
     },
     {
       model_: 'BooleanProperty',
       name: 'escapeHTML',
       defaultValue: true,
       // TODO: make the default 'true' for security reasons
-      help: 'If true, HTML content is escaped in display mode.'
+      help: 'If true, HTML content is escaped in display mode.',
+      documentation: function() { /* If true, HTML content is escaped in display mode. */}
     },
     {
       model_: 'StringProperty',
       name: 'mode',
       defaultValue: 'read-write',
-      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] }
+      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] },
+      documentation: function() { /* Can be 'read-only', 'read-write' or 'final'. */}
     },
     {
       name: 'domValue',
+      hidden: true
     },
     {
       name: 'data',
+      documentation: function() { /* The object to bind to the user's entered text. */}
     },
     {
       model_: 'StringProperty',
       name: 'readWriteTagName',
       defaultValueFn: function() {
         return this.displayHeight === 1 ? 'input' : 'textarea';
-      }
+      },
+      hidden: true
     },
     {
       model_: 'BooleanProperty',
       name: 'autocomplete',
-      defaultValue: true
+      defaultValue: true,
+      documentation: function() { /* Set to true to enable autocomplete. */}
     },
-    'autocompleter',
-    'autocompleteView'
+    {
+      name: 'autocompleter',
+      documentation: function() { /* The autocompleter model to use. */}
+    },
+    {
+      name: 'autocompleteView',
+      documentation: function() { /* The autocomplete view created. */}
+    }
   ],
 
   constants: {
@@ -1700,12 +1723,14 @@ MODEL({
 
   methods: {
     toHTML: function() {
+      /* Selects read-only versus read-write DOM output */
       return this.mode === 'read-write' ?
         this.toReadWriteHTML() :
         this.toReadOnlyHTML()  ;
     },
 
     toReadWriteHTML: function() {
+      /* Supplies the correct element for read-write mode */
       var str = '<' + this.readWriteTagName + ' id="' + this.id + '"';
       str += ' type="' + this.type + '" ' + this.cssClassAttr();
 
@@ -1721,12 +1746,15 @@ MODEL({
     },
 
     toReadOnlyHTML: function() {
+      /* Supplies the correct element for read-only mode */
       var self = this;
       this.setClass('placeholder', function() { return self.data === ''; }, this.id);
       return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>';
     },
 
     setupAutocomplete: function() {
+      /* Initializes autocomplete, if $$DOC{ref:'.autocomplete'} and
+        $$DOC{ref:'.autocompleter'} are set. */
       if ( ! this.autocomplete || ! this.autocompleter ) return;
 
       var view = this.autocompleteView = this.X.AutocompleteView.create({
@@ -1755,6 +1783,7 @@ MODEL({
     },
 
     initHTML: function() {
+      /* Connects key events. */
       if ( ! this.$ ) return;
 
       this.SUPER();
@@ -1795,15 +1824,15 @@ MODEL({
       }
     },
 
-    textToValue: function(text) { return text; },
+    textToValue: function(text) { /* Passthrough */ return text; },
 
-    valueToText: function(value) {
+    valueToText: function(value) { /* Filters for read-only mode */
       if ( this.mode === 'read-only' )
         return (value === '') ? this.placeholder : value;
       return value;
     },
 
-    destroy: function() {
+    destroy: function() { /* Unlinks key handler. */
       this.SUPER();
       Events.unlink(this.domValue, this.data$);
     }
