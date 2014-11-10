@@ -84,9 +84,8 @@ var Model = {
         and instances of the class are completely separate entities. In FOAM every class definition
         is a $$DOC{ref:'Model'}, including itself.</li>
 
-        <li>Creating a subcontext and replacing X.YourModel with a different model (such as
-        YourTestModelMock created specifically for testing) will give you seamless dependency
-        injection. See the
+        <li>$$DOC{ref:'Model.exports',text:'Exporting'} a model property allows
+        seamless dependency injection. See the
         $$DOC{ref:'developerDocs.Context.chapters.intro', text:'Context documentation'}
         for more information.</li>
       </ul>
