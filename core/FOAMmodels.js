@@ -38,7 +38,7 @@ var files = [
   'JSONParser',
   'TemplateUtil',
   // To use FO, uncomment the next line
-  // and comment out all lines from FObject to mm6Prototbuf
+  // and comment out all lines from FObject to mm5Misc
   // inclusively
 //  'experimental/fo',
 //  'experimental/protobuffeatures',
@@ -49,7 +49,6 @@ var files = [
   'mm3Types',
   'mm4Method',
   'mm5Misc',
-  'mm6Protobuf',
   [ 'value', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
   [ 'view', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
   [ 'layout', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],

@@ -644,4 +644,4 @@ for ( var i = 0 ; i < Property.properties.length ; i++ )
     Property.properties[i] = Property.create(Property.properties[i]);
 
 USED_MODELS.Property = Property;
-
+USED_MODELS.Model = Model;
