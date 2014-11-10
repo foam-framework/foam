@@ -219,7 +219,9 @@ var RegisterDevDocs = function(opt_X) {
         <p>Contexts are collections of external variables that provide a way to control the
           apparent global environment of each $$DOC{ref:'Model'} instance at
           run time. You can replace $$DOC{ref:'Model'} definitions, make values or references,
-          and spawn sub-contexts to limit what your child instances can see.
+          and spawn sub-contexts to limit what your child instances can see. Internally,
+          your instance's context is stored in <code>this.X</code>, but you should rarely need
+          to access it directly.
           </p>
           <p>
           To share $$DOC{ref:'Model',usePlural:true} and values with other instances, use
@@ -227,19 +229,44 @@ var RegisterDevDocs = function(opt_X) {
           </p>
           <p>
           <ul>
-          <li>Use $$DOC{ref:'Model.requires'} to grab $$DOC{ref:'Model'}  definitions
-          from your context. $$DOC{ref:'Model.imports'} grabs properties, and to change
-          the contents of the context for your child instances, use
-          $$DOC{ref:'Model.exports'} to add or replace items. Note that your
-          $$DOC{ref:'Model.exports'} don't show up in your own context. Only
-          instances you create will see them.
-          </li></ul>
+          <li>To use a $$DOC{ref:'Model'} definition, add it to your $$DOC{ref:'Model.requires'}.
+          This indicates not only that it should be loaded for you, but also installs a
+          shortcut on your instance so you can call <code>this.ModelName()</code> to
+          create an instance.
+          </li>
+          <li>To access values and $$DOC{ref:'Property',usePlural:true} that your
+          parent (or its parent) has exported, list them in your $$DOC{ref:'Model.imports'}.
+          Shortcuts are created on your instance so you can access the values:
+          <code>this.impdPropName</code>.
+          </li>
+          <li>To make your own $$DOC{ref:'Property',usePlural:true} available to
+          the instances you create, list them in $$DOC{ref:'Model.exports'}.
+          You can also export a $$DOC{ref:'Model'} definition or a $$DOC{ref:'Property'}
+          holding a model definition to cause dependency injection.
+          Note that your $$DOC{ref:'Model.exports'} don't show up in your own context.
+          Only instances you create (and their children) will see them.
+          </li>
+          </ul>
           </p>
-          <p>While you can't change the existence of parent values from inside a child, you can
-          modify the contents. This means you can communicate information back up to parents
+          <p>Communicating back up to a parent instance is dependent on the parent
+          opening the lines of communication. Anything the child exports is invisible to
+          the parent, but the child <em>is</em> allowed to modify the contents
+          of a $$DOC{ref:'Property'} the parent had previously exported.
+          This means you can communicate information back up to parents
           without knowing what those parents are, only that they exported a particular value.</p>
+        */},
+      chapters: [
+        {
+          name: 'example',
+          label: 'Context in Practice',
+          model_: 'Documentation',
+          body: function() {/*
+          <p>This example demonstrates how imports and exports are passed down through
+          the creation chain. In this exmaple, <code>Bank</code> creates one or more
+          <code>Accounts</code>, and <code>Account</code> creates a one or
+          more <code>Transactions</code>.
           <p><img src="images/contextNew.png" alt="Bank Account Transaction diagram"/></p>
-          <p>Diagram notes:
+          <p>Notes:
             <ul>
               <li>
                 Pseudo-properties are created on your instance for each $$DOC{ref:'Model'} or
@@ -263,7 +290,11 @@ var RegisterDevDocs = function(opt_X) {
                 it actually creates an instance of itself. Replacements of existing
                 $$DOC{ref:'Model'} names can also be done for easy mocking.
                 </li>
-      */},
+              </ul>
+             </p>
+          */}
+        }
+      ]
 //      chapters: [
 //        {
 //          name: 'intro',
