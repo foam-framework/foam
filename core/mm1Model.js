@@ -69,11 +69,12 @@ var Model = {
       <p>To create an instance of a $$DOC{ref:'Model'}, add it in your
       $$DOC{ref:'Model.requires'} list, then, in Javascript:</p>
       <p>
-        <code>this.YourModel.create({ propName: val... })</code> creates an instance.
+        <code>this.YourModel({ propName: val... })</code> creates an instance.
       </p>
+      <p>
       Under the covers, $$DOC{ref:'Model.requires'} is creating an alias for the
       $$DOC{ref:'Model'} instance that exists in your context. You can access it
-      directly at <code>this.X.yourPackage.YourModel.create({...})</code>.</p>
+      directly at <code>this.X.yourPackage.YourModel</code>.</p>
 
       <p>Note:
       <ul>
@@ -81,12 +82,13 @@ var Model = {
         (with YourModel.model_ === Model), while instances
         of your model have your new type (myInstance.model_ === YourModel). This
         differs from other object-oriented systems where the definition of a class
-        and instances of the class are completely separate entities. In FOAM every class definition
-        is a $$DOC{ref:'Model'}, including itself.</li>
+        and instances of the class are completely separate entities. In FOAM every
+        class definition
+        is an instance of $$DOC{ref:'Model'}, including itself.</li>
 
         <li>$$DOC{ref:'Model.exports',text:'Exporting'} a model property allows
         seamless dependency injection. See the
-        $$DOC{ref:'developerDocs.Context.chapters.intro', text:'Context documentation'}
+        $$DOC{ref:'developerDocs.Context', text:'Context documentation'}
         for more information.</li>
       </ul>
       </p>

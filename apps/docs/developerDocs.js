@@ -264,7 +264,7 @@ var RegisterDevDocs = function(opt_X) {
           <p>This example demonstrates how imports and exports are passed down through
           the creation chain. In this exmaple, <code>Bank</code> creates one or more
           <code>Accounts</code>, and <code>Account</code> creates a one or
-          more <code>Transactions</code>.
+          more <code>Transactions</code>.</p>
           <p><img src="images/contextNew.png" alt="Bank Account Transaction diagram"/></p>
           <p>Notes:
             <ul>
