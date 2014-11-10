@@ -52,6 +52,7 @@ var DocumentationBootstrap = {
 
 var Model = {
   __proto__: BootstrapModel,
+  instance_: {},
 
   name:  'Model',
   plural:'Models',
