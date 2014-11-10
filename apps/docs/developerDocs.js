@@ -217,133 +217,189 @@ var RegisterDevDocs = function(opt_X) {
 
       body: function() {/*
         <p>Contexts are collections of external variables that provide a way to control the
-          global environment at
+          apparent global environment of each $$DOC{ref:'Model'} instance at
           run time. You can replace $$DOC{ref:'Model'} definitions, make values or references,
-          and spawn sub-contexts to limit what your child instances can see.
+          and spawn sub-contexts to limit what your child instances can see. Internally,
+          your instance's context is stored in <code>this.X</code>, but you should rarely need
+          to access it directly.
           </p>
-          <p>Even if you don't create sub-contexts in your $$DOC{ref:'Model'}, you
-          should always use your current context when creating instances:
-          <p><code>this.X.MyModel.create(...)</code></p>
-          <p>This guarantees you will play nicely with other $$DOC{ref:'Model',usePlural:true}
-          that may rely on sub-contexting for dependency injection or to confgure
-          the $$DOC{ref:'View',usePlural:true} that you create, without requiring any
-          knowledge or intervention on your part. When in doubt, never use a global. Always
-          <code>this.X</code>, or use $$DOC{ref:'Model.imports',text:'imports'}
-          and $$DOC{ref:'Model.exports',text:'exports'}.</p>
-          <p>Contexts form a tree structure, with each $$DOC{ref:'Model'} that creates child
-          instances having the option to branch. Each sub-context branch sees everything the parent
-          context contains, but can't add or remove things from the parent. If in doubt,
-          sub-context! (Note that $$DOC{ref:'Model.exports'} will sub-context for you).</p>
-          <p>While you can't change the existence of parent values from a sub-context, you can
-          modify the contents. This means you can communicate information back up to parents
-          without knowing what those parents are, only that they created a particular value
-          on the context they passed on.</p>
-      */},
+          <p>
+          To share $$DOC{ref:'Model',usePlural:true} and values with other instances, use
+          $$DOC{ref:'Model.requires'}, $$DOC{ref:'Model.imports'}, and $$DOC{ref:'Model.exports'}.
+          </p>
+          <p>
+          <ul>
+          <li>To use a $$DOC{ref:'Model'} definition, add it to your $$DOC{ref:'Model.requires'}.
+          This indicates not only that it should be loaded for you, but also installs a
+          shortcut on your instance so you can call <code>this.ModelName()</code> to
+          create an instance.
+          </li>
+          <li>To access values and $$DOC{ref:'Property',usePlural:true} that your
+          parent (or its parent) has exported, list them in your $$DOC{ref:'Model.imports'}.
+          Shortcuts are created on your instance so you can access the values:
+          <code>this.impdPropName</code>.
+          </li>
+          <li>To make your own $$DOC{ref:'Property',usePlural:true} available to
+          the instances you create, list them in $$DOC{ref:'Model.exports'}.
+          You can also export a $$DOC{ref:'Model'} definition or a $$DOC{ref:'Property'}
+          holding a model definition to cause dependency injection.
+          Note that your $$DOC{ref:'Model.exports'} don't show up in your own context.
+          Only instances you create (and their children) will see them.
+          </li>
+          </ul>
+          </p>
+          <p>Communicating back up to a parent instance is dependent on the parent
+          opening the lines of communication. Anything the child exports is invisible to
+          the parent, but the child <em>is</em> allowed to modify the contents
+          of a $$DOC{ref:'Property'} the parent had previously exported.
+          This means you can communicate information back up to parents
+          without knowing what those parents are, only that they exported a particular value.</p>
+        */},
       chapters: [
         {
-          name: 'intro',
-          label: 'What is a Context?',
+          name: 'example',
+          label: 'Context in Practice',
           model_: 'Documentation',
           body: function() {/*
-            <p>When you write code in a traditional language, you have the option of creating
-            variables in the global scope. Class names are defined globally. Many things
-            operate as singletons, sharing a namespace heirarchy that spans the entire
-            process or virtual machine. Anything created in this space or named this way
-            has a problem: there's no simple way to limit what other parts of your code
-            see. Dependency injection frameworks were invented as a workaround for this
-            problem, and singletons are avoided.
-            </p>
-            <p>A $$DOC{ref:'developerDocs.Context',text:'Context'} solves this problem
-            by wrapping the global namespace and instances into an object, <code>this.X</code>,
-            and allowing code
-            to create copies with specific changes that can be passed on to
-            the instances you create.
-            </p>
-            <p><img src="images/context1.png" alt="context diagram" /></p>
-            <p>Sub-contexting creates passthroughs for all the items in the original
-            context, appearing identical.</p>
-          */}
-        },
-        {
-          name: 'subcontextStructure',
-          label: 'Sub-context Structure',
-          model_: 'Documentation',
-          body: function() {/*
-            <p>Sub-contexts are arranged in a tree. The root is the global context,
-            which includes all the $$DOC{ref:'Model',usePlural:true} defined outside
-            of a specific context.
-            </p>
-            <p>Each time you call <code>this.X.sub()</code>, you create a branch with
-            a copy of the parent context. Changes propagate down the branches, so
-            if you add a value instance to the root, all the subcontexts will also have
-            that value. If you create a value in a subcontext, however, the parent
-            will not see the value.
-            </p>
-            <p><img src="images/context2.png" alt="context value replacement"/></p>
-            <p>Setting the contents of a value (such as <code>Y.parent.set()</code>
-            above) will change
-            the value that everyone sees from the original context, since you are
-            reading the reference from the context and stuffing a value into it. When
-            setting the reference itself to a new object, the sub-context changes and
-            the parent is unchanged.
-            </p>
-            <p>The basic rule of thumb is that any $$DOC{ref:'Model'} that wants
-            to change the contents of its context should sub-context first.
-            Calling <code>this.X = this.X.sub();</code> in your init() $$DOC{ref:'Method'},
-            before you call <code>this.SUPER();</code>,
-            replaces your implicit context with a subcontext, so anything created inside
-            your $$DOC{ref:'Model'} will use the subcontext.
-            </p>
-            <p>You can also create multiple subcontexts, and manage their use yourself:
-            <p><code>
-              this.searchX = this.X.sub({name:'searchContext'});<br/>
-              this.detailX = this.X.sub({name:'detailContext'});<br/>
-              ...<br/>
-              this.searchX.selection = this.searchX.SimpleValue.create();<br/>
-              this.detailX.DetailView = this.X.BetterDetailView;<br/>
-               </code></p>
-            </p>
-          */}
-        },
-        {
-          name: 'dependencyInjection',
-          label: 'Dependency Injection',
-          model_: 'Documentation',
-          body: function() {/*
-            <p>The goal of dependency injection is to transparently replace implementation
-            as needed. Uses include:</p>
+          <p>This example demonstrates how imports and exports are passed down through
+          the creation chain. In this exmaple, <code>Bank</code> creates one or more
+          <code>Accounts</code>, and <code>Account</code> creates a one or
+          more <code>Transactions</code>.</p>
+          <p><img src="images/contextNew.png" alt="Bank Account Transaction diagram"/></p>
+          <p>Notes:
             <ul>
-                <li>Picking the most appropriate implementation at run time</li>
-                <li>Replacing a production implementation with a mock or fake</li>
-                <li>Decoupling dependencies without added layers of interface inheritance</li>
-            </ul>
-            <p>With control over you Context, you get all this for free. To replace the
-            implementation of a $$DOC{ref:'Model'}, just reassign it in your subcontext:
-            </p>
-            <p><img src="images/context3.png" alt="context dependency injection"/></p>
-            <p>Now code running inside a model instance created with context Y will
-            have <code>MockController</code> instead of <code>Controller</code>,
-            but not be aware of the change.</p>
-            <code>
-              Y.Value.create();<br/>
-              ...<br/>
-              // inside Value:<br/>
-              methods: {<br/>
-        &nbsp;&nbsp;        manageValue: function() {<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;          // When created with context Y, this actually creates a MockController.<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;          // If passed the original context instead, it would create a Controller.<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;          var controller = this.X.Controller.create();<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;          controller.callMethodsAsNormal();<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;          ...<br/>
-              }}<br/>
-            </code></p>
-            <p>This model replacement continues into sub-contexts you create, so if
-            the MockController instance created any models, it would pass the modified
-            context along to them (possibly after doing some replacements of its own).
-            </p>
+              <li>
+                Pseudo-properties are created on your instance for each $$DOC{ref:'Model'} or
+                other item you $$DOC{ref:'Model.imports', text:'import'}. These pseudo-properties
+                can be exported to change the name, if desired. Note that <code>institution,
+                Acount.bankNum,</code> and <code>holder</code> are all the same property with different aliases.
+               </li>
+               <li>
+                Importing doesn't hide the imported value from child instances.
+                <code>Transaction</code> in the diagram can see
+                <code>institution</code> and <code>branch</code> from <code>Bank</code>
+                along with the other things exported from its parents.
+               </li>
+               <li>
+                Dependency injection can be performed by
+                $$DOC{ref:'Model.requires',text:'requiring'} a $$DOC{ref:'Model'} and
+                then $$DOC{ref:'Model.exports',text:'exporting'} it with the name of
+                the $$DOC{ref:'Model'} you wish to replace. <code>Account</code>
+                exports <code>Transaction</code> as <code>SubTxn</code>, so when
+                <code>Transaction</code> tries to create an instance of this.SubTxn(),
+                it actually creates an instance of itself. Replacements of existing
+                $$DOC{ref:'Model'} names can also be done for easy mocking.
+                </li>
+              </ul>
+             </p>
           */}
-        },
+        }
       ]
+//      chapters: [
+//        {
+//          name: 'intro',
+//          label: 'What is a Context?',
+//          model_: 'Documentation',
+//          body: function() {/*
+//            <p>When you write code in a traditional language, you have the option of creating
+//            variables in the global scope. Class names are defined globally. Many things
+//            operate as singletons, sharing a namespace heirarchy that spans the entire
+//            process or virtual machine. Anything created in this space or named this way
+//            has a problem: there's no simple way to limit what other parts of your code
+//            see. Dependency injection frameworks were invented as a workaround for this
+//            problem, and singletons are avoided.
+//            </p>
+//            <p>A $$DOC{ref:'developerDocs.Context',text:'Context'} solves this problem
+//            by wrapping the global namespace and instances into an object, <code>this.X</code>,
+//            and allowing code
+//            to create copies with specific changes that can be passed on to
+//            the instances you create.
+//            </p>
+//            <p><img src="images/context1.png" alt="context diagram" /></p>
+//            <p>Sub-contexting creates passthroughs for all the items in the original
+//            context, appearing identical.</p>
+//          */}
+//        },
+//        {
+//          name: 'subcontextStructure',
+//          label: 'Sub-context Structure',
+//          model_: 'Documentation',
+//          body: function() {/*
+//            <p>Sub-contexts are arranged in a tree. The root is the global context,
+//            which includes all the $$DOC{ref:'Model',usePlural:true} defined outside
+//            of a specific context.
+//            </p>
+//            <p>Each time you call <code>this.X.sub()</code>, you create a branch with
+//            a copy of the parent context. Changes propagate down the branches, so
+//            if you add a value instance to the root, all the subcontexts will also have
+//            that value. If you create a value in a subcontext, however, the parent
+//            will not see the value.
+//            </p>
+//            <p><img src="images/context2.png" alt="context value replacement"/></p>
+//            <p>Setting the contents of a value (such as <code>Y.parent.set()</code>
+//            above) will change
+//            the value that everyone sees from the original context, since you are
+//            reading the reference from the context and stuffing a value into it. When
+//            setting the reference itself to a new object, the sub-context changes and
+//            the parent is unchanged.
+//            </p>
+//            <p>The basic rule of thumb is that any $$DOC{ref:'Model'} that wants
+//            to change the contents of its context should sub-context first.
+//            Calling <code>this.X = this.X.sub();</code> in your init() $$DOC{ref:'Method'},
+//            before you call <code>this.SUPER();</code>,
+//            replaces your implicit context with a subcontext, so anything created inside
+//            your $$DOC{ref:'Model'} will use the subcontext.
+//            </p>
+//            <p>You can also create multiple subcontexts, and manage their use yourself:
+//            <p><code>
+//              this.searchX = this.X.sub({name:'searchContext'});<br/>
+//              this.detailX = this.X.sub({name:'detailContext'});<br/>
+//              ...<br/>
+//              this.searchX.selection = this.searchX.SimpleValue.create();<br/>
+//              this.detailX.DetailView = this.X.BetterDetailView;<br/>
+//               </code></p>
+//            </p>
+//          */}
+//        },
+//        {
+//          name: 'dependencyInjection',
+//          label: 'Dependency Injection',
+//          model_: 'Documentation',
+//          body: function() {/*
+//            <p>The goal of dependency injection is to transparently replace implementation
+//            as needed. Uses include:</p>
+//            <ul>
+//                <li>Picking the most appropriate implementation at run time</li>
+//                <li>Replacing a production implementation with a mock or fake</li>
+//                <li>Decoupling dependencies without added layers of interface inheritance</li>
+//            </ul>
+//            <p>With control over you Context, you get all this for free. To replace the
+//            implementation of a $$DOC{ref:'Model'}, just reassign it in your subcontext:
+//            </p>
+//            <p><img src="images/context3.png" alt="context dependency injection"/></p>
+//            <p>Now code running inside a model instance created with context Y will
+//            have <code>MockController</code> instead of <code>Controller</code>,
+//            but not be aware of the change.</p>
+//            <code>
+//              Y.Value.create();<br/>
+//              ...<br/>
+//              // inside Value:<br/>
+//              methods: {<br/>
+//        &nbsp;&nbsp;        manageValue: function() {<br/>
+//        &nbsp;&nbsp;&nbsp;&nbsp;          // When created with context Y, this actually creates a MockController.<br/>
+//        &nbsp;&nbsp;&nbsp;&nbsp;          // If created with the original context instead, it would create a Controller.<br/>
+//        &nbsp;&nbsp;&nbsp;&nbsp;          var controller = this.X.Controller.create();<br/>
+//        &nbsp;&nbsp;&nbsp;&nbsp;          controller.callMethodsAsNormal();<br/>
+//        &nbsp;&nbsp;&nbsp;&nbsp;          ...<br/>
+//              }}<br/>
+//            </code></p>
+//            <p>This model replacement continues into sub-contexts you create, so if
+//            the MockController instance created any models, it would pass the modified
+//            context along to them (possibly after doing some replacements of its own).
+//            </p>
+//          */}
+//        },
+//      ]
 
     })
   );

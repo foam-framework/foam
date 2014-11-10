@@ -77,7 +77,6 @@ var BootstrapModel = {
   name_: 'BootstrapModel <startup only, error if you see this>',
 
   buildPrototype: function() { /* Internal use only. */
-
     // save our pure state
     // Note: Only documentation browser uses this, and it will be replaced
     // by the new Feature Oriented bootstrapping process, so only use the
@@ -407,9 +406,7 @@ var BootstrapModel = {
   },
 
   getPrototype: function() { /* Returns the definition $$DOC{ref:'Model'} of this instance. */
-    return this.prototype_ && this.prototype_.model_ == this ?
-      this.prototype_ :
-      ( this.prototype_ = this.buildPrototype() );
+    return this.instance_.prototype_ || ( this.instance_.prototype_ = this.buildPrototype() );
   },
 
   saveDefinition: function(self) {
