@@ -253,6 +253,8 @@ var BootstrapModel = {
       props[prop][subProp] = (props[prop][subProp] || []).concat(alias);
     });
 
+    if ( extendsModel && extendsModel.exportKeys.length > 0 ) this.exportKeys = this.exportKeys.concat(extendsModel.exportKeys);
+
     // templates
     this.templates && Object_forEach(this.templates, function(t) {
       addMethod(t.name, TemplateUtil.lazyCompile(t));
