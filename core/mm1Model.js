@@ -273,16 +273,21 @@ var Model = {
           <p>Imported items are installed into your $$DOC{ref:'Model'}
           as pseudo-properties, using their $$DOC{ref:'Model.name', text:'name'}
           or the alias specified here.</p>
-          <p><code>imports: [ 'productList.selectedItem',
-                   'productList.selectionDAO as selectedProductDAO' ]<br/>
+          <p><code>imports: [ 'selectedItem',
+                   'selectionDAO as dao' ]<br/>
                    ...<br/>
                    // in your Model's methods: <br/>
-                  this.selectedItem.get();          // equivalent to this.X.productList.selectedItem.get()<br/>
-                  this.selectedProductDAO.select(); // equivalent to this.X.productList.selectionDAO.select()<br/>
+                  this.selectedItem.get(); // equivalent to this.X.selectedItem.get()<br/>
+                  this.dao.select(); // equivalent to this.X.selectionDAO.select()<br/>
                   </code></p>
           <p>If you have $$DOC{ref:'.exports',text:'exported'} properties from a
           $$DOC{ref:'Model'} in a parent context, you can import those items and give
-          them aliases for convenient access without the <code>this.X</code>.
+          them aliases for convenient access without the <code>this.X</code>.</p>
+          <p>You can also re-export items you have imported, either with a different
+          name or to replace the item you imported with a different property. While
+          everyone can see changes to the value inside the imported property, only
+          children (instances you create in your $$DOC{ref:'Model'}) will see
+          $$DOC{ref:'Model.exports'} replacing the property itself.
         */}
     },
     {
@@ -292,23 +297,33 @@ var Model = {
       defaultValueFn: function() { return []; },
       help: 'Context exports.',
       documentation: function() { /*
-          <p>List of $$DOC{ref:'Property',usePlural:true} to export to your sub-context,
+          <p>A list of $$DOC{ref:'Property',usePlural:true} to export to your sub-context,
            as strings of the form:
           <code>PropertyName [as Alias]</code>.</p>
           <p>Properties you wish to share with other instances you create
             (like sub-$$DOC{ref:'View',usePlural:true})
-            can be exported automatically by listing them here. Your this.X is replaced with
-            a sub-context, so your parent context does not see exported properties.</p>
+            can be exported automatically by listing them here.
+            You are automatically sub-contexted, so your parent context does not
+            see exported properties. In other words, exports are seen by children,
+            not by parents.</p>
+            <p>Instances you create can declare $$DOC{ref:'Model.imports'} to
+            conveniently grab your exported items from the context.<p>
           <p><code>MODEL({ name: firstModel<br/>
                &nbsp;&nbsp;   exports: [ 'myProperty', 'name as parentName' ],<br/>
                &nbsp;&nbsp;   properties: [<br/>
                &nbsp;&nbsp;     {<br/>
-                 &nbsp;&nbsp;&nbsp;&nbsp;     name: 'proper',<br/>
-                 &nbsp;&nbsp;&nbsp;&nbsp;     view: { factory_: 'DetailView',<br/>
-                 &nbsp;&nbsp;&nbsp;&nbsp; methods: { toHTML: function() {<br/>
-                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         // our context is provided by firstModel, so:<br/>
-                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         this.X.myProperty = 4; // we can see exported myProperty<br/>
-                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         out.print(this.X.parentName); // aliased, links back to our name<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp; name: 'proper',<br/>
+                <br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp; // This property will create a DetailView for us<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp; view: { factory_: 'DetailView',<br/>
+                <br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the properties our creator exported.<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imports: [ 'myProperty', 'parentName' ],<br/>
+                <br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; methods: { toHTML: function() {<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // our context is provided by firstModel, so:<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.myProperty = 4; // we can see exported myProperty<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; out.print(this.parentName); // aliased, links back to our name<br/>
                  &nbsp;&nbsp;&nbsp;&nbsp;     }}},<br/>
                  &nbsp;&nbsp;&nbsp;&nbsp;     ...<br/>
                  &nbsp;&nbsp;&nbsp;&nbsp;     { name: 'myProperty' },<br/>
