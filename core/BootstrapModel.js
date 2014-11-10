@@ -445,7 +445,7 @@ var BootstrapModel = {
   isSubModel: function(model) {
     /* Returns true if the given instance extends this $$DOC{ref:'Model'} or a descendant of this. */
     try {
-      return model && ( model === this || this.isSubModel(model.getPrototype().__proto__.model_) );
+      return model && model.getPrototype && ( model.getPrototype() === this.getPrototype() || this.isSubModel(model.getPrototype().__proto__.model_) );
     } catch (x) {
       return false;
     }
