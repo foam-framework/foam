@@ -850,10 +850,20 @@ MODEL({
 
   extendsModel: 'View',
 
+  documentation: function() {/*
+    Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one
+    $$DOC{ref:'Property'}. The $$DOC{ref:'View'} chosen can be based off the
+    $$DOC{ref:'Property.view',text:'Property.view'} value, the $$DOC{ref:'.innerView'} value, or
+    $$DOC{ref:'.args'}.model_.
+  */},
+
   properties: [
     {
       name: 'prop',
-      type: 'Property'
+      type: 'Property',
+      documentation: function() {/*
+          The $$DOC{ref:'Property'} for which to generate a $$DOC{ref:'View'}.
+      */}
     },
     {
       name: 'parent',
@@ -861,29 +871,52 @@ MODEL({
       postSet: function(_, p) {
         p[this.prop.name + 'View'] = this.view;
         if ( this.view ) this.view.parent = p;
-      }
+      },
+      documentation: function() {/*
+        The $$DOC{ref:'View'} to use as the parent container for the new
+        sub-$$DOC{ref:'View'}.
+      */}
     },
     {
       name: 'data',
       postSet: function(oldData, data) {
         this.unbindData(oldData);
         this.bindData(data);
-      }
+      },
+      documentation: function() {/*
+        The data to feed into the new sub-$$DOC{ref:'View'}. The data set here
+        is linked bi-directionally to the $$DOC{ref:'View'}. Typically this
+        data is the property value.
+      */}
     },
     {
       name: 'innerView',
-      help: 'Override for prop.view'
+      help: 'Override for prop.view',
+      documentation: function() {/*
+        The optional name of the desired sub-$$DOC{ref:'View'}. If not specified,
+        prop.$$DOC{ref:'Property.view'} is used.
+      */}
     },
     {
       name: 'view',
-      type: 'View'
+      type: 'View',
+      documentation: function() {/*
+        The new sub-$$DOC{ref:'View'} generated for the given $$DOC{ref:'Property'}.
+      */}
     },
-    'args'
+    {
+      name: 'args',
+      documentation: function() {/*
+        Optional arguments to be used for sub-$$DOC{ref:'View'} creation. args.model_
+        in particular specifies the exact $$DOC{ref:'View'} to use.
+      */}
+    }
   ],
 
   methods: {
 
     init: function(args) {
+      /* Sets up the new sub-$$DOC{ref:'View'} immediately. */
       this.SUPER(args);
 
       if ( this.args && this.args.model_ ) {
@@ -907,6 +940,7 @@ MODEL({
     },
 
     createViewFromProperty: function(prop) {
+      /* Helper to determine the $$DOC{ref:'View'} to use. */
       var viewName = this.innerView || prop.view
       if ( ! viewName ) return this.X.TextFieldView.create(prop);
       if ( typeof viewName === 'string' ) return this.X[viewName].create(prop);
@@ -923,6 +957,7 @@ MODEL({
     },
 
     unbindData: function(oldData) {
+      /* Unbind the data from the old view. */
       var view = this.view;
       if ( ! view || ! oldData ) return;
       var pValue = oldData.propertyValue(this.prop.name);
@@ -930,19 +965,20 @@ MODEL({
     },
 
     bindData: function(data) {
+      /* Bind data to the new view. */
       var view = this.view;
       if ( ! view || ! data ) return;
       var pValue = data.propertyValue(this.prop.name);
       Events.link(pValue, view.data$);
     },
 
-    toHTML: function() { return this.view.toHTML(); },
+    toHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ return this.view.toHTML(); },
 
-    toString: function() { return 'PropertyView(' + this.prop.name + ', ' + this.view + ')'; },
+    toString: function() { /* Name info. */ return 'PropertyView(' + this.prop.name + ', ' + this.view + ')'; },
 
-    initHTML: function() { this.view.initHTML(); },
+    initHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ this.view.initHTML(); },
 
-    destroy: function() {
+    destroy: function() { /* Passthrough to $$DOC{ref:'.view'} */
       this.SUPER();
       this.view.destroy();
     }
