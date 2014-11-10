@@ -354,7 +354,9 @@ var TemplateUtil = {
          });
        } else if ( typeof t.template === 'function' ) {
          t.template = multiline(t.template);
-       } else if (!t.template$) {
+       }
+
+       if (!t.template$) {
          // we haven't FOAMalized the template, and there's no crazy multiline functions.
          // Note that Model and boostrappy models must use this case, as Template is not
          // yet defined at bootstrap time. Use a Template object definition with a bare

@@ -878,6 +878,9 @@ MODEL({
       help: 'Template text. <%= expr %> or <% out(...); %>',
       documentation: function() { /* The string content of the uncompiled $$DOC{ref:'Template'} body.
          */}
+    },
+    {
+      name: 'futureTemplate'
     }/*,
        {
        name: 'templates',
