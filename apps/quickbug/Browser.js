@@ -489,7 +489,7 @@ MODEL({
       this.memento = '';
 
       this.location.y = this.X.QIssue.OWNER;
-      this.location.x = this.X.QIssue.STATUS;
+      this.location.x_ = this.X.QIssue.STATUS;
 
       this.searchField.data$.addListener(this.onSearch);
       Events.follow(this.location.q$, this.searchField.data$);
@@ -684,7 +684,7 @@ Please use labels and text to provide additional information.
           }).addDecorator(self.X.QIssuePreviewBorder.create());
 
           var popup = self.currentPreview = self.X.PopupView.create({
-            x: e.x + 25,
+            x_: e.x + 25,
             y: Math.min(
               screenHeight-HEIGHT-180,
               Math.max(

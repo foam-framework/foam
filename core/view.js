@@ -1084,7 +1084,7 @@ MODEL({
       type: 'View',
     },
     {
-      name: 'x'
+      name: 'x_'
     },
     {
       name: 'y'
@@ -1113,7 +1113,7 @@ MODEL({
       if ( this.$ ) return;
       var document = this.X.document;
       var div      = document.createElement('div');
-      div.style.left = this.x + 'px';
+      div.style.left = this.x_ + 'px';
       div.style.top = this.y + 'px';
       if ( this.width )     div.style.width = this.width + 'px';
       if ( this.height )    div.style.height = this.height + 'px';
