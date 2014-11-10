@@ -993,3 +993,6 @@ MODEL({
 
 // HACK to get around property-template bootstrap ordering issues
 TemplateUtil.modelExpandTemplates(Property, Property.templates);
+TemplateUtil.modelExpandTemplates(Method, Method.templates);
+TemplateUtil.modelExpandTemplates(Model, Model.templates);
+TemplateUtil.modelExpandTemplates(Arg, Arg.templates);
