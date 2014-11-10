@@ -59,13 +59,32 @@ MODEL({
 
   requires: [
     'GMailUserInfo',
-    'ContactDAO'
+    'ContactDAO',
+    'EasyOAuth2',
+    'TouchManager',
+    'GestureManager',
+    'XHR'
   ],
   exports: [
-    'contactDao'
+    'touchManager',
+    'gestureManager',
+    'contactDao',
+    'authXHR as XHR'
   ],
 
   properties: [
+    {
+      name: 'touchManager',
+      factory: function() {
+        return this.TouchManager();
+      }
+    },
+    {
+      name: 'gestureManager',
+      factory: function() {
+        return this.GestureManager();
+      }
+    },
     {
       name: 'controller',
       subType: 'AppController',
@@ -74,7 +93,30 @@ MODEL({
         this.stack.setTopView(FloatingView.create({ view: view }));
       }
     },
-    { name: 'oauth' },
+    {
+      name: 'oauth',
+      factory: function() {
+        return this.EasyOAuth2.create({
+          clientId: "945476427475-oaso9hq95r8lnbp2rruo888rl3hmfuf8.apps.googleusercontent.com",
+          clientSecret: "GTkp929u268_SXAiHitESs-1",
+          scopes: [
+            "https://www.googleapis.com/auth/userinfo.profile",
+            "https://www.googleapis.com/auth/userinfo.email",
+            "https://mail.google.com/"
+          ]
+        });
+      }
+    },
+    {
+      name: 'authXHR',
+      factory: function() {
+        return this.XHR.xbind({
+          authAgent: this.oauth,
+          retries: 3,
+          delay: 10
+        });
+      }
+    },
     {
       name: 'emailDao',
       type: 'DAO',
@@ -140,35 +182,10 @@ MODEL({
         }.bind(this));
         return '';
       }
-    }
+    },
   ],
 
   methods: {
-    init: function() {
-      this.X = this.X.sub({
-        touchManager: this.X.TouchManager.create({})
-      }, 'MGMAIL CONTEXT');
-      this.X.gestureManager = this.X.GestureManager.create({});
-
-      this.oauth = this.X.EasyOAuth2.create({
-        clientId: "945476427475-oaso9hq95r8lnbp2rruo888rl3hmfuf8.apps.googleusercontent.com",
-        clientSecret: "GTkp929u268_SXAiHitESs-1",
-        scopes: [
-          "https://www.googleapis.com/auth/userinfo.profile",
-          "https://www.googleapis.com/auth/userinfo.email",
-          "https://mail.google.com/"
-        ]
-      });
-
-      this.X.registerModel(XHR.xbind({
-        authAgent: this.oauth,
-        retries: 3,
-        delay: 10
-      }), 'XHR');
-
-      this.SUPER();
-    },
-
     toHTML: function() { return this.stack.toHTML(); },
 
     initHTML: function() {
