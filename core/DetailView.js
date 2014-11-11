@@ -171,7 +171,7 @@ MODEL({
       if ( prop.detailViewPreRow ) str += prop.detailViewPreRow(this);
 
       str += '<tr class="detail-' + prop.name + '">';
-      if ( view.model_ === DAOController ) {
+      if ( DAOController.isInstance(view) ) {
         str += "<td colspan=2><div class=detailArrayLabel>" + prop.label + "</div>";
         str += view.toHTML();
         str += '</td>';

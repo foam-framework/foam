@@ -394,7 +394,7 @@ var TreeIndex = {
 
     if ( query === FALSE ) return NOT_FOUND;
 
-    if ( ! query && sink.model_ === CountExpr ) {
+    if ( ! query && CountExpr.isInstance(sink) ) {
       var count = this.size(s);
       //        console.log('**************** COUNT SHORT-CIRCUIT ****************', count, this.toString());
       return {
@@ -409,16 +409,16 @@ var TreeIndex = {
     var isExprMatch = function(model) {
       if ( query ) {
 
-        if ( query.model_ === model && query.arg1 === prop ) {
+        if ( model.isInstance(query) && query.arg1 === prop ) {
           var arg2 = query.arg2;
           query = undefined;
           return arg2;
         }
 
-        if ( query.model_ === AndExpr ) {
+        if ( AndExpr.isInstance(query) ) {
           for ( var i = 0 ; i < query.args.length ; i++ ) {
             var q = query.args[i];
-            if ( q.model_ === model && q.arg1 === prop ) {
+            if ( model.isInstance(q) && q.arg1 === prop ) {
               query = query.clone();
               query.args[i] = TRUE;
               query = query.partialEval();
@@ -827,7 +827,7 @@ var mLangIndex = {
     // console.log('s');
     if ( options && options.query ) return NO_PLAN;
 
-    if ( sink.model_ && s.model_ === sink.model_ && s.arg1 === sink.arg1 ) {
+    if ( sink.model_ && sink.model_.isInstance(s) && s.arg1 === sink.arg1 ) {
       this.PLAN.s = s;
       return this.PLAN;
     }

@@ -348,8 +348,8 @@ MODEL({
     ],
 
     partialAnd: function(e1, e2) {
-      if ( e2.model_ === OrExpr ) { var tmp = e1; e1 = e2; e2 = tmp; }
-      if ( e1.model_ === OrExpr ) {
+      if ( OrExpr.isInstance(e2) ) { var tmp = e1; e1 = e2; e2 = tmp; }
+      if ( OrExpr.isInstance(e1) ) {
         var args = [];
         for ( var i = 0 ; i < e1.args.length ; i++ ) {
           args.push(AND(e2, e1.args[i]));
