@@ -792,11 +792,11 @@ var ViewFactoryProperty = Model.create({
               // template is async.  Should create a FutureView to handle this.
               arequireModel(viewModel);
             }
-            return viewModel.create.bind(viewModel);
+            return function(args, X) { return viewModel.create(args, X || this.X); };
           }
 
           return function(map, opt_X) {
-            return FOAM.lookup(f, opt_X || this.X).create(map);
+            return FOAM.lookup(f, opt_X || this.X).create(map, opt_X || this.X);
           }.bind(this);
         }
 
