@@ -613,9 +613,9 @@ var TreeIndex = {
             index.selectReverse(s, sink, options) :
             index.select(s, sink, options) ;
           index.selectCount--;
-
-          return anop;
         }
+
+        return anop;
       },
       toString: function() { return 'scan(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ')'; }
     };

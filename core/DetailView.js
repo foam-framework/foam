@@ -263,6 +263,7 @@ MODEL({
       name: 'data',
       preSet: function(_, v) { if ( v ) return v.deepClone(); },
       postSet: function(_, data) {
+        if ( ! data ) return;
         this.originalData = data.deepClone();
         if ( ! this.model && data && data.model_ ) this.model = data.model_;
         data.addListener(function() { this.version++; }.bind(this));
