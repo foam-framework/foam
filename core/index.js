@@ -34,14 +34,14 @@
 /** Plan indicating that there are no matching records. **/
 var NOT_FOUND = {
   cost: 0,
-  execute: function(_, sink, _) { return aconstant(sink); },
+  execute: function(_, sink, _) { return anop; },
   toString: function() { return "no-match(cost=0)"; }
 };
 
 /** Plan indicating that an index has no plan for executing a query. **/
 var NO_PLAN = {
   cost: Number.MAX_VALUE,
-  execute: function() {},
+  execute: function() { return anop; },
   toString: function() { return "no-plan"; }
 };
 
@@ -59,7 +59,7 @@ var ValueIndex = {
              cost: 1,
              execute: function(s, sink) {
                sink.put(s);
-               return aconstant(sink);
+               return anop;
              },
              toString: function() { return 'unique'; }
            };
@@ -400,7 +400,7 @@ var TreeIndex = {
       //        console.log('**************** COUNT SHORT-CIRCUIT ****************', count, this.toString());
       return {
         cost: 0,
-        execute: function(unused, sink, options) { sink.count += count; return aconstant(sink); },
+        execute: function(unused, sink, options) { sink.count += count; return anop; },
         toString: function() { return 'short-circuit-count(' + count + ')'; }
       };
     }
@@ -476,9 +476,7 @@ var TreeIndex = {
           for ( var i = 0 ; i < subPlans.length ; i++ ) {
             pars.push(subPlans[i].execute(results[i], sink, newOptions));
           }
-          return aseq(
-            apar.apply(null, pars),
-            aconstant(sink));
+          return apar.apply(null, pars);
         },
         toString: function() {
           return 'IN(key=' + prop.name + ', size=' + results.length + ')';
@@ -616,7 +614,7 @@ var TreeIndex = {
             index.select(s, sink, options) ;
           index.selectCount--;
 
-          return aconstant(sink);
+          return anop;
         }
       },
       toString: function() { return 'scan(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ')'; }
@@ -799,7 +797,7 @@ var mLangIndex = {
       mlang: mlang,
       PLAN: {
         cost: 0,
-        execute: function(s, sink, options) { sink.copyFrom(s); return aconstant(sink); },
+        execute: function(s, sink, options) { sink.copyFrom(s); return anop; },
         toString: function() { return 'mLangIndex(' + this.s + ')'; }
       }
     };
@@ -1078,12 +1076,11 @@ var MDAO = Model.create({
       var plan = this.index.plan(this.root, sink, options);
 
       var future = afuture();
-      aseq(
-        plan.execute(this.root, sink, options),
-        function(ret, s) {
+      plan.execute(this.root, sink, options)(
+        function(ret) {
           sink && sink.eof && sink.eof();
-          ret(s);
-        })(future.set)
+          future.set(sink)
+        });
       return future.get;
     },
 
