@@ -2984,14 +2984,11 @@ MODEL({
   ],
 
   templates: [
-    function choiceButton(_, i, length, choice) {/*
-      <%
+    function choiceButton(_, i, length, choice) {/*<%
         var id = this.on('click', function() { self.choice = choice; });
-        this.setClass('mdoe_button_active', function() { return self.choice === choice; }, id);
-      %>
-      <a id="<%= id %>" class="buttonify<%= i == 0 ? ' capsule_left' : '' %><%=
-                                           i == length - 1 ? ' capsule_right' : '' %>"><%= choice.label %></a>
-    */},
+        this.setClass('mode_button_active', function() { return self.choice === choice; }, id);
+      %><a id="<%= id %>" class="buttonify<%= i == 0 ? ' capsule_left' : '' %><%=
+                                              i == length - 1 ? ' capsule_right' : '' %>"><%= choice.label %></a>*/},
     function toHTML() {/*
       <div id="<%= this.id %>" class="AltViewOuter column" style="margin-bottom:5px;">
         <div class="altViewButtons rigid">
