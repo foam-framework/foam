@@ -2946,7 +2946,7 @@ MODEL({
       model_: 'ViewFactoryProperty',
       name: 'view',
       defaultValue: 'View',
-      postSet: function(old, v) { 
+      postSet: function(old, v) {
         if ( ! this.$ ) return;
         this.removeChild(old);
         var view = this.view();
@@ -4727,6 +4727,7 @@ MODEL({
     { model_: 'ViewFactoryProperty', name: 'mainView' },
     { model_: 'ViewFactoryProperty', name: 'panelView' },
     {
+      model_: 'IntProperty',
       name: 'minWidth',
       defaultValueFn: function() {
         var e = this.main$();
@@ -4736,7 +4737,9 @@ MODEL({
       }
     },
     {
+      model_: 'IntProperty',
       name: 'width',
+      model_: 'IntProperty',
       hidden: true,
       help: 'Set internally by the resize handler',
       postSet: function(_, x) {
@@ -4744,6 +4747,7 @@ MODEL({
       }
     },
     {
+      model_: 'IntProperty',
       name: 'minPanelWidth',
       defaultValueFn: function() {
         if ( this.panelView && this.panelView.minWidth )
@@ -4755,6 +4759,7 @@ MODEL({
       }
     },
     {
+      model_: 'IntProperty',
       name: 'panelWidth',
       hidden: true,
       help: 'Set internally by the resize handler',
@@ -4763,6 +4768,7 @@ MODEL({
       }
     },
     {
+      model_: 'IntProperty',
       name: 'parentWidth',
       help: 'A pseudoproperty that returns the current with (CSS pixels) of the containing element',
       getter: function() {
@@ -4770,17 +4776,20 @@ MODEL({
       }
     },
     {
+      model_: 'IntProperty',
       name: 'stripWidth',
       help: 'The width in (CSS) pixels of the minimal visible strip of panel',
       defaultValue: 30
     },
     {
+      model_: 'FloatProperty',
       name: 'panelRatio',
       help: 'The ratio (0-1) of the total width occupied by the panel, when ' +
           'the containing element is wide enough for expanded view.',
       defaultValue: 0.5
     },
     {
+      model_: 'IntProperty',
       name: 'panelX',
       //defaultValueFn: function() { this.width - this.stripWidth; },
       preSet: function(oldX, x) {
