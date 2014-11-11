@@ -100,8 +100,10 @@ var TemplateParser = {
 
   'foamTag': FOAMTagParser.create().export('START'),
 
-  'create child': seq('$$', repeat(notChars(' $\n<{')),
-                      optional(JSONParser.export('objAsString'))),
+  'create child': seq(
+    '$$',
+    repeat(notChars(' $\n<{')),
+    optional(JSONParser.export('objAsString'))),
 
   'simple value': seq('%%', repeat(notChars(' "\n<'))),
 
@@ -181,6 +183,7 @@ var TemplateCompiler = {
               "),\n'");
   },
   foamTag: function(t) {
+    // A Feature
     if ( t.attrs.f ) {
       var name = t.attrs.f.constantize();
       var attrs = t.attrs.clone();
@@ -197,14 +200,20 @@ var TemplateCompiler = {
       this.push("', self.createTemplateView('", name, "',");
       this.push(JSON.stringify(attrs));
       this.push("),\n'");
-    } else if ( t.attrs.model ) {
+    }
+    // A Model
+    else if ( t.attrs.model ) {
       var modelName = t.attrs.model;
       var attrs = t.attrs.clone();
       delete attrs['model'];
 
       for ( var i = 0 ; i < t.children.length ; i++ ) {
         var c = t.children[i];
-        if ( typeof c !== 'string' ) attrs[c.tag] = c.innerHTML();
+        // Ignore strings, only interested in sub-tags
+        if ( typeof c !== 'string' ) {
+          // TODO(kgr): if it is an array property, then add to the array
+          attrs[c.tag] = c.innerHTML();
+        }
       }
 
       this.push("', X.", modelName, '.create(');
