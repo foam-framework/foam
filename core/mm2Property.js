@@ -56,6 +56,7 @@ var Property = {
          */}
 
     },
+
     {
       name: 'exportKeys',
       type: 'Array',
@@ -76,7 +77,7 @@ var Property = {
       defaultValue: '',
       preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; },
       help: 'Keys to export value$ as.',
-      documentation: function() {/* Same as $$DOC{ ref: 'Property.exportKeys' }, expect it exports the property Value (name$) of the property rather than the raw value of the property. */}
+      documentation: function()  {/* Same as $$DOC{ ref: 'Property.exportKeys' }, except it exports the property Value (propName$) of the property rather than the raw value of the property. */}
     },
     {
       name: 'label',

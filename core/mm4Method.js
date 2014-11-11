@@ -824,6 +824,7 @@ MODEL({
        <li><code>\\&lt;new-line&gt;</code>: ignored</li>
        <li><code>$$DOC{ref:'Template',text:'%%value'}(&lt;whitespace&gt;|{parameters})</code>: output a single value to the template output</li>
        <li><code>$$DOC{ref:'Template',text:'$$feature'}(&lt;whitespace&gt;|{parameters})</code>: output the View or Action for the current Value</li>
+       <li><code>&lt;!-- comment --&gt;</code> comments are stripped from $$DOC{ref:'Template',usePlural:true}.</li>
     </ul>
   */},
 
@@ -949,7 +950,7 @@ MODEL({
       help: 'The main content of the document.',
       documentation: "The main body text of the document. Any valid template can be used, including the $$DOC{ref:'DocView'} specific $$DOC{ref:'DocView',text:'$$DOC{\"ref\"}'} and $$DOC{ref:'DocView',text:'$$THISDATA{}'} tags.",
       preSet: function(_, template) {
-          return TemplateUtil.templateMemberExpander(template, this.X);
+          return TemplateUtil.templateMemberExpander(this, template);
       }
     },
     {

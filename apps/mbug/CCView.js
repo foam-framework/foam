@@ -52,7 +52,7 @@ MODEL({
       }
     */},
     function toInnerHTML() {/*
-      <%= this.MDMonogramStringView({ data: this.data }) %>
+      <%= this.MDMonogramStringView.create({ data: this.data }) %>
       <div class="owner-name">{{ this.data }}</div>
       <span class="removeRow">$$removeRow</span>
     */}

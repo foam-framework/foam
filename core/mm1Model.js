@@ -70,7 +70,7 @@ var Model = {
       <p>To create an instance of a $$DOC{ref:'Model'}, add it in your
       $$DOC{ref:'Model.requires'} list, then, in Javascript:</p>
       <p>
-        <code>this.YourModel({ propName: val... })</code> creates an instance.
+        <code>this.YourModel.create({ propName: val... })</code> creates an instance.
       </p>
       <p>
       Under the covers, $$DOC{ref:'Model.requires'} is creating an alias for the
@@ -91,6 +91,11 @@ var Model = {
         seamless dependency injection. See the
         $$DOC{ref:'developerDocs.Context', text:'Context documentation'}
         for more information.</li>
+
+        <li>Calling .create direclty on a $$DOC{ref:'Model'} from your context,
+        without using the $$DOC{ref:'.requires'} shortcut, must include the
+        context: <code>this.X.MyModel.create({args}, this.X);</code>. Use
+        $$DOC{ref:'.requires'} unless you have some compelling reason not to!</li>
       </ul>
       </p>
       <p>For more information about how $$DOC{ref:'Model',usePlural:true} are instantiated,

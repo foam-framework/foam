@@ -279,17 +279,17 @@ var TemplateUtil = {
    },
 
    // TODO: add docs to explain what this method does.
-   templateMemberExpander: function(t, opt_X) {
+   templateMemberExpander: function(self, t, opt_X) {
+     var X = opt_X? opt_X : self.X;
+
      // Load templates from an external file
      // if their 'template' property isn't set
-     var i = 0;
-     var X = opt_X? opt_X : window.X;
      if ( typeof t === 'function' ) {
-       t = docTemplate = X.Template.create({
+       t = X.Template.create({
          name: t.name,
          // ignore first argument, which should be 'opt_out'
-         args: t.toString().match(/\((.*)\)/)[1].split(',').slice(1).filter(function(a) {
-           return X.Arg.create({name: a});
+         args: t.toString().match(/\((.*?)\)/)[1].split(',').slice(1).map(function(a) {
+           return X.Arg.create({name: a.trim()});
          }),
          template: multiline(t)});
      } else if ( typeof t === 'string' ) {
@@ -298,76 +298,43 @@ var TemplateUtil = {
          template: t
        });
      } else if ( ! t.template ) {
-       // console.log('loading: '+ this.name + ' ' + t.name);
-
        var future = afuture();
-       var path = this.sourcePath;
+       var path = self.sourcePath;
 
        t.futureTemplate = future.get;
        path = path.substring(0, path.lastIndexOf('/')+1);
-       path += this.name + '_' + t.name + '.ft';
+       path += self.name + '_' + t.name + '.ft';
 
        var xhr = new XMLHttpRequest();
        xhr.open("GET", path);
        xhr.asend(function(data) {
          t.template = data;
-         future.set(X.Template.create(t));
+         future.set(Template.create(t));
          t.futureTemplate = undefined;
        });
      } else if ( typeof t.template === 'function' ) {
        t.template = multiline(t.template);
      }
-     // TODO: do we need the case where you specify a Template def. with
-     // .template = 'string'? Unify this with modelExpandTemplates.
+
+     if (!t.template$) {
+       // we haven't FOAMalized the template, and there's no crazy multiline functions.
+       // Note that Model and boostrappy models must use this case, as Template is not
+       // yet defined at bootstrap time. Use a Template object definition with a bare
+       // string template body in those cases.
+       if (typeof X.Template != "undefined")
+         t = JSONUtil.mapToObj(X, t, X.Template);
+       else
+         t = JSONUtil.mapToObj(X, t); // safe for bootstrap, but won't do anything in that case.
+     }
+
      return t;
    },
 
    modelExpandTemplates: function(self, templates) {
-     // Load templates from an external file
-     // if their 'template' property isn't set
-     var i = 0;
-     templates.forEach(function(t) {
-       if ( typeof t === 'function' ) {
-         t = templates[i] = Template.create({
-           name: t.name,
-           // ignore first argument, which should be 'opt_out'
-           args: t.toString().match(/\((.*?)\)/)[1].split(',').slice(1).map(function(a) {
-             return Arg.create({name: a.trim()});
-           }),
-           template: multiline(t)});
-       } else if ( ! t.template ) {
-         // console.log('loading: '+ self.name + ' ' + t.name);
+     for (var i = 0; i < templates.length; i++) {
+       templates[i] = TemplateUtil.templateMemberExpander(self, templates[i]);
+     }
 
-         var future = afuture();
-         var path = this.sourcePath;
-
-         t.futureTemplate = future.get;
-         path = path.substring(0, path.lastIndexOf('/')+1);
-         path += self.name + '_' + t.name + '.ft';
-
-         var xhr = new XMLHttpRequest();
-         xhr.open("GET", path);
-         xhr.asend(function(data) {
-           t.template = data;
-           future.set(Template.create(t));
-           t.futureTemplate = undefined;
-         });
-       } else if ( typeof t.template === 'function' ) {
-         t.template = multiline(t.template);
-       }
-
-       if (!t.template$) {
-         // we haven't FOAMalized the template, and there's no crazy multiline functions.
-         // Note that Model and boostrappy models must use this case, as Template is not
-         // yet defined at bootstrap time. Use a Template object definition with a bare
-         // string template body in those cases.
-         if (typeof Template != "undefined")
-           t = templates[i] = JSONUtil.mapToObj(self.X, t, Template);
-         else
-           t = templates[i] = JSONUtil.mapToObj(self.X, t); // safe for bootstrap, but won't do anything in that case.
-       }
-       i++;
-     }.bind(self))
   }
 };
 
