@@ -448,26 +448,6 @@ var RegisterDevDocs = function(opt_X) {
           */}
         },
         {
-          name: 'pubSub',
-          label: 'Publishing and Subscribing',
-          model_: 'Documentation',
-          body: function() {/*
-            <p>To publish an event, simply invent a topic name. The topic is the type of
-            event, and used to filter listeners so they only receive notification when
-            the topic they are interested in is triggered. Example topics would include
-            'property', 'keydown', 'remove', 'selected', or whatever is relevant to your
-            $$DOC{ref:'Model'} and its listeners. </p>
-            <p>Every object in FOAM can send and receive events, so there is no need to
-            register your intent to publish. When the event happens, just call
-            <code>this.publish('topicName', opt_args)</code> and any listeners will be immediately
-            notified. If you don't want to wait around for them, the asynchronous version
-            <code>this.publishAsync('topicName', opt_args)</code> will return immediately and notify
-            the listeners later.</p>
-            <p>Listeners receive the optional arguments, if provided. Property changes, for
-            instance, will send the old and new values for the listener to reference.</p>
-          */}
-        },
-        {
           name: 'binding',
           label: 'Binding',
           model_: 'Documentation',
@@ -506,6 +486,26 @@ var RegisterDevDocs = function(opt_X) {
             <p>When a binding is no longer needed, clean it up with
             <code>Events.unfollow(src,dst)</code> or
             <code>Events.unlink(obj1, obj2)</code> respectively.
+          */}
+        },
+        {
+          name: 'pubSub',
+          label: 'Publishing and Subscribing',
+          model_: 'Documentation',
+          body: function() {/*
+            <p>To publish an event, simply invent a topic name. The topic is the type of
+            event, and used to filter listeners so they only receive notification when
+            the topic they are interested in is triggered. Example topics would include
+            'property', 'keydown', 'remove', 'selected', or whatever is relevant to your
+            $$DOC{ref:'Model'} and its listeners. </p>
+            <p>Every object in FOAM can send and receive events, so there is no need to
+            register your intent to publish. When the event happens, just call
+            <code>this.publish('topicName', opt_args)</code> and any listeners will be immediately
+            notified. If you don't want to wait around for them, the asynchronous version
+            <code>this.publishAsync('topicName', opt_args)</code> will return immediately and notify
+            the listeners later.</p>
+            <p>Listeners receive the optional arguments, if provided. Property changes, for
+            instance, will send the old and new values for the listener to reference.</p>
           */}
         },
         {

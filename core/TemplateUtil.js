@@ -299,7 +299,7 @@ var TemplateUtil = {
        });
      } else if ( ! t.template ) {
        var future = afuture();
-       var path = this.sourcePath;
+       var path = self.sourcePath;
 
        t.futureTemplate = future.get;
        path = path.substring(0, path.lastIndexOf('/')+1);
