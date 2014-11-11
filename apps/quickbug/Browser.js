@@ -40,7 +40,8 @@ MODEL({
     'TextFieldView',
     'ChoiceView',
     'ImageView',
-    'MementoMgr'
+    'MementoMgr',
+    'AddBookmarkDialog'
   ],
 
   exportKeys: ['stack', 'browser'],

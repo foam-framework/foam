@@ -3769,7 +3769,7 @@ MODEL({
           rulesDAO
             .where(AND(GT(MigrationRule.VERSION, version.version),
                        LTE(MigrationRule.VERSION, self.X.App.version)))
-            .select([].sink)(function(rules) {
+            .select()(function(rules) {
               var seq = [];
               for ( var i = 0; i < rules.length; i++ ) {
                      (function(rule) {
