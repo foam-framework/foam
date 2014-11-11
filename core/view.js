@@ -3272,6 +3272,7 @@ MODEL({
   ]
 });
 
+
 MODEL({
   name: 'GalleryView',
   extendsModel: 'SwipeAltView',
@@ -4814,25 +4815,21 @@ MODEL({
     'expanded'
   ],
 
+  templates: [
+    // TODO(kgr): Add CSS here
+
+    function toHTML() {/*
+      <div id="%%id" style="display: inline-block; position: relative" class="SliderPanel">
+        <div id="%%id-main">
+          <div id="%%id-shadow" class="shadow"></div>
+          <%= this.mainView() %>
+        </div>
+        <div id="%%id-panel" style="position: absolute; top: 0; left: 0"><%= this.panelView() %></div>
+      </div>
+    */}
+  ],
+
   methods: {
-    toHTML: function() {
-      var mainView  = this.mainView();
-      var panelView = this.panelView();
-
-      this.addChildren(mainView, panelView);
-
-      return '<div id="' + this.id + '" ' +
-          'style="display: inline-block; position: relative" class="SliderPanel">' +
-          '<div id="' + this.id + '-main">' +
-              mainView.toHTML() +
-          '</div>' +
-          '<div id="' + this.id + '-panel" style="position: absolute; top: 0; left: 0">' +
-          '   <div id="' + this.id + '-shadow" class="shadow"></div>' +
-              panelView.toHTML() +
-          '</div>' +
-          '</div>';
-    },
-
     initHTML: function() {
       // Mousedown and touch events on the sliding panel itself.
       // Mousemove and mouseup on the whole window, so that you can drag the
@@ -4947,6 +4944,7 @@ MODEL({
     }
   ]
 });
+
 
 MODEL({
   name: 'ActionSheetView',
