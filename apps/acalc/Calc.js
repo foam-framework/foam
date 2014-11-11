@@ -435,9 +435,5 @@ var CalcButton = ActionButtonCView2.xbind({
 });
 X.registerModel(CalcButton, 'ActionButton');
 
-
 MODEL({ name: 'HistoryView',          extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 MODEL({ name: 'CalcView',             extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-MODEL({ name: 'MainButtonsView',      extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-MODEL({ name: 'SecondaryButtonsView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-MODEL({ name: 'TertiaryButtonsView',  extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });

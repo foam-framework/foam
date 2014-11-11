@@ -9,19 +9,94 @@
   </div>
   <div class='keypad'>
   <div class="edge2"></div>
-  <%=
-    SlidePanelView.create({
-      mainView: MainButtonsView.create({data: this.data}),
-      panelView: SlidePanelView.create({
-        mainView: SecondaryButtonsView.create({data: this.data}),
-        panelView: TertiaryButtonsView.create({data: this.data}),
-        minWidth: 360,
-        minPanelWidth: 90,
-        panelRatio: 0.25
-      }),
-      minWidth: 360
-    })
-  %>
+  <foam model="SlidePanelView" minWidth="360">
+    <mainView>
+      <div id="%%id" class="buttons button-row">
+        <div class="button-column" style="flex-grow: 3">
+          <div class="button-row">
+            <div class="button">$$7</div><div class="button">$$8</div><div class="button">$$9</div>
+          </div>
+          <div class="button-row">
+            <div class="button">$$4</div><div class="button">$$5</div><div class="button">$$6</div>
+         </div>
+          <div class="button-row">
+            <div class="button">$$1</div><div class="button">$$2</div><div class="button">$$3</div>
+          </div>
+          <div class="button-row">
+            <div class="button">$$point</div><div class="button">$$0</div><div class="button">$$equals</div>
+          </div>
+        </div>
+      <%
+      this.X.registerModel(CalcButton.xbind({
+        background: '#777', width: 70, height: 70
+      }), 'ActionButton');
+      %>
+        <div class="button-column rhs-ops" style="flex-grow: 1">
+          <div class="button">$$ac</div>
+          <div class="button">$$plus</div>
+          <div class="button">$$minus</div>
+          <div class="button">$$div</div>
+          <div class="button">$$mult</div>
+        </div>
+      </div>
+    </mainView>
+    <panelView>
+      <foam model="SlidePanelView" minWidth="360" minPanelWidth="90" panelRatio="0.25">
+        <mainView>
+          <%
+          this.X.registerModel(CalcButton.xbind({
+            background: 'rgb(64, 189, 158)',
+            width:  100,
+            height: 58,
+            font:   '20px Roboto'
+          }), 'ActionButton');
+          %>
+          <div id="%%id" class="buttons button-row secondaryButtons">
+            <div class="button-column" style="flex-grow: 1">
+              <div class="button-row">
+                <div class="button">$$inv</div><div class="button">$$square</div><div class="button">$$sqroot</div>
+              </div>
+              <div class="button-row">
+                <div class="button">$$log</div><div class="button">$$pow</div><div class="button">$$root</div>
+              </div>
+              <div class="button-row">
+                <div class="button">$$ln</div><div class="button">$$exp</div><div class="button">$$e</div>
+              </div>
+              <div class="button-row">
+                <div class="button">$$sin </div><div class="button">$$cos</div><div class="button">$$tan</div>
+              </div>
+              <div class="button-row">
+                <div class="button">$$asin</div><div class="button">$$acos</div><div class="button">$$atan</div>
+              </div>
+              <div class="button-row">
+                <div class="button">$$sign</div><div class="button">$$percent</div><div class="button">$$pi</div>
+              </div>
+            </div>
+          </div>
+        </mainView>
+        <panelView>
+          <%
+          this.X.registerModel(this.X.ActionButton.xbind({
+            width: 70,
+            height: 70,
+            color:      'rgb(119, 119, 119)',
+            background: 'rgb(29, 233, 182)',
+            font:       '18px Roboto'
+          }), 'ActionButton');
+          %>
+          <div id="%%id" class="buttons button-row tertiaryButtons">
+            <div class="button-column" style="flex-grow: 1">
+              <div class="button-row"><div class="button">$$deg</div></div>
+              <div class="button-row"><div class="button">$$rad</div></div>
+              <div class="button-row"><div class="button">$$fact</div></div>
+              <div class="button-row"><div class="button">$$p</div></div>
+              <div class="button-row"><div class="button">$$c</div></div>
+            </div>
+          </div>
+        </panelView>
+      </foam>
+    </panelView>
+  </foam>
   </div>
 </div>
 <%
