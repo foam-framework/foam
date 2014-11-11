@@ -153,14 +153,13 @@ var BootstrapModel = {
       var key  = imp[1] || path[path.length-1];
 
       defineLocalProperty(cls, key, function() {
+        var Y     = this.X;
         var model = FOAM.lookup(m, this.X);
         var proto = model.getPrototype();
-        var self  = this;
-        var f     = function(args, opt_X) {
-          return proto.create(args, opt_X || self.X);
+        return {
+          __proto__: model,
+          create: function(args, X) { return proto.create(args, X || Y); }
         };
-        f.__proto__ = model;
-        return f;
       });
     });
 
