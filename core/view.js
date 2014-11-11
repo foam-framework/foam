@@ -947,7 +947,7 @@ MODEL({
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
       if ( viewName.model_ ) { var v = viewName.model_.create(viewName, this.X).copyFrom(prop); v.id = this.nextID(); return v; }
       if ( viewName.factory_ ) {
-        var v = FOAM.lookup(viewName.factory_).create(viewName, this.X).copyFrom(prop);
+        var v = FOAM.lookup(viewName.factory_, this.X).create(viewName, this.X).copyFrom(prop);
         v.id = this.nextID();
         return v;
       }
