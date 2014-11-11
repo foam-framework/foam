@@ -19,8 +19,8 @@ MODEL({
   name: 'DetailView',
   extendsModel: 'View',
 
-  imports: [ 'data' ],
-  exports: [ 'data' ],
+  imports: [ 'data$' ],
+  exports: [ 'data$' ],
 
   documentation:function() {/*
     When a view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'DetailView'}
