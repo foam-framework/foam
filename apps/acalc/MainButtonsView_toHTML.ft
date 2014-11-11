@@ -1,24 +1,16 @@
 <div id="%%id" class="buttons button-row">
   <div class="button-column" style="flex-grow: 3">
     <div class="button-row">
-      <div class="button">$$7</div>
-      <div class="button">$$8</div>
-      <div class="button">$$9</div>
+      <div class="button">$$7</div><div class="button">$$8</div><div class="button">$$9</div>
     </div>
     <div class="button-row">
-      <div class="button">$$4</div>
-      <div class="button">$$5</div>
-      <div class="button">$$6</div>
+      <div class="button">$$4</div><div class="button">$$5</div><div class="button">$$6</div>
+   </div>
+    <div class="button-row">
+      <div class="button">$$1</div><div class="button">$$2</div><div class="button">$$3</div>
     </div>
     <div class="button-row">
-      <div class="button">$$1</div>
-      <div class="button">$$2</div>
-      <div class="button">$$3</div>
-    </div>
-    <div class="button-row">
-      <div class="button">$$point</div>
-      <div class="button">$$0</div>
-      <div class="button">$$equals</div>
+      <div class="button">$$point</div><div class="button">$$0</div><div class="button">$$equals</div>
     </div>
   </div>
 <%

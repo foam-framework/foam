@@ -9,20 +9,10 @@ this.X.registerModel(this.X.ActionButton.xbind({
 %>
 <div id="%%id" class="buttons button-row tertiaryButtons">
   <div class="button-column" style="flex-grow: 1">
-    <div class="button-row">
-      <div class="button">$$deg</div>
-    </div>
-    <div class="button-row">
-      <div class="button">$$rad</div>
-    </div>
-    <div class="button-row">
-      <div class="button">$$fact</div>
-    </div>
-    <div class="button-row">
-      <div class="button">$$p</div>
-    </div>
-    <div class="button-row">
-      <div class="button">$$c</div>
-    </div>
+    <div class="button-row"><div class="button">$$deg</div></div>
+    <div class="button-row"><div class="button">$$rad</div></div>
+    <div class="button-row"><div class="button">$$fact</div></div>
+    <div class="button-row"><div class="button">$$p</div></div>
+    <div class="button-row"><div class="button">$$c</div></div>
   </div>
 </div>

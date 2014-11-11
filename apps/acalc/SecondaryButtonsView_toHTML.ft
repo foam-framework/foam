@@ -9,34 +9,22 @@ this.X.registerModel(CalcButton.xbind({
 <div id="%%id" class="buttons button-row secondaryButtons">
   <div class="button-column" style="flex-grow: 1">
     <div class="button-row">
-      <div class="button">$$inv</div>
-      <div class="button">$$square</div>
-      <div class="button">$$sqroot</div>
+      <div class="button">$$inv</div><div class="button">$$square</div><div class="button">$$sqroot</div>
     </div>
     <div class="button-row">
-      <div class="button">$$log</div>
-      <div class="button">$$pow</div>
-      <div class="button">$$root</div>
+      <div class="button">$$log</div><div class="button">$$pow</div><div class="button">$$root</div>
     </div>
     <div class="button-row">
-      <div class="button">$$ln</div>
-      <div class="button">$$exp</div>
-      <div class="button">$$e</div>
+      <div class="button">$$ln</div><div class="button">$$exp</div><div class="button">$$e</div>
     </div>
     <div class="button-row">
-      <div class="button">$$sin </div>
-      <div class="button">$$cos</div>
-      <div class="button">$$tan</div>
+      <div class="button">$$sin </div><div class="button">$$cos</div><div class="button">$$tan</div>
     </div>
     <div class="button-row">
-      <div class="button">$$asin</div>
-      <div class="button">$$acos</div>
-      <div class="button">$$atan</div>
+      <div class="button">$$asin</div><div class="button">$$acos</div><div class="button">$$atan</div>
     </div>
     <div class="button-row">
-      <div class="button">$$sign</div>
-      <div class="button">$$percent</div>
-      <div class="button">$$pi</div>
+      <div class="button">$$sign</div><div class="button">$$percent</div><div class="button">$$pi</div>
     </div>
   </div>
 </div>
