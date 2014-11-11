@@ -2750,13 +2750,13 @@ MODEL({
     find: function(key, sink) {
       var self = this;
       this.X.ajsonp(this.buildFindURL(key), this.buildFindParams())(function(data, status) {
-        var deserialized = self.jsonToObj(data);
+        var deserialized;
         if ( status !== 200 || ! (deserialized = self.jsonToObj(data)) ) {
           sink && sink.error && sink.error('Network error');
           return;
         }
 
-        sink && sink.put && sink.put(self.jsonToObj(deserialized));
+        sink && sink.put && sink.put(deserialized);
       });
     }
   }
