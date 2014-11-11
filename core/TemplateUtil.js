@@ -213,7 +213,6 @@ var TemplateCompiler = {
         if ( typeof c !== 'string' ) {
           // TODO(kgr): if it is an array property, then add to the array
           attrs[c.tag] = c.innerHTML();
-          console.log('************ ', c.tag, " -> ", c.innerHTML());
         }
       }
 
