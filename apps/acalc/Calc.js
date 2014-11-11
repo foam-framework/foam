@@ -15,7 +15,12 @@
  * limitations under the License.
  */
 
-function factorial(n)      { var r = 1; while ( n > 0 ) r *= n--; return r; };
+function factorial(n) {
+  if ( n > 170 ) return 1/0;
+  var r = 1;
+  while ( n > 0 ) r *= n--;
+  return r;
+};
 function permutation(n, r) { return factorial(n) / factorial(n-r); };
 function combination(n, r) { return permutation(n, r) / factorial(r); };
 
