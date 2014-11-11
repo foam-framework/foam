@@ -20,7 +20,7 @@ MODEL({
       subType: 'QBug',
       view: function() { return this.DetailView({model: QBug}); },
       factory: function() {
-        return this.QBug({
+        return this.QBug.create({
           authClientId: '18229540903-cojf1q6g154dk5kpim4jnck3cfdvqe3u.apps.googleusercontent.com',
           authClientSecret: 'HkwDwjSekPBL5Oybq1NsDeZj'
         });
@@ -68,7 +68,7 @@ MODEL({
     {
       name: 'stack',
       subType: 'StackView',
-      factory: function() { return this.StackView(); },
+      factory: function() { return this.StackView.create(); },
       postSet: function(old, v) {
         if ( old ) {
           Events.unfollow(this.width$, old.width$);
@@ -83,8 +83,8 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X.touchManager   = this.TouchManager();
-      this.X.gestureManager = this.GestureManager();
+      this.X.touchManager   = this.TouchManager.create();
+      this.X.gestureManager = this.GestureManager.create();
     },
     toHTML: function() { return this.stack.toHTML(); },
     projectContext: function() {
@@ -218,7 +218,7 @@ MODEL({
     <div class="separator"></div>
     <div id="<%= this.id %>" class="comment-view">
        <span class="owner">
-         <%= this.MDMonogramStringView({data: this.data.author.name}) %>
+         <%= this.MDMonogramStringView.create({data: this.data.author.name}) %>
        </span>
        <span class="content">
          Commented by $$author<br>
@@ -326,7 +326,7 @@ MODEL({
          projects.forEach(function(project) { %>
         <% if ( ' chromium-os chromedriver cinc crwm chrome-os-partner ee-testers-external '.indexOf(' ' + project + ' ') != -1 ) return; %>
         <div id="<%= self.on('click', function() { self.X.stack.back(); self.X.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
-          <%= self.ImageView({backupImage: 'images/defaultlogo.png', data: self.X.baseURL + project + '/logo'}) %>
+          <%= self.ImageView.create({backupImage: 'images/defaultlogo.png', data: self.X.baseURL + project + '/logo'}) %>
           <span class="project-name <%= self.X.projectName === project ? 'selected' : '' %>"><%= project %></span>
         </div>
         <% }); %>
