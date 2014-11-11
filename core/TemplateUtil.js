@@ -288,7 +288,7 @@ var TemplateUtil = {
        t = docTemplate = X.Template.create({
          name: t.name,
          // ignore first argument, which should be 'opt_out'
-         args: t.toString().match(/\((.*)\)/)[1].split(',').slice(1).filter(function(a) {
+         args: t.toString().match(/\((.*?)\)/)[1].split(',').slice(1).filter(function(a) {
            return X.Arg.create({name: a});
          }),
          template: multiline(t)});
