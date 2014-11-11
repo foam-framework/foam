@@ -1076,7 +1076,6 @@ var MDAO = Model.create({
       }
 
       var plan = this.index.plan(this.root, sink, options);
-      var ret = plan.execute(this.root, sink, options);
 
       var future = afuture();
       aseq(
