@@ -85,6 +85,7 @@ var TemplateParser = {
   START: sym('markup'),
 
   markup: repeat0(alt(
+    sym('comment'),
     sym('foamTag'),
     sym('create child'),
     sym('simple value'),
@@ -97,6 +98,8 @@ var TemplateParser = {
     sym('single quote'),
     sym('text')
   )),
+
+  'comment': seq('<!--', repeat(not('-->', anyChar)), '-->'),
 
   'foamTag': FOAMTagParser.create().export('START'),
 
@@ -189,9 +192,6 @@ var TemplateCompiler = {
       var attrs = t.attrs.clone();
       delete attrs['f'];
 
-      // ???(kgr): Not sure if this is the best way.
-      // if ( this.data || this.X.data ) attrs.data = this.data || this.X.data;
-
       for ( var i = 0 ; i < t.children.length ; i++ ) {
         var c = t.children[i];
         if ( typeof c !== 'string' ) attrs[c.tag] = c.innerHTML();
@@ -213,6 +213,7 @@ var TemplateCompiler = {
         if ( typeof c !== 'string' ) {
           // TODO(kgr): if it is an array property, then add to the array
           attrs[c.tag] = c.innerHTML();
+          console.log('************ ', c.tag, " -> ", c.innerHTML());
         }
       }
 
