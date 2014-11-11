@@ -2949,7 +2949,8 @@ MODEL({
       postSet: function(old, v) { 
         if ( ! this.$ ) return;
         this.removeChild(old);
-        var view = v({ data$: this.data$ });
+        var view = this.view();
+        view.data = this.data;
         this.addChild(view);
         this.viewContainer.innerHTML = view.toHTML();
         view.initHTML();
@@ -2984,14 +2985,11 @@ MODEL({
   ],
 
   templates: [
-    function choiceButton(_, i, length, choice) {/*
-      <%
+    function choiceButton(_, i, length, choice) {/*<%
         var id = this.on('click', function() { self.choice = choice; });
-        this.setClass('mdoe_button_active', function() { return self.choice === choice; }, id);
-      %>
-      <a id="<%= id %>" class="buttonify<%= i == 0 ? ' capsule_left' : '' %><%=
-                                           i == length - 1 ? ' capsule_right' : '' %>"><%= choice.label %></a>
-    */},
+        this.setClass('mode_button_active', function() { return self.choice === choice; }, id);
+      %><a id="<%= id %>" class="buttonify<%= i == 0 ? ' capsule_left' : '' %><%=
+                                              i == length - 1 ? ' capsule_right' : '' %>"><%= choice.label %></a>*/},
     function toHTML() {/*
       <div id="<%= this.id %>" class="AltViewOuter column" style="margin-bottom:5px;">
         <div class="altViewButtons rigid">

@@ -619,6 +619,7 @@ Please use labels and text to provide additional information.
             arequire('CursorView'),
             arequire('AddBookmarkDialog'),
             arequire('QIssueDetailView'),
+            arequire('QIssueCreateView'),
             arequire('QIssueCommentCreateView'),
             arequire('QIssueCommentView'),
             arequire('QIssueCommentAuthorView'),

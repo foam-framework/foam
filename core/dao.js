@@ -2749,12 +2749,14 @@ MODEL({
     },
     find: function(key, sink) {
       var self = this;
-      this.X.ajsonp(this.buildFindURL(key), this.buildFindParams())(function(data) {
-        if ( data ) {
-          sink && sink.put && sink.put(self.jsonToObj(data));
-        } else {
-          sink && sink.error && sink.error('No Network Response');
+      this.X.ajsonp(this.buildFindURL(key), this.buildFindParams())(function(data, status) {
+        var deserialized = self.jsonToObj(data);
+        if ( status !== 200 || ! (deserialized = self.jsonToObj(data)) ) {
+          sink && sink.error && sink.error('Network error');
+          return;
         }
+
+        sink && sink.put && sink.put(self.jsonToObj(deserialized));
       });
     }
   }
