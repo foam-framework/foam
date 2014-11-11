@@ -52,7 +52,7 @@ var FObject = {
     o.init(args);
 
     if ( o.model_.exportKeys ) {
-      for ( var i = 0; i < o.model_.exportKeys.length; i ++ ) o.X[o.exportKeys[i]] = o;
+      for ( var i = 0; i < o.model_.exportKeys.length; i ++ ) o.X[o.model_.exportKeys[i]] = o;
     }
 
     return o;

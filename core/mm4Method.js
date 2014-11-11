@@ -878,6 +878,9 @@ MODEL({
       help: 'Template text. <%= expr %> or <% out(...); %>',
       documentation: function() { /* The string content of the uncompiled $$DOC{ref:'Template'} body.
          */}
+    },
+    {
+      name: 'futureTemplate'
     }/*,
        {
        name: 'templates',
@@ -990,3 +993,6 @@ MODEL({
 
 // HACK to get around property-template bootstrap ordering issues
 TemplateUtil.modelExpandTemplates(Property, Property.templates);
+TemplateUtil.modelExpandTemplates(Method, Method.templates);
+TemplateUtil.modelExpandTemplates(Model, Model.templates);
+TemplateUtil.modelExpandTemplates(Arg, Arg.templates);

@@ -18,7 +18,8 @@
 MODEL({
   name: 'PositionedViewTrait',
   properties: [
-    { model_: 'FloatProperty', name: 'x',      units: 'px', defaultValue: 0 },
+    { name: 'x', setter: function() { debugger; }, getter: function() { debugger; } },
+    { model_: 'FloatProperty', name: 'x_',      units: 'px', defaultValue: 0 },
     { model_: 'FloatProperty', name: 'y',      units: 'px', defaultValue: 0 },
     { model_: 'FloatProperty', name: 'z',      units: 'px', defaultValue: 0 },
     { model_: 'IntProperty', name: 'width',  units: 'px', defaultValue: 100 },
@@ -54,7 +55,7 @@ MODEL({
     initHTML: function() {
       this.SUPER();
       var self = this;
-      this.X.dynamic(function() { self.x; self.y; self.z; },
+      this.X.dynamic(function() { self.x_; self.y; self.z; },
                      this.position);
       this.X.dynamic(function() { self.width; self.height; },
                      this.resize);
@@ -64,7 +65,7 @@ MODEL({
     },
     transform: function() {
       return 'translate3d(' +
-        this.x + 'px,' +
+        this.x_ + 'px,' +
         this.y + 'px,' +
         this.z + 'px)';
     },
@@ -113,7 +114,7 @@ MODEL({
       type: 'View',
       postSet: function(old, v) {
         var self = this;
-        v.x = 0;
+        v.x_ = 0;
         v.y = 0;
         this.X.dynamic(function() { self.width; self.height; },
                        function() {
@@ -144,7 +145,7 @@ MODEL({
 MODEL({
   name: 'Point',
   properties: [
-    { model_: 'IntProperty', name: 'x' },
+    { model_: 'IntProperty', name: 'x_' },
     { model_: 'IntProperty', name: 'y' }
   ]
 });
@@ -272,17 +273,17 @@ MODEL({
         if ( this.reverse ) r = -1;
 
         if ( this.direction === 'horizontal' ) {
-          this.view.x = -(r * this.slideAmount * this.width);
+          this.view.x_ = -(r * this.slideAmount * this.width);
           this.view.y = 0;
           if ( this.incomingView ) {
-            this.incomingView.x = r * this.width - (r * this.slideAmount * this.width);
+            this.incomingView.x_ = r * this.width - (r * this.slideAmount * this.width);
             this.incomingView.y = 0;
           }
         } else {
-          this.view.x = 0;
+          this.view.x_ = 0;
           this.view.y = -(r * this.slideAmount * this.height);
           if ( this.incomingView ) {
-            this.incomingView.x = 0;
+            this.incomingView.x_ = 0;
             this.incomingView.y = r * this.height - (r * this.slideAmount * this.height);
           }
         }
@@ -357,7 +358,7 @@ MODEL({
         if ( this.view ) {
           this.view.width = width;
           this.view.height = this.height;
-          this.view.x = -((1 - this.slideAmount) * width);
+          this.view.x_ = -((1 - this.slideAmount) * width);
           this.view.y = 0;
           this.view.z = 1;
         }

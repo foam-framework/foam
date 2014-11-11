@@ -1,8 +1,16 @@
 MODEL({
   name: 'MBug',
+  extendsModel: 'View',
   description: 'Mobile QuickBug',
 
-  extendsModel: 'View',
+  requires: [
+    'DetailView',
+    'GestureManager',
+    'QBug',
+    'StackView',
+    'TouchManager'
+  ],
+
   traits: ['PositionedDOMViewTrait'],
 
   properties: [
@@ -10,9 +18,9 @@ MODEL({
       name: 'qbug',
       label: 'QBug',
       subType: 'QBug',
-      view: function() { return this.X.DetailView.create({model: QBug}); },
+      view: function() { return this.DetailView({model: QBug}); },
       factory: function() {
-        return this.X.QBug.create({
+        return this.QBug({
           authClientId: '18229540903-cojf1q6g154dk5kpim4jnck3cfdvqe3u.apps.googleusercontent.com',
           authClientSecret: 'HkwDwjSekPBL5Oybq1NsDeZj'
         });
@@ -60,7 +68,7 @@ MODEL({
     {
       name: 'stack',
       subType: 'StackView',
-      factory: function() { return this.X.StackView.create(); },
+      factory: function() { return this.StackView(); },
       postSet: function(old, v) {
         if ( old ) {
           Events.unfollow(this.width$, old.width$);
@@ -75,8 +83,8 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X.touchManager   = this.X.TouchManager.create({});
-      this.X.gestureManager = this.X.GestureManager.create({});
+      this.X.touchManager   = this.TouchManager();
+      this.X.gestureManager = this.GestureManager();
     },
     toHTML: function() { return this.stack.toHTML(); },
     projectContext: function() {
@@ -104,9 +112,7 @@ MODEL({
     },
     editIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
-      var v = this.project.X.FloatingView.create({
-        view: this.project.X.IssueView.create({dao: this.project.X.issueDAO, data: issue.deepClone()})
-      });
+      var v = this.project.X.IssueView.create({dao: this.project.X.issueDAO, data: issue.deepClone()});
       this.stack.pushView(v, '');
     },
     setProject: function(projectName) {
@@ -205,11 +211,14 @@ MODEL({
 MODEL({
   name: 'CommentView',
   extendsModel: 'DetailView',
+
+  requires: [ 'MDMonogramStringView' ],
+
   templates: [ function toHTML() {/*
     <div class="separator"></div>
     <div id="<%= this.id %>" class="comment-view">
        <span class="owner">
-         <%= MDMonogramStringView.create({data: this.data.author.name}) %>
+         <%= this.MDMonogramStringView({data: this.data.author.name}) %>
        </span>
        <span class="content">
          Commented by $$author<br>
@@ -225,8 +234,8 @@ MODEL({
 // used to show and select available projects.
 MODEL({
   name: 'ChangeProjectView',
-
   extendsModel: 'DetailView',
+  requires: [ 'ImageView' ],
   traits: ['PositionedDOMViewTrait'],
 
   properties: [
@@ -317,7 +326,7 @@ MODEL({
          projects.forEach(function(project) { %>
         <% if ( ' chromium-os chromedriver cinc crwm chrome-os-partner ee-testers-external '.indexOf(' ' + project + ' ') != -1 ) return; %>
         <div id="<%= self.on('click', function() { self.X.stack.back(); self.X.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
-          <%= ImageView.create({backupImage: 'images/defaultlogo.png', data: self.X.baseURL + project + '/logo'}) %>
+          <%= self.ImageView({backupImage: 'images/defaultlogo.png', data: self.X.baseURL + project + '/logo'}) %>
           <span class="project-name <%= self.X.projectName === project ? 'selected' : '' %>"><%= project %></span>
         </div>
         <% }); %>

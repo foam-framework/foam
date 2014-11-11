@@ -1,6 +1,7 @@
 MODEL({
   name: 'CCView',
   extendsModel: 'AutocompleteListView',
+
   properties: [
     {
       name: 'srcDAO',
@@ -27,7 +28,11 @@ MODEL({
 MODEL({
   name: 'CitationView',
   extendsModel: 'DefaultRowView',
+
+  requires: [ 'MDMonogramStringView' ],
+
   properties: [ { name: 'className', defaultValue: 'CitationView' } ],
+
   templates: [
     function CSS() {/*
       .CitationView {
@@ -47,7 +52,7 @@ MODEL({
       }
     */},
     function toInnerHTML() {/*
-      <%= this.X.MDMonogramStringView.create({ data: this.data }) %>
+      <%= this.MDMonogramStringView({ data: this.data }) %>
       <div class="owner-name">{{ this.data }}</div>
       <span class="removeRow">$$removeRow</span>
     */}

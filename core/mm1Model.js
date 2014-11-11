@@ -162,7 +162,7 @@ var Model = {
       subType: 'String',
       required: false,
       hidden: true,
-      defaultValue: '',
+      defaultValue: [],
       preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; },
       help: 'Keys to export this object as in its sub-context.',
       documentation: function() {/* */}

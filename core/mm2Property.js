@@ -636,6 +636,7 @@ Model.methods = {
 // or ever will write. Oct. 4, 2011 -- KGR
 Model = Model.create(Model);
 Model.model_ = Model;
+Model.create = BootstrapModel.create;
 
 Property = Model.create(Property);
 
@@ -645,4 +646,4 @@ for ( var i = 0 ; i < Property.properties.length ; i++ )
     Property.properties[i] = Property.create(Property.properties[i]);
 
 USED_MODELS.Property = Property;
-
+USED_MODELS.Model = Model;

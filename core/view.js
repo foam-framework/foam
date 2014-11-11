@@ -850,10 +850,20 @@ MODEL({
 
   extendsModel: 'View',
 
+  documentation: function() {/*
+    Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one
+    $$DOC{ref:'Property'}. The $$DOC{ref:'View'} chosen can be based off the
+    $$DOC{ref:'Property.view',text:'Property.view'} value, the $$DOC{ref:'.innerView'} value, or
+    $$DOC{ref:'.args'}.model_.
+  */},
+
   properties: [
     {
       name: 'prop',
-      type: 'Property'
+      type: 'Property',
+      documentation: function() {/*
+          The $$DOC{ref:'Property'} for which to generate a $$DOC{ref:'View'}.
+      */}
     },
     {
       name: 'parent',
@@ -861,29 +871,52 @@ MODEL({
       postSet: function(_, p) {
         p[this.prop.name + 'View'] = this.view;
         if ( this.view ) this.view.parent = p;
-      }
+      },
+      documentation: function() {/*
+        The $$DOC{ref:'View'} to use as the parent container for the new
+        sub-$$DOC{ref:'View'}.
+      */}
     },
     {
       name: 'data',
       postSet: function(oldData, data) {
         this.unbindData(oldData);
         this.bindData(data);
-      }
+      },
+      documentation: function() {/*
+        The data to feed into the new sub-$$DOC{ref:'View'}. The data set here
+        is linked bi-directionally to the $$DOC{ref:'View'}. Typically this
+        data is the property value.
+      */}
     },
     {
       name: 'innerView',
-      help: 'Override for prop.view'
+      help: 'Override for prop.view',
+      documentation: function() {/*
+        The optional name of the desired sub-$$DOC{ref:'View'}. If not specified,
+        prop.$$DOC{ref:'Property.view'} is used.
+      */}
     },
     {
       name: 'view',
-      type: 'View'
+      type: 'View',
+      documentation: function() {/*
+        The new sub-$$DOC{ref:'View'} generated for the given $$DOC{ref:'Property'}.
+      */}
     },
-    'args'
+    {
+      name: 'args',
+      documentation: function() {/*
+        Optional arguments to be used for sub-$$DOC{ref:'View'} creation. args.model_
+        in particular specifies the exact $$DOC{ref:'View'} to use.
+      */}
+    }
   ],
 
   methods: {
 
     init: function(args) {
+      /* Sets up the new sub-$$DOC{ref:'View'} immediately. */
       this.SUPER(args);
 
       if ( this.args && this.args.model_ ) {
@@ -907,13 +940,14 @@ MODEL({
     },
 
     createViewFromProperty: function(prop) {
+      /* Helper to determine the $$DOC{ref:'View'} to use. */
       var viewName = this.innerView || prop.view
       if ( ! viewName ) return this.X.TextFieldView.create(prop);
       if ( typeof viewName === 'string' ) return this.X[viewName].create(prop);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
       if ( viewName.model_ ) { var v = viewName.model_.create(viewName, this.X).copyFrom(prop); v.id = this.nextID(); return v; }
       if ( viewName.factory_ ) {
-        var v = FOAM.lookup(viewName.factory_).create(viewName, this.X).copyFrom(prop);
+        var v = FOAM.lookup(viewName.factory_, this.X).create(viewName, this.X).copyFrom(prop);
         v.id = this.nextID();
         return v;
       }
@@ -923,6 +957,7 @@ MODEL({
     },
 
     unbindData: function(oldData) {
+      /* Unbind the data from the old view. */
       var view = this.view;
       if ( ! view || ! oldData ) return;
       var pValue = oldData.propertyValue(this.prop.name);
@@ -930,19 +965,20 @@ MODEL({
     },
 
     bindData: function(data) {
+      /* Bind data to the new view. */
       var view = this.view;
       if ( ! view || ! data ) return;
       var pValue = data.propertyValue(this.prop.name);
       Events.link(pValue, view.data$);
     },
 
-    toHTML: function() { return this.view.toHTML(); },
+    toHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ return this.view.toHTML(); },
 
-    toString: function() { return 'PropertyView(' + this.prop.name + ', ' + this.view + ')'; },
+    toString: function() { /* Name info. */ return 'PropertyView(' + this.prop.name + ', ' + this.view + ')'; },
 
-    initHTML: function() { this.view.initHTML(); },
+    initHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ this.view.initHTML(); },
 
-    destroy: function() {
+    destroy: function() { /* Passthrough to $$DOC{ref:'.view'} */
       this.SUPER();
       this.view.destroy();
     }
@@ -1084,7 +1120,7 @@ MODEL({
       type: 'View',
     },
     {
-      name: 'x'
+      name: 'x_'
     },
     {
       name: 'y'
@@ -1113,7 +1149,7 @@ MODEL({
       if ( this.$ ) return;
       var document = this.X.document;
       var div      = document.createElement('div');
-      div.style.left = this.x + 'px';
+      div.style.left = this.x_ + 'px';
       div.style.top = this.y + 'px';
       if ( this.width )     div.style.width = this.width + 'px';
       if ( this.height )    div.style.height = this.height + 'px';
@@ -1590,70 +1626,93 @@ MODEL({
 
   extendsModel: 'View',
 
+  documentation: function() { /*
+      The default $$DOC{ref:'View'} for a string. Supports autocomplete
+      when an autocompleter is installed in $$DOC{ref:'.autocompleter'}.
+  */},
+
   properties: [
     {
       model_: 'StringProperty',
       name: 'name',
-      defaultValue: 'field'
+      defaultValue: 'field',
+      documentation: function() { /* The name of the field. */}
     },
     {
       model_: 'IntProperty',
       name: 'displayWidth',
-      defaultValue: 30
+      defaultValue: 30,
+      documentation: function() { /* The width to fix the HTML text box. */}
     },
     {
       model_: 'IntProperty',
       name: 'displayHeight',
-      defaultValue: 1
+      defaultValue: 1,
+      documentation: function() { /* The height to fix the HTML text box. */}
     },
     {
       model_: 'StringProperty',
       name: 'type',
-      defaultValue: 'text'
+      defaultValue: 'text',
+      documentation: function() { /* The type of field to create. */}
     },
     {
       model_: 'StringProperty',
       name: 'placeholder',
-      defaultValue: undefined
+      defaultValue: undefined,
+      documentation: function() { /* Placeholder to use when empty. */}
     },
     {
       model_: 'BooleanProperty',
       name: 'onKeyMode',
-      help: 'If true, value is updated on each keystroke.'
+      help: 'If true, value is updated on each keystroke.',
+      documentation: function() { /* If true, value is updated on each keystroke. */}
     },
     {
       model_: 'BooleanProperty',
       name: 'escapeHTML',
       defaultValue: true,
       // TODO: make the default 'true' for security reasons
-      help: 'If true, HTML content is escaped in display mode.'
+      help: 'If true, HTML content is escaped in display mode.',
+      documentation: function() { /* If true, HTML content is escaped in display mode. */}
     },
     {
       model_: 'StringProperty',
       name: 'mode',
       defaultValue: 'read-write',
-      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] }
+      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] },
+      documentation: function() { /* Can be 'read-only', 'read-write' or 'final'. */}
     },
     {
       name: 'domValue',
+      hidden: true
     },
     {
       name: 'data',
+      documentation: function() { /* The object to bind to the user's entered text. */}
     },
     {
       model_: 'StringProperty',
       name: 'readWriteTagName',
       defaultValueFn: function() {
         return this.displayHeight === 1 ? 'input' : 'textarea';
-      }
+      },
+      hidden: true
     },
     {
       model_: 'BooleanProperty',
       name: 'autocomplete',
-      defaultValue: true
+      defaultValue: true,
+      documentation: function() { /* Set to true to enable autocomplete. */}
     },
-    'autocompleter',
-    'autocompleteView'
+    {
+      name: 'autocompleter',
+      documentation: function() { /* The autocompleter model to use. */}
+    },
+    {
+      name: 'autocompleteView',
+      documentation: function() { /* The autocomplete view created. */}
+    }
   ],
 
   constants: {
@@ -1664,12 +1723,14 @@ MODEL({
 
   methods: {
     toHTML: function() {
+      /* Selects read-only versus read-write DOM output */
       return this.mode === 'read-write' ?
         this.toReadWriteHTML() :
         this.toReadOnlyHTML()  ;
     },
 
     toReadWriteHTML: function() {
+      /* Supplies the correct element for read-write mode */
       var str = '<' + this.readWriteTagName + ' id="' + this.id + '"';
       str += ' type="' + this.type + '" ' + this.cssClassAttr();
 
@@ -1685,12 +1746,15 @@ MODEL({
     },
 
     toReadOnlyHTML: function() {
+      /* Supplies the correct element for read-only mode */
       var self = this;
       this.setClass('placeholder', function() { return self.data === ''; }, this.id);
       return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>';
     },
 
     setupAutocomplete: function() {
+      /* Initializes autocomplete, if $$DOC{ref:'.autocomplete'} and
+        $$DOC{ref:'.autocompleter'} are set. */
       if ( ! this.autocomplete || ! this.autocompleter ) return;
 
       var view = this.autocompleteView = this.X.AutocompleteView.create({
@@ -1719,6 +1783,7 @@ MODEL({
     },
 
     initHTML: function() {
+      /* Connects key events. */
       if ( ! this.$ ) return;
 
       this.SUPER();
@@ -1759,15 +1824,15 @@ MODEL({
       }
     },
 
-    textToValue: function(text) { return text; },
+    textToValue: function(text) { /* Passthrough */ return text; },
 
-    valueToText: function(value) {
+    valueToText: function(value) { /* Filters for read-only mode */
       if ( this.mode === 'read-only' )
         return (value === '') ? this.placeholder : value;
       return value;
     },
 
-    destroy: function() {
+    destroy: function() { /* Unlinks key handler. */
       this.SUPER();
       Events.unlink(this.domValue, this.data$);
     }

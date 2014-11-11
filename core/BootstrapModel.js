@@ -253,6 +253,8 @@ var BootstrapModel = {
       props[prop][subProp] = (props[prop][subProp] || []).concat(alias);
     });
 
+    if ( extendsModel && extendsModel.exportKeys.length > 0 ) this.exportKeys = this.exportKeys.concat(extendsModel.exportKeys);
+
     // templates
     this.templates && Object_forEach(this.templates, function(t) {
       addMethod(t.name, TemplateUtil.lazyCompile(t));
@@ -445,7 +447,7 @@ var BootstrapModel = {
   isSubModel: function(model) {
     /* Returns true if the given instance extends this $$DOC{ref:'Model'} or a descendant of this. */
     try {
-      return model && ( model === this || this.isSubModel(model.getPrototype().__proto__.model_) );
+      return model && model.getPrototype && ( model.getPrototype() === this.getPrototype() || this.isSubModel(model.getPrototype().__proto__.model_) );
     } catch (x) {
       return false;
     }
