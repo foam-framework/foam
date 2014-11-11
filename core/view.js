@@ -2949,7 +2949,8 @@ MODEL({
       postSet: function(old, v) { 
         if ( ! this.$ ) return;
         this.removeChild(old);
-        var view = v({ data$: this.data$ });
+        var view = this.view();
+        view.data = this.data;
         this.addChild(view);
         this.viewContainer.innerHTML = view.toHTML();
         view.initHTML();
