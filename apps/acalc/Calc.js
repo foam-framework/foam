@@ -103,7 +103,7 @@ MODEL({ name: 'History', properties: [ 'op', 'a2' ] });
 MODEL({
   name: 'Calc',
 
-  requires: [ 'MainButtonsView', 'SecondaryButtonsView', 'TertiaryButtonsView', 'HistoryView', 'CalcView' ],
+  requires: [ 'HistoryView', 'CalcView' ],
 
   templates: [ function CSS() {/*
     body {
