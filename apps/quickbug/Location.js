@@ -149,8 +149,8 @@ MODEL({
     },
     {
       model_: 'LocationProperty',
-      name: 'x',
-      toMemento: function(x) { return x.name; },
+      name: 'x_',
+      toMemento: function(x) { return x_.name; },
       fromMemento: function(name) { return this.X.QIssue.getProperty(name); }
     },
     {

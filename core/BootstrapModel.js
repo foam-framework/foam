@@ -77,7 +77,6 @@ var BootstrapModel = {
   name_: 'BootstrapModel <startup only, error if you see this>',
 
   buildPrototype: function() { /* Internal use only. */
-
     // save our pure state
     // Note: Only documentation browser uses this, and it will be replaced
     // by the new Feature Oriented bootstrapping process, so only use the
@@ -254,6 +253,8 @@ var BootstrapModel = {
       props[prop][subProp] = (props[prop][subProp] || []).concat(alias);
     });
 
+    if ( extendsModel && extendsModel.exportKeys.length > 0 ) this.exportKeys = this.exportKeys.concat(extendsModel.exportKeys);
+
     // templates
     this.templates && Object_forEach(this.templates, function(t) {
       addMethod(t.name, TemplateUtil.lazyCompile(t));
@@ -407,9 +408,7 @@ var BootstrapModel = {
   },
 
   getPrototype: function() { /* Returns the definition $$DOC{ref:'Model'} of this instance. */
-    return this.prototype_ && this.prototype_.model_ == this ?
-      this.prototype_ :
-      ( this.prototype_ = this.buildPrototype() );
+    return this.instance_.prototype_ || ( this.instance_.prototype_ = this.buildPrototype() );
   },
 
   saveDefinition: function(self) {
@@ -448,7 +447,7 @@ var BootstrapModel = {
   isSubModel: function(model) {
     /* Returns true if the given instance extends this $$DOC{ref:'Model'} or a descendant of this. */
     try {
-      return model && ( model === this || this.isSubModel(model.getPrototype().__proto__.model_) );
+      return model && model.getPrototype && ( model.getPrototype() === this.getPrototype() || this.isSubModel(model.getPrototype().__proto__.model_) );
     } catch (x) {
       return false;
     }

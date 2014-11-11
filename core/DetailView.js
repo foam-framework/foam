@@ -338,7 +338,7 @@ MODEL({
       name: 'args'
     },
     {
-      model_: 'ViewProperty',
+      model_: 'ViewFactoryProperty',
       name: 'viewModel',
       defaultValue: 'DAOController'
     },

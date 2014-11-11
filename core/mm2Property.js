@@ -16,6 +16,7 @@
  */
 var Property = {
   __proto__: BootstrapModel,
+  instance_: {},
 
   name:  'Property',
   plural:'Properties',
@@ -62,7 +63,7 @@ var Property = {
       required: false,
       hidden: true,
       defaultValue: '',
-      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; }, 
+      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; },
       help: 'Keys to export value as.',
       documentation: function() {/* If set, when the an object with this property is initialized the value of this property on the object will be exported into the objects sub-context. */}
     },
@@ -73,7 +74,7 @@ var Property = {
       required: false,
       hidden: true,
       defaultValue: '',
-      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; }, 
+      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; },
       help: 'Keys to export value$ as.',
       documentation: function() {/* Same as $$DOC{ ref: 'Property.exportKeys' }, expect it exports the property Value (name$) of the property rather than the raw value of the property. */}
     },
@@ -635,6 +636,7 @@ Model.methods = {
 // or ever will write. Oct. 4, 2011 -- KGR
 Model = Model.create(Model);
 Model.model_ = Model;
+Model.create = BootstrapModel.create;
 
 Property = Model.create(Property);
 
@@ -644,4 +646,4 @@ for ( var i = 0 ; i < Property.properties.length ; i++ )
     Property.properties[i] = Property.create(Property.properties[i]);
 
 USED_MODELS.Property = Property;
-
+USED_MODELS.Model = Model;
