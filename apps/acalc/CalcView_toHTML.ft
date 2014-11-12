@@ -41,7 +41,7 @@
       </div>
     </mainView>
     <panelView>
-      <foam model="SlidePanelView" minWidth="360" minPanelWidth="90" panelRatio="0.25">
+      <div id="%%id"><foam model="SlidePanelView" minWidth="360" minPanelWidth="90" panelRatio="0.25">
         <mainView>
           <%
           this.X.registerModel(CalcButton.xbind({
@@ -94,7 +94,7 @@
             </div>
           </div>
         </panelView>
-      </foam>
+      </foam></div>
     </panelView>
   </foam>
   </div>
