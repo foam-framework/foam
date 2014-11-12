@@ -63,7 +63,7 @@ function override(cls, methodName, method) {
     this.SUPER = null;
     return ret;
   };
-
+  f.toString = function() { return method.toString(); };
   f.super_ = super_;
 
   cls[methodName] = f;
