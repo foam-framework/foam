@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 var StringProperty = Model.create({
   extendsModel: 'Property',
 
@@ -270,6 +271,7 @@ var IntProperty = Model.create({
     }
   ]
 });
+
 
 var FloatProperty = Model.create({
   extendsModel: 'Property',
