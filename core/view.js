@@ -803,7 +803,7 @@ MODEL({
       function init(actions, opt_value) {
         actions.forEach(function(action) {
           for ( var j = 0 ; j < action.keyboardShortcuts.length ; j++ ) {
-            var key     = action.keyboardShortcuts[j];
+            var key = action.keyboardShortcuts[j];
             keyMap[key] = opt_value ?
               function() { action.callIfEnabled(self.X, opt_value.get()); } :
               action.callIfEnabled.bind(action, self.X, self) ;
@@ -819,6 +819,7 @@ MODEL({
         init(this.model.actions, this.data$);
 
       if ( found ) {
+        console.assert(this.$, 'View must define outer id when using keyboard shortcuts: ' + this.name_);
         this.keyMap_ = keyMap;
         this.$.parentElement.addEventListener('keydown', this.onKeyboardShortcut);
       }
