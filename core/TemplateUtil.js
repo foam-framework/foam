@@ -239,7 +239,7 @@ var TemplateUtil = {
    lazyCompile: function(t) {
      var delegate;
 
-     return function() {
+     var f = function() {
        if ( ! delegate ) {
          if ( ! t.template )
            throw 'Must arequire() template model before use for ' + this.name_ + '.' + t.name;
@@ -248,6 +248,10 @@ var TemplateUtil = {
 
        return delegate.apply(this, arguments);
      };
+
+     f.toString = function() { return delegate ? delegate.toString() : t; };
+
+     return f;
    },
 
    compile: window.chrome && window.chrome.app && window.chrome.app.runtime ?
