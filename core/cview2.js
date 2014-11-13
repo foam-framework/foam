@@ -73,6 +73,7 @@ MODEL({
         if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
         this.canvas.save();
         this.canvas.scale(this.scalingRatio, this.scalingRatio);
+        this.cview.erase();
         this.cview.paint();
         this.canvas.restore();
       }
@@ -254,9 +255,13 @@ MODEL({
       view:  'IntFieldView',
       defaultValue: 10
     },
+//    {
+//      name: 'parent',
+//      type: 'CView2'
+//    },
     {
       name:  'children',
-      type:  'CView[]',
+      type:  'CView2[]',
       factory: function() { return []; },
       hidden: true
     },
@@ -316,7 +321,7 @@ MODEL({
         child.view = this.view;
         child.addListener(this.view.paint);
       }
-      // child.parent = this;
+      //child.parent = this;
       return this;
     },
 
@@ -329,7 +334,7 @@ MODEL({
       this.children.deleteI(child);
       child.view = undefined;
       child.removeListener(this.view.paint);
-      // child.parent = undefined;
+      //child.parent = undefined;
       return this;
     },
 
@@ -348,7 +353,7 @@ MODEL({
       }
     },
 
-    paintSelf: function() {},
+    paintSelf: function() { /* Implement in sub-models to do your painting. */ },
 
     paint: function() {
       if ( ! this.$ ) return;
@@ -357,7 +362,7 @@ MODEL({
         this.state = 'active';
       }
       this.canvas.translate(this.x, this.y);
-      this.erase();
+      //this.erase();
       this.paintSelf();
       this.paintChildren();
     },
@@ -396,7 +401,7 @@ MODEL({
 
   methods: {
 
-    paint: function() {
+    paintSelf: function() {
       var c = this.canvas;
       if ( ! c ) return;
 
@@ -406,7 +411,7 @@ MODEL({
         c.lineWidth = this.borderWidth;
         c.strokeStyle = this.border;
         c.beginPath();
-        c.arc(this.x, this.y, this.r, 0, Math.PI*2, true);
+        c.arc(0, 0, this.r, 0, Math.PI*2, true);
         c.closePath();
         c.stroke();
       }
@@ -415,7 +420,7 @@ MODEL({
         c.fillStyle = this.color;
 
         c.beginPath();
-        c.arc(this.x, this.y, this.r, 0, Math.PI*2, true);
+        c.arc(0, 0, this.r, 0, Math.PI*2, true);
         c.closePath();
         c.fill();
       }

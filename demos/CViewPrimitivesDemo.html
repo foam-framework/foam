@@ -1,0 +1,49 @@
+<html>
+  <head>
+    <script language="javascript" src="../../core/bootFOAM.js"></script>
+    <title>CView Primitives Demo</title>
+    <link rel="stylesheet" type="text/css" href="../../core/foam.css" />
+    <script src="../../core/cview.js"></script>
+    <script src="../../core/cview2.js"></script>
+    <script src="../../core/CViewPrimitives.js"></script>
+  </head>
+  <body bgcolor="#eeffee"">
+    <script>
+      var view = X.CView2.create({width: 500, height: 300});
+
+      view.write(document);
+
+      var label = X.canvas.Label.create({
+            x: 20,
+            y: 20,
+            color: 'black',
+            width: 100,
+            height: 30,
+            text: "hello world",
+            font: "12pt Roboto"
+          });
+     var box = X.canvas.Rectangle.create({
+           x: 10,
+           y: 10,
+           color: '#ff00ff',
+           width: 100,
+           height: 20,
+           border: "blue"
+         });
+
+      var circle = X.Circle2.create({
+          x: 10,
+          y: 10,
+          color: 'red',
+          radius: 20,
+
+        });
+
+      view.addChild(box);
+      view.addChild(circle);
+      view.addChild(label);
+
+      //window.setTimeout(function() { view.paint(); }, 1000);
+    </script>
+  </body>
+</html>
