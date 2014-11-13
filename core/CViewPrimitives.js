@@ -41,7 +41,26 @@ MODEL({
       model_: 'IntProperty',
       name: 'max',
       documentation: function() {/* The maximum size. If undefined, no preference. */},
+    },
+    {
+      model_: 'IntProperty',
+      name: 'stretchFactor',
+      defaultValue: 0,
+      documentation: function() {/* If zero, item will not grow unless all other
+            items are ungrowable. If above zero,
+            indicates the proportion of space this item should take (versus the
+            total of all stretch factors in the layout). */},
+    },
+    {
+      model_: 'IntProperty',
+      name: 'shrinkFactor',
+      defaultValue: 0,
+      documentation: function() {/* If zero, item will not shrink unless all other
+            items are unshrinkable. If above zero,
+            indicates the proportion of space this item should take (versus the
+            total of all shrink factors in the layout). */},
     }
+
   ]
 
 });

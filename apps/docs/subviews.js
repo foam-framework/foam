@@ -316,7 +316,7 @@ MODEL({
       var modelDef = model.definition_?  model.definition_: model;
       var self = this;
       var newModelTr = this.X.DocModelInheritanceTracker.create();
-      newModelTr.model = model.name;
+      newModelTr.model = model.id;
 
       this.X.Model.properties.forEach(function(modProp) {
         var modPropVal = modelDef[modProp.name];
@@ -361,7 +361,7 @@ MODEL({
         previousExtenderTrackers.push(newModelTr);
         // inheritance level will bubble back up the stack once we know where the bottom is
         newModelTr.inheritanceLevel = 1 + this.loadFeaturesOfModel(
-                          this.X[model.extendsModel], previousExtenderTrackers);
+                          FOAM.lookup(model.extendsModel, X), previousExtenderTrackers);
       }
 
       // the tracker is now complete
