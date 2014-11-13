@@ -111,7 +111,6 @@ var BooleanProperty = Model.create({
         return txt.equalsIC('y') || txt.equalsIC('yes') || txt.equalsIC('true') || txt.equalsIC('t');
       }
     }
-
   ]
 });
 
@@ -409,21 +408,11 @@ var ArrayProperty = Model.create({
       defaultValue: function(_, a, prop) {
         var m = this.X[prop.subType] || GLOBAL[prop.subType];
 
+        // if ( ! Array.isArray(a) ) a = [a];  // ???: Is this a good idea?
         if ( ! m ) return a;
 
-        for ( var i = 0 ; i < a.length ; i++ ) {
-          // TODO: remove when 'redundant model_'s removed
-          /*
-            if ( a[i].model_ ) {
-            if ( a[i].model_ == prop.subType ) {
-            console.log('********* redundant model_ ', prop.subType)
-            } else {
-            console.log('*');
-            }
-            }
-          */
+        for ( var i = 0 ; i < a.length ; i++ )
           a[i] = a[i].model_ ? FOAM(a[i]) : m.create(a[i]);
-        }
 
         return a;
       }
