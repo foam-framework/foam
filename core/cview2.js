@@ -407,7 +407,7 @@ MODEL({
           to 'active' '$$DOC{ref:'.state'}. */ },
 
     write: function(document) { /* Inserts this $$DOC{ref:'CView2'} into the DOM
-                                   with a $$DOC{ref:'AbstractCViewView'} wrapper. */
+                                   with an $$DOC{ref:'AbstractCViewView'} wrapper. */
       var v = this.toView_();
       document.writeln(v.toHTML());
       v.initHTML();

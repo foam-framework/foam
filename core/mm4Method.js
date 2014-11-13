@@ -680,6 +680,15 @@ MODEL({
 
   properties: [
     {
+      name:  'name',
+      required: true,
+      help: 'Interface name.',
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'.'} definition names should use CamelCase starting with a capital letter.
+         */}
+    },
+    {
       name:  'package',
       help: 'Interface package.',
       documentation: Model.PACKAGE.documentation.clone()
@@ -696,15 +705,6 @@ MODEL({
         $$DOC{ref:'Interface',usePlural:true}, and have $$DOC{ref:'Model.extendsModel'}
         set to $$DOC{ref:'Interface'}.
       */}
-    },
-    {
-      name:  'name',
-      required: true,
-      help: 'Interface name.',
-      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
-        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
-        $$DOC{ref:'.'} definition names should use CamelCase starting with a capital letter.
-         */}
     },
     {
       name:  'description',

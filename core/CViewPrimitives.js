@@ -16,6 +16,82 @@
  */
 
 
+//////////////////////////////// Layout stuff
+// Note that this should be merged into layout.js when ready
+
+MODEL({
+  name: 'LayoutItemLinearConstraints',
+  package: 'canvas',
+
+  documentation: function() {/* The information layout items provide for a
+                            single axis of linear layout. */},
+
+  properties: [
+    {
+      model_: 'IntProperty',
+      name: 'preferred',
+      documentation: function() {/* The preferred item size. If undefined, no preference. */},
+    },
+    {
+      model_: 'IntProperty',
+      name: 'min',
+      documentation: function() {/* The minimum size. If undefined, no preference. */},
+    },
+    {
+      model_: 'IntProperty',
+      name: 'max',
+      documentation: function() {/* The maximum size. If undefined, no preference. */},
+    }
+  ]
+
+});
+
+
+INTERFACE({
+  name: 'LayoutItemHorizontal',
+  package: 'canvas',
+
+  documentation: function() {/* This interface enables an item to be placed in
+                                a horizontal layout. If you do not  */},
+  properties: [
+    {
+      model_: 'LayoutItemLinearConstraints',
+      name: 'horizontal',
+      documentation: function() {/* Horizontal layout constraints. If undefined,
+                              no constraints or preferences are assumed. */},
+    }
+  ]
+
+});
+
+
+INTERFACE({
+  name: 'LayoutItemVertical',
+  package: 'canvas',
+
+  documentation: function() {/* This interface enables an item to be placed in
+                                a horizontal layout. */},
+  properties: [
+    {
+      model_: 'LayoutItemLinearConstraints',
+      name: 'vertical',
+      documentation: function() {/* Vertical layout constraints. If undefined,
+                              no constraints or preferences are assumed. */},
+    }
+  ]
+
+});
+
+
+
+
+
+
+
+
+
+
+
 MODEL({
   name:  'Rectangle',
 
