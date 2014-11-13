@@ -15,54 +15,111 @@
  * limitations under the License.
  */
 
-/** Like XMLParser, but more forgiving of unmatched tags. **/
-// TODO(kgr): have XMLParser use Tag also
-var Tag = {
-  create: function(tagName, opt_attrs, opt_children) {
-    return {
-      __proto__: this,
-      tag:      tagName,
-      attrs:    opt_attrs || {},
-      children: opt_children || []
-    };
-  },
-  toString: function() { return this.toHTML(); },
-  toHTML: function() {
-    var out = '<' + this.tag;
-    for ( key in this.attrs ) { out += ' ' + key + '="' + this.attrs[key] + '"'; }
-    if ( this.children.length ) {
-      out += '>';
-      out += this.innerHTML();
-      out += '</' + this.tag + '>';
-    } else {
-      out += '>';
-    }
-    return out;
-  },
-  innerHTML: function() {
-    var out = '';
-    for ( var i = 0 ; i < this.children.length ; i++ ) {
-      var c = this.children[i];
-      out += c.toHTML ? c.toHTML() : c.toString();
-    }
-    return out;
-  },
-  toXML: function() {
-    var out = '<' + this.tag;
-    for ( key in this.attrs ) { out += ' ' + key + '="' + this.attrs[key] + '"'; }
-    if ( this.children.length ) {
-      out += '>';
-      for ( var i = 0 ; i < this.children.length ; i++ ) {
-        out += this.children[i].toXML();
-      }
-      out += '</' + this.tag + '>';
-    } else {
-      out += '/>';
-    }
-    return out;
-  }
-};
+/**
+ * A sub-set of the DOM Element interface that we use for FOAM tag parsing.
+ * This lets us transparently build FOAM objects and views from either real DOM
+ * or from the output of FOAM's HTML parser.
+ **/
+MODEL({
+  package: 'foam.html',
+  name: 'Element',
 
+  constants: {
+    OPTIONAL_CLOSE_TAGS: {
+      HTML: true,
+      HEAD: true,
+      BODY: true,
+      P: true,
+      DT: true,
+      DD: true,
+      LI: true,
+      OPTION: true,
+      THEAD: true,
+      TH: true,
+      TBODY: true,
+      TR: true,
+      TD: true,
+      TFOOT: true,
+      COLGROUP: true,
+    },
+    ILLEGAL_CLOSE_TAGS: {
+      IMG: true,
+      INPUT: true,
+      BR: true,
+      HR: true,
+      FRAME: true,
+      AREA: true,
+      BASE: true,
+      BASEFONT: true,
+      COL: true,
+      ISINDEX: true,
+      LINK: true,
+      META: true,
+      PARAM: true
+    }
+  },
+
+  properties: [
+    {
+      name: 'id'
+    },
+    {
+      name: 'nodeName',
+      preSet: function(_, v) {
+        return v.toLowerCase();
+      }
+    },
+    {
+      name: 'attributes',
+      factory: function() { return {}; }
+    },
+    {
+      name: 'childNodes',
+      factory: function() { return []; }
+    },
+    {
+      name: 'children',
+      getter: function() {
+        return this.childNodes.filter(function(c) { return this.model_.isInstance(c); });
+      }
+    },
+    {
+      name: 'outerHTML',
+      getter: function() {
+        var out = '<' + this.nodeName;
+        if ( this.id ) out += ' id="' + this.id + '"';
+        for ( key in this.attributes ) {
+          out += ' ' + key + '="' + this.attributes[key] + '"';
+        }
+        if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] &&
+             ( this.OPTIONAL_CLOSE_TAGS[this.nodeName] && this.childNodes.length ) ) {
+          out += '>';
+          out += this.innerHTML;
+          out += '</' + this.nodeName;
+        }
+        out += '>';
+        return out;
+      }
+    },
+    {
+      name: 'innerHTML',
+      getter: function() {
+        var out = '';
+        for ( var i = 0 ; i < this.childNodes.length ; i++ ) {
+          var c = this.childNodes[i];
+          out += c.toHTML ? c.toHTML() : c.toString();
+        }
+        return out;
+      }
+    }
+  ],
+
+  methods: {
+    getAttribute: function(name) { return this.attributes[name]; },
+    appendChild: function(c) { this.childNodes.push(c); },
+    toHTML: function() { return this.outerHTML; }
+  }
+});
 
 var HTMLParser = {
   __proto__: grammar,
@@ -70,7 +127,7 @@ var HTMLParser = {
   create: function() {
     return {
       __proto__: this,
-      stack: [ Tag.create('html') ]
+      stack: [ X.foam.html.Element.create({nodeName: 'html'}) ]
     }
   },
 
@@ -128,12 +185,12 @@ var HTMLParser = {
     var tag = xs[1];
     // < tagName ws attributes ws / >
     // 0 1       2  3          4  5 6
-    var obj = Tag.create(tag, xs[3]);
-    this.peek().children.push(obj);
+    var obj = X.foam.html.Element.create({nameName: tag, attributes: xs[3]});
+    this.peek().appendChild(obj);
     if ( xs[5] != '/' ) this.stack.push(obj);
     return obj;
   },
-  text: function(xs) { this.peek().children.push(xs); },
+  text: function(xs) { this.peek().appendChild(xs); },
   endTag: function(xs) {
     var tag = xs;
     var stack = this.stack;
@@ -141,8 +198,8 @@ var HTMLParser = {
       var top = stack.pop();
       if ( top.tag == tag ) return;
       var peek = this.peek();
-      peek.children = peek.children.concat(top.children);
-      top.children = [];
+      peek.childNodes = peek.childNodes.concat(top.childNodes);
+      top.childNodex = [];
     }
   }
 });
@@ -169,3 +226,5 @@ test('<b>foo</b></foam>');
 test('<pA a="1">foo</pA>');
 test('<pA a="1" b="2">foo<b>bold</b></pA>');
 */
+
+TemplateParser.foamTag = FOAMTagParser.create().export('START');

@@ -33,7 +33,7 @@ var FOAMTagParser = {
   create: function() {
     return {
       __proto__: this,
-      html:      HTMLParser.create().export('START')
+      html: HTMLParser.create().export('START')
     };
   },
 
@@ -73,7 +73,9 @@ var FOAMTagParser = {
     xs.forEach(function(attr) { attrs[attr[0]] = attr[2]; });
     return attrs;
   },
-  tag:      function(xs) { return Tag.create(xs[1], xs[3], xs[5]); },
+  tag: function(xs) {
+    return foam.html.Element.create({nodeName: xs[1], attributes: xs[3], childNodes: xs[5]});
+  },
   closed:   function()   { return []; },
   matching: function(xs) { return xs.children; }
 });
@@ -101,7 +103,7 @@ var TemplateParser = {
 
   'comment': seq('<!--', repeat(not('-->', anyChar)), '-->'),
 
-  'foamTag': FOAMTagParser.create().export('START'),
+  'foamTag': function() {}, // placeholder until gets filled in after HTMLParser is built
 
   'create child': seq(
     '$$',
@@ -185,41 +187,33 @@ var TemplateCompiler = {
               v[2] ? ', ' + v[2] : '',
               "),\n'");
   },
-  foamTag: function(t) {
-    // A Feature
-    if ( t.attrs.f ) {
-      var name = t.attrs.f.constantize();
-      var attrs = t.attrs.clone();
-      delete attrs['f'];
+  foamTag: function(e) {
+    function buildAttrs(e, attrToDelete) {
+      var attrs = e.attributes.clone();
+      delete attrs[attrToDelete];
 
-      for ( var i = 0 ; i < t.children.length ; i++ ) {
-        var c = t.children[i];
-        if ( typeof c !== 'string' ) attrs[c.tag] = c.innerHTML();
+      var children = e.children;
+      for ( var i = 0 ; i < children.length ; i++ ) {
+        var c = children[i];
+        attrs[c.nodeName] = c.innerHTML;
       }
 
+      return attrs;
+    }
+
+    // A Feature
+    if ( e.attributes.f ) {
+      var name = e.attributes.f.constantize();
       this.push("', self.createTemplateView('", name, "',");
-      this.push(JSON.stringify(attrs));
+      this.push(JSON.stringify(buildAttrs(e, 'f')));
       this.push("),\n'");
     }
     // A Model
-    else if ( t.attrs.model ) {
-      var modelName = t.attrs.model;
-      var attrs = t.attrs.clone();
-      delete attrs['model'];
-
-      for ( var i = 0 ; i < t.children.length ; i++ ) {
-        var c = t.children[i];
-        // Ignore strings, only interested in sub-tags
-        if ( typeof c !== 'string' ) {
-          // TODO(kgr): if it is an array property, then add to the array
-          attrs[c.tag] = c.innerHTML();
-        }
-      }
-
+    else if ( e.attributes.model ) {
+      var modelName = e.attributes.model;
       this.push("', X.", modelName, '.create(');
-      this.push(JSON.stringify(attrs));
+      this.push(JSON.stringify(buildAttrs(e, 'model')));
       this.push("),\n'");
-
     }
   },
   'simple value': function(v) { this.push("',\n self.", v[1].join(''), ",\n'"); },
