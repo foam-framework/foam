@@ -319,7 +319,7 @@ MODEL({
       this.children.push(child);
       if ( this.view ) {
         child.view = this.view;
-        //child.addListener(this.view.paint);
+        child.addListener(this.view.paint);
       }
       //child.parent = this;
       return this;
@@ -333,7 +333,7 @@ MODEL({
     removeChild: function(child) {
       this.children.deleteI(child);
       child.view = undefined;
-      //child.removeListener(this.view.paint);
+      child.removeListener(this.view.paint);
       //child.parent = undefined;
       return this;
     },
