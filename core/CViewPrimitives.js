@@ -23,6 +23,8 @@ MODEL({
   name: 'LayoutItemLinearConstraints',
   package: 'canvas',
 
+  extendsModel: 'Property',
+
   documentation: function() {/* The information layout items provide for a
                             single axis of linear layout. */},
 
@@ -65,17 +67,16 @@ MODEL({
 
 });
 
-
-INTERFACE({
-  name: 'LayoutItemHorizontal',
+MODEL({
+  name: 'LayoutItemHorizontalTrait',
   package: 'canvas',
 
-  documentation: function() {/* This interface enables an item to be placed in
+  documentation: function() {/* This trait enables an item to be placed in
                                 a horizontal layout. If you do not  */},
   properties: [
     {
       model_: 'LayoutItemLinearConstraints',
-      name: 'horizontal',
+      name: 'horizontalConstraints',
       documentation: function() {/* Horizontal layout constraints. If undefined,
                               no constraints or preferences are assumed. */},
     }
@@ -83,17 +84,16 @@ INTERFACE({
 
 });
 
-
-INTERFACE({
-  name: 'LayoutItemVertical',
+MODEL({
+  name: 'LayoutItemVerticalTrait',
   package: 'canvas',
 
-  documentation: function() {/* This interface enables an item to be placed in
-                                a horizontal layout. */},
+  documentation: function() {/* This trait enables an item to be placed in
+                                a vertical layout. */},
   properties: [
     {
       model_: 'LayoutItemLinearConstraints',
-      name: 'vertical',
+      name: 'verticalConstraints',
       documentation: function() {/* Vertical layout constraints. If undefined,
                               no constraints or preferences are assumed. */},
     }
@@ -102,8 +102,61 @@ INTERFACE({
 });
 
 
+MODEL({
+  name: 'Layout',
+  package: 'canvas',
 
+  extendsModel: 'CView2',
 
+  documentation: function() {/*
+      Base model for layouts that control the position and size of
+      child $$DOC{ref:'CView2'} instances. $$DOC{ref:'.',usePlural:true}
+      themselves to not paint anything, except as a debug tool.
+    */},
+
+  listeners: [
+    {
+      name: 'performLayout',
+      isFramed: true,
+      documentation: function() {/* Performs a full layout of child items. */},
+      code: function(evt) {
+        this.calculateLayout();
+      }
+    }
+  ],
+  methods: {
+    calculateLayout: function() { /* Override to perform your layout operation */
+      console.warn("No layout operation defined in " + this.name +
+                   ". Did you forget to define listener performLayout()?");
+    }
+  }
+});
+
+MODEL({
+  name: 'LinearLayout',
+  package: 'canvas',
+
+  extendsModel: 'CView2',
+
+  documentation: function() {/*
+      A linear layout for row or column alignment. Only the main axis is laid out.
+    */},
+
+  properties: [
+    {
+      name: 'orientation',
+      type: 'String', // TODO: should be ENUM
+      defaultValue: 'horizontal',
+      documentation: function() {/* Set to 'horizontal' or 'vertical'. */},
+    }
+  ],
+
+  methods: {
+    calculateLayout: function() { /* lay out items along the primary axis */
+
+    }
+  }
+});
 
 
 

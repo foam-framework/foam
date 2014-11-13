@@ -700,10 +700,12 @@ MODEL({
       help: 'Interfaces extended by this interface.',
       documentation: function() { /*
         The other $$DOC{ref:'Interface',usePlural:true} this $$DOC{ref:'Interface'} inherits
-        from. Unlike most $$DOC{ref:'Model',usePlural:true},
+        from. Like a $$DOC{ref:'Model'} instance can $$DOC{ref:'Model.extendsModel'} other
+        $$DOC{ref:'Model',usePlural:true},
         $$DOC{ref:'Interface',usePlural:true} should only extend other
-        $$DOC{ref:'Interface',usePlural:true}, and have $$DOC{ref:'Model.extendsModel'}
-        set to $$DOC{ref:'Interface'}.
+        instances of $$DOC{ref:'Interface'}.</p>
+        <p>Do not specify <code>extendsModel: 'Interface'</code> unless you are
+        creating a new interfacing system.
       */}
     },
     {
