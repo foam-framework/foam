@@ -256,16 +256,34 @@ MODEL({
 
   properties: [
     {
-      name: 'originalData'
+      name: 'rawData',
+      documentation: 'The uncloned original input data.',
+      postSet: function(old, nu) {
+        if ( old ) old.removeListener(this.rawUpdate);
+        if ( nu ) nu.addListener(this.rawUpdate);
+      }
+    },
+    {
+      name: 'originalData',
+      documentation: 'A clone of the input data, for comparison with edits.'
     },
     {
       name: 'data',
-      preSet: function(_, v) { if ( v ) return v.deepClone(); },
+      preSet: function(_, v) {
+        if ( ! v ) return;
+        this.rawData = v;
+        return v.deepClone();
+      },
       postSet: function(_, data) {
         if ( ! data ) return;
         this.originalData = data.deepClone();
         if ( ! this.model && data && data.model_ ) this.model = data.model_;
-        data.addListener(function() { this.version++; }.bind(this));
+        data.addListener(function() {
+          // The user is making edits. Drop rawData, since we no longer want
+          // to react to updates to it.
+          this.version++;
+          this.rawData = '';
+        }.bind(this));
       }
     },
     {
@@ -283,6 +301,17 @@ MODEL({
       // Used to help trigger isEnabled / isAvailable in Actions.
       model_: 'IntProperty',
       name: 'version'
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'rawUpdate',
+      code: function() {
+        // If this listener fires, the raw data updated and the user hasn't
+        // changed anything.
+        this.data = this.rawData;
+      }
     }
   ],
 
