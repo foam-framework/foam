@@ -139,14 +139,17 @@ function arequire(modelName, opt_X) {
    **/
   if ( ! model ) { console.log(modelName, 'not found'); return; }
 
-  return arequireModel(model);
+  return arequireModel(model, X);
 }
 
 
-function arequireModel(model) {
+function arequireModel(model, X) {
   if ( ! model.required__ ) {
-    // TODO(kgr): eventually this should just call the arequire() method on the Model
     var args = [];
+
+    if ( model.extendsModel ) args.push(arequire(model.extendsModel, X));
+
+    // TODO(kgr): eventually this should just call the arequire() method on the Model
     if ( model.templates ) for ( var i = 0 ; i < model.templates.length ; i++ ) {
       var t = model.templates[i];
       args.push(aseq(

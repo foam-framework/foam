@@ -15,7 +15,12 @@
  * limitations under the License.
  */
 
-function factorial(n)      { var r = 1; while ( n > 0 ) r *= n--; return r; };
+function factorial(n) {
+  if ( n > 170 ) return 1/0;
+  var r = 1;
+  while ( n > 0 ) r *= n--;
+  return r;
+};
 function permutation(n, r) { return factorial(n) / factorial(n-r); };
 function combination(n, r) { return permutation(n, r) / factorial(r); };
 
@@ -98,7 +103,7 @@ MODEL({ name: 'History', properties: [ 'op', 'a2' ] });
 MODEL({
   name: 'Calc',
 
-  requires: [ 'MainButtonsView', 'SecondaryButtonsView', 'TertiaryButtonsView', 'HistoryView', 'CalcView' ],
+  requires: [ 'HistoryView', 'CalcView' ],
 
   templates: [ function CSS() {/*
     body {
@@ -430,9 +435,5 @@ var CalcButton = ActionButtonCView2.xbind({
 });
 X.registerModel(CalcButton, 'ActionButton');
 
-
 MODEL({ name: 'HistoryView',          extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 MODEL({ name: 'CalcView',             extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-MODEL({ name: 'MainButtonsView',      extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-MODEL({ name: 'SecondaryButtonsView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-MODEL({ name: 'TertiaryButtonsView',  extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });

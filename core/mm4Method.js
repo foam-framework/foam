@@ -680,6 +680,15 @@ MODEL({
 
   properties: [
     {
+      name:  'name',
+      required: true,
+      help: 'Interface name.',
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'.'} definition names should use CamelCase starting with a capital letter.
+         */}
+    },
+    {
       name:  'package',
       help: 'Interface package.',
       documentation: Model.PACKAGE.documentation.clone()
@@ -691,20 +700,13 @@ MODEL({
       help: 'Interfaces extended by this interface.',
       documentation: function() { /*
         The other $$DOC{ref:'Interface',usePlural:true} this $$DOC{ref:'Interface'} inherits
-        from. Unlike most $$DOC{ref:'Model',usePlural:true},
+        from. Like a $$DOC{ref:'Model'} instance can $$DOC{ref:'Model.extendsModel'} other
+        $$DOC{ref:'Model',usePlural:true},
         $$DOC{ref:'Interface',usePlural:true} should only extend other
-        $$DOC{ref:'Interface',usePlural:true}, and have $$DOC{ref:'Model.extendsModel'}
-        set to $$DOC{ref:'Interface'}.
+        instances of $$DOC{ref:'Interface'}.</p>
+        <p>Do not specify <code>extendsModel: 'Interface'</code> unless you are
+        creating a new interfacing system.
       */}
-    },
-    {
-      name:  'name',
-      required: true,
-      help: 'Interface name.',
-      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
-        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
-        $$DOC{ref:'.'} definition names should use CamelCase starting with a capital letter.
-         */}
     },
     {
       name:  'description',
@@ -824,6 +826,7 @@ MODEL({
        <li><code>\\&lt;new-line&gt;</code>: ignored</li>
        <li><code>$$DOC{ref:'Template',text:'%%value'}(&lt;whitespace&gt;|{parameters})</code>: output a single value to the template output</li>
        <li><code>$$DOC{ref:'Template',text:'$$feature'}(&lt;whitespace&gt;|{parameters})</code>: output the View or Action for the current Value</li>
+       <li><code>&lt;!-- comment --&gt;</code> comments are stripped from $$DOC{ref:'Template',usePlural:true}.</li>
     </ul>
   */},
 
@@ -949,7 +952,7 @@ MODEL({
       help: 'The main content of the document.',
       documentation: "The main body text of the document. Any valid template can be used, including the $$DOC{ref:'DocView'} specific $$DOC{ref:'DocView',text:'$$DOC{\"ref\"}'} and $$DOC{ref:'DocView',text:'$$THISDATA{}'} tags.",
       preSet: function(_, template) {
-          return TemplateUtil.templateMemberExpander(template, this.X);
+          return TemplateUtil.templateMemberExpander(this, template);
       }
     },
     {

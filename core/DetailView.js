@@ -19,6 +19,9 @@ MODEL({
   name: 'DetailView',
   extendsModel: 'View',
 
+  imports: [ 'data' ],
+  exports: [ 'data' ],
+
   documentation:function() {/*
     When a view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'DetailView'}
     is the place to start. Either using $$DOC{ref:'DetailView'} directly, implementing
@@ -38,7 +41,6 @@ MODEL({
     <p>For each $$DOC{ref:'Property'} in the $$DOC{ref:'.data'} instance specified,
     a $$DOC{ref:'PropertyView'} is created that selects the appropriate $$DOC{ref:'View'}
     to construct.
-
   */},
 
   properties: [
@@ -171,7 +173,7 @@ MODEL({
       if ( prop.detailViewPreRow ) str += prop.detailViewPreRow(this);
 
       str += '<tr class="detail-' + prop.name + '">';
-      if ( view.model_ === DAOController ) {
+      if ( DAOController.isInstance(view) ) {
         str += "<td colspan=2><div class=detailArrayLabel>" + prop.label + "</div>";
         str += view.toHTML();
         str += '</td>';
@@ -254,15 +256,34 @@ MODEL({
 
   properties: [
     {
-      name: 'originalData'
+      name: 'rawData',
+      documentation: 'The uncloned original input data.',
+      postSet: function(old, nu) {
+        if ( old ) old.removeListener(this.rawUpdate);
+        if ( nu ) nu.addListener(this.rawUpdate);
+      }
+    },
+    {
+      name: 'originalData',
+      documentation: 'A clone of the input data, for comparison with edits.'
     },
     {
       name: 'data',
-      preSet: function(_, v) { if ( v ) return v.deepClone(); },
+      preSet: function(_, v) {
+        if ( ! v ) return;
+        this.rawData = v;
+        return v.deepClone();
+      },
       postSet: function(_, data) {
+        if ( ! data ) return;
         this.originalData = data.deepClone();
         if ( ! this.model && data && data.model_ ) this.model = data.model_;
-        data.addListener(function() { this.version++; }.bind(this));
+        data.addListener(function() {
+          // The user is making edits. Drop rawData, since we no longer want
+          // to react to updates to it.
+          this.version++;
+          this.rawData = '';
+        }.bind(this));
       }
     },
     {
@@ -280,6 +301,17 @@ MODEL({
       // Used to help trigger isEnabled / isAvailable in Actions.
       model_: 'IntProperty',
       name: 'version'
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'rawUpdate',
+      code: function() {
+        // If this listener fires, the raw data updated and the user hasn't
+        // changed anything.
+        this.data = this.rawData;
+      }
     }
   ],
 

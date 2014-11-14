@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 var StringProperty = Model.create({
   extendsModel: 'Property',
 
@@ -110,7 +111,6 @@ var BooleanProperty = Model.create({
         return txt.equalsIC('y') || txt.equalsIC('yes') || txt.equalsIC('true') || txt.equalsIC('t');
       }
     }
-
   ]
 });
 
@@ -271,6 +271,7 @@ var IntProperty = Model.create({
   ]
 });
 
+
 var FloatProperty = Model.create({
   extendsModel: 'Property',
 
@@ -407,21 +408,11 @@ var ArrayProperty = Model.create({
       defaultValue: function(_, a, prop) {
         var m = this.X[prop.subType] || GLOBAL[prop.subType];
 
+        // if ( ! Array.isArray(a) ) a = [a];  // ???: Is this a good idea?
         if ( ! m ) return a;
 
-        for ( var i = 0 ; i < a.length ; i++ ) {
-          // TODO: remove when 'redundant model_'s removed
-          /*
-            if ( a[i].model_ ) {
-            if ( a[i].model_ == prop.subType ) {
-            console.log('********* redundant model_ ', prop.subType)
-            } else {
-            console.log('*');
-            }
-            }
-          */
+        for ( var i = 0 ; i < a.length ; i++ )
           a[i] = a[i].model_ ? FOAM(a[i]) : m.create(a[i]);
-        }
 
         return a;
       }
@@ -792,11 +783,11 @@ var ViewFactoryProperty = Model.create({
               // template is async.  Should create a FutureView to handle this.
               arequireModel(viewModel);
             }
-            return viewModel.create.bind(viewModel);
+            return function(args, X) { return viewModel.create(args, X || this.X); };
           }
 
           return function(map, opt_X) {
-            return FOAM.lookup(f, opt_X || this.X).create(map);
+            return FOAM.lookup(f, opt_X || this.X).create(map, opt_X || this.X);
           }.bind(this);
         }
 

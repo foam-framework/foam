@@ -186,6 +186,18 @@ var FObject = {
       this.create = BootstrapModel.create;
   },
 
+  fromElement: function(e) {
+    for ( var i = 0 ; i < e.children.length ; i++ ) {
+      var c = e.children[i];
+      if ( typeof c !== 'string' ) {
+        var p = this.model_.getProperty(c.tag);
+        if ( p ) {
+          p.initFromElement(this, c);
+        }
+      }
+    }
+  },
+
   installInDocument: function(X, document) {
     for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
       var t = this.model_.templates[i];

@@ -574,3 +574,31 @@ MODEL({
     }
   })();
 })();
+
+// Go back over each model so far, assigning the new Model to remove any reference
+// to the bootstrap Model, then FOAMalize any features that were missed due to
+// the model for that feature type ("Method", "Documentation", etc.) being
+// missing previously. This time the preSet for each should be fully operational.
+function recopyModelFeatures(m) {
+  m.model_ = Model;
+
+  // the preSet for each of these does the work
+  m.methods       = m.methods;
+  m.templates     = m.templates;
+  m.relationships = m.relationships;
+  m.properties    = m.properties;
+  m.actions       = m.actions;
+  m.listeners     = m.listeners;
+  m.models        = m.models;
+  m.tests         = m.tests;
+  m.issues        = m.issues;
+
+  if (DEBUG) {
+    BootstrapModel.saveDefinition(m); // keep copies of the updated lists
+  }
+}
+
+for ( var id in USED_MODELS ) {
+  recopyModelFeatures(FOAM.lookup(id));
+}
+USED_MODELS['Model'] = Model;

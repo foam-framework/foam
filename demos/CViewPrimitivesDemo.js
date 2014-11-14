@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2014 Google Inc. All Rights Reserved.
+ * Copyright 2014 Google Inc. All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,3 @@
  * limitations under the License.
  */
 
-console.log('ServiceWorker Support');
-navigator.serviceWorker.register('../core/sw.js', {
-  scope: '/'
-}).then(function() {
-  console.log('Service Worker registered.');
-}).catch(function(err) {
-  console.log('Service Worker Error: ', err.toString());
-});

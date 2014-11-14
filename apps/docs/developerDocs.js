@@ -236,13 +236,13 @@ var RegisterDevDocs = function(opt_X) {
           <ul>
           <li>To use a $$DOC{ref:'Model'} definition, add it to your $$DOC{ref:'Model.requires'}.
           This indicates not only that it should be loaded for you, but also installs a
-          shortcut on your instance so you can call <code>this.ModelName()</code> to
+          shortcut on your instance so you can call <code>this.ModelName.create()</code> to
           create an instance.
           </li>
           <li>To access values and $$DOC{ref:'Property',usePlural:true} that your
           parent (or its parent) has exported, list them in your $$DOC{ref:'Model.imports'}.
           Shortcuts are created on your instance so you can access the values:
-          <code>this.impdPropName</code>.
+          <code>imports: [ 'myImport' ]</code> gives you <code>this.myImport</code>.
           </li>
           <li>To make your own $$DOC{ref:'Property',usePlural:true} available to
           the instances you create, list them in $$DOC{ref:'Model.exports'}.
@@ -267,7 +267,7 @@ var RegisterDevDocs = function(opt_X) {
           model_: 'Documentation',
           body: function() {/*
           <p>This example demonstrates how imports and exports are passed down through
-          the creation chain. In this exmaple, <code>Bank</code> creates one or more
+          the creation chain. In this example, <code>Bank</code> creates one or more
           <code>Accounts</code>, and <code>Account</code> creates a one or
           more <code>Transactions</code>.</p>
           <p><img src="images/contextNew.png" alt="Bank Account Transaction diagram"/></p>
@@ -286,12 +286,17 @@ var RegisterDevDocs = function(opt_X) {
                 along with the other things exported from its parents.
                </li>
                <li>
+               If <code>Transaction</code> changed the value of <code>branch</code>, the value
+               change would be seen by both <code>Account</code> and <code>Bank</code>.
+               </li>
+               <li>
                 Dependency injection can be performed by
                 $$DOC{ref:'Model.requires',text:'requiring'} a $$DOC{ref:'Model'} and
                 then $$DOC{ref:'Model.exports',text:'exporting'} it with the name of
                 the $$DOC{ref:'Model'} you wish to replace. <code>Account</code>
                 exports <code>Transaction</code> as <code>SubTxn</code>, so when
-                <code>Transaction</code> tries to create an instance of this.SubTxn(),
+                <code>Transaction</code> tries to create an instance of
+                <code>this.SubTxn.create()</code>,
                 it actually creates an instance of itself. Replacements of existing
                 $$DOC{ref:'Model'} names can also be done for easy mocking.
                 </li>
@@ -443,26 +448,6 @@ var RegisterDevDocs = function(opt_X) {
           */}
         },
         {
-          name: 'pubSub',
-          label: 'Publishing and Subscribing',
-          model_: 'Documentation',
-          body: function() {/*
-            <p>To publish an event, simply invent a topic name. The topic is the type of
-            event, and used to filter listeners so they only receive notification when
-            the topic they are interested in is triggered. Example topics would include
-            'property', 'keydown', 'remove', 'selected', or whatever is relevant to your
-            $$DOC{ref:'Model'} and its listeners. </p>
-            <p>Every object in FOAM can send and receive events, so there is no need to
-            register your intent to publish. When the event happens, just call
-            <code>this.publish('topicName', opt_args)</code> and any listeners will be immediately
-            notified. If you don't want to wait around for them, the asynchronous version
-            <code>this.publishAsync('topicName', opt_args)</code> will return immediately and notify
-            the listeners later.</p>
-            <p>Listeners receive the optional arguments, if provided. Property changes, for
-            instance, will send the old and new values for the listener to reference.</p>
-          */}
-        },
-        {
           name: 'binding',
           label: 'Binding',
           model_: 'Documentation',
@@ -501,6 +486,26 @@ var RegisterDevDocs = function(opt_X) {
             <p>When a binding is no longer needed, clean it up with
             <code>Events.unfollow(src,dst)</code> or
             <code>Events.unlink(obj1, obj2)</code> respectively.
+          */}
+        },
+        {
+          name: 'pubSub',
+          label: 'Publishing and Subscribing',
+          model_: 'Documentation',
+          body: function() {/*
+            <p>To publish an event, simply invent a topic name. The topic is the type of
+            event, and used to filter listeners so they only receive notification when
+            the topic they are interested in is triggered. Example topics would include
+            'property', 'keydown', 'remove', 'selected', or whatever is relevant to your
+            $$DOC{ref:'Model'} and its listeners. </p>
+            <p>Every object in FOAM can send and receive events, so there is no need to
+            register your intent to publish. When the event happens, just call
+            <code>this.publish('topicName', opt_args)</code> and any listeners will be immediately
+            notified. If you don't want to wait around for them, the asynchronous version
+            <code>this.publishAsync('topicName', opt_args)</code> will return immediately and notify
+            the listeners later.</p>
+            <p>Listeners receive the optional arguments, if provided. Property changes, for
+            instance, will send the old and new values for the listener to reference.</p>
           */}
         },
         {

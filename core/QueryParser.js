@@ -171,17 +171,19 @@ var QueryParserFactory = function(model) {
       // Always treat an OR'ed value list and let the partial evalulator
       // simplify it when it isn't.
 
-      if ( v[1] === '=' ) return IN(v[0], v[2]);
-      if ( v[1] === ':' ) return ContainedInICExpr.create({arg1: compile_(v[0]), arg2: v[2]});
+      var prop    = v[0];
+      var values  = v[2];
+      var isInt   = IntProperty.isInstance(prop);
+      var isNum   = isInt || FloatProperty.isInstance(prop);
 
-      var or = OR();
-      var values = v[2];
-      for ( var i = 0 ; i < values.length ; i++ ) {
-        or.args.push(v[1] == ':' && ( v[0].type === 'String' || v[0].subType === 'String' ) ?
-                     CONTAINS_IC(v[0], values[i]) :
-                     EQ(v[0], values[i]));
+      if ( isNum ) {
+        for ( var i = 0 ; i < values.length ; i++ )
+          values[i] = isInt ? parseInt(values[i]) : parseFloat(values[i]);
       }
-      return or;
+
+      return ( v[1] === '=' || isNum ) ?
+        IN(v[0], values) :
+        ContainedInICExpr.create({arg1: compile_(prop), arg2: values}) ;
     },
 
     'literal date': function(v) { return new Date(v[0], v[2]-1, v[4]); },

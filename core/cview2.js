@@ -18,38 +18,72 @@ MODEL({
   name: 'AbstractCViewView',
   extendsModel: 'View',
 
+  documentation: function() {  /*
+    Forming the DOM component for a $$DOC{ref:'CView2',text:'canvas view'},
+    the $$DOC{ref:'.'} provides a canvas and DOM event integration. When you
+    create a $$DOC{ref:'CView2'} and $$DOC{ref:'CView2.write'} it into your
+    document, an $$DOC{ref:'.'} is created automatically to host your view.</p>
+    <p>Changes to your $$DOC{ref:'CView2'} or its children ripple down and
+    cause a repaint, starting with a $$DOC{ref:'AbstractCViewView.paint'} call.
+  */},
+
+
   properties: [
     {
       name: 'cview',
+      type: 'CView2',
       postSet: function(_, cview) {
         cview.view = this;
-      }
+      },
+      documentation: function() {/*
+          The $$DOC{ref:'CView2'} root node that contains all the content to render.
+        */}
     },
     {
       name: 'className',
       help: 'CSS class name(s), space separated.',
-      defaultValue: ''
+      defaultValue: '',
+      documentation: function() {/*
+          CSS class name(s), space separated.
+        */}
     },
     {
       model_: 'IntProperty',
       name: 'scalingRatio',
       preSet: function(_, v) { if ( v < 0 ) return 1; return v; },
       postSet: function(_, v) { console.log('Scaling to: ' , v); },
-      defaultValue: 1
+      defaultValue: 1,
+      documentation: function() {/*
+          If scaling is required to render the canvas at a higher resolution than
+          CSS pixels (for high DPI devices, for instance), the scaling value can
+          be used to set the pixel scale. This is set automatically by
+          $$DOC{ref:'.initHTML'}.
+        */}
     },
     {
       model_: 'IntProperty',
       name:  'width',
-      defaultValue: 100
+      defaultValue: 100,
+      documentation: function() {/*
+          The CSS width of the canvas. See also $$DOC{ref:'.canvasWidth'} and
+          $$DOC{ref:'.styleWidth'}.
+        */}
     },
     {
       model_: 'IntProperty',
       name:  'height',
-      defaultValue: 100
+      defaultValue: 100,
+      documentation: function() {/*
+          The CSS height of the canvas. See also $$DOC{ref:'.canvasHeight'} and
+          $$DOC{ref:'.styleHeight'}.
+        */}
     },
     {
       name: 'canvas',
-      getter: function() { return this.$ && this.$.getContext('2d'); }
+      getter: function() { return this.$ && this.$.getContext('2d'); },
+      documentation: function() {/*
+          The HTML canvas context. Use this to render.
+        */}
     }
   ],
 
@@ -64,7 +98,10 @@ MODEL({
         this.$.height       = this.canvasHeight();
         this.$.style.height = this.styleHeight();
         this.paint();
-      }
+      },
+      documentation: function() {/*
+          Reacts to resize events to fix the size of the canvas.
+        */}
     },
     {
       name: 'paint',
@@ -73,32 +110,38 @@ MODEL({
         if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
         this.canvas.save();
         this.canvas.scale(this.scalingRatio, this.scalingRatio);
+        this.cview.erase();
         this.cview.paint();
         this.canvas.restore();
-      }
+      },
+      documentation: function() {/*
+          Clears the canvas and triggers a repaint of the root $$DOC{ref:'CView2'}
+          and its children.
+        */}
     }
   ],
 
   methods: {
-    init: function() {
+    init: function() { /* Connects resize listeners. */
       this.SUPER();
       this.X.dynamic(function() { this.scalingRatio; this.width; this.height; }.bind(this),
                      this.resize);
     },
 
-    styleWidth:   function() { return (this.width) + 'px'; },
-    canvasWidth:  function() { return this.width * this.scalingRatio; },
-    styleHeight:  function() { return (this.height) + 'px'; },
-    canvasHeight: function() { return this.height * this.scalingRatio; },
+    styleWidth:   function() { /* The CSS width string */ return (this.width) + 'px'; },
+    canvasWidth:  function() { /* The scaled width */ return this.width * this.scalingRatio; },
+    styleHeight:  function() { /* The CSS height string */ return (this.height) + 'px'; },
+    canvasHeight: function() { /* The scaled height */ return this.height * this.scalingRatio; },
 
-    toString: function() { return 'CViewView(' + this.cview + ')'; },
+    toString: function() { /* The description of this. */ return 'CViewView(' + this.cview + ')'; },
 
-    toHTML: function() {
+    toHTML: function() { /* Creates the canvas element. */
       var className = this.className ? ' class="' + this.className + '"' : '';
       return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + '"></canvas>';
     },
 
-    initHTML: function() {
+    initHTML: function() { /* Computes the scaling ratio from the window.devicePixelRatio
+                              and canvas.backingStoreRatio. */
       if ( ! this.$ ) return;
 
       this.maybeInitTooltip();
@@ -122,7 +165,7 @@ MODEL({
       this.paint();
     },
 
-    destroy: function() {
+    destroy: function() { /* Call to clean up this and child views. */
       this.SUPER();
       this.cview.destroy();
     }
@@ -179,6 +222,10 @@ MODEL({
   name: 'CViewView',
   extendsModel: 'AbstractCViewView',
   help: 'DOM wrapper for a CView2, auto adjusts it size to fit the given cview.',
+  documentation: function() {/*
+      DOM wrapper for a $$DOC{ref:'CView2'}, that auto adjusts it size to fit
+      he given view.
+    */},
   properties: [
     {
       name: 'cview',
@@ -197,6 +244,25 @@ MODEL({
 MODEL({
   name:  'CView2',
   label: 'CView2',
+  documentation: function() {/*
+      The base class for a canvas item. A $$DOC{ref:'.'} can be directly inserted
+      into the DOM with $$DOC{ref:'.write'}, and will generate a $$DOC{ref:'CViewView'}
+      wrapper.</p>
+      <p>$$DOC{ref:'.'} submodels directly nest inside each other, with a single
+      root $$DOC{ref:'.'} attached to the canvas. Use $$DOC{ref:'.addChild'} to attach a new
+      $$DOC{ref:'.'} to the scene graph:</p>
+      <p><code>
+            var rootNode = this.X.CView2.create({width:300, height:200});<br/>
+            <br/>
+            rootNode.write(document); // a CViewView wrapper is created for us<br/>
+            <br/>
+            rootNode.addChild(this.X.Circle2.create({x:30, y:50, radius: 30, color: 'blue'});<br/>
+            rootNode.addChild(this.X.Label.create({x: 50, y: 30, text: "Hello", color: 'black'});<br/>
+      </code></p>
+      <p>When modeling your own $$DOC{ref:'CView2'} submodel, override $$DOC{ref:'.paintSelf'}
+      to render your content. Children will automatically be painted for you. For more direct
+      control over child rendering, override $$DOC{ref:'.paint'}.
+    */},
 
   properties: [
     {
@@ -209,81 +275,115 @@ MODEL({
           child.addListener(view.paint);
         }
       },
-      hidden: true
+      hidden: true,
+      documentation: function() {/* The canvas view this scene draws into */ }
     },
     {
       name:  'canvas',
       getter: function() { return this.view && this.view.canvas; },
-      hidden: true
+      hidden: true,
+      documentation: function() {/* Safe getter for the canvas view this scene draws into */ }
     },
     {
       name:  '$',
       getter: function() { return this.view && this.view.$; },
-      hidden: true
+      hidden: true,
+      documentation: function() {/* Safe getter for the canvas DOM element this scene draws into */ }
     },
     {
       name: 'state',
-      defaultValue: 'initial'
+      defaultValue: 'initial',
+      documentation: function() {/* Indicates if canvas setup is in progress ('initial'),
+                                  or ready to paint ('active'). */}
     },
     {
       name: 'className',
       help: 'CSS class name(s), space separated. Used if adapted with a CViewView.',
-      defaultValue: ''
+      defaultValue: '',
+      documentation: function() {/* CSS class name(s), space separated.
+          Only used if this is the root node adapted with a $$DOC{ref:'CViewView'}. */}
     },
     {
       name:  'x',
       type:  'int',
       view:  'IntFieldView',
-      defaultValue: 0
+      defaultValue: 0,
+      documentation: function() {/*
+          The X offset of this view relative to its parent. */}
     },
     {
       name:  'y',
       type:  'int',
       view:  'IntFieldView',
-      defaultValue: 0
+      defaultValue: 0,
+      documentation: function() {/*
+          The Y offset of this view relative to its parent. */}
     },
     {
       name:  'width',
       type:  'int',
       view:  'IntFieldView',
-      defaultValue: 10
+      defaultValue: 10,
+      documentation: function() {/*
+          The width of this view. Painting is not automatically clipped, so a view
+          may render outside of its apparent rectangle. */}
     },
     {
       name:  'height',
       type:  'int',
       view:  'IntFieldView',
-      defaultValue: 10
+      defaultValue: 10,
+      documentation: function() {/*
+          The height of this view. Painting is not automatically clipped, so a view
+          may render outside of its apparent rectangle. */}
     },
+//    {
+//      name: 'parent',
+//      type: 'CView2'
+//    },
     {
       name:  'children',
-      type:  'CView[]',
+      type:  'CView2[]',
       factory: function() { return []; },
-      hidden: true
+      hidden: true,
+      documentation: function() {/*
+          Child views render relative to their parent, but are not clipped
+          by the parent's apparent rectangle. */}
     },
     {
       name:  'alpha',
-      type:  'int',
-      defaultValue: 1
+      type:  'float',
+      defaultValue: 1,
+      documentation: function() {/*
+          The desired opacity of the content, from 0:transparent to 1:opaque.
+          Child views do not inherit and are not limited by this value. */}
     },
     {
       name:  'color',
       label: 'Foreground Color',
       type:  'String',
-      defaultValue: 'black'
+      defaultValue: 'black',
+      documentation: function() {/*
+          The foreground color for rendering primary content. */}
     },
     {
       name:  'background',
       label: 'Background Color',
       type:  'String',
-      defaultValue: 'white'
+      defaultValue: 'white',
+      documentation: function() {/*
+          The optional background color for opaque items that $$DOC{ref:'.erase'}
+          their background. */}
     },
     {
-      name: 'font'
+      name: 'font',
+      documentation: function() {/*
+          The font to use for rendering text, in CSS string format: <code>'24px Roboto'</code>. */}
     }
   ],
 
   methods: {
-    toView_: function() {
+    toView_: function() { /* Internal. Creates a CViewView wrapper. */
       if ( ! this.view ) {
         var params = {cview: this};
         if ( this.className ) params.className = this.className;
@@ -293,7 +393,7 @@ MODEL({
       return this.view;
     },
 
-    toPositionedView_: function() {
+    toPositionedView_: function() { /* Internal. Creates a PositionedCViewView wrapper. */
       if ( ! this.view ) {
         var params = {cview: this};
         if ( this.className ) params.className = this.className;
@@ -302,44 +402,50 @@ MODEL({
       return this.view;
     },
 
-    initCView: function() { },
+    initCView: function() { /* Override in submodels for initialization. Callled
+          once on first $$DOC{ref:'.paint'} when transitioning from 'initial'
+          to 'active' '$$DOC{ref:'.state'}. */ },
 
-    write: function(document) {
+    write: function(document) { /* Inserts this $$DOC{ref:'CView2'} into the DOM
+                                   with an $$DOC{ref:'AbstractCViewView'} wrapper. */
       var v = this.toView_();
       document.writeln(v.toHTML());
       v.initHTML();
     },
 
-    addChild: function(child) {
+    addChild: function(child) { /* Adds a child $$DOC{ref:'CView2'} to the scene
+                                   under this. */
       this.children.push(child);
       if ( this.view ) {
         child.view = this.view;
         child.addListener(this.view.paint);
       }
-      // child.parent = this;
+      //child.parent = this;
       return this;
     },
 
-    addChildren: function() {
+    addChildren: function() { /* Calls $$DOC{ref:'.addChild'} for each parameter. */
       for ( var key in arguments ) this.addChild(arguments[key]);
       return this;
     },
 
-    removeChild: function(child) {
+    removeChild: function(child) { /* Removes a child from the scene. */
       this.children.deleteI(child);
       child.view = undefined;
       child.removeListener(this.view.paint);
-      // child.parent = undefined;
+      //child.parent = undefined;
       return this;
     },
 
-    erase: function() {
+    erase: function() { /* Wipes the canvas area of this $$DOC{ref:'.'}. Primarily used
+                          by the root node to clear the entire canvas, but an opaque child
+                          may choose to erase its own area, if required. */
       this.canvas.clearRect(0, 0, this.width, this.height);
       this.canvas.fillStyle = this.background;
       this.canvas.fillRect(0, 0, this.width, this.height);
     },
 
-    paintChildren: function() {
+    paintChildren: function() { /* Paints each child. */
       for ( var i = 0 ; i < this.children.length ; i++ ) {
         var child = this.children[i];
         this.canvas.save();
@@ -348,22 +454,23 @@ MODEL({
       }
     },
 
-    paintSelf: function() {},
+    paintSelf: function() { /* Implement this in sub-models to do your painting. */ },
 
-    paint: function() {
+    paint: function() { /* Translates the canvas to our ($$DOC{ref:'.x'}, $$DOC{ref:'.y'}),
+                          does a $$DOC{ref:'.paintSelf'} then paints all the children. */
       if ( ! this.$ ) return;
       if ( this.state === 'initial' ) {
         this.initCView();
         this.state = 'active';
       }
       this.canvas.translate(this.x, this.y);
-      this.erase();
+      //this.erase(); // let the canvas AbstractCViewView take care of erasing the root node
       this.paintSelf();
       this.paintChildren();
     },
 
     destroy: function() {
-      // Implement me in submodels to do cleanup when the view is removed.
+      /* Implement me in submodels to do cleanup when the view is removed. */
     }
   }
 });
@@ -396,7 +503,7 @@ MODEL({
 
   methods: {
 
-    paint: function() {
+    paintSelf: function() {
       var c = this.canvas;
       if ( ! c ) return;
 
@@ -406,7 +513,7 @@ MODEL({
         c.lineWidth = this.borderWidth;
         c.strokeStyle = this.border;
         c.beginPath();
-        c.arc(this.x, this.y, this.r, 0, Math.PI*2, true);
+        c.arc(0, 0, this.r, 0, Math.PI*2, true);
         c.closePath();
         c.stroke();
       }
@@ -415,7 +522,7 @@ MODEL({
         c.fillStyle = this.color;
 
         c.beginPath();
-        c.arc(this.x, this.y, this.r, 0, Math.PI*2, true);
+        c.arc(0, 0, this.r, 0, Math.PI*2, true);
         c.closePath();
         c.fill();
       }

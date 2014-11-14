@@ -803,7 +803,7 @@ MODEL({
       function init(actions, opt_value) {
         actions.forEach(function(action) {
           for ( var j = 0 ; j < action.keyboardShortcuts.length ; j++ ) {
-            var key     = action.keyboardShortcuts[j];
+            var key = action.keyboardShortcuts[j];
             keyMap[key] = opt_value ?
               function() { action.callIfEnabled(self.X, opt_value.get()); } :
               action.callIfEnabled.bind(action, self.X, self) ;
@@ -819,6 +819,7 @@ MODEL({
         init(this.model.actions, this.data$);
 
       if ( found ) {
+        console.assert(this.$, 'View must define outer id when using keyboard shortcuts: ' + this.name_);
         this.keyMap_ = keyMap;
         this.$.parentElement.addEventListener('keydown', this.onKeyboardShortcut);
       }
@@ -2946,10 +2947,11 @@ MODEL({
       model_: 'ViewFactoryProperty',
       name: 'view',
       defaultValue: 'View',
-      postSet: function(old, v) { 
+      postSet: function(old, v) {
         if ( ! this.$ ) return;
         this.removeChild(old);
-        var view = v({ data$: this.data$ });
+        var view = this.view();
+        view.data = this.data;
         this.addChild(view);
         this.viewContainer.innerHTML = view.toHTML();
         view.initHTML();
@@ -2984,14 +2986,11 @@ MODEL({
   ],
 
   templates: [
-    function choiceButton(_, i, length, choice) {/*
-      <%
+    function choiceButton(_, i, length, choice) {/*<%
         var id = this.on('click', function() { self.choice = choice; });
-        this.setClass('mdoe_button_active', function() { return self.choice === choice; }, id);
-      %>
-      <a id="<%= id %>" class="buttonify<%= i == 0 ? ' capsule_left' : '' %><%=
-                                           i == length - 1 ? ' capsule_right' : '' %>"><%= choice.label %></a>
-    */},
+        this.setClass('mode_button_active', function() { return self.choice === choice; }, id);
+      %><a id="<%= id %>" class="buttonify<%= i == 0 ? ' capsule_left' : '' %><%=
+                                              i == length - 1 ? ' capsule_right' : '' %>"><%= choice.label %></a>*/},
     function toHTML() {/*
       <div id="<%= this.id %>" class="AltViewOuter column" style="margin-bottom:5px;">
         <div class="altViewButtons rigid">
@@ -3273,6 +3272,7 @@ MODEL({
     */}
   ]
 });
+
 
 MODEL({
   name: 'GalleryView',
@@ -4729,6 +4729,7 @@ MODEL({
     { model_: 'ViewFactoryProperty', name: 'mainView' },
     { model_: 'ViewFactoryProperty', name: 'panelView' },
     {
+      model_: 'IntProperty',
       name: 'minWidth',
       defaultValueFn: function() {
         var e = this.main$();
@@ -4738,7 +4739,9 @@ MODEL({
       }
     },
     {
+      model_: 'IntProperty',
       name: 'width',
+      model_: 'IntProperty',
       hidden: true,
       help: 'Set internally by the resize handler',
       postSet: function(_, x) {
@@ -4746,6 +4749,7 @@ MODEL({
       }
     },
     {
+      model_: 'IntProperty',
       name: 'minPanelWidth',
       defaultValueFn: function() {
         if ( this.panelView && this.panelView.minWidth )
@@ -4757,6 +4761,7 @@ MODEL({
       }
     },
     {
+      model_: 'IntProperty',
       name: 'panelWidth',
       hidden: true,
       help: 'Set internally by the resize handler',
@@ -4765,6 +4770,7 @@ MODEL({
       }
     },
     {
+      model_: 'IntProperty',
       name: 'parentWidth',
       help: 'A pseudoproperty that returns the current with (CSS pixels) of the containing element',
       getter: function() {
@@ -4772,17 +4778,20 @@ MODEL({
       }
     },
     {
+      model_: 'IntProperty',
       name: 'stripWidth',
       help: 'The width in (CSS) pixels of the minimal visible strip of panel',
       defaultValue: 30
     },
     {
+      model_: 'FloatProperty',
       name: 'panelRatio',
       help: 'The ratio (0-1) of the total width occupied by the panel, when ' +
           'the containing element is wide enough for expanded view.',
       defaultValue: 0.5
     },
     {
+      model_: 'IntProperty',
       name: 'panelX',
       //defaultValueFn: function() { this.width - this.stripWidth; },
       preSet: function(oldX, x) {
@@ -4807,25 +4816,21 @@ MODEL({
     'expanded'
   ],
 
+  templates: [
+    // TODO(kgr): Add CSS here
+
+    function toHTML() {/*
+      <div id="%%id" style="display: inline-block; position: relative" class="SliderPanel">
+        <div id="%%id-main">
+          <div id="%%id-shadow" class="shadow"></div>
+          <%= this.mainView() %>
+        </div>
+        <div id="%%id-panel" style="position: absolute; top: 0; left: 0"><%= this.panelView() %></div>
+      </div>
+    */}
+  ],
+
   methods: {
-    toHTML: function() {
-      var mainView  = this.mainView();
-      var panelView = this.panelView();
-
-      this.addChildren(mainView, panelView);
-
-      return '<div id="' + this.id + '" ' +
-          'style="display: inline-block; position: relative" class="SliderPanel">' +
-          '<div id="' + this.id + '-main">' +
-              mainView.toHTML() +
-          '</div>' +
-          '<div id="' + this.id + '-panel" style="position: absolute; top: 0; left: 0">' +
-          '   <div id="' + this.id + '-shadow" class="shadow"></div>' +
-              panelView.toHTML() +
-          '</div>' +
-          '</div>';
-    },
-
     initHTML: function() {
       // Mousedown and touch events on the sliding panel itself.
       // Mousemove and mouseup on the whole window, so that you can drag the
@@ -4940,6 +4945,7 @@ MODEL({
     }
   ]
 });
+
 
 MODEL({
   name: 'ActionSheetView',
@@ -5081,4 +5087,74 @@ MODEL({
       this.initHTML();
     }
   }
+});
+
+MODEL({
+  name: 'ControllerOption',
+  properties: [
+    { model_: 'ViewFactoryProperty', name: 'controller' },
+    { model_: 'IntProperty', name: 'minWidth' }
+  ]
+});
+
+MODEL({
+  name: 'ResponsiveController',
+  extendsModel: 'View',
+  imports: ['window'],
+  properties: [
+    {
+      model_: 'ArrayProperty',
+      subType: 'ControllerOption',
+      name: 'options',
+      preSet: function(_, v) {
+        return v.slice().sort(toCompare(ControllerOption.MIN_WIDTH));
+      }
+    },
+    {
+      name: 'current',
+      type: 'ControllerOption',
+      postSet: function(old, v) {
+        if ( old !== v ) this.updateHTML();
+      }
+    },
+    {
+      name: 'tagName',
+      defaultValue: 'div'
+    }
+  ],
+  methods: {
+    initHTML: function() {
+      this.SUPER();
+      this.window.addEventListener('resize', this.onResize);
+      this.onResize_();
+    },
+    destory: function() {
+      this.window.removeEventListener('resize', this.onResize);
+    },
+    onResize_: function() {
+      if (!this.$) return;
+
+      var width = this.$.clientWidth;
+
+      for (var i = 0; i < this.options.length; i++) {
+        var option = this.options[i];
+        if ( option.minWidth > width ) break;
+      }
+      i = Math.max(i - 1, 0);
+
+      this.current = this.options[i];
+    }
+  },
+  listeners: [
+    {
+      name: 'onResize',
+      isMerged: 100,
+      code: function() {
+        this.onResize_();
+      }
+    }
+  ],
+  templates: [
+    function toInnerHTML() {/*<%= this.current ? this.current.controller() : '' %>*/}
+  ]
 });

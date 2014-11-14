@@ -40,7 +40,8 @@ MODEL({
     'TextFieldView',
     'ChoiceView',
     'ImageView',
-    'MementoMgr'
+    'MementoMgr',
+    'AddBookmarkDialog'
   ],
 
   exportKeys: ['stack', 'browser'],
@@ -60,7 +61,7 @@ MODEL({
     },
     {
       name: 'location',
-      factory: function() { return this.Location(); }
+      factory: function() { return this.Location.create(); }
     },
     {
       name: 'memento',
@@ -91,7 +92,7 @@ MODEL({
     {
       name: 'IssueDAO',
       factory: function() {
-        return this.QIssueSplitDAO({
+        return this.QIssueSplitDAO.create({
           local: this.project.IssueDAO,
           model: this.X.QIssue,
           remote: this.project.IssueNetworkDAO
@@ -168,7 +169,7 @@ MODEL({
     },
     {
       name: 'timer',
-      factory: function() { return this.Timer(); }
+      factory: function() { return this.Timer.create(); }
     },
     {
       mode_: 'IntProperty',
@@ -182,7 +183,7 @@ MODEL({
       name: 'countField',
       type: 'TextFieldView',
       factory: function() {
-        return this.TextFieldView({
+        return this.TextFieldView.create({
           name: 'count',
           className: 'qbugCount',
           mode: 'read-only',
@@ -203,7 +204,7 @@ MODEL({
       factory: function() {
         var open = this.project.openPredicate;
 
-        return this.ChoiceView({
+        return this.ChoiceView.create({
           helpText: 'Search within:',
           data$: this.location.can$,
           choices: [
@@ -220,7 +221,7 @@ MODEL({
     },
     {
       name: 'searchField',
-      factory: function() { return this.TextFieldView({
+      factory: function() { return this.TextFieldView.create({
         name: 'search',
         type: 'search',
         displayWidth: 5
@@ -229,13 +230,13 @@ MODEL({
     {
       name: 'refreshImg',
       factory: function() {
-        return this.ImageView({data: 'images/refresh.png'});
+        return this.ImageView.create({data: 'images/refresh.png'});
       }
     },
     {
       name: 'logo',
       factory: function() {
-        return this.ImageView({data: this.url + '/logo'});
+        return this.ImageView.create({data: this.url + '/logo'});
       }
     },
     {
@@ -248,7 +249,7 @@ MODEL({
     },
     {
       name: 'mementoMgr',
-      factory: function() { return this.MementoMgr({memento: this.memento$}); }
+      factory: function() { return this.MementoMgr.create({memento: this.memento$}); }
     }
   ],
 
@@ -619,6 +620,7 @@ Please use labels and text to provide additional information.
             arequire('CursorView'),
             arequire('AddBookmarkDialog'),
             arequire('QIssueDetailView'),
+            arequire('QIssueCreateView'),
             arequire('QIssueCommentCreateView'),
             arequire('QIssueCommentView'),
             arequire('QIssueCommentAuthorView'),
