@@ -74,7 +74,7 @@ var FOAMTagParser = {
     return attrs;
   },
   tag: function(xs) {
-    return foam.html.Element.create({nodeName: xs[1], attributes: xs[3], childNodes: xs[5]});
+    return X.foam.html.Element.create({nodeName: xs[1], attributes: xs[3], childNodes: xs[5]});
   },
   closed:   function()   { return []; },
   matching: function(xs) { return xs.children; }
@@ -103,7 +103,8 @@ var TemplateParser = {
 
   'comment': seq('<!--', repeat(not('-->', anyChar)), '-->'),
 
-  'foamTag': function() {}, // placeholder until gets filled in after HTMLParser is built
+  'foamTag': sym('foamTag_'),
+  'foamTag_': function() {}, // placeholder until gets filled in after HTMLParser is built
 
   'create child': seq(
     '$$',

@@ -64,10 +64,10 @@ MODEL({
       name: 'id'
     },
     {
-      name: 'nodeName',
+      name: 'nodeName'/*,
       preSet: function(_, v) {
         return v.toLowerCase();
-      }
+      }*/
     },
     {
       name: 'attributes',
@@ -80,7 +80,7 @@ MODEL({
     {
       name: 'children',
       getter: function() {
-        return this.childNodes.filter(function(c) { return this.model_.isInstance(c); });
+        return this.childNodes.filter(function(c) { return typeof c !== 'string'; });
       }
     },
     {
@@ -92,7 +92,7 @@ MODEL({
           out += ' ' + key + '="' + this.attributes[key] + '"';
         }
         if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] &&
-             ( this.OPTIONAL_CLOSE_TAGS[this.nodeName] && this.childNodes.length ) ) {
+             ( ! this.OPTIONAL_CLOSE_TAGS[this.nodeName] || this.childNodes.length ) ) {
           out += '>';
           out += this.innerHTML;
           out += '</' + this.nodeName;
@@ -105,10 +105,8 @@ MODEL({
       name: 'innerHTML',
       getter: function() {
         var out = '';
-        for ( var i = 0 ; i < this.childNodes.length ; i++ ) {
-          var c = this.childNodes[i];
-          out += c.toHTML ? c.toHTML() : c.toString();
-        }
+        for ( var i = 0 ; i < this.childNodes.length ; i++ )
+          out += this.childNodes[i].toString();
         return out;
       }
     }
@@ -117,7 +115,7 @@ MODEL({
   methods: {
     getAttribute: function(name) { return this.attributes[name]; },
     appendChild: function(c) { this.childNodes.push(c); },
-    toHTML: function() { return this.outerHTML; }
+    toString: function() { return this.outerHTML; }
   }
 });
 
@@ -185,21 +183,21 @@ var HTMLParser = {
     var tag = xs[1];
     // < tagName ws attributes ws / >
     // 0 1       2  3          4  5 6
-    var obj = X.foam.html.Element.create({nameName: tag, attributes: xs[3]});
+    var obj = X.foam.html.Element.create({nodeName: tag, attributes: xs[3]});
     this.peek().appendChild(obj);
     if ( xs[5] != '/' ) this.stack.push(obj);
     return obj;
   },
   text: function(xs) { this.peek().appendChild(xs); },
-  endTag: function(xs) {
-    var tag = xs;
+  endTag: function(tag) {
+    // tag = tag.toLowerCase();
     var stack = this.stack;
     while ( true ) {
       var top = stack.pop();
-      if ( top.tag == tag ) return;
+      if ( top.nodeName == tag ) return;
       var peek = this.peek();
       peek.childNodes = peek.childNodes.concat(top.childNodes);
-      top.childNodex = [];
+      top.childNodes = [];
     }
   }
 });
@@ -227,4 +225,4 @@ test('<pA a="1">foo</pA>');
 test('<pA a="1" b="2">foo<b>bold</b></pA>');
 */
 
-TemplateParser.foamTag = FOAMTagParser.create().export('START');
+TemplateParser.foamTag_ = FOAMTagParser.create().export('START');
