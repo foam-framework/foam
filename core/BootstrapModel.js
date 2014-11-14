@@ -86,12 +86,15 @@ var BootstrapModel = {
     }
 
     function addTraitToModel(traitModel, parentModel) {
-      var name = parentModel.name + '_ExtendedWith_' + traitModel.name;
+      var name = (parentModel.id? parentModel.id.replace('.','__') : "")
+                  + '_ExtendedWith_' + 
+                   (traitModel.id? traitModel.id.replace('.','__') : "");
 
       if ( ! FOAM.lookup(name) ) {
         var model = traitModel.deepClone();
+        model.package = "";
         model.name = name;
-        model.extendsModel = parentModel.name;
+        model.extendsModel = parentModel.id;
         GLOBAL.registerModel(model);
       }
 
