@@ -29,6 +29,62 @@ MODEL({
   ]
 });
 
+MODEL({
+  name: 'DOMPanel',
+  extendsModel: 'View',
+  imports: [
+    'window'
+  ],
+  properties: [
+    { model_: 'IntProperty', name: 'width' },
+    { model_: 'IntProperty', name: 'height' },
+    { name: 'tagName', defaultValue: 'div' },
+    { name: 'view', postSet: function() { this.updateHTML(); } }
+  ],
+  methods: {
+    init: function() {
+      this.SUPER();
+      var self = this;
+      this.X.dynamic(function() { self.width; self.height; },
+                     this.layout);
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.window.addEventListener('resize', this.onResize);
+      this.onResize();
+    },
+    destroy: function() {
+      this.SUPER();
+      if (this.window) this.window.removeEventListener('resize', this.onResize);
+    }
+  },
+  templates: [
+    function toInnerHTML() {/*<%= this.view %>*/},
+  ],
+  listeners: [
+    {
+      name: 'layout',
+      isFramed: true,
+      code: function() {
+        if (!this.view) return;
+        this.view.x_ = 0;
+        this.view.y = 0;
+        this.view.z = 0;
+        this.view.width = this.width;
+        this.view.height = this.height;
+      }
+    },
+    {
+      name: 'onResize',
+      isMerged: 100,
+      code: function() {
+        if (!this.$) return;
+        this.width = this.$.clientWidth;
+        this.height = this.$.clientHeight;
+      }
+    }
+  ]
+});
 
 MODEL({
   name: 'PositionedDOMViewTrait',
@@ -366,4 +422,3 @@ MODEL({
     }
   ]
 });
-
