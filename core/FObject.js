@@ -187,12 +187,8 @@ var FObject = {
   fromElement: function(e) {
     for ( var i = 0 ; i < e.children.length ; i++ ) {
       var c = e.children[i];
-      if ( typeof c !== 'string' ) {
-        var p = this.model_.getProperty(c.tag);
-        if ( p ) {
-          p.initFromElement(this, c);
-        }
-      }
+      var p = this.model_.getProperty(c.nodeName);
+      if ( p ) this[c.nodeName] = p.fromElement.call(this, c, p);
     }
   },
 
