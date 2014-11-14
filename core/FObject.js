@@ -158,7 +158,6 @@ var FObject = {
         }).filter(function (s) {
           return typeof this[s[0]] === 'function';
         }.bind(this)));
-      }
       for ( var i = 0 ; i < fnExports.length ; i++ ) {
         var e = fnExports[i];
         this.X[e[1]] = this[e[0]].bind(this);
@@ -170,9 +169,8 @@ var FObject = {
           s[0] = s[0].trim();
           return [s[0], s[1] || s[0]];
         }).filter(function (s) {
-          return typeof this[s[0]] !== 'function' && ! this.getProperty(s[0]);
+          return typeof this[s[0]] !== 'function' && ! this.model_.getProperty(s[0]);
         }.bind(this)));
-      }
       for ( var i = 0 ; i < otherExports.length ; i++ ) {
         var e = otherExports[i];
         this.X[e[1]] = this[e[0]];
