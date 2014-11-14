@@ -150,19 +150,32 @@ var FObject = {
 
     // Add non-property exports to Context
     if ( this.model_.exports && this.model_.exports.length ) {
-      if ( ! this.model_.exports_ ) {
-        this.model_.exports_ = this.model_.exports.map(function(e) {
+      var fnExports = this.model_.fnExports_ ||
+        ( this.model_.fnExports_ = this.model_.exports.map(function(e) {
           var s = e.split(' as ');
           s[0] = s[0].trim();
           return [s[0], s[1] || s[0]];
         }).filter(function (s) {
           return typeof this[s[0]] === 'function';
-        }.bind(this));
+        }.bind(this)));
       }
-      for ( var i = 0 ; i < this.model_.exports_.length ; i++ ) {
-        var e = this.model_.exports_[i];
-        var v = this[e[0]].bind(this);
-        this.X[e[1]] = v;
+      for ( var i = 0 ; i < fnExports.length ; i++ ) {
+        var e = fnExports[i];
+        this.X[e[1]] = this[e[0]].bind(this);
+      }
+
+      var otherExports = this.model_.otherExports_ ||
+        ( this.model_.otherExports_ = this.model_.exports.map(function(e) {
+          var s = e.split(' as ');
+          s[0] = s[0].trim();
+          return [s[0], s[1] || s[0]];
+        }).filter(function (s) {
+          return typeof this[s[0]] !== 'function' && ! this.getProperty(s[0]);
+        }.bind(this)));
+      }
+      for ( var i = 0 ; i < otherExports.length ; i++ ) {
+        var e = otherExports[i];
+        this.X[e[1]] = this[e[0]];
       }
     }
 
