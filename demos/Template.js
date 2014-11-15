@@ -62,6 +62,7 @@ MODEL({
         <strings>a</strings>
         <strings>b</strings>
         <strings>c</strings>
+        <string>Created win singular name: 'string'</string>
         <tabs>
           <title>Title1</title>
           <view>Embedded here.</view>
@@ -74,6 +75,10 @@ MODEL({
           <title>Title3</title>
           <view>Tab3 Contents</view>
         </tabs>
+        <tab>
+          <title>Title4</title>
+          <view>Notice that this tab is created with the singular name: 'tab'.</view>
+        </tab>
       </foam>
     */}
   ]
