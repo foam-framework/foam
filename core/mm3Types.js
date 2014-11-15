@@ -467,7 +467,7 @@ var ArrayProperty = Model.create({
     {
       name: 'fromElement',
       defaultValue: function(e, p) {
-        var model = FOAM.lookup(e.getAttribute('model') || this.subType, this.X);
+        var model = FOAM.lookup(e.getAttribute('model') || p.subType, this.X);
         var o = model.create({}, this.X);
         o.fromElement(e);
         this[p.name] = this[p.name].pushF(o);
