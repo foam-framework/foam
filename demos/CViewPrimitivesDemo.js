@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-var view = X.canvas.LinearLayout.create({width: 350, height: 300});
+var view = X.canvas.LinearLayout.create({width: 120, height: 300});
 view.write(document);
 
 MODEL({

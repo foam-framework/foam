@@ -192,53 +192,92 @@ MODEL({
         i++;
       });
       
-      var shrinkF = function() {
-        // find all shrinkables
-        var shrinkables = []; // indexes into children[], since we reference itemSizes[] too
-        var shrinkTotal = 0;
+      var resizeF = function(isShrink) {
+        var sizeOkF, factorF, sizeNotOkF, makeSizeOkF;
+        if (isShrink) {
+          sizeOkF = function(index, child) {
+            return itemSizes[index] > constraintsF(child).min;
+          }
+          factorF = function(child) {
+            return constraintsF(child).shrinkFactor;
+          }
+          sizeNotOkF = function(index, child) {
+            return itemSizes[index] < constraintsF(child).min;
+          }
+          makeSizeOkF = function(index, child) {
+            availableSpace += itemSizes[index] - constraintsF(child).min;
+            itemSizes[index] = constraintsF(child).min;
+            resizeF(true); // recurse with a smaller list now that item i is locked at minimum
+            // This will eventually catch the case where we can't shrink enough, since we
+            // will keep re-shrinking until the list of workingSet is empty.
+            return false;
+          }
+        } else { //grow
+          sizeOkF = function(index, child) {
+            return itemSizes[index] < constraintsF(child).max;
+          }
+          factorF = function(child) {
+            return constraintsF(child).stretchFactor;
+          }
+          sizeNotOkF = function(index, child) {
+            return itemSizes[index] > constraintsF(child).max;
+          }
+          makeSizeOkF = function(index, child) {
+            availableSpace += itemSizes[index] - constraintsF(child).max;
+            itemSizes[index] = constraintsF(child).max;
+            resizeF(false); // recurse with a smaller list now that item i is locked at minimum
+            // This will eventually catch the case where we can't shrink enough, since we
+            // will keep re-shrinking until the list of workingSet is empty.
+            return false;
+          }
+        }
+        
+        // find all workingSet
+        var workingSet = []; // indexes into children[], since we reference itemSizes[] too
+        var modifyTotal = 0;
         var i = 0;
         this.children.forEach(function(child) {
-          if (itemSizes[i] > constraintsF(child).min // item is willing and able to shrink
-              && constraintsF(child).shrinkFactor > 0) {
-            shrinkables.push(i);
-            shrinkTotal += constraintsF(child).shrinkFactor;
+          if (sizeOkF(i, child) // item is willing and able to shrink
+              && factorF(child) > 0) {
+            workingSet.push(i);
+            modifyTotal += factorF(child);
           }
           i++;
         });
-        if (shrinkables.length === 0) { // if no willing items, try the ones with factor 0
+        if (workingSet.length === 0) { // if no willing items, try the ones with factor 0
           i = 0;
           this.children.forEach(function(child) {
-            if (itemSizes[i] > constraintsF(child).min) { // item is willing and able to shrink
-              shrinkables.push(i);
-              shrinkTotal += 1; // since constraintsF(child).shrinkFactor === 0
+            if (sizeOkF(i, child)) { // item is able to shrink, though not willing
+              workingSet.push(i);
+              modifyTotal += 1; // since constraintsF(child).shrinkFactor === 0
             }
             i++;
           });
         }
-        if (shrinkables.length === 0) {
+        if (workingSet.length === 0) {
           // absolutely nothing we can shrink. Abort!
-          console.warn("Layout failed to shrink due to minimum sizing: ", this, itemSizes);
+          if (isShrink)
+            console.warn("Layout failed to shrink due to minimum sizing: ", this, itemSizes, parentSizeF(this));
+          else
+            console.warn("Layout failed to stretch due to maximum sizing: ", this, itemSizes, parentSizeF(this));
           applySizesF(); // size it anyway
           return;
         }
         
         // float division, so we have to keep a running total later 
         // and round only when setting pos and size
-        var shrinkEachBy = availableSpace / shrinkTotal;
+        var modifyEachBy = availableSpace / modifyTotal;
         
         // apply the shrinkage
-        shrinkables.every(function(i) {
-          var constraints = constraintsF(this.children[i]);
-          itemSizes[i] += shrinkEachBy * constraints.shrinkFactor;
-          availableSpace -= shrinkEachBy * constraints.shrinkFactor;
-          if (itemSizes[i] < constraints.min) { // if we hit the limit for this item
-            availableSpace += itemSizes[i] - constraints.min;
-            itemSizes[i] = constraints.min;
-            shrinkF(); // recurse with a smaller list now that item i is locked at minimum
-            // This will eventually catch the case where we can't shrink enough, since we
-            // will keep re-shrinking until the list of shrinkables is empty.
-            return false;
+        workingSet.every(function(i) {
+          var factor = factorF(this.children[i]);
+          if (factor < 1) factor = 1;
+          itemSizes[i] += modifyEachBy * factor;
+          availableSpace -= modifyEachBy * factor;
+          if (sizeNotOkF(i, this.children[i])) { // if we hit the limit for this item
+            return makeSizeOkF(i, this.children[i]);
           }
+          return true;
         }.bind(this));
         
         // lock in changes, we're done
@@ -246,9 +285,6 @@ MODEL({
         
       }.bind(this);
       
-      var growF = function() {
-        
-      }.bind(this);
       
       var applySizesF = function() {
         var applySizeF = Function("item", "val", "item."+ 
@@ -267,9 +303,9 @@ MODEL({
       }.bind(this);
       
       if (availableSpace > 0) {
-        growF();
+        resizeF(false);
       } else if (availableSpace < 0) {
-        shrinkF();
+        resizeF(true);
       } else {
         // we're done!
         applySizesF();
