@@ -397,6 +397,14 @@ var ArrayProperty = Model.create({
       help: 'The FOAM type of this property.'
     },
     {
+      name: 'singular',
+      type: 'String',
+      displayWidth: 70,
+      defaultValueFn: function() { return this.name.replace(/s$/, ''); },
+      help: 'The plural form of this model\'s name.',
+      documentation: function() { /* The singular form of $$DOC{ref:'Property.name'}.*/}
+    },
+    {
       name: 'subType',
       type: 'String',
       displayWidth: 20,
@@ -550,6 +558,14 @@ var StringArrayProperty = Model.create({
       displayWidth: 20,
       defaultValue: 'Array[]',
       help: 'The FOAM type of this property.'
+    },
+    {
+      name: 'singular',
+      type: 'String',
+      displayWidth: 70,
+      defaultValueFn: function() { return this.name.replace(/s$/, ''); },
+      help: 'The plural form of this model\'s name.',
+      documentation: function() { /* The singular form of $$DOC{ref:'Property.name'}.*/}
     },
     {
       name: 'subType',

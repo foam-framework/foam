@@ -185,9 +185,22 @@ var FObject = {
   },
 
   fromElement: function(e) {
+    var elements = this.elementMap_;
+
+    // Build a map of properties keyed off of either 'name' or 'singular'
+    if ( ! elements ) {
+      elements = {};
+      for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
+        var p = this.model_.properties[i];
+        elements[p.name] = p;
+        if ( p.singular ) elements[p.singular] = p;
+      }
+      this.elementMap_ = elements;
+    }
+
     for ( var i = 0 ; i < e.children.length ; i++ ) {
       var c = e.children[i];
-      var p = this.model_.getProperty(c.nodeName);
+      var p = elements[c.nodeName];
       if ( p ) p.fromElement.call(this, c, p);
     }
     return this;
