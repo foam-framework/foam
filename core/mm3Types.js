@@ -105,15 +105,16 @@ var BooleanProperty = Model.create({
       help: 'The protobuf tag number for this field.'
     },
     {
-      name: 'fromElement',
-      defaultValue: function(e, p) {
-        var txt = e.innerHTML.trim();
+      name: 'fromString',
+      defaultValue: function(s, p) {
+        var txt = s.trim();
         this[p.name] =
           txt.equalsIC('y')    ||
           txt.equalsIC('yes')  ||
           txt.equalsIC('true') ||
           txt.equalsIC('t');
-      }
+      },
+      help: 'Function to extract value from a String.'
     }
   ]
 });

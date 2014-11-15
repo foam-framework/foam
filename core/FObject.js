@@ -198,11 +198,25 @@ var FObject = {
       this.elementMap_ = elements;
     }
 
+    for ( var key in e.attributes ) {
+      var p = elements[key];
+      if ( p ) {
+        p.fromString.call(this, e.attributes[key], p);
+      } else {
+        console.warn('Unknown attribute name: "' + key + '"');
+      }
+    }
+
     for ( var i = 0 ; i < e.children.length ; i++ ) {
       var c = e.children[i];
       var p = elements[c.nodeName];
-      if ( p ) p.fromElement.call(this, c, p);
+      if ( p ) {
+        p.fromElement.call(this, c, p);
+      } else {
+        console.warn('Unknown element name: "' + c.key + '"');
+      }
     }
+
     return this;
   },
 

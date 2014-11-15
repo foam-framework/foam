@@ -542,8 +542,13 @@ var Property = {
       documentation: "A comparator function two compare two instances of this $$DOC{ref:'Property'}."
     },
     {
+      name: 'fromString',
+      defaultValue: function(s, p) { this[p.name] = s; },
+      help: 'Function to extract value from a String.'
+    },
+    {
       name: 'fromElement',
-      defaultValue: function(e, p) { this[p.name] = e.innerHTML; },
+      defaultValue: function(e, p) { p.fromString.call(this, e.innerHTML, p); },
       help: 'Function to extract from a DOM Element.',
       documentation: "Function to extract a value from a DOM Element."
     },
