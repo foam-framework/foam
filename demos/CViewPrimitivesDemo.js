@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-var view = X.canvas.LinearLayout.create({width: 300, height: 300});
+var view = X.canvas.LinearLayout.create({width: 350, height: 300});
 view.write(document);
 
 MODEL({
@@ -36,30 +36,30 @@ MODEL({
 });
 
 var rect1 = X.LRectangle.create({
-       x: 20,
+       x: 0,
        y: 20,
        border: 'black',
-       width: 100,
+       width: 120,
        height: 30,
   
 });
 view.addChild(rect1);
 
 var rect2 = X.LRectangle.create({
-       x: 20,
-       y: 20,
+       x: 60,
+       y: 25,
        border: 'blue',
-       width: 100,
+       width: 120,
        height: 30,
   
 });
 view.addChild(rect2);
 
 var rect3 = X.LRectangle.create({
-       x: 20,
-       y: 20,
+       x: 120,
+       y: 30,
        border: 'red',
-       width: 100,
+       width: 120,
        height: 30,
   
 });

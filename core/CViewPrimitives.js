@@ -170,9 +170,9 @@ MODEL({
     calculateLayout: function() { /* lay out items along the primary axis */
       // these helpers take care of orientation awareness
       var constraintsF = Function("item", "return item."+ this.orientation+"Constraints");
-      var positionF = Function("item", "return item."+ 
-                      (this.orientation==='horizontal'? "x" : "y"));
       var sizeF = Function("item", "return item."+ 
+                      (this.orientation==='horizontal'? "width" : "height"));
+      var parentSizeF = Function("item", "return item."+ 
                       (this.orientation==='horizontal'? "width" : "height"));
             
       var boundedF = function(val, constraints) { 
@@ -181,7 +181,7 @@ MODEL({
                val;
       }
 
-      var availableSpace = sizeF(this);
+      var availableSpace = parentSizeF(this);
       
       // initialize with all at preferred size
       var itemSizes = [];
@@ -227,8 +227,8 @@ MODEL({
         var shrinkEachBy = availableSpace / shrinkTotal;
         
         // apply the shrinkage
-        shrinkables.forEach(function(i) {
-          var constraints = constraintsF(children[i]);
+        shrinkables.every(function(i) {
+          var constraints = constraintsF(this.children[i]);
           itemSizes[i] += shrinkEachBy * constraints.shrinkFactor;
           availableSpace -= shrinkEachBy * constraints.shrinkFactor;
           if (itemSizes[i] < constraints.min) { // if we hit the limit for this item
@@ -237,9 +237,9 @@ MODEL({
             shrinkF(); // recurse with a smaller list now that item i is locked at minimum
             // This will eventually catch the case where we can't shrink enough, since we
             // will keep re-shrinking until the list of shrinkables is empty.
-            return;
+            return false;
           }
-        });
+        }.bind(this));
         
         // lock in changes, we're done
         applySizesF();
@@ -251,11 +251,16 @@ MODEL({
       }.bind(this);
       
       var applySizesF = function() {
+        var applySizeF = Function("item", "val", "item."+ 
+                        (this.orientation==='horizontal'? "width" : "height") + " = val;");
+        var applyPositionF = Function("item", "val", "item."+ 
+                        (this.orientation==='horizontal'? "x" : "y")+ " = val;");
+
         var i = 0;
         var pos = 0;
         this.children.forEach(function(child) {
-          sizeF(child) = itemSizes[i];
-          positionF(child) = pos;
+          applySizeF(child, itemSizes[i]);
+          applyPositionF(child, pos);
           pos += itemSizes[i];
           i++;
         });
@@ -324,7 +329,7 @@ MODEL({
         c.fillStyle = this.color;
 
         c.beginPath();
-        c.rect(this.x, this.y, this.width, this.height);
+        c.rect(0, 0, this.width, this.height);
         c.closePath();
         c.fill();
       }
@@ -333,7 +338,7 @@ MODEL({
         c.lineWidth = this.borderWidth;
         c.strokeStyle = this.border;
         c.beginPath();
-        c.rect(this.x, this.y, this.width, this.height);
+        c.rect(0, 0, this.width, this.height);
         c.closePath();
         c.stroke();
       }
