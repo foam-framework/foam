@@ -79,6 +79,9 @@ MODEL({
           <title>Title4</title>
           <view>Notice that this tab is created with the singular name: 'tab'.</view>
         </tab>
+        <tab title="Title5">
+          <view>Notice that this tab defined the title as an attribute.</view>
+        </tab>
       </foam>
     */}
   ]
