@@ -188,7 +188,7 @@ var FObject = {
     for ( var i = 0 ; i < e.children.length ; i++ ) {
       var c = e.children[i];
       var p = this.model_.getProperty(c.nodeName);
-      if ( p ) this[c.nodeName] = p.fromElement.call(this, c, p);
+      if ( p ) p.fromElement.call(this, c, p);
     }
     return this;
   },

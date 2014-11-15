@@ -106,9 +106,13 @@ var BooleanProperty = Model.create({
     },
     {
       name: 'fromElement',
-      defaultValue: function(e) {
+      defaultValue: function(e, p) {
         var txt = e.innerHTML.trim();
-        return txt.equalsIC('y') || txt.equalsIC('yes') || txt.equalsIC('true') || txt.equalsIC('t');
+        this[p.name] =
+          txt.equalsIC('y')    ||
+          txt.equalsIC('yes')  ||
+          txt.equalsIC('true') ||
+          txt.equalsIC('t');
       }
     }
   ]
@@ -355,10 +359,10 @@ var FunctionProperty = Model.create({
     },
     {
       name: 'fromElement',
-      defaultValue: function(e) {
+      defaultValue: function(e, p) {
         var txt = e.innerHTML.trim();
 
-        return txt.startsWith('function') ?
+        this[p.name] = txt.startsWith('function') ?
           eval('(' + txt + ')') :
           new Function(txt) ;
       }
@@ -759,8 +763,8 @@ var ViewFactoryProperty = Model.create({
     },
     {
       name: 'fromElement',
-      defaultValue: function(e) {
-        return e.innerHTML_ || ( e.innerHTML_ = e.innerHTML );
+      defaultValue: function(e, p) {
+        this[p.name] = e.innerHTML_ || ( e.innerHTML_ = e.innerHTML );
       }
     },
     {
