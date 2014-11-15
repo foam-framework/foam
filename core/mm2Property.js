@@ -543,7 +543,7 @@ var Property = {
     },
     {
       name: 'fromElement',
-      defaultValue: function(e) { return e.innerHTML; },
+      defaultValue: function(e, p) { this[p.name] = e.innerHTML; },
       help: 'Function to extract from a DOM Element.',
       documentation: "Function to extract a value from a DOM Element."
     },
