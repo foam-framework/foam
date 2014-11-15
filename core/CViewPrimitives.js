@@ -30,17 +30,20 @@ MODEL({
     {
       model_: 'IntProperty',
       name: 'preferred',
-      documentation: function() {/* The preferred item size. If undefined, no preference. */},
+      defaultValue: 100,
+      documentation: function() {/* The preferred item size. */},
     },
     {
       model_: 'IntProperty',
       name: 'min',
-      documentation: function() {/* The minimum size. If undefined, no preference. */},
+      defaultValue: 0,
+      documentation: function() {/* The minimum size. */},
     },
     {
       model_: 'IntProperty',
       name: 'max',
-      documentation: function() {/* The maximum size. If undefined, no preference. */},
+      defaultValue: Number.MAX_VALUE,
+      documentation: function() {/* The maximum size. */},
     },
     {
       model_: 'IntProperty',
