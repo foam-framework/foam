@@ -17,15 +17,23 @@
 
 require('../core/bootFOAMnode');
 require('../node/fileDAO');
-var daoServer = require('../node/server');
+require('../node/server');
 var path = require('path');
 
 // Create an XMLFileDAO against FUNTests.xml
 var dao = XMLFileDAO.create({ name: path.join(__dirname, 'FUNTests.xml'), model: Model });
 
-daoServer.launchServer({
-  daoMap: { 'ModelDAO': dao },
+X.NodeServer.create({
   port: 8888,
-  static: path.resolve(__dirname, '..')
-});
+  handlers: [
+    X.DAOHandler.create({
+      daoMap: { 'ModelDAO': dao },
+      path: '/api'
+    }),
+    X.StaticFileHandler.create({
+      dir: path.resolve(__dirname, '..'),
+      prefix: '/'
+    })
+  ]
+}).launch();
 
