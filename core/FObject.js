@@ -190,6 +190,7 @@ var FObject = {
       var p = this.model_.getProperty(c.nodeName);
       if ( p ) this[c.nodeName] = p.fromElement.call(this, c, p);
     }
+    return this;
   },
 
   installInDocument: function(X, document) {

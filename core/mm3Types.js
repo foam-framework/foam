@@ -758,6 +758,12 @@ var ViewFactoryProperty = Model.create({
       preSet: function(_, f) { return ViewFactoryProperty.PRE_SET.defaultValue.call(this, null, f); }
     },
     {
+      name: 'fromElement',
+      defaultValue: function(e) {
+        return e.innerHTML_ || ( e.innerHTML_ = e.innerHTML );
+      }
+    },
+    {
       name: 'preSet',
       doc: "Can be specified as either a function, a Model, a Model path, or a JSON object.",
       defaultValue: function(_, f) {

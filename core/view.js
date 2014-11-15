@@ -940,6 +940,11 @@ MODEL({
       this.bindData(this.data);
     },
 
+    fromElement: function(e) {
+      this.view.fromElement(e);
+      return this;
+    },
+
     createViewFromProperty: function(prop) {
       /* Helper to determine the $$DOC{ref:'View'} to use. */
       var viewName = this.innerView || prop.view
