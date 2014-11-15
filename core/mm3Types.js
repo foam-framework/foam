@@ -465,6 +465,15 @@ var ArrayProperty = Model.create({
       }
     },
     {
+      name: 'fromElement',
+      defaultValue: function(e, p) {
+        var model = FOAM.lookup(e.getAttribute('model') || this.subType, this.X);
+        var o = model.create({}, this.X);
+        o.fromElement(e);
+        this[p.name] = this[p.name].pushF(o);
+      }
+    },
+    {
       name: 'prototag',
       label: 'Protobuf tag',
       type: 'Int',
@@ -582,6 +591,12 @@ var StringArrayProperty = Model.create({
     {
       name: 'exclusive',
       defaultValue: false
+    },
+    {
+      name: 'fromElement',
+      defaultValue: function(e, p) {
+        this[p.name] = this[p.name].pushF(e.innerHTML);
+      }
     }
   ]
 });
