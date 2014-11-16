@@ -296,7 +296,7 @@ MODEL({
     function toDetailHTML() {/*
         &nbsp;&nbsp; Search: $$search
         <p>
-        <foam f="filteredDAO" className="demos" tagName="ul"><rowView>
+        <foam f="filteredDAO" className="demos" tagName="ul">
           <li class="thumbnail">
             <a href="%%data.path" class="thumb">$$name{mode: 'read-only'}</a>
             <br>
@@ -309,7 +309,7 @@ MODEL({
             <% } %>
             <br>
           </li>
-        </rowView></foam>
+        </foam>
     */}
   ]
 });
