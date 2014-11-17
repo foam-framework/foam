@@ -1844,6 +1844,44 @@ f1 end
 
         </property>
       </object>
+      <object model="UnitTest">
+        <property name="name">LinearLayoutTrait test</property>
+        <property name="description">Tests generic canvas.LinearLayoutTrait layout handling</property>
+        <property name="code" type="function">function anonymous() {
+  // Prepare a trait host model with the bare essential properties
+  MODEL({ name: 'LinLayTest', traits: [ 'layout.LinearLayoutTrait' ],
+    properties: [
+      'width', 'height',
+      {
+        name: 'children',
+        defaultValue: []
+      }
+    ]
+  });
+  // prepare a layout item trait host model
+  MODEL({ name: 'LayItem', traits: [ 'layout.LayoutItemHorizontalTrait', 'layout.LayoutItemVerticalTrait'  ],
+    properties: [
+      'width', 'height', 'x', 'y'
+    ]
+  });
+  this.log(this.X.LayItem.id);
+}
+        </property>
+        <property name="tags">
+          <i>node</i>
+          <i>web</i>
+        </property>
+        <property name="tests">
+          <object model="RegressionTest">
+            <property name="name">Future Function</property>
+            <property name="code" type="function">function (ret){
+              this.log("Exact output...");
+            }
+            </property>
+            <property name="master">Exact output...</property>
+          </object>
+        </property>
+      </object>
 
     </property>
   </object>

@@ -49,6 +49,7 @@ var files = [
   'mm3Types',
   'mm4Method',
   'mm5Misc',
+  'LayoutTraits', // generic, non-view specific, so no predicate
   [ 'value', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
   [ 'view', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
   [ 'layout', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
@@ -61,6 +62,7 @@ var files = [
   [ 'RichTextView', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
   [ 'listchoiceview', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
   [ 'scroll', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
+  [ 'CViewPrimitives', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
   'HTMLParser',
   'mlang',
   'QueryParser',
