@@ -281,7 +281,7 @@ var FloatProperty = Model.create({
   extendsModel: 'Property',
 
   name:  'FloatProperty',
-  help:  "Describes a properties of type Float.",
+  help:  'Describes a properties of type Float.',
 
   properties: [
     {

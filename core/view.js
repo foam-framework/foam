@@ -3408,7 +3408,7 @@ MODEL({
     valueToText: function(val) {
       return this.hasOwnProperty('precision') ?
         this.formatNumber(val) :
-        String.valueOf(val) ;
+        ''+val ;
     },
     textToValue: function(text) { return parseFloat(text) || 0; }
   }
@@ -3425,7 +3425,7 @@ MODEL({
   ],
 
   methods: {
-    textToValue: function(text) { return parseInt(text) || "0"; },
+    textToValue: function(text) { return parseInt(text) || '0'; },
     valueToText: function(value) { return value ? value : '0'; }
   }
 });
