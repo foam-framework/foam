@@ -1984,7 +1984,7 @@ f1 end
                   { name: 'foo', defaultValue: 'bar' },
                   {
                     name: 'myChild',
-                    factory: function() { return this.Child.create(); }
+                    lazyFactory: function() { return this.Child.create(); }
                   }
                 ]
               });
