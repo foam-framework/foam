@@ -56,7 +56,9 @@ MODEL({
     {
       name:  'data',
       postSet: function(_, data) {
-        if ( ! this.model && data && data.model_ ) this.model = data.model_;
+        if ( data && data.model_ && this.model !== data.model_ ) {
+          this.model = data.model_;
+        }
         this.onValueChange_();
       },
       documentation: function() {/*

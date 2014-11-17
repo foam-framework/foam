@@ -217,8 +217,9 @@ var Model = {
       displayHeight: 1,
       defaultValueFn: function() { return this.name + 's'; },
       help: 'The plural form of this model\'s name.',
-      documentation: function() { /* The plural form of $$DOC{ref:'Model.name'}, for use in documentation
-        and other human-readable areas. */}
+      documentation: function() { /* The plural form of $$DOC{ref:'Model.name'}, for use in database
+        table naming, labels and documentation. The format generally follows the same
+        contsraints as $$DOC{ref:'.name'}. */}
     },
     {
       name: 'version',

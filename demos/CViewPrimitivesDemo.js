@@ -21,7 +21,7 @@ view.write(document);
 MODEL({
   name: 'LRectangle',
   extendsModel: 'canvas.Rectangle',
-  traits: [ 'canvas.LayoutItemHorizontalTrait' ],
+  traits: [ 'layout.LayoutItemHorizontalTrait' ],
   
   methods: {
     init: function() {
