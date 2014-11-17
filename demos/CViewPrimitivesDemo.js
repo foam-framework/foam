@@ -14,9 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var canv = X.CView2.create({width: 800, height: 800});
+canv.write(document);
+
 
 var view = X.canvas.LinearLayout.create({width: 120, height: 300});
-view.write(document);
+canv.addChild(view);
 
 MODEL({
   name: 'LRectangle',
@@ -34,6 +37,23 @@ MODEL({
   }
   
 });
+MODEL({
+  name: 'LRectangle2',
+  extendsModel: 'canvas.Rectangle',
+  traits: [ 'layout.LayoutItemHorizontalTrait' ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      this.horizontalConstraints.min = 50;
+      this.horizontalConstraints.max = 300;
+      this.horizontalConstraints.preferred = 200;
+      this.horizontalConstraints.shrinkFactor = 1;
+    }
+  }
+
+});
 
 var rect1 = X.LRectangle.create({
        x: 0,
@@ -45,7 +65,7 @@ var rect1 = X.LRectangle.create({
 });
 view.addChild(rect1);
 
-var rect2 = X.LRectangle.create({
+var rect2 = X.LRectangle2.create({
        x: 60,
        y: 25,
        border: 'blue',
@@ -65,7 +85,14 @@ var rect3 = X.LRectangle.create({
 });
 view.addChild(rect3);
 
-view.performLayout();
+//view.performLayout();
+var mouse = X.Mouse.create();
+mouse.connect(canv.$);
+
+Events.dynamic(function() { mouse.x; mouse.y; }, function() {
+  view.width = mouse.x;
+  view.height = mouse.y;
+});
 
 // var label = X.canvas.Label.create({
 //      x: 20,

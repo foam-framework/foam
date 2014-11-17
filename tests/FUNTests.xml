@@ -1844,6 +1844,7 @@ f1 end
 
         </property>
       </object>
+
       <object model="UnitTest">
         <property name="name">LinearLayoutTrait test</property>
         <property name="description">Tests generic canvas.LinearLayoutTrait layout handling</property>
@@ -1864,7 +1865,45 @@ f1 end
       'width', 'height', 'x', 'y'
     ]
   });
-  this.log(this.X.LayItem.id);
+
+  // make some layout items to use
+  this.item1 = this.X.LayItem.create({x:0, y:0, width:10, height: 10});
+  this.item2 = this.X.LayItem.create({x:0, y:0, width:10, height: 10});
+  this.item3 = this.X.LayItem.create({x:0, y:0, width:10, height: 10});
+  this.item4 = this.X.LayItem.create({x:0, y:0, width:10, height: 10});
+
+  this.item1.horizontalConstraints.min = 0;
+  this.item2.horizontalConstraints.min = 10;
+  this.item3.horizontalConstraints.min = 20;
+  //this.item4.horizontalConstraints.min = 0;
+
+  this.item1.horizontalConstraints.max = 100;
+  this.item2.horizontalConstraints.max = 30;
+  this.item3.horizontalConstraints.max = 50;
+  //this.item4.horizontalConstraints.max = 0;
+
+  this.item1.horizontalConstraints.preferred = 5;
+  this.item2.horizontalConstraints.preferred = 20;
+  this.item3.horizontalConstraints.preferred = 30;
+  this.item4.horizontalConstraints.preferred = 100;
+
+  this.item1.horizontalConstraints.stretchFactor = 0;
+  this.item2.horizontalConstraints.stretchFactor = 1;
+  this.item3.horizontalConstraints.stretchFactor = 2;
+  this.item4.horizontalConstraints.stretchFactor = 3;
+
+  this.item1.horizontalConstraints.shrinkFactor = 1;
+  this.item2.horizontalConstraints.shrinkFactor = 2;
+  this.item3.horizontalConstraints.shrinkFactor = 3;
+  this.item4.horizontalConstraints.shrinkFactor = 0;
+
+  this.logItems = function() {
+    var self = this;
+    [self.item1, self.item2, self.item3, self.item4].forEach(function(item) {
+      self.log("(",item.x, ", ", item.y, ") ", item.width, "x", item.height);
+    });
+  };
+
 }
         </property>
         <property name="tags">
@@ -1873,13 +1912,55 @@ f1 end
         </property>
         <property name="tests">
           <object model="RegressionTest">
-            <property name="name">Future Function</property>
-            <property name="code" type="function">function (ret){
-              this.log("Exact output...");
-            }
+            <property name="name">Shrinking Layout</property>
+            <property name="code" type="function">function anonymous() {
+                // make a layout
+                var layout1 = this.X.LinLayTest.create();
+                layout1.orientation = 'horizontal';
+                layout1.width = 100;
+
+                layout1.children = [this.item1, this.item2, this.item3, this.item4];
+                layout1.calculateLayout();
+
+                this.logItems();
+              }
             </property>
-            <property name="master">Exact output...</property>
+            <property name="tags">
+              <i>node</i>
+              <i>web</i>
+            </property>
+            <property name="master">(0, 0) 0x10
+(0, 0) 10x10
+(10, 0) 20x10
+(30, 0) 70x10
+</property>
           </object>
+
+          <object model="RegressionTest">
+            <property name="name">Growing Layout</property>
+            <property name="code" type="function">function anonymous() {
+                // make a layout
+                var layout1 = this.X.LinLayTest.create();
+                layout1.orientation = 'horizontal';
+                layout1.width = 300;
+
+                layout1.children = [this.item1, this.item2, this.item3, this.item4];
+                layout1.calculateLayout();
+
+                this.logItems();
+              }
+            </property>
+            <property name="tags">
+              <i>node</i>
+              <i>web</i>
+            </property>
+            <property name="master">(0, 0) 5x10
+(5, 0) 30x10
+(35, 0) 50x10
+(85, 0) 215x10
+</property>
+          </object>
+
         </property>
       </object>
 

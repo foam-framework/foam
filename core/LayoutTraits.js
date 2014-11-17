@@ -234,7 +234,6 @@ MODEL({
           applySizesF(); // size it anyway
           return;
         }
-        
         // float division, so we have to keep a running total later 
         // and round only when setting pos and size
         var modifyEachBy = availableSpace / modifyTotal;

@@ -21,7 +21,30 @@ MODEL({
   name: 'LinearLayout',
   extendsModel: 'CView2',
   package: 'canvas',
-  traits: [ 'layout.LinearLayoutTrait']
+  traits: [ 'layout.LinearLayoutTrait'],
+
+  methods: {
+      init: function() {
+        this.SUPER();
+
+        var self = this;
+        // if we change size, redo internal layout
+        this.X.dynamic(function() { self.width; self.height; },
+                       this.performLayout);
+//        this.X.dynamic(function() { self.width; self.height; },
+//                       function() { console.log(self.width, self.height);} );
+      },
+      addChild: function(child) { /* Adds a child $$DOC{ref:'CView2'} to the scene
+                                     under this. Add our listener for child constraint
+                                     changes. */
+        this.SUPER(child);
+
+        var constraints = this.orientation === 'horizontal'?
+                            child.horizontalConstraints :
+                            child.verticalConstraints;
+        constraints.addListener(this.performLayout);
+      }
+    }
   
 });
 
