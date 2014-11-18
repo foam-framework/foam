@@ -70,7 +70,7 @@ MODEL({
     init: function() {
       this.SUPER();
 
-      Events.dynamic( function() { this.text; this.canvas; }, this.updatePreferred );
+      Events.dynamic( function() { this.text; this.canvas; }.bind(this), this.updatePreferred );
       this.updatePreferred();
     }
   },
@@ -136,13 +136,13 @@ Events.dynamic(function() { mouse.x; mouse.y; }, function() {
   view.height = mouse.y;
 });
 
-var editor1 = X.DetailView.create({ data: rect1.horizontalConstraints });
+var editor1 = X.DetailView.create({ data: rect1 });
 editor1.write(document);
 
-var editor2 = X.DetailView.create({ data: rect2.horizontalConstraints });
+var editor2 = X.DetailView.create({ data: rect2});
 editor2.write(document);
 
-var editor3 = X.DetailView.create({ data: rect3.horizontalConstraints });
+var editor3 = X.DetailView.create({ data: rect3});
 editor3.write(document);
 
 // var label = X.canvas.Label.create({

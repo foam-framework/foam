@@ -152,7 +152,8 @@ MODEL({
                               no constraints or preferences are assumed. */},
       factory: function() {
         return this.X.layout.LayoutItemLinearConstraints.create();
-      }
+      },
+      view:'DetailView'
     }
   ]
 
@@ -173,7 +174,8 @@ MODEL({
                               no constraints or preferences are assumed. */},
       factory: function() {
         return this.X.layout.LayoutItemLinearConstraints.create();
-      }
+      },
+      view:'DetailView'
     }
   ]
 
