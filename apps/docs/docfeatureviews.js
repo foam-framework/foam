@@ -679,7 +679,7 @@ MODEL({
     <%    } else {
             if (this.hasFeatures) { %>
               <p class="feature-type-heading"><%=this.featureName()%>:</p>
-              <div class="memberList">$$selfFeaturesDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.selfFeaturesDAO, model: Property }</div>
+              <div class="memberList">$$selfFeaturesDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.selfFeaturesDAO, model: Model }</div>
       <%    }
             if (this.hasInheritedFeatures) { %>
               <p class="feature-type-heading">Inherited <%=this.featureName()%>:</p>

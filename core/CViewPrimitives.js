@@ -74,10 +74,11 @@ MODEL({
 
   models: [
     {
+      model_: 'Model',
       name: 'MarginProxy',
       extendsModel: 'layout.LayoutItemLinearConstraintsProxy',
 
-      documentation: function() {/* Adds an $$DOC{ref:'.addAmount'} to the proxied constraints. */},
+      documentation: function() {/* Adds an $$DOC{ref:'canvas.Margin.MarginProxy.addAmount'} to the proxied constraints. */},
 
       properties: [
         {
