@@ -129,9 +129,11 @@ MODEL({
 
   methods: {
     setTotalSize: function(size) {
-      this.preferred.totalSize_ = size;
-      this.min.totalSize_ = size;
-      this.max.totalSize_ = size;
+      if (this.preferred.totalSize_ !== size) {
+        this.preferred.totalSize_ = size;
+        this.min.totalSize_ = size;
+        this.max.totalSize_ = size;
+      }
     }
   }
 
@@ -209,7 +211,16 @@ MODEL({
       code: function(evt) {
         this.calculateLayout();
       }
+    },
+    {
+      name: 'updatePreferredSize',
+      isFramed: true,
+      documentation: function() {/* Performs a full layout of child items. */},
+      code: function(evt) {
+        this.calculatePreferredSize();
+      }
     }
+    
   ],
 
   methods: {
@@ -359,6 +370,37 @@ MODEL({
       }
       
       
+    },
+    calculatePreferredSize: function() { /* Find the size of layout that accomodates all items
+                                            at their preferred sizes. */
+      var constraintsF = Function("item", "return item."+ this.orientation+"Constraints");
+      var opposedConstraintsF = Function("item", "return item."+ 
+                                         ((this.orientation === 'horizontal')? 'vertical':'horizontal')
+                                         +"Constraints");
+      var boundedF = function(val, constraints) { 
+        return (constraints.min.pix && val < constraints.min.pix)? constraints.min.pix :
+               (constraints.max.pix && val > constraints.max.pix)? constraints.max.pix :
+               val;
+      }
+      var parentSizeF = Function("item", "return item."+ 
+                      (this.orientation==='horizontal'? "width" : "height"));
+      var sz = parentSizeF(this);      
+      
+
+      // sum up preferred sizes
+      var totalSize = 0;
+      var largestOpposedAxisPreferred = 0;
+      this.children.forEach(function(child) {
+        constraintsF(child).setTotalSize(sz); // for percentages
+        totalSize += boundedF(constraintsF(child).preferred.pix, constraintsF(child));
+        // also find the largest preferred size on our non-layout axis
+        var oaPref = opposedConstraintsF(child)? opposedConstraintsF(child).preferred.pix : 0;
+        if (oaPref > largestOpposedAxisPreferred) largestOpposedAxisPreferred = oaPref;
+      });
+      
+      // apply if valid for our layout item traits
+      if (constraintsF(this)) constraintsF(this).preferred.val = totalSize;
+      if (opposedConstraintsF(this)) opposedConstraintsF(this).preferred.val = largestOpposedAxisPreferred;
     }
   }
 });

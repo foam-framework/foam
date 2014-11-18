@@ -21,7 +21,9 @@ MODEL({
   name: 'LinearLayout',
   extendsModel: 'CView2',
   package: 'canvas',
-  traits: [ 'layout.LinearLayoutTrait'],
+  traits: [ 'layout.LinearLayoutTrait', 
+            'layout.LayoutItemHorizontalTrait',
+            'layout.LayoutItemVerticalTrait' ],
 
   methods: {
       init: function() {
@@ -38,10 +40,22 @@ MODEL({
                                      changes. */
         this.SUPER(child);
 
+        // listen for changes to child layout constraints
         var constraints = this.orientation === 'horizontal'?
                             child.horizontalConstraints :
                             child.verticalConstraints;
         constraints.addListener(this.performLayout);
+        constraints.preferred.addListener(this.updatePreferredSize);
+      },
+      removeChild: function(child) { /* Removes a child $$DOC{ref:'CView2'} from the scene. */
+        // unlisten
+        var constraints = this.orientation === 'horizontal'?
+                            child.horizontalConstraints :
+                            child.verticalConstraints;
+        constraints.removeListener(this.performLayout);
+        constraints.preferred.removeListener(this.updatePreferredSize);
+                
+        this.SUPER(child);
       }
     }
   

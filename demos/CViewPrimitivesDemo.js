@@ -17,9 +17,11 @@
 var canv = X.CView2.create({width: 1000, height: 300});
 canv.write(document);
 
+var outerLayout = X.canvas.LinearLayout.create();
+canv.addChild(outerLayout);
 
 var view = X.canvas.LinearLayout.create({width: 120, height: 300});
-canv.addChild(view);
+outerLayout.addChild(view);
 
 MODEL({
   name: 'LRectangle',
@@ -127,13 +129,23 @@ var rect3 = view.X.LRectangle.create({
 });
 view.addChild(rect3);
 
+var rect4 = view.X.LRectangle.create({
+       x: 120,
+       y: 30,
+       border: 'green',
+       width: 120,
+       height: 30,
+  
+});
+outerLayout.addChild(rect4);
+
 //view.performLayout();
 var mouse = X.Mouse.create();
 mouse.connect(canv.$);
 
 Events.dynamic(function() { mouse.x; mouse.y; }, function() {
-  view.width = mouse.x;
-  view.height = mouse.y;
+  outerLayout.width = mouse.x;
+  outerLayout.height = mouse.y;
 });
 
 var editor1 = X.DetailView.create({ data: rect1 });
@@ -144,6 +156,12 @@ editor2.write(document);
 
 var editor3 = X.DetailView.create({ data: rect3});
 editor3.write(document);
+
+var editor4 = X.DetailView.create({ data: rect4});
+editor4.write(document);
+
+var editorV = X.DetailView.create({data: view});
+editorV.write(document);
 
 // var label = X.canvas.Label.create({
 //      x: 20,
