@@ -66,7 +66,10 @@ MODEL({
       model_: 'IntProperty',
       name: 'totalSize_',
       hidden: true,
-      postSet: function() { this.pix = undefined; }
+      postSet: function() { this.pix = undefined; },
+      documentation: function() { /* This is set by the layout implementation before
+        performing a layout operation. */ }
+
     }
   ],
 
