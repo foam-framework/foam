@@ -31,9 +31,7 @@ var FObject = {
   create: function(args, opt_X) {
     var o = this.create_(this);
     o.instance_ = {};
-    o.X = opt_X || X;
-
-    o.X = o.X.sub({});
+    o.X = (opt_X || X).sub({});
 
     if ( this.model_.imports && this.model_.imports.length ) {
       if ( ! this.imports_ ) {
@@ -95,8 +93,6 @@ var FObject = {
   init: function(_) {
     if ( ! this.model_ ) return;
 
-    this.X = this.X.sub();
-
     var ps;
 
     function exportKeys(X, keys, value) {
@@ -124,7 +120,6 @@ var FObject = {
 
       exportKeys(this.X, prop.exportKeys, this[prop.name]);
     }
-
 
     ps = this.selectProperties_('exportValueKeyProperties_', 'exportValueKeys');
     for ( var i = 0 ; i < ps.length ; i++ ) {
