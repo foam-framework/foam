@@ -21,7 +21,9 @@ MODEL({
   name: 'LinearLayout',
   extendsModel: 'CView2',
   package: 'canvas',
-  traits: [ 'layout.LinearLayoutTrait'],
+  traits: [ 'layout.LinearLayoutTrait', 
+            'layout.LayoutItemHorizontalTrait',
+            'layout.LayoutItemVerticalTrait' ],
 
   methods: {
       init: function() {
@@ -30,19 +32,30 @@ MODEL({
         var self = this;
         // if we change size, redo internal layout
         this.X.dynamic(function() { self.width; self.height; },
-                       this.performLayout);
-//        this.X.dynamic(function() { self.width; self.height; },
-//                       function() { console.log(self.width, self.height);} );
+                       this.performLayout); // TODO: don't react to orientation-independent one
+
       },
       addChild: function(child) { /* Adds a child $$DOC{ref:'CView2'} to the scene
                                      under this. Add our listener for child constraint
                                      changes. */
         this.SUPER(child);
 
+        // listen for changes to child layout constraints
         var constraints = this.orientation === 'horizontal'?
                             child.horizontalConstraints :
                             child.verticalConstraints;
         constraints.addListener(this.performLayout);
+        constraints.preferred.addListener(this.updatePreferredSize);
+      },
+      removeChild: function(child) { /* Removes a child $$DOC{ref:'CView2'} from the scene. */
+        // unlisten
+        var constraints = this.orientation === 'horizontal'?
+                            child.horizontalConstraints :
+                            child.verticalConstraints;
+        constraints.removeListener(this.performLayout);
+        constraints.preferred.removeListener(this.updatePreferredSize);
+                
+        this.SUPER(child);
       }
     }
   
@@ -144,7 +157,6 @@ MODEL({
     paintSelf: function() {
       var c = this.canvas;
       c.save();
-console.log("paint label", this.text);
 
       c.textBaseline = 'top';
       c.fillStyle = this.color;

@@ -106,9 +106,6 @@ MODEL({
     sendJSON: function(res, status, json) {
       this.send(res, status, JSON.stringify(json));
     },
-    send404: function(res, msg) {
-      this.send(res, 404, msg);
-    },
     mkLogMessage_: function(level, msg) {
       return '[' + (new Date()).toISOString() + '] (' + level + ') [' + this.LOG_TITLE + ']  ' + msg;
     },
@@ -147,6 +144,12 @@ MODEL({
       name: 'prefix',
       documentation: 'URL path prefix. Stripped before searching $$DOC{ref:".dir"}.',
       required: true
+    },
+    {
+      name: 'listDirectories',
+      documentation: 'When set to true, the server will list directory ' +
+          'contents. When false, returns 404s for directories.',
+      defaultValue: true
     }
   ],
 
@@ -161,6 +164,9 @@ MODEL({
   },
 
   methods: {
+    send404: function(res, target) {
+      this.send(res, 404, 'File not found: ' + target);
+    },
     handle: function(req, res) {
       // Try to serve a static file.
       if ( ! this.dir ) return false;
@@ -187,7 +193,7 @@ MODEL({
       this.verbose('Relative path: ' + target);
       // The relative path can't start with .. or it's outside the dir.
       if ( rel.startsWith('..') ) {
-        this.send404(res, 'Illegal path: Attempts to leave directory.');
+        this.send(res, 404, 'Illegal path: Attempts to leave directory.');
         this.warn('Tried to read static file outside directory: ' + target);
         return true;
       }
@@ -195,23 +201,48 @@ MODEL({
       // Now we have a legal filename within our subdirectory.
       // We try to stream the file to the other end.
       if ( ! fs.existsSync(target) ) {
-        this.send404(res, 'File not found: ' + target);
+        this.send404(res, target);
         this.warn('File not found: ' + target);
         return true;
       }
 
-      var ext = path.extname(target);
-      var mimetype = this.MIME_TYPES[ext] || this.MIME_TYPES.__default;
-      if ( mimetype === this.MIME_TYPES.__default ) {
-        this.log('Unknown MIME type: ' + ext);
-      }
-      res.statusCode = 200;
-      res.setHeader('Content-type', mimetype);
+      var stats = fs.statSync(target);
+      if ( stats.isDirectory() ) {
+        if ( ! this.listDirectories ) {
+          this.send404(res, target);
+          return true;
+        }
+        // Send the directory listing.
+        var title = 'Directory listing for ' + req.url;
+        var body = '<html><head><title>' + title + '</title></head><body>';
+        body += '<h2>' + title + '</h2><hr /><ul>';
 
-      // Open the file as a stream.
-      this.log('200 OK ' + target);
-      var stream = fs.createReadStream(target);
-      stream.pipe(res);
+        var files = fs.readdirSync(target);
+        for ( var i = 0 ; i < files.length ; i++ ) {
+          var st = fs.statSync(path.join(target, files[i]));
+          var name = files[i] + (st.isDirectory() ? '/' : '');
+          body += '<li><a href="' + name + '">' + name + '</a></li>';
+        }
+        body += '</ul></body></html>';
+        res.setHeader('Content-type', 'text/html');
+        res.statusCode = 200;
+        res.write(body, 'utf8');
+        res.end();
+        this.log('200 OK (dir) ' + target);
+      } else {
+        var ext = path.extname(target);
+        var mimetype = this.MIME_TYPES[ext] || this.MIME_TYPES.__default;
+        if ( mimetype === this.MIME_TYPES.__default ) {
+          this.log('Unknown MIME type: ' + ext);
+        }
+        res.statusCode = 200;
+        res.setHeader('Content-type', mimetype);
+
+        // Open the file as a stream.
+        this.log('200 OK ' + target);
+        var stream = fs.createReadStream(target);
+        stream.pipe(res);
+      }
       return true;
     }
   }

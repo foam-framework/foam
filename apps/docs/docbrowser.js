@@ -34,6 +34,7 @@ MODEL({
     },
     {
       name: 'dao',
+      defaultValue: [],
       factory: function() {
         var newDAO = this.X.MDAO.create({model:Model});
 

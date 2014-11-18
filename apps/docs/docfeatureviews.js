@@ -366,7 +366,7 @@ MODEL({
     function toInnerHTML() {/*
       <div id="scrollTarget_<%=this.data.name%>">
         <p><span class="feature-heading"><%=this.data.name%></span>
-           <span class="feature-type">(<%=this.data.type%>)</span></p>
+           <span class="feature-type">($$DOC{ref:this.data.type})</span></p>
         <p><%=this.renderDocSourceHTML()%></p>
         <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureOverridesRefView', data: this.overridesDAO, model: DocFeatureInheritanceTracker }</p>
       </div>

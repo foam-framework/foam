@@ -19,6 +19,69 @@
 //////////////////////////////// Layout stuff
 
 MODEL({
+  name: 'ConstraintValue',
+  package: 'layout',
+
+  documentation: function() {/* Stores an integer pixel value or percentage.
+    For percentages, a layoutPixelSize is imported. Export this from your
+    layout items from total layout width or height depending on orientation. */},
+
+  properties: [
+//    {
+//      model_: 'BooleanProperty',
+//      name: 'isPercentage',
+//      defaultValue: false,
+//      mode: 'read-only',
+//      documentation: function() { /* Indicates if the value is a percentage
+//          0-100. $$DOC{ref:'.val'} will be reduced to 100 if too large when
+//          $$DOC{ref:'.isPercentage'} is set to true. */ }
+//    },
+    {
+      name: 'val',
+      postSet: function() { this.pix = undefined; },
+      documentation: function() { /* The value in pixels or as a percentage.
+        If a string including '%' is specified, percentage is assumed.
+        If an integer is specfied, it is treated as a
+        pixel value. */ }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'pix',
+      mode: 'read-only',
+      getter: function() {
+        if (!this.instance_.pix) {
+          if (this.isPercentage()) {
+            this.instance_.pix = (parseInt(this.val.replace('%','') || 0) / 100) * this.totalSize_;
+          } else {
+            this.instance_.pix = parseInt(this.val || 0)
+          }
+        }
+        return this.instance_.pix;
+      },
+      documentation: function() { /* The calculated pixel value, based on $$DOC{ref:'.val'}. */ }
+
+    },
+    {
+      model_: 'IntProperty',
+      name: 'totalSize_',
+      hidden: true,
+      postSet: function() { this.pix = undefined; },
+      documentation: function() { /* This is set by the layout implementation before
+        performing a layout operation. */ }
+
+    }
+  ],
+
+  methods: {
+    isPercentage: function() { /* Indicates if the set $$DOC{ref:'.val'} is a percentage. */
+      return  (typeof this.val === 'string' && this.val.indexOf('%') !== -1);
+    }
+  }
+
+});
+
+
+MODEL({
   name: 'LayoutItemLinearConstraints',
   package: 'layout',
 
@@ -27,22 +90,25 @@ MODEL({
 
   properties: [
     {
-      model_: 'IntProperty',
+      factory: function() { return this.X.layout.ConstraintValue.create({val:100}); },
       name: 'preferred',
-      defaultValue: 100,
       documentation: function() {/* The preferred item size. */},
+      view: 'DetailView',
+      type: 'layout.ConstraintValue'
     },
     {
-      model_: 'IntProperty',
+      factory: function() { return this.X.layout.ConstraintValue.create({val:0}); },
       name: 'min',
-      defaultValue: 0,
       documentation: function() {/* The minimum size. */},
+      view: 'DetailView',
+      type: 'layout.ConstraintValue'
     },
     {
-      model_: 'IntProperty',
+      factory: function() { return this.X.layout.ConstraintValue.create({val:'100%'}); },
       name: 'max',
-      defaultValue: Number.MAX_VALUE,
       documentation: function() {/* The maximum size. */},
+      view: 'DetailView',
+      type: 'layout.ConstraintValue'
     },
     {
       model_: 'IntProperty',
@@ -62,7 +128,17 @@ MODEL({
             indicates the proportion of space this item should take (versus the
             total of all shrink factors in the layout). */},
     }
-  ]
+  ],
+
+  methods: {
+    setTotalSize: function(size) {
+      if (this.preferred.totalSize_ !== size) {
+        this.preferred.totalSize_ = size;
+        this.min.totalSize_ = size;
+        this.max.totalSize_ = size;
+      }
+    }
+  }
 
 });
 
@@ -72,15 +148,17 @@ MODEL({
 
   documentation: function() {/* This trait enables an item to be placed in
                                 a horizontal layout. If you do not  */},
+
   properties: [
     {
       name: 'horizontalConstraints',
-      type: 'LayoutItemLinearConstraints',
+      type: 'layout.LayoutItemLinearConstraints',
       documentation: function() {/* Horizontal layout constraints. If undefined,
                               no constraints or preferences are assumed. */},
       factory: function() {
         return this.X.layout.LayoutItemLinearConstraints.create();
-      }
+      },
+      view:'DetailView'
     }
   ]
 
@@ -92,15 +170,17 @@ MODEL({
 
   documentation: function() {/* This trait enables an item to be placed in
                                 a vertical layout. */},
-  properties: [
+
+    properties: [
     {
       name: 'verticalConstraints',
-      type: 'LayoutItemLinearConstraints',
+      type: 'layout.LayoutItemLinearConstraints',
       documentation: function() {/* Vertical layout constraints. If undefined,
                               no constraints or preferences are assumed. */},
       factory: function() {
         return this.X.layout.LayoutItemLinearConstraints.create();
-      }
+      },
+      view:'DetailView'
     }
   ]
 
@@ -134,7 +214,16 @@ MODEL({
       code: function(evt) {
         this.calculateLayout();
       }
+    },
+    {
+      name: 'updatePreferredSize',
+      isFramed: true,
+      documentation: function() {/* Performs a full layout of child items. */},
+      code: function(evt) {
+        this.calculatePreferredSize();
+      }
     }
+    
   ],
 
   methods: {
@@ -147,18 +236,20 @@ MODEL({
                       (this.orientation==='horizontal'? "width" : "height"));
             
       var boundedF = function(val, constraints) { 
-        return (constraints.min && val < constraints.min)? constraints.min :
-               (constraints.max && val > constraints.max)? constraints.max :
+        return (constraints.min.pix && val < constraints.min.pix)? constraints.min.pix :
+               (constraints.max.pix && val > constraints.max.pix)? constraints.max.pix :
                val;
       }
 
       var availableSpace = parentSizeF(this);
+      var sz = parentSizeF(this);
       
       // initialize with all at preferred size
       var itemSizes = [];
       var i = 0;
       this.children.forEach(function(child) {
-        itemSizes[i] = boundedF(constraintsF(child).preferred, constraintsF(child));
+        constraintsF(child).setTotalSize(sz); // for percentages
+        itemSizes[i] = boundedF(constraintsF(child).preferred.pix, constraintsF(child));
         availableSpace -= itemSizes[i];
         i++;
       });
@@ -167,17 +258,17 @@ MODEL({
         var sizeOkF, factorF, sizeNotOkF, makeSizeOkF;
         if (isShrink) {
           sizeOkF = function(index, child) {
-            return itemSizes[index] > constraintsF(child).min;
+            return itemSizes[index] > constraintsF(child).min.pix;
           }
           factorF = function(child) {
             return constraintsF(child).shrinkFactor;
           }
           sizeNotOkF = function(index, child) {
-            return itemSizes[index] < constraintsF(child).min;
+            return itemSizes[index] < constraintsF(child).min.pix;
           }
           makeSizeOkF = function(index, child) {
-            availableSpace += itemSizes[index] - constraintsF(child).min;
-            itemSizes[index] = constraintsF(child).min;
+            availableSpace += itemSizes[index] - constraintsF(child).min.pix;
+            itemSizes[index] = constraintsF(child).min.pix;
             resizeF(true); // recurse with a smaller list now that item i is locked at minimum
             // This will eventually catch the case where we can't shrink enough, since we
             // will keep re-shrinking until the list of workingSet is empty.
@@ -185,17 +276,17 @@ MODEL({
           }
         } else { //grow
           sizeOkF = function(index, child) {
-            return itemSizes[index] < constraintsF(child).max;
+            return itemSizes[index] < constraintsF(child).max.pix;
           }
           factorF = function(child) {
             return constraintsF(child).stretchFactor;
           }
           sizeNotOkF = function(index, child) {
-            return itemSizes[index] > constraintsF(child).max;
+            return itemSizes[index] > constraintsF(child).max.pix;
           }
           makeSizeOkF = function(index, child) {
-            availableSpace += itemSizes[index] - constraintsF(child).max;
-            itemSizes[index] = constraintsF(child).max;
+            availableSpace += itemSizes[index] - constraintsF(child).max.pix;
+            itemSizes[index] = constraintsF(child).max.pix;
             resizeF(false); // recurse with a smaller list now that item i is locked at minimum
             // This will eventually catch the case where we can't shrink enough, since we
             // will keep re-shrinking until the list of workingSet is empty.
@@ -282,6 +373,37 @@ MODEL({
       }
       
       
+    },
+    calculatePreferredSize: function() { /* Find the size of layout that accomodates all items
+                                            at their preferred sizes. */
+      var constraintsF = Function("item", "return item."+ this.orientation+"Constraints");
+      var opposedConstraintsF = Function("item", "return item."+ 
+                                         ((this.orientation === 'horizontal')? 'vertical':'horizontal')
+                                         +"Constraints");
+      var boundedF = function(val, constraints) { 
+        return (constraints.min.pix && val < constraints.min.pix)? constraints.min.pix :
+               (constraints.max.pix && val > constraints.max.pix)? constraints.max.pix :
+               val;
+      }
+      var parentSizeF = Function("item", "return item."+ 
+                      (this.orientation==='horizontal'? "width" : "height"));
+      var sz = parentSizeF(this);      
+      
+
+      // sum up preferred sizes
+      var totalSize = 0;
+      var largestOpposedAxisPreferred = 0;
+      this.children.forEach(function(child) {
+        constraintsF(child).setTotalSize(sz); // for percentages
+        totalSize += boundedF(constraintsF(child).preferred.pix, constraintsF(child));
+        // also find the largest preferred size on our non-layout axis
+        var oaPref = opposedConstraintsF(child)? opposedConstraintsF(child).preferred.pix : 0;
+        if (oaPref > largestOpposedAxisPreferred) largestOpposedAxisPreferred = oaPref;
+      });
+      
+      // apply if valid for our layout item traits
+      if (constraintsF(this)) constraintsF(this).preferred.val = totalSize;
+      if (opposedConstraintsF(this)) opposedConstraintsF(this).preferred.val = largestOpposedAxisPreferred;
     }
   }
 });
