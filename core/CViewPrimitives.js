@@ -30,9 +30,8 @@ MODEL({
         var self = this;
         // if we change size, redo internal layout
         this.X.dynamic(function() { self.width; self.height; },
-                       this.performLayout);
-//        this.X.dynamic(function() { self.width; self.height; },
-//                       function() { console.log(self.width, self.height);} );
+                       this.performLayout); // TODO: don't react to orientation-independent one
+
       },
       addChild: function(child) { /* Adds a child $$DOC{ref:'CView2'} to the scene
                                      under this. Add our listener for child constraint
@@ -144,7 +143,6 @@ MODEL({
     paintSelf: function() {
       var c = this.canvas;
       c.save();
-console.log("paint label", this.text);
 
       c.textBaseline = 'top';
       c.fillStyle = this.color;

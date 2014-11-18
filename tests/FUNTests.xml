@@ -1872,20 +1872,20 @@ f1 end
   this.item3 = this.X.LayItem.create({x:0, y:0, width:10, height: 10});
   this.item4 = this.X.LayItem.create({x:0, y:0, width:10, height: 10});
 
-  this.item1.horizontalConstraints.min = 0;
-  this.item2.horizontalConstraints.min = 10;
-  this.item3.horizontalConstraints.min = 20;
-  //this.item4.horizontalConstraints.min = 0;
+  this.item1.horizontalConstraints.min.val = 0;
+  this.item2.horizontalConstraints.min.val = 10;
+  this.item3.horizontalConstraints.min.val = 20;
+  //this.item4.horizontalConstraints.min.val = 0;
 
-  this.item1.horizontalConstraints.max = 100;
-  this.item2.horizontalConstraints.max = 30;
-  this.item3.horizontalConstraints.max = 50;
-  //this.item4.horizontalConstraints.max = 0;
+  this.item1.horizontalConstraints.max.val = 100;
+  this.item2.horizontalConstraints.max.val = 30;
+  this.item3.horizontalConstraints.max.val = 50;
+  //this.item4.horizontalConstraints.max.val = 9999999999;
 
-  this.item1.horizontalConstraints.preferred = 5;
-  this.item2.horizontalConstraints.preferred = 20;
-  this.item3.horizontalConstraints.preferred = 30;
-  this.item4.horizontalConstraints.preferred = 100;
+  this.item1.horizontalConstraints.preferred.val = 5;
+  this.item2.horizontalConstraints.preferred.val = 20;
+  this.item3.horizontalConstraints.preferred.val = 30;
+  this.item4.horizontalConstraints.preferred.val = 100;
 
   this.item1.horizontalConstraints.stretchFactor = 0;
   this.item2.horizontalConstraints.stretchFactor = 1;

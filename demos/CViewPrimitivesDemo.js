@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var canv = X.CView2.create({width: 800, height: 800});
+var canv = X.CView2.create({width: 1000, height: 300});
 canv.write(document);
 
 
@@ -30,9 +30,6 @@ MODEL({
     init: function() {
       this.SUPER();
       
-      this.horizontalConstraints.min = 50;
-      this.horizontalConstraints.max = 200;
-      this.horizontalConstraints.preferred = 120;
     }
   }
   
@@ -46,16 +43,16 @@ MODEL({
     init: function() {
       this.SUPER();
 
-      this.horizontalConstraints.min = 50;
-      this.horizontalConstraints.max = 300;
-      this.horizontalConstraints.preferred = 200;
+      this.horizontalConstraints.min.val = 50;
+      this.horizontalConstraints.max.val = 400;
+      this.horizontalConstraints.preferred.val = 200;
       this.horizontalConstraints.shrinkFactor = 1;
     }
   }
 
 });
 
-var rect1 = X.LRectangle.create({
+var rect1 = view.X.LRectangle.create({
        x: 0,
        y: 20,
        border: 'black',
@@ -65,7 +62,7 @@ var rect1 = X.LRectangle.create({
 });
 view.addChild(rect1);
 
-var rect2 = X.LRectangle2.create({
+var rect2 = view.X.LRectangle2.create({
        x: 60,
        y: 25,
        border: 'blue',
@@ -75,7 +72,7 @@ var rect2 = X.LRectangle2.create({
 });
 view.addChild(rect2);
 
-var rect3 = X.LRectangle.create({
+var rect3 = view.X.LRectangle.create({
        x: 120,
        y: 30,
        border: 'red',
@@ -93,6 +90,15 @@ Events.dynamic(function() { mouse.x; mouse.y; }, function() {
   view.width = mouse.x;
   view.height = mouse.y;
 });
+
+var editor1 = X.DetailView.create({ data: rect1.horizontalConstraints });
+editor1.write(document);
+
+var editor2 = X.DetailView.create({ data: rect2.horizontalConstraints });
+editor2.write(document);
+
+var editor3 = X.DetailView.create({ data: rect3.horizontalConstraints });
+editor3.write(document);
 
 // var label = X.canvas.Label.create({
 //      x: 20,
