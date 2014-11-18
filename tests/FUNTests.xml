@@ -1964,6 +1964,51 @@ f1 end
         </property>
       </object>
 
+      <object model="UnitTest">
+        <property name="name">Packages</property>
+        <property name="description">Tests the package system: package, require, import, export</property>
+        <property name="tags">
+          <i>web</i>
+          <i>node</i>
+        </property>
+        <property name="tests">
+          <object model="UnitTest">
+            <property name="name">Children import things I export</property>
+            <property name="description">If I export 'foo', and have a factory that creates a require()d child that imports 'foo', that instance should get my 'foo'.</property>
+            <property name="code" type="function">function anonymous() {
+              CLASS({
+                name: 'Parent',
+                exports: ['foo'],
+                requires: ['Child'],
+                properties: [
+                  { name: 'foo', defaultValue: 'bar' },
+                  {
+                    name: 'myChild',
+                    factory: function() { return this.Child.create(); }
+                  }
+                ]
+              });
+              CLASS({
+                name: 'Child',
+                imports: ['foo'],
+                methods: {
+                  check: function() {
+                    return this.foo;
+                  }
+                }
+              });
+
+              var parent = this.X.Parent.create();
+              this.assert(parent.myChild.check() === parent.foo,
+                  '"foo" should be imported into Child from Parent');
+
+            }
+            </property>
+          </object>
+
+        </property>
+      </object>
+
     </property>
   </object>
 

@@ -23,8 +23,11 @@ var path = require('path');
 // Create an XMLFileDAO against FUNTests.xml
 var dao = XMLFileDAO.create({ name: path.join(__dirname, 'FUNTests.xml'), model: Model });
 
+var port = 8888;
+if ( process.argv.length > 2 ) port = process.argv[2];
+
 X.NodeServer.create({
-  port: 8888,
+  port: port,
   handlers: [
     X.DAOHandler.create({
       daoMap: { 'ModelDAO': dao },
