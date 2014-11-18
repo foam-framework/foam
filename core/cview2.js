@@ -239,8 +239,30 @@ MODEL({
   ]
 });
 
+MODEL({
+  name: 'Point',
+  package: 'canvas',
 
-// Should CViews' have a cparent?
+  properties: [
+    {
+      model_: 'IntProperty',
+      name: 'x',
+      defaultValue: 0
+    },
+    {
+      model_: 'IntProperty',
+      name: 'y',
+      defaultValue: 0
+    }
+  ],
+
+  methods: {
+    toString: function() { return "canvas.Point("+this.x+", "+this.y+")"; }
+  }
+
+})
+
+
 MODEL({
   name:  'CView2',
   label: 'CView2',
@@ -337,10 +359,10 @@ MODEL({
           The height of this view. Painting is not automatically clipped, so a view
           may render outside of its apparent rectangle. */}
     },
-//    {
-//      name: 'parent',
-//      type: 'CView2'
-//    },
+    {
+      name: 'parent',
+      type: 'CView2'
+    },
     {
       name:  'children',
       type:  'CView2[]',
@@ -420,7 +442,7 @@ MODEL({
         child.view = this.view;
         child.addListener(this.view.paint);
       }
-      //child.parent = this;
+      child.parent = this;
       return this;
     },
 
@@ -433,7 +455,7 @@ MODEL({
       this.children.deleteI(child);
       child.view = undefined;
       child.removeListener(this.view.paint);
-      //child.parent = undefined;
+      child.parent = undefined;
       return this;
     },
 
@@ -467,6 +489,22 @@ MODEL({
       //this.erase(); // let the canvas AbstractCViewView take care of erasing the root node
       this.paintSelf();
       this.paintChildren();
+    },
+
+    mapToParent: function(point) { /* Maps a coordinate from this to our parents'. */
+      point.x -= this.x;
+      point.y -= this.y;
+      return point;
+    },
+
+    mapToCanvas: function(point) { /* Maps a coordinate from this to the canvas.
+                    Useful for sharing a point between sibling or cousin items. */
+      this.mapToParent(point);
+      if (this.parent && this.parent.mapToCanvas) {
+        return this.parent.mapToCanvas(point);
+      } else {
+        return point;
+      }
     },
 
     destroy: function() {

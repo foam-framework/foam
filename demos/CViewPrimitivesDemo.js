@@ -52,6 +52,50 @@ MODEL({
 
 });
 
+
+MODEL({
+  name: 'LLabel',
+  extendsModel: 'canvas.Label',
+  traits: [ 'layout.LayoutItemHorizontalTrait' ],
+
+  properties: [
+    {
+      model_: 'BooleanProperty',
+      name: 'isShrinkable',
+      defaultValue: false
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      Events.dynamic( function() { this.text; this.canvas; }, this.updatePreferred );
+      this.updatePreferred();
+    }
+  },
+  listeners: [
+    {
+      name: 'updatePreferred',
+      isFramed: true,
+      code: function() {
+        var c = this.canvas;
+        if (c) {
+          c.save();
+          if (this.font) c.font = this.font;
+          this.horizontalConstraints.preferred.val = c.measureText(this.text).width;
+          c.restore();
+          if (!this.isShrinkable) { // if no shrink, lock minimum to preferred
+            this.horizontalConstraints.min.val = this.horizontalConstraints.preferred.val;
+          }
+        }
+      }
+    }
+  ]
+
+
+});
+
 var rect1 = view.X.LRectangle.create({
        x: 0,
        y: 20,
@@ -62,12 +106,13 @@ var rect1 = view.X.LRectangle.create({
 });
 view.addChild(rect1);
 
-var rect2 = view.X.LRectangle2.create({
+var rect2 = view.X.LLabel.create({
        x: 60,
        y: 25,
-       border: 'blue',
+       color: 'blue',
        width: 120,
        height: 30,
+       text: 'Hello World'
   
 });
 view.addChild(rect2);

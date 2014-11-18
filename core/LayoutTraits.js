@@ -47,7 +47,6 @@ MODEL({
     {
       model_: 'IntProperty',
       name: 'pix',
-      hidden: true,
       mode: 'read-only',
       getter: function() {
         if (!this.instance_.pix) {
@@ -74,7 +73,7 @@ MODEL({
   ],
 
   methods: {
-    isPercentage: function() {
+    isPercentage: function() { /* Indicates if the set $$DOC{ref:'.val'} is a percentage. */
       return  (typeof this.val === 'string' && this.val.indexOf('%') !== -1);
     }
   }
