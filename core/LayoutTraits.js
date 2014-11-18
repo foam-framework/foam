@@ -143,6 +143,49 @@ MODEL({
 });
 
 MODEL({
+  name: 'LayoutItemLinearConstraintsProxy',
+  package: 'layout',
+
+  extendsModel: 'layout.LayoutItemLinearConstraints',
+
+  documentation: function() {/* The information layout items provide for a
+                            single axis of linear layout. */},
+
+  properties: [
+    {
+      name: 'data',
+      type: 'layout.LayoutItemLinearConstraints',
+      preSet: function(old,nu) {
+        if (old) {
+          Events.unfollow(old.preferred.pix$, this.preferred.val$);
+          Events.unfollow(old.max.pix$, this.max.val$);
+          Events.unfollow(old.min.pix$, this.min.val$);
+          Events.unfollow(old.stretchFactor$, this.stretchFactor$);
+          Events.unfollow(old.shrinkFactor$, this.shrinkFactor$);
+        }
+        return nu;
+      },
+      postSet: function() {
+        Events.follow(this.data.preferred.pix$, this.preferred.val$);
+        Events.follow(this.data.max.pix$, this.max.val$);
+        Events.follow(this.data.min.pix$, this.min.val$);
+        Events.follow(this.data.stretchFactor$, this.stretchFactor$);
+        Events.follow(this.data.shrinkFactor$, this.shrinkFactor$);
+      }
+    }
+  ],
+
+  methods: {
+    setTotalSize: function(size) {
+      if (this.data) {
+        this.data.setTotalSize(size);
+      }
+    }
+  }
+
+});
+
+MODEL({
   name: 'LayoutItemHorizontalTrait',
   package: 'layout',
 

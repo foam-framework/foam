@@ -63,6 +63,151 @@ MODEL({
 
 
 MODEL({
+  name:  'Margin',
+
+  extendsModel: 'CView2',
+
+  package: 'canvas',
+
+  traits: [ 'layout.LayoutItemHorizontalTrait',
+            'layout.LayoutItemVerticalTrait' ],
+
+  models: [
+    {
+      name: 'MarginProxy',
+      extendsModel: 'layout.LayoutItemLinearConstraintsProxy',
+
+      properties: [
+        {
+          name: 'data',
+          postSet: function() {
+            var mapFn = function(val) { return val + this.addAmount }.bind(this);
+
+            Events.map(this.data.preferred.pix$, this.preferred.val$, mapFn);
+            Events.map(this.data.max.pix$, this.max.val$, mapFn);
+            Events.map(this.data.min.pix$, this.min.val$, mapFn);
+
+            Events.follow(this.data.stretchFactor$, this.stretchFactor$);
+            Events.follow(this.data.shrinkFactor$, this.shrinkFactor$);
+          }
+        },
+        {
+          model_: 'IntProperty',
+          name: 'addAmount',
+          documentation: function() {/* The amount to add to the proxied pixel values. */},
+          defaultValue: 0
+        }
+      ]
+    }
+  ],
+
+  properties: [
+    {
+      model_: 'IntProperty',
+      name:  'top',
+      label: 'Top Margin',
+      documentation: function() {/* Margin in pixels. */},
+      defaultValue: 0
+    },
+    {
+      model_: 'IntProperty',
+      name:  'left',
+      label: 'Left Margin',
+      documentation: function() {/* Margin in pixels. */},
+      defaultValue: 0
+    },
+    {
+      model_: 'IntProperty',
+      name:  'right',
+      label: 'Right Margin',
+      documentation: function() {/* Margin in pixels. */},
+      defaultValue: 0
+    },
+    {
+      model_: 'IntProperty',
+      name:  'bottom',
+      label: 'Bottom Margin',
+      documentation: function() {/* Margin in pixels. */},
+      defaultValue: 0
+    },
+    {
+      name: 'horizontalConstraints',
+      documentation: function() {/* Horizontal layout constraints. Proxied from
+          $$DOC{ref:'.data'}. */},
+      factory: function() { /* override with our special proxy */
+        return this.X.canvas.Margin.MarginProxy.create();
+      }
+    },
+    {
+      name: 'verticalConstraints',
+      documentation: function() {/* Vertical layout constraints. Proxied from
+          $$DOC{ref:'.data'}. */},
+      factory: function() { /* override with our special proxy */
+        return this.X.canvas.Margin.MarginProxy.create();
+      }
+    }
+
+  ],
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      Events.dynamic(
+            function(){ this.top; this.left; this.right; this.bottom;
+                        this.width; this.height; }.bind(this),
+            this.updateMargins);
+    },
+
+    addChild: function(child) { /* Adds a child $$DOC{ref:'CView2'} to the scene
+                                   under this. Add our listener for child constraint
+                                   changes. */
+      // remove any existing children so we only have at most one at all times
+      this.children.forEach(this.removeChild);
+
+      this.SUPER(child);
+
+      // proxy the child's constraints into ours
+      if (child.verticalConstraints)
+        this.verticalConstraints.data = child.verticalConstraints;
+      if (child.horizontalConstraints)
+        this.horizontalConstraints.data = child.horizontalConstraints;
+
+
+    },
+    removeChild: function(child) { /* Removes a child $$DOC{ref:'CView2'} from the scene. */
+      // unlisten
+      this.verticalConstraints.data = undefined;
+      this.horizontalConstraints.data = undefined;
+
+      this.SUPER(child);
+    }
+
+  },
+
+  listeners: [
+    {
+      name: 'updateMargins',
+      isFramed: true,
+      documentation: function() {/* Adjusts child item. */},
+      code: function(evt) {
+        this.verticalConstraints.addAmount = this.top+this.bottom;
+        this.horizontalConstraints.addAmount = this.left+this.right;
+
+        var child = this.children[0];
+        if (child) {
+          child.x = this.left;
+          child.y = this.top;
+          child.width = this.width - (this.left + this.right);
+          child.height = this.height - (this.bottom + this.top);
+        }
+      }
+    },
+  ]
+});
+
+
+
+MODEL({
   name:  'Rectangle',
 
   extendsModel: 'CView2',

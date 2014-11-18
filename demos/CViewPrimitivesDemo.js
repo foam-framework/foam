@@ -133,13 +133,15 @@ view.addChild(rect3);
 
 var rect4 = view.X.LRectangle.create({
        x: 120,
-       y: 30,
+       y: 0,
        border: 'green',
        width: 120,
-       height: 30,
+       height: 50,
   
 });
-outerLayout.addChild(rect4);
+var rect4Margin = view.X.canvas.Margin.create();
+rect4Margin.addChild(rect4);
+outerLayout.addChild(rect4Margin);
 
 //view.performLayout();
 var mouse = X.Mouse.create();
@@ -161,6 +163,8 @@ editor3.write(document);
 
 var editor4 = X.DetailView.create({ data: rect4});
 editor4.write(document);
+var editor4b = X.DetailView.create({ data: rect4Margin});
+editor4b.write(document);
 
 var editorV = X.DetailView.create({data: view});
 editorV.write(document);
