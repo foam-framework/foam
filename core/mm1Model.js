@@ -364,7 +364,7 @@ var Model = {
       type: 'Array[String]',
       view: 'StringArrayView',
       displayWidth: 70,
-      factory: function() {
+      lazyFactory: function() {
         return this.properties.map(function(o) { return o.name; });
       },
       help: 'Properties to be displayed in table view. Defaults to all properties.',
