@@ -139,7 +139,7 @@ var rect4 = view.X.LRectangle.create({
        height: 50,
   
 });
-var rect4Margin = view.X.canvas.Margin.create();
+var rect4Margin = view.X.canvas.Margin.create({ left: 20, top: 8, bottom: 8, right: 30, height: 80});
 rect4Margin.addChild(rect4);
 outerLayout.addChild(rect4Margin);
 

@@ -77,6 +77,8 @@ MODEL({
       name: 'MarginProxy',
       extendsModel: 'layout.LayoutItemLinearConstraintsProxy',
 
+      documentation: function() {/* Adds an $$DOC{ref:'.addAmount'} to the proxied constraints. */},
+
       properties: [
         {
           name: 'data',
@@ -133,7 +135,7 @@ MODEL({
     {
       name: 'horizontalConstraints',
       documentation: function() {/* Horizontal layout constraints. Proxied from
-          $$DOC{ref:'.data'}. */},
+          the child. */},
       factory: function() { /* override with our special proxy */
         return this.X.canvas.Margin.MarginProxy.create();
       }
@@ -141,7 +143,7 @@ MODEL({
     {
       name: 'verticalConstraints',
       documentation: function() {/* Vertical layout constraints. Proxied from
-          $$DOC{ref:'.data'}. */},
+          the child. */},
       factory: function() { /* override with our special proxy */
         return this.X.canvas.Margin.MarginProxy.create();
       }
