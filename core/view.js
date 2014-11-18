@@ -264,7 +264,7 @@ MODEL({
       name:  'id',
       label: 'Element ID',
       type:  'String',
-      factory: function() { return this.nextID(); },
+      lazyFactory: function() { return this.nextID(); },
       documentation: function() {/*
         The DOM element id for the outermost tag of
         this $$DOC{ref:'View'}.
