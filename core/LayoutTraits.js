@@ -19,7 +19,7 @@
 //////////////////////////////// Layout stuff
 
 MODEL({
-  name: 'ConstraintProperty',
+  name: 'ConstraintValue',
   package: 'layout',
 
   documentation: function() {/* Stores an integer pixel value or percentage.
@@ -90,22 +90,25 @@ MODEL({
 
   properties: [
     {
-      factory: function() { return this.X.layout.ConstraintProperty.create({val:100}); },
+      factory: function() { return this.X.layout.ConstraintValue.create({val:100}); },
       name: 'preferred',
       documentation: function() {/* The preferred item size. */},
-      view: 'DetailView'
+      view: 'DetailView',
+      type: 'layout.ConstraintValue'
     },
     {
-      factory: function() { return this.X.layout.ConstraintProperty.create({val:0}); },
+      factory: function() { return this.X.layout.ConstraintValue.create({val:0}); },
       name: 'min',
       documentation: function() {/* The minimum size. */},
-      view: 'DetailView'
+      view: 'DetailView',
+      type: 'layout.ConstraintValue'
     },
     {
-      factory: function() { return this.X.layout.ConstraintProperty.create({val:'100%'}); },
+      factory: function() { return this.X.layout.ConstraintValue.create({val:'100%'}); },
       name: 'max',
       documentation: function() {/* The maximum size. */},
-      view: 'DetailView'
+      view: 'DetailView',
+      type: 'layout.ConstraintValue'
     },
     {
       model_: 'IntProperty',
@@ -149,7 +152,7 @@ MODEL({
   properties: [
     {
       name: 'horizontalConstraints',
-      type: 'LayoutItemLinearConstraints',
+      type: 'layout.LayoutItemLinearConstraints',
       documentation: function() {/* Horizontal layout constraints. If undefined,
                               no constraints or preferences are assumed. */},
       factory: function() {
@@ -171,7 +174,7 @@ MODEL({
     properties: [
     {
       name: 'verticalConstraints',
-      type: 'LayoutItemLinearConstraints',
+      type: 'layout.LayoutItemLinearConstraints',
       documentation: function() {/* Vertical layout constraints. If undefined,
                               no constraints or preferences are assumed. */},
       factory: function() {

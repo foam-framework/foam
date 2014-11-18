@@ -64,7 +64,9 @@ MODEL({
     {
       model_: 'BooleanProperty',
       name: 'isShrinkable',
-      defaultValue: false
+      defaultValue: false,
+      documentation: function() {/* Indicates if the minimum size constraint should
+        be the same as the preferred size, preventing font shrinking. */}
     }
   ],
 
@@ -72,7 +74,7 @@ MODEL({
     init: function() {
       this.SUPER();
 
-      Events.dynamic( function() { this.text; this.canvas; }.bind(this), this.updatePreferred );
+      Events.dynamic( function() { this.text; this.font; this.canvas; }.bind(this), this.updatePreferred );
       this.updatePreferred();
     }
   },
