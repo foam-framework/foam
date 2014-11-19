@@ -63,6 +63,7 @@ var files = [
   [ 'listchoiceview', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
   [ 'scroll', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
   [ 'CViewPrimitives', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
+  [ 'Diagramming', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
   'HTMLParser',
   'mlang',
   'QueryParser',

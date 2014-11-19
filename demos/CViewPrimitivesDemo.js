@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var canv = X.CView2.create({width: 1000, height: 300});
+var canv = X.diagram.Diagram.create({width: 1000, height: 300});
 canv.write(document);
 
-var outerLayout = X.canvas.LinearLayout.create({});
+var outerLayout = canv.X.canvas.LinearLayout.create({});
 canv.addChild(outerLayout);
 
-var view = X.canvas.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
+var view = canv.X.canvas.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
 outerLayout.addChild(view);
 
 MODEL({
@@ -31,14 +31,22 @@ MODEL({
 });
 
 
-var rect1 = X.canvas.Rectangle.create({
+var rect1 = canv.X.diagram.Block.create({
        x: 0,
        y: 20,
        border: 'black',
+       background: 'white',
        width: 120,
        height: 30,
   
 });
+var sect1 = canv.X.diagram.Section.create({
+  title: 'Section title'
+});
+rect1.addChild(sect1);
+
+
+
 view.addChild(rect1);
 
 var spacer1 = X.canvas.Spacer.create({
