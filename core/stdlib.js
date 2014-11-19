@@ -385,6 +385,9 @@ __features__[0][1](__features__);
   Make processFeature be a feature.
 */
 
+/** NOP func. **/
+function nop() {}
+
 
 // binaryInsert into a sorted array, removing duplicates
 Object.defineProperty(Array.prototype, 'binaryInsert', {
