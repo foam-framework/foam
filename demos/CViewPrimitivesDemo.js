@@ -14,114 +14,70 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var canv = X.CView2.create({width: 1000, height: 300});
+var canv = X.diagram.Diagram.create({width: 1000, height: 300});
 canv.write(document);
 
-var outerLayout = X.canvas.LinearLayout.create();
+var outerLayout = X.canvas.LinearLayout.create({});
 canv.addChild(outerLayout);
 
-var view = X.canvas.LinearLayout.create({width: 120, height: 300});
+var view = X.canvas.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
 outerLayout.addChild(view);
 
 MODEL({
-  name: 'LRectangle',
-  extendsModel: 'canvas.Rectangle',
-  traits: [ 'layout.LayoutItemHorizontalTrait' ],
-  
-  methods: {
-    init: function() {
-      this.SUPER();
-      
-    }
-  }
-  
-});
-MODEL({
-  name: 'LRectangle2',
-  extendsModel: 'canvas.Rectangle',
-  traits: [ 'layout.LayoutItemHorizontalTrait' ],
-
-  methods: {
-    init: function() {
-      this.SUPER();
-
-      this.horizontalConstraints.min.val = 50;
-      this.horizontalConstraints.max.val = 400;
-      this.horizontalConstraints.preferred.val = 200;
-      this.horizontalConstraints.shrinkFactor = 1;
-    }
-  }
-
-});
-
-
-MODEL({
-  name: 'LLabel',
+  name: 'BorderLabel',
   extendsModel: 'canvas.Label',
-  traits: [ 'layout.LayoutItemHorizontalTrait' ],
-
-  properties: [
-    {
-      model_: 'BooleanProperty',
-      name: 'isShrinkable',
-      defaultValue: false,
-      documentation: function() {/* Indicates if the minimum size constraint should
-        be the same as the preferred size, preventing font shrinking. */}
-    }
-  ],
-
-  methods: {
-    init: function() {
-      this.SUPER();
-
-      Events.dynamic( function() { this.text; this.font; this.canvas; }.bind(this), this.updatePreferred );
-      this.updatePreferred();
-    }
-  },
-  listeners: [
-    {
-      name: 'updatePreferred',
-      isFramed: true,
-      code: function() {
-        var c = this.canvas;
-        if (c) {
-          c.save();
-          if (this.font) c.font = this.font;
-          this.horizontalConstraints.preferred.val = c.measureText(this.text).width;
-          c.restore();
-          if (!this.isShrinkable) { // if no shrink, lock minimum to preferred
-            this.horizontalConstraints.min.val = this.horizontalConstraints.preferred.val;
-          }
-        }
-      }
-    }
-  ]
-
+  traits: ['canvas.BorderTrait']
 
 });
 
-var rect1 = view.X.LRectangle.create({
+var spacer1 = X.canvas.Spacer.create({
+  fixedHeight: 20,
+  fixedWidth: 30
+});
+view.addChild(spacer1);
+
+var rect1 = X.diagram.Block.create({
        x: 0,
        y: 20,
        border: 'black',
+       background: 'white',
        width: 120,
        height: 30,
   
-});
+}, canv.X);
+var sect1 = X.diagram.Section.create({
+  title: 'A Model'
+}, canv.X);
+rect1.addChild(sect1);
+var sect2 = X.diagram.Section.create({
+  title: 'propertyName',
+  titleFont: '12px Roboto'
+}, canv.X);
+rect1.addChild(sect2);
+
 view.addChild(rect1);
 
-var rect2 = view.X.LLabel.create({
+var spacer1b = X.canvas.Spacer.create({
+  fixedHeight: 20,
+  fixedWidth: 30
+});
+view.addChild(spacer1b);
+
+
+var rect2 = X.BorderLabel.create({
        x: 60,
        y: 25,
        color: 'blue',
        width: 120,
        height: 30,
-       text: 'Hello World'
-  
+       text: 'Hello World',
+       border: 'red',
+       borderWidth: 2
+
 });
 view.addChild(rect2);
 
-var rect3 = view.X.LRectangle.create({
+var rect3 = X.canvas.Rectangle.create({
        x: 120,
        y: 30,
        border: 'red',
@@ -131,15 +87,41 @@ var rect3 = view.X.LRectangle.create({
 });
 view.addChild(rect3);
 
-var rect4 = view.X.LRectangle.create({
-       x: 120,
-       y: 30,
-       border: 'green',
-       width: 120,
-       height: 30,
-  
+var spacer2 = X.canvas.Spacer.create({
+  fixedHeight: 20,
+  fixedWidth: 50
 });
-outerLayout.addChild(rect4);
+outerLayout.addChild(spacer2);
+
+
+var rect4 = X.diagram.Block.create({
+       x: 120,
+       y: 0,
+       border: 'green',
+       background: 'white',
+       width: 120,
+       height: 50,
+  
+}, canv.X);
+var rect4Margin = X.canvas.Margin.create({ left: 20, top: 8, bottom: 8, right: 30, height: 80});
+rect4Margin.addChild(rect4);
+outerLayout.addChild(rect4Margin);
+
+var sect1b = X.diagram.Section.create({
+  title: 'More Model'
+}, canv.X);
+rect4.addChild(sect1b);
+var sect2b = X.diagram.Section.create({
+  title: 'imports',
+  titleFont: 'italic 12px Roboto'
+}, canv.X);
+rect4.addChild(sect2b);
+
+
+var link = X.diagram.Link.create({color: 'red'}, canv.X);
+link.start = canv.X.linkPoints[1];
+link.end = canv.X.linkPoints[9];
+canv.addChild(link);
 
 //view.performLayout();
 var mouse = X.Mouse.create();
@@ -153,6 +135,9 @@ Events.dynamic(function() { mouse.x; mouse.y; }, function() {
 var editor1 = X.DetailView.create({ data: rect1 });
 editor1.write(document);
 
+var editor1b = X.DetailView.create({ data: spacer1 });
+editor1b.write(document);
+
 var editor2 = X.DetailView.create({ data: rect2});
 editor2.write(document);
 
@@ -161,6 +146,8 @@ editor3.write(document);
 
 var editor4 = X.DetailView.create({ data: rect4});
 editor4.write(document);
+var editor4b = X.DetailView.create({ data: rect4Margin});
+editor4b.write(document);
 
 var editorV = X.DetailView.create({data: view});
 editorV.write(document);

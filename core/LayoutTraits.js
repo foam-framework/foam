@@ -75,8 +75,21 @@ MODEL({
   methods: {
     isPercentage: function() { /* Indicates if the set $$DOC{ref:'.val'} is a percentage. */
       return  (typeof this.val === 'string' && this.val.indexOf('%') !== -1);
+    },
+    init: function() {
+      this.val$.addListener(this.doLayoutEvent);
+      // layout must be changing anyway, so don't listen to .pix changes
     }
-  }
+  },
+  listeners: [
+    {
+      name: 'doLayoutEvent',
+      isFramed: 'true',
+      code: function(evt) {
+        this.publish(['layout'], null);
+      }
+    }
+  ]
 
 });
 
@@ -137,6 +150,67 @@ MODEL({
         this.min.totalSize_ = size;
         this.max.totalSize_ = size;
       }
+    },
+    init: function() {
+      this.SUPER();
+
+      this.min.subscribe(['layout'], this.doLayoutEvent);
+      this.max.subscribe(['layout'], this.doLayoutEvent);
+      this.preferred.subscribe(['layout'], this.doLayoutEvent);
+      this.stretchFactor$.addListener(this.doLayoutEvent);
+      this.shrinkFactor$.addListener(this.doLayoutEvent);
+    }
+  },
+  listeners: [
+    {
+      name: 'doLayoutEvent',
+      isFramed: 'true',
+      code: function(evt) {
+        this.publish(['layout'], null);
+      }
+    }
+  ]
+
+});
+
+MODEL({
+  name: 'LayoutItemLinearConstraintsProxy',
+  package: 'layout',
+
+  extendsModel: 'layout.LayoutItemLinearConstraints',
+
+  documentation: function() {/* The information layout items provide for a
+                            single axis of linear layout. */},
+
+  properties: [
+    {
+      name: 'data',
+      type: 'layout.LayoutItemLinearConstraints',
+      preSet: function(old,nu) {
+        if (old) {
+          Events.unfollow(old.preferred.pix$, this.preferred.val$);
+          Events.unfollow(old.max.pix$, this.max.val$);
+          Events.unfollow(old.min.pix$, this.min.val$);
+          Events.unfollow(old.stretchFactor$, this.stretchFactor$);
+          Events.unfollow(old.shrinkFactor$, this.shrinkFactor$);
+        }
+        return nu;
+      },
+      postSet: function() {
+        Events.follow(this.data.preferred.pix$, this.preferred.val$);
+        Events.follow(this.data.max.pix$, this.max.val$);
+        Events.follow(this.data.min.pix$, this.min.val$);
+        Events.follow(this.data.stretchFactor$, this.stretchFactor$);
+        Events.follow(this.data.shrinkFactor$, this.shrinkFactor$);
+      }
+    }
+  ],
+
+  methods: {
+    setTotalSize: function(size) {
+      if (this.data) {
+        this.data.setTotalSize(size);
+      }
     }
   }
 
@@ -158,9 +232,23 @@ MODEL({
       factory: function() {
         return this.X.layout.LayoutItemLinearConstraints.create();
       },
-      view:'DetailView'
+      view:'DetailView',
+      postSet: function() {
+        this.horizontalConstraints.subscribe(['layout'], this.doLayoutEvent);
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'doLayoutEvent',
+      isFramed: 'true',
+      code: function(evt) {
+        this.publish(['layout'], null);
+      }
     }
   ]
+
 
 });
 
@@ -180,7 +268,20 @@ MODEL({
       factory: function() {
         return this.X.layout.LayoutItemLinearConstraints.create();
       },
-      view:'DetailView'
+      view:'DetailView',
+      postSet: function() {
+        this.horizontalConstraints.subscribe(['layout'], this.doLayoutEvent);
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'doLayoutEvent',
+      isFramed: 'true',
+      code: function(evt) {
+        this.publish(['layout'], null);
+      }
     }
   ]
 
@@ -227,7 +328,11 @@ MODEL({
   ],
 
   methods: {
+
     calculateLayout: function() { /* lay out items along the primary axis */
+      // no children, nothing to do
+      if (this.children.length <= 0) return;
+
       // these helpers take care of orientation awareness
       var constraintsF = Function("item", "return item."+ this.orientation+"Constraints");
       var sizeF = Function("item", "return item."+ 
@@ -352,12 +457,26 @@ MODEL({
                         (this.orientation==='horizontal'? "width" : "height") + " = val;");
         var applyPositionF = Function("item", "val", "item."+ 
                         (this.orientation==='horizontal'? "x" : "y")+ " = val;");
+        var applyOpposedPositionF = Function("item", "val", "item."+
+                        (this.orientation==='vertical'? "x" : "y")+ " = val;");
+        // For the off-axis, try and apply our height to the items, but bound it by their max/min
+        var opposedConstraintsF = Function("item", "return item."+
+                                           ((this.orientation === 'horizontal')? 'vertical':'horizontal')
+                                           +"Constraints");
+        var applyOpposedSizeF = Function("item", "val", "boundedF", "opposedConstraintsF",
+                        "item."+ (this.orientation==='vertical'? "width" : "height") +
+                        " = boundedF(val, opposedConstraintsF(item));");
+        var opposedParentSize = this.orientation==='horizontal'? this.height : this.width;
 
         var i = 0;
         var pos = 0;
         this.children.forEach(function(child) {
           applySizeF(child, itemSizes[i]);
+          applyOpposedSizeF(child, opposedParentSize, boundedF, opposedConstraintsF);
+
           applyPositionF(child, pos);
+          applyOpposedPositionF(child, 0);
+
           pos += itemSizes[i];
           i++;
         });
@@ -370,12 +489,18 @@ MODEL({
       } else {
         // we're done!
         applySizesF();
-      }
-      
-      
+      }      
     },
     calculatePreferredSize: function() { /* Find the size of layout that accomodates all items
                                             at their preferred sizes. */
+      // no children, zero
+      if (this.children.length <= 0) {
+        // apply if valid for our layout item traits
+        if (this.horizontalConstraints) this.horizontalConstraints.preferred.val = 0;
+        if (this.verticalConstraints) this.verticalConstraints.preferred.val = 0;
+        return;
+      }
+
       var constraintsF = Function("item", "return item."+ this.orientation+"Constraints");
       var opposedConstraintsF = Function("item", "return item."+ 
                                          ((this.orientation === 'horizontal')? 'vertical':'horizontal')
@@ -388,7 +513,6 @@ MODEL({
       var parentSizeF = Function("item", "return item."+ 
                       (this.orientation==='horizontal'? "width" : "height"));
       var sz = parentSizeF(this);      
-      
 
       // sum up preferred sizes
       var totalSize = 0;
@@ -400,7 +524,7 @@ MODEL({
         var oaPref = opposedConstraintsF(child)? opposedConstraintsF(child).preferred.pix : 0;
         if (oaPref > largestOpposedAxisPreferred) largestOpposedAxisPreferred = oaPref;
       });
-      
+
       // apply if valid for our layout item traits
       if (constraintsF(this)) constraintsF(this).preferred.val = totalSize;
       if (opposedConstraintsF(this)) opposedConstraintsF(this).preferred.val = largestOpposedAxisPreferred;
@@ -410,6 +534,149 @@ MODEL({
 
 
 
+MODEL({
+  name:  'MarginTrait',
+  package: 'layout',
+
+  documentation: function() {/*
+      Adds a margin around one child item. Requires $$DOC{ref:'addChild'} and
+      $$DOC{ref:'removeChild'} methods on trait users. Use
+      $$DOC{ref:'layout.LayoutItemHorizontalTrait'} and
+      $$DOC{ref:'layout.LayoutItemVerticalTrait'} alongside this trait.
+    */},
+
+  models: [
+    {
+      model_: 'Model',
+      name: 'MarginProxy',
+      extendsModel: 'layout.LayoutItemLinearConstraintsProxy',
+
+      documentation: function() {/* Adds an $$DOC{ref:'canvas.Margin.MarginProxy.addAmount'} to the proxied constraints. */},
+
+      properties: [
+        {
+          name: 'data',
+          documentation: function() {/* Overridden to introduce $$DOC{ref:'.addAmount'}. */},
+          postSet: function() {
+            var mapFn = function(val) { return val + this.addAmount }.bind(this);
+
+            Events.map(this.data.preferred.pix$, this.preferred.val$, mapFn);
+            Events.map(this.data.max.pix$, this.max.val$, mapFn);
+            Events.map(this.data.min.pix$, this.min.val$, mapFn);
+
+            Events.follow(this.data.stretchFactor$, this.stretchFactor$);
+            Events.follow(this.data.shrinkFactor$, this.shrinkFactor$);
+          }
+        },
+        {
+          model_: 'IntProperty',
+          name: 'addAmount',
+          documentation: function() {/* The amount to add to the proxied pixel values. */},
+          defaultValue: 0
+        }
+      ]
+    }
+  ],
+
+  properties: [
+    {
+      model_: 'IntProperty',
+      name:  'top',
+      label: 'Top Margin',
+      documentation: function() {/* Margin in pixels. */},
+      defaultValue: 0
+    },
+    {
+      model_: 'IntProperty',
+      name:  'left',
+      label: 'Left Margin',
+      documentation: function() {/* Margin in pixels. */},
+      defaultValue: 0
+    },
+    {
+      model_: 'IntProperty',
+      name:  'right',
+      label: 'Right Margin',
+      documentation: function() {/* Margin in pixels. */},
+      defaultValue: 0
+    },
+    {
+      model_: 'IntProperty',
+      name:  'bottom',
+      label: 'Bottom Margin',
+      documentation: function() {/* Margin in pixels. */},
+      defaultValue: 0
+    },
+    {
+      name: 'horizontalConstraints',
+      documentation: function() {/* Horizontal layout constraints. Proxied from
+          the child. */},
+      factory: function() { /* override with our special proxy */
+        return this.X.canvas.Margin.MarginProxy.create();
+      }
+    },
+    {
+      name: 'verticalConstraints',
+      documentation: function() {/* Vertical layout constraints. Proxied from
+          the child. */},
+      factory: function() { /* override with our special proxy */
+        return this.X.canvas.Margin.MarginProxy.create();
+      }
+    }
+  ],
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      Events.dynamic(
+            function(){ this.top; this.left; this.right; this.bottom;
+                        this.width; this.height; }.bind(this),
+            this.updateMargins);
+    },
+
+    addChild: function(child) { /* Adds a child $$DOC{ref:'CView2'} to the scene
+                                   under this. Add our listener for child constraint
+                                   changes. Only one child at a time is supported. */
+      // remove any existing children so we only have at most one at all times
+      this.children.forEach(this.removeChild.bind(this));
+
+      this.SUPER(child);
+
+      // proxy the child's constraints into ours
+      if (child.verticalConstraints && this.verticalConstraints)
+        this.verticalConstraints.data = child.verticalConstraints;
+      if (child.horizontalConstraints && this.horizontalConstraints)
+        this.horizontalConstraints.data = child.horizontalConstraints;
+    },
+    removeChild: function(child) { /* Removes the child $$DOC{ref:'CView2'} from the scene. */
+      // unlisten
+      if (this.verticalConstraints) this.verticalConstraints.data = undefined;
+      if (this.horizontalConstraints) this.horizontalConstraints.data = undefined;
+
+      this.SUPER(child);
+    }
+  },
+
+  listeners: [
+    {
+      name: 'updateMargins',
+      isFramed: true,
+      documentation: function() {/* Adjusts child item. */},
+      code: function(evt) {
+        if (this.verticalConstraints) this.verticalConstraints.addAmount = this.top+this.bottom;
+        if (this.horizontalConstraints) this.horizontalConstraints.addAmount = this.left+this.right;
+
+        var child = this.children[0];
+        if (child) {
+          child.x = this.left;
+          child.y = this.top;
+          child.width = this.width - (this.left + this.right);
+          child.height = this.height - (this.bottom + this.top);
+        }
+      }
+    },
+  ]
+});
 
 
 
