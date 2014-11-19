@@ -17,10 +17,10 @@
 var canv = X.diagram.Diagram.create({width: 1000, height: 300});
 canv.write(document);
 
-var outerLayout = canv.X.canvas.LinearLayout.create({});
+var outerLayout = X.canvas.LinearLayout.create({});
 canv.addChild(outerLayout);
 
-var view = canv.X.canvas.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
+var view = X.canvas.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
 outerLayout.addChild(view);
 
 MODEL({
@@ -30,8 +30,13 @@ MODEL({
 
 });
 
+var spacer1 = X.canvas.Spacer.create({
+  fixedHeight: 20,
+  fixedWidth: 30
+});
+view.addChild(spacer1);
 
-var rect1 = canv.X.diagram.Block.create({
+var rect1 = X.diagram.Block.create({
        x: 0,
        y: 20,
        border: 'black',
@@ -39,21 +44,25 @@ var rect1 = canv.X.diagram.Block.create({
        width: 120,
        height: 30,
   
-});
-var sect1 = canv.X.diagram.Section.create({
-  title: 'Section title'
-});
+}, canv.X);
+var sect1 = X.diagram.Section.create({
+  title: 'A Model'
+}, canv.X);
 rect1.addChild(sect1);
-
-
+var sect2 = X.diagram.Section.create({
+  title: 'propertyName',
+  titleFont: '12px Roboto'
+}, canv.X);
+rect1.addChild(sect2);
 
 view.addChild(rect1);
 
-var spacer1 = X.canvas.Spacer.create({
+var spacer1b = X.canvas.Spacer.create({
   fixedHeight: 20,
   fixedWidth: 30
 });
-view.addChild(spacer1);
+view.addChild(spacer1b);
+
 
 var rect2 = X.BorderLabel.create({
        x: 60,
@@ -78,17 +87,41 @@ var rect3 = X.canvas.Rectangle.create({
 });
 view.addChild(rect3);
 
-var rect4 = X.canvas.Rectangle.create({
+var spacer2 = X.canvas.Spacer.create({
+  fixedHeight: 20,
+  fixedWidth: 50
+});
+outerLayout.addChild(spacer2);
+
+
+var rect4 = X.diagram.Block.create({
        x: 120,
        y: 0,
        border: 'green',
+       background: 'white',
        width: 120,
        height: 50,
   
-});
+}, canv.X);
 var rect4Margin = X.canvas.Margin.create({ left: 20, top: 8, bottom: 8, right: 30, height: 80});
 rect4Margin.addChild(rect4);
 outerLayout.addChild(rect4Margin);
+
+var sect1b = X.diagram.Section.create({
+  title: 'More Model'
+}, canv.X);
+rect4.addChild(sect1b);
+var sect2b = X.diagram.Section.create({
+  title: 'imports',
+  titleFont: 'italic 12px Roboto'
+}, canv.X);
+rect4.addChild(sect2b);
+
+
+var link = X.diagram.Link.create({color: 'red'}, canv.X);
+link.start = canv.X.linkPoints[1];
+link.end = canv.X.linkPoints[9];
+canv.addChild(link);
 
 //view.performLayout();
 var mouse = X.Mouse.create();

@@ -492,8 +492,8 @@ MODEL({
     },
 
     mapToParent: function(point) { /* Maps a coordinate from this to our parents'. */
-      point.x -= this.x;
-      point.y -= this.y;
+      point.x += this.x;
+      point.y += this.y;
       return point;
     },
 

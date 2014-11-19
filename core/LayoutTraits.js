@@ -78,7 +78,7 @@ MODEL({
     },
     init: function() {
       this.val$.addListener(this.doLayoutEvent);
-      //this.pix$.addListener(this.doLayoutEvent); // layout must be changing anyway, so don't listen
+      // layout must be changing anyway, so don't listen to .pix changes
     }
   },
   listeners: [
