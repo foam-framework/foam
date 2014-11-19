@@ -75,8 +75,21 @@ MODEL({
   methods: {
     isPercentage: function() { /* Indicates if the set $$DOC{ref:'.val'} is a percentage. */
       return  (typeof this.val === 'string' && this.val.indexOf('%') !== -1);
+    },
+    init: function() {
+      this.val$.addListener(this.doLayoutEvent);
+      this.pix$.addListener(this.doLayoutEvent);
     }
-  }
+  },
+  listeners: [
+    {
+      name: 'doLayoutEvent',
+      isFramed: 'true',
+      code: function(evt) {
+        this.publish(['layout'], null);
+      }
+    }
+  ]
 
 });
 
@@ -137,8 +150,26 @@ MODEL({
         this.min.totalSize_ = size;
         this.max.totalSize_ = size;
       }
+    },
+    init: function() {
+      this.SUPER();
+
+      this.min.subscribe(['layout'], this.doLayoutEvent);
+      this.max.subscribe(['layout'], this.doLayoutEvent);
+      this.preferred.subscribe(['layout'], this.doLayoutEvent);
+      this.stretchFactor$.addListener(this.doLayoutEvent);
+      this.shrinkFactor$.addListener(this.doLayoutEvent);
     }
-  }
+  },
+  listeners: [
+    {
+      name: 'doLayoutEvent',
+      isFramed: 'true',
+      code: function(evt) {
+        this.publish(['layout'], null);
+      }
+    }
+  ]
 
 });
 
@@ -201,9 +232,23 @@ MODEL({
       factory: function() {
         return this.X.layout.LayoutItemLinearConstraints.create();
       },
-      view:'DetailView'
+      view:'DetailView',
+      postSet: function() {
+        this.horizontalConstraints.subscribe(['layout'], this.doLayoutEvent);
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'doLayoutEvent',
+      isFramed: 'true',
+      code: function(evt) {
+        this.publish(['layout'], null);
+      }
     }
   ]
+
 
 });
 
@@ -223,7 +268,20 @@ MODEL({
       factory: function() {
         return this.X.layout.LayoutItemLinearConstraints.create();
       },
-      view:'DetailView'
+      view:'DetailView',
+      postSet: function() {
+        this.horizontalConstraints.subscribe(['layout'], this.doLayoutEvent);
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'doLayoutEvent',
+      isFramed: 'true',
+      code: function(evt) {
+        this.publish(['layout'], null);
+      }
     }
   ]
 
@@ -270,6 +328,7 @@ MODEL({
   ],
 
   methods: {
+
     calculateLayout: function() { /* lay out items along the primary axis */
       // these helpers take care of orientation awareness
       var constraintsF = Function("item", "return item."+ this.orientation+"Constraints");

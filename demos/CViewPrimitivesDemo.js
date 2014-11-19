@@ -41,6 +41,12 @@ var rect1 = X.canvas.Rectangle.create({
 });
 view.addChild(rect1);
 
+var spacer1 = X.canvas.Spacer.create({
+  fixedHeight: 20,
+  fixedWidth: 30
+});
+view.addChild(spacer1);
+
 var rect2 = X.BorderLabel.create({
        x: 60,
        y: 25,
@@ -87,6 +93,9 @@ Events.dynamic(function() { mouse.x; mouse.y; }, function() {
 
 var editor1 = X.DetailView.create({ data: rect1 });
 editor1.write(document);
+
+var editor1b = X.DetailView.create({ data: spacer1 });
+editor1b.write(document);
 
 var editor2 = X.DetailView.create({ data: rect2});
 editor2.write(document);

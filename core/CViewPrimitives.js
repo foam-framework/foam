@@ -46,16 +46,17 @@ MODEL({
         var constraints = this.orientation === 'horizontal'?
                             child.horizontalConstraints :
                             child.verticalConstraints;
-        constraints.addListener(this.performLayout);
-        constraints.preferred.addListener(this.updatePreferredSize);
+
+        constraints.subscribe(['layout'], this.performLayout);
+        constraints.preferred.subscribe(['layout'], this.updatePreferredSize);
       },
       removeChild: function(child) { /* Removes a child $$DOC{ref:'CView2'} from the scene. */
         // unlisten
         var constraints = this.orientation === 'horizontal'?
                             child.horizontalConstraints :
                             child.verticalConstraints;
-        constraints.removeListener(this.performLayout);
-        constraints.preferred.removeListener(this.updatePreferredSize);
+        constraints.unsubscribe(['layout'], this.performLayout);
+        constraints.preferred.subscribe(['layout'], this.updatePreferredSize);
                 
         this.SUPER(child);
       }
@@ -137,6 +138,7 @@ MODEL({
   name:  'SimpleRectangle',
   extendsModel: 'CView2',
   package: 'canvas',
+  documentation: function() {/* A $$DOC{ref:'CView2'} rectangle with no layout capability. */},
 
   traits: [ 'canvas.BorderTrait' ]
 });
@@ -146,14 +148,67 @@ MODEL({
   package: 'canvas',
   extendsModel: 'canvas.SimpleRectangle',
   traits: [ 'layout.LayoutItemHorizontalTrait', 'layout.LayoutItemVerticalTrait' ],
+  documentation: function() {/* A $$DOC{ref:'CView2'} rectangle that can be laid out. */}
 });
 
+MODEL({
+  name: 'Spacer',
+  package: 'canvas',
+  extendsModel: 'CView2',
+  traits: [ 'layout.LayoutItemHorizontalTrait', 'layout.LayoutItemVerticalTrait' ],
+  documentation: function() {/* A $$DOC{ref:'CView2'} layout spacer. No children
+      or painting is supported. */},
+
+  methods: {
+    addChild: function() {/* Does nothing. */},
+    removeChild: function() {/* Does nothing. */},
+    paintSelf: function() {/* Does nothing. */},
+    paint: function() {/* Does nothing. */},
+    init: function() {
+      this.SUPER();
+
+      if (this.fixedWidth) this.fixedWidth = this.fixedWidth;
+      if (this.fixedHeight) this.fixedHeight = this.fixedHeight;
+    }
+  },
+
+  properties: [
+    {
+      name:  'fixedWidth',
+      label: 'Fixed Width',
+      type:  'String',
+      defaultValue: '',
+      help: "Optional shortcut to set a fixed width (integer or percent value).",
+      documentation: "Optional shortcut to set a fixed width (integer or percent value).",
+      postSet: function() {
+        if (this.fixedWidth && this.horizontalConstraints) {
+          this.horizontalConstraints.min.val = this.fixedWidth;
+          this.horizontalConstraints.max.val = this.fixedWidth;
+          this.horizontalConstraints.preferred.val = this.fixedWidth;
+        }
+      }
+    },
+    {
+      name:  'fixedHeight',
+      label: 'Fixed Height',
+      type:  'ConstraintValue',
+      defaultValue: '',
+      help: "Optional shortcut to set a fixed height (integer or percent value).",
+      documentation: "Optional shortcut to set a fixed width (integer or percent value).",
+      postSet: function() {
+        if (this.fixedHeight && this.verticalConstraints) {
+          this.verticalConstraints.min.val = this.fixedHeight;
+          this.verticalConstraints.max.val = this.fixedHeight;
+          this.verticalConstraints.preferred.val = this.fixedHeight;
+        }
+      }
+    },
+  ]
+});
 
 MODEL({
   name:  'Label',
-
   extendsModel: 'CView2',
-
   package: 'canvas',
 
   traits: [ 'layout.LayoutItemHorizontalTrait', 'layout.LayoutItemVerticalTrait' ],
