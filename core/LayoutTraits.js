@@ -395,12 +395,26 @@ MODEL({
                         (this.orientation==='horizontal'? "width" : "height") + " = val;");
         var applyPositionF = Function("item", "val", "item."+ 
                         (this.orientation==='horizontal'? "x" : "y")+ " = val;");
+        var applyOpposedPositionF = Function("item", "val", "item."+
+                        (this.orientation==='vertical'? "x" : "y")+ " = val;");
+        // For the off-axis, try and apply our height to the items, but bound it by their max/min
+        var opposedConstraintsF = Function("item", "return item."+
+                                           ((this.orientation === 'horizontal')? 'vertical':'horizontal')
+                                           +"Constraints");
+        var applyOpposedSizeF = Function("item", "val", "boundedF", "opposedConstraintsF",
+                        "item."+ (this.orientation==='vertical'? "width" : "height") +
+                        " = boundedF(val, opposedConstraintsF(item));");
+        var opposedParentSize = this.orientation==='horizontal'? this.height : this.width;
 
         var i = 0;
         var pos = 0;
         this.children.forEach(function(child) {
           applySizeF(child, itemSizes[i]);
+          applyOpposedSizeF(child, opposedParentSize, boundedF, opposedConstraintsF);
+
           applyPositionF(child, pos);
+          applyOpposedPositionF(child, 0);
+
           pos += itemSizes[i];
           i++;
         });
@@ -453,6 +467,149 @@ MODEL({
 
 
 
+MODEL({
+  name:  'MarginTrait',
+  package: 'layout',
+
+  documentation: function() {/*
+      Adds a margin around one child item. Requires $$DOC{ref:'addChild'} and
+      $$DOC{ref:'removeChild'} methods on trait users. Use
+      $$DOC{ref:'layout.LayoutItemHorizontalTrait'} and
+      $$DOC{ref:'layout.LayoutItemVerticalTrait'} alongside this trait.
+    */},
+
+  models: [
+    {
+      model_: 'Model',
+      name: 'MarginProxy',
+      extendsModel: 'layout.LayoutItemLinearConstraintsProxy',
+
+      documentation: function() {/* Adds an $$DOC{ref:'canvas.Margin.MarginProxy.addAmount'} to the proxied constraints. */},
+
+      properties: [
+        {
+          name: 'data',
+          documentation: function() {/* Overridden to introduce $$DOC{ref:'.addAmount'}. */},
+          postSet: function() {
+            var mapFn = function(val) { return val + this.addAmount }.bind(this);
+
+            Events.map(this.data.preferred.pix$, this.preferred.val$, mapFn);
+            Events.map(this.data.max.pix$, this.max.val$, mapFn);
+            Events.map(this.data.min.pix$, this.min.val$, mapFn);
+
+            Events.follow(this.data.stretchFactor$, this.stretchFactor$);
+            Events.follow(this.data.shrinkFactor$, this.shrinkFactor$);
+          }
+        },
+        {
+          model_: 'IntProperty',
+          name: 'addAmount',
+          documentation: function() {/* The amount to add to the proxied pixel values. */},
+          defaultValue: 0
+        }
+      ]
+    }
+  ],
+
+  properties: [
+    {
+      model_: 'IntProperty',
+      name:  'top',
+      label: 'Top Margin',
+      documentation: function() {/* Margin in pixels. */},
+      defaultValue: 0
+    },
+    {
+      model_: 'IntProperty',
+      name:  'left',
+      label: 'Left Margin',
+      documentation: function() {/* Margin in pixels. */},
+      defaultValue: 0
+    },
+    {
+      model_: 'IntProperty',
+      name:  'right',
+      label: 'Right Margin',
+      documentation: function() {/* Margin in pixels. */},
+      defaultValue: 0
+    },
+    {
+      model_: 'IntProperty',
+      name:  'bottom',
+      label: 'Bottom Margin',
+      documentation: function() {/* Margin in pixels. */},
+      defaultValue: 0
+    },
+    {
+      name: 'horizontalConstraints',
+      documentation: function() {/* Horizontal layout constraints. Proxied from
+          the child. */},
+      factory: function() { /* override with our special proxy */
+        return this.X.canvas.Margin.MarginProxy.create();
+      }
+    },
+    {
+      name: 'verticalConstraints',
+      documentation: function() {/* Vertical layout constraints. Proxied from
+          the child. */},
+      factory: function() { /* override with our special proxy */
+        return this.X.canvas.Margin.MarginProxy.create();
+      }
+    }
+  ],
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      Events.dynamic(
+            function(){ this.top; this.left; this.right; this.bottom;
+                        this.width; this.height; }.bind(this),
+            this.updateMargins);
+    },
+
+    addChild: function(child) { /* Adds a child $$DOC{ref:'CView2'} to the scene
+                                   under this. Add our listener for child constraint
+                                   changes. Only one child at a time is supported. */
+      // remove any existing children so we only have at most one at all times
+      this.children.forEach(this.removeChild.bind(this));
+
+      this.SUPER(child);
+
+      // proxy the child's constraints into ours
+      if (child.verticalConstraints && this.verticalConstraints)
+        this.verticalConstraints.data = child.verticalConstraints;
+      if (child.horizontalConstraints && this.horizontalConstraints)
+        this.horizontalConstraints.data = child.horizontalConstraints;
+    },
+    removeChild: function(child) { /* Removes the child $$DOC{ref:'CView2'} from the scene. */
+      // unlisten
+      if (this.verticalConstraints) this.verticalConstraints.data = undefined;
+      if (this.horizontalConstraints) this.horizontalConstraints.data = undefined;
+
+      this.SUPER(child);
+    }
+  },
+
+  listeners: [
+    {
+      name: 'updateMargins',
+      isFramed: true,
+      documentation: function() {/* Adjusts child item. */},
+      code: function(evt) {
+        if (this.verticalConstraints) this.verticalConstraints.addAmount = this.top+this.bottom;
+        if (this.horizontalConstraints) this.horizontalConstraints.addAmount = this.left+this.right;
+
+        var child = this.children[0];
+        if (child) {
+          child.x = this.left;
+          child.y = this.top;
+          child.width = this.width - (this.left + this.right);
+          child.height = this.height - (this.bottom + this.top);
+        }
+      }
+    },
+  ]
+});
 
 
 

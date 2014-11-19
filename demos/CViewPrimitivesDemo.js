@@ -17,90 +17,21 @@
 var canv = X.CView2.create({width: 1000, height: 300});
 canv.write(document);
 
-var outerLayout = X.canvas.LinearLayout.create();
+var outerLayout = X.canvas.LinearLayout.create({});
 canv.addChild(outerLayout);
 
-var view = X.canvas.LinearLayout.create({width: 120, height: 300});
+var view = X.canvas.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
 outerLayout.addChild(view);
 
 MODEL({
-  name: 'LRectangle',
-  extendsModel: 'canvas.Rectangle',
-  traits: [ 'layout.LayoutItemHorizontalTrait' ],
-  
-  methods: {
-    init: function() {
-      this.SUPER();
-      
-    }
-  }
-  
-});
-MODEL({
-  name: 'LRectangle2',
-  extendsModel: 'canvas.Rectangle',
-  traits: [ 'layout.LayoutItemHorizontalTrait' ],
-
-  methods: {
-    init: function() {
-      this.SUPER();
-
-      this.horizontalConstraints.min.val = 50;
-      this.horizontalConstraints.max.val = 400;
-      this.horizontalConstraints.preferred.val = 200;
-      this.horizontalConstraints.shrinkFactor = 1;
-    }
-  }
-
-});
-
-
-MODEL({
-  name: 'LLabel',
+  name: 'BorderLabel',
   extendsModel: 'canvas.Label',
-  traits: [ 'layout.LayoutItemHorizontalTrait' ],
-
-  properties: [
-    {
-      model_: 'BooleanProperty',
-      name: 'isShrinkable',
-      defaultValue: false,
-      documentation: function() {/* Indicates if the minimum size constraint should
-        be the same as the preferred size, preventing font shrinking. */}
-    }
-  ],
-
-  methods: {
-    init: function() {
-      this.SUPER();
-
-      Events.dynamic( function() { this.text; this.font; this.canvas; }.bind(this), this.updatePreferred );
-      this.updatePreferred();
-    }
-  },
-  listeners: [
-    {
-      name: 'updatePreferred',
-      isFramed: true,
-      code: function() {
-        var c = this.canvas;
-        if (c) {
-          c.save();
-          if (this.font) c.font = this.font;
-          this.horizontalConstraints.preferred.val = c.measureText(this.text).width;
-          c.restore();
-          if (!this.isShrinkable) { // if no shrink, lock minimum to preferred
-            this.horizontalConstraints.min.val = this.horizontalConstraints.preferred.val;
-          }
-        }
-      }
-    }
-  ]
-
+  traits: ['canvas.BorderTrait']
 
 });
 
-var rect1 = view.X.LRectangle.create({
+
+var rect1 = X.canvas.Rectangle.create({
        x: 0,
        y: 20,
        border: 'black',
@@ -110,18 +41,20 @@ var rect1 = view.X.LRectangle.create({
 });
 view.addChild(rect1);
 
-var rect2 = view.X.LLabel.create({
+var rect2 = X.BorderLabel.create({
        x: 60,
        y: 25,
        color: 'blue',
        width: 120,
        height: 30,
-       text: 'Hello World'
-  
+       text: 'Hello World',
+       border: 'red',
+       borderWidth: 2
+
 });
 view.addChild(rect2);
 
-var rect3 = view.X.LRectangle.create({
+var rect3 = X.canvas.Rectangle.create({
        x: 120,
        y: 30,
        border: 'red',
@@ -131,7 +64,7 @@ var rect3 = view.X.LRectangle.create({
 });
 view.addChild(rect3);
 
-var rect4 = view.X.LRectangle.create({
+var rect4 = X.canvas.Rectangle.create({
        x: 120,
        y: 0,
        border: 'green',
@@ -139,7 +72,7 @@ var rect4 = view.X.LRectangle.create({
        height: 50,
   
 });
-var rect4Margin = view.X.canvas.Margin.create({ left: 20, top: 8, bottom: 8, right: 30, height: 80});
+var rect4Margin = X.canvas.Margin.create({ left: 20, top: 8, bottom: 8, right: 30, height: 80});
 rect4Margin.addChild(rect4);
 outerLayout.addChild(rect4Margin);
 
