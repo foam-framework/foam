@@ -19,77 +19,64 @@
 //////////////////////////////// Layout stuff
 
 MODEL({
-  name: 'ConstraintValue',
+  name: 'ConstraintProperty',
   package: 'layout',
+  extendsModel: 'Property',
 
   documentation: function() {/* Stores an integer pixel value or percentage.
     For percentages, a layoutPixelSize is imported. Export this from your
     layout items from total layout width or height depending on orientation. */},
 
   properties: [
-//    {
-//      model_: 'BooleanProperty',
-//      name: 'isPercentage',
-//      defaultValue: false,
-//      mode: 'read-only',
-//      documentation: function() { /* Indicates if the value is a percentage
-//          0-100. $$DOC{ref:'.val'} will be reduced to 100 if too large when
-//          $$DOC{ref:'.isPercentage'} is set to true. */ }
-//    },
     {
-      name: 'val',
-      postSet: function() { this.pix = undefined; },
-      documentation: function() { /* The value in pixels or as a percentage.
-        If a string including '%' is specified, percentage is assumed.
-        If an integer is specfied, it is treated as a
-        pixel value. */ }
+      name: 'view',
+      defaultValue: 'TextFieldView'
     },
     {
-      model_: 'IntProperty',
-      name: 'pix',
-      mode: 'read-only',
-      getter: function() {
-        if (!this.instance_.pix) {
-          if (this.isPercentage()) {
-            this.instance_.pix = (parseInt(this.val.replace('%','') || 0) / 100) * this.totalSize_;
-          } else {
-            this.instance_.pix = parseInt(this.val || 0)
+      name: 'install',
+      defaultValue: function(prop) {
+        // define a shared 'total size' property
+        //if (!this.hasOwnProperty(constraintValue_TotalSize_)) {
+          this.defineProperty(
+            {
+              model_: 'IntProperty',
+              name: 'constraintValue_TotalSize_',
+              defaultValue: 0,
+              hidden: true,
+              documentation: function() { /* This is set by the layout implementation before
+                performing a layout operation. */ },
+            }
+          );
+        //}
+
+        defineLazyProperty(this, prop.name+"$Pix", function() {
+          // clear $Pix when total size or value changes
+          this.constraintValue_TotalSize_$.addListener(function() {
+            this.instance_[prop.name+"$Pix"] = undefined;
+          }.bind(this));
+          this[prop.name+"$"].addListener(function() {
+            this.instance_[prop.name+"$Pix"] = undefined;
+          }.bind(this));
+
+          return {
+            get: function() {
+              if (!this.instance_[prop.name+"$Pix"]) {
+                var propVal = this[prop.name];
+                if ((typeof propVal === 'string' && propVal.indexOf('%') !== -1)) {
+                  this.instance_[prop.name+"$Pix"] = (parseInt(propVal.replace('%','') || 0) / 100) * this.constraintValue_TotalSize_;
+                } else {
+                  this.instance_[prop.name+"$Pix"] = parseInt(propVal || 0)
+                }
+              }
+              return this.instance_[prop.name+"$Pix"];
+            }.bind(this),
+            configurable: true
           }
-        }
-        return this.instance_.pix;
-      },
-      documentation: function() { /* The calculated pixel value, based on $$DOC{ref:'.val'}. */ }
+        });
 
-    },
-    {
-      model_: 'IntProperty',
-      name: 'totalSize_',
-      hidden: true,
-      postSet: function() { this.pix = undefined; },
-      documentation: function() { /* This is set by the layout implementation before
-        performing a layout operation. */ }
-
-    }
-  ],
-
-  methods: {
-    isPercentage: function() { /* Indicates if the set $$DOC{ref:'.val'} is a percentage. */
-      return  (typeof this.val === 'string' && this.val.indexOf('%') !== -1);
-    },
-    init: function() {
-      this.val$.addListener(this.doLayoutEvent);
-      // layout must be changing anyway, so don't listen to .pix changes
-    }
-  },
-  listeners: [
-    {
-      name: 'doLayoutEvent',
-      isFramed: 'true',
-      code: function(evt) {
-        this.publish(['layout'], null);
       }
     }
-  ]
+  ],
 
 });
 
@@ -103,25 +90,25 @@ MODEL({
 
   properties: [
     {
-      factory: function() { return this.X.layout.ConstraintValue.create({val:100}); },
+      model_: 'ConstraintProperty',
+      defaultValue: 100,
       name: 'preferred',
       documentation: function() {/* The preferred item size. */},
-      view: 'DetailView',
-      type: 'layout.ConstraintValue'
+      type: 'layout.ConstraintProperty'
     },
     {
-      factory: function() { return this.X.layout.ConstraintValue.create({val:0}); },
+      model_: 'ConstraintProperty',
+      defaultValue: 0,
       name: 'min',
       documentation: function() {/* The minimum size. */},
-      view: 'DetailView',
-      type: 'layout.ConstraintValue'
+      type: 'layout.ConstraintProperty'
     },
     {
-      factory: function() { return this.X.layout.ConstraintValue.create({val:'100%'}); },
+      model_: 'ConstraintProperty',
+      defaultValue: '100%',
       name: 'max',
       documentation: function() {/* The maximum size. */},
-      view: 'DetailView',
-      type: 'layout.ConstraintValue'
+      type: 'layout.ConstraintProperty'
     },
     {
       model_: 'IntProperty',
@@ -145,18 +132,16 @@ MODEL({
 
   methods: {
     setTotalSize: function(size) {
-      if (this.preferred.totalSize_ !== size) {
-        this.preferred.totalSize_ = size;
-        this.min.totalSize_ = size;
-        this.max.totalSize_ = size;
+      if (!this.constraintValue_TotalSize_ || this.constraintValue_TotalSize_ !== size) {
+        this.constraintValue_TotalSize_ = size;
       }
     },
     init: function() {
       this.SUPER();
 
-      this.min.subscribe(['layout'], this.doLayoutEvent);
-      this.max.subscribe(['layout'], this.doLayoutEvent);
-      this.preferred.subscribe(['layout'], this.doLayoutEvent);
+      this.min$.addListener(this.doLayoutEvent);
+      this.max$.addListener(this.doLayoutEvent);
+      this.preferred$.addListener(this.doLayoutEvent);
       this.stretchFactor$.addListener(this.doLayoutEvent);
       this.shrinkFactor$.addListener(this.doLayoutEvent);
     }
@@ -188,18 +173,18 @@ MODEL({
       type: 'layout.LayoutItemLinearConstraints',
       preSet: function(old,nu) {
         if (old) {
-          Events.unfollow(old.preferred.pix$, this.preferred.val$);
-          Events.unfollow(old.max.pix$, this.max.val$);
-          Events.unfollow(old.min.pix$, this.min.val$);
+          Events.unfollow(old.preferred$Pix$, this.preferred$);
+          Events.unfollow(old.max$Pix$, this.max$);
+          Events.unfollow(old.min$Pix$, this.min$);
           Events.unfollow(old.stretchFactor$, this.stretchFactor$);
           Events.unfollow(old.shrinkFactor$, this.shrinkFactor$);
         }
         return nu;
       },
       postSet: function() {
-        Events.follow(this.data.preferred.pix$, this.preferred.val$);
-        Events.follow(this.data.max.pix$, this.max.val$);
-        Events.follow(this.data.min.pix$, this.min.val$);
+        Events.follow(this.data.preferred$Pix$, this.preferred$);
+        Events.follow(this.data.max$Pix$, this.max$);
+        Events.follow(this.data.min$Pix$, this.min$);
         Events.follow(this.data.stretchFactor$, this.stretchFactor$);
         Events.follow(this.data.shrinkFactor$, this.shrinkFactor$);
       }
@@ -333,6 +318,11 @@ MODEL({
       // no children, nothing to do
       if (this.children.length <= 0) return;
 
+      // size changes to ourself may impact percentage preferred size of some children,
+      // so calculate it too. This calculateLayout operation doesn't depend on
+      // anything that calculatePreferredSize() does.
+      this.calculatePreferredSize();
+
       // these helpers take care of orientation awareness
       var constraintsF = Function("item", "return item."+ this.orientation+"Constraints");
       var sizeF = Function("item", "return item."+ 
@@ -341,8 +331,8 @@ MODEL({
                       (this.orientation==='horizontal'? "width" : "height"));
             
       var boundedF = function(val, constraints) { 
-        return (constraints.min.pix && val < constraints.min.pix)? constraints.min.pix :
-               (constraints.max.pix && val > constraints.max.pix)? constraints.max.pix :
+        return (constraints.min$Pix && val < constraints.min$Pix)? constraints.min$Pix :
+               (constraints.max$Pix && val > constraints.max$Pix)? constraints.max$Pix :
                val;
       }
 
@@ -354,7 +344,7 @@ MODEL({
       var i = 0;
       this.children.forEach(function(child) {
         constraintsF(child).setTotalSize(sz); // for percentages
-        itemSizes[i] = boundedF(constraintsF(child).preferred.pix, constraintsF(child));
+        itemSizes[i] = boundedF(constraintsF(child).preferred$Pix, constraintsF(child));
         availableSpace -= itemSizes[i];
         i++;
       });
@@ -363,17 +353,17 @@ MODEL({
         var sizeOkF, factorF, sizeNotOkF, makeSizeOkF;
         if (isShrink) {
           sizeOkF = function(index, child) {
-            return itemSizes[index] > constraintsF(child).min.pix;
+            return itemSizes[index] > constraintsF(child).min$Pix;
           }
           factorF = function(child) {
             return constraintsF(child).shrinkFactor;
           }
           sizeNotOkF = function(index, child) {
-            return itemSizes[index] < constraintsF(child).min.pix;
+            return itemSizes[index] < constraintsF(child).min$Pix;
           }
           makeSizeOkF = function(index, child) {
-            availableSpace += itemSizes[index] - constraintsF(child).min.pix;
-            itemSizes[index] = constraintsF(child).min.pix;
+            availableSpace += itemSizes[index] - constraintsF(child).min$Pix;
+            itemSizes[index] = constraintsF(child).min$Pix;
             resizeF(true); // recurse with a smaller list now that item i is locked at minimum
             // This will eventually catch the case where we can't shrink enough, since we
             // will keep re-shrinking until the list of workingSet is empty.
@@ -381,17 +371,17 @@ MODEL({
           }
         } else { //grow
           sizeOkF = function(index, child) {
-            return itemSizes[index] < constraintsF(child).max.pix;
+            return itemSizes[index] < constraintsF(child).max$Pix;
           }
           factorF = function(child) {
             return constraintsF(child).stretchFactor;
           }
           sizeNotOkF = function(index, child) {
-            return itemSizes[index] > constraintsF(child).max.pix;
+            return itemSizes[index] > constraintsF(child).max$Pix;
           }
           makeSizeOkF = function(index, child) {
-            availableSpace += itemSizes[index] - constraintsF(child).max.pix;
-            itemSizes[index] = constraintsF(child).max.pix;
+            availableSpace += itemSizes[index] - constraintsF(child).max$Pix;
+            itemSizes[index] = constraintsF(child).max$Pix;
             resizeF(false); // recurse with a smaller list now that item i is locked at minimum
             // This will eventually catch the case where we can't shrink enough, since we
             // will keep re-shrinking until the list of workingSet is empty.
@@ -471,6 +461,9 @@ MODEL({
         var i = 0;
         var pos = 0;
         this.children.forEach(function(child) {
+          // we didn't care about the off-axis before, so ensure it's set
+          opposedConstraintsF(child).setTotalSize(opposedParentSize);
+
           applySizeF(child, itemSizes[i]);
           applyOpposedSizeF(child, opposedParentSize, boundedF, opposedConstraintsF);
 
@@ -496,8 +489,8 @@ MODEL({
       // no children, zero
       if (this.children.length <= 0) {
         // apply if valid for our layout item traits
-        if (this.horizontalConstraints) this.horizontalConstraints.preferred.val = 0;
-        if (this.verticalConstraints) this.verticalConstraints.preferred.val = 0;
+        if (this.horizontalConstraints) this.horizontalConstraints.preferred = 0;
+        if (this.verticalConstraints) this.verticalConstraints.preferred = 0;
         return;
       }
 
@@ -506,8 +499,8 @@ MODEL({
                                          ((this.orientation === 'horizontal')? 'vertical':'horizontal')
                                          +"Constraints");
       var boundedF = function(val, constraints) { 
-        return (constraints.min.pix && val < constraints.min.pix)? constraints.min.pix :
-               (constraints.max.pix && val > constraints.max.pix)? constraints.max.pix :
+        return (constraints.min$Pix && val < constraints.min$Pix)? constraints.min$Pix :
+               (constraints.max$Pix && val > constraints.max$Pix)? constraints.max$Pix :
                val;
       }
       var parentSizeF = Function("item", "return item."+ 
@@ -519,15 +512,14 @@ MODEL({
       var largestOpposedAxisPreferred = 0;
       this.children.forEach(function(child) {
         constraintsF(child).setTotalSize(sz); // for percentages
-        totalSize += boundedF(constraintsF(child).preferred.pix, constraintsF(child));
+        totalSize += boundedF(constraintsF(child).preferred$Pix, constraintsF(child));
         // also find the largest preferred size on our non-layout axis
-        var oaPref = opposedConstraintsF(child)? opposedConstraintsF(child).preferred.pix : 0;
+        var oaPref = opposedConstraintsF(child)? opposedConstraintsF(child).preferred$Pix : 0;
         if (oaPref > largestOpposedAxisPreferred) largestOpposedAxisPreferred = oaPref;
       });
-
       // apply if valid for our layout item traits
-      if (constraintsF(this)) constraintsF(this).preferred.val = totalSize;
-      if (opposedConstraintsF(this)) opposedConstraintsF(this).preferred.val = largestOpposedAxisPreferred;
+      if (constraintsF(this)) constraintsF(this).preferred = totalSize;
+      if (opposedConstraintsF(this)) opposedConstraintsF(this).preferred = largestOpposedAxisPreferred;
     }
   }
 });
@@ -560,9 +552,9 @@ MODEL({
           postSet: function() {
             var mapFn = function(val) { return val + this.addAmount }.bind(this);
 
-            Events.map(this.data.preferred.pix$, this.preferred.val$, mapFn);
-            Events.map(this.data.max.pix$, this.max.val$, mapFn);
-            Events.map(this.data.min.pix$, this.min.val$, mapFn);
+            Events.map(this.data.preferred$Pix$, this.preferred$, mapFn);
+            Events.map(this.data.max$Pix$, this.max$, mapFn);
+            Events.map(this.data.min$Pix$, this.min$, mapFn);
 
             Events.follow(this.data.stretchFactor$, this.stretchFactor$);
             Events.follow(this.data.shrinkFactor$, this.shrinkFactor$);

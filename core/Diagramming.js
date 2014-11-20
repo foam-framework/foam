@@ -162,6 +162,7 @@ MODEL({
 MODEL({
   name: 'Section',
   package: 'diagram',
+  label: 'Section',
 
   requires: ['canvas.Label as Label',
              'diagram.LinkPoint'],
@@ -204,7 +205,7 @@ MODEL({
       this.SUPER();
 
       this.addChild(this.Label.create({text$: this.title$, font$: this.titleFont$}));
-      this.verticalConstraints.max.val$ = this.verticalConstraints.preferred.pix$;
+      this.verticalConstraints.max$ = this.verticalConstraints.preferred$Pix$;
 
       this.addLinkPoints();
     },

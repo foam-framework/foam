@@ -43,21 +43,27 @@ MODEL({
         this.SUPER(child);
 
         // listen for changes to child layout constraints
-        var constraints = this.orientation === 'horizontal'?
-                            child.horizontalConstraints :
-                            child.verticalConstraints;
+        if (child.horizontalConstraints) {
+          child.horizontalConstraints.subscribe(['layout'], this.performLayout);
+          child.horizontalConstraints.preferred$.addListener(this.updatePreferredSize);
+        }
+        if (child.verticalConstraints) {
+          child.verticalConstraints.subscribe(['layout'], this.performLayout);
+          child.verticalConstraints.preferred$.addListener(this.updatePreferredSize);
+        }
 
-        constraints.subscribe(['layout'], this.performLayout);
-        constraints.preferred.subscribe(['layout'], this.updatePreferredSize);
       },
       removeChild: function(child) { /* Removes a child $$DOC{ref:'CView2'} from the scene. */
         // unlisten
-        var constraints = this.orientation === 'horizontal'?
-                            child.horizontalConstraints :
-                            child.verticalConstraints;
-        constraints.unsubscribe(['layout'], this.performLayout);
-        constraints.preferred.subscribe(['layout'], this.updatePreferredSize);
-                
+        if (child.horizontalConstraints) {
+          child.horizontalConstraints.unsubscribe(['layout'], this.performLayout);
+          child.horizontalConstraints.preferred$.removeListener(this.updatePreferredSize);
+        }
+        if (child.verticalConstraints) {
+          child.verticalConstraints.unsubscribe(['layout'], this.performLayout);
+          child.verticalConstraints.preferred$.removeListener(this.updatePreferredSize);
+        }
+
         this.SUPER(child);
       }
     }
@@ -167,6 +173,11 @@ MODEL({
     init: function() {
       this.SUPER();
 
+      // change defaults
+      this.horizontalConstraints.preferred = 0;
+      this.verticalConstraints.preferred = 0;
+
+      // apply fixed settings if specified
       if (this.fixedWidth) this.fixedWidth = this.fixedWidth;
       if (this.fixedHeight) this.fixedHeight = this.fixedHeight;
     }
@@ -182,9 +193,9 @@ MODEL({
       documentation: "Optional shortcut to set a fixed width (integer or percent value).",
       postSet: function() {
         if (this.fixedWidth && this.horizontalConstraints) {
-          this.horizontalConstraints.min.val = this.fixedWidth;
-          this.horizontalConstraints.max.val = this.fixedWidth;
-          this.horizontalConstraints.preferred.val = this.fixedWidth;
+          this.horizontalConstraints.min = this.fixedWidth;
+          this.horizontalConstraints.max = this.fixedWidth;
+          this.horizontalConstraints.preferred = this.fixedWidth;
         }
       }
     },
@@ -197,9 +208,9 @@ MODEL({
       documentation: "Optional shortcut to set a fixed width (integer or percent value).",
       postSet: function() {
         if (this.fixedHeight && this.verticalConstraints) {
-          this.verticalConstraints.min.val = this.fixedHeight;
-          this.verticalConstraints.max.val = this.fixedHeight;
-          this.verticalConstraints.preferred.val = this.fixedHeight;
+          this.verticalConstraints.min = this.fixedHeight;
+          this.verticalConstraints.max = this.fixedHeight;
+          this.verticalConstraints.preferred = this.fixedHeight;
         }
       }
     },
@@ -288,10 +299,10 @@ MODEL({
           // width of text
           c.save();
           if (this.font) c.font = this.font;
-          this.horizontalConstraints.preferred.val = c.measureText(this.text).width + this.padding*2;
+          this.horizontalConstraints.preferred = c.measureText(this.text).width + this.padding*2;
           c.restore();
           if (!this.isShrinkable) { // if no shrink, lock minimum to preferred
-            this.horizontalConstraints.min.val = this.horizontalConstraints.preferred.val;
+            this.horizontalConstraints.min = this.horizontalConstraints.preferred;
           }
           // height (this is not directly accessible... options include putting
           // a span into the DOM and getting font metrics from that, or just going
@@ -299,10 +310,10 @@ MODEL({
           if (!this.font) this.font = c.font;
 
           var height = parseInt(/[0-9]+(?=pt|px)/.exec(this.font) || 0);
-          this.verticalConstraints.preferred.val = height + this.padding*2;
+          this.verticalConstraints.preferred = height + this.padding*2;
 
           if (!this.isShrinkable) { // if no shrink, lock minimum to preferred
-            this.verticalConstraints.min.val = this.verticalConstraints.preferred.val;
+            this.verticalConstraints.min = this.verticalConstraints.preferred;
           }
         }
 

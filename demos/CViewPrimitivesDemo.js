@@ -36,7 +36,7 @@ var spacer1 = X.canvas.Spacer.create({
 });
 view.addChild(spacer1);
 
-var rect1 = X.diagram.Block.create({
+var block1 = X.diagram.Block.create({
        x: 0,
        y: 20,
        border: 'black',
@@ -48,14 +48,15 @@ var rect1 = X.diagram.Block.create({
 var sect1 = X.diagram.Section.create({
   title: 'A Model'
 }, canv.X);
-rect1.addChild(sect1);
+block1.addChild(sect1);
 var sect2 = X.diagram.Section.create({
   title: 'propertyName',
   titleFont: '12px Roboto'
 }, canv.X);
-rect1.addChild(sect2);
+block1.addChild(sect2);
 
-view.addChild(rect1);
+view.addChild(block1);
+
 
 var spacer1b = X.canvas.Spacer.create({
   fixedHeight: 20,
@@ -64,7 +65,7 @@ var spacer1b = X.canvas.Spacer.create({
 view.addChild(spacer1b);
 
 
-var rect2 = X.BorderLabel.create({
+var label1 = X.BorderLabel.create({
        x: 60,
        y: 25,
        color: 'blue',
@@ -75,7 +76,7 @@ var rect2 = X.BorderLabel.create({
        borderWidth: 2
 
 });
-view.addChild(rect2);
+view.addChild(label1);
 
 var rect3 = X.canvas.Rectangle.create({
        x: 120,
@@ -94,7 +95,7 @@ var spacer2 = X.canvas.Spacer.create({
 outerLayout.addChild(spacer2);
 
 
-var rect4 = X.diagram.Block.create({
+var block2 = X.diagram.Block.create({
        x: 120,
        y: 0,
        border: 'green',
@@ -103,19 +104,22 @@ var rect4 = X.diagram.Block.create({
        height: 50,
   
 }, canv.X);
-var rect4Margin = X.canvas.Margin.create({ left: 20, top: 8, bottom: 8, right: 30, height: 80});
-rect4Margin.addChild(rect4);
-outerLayout.addChild(rect4Margin);
+var block2Margin = X.canvas.Margin.create({ left: 20, top: 8, bottom: 8, right: 30, height: 80});
+block2Margin.addChild(block2);
+outerLayout.addChild(block2Margin);
 
 var sect1b = X.diagram.Section.create({
   title: 'More Model'
 }, canv.X);
-rect4.addChild(sect1b);
+block2.addChild(sect1b);
 var sect2b = X.diagram.Section.create({
   title: 'imports',
   titleFont: 'italic 12px Roboto'
 }, canv.X);
-rect4.addChild(sect2b);
+block2.addChild(sect2b);
+var spacer3 = X.canvas.Spacer.create();
+spacer3.verticalConstraints.stretchFactor = 1;
+block2.addChild(spacer3);
 
 
 var link = X.diagram.Link.create({color: 'red'}, canv.X);
@@ -132,25 +136,33 @@ Events.dynamic(function() { mouse.x; mouse.y; }, function() {
   outerLayout.height = mouse.y;
 });
 
-var editor1 = X.DetailView.create({ data: rect1 });
-editor1.write(document);
 
-var editor1b = X.DetailView.create({ data: spacer1 });
-editor1b.write(document);
+///////////////////Editors
 
-var editor2 = X.DetailView.create({ data: rect2});
-editor2.write(document);
+var editors = [block2, sect1b, sect2b];
 
-var editor3 = X.DetailView.create({ data: rect3});
-editor3.write(document);
+editors.forEach(function(thing) {
+  var editor = X.DetailView.create({ data: thing});
+  editor.write(document);
 
-var editor4 = X.DetailView.create({ data: rect4});
-editor4.write(document);
-var editor4b = X.DetailView.create({ data: rect4Margin});
-editor4b.write(document);
+});
 
-var editorV = X.DetailView.create({data: view});
-editorV.write(document);
+//var editor1b = X.DetailView.create({ data: spacer1 });
+//editor1b.write(document);
+
+//var editor2 = X.DetailView.create({ data: label1});
+//editor2.write(document);
+
+//var editor3 = X.DetailView.create({ data: rect3});
+//editor3.write(document);
+
+//var editor4 = X.DetailView.create({ data: block2});
+//editor4.write(document);
+//var editor4b = X.DetailView.create({ data: block2Margin});
+//editor4b.write(document);
+
+//var editorV = X.DetailView.create({data: view});
+//editorV.write(document);
 
 // var label = X.canvas.Label.create({
 //      x: 20,
