@@ -104,6 +104,16 @@ MODEL({
       name: 'orientation',
       defaultValue: 'vertical'
     },
+    {
+      name: 'myLinkPoints',
+      type: 'DAOProperty',
+      factory: function() { return []; }
+//      dynamicValue: function() {
+//        // proxy until this shows up in the context?
+//        if (this.linkPoints) this.myLinkPoints = this.linkPoints.where(EQ(LinkPoint.OWNER, this));
+//      }
+    }
+    
   ],
 
   methods: {
@@ -124,6 +134,8 @@ MODEL({
                                     this.mapToCanvas(pt1);
                                   }.bind(this) )
         this.linkPoints.push(pt1);
+        this.myLinkPoints.push(pt1);
+        
       }
       {
         var pt2 = this.LinkPoint.create({owner: this, name: '2'});
@@ -134,6 +146,7 @@ MODEL({
                                     this.mapToCanvas(pt2);
                                   }.bind(this) )
         this.linkPoints.push(pt2);
+        this.myLinkPoints.push(pt2);
       }
       {
         var pt3 = this.LinkPoint.create({owner: this, name: '3'});
@@ -144,6 +157,7 @@ MODEL({
                                     this.mapToCanvas(pt3);
                                   }.bind(this) )
         this.linkPoints.push(pt3);
+        this.myLinkPoints.push(pt3);
       }
       {
         var pt4 = this.LinkPoint.create({owner: this, name: '4'});
@@ -154,6 +168,7 @@ MODEL({
                                     this.mapToCanvas(pt4);
                                   }.bind(this) )
         this.linkPoints.push(pt4);
+        this.myLinkPoints.push(pt4);
       }
     }
   }
@@ -193,6 +208,7 @@ MODEL({
     {
       name: 'myLinkPoints',
       type: 'DAOProperty',
+      factory: function() { return []; }
 //      dynamicValue: function() {
 //        // proxy until this shows up in the context?
 //        if (this.linkPoints) this.myLinkPoints = this.linkPoints.where(EQ(LinkPoint.OWNER, this));
@@ -220,6 +236,7 @@ MODEL({
                                     this.mapToCanvas(pt3);
                                   }.bind(this) )
         this.linkPoints.push(pt3);
+        this.myLinkPoints.push(pt3);
       }
       {
         var pt4 = this.LinkPoint.create({owner: this, name: '4'});
@@ -230,6 +247,7 @@ MODEL({
                                     this.mapToCanvas(pt4);
                                   }.bind(this) )
         this.linkPoints.push(pt4);
+        this.myLinkPoints.push(pt4);
       }
     }
 
@@ -274,8 +292,9 @@ MODEL({
 
       var points = this.selectBestPoints();
 
-      if (this.style.toLower() === 'manhattan')
+      if (this.style === 'manhattan')
       {
+console.log('paint ', points.start.side, points.end.side);
         c.moveTo(points.start.x, points.start.y);
         c.lineTo(points.end.x, points.end.y);
         c.stroke();
@@ -291,40 +310,39 @@ MODEL({
       var BIG_VAL = 999999999;
 
       // comparators use manhattan length + reject points in non-optimal directions
-      var comparators = {
-        left: function(startPt, endPt) {
-          return ((endPt.x < startPt.x)? startPt.x - endPt.x : BIG_VAL)
-              + Math.abs(startPt.y-endPt.y);
-        },
-        right: function(startPt, endPt) {
-          return ((endPt.x > startPt.x)? endPt.x - startPt.x : BIG_VAL)
-              + Math.abs(startPt.y-endPt.y);
-        },
-        top: function(startPt, endPt) {
-          return ((endPt.y < startPt.y)? startPt.y - endPt.y : BIG_VAL)
-              + Math.abs(startPt.x-endPt.x);
-        },
-        bottom: function(startPt, endPt) {
-          return ((endPt.y > startPt.y)? endPt.y - startPt.y : BIG_VAL)
-              + Math.abs(startPt.x-endPt.x);
-        },
-
-      };
+      // var comparators = {
+      //   left: function(startPt, endPt) {
+      //     return (Math.abs(startPt.x - endPt.x)
+      //         + Math.abs(startPt.y-endPt.y);
+      //   },
+      //   right: function(startPt, endPt) {
+      //     return ((endPt.x > startPt.x)? endPt.x - startPt.x : BIG_VAL)
+      //         + Math.abs(startPt.y-endPt.y);
+      //   },
+      //   top: function(startPt, endPt) {
+      //     return ((endPt.y < startPt.y)? startPt.y - endPt.y : BIG_VAL)
+      //         + Math.abs(startPt.x-endPt.x);
+      //   },
+      //   bottom: function(startPt, endPt) {
+      //     return ((endPt.y > startPt.y)? endPt.y - startPt.y : BIG_VAL)
+      //         + Math.abs(startPt.x-endPt.x);
+      //   },
+      //
+      // };
 
       var smallest = BIG_VAL;
       var smallestStart;
       var smallestEnd;
       self.start.forEach(function(start) {
         self.end.forEach(function(end) {
-          var dist = comparators[start.side](start,end);
+          var dist = Math.abs(start.x - end.x) + Math.abs(start.y - end.y);
           if (dist < smallest) {
-            dist = smallest;
+            smallest = dist;
             smallestStart = start;
             smallestEnd = end;
           }
         });
       });
-
       return { start: smallestStart, end: smallestEnd }
     }
 

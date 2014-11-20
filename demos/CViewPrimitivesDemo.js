@@ -122,10 +122,10 @@ spacer3.verticalConstraints.stretchFactor = 1;
 block2.addChild(spacer3);
 
 
-//var link = X.diagram.Link.create({color: 'red'}, canv.X);
-//link.start = canv.X.linkPoints[1];
-//link.end = canv.X.linkPoints[9];
-//canv.addChild(link);
+var link = X.diagram.Link.create({color: 'red'}, canv.X);
+link.start = sect2b.myLinkPoints;
+link.end = sect2.myLinkPoints;
+canv.addChild(link);
 
 //view.performLayout();
 var mouse = X.Mouse.create();
