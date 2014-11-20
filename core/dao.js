@@ -3418,7 +3418,7 @@ MODEL({
 
       this.SUPER(args);
 
-      if ( chrome.storage ) {
+      if ( window.chrome && chrome.storage ) {
         this.ALIASES.LOCAL = 'ChromeStorageDAO';
         this.ALIASES.SYNC  = 'ChromeSyncStorageDAO';
       }
