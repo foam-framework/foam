@@ -50,12 +50,12 @@ var FObject = {
       }
     }
 
-    if ( typeof args === 'object' ) o.copyFrom(args);
-    o.init(args);
+    if ( this.exportKeys )
+      for ( var i = 0 ; i < this.exportKeys.length ; i++ ) o.X[o.exportKeys[i]] = o;
 
-    if ( o.model_.exportKeys ) {
-      for ( var i = 0; i < o.model_.exportKeys.length; i ++ ) o.X[o.exportKeys[i]] = o;
-    }
+    if ( typeof args === 'object' ) o.copyFrom(args);
+
+    o.init(args);
 
     return o;
   },
