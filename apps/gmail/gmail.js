@@ -75,7 +75,7 @@ MODEL({
       name: 'emailDao',
       type: 'DAO',
       factory: function() {
-        return this.X.LimitedLiveCachingDAO.create({
+        var dao = this.X.LimitedLiveCachingDAO.create({
           cacheLimit: 100,
           src: this.X.GMailToEMailDAO.create({
             delegate: this.X.GMailMessageDAO.create({})
@@ -90,6 +90,11 @@ MODEL({
               cache: this.X.MDAO.create({ model: this.X.EMail })
           })
         });
+        dao.src
+          .limit(100)
+          .where(EQ(this.X.EMail.LABELS, "INBOX"))
+          .select(dao.cache);
+        return dao;
       }
     },
     {
@@ -235,7 +240,7 @@ MODEL({
     changeLabel: function(label) {
       if (label) {
         this.controller.q = 'l:' + label.id;
-        this.controller.name = label.name;
+        this.controller.name = label.label;
       } else {
         this.controller.q = '';
         this.controller.name = 'All Mail';
