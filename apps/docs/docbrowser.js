@@ -20,8 +20,6 @@ var touchManager = TouchManager.create({});
 touchManager.install(document);
 var gestureManager = GestureManager.create();
 
-DEBUG = true;
-
 MODEL({
   name: 'ModelListController',
   properties: [
@@ -36,6 +34,7 @@ MODEL({
     },
     {
       name: 'dao',
+      defaultValue: [],
       factory: function() {
         var newDAO = this.X.MDAO.create({model:Model});
 

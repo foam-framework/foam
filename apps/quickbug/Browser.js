@@ -33,14 +33,23 @@ MODEL({
   requires: [
     'AlternateView',
     'CursorView',
-    'RelationshipView'
+    'RelationshipView',
+    'Location',
+    'QIssueSplitDAO',
+    'Timer',
+    'TextFieldView',
+    'ChoiceView',
+    'ImageView',
+    'MementoMgr',
+    'AddBookmarkDialog'
+  ],
+
+  exportKeys: ['stack', 'browser'],
+  exports: [
+    'IssueDAO'
   ],
 
   properties: [
-    {
-      name: 'X',
-      preSet: function(_, x) { return x.sub({stack: this, browser: this}); }
-    },
     'project',
     'previewID',
     'favouritesMenu',
@@ -52,7 +61,7 @@ MODEL({
     },
     {
       name: 'location',
-      factory: function() { return this.X.Location.create(); }
+      factory: function() { return this.Location.create(); }
     },
     {
       name: 'memento',
@@ -83,7 +92,7 @@ MODEL({
     {
       name: 'IssueDAO',
       factory: function() {
-        return this.X.QIssueSplitDAO.create({
+        return this.QIssueSplitDAO.create({
           local: this.project.IssueDAO,
           model: this.X.QIssue,
           remote: this.project.IssueNetworkDAO
@@ -94,9 +103,6 @@ MODEL({
           delegate: this.project.IssueDAO,
           window:   this.X.window
         });
-      },
-      postSet: function(_, v) {
-        this.X.IssueDAO = v;
       }
     },
     {
@@ -132,7 +138,7 @@ MODEL({
           dao: this.bookmarkDAO,
           linkLabel: 'Bookmarks &#x25BE;',
           extraClassName: 'bookmarks-menu'
-        });
+        }, Y);
         v.data = 'dummy';
         v.data$.addListener(function() {
           if ( v.data ) self.memento = v.data;
@@ -163,7 +169,7 @@ MODEL({
     },
     {
       name: 'timer',
-      factory: function() { return this.X.Timer.create(); }
+      factory: function() { return this.Timer.create(); }
     },
     {
       mode_: 'IntProperty',
@@ -177,7 +183,7 @@ MODEL({
       name: 'countField',
       type: 'TextFieldView',
       factory: function() {
-        return TextFieldView.create({
+        return this.TextFieldView.create({
           name: 'count',
           className: 'qbugCount',
           mode: 'read-only',
@@ -198,7 +204,7 @@ MODEL({
       factory: function() {
         var open = this.project.openPredicate;
 
-        return ChoiceView.create({
+        return this.ChoiceView.create({
           helpText: 'Search within:',
           data$: this.location.can$,
           choices: [
@@ -215,7 +221,7 @@ MODEL({
     },
     {
       name: 'searchField',
-      factory: function() { return TextFieldView.create({
+      factory: function() { return this.TextFieldView.create({
         name: 'search',
         type: 'search',
         displayWidth: 5
@@ -224,13 +230,13 @@ MODEL({
     {
       name: 'refreshImg',
       factory: function() {
-        return ImageView.create({data: 'images/refresh.png'});
+        return this.ImageView.create({data: 'images/refresh.png'});
       }
     },
     {
       name: 'logo',
       factory: function() {
-        return ImageView.create({data: this.url + '/logo'});
+        return this.ImageView.create({data: this.url + '/logo'});
       }
     },
     {
@@ -243,7 +249,7 @@ MODEL({
     },
     {
       name: 'mementoMgr',
-      factory: function() { return this.X.MementoMgr.create({memento: this.memento$}); }
+      factory: function() { return this.MementoMgr.create({memento: this.memento$}); }
     }
   ],
 
@@ -489,7 +495,7 @@ MODEL({
       this.memento = '';
 
       this.location.y = this.X.QIssue.OWNER;
-      this.location.x = this.X.QIssue.STATUS;
+      this.location.x_ = this.X.QIssue.STATUS;
 
       this.searchField.data$.addListener(this.onSearch);
       Events.follow(this.location.q$, this.searchField.data$);
@@ -614,6 +620,7 @@ Please use labels and text to provide additional information.
             arequire('CursorView'),
             arequire('AddBookmarkDialog'),
             arequire('QIssueDetailView'),
+            arequire('QIssueCreateView'),
             arequire('QIssueCommentCreateView'),
             arequire('QIssueCommentView'),
             arequire('QIssueCommentAuthorView'),
@@ -684,7 +691,7 @@ Please use labels and text to provide additional information.
           }).addDecorator(self.X.QIssuePreviewBorder.create());
 
           var popup = self.currentPreview = self.X.PopupView.create({
-            x: e.x + 25,
+            x_: e.x + 25,
             y: Math.min(
               screenHeight-HEIGHT-180,
               Math.max(

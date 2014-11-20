@@ -264,7 +264,7 @@ MODEL({
       name:  'id',
       label: 'Element ID',
       type:  'String',
-      factory: function() { return this.nextID(); },
+      lazyFactory: function() { return this.nextID(); },
       documentation: function() {/*
         The DOM element id for the outermost tag of
         this $$DOC{ref:'View'}.
@@ -803,7 +803,7 @@ MODEL({
       function init(actions, opt_value) {
         actions.forEach(function(action) {
           for ( var j = 0 ; j < action.keyboardShortcuts.length ; j++ ) {
-            var key     = action.keyboardShortcuts[j];
+            var key = action.keyboardShortcuts[j];
             keyMap[key] = opt_value ?
               function() { action.callIfEnabled(self.X, opt_value.get()); } :
               action.callIfEnabled.bind(action, self.X, self) ;
@@ -819,6 +819,7 @@ MODEL({
         init(this.model.actions, this.data$);
 
       if ( found ) {
+        console.assert(this.$, 'View must define outer id when using keyboard shortcuts: ' + this.name_);
         this.keyMap_ = keyMap;
         this.$.parentElement.addEventListener('keydown', this.onKeyboardShortcut);
       }
@@ -850,10 +851,20 @@ MODEL({
 
   extendsModel: 'View',
 
+  documentation: function() {/*
+    Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one
+    $$DOC{ref:'Property'}. The $$DOC{ref:'View'} chosen can be based off the
+    $$DOC{ref:'Property.view',text:'Property.view'} value, the $$DOC{ref:'.innerView'} value, or
+    $$DOC{ref:'.args'}.model_.
+  */},
+
   properties: [
     {
       name: 'prop',
-      type: 'Property'
+      type: 'Property',
+      documentation: function() {/*
+          The $$DOC{ref:'Property'} for which to generate a $$DOC{ref:'View'}.
+      */}
     },
     {
       name: 'parent',
@@ -861,29 +872,52 @@ MODEL({
       postSet: function(_, p) {
         p[this.prop.name + 'View'] = this.view;
         if ( this.view ) this.view.parent = p;
-      }
+      },
+      documentation: function() {/*
+        The $$DOC{ref:'View'} to use as the parent container for the new
+        sub-$$DOC{ref:'View'}.
+      */}
     },
     {
       name: 'data',
       postSet: function(oldData, data) {
         this.unbindData(oldData);
         this.bindData(data);
-      }
+      },
+      documentation: function() {/*
+        The data to feed into the new sub-$$DOC{ref:'View'}. The data set here
+        is linked bi-directionally to the $$DOC{ref:'View'}. Typically this
+        data is the property value.
+      */}
     },
     {
       name: 'innerView',
-      help: 'Override for prop.view'
+      help: 'Override for prop.view',
+      documentation: function() {/*
+        The optional name of the desired sub-$$DOC{ref:'View'}. If not specified,
+        prop.$$DOC{ref:'Property.view'} is used.
+      */}
     },
     {
       name: 'view',
-      type: 'View'
+      type: 'View',
+      documentation: function() {/*
+        The new sub-$$DOC{ref:'View'} generated for the given $$DOC{ref:'Property'}.
+      */}
     },
-    'args'
+    {
+      name: 'args',
+      documentation: function() {/*
+        Optional arguments to be used for sub-$$DOC{ref:'View'} creation. args.model_
+        in particular specifies the exact $$DOC{ref:'View'} to use.
+      */}
+    }
   ],
 
   methods: {
 
     init: function(args) {
+      /* Sets up the new sub-$$DOC{ref:'View'} immediately. */
       this.SUPER(args);
 
       if ( this.args && this.args.model_ ) {
@@ -906,14 +940,20 @@ MODEL({
       this.bindData(this.data);
     },
 
+    fromElement: function(e) {
+      this.view.fromElement(e);
+      return this;
+    },
+
     createViewFromProperty: function(prop) {
+      /* Helper to determine the $$DOC{ref:'View'} to use. */
       var viewName = this.innerView || prop.view
       if ( ! viewName ) return this.X.TextFieldView.create(prop);
       if ( typeof viewName === 'string' ) return this.X[viewName].create(prop);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
       if ( viewName.model_ ) { var v = viewName.model_.create(viewName, this.X).copyFrom(prop); v.id = this.nextID(); return v; }
       if ( viewName.factory_ ) {
-        var v = FOAM.lookup(viewName.factory_).create(viewName, this.X).copyFrom(prop);
+        var v = FOAM.lookup(viewName.factory_, this.X).create(viewName, this.X).copyFrom(prop);
         v.id = this.nextID();
         return v;
       }
@@ -923,6 +963,7 @@ MODEL({
     },
 
     unbindData: function(oldData) {
+      /* Unbind the data from the old view. */
       var view = this.view;
       if ( ! view || ! oldData ) return;
       var pValue = oldData.propertyValue(this.prop.name);
@@ -930,19 +971,20 @@ MODEL({
     },
 
     bindData: function(data) {
+      /* Bind data to the new view. */
       var view = this.view;
       if ( ! view || ! data ) return;
       var pValue = data.propertyValue(this.prop.name);
       Events.link(pValue, view.data$);
     },
 
-    toHTML: function() { return this.view.toHTML(); },
+    toHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ return this.view.toHTML(); },
 
-    toString: function() { return 'PropertyView(' + this.prop.name + ', ' + this.view + ')'; },
+    toString: function() { /* Name info. */ return 'PropertyView(' + this.prop.name + ', ' + this.view + ')'; },
 
-    initHTML: function() { this.view.initHTML(); },
+    initHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ this.view.initHTML(); },
 
-    destroy: function() {
+    destroy: function() { /* Passthrough to $$DOC{ref:'.view'} */
       this.SUPER();
       this.view.destroy();
     }
@@ -1084,7 +1126,7 @@ MODEL({
       type: 'View',
     },
     {
-      name: 'x'
+      name: 'x_'
     },
     {
       name: 'y'
@@ -1113,7 +1155,7 @@ MODEL({
       if ( this.$ ) return;
       var document = this.X.document;
       var div      = document.createElement('div');
-      div.style.left = this.x + 'px';
+      div.style.left = this.x_ + 'px';
       div.style.top = this.y + 'px';
       if ( this.width )     div.style.width = this.width + 'px';
       if ( this.height )    div.style.height = this.height + 'px';
@@ -1590,70 +1632,93 @@ MODEL({
 
   extendsModel: 'View',
 
+  documentation: function() { /*
+      The default $$DOC{ref:'View'} for a string. Supports autocomplete
+      when an autocompleter is installed in $$DOC{ref:'.autocompleter'}.
+  */},
+
   properties: [
     {
       model_: 'StringProperty',
       name: 'name',
-      defaultValue: 'field'
+      defaultValue: 'field',
+      documentation: function() { /* The name of the field. */}
     },
     {
       model_: 'IntProperty',
       name: 'displayWidth',
-      defaultValue: 30
+      defaultValue: 30,
+      documentation: function() { /* The width to fix the HTML text box. */}
     },
     {
       model_: 'IntProperty',
       name: 'displayHeight',
-      defaultValue: 1
+      defaultValue: 1,
+      documentation: function() { /* The height to fix the HTML text box. */}
     },
     {
       model_: 'StringProperty',
       name: 'type',
-      defaultValue: 'text'
+      defaultValue: 'text',
+      documentation: function() { /* The type of field to create. */}
     },
     {
       model_: 'StringProperty',
       name: 'placeholder',
-      defaultValue: undefined
+      defaultValue: undefined,
+      documentation: function() { /* Placeholder to use when empty. */}
     },
     {
       model_: 'BooleanProperty',
       name: 'onKeyMode',
-      help: 'If true, value is updated on each keystroke.'
+      help: 'If true, value is updated on each keystroke.',
+      documentation: function() { /* If true, value is updated on each keystroke. */}
     },
     {
       model_: 'BooleanProperty',
       name: 'escapeHTML',
       defaultValue: true,
       // TODO: make the default 'true' for security reasons
-      help: 'If true, HTML content is escaped in display mode.'
+      help: 'If true, HTML content is escaped in display mode.',
+      documentation: function() { /* If true, HTML content is escaped in display mode. */}
     },
     {
       model_: 'StringProperty',
       name: 'mode',
       defaultValue: 'read-write',
-      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] }
+      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] },
+      documentation: function() { /* Can be 'read-only', 'read-write' or 'final'. */}
     },
     {
       name: 'domValue',
+      hidden: true
     },
     {
       name: 'data',
+      documentation: function() { /* The object to bind to the user's entered text. */}
     },
     {
       model_: 'StringProperty',
       name: 'readWriteTagName',
       defaultValueFn: function() {
         return this.displayHeight === 1 ? 'input' : 'textarea';
-      }
+      },
+      hidden: true
     },
     {
       model_: 'BooleanProperty',
       name: 'autocomplete',
-      defaultValue: true
+      defaultValue: true,
+      documentation: function() { /* Set to true to enable autocomplete. */}
     },
-    'autocompleter',
-    'autocompleteView'
+    {
+      name: 'autocompleter',
+      documentation: function() { /* The autocompleter model to use. */}
+    },
+    {
+      name: 'autocompleteView',
+      documentation: function() { /* The autocomplete view created. */}
+    }
   ],
 
   constants: {
@@ -1664,12 +1729,14 @@ MODEL({
 
   methods: {
     toHTML: function() {
+      /* Selects read-only versus read-write DOM output */
       return this.mode === 'read-write' ?
         this.toReadWriteHTML() :
         this.toReadOnlyHTML()  ;
     },
 
     toReadWriteHTML: function() {
+      /* Supplies the correct element for read-write mode */
       var str = '<' + this.readWriteTagName + ' id="' + this.id + '"';
       str += ' type="' + this.type + '" ' + this.cssClassAttr();
 
@@ -1685,12 +1752,15 @@ MODEL({
     },
 
     toReadOnlyHTML: function() {
+      /* Supplies the correct element for read-only mode */
       var self = this;
       this.setClass('placeholder', function() { return self.data === ''; }, this.id);
       return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>';
     },
 
     setupAutocomplete: function() {
+      /* Initializes autocomplete, if $$DOC{ref:'.autocomplete'} and
+        $$DOC{ref:'.autocompleter'} are set. */
       if ( ! this.autocomplete || ! this.autocompleter ) return;
 
       var view = this.autocompleteView = this.X.AutocompleteView.create({
@@ -1719,6 +1789,7 @@ MODEL({
     },
 
     initHTML: function() {
+      /* Connects key events. */
       if ( ! this.$ ) return;
 
       this.SUPER();
@@ -1759,15 +1830,15 @@ MODEL({
       }
     },
 
-    textToValue: function(text) { return text; },
+    textToValue: function(text) { /* Passthrough */ return text; },
 
-    valueToText: function(value) {
+    valueToText: function(value) { /* Filters for read-only mode */
       if ( this.mode === 'read-only' )
         return (value === '') ? this.placeholder : value;
       return value;
     },
 
-    destroy: function() {
+    destroy: function() { /* Unlinks key handler. */
       this.SUPER();
       Events.unlink(this.domValue, this.data$);
     }
@@ -2881,10 +2952,11 @@ MODEL({
       model_: 'ViewFactoryProperty',
       name: 'view',
       defaultValue: 'View',
-      postSet: function(old, v) { 
+      postSet: function(old, v) {
         if ( ! this.$ ) return;
         this.removeChild(old);
-        var view = v({ data$: this.data$ });
+        var view = this.view();
+        view.data = this.data;
         this.addChild(view);
         this.viewContainer.innerHTML = view.toHTML();
         view.initHTML();
@@ -2919,14 +2991,11 @@ MODEL({
   ],
 
   templates: [
-    function choiceButton(_, i, length, choice) {/*
-      <%
+    function choiceButton(_, i, length, choice) {/*<%
         var id = this.on('click', function() { self.choice = choice; });
-        this.setClass('mdoe_button_active', function() { return self.choice === choice; }, id);
-      %>
-      <a id="<%= id %>" class="buttonify<%= i == 0 ? ' capsule_left' : '' %><%=
-                                           i == length - 1 ? ' capsule_right' : '' %>"><%= choice.label %></a>
-    */},
+        this.setClass('mode_button_active', function() { return self.choice === choice; }, id);
+      %><a id="<%= id %>" class="buttonify<%= i == 0 ? ' capsule_left' : '' %><%=
+                                              i == length - 1 ? ' capsule_right' : '' %>"><%= choice.label %></a>*/},
     function toHTML() {/*
       <div id="<%= this.id %>" class="AltViewOuter column" style="margin-bottom:5px;">
         <div class="altViewButtons rigid">
@@ -3209,6 +3278,7 @@ MODEL({
   ]
 });
 
+
 MODEL({
   name: 'GalleryView',
   extendsModel: 'SwipeAltView',
@@ -3338,7 +3408,7 @@ MODEL({
     valueToText: function(val) {
       return this.hasOwnProperty('precision') ?
         this.formatNumber(val) :
-        String.valueOf(val) ;
+        ''+val ;
     },
     textToValue: function(text) { return parseFloat(text) || 0; }
   }
@@ -3355,7 +3425,7 @@ MODEL({
   ],
 
   methods: {
-    textToValue: function(text) { return parseInt(text) || "0"; },
+    textToValue: function(text) { return parseInt(text) || '0'; },
     valueToText: function(value) { return value ? value : '0'; }
   }
 });
@@ -4664,6 +4734,7 @@ MODEL({
     { model_: 'ViewFactoryProperty', name: 'mainView' },
     { model_: 'ViewFactoryProperty', name: 'panelView' },
     {
+      model_: 'IntProperty',
       name: 'minWidth',
       defaultValueFn: function() {
         var e = this.main$();
@@ -4673,7 +4744,9 @@ MODEL({
       }
     },
     {
+      model_: 'IntProperty',
       name: 'width',
+      model_: 'IntProperty',
       hidden: true,
       help: 'Set internally by the resize handler',
       postSet: function(_, x) {
@@ -4681,6 +4754,7 @@ MODEL({
       }
     },
     {
+      model_: 'IntProperty',
       name: 'minPanelWidth',
       defaultValueFn: function() {
         if ( this.panelView && this.panelView.minWidth )
@@ -4692,6 +4766,7 @@ MODEL({
       }
     },
     {
+      model_: 'IntProperty',
       name: 'panelWidth',
       hidden: true,
       help: 'Set internally by the resize handler',
@@ -4700,6 +4775,7 @@ MODEL({
       }
     },
     {
+      model_: 'IntProperty',
       name: 'parentWidth',
       help: 'A pseudoproperty that returns the current with (CSS pixels) of the containing element',
       getter: function() {
@@ -4707,17 +4783,20 @@ MODEL({
       }
     },
     {
+      model_: 'IntProperty',
       name: 'stripWidth',
       help: 'The width in (CSS) pixels of the minimal visible strip of panel',
       defaultValue: 30
     },
     {
+      model_: 'FloatProperty',
       name: 'panelRatio',
       help: 'The ratio (0-1) of the total width occupied by the panel, when ' +
           'the containing element is wide enough for expanded view.',
       defaultValue: 0.5
     },
     {
+      model_: 'IntProperty',
       name: 'panelX',
       //defaultValueFn: function() { this.width - this.stripWidth; },
       preSet: function(oldX, x) {
@@ -4742,25 +4821,21 @@ MODEL({
     'expanded'
   ],
 
+  templates: [
+    // TODO(kgr): Add CSS here
+
+    function toHTML() {/*
+      <div id="%%id" style="display: inline-block; position: relative" class="SliderPanel">
+        <div id="%%id-main">
+          <div id="%%id-shadow" class="shadow"></div>
+          <%= this.mainView() %>
+        </div>
+        <div id="%%id-panel" style="position: absolute; top: 0; left: 0"><%= this.panelView() %></div>
+      </div>
+    */}
+  ],
+
   methods: {
-    toHTML: function() {
-      var mainView  = this.mainView();
-      var panelView = this.panelView();
-
-      this.addChildren(mainView, panelView);
-
-      return '<div id="' + this.id + '" ' +
-          'style="display: inline-block; position: relative" class="SliderPanel">' +
-          '<div id="' + this.id + '-main">' +
-              mainView.toHTML() +
-          '</div>' +
-          '<div id="' + this.id + '-panel" style="position: absolute; top: 0; left: 0">' +
-          '   <div id="' + this.id + '-shadow" class="shadow"></div>' +
-              panelView.toHTML() +
-          '</div>' +
-          '</div>';
-    },
-
     initHTML: function() {
       // Mousedown and touch events on the sliding panel itself.
       // Mousemove and mouseup on the whole window, so that you can drag the
@@ -4875,6 +4950,7 @@ MODEL({
     }
   ]
 });
+
 
 MODEL({
   name: 'ActionSheetView',
@@ -5016,4 +5092,74 @@ MODEL({
       this.initHTML();
     }
   }
+});
+
+MODEL({
+  name: 'ControllerOption',
+  properties: [
+    { model_: 'ViewFactoryProperty', name: 'controller' },
+    { model_: 'IntProperty', name: 'minWidth' }
+  ]
+});
+
+MODEL({
+  name: 'ResponsiveController',
+  extendsModel: 'View',
+  imports: ['window'],
+  properties: [
+    {
+      model_: 'ArrayProperty',
+      subType: 'ControllerOption',
+      name: 'options',
+      preSet: function(_, v) {
+        return v.slice().sort(toCompare(ControllerOption.MIN_WIDTH));
+      }
+    },
+    {
+      name: 'current',
+      type: 'ControllerOption',
+      postSet: function(old, v) {
+        if ( old !== v ) this.updateHTML();
+      }
+    },
+    {
+      name: 'tagName',
+      defaultValue: 'div'
+    }
+  ],
+  methods: {
+    initHTML: function() {
+      this.SUPER();
+      this.window.addEventListener('resize', this.onResize);
+      this.onResize_();
+    },
+    destory: function() {
+      this.window.removeEventListener('resize', this.onResize);
+    },
+    onResize_: function() {
+      if (!this.$) return;
+
+      var width = this.$.clientWidth;
+
+      for (var i = 0; i < this.options.length; i++) {
+        var option = this.options[i];
+        if ( option.minWidth > width ) break;
+      }
+      i = Math.max(i - 1, 0);
+
+      this.current = this.options[i];
+    }
+  },
+  listeners: [
+    {
+      name: 'onResize',
+      isMerged: 100,
+      code: function() {
+        this.onResize_();
+      }
+    }
+  ],
+  templates: [
+    function toInnerHTML() {/*<%= this.current ? this.current.controller() : '' %>*/}
+  ]
 });

@@ -193,13 +193,13 @@ defineProperties(Array.prototype, {
     return anop();
   },
   select: function(sink, options) {
-    sink = sink || [];
+    sink = sink || [].sink;
     var hasQuery = options && ( options.query || options.order );
     var originalsink = sink;
     sink = this.decorateSink_(sink, options, false, ! hasQuery);
 
     // Short-circuit COUNT.
-    if ( ! hasQuery && sink.model_ === CountExpr ) {
+    if ( ! hasQuery && CountExpr.isInstance(sink) ) {
       sink.count = this.length;
       return aconstant(originalsink);
     }

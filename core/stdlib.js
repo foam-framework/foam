@@ -41,7 +41,7 @@ var __features__ = [
   // Concept,         Role,         Individual
   [                 , 'prototype',  this ],
   [                 , 'GLOBAL',     this['GLOBAL'] || this ],
-  [                 , 'DEBUG',      false ],
+  [                 , 'DEBUG',      window['DEBUG']? true : false ], // pick up global debug setting, if present
   [                 , 'Role$',      function Property$(c, r, f) { Object.defineProperty(c, f[0], f[1]); }],
   [                 , 'Role$',      function Method$(c, r, f) {
     if ( c == Object ) {
@@ -384,6 +384,9 @@ __features__[0][1](__features__);
   Allow Role to be a function?
   Make processFeature be a feature.
 */
+
+/** NOP func. **/
+function nop() {}
 
 
 // binaryInsert into a sorted array, removing duplicates

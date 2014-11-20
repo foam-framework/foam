@@ -7,8 +7,8 @@ MODEL({
   ],
 
   methods: {
-    updateSubViews: function(SUPER) {
-      SUPER();
+    updateSubViews: function() {
+      this.SUPER();
       if ( ! this.$ ) return;
       this.$.firstElementChild.href = this.data.htmlLink;
     }

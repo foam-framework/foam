@@ -15,10 +15,6 @@
  * limitations under the License.
  */
 
-
-
-
-
 MODEL({
   name: 'DocView',
   extendsModel: 'View',
@@ -244,7 +240,6 @@ MODEL({
         }
       }
     }
-
   ],
 
 
@@ -266,10 +261,10 @@ MODEL({
       this.updateHTML();
     },
 
-    initInnerHTML: function(SUPER) {
+    initInnerHTML: function() {
       /* If a feature is present in the this.X.documentViewRef $$DOC{ref:'DocRef'},
         scroll to that location on the page. Otherwise scroll to the top. */
-      SUPER();
+      this.SUPER();
       
       this.scrollToFeature();
     },
@@ -320,7 +315,7 @@ MODEL({
       var modelDef = model.definition_?  model.definition_: model;
       var self = this;
       var newModelTr = this.X.DocModelInheritanceTracker.create();
-      newModelTr.model = model.name;
+      newModelTr.model = model.id;
 
       this.X.Model.properties.forEach(function(modProp) {
         var modPropVal = modelDef[modProp.name];
@@ -365,7 +360,7 @@ MODEL({
         previousExtenderTrackers.push(newModelTr);
         // inheritance level will bubble back up the stack once we know where the bottom is
         newModelTr.inheritanceLevel = 1 + this.loadFeaturesOfModel(
-                          this.X[model.extendsModel], previousExtenderTrackers);
+                          FOAM.lookup(model.extendsModel, X), previousExtenderTrackers);
       }
 
       // the tracker is now complete
@@ -541,8 +536,6 @@ MODEL({
       }
     }
   }
-
-
 });
 
 
@@ -560,20 +553,19 @@ MODEL({
         this.X[this.model_.extendsModel].DATA.postSet.call(this); // TODO: implement this.SUPER() for these
         this.parentModel = this.data;
       }
-    },
-
+    }
   ],
 
   templates: [
-    function toInnerHTML()    {/*
+    function toInnerHTML() {/*
       <%    this.destroy(); %>
       <%    if (this.data) {  %>
               <p><%=this.renderDocSourceHTML()%></p>
       <%    } %>
     */}
-  ],
-
+  ]
 });
+
 
 MODEL({
   name: 'DocFeatureBodyView',
@@ -593,8 +585,6 @@ MODEL({
     */}
   ]
 });
-
-
 
 
 MODEL({
@@ -728,6 +718,7 @@ MODEL({
   ],
 });
 
+
 MODEL({
   name: 'DocRef',
   label: 'Documentation Reference',
@@ -788,7 +779,6 @@ MODEL({
         $$DOC{ref:'.resolvedModelChain'} is usable, false otherwise.
       */}
     }
-
   ],
 
   methods: {
@@ -857,9 +847,7 @@ MODEL({
 
       //TODO: do something with the package parts, resolve package refs with no model
 
-      if (!model) {
-        return;
-      }
+      if ( ! model ) return;
       
       newResolvedModelChain.push(model);
       newResolvedRef += model.name;
@@ -887,13 +875,12 @@ MODEL({
       }
 
       // allow further specification of sub properties or lists
-      if (foundObject && remainingArgs.length > 0)
-      {
-        if (!remainingArgs.every(function (arg) {
+      if ( foundObject && remainingArgs.length > 0 ) {
+        if ( ! remainingArgs.every(function (arg) {
             var newObject;
 
             // null arg is an error at this point
-            if (arg.length <= 0) return false;
+            if ( arg.length <= 0 ) return false;
 
             // check if arg is the name of a sub-object of foundObject
             var argCaller = Function('return this.'+arg);
@@ -949,6 +936,3 @@ MODEL({
 //  ]
 
 });
-
-
-

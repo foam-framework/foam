@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var xxxx = 0;
-var prefix = '';
 
 /**
  * The Prototype for all Generated Prototypes.
@@ -33,12 +31,10 @@ var FObject = {
   create: function(args, opt_X) {
     var o = this.create_(this);
     o.instance_ = {};
-    o.X = opt_X || X;
-
-    o.X = o.X.sub({});
+    o.X = (opt_X || X).sub({});
 
     if ( this.model_.imports && this.model_.imports.length ) {
-      if ( ! this.imports_ ) {
+      if ( ! Object.prototype.hasOwnProperty.call(this, 'imports_') ) {
         this.imports_ = this.model_.imports.map(function(e) {
           var s = e.split(' as ');
           return [s[0], s[1] || s[0]];
@@ -101,22 +97,9 @@ var FObject = {
 
     function exportKeys(X, keys, value) {
       if ( ! keys ) return;
-      for ( var i = 0 ; i < keys.length ; i++ )
-        X[keys[i]] = value;
-    }
-
-    ps = this.selectProperties_('factoryProperties_', 'factory');
-    for ( var i = 0 ; i < ps.length ; i++ ) {
-      var prop = ps[i];
-
-      // If a value was explicitly provided in the create args
-      // then don't call the factory if it exists.
-      // if ( ! this.instance_[prop.name] ) this[prop.name] = prop.factory.call(this);
-      if ( ! this.hasOwnProperty(prop.name) ) this[prop.name] = prop.factory.call(this);
-
-      exportKeys(this.X, prop.exportKeys, this[prop.name]);
-      if ( prop.exportValueKeys && prop.exportValueKeys.length )
-        exportKeys(this.X, prop.exportValueKeys, this[prop.name + '$']);
+      for ( var i = 0 ; i < keys.length ; i++ ) {
+        X.set(keys[i], value);
+      }
     }
 
     ps = this.selectProperties_('dynamicValueProperties_', 'dynamicValue');
@@ -138,7 +121,6 @@ var FObject = {
       exportKeys(this.X, prop.exportKeys, this[prop.name]);
     }
 
-
     ps = this.selectProperties_('exportValueKeyProperties_', 'exportValueKeys');
     for ( var i = 0 ; i < ps.length ; i++ ) {
       var prop = ps[i];
@@ -148,20 +130,46 @@ var FObject = {
 
     // Add non-property exports to Context
     if ( this.model_.exports && this.model_.exports.length ) {
-      if ( ! this.model_.exports_ ) {
-        this.model_.exports_ = this.model_.exports.map(function(e) {
+      var fnExports = this.model_.fnExports_ ||
+        ( this.model_.fnExports_ = this.model_.exports.map(function(e) {
           var s = e.split(' as ');
           s[0] = s[0].trim();
           return [s[0], s[1] || s[0]];
         }).filter(function (s) {
           return typeof this[s[0]] === 'function';
-        }.bind(this));
+        }.bind(this)));
+      for ( var i = 0 ; i < fnExports.length ; i++ ) {
+        var e = fnExports[i];
+        this.X[e[1]] = this[e[0]].bind(this);
       }
-      for ( var i = 0 ; i < this.model_.exports_.length ; i++ ) {
-        var e = this.model_.exports_[i];
-        var v = this[e[0]].bind(this);
-        this.X[e[1]] = v;
+
+      var otherExports = this.model_.otherExports_ ||
+        ( this.model_.otherExports_ = this.model_.exports.map(function(e) {
+          var s = e.split(' as ');
+          s[0] = s[0].trim();
+          return [s[0], s[1] || s[0]];
+        }).filter(function (s) {
+          return typeof this[s[0]] !== 'function' && ! this.model_.getProperty(s[0]);
+        }.bind(this)));
+      for ( var i = 0 ; i < otherExports.length ; i++ ) {
+        var e = otherExports[i];
+        this.X[e[1]] = this[e[0]];
       }
+    }
+
+    ps = this.selectProperties_('factoryProperties_', 'factory');
+    for ( var i = 0 ; i < ps.length ; i++ ) {
+      var prop = ps[i];
+
+      // If a value was explicitly provided in the create args
+      // then don't call the factory if it exists.
+      // if ( ! this.instance_[prop.name] ) this[prop.name] = prop.factory.call(this);
+      if ( ! this.hasOwnProperty(prop.name) ) this[prop.name] = prop.factory.call(this);
+
+      exportKeys(this.X, prop.exportKeys, this[prop.name]);
+
+      if ( prop.exportValueKeys && prop.exportValueKeys.length )
+        exportKeys(this.X, prop.exportValueKeys, this[prop.name + '$']);
     }
 
     // Add shortcut create() method to Models which allows them to be
@@ -169,6 +177,42 @@ var FObject = {
     // because we need the regular behavior there.
     if ( this.model_ == Model && this.name != 'Model' )
       this.create = BootstrapModel.create;
+  },
+
+  fromElement: function(e) {
+    var elements = this.elementMap_;
+
+    // Build a map of properties keyed off of either 'name' or 'singular'
+    if ( ! elements ) {
+      elements = {};
+      for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
+        var p = this.model_.properties[i];
+        elements[p.name] = p;
+        if ( p.singular ) elements[p.singular] = p;
+      }
+      this.elementMap_ = elements;
+    }
+
+    for ( var key in e.attributes ) {
+      var p = elements[key];
+      if ( p ) {
+        p.fromString.call(this, e.attributes[key], p);
+      } else {
+        console.warn('Unknown attribute name: "' + key + '"');
+      }
+    }
+
+    for ( var i = 0 ; i < e.children.length ; i++ ) {
+      var c = e.children[i];
+      var p = elements[c.nodeName];
+      if ( p ) {
+        p.fromElement.call(this, c, p);
+      } else {
+        console.warn('Unknown element name: "' + c.key + '"');
+      }
+    }
+
+    return this;
   },
 
   installInDocument: function(X, document) {

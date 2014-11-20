@@ -15,28 +15,11 @@
  * limitations under the License.
  */
 
-require('../core/bootFOAMnode');
-require('../node/fileDAO');
-require('../node/server');
-var path = require('path');
-
-// Create an XMLFileDAO against FUNTests.xml
-var dao = XMLFileDAO.create({ name: path.join(__dirname, 'FUNTests.xml'), model: Model });
-
-var port = 8888;
-if ( process.argv.length > 2 ) port = process.argv[2];
-
-X.NodeServer.create({
-  port: port,
-  handlers: [
-    X.DAOHandler.create({
-      daoMap: { 'ModelDAO': dao },
-      path: '/api'
-    }),
-    X.StaticFileHandler.create({
-      dir: path.resolve(__dirname, '..'),
-      prefix: '/'
-    })
-  ]
-}).launch();
-
+console.log('ServiceWorker Support');
+navigator.serviceWorker.register('../core/sw.js', {
+  scope: '/'
+}).then(function() {
+  console.log('Service Worker registered.');
+}).catch(function(err) {
+  console.log('Service Worker Error: ', err.toString());
+});

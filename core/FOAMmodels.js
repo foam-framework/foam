@@ -16,6 +16,7 @@
  */
 
 var files = [
+//  ['ServiceWorker', function() { return window.navigator && navigator.serviceWorker; }],
   ['firefox', function() { return window.navigator && navigator.userAgent.indexOf('Firefox') != -1; }],
   ['safari', function() { return window.navigator && navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1; }],
   [ 'i18n', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
@@ -28,17 +29,17 @@ var files = [
   'base64',
   'encodings',
   'utf8',
+  'async',
   'parse',
   'event',
   'JSONUtil',
-  'HTMLParser',
   'XMLUtil',
   'context',
   'FOAM',
   'JSONParser',
   'TemplateUtil',
   // To use FO, uncomment the next line
-  // and comment out all lines from FObject to mm6Prototbuf
+  // and comment out all lines from FObject to mm5Misc
   // inclusively
 //  'experimental/fo',
 //  'experimental/protobuffeatures',
@@ -49,7 +50,7 @@ var files = [
   'mm3Types',
   'mm4Method',
   'mm5Misc',
-  'mm6Protobuf',
+  'LayoutTraits', // generic, non-view specific, so no predicate
   [ 'value', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
   [ 'view', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
   [ 'layout', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
@@ -62,10 +63,12 @@ var files = [
   [ 'RichTextView', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
   [ 'listchoiceview', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
   [ 'scroll', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
+  [ 'CViewPrimitives', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
+  [ 'Diagramming', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
+  'HTMLParser',
   'mlang',
   'QueryParser',
   'search',
-  'async',
   'oam',
   'visitor',
   'messaging',

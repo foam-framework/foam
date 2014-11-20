@@ -16,6 +16,7 @@
  */
 var Property = {
   __proto__: BootstrapModel,
+  instance_: {},
 
   name:  'Property',
   plural:'Properties',
@@ -55,6 +56,7 @@ var Property = {
          */}
 
     },
+
     {
       name: 'exportKeys',
       type: 'Array',
@@ -62,7 +64,7 @@ var Property = {
       required: false,
       hidden: true,
       defaultValue: '',
-      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; }, 
+      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; },
       help: 'Keys to export value as.',
       documentation: function() {/* If set, when the an object with this property is initialized the value of this property on the object will be exported into the objects sub-context. */}
     },
@@ -73,9 +75,9 @@ var Property = {
       required: false,
       hidden: true,
       defaultValue: '',
-      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; }, 
+      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; },
       help: 'Keys to export value$ as.',
-      documentation: function() {/* Same as $$DOC{ ref: 'Property.exportKeys' }, expect it exports the property Value (name$) of the property rather than the raw value of the property. */}
+      documentation: function()  {/* Same as $$DOC{ ref: 'Property.exportKeys' }, except it exports the property Value (propName$) of the property rather than the raw value of the property. */}
     },
     {
       name: 'label',
@@ -540,8 +542,13 @@ var Property = {
       documentation: "A comparator function two compare two instances of this $$DOC{ref:'Property'}."
     },
     {
+      name: 'fromString',
+      defaultValue: function(s, p) { this[p.name] = s; },
+      help: 'Function to extract value from a String.'
+    },
+    {
       name: 'fromElement',
-      defaultValue: function(e) { return e.innerHTML; },
+      defaultValue: function(e, p) { p.fromString.call(this, e.innerHTML, p); },
       help: 'Function to extract from a DOM Element.',
       documentation: "Function to extract a value from a DOM Element."
     },
@@ -635,6 +642,7 @@ Model.methods = {
 // or ever will write. Oct. 4, 2011 -- KGR
 Model = Model.create(Model);
 Model.model_ = Model;
+Model.create = BootstrapModel.create;
 
 Property = Model.create(Property);
 
@@ -644,4 +652,4 @@ for ( var i = 0 ; i < Property.properties.length ; i++ )
     Property.properties[i] = Property.create(Property.properties[i]);
 
 USED_MODELS.Property = Property;
-
+USED_MODELS.Model = Model;

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 MODEL({
   name: 'InputPoint',
   properties: [
@@ -90,8 +89,8 @@ MODEL({
   },
 
   methods: {
-    init: function(SUPER) {
-      SUPER();
+    init: function() {
+      this.SUPER();
       if ( this.X.document ) this.install(this.X.document);
     },
 

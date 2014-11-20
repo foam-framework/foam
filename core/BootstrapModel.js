@@ -39,9 +39,7 @@ this.Relationship = null;
  * Override a method, making calling the overridden method possible by
  * calling this.SUPER();
  **/
-/* Begin Rhino Compatible Version */
-// The try/catch prevents JIT-ing of this method, but it is still faster than
-// the alternate version
+
 function override(cls, methodName, method) {
   var super_ = cls[methodName];
 
@@ -65,27 +63,11 @@ function override(cls, methodName, method) {
     this.SUPER = null;
     return ret;
   };
-
+  f.toString = function() { return method.toString(); };
   f.super_ = super_;
 
   cls[methodName] = f;
 }
-/* End Rhino Compatible Version */
-
-/* Begin Non-Rhino Version */
-/*
-function override(cls, methodName, method) {
-  method.super_ = cls[methodName];
-  cls[methodName] = method;
-}
-
-Object.defineProperty(FObject, 'SUPER', {
-  get: function() {
-    return arguments.callee.caller.super_.bind(this);
-  }
-});
-*/
-/* End Non-Rhino Version */
 
 
 var BootstrapModel = {
@@ -95,7 +77,6 @@ var BootstrapModel = {
   name_: 'BootstrapModel <startup only, error if you see this>',
 
   buildPrototype: function() { /* Internal use only. */
-
     // save our pure state
     // Note: Only documentation browser uses this, and it will be replaced
     // by the new Feature Oriented bootstrapping process, so only use the
@@ -105,12 +86,15 @@ var BootstrapModel = {
     }
 
     function addTraitToModel(traitModel, parentModel) {
-      var name = parentModel.name + '_ExtendedWith_' + traitModel.name;
+      var name = (parentModel.id? parentModel.id.replace('.','__') : "")
+                  + '_ExtendedWith_' +
+                   (traitModel.id? traitModel.id.replace('.','__') : "");
 
       if ( ! FOAM.lookup(name) ) {
         var model = traitModel.deepClone();
+        model.package = "";
         model.name = name;
-        model.extendsModel = parentModel.name;
+        model.extendsModel = parentModel.id;
         GLOBAL.registerModel(model);
       }
 
@@ -140,7 +124,7 @@ var BootstrapModel = {
     // Install a custom constructor so that Objects are named properly
     // in the JS memory profiler.
     // Doesn't work for Model because of some Bootstrap ordering issues.
-    if ( this.name !== 'Model' && ! ( window.chrome && chrome.runtime && chrome.runtime.id ) ) {
+    if ( this.name && this.name !== 'Model' && ! ( window.chrome && chrome.runtime && chrome.runtime.id ) ) {
       var s = '(function() { var XXX = function() { }; XXX.prototype = this; return function() { return new XXX(); }; })'.replace(/XXX/g, this.name);
       try { cls.create_ = eval(s).call(cls); } catch (e) { }
     }
@@ -172,14 +156,13 @@ var BootstrapModel = {
       var key  = imp[1] || path[path.length-1];
 
       defineLocalProperty(cls, key, function() {
+        var Y     = this.X;
         var model = FOAM.lookup(m, this.X);
         var proto = model.getPrototype();
-        var self  = this;
-        var f     = function(args, opt_X) {
-          return proto.create(args, opt_X || self.X);
+        return {
+          __proto__: model,
+          create: function(args, X) { return proto.create(args, X || Y); }
         };
-        f.__proto__ = model;
-        return f;
       });
     });
 
@@ -272,6 +255,8 @@ var BootstrapModel = {
       props[prop][subProp] = (props[prop][subProp] || []).concat(alias);
     });
 
+    if ( extendsModel && extendsModel.exportKeys.length > 0 ) this.exportKeys = this.exportKeys.concat(extendsModel.exportKeys);
+
     // templates
     this.templates && Object_forEach(this.templates, function(t) {
       addMethod(t.name, TemplateUtil.lazyCompile(t));
@@ -300,7 +285,10 @@ var BootstrapModel = {
     // add constants
     for ( var key in this.constants ) {
       var c = this.constants[key];
-      if ( Constant && Constant.isInstance(c) ) {
+      if ( Constant ) {
+        if ( ! Constant.isInstance(c) ) {
+          c = this.constants[key] = Constant.create(c);
+        }
         // TODO(kgr): only add to Proto when Model cleanup done.
         Object.defineProperty(cls, c.name, {value: c.value});
         Object.defineProperty(this, c.name, {value: c.value});
@@ -425,9 +413,7 @@ var BootstrapModel = {
   },
 
   getPrototype: function() { /* Returns the definition $$DOC{ref:'Model'} of this instance. */
-    return this.prototype_ && this.prototype_.model_ == this ?
-      this.prototype_ :
-      ( this.prototype_ = this.buildPrototype() );
+    return this.instance_.prototype_ || ( this.instance_.prototype_ = this.buildPrototype() );
   },
 
   saveDefinition: function(self) {
@@ -466,7 +452,7 @@ var BootstrapModel = {
   isSubModel: function(model) {
     /* Returns true if the given instance extends this $$DOC{ref:'Model'} or a descendant of this. */
     try {
-      return model && ( model === this || this.isSubModel(model.getPrototype().__proto__.model_) );
+      return model && model.getPrototype && ( model.getPrototype() === this.getPrototype() || this.isSubModel(model.getPrototype().__proto__.model_) );
     } catch (x) {
       return false;
     }

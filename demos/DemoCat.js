@@ -285,8 +285,8 @@ MODEL({
     }
   ],
   methods: {
-    init: function(SUPER) {
-      SUPER();
+    init: function() {
+      this.SUPER();
       var i = window.location.href.indexOf('?q=');
       if ( i != -1 ) this.search = window.location.href.substring(i+3);
     }
@@ -296,7 +296,7 @@ MODEL({
     function toDetailHTML() {/*
         &nbsp;&nbsp; Search: $$search
         <p>
-        <foam f="filteredDAO" className="demos" tagName="ul"><rowView>
+        <foam f="filteredDAO" className="demos" tagName="ul">
           <li class="thumbnail">
             <a href="%%data.path" class="thumb">$$name{mode: 'read-only'}</a>
             <br>
@@ -309,7 +309,7 @@ MODEL({
             <% } %>
             <br>
           </li>
-        </rowView></foam>
+        </foam>
     */}
   ]
 });

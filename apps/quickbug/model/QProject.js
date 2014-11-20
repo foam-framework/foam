@@ -852,7 +852,7 @@ MODEL({
           var window = self.window = w.contentWindow;
 
           apar(
-            arequire('Browser'),
+            arequire('ChromeAppBrowser'),
             arequire('ConfigureProjectsView'),
             arequire('GridView'),
             arequire('QIssueCommentAuthorView'),

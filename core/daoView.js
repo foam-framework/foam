@@ -478,6 +478,16 @@ MODEL({
         this.children = [];
         this.painting = false;
       }.bind(this));
+    },
+
+    /** Allow rowView to be optional when defined using HTML. **/
+    fromElement: function(e) {
+      var children = e.children;
+      if ( children.length == 1 && children[0].nodeName === 'rowView' ) {
+        this.SUPER(e);
+      } else {
+        this.rowView = e.innerHTML;
+      }
     }
   },
 
@@ -1063,18 +1073,20 @@ MODEL({
     }
   ],
   methods: {
-    init: function(SUPER, args) {
+    init: function(args) {
       var self = this;
-      SUPER(args);
+      this.SUPER(args);
 
-      this.X.dynamic(function() { self.count; },
-                function() {
-                  if ( ! self.$ ) return;
-                  self.container$.style.height = (self.count * self.rowSize) + 'px';
-                });
+      this.X.dynamic(
+        function() { self.count; },
+        function() {
+          if ( ! self.$ ) return;
+          self.container$.style.height = (self.count * self.rowSize) + 'px';
+        });
 
-      this.X.dynamic(function() { self.objs; self.offset; },
-                function() { self.render(); });
+      this.X.dynamic(
+        function() { self.objs; self.offset; },
+        function() { self.render(); });
     },
   },
   listeners: [

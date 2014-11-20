@@ -118,13 +118,13 @@ MODEL({
     {
       name: 'layout',
       code: function() {
-        this.overlaySlider.x = 0;
+        this.overlaySlider.x_ = 0;
         this.overlaySlider.y = 0;
         this.overlaySlider.z = this.sliderOpen ? 1 : 0;
         this.overlaySlider.width = this.width;
         this.overlaySlider.height = this.height;
 
-        this.slider.x = 0;
+        this.slider.x_ = 0;
         this.slider.y = 0;
         this.slider.width = this.width;
         this.slider.height = this.height;

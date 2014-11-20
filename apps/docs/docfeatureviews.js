@@ -366,7 +366,7 @@ MODEL({
     function toInnerHTML() {/*
       <div id="scrollTarget_<%=this.data.name%>">
         <p><span class="feature-heading"><%=this.data.name%></span>
-           <span class="feature-type">(<%=this.data.type%>)</span></p>
+           <span class="feature-type">($$DOC{ref:this.data.type.replace('[]',''), text:this.data.type})</span></p>
         <p><%=this.renderDocSourceHTML()%></p>
         <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureOverridesRefView', data: this.overridesDAO, model: DocFeatureInheritanceTracker }</p>
       </div>
@@ -679,7 +679,7 @@ MODEL({
     <%    } else {
             if (this.hasFeatures) { %>
               <p class="feature-type-heading"><%=this.featureName()%>:</p>
-              <div class="memberList">$$selfFeaturesDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.selfFeaturesDAO, model: Property }</div>
+              <div class="memberList">$$selfFeaturesDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.selfFeaturesDAO, model: Model }</div>
       <%    }
             if (this.hasInheritedFeatures) { %>
               <p class="feature-type-heading">Inherited <%=this.featureName()%>:</p>

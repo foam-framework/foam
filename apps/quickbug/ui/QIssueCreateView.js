@@ -2,6 +2,12 @@ MODEL({
   name: 'QIssueCreateView',
   extendsModel: 'DetailView',
 
+  requires: [
+    'AutocompleteView',
+    'LabelAutocompleteView',
+    'StatusAutocompleteView'
+  ],
+
   properties: [
     {
       name: 'model',

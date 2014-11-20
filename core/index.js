@@ -34,14 +34,14 @@
 /** Plan indicating that there are no matching records. **/
 var NOT_FOUND = {
   cost: 0,
-  execute: function() {},
+  execute: function(_, sink, _) { return anop; },
   toString: function() { return "no-match(cost=0)"; }
 };
 
 /** Plan indicating that an index has no plan for executing a query. **/
 var NO_PLAN = {
   cost: Number.MAX_VALUE,
-  execute: function() {},
+  execute: function() { return anop; },
   toString: function() { return "no-plan"; }
 };
 
@@ -59,6 +59,7 @@ var ValueIndex = {
              cost: 1,
              execute: function(s, sink) {
                sink.put(s);
+               return anop;
              },
              toString: function() { return 'unique'; }
            };
@@ -394,12 +395,12 @@ var TreeIndex = {
 
     if ( query === FALSE ) return NOT_FOUND;
 
-    if ( ! query && sink.model_ === CountExpr ) {
+    if ( ! query && CountExpr.isInstance(sink) ) {
       var count = this.size(s);
       //        console.log('**************** COUNT SHORT-CIRCUIT ****************', count, this.toString());
       return {
         cost: 0,
-        execute: function(unused, sink, options) { sink.count += count; },
+        execute: function(unused, sink, options) { sink.count += count; return anop; },
         toString: function() { return 'short-circuit-count(' + count + ')'; }
       };
     }
@@ -409,16 +410,16 @@ var TreeIndex = {
     var isExprMatch = function(model) {
       if ( query ) {
 
-        if ( query.model_ === model && query.arg1 === prop ) {
+        if ( model.isInstance(query) && query.arg1 === prop ) {
           var arg2 = query.arg2;
           query = undefined;
           return arg2;
         }
 
-        if ( query.model_ === AndExpr ) {
+        if ( AndExpr.isInstance(query) ) {
           for ( var i = 0 ; i < query.args.length ; i++ ) {
             var q = query.args[i];
-            if ( q.model_ === model && q.arg1 === prop ) {
+            if ( model.isInstance(q) && q.arg1 === prop ) {
               query = query.clone();
               query.args[i] = TRUE;
               query = query.partialEval();
@@ -471,9 +472,11 @@ var TreeIndex = {
       return {
         cost: 1 + cost,
         execute: function(s2, sink, options) {
+          var pars = [];
           for ( var i = 0 ; i < subPlans.length ; i++ ) {
-            subPlans[i].execute(results[i], sink, newOptions);
+            pars.push(subPlans[i].execute(results[i], sink, newOptions));
           }
+          return apar.apply(null, pars);
         },
         toString: function() {
           return 'IN(key=' + prop.name + ', size=' + results.length + ')';
@@ -500,7 +503,7 @@ var TreeIndex = {
       return {
         cost: 1 + subPlan.cost,
         execute: function(s2, sink, options) {
-          subPlan.execute(result, sink, newOptions);
+          return subPlan.execute(result, sink, newOptions);
         },
         toString: function() {
           return 'lookup(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ') ' + subPlan.toString();
@@ -611,6 +614,8 @@ var TreeIndex = {
             index.select(s, sink, options) ;
           index.selectCount--;
         }
+
+        return anop;
       },
       toString: function() { return 'scan(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ')'; }
     };
@@ -773,7 +778,7 @@ var AltIndex = {
 
     return {
       __proto__: bestPlan,
-      execute: function(unused, sink, options) { bestPlan.execute(s[bestPlanI], sink, options); }
+      execute: function(unused, sink, options) { return bestPlan.execute(s[bestPlanI], sink, options); }
     };
   },
 
@@ -792,7 +797,7 @@ var mLangIndex = {
       mlang: mlang,
       PLAN: {
         cost: 0,
-        execute: function(s, sink, options) { sink.copyFrom(s); },
+        execute: function(s, sink, options) { sink.copyFrom(s); return anop; },
         toString: function() { return 'mLangIndex(' + this.s + ')'; }
       }
     };
@@ -827,7 +832,7 @@ var mLangIndex = {
     // console.log('s');
     if ( options && options.query ) return NO_PLAN;
 
-    if ( sink.model_ && s.model_ === sink.model_ && s.arg1 === sink.arg1 ) {
+    if ( sink.model_ && sink.model_.isInstance(s) && s.arg1 === sink.arg1 ) {
       this.PLAN.s = s;
       return this.PLAN;
     }
@@ -1064,13 +1069,19 @@ var MDAO = Model.create({
       if ( DescribeExpr.isInstance(sink) ) {
         var plan = this.index.plan(this.root, sink.arg1, options);
         sink.plan = 'cost: ' + plan.cost + ', ' + plan.toString();
-      } else {
-        var plan = this.index.plan(this.root, sink, options);
-        plan.execute(this.root, sink, options);
+        sink && sink.eof && sink.eof();
+        return aconstant(sink);
       }
 
-      sink && sink.eof && sink.eof();
-      return aconstant(sink);
+      var plan = this.index.plan(this.root, sink, options);
+
+      var future = afuture();
+      plan.execute(this.root, sink, options)(
+        function(ret) {
+          sink && sink.eof && sink.eof();
+          future.set(sink)
+        });
+      return future.get;
     },
 
     toString: function() {

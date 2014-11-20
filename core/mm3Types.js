@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 var StringProperty = Model.create({
   extendsModel: 'Property',
 
@@ -104,13 +105,17 @@ var BooleanProperty = Model.create({
       help: 'The protobuf tag number for this field.'
     },
     {
-      name: 'fromElement',
-      defaultValue: function(e) {
-        var txt = e.innerHTML.trim();
-        return txt.equalsIC('y') || txt.equalsIC('yes') || txt.equalsIC('true') || txt.equalsIC('t');
-      }
+      name: 'fromString',
+      defaultValue: function(s, p) {
+        var txt = s.trim();
+        this[p.name] =
+          txt.equalsIC('y')    ||
+          txt.equalsIC('yes')  ||
+          txt.equalsIC('true') ||
+          txt.equalsIC('t');
+      },
+      help: 'Function to extract value from a String.'
     }
-
   ]
 });
 
@@ -271,11 +276,12 @@ var IntProperty = Model.create({
   ]
 });
 
+
 var FloatProperty = Model.create({
   extendsModel: 'Property',
 
   name:  'FloatProperty',
-  help:  "Describes a properties of type Float.",
+  help:  'Describes a properties of type Float.',
 
   properties: [
     {
@@ -354,10 +360,10 @@ var FunctionProperty = Model.create({
     },
     {
       name: 'fromElement',
-      defaultValue: function(e) {
+      defaultValue: function(e, p) {
         var txt = e.innerHTML.trim();
 
-        return txt.startsWith('function') ?
+        this[p.name] = txt.startsWith('function') ?
           eval('(' + txt + ')') :
           new Function(txt) ;
       }
@@ -392,6 +398,14 @@ var ArrayProperty = Model.create({
       help: 'The FOAM type of this property.'
     },
     {
+      name: 'singular',
+      type: 'String',
+      displayWidth: 70,
+      defaultValueFn: function() { return this.name.replace(/s$/, ''); },
+      help: 'The plural form of this model\'s name.',
+      documentation: function() { /* The singular form of $$DOC{ref:'Property.name'}.*/}
+    },
+    {
       name: 'subType',
       type: 'String',
       displayWidth: 20,
@@ -407,21 +421,11 @@ var ArrayProperty = Model.create({
       defaultValue: function(_, a, prop) {
         var m = this.X[prop.subType] || GLOBAL[prop.subType];
 
+        // if ( ! Array.isArray(a) ) a = [a];  // ???: Is this a good idea?
         if ( ! m ) return a;
 
-        for ( var i = 0 ; i < a.length ; i++ ) {
-          // TODO: remove when 'redundant model_'s removed
-          /*
-            if ( a[i].model_ ) {
-            if ( a[i].model_ == prop.subType ) {
-            console.log('********* redundant model_ ', prop.subType)
-            } else {
-            console.log('*');
-            }
-            }
-          */
+        for ( var i = 0 ; i < a.length ; i++ )
           a[i] = a[i].model_ ? FOAM(a[i]) : m.create(a[i]);
-        }
 
         return a;
       }
@@ -467,6 +471,15 @@ var ArrayProperty = Model.create({
             configurable: true
           };
         });
+      }
+    },
+    {
+      name: 'fromElement',
+      defaultValue: function(e, p) {
+        var model = FOAM.lookup(e.getAttribute('model') || p.subType, this.X);
+        var o = model.create({}, this.X);
+        o.fromElement(e);
+        this[p.name] = this[p.name].pushF(o);
       }
     },
     {
@@ -548,6 +561,14 @@ var StringArrayProperty = Model.create({
       help: 'The FOAM type of this property.'
     },
     {
+      name: 'singular',
+      type: 'String',
+      displayWidth: 70,
+      defaultValueFn: function() { return this.name.replace(/s$/, ''); },
+      help: 'The plural form of this model\'s name.',
+      documentation: function() { /* The singular form of $$DOC{ref:'Property.name'}.*/}
+    },
+    {
       name: 'subType',
       type: 'String',
       displayWidth: 20,
@@ -587,6 +608,12 @@ var StringArrayProperty = Model.create({
     {
       name: 'exclusive',
       defaultValue: false
+    },
+    {
+      name: 'fromElement',
+      defaultValue: function(e, p) {
+        this[p.name] = this[p.name].pushF(e.innerHTML);
+      }
     }
   ]
 });
@@ -767,6 +794,12 @@ var ViewFactoryProperty = Model.create({
       preSet: function(_, f) { return ViewFactoryProperty.PRE_SET.defaultValue.call(this, null, f); }
     },
     {
+      name: 'fromElement',
+      defaultValue: function(e, p) {
+        this[p.name] = e.innerHTML_ || ( e.innerHTML_ = e.innerHTML );
+      }
+    },
+    {
       name: 'preSet',
       doc: "Can be specified as either a function, a Model, a Model path, or a JSON object.",
       defaultValue: function(_, f) {
@@ -792,11 +825,11 @@ var ViewFactoryProperty = Model.create({
               // template is async.  Should create a FutureView to handle this.
               arequireModel(viewModel);
             }
-            return viewModel.create.bind(viewModel);
+            return function(args, X) { return viewModel.create(args, X || this.X); };
           }
 
           return function(map, opt_X) {
-            return FOAM.lookup(f, opt_X || this.X).create(map);
+            return FOAM.lookup(f, opt_X || this.X).create(map, opt_X || this.X);
           }.bind(this);
         }
 

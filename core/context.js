@@ -15,6 +15,22 @@
  * limitations under the License.
  */
 
+/** Update a Context binding. **/
+function set(key, value) {
+  // It looks like the chrome debug console is overwriting sub.window
+  // but this prevents it.
+  Object.defineProperty(
+    this,
+    key,
+    {
+      value: value,
+      writable: key !== 'window',
+      configurable: true
+    }
+  );
+}
+
+
 /** Create a sub-context, populating with bindings from opt_args. **/
 function sub(opt_args, opt_name) {
 //  var sub = Object.create(this);
@@ -22,17 +38,7 @@ function sub(opt_args, opt_name) {
 
   if ( opt_args ) for ( var key in opt_args ) {
     if ( opt_args.hasOwnProperty(key) ) {
-      // It looks like the chrome debug console is overwriting sub.window
-      // but this prevents it.
-      Object.defineProperty(
-        sub,
-        key,
-        {
-          value: opt_args[key],
-          writable: key !== 'window',
-          configurable: true
-        }
-      );
+      sub.set(key, opt_args[key]);
     }
   }
   if ( opt_name ) {
