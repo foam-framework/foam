@@ -46,8 +46,8 @@ var FObject = {
       }
     }
 
-    if ( this.exportKeys )
-      for ( var i = 0 ; i < this.exportKeys.length ; i++ ) o.X[o.exportKeys[i]] = o;
+    if ( this.model_.exportKeys )
+      for ( var i = 0 ; i < this.model_.exportKeys.length ; i++ ) o.X[this.model_.exportKeys[i]] = o;
 
     if ( typeof args === 'object' ) o.copyFrom(args);
 
