@@ -248,14 +248,21 @@ MODEL({
   properties: [
     {
       name: 'start',
-      type: 'diagram.LinkPoint',
-      documentation: function () {/* The starting point of the link. */},
+      type: 'diagram.LinkPoint[]',
+      documentation: function () {/* The potential starting points of the link. */},
     },
     {
       name: 'end',
-      type: 'diagram.LinkPoint',
-      documentation: function () {/* The starting point of the link. */},
+      type: 'diagram.LinkPoint[]',
+      documentation: function () {/* The potential ending points of the link. */},
+    },
+    {
+      name: 'style',
+      type: 'String',
+      defaultValue: 'manhattan',
+      documentation: function () {/* The connector style. Choose from manhattan. */},
     }
+
   ],
 
   methods: {
@@ -265,12 +272,62 @@ MODEL({
       var c = this.canvas;
       c.save();
 
-      c.moveTo(this.start.x, this.start.y);
-      c.lineTo(this.end.x, this.end.y);
-      c.stroke();
+      var points = this.selectBestPoints();
+
+      if (this.style.toLower() === 'manhattan')
+      {
+        c.moveTo(points.start.x, points.start.y);
+        c.lineTo(points.end.x, points.end.y);
+        c.stroke();
+      }
 
       c.restore();
+    },
+
+    selectBestPoints: function() {
+      /* For each starting point, find the closest ending point.
+        Take the smallest link distance. */
+      var self = this;
+      var BIG_VAL = 999999999;
+
+      // comparators use manhattan length + reject points in non-optimal directions
+      var comparators = {
+        left: function(startPt, endPt) {
+          return ((endPt.x < startPt.x)? startPt.x - endPt.x : BIG_VAL)
+              + Math.abs(startPt.y-endPt.y);
+        },
+        right: function(startPt, endPt) {
+          return ((endPt.x > startPt.x)? endPt.x - startPt.x : BIG_VAL)
+              + Math.abs(startPt.y-endPt.y);
+        },
+        top: function(startPt, endPt) {
+          return ((endPt.y < startPt.y)? startPt.y - endPt.y : BIG_VAL)
+              + Math.abs(startPt.x-endPt.x);
+        },
+        bottom: function(startPt, endPt) {
+          return ((endPt.y > startPt.y)? endPt.y - startPt.y : BIG_VAL)
+              + Math.abs(startPt.x-endPt.x);
+        },
+
+      };
+
+      var smallest = BIG_VAL;
+      var smallestStart;
+      var smallestEnd;
+      self.start.forEach(function(start) {
+        self.end.forEach(function(end) {
+          var dist = comparators[start.side](start,end);
+          if (dist < smallest) {
+            dist = smallest;
+            smallestStart = start;
+            smallestEnd = end;
+          }
+        });
+      });
+
+      return { start: smallestStart, end: smallestEnd }
     }
+
   }
 
 });
