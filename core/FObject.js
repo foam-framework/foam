@@ -34,7 +34,7 @@ var FObject = {
     o.X = (opt_X || X).sub({});
 
     if ( this.model_.imports && this.model_.imports.length ) {
-      if ( ! this.imports_ ) {
+      if ( ! Object.prototype.hasOwnProperty.call(this, 'imports_') ) {
         this.imports_ = this.model_.imports.map(function(e) {
           var s = e.split(' as ');
           return [s[0], s[1] || s[0]];
