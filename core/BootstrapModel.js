@@ -87,7 +87,7 @@ var BootstrapModel = {
 
     function addTraitToModel(traitModel, parentModel) {
       var name = (parentModel.id? parentModel.id.replace('.','__') : "")
-                  + '_ExtendedWith_' + 
+                  + '_ExtendedWith_' +
                    (traitModel.id? traitModel.id.replace('.','__') : "");
 
       if ( ! FOAM.lookup(name) ) {
@@ -124,7 +124,7 @@ var BootstrapModel = {
     // Install a custom constructor so that Objects are named properly
     // in the JS memory profiler.
     // Doesn't work for Model because of some Bootstrap ordering issues.
-    if ( this.name !== 'Model' && ! ( window.chrome && chrome.runtime && chrome.runtime.id ) ) {
+    if ( this.name && this.name !== 'Model' && ! ( window.chrome && chrome.runtime && chrome.runtime.id ) ) {
       var s = '(function() { var XXX = function() { }; XXX.prototype = this; return function() { return new XXX(); }; })'.replace(/XXX/g, this.name);
       try { cls.create_ = eval(s).call(cls); } catch (e) { }
     }
@@ -285,7 +285,10 @@ var BootstrapModel = {
     // add constants
     for ( var key in this.constants ) {
       var c = this.constants[key];
-      if ( Constant && Constant.isInstance(c) ) {
+      if ( Constant ) {
+        if ( ! Constant.isInstance(c) ) {
+          c = this.constants[key] = Constant.create(c);
+        }
         // TODO(kgr): only add to Proto when Model cleanup done.
         Object.defineProperty(cls, c.name, {value: c.value});
         Object.defineProperty(this, c.name, {value: c.value});
