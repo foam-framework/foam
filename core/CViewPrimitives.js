@@ -45,11 +45,9 @@ MODEL({
         // listen for changes to child layout constraints
         if (child.horizontalConstraints) {
           child.horizontalConstraints.subscribe(['layout'], this.performLayout);
-          child.horizontalConstraints.preferred$.addListener(this.updatePreferredSize);
         }
         if (child.verticalConstraints) {
           child.verticalConstraints.subscribe(['layout'], this.performLayout);
-          child.verticalConstraints.preferred$.addListener(this.updatePreferredSize);
         }
 
       },

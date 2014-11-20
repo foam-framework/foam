@@ -290,6 +290,14 @@ MODEL({
       type: 'String', // TODO: should be ENUM
       defaultValue: 'horizontal',
       documentation: function() {/* Set to 'horizontal' or 'vertical'. */},
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'fitContents',
+      defaultValue: false,
+      documentation: function() {/* If set to true, the layout will set
+          its own min and max constraints by the sum of the content. */},
+      postSet: function() { this.calculatePreferredSize(); }
     }
   ],
   listeners: [
@@ -486,40 +494,55 @@ MODEL({
     },
     calculatePreferredSize: function() { /* Find the size of layout that accomodates all items
                                             at their preferred sizes. */
+      var self = this;
+      var syncConstraints = ['preferred'];
+
+      if (this.fitContents) { // sync all if fitting to contents
+        syncConstraints = ['min','max','preferred'];
+      }
+
       // no children, zero
-      if (this.children.length <= 0) {
+      if (self.children.length <= 0) {
         // apply if valid for our layout item traits
-        if (this.horizontalConstraints) this.horizontalConstraints.preferred = 0;
-        if (this.verticalConstraints) this.verticalConstraints.preferred = 0;
+        if (self.horizontalConstraints) self.horizontalConstraints.preferred = 0;
+        if (self.verticalConstraints) self.verticalConstraints.preferred = 0;
         return;
       }
 
-      var constraintsF = Function("item", "return item."+ this.orientation+"Constraints");
+      var constraintsF = Function("item", "return item."+ self.orientation+"Constraints");
       var opposedConstraintsF = Function("item", "return item."+ 
-                                         ((this.orientation === 'horizontal')? 'vertical':'horizontal')
+                                         ((self.orientation === 'horizontal')? 'vertical':'horizontal')
                                          +"Constraints");
       var boundedF = function(val, constraints) { 
         return (constraints.min$Pix && val < constraints.min$Pix)? constraints.min$Pix :
                (constraints.max$Pix && val > constraints.max$Pix)? constraints.max$Pix :
                val;
       }
-      var parentSizeF = Function("item", "return item."+ 
-                      (this.orientation==='horizontal'? "width" : "height"));
-      var sz = parentSizeF(this);      
+
+      var sz = self.orientation==='horizontal'? self.width : self.height;
+      var opposedSz = self.orientation==='horizontal'? self.height : self.width;
 
       // sum up preferred sizes
-      var totalSize = 0;
-      var largestOpposedAxisPreferred = 0;
-      this.children.forEach(function(child) {
+      var totalSizes = { min:0, max: sz, preferred: 0 };
+      var opposedTotalSizes = { min:0, max: opposedSz, preferred: 0 };
+      self.children.forEach(function(child) {
         constraintsF(child).setTotalSize(sz); // for percentages
-        totalSize += boundedF(constraintsF(child).preferred$Pix, constraintsF(child));
-        // also find the largest preferred size on our non-layout axis
-        var oaPref = opposedConstraintsF(child)? opposedConstraintsF(child).preferred$Pix : 0;
-        if (oaPref > largestOpposedAxisPreferred) largestOpposedAxisPreferred = oaPref;
+        opposedConstraintsF(child).setTotalSize(opposedSz);
+
+        syncConstraints.forEach(function(cnst) {
+          totalSizes[cnst] += constraintsF(child)[cnst+'$Pix'];
+          // find smallest for min
+          if ((cnst==='max' && (opposedConstraintsF(child)[cnst+'$Pix'] < opposedTotalSizes[cnst]))
+             || (cnst!=='max' && (opposedConstraintsF(child)[cnst+'$Pix'] > opposedTotalSizes[cnst]))) {
+            opposedTotalSizes[cnst] = opposedConstraintsF(child)[cnst+'$Pix'];
+          }
+        });
       });
       // apply if valid for our layout item traits
-      if (constraintsF(this)) constraintsF(this).preferred = totalSize;
-      if (opposedConstraintsF(this)) opposedConstraintsF(this).preferred = largestOpposedAxisPreferred;
+      syncConstraints.forEach(function(cnst) {
+        if (constraintsF(self)) constraintsF(self)[cnst] = totalSizes[cnst];
+        if (opposedConstraintsF(self)) opposedConstraintsF(self)[cnst] = opposedTotalSizes[cnst];
+      });
     }
   }
 });
