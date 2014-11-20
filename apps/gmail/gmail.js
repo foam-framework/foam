@@ -240,7 +240,7 @@ MODEL({
     changeLabel: function(label) {
       if (label) {
         this.controller.q = 'l:' + label.id;
-        this.controller.name = label.name;
+        this.controller.name = label.label;
       } else {
         this.controller.q = '';
         this.controller.name = 'All Mail';
