@@ -300,7 +300,9 @@ MODEL({
       name:   '$',
       hidden: true,
       mode:   "read-only",
-      getter: function() { return $(this.id); },
+      getter: function() {
+        return this.instance_.$ ? this.instance_.$ : this.instance_.$ = $(this.id);
+      },
       help:   'DOM Element.'
     },
     {
