@@ -51,27 +51,143 @@ MODEL({
   }
 });
 
-
+MODEL({
+  name: 'ParentageListener',
+  documentation: "Tracks changes in a parent chain and runs bind/unbind functions as parents enter or leave.",
+  package: 'diagram',
+  
+  properties: [
+    {
+      name: 'data',
+      preSet: function(old,nu) {
+        // new data, so clean out all old parents
+        if (this.boundParents_) this.removeParents(this.boundParents_);
+        return nu;
+      },
+      postSet: function() { 
+        // bind parents, add listeners for parent changes
+        this.updateChain();
+      },
+    },
+    {
+      name: 'bindFn',
+      type: 'Function',
+      preSet: function(old,nu) {  
+        if (nu && this.boundParents_) {
+          this.boundParents_.map(nu);
+        }
+        return nu;
+      },      
+    },
+    {
+      name: 'unbindFn',
+      type: 'Function',
+    },
+    {
+      name: 'boundParents_',
+      hidden: true,
+      documentation: "The items we have bound to, for later cleanup",
+      //factory: function() { return []; }
+    }
+  ],
+  methods: {
+    removeParents: function(pList) {
+      pList.clone().forEach(function(p) {
+        p.parent$.removeListener(this.updateChain);
+        if (this.unbindFn) this.unbindFn(p);
+        this.boundParents_.remove(p);
+        // don't recurse here since we already know exactly what we've bound to,
+        //  and parentage may have changed
+      }.bind(this));
+    },
+    addParent: function(p) {
+      if (this.boundParents_.indexOf(p) === -1) { // we don't already have it
+        if (this.bindFn) this.bindFn(p);
+        p.parent$.addListener(this.updateChain);
+        this.boundParents_.push(p);
+        
+        // recurse on parents of p
+        if (p.parent) this.addParent(p.parent);
+      }
+    }
+  },
+  listeners: [
+    {
+      name: 'updateChain',
+      isFramed: true,
+      code: function() {
+        if (!this.boundParents_) this.boundParents_ = [].clone();
+        // brute force: remove all, redo parent chain
+        this.removeParents(this.boundParents_);
+        this.addParent(this.data);
+      }
+    }
+  ]
+  
+});
 
 MODEL({
   name: 'LinkPoint',
   package: 'diagram',
   //extendsModel: 'canvas.Point', // screws up ids
 
+  requires: ['diagram.ParentageListener as ParentageListener'],
+
   ids: ['owner','name','side'],
 
   properties: [
     {
+      name: 'parentage',
+      type: 'ParentageListener',
+      factory: function() {
+        return this.ParentageListener.create({ bindFn: this.bindXY, unbindFn: this.unbindXY, data: this.owner });
+      }
+    },
+    {
       name: 'side',
       type: 'String',
-      defaultValue: 'right' // left, top, bottom, right
+      defaultValue: 'right', // left, top, bottom, right
+      postSet: function() { this.updatePosition(); },
     },
     {
       name: 'name',
       type: 'String'
     },
     {
-      name: 'owner'
+      name: 'owner',
+      preSet: function(old,nu) { this.unbindPositioning(); return nu; },
+      postSet: function() { this.bindPositioning(); }
+    },
+    {
+      name: 'positioningFunction',
+      type: 'Function',
+      postSet: function() { this.updatePosition(); },
+      documentation: function() {/* The function to position this point inside the $$DOC{ref:'.owner'}.
+            Parameters (self, container) are passed in to avoid binding confusion with <code>this</code>. 
+            The default implementation positions the point based on $$DOC{ref:'.side'}. */},
+      defaultValue: function(self, container) {
+        if(self.side === 'top') {
+          self.x = (0 + container.width / 2);
+          self.y = (0);
+          container.mapToCanvas(self);                    
+        } else
+        if(self.side === 'bottom') {
+          self.x = (0 + container.width / 2);
+          self.y = (0 + container.height);
+          container.mapToCanvas(self);
+        } else
+        if(self.side === 'left') {
+          self.x = (0);
+          self.y = (0 + container.height/2);
+          container.mapToCanvas(self);
+        } else           
+        if(self.side === 'right') {
+          self.x = (0 + container.width);
+          self.y = (0 + container.height/2);
+          container.mapToCanvas(self);
+        }
+                          
+      }
     },
     {
       model_: 'IntProperty',
@@ -82,9 +198,59 @@ MODEL({
       model_: 'IntProperty',
       name: 'y',
       defaultValue: 0
-    }
-  ]
+    },
+
+  ],
   
+  methods: {
+    bindPositioning: function() {
+        
+      if (!this.owner || !this.positioningFunction) return;
+      
+      // listen for changes to the owner width, height
+      this.owner.width$.addListener(this.updatePosition); 
+      this.owner.height$.addListener(this.updatePosition); 
+
+      // bindXY on owner and its parents  
+      this.parentage.data = this.owner;       
+    },
+    unbindPositioning: function() {
+      
+      if (this.owner) {
+        // unlisten for changes to the owner 
+        this.owner.width$.removeListener(this.updatePosition); 
+        this.owner.height$.removeListener(this.updatePosition);         
+      }
+      
+      //TODO: for now reset totally, but this is not necessary when changing data from one item to another
+      this.parentage.data = undefined;
+    }    
+  },
+  
+  listeners: [
+    {
+      name: 'updatePosition',
+      isFramed: true,
+      code: function() {
+        this.positioningFunction(this, this.owner);
+      }
+    },
+    {
+      name: 'bindXY',
+      code: function(target) {
+        target.x$.addListener(this.updatePosition);
+        target.y$.addListener(this.updatePosition);
+      }
+    },
+    {
+      name: 'unbindXY',
+      code: function(target) {        
+        target.x$.removeListener(this.updatePosition);
+        target.y$.removeListener(this.updatePosition);
+      }
+    },
+    
+  ]
 });
 
 
@@ -126,47 +292,27 @@ MODEL({
     addLinkPoints: function() {
       {
         // make four points at our edges
-        var pt1 = this.LinkPoint.create({owner: this, name: '1'});
-        pt1.side = 'top';
-        Events.dynamic(function() { this.x; this.y; this.width; this.height; }.bind(this),
-                       function() { pt1.x = (0 + this.width / 2);
-                                    pt1.y = (0);
-                                    this.mapToCanvas(pt1);
-                                  }.bind(this) )
+        var pt1 = this.LinkPoint.create({owner: this, name: '1', side: 'top'});
+        
         this.linkPoints.push(pt1);
         this.myLinkPoints.push(pt1);
         
       }
       {
-        var pt2 = this.LinkPoint.create({owner: this, name: '2'});
-        pt2.side = 'bottom';
-        Events.dynamic(function() { this.x; this.y; this.width; this.height; }.bind(this),
-                       function() { pt2.x = (0 + this.width / 2);
-                                    pt2.y = (0 + this.height);
-                                    this.mapToCanvas(pt2);
-                                  }.bind(this) )
+        var pt2 = this.LinkPoint.create({owner: this, name: '2', side: 'bottom'});
+        
         this.linkPoints.push(pt2);
         this.myLinkPoints.push(pt2);
       }
       {
-        var pt3 = this.LinkPoint.create({owner: this, name: '3'});
-        pt3.side = 'left';
-        Events.dynamic(function() { this.x; this.y; this.height; this.width; }.bind(this),
-                       function() { pt3.x = (0);
-                                    pt3.y = (0 + this.height/2);
-                                    this.mapToCanvas(pt3);
-                                  }.bind(this) )
+        var pt3 = this.LinkPoint.create({owner: this, name: '3', side: 'left'});
+        
         this.linkPoints.push(pt3);
         this.myLinkPoints.push(pt3);
       }
       {
-        var pt4 = this.LinkPoint.create({owner: this, name: '4'});
-        pt4.side = 'right';
-        Events.dynamic(function() { this.x; this.y; this.height; this.width; }.bind(this),
-                       function() { pt4.x = (0 + this.width);
-                                    pt4.y = (0 + this.height/2);
-                                    this.mapToCanvas(pt4);
-                                  }.bind(this) )
+        var pt4 = this.LinkPoint.create({owner: this, name: '4', side: 'right'});
+        
         this.linkPoints.push(pt4);
         this.myLinkPoints.push(pt4);
       }
@@ -228,24 +374,14 @@ MODEL({
     // TODO: account for movement that changes our parent but not our x,y,width,height
     addLinkPoints: function() {
       {
-        var pt3 = this.LinkPoint.create({owner: this, name: '3'});
-        pt3.side = 'left';
-        Events.dynamic(function() { this.x; this.y; this.height; this.width; }.bind(this),
-                       function() { pt3.x = (0);
-                                    pt3.y = (0 + this.height/2);
-                                    this.mapToCanvas(pt3);
-                                  }.bind(this) )
+        var pt3 = this.LinkPoint.create({owner: this, name: '3', side:'left'});
+        
         this.linkPoints.push(pt3);
         this.myLinkPoints.push(pt3);
       }
       {
-        var pt4 = this.LinkPoint.create({owner: this, name: '4'});
-        pt4.side = 'right';
-        Events.dynamic(function() { this.x; this.y; this.height; this.width; }.bind(this),
-                       function() { pt4.x = (0 + this.width);
-                                    pt4.y = (0 + this.height/2);
-                                    this.mapToCanvas(pt4);
-                                  }.bind(this) )
+        var pt4 = this.LinkPoint.create({owner: this, name: '4', side:'right'});
+        
         this.linkPoints.push(pt4);
         this.myLinkPoints.push(pt4);
       }
@@ -294,7 +430,6 @@ MODEL({
 
       if (this.style === 'manhattan')
       {
-console.log('paint ', points.start.side, points.end.side);
         c.moveTo(points.start.x, points.start.y);
         c.lineTo(points.end.x, points.end.y);
         c.stroke();
@@ -308,27 +443,6 @@ console.log('paint ', points.start.side, points.end.side);
         Take the smallest link distance. */
       var self = this;
       var BIG_VAL = 999999999;
-
-      // comparators use manhattan length + reject points in non-optimal directions
-      // var comparators = {
-      //   left: function(startPt, endPt) {
-      //     return (Math.abs(startPt.x - endPt.x)
-      //         + Math.abs(startPt.y-endPt.y);
-      //   },
-      //   right: function(startPt, endPt) {
-      //     return ((endPt.x > startPt.x)? endPt.x - startPt.x : BIG_VAL)
-      //         + Math.abs(startPt.y-endPt.y);
-      //   },
-      //   top: function(startPt, endPt) {
-      //     return ((endPt.y < startPt.y)? startPt.y - endPt.y : BIG_VAL)
-      //         + Math.abs(startPt.x-endPt.x);
-      //   },
-      //   bottom: function(startPt, endPt) {
-      //     return ((endPt.y > startPt.y)? endPt.y - startPt.y : BIG_VAL)
-      //         + Math.abs(startPt.x-endPt.x);
-      //   },
-      //
-      // };
 
       var smallest = BIG_VAL;
       var smallestStart;

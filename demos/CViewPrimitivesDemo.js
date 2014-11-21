@@ -17,8 +17,11 @@
 var canv = X.diagram.Diagram.create({width: 1000, height: 300});
 canv.write(document);
 
-var outerLayout = X.canvas.LinearLayout.create({});
+var outerLayout = X.canvas.LinearLayout.create({ width : 500, height: 300});
 canv.addChild(outerLayout);
+
+var spacer1e = X.canvas.Spacer.create({});
+outerLayout.addChild(spacer1e);
 
 var view = X.canvas.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
 outerLayout.addChild(view);
@@ -30,10 +33,7 @@ MODEL({
 
 });
 
-var spacer1 = X.canvas.Spacer.create({
-  fixedHeight: 20,
-  fixedWidth: 30
-});
+var spacer1 = X.canvas.Spacer.create({});
 view.addChild(spacer1);
 
 var block1 = X.diagram.Block.create({
@@ -44,7 +44,14 @@ var block1 = X.diagram.Block.create({
        width: 120,
        height: 30,
   
-}, canv.X);
+}, canv.X); 
+block1.horizontalConstraints.min = 50;
+block1.horizontalConstraints.max = 50;
+block1.verticalConstraints.min = 100;
+block1.verticalConstraints.max = 100;
+
+view.addChild(block1);
+
 var sect1 = X.diagram.Section.create({
   title: 'A Model'
 }, canv.X);
@@ -55,7 +62,7 @@ var sect2 = X.diagram.Section.create({
 }, canv.X);
 block1.addChild(sect2);
 
-view.addChild(block1);
+
 
 
 var spacer1b = X.canvas.Spacer.create({
@@ -84,7 +91,7 @@ var rect3 = X.canvas.Rectangle.create({
        border: 'red',
        width: 120,
        height: 30,
-  
+
 });
 view.addChild(rect3);
 
@@ -102,7 +109,7 @@ var block2 = X.diagram.Block.create({
        background: 'white',
        width: 120,
        height: 50,
-  
+
 }, canv.X);
 var block2Margin = X.canvas.Margin.create({ left: 20, top: 8, bottom: 8, right: 30, height: 80});
 block2Margin.addChild(block2);
@@ -139,7 +146,7 @@ Events.dynamic(function() { mouse.x; mouse.y; }, function() {
 
 ///////////////////Editors
 
-var editors = [block2, sect1b, sect2b];
+var editors = [block2, block2Margin, sect1b, sect2b, outerLayout];
 
 editors.forEach(function(thing) {
   var editor = X.DetailView.create({ data: thing});
@@ -147,50 +154,4 @@ editors.forEach(function(thing) {
 
 });
 
-//var editor1b = X.DetailView.create({ data: spacer1 });
-//editor1b.write(document);
-
-//var editor2 = X.DetailView.create({ data: label1});
-//editor2.write(document);
-
-//var editor3 = X.DetailView.create({ data: rect3});
-//editor3.write(document);
-
-//var editor4 = X.DetailView.create({ data: block2});
-//editor4.write(document);
-//var editor4b = X.DetailView.create({ data: block2Margin});
-//editor4b.write(document);
-
-//var editorV = X.DetailView.create({data: view});
-//editorV.write(document);
-
-// var label = X.canvas.Label.create({
-//      x: 20,
-//      y: 20,
-//      color: 'black',
-//      width: 100,
-//      height: 30,
-//      text: "hello world",
-//      font: "12pt Roboto"
-//    });
-// var box = X.canvas.Rectangle.create({
-//     x: 10,
-//     y: 10,
-//     color: '#ff00ff',
-//     width: 100,
-//     height: 20,
-//     border: "blue"
-//   });
-//
-// var circle = X.Circle2.create({
-//    x: 10,
-//    y: 10,
-//    color: 'red',
-//    radius: 20,
-//
-//  });
-//
-// view.addChild(box);
-// view.addChild(circle);
-// view.addChild(label);
 

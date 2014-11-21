@@ -36,43 +36,42 @@ MODEL({
       name: 'install',
       defaultValue: function(prop) {
         // define a shared 'total size' property
-        //if (!this.hasOwnProperty(constraintValue_TotalSize_)) {
-          this.defineProperty(
-            {
-              model_: 'IntProperty',
-              name: 'constraintValue_TotalSize_',
-              defaultValue: 0,
-              hidden: true,
-              documentation: function() { /* This is set by the layout implementation before
-                performing a layout operation. */ },
-            }
-          );
-        //}
-
-        defineLazyProperty(this, prop.name+"$Pix", function() {
-          // clear $Pix when total size or value changes
-          this.constraintValue_TotalSize_$.addListener(function() {
-            this.instance_[prop.name+"$Pix"] = undefined;
-          }.bind(this));
-          this[prop.name+"$"].addListener(function() {
-            this.instance_[prop.name+"$Pix"] = undefined;
-          }.bind(this));
-
-          return {
-            get: function() {
-              if (!this.instance_[prop.name+"$Pix"]) {
-                var propVal = this[prop.name];
-                if ((typeof propVal === 'string' && propVal.indexOf('%') !== -1)) {
-                  this.instance_[prop.name+"$Pix"] = (parseInt(propVal.replace('%','') || 0) / 100) * this.constraintValue_TotalSize_;
-                } else {
-                  this.instance_[prop.name+"$Pix"] = parseInt(propVal || 0)
-                }
-              }
-              return this.instance_[prop.name+"$Pix"];
-            }.bind(this),
-            configurable: true
+        this.defineProperty(
+          {
+            model_: 'IntProperty',
+            name: 'constraintValue_TotalSize_',
+            defaultValue: 0,
+            hidden: true,
+            documentation: function() { /* This is set by the layout implementation before
+              performing a layout operation. */ },
           }
-        });
+        );
+
+        var pixFn = function(self, prop) {
+          var propVal = self[prop.name];
+          if ((typeof propVal === 'string' && propVal.indexOf('%') !== -1)) {
+            return (parseInt(propVal.replace('%','') || 0) / 100) * self.constraintValue_TotalSize_;
+          } else {
+            return parseInt(propVal || 0)
+          }
+        }
+        
+        this.defineProperty(
+          {
+            model_: 'IntProperty',
+            name: prop.name+"$Pix",
+            defaultValue: 0,
+            hidden: true,
+            documentation: function() { /* The calculated pixel size. */ },
+          }
+        );
+        this.constraintValue_TotalSize_$.addListener(function(self, msg) {
+          self[prop.name+"$Pix"] = pixFn(self, prop);
+        }.bind(this));
+        this[prop.name+"$"].addListener(function(self, msg) {
+          self[prop.name+"$Pix"] = pixFn(self, prop);
+        }.bind(this));
+
 
       }
     }
@@ -290,6 +289,7 @@ MODEL({
       type: 'String', // TODO: should be ENUM
       defaultValue: 'horizontal',
       documentation: function() {/* Set to 'horizontal' or 'vertical'. */},
+      postSet: function()  { this.calculateLayout();  }
     },
     {
       model_: 'BooleanProperty',
@@ -438,6 +438,7 @@ MODEL({
           if (factor < 1) factor = 1;
           itemSizes[i] += modifyEachBy * factor;
           availableSpace -= modifyEachBy * factor;
+          
           if (sizeNotOkF(i, this.children[i])) { // if we hit the limit for this item
             return makeSizeOkF(i, this.children[i]);
           }
@@ -548,7 +549,6 @@ MODEL({
 });
 
 
-
 MODEL({
   name:  'MarginTrait',
   package: 'layout',
@@ -573,7 +573,11 @@ MODEL({
           name: 'data',
           documentation: function() {/* Overridden to introduce $$DOC{ref:'.addAmount'}. */},
           postSet: function() {
-            var mapFn = function(val) { return val + this.addAmount }.bind(this);
+            if (!this.data) return;
+            
+            var mapFn = function(val) { 
+              return val + this.addAmount 
+            }.bind(this);
 
             Events.map(this.data.preferred$Pix$, this.preferred$, mapFn);
             Events.map(this.data.max$Pix$, this.max$, mapFn);
@@ -622,26 +626,14 @@ MODEL({
       documentation: function() {/* Margin in pixels. */},
       defaultValue: 0
     },
-    {
-      name: 'horizontalConstraints',
-      documentation: function() {/* Horizontal layout constraints. Proxied from
-          the child. */},
-      factory: function() { /* override with our special proxy */
-        return this.X.canvas.Margin.MarginProxy.create();
-      }
-    },
-    {
-      name: 'verticalConstraints',
-      documentation: function() {/* Vertical layout constraints. Proxied from
-          the child. */},
-      factory: function() { /* override with our special proxy */
-        return this.X.canvas.Margin.MarginProxy.create();
-      }
-    }
+
   ],
   methods: {
     init: function() {
       this.SUPER();
+
+      this.horizontalConstraints = this.X.layout.MarginTrait.MarginProxy.create({},this.X);
+      this.verticalConstraints = this.X.layout.MarginTrait.MarginProxy.create({},this.X);
 
       Events.dynamic(
             function(){ this.top; this.left; this.right; this.bottom;
@@ -692,6 +684,7 @@ MODEL({
     },
   ]
 });
+
 
 
 
