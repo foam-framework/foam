@@ -1186,6 +1186,8 @@ function limitedDAO(count, dao) {
     }
   };
 }
+
+
 MODEL({
   name: 'LimitedDAO_',
   extendsModel: 'ProxyDAO',
@@ -1224,6 +1226,7 @@ MODEL({
   }
 });
 
+
 // deprecated. Use a SkipDAO_ instance instead.
 function skipDAO(skip, dao) {
   if ( skip !== Math.floor(skip) ) console.warn('skip() called with non-integer value: ' + skip);
@@ -1246,6 +1249,8 @@ function skipDAO(skip, dao) {
     }
   };
 }
+
+
 MODEL({
   name: 'SkipDAO_',
   extendsModel: 'ProxyDAO',
@@ -3413,7 +3418,7 @@ MODEL({
 
       this.SUPER(args);
 
-      if ( chrome.storage ) {
+      if ( window.chrome && chrome.storage ) {
         this.ALIASES.LOCAL = 'ChromeStorageDAO';
         this.ALIASES.SYNC  = 'ChromeSyncStorageDAO';
       }
@@ -3895,6 +3900,7 @@ MODEL({
     }
   ]
 });
+
 
 MODEL({
   name: 'ContextualizingDAO',
