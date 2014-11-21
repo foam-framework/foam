@@ -17,13 +17,13 @@
 var canv = X.diagram.Diagram.create({width: 1000, height: 300});
 canv.write(document);
 
-var outerLayout = X.canvas.LinearLayout.create({ width : 500, height: 300});
+var outerLayout = X.diagram.LinearLayout.create({ width : 500, height: 300});
 canv.addChild(outerLayout);
 
 var spacer1e = X.canvas.Spacer.create({});
 outerLayout.addChild(spacer1e);
 
-var view = X.canvas.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
+var view = X.diagram.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
 outerLayout.addChild(view);
 
 MODEL({
@@ -111,7 +111,7 @@ var block2 = X.diagram.Block.create({
        height: 50,
 
 }, canv.X);
-var block2Margin = X.canvas.Margin.create({ left: 20, top: 8, bottom: 8, right: 30, height: 80});
+var block2Margin = X.diagram.Margin.create({ left: 20, top: 8, bottom: 8, right: 30, height: 80});
 block2Margin.addChild(block2);
 outerLayout.addChild(block2Margin);
 

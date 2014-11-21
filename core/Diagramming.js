@@ -15,7 +15,44 @@
  * limitations under the License.
  */
 
+MODEL({
+  name: 'DiagramItemTrait',
+  package: 'diagram',
 
+  documentation: function() {/* This trait overrides $$DOC{ref:'.addChild'} and $$DOC{ref:'.removeChild'}
+       to introduce extra diagram-specific functionality. it is designed to work with $$DOC{ref:'CView2'}. */},
+
+  properties: [
+    {
+      model_: 'IntProperty',
+      name: 'globalX',
+      defaultValue: 0
+    },
+    {
+      model_: 'IntProperty',
+      name: 'globalY',
+      defaultValue: 0
+    },
+    {
+      name: 'parent',
+      postSet: function() {
+        if (this.dynamicListeners_ && this.dynamicListeners_.destroy) {
+          this.dynamicListeners_.destroy();
+        }
+        this.dynamicListeners_ = Events.dynamic(function() { 
+          this.globalX = this.parent.globalX + this.x;
+          this.globalY = this.parent.globalY + this.y;
+         }.bind(this))
+      }
+    },
+    {
+      name: 'dynamicListeners_',
+      hidden: true
+    }
+  ],
+  
+  
+});
 
 
 MODEL({
@@ -23,6 +60,7 @@ MODEL({
   package: 'diagram',
 
   extendsModel: 'CView2',
+  traits: ['diagram.DiagramItemTrait'],
 
   exports: ['linkPoints'],
 
@@ -36,6 +74,8 @@ MODEL({
   ],
 
   methods: {
+
+
     paint: function()  {
       this.SUPER();
 // DEBUG painting
@@ -74,7 +114,7 @@ MODEL({
       type: 'Function',
       preSet: function(old,nu) {  
         if (nu && this.boundParents_) {
-          this.boundParents_.map(nu);
+          this.boundParents_.map(nu); // we have items we're attached to, but didn't run bindFn on!
         }
         return nu;
       },      
@@ -131,23 +171,23 @@ MODEL({
   package: 'diagram',
   //extendsModel: 'canvas.Point', // screws up ids
 
-  requires: ['diagram.ParentageListener as ParentageListener'],
+//  requires: ['diagram.ParentageListener as ParentageListener'],
 
   ids: ['owner','name','side'],
 
   properties: [
-    {
-      name: 'parentage',
-      type: 'ParentageListener',
-      factory: function() {
-        return this.ParentageListener.create({ bindFn: this.bindXY, unbindFn: this.unbindXY, data: this.owner });
-      }
-    },
+    // {
+    //   name: 'parentage',
+    //   type: 'ParentageListener',
+    //   factory: function() {
+    //     return this.ParentageListener.create({ bindFn: this.bindXY, unbindFn: this.unbindXY, data: this.owner });
+    //   }
+    // },
     {
       name: 'side',
       type: 'String',
       defaultValue: 'right', // left, top, bottom, right
-      postSet: function() { this.updatePosition(); },
+      //postSet: function() { this.updatePosition(); },
     },
     {
       name: 'name',
@@ -158,37 +198,7 @@ MODEL({
       preSet: function(old,nu) { this.unbindPositioning(); return nu; },
       postSet: function() { this.bindPositioning(); }
     },
-    {
-      name: 'positioningFunction',
-      type: 'Function',
-      postSet: function() { this.updatePosition(); },
-      documentation: function() {/* The function to position this point inside the $$DOC{ref:'.owner'}.
-            Parameters (self, container) are passed in to avoid binding confusion with <code>this</code>. 
-            The default implementation positions the point based on $$DOC{ref:'.side'}. */},
-      defaultValue: function(self, container) {
-        if(self.side === 'top') {
-          self.x = (0 + container.width / 2);
-          self.y = (0);
-          container.mapToCanvas(self);                    
-        } else
-        if(self.side === 'bottom') {
-          self.x = (0 + container.width / 2);
-          self.y = (0 + container.height);
-          container.mapToCanvas(self);
-        } else
-        if(self.side === 'left') {
-          self.x = (0);
-          self.y = (0 + container.height/2);
-          container.mapToCanvas(self);
-        } else           
-        if(self.side === 'right') {
-          self.x = (0 + container.width);
-          self.y = (0 + container.height/2);
-          container.mapToCanvas(self);
-        }
-                          
-      }
-    },
+
     {
       model_: 'IntProperty',
       name: 'x',
@@ -199,31 +209,47 @@ MODEL({
       name: 'y',
       defaultValue: 0
     },
-
+    {
+      name: 'dynamicListeners_',
+      hidden: true
+    }
   ],
   
   methods: {
     bindPositioning: function() {
         
-      if (!this.owner || !this.positioningFunction) return;
+      if (!this.owner || !this.positioningFunctionX || !this.positioningFunctionY) 
+        return;
       
-      // listen for changes to the owner width, height
-      this.owner.width$.addListener(this.updatePosition); 
-      this.owner.height$.addListener(this.updatePosition); 
-
-      // bindXY on owner and its parents  
-      this.parentage.data = this.owner;       
+      this.dynamicListeners_ = Events.dynamic(
+        function() { 
+          this.owner.width; this.owner.height; this.owner.globalX; this.owner.globalY;
+          this.side;
+         }.bind(this),
+         function() { 
+           this.updatePosition();
+          }.bind(this)
+       );
+      
+      // // listen for changes to the owner width, height
+//       this.owner.width$.addListener(this.updatePosition);
+//       this.owner.height$.addListener(this.updatePosition);
+//
+//       Events.map(this.owner.globalX$, this.x$, this.positioningFunctionX);
+//       Events.map(this.owner.globalY$, this.Y$, this.positioningFunctionY);
     },
     unbindPositioning: function() {
-      
-      if (this.owner) {
-        // unlisten for changes to the owner 
-        this.owner.width$.removeListener(this.updatePosition); 
-        this.owner.height$.removeListener(this.updatePosition);         
+      if (this.dynamicListeners_ && this.dynamicListeners_.destroy) {
+        this.dynamicListeners_.destroy();
       }
-      
-      //TODO: for now reset totally, but this is not necessary when changing data from one item to another
-      this.parentage.data = undefined;
+      // if (this.owner) {
+      //   // unlisten for changes to the owner
+      //   this.owner.width$.removeListener(this.updatePosition);
+      //   this.owner.height$.removeListener(this.updatePosition);
+      //
+      //   Events.unfollow(this.owner.globalX$, this.x$, this.positioningFunctionX);
+      //   Events.unfollow(this.owner.globalY$, this.Y$, this.positioningFunctionY);
+      // }
     }    
   },
   
@@ -232,27 +258,69 @@ MODEL({
       name: 'updatePosition',
       isFramed: true,
       code: function() {
-        this.positioningFunction(this, this.owner);
+        this.x = this.positioningFunctionX(this.owner.globalX);
+        this.y = this.positioningFunctionY(this.owner.globalY);
       }
     },
     {
-      name: 'bindXY',
-      code: function(target) {
-        target.x$.addListener(this.updatePosition);
-        target.y$.addListener(this.updatePosition);
-      }
+      name: 'positioningFunctionX',
+      documentation: function() {/* The function to position this point inside the $$DOC{ref:'.owner'}.
+            Parameters (self, this.owner) are passed in to avoid binding confusion with <code>this</code>. 
+            The default implementation positions the point based on $$DOC{ref:'.side'}. */},
+      code: function(x) {
+        if(this.side === 'top') {
+          return x + (this.owner.width / 2);
+        } else
+        if(this.side === 'bottom') {
+          return x + (this.owner.width / 2);
+        } else
+        if(this.side === 'left') {
+          return x;
+        } else           
+        if(this.side === 'right') {
+          return x + (this.owner.width);
+        }                          
+      },
+      
     },
     {
-      name: 'unbindXY',
-      code: function(target) {        
-        target.x$.removeListener(this.updatePosition);
-        target.y$.removeListener(this.updatePosition);
-      }
+      name: 'positioningFunctionY',
+      documentation: function() {/* The function to position this point inside the $$DOC{ref:'.owner'}.
+            Parameters (this, this.owner) are passed in to avoid binding confusion with <code>this</code>. 
+            The default implementation positions the point based on $$DOC{ref:'.side'}. */},
+      code: function(y) {
+        if(this.side === 'top') {
+          return y;
+        } else
+        if(this.side === 'bottom') {
+          return y + (this.owner.height);
+        } else
+        if(this.side === 'left') {
+          return y + (this.owner.height/2);
+        } else           
+        if(this.side === 'right') {
+          return y + (this.owner.height/2);
+        }
+                          
+      },
+      
     },
-    
   ]
 });
 
+MODEL({
+  name: 'LinearLayout',
+  package: 'diagram',
+  
+  extendsModel: 'canvas.LinearLayout',
+  traits: ['diagram.DiagramItemTrait'],
+});
+MODEL({
+  name: 'Margin',
+  package: 'diagram',
+  extendsModel: 'canvas.Margin',
+  traits: ['diagram.DiagramItemTrait'],
+});
 
 MODEL({
   name: 'Block',
@@ -260,7 +328,7 @@ MODEL({
   
   requires: ['diagram.LinkPoint'],
 
-  extendsModel: 'canvas.LinearLayout',
+  extendsModel: 'diagram.LinearLayout',
   traits: ['canvas.BorderTrait'],
   
   imports: ['linkPoints'],
@@ -328,7 +396,7 @@ MODEL({
   requires: ['canvas.Label as Label',
              'diagram.LinkPoint'],
 
-  extendsModel: 'canvas.LinearLayout',
+  extendsModel: 'diagram.LinearLayout',
   traits: ['canvas.BorderTrait'],
 
   imports: ['linkPoints'],
