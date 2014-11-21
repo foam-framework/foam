@@ -80,7 +80,11 @@ MODEL({
     },
     {
       name: 'canvas',
-      getter: function() { return this.$ && this.$.getContext('2d'); },
+      getter: function() {
+        return this.instance_.canvas ?
+          this.instance_.canvas :
+          this.instance_.canvas = this.$ && this.$.getContext('2d');
+      },
       documentation: function() {/*
           The HTML canvas context. Use this to render.
         */}
@@ -540,7 +544,6 @@ MODEL({
   ],
 
   methods: {
-
     paintSelf: function() {
       var c = this.canvas;
       if ( ! c ) return;
