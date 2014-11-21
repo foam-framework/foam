@@ -93,6 +93,46 @@ var FObject = {
     return a;
   },
 
+  initAgents: function() {
+    if ( ! Object.hasOwnProperty.call(this, 'initAgents_') ) {
+      var agents = [];
+
+      if ( this.exportKeys ) this.exportKeys.forEach(function(key) {
+        agents.push([-1, function(o, X) {
+          X.set(key, o);
+        }]);
+      });
+
+      this.model_.properties.forEach(function(prop) {
+        if ( prop.initPropertyAgents ) {
+          prop.initPropertyAgents(agents);
+        } /* else if ( Property ) {
+          Property.methods.initPropertyAgents.call(prop, agents);
+        } */ else {
+          agents.push([0, function(o, X, m) {
+            if ( m.hasOwnProperty(this.name) ) o[this.name] = m[this.name];
+          }]);
+        }
+      });
+
+      this.initAgents_ = agents.sort(function(o1, o2) { return o1[0] - o2[0]; });
+      /*
+      for ( var i = 0 ; i < agents.length ; i++ ) {
+        console.log(i, agents[i][1].toString());
+      }
+      */
+    }
+
+    return this.initAgents_;
+  },
+
+  newInit: function(map) {
+    if ( ! this.model_ ) return;
+
+    var agents = this.initAgents();
+    for ( var i = 0 ; i < agents.length ; i++ ) agents[i][1](this, this.X, map);
+  },
+
   init: function(_) {
     if ( ! this.model_ ) return;
 
@@ -338,6 +378,13 @@ var FObject = {
           this.instance_[name] = prop.lazyFactory.call(this, prop);
           return this.instance_[name];
         };
+      } else if ( prop.factory ) {
+        getter = function() {
+          if ( typeof this.instance_[name] !== 'undefined' ) return this.instance_[name];
+// console.log('Ahead of order factory: ', prop.name);
+          this.instance_[name] = prop.factory.call(this, prop);
+          return this.instance_[name];
+        };
       } else if ( prop.defaultValueFn ) {
         getter = function() {
           return typeof this.instance_[name] !== 'undefined' ? this.instance_[name] : prop.defaultValueFn.call(this, prop);
@@ -409,6 +456,12 @@ var FObject = {
           setter.call(this, oldValue, preSet.call(this, oldValue, newValue, prop));
         }; })(setter, prop.preSet);
       }
+
+      /* TODO: New version that doesn't trigger lazyFactory or getter.
+      setter = (function(setter) { return function(newValue) {
+        setter.call(this, this.instance_[name], newValue);
+      }; })(setter);
+      */
 
       setter = (function(setter) { return function(newValue) {
         setter.call(this, this[name], newValue);
