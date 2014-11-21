@@ -56,14 +56,13 @@ var Property = {
          */}
 
     },
-
     {
       name: 'exportKeys',
       type: 'Array',
       subType: 'String',
       required: false,
       hidden: true,
-      defaultValue: '',
+      defaultValue: [],
       preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; },
       help: 'Keys to export value as.',
       documentation: function() {/* If set, when the an object with this property is initialized the value of this property on the object will be exported into the objects sub-context. */}
@@ -74,7 +73,7 @@ var Property = {
       subType: 'String',
       required: false,
       hidden: true,
-      defaultValue: '',
+      defaultValue: [],
       preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; },
       help: 'Keys to export value$ as.',
       documentation: function()  {/* Same as $$DOC{ ref: 'Property.exportKeys' }, except it exports the property Value (propName$) of the property rather than the raw value of the property. */}
@@ -595,19 +594,60 @@ var Property = {
       return this.compareProperty(this.f(o1), this.f(o2));
     },
     toSQL: function() { return this.name; },
-    toMQL: function() { return this.name; }
-  },
+    toMQL: function() { return this.name; },
+    initPropertyAgents: function(agents) {
+      var prop = this;
 
-  getProperty: function(name) {
-    console.assert(false, 'Property.getProperty called - Why am I here? It never seems to be called.');
-    for ( var i = 0 ; i < this.properties.length ; i++ ) {
-      var p = this.properties[i];
+      function add(priority, desc, agent) {
+        var f = function(o, X, map) {
+          agent.call(prop, o, X, map);
+        };
+        f.toString = function() { return prop.name + ': ' + desc; };
+        var oldF = f;
+        f = function(o, X, map) {
+          console.log(oldF.toString());
+          return oldF.call(this, o, X, map);
+        };
+        agents.push([priority, f]);
+      }
 
-      if ( p.name === name ) return p;
+      /*
+      add(this.postSet ? 9 : 0, this.postSet ? 'Copy args.' : 'Copy args (postSet).', function(o, X, m) {
+        if ( ! map ) return;
+        if ( map.hasOwnProperty(this.name)   ) o[this.name]   = m[this.name];
+        if ( map.hasOwnProperty(this.name$_) ) o[this.name$_] = m[this.name$];
+      });
+      */
+
+      if ( this.dynamicValue ) {
+        add(10, 'dynamicValue', function(o, X) {
+          var name = this.name;
+          var dynamicValue = this.dynamicValue;
+
+          Events.dynamic(
+            dynamicValue.bind(o),
+            function(value) { o[name] = value; });
+        });
+      }
+
+      if ( this.factory ) {
+        add(11, 'factory', function(o, X) {
+          if ( ! o.hasOwnProperty(this.name) ) o[this.name] = this.factory.call(o);
+        });
+      }
+
+      if ( this.exportKeys ) this.exportKeys.forEach(function(key) {
+        add(1, 'exportKey ' + key, function(o, X) {
+          X.set(key, o[this.name]);
+        });
+      });
+
+      if ( this.exportValueKeys ) this.exportValueKeys.forEach(function(key) {
+        add(0, 'exportValueKey ' + key, function(o, X) {
+          X.set(key, o[this.name$_]);
+        });
+      });
     }
-
-    document.writeln("couldn't find: " + name);
-    return null;
   },
 
   templates: [

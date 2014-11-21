@@ -84,7 +84,10 @@ var FObject = {
 
     var a = [];
     var ps = this.model_.properties;
-    for ( var i = 0 ; i < ps.length ; i++ ) if ( ps[i][p] ) a.push(ps[i]);
+    for ( var i = 0 ; i < ps.length ; i++ )
+      if ( ps[i][p] && ( ! Array.isArray(ps[i][p]) || ps[i][p].length ) )
+        a.push(ps[i]);
+
     this.model_[name] = a;
 
     return a;
