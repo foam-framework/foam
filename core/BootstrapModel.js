@@ -236,6 +236,7 @@ var BootstrapModel = {
     // Handle 'exports'
     if ( extendsModel ) this.exports = this.exports.concat(extendsModel.exports);
 
+    // TODO(kgr): move to initAgent system when ready
     Object_forEach(this.exports, function(e) {
       var exp = e.split(' as ');
 
@@ -245,14 +246,19 @@ var BootstrapModel = {
       var alias = exp[1] || exp[0];
       var asValue = key.charAt(key.length-1) == '$';
       if ( asValue ) key = key.slice(0, key.length-1);
-      var prop  = findProp(key);
-      if ( prop == -1 ) {
-        // TODO: this isn't an error if we're export 'this' or a method, add check before reporting.
-        // console.warn('Unknown export: "'+ cls.name_ + '.' + key + '"');
-        return;
+      if ( key ) {
+        var prop  = findProp(key);
+        if ( prop == -1 ) {
+          // TODO: this isn't an error if we're exporting a method, add check before reporting.
+          // console.warn('Unknown export: "'+ cls.name_ + '.' + key + '"');
+          return;
+        }
+        var subProp = asValue ? 'exportValueKeys' : 'exportKeys';
+        props[prop][subProp] = (props[prop][subProp] || []).concat(alias);
+      } else {
+        // Exporting 'this'
+        this.exportKeys.push(alias);
       }
-      var subProp = asValue ? 'exportValueKeys' : 'exportKeys';
-      props[prop][subProp] = (props[prop][subProp] || []).concat(alias);
     });
 
     if ( extendsModel && extendsModel.exportKeys.length > 0 ) this.exportKeys = this.exportKeys.concat(extendsModel.exportKeys);
