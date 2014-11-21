@@ -31,6 +31,19 @@ function set(key, value) {
 }
 
 
+function setValue(key, value) {
+  Object.defineProperty(
+    this,
+    key,
+    {
+      getter: function() { this.set(key, value.get()); return this[key]; }.bind(this),
+      writable: key !== 'window',
+      configurable: true
+    }
+  );
+}
+
+
 /** Create a sub-context, populating with bindings from opt_args. **/
 function sub(opt_args, opt_name) {
 //  var sub = Object.create(this);
