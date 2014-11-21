@@ -475,6 +475,10 @@ MODEL({
     {
       model_: 'FunctionProperty',
       name: 'updateListener'
+    },
+    {
+      name: 'mode',
+      defaultValue: 'read-write'
     }
   ],
 
@@ -542,6 +546,14 @@ MODEL({
   ],
 
   methods: {
+    toHTML: function() {
+      if ( this.mode === 'read-only' ) {
+        return '<span id="' + id + '" class="popupChoiceView-readonly">' +
+            ((this.choice && this.choice[1]) || '') + '</span>';
+      } else {
+        return this.SUPER();
+      }
+    },
     toInnerHTML: function() {
       var out = '';
 
