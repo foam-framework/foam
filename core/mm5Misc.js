@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 MODEL({
   name: 'UnitTest',
   plural: 'Unit Tests',
@@ -593,9 +594,8 @@ function recopyModelFeatures(m) {
   m.tests         = m.tests;
   m.issues        = m.issues;
 
-  if (DEBUG) {
-    BootstrapModel.saveDefinition(m); // keep copies of the updated lists
-  }
+  // keep copies of the updated lists
+  if ( DEBUG ) BootstrapModel.saveDefinition(m);
 }
 
 for ( var id in USED_MODELS ) {

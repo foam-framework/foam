@@ -256,7 +256,6 @@ MODEL({
        $$DOC{ref:'Method'} or $$DOC{ref:'Template'}. If direct control is required,
        at minimum you must implement $$DOC{ref:'.toHTML'} and $$DOC{ref:'.initHTML'}.
     </p>
-
   */},
 
   properties: [
