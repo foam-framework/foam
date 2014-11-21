@@ -236,14 +236,16 @@ var BootstrapModel = {
     // Handle 'exports'
     if ( extendsModel ) this.exports = this.exports.concat(extendsModel.exports);
 
+    var self = this;
     // TODO(kgr): move to initAgent system when ready
     Object_forEach(this.exports, function(e) {
-      var exp = e.split(' as ');
+      var exp = e.split('as ');
 
       if ( exp.length == 0 ) return;
 
-      var key   = exp[0];
+      var key   = exp[0].trim();
       var alias = exp[1] || exp[0];
+
       var asValue = key.charAt(key.length-1) == '$';
       if ( asValue ) key = key.slice(0, key.length-1);
       if ( key ) {
@@ -257,7 +259,7 @@ var BootstrapModel = {
         props[prop][subProp] = (props[prop][subProp] || []).concat(alias);
       } else {
         // Exporting 'this'
-        this.exportKeys.push(alias);
+        self.exportKeys.push(alias);
       }
     });
 
