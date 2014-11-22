@@ -62,33 +62,6 @@ MODEL({
   extendsModel: 'CView2',
   traits: ['diagram.DiagramItemTrait'],
 
-  exports: ['linkPoints'],
-
-  properties: [
-    {
-      name: 'linkPoints',
-      type: 'DAOProperty',
-      documentation: function () {/* The shared store of linkable points in the diagram. */},
-      factory: function() { return [].dao; }
-    }
-  ],
-
-  methods: {
-
-
-    paint: function()  {
-      this.SUPER();
-// DEBUG painting
-      var c = this.canvas;
-      c.save();
-      this.linkPoints.forEach(function(pt) {
-        c.fillStyle = "#FF0000";
-        c.fillRect(pt.x-2, pt.y-2, 4, 4);
-
-      }.bind(this));
-      c.restore();
-    }
-  }
 });
 
 MODEL({
@@ -343,7 +316,7 @@ MODEL({
   extendsModel: 'diagram.LinearLayout',
   traits: ['canvas.BorderTrait'],
   
-  imports: ['linkPoints'],
+  //imports: ['linkPoints'],
 
   properties: [
     {
@@ -370,25 +343,25 @@ MODEL({
         // make four points at our edges
         var pt1 = this.LinkPoint.create({owner: this, name: '1', side: 'top'});
         
-        this.linkPoints.push(pt1);
+        //this.linkPoints.push(pt1);
         this.myLinkPoints.push(pt1);
       }
       {
         var pt2 = this.LinkPoint.create({owner: this, name: '2', side: 'bottom'});
         
-        this.linkPoints.push(pt2);
+        //this.linkPoints.push(pt2);
         this.myLinkPoints.push(pt2);
       }
       {
         var pt3 = this.LinkPoint.create({owner: this, name: '3', side: 'left'});
         
-        this.linkPoints.push(pt3);
+        //this.linkPoints.push(pt3);
         this.myLinkPoints.push(pt3);
       }
       {
         var pt4 = this.LinkPoint.create({owner: this, name: '4', side: 'right'});
         
-        this.linkPoints.push(pt4);
+        //this.linkPoints.push(pt4);
         this.myLinkPoints.push(pt4);
       }
     }
@@ -406,7 +379,7 @@ MODEL({
   extendsModel: 'diagram.LinearLayout',
   traits: ['canvas.BorderTrait'],
 
-  imports: ['linkPoints'],
+  //imports: ['linkPoints'],
 
   properties: [
     {
@@ -447,13 +420,13 @@ MODEL({
       {
         var pt3 = this.LinkPoint.create({owner: this, name: '3', side:'left'});
         
-        this.linkPoints.push(pt3);
+        //this.linkPoints.push(pt3);
         this.myLinkPoints.push(pt3);
       }
       {
         var pt4 = this.LinkPoint.create({owner: this, name: '4', side:'right'});
         
-        this.linkPoints.push(pt4);
+        //this.linkPoints.push(pt4);
         this.myLinkPoints.push(pt4);
       }
     }
@@ -486,6 +459,11 @@ MODEL({
       type: 'String',
       defaultValue: 'manhattan',
       documentation: function () {/* The connector style. Choose from manhattan. */},
+    },
+    {
+      name: 'arrowLength',
+      model_: 'IntProperty',
+      defaultValue: 20
     }
 
   ],
@@ -498,17 +476,31 @@ MODEL({
       c.save();
 
       var points = this.selectBestPoints();
+      var s = points.start.offsetBy(this.arrowLength);
+      var e = points.end.offsetBy(this.arrowLength);
 
-      var arrowLength = 20;
       var H = 0;
       var V = 1;
       var sideDirs = { left: -1, right: 1, top: -1, bottom: 1 };
 
+      // draw arrows
+      c.save();
+      
+      // fake arrows
+      c.lineWidth = 4;
+      c.moveTo(points.start.x, points.start.y);
+      c.lineTo(s.x, s.y);
+      
+      c.moveTo(points.end.x, points.end.y);
+      c.lineTo(e.x,e.y);
+      
+      c.stroke();
+      
+      c.restore();
+
+      // draw connector
       if (this.style === 'manhattan')
-      {
-        s = points.start.offsetBy(arrowLength);
-        e = points.end.offsetBy(arrowLength);
-        
+      {        
         // hor/vert orientation of points
         var sOr = (points.start.side==='left' || points.start.side==='right')? H : V;
         var eOr = (points.end.side==='left' || points.end.side==='right')? H : V;
@@ -548,20 +540,18 @@ MODEL({
         if (sDir === 0) {
           if (sOr === V) {
             sDir = e.y - s.y;
-            sDir = sDir / Math.abs(sDir); // normalize
           } else  {
             sDir = e.x - s.x;
-            sDir = sDir / Math.abs(sDir); // normalize
           }
+          sDir = sDir / Math.abs(sDir); // normalize
         }
         if (eDir === 0) {
           if (eOr === V) {
             eDir = s.y - e.y;
-            eDir = eDir / Math.abs(eDir); // normalize
           } else  {
             eDir = s.x - e.x;
-            eDir = eDir / Math.abs(eDir); // normalize
           }
+          eDir = eDir / Math.abs(eDir); // normalize
         }
         
         if (sOr !== eOr) { // corner
@@ -607,16 +597,18 @@ MODEL({
       var smallest = BIG_VAL;
       var smallestStart;
       var smallestEnd;
-      self.start.forEach(function(start) {
-        self.end.forEach(function(end) {
+      self.start.forEach(function(startP) {
+        var start = startP.offsetBy(this.arrowLength);
+        self.end.forEach(function(endP) {
+          var end = endP.offsetBy(this.arrowLength);
           var dist = Math.abs(start.x - end.x) + Math.abs(start.y - end.y);
           if (dist < smallest) {
             smallest = dist;
-            smallestStart = start;
-            smallestEnd = end;
+            smallestStart = startP;
+            smallestEnd = endP;
           }
-        });
-      });
+        }.bind(this));
+      }.bind(this));
       return { start: smallestStart, end: smallestEnd }
     }
 
