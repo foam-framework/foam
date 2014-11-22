@@ -78,12 +78,18 @@ var FObject = {
 
   addInitAgent: function(priority, desc, agent) {
     agent.toString = function() { return desc; };
-    this.model_.initAgents_.push([priority, agent]);
+    this.initAgents_.push([priority, agent]);
   },
 
   initAgents: function() {
-    if ( ! Object.hasOwnProperty.call(this.model_, 'initAgents_') ) {
-      var agents = this.model_.initAgents_ = [];
+    if ( ! this.model_ ) return;
+
+    // this == prototype
+    if ( ! Object.hasOwnProperty.call(this, 'initAgents_') ) {
+      this.__proto__ && this.__proto__.initAgents && this.__proto__.initAgents();
+
+      // Maybe inherit initAgents from super
+      var agents = this.initAgents_ = this.initAgents_ ? this.initAgents_.clone() : [];
       var self = this;
 
       // Four cases for export: 'this', a method, a property value$, a property
@@ -127,7 +133,7 @@ var FObject = {
         }
       });
 
-      this.model_.initAgents_ = agents.sort(function(o1, o2) { return o1[0] - o2[0]; });
+      agents.sort(function(o1, o2) { return o1[0] - o2[0]; });
       /*
       for ( var i = 0 ; i < agents.length ; i++ ) {
         console.log(i, agents[i][1].toString());
@@ -135,13 +141,13 @@ var FObject = {
       */
     }
 
-    return this.model_.initAgents_;
+    return this.initAgents_;
   },
 
   init: function(map) {
     if ( ! this.model_ ) return;
 
-    var agents = this.initAgents();
+    var agents = this.__proto__.initAgents();
     for ( var i = 0 ; i < agents.length ; i++ ) agents[i][1](this, this.X, map);
 
     // Add shortcut create() method to Models which allows them to be
