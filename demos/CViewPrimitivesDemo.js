@@ -23,8 +23,10 @@ canv.addChild(outerLayout);
 var spacer1e = X.canvas.Spacer.create({});
 outerLayout.addChild(spacer1e);
 
-var view = X.diagram.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
-outerLayout.addChild(view);
+var vlay1 = X.diagram.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
+outerLayout.addChild(vlay1);
+var vlay2 = X.diagram.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
+outerLayout.addChild(vlay2);
 
 MODEL({
   name: 'BorderLabel',
@@ -34,7 +36,7 @@ MODEL({
 });
 
 var spacer1 = X.canvas.Spacer.create({});
-view.addChild(spacer1);
+vlay1.addChild(spacer1);
 
 var block1 = X.diagram.Block.create({
        x: 0,
@@ -50,7 +52,7 @@ block1.horizontalConstraints.max = 50;
 block1.verticalConstraints.min = 100;
 block1.verticalConstraints.max = 100;
 
-view.addChild(block1);
+vlay1.addChild(block1);
 
 var sect1 = X.diagram.Section.create({
   title: 'A Model'
@@ -69,7 +71,7 @@ var spacer1b = X.canvas.Spacer.create({
   fixedHeight: 20,
   fixedWidth: 30
 });
-view.addChild(spacer1b);
+vlay1.addChild(spacer1b);
 
 
 var label1 = X.BorderLabel.create({
@@ -83,7 +85,7 @@ var label1 = X.BorderLabel.create({
        borderWidth: 2
 
 });
-view.addChild(label1);
+vlay1.addChild(label1);
 
 var rect3 = X.canvas.Rectangle.create({
        x: 120,
@@ -93,7 +95,7 @@ var rect3 = X.canvas.Rectangle.create({
        height: 30,
 
 });
-view.addChild(rect3);
+vlay1.addChild(rect3);
 
 var spacer2 = X.canvas.Spacer.create({
   fixedHeight: 20,
@@ -101,6 +103,10 @@ var spacer2 = X.canvas.Spacer.create({
 });
 outerLayout.addChild(spacer2);
 
+
+var spacer5 = X.canvas.Spacer.create();
+spacer5.verticalConstraints.stretchFactor = 3;
+vlay2.addChild(spacer5);
 
 var block2 = X.diagram.Block.create({
        x: 120,
@@ -113,7 +119,7 @@ var block2 = X.diagram.Block.create({
 }, canv.X);
 var block2Margin = X.diagram.Margin.create({ left: 20, top: 8, bottom: 8, right: 30, height: 80});
 block2Margin.addChild(block2);
-outerLayout.addChild(block2Margin);
+vlay2.addChild(block2Margin);
 
 var sect1b = X.diagram.Section.create({
   title: 'More Model'
@@ -130,11 +136,11 @@ block2.addChild(spacer3);
 
 
 var link = X.diagram.Link.create({color: 'red'}, canv.X);
-link.start = sect2b.myLinkPoints;
-link.end = sect2.myLinkPoints;
+link.start = block1.myLinkPoints;
+link.end = block2.myLinkPoints;
 canv.addChild(link);
 
-//view.performLayout();
+//vlay1.performLayout();
 var mouse = X.Mouse.create();
 mouse.connect(canv.$);
 
