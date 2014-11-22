@@ -489,10 +489,12 @@ MODEL({
         this.initCView();
         this.state = 'active';
       }
+      this.canvas.save();
       this.canvas.translate(this.x, this.y);
       //this.erase(); // let the canvas AbstractCViewView take care of erasing the root node
       this.paintSelf();
       this.paintChildren();
+      this.canvas.restore();
     },
 
     mapToParent: function(point) { /* Maps a coordinate from this to our parents'. */
@@ -897,7 +899,6 @@ MODEL({name: 'MotionBlur', methods: {
     c.translate(-this.vx, -this.vy);
     this.alpha = 0.6;
     this.SUPER();
-
     c.translate(-this.vx, -this.vy);
     this.alpha = 0.3;
     this.SUPER();
