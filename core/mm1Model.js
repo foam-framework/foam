@@ -162,17 +162,6 @@ var Model = {
          */}
     },
     {
-      name: 'exportKeys',
-      type: 'Array',
-      subType: 'String',
-      required: false,
-      hidden: true,
-      defaultValue: [],
-      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; },
-      help: 'Keys to export this object as in its sub-context.',
-      documentation: function() {/* */}
-    },
-    {
       name: 'label',
       type: 'String',
       displayWidth: 70,

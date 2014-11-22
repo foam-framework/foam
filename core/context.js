@@ -32,6 +32,7 @@ function set(key, value) {
 
 
 function setValue(key, value) {
+  return this.set(key, value.get());
   Object.defineProperty(
     this,
     key,

@@ -46,9 +46,6 @@ var FObject = {
       }
     }
 
-    if ( this.model_.exportKeys )
-      for ( var i = 0 ; i < this.model_.exportKeys.length ; i++ ) o.X[this.model_.exportKeys[i]] = o;
-
     if ( typeof args === 'object' ) o.copyFrom(args);
 
     o.init(args);
@@ -93,14 +90,50 @@ var FObject = {
     return a;
   },
 
-  initAgents: function() {
-    if ( ! Object.hasOwnProperty.call(this, 'initAgents_') ) {
-      var agents = [];
+  addInitAgent: function(priority, desc, agent) {
+    agent.toString = function() { return desc; };
+    /*
+    var oldAgent = agent;
+    agent = function(o, X, map) {
+      console.log(oldAgent.toString());
+      return oldAgent.call(this, o, X, map);
+    };
+    */
+    this.model_.initAgents_.push([priority, agent]);
+  },
 
-      if ( this.exportKeys ) this.exportKeys.forEach(function(key) {
-        agents.push([-1, function(o, X) {
-          X.set(key, o);
-        }]);
+  initAgents: function() {
+    if ( ! Object.hasOwnProperty.call(this.model_, 'initAgents_') ) {
+      var agents = this.model_.initAgents_ = [];
+      var self = this;
+
+      // Four cases for export: 'this', a method, a property value$, a property
+      Object_forEach(this.model_.exports, function(e) {
+        var exp = e.split('as ');
+        
+        if ( exp.length == 0 ) return;
+        
+        var key   = exp[0].trim();
+        var alias = exp[1] || exp[0];
+        
+        if ( key ) {
+          var asValue = key.charAt(key.length-1) == '$';
+          if ( asValue ) key = key.slice(0, key.length-1);
+
+          var prop = self.model_.getProperty(key);
+          if ( prop ) {
+            if ( asValue ) {
+              self.addInitAgent(0, 'export property value ' + key, function(o, X) { X.set(alias, o[prop.name$_]); });
+            } else {
+              self.addInitAgent(0, 'export property ' + key, function(o, X) { X.setValue(alias, o[prop.name$_]); });
+            }
+          } else {
+            self.addInitAgent(0, 'export method ' + key, function(o, X) { debugger; X.set(alias, o[key].bind(o)); });
+          }
+        } else {
+          // Exporting 'this'
+          self.addInitAgent(0, 'export this', function(o, X) { X.set(alias, o); });
+        }
       });
 
       this.model_.properties.forEach(function(prop) {
@@ -115,7 +148,7 @@ var FObject = {
         }
       });
 
-      this.initAgents_ = agents.sort(function(o1, o2) { return o1[0] - o2[0]; });
+      this.model_.initAgents_ = agents.sort(function(o1, o2) { return o1[0] - o2[0]; });
       /*
       for ( var i = 0 ; i < agents.length ; i++ ) {
         console.log(i, agents[i][1].toString());
@@ -123,28 +156,18 @@ var FObject = {
       */
     }
 
-    return this.initAgents_;
+    return this.model_.initAgents_;
   },
 
-  newInit: function(map) {
+  init: function(map) {
     if ( ! this.model_ ) return;
 
     var agents = this.initAgents();
     for ( var i = 0 ; i < agents.length ; i++ ) agents[i][1](this, this.X, map);
-  },
-
-  init: function(_) {
-    if ( ! this.model_ ) return;
 
     var ps;
 
-    function exportKeys(X, keys, value) {
-      if ( ! keys ) return;
-      for ( var i = 0 ; i < keys.length ; i++ ) {
-        X.set(keys[i], value);
-      }
-    }
-
+    /*
     ps = this.selectProperties_('dynamicValueProperties_', 'dynamicValue');
     ps.forEach(function(prop) {
       var name = prop.name;
@@ -154,51 +177,7 @@ var FObject = {
         dynamicValue.bind(this),
         function(value) { this[name] = value; }.bind(this));
     }.bind(this));
-
-
-    // TODO(kgr): exclude values which were handled in the above lists already
-    ps = this.selectProperties_('exportKeyProperties_', 'exportKeys');
-    for ( var i = 0 ; i < ps.length ; i++ ) {
-      var prop = ps[i];
-
-      exportKeys(this.X, prop.exportKeys, this[prop.name]);
-    }
-
-    ps = this.selectProperties_('exportValueKeyProperties_', 'exportValueKeys');
-    for ( var i = 0 ; i < ps.length ; i++ ) {
-      var prop = ps[i];
-
-      exportKeys(this.X, prop.exportValueKeys, this[prop.name + '$']);
-    }
-
-    // Add non-property exports to Context
-    if ( this.model_.exports && this.model_.exports.length ) {
-      var fnExports = this.model_.fnExports_ ||
-        ( this.model_.fnExports_ = this.model_.exports.map(function(e) {
-          var s = e.split(' as ');
-          s[0] = s[0].trim();
-          return [s[0], s[1] || s[0]];
-        }).filter(function (s) {
-          return typeof this[s[0]] === 'function';
-        }.bind(this)));
-      for ( var i = 0 ; i < fnExports.length ; i++ ) {
-        var e = fnExports[i];
-        this.X[e[1]] = this[e[0]].bind(this);
-      }
-
-      var otherExports = this.model_.otherExports_ ||
-        ( this.model_.otherExports_ = this.model_.exports.map(function(e) {
-          var s = e.split(' as ');
-          s[0] = s[0].trim();
-          return [s[0], s[1] || s[0]];
-        }).filter(function (s) {
-          return typeof this[s[0]] !== 'function' && ! this.model_.getProperty(s[0]);
-        }.bind(this)));
-      for ( var i = 0 ; i < otherExports.length ; i++ ) {
-        var e = otherExports[i];
-        this.X[e[1]] = this[e[0]];
-      }
-    }
+    */
 
     ps = this.selectProperties_('factoryProperties_', 'factory');
     for ( var i = 0 ; i < ps.length ; i++ ) {
@@ -208,18 +187,12 @@ var FObject = {
       // then don't call the factory if it exists.
       // if ( ! this.instance_[prop.name] ) this[prop.name] = prop.factory.call(this);
       if ( ! this.hasOwnProperty(prop.name) ) this[prop.name] = prop.factory.call(this);
-
-      exportKeys(this.X, prop.exportKeys, this[prop.name]);
-
-      if ( prop.exportValueKeys && prop.exportValueKeys.length )
-        exportKeys(this.X, prop.exportValueKeys, this[prop.name + '$']);
     }
 
     // Add shortcut create() method to Models which allows them to be
     // used as constructors.  Don't do this for the Model though
     // because we need the regular behavior there.
-    if ( this.model_ == Model && this.name != 'Model' )
-      this.create = BootstrapModel.create;
+    if ( this.model_ == Model && this.name != 'Model' ) this.create = BootstrapModel.create;
   },
 
   fromElement: function(e) {

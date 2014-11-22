@@ -57,28 +57,6 @@ var Property = {
 
     },
     {
-      name: 'exportKeys',
-      type: 'Array',
-      subType: 'String',
-      required: false,
-      hidden: true,
-      defaultValue: [],
-      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; },
-      help: 'Keys to export value as.',
-      documentation: function() {/* If set, when the an object with this property is initialized the value of this property on the object will be exported into the objects sub-context. */}
-    },
-    {
-      name: 'exportValueKeys',
-      type: 'Array',
-      subType: 'String',
-      required: false,
-      hidden: true,
-      defaultValue: [],
-      preSet: function(_, v) { return ! Array.isArray(v) ? [v] : v; },
-      help: 'Keys to export value$ as.',
-      documentation: function()  {/* Same as $$DOC{ ref: 'Property.exportKeys' }, except it exports the property Value (propName$) of the property rather than the raw value of the property. */}
-    },
-    {
       name: 'label',
       type: 'String',
       required: false,
@@ -595,58 +573,33 @@ var Property = {
     },
     toSQL: function() { return this.name; },
     toMQL: function() { return this.name; },
-    initPropertyAgents: function(agents) {
+    initPropertyAgents: function(model) {
       var prop = this;
 
-      function add(priority, desc, agent) {
-        var f = function(o, X, map) {
-          agent.call(prop, o, X, map);
-        };
-        f.toString = function() { return prop.name + ': ' + desc; };
-        var oldF = f;
-        f = function(o, X, map) {
-          console.log(oldF.toString());
-          return oldF.call(this, o, X, map);
-        };
-        agents.push([priority, f]);
-      }
-
       /*
-      add(this.postSet ? 9 : 0, this.postSet ? 'Copy args.' : 'Copy args (postSet).', function(o, X, m) {
+      model.addInitAgent(this.postSet ? 9 : 0, prop.name + ': ' + this.postSet ? 'Copy args.' : 'Copy args (postSet).', function(o, X, m) {
         if ( ! map ) return;
         if ( map.hasOwnProperty(this.name)   ) o[this.name]   = m[this.name];
         if ( map.hasOwnProperty(this.name$_) ) o[this.name$_] = m[this.name$];
-      });
+      }.bind(prop));
       */
 
       if ( this.dynamicValue ) {
-        add(10, 'dynamicValue', function(o, X) {
+        model.addInitAgent(10, prop.name + ': dynamicValue', function(o, X) {
           var name = this.name;
           var dynamicValue = this.dynamicValue;
 
           Events.dynamic(
             dynamicValue.bind(o),
             function(value) { o[name] = value; });
-        });
+        }.bind(prop));
       }
 
-      if ( this.factory ) {
-        add(11, 'factory', function(o, X) {
+      if ( false && this.factory ) {
+        model.addInitAgent(11, prop.name + ': factory', function(o, X) {
           if ( ! o.hasOwnProperty(this.name) ) o[this.name] = this.factory.call(o);
-        });
+        }.bind(prop));
       }
-
-      if ( this.exportKeys ) this.exportKeys.forEach(function(key) {
-        add(1, 'exportKey ' + key, function(o, X) {
-          X.set(key, o[this.name]);
-        });
-      });
-
-      if ( this.exportValueKeys ) this.exportValueKeys.forEach(function(key) {
-        add(0, 'exportValueKey ' + key, function(o, X) {
-          X.set(key, o[this.name$_]);
-        });
-      });
     }
   },
 
