@@ -576,11 +576,11 @@ var Property = {
     initPropertyAgents: function(proto) {
       var prop = this;
 
-      /*
-      proto.addInitAgent(this.postSet ? 9 : 0, prop.name + ': ' + this.postSet ? 'Copy args.' : 'Copy args (postSet).', function(o, X, m) {
-        if ( ! map ) return;
-        if ( map.hasOwnProperty(this.name)   ) o[prop.name]   = m[prop.name];
-        if ( map.hasOwnProperty(this.name$_) ) o[prop.name$_] = m[prop.name$];
+      /* Is handled by copyFrom(), but could be done here instead.
+      proto.addInitAgent(this.postSet ? 9 : 0, this.name + ': ' + this.postSet ? 'Copy args.' : 'Copy args (postSet).', function(o, X, m) {
+        if ( ! m ) return;
+        if ( m.hasOwnProperty(this.name)   ) o[prop.name]   = m[prop.name];
+        if ( m.hasOwnProperty(this.name$_) ) o[prop.name$_] = m[prop.name$];
       });
       */
 
@@ -597,7 +597,7 @@ var Property = {
 
       if ( this.factory ) {
         proto.addInitAgent(11, prop.name + ': factory', function(o, X) {
-          if ( ! o.hasOwnProperty(this.name) ) o[prop.name];// = this.factory.call(o);
+          if ( ! o.hasOwnProperty(this.name) ) o[prop.name];
         });
       }
     }
