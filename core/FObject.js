@@ -121,12 +121,13 @@ var FObject = {
       this.model_.properties.forEach(function(prop) {
         if ( prop.initPropertyAgents ) {
           prop.initPropertyAgents(self);
-        } /* else if ( Property ) {
-          Property.methods.initPropertyAgents.call(prop, agents);
-        } */ else {
-          agents.push([0, function(o, X, m) {
-            if ( m.hasOwnProperty(this.name) ) o[this.name] = m[this.name];
-          }]);
+        } else {
+          self.addInitAgent(
+            0,
+            'set proto-property ' + prop.name,
+            function(o, X, m) {
+              if ( m.hasOwnProperty(prop.name) ) o[prop.name] = m[prop.name];
+            });
         }
       });
 
