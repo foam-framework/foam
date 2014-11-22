@@ -126,7 +126,8 @@ var FObject = {
             0,
             'set proto-property ' + prop.name,
             function(o, X, m) {
-              if ( m.hasOwnProperty(prop.name) ) o[prop.name] = m[prop.name];
+              if ( m && m.hasOwnProperty(prop.name) )
+                o[prop.name] = m[prop.name];
             });
         }
       });
