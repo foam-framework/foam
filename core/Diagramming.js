@@ -176,13 +176,6 @@ MODEL({
   ids: ['owner','name','side'],
 
   properties: [
-    // {
-    //   name: 'parentage',
-    //   type: 'ParentageListener',
-    //   factory: function() {
-    //     return this.ParentageListener.create({ bindFn: this.bindXY, unbindFn: this.unbindXY, data: this.owner });
-    //   }
-    // },
     {
       name: 'side',
       type: 'String',
@@ -210,6 +203,13 @@ MODEL({
       defaultValue: 0
     },
     {
+      model_: 'IntProperty',
+      name: 'distanceToClear',
+      defaultValue: 0,
+      documentation: function() {/* The distance from the link point to the edge of the 
+           owner (typically half the width or half the height for a centered link). */}
+    },
+    {
       name: 'dynamicListeners_',
       hidden: true
     }
@@ -217,7 +217,6 @@ MODEL({
   
   methods: {
     bindPositioning: function() {
-        
       if (!this.owner || !this.positioningFunctionX || !this.positioningFunctionY) 
         return;
       
@@ -228,29 +227,30 @@ MODEL({
          }.bind(this),
          function() { 
            this.updatePosition();
+           this.updateClearing();
           }.bind(this)
        );
-      
-      // // listen for changes to the owner width, height
-//       this.owner.width$.addListener(this.updatePosition);
-//       this.owner.height$.addListener(this.updatePosition);
-//
-//       Events.map(this.owner.globalX$, this.x$, this.positioningFunctionX);
-//       Events.map(this.owner.globalY$, this.Y$, this.positioningFunctionY);
     },
     unbindPositioning: function() {
       if (this.dynamicListeners_ && this.dynamicListeners_.destroy) {
         this.dynamicListeners_.destroy();
       }
-      // if (this.owner) {
-      //   // unlisten for changes to the owner
-      //   this.owner.width$.removeListener(this.updatePosition);
-      //   this.owner.height$.removeListener(this.updatePosition);
-      //
-      //   Events.unfollow(this.owner.globalX$, this.x$, this.positioningFunctionX);
-      //   Events.unfollow(this.owner.globalY$, this.Y$, this.positioningFunctionY);
-      // }
-    }    
+    },
+    
+    offsetBy: function(amount) {
+      if(this.side === 'top') {
+        return { x: this.x, y: this.y - amount };
+      } else
+      if(this.side === 'bottom') {
+        return { x: this.x, y: this.y + amount };
+      } else
+      if(this.side === 'left') {
+        return { x: this.x - amount, y: this.y };
+      } else           
+      if(this.side === 'right') {
+        return { x: this.x + amount, y: this.y };
+      }             
+    }
   },
   
   listeners: [
@@ -260,6 +260,18 @@ MODEL({
       code: function() {
         this.x = this.positioningFunctionX(this.owner.globalX);
         this.y = this.positioningFunctionY(this.owner.globalY);
+      }
+    },
+    {
+      name: 'updateClearing',
+      isFramed: true,
+      code: function() {
+        if(this.side === 'top' || this.side === 'bottom') {
+          this.distanceToClear = this.owner.width/2;
+        } else
+        if(this.side === 'left' || this.side === 'right') {
+          this.distanceToClear = this.owner.height/2;
+        }    
       }
     },
     {
@@ -342,10 +354,6 @@ MODEL({
       name: 'myLinkPoints',
       type: 'DAOProperty',
       factory: function() { return []; }
-//      dynamicValue: function() {
-//        // proxy until this shows up in the context?
-//        if (this.linkPoints) this.myLinkPoints = this.linkPoints.where(EQ(LinkPoint.OWNER, this));
-//      }
     }
     
   ],
@@ -364,7 +372,6 @@ MODEL({
         
         this.linkPoints.push(pt1);
         this.myLinkPoints.push(pt1);
-        
       }
       {
         var pt2 = this.LinkPoint.create({owner: this, name: '2', side: 'bottom'});
@@ -423,10 +430,6 @@ MODEL({
       name: 'myLinkPoints',
       type: 'DAOProperty',
       factory: function() { return []; }
-//      dynamicValue: function() {
-//        // proxy until this shows up in the context?
-//        if (this.linkPoints) this.myLinkPoints = this.linkPoints.where(EQ(LinkPoint.OWNER, this));
-//      }
     }
   ],
 
@@ -496,10 +499,99 @@ MODEL({
 
       var points = this.selectBestPoints();
 
+      var arrowLength = 20;
+      var H = 0;
+      var V = 1;
+      var sideDirs = { left: -1, right: 1, top: -1, bottom: 1 };
+
       if (this.style === 'manhattan')
       {
-        c.moveTo(points.start.x, points.start.y);
-        c.lineTo(points.end.x, points.end.y);
+        s = points.start.offsetBy(arrowLength);
+        e = points.end.offsetBy(arrowLength);
+        
+        // hor/vert orientation of points
+        var sOr = (points.start.side==='left' || points.start.side==='right')? H : V;
+        var eOr = (points.end.side==='left' || points.end.side==='right')? H : V;
+        
+        var sDir = sideDirs[points.start.side];
+        var eDir = sideDirs[points.end.side];
+        
+        // check if the ideal direction is no good
+        if (sOr === H) {
+          if ((sDir > 0 && s.x > e.x)
+              || (sDir < 0 && s.x < e.x)) {
+            sOr = V;
+            sDir = 0;
+          }
+        } else if (sOr === V) {
+          if ((sDir > 0 && s.y > e.y)
+              || (sDir < 0 && s.y < e.y)) {
+            sOr = H;
+            sDir = 0;
+          }
+        }
+        if (eOr === H) {
+          if ((eDir > 0 && s.x < e.x)
+              || (eDir < 0 && s.x > e.x)) {
+            eOr = V;
+            eDir = 0;
+          }
+        } else if (eOr === V) {
+          if ((eDir > 0 && s.y < e.y)
+              || (eDir < 0 && s.y > e.y)) {
+            eOr = H;
+            eDir = 0;
+          }
+        }
+        
+        // if we reset the direction, find the new one
+        if (sDir === 0) {
+          if (sOr === V) {
+            sDir = e.y - s.y;
+            sDir = sDir / Math.abs(sDir); // normalize
+          } else  {
+            sDir = e.x - s.x;
+            sDir = sDir / Math.abs(sDir); // normalize
+          }
+        }
+        if (eDir === 0) {
+          if (eOr === V) {
+            eDir = s.y - e.y;
+            eDir = eDir / Math.abs(eDir); // normalize
+          } else  {
+            eDir = s.x - e.x;
+            eDir = eDir / Math.abs(eDir); // normalize
+          }
+        }
+        
+        if (sOr !== eOr) { // corner
+          c.moveTo(s.x, s.y);
+          if (sOr===H) {
+            c.lineTo(e.x, s.y); 
+          } else {
+            c.lineTo(s.x, e.y); 
+          }
+          
+          c.moveTo(e.x, e.y);
+          if (eOr===H) {
+            c.lineTo(s.x, e.y); 
+          } else {
+            c.lineTo(e.x, s.y); 
+          }
+        } else { // center split
+          c.moveTo(s.x, s.y);
+          if (sOr===H) {
+            var half = s.x + (e.x - s.x) / 2;
+            c.lineTo(half, s.y);
+            c.lineTo(half, e.y);
+          } else {
+            var half = s.y + (e.y - s.y) / 2;
+            c.lineTo(s.x, half);
+            c.lineTo(e.x, half);
+          }
+          c.lineTo(e.x, e.y);
+        }
+        
         c.stroke();
       }
 
