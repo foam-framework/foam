@@ -573,32 +573,32 @@ var Property = {
     },
     toSQL: function() { return this.name; },
     toMQL: function() { return this.name; },
-    initPropertyAgents: function(model) {
+    initPropertyAgents: function(proto) {
       var prop = this;
 
       /*
-      model.addInitAgent(this.postSet ? 9 : 0, prop.name + ': ' + this.postSet ? 'Copy args.' : 'Copy args (postSet).', function(o, X, m) {
+      proto.addInitAgent(this.postSet ? 9 : 0, prop.name + ': ' + this.postSet ? 'Copy args.' : 'Copy args (postSet).', function(o, X, m) {
         if ( ! map ) return;
-        if ( map.hasOwnProperty(this.name)   ) o[this.name]   = m[this.name];
-        if ( map.hasOwnProperty(this.name$_) ) o[this.name$_] = m[this.name$];
-      }.bind(prop));
+        if ( map.hasOwnProperty(this.name)   ) o[prop.name]   = m[prop.name];
+        if ( map.hasOwnProperty(this.name$_) ) o[prop.name$_] = m[prop.name$];
+      });
       */
 
       if ( this.dynamicValue ) {
-        model.addInitAgent(10, prop.name + ': dynamicValue', function(o, X) {
-          var name = this.name;
-          var dynamicValue = this.dynamicValue;
+        proto.addInitAgent(10, prop.name + ': dynamicValue', function(o, X) {
+          var name = prop.name;
+          var dynamicValue = prop.dynamicValue;
 
           Events.dynamic(
             dynamicValue.bind(o),
             function(value) { o[name] = value; });
-        }.bind(prop));
+        });
       }
 
-      if ( false && this.factory ) {
-        model.addInitAgent(11, prop.name + ': factory', function(o, X) {
-          if ( ! o.hasOwnProperty(this.name) ) o[this.name] = this.factory.call(o);
-        }.bind(prop));
+      if ( this.factory ) {
+        proto.addInitAgent(11, prop.name + ': factory', function(o, X) {
+          if ( ! o.hasOwnProperty(this.name) ) o[prop.name];// = this.factory.call(o);
+        });
       }
     }
   },

@@ -76,29 +76,8 @@ var FObject = {
   /** Context defaults to the global namespace by default. **/
   X: X,
 
-  selectProperties_: function(name, p) {
-    if ( Object.hasOwnProperty.call(this.model_, name) ) return this.model_[name];
-
-    var a = [];
-    var ps = this.model_.properties;
-    for ( var i = 0 ; i < ps.length ; i++ )
-      if ( ps[i][p] && ( ! Array.isArray(ps[i][p]) || ps[i][p].length ) )
-        a.push(ps[i]);
-
-    this.model_[name] = a;
-
-    return a;
-  },
-
   addInitAgent: function(priority, desc, agent) {
     agent.toString = function() { return desc; };
-    /*
-    var oldAgent = agent;
-    agent = function(o, X, map) {
-      console.log(oldAgent.toString());
-      return oldAgent.call(this, o, X, map);
-    };
-    */
     this.model_.initAgents_.push([priority, agent]);
   },
 
@@ -138,7 +117,7 @@ var FObject = {
 
       this.model_.properties.forEach(function(prop) {
         if ( prop.initPropertyAgents ) {
-          prop.initPropertyAgents(agents);
+          prop.initPropertyAgents(self);
         } /* else if ( Property ) {
           Property.methods.initPropertyAgents.call(prop, agents);
         } */ else {
@@ -164,30 +143,6 @@ var FObject = {
 
     var agents = this.initAgents();
     for ( var i = 0 ; i < agents.length ; i++ ) agents[i][1](this, this.X, map);
-
-    var ps;
-
-    /*
-    ps = this.selectProperties_('dynamicValueProperties_', 'dynamicValue');
-    ps.forEach(function(prop) {
-      var name = prop.name;
-      var dynamicValue = prop.dynamicValue;
-
-      Events.dynamic(
-        dynamicValue.bind(this),
-        function(value) { this[name] = value; }.bind(this));
-    }.bind(this));
-    */
-
-    ps = this.selectProperties_('factoryProperties_', 'factory');
-    for ( var i = 0 ; i < ps.length ; i++ ) {
-      var prop = ps[i];
-
-      // If a value was explicitly provided in the create args
-      // then don't call the factory if it exists.
-      // if ( ! this.instance_[prop.name] ) this[prop.name] = prop.factory.call(this);
-      if ( ! this.hasOwnProperty(prop.name) ) this[prop.name] = prop.factory.call(this);
-    }
 
     // Add shortcut create() method to Models which allows them to be
     // used as constructors.  Don't do this for the Model though
