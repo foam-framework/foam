@@ -119,7 +119,8 @@ var block2 = X.diagram.Block.create({
 }, canv.X);
 var block2Margin = X.diagram.Margin.create({ left: 20, top: 8, bottom: 8, right: 30, height: 80});
 block2Margin.addChild(block2);
-vlay2.addChild(block2Margin);
+//vlay2.addChild(block2Margin);
+canv.addChild(block2Margin);
 
 var sect1b = X.diagram.Section.create({
   title: 'More Model'
@@ -136,8 +137,8 @@ block2.addChild(spacer3);
 
 
 var link = X.diagram.Link.create({color: 'red'}, canv.X);
-link.start = block1.myLinkPoints;
-link.end = block2.myLinkPoints;
+link.start = sect1b.myLinkPoints; //block1.myLinkPoints;
+link.end = sect1.myLinkPoints; //block2.myLinkPoints;
 canv.addChild(link);
 
 //vlay1.performLayout();
@@ -145,8 +146,10 @@ var mouse = X.Mouse.create();
 mouse.connect(canv.$);
 
 Events.dynamic(function() { mouse.x; mouse.y; }, function() {
-  outerLayout.width = mouse.x;
-  outerLayout.height = mouse.y;
+  //outerLayout.width = mouse.x;
+  //outerLayout.height = mouse.y;
+  block2.x = mouse.x;
+  block2.y = mouse.y;
 });
 
 
