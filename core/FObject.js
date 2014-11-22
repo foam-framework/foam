@@ -130,10 +130,18 @@ var FObject = {
         }
       });
 
+      // Add shortcut create() method to Models
+      self.addInitAgent(0, 'Add create() to Model', function(o, X) {
+        if ( o.name != 'Model' ) o.create = BootstrapModel.create;
+      });
+      
       agents.sort(function(o1, o2) { return o1[0] - o2[0]; });
+      /*
+        // For debugging, prints list of init agents.
       for ( var i = 0 ; i < agents.length ; i++ ) {
         console.log(i, agents[i][1].toString());
       }
+      */
     }
 
     return this.initAgents_;
@@ -144,11 +152,6 @@ var FObject = {
 
     var agents = this.__proto__.initAgents();
     for ( var i = 0 ; i < agents.length ; i++ ) agents[i][1](this, this.X, map);
-
-    // Add shortcut create() method to Models which allows them to be
-    // used as constructors.  Don't do this for the Model though
-    // because we need the regular behavior there.
-    if ( this.model_ == Model && this.name != 'Model' ) this.create = BootstrapModel.create;
   },
 
   fromElement: function(e) {
