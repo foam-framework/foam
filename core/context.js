@@ -32,12 +32,12 @@ function set(key, value) {
 
 
 function setValue(key, value) {
+  var X = this;
   Object.defineProperty(
     this,
     key,
     {
-      getter: function() { this.set(key, value.get()); return this[key]; }.bind(this),
-      writable: key !== 'window',
+      get: function() { X.set(key, value.get()); return X[key]; },
       configurable: true
     }
   );
