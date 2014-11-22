@@ -56,7 +56,7 @@ MODEL({
       name: 'table',
       factory: function() {
         return CView2.create({background: 'lightgray', width: this.WIDTH, height: this.HEIGHT}).addChildren(
-          CView2.create({x: this.WIDTH/2-5, width:10, height: this.HEIGHT, background: 'white'}),
+          X.canvas.Rectangle.create({x: this.WIDTH/2-5, width:10, height: this.HEIGHT, border:'rgba(0,0,0,0)' , background: 'white'}),
           this.ball,
           this.lPaddle,
           this.rPaddle);
