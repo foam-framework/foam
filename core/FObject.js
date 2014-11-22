@@ -128,7 +128,7 @@ var FObject = {
               self.addInitAgent(0, 'export property ' + key, function(o, X) { X.setValue(alias, o[prop.name$_]); });
             }
           } else {
-            self.addInitAgent(0, 'export method ' + key, function(o, X) { debugger; X.set(alias, o[key].bind(o)); });
+            self.addInitAgent(0, 'export method ' + key, function(o, X) { X.set(alias, o[key].bind(o)); });
           }
         } else {
           // Exporting 'this'

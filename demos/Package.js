@@ -25,7 +25,7 @@ CLASS({
         this.balance += amount;
         this.reportDeposit(this.id, amount, this.balance);
 
-        console.log('*************** BANK: ', this.X.Bank);
+        console.log('Bank: ', this.X.Bank);
         return this.balance;
       }
     },
