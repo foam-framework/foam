@@ -86,10 +86,7 @@ var FObject = {
 
     // this == prototype
     if ( ! Object.hasOwnProperty.call(this, 'initAgents_') ) {
-      this.__proto__ && this.__proto__.initAgents && this.__proto__.initAgents();
-
-      // Maybe inherit initAgents from super
-      var agents = this.initAgents_ = this.initAgents_ ? this.initAgents_.clone() : [];
+      var agents = this.initAgents_ = [];
       var self = this;
 
       // Four cases for export: 'this', a method, a property value$, a property
@@ -134,11 +131,9 @@ var FObject = {
       });
 
       agents.sort(function(o1, o2) { return o1[0] - o2[0]; });
-      /*
       for ( var i = 0 ; i < agents.length ; i++ ) {
         console.log(i, agents[i][1].toString());
       }
-      */
     }
 
     return this.initAgents_;
