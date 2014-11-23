@@ -367,7 +367,8 @@ MODEL({
         if ( e2.model_.name == RULES[i][0] && e1.model_.name == RULES[i][1] ) return RULES[i][2](e2, e1);
       }
 
-      console.log('************** Unknown partialAnd combination: ', e1.name_, e2.name_);
+      if ( DEBUG )
+        console.log('Unknown partialAnd combination: ', e1.name_, e2.name_);
 
       return null;
     },
