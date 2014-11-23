@@ -51,7 +51,7 @@ MODEL({
     },
     {
       name: 'openPredicate',
-      factory: function() {
+      lazyFactory: function() {
         var ss = this.project.issuesConfig.statuses;
         var os = [];
         for ( var i = 0 ; i < ss.length ; i++ ) {
@@ -65,7 +65,7 @@ MODEL({
     {
       name: 'LabelDAO',
       help: 'DAO of known labels.',
-      factory: function() {
+      lazyFactory: function() {
         var dao = MDAO.create({model: this.X.QIssueLabel});
         this.project.issuesConfig && this.project.issuesConfig.labels.select(dao);
         return dao;
@@ -75,7 +75,7 @@ MODEL({
     {
       name: 'StatusDAO',
       help: 'DAO of known statuses.',
-      factory: function() {
+      lazyFactory: function() {
         var dao = MDAO.create({model: this.X.QIssueStatus});
         this.project.issuesConfig && this.project.issuesConfig.statuses.select(dao);
         return dao;
@@ -85,7 +85,7 @@ MODEL({
     {
       name: 'PersonDAO',
       help: 'DAO of known people.',
-      factory: function() {
+      lazyFactory: function() {
         var dao = MDAO.create({ model: IssuePerson });
         this.project.members.select(dao);
         return dao;
@@ -96,7 +96,7 @@ MODEL({
     },
     {
       name: 'IssueMDAO',
-      factory: function() {
+      lazyFactory: function() {
         var dao  = this.X.MDAO.create({model: this.X.QIssue});
         var auto = this.X.AutoIndex.create(dao);
 
@@ -108,7 +108,7 @@ MODEL({
     },
     {
       name: 'IssueIDBDAO',
-      factory: function() {
+      lazyFactory: function() {
         return this.X.EasyDAO.create({
           model: this.X.QIssue,
           name: this.projectName + '_' + this.X.QIssue.plural,
@@ -136,7 +136,7 @@ MODEL({
     },
     {
       name: 'IssueCommentNetworkDAO',
-      factory: function() {
+      lazyFactory: function() {
         return this.X.LazyCacheDAO.create({
           model: this.X.QIssueComment,
           cacheOnSelect: true,
@@ -153,7 +153,7 @@ MODEL({
     },
     {
       name: 'IssueCommentDAO',
-      factory: function() {
+      lazyFactory: function() {
         return this.X.QIssueCommentUpdateDAO.create({
           delegate: this.IssueCommentNetworkDAO
         });
@@ -167,7 +167,7 @@ MODEL({
     },
     {
       name: 'IssueNetworkDAO',
-      factory: function() {
+      lazyFactory: function() {
         return this.X.IssueRestDAO.create({
           url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
           IssueCommentDAO: this.IssueCommentNetworkDAO,
@@ -189,7 +189,7 @@ MODEL({
     },
     {
       name: 'bookmarkDAO',
-      factory: function() {
+      lazyFactory: function() {
         var newDAO = this.X.EasyDAO.create({
           model:   Bookmark,
           name:    this.projectName + '_' + Bookmark.plural,
@@ -232,7 +232,7 @@ MODEL({
     },
     {
       name: 'persistentContext',
-      factory: function() {
+      lazyFactory: function() {
         return this.X.PersistentContext.create({
           dao: this.X.IDBDAO.create({
             model: this.X.Binding,
@@ -252,7 +252,7 @@ MODEL({
     },
     {
       name: 'defaultSortChoices',
-      factory: function() {
+      lazyFactory: function() {
         return [
           [ DESC(this.X.QIssue.MODIFIED),      'Last modified' ],
           [ this.X.QIssue.PRI, 'Priority' ],
