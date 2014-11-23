@@ -26,6 +26,7 @@
 
 /** Publish and Subscribe Event Notification Service. **/
 // ??? Whould 'Observable' be a better name?
+// TODO(kgr): Model or just make part of FObject?
 var EventService = {
 
   /** If listener thows this exception, it will be removed. **/
@@ -343,6 +344,7 @@ var EventService = {
 
 
 /** Extend EventService with support for dealing with property-change notification. **/
+// TODO(kgr): Model
 var PropertyChangeSupport = {
 
   __proto__: EventService,
@@ -574,20 +576,20 @@ var Events = {
    * passed to 'opt_fn'.
    * @param opt_fn also invoked when dependencies change,
    *        but its own dependencies are not tracked.
-   * @returns a cleanup object. call ret.destroy(); to 
+   * @returns a cleanup object. call ret.destroy(); to
    *        destroy the dynamic function and listeners.
    */
   dynamic: function(fn, opt_fn, opt_X) {
     var fn2 = opt_fn ? function() { opt_fn(fn()); } : fn;
     var listener = EventService.framed(fn2, opt_X);
-    var destroyHelper = { 
+    var destroyHelper = {
       listener: listener,
       propertyValues: [].clone(),
-      destroy: function() { 
+      destroy: function() {
         this.propertyValues.forEach(function(p) {
-          p.removeListener(this.listener); 
+          p.removeListener(this.listener);
         }.bind(this))
-      } 
+      }
     };
     Events.onGet.push(function(obj, name, value) {
       // Uncomment next line to debug.
@@ -622,7 +624,7 @@ Function.prototype.o = function(f2) {
   return function() { return f1.call(this, f2.apply(this, argsToArray(arguments))); };
 };
 
-
+// TODO(kgr): Model
 var Movement = {
 
   distance: function(x, y) { return Math.sqrt(x*x + y*y); },
