@@ -18,8 +18,7 @@
 MODEL({
   name: 'PositionedViewTrait',
   properties: [
-    { name: 'x', setter: function() { debugger; }, getter: function() { debugger; } },
-    { model_: 'FloatProperty', name: 'x_',      units: 'px', defaultValue: 0 },
+    { model_: 'FloatProperty', name: 'x',      units: 'px', defaultValue: 0 },
     { model_: 'FloatProperty', name: 'y',      units: 'px', defaultValue: 0 },
     { model_: 'FloatProperty', name: 'z',      units: 'px', defaultValue: 0 },
     { model_: 'IntProperty', name: 'width',  units: 'px', defaultValue: 100 },
@@ -28,6 +27,7 @@ MODEL({
     { model_: 'IntProperty', name: 'preferredHeight', units: 'px', defaultValue: 100 }
   ]
 });
+
 
 MODEL({
   name: 'DOMPanel',
@@ -66,8 +66,8 @@ MODEL({
       name: 'layout',
       isFramed: true,
       code: function() {
-        if (!this.view) return;
-        this.view.x_ = 0;
+        if ( ! this.view ) return;
+        this.view.x = 0;
         this.view.y = 0;
         this.view.z = 0;
         this.view.width = this.width;
@@ -78,13 +78,14 @@ MODEL({
       name: 'onResize',
       isMerged: 100,
       code: function() {
-        if (!this.$) return;
-        this.width = this.$.clientWidth;
+        if ( ! this.$ ) return;
+        this.width  = this.$.clientWidth;
         this.height = this.$.clientHeight;
       }
     }
   ]
 });
+
 
 MODEL({
   name: 'PositionedDOMViewTrait',
@@ -111,17 +112,19 @@ MODEL({
     initHTML: function() {
       this.SUPER();
       var self = this;
-      this.X.dynamic(function() { self.x_; self.y; self.z; },
-                     this.position);
-      this.X.dynamic(function() { self.width; self.height; },
-                     this.resize);
+      this.X.dynamic(
+        function() { self.x; self.y; self.z; },
+        this.position);
+      this.X.dynamic(
+        function() { self.width; self.height; },
+        this.resize);
       this.$.style.position = 'absolute';
       this.position();
       this.resize();
     },
     transform: function() {
       return 'translate3d(' +
-        this.x_ + 'px,' +
+        this.x + 'px,' +
         this.y + 'px,' +
         this.z + 'px)';
     },
@@ -151,6 +154,7 @@ MODEL({
   ]
 });
 
+
 MODEL({
   name: 'Window',
   properties: [
@@ -170,14 +174,15 @@ MODEL({
       type: 'View',
       postSet: function(old, v) {
         var self = this;
-        v.x_ = 0;
+        v.x = 0;
         v.y = 0;
-        this.X.dynamic(function() { self.width; self.height; },
-                       function() {
-                         v.width = self.width;
-                         v.height = self.height;
-                         self.window.document.body.style.height = self.height + 'px';
-                       });
+        this.X.dynamic(
+          function() { self.width; self.height; },
+          function() {
+            v.width  = self.width;
+            v.height = self.height;
+            self.window.document.body.style.height = self.height + 'px';
+          });
         var s = this.window.document.body.style;
         s.padding = '0px';
         s.margin = '0px';
@@ -198,13 +203,15 @@ MODEL({
   ]
 });
 
+
 MODEL({
   name: 'Point',
   properties: [
-    { model_: 'IntProperty', name: 'x_' },
+    { model_: 'IntProperty', name: 'x' },
     { model_: 'IntProperty', name: 'y' }
   ]
 });
+
 
 MODEL({
   name: 'FloatingView',
@@ -219,6 +226,7 @@ MODEL({
     function toInnerHTML() {/* %%view */}
   ]
 });
+
 
 MODEL({
   name: 'ViewSlider',
@@ -253,8 +261,15 @@ MODEL({
     init: function() {
       this.SUPER();
       var self = this;
-      this.X.dynamic(function() { self.width; self.height; self.direction; self.slideAmount; self.reverse },
-                     this.layout);
+      this.X.dynamic(
+        function() {
+          self.width;
+          self.height;
+          self.direction;
+          self.slideAmount;
+          self.reverse;
+        },
+        this.layout);
     },
     toHTML: function() {
       this.children = [];
@@ -329,17 +344,17 @@ MODEL({
         if ( this.reverse ) r = -1;
 
         if ( this.direction === 'horizontal' ) {
-          this.view.x_ = -(r * this.slideAmount * this.width);
+          this.view.x = -(r * this.slideAmount * this.width);
           this.view.y = 0;
           if ( this.incomingView ) {
-            this.incomingView.x_ = r * this.width - (r * this.slideAmount * this.width);
+            this.incomingView.x = r * this.width - (r * this.slideAmount * this.width);
             this.incomingView.y = 0;
           }
         } else {
-          this.view.x_ = 0;
+          this.view.x = 0;
           this.view.y = -(r * this.slideAmount * this.height);
           if ( this.incomingView ) {
-            this.incomingView.x_ = 0;
+            this.incomingView.x = 0;
             this.incomingView.y = r * this.height - (r * this.slideAmount * this.height);
           }
         }
@@ -347,6 +362,7 @@ MODEL({
     }
   ]
 });
+
 
 MODEL({
   name: 'OverlaySlider',
@@ -393,15 +409,12 @@ MODEL({
   listeners: [
     {
       name: 'onClick',
-      code: function() {
-        this.publish(['click']);
-      }
+      code: function() { this.publish(['click']); }
     },
     {
       name: 'layout',
       code: function() {
-        var width = Math.min(this.view.preferredWidth,
-                             this.width);
+        var width = Math.min(this.view.preferredWidth, this.width);
 
         if ( this.$ ) {
           var overlay = this.X.$(this.id + '-slider');
@@ -414,7 +427,7 @@ MODEL({
         if ( this.view ) {
           this.view.width = width;
           this.view.height = this.height;
-          this.view.x_ = -((1 - this.slideAmount) * width);
+          this.view.x = -((1 - this.slideAmount) * width);
           this.view.y = 0;
           this.view.z = 1;
         }

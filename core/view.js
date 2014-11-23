@@ -263,7 +263,7 @@ MODEL({
       name:  'id',
       label: 'Element ID',
       type:  'String',
-      lazyFactory: function() { return this.nextID(); },
+      factory: function() { return this.nextID(); },
       documentation: function() {/*
         The DOM element id for the outermost tag of
         this $$DOC{ref:'View'}.
@@ -1127,7 +1127,7 @@ MODEL({
       type: 'View',
     },
     {
-      name: 'x_'
+      name: 'x'
     },
     {
       name: 'y'
@@ -1156,7 +1156,7 @@ MODEL({
       if ( this.$ ) return;
       var document = this.X.document;
       var div      = document.createElement('div');
-      div.style.left = this.x_ + 'px';
+      div.style.left = this.x + 'px';
       div.style.top = this.y + 'px';
       if ( this.width )     div.style.width = this.width + 'px';
       if ( this.height )    div.style.height = this.height + 'px';

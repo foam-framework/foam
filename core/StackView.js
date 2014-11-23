@@ -22,21 +22,23 @@
 */
 MODEL({
   name: 'StackView',
-  traits: ['PositionedDOMViewTrait'],
   extendsModel: 'View',
+
+  traits: ['PositionedDOMViewTrait'],
+
   properties: [
     {
       model_: 'ArrayProperty',
       name: 'stack',
-      factory: function() { return []; }
+      lazyFactory: function() { return []; }
     },
     {
       name: 'redo',
-      factory: function() { return []; }
+      lazyFactory: function() { return []; }
     },
     {
       name: 'slider',
-      factory: function() { return this.X.ViewSlider.create(); }
+      lazyFactory: function() { return this.X.ViewSlider.create(); }
     },
     {
       name: 'overlaySlider',
@@ -49,9 +51,11 @@ MODEL({
     { model_: 'BooleanProperty', name: 'sliderOpen', defaultValue: false },
     'slideLatch'
   ],
+
   constants: {
     EASE_ACCELERATION: 0.9
   },
+
   methods: {
     init: function() {
       this.SUPER();
@@ -118,13 +122,13 @@ MODEL({
     {
       name: 'layout',
       code: function() {
-        this.overlaySlider.x_ = 0;
+        this.overlaySlider.x = 0;
         this.overlaySlider.y = 0;
         this.overlaySlider.z = this.sliderOpen ? 1 : 0;
         this.overlaySlider.width = this.width;
         this.overlaySlider.height = this.height;
 
-        this.slider.x_ = 0;
+        this.slider.x = 0;
         this.slider.y = 0;
         this.slider.width = this.width;
         this.slider.height = this.height;

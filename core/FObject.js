@@ -49,6 +49,7 @@ var FObject = {
     if ( typeof args === 'object' ) o.copyFrom(args);
 
     o.init(args);
+//    if ( ! Object.hasOwnProperty(this, 'superInitCalled_') ) console.warn('Failed to call SUPER() in init ', this.name_);
 
     return o;
   },
@@ -92,12 +93,12 @@ var FObject = {
       // Four cases for export: 'this', a method, a property value$, a property
       Object_forEach(this.model_.exports, function(e) {
         var exp = e.split('as ');
-        
+
         if ( exp.length == 0 ) return;
-        
+
         var key   = exp[0].trim();
         var alias = exp[1] || exp[0];
-        
+
         if ( key ) {
           var asValue = key.charAt(key.length-1) == '$';
           if ( asValue ) key = key.slice(0, key.length-1);
@@ -136,7 +137,7 @@ var FObject = {
       self.addInitAgent(0, 'Add create() to Model', function(o, X) {
         if ( o.name != 'Model' ) o.create = BootstrapModel.create;
       });
-      
+
       agents.sort(function(o1, o2) { return o1[0] - o2[0]; });
       /*
         // For debugging, prints list of init agents.
@@ -150,6 +151,8 @@ var FObject = {
   },
 
   init: function(map) {
+    // this.superInitCalled_ = true;
+
     if ( ! this.model_ ) return;
 
     var agents = this.__proto__.initAgents();
@@ -396,7 +399,6 @@ var FObject = {
         setter.call(this, this.instance_[name], newValue);
       }; })(setter);
       */
-
       setter = (function(setter) { return function(newValue) {
         setter.call(this, this[name], newValue);
       }; })(setter);
