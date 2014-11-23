@@ -70,7 +70,6 @@ MODEL({
         property, from which $$DOC{ref:'PropertyView'} will extract its named
         $$DOC{ref:'Property'}
         and bind the property to the sub-view $$DOC{ref:'DetailView.data'}.
-
       */}
     },
     {
@@ -90,7 +89,6 @@ MODEL({
         $$DOC{ref:'Property',usePlural:true}. Changing the $$DOC{ref:'.data'} out
         for another instance of the same $$DOC{ref:'Model'} will refresh the contents
         of the sub-views without destroying and re-creating them.
-
       */}
     },
     {
@@ -107,7 +105,6 @@ MODEL({
       defaultValue: 'read-write',
       documentation: function() {/*
         The editing mode. To disable editing set to 'read-only'.
-
       */}
     },
     {
@@ -117,7 +114,6 @@ MODEL({
       documentation: function() {/*
         Set true to create sub-views to display $$DOC{ref:'Relationship',usePlural:true}
         for the $$DOC{ref:'.model'}.
-
       */}
     }
   ],
@@ -198,8 +194,7 @@ MODEL({
          <p>$$DOC{ref:'Model',usePlural:true} may specify a .toDetailHTML() $$DOC{ref:'Method'} or
          $$DOC{ref:'Template'} to render their contents instead of the
           $$DOC{ref:'DetailView.defaultToHTML'} we supply here.
-
-        */
+      */
 
       if ( ! this.model ) throw "DetailView: either 'data' or 'model' must be specified.";
 
@@ -407,6 +402,7 @@ MODEL({
     function toInnerHTML() {/* %%view */}
   ]
 });
+
 
 MODEL({
   name: 'RelationshipsView',
