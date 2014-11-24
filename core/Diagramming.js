@@ -464,6 +464,18 @@ MODEL({
       name: 'arrowLength',
       model_: 'IntProperty',
       defaultValue: 20
+    },
+    {
+      name: 'arrowStyle',
+      type: 'String',
+      defaultValue: 'association', // aggregation, composition, generalization, dependency
+      documentation: function () {/* Arrow styles:
+             <ul><li>association: no arrows</li>
+                 <li>aggregation: hollow diamond at start</li>
+                 <li>composition: filled diamond at start</li>
+                 <li>generalization: hollow arrow at start</li>
+                 <li>dependency: open arrow at end</li>
+              </ul>*/},
     }
 
   ],
@@ -483,20 +495,7 @@ MODEL({
       var V = 1;
       var sideDirs = { left: -1, right: 1, top: -1, bottom: 1 };
 
-      // draw arrows
-      c.save();
-      
-      // fake arrows
-      c.lineWidth = 4;
-      c.moveTo(points.start.x, points.start.y);
-      c.lineTo(s.x, s.y);
-      
-      c.moveTo(points.end.x, points.end.y);
-      c.lineTo(e.x,e.y);
-      
-      c.stroke();
-      
-      c.restore();
+      this.paintArrows(points, s, e);
 
       // draw connector
       if (this.style === 'manhattan')
@@ -610,6 +609,53 @@ MODEL({
         }.bind(this));
       }.bind(this));
       return { start: smallestStart, end: smallestEnd }
+    },
+    
+    paintArrows: function(points, s, e) {
+      // draw arrows
+      var c = this.canvas;
+      c.save();
+      
+      // draw end line in all cases
+      c.moveTo(points.end.x, points.end.y);
+      c.lineTo(e.x,e.y);
+      c.stroke();
+
+      if (this.arrowStyle === 'association') {
+        c.moveTo(points.start.x, points.start.y);
+        c.lineTo(s.x, s.y);        
+        c.stroke();
+      } else {
+        c.save();
+
+        c.translate(points.start.x, points.start.y);
+        if (points.start.side==='top') c.rotate(-Math.PI/2);
+        if (points.start.side==='bottom') c.rotate(Math.PI/2);
+        if (points.start.side==='left') c.rotate(Math.PI);
+        
+        c.moveTo(0,0);
+        if (this.arrowStyle === 'aggregation' || this.arrowStyle === 'composition' ) {
+          c.lineTo(this.arrowLength/2, -this.arrowLength/4);
+          c.lineTo(this.arrowLength, 0);
+          c.lineTo(this.arrowLength/2, this.arrowLength/4);
+          c.lineTo(0,0);
+          if (this.arrowStyle==='aggregation') {
+            c.stroke();
+          } else {
+            c.fillStyle = this.color;
+            c.fill();
+          }
+        } else if (this.arrowStyle === 'generalization') {
+          c.lineTo(this.arrowLength/1.2, -this.arrowLength/2);
+          c.lineTo(this.arrowLength/1.2, this.arrowLength/2);
+          c.lineTo(0,0);
+          c.moveTo(this.arrowLength/1.2, 0);
+          c.lineTo(this.arrowLength, 0)
+          c.stroke();
+        }
+        c.restore();
+      }      
+      c.restore();
     }
 
   }
