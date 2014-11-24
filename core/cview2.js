@@ -475,6 +475,7 @@ MODEL({
       for ( var i = 0 ; i < this.children.length ; i++ ) {
         var child = this.children[i];
         this.canvas.save();
+        this.canvas.beginPath(); // reset any existing path (canvas.restore() does not affect path)
         child.paint();
         this.canvas.restore();
       }

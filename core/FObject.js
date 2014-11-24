@@ -331,7 +331,7 @@ var FObject = {
           if ( typeof this.instance_[name] == 'undefined' ) {
             this.instance_[name] = null; // prevents infinite recursion
             // console.log('Ahead of order factory: ', prop.name);
-            debugger;
+            //debugger;
             var val = prop.factory.call(this, prop);
             this[name] = val;
           }

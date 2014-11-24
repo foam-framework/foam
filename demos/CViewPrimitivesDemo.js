@@ -77,7 +77,7 @@ vlay1.addChild(spacer1b);
 var label1 = X.BorderLabel.create({
        x: 60,
        y: 25,
-       color: 'blue',
+       color: 'red',
        width: 120,
        height: 30,
        text: 'Hello World',
@@ -136,7 +136,7 @@ spacer3.verticalConstraints.stretchFactor = 1;
 block2.addChild(spacer3);
 
 
-var link = X.diagram.Link.create({color: 'red', arrowStyle:'generalization'}, canv.X);
+var link = X.diagram.Link.create({color: 'blue', arrowStyle:'composition'}, canv.X);
 link.start = block1.myLinkPoints;
 link.end = block2.myLinkPoints;
 canv.addChild(link);

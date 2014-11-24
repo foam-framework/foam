@@ -615,16 +615,19 @@ MODEL({
       // draw arrows
       var c = this.canvas;
       c.save();
-      
+      c.beginPath();
+
       // draw end line in all cases
       c.moveTo(points.end.x, points.end.y);
       c.lineTo(e.x,e.y);
       c.stroke();
+      c.beginPath();
 
       if (this.arrowStyle === 'association') {
         c.moveTo(points.start.x, points.start.y);
         c.lineTo(s.x, s.y);        
         c.stroke();
+        c.beginPath();
       } else {
         c.save();
 
@@ -641,6 +644,7 @@ MODEL({
           c.lineTo(0,0);
           if (this.arrowStyle==='aggregation') {
             c.stroke();
+            c.beginPath();
           } else {
             c.fillStyle = this.color;
             c.fill();
@@ -652,6 +656,7 @@ MODEL({
           c.moveTo(this.arrowLength/1.2, 0);
           c.lineTo(this.arrowLength, 0)
           c.stroke();
+          c.beginPath();
         }
         c.restore();
       }      
