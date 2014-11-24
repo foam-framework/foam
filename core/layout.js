@@ -18,13 +18,13 @@
 MODEL({
   name: 'PositionedViewTrait',
   properties: [
-    { model_: 'FloatProperty', name: 'x',      units: 'px', defaultValue: 0 },
-    { model_: 'FloatProperty', name: 'y',      units: 'px', defaultValue: 0 },
-    { model_: 'FloatProperty', name: 'z',      units: 'px', defaultValue: 0 },
-    { model_: 'IntProperty', name: 'width',  units: 'px', defaultValue: 100 },
-    { model_: 'IntProperty', name: 'height', units: 'px', defaultValue: 100 },
-    { model_: 'IntProperty', name: 'preferredWidth', units: 'px', defaultValue: 100 },
-    { model_: 'IntProperty', name: 'preferredHeight', units: 'px', defaultValue: 100 }
+    { model_: 'FloatProperty', name: 'x',               units: 'px', defaultValue: 0 },
+    { model_: 'FloatProperty', name: 'y',               units: 'px', defaultValue: 0 },
+    { model_: 'FloatProperty', name: 'z',               units: 'px', defaultValue: 0 },
+    { model_: 'IntProperty',   name: 'width',           units: 'px', defaultValue: 100 },
+    { model_: 'IntProperty',   name: 'height',          units: 'px', defaultValue: 100 },
+    { model_: 'IntProperty',   name: 'preferredWidth',  units: 'px', defaultValue: 100 },
+    { model_: 'IntProperty',   name: 'preferredHeight', units: 'px', defaultValue: 100 }
   ]
 });
 
@@ -55,7 +55,7 @@ MODEL({
     },
     destroy: function() {
       this.SUPER();
-      if (this.window) this.window.removeEventListener('resize', this.onResize);
+      if ( this.window ) this.window.removeEventListener('resize', this.onResize);
     }
   },
   templates: [
@@ -128,12 +128,8 @@ MODEL({
         this.y + 'px,' +
         this.z + 'px)';
     },
-    styleWidth: function() {
-      return this.width + 'px';
-    },
-    styleHeight: function() {
-      return this.height + 'px';
-    }
+    styleWidth: function() { return this.width + 'px'; },
+    styleHeight: function() { return this.height + 'px'; }
   },
   listeners: [
     {
@@ -307,9 +303,7 @@ MODEL({
 
       var self = this;
 
-      var fn = function() {
-        self.slideAmount = 1.0;
-      };
+      var fn = function() { self.slideAmount = 1.0; };
 
       window.setTimeout(function() {
         self.latch = this.X.animate(opt_time, fn, opt_interp, function() {
