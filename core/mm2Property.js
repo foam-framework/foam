@@ -267,6 +267,10 @@ var Property = {
       */}
     },
     {
+      name: 'pattern',
+      help: 'Regex pattern for property.'
+    },
+    {
       model_: 'ViewFactoryProperty',
       name: 'view',
       type: 'view',
