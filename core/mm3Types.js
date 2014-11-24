@@ -54,6 +54,10 @@ var StringProperty = Model.create({
       defaultValue: 'TextFieldView'
     },
     {
+      name: 'pattern',
+      help: 'Regex pattern for property.'
+    },
+    {
       name: 'prototag',
       label: 'Protobuf tag',
       type: 'Int',

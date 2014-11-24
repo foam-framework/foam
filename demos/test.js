@@ -535,6 +535,7 @@ MODEL({
       view: { factory_: 'TextFieldView', required: true }
     },
     {
+      model_: 'StringProperty',
       name: 'patternField',
       pattern: '###'
     },
