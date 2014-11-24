@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   name: 'Ball',
   extendsModel: 'Circle2',
   traits: ['Physical', 'MotionBlur'],
@@ -11,7 +11,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'Paddle',
   extendsModel: 'Circle2',
   traits: ['Physical', 'Shadow'],
@@ -23,7 +23,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'Pong',
   extendsModel: 'View',
 
@@ -162,7 +162,7 @@ MODEL({
       this.lPaddle.y = this.rPaddle.y = (this.HEIGHT-this.rPaddle.height)/2;
 
       // Setup Ball
-      this.ball.x  = this.ball.y  = 100;
+      this.ball.x  = this.ball.y = 100;
       this.ball.y  = this.rPaddle.y;
       this.ball.vx = this.ball.vy = 10;
 
