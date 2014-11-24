@@ -580,7 +580,7 @@ var Property = {
       proto.addInitAgent((this.postSet || this.setter) ? 9 : 0, this.name + ': ' + (this.postSet || this.setter ? 'copy arg (postSet)' : 'copy arg'), function(o, X, m) {
         if ( ! m ) return;
         if ( m.hasOwnProperty(prop.name)   ) o[prop.name]   = m[prop.name];
-        if ( m.hasOwnProperty(prop.name$_) ) o[prop.name$_] = m[prop.name$];
+        if ( m.hasOwnProperty(prop.name$_) ) o[prop.name$_] = m[prop.name$_];
       });
 
       if ( this.dynamicValue ) {
