@@ -615,6 +615,12 @@ MODEL({
         }.bind(this));
       }.bind(this));
 
+
+      if (!byDist[smallest]) {
+        // no good points, so return something
+        return { start: self.start[0], end: self.end[0], shortAxisDist: 0 };
+      }
+
       return byDist[smallest];
     },
     
