@@ -76,7 +76,7 @@ var __features__ = [
   [ String          , 'Method$',    function constantize() {
     // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
     // TODO: add property to specify constantization. For now catch special case to avoid conflict with context this.X.
-    return this === "x"? "X_" : this.replace(/[a-z_][^a-z_]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase();
+    return this == "x"? "X_" : this.replace(/[a-z_][^a-z_]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase();
   }],
   [ String          , 'Method$',    function clone() { return this.toString(); }],
   [ Object          , 'Method$',    function clone() { return this; }],
