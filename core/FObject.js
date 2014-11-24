@@ -411,7 +411,7 @@ var FObject = {
 
       /* TODO: New version that doesn't trigger lazyFactory or getter. */
       setter = (function(setter) { return function(newValue) {
-        setter.call(this, this.instance_[name] || prop.defaultValue, newValue);
+        setter.call(this, typeof this.instance_[name] == 'undefined' ? prop.defaultValue : this.instance_[name], newValue);
       }; })(setter);
 
       /*
