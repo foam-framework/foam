@@ -46,8 +46,9 @@ var FObject = {
       }
     }
 
-    if ( typeof args === 'object' ) o.copyFrom(args);
+//    if ( typeof args === 'object' ) o.copyFrom(args);
 
+    o.initX(args);
     o.init(args);
 //    if ( ! Object.hasOwnProperty(this, 'superInitCalled_') ) console.warn('Failed to call SUPER() in init ', this.name_);
 
@@ -138,19 +139,26 @@ var FObject = {
         if ( o.name != 'Model' ) o.create = BootstrapModel.create;
       });
 
-      agents.sort(function(o1, o2) { return o1[0] - o2[0]; });
+      // Works if sort is 'stable', which it isn't in Chrome
+      // agents.sort(function(o1, o2) { return o1[0] - o2[0]; });
+
+      // TODO(kgr): make a stableSort() function in stdlib
+      for ( key in agents ) agents[key][2] = key;
+      agents.sort(CompoundComparator(
+        function(o1, o2) { return o1[0] - o2[0]; },
+        function(o1, o2) { return o1[2] - o2[2]; }));
+
+      // For debugging, prints list of init agents.
       /*
-        // For debugging, prints list of init agents.
-      for ( var i = 0 ; i < agents.length ; i++ ) {
-        console.log(i, agents[i][1].toString());
-      }
+      for ( var i = 0 ; i < agents.length ; i++ )
+        console.log(i, agents[i][0], agents[i][1].toString());
       */
     }
 
     return this.initAgents_;
   },
 
-  init: function(map) {
+  initX: function(map) {
     // this.superInitCalled_ = true;
 
     if ( ! this.model_ ) return;
@@ -158,6 +166,8 @@ var FObject = {
     var agents = this.__proto__.initAgents();
     for ( var i = 0 ; i < agents.length ; i++ ) agents[i][1](this, this.X, map);
   },
+
+  init: nop,
 
   fromElement: function(e) {
     var elements = this.elementMap_;
@@ -317,9 +327,14 @@ var FObject = {
         };
       } else if ( prop.factory ) {
         getter = function() {
-          if ( typeof this.instance_[name] !== 'undefined' ) return this.instance_[name];
-// console.log('Ahead of order factory: ', prop.name);
-          this.instance_[name] = prop.factory.call(this, prop);
+//          console.log('.');
+          if ( typeof this.instance_[name] == 'undefined' ) {
+            this.instance_[name] = null; // prevents infinite recursion
+            // console.log('Ahead of order factory: ', prop.name);
+            debugger;
+            var val = prop.factory.call(this, prop);
+            this[name] = val;
+          }
           return this.instance_[name];
         };
       } else if ( prop.defaultValueFn ) {
@@ -394,15 +409,16 @@ var FObject = {
         }; })(setter, prop.preSet);
       }
 
-      /* TODO: New version that doesn't trigger lazyFactory or getter.
+      /* TODO: New version that doesn't trigger lazyFactory or getter. */
       setter = (function(setter) { return function(newValue) {
         setter.call(this, this.instance_[name], newValue);
       }; })(setter);
-      */
+      
+      /*
       setter = (function(setter) { return function(newValue) {
         setter.call(this, this[name], newValue);
       }; })(setter);
-
+      */
       this.defineFOAMSetter(name, setter);
     }
 

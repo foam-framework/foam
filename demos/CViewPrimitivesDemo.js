@@ -117,7 +117,7 @@ var block2 = X.diagram.Block.create({
        height: 50,
 
 }, canv.X);
-var block2Margin = X.diagram.Margin.create({ left: 20, top: 8, bottom: 8, right: 30, height: 80});
+var block2Margin = X.diagram.Margin.create({ left: 8, top: 8, bottom: 8, right: 8, width: 80, height: 80});
 block2Margin.addChild(block2);
 //vlay2.addChild(block2Margin);
 canv.addChild(block2Margin);
@@ -136,9 +136,9 @@ spacer3.verticalConstraints.stretchFactor = 1;
 block2.addChild(spacer3);
 
 
-var link = X.diagram.Link.create({color: 'red'}, canv.X);
-link.start = sect1b.myLinkPoints; //block1.myLinkPoints;
-link.end = sect1.myLinkPoints; //block2.myLinkPoints;
+var link = X.diagram.Link.create({color: 'red', arrowStyle:'generalization'}, canv.X);
+link.start = block1.myLinkPoints;
+link.end = block2.myLinkPoints;
 canv.addChild(link);
 
 //vlay1.performLayout();
