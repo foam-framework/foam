@@ -524,6 +524,9 @@ MODEL({
   name: 'Test',
   properties: [
     {
+      name: 'notReq'
+    },
+    {
       name: 'reqField',
       required: true
     },
@@ -532,8 +535,12 @@ MODEL({
       view: { factory_: 'TextFieldView', required: true }
     },
     {
-      name: 'notReq',
-      required: true
+      name: 'patternField',
+      pattern: '###'
+    },
+    {
+      name: 'patternView',
+      view: { factory_: 'TextFieldView', pattern: '###' }
     }
   ]
 });
