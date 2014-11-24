@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
    name: 'Feature',
    plural:'Features',
    help:  "A feature of a Model.",

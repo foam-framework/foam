@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'IssueRestDAO',
   extendsModel: 'RestDAO',
 
@@ -207,7 +207,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'QIssueCommentUpdateDAO',
   help: 'Decorates a comment dao, and on put, updates an associated issue dao.',
   extendsModel: 'ProxyDAO',
@@ -232,7 +232,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'QIssueCommentNetworkDAO',
   extendsModel: 'RestDAO',
 
@@ -322,7 +322,7 @@ IssueCommentNetworkDAO.where(EQ(CrIssue.ID, 225776)).select(console.log.json);
  * Remote data is stored non-permanently in the local MDAO.
  * Also merges DAO update events so as to not force the GUI to update on every frame.
  **/
-MODEL({
+CLASS({
   name: 'QIssueSplitDAO',
   extendsModel: 'AbstractDAO',
 

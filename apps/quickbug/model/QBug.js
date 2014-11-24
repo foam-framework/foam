@@ -19,7 +19,7 @@ var BROWSERS = []; // for debugging
 
 
 /** QuickBug Top-Level Object. **/
-MODEL({
+CLASS({
   name: 'QBug',
   label: 'Quick Bug',
 

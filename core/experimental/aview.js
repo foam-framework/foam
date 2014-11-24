@@ -16,7 +16,7 @@
  */
 // Experimental Animated Views
 
-MODEL({
+CLASS({
   name: 'ALabel',
 
   extendsModel: 'View',
@@ -66,7 +66,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'AImageView',
 
   extendsModel: 'View',

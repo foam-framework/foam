@@ -5,7 +5,7 @@ aDAO.put(Bookmark.create({id: 2, title: 'title2'}));
 aDAO.put(Bookmark.create({id: 3, title: 'title3'}));
 aDAO.remove(2);
 
-MODEL({
+CLASS({
   name: 'ArrayDAOExample',
   properties: [
     {
@@ -31,7 +31,7 @@ var ade = ArrayDAOExample.create({p2: [
 ade.write(document);
 
 
-MODEL({
+CLASS({
   name: 'Point',
   properties: [ 'x', 'y' ],
   methods: {
@@ -44,7 +44,7 @@ p.scale(2);
 p.x = p.y;
 console.log(p.toJSON());
 
-MODEL({
+CLASS({
   name: 'Point3D',
   extendsModel: 'Point',
   properties: [ 'z' ],
@@ -520,7 +520,7 @@ ctrl.__proto__.stackView = stack;
 stack.pushView(ctrl, "Browse Models");
 
 
-MODEL({
+CLASS({
   name: 'Test',
   properties: [
     {

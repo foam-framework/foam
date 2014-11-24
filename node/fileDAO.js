@@ -1,6 +1,6 @@
 var fs = require('fs');
 
-MODEL({
+CLASS({
   name: 'JSONFileDAO',
 
   extendsModel: 'MDAO',
@@ -52,7 +52,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'XMLFileDAO',
 
   extendsModel: 'MDAO',

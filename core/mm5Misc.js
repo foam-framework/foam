@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'UnitTest',
   plural: 'Unit Tests',
 
@@ -280,7 +280,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'RegressionTest',
   label: 'Regression Test',
   documentation: 'A $$DOC{ref: "UnitTest"} with a "gold master", which is compared with the output of the live test.',
@@ -325,7 +325,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'UITest',
   label: 'UI Test',
 
@@ -345,7 +345,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'Relationship',
   tableProperties: [
     'name', 'label', 'relatedModel', 'relatedProperty'
@@ -445,7 +445,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'Issue',
   plural: 'Issues',
   help: 'An issue describes a question, feature request, or defect.',

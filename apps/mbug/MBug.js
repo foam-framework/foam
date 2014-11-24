@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   name: 'MBug',
   extendsModel: 'View',
   description: 'Mobile QuickBug',
@@ -129,7 +129,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'PriorityView',
   extendsModel: 'View',
   properties: [
@@ -161,7 +161,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'PriorityCitationView',
   extendsModel: 'PriorityView',
   methods: {
@@ -180,7 +180,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'IssueCitationView',
   extendsModel: 'DetailView',
   templates: [
@@ -208,7 +208,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'CommentView',
   extendsModel: 'DetailView',
 
@@ -232,7 +232,7 @@ MODEL({
 
 // Is actually a DetailView on User, but is only really
 // used to show and select available projects.
-MODEL({
+CLASS({
   name: 'ChangeProjectView',
   extendsModel: 'DetailView',
   requires: [ 'ImageView' ],

@@ -3,7 +3,7 @@
  * Draw the ID with style line-through if issue closed.
  * Display a TileView hover preview.
  **/
-MODEL({
+CLASS({
   name: 'BlockView',
   extendsModel: 'View',
 

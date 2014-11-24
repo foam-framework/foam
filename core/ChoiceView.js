@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-MODEL({
+CLASS({
   name: 'AbstractChoiceView',
 
   extendsModel: 'View',
@@ -192,7 +192,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ChoiceListView',
 
   extendsModel: 'AbstractChoiceView',
@@ -304,7 +304,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'ChoiceView',
 
   extendsModel: 'AbstractChoiceView',
@@ -413,7 +413,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'RadioBoxView',
 
   extendsModel: 'ChoiceView',
@@ -458,7 +458,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'PopupChoiceView',
 
   extendsModel: 'AbstractChoiceView',

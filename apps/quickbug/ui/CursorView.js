@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   name: 'Cursor',
 
   properties: [
@@ -82,7 +82,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'CursorView',
 
   extendsModel: 'DetailView',

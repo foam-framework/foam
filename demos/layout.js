@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   name: 'OrbitingLayout',
   extendsModel: 'View',
   traits: ['PositionedDOMViewTrait'],

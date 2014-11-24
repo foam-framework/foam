@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'Application',
   ids: ['name'],
   properties: [

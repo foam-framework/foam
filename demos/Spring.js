@@ -1,7 +1,7 @@
 var space   = CView2.create({width: 2000, height: 1700, background: 'white'});
 var mouse   = Mouse.create();
 
-MODEL({name: 'Circle', extendsModel: 'Circle2', traits: ['Physical'] });
+CLASS({name: 'Circle', extendsModel: 'Circle2', traits: ['Physical'] });
 
 space.write(document);
 mouse.connect(space.$);

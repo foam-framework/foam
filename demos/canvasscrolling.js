@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   name: 'ExperimentalScrollView',
   extendsModel: 'CView2',
   properties: [
@@ -214,7 +214,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'QIssue',
   properties: [
     'id',

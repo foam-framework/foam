@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-MODEL({
+CLASS({
   name: 'DemoView',
   extendsModel: 'DetailView',
   properties: ['childView', 'resultsCallback', 'childrenCallback', 'initHTMLFuture'],
@@ -70,7 +70,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'TestsView',
   extendsModel: 'AbstractDAOView',
 

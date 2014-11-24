@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   name: 'QIssueDetailView',
   extendsModel: 'DetailView',
 
@@ -105,7 +105,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'QIssueLabelsView',
   extendsModel: 'View',
 

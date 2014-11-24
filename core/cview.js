@@ -17,7 +17,7 @@
 
 /** A Canvas View for embedding CView's in. **/
 // TODO: add a 'mouse' property which creates and connects a Mouse model.
-MODEL({
+CLASS({
   name: 'Canvas',
   extendsModel: 'View',
 
@@ -103,7 +103,7 @@ MODEL({
  * CView's can also be used as regular (DOM) Views because if you call
  * toHTML() on them they will create their own 'Canvas' View parent.
  **/
-MODEL({
+CLASS({
   name:  'CView',
   label: 'CView',
 
@@ -242,7 +242,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'Label',
 
   properties: [
@@ -309,7 +309,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'Box',
   extendsModel: 'Label',
 
@@ -393,7 +393,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'Circle',
 
   properties: [
@@ -490,7 +490,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'ImageCView',
 
   properties: [
@@ -547,7 +547,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'Rectangle',
 
   properties: [
@@ -594,7 +594,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'ProgressCView',
   extendsModel: 'CView',
 
@@ -638,7 +638,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'Graph',
   extendsModel: 'CView',
 
@@ -1019,7 +1019,7 @@ var WarpedCanvas = {
 };
 
 
-MODEL({
+CLASS({
   name:  'GridCView',
   extendsModel: 'CView',
   label: 'GridCView',

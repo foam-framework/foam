@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'Person',
   properties: [ 'name' ]
 });
 
-MODEL({
+CLASS({
   name: 'PersonView',
 
   extendsModel: 'DetailView',

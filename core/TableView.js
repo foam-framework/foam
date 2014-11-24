@@ -26,7 +26,7 @@
     repaint
 
 */
-MODEL({
+CLASS({
   name: 'TableView',
   extendsModel: 'AbstractDAOView',
 
@@ -515,7 +515,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'EditColumnsView',
 
   extendsModel: 'View',

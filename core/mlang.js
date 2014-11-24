@@ -19,7 +19,7 @@
 // TODO: add type-checking in partialEval
 //  (type-checking is a subset of partial-eval)
 
-MODEL({
+CLASS({
   name: 'Expr',
 
   // package: 'foam.mlang',
@@ -133,7 +133,7 @@ var IDENTITY = (FOAM({
 })).create();
 
 /** An n-ary function. **/
-MODEL({
+CLASS({
   name: 'NARY',
 
   extendsModel: 'Expr',
@@ -192,7 +192,7 @@ MODEL({
 
 
 /** An unary function. **/
-MODEL({
+CLASS({
   name: 'UNARY',
 
   extendsModel: 'Expr',
@@ -223,7 +223,7 @@ MODEL({
 
 
 /** An unary function. **/
-MODEL({
+CLASS({
   name: 'BINARY',
 
   extendsModel: 'UNARY',
@@ -253,7 +253,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'AndExpr',
 
   extendsModel: 'NARY',
@@ -427,7 +427,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'OrExpr',
 
   extendsModel: 'NARY',
@@ -573,7 +573,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'NotExpr',
 
   extendsModel: 'UNARY',
@@ -618,7 +618,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DescribeExpr',
 
   extendsModel: 'UNARY',
@@ -647,7 +647,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'EqExpr',
 
   extendsModel: 'BINARY',
@@ -699,7 +699,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'InExpr',
 
   extendsModel: 'BINARY',
@@ -739,7 +739,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ContainedInICExpr',
 
   extendsModel: 'BINARY',
@@ -781,7 +781,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ContainsExpr',
 
   extendsModel: 'BINARY',
@@ -821,7 +821,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ContainsICExpr',
 
   extendsModel: 'BINARY',
@@ -876,7 +876,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'NeqExpr',
 
   extendsModel: 'BINARY',
@@ -903,7 +903,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'LtExpr',
 
   extendsModel: 'BINARY',
@@ -930,7 +930,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'GtExpr',
 
   extendsModel: 'BINARY',
@@ -957,7 +957,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'LteExpr',
 
   extendsModel: 'BINARY',
@@ -984,7 +984,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'GteExpr',
 
   extendsModel: 'BINARY',
@@ -1013,7 +1013,7 @@ MODEL({
 
 
 // TODO: A TrieIndex would be ideal for making this very fast.
-MODEL({
+CLASS({
   name: 'StartsWithExpr',
 
   extendsModel: 'BINARY',
@@ -1051,7 +1051,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'StartsWithICExpr',
 
   extendsModel: 'BINARY',
@@ -1079,7 +1079,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ConstantExpr',
 
   extendsModel: 'UNARY',
@@ -1112,7 +1112,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ConcatExpr',
   extendsModel: 'NARY',
 
@@ -1158,7 +1158,7 @@ function compileArray_(args) {
 };
 
 
-MODEL({
+CLASS({
   name: 'SumExpr',
 
   extendsModel: 'UNARY',
@@ -1181,7 +1181,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'AvgExpr',
 
   extendsModel: 'UNARY',
@@ -1215,7 +1215,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'MaxExpr',
 
   extendsModel: 'UNARY',
@@ -1250,7 +1250,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'MinExpr',
 
   extendsModel: 'UNARY',
@@ -1285,7 +1285,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DistinctExpr',
 
   extendsModel: 'BINARY',
@@ -1318,7 +1318,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'GroupByExpr',
 
   extendsModel: 'BINARY',
@@ -1416,7 +1416,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'GridByExpr',
 
   extendsModel: 'Expr',
@@ -1570,7 +1570,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'MapExpr',
 
   extendsModel: 'BINARY',
@@ -1606,7 +1606,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'CountExpr',
 
   extendsModel: 'Expr',
@@ -1634,7 +1634,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'SeqExpr',
 
   extendsModel: 'NARY',
@@ -1683,7 +1683,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'UpdateExpr',
   extendsModel: 'NARY',
 
@@ -1744,7 +1744,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'SetExpr',
   label: 'SetExpr',
 
@@ -1885,7 +1885,7 @@ function CONCAT() {
 }
 
 
-MODEL({
+CLASS({
   name: 'ExpandableGroupByExpr',
 
   extendsModel: 'BINARY',
@@ -1984,7 +1984,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'TreeExpr',
 
   extendsModel: 'Expr',
@@ -2041,7 +2041,7 @@ function TREE(parentProperty, childrenProperty) {
   });
 }
 
-MODEL({
+CLASS({
   name: 'DescExpr',
 
   extendsModel: 'UNARY',
@@ -2059,7 +2059,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'AddExpr',
 
   extendsModel: 'BINARY',

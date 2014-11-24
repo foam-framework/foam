@@ -19,7 +19,7 @@
  * Only completely modelled models here.
  * All models in this file can be stored and loaded in a DAO.
  **/
-MODEL({
+CLASS({
   name: 'Timer',
 
   properties: [
@@ -158,7 +158,7 @@ MODEL({
  *
  * TODO: Make simpler to setup.
  **/
-MODEL({
+CLASS({
   name: 'Binding',
 
   documentation: function() {/*
@@ -194,7 +194,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'PersistentContext',
 
   documentation: function() {/*
@@ -289,7 +289,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'UserInfo',
   label: 'UserInfo',
 

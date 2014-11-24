@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   name: 'QIssueTileView',
   label: 'QIssue Tile View',
 

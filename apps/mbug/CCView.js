@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   name: 'CCView',
   extendsModel: 'AutocompleteListView',
 
@@ -25,7 +25,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'CitationView',
   extendsModel: 'DefaultRowView',
 
@@ -60,7 +60,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'PersonView',
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*

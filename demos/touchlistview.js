@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   name: 'Contact',
 
   properties: [
@@ -83,7 +83,7 @@ dao.put(Contact.create({ first: "Frankie", last:   "Valdez", email: "Frankie@Val
 dao.put(Contact.create({ first: "Jermaine", last:   "Mccoy", email: "Jermaine@Mccoy.com" }));
 dao.put(Contact.create({ first: "Zachary", last:   "Hayes", email: "Zachary@Hayes.com" }));
 
-MODEL({
+CLASS({
   name: 'ContactRowView',
   extendsModel: 'View',
 
@@ -103,7 +103,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'ContactRowRenderer',
   properties: [
     { name: 'height', defaultValue: 200 }

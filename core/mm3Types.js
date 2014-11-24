@@ -935,7 +935,7 @@ var DocumentationProperty = Model.create({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'EnumPropertyTrait',
   properties: [
     {
@@ -952,13 +952,13 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'StringEnumProperty',
   traits: ['EnumPropertyTrait'],
   extendsModel: 'StringProperty'
 });
 
-MODEL({
+CLASS({
   name: 'DOMElementProperty',
   extendsModel: 'StringProperty',
   properties: [

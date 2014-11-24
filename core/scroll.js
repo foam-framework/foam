@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-MODEL({
+CLASS({
   name:  'ScrollCView',
 
   extendsModel: 'CView',
@@ -165,7 +165,7 @@ MODEL({
 
 
 /** Add a scrollbar around an inner-view. **/
-MODEL({
+CLASS({
   name:  'ScrollBorder',
 
   extendsModel: 'View',

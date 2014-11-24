@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'QIssueStatus',
 
   ids: [ 'status' ],
@@ -27,7 +27,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'StatusCompleter',
   properties: [
     { model_: 'DAOProperty', name: 'autocompleteDao' }
@@ -53,7 +53,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'StatusAutocompleteView',
   extendsModel: 'AutocompleteView',
 

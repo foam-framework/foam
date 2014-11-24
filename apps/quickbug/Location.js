@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'LocationProperty',
 
   extendsModel: 'Property',
@@ -29,7 +29,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'Location',
 
   properties: [
