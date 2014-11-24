@@ -518,3 +518,25 @@ var stack = StackView.create();
 stack.write(document);
 ctrl.__proto__.stackView = stack;
 stack.pushView(ctrl, "Browse Models");
+
+
+MODEL({
+  name: 'Test',
+  properties: [
+    {
+      name: 'reqField',
+      required: true
+    },
+    {
+      name: 'reqView',
+      view: { factory_: 'TextFieldView', required: true }
+    },
+    {
+      name: 'notReq',
+      required: true
+    }
+  ]
+});
+
+var t = Test.create();
+t.write(document);
