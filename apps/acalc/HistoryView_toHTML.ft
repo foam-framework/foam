@@ -1,6 +1,0 @@
-<div class="history">
-{{this.data.op}} {{this.data.a2}}<br>
-<% if ( this.data.op.toString() ) { %>
-<hr>
-<% } %>
-</div>

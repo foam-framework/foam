@@ -289,7 +289,7 @@ CLASS({
     {
       model_: 'ArrayProperty',
       name: 'history',
-      view: { factory_: 'DAOListView', rowView: 'HistoryView' },
+      view: 'DAOListView',
       factory: function() { return [].sink; }
     },
     {
@@ -435,5 +435,4 @@ var CalcButton = ActionButtonCView2.xbind({
 });
 X.registerModel(CalcButton, 'ActionButton');
 
-CLASS({ name: 'HistoryView',          extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 CLASS({ name: 'CalcView',             extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });

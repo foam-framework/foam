@@ -196,6 +196,7 @@ var HTMLParser = {
       var top = stack.pop();
       if ( top.nodeName == tag ) return;
       var peek = this.peek();
+      if ( ! peek ) { this.stack.push(top); return; }
       peek.childNodes = peek.childNodes.concat(top.childNodes);
       top.childNodes = [];
     }
