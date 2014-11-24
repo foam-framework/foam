@@ -308,8 +308,8 @@ MODEL({
       window.setTimeout(function() {
         self.latch = this.X.animate(opt_time, fn, opt_interp, function() {
           if ( self.view ) {
-            self.view.destroy();
             self.$.removeChild(self.view.$);
+            self.view.destroy();
           }
           self.view = view;
           self.incomingView = '';

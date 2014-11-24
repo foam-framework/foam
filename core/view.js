@@ -835,6 +835,7 @@ MODEL({
         this.children[i].destroy();
       }
       this.children = [];
+      delete this.instance_.$;
     },
 
     close: function() {
