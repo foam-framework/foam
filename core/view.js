@@ -1693,7 +1693,12 @@ MODEL({
     {
       model_: 'BooleanProperty',
       name: 'required',
-      documentation: function() { /* If value is required. */}
+      documentation: 'If value is required.'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'pattern',
+      documentation: 'Regex pattern for value.'
     },
     {
       name: 'domValue',
@@ -1753,6 +1758,7 @@ MODEL({
         ' rows="' + this.displayHeight + '" cols="' + this.displayWidth + '"';
 
       if ( this.required ) str += ' required';
+      if ( this.pattern  ) str += ' pattern="' + this.pattern + '"';
 
       str += ' name="' + this.name + '">';
       str += '</' + this.readWriteTagName + '>';
