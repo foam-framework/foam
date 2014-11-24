@@ -1691,6 +1691,11 @@ MODEL({
       documentation: function() { /* Can be 'read-only', 'read-write' or 'final'. */}
     },
     {
+      model_: 'BooleanProperty',
+      name: 'required',
+      documentation: function() { /* If value is required. */}
+    },
+    {
       name: 'domValue',
       hidden: true
     },
@@ -1746,6 +1751,8 @@ MODEL({
       str += this.readWriteTagName === 'input' ?
         ' size="' + this.displayWidth + '"' :
         ' rows="' + this.displayHeight + '" cols="' + this.displayWidth + '"';
+
+      if ( this.required ) str += ' required';
 
       str += ' name="' + this.name + '">';
       str += '</' + this.readWriteTagName + '>';
