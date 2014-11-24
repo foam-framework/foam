@@ -2978,7 +2978,15 @@ MODEL({
     },
     {
       model_: 'BooleanProperty',
+      name: 'refreshOnCacheHit',
+      defaultValue: false,
+      documentation: 'When true, makes a network call in the background to ' +
+          'update the record, even on a cache hit.'
+    },
+    {
+      model_: 'BooleanProperty',
       name: 'cacheOnSelect',
+      documentation: 'Whether to populate the cache on select().',
       defaultValue: false
     },
     {
@@ -2986,7 +2994,9 @@ MODEL({
       name: 'staleTimeout',
       defaultValue: 500,
       units: 'ms',
-      help: 'Time in miliseconds before we consider the delegate results to be stale for a particular query and will issue a new select.'
+      documentation: 'Time in milliseconds before we consider the delegate ' +
+          'results to be stale for a particular query and will issue a new ' +
+          'select.'
     },
     {
       name: 'selects',
@@ -2999,7 +3009,12 @@ MODEL({
       var self = this;
 
       var mysink = {
-        put: sink.put.bind(sink),
+        put: this.refreshOnCacheHit ?
+            function() {
+              self.cache.put.apply(self.cache, arguments);
+              sink.put.apply(sink, arguments);
+            } :
+            sink.put.bind(sink),
         error: function() {
           self.delegate.find(id, {
             put: function(obj) {
@@ -3015,7 +3030,7 @@ MODEL({
         }
       };
 
-      this.delegate.find(id, mysink);
+      this.cache.find(id, mysink);
     },
     select: function(sink, options) {
       if ( ! this.cacheOnSelect ) {
