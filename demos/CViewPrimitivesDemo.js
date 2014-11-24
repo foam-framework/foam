@@ -137,6 +137,8 @@ block2.addChild(spacer3);
 
 
 var link = X.diagram.Link.create({color: 'blue', arrowStyle:'composition'}, canv.X);
+//link.start = sect1.myLinkPoints;
+//link.end = sect1b.myLinkPoints;
 link.start = block1.myLinkPoints;
 link.end = block2.myLinkPoints;
 canv.addChild(link);

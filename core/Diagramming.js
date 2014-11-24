@@ -487,13 +487,14 @@ MODEL({
       var c = this.canvas;
       c.save();
 
-      var points = this.selectBestPoints();
-      var s = points.start.offsetBy(this.arrowLength);
-      var e = points.end.offsetBy(this.arrowLength);
-
       var H = 0;
       var V = 1;
       var sideDirs = { left: -1, right: 1, top: -1, bottom: 1 };
+      var orientations = { left: H, right: H, top: V, bottom: V };
+
+      var points = this.selectBestPoints(H,V,sideDirs,orientations);
+      var s = points.start.offsetBy(this.arrowLength);
+      var e = points.end.offsetBy(this.arrowLength);
 
       this.paintArrows(points, s, e);
 
@@ -587,30 +588,84 @@ MODEL({
       c.restore();
     },
 
-    selectBestPoints: function() {
+    selectBestPoints: function(H,V,directions,orientations) {
       /* For each starting point, find the closest ending point.
         Take the smallest link distance. */
       var self = this;
       var BIG_VAL = 999999999;
 
       var smallest = BIG_VAL;
-      var smallestStart;
-      var smallestEnd;
+      var byDist = {};
       self.start.forEach(function(startP) {
         var start = startP.offsetBy(this.arrowLength);
         self.end.forEach(function(endP) {
           var end = endP.offsetBy(this.arrowLength);
           var dist = Math.abs(start.x - end.x) + Math.abs(start.y - end.y);
-          if (dist < smallest) {
-            smallest = dist;
-            smallestStart = startP;
-            smallestEnd = endP;
+          // pick smallest connector path whose points won't make a backwards connector
+          if (!this.isBannedConfiguration(startP, endP, start, end, H,V,directions,orientations)) {
+            if (dist < smallest) smallest = dist;
+            byDist[dist] = { start: startP, end: endP };
           }
         }.bind(this));
       }.bind(this));
-      return { start: smallestStart, end: smallestEnd }
+
+      return byDist[smallest];
     },
     
+    isBannedConfiguration: function(startP, endP, offsS, offsE, H,V,directions,orientations) {
+      var minimumPath = this.arrowLength*2;
+
+      // don't allow points inside the other end's owner rect
+      if (   this.isPointInsideItem(startP, endP.owner)
+          || this.isPointInsideItem(endP, startP.owner)) return true;
+
+      // Also check the case where we are just at the minimum path length, and make
+      // sure the line isn't pushed through the other item
+      var doubleOffsetS = startP.offsetBy(minimumPath);
+      var doubleOffsetE = endP.offsetBy(minimumPath);
+      if (   this.isPointInsideItem(doubleOffsetS, endP.owner)
+          || this.isPointInsideItem(doubleOffsetE, startP.owner)) return true;
+
+      var sOr = orientations[startP.side];
+      var eOr = orientations[endP.side];
+      var sDir = directions[startP.side];
+      var eDir = directions[endP.side];
+
+      var hDir = endP.x - startP.x;
+      hDir /= Math.abs(hDir);
+      var vDir = endP.y - startP.y;
+      vDir /= Math.abs(vDir);
+
+      var shortAxisOr = Math.abs(endP.x - startP.x) > Math.abs(endP.y - startP.y)? V : H;
+      var shortAxisDist = shortAxisOr===H? Math.abs(offsE.x - offsS.x) : Math.abs(offsE.y - offsS.y);
+
+      dist = Math.abs(offsS.x - offsE.x) + Math.abs(offsS.y - offsE.y); // connector ends (after arrows)
+      rawDist = Math.abs(startP.x - endP.x) + Math.abs(startP.y - endP.y); // link points
+
+      if (sOr === eOr) {
+        if (rawDist < minimumPath) {
+          return sDir !== eDir;
+        } else {
+          if (shortAxisOr === sOr && sDir !== eDir) {
+            return shortAxisDist < minimumPath;
+          } else {
+            return false; //sDir === eDir;
+          }
+        }
+      } else {
+        // corner
+        return (sOr === H)? sDir !== hDir : sDir !== vDir
+            && (eOr === H)? eDir !== hDir : eDir !== vDir;
+      }
+    },
+
+    isPointInsideItem: function(point, item) {
+      return point.x <= item.globalX+item.width
+          && point.x >= item.globalX
+          && point.y <= item.globalY+item.height
+          && point.y >= item.globalY;
+    },
+
     paintArrows: function(points, s, e) {
       // draw arrows
       var c = this.canvas;
