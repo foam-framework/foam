@@ -189,8 +189,11 @@ MODEL({
   ],
 
   methods: {
-    init: function() {
+    contextSetup: function() {
+      // factories below will trigger this before init()
       /* This is a method documentation comment: spawn and populate sub contexts. */
+
+      if (this.SearchContext) return; // don't run twice
 
       // load developer guides
       RegisterDevDocs(this.X);
@@ -205,7 +208,10 @@ MODEL({
 
       this.X.documentViewRequestNavigation = this.requestNavigation.bind(this);
 
-      /////////////////////////// Context setup ^
+    },
+
+    init: function() {
+
       this.SUPER();
       /////////////////////////// this.init v
 
@@ -268,12 +274,14 @@ MODEL({
     {
       name: 'modelList',
       factory: function() {
+        this.contextSetup();
         return this.SearchContext.ModelListController.create();
       }
     },
     {
       name: 'modelListView',
       factory: function() {
+        this.contextSetup();
         return this.SearchContext.ControllerView.create({ model: ModelListController,
                                                           data$: this.modelList$ });
       }
@@ -281,6 +289,7 @@ MODEL({
     {
       name: 'selectionView',
       factory: function() {
+        this.contextSetup();
         return this.DetailContext.DocModelView.create({ model: Model, data$: this.DetailContext.documentViewRef });
       }
     },
