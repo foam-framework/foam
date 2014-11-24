@@ -411,9 +411,9 @@ var FObject = {
 
       /* TODO: New version that doesn't trigger lazyFactory or getter. */
       setter = (function(setter) { return function(newValue) {
-        setter.call(this, this.instance_[name], newValue);
+        setter.call(this, this.instance_[name] || prop.defaultValue, newValue);
       }; })(setter);
-      
+
       /*
       setter = (function(setter) { return function(newValue) {
         setter.call(this, this[name], newValue);
