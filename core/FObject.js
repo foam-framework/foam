@@ -49,7 +49,7 @@ var FObject = {
     if ( o.model_ ) {
       var agents = this.initAgents();
       for ( var i = 0 ; i < agents.length ; i++ ) agents[i][1](o, o.X, args);
-    } else debugger;
+    } else debugger; // TODO: if this happens, then document why/when, if not, remove
 
     o.init(args);
 
