@@ -601,18 +601,30 @@ CLASS({
         self.end.forEach(function(endP) {
           var end = endP.offsetBy(this.arrowLength);
           var dist = Math.abs(start.x - end.x) + Math.abs(start.y - end.y);
-          // pick smallest connector path whose points won't make a backwards connector
-          if (!this.isBannedConfiguration(startP, endP, start, end, H,V,directions,orientations)) {
-            if (dist < smallest) smallest = dist;
-            byDist[dist] = { start: startP, end: endP };
+          var shortAxisOr = Math.abs(endP.x - startP.x) > Math.abs(endP.y - startP.y)? V : H;
+          var shortAxisDist = shortAxisOr===H? Math.abs(end.x - start.x) : Math.abs(end.y - start.y);
+
+          // pick smallest connector path whose points won't make a bad connector
+          if (!this.isBannedConfiguration(startP, endP, start, end, H,V,directions,orientations, shortAxisOr, shortAxisDist)) {
+            // if we tie, try for the smallest short-axis (middle displacement)
+            if (!byDist[dist] || byDist[dist].shortAxisDist > shortAxisDist) {
+              if (dist < smallest) smallest = dist;
+              byDist[dist] = { start: startP, end: endP, shortAxisDist: shortAxisDist };
+            }
           }
         }.bind(this));
       }.bind(this));
 
+
+      if (!byDist[smallest]) {
+        // no good points, so return something
+        return { start: self.start[0], end: self.end[0], shortAxisDist: 0 };
+      }
+
       return byDist[smallest];
     },
     
-    isBannedConfiguration: function(startP, endP, offsS, offsE, H,V,directions,orientations) {
+    isBannedConfiguration: function(startP, endP, offsS, offsE, H,V,directions,orientations,shortAxisOr, shortAxisDist) {
       var minimumPath = this.arrowLength*2;
 
       // don't allow points inside the other end's owner rect
@@ -635,9 +647,6 @@ CLASS({
       hDir /= Math.abs(hDir);
       var vDir = endP.y - startP.y;
       vDir /= Math.abs(vDir);
-
-      var shortAxisOr = Math.abs(endP.x - startP.x) > Math.abs(endP.y - startP.y)? V : H;
-      var shortAxisDist = shortAxisOr===H? Math.abs(offsE.x - offsS.x) : Math.abs(offsE.y - offsS.y);
 
       dist = Math.abs(offsS.x - offsE.x) + Math.abs(offsS.y - offsE.y); // connector ends (after arrows)
       rawDist = Math.abs(startP.x - endP.x) + Math.abs(startP.y - endP.y); // link points
