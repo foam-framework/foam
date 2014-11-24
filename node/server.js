@@ -19,7 +19,7 @@ var http = require('http');
 var fs   = require('fs');
 var path = require('path');
 
-MODEL({
+CLASS({
   name: 'NodeServer',
   requires: [
     'ErrorHandler',
@@ -77,7 +77,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'Handler',
   documentation: 'Abstract Handler class. handle() returns true if handled, ' +
       'false if the server should keep looking.',
@@ -128,7 +128,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'StaticFileHandler',
   extendsModel: 'Handler',
   properties: [
@@ -248,7 +248,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'DAOHandler',
   extendsModel: 'Handler',
   properties: [

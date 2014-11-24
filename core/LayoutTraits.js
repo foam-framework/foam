@@ -18,7 +18,7 @@
 
 //////////////////////////////// Layout stuff
 
-MODEL({
+CLASS({
   name: 'ConstraintProperty',
   package: 'layout',
   extendsModel: 'Property',
@@ -80,7 +80,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'LayoutItemLinearConstraints',
   package: 'layout',
 
@@ -157,7 +157,7 @@ MODEL({
 
 });
 
-MODEL({
+CLASS({
   name: 'LayoutItemLinearConstraintsProxy',
   package: 'layout',
 
@@ -200,7 +200,7 @@ MODEL({
 
 });
 
-MODEL({
+CLASS({
   name: 'LayoutItemHorizontalTrait',
   package: 'layout',
 
@@ -236,7 +236,7 @@ MODEL({
 
 });
 
-MODEL({
+CLASS({
   name: 'LayoutItemVerticalTrait',
   package: 'layout',
 
@@ -271,7 +271,7 @@ MODEL({
 
 });
 
-MODEL({
+CLASS({
   name: 'LinearLayoutTrait',
   package: 'layout',
 
@@ -549,7 +549,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'MarginTrait',
   package: 'layout',
 

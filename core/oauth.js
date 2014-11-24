@@ -63,7 +63,7 @@ var OAuthXhr = {
   }
 };
 
-MODEL({
+CLASS({
   name: 'OAuthXhrFactory',
   label: 'OAuthXhrFactory',
 
@@ -86,7 +86,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'OAuth2',
   label: 'OAuth 2.0',
 
@@ -167,7 +167,7 @@ function deferJsonP(X) {
   return future;
 }
 
-MODEL({
+CLASS({
   name: 'OAuth2WebClient',
   help: 'Strategy for OAuth2 when running as a web page.',
 
@@ -204,7 +204,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'OAuth2ChromeApp',
   help: 'Strategy for OAuth2 when running as a Chrome App',
 
@@ -339,7 +339,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'OAuth2ChromeIdentity',
   extendsModel: 'OAuth2',
   help: 'OAuth2 strategy that uses the Chrome identity API',
@@ -356,7 +356,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'OAuth2Redirect',
   extendsModel: 'OAuth2',
   help: 'OAuth2 strategy that uses the redirect.',

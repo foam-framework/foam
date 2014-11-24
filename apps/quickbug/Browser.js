@@ -25,7 +25,7 @@ MementoMgr.FORTH.label = '';
 MementoMgr.BACK.help = '';
 MementoMgr.FORTH.help = '';
 
-MODEL({
+CLASS({
   name: 'Browser',
 
   extendsModel: 'View',
@@ -750,7 +750,7 @@ Please use labels and text to provide additional information.
 
 
 /** A subclass of Browser which works as a Chrome-App. **/
-MODEL({
+CLASS({
   name: 'ChromeAppBrowser',
 
   extendsModel: 'Browser',

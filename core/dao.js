@@ -391,7 +391,7 @@ var JSONToObject = {
 };
 
 
-MODEL({
+CLASS({
   name: 'AbstractDAO',
 
   properties: [
@@ -549,7 +549,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ProxyDAO',
 
   extendsModel: 'AbstractDAO',
@@ -646,7 +646,7 @@ MODEL({
 
 
 /** A DAO proxy that delays operations until the delegate is set in the future. **/
-MODEL({
+CLASS({
   name: 'FutureDAO',
 
   extendsModel: 'ProxyDAO',
@@ -740,7 +740,7 @@ MODEL({
  * Apply this decorator to a DAO if you'd like to (for debugging purposes)
  * pretend that accesses are slow. Currently, only select has been targetted.
  */
-MODEL({
+CLASS({
    name: 'DelayedDAO',
 
    extendsModel: 'ProxyDAO',
@@ -785,7 +785,7 @@ dao.select(console.log);
 */
 
 
-MODEL({
+CLASS({
   name: 'ErrorDAO',
   extendsModel: 'AbstractDAO',
   methods: {
@@ -804,7 +804,7 @@ MODEL({
  * sequence number on DAO.put() if the properties value
  * is set to the properties default value.
  */
-MODEL({
+CLASS({
   name: 'SeqNoDAO',
   label: 'SeqNoDAO',
 
@@ -857,7 +857,7 @@ MODEL({
 
 
 
-MODEL({
+CLASS({
   name: 'GUIDDAO',
   label: 'GUIDDAO',
 
@@ -893,7 +893,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'CachingDAO',
 
   extendsModel: 'ProxyDAO',
@@ -938,7 +938,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'LimitedLiveCachingDAO',
 
   extendsModel: 'ProxyDAO',
@@ -984,7 +984,7 @@ MODEL({
  * Remove dependent children from a secondary DAO when parent is
  * removed from the delegate DAO.
  */
-MODEL({
+CLASS({
   name: 'CascadingRemoveDAO',
   label: 'Cascading Remove DAO',
 
@@ -1058,7 +1058,7 @@ function filteredDAO(query, dao) {
     }
   };
 }
-MODEL({
+CLASS({
   name: 'FilteredDAO_',
   extendsModel: 'ProxyDAO',
 
@@ -1127,7 +1127,7 @@ function orderedDAO(comparator, dao) {
     }
   };
 }
-MODEL({
+CLASS({
   name: 'OrderedDAO_',
   extendsModel: 'ProxyDAO',
 
@@ -1188,7 +1188,7 @@ function limitedDAO(count, dao) {
 }
 
 
-MODEL({
+CLASS({
   name: 'LimitedDAO_',
   extendsModel: 'ProxyDAO',
 
@@ -1251,7 +1251,7 @@ function skipDAO(skip, dao) {
 }
 
 
-MODEL({
+CLASS({
   name: 'SkipDAO_',
   extendsModel: 'ProxyDAO',
 
@@ -1314,7 +1314,7 @@ function atxn(afunc) {
  * data store.  Obviously this will get slow if you store large amounts
  * of data in the database.
  */
-MODEL({
+CLASS({
   name: 'IDBDAO',
   label: 'IndexedDB DAO',
 
@@ -1627,7 +1627,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'StorageDAO',
 
   extendsModel: 'MDAO',
@@ -1677,7 +1677,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   extendsModel: 'AbstractDAO',
 
   name: 'AbstractFileDAO',
@@ -1820,7 +1820,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'JSONFileDAO',
   extendsModel: 'AbstractFileDAO',
 
@@ -1888,7 +1888,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'KeyCollector',
   help: "A sink that collects the keys of the objects it's given.",
 
@@ -1911,7 +1911,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'WorkerDAO',
   extendsModel: 'AbstractDAO',
 
@@ -2108,7 +2108,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'WorkerDelegate',
   help:  'The client side of a web-worker DAO',
 
@@ -2258,7 +2258,7 @@ var ModelDAO = {
 };
 
 
-MODEL({
+CLASS({
   name: 'OrderedCollectorSink',
 
   properties: [
@@ -2285,7 +2285,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'CollectorSink',
 
   properties: [
@@ -2307,7 +2307,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ParitionDAO',
   extendsModel: 'AbstractDAO',
 
@@ -2422,7 +2422,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ActionFactoryDAO',
   extendsModel: 'ProxyDAO',
   label: 'ActionFactoryDAO',
@@ -2476,7 +2476,7 @@ MODEL({
 
 
 // TODO Why is this even a DAO, it literally only does find.
-MODEL({
+CLASS({
   name: 'BlobReaderDAO',
 
   properties: [
@@ -2515,7 +2515,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'GDriveDAO',
   properties: [
     {
@@ -2561,7 +2561,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'RestDAO',
   extendsModel: 'AbstractDAO',
 
@@ -2768,7 +2768,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DefaultObjectDAO',
   help: 'A DAO decorator that will generate a default object if no object is found on a .find() call.',
 
@@ -2796,7 +2796,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'LRUCachingDAO',
 
   extendsModel: 'ProxyDAO',
@@ -2964,7 +2964,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'LazyCacheDAO',
 
   extendsModel: 'ProxyDAO',
@@ -3103,7 +3103,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'PropertyOffloadDAO',
   extendsModel: 'ProxyDAO',
 
@@ -3161,7 +3161,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'BlobSerializeDAO',
   extendsModel: 'ProxyDAO',
 
@@ -3255,7 +3255,7 @@ MODEL({
 
 
 // TODO: Make a Singleton?
-MODEL({
+CLASS({
   name: 'NullDAO',
   help: 'A DAO that stores nothing and does nothing.',
   methods: {
@@ -3323,7 +3323,7 @@ var WaitCursorDAO = FOAM({
 });
 
 
-MODEL({
+CLASS({
   name: 'EasyDAO',
   extendsModel: 'ProxyDAO',
 
@@ -3502,7 +3502,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'StoreAndForwardOperation',
   properties: [
     { model_: 'IntProperty', name: 'id' },
@@ -3512,7 +3512,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'StoreAndForwardDAO',
   extendsModel: 'ProxyDAO',
 
@@ -3626,7 +3626,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'AbstractAdapterDAO',
   extendsModel: 'ProxyDAO',
   help: 'An abstract decorator for adapting a DAO of one data type to another data type.  Extend this class and implement aToB() and bToA().',
@@ -3706,7 +3706,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'DAOVersion',
   ids: ['name'],
   properties: [
@@ -3715,7 +3715,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'MigrationRule',
   ids: ['modelName'],
   properties: [
@@ -3735,7 +3735,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'MigrationDAO',
   extendsModel: 'ProxyDAO',
 
@@ -3814,7 +3814,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'SlidingWindowDAODecorator',
   extendsModel: 'ProxyDAO',
   help: 'A DAO decorator which reduces network calls by caching a chunk of data around a given query for a period of time.',
@@ -3917,7 +3917,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ContextualizingDAO',
   extendsModel: 'ProxyDAO',
   methods: {

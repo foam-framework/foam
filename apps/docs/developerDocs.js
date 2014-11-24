@@ -17,7 +17,7 @@
 
 // TODO: refactor the documentation viewer so we just create instances of
 // DocumentationBook and not submodels.
-MODEL({
+CLASS({
   name: 'DocumentationBook',
   extendsModel: 'Documentation',
   label: 'Documentation Book',

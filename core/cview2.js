@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-MODEL({
+CLASS({
   name: 'AbstractCViewView',
   extendsModel: 'View',
 
@@ -177,7 +177,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'PositionedCViewView',
   extendsModel: 'AbstractCViewView',
   traits: ['PositionedDOMViewTrait'],
@@ -222,7 +222,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'CViewView',
   extendsModel: 'AbstractCViewView',
   help: 'DOM wrapper for a CView2, auto adjusts it size to fit the given cview.',
@@ -243,7 +243,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'Point',
   package: 'canvas',
 
@@ -267,7 +267,7 @@ MODEL({
 })
 
 
-MODEL({
+CLASS({
   name:  'CView2',
   label: 'CView2',
   documentation: function() {/*
@@ -521,7 +521,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'Circle2',
 
   extendsModel: 'CView2',
@@ -575,7 +575,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ActionButtonCView',
 
   extendsModel: 'CView2',
@@ -843,7 +843,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DAOListCView',
   extendsModel: 'CView2',
 
@@ -890,7 +890,7 @@ MODEL({
 });
 
 
-MODEL({name: 'MotionBlur', methods: {
+CLASS({name: 'MotionBlur', methods: {
   paint: function() {
     this.SUPER();
     var c = this.canvas;
@@ -910,7 +910,7 @@ MODEL({name: 'MotionBlur', methods: {
 }});
 
 
-MODEL({name: 'Shadow', methods: {
+CLASS({name: 'Shadow', methods: {
   paint: function() {
     var c = this.canvas;
     var oldAlpha = this.alpha;
@@ -931,7 +931,7 @@ MODEL({name: 'Shadow', methods: {
 }});
 
 
-MODEL({
+CLASS({
   name: 'CanvasScrollView',
   extendsModel: 'CView2',
   properties: [

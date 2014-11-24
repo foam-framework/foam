@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'ConfigureProjectsView',
   extendsModel: 'DetailView',
 

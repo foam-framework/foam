@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'ChromeStorageDAO',
   label: 'Chrome Storage DAO',
 
@@ -164,7 +164,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ChromeSyncStorageDAO',
   label: 'Chrome Sync Storage DAO',
 

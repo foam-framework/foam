@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
    name:  'LabelView',
 
    extendsModel: 'View',

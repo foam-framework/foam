@@ -19,7 +19,7 @@
  * Perform text search on 'summary' field and prefix searches on 'cc' and 'owner' fields.
  * Also search the labels, but exclude the value before the first '-'.
  */
-MODEL({
+CLASS({
    name: 'DefaultQuery',
 
    extendsModel: 'UNARY',

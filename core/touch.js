@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'InputPoint',
   properties: [
     'id', 'type',
@@ -75,7 +75,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'TouchManager',
 
   properties: [
@@ -233,7 +233,7 @@ MODEL({
 
 // GESTURES
 
-MODEL({
+CLASS({
   name: 'Gesture',
   help: 'Installed in the GestureManager to watch for a particular kind of gesture',
 
@@ -268,7 +268,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ScrollGesture',
   help: 'Gesture that understands vertical or horizontal scrolling.',
 
@@ -486,7 +486,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'VerticalScrollNativeTrait',
   documentation: 'Makes (part of) a View scroll vertically. Expects scrollerID to be a property, giving the DOM ID of the element with overflow:scroll or similar. Any onScroll listener will be called on each scroll event, as per the verticalScrollNative gesture. NB: this.onScroll should be a listener, because this trait does not bind it.',
   properties: [
@@ -531,7 +531,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'TapGesture',
   help: 'Gesture that understands a quick, possible multi-point tap. Calls into the handler: tapClick(numberOfPoints).',
 
@@ -567,7 +567,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'DragGesture',
   help: 'Gesture that understands a hold and drag with mouse or one touch point.',
   properties: [
@@ -622,7 +622,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'PinchTwistGesture',
   help: 'Gesture that understands a two-finger pinch/stretch and rotation',
   properties: [
@@ -731,7 +731,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'GestureTarget',
   help: 'Created by each view that wants to receive gestures.',
   properties: [
@@ -756,7 +756,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'GestureManager',
   requires: [
     'DragGesture',

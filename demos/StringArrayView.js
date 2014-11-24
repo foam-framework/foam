@@ -1,6 +1,6 @@
 var stack = X.StackView.create();
 
-MODEL({
+CLASS({
   name: 'RefTable',
 
   properties: [
@@ -13,7 +13,7 @@ MODEL({
 var dao = ['ab','bb','cb','db','eb','fb','gb','hb','ib', 'aa','ba','ca','da','ea','fa','ga','ha','ia'].map(function(d) { return RefTable.create({id: d}); });
 
 /*
-MODEL({
+CLASS({
   name: 'TestCompleter',
   properties: [
     { model_: 'DAOProperty', name: 'autocompleteDao' }
@@ -40,7 +40,7 @@ MODEL({
 });
 */
 
-MODEL({
+CLASS({
   name: 'Test',
 
   properties: [

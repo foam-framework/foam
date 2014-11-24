@@ -51,7 +51,7 @@ ajsonp = function(url, params, opt_method) {
   return axhr(url, opt_method ? opt_method : 'GET', params);
 };
 
-MODEL({
+CLASS({
   name: 'ChromeAuthAgent',
   label: 'ChromeAuthAgent',
 

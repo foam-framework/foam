@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   name: 'C',
   properties: [
     'id',
@@ -6,7 +6,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'B',
   properties: [
     'id',
@@ -21,7 +21,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'A',
   properties: [
     'id',

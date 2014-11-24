@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'DiagramItemTrait',
   package: 'diagram',
 
@@ -55,7 +55,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'Diagram',
   package: 'diagram',
 
@@ -64,7 +64,7 @@ MODEL({
 
 });
 
-MODEL({
+CLASS({
   name: 'ParentageListener',
   documentation: "Tracks changes in a parent chain and runs bind/unbind functions as parents enter or leave.",
   package: 'diagram',
@@ -139,7 +139,7 @@ MODEL({
   
 });
 
-MODEL({
+CLASS({
   name: 'LinkPoint',
   package: 'diagram',
   //extendsModel: 'canvas.Point', // screws up ids
@@ -293,21 +293,21 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'LinearLayout',
   package: 'diagram',
   
   extendsModel: 'canvas.LinearLayout',
   traits: ['diagram.DiagramItemTrait'],
 });
-MODEL({
+CLASS({
   name: 'Margin',
   package: 'diagram',
   extendsModel: 'canvas.Margin',
   traits: ['diagram.DiagramItemTrait'],
 });
 
-MODEL({
+CLASS({
   name: 'Block',
   package: 'diagram',
   
@@ -368,7 +368,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'Section',
   package: 'diagram',
   label: 'Section',
@@ -437,7 +437,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'Link',
   package: 'diagram',
 

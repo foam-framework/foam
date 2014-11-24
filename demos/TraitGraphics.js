@@ -1,13 +1,13 @@
 var space   = CView2.create({width: 2000, height: 1700});
 var mouse   = Mouse.create();
 
-MODEL({
+CLASS({
   name: 'ShadowCircle',
   extendsModel: 'Circle2',
   traits: ['Physical', 'Shadow']
 });
 
-MODEL({
+CLASS({
   name: 'BlurCircle',
   extendsModel: 'Circle2',
   traits: ['Physical', 'MotionBlur']

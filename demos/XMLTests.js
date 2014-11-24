@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   name: 'DemoView',
   extendsModel: 'DetailView',
   templates: [ { name: 'toHTML' } ]

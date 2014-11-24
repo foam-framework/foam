@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'QIssueLabel',
 
   ids: [ 'label' ],
@@ -26,7 +26,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'LabelAutocompleteView',
   extendsModel: 'AutocompleteView',
   methods: {
@@ -48,7 +48,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'LabelCompleter',
   properties: [
     { model_: 'DAOProperty', name: 'autocompleteDao' }

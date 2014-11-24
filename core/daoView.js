@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'AbstractDAOView',
 
   extendsModel: 'View',
@@ -69,7 +69,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'GridView',
 
   extendsModel: 'AbstractDAOView',
@@ -211,7 +211,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ArrayTileView',
 
   extendsModel: 'AbstractDAOView',
@@ -341,7 +341,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DAOListView',
   extendsModel: 'AbstractDAOView',
 
@@ -517,7 +517,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ScrollViewRow',
   documentation: 'Wrapper for a single row in a $$DOC{ref: "ScrollView"}. Users should not need to create these. TODO: I should be a submodel of ScrollView once that\'s possible.',
   properties: [
@@ -570,7 +570,7 @@ MODEL({
  * tombstones (if the # of rows is available), or a pacifier view while the
  * content is being fetched.
  */
-MODEL({
+CLASS({
   name: 'ScrollView',
   extendsModel: 'AbstractDAOView',
 
@@ -1014,7 +1014,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'SimpleScrollView',
   extendsModel: 'AbstractDAOView',
   traits: ['VerticalScrollNativeTrait'],
@@ -1150,7 +1150,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'PredicatedView',
   extendsModel: 'View',
 

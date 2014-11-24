@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   name: 'DoubleClickWrapper',
 
   extendsModel: 'View',

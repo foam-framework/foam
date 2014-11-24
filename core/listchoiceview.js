@@ -31,7 +31,7 @@ var ListChoiceViewRenderer = {
   }
 };
 
-MODEL({
+CLASS({
   name:  'ListChoiceView',
 
   extendsModel: 'View',

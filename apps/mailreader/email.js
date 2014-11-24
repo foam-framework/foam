@@ -29,7 +29,7 @@ function lazyEval(fn) {
    };
 };
 
-MODEL({
+CLASS({
     name: 'EMailLabel',
     label: 'EMailLabel',
 
@@ -150,7 +150,7 @@ MODEL({
     }
 });
 
-MODEL({
+CLASS({
     name: 'EMailPreference',
     label: 'EMailPreference',
 
@@ -170,7 +170,7 @@ MODEL({
     ]
 });
 
-MODEL({
+CLASS({
    name: 'Attachment',
    plural: 'Attachments',
    tableProperties:
@@ -712,7 +712,7 @@ var MBOXLoader = {
 });
 
 
-MODEL({
+CLASS({
     name: 'EMailBody',
     label: 'EMailBody',
 
@@ -743,7 +743,7 @@ MODEL({
     }
 });
 
-MODEL({
+CLASS({
    name:  'EMailsView',
 
    extendsModel: 'DetailView',

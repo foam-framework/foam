@@ -17,7 +17,7 @@
 
 
 
-MODEL({
+CLASS({
   name: 'LinearLayout',
   extendsModel: 'CView2',
   package: 'canvas',
@@ -69,7 +69,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'Margin',
   package: 'canvas',
   extendsModel: 'CView2',
@@ -79,7 +79,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'BorderTrait',
   package: 'canvas',
   documentation: function() {/* Add $$DOC{ref:'BorderTrait'} to a CView2 to paint
@@ -138,7 +138,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'SimpleRectangle',
   extendsModel: 'CView2',
   package: 'canvas',
@@ -147,7 +147,7 @@ MODEL({
   traits: [ 'canvas.BorderTrait' ]
 });
 
-MODEL({
+CLASS({
   name: 'Rectangle',
   package: 'canvas',
   extendsModel: 'canvas.SimpleRectangle',
@@ -155,7 +155,7 @@ MODEL({
   documentation: function() {/* A $$DOC{ref:'CView2'} rectangle that can be laid out. */}
 });
 
-MODEL({
+CLASS({
   name: 'Spacer',
   package: 'canvas',
   extendsModel: 'CView2',
@@ -215,7 +215,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name:  'Label',
   extendsModel: 'CView2',
   package: 'canvas',

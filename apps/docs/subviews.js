@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'DocView',
   extendsModel: 'View',
   label: 'Documentation View Base',
@@ -99,7 +99,7 @@ MODEL({
 
 
 
-MODEL({
+CLASS({
   name: 'DocModelInheritanceTracker',
   help: 'Stores inheritance information for a Model',
   documentation: function() { /*
@@ -127,7 +127,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'DocFeatureInheritanceTracker',
   help: 'Stores inheritance information for a feature of a Model',
   documentation: function() { /*
@@ -201,7 +201,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'DocModelView',
   extendsModel: 'DocView',
   help: 'Displays the documentation of the given Model.',
@@ -444,7 +444,7 @@ MODEL({
 
 });
 
-MODEL({
+CLASS({
   name: 'DocBookView',
   extendsModel: 'DocView',
   help: 'Displays the documentation of the given book.',
@@ -487,7 +487,7 @@ MODEL({
 
 
 
-MODEL({
+CLASS({
   name: 'DocBodyView',
   extendsModel: 'DocView',
   label: 'Documentation Body View Base',
@@ -539,7 +539,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DocModelBodyView',
   extendsModel: 'DocBodyView',
   label: 'Documentation Model View',
@@ -567,7 +567,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DocFeatureBodyView',
   extendsModel: 'DocBodyView',
   label: 'Documentation Feature View',
@@ -587,7 +587,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DocRefView',
   extendsModel: 'View',
   label: 'Documentation Reference View',
@@ -719,7 +719,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DocRef',
   label: 'Documentation Reference',
   help: 'A reference to a documented Model or feature of a Model',

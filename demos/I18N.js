@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   name: 'Test',
 
   properties: [

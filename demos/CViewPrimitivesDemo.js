@@ -28,7 +28,7 @@ outerLayout.addChild(vlay1);
 var vlay2 = X.diagram.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
 outerLayout.addChild(vlay2);
 
-MODEL({
+CLASS({
   name: 'BorderLabel',
   extendsModel: 'canvas.Label',
   traits: ['canvas.BorderTrait']

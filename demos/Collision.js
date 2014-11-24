@@ -1,4 +1,4 @@
-MODEL({name: 'Circle', extendsModel: 'Circle2', traits: ['Physical'] });
+CLASS({name: 'Circle', extendsModel: 'Circle2', traits: ['Physical'] });
 
 var space    = CView2.create({width: 1500, height: 800, background: 'white'});
 var mouse    = Mouse.create();

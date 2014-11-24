@@ -1,5 +1,5 @@
 
-MODEL({
+CLASS({
   name: 'IssueLabelView',
   extendsModel: 'AutocompleteListView',
   properties: [
@@ -25,7 +25,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'LabelCitationView',
   extendsModel: 'DefaultRowView',
   traits: ['ColoredBackgroundTrait'],
@@ -59,7 +59,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'LabelView',
   extendsModel: 'DetailView',
   traits: ['ColoredBackgroundTrait'],
