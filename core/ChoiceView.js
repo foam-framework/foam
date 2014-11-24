@@ -80,9 +80,19 @@ MODEL({
     {
       name:  'choices',
       type:  'Array[StringField]',
-      help: 'Array of [value, label] choices.  Simple String values will be upgraded to [value, value].',
+      documentation: 'Array of [value, label] choices.  Simple String values will be upgraded to [value, value]. Can also be a map, in which case this becomes a [key, value] map in enumeration order.',
       defaultValue: [],
       preSet: function(_, a) {
+        // If a is a map, instead of an array, we make [key, value] pairs.
+        if ( typeof a === 'object' && ! Array.isArray(a) ) {
+          var out = [];
+          for ( var key in a ) {
+            if ( a.hasOwnProperty(key) )
+              out.push([key, a[key]]);
+          }
+          return out;
+        }
+
         a = a.clone();
         // Upgrade single values to [value, value]
         for ( var i = 0 ; i < a.length ; i++ )
