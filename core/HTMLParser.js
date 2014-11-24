@@ -20,7 +20,7 @@
  * This lets us transparently build FOAM objects and views from either real DOM
  * or from the output of FOAM's HTML parser.
  **/
-MODEL({
+CLASS({
   package: 'foam.html',
   name: 'Element',
 

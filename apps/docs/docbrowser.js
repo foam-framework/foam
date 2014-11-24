@@ -20,7 +20,7 @@ var touchManager = TouchManager.create({});
 touchManager.install(document);
 var gestureManager = GestureManager.create();
 
-MODEL({
+CLASS({
   name: 'ModelListController',
   properties: [
     {
@@ -92,7 +92,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ModelDescriptionRowView',
   extendsModel: 'View',
 
@@ -131,7 +131,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ControllerView',
   extendsModel: 'DetailView',
 
@@ -154,7 +154,7 @@ MODEL({
 
 
 
-MODEL({
+CLASS({
   name: 'DocBrowserController',
 
   documentation: function() {  /*
@@ -297,7 +297,7 @@ MODEL({
 
 });
 
-MODEL({
+CLASS({
   name: 'DocBrowserView',
   extendsModel: 'DetailView',
 

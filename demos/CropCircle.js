@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   name:  'CropCircle',
   extendsModel: 'CView2',
 

@@ -18,7 +18,7 @@
 // Override the primary key of people to be the name property.
 IssuePerson.ids = ['name'];
 
-MODEL({
+CLASS({
   name: 'PersonCompleter',
   properties: [
     { model_: 'DAOProperty', name: 'autocompleteDao' }

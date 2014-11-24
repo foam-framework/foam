@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'PositionedViewTrait',
   properties: [
     { model_: 'FloatProperty', name: 'x',               units: 'px', defaultValue: 0 },
@@ -29,7 +29,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DOMPanel',
   extendsModel: 'View',
   imports: [
@@ -87,7 +87,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'PositionedDOMViewTrait',
   traits: ['PositionedViewTrait'],
   properties: [
@@ -151,7 +151,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'Window',
   properties: [
     { model_: 'IntProperty', name: 'width' },
@@ -200,7 +200,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'Point',
   properties: [
     { model_: 'IntProperty', name: 'x' },
@@ -209,7 +209,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'FloatingView',
   extendsModel: 'View',
   traits: ['PositionedDOMViewTrait'],
@@ -224,7 +224,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ViewSlider',
   traits: ['PositionedDOMViewTrait'],
   extendsModel: 'View',
@@ -358,7 +358,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'OverlaySlider',
   traits: ['PositionedDOMViewTrait'],
   extendsModel: 'View',

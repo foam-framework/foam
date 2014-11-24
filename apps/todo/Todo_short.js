@@ -1,10 +1,10 @@
-MODEL({
+CLASS({
   name: 'TodoDAO', extendsModel: 'ProxyDAO',
   methods: { put: function(issue, s) {
     if (!issue.text) this.remove(issue.id, { remove: s && s.put }); else this.SUPER(issue, s);
   }}});
 
-MODEL({
+CLASS({
   name: 'Todo',
   properties: [
     'id', { name: 'completed', model_: 'BooleanProperty' },
@@ -25,7 +25,7 @@ MODEL({
       this.setClass('completed', function() { return this.data.completed; }.bind(this), this.id);
     %> */}]});
 
-MODEL({
+CLASS({
   name: 'Controller',
   properties: [
     {

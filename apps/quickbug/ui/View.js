@@ -85,7 +85,7 @@ var COL = {
 };
 
 
-MODEL({
+CLASS({
   name: 'DragAndDropGrid',
   extendsModel: 'GridByExpr',
 
@@ -126,7 +126,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'IssueDropCell',
   extendsModel: 'View',
 
@@ -210,7 +210,7 @@ MODEL({
  * An extension to COUNT() which turns count into a link which performs
  * a query for only the selected data when clicked.
  */
-MODEL({
+CLASS({
   name: 'ItemCount',
   extendsModel: 'CountExpr',
 
@@ -377,7 +377,7 @@ function createView(rowSelectionValue, browser) {
 }
 
 
-MODEL({
+CLASS({
   name: 'GriddedStringArrayView',
   extendsModel: 'View',
 

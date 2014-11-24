@@ -1,6 +1,6 @@
 var VIDEO_PATH = 'https://x20web.corp.google.com/~kgr/power/videos/DemoDen/';
 
-MODEL({
+CLASS({
   name: 'Demo',
   properties: [
     'name', 'path', 'keywords', 'image', 'video', 'description',
@@ -270,7 +270,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
 ], Demo).dao;
 
 
-MODEL({
+CLASS({
   name: 'Controller',
   properties: [
     { name: 'search', view: { factory_: 'TextFieldView', onKeyMode: true } },

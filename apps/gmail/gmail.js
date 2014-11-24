@@ -50,7 +50,7 @@ queryParser.expr = alt(
 );
 
 
-MODEL({
+CLASS({
   name: 'MGmail',
   description: 'Mobile Gmail',
   traits: ['PositionedDOMViewTrait'],
@@ -269,7 +269,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'GMailUserInfo',
   properties: ['email', 'name', 'avatarUrl'],
   methods: {
@@ -282,7 +282,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'EMailView',
   extendsModel: 'UpdateDetailView',
   properties: [
@@ -351,7 +351,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'EMailCitationView',
   extendsModel: 'DetailView',
   properties: [
@@ -450,7 +450,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'MenuView',
   extendsModel: 'View',
   traits: ['PositionedDOMViewTrait'],
@@ -543,7 +543,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'MenuLabelCitationView',
   extendsModel: 'DetailView',
   requires: ['SimpleValue'],

@@ -238,7 +238,7 @@ function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 
 // ??? Should this have a 'data' property?
 // Or maybe a DataView and ModelView
-MODEL({
+CLASS({
   name: 'View',
   label: 'View',
 
@@ -848,7 +848,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'PropertyView',
 
   extendsModel: 'View',
@@ -995,7 +995,7 @@ MODEL({
 
 
 // http://www.google.com/design/spec/components/tooltips.html#tooltips-usage
-MODEL({
+CLASS({
   name: 'Tooltip',
 
   extendsModel: 'View',
@@ -1117,7 +1117,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'PopupView',
 
   extendsModel: 'View',
@@ -1182,7 +1182,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'AutocompleteView',
   extendsModel: 'PopupView',
   help: 'Default autocomplete popup.',
@@ -1383,7 +1383,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'StaticHTML',
   extendsModel: 'View',
   properties: [
@@ -1409,7 +1409,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'MenuSeparator',
   extendsModel: 'StaticHTML',
   properties: [
@@ -1470,7 +1470,7 @@ var DomValue = {
 };
 
 
-MODEL({
+CLASS({
   name: 'WindowHashValue',
 
   properties: [
@@ -1500,7 +1500,7 @@ MODEL({
 X.memento = X.WindowHashValue.create();
 
 
-MODEL({
+CLASS({
   name: 'ImageView',
 
   extendsModel: 'View',
@@ -1580,7 +1580,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'BlobImageView',
 
   extendsModel: 'View',
@@ -1628,7 +1628,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'TextFieldView',
   label: 'Text Field',
 
@@ -1694,7 +1694,12 @@ MODEL({
     {
       model_: 'BooleanProperty',
       name: 'required',
-      documentation: function() { /* If value is required. */}
+      documentation: 'If value is required.'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'pattern',
+      documentation: 'Regex pattern for value.'
     },
     {
       name: 'domValue',
@@ -1754,6 +1759,7 @@ MODEL({
         ' rows="' + this.displayHeight + '" cols="' + this.displayWidth + '"';
 
       if ( this.required ) str += ' required';
+      if ( this.pattern  ) str += ' pattern="' + this.pattern + '"';
 
       str += ' name="' + this.name + '">';
       str += '</' + this.readWriteTagName + '>';
@@ -1882,7 +1888,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'DateFieldView',
   label: 'Date Field',
 
@@ -1905,7 +1911,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'DateTimeFieldView',
   label: 'Date-Time Field',
 
@@ -1963,7 +1969,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'RelativeDateTimeFieldView',
   label: 'Relative Date-Time Field',
 
@@ -1981,7 +1987,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'HTMLView',
   label: 'HTML Field',
 
@@ -2035,7 +2041,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'RoleView',
 
   extendsModel: 'View',
@@ -2090,7 +2096,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'BooleanView',
 
   extendsModel: 'View',
@@ -2128,7 +2134,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ImageBooleanView',
 
   extendsModel: 'View',
@@ -2201,7 +2207,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'CSSImageBooleanView',
 
   extendsModel: 'View',
@@ -2241,7 +2247,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'TextAreaView',
 
   extendsModel: 'TextFieldView',
@@ -2263,7 +2269,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'FunctionView',
 
   extendsModel: 'TextFieldView',
@@ -2329,7 +2335,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'JSView',
 
   extendsModel: 'TextAreaView',
@@ -2356,7 +2362,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'XMLView',
   label: 'XML View',
 
@@ -2383,7 +2389,7 @@ MODEL({
 
 
 /** A display-only summary view. **/
-MODEL({
+CLASS({
   name: 'SummaryView',
 
   extendsModel: 'View',
@@ -2444,7 +2450,7 @@ MODEL({
 
 
 /** A display-only on-line help view. **/
-MODEL({
+CLASS({
   name: 'HelpView',
 
   extendsModel: 'View',
@@ -2496,7 +2502,7 @@ MODEL({
 
 
 // TODO: add ability to set CSS class and/or id
-MODEL({
+CLASS({
   name: 'ActionButton',
 
   extendsModel: 'View',
@@ -2592,7 +2598,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ActionLink',
 
   extendsModel: 'ActionButton',
@@ -2630,7 +2636,7 @@ MODEL({
 
 
 // TODO: ActionBorder should use this.
-MODEL({
+CLASS({
   name:  'ToolbarView',
   label: 'Toolbar',
 
@@ -2785,7 +2791,7 @@ MODEL({
    listen for changes to Model and change buttons displayed and enabled
    isAvailable
 */
-MODEL({
+CLASS({
   name: 'ActionBorder',
 
   methods: {
@@ -2824,7 +2830,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ProgressView',
 
   extendsModel: 'View',
@@ -2867,7 +2873,7 @@ var ArrayView = {
 };
 */
 
-MODEL({
+CLASS({
   name: 'Mouse',
 
   properties: [
@@ -2905,7 +2911,7 @@ MODEL({
 
 
 // TODO: This should be replaced with a generic Choice.
-MODEL({
+CLASS({
   name: 'ViewChoice',
 
   tableProperties: [
@@ -2932,7 +2938,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'AlternateView',
 
   extendsModel: 'View',
@@ -3020,7 +3026,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'SwipeAltView',
   extendsModel: 'View',
 
@@ -3288,7 +3294,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'GalleryView',
   extendsModel: 'SwipeAltView',
 
@@ -3344,7 +3350,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'GalleryImageView',
   extendsModel: 'View',
 
@@ -3358,7 +3364,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ModelAlternateView',
   extendsModel: 'AlternateView',
   methods: {
@@ -3396,7 +3402,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'FloatFieldView',
 
   extendsModel: 'TextFieldView',
@@ -3424,7 +3430,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'IntFieldView',
 
   extendsModel: 'TextFieldView',
@@ -3440,7 +3446,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'StringArrayView',
 
   extendsModel: 'TextFieldView',
@@ -3500,7 +3506,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'MultiLineStringArrayView',
   extendsModel: 'View',
 
@@ -3688,7 +3694,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   extendsModel: 'View',
 
   name: 'SplitView',
@@ -3733,7 +3739,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ListValueView',
   help: 'Combines an input view with a value view for the edited value.',
 
@@ -3773,7 +3779,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'ArrayListView',
   extendsModel: 'View',
 
@@ -3829,7 +3835,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'KeyView',
   extendsModel: 'View',
 
@@ -3877,7 +3883,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DAOKeyView',
   extendsModel: 'View',
 
@@ -3921,7 +3927,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'AutocompleteListView',
 
   extendsModel: 'View',
@@ -4081,7 +4087,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ViewSwitcher',
   extendsModel: 'View',
 
@@ -4164,7 +4170,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ListInputView',
 
   extendsModel: 'AbstractDAOView',
@@ -4339,7 +4345,7 @@ MODEL({
  * TODO: a horizontal scrollbar. Either a separate view, or a generalization of
  * this one.
  */
-MODEL({
+CLASS({
   name: 'VerticalScrollbarView',
   extendsModel: 'View',
 
@@ -4559,7 +4565,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'UnitTestResultView',
   extendsModel: 'View',
 
@@ -4607,7 +4613,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'RegressionTestValueView',
   extendsModel: 'TextFieldView',
   properties: [
@@ -4622,7 +4628,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'RegressionTestResultView',
   label: 'Regression Test Result View',
   documentation: 'Displays the output of a $$DOC{.ref:"RegressionTest"}, either master or live.',
@@ -4687,7 +4693,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'UITestResultView',
   label: 'UI Test Result View',
   help: 'Overrides the inner masterView and liveView for UITests.',
@@ -4729,7 +4735,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'SlidePanelView',
   extendsModel: 'View',
 
@@ -4961,7 +4967,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ActionSheetView',
   extendsModel: 'View',
   traits: ['PositionedDOMViewTrait'],
@@ -4992,7 +4998,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   extendsModel: 'View',
 
   name: 'CollapsibleView',
@@ -5089,7 +5095,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'SimpleDynamicViewTrait',
   properties: [
     { name: 'data', postSet: function() { this.updateHTML(); } }
@@ -5103,7 +5109,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'ControllerOption',
   properties: [
     { model_: 'ViewFactoryProperty', name: 'controller' },
@@ -5111,7 +5117,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'ResponsiveController',
   extendsModel: 'View',
   imports: ['window'],

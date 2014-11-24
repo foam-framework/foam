@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'LabelArrayProperty',
   extendsModel: 'StringArrayProperty',
 
@@ -50,7 +50,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'LabelStringProperty',
   extendsModel: 'StringProperty',
 
@@ -77,7 +77,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'LabelStringEnumProperty',
   extendsModel: 'LabelStringProperty',
   traits: ['EnumPropertyTrait'],

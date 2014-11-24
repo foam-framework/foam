@@ -20,7 +20,7 @@
    Use MementoMgr.
    Browser history support.
 */
-MODEL({
+CLASS({
   name: 'StackView',
   extendsModel: 'View',
 

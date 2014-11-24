@@ -50,7 +50,7 @@ CLASS({
 });
 
 
-MODEL({
+CLASS({
   name: 'Controller',
 
   properties: [

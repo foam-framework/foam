@@ -90,17 +90,17 @@ DEFAULT_OP.toString = function() { return ''; };
 
 
 /** A subclass of FloatFieldView which doesn't display 0 values. **/
-MODEL({
+CLASS({
   name:  'CalcFloatFieldView',
   extendsModel: 'FloatFieldView',
   methods: { valueToText: function(v) { return v == 0 ? '' : v.toString(); } }
 });
 
 
-MODEL({ name: 'History', properties: [ 'op', 'a2' ] });
+CLASS({ name: 'History', properties: [ 'op', 'a2' ] });
 
 
-MODEL({
+CLASS({
   name: 'Calc',
 
   requires: [ 'HistoryView', 'CalcView' ],
@@ -415,7 +415,7 @@ MODEL({
 // HACK: The buttons don't draw using the Roboto font because it isn't loaded yet.
 // So we wait a second, to give the font time to load, then redraw all the buttons.
 // TODO: Something better.
-MODEL({
+CLASS({
   name: 'ActionButtonCView2',
   extendsModel: 'ActionButtonCView',
   methods: {
@@ -435,5 +435,5 @@ var CalcButton = ActionButtonCView2.xbind({
 });
 X.registerModel(CalcButton, 'ActionButton');
 
-MODEL({ name: 'HistoryView',          extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-MODEL({ name: 'CalcView',             extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+CLASS({ name: 'HistoryView',          extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+CLASS({ name: 'CalcView',             extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });

@@ -33,7 +33,7 @@ dao = DelayedDAO.create({
 */
 
 
-MODEL({
+CLASS({
   name: 'AvatarView',
   extendsModel: 'View',
 
@@ -71,7 +71,7 @@ MODEL({
   ],
 });
 
-MODEL({
+CLASS({
   name: 'ContactRowView',
   extendsModel: 'DetailView',
 

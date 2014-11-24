@@ -20,7 +20,7 @@ canv.write(document);
 var outerLayout = X.diagram.LinearLayout.create({ width : 500, height: 300});
 canv.addChild(outerLayout);
 
-var spacer1e = X.canvas.Spacer.create({});
+var spacer1e = X.canvas.Spacer.create({ fixedWidth: 200 });
 outerLayout.addChild(spacer1e);
 
 var vlay1 = X.diagram.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
@@ -28,14 +28,14 @@ outerLayout.addChild(vlay1);
 var vlay2 = X.diagram.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
 outerLayout.addChild(vlay2);
 
-MODEL({
+CLASS({
   name: 'BorderLabel',
   extendsModel: 'canvas.Label',
   traits: ['canvas.BorderTrait']
 
 });
 
-var spacer1 = X.canvas.Spacer.create({});
+var spacer1 = X.canvas.Spacer.create({ });
 vlay1.addChild(spacer1);
 
 var block1 = X.diagram.Block.create({
@@ -136,10 +136,16 @@ spacer3.verticalConstraints.stretchFactor = 1;
 block2.addChild(spacer3);
 
 
-var link = X.diagram.Link.create({color: 'blue', arrowStyle:'composition'}, canv.X);
+var link = X.diagram.Link.create({color: 'blue', arrowStyle:'generalization'}, canv.X);
 link.start = block1.myLinkPoints;
 link.end = block2.myLinkPoints;
 canv.addChild(link);
+
+var link2 = X.diagram.Link.create({color: 'blue', arrowStyle:'composition'}, canv.X);
+link2.start = sect1.myLinkPoints;
+link2.end = sect1b.myLinkPoints;
+canv.addChild(link2);
+
 
 //vlay1.performLayout();
 var mouse = X.Mouse.create();

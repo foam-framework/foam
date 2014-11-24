@@ -17,7 +17,7 @@
 
 
 
-MODEL({
+CLASS({
   name: 'DocFeaturesView',
   extendsModel: 'View',
   help: 'Displays the documentation of the given set of features.',
@@ -187,7 +187,7 @@ MODEL({
 
 });
 
-MODEL({
+CLASS({
   name: 'DocFeatureCollapsedView',
   extendsModel: 'DocBodyView',
   help: 'A generic view for collapsed sets.',
@@ -223,7 +223,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DocFeatureRowView',
   extendsModel: 'DocBodyView',
   help: 'A generic view for each item in a list of documented features.',
@@ -271,7 +271,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'DocFeatureOverridesRefView',
   extendsModel: 'DocRefView',
   label: 'Documentation Feature Overrides Reference Link View',
@@ -297,7 +297,7 @@ MODEL({
     },
   ],
 });
-MODEL({
+CLASS({
   name: 'DocFeatureSubmodelRefView',
   extendsModel: 'DocRefView',
   label: 'Documentation Feature Model Link Reference View',
@@ -324,7 +324,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DocPropertiesView',
   extendsModel: 'DocFeaturesView',
   help: 'Displays the documentation of the given Properties.',
@@ -357,7 +357,7 @@ MODEL({
 
 });
 
-MODEL({
+CLASS({
   name: 'DocPropertyRowView',
   extendsModel: 'DocFeatureRowView',
   help: 'A view for documentation of each item in a list of properties.',
@@ -375,7 +375,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DocRelationshipsView',
   extendsModel: 'DocFeaturesView',
   help: 'Displays the documentation of the given Relationships.',
@@ -395,7 +395,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DocActionsView',
   extendsModel: 'DocFeaturesView',
   help: 'Displays the documentation of the given Actions.',
@@ -414,7 +414,7 @@ MODEL({
 
 });
 
-MODEL({
+CLASS({
   name: 'DocListenersView',
   extendsModel: 'DocMethodsView',
   help: 'Displays the documentation of the given Listeners.',
@@ -433,7 +433,7 @@ MODEL({
 
 });
 
-MODEL({
+CLASS({
   name: 'DocTemplatesView',
   extendsModel: 'DocFeaturesView',
   help: 'Displays the documentation of the given Templates.',
@@ -453,7 +453,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DocIssuesView',
   extendsModel: 'DocFeaturesView',
   help: 'Displays the documentation of the given Issues.',
@@ -473,7 +473,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DocMethodsView',
   extendsModel: 'DocFeaturesView',
   help: 'Displays the documentation of the given Methods.',
@@ -500,7 +500,7 @@ MODEL({
 
 });
 
-MODEL({
+CLASS({
   name: 'DocMethodRowView',
   extendsModel: 'DocFeatureRowView',
   help: 'A view for each item in a list of documented Methods, including arguments.',
@@ -517,7 +517,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'DocMethodArgumentsView',
   extendsModel: 'DocFeaturesView',
   help: 'Displays the documentation of the given Method Arguments. Data should be a Method.',
@@ -554,7 +554,7 @@ MODEL({
   ],
 });
 
-MODEL({
+CLASS({
   name: 'DocMethodArgumentRowView',
   extendsModel: 'DocBodyView',
   help: 'A view for each item in a list of Args.',
@@ -567,7 +567,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'DocMethodArgumentsSmallView',
   extendsModel: 'DocMethodArgumentsView',
   help: 'Displays the documentation of the given Method Arguments. Data should be a Method.',
@@ -597,7 +597,7 @@ MODEL({
   ],
 });
 
-MODEL({
+CLASS({
   name: 'DocMethodArgumentSmallRowView',
   extendsModel: 'DocBodyView',
   help: 'An in-line view for each item in a list of Args.',
@@ -609,7 +609,7 @@ MODEL({
 
 
 
-MODEL({
+CLASS({
   name: 'DocChaptersView',
   extendsModel: 'DocFeaturesView',
   help: 'Displays the contents of the given Chapters.',
@@ -646,7 +646,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'DocInnerModelsView',
   extendsModel: 'DocFeaturesView',
   help: 'Displays the documentation of the given inner Models.',
@@ -695,7 +695,7 @@ MODEL({
 
 });
 
-MODEL({
+CLASS({
   name: 'DocInnerModelsRowView',
   extendsModel: 'DocFeatureRowView',
   help: 'A view for each item in a list of documented Methods, including arguments.',

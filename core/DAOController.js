@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-MODEL({
+CLASS({
   name:  'DAOController',
   label: 'DAO Controller',
 
@@ -175,7 +175,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'DAOCreateController',
   label: 'DAO Create',
 
@@ -240,7 +240,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'DAOUpdateController',
   label: 'DAO Update',
 

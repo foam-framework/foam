@@ -18,7 +18,7 @@
 
 // See: https://developers.google.com/chart/interactive/docs/index
 
-MODEL({
+CLASS({
   name: 'PieGraph',
 
   extendsModel: 'CView',
@@ -133,7 +133,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'PieExpr',
 
   extendsModel: 'GroupByExpr',

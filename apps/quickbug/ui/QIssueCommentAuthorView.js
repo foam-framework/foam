@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   name: 'QIssueCommentAuthorView',
   extendsModel: 'DetailView',
 

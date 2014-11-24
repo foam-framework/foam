@@ -24,7 +24,7 @@
  *    improve L&F
  */
 
-MODEL({
+CLASS({
   name: 'Link',
   properties: [
     {
@@ -77,7 +77,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'LinkView',
 
   extendsModel: 'DetailView',
@@ -135,7 +135,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ColorPickerView',
 
   extendsModel: 'View',
@@ -181,7 +181,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'RichTextView',
 
   extendsModel: 'View',

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'DetailView',
   extendsModel: 'View',
 
@@ -243,7 +243,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'UpdateDetailView',
   extendsModel: 'DetailView',
 
@@ -354,7 +354,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'RelationshipView',
   extendsModel: 'View',
 
@@ -404,7 +404,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'RelationshipsView',
   extendsModel: 'DetailView',
 

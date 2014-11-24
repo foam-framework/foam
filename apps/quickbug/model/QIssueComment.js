@@ -70,7 +70,7 @@ var QIssueComment = FOAM({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'QIssueCommentUpdate',
   extendsModel: 'IssueCommentUpdate',
 

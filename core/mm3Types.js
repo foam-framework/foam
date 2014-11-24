@@ -54,6 +54,10 @@ var StringProperty = Model.create({
       defaultValue: 'TextFieldView'
     },
     {
+      name: 'pattern',
+      help: 'Regex pattern for property.'
+    },
+    {
       name: 'prototag',
       label: 'Protobuf tag',
       type: 'Int',
@@ -931,7 +935,7 @@ var DocumentationProperty = Model.create({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'EnumPropertyTrait',
   properties: [
     {
@@ -948,13 +952,13 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'StringEnumProperty',
   traits: ['EnumPropertyTrait'],
   extendsModel: 'StringProperty'
 });
 
-MODEL({
+CLASS({
   name: 'DOMElementProperty',
   extendsModel: 'StringProperty',
   properties: [

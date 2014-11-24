@@ -24,9 +24,7 @@ var FObject = {
 
   name_: 'FObject',
 
-  create_: function() {
-    return Object.create(this);
-  },
+  create_: function() { return Object.create(this); },
 
   create: function(args, opt_X) {
     var o = this.create_(this);
@@ -48,12 +46,17 @@ var FObject = {
 
 //    if ( typeof args === 'object' ) o.copyFrom(args);
 
-    o.initX(args);
+    if ( o.model_ ) {
+      var agents = this.initAgents();
+      for ( var i = 0 ; i < agents.length ; i++ ) agents[i][1](o, o.X, args);
+    } else debugger; // TODO: if this happens, then document why/when, if not, remove
+
     o.init(args);
-//    if ( ! Object.hasOwnProperty(this, 'superInitCalled_') ) console.warn('Failed to call SUPER() in init ', this.name_);
 
     return o;
   },
+
+  init: nop,
 
   // TODO: document
   xbind: function(map) {
@@ -157,17 +160,6 @@ var FObject = {
 
     return this.initAgents_;
   },
-
-  initX: function(map) {
-    // this.superInitCalled_ = true;
-
-    if ( ! this.model_ ) return;
-
-    var agents = this.__proto__.initAgents();
-    for ( var i = 0 ; i < agents.length ; i++ ) agents[i][1](this, this.X, map);
-  },
-
-  init: nop,
 
   fromElement: function(e) {
     var elements = this.elementMap_;

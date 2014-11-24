@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   name: 'Phone',
   properties: [
     'id', 'age', 'name', 'snippet', 'additionalFeatures', 'android',

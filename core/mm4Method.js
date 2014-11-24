@@ -18,7 +18,7 @@
 // TODO: do this once no views use it directly
 // delete BootstrapModel;
 
-MODEL({
+CLASS({
   name: 'Action',
   plural: 'Actions',
 
@@ -226,7 +226,7 @@ MODEL({
    });
 */
 
-MODEL({
+CLASS({
   name: 'Arg',
 
   tableProperties: [
@@ -372,7 +372,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'Constant',
   plural: 'constants',
 
@@ -426,7 +426,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'Method',
   plural: 'Methods',
 
@@ -663,7 +663,7 @@ Method.methods = {
 };
 
 
-MODEL({
+CLASS({
   name: 'Interface',
   plural: 'Interfaces',
 
@@ -797,7 +797,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'Template',
 
   tableProperties: [
@@ -897,7 +897,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'Documentation',
 
   tableProperties: [

@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   requires: ['PhoneCitationView', 'PhoneDetailView'],
 
   name: 'Controller',
@@ -25,7 +25,7 @@ MODEL({
 });
 
 
-MODEL({ name: 'PhoneCitationView', extendsModel: 'DetailView', templates: [
+CLASS({ name: 'PhoneCitationView', extendsModel: 'DetailView', templates: [
   function toHTML() {/*
       <li class="thumbnail">
         <a href="#{{this.data.id}}" class="thumb">$$imageUrl</a>
@@ -36,10 +36,10 @@ MODEL({ name: 'PhoneCitationView', extendsModel: 'DetailView', templates: [
 ]});
 
 
-MODEL({ name: 'PhoneDetailView',   extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+CLASS({ name: 'PhoneDetailView',   extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 
 
-MODEL({
+CLASS({
   name: 'ControllerView',
   extendsModel: 'DetailView',
   templates: [

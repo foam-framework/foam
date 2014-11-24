@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-MODEL({
+CLASS({
   name:  'GroupBySearchView',
   extendsModel: 'View',
 
@@ -130,7 +130,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name:  'TextSearchView',
 
   extendsModel: 'View',
@@ -202,7 +202,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'SearchView',
   extendsModel: 'View',
 
@@ -265,7 +265,7 @@ MODEL({
   ]
 });
 
-MODEL({
+CLASS({
   name: 'SearchBorder',
 
   properties: [

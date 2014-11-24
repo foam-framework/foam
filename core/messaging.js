@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'XHR',
 
   properties: [
@@ -71,7 +71,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: "OAuthXhrDecorator",
 
   properties: [
@@ -100,7 +100,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'RetryDecorator',
 
   properties: [
@@ -134,7 +134,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'DelayDecorator',
 
   properties: [
@@ -151,7 +151,7 @@ MODEL({
   }
 });
 
-MODEL({
+CLASS({
   name: 'XhrMessenger',
   properties: [
     { model_: 'URLProperty', name: 'url' },

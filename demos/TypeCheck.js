@@ -1,6 +1,6 @@
 DEBUG = true;
 
-MODEL({
+CLASS({
   name: 'Account',
 
   properties: [

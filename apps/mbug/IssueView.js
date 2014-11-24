@@ -1,4 +1,4 @@
-MODEL({
+CLASS({
   name: 'IssueView',
   extendsModel: 'UpdateDetailView',
   traits: ['VerticalScrollNativeTrait'],
