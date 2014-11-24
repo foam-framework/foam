@@ -646,9 +646,11 @@ MODEL({
             c.fill();
           }
         } else if (this.arrowStyle === 'generalization') {
-          c.lineTo(this.arrowLength, -this.arrowLength/1.2);
-          c.lineTo(this.arrowLength, this.arrowLength/1.2);
-          c.lineTo(0,0);        
+          c.lineTo(this.arrowLength/1.2, -this.arrowLength/2);
+          c.lineTo(this.arrowLength/1.2, this.arrowLength/2);
+          c.lineTo(0,0);
+          c.moveTo(this.arrowLength/1.2, 0);
+          c.lineTo(this.arrowLength, 0)
           c.stroke();
         }
         c.restore();
