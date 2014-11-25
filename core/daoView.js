@@ -934,7 +934,7 @@ CLASS({
         var maxVisible = Math.ceil((2 * this.runway + this.viewportHeight) / this.rowHeight);
         if ( this.visibleBottom - this.visibleTop + 1 < maxVisible ) {
           if ( this.visibleTop === 0 ) this.visibleBottom = Math.min(maxVisible - 1, this.count - 1);
-          else this.visibleTop = Math.max(0, this.visibleBottom - this.count + 1);
+          else this.visibleTop = Math.max(0, this.visibleBottom - maxVisible + 1);
         }
 
         // Four cases:
