@@ -81,33 +81,35 @@ var BootstrapModel = {
     // Note: Only documentation browser uses this, and it will be replaced
     // by the new Feature Oriented bootstrapping process, so only use the
     // extra memory in DEBUG mode.
-    if (DEBUG) {
-      BootstrapModel.saveDefinition(this);
-    }
+    if ( DEBUG ) BootstrapModel.saveDefinition(this);
 
     function addTraitToModel(traitModel, parentModel) {
-      var name = (parentModel.id? parentModel.id.replace('.','__') : "")
-                  + '_ExtendedWith_' +
-                   (traitModel.id? traitModel.id.replace('.','__') : "");
+      var parentName = parentModel && parentModel.id ? parentModel.id.replace(/\./g, '__') : '';
+      var traitName  = traitModel.id ? traitModel.id.replace(/\./g, '__') : ''
+      var name       = parentName + '_ExtendedWith_' + traitName;
 
       if ( ! FOAM.lookup(name) ) {
         var model = traitModel.deepClone();
         model.package = "";
         model.name = name;
-        model.extendsModel = parentModel.id;
-        GLOBAL.registerModel(model);
+        model.extendsModel = parentModel && parentModel.id;
+        GLOBAL.X.registerModel(model);
       }
 
-      return FOAM.lookup(name);
+      var ret = FOAM.lookup(name);
+      if ( ! ret ) debugger;
+      return ret;
     }
 
-    if ( this.extendsModel && ! FOAM.lookup(this.extendsModel) ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
+    if ( this.extendsModel && ! FOAM.lookup(this.extendsModel, this.X) ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
 
-    var extendsModel = this.extendsModel && FOAM.lookup(this.extendsModel);
+    var extendsModel = this.extendsModel && FOAM.lookup(this.extendsModel, this.X);
 
     if ( this.traits ) for ( var i = 0 ; i < this.traits.length ; i++ ) {
       var trait      = this.traits[i];
-      var traitModel = FOAM.lookup(trait);
+      var traitModel = FOAM.lookup(trait, this.X);
+
+      console.assert(traitModel, 'Unknow trait: ' + trait);
 
       if ( traitModel ) {
         extendsModel = addTraitToModel(traitModel, extendsModel);
@@ -118,6 +120,7 @@ var BootstrapModel = {
 
     var proto  = extendsModel ? extendsModel.getPrototype() : FObject;
     var cls    = Object.create(proto);
+
     cls.model_ = this;
     cls.name_  = this.name;
 
