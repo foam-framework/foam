@@ -5197,6 +5197,8 @@ CLASS({
         display: flex;
         align-items: center;
         justify-content: center;
+        height: 100%;
+        width: 100%;
       }
       .spinner {
         <% for (var i = 0; i < prefixes.length; i++) { %>
