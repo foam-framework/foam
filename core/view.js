@@ -179,7 +179,7 @@ var DOM = {
       var p = findProperty(key);
 
       if ( p ) {
-        args[p.name] = p.fromElement(c);
+        args[p.name] = p.fromElement(c, p);
       } else {
         console.log('unknown element: ', key);
       }
