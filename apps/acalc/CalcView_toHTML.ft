@@ -117,4 +117,5 @@
     inner$.style.top = toNum(outer.height)-toNum(inner.height) + 'px';
   }.bind(this));
   Events.dynamic(function() { this.data.op; this.data.a1; this.data.a2; }.bind(this), move);
+  this.data.history.listen(move);
 %>
