@@ -127,7 +127,7 @@ var DOM = {
   initElement: function(e, X, opt_document) {
     // If was a sub-object for an object that has already been displayed,
     // then it will no longer be in the DOM and doesn't need to be shown.
-    if ( opt_document && ! opt_document.contains(e) ) return;
+    if ( opt_document && ! opt_document.body.contains(e) ) return;
 
     var args = {};
     var modelName = e.getAttribute('model');

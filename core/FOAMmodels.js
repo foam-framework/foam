@@ -18,6 +18,7 @@
 var files = [
 //  ['ServiceWorker', function() { return window.navigator && navigator.serviceWorker; }],
   ['firefox', function() { return window.navigator && navigator.userAgent.indexOf('Firefox') != -1; }],
+  ['funcName', function() { return ! Number.name; }],
   ['safari', function() { return window.navigator && navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1; }],
   [ 'i18n', function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
   'stdlib',
