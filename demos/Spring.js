@@ -1,7 +1,7 @@
-var space   = CView2.create({width: 2000, height: 1700, background: 'white'});
+var space   = foam.graphics.CView.create({width: 2000, height: 1700, background: 'white'});
 var mouse   = Mouse.create();
 
-CLASS({name: 'Circle', extendsModel: 'Circle2', traits: ['Physical'] });
+CLASS({name: 'Circ', extendsModel: 'foam.graphics.Circle', traits: ['Physical'] });
 
 space.write(document);
 mouse.connect(space.$);
@@ -11,7 +11,7 @@ mouse.x = mouse.y = 300;
 var N = 19;
 for ( var x = 0 ; x < N ; x++ ) {
   for ( var y = 0 ; y < N ; y++ ) {
-    var c = Circle.create({
+    var c = Circ.create({
       r: 8,
       x: 300 + (x-(N-1)/2)*25,
       y: 300 + (y-(N-1)/2)*25,
@@ -25,4 +25,3 @@ for ( var x = 0 ; x < N ; x++ ) {
     Movement.friction(c, 0.95);
   }
 }
-

@@ -14,29 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
+  package: 'foam.graphics',
   name: 'AbstractCViewView',
   extendsModel: 'View',
 
   documentation: function() {  /*
-    Forming the DOM component for a $$DOC{ref:'CView2',text:'canvas view'},
+    Forming the DOM component for a $$DOC{ref:'foam.graphics.CView',text:'canvas view'},
     the $$DOC{ref:'.'} provides a canvas and DOM event integration. When you
-    create a $$DOC{ref:'CView2'} and $$DOC{ref:'CView2.write'} it into your
+    create a $$DOC{ref:'foam.graphics.CView'} and $$DOC{ref:'foam.graphics.CView.write'} it into your
     document, an $$DOC{ref:'.'} is created automatically to host your view.</p>
-    <p>Changes to your $$DOC{ref:'CView2'} or its children ripple down and
+    <p>Changes to your $$DOC{ref:'foam.graphics.CView'} or its children ripple down and
     cause a repaint, starting with a $$DOC{ref:'AbstractCViewView.paint'} call.
   */},
-
 
   properties: [
     {
       name: 'cview',
-      type: 'CView2',
+      type: 'foam.graphics.CView',
       postSet: function(_, cview) {
         cview.view = this;
       },
       documentation: function() {/*
-          The $$DOC{ref:'CView2'} root node that contains all the content to render.
+          The $$DOC{ref:'foam.graphics.CView'} root node that contains all the content to render.
         */}
     },
     {
@@ -119,7 +120,7 @@ CLASS({
         this.canvas.restore();
       },
       documentation: function() {/*
-          Clears the canvas and triggers a repaint of the root $$DOC{ref:'CView2'}
+          Clears the canvas and triggers a repaint of the root $$DOC{ref:'foam.graphics.CView'}
           and its children.
         */}
     }
@@ -178,6 +179,7 @@ CLASS({
 
 
 CLASS({
+  package: 'foam.graphics',
   name: 'PositionedCViewView',
   extendsModel: 'AbstractCViewView',
   traits: ['PositionedDOMViewTrait'],
@@ -224,10 +226,10 @@ CLASS({
 
 CLASS({
   name: 'CViewView',
-  extendsModel: 'AbstractCViewView',
-  help: 'DOM wrapper for a CView2, auto adjusts it size to fit the given cview.',
+  extendsModel: 'foam.graphics.AbstractCViewView',
+  help: 'DOM wrapper for a CView, auto adjusts it size to fit the given cview.',
   documentation: function() {/*
-      DOM wrapper for a $$DOC{ref:'CView2'}, that auto adjusts it size to fit
+      DOM wrapper for a $$DOC{ref:'foam.graphics.CView'}, that auto adjusts it size to fit
       he given view.
     */},
   properties: [
@@ -243,7 +245,9 @@ CLASS({
   ]
 });
 
+
 CLASS({
+  package: 'foam.graphics',
   name: 'Point',
   package: 'canvas',
 
@@ -263,13 +267,14 @@ CLASS({
   methods: {
     toString: function() { return "canvas.Point("+this.x+", "+this.y+")"; }
   }
-
 })
 
 
 CLASS({
-  name:  'CView2',
-  label: 'CView2',
+  package: 'foam.graphics',
+  name:  'CView',
+  label: 'CView',
+
   documentation: function() {/*
       The base class for a canvas item. A $$DOC{ref:'.'} can be directly inserted
       into the DOM with $$DOC{ref:'.write'}, and will generate a $$DOC{ref:'CViewView'}
@@ -278,14 +283,14 @@ CLASS({
       root $$DOC{ref:'.'} attached to the canvas. Use $$DOC{ref:'.addChild'} to attach a new
       $$DOC{ref:'.'} to the scene graph:</p>
       <p><code>
-            var rootNode = this.X.CView2.create({width:300, height:200});<br/>
+            var rootNode = this.X.CView.create({width:300, height:200});<br/>
             <br/>
             rootNode.write(document); // a CViewView wrapper is created for us<br/>
             <br/>
-            rootNode.addChild(this.X.Circle2.create({x:30, y:50, radius: 30, color: 'blue'});<br/>
+            rootNode.addChild(this.X.Circle.create({x:30, y:50, radius: 30, color: 'blue'});<br/>
             rootNode.addChild(this.X.Label.create({x: 50, y: 30, text: "Hello", color: 'black'});<br/>
       </code></p>
-      <p>When modeling your own $$DOC{ref:'CView2'} submodel, override $$DOC{ref:'.paintSelf'}
+      <p>When modeling your own $$DOC{ref:'foam.graphics.CView'} submodel, override $$DOC{ref:'.paintSelf'}
       to render your content. Children will automatically be painted for you. For more direct
       control over child rendering, override $$DOC{ref:'.paint'}.
     */},
@@ -365,11 +370,11 @@ CLASS({
     },
     {
       name: 'parent',
-      type: 'CView2'
+      type: 'foam.graphics.CView'
     },
     {
       name:  'children',
-      type:  'CView2[]',
+      type:  'foam.graphics.CView[]',
       factory: function() { return []; },
       hidden: true,
       documentation: function() {/*
@@ -432,14 +437,14 @@ CLASS({
           once on first $$DOC{ref:'.paint'} when transitioning from 'initial'
           to 'active' '$$DOC{ref:'.state'}. */ },
 
-    write: function(document) { /* Inserts this $$DOC{ref:'CView2'} into the DOM
+    write: function(document) { /* Inserts this $$DOC{ref:'foam.graphics.CView'} into the DOM
                                    with an $$DOC{ref:'AbstractCViewView'} wrapper. */
       var v = this.toView_();
       document.writeln(v.toHTML());
       v.initHTML();
     },
 
-    addChild: function(child) { /* Adds a child $$DOC{ref:'CView2'} to the scene
+    addChild: function(child) { /* Adds a child $$DOC{ref:'foam.graphics.CView'} to the scene
                                    under this. */
       this.children.push(child);
       if ( this.view ) {
@@ -522,9 +527,10 @@ CLASS({
 
 
 CLASS({
-  name:  'Circle2',
+  package: 'foam.graphics',
+  name:  'Circle',
 
-  extendsModel: 'CView2',
+  extendsModel: 'foam.graphics.CView',
 
   properties: [
     {
@@ -576,9 +582,10 @@ CLASS({
 
 
 CLASS({
+  package: 'foam.graphics',
   name: 'ActionButtonCView',
 
-  extendsModel: 'CView2',
+  extendsModel: 'foam.graphics.CView',
 
   properties: [
     {
@@ -615,7 +622,7 @@ CLASS({
     },
     {
       name: 'halo',
-      factory: function() { return Circle2.create({
+      factory: function() { return Circle.create({
         alpha: 0,
         r: 10,
         color: this.haloColor
@@ -844,8 +851,9 @@ CLASS({
 
 
 CLASS({
+  package: 'foam.graphics',
   name: 'DAOListCView',
-  extendsModel: 'CView2',
+  extendsModel: 'foam.graphics.CView',
 
   properties: [
     { model_: 'DAOProperty', name: 'dao' },
@@ -890,50 +898,59 @@ CLASS({
 });
 
 
-CLASS({name: 'MotionBlur', methods: {
-  paint: function() {
-    this.SUPER();
-    var c = this.canvas;
-    var oldAlpha = this.alpha;
+CLASS({
+  package: 'foam.graphics',
+  name: 'MotionBlur',
+  methods: {
+    paint: function() {
+      this.SUPER();
+      var c = this.canvas;
+      var oldAlpha = this.alpha;
 
-    c.save();
-    c.translate(-this.vx, -this.vy);
-    this.alpha = 0.6;
-    this.SUPER();
-    c.translate(-this.vx, -this.vy);
-    this.alpha = 0.3;
-    this.SUPER();
-    c.restore();
+      c.save();
+      c.translate(-this.vx, -this.vy);
+      this.alpha = 0.6;
+      this.SUPER();
+      c.translate(-this.vx, -this.vy);
+      this.alpha = 0.3;
+      this.SUPER();
+      c.restore();
 
-    this.alpha = oldAlpha;
+      this.alpha = oldAlpha;
+    }
   }
-}});
-
-
-CLASS({name: 'Shadow', methods: {
-  paint: function() {
-    var c = this.canvas;
-    var oldAlpha = this.alpha;
-    var oldColor = this.color;
-
-    c.save();
-    c.translate(4, 4);
-    this.alpha = 0.2;
-    this.color = 'black';
-    this.SUPER();
-    c.restore();
-
-    this.alpha = oldAlpha;
-    this.color = oldColor;
-
-    this.SUPER();
-  }
-}});
+});
 
 
 CLASS({
+  package: 'foam.graphics',
+  name: 'Shadow',
+  methods: {
+    paint: function() {
+      var c = this.canvas;
+      var oldAlpha = this.alpha;
+      var oldColor = this.color;
+
+      c.save();
+      c.translate(4, 4);
+      this.alpha = 0.2;
+      this.color = 'black';
+      this.SUPER();
+      c.restore();
+
+      this.alpha = oldAlpha;
+      this.color = oldColor;
+
+      this.SUPER();
+    }
+  }
+});
+
+
+CLASS({
+  package: 'foam.graphics',
   name: 'CanvasScrollView',
-  extendsModel: 'CView2',
+  extendsModel: 'foam.graphics.CView',
   properties: [
     {
       model_: 'DAOProperty',
@@ -964,11 +981,12 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      this.X.dynamic(function() { this.width; this.renderer; this.offset; this.objs; }.bind(this),
-                     function() {
-                       this.renderer.width = this.width;
-                       this.view && this.view.paint();
-                     }.bind(this));
+      this.X.dynamic(
+        function() { this.width; this.renderer; this.offset; this.objs; }.bind(this),
+        function() {
+          this.renderer.width = this.width;
+          this.view && this.view.paint();
+        }.bind(this));
     },
     initCView: function() {
       this.X.dynamic(

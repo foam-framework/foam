@@ -252,7 +252,7 @@ CLASS({
       name:  'id',
       label: 'Element ID',
       type:  'String',
-      factory: function() { return this.nextID(); },
+      factory: function() { return this.instance_.id || this.nextID(); },
       documentation: function() {/*
         The DOM element id for the outermost tag of
         this $$DOC{ref:'View'}.
@@ -290,7 +290,7 @@ CLASS({
       hidden: true,
       mode:   "read-only",
       getter: function() {
-        return this.instance_.$ ? this.instance_.$ : this.instance_.$ = $(this.id);
+        return this.instance_.$ ? this.instance_.$ : this.instance_.$ = this.X.document.getElementById(this.id);
       },
       help:   'DOM Element.'
     },
@@ -5186,6 +5186,8 @@ CLASS({
         display: flex;
         align-items: center;
         justify-content: center;
+        height: 100%;
+        width: 100%;
       }
       .spinner {
         <% for (var i = 0; i < prefixes.length; i++) { %>
@@ -5294,8 +5296,10 @@ CLASS({
       code: function() {
         this.timer = '';
         this.spinner = this.spinnerView();
-        this.$.outerHTML = this.spinner.toHTML();
-        this.spinner.initHTML();
+        if ( this.$ ) {
+          this.$.outerHTML = this.spinner.toHTML();
+          this.spinner.initHTML();
+        }
       }
     },
     {
@@ -5319,6 +5323,16 @@ CLASS({
   ],
 
   methods: {
+    toHTML: function() {
+      if ( this.childView ) return this.childView.toHTML();
+      if ( this.spinner ) return this.spinner.toHTML();
+      return this.SUPER();
+    },
+    initHTML: function() {
+      if ( this.childView ) this.childView.initHTML();
+      if ( this.spinner ) this.spinner.initHTML();
+      this.SUPER();
+    },
     destroy: function() {
       if ( this.spinner ) this.spinner.destroy();
       if ( this.childView ) this.childView.destroy();

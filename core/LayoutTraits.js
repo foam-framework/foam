@@ -55,7 +55,7 @@ CLASS({
             return parseInt(propVal || 0)
           }
         }
-        
+
         this.defineProperty(
           {
             model_: 'IntProperty',
@@ -71,12 +71,9 @@ CLASS({
         this[prop.name+"$"].addListener(function(self, msg) {
           self[prop.name+"$Pix"] = pixFn(self, prop);
         }.bind(this));
-
-
       }
     }
-  ],
-
+  ]
 });
 
 
@@ -154,8 +151,8 @@ CLASS({
       }
     }
   ]
-
 });
+
 
 CLASS({
   name: 'LayoutItemLinearConstraintsProxy',
@@ -200,6 +197,7 @@ CLASS({
 
 });
 
+
 CLASS({
   name: 'LayoutItemHorizontalTrait',
   package: 'layout',
@@ -232,9 +230,8 @@ CLASS({
       }
     }
   ]
-
-
 });
+
 
 CLASS({
   name: 'LayoutItemVerticalTrait',
@@ -268,8 +265,8 @@ CLASS({
       }
     }
   ]
-
 });
+
 
 CLASS({
   name: 'LinearLayoutTrait',
@@ -317,7 +314,6 @@ CLASS({
         this.calculatePreferredSize();
       }
     }
-    
   ],
 
   methods: {
@@ -333,12 +329,12 @@ CLASS({
 
       // these helpers take care of orientation awareness
       var constraintsF = Function("item", "return item."+ this.orientation+"Constraints");
-      var sizeF = Function("item", "return item."+ 
+      var sizeF = Function("item", "return item."+
                       (this.orientation==='horizontal'? "width" : "height"));
-      var parentSizeF = Function("item", "return item."+ 
+      var parentSizeF = Function("item", "return item."+
                       (this.orientation==='horizontal'? "width" : "height"));
-            
-      var boundedF = function(val, constraints) { 
+
+      var boundedF = function(val, constraints) {
         return (constraints.min$Pix && val < constraints.min$Pix)? constraints.min$Pix :
                (constraints.max$Pix && val > constraints.max$Pix)? constraints.max$Pix :
                val;
@@ -346,7 +342,7 @@ CLASS({
 
       var availableSpace = parentSizeF(this);
       var sz = parentSizeF(this);
-      
+
       // initialize with all at preferred size
       var itemSizes = [];
       var i = 0;
@@ -356,7 +352,7 @@ CLASS({
         availableSpace -= itemSizes[i];
         i++;
       });
-      
+
       var resizeF = function(isShrink) {
         var sizeOkF, factorF, sizeNotOkF, makeSizeOkF;
         if (isShrink) {
@@ -396,7 +392,7 @@ CLASS({
             return false;
           }
         }
-        
+
         // find all workingSet
         var workingSet = []; // indexes into children[], since we reference itemSizes[] too
         var modifyTotal = 0;
@@ -428,33 +424,32 @@ CLASS({
           applySizesF(); // size it anyway
           return;
         }
-        // float division, so we have to keep a running total later 
+        // float division, so we have to keep a running total later
         // and round only when setting pos and size
         var modifyEachBy = availableSpace / modifyTotal;
-        
+
         // apply the shrinkage
         workingSet.every(function(i) {
           var factor = factorF(this.children[i]);
           if (factor < 1) factor = 1;
           itemSizes[i] += modifyEachBy * factor;
           availableSpace -= modifyEachBy * factor;
-          
+
           if (sizeNotOkF(i, this.children[i])) { // if we hit the limit for this item
             return makeSizeOkF(i, this.children[i]);
           }
           return true;
         }.bind(this));
-        
+
         // lock in changes, we're done
         applySizesF();
-        
+
       }.bind(this);
-      
-      
+
       var applySizesF = function() {
-        var applySizeF = Function("item", "val", "item."+ 
+        var applySizeF = Function("item", "val", "item."+
                         (this.orientation==='horizontal'? "width" : "height") + " = val;");
-        var applyPositionF = Function("item", "val", "item."+ 
+        var applyPositionF = Function("item", "val", "item."+
                         (this.orientation==='horizontal'? "x" : "y")+ " = val;");
         var applyOpposedPositionF = Function("item", "val", "item."+
                         (this.orientation==='vertical'? "x" : "y")+ " = val;");
@@ -483,7 +478,7 @@ CLASS({
           i++;
         });
       }.bind(this);
-      
+
       if (availableSpace > 0) {
         resizeF(false);
       } else if (availableSpace < 0) {
@@ -491,7 +486,7 @@ CLASS({
       } else {
         // we're done!
         applySizesF();
-      }      
+      }
     },
     calculatePreferredSize: function() { /* Find the size of layout that accomodates all items
                                             at their preferred sizes. */
@@ -511,10 +506,10 @@ CLASS({
       }
 
       var constraintsF = Function("item", "return item."+ self.orientation+"Constraints");
-      var opposedConstraintsF = Function("item", "return item."+ 
+      var opposedConstraintsF = Function("item", "return item."+
                                          ((self.orientation === 'horizontal')? 'vertical':'horizontal')
                                          +"Constraints");
-      var boundedF = function(val, constraints) { 
+      var boundedF = function(val, constraints) {
         return (constraints.min$Pix && val < constraints.min$Pix)? constraints.min$Pix :
                (constraints.max$Pix && val > constraints.max$Pix)? constraints.max$Pix :
                val;
@@ -574,9 +569,9 @@ CLASS({
           documentation: function() {/* Overridden to introduce $$DOC{ref:'.addAmount'}. */},
           postSet: function() {
             if (!this.data) return;
-            
-            var mapFn = function(val) { 
-              return val + this.addAmount 
+
+            var mapFn = function(val) {
+              return val + this.addAmount
             }.bind(this);
 
             Events.map(this.data.preferred$Pix$, this.preferred$, mapFn);
@@ -636,9 +631,9 @@ CLASS({
       this.verticalConstraints = this.X.layout.MarginTrait.MarginProxy.create({},this.X);
 
       Events.dynamic(
-            function(){ this.top; this.left; this.right; this.bottom;
-                        this.width; this.height; }.bind(this),
-            this.updateMargins);
+        function(){ this.top; this.left; this.right; this.bottom;
+                    this.width; this.height; }.bind(this),
+        this.updateMargins);
     },
 
     addChild: function(child) { /* Adds a child $$DOC{ref:'CView2'} to the scene
@@ -681,25 +676,6 @@ CLASS({
           child.height = this.height - (this.bottom + this.top);
         }
       }
-    },
+    }
   ]
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

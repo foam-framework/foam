@@ -15,71 +15,29 @@
  * limitations under the License.
  */
 
-
-
 CLASS({
+  package: 'foam.graphics',
   name: 'LinearLayout',
-  extendsModel: 'CView2',
-  package: 'canvas',
-  traits: [ 'layout.LinearLayoutTrait', 
-            'layout.LayoutItemHorizontalTrait',
-            'layout.LayoutItemVerticalTrait' ],
+  extendsModel: 'foam.graphics.CView',
 
-
-
-  methods: {
-      init: function() {
-        this.SUPER();
-
-        var self = this;
-        // if we change size, redo internal layout
-        this.X.dynamic(function() { self.width; self.height; },
-                       this.performLayout); // TODO: don't react to orientation-independent one
-
-      },
-      addChild: function(child) { /* Adds a child $$DOC{ref:'CView2'} to the scene
-                                     under this. Add our listener for child constraint
-                                     changes. */
-        this.SUPER(child);
-
-        // listen for changes to child layout constraints
-        if (child.horizontalConstraints) {
-          child.horizontalConstraints.subscribe(['layout'], this.performLayout);
-        }
-        if (child.verticalConstraints) {
-          child.verticalConstraints.subscribe(['layout'], this.performLayout);
-        }
-
-      },
-      removeChild: function(child) { /* Removes a child $$DOC{ref:'CView2'} from the scene. */
-        // unlisten
-        if (child.horizontalConstraints) {
-          child.horizontalConstraints.unsubscribe(['layout'], this.performLayout);
-          child.horizontalConstraints.preferred$.removeListener(this.updatePreferredSize);
-        }
-        if (child.verticalConstraints) {
-          child.verticalConstraints.unsubscribe(['layout'], this.performLayout);
-          child.verticalConstraints.preferred$.removeListener(this.updatePreferredSize);
-        }
-
-        this.SUPER(child);
-      }
-    }
-  
-});
-
-CLASS({
-  name: 'LockToPreferredLayout',
-  extendsModel: 'CView2',
-  package: 'canvas',
-
-  documentation: function() {/*
-      A simple layout for items not already in a layout. It will take the preferred
-      size of its child and set the width and height of itself to match.
-    */},
+  traits: [
+    'layout.LinearLayoutTrait',
+    'layout.LayoutItemHorizontalTrait',
+    'layout.LayoutItemVerticalTrait'
+  ],
 
   methods: {
-    addChild: function(child) { /* Adds a child $$DOC{ref:'CView2'} to the scene
+    init: function() {
+      this.SUPER();
+
+      var self = this;
+      // if we change size, redo internal layout
+      this.X.dynamic(
+        function() { self.width; self.height; },
+        this.performLayout); // TODO: don't react to orientation-independent one
+    },
+
+    addChild: function(child) { /* Adds a child $$DOC{ref:'foam.graphics.CView'} to the scene
                                    under this. Add our listener for child constraint
                                    changes. */
       this.SUPER(child);
@@ -93,7 +51,50 @@ CLASS({
       }
 
     },
-    removeChild: function(child) { /* Removes a child $$DOC{ref:'CView2'} from the scene. */
+
+    removeChild: function(child) { /* Removes a child $$DOC{ref:'foam.graphics.CView'} from the scene. */
+      // unlisten
+      if (child.horizontalConstraints) {
+        child.horizontalConstraints.unsubscribe(['layout'], this.performLayout);
+        child.horizontalConstraints.preferred$.removeListener(this.updatePreferredSize);
+      }
+      if (child.verticalConstraints) {
+        child.verticalConstraints.unsubscribe(['layout'], this.performLayout);
+        child.verticalConstraints.preferred$.removeListener(this.updatePreferredSize);
+      }
+
+      this.SUPER(child);
+    }
+  }
+});
+
+
+CLASS({
+  package: 'foam.graphics',
+  name: 'LockToPreferredLayout',
+  extendsModel: 'foam.graphics.CView',
+
+  documentation: function() {/*
+      A simple layout for items not already in a layout. It will take the preferred
+      size of its child and set the width and height of itself to match.
+    */},
+
+  methods: {
+    addChild: function(child) { /* Adds a child $$DOC{ref:'foam.graphics.CView'} to the scene
+                                   under this. Add our listener for child constraint
+                                   changes. */
+      this.SUPER(child);
+
+      // listen for changes to child layout constraints
+      if (child.horizontalConstraints) {
+        child.horizontalConstraints.subscribe(['layout'], this.performLayout);
+      }
+      if (child.verticalConstraints) {
+        child.verticalConstraints.subscribe(['layout'], this.performLayout);
+      }
+
+    },
+    removeChild: function(child) { /* Removes a child $$DOC{ref:'foam.graphics.CView'} from the scene. */
       // unlisten
       if (child.horizontalConstraints) {
         child.horizontalConstraints.unsubscribe(['layout'], this.performLayout);
@@ -104,7 +105,6 @@ CLASS({
 
       this.SUPER(child);
     }
-
   },
   listeners: [
     {
@@ -130,19 +130,21 @@ CLASS({
 
 
 CLASS({
+  package: 'foam.graphics',
   name: 'Margin',
-  package: 'canvas',
-  extendsModel: 'CView2',
-  traits: [ 'layout.MarginTrait',
-            'layout.LayoutItemHorizontalTrait',
-            'layout.LayoutItemVerticalTrait' ],
+  extendsModel: 'foam.graphics.CView',
+  traits: [
+    'layout.MarginTrait',
+    'layout.LayoutItemHorizontalTrait',
+    'layout.LayoutItemVerticalTrait'
+  ],
 });
 
 
 CLASS({
+  package: 'foam.graphics',
   name:  'BorderTrait',
-  package: 'canvas',
-  documentation: function() {/* Add $$DOC{ref:'BorderTrait'} to a CView2 to paint
+  documentation: function() {/* Add $$DOC{ref:'BorderTrait'} to a CView to paint
                               a rectangular border around your item. */},
 
   properties: [
@@ -164,7 +166,6 @@ CLASS({
   ],
 
   methods: {
-
     paintSelf: function() { /* make sure to call <code>this.SUPER();</code> in
                                 your BorderTrait using model's $$DOC{ref:'.paintSelf'}. */
       this.SUPER();
@@ -199,28 +200,30 @@ CLASS({
 
 
 CLASS({
+  package: 'foam.graphics',
   name:  'SimpleRectangle',
-  extendsModel: 'CView2',
-  package: 'canvas',
-  documentation: function() {/* A $$DOC{ref:'CView2'} rectangle with no layout capability. */},
+  extendsModel: 'foam.graphics.CView',
+  documentation: function() {/* A $$DOC{ref:'foam.graphics.CView'} rectangle with no layout capability. */},
 
-  traits: [ 'canvas.BorderTrait' ]
+  traits: [ 'foam.graphics.BorderTrait' ]
 });
 
+
 CLASS({
+  package: 'foam.graphics',
   name: 'Rectangle',
-  package: 'canvas',
-  extendsModel: 'canvas.SimpleRectangle',
+  extendsModel: 'foam.graphics.SimpleRectangle',
   traits: [ 'layout.LayoutItemHorizontalTrait', 'layout.LayoutItemVerticalTrait' ],
-  documentation: function() {/* A $$DOC{ref:'CView2'} rectangle that can be laid out. */}
+  documentation: function() {/* A $$DOC{ref:'foam.graphics.CView'} rectangle that can be laid out. */}
 });
 
+
 CLASS({
+  package: 'foam.graphics',
   name: 'Spacer',
-  package: 'canvas',
-  extendsModel: 'CView2',
+  extendsModel: 'foam.graphics.CView',
   traits: [ 'layout.LayoutItemHorizontalTrait', 'layout.LayoutItemVerticalTrait' ],
-  documentation: function() {/* A $$DOC{ref:'CView2'} layout spacer. No children
+  documentation: function() {/* A $$DOC{ref:'foam.graphics.CView'} layout spacer. No children
       or painting is supported. */},
 
   methods: {
@@ -275,10 +278,11 @@ CLASS({
   ]
 });
 
+
 CLASS({
+  package: 'foam.graphics',
   name:  'Label',
-  extendsModel: 'CView2',
-  package: 'canvas',
+  extendsModel: 'foam.graphics.CView',
 
   traits: [ 'layout.LayoutItemHorizontalTrait', 'layout.LayoutItemVerticalTrait' ],
 
@@ -288,13 +292,13 @@ CLASS({
       label: 'Text Alignment',
       type:  'String',
       defaultValue: 'left',
-      help: "Text alignment can be left, right, center, or the locale aware start and end."
+      help: 'Text alignment can be left, right, center, or the locale aware start and end.'
     },
     {
       name: 'text',
       aliases: 'data',
       type: 'String',
-      defaultValue: ""
+      defaultValue: ''
     },
     {
       name: 'font',
@@ -318,17 +322,16 @@ CLASS({
       documentation: function() {/* Indicates if the minimum size constraint should
         be the same as the preferred size, preventing font shrinking. */}
     }
-
   ],
 
   methods: {
-
     init: function() {
       this.SUPER();
 
       Events.dynamic(
-            function() { this.text; this.font; this.canvas; this.padding; }.bind(this),
-            this.updatePreferred );
+        function() { this.text; this.font; this.canvas; this.padding; }.bind(this),
+        this.updatePreferred );
+
       this.updatePreferred();
     },
 
@@ -359,46 +362,25 @@ CLASS({
           if (this.font) c.font = this.font;
           this.horizontalConstraints.preferred = c.measureText(this.text).width + this.padding*2;
           c.restore();
-          if (!this.isShrinkable) { // if no shrink, lock minimum to preferred
+
+          // if no shrink, lock minimum to preferred
+          if ( ! this.isShrinkable )
             this.horizontalConstraints.min = this.horizontalConstraints.preferred;
-          }
+
           // height (this is not directly accessible... options include putting
           // a span into the DOM and getting font metrics from that, or just going
           // by raw font height setting (which is always pixels in a canvas)
-          if (!this.font) this.font = c.font;
+          if ( ! this.font ) this.font = c.font;
 
           var height = parseInt(/[0-9]+(?=pt|px)/.exec(this.font) || 0);
           this.verticalConstraints.preferred = height + this.padding*2;
 
-          if (!this.isShrinkable) { // if no shrink, lock minimum to preferred
+          // if no shrink, lock minimum to preferred
+          if ( ! this.isShrinkable )
             this.verticalConstraints.min = this.verticalConstraints.preferred;
-          }
         }
 
       }
     }
   ]
-
-
-
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
