@@ -1,10 +1,10 @@
-CLASS({name: 'Circle', extendsModel: 'Circle2', traits: ['Physical'] });
+CLASS({name: 'Circ', extendsModel: 'foam.graphics.Circle', traits: ['Physical'] });
 
-var space    = CView2.create({width: 1500, height: 800, background: 'white'});
+var space    = foam.graphics.CView.create({width: 1500, height: 800, background: 'white'});
 var mouse    = Mouse.create();
 var collider = Collider.create();
-var bumper   = Circle.create({r: 30, color: 'gray'});
-var anchor   = Circle.create({r: 0, x: 1400, y: 400, color: 'white'});
+var bumper   = Circ.create({r: 30, color: 'gray'});
+var anchor   = Circ.create({r: 0, x: 1400, y: 400, color: 'white'});
 
 function bounceOnWalls(c, w, h) {
   Events.dynamic(function() { c.x; c.y; }, function() {
@@ -23,7 +23,7 @@ mouse.connect(space.$);
 var N = 7;
 for ( var x = 0 ; x < N ; x++ ) {
   for ( var y = 0 ; y < N ; y++ ) {
-    var c = Circle.create({
+    var c = Circ.create({
       r: x == (N-1)/2 ? 32 : x % 2 ? 25 : 10,
       x: 600+(x-(N-1)/2)*100,
       y: 400+(y-(N-1)/2)*100,

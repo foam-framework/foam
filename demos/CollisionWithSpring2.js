@@ -1,10 +1,10 @@
-CLASS({name: 'Circle', extendsModel: 'Circle2', traits: ['Physical'] });
+CLASS({name: 'Circ', extendsModel: 'foam.graphics.Circle', traits: ['Physical'] });
 
-var space    = CView2.create({width: 1500, height: 1000, background:'black'});
+var space    = foam.graphics.CView.create({width: 1500, height: 1000, background:'black'});
 var mouse    = Mouse.create();
 var collider = Collider.create();
-var bumper   = Circle.create({r: 30, color: 'white'});
-var anchor   = Circle.create({r: 0, x: 1400, y: 400, color: 'white'});
+var bumper   = Circ.create({r: 30, color: 'white'});
+var anchor   = Circ.create({r: 0, x: 1400, y: 400, color: 'white'});
 
 function bounceOnWalls(c, w, h) {
   Events.dynamic(function() { c.x; c.y; }, function() {
@@ -26,7 +26,7 @@ var N = 3;
 for ( var x = 0 ; x < N ; x++ ) {
   cs[x] = [];
   for ( var y = 0 ; y < N ; y++ ) {
-    var c = cs[x][y] = Circle.create({
+    var c = cs[x][y] = Circ.create({
       r: 25,
       x: 600+(x-(N-1)/2)*70,
       y: 400+(y-(N-1)/2)*70,
@@ -48,7 +48,7 @@ for ( var x = 0 ; x < N ; x++ ) {
 var cs2 = [];
 var N2 = 16;
 for ( var i = 0 ; i < N2 ; i++ ) {
-  var c = cs2[i] = Circle.create({r: 20, x:600+200*Math.sin(i/N2*2*Math.PI), y:300+200*Math.cos(i/N2*2*Math.PI), color: 'green'});
+  var c = cs2[i] = Circ.create({r: 20, x:600+200*Math.sin(i/N2*2*Math.PI), y:300+200*Math.cos(i/N2*2*Math.PI), color: 'green'});
   space.addChild(c);
   Movement.inertia(c);
   Movement.friction(c, 0.97);
