@@ -484,31 +484,31 @@ CLASS({
             <p class="important">Extends $$DOC{ref: this.data.extendsModel }</p>
 <%        } %>
           </div>
-          $$model{ model_: 'DocModelBodyView' }
+          $$data{ model_: 'DocModelBodyView' }
         </div>
         <div class="members">
-          $$model{ model_: 'DocInnerModelsView' }
+          $$data{ model_: 'DocInnerModelsView' }
         </div>
         <div class="members">
-          $$model{ model_: 'DocPropertiesView' }
+          $$data{ model_: 'DocPropertiesView' }
         </div>
         <div class="members">
-          $$model{ model_: 'DocMethodsView' }
+          $$data{ model_: 'DocMethodsView' }
         </div>
         <div class="members">
-          $$model{ model_: 'DocActionsView' }
+          $$data{ model_: 'DocActionsView' }
         </div>
         <div class="members">
-          $$model{ model_: 'DocListenersView' }
+          $$data{ model_: 'DocListenersView' }
         </div>
         <div class="members">
-          $$model{ model_: 'DocTemplatesView' }
+          $$data{ model_: 'DocTemplatesView' }
         </div>
         <div class="members">
-          $$model{ model_: 'DocRelationshipsView' }
+          $$data{ model_: 'DocRelationshipsView' }
         </div>
         <div class="members">
-          $$model{ model_: 'DocIssuesView' }
+          $$data{ model_: 'DocIssuesView' }
         </div>
 <%    } %>
     */}

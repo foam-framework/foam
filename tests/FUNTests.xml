@@ -2022,10 +2022,6 @@ f1 end
           <object model="UnitTest">
             <property name="name">Model replaced when a valid replacement is available</property>
             <property name="description">If a creation arg x.MyModel.create({model:SpecModel}) is supplied, and a model with the name SpecModelMyModel exists, it is created instead.</property>
-            <property name="tags">
-              <i>web</i>
-              <i>node</i>
-            </property>
             <property name="code" type="function">function anonymous() {
               CLASS({
                 name: 'Base',
@@ -2047,14 +2043,15 @@ f1 end
 
             }
             </property>
-          </object>
-          <object model="UnitTest">
-            <property name="name">Model in a package replaced when a valid replacement is available</property>
-            <property name="description">If a creation arg X.myPackage.MyModel.create({model:SpecModel}) is supplied, and a model with the name myPackage.SpecModelMyModel exists, it is created instead.</property>
             <property name="tags">
               <i>web</i>
               <i>node</i>
             </property>
+          </object>
+
+          <object model="UnitTest">
+            <property name="name">Model in a package replaced when a valid replacement is available</property>
+            <property name="description">If a creation arg X.myPackage.MyModel.create({model:SpecModel}) is supplied, and a model with the name myPackage.SpecModelMyModel exists, it is created instead.</property>
             <property name="code" type="function">function anonymous() {
               CLASS({
                 name: 'Base',
@@ -2079,14 +2076,15 @@ f1 end
 
             }
             </property>
-          </object>
-          <object model="UnitTest">
-            <property name="name">Model not replaced when no model arg present</property>
-            <property name="description">If a creation arg X.myPackage.MyModel.create({model:SpecModel}) is NOT supplied, and a model with the name myPackage.SpecModelMyModel exists, it is ignored.</property>
             <property name="tags">
               <i>web</i>
               <i>node</i>
             </property>
+          </object>
+
+          <object model="UnitTest">
+            <property name="name">Model not replaced when no model arg present</property>
+            <property name="description">If a creation arg X.myPackage.MyModel.create({model:SpecModel}) is NOT supplied, and a model with the name myPackage.SpecModelMyModel exists, it is ignored.</property>
             <property name="code" type="function">function anonymous() {
               CLASS({
                 name: 'Base',
@@ -2111,6 +2109,138 @@ f1 end
 
             }
             </property>
+            <property name="tags">
+              <i>web</i>
+              <i>node</i>
+            </property>
+          </object>
+
+        </property>
+      </object>
+
+      <object model="UnitTest">
+        <property name="name">Traits</property>
+        <property name="description">Tests handling of traits.</property>
+        <property name="code" type="function">function anonymous() {
+          CLASS({
+            name: 'TraitA',
+            package: 'different.package',
+            properties: [
+              { name: 'a', defaultValue: 1 },
+            ]
+          });
+          CLASS({
+            name: 'TraitB',
+            package: 'different.package',
+            properties: [
+              { name: 'b', defaultValue: 2 },
+            ]
+          });
+          CLASS({
+            name: 'TraitH',
+            package: 'different.package',
+            properties: [
+              { name: 'h1', defaultValue: 3 },
+            ]
+          });
+          CLASS({
+            name: 'HostBase',
+            package: 'nested.package.levels',
+            properties: [
+              { name: 'h1', defaultValue: 4 },
+              { name: 'h2', defaultValue: 'tada' },
+            ]
+          });
+
+          this.logItems = function(result) {
+            this.log(result.h1);
+            this.log(result.h2);
+            this.log(result.a);
+            this.log(result.b);
+          }
+        }
+        </property>
+        <property name="tags">
+          <i>web</i>
+          <i>node</i>
+        </property>
+        <property name="tests">
+          <object model="RegressionTest">
+            <property name="name">Trait added to host class adds properties</property>
+            <property name="description">The class resulting from a class with a trait added should have the combined set of properties of both.</property>
+            <property name="code" type="function">function anonymous() {
+              CLASS({
+                name: 'Host',
+                package: 'nested.package.levels',
+                extendsModel: 'nested.package.levels.HostBase',
+                traits: ['different.package.TraitA']
+              });
+              var result = this.X.nested.package.levels.Host.create();
+
+              this.logItems(result);
+            }
+            </property>
+            <property name="tags">
+              <i>web</i>
+              <i>node</i>
+            </property>
+            <property name="master">4
+tada
+1
+undefined
+</property>
+          </object>
+
+          <object model="RegressionTest">
+            <property name="name">Trait added to host class overrides properties</property>
+            <property name="description">The class resulting from a class with a trait added should have the combined set of properties of both, with the trait overriding properties of the host's extendsModel.</property>
+            <property name="code" type="function">function anonymous() {
+              CLASS({
+                name: 'Host',
+                package: 'nested.package.levels',
+                extendsModel: 'nested.package.levels.HostBase',
+                traits: ['different.package.TraitH']
+              });
+              var result = this.X.nested.package.levels.Host.create();
+
+              this.logItems(result);
+            }
+            </property>
+            <property name="tags">
+              <i>web</i>
+              <i>node</i>
+            </property>
+            <property name="master">3
+tada
+undefined
+undefined
+</property>
+          </object>
+
+          <object model="RegressionTest">
+            <property name="name">Multiple Traits added to host class</property>
+            <property name="description">The class resulting from a class with two traits added should have the combined set of properties of all three.</property>
+            <property name="code" type="function">function anonymous() {
+              CLASS({
+                name: 'Host',
+                package: 'nested.package.levels',
+                extendsModel: 'nested.package.levels.HostBase',
+                traits: ['different.package.TraitA', 'different.package.TraitB']
+              });
+              var result = this.X.nested.package.levels.Host.create();
+
+              this.logItems(result);
+            }
+            </property>
+            <property name="tags">
+              <i>web</i>
+              <i>node</i>
+            </property>
+            <property name="master">4
+tada
+1
+2
+</property>
           </object>
 
         </property>
