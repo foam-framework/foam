@@ -405,6 +405,8 @@ var TreeIndex = {
       };
     }
 
+    if ( options && options.limit && options.skip && options.skip + options.limit > this.size(s) ) return NO_PLAN;
+
     var prop = this.prop;
 
     var isExprMatch = function(model) {
@@ -569,7 +571,7 @@ var TreeIndex = {
         reverseSort = true;
       } else {
         sortRequired = true;
-        cost *= Math.log(cost) / Math.log(2);
+        if ( cost != 0 ) cost *= Math.log(cost) / Math.log(2);
       }
     }
 
@@ -1002,7 +1004,7 @@ var MDAO = Model.create({
     },
 
     find: function(key, sink) {
-      if ( ! key ) {
+      if ( key == undefined ) {
         sink && sink.error && sink.error('missing key');
         return;
       }

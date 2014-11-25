@@ -27,6 +27,18 @@ var FObject = {
   create_: function() { return Object.create(this); },
 
   create: function(args, opt_X) {
+
+    // check for a model-for-model replacement
+    if (args && args.model) {
+      var replacementName = ((this.model_.package)? this.model_.package+"." : "")
+                            + (args.model.name? args.model.name : args.model)
+                            + this.model_.name;
+      var replacementModel = FOAM.lookup(replacementName, opt_X || X);
+      if (replacementModel) {
+        return replacementModel.create(args, opt_X);
+      }
+    }
+
     var o = this.create_(this);
     o.instance_ = {};
     o.X = (opt_X || X).sub({});

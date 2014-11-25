@@ -2011,6 +2011,111 @@ f1 end
         </property>
       </object>
 
+      <object model="UnitTest">
+        <property name="name">Model-for-Model</property>
+        <property name="description">Tests replacement of models at creation time based on the data type.</property>
+        <property name="tags">
+          <i>web</i>
+          <i>node</i>
+        </property>
+        <property name="tests">
+          <object model="UnitTest">
+            <property name="name">Model replaced when a valid replacement is available</property>
+            <property name="description">If a creation arg x.MyModel.create({model:SpecModel}) is supplied, and a model with the name SpecModelMyModel exists, it is created instead.</property>
+            <property name="tags">
+              <i>web</i>
+              <i>node</i>
+            </property>
+            <property name="code" type="function">function anonymous() {
+              CLASS({
+                name: 'Base',
+                properties: [
+                  { name: 'model' },
+                ]
+              });
+              CLASS({
+                name: 'Specific',
+              });
+              CLASS({
+                name: 'SpecificBase',
+                extendsModel: 'Base'
+              });
+
+              var created = this.X.Base.create({ model:this.X.Specific });
+              this.assert(created.model_.name === 'SpecificBase',
+                  '"created" should be of type SpecificBase, not '+created.model_.name);
+
+            }
+            </property>
+          </object>
+          <object model="UnitTest">
+            <property name="name">Model in a package replaced when a valid replacement is available</property>
+            <property name="description">If a creation arg X.myPackage.MyModel.create({model:SpecModel}) is supplied, and a model with the name myPackage.SpecModelMyModel exists, it is created instead.</property>
+            <property name="tags">
+              <i>web</i>
+              <i>node</i>
+            </property>
+            <property name="code" type="function">function anonymous() {
+              CLASS({
+                name: 'Base',
+                package: 'myPackage',
+                properties: [
+                  { name: 'model' },
+                ]
+              });
+              CLASS({
+                name: 'Specific',
+                package: 'other'
+              });
+              CLASS({
+                name: 'SpecificBase',
+                extendsModel: 'Base',
+                package: 'myPackage'
+              });
+
+              var created = this.X.myPackage.Base.create({ model:this.X.other.Specific });
+              this.assert(created.model_.id === 'myPackage.SpecificBase',
+                  '"created" should be of type myPackage.SpecificBase, not '+created.model_.id);
+
+            }
+            </property>
+          </object>
+          <object model="UnitTest">
+            <property name="name">Model not replaced when no model arg present</property>
+            <property name="description">If a creation arg X.myPackage.MyModel.create({model:SpecModel}) is NOT supplied, and a model with the name myPackage.SpecModelMyModel exists, it is ignored.</property>
+            <property name="tags">
+              <i>web</i>
+              <i>node</i>
+            </property>
+            <property name="code" type="function">function anonymous() {
+              CLASS({
+                name: 'Base',
+                package: 'myPackage',
+                properties: [
+                  { name: 'model' },
+                ]
+              });
+              CLASS({
+                name: 'Specific',
+                package: 'other'
+              });
+              CLASS({
+                name: 'SpecificBase',
+                extendsModel: 'Base',
+                package: 'myPackage'
+              });
+
+              var created = this.X.myPackage.Base.create({ });
+              this.assert(created.model_.id === 'myPackage.Base',
+                  '"created" should be of type myPackage.Base, not '+created.model_.id);
+
+            }
+            </property>
+          </object>
+
+        </property>
+      </object>
+
     </property>
   </object>
 

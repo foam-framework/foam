@@ -81,6 +81,8 @@ CLASS({
 
       if ( ! query ) return this.delegate.select(sink, options);
 
+      sink = sink || [].sink;
+
       var arg1;
 
       var keywords = this;

@@ -934,7 +934,7 @@ CLASS({
         var maxVisible = Math.ceil((2 * this.runway + this.viewportHeight) / this.rowHeight);
         if ( this.visibleBottom - this.visibleTop + 1 < maxVisible ) {
           if ( this.visibleTop === 0 ) this.visibleBottom = Math.min(maxVisible - 1, this.count - 1);
-          else this.visibleTop = Math.max(0, this.visibleBottom - this.count + 1);
+          else this.visibleTop = Math.max(0, this.visibleBottom - maxVisible + 1);
         }
 
         // Four cases:
@@ -964,7 +964,7 @@ CLASS({
           // Something to load.
           var self = this;
           var updateNumber = ++this.daoUpdateNumber;
-          this.dao.skip(toLoadTop).limit(toLoadBottom - toLoadTop + 1).select([])(function(a) {
+          this.dao.skip(toLoadTop).limit(toLoadBottom - toLoadTop + 1).select()(function(a) {
             if ( ! a || ! a.length ) return;
             if ( updateNumber !== self.daoUpdateNumber ) return;
 
