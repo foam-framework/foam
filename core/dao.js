@@ -741,42 +741,67 @@ CLASS({
  * pretend that accesses are slow. Currently, only select has been targetted.
  */
 CLASS({
-   name: 'DelayedDAO',
+  name: 'DelayedDAO',
 
-   extendsModel: 'ProxyDAO',
+  extendsModel: 'ProxyDAO',
 
-   properties: [
-     {
-       model_: 'IntProperty',
-       name: 'initialDelay'
-     },
-     {
-       model_: 'IntProperty',
-       name: 'rowDelay'
-     }
-   ],
+  properties: [
+    {
+      model_: 'IntProperty',
+      name: 'initialDelay'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'rowDelay'
+    }
+  ],
 
-   methods: {
-      select: function(sink, options) {
+  methods: {
+    select: function(sink, options) {
+      sink = sink || [];
       var f = afuture();
-         var i = 0;
-         var delayedSink = this.rowDelay ? {
-            __proto__: sink,
-            put: function() {
-               var args = arguments;
-               setTimeout(function() {
-                  sink.put.apply(sink, args);
-               }, this.rowDelay * ++i);
-            }.bind(this)
-         } : sink;
-         setTimeout(function() {
-           this.delegate.select(delayedSink, options)(function(result) {
-             f.set(result);
-           });
-         }.bind(this), this.initialDelay);
-      return f.get;
+      var self = this;
+
+      if ( Expr.isInstance(sink) ) {
+        setTimeout(function() {
+          self.delegate.select(sink, options)(f.set)
+        }, this.initialDelay);
+        return f.get;
       }
-   }
+
+
+      var i = 0;
+      var delayedSink = {
+        pars: [],
+        put: function() {
+          var args = arguments;
+          this.pars.push(
+            function(ret) {
+              setTimeout(function() {
+                sink.put.apply(sink, args);
+                ret()
+              }, self.rowDelay * ++i );
+            });
+        },
+        eof: function() {
+          apar.apply(null, this.pars)(
+            function() {
+              sink && sink.eof && sink.eof();
+              f.set(sink);
+            });
+        },
+        error: function() {
+          sink && sink.error && sink.error.apply(sink, arguments);
+        }
+      };
+
+      setTimeout(function() {
+        self.delegate.select(delayedSink, options)
+      }, this.initialDelay);
+
+      return f.get;
+    }
+  }
 });
 
 /*
