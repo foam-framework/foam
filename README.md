@@ -1,6 +1,6 @@
 # FOAM
 
-[http://foamdev.com]()
+[http://www.foamdev.com]()
 
 ## Feature Oriented Active Modeller
 
