@@ -1,7 +1,7 @@
 CLASS({
   name: 'Ball',
-  extendsModel: 'Circle2',
-  traits: ['Physical', 'MotionBlur'],
+  extendsModel: 'foam.graphics.Circle',
+  traits: ['Physical', 'foam.graphics.MotionBlur'],
   properties: [
     {
       name: 'vx',
@@ -13,8 +13,8 @@ CLASS({
 
 CLASS({
   name: 'Paddle',
-  extendsModel: 'Circle2',
-  traits: ['Physical', 'Shadow'],
+  extendsModel: 'foam.graphics.Circle',
+  traits: ['Physical', 'foam.graphics.Shadow'],
   properties: [
     { name: 'color', defaultValue: 'white' },
     { name: 'r',     defaultValue: 30 },
@@ -26,6 +26,11 @@ CLASS({
 CLASS({
   name: 'Pong',
   extendsModel: 'View',
+
+  requires: [
+    'foam.graphics.CView',
+    'foam.graphics.Rectangle'
+  ],
 
   constants: {
     PADDLE_SPEED: 10
@@ -55,8 +60,8 @@ CLASS({
     {
       name: 'table',
       factory: function() {
-        return CView2.create({background: 'lightgray', width: this.WIDTH, height: this.HEIGHT}).addChildren(
-          X.canvas.Rectangle.create({x: this.WIDTH/2-5, width:10, height: this.HEIGHT, border:'rgba(0,0,0,0)' , background: 'white'}),
+        return this.CView.create({background: 'lightgray', width: this.WIDTH, height: this.HEIGHT}).addChildren(
+          this.Rectangle.create({x: this.WIDTH/2-5, width:10, height: this.HEIGHT, border:'rgba(0,0,0,0)' , background: 'white'}),
           this.ball,
           this.lPaddle,
           this.rPaddle);
