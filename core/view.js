@@ -5178,3 +5178,70 @@ CLASS({
     function toInnerHTML() {/*<%= this.current ? this.current.controller() : '' %>*/}
   ]
 });
+
+CLASS({
+  name: 'SpinnerView',
+  extendsModel: 'View',
+  documentation: 'Renders a spinner in the Material Design style.',
+  // TODO(braden): This spinner renders badly on Firefox.
+  constants: {
+    COLOR: '#4285F4',
+    OFFSET: '187',
+    DURATION: '1.4s'
+  },
+
+  templates: [
+    function CSS() {/*
+      <% var prefixes = ['-webkit-', '-moz-', '']; %>
+      .spinner-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .spinner {
+        <% for (var i = 0; i < prefixes.length; i++) { %>
+          <%= prefixes[i] %>animation: spinner-rotator <%= this.DURATION %> linear infinite;
+        <% } %>
+      }
+
+      <% for (var i = 0; i < prefixes.length; i++) { %>
+        @<%= prefixes[i] %>keyframes spinner-rotator {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(270deg); }
+        }
+      <% } %>
+
+      .spinner-path {
+        stroke: <%= this.COLOR %>;
+        stroke-dasharray: <%= this.OFFSET %>;
+        stroke-dashoffset: 120;
+        transform-origin: center;
+        <% for (var i = 0; i < prefixes.length; i++) { %>
+          <%= prefixes[i] %>animation: spinner-dash <%= this.DURATION %> ease-in-out infinite;
+        <% } %>
+      }
+
+      <% for (var i = 0; i < prefixes.length; i++) { %>
+        @<%= prefixes[i] %>keyframes spinner-dash {
+          0% { stroke-dashoffset: <%= this.OFFSET %>; }
+          50% {
+            stroke-dashoffset: <%= Math.floor(this.OFFSET / 4) %>;
+            transform: rotate(135deg);
+          }
+          100% {
+            stroke-dashoffset: <%= this.OFFSET %>;
+            transform: rotate(450deg);
+          }
+        }
+      <% } %>
+    */},
+    function toHTML() {/*
+      <div id="%%id" class="spinner-container">
+        <svg class="spinner" width="3cm" height="3cm" viewBox="0 0 66 66">
+          <circle class="spinner-path" fill="none" stroke-width="6"
+              stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+        </svg>
+      </div>
+    */}
+  ]
+});
