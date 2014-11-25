@@ -68,6 +68,66 @@ CLASS({
   
 });
 
+CLASS({
+  name: 'LockToPreferredLayout',
+  extendsModel: 'CView2',
+  package: 'canvas',
+
+  documentation: function() {/*
+      A simple layout for items not already in a layout. It will take the preferred
+      size of its child and set the width and height of itself to match.
+    */},
+
+  methods: {
+    addChild: function(child) { /* Adds a child $$DOC{ref:'CView2'} to the scene
+                                   under this. Add our listener for child constraint
+                                   changes. */
+      this.SUPER(child);
+
+      // listen for changes to child layout constraints
+      if (child.horizontalConstraints) {
+        child.horizontalConstraints.subscribe(['layout'], this.performLayout);
+      }
+      if (child.verticalConstraints) {
+        child.verticalConstraints.subscribe(['layout'], this.performLayout);
+      }
+
+    },
+    removeChild: function(child) { /* Removes a child $$DOC{ref:'CView2'} from the scene. */
+      // unlisten
+      if (child.horizontalConstraints) {
+        child.horizontalConstraints.unsubscribe(['layout'], this.performLayout);
+      }
+      if (child.verticalConstraints) {
+        child.verticalConstraints.unsubscribe(['layout'], this.performLayout);
+      }
+
+      this.SUPER(child);
+    }
+
+  },
+  listeners: [
+    {
+      name: 'performLayout',
+      isFramed: true,
+      code: function() {
+        // lock our size to the child's preferred size
+        if (this.children[0]) {
+          if (this.children[0].horizontalConstraints) {
+            this.width =  this.children[0].horizontalConstraints.preferred;
+            this.children[0].width = this.width;
+          }
+          if (this.children[0].verticalConstraints) {
+            this.height = this.children[0].verticalConstraints.preferred;
+            this.children[0].height = this.height;
+          }
+        }
+      }
+    }
+  ]
+
+});
+
 
 CLASS({
   name: 'Margin',

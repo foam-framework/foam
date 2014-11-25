@@ -120,7 +120,11 @@ var block2 = X.diagram.Block.create({
 var block2Margin = X.diagram.Margin.create({ left: 8, top: 8, bottom: 8, right: 8, width: 80, height: 80});
 block2Margin.addChild(block2);
 //vlay2.addChild(block2Margin);
-canv.addChild(block2Margin);
+
+var block2LockerLayout = X.diagram.LockToPreferredLayout.create({}, canv.X);
+block2LockerLayout.addChild(block2Margin);
+
+canv.addChild(block2LockerLayout);
 
 var sect1b = X.diagram.Section.create({
   title: 'More Model'
