@@ -184,6 +184,48 @@ function aapply_(f, ret, args) {
   f.apply(this, args);
 }
 
+/**
+ * A request queue that reduces each request against the pending requests.
+ * Also limits the queue to a maximum size and operates in a LIFO manner.
+ * TODO: This could probably be split into decorators and integrated with asynchronized.
+ */
+function arequestqueue(f, opt_lock, opt_max) {
+  var lock = opt_lock || {};
+  if ( ! lock.q ) { lock.q = []; lock.active = null; }
+
+  var onExit = function() {
+    var next = lock.active = lock.q.pop();
+
+    if ( next ) {
+      setTimeout(function() { f(onExit, next); }, 0);
+    }
+  };
+
+  var reduceDown = function(o, q) {
+    for ( var i = q.length -1 ; i >= 0 ; i-- ) {
+      var result = o.reduce(q[i]);
+      if ( result ) {
+        q.splice(i, 1);
+        reduceDown(result, q);
+        break;
+      }
+    }
+    q.push(o);
+  }
+
+  return function(o) {
+    if ( lock.active ) {
+      // If the next request reduces into the active one, then forget about it.
+      var first = o.reduce(lock.active);
+      if ( first && first.equals(lock.active) ) return;
+    }
+
+    reduceDown(o, lock.q, lock.q.length - 1);
+    if ( lock.q.length > opt_max ) lock.q.length = opt_max;
+
+    if ( ! lock.active ) onExit();
+  };
+}
 
 /**
  * A Binary Semaphore which only allows the delegate function to be
