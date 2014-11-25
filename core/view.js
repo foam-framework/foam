@@ -263,7 +263,7 @@ CLASS({
       name:  'id',
       label: 'Element ID',
       type:  'String',
-      factory: function() { return this.nextID(); },
+      factory: function() { return this.instance_.id || this.nextID(); },
       documentation: function() {/*
         The DOM element id for the outermost tag of
         this $$DOC{ref:'View'}.
@@ -301,7 +301,7 @@ CLASS({
       hidden: true,
       mode:   "read-only",
       getter: function() {
-        return this.instance_.$ ? this.instance_.$ : this.instance_.$ = $(this.id);
+        return this.instance_.$ ? this.instance_.$ : this.instance_.$ = this.X.document.getElementById(this.id);
       },
       help:   'DOM Element.'
     },
