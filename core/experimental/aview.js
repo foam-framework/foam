@@ -58,7 +58,7 @@ CLASS({
         f1$.innerHTML = this.data;
         f2$.innerHTML = this.data;
 
-        f1$.style.top  = f2$.offsetTop;
+//        f1$.style.top  = f2$.offsetTop;
         f1$.style.left = f2$.offsetLeft;
       }
     }
