@@ -1,16 +1,16 @@
-var space   = CView2.create({width: 2000, height: 1700});
+var space   = foam.graphics.CView.create({width: 2000, height: 1700});
 var mouse   = Mouse.create();
 
 CLASS({
   name: 'ShadowCircle',
-  extendsModel: 'Circle2',
-  traits: ['Physical', 'Shadow']
+  extendsModel: 'foam.graphics.Circle',
+  traits: ['Physical', 'foam.graphics.Shadow']
 });
 
 CLASS({
   name: 'BlurCircle',
-  extendsModel: 'Circle2',
-  traits: ['Physical', 'MotionBlur']
+  extendsModel: 'foam.graphics.Circle',
+  traits: ['Physical', 'foam.graphics.MotionBlur']
 });
 
 
@@ -49,4 +49,3 @@ for ( var x = 0 ; x < N ; x++ ) {
     Movement.friction(c, 0.9);
   }
 }
-
