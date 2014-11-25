@@ -405,6 +405,8 @@ var TreeIndex = {
       };
     }
 
+    if ( options && options.limit && options.skip && options.skip + options.limit > this.size(s) ) return NO_PLAN;
+
     var prop = this.prop;
 
     var isExprMatch = function(model) {
