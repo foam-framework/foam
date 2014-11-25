@@ -308,6 +308,14 @@ CLASS({
 });
 
 CLASS({
+  name: 'LockToPreferredLayout',
+  package: 'diagram',
+  extendsModel: 'canvas.LockToPreferredLayout',
+  traits: ['diagram.DiagramItemTrait'],
+});
+
+
+CLASS({
   name: 'Block',
   package: 'diagram',
   
