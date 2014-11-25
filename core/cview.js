@@ -548,7 +548,7 @@ CLASS({
 
 
 CLASS({
-  name:  'Rectangle',
+  name: 'Rectangle',
 
   properties: [
     {
