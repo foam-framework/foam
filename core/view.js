@@ -173,19 +173,8 @@ var DOM = {
       return null;
     }
 
-    for ( var i = 0 ; i < e.children.length ; i++ ) {
-      var c = e.children[i];
-      var key = c.nodeName;
-      var p = findProperty(key);
-
-      if ( p ) {
-        args[p.name] = p.fromElement(c, p);
-      } else {
-        console.log('unknown element: ', key);
-      }
-    }
-
-    var obj = model.create(args, X);
+    var obj = model.create(undefined, X);
+    obj.fromElement(e);
 
     var onLoad = e.getAttribute('oninit');
     if ( onLoad ) {
