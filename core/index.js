@@ -1004,7 +1004,7 @@ var MDAO = Model.create({
     },
 
     find: function(key, sink) {
-      if ( ! key ) {
+      if ( key == undefined ) {
         sink && sink.error && sink.error('missing key');
         return;
       }
