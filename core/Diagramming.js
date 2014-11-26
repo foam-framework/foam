@@ -20,7 +20,7 @@ CLASS({
   package: 'diagram',
 
   documentation: function() {/* This trait overrides $$DOC{ref:'.addChild'} and $$DOC{ref:'.removeChild'}
-       to introduce extra diagram-specific functionality. it is designed to work with $$DOC{ref:'CView2'}. */},
+       to introduce extra diagram-specific functionality. it is designed to work with $$DOC{ref:'foam.graphics.CView'}. */},
 
   properties: [
     {
@@ -59,7 +59,7 @@ CLASS({
   name: 'Diagram',
   package: 'diagram',
 
-  extendsModel: 'CView2',
+  extendsModel: 'foam.graphics.CView',
   traits: ['diagram.DiagramItemTrait'],
 
 });
@@ -142,7 +142,7 @@ CLASS({
 CLASS({
   name: 'LinkPoint',
   package: 'diagram',
-  //extendsModel: 'canvas.Point', // screws up ids
+  //extendsModel: 'foam.graphics.Point', // screws up ids
 
 //  requires: ['diagram.ParentageListener as ParentageListener'],
 
@@ -297,20 +297,20 @@ CLASS({
   name: 'LinearLayout',
   package: 'diagram',
   
-  extendsModel: 'canvas.LinearLayout',
+  extendsModel: 'foam.graphics.LinearLayout',
   traits: ['diagram.DiagramItemTrait'],
 });
 CLASS({
   name: 'Margin',
   package: 'diagram',
-  extendsModel: 'canvas.Margin',
+  extendsModel: 'foam.graphics.Margin',
   traits: ['diagram.DiagramItemTrait'],
 });
 
 CLASS({
   name: 'LockToPreferredLayout',
   package: 'diagram',
-  extendsModel: 'canvas.LockToPreferredLayout',
+  extendsModel: 'foam.graphics.LockToPreferredLayout',
   traits: ['diagram.DiagramItemTrait'],
 });
 
@@ -322,7 +322,7 @@ CLASS({
   requires: ['diagram.LinkPoint'],
 
   extendsModel: 'diagram.LinearLayout',
-  traits: ['canvas.BorderTrait'],
+  traits: ['foam.graphics.BorderTrait'],
   
   //imports: ['linkPoints'],
 
@@ -381,11 +381,11 @@ CLASS({
   package: 'diagram',
   label: 'Section',
 
-  requires: ['canvas.Label as Label',
+  requires: ['foam.graphics.Label as Label',
              'diagram.LinkPoint'],
 
   extendsModel: 'diagram.LinearLayout',
-  traits: ['canvas.BorderTrait'],
+  traits: ['foam.graphics.BorderTrait'],
 
   //imports: ['linkPoints'],
 
@@ -449,7 +449,7 @@ CLASS({
   name: 'Link',
   package: 'diagram',
 
-  extendsModel: 'CView2',
+  extendsModel: 'foam.graphics.CView',
 
   properties: [
     {

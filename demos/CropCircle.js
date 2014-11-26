@@ -1,6 +1,6 @@
 CLASS({
   name:  'CropCircle',
-  extendsModel: 'CView2',
+  extendsModel: 'foam.graphics.CView',
 
   properties: [
     {
