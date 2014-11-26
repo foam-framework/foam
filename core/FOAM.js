@@ -250,7 +250,8 @@ function CLASS(m) {
     UNUSED_MODELS[id] = true;
 
     // TODO(adamvy): Remove this once we no longer have code depending on models to being in the global scope.
-    Object.defineProperty(GLOBAL, m.name, { get: function() { return path[m.name]; }, configurable: true });
+    if ( ! m.package )
+      Object.defineProperty(GLOBAL, m.name, { get: function() { return path[m.name]; }, configurable: true });
 
     Object.defineProperty(path, m.name, {
       get: function () {
