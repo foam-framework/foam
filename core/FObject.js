@@ -182,17 +182,30 @@ var FObject = {
       for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
         var p = this.model_.properties[i];
         elements[p.name] = p;
-        if ( p.singular ) elements[p.singular] = p;
+        elements[p.name.toUpperCase()] = p;
+        if ( p.singular ) {
+          elements[p.singular] = p;
+          elements[p.singular.toUpperCase()] = p;
+        }
       }
       this.elementMap_ = elements;
     }
 
-    for ( var key in e.attributes ) {
-      var p = elements[key];
+    for ( var i = 0 ; i < e.attributes.length ; i++ ) {
+      var attr = e.attributes[i];
+      var p    = elements[attr.name];
+      var val  = attr.value;
       if ( p ) {
-        p.fromString.call(this, e.attributes[key], p);
+        if ( val.startsWith('#') ) {
+          val = val.substring(1);
+          this[attr.name] = $(val);
+        } else {
+          // Call fromString() for attribute values because they're
+          // String values, not Elements.
+          p.fromString.call(this, val, p);
+        }
       } else {
-        console.warn('Unknown attribute name: "' + key + '"');
+        console.warn('Unknown attribute name: "' + attr.name + '"');
       }
     }
 
@@ -202,7 +215,7 @@ var FObject = {
       if ( p ) {
         p.fromElement.call(this, c, p);
       } else {
-        console.warn('Unknown element name: "' + c.key + '"');
+        console.warn('Unknown element name: "' + c.nodeName + '"');
       }
     }
 

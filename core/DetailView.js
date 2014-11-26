@@ -129,7 +129,7 @@ CLASS({
     createTemplateView: function(name, opt_args) {
       /* Overridden here to set the new View.$$DOC{ref:'.data'} to this.$$DOC{ref:'.data'}.
          See $$DOC{ref:'View.createTemplateView'}. */
-      var o = this.viewModel()[name];
+      var o = this.viewModel().getFeature(name);
       if ( o ) {
         var v;
 

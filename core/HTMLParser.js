@@ -70,8 +70,12 @@ CLASS({
       }*/
     },
     {
+      name: 'attributeMap_',
+      factory: function() { return []; }
+    },
+    {
       name: 'attributes',
-      factory: function() { return {}; }
+      getter: function() { return Object.keys(this.attributeMap_); }
     },
     {
       name: 'childNodes',
@@ -88,8 +92,8 @@ CLASS({
       getter: function() {
         var out = '<' + this.nodeName;
         if ( this.id ) out += ' id="' + this.id + '"';
-        for ( key in this.attributes ) {
-          out += ' ' + key + '="' + this.attributes[key] + '"';
+        for ( key in this.attributeMap_ ) {
+          out += ' ' + key + '="' + this.attributeMap_[key] + '"';
         }
         if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] &&
              ( ! this.OPTIONAL_CLOSE_TAGS[this.nodeName] || this.childNodes.length ) ) {
@@ -113,11 +117,12 @@ CLASS({
   ],
 
   methods: {
-    getAttribute: function(name) { return this.attributes[name]; },
+    getAttribute: function(name) { return this.attributeMap_[name]; },
     appendChild: function(c) { this.childNodes.push(c); },
     toString: function() { return this.outerHTML; }
   }
 });
+
 
 var HTMLParser = {
   __proto__: grammar,
@@ -183,7 +188,7 @@ var HTMLParser = {
     var tag = xs[1];
     // < tagName ws attributes ws / >
     // 0 1       2  3          4  5 6
-    var obj = X.foam.html.Element.create({nodeName: tag, attributes: xs[3]});
+    var obj = X.foam.html.Element.create({nodeName: tag, attributeMap_: xs[3]});
     this.peek().appendChild(obj);
     if ( xs[5] != '/' ) this.stack.push(obj);
     return obj;
