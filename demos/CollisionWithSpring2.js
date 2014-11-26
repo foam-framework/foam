@@ -1,8 +1,16 @@
-CLASS({name: 'Circ', extendsModel: 'foam.graphics.Circle', traits: ['Physical'] });
+CLASS({
+  name: 'Circ',
+  extendsModel: 'foam.graphics.Circle',
+  traits: ['foam.physics.Physical']
+});
 
-var space    = foam.graphics.CView.create({width: 1500, height: 1000, background:'black'});
+var space    = foam.graphics.CView.create({
+  width: 1500,
+  height: 1000,
+  background:'black'
+});
 var mouse    = Mouse.create();
-var collider = Collider.create();
+var collider = foam.physics.Collider.create();
 var bumper   = Circ.create({r: 30, color: 'white'});
 var anchor   = Circ.create({r: 0, x: 1400, y: 400, color: 'white'});
 
@@ -67,7 +75,7 @@ collider.collide = function(c1, c2) {
     c2.vx += 25 * Math.cos(a);
     c2.vy += 25 * Math.sin(a);
   } else {
-    Collider.getPrototype().collide.call(this, c1, c2);
+    foam.physics.Collider.getPrototype().collide.call(this, c1, c2);
   }
 };
 

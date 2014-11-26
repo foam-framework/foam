@@ -4,13 +4,13 @@ var mouse   = Mouse.create();
 CLASS({
   name: 'ShadowCircle',
   extendsModel: 'foam.graphics.Circle',
-  traits: ['Physical', 'foam.graphics.Shadow']
+  traits: ['foam.physics.Physical', 'foam.graphics.Shadow']
 });
 
 CLASS({
   name: 'BlurCircle',
   extendsModel: 'foam.graphics.Circle',
-  traits: ['Physical', 'foam.graphics.MotionBlur']
+  traits: ['foam.physics.Physical', 'foam.graphics.MotionBlur']
 });
 
 

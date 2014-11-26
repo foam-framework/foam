@@ -1,7 +1,11 @@
 var space   = foam.graphics.CView.create({width: 2000, height: 1700, background: 'white'});
 var mouse   = Mouse.create();
 
-CLASS({name: 'Circ', extendsModel: 'foam.graphics.Circle', traits: ['Physical'] });
+CLASS({
+  name: 'Circ',
+  extendsModel: 'foam.graphics.Circle',
+  traits: ['foam.physics.Physical']
+});
 
 space.write(document);
 mouse.connect(space.$);
