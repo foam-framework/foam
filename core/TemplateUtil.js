@@ -74,7 +74,7 @@ var FOAMTagParser = {
     return attrs;
   },
   tag: function(xs) {
-    return X.foam.html.Element.create({nodeName: xs[1], attributes: xs[3], childNodes: xs[5]});
+    return X.foam.html.Element.create({nodeName: xs[1], attributeMap_: xs[3], childNodes: xs[5]});
   },
   closed:   function()   { return []; },
   matching: function(xs) { return xs.children; }
@@ -175,7 +175,8 @@ var TemplateCompiler = {
 
   push: function() { this.out.push.apply(this.out, arguments); },
 
-  header: 'var self = this; var X = this.X; var escapeHTML = XMLUtil.escape; var out = opt_out ? opt_out : TemplateOutput.create(this);' +
+  header: 'var self = this; var X = this.X; var escapeHTML = XMLUtil.escape;' +
+    'var out = opt_out ? opt_out : TemplateOutput.create(this);' +
     "out('",
 
   footer: "');" +
@@ -188,10 +189,11 @@ var TemplateCompiler = {
     return ret;
   },
   'create child': function(v) {
-    var name = v[1].join('').constantize();
-    this.push("', self.createTemplateView('", name, "'",
-              v[2] ? ', ' + v[2] : '',
-              "),\n'");
+    var name = v[1].join('');
+    this.push(
+      "', self.createTemplateView('", name, "'",
+      v[2] ? ', ' + v[2] : '',
+      "),\n'");
   },
   foamTag: function(e) {
     function buildAttrs(e, attrToDelete) {
@@ -201,24 +203,25 @@ var TemplateCompiler = {
     }
 
     // A Feature
-    if ( e.attributes.f ) {
-      var name = e.attributes.f.constantize();
-      this.push("', self.createTemplateView('", name, "',");
+    var fName = e.getAttribute('f');
+    if ( fName ) {
+      this.push("', self.createTemplateView('", fName, "',");
       this.push(JSON.stringify(buildAttrs(e, 'f')));
     }
     // A Model
-    else if ( e.attributes.model ) {
-      var modelName = e.attributes.model;
-      this.push("', X.", modelName, '.create(');
-      this.push(JSON.stringify(buildAttrs(e, 'model')));
-    }
     else {
-      console.error('Foam tag must define either "model" or "f" attribute.'); 
+      var modelName = e.getAttribute('model');
+      if ( modelName ) {
+        this.push("', X.", modelName, '.create(');
+        this.push(JSON.stringify(buildAttrs(e, 'model')));
+      } else {
+        console.error('Foam tag must define either "model" or "f" attribute.');
+      }
     }
 
     if ( e.children.length ) {
       this.push(')');
-      e.attributes = [];
+      e.attributeMap_ = [];
       this.push('.fromElement(elementFromString("' + e.outerHTML.replace(/\n/g, '\\n').replace(/"/g, '\\"') + '")');
     }
 
@@ -349,7 +352,6 @@ var TemplateUtil = {
      for (var i = 0; i < templates.length; i++) {
        templates[i] = TemplateUtil.templateMemberExpander(self, templates[i]);
      }
-
   }
 };
 
@@ -373,7 +375,7 @@ var aevalTemplate = function(t) {
     } catch (err) {
       console.log('Template Error: ', err);
       console.log(code);
-      return aconstant(function(){return 'TemplateError: Check console.';});
+      return aconstant(function() {return 'TemplateError: Check console.';});
     }
   }
 
