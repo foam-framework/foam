@@ -506,7 +506,7 @@ CLASS({
         Used by the $$DOC{ref:'Template',text:'$$propName'} sub-$$DOC{ref:'View'}
         creation tag in $$DOC{ref:'Template',usePlural:true}.
       */
-      var o = this.model_[name];
+      var o = this.model_[name.constantize()];
       if ( ! o ) throw 'Unknown View Name: ' + name;
 
       if ( Action.isInstance(o) )

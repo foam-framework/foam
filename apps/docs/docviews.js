@@ -35,7 +35,7 @@ CLASS({
     pass on its data directly, rather than a property of that data.</p>
     <p>Views that wish to use DOC reference tags should extend this model. To display the
     $$DOC{ref:'Model.documentation'} of a model, use a $$DOC{ref:'DocModelView'} or
-    $$DOC{ref:'DocBodyView'}.</p>
+    $$DOC{ref:'foam.docmentation.DocBodyView'}.</p>
     <p>Documentation views require that a this.documentViewRef $$DOC{ref:'SimpleValue'}
     be present on the context. The supplied model is used as the base for resolving documentation
     references. If you are viewing the documentation for a Model, it will be a
@@ -74,7 +74,7 @@ CLASS({
           tags in documentation templates.</p>
       */
       var X = ( opt_args && opt_args.X ) || this.X;
-      var v = X.DocRefView.create(opt_args, X);
+      var v = X.foam.documentation.DocRefView.create(opt_args, X);
       this.addChild(v);
       return v;
     },
@@ -1148,7 +1148,9 @@ CLASS({
   help: 'Displays the documentation of the given feature list.',
 
   requires: [ 'DAOListView',
-              'foam.documentation.DocFeatureCollapsedView' ],
+              'foam.documentation.DocFeatureCollapsedView',
+              'foam.documentation.DocFeatureInheritanceTracker'
+              ],
 
   imports: ['featureDAO', 'modelDAO', 'documentViewRef'],
 
@@ -1194,20 +1196,20 @@ CLASS({
         this.selfFeaturesDAO = [].sink;
         this.featureDAO
           .where(
-                AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.documentViewRef.get().resolvedRoot.resolvedModelChain[0].id),
-                        EQ(DocFeatureInheritanceTracker.IS_DECLARED, true)),
-                    CONTAINS(DocFeatureInheritanceTracker.TYPE, this.featureType))
+                AND(AND(EQ(this.DocFeatureInheritanceTracker.MODEL, this.documentViewRef.get().resolvedRoot.resolvedModelChain[0].id),
+                        EQ(this.DocFeatureInheritanceTracker.IS_DECLARED, true)),
+                    CONTAINS(this.DocFeatureInheritanceTracker.TYPE, this.featureType))
                 )
-          .select(MAP(DocFeatureInheritanceTracker.FEATURE, this.selfFeaturesDAO));
+          .select(MAP(this.DocFeatureInheritanceTracker.FEATURE, this.selfFeaturesDAO));
 
         this.inheritedFeaturesDAO = [].sink;
         this.featureDAO
           .where(
-                AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.documentViewRef.get().resolvedRoot.resolvedModelChain[0].id),
-                        EQ(DocFeatureInheritanceTracker.IS_DECLARED, false)),
-                    CONTAINS(DocFeatureInheritanceTracker.TYPE, this.featureType))
+                AND(AND(EQ(this.DocFeatureInheritanceTracker.MODEL, this.documentViewRef.get().resolvedRoot.resolvedModelChain[0].id),
+                        EQ(this.DocFeatureInheritanceTracker.IS_DECLARED, false)),
+                    CONTAINS(this.DocFeatureInheritanceTracker.TYPE, this.featureType))
                 )
-          .select(MAP(DocFeatureInheritanceTracker.FEATURE, this.inheritedFeaturesDAO));
+          .select(MAP(this.DocFeatureInheritanceTracker.FEATURE, this.inheritedFeaturesDAO));
 
         this.updateHTML();
       }
@@ -1274,12 +1276,12 @@ CLASS({
     <%    } else {
             if (this.hasFeatures) { %>
               <p class="feature-type-heading"><%=this.model.plural%>:</p>
-              <div class="memberList">$$THISDATA{ model_: 'DAOListView', data$: this.selfFeaturesDAO$, rowView: 'RowDocView', model: this.model }</div>
+              <div class="memberList">$$THISDATA{ model_: 'DAOListView', data$: this.selfFeaturesDAO$, rowView: 'foam.documentation.RowDocView', model: this.model }</div>
       <%    }
             if (this.hasInheritedFeatures) { %>
               <p class="feature-type-heading">Inherited <%=this.model.plural%>:</p>
       <%
-              var fullView = this.DAOListView.create({ rowView: 'RowDocView', data$: this.inheritedFeaturesDAO$, model: this.model });
+              var fullView = this.DAOListView.create({ rowView: 'foam.documentation.RowDocView', data$: this.inheritedFeaturesDAO$, model: this.model });
               var collapsedView = this.DocFeatureCollapsedView.create({ data$: this.inheritedFeaturesDAO$});
               %>
               <div class="memberList inherited">$$THISDATA{ model_: 'CollapsibleView', collapsedView: collapsedView, fullView: fullView, showActions: true }</div>

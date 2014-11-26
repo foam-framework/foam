@@ -125,7 +125,7 @@ CLASS({
   },
   templates: [ // TODO: the data gets set on the modelNameView... screws it up
     function toInnerHTML() {/*
-      <p class="browse-list-entry">$$modelName{model_:'DocRefView', ref$: this.modelRef$, text$: this.modelName$}</p>
+      <p class="browse-list-entry">$$modelName{model_:'foam.documentation.DocRefView', ref$: this.modelRef$, text$: this.modelName$}</p>
     */}
   ]
 });
@@ -242,7 +242,7 @@ CLASS({
       // don't respond if we are already at the location desired
       if (location.hash.substring(1) === this.DetailContext.documentViewRef.get().ref) return;
 
-      var newRef = this.DetailContext.DocRef.create({ref:location.hash.substring(1)});
+      var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:location.hash.substring(1)});
       if (newRef.valid) {
         this.DetailContext.documentViewRef.set(newRef);
         this.selection = newRef.resolvedModelChain[0];
