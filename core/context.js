@@ -127,6 +127,9 @@ function subWindow(w, opt_name, isBackground) {
 var X = this.subWindow(window, 'DEFAULT WINDOW', typeof process === 'object').sub({IN_WINDOW: false}, 'TOP-X');
 var _ROOT_X = X;
 
+var foam = {};
+X.foam = foam;
+
 var registerFactory = function(model, factory) {
   // TODO
 };
