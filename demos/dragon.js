@@ -18,7 +18,15 @@ CLASS({
   name:  'Dragon',
   extendsModel: 'CView',
 
+  constants: {
+    colours: ['#33f','#f00','#fc0','#33f','#3c0']
+  },
+
   properties: [
+    {
+      name: 'i',
+      defaultValue: 1
+    },
     {
       name:  'eyes',
       type:  'EyesCView',
@@ -56,13 +64,13 @@ CLASS({
       defaultValue: 'gray'
     },
     {
-      name:  'timer'
+      name:  'timer',
+      postSet: function(_, timer) {
+        var self = this;
+        Events.dynamic(function() { self.timer.time; }, function() { self.paint(); });
+      }
     }
   ],
-
-  constants: {
-    colours: ['#33f','#f00','#fc0','#33f','#3c0']
-  },
 
   methods: {
     dot: function(r) {
@@ -104,21 +112,12 @@ CLASS({
       this.feather(r*0.92);
     },
 
-    init: function() {
-      this.SUPER();
-      var self = this;
-      this.i = 0;
-      Events.dynamic(function() { self.timer.time; }, function() { self.paint(); });
-      //      this.timer && this.timer.propertyValue('time').addListener(this.paint.bind(this));
-    },
-
     paintSelf: function() {
       var c = this.canvas;
       c.save();
       this.i = 0;
-      try
-      {
 
+      try {
         c.translate(500,250);
         c.translate(0, -30*Math.sin(this.timer.time/4000*(Math.PI*2)));
 
@@ -142,9 +141,7 @@ CLASS({
         c.translate(-80,-140);
         c.translate(-500,-500);
         this.eyes.paint();
-
-      }
-      catch(x) {
+      } catch(x) {
         console.log(x);
       }
       c.restore();
