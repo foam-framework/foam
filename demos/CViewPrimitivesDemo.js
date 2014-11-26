@@ -20,7 +20,7 @@ canv.write(document);
 var outerLayout = X.diagram.LinearLayout.create({ width : 500, height: 300});
 canv.addChild(outerLayout);
 
-var spacer1e = X.canvas.Spacer.create({ fixedWidth: 200 });
+var spacer1e = X.foam.graphics.Spacer.create({ fixedWidth: 200 });
 outerLayout.addChild(spacer1e);
 
 var vlay1 = X.diagram.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
@@ -30,12 +30,12 @@ outerLayout.addChild(vlay2);
 
 CLASS({
   name: 'BorderLabel',
-  extendsModel: 'canvas.Label',
-  traits: ['canvas.BorderTrait']
+  extendsModel: 'foam.graphics.Label',
+  traits: ['foam.graphics.BorderTrait']
 
 });
 
-var spacer1 = X.canvas.Spacer.create({ });
+var spacer1 = X.foam.graphics.Spacer.create({ });
 vlay1.addChild(spacer1);
 
 var block1 = X.diagram.Block.create({
@@ -67,7 +67,7 @@ block1.addChild(sect2);
 
 
 
-var spacer1b = X.canvas.Spacer.create({
+var spacer1b = X.foam.graphics.Spacer.create({
   fixedHeight: 20,
   fixedWidth: 30
 });
@@ -87,7 +87,7 @@ var label1 = X.BorderLabel.create({
 });
 vlay1.addChild(label1);
 
-var rect3 = X.canvas.Rectangle.create({
+var rect3 = X.foam.graphics.Rectangle.create({
        x: 120,
        y: 30,
        border: 'red',
@@ -97,14 +97,14 @@ var rect3 = X.canvas.Rectangle.create({
 });
 vlay1.addChild(rect3);
 
-var spacer2 = X.canvas.Spacer.create({
+var spacer2 = X.foam.graphics.Spacer.create({
   fixedHeight: 20,
   fixedWidth: 50
 });
 outerLayout.addChild(spacer2);
 
 
-var spacer5 = X.canvas.Spacer.create();
+var spacer5 = X.foam.graphics.Spacer.create();
 spacer5.verticalConstraints.stretchFactor = 3;
 vlay2.addChild(spacer5);
 
@@ -135,7 +135,7 @@ var sect2b = X.diagram.Section.create({
   titleFont: 'italic 12px Roboto'
 }, canv.X);
 block2.addChild(sect2b);
-var spacer3 = X.canvas.Spacer.create();
+var spacer3 = X.foam.graphics.Spacer.create();
 spacer3.verticalConstraints.stretchFactor = 1;
 block2.addChild(spacer3);
 
