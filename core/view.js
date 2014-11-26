@@ -474,7 +474,7 @@ CLASS({
     createView: function(prop, opt_args) {
       /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.X;
-      var v = X.PropertyView.create({prop: prop, args: opt_args});
+      var v = X.PropertyView.create({prop: prop, args: opt_args}, X);
       this.addChild(v);
       return v;
     },
@@ -849,6 +849,9 @@ CLASS({
     $$DOC{ref:'.args'}.model_.
   */},
 
+  imports: ['data'],
+  exports: ['propValue as data'],
+
   properties: [
     {
       name: 'prop',
@@ -856,6 +859,12 @@ CLASS({
       documentation: function() {/*
           The $$DOC{ref:'Property'} for which to generate a $$DOC{ref:'View'}.
       */}
+    },
+    {
+      name: 'propValue',
+      documentation: function() {/*
+          The value of the $$DOC{ref:'Property'} of $$DOC{ref:'.data'}.
+      */},
     },
     {
       name: 'parent',
@@ -914,7 +923,7 @@ CLASS({
       if ( this.args && this.args.model_ ) {
         var model = FOAM.lookup(this.args.model_, this.X);
         console.assert( model, 'Unknown View: ' + this.args.model_);
-        var view = model.create(this.prop);
+        var view = model.create(this.prop, this.X);
         delete this.args.model_;
       } else {
         view = this.createViewFromProperty(this.prop);
@@ -959,6 +968,7 @@ CLASS({
       if ( ! view || ! oldData ) return;
       var pValue = oldData.propertyValue(this.prop.name);
       Events.unlink(pValue, view.data$);
+      Events.unlink(pValue, this.propValue$);
     },
 
     bindData: function(data) {
@@ -967,6 +977,7 @@ CLASS({
       if ( ! view || ! data ) return;
       var pValue = data.propertyValue(this.prop.name);
       Events.link(pValue, view.data$);
+      Events.link(pValue, this.propValue$);
     },
 
     toHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ return this.view.toHTML(); },

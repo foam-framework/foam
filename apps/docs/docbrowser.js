@@ -245,6 +245,7 @@ CLASS({
       var newRef = this.DetailContext.DocRef.create({ref:location.hash.substring(1)});
       if (newRef.valid) {
         this.DetailContext.documentViewRef.set(newRef);
+        this.selection = newRef.resolvedModelChain[0];
         this.SearchContext.selection$.set(newRef.resolvedRoot.resolvedModelChain[0]); // selection wants a Model object
 
       }
@@ -272,10 +273,13 @@ CLASS({
 
   properties: [
     {
+      name: 'selection',
+    },
+    {
       name: 'modelList',
       factory: function() {
         this.contextSetup();
-        return this.SearchContext.ModelListController.create();
+        return this.SearchContext.ModelListController.create({}, this.SearchContext);
       }
     },
     {
@@ -283,14 +287,14 @@ CLASS({
       factory: function() {
         this.contextSetup();
         return this.SearchContext.ControllerView.create({ model: ModelListController,
-                                                          data$: this.modelList$ });
+                                                          data$: this.modelList$ }, this.SearchContext);
       }
     },
     {
       name: 'selectionView',
       factory: function() {
         this.contextSetup();
-        return this.DetailContext.DocModelView.create({ model: Model, data$: this.DetailContext.documentViewRef });
+        return this.DetailContext.foam.documentation.DocViewPicker.create({ data$: this.selection$ }, this.DetailContext);
       }
     },
   ]
