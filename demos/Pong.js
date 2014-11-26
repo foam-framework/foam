@@ -1,7 +1,7 @@
 CLASS({
   name: 'Ball',
   extendsModel: 'foam.graphics.Circle',
-  traits: ['Physical', 'foam.graphics.MotionBlur'],
+  traits: ['foam.physics.Physical', 'foam.graphics.MotionBlur'],
   properties: [
     {
       name: 'vx',
@@ -14,7 +14,7 @@ CLASS({
 CLASS({
   name: 'Paddle',
   extendsModel: 'foam.graphics.Circle',
-  traits: ['Physical', 'foam.graphics.Shadow'],
+  traits: ['foam.physics.Physical', 'foam.graphics.Shadow'],
   properties: [
     { name: 'color', defaultValue: 'white' },
     { name: 'r',     defaultValue: 30 },
@@ -29,7 +29,8 @@ CLASS({
 
   requires: [
     'foam.graphics.CView',
-    'foam.graphics.Rectangle'
+    'foam.graphics.Rectangle',
+    'foam.physics.Collider'
   ],
 
   constants: {
@@ -174,7 +175,7 @@ CLASS({
       this.ball.x$.addListener(this.onBallMove);
 
       // Setup Physics
-      Collider.create().add(this.ball, this.lPaddle, this.rPaddle).start();
+      this.Collider.create().add(this.ball, this.lPaddle, this.rPaddle).start();
       Movement.inertia(this.ball);
     }
   }
