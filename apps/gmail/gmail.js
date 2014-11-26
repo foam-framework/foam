@@ -58,10 +58,51 @@ CLASS({
   extendsModel: 'View',
 
   requires: [
-    'GMailUserInfo'
+    'GMailUserInfo',
+    'TouchManager',
+    'GestureManager',
+    'EasyOAuth2'
+  ],
+
+  exports: [
+    'XHR',
+    'touchManager',
+    'gestureManager'
   ],
 
   properties: [
+    {
+      name: 'XHR',
+      factory: function() {
+        return XHR.xbind({
+          authAgent: this.oauth,
+          retries: 3,
+          delay: 10
+        });
+      }
+    },
+    {
+      name: 'touchManager',
+      factory: function()  { return this.TouchManager.create(); }
+    },
+    {
+      name: 'gestureManager',
+      factory: function() { return this.GestureManager.create(); }
+    },
+    {
+      name: 'oauth',
+      factory: function() {
+        return this.EasyOAuth2.create({
+          clientId: "945476427475-oaso9hq95r8lnbp2rruo888rl3hmfuf8.apps.googleusercontent.com",
+          clientSecret: "GTkp929u268_SXAiHitESs-1",
+          scopes: [
+            "https://www.googleapis.com/auth/userinfo.profile",
+            "https://www.googleapis.com/auth/userinfo.email",
+            "https://mail.google.com/"
+          ]
+        });        
+      }
+    },
     {
       name: 'controller',
       subType: 'AppController',
@@ -70,7 +111,6 @@ CLASS({
         this.stack.setTopView(FloatingView.create({ view: view }));
       }
     },
-    { name: 'oauth' },
     {
       name: 'emailDao',
       type: 'DAO',
@@ -141,31 +181,6 @@ CLASS({
   ],
 
   methods: {
-    init: function() {
-      this.X = this.X.sub({
-        touchManager: this.X.TouchManager.create({})
-      }, 'MGMAIL CONTEXT');
-      this.X.gestureManager = this.X.GestureManager.create({});
-
-      this.oauth = this.X.EasyOAuth2.create({
-        clientId: "945476427475-oaso9hq95r8lnbp2rruo888rl3hmfuf8.apps.googleusercontent.com",
-        clientSecret: "GTkp929u268_SXAiHitESs-1",
-        scopes: [
-          "https://www.googleapis.com/auth/userinfo.profile",
-          "https://www.googleapis.com/auth/userinfo.email",
-          "https://mail.google.com/"
-        ]
-      });
-
-      this.X.registerModel(XHR.xbind({
-        authAgent: this.oauth,
-        retries: 3,
-        delay: 10
-      }), 'XHR');
-
-      this.SUPER();
-    },
-
     toHTML: function() { return this.stack.toHTML(); },
 
     initHTML: function() {
