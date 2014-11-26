@@ -1847,7 +1847,7 @@ f1 end
 
       <object model="UnitTest">
         <property name="name">LinearLayoutTrait test</property>
-        <property name="description">Tests generic canvas.LinearLayoutTrait layout handling</property>
+        <property name="description">Tests generic foam.graphics.LinearLayoutTrait layout handling</property>
         <property name="code" type="function">function anonymous() {
   // Prepare a trait host model with the bare essential properties
   MODEL({ name: 'LinLayTest', traits: [ 'layout.LinearLayoutTrait' ],

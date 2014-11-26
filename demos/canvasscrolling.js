@@ -1,6 +1,6 @@
 CLASS({
   name: 'ExperimentalScrollView',
-  extendsModel: 'CView2',
+  extendsModel: 'foam.graphics.CView',
   properties: [
     {
       name: 'silhouette',

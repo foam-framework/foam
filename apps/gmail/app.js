@@ -90,7 +90,7 @@ window.onload = function() {
     arequire('AbstractDAOView'),
     arequire('DetailView'),
     arequire('ActionButtonCView'),
-    arequire('CView2'),
+    arequire('foam.graphics.CView'),
     arequire('Circle2'),
     arequire('PropertyView'),
     arequire('CViewView'),

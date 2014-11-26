@@ -561,7 +561,7 @@ CLASS({
       name: 'MarginProxy',
       extendsModel: 'layout.LayoutItemLinearConstraintsProxy',
 
-      documentation: function() {/* Adds an $$DOC{ref:'canvas.Margin.MarginProxy.addAmount'} to the proxied constraints. */},
+      documentation: function() {/* Adds an $$DOC{ref:'foam.graphics.Margin.MarginProxy.addAmount'} to the proxied constraints. */},
 
       properties: [
         {
@@ -636,7 +636,7 @@ CLASS({
         this.updateMargins);
     },
 
-    addChild: function(child) { /* Adds a child $$DOC{ref:'CView2'} to the scene
+    addChild: function(child) { /* Adds a child $$DOC{ref:'foam.graphics.CView'} to the scene
                                    under this. Add our listener for child constraint
                                    changes. Only one child at a time is supported. */
       // remove any existing children so we only have at most one at all times
@@ -650,7 +650,7 @@ CLASS({
       if (child.horizontalConstraints && this.horizontalConstraints)
         this.horizontalConstraints.data = child.horizontalConstraints;
     },
-    removeChild: function(child) { /* Removes the child $$DOC{ref:'CView2'} from the scene. */
+    removeChild: function(child) { /* Removes the child $$DOC{ref:'foam.graphics.CView'} from the scene. */
       // unlisten
       if (this.verticalConstraints) this.verticalConstraints.data = undefined;
       if (this.horizontalConstraints) this.horizontalConstraints.data = undefined;
