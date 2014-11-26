@@ -148,7 +148,9 @@ CLASS({
     {
       model_: 'ArrayProperty',
       name: 'tests',
+      subType: 'UnitTest',
       label: 'Tests',
+      view: 'DAOListView',
       documentation: 'An array of child tests. Will be run in order after the parent test.'
     },
     {
