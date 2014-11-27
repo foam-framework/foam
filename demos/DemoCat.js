@@ -24,7 +24,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
     keywords: ['animation', 'reactive'],
     src: 'SolarSystem.js',
     image: 'SolarSystem.png',
-  },
+  },/*
   {
     name: 'Canvas Scrolling',
     path: 'canvasscrolling.html',
@@ -33,7 +33,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
     src: 'canvasscrolling.js',
     image: 'canvasscrolling.png',
   },
-  {
+  */{
     name: 'Reactive Clocks',
     path: 'ReactiveClocks.html',
     description: 'A simple demo of reactive programming.  The first clocks reacts to the position of the mouse while the second clock reacts to the position of the first clock and to time.  Reacting to time essentially gives you an animation system for free.',
