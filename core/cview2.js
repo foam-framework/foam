@@ -587,6 +587,8 @@ CLASS({
 
   extendsModel: 'foam.graphics.CView',
 
+  requires: [ 'foam.graphics.Circle' ],
+
   properties: [
     {
       name: 'action',
@@ -622,7 +624,7 @@ CLASS({
     },
     {
       name: 'halo',
-      factory: function() { return Circle.create({
+      factory: function() { return this.Circle.create({
         alpha: 0,
         r: 10,
         color: this.haloColor
