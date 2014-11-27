@@ -342,6 +342,12 @@ OrderHeaderDAO.select(function(header) {
   });
 });
 
+OrderHeaderDAO.select(function(header) {
+  header.OrderItems.select(SUM(OrderItem.AMOUNT))(function(s) {
+    console.log(header.id, ' ', header.title, ' total: $', s.sum);
+  });
+});
+
 // System Tables
 
 // Models are also Modelled, so can be also be stored in a DAO
