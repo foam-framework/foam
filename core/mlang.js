@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 // TODO: add type-checking in partialEval
 //  (type-checking is a subset of partial-eval)
 
@@ -2084,6 +2083,7 @@ function DESC(arg1) {
 }
 
 var JOIN = function(dao, key, sink) {
+  sink = sink || [];
   return {
     f: function(o) {
       var s = sink.clone();

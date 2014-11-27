@@ -249,8 +249,7 @@ dao.remove('11');
 // New DAO should contain updates made to dao
 newDAO.select(MAP(Person.NAME, []))(console.log);
 
-var PayStub = FOAM({
-  model_: 'Model',
+CLASS({
   name: 'PayStub',
   properties: [
     { name: 'id' },
@@ -296,6 +295,52 @@ PayStubDAO.select(DISTINCT(PayStub.PID, []))(console.log);
 
 // 'distinct' multi-part
 PayStubDAO.select(DISTINCT(SEQ(PayStub.PID, PayStub.YEAR,PayStub.MONTH), []))(console.log);
+
+// Join and Relationships
+
+CLASS({
+  name: 'OrderHeader',
+  properties: [ 'id', 'title' ],
+  relationships: [
+    { relatedModel: 'OrderItem', relatedProperty: 'orderId' }
+  ]
+});
+
+CLASS({
+  name: 'OrderItem',
+  properties: [ 'id', 'orderId', 'title', 'amount' ]
+});
+
+var OrderHeaderDAO = [
+  OrderHeader.create({id: 1, title: 'Order 1'}),
+  OrderHeader.create({id: 2, title: 'Order 2'})
+].dao;
+
+var OrderItemDAO = [
+  OrderItem.create({id: 1, orderId: 1, title: 'Item 1', amount: 99.99}),
+  OrderItem.create({id: 2, orderId: 1, title: 'Item 2', amount: 13.95}),
+  OrderItem.create({id: 3, orderId: 2, title: 'Item 1', amount: 14.95}),
+  OrderItem.create({id: 4, orderId: 2, title: 'Item 2', amount: 999.99}),
+  OrderItem.create({id: 5, orderId: 2, title: 'Item 3', amount: 62.45})
+].dao;
+
+OrderHeaderDAO.select(function(header) {
+  console.log(header.id, ' ', header.title);
+  OrderItemDAO.where(EQ(OrderItem.ORDER_ID, header.id)).select(function(item) {
+    console.log(header.id, '  ', header.title, '  ', item.title, ' ', item.amount);
+  });
+});
+
+OrderHeaderDAO.select(MAP(JOIN(OrderItemDAO, OrderItem.ORDER_ID)))(function (m) {
+  console.log(JSONUtil.stringify(m.arg2));
+});
+
+OrderHeaderDAO.select(function(header) {
+  console.log(header.id, ' ', header.title);
+  header.OrderItems.select(function(item) {
+    console.log(header.id, '  ', header.title, '  ', item.title, ' ', item.amount);
+  });
+});
 
 // System Tables
 
