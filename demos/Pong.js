@@ -18,7 +18,7 @@ CLASS({
   properties: [
     { name: 'color', defaultValue: 'white' },
     { name: 'r',     defaultValue: 30 },
-    { name: 'mass',  defaultValue: Physical.INFINITE_MASS },
+    { name: 'mass',  defaultValue: foam.physics.Physical.INFINITE_MASS },
   ]
 });
 
