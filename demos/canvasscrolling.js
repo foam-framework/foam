@@ -1,6 +1,10 @@
 CLASS({
   name: 'ExperimentalScrollView',
   extendsModel: 'foam.graphics.CView',
+  constants: {
+    colors: 'e8ad62 9b26af 6639b6 4184f3 02a8f3 00bbd3 009587 0e9c57 9e9c57 8ac249 ccdb38 ffea3a f3b300 ff9700 ff5621 785447'.split(' '),
+    priorityColors: 'DB4437 F4B400 4285F4 0F9D58'.split(' '),
+  },
   properties: [
     {
       name: 'silhouette',
@@ -173,9 +177,6 @@ CLASS({
 //      var end = performance.now();
 //      console.log('Render time: ', end - start);
     },
-    colors: 'e8ad62 9b26af 6639b6 4184f3 02a8f3 00bbd3 009587 0e9c57 9e9c57 8ac249 ccdb38 ffea3a f3b300 ff9700 ff5621 785447'.split(' '),
-    priorityColors: 'DB4437 F4B400 4285F4 0F9D58'.split(' '),
-
     generateColor: function(data) {
       return '#' + this.colors[Math.abs(data.hashCode()) % this.colors.length];
     },
@@ -185,8 +186,7 @@ CLASS({
       if ( this.map[data] !== undefined ) return this.map[data];
 //      console.warn('Unknown priority ', data);
       return 3;
-    },
-
+    }
   },
   listeners: [
     {
