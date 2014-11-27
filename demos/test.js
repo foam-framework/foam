@@ -1,3 +1,43 @@
+CLASS({
+  name: 'Test',
+  properties: [
+    {
+      name: 'notReq'
+    },
+    {
+      name: 'reqField',
+      required: true
+    },
+    {
+      name: 'reqView',
+      view: { factory_: 'TextFieldView', required: true }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'patternField',
+      pattern: '###'
+    },
+    {
+      name: 'patternView',
+      view: { factory_: 'TextFieldView', pattern: '###' }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'intStepView',
+      view: { factory_: 'IntFieldView', step: 10 }
+    },
+    {
+      model_: 'FloatProperty',
+      name: 'floatStepView',
+      view: { factory_: 'FloatFieldView', step: .1 }
+    }
+  ]
+});
+
+var t = Test.create();
+t.write(document);
+
+
 var aDAO = [].dao;
 
 aDAO.put(Bookmark.create({id: 1, title: 'title1'}));
@@ -23,13 +63,13 @@ CLASS({
   ]
 });
 
-
+/*
 var ade = ArrayDAOExample.create({p2: [
   Bookmark.create({id: 1, title: 'title1', img: ''}),
   Bookmark.create({id: 1, title: 'title2', img: ''})
 ]});
 ade.write(document);
-
+*/
 
 CLASS({
   name: 'Point',
@@ -518,33 +558,3 @@ var stack = StackView.create();
 stack.write(document);
 ctrl.__proto__.stackView = stack;
 stack.pushView(ctrl, "Browse Models");
-
-
-CLASS({
-  name: 'Test',
-  properties: [
-    {
-      name: 'notReq'
-    },
-    {
-      name: 'reqField',
-      required: true
-    },
-    {
-      name: 'reqView',
-      view: { factory_: 'TextFieldView', required: true }
-    },
-    {
-      model_: 'StringProperty',
-      name: 'patternField',
-      pattern: '###'
-    },
-    {
-      name: 'patternView',
-      view: { factory_: 'TextFieldView', pattern: '###' }
-    }
-  ]
-});
-
-var t = Test.create();
-t.write(document);
