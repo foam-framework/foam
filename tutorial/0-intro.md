@@ -6,7 +6,18 @@ tutorial: 0
 
 ## Overview
 
-FOAM is a reactive MVC Javascript framework which tries to deliver a higher level of abstraction, productivity, and performance. See the [About page]({{ site.baseurl}}/about/) for more about the philosophy, or follow this tutorial to dive right in.
+FOAM is a a Javascript library. It is split into several parts conceptually,
+though all are currently imported together:
+
+- An advanced class system, similar in principle to Java's but much more
+  powerful.
+- A library for abstracting across data sources, with helpers for caching,
+  logging and more.
+- A view library for use in building web apps.
+
+FOAM is all about working at a high level of abstraction, productivity, and
+performance. See the [About page]({{ site.baseurl}}/about/) for more about its
+philosophy, or follow this tutorial to dive right in.
 
 This tutorial is split into several parts:
 
@@ -16,7 +27,7 @@ This tutorial is split into several parts:
 - [Controllers]({{ site.baseurl }}/tutorial/3-dao/)
 - [Custom Templates]({{ site.baseurl }}/tutorial/4-templates)
 - [Navigation]({{ site.baseurl }}/tutorial/5-navigation)
-- [`DetailView' and External Templates]({{ site.baseurl }}/tutorial/6-detailview)
+- [`DetailView` and External Templates]({{ site.baseurl }}/tutorial/6-detailview)
 - [Animations]({{ site.baseurl }}/tutorial/7-animation)
 
 ## Audience
@@ -40,7 +51,7 @@ Let's dive right in. Make a new directory for your project, switch to it, and do
 
 Now you've got a subdirectory `foam/` that holds all the code for FOAM, along with numerous demos and test pages.
 
-The core library is split across many files, but you only need to include one in your HTML document: `core/bootFOAM.js`. There is likewise `core/foam.css` which should be included for some views to work properly.
+The library is split across many files, but you only need to include one in your HTML document: `core/bootFOAM.js`. There is likewise `core/foam.css` which should be included for some views to work properly.
 
 Create `$PROJECT/index.html` with the following contents:
 

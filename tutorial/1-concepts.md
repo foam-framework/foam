@@ -6,24 +6,71 @@ tutorial: 1
 
 FOAM is, fundamentally, about data. It takes the object-oriented view of data: the smallest unit of data is an object, and an object is a collection of properties and methods.
 
-## Models
+## Modeling Data
 
-In FOAM, all objects have a **model**. The model is akin to a Java or C++ class: it defines the properties and methods all objects of this type have. Javascript has poor object support; FOAM expands it significantly.
+In Java, you write a class definition using special syntax:
 
-Models have several parts:
+{% highlight java %}
+public class MyClass extends BaseClass {
+  private int someField;
+  public MyClass(someField) {
+    this.someField = someField;
+  }
+  public int getSomeField() {
+    return someField;
+  }
+  public void setSomeField(int sf) {
+    someField = sf;
+  }
+}
+{% endhighlight %}
 
-- **Properties**: Like public member variables.
-    - In FOAM, properties are accessed like plain old Javascript objects, `point.x += 10`, but there can be custom handlers attached to reading and writing the values.
-- **Methods**: Plain old methods, as in Java or most other languages.
-- **Actions**: Guarded methods for GUIs, whose buttons can be hidden or disabled based on custom conditions.
-- **Listeners**: Pre-bound event listeners. These are essentially methods with `this` pre-bound.
-    - Listeners can declare they want to be batched. If so, events will be held until the next animation frame (`isAnimated: true`) or until a set time has elapsed (`isMerged: 100` for 100 milliseconds). Your code is only called once, and the event delivered to it is the latest one.
-- **Templates**: Written in FOAM's template syntax, then compiled at load time into methods that return HTML strings.
+This creates a *class*, and you can use `new` to create an *instance* of that
+class.
 
-Here's a simple model:
+FOAM's approach is similar in principle: you write a definition for the class,
+and at runtime that creates a class which your code can instantiate.
+
+FOAM's class definitions take the form of a JSON object passed to the `CLASS()`
+global function. The following defines a class similar to the Java one above:
 
 {% highlight js %}
-MODEL({
+CLASS({
+  name: 'MyClass',
+  extendsModel: 'BaseClass',
+  properties: [
+    {
+      model_: 'IntProperty',
+      name: 'someField'
+    }
+  ]
+});
+{% endhighlight %}
+
+### Parts of a Class
+
+In both Java and FOAM, a class has a `name`, a parent class
+(`extendsModel`) that defaults to a fundamental class (`FObject`), properties
+and methods.
+
+That's about where the similarities stop. FOAM's classes are much richer than
+their Java counterparts.
+
+FOAM properties are like public member variables, and are accessed in the same
+way: `point.x += 10`. But they have very many more features: `postSet` functions
+to call when the property's value changes, the `view` to use when displaying
+this property to the user, `dynamicValue` for spreadsheet-style reactive
+programming, `defaultValue` and [much more]({{ site.baseurl }}/tutorial/8-appendix).
+
+FOAM models support `constants`, mixins (known as `traits`), special kinds of
+methods (`actions`, `listeners`, and `templates`) and more.
+
+### A Simple Example
+
+Here's a simple class:
+
+{% highlight js %}
+CLASS({
   name: 'Point',
   properties: ['x', 'y'],
   methods: {
@@ -54,117 +101,71 @@ which will output
 }
 {% endhighlight %}
 
-So you can see that, whatever might be going on under the hood, these modelled objects can be manipulated very much like plain old Javascript objects: read and write their properties, call their methods, and so on. The main difference is that new instances are created with `MyModel.create({...})` rather than `new MyModel(...)`.
+So you can see that, whatever might be going on under the hood, these objects
+can be manipulated very much like plain old Javascript objects: read and write
+their properties, call their methods, and so on. The main difference is that new
+instances are created with `MyModel.create({...})` rather than `new MyModel(...)`.
 
-### Extending Models
+### Extending Classes
 
-Models can extend other models, which means they will inherit all of the parent model's properties and methods (and listeners, actions, ...).
+Classes can extend other classes, which means they will inherit all of the
+parent class's properties and methods (and listeners, actions, ...).
 
 {% highlight js %}
-MODEL({
+CLASS({
   name: 'Point3D',
   extendsModel: 'Point',
   properties: ['z'],
   methods: {
     scale: function(s) {
-      SUPER(s);
+      this.SUPER(s);
       this.z *= s;
     }
   }
 });
 {% endhighlight %}
 
-This defines a new model `Point3D` that extends `Point`. It inherits all the properties (`x` and `y`) of `Point`, and adds a new one, `z`. It would inherit the method `scale` too, but instead overrides it.
+This defines a new model `Point3D` that extends `Point`. It inherits all the
+properties (`x` and `y`) of `Point`, and adds a new one, `z`. It would inherit
+the method `scale` too, but instead overrides it.
 
-This overridden method calls `SUPER(s)`, which is similar to calling `super.scale(s)` in Java.
+This overridden method calls `this.SUPER(s)`, which is similar to calling
+`super.scale(s)` in Java.
 
-Because `super` and `extends` are reserved (but unused) words in Javascript, FOAM uses these alternative names.
+Because `class`, `super` and `extends` are reserved (but unused) words in
+Javascript, FOAM uses these alternative spellings.
 
 ### Properties
 
-In the example above, we defined a property simply as a string, `'z'`. This defines a property with that name on the model. There are *many* more properties a property can have. Here's an example of a model with a more interesting property:
+In the example above, we created a property with a simple string, `'z'`. This
+defines a property with that name on the class. There are *many* more
+interesting things to set on a property. These are detailed in the
+[appendix]({{ site.baseurl }}/tutorial/8-appendix).
 
-{% highlight js %}
-MODEL({
-  name: 'Event',
-  properties: [
-    {
-      model_: 'IntProperty',
-      name: 'time',
-      documentation: 'The current time in milliseconds since the epoch.',
-      help: 'Milliseconds since the epoch',
-      preSet: function(_, t) { return Math.ceil(t); }
-      defaultValue: 0
-    }
-  ]
-});
-{% endhighlight %}
+### Listeners, Actions and Templates
 
-The properties on an object are data, and data is modelled. Therefore properties have models of their own, with properties and methods.
+These are three kinds of special methods on a class. They are called like normal
+methods.
 
-A property only has one required (meta)property, `name`, but this example sets several more:
+Listeners always bind `this` correctly, so they can be conveniently passed as
+DOM event handlers. You can also specify `isMerged: 100` or `isFramed: true`,
+and multiple calls to the listener will be merged into one call every 100ms, or
+one call on the next `requestAnimationFrame`.
 
-- `model_`: This defines the model of this property. An `IntProperty` represents an integer value, and knows how to display itself, print itself, and so on. This is somewhat akin to declaring an `int time;` member variable in Java, but means quite a bit more, as we will see.
-- `name`: As noted above, the only (meta)property every property requires.
-- `documentation`: Documentation intended for developers or detailed help pages.
-- `help`: Shorter help text aimed at a user, which might be displayed in a tooltip or other help view. It's up to the view to decide how, or whether, to present this information.
-- `preSet`: This function runs when this property is written. It is passed the old and new values, and its return value becomes the actual value stored in the property.
-- `defaultValue`: Specifies the default value for this property. Note that when a property is currently equal to its `defaultValue`, the value is omitted from `toJSON` representations, not stored in the database, and not sent over the wire, saving bandwidth and space.
+Actions represent operations the user can request on an instance of this class,
+like `send`ing an email. They are generally rendered in views as a button or
+link. Actions can specify a user-visible `label`, and have reactive handlers
+`isEnabled` and `isAvailable` that will toggle the button's state.
 
-There are many more properties-on-properties: `hidden`, `postSet`, `getter`, `setter`, `factory` and lots more. See the [appendix]({{ site.baseurl }}/tutorial/8-appendix) for more details.
+Templates are, at runtime, methods that return strings. But in the class
+definition, they are written in FOAM's template syntax and are compiled at
+class load time. The syntax is JSP-style, with several powerful features added.
+Templates make it easy to write reactive UIs with two-way data binding.
 
-
-### Listeners
-
-Listeners are called like methods, but they have some special features.
-
-The most basic is that they always have `this` bound properly, making it easy to pass them as event handlers without having to bind manually.
-
-For more details, see the [appendix]({{ site.baseurl }}/tutorial/8-appendix).
-
-
-### Templates
-
-Models can have templates. Templates are used to generate methods that return snippets of HTML. You could write `toHTML` as a `method` in plain old Javascript, or as a `template` using a superset of JSP syntax.
-
-Since Javascript doesn't have multi-line strings, we use `/* ... */` comments around the body of a function to enclose the template syntax.
-
-{% highlight js %}
-{% raw %}
-MODEL({
-  name: 'IssueCitationView',
-  extendsModel: 'DetailView',
-  templates: [
-    function priorityTemplate() {/*
-      <% var pri = this.data.pri || '0'; %>
-      <span class="priority priority-{{{pri}}}">Pri {{{pri}}}</span>
-    */},
-
-    function toHTML() {/*
-      <div id="%%id" class="issue-citation">
-        $$owner{model_: "IssueOwnerAvatarView"}
-        <div class="middle">
-          $$id{ mode: 'read-only', className: 'id' } <% this.priorityTemplate(out); %><br>
-          $$summary{mode: 'read-only'}
-        </div>
-        $$starred{
-          model_: 'ImageBooleanView',
-          className:  'star',
-          trueImage:  'images/ic_star_24dp.png',
-          falseImage: 'images/ic_star_outline_24dp.png'
-        }
-      </div>
-    */}
-  ]
-});
-{% endraw %}
-{% endhighlight %}
-
-The details of templates belong to [part 4]({{ site.baseurl }}/tutorial/4-templates), but for now let's note a few high-level points:
-
-- Templates can be given either inline as above, or in external files.
-- Multi-line strings are hacked into Javascript for the templates by using multi-line comments.
-- Template syntax is augmented HTML, a superset of JSP syntax.
+Templates will be discussed in more detail in
+[part 4]({{ site.baseurl }}/tutorial/4-templates), more information about all
+three special kinds of methods is in the
+[appendix]({{ site.baseurl }}/tutorial/8-appendix).
 
 
 ## MVC
@@ -175,30 +176,44 @@ MVC is a classic pattern for breaking up applications into reusable, decoupled c
 - **View:** Presents this data to the user, for viewing and maybe editing.
 - **Controller:** Mediates between the other two.
 
-Many frameworks focus on the model and the view, which are almost by definition application-specific. Every app needs its own data types, its own forms, and its own style of presentation. But the definitions of the models and their views can be pretty lightweight, especially if you're given some extensible, customizable components for common needs.
+Many frameworks focus on the model and the view, which are almost by definition
+application-specific. Every app needs its own data types, its own forms, and its
+own style of presentation. But the definitions of the models and their views can
+be pretty lightweight, especially if you're given some extensible, customizable
+components for common needs.
 
-FOAM goes a step farther and allows controllers to be generic, so that they can operate on all kinds of models and views. In many cases, FOAM's default controllers can be used to build the structure of your application, requiring your own code only for application-specific details while the base controllers provide navigation, animations, editing, searching, and so on.
+FOAM goes a step farther and allows controllers to be generic, so that they can
+operate on all kinds of models and views. In many cases, FOAM's default
+controllers can be used to build the structure of your application, requiring
+you to write code only for application-specific details while the controllers
+provide navigation, animations, editing, searching, and more.
 
 ### Terminology Warning
 
-FOAM has an unfortunate terminology collision around the word "model". We use it to mean both:
+FOAM has an unfortunate terminology collision around the word "model".
 
-- models as above, the concept similar to Java classes, and
-- the M in MVC, the data model of the application.
+We use it to mean the M in MVC, but also refer to the JSON object that defines
+a class as its "model".
 
-The M in MVC is generally a collection of FOAM models, which together define all the data in the application.
-
+This fact is visible, for example, in the JSON serialization of a FOAM object,
+which includes `"model_": "MyClass"`.
 
 ### Model
 
-The Model (ie. the M) in a FOAM application is a collection of FOAM models. For example, the data model for an email client might consist of several FOAM models: `EMail`, `Attachment`, `Contact`, and maybe `Thread` and `Label`.
+The Model (the M of MVC) in a FOAM application is a collection of FOAM classes.
+For example, the data model for an email client might consist of several
+classes: `EMail`, `Attachment`, `Contact`, and maybe `Thread` and `Label`.
 
-Most views in FOAM deal either with a single object, or with a collection of objects. Collections of data all implement the DAO interface (see below).
+Most views in FOAM deal either with a single object, or with a collection of
+objects. The DAO interface (see below) is FOAM's universal API for collections
+of data.
 
 
 ### DAO - Data Access Objects
 
-Data Access Object, or DAO, is a generic interface for a collection of objects, all of the same model. There are many implementations of this common interface, including:
+Data Access Object, or DAO, is a generic interface for a collection of objects,
+all of the same class. FOAM's data storage library includes many implementations
+of this common interface, including:
 
 - In-memory (lightning fast, with automatic indexing and query optimization)
 - `LocalStorage` and `chrome.storage.*`
@@ -208,56 +223,104 @@ Data Access Object, or DAO, is a generic interface for a collection of objects, 
 - XML and JSON files
 - MongoDB via Node.js
 
-In addition there is a large set of DAO decorators, which add extra functionality to other DAOs. This spares each DAO's author from having to reimplement caching, autoincrement, logging, timing, or anything else not specific to the target backend.
+In addition there is a large set of DAO decorators, which add extra
+functionality to other DAOs. This spares each DAO's author from having to
+reimplement caching, autoincrement, logging, timing, or anything else not
+specific to the target backend.
 
-DAOs have a rich and extensible query language, which supports filtering, sorting, grouping, aggregation and more. More details of the interface and how to use it are in [part 3]({{ site.baseurl }}/tutorial/3-dao) and the [appendix]({{ site.baseurl }}/tutorial/8-appendix).
+DAOs have a rich and extensible query language, which supports filtering,
+sorting, grouping, aggregation and more. More details of the interface and how
+to use it are in [part 3]({{ site.baseurl }}/tutorial/3-dao) and the
+[appendix]({{ site.baseurl }}/tutorial/8-appendix).
 
 
 ### Views
 
-In FOAM, a view is responsible for presenting some data - either a single object or a DAO - to the user.
+In FOAM, a view is responsible for presenting some data - either a single object
+or a DAO - to the user.
 
-For single objects, the view is usually a subclass of `DetailView` with a custom template.
+For single objects, the view is usually a subclass of `DetailView` with a custom
+template.
 
-For DAOs, there are a variety of views; `TableView`, `GridView` and `DAOListView` are the most common.
+For DAOs, there are a variety of views; `TableView`, `GridView` and
+`DAOListView` are the most common.
 
 ### Controllers
 
-We find that most applications fall into a few categories. With the right amount of abstraction on both your data and views, a generic and reusable controller for each archetype of app can be created.
+We find that most applications fall into a few categories. With the right amount
+of abstraction on both your data and views, a generic and reusable controller
+for each archetype of app can be created.
 
-For example, FOAM has a reusable `ThreePaneController` for the ubiquitous "list of filters on the left, table of items on upper right, and details of selected item on bottom right" style of app. (This archetype fits Gmail, Outlook and iTunes, for example.) On mobile, we have a reactive controller (`AppController`) that renders a vertical list and navigates to details when you tap, for phones. On tablets, it's the ubiquitous list on the left and details on the right. Animation and navigation are built into the controller, your app need only specify the views to use for list entries and detail pages, and the DAO of the data to display.
+For example, FOAM has a reusable `ThreePaneController` for the ubiquitous
+"list of filters on the left, table of items on upper right, and details of
+selected item on bottom right" style of app. (This archetype fits Gmail, Outlook
+and iTunes, for example.) On mobile, we have a reactive controller
+(`AppController`) that renders a vertical list and navigates to details when you
+tap, for phones. On tablets, it's the ubiquitous list on the left and details on
+the right. Animation and navigation are built into the controller, your app need
+only specify the views to use for list entries and detail pages, and the DAO of
+the data to display.
 
-This is possible because the metadata - the properties and actions on the model - are known. The generic controllers can add search and sort functionality based on the properties of the model, and their types.
+This is possible because we have so much metadata about the objects. The
+properties and actions for your classes are known at runtime. The generic
+controllers can add search and sort functionality based on the properties of
+your classes.
 
-These reusable controllers are a major reason why FOAM can be used to develop applications so rapidly - the functional portions of the app can be assembled very quickly, and the majority of development is then adjusting the custom templates and styling.
+These reusable controllers are a major reason why FOAM can be used to develop
+applications so rapidly - the functional portions of the app can be assembled
+very quickly, and the majority of development is then adjusting the custom
+templates and styling the app.
+
+Of course, if none of FOAM's controllers suit your needs, you can extend one or
+write your own. FOAM is a library, and you can use whichever parts of it suit
+your needs.
 
 
 ## Reactive Programming
 
-FOAM has fast support for reactive programming. Reactive programming is a spreadsheet-like style of computation that abstracts the details of dataflow. You specify a value in terms of some others, and FOAM hooks up event listeners for you to make sure the values are in sync. This saves the programmer from the burdens of writing event handlers, callbacks and manual data binding.
+FOAM has excellent support for reactive programming. Reactive programming is a
+spreadsheet-like style of computation that abstracts the details of dataflow.
+You specify a value in terms of some others, and FOAM hooks up event listeners
+for you to make sure the values are in sync. This saves the programmer from the
+burdens of writing event handlers, callbacks and manual data binding.
 
-FOAM's reactive programming support is event-driven, and therefore has minimal overhead. It does not do dirty checking; instead, each update to a value ripples through the data model, triggering further updates, and so on.
+FOAM's reactive programming support is event-driven, and therefore has minimal
+overhead. It does not do dirty checking; instead, each update to a value ripples
+through the data model, triggering further updates, and so on. No handlers are
+run when none of their inputs have changed. This is why FOAM's reactive
+programming support scales so well; it's still very fast with thousands of
+bindings.
 
-There are one-way (`Events.follow`) and two-way (`Events.link`) binding functions, plus variants of each that bind the values, but filtered through a function (`.map` and `.relate`; useful for eg. converting between units).
-
-There is also the extremely flexible `Events.dynamic`. It takes a function with no arguments and treats it like a spreadsheet formula. FOAM will run the function once and capture all the property reads it performs. Then it attaches listeners to each of those properties, so that your function will be run again every time one of its inputs changes, just like a spreadsheet cell.
+The various ways of hooking up reactive listeners are detailed in the
+[appendix]({{site.baseurl}}/tutorial/8-appendix).
 
 ### Animation
 
-Animations in FOAM are similarly rich: an animation is a reactive program with time as an input.
+Animations in FOAM are similarly rich; an animation is a reactive program with
+time as an input, after all.
 
-FOAM includes a suite of animation functions that make it easy to have components ease in or out, slide smoothly, bounce, spin, orbit, and more.
+FOAM includes a suite of animation functions that make it easy to have
+components ease in or out, slide smoothly, bounce, spin, orbit, and more.
 
 
 ## Miscellany
 
-FOAM tries to provide many missing utilities from Javascript and web platform. It has fast JSON and XML parsers, a simple parser combinator library, a `SyncManager` for syncing data for offline use, a powerful asynchronous function library, unit and regression testing, and more.
+FOAM tries to provide many missing utilities from Javascript and web platform.
+It has fast JSON and XML parsers, a parser combinator library, a `SyncManager`
+that can sync data for offline use, a powerful asynchronous function library,
+unit and regression testing, and more.
 
-FOAM is largely written in itself, which helps keep it compact despite all these features. Because of this meta-programming nature, FOAM is not very large.
+## Overhead
 
-Minified and gzipped, it comes in at 94 KB as of early July 2014. There is a great deal in the core codebase currently that should not be there; as FOAM moves towards release we will cut this at least in half.
+FOAM is largely written in itself, which helps keep it compact despite all these
+features. Because of this meta-programming nature, FOAM is not very large.
+
+Minified and gzipped, it weighs in at 122 KB as of late November 2014. There is
+a great deal in the core codebase currently that should not be there; as FOAM
+moves towards a 1.0 release we will cut it into smaller pieces.
 
 ## Next
 
-You should proceed either to [part 2]({{ site.baseurl }}/tutorial/2-model) or the [appendix]({{ site.baseurl }}/tutorial/8-appendix) if you're still curious.
+You should proceed either to [part 2]({{ site.baseurl }}/tutorial/2-model) or
+the [appendix]({{ site.baseurl }}/tutorial/8-appendix) if you're still curious.
 
