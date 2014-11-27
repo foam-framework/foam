@@ -11,6 +11,32 @@
  <body>
 
 <script id='demo' language="xjavascript">
+
+// Test IN and EQ
+
+CLASS({
+  name: 'MyTable',
+  properties: [ 'id', 'columnA', 'columnB' ]
+});
+
+var MyTableDAO = EasyDAO.create({model: MyTable, seqNo: true, daoType: 'IDBDAO', cache: true});
+
+[
+  MyTable.create({columnA: 'ABC', columnB: '123thd'}),
+  MyTable.create({columnA: 'DFT', columnB: '123thd'}),
+  MyTable.create({columnA: 'XYZ', columnB: '123thd'}),
+  MyTable.create({columnA: 'ABC', columnB: '124thd'}),
+  MyTable.create({columnA: 'DFT', columnB: '124thd'}),
+  MyTable.create({columnA: 'XYZ', columnB: '124thd'})
+].select(MyTableDAO);
+
+MyTableDAO.where(AND(IN(MyTable.COLUMN_A, ['ABC', 'DFT']), EQ(MyTable.COLUMN_B, '123thd'))).select(function(mt) {
+  console.log(mt.toJSON());
+});
+
+MyTableDAO.removeAll();
+
+
 // DAO Sample
 
 // First, create a Model (like a schema)
@@ -363,7 +389,6 @@ TableView.create({model: Person, dao: dao}).write(document);
 
 // Document is also a Sink
 dao.select(document);
-
 
 </script>
 
