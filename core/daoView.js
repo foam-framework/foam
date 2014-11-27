@@ -909,8 +909,10 @@ CLASS({
 
         var s = this.spinnerContainer$();
         if ( s ) {
-          this.spinnerController.startSpinner(s);
-          s.style.display = 'block';
+          this.spinnerController.startSpinner(function() {
+            s.style.display = 'block';
+            return s;
+          });
         }
 
         this.dao.select(COUNT())(function(c) {

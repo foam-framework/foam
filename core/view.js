@@ -5415,6 +5415,7 @@ CLASS({
         this.spinner = '';
         this.spinnerContainer = element;
         this.doneWaiting = false;
+        if ( this.timer ) this.clearTimeout(this.timer);
         this.timer = this.setTimeout(this.onTimer, this.minWait);
       }
     },
@@ -5444,7 +5445,11 @@ CLASS({
         } else if ( ! this.spinner && ! this.doneWaiting ) {
           // Pre-spinner time has expired. Create the spinner.
           this.spinner = this.spinnerView();
-          this.spinnerContainer.innerHTML = this.spinner.toHTML();
+          var element = this.spinnerContainer;
+          if ( typeof element === 'function' ) {
+            element = element();
+          }
+          element.innerHTML = this.spinner.toHTML();
           this.spinner.initHTML();
           this.timer = this.setTimeout(this.onTimer, this.minSpinner);
         }
