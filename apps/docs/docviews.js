@@ -143,15 +143,17 @@ CLASS({
     {
       name: 'data',
       postSet: function() {
-        if (this.data && (!this.model || this.model !== this.data.model_)) {
+        //if (this.data && (!this.model || this.model !== this.data.model_)) {
           this.model = this.data.model_;
-        }
+        //}
+        this.updateHTML();
+
       }
     },
     {
       name: 'model',
       postSet: function() {
-        this.updateHTML();
+//        this.updateHTML();
       }
     }
 
@@ -293,7 +295,9 @@ CLASS({
       </p>
   */},
 
-  imports: ['modelDAO'],
+  requires: ['foam.documentation.DocModelInheritanceTracker as DocModelInheritanceTracker'],
+
+  imports: ['modelDAO$'],
 
   ids: [ 'primaryKey' ],
 
@@ -327,6 +331,9 @@ CLASS({
       }
     },
     {
+      name: 'modelDAO'
+    },
+    {
       name: 'model',
       help: 'The name of the Model to which the feature belongs.',
       documentation: "The name of the $$DOC{ref:'Model'} to which the feature belongs.",
@@ -344,7 +351,7 @@ CLASS({
       documentation: "Helper to look up the inheritance level of $$DOC{ref:'.model'}",
       getter: function() {
         var modelTracker = [];
-        this.modelDAO.where(EQ(DocModelInheritanceTracker.MODEL, this.model))
+        this.modelDAO.where(EQ(this.DocModelInheritanceTracker.MODEL, this.model))
             .select(modelTracker);
         this.instance_.inheritanceLevel = modelTracker[0];
         return this.instance_.inheritanceLevel;
@@ -369,7 +376,7 @@ CLASS({
              'Model',
              'MDAO'],
 
-  exports: ['featureDAO', 'modelDAO'],
+  exports: ['featureDAO$', 'modelDAO$'],
 
   documentation: function() {/*
     Displays the documentation for a given $$DOC{ref:'Model'}. The viewer will
@@ -1152,7 +1159,7 @@ CLASS({
               'foam.documentation.DocFeatureInheritanceTracker'
               ],
 
-  imports: ['featureDAO', 'modelDAO', 'documentViewRef'],
+  imports: ['featureDAO$', 'documentViewRef'],
 
   properties: [
     {
@@ -1171,6 +1178,9 @@ CLASS({
       name: 'featureType',
       help: 'The property name from which data is set (such as "properties" or "methods")',
       type: 'String'
+    },
+    {
+      name: 'featureDAO'
     },
     {
       name:  'dao',

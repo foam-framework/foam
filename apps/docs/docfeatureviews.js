@@ -223,105 +223,115 @@
 //});
 
 
-//CLASS({
-//  name: 'DocFeatureRowView',
-//  extendsModel: 'DocBodyView',
-//  help: 'A generic view for each item in a list of documented features.',
+CLASS({
+  name: 'DocFeatureView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocView',
+  help: 'A generic view for each item in a list of documented features.',
 
-//  properties: [
-//    {
-//      name: 'overridesDAO',
-//      model_: 'DAOProperty',
-//      defaultValue: []
-//    },
-//    {
-//      name: 'extraClassName',
-//      defaultValue: 'feature-row'
-//    },
-//    {
-//      name: 'tagName',
-//      defaultValue: 'div'
-//    }
+  requires: ['foam.documentation.DocFeatureInheritanceTracker as DocFeatureInheritanceTracker'],
 
-//  ],
+  imports: ['featureDAO$'],
 
-//  methods: {
-//    init: function() {
-//      this.SUPER();
-//      // TODO: do this on postSet instead of pipe?
-//      this.overridesDAO = [];
-//      this.X.docModelViewFeatureDAO
-//          .where(
-//                AND(EQ(DocFeatureInheritanceTracker.NAME, this.data.name),
-//                    EQ(DocFeatureInheritanceTracker.IS_DECLARED, true))
-//          )
-//          .orderBy(DESC(DocFeatureInheritanceTracker.INHERITANCE_LEVEL))
-//          .pipe(this.overridesDAO);
-//    }
-//  },
+  properties: [
+    {
+      name: 'overridesDAO',
+      model_: 'DAOProperty',
+      defaultValue: []
+    },
+    {
+      name: 'extraClassName',
+      defaultValue: 'feature-row'
+    },
+    {
+      name: 'tagName',
+      defaultValue: 'div'
+    },
+    {
+      name: 'featureDAO'
+    }
 
-//  templates: [
-//    function toInnerHTML() {/*
-//      <div id="scrollTarget_<%=this.data.name%>">
-//        <p class="feature-heading"><%=this.data.name%></p>
-//        <p><%=this.renderDocSourceHTML()%></p>
-//        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureOverridesRefView', data: this.overridesDAO, model: DocFeatureInheritanceTracker }</p>
-//      </div>
-//    */}
-//  ]
-//});
+  ],
 
-//CLASS({
-//  name: 'DocFeatureOverridesRefView',
-//  extendsModel: 'DocRefView',
-//  label: 'Documentation Feature Overrides Reference Link View',
-//  help: "The view of a documentation reference link based on a Model's overrides.",
+  methods: {
+    init: function() {
+      this.SUPER();
+      // TODO: do this on postSet instead of pipe?
+      this.overridesDAO = [];
+      this.featureDAO
+          .where(
+                AND(EQ(this.DocFeatureInheritanceTracker.NAME, this.data.name),
+                    EQ(this.DocFeatureInheritanceTracker.IS_DECLARED, true))
+          )
+          .orderBy(DESC(this.DocFeatureInheritanceTracker.INHERITANCE_LEVEL))
+          .pipe(this.overridesDAO);
+    }
+  },
 
-//  documentation: function() { /*
-//    <p>An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
-//    for notes on usage.</p>
-//    */},
+  templates: [
+    function toInnerHTML() {/*
+      <div id="scrollTarget_<%=this.data.name%>">
+        <p class="feature-heading"><%=this.data.name%></p>
+        <p>$$documentation{ model_: 'foam.documentation.DocBodyView' }</p>
+<!--        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'foam.documentation.DocFeatureOverridesRefView', model: this.X.foam.documentation.DocFeatureInheritanceTracker }</p> -->
+      </div>
+    */}
+  ]
+});
 
-//  properties: [
-//    {
-//      name: 'data',
-//      help: 'Shortcut to set reference by Model name.',
-//      postSet: function() {
-//        this.ref = this.data.model + "." + this.data.name;
-//        this.text = this.data.model + " / ";
-//      },
-//      documentation: function() { /*
-//        The target reference Model definition. Use this instead of setting
-//        $$DOC{ref:'.docRef'}, if you are referencing a $$DOC{ref:'Model'}.
-//        */}
-//    },
-//  ],
-//});
-//CLASS({
-//  name: 'DocFeatureSubmodelRefView',
-//  extendsModel: 'DocRefView',
-//  label: 'Documentation Feature Model Link Reference View',
-//  help: 'The view of a documentation reference link based on a Model.',
+CLASS({
+  name: 'DocFeatureOverridesRefView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocRefView',
+  label: 'Documentation Feature Overrides Reference Link View',
+  help: "The view of a documentation reference link based on a Model's overrides.",
 
-//  documentation: function() { /*
-//    <p>An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
-//    for notes on usage.</p>
-//    */},
+  documentation: function() { /*
+    <p>An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
+    for notes on usage.</p>
+    */},
 
-//  properties: [
-//    {
-//      name: 'data',
-//      help: 'Shortcut to set reference by Model name.',
-//      postSet: function() {
-//        this.ref = "."+this.data.name;
-//      },
-//      documentation: function() { /*
-//        The target reference Model definition. Use this instead of setting
-//        $$DOC{ref:'.docRef'}, if you are referencing a $$DOC{ref:'Model'}.
-//        */}
-//    },
-//  ],
-//});
+  properties: [
+    {
+      name: 'data',
+      help: 'Shortcut to set reference by Model name.',
+      postSet: function() {
+        this.ref = this.data.model + "." + this.data.name;
+        this.text = this.data.model + " / ";
+      },
+      documentation: function() { /*
+        The target reference Model definition. Use this instead of setting
+        $$DOC{ref:'.docRef'}, if you are referencing a $$DOC{ref:'Model'}.
+        */}
+    },
+  ],
+});
+CLASS({
+  name: 'DocFeatureSubmodelRefView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocRefView',
+  label: 'Documentation Feature Model Link Reference View',
+  help: 'The view of a documentation reference link based on a Model.',
+
+  documentation: function() { /*
+    <p>An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
+    for notes on usage.</p>
+    */},
+
+  properties: [
+    {
+      name: 'data',
+      help: 'Shortcut to set reference by Model name.',
+      postSet: function() {
+        this.ref = "."+this.data.name;
+      },
+      documentation: function() { /*
+        The target reference Model definition. Use this instead of setting
+        $$DOC{ref:'.docRef'}, if you are referencing a $$DOC{ref:'Model'}.
+        */}
+    },
+  ],
+});
 
 
 //CLASS({
@@ -357,23 +367,55 @@
 
 //});
 
-//CLASS({
-//  name: 'DocPropertyRowView',
-//  extendsModel: 'DocFeatureRowView',
-//  help: 'A view for documentation of each item in a list of properties.',
+CLASS({
+  name: 'PropertyRowDocView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocFeatureView',
+  help: 'A view for documentation of each item in a list of properties.',
 
-//  templates: [
-//    function toInnerHTML() {/*
-//      <div id="scrollTarget_<%=this.data.name%>">
-//        <p><span class="feature-heading"><%=this.data.name%></span>
-//           <span class="feature-type">($$DOC{ref:this.data.type.replace('[]',''), text:this.data.type})</span></p>
-//        <p><%=this.renderDocSourceHTML()%></p>
-//        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureOverridesRefView', data: this.overridesDAO, model: DocFeatureInheritanceTracker }</p>
-//      </div>
-//    */}
-//  ]
-//});
+  templates: [
+    function toInnerHTML() {/*
+      <div id="scrollTarget_<%=this.data.name%>">
+        <p><span class="feature-heading"><%=this.data.name%></span>
+           <span class="feature-type">($$DOC{ref:this.data.type.replace('[]',''), text:this.data.type})</span></p>
+        <p>$$documentation{ model_: 'foam.documentation.DocBodyView' }</p>
+<!--        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'foam.documentation.DocFeatureOverridesRefView', model: this.X.foam.documentation.DocFeatureInheritanceTracker }</p> -->
+      </div>
+    */}
+  ]
+});
 
+
+CLASS({
+  name: 'MethodRowDocView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocFeatureView',
+  help: 'A view for documentation of each item in a list of methods.',
+});
+CLASS({
+  name: 'RelationshipRowDocView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocFeatureView',
+  help: 'A view for documentation of each item in a list of methods.',
+});
+CLASS({
+  name: 'IssueRowDocView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocFeatureView',
+  help: 'A view for documentation of each item in a list of methods.',
+});
+CLASS({
+  name: 'TemplateRowDocView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocFeatureView',
+  help: 'A view for documentation of each item in a list of methods.',
+});
+CLASS({
+  name: 'ActionRowDocView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocFeatureView',
+  help: 'A view for documentation of each item in a list of methods.',
+});
 
 //CLASS({
 //  name: 'DocRelationshipsView',

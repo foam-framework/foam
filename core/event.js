@@ -216,6 +216,7 @@ var EventService = {
   /** Subscribe to notifications for the specified topic. **/
   subscribe: function (topic, listener) {
     if ( ! this.subs_ ) this.subs_ = {};
+//console.log("Sub: ",this, listener);
 
     this.sub_(this.subs_, 0, topic, listener);
   },
