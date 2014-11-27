@@ -720,6 +720,18 @@ CLASS({
       name: 'oldVisibleBottom',
       documentation: 'Set by $$DOC{ref: ".allocateVisible"} after it has finished. Prevents duplicated work: no need to process the rows if nothing has moved since the last call.',
       defaultValue: -1
+    },
+    {
+      name: 'spinnerContainerID',
+      factory: function() {
+        return this.nextID();
+      }
+    },
+    {
+      name: 'spinnerController',
+      factory: function() {
+        return this.X.WaitController.create();
+      }
     }
   ],
 
@@ -750,6 +762,9 @@ CLASS({
     },
     container$: function() {
       return this.X.document.getElementById(this.containerID);
+    },
+    spinnerContainer$: function() {
+      return this.X.document.getElementById(this.spinnerContainerID);
     },
     // Allocates visible rows to the correct positions.
     // Will create new visible rows where necessary, and reuse existing ones.
@@ -892,6 +907,13 @@ CLASS({
       documentation: 'When the DAO changes, we invalidate everything. All $$DOC{ref: ".visibleRows"} are recycled, the $$DOC{ref: ".cache"} is cleared, etc.',
       code: function() {
         this.invalidate();
+
+        var s = this.spinnerContainer$();
+        if ( s ) {
+          this.spinnerController.startSpinner(s);
+          s.style.display = 'block';
+        }
+
         this.dao.select(COUNT())(function(c) {
           this.count = c.count;
 
@@ -968,6 +990,11 @@ CLASS({
             if ( ! a || ! a.length ) return;
             if ( updateNumber !== self.daoUpdateNumber ) return;
 
+            // Tell the spinner controller we're done waiting.
+            // No harm in multiple calls to this for the same spinner instance.
+            self.spinnerController.ready();
+            self.spinnerContainer$().style.display = 'none';
+
             // If we're in read-write mode, clone everything before it goes in the cache.
             for ( var i = 0 ; i < a.length ; i++ ) {
               var o = a[i];
@@ -1005,6 +1032,7 @@ CLASS({
             %>
           </div>
         <% } %>
+        <div id="%%spinnerContainerID" style="display: none; width: 100%; height: 100%"></div>
         <div id="%%scrollerID" style="overflow-y: scroll; width:100%; height: 100%;">
           <div id="%%containerID" style="position:relative;width:100%;height:100%; -webkit-transform: translate3d(0px, 0px, 0px);">
           </div>

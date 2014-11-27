@@ -5261,7 +5261,7 @@ CLASS({
       '$$DOC{ref:"SpinnerView"} until the future resolves.',
 
   imports: [
-    'cancelTimeout',
+    'clearTimeout',
     'setTimeout'
   ],
 
@@ -5314,7 +5314,7 @@ CLASS({
     {
       name: 'onFuture',
       code: function(view) {
-        if ( this.timer ) this.cancelTimeout(this.timer);
+        if ( this.timer ) this.clearTimeout(this.timer);
 
         var el;
         if ( this.spinner ) {
@@ -5345,6 +5345,109 @@ CLASS({
     destroy: function() {
       if ( this.spinner ) this.spinner.destroy();
       if ( this.childView ) this.childView.destroy();
+    }
+  }
+});
+CLASS({
+  name: 'WaitController',
+  documentation: 'A simple controller that knows how to show a spinner for a ' +
+      'user-defined period into an arbitrary DOM element. NB: Empties the ' +
+      'innerHTML of the container when done, so make sure it\'s not important!',
+
+  requires: [
+    'SpinnerView'
+  ],
+
+  imports: [
+    'clearTimeout',
+    'setTimeout'
+  ],
+
+  properties: [
+    {
+      name: 'minWait',
+      documentation: 'Minimum wait time before showing a spinner.',
+      units: 'ms',
+      defaultValue: 500
+    },
+    {
+      name: 'minSpinner',
+      documentation: 'Minimum time to show a spinner. (Seems strange, but it ' +
+          'is perceived as glitchy to see a spinner for only an instant.',
+      units: 'ms',
+      defaultValue: 500
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'spinnerView',
+      documentation: 'Sets the view to use as the spinner.',
+      defaultValue: 'SpinnerView'
+    },
+    {
+      name: 'doneWaiting',
+      defaultValue: false
+    },
+    {
+      name: 'spinner'
+    },
+    {
+      name: 'spinnerContainer'
+    },
+    {
+      name: 'timer'
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'startSpinner',
+      code: function(element) {
+        this.spinner = '';
+        this.spinnerContainer = element;
+        this.doneWaiting = false;
+        this.timer = this.setTimeout(this.onTimer, this.minWait);
+      }
+    },
+    {
+      name: 'ready',
+      code: function() {
+        if ( this.timer && this.spinner ) {
+          // Minimum spinner timer has not expired. Set the flag and return.
+          this.doneWaiting = true;
+        } else if ( this.spinner ) {
+          // Spinner minimum time elapsed, data now ready. Kill the spinner.
+          this.destroySpinner();
+        } else if ( this.timer ) {
+          // Minimum pre-spinner timer is still running. Kill it and return.
+          this.clearTimeout(this.timer);
+          this.timer = '';
+        }
+      }
+    },
+    {
+      name: 'onTimer',
+      code: function() {
+        if ( this.spinner && this.doneWaiting ) {
+          // Spinner is up and data has been received. Now that the minimum time
+          // has elapsed, clean up the spinner and return.
+          this.destroySpinner();
+        } else if ( ! this.spinner && ! this.doneWaiting ) {
+          // Pre-spinner time has expired. Create the spinner.
+          this.spinner = this.spinnerView();
+          this.spinnerContainer.innerHTML = this.spinner.toHTML();
+          this.spinner.initHTML();
+          this.timer = this.setTimeout(this.onTimer, this.minSpinner);
+        }
+        // If there's no spinner and we're done waiting, do nothing.
+        // If there's a spinner but we're not done waiting, do nothing.
+      }
+    }
+  ],
+
+  methods: {
+    destroySpinner: function() {
+      this.spinner && this.spinner.destroy();
+      this.spinnerContainer.innerHTML = '';
     }
   }
 });
