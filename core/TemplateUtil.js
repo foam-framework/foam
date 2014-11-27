@@ -68,13 +68,9 @@ var FOAMTagParser = {
   whitespace: repeat(alt(' ', '\t', '\r', '\n'))
 
 }.addActions({
-  attributes: function(xs) {
-    var attrs = {};
-    xs.forEach(function(attr) { attrs[attr[0]] = attr[2]; });
-    return attrs;
-  },
+  attribute: function(xs) { return { name: xs[0], value: xs[2] }; },
   tag: function(xs) {
-    return X.foam.html.Element.create({nodeName: xs[1], attributeMap_: xs[3], childNodes: xs[5]});
+    return X.foam.html.Element.create({nodeName: xs[1], attributes: xs[3], childNodes: xs[5]});
   },
   closed:   function()   { return []; },
   matching: function(xs) { return xs.children; }
@@ -221,7 +217,7 @@ var TemplateCompiler = {
 
     if ( e.children.length ) {
       this.push(')');
-      e.attributeMap_ = [];
+      e.attributes = [];
       this.push('.fromElement(elementFromString("' + e.outerHTML.replace(/\n/g, '\\n').replace(/"/g, '\\"') + '")');
     }
 
@@ -389,5 +385,3 @@ var aevalTemplate = function(t) {
       doEval(t)(ret);
     });
 };
-
-

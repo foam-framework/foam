@@ -71,11 +71,15 @@ CLASS({
     },
     {
       name: 'attributeMap_',
-      factory: function() { return []; }
+      factory: function() { return {}; }
     },
     {
       name: 'attributes',
-      getter: function() { return Object.keys(this.attributeMap_); }
+      factory: function() { return []; },
+      postSet: function(_, attrs) {
+        for ( var i = 0 ; i < attrs.length ; i++ )
+          this.attributeMap_[attrs[i].name] = attrs[i];
+      }
     },
     {
       name: 'childNodes',
@@ -93,7 +97,7 @@ CLASS({
         var out = '<' + this.nodeName;
         if ( this.id ) out += ' id="' + this.id + '"';
         for ( key in this.attributeMap_ ) {
-          out += ' ' + key + '="' + this.attributeMap_[key] + '"';
+          out += ' ' + key + '="' + this.attributeMap_[key].value + '"';
         }
         if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] &&
              ( ! this.OPTIONAL_CLOSE_TAGS[this.nodeName] || this.childNodes.length ) ) {
@@ -117,7 +121,22 @@ CLASS({
   ],
 
   methods: {
-    getAttribute: function(name) { return this.attributeMap_[name]; },
+    setAttribute: function(name, value) {
+      var attr = this.getAttributeNode(name);
+
+      if ( attr ) {
+        attr.value = value;
+      } else {
+        attr = {name: name, value: value};
+        this.attributes.push(attr);
+        this.attributeMap_[name] = attr;
+      }
+    },
+    getAttributeNode: function(name) { return this.attributeMap_[name]; },
+    getAttribute: function(name) {
+      var attr = this.getAttributeNode(name);
+      return attr && attr.value;
+    },
     appendChild: function(c) { this.childNodes.push(c); },
     toString: function() { return this.outerHTML; }
   }
@@ -179,16 +198,14 @@ var HTMLParser = {
   whitespace: repeat(alt(' ', '\t', '\r', '\n'))
 }.addActions({
   START: function(xs) { return this.stack[0]; },
-  attributes: function(xs) {
-    var attrs = {};
-    xs.forEach(function(attr) { attrs[attr[0]] = attr[2]; });
-    return attrs;
+  attribute: function(xs) {
+    return { name: xs[0], value: xs[2] };
   },
   startTag: function(xs) {
     var tag = xs[1];
     // < tagName ws attributes ws / >
     // 0 1       2  3          4  5 6
-    var obj = X.foam.html.Element.create({nodeName: tag, attributeMap_: xs[3]});
+    var obj = X.foam.html.Element.create({nodeName: tag, attributes: xs[3]});
     this.peek().appendChild(obj);
     if ( xs[5] != '/' ) this.stack.push(obj);
     return obj;

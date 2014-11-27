@@ -417,7 +417,7 @@ CLASS({
 // TODO: Something better.
 CLASS({
   name: 'ActionButtonCView2',
-  extendsModel: 'ActionButtonCView',
+  extendsModel: 'foam.graphics.ActionButtonCView',
   methods: {
     init: function() {
       this.SUPER();
