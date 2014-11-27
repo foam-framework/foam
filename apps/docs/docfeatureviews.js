@@ -231,7 +231,7 @@ CLASS({
 
   requires: ['foam.documentation.DocFeatureInheritanceTracker as DocFeatureInheritanceTracker'],
 
-  imports: ['featureDAO$'],
+  imports: ['featureDAO'],
 
   properties: [
     {
@@ -247,9 +247,6 @@ CLASS({
       name: 'tagName',
       defaultValue: 'div'
     },
-    {
-      name: 'featureDAO'
-    }
 
   ],
 

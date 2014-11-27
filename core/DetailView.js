@@ -19,8 +19,8 @@ CLASS({
   name: 'DetailView',
   extendsModel: 'View',
 
-  imports: [ 'data' ],
-  exports: [ 'data' ],
+//  imports: [ 'data$' ],
+//  exports: [ 'forwardedData$ as data$' ],
 
   documentation:function() {/*
     When a view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'DetailView'}
@@ -124,6 +124,18 @@ CLASS({
 
     viewModel: function() { /* The $$DOC{ref:'Model'} type of the $$DOC{ref:'.data'}. */
        return this.model;
+    },
+
+    createView: function(prop, opt_args) {
+      /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
+      var X = ( opt_args && opt_args.X ) || this.X;
+      // our default is to have X.data$ = this.data$, so we're ok.
+      // the base View implementation will replace X.data$ with 'this'.
+      var args = opt_args? opt_args.clone() : {} ;
+      args.prop = prop;
+      var v = X.PropertyView.create(args, X);
+      this.addChild(v);
+      return v;
     },
 
     createTemplateView: function(name, opt_args) {

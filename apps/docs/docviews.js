@@ -114,7 +114,8 @@ CLASS({
         var v = this.createReferenceView(opt_args);
         return v;
       } else if (name === 'THISDATA') { // TODO: refactor this into view.js, as it is very similar to the normal case
-        return this.createExplicitView(opt_args);
+        //return this.createExplicitView(opt_args);
+        debugger;
       } else {
         //if (opt_args && !opt_args.X) opt_args.X = this.X;
         return this.SUPER(name, opt_args);
@@ -163,7 +164,7 @@ CLASS({
     function toInnerHTML() {/*
       <% this.destroy();
       if (this.data) { %>
-        $$THISDATA{model_: 'foam.documentation.FullPageDocView', model: this.model }
+        $$data{model_: 'foam.documentation.FullPageDocView', model: this.model }
       <% console.log("rendered data ",this.data,this.model);  } %>
     */}
   ]
@@ -297,7 +298,7 @@ CLASS({
 
   requires: ['foam.documentation.DocModelInheritanceTracker as DocModelInheritanceTracker'],
 
-  imports: ['modelDAO$'],
+  imports: ['modelDAO'],
 
   ids: [ 'primaryKey' ],
 
@@ -376,7 +377,7 @@ CLASS({
              'Model',
              'MDAO'],
 
-  exports: ['featureDAO$', 'modelDAO$'],
+  exports: ['featureDAO', 'modelDAO'],
 
   documentation: function() {/*
     Displays the documentation for a given $$DOC{ref:'Model'}. The viewer will
@@ -1159,7 +1160,7 @@ CLASS({
               'foam.documentation.DocFeatureInheritanceTracker'
               ],
 
-  imports: ['featureDAO$', 'documentViewRef'],
+  imports: ['featureDAO', 'documentViewRef'],
 
   properties: [
     {
@@ -1286,15 +1287,15 @@ CLASS({
     <%    } else {
             if (this.hasFeatures) { %>
               <p class="feature-type-heading"><%=this.model.plural%>:</p>
-              <div class="memberList">$$THISDATA{ model_: 'DAOListView', data$: this.selfFeaturesDAO$, rowView: 'foam.documentation.RowDocView', model: this.model }</div>
+              <div class="memberList">$$selfFeaturesDAO{ model_: 'DAOListView', rowView: 'foam.documentation.RowDocView', model: this.model }</div>
       <%    }
             if (this.hasInheritedFeatures) { %>
               <p class="feature-type-heading">Inherited <%=this.model.plural%>:</p>
       <%
-              var fullView = this.DAOListView.create({ rowView: 'foam.documentation.RowDocView', data$: this.inheritedFeaturesDAO$, model: this.model });
-              var collapsedView = this.DocFeatureCollapsedView.create({ data$: this.inheritedFeaturesDAO$});
+              var fullView = this.DAOListView.create({ rowView: 'foam.documentation.RowDocView', model: this.model });
+              var collapsedView = this.DocFeatureCollapsedView.create();
               %>
-              <div class="memberList inherited">$$THISDATA{ model_: 'CollapsibleView', collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
+              <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'CollapsibleView', collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
       <%    } %>
     <%    } %>
     */}
@@ -1312,7 +1313,11 @@ CLASS({
     {
       name: 'data',
       postSet: function() {
-        this.dao = this.data;
+        if (this.data && this.data.select) {
+          this.dao = this.data;
+        } else {
+          this.dao = [];
+        }
       }
     },
     {

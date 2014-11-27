@@ -231,6 +231,8 @@ CLASS({
   name: 'View',
   label: 'View',
 
+  //exports: [ 'myself$ as data$' ],
+
   documentation: function() {/*
     <p>$$DOC{ref:'View',usePlural:true} render data. This could be a specific
        $$DOC{ref:'Model'} or a $$DOC{ref:'DAO'}. In the case of $$DOC{ref:'DetailView'},
@@ -410,7 +412,7 @@ CLASS({
     deepPublish: function(topic) {
       /*
        Publish an event and cause all children to publish as well.
-       */
+       */X.SimpleValue.create({ value: this });
       var count = this.publish.apply(this, arguments);
 
       if ( this.children ) {
@@ -474,7 +476,9 @@ CLASS({
     createView: function(prop, opt_args) {
       /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.X;
-      var v = X.PropertyView.create({prop: prop, args: opt_args}, X);
+      var args = opt_args.clone();
+      args.prop = prop;
+      var v = X.PropertyView.create(args, X);
       this.addChild(v);
       return v;
     },
@@ -515,7 +519,7 @@ CLASS({
         v = this.createRelationshipView(o, opt_args);
       else
         v = this.createView(o, opt_args);
-      v.data = this;
+        v.data = this;
       return v;
     },
 
@@ -847,8 +851,8 @@ CLASS({
     $$DOC{ref:'.args'}.model_.
   */},
 
-  imports: ['data'],
-  exports: ['propValue as data'],
+//  imports: ['data$'],
+//  exports: ['propValue$ as data$'],
 
   properties: [
     {
@@ -903,13 +907,13 @@ CLASS({
         The new sub-$$DOC{ref:'View'} generated for the given $$DOC{ref:'Property'}.
       */}
     },
-    {
-      name: 'args',
-      documentation: function() {/*
-        Optional arguments to be used for sub-$$DOC{ref:'View'} creation. args.model_
-        in particular specifies the exact $$DOC{ref:'View'} to use.
-      */}
-    }
+//    {
+//      name: 'args',
+//      documentation: function() {/*
+//        Optional arguments to be used for sub-$$DOC{ref:'View'} creation. args.model_
+//        in particular specifies the exact $$DOC{ref:'View'} to use.
+//      */}
+//    }
   ],
 
   methods: {
@@ -918,16 +922,16 @@ CLASS({
       /* Sets up the new sub-$$DOC{ref:'View'} immediately. */
       this.SUPER(args);
 
-      if ( this.args && this.args.model_ ) {
-        var model = FOAM.lookup(this.args.model_, this.X);
-        console.assert( model, 'Unknown View: ' + this.args.model_);
-        var view = model.create(this.prop, this.X);
-        delete this.args.model_;
+      if ( args && args.model_ ) {
+        var model = FOAM.lookup(args.model_, this.X);
+        console.assert( model, 'Unknown View: ' + args.model_);
+        var view = model.create(args, this.X);
+        delete args.model_;
       } else {
         view = this.createViewFromProperty(this.prop);
       }
 
-      view.copyFrom(this.args);
+      //view.copyFrom(args);
       view.parent = this.parent;
       view.prop = this.prop;
 
@@ -966,7 +970,7 @@ CLASS({
       if ( ! view || ! oldData ) return;
       var pValue = oldData.propertyValue(this.prop.name);
       Events.unlink(pValue, view.data$);
-      Events.unlink(pValue, this.propValue$);
+      //Events.unlink(pValue, this.propValue$);
     },
 
     bindData: function(data) {
@@ -975,7 +979,7 @@ CLASS({
       if ( ! view || ! data ) return;
       var pValue = data.propertyValue(this.prop.name);
       Events.link(pValue, view.data$);
-      Events.link(pValue, this.propValue$);
+      //Events.link(pValue, this.propValue$);
     },
 
     toHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ return this.view.toHTML(); },
@@ -5008,7 +5012,10 @@ CLASS({
     {
       name:  'fullView',
       preSet: function(old, nu) {
-        if (old) this.removeChild(old);
+        if (old) {
+            this.removeChild(old);
+            Events.unlink(old.data$, this.data$);
+        }
         return nu;
       },
       postSet: function() {
@@ -5023,7 +5030,10 @@ CLASS({
     {
       name:  'collapsedView',
       preSet: function(old, nu) {
-        if (old) this.removeChild(old);
+        if (old) {
+            this.removeChild(old);
+            Events.unlink(old.data$, this.data$);
+        }
         return nu;
       },
       postSet: function() {
