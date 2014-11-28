@@ -295,15 +295,29 @@ function atimeout(delay, f, opt_timeoutF) {
   };
 }
 
-
-/** Memoize an async function. **/
-function amemo(f) {
+/**
+ * Memoize an async function.
+**/
+function amemo(f, opt_ttl) {
   var memoized = false;
   var values;
   var waiters;
+  var age = 0;
+  var pending = false
 
   return function(ret) {
-    if ( memoized ) { ret.apply(null, values); return; }
+    if ( memoized ) {
+      ret.apply(null, values);
+      if ( opt_ttl != undefined && ! pending && Date.now() > age + opt_ttl ) {
+        pending = true;
+        f(function() {
+          values = arguments;
+          age = Date.now();
+          pending = false;
+        })
+      }
+      return;
+    }
 
     var first = ! waiters;
 
@@ -314,10 +328,11 @@ function amemo(f) {
     if ( first ) {
       f(function() {
         values = arguments;
+        age = Date.now();
         for (var i = 0 ; i < waiters.length; i++) {
           waiters[i] && waiters[i].apply(null, values);
         }
-        f = undefined;
+        if ( opt_ttl == undefined ) f = undefined;
         memoized = true;
         waiters = undefined;
       });
