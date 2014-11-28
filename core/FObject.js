@@ -30,13 +30,29 @@ var FObject = {
 
     // check for a model-for-model replacement
     if (args && args.model) {
-      var replacementName = ((this.model_.package)? this.model_.package+"." : "")
-                            + (args.model.name? args.model.name : args.model)
-                            + this.model_.name;
-      var replacementModel = FOAM.lookup(replacementName, opt_X || X);
-      if (replacementModel) {
-        return replacementModel.create(args, opt_X);
-      }
+
+      var replacementF = function(otherModel) {
+        var replacementName = ((this.model_.package)? this.model_.package+"." : "")
+                              + (otherModel.name? otherModel.name : otherModel)
+                              + this.model_.name;
+        var replacementModel = FOAM.lookup(replacementName, opt_X || X);
+        if (replacementModel) {
+          return replacementModel;
+        } else {
+          // Follow the inheritance chain in case there's a more general model available
+          // check again using args.model's extendsModel
+          if (otherModel.extendsModel) {
+            var extend = FOAM.lookup(otherModel.extendsModel, opt_X || X);
+            if (extend) {
+              return replacementF(extend);
+            }
+          }
+          return undefined;
+        }
+      }.bind(this);
+
+      var ret = replacementF(args.model);
+      if (ret) return ret.create(args, opt_X);
     }
 
     var o = this.create_(this);
