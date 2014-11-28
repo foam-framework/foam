@@ -44,10 +44,10 @@ var __features__ = [
   [                 , 'DEBUG',      window['DEBUG']? true : false ], // pick up global debug setting, if present
   [                 , 'Role$',      function Property$(c, r, f) { Object.defineProperty(c, f[0], f[1]); }],
   [                 , 'Role$',      function Method$(c, r, f) {
-    if ( c == Object ) {
-      Object.defineProperty(Object.prototype, f.name, { value: f, writable: true });
-    } else {
+    if ( c == window ) {
       c.prototype[f.name] = f;
+    } else {
+      Object.defineProperty(c.prototype, f.name, { value: f, writable: true, enumerable: false });
     }
   }],
   [                 , 'Role$',      function Poly$(c, r, f) { if ( ! c.prototype.hasOwnProperty(f.name) ) c.prototype[f.name] = f; }],
@@ -273,7 +273,7 @@ var __features__ = [
       return ret;
     };
 
-    return function(arg) {
+    return function bind(arg) {
       return arguments.length == 1 ?
         simpleBind(this, arg) :
         oldBind.apply(this, argsToArray(arguments));
@@ -285,6 +285,18 @@ var __features__ = [
   [ Function        , 'Method$',    function compareTo(o) {
     return this === o ? 0 : ( this.name.compareTo(o.name) || 1 );
   }],
+  /**
+   * Replace Array.forEach with a faster version.
+   **/
+  [ Array        , 'Method$',    (function() {
+    var oldForEach  = Function.prototype.bind;
+
+    return function forEach(f, opt_this) {
+      if ( ! this || ! f || opt_this ) return oldForEach.call(this, f);
+      var l = this.length;
+      for ( var i = 0 ; i < l ; i++ ) f(this[i], i, this);
+    };
+  })()],
   [ Date            , 'Method$',    function toRelativeDateString(){
     var seconds = Math.floor((Date.now() - this.getTime())/1000);
 
