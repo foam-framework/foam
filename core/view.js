@@ -923,13 +923,15 @@ CLASS({
       if ( this.args && this.args.model_ ) {
         var model = FOAM.lookup(this.args.model_, this.X);
         console.assert( model, 'Unknown View: ' + this.args.model_);
-        var view = model.create(this.args, this.X);
+        // HACK to make sure model specification makes it into the create
+        if (this.args.model) this.prop.model = this.args.model;
+        var view = model.create(this.prop, this.X);
         delete this.args.model_;
       } else {
         view = this.createViewFromProperty(this.prop);
       }
 
-      //view.copyFrom(args);
+      view.copyFrom(this.args);
       view.parent = this.parent;
       view.prop = this.prop;
 
