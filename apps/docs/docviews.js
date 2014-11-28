@@ -62,7 +62,6 @@ CLASS({
 
     toHTML: function() {
       // from View.toHTML():
-      console.log("toHTML ",this,this.data);
       this.invokeDestructors();
       return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + '>' +
         this.toInnerHTML() +
@@ -136,7 +135,7 @@ CLASS({
       <% this.destroy();
       if (this.data) { %>
         $$data{model_: 'foam.documentation.FullPageDocView', model: this.model }
-      <% console.log("rendered data ",this.data,this.model);  } %>
+  <%  } %>
     */}
   ]
 
@@ -446,7 +445,7 @@ CLASS({
       // be a global search problem.
       this.loadFeaturesOfModel(this.data, []);
 
-      this.debugLogFeatureDAO();
+      //this.debugLogFeatureDAO();
     },
     loadFeaturesOfModel: function(model, previousExtenderTrackers) {
       /* <p>Recursively load features of this $$DOC{ref:'Model'} and
