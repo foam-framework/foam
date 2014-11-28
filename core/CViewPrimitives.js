@@ -144,7 +144,7 @@ CLASS({
 CLASS({
   package: 'foam.graphics',
   name:  'BorderTrait',
-  documentation: function() {/* Add $$DOC{ref:'BorderTrait'} to a CView to paint
+  documentation: function() {/* Add $$DOC{ref:'.'} to a CView to paint
                               a rectangular border around your item. */},
 
   properties: [
@@ -167,7 +167,7 @@ CLASS({
 
   methods: {
     paintSelf: function() { /* make sure to call <code>this.SUPER();</code> in
-                                your BorderTrait using model's $$DOC{ref:'.paintSelf'}. */
+                                your BorderTrait model's $$DOC{ref:'.paintSelf'}. */
       this.SUPER();
 
       var c = this.canvas;
