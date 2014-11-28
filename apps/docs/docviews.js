@@ -144,17 +144,15 @@ CLASS({
     {
       name: 'data',
       postSet: function() {
-        //if (this.data && (!this.model || this.model !== this.data.model_)) {
+        if (this.data && (!this.model || this.model !== this.data.model_)) {
           this.model = this.data.model_;
-        //}
-        this.updateHTML();
-
+        }
       }
     },
     {
       name: 'model',
       postSet: function() {
-//        this.updateHTML();
+        this.updateHTML();
       }
     }
 
@@ -766,9 +764,9 @@ CLASS({
           this.renderDocSourceHTML = TemplateUtil.lazyCompile(this.data.body);
         }
         
-        //if (this.data && (!this.model || this.model !== this.data.model_)) {
+        if (this.data && (!this.model || this.model !== this.data.model_)) {
           this.model = this.data.model_;
-        //}
+        }
         this.updateHTML();
       }
     },
