@@ -3025,7 +3025,17 @@ CLASS({
     },
     {
       name: 'selects',
-      factory: function() { return []; }
+      factory: function() { return {}; }
+    },
+    {
+      name: 'selectKey',
+      defaultValue: function(sink, options) {
+        var query = ( options && options.query && options.query.toSQL() ) || "";
+        var limit = ( options && options.limit );
+        var skip =  ( options && options.skip );
+        var order = ( options && options.order && options.order.toSQL() ) || "";
+        return [query, limit, skip, order];
+      }
     }
   ],
 
@@ -3062,65 +3072,19 @@ CLASS({
         return this.SUPER(sink, options);
       }
 
-      var query = ( options && options.query && options.query.toSQL() ) || "";
-      var limit = ( options && options.limit );
-      var skip =  ( options && options.skip );
-      var order = ( options && options.order && options.order.toSQL() ) || "";
+      sink = sink || [].sink;
 
-      var running = false;
-      for ( var i = 0; i < this.selects.length; i++ ) {
-        if ( this.selects[i].query === query &&
-             this.selects[i].limit === limit &&
-             this.selects[i].skip === skip &&
-             this.selects[i].order === order ) {
-          running = true;
-        }
-      }
+      var key = this.selectKey(sink, options);
 
-      if ( ! running ) {
-        var pendingSelect = {
-          sink: sink,
-          query: query,
-          limit: limit,
-          skip: skip,
-          order: order
-        };
-
-        this.selects.push(pendingSelect);
-
+      if ( ! this.selects[key] ||
+          (new Date()) - this.selects[key][1] > this.staleTimeout) {
+        this.selects[key] = [sink, new Date()];
 
         var cache = this.cache;
         var count = 0;
         var remaining = 0;
 
-        var finished = (function() {
-          if ( count !== remaining ) return;
-          window.setTimeout((function() {
-            for ( var i = 0; i < this.selects.length; i++ ) {
-              if ( this.selects[i] === pendingSelect ) {
-                this.selects.splice(i, 1);
-                break;
-              }
-            }
-          }).bind(this), this.staleTimeout);
-        }).bind(this);
-
-        this.delegate.select({
-          put: function(obj) {
-            remaining++;
-            cache.put(obj, {
-              put: function() {
-                count++;
-                finished();
-              },
-              error: function() {
-                count++;
-                finished();
-              }
-            });
-          },
-          eof: finished
-        }, options);
+        this.delegate.select(cache, options);
       }
 
       return this.cache.select(sink, options);
