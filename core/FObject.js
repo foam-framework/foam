@@ -298,12 +298,16 @@ var FObject = {
   },
 
   equals: function(other) {
-    if ( ! other.model_ || other.model_ !== this.model_ ) return false;
     return this.compareTo(other) == 0;
   },
 
   compareTo: function(other) {
     if ( other === this ) return 0;
+    if ( this.model_ !== other.model_ ) {
+      // TODO: This provides unstable ordering if two objects have a different model_
+      // but they have the same name.
+      return this.model_.name.compareTo(other.model_.name) || 1;
+    }
 
     var ps = this.model_.properties;
 
