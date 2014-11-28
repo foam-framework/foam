@@ -769,7 +769,7 @@ CLASS({
           }
         }
       } else {
-        v = v.toUpperCase();
+        v = ('' + v).toUpperCase();
         for ( var i = 0 ; i < this.arg2.length ; i++ ) {
           if ( v.indexOf(this.arg2[i]) != -1 ) return true;
         }
