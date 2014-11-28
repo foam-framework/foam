@@ -270,7 +270,7 @@ CLASS({
       <div id="scrollTarget_<%=this.data.name%>">
         <p class="feature-heading"><%=this.data.name%></p>
         <p>$$documentation{ model_: 'foam.documentation.DocBodyView' }</p>
-<!--        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'foam.documentation.DocFeatureOverridesRefView', model: this.X.foam.documentation.DocFeatureInheritanceTracker }</p> -->
+        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'foam.documentation.DocFeatureOverridesRefView', model: this.X.foam.documentation.DocFeatureInheritanceTracker }</p>
       </div>
     */}
   ]
@@ -376,7 +376,7 @@ CLASS({
         <p><span class="feature-heading"><%=this.data.name%></span>
            <span class="feature-type">($$DOC{ref:this.data.type.replace('[]',''), text:this.data.type})</span></p>
         <p>$$documentation{ model_: 'foam.documentation.DocBodyView' }</p>
-<!--        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'foam.documentation.DocFeatureOverridesRefView', model: this.X.foam.documentation.DocFeatureInheritanceTracker }</p> -->
+        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'foam.documentation.DocFeatureOverridesRefView', model: this.X.foam.documentation.DocFeatureInheritanceTracker }</p>
       </div>
     */}
   ]
