@@ -297,7 +297,10 @@ var FObject = {
     }
   },
 
-  equals: function(other) { return this.compareTo(other) == 0; },
+  equals: function(other) {
+    if ( ! other.model_ || other.model_ !== this.model_ ) return false;
+    return this.compareTo(other) == 0;
+  },
 
   compareTo: function(other) {
     if ( other === this ) return 0;
