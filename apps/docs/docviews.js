@@ -79,30 +79,6 @@ CLASS({
       return v;
     },
 
-    createExplicitView: function(opt_args) { /*
-      <p>Creates subviews from the $$DOC{ref:'.',text:'$$THISDATA'} tag, using
-        an explicitly defined "model_: $$DOC{ref:'Model.name'}" in opt_args.</p>
-      */
-      var X = ( opt_args && opt_args.X ) || this.X;
-      var o = FOAM.lookup(opt_args.model_, X);
-      if (!o) {
-        console.warn("Invalid model_ specific in $$THISDATA ", this, opt_args.model_);
-        return;
-      }
-      var v = o.create( opt_args, X ); // we only support model_ in explicit mode
-      if (!opt_args.data) { // explicit data is honored
-        if (this.data) { // TODO: when refactoring $$THISDATA below, figure out what we can assume about this.data being present
-          v.data$ = this.data$;
-        } else {
-          v.data = this; // TODO: correct assumption? do we want data set to this?
-        }
-      } else {
-        v.data = opt_args.data;
-      }
-      this.addChild(v);
-      return v;
-    },
-
     createTemplateView: function(name, opt_args) {
       /*
         Overridden to add support for the $$DOC{ref:'.',text:'$$DOC'} and
@@ -113,9 +89,6 @@ CLASS({
       if (name === 'DOC') {
         var v = this.createReferenceView(opt_args);
         return v;
-      } else if (name === 'THISDATA') { // TODO: refactor this into view.js, as it is very similar to the normal case
-        //return this.createExplicitView(opt_args);
-        debugger;
       } else {
         //if (opt_args && !opt_args.X) opt_args.X = this.X;
         return this.SUPER(name, opt_args);
@@ -781,7 +754,8 @@ CLASS({
         // returned function. You could also implement this the same way lazyCompile does...
         return this.renderDocSourceHTML();
       } else {
-        return "no data"; // no data yet
+        console.warn("Rendered ", this, " with no data!");
+        return ""; // no data yet
       }
     }
   },
