@@ -762,6 +762,13 @@ CLASS({
       help: 'The documentation to display.',
       required: true,
       postSet: function() {
+        if (this.data && this.data.body) {
+          this.renderDocSourceHTML = TemplateUtil.lazyCompile(this.data.body);
+        }
+        
+        //if (this.data && (!this.model || this.model !== this.data.model_)) {
+          this.model = this.data.model_;
+        //}
         this.updateHTML();
       }
     },
@@ -774,10 +781,9 @@ CLASS({
         // The first time this method is hit, replace it with the one that will
         // compile the template, then call that. Future calls go direct to lazyCompile's
         // returned function. You could also implement this the same way lazyCompile does...
-        this.renderDocSourceHTML = TemplateUtil.lazyCompile(this.data.body);
         return this.renderDocSourceHTML();
       } else {
-        return ""; // no data yet
+        return "no data"; // no data yet
       }
     }
   },
@@ -1057,11 +1063,13 @@ CLASS({
       // Strip off package or contining Model until we are left with the last
       // resolving Model name in the chain (including inner models).
       // Ex: package.subpackage.ParentModel.InnerModel.feature => InnerModel
-      while (args.length > 0 && model && model[args[1]] && model[args[1]].model_) {
+      var findingPackages = true;
+      while (args.length > 0 && model && model[args[1]] && (findingPackages || model[args[1]].model_)) {
         newResolvedRef += args[0] + ".";
         newResolvedRoot += args[0] + ".";
         args = args.slice(1); // remove package/outerModel part
         model = model[args[0]];
+        if (model.model_) findingPackages = false; // done with packages, now check for inner models
       };
 
       //TODO: do something with the package parts, resolve package refs with no model
