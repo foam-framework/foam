@@ -778,6 +778,8 @@ var AltIndex = {
 
     //    console.log('Best Plan: ' + bestPlan);
 
+    if ( bestPlan == undefined ) return NO_PLAN;
+
     return {
       __proto__: bestPlan,
       execute: function(unused, sink, options) { return bestPlan.execute(s[bestPlanI], sink, options); }
