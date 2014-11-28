@@ -364,7 +364,10 @@ var PropertyChangeSupport = {
     if ( ! this.subs_ ) return;
 
     // don't fire event if value didn't change
-    if ( property != null && oldValue === newValue ) return;
+    if ( property != null && (
+          oldValue === newValue || 
+          (/*NaN check*/(oldValue !== oldValue) && (newValue !== newValue)) )
+       ) return;
 
     this.publish(this.propertyTopic(property), oldValue, newValue);
   },
@@ -374,7 +377,7 @@ var PropertyChangeSupport = {
     if ( ! this.subs_ ) return;
 
     // don't fire event if value didn't change
-    if ( oldValue === newValue ) return;
+    if ( oldValue === newValue || (/*NaN check*/(oldValue !== oldValue) && (newValue !== newValue)) ) return;
 
     this.publish(propertyTopic, oldValue, newValue);
   },
