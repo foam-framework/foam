@@ -46,11 +46,11 @@ var QueryParserFactory = function(model) {
 
     query: sym('or'),
 
-    or: repeat(sym('and'), literal_ic(' OR '), 1),
+    or: repeat(sym('and'), alt(literal_ic(' OR '), literal(' | ')), 1),
 
     and: repeat(
       sym('expr'),
-      alt(literal_ic('AND '), not(literal_ic(' OR'), ' ')),
+      alt(literal_ic('AND '), not(alt(literal_ic(' OR'), literal(' |')), ' ')),
       1),
 
     expr: alt(

@@ -22,6 +22,9 @@ var gestureManager = GestureManager.create();
 
 CLASS({
   name: 'ModelListController',
+  
+  requires: ['MDAO', 'DAOListView'],
+  
   properties: [
     {
       name: 'search',
@@ -36,7 +39,7 @@ CLASS({
       name: 'dao',
       defaultValue: [],
       factory: function() {
-        var newDAO = this.X.MDAO.create({model:Model});
+        var newDAO = this.MDAO.create({model:Model});
 
         // This is to make sure getPrototype is called, even if the model object
         // has been created without a .create or .getPrototype having been called
@@ -85,7 +88,7 @@ CLASS({
     {
       name: 'filteredDAOView',
       factory: function() {
-        return this.X.DAOListView.create({ data$: this.filteredDAO$, rowView: 'ModelDescriptionRowView' });
+        return this.DAOListView.create({ data$: this.filteredDAO$, rowView: 'ModelDescriptionRowView' });
       }
     }
   ]
@@ -118,7 +121,7 @@ CLASS({
     init: function() {
       // set up context // TODO: template is compile before we create subcontext
       this.X = this.X.sub({name:'ModelDescriptionRowView_X'});
-      this.X.documentationViewParentModel = SimpleValue.create();
+      this.X.documentationViewParentModel = this.X.SimpleValue.create({}, this.X);
 
       this.SUPER();
     }
@@ -204,7 +207,7 @@ CLASS({
 
       // detail context needs a documentViewRef.get().resolvedRoot to indicate what model it is rooted at
       this.DetailContext = this.X.sub({}, 'detailX');
-      this.DetailContext.documentViewRef = this.DetailContext.SimpleValue.create();// this.DetailContext.DocRef.create();
+      this.DetailContext.documentViewRef = this.DetailContext.SimpleValue.create({},this.DetailContext);// this.DetailContext.DocRef.create();
 
       this.X.documentViewRequestNavigation = this.requestNavigation.bind(this);
 
@@ -221,12 +224,12 @@ CLASS({
       // initialization from hash
       this.setReferenceFromHash();
 
-      var testArg = this.X.Arg.create({name: 'testy'});
+      var testArg = this.X.Arg.create({name: 'testy'}, this.X);
       testArg.documentation = this.X.Documentation.create({
         body: function() { /*
           Argument $$DOC{ref:'.'} documentation.
           */ }
-      });
+      }, this.X);
       this.model_.methods[1].args.push(testArg);
     },
 
@@ -242,10 +245,10 @@ CLASS({
       // don't respond if we are already at the location desired
       if (location.hash.substring(1) === this.DetailContext.documentViewRef.get().ref) return;
 
-      var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:location.hash.substring(1)});
+      var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:location.hash.substring(1)}, this.DetailContext);
       if (newRef.valid) {
         this.DetailContext.documentViewRef.set(newRef);
-        this.selection = newRef.resolvedModelChain[0];
+        if (newRef.resolvedModelChain[0] !== this.selection) this.selection = newRef.resolvedModelChain[0];
         this.SearchContext.selection$.set(newRef.resolvedRoot.resolvedModelChain[0]); // selection wants a Model object
 
       }
@@ -255,7 +258,7 @@ CLASS({
       if (ref.valid) {
         this.DetailContext.documentViewRef.set(ref);
         this.SearchContext.selection$.set(ref.resolvedRoot.resolvedModelChain[0]); // selection wants a Model object
-        this.selection = ref.resolvedModelChain[0];
+        if (ref.resolvedModelChain[0] !== this.selection) this.selection = ref.resolvedModelChain[0];
         location.hash = "#" + ref.resolvedRef;
       }
     }

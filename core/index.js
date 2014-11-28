@@ -405,7 +405,7 @@ var TreeIndex = {
       };
     }
 
-    if ( options && options.limit != null && options.skip != null && options.skip + options.limit > this.size(s) ) return NO_PLAN;
+//    if ( options && options.limit != null && options.skip != null && options.skip + options.limit > this.size(s) ) return NO_PLAN;
 
     var prop = this.prop;
 
