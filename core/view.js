@@ -412,7 +412,7 @@ CLASS({
     deepPublish: function(topic) {
       /*
        Publish an event and cause all children to publish as well.
-       */X.SimpleValue.create({ value: this });
+       */
       var count = this.publish.apply(this, arguments);
 
       if ( this.children ) {
@@ -476,9 +476,7 @@ CLASS({
     createView: function(prop, opt_args) {
       /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.X;
-      var args = opt_args.clone();
-      args.prop = prop;
-      var v = X.PropertyView.create(args, X);
+      var v = X.PropertyView.create({prop: prop, args: opt_args}, X);
       this.addChild(v);
       return v;
     },
@@ -907,26 +905,26 @@ CLASS({
         The new sub-$$DOC{ref:'View'} generated for the given $$DOC{ref:'Property'}.
       */}
     },
-//    {
-//      name: 'args',
-//      documentation: function() {/*
-//        Optional arguments to be used for sub-$$DOC{ref:'View'} creation. args.model_
-//        in particular specifies the exact $$DOC{ref:'View'} to use.
-//      */}
-//    }
+    {
+      name: 'args',
+      documentation: function() {/*
+        Optional arguments to be used for sub-$$DOC{ref:'View'} creation. args.model_
+        in particular specifies the exact $$DOC{ref:'View'} to use.
+      */}
+    }
   ],
 
   methods: {
 
-    init: function(args) {
+    init: function() {
       /* Sets up the new sub-$$DOC{ref:'View'} immediately. */
-      this.SUPER(args);
+      this.SUPER();
 
-      if ( args && args.model_ ) {
-        var model = FOAM.lookup(args.model_, this.X);
-        console.assert( model, 'Unknown View: ' + args.model_);
-        var view = model.create(args, this.X);
-        delete args.model_;
+      if ( this.args && this.args.model_ ) {
+        var model = FOAM.lookup(this.args.model_, this.X);
+        console.assert( model, 'Unknown View: ' + this.args.model_);
+        var view = model.create(this.args, this.X);
+        delete this.args.model_;
       } else {
         view = this.createViewFromProperty(this.prop);
       }

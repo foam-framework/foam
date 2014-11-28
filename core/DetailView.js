@@ -126,18 +126,6 @@ CLASS({
        return this.model;
     },
 
-    createView: function(prop, opt_args) {
-      /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
-      var X = ( opt_args && opt_args.X ) || this.X;
-      // our default is to have X.data$ = this.data$, so we're ok.
-      // the base View implementation will replace X.data$ with 'this'.
-      var args = opt_args? opt_args.clone() : {} ;
-      args.prop = prop;
-      var v = X.PropertyView.create(args, X);
-      this.addChild(v);
-      return v;
-    },
-
     createTemplateView: function(name, opt_args) {
       /* Overridden here to set the new View.$$DOC{ref:'.data'} to this.$$DOC{ref:'.data'}.
          See $$DOC{ref:'View.createTemplateView'}. */
