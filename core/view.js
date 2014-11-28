@@ -1763,10 +1763,14 @@ CLASS({
       if ( this.required ) str += ' required';
       if ( this.pattern  ) str += ' pattern="' + this.pattern + '"';
 
+      str += this.extraAttributes();
+
       str += ' name="' + this.name + '">';
       str += '</' + this.readWriteTagName + '>';
       return str;
     },
+
+    extraAttributes: function() { return ''; },
 
     toReadOnlyHTML: function() {
       /* Supplies the correct element for read-only mode */
@@ -3405,13 +3409,31 @@ CLASS({
 
 
 CLASS({
-  name: 'FloatFieldView',
+  name: 'AbstractNumberFieldView',
 
   extendsModel: 'TextFieldView',
+  abstractModel: true,
 
   properties: [
-    { name: 'precision', defaultValue: undefined },
-    { name: 'type',      defaultValue: 'number' }
+    { name: 'type', defaultValue: 'number' },
+    { name: 'step' }
+  ],
+
+  methods: {
+    extraAttributes: function() {
+      return this.step ? ' step="' + this.step + '"' : '';
+    }
+  }
+});
+
+
+CLASS({
+  name: 'FloatFieldView',
+
+  extendsModel: 'AbstractNumberFieldView',
+
+  properties: [
+    { name: 'precision', defaultValue: undefined }
   ],
 
   methods: {
@@ -3425,7 +3447,7 @@ CLASS({
     valueToText: function(val) {
       return this.hasOwnProperty('precision') ?
         this.formatNumber(val) :
-        ''+val ;
+        '' + val ;
     },
     textToValue: function(text) { return parseFloat(text) || 0; }
   }
@@ -3435,11 +3457,7 @@ CLASS({
 CLASS({
   name: 'IntFieldView',
 
-  extendsModel: 'TextFieldView',
-
-  properties: [
-    { name: 'type', defaultValue: 'number' }
-  ],
+  extendsModel: 'AbstractNumberFieldView',
 
   methods: {
     textToValue: function(text) { return parseInt(text) || '0'; },
