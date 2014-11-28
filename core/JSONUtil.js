@@ -105,7 +105,8 @@ var JSONUtil = {
 
       if ( opt_defaultModel && ! obj.model_ ) return opt_defaultModel.create(obj);
 
-      return X[obj.model_] ? X[obj.model_].create(obj) : obj;
+      var newObj = FOAM.lookup(obj.model_, X);
+      return newObj ? newObj.create(obj, X) : obj;
     }
 
     return obj;

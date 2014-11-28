@@ -86,21 +86,21 @@ CLASS({
 
   properties: [
     {
-      model_: 'ConstraintProperty',
+      model_: 'layout.ConstraintProperty',
       defaultValue: 100,
       name: 'preferred',
       documentation: function() {/* The preferred item size. */},
       type: 'layout.ConstraintProperty'
     },
     {
-      model_: 'ConstraintProperty',
+      model_: 'layout.ConstraintProperty',
       defaultValue: 0,
       name: 'min',
       documentation: function() {/* The minimum size. */},
       type: 'layout.ConstraintProperty'
     },
     {
-      model_: 'ConstraintProperty',
+      model_: 'layout.ConstraintProperty',
       defaultValue: '100%',
       name: 'max',
       documentation: function() {/* The maximum size. */},
