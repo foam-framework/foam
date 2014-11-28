@@ -79,30 +79,6 @@ CLASS({
       return v;
     },
 
-    createExplicitView: function(opt_args) { /*
-      <p>Creates subviews from the $$DOC{ref:'.',text:'$$THISDATA'} tag, using
-        an explicitly defined "model_: $$DOC{ref:'Model.name'}" in opt_args.</p>
-      */
-      var X = ( opt_args && opt_args.X ) || this.X;
-      var o = FOAM.lookup(opt_args.model_, X);
-      if (!o) {
-        console.warn("Invalid model_ specific in $$THISDATA ", this, opt_args.model_);
-        return;
-      }
-      var v = o.create( opt_args, X ); // we only support model_ in explicit mode
-      if (!opt_args.data) { // explicit data is honored
-        if (this.data) { // TODO: when refactoring $$THISDATA below, figure out what we can assume about this.data being present
-          v.data$ = this.data$;
-        } else {
-          v.data = this; // TODO: correct assumption? do we want data set to this?
-        }
-      } else {
-        v.data = opt_args.data;
-      }
-      this.addChild(v);
-      return v;
-    },
-
     createTemplateView: function(name, opt_args) {
       /*
         Overridden to add support for the $$DOC{ref:'.',text:'$$DOC'} and
@@ -113,8 +89,6 @@ CLASS({
       if (name === 'DOC') {
         var v = this.createReferenceView(opt_args);
         return v;
-      } else if (name === 'THISDATA') { // TODO: refactor this into view.js, as it is very similar to the normal case
-        return this.createExplicitView(opt_args);
       } else {
         //if (opt_args && !opt_args.X) opt_args.X = this.X;
         return this.SUPER(name, opt_args);
@@ -161,7 +135,7 @@ CLASS({
     function toInnerHTML() {/*
       <% this.destroy();
       if (this.data) { %>
-        $$THISDATA{model_: 'foam.documentation.FullPageDocView', model: this.model }
+        $$data{model_: 'foam.documentation.FullPageDocView', model: this.model }
       <% console.log("rendered data ",this.data,this.model);  } %>
     */}
   ]
@@ -293,6 +267,8 @@ CLASS({
       </p>
   */},
 
+  requires: ['foam.documentation.DocModelInheritanceTracker as DocModelInheritanceTracker'],
+
   imports: ['modelDAO'],
 
   ids: [ 'primaryKey' ],
@@ -327,6 +303,9 @@ CLASS({
       }
     },
     {
+      name: 'modelDAO'
+    },
+    {
       name: 'model',
       help: 'The name of the Model to which the feature belongs.',
       documentation: "The name of the $$DOC{ref:'Model'} to which the feature belongs.",
@@ -344,7 +323,7 @@ CLASS({
       documentation: "Helper to look up the inheritance level of $$DOC{ref:'.model'}",
       getter: function() {
         var modelTracker = [];
-        this.modelDAO.where(EQ(DocModelInheritanceTracker.MODEL, this.model))
+        this.modelDAO.where(EQ(this.DocModelInheritanceTracker.MODEL, this.model))
             .select(modelTracker);
         this.instance_.inheritanceLevel = modelTracker[0];
         return this.instance_.inheritanceLevel;
@@ -754,6 +733,13 @@ CLASS({
       help: 'The documentation to display.',
       required: true,
       postSet: function() {
+        if (this.data && this.data.body) {
+          this.renderDocSourceHTML = TemplateUtil.lazyCompile(this.data.body);
+        }
+        
+        if (this.data && (!this.model || this.model !== this.data.model_)) {
+          this.model = this.data.model_;
+        }
         this.updateHTML();
       }
     },
@@ -766,9 +752,9 @@ CLASS({
         // The first time this method is hit, replace it with the one that will
         // compile the template, then call that. Future calls go direct to lazyCompile's
         // returned function. You could also implement this the same way lazyCompile does...
-        this.renderDocSourceHTML = TemplateUtil.lazyCompile(this.data.body);
         return this.renderDocSourceHTML();
       } else {
+        console.warn("Rendered ", this, " with no data!");
         return ""; // no data yet
       }
     }
@@ -1049,11 +1035,13 @@ CLASS({
       // Strip off package or contining Model until we are left with the last
       // resolving Model name in the chain (including inner models).
       // Ex: package.subpackage.ParentModel.InnerModel.feature => InnerModel
-      while (args.length > 0 && model && model[args[1]] && model[args[1]].model_) {
+      var findingPackages = true;
+      while (args.length > 0 && model && model[args[1]] && (findingPackages || model[args[1]].model_)) {
         newResolvedRef += args[0] + ".";
         newResolvedRoot += args[0] + ".";
         args = args.slice(1); // remove package/outerModel part
         model = model[args[0]];
+        if (model.model_) findingPackages = false; // done with packages, now check for inner models
       };
 
       //TODO: do something with the package parts, resolve package refs with no model
@@ -1152,7 +1140,7 @@ CLASS({
               'foam.documentation.DocFeatureInheritanceTracker'
               ],
 
-  imports: ['featureDAO', 'modelDAO', 'documentViewRef'],
+  imports: ['featureDAO', 'documentViewRef'],
 
   properties: [
     {
@@ -1171,6 +1159,9 @@ CLASS({
       name: 'featureType',
       help: 'The property name from which data is set (such as "properties" or "methods")',
       type: 'String'
+    },
+    {
+      name: 'featureDAO'
     },
     {
       name:  'dao',
@@ -1276,15 +1267,15 @@ CLASS({
     <%    } else {
             if (this.hasFeatures) { %>
               <p class="feature-type-heading"><%=this.model.plural%>:</p>
-              <div class="memberList">$$THISDATA{ model_: 'DAOListView', data$: this.selfFeaturesDAO$, rowView: 'foam.documentation.RowDocView', model: this.model }</div>
+              <div class="memberList">$$selfFeaturesDAO{ model_: 'DAOListView', rowView: 'foam.documentation.RowDocView', model: this.model }</div>
       <%    }
             if (this.hasInheritedFeatures) { %>
               <p class="feature-type-heading">Inherited <%=this.model.plural%>:</p>
       <%
-              var fullView = this.DAOListView.create({ rowView: 'foam.documentation.RowDocView', data$: this.inheritedFeaturesDAO$, model: this.model });
-              var collapsedView = this.DocFeatureCollapsedView.create({ data$: this.inheritedFeaturesDAO$});
+              var fullView = this.DAOListView.create({ rowView: 'foam.documentation.RowDocView', model: this.model });
+              var collapsedView = this.DocFeatureCollapsedView.create();
               %>
-              <div class="memberList inherited">$$THISDATA{ model_: 'CollapsibleView', collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
+              <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'CollapsibleView', collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
       <%    } %>
     <%    } %>
     */}
@@ -1302,7 +1293,11 @@ CLASS({
     {
       name: 'data',
       postSet: function() {
-        this.dao = this.data;
+        if (this.data && this.data.select) {
+          this.dao = this.data;
+        } else {
+          this.dao = [];
+        }
       }
     },
     {

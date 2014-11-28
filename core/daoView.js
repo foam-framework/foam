@@ -28,6 +28,8 @@ CLASS({
       re-rendered.</p>
   */},
 
+  exports: ['dao$ as daoViewCurrentDAO$'],
+
   properties: [
     {
       name: 'data',
@@ -46,9 +48,10 @@ CLASS({
       help: 'An alias for the data property.',
       onDAOUpdate: 'onDAOUpdate',
       postSet: function(oldDAO, dao) {
-        if ( this.data !== dao ) {
+        if (!dao) {
+          this.data = "";
+        } else if ( this.data !== dao ) {
           this.data = dao;
-          this.X.daoViewCurrentDAO = dao;
         }
       },
       documentation: function() { /*
@@ -59,10 +62,6 @@ CLASS({
   ],
 
   methods: {
-    init: function() { /* $$DOC{ref:'AbstractDAOView'} sub-contexts. */
-      this.SUPER();
-      this.X = this.X.sub({ daoViewCurrentDAO: this.dao }); // TODO: do this before SUPER?
-    },
     onDAOUpdate: function() { /* Implement this $$DOC{ref:'Method'} in
           sub-models to respond to changes in $$DOC{ref:'.dao'}. */ }
   }

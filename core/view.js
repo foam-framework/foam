@@ -231,6 +231,8 @@ CLASS({
   name: 'View',
   label: 'View',
 
+  //exports: [ 'myself$ as data$' ],
+
   documentation: function() {/*
     <p>$$DOC{ref:'View',usePlural:true} render data. This could be a specific
        $$DOC{ref:'Model'} or a $$DOC{ref:'DAO'}. In the case of $$DOC{ref:'DetailView'},
@@ -515,7 +517,7 @@ CLASS({
         v = this.createRelationshipView(o, opt_args);
       else
         v = this.createView(o, opt_args);
-      v.data = this;
+        v.data = this;
       return v;
     },
 
@@ -847,8 +849,8 @@ CLASS({
     $$DOC{ref:'.args'}.model_.
   */},
 
-  imports: ['data'],
-  exports: ['propValue as data'],
+//  imports: ['data$'],
+//  exports: ['propValue$ as data$'],
 
   properties: [
     {
@@ -914,13 +916,15 @@ CLASS({
 
   methods: {
 
-    init: function(args) {
+    init: function() {
       /* Sets up the new sub-$$DOC{ref:'View'} immediately. */
-      this.SUPER(args);
+      this.SUPER();
 
       if ( this.args && this.args.model_ ) {
         var model = FOAM.lookup(this.args.model_, this.X);
         console.assert( model, 'Unknown View: ' + this.args.model_);
+        // HACK to make sure model specification makes it into the create
+        if (this.args.model) this.prop.model = this.args.model;
         var view = model.create(this.prop, this.X);
         delete this.args.model_;
       } else {
@@ -966,7 +970,7 @@ CLASS({
       if ( ! view || ! oldData ) return;
       var pValue = oldData.propertyValue(this.prop.name);
       Events.unlink(pValue, view.data$);
-      Events.unlink(pValue, this.propValue$);
+      //Events.unlink(pValue, this.propValue$);
     },
 
     bindData: function(data) {
@@ -975,7 +979,7 @@ CLASS({
       if ( ! view || ! data ) return;
       var pValue = data.propertyValue(this.prop.name);
       Events.link(pValue, view.data$);
-      Events.link(pValue, this.propValue$);
+      //Events.link(pValue, this.propValue$);
     },
 
     toHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ return this.view.toHTML(); },
@@ -5026,7 +5030,10 @@ CLASS({
     {
       name:  'fullView',
       preSet: function(old, nu) {
-        if (old) this.removeChild(old);
+        if (old) {
+            this.removeChild(old);
+            Events.unlink(old.data$, this.data$);
+        }
         return nu;
       },
       postSet: function() {
@@ -5041,7 +5048,10 @@ CLASS({
     {
       name:  'collapsedView',
       preSet: function(old, nu) {
-        if (old) this.removeChild(old);
+        if (old) {
+            this.removeChild(old);
+            Events.unlink(old.data$, this.data$);
+        }
         return nu;
       },
       postSet: function() {

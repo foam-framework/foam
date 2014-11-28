@@ -253,9 +253,9 @@ CLASS({
 
     requestNavigation: function(ref) {
       if (ref.valid) {
-        this.selection = ref.resolvedModelChain[0];
         this.DetailContext.documentViewRef.set(ref);
         this.SearchContext.selection$.set(ref.resolvedRoot.resolvedModelChain[0]); // selection wants a Model object
+        this.selection = ref.resolvedModelChain[0];
         location.hash = "#" + ref.resolvedRef;
       }
     }
