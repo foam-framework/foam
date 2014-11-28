@@ -704,7 +704,248 @@ var SetIndex = {
 
 };
 
+var PositionQuery = {
+  create: function(args) {
+    return {
+      __proto__: this,
+      skip: args.skip,
+      limit: args.limit,
+      s: args.s
+    };
+  },
+  reduce: function(other) {
+    var otherFinish = other.skip + other.limit;
+    var myFinish = this.skip + this.limit;
 
+    if ( other.skip > myFinish ) return null;
+    if ( other.skip >= this.skip ) {
+      return PositionQuery.create({
+        skip: this.skip,
+        limit: Math.max(myFinish, otherFinish) - this.skip,
+        s: this.s
+      });
+    }
+    return other.reduce(this);
+  },
+  equals: function(other) {
+    return this.skip === other.skip && this.limit === other.limit;
+  }
+};
+
+var AutoPositionIndex = {
+  create: function(factory, mdao, networkdao, maxage) {
+    var obj = {
+      __proto__: this,
+      factory: factory,
+      maxage: maxage,
+      dao: mdao,
+      networkdao: networkdao,
+      sets: [],
+      alt: AltIndex.create(),
+      queue: arequestqueue(function(ret, request) {
+        var s = request.s;
+        obj.networkdao
+          .skip(request.skip)
+          .limit(request.limit)
+          .select()(function(objs) {
+            var now = Date.now();
+            for ( var i = 0; i < objs.length; i++ ) {
+              s[request.skip + i] = {
+                obj: objs[i],
+                timestamp: now
+              };
+              s.feedback = objs[i].id;
+              obj.dao.put(objs[i]);
+              s.feedback = null;
+            }
+            ret();
+          });
+      }, undefined, 1)
+    };
+    return obj;
+  },
+
+  put: function(s) { return s; },
+  remove: function(s) { return s; },
+
+  bulkLoad: function(a) {
+    return [];
+  },
+
+  addIndex: function(s, index) {
+    return this;
+  },
+
+  addPosIndex: function(s, options) {
+    var index = PositionIndex.create(
+      options && options.order,
+      options && options.query,
+      this.factory,
+      this.mdao,
+      this.networkdao,
+      this.queue,
+      this.maxage);
+
+    this.alt.delegates.push(index);
+    s.push(index.bulkLoad([]));
+  },
+
+  hasIndex: function(options) {
+    for ( var i = 0; i < this.sets.length; i++ ) {
+      var set = this.sets[i];
+      if ( set[0].equals((options && options.query) || '') && set[1].equals((options && options.order) || '') ) return true;
+    }
+    return false;
+  },
+
+  plan: function(s, sink, options) {
+    var subPlan = this.alt.plan(s, sink, options);
+
+    if ( subPlan != NO_PLAN ) return subPlan;
+
+    if ( ( options && options.skip != null && options.limit != null ) ||
+         CountExpr.isInstance(sink) ) {
+      if ( this.hasIndex(options) ) return NO_PLAN;
+      this.sets.push([(options && options.query) || '', (options && options.order) || '']);
+      this.addPosIndex(s, options);
+      return this.alt.plan(s, sink, options);
+    }
+    return NO_PLAN;
+  }
+};
+
+var PositionIndex = {
+  create: function(order, query, factory, dao, networkdao, queue, maxage) {
+    return {
+      __proto__: this,
+      order: order || '',
+      query: query || '',
+      factory: factory,
+      dao: dao,
+      networkdao: networkdao.where(query).orderBy(order),
+      maxage: maxage,
+      queue: queue
+    };
+  },
+
+  put: function(s, newValue) {
+    if ( s.feedback === newValue.id ) return s;
+    var compare = toCompare(this.order);
+
+    for ( var i = 0; i < s.length; i++ ) {
+      var entry = s[i]
+      if ( ! entry ) continue;
+      entry = entry.obj;
+
+      // Only happens when things are put into the dao from a select on this index.
+      // otherwise objects are removed() first from the MDAO.
+      if ( entry.id === newValue.id ) {
+        break;
+      }
+
+      if ( compare(entry, newValue) > 0 ) {
+        for ( var j = s.length; j > i; j-- ) {
+          s[j] = s[j-1];
+        }
+
+        // If we have objects on both sides, put this one here.
+        if ( s[i-1] ) s[i] = {
+          obj: newValue,
+          timestamp: Date.now()
+        };
+        break;
+      }
+    }
+    return s;
+  },
+
+  remove: function(s, obj) {
+    if ( s.feedback === obj.id ) return s;
+    for ( var i = 0; i < s.length; i++ ) {
+      if ( s[i] && s[i].obj.id === obj.id ) {
+        for ( var j = i; j < s.length - 1; j++ ) {
+          s[j] = s[j+1];
+        }
+        break;
+      }
+    }
+    return s;
+  },
+
+  bulkLoad: function(a) { return []; },
+
+  plan: function(s, sink, options) {
+    var order = ( options && options.order ) || '';
+    var query = ( options && options.query ) || '';
+    var skip = options && options.skip;
+    var limit = options && options.limit;
+
+    var self = this;
+
+    if ( ! order.equals(this.order) ||
+         ! query.equals(this.query) ) return NO_PLAN;
+
+    if ( CountExpr.isInstance(sink) ) {
+      return {
+        cost: 0,
+        execute: function(s, sink, options) {
+          if ( ! s.count ) {
+            s.count = amemo(function(ret) {
+              self.networkdao.select(COUNT())(function(c) {
+                ret(c);
+              });
+            }, self.maxage);
+          }
+
+          return (function(ret, count) {
+            sink.copyFrom(count);
+            ret();
+          }).ao(s.count);
+        },
+        toString: function() { return 'position-index(cost=' + this.cost + ', count)'; }
+      }
+    } else if ( skip == undefined || limit == undefined ) {
+      return NO_PLAN;
+    }
+
+    var threshold = Date.now() - this.maxage;
+    return {
+      cost: 0,
+      toString: function() { return 'position-index(cost=' + this.cost + ')'; },
+      execute: function(s, sink, options) {
+        var objs = [];
+
+        var min;
+        var max;
+
+        for ( var i = 0 ; i < limit; i++ ) {
+          var o = s[i + skip];
+          if ( ! o || o.timestamp < threshold ) {
+            if ( min == undefined ) min = i + skip;
+            max = i + skip;
+          }
+          objs[i] = o ? o.obj : self.factory();
+          if ( ! objs[i] ) debugger;
+        }
+
+        if ( min != undefined ) {
+          self.queue(PositionQuery.create({
+            skip: min,
+            limit: (max - min) + 1,
+            s: s
+          }));
+        }
+
+
+        for ( var i = 0; i < objs.length; i++ ) {
+          sink.put(objs[i]);
+        }
+
+        return anop;
+      }
+    };
+  }
+};
 
 var AltIndex = {
   // Maximum cost for a plan which is good enough to not bother looking at the rest.
