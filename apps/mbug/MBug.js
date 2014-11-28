@@ -37,12 +37,22 @@ CLASS({
 
         project.IssueNetworkDAO.batchSize = 25;
 
-        Y.issueDAO = Y.QIssueSplitDAO.create({
-          model: Y.QIssue,
-          local: localDao,
-          remote: project.IssueNetworkDAO,
-          maxLimit: 25
-        });
+        var factory = function() {
+          return Y.QIssue.create({
+            status: 'OPEN',
+            id: '',
+            summary: 'Loading...',
+            starred: false
+          });
+        };
+
+        Y.issueDAO = Y.MDAO.create({ model: Y.QIssue });
+
+        // TODO: Clean this up.
+        Y.issueDAO.index = AltIndex.create(
+          AutoPositionIndex.create(factory, Y.issueDAO, project.IssueNetworkDAO, 2000),
+          TreeIndex.create(Y.QIssue.ID));
+        Y.issueDAO.root = [[]];
 
         Y.issueDAO = Y.KeywordDAO.create({
           delegate: Y.issueDAO
