@@ -927,15 +927,15 @@ person: Andy
           'Requesting x.bar does not call the factory again');
 
       x.foo = 17;
-      this.assert(seqMatches(['bar factory', 'foo dVF', 'foo dVF', 'foo dVF']),
+      this.assert(seqMatches(['bar factory', 'foo dVF', 'foo dVF']),
           'Overwriting the value causes one more defaultValueFn call');
 
       this.assert(x.foo === 17, 'Overwriting the property with the defaultValueFn works');
-      this.assert(seqMatches(['bar factory', 'foo dVF', 'foo dVF', 'foo dVF']),
+      this.assert(seqMatches(['bar factory', 'foo dVF', 'foo dVF']),
           'And now requesting it does not call the defaultValueFn');
       x.foo = 7;
       this.assert(x.foo === 7, 'Setting the property to the default value still doesn\'t return to calling the defaultValueFn');
-      this.assert(seqMatches(['bar factory', 'foo dVF', 'foo dVF', 'foo dVF']),
+      this.assert(seqMatches(['bar factory', 'foo dVF', 'foo dVF']),
           'Requesting it still doesn\'t call defaultValueFn');
 
 }
