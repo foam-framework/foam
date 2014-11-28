@@ -113,20 +113,22 @@ CLASS({
   */},
 
   properties: [
-    {
-      name: 'data',
-      postSet: function() {
-        if (this.data && (!this.model || this.model !== this.data.model_)) {
-          this.model = this.data.model_;
-        }
-      }
-    },
-    {
-      name: 'model',
-      postSet: function() {
-        this.updateHTML();
-      }
-    }
+    // {
+//       name: 'data',
+//       postSet: function() {
+//         if (this.data && (!this.model || this.model !== this.data.model_)) {
+//           this.model = this.data.model_;
+//         } else {
+//
+//         }
+//       }
+//     },
+//     {
+//       name: 'model',
+//       postSet: function() {
+//         this.updateHTML();
+//       }
+//     }
 
   ],
 
@@ -659,6 +661,12 @@ CLASS({
   extendsModel: 'foam.documentation.FullPageDocView',
   help: 'Displays the documentation of the given book.',
 
+  methods: {
+    onValueChange_: function() {
+      this.updateHTML();
+    }
+  },
+
   templates: [
 
     function toInnerHTML()    {/*
@@ -669,7 +677,7 @@ CLASS({
           $$data{ model_: 'foam.documentation.DocBodyView' }
         </div>
         <div class="chapters">
-          $$chapters{ model_: 'foam.documentation.DocChaptersView', data: this }
+          $$chapters{ model_: 'foam.documentation.DocChaptersView' }
         </div>
 <%    } %>
     */}
@@ -686,10 +694,10 @@ CLASS({
   templates: [
 
     function toInnerHTML()    {/*
-<%    this.destroy(); %>
+<%    this.destroy(); console.log("Summary doc view ", this.data); %>
 <%    if (this.data) {  %>
         <div id="scrollTarget_<%=this.data.name%>" class="introduction">
-          <h2><%=this.documentation.label%></h2>
+          <h2><%=this.data.label%></h2>
           $$data{ model_: 'foam.documentation.DocBodyView' }
         </div>
 <%    } %>
@@ -1033,6 +1041,8 @@ CLASS({
       var newResolvedModelChain = [];
       var newResolvedRef = "";
       var newResolvedRoot = "";
+
+      if ( ! model ) return;
 
       // Strip off package or contining Model until we are left with the last
       // resolving Model name in the chain (including inner models).

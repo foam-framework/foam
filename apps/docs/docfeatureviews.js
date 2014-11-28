@@ -17,210 +17,6 @@
 
 
 
-//CLASS({
-//  name: 'DocFeaturesView',
-//  extendsModel: 'View',
-//  help: 'Displays the documentation of the given set of features.',
-
-//  properties: [
-//    {
-//      name:  'data',
-//      help: 'The model whose features to view.',
-//      postSet: function(old, data) {
-//        if (old) Events.unfollow(this.getGroupFromTarget(old), this.dao$);
-//        Events.follow(this.getGroupFromTarget(data), this.dao$);
-//        this.updateHTML();
-//      }
-//    },
-//    {
-//      name:  'dao',
-//      model_: 'DAOProperty',
-//      defaultValue: [],
-//      onDAOUpdate: function() {
-//        this.filteredDAO = this.dao;
-//      }
-//    },
-//    {
-//      name:  'filteredDAO',
-//      model_: 'DAOProperty',
-//      onDAOUpdate: function() {
-//        var self = this;
-//        if (!this.X.documentViewRef) {
-//          console.warn("this.X.documentViewRef non-existent");
-//        } else if (!this.X.documentViewRef.get()) {
-//          console.warn("this.X.documentViewRef not set");
-//        } else if (!this.X.documentViewRef.get().valid) {
-//          console.warn("this.X.documentViewRef not valid");
-//        }
-
-//        this.filteredDAO.select(COUNT())(function(c) {
-//          self.hasDAOContent = c.count > 0;
-//        });
-
-//        this.selfFeaturesDAO = [].sink;
-//        this.X.docModelViewFeatureDAO
-//          .where(
-//                AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.X.documentViewRef.get().resolvedRoot.resolvedModelChain[0].id),
-//                        EQ(DocFeatureInheritanceTracker.IS_DECLARED, true)),
-//                    CONTAINS(DocFeatureInheritanceTracker.TYPE, this.featureType()))
-//                )
-//          .select(MAP(DocFeatureInheritanceTracker.FEATURE, this.selfFeaturesDAO));
-
-//        this.inheritedFeaturesDAO = [].sink;
-//        this.X.docModelViewFeatureDAO
-//          .where(
-//                AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.X.documentViewRef.get().resolvedRoot.resolvedModelChain[0].id),
-//                        EQ(DocFeatureInheritanceTracker.IS_DECLARED, false)),
-//                    CONTAINS(DocFeatureInheritanceTracker.TYPE, this.featureType()))
-//                )
-//          .select(MAP(DocFeatureInheritanceTracker.FEATURE, this.inheritedFeaturesDAO));
-
-//        this.updateHTML();
-
-//      }
-//    },
-//    {
-//      name:  'selfFeaturesDAO',
-//      model_: 'DAOProperty',
-//      documentation: function() { /*
-//          Returns the list of features (matching this feature type) that are
-//          declared or overridden in this $$DOC{ref:'Model'}
-//      */},
-//      onDAOUpdate: function() {
-//        var self = this;
-//        this.selfFeaturesDAO.select(COUNT())(function(c) {
-//          self.hasFeatures = c.count > 0;
-//        });
-//      }
-//    },
-//    {
-//      name:  'inheritedFeaturesDAO',
-//      model_: 'DAOProperty',
-//      documentation: function() { /*
-//          Returns the list of features (matching this feature type) that are
-//          inherited but not declared or overridden in this $$DOC{ref:'Model'}
-//      */},
-//      onDAOUpdate: function() {
-//        var self = this;
-//        this.inheritedFeaturesDAO.select(COUNT())(function(c) {
-//          self.hasInheritedFeatures = c.count > 0;
-//        });
-//      }
-//    },
-//    {
-//      name: 'hasDAOContents',
-//      defaultValue: false,
-//      postSet: function(_, nu) {
-//        this.updateHTML();
-//      },
-//      documentation: function() { /*
-//          True if the $$DOC{ref:'.filteredDAO'} is not empty.
-//      */}
-//    },
-//    {
-//      name: 'hasFeatures',
-//      defaultValue: false,
-//      postSet: function(_, nu) {
-//        this.updateHTML();
-//      },
-//      documentation: function() { /*
-//          True if the $$DOC{ref:'.selfFeaturesDAO'} is not empty.
-//      */}
-//    },
-//    {
-//      name: 'hasInheritedFeatures',
-//      defaultValue: false,
-//      postSet: function(_, nu) {
-//        this.updateHTML();
-//      },
-//      documentation: function() { /*
-//          True if the $$DOC{ref:'.inheritedFeaturesDAO'} is not empty.
-//      */}
-//    },
-//    {
-//      name: 'rowView',
-//      help: 'Override this to specify the view to use to display each feature.',
-//      factory: function() { return 'DocFeatureRowView'; }
-//    },
-//    {
-//      name: 'tagName',
-//      defaultValue: 'div'
-//    },
-//  ],
-
-//  templates: [
-//    function toInnerHTML()    {/*
-//    <%    this.destroy();
-//          if (!this.hasFeatures && !this.hasInheritedFeatures) { %>
-//            <p class="feature-type-heading">No <%=this.featureName()%>.</p>
-//    <%    } else {
-//            if (this.hasFeatures) { %>
-//              <p class="feature-type-heading"><%=this.featureName()%>:</p>
-//              <div class="memberList">$$selfFeaturesDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.selfFeaturesDAO, model: Property }</div>
-//      <%    }
-//            if (this.hasInheritedFeatures) { %>
-//              <p class="feature-type-heading">Inherited <%=this.featureName()%>:</p>
-//      <%
-//              var fullView = this.X.DAOListView.create({ rowView: this.rowView, model: Property });
-//              var collapsedView = this.X.DocFeatureCollapsedView.create();
-//              %>
-//              <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'CollapsibleView', data: this.inheritedFeaturesDAO, collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
-//      <%    } %>
-//    <%    } %>
-//    */}
-//  ],
-
-//  methods: {
-//    getGroupFromTarget: function(target) {
-//      // implement this to return your desired feature (i.e target.properties$)
-//      console.assert(false, 'DocFeaturesView.getGroupFromTarget: implement me!');
-//    },
-//    featureName: function() {
-//      // implement this to return the display name of your feature (i.e. "Properties")
-//      console.assert(false, 'DocFeaturesView.featureName: implement me!');
-//    },
-//    featureType: function() {
-//      // implement this to return Model property name (i.e. "properties", "methods", etc.)
-//      console.assert(false, 'DocFeaturesView.featureType: implement me!');
-//    }
-//  }
-
-//});
-
-//CLASS({
-//  name: 'DocFeatureCollapsedView',
-//  extendsModel: 'DocBodyView',
-//  help: 'A generic view for collapsed sets.',
-
-//  properties: [
-//    {
-//      name: 'data',
-//      postSet: function() {
-//        this.dao = this.data;
-//      }
-//    },
-//    {
-//      name:  'dao',
-//      model_: 'DAOProperty',
-//      defaultValue: [],
-//      onDAOUpdate: function() {
-//        var self = this;
-//        this.dao.select(COUNT())(function(c) {
-//          self.count = c.count;
-//        });
-//      }
-//    },
-//    {
-//      name: 'count'
-//    }
-//  ],
-
-//  templates: [
-//    function toInnerHTML() {/*
-//      <p><%=this.count%> more...</p>
-//    */}
-//  ]
-//});
 
 
 CLASS({
@@ -414,130 +210,6 @@ CLASS({
   help: 'A view for documentation of each item in a list of methods.',
 });
 
-//CLASS({
-//  name: 'DocRelationshipsView',
-//  extendsModel: 'DocFeaturesView',
-//  help: 'Displays the documentation of the given Relationships.',
-
-//  methods: {
-//    getGroupFromTarget: function(target) {
-//      return target.relationships$;
-//    },
-//    featureName: function() {
-//      return "Relationships";
-//    },
-//    featureType: function() {
-//      return "relationships";
-//    },
-//  }
-
-//});
-
-
-//CLASS({
-//  name: 'DocActionsView',
-//  extendsModel: 'DocFeaturesView',
-//  help: 'Displays the documentation of the given Actions.',
-
-//  methods: {
-//    getGroupFromTarget: function(target) {
-//      return target.actions$;
-//    },
-//    featureName: function() {
-//      return "Actions";
-//    },
-//    featureType: function() {
-//      return "actions";
-//    },
-//  }
-
-//});
-
-//CLASS({
-//  name: 'DocListenersView',
-//  extendsModel: 'DocMethodsView',
-//  help: 'Displays the documentation of the given Listeners.',
-
-//  methods: {
-//    getGroupFromTarget: function(target) {
-//      return target.listeners$;
-//    },
-//    featureName: function() {
-//      return "Listeners";
-//    },
-//    featureType: function() {
-//      return "listeners";
-//    },
-//  }
-
-//});
-
-//CLASS({
-//  name: 'DocTemplatesView',
-//  extendsModel: 'DocFeaturesView',
-//  help: 'Displays the documentation of the given Templates.',
-
-//  methods: {
-//    getGroupFromTarget: function(target) {
-//      return target.templates$;
-//    },
-//    featureName: function() {
-//      return "Templates";
-//    },
-//    featureType: function() {
-//      return "templates";
-//    },
-//  }
-
-//});
-
-
-//CLASS({
-//  name: 'DocIssuesView',
-//  extendsModel: 'DocFeaturesView',
-//  help: 'Displays the documentation of the given Issues.',
-
-//  methods: {
-//    getGroupFromTarget: function(target) {
-//      return target.issues$;
-//    },
-//    featureName: function() {
-//      return "Issues";
-//    },
-//    featureType: function() {
-//      return "issues";
-//    },
-//  }
-
-//});
-
-
-//CLASS({
-//  name: 'DocMethodsView',
-//  extendsModel: 'DocFeaturesView',
-//  help: 'Displays the documentation of the given Methods.',
-
-//  properties: [
-//    {
-//      name: 'rowView',
-//      help: 'Override this to specify the view to use to display each feature.',
-//      factory: function() { return 'DocMethodRowView'; }
-//    }
-//  ],
-
-//  methods: {
-//    getGroupFromTarget: function(target) {
-//      return target.methods$;
-//    },
-//    featureName: function() {
-//      return "Methods";
-//    },
-//    featureType: function() {
-//      return "methods";
-//    },
-//  }
-
-//});
 
 //CLASS({
 //  name: 'DocMethodRowView',
@@ -648,41 +320,27 @@ CLASS({
 
 
 
-//CLASS({
-//  name: 'DocChaptersView',
-//  extendsModel: 'DocFeaturesView',
-//  help: 'Displays the contents of the given Chapters.',
+CLASS({
+  name: 'DocChaptersView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocView',
+  help: 'Displays the contents of the given Chapters.',
 
-//  properties: [
-//    {
-//      name: 'rowView',
-//      help: 'Override this to specify the view to use to display each feature.',
-//      factory: function() { return 'DocBookView'; }
-//    }
-//  ],
-
-//  methods: {
-//    getGroupFromTarget: function(target) {
-//      return target.documentation.chapters$;
-//    },
-//    featureName: function() {
-//      return "Chapters";
-//    },
-//    featureType: function() {
-//      return "documentation";
-//    },
-//  },
-
-//  templates: [
-//    function toInnerHTML()    {/*
-//    <%    this.destroy();
-//          if (!this.hasDAOContent) { %>
-//    <%    } else { %>
-//            <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: this.X.Documentation }</div>
-//    <%    } %>
-//    */}
-//  ]
-//});
+  methods: {
+    viewModel: function() { /* The $$DOC{ref:'Model'} type of the $$DOC{ref:'.data'}. */
+       return this;
+     }
+  },
+  
+  templates: [
+    function toInnerHTML()    {/*
+    <%    this.destroy(); 
+          if (this.data) { %>
+            <div class="memberList">$$data{ model_: 'DAOListView', rowView: 'foam.documentation.DocumentationBookSummaryDocView', model: this.X.Documentation }</div>
+    <%    } %>
+    */}
+  ]
+});
 
 
 //CLASS({

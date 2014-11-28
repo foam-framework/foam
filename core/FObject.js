@@ -652,32 +652,33 @@ var FObject = {
   getFeature: function(featureName) {
     var feature = this.getMyFeature(featureName);
 
-    if (this.id != "Model" && !feature) {
-      if (this.extendsModel.length > 0 && this.X[this.extendsModel]) {
-        return this.X[this.extendsModel].getFeature(featureName);
-      } else {
-        return this.X["Model"].getFeature(featureName);
+    if (!feature && this.extendsModel) {
+      var ext = FOAM.lookup(this.extendsModel, this.X); 
+      if (ext) {
+        return ext.getFeature(featureName);
       }
     } else {
       return feature;
     }
+    return undefined;
   },
 
   // getAllFeatures accounts for inheritance through extendsModel
   getAllFeatures: function() {
     var featureList = this.getAllMyFeatures();
 
-    if (this.id != "Model") {
-      var superModel = (this.extendsModel.length > 0 && this.X[this.extendsModel].id)? this.X[this.extendsModel] : this.X["Model"];
-      console.log("getAll: ", this.extendsModel, superModel);
-      superModel.getAllFeatures().map(function(subFeat) {
+    if (this.extendsModel) {
+      var ext = FOAM.lookup(this.extendsModel, this.X);
+      if (ext) {
+        ext.getAllFeatures().map(function(subFeat) {
           var subName = subFeat.name.toUpperCase();
           if (!featureList.mapFind(function(myFeat) { // merge in features we don't already have
             return myFeat && myFeat.name && myFeat.name.toUpperCase() === subName;
           })) {
             featureList.push(subFeat);
           }
-      });
+        });
+      }
     }
     return featureList;
   }
