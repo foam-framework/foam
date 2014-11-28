@@ -1,4 +1,4 @@
-/**
+1/**
  * @license
  * Copyright 2014 Google Inc. All Rights Reserved.
  *
@@ -21,6 +21,10 @@ CLASS({
   tableProperties: [
     'projectName',
     'baseURL'
+  ],
+
+  exports: [
+    'IssueCommentDAO as QIssueCommentDAO'
   ],
 
   properties: [
@@ -152,17 +156,12 @@ CLASS({
       }
     },
     {
+      model_: 'DAOProperty',
       name: 'IssueCommentDAO',
-      lazyFactory: function() {
+      factory: function() {
         return this.X.QIssueCommentUpdateDAO.create({
           delegate: this.IssueCommentNetworkDAO
         });
-      },
-      postSet: function(_, v) {
-        if ( ! this.X.IssueCommentDAO )
-          this.X.QIssueCommentDAO = ProxyDAO.create({ delegate: v });
-        else
-          this.X.QIssueCommentDAO.delegate = v;
       }
     },
     {
