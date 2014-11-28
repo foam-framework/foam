@@ -347,6 +347,8 @@ CLASS({
              'Model',
              'MDAO'],
 
+  imports: ['documentViewRef'],
+
   exports: ['featureDAO', 'modelDAO'],
 
   documentation: function() {/*
@@ -411,9 +413,10 @@ CLASS({
 
     scrollToFeature: function() {
       var self = this;
-      if (self.data && self.data.valid) {
+      var ref = self.documentViewRef.get();
+      if (ref && ref.valid) {
         if (! // if we don't find an element to scroll to:
-          self.data.resolvedModelChain.slice(1).reverse().some(function(feature) {
+          ref.resolvedModelChain.slice(1).reverse().some(function(feature) {
             if (feature && feature.name) {
               element = $("scrollTarget_"+feature.name);
               if (element) {
