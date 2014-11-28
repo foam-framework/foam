@@ -248,7 +248,7 @@ CLASS({
       var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:location.hash.substring(1)}, this.DetailContext);
       if (newRef.valid) {
         this.DetailContext.documentViewRef.set(newRef);
-        this.selection = newRef.resolvedModelChain[0];
+        if (newRef.resolvedModelChain[0] !== this.selection) this.selection = newRef.resolvedModelChain[0];
         this.SearchContext.selection$.set(newRef.resolvedRoot.resolvedModelChain[0]); // selection wants a Model object
 
       }
@@ -258,7 +258,7 @@ CLASS({
       if (ref.valid) {
         this.DetailContext.documentViewRef.set(ref);
         this.SearchContext.selection$.set(ref.resolvedRoot.resolvedModelChain[0]); // selection wants a Model object
-        this.selection = ref.resolvedModelChain[0];
+        if (ref.resolvedModelChain[0] !== this.selection) this.selection = ref.resolvedModelChain[0];
         location.hash = "#" + ref.resolvedRef;
       }
     }
