@@ -253,9 +253,9 @@ CLASS({
       name: 'defaultSortChoices',
       lazyFactory: function() {
         return [
-          [ DESC(this.X.QIssue.MODIFIED),      'Last modified' ],
-          [ this.X.QIssue.PRI, 'Priority' ],
-          [ DESC(this.X.QIssue.ID),            'Issue ID' ]
+          [ DESC(this.X.QIssue.MODIFIED), 'Last modified' ],
+          [ this.X.QIssue.PRI,            'Priority' ],
+          [ DESC(this.X.QIssue.ID),       'Issue ID' ]
         ];
       }
     },
@@ -834,9 +834,9 @@ CLASS({
 
         if ( this.projectName !== 'chromium' ) {
           this.defaultSortChoices = [
-            [ DESC(this.X.QIssue.MODIFIED),      'Last modified' ],
-            [ this.X.QIssue.PRIORITY, 'Priority' ],
-            [ DESC(this.X.QIssue.ID),            'Issue ID' ]
+            [ DESC(this.X.QIssue.MODIFIED), 'Last modified' ],
+            [ this.X.QIssue.PRIORITY,       'Priority' ],
+            [ DESC(this.X.QIssue.ID),       'Issue ID' ]
           ];
         }
       }
