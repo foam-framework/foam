@@ -54,6 +54,7 @@ var QueryParserFactory = function(model) {
       1),
 
     expr: alt(
+      sym('paren'),
       sym('negate'),
       sym('has'),
       sym('is'),
