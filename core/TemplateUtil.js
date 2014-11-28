@@ -208,7 +208,7 @@ var TemplateCompiler = {
     else {
       var modelName = e.getAttribute('model');
       if ( modelName ) {
-        this.push("', X.", modelName, '.create(');
+        this.push("', X.sub({data: this.data}).", modelName, '.create(');
         this.push(JSON.stringify(buildAttrs(e, 'model')));
       } else {
         console.error('Foam tag must define either "model" or "f" attribute.');

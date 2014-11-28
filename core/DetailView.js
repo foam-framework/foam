@@ -19,7 +19,7 @@ CLASS({
   name: 'DetailView',
   extendsModel: 'View',
 
-  //imports: [ 'data' ],
+  imports: [ 'data' ],
   //exports: [ 'data' ],
 
   documentation:function() {/*
