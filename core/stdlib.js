@@ -275,6 +275,12 @@ var __features__ = [
         oldBind.apply(this, argsToArray(arguments));
     };
   })()],
+  [ Function        , 'Method$',    function equals(o) {
+    return this === o;
+  }],
+  [ Function        , 'Method$',    function compareTo(o) {
+    return this === o ? 0 : ( this.name.compareTo(o.name) || 1 );
+  }],
   [ Date            , 'Method$',    function toRelativeDateString(){
     var seconds = Math.floor((Date.now() - this.getTime())/1000);
 
