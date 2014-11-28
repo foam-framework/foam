@@ -3946,26 +3946,6 @@ CLASS({
   name: 'ContextualizingDAO',
   extendsModel: 'ProxyDAO',
   methods: {
-    select: function(sink, options) {
-      sink = sink || [].sink;
-      var X = this.X;
-      var future = afuture();
-      this.delegate.select({
-        put: function(o) {
-          o = o.clone();
-          o.X = X;
-          sink.put && sink.put(o);
-        },
-        error: function() {
-          sink.error && sink.error.apply(sink, arguments);
-        },
-        eof: function() {
-          sink.eof && sink.eof.apply(arguments);
-          future.set(sink);
-        }
-      }, options);
-      return future.get;
-    },
     find: function(id, sink) {
       var X = this.X;
       this.delegate.find(id, {

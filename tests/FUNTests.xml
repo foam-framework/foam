@@ -368,7 +368,7 @@
         (function(ret) {
           dao.select()((function(a) {
             for ( var i = 0; i &lt; a.length ; i++ )
-              this.assert(a[i].X.a, 'Selected objects have the correct context.');
+              this.assert(!a[i].X.a, 'Selected objects are unchanged.');
             ret();
           }).bind(this));
         }).bind(this),
