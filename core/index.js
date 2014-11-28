@@ -1159,6 +1159,7 @@ var MDAO = Model.create({
       this.SUPER();
 
       this.map = {};
+      // TODO(kgr): this doesn't support multi-part keys, but should
       this.index = TreeIndex.create(this.model.getProperty(this.model.ids[0]));
 
       if ( this.autoIndex ) this.addRawIndex(AutoIndex.create(this));
