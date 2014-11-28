@@ -1037,7 +1037,7 @@ CLASS({
       // Strip off package or contining Model until we are left with the last
       // resolving Model name in the chain (including inner models).
       // Ex: package.subpackage.ParentModel.InnerModel.feature => InnerModel
-      var findingPackages = true;
+      var findingPackages = !model.model_;
       while (args.length > 0 && model && model[args[1]] && (findingPackages || model[args[1]].model_)) {
         newResolvedRef += args[0] + ".";
         newResolvedRoot += args[0] + ".";
