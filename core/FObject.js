@@ -281,9 +281,11 @@ var FObject = {
     }
   },
 
-  equals: function(other) { return other === this || this.compareTo(other) == 0; },
+  equals: function(other) { return this.compareTo(other) == 0; },
 
   compareTo: function(other) {
+    if ( other === this ) return 0;
+
     var ps = this.model_.properties;
 
     for ( var i = 0 ; i < ps.length ; i++ ) {
