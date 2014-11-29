@@ -31,25 +31,6 @@ a {
   color: #4285f4;
 }
 
-.monogram-string-view {
-  align-items: center;
-  -webkit-align-items: center;
-  border-radius: 20px;
-  border: 1px solid rgba(0,0,0,.1);
-  color: #fff;
-  display: inline-flex;
-  display: -webkit-inline-flex;
-  flex-grow: 0;
-  -webkit-flex-grow: 0;
-  font-size: 20px;
-  height: 40px;
-  justify-content: center;
-  -webkit-justify-content: center;
-  margin-right: 16px;
-  overflow: hidden;
-  width: 40px;
-}
-
 .mdui-app-controller {
   display: flex;
   display: -webkit-flex;
