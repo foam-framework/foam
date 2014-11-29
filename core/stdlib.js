@@ -52,6 +52,32 @@ MODEL({
 });
 
 
+MODEL({
+  extendsProto: 'String',
+
+  methods: [
+    function indexOfIC(a) { return ( a.length > this.length ) ? -1 : this.toUpperCase().indexOf(a.toUpperCase()); },
+    function equals(other) { return this.compareTo(other) === 0; },
+    function equalsIC(other) { return other && this.toUpperCase() === other.toUpperCase(); },
+    function capitalize() { return this.charAt(0).toUpperCase() + this.slice(1); },
+    function capitalize() { return this.charAt(0).toUpperCase() + this.slice(1); },
+    function labelize() {
+      return this.replace(/[a-z][A-Z]/g, function (a) { return a.charAt(0) + ' ' + a.charAt(1); }).capitalize();
+    },
+    function constantize() {
+      // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
+      // TODO: add property to specify constantization. For now catch special case to avoid conflict with context this.X.
+      return this == "x" ?
+        "X_" :
+        this.replace(/[a-z_][^0-9a-z_]/g, function(a) {
+          return a.substring(0,1) + '_' + a.substring(1,2);
+        }).toUpperCase();
+    },
+    function clone() { return this.toString(); }
+  ]
+});
+
+
 var __features__ = [
   // First Axiom is used to Boot the remaining Axioms
   [ '__features__', function(__features__) {
@@ -92,25 +118,6 @@ var __features__ = [
     var id = 1;
     return function() { return this.$UID__ || (this.$UID__ = id++); };
   })()}]],
-{ return v; }; } ],
-  [ String          , 'Method$',    function indexOfIC(a) { return ( a.length > this.length ) ? -1 : this.toUpperCase().indexOf(a.toUpperCase()); }],
-  [ String          , 'Method$',    function equals(other) { return this.compareTo(other) === 0; }],
-  [ String          , 'Method$',    function equalsIC(other) { return other && this.toUpperCase() === other.toUpperCase(); }],
-  [ String          , 'Method$',    function capitalize() { return this.charAt(0).toUpperCase() + this.slice(1); }],
-  [ String          , 'Method$',    function capitalize() { return this.charAt(0).toUpperCase() + this.slice(1); }],
-  [ String          , 'Method$',    function labelize() {
-    return this.replace(/[a-z][A-Z]/g, function (a) { return a.charAt(0) + ' ' + a.charAt(1); }).capitalize();
-  }],
-  [ String          , 'Method$',    function constantize() {
-    // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
-    // TODO: add property to specify constantization. For now catch special case to avoid conflict with context this.X.
-    return this == "x" ?
-      "X_" :
-      this.replace(/[a-z_][^0-9a-z_]/g, function(a) {
-        return a.substring(0,1) + '_' + a.substring(1,2);
-      }).toUpperCase();
-  }],
-  [ String          , 'Method$',    function clone() { return this.toString(); }],
   [ Object          , 'Method$',    function clone() { return this; }],
   [ Number          , 'Method$',    function clone() { return +this; }],
   [ Object          , 'Method$',    function deepClone() { return this.clone(); }],
