@@ -68,7 +68,8 @@ var FObject = {
       }
       for ( var i = 0 ; i < this.imports_.length ; i++ ) {
         var im = this.imports_[i];
-        o[im[1]] = o.X[im[0]];
+        // Don't import from Context if explicitly passed in args
+        if ( ! args || ! args.hasOwnProperty(im[1]) ) o[im[1]] = o.X[im[0]];
       }
     }
 
