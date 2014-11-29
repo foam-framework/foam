@@ -32,6 +32,7 @@ a {
 }
 
 .mdui-app-controller {
+  background: white;
   display: flex;
   display: -webkit-flex;
   flex-direction: column;
