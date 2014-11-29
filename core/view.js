@@ -3032,6 +3032,7 @@ CLASS({
   ]
 });
 
+
 CLASS({
   name: 'SwipeAltView',
   extendsModel: 'View',
@@ -4794,10 +4795,9 @@ CLASS({
       defaultValueFn: function() {
         if ( this.panelView && this.panelView.minWidth )
           return this.panelView.minWidth + (this.panelView.stripWidth || 0);
+
         var e = this.panel$();
-        return e ?
-            toNum(this.X.window.getComputedStyle(e).width) :
-            250;
+        return e ? toNum(this.X.window.getComputedStyle(e).width) : 250;
       }
     },
     {
