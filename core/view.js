@@ -4778,9 +4778,7 @@ CLASS({
       name: 'minWidth',
       defaultValueFn: function() {
         var e = this.main$();
-        return e ?
-            toNum(this.X.window.getComputedStyle(e).width) :
-            300;
+        return e ? toNum(this.X.window.getComputedStyle(e).width) : 300;
       }
     },
     {
@@ -4809,17 +4807,13 @@ CLASS({
       name: 'panelWidth',
       hidden: true,
       help: 'Set internally by the resize handler',
-      postSet: function(_, x) {
-        this.panel$().style.width = x + 'px';
-      }
+      postSet: function(_, x) { this.panel$().style.width = x + 'px'; }
     },
     {
       model_: 'IntProperty',
       name: 'parentWidth',
       help: 'A pseudoproperty that returns the current with (CSS pixels) of the containing element',
-      getter: function() {
-        return toNum(this.X.window.getComputedStyle(this.$.parentNode).width);
-      }
+      getter: function() { return toNum(this.X.window.getComputedStyle(this.$.parentNode).width); }
     },
     {
       model_: 'IntProperty',
@@ -4840,14 +4834,15 @@ CLASS({
       //defaultValueFn: function() { this.width - this.stripWidth; },
       preSet: function(oldX, x) {
         if ( oldX !== x ) this.dir_ = oldX.compareTo(x);
+
         // Bound it between its left and right limits: full open and just the
         // strip.
-        if ( x <= this.parentWidth - this.panelWidth ) {
+        if ( x <= this.parentWidth - this.panelWidth )
           return this.parentWidth - this.panelWidth;
-        }
-        if ( x >= this.parentWidth - this.stripWidth ) {
+
+        if ( x >= this.parentWidth - this.stripWidth )
           return this.parentWidth - this.stripWidth;
-        }
+
         return x;
       },
       postSet: function(_, x) {
