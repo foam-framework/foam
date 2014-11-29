@@ -435,7 +435,7 @@ CLASS({
     cssClassAttr: function() {
       /*
         Returns the full CSS class to use for the $$DOC{ref:'View'} DOM element.
-        */
+       */
       if ( ! this.className && ! this.extraClassName ) return '';
 
       var s = ' class="';
@@ -451,20 +451,24 @@ CLASS({
     dynamicTag: function(tagName, f) {
       /*
         Creates a dynamic HTML tag whose content will be automatically updated.
-        */
+       */
       var id = this.nextID();
-      this.X.dynamic(function() {
-        var html = f();
-        var e = $(id);
-        if ( e ) e.innerHTML = html;
+
+      this.addInitializer(function() {
+        this.X.dynamic(function() {
+          var html = f();
+          var e = $(id);
+          if ( e ) e.innerHTML = html;
+        }.bind(this));
       }.bind(this));
+
       return '<' + tagName + ' id="' + id + '"></' + tagName + '>';
     },
 
     bindSubView: function(view, prop) {
       /*
         Bind a sub-$$DOC{ref:'View'} to a $$DOC{ref:'Property'} of this.
-        */
+       */
       view.setValue(this.propertyValue(prop.name));
     },
 
