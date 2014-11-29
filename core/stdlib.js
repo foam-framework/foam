@@ -15,6 +15,43 @@
  * limitations under the License.
  */
 
+var GLOBAL = GLOBAL || this;
+
+function MODEL(model) {
+  var proto = model.extendsProto ?
+    GLOBAL[model.extendsProto].prototype :
+    GLOBAL[model.extendsObject] ;
+
+  model.methods.forEach(function(m) {
+    Object.defineProperty(
+      proto,
+      m.name,
+      { value: m, writable: true, enumerable: false });
+  });
+}
+
+
+MODEL({
+  extendsObject: 'GLOBAL',
+
+  methods: [
+    function memoize(f) {
+      var cache = {};
+      return function() {
+        var key = argsToArray(arguments).toString();
+        if ( ! cache.hasOwnProperty(key) ) cache[key] = f.apply(this, arguments);
+        return cache[key];
+      };
+    },
+
+    function constantFn(v) {
+      /* Create a function which always returns the supplied constant value. */
+      return function() { return v; };
+    }
+  ]
+});
+
+
 var __features__ = [
   // First Axiom is used to Boot the remaining Axioms
   [ '__features__', function(__features__) {
@@ -55,16 +92,7 @@ var __features__ = [
     var id = 1;
     return function() { return this.$UID__ || (this.$UID__ = id++); };
   })()}]],
-  [                 , 'Method$',    function memoize(f) {
-    var cache = {};
-    return function() {
-      var key = argsToArray(arguments).toString();
-      if ( ! cache.hasOwnProperty(key) ) cache[key] = f.apply(this, arguments);
-      return cache[key];
-    };
-  }],
-  // Create a function which always returns the supplied constant value.
-  [                 , 'Method$',    function constantFn(v) { return function() { return v; }; } ],
+{ return v; }; } ],
   [ String          , 'Method$',    function indexOfIC(a) { return ( a.length > this.length ) ? -1 : this.toUpperCase().indexOf(a.toUpperCase()); }],
   [ String          , 'Method$',    function equals(other) { return this.compareTo(other) === 0; }],
   [ String          , 'Method$',    function equalsIC(other) { return other && this.toUpperCase() === other.toUpperCase(); }],
