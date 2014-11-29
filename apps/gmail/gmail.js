@@ -534,6 +534,7 @@ CLASS({
 
       .menuHeader {
         background: #db4437;
+        box-shadow: 0 3px 6px #888;
         color: white;
         padding: 10px 0 8px 15px;
       }
