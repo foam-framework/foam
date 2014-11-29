@@ -14,7 +14,7 @@
   </div>
   <div class='keypad'>
   <div class="edge2"></div>
-  <foam model="SlidePanelView" minWidth="360">
+  <foam model="SlidePanelView" minWidth="360" minPanelWidth="400" panelRatio="0.4">
     <mainView>
       <div id="%%id" class="buttons button-row">
         <div class="button-column" style="flex-grow: 3">
@@ -46,7 +46,7 @@
       </div>
     </mainView>
     <panelView>
-      <div id="%%id"><foam model="SlidePanelView" minWidth="360" minPanelWidth="90" panelRatio="0.25">
+      <div id="%%id"><foam model="SlidePanelView" minWidth="360" minPanelWidth="100" panelRatio="0.2">
         <mainView>
           <%
           this.X.registerModel(CalcButton.xbind({

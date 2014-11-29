@@ -4812,7 +4812,7 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'parentWidth',
-      help: 'A pseudoproperty that returns the current with (CSS pixels) of the containing element',
+      help: 'A pseudoproperty that returns the current width (CSS pixels) of the containing element',
       getter: function() { return toNum(this.X.window.getComputedStyle(this.$.parentNode).width); }
     },
     {
