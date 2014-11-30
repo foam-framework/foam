@@ -27,57 +27,110 @@
 /** Publish and Subscribe Event Notification Service. **/
 // ??? Whould 'Observable' be a better name?
 // TODO(kgr): Model or just make part of FObject?
-var EventService = {
 
-  /** If listener thows this exception, it will be removed. **/
-  UNSUBSCRIBE_EXCEPTION: 'unsubscribe',
+MODEL({
+  name: 'EventService',
 
-  /** Used as topic suffix to specify broadcast to all sub-topics. **/
-  WILDCARD: "*",
-
-  /** Create a "one-time" listener which unsubscribes itself after its first invocation. **/
-  oneTime: function(listener) {
-    return function() {
-      listener.apply(this, argsToArray(arguments));
-
-      throw EventService.UNSUBSCRIBE_EXCEPTION;
-    };
+  constants: {
+    /** If listener thows this exception, it will be removed. **/
+    UNSUBSCRIBE_EXCEPTION: 'unsubscribe',
+    
+    /** Used as topic suffix to specify broadcast to all sub-topics. **/
+    WILDCARD: "*"
   },
 
-  /** Log all listener invocations to console. **/
-  consoleLog: function(listener) {
-    return function() {
-      var args = argsToArray(arguments);
-      console.log(args);
+  methods: {
+    /** Create a "one-time" listener which unsubscribes itself after its first invocation. **/
+    oneTime: function(listener) {
+      return function() {
+        listener.apply(this, argsToArray(arguments));
 
-      listener.apply(this, args);
-    };
-  },
+        throw EventService.UNSUBSCRIBE_EXCEPTION;
+      };
+    },
 
-  /**
-   * Merge all notifications occuring in the specified time window into a single notification.
-   * Only the last notification is delivered.
-   *
-   * @param opt_delay time in milliseconds of time-window, defaults to 16ms, which is
-   *        the smallest delay that humans aren't able to perceive.
-   **/
-  merged: function(listener, opt_delay, opt_X) {
-    var delay = opt_delay || 16;
+    /** Log all listener invocations to console. **/
+    consoleLog: function(listener) {
+      return function() {
+        var args = argsToArray(arguments);
+        console.log(args);
 
-    return function() {
-      var triggered    = false;
-      var unsubscribed = false;
-      var lastArgs     = null;
+        listener.apply(this, args);
+      };
+    },
 
-      var f = function() {
-        lastArgs = arguments;
+    /**
+     * Merge all notifications occuring in the specified time window into a single notification.
+     * Only the last notification is delivered.
+     *
+     * @param opt_delay time in milliseconds of time-window, defaults to 16ms, which is
+     *        the smallest delay that humans aren't able to perceive.
+     **/
+    merged: function(listener, opt_delay, opt_X) {
+      var delay = opt_delay || 16;
 
-        if ( unsubscribed ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+      return function() {
+        var triggered    = false;
+        var unsubscribed = false;
+        var lastArgs     = null;
 
-        if ( ! triggered ) {
-          triggered = true;
-          try {
-            ((opt_X && opt_X.setTimeout) || setTimeout)(
+        var f = function() {
+          lastArgs = arguments;
+
+          if ( unsubscribed ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+
+          if ( ! triggered ) {
+            triggered = true;
+            try {
+              ((opt_X && opt_X.setTimeout) || setTimeout)(
+                function() {
+                  triggered = false;
+                  var args = argsToArray(lastArgs);
+                  lastArgs = null;
+                  try {
+                    listener.apply(this, args);
+                  } catch (x) {
+                    if ( x === EventService.UNSUBSCRIBE_EXCEPTION ) unsubscribed = true;
+                  }
+                }, delay);
+            } catch(e) {
+              // TODO: Clean this up when we move EventService into the context.
+              throw EventService.UNSUBSCRIBE_EXCEPTION;
+            }
+          }
+        };
+
+        f.toString = function() {
+          return 'MERGED(' + delay + ', ' + listener.$UID + ', ' + listener + ')';
+        };
+
+        return f;
+      }();
+    },
+
+    /**
+     * Merge all notifications occuring until the next animation frame.
+     * Only the last notification is delivered.
+     **/
+    // TODO: execute immediately from within a requestAnimationFrame
+    framed: function(listener, opt_X) {
+      opt_X = opt_X || this.X;
+      //    if ( ! opt_X ) debugger;
+      //    if ( opt_X.isBackground ) debugger;
+
+      return function() {
+        var triggered    = false;
+        var unsubscribed = false;
+        var lastArgs     = null;
+
+        var f = function() {
+          lastArgs = arguments;
+
+          if ( unsubscribed ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+
+          if ( ! triggered ) {
+            triggered = true;
+            ((opt_X && opt_X.requestAnimationFrame) || requestAnimationFrame)(
               function() {
                 triggered = false;
                 var args = argsToArray(lastArgs);
@@ -87,261 +140,215 @@ var EventService = {
                 } catch (x) {
                   if ( x === EventService.UNSUBSCRIBE_EXCEPTION ) unsubscribed = true;
                 }
-              }, delay);
-          } catch(e) {
-            // TODO: Clean this up when we move EventService into the context.
-            throw EventService.UNSUBSCRIBE_EXCEPTION;
+              });
+          }
+        };
+
+        f.toString = function() {
+          return 'ANIMATE(' + listener.$UID + ', ' + listener + ')';
+        };
+
+        return f;
+      }();
+    },
+
+    /** Decroate a listener so that the event is delivered asynchronously. **/
+    async: function(listener) {
+      return this.delay(0, listener);
+    },
+
+    delay: function(delay, listener, opt_X) {
+      opt_X = opt_X || this.X;
+      return function() {
+        var args = argsToArray(arguments);
+
+        // Is there a better way of doing this?
+        (opt_X && opt_X.setTimeout ? opt_X.setTimeout : setTimeout)( function() { listener.apply(this, args); }, delay );
+      };
+    },
+
+    hasListeners: function (topic) {
+      console.log('TODO: haslisteners');
+      // TODO:
+      return true;
+    },
+
+    /**
+     * Publish a notification to the specified topic.
+     *
+     * @return number of subscriptions notified
+     **/
+    publish: function (topic) {
+      return this.subs_ ?
+        this.pub_(
+          this.subs_,
+          0,
+          topic,
+          this.appendArguments([this, topic], arguments, 1)) :
+        0;
+    },
+
+    /** Publish asynchronously. **/
+    publishAsync: function (topic) {
+      var args = argsToArray(arguments);
+      var me   = this;
+
+      setTimeout( function() { me.publish.apply(me, args); }, 0);
+    },
+
+    /**
+     * Publishes a message to this object and all of its children.
+     * Objects/Protos which have children should override the
+     * standard definition, which is the same as just calling publish().
+     **/
+    deepPublish: function(topic) {
+      return this.publish.apply(this, arguments);
+    },
+
+    /**
+     * Publish a message supplied by a factory function.
+     *
+     * This is useful if the message is expensive to generate and you
+     * don't want to waste the effort if there are no listeners.
+     *
+     * arg fn: function which returns array
+     **/
+    lazyPublish: function (topic, fn) {
+      if ( this.hasListeners(topic) ) return this.publish.apply(this, fn());
+
+      return 0;
+    },
+
+    /** Subscribe to notifications for the specified topic. **/
+    subscribe: function (topic, listener) {
+      if ( ! this.subs_ ) this.subs_ = {};
+      //console.log("Sub: ",this, listener);
+
+      this.sub_(this.subs_, 0, topic, listener);
+    },
+
+    /** Unsubscribe a listener from the specified topic. **/
+    unsubscribe: function (topic, listener) {
+      if ( ! this.subs_ ) return;
+
+      this.unsub_(this.subs_, 0, topic, listener);
+    },
+
+    /** Unsubscribe all listeners from this service. **/
+    unsubscribeAll: function () {
+      this.sub_ = {};
+    },
+
+
+    ///////////////////////////////////////////////////////
+    //                                            Internal
+    /////////////////////////////////////////////////////
+
+    pub_: function(map, topicIndex, topic, msg) {
+      var count = 0;
+
+      // There are no subscribers, so nothing to do
+      if ( map == null ) return 0;
+
+      if ( topicIndex < topic.length ) {
+        var t = topic[topicIndex];
+
+        // wildcard publish, so notify all sub-topics, instead of just one
+        if ( t == this.WILDCARD )
+          return this.notifyListeners_(topic, map, msg);
+
+        if ( t ) count += this.pub_(map[t], topicIndex+1, topic, msg);
+      }
+
+      count += this.notifyListeners_(topic, map[null], msg);
+
+      return count;
+    },
+
+    sub_: function(map, topicIndex, topic, listener) {
+      if ( topicIndex == topic.length ) {
+        if ( ! map[null] ) map[null] = [];
+        map[null].push(listener);
+      } else {
+        var key = topic[topicIndex];
+
+        if ( ! map[key] ) map[key] = {};
+
+        this.sub_(map[key], topicIndex+1, topic, listener);
+      }
+    },
+
+    unsub_: function(map, topicIndex, topic, listener) {
+      if ( topicIndex == topic.length ) {
+        if ( ! map[null] ) return true;
+
+        if ( ! map[null].deleteI(listener) ) {
+          console.warn('phantom unsubscribe, size: ', map[null].length);
+        } else {
+          //        console.log('remove', topic);
+        }
+
+        if ( ! map[null].length ) delete map[null];
+      } else {
+        var key = topic[topicIndex];
+
+        if ( ! map[key] ) return false;
+
+        if ( this.unsub_(map[key], topicIndex+1, topic, listener) )
+          delete map[key];
+      }
+      return Object.keys(map).length == 0;
+    },
+
+    /** @return true if the message was delivered without error. **/
+    notifyListener_: function(topic, listener, msg) {
+      try {
+        listener.apply(null, msg);
+      } catch ( err ) {
+        if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
+          console.error('Error delivering event (removing listener): ', topic.join('.'), err);
+        } else {
+          console.warn('Unsubscribing listener: ', topic.join('.'));
+        }
+
+        return false;
+      }
+
+      return true;
+    },
+
+    /** @return number of listeners notified **/
+    notifyListeners_: function(topic, listeners, msg) {
+      if ( listeners == null ) return 0;
+
+      if ( Array.isArray(listeners) ) {
+        for ( var i = 0 ; i < listeners.length ; i++ ) {
+          var listener = listeners[i];
+
+          if ( ! this.notifyListener_(topic, listener, msg) ) {
+            listeners.splice(i,1);
+            i--;
           }
         }
-      };
 
-      f.toString = function() {
-        return 'MERGED(' + delay + ', ' + listener.$UID + ', ' + listener + ')';
-      };
-
-      return f;
-    }();
-  },
-
-  /**
-   * Merge all notifications occuring until the next animation frame.
-   * Only the last notification is delivered.
-   **/
-  // TODO: execute immediately from within a requestAnimationFrame
-  framed: function(listener, opt_X) {
-    opt_X = opt_X || this.X;
-//    if ( ! opt_X ) debugger;
-//    if ( opt_X.isBackground ) debugger;
-
-    return function() {
-      var triggered    = false;
-      var unsubscribed = false;
-      var lastArgs     = null;
-
-      var f = function() {
-        lastArgs = arguments;
-
-        if ( unsubscribed ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-
-        if ( ! triggered ) {
-          triggered = true;
-          ((opt_X && opt_X.requestAnimationFrame) || requestAnimationFrame)(
-            function() {
-              triggered = false;
-              var args = argsToArray(lastArgs);
-              lastArgs = null;
-              try {
-                listener.apply(this, args);
-              } catch (x) {
-                if ( x === EventService.UNSUBSCRIBE_EXCEPTION ) unsubscribed = true;
-              }
-            });
-        }
-      };
-
-      f.toString = function() {
-        return 'ANIMATE(' + listener.$UID + ', ' + listener + ')';
-      };
-
-      return f;
-    }();
-  },
-
-  /** Decroate a listener so that the event is delivered asynchronously. **/
-  async: function(listener) {
-    return this.delay(0, listener);
-  },
-
-  delay: function(delay, listener, opt_X) {
-    opt_X = opt_X || this.X;
-    return function() {
-      var args = argsToArray(arguments);
-
-      // Is there a better way of doing this?
-      (opt_X && opt_X.setTimeout ? opt_X.setTimeout : setTimeout)( function() { listener.apply(this, args); }, delay );
-    };
-  },
-
-  hasListeners: function (topic) {
-    // TODO:
-    return true;
-  },
-
-  /**
-   * Publish a notification to the specified topic.
-   *
-   * @return number of subscriptions notified
-   **/
-  publish: function (topic) {
-    return this.subs_ ?
-      this.pub_(
-        this.subs_,
-        0,
-        topic,
-        this.appendArguments([this, topic], arguments, 1)) :
-      0;
-  },
-
-  /** Publish asynchronously. **/
-  publishAsync: function (topic) {
-    var args = argsToArray(arguments);
-    var me   = this;
-
-    setTimeout( function() { me.publish.apply(me, args); }, 0);
-  },
-
-  /**
-   * Publishes a message to this object and all of its children.
-   * Objects/Protos which have children should override the
-   * standard definition, which is the same as just calling publish().
-   **/
-  deepPublish: function(topic) {
-    return this.publish.apply(this, arguments);
-  },
-
-  /**
-   * Publish a message supplied by a factory function.
-   *
-   * This is useful if the message is expensive to generate and you
-   * don't want to waste the effort if there are no listeners.
-   *
-   * arg fn: function which returns array
-   **/
-  lazyPublish: function (topic, fn) {
-    if ( this.hasListeners(topic) ) return this.publish.apply(this, fn());
-
-    return 0;
-  },
-
-  /** Subscribe to notifications for the specified topic. **/
-  subscribe: function (topic, listener) {
-    if ( ! this.subs_ ) this.subs_ = {};
-//console.log("Sub: ",this, listener);
-
-    this.sub_(this.subs_, 0, topic, listener);
-  },
-
-  /** Unsubscribe a listener from the specified topic. **/
-  unsubscribe: function (topic, listener) {
-    if ( ! this.subs_ ) return;
-
-    this.unsub_(this.subs_, 0, topic, listener);
-  },
-
-  /** Unsubscribe all listeners from this service. **/
-  unsubscribeAll: function () {
-    this.sub_ = {};
-  },
-
-
-  ///////////////////////////////////////////////////////
-  //                                            Internal
-  /////////////////////////////////////////////////////
-
-  pub_: function(map, topicIndex, topic, msg) {
-    var count = 0;
-
-    // There are no subscribers, so nothing to do
-    if ( map == null ) return 0;
-
-    if ( topicIndex < topic.length ) {
-      var t = topic[topicIndex];
-
-      // wildcard publish, so notify all sub-topics, instead of just one
-      if ( t == this.WILDCARD )
-        return this.notifyListeners_(topic, map, msg);
-
-      if ( t ) count += this.pub_(map[t], topicIndex+1, topic, msg);
-    }
-
-    count += this.notifyListeners_(topic, map[null], msg);
-
-    return count;
-  },
-
-  sub_: function(map, topicIndex, topic, listener) {
-    if ( topicIndex == topic.length ) {
-      if ( ! map[null] ) map[null] = [];
-      map[null].push(listener);
-    } else {
-      var key = topic[topicIndex];
-
-      if ( ! map[key] ) map[key] = {};
-
-      this.sub_(map[key], topicIndex+1, topic, listener);
-    }
-  },
-
-  unsub_: function(map, topicIndex, topic, listener) {
-    if ( topicIndex == topic.length ) {
-      if ( ! map[null] ) return true;
-
-      if ( ! map[null].deleteI(listener) ) {
-        console.warn('phantom unsubscribe, size: ', map[null].length);
-      } else {
-//        console.log('remove', topic);
+        return listeners.length;
       }
 
-      if ( ! map[null].length ) delete map[null];
-    } else {
-      var key = topic[topicIndex];
-
-      if ( ! map[key] ) return false;
-
-      if ( this.unsub_(map[key], topicIndex+1, topic, listener) )
-        delete map[key];
-    }
-    return Object.keys(map).length == 0;
-  },
-
-  /** @return true if the message was delivered without error. **/
-  notifyListener_: function(topic, listener, msg) {
-    try {
-      listener.apply(null, msg);
-    } catch ( err ) {
-      if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
-        console.error('Error delivering event (removing listener): ', topic.join('.'), err);
-      } else {
-        console.warn('Unsubscribing listener: ', topic.join('.'));
+      var count = 0;
+      for ( var key in listeners ) {
+        count += this.notifyListeners_(topic, listeners[key], msg);
       }
+      return count;
+    },
 
-      return false;
+    // convenience method to turn 'arguments' into a real array
+    appendArguments: function (a, args, start) {
+      for ( var i = start ; i < args.length ; i++ ) a.push(args[i]);
+
+      return a;
     }
-
-    return true;
-  },
-
-  /** @return number of listeners notified **/
-  notifyListeners_: function(topic, listeners, msg) {
-    if ( listeners == null ) return 0;
-
-    if ( Array.isArray(listeners) ) {
-      for ( var i = 0 ; i < listeners.length ; i++ ) {
-        var listener = listeners[i];
-
-        if ( ! this.notifyListener_(topic, listener, msg) ) {
-          listeners.splice(i,1);
-          i--;
-        }
-      }
-
-      return listeners.length;
-    }
-
-    var count = 0;
-    for ( var key in listeners ) {
-      count += this.notifyListeners_(topic, listeners[key], msg);
-    }
-    return count;
-  },
-
-  // convenience method to turn 'arguments' into a real array
-  appendArguments: function (a, args, start) {
-    for ( var i = start ; i < args.length ; i++ ) a.push(args[i]);
-
-    return a;
   }
-};
+});
 
 
 /** Extend EventService with support for dealing with property-change notification. **/

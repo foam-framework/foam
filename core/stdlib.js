@@ -19,9 +19,10 @@ var DEBUG  = false;
 var GLOBAL = GLOBAL || this;
 
 function MODEL(model) {
-  var proto = model.extendsProto ?
-    GLOBAL[model.extendsProto].prototype :
-    GLOBAL[model.extendsObject] ;
+  var proto = 
+    model.name         ? GLOBAL[model.name] || ( GLOBAL[model.name] = {} ) : 
+    model.extendsProto ? GLOBAL[model.extendsProto].prototype :
+                         GLOBAL[model.extendsObject] ;
 
   model.properties && model.properties.forEach(function(p) {
     Object.defineProperty(
@@ -36,12 +37,20 @@ function MODEL(model) {
       key,
       { value: model.constants[key], writable: true, enumerable: false });
 
-  model.methods.forEach(function(m) {
-    Object.defineProperty(
-      proto,
-      m.name,
-      { value: m, writable: true, enumerable: false });
-  });
+  if ( Array.isArray(model.methods) ) {
+    model.methods.forEach(function(m) {
+      Object.defineProperty(
+        proto,
+        m.name,
+        { value: m, writable: true, enumerable: false });
+    });
+  } else {
+    for ( var key in model.methods ) 
+      Object.defineProperty(
+        proto,
+        key,
+        { value: model.methods[key], writable: true, enumerable: false });
+  }
 }
 
 
