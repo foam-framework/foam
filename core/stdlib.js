@@ -635,10 +635,10 @@ document.put = function(obj) {
 // Promote webkit apis
 // TODO(kgr): this should be somewhere web specific
 
-window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+window.requestFileSystem     = window.requestFileSystem || window.webkitRequestFileSystem;
 window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
 
-if (window.Blob) {
+if ( window.Blob ) {
   Blob.prototype.slice = Blob.prototype.slice || Blob.prototype.webkitSlice;
 }
 
