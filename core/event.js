@@ -457,7 +457,6 @@ var PropertyValue = {
 };
 
 
-
 /** Static support methods for working with Events. **/
 var Events = {
 
@@ -623,10 +622,6 @@ var Events = {
 
 */
 
-Function.prototype.o = function(f2) {
-  var f1 = this;
-  return function() { return f1.call(this, f2.apply(this, argsToArray(arguments))); };
-};
 
 // TODO(kgr): Model
 var Movement = {

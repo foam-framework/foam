@@ -494,6 +494,13 @@ MODEL({
 
     function compareTo(o) {
       return this === o ? 0 : ( this.name.compareTo(o.name) || 1 );
+    },
+
+    function o(f2) {
+      var f1 = this;
+      return function() {
+        return f1.call(this, f2.apply(this, argsToArray(arguments)));
+      };
     }
   ]
 });
