@@ -22,6 +22,12 @@ function MODEL(model) {
     GLOBAL[model.extendsProto].prototype :
     GLOBAL[model.extendsObject] ;
 
+  for ( key in model.constants ) 
+    Object.defineProperty(
+      proto,
+      key,
+      { value: model.constants[key], writable: true, enumerable: false });
+
   model.methods.forEach(function(m) {
     Object.defineProperty(
       proto,
@@ -222,7 +228,9 @@ MODEL({
     function findViewportXY(node) {
       var rect = node.getBoundingClientRect();
       return [rect.left, rect.top];
-    }
+    },
+
+    function nop() { /** NOP function. **/ }
   ]
 });
 
@@ -232,7 +240,9 @@ MODEL({
 
   methods: [
     function clone() { return this; },
+
     function deepClone() { return this.clone(); },
+
     function become(other) {
       var local = Object.getOwnPropertyNames(this);
       for ( var i = 0; i < local.length; i++ ) {
@@ -247,6 +257,129 @@ MODEL({
           Object.getOwnPropertyDescriptor(other, remote[i]));
       }
       this.__proto__ = other.__proto__;
+    }
+  ]
+});
+
+
+MODEL({
+  extendsProto: 'Array',
+
+  constants: {
+    oldForEach_: Array.prototype.forEach
+  },
+
+  methods: [
+    function forEach(f, opt_this) {
+      /* Replace Array.forEach with a faster version. */
+      if ( ! this || ! f || opt_this ) return this.oldForEach_.call(this, f);
+
+      var l = this.length;
+      for ( var i = 0 ; i < l ; i++ ) f(this[i], i, this);
+    },
+
+    function binaryInsert(items) {
+      /* binaryInsert into a sorted array, removing duplicates */
+      var start = 0;
+      var end = this.length-1;
+      
+      while ( end >= start ) {
+        var m = start + Math.floor((end-start) / 2);
+        var c = item.compareTo(this[m]);
+        if ( c == 0 ) return this; // already there, nothing to do
+        if ( c < 0 ) { end = m-1; } else { start = m+1; }
+      }
+      
+      this.splice(start, 0, item);
+      
+      return this;
+    },
+
+    function union(other) {
+      return this.concat(
+        other.filter(function(o) { return this.indexOf(o) == -1; }.bind(this)));
+    },
+
+    function intersection(other) {
+      return this.filter(function(o) { return other.indexOf(o) != -1; });
+    },
+
+    function intern() {
+      for ( var i = 0 ; i < this.length ; i++ )
+        if ( this[i].intern ) this[i] = this[i].intern();
+      
+      return this;
+    },
+
+    function copareTo(other) {
+      if ( this.length !== other.length ) return -1;
+
+      for ( var i = 0 ; i < this.length ; i++ ) {
+        var result = this[i].compareTo(other[i]);
+        if ( result !== 0 ) return result;
+      }
+      return 0;
+    },
+
+    function fReduce(comparator, arr) {
+      compare = toCompare(comparator);
+      var result = [];
+      
+      var i = 0;
+      var j = 0;
+      var k = 0;
+      while(i < this.length && j < arr.length) {
+        var a = compare(this[i], arr[j]);
+        if ( a < 0 ) {
+          result[k++] = this[i++];
+          continue;
+        }
+        if ( a == 0) {
+          result[k++] = this[i++];
+          result[k++] = arr[j++];
+          continue;
+        }
+        result[k++] = arr[j++];
+      }
+      
+      if ( i != this.length ) result = result.concat(this.slice(i));
+      if ( j != arr.length ) result = result.concat(arr.slice(j));
+      
+      return result;
+    },
+
+    function pushAll(arr) {
+      /**
+       * Push an array of values onto an array.
+       * @param arr array of values
+       * @return new length of this array
+       */
+      // TODO: not needed, port and replace with pipe()
+      this.push.apply(this, arr);
+      return this.length;
+    },
+
+    function mapFind(map) {
+      /**
+       * Search for a single element in an array.
+       * @param predicate used to determine element to find
+       */
+      for (var i = 0;  i < this.length ; i++ ) {
+        var result = map(this[i], i);
+        if ( result ) return result;
+      }
+    },
+
+    function mapProp(prop) {
+      // Called like myArray.mapProp('name'), that's equivalent to:
+      // myArray.map(function(x) { return x.name; });
+      return this.map(function(x) { return x[prop]; });
+    },
+
+    function mapCall() {
+      var args = Array.prototype.slice.call(arguments, 0);
+      var func = args.shift();
+      return this.map(function(x) { return x[func] && x[func].apply(x[func], args); });
     }
   ]
 });
@@ -355,18 +488,6 @@ var __features__ = [
   [ Function        , 'Method$',    function compareTo(o) {
     return this === o ? 0 : ( this.name.compareTo(o.name) || 1 );
   }],
-  /**
-   * Replace Array.forEach with a faster version.
-   **/
-  [ Array        , 'Method$',    (function() {
-    var oldForEach  = Function.prototype.bind;
-
-    return function forEach(f, opt_this) {
-      if ( ! this || ! f || opt_this ) return oldForEach.call(this, f);
-      var l = this.length;
-      for ( var i = 0 ; i < l ; i++ ) f(this[i], i, this);
-    };
-  })()],
   [ Date            , 'Method$',    function toRelativeDateString(){
     var seconds = Math.floor((Date.now() - this.getTime())/1000);
 
@@ -411,23 +532,6 @@ var __features__ = [
   [ Boolean         , 'Method$',    function compareTo(o) {
     return (this.valueOf() ? 1 : 0) - (o ? 1 : 0);
   }],
-  /*
-  [ String          , 'Method$',    function }],
-  [ String          , 'Method$',    function }],
-  [ String          , 'Method$',    function }],
-  [ String          , 'Method$',    function }],
-  [ String          , 'Method$',    function }],
-  [ String          , 'Method$',    function }],
-  [ String          , 'Method$',    function }],
-  [ String, 'Method$', function
-  }],
-  [ String, 'Method$', function
-  }],
-  [ String, 'Method$', function
-  }],
-  [ String, 'Method$', function
-  }],
-  */
   [ String          , 'Poly$',   function startsWithIC(a) {
     if ( a.length > this.length ) return false;
     var l = a.length;
@@ -453,99 +557,6 @@ var __features__ = [
 
 __features__[0][1](__features__);
 
-/*  ???:
-  Allow Role to be a function?
-  Make processFeature be a feature.
-*/
-
-/** NOP func. **/
-function nop() {}
-
-
-// binaryInsert into a sorted array, removing duplicates
-Object.defineProperty(Array.prototype, 'binaryInsert', {
-  value: function(item) {
-    var start = 0;
-    var end = this.length-1;
-
-    while ( end >= start ) {
-      var m = start + Math.floor((end-start) / 2);
-      var c = item.compareTo(this[m]);
-      if ( c == 0 ) return this; // already there, nothing to do
-      if ( c < 0 ) { end = m-1; } else { start = m+1; }
-    }
-
-    this.splice(start, 0, item);
-
-    return this;
-  }
-});
-
-Object.defineProperty(Array.prototype, 'union', {
-  value: function(other) {
-    return this.concat(
-      other.filter(function(o) { return this.indexOf(o) == -1; }.bind(this)));
-  }
-});
-
-Object.defineProperty(Array.prototype, 'intersection', {
-  value: function(other) {
-    return this.filter(function(o) { return other.indexOf(o) != -1; });
-  }
-});
-
-// TODO: binarySearch
-
-Object.defineProperty(Array.prototype, 'intern', {
-  value: function() {
-    for ( var i = 0 ; i < this.length ; i++ )
-      if ( this[i].intern ) this[i] = this[i].intern();
-
-    return this;
-  }
-});
-
-Object.defineProperty(Array.prototype, 'compareTo', {
-  value: function(other) {
-    if ( this.length !== other.length ) return -1;
-
-    for ( var i = 0 ; i < this.length ; i++ ) {
-      var result = this[i].compareTo(other[i]);
-      if ( result !== 0 ) return result;
-    }
-    return 0;
-  }
-});
-
-Object.defineProperty(Array.prototype, 'fReduce', {
-  value: function(comparator, arr) {
-    compare = toCompare(comparator);
-    var result = [];
-
-    var i = 0;
-    var j = 0;
-    var k = 0;
-    while(i < this.length && j < arr.length) {
-      var a = compare(this[i], arr[j]);
-      if ( a < 0 ) {
-        result[k++] = this[i++];
-        continue;
-      }
-      if ( a == 0) {
-        result[k++] = this[i++];
-        result[k++] = arr[j++];
-        continue;
-      }
-      result[k++] = arr[j++];
-    }
-
-    if ( i != this.length ) result = result.concat(this.slice(i));
-    if ( j != arr.length ) result = result.concat(arr.slice(j));
-
-    return result;
-  }
-});
-
 
 function defineProperties(proto, fns) {
   for ( var key in fns ) {
@@ -562,66 +573,6 @@ function defineProperties(proto, fns) {
 }
 
 
-/**
- * Push an array of values onto an array.
- * @param arr array of values
- * @return new length of this array
- */
-// TODO: not needed, port and replace with pipe()
-Object.defineProperty(Array.prototype, 'pushAll', {
-  value: function(arr) {
-    this.push.apply(this, arr);
-    return this.length;
-}});
-
-
-/**
- * Search for a single element in an array.
- * @param predicate used to determine element to find
- */
-Object.defineProperty(Array.prototype, 'mapFind', {
-  value: function(map) {
-    for (var i = 0;  i < this.length ; i++ ) {
-      var result = map(this[i], i);
-      if ( result ) return result;
-    }
-  }
-});
-
-
-/** Remove an element from an array. **/
-/*
-Object.defineProperty(Array.prototype, 'remove', {
-  value: function(obj) {
-    var i = this.indexOf(obj);
-
-    if ( i != -1 ) this.splice(i, 1);
-
-    return this;
-}});
-*/
-
-/**
- * ForEach operator on Objects.
- * Calls function with arguments (obj, key).
- **/
-/*
-Object.defineProperty(Object.prototype, 'forEach', {
-  value: function(fn) {
-    for ( var key in this ) if (this.hasOwnProperty(key)) fn(this[key], key);
-}});
-*/
-
-
-/*
-Object.defineProperty(Object.prototype, 'put', {
-  value: function(obj) {
-    this[obj.id] = obj;
-  },
-  configurable: true,
-  writable: true
-});
-*/
 
 console.log.json = function() {
    var args = [];
@@ -642,16 +593,16 @@ console.log.str = function() {
 };
 
 // Promote 'console.log' into a Sink
-console.log.put         = console.log.bind(console);
-console.log.remove      = console.log.bind(console, 'remove: ');
-console.log.error       = console.log.bind(console, 'error: ');
-console.log.json.put    = console.log.json.bind(console);
+console.log.put          = console.log.bind(console);
+console.log.remove       = console.log.bind(console, 'remove: ');
+console.log.error        = console.log.bind(console, 'error: ');
+console.log.json.put     = console.log.json.bind(console);
 console.log.json.reduceI = console.log.json.bind(console, 'reduceI: ');
-console.log.json.remove = console.log.json.bind(console, 'remove: ');
-console.log.json.error  = console.log.json.bind(console, 'error: ');
-console.log.str.put     = console.log.str.bind(console);
-console.log.str.remove  = console.log.str.bind(console, 'remove: ');
-console.log.str.error  = console.log.str.bind(console, 'error: ');
+console.log.json.remove  = console.log.json.bind(console, 'remove: ');
+console.log.json.error   = console.log.json.bind(console, 'error: ');
+console.log.str.put      = console.log.str.bind(console);
+console.log.str.remove   = console.log.str.bind(console, 'remove: ');
+console.log.str.error    = console.log.str.bind(console, 'error: ');
 
 document.put = function(obj) {
   if ( obj.write ) {
@@ -679,22 +630,6 @@ String.prototype.intern = (function() {
   return function() { return map[this] || (map[this] = this.toString()); };
 })();
 
-// Called like myArray.mapProp('name'), that's equivalent to:
-// myArray.map(function(x) { return x.name; });
-Object.defineProperty(Array.prototype, 'mapProp', {
-  value: function(prop) {
-    return this.map(function(x) { return x[prop]; });
-  }
-});
-
-Object.defineProperty(Array.prototype, 'mapCall', {
-  value: function() {
-    var args = Array.prototype.slice.call(arguments, 0);
-    var func = args.shift();
-    return this.map(function(x) { return x[func] && x[func].apply(x[func], args); });
-  }
-});
-
 if ( window.XMLHttpRequest ) {
   /**
    * Add an afunc send to XMLHttpRequest
@@ -714,6 +649,7 @@ if ( window.XMLHttpRequest ) {
 RegExp.quote = function(str) {
   return (str+'').replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1');
 };
+
 
 var FeatureSet = {
   create: function() {
@@ -774,7 +710,6 @@ var FeatureSet = {
     return this.version_;
   }
 };
-
 
 function defineLocalProperty(cls, name, factory) {
   Object.defineProperty(cls, name, { get: function() {
