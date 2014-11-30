@@ -9,7 +9,6 @@ cat \
   ../../core/io.js \
   ../../core/writer.js \
   ../../core/socket.js \
-  ../../core/hash.js \
   ../../core/base64.js \
   ../../core/utf8.js \
   ../../core/parse.js \

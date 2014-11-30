@@ -28,7 +28,6 @@ var files = [
   'io',
   'writer',
   'socket',
-  'hash',
   'base64',
   'encodings',
   'utf8',
