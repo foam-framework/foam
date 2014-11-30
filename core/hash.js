@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 String.prototype.hashCode = function() {
   var hash = 0;
   if ( this.length == 0 ) return hash;

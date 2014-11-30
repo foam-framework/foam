@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 var SourceBlob = function(blob, sink, opt_skip, opt_buffersize) {
   var pos        = opt_skip || 0;
   var buffersize = opt_buffersize || 147456;
@@ -75,7 +76,6 @@ var TextToLines = function(sink) {
 
     return b;
   };
-
 
   return {
     __proto__: sink,
@@ -141,6 +141,7 @@ var BlobReader = {
   }
 };
 
+
 var TextReader = {
   create: function(reader) {
     return {
@@ -170,6 +171,7 @@ var TextReader = {
     this.reader.read(s);
   }
 };
+
 
 var LineBasedReader = {
   create: function(reader) {
@@ -212,6 +214,7 @@ var LineBasedReader = {
   }
 };
 
+
 var FullReader = {
   create: function(reader) {
     return {
@@ -233,6 +236,7 @@ var FullReader = {
   }
 };
 
+
 var AsBlobReader = {
   create: function(reader) {
     return {
@@ -251,6 +255,7 @@ var AsBlobReader = {
     this.reader.read(s);
   }
 };
+
 
 var SocketReader = {
   create: function(socket, opt_buffersize) {
@@ -274,6 +279,7 @@ var SocketReader = {
     });
   }
 };
+
 
 /**
  * <input type="file" id="fileinput">
