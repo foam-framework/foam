@@ -47,6 +47,206 @@ MODEL({
     function constantFn(v) {
       /* Create a function which always returns the supplied constant value. */
       return function() { return v; };
+    },
+
+    function argsToArray(args) {
+      var array = new Array(args.length);
+      for ( var i = 0; i < args.length; i++ ) array[i] = args[i];
+      return array;
+    },
+
+    function StringComparator(s1, s2) {
+      if ( s1 == s2 ) return 0;
+      return s1 < s2 ? -1 : 1;
+    },
+
+    function toCompare(c) {
+      if ( Array.isArray(c) ) return CompoundComparator.apply(null, c);
+      
+      return c.compare ? c.compare.bind(c) : c;
+    },
+
+    function CompoundComparator() {
+      var args = argsToArray(arguments);
+      var cs = [];
+      
+      // Convert objects with .compare() methods to compare functions.
+      for ( var i = 0 ; i < args.length ; i++ )
+        cs[i] = toCompare(args[i]);
+      
+      var f = function(o1, o2) {
+        for ( var i = 0 ; i < cs.length ; i++ ) {
+          var r = cs[i](o1, o2);
+          if ( r != 0 ) return r;
+        }
+        return 0;
+      };
+      
+      f.toSQL = function() { return args.map(function(s) { return s.toSQL(); }).join(','); };
+      f.toMQL = function() { return args.map(function(s) { return s.toMQL(); }).join(' '); };
+      f.toString = f.toSQL;
+      
+      return f;
+    },
+
+    function randomAct() {
+      /**
+       * Take an array where even values are weights and odd values are functions,
+       * and execute one of the functions with propability equal to it's relative
+       * weight.
+       */
+      // TODO: move this method somewhere better
+      var totalWeight = 0.0;
+      for ( var i = 0 ; i < arguments.length ; i += 2 ) totalWeight += arguments[i];
+      
+      var r = Math.random();
+      
+      for ( var i = 0, weight = 0 ; i < arguments.length ; i += 2 ) {
+        weight += arguments[i];
+        if ( r <= weight / totalWeight ) {
+          arguments[i+1]();
+          return;
+        }
+      }
+    },
+
+    // Workaround for crbug.com/258552
+    function Object_forEach(obj, fn) {
+      for (var key in obj) if (obj.hasOwnProperty(key)) fn(obj[key], key);
+    },
+
+    function predicatedSink(predicate, sink) {
+      if ( predicate === TRUE || ! sink ) return sink;
+      
+      return {
+        __proto__: sink,
+        $UID: sink.$UID,
+        put: function(obj, s, fc) {
+          if ( sink.put && ( ! obj || predicate.f(obj) ) ) sink.put(obj, s, fc);
+        },
+        remove: function(obj, s, fc) {
+          if ( sink.remove && ( ! obj || predicate.f(obj) ) ) sink.remove(obj, s, fc);
+        },
+        toString: function() {
+          return 'PredicatedSink(' +
+            sink.$UID + ', ' + predicate + ', ' + sink + ')';
+        }
+      };
+    },
+
+    function limitedSink(count, sink) {
+      var i = 0;
+      return {
+        __proto__: sink,
+        put: function(obj, s, fc) {
+          if ( i++ >= count && fc ) {
+            fc.stop();
+          } else {
+            sink.put(obj, s, fc);
+          }
+        }/*,
+           eof: function() {
+           sink.eof && sink.eof();
+           }*/
+      };
+    },
+
+    function skipSink(skip, sink) {
+      var i = 0;
+      return {
+        __proto__: sink,
+        put: function(obj, s, fc) {
+          if ( i++ >= skip ) sink.put(obj, s, fc);
+        }
+      };
+    },
+
+    function orderedSink(comparator, sink) {
+      comparator = toCompare(comparator);
+      return {
+        __proto__: sink,
+        i: 0,
+        arr: [],
+        put: function(obj, s, fc) {
+          this.arr.push(obj);
+        },
+        eof: function() {
+          this.arr.sort(comparator);
+          this.arr.select(sink);
+        }
+      };
+    },
+
+    function defineLazyProperty(target, name, definitionFn) {
+      Object.defineProperty(target, name, {
+        get: function() {
+          var definition = definitionFn.call(this);
+          Object.defineProperty(this, name, definition);
+          return definition.get ?
+            definition.get.call(this) :
+            definition.value;
+        },
+        configurable: true
+      });
+    },
+
+    // Function for returning multi-line strings from commented functions.
+    // Ex. var str = multiline(function() { /* multi-line string here */ });
+    function multiline(f) {
+      var s = f.toString();
+      var start = s.indexOf('/*');
+      var end   = s.lastIndexOf('*/');
+      return s.substring(start+2, end);
+    },
+
+    // Computes the XY coordinates of the given node
+    // relative to the containing elements.
+    // TODO: findViewportXY works better... but do we need to find parent?
+    function findPageXY(node) {
+      var x = 0;
+      var y = 0;
+      var parent;
+      
+      while ( node ) {
+        parent = node;
+        x += node.offsetLeft;
+        y += node.offsetTop;
+        node = node.offsetParent;
+      }
+      
+      return [x, y, parent];
+    },
+
+    // Computes the XY coordinates of the given node
+    // relative to the viewport.
+    function findViewportXY(node) {
+      var rect = node.getBoundingClientRect();
+      return [rect.left, rect.top];
+    }
+  ]
+});
+
+
+MODEL({
+  extendsProto: 'Object',
+
+  methods: [
+    function clone() { return this; },
+    function deepClone() { return this.clone(); },
+    function become(other) {
+      var local = Object.getOwnPropertyNames(this);
+      for ( var i = 0; i < local.length; i++ ) {
+        delete this[local[i]];
+      }
+      
+      var remote = Object.getOwnPropertyNames(other);
+      for ( i = 0; i < remote.length; i++ ) {
+        Object.defineProperty(
+          this,
+          remote[i],
+          Object.getOwnPropertyDescriptor(other, remote[i]));
+      }
+      this.__proto__ = other.__proto__;
     }
   ]
 });
@@ -57,13 +257,19 @@ MODEL({
 
   methods: [
     function indexOfIC(a) { return ( a.length > this.length ) ? -1 : this.toUpperCase().indexOf(a.toUpperCase()); },
+
     function equals(other) { return this.compareTo(other) === 0; },
+
     function equalsIC(other) { return other && this.toUpperCase() === other.toUpperCase(); },
+
     function capitalize() { return this.charAt(0).toUpperCase() + this.slice(1); },
+
     function capitalize() { return this.charAt(0).toUpperCase() + this.slice(1); },
+
     function labelize() {
       return this.replace(/[a-z][A-Z]/g, function (a) { return a.charAt(0) + ' ' + a.charAt(1); }).capitalize();
     },
+
     function constantize() {
       // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
       // TODO: add property to specify constantization. For now catch special case to avoid conflict with context this.X.
@@ -73,7 +279,10 @@ MODEL({
           return a.substring(0,1) + '_' + a.substring(1,2);
         }).toUpperCase();
     },
-    function clone() { return this.toString(); }
+
+    function clone() { return this.toString(); },
+
+    function compareTo(o) { return ( o == this ) ? 0 : this < o ? -1 : 1; }
   ]
 });
 
@@ -118,181 +327,7 @@ var __features__ = [
     var id = 1;
     return function() { return this.$UID__ || (this.$UID__ = id++); };
   })()}]],
-  [ Object          , 'Method$',    function clone() { return this; }],
   [ Number          , 'Method$',    function clone() { return +this; }],
-  [ Object          , 'Method$',    function deepClone() { return this.clone(); }],
-  [ Object          , 'Method$',    function become(other) {
-    var local = Object.getOwnPropertyNames(this);
-    for ( var i = 0; i < local.length; i++ ) {
-      delete this[local[i]];
-    }
-
-    var remote = Object.getOwnPropertyNames(other);
-    for ( i = 0; i < remote.length; i++ ) {
-      Object.defineProperty(
-        this,
-        remote[i],
-        Object.getOwnPropertyDescriptor(other, remote[i]));
-    }
-    this.__proto__ = other.__proto__;
-  }],
-  [                 , 'Method$', function argsToArray(args) {
-    var array = new Array(args.length);
-    for ( var i = 0; i < args.length; i++ ) array[i] = args[i];
-    return array;
-  }],
-  [                 , 'Method$', function StringComparator(s1, s2) {
-    if ( s1 == s2 ) return 0;
-    return s1 < s2 ? -1 : 1;
-  }],
-  [                 , 'Method$', function toCompare(c) {
-    if ( Array.isArray(c) ) return CompoundComparator.apply(null, c);
-
-    return c.compare ? c.compare.bind(c) : c;
-  }],
-  [                 , 'Method$', function CompoundComparator() {
-    var args = argsToArray(arguments);
-    var cs = [];
-
-    // Convert objects with .compare() methods to compare functions.
-    for ( var i = 0 ; i < args.length ; i++ )
-      cs[i] = toCompare(args[i]);
-
-    var f = function(o1, o2) {
-      for ( var i = 0 ; i < cs.length ; i++ ) {
-        var r = cs[i](o1, o2);
-        if ( r != 0 ) return r;
-      }
-      return 0;
-    };
-
-    f.toSQL = function() { return args.map(function(s) { return s.toSQL(); }).join(','); };
-    f.toMQL = function() { return args.map(function(s) { return s.toMQL(); }).join(' '); };
-    f.toString = f.toSQL;
-
-    return f;
-  }],
-  [                 , 'Method$', function randomAct() {
-    var totalWeight = 0.0;
-    for ( var i = 0 ; i < arguments.length ; i += 2 ) totalWeight += arguments[i];
-
-    var r = Math.random();
-
-    for ( var i = 0, weight = 0 ; i < arguments.length ; i += 2 ) {
-      weight += arguments[i];
-      if ( r <= weight / totalWeight ) {
-        arguments[i+1]();
-        return;
-      }
-    }
-  }],
-  // Workaround for crbug.com/258552
-  [                 , 'Method$', function Object_forEach(obj, fn) {
-    for (var key in obj) if (obj.hasOwnProperty(key)) fn(obj[key], key);
-  }],
-  [                 , 'Method$', function predicatedSink(predicate, sink) {
-    if ( predicate === TRUE || ! sink ) return sink;
-
-    return {
-      __proto__: sink,
-      $UID: sink.$UID,
-      put: function(obj, s, fc) {
-        if ( sink.put && ( ! obj || predicate.f(obj) ) ) sink.put(obj, s, fc);
-      },
-      remove: function(obj, s, fc) {
-        if ( sink.remove && ( ! obj || predicate.f(obj) ) ) sink.remove(obj, s, fc);
-      },
-      toString: function() { return 'PredicatedSink(' + sink.$UID + ', ' + predicate + ', ' + sink + ')';
-
-                           }/*,
-                              eof: function() {
-                              sink && sink.eof && sink.eof();
-                              }*/
-    };
-  }],
-  [                 , 'Method$', function limitedSink(count, sink) {
-    var i = 0;
-    return {
-      __proto__: sink,
-      put: function(obj, s, fc) {
-        if ( i++ >= count && fc ) {
-          fc.stop();
-        } else {
-          sink.put(obj, s, fc);
-        }
-      }/*,
-         eof: function() {
-         sink.eof && sink.eof();
-         }*/
-    };
-  }],
-  [                 , 'Method$', function skipSink(skip, sink) {
-    var i = 0;
-    return {
-      __proto__: sink,
-      put: function(obj, s, fc) {
-        if ( i++ >= skip ) sink.put(obj, s, fc);
-      }
-    };
-  }],
-  [                 , 'Method$', function orderedSink(comparator, sink) {
-    comparator = toCompare(comparator);
-    return {
-      __proto__: sink,
-      i: 0,
-      arr: [],
-      put: function(obj, s, fc) {
-        this.arr.push(obj);
-      },
-      eof: function() {
-        this.arr.sort(comparator);
-        this.arr.select(sink);
-      }
-    };
-  }],
-  [                 , 'Method$', function defineLazyProperty(target, name, definitionFn) {
-    Object.defineProperty(target, name, {
-      get: function() {
-        var definition = definitionFn.call(this);
-        Object.defineProperty(this, name, definition);
-        return definition.get ?
-          definition.get.call(this) :
-          definition.value;
-      },
-      configurable: true
-    });
-  }],
-  // Function for returning multi-line strings from commented functions.
-  // Ex. var str = multiline(function() { /* multi-line string here */ });
-  [                 , 'Method$', function multiline(f) {
-    var s = f.toString();
-    var start = s.indexOf('/*');
-    var end   = s.lastIndexOf('*/');
-    return s.substring(start+2, end);
-  }],
-  // Computes the XY coordinates of the given node
-  // relative to the containing elements.
-  // TODO: findViewportXY works better... but do we need to find parent?
-  [                 , 'Method$', function findPageXY(node) {
-    var x = 0;
-    var y = 0;
-    var parent;
-
-    while ( node ) {
-      parent = node;
-      x += node.offsetLeft;
-      y += node.offsetTop;
-      node = node.offsetParent;
-    }
-
-    return [x, y, parent];
-  }],
-  // Computes the XY coordinates of the given node
-  // relative to the viewport.
-  [                 , 'Method$', function findViewportXY(node) {
-    var rect = node.getBoundingClientRect();
-    return [rect.left, rect.top];
-  }],
   /**
    * Replace Function.bind with a version
    * which is ~10X faster for the common case
@@ -369,9 +404,6 @@ var __features__ = [
   }],
   [ Date            , 'Method$',    function toMQL() {
     return this.getFullYear() + '/' + (this.getMonth() + 1) + '/' + this.getDate();
-  }],
-  [ String          , 'Method$',    function compareTo(o) {
-    return ( o == this ) ? 0 : this < o ? -1 : 1;
   }],
   [ Number          , 'Method$',    function compareTo(o) {
     return ( o == this ) ? 0 : this < o ? -1 : 1;
@@ -513,53 +545,6 @@ Object.defineProperty(Array.prototype, 'fReduce', {
     return result;
   }
 });
-
-/** Reverse the direction of a comparator. **/
-
-var CompoundComparator = function() {
-  var args = argsToArray(arguments);
-  var cs = [];
-
-  // Convert objects with .compare() methods to compare functions.
-  for ( var i = 0 ; i < args.length ; i++ )
-    cs[i] = toCompare(args[i]);
-
-  var f = function(o1, o2) {
-    for ( var i = 0 ; i < cs.length ; i++ ) {
-      var r = cs[i](o1, o2);
-      if ( r != 0 ) return r;
-    }
-    return 0;
-  };
-
-  f.toSQL = function() { return args.map(function(s) { return s.toSQL(); }).join(','); };
-  f.toMQL = function() { return args.map(function(s) { return s.toMQL(); }).join(' '); };
-  f.toString = f.toSQL;
-
-  return f;
-};
-
-
-/**
- * Take an array where even values are weights and odd values are functions,
- * and execute one of the functions with propability equal to it's relative
- * weight.
- */
-// TODO: move this method somewhere better
-function randomAct() {
-  var totalWeight = 0.0;
-  for ( var i = 0 ; i < arguments.length ; i += 2 ) totalWeight += arguments[i];
-
-  var r = Math.random();
-
-  for ( var i = 0, weight = 0 ; i < arguments.length ; i += 2 ) {
-    weight += arguments[i];
-    if ( r <= weight / totalWeight ) {
-      arguments[i+1]();
-      return;
-    }
-  }
-}
 
 
 function defineProperties(proto, fns) {
