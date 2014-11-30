@@ -15,12 +15,20 @@
  * limitations under the License.
  */
 
+var DEBUG  = false;
 var GLOBAL = GLOBAL || this;
 
 function MODEL(model) {
   var proto = model.extendsProto ?
     GLOBAL[model.extendsProto].prototype :
     GLOBAL[model.extendsObject] ;
+
+  model.properties && model.properties.forEach(function(p) {
+    Object.defineProperty(
+      proto,
+      p.name,
+      { get: p.getter, enumerable: false });
+  });
 
   for ( key in model.constants ) 
     Object.defineProperty(
@@ -237,6 +245,16 @@ MODEL({
 
 MODEL({
   extendsProto: 'Object',
+
+  properties: [
+    {
+      name: '$UID',
+      getter: (function() {
+        var id = 1;
+        return function() { return this.$UID__ || (this.$UID__ = id++); };
+      })()
+    }
+  ],
 
   methods: [
     function clone() { return this; },
@@ -538,50 +556,6 @@ MODEL({
 });
 
 
-var __features__ = [
-  // First Axiom is used to Boot the remaining Axioms
-  [ '__features__', function(__features__) {
-    var __roles__ = { Role$: function(c, r, f) { __roles__[f.name] = f; } };
-    function Let$(c, r, f) { c[r] = f; }
-    function lookup(key) {
-      if ( ! key ) return this;
-      if ( ! ( typeof key === 'string' ) ) return key;
-
-      var path = key.split('.');
-      var root = this
-      for ( var i = 0 ; i < path.length ; i++ ) root = root[path[i]];
-
-      return root;
-    }
-
-    for ( var i = 1 ; i < __features__.length ; i++ ) {
-      var a = __features__[i], c = lookup(a[0]), r = a[1], f = a[2];
-
-//      console.log('Feature: ', r, f.name || f);
-      (__roles__[r] || Let$)(c, r, f);
-    }
-  }],
-  // Concept,         Role,         Individual
-  [                 , 'prototype',  this ],
-  [                 , 'DEBUG',      window['DEBUG']? true : false ], // pick up global debug setting, if present
-  [                 , 'Role$',      function Property$(c, r, f) { Object.defineProperty(c, f[0], f[1]); }],
-  [                 , 'Role$',      function Method$(c, r, f) {
-    if ( c == window ) {
-      c.prototype[f.name] = f;
-    } else {
-      Object.defineProperty(c.prototype, f.name, { value: f, writable: true, enumerable: false });
-    }
-  }],
-  [                 , 'Role$',      function Poly$(c, r, f) { if ( ! c.prototype.hasOwnProperty(f.name) ) c.prototype[f.name] = f; }],
-  [ Object.prototype, 'Property$',  ['$UID', { get: (function() {
-    var id = 1;
-    return function() { return this.$UID__ || (this.$UID__ = id++); };
-  })()}]]
-];
-
-__features__[0][1](__features__);
-
-
 function defineProperties(proto, fns) {
   for ( var key in fns ) {
     try {
@@ -595,7 +569,6 @@ function defineProperties(proto, fns) {
     }
   }
 }
-
 
 
 console.log.json = function() {
