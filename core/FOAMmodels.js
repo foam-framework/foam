@@ -87,7 +87,6 @@ var files = [
   [ 'ThreePaneController', IN_BROWSER ],
   'experimental/protobufparser',
   'experimental/protobuf',
-  // remove below here
   'models',
   [ 'touch', IN_BROWSER ],
   [ 'glang', IN_BROWSER ],
