@@ -352,76 +352,80 @@ MODEL({
 
 
 /** Extend EventService with support for dealing with property-change notification. **/
-// TODO(kgr): Model
-var PropertyChangeSupport = {
+MODEL({
+  name: 'PropertyChangeSupport',
 
-  __proto__: EventService,
+  extendsModel: 'EventService',
 
-  /** Root for property topics. **/
-  PROPERTY_TOPIC: 'property',
-
-  /** Create a topic for the specified property name. **/
-  propertyTopic: function (property) {
-    return [ this.PROPERTY_TOPIC, property ];
+  constants: {
+    /** Root for property topics. **/
+    PROPERTY_TOPIC: 'property'
   },
 
-  /** Indicate that a specific property has changed. **/
-  propertyChange: function (property, oldValue, newValue) {
-    // don't bother firing event if there are no listeners
-    if ( ! this.subs_ ) return;
+  methods: {
+    /** Create a topic for the specified property name. **/
+    propertyTopic: function (property) {
+      return [ this.PROPERTY_TOPIC, property ];
+    },
 
-    // don't fire event if value didn't change
-    if ( property != null && (
-          oldValue === newValue || 
+    /** Indicate that a specific property has changed. **/
+    propertyChange: function (property, oldValue, newValue) {
+      // don't bother firing event if there are no listeners
+      if ( ! this.subs_ ) return;
+      
+      // don't fire event if value didn't change
+      if ( property != null && (
+        oldValue === newValue || 
           (/*NaN check*/(oldValue !== oldValue) && (newValue !== newValue)) )
-       ) return;
-
-    this.publish(this.propertyTopic(property), oldValue, newValue);
-  },
-
-  propertyChange_: function (propertyTopic, oldValue, newValue) {
-    // don't bother firing event if there are no listeners
-    if ( ! this.subs_ ) return;
-
-    // don't fire event if value didn't change
-    if ( oldValue === newValue || (/*NaN check*/(oldValue !== oldValue) && (newValue !== newValue)) ) return;
-
-    this.publish(propertyTopic, oldValue, newValue);
-  },
-
-  /** Indicates that one or more unspecified properties have changed. **/
-  globalChange: function () {
-    this.publish(this.propertyTopic(this.WILDCARD), null, null);
-  },
-
-  addListener: function(listener) {
-    console.assert(listener, 'Listener cannot be null.');
-    // this.addPropertyListener([ this.PROPERTY_TOPIC ], listener);
-    this.addPropertyListener(null, listener);
-  },
-
-  removeListener: function(listener) {
-    this.removePropertyListener(null, listener);
-  },
-
-  /** @arg property the name of the property to listen to or 'null' to listen to all properties. **/
-  addPropertyListener: function(property, listener) {
-    this.subscribe(this.propertyTopic(property), listener);
-  },
-
-  removePropertyListener: function(property, listener) {
-    this.unsubscribe(this.propertyTopic(property), listener);
-  },
-
-  /** Create a Value for the specified property. **/
-  propertyValue: function(prop) {
-    if ( ! prop ) throw 'Property Name required for propertyValue().';
-    var name = prop + 'Value___';
-    return Object.hasOwnProperty.call(this, name) ? this[name] : ( this[name] = PropertyValue.create(this, prop) );
+         ) return;
+      
+      this.publish(this.propertyTopic(property), oldValue, newValue);
+    },
+    
+    propertyChange_: function (propertyTopic, oldValue, newValue) {
+      // don't bother firing event if there are no listeners
+      if ( ! this.subs_ ) return;
+      
+      // don't fire event if value didn't change
+      if ( oldValue === newValue || (/*NaN check*/(oldValue !== oldValue) && (newValue !== newValue)) ) return;
+      
+      this.publish(propertyTopic, oldValue, newValue);
+    },
+    
+    /** Indicates that one or more unspecified properties have changed. **/
+    globalChange: function () {
+      this.publish(this.propertyTopic(this.WILDCARD), null, null);
+    },
+    
+    addListener: function(listener) {
+      console.assert(listener, 'Listener cannot be null.');
+      // this.addPropertyListener([ this.PROPERTY_TOPIC ], listener);
+      this.addPropertyListener(null, listener);
+    },
+    
+    removeListener: function(listener) {
+      this.removePropertyListener(null, listener);
+    },
+    
+    /** @arg property the name of the property to listen to or 'null' to listen to all properties. **/
+    addPropertyListener: function(property, listener) {
+      this.subscribe(this.propertyTopic(property), listener);
+    },
+    
+    removePropertyListener: function(property, listener) {
+      this.unsubscribe(this.propertyTopic(property), listener);
+    },
+    
+    /** Create a Value for the specified property. **/
+    propertyValue: function(prop) {
+      if ( ! prop ) throw 'Property Name required for propertyValue().';
+      var name = prop + 'Value___';
+      return Object.hasOwnProperty.call(this, name) ? this[name] : ( this[name] = PropertyValue.create(this, prop) );
+    }
   }
-};
-
-
+});
+  
+  
 var FunctionStack = {
   create: function() {
     var stack = [false];

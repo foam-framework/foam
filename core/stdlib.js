@@ -19,10 +19,21 @@ var DEBUG  = false;
 var GLOBAL = GLOBAL || this;
 
 function MODEL(model) {
-  var proto = 
-    model.name         ? GLOBAL[model.name] || ( GLOBAL[model.name] = {} ) : 
-    model.extendsProto ? GLOBAL[model.extendsProto].prototype :
-                         GLOBAL[model.extendsObject] ;
+  var proto;
+
+  if ( model.name ) {
+    if ( ! GLOBAL[model.name] ) {
+      if ( model.extendsModel ) {
+        GLOBAL[model.name] = { __proto__: GLOBAL[model.extendsModel] };
+      } else {
+        GLOBAL[model.name] = {};
+      }
+    }
+    proto = GLOBAL[model.name];
+  } else {
+    proto = model.extendsProto ? GLOBAL[model.extendsProto].prototype :
+                                 GLOBAL[model.extendsObject] ;
+  }
 
   model.properties && model.properties.forEach(function(p) {
     Object.defineProperty(
