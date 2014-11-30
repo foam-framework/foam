@@ -17,10 +17,29 @@
 // TODO: time-travelling debugger, ala:
 //    "Debugging Standard ML Without Reverse Engineering"
 
-/** Adapt a synchronous method into a psedo-afunc. **/
-Function.prototype.abind = function(self) {
-  return function(ret) { this.apply(self, arguments); ret(); }.bind(this);
-};
+MODEL({
+  extendsProto: 'Function',
+
+  methods: [
+    function abind(self) {
+      /** Adapt a synchronous method into a psedo-afunc. **/
+      return function(ret) { this.apply(self, arguments); ret(); }.bind(this);
+    },
+
+    function ao(f2) {
+      /** Async Compose (like Function.prototype.O, but for async functions **/
+      var f1 = this;
+      return function(ret) {
+        var args = argsToArray(arguments);
+        args[0] = f1.bind(this, ret);
+        f2.apply(this, args);
+      }
+    },
+
+    function aseq(f2) { return f2.ao(this); }
+  ]
+});
+
 
 /** NOP afunc. **/
 function anop(ret) { ret && ret(undefined); }
@@ -415,21 +434,6 @@ function mergeAsync(f) {
     f.apply(null, a);
   };
 }
-
-
-/** Async Compose (like Function.prototype.O, but for async functions **/
-Function.prototype.ao = function(f2) {
-  var f1 = this;
-  return function(ret) {
-    var args = argsToArray(arguments);
-    args[0] = f1.bind(this, ret);
-    f2.apply(this, args);
-  };
-};
-
-Function.prototype.aseq = function(f2) {
-  return f2.ao(this);
-};
 
 
 /** Compose a variable number of async functions. **/
