@@ -448,7 +448,18 @@ MODEL({
         if ( this[i].toUpperCase() !== a[i].toUpperCase() ) return false;
       }
       return true;
-    }
+    },
+
+    function put(obj) { return this + obj.toJSON(); },
+    
+    (function() {
+      var map = {};
+      
+      return function intern() {
+        /** Convert a string to an internal canonical copy. **/
+        return map[this] || (map[this] = this.toString());
+      };
+    })()
   ]
 });
 
@@ -556,6 +567,17 @@ MODEL({
 });
 
 
+MODEL({
+  extendsProto: 'RegExp',
+
+  methods: [
+    function quote(str) {
+      return (str+'').replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1');
+    }
+  ]
+});
+
+
 function defineProperties(proto, fns) {
   for ( var key in fns ) {
     try {
@@ -609,9 +631,9 @@ document.put = function(obj) {
   }
 };
 
-String.prototype.put = function(obj) { return this + obj.toJSON(); };
 
 // Promote webkit apis
+// TODO(kgr): this should be somewhere web specific
 
 window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
@@ -619,13 +641,6 @@ window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequ
 if (window.Blob) {
   Blob.prototype.slice = Blob.prototype.slice || Blob.prototype.webkitSlice;
 }
-
-/** Convert a string to an internal canonical copy. **/
-String.prototype.intern = (function() {
-  var map = {};
-
-  return function() { return map[this] || (map[this] = this.toString()); };
-})();
 
 if ( window.XMLHttpRequest ) {
   /**
@@ -642,10 +657,6 @@ if ( window.XMLHttpRequest ) {
     xhr.send(opt_data);
   };
 }
-
-RegExp.quote = function(str) {
-  return (str+'').replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1');
-};
 
 
 var FeatureSet = {
