@@ -415,7 +415,22 @@ MODEL({
 
     function clone() { return this.toString(); },
 
-    function compareTo(o) { return ( o == this ) ? 0 : this < o ? -1 : 1; }
+    function compareTo(o) { return ( o == this ) ? 0 : this < o ? -1 : 1; },
+
+    // Polyfil
+    String.prototype.startsWith || function startsWith(a) {
+      // This implementation is very slow for some reason
+      return 0 == this.lastIndexOf(a, 0);
+    },
+
+    function startsWithIC(a) {
+      if ( a.length > this.length ) return false;
+      var l = a.length;
+      for ( var i = 0 ; i < l; i++ ) {
+        if ( this[i].toUpperCase() !== a[i].toUpperCase() ) return false;
+      }
+      return true;
+    }
   ]
 });
 
@@ -450,9 +465,75 @@ MODEL({
 
     function compareTo(o) {
       return this === o ? 0 : ( this.name.compareTo(o.name) || 1 );
+    }
+  ]
+});
+
+
+MODEL({
+  extendsProto: 'Date',
+
+  methods: [
+    function toRelativeDateString(){
+      var seconds = Math.floor((Date.now() - this.getTime())/1000);
+      
+      if ( seconds < 60 ) return 'moments ago';
+      
+      var minutes = Math.floor((seconds)/60);
+      
+      if ( minutes == 1 ) return '1 minute ago';
+      
+      if ( minutes < 60 ) return minutes + ' minutes ago';
+      
+      var hours = Math.floor(minutes/60);
+      if ( hours == 1 ) return '1 hour ago';
+      
+      if ( hours < 24 ) return hours + ' hours ago';
+      
+      var days = Math.floor(hours / 24);
+      if ( days == 1 ) return '1 day ago';
+      
+      if ( days < 7 ) return days + ' days ago';
+      
+      if ( days < 365 ) {
+        var year = 1900+this.getYear();
+        var noyear = this.toDateString().replace(" " + year, "");
+        return noyear.substring(4);
+      }
+      
+      return this.toDateString().substring(4);
     },
+    
+    function compareTo(o){
+      if ( o === this ) return 0;
+      if ( ! o ) return 1;
+      var d = this.getTime() - o.getTime();
+      return d == 0 ? 0 : d > 0 ? 1 : -1;
+    },
+    
+    function toMQL() {
+      return this.getFullYear() + '/' + (this.getMonth() + 1) + '/' + this.getDate();
+    }
+  ]
+});
 
 
+MODEL({
+  extendsProto: 'Number',
+
+  methods: [
+    function compareTo(o) { return ( o == this ) ? 0 : this < o ? -1 : 1; },
+
+    function clone() { return +this; }
+  ]
+});
+
+
+MODEL({
+  extendsProto: 'Boolean',
+
+  methods: [
+    function compareTo(o) { return (this.valueOf() ? 1 : 0) - (o ? 1 : 0); }
   ]
 });
 
@@ -482,7 +563,6 @@ var __features__ = [
   }],
   // Concept,         Role,         Individual
   [                 , 'prototype',  this ],
-  [                 , 'GLOBAL',     this['GLOBAL'] || this ],
   [                 , 'DEBUG',      window['DEBUG']? true : false ], // pick up global debug setting, if present
   [                 , 'Role$',      function Property$(c, r, f) { Object.defineProperty(c, f[0], f[1]); }],
   [                 , 'Role$',      function Method$(c, r, f) {
@@ -496,73 +576,7 @@ var __features__ = [
   [ Object.prototype, 'Property$',  ['$UID', { get: (function() {
     var id = 1;
     return function() { return this.$UID__ || (this.$UID__ = id++); };
-  })()}]],
-  [ Number          , 'Method$',    function clone() { return +this; }],
-  [ Date            , 'Method$',    function toRelativeDateString(){
-    var seconds = Math.floor((Date.now() - this.getTime())/1000);
-
-    if ( seconds < 60 ) return 'moments ago';
-
-    var minutes = Math.floor((seconds)/60);
-
-    if ( minutes == 1 ) return '1 minute ago';
-
-    if ( minutes < 60 ) return minutes + ' minutes ago';
-
-    var hours = Math.floor(minutes/60);
-    if ( hours == 1 ) return '1 hour ago';
-
-    if ( hours < 24 ) return hours + ' hours ago';
-
-    var days = Math.floor(hours / 24);
-    if ( days == 1 ) return '1 day ago';
-
-    if ( days < 7 ) return days + ' days ago';
-
-    if ( days < 365 ) {
-      var year = 1900+this.getYear();
-      var noyear = this.toDateString().replace(" " + year, "");
-      return noyear.substring(4);
-    }
-
-    return this.toDateString().substring(4);
-  }],
-  [ Date            , 'Method$',    function compareTo(o){
-    if ( o === this ) return 0;
-    if ( ! o ) return 1;
-    var d = this.getTime() - o.getTime();
-    return d == 0 ? 0 : d > 0 ? 1 : -1;
-  }],
-  [ Date            , 'Method$',    function toMQL() {
-    return this.getFullYear() + '/' + (this.getMonth() + 1) + '/' + this.getDate();
-  }],
-  [ Number          , 'Method$',    function compareTo(o) {
-    return ( o == this ) ? 0 : this < o ? -1 : 1;
-  }],
-  [ Boolean         , 'Method$',    function compareTo(o) {
-    return (this.valueOf() ? 1 : 0) - (o ? 1 : 0);
-  }],
-  [ String          , 'Poly$',   function startsWithIC(a) {
-    if ( a.length > this.length ) return false;
-    var l = a.length;
-    for ( var i = 0 ; i < l; i++ ) {
-      if ( this[i].toUpperCase() !== a[i].toUpperCase() ) return false;
-    }
-    return true;
-  }],
-  [ String          , 'Poly$',   function startsWith(a) {
-    // This implementation is very slow for some reason
-    return 0 == this.lastIndexOf(a, 0);
-    /*
-      But this one isn't any faster.
-      String.prototype.startsWith = function (a) {
-      if ( a.length > this.length ) return false;
-      var l = a.length;
-      for ( var i = 0 ; i < l ; i++ ) if ( this.charCodeAt(i) !== a.charCodeAt(i) ) return false;
-      return true;
-      };
-    */
-  }],
+  })()}]]
 ];
 
 __features__[0][1](__features__);
