@@ -635,385 +635,385 @@ var Events = {
 
 
 // TODO(kgr): Model
-var Movement = {
+MODEL({
+  name: 'Movement',
 
-  distance: function(x, y) { return Math.sqrt(x*x + y*y); },
+  methods: {
 
-  /** Combinator to create the composite of two functions. **/
-  o: function(f1, f2) { return function(x) { return f1(f2(x)); }; },
+    distance: function(x, y) { return Math.sqrt(x*x + y*y); },
 
-  /** Combinator to create the average of two functions. **/
-  avg: function(f1, f2) { return function(x) { return (f1(x) + f2(x))/2; }; },
-
-  /** Constant speed. **/
-  linear: function(x) { return x; },
-
-  /** Move to target value and then return back to original value. **/
-  back: function(x) { return x < 0.5 ? 2*x : 2-2*x; },
-
-  /** Start slow and accelerate until half-way, then start slowing down. **/
-  accelerate: function(x) { return (Math.sin(x * Math.PI - Math.PI/2)+1)/2; },
-
-  /** Start slow and ease-in to full speed. **/
-  easeIn: function(a) {
-    var v = 1/(1-a/2);
-    return function(x) {
-      var x1 = Math.min(x, a);
-      var x2 = Math.max(x-a, 0);
-      return (a ? 0.5*x1*(x1/a)*v : 0) + x2*v;
-    };
-  },
-
-  /** Combinator to reverse behaviour of supplied function. **/
-  reverse: function(f) { return function(x) { return 1-f(1-x); }; },
-
-  /** Reverse of easeIn. **/
-  easeOut: function(b) { return Movement.reverse(Movement.easeIn(b)); },
-
-  /**
-   * Cause an oscilation at the end of the movement.
-   * @param b percentage of time to to spend bouncing [0, 1]
-   * @param a amplitude of maximum bounce
-   * @param opt_c number of cycles in bounce (default: 3)
-   */
-  oscillate:  function(b, a, opt_c) {
-    var c = opt_c || 3;
-    return function(x) {
-      if ( x < (1-b) ) return x/(1-b);
-      var t = (x-1+b)/b;
-      return 1+(1-t)*2*a*Math.sin(2*c*Math.PI * t);
-    };
-  },
-
-  /**
-   * Cause an bounce at the end of the movement.
-   * @param b percentage of time to to spend bouncing [0, 1]
-   * @param a amplitude of maximum bounce
-   */
-  bounce:  function(b,a,opt_c) {
-    var c = opt_c || 3;
-    return function(x) {
-      if ( x < (1-b) ) return x/(1-b);
-      var t = (x-1+b)/b;
-      return 1-(1-t)*2*a*Math.abs(Math.sin(2*c*Math.PI * t));
-    };
-  },
-  bounce2: function(a) {
-    var v = 1 / (1-a);
-    return function(x) {
-      if ( x < (1-a) ) return v*x;
-      var p = (x-1+a)/a;
-      return 1-(x-1+a)*v/2;
-    };
-  },
-
-  /** Move backwards a% before continuing to end. **/
-  stepBack: function(a) {
-    return function(x) {
-      return ( x < a ) ? -x : -2*a+(1+2*a)*x;
-    };
-  },
-
-  /** Combination of easeIn and easeOut. **/
-  ease: function(a, b) {
-    return Movement.o(Movement.easeIn(a), Movement.easeOut(b));
-  },
-
-  seq: function(f1, f2) {
-    return ( f1 && f2 ) ? function() { f1.apply(this, argsToArray(arguments)); f2(); } :
-    f1 ? f1
-      : f2 ;
-  },
-
-  /** @return a latch function which can be called to stop the animation. **/
-  animate: function(duration, fn, opt_interp, opt_onEnd, opt_X) {
-    var setIntervalX   = ( opt_X && opt_X.setInterval   ) || setInterval;
-    var clearIntervalX = ( opt_X && opt_X.clearInterval ) || clearInterval;
-
-    //console.assert( opt_X && opt_X.setInterval, 'opt_X or opt_X.setInterval not available');
-
-    if ( duration == 0 ) return Movement.seq(fn, opt_onEnd);
-    var interp = opt_interp || Movement.linear;
-
-    return function() {
-      var ranges    = [];
-      var timer;
-
-      function stop() {
-        clearIntervalX(timer);
-        opt_onEnd && opt_onEnd();
-        opt_onEnd = null;
-      }
-
-      if ( fn ) {
-        Events.onSet.push(function(obj, name, value2) {
-          ranges.push([obj, name, obj[name], value2]);
-        });
-        fn.apply(this, argsToArray(arguments));
-        Events.onSet.pop();
-      }
-
-      var startTime = Date.now();
-
-      if ( ranges.length > 0 ) {
-        timer = setIntervalX(function() {
-          var now = Date.now();
-          var p   = interp((Math.min(now, startTime + duration)-startTime)/duration);
-
-          for ( var i = 0 ; i < ranges.length ; i++ ) {
-            var r = ranges[i];
-            var obj = r[0], name = r[1], value1 = r[2], value2 = r[3];
-
-            obj[name] = value1 + (value2-value1) * p;
-          }
-
-          if ( now >= startTime + duration ) stop();
-        }, 16);
-      } else {
-        timer = setIntervalX(stop, duration);
-      }
-
-      return stop;
-    };
-  },
-
-  // requires unsubscribe to work first (which it does now)
-  /*
-  animate2: function(timer, duration, fn) {
-    return function() {
+    /** Combinator to create the composite of two functions. **/
+    o: function(f1, f2) { return function(x) { return f1(f2(x)); }; },
+    
+    /** Combinator to create the average of two functions. **/
+    avg: function(f1, f2) { return function(x) { return (f1(x) + f2(x))/2; }; },
+    
+    /** Constant speed. **/
+    linear: function(x) { return x; },
+    
+    /** Move to target value and then return back to original value. **/
+    back: function(x) { return x < 0.5 ? 2*x : 2-2*x; },
+    
+    /** Start slow and accelerate until half-way, then start slowing down. **/
+    accelerate: function(x) { return (Math.sin(x * Math.PI - Math.PI/2)+1)/2; },
+    
+    /** Start slow and ease-in to full speed. **/
+    easeIn: function(a) {
+      var v = 1/(1-a/2);
+      return function(x) {
+        var x1 = Math.min(x, a);
+        var x2 = Math.max(x-a, 0);
+        return (a ? 0.5*x1*(x1/a)*v : 0) + x2*v;
+      };
+    },
+    
+    /** Combinator to reverse behaviour of supplied function. **/
+    reverse: function(f) { return function(x) { return 1-f(1-x); }; },
+    
+    /** Reverse of easeIn. **/
+    easeOut: function(b) { return Movement.reverse(Movement.easeIn(b)); },
+    
+    /**
+     * Cause an oscilation at the end of the movement.
+     * @param b percentage of time to to spend bouncing [0, 1]
+     * @param a amplitude of maximum bounce
+     * @param opt_c number of cycles in bounce (default: 3)
+     */
+    oscillate:  function(b, a, opt_c) {
+      var c = opt_c || 3;
+      return function(x) {
+        if ( x < (1-b) ) return x/(1-b);
+        var t = (x-1+b)/b;
+        return 1+(1-t)*2*a*Math.sin(2*c*Math.PI * t);
+      };
+    },
+    
+    /**
+     * Cause an bounce at the end of the movement.
+     * @param b percentage of time to to spend bouncing [0, 1]
+     * @param a amplitude of maximum bounce
+     */
+    bounce:  function(b,a,opt_c) {
+      var c = opt_c || 3;
+      return function(x) {
+        if ( x < (1-b) ) return x/(1-b);
+        var t = (x-1+b)/b;
+        return 1-(1-t)*2*a*Math.abs(Math.sin(2*c*Math.PI * t));
+      };
+    },
+    bounce2: function(a) {
+      var v = 1 / (1-a);
+      return function(x) {
+        if ( x < (1-a) ) return v*x;
+        var p = (x-1+a)/a;
+        return 1-(x-1+a)*v/2;
+      };
+    },
+    
+    /** Move backwards a% before continuing to end. **/
+    stepBack: function(a) {
+      return function(x) {
+        return ( x < a ) ? -x : -2*a+(1+2*a)*x;
+      };
+    },
+    
+    /** Combination of easeIn and easeOut. **/
+    ease: function(a, b) {
+      return Movement.o(Movement.easeIn(a), Movement.easeOut(b));
+    },
+    
+    seq: function(f1, f2) {
+      return ( f1 && f2 ) ? function() { f1.apply(this, argsToArray(arguments)); f2(); } :
+      f1 ? f1
+        : f2 ;
+    },
+    
+    /** @return a latch function which can be called to stop the animation. **/
+    animate: function(duration, fn, opt_interp, opt_onEnd, opt_X) {
+      var setIntervalX   = ( opt_X && opt_X.setInterval   ) || setInterval;
+      var clearIntervalX = ( opt_X && opt_X.clearInterval ) || clearInterval;
+      
+      //console.assert( opt_X && opt_X.setInterval, 'opt_X or opt_X.setInterval not available');
+      
+      if ( duration == 0 ) return Movement.seq(fn, opt_onEnd);
+      var interp = opt_interp || Movement.linear;
+      
+      return function() {
+        var ranges    = [];
+        var timer;
+        
+        function stop() {
+          clearIntervalX(timer);
+          opt_onEnd && opt_onEnd();
+          opt_onEnd = null;
+        }
+        
+        if ( fn ) {
+          Events.onSet.push(function(obj, name, value2) {
+            ranges.push([obj, name, obj[name], value2]);
+          });
+          fn.apply(this, argsToArray(arguments));
+          Events.onSet.pop();
+        }
+        
+        var startTime = Date.now();
+        
+        if ( ranges.length > 0 ) {
+          timer = setIntervalX(function() {
+            var now = Date.now();
+            var p   = interp((Math.min(now, startTime + duration)-startTime)/duration);
+            
+            for ( var i = 0 ; i < ranges.length ; i++ ) {
+              var r = ranges[i];
+              var obj = r[0], name = r[1], value1 = r[2], value2 = r[3];
+              
+              obj[name] = value1 + (value2-value1) * p;
+            }
+            
+            if ( now >= startTime + duration ) stop();
+          }, 16);
+        } else {
+          timer = setIntervalX(stop, duration);
+        }
+        
+        return stop;
+      };
+    },
+    
+    // requires unsubscribe to work first (which it does now)
+    /*
+      animate2: function(timer, duration, fn) {
+      return function() {
       var startTime = timer.time;
       Events.onSet.push(function(obj, name, value2) {
-        var value1 = obj[name];
-
-        Events.dynamic(function() {
-          var now = timer.time;
-
-          obj[name] = value1 + (value2-value1) * (now-startTime)/duration;
-
-          if ( now > startTime + duration ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-        });
-
-        return false;
+      var value1 = obj[name];
+      
+      Events.dynamic(function() {
+      var now = timer.time;
+      
+      obj[name] = value1 + (value2-value1) * (now-startTime)/duration;
+      
+      if ( now > startTime + duration ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+      });
+      
+      return false;
       });
       fn.apply(this, argsToArray(arguments));
       Events.onSet.pop();
       update();
-    };
-  },
-  */
-
-  // TODO: if this were an object then you could sub-class to modify playback
-  compile: function (a, opt_rest) {
-    function noop() {}
-
-    function isPause(op) {
-      return Array.isArray(op) && op[0] == 0;
-    }
-
-    function compilePause(op, rest) {
-      return function() {
-        document.onclick = function() {
-          document.onclick = null;
-          rest();
+      };
+      },
+    */
+    
+    // TODO: if this were an object then you could sub-class to modify playback
+    compile: function (a, opt_rest) {
+      function noop() {}
+      
+      function isPause(op) {
+        return Array.isArray(op) && op[0] == 0;
+      }
+      
+      function compilePause(op, rest) {
+        return function() {
+          document.onclick = function() {
+            document.onclick = null;
+            rest();
+          };
         };
-      };
-    }
+      }
+      
+      function isSimple(op) {
+        return Array.isArray(op) && typeof op[0] === 'number';
+      }
+      
+      function compileSimple(op, rest) {
+        op[3] = Movement.seq(op[3], rest);
+        return function() { Movement.animate.apply(null, op)(); };
+      }
+      
+      function isParallel(op) {
+        return Array.isArray(op) && Array.isArray(op[0]);
+      }
+      
+      function compileParallel(op, rest) {
+        var join = (function(num) {
+          return function() { --num || rest(); };
+        })(op.length);
 
-    function isSimple(op) {
-      return Array.isArray(op) && typeof op[0] === 'number';
-    }
-
-    function compileSimple(op, rest) {
-      op[3] = Movement.seq(op[3], rest);
-      return function() { Movement.animate.apply(null, op)(); };
-    }
-
-    function isParallel(op) {
-      return Array.isArray(op) && Array.isArray(op[0]);
-    }
-
-    function compileParallel(op, rest) {
-      var join = (function(num) {
-        return function() { --num || rest(); };
-      })(op.length);
-
-      return function() {
-        for ( var i = 0 ; i < op.length ; i++ )
-          if ( isSimple(op[i]) )
-            Movement.animate(op[i][0], op[i][1], op[i][2], Movement.seq(op[i][3], join))();
-        else
-          Movement.compile(op[i], join)();
-      };
-    }
-
-    function compileFn(fn, rest) {
-      return Movement.seq(fn, rest);
-    }
-
-    function compile_(a, i) {
-      if ( i >= a.length ) return opt_rest || noop;
-
-      var rest = compile_(a, i+1);
-      var op = a[i];
-
-      if ( isPause(op)    ) return compilePause(op, rest);
-      if ( isSimple(op)   ) return compileSimple(op, rest);
-      if ( isParallel(op) ) return compileParallel(op, rest);
-
-      return compileFn(op, rest);
-    }
-
-    return compile_(a, 0);
-  },
-
-
-  onIntersect: function (o1, o2, fn) {
-    if ( o1.model_.R ) {
-      Events.dynamic(function() { o1.x; o1.y; o2.x; o2.y; }, function() {
-        var dx = o1.x - o2.x;
-        var dy = o1.y - o2.y;
-        var d = dx*dx + dy*dy;
-        var r2 = o1.r + o2.r;
-        if ( d < r2*r2 )
-          fn.call(null, o1, o2);
+        return function() {
+          for ( var i = 0 ; i < op.length ; i++ )
+            if ( isSimple(op[i]) )
+              Movement.animate(op[i][0], op[i][1], op[i][2], Movement.seq(op[i][3], join))();
+          else
+            Movement.compile(op[i], join)();
+        };
+      }
+      
+      function compileFn(fn, rest) {
+        return Movement.seq(fn, rest);
+      }
+      
+      function compile_(a, i) {
+        if ( i >= a.length ) return opt_rest || noop;
+        
+        var rest = compile_(a, i+1);
+        var op = a[i];
+        
+        if ( isPause(op)    ) return compilePause(op, rest);
+        if ( isSimple(op)   ) return compileSimple(op, rest);
+        if ( isParallel(op) ) return compileParallel(op, rest);
+        
+        return compileFn(op, rest);
+      }
+      
+      return compile_(a, 0);
+    },
+    
+    onIntersect: function (o1, o2, fn) {
+      if ( o1.model_.R ) {
+        Events.dynamic(function() { o1.x; o1.y; o2.x; o2.y; }, function() {
+          var dx = o1.x - o2.x;
+          var dy = o1.y - o2.y;
+          var d = dx*dx + dy*dy;
+          var r2 = o1.r + o2.r;
+          if ( d < r2*r2 )
+            fn.call(null, o1, o2);
+        });
+      } else {
+        Events.dynamic(function() { o1.x; o1.y; o2.x; o2.y; }, function() {
+          if ( ( o1.x <= o2.x && o1.x + o1.width > o2.x    &&
+                 o1.y <= o2.y && o1.y + o1.height > o2.y ) ||
+               ( o2.x <= o1.x && o2.x + o2.width > o1.x    &&
+                 o2.y <= o1.y && o2.y + o2.height > o1.y ) )
+          {
+            fn.call(null, o1, o2);
+          }
+        });
+      }
+    },
+    
+    stepTowards: function(src, dst, maxStep) {
+      var dx = src.x - dst.x;
+      var dy = src.y - dst.y;
+      var theta = Math.atan2(dy,dx);
+      var r     = Math.sqrt(dx*dx+dy*dy);
+      r = r < 0 ? Math.max(-maxStep, r) : Math.min(maxStep, r);
+      
+      dst.x += r*Math.cos(-theta);
+      dst.y -= r*Math.sin(-theta);
+    },
+    
+    
+    /**
+     * Cause one object to move towards another at a specified rate.
+     *
+     * @arg t timer
+     * @arg body body to be orbitted
+     * @arg sat object to orbit body
+     * @arg r radius of orbit
+     * @arg p period of orbit
+     */
+    moveTowards: function (t, body, sat, v) {
+      var bodyX = body.propertyValue('x');
+      var bodyY = body.propertyValue('y');
+      var satX  = sat.propertyValue('x');
+      var satY  = sat.propertyValue('y');
+      
+      t.addListener(function() {
+        var dx = bodyX.get() - satX.get();
+        var dy = (bodyY.get() - satY.get());
+        var theta = Math.atan2(dy,dx);
+        var r     = Math.sqrt(dx*dx+dy*dy);
+        
+        r = r < 0 ? Math.max(-v, r) : Math.min(v, r);
+        
+        satX.set(satX.get() + r*Math.cos(-theta));
+        satY.set(satY.get() - r*Math.sin(-theta));
       });
-    } else {
-      Events.dynamic(function() { o1.x; o1.y; o2.x; o2.y; }, function() {
-        if ( ( o1.x <= o2.x && o1.x + o1.width > o2.x    &&
-               o1.y <= o2.y && o1.y + o1.height > o2.y ) ||
-             ( o2.x <= o1.x && o2.x + o2.width > o1.x    &&
-               o2.y <= o1.y && o2.y + o2.height > o1.y ) )
-        {
-          fn.call(null, o1, o2);
+    },
+
+    /**
+     * Cause one object to orbit another.
+     *
+     * @arg t timer
+     * @arg body body to be orbitted
+     * @arg sat object to orbit body
+     * @arg r radius of orbit
+     * @arg p period of orbit
+     */
+    orbit: function (t, body, sat, r, p, opt_start) {
+      var bodyX = body.x$;
+      var bodyY = body.y$;
+      var satX  = sat.x$;
+      var satY  = sat.y$;
+      var start = opt_start || 0;
+      
+      t.addListener(EventService.framed(function() {
+        var time = t.time;
+        satX.set(bodyX.get() + r*Math.sin(time/p*Math.PI*2 + start));
+        satY.set(bodyY.get() + r*Math.cos(time/p*Math.PI*2 + start));
+      }));
+    },
+    
+    strut: function(mouse, c, dx, dy) {
+      Events.dynamic(function() { mouse.x; mouse.y; }, function() {
+        c.x = mouse.x + dx;
+        c.y = mouse.y + dy;
+      });
+    },
+    
+    friction: function(c, opt_coef) {
+      var coef = opt_coef || 0.9;
+      Events.dynamic(function() { c.vx; c.vy; }, function() {
+        c.vx *= coef;
+        c.vy *= coef;
+      });
+    },
+    
+    inertia: function(c) {
+      Events.dynamic(function() { c.vx; c.vy; c.x; c.y; }, function() {
+        // Dynamic Friction
+        c.x += c.vx;
+        c.y += c.vy;
+        // StaticFriction
+        if ( c.x < 0.1 ) c.x = 0;
+        if ( c.y < 0.1 ) c.y = 0;
+      });
+    },
+    
+    spring: function(mouse, c, dx, dy, opt_strength) {
+      var strength = opt_strength || 8;
+      Events.dynamic(function() { mouse.x; mouse.y; c.x; c.y; }, function() {
+        if ( dx === 0 && dy === 0 ) {
+          c.x = mouse.x;
+          c.y = mouse.y;
+        } else {
+          var d   = Movement.distance(dx, dy);
+          var dx2 = mouse.x + dx - c.x;
+          var dy2 = mouse.y + dy - c.y;
+          var d2  = Movement.distance(dx2, dy2);
+          var dv  = strength * d2/d;
+          var a   = Math.atan2(dy2, dx2);
+          c.vx += dv * Math.cos(a);
+          c.vy += dv * Math.sin(a);
+        }
+      });
+    },
+    
+    spring2: function(c1, c2, length, opt_strength) {
+      var strength = opt_strength || 4;
+      
+      Events.dynamic(function() { c1.x; c1.y; c2.x; c2.y; }, function() {
+        var d = c1.distanceTo(c2);
+        var a = Math.atan2(c2.y-c1.y, c2.x-c1.x);
+        if ( d > length ) {
+          c1.applyMomentum( strength * (d/length-1), a);
+          c2.applyMomentum(-strength * (d/length-1), a);
+        } else if ( d < length ) {
+          c1.applyMomentum(-strength * (length/d-1), a);
+          c2.applyMomentum( strength * (length/d-1), a);
         }
       });
     }
-  },
-
-
-  stepTowards: function(src, dst, maxStep) {
-    var dx = src.x - dst.x;
-    var dy = src.y - dst.y;
-    var theta = Math.atan2(dy,dx);
-    var r     = Math.sqrt(dx*dx+dy*dy);
-    r = r < 0 ? Math.max(-maxStep, r) : Math.min(maxStep, r);
-
-    dst.x += r*Math.cos(-theta);
-    dst.y -= r*Math.sin(-theta);
-  },
-
-
-  /**
-   * Cause one object to move towards another at a specified rate.
-   *
-   * @arg t timer
-   * @arg body body to be orbitted
-   * @arg sat object to orbit body
-   * @arg r radius of orbit
-   * @arg p period of orbit
-   */
-  moveTowards: function (t, body, sat, v) {
-    var bodyX = body.propertyValue('x');
-    var bodyY = body.propertyValue('y');
-    var satX  = sat.propertyValue('x');
-    var satY  = sat.propertyValue('y');
-
-    t.addListener(function() {
-      var dx = bodyX.get() - satX.get();
-      var dy = (bodyY.get() - satY.get());
-      var theta = Math.atan2(dy,dx);
-      var r     = Math.sqrt(dx*dx+dy*dy);
-
-      r = r < 0 ? Math.max(-v, r) : Math.min(v, r);
-
-      satX.set(satX.get() + r*Math.cos(-theta));
-      satY.set(satY.get() - r*Math.sin(-theta));
-    });
-  },
-
-
-  /**
-   * Cause one object to orbit another.
-   *
-   * @arg t timer
-   * @arg body body to be orbitted
-   * @arg sat object to orbit body
-   * @arg r radius of orbit
-   * @arg p period of orbit
-   */
-  orbit: function (t, body, sat, r, p, opt_start) {
-    var bodyX = body.x$;
-    var bodyY = body.y$;
-    var satX  = sat.x$;
-    var satY  = sat.y$;
-    var start = opt_start || 0;
-
-    t.addListener(EventService.framed(function() {
-      var time = t.time;
-      satX.set(bodyX.get() + r*Math.sin(time/p*Math.PI*2 + start));
-      satY.set(bodyY.get() + r*Math.cos(time/p*Math.PI*2 + start));
-    }));
-  },
-
-  strut: function(mouse, c, dx, dy) {
-    Events.dynamic(function() { mouse.x; mouse.y; }, function() {
-      c.x = mouse.x + dx;
-      c.y = mouse.y + dy;
-    });
-  },
-
-  friction: function(c, opt_coef) {
-    var coef = opt_coef || 0.9;
-    Events.dynamic(function() { c.vx; c.vy; }, function() {
-      c.vx *= coef;
-      c.vy *= coef;
-    });
-  },
-
-  inertia: function(c) {
-    Events.dynamic(function() { c.vx; c.vy; c.x; c.y; }, function() {
-      // Dynamic Friction
-      c.x += c.vx;
-      c.y += c.vy;
-      // StaticFriction
-      if ( c.x < 0.1 ) c.x = 0;
-      if ( c.y < 0.1 ) c.y = 0;
-    });
-  },
-
-  spring: function(mouse, c, dx, dy, opt_strength) {
-    var strength = opt_strength || 8;
-    Events.dynamic(function() { mouse.x; mouse.y; c.x; c.y; }, function() {
-      if ( dx === 0 && dy === 0 ) {
-        c.x = mouse.x;
-        c.y = mouse.y;
-      } else {
-        var d   = Movement.distance(dx, dy);
-        var dx2 = mouse.x + dx - c.x;
-        var dy2 = mouse.y + dy - c.y;
-        var d2  = Movement.distance(dx2, dy2);
-        var dv  = strength * d2/d;
-        var a   = Math.atan2(dy2, dx2);
-        c.vx += dv * Math.cos(a);
-        c.vy += dv * Math.sin(a);
-      }
-    });
-  },
-
-  spring2: function(c1, c2, length, opt_strength) {
-    var strength = opt_strength || 4;
-
-    Events.dynamic(function() { c1.x; c1.y; c2.x; c2.y; }, function() {
-      var d = c1.distanceTo(c2);
-      var a = Math.atan2(c2.y-c1.y, c2.x-c1.x);
-      if ( d > length ) {
-        c1.applyMomentum( strength * (d/length-1), a);
-        c2.applyMomentum(-strength * (d/length-1), a);
-      } else if ( d < length ) {
-        c1.applyMomentum(-strength * (length/d-1), a);
-        c2.applyMomentum( strength * (length/d-1), a);
-      }
-    });
   }
-
-};
+});
