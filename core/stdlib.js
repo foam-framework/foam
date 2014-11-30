@@ -420,6 +420,43 @@ MODEL({
 });
 
 
+MODEL({
+  extendsProto: 'Function',
+
+  methods: [
+    /**
+     * Replace Function.bind with a version
+     * which is ~10X faster for the common case
+     * where you're only binding 'this'.
+     **/
+    (function() {
+      var oldBind    = Function.prototype.bind;
+      var simpleBind = function(f, self) {
+        var ret = function() { return f.apply(self, arguments); };
+        ret.toString = function bind() {
+          return f.toString();
+        };
+        return ret;
+      };
+      
+      return function bind(arg) {
+        return arguments.length == 1 ?
+          simpleBind(this, arg) :
+          oldBind.apply(this, argsToArray(arguments));
+      };
+    })(),
+    
+    function equals(o) { return this === o; },
+
+    function compareTo(o) {
+      return this === o ? 0 : ( this.name.compareTo(o.name) || 1 );
+    },
+
+
+  ]
+});
+
+
 var __features__ = [
   // First Axiom is used to Boot the remaining Axioms
   [ '__features__', function(__features__) {
@@ -461,33 +498,6 @@ var __features__ = [
     return function() { return this.$UID__ || (this.$UID__ = id++); };
   })()}]],
   [ Number          , 'Method$',    function clone() { return +this; }],
-  /**
-   * Replace Function.bind with a version
-   * which is ~10X faster for the common case
-   * where you're only binding 'this'.
-   **/
-  [ Function        , 'Method$',    (function() {
-    var oldBind    = Function.prototype.bind;
-    var simpleBind = function(f, self) {
-      var ret = function() { return f.apply(self, arguments); };
-      ret.toString = function bind() {
-        return f.toString();
-      };
-      return ret;
-    };
-
-    return function bind(arg) {
-      return arguments.length == 1 ?
-        simpleBind(this, arg) :
-        oldBind.apply(this, argsToArray(arguments));
-    };
-  })()],
-  [ Function        , 'Method$',    function equals(o) {
-    return this === o;
-  }],
-  [ Function        , 'Method$',    function compareTo(o) {
-    return this === o ? 0 : ( this.name.compareTo(o.name) || 1 );
-  }],
   [ Date            , 'Method$',    function toRelativeDateString(){
     var seconds = Math.floor((Date.now() - this.getTime())/1000);
 
