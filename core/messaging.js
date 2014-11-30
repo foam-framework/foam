@@ -34,19 +34,19 @@ CLASS({
       if ( this.retries ) this.addDecorator(RetryDecorator.create({ maxAttempts: this.retries }));
     },
 
-    makeXhr: function() {
-      return new XMLHttpRequest();
-    },
-    open: function(xhr, method, url) {
-      xhr.open(method, url);
-    },
+    makeXhr: function() { return new XMLHttpRequest(); },
+
+    open: function(xhr, method, url) { xhr.open(method, url); },
+
     setRequestHeader: function(xhr, header, value) {
       xhr.setRequestHeader(header, value);
     },
+
     configure: function(xhr) {
       xhr.responseType = this.responseType;
       this.setRequestHeader(xhr, "Content-Type", "application/json");
     },
+
     bindListeners: function(xhr, ret) {
       var self = this;
       xhr.onreadystatechange = function() {
@@ -58,9 +58,11 @@ CLASS({
         }
       }
     },
+
     send: function(xhr, data) {
       xhr.send(data);
     },
+
     asend: function(ret, url, data, method) {
       var xhr = this.makeXhr();
       this.open(xhr, method || "GET", url);
@@ -70,6 +72,7 @@ CLASS({
     },
   }
 });
+
 
 CLASS({
   name: "OAuthXhrDecorator",
@@ -84,6 +87,7 @@ CLASS({
       xhr.setRequestHeader("Authorization", "Bearer " + decorator.authAgent.accessToken);
       return delegate.apply(this, args);
     },
+
     asend: function(decorator, delegate, args) {
       var ret = args[0];
       args[0] = function(response, xhr) {
@@ -100,6 +104,7 @@ CLASS({
   }
 });
 
+
 CLASS({
   name: 'RetryDecorator',
 
@@ -107,32 +112,34 @@ CLASS({
     { model_: 'IntProperty', name: 'maxAttempts', defaultValue: 3 }
   ],
 
- methods: {
+  methods: {
     asend: function(decorator, delegate, args) {
       var originalRet = args[0];
       var attempts = 0;
       var self = this;
       var response;
 
-      awhile(function() { return true; },
-             aseq(
-               function(ret) {
-                 args[0] = ret;
-                 delegate.apply(self, args);
-               },
-               function(ret, response, xhr) {
-                 if ( ( xhr.status >= 200 && xhr.status < 300 ) ||
-                      xhr.status === 404 ||
-                      ++attempts >= decorator.maxAttempts ) {
-                   finished = true;
-                   originalRet(response, xhr);
-                   return;
-                 }
-                 ret();
-               }))(function(){});
+      awhile(
+        function() { return true; },
+        aseq(
+          function(ret) {
+            args[0] = ret;
+            delegate.apply(self, args);
+          },
+          function(ret, response, xhr) {
+            if ( ( xhr.status >= 200 && xhr.status < 300 ) ||
+                 xhr.status === 404 ||
+                 ++attempts >= decorator.maxAttempts ) {
+              finished = true;
+              originalRet(response, xhr);
+              return;
+            }
+            ret();
+          }))(function(){});
     }
   }
 });
+
 
 CLASS({
   name: 'DelayDecorator',
@@ -150,6 +157,7 @@ CLASS({
     }
   }
 });
+
 
 CLASS({
   name: 'XhrMessenger',
