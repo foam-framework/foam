@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 var Base64Decoder = {
   lookup: function(data) {
     return this.table_[data];

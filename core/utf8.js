@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 String.fromCharCode = (function() {
   var oldLookup = String.fromCharCode;
   var lookupTable = [];
@@ -26,6 +27,7 @@ String.fromCharCode = (function() {
     return result;
   };
 })();
+
 
 // WARNING: This is a hastily written UTF-8 decoder it probably has bugs.
 var IncrementalUtf8 = {
@@ -88,6 +90,7 @@ var IncrementalUtf8 = {
   }
 };
 
+
 var utf8tostring = (function() {
   var decoder = IncrementalUtf8.create();
 
@@ -100,6 +103,7 @@ var utf8tostring = (function() {
     return str;
   };
 })();
+
 
 function stringtoutf8(str) {
     var res = [];

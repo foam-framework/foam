@@ -15,6 +15,75 @@
  * limitations under the License.
  */
 
+var FeatureSet = {
+  create: function() {
+    var obj = Object.create(this);
+    obj.a_ = [];
+    obj.version_ = 1;
+    obj.parentVersion_ = 0;
+    obj.names_ = {};
+    return obj;
+  },
+
+  where: function(p) {
+    return {
+      __proto__: this,
+      forEach: function(iterator) {
+        return this.__proto__.forEach.call(this, function(f) {
+          if ( p(f) ) iterator(f);
+        });
+      },
+      localForEach: function(iterator) {
+        return this.__proto__.localForEach.call(this, function(f) {
+          if ( p(f) ) iterator(f);
+        });
+      },
+    };
+  },
+
+  forEach: function(iterator) {
+    var self = this;
+    if ( this.parent )
+      this.parent.where(function(f) {
+        return !f.name || !self.names_[f.name];
+      }).forEach(iterator);
+    this.localForEach(iterator);
+  },
+
+  localForEach: function(iterator) {
+    for ( var i = 0; i < this.a_.length; i++ ) {
+      var f = this.a_[i];
+
+      if ( f.name && f !== this.names_[f.name] )
+        continue;
+
+      iterator(this.a_[i]);
+    }
+  },
+
+  add: function(a) {
+    if ( a.name ) this.names_[a.name] = a;
+    this.a_.push(a);
+    this.version_++;
+  },
+
+  get parent() { return this.parent_; },
+  set parent(p)  { this.parent_ = p; },
+
+  get version() {
+    return this.version_;
+  }
+};
+
+function defineLocalProperty(cls, name, factory) {
+  Object.defineProperty(cls, name, { get: function() {
+    if ( this == cls ) return null;
+    var value = factory.call(this);
+    Object.defineProperty(this, name, { value: value });
+    return value;
+  } });
+}
+
 Object.defineProperty(Object.prototype, 'addFeature', {
   configurable: true,
   enumerable: false,

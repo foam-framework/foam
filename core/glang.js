@@ -28,9 +28,7 @@ CLASS({
       name:  'r',
       type:  'int',
       view:  'IntFieldView',
-      postSet: function(_, r) {
-        this.width = this.height = 2*r+2;
-      },
+      postSet: function(_, r) { this.width = this.height = 2*r+2; },
       defaultValue: 50
     },
     {
@@ -50,9 +48,7 @@ CLASS({
     {
       name:  'data',
       type:  'Array[float]',
-      factory: function() {
-        return [];
-      }
+      factory: function() { return []; }
     },
     {
       name: 'groups',
@@ -177,11 +173,12 @@ CLASS({
   }
 });
 
+
 var PIE = function(f, opt_args) {
   var p = PieExpr.create({arg1: f, arg2: COUNT()});
 
-  // TODO: opt_args is a little hackish, better to either make into a real property
-  // or take a PieGraph prototype as an argument/property.
+  // TODO: opt_args is a little hackish, better to either make into a real
+  // property or take a PieGraph prototype as an argument/property.
   p.opt_args = opt_args;
 
   return p;

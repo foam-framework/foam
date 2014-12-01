@@ -32,6 +32,7 @@ a {
 }
 
 .mdui-app-controller {
+  background: white;
   display: flex;
   display: -webkit-flex;
   flex-direction: column;
@@ -151,4 +152,6 @@ canvas.createButton {
   right: 20px;
   z-index: 10;
   background: rgba(0,0,0,0);
+  box-shadow: 3px 3px 3px #aaa;
+  border-radius: 30px;
 }

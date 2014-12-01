@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-if (navigator && navigator.userAgent.indexOf('Firefox') != -1) {
+if ( navigator && navigator.userAgent.indexOf('Firefox') != -1 ) {
   console.log('Loading Firefox Support.');
 
   Object.defineProperties(MouseEvent.prototype, {

@@ -124,18 +124,6 @@ var BooleanProperty = Model.create({
 });
 
 
-/*
-  preSet: function (d) {
-  return typeof d === 'string' ? new Date(d) : d;
-  },
-  tableFormatter: function(d) {
-  return d.toDateString();
-  },
-  factory: function() { return new Date(); }
-
-*/
-
-
 var DateProperty = Model.create({
   extendsModel: 'Property',
 

@@ -68,7 +68,8 @@ var FObject = {
       }
       for ( var i = 0 ; i < this.imports_.length ; i++ ) {
         var im = this.imports_[i];
-        o[im[1]] = o.X[im[0]];
+        // Don't import from Context if explicitly passed in args
+        if ( ! args || ! args.hasOwnProperty(im[1]) ) o[im[1]] = o.X[im[0]];
       }
     }
 
@@ -297,9 +298,7 @@ var FObject = {
     }
   },
 
-  equals: function(other) {
-    return this.compareTo(other) == 0;
-  },
+  equals: function(other) { return this.compareTo(other) == 0; },
 
   compareTo: function(other) {
     if ( other === this ) return 0;
@@ -341,9 +340,7 @@ var FObject = {
   },
 
   /** Reset a property to its default value. **/
-  clearProperty: function(name) {
-    delete this.instance_[name];
-  },
+  clearProperty: function(name) { delete this.instance_[name]; },
 
   defineProperty: function(prop) {
     var name = prop.name;
@@ -568,19 +565,11 @@ var FObject = {
     return this;
   },
 
+  output: function(out) { return JSONUtil.output(out, this); },
 
-  output: function(out) {
-    return JSONUtil.output(out, this);
-  },
+  toJSON: function() { return JSONUtil.stringify(this); },
 
-
-  toJSON: function() {
-    return JSONUtil.stringify(this);
-  },
-
-  toXML: function() {
-    return XMLUtil.stringify(this);
-  },
+  toXML: function() { return XMLUtil.stringify(this); },
 
   write: function(document, opt_view) {
     var view = (opt_view || DetailView).create({
@@ -605,7 +594,7 @@ var FObject = {
     if ( decorator.decorateObject )
       decorator.decorateObject(this);
 
-    for ( var i = 0; i < decorator.model_.methods.length; i++ ) {
+    for ( var i = 0 ; i < decorator.model_.methods.length ; i++ ) {
       var method = decorator.model_.methods[i];
       if ( method.name !== 'decorateObject' )
         this.decorate(method.name, method.code, decorator);
@@ -652,29 +641,28 @@ var FObject = {
   getFeature: function(featureName) {
     var feature = this.getMyFeature(featureName);
 
-    if (!feature && this.extendsModel) {
+    if ( ! feature && this.extendsModel ) {
       var ext = FOAM.lookup(this.extendsModel, this.X); 
-      if (ext) {
+      if ( ext ) {
         return ext.getFeature(featureName);
       }
     } else {
       return feature;
     }
-    return undefined;
   },
 
   // getAllFeatures accounts for inheritance through extendsModel
   getAllFeatures: function() {
     var featureList = this.getAllMyFeatures();
 
-    if (this.extendsModel) {
+    if ( this.extendsModel ) {
       var ext = FOAM.lookup(this.extendsModel, this.X);
-      if (ext) {
+      if ( ext ) {
         ext.getAllFeatures().map(function(subFeat) {
           var subName = subFeat.name.toUpperCase();
-          if (!featureList.mapFind(function(myFeat) { // merge in features we don't already have
+          if ( ! featureList.mapFind(function(myFeat) { // merge in features we don't already have
             return myFeat && myFeat.name && myFeat.name.toUpperCase() === subName;
-          })) {
+          }) ) {
             featureList.push(subFeat);
           }
         });

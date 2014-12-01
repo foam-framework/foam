@@ -158,7 +158,6 @@ function optional(p) {
   return f;
 }
 
-
 function copyInput(p) {
   p = prep(p);
   var f = function(ps) {
@@ -171,7 +170,6 @@ function copyInput(p) {
 
   return f;
 }
-
 
 /** Parses if the delegate parser parses, but doesn't advance the pstream. **/
 function lookahead(p) {
@@ -477,6 +475,8 @@ var grammar = {
   }
 };
 
+
+// TODO(kgr): move this somewhere better
 function defineTTLProperty(obj, name, ttl, f) {
   Object.defineProperty(obj, name, {
     get: function() {
