@@ -33,18 +33,18 @@ CLASS({
         var Y = project.X;
         Y.project     = project;
         Y.projectName = project.projectName;
-        var localDao = MDAO.create({ model: Y.QIssue });
 
         project.IssueNetworkDAO.batchSize = 25;
 
-        var factory = function() {
-          return Y.QIssue.create({
+        var factory = (function() {
+          var placeholder = Y.QIssue.create({
             status: 'OPEN',
             id: '',
             summary: 'Loading...',
             starred: false
           });
-        };
+          return function() { return placeholder; }
+        })();
 
         Y.issueDAO = Y.MDAO.create({ model: Y.QIssue });
 

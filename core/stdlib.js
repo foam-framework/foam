@@ -316,7 +316,7 @@ MODEL({
       for ( var i = 0 ; i < l ; i++ ) f(this[i], i, this);
     },
 
-    function binaryInsert(items) {
+    function binaryInsert(item) {
       /* binaryInsert into a sorted array, removing duplicates */
       var start = 0;
       var end = this.length-1;
@@ -349,7 +349,7 @@ MODEL({
       return this;
     },
 
-    function copareTo(other) {
+    function compareTo(other) {
       if ( this.length !== other.length ) return -1;
 
       for ( var i = 0 ; i < this.length ; i++ ) {

@@ -261,7 +261,7 @@ CLASS({
 
       body.style.overflow = 'auto';
       body.style.margin = '5px';
-      body.style.height = '100%';
+      // body.style.height = '100%';
 
       var self = this;
       body.ondrop = function(e) {

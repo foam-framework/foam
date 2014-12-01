@@ -952,7 +952,7 @@ CLASS({
   properties: [
     {
       name: 'getter',
-      defaultValue: function(name) { return this.X.$(this.instance_[name]); }
+      defaultValue: function(name) { return this.X.document.getElementById(this.instance_[name]); }
     }
   ]
 });
