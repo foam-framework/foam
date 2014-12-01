@@ -36,14 +36,15 @@ CLASS({
 
         project.IssueNetworkDAO.batchSize = 25;
 
-        var factory = function() {
-          return Y.QIssue.create({
+        var factory = (function() {
+          var placeholder = Y.QIssue.create({
             status: 'OPEN',
             id: '',
             summary: 'Loading...',
             starred: false
           });
-        };
+          return function() { return placeholder; }
+        })();
 
         Y.issueDAO = Y.MDAO.create({ model: Y.QIssue });
 
