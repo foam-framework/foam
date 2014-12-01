@@ -112,25 +112,6 @@ CLASS({
     DocumentationBook, or other thing.
   */},
 
-  properties: [
-    // {
-//       name: 'data',
-//       postSet: function() {
-//         if (this.data && (!this.model || this.model !== this.data.model_)) {
-//           this.model = this.data.model_;
-//         } else {
-//
-//         }
-//       }
-//     },
-//     {
-//       name: 'model',
-//       postSet: function() {
-//         this.updateHTML();
-//       }
-//     }
-
-  ],
 
   templates: [
     function toInnerHTML() {/*
@@ -378,10 +359,12 @@ CLASS({
       help: 'The model for which to display documentation.',
       documentation: "The $$DOC{ref:'Model'} for which to display $$DOC{ref:'Documentation'}.",
       postSet: function() {
-        if (this.data.model_.id !== 'Model') {
-          console.warn("ModelDocView created with non-model instance: ", this.data.model_.id, this.data);
+        if (this.data) {
+          if (this.data.model_.id !== 'Model') {
+            console.warn("ModelDocView created with non-model instance: ", this.data.model_.id, this.data);
+          }
+          this.processModelChange();
         }
-        this.processModelChange();
       }
     },
   ],
@@ -703,10 +686,16 @@ CLASS({
   extendsModel: 'foam.documentation.SummaryDocView',
   help: 'Displays the documentation of the given book.',
 
+  methods: {
+    onValueChange_: function() {
+      this.updateHTML();
+    }
+  },
+
   templates: [
 
     function toInnerHTML()    {/*
-<%    this.destroy(); console.log("Summary doc view ", this.data); %>
+<%    this.destroy(); %>
 <%    if (this.data) {  %>
         <div id="scrollTarget_<%=this.data.name%>" class="introduction">
           <h2><%=this.data.label%></h2>
@@ -1055,7 +1044,6 @@ CLASS({
       var newResolvedRoot = "";
 
       if ( ! model ) return;
-//console.log("Resolving: ",reference);
       // Strip off package or contining Model until we are left with the last
       // resolving Model name in the chain (including inner models).
       // Ex: package.subpackage.ParentModel.InnerModel.feature => InnerModel
@@ -1063,7 +1051,6 @@ CLASS({
       while (args.length > 0 && model && model[args[1]] && (findingPackages || (model[args[1]].model_ && model[args[1]].model_.id == 'Model'))) {
         newResolvedRef += args[0] + ".";
         newResolvedRoot += args[0] + ".";
-//console.log((findingPackages?"package part: ":"outer model: ") ,args[0]);
         args = args.slice(1); // remove package/outerModel part
         model = model[args[0]];
         if (model.model_) findingPackages = false; // done with packages, now check for inner models
@@ -1076,7 +1063,6 @@ CLASS({
       newResolvedModelChain.push(model);
       newResolvedRef += model.name;
       newResolvedRoot += model.name;
-//console.log("Resolved root: ", newResolvedRoot);
       // Check for a feature, and check inherited features too
       // If we have a Model definition, we make the jump from definition to an
       // instance of a feature definition here

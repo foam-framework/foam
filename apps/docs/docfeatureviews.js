@@ -327,14 +327,14 @@ CLASS({
   help: 'Displays the contents of the given Chapters.',
 
   methods: {
-    viewModel: function() { /* The $$DOC{ref:'Model'} type of the $$DOC{ref:'.data'}. */
-       return this;
-     }
+    onValueChange_: function() {
+      this.updateHTML();
+    },
   },
   
   templates: [
     function toInnerHTML()    {/*
-    <%    this.destroy(); 
+    <%    this.destroy();
           if (this.data) { %>
             <div class="memberList">$$data{ model_: 'DAOListView', rowView: 'foam.documentation.DocumentationBookSummaryDocView', model: this.X.Documentation }</div>
     <%    } %>

@@ -195,8 +195,8 @@ var BootstrapModel = {
       if ( i == -1 ) {
         props.push(Property.create({
           name:      alias,
-          transient: true,
-          hidden:    true
+//          transient: true,
+//          hidden:    true
         }));
       }/*
          TODO(kgr): Do I need to do anything in this case?

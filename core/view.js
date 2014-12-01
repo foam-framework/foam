@@ -971,7 +971,7 @@ CLASS({
     unbindData: function(oldData) {
       /* Unbind the data from the old view. */
       var view = this.view;
-      if ( ! view || ! oldData ) return;
+      if ( ! view || ! oldData || ! oldData.model_ ) return;
       var pValue = oldData.propertyValue(this.prop.name);
       Events.unlink(pValue, view.data$);
       //Events.unlink(pValue, this.propValue$);
@@ -980,7 +980,7 @@ CLASS({
     bindData: function(data) {
       /* Bind data to the new view. */
       var view = this.view;
-      if ( ! view || ! data ) return;
+      if ( ! view || ! data || ! data.model_ ) return;
       var pValue = data.propertyValue(this.prop.name);
       Events.link(pValue, view.data$);
       //Events.link(pValue, this.propValue$);

@@ -41,9 +41,9 @@ CLASS({
       factory: function() {
         var newDAO = this.MDAO.create({model:Model});
 
-        // This is to make sure getPrototype is called, even if the model object
-        // has been created without a .create or .getPrototype having been called
-        // yet.
+        //This is to make sure getPrototype is called, even if the model object
+        //has been created without a .create or .getPrototype having been called
+        //yet.
         for ( var key in UNUSED_MODELS ) {
           var modl = FOAM.lookup(key, this.X);
           modl.getPrototype && modl.getPrototype();
@@ -282,7 +282,7 @@ CLASS({
       name: 'modelList',
       factory: function() {
         this.contextSetup();
-        return this.SearchContext.ModelListController.create({}, this.SearchContext);
+        return this.SearchContext.ModelListController.create({}, this.SearchContext);      
       }
     },
     {

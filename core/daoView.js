@@ -34,7 +34,9 @@ CLASS({
     {
       name: 'data',
       postSet: function(oldDAO, dao) {
-        if ( this.dao !== dao ) this.dao = dao;
+        if ( this.dao !== dao ) {
+          this.dao = dao;
+        }
       },
       documentation: function() { /*
           Sets the $$DOC{ref:'DAO'} to render items from. Use $$DOC{ref:'.data'}
@@ -500,7 +502,9 @@ CLASS({
     {
       name: 'realDAOUpdate',
       isFramed: true,
-      code: function() { if ( ! this.hidden ) this.updateHTML(); }
+      code: function() { 
+        if ( ! this.hidden ) this.updateHTML(); 
+      }
     },
     {
       name: 'onScroll',
