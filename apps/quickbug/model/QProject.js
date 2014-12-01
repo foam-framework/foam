@@ -24,7 +24,10 @@ CLASS({
   ],
 
   exports: [
-    'IssueCommentDAO as QIssueCommentDAO'
+    'IssueCommentDAO as QIssueCommentDAO',
+    'StatusDAO',
+    'LabelDAO',
+    'PersonDAO'
   ],
 
   properties: [
@@ -69,33 +72,28 @@ CLASS({
     {
       name: 'LabelDAO',
       help: 'DAO of known labels.',
-      lazyFactory: function() {
+      factory: function() {
         var dao = MDAO.create({model: this.X.QIssueLabel});
         this.project.issuesConfig && this.project.issuesConfig.labels.select(dao);
         return dao;
-      },
-      postSet: function(_, value) { this.X.LabelDAO = value; }
+      }
     },
     {
       name: 'StatusDAO',
       help: 'DAO of known statuses.',
-      lazyFactory: function() {
+      factory: function() {
         var dao = MDAO.create({model: this.X.QIssueStatus});
         this.project.issuesConfig && this.project.issuesConfig.statuses.select(dao);
         return dao;
-      },
-      postSet: function(_, value) { this.X.StatusDAO = value; }
+      }
     },
     {
       name: 'PersonDAO',
       help: 'DAO of known people.',
-      lazyFactory: function() {
+      factory: function() {
         var dao = MDAO.create({ model: IssuePerson });
         this.project.members.select(dao);
         return dao;
-      },
-      postSet: function(_, value)  {
-        this.X.PersonDAO = value;
       }
     },
     {
