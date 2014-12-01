@@ -741,26 +741,7 @@ var AutoPositionIndex = {
       dao: mdao,
       networkdao: networkdao,
       sets: [],
-      alt: AltIndex.create(),
-      queue: arequestqueue(function(ret, request) {
-        var s = request.s;
-        obj.networkdao
-          .skip(request.skip)
-          .limit(request.limit)
-          .select()(function(objs) {
-            var now = Date.now();
-            for ( var i = 0; i < objs.length; i++ ) {
-              s[request.skip + i] = {
-                obj: objs[i],
-                timestamp: now
-              };
-              s.feedback = objs[i].id;
-              obj.dao.put(objs[i]);
-              s.feedback = null;
-            }
-            ret();
-          });
-      }, undefined, 1)
+      alt: AltIndex.create()
     };
     return obj;
   },
@@ -781,7 +762,7 @@ var AutoPositionIndex = {
       options && options.order,
       options && options.query,
       this.factory,
-      this.mdao,
+      this.dao,
       this.networkdao,
       this.queue,
       this.maxage);
@@ -816,7 +797,7 @@ var AutoPositionIndex = {
 
 var PositionIndex = {
   create: function(order, query, factory, dao, networkdao, queue, maxage) {
-    return {
+    var obj = {
       __proto__: this,
       order: order || '',
       query: query || '',
@@ -824,8 +805,27 @@ var PositionIndex = {
       dao: dao,
       networkdao: networkdao.where(query).orderBy(order),
       maxage: maxage,
-      queue: queue
+      queue: arequestqueue(function(ret, request) {
+        var s = request.s;
+        obj.networkdao
+          .skip(request.skip)
+          .limit(request.limit)
+          .select()(function(objs) {
+            var now = Date.now();
+            for ( var i = 0; i < objs.length; i++ ) {
+              s[request.skip + i] = {
+                obj: objs[i],
+                timestamp: now
+              };
+              s.feedback = objs[i].id;
+              obj.dao.put(objs[i]);
+              s.feedback = null;
+            }
+            ret();
+          });
+      }, undefined, 1)
     };
+    return obj;
   },
 
   put: function(s, newValue) {
