@@ -3826,6 +3826,8 @@ CLASS({
     select: function(sink, options) {
       if ( ! this.timeout_ ) this.timeout_ = this.X.setTimeout(this.purge, this.queryTTL);
 
+      sink = sink || [].sink;
+
       var query = options && options.query;
       var order = options && options.order;
       var skip = options.skip;
