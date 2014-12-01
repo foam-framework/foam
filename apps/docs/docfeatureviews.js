@@ -330,6 +330,9 @@ CLASS({
     onValueChange_: function() {
       this.updateHTML();
     },
+    viewModel: function() { /* The $$DOC{ref:'Model'} type of the $$DOC{ref:'.data'}. */
+      return this.X.Model; // force detailview to fall back to view.createTemplateView()
+    }
   },
   
   templates: [

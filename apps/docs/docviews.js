@@ -112,7 +112,6 @@ CLASS({
     DocumentationBook, or other thing.
   */},
 
-
   templates: [
     function toInnerHTML() {/*
       <% this.destroy();
