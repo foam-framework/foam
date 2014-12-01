@@ -12,6 +12,30 @@
 
 <script id='demo' language="xjavascript">
 
+CLASS({
+  name: 'Tabla',
+  properties: [ 'id', 'a', 'b' ]
+});
+
+// Create an IndexedDB table with caching.
+var dao = EasyDAO.create({model: Tabla, daoType: 'IDBDAO', cache: true});
+
+// Add your test data.
+[
+  Tabla.create({id: 1, a: 'johnny', b: 'olivas'}),
+  Tabla.create({id: 2, a: 'jonas',  b: 'torres'}),
+  Tabla.create({id: 3, a: 'jon',    b: 'jonatis'}),
+  Tabla.create({id: 4, a: 'alc',    b: 'jonhson'})
+].select(dao);
+
+// Select id from tabla Where x='jon' or y='jon'
+dao.where(OR(CONTAINS(Tabla.A, 'jon'), CONTAINS(Tabla.B, 'jon'))).select(
+  function(t) { console.log(t.id); }
+);
+
+// Cleanup Data when done.
+dao.removeAll();
+
 // Test IN and EQ
 
 CLASS({
@@ -40,8 +64,7 @@ MyTableDAO.removeAll();
 // DAO Sample
 
 // First, create a Model (like a schema)
-var Person = FOAM({
-  model_: 'Model',
+CLASS({
   name: 'Person',
   properties: [
     { name: 'id' },
