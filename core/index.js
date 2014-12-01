@@ -1019,7 +1019,7 @@ var AltIndex = {
 
     //    console.log('Best Plan: ' + bestPlan);
 
-    if ( bestPlan == undefined ) return NO_PLAN;
+    if ( bestPlan == undefined || bestPlan == NO_PLAN ) return NO_PLAN;
 
     return {
       __proto__: bestPlan,
