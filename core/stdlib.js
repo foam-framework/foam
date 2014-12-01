@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-var DEBUG  = false;
+var DEBUG  = DEBUG || false;
 var GLOBAL = GLOBAL || this;
 
 function MODEL(model) {

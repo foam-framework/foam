@@ -966,7 +966,7 @@ CLASS({
       help: 'Sub-documents comprising the full body of this document.',
       documentation: "Optional sub-documents to be included in this document. A viewer may choose to provide an index or a table of contents.",
       preSet: function(old, nu) {
-        if ( ! DEBUG ) return;
+        if ( ! DEBUG ) return []; // returning undefined causes problems
         var self = this;
         var foamalized = [];
         // create models if necessary
