@@ -64,6 +64,6 @@ CLASS({
   extendsModel: 'DetailView',
   traits: ['ColoredBackgroundTrait'],
   templates: [ function toHTML() {/*
-    <div id="%%id" %%generateColorStyle(this.data.label.match(/[^-]+/)[0]) class="IssueLabel">{{ this.data.label }}</div>
+    <div id="%%id" <%= this.generateColorStyle(this.data.label.match(/[^-]+/)[0]) %> class="IssueLabel">{{ this.data.label }}</div>
   */} ]
 });
