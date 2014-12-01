@@ -5302,16 +5302,13 @@ CLASS({
     {
       name: 'future',
       required: true,
-      documentation: 'The Future for this View. Returns a View.',
-      postSet: function(old, nu) {
-        nu.get(this.onFuture);
-      },
+      documentation: 'The Future for this View. Returns a View.'
     },
     {
       name: 'timer',
       hidden: true,
       factory: function() {
-        return this.setTimeout(this.onTimer, 10);
+        return this.setTimeout(this.onTimer, 500);
       }
     },
     {
@@ -5368,6 +5365,7 @@ CLASS({
       if ( this.childView ) this.childView.initHTML();
       if ( this.spinner ) this.spinner.initHTML();
       this.SUPER();
+      (this.future.get || this.future)(this.onFuture);
     },
     destroy: function() {
       if ( this.spinner ) this.spinner.destroy();
