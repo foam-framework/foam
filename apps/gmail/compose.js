@@ -33,7 +33,7 @@ CLASS({
         $$to{placeholder: 'To'} <br>
         $$cc{placeholder: 'Cc'} <br>
         $$bcc{placeholder: 'Bcc'} <br>
-        $$subject{ placeholder: 'Subject' }
+        $$subject{ placeholder: 'Subject', onKeyMode: true}
         $$body{model_: 'ToolbarRichTextView', height: 300, placeholder: 'Message'}
         </div>
         $$send{background: '#259b24', radius: 24, iconUrl: 'images/send.png'}
