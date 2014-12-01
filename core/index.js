@@ -814,7 +814,7 @@ var PositionIndex = {
             var now = Date.now();
             for ( var i = 0; i < objs.length; i++ ) {
               s[request.skip + i] = {
-                obj: objs[i],
+                obj: objs[i].id,
                 timestamp: now
               };
               s.feedback = objs[i].id;
@@ -924,7 +924,13 @@ var PositionIndex = {
             if ( min == undefined ) min = i + skip;
             max = i + skip;
           }
-          objs[i] = o ? o.obj : self.factory();
+          if ( o ) {
+            // TODO: Works because find is actually synchronous.
+            // this will need to fixed if find starts using an async function.
+            self.dao.find(o.obj, { put: function(obj) { objs[i] = obj; } });
+          } else {
+            objs[i] = self.factory();
+          }
           if ( ! objs[i] ) debugger;
         }
 
