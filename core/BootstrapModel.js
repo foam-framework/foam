@@ -30,6 +30,15 @@
  * the end of metamodel.js once the real Model is created.
  **/
 
+function defineLocalProperty(cls, name, factory) {
+  Object.defineProperty(cls, name, { get: function() {
+    if ( this == cls ) return null;
+    var value = factory.call(this);
+    Object.defineProperty(this, name, { value: value });
+    return value;
+  } });
+}
+
 this.Constant = null;
 this.Method = null;
 this.Action = null;
