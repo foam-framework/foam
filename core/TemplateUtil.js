@@ -337,7 +337,7 @@ MODEL({
         // Note that Model and boostrappy models must use this case, as Template is not
         // yet defined at bootstrap time. Use a Template object definition with a bare
         // string template body in those cases.
-        t = ( typeof X.Template != "undefined" ) ?
+        t = ( typeof X.Template !== 'undefined' ) ?
           JSONUtil.mapToObj(X, t, X.Template) :
           JSONUtil.mapToObj(X, t) ; // safe for bootstrap, but won't do anything in that case.
       }
@@ -345,7 +345,8 @@ MODEL({
       return t;
     },
 
-    modelExpandTemplates: function(self, templates) {
+    modelExpandTemplates: function(self) {
+      var templates = self.templates;
       for (var i = 0; i < templates.length; i++) {
         templates[i] = TemplateUtil.templateExpander(self, templates[i]);
       }

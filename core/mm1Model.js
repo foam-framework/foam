@@ -578,7 +578,7 @@ var Model = {
       factory: function() { return []; },
       defaultValue: [],
       postSet: function(_, templates) {
-        TemplateUtil.modelExpandTemplates(this, templates);
+        TemplateUtil.modelExpandTemplates(this);
       },
       //         defaultValueFn: function() { return []; },
       help: 'Templates associated with this entity.',
