@@ -515,7 +515,7 @@ CLASS({
       var o = this.model_[name.constantize()];
       if ( ! o ) throw 'Unknown View Name: ' + name;
 
-      opt_args = opt_args ? { __proto__: opt_args, data: v.data } : { data: v.data };
+      opt_args = opt_args ? { __proto__: opt_args, data: this } : { data: this };
 
       if ( Action.isInstance(o) )
         var v = this.createActionView(o, opt_args);
