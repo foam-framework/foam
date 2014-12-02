@@ -26,7 +26,7 @@ CLASS({
     create a $$DOC{ref:'foam.graphics.CView'} and $$DOC{ref:'foam.graphics.CView.write'} it into your
     document, an $$DOC{ref:'.'} is created automatically to host your view.</p>
     <p>Changes to your $$DOC{ref:'foam.graphics.CView'} or its children ripple down and
-    cause a repaint, starting with a $$DOC{ref:'AbstractCViewView.paint'} call.
+    cause a repaint, starting with a $$DOC{ref:'.paint'} call.
   */},
 
   properties: [
@@ -432,7 +432,7 @@ CLASS({
           to 'active' '$$DOC{ref:'.state'}. */ },
 
     write: function(document) { /* Inserts this $$DOC{ref:'foam.graphics.CView'} into the DOM
-                                   with an $$DOC{ref:'AbstractCViewView'} wrapper. */
+                                   with an $$DOC{ref:'foam.graphics.AbstractCViewView'} wrapper. */
       var v = this.toView_();
       document.writeln(v.toHTML());
       v.initHTML();
