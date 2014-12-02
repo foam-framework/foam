@@ -290,7 +290,7 @@ MODEL({
       };
     },
 
-    templateMemberExpander: function(self, t, opt_X) {
+    templateExpander: function(self, t, opt_X) {
       /*
        * If a template is supplied as a function, treat it as a multiline string.
        * Parse function arguments to populate template.args.
@@ -347,7 +347,7 @@ MODEL({
 
     modelExpandTemplates: function(self, templates) {
       for (var i = 0; i < templates.length; i++) {
-        templates[i] = TemplateUtil.templateMemberExpander(self, templates[i]);
+        templates[i] = TemplateUtil.templateExpander(self, templates[i]);
       }
     }
   }
