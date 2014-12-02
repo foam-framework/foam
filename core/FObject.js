@@ -139,9 +139,9 @@ var FObject = {
           var prop = self.model_.getProperty(key);
           if ( prop ) {
             if ( asValue ) {
-              self.addInitAgent(0, 'export property value ' + key, function(o, X) { X.set(alias, o[prop.name$_]); });
+              self.addInitAgent(0, 'export property value ' + key, function(o, X) { X.set(alias, FOAM.lookup(prop.name$_, o)); });
             } else {
-              self.addInitAgent(0, 'export property ' + key, function(o, X) { X.setValue(alias, o[prop.name$_]); });
+              self.addInitAgent(0, 'export property ' + key, function(o, X) { X.setValue(alias, FOAM.lookup(prop.name$_, o)); });
             }
           } else {
             self.addInitAgent(0, 'export method ' + key, function(o, X) { X.set(alias, o[key].bind(o)); });
@@ -642,7 +642,7 @@ var FObject = {
     var feature = this.getMyFeature(featureName);
 
     if ( ! feature && this.extendsModel ) {
-      var ext = FOAM.lookup(this.extendsModel, this.X); 
+      var ext = FOAM.lookup(this.extendsModel, this.X);
       if ( ext ) {
         return ext.getFeature(featureName);
       }
