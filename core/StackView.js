@@ -24,6 +24,12 @@ CLASS({
   name: 'StackView',
   extendsModel: 'View',
 
+  requires: [
+    'ViewSlider',
+    'OverlaySlider',
+    'FloatingView'
+  ],
+
   traits: ['PositionedDOMViewTrait'],
 
   properties: [
@@ -38,11 +44,11 @@ CLASS({
     },
     {
       name: 'slider',
-      lazyFactory: function() { return this.X.ViewSlider.create(); }
+      lazyFactory: function() { return this.ViewSlider.create(); }
     },
     {
       name: 'overlaySlider',
-      factory: function() { return this.X.OverlaySlider.create(); },
+      factory: function() { return this.OverlaySlider.create(); },
       postSet: function(old, v) {
         if ( old ) old.unsubscribe(['click'], this.overlayBack);
         v.subscribe(['click'], this.overlayBack);
@@ -71,7 +77,7 @@ CLASS({
         this.propertyChange('redo', this.redo, this.redo);
       }
 
-      if ( ! view.model_.Z ) view = FloatingView.create({ view: view });
+      if ( ! view.model_.Z ) view = this.FloatingView.create({ view: view });
 
       this.stack.push(view);
       this.propertyChange('stack', this.stack, this.stack);
@@ -94,7 +100,7 @@ CLASS({
       this.pushView(view, undefined, undefined, 'none');
     },
     slideView: function(view, opt_label, opt_side, opt_delay) {
-      if ( ! view.model_.Z ) view = FloatingView.create({ view: view });
+      if ( ! view.model_.Z ) view = this.FloatingView.create({ view: view });
 
       if ( this.slideLatch ) {
         this.slideLatch();
