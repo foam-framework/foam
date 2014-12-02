@@ -290,9 +290,13 @@ MODEL({
       };
     },
 
-    // TODO: add docs to explain what this method does.
     templateMemberExpander: function(self, t, opt_X) {
-      var X = opt_X? opt_X : self.X;
+      /*
+       * If a template is supplied as a function, treat it as a multiline string.
+       * Parse function arguments to populate template.args.
+       * Setup template future.
+       */
+      var X = opt_X ? opt_X : self.X;
 
       // Load templates from an external file
       // if their 'template' property isn't set
