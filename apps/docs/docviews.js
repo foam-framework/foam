@@ -221,17 +221,19 @@ CLASS({
       </p>
   */},
 
+  ids: ['model'],
+
   properties: [
+    {
+      name: 'model',
+      help: 'The model name.',
+      documentation: "The $$DOC{ref:'Model'} name."
+    },
     {
       name: 'inheritanceLevel',
       help: 'The inheritance level of model.',
       documentation: "The inheritance level of $$DOC{ref:'.model'} (0 = root, no extendsModel specified)",
       defaultValue: 0
-    },
-    {
-      name: 'model',
-      help: 'The model name.',
-      documentation: "The $$DOC{ref:'Model'} name."
     },
   ]
 });
@@ -306,9 +308,16 @@ CLASS({
         var modelTracker = [];
         this.modelDAO.where(EQ(this.DocModelInheritanceTracker.MODEL, this.model))
             .select(modelTracker);
-        this.instance_.inheritanceLevel = modelTracker[0];
+        this.instance_.inheritanceLevel = modelTracker[0].inheritanceLevel;
         return this.instance_.inheritanceLevel;
       }
+    },
+    {
+      name: 'fromTrait',
+      help: 'Indicates if the feature was inherited from a trait.',
+      documentation: 'Indicates if the feature was inherited from a trait.',
+      model_: 'BooleanProperty',
+      defaultValue: false
     }
   ],
   methods: {
@@ -359,8 +368,9 @@ CLASS({
       documentation: "The $$DOC{ref:'Model'} for which to display $$DOC{ref:'Documentation'}.",
       postSet: function() {
         if (this.data) {
-          if (this.data.model_.id !== 'Model') {
-            console.warn("ModelDocView created with non-model instance: ", this.data.model_.id, this.data);
+          if (!this.data.model_ || this.data.model_.id !== 'Model') {
+            console.warn("ModelDocView created with non-model instance: ", this.data);
+            return;
           }
           this.processModelChange();
         }
@@ -446,12 +456,17 @@ CLASS({
 
       //this.debugLogFeatureDAO();
     },
-    loadFeaturesOfModel: function(model, previousExtenderTrackers) {
+    loadFeaturesOfModel: function(model, previousExtenderTrackers, traitInheritanceLevel) {
       /* <p>Recursively load features of this $$DOC{ref:'Model'} and
         $$DOC{ref:'Model',usePlural:true} it extends.</p>
         <p>Returns the inheritance level of model (0 = $$DOC{ref:'Model'}).
         </p>
         */
+      var isTrait = true;
+      if (typeof traitInheritanceLevel == 'undefined') {
+        traitInheritanceLevel = 0;
+        isTrait = false;
+      } 
       var modelDef = model.definition_?  model.definition_: model;
       var self = this;
       var newModelTr = this.DocModelInheritanceTracker.create();
@@ -467,11 +482,15 @@ CLASS({
                     isDeclared:true,
                     feature: feature,
                     model: newModelTr.model,
-                    type: modProp.name });
+                    type: modProp.name,
+                    fromTrait: isTrait
+              });
               self.featureDAO.put(featTr);
 
               // for the models that extend this model, make sure they have
               // the feature too, if they didn't already have it declared (overridden).
+              // isTrait is not set, as we don't distinguish between inherited trait features and
+              // extendsModel features.
               previousExtenderTrackers.forEach(function(extModelTr) {
                 self.featureDAO
                       .where(EQ(self.DocFeatureInheritanceTracker.PRIMARY_KEY,
@@ -491,17 +510,32 @@ CLASS({
           });
         }
       });
-      // Check if we extend something. Use model instead of modelDef, in case we
-      // have traits that injected themselves into our inheritance heirarchy.
-      if (!model.extendsModel) {
-        newModelTr.inheritanceLevel = 0;
-      } else {
-        // add the tracker we're building to the list, for updates from our base models
-        previousExtenderTrackers.push(newModelTr);
-        // inheritance level will bubble back up the stack once we know where the bottom is
-        newModelTr.inheritanceLevel = 1 + this.loadFeaturesOfModel(
-                          FOAM.lookup(model.extendsModel, X), previousExtenderTrackers);
+            
+      if (!isTrait) {
+        // Check if we extend something, and recurse.
+        if (!model.extendsModel) {
+          newModelTr.inheritanceLevel = 0;
+        } else {
+          // add the tracker we're building to the list, for updates from our base models
+          previousExtenderTrackers.push(newModelTr);
+          // inheritance level will bubble back up the stack once we know where the bottom is.
+          // pass a copy of previousExtenderTrackers so we know what to update in the traits section after.
+          newModelTr.inheritanceLevel = 1 + this.loadFeaturesOfModel(
+                            FOAM.lookup(model.extendsModel, this.X), previousExtenderTrackers.slice(0));
+        }
+      
+        // Process traits with the same inheritance level we were assigned, since they appear first in the
+        // apparent inheritance chain before our extendsModel.
+        if (model.traits && model.traits.length > 0) {
+          model.traits.forEach(function(trait) {
+            this.loadFeaturesOfModel(
+              FOAM.lookup(trait, this.X), 
+              previousExtenderTrackers.slice(0), 
+              newModelTr.inheritanceLevel);
+          }.bind(this));
+        }
       }
+
 
       // the tracker is now complete
       this.modelDAO.put(newModelTr);
@@ -855,6 +889,14 @@ CLASS({
           instead of $$DOC{ref:'Model.name',text:'Model.name'} in the link text,
           for convenient pluralization.
         */}
+    },
+    {
+      name: 'acceptInvalid',
+      model_: 'BooleanProperty',
+      defaultValue: false,
+      documentation: function() { /*
+        If true, an invalid reference will just render as static text, rather than show an error.
+      */}      
     }
   ],
 
@@ -863,10 +905,22 @@ CLASS({
     function toInnerHTML()    {/*<%
       this.destroy();
       if (!this.docRef || !this.docRef.valid) {
-        if (this.docRef && this.docRef.ref) {
-          %>[INVALID_REF:<%=this.docRef.ref%>]<%
+        if (this.acceptInvalid) {
+          if (this.text && this.text.length > 0) {
+            %><%=this.text%><%
+          } else if (this.docRef) {
+            %><%=this.docRef.ref%><%
+          } else if (this.ref) {
+            %><%=this.ref%><%
+          } else {
+            %>___<%
+          }
         } else {
-          %>[INVALID_REF:*no_reference*]<%
+          if (this.docRef && this.docRef.ref) {
+            %>[INVALID_REF:<%=this.docRef.ref%>]<%
+          } else {
+            %>[INVALID_REF:*no_reference*]<%
+          }
         }
       } else {
         var mostSpecificObject = this.docRef.resolvedModelChain[this.docRef.resolvedModelChain.length-1];
@@ -881,9 +935,9 @@ CLASS({
         } else {
           %><%=this.docRef.ref%><%
         }
+        this.on('click', this.onClick, this.id);
       }
 
-      this.on('click', this.onClick, this.id);
 
       %>*/}
   ],

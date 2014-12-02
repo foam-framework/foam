@@ -90,7 +90,7 @@ CLASS({
       help: 'Shortcut to set reference by Model name.',
       postSet: function() {
         this.ref = this.data.model + "." + this.data.name;
-        this.text = this.data.model + " / ";
+        this.text = (this.data.fromTrait? "(T) " : "") + this.data.model + " / ";
       },
       documentation: function() { /*
         The target reference Model definition. Use this instead of setting
@@ -170,7 +170,7 @@ CLASS({
     function toInnerHTML() {/*
       <div id="scrollTarget_<%=this.data.name%>">
         <p><span class="feature-heading"><%=this.data.name%></span>
-           <span class="feature-type">($$DOC{ref:this.data.type.replace('[]',''), text:this.data.type})</span></p>
+           <span class="feature-type">($$DOC{ref:this.data.type.replace('[]',''), text:this.data.type, acceptInvalid:true})</span></p>
         <p>$$documentation{ model_: 'foam.documentation.DocBodyView' }</p>
         <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'foam.documentation.DocFeatureOverridesRefView', model: this.X.foam.documentation.DocFeatureInheritanceTracker }</p>
       </div>

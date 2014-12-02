@@ -19,31 +19,25 @@ CLASS({
   name: 'DiagramItemTrait',
   package: 'diagram',
 
-  documentation: function() {/* This trait overrides $$DOC{ref:'.addChild'} and $$DOC{ref:'.removeChild'}
-       to introduce extra diagram-specific functionality. it is designed to work with $$DOC{ref:'foam.graphics.CView'}. */},
+  documentation: function() {/* This trait adds a $$DOC{ref:'.globalX'} and $$DOC{ref:'.globalY'}
+          that track the item's position relative to the canvas. It is designed to work with
+           $$DOC{ref:'foam.graphics.CView'} or anything else with an x, y and parent 
+          (with $$DOC{ref:'.'}).</p>
+          <p>Note that for the coordinate transformation to work, you must apply this trait to 
+          all items in the parent/child chain. Everything in a diagram should inherit $$DOC{ref:'.'}. */},
 
   properties: [
     {
       model_: 'IntProperty',
       name: 'globalX',
-      defaultValue: 0
+      defaultValue: 0,
+      documentation: function() {/* The x position of the item, in canvas coordinates. */}
     },
     {
       model_: 'IntProperty',
       name: 'globalY',
-      defaultValue: 0
-    },
-    {
-      name: 'parent',
-      postSet: function() {
-        if (this.dynamicListeners_ && this.dynamicListeners_.destroy) {
-          this.dynamicListeners_.destroy();
-        }
-        this.dynamicListeners_ = Events.dynamic(function() { 
-          this.globalX = this.parent.globalX + this.x;
-          this.globalY = this.parent.globalY + this.y;
-         }.bind(this))
-      }
+      defaultValue: 0,
+      documentation: function() {/* The y position of the item, in canvas coordinates. */}
     },
     {
       name: 'dynamicListeners_',
@@ -51,6 +45,25 @@ CLASS({
     }
   ],
   
+  methods: {
+    init: function() { /* Sets up a listener on inherited $$DOC{ref:'foam.graphics.CView.parent'}. */
+      this.SUPER();
+      
+      Events.dynamic(
+        function() { this.parent; },
+        function() {
+          if (this.dynamicListeners_ && this.dynamicListeners_.destroy) {
+            this.dynamicListeners_.destroy();
+          }
+          this.dynamicListeners_ = Events.dynamic(function() { 
+            this.globalX = this.parent.globalX + this.x;
+            this.globalY = this.parent.globalY + this.y;
+          }.bind(this))
+        }.bind(this)
+      );
+      
+    }
+  }
   
 });
 
