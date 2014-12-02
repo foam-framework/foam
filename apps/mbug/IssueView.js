@@ -2,6 +2,16 @@ CLASS({
   name: 'IssueView',
   extendsModel: 'UpdateDetailView',
   traits: ['VerticalScrollNativeTrait'],
+  requires: [
+    'CCView',
+    'CommentView',
+    'DAOListView',
+    'ImageBooleanView',
+    'IssueLabelView',
+    'PopupChoiceView',
+    'PriorityView',
+    'mdTextFieldView'
+  ],
   properties: [
     {
       name: 'scrollerID',
