@@ -852,8 +852,7 @@ CLASS({
       displayHeight: 1,
       defaultValue: '',
       help: 'The template\'s description.',
-      documentation: function() { /* A human readable description of the $$DOC{ref:'.'}.
-         */}
+      documentation: "A human readable description of the $$DOC{ref:'.'}."
     },
     {
       model_: 'ArrayProperty',
@@ -879,8 +878,7 @@ CLASS({
       // Doesn't work because of bootstrapping issues.
       // preSet: function(_, t) { return typeof t === 'function' ? multiline(t) : t ; },
       help: 'Template text. <%= expr %> or <% out(...); %>',
-      documentation: function() { /* The string content of the uncompiled $$DOC{ref:'Template'} body.
-         */}
+      documentation: "The string content of the uncompiled $$DOC{ref:'Template'} body."
     },
     {
       name: 'futureTemplate'
@@ -926,8 +924,8 @@ CLASS({
 
   properties: [
     {
-      name:  'name',
-      type:  'String',
+      name: 'name',
+      type: 'String',
       required: true,
       displayWidth: 30,
       displayHeight: 1,
@@ -952,7 +950,7 @@ CLASS({
       help: 'The main content of the document.',
       documentation: "The main body text of the document. Any valid template can be used, including the $$DOC{ref:'DocView'} specific $$DOC{ref:'DocView',text:'$$DOC{\"ref\"}'} and $$DOC{ref:'DocView',text:'$$THISDATA{}'} tags.",
       preSet: function(_, template) {
-          return TemplateUtil.templateMemberExpander(this, template);
+        return TemplateUtil.templateMemberExpander(this, template);
       }
     },
     {

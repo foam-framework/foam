@@ -42,7 +42,7 @@ function MODEL(model) {
       { get: p.getter, enumerable: false });
   });
 
-  for ( key in model.constants ) 
+  for ( key in model.constants )
     Object.defineProperty(
       proto,
       key,
@@ -56,7 +56,7 @@ function MODEL(model) {
         { value: m, writable: true, enumerable: false });
     });
   } else {
-    for ( var key in model.methods ) 
+    for ( var key in model.methods )
       Object.defineProperty(
         proto,
         key,
@@ -96,18 +96,18 @@ MODEL({
 
     function toCompare(c) {
       if ( Array.isArray(c) ) return CompoundComparator.apply(null, c);
-      
+
       return c.compare ? c.compare.bind(c) : c;
     },
 
     function CompoundComparator() {
       var args = argsToArray(arguments);
       var cs = [];
-      
+
       // Convert objects with .compare() methods to compare functions.
       for ( var i = 0 ; i < args.length ; i++ )
         cs[i] = toCompare(args[i]);
-      
+
       var f = function(o1, o2) {
         for ( var i = 0 ; i < cs.length ; i++ ) {
           var r = cs[i](o1, o2);
@@ -115,11 +115,11 @@ MODEL({
         }
         return 0;
       };
-      
+
       f.toSQL = function() { return args.map(function(s) { return s.toSQL(); }).join(','); };
       f.toMQL = function() { return args.map(function(s) { return s.toMQL(); }).join(' '); };
       f.toString = f.toSQL;
-      
+
       return f;
     },
 
@@ -132,9 +132,9 @@ MODEL({
       // TODO: move this method somewhere better
       var totalWeight = 0.0;
       for ( var i = 0 ; i < arguments.length ; i += 2 ) totalWeight += arguments[i];
-      
+
       var r = Math.random();
-      
+
       for ( var i = 0, weight = 0 ; i < arguments.length ; i += 2 ) {
         weight += arguments[i];
         if ( r <= weight / totalWeight ) {
@@ -151,7 +151,7 @@ MODEL({
 
     function predicatedSink(predicate, sink) {
       if ( predicate === TRUE || ! sink ) return sink;
-      
+
       return {
         __proto__: sink,
         $UID: sink.$UID,
@@ -240,14 +240,14 @@ MODEL({
       var x = 0;
       var y = 0;
       var parent;
-      
+
       while ( node ) {
         parent = node;
         x += node.offsetLeft;
         y += node.offsetTop;
         node = node.offsetParent;
       }
-      
+
       return [x, y, parent];
     },
 
@@ -286,7 +286,7 @@ MODEL({
       for ( var i = 0; i < local.length; i++ ) {
         delete this[local[i]];
       }
-      
+
       var remote = Object.getOwnPropertyNames(other);
       for ( i = 0; i < remote.length; i++ ) {
         Object.defineProperty(
@@ -320,16 +320,16 @@ MODEL({
       /* binaryInsert into a sorted array, removing duplicates */
       var start = 0;
       var end = this.length-1;
-      
+
       while ( end >= start ) {
         var m = start + Math.floor((end-start) / 2);
         var c = item.compareTo(this[m]);
         if ( c == 0 ) return this; // already there, nothing to do
         if ( c < 0 ) { end = m-1; } else { start = m+1; }
       }
-      
+
       this.splice(start, 0, item);
-      
+
       return this;
     },
 
@@ -345,7 +345,7 @@ MODEL({
     function intern() {
       for ( var i = 0 ; i < this.length ; i++ )
         if ( this[i].intern ) this[i] = this[i].intern();
-      
+
       return this;
     },
 
@@ -362,7 +362,7 @@ MODEL({
     function fReduce(comparator, arr) {
       compare = toCompare(comparator);
       var result = [];
-      
+
       var i = 0;
       var j = 0;
       var k = 0;
@@ -379,10 +379,10 @@ MODEL({
         }
         result[k++] = arr[j++];
       }
-      
+
       if ( i != this.length ) result = result.concat(this.slice(i));
       if ( j != arr.length ) result = result.concat(arr.slice(j));
-      
+
       return result;
     },
 
@@ -471,10 +471,10 @@ MODEL({
     },
 
     function put(obj) { return this + obj.toJSON(); },
-    
+
     (function() {
       var map = {};
-      
+
       return function intern() {
         /** Convert a string to an internal canonical copy. **/
         return map[this] || (map[this] = this.toString());
@@ -484,13 +484,13 @@ MODEL({
     function hashCode() {
       var hash = 0;
       if ( this.length == 0 ) return hash;
-      
+
       for (i = 0; i < this.length; i++) {
         var code = this.charCodeAt(i);
         hash = ((hash << 5) - hash) + code;
         hash &= hash;
       }
-      
+
       return hash;
     }
   ]
@@ -515,14 +515,14 @@ MODEL({
         };
         return ret;
       };
-      
+
       return function bind(arg) {
         return arguments.length == 1 ?
           simpleBind(this, arg) :
           oldBind.apply(this, argsToArray(arguments));
       };
     })(),
-    
+
     function equals(o) { return this === o; },
 
     function compareTo(o) {
@@ -545,41 +545,41 @@ MODEL({
   methods: [
     function toRelativeDateString(){
       var seconds = Math.floor((Date.now() - this.getTime())/1000);
-      
+
       if ( seconds < 60 ) return 'moments ago';
-      
+
       var minutes = Math.floor((seconds)/60);
-      
+
       if ( minutes == 1 ) return '1 minute ago';
-      
+
       if ( minutes < 60 ) return minutes + ' minutes ago';
-      
+
       var hours = Math.floor(minutes/60);
       if ( hours == 1 ) return '1 hour ago';
-      
+
       if ( hours < 24 ) return hours + ' hours ago';
-      
+
       var days = Math.floor(hours / 24);
       if ( days == 1 ) return '1 day ago';
-      
+
       if ( days < 7 ) return days + ' days ago';
-      
+
       if ( days < 365 ) {
         var year = 1900+this.getYear();
         var noyear = this.toDateString().replace(" " + year, "");
         return noyear.substring(4);
       }
-      
+
       return this.toDateString().substring(4);
     },
-    
+
     function compareTo(o){
       if ( o === this ) return 0;
       if ( ! o ) return 1;
       var d = this.getTime() - o.getTime();
       return d == 0 ? 0 : d > 0 ? 1 : -1;
     },
-    
+
     function toMQL() {
       return this.getFullYear() + '/' + (this.getMonth() + 1) + '/' + this.getDate();
     }

@@ -37,9 +37,9 @@ var files = [
   'JSONUtil',
   'XMLUtil',
   'context',
-  'FOAM',
   'JSONParser',
   'TemplateUtil',
+  'FOAM',
   // To use FO, uncomment the next line
   // and comment out all lines from FObject to mm5Misc
   // inclusively

@@ -233,123 +233,118 @@ var TemplateCompiler = {
   text: function(v) { this.push(v); }
 });
 
+MODEL({
+  name: 'TemplateUtil',
 
-var TemplateUtil = {
+  methods: {
+    /** Create a method which only compiles the template when first used. **/
+    lazyCompile: function(t) {
+      var delegate;
 
-   /** Create a method which only compiles the template when first used. **/
-   lazyCompile: function(t) {
-     var delegate;
+      var f = function() {
+        if ( ! delegate ) {
+          if ( ! t.template )
+            throw 'Must arequire() template model before use for ' + this.name_ + '.' + t.name;
+          delegate = TemplateUtil.compile(Template.isInstance(t) ? t : Template.create(t));
+        }
 
-     var f = function() {
-       if ( ! delegate ) {
-         if ( ! t.template )
-           throw 'Must arequire() template model before use for ' + this.name_ + '.' + t.name;
-         delegate = TemplateUtil.compile(Template.isInstance(t) ? t : Template.create(t));
-       }
-
-       return delegate.apply(this, arguments);
-     };
-
-     f.toString = function() { return delegate ? delegate.toString() : t; };
-
-     return f;
-   },
-
-   compile: window.chrome && window.chrome.app && window.chrome.app.runtime ?
-     function() {
-       return function() {
-         return this.name_ + " wasn't required.  Models must be arequired()'ed for Templates to be compiled in Packaged Apps.";
-       };
-     } :
-     function(t) {
-       var code = TemplateCompiler.parseString(t.template);
-
-       try {
-         var args = ['opt_out'];
-         for ( var i = 0 ; i < t.args.length ; i++ ) {
-           args.push(t.args[i].name);
-         }
-         args.push(code);
-         return Function.apply(null, args);
-       } catch (err) {
-         console.log('Template Error: ', err);
-         console.log(code);
-         return function() {};
-       }
-     },
-
-   /**
-    * Combinator which takes a template which expects an output parameter and
-    * converts it into a function which returns a string.
-    */
-   stringifyTemplate: function (template) {
-      return function() {
-         var buf = [];
-
-         this.output(buf.push.bind(buf), obj);
-
-         return buf.join('');
+        return delegate.apply(this, arguments);
       };
-   },
 
-   // TODO: add docs to explain what this method does.
-   templateMemberExpander: function(self, t, opt_X) {
-     var X = opt_X? opt_X : self.X;
+      f.toString = function() { return delegate ? delegate.toString() : t; };
 
-     // Load templates from an external file
-     // if their 'template' property isn't set
-     if ( typeof t === 'function' ) {
-       t = X.Template.create({
-         name: t.name,
-         // ignore first argument, which should be 'opt_out'
-         args: t.toString().match(/\((.*?)\)/)[1].split(',').slice(1).map(function(a) {
-           return X.Arg.create({name: a.trim()});
-         }),
-         template: multiline(t)});
-     } else if ( typeof t === 'string' ) {
-       t = docTemplate = X.Template.create({
-         name: 'body',
-         template: t
-       });
-     } else if ( ! t.template ) {
-       var future = afuture();
-       var path = self.sourcePath;
+      return f;
+    },
 
-       t.futureTemplate = future.get;
-       path = path.substring(0, path.lastIndexOf('/')+1);
-       path += self.name + '_' + t.name + '.ft';
+    compile: function(t) {
+      var code = TemplateCompiler.parseString(t.template);
 
-       var xhr = new XMLHttpRequest();
-       xhr.open("GET", path);
-       xhr.asend(function(data) {
-         t.template = data;
-         future.set(Template.create(t));
-         t.futureTemplate = undefined;
-       });
-     } else if ( typeof t.template === 'function' ) {
-       t.template = multiline(t.template);
-     }
+      try {
+        var args = ['opt_out'];
+        for ( var i = 0 ; i < t.args.length ; i++ ) {
+          args.push(t.args[i].name);
+        }
+        args.push(code);
+        return Function.apply(null, args);
+      } catch (err) {
+        console.log('Template Error: ', err);
+        console.log(code);
+        return function() {};
+      }
+    },
 
-     if (!t.template$) {
-       // we haven't FOAMalized the template, and there's no crazy multiline functions.
-       // Note that Model and boostrappy models must use this case, as Template is not
-       // yet defined at bootstrap time. Use a Template object definition with a bare
-       // string template body in those cases.
-       if (typeof X.Template != "undefined")
-         t = JSONUtil.mapToObj(X, t, X.Template);
-       else
-         t = JSONUtil.mapToObj(X, t); // safe for bootstrap, but won't do anything in that case.
-     }
+    /**
+     * Combinator which takes a template which expects an output parameter and
+     * converts it into a function which returns a string.
+     */
+    stringifyTemplate: function (template) {
+      return function() {
+        var buf = [];
 
-     return t;
-   },
+        this.output(buf.push.bind(buf), obj);
 
-   modelExpandTemplates: function(self, templates) {
-     for (var i = 0; i < templates.length; i++) {
-       templates[i] = TemplateUtil.templateMemberExpander(self, templates[i]);
-     }
+        return buf.join('');
+      };
+    },
+
+    // TODO: add docs to explain what this method does.
+    templateMemberExpander: function(self, t, opt_X) {
+      var X = opt_X? opt_X : self.X;
+
+      // Load templates from an external file
+      // if their 'template' property isn't set
+      if ( typeof t === 'function' ) {
+        t = X.Template.create({
+          name: t.name,
+          // ignore first argument, which should be 'opt_out'
+          args: t.toString().match(/\((.*?)\)/)[1].split(',').slice(1).map(function(a) {
+            return X.Arg.create({name: a.trim()});
+          }),
+          template: multiline(t)});
+      } else if ( typeof t === 'string' ) {
+        t = docTemplate = X.Template.create({
+          name: 'body',
+          template: t
+        });
+      } else if ( ! t.template ) {
+        var future = afuture();
+        var path = self.sourcePath;
+
+        t.futureTemplate = future.get;
+        path = path.substring(0, path.lastIndexOf('/')+1);
+        path += self.name + '_' + t.name + '.ft';
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", path);
+        xhr.asend(function(data) {
+          t.template = data;
+          future.set(Template.create(t));
+          t.futureTemplate = undefined;
+        });
+      } else if ( typeof t.template === 'function' ) {
+        t.template = multiline(t.template);
+      }
+
+      if ( ! t.template$ ) {
+        // we haven't FOAMalized the template, and there's no crazy multiline functions.
+        // Note that Model and boostrappy models must use this case, as Template is not
+        // yet defined at bootstrap time. Use a Template object definition with a bare
+        // string template body in those cases.
+        t = ( typeof X.Template != "undefined" ) ?
+          JSONUtil.mapToObj(X, t, X.Template) :
+          JSONUtil.mapToObj(X, t) ; // safe for bootstrap, but won't do anything in that case.
+      }
+
+      return t;
+    },
+
+    modelExpandTemplates: function(self, templates) {
+      for (var i = 0; i < templates.length; i++) {
+        templates[i] = TemplateUtil.templateMemberExpander(self, templates[i]);
+      }
+    }
   }
-};
+});
 
 
 /** Is actually synchronous but is replaced in ChromeApp with an async version. **/

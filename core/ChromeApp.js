@@ -17,6 +17,12 @@
 
 /** Code Specific to Chrome Apps. **/
 
+TemplateUtil.compile = function() {
+  return function() {
+    return this.name_ + " wasn't required.  Models must be arequired()'ed for Templates to be compiled in Packaged Apps.";
+  };
+};
+
 var __EVAL_CALLBACKS__ = {};
 var aeval = (function() {
   var nextID = 0;
