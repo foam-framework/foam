@@ -294,12 +294,11 @@ MODEL({
       /*
        * If a template is supplied as a function, treat it as a multiline string.
        * Parse function arguments to populate template.args.
+       * Load template from file if external.
        * Setup template future.
        */
-      var X = opt_X ? opt_X : self.X;
+      var X = opt_X || self.X;
 
-      // Load templates from an external file
-      // if their 'template' property isn't set
       if ( typeof t === 'function' ) {
         t = X.Template.create({
           name: t.name,
@@ -315,7 +314,7 @@ MODEL({
         });
       } else if ( ! t.template ) {
         var future = afuture();
-        var path = self.sourcePath;
+        var path   = self.sourcePath;
 
         t.futureTemplate = future.get;
         path = path.substring(0, path.lastIndexOf('/')+1);
@@ -332,11 +331,13 @@ MODEL({
         t.template = multiline(t.template);
       }
 
+      if ( ! t.futureTemplate ) t.futureTemplate = aconstant(t);
+
+      // We haven't FOAMalized the template, and there's no crazy multiline functions.
+      // Note that Model and boostrappy models must use this case, as Template is not
+      // yet defined at bootstrap time. Use a Template object definition with a bare
+      // string template body in those cases.
       if ( ! t.template$ ) {
-        // we haven't FOAMalized the template, and there's no crazy multiline functions.
-        // Note that Model and boostrappy models must use this case, as Template is not
-        // yet defined at bootstrap time. Use a Template object definition with a bare
-        // string template body in those cases.
         t = ( typeof X.Template !== 'undefined' ) ?
           JSONUtil.mapToObj(X, t, X.Template) :
           JSONUtil.mapToObj(X, t) ; // safe for bootstrap, but won't do anything in that case.
@@ -378,11 +379,7 @@ var aevalTemplate = function(t) {
     }
   }
 
-  if ( t.template ) return doEval(t);
-
   return aseq(
     t.futureTemplate,
-    function(ret, t) {
-      doEval(t)(ret);
-    });
+    function(ret, t) { doEval(t)(ret); });
 };

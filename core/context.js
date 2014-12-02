@@ -75,7 +75,9 @@ function subWindow(w, opt_name, isBackground) {
       for ( var m = model ; m && m.getPrototype ; m = m.extendsModel && this[m.extendsModel] ) {
         if ( installedModels[m.id] ) return;
         installedModels[m.id] = true;
-        m.getPrototype().installInDocument(this, document);
+        arequireModel(m)(function(m) {
+          m.getPrototype().installInDocument(this, document);
+        }.bind(this));
       }
     },
     addStyle: function(css) {

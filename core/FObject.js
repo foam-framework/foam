@@ -242,16 +242,10 @@ var FObject = {
   installInDocument: function(X, document) {
     for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
       var t = this.model_.templates[i];
-      if ( t.name == 'CSS' ) {
-        // TODO(kgr): the futureTemplate should be changed to always be there
-        // so that we don't need two cases.
-        if ( t.futureTemplate ) {
-          t.futureTemplate(function() {
-            X.addStyle(this.CSS());
-          }.bind(this));
-        } else {
+      if ( t.name === 'CSS' ) {
+        t.futureTemplate(function() {
           X.addStyle(this.CSS());
-        }
+        }.bind(this));
         return;
       }
     }
