@@ -572,7 +572,7 @@ CLASS({
     function toInnerHTML()    {/*
 <%    this.destroy(); %>
 <%    if (this.data) {  %>
-        $$data{ model_: SummaryDocView, model: this.data.model_ }
+        $$data{ model_: 'foam.documentation.SummaryDocView', model: this.data.model_ }
         <div class="members">
           $$models{ model_: 'foam.documentation.FeatureListDocView', model: this.X.Model, featureType:'models' }
         </div>
