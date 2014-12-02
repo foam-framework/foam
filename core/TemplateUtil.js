@@ -77,53 +77,56 @@ var FOAMTagParser = {
 });
 
 
-var TemplateParser = {
-  __proto__: grammar,
+MODEL({
+  name: 'TemplateParser',
+  extendsModel: 'grammar',
 
-  START: sym('markup'),
+  methods: {
+    START: sym('markup'),
 
-  markup: repeat0(alt(
-    sym('comment'),
-    sym('foamTag'),
-    sym('create child'),
-    sym('simple value'),
-    sym('live value tag'),
-    sym('raw values tag'),
-    sym('values tag'),
-    sym('code tag'),
-    sym('ignored newline'),
-    sym('newline'),
-    sym('single quote'),
-    sym('text')
-  )),
+    markup: repeat0(alt(
+      sym('comment'),
+      sym('foamTag'),
+      sym('create child'),
+      sym('simple value'),
+      sym('live value tag'),
+      sym('raw values tag'),
+      sym('values tag'),
+      sym('code tag'),
+      sym('ignored newline'),
+      sym('newline'),
+      sym('single quote'),
+      sym('text')
+    )),
 
-  'comment': seq('<!--', repeat(not('-->', anyChar)), '-->'),
+    'comment': seq('<!--', repeat(not('-->', anyChar)), '-->'),
 
-  'foamTag': sym('foamTag_'),
-  'foamTag_': function() {}, // placeholder until gets filled in after HTMLParser is built
+    'foamTag': sym('foamTag_'),
+    'foamTag_': function() {}, // placeholder until gets filled in after HTMLParser is built
 
-  'create child': seq(
-    '$$',
-    repeat(notChars(' $\n<{')),
-    optional(JSONParser.export('objAsString'))),
+    'create child': seq(
+      '$$',
+      repeat(notChars(' $\n<{')),
+      optional(JSONParser.export('objAsString'))),
 
-  'simple value': seq('%%', repeat(notChars(' -"\n<'))),
+    'simple value': seq('%%', repeat(notChars(' -"\n<'))),
 
-  'live value tag': seq('<%#', repeat(not('%>', anyChar)), '%>'),
+    'live value tag': seq('<%#', repeat(not('%>', anyChar)), '%>'),
 
-  'raw values tag': alt(
-    seq('<%=', repeat(not('%>', anyChar)), '%>'),
-    seq('{{{', repeat(not('}}}', anyChar)), '}}}')
-  ),
+    'raw values tag': alt(
+      seq('<%=', repeat(not('%>', anyChar)), '%>'),
+      seq('{{{', repeat(not('}}}', anyChar)), '}}}')
+    ),
 
-  'values tag': seq('{{', repeat(not('}}', anyChar)), '}}'),
+    'values tag': seq('{{', repeat(not('}}', anyChar)), '}}'),
 
-  'code tag': seq('<%', repeat(not('%>', anyChar)), '%>'),
-  'ignored newline': literal('\\\n'),
-  newline: literal('\n'),
-  'single quote': literal("'"),
-  text: anyChar
-};
+    'code tag': seq('<%', repeat(not('%>', anyChar)), '%>'),
+    'ignored newline': literal('\\\n'),
+    newline: literal('\n'),
+    'single quote': literal("'"),
+    text: anyChar
+  }
+});
 
 
 var TemplateOutput = {
@@ -370,9 +373,7 @@ var aevalTemplate = function(t) {
     }
   }
 
-  if ( t.template ) {
-    return doEval(t);
-  }
+  if ( t.template ) return doEval(t);
 
   return aseq(
     t.futureTemplate,
