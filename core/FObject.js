@@ -139,9 +139,9 @@ var FObject = {
           var prop = self.model_.getProperty(key);
           if ( prop ) {
             if ( asValue ) {
-              self.addInitAgent(0, 'export property value ' + key, function(o, X) { X.set(alias, FOAM.lookup(prop.name$_, o)); });
+              self.addInitAgent(1, 'export property value ' + key, function(o, X) { X.set(alias, FOAM.lookup(prop.name$_, o)); });
             } else {
-              self.addInitAgent(0, 'export property ' + key, function(o, X) { X.setValue(alias, FOAM.lookup(prop.name$_, o)); });
+              self.addInitAgent(1, 'export property ' + key, function(o, X) { X.setValue(alias, FOAM.lookup(prop.name$_, o)); });
             }
           } else {
             self.addInitAgent(0, 'export method ' + key, function(o, X) { X.set(alias, o[key].bind(o)); });
