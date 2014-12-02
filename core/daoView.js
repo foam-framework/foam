@@ -913,7 +913,7 @@ CLASS({
 
         var s = this.spinnerContainer$();
         if ( s ) {
-          this.spinnerController.startSpinner(function() {
+          this.spinnerController.startSpinner('scrollView-' + this.id, function() {
             s.style.display = 'block';
             return s;
           });
@@ -997,7 +997,7 @@ CLASS({
 
             // Tell the spinner controller we're done waiting.
             // No harm in multiple calls to this for the same spinner instance.
-            self.spinnerController.ready();
+            self.spinnerController.ready('scrollView-' + this.id);
             self.spinnerContainer$().style.display = 'none';
 
             // If we're in read-write mode, clone everything before it goes in the cache.

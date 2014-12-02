@@ -5470,8 +5470,10 @@ CLASS({
 });
 CLASS({
   name: 'WaitController',
-  documentation: 'A simple controller that knows how to show a spinner for a ' +
-      'user-defined period into an arbitrary DOM element. NB: Empties the ' +
+  documentation: 'A controller that knows how to show a spinner for a ' +
+      'user-defined period into an arbitrary DOM element. The spinner can be ' +
+      '"started" and "stopped" multiple times with different topics, and it ' +
+      'will be visible until every topic is complete. NB: Empties the ' +
       'innerHTML of the container when done, so make sure it\'s not important!',
 
   requires: [
@@ -5504,14 +5506,14 @@ CLASS({
       defaultValue: 'SpinnerView'
     },
     {
-      name: 'doneWaiting',
-      defaultValue: false
-    },
-    {
       name: 'spinner'
     },
     {
       name: 'spinnerContainer'
+    },
+    {
+      name: 'topics',
+      factory: function() { return {}; }
     },
     {
       name: 'timer'
@@ -5521,23 +5523,30 @@ CLASS({
   listeners: [
     {
       name: 'startSpinner',
-      code: function(element) {
-        this.spinner = '';
-        this.spinnerContainer = element;
-        this.doneWaiting = false;
-        if ( this.timer ) this.clearTimeout(this.timer);
-        this.timer = this.setTimeout(this.onTimer, this.minWait);
+      code: function(topic, opt_element) {
+        if ( this.topics[topic] ) return; // Do nothing for running topics.
+
+        if ( Object.keys(this.topics).length === 0 ) {
+          this.spinner = '';
+          this.spinnerContainer = opt_element || this.spinnerContainer;
+          if ( this.timer ) this.clearTimeout(this.timer);
+          this.timer = this.setTimeout(this.onTimer, this.minWait);
+        }
+        this.topics[topic] = true;
       }
     },
     {
       name: 'ready',
-      code: function() {
+      code: function(topic) {
+        delete this.topics[topic];
         if ( this.timer && this.spinner ) {
-          // Minimum spinner timer has not expired. Set the flag and return.
-          this.doneWaiting = true;
+          // Minimum spinner timer has not expired. Delete the topic and return.
+          return;
         } else if ( this.spinner ) {
-          // Spinner minimum time elapsed, data now ready. Kill the spinner.
-          this.destroySpinner();
+          // Spinner minimum time elapsed, data now ready. Kill the spinner if
+          // all topics are cleared.
+          if ( Object.keys(this.topics).length === 0 )
+            this.destroySpinner();
         } else if ( this.timer ) {
           // Minimum pre-spinner timer is still running. Kill it and return.
           this.clearTimeout(this.timer);
@@ -5548,11 +5557,12 @@ CLASS({
     {
       name: 'onTimer',
       code: function() {
-        if ( this.spinner && this.doneWaiting ) {
+        var doneWaiting = Object.keys(this.topics).length === 0;
+        if ( this.spinner && doneWaiting ) {
           // Spinner is up and data has been received. Now that the minimum time
           // has elapsed, clean up the spinner and return.
           this.destroySpinner();
-        } else if ( ! this.spinner && ! this.doneWaiting ) {
+        } else if ( ! this.spinner && ! doneWaiting ) {
           // Pre-spinner time has expired. Create the spinner.
           this.spinner = this.spinnerView();
           var element = this.spinnerContainer;
