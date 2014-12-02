@@ -42,6 +42,11 @@ CLASS({
         border: none;
       }
 
+      .actionButtonCView-send {
+        box-shadow: 3px 3px 3px #aaa;
+        border-radius: 30px;
+      }
+
       .md-text-field-container {
         height: 68p x;
         margin-left: -12px;
