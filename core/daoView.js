@@ -725,15 +725,21 @@ CLASS({
       defaultValue: -1
     },
     {
+      name: 'spinnerController',
+      factory: function() {
+        return this.X.WaitController.create();
+      }
+    },
+    {
       name: 'spinnerContainerID',
       factory: function() {
         return this.nextID();
       }
     },
     {
-      name: 'spinnerController',
+      name: 'spinner',
       factory: function() {
-        return this.X.WaitController.create();
+        return this.X.SpinnerView.create({ data$: this.spinnerController.busy$ });
       }
     }
   ],
@@ -765,9 +771,6 @@ CLASS({
     },
     container$: function() {
       return this.X.document.getElementById(this.containerID);
-    },
-    spinnerContainer$: function() {
-      return this.X.document.getElementById(this.spinnerContainerID);
     },
     // Allocates visible rows to the correct positions.
     // Will create new visible rows where necessary, and reuse existing ones.
@@ -911,13 +914,7 @@ CLASS({
       code: function() {
         this.invalidate();
 
-        var s = this.spinnerContainer$();
-        if ( s ) {
-          this.spinnerController.startSpinner(function() {
-            s.style.display = 'block';
-            return s;
-          });
-        }
+        this.spinnerController.waitFor('scrollView-' + this.id);
 
         this.dao.select(COUNT())(function(c) {
           this.count = c.count;
@@ -992,13 +989,12 @@ CLASS({
           var self = this;
           var updateNumber = ++this.daoUpdateNumber;
           this.dao.skip(toLoadTop).limit(toLoadBottom - toLoadTop + 1).select()(function(a) {
-            if ( ! a || ! a.length ) return;
             if ( updateNumber !== self.daoUpdateNumber ) return;
+            if ( ! a || ! a.length ) return;
 
             // Tell the spinner controller we're done waiting.
             // No harm in multiple calls to this for the same spinner instance.
-            self.spinnerController.ready();
-            self.spinnerContainer$().style.display = 'none';
+            self.spinnerController.done('scrollView-' + self.id);
 
             // If we're in read-write mode, clone everything before it goes in the cache.
             for ( var i = 0 ; i < a.length ; i++ ) {
@@ -1037,7 +1033,15 @@ CLASS({
             %>
           </div>
         <% } %>
-        <div id="%%spinnerContainerID" style="display: none; width: 100%; height: 100%"></div>
+        <div id="%%spinnerContainerID" style="display: none; width: 100%; height: 100%">
+          <%= this.spinner %>
+        </div>
+        <% this.addInitializer(function(){
+          self.spinnerController.busy$.addListener(function() {
+            var e = $(self.spinnerContainerID);
+            if ( e ) e.style.display = self.spinnerController.busy ? 'block' : 'none';
+          });
+        }); %>
         <div id="%%scrollerID" style="overflow-y: scroll; width:100%; height: 100%;">
           <div id="%%containerID" style="position:relative;width:100%;height:100%; -webkit-transform: translate3d(0px, 0px, 0px);">
           </div>

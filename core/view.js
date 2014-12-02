@@ -5210,13 +5210,33 @@ CLASS({
 CLASS({
   name: 'SpinnerView',
   extendsModel: 'View',
-  documentation: 'Renders a spinner in the Material Design style.',
-  // TODO(braden): This spinner renders badly on Firefox.
+  documentation: 'Renders a spinner in the Material Design style. Has a ' +
+      '$$DOC{ref:".data"} property and acts like a $$DOC{ref:"BooleanView"}, ' +
+      'that creates and destroys and the spinner when the value changes.',
+  // TODO(braden): This spinner doesn't render on Firefox.
   properties: [
+    {
+      name: 'data',
+      documentation: 'Defaults to true, so that the spinner will show itself ' +
+          'by default, if data is not set.',
+      defaultValue: true,
+      postSet: function(old, nu) {
+        if ( ! this.$ ) return;
+        if ( old && ! nu ) this.$.innerHTML = '';
+        else if ( ! old && nu ) {
+          this.$.innerHTML = this.toInnerHTML();
+          this.initInnerHTML();
+        }
+      }
+    },
     {
       name: 'color',
       documentation: 'The color to use for the spinner.',
       defaultValue: '#4285F4'
+    },
+    {
+      name: 'extraClassName',
+      defaultValue: 'spinner-container'
     }
   ],
 
@@ -5354,13 +5374,11 @@ CLASS({
         }
       <% } %>
     */},
-    function toHTML() {/*
-      <div id="%%id" class="spinner-container">
-        <div class="spinner-fixed-box">
-          <div class="spinner-turning-box">
-            <div class="spinner-layer" style="border-color: <%= this.color %>">
-              <div class="spinner-circle-clipper spinner-clipper-left"><div class="spinner-circle"></div></div><div class="spinner-gap-patch"><div class="spinner-circle"></div></div><div class="spinner-circle-clipper spinner-clipper-right"><div class="spinner-circle"></div></div>
-            </div>
+    function toInnerHTML() {/*
+      <div class="spinner-fixed-box">
+        <div class="spinner-turning-box">
+          <div class="spinner-layer" style="border-color: <%= this.color %>">
+            <div class="spinner-circle-clipper spinner-clipper-left"><div class="spinner-circle"></div></div><div class="spinner-gap-patch"><div class="spinner-circle"></div></div><div class="spinner-circle-clipper spinner-clipper-right"><div class="spinner-circle"></div></div>
           </div>
         </div>
       </div>
@@ -5470,13 +5488,18 @@ CLASS({
 });
 CLASS({
   name: 'WaitController',
-  documentation: 'A simple controller that knows how to show a spinner for a ' +
-      'user-defined period into an arbitrary DOM element. NB: Empties the ' +
-      'innerHTML of the container when done, so make sure it\'s not important!',
-
-  requires: [
-    'SpinnerView'
-  ],
+  documentation: '<p>A controller that sets an output property to true when any ' +
+      '"topic" is active. Any code that needs to indicate a busy state can ' +
+      'add a topic to this controller with $$DOC{ref:".waitFor"} and signal ' +
+      'it\'s done with $$DOC{ref:".done"}.</p>' +
+      '<p>The controller will set $$DOC{ref:".busy"} to true when the rules ' +
+      'are met: <ul>' +
+      '<li>At least one topic has been added.</li>' +
+      '<li>The $$DOC{ref:".minPreSpinnerWait"} timer has expired.</li>' +
+      '</ul> and will set it back to false when the rules are met: <ul>' +
+      '<li>All topics have been $$DOC{ref:".done"}.</li>' +
+      '<li>The $$DOC{ref:".minSpinnerShowTime"} has elapsed.</li>' +
+      '</ul></p>',
 
   imports: [
     'clearTimeout',
@@ -5485,94 +5508,91 @@ CLASS({
 
   properties: [
     {
-      name: 'minWait',
+      name: 'busy',
+      documentation: 'Set when the controller\'s logic indicates a spinner ' +
+          'should be shown.',
+      defaultValue: false
+    },
+    {
+      name: 'minPreSpinnerWait',
       documentation: 'Minimum wait time before showing a spinner.',
       units: 'ms',
       defaultValue: 500
     },
     {
-      name: 'minSpinner',
+      name: 'minSpinnerShowTime',
       documentation: 'Minimum time to show a spinner. (Seems strange, but it ' +
-          'is perceived as glitchy to see a spinner for only an instant.',
+          'is perceived as glitchy to see a spinner for only an instant.)',
       units: 'ms',
       defaultValue: 500
     },
     {
-      model_: 'ViewFactoryProperty',
-      name: 'spinnerView',
-      documentation: 'Sets the view to use as the spinner.',
-      defaultValue: 'SpinnerView'
+      name: 'waiting',
+      hidden: true,
+      getter: function() { return Object.keys(this.topics).length > 0; }
     },
     {
-      name: 'doneWaiting',
-      defaultValue: false
-    },
-    {
-      name: 'spinner'
-    },
-    {
-      name: 'spinnerContainer'
+      name: 'topics',
+      factory: function() { return {}; }
     },
     {
       name: 'timer'
     }
   ],
 
+  methods: {
+    waitFor: function(topic) {
+      if ( this.topics[topic] ) return; // Do nothing for running topics.
+      var alreadyWaiting = this.waiting;
+      this.topics[topic] = true;
+
+      // If there were already things waiting, nothing more to do.
+      if ( alreadyWaiting ) return;
+
+      // But if this is the first topic, we start the pre-spinner timer.
+      // Clear the minimum spinner timer if it's already running.
+      if ( this.timer ) this.clearTimeout(this.timer);
+      this.timer = this.setTimeout(this.onTimer, this.minPreSpinnerWait);
+    },
+    done: function(topic) {
+      if ( ! this.topics[topic] ) return; // Unrecognized topic; bail.
+      delete this.topics[topic];
+
+      // If there are still things waiting, do nothing further.
+      if ( this.waiting ) return;
+
+      if ( this.timer && ! this.busy ) {
+        // Pre-spinner timer is still running. Cancel it and we're done.
+        this.clearTimeout(this.timer);
+        this.timer = '';
+      } else if ( this.busy ) {
+        // Spinner is up, and the minimum spinner timer has expired.
+        this.busy = false;
+      }
+      // The final case is that the minimum spinner timer is still running,
+      // in which case we just let it expire.
+    }
+  },
+
   listeners: [
-    {
-      name: 'startSpinner',
-      code: function(element) {
-        this.spinner = '';
-        this.spinnerContainer = element;
-        this.doneWaiting = false;
-        if ( this.timer ) this.clearTimeout(this.timer);
-        this.timer = this.setTimeout(this.onTimer, this.minWait);
-      }
-    },
-    {
-      name: 'ready',
-      code: function() {
-        if ( this.timer && this.spinner ) {
-          // Minimum spinner timer has not expired. Set the flag and return.
-          this.doneWaiting = true;
-        } else if ( this.spinner ) {
-          // Spinner minimum time elapsed, data now ready. Kill the spinner.
-          this.destroySpinner();
-        } else if ( this.timer ) {
-          // Minimum pre-spinner timer is still running. Kill it and return.
-          this.clearTimeout(this.timer);
-          this.timer = '';
-        }
-      }
-    },
     {
       name: 'onTimer',
       code: function() {
-        if ( this.spinner && this.doneWaiting ) {
-          // Spinner is up and data has been received. Now that the minimum time
-          // has elapsed, clean up the spinner and return.
-          this.destroySpinner();
-        } else if ( ! this.spinner && ! this.doneWaiting ) {
-          // Pre-spinner time has expired. Create the spinner.
-          this.spinner = this.spinnerView();
-          var element = this.spinnerContainer;
-          if ( typeof element === 'function' ) {
-            element = element();
-          }
-          element.innerHTML = this.spinner.toHTML();
-          this.spinner.initHTML();
-          this.timer = this.setTimeout(this.onTimer, this.minSpinner);
+        var waiting = this.waiting;
+        this.timer = '';
+        if ( this.busy && ! waiting ) {
+          // Minimum spinner timer just expired, and we're done waiting.
+          this.busy = false;
+        } else if ( ! this.busy && waiting ) {
+          // Topics are waiting and we're not already busy., so this is the
+          // pre-spinner timer that just expired. Set busy.
+          this.busy = true;
         }
-        // If there's no spinner and we're done waiting, do nothing.
-        // If there's a spinner but we're not done waiting, do nothing.
+        // Otherwise, either:
+        // - The minimum spinner time expired and things are still waiting, or
+        // - The pre-spinner timer just expired but the wait is already over.
+        // Either way, nothing to do.
       }
     }
-  ],
-
-  methods: {
-    destroySpinner: function() {
-      this.spinner && this.spinner.destroy();
-      this.spinnerContainer.innerHTML = '';
-    }
-  }
+  ]
 });
