@@ -115,7 +115,7 @@ CLASS({
   templates: [
     function toInnerHTML() {/*
       <% this.destroy();
-      if (this.data) { %>
+      if (this.data && this.model) { %>
         $$data{model_: 'foam.documentation.FullPageDocView', model: this.model }
   <%  } %>
     */}
@@ -572,28 +572,7 @@ CLASS({
     function toInnerHTML()    {/*
 <%    this.destroy(); %>
 <%    if (this.data) {  %>
-        <div class="introduction">
-          <h1><%=this.data.name%></h1>
-          <div class="model-info-block">
-<%        if (this.data.model_ && this.data.model_.id && this.data.model_.id != "Model") { %>
-            <p class="important">Implements $$DOC{ref: this.data.model_.id }</p>
-<%        } else { %>
-            <p class="important">$$DOC{ref:'Model'} definition</p>
-<%        } %>
-<%        if (this.data.sourcePath) { %>
-            <p class="note">Loaded from <a href='<%=this.data.sourcePath%>'><%=this.data.sourcePath%></a></p>
-<%        } else { %>
-            <p class="note">No source path available.</p>
-<%        } %>
-<%        if (this.data.package) { %>
-            <p class="important">Package <%=this.data.package%></p>
-<%        } %>
-<%        if (this.data.extendsModel) { %>
-            <p class="important">Extends $$DOC{ref: this.data.extendsModel }</p>
-<%        } %>
-          </div>
-          $$documentation{ model_: 'foam.documentation.DocBodyView' }
-        </div>
+        $$data{ model_: 'foam.documentation.SummaryDocView', model: this.data.model_ }
         <div class="members">
           $$models{ model_: 'foam.documentation.FeatureListDocView', model: this.X.Model, featureType:'models' }
         </div>

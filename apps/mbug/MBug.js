@@ -4,8 +4,11 @@ CLASS({
   description: 'Mobile QuickBug',
 
   requires: [
+    'AppController',
     'DetailView',
     'GestureManager',
+    'IssueCitationView',
+    'IssueView',
     'QBug',
     'StackView',
     'TouchManager'
@@ -18,7 +21,7 @@ CLASS({
       name: 'qbug',
       label: 'QBug',
       subType: 'QBug',
-      view: function() { return this.DetailView({model: QBug}); },
+      view: function() { return this.DetailView.create({model: QBug}); },
       factory: function() {
         return this.QBug.create({
           authClientId: '18229540903-cojf1q6g154dk5kpim4jnck3cfdvqe3u.apps.googleusercontent.com',
@@ -58,7 +61,7 @@ CLASS({
           delegate: Y.issueDAO
         });
 
-        var pc = Y.AppController.create({
+        var pc = this.AppController.create({
           name: project.projectName,
           model: Y.QIssue,
           dao: Y.issueDAO,
@@ -70,8 +73,8 @@ CLASS({
           menuFactory: function() {
             return this.X.ChangeProjectView.create({data: project.user});
           }
-        });
-        this.stack.setTopView(pc.X.DetailView.create({data: pc}));
+        }, Y);
+        this.stack.setTopView(this.DetailView.create({data: pc}, pc.X));
         project.X = pc.X;
       }
     },
@@ -193,6 +196,11 @@ CLASS({
 CLASS({
   name: 'IssueCitationView',
   extendsModel: 'DetailView',
+  requires: [
+    'ImageBooleanView',
+    'MDMonogramStringView',
+    'PriorityCitationView'
+  ],
   templates: [
     function toHTML() {/*
       <div id="<%= this.on('click', function() { this.X.mbug.editIssue(this.data); }) %>" class="issue-citation">

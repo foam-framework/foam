@@ -310,7 +310,7 @@ MODEL({
   methods: [
     function forEach(f, opt_this) {
       /* Replace Array.forEach with a faster version. */
-      if ( ! this || ! f || opt_this ) return this.oldForEach_.call(this, f);
+      if ( ! this || ! f || opt_this ) return this.oldForEach_.call(this, f, opt_this);
 
       var l = this.length;
       for ( var i = 0 ; i < l ; i++ ) f(this[i], i, this);

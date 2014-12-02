@@ -2,6 +2,10 @@
 CLASS({
   name: 'IssueLabelView',
   extendsModel: 'AutocompleteListView',
+  requires: [
+    'LabelCitationView',
+    'LabelView'
+  ],
   properties: [
     {
       name: 'srcDAO',
