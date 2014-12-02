@@ -44,9 +44,7 @@ CLASS({
       name: 'className',
       help: 'CSS class name(s), space separated.',
       defaultValue: '',
-      documentation: function() {/*
-          CSS class name(s), space separated.
-        */}
+      documentation: 'CSS class name(s), space separated.'
     },
     {
       model_: 'IntProperty',
@@ -86,9 +84,7 @@ CLASS({
           this.instance_.canvas :
           this.instance_.canvas = this.$ && this.$.getContext('2d');
       },
-      documentation: function() {/*
-          The HTML canvas context. Use this to render.
-        */}
+      documentation: 'The HTML canvas context. Use this to render.'
     }
   ],
 
@@ -104,9 +100,7 @@ CLASS({
         this.$.style.height = this.styleHeight();
         this.paint();
       },
-      documentation: function() {/*
-          Reacts to resize events to fix the size of the canvas.
-        */}
+      documentation: 'Reacts to resize events to fix the size of the canvas.'
     },
     {
       name: 'paint',
@@ -700,7 +694,7 @@ CLASS({
         this.X.animate(150, function() {
           this.halo.x = this.width/2;
           this.halo.y = this.height/2;
-          this.halo.r = Math.min(28, Math.min(this.width, this.height)/2);
+          this.halo.r = Math.min(28, Math.min(this.width, this.height)/2)+0.5;
           this.halo.alpha = 1;
         }.bind(this), Movement.easeIn(1))();
       }
@@ -800,26 +794,22 @@ CLASS({
 
     erase: function() {
       var c = this.canvas;
-      if ( this.radius ) {
-        if ( this.halo.r < this.radius-1 ) {
-          c.beginPath();
-          c.arc(this.x+this.radius, this.y+this.radius, this.radius-1, 0, Math.PI*2, false);
-          c.fillStyle = this.background;
-          c.lineWidth = 1;
-          c.fill();
-        }
-      } else {
-        this.canvas.clearRect(0, 0, this.width, this.height);
-        this.canvas.fillStyle = this.background;
-        this.canvas.fillRect(0, 0, this.width, this.height);
-      }
+
+      c.clearRect(0, 0, this.width, this.height);
+
+      var r = this.width/2;
+      c.fillStyle = this.background;
+      c.beginPath();
+      c.arc(r, r, r, 0, Math.PI*2, true);
+      c.closePath();
+      c.fill();
     },
 
     paintSelf: function() {
       var c = this.canvas;
 
       c.save();
-      if ( this.radius ) {
+      if ( this.radius && this.halo.r < this.radius-3 ) {
         c.beginPath();
         c.arc(this.x+this.radius, this.y+this.radius, this.radius, 0, Math.PI*2, false);
         c.clip();
