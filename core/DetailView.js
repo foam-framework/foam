@@ -123,7 +123,7 @@ CLASS({
     onValueChange_: function() { /* Override with value update code. */ },
 
     viewModel: function() { /* The $$DOC{ref:'Model'} type of the $$DOC{ref:'.data'}. */
-       return this.model;
+      return this.model;
     },
 
     createTemplateView: function(name, opt_args) {
@@ -132,7 +132,6 @@ CLASS({
       var o = this.viewModel().getFeature(name);
       if ( o ) {
         var v;
-
         if ( Action.isInstance(o) )
           v = this.createActionView(o, opt_args);
         else if ( Relationship.isInstance(o) )
