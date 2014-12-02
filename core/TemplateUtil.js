@@ -345,7 +345,7 @@ MODEL({
       return t;
     },
 
-    modelExpandTemplates: function(self) {
+    expandModelTemplates: function(self) {
       var templates = self.templates;
       for (var i = 0; i < templates.length; i++) {
         templates[i] = TemplateUtil.templateExpander(self, templates[i]);

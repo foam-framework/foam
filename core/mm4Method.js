@@ -993,7 +993,7 @@ CLASS({
 });
 
 // HACK to get around property-template bootstrap ordering issues
-TemplateUtil.modelExpandTemplates(Property);
-TemplateUtil.modelExpandTemplates(Method);
-TemplateUtil.modelExpandTemplates(Model);
-TemplateUtil.modelExpandTemplates(Arg);
+TemplateUtil.expandModelTemplates(Property);
+TemplateUtil.expandModelTemplates(Method);
+TemplateUtil.expandModelTemplates(Model);
+TemplateUtil.expandModelTemplates(Arg);
