@@ -808,14 +808,7 @@ CLASS({
     paintSelf: function() {
       var c = this.canvas;
 
-      c.save();
-      if ( this.radius && this.halo.r < this.radius-3 ) {
-        c.beginPath();
-        c.arc(this.x+this.radius, this.y+this.radius, this.radius, 0, Math.PI*2, false);
-        c.clip();
-      }
       this.halo.paint();
-      c.restore();
 
       if ( this.font ) c.font = this.font;
 
