@@ -18,7 +18,7 @@ CLASS({
     function CSS() {/*
       .content {
         margin-left: 16px;
-        margin-top: 70px;
+        margin-top: 44px;
         display: flex;
         flex-direction: column;
         height: 93%;
@@ -26,7 +26,8 @@ CLASS({
 
       .richText {
         flex-grow: 1;
-        margin-top: 14px;
+        margin-top: 30px;
+        margin-left: -2px;
       }
 
       .richText .placeholder { font-size: 14px; font-family: Roboto; }
@@ -42,7 +43,7 @@ CLASS({
       }
 
       .md-text-field-container {
-        height: 68px;
+        height: 68p x;
         margin-left: -12px;
         margin-top: -18px;
         margin-bottom: -8px;
