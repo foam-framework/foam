@@ -515,15 +515,16 @@ CLASS({
       var o = this.model_[name.constantize()];
       if ( ! o ) throw 'Unknown View Name: ' + name;
 
-      opt_args = opt_args ? { __proto__: opt_args, data: this } : { data: this };
+      var args = {}; // opt_args ? opt_args.clone() : {};
+//      args.data = this;
 
       if ( Action.isInstance(o) )
-        var v = this.createActionView(o, opt_args);
+        var v = this.createActionView(o, args);
       else if ( Relationship.isInstance(o) )
-        v = this.createRelationshipView(o, opt_args);
+        v = this.createRelationshipView(o, args);
       else
-        v = this.createView(o, opt_args);
-
+        v = this.createView(o, args);
+      v.data = this;
       return v;
     },
 
