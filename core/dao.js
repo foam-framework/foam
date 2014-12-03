@@ -735,6 +735,50 @@ CLASS({
   }
 });
 
+CLASS({
+  name: 'ManuallyDelayedDAO',
+  extendsModel: 'ProxyDAO',
+  properties: [
+    {
+      name: 'pending',
+      factory: function() { return []; }
+    }
+  ],
+  methods: {
+    select: function(sink, options) {
+      var future = afuture();
+
+      sink = sink || [].sink;
+
+      var daofuture = this.delegate.select(undefined, options);
+
+      var fc = this.createFlowControl_();
+
+      this.pending.push(function(ret) {
+        daofuture(function(a) {
+          for ( var i = 0; i < a.length && ! fc.stopped; i++ ) {
+            sink.put(a[i], null, fc);
+            if ( fc.errorEvt ) {
+              sink.error && sink.error(fc.errorEvt);
+            }
+          }
+          if ( ! fc.errorEvt ) {
+            sink.eof && sink.eof();
+          }
+          future.set(sink);
+          ret();
+        });
+      });
+
+      return future.get;
+    },
+    join: function(ret) {
+      var pending = this.pending;
+      this.pending = [];
+      apar.apply(null, pending)(ret);
+    }
+  }
+});
 
 /**
  * Apply this decorator to a DAO if you'd like to (for debugging purposes)
