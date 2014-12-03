@@ -882,7 +882,8 @@ CLASS({
     },
     {
       name: 'futureTemplate'
-    }/*,
+    },
+    /*
        {
        name: 'templates',
        type: 'Array[Template]',
@@ -890,7 +891,11 @@ CLASS({
        view: 'ArrayView',
        defaultValue: [],
        help: 'Sub-templates of this template.'
-       }*/
+       },*/
+    {
+      model_: 'DocumentationProperty',
+      name: 'documentation'
+    }
   ]
 });
 

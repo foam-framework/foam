@@ -1409,7 +1409,7 @@ CLASS({
     function toInnerHTML()    {/*
     <%    this.destroy();
           if (!this.hasFeatures && !this.hasInheritedFeatures) { %>
-            <p class="feature-type-heading">No <%=this.model.plural%>.</p>
+          <% //  <p class="feature-type-heading">No <%=this.model.plural%>.</p> %>
     <%    } else {
             if (this.hasFeatures) { %>
               <p class="feature-type-heading"><%=this.model.plural%>:</p>
