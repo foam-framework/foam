@@ -3951,13 +3951,13 @@ CLASS({
         },
         eof: op === 'select' || op === 'removeAll' ?
           function() { comp(); sink && sink.eof && sink.eof(); } :
-          sink.eof.bind(sink),
+          sink && sink.eof && sink.eof.bind(sink),
         put: op === 'put' || op === 'find' ?
           function(x) { comp(); sink && sink.put && sink.put(x); } :
-          sink.put.bind(sink),
+          sink && sink.put && sink.put.bind(sink),
         remove: op === 'remove' ?
           function(x) { comp(); sink && sink.remove && sink.remove(x); } :
-          sink.remove.bind(sink)
+          sink && sink.remove && sink.remove.bind(sink)
       };
 
       return mysink;
