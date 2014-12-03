@@ -103,7 +103,7 @@ CLASS({ name: 'History', properties: [ 'op', 'a2' ] });
 CLASS({
   name: 'Calc',
 
-  requires: [ 'HistoryView', 'CalcView' ],
+  requires: [ 'CalcView' ],
 
   templates: [ function CSS() {/*
     body {
