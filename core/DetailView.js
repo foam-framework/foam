@@ -77,7 +77,7 @@ CLASS({
       type:  'Model',
       postSet: function(_, m) {
         if ( this.$ ) {
-          this.children = [];
+          this.children = []; // TODO(jacksonic): Why not updateHTML() instead of this? no destroy()!
           this.$.outerHTML = this.toHTML();
           this.initHTML();
         }
@@ -129,21 +129,22 @@ CLASS({
     createTemplateView: function(name, opt_args) {
       /* Overridden here to set the new View.$$DOC{ref:'.data'} to this.$$DOC{ref:'.data'}.
          See $$DOC{ref:'View.createTemplateView'}. */
-      var o = this.viewModel().getFeature(name);
-      if ( o ) {
-        var v;
-        if ( Action.isInstance(o) )
-          v = this.createActionView(o, opt_args);
-        else if ( Relationship.isInstance(o) )
-          v = this.createRelationshipView(o, opt_args);
-        else
-          v = this.createView(o, opt_args);
-
-        v.data$ = this.data$;
-
-        return v;
+      if (this.viewModel()) {
+        var o = this.viewModel().getFeature(name);
+        if ( o ) {
+          var v;
+          if ( Action.isInstance(o) )
+            v = this.createActionView(o, opt_args);
+          else if ( Relationship.isInstance(o) )
+            v = this.createRelationshipView(o, opt_args);
+          else
+            v = this.createView(o, opt_args);
+  
+          v.data$ = this.data$;
+  
+          return v;
+        }
       }
-
       return this.SUPER(name, opt_args);
     },
 

@@ -444,6 +444,7 @@ CLASS({
       this.children = [];
       this.initializers_ = [];
 
+      var doneFirstItem = false;
       var d = this.dao;
       if ( this.chunkSize ) {
         d = d.limit(this.chunkSize * this.chunksLoaded);
@@ -460,6 +461,13 @@ CLASS({
           }.bind(this, o));
         }
         this.addChild(view);
+        
+        if (!doneFirstItem) {
+          doneFirstItem = true;
+        } else {
+          this.separatorToHTML(out); // optional separator
+        }
+        
         if ( this.X.selection$ ) {
           out.push('<div class="' + this.className + '-row' + '" id="' + this.on('click', (function() {
             this.selection = o;
@@ -489,6 +497,13 @@ CLASS({
       } else {
         this.rowView = e.innerHTML;
       }
+    },
+    
+    // Template method
+    separatorToHTML: function(out) {
+      /* Template method. Override to provide a separator if required. This
+      method is called <em>before</em> each list item, except the first. Use
+      out.push("<myhtml>...") for efficiency. */
     }
   },
 
@@ -725,10 +740,13 @@ CLASS({
       defaultValue: -1
     },
     {
-      name: 'spinnerController',
+      name: 'spinnerBusyStatus',
       factory: function() {
-        return this.X.WaitController.create();
+        return this.X.BusyStatus.create();
       }
+    },
+    {
+      name: 'busyComplete_'
     },
     {
       name: 'spinnerContainerID',
@@ -739,7 +757,7 @@ CLASS({
     {
       name: 'spinner',
       factory: function() {
-        return this.X.SpinnerView.create({ data$: this.spinnerController.busy$ });
+        return this.X.SpinnerView.create({ data$: this.spinnerBusyStatus.busy$ });
       }
     }
   ],
@@ -914,7 +932,9 @@ CLASS({
       code: function() {
         this.invalidate();
 
-        this.spinnerController.waitFor('scrollView-' + this.id);
+        var oldComplete = this.busyComplete_;
+        this.busyComplete_ = this.spinnerBusyStatus.start();
+        oldComplete && oldComplete();
 
         this.dao.select(COUNT())(function(c) {
           this.count = c.count;
@@ -994,7 +1014,7 @@ CLASS({
 
             // Tell the spinner controller we're done waiting.
             // No harm in multiple calls to this for the same spinner instance.
-            self.spinnerController.done('scrollView-' + self.id);
+            self.busyComplete_();
 
             // If we're in read-write mode, clone everything before it goes in the cache.
             for ( var i = 0 ; i < a.length ; i++ ) {
@@ -1037,9 +1057,9 @@ CLASS({
           <%= this.spinner %>
         </div>
         <% this.addInitializer(function(){
-          self.spinnerController.busy$.addListener(function() {
+          self.spinnerBusyStatus.busy$.addListener(function() {
             var e = $(self.spinnerContainerID);
-            if ( e ) e.style.display = self.spinnerController.busy ? 'block' : 'none';
+            if ( e ) e.style.display = self.spinnerBusyStatus.busy ? 'block' : 'none';
           });
         }); %>
         <div id="%%scrollerID" style="overflow-y: scroll; width:100%; height: 100%;">
