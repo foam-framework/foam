@@ -368,8 +368,10 @@ var aevalTemplate = function(t) {
 
     try {
       var args = ['opt_out'];
-      if ( t.args ) for ( var i = 0 ; i < t.args.length ; i++ ) {
-        args.push(t.args[i].name);
+      if (t.args) {
+        for ( var i = 0 ; i < t.args.length ; i++ ) {
+          args.push(t.args[i].name);
+        }
       }
       return aeval('function(' + args.join(',') + '){' + code + '}');
     } catch (err) {

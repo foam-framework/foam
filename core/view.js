@@ -649,7 +649,7 @@ CLASS({
           var newValue = valueFn(e.getAttribute(attributeName));
           if ( newValue == undefined ) e.removeAttribute(attributeName);
           else e.setAttribute(attributeName, newValue);
-        })
+        }.bind(this))
       }.bind(this));
     },
 

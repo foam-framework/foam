@@ -99,6 +99,19 @@ CLASS({
 });
 
 CLASS({
+  name: 'TextualDAOListView',
+  package: 'foam.documentation',
+  extendsModel: 'DAOListView',
+    
+  methods: {    
+    // Template method
+    separatorToHTML: function(out) {
+      out.push(", ");
+    }
+  }
+});
+
+CLASS({
   name: 'DocViewPicker',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocView',
@@ -404,9 +417,11 @@ CLASS({
     processModelChange: function() {
       // abort if it's too early //TODO: (we import data and run its postSet before the rest is set up)
       if (!this.featureDAO || !this.modelDAO) return;
-
+//var startTime = Date.now();
+//console.log("Generating FeatureDAO...", this.data );
       this.generateFeatureDAO();
-      this.updateHTML();
+//console.log("  FeatureDAO complete.", Date.now() - startTime);
+      this.updateHTML(); // not strictly necessary, but seems faster than allowing children to update individually
     },
 
     initInnerHTML: function() {
@@ -424,7 +439,7 @@ CLASS({
         if (! // if we don't find an element to scroll to:
           ref.resolvedModelChain.slice(1).reverse().some(function(feature) {
             if (feature && feature.name) {
-              element = $("scrollTarget_"+feature.name);
+              element = this.X.$("scrollTarget_"+feature.name);
               if (element) {
                 element.scrollIntoView(true);
                 return true;
@@ -610,6 +625,12 @@ CLASS({
 
   documentation: "A summary documentation view for $$DOC{ref:'Model'} instances.",
 
+  methods: {
+    onValueChange_: function() {
+      this.updateHTML();
+    }
+  },
+  
   templates: [
 
     function toInnerHTML()    {/*
@@ -633,6 +654,9 @@ CLASS({
 <%        } %>
 <%        if (this.data.extendsModel) { %>
             <p class="important">Extends $$DOC{ref: this.data.extendsModel }</p>
+<%        } %>
+<%        if (this.data.traits && this.data.traits.length > 0) { %>
+            <p class="important">Traits: $$traits{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelRefView', mode: 'read-only' }</p>
 <%        } %>
           </div>
           $$documentation{ model_: 'foam.documentation.DocBodyView' }
@@ -668,21 +692,12 @@ CLASS({
   extendsModel: 'foam.documentation.FullPageDocView',
   help: 'Displays the documentation of the given book.',
 
-  methods: {
-    onValueChange_: function() {
-      this.updateHTML();
-    }
-  },
-
   templates: [
 
     function toInnerHTML()    {/*
 <%    this.destroy(); %>
 <%    if (this.data) {  %>
-        <div id="scrollTarget_<%=this.data.name%>" class="introduction">
-          <h2><%=this.data.label%></h2>
-          $$data{ model_: 'foam.documentation.DocBodyView' }
-        </div>
+        $$data{ model_: 'foam.documentation.DocumentationBookSummaryDocView' }
         <div class="chapters">
           $$chapters{ model_: 'foam.documentation.DocChaptersView' }
         </div>
