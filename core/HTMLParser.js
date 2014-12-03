@@ -163,12 +163,12 @@ var HTMLParser = {
     sym('startTag'))),
 
   startTag: seq(
-      '<',
-      sym('tagName'),
-      sym('whitespace'),
-      sym('attributes'),
-      sym('whitespace'),
-      optional('/'),
+    '<',
+    sym('tagName'),
+    sym('whitespace'),
+    sym('attributes'),
+    sym('whitespace'),
+    optional('/'),
     '>'),
 
   endTag: (function() {
