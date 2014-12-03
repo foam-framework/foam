@@ -3119,19 +3119,33 @@ CLASS({
       sink = sink || [].sink;
 
       var key = this.selectKey(sink, options);
+      var future = afuture();
+      var delegateFuture = afuture();
+      var self = this;
 
-      if ( ! this.selects[key] ||
-          (new Date()) - this.selects[key][1] > this.staleTimeout) {
-        this.selects[key] = [sink, new Date()];
+      var entry = this.selects[key];
 
-        var cache = this.cache;
-        var count = 0;
-        var remaining = 0;
-
-        this.delegate.select(cache, options);
+      if ( ! entry ||
+           Date.now() - this.selects[key][1] > this.staleTimeout ) {
+        this.selects[key] = entry = [afuture(), Date.now()];
+        this.delegate.select(this.cache, options)(entry[0].set);
+      } else {
+        delegateFuture.set();
       }
 
-      return this.cache.select(sink, options);
+      function readFromCache() {
+        self.cache.select(sink, options)(future.set);
+      }
+
+      self.cache.select(COUNT(), options)(function(c) {
+        if ( c.count > 0 ) {
+          readFromCache();
+        } else {
+          entry[0].get(readFromCache);
+        }
+      });
+
+      return future.get;
     }
   }
 });
