@@ -66,7 +66,7 @@ CLASS({
       <div id="scrollTarget_<%=this.data.name%>">
         <p class="feature-heading"><%=this.data.name%></p>
         <p>$$documentation{ model_: 'foam.documentation.DocBodyView' }</p>
-        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'foam.documentation.DocFeatureOverridesRefView', model: this.X.foam.documentation.DocFeatureInheritanceTracker }</p>
+        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureOverridesRefView', model: this.X.foam.documentation.DocFeatureInheritanceTracker }</p>
       </div>
     */}
   ]
@@ -90,7 +90,7 @@ CLASS({
       help: 'Shortcut to set reference by Model name.',
       postSet: function() {
         this.ref = this.data.model + "." + this.data.name;
-        this.text = (this.data.fromTrait? "(T) " : "") + this.data.model + " / ";
+        this.text = (this.data.fromTrait? "(T)" : "") + this.data.model;
       },
       documentation: function() { /*
         The target reference Model definition. Use this instead of setting
@@ -145,9 +145,9 @@ CLASS({
       postSet: function() {
         this.ref = this.data;
         if (this.docRef.valid) {
-          this.text = this.docRef.resolvedModelChain[0].name + " &nbsp;&nbsp;";
+          this.text = this.docRef.resolvedModelChain[0].name;
         } else {
-          this.text = this.data + " &nbsp;&nbsp;";
+          this.text = this.data;
         }
       },
       documentation: function() { /*
@@ -204,7 +204,7 @@ CLASS({
         <p><span class="feature-heading"><%=this.data.name%></span>
            <span class="feature-type">($$DOC{ref:this.data.type.replace('[]',''), text:this.data.type, acceptInvalid:true})</span></p>
         <p>$$documentation{ model_: 'foam.documentation.DocBodyView' }</p>
-        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'foam.documentation.DocFeatureOverridesRefView', model: this.X.foam.documentation.DocFeatureInheritanceTracker }</p>
+        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureOverridesRefView', model: this.X.foam.documentation.DocFeatureInheritanceTracker }</p>
       </div>
     */}
   ]
@@ -254,7 +254,7 @@ CLASS({
 //        <p class="feature-heading"><%=this.data.name%> $$THISDATA{ model_: 'DocMethodArgumentsSmallView' }</p>
 //        <div class="memberList">$$THISDATA{ model_: 'DocMethodArgumentsView' }</div>
 //        <p><%=this.renderDocSourceHTML()%></p>
-//        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureOverridesRefView', data: this.overridesDAO, model: Model }</p>
+//        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'foam.documentation.TextualDAOListView', rowView: 'DocFeatureOverridesRefView', data: this.overridesDAO, model: Model }</p>
 //      </div>
 //    */}
 //  ]

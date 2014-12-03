@@ -99,6 +99,19 @@ CLASS({
 });
 
 CLASS({
+  name: 'TextualDAOListView',
+  package: 'foam.documentation',
+  extendsModel: 'DAOListView',
+    
+  methods: {    
+    // Template method
+    separatorToHTML: function(out) {
+      out.push(", ");
+    }
+  }
+});
+
+CLASS({
   name: 'DocViewPicker',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocView',
@@ -641,7 +654,7 @@ CLASS({
             <p class="important">Extends $$DOC{ref: this.data.extendsModel }</p>
 <%        } %>
 <%        if (this.data.traits && this.data.traits.length > 0) { %>
-            <p class="important">Traits: $$traits{ model_: 'DAOListView', rowView: 'foam.documentation.DocFeatureModelRefView', mode: 'read-only' }</p>
+            <p class="important">Traits: $$traits{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelRefView', mode: 'read-only' }</p>
 <%        } %>
           </div>
           $$documentation{ model_: 'foam.documentation.DocBodyView' }

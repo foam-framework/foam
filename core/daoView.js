@@ -444,6 +444,7 @@ CLASS({
       this.children = [];
       this.initializers_ = [];
 
+      var doneFirstItem = false;
       var d = this.dao;
       if ( this.chunkSize ) {
         d = d.limit(this.chunkSize * this.chunksLoaded);
@@ -460,6 +461,13 @@ CLASS({
           }.bind(this, o));
         }
         this.addChild(view);
+        
+        if (!doneFirstItem) {
+          doneFirstItem = true;
+        } else {
+          this.separatorToHTML(out); // optional separator
+        }
+        
         if ( this.X.selection$ ) {
           out.push('<div class="' + this.className + '-row' + '" id="' + this.on('click', (function() {
             this.selection = o;
@@ -489,6 +497,13 @@ CLASS({
       } else {
         this.rowView = e.innerHTML;
       }
+    },
+    
+    // Template method
+    separatorToHTML: function(out) {
+      /* Template method. Override to provide a separator if required. This
+      method is called <em>before</em> each list item, except the first. Use
+      out.push("<myhtml>...") for efficiency. */
     }
   },
 
