@@ -242,6 +242,30 @@ CLASS({
   help: 'A view for documentation of each item in a list of methods.',
 });
 
+CLASS({
+  name: 'SimpleRowDocView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.RowDocView',
+  help: 'A view for documentation of each item in a list, without using featureDAO.',
+
+  templates: [
+    function toInnerHTML() {/*
+      <div id="scrollTarget_<%=this.data.name%>">
+        <p><span class="feature-heading"><%=this.data.name%></span></p>
+        <p>$$documentation{ model_: 'foam.documentation.DocBodyView' }</p>
+      </div>
+    */}
+  ]
+
+});
+
+CLASS({
+  name: 'MethodSimpleRowDocView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.SimpleRowDocView',
+  help: 'A view for documentation of each item in a list of methods, without using featureDAO.',
+});
+
 
 //CLASS({
 //  name: 'DocMethodRowView',

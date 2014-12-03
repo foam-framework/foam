@@ -512,7 +512,11 @@ CLASS({
         Used by the $$DOC{ref:'Template',text:'$$propName'} sub-$$DOC{ref:'View'}
         creation tag in $$DOC{ref:'Template',usePlural:true}.
       */
+      
+      // Can't call viewModel() here, since DetailView overrides it but relies
+      // on falling back on view's implementation. TODO(jacksonic): figure it out
       var o = this.model_[name.constantize()];
+      
       if ( ! o ) throw 'Unknown View Name: ' + name;
 
       var args = opt_args; // opt_args ? opt_args.clone() : {};

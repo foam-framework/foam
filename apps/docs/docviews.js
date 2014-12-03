@@ -119,12 +119,21 @@ CLASS({
   help: 'Base Model for full page documentation views.',
 
   requires: ['foam.documentation.FullPageDocView'],
-
+ 
   documentation: function() {/*
     Creates a sub-view appropriate for the specified data (such as a Model definition,
     DocumentationBook, or other thing.
   */},
 
+  properties: [
+    {
+      name: 'model',
+      postSet: function() {
+        this.updateHTML();
+      }
+    }
+  ],
+  
   templates: [
     function toInnerHTML() {/*
       <% this.destroy();
@@ -212,13 +221,13 @@ CLASS({
 <%    this.destroy(); %>
 <%    if (this.data) {  %>
         <p class="important"><%=this.data.name%></p>
+        $$documentation{ model_: 'foam.documentation.DocBodyView' }
 <%    } %>
     */}
   ]
 
 
 });
-
 
 CLASS({
   name: 'DocModelInheritanceTracker',
@@ -381,10 +390,6 @@ CLASS({
       documentation: "The $$DOC{ref:'Model'} for which to display $$DOC{ref:'Documentation'}.",
       postSet: function() {
         if (this.data) {
-          if (!this.data.model_ || this.data.model_.id !== 'Model') {
-            console.warn("ModelDocView created with non-model instance: ", this.data);
-            return;
-          }
           this.processModelChange();
         }
       }
@@ -417,10 +422,7 @@ CLASS({
     processModelChange: function() {
       // abort if it's too early //TODO: (we import data and run its postSet before the rest is set up)
       if (!this.featureDAO || !this.modelDAO) return;
-//var startTime = Date.now();
-//console.log("Generating FeatureDAO...", this.data );
       this.generateFeatureDAO();
-//console.log("  FeatureDAO complete.", Date.now() - startTime);
       this.updateHTML(); // not strictly necessary, but seems faster than allowing children to update individually
     },
 
@@ -459,15 +461,26 @@ CLASS({
       /* Builds a feature DAO to sort out inheritance and overriding of
         $$DOC{ref:'Property',usePlural:true}, $$DOC{ref:'Method',usePlural:true},
         and other features. */
+       
+      //var startTime = Date.now();
+      //console.log("Generating FeatureDAO...", this.data );
 
       this.featureDAO.removeAll();
       this.modelDAO.removeAll();
 
+      if (!this.data.model_ || this.data.model_.id !== 'Model') {
+        console.warn("ModelDocView created with non-model instance: ", this.data);
+        return;
+      }
+
+      
       // Run through the features in the Model definition in this.data,
       // and load them into the feature DAO. Passing [] assumes we don't
       // care about other models that extend this one. Finding such would
       // be a global search problem.
       this.loadFeaturesOfModel(this.data, []);
+       
+      //console.log("  FeatureDAO complete.", Date.now() - startTime);
 
       //this.debugLogFeatureDAO();
     },
@@ -685,6 +698,81 @@ CLASS({
   ]
 
 });
+
+CLASS({
+  name: 'InterfaceFullPageDocView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.FullPageDocView',
+  help: 'A full-page documentation view for Interface instances.',
+
+  documentation: "A full-page documentation view for $$DOC{ref:'Interface'} instances.",
+
+  templates: [
+
+    function toInnerHTML()    {/*
+<%    this.destroy(); %>
+<%    if (this.data) {  %>
+        $$data{ model_: 'foam.documentation.SummaryDocView', model: this.data.model_ }
+        <div class="members">
+          <p class="feature-type-heading">Methods:</p>
+          <div class="memberList">$$methods{ model_: 'DAOListView', rowView: 'foam.documentation.SimpleRowDocView' }</div>
+        </div>
+<%    } %>
+    */}
+  ]
+
+});
+
+CLASS({
+  name: 'InterfaceSummaryDocView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.SummaryDocView',
+  help: 'Displays the documentation of the given interface.',
+
+  methods: {
+    onValueChange_: function() {
+      this.updateHTML();
+    }
+  },
+
+  
+  templates: [
+
+    function toInnerHTML()    {/*
+<%    this.destroy(); %>
+<%    if (this.data) {  %>
+        <div class="introduction">
+          <h1><%=this.data.name%></h1>
+          <div class="model-info-block">
+            <p class="important">Interface definition</p>
+          
+<%        if (this.data.package) { %>
+            <p class="important">Package <%=this.data.package%></p>
+<%        } %>
+        
+<%        if (this.data.description) { %>
+            <p class="important">Description: <%=this.data.description%></p>
+<%        } %>
+
+<%        if (this.data.extends && this.data.extends.length > 0) { %>
+            <p class="important">Extends: $$extends{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelRefView', mode: 'read-only' }</p>
+<%        } %>
+
+            <div id="scrollTarget_<%=this.data.name%>" class="introduction">
+              <h2><%=this.data.label%></h2>
+              $$documentation{ model_: 'foam.documentation.DocBodyView' }
+            </div>
+          </div>
+        </div>
+<%    } %>
+    */}
+  ]
+
+});
+
+
+
+
 
 CLASS({
   name: 'DocumentationBookFullPageDocView',
