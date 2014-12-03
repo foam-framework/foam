@@ -292,7 +292,15 @@ CLASS({
     }
   },
   templates: [
-    function CSS() {/* .thumbnail { margin-bottom: 40px; } */},
+    function CSS() {/*
+      .thumbnail { margin-bottom: 40px; }
+      a img {
+        border: 1px solid gray;
+        box-shadow: 3px 3px 6px gray;
+        margin-left: 30px;
+        margin-top: -38px;
+      }
+    */},
     function toDetailHTML() {/*
         &nbsp;&nbsp; Search: $$search
         <p>
