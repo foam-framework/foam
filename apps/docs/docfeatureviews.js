@@ -103,6 +103,33 @@ CLASS({
   name: 'DocFeatureSubmodelRefView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocRefView',
+  label: 'Documentation Feature sub-model Link Reference View',
+  help: 'The view of a documentation reference link based on a Sub-Model.',
+
+  documentation: function() { /*
+    <p>An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
+    for notes on usage.</p>
+    */},
+
+  properties: [
+    {
+      name: 'data',
+      help: 'Shortcut to set reference by Model.',
+      postSet: function() {
+        this.ref = "."+this.data.name;
+      },
+      documentation: function() { /*
+        The target reference Model definition. Use this instead of setting
+        $$DOC{ref:'.docRef'}, if you are referencing a $$DOC{ref:'Model'}.
+        */}
+    },
+  ],
+});
+
+CLASS({
+  name: 'DocFeatureModelRefView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocRefView',
   label: 'Documentation Feature Model Link Reference View',
   help: 'The view of a documentation reference link based on a Model.',
 
@@ -116,7 +143,12 @@ CLASS({
       name: 'data',
       help: 'Shortcut to set reference by Model name.',
       postSet: function() {
-        this.ref = "."+this.data.name;
+        this.ref = this.data;
+        if (this.docRef.valid) {
+          this.text = this.docRef.resolvedModelChain[0].name + " &nbsp;&nbsp;";
+        } else {
+          this.text = this.data + " &nbsp;&nbsp;";
+        }
       },
       documentation: function() { /*
         The target reference Model definition. Use this instead of setting

@@ -610,6 +610,12 @@ CLASS({
 
   documentation: "A summary documentation view for $$DOC{ref:'Model'} instances.",
 
+  methods: {
+    onValueChange_: function() {
+      this.updateHTML();
+    }
+  },
+  
   templates: [
 
     function toInnerHTML()    {/*
@@ -633,6 +639,9 @@ CLASS({
 <%        } %>
 <%        if (this.data.extendsModel) { %>
             <p class="important">Extends $$DOC{ref: this.data.extendsModel }</p>
+<%        } %>
+<%        if (this.data.traits && this.data.traits.length > 0) { %>
+            <p class="important">Traits: $$traits{ model_: 'DAOListView', rowView: 'foam.documentation.DocFeatureModelRefView', mode: 'read-only' }</p>
 <%        } %>
           </div>
           $$documentation{ model_: 'foam.documentation.DocBodyView' }
@@ -668,21 +677,12 @@ CLASS({
   extendsModel: 'foam.documentation.FullPageDocView',
   help: 'Displays the documentation of the given book.',
 
-  methods: {
-    onValueChange_: function() {
-      this.updateHTML();
-    }
-  },
-
   templates: [
 
     function toInnerHTML()    {/*
 <%    this.destroy(); %>
 <%    if (this.data) {  %>
-        <div id="scrollTarget_<%=this.data.name%>" class="introduction">
-          <h2><%=this.data.label%></h2>
-          $$data{ model_: 'foam.documentation.DocBodyView' }
-        </div>
+        $$data{ model_: 'foam.documentation.DocumentationBookSummaryDocView' }
         <div class="chapters">
           $$chapters{ model_: 'foam.documentation.DocChaptersView' }
         </div>
