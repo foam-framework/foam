@@ -102,7 +102,7 @@ MODEL({
     'comment': seq('<!--', repeat(not('-->', anyChar)), '-->'),
 
     'foamTag': sym('foamTag_'),
-    'foamTag_': function() {}, // placeholder until gets filled in after HTMLParser is built
+    'foamTag_': function() { }, // placeholder until gets filled in after HTMLParser is built
 
     'create child': seq(
       '$$',
@@ -162,6 +162,7 @@ var TemplateOutput = {
 };
 
 
+// Called from generated template code.
 function elementFromString(str) {
   return str.element || ( str.element = HTMLParser.create().parseString(str).children[0] );
 }
@@ -235,6 +236,7 @@ var TemplateCompiler = {
   newline: function () { this.push("\\n"); },
   text: function(v) { this.push(v); }
 });
+
 
 MODEL({
   name: 'TemplateUtil',
