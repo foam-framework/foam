@@ -294,11 +294,12 @@ CLASS({
   templates: [
     function CSS() {/*
       .thumbnail { margin-bottom: 40px; }
-      a img {
+      .screenshot {
         border: 1px solid gray;
-        box-shadow: 3px 3px 6px gray;
+        box-shadow: 5px 5px 15px gray;
         margin-left: 30px;
         margin-top: -38px;
+        border-radius: 10px;
       }
     */},
     function toDetailHTML() {/*
@@ -308,7 +309,7 @@ CLASS({
           <li class="thumbnail">
             <a href="%%data.path" class="thumb">$$name{mode: 'read-only'}</a>
             <br>
-            <% if ( this.data.image ) { %> <br><a href="%%data.path"><img width=250 height=250 src="democat/%%data.image"></a> <% } %>
+            <% if ( this.data.image ) { %> <br><a href="%%data.path"><img class="screenshot" width=250 height=250 src="democat/%%data.image"></a> <% } %>
             <p>$$description{mode: 'read-only', escapeHTML: false}</p>
             <b>Keywords:</b> <%= this.data.keywords.join(', ') %><br>
             <b>Source:</b> <a href="%%data.src">here</a><br>
