@@ -417,9 +417,11 @@ CLASS({
     processModelChange: function() {
       // abort if it's too early //TODO: (we import data and run its postSet before the rest is set up)
       if (!this.featureDAO || !this.modelDAO) return;
-
+//var startTime = Date.now();
+//console.log("Generating FeatureDAO...", this.data );
       this.generateFeatureDAO();
-      this.updateHTML();
+//console.log("  FeatureDAO complete.", Date.now() - startTime);
+      this.updateHTML(); // not strictly necessary, but seems faster than allowing children to update individually
     },
 
     initInnerHTML: function() {
@@ -437,7 +439,7 @@ CLASS({
         if (! // if we don't find an element to scroll to:
           ref.resolvedModelChain.slice(1).reverse().some(function(feature) {
             if (feature && feature.name) {
-              element = $("scrollTarget_"+feature.name);
+              element = this.X.$("scrollTarget_"+feature.name);
               if (element) {
                 element.scrollIntoView(true);
                 return true;

@@ -153,7 +153,7 @@ var DOM = {
       if ( p ) {
         if ( val.startsWith('#') ) {
           val = val.substring(1);
-          val = $(val);
+          val = X.$(val);
         }
         args[key] = val;
       } else {
@@ -457,7 +457,7 @@ CLASS({
       this.addInitializer(function() {
         this.X.dynamic(function() {
           var html = f();
-          var e = $(id);
+          var e = this.X.$(id);
           if ( e ) e.innerHTML = html;
         }.bind(this));
       }.bind(this));
@@ -630,10 +630,10 @@ CLASS({
       }
 
       this.addInitializer(function() {
-        var e = $(opt_id);
+        var e = this.X.$(opt_id);
         // if ( ! e ) console.log('Error Missing element for id: ' + opt_id + ' on event ' + event);
         if ( e ) e.addEventListener(event, listener, false);
-      });
+      }.bind(this));
 
       return opt_id;
     },
@@ -644,12 +644,12 @@ CLASS({
       valueFn = valueFn.bind(this);
       this.addInitializer(function() {
         this.X.dynamic(valueFn, function() {
-          var e = $(opt_id);
+          var e = this.X.$(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           var newValue = valueFn(e.getAttribute(attributeName));
           if ( newValue == undefined ) e.removeAttribute(attributeName);
           else e.setAttribute(attributeName, newValue);
-        })
+        }.bind(this))
       }.bind(this));
     },
 
@@ -660,7 +660,7 @@ CLASS({
 
       this.addInitializer(function() {
         this.X.dynamic(predicate, function() {
-          var e = $(opt_id);
+          var e = this.X.$(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           DOM.setClass(e, className, predicate());
         });
@@ -683,7 +683,7 @@ CLASS({
 
     insertInElement: function(name) {
       /* Insert this View's toHTML into the Element of the supplied name. */
-      var e = $(name);
+      var e = this.X.$(name);
       e.innerHTML = this.toHTML();
       this.initHTML();
     },
@@ -4476,7 +4476,7 @@ CLASS({
   ],
 
   methods: {
-    thumb: function() { return $(this.thumbID); },
+    thumb: function() { return this.X.$(this.thumbID); },
     initHTML: function() {
       this.SUPER();
 

@@ -359,9 +359,9 @@ CLASS({
   help: 'Displays the contents of the given Chapters.',
 
   methods: {
-    onValueChange_: function() {
-      this.updateHTML();
-    },
+//     onValueChange_: function() {
+//       this.updateHTML();
+//     },
     viewModel: function() { /* The $$DOC{ref:'Model'} type of the $$DOC{ref:'.data'}. */
       return this.X.Model; // force detailview to fall back to view.createTemplateView()
     }
