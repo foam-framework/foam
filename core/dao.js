@@ -3931,6 +3931,56 @@ CLASS({
   }
 });
 
+CLASS({
+  name: 'BusyStatusDAO',
+  extendsModel: 'ProxyDAO',
+  imports: [
+    'busyStatus'
+  ],
+
+  methods: {
+    wrapSink: function(op, sink) {
+      var comp = this.busyStatus.start();
+      // NB: We must make sure that whenever anything is called on sink, this
+      // is the original sink, not mysink. Otherwise eg. MDAO will fail, as it
+      // writes things to mysink.instance_ and not sink.instance_.
+      var mysink = {
+        error: function() {
+          comp();
+          sink && sink.error && sink.error.apply(sink, arguments);
+        },
+        eof: op === 'select' || op === 'removeAll' ?
+          function() { comp(); sink && sink.eof && sink.eof(); } :
+          sink.eof.bind(sink),
+        put: op === 'put' || op === 'find' ?
+          function(x) { comp(); sink && sink.put && sink.put(x); } :
+          sink.put.bind(sink),
+        remove: op === 'remove' ?
+          function(x) { comp(); sink && sink.remove && sink.remove(x); } :
+          sink.remove.bind(sink)
+      };
+
+      return mysink;
+    },
+    select: function(sink, options) {
+      return this.delegate.select(this.wrapSink('select', sink || [].sink), options);
+    },
+    put: function(obj, sink) {
+      this.delegate.put(obj, this.wrapSink('put', sink));
+    },
+    remove: function(obj, sink) {
+      this.delegate.remove(obj, this.wrapSink('remove', sink));
+    },
+    find: function(obj, sink) {
+      this.delegate.find(obj, this.wrapSink('find', sink));
+    },
+    removeAll: function(sink, options) {
+      return this.delegate.removeAll(this.wrapSink('removeAll', sink), options);
+    }
+  }
+});
+
+
 // Experimental, convert all functions into sinks
 Function.prototype.put    = function() { this.apply(this, arguments); };
 Function.prototype.remove = function() { this.apply(this, arguments); };

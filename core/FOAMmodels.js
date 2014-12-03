@@ -90,6 +90,7 @@ var files = [
   [ 'touch', IN_BROWSER ],
   [ 'glang', IN_BROWSER ],
   'oauth',
+  'busy',
   [ '../apps/mailreader/view', IN_BROWSER ],
   [ '../apps/mailreader/email', IN_BROWSER ],
   [ '../lib/email/email', IN_BROWSER ],
