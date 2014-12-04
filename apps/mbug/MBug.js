@@ -5,6 +5,7 @@ CLASS({
 
   requires: [
     'AppController',
+    'ChangeProjectView',
     'DetailView',
     'GestureManager',
     'IssueCitationView',
