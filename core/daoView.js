@@ -1029,7 +1029,9 @@ CLASS({
             self.allocateVisible();
           });
         } else {
+          // Not loading anything, render what we have and stop the spinner if necessary.
           this.allocateVisible();
+          this.spinnerController.done('scrollView-' + this.id);
         }
       }
     }
