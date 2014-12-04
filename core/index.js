@@ -746,8 +746,8 @@ var AutoPositionIndex = {
     return obj;
   },
 
-  put: function(s) { return s; },
-  remove: function(s) { return s; },
+  put: function(s, value) { return this.alt.put(s, value); },
+  remove: function(s, value) { return this.alt.remove(s, value); },
 
   bulkLoad: function(a) {
     return [];
