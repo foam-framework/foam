@@ -153,7 +153,7 @@ var DOM = {
       if ( p ) {
         if ( val.startsWith('#') ) {
           val = val.substring(1);
-          val = this.X.$(val);
+          val = X.$(val);
         }
         args[key] = val;
       } else {
