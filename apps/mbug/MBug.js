@@ -40,23 +40,17 @@ CLASS({
 
         project.IssueNetworkDAO.batchSize = 25;
 
-        var factory = (function() {
-          var placeholder = Y.QIssue.create({
-            status: 'OPEN',
-            id: '',
-            summary: 'Loading...',
-            starred: false
-          });
-          return function() { return placeholder; }
-        })();
-
-        Y.issueDAO = Y.MDAO.create({ model: Y.QIssue });
-
-        // TODO: Clean this up.
-        Y.issueDAO.index = AltIndex.create(
-          AutoPositionIndex.create(factory, Y.issueDAO, project.IssueNetworkDAO, 2000),
-          TreeIndex.create(Y.QIssue.ID));
-        Y.issueDAO.root = [[]];
+        Y.issueDAO = Y.SplitDAO.create({
+          model: Y.QIssue,
+          remote: project.IssueNetworkDAO,
+          placeholderFactory: constantFn(
+            Y.QIssue.create({
+              status: 'OPEN',
+              id: '',
+              summary: 'Loading...',
+              starred: false
+            }))
+        });
 
         Y.issueDAO = Y.KeywordDAO.create({
           delegate: Y.issueDAO
