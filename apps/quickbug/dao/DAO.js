@@ -187,7 +187,10 @@ CLASS({
                 },
                 function(ret, result) {
                   if ( sink ) {
-                    if ( result ) sink.put && sink.put(result);
+                    if ( result ) {
+                      sink.put && sink.put(result);
+                      self.notify_('put', [result]);
+                    }
                     else sink.error && sink.error('put', issue);
                   }
                   ret();
