@@ -18,9 +18,9 @@ cat \
   ../../core/JSONUtil.js \
   ../../core/XMLUtil.js \
   ../../core/context.js \
-  ../../core/FOAM.js \
   ../../core/JSONParser.js \
   ../../core/TemplateUtil.js \
+  ../../core/FOAM.js \
   ../../core/FObject.js \
   ../../core/BootstrapModel.js \
   ../../core/mm1Model.js \
