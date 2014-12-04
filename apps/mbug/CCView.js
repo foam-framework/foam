@@ -7,11 +7,11 @@ CLASS({
     'PersonView'
   ],
 
+  imports: [
+    'PersonDAO as srcDAO'
+  ],
+
   properties: [
-    {
-      name: 'srcDAO',
-      factory: function() { return this.X.PersonDAO; }
-    },
     {
       name: 'queryFactory',
       defaultValue: function(data) {
@@ -75,5 +75,3 @@ CLASS({
     </div>
   */} ]
 });
-
-

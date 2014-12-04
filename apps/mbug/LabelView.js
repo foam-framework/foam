@@ -1,4 +1,3 @@
-
 CLASS({
   name: 'IssueLabelView',
   extendsModel: 'AutocompleteListView',
@@ -6,11 +5,10 @@ CLASS({
     'LabelCitationView',
     'LabelView'
   ],
+  imports: [
+    'LabelDAO as srcDAO'
+  ],
   properties: [
-    {
-      name: 'srcDAO',
-      factory: function() { return this.X.LabelDAO; }
-    },
     {
       name: 'queryFactory',
       defaultValue: function(data) {
