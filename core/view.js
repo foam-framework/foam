@@ -153,7 +153,7 @@ var DOM = {
       if ( p ) {
         if ( val.startsWith('#') ) {
           val = val.substring(1);
-          val = $(val);
+          val = X.$(val);
         }
         args[key] = val;
       } else {
@@ -294,7 +294,7 @@ CLASS({
       getter: function() {
         return this.instance_.$ ? this.instance_.$ : this.instance_.$ = this.X.document.getElementById(this.id);
       },
-      help:   'DOM Element.'
+      help: 'DOM Element.'
     },
     {
       name: 'tagName',
@@ -457,7 +457,7 @@ CLASS({
       this.addInitializer(function() {
         this.X.dynamic(function() {
           var html = f();
-          var e = $(id);
+          var e = this.X.$(id);
           if ( e ) e.innerHTML = html;
         }.bind(this));
       }.bind(this));
@@ -512,7 +512,11 @@ CLASS({
         Used by the $$DOC{ref:'Template',text:'$$propName'} sub-$$DOC{ref:'View'}
         creation tag in $$DOC{ref:'Template',usePlural:true}.
       */
+      
+      // Can't call viewModel() here, since DetailView overrides it but relies
+      // on falling back on view's implementation. TODO(jacksonic): figure it out
       var o = this.model_[name.constantize()];
+      
       if ( ! o ) throw 'Unknown View Name: ' + name;
 
       var args = opt_args; // opt_args ? opt_args.clone() : {};
@@ -630,10 +634,10 @@ CLASS({
       }
 
       this.addInitializer(function() {
-        var e = $(opt_id);
+        var e = this.X.$(opt_id);
         // if ( ! e ) console.log('Error Missing element for id: ' + opt_id + ' on event ' + event);
         if ( e ) e.addEventListener(event, listener, false);
-      });
+      }.bind(this));
 
       return opt_id;
     },
@@ -644,12 +648,12 @@ CLASS({
       valueFn = valueFn.bind(this);
       this.addInitializer(function() {
         this.X.dynamic(valueFn, function() {
-          var e = $(opt_id);
+          var e = this.X.$(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           var newValue = valueFn(e.getAttribute(attributeName));
           if ( newValue == undefined ) e.removeAttribute(attributeName);
           else e.setAttribute(attributeName, newValue);
-        })
+        }.bind(this))
       }.bind(this));
     },
 
@@ -660,7 +664,7 @@ CLASS({
 
       this.addInitializer(function() {
         this.X.dynamic(predicate, function() {
-          var e = $(opt_id);
+          var e = this.X.$(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           DOM.setClass(e, className, predicate());
         });
@@ -683,7 +687,7 @@ CLASS({
 
     insertInElement: function(name) {
       /* Insert this View's toHTML into the Element of the supplied name. */
-      var e = $(name);
+      var e = this.X.$(name);
       e.innerHTML = this.toHTML();
       this.initHTML();
     },
@@ -4476,7 +4480,7 @@ CLASS({
   ],
 
   methods: {
-    thumb: function() { return $(this.thumbID); },
+    thumb: function() { return this.X.$(this.thumbID); },
     initHTML: function() {
       this.SUPER();
 
@@ -5485,114 +5489,4 @@ CLASS({
       if ( this.childView ) this.childView.destroy();
     }
   }
-});
-CLASS({
-  name: 'WaitController',
-  documentation: '<p>A controller that sets an output property to true when any ' +
-      '"topic" is active. Any code that needs to indicate a busy state can ' +
-      'add a topic to this controller with $$DOC{ref:".waitFor"} and signal ' +
-      'it\'s done with $$DOC{ref:".done"}.</p>' +
-      '<p>The controller will set $$DOC{ref:".busy"} to true when the rules ' +
-      'are met: <ul>' +
-      '<li>At least one topic has been added.</li>' +
-      '<li>The $$DOC{ref:".minPreSpinnerWait"} timer has expired.</li>' +
-      '</ul> and will set it back to false when the rules are met: <ul>' +
-      '<li>All topics have been $$DOC{ref:".done"}.</li>' +
-      '<li>The $$DOC{ref:".minSpinnerShowTime"} has elapsed.</li>' +
-      '</ul></p>',
-
-  imports: [
-    'clearTimeout',
-    'setTimeout'
-  ],
-
-  properties: [
-    {
-      name: 'busy',
-      documentation: 'Set when the controller\'s logic indicates a spinner ' +
-          'should be shown.',
-      defaultValue: false
-    },
-    {
-      name: 'minPreSpinnerWait',
-      documentation: 'Minimum wait time before showing a spinner.',
-      units: 'ms',
-      defaultValue: 500
-    },
-    {
-      name: 'minSpinnerShowTime',
-      documentation: 'Minimum time to show a spinner. (Seems strange, but it ' +
-          'is perceived as glitchy to see a spinner for only an instant.)',
-      units: 'ms',
-      defaultValue: 500
-    },
-    {
-      name: 'waiting',
-      hidden: true,
-      getter: function() { return Object.keys(this.topics).length > 0; }
-    },
-    {
-      name: 'topics',
-      factory: function() { return {}; }
-    },
-    {
-      name: 'timer'
-    }
-  ],
-
-  methods: {
-    waitFor: function(topic) {
-      if ( this.topics[topic] ) return; // Do nothing for running topics.
-      var alreadyWaiting = this.waiting;
-      this.topics[topic] = true;
-
-      // If there were already things waiting, nothing more to do.
-      if ( alreadyWaiting ) return;
-
-      // But if this is the first topic, we start the pre-spinner timer.
-      // Clear the minimum spinner timer if it's already running.
-      if ( this.timer ) this.clearTimeout(this.timer);
-      this.timer = this.setTimeout(this.onTimer, this.minPreSpinnerWait);
-    },
-    done: function(topic) {
-      if ( ! this.topics[topic] ) return; // Unrecognized topic; bail.
-      delete this.topics[topic];
-
-      // If there are still things waiting, do nothing further.
-      if ( this.waiting ) return;
-
-      if ( this.timer && ! this.busy ) {
-        // Pre-spinner timer is still running. Cancel it and we're done.
-        this.clearTimeout(this.timer);
-        this.timer = '';
-      } else if ( this.busy ) {
-        // Spinner is up, and the minimum spinner timer has expired.
-        this.busy = false;
-      }
-      // The final case is that the minimum spinner timer is still running,
-      // in which case we just let it expire.
-    }
-  },
-
-  listeners: [
-    {
-      name: 'onTimer',
-      code: function() {
-        var waiting = this.waiting;
-        this.timer = '';
-        if ( this.busy && ! waiting ) {
-          // Minimum spinner timer just expired, and we're done waiting.
-          this.busy = false;
-        } else if ( ! this.busy && waiting ) {
-          // Topics are waiting and we're not already busy., so this is the
-          // pre-spinner timer that just expired. Set busy.
-          this.busy = true;
-        }
-        // Otherwise, either:
-        // - The minimum spinner time expired and things are still waiting, or
-        // - The pre-spinner timer just expired but the wait is already over.
-        // Either way, nothing to do.
-      }
-    }
-  ]
 });

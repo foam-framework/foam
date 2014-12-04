@@ -68,6 +68,7 @@ cat \
   ../../core/touch.js \
   ../../core/glang.js \
   ../../core/oauth.js \
+  ../../core/busy.js \
   ../../core/ChromeApp.js \
   ../../core/SyncManager.js \
   ../../lib/bookmarks/bookmark.js \

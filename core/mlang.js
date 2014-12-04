@@ -29,6 +29,7 @@ CLASS({
     // Mustang Query Language
     toMQL: function() { /* Outputs Mustang Query Language for this expression. */ return this.label_; },
     toSQL: function() { /* Outputs SQL for this expression. */ return this.label_; },
+    toBQL: function() { /* Outputs yet another query language for this expression. */ return this.label_; },
     toString: function() {
       /* Converts to a string form for debugging; defaults to $$DOC{ref: ".toMQL", text: "MQL"}. */
       return this.toMQL();
@@ -99,6 +100,7 @@ var TRUE = (FOAM({
     toString: function() { return '<true>'; },
     toSQL:    function() { return '( 1 = 1 )'; },
     toMQL:    function() { return ''; },
+    toBQL:    function() { return ''; },
     f:        function() { return true; }
   }
 })).create();
@@ -114,6 +116,7 @@ var FALSE = (FOAM({
   methods: {
     toSQL: function(out) { return '( 1 <> 1 )'; },
     toMQL: function(out) { return '<false>'; },
+    toBQL: function(out) { return '<false>'; },
     f:     function() { return false; }
   }
 })).create();
@@ -185,6 +188,18 @@ CLASS({
       }
       s += ')';
       return str;
+    },
+    toBQL: function() {
+      var s;
+      s = this.model_.label;
+      s += '(';
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a = this.args[i];
+        s += a.toBQL();
+        if ( i < this.args.length-1 ) out.push(',');
+      }
+      s += ')';
+      return str;
     }
   }
 });
@@ -216,6 +231,9 @@ CLASS({
     },
     toMQL: function() {
       return this.label_ + '(' + this.arg1.toMQL() + ')';
+    },
+    toBQL: function() {
+      return this.label_ + '(' + this.arg1.toBQL() + ')';
     }
   }
 });
@@ -247,6 +265,9 @@ CLASS({
     },
     toMQL: function() {
       return this.arg1.toMQL() + ' ' + this.label_ + ' ' + this.arg2.toMQL();
+    },
+    toBQL: function() {
+      return this.arg1.toBQL() + ' ' + this.label_ + ' ' + this.arg2.toBQL();
     }
   }
 });
@@ -276,6 +297,19 @@ CLASS({
       for ( var i = 0 ; i < this.args.length ; i++ ) {
         var a = this.args[i];
         var sub = a.toMQL();
+        if ( OrExpr.isInstance(a) ) {
+          sub = '(' + sub + ')';
+        }
+        s += sub;
+        if ( i < this.args.length-1 ) s += (' ');
+      }
+      return s;
+    },
+    toBQL: function() {
+      var s = '';
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a = this.args[i];
+        var sub = a.toBQL();
         if ( OrExpr.isInstance(a) ) {
           sub = '(' + sub + ')';
         }
@@ -456,6 +490,16 @@ CLASS({
       return s;
     },
 
+    toBQL: function() {
+      var s = '';
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a = this.args[i];
+        s += a.toBQL();
+        if ( i < this.args.length-1 ) s += (' | ');
+      }
+      return s;
+    },
+
     collectInputs: function(terms) {
       for ( var i = 0; i < this.args.length; i++ ) {
         this.args[i].collectInputs(terms);
@@ -588,6 +632,10 @@ CLASS({
       // TODO: only include params if necessary
       return '-' + this.arg1.toMQL();
     },
+    toBQL: function() {
+      // TODO: only include params if necessary
+      return '-' + this.arg1.toBQL();
+    },
     collectInputs: function(terms) {
       this.arg1.collectInputs(terms);
     },
@@ -636,6 +684,7 @@ CLASS({
     toString: function() { return this.plan; },
     toSQL: function() { return this.arg1.toSQL(); },
     toMQL: function() { return this.arg1.toMQL(); },
+    toBQL: function() { return this.arg1.toBQL(); },
     partialEval: function() {
       var newArg = this.arg1.partialEval();
 
@@ -665,6 +714,12 @@ CLASS({
       return this.arg2     === TRUE ? 'is:' + this.arg1.toMQL()   :
              this.arg2.f() == ''    ? '-has:' + this.arg1.toMQL() :
              this.arg1.toMQL() + '=' + this.arg2.toMQL()      ;
+    },
+
+    toBQL: function() {
+      if ( ! this.arg1.toBQL || ! this.arg2.toBQL ) return '';
+      return this.arg2     === TRUE ? this.arg1.toBQL() + ':true' :
+             this.arg1.toBQL() + ':' + this.arg2.toBQL()      ;
     },
 
     partialEval: function() {
@@ -730,6 +785,7 @@ CLASS({
     },
     toSQL: function() { return this.arg1.toSQL() + ' IN ' + this.arg2; },
     toMQL: function() { return this.arg1.toMQL() + '=' + this.arg2.join(',') },
+    toBQL: function() { return this.arg1.toBQL() + ':(' + this.arg2.join('|') + ')' },
 
     f: function(obj) {
       return this.valueSet().hasOwnProperty(this.arg1.f(obj));
@@ -758,6 +814,7 @@ CLASS({
   methods: {
     toSQL: function() { return this.arg1.toSQL() + ' IN ' + this.arg2; },
     toMQL: function() { return this.arg1.toMQL() + ':' + this.arg2.join(',') },
+    toBQL: function() { return this.arg1.toBQL() + ':(' + this.arg2.join('|') + ')' },
 
     f: function(obj) {
       var v = this.arg1.f(obj);
@@ -790,6 +847,7 @@ CLASS({
   methods: {
     toSQL: function() { return this.arg1.toSQL() + " like '%' + " + this.arg2.toSQL() + "+ '%'"; },
     toMQL: function() { return this.arg1.toMQL() + ':' + this.arg2.toMQL(); },
+    toBQL: function() { return this.arg1.toBQL() + ':' + this.arg2.toBQL(); },
 
     partialEval: function() {
       var newArg1 = this.arg1.partialEval();
@@ -840,6 +898,7 @@ CLASS({
     // No different that the non IC-case
     toSQL: function() { return this.arg1.toSQL() + " like '%' + " + this.arg2.toSQL() + "+ '%'"; },
     toMQL: function() { return this.arg1.toMQL() + ':' + this.arg2.toMQL(); },
+    toBQL: function() { return this.arg1.toBQL() + ':' + this.arg2.toBQL(); },
 
     partialEval: function() {
       var newArg1 = this.arg1.partialEval();
@@ -884,6 +943,7 @@ CLASS({
   methods: {
     toSQL: function() { return this.arg1.toSQL() + '<>' + this.arg2.toSQL(); },
     toMQL: function() { return '-' + this.arg1.toMQL() + '=' + this.arg2.toMQL(); },
+    toBQL: function() { return '-' + this.arg1.toBQL() + ':' + this.arg2.toBQL(); },
 
     partialEval: function() {
       var newArg1 = this.arg1.partialEval();
@@ -911,6 +971,7 @@ CLASS({
   methods: {
     toSQL: function() { return this.arg1.toSQL() + '<' + this.arg2.toSQL(); },
     toMQL: function() { return this.arg1.toMQL() + '-before:' + this.arg2.toMQL(); },
+    toBQL: function() { return this.arg1.toBQL() + '<' + this.arg2.toBQL(); },
 
     partialEval: function() {
       var newArg1 = this.arg1.partialEval();
@@ -938,6 +999,7 @@ CLASS({
   methods: {
     toSQL: function() { return this.arg1.toSQL() + '>' + this.arg2.toSQL(); },
     toMQL: function() { return this.arg1.toMQL() + '-after:' + this.arg2.toMQL(); },
+    toBQL: function() { return this.arg1.toBQL() + '>' + this.arg2.toBQL(); },
 
     partialEval: function() {
       var newArg1 = this.arg1.partialEval();
@@ -965,6 +1027,7 @@ CLASS({
   methods: {
     toSQL: function() { return this.arg1.toSQL() + '<=' + this.arg2.toSQL(); },
     toMQL: function() { return this.arg1.toMQL() + '-before:' + this.arg2.toMQL(); },
+    toBQL: function() { return this.arg1.toBQL() + '<=' + this.arg2.toBQL(); },
 
     partialEval: function() {
       var newArg1 = this.arg1.partialEval();
@@ -992,6 +1055,7 @@ CLASS({
   methods: {
     toSQL: function() { return this.arg1.toSQL() + '>=' + this.arg2.toSQL(); },
     toMQL: function() { return this.arg1.toMQL() + '-after:' + this.arg2.toMQL(); },
+    toBQL: function() { return this.arg1.toBQL() + '>=' + this.arg2.toBQL(); },
 
     partialEval: function() {
       var newArg1 = this.arg1.partialEval();
@@ -1021,6 +1085,8 @@ CLASS({
     toSQL: function() { return this.arg1.toSQL() + " like '%' + " + this.arg2.toSQL() + "+ '%'"; },
     // TODO: Does MQL support this operation?
     toMQL: function() { return this.arg1.toMQL() + '-after:' + this.arg2.toMQL(); },
+    // TODO: Likewise BQL.
+    toBQL: function() { return this.arg1.toBQL() + '>=' + this.arg2.toBQL(); },
 
     partialEval: function() {
       var newArg1 = this.arg1.partialEval();
@@ -1059,6 +1125,8 @@ CLASS({
     toSQL: function() { return this.arg1.toSQL() + " like '%' + " + this.arg2.toSQL() + "+ '%'"; },
     // TODO: Does MQL support this operation?
     toMQL: function() { return this.arg1.toMQL() + '-after:' + this.arg2.toMQL(); },
+    // TODO: Does BQL support this operation?
+    toBQL: function() { return this.arg1.toBQL() + '>=' + this.arg2.toBQL(); },
 
     partialEval: function() {
       var newArg1 = this.arg1.partialEval();
@@ -1104,6 +1172,12 @@ CLASS({
       return ( typeof this.arg1 === 'string' ) ?
         this.escapeMQLString(this.arg1) :
         (this.arg1.toMQL ? this.arg1.toMQL() :
+         this.arg1.toString());
+    },
+    toBQL: function() {
+      return ( typeof this.arg1 === 'string' ) ?
+        this.escapeMQLString(this.arg1) :
+        (this.arg1.toBQL ? this.arg1.toBQL() :
          this.arg1.toString());
     },
     f: function(obj) { return this.arg1; }

@@ -157,6 +157,7 @@ var HTMLParser = {
 
   START: sym('html'),
 
+// TODO(kgr): replace with repeat0
   html: repeat(alt(
     sym('text'),
     sym('endTag'),
@@ -197,29 +198,32 @@ var HTMLParser = {
 
   whitespace: repeat(alt(' ', '\t', '\r', '\n'))
 }.addActions({
-  START: function(xs) { return this.stack[0]; },
-  attribute: function(xs) {
-    return { name: xs[0], value: xs[2] };
+  START: function(xs) {
+    var ret = this.stack[0];
+    this.stack = [ X.foam.html.Element.create({nodeName: 'html'}) ];
+    return ret;
   },
+  attribute: function(xs) { return { name: xs[0], value: xs[2] }; },
+  text: function(xs) { this.peek() && this.peek().appendChild(xs); },
   startTag: function(xs) {
     var tag = xs[1];
     // < tagName ws attributes ws / >
     // 0 1       2  3          4  5 6
     var obj = X.foam.html.Element.create({nodeName: tag, attributes: xs[3]});
-    this.peek().appendChild(obj);
+    this.peek() && this.peek().appendChild(obj);
     if ( xs[5] != '/' ) this.stack.push(obj);
     return obj;
   },
-  text: function(xs) { this.peek().appendChild(xs); },
   endTag: function(tag) {
-    // tag = tag.toLowerCase();
     var stack = this.stack;
-    while ( true ) {
+
+    while ( stack.length > 1 ) {
+      if ( this.peek().nodeName === tag ) {
+        stack.pop();
+        return;
+      }
       var top = stack.pop();
-      if ( top.nodeName == tag ) return;
-      var peek = this.peek();
-      if ( ! peek ) { this.stack.push(top); return; }
-      peek.childNodes = peek.childNodes.concat(top.childNodes);
+      this.peek().childNodes = this.peek().childNodes.concat(top.childNodes);
       top.childNodes = [];
     }
   }

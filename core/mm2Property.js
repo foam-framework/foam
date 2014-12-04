@@ -573,6 +573,7 @@ var Property = {
     },
     toSQL: function() { return this.name; },
     toMQL: function() { return this.name; },
+    toBQL: function() { return this.name; },
     initPropertyAgents: function(proto) {
       var prop = this;
 

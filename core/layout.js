@@ -216,7 +216,8 @@ CLASS({
   properties: [
     { name: 'view' },
     { name: 'width',  defaultValue: 300 },
-    { name: 'height', defaultValue: 300 }
+    { name: 'height', defaultValue: 300 },
+    { name: 'className', defaultValue: 'floatingView' }
   ],
   templates: [
     function toInnerHTML() {/* %%view */}

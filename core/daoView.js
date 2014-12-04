@@ -740,10 +740,13 @@ CLASS({
       defaultValue: -1
     },
     {
-      name: 'spinnerController',
+      name: 'spinnerBusyStatus',
       factory: function() {
-        return this.X.WaitController.create();
+        return this.X.BusyStatus.create();
       }
+    },
+    {
+      name: 'busyComplete_'
     },
     {
       name: 'spinnerContainerID',
@@ -754,7 +757,7 @@ CLASS({
     {
       name: 'spinner',
       factory: function() {
-        return this.X.SpinnerView.create({ data$: this.spinnerController.busy$ });
+        return this.X.SpinnerView.create({ data$: this.spinnerBusyStatus.busy$ });
       }
     }
   ],
@@ -930,7 +933,9 @@ CLASS({
       code: function() {
         this.invalidate();
 
-        this.spinnerController.waitFor('scrollView-' + this.id);
+        var oldComplete = this.busyComplete_;
+        this.busyComplete_ = this.spinnerBusyStatus.start();
+        oldComplete && oldComplete();
 
         this.dao.select(COUNT())(function(c) {
           this.count = c.count;
@@ -1010,7 +1015,7 @@ CLASS({
 
             // Tell the spinner controller we're done waiting.
             // No harm in multiple calls to this for the same spinner instance.
-            self.spinnerController.done('scrollView-' + self.id);
+            self.busyComplete_();
 
             // If we're in read-write mode, clone everything before it goes in the cache.
             for ( var i = 0 ; i < a.length ; i++ ) {
@@ -1032,7 +1037,7 @@ CLASS({
         } else {
           // Not loading anything, render what we have and stop the spinner if necessary.
           this.allocateVisible();
-          this.spinnerController.done('scrollView-' + this.id);
+          self.busyComplete_();
         }
       }
     }
@@ -1055,9 +1060,9 @@ CLASS({
           <%= this.spinner %>
         </div>
         <% this.addInitializer(function(){
-          self.spinnerController.busy$.addListener(function() {
+          self.spinnerBusyStatus.busy$.addListener(function() {
             var e = $(self.spinnerContainerID);
-            if ( e ) e.style.display = self.spinnerController.busy ? 'block' : 'none';
+            if ( e ) e.style.display = self.spinnerBusyStatus.busy ? 'block' : 'none';
           });
         }); %>
         <div id="%%scrollerID" style="overflow-y: scroll; width:100%; height: 100%;">

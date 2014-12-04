@@ -118,6 +118,7 @@ MODEL({
 
       f.toSQL = function() { return args.map(function(s) { return s.toSQL(); }).join(','); };
       f.toMQL = function() { return args.map(function(s) { return s.toMQL(); }).join(' '); };
+      f.toBQL = function() { return args.map(function(s) { return s.toBQL(); }).join(' '); };
       f.toString = f.toSQL;
 
       return f;
@@ -582,6 +583,11 @@ MODEL({
 
     function toMQL() {
       return this.getFullYear() + '/' + (this.getMonth() + 1) + '/' + this.getDate();
+    },
+
+    function toBQL() {
+      var str = this.toISOString(); // eg. 2014-12-04T16:37:33.420Z
+      return str.substring(0, str.indexOf('.')); // eg. 2014-12-04T16:37:33
     }
   ]
 });
