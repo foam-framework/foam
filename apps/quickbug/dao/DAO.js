@@ -323,7 +323,7 @@ IssueCommentNetworkDAO.where(EQ(CrIssue.ID, 225776)).select(console.log.json);
  * Also merges DAO update events so as to not force the GUI to update on every frame.
  **/
 CLASS({
-  name: 'QIssueSplitDAO',
+  name: 'QIssuesSplitDAO',
   extendsModel: 'AbstractDAO',
 
   properties: [

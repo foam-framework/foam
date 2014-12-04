@@ -35,7 +35,7 @@ CLASS({
     'CursorView',
     'RelationshipView',
     'Location',
-    'QIssueSplitDAO',
+    'QIssuesSplitDAO',
     'Timer',
     'TextFieldView',
     'ChoiceView',
@@ -92,7 +92,7 @@ CLASS({
     {
       name: 'IssueDAO',
       factory: function() {
-        return this.QIssueSplitDAO.create({
+        return this.QIssuesSplitDAO.create({
           local: this.project.IssueDAO,
           model: this.X.QIssue,
           remote: this.project.IssueNetworkDAO
