@@ -549,8 +549,8 @@ CLASS({
   package: 'layout',
 
   documentation: function() {/*
-      Adds a margin around one child item. Requires $$DOC{ref:'addChild'} and
-      $$DOC{ref:'removeChild'} methods on trait users. Use
+      Adds a margin around one child item. Requires $$DOC{ref:'.addChild'} and
+      $$DOC{ref:'.removeChild'} methods on trait users. Use
       $$DOC{ref:'layout.LayoutItemHorizontalTrait'} and
       $$DOC{ref:'layout.LayoutItemVerticalTrait'} alongside this trait.
     */},
@@ -561,7 +561,7 @@ CLASS({
       name: 'MarginProxy',
       extendsModel: 'layout.LayoutItemLinearConstraintsProxy',
 
-      documentation: function() {/* Adds an $$DOC{ref:'foam.graphics.Margin.MarginProxy.addAmount'} to the proxied constraints. */},
+      documentation: function() {/* Adds an $$DOC{ref:'layout.MarginTrait.MarginProxy.addAmount'} to the proxied constraints. */},
 
       properties: [
         {

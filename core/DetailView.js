@@ -139,8 +139,7 @@ CLASS({
             v = this.createRelationshipView(o, opt_args);
           else
             v = this.createView(o, opt_args);
-  
-          v.data$ = this.data$;
+            v.data$ = this.data$;
   
           return v;
         }
