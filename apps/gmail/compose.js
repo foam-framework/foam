@@ -16,12 +16,19 @@ CLASS({
 
   templates: [
     function CSS() {/*
+      .email-compose-view {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
       .content {
         margin-left: 16px;
         margin-top: 44px;
         display: flex;
         flex-direction: column;
-        height: 93%;
+        flex-grow: 1;
+        position: relative;
        }
 
       .richText {
@@ -32,17 +39,14 @@ CLASS({
 
       .richText .placeholder { font-size: 14px; font-family: Roboto; }
 
-      .actionButtonCView-send {
-        float: right;
-        margin-top: -64px;
-        margin-right: 32px;
-      }
-
       iframe {
         border: none;
       }
 
       .actionButtonCView-send {
+        position: absolute;
+        bottom: 10px;
+        right: 24px;
         box-shadow: 3px 3px 3px #aaa;
         border-radius: 30px;
       }
