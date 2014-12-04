@@ -41,6 +41,7 @@
 }
 
 .issue-edit {
+  background: white;
   display: flex;
   flex-direction: column;
   height: 100%;
