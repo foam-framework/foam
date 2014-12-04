@@ -519,6 +519,10 @@ MODEL({
     /** Execute the supplied afunc concurrently n times. **/
     function arepeatpar(n, afunc) {
       return function(ret /* opt_args */) {
+        if ( n === 0 ) {
+          ret && ret();
+          return;
+        }
         var aargs = [];
         var count = 0;
 
