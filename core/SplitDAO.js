@@ -17,6 +17,10 @@
 CLASS({
   name: 'SplitDAO',
 
+  requires: [
+    'MDAO'
+  ],
+
   extendsModel: 'ProxyDAO',
 
   properties: [
@@ -35,108 +39,74 @@ CLASS({
       required: true
     },
     {
-      name: 'syncManager',
-      factory: function() {
-        return this.X.SyncManager.create({
-          srcDAO: this.remote,
-          dstDAO: this.delegate,
-        });
-      },
-      hidden: true
+      model_: 'FunctionProperty',
+      name: 'placeholderFactory'
     },
     {
-      name: 'remoteFlags',
+      model_: 'IntProperty',
+      name: 'staleTimeout',
+      defaultValue: 5000
+    },
+    {
+      name: 'delegate',
       factory: function() {
-        return {};
-      },
+        // TODO: Cleanup the index setup, it shouldn't be this hard.
+        var dao = this.MDAO.create({
+          model: this.model,
+        });
+        dao.index = AltIndex.create(
+          AutoPositionIndex.create(
+            this.placeholderFactory,
+            dao,
+            this.remote,
+            this.staleTimeout),
+          TreeIndex.create(this.model.getProperty(this.model.ids[0])));
+        dao.root = [[]];
+        return dao;
+      }
     }
   ],
 
   methods: {
     init: function() {
       this.SUPER();
+      var self = this;
+      this.remote.listen({
+        put: function(obj) {
+          debugger;
+          self.delegate.put(obj);
+        },
+        remove: function(obj) {
+          debugger;
+          self.delegate.remove(obj);
+        }
+      });
     },
 
     put: function(obj, sink) {
-      var self = this;
-      this.remote.put(obj, {
-        put: function(obj) {
-          self.delegate.put(obj, sink);
-          self.notify_('put', [obj]);
-        },
-        error: ( sink && sink.error ) ? sink.error.bind(sink) : function(){}
-      });
+      this.remote.put(obj, sink);
     },
 
     remove: function(obj, sink) {
-      var self = this;
-      this.remove.remove(obj, {
-        remove: function(obj) {
-          self.delegate.remove(obj, sink);
-          self.notify_('remove', [obj]);
-        },
-        error: ( sink && sink.error ) ? sink.error.bind(sink) : function(){}
-      });
+      this.remote.remove(obj, sink);
     },
 
     find: function(key, sink) {
-      var delegate = this.delegate;
-      var remove = this.remove;
-
-      this.delegate.find(key, {
+      var remote = this.remote;
+      var delegate = this.delegate
+      this.SUPER(key, {
         put: function(obj) {
-          sink && sink.put && sink.put(obj);
         },
         error: function() {
           remote.find(key, {
             put: function(obj) {
               sink && sink.put && sink.put(obj);
               delegate.put(obj);
-              self.notify_('put', [obj]);
             },
-            error: (sink && sink.error) ? sink.error.bind(sink) : function(){}
-          });
+            error: (sink && sink.error) ? sink.error.bind(sink) : undefined
+          })
         }
       });
-    },
-
-    select: function(sink, options) {
-      var key = [
-        'limit=' + options.limit,
-        'skip=' + options.skip,
-        'query=' + (options.query ? options.query.toSQL() : ''),
-        'order=' + (options.order ? options.order.toSQL() : '')
-      ];
-
-      if ( CountExpr.isInstance(sink) ) {
-        return this.remote.select(sink, options);
-      }
-
-      if ( ! this.remoteFlags[key] ) {
-        this.remoteFlags[key] = true;
-
-        this.remote.select({
-          put: (function(obj) {
-            this.delegate.find(obj.id, {
-              put: (function(existing) {
-                var modified = this.syncManager.modifiedProperty.name;
-                if ( obj[modified].compareTo(existing[modified]) > 0 )
-                  this.delegate.put(obj);
-              }).bind(this),
-              error: (function() {
-                this.delegate.put(obj);
-              }).bind(this)
-            });
-          }).bind(this),
-          eof: (function() {
-            delete this.remoteFlags[key];
-          }).bind(this),
-          error: (function() {
-            delete this.remoteFlags[key];
-          }).bind(this)
-        }, options);
-      }
-      return this.delegate.select(sink, options);
     }
   }
 });
