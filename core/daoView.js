@@ -928,6 +928,7 @@ CLASS({
     },
     {
       name: 'onDAOUpdate',
+      isFramed: true,
       documentation: 'When the DAO changes, we invalidate everything. All $$DOC{ref: ".visibleRows"} are recycled, the $$DOC{ref: ".cache"} is cleared, etc.',
       code: function() {
         this.invalidate();
@@ -1034,7 +1035,9 @@ CLASS({
             self.allocateVisible();
           });
         } else {
+          // Not loading anything, render what we have and stop the spinner if necessary.
           this.allocateVisible();
+          self.busyComplete_();
         }
       }
     }

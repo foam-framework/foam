@@ -187,7 +187,10 @@ CLASS({
                 },
                 function(ret, result) {
                   if ( sink ) {
-                    if ( result ) sink.put && sink.put(result);
+                    if ( result ) {
+                      sink.put && sink.put(result);
+                      self.notify_('put', [result]);
+                    }
                     else sink.error && sink.error('put', issue);
                   }
                   ret();
@@ -323,7 +326,7 @@ IssueCommentNetworkDAO.where(EQ(CrIssue.ID, 225776)).select(console.log.json);
  * Also merges DAO update events so as to not force the GUI to update on every frame.
  **/
 CLASS({
-  name: 'QIssueSplitDAO',
+  name: 'QIssuesSplitDAO',
   extendsModel: 'AbstractDAO',
 
   properties: [

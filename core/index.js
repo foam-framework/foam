@@ -746,8 +746,8 @@ var AutoPositionIndex = {
     return obj;
   },
 
-  put: function(s) { return s; },
-  remove: function(s) { return s; },
+  put: function(s, value) { return this.alt.put(s, value); },
+  remove: function(s, value) { return this.alt.remove(s, value); },
 
   bulkLoad: function(a) {
     return [];
@@ -835,7 +835,8 @@ var PositionIndex = {
     for ( var i = 0; i < s.length; i++ ) {
       var entry = s[i]
       if ( ! entry ) continue;
-      entry = entry.obj;
+      // TODO: This abuses the fact that find is synchronous.
+      this.dao.find(entry.obj, { put: function(o) { entry = o; } });
 
       // Only happens when things are put into the dao from a select on this index.
       // otherwise objects are removed() first from the MDAO.
@@ -849,8 +850,8 @@ var PositionIndex = {
         }
 
         // If we have objects on both sides, put this one here.
-        if ( s[i-1] ) s[i] = {
-          obj: newValue,
+        if ( i == 0 || s[i-1] ) s[i] = {
+          obj: newValue.id,
           timestamp: Date.now()
         };
         break;
@@ -862,7 +863,7 @@ var PositionIndex = {
   remove: function(s, obj) {
     if ( s.feedback === obj.id ) return s;
     for ( var i = 0; i < s.length; i++ ) {
-      if ( s[i] && s[i].obj.id === obj.id ) {
+      if ( s[i] && s[i].obj === obj.id ) {
         for ( var j = i; j < s.length - 1; j++ ) {
           s[j] = s[j+1];
         }

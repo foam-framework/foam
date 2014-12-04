@@ -2245,6 +2245,91 @@ tada
 
         </property>
       </object>
+      <object model="UnitTest">
+        <property name="name">Lazy DAO Test</property>
+        <property name="tags">
+          <i>web</i>
+          <i>node</i>
+        </property>
+        <property name="async">true</property>
+        <property name="code" type="function">function (ret) {
+              var Abc = Model.create({
+                name: 'Abc',
+                properties: [
+                  'a',
+                  'b'
+                ]
+              });
+                
+              var src = ManuallyDelayedDAO.create({ delegate: [
+                Abc.create({ a: 1, b: 'a'}),
+                Abc.create({ a: 2, b: 'a'}),
+                Abc.create({ a: 3, b: 'b'}),
+                Abc.create({ a: 4, b: 'b'}),
+                Abc.create({ a: 5, b: 'c'}),
+                Abc.create({ a: 6, b: 'c'}),
+                Abc.create({ a: 7, b: 'd'}),
+                Abc.create({ a: 8, b: 'd'})
+              ]});
+      
+              var cache = MDAO.create({ model: Abc });
+      
+              var dao = LazyCacheDAO.create({
+                cache: cache,
+                delegate: src,
+                cacheOnSelect: true
+              });
+
+              function doJoin(ret) { src.join(ret); }
+      
+              var self = this;
+              aseq(
+                function(ret) {
+                  cache.select(COUNT())(function(c) {
+                    self.assert(c.count === 0, 'Cache should start empty.');
+                    ret();
+                  });
+                },
+                function(ret) {
+                  dao.where(EQ(Abc.B, "a")).select(COUNT())(function(c) {
+                    self.assert(c.count === 2, 'First select should get full results from network.');
+                    ret();
+                  });
+                  src.join(function(){});
+                },
+                function(ret) {
+                  cache.select(COUNT())(function(c) {
+                    self.assert(c.count === 2, 'Cache should now contain all fetched rows from before.');
+                    ret();
+                  });
+                },
+                function(ret) {
+                  dao.select(COUNT())(function(c) {
+                    self.assert(c.count === 2, 'Select should return cache results if there are any.');
+                    ret();
+                  });
+                },
+                function(ret) {
+                  // Wait till the "network" dao is finished.
+                  src.join(ret)
+                },
+                function(ret) {
+                  dao.select(COUNT())(function(c) {
+                    self.assert(c.count === 8, 'Select should return the full set now.');
+                    ret();
+                  });
+                  src.join(function(){});
+                },
+                function(ret) {
+                  dao.delegate = NullDAO.create({});
+                  dao.where(EQ(Abc.B, "c")).select(COUNT())(function(c) {
+                    self.assert(c.count === 2, 'Should be able to answer a query even if the src dao is offline.');
+                    ret();
+                  });
+                })(ret);
+            }
+        </property>
+      </object>
 
     </property>
   </object>
