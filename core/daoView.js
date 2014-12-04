@@ -925,6 +925,7 @@ CLASS({
     },
     {
       name: 'onDAOUpdate',
+      isFramed: true,
       documentation: 'When the DAO changes, we invalidate everything. All $$DOC{ref: ".visibleRows"} are recycled, the $$DOC{ref: ".cache"} is cleared, etc.',
       code: function() {
         this.invalidate();
