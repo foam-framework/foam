@@ -299,8 +299,11 @@ CLASS({
         box-shadow: 5px 5px 15px gray;
         margin-left: 30px;
         margin-top: -38px;
-        border-radius: 10px;
       }
+      span[name="description"] {
+        margin-top: 24px;
+        display: block;
+        width: 500px;
     */},
     function toDetailHTML() {/*
         &nbsp;&nbsp; Search: $$search
