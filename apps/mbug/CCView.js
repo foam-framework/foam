@@ -2,6 +2,11 @@ CLASS({
   name: 'CCView',
   extendsModel: 'AutocompleteListView',
 
+  requires: [
+    'CitationView',
+    'PersonView'
+  ],
+
   properties: [
     {
       name: 'srcDAO',
