@@ -108,7 +108,7 @@ CLASS({
   templates: [ function CSS() {/*
     body {
       font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
-      font-size: 24px;
+      font-size: 28px;
       margin: 0;
     }
 
@@ -153,7 +153,7 @@ CLASS({
     .calc-display, .calc-display:focus {
       border: none;
       letter-spacing: 1px;
-      line-height: 25px;
+      line-height: 36px;
       margin: 0;
       min-width: 204px;
       overflow: scroll;
@@ -269,11 +269,15 @@ CLASS({
     // Copied from foam.css.
     .SliderPanel .shadow {
       background: linear-gradient(to left, rgba(0,0,0,0.3) 0%,
-                                         rgba(0,0,0,0) 100%);
+                                           rgba(0,0,0,0) 100%);
       height: 100%;
       left: -8px;
       position: absolute;
       width: 8px;
+    }
+
+    .alabel {
+      font-size: 44px;
     }
   */}],
 
