@@ -512,11 +512,11 @@ CLASS({
         Used by the $$DOC{ref:'Template',text:'$$propName'} sub-$$DOC{ref:'View'}
         creation tag in $$DOC{ref:'Template',usePlural:true}.
       */
-      
+
       // Can't call viewModel() here, since DetailView overrides it but relies
       // on falling back on view's implementation. TODO(jacksonic): figure it out
       var o = this.model_[name.constantize()];
-      
+
       if ( ! o ) throw 'Unknown View Name: ' + name;
 
       var args = opt_args; // opt_args ? opt_args.clone() : {};
@@ -4863,10 +4863,18 @@ CLASS({
   ],
 
   templates: [
-    // TODO(kgr): Add CSS here
-
+    function CSS() {/*
+      .SliderPanel .shadow {
+        background: linear-gradient(to left, rgba(0,0,0,0.3) 0%,
+                                             rgba(0,0,0,0) 100%);
+        height: 100%;
+        left: -8px;
+        position: absolute;
+        width: 8px;
+        }
+    */},
     function toHTML() {/*
-      <div id="%%id" style="display: inline-block; position: relative" class="SliderPanel">
+      <div id="%%id" style="display: inline-block;position: relative;" class="SliderPanel">
         <div id="%%id-main">
           <div id="%%id-shadow" class="shadow"></div>
           <%= this.mainView() %>
