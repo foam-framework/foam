@@ -1037,7 +1037,7 @@ CLASS({
         } else {
           // Not loading anything, render what we have and stop the spinner if necessary.
           this.allocateVisible();
-          self.busyComplete_();
+          this.busyComplete_();
         }
       }
     }

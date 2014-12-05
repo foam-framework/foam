@@ -108,7 +108,7 @@ CLASS({
   templates: [ function CSS() {/*
     body {
       font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
-      font-size: 24px;
+      font-size: 28px;
       margin: 0;
     }
 
@@ -153,12 +153,11 @@ CLASS({
     .calc-display, .calc-display:focus {
       border: none;
       letter-spacing: 1px;
-      line-height: 25px;
+      line-height: 36px;
       margin: 0;
       min-width: 204px;
       overflow: scroll;
       padding: 0 25pt 2pt 25pt;
-      width: calc( 100% - 40px );
       text-align: right;
     }
 
@@ -234,7 +233,8 @@ CLASS({
       right: 20pt;
       top: 100%;
       transition: top 0.3s ease;
-      width: 85%;
+      width: 100%;
+      padding-left: 60px;
     }
 
     .calc-display {
@@ -269,11 +269,15 @@ CLASS({
     // Copied from foam.css.
     .SliderPanel .shadow {
       background: linear-gradient(to left, rgba(0,0,0,0.3) 0%,
-                                         rgba(0,0,0,0) 100%);
+                                           rgba(0,0,0,0) 100%);
       height: 100%;
       left: -8px;
       position: absolute;
       width: 8px;
+    }
+
+    .alabel {
+      font-size: 44px;
     }
   */}],
 
@@ -435,4 +439,4 @@ var CalcButton = ActionButtonCView2.xbind({
 });
 X.registerModel(CalcButton, 'ActionButton');
 
-CLASS({ name: 'CalcView',             extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+CLASS({ name: 'CalcView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });

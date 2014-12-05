@@ -219,13 +219,13 @@ CLASS({
       */}
     },
     {
-      name: 'data',
-      help: 'Downstream data value provided to consumers.',
+      name: 'self',
+      help: 'Downstream "this" value provided to consumers.',
       documentation: function() {/* 
-        The value provided to consumers downstream (children) of this provider.
+        The value provided to consumers downstream (children) of this provider when constructed
+        from properties of this view.
       */},
       factory: function() { return this; }
-      // do not touch preset/postset on this property
     },
     {
       name:   'shortcuts',
@@ -475,7 +475,8 @@ CLASS({
       if ( ! o ) throw 'Unknown View Name: ' + name;
 
       var args = opt_args; // opt_args ? opt_args.clone() : {};
-//      args.data = this;
+      // for properties of this view, use our 'self' property as child data
+      args.X = this.X.sub({data$: this.self$});
 
       if ( Action.isInstance(o) )
         var v = this.createActionView(o, args);
@@ -892,8 +893,10 @@ CLASS({
         this.internalSetDownstreamData(nu);
         // rebuild children with new data
         this.updateHTML();
+      } else {
+        this.internalSetDownstreamData(nu); // just move the new data along
       }
-      this.onValueChange_();
+      this.onValueChange_(); // always let subclasses have their chance to react afterwards
     },
 
     // Template Method
@@ -915,7 +918,7 @@ CLASS({
           else if ( Relationship.isInstance(o) )
             v = this.createRelationshipView(o, opt_args);
           else
-            v = this.createView(o, opt_args);
+            v = this.createView(o, opt_args); 
           return v;
         }
       }
@@ -994,17 +997,13 @@ CLASS({
         if ( prop.hidden ) continue;
 
         var view = this.createView(prop);
-        view.data$ = this.data$;
         str += this.rowToHTML(prop, view);
       }
 
       str += this.endForm();
 
       if ( this.showRelationships ) {
-        var view = this.X.RelationshipsView.create({
-          data: this.data
-        });
-        //view.data$ = this.data$;
+        var view = this.X.RelationshipsView.create();
         str += view.toHTML();
         this.addChild(view);
       }
@@ -1134,8 +1133,8 @@ CLASS({
   
   package: 'foam.experimental.views',
 
-  traits: ['foam.experimental.views.DataConsumerTrait', 
-           'foam.experimental.views.DataProviderTrait'],
+  traits: ['foam.experimental.views.DataConsumerTrait'], 
+          // 'foam.experimental.views.DataProviderTrait'],
 
   documentation: function() {/*
     Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one
@@ -1194,7 +1193,7 @@ CLASS({
     },
     propagateDownstreamChange: function(old, nu) {
       // pack the new value into our upstream
-      this.upstreamData.propertyValue(this.prop.name) = nu;
+      this.upstreamData[this.prop.name] = nu;
     },
     propagateUpstreamChange: function(old, nu) {
       this.unbind(old);

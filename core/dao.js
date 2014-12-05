@@ -394,6 +394,12 @@ var JSONToObject = {
 CLASS({
   name: 'AbstractDAO',
 
+  documentation: function() {/*
+    The base for most DAO implementations, $$DOC{ref:'.'} provides basic facilities for 
+    $$DOC{ref:'.where'}, $$DOC{ref:'.limit'}, $$DOC{ref:'.skip'}, and $$DOC{ref:'.orderBy'} 
+    operations, and provides for notifications of updates through $$DOC{ref:'.listen'}.
+  */},
+
   properties: [
     {
       name: 'daoListeners_',
@@ -404,16 +410,25 @@ CLASS({
   ],
 
   methods: {
-    update: function(expr) {
+    update: function(expr) { /* Applies a change to the DAO contents. */
       return this.select(UPDATE(expr, this));
     },
 
-    listen: function(sink, options) {
+    listen: function(sink, options) { /* Send future changes to sink. */
       sink = this.decorateSink_(sink, options, true);
       this.daoListeners_.push(sink);
     },
 
-    pipe: function(sink, options) {
+    select: function(sink, options) {
+      /* Template method. Override to copy the contents of this DAO (filtered or ordered as
+      necessary) to sink. */
+    },
+    remove: function(query, sink) {
+      /* Template method. Override to remove matching items and put them into sink if supplied. */
+    },
+
+    pipe: function(sink, options) { /* A $$DOC{ref:'.select'} followed by $$DOC{ref:'.listen'}.
+           Dump our contents to sink, then send future changes there as well. */
       sink = this.decorateSink_(sink, options, true);
 
       var fc   = this.createFlowControl_();
@@ -469,27 +484,27 @@ CLASS({
       };
     },
 
-    where: function(query) {
+    where: function(query) { /* Return a DAO that contains a filtered subset of this one. */
       // only use X if we are an invalid instance without a this.X
       return (this.X || X).FilteredDAO_.create({query: query, delegate: this});
       //return filteredDAO(query, this);
     },
 
-    limit: function(count) {
+    limit: function(count) { /* Return a DAO that contains a count limited subset of this one. */
       return (this.X || X).LimitedDAO_.create({count:count, delegate:this});
       //return limitedDAO(count, this);
     },
 
-    skip: function(skip) {
+    skip: function(skip) { /* Return a DAO that contains a subset of this one, skipping initial items. */
       return (this.X || X).SkipDAO_.create({skip:skip, delegate:this});
       //return skipDAO(skip, this);
     },
 
-    orderBy: function() {
+    orderBy: function() { /* Return a DAO that contains a subset of this one, ordered as specified. */
       return (this.X || X).OrderedDAO_.create({ comparator: arguments.length == 1 ? arguments[0] : argsToArray(arguments), delegate: this });
     },
 
-    unlisten: function(sink) {
+    unlisten: function(sink) { /* Stop sending updates to the given sink. */
       var ls = this.daoListeners_;
 //      if ( ! ls.length ) console.warn('Phantom DAO unlisten: ', this, sink);
       for ( var i = 0; i < ls.length ; i++ ) {
@@ -502,7 +517,9 @@ CLASS({
 
     // Default removeAll: calls select() with the same options and
     // calls remove() for all returned values.
-    removeAll: function(sink, options) {
+    removeAll: function(sink, options) { /* Default $$DOC{ref:'.removeAll'}: calls 
+            $$DOC{ref:'.select'} with the same options and calls $$DOC{ref:'.remove'}
+             for all returned values. */
       var self = this;
       var future = afuture();
       this.select({
@@ -554,6 +571,12 @@ CLASS({
 
   extendsModel: 'AbstractDAO',
 
+  documentation: function() {/*
+    Provides a proxy to the $$DOC{ref:'.delegate'} DAO, and allows swapping out the 
+    $$DOC{ref:'.delegate'} transparently
+    to any listeners of this $$DOC{ref:'.'}.
+  */},
+  
   properties: [
     {
       name: 'delegate',
@@ -562,6 +585,7 @@ CLASS({
       hidden: true,
       required: true,
       transient: true,
+      documentation: "The internal DAO to proxy.",
       factory: function() { return NullDAO.create(); }, // TODO: use singleton
       postSet: function(oldDAO, newDAO) {
         if ( this.daoListeners_.length ) {
@@ -586,7 +610,7 @@ CLASS({
   ],
 
   methods: {
-    relay: function() {
+    relay: function() { /* Sets up relay for listening to delegate changes. */
       if ( ! this.relay_ ) {
         var self = this;
 
@@ -600,27 +624,27 @@ CLASS({
       return this.relay_;
     },
 
-    put: function(value, sink) {
+    put: function(value, sink) { /* Passthrough to delegate. */
       this.delegate.put(value, sink);
     },
 
-    remove: function(query, sink) {
+    remove: function(query, sink) { /* Passthrough to delegate. */
       this.delegate.remove(query, sink);
     },
 
-    removeAll: function() {
+    removeAll: function() { /* Passthrough to delegate. */
       return this.delegate.removeAll.apply(this.delegate, arguments);
     },
 
-    find: function(key, sink) {
+    find: function(key, sink) { /* Passthrough to delegate. */
       this.delegate.find(key, sink);
     },
 
-    select: function(sink, options) {
+    select: function(sink, options) { /* Passthrough to delegate. */
       return this.delegate.select(sink, options);
     },
 
-    listen: function(sink, options) {
+    listen: function(sink, options) { /* Passthrough to delegate, using $$DOC{ref:'.relay'}. */
       // Adding first listener, so listen to delegate
       if ( ! this.daoListeners_.length && this.delegate ) {
         this.delegate.listen(this.relay());
@@ -629,7 +653,7 @@ CLASS({
       this.SUPER(sink, options);
     },
 
-    unlisten: function(sink) {
+    unlisten: function(sink) { /* Passthrough to delegate, using $$DOC{ref:'.relay'}. */
       this.SUPER(sink);
 
       // Remove last listener, so unlisten to delegate
@@ -638,7 +662,7 @@ CLASS({
       }
     },
 
-    toString: function() {
+    toString: function() { /* String representation. */
       return this.name_ + '(' + this.delegate + ')';
     }
   }
@@ -650,6 +674,10 @@ CLASS({
   name: 'FutureDAO',
 
   extendsModel: 'ProxyDAO',
+
+  documentation: function() {/* 
+    A DAO proxy that delays operations until the delegate is set, at some time in the future.  
+  */ },
 
   properties: [
     {
@@ -664,16 +692,20 @@ CLASS({
     },
     {
       name: 'future',
-      required: true
+      required: true,
+      documentation: "The future on which to operate before the delegate becomes available."
     },
     {
       name: 'model',
-      defaultValueFn: function() { return this.delegate ? this.delegate.model : ''; }
+      defaultValueFn: function() { return this.delegate ? this.delegate.model : ''; },
+      documentation: function() {/* 
+        The model type of the items in the delegate DAO. Empty if the future has not been set yet.
+      */}
     }
   ],
 
   methods: {
-    init: function() {
+    init: function() { /* Sets up the future to provide us with the delegate when it becomes available. */
       this.SUPER();
 
       this.future(function(delegate) {
@@ -681,7 +713,7 @@ CLASS({
       }.bind(this));
     },
 
-    put: function(value, sink) {
+    put: function(value, sink) { /* Passthrough to delegate or the future, if delegate not set yet. */
       if ( this.delegate ) {
         this.delegate.put(value, sink);
       } else {
@@ -689,7 +721,7 @@ CLASS({
       }
     },
 
-    remove: function(query, sink) {
+    remove: function(query, sink) { /* Passthrough to delegate or the future, if delegate not set yet. */
       if ( this.delegate ) {
         this.delegate.remove(query, sink);
       } else {
@@ -697,7 +729,7 @@ CLASS({
       }
     },
 
-    removeAll: function() {
+    removeAll: function() { /* Passthrough to delegate or the future, if delegate not set yet. */
       if ( this.delegate ) {
         return this.delegate.removeAll.apply(this.delegate, arguments);
       }
@@ -711,7 +743,7 @@ CLASS({
       return f.get;
     },
 
-    find: function(key, sink) {
+    find: function(key, sink) {/* Passthrough to delegate or the future, if delegate not set yet. */
       if ( this.delegate ) {
         this.delegate.find(key, sink);
       } else {
@@ -719,7 +751,7 @@ CLASS({
       }
     },
 
-    select: function(sink, options) {
+    select: function(sink, options) {/* Passthrough to delegate or the future, if delegate not set yet. */
       if ( this.delegate ) {
         return this.delegate.select(sink, options);
       }
