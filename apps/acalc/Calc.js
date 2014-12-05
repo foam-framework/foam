@@ -266,16 +266,6 @@ CLASS({
       margin-bottom: -4px;
     }
 
-    // Copied from foam.css.
-    .SliderPanel .shadow {
-      background: linear-gradient(to left, rgba(0,0,0,0.3) 0%,
-                                           rgba(0,0,0,0) 100%);
-      height: 100%;
-      left: -8px;
-      position: absolute;
-      width: 8px;
-    }
-
     .alabel {
       font-size: 44px;
     }
