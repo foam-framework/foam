@@ -102,7 +102,24 @@ var QueryParserFactory = function(model) {
       sym('string'),
       sym('number')),
 
-    valueList: repeat(sym('value'), ',', 1),
+    compoundValue: alt(
+      sym('negateValue'),
+      sym('orValue'),
+      sym('andValue')),
+
+    negateValue: seq('(', alt('-', literal_ic('not ')), sym('value'), ')'),
+
+    orValue: seq(
+      '(',
+      repeat(sym('value'), alt('|', literal_ic(' or '), ' | '), 1),
+      ')'),
+
+    andValue: seq(
+      '(',
+      repeat(sym('value'), alt(literal_ic(' and '), ' '), 1),
+      ')'),
+
+    valueList: alt(sym('compoundValue'), repeat(sym('value'), ',', 1)),
 
     me: seq(literal_ic('me'), lookahead(not(sym('char')))),
 
@@ -210,8 +227,9 @@ var QueryParserFactory = function(model) {
     },
 
     equals: function(v) {
-      // Always treat an OR'ed value list and let the partial evalulator
-      // simplify it when it isn't.
+      // v[2], the values, is an array, which might have an 'and', 'or', or
+      // 'negated' property on it. The default is 'or'. The partial evaluator
+      // will simplify if these are needlessly complex.
 
       var prop    = v[0];
       var values  = v[2];
@@ -239,9 +257,37 @@ var QueryParserFactory = function(model) {
           values[i] = isInt ? parseInt(values[i]) : parseFloat(values[i]);
       }
 
-      return ( v[1] === '=' || isNum ) ?
+      var expr = ( v[1] === '=' || isNum ) ?
         IN(v[0], values) :
         ContainedInICExpr.create({arg1: compile_(prop), arg2: values}) ;
+      if ( values.negated ) {
+        return NOT(expr);
+      } else if ( values.and ) {
+        return AndExpr.create({
+          args: values.map(function(x) {
+            return expr.model_.create({ arg1: expr.arg1, arg2: [x] });
+          })
+        });
+      } else {
+        return expr;
+      }
+    },
+
+    negateValue: function(v) {
+      v.negated = true;
+      return v;
+    },
+
+    orValue: function(v) {
+      v = v[1];
+      v.or = true;
+      return v;
+    },
+
+    andValue: function(v) {
+      v = v[1];
+      v.and = true;
+      return v;
     },
 
     // All dates are actually treated as ranges. These are arrays of Date
