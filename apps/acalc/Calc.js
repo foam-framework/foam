@@ -158,7 +158,6 @@ CLASS({
       min-width: 204px;
       overflow: scroll;
       padding: 0 25pt 2pt 25pt;
-      width: calc( 100% - 40px );
       text-align: right;
     }
 
@@ -234,7 +233,8 @@ CLASS({
       right: 20pt;
       top: 100%;
       transition: top 0.3s ease;
-      width: 85%;
+      width: 100%;
+      padding-left: 60px;
     }
 
     .calc-display {
