@@ -125,9 +125,7 @@ var QueryParserFactory = function(model) {
       // YYYY-MM
       seq(sym('number'), '-', sym('number')),
       // YY/MM/DD
-      seq(sym('number'), '/', sym('number'), '/', sym('number')),
-      // YYYY
-      seq(sym('number'))),
+      seq(sym('number'), '/', sym('number'), '/', sym('number'))),
 
     'relative date': seq(literal_ic('today'), optional(seq('-', sym('number')))),
 
@@ -219,13 +217,20 @@ var QueryParserFactory = function(model) {
       var values  = v[2];
       var isInt   = IntProperty.isInstance(prop);
       var isNum   = isInt || FloatProperty.isInstance(prop);
+      var isDateField = DateProperty.isInstance(prop) || DateTimeProperty.isInstance(prop);
       var isDateRange = Array.isArray(values[0]) && values[0][0] instanceof Date;
 
-      console.log(prop.name, values, isInt, isNum, isDateRange);
-
-      if ( isDateRange ) {
+      if ( isDateField || isDateRange ) {
+        if ( ! isDateRange ) {
+          // Convert the number, a single year, into a date. Fortunately, years
+          // are easy to add.
+          var start = new Date(0); // Jan 1 1970 at midnight UTC.
+          var end   = new Date(0);
+          start.setUTCFullYear(values[0]);
+          end.setUTCFullYear(+values[0] + 1);
+          values = [[start, end]];
+        }
         var q = AND(GTE(prop, values[0][0]), LT(prop, values[0][1]));
-        console.log('date range', q);
         return q;
       }
 
@@ -266,7 +271,6 @@ var QueryParserFactory = function(model) {
       var op = 'UTC' + ops[last];
       end['set' + op](end['get' + op]() + 1);
 
-      console.log('Received', v, 'output', start, end);
       return [start, end];
     },
 
