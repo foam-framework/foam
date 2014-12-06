@@ -4876,10 +4876,13 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" style="display: inline-block;position: relative;" class="SliderPanel">
         <div id="%%id-main">
-          <div id="%%id-shadow" class="shadow"></div>
+          <div style="width:0;position:absolute;"></div>
           <%= this.mainView() %>
         </div>
-        <div id="%%id-panel" style="position: absolute; top: 0; left: 0"><%= this.panelView() %></div>
+        <div id="%%id-panel" style="position: absolute; top: 0; left: 0">
+          <div id="%%id-shadow" class="shadow"></div>
+          <%= this.panelView() %>
+        </div>
       </div>
     */}
   ],
