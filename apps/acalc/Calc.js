@@ -266,8 +266,13 @@ CLASS({
       margin-bottom: -4px;
     }
 
+    .history {
+      color: #b3b3b3
+    }
+
     .alabel {
       font-size: 44px;
+      color: #b3b3b3
     }
   */}],
 
