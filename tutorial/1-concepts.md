@@ -6,7 +6,7 @@ tutorial: 1
 
 FOAM is, fundamentally, about data. It takes the object-oriented view of data: the smallest unit of data is an object, and an object is a collection of properties and methods.
 
-## Modeling Data
+## Defining Data Objects
 
 In Java, you write a class definition using special syntax:
 
@@ -53,11 +53,11 @@ In both Java and FOAM, a class has a `name`, a parent class
 (`extendsModel`) that defaults to a fundamental class (`FObject`), properties
 and methods.
 
-That's about where the similarities stop. FOAM's classes are much richer than
+The difference is that FOAM's classes are much richer than
 their Java counterparts.
 
 FOAM properties are like public member variables, and are accessed in the same
-way: `point.x += 10`. But they have very many more features: `postSet` functions
+way: `point.x += 10`. But they have many more features: `postSet` functions
 to call when the property's value changes, the `view` to use when displaying
 this property to the user, `dynamicValue` for spreadsheet-style reactive
 programming, `defaultValue` and [much more]({{ site.baseurl }}/tutorial/8-appendix).
@@ -104,7 +104,7 @@ which will output
 So you can see that, whatever might be going on under the hood, these objects
 can be manipulated very much like plain old Javascript objects: read and write
 their properties, call their methods, and so on. The main difference is that new
-instances are created with `MyModel.create({...})` rather than `new MyModel(...)`.
+instances are created with `MyClass.create({...})` rather than `new MyClass(...)`.
 
 ### Extending Classes
 
@@ -125,7 +125,7 @@ CLASS({
 });
 {% endhighlight %}
 
-This defines a new model `Point3D` that extends `Point`. It inherits all the
+This defines a new class `Point3D` that extends `Point`. It inherits all the
 properties (`x` and `y`) of `Point`, and adds a new one, `z`. It would inherit
 the method `scale` too, but instead overrides it.
 
@@ -148,14 +148,12 @@ These are three kinds of special methods on a class. They are called like normal
 methods.
 
 Listeners always bind `this` correctly, so they can be conveniently passed as
-DOM event handlers. You can also specify `isMerged: 100` or `isFramed: true`,
-and multiple calls to the listener will be merged into one call every 100ms, or
-one call on the next `requestAnimationFrame`.
+DOM event handlers. They can also be rate-limited, or delay until the next
+animation frame.
 
-Actions represent operations the user can request on an instance of this class,
-like `send`ing an email. They are generally rendered in views as a button or
-link. Actions can specify a user-visible `label`, and have reactive handlers
-`isEnabled` and `isAvailable` that will toggle the button's state.
+Actions are operations the user can perform on an instance of this class,
+like `send`ing an email. They can define `isEnabled` and `isAvailable` to
+control their state in the UI.
 
 Templates are, at runtime, methods that return strings. But in the class
 definition, they are written in FOAM's template syntax and are compiled at
@@ -198,54 +196,8 @@ a class as its "model".
 This fact is visible, for example, in the JSON serialization of a FOAM object,
 which includes `"model_": "MyClass"`.
 
-### Model
 
-The Model (the M of MVC) in a FOAM application is a collection of FOAM classes.
-For example, the data model for an email client might consist of several
-classes: `EMail`, `Attachment`, `Contact`, and maybe `Thread` and `Label`.
-
-Most views in FOAM deal either with a single object, or with a collection of
-objects. The DAO interface (see below) is FOAM's universal API for collections
-of data.
-
-
-### DAO - Data Access Objects
-
-Data Access Object, or DAO, is a generic interface for a collection of objects,
-all of the same class. FOAM's data storage library includes many implementations
-of this common interface, including:
-
-- In-memory (lightning fast, with automatic indexing and query optimization)
-- `LocalStorage` and `chrome.storage.*`
-- `IndexedDB`
-- Plain Javascript Arrays
-- REST services
-- XML and JSON files
-- MongoDB via Node.js
-
-In addition there is a large set of DAO decorators, which add extra
-functionality to other DAOs. This spares each DAO's author from having to
-reimplement caching, autoincrement, logging, timing, or anything else not
-specific to the target backend.
-
-DAOs have a rich and extensible query language, which supports filtering,
-sorting, grouping, aggregation and more. More details of the interface and how
-to use it are in [part 3]({{ site.baseurl }}/tutorial/3-dao) and the
-[appendix]({{ site.baseurl }}/tutorial/8-appendix).
-
-
-### Views
-
-In FOAM, a view is responsible for presenting some data - either a single object
-or a DAO - to the user.
-
-For single objects, the view is usually a subclass of `DetailView` with a custom
-template.
-
-For DAOs, there are a variety of views; `TableView`, `GridView` and
-`DAOListView` are the most common.
-
-### Controllers
+### Controllers - MOVE ME
 
 We find that most applications fall into a few categories. With the right amount
 of abstraction on both your data and views, a generic and reusable controller

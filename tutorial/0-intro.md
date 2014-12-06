@@ -28,7 +28,6 @@ This tutorial is split into several parts:
 - [Custom Templates]({{ site.baseurl }}/tutorial/4-templates)
 - [Navigation]({{ site.baseurl }}/tutorial/5-navigation)
 - [`DetailView` and External Templates]({{ site.baseurl }}/tutorial/6-detailview)
-- [Animations]({{ site.baseurl }}/tutorial/7-animation)
 
 ## Audience
 

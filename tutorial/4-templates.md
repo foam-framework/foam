@@ -4,28 +4,40 @@ permalink: /tutorial/4-templates/
 tutorial: 4
 ---
 
-A template on a model is simply a Javascript function that returns a string of HTML when called. Instead of writing Javascript code by hand, you'll usually use the template syntax.
+A view is responsible for presenting some data to the user. This might be a
+single object, or a collection.
 
-Templates can also live in external files, which are introduced in [part 6]({{ site.baseurl }}/tutorial/6-detailview).
+In FOAM, a `View` needs to specify some HTML, by returning a Javascript string
+from a method called `toHTML()`.
+
+Rather than writing a Javascript function that constructs and returns such a
+string, FOAM supports a template syntax. A class can have a `templates` section,
+and at load time your templates are compiled into Javascript functions that
+return strings.
+
+Templates can also live in external files, which are introduced in
+[part 6]({{ site.baseurl }}/tutorial/6-detailview).
 
 ## Template Syntax
 
-FOAM's template syntax is a superset of JSP syntax. This means templates are HTML, with the following extras:
+FOAM's template syntax is a superset of JSP syntax. This means templates are
+HTML overall, with the following extras:
 
 {% raw %}
 - `<%   %>` encloses Javascript code.
     - Real Javascript, not a restricted subset.
 - `<%=  %>` encloses a comma-separated list of Javascript expressions whose values are written to the DOM.
-- `{{  }}` inserts a Javascript value, with escaping.
-- `{{{ }}}` does the same but without escaping.
 - `%%foo` inserts the simple value of `this.foo` into the page.
-- `$$foo` inserts the view for `this.foo` at this location. That is, whatever `this.foo$.view` is, it will be created, fed the value of `this.foo`, and inserted into the DOM.
-    - `$$foo{ x: 'y', y: 'x' }` will pass along the values you set to `.create` when it builds the view for `foo`.
+- `$$foo` inserts the `view` for `this.foo` at this location. That is, whatever
+  the `foo` property's `view` is set to, one will be created and inserted here.
+    - `$$foo{ x: 'abc', y: 'def' }` will pass along those values to `.create`
+      when it builds the view for `foo`.
 {% endraw %}
 
 ### Control Structures
 
-Since `<%  %>` allows embedding arbitrary, real Javascript code, you can create control structures like so:
+Since `<%  %>` allows embedding arbitrary, real Javascript code, you can create
+control structures like so:
 
 {% highlight jsp %}
 <ul>
@@ -35,15 +47,19 @@ Since `<%  %>` allows embedding arbitrary, real Javascript code, you can create 
 </ul>
 {% endhighlight %}
 
-However, code like this is rarely necessary, since FOAM contains many views that handle creating rows from a collection of data. `DAOListView` from [part 3]({{ site.baseurl }}/tutorial/3-dao) is one example; `TableView` and `GridView` are two more.
+However, code like this is rarely necessary, since FOAM contains many views that
+handle creating rows from a collection of data. `DAOListView` from
+[part 3]({{ site.baseurl }}/tutorial/3-dao) is one example; `TableView` and
+`GridView` are two more.
 
 ## Inline Templates
 
-Let's define our template for each phone in the catalog. Expand `PhoneCitationView` so it looks like this:
+Let's define the template for each phone in the catalog. Expand
+`PhoneCitationView` so it looks like this:
 
 {% highlight js %}
 {% raw %}
-MODEL({
+CLASS({
   name: 'PhoneCitationView',
   extendsModel: 'DetailView',
   templates: [
@@ -59,11 +75,18 @@ MODEL({
 {% endraw %}
 {% endhighlight %}
 
-- FOAM uses multi-line comments in templates as a hack for multi-line strings in Javascript.
-- Inside a template, `this` is bound to the view itself, **not the `Phone` object**.
+- FOAM uses multi-line comments in templates as a hack for multi-line strings in
+  Javascript.
+- Inside a template, `this` is bound to the view itself, **not the `Phone`
+  object**.
 - The `Phone` object is `this.data` instead.
-- The `$$foo` syntax puts a child view at this location. `imageUrl` has its `view` set to `ImageView`, so `$$imageUrl` will render an `ImageView` inside the first link tag.
-- `$$name{mode: 'read-only'}` will put the child view for the `name` property (defaults to `TextFieldView`) in the second link tag, creating the view with its `mode` property set to `'read-only'`. `mode: 'read-only'` on a `TextFieldView` is simply text in a `<span>`.
+- The `$$foo` syntax puts a child view at this location. `imageUrl` has its
+  `view` set to `ImageView`, so `$$imageUrl` will render an `ImageView` inside
+  the first link tag.
+- `$$name{mode: 'read-only'}` will put the child view for the `name` property
+  (defaults to `TextFieldView`) in the second link tag, creating the view with
+  its `mode` property set to `'read-only'`. `mode: 'read-only'` on a
+  `TextFieldView` is simply text in a `<span>`.
 - Similarly for `$$snippet{mode: 'read-only'}`.
 
 Now reload your app and see that... it's a complete mess. That's because `PhoneCitationView` is putting in `<li>` tags but they're not in a `<ul>`, and the custom CSS for the app is not being loaded.
@@ -71,7 +94,7 @@ Now reload your app and see that... it's a complete mess. That's because `PhoneC
 We'll get back to the CSS shortly. First, let's add a second template, for the top-level `ControllerView`. Add this code to `Controller.js`, expanding our `ControllerView`:
 
 {% highlight js %}
-MODEL({
+CLASS({
   name: 'ControllerView',
   extendsModel: 'DetailView',
   templates: [
@@ -84,19 +107,23 @@ MODEL({
 });
 {% endhighlight %}
 
-- Many FOAM views support `className` and `tagName`. The default `tagName` for a `DAOListView` is `<div>`, but we want to use `<ul>` here.
+- Most FOAM views support `className` and `tagName`. The default `tagName` for a
+  `DAOListView` is `<div>`, but we want to use `<ul>` here.
 - `search` has `view` set to `TextFieldView`, so it will render as a text box.
 - `order`'s `view` is `ChoiceView`, which renders a drop-down list.
 - `filteredDAO` is the `DAOListView`, which renders the list of entries.
 
-The custom CSS still isn't loaded, so add the following to `index.html`'s `<head>` tag:
+The custom CSS still isn't loaded, so add the following to `index.html`'s
+`<head>` tag:
 
 {% highlight html %}
 <link rel="stylesheet" href="css/app.css" />
 <link rel="stylesheet" href="css/bootstrap.css" />
 {% endhighlight %}
 
-and reload your app. Now it should look much better, and the search and sort functions work!
+and reload your app. Now it should look much better, and the search and sort
+functions work!
 
-[Part 5]({{ site.baseurl }}/tutorial/5-navigation) will add navigation to our app.
+[Part 5]({{ site.baseurl }}/tutorial/5-navigation) will add navigation to our
+app.
 

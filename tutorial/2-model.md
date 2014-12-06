@@ -4,9 +4,6 @@ permalink: /tutorial/2-model/
 tutorial: 2
 ---
 
-The place to start with any FOAM application is with a first draft of your data
-model.
-
 The app we're going to build here is shamelessly borrowed from the
 [AngularJS tutorial](https://docs.angularjs.org/tutorial). It is a simple
 catalog app the shows a collection of (amusingly outdated) smartphones. It has
@@ -16,9 +13,16 @@ phone.
 You can see the finished app running live
 [here]({{ site.baseurl }}/foam/apps/phonecat/Cat.html).
 
+
 ## Defining the Model
 
-Our application has only one FOAM class in its Model: `Phone`. `Phone` has many
+The place to start with any FOAM application is with a first draft of your data
+model: the M of MVC.
+
+For example, the model for an email client might consist of a handful of
+classes: `Email`, `Attachment`, `Contact`, and maybe `Thread` and `Label`.
+
+Our application has only one class in its Model: `Phone`. `Phone` has many
 properties, most of them giving the specifications of the device.
 
 Put the following code in `$PROJECT/Phone.js`:
@@ -42,14 +46,13 @@ Note that providing just the name of a property (`'age'`, `'snippet'`,
 Most of these properties are straightforward, just the data about each phone.
 Some are notable:
 
-- `id` is not required, but it's generally a good idea for objects which will be
-  stored in a DAO to have an `id` property. Many DAOs require a primary key, and
-  they will use `id` if it exists.
-    - You can specify a complex ID using the `ids` field of a class.
-    - If you have an `id` property, DAOs will use that.
-    - Failing that, they use the first property in the `properties` array.
+- `id` is not required, but it's generally a good idea for objects to have a
+  primary key.
+    - If you have an `id` property, that's the primary key.
+    - Failing that, the first property in the `properties` array is the primary
+      key.
 - `imageUrl` has `view` specified as `ImageView`, so that when we render it in
-  a `View`, an `ImageView` will be created for it.
+  a view, an `ImageView` will be created for it.
 - `images` is defined as a `StringArrayProperty`, which handles array-valued
   properties better than the default generic property.
 
