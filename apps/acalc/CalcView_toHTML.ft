@@ -1,3 +1,9 @@
+<div style="position: relative;">
+  <div style="position: absolute;">
+    <span id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad">Rad</span>
+    <span id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg">Deg</span>
+  </div>
+</div>
 <div class="edge"></div>
 <div id="%%id" class="calc">
   <div class="calc-display">
@@ -90,8 +96,8 @@
           %>
           <div id="%%id" class="buttons button-row tertiaryButtons">
             <div class="button-column" style="flex-grow: 1">
-              <div class="button-row"><div class="button">$$deg</div></div>
               <div class="button-row"><div class="button">$$rad</div></div>
+              <div class="button-row"><div class="button">$$deg</div></div>
               <div class="button-row"><div class="button">$$fact</div></div>
               <div class="button-row"><div class="button">$$p</div></div>
               <div class="button-row"><div class="button">$$c</div></div>

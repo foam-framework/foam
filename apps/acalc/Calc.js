@@ -150,6 +150,18 @@ CLASS({
       height: 100%;
     }
 
+    .deg, .rad {
+      font-size: 18px;
+      padding-left: 12px;
+      color: #b3b3b3;
+      opacity: 0;
+      transition: opacity 0.8s;
+    }
+ 
+    .active {
+      opacity: 1;
+    }
+
     .calc-display, .calc-display:focus {
       border: none;
       letter-spacing: 1px;
@@ -377,7 +389,7 @@ CLASS({
     {
       name: 'percent',
       label: '%',
-      action: function() { this.a2 = this.a2 / 100.0; }
+      action: function() { this.a2 /= 100.0; }
     },
     {
       name: 'deg',
