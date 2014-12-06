@@ -52,7 +52,7 @@
             background: 'rgb(64, 189, 158)',
             width:  100,
             height: 58,
-            font:   '300 20px Roboto'
+            font:   '300 20px RobotoDraft'
           }), 'ActionButton');
           %>
           <div id="%%id" class="buttons button-row secondaryButtons">
@@ -85,7 +85,7 @@
             height: 70,
             color:      'rgb(119, 119, 119)',
             background: 'rgb(29, 233, 182)',
-            font:       '300 20px Roboto'
+            font:       '200 20px RobotoDraft'
           }), 'ActionButton');
           %>
           <div id="%%id" class="buttons button-row tertiaryButtons">
