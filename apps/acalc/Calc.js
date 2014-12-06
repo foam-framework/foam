@@ -141,7 +141,7 @@ CLASS({
     }
 
     .calc {
-      background-color: #fff;
+      background-color: #eee;
       border: 0;
       margin: 0;
       padding: 0px;
@@ -161,17 +161,9 @@ CLASS({
       text-align: right;
     }
 
-    .edge-top {
-      height: 5px;
-      width: 100%;
-      z-index: 99;
-      position: absolute;
-      background: #fff;
-    }
-
     .edge {
-      background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,
-                                             rgba(255,255,255,0) 100%);
+      background: linear-gradient(to bottom, rgba(240,240,240,1) 0%,
+                                             rgba(240,240,240,0) 100%);
       height: 20px;
       position: absolute;
       top: 5px;
