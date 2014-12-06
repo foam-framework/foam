@@ -166,7 +166,7 @@ CLASS({
                                              rgba(240,240,240,0) 100%);
       height: 20px;
       position: absolute;
-      top: 5px;
+      top: 0;
       width: 100%;
       z-index: 99;
     }
