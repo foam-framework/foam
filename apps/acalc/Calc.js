@@ -110,6 +110,7 @@ CLASS({
       font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
       font-size: 28px;
       margin: 0;
+      -webkit-user-select: none;
     }
 
     * {
