@@ -422,7 +422,7 @@ var CalcButton = ActionButtonCView2.xbind({
   background: '#4b4b4b',
   width:      95,
   height:     85,
-  font:       '24px Roboto'
+  font:       '300 32px Roboto'
 });
 X.registerModel(CalcButton, 'ActionButton');
 
