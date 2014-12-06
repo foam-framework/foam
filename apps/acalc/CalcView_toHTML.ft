@@ -114,10 +114,11 @@
     var inner$ = this.$.querySelector('.inner-calc-display');
     var outer  = window.getComputedStyle(outer$);
     var inner  = window.getComputedStyle(inner$);
-    // TODO(kgr): where does the 8 come from?
-    inner$.style.top = toNum(outer.height)-toNum(inner.height)-8 + 'px';
+    // TODO(kgr): where does the 11 come from?
+    inner$.style.top = toNum(outer.height)-toNum(inner.height)-11 + 'px';
 
   }.bind(this));
   Events.dynamic(function() { this.data.op; this.data.a1; this.data.a2; }.bind(this), move);
   this.data.history.listen(move);
+  this.X.window.addEventListener('resize', move);
 %>
