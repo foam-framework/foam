@@ -106,31 +106,29 @@ CLASS({
   requires: [ 'CalcView' ],
 
   templates: [ function CSS() {/*
-    body {
-      font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
-      font-size: 28px;
-      margin: 0;
-      -webkit-user-select: none;
-    }
-
     * {
       box-sizing: border-box;
     }
 
     html {
+      height: 100%;
       margin: 0;
+      overflow: hidden;
       padding: 0;
       width: 100%;
-      height: 100%;
-      overflow: hidden;
     }
 
     body {
+      -webkit-user-select: none;
+      font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
+      font-size: 28px;
+      font-weight: 300;
+      height: 100%;
+      margin: 0;
       margin: 0px;
+      overflow: hidden;
       padding: 0px;
       width: 100%;
-      height: 100%;
-      font-weight: 300;
     }
 
     ::-webkit-scrollbar {
@@ -169,7 +167,6 @@ CLASS({
       line-height: 36px;
       margin: 0;
       min-width: 204px;
-      overflow: scroll;
       padding: 0 25pt 2pt 25pt;
       text-align: right;
     }
