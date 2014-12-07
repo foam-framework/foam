@@ -122,6 +122,6 @@
     // TODO(kgr): where does the 11 come from?
     inner$.style.top = toNum(outer.height)-toNum(inner.height)-11 + 'px';
   }.bind(this))));
-  this.data.history.listen(move);
+  Events.dynamic(function() { this.data.history; this.data.op; this.data.a1; this.data.a2; }.bind(this), move);
   this.X.window.addEventListener('resize', move);
 %>
