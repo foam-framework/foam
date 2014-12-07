@@ -144,21 +144,21 @@ CLASS({
     .calc {
       background-color: #eee;
       border: 0;
-      margin: 0;
-      padding: 0px;
       display: flex;
       flex-direction: column;
       height: 100%;
+      margin: 0;
+      padding: 0px;
     }
 
     .deg, .rad {
-      font-size: 18px;
-      padding-left: 12px;
       color: #b3b3b3;
+      font-size: 18px;
       opacity: 0;
+      padding-left: 12px;
       transition: opacity 0.8s;
     }
- 
+
     .active {
       opacity: 1;
     }
