@@ -89,14 +89,6 @@ var DEFAULT_OP = function(a1, a2) { return a2; };
 DEFAULT_OP.toString = function() { return ''; };
 
 
-/** A subclass of FloatFieldView which doesn't display 0 values. **/
-CLASS({
-  name:  'CalcFloatFieldView',
-  extendsModel: 'FloatFieldView',
-  methods: { valueToText: function(v) { return v == 0 ? '' : v.toString(); } }
-});
-
-
 CLASS({ name: 'History', properties: [ 'op', 'a2' ] });
 
 
