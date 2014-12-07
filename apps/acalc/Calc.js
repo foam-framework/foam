@@ -410,7 +410,7 @@ CLASS({
     unaryOp('atan',   [], invTrigFn(Math.atan)),
     unaryOp('square', [], function(a) { return a*a; }, 'x²'),
     unaryOp('sqroot', [82 /* r */], Math.sqrt, '√'),
-    unaryOp('log',    [], function(a) { return Math.log(a) / Math.log(10); }),
+    unaryOp('log',    [], function(a) { return Math.log(a) / Math.LN10; }),
     unaryOp('ln',     [], Math.log),
     unaryOp('exp',    [], Math.exp, 'eⁿ'),
   ]
