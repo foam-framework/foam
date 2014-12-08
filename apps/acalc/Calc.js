@@ -38,8 +38,8 @@ function invTrigFn(f) {
 }
 
 /** Make a Binary Action. **/
-function binaryOp(name, keys, f, sym) {
-  f.toString = function() { return sym; };
+function binaryOp(name, keys, f, sym, opt_displayLabel) {
+  f.toString = function() { return opt_displayLabel || sym; };
   return {
     name: name,
     label: sym,
@@ -316,7 +316,7 @@ CLASS({
     binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7'),
     binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7'),
     binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
-    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '-'),
+    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–', '-'),
     binaryOp('pow',   [],                 Math.pow,                             'yⁿ'),
     binaryOp('p',     [],                 permutation,                          'nPr'),
     binaryOp('c',     [],                 combination,                          'nCr'),
