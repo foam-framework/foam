@@ -491,7 +491,7 @@ CLASS({
     createView: function(prop, opt_args) {
       /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.X;
-      var v = X.PropertyView.create({prop: prop, args: opt_args}, X);
+      var v = X.HTMLPropertyView.create({prop: prop, args: opt_args}, X);
       this.addChild(v);
       return v;
     },
@@ -1656,7 +1656,8 @@ CLASS({
   name:  'TextFieldView',
   label: 'Text Field',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.experimental.views.HTMLView',
+  traits: ['foam.experimental.views.DataConsumerTrait'],
 
   documentation: function() { /*
       The default $$DOC{ref:'View'} for a string. Supports autocomplete
@@ -2533,7 +2534,10 @@ CLASS({
 CLASS({
   name: 'ActionButton',
 
-  extendsModel: 'View',
+  traits: ['foam.experimental.views.DataConsumerTrait'],
+
+  
+  extendsModel: 'foam.experimental.views.HTMLView',
 
   properties: [
     {

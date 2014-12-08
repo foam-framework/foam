@@ -145,4 +145,4 @@ CLASS({
   ]
 });
 
-CLASS({ name: 'CalcView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+CLASS({ name: 'CalcView', extendsModel: 'foam.experimental.views.HTMLDetailView', templates: [ { name: 'toHTML' } ] });

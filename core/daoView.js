@@ -18,7 +18,7 @@
 CLASS({
   name: 'AbstractDAOView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.experimental.views.HTMLView',
 
   documentation: function() { /*
      <p>For $$DOC{ref:'View',usePlural:true} that take data items from a $$DOC{ref:'DAO'}
