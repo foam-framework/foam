@@ -1,3 +1,4 @@
+// BUG: Press 'Log' on startup
 /**
  * @license
  * Copyright 2014 Google Inc. All Rights Reserved.
@@ -37,8 +38,8 @@ function invTrigFn(f) {
 }
 
 /** Make a Binary Action. **/
-function binaryOp(name, keys, f, sym) {
-  f.toString = function() { return sym; };
+function binaryOp(name, keys, f, sym, opt_displayLabel) {
+  f.toString = function() { return opt_displayLabel || sym; };
   return {
     name: name,
     label: sym,
@@ -89,14 +90,6 @@ var DEFAULT_OP = function(a1, a2) { return a2; };
 DEFAULT_OP.toString = function() { return ''; };
 
 
-/** A subclass of FloatFieldView which doesn't display 0 values. **/
-CLASS({
-  name:  'CalcFloatFieldView',
-  extendsModel: 'FloatFieldView',
-  methods: { valueToText: function(v) { return v == 0 ? '' : v.toString(); } }
-});
-
-
 CLASS({ name: 'History', properties: [ 'op', 'a2' ] });
 
 
@@ -106,31 +99,29 @@ CLASS({
   requires: [ 'CalcView' ],
 
   templates: [ function CSS() {/*
-    body {
-      font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
-      font-size: 28px;
-      margin: 0;
-      -webkit-user-select: none;
-    }
-
     * {
       box-sizing: border-box;
     }
 
     html {
+      height: 100%;
       margin: 0;
+      overflow: hidden;
       padding: 0;
       width: 100%;
-      height: 100%;
-      overflow: hidden;
     }
 
     body {
+      -webkit-user-select: none;
+      font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
+      font-size: 28px;
+      font-weight: 300;
+      height: 100%;
+      margin: 0;
       margin: 0px;
+      overflow: hidden;
       padding: 0px;
       width: 100%;
-      height: 100%;
-      font-weight: 300;
     }
 
     ::-webkit-scrollbar {
@@ -169,7 +160,6 @@ CLASS({
       line-height: 36px;
       margin: 0;
       min-width: 204px;
-      overflow: scroll;
       padding: 0 25pt 2pt 25pt;
       text-align: right;
     }
@@ -239,7 +229,7 @@ CLASS({
       top: 100%;
       transition: top 0.3s ease;
       width: 100%;
-      padding-left: 60px;
+      padding-left: 140px;
     }
 
     .calc-display {
@@ -308,7 +298,7 @@ CLASS({
       this.SUPER();
 
       Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
-        this.row1 = this.op + ( this.a2 != '' ? '&nbsp;' + this.a2 : '' );
+        this.row1 = this.op + ( this.a2 !== '' ? '&nbsp;' + this.a2 : '' );
       }.bind(this)));
     },
     push: function(a2, opt_op) {
@@ -326,7 +316,7 @@ CLASS({
     binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7'),
     binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7'),
     binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
-    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–'),
+    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–', '-'),
     binaryOp('pow',   [],                 Math.pow,                             'yⁿ'),
     binaryOp('p',     [],                 permutation,                          'nPr'),
     binaryOp('c',     [],                 combination,                          'nCr'),
@@ -390,6 +380,7 @@ CLASS({
     {
       name: 'percent',
       label: '%',
+      keyboardShortcuts: [ 'shift-53' /* % */ ],
       action: function() { this.a2 /= 100.0; }
     },
     {

@@ -23,7 +23,7 @@ var gestureManager = GestureManager.create();
 CLASS({
   name: 'ModelListController',
   
-  requires: ['MDAO', 'DAOListView'],
+  requires: ['MDAO', 'DAOListView', 'foam.documentation.ModelCompletenessRecord as ModelCompletenessRecord'],
   
   properties: [
     {
@@ -73,6 +73,8 @@ CLASS({
           newDAO.put(this.X.developerDocs[key]);
         }
 
+        //this.generateCompletnessReport(newDAO);
+        
         return newDAO;
       }
     },
@@ -90,6 +92,133 @@ CLASS({
       factory: function() {
         return this.DAOListView.create({ data$: this.filteredDAO$, rowView: 'ModelDescriptionRowView' });
       }
+    }
+  ],
+  
+  methods: {
+    generateCompletnessReport: function(models) {
+      var modelList = [];
+      models.select(modelList);
+      
+      var reports = [];
+      var totalUndoc = 0;
+      var totalDoc = 0;
+      var incomplete = 0;
+      var complete = 0;
+      
+      for (var i = 0; i < modelList.length; i++) {
+        var m = modelList[i];
+        if (Model.isInstance(m)) {
+          var report = this.ModelCompletenessRecord.create({model: m});
+          
+          if (m.documentation) {
+            report.documented = true;
+            totalDoc += 1;
+          } else {
+            //console.log("nodoc: ", m);
+            totalUndoc += 1;
+          }
+            
+          var features = m.getAllMyFeatures();
+          if (features) features.forEach(function(feature) {
+            // ignore hidden properties and methods ending in _
+            if (!(
+                  feature.hidden || 
+                  (feature.name && feature.name.indexOf("_", feature.name.length - 1) !== -1)
+               ))
+            {
+              if (feature.documentation) {
+                report.documentedFeatureCount += 1;
+              } else {
+                report.undocumentedFeatureCount += 1;
+                report.undocumentedFeatures.push(feature);
+              }
+            }
+          }.bind(this));
+          
+          if (report.undocumentedFeatureCount > 0) {
+            incomplete += 1;
+          } else {
+            complete += 1;
+          }
+          
+          reports.push(report);
+        }
+      }        
+      
+      console.log("Documentation Report ======================");
+      console.log("Documented:   "+totalDoc);
+      console.log("Undocumented: "+totalUndoc);
+      console.log("Features complete: "+complete);
+      console.log("Features missing:  "+incomplete);
+      
+      var criteria = [
+        { 
+          name: 'Documented but incomplete',
+          f: function(r) { return r.documented && r.undocumentedFeatureCount > 0; }
+        },
+        { 
+          name: 'Not Documented',
+          f: function(r) { return !r.documented; }
+        },
+        { 
+          name: 'Documented and complete',
+          f: function(r) { return r.documented && r.undocumentedFeatureCount <= 0; }
+        },
+      ];        
+      
+      criteria.forEach(function(c) {
+        console.log("=====================");
+        console.log(c.name);
+        for (var i = 0; i < reports.length; i++) {
+          var r = reports[i];
+          // log interesting ones        
+          if (c.f(r)) {
+            console.log("---------------------");
+            console.log("Model "+r.model.id);
+            console.log("Documentation " + (r.documented? "OK" : "NO"));
+            console.log("Features: " + (r.undocumentedFeatureCount > 0? "INCOMPLETE":"OK"));
+            console.log("        : " + r.documentedFeatureCount + "/" + (r.undocumentedFeatureCount+r.documentedFeatureCount));
+            if (r.undocumentedFeatureCount > 0) {
+              r.undocumentedFeatures.forEach(function(f) {
+                  console.log("      Missing feature docs: "+f.name);
+              });
+            }
+          }
+        }
+      }.bind(this));
+      
+    }
+  }
+});
+
+CLASS({
+  name: 'ModelCompletenessRecord',
+  package: 'foam.documentation',
+  
+  properties: [
+    {
+      name: 'model'
+    },
+    {
+      name: 'documented',
+      model_: 'BooleanProperty',
+      defaultValue: false
+    },
+    {
+      name: 'undocumentedFeatureCount',
+      model_: 'IntProperty',
+      defaultValue: 0
+    },
+    {
+      name: 'documentedFeatureCount',
+      model_: 'IntProperty',
+      defaultValue: 0
+    },
+    {
+      name: 'undocumentedFeatures',
+      model_: 'StringArrayProperty',
+      factory: function() { return []; }
     }
   ]
 });

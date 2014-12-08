@@ -46,7 +46,7 @@ CLASS({
           placeholderFactory: constantFn(
             Y.QIssue.create({
               status: 'OPEN',
-              id: '',
+              id: 0,
               summary: 'Loading...',
               starred: false
             }))
@@ -119,6 +119,9 @@ CLASS({
       });
     },
     editIssue: function(issue) {
+      // Don't open placeholder issues.
+      if ( issue.id == 0 && issue.summary == 'Loading...' ) return;
+
       // TODO: clone issue, and add listener which saves on updates
       var v = this.project.X.IssueView.create({dao: this.project.X.issueDAO, data: issue.deepClone()});
       this.stack.pushView(v, '');
