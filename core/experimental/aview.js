@@ -21,6 +21,8 @@ CLASS({
 
   extendsModel: 'View',
 
+  imports: [ 'window' ],
+
   properties: [
     {
       name: 'data'
@@ -43,6 +45,7 @@ CLASS({
     },
     initHTML: function() {
       this.data$.addListener(this.onDataChange);
+      this.window.addEventListener('resize', this.onDataChange);
     }
   },
 

@@ -1,4 +1,9 @@
-<div class="edge-top"></div>
+<div style="position: relative;z-index: 100;">
+  <div style="position: absolute;">
+    <span id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad">RAD</span>
+    <span id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg">DEG</span>
+  </div>
+</div>
 <div class="edge"></div>
 <div id="%%id" class="calc">
   <div class="calc-display">
@@ -46,14 +51,14 @@
       </div>
     </mainView>
     <panelView>
-      <div id="%%id"><foam model="SlidePanelView" minWidth="360" minPanelWidth="100" panelRatio="0.2">
+      <div id="%%id"><foam model="SlidePanelView" minWidth="360" minPanelWidth="140" panelRatio="0.2">
         <mainView>
           <%
           this.X.registerModel(CalcButton.xbind({
             background: 'rgb(64, 189, 158)',
             width:  100,
             height: 58,
-            font:   '20px Roboto'
+            font:   '300 20px RobotoDraft'
           }), 'ActionButton');
           %>
           <div id="%%id" class="buttons button-row secondaryButtons">
@@ -86,13 +91,13 @@
             height: 70,
             color:      'rgb(119, 119, 119)',
             background: 'rgb(29, 233, 182)',
-            font:       '18px Roboto'
+            font:       '300 20px RobotoDraft'
           }), 'ActionButton');
           %>
           <div id="%%id" class="buttons button-row tertiaryButtons">
             <div class="button-column" style="flex-grow: 1">
-              <div class="button-row"><div class="button">$$deg</div></div>
               <div class="button-row"><div class="button">$$rad</div></div>
+              <div class="button-row"><div class="button">$$deg</div></div>
               <div class="button-row"><div class="button">$$fact</div></div>
               <div class="button-row"><div class="button">$$p</div></div>
               <div class="button-row"><div class="button">$$c</div></div>
@@ -108,14 +113,25 @@
   // This block causes the calc-display to scroll when updated.
   // To remove this feature replace the .inner-calc-display 'transition:' and
   // 'top:' styles with 'bottom: 0'.
-  var move = EventService.framed(function() {
+  var move = EventService.framed(EventService.framed(function() {
     if ( ! this.$ ) return;
     var outer$ = this.$.querySelector('.calc-display');
     var inner$ = this.$.querySelector('.inner-calc-display');
     var outer  = window.getComputedStyle(outer$);
     var inner  = window.getComputedStyle(inner$);
-    inner$.style.top = toNum(outer.height)-toNum(inner.height) + 'px';
-  }.bind(this));
+    // TODO(kgr): where does the 11 come from?
+    inner$.style.top = toNum(outer.height)-toNum(inner.height)-11 + 'px';
+  }.bind(this)));
   Events.dynamic(function() { this.data.op; this.data.a1; this.data.a2; }.bind(this), move);
   this.data.history.listen(move);
+  this.X.window.addEventListener('resize', move);
+  // Add mousewhell scrolling.
+  this.X.document.addEventListener('mousewheel', EventService.framed(function(e) {
+    var inner$ = self.$.querySelector('.inner-calc-display');
+    var outer$ = self.$.querySelector('.calc-display');
+    var outer  = window.getComputedStyle(outer$);
+    var inner  = window.getComputedStyle(inner$);
+    var top = toNum(inner$.style.top);
+    inner$.style.top = Math.min(0, Math.max(toNum(outer.height)-toNum(inner.height)-11, top-e.deltaY)) + 'px';
+  }));
 %>

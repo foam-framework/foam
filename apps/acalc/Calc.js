@@ -1,3 +1,4 @@
+// BUG: Press 'Log' on startup
 /**
  * @license
  * Copyright 2014 Google Inc. All Rights Reserved.
@@ -37,8 +38,8 @@ function invTrigFn(f) {
 }
 
 /** Make a Binary Action. **/
-function binaryOp(name, keys, f, sym) {
-  f.toString = function() { return sym; };
+function binaryOp(name, keys, f, sym, opt_displayLabel) {
+  f.toString = function() { return opt_displayLabel || sym; };
   return {
     name: name,
     label: sym,
@@ -89,14 +90,6 @@ var DEFAULT_OP = function(a1, a2) { return a2; };
 DEFAULT_OP.toString = function() { return ''; };
 
 
-/** A subclass of FloatFieldView which doesn't display 0 values. **/
-CLASS({
-  name:  'CalcFloatFieldView',
-  extendsModel: 'FloatFieldView',
-  methods: { valueToText: function(v) { return v == 0 ? '' : v.toString(); } }
-});
-
-
 CLASS({ name: 'History', properties: [ 'op', 'a2' ] });
 
 
@@ -106,30 +99,29 @@ CLASS({
   requires: [ 'CalcView' ],
 
   templates: [ function CSS() {/*
-    body {
-      font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
-      font-size: 28px;
-      margin: 0;
-    }
-
     * {
       box-sizing: border-box;
     }
 
     html {
+      height: 100%;
       margin: 0;
+      overflow: hidden;
       padding: 0;
       width: 100%;
-      height: 100%;
-      overflow: hidden;
     }
 
     body {
+      -webkit-user-select: none;
+      font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
+      font-size: 28px;
+      font-weight: 300;
+      height: 100%;
+      margin: 0;
       margin: 0px;
+      overflow: hidden;
       padding: 0px;
       width: 100%;
-      height: 100%;
-      font-weight: 300;
     }
 
     ::-webkit-scrollbar {
@@ -141,13 +133,25 @@ CLASS({
     }
 
     .calc {
-      background-color: #fff;
+      background-color: #eee;
       border: 0;
-      margin: 0;
-      padding: 0px;
       display: flex;
       flex-direction: column;
       height: 100%;
+      margin: 0;
+      padding: 0px;
+    }
+
+    .deg, .rad {
+      color: #b3b3b3;
+      font-size: 18px;
+      opacity: 0;
+      padding-left: 12px;
+      transition: opacity 0.8s;
+    }
+
+    .active {
+      opacity: 1;
     }
 
     .calc-display, .calc-display:focus {
@@ -156,25 +160,16 @@ CLASS({
       line-height: 36px;
       margin: 0;
       min-width: 204px;
-      overflow: scroll;
       padding: 0 25pt 2pt 25pt;
       text-align: right;
     }
 
-    .edge-top {
-      height: 5px;
-      width: 100%;
-      z-index: 99;
-      position: absolute;
-      background: #fff;
-    }
-
     .edge {
-      background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,
-                                             rgba(255,255,255,0) 100%);
+      background: linear-gradient(to bottom, rgba(240,240,240,1) 0%,
+                                             rgba(240,240,240,0) 100%);
       height: 20px;
       position: absolute;
-      top: 5px;
+      top: 0;
       width: 100%;
       z-index: 99;
     }
@@ -234,7 +229,7 @@ CLASS({
       top: 100%;
       transition: top 0.3s ease;
       width: 100%;
-      padding-left: 60px;
+      padding-left: 140px;
     }
 
     .calc-display {
@@ -266,18 +261,13 @@ CLASS({
       margin-bottom: -4px;
     }
 
-    // Copied from foam.css.
-    .SliderPanel .shadow {
-      background: linear-gradient(to left, rgba(0,0,0,0.3) 0%,
-                                           rgba(0,0,0,0) 100%);
-      height: 100%;
-      left: -8px;
-      position: absolute;
-      width: 8px;
+    .history {
+      color: #b3b3b3
     }
 
     .alabel {
       font-size: 44px;
+      color: #b3b3b3
     }
   */}],
 
@@ -308,7 +298,7 @@ CLASS({
       this.SUPER();
 
       Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
-        this.row1 = this.op + ( this.a2 != '' ? '&nbsp;' + this.a2 : '' );
+        this.row1 = this.op + ( this.a2 !== '' ? '&nbsp;' + this.a2 : '' );
       }.bind(this)));
     },
     push: function(a2, opt_op) {
@@ -326,7 +316,7 @@ CLASS({
     binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7'),
     binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7'),
     binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
-    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–'),
+    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–', '-'),
     binaryOp('pow',   [],                 Math.pow,                             'yⁿ'),
     binaryOp('p',     [],                 permutation,                          'nPr'),
     binaryOp('c',     [],                 combination,                          'nCr'),
@@ -390,7 +380,7 @@ CLASS({
     {
       name: 'percent',
       label: '%',
-      action: function() { this.a2 = this.a2 / 100.0; }
+      action: function() { this.a2 /= 100.0; }
     },
     {
       name: 'deg',
@@ -410,7 +400,7 @@ CLASS({
     unaryOp('atan',   [], invTrigFn(Math.atan)),
     unaryOp('square', [], function(a) { return a*a; }, 'x²'),
     unaryOp('sqroot', [82 /* r */], Math.sqrt, '√'),
-    unaryOp('log',    [], function(a) { return Math.log(a) / Math.log(10); }),
+    unaryOp('log',    [], function(a) { return Math.log(a) / Math.LN10; }),
     unaryOp('ln',     [], Math.log),
     unaryOp('exp',    [], Math.exp, 'eⁿ'),
   ]
@@ -435,7 +425,7 @@ var CalcButton = ActionButtonCView2.xbind({
   background: '#4b4b4b',
   width:      95,
   height:     85,
-  font:       '24px Roboto'
+  font:       '300 32px RobotoDraft'
 });
 X.registerModel(CalcButton, 'ActionButton');
 
