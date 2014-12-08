@@ -30,54 +30,54 @@ CLASS({
   properties: [
     {
       name: 'data',
-      help: 'Downstream data value provided to consumers.',
+      help: 'Child data value provided to consumers.',
       documentation: function() {/* 
-        The value provided to consumers downstream (children) of this provider.
+        The value provided to consumers child (children) of this provider.
       */},
       preSet: function(old, nu) {
-        // if the new data from downstream is ok, let it be set and propagate
-        if (this.internallySettingDownstream_ ||
-            this.validateDownstreamChange(old, nu) {
+        // if the new data from child is ok, let it be set and propagate
+        if (this.internallySettingChildData_ ||
+            this.validateChildDataChange(old, nu)) {
           return nu;
         } else {
           return old;
         }
       },
       postSet: function(old, nu) {
-        if (!internallySettingDownstream_) {
-          propagateDownstreamChange(old, nu);
+        if (!internallySettingChildData_) {
+          propagateChildDataChange(old, nu);
         }
       }
     },
     {
-      name: 'internallySettingDownstream_',
+      name: 'internallySettingChildData_',
       model_: 'BooleanProperty',
       defaultValue: false
     }
   ],
 
   methods: {
-    internalSetDownstreamData: function(nu) { 
+    internalSetChildData: function(nu) { 
           /* Sets $$DOC{ref:'.data'} without invoking validator 
               and propagators. */
-        this.internallySettingDownstream_ = true;
+        this.internallySettingChildData_ = true;
         this.data = nu;
-        this.internallySettingDownstream_ = false;
+        this.internallySettingChildData_ = false;
     },
     
-    validateDownstreamChange: function(old, nu) {
-      /* Override to validate changed data from downstream consumers.
-      Return true if the change is good to process and propagate upstream.
-      Returning false will force the downstream data back to its old value. */
+    validateChildDataChange: function(old, nu) {
+      /* Override to validate changed data from child consumers.
+      Return true if the change is good to process and propagate parent.
+      Returning false will force the child data back to its old value. */
       return true;
     },
-    propagateDownstreamChange: function(old, nu) {
-      /* Override to transform data from downstream children and pass 
-      changes upstream. Propagation may be stopped here if changes should
+    propagateChildDataChange: function(old, nu) {
+      /* Override to transform data from child children and pass 
+      changes parent. Propagation may be stopped here if changes should
       not interest the provider. */
       
       // by default just pass it along
-      if (this.internalSetUpstreamData) this.internalSetUpstreamData(nu); 
+      if (this.internalSetParentData) this.internalSetParentData(nu); 
     }, 
   }
   
@@ -90,28 +90,28 @@ CLASS({
   
   documentation: function() {/*
     Trait for consumers of a data property. It contains 
-    an $$DOC{ref:'.upstreamData'}
+    an $$DOC{ref:'.parentData'}
     property and imports it by reference from the context.
   */},
   
-  imports: ['data$ as upstreamData$'],
+  imports: ['data$ as parentData$'],
   
   properties: [
     {
-      name: 'upstreamData',
-      help: 'Upstream data value from provider.',
+      name: 'parentData',
+      help: 'Parent data value from provider.',
       documentation: function() {/* 
-        The value provided from upstream (by the parent).
-      */}
+        The value provided from parent (by the parent).
+      */},
       postSet: function(old, nu) {
         // check if we should progagate the change, if so, set data
-        if (!internallySettingUpstream_) {
-          propagateUpstreamChange(old, nu);
+        if (!internallySettingParentData_) {
+          propagateParentDataChange(old, nu);
         }
       }
     },
     {
-      name: 'internallySettingUpstream_',
+      name: 'internallySettingParentData_',
       model_: 'BooleanProperty',
       defaultValue: false
     }
@@ -119,24 +119,104 @@ CLASS({
   ],
   
   methods: {
-    internalSetUpstreamData: function(nu) { 
-      /* Sets $$DOC{ref:'.upstreamData'} without invoking validator
+    internalSetParentData: function(nu) { 
+      /* Sets $$DOC{ref:'.parentData'} without invoking validator
         and propagators. */
-        this.internallySettingUpstream_ = true;
-        this.upstreamData = nu;
-        this.internallySettingUpstream_ = false;
+        this.internallySettingParentData_ = true;
+        this.parentData = nu;
+        this.internallySettingParentData_ = false;
     },
 
-    propagateUpstreamChange: function(old, nu) {
-      /* Override to halt or transform data propagating downstream to children.</p>
+    propagateParentDataChange: function(old, nu) {
+      /* Override to halt or transform data propagating child to children.</p>
       <p>Transformation may include unpacking a value from the 
-      $$DOC{ref:'.upstreamData'} and binding that to $$DOC{ref:'.data'}.</p>
+      $$DOC{ref:'.parentData'} and binding that to $$DOC{ref:'.data'}.</p>
       <p>One example of halting propagation would be if the data value
       changes enough that the current children will be destroyed, so
       propagation before they are re-created is a waste. */
       
       // by default just pass it along
-      if (this.internalSetDownstreamData) this.internalSetDownstreamData(nu); 
+      if (this.internalSetChildData) this.internalSetChildData(nu); 
+    }
+  }
+});
+
+CLASS({
+  name: 'ChildTreeTrait',
+  package: 'foam.experimental.views',
+  
+  properties: [
+    {
+      name: 'parent',
+      type: 'foam.experimental.views.ChildTreeTrait',
+      hidden: true
+    },
+    {
+      name: 'children',
+      type: 'Array[foam.experimental.views.ChildTreeTrait]',
+      factory: function() { return []; },
+      documentation: function() {/*
+        $$DOC{ref:'ChildTreeTrait',usePlural:true} children are arranged in a tree.
+      */}
+    }
+  ],
+  
+  methods: {
+    addChild: function(child) {
+      /*
+        Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
+        a sub-$$DOC{ref:'View'} is created, add it to the tree with this method.
+      */
+      this.SUPER(child);
+
+      // Check prevents duplicate addChild() calls,
+      // which can happen when you use creatView() to create a sub-view (and it calls addChild)
+      // and then you write the View using TemplateOutput (which also calls addChild).
+      // That should all be cleaned up and all outputHTML() methods should use TemplateOutput.
+      if ( this.children.indexOf(child) != -1 ) return;
+
+      try {
+        child.parent = this;
+      } catch (x) { console.log(x); }
+
+      var children = this.children;
+      children.push(child);
+      this.children = children;
+
+      return this;
+    },
+
+    removeChild: function(child) {
+      /*
+        Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
+        a sub-$$DOC{ref:'View'} is destroyed, remove it from the tree with this method.
+      */
+      this.SUPER(child);
+      
+      this.children.deleteI(child);
+      child.parent = undefined;
+
+      return this;
+    },
+
+    addChildren: function() {
+      /* Adds multiple children at once. */
+      Array.prototype.forEach.call(arguments, this.addChild.bind(this));
+
+      return this;
+    },
+    
+    destroy: function() {
+      while(children.length > 0) {
+        var c = children.pop();
+        c.parent = undefined;
+        c.destroy();
+      });
+    },
+    
+    create: function() {
+      /* Template method. After a destroy(), create() is called to fill in the object again. If
+         any special children need to be re-created, do it here. */
     }
   }
 });
@@ -147,14 +227,14 @@ CLASS({
 //   traits: ['foam.experimental.views.DataConsumerTrait', 'foam.experimental.views.DataProviderTrait'],
 //    
 //   methods: {
-//     validateDownstreamChange: function(old, nu) {
+//     validateChildDataChange: function(old, nu) {
 //       /* Implement me */
 //       return /*boolean*/
 //     },
-//     propagateDownstreamChange: function(old, nu) {
+//     propagateChildDataChange: function(old, nu) {
 //       /* Implement me */
 //     },
-//     propagateUpstreamChange: function(old, nu) {
+//     propagateParentDataChange: function(old, nu) {
 //       /* Implement me */
 //     } 
 //   } 
@@ -162,14 +242,16 @@ CLASS({
 
 
 
-// ??? Should this have a 'data' property?
-// Or maybe a DataView and ModelView
+/////////////////////////////////////////////// Existing HTML views refactor:
+
+
 CLASS({
   name: 'View',
   label: 'View',
   package: 'foam.experimental.views',
   
-  traits: ['foam.experimental.views.DataProviderTrait'], // provides itself as data
+  traits: ['foam.experimental.views.DataProviderTrait',
+           'foam.experimental.views.ChildTreeTrait'],
   
 
   documentation: function() {/*
@@ -187,7 +269,7 @@ CLASS({
        at minimum you must implement $$DOC{ref:'.toHTML'} and $$DOC{ref:'.initHTML'}.
     </p>
   */},
-
+  
   properties: [
     {
       name:  'id',
@@ -200,29 +282,10 @@ CLASS({
       */}
     },
     {
-      name: 'parent',
-      type: 'View',
-      hidden: true
-    },
-    {
-      name: 'children',
-      type: 'Array[View]',
-      factory: function() { return []; },
-      documentation: function() {/*
-        <p>$$DOC{ref:'View',usePlural:true} are arranged in a tree. Each sub-view
-        contained inside this one is a child. Subviews can be created explicitly
-        or inside a template with the $$DOC{ref:'Template',text:"$$propName"}
-        tag.</p>
-        <p>Generally, sub-views are created around a property of the data that
-        this $$DOC{ref:'View'} is showing, each layer getting more specific.</p>
-
-      */}
-    },
-    {
       name: 'self',
-      help: 'Downstream "this" value provided to consumers.',
+      help: 'Child "this" value provided to consumers.',
       documentation: function() {/* 
-        The value provided to consumers downstream (children) of this provider when constructed
+        The value provided to consumers child (children) of this provider when constructed
         from properties of this view.
       */},
       factory: function() { return this; }
@@ -356,7 +419,7 @@ CLASS({
 
   methods: {
 
-    validateDownstreamChange: function(old, nu) {
+    validateChildDataChange: function(old, nu) {
       /* Since our data is ourself, we can't allow it to be swapped out
          for something else. */
       return false;
@@ -493,46 +556,6 @@ CLASS({
       if ( this.$ && this.$.focus ) this.$.focus();
     },
 
-    addChild: function(child) {
-      /*
-        Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
-        a sub-$$DOC{ref:'View'} is created, add it to the tree with this method.
-      */
-      if ( child.toView_ ) child = child.toView_(); // Maybe the check isn't needed.
-      // Check prevents duplicate addChild() calls,
-      // which can happen when you use creatView() to create a sub-view (and it calls addChild)
-      // and then you write the View using TemplateOutput (which also calls addChild).
-      // That should all be cleaned up and all outputHTML() methods should use TemplateOutput.
-      if ( this.children.indexOf(child) != -1 ) return;
-
-      try {
-        child.parent = this;
-      } catch (x) { console.log(x); }
-
-      var children = this.children;
-      children.push(child);
-      this.children = children;
-
-      return this;
-    },
-
-    removeChild: function(child) {
-      /*
-        Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
-        a sub-$$DOC{ref:'View'} is destroyed, remove it from the tree with this method.
-      */
-      this.children.deleteI(child);
-      child.parent = undefined;
-
-      return this;
-    },
-
-    addChildren: function() {
-      /* Adds multiple children at once. */
-      Array.prototype.forEach.call(arguments, this.addChild.bind(this));
-
-      return this;
-    },
 
     addShortcut: function(key, callback, context) {
       /* Add a keyboard shortcut. */
@@ -884,17 +907,17 @@ CLASS({
 
   methods: {
 
-    propagateUpstreamChange: function(old, nu) {
+    propagateParentDataChange: function(old, nu) {
       if ( nu && nu.model_ && this.model !== nu.model_ ) {
         // destroy children
         this.destroy();
         // propagate data change (nowhere)
         this.model = nu.model_;
-        this.internalSetDownstreamData(nu);
+        this.internalSetChildData(nu);
         // rebuild children with new data
         this.updateHTML();
       } else {
-        this.internalSetDownstreamData(nu); // just move the new data along
+        this.internalSetChildData(nu); // just move the new data along
       }
       this.onValueChange_(); // always let subclasses have their chance to react afterwards
     },
@@ -1029,7 +1052,7 @@ CLASS({
   properties: [
     {
       name: 'originalData',
-      documentation: 'A clone of the upstream data, for comparison with edits.'
+      documentation: 'A clone of the parent data, for comparison with edits.'
     },
     {
       name: 'dao'
@@ -1050,11 +1073,11 @@ CLASS({
   ],
 
   methods: {
-    propagateUpstreamChange: function(old, nu) {
+    propagateParentDataChange: function(old, nu) {
       // since we're cloning the propagated data, we have to listen
-      // for changes to the upstreamData and clone again 
-      if ( old ) old.removeListener(this.upstreamContentsChanged);
-      if ( nu ) nu.addListener(this.upstreamContentsChanged);
+      // for changes to the parentData and clone again 
+      if ( old ) old.removeListener(this.parentContentsChanged);
+      if ( nu ) nu.addListener(this.parentContentsChanged);
       
       if (!nu) return;
       // propagate a clone and build children
@@ -1062,23 +1085,23 @@ CLASS({
       this.originalData = nu.deepClone();
 
       data.addListener(function() {
-        // The user is making edits. Don't listen for upstream changes,
+        // The user is making edits. Don't listen for parent changes,
         // since we no longer want to react to updates to it.
         this.version++;
-        this.upstreamData.removeListener(this.upstreamContentsChanged);
+        this.parentData.removeListener(this.parentContentsChanged);
       }.bind(this));
     } 
  
-  }
+  },
   
   listeners: [
     {
-      name: 'upstreamContentsChanged',
+      name: 'parentContentsChanged',
       code: function() {
-        // If this listener fires, the upstream data has changed internally
+        // If this listener fires, the parent data has changed internally
         // and the user hasn't edited our copy yet, so keep the clones updated.
-        this.data.copyFrom(this.upstreamData);
-        this.originalData.copyFrom(this.upstreamData);
+        this.data.copyFrom(this.parentData);
+        this.originalData.copyFrom(this.parentData);
       }
     }
   ],
@@ -1119,7 +1142,7 @@ CLASS({
     {
       name: 'reset',
       isAvailable: function() { this.version; return ! this.originalData.equals(this.data); },
-      action: function() { this.data.copyFrom(this.originalData); } // or do we want upstreamData?
+      action: function() { this.data.copyFrom(this.originalData); } // or do we want parentData?
     }
   ]
 });
@@ -1188,17 +1211,17 @@ CLASS({
   ],
 
   methods: {
-    validateDownstreamChange: function(old, nu) {
+    validateChildDataChange: function(old, nu) {
       return true;
     },
-    propagateDownstreamChange: function(old, nu) {
-      // pack the new value into our upstream
-      this.upstreamData[this.prop.name] = nu;
+    propagateChildDataChange: function(old, nu) {
+      // pack the new value into our parent
+      this.parentData[this.prop.name] = nu;
     },
-    propagateUpstreamChange: function(old, nu) {
+    propagateParentDataChange: function(old, nu) {
       this.unbind(old);
       this.bind(nu);
-    } 
+    }, 
 
     init: function() {
       /* Sets up the new sub-$$DOC{ref:'View'} immediately. */
@@ -1250,12 +1273,12 @@ CLASS({
 
     unbindData: function(oldData) {
       /* Unbind the data from the old view. */
-      oldData.removeListener(this.upstreamPropertyChange);
+      oldData.removeListener(this.parentPropertyChange);
     },
 
     bindData: function(nuData) {
       /* Bind data to the new view. */
-      nuData.addListener(this.upstreamPropertyChange);
+      nuData.addListener(this.parentPropertyChange);
     },
 
     toHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ return this.view.toHTML(); },
@@ -1272,10 +1295,11 @@ CLASS({
   
   listeners: [
     {
-      name: 'upstreamPropertyChange',
+      name: 'parentPropertyChange',
       code: function() {
-        this.internalSetDownstreamData(this.upstreamData[this.prop.name]);
+        this.internalSetChildData(this.parentData[this.prop.name]);
       }
+    }
   ]
 });
 
