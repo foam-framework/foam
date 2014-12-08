@@ -263,7 +263,11 @@ CLASS({
     {
       name: 'parent',
       type: 'View',
-      hidden: true
+      hidden: true,
+      documentation: function() {/*
+          The parent view that contains this one.
+      */}
+
     },
     {
       name: 'children',
@@ -294,7 +298,11 @@ CLASS({
       getter: function() {
         return this.instance_.$ ? this.instance_.$ : this.instance_.$ = this.X.document.getElementById(this.id);
       },
-      help: 'DOM Element.'
+      help: 'DOM Element.',
+      documentation: function() {/*
+          The DOM element this view controls.
+      */}
+
     },
     {
       name: 'tagName',
@@ -314,7 +322,10 @@ CLASS({
       */}
     },
     {
-      name: 'tooltip'
+      name: 'tooltip',
+      documentation: function() {/*
+        The tooltip text to display when the user hovers over this view.
+      */}
     },
     {
       name: 'extraClassName',

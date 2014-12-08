@@ -76,7 +76,10 @@ CLASS({
     },
     {
       model_: 'DocumentationProperty',
-      name: 'documentation'
+      name: 'documentation',
+      documentation: function() { /*
+          The developer documentation.
+        */}
     },
     {
       name: 'default',
@@ -323,7 +326,10 @@ CLASS({
     },
     {
       model_: 'DocumentationProperty',
-      name: 'documentation'
+      name: 'documentation',
+      documentation: function() { /*
+          The developer documentation.
+      */}
     }
   ],
 
@@ -412,6 +418,10 @@ CLASS({
     {
       model_: 'DocumentationProperty',
       name: 'documentation',
+      documentation: function() { /*
+          The developer documentation.
+      */}
+
     },
     {
       name: 'value',
@@ -510,6 +520,9 @@ CLASS({
     {
       model_: 'DocumentationProperty',
       name: 'documentation',
+      documentation: function() { /*
+          The developer documentation.
+      */}
     },
     {
       name: 'code',

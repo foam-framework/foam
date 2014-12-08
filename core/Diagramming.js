@@ -460,11 +460,10 @@ CLASS({
 CLASS({
   name: 'SectionGroup',
   package: 'diagram',
-  label: 'Section',
+  label: 'Section Group',
 
-  requires: ['foam.graphics.Label as Label',
-             'diagram.LinkPoint'],
-
+  requires: ['diagram.Section'],
+  
   extendsModel: 'diagram.Block',
   
   properties: [
@@ -491,7 +490,7 @@ CLASS({
     init: function() {
       this.SUPER();
       this.create();
-    }
+    },
     create: function() {
       if (!this.titleSection) {
         this.titleSection = this.Section.create({title$: this.title$, titleFont$: this.titleFont$});

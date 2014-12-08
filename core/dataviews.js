@@ -211,7 +211,7 @@ CLASS({
         var c = children.pop();
         c.parent = undefined;
         c.destroy();
-      });
+      }
     },
     
     create: function() {
