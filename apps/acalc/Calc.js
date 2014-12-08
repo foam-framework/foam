@@ -380,6 +380,7 @@ CLASS({
     {
       name: 'percent',
       label: '%',
+      keyboardShortcuts: [ 'shift-53' /* % */ ],
       action: function() { this.a2 /= 100.0; }
     },
     {
