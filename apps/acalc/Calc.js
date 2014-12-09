@@ -38,8 +38,8 @@ function invTrigFn(f) {
 }
 
 /** Make a Binary Action. **/
-function binaryOp(name, keys, f, sym, opt_displayLabel) {
-  f.toString = function() { return opt_displayLabel || sym; };
+function binaryOp(name, keys, f, sym) {
+  f.toString = function() { return sym; };
   return {
     name: name,
     label: sym,
@@ -316,7 +316,7 @@ CLASS({
     binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7'),
     binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7'),
     binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
-    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–', '-'),
+    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–'),
     binaryOp('pow',   [],                 Math.pow,                             'yⁿ'),
     binaryOp('p',     [],                 permutation,                          'nPr'),
     binaryOp('c',     [],                 combination,                          'nCr'),
@@ -431,3 +431,30 @@ var CalcButton = ActionButtonCView2.xbind({
 X.registerModel(CalcButton, 'ActionButton');
 
 CLASS({ name: 'CalcView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+/*
+function flare(e, color) {
+  var eStyle  = window.getComputedStyle(e);
+  var w = toNum(eStyle.width);
+  var h = toNum(eStyle.height);
+  var c = foam.graphics.Circle.create({r: 20, width: w, height: h, x: w-25, y: h-25, color: color, xbackground: 'rgba(100, 0, 0, 0.2)'});
+  var view = c.toView_();
+  var div = document.createElement('div');
+  div.style = "position: absolute; width: 100%, height: 100%";
+  var id = View.getPrototype().nextID();
+  div.id = this.id;
+  div.innerHTML = view.toHTML();
+  e.appendChild(div);
+  view.initHTML();
+//  Movement.animate(200, function() { c.r = Math.sqrt(w*w, h*h); })();
+  Movement.compile([
+    [300, function() { c.r = Math.sqrt(w*w, h*h); }],
+    [200, function() { c.alpha = 0; }]
+  ])();
+c.r$.addListener(EventService.framed(view.paint.bind(view)));
+c.alpha$.addListener(EventService.framed(view.paint.bind(view)));
+}
+
+setTimeout(function() {
+  flare($$('calc-display')[0], 'red');
+}, 500);
+*/
