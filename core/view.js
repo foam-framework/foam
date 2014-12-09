@@ -491,7 +491,7 @@ CLASS({
     createView: function(prop, opt_args) {
       /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.X;
-      var v = X.HTMLPropertyView.create({prop: prop, args: opt_args}, X);
+      var v = X.foam.experimental.views.HTMLPropertyView.create({prop: prop, args: opt_args}, X);
       this.addChild(v);
       return v;
     },

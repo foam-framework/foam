@@ -1421,9 +1421,11 @@ CLASS({
 CLASS({
   name: 'HTMLPropertyView',
 
-  extendsModel: 'foam.experimental.views.HTMLView',
   package: 'foam.experimental.views',
-  traits: ['foam.experimental.views.DataConsumerTrait',
+  traits: ['foam.experimental.views.ViewTrait',
+           'foam.experimental.views.DataProviderTrait',
+           'foam.experimental.views.ChildTreeTrait',
+           'foam.experimental.views.DataConsumerTrait',
            'foam.experimental.views.PropertyViewTrait'], 
 
   documentation: function() {/*
