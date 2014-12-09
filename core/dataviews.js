@@ -269,35 +269,14 @@ CLASS({
   }
 });
 
-// CLASS({
-//   name: 'ExampleDataHandler',
-//   package: 'foam.experimental.views',
-//   traits: ['foam.experimental.views.DataConsumerTrait', 'foam.experimental.views.DataProviderTrait'],
-//    
-//   methods: {
-//     validateChildDataChange: function(old, nu) {
-//       /* Implement me */
-//       return /*boolean*/
-//     },
-//     propagateChildDataChange: function(old, nu) {
-//       /* Implement me */
-//     },
-//     propagateParentDataChange: function(old, nu) {
-//       /* Implement me */
-//     } 
-//   } 
-// });
-
-
-
 
 CLASS({
-  name: 'ViewTrait',
+  name: 'BaseView',
   label: 'View',
   package: 'foam.experimental.views',
   
-  //traits: ['foam.experimental.views.DataProviderTrait',
-  //         'foam.experimental.views.ChildTreeTrait'],
+  traits: ['foam.experimental.views.DataProviderTrait',
+           'foam.experimental.views.ChildTreeTrait'],
 
 
   documentation: function() {/*
@@ -414,22 +393,13 @@ CLASS({
 });
 
 
-
-
-
-/////////////////////////////////////////////// Existing HTML views refactor:
-
-
-
 CLASS({
-  name: 'HTMLView',
+  name: 'View',
   label: 'HTMLView',
-  traits: ['foam.experimental.views.ViewTrait',
-           'foam.experimental.views.DataProviderTrait',
-           'foam.experimental.views.ChildTreeTrait'],
+  extendsModel: 'foam.experimental.views.BaseView',
+  traits: ['foam.experimental.views.HTMLViewTrait'],
   package: 'foam.experimental.views',
-  
-  
+
   documentation: function() {/*
     <p>$$DOC{ref:'View',usePlural:true} render data. This could be a specific
        $$DOC{ref:'Model'} or a $$DOC{ref:'DAO'}. In the case of $$DOC{ref:'DetailView'},
@@ -445,6 +415,19 @@ CLASS({
        at minimum you must implement $$DOC{ref:'.toHTML'} and $$DOC{ref:'.initHTML'}.
     </p>
   */},
+  
+});
+
+CLASS({
+  name: 'HTMLViewTrait',
+  label: 'HTMLViewTrait',
+  extendsModel: 'foam.experimental.views.BaseView',
+  package: 'foam.experimental.views',
+  
+  documentation: function() {/*
+    The HTML implementation for $$DOC{ref:'foam.experimental.views.View'}.
+  */},
+  
   
   properties: [
     {
@@ -911,7 +894,9 @@ CLASS({
 
 
 CLASS({
-  name: 'DetailViewTrait',
+  name: 'BaseDetailView',
+  extendsModel: 'foam.experimental.views.BaseView',
+  traits: ['foam.experimental.views.DataConsumerTrait'],
   package: 'foam.experimental.views',
   
   documentation:function() {/*
@@ -1011,13 +996,12 @@ CLASS({
 });
 
 CLASS({
-  name: 'HTMLDetailView',
-  extendsModel: 'foam.experimental.views.HTMLView',
+  name: 'DetailView',
+  extendsModel: 'foam.experimental.views.BaseDetailView',
+  traits: ['foam.experimental.views.HTMLViewTrait',
+           'foam.experimental.views.HTMLDetailViewTrait'],
   package: 'foam.experimental.views',
-  traits: ['foam.experimental.views.DataConsumerTrait',
-           'foam.experimental.views.DetailViewTrait'],
 
-  
   documentation:function() {/*
     When a view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'DetailView'}
     is the place to start. Either using $$DOC{ref:'DetailView'} directly, implementing
@@ -1037,6 +1021,15 @@ CLASS({
     <p>For each $$DOC{ref:'Property'} in the $$DOC{ref:'.data'} instance specified,
     a $$DOC{ref:'PropertyView'} is created that selects the appropriate $$DOC{ref:'View'}
     to construct.
+  */},
+});
+
+CLASS({
+  name: 'HTMLDetailViewTrait',
+  package: 'foam.experimental.views',
+  
+  documentation:function() {/*
+    The HTML implementation of $$DOC{ref:'foam.experimental.views.DetailView'}.
   */},
 
   properties: [
@@ -1146,13 +1139,15 @@ CLASS({
 
 CLASS({
   name: 'HTMLUpdateDetailView',
-  extendsModel: 'foam.experimental.views.HTMLDetailView',
+  extendsModel: 'foam.experimental.views.BaseUpdateDetailView',
   package: 'foam.experimental.views',
-  traits: ['foam.experimental.views.UpdateDetailViewTrait']
+  traits: ['foam.experimental.views.HTMLViewTrait',
+           'foam.experimental.views.HTMLDetailViewTrait']
 });
 
 CLASS({
-  name: 'UpdateDetailViewTrait',
+  name: 'BaseUpdateDetailView',
+  extendsModel: 'foam.experimental.views.BaseDetailView',
   package: 'foam.experimental.views',
   
   documentation:function() {/*
@@ -1262,11 +1257,13 @@ CLASS({
 
 
 CLASS({
-  name: 'PropertyViewTrait',
+  name: 'BasePropertyView',
   package: 'foam.experimental.views',
-
+  extendsModel: 'foam.experimental.views.BaseView',
+  traits: ['foam.experimental.views.DataConsumerTrait'],
+  
   documentation: function() {/*
-    Apply this trait to a $$DOC{ref:'ViewTrait'} (such as $$DOC{ref:'HTMLView'}).</p>
+    Apply this trait to a $$DOC{ref:'BaseView'} (such as $$DOC{ref:'HTMLView'}).</p>
     <p>Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one
     $$DOC{ref:'Property'}. The $$DOC{ref:'View'} chosen can be based off the
     $$DOC{ref:'Property.view',text:'Property.view'} value, the $$DOC{ref:'.innerView'} value, or
@@ -1419,14 +1416,10 @@ CLASS({
 });
 
 CLASS({
-  name: 'HTMLPropertyView',
-
+  name: 'PropertyView',
+  extendsModel: 'foam.experimental.views.BasePropertyView',
   package: 'foam.experimental.views',
-  traits: ['foam.experimental.views.ViewTrait',
-           'foam.experimental.views.DataProviderTrait',
-           'foam.experimental.views.ChildTreeTrait',
-           'foam.experimental.views.DataConsumerTrait',
-           'foam.experimental.views.PropertyViewTrait'], 
+  traits: ['foam.experimental.views.HTMLPropertyViewTrait'], 
 
   documentation: function() {/*
     Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one
@@ -1434,6 +1427,11 @@ CLASS({
     $$DOC{ref:'Property.view',text:'Property.view'} value, the $$DOC{ref:'.innerView'} value, or
     $$DOC{ref:'.args'}.model_.
   */},
+});
+
+CLASS({
+  name: 'HTMLPropertyViewTrait',
+  package: 'foam.experimental.views',
   
   methods: {
     toHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ return this.view.toHTML(); },
