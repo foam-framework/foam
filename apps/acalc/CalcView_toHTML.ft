@@ -21,7 +21,7 @@
   <div class="edge2"></div>
   <foam model="SlidePanelView" minWidth="360" minPanelWidth="400" panelRatio="0.4">
     <mainView>
-      <div id="%%id" class="buttons button-row">
+      <div id="%%id" class="buttons button-row" style="background:#4b4b4b;">
         <div class="button-column" style="flex-grow: 3">
           <div class="button-row">
             <div class="button">$$7</div><div class="button">$$8</div><div class="button">$$9</div>
@@ -62,7 +62,7 @@
           }), 'ActionButton');
           %>
           <div id="%%id" class="buttons button-row secondaryButtons">
-            <div class="button-column" style="flex-grow: 1">
+            <div class="button-column" style="flex-grow: 1;">
               <div class="button-row">
                 <div class="button">$$inv</div><div class="button">$$square</div><div class="button">$$sqroot</div>
               </div>

@@ -211,6 +211,7 @@ CLASS({
       border-left-width: 1px;
       border-left-style: solid;
       border-left-color: rgb(68, 68, 68);
+      background: #777;
     }
 
     .rhs-ops .button {
