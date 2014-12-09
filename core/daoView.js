@@ -19,6 +19,7 @@ CLASS({
   name: 'AbstractDAOView',
 
   extendsModel: 'foam.experimental.views.HTMLView',
+  traits: ['foam.experimental.views.DataConsumerTrait'],
 
   documentation: function() { /*
      <p>For $$DOC{ref:'View',usePlural:true} that take data items from a $$DOC{ref:'DAO'}
@@ -324,7 +325,7 @@ CLASS({
       name: 'onRemove',
       code: function(src, topic, obj) {
         var self = this;
-        this.data = this.data.removeF({
+        this.parentData = this.data.removeF({
           f: function(o) {
             return o === self.property.f(obj);
           }

@@ -580,6 +580,12 @@ CLASS({
 
 
   methods: {
+    
+    init: function() {
+      this.SUPER();
+      this.construct();
+    },
+
     toView_: function() { return this; },
 
     strToHTML: function(str) {
@@ -1273,7 +1279,12 @@ CLASS({
       type: 'Property',
       documentation: function() {/*
           The $$DOC{ref:'Property'} for which to generate a $$DOC{ref:'View'}.
-      */}
+      */},
+      postSet: function() {
+        // if we got data first, we'll need to propagate it now that 
+        // we know which property to use
+        if (this.parentData) this.parentPropertyChange();
+      }
     },
     {
       name: 'parent',
@@ -1360,6 +1371,7 @@ CLASS({
     bindData: function(nuData) {
       /* Bind data to the new view. */
       if (nuData) nuData.addListener(this.parentPropertyChange);
+      this.parentPropertyChange(); // trigger it to do initial set
     },
 
 
@@ -1392,7 +1404,7 @@ CLASS({
       // if ( this.prop.description || this.prop.help ) view.tooltip = this.prop.description || this.prop.help;
 
       this.view = view;
-      this.bindData(this.data);
+      //this.bindData(this.data);
     }
   },
   
@@ -1400,7 +1412,7 @@ CLASS({
     {
       name: 'parentPropertyChange',
       code: function() {
-        this.internalSetChildData(this.parentData[this.prop.name]);
+        if (this.prop) this.internalSetChildData(this.parentData[this.prop.name]);
       }
     }
   ]
