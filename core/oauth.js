@@ -387,6 +387,37 @@ CLASS({
   }
 });
 
+CLASS({
+  name: 'OAuth2RedirectWithServer',
+  extendsModel: 'OAuth2',
+  documentation: 'OAuth2 strategy that redirects the whole page. Uses the ' +
+      'web server flow, so you need a server. Expects to find the access ' +
+      'access token in LocalStorage, under the key "__foam_oauth_token". If ' +
+      'it fails to find the token, it will perform the redirect.',
+
+  methods: {
+    refreshNow_: function(ret) {
+      var token = this.X.window.localStorage.getItem('__foam_oauth_token');
+      if ( token ) {
+        this.accessToken = token;
+        ret(token);
+      } else {
+        var returnPath = location.origin +
+          location.pathname.substring(0, location.pathname.lastIndexOf('/')) +
+              '/oauth2callback.html';
+
+        var params = [
+          'response_type=code',
+          'client_id=' + encodeURIComponent(this.clientId),
+          'redirect_uri=' + encodeURIComponent(returnPath),
+          'scope=' + encodeURIComponent(this.scopes.join(' '))
+        ];
+        this.X.window.location = this.endpoint + 'auth?' + params.join('&');
+      }
+    }
+  }
+});
+
 // TODO: Register model for model, or fix the facade.
 if ( window.cordova || window.PhoneGap || window.phonegap) {
   var EasyOAuth2 = OAuth2ChromeIdentity
