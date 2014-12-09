@@ -239,7 +239,7 @@ CLASS({
   
   properties: [
     {
-      name: 'data',
+      name: 'childData',
       help: 'Child data value provided to consumers.',
       documentation: function() {/* 
         The value provided to consumers child (children) of this provider.
@@ -276,14 +276,15 @@ CLASS({
       
       // juggle context and export data$
       this.originalContext_ = this.X;
-      this.X = this.originalContext_.sub({data$: this.data$});
+      this.X = this.originalContext_.sub({data$: this.childData$});
     },
     
     internalSetChildData: function(nu) { 
           /* Sets $$DOC{ref:'.data'} without invoking validator 
               and propagators, but does notify children. */
         this.internallySettingChildData_ = true;
-        this.data = nu;
+        this.childData = nu;
+        if (this.data) this.data = nu;
         this.internallySettingChildData_ = false;
     },
     
@@ -347,6 +348,18 @@ CLASS({
       }
     },
     {
+      name: 'data',
+      help: 'For compatibility with older usages of View.',
+      postSet: function() {
+        if (!this.internallySettingParentData_) {
+          // if not updating internally, pass the value as if it were
+          // a parentData change.
+          Events.unlink(this.X.data$, this.parentData$);
+          this.parentData = this.data;
+        }
+      }
+    },
+    {
       name: 'internallySettingParentData_',
       model_: 'BooleanProperty',
       defaultValue: false
@@ -360,6 +373,7 @@ CLASS({
         and propagators. */
         this.internallySettingParentData_ = true;
         this.parentData = nu;
+        if (this.data) this.data = nu;
         this.internallySettingParentData_ = false;
     },
 
@@ -1065,7 +1079,7 @@ CLASS({
       if ( DetailView.isInstance(this) &&
           this.model &&
           this.model.actions )
-        init(this.model.actions, this.data$);
+        init(this.model.actions, this.childData$);
 
       if ( found ) {
         console.assert(this.$, 'View must define outer id when using keyboard shortcuts: ' + this.name_);
