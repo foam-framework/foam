@@ -680,7 +680,11 @@ CLASS({
     {
       name: 'onMouseDown',
       code: function(evt) {
-        this.down_ = true;
+        if ( this.up_ ) {
+          this.up_();
+          this.up_ = false;
+        }
+        this.down_ && this.down_();
         if ( evt.type === 'touchstart' ) {
           var rect = this.$.getBoundingClientRect();
           var t = evt.touches[0];
@@ -691,7 +695,7 @@ CLASS({
           this.halo.y = evt.offsetY;
         }
         this.halo.r = 5;
-        this.X.animate(150, function() {
+        this.down_ = this.X.animate(150, function() {
           this.halo.x = this.width/2;
           this.halo.y = this.height/2;
           this.halo.r = Math.min(28, Math.min(this.width, this.height)/2)+0.5;
@@ -703,8 +707,9 @@ CLASS({
       name: 'onMouseUp',
       code: function() {
         if ( ! this.down_ ) return;
+        this.down_();
         this.down_ = false;
-        this.X.animate(
+        this.up_ = this.X.animate(
           300,
           function() { this.halo.r -= 2; this.halo.alpha = 0; }.bind(this))();
       }
