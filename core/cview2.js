@@ -582,6 +582,7 @@ CLASS({
   extendsModel: 'foam.graphics.CView',
 
   requires: [ 'foam.graphics.Circle' ],
+  imports: [ 'gestureManager' ],
 
   properties: [
     {
@@ -674,7 +675,7 @@ CLASS({
 
   listeners: [
     {
-      name: 'onClick',
+      name: 'tapClick',
       code: function() { this.action.callIfEnabled(this.X, this.data); }
     },
     {
@@ -776,11 +777,11 @@ CLASS({
       this.halo.view = this.view;
       this.halo.addListener(this.view.paint);
 
-      if ( this.X.gestureManager ) {
+      if ( this.gestureManager ) {
         // TODO: Glow animations on touch.
-        this.X.gestureManager.install(this.tapGesture);
+        this.gestureManager.install(this.tapGesture);
       } else {
-        this.$.addEventListener('click',      this.onClick);
+        this.$.addEventListener('click',      this.tapClick);
       }
 
       this.$.addEventListener('mousedown',   this.onMouseDown);
@@ -795,8 +796,8 @@ CLASS({
 
     destroy: function() {
       this.SUPER();
-      if ( this.X.gestureManager ) {
-        this.X.gestureManager.uninstall(this.tapGesture);
+      if ( this.gestureManager ) {
+        this.gestureManager.uninstall(this.tapGesture);
       }
     },
 

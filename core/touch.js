@@ -70,7 +70,13 @@ CLASS({
       name: 'totalY',
       getter: function() { return this.y - this.y0; }
     },
-    'lastTime'
+    'lastTime',
+    {
+      name: 'shouldPreventDefault',
+      documentation: 'Set me when incoming events should have preventDefault ' +
+          'called on them',
+      defaultValue: false
+    }
   ]
 });
 
@@ -125,14 +131,17 @@ CLASS({
       this.publish(this.TOUCH_START, this.touches[i]);
     },
     touchMove: function(i, t, e) {
-      this.touches[i].x = t.pageX;
-      this.touches[i].y = t.pageY;
+      var touch = this.touches[i];
+      touch.x = t.pageX;
+      touch.y = t.pageY;
 
       // On touchMoves only, set the lastTime.
       // This is used by momentum scrolling to find the speed at release.
-      this.touches[i].lastTime = this.X.performance.now();
+      touch.lastTime = this.X.performance.now();
 
-      this.publish(this.TOUCH_MOVE, this.touches[i]);
+      if ( touch.shouldPreventDefault ) e.preventDefault();
+
+      this.publish(this.TOUCH_MOVE, this.touch);
     },
     touchEnd: function(i, t, e) {
       this.touches[i].x = t.pageX;
@@ -586,7 +595,10 @@ CLASS({
       // I conflict with: vertical and horizontal scrolling, when using touch.
       if ( Object.keys(map).length > 1 ) return;
       var point = map[Object.keys(map)[0]];
-      var r = point.dx !== 0 || point.dy !== 0;
+      var r = ! point.done && (Math.abs(point.totalX) > 0 || Math.abs(point.totalY) > 0);
+      // Need to preventDefault on touchmoves or Chrome can swipe for
+      // back/forward.
+      if ( r ) point.shouldPreventDefault = true;
       return r;
     },
 
@@ -961,7 +973,7 @@ CLASS({
       name: 'onMouseDown',
       code: function(event) {
         // Build the InputPoint for it.
-        var point = InputPoint.create({
+        var point = this.X.InputPoint.create({
           id: 'mouse',
           type: 'mouse',
           x: event.pageX,

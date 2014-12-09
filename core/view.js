@@ -4771,6 +4771,13 @@ CLASS({
   name: 'SlidePanelView',
   extendsModel: 'View',
 
+  requires: [
+    'GestureTarget'
+  ],
+  imports: [
+    'gestureManager'
+  ],
+
   help: 'A controller that shows a main view with a small strip of the ' +
       'secondary view visible at the right edge. This "panel" can be dragged ' +
       'by a finger or mouse pointer to any position from its small strip to ' +
@@ -4856,9 +4863,18 @@ CLASS({
         this.panel$().style.webkitTransform = 'translate3d(' + x + 'px, 0,0)';
       }
     },
-    'dragging',
-    'firstDragX',
-    'oldPanelX',
+    {
+      name: 'dragGesture',
+      hidden: true,
+      transient: true,
+      lazyFactory: function() {
+        return this.GestureTarget.create({
+          containerID: this.id + '-panel',
+          handler: this,
+          gesture: 'drag'
+        });
+      }
+    },
     'expanded'
   ],
 
@@ -4889,16 +4905,7 @@ CLASS({
 
   methods: {
     initHTML: function() {
-      // Mousedown and touch events on the sliding panel itself.
-      // Mousemove and mouseup on the whole window, so that you can drag the
-      // cursor off the slider and have it still following until you release the mouse.
-      this.panel$().addEventListener('mousedown',  this.onMouseDown);
-      this.panel$().addEventListener('touchstart', this.onTouchStart);
-      this.panel$().addEventListener('touchmove',  this.onTouchMove);
-      this.panel$().addEventListener('touchend',   this.onTouchEnd);
-
-      this.X.document.addEventListener('mousemove', this.onMouseMove);
-      this.X.document.addEventListener('mouseup',   this.onMouseUp);
+      this.gestureManager.install(this.dragGesture);
 
       // Resize first, then init the outer view, and finally the panel view.
       this.X.window.addEventListener('resize', this.onResize);
@@ -4940,63 +4947,22 @@ CLASS({
       }
     },
     {
-      name: 'onMouseDown',
-      code: function(e) {
+      name: 'dragStart',
+      code: function(point) {
         if ( this.expanded ) return;
-        this.firstDragX = e.clientX;
-        this.oldPanelX = this.panelX;
-        this.dragging = true;
-        // Stop propagation so that only the uppermost panel is dragged, if
-        // they are nested.
-        e.stopPropagation();
+        // Otherwise, bind panelX to the absolute X.
+        var self = this;
+        var originalX = this.panelX;
+        Events.map(point.x$, this.panelX$, function(x) {
+          return originalX + point.totalX;
+        });
       }
     },
     {
-      name: 'onTouchStart',
-      code: function(e) {
+      name: 'dragEnd',
+      code: function(point) {
         if ( this.expanded ) return;
-        if ( e.touches.length > 1 ) return;
-        var t = e.touches[0];
-        this.firstDragX = e.touches[0].clientX;
-        this.oldPanelX = this.panelX;
-        this.dragging = true;
-        e.stopPropagation();
-        e.preventDefault();
-      }
-    },
-    {
-      name: 'onMouseMove',
-      code: function(e) {
-        if ( this.expanded ) return;
-        if ( ! this.dragging ) return;
-        e.preventDefault(); // Necessary to make browser handle this nicely.
-        var dx = e.clientX - this.firstDragX;
-        this.panelX = this.oldPanelX + dx;
-      }
-    },
-    {
-      name: 'onTouchMove',
-      code: function(e) {
-        if ( this.expanded ) return;
-        if ( ! this.dragging ) return;
-        e.preventDefault();
-        var dx = e.touches[0].clientX - this.firstDragX;
-        this.panelX = this.oldPanelX + dx;
-      }
-    },
-    {
-      name: 'onMouseUp',
-      code: function(e) {
-        if ( this.expanded ) return;
-        this.dragging = false;
-        this.snap();
-      }
-    },
-    {
-      name: 'onTouchEnd',
-      code: function(e) {
-        if ( this.expanded ) return;
-        this.dragging = false;
+        Events.unfollow(point.x$, this.panelX$);
         this.snap();
       }
     }
