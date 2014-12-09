@@ -324,7 +324,7 @@ CLASS({
     {
       name: 'ac',
       label: 'AC',
-      help: 'All Clear.',
+      // help: 'All Clear.',
       keyboardShortcuts: [ 65 /* a */, 67 /* c */ ],
       action: function() {
         this.a2 = '0';
