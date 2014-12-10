@@ -2666,6 +2666,10 @@ CLASS({
   name: 'RestDAO',
   extendsModel: 'AbstractDAO',
 
+  imports: [
+    'ajsonp'
+  ],
+
   properties: [
     {
       name: 'model',
@@ -2718,7 +2722,7 @@ CLASS({
     put: function(value, sink) {
       var self = this;
       var extra = {};
-      this.X.ajsonp(this.buildPutURL(value),
+      this.ajsonp(this.buildPutURL(value),
              this.buildPutParams(value),
              "POST",
              this.objToJson(value, extra)
@@ -2802,7 +2806,7 @@ CLASS({
           myparams.push('maxResults=' + batch);
           myparams.push('startIndex=' + index);
 
-          self.X.ajsonp(url, myparams)(function(data) {
+          self.ajsonp(url, myparams)(function(data) {
             // Short-circuit count.
             // TODO: This count is wrong for queries that use
             if ( CountExpr.isInstance(sink) ) {
@@ -2855,7 +2859,7 @@ CLASS({
     },
     find: function(key, sink) {
       var self = this;
-      this.X.ajsonp(this.buildFindURL(key), this.buildFindParams())(function(data, status) {
+      this.ajsonp(this.buildFindURL(key), this.buildFindParams())(function(data, status) {
         var deserialized;
         if ( status !== 200 || ! (deserialized = self.jsonToObj(data)) ) {
           sink && sink.error && sink.error('Network error');

@@ -636,6 +636,10 @@ var ajsonp = function(url, params) {
     script.onload = function() {
       document.body.removeChild(this);
     };
+    script.onerror = function() {
+      cb(null);
+      document.body.removeChild(this);
+    };
     document.body.appendChild(script);
   };
 };
