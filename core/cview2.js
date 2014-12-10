@@ -123,8 +123,9 @@ CLASS({
   methods: {
     init: function() { /* Connects resize listeners. */
       this.SUPER();
-      this.X.dynamic(function() { this.scalingRatio; this.width; this.height; }.bind(this),
-                     this.resize);
+      this.X.dynamic(
+        function() { this.scalingRatio; this.width; this.height; }.bind(this),
+        this.resize);
     },
 
     styleWidth:   function() { /* The CSS width string */ return (this.width) + 'px'; },

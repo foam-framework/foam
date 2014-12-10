@@ -17,7 +17,7 @@
 
  // This accounts for binary-decimal conversion rounding (infinite 0.99999999)
  // 12 places is just short of what javascript gives you, so it forces
- // the number to round, which elimitates the spurious 9's. 
+ // the number to round, which elimitates the spurious 9's.
  var DECIMAL_PLACES_PRECISION = 12;
 
 function trigFn(f) {
@@ -404,7 +404,10 @@ CLASS({
       label: '.',
       keyboardShortcuts: [ 110, 190 ],
       action: function() {
-        if ( this.a2.toString().indexOf('.') == -1 ) this.a2 = this.a2 + '.';
+        if ( this.a2.toString().indexOf('.') == -1 ) {
+          this.a2 = this.a2 + '.';
+          this.editable = true;
+        }
       }
     },
     {
@@ -492,6 +495,7 @@ X.registerModel(CalcButton, 'ActionButton');
 
 CLASS({ name: 'CalcView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 
+// TODO(kgr): move to core when done.
 function flare(e, color) {
   var w = e.clientWidth;
   var h = e.clientHeight;
