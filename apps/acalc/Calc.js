@@ -96,7 +96,16 @@ CLASS({ name: 'History', properties: [ 'op', 'a2' ] });
 CLASS({
   name: 'Calc',
 
-  requires: [ 'CalcView' ],
+  requires: [
+    'CalcView',
+    'GestureManager',
+    'TouchManager'
+  ],
+
+  exports: [
+    'gestureManager',
+    'touchManager'
+  ],
 
   templates: [ function CSS() {/*
     * {
@@ -292,6 +301,25 @@ CLASS({
       name: 'row1',
       view: 'ALabel'
     },
+    {
+      name: 'touchManager',
+      factory: function() {
+        // TODO(braden): HACK This should be just exporting the property, but
+        // the context is not properly passed into views created using <foam>
+        // tags right now. Clean up this and gestureManager below.
+        var tm = this.TouchManager.create();
+        window.X.touchManager = tm;
+        return tm;
+      }
+    },
+    {
+      name: 'gestureManager',
+      factory: function() {
+        var gm = this.GestureManager.create();
+        window.X.gestureManager = gm;
+        return gm;
+      }
+    }
   ],
 
   methods: {
