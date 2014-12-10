@@ -672,7 +672,7 @@ CLASS({
       defaultValueFn: function() { return this.action.help; }
     },
     {
-      name: 'state',
+      name: 'state_',
       defaultValue: 'default' // pressed, released
     }
   ],
@@ -685,9 +685,9 @@ CLASS({
     {
       name: 'onMouseDown',
       code: function(evt) {
-        if ( this.state !== 'default' ) return;
+        if ( this.state_ !== 'default' ) return;
 
-        this.state = 'pressed';
+        this.state_ = 'pressing';
 
         if ( evt.type === 'touchstart' ) {
           var rect = this.$.getBoundingClientRect();
@@ -699,23 +699,31 @@ CLASS({
           this.halo.y = evt.offsetY;
         }
         this.halo.r = 5;
-        this.down_ = this.X.animate(150, function() {
+        this.X.animate(150, function() {
           this.halo.x = this.width/2;
           this.halo.y = this.height/2;
           this.halo.r = Math.min(28, Math.min(this.width, this.height)/2)+0.5;
           this.halo.alpha = 1;
-        }.bind(this), Movement.easeIn(1), this.onMouseUp)();
+        }.bind(this), Movement.easeIn(1), function() {
+          if ( this.state_ === 'cancelled' ) {
+            this.state_ = 'pressed';
+            this.onMouseUp();
+          } else {
+            this.state_ = 'pressed';
+          }
+        }.bind(this))();
       }
     },
     {
       name: 'onMouseUp',
       code: function() {
-        if ( this.state !== 'pressed' ) return;
-        this.state = 'released';
-        
+        if ( this.state_ === 'pressing' ) { this.state_ = 'cancelled'; return; }
+        if ( this.state_ === 'cancelled' ) return;
+        this.state_ = 'released';
+
         this.X.animate(
           300,
-          function() { this.halo.r -= 2; this.halo.alpha = 0; }.bind(this), function() { this.state = 'default' }.bind(this))();
+          function() { this.halo.r *= 0.99; this.halo.alpha = 0; }.bind(this), function() { this.state_ = 'default' }.bind(this))();
       }
     }
   ],
@@ -739,9 +747,6 @@ CLASS({
 
         this.image_.src = this.iconUrl;
       }
-    },
-
-    fadeOutHalo: function() {
     },
 
     bindIsAvailable: function() {
