@@ -33,14 +33,22 @@ CLASS({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( this.dao !== nu ) {
+          this.dao = nu;
+        }
+      }
+    },
+    {
       model_: 'DAOProperty',
       name: 'dao',
       label: 'DAO',
       help: 'An alias for the data property.',
       onDAOUpdate: 'onDAOUpdate',
       postSet: function(oldDAO, dao) {
-        if ( this.parentData !== dao ) {
-          this.internalSetParentData_(dao);
+        if ( this.data !== dao ) {
+          this.data = dao;
         }
       },
       documentation: function() { /*
@@ -53,13 +61,7 @@ CLASS({
   methods: {
     onDAOUpdate: function() { /* Implement this $$DOC{ref:'Method'} in
           sub-models to respond to changes in $$DOC{ref:'.dao'}. */ 
-    },
-          
-    propagateParentDataChange: function(old, nu) {
-      if ( this.dao !== nu ) {
-        this.dao = nu;
-      }
-    }
+    },          
   }
 });
 

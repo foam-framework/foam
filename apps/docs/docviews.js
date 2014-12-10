@@ -125,15 +125,6 @@ CLASS({
     DocumentationBook, or other thing.
   */},
 
-  properties: [
-    {
-      name: 'model',
-      postSet: function() {
-        this.updateHTML();
-      }
-    }
-  ],
-  
   templates: [
     function toInnerHTML() {/*
       <% this.destroy();
@@ -384,16 +375,6 @@ CLASS({
         return this.MDAO.create({model:this.DocModelInheritanceTracker, autoIndex:true});
       }
     },
-    {
-      name: 'data',
-      help: 'The model for which to display documentation.',
-      documentation: "The $$DOC{ref:'Model'} for which to display $$DOC{ref:'Documentation'}.",
-      postSet: function() {
-        if (this.data) {
-          this.processModelChange();
-        }
-      }
-    },
   ],
 
   listeners: [
@@ -414,6 +395,10 @@ CLASS({
       this.documentViewRef.addListener(this.doScrollToFeature);
     },
 
+    onValueChange_: function() {
+      this.processModelChange();
+    },
+    
     destroy: function() {
       this.SUPER();
       this.documentViewRef.removeListener(this.doScrollToFeature);
@@ -866,6 +851,7 @@ CLASS({
         if (this.data && (!this.model || this.model !== this.data.model_)) {
           this.model = this.data.model_;
         }
+        this.childData = this.data;
         this.updateHTML();
       }
     },
@@ -1294,6 +1280,7 @@ CLASS({
       help: 'The array property whose features to view.',
       postSet: function() {
         this.dao = this.data;
+        this.childData = this.data;
         this.updateHTML();
       }
     },

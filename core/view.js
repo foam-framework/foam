@@ -244,29 +244,13 @@ CLASS({
       documentation: function() {/* 
         The value provided to consumers child (children) of this provider.
       */},
-      preSet: function(old, nu) {
-        // if the new data from child is ok, let it be set and propagate
-        if (this.internallySettingChildData_ ||
-            this.validateChildDataChange(old, nu)) {
-          return nu;
-        } else {
-          return old;
-        }
-      },
-      postSet: function(old, nu) {
-        if (!this.internallySettingChildData_) {
-          this.propagateChildDataChange(old, nu);
-        }
-      }
-    },
-    {
-      name: 'internallySettingChildData_',
-      model_: 'BooleanProperty',
-      defaultValue: false
     },
     {
       name: 'originalContext_',
-      hidden: true
+      hidden: true,
+      factory: function() {
+        return this.X;
+      }
     }
   ],
 
@@ -275,34 +259,9 @@ CLASS({
       this.SUPER();
       
       // juggle context and export data$
-      this.originalContext_ = this.X;
       this.X = this.originalContext_.sub({data$: this.childData$});
     },
-    
-    internalSetChildData: function(nu) { 
-          /* Sets $$DOC{ref:'.data'} without invoking validator 
-              and propagators, but does notify children. */
-        this.internallySettingChildData_ = true;
-        this.childData = nu;
-        if (this.data) this.data = nu;
-        this.internallySettingChildData_ = false;
-    },
-    
-    validateChildDataChange: function(old, nu) {
-      /* Override to validate changed data from child consumers.
-      Return true if the change is good to process and propagate parent.
-      Returning false will force the child data back to its old value. */
-      return true;
-    },
-    propagateChildDataChange: function(old, nu) {
-      /* Override to transform data from child children and pass 
-      changes parent. Propagation may be stopped here if changes should
-      not interest the provider. */
-      
-      // by default just pass it along
-      if (this.internalSetParentData) this.internalSetParentData(nu); 
-    }, 
-    
+       
     destroy: function() {
       /* Called to tear down children. Also let the previous child context
         be garbage collected. */
@@ -314,7 +273,7 @@ CLASS({
       /* Called to construct new content and children. Create a new context
          for the children and export our data. */
       if (arguments.callee.caller.super_) this.SUPER();
-      this.X = this.originalContext_.sub({data$: this.data$});
+      this.X = this.originalContext_.sub({data$: this.childData$});
     }
   }
   
@@ -327,68 +286,19 @@ CLASS({
   
   documentation: function() {/*
     Trait for consumers of a data property. It contains 
-    an $$DOC{ref:'.parentData'}
+    an $$DOC{ref:'.data'}
     property and imports it by reference from the context.
   */},
   
-  imports: ['data$ as parentData$'],
+  imports: ['data$'],
   
   properties: [
     {
-      name: 'parentData',
-      help: 'Parent data value from provider.',
-      documentation: function() {/* 
-        The value provided from parent (by the parent).
-      */},
-      postSet: function(old, nu) {
-        // check if we should progagate the change, if so, set data
-        if (!this.internallySettingParentData_) {
-          this.propagateParentDataChange(old, nu);
-        }
-      }
-    },
-    {
       name: 'data',
-      help: 'For compatibility with older usages of View.',
-      postSet: function() {
-        if (!this.internallySettingParentData_) {
-          // if not updating internally, pass the value as if it were
-          // a parentData change.
-          Events.unlink(this.X.data$, this.parentData$);
-          this.parentData = this.data;
-        }
-      }
+      help: 'The incoming data for this view to use.',
     },
-    {
-      name: 'internallySettingParentData_',
-      model_: 'BooleanProperty',
-      defaultValue: false
-    }
+  ]
 
-  ],
-  
-  methods: {
-    internalSetParentData: function(nu) { 
-      /* Sets $$DOC{ref:'.parentData'} without invoking validator
-        and propagators. */
-        this.internallySettingParentData_ = true;
-        this.parentData = nu;
-        if (this.data) this.data = nu;
-        this.internallySettingParentData_ = false;
-    },
-
-    propagateParentDataChange: function(old, nu) {
-      /* Override to halt or transform data propagating child to children.</p>
-      <p>Transformation may include unpacking a value from the 
-      $$DOC{ref:'.parentData'} and binding that to $$DOC{ref:'.data'}.</p>
-      <p>One example of halting propagation would be if the data value
-      changes enough that the current children will be destroyed, so
-      propagation before they are re-created is a waste. */
-      
-      // by default just pass it along
-      if (this.internalSetChildData) this.internalSetChildData(nu); 
-    }
-  }
 });
 
 CLASS({
@@ -502,7 +412,8 @@ CLASS({
   traits: ['foam.experimental.views.DataProviderTrait',
            'foam.experimental.views.ChildTreeTrait'],
 
-
+  requires: ['SimpleValue'],
+           
   documentation: function() {/*
     <p>$$DOC{ref:'View',usePlural:true} render data. This could be a specific
        $$DOC{ref:'Model'} or a $$DOC{ref:'DAO'}. In the case of $$DOC{ref:'DetailView'},
@@ -517,13 +428,12 @@ CLASS({
   
   properties: [
     {
-      name: 'self',
-      help: 'Child "this" value provided to consumers.',
+      name: 'selfX',
+      help: 'Context with data$ = self',
       documentation: function() {/* 
-        The value provided to consumers child (children) of this provider when constructed
+        The context provided to consumers (children) of this provider when constructed
         from properties of this view.
       */},
-      factory: function() { return this; }
     },
   ],
 
@@ -539,11 +449,12 @@ CLASS({
       this.SUPER();
       this.construct();
     },
-
-    validateChildDataChange: function(old, nu) {
-      /* Since our data is ourself, we can't allow it to be swapped out
-         for something else. */
-      return false;
+    
+    construct: function() {
+      /* Create an additional context for children based on properties of this,
+        rather than data. */
+      this.SUPER();
+      this.selfX = this.originalContext_.sub({data$: this.SimpleValue.create(this)});
     },
 
     toView_: function() { return this; },
@@ -589,7 +500,7 @@ CLASS({
 
       var args = opt_args; // opt_args ? opt_args.clone() : {};
       // for properties of this view, use our 'self' property as child data
-      args.X = this.X.sub({data$: this.self$});
+      args.X = this.selfX;
 
       var v;
       if ( Action.isInstance(o) )
@@ -608,8 +519,10 @@ CLASS({
       for ( var i = 0; i < this.children.length; i++ ) {
         this.children[i].destroy();
       }
-      this.children = [];
       delete this.instance_.$;
+      
+      this.SUPER();
+      this.selfX = this.originalContext_;
     },
 
     close: function() {
@@ -1120,6 +1033,9 @@ CLASS({
   name: 'BasePropertyView',
   package: 'foam.experimental.views',
   extendsModel: 'foam.experimental.views.BaseView',
+//   traits: ['foam.experimental.views.DataProviderTrait',
+//            'foam.experimental.views.DataConsumerTrait',
+//            'foam.experimental.views.ChildTreeTrait'],
   traits: ['foam.experimental.views.DataConsumerTrait'],
   
   documentation: function() {/*
@@ -1132,15 +1048,20 @@ CLASS({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(old, nu) {
+        this.unbindData(old);
+        this.bindData(nu);
+      }
+    },    
+    {
       name: 'prop',
       type: 'Property',
       documentation: function() {/*
           The $$DOC{ref:'Property'} for which to generate a $$DOC{ref:'View'}.
       */},
-      postSet: function() {
-        // if we got data first, we'll need to propagate it now that 
-        // we know which property to use
-        if (this.parentData) this.parentPropertyChange();
+      postSet: function(old, nu) {
+        if (!old) this.bindData(this.data);
       }
     },
     {
@@ -1180,18 +1101,7 @@ CLASS({
   ],
 
   methods: {
-    validateChildDataChange: function(old, nu) {
-      return true;
-    },
-    propagateChildDataChange: function(old, nu) {
-      // pack the new value into our parent
-      this.parentData[this.prop.name] = nu;
-    },
-    propagateParentDataChange: function(old, nu) {
-      this.unbindData(old);
-      this.bindData(nu);
-    }, 
-
+    
     fromElement: function(e) {
       this.view.fromElement(e);
       return this;
@@ -1215,14 +1125,15 @@ CLASS({
     },
 
     unbindData: function(oldData) {
-      /* Unbind the data from the old view. */
-      if (oldData) oldData.removeListener(this.parentPropertyChange);
+      if (! oldData || !this.prop ) return;
+      var pValue = oldData.propertyValue(this.prop.name);
+      Events.unlink(pValue, this.childData$);
     },
 
-    bindData: function(nuData) {
-      /* Bind data to the new view. */
-      if (nuData) nuData.addListener(this.parentPropertyChange);
-      this.parentPropertyChange(); // trigger it to do initial set
+    bindData: function(data) {
+      if (! data || !this.prop) return;
+      var pValue = data.propertyValue(this.prop.name);
+      Events.link(pValue, this.childData$);
     },
 
 
@@ -1235,6 +1146,8 @@ CLASS({
     
     construct: function() {
       this.SUPER();
+      
+      console.log("PropView context data: ", this.originalContext_.data$, " P",this.parent);
       
       if ( this.args && this.args.model_ ) {
         var model = FOAM.lookup(this.args.model_, this.X);
@@ -1255,18 +1168,10 @@ CLASS({
       // if ( this.prop.description || this.prop.help ) view.tooltip = this.prop.description || this.prop.help;
 
       this.view = view;
-      //this.bindData(this.data);
+      this.bindData(this.data);
     }
   },
   
-  listeners: [
-    {
-      name: 'parentPropertyChange',
-      code: function() {
-        if (this.prop) this.internalSetChildData(this.parentData[this.prop.name]);
-      }
-    }
-  ]
 });
 
 CLASS({

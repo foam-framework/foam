@@ -41,6 +41,30 @@ CLASS({
 
   properties: [
     {
+      name: 'data',
+      documentation: function() {/*
+        Handles a model change, which requires that the child views be torn down.
+        If the data.model_ remains the same, the new data is simply propagated to
+        the existing children.
+      */},
+      postSet: function(old, nu) {
+        console.log("DetailView "+this.model_.name+" set data ",nu);
+        if ( nu && nu.model_ && this.model !== nu.model_ ) {
+          // destroy children
+          this.destroy();
+          // propagate data change (nowhere)
+          this.model = nu.model_;
+          this.childData = nu;
+          // rebuild children with new data
+          this.construct();
+        } else {
+          this.childData = nu; // just move the new data along
+        }
+        this.onValueChange_(); // sub-classes may handle to change as well
+        console.log("           "+this.model_.name+" childData:",this.childData);
+      }
+    },
+    {
       name:  'model',
       type:  'Model',
       documentation: function() {/*
@@ -80,24 +104,6 @@ CLASS({
   ],
 
   methods: {
-    validateChildDataChange: function(old, nu) {
-      return true;
-    },
-
-    propagateParentDataChange: function(old, nu) {
-      if ( nu && nu.model_ && this.model !== nu.model_ ) {
-        // destroy children
-        this.destroy();
-        // propagate data change (nowhere)
-        this.model = nu.model_;
-        this.internalSetChildData(nu);
-        // rebuild children with new data
-        this.construct();
-      } else {
-        this.internalSetChildData(nu); // just move the new data along
-      }
-      this.onValueChange_(); // always let subclasses have their chance to react afterwards
-    },
 
     // Template Method
     onValueChange_: function() { /* Override with value update code. */ },
@@ -289,6 +295,27 @@ CLASS({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(old, nu) {
+        // since we're cloning the propagated data, we have to listen
+        // for changes to the data and clone again 
+        if ( old ) old.removeListener(this.parentContentsChanged);
+        if ( nu ) nu.addListener(this.parentContentsChanged);
+        
+        if (!nu) return;
+        // propagate a clone and build children
+        this.childData = nu.deepClone();
+        this.originalData = nu.deepClone();
+  
+        this.data.addListener(function() {
+          // The user is making edits. Don't listen for parent changes,
+          // since we no longer want to react to updates to it.
+          this.version++;
+          this.data.removeListener(this.parentContentsChanged);
+        }.bind(this));
+      }
+    },
+    {
       name: 'originalData',
       documentation: 'A clone of the parent data, for comparison with edits.'
     },
@@ -310,27 +337,6 @@ CLASS({
     }
   ],
 
-  methods: {
-    propagateParentDataChange: function(old, nu) {
-      // since we're cloning the propagated data, we have to listen
-      // for changes to the parentData and clone again 
-      if ( old ) old.removeListener(this.parentContentsChanged);
-      if ( nu ) nu.addListener(this.parentContentsChanged);
-      
-      if (!nu) return;
-      // propagate a clone and build children
-      this.SUPER(old, nu.deepClone());
-      this.originalData = nu.deepClone();
-
-      data.addListener(function() {
-        // The user is making edits. Don't listen for parent changes,
-        // since we no longer want to react to updates to it.
-        this.version++;
-        this.parentData.removeListener(this.parentContentsChanged);
-      }.bind(this));
-    } 
- 
-  },
   
   listeners: [
     {
@@ -338,8 +344,8 @@ CLASS({
       code: function() {
         // If this listener fires, the parent data has changed internally
         // and the user hasn't edited our copy yet, so keep the clones updated.
-        this.data.copyFrom(this.parentData);
-        this.originalData.copyFrom(this.parentData);
+        this.childData.copyFrom(this.data);
+        this.originalData.copyFrom(this.data);
       }
     }
   ],
@@ -369,18 +375,18 @@ CLASS({
     {
       name:  'cancel',
       help:  'Cancel update.',
-      isAvailable: function() { this.version; return ! this.originalData.equals(this.data); },
+      isAvailable: function() { this.version; return ! this.originalData.equals(this.childData); },
       action: function() { this.stack.back(); }
     },
     {
       name:  'back',
-      isAvailable: function() { this.version; return this.originalData.equals(this.data); },
+      isAvailable: function() { this.version; return this.originalData.equals(this.childData); },
       action: function() { this.stack.back(); }
     },
     {
       name: 'reset',
-      isAvailable: function() { this.version; return ! this.originalData.equals(this.data); },
-      action: function() { this.data.copyFrom(this.originalData); } // or do we want parentData?
+      isAvailable: function() { this.version; return ! this.originalData.equals(this.childData); },
+      action: function() { this.childData.copyFrom(this.originalData); } // or do we want data?
     }
   ]
 });
