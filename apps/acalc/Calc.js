@@ -1,4 +1,3 @@
-// BUG: Press 'Log' on startup
 /**
  * @license
  * Copyright 2014 Google Inc. All Rights Reserved.
