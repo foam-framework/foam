@@ -361,6 +361,7 @@ CLASS({
         this.editable = true;
         this.op = DEFAULT_OP;
         this.history = [].sink;
+  flare($$('calc-display')[0], '#2196F3' /* blue */);
       }
     },
     {
@@ -461,30 +462,32 @@ var CalcButton = ActionButtonCView2.xbind({
 X.registerModel(CalcButton, 'ActionButton');
 
 CLASS({ name: 'CalcView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-/*
+
 function flare(e, color) {
-  var eStyle  = window.getComputedStyle(e);
-  var w = toNum(eStyle.width);
-  var h = toNum(eStyle.height);
-  var c = foam.graphics.Circle.create({r: 20, width: w, height: h, x: w-25, y: h-25, color: color, xbackground: 'rgba(100, 0, 0, 0.2)'});
+//  var eStyle  = window.getComputedStyle(e);
+//  var w = toNum(eStyle.width);
+//  var h = toNum(eStyle.height);
+  var w = e.clientWidth;
+  var h = e.clientHeight;
+  var c = foam.graphics.Circle.create({r: 0, width: w, height: h, x: w, y: h, color: color});
   var view = c.toView_();
   var div = document.createElement('div');
-  div.style = "position: absolute; width: 100%, height: 100%";
+  var dStyle = div.style;
+  dStyle.position = 'absolute';
+  dStyle.left = 0;
+
   var id = View.getPrototype().nextID();
-  div.id = this.id;
+  div.id = id;
   div.innerHTML = view.toHTML();
   e.appendChild(div);
   view.initHTML();
-//  Movement.animate(200, function() { c.r = Math.sqrt(w*w, h*h); })();
   Movement.compile([
-    [300, function() { c.r = Math.sqrt(w*w, h*h); }],
-    [200, function() { c.alpha = 0; }]
+    // MYSTERY(kgr): I don't know why the 1.2 is needed.
+    [300, function() { c.r = 1.2 * Math.sqrt(w*w, h*h); }],
+    [500],
+    [150, function() { c.alpha = 0; }],
+    function() { div.remove(); }
   ])();
 c.r$.addListener(EventService.framed(view.paint.bind(view)));
 c.alpha$.addListener(EventService.framed(view.paint.bind(view)));
 }
-
-setTimeout(function() {
-  flare($$('calc-display')[0], 'red');
-}, 500);
-*/
