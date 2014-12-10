@@ -482,10 +482,9 @@ function flare(e, color) {
   e.appendChild(div);
   view.initHTML();
   Movement.compile([
-    // MYSTERY(kgr): I don't know why the 1.2 is needed.
-    [300, function() { c.r = 1.2 * Math.sqrt(w*w, h*h); }],
-    [500],
-    [150, function() { c.alpha = 0; }],
+    // MYSTERY(kgr): I don't know why the 1.3 is needed.
+    [500, function() { c.r = 1.3 * Math.sqrt(w*w, h*h); }],
+    [200, function() { c.alpha = 0; }],
     function() { div.remove(); }
   ])();
 c.r$.addListener(EventService.framed(view.paint.bind(view)));
