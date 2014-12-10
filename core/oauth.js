@@ -383,6 +383,27 @@ CLASS({
         ];
         this.X.window.location = this.endpoint + 'auth?' + params.join('&');
       }
+    },
+    setJsonpFuture: function(X, future) {
+      var agent = this;
+      future.set(function(url, params) {
+        var tries = 0;
+        var send = ajsonp.bind(null, url, params);
+        function callback(ret, data)  {
+          if ( data === null ) {
+            tries++;
+            if ( tries == 3 ) ret(null);
+            else {
+              send()(callback)
+            }
+          } else {
+            ret();
+          }
+        }
+        return function(ret) {
+          send()(callback);
+        }
+      });
     }
   }
 });
