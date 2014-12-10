@@ -185,7 +185,7 @@ CLASS({
       position: absolute;
       top: 0;
       width: 100%;
-      z-index: 99;
+      z-index: 1;
     }
 
     .edge2 {
@@ -275,6 +275,7 @@ CLASS({
       flex-grow: 0;
       flex-shrink: 0;
       margin-bottom: -4px;
+      z-index: 5;
     }
 
     .history {
@@ -485,9 +486,6 @@ X.registerModel(CalcButton, 'ActionButton');
 CLASS({ name: 'CalcView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 
 function flare(e, color) {
-//  var eStyle  = window.getComputedStyle(e);
-//  var w = toNum(eStyle.width);
-//  var h = toNum(eStyle.height);
   var w = e.clientWidth;
   var h = e.clientHeight;
   var c = foam.graphics.Circle.create({r: 0, width: w, height: h, x: w, y: h, color: color});
@@ -496,6 +494,7 @@ function flare(e, color) {
   var dStyle = div.style;
   dStyle.position = 'absolute';
   dStyle.left = 0;
+  dStyle.zIndex = 4;
 
   var id = View.getPrototype().nextID();
   div.id = id;
