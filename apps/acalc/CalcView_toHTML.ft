@@ -38,7 +38,7 @@
         </div>
       <%
       this.X.registerModel(CalcButton.xbind({
-        background: '#777', width: 110, height: 70
+        background: '#777', width: 100, height: 70
       }), 'ActionButton');
       %>
         <div class="button-column rhs-ops" style="flex-grow: 1">
@@ -56,7 +56,7 @@
           <%
           this.X.registerModel(CalcButton.xbind({
             background: 'rgb(64, 189, 158)',
-            width:  120,
+            width:  60,
             height: 58,
             font:   '300 20px RobotoDraft'
           }), 'ActionButton');
@@ -87,7 +87,7 @@
         <panelView>
           <%
           this.X.registerModel(this.X.ActionButton.xbind({
-            width: 90,
+            width: 70,
             height: 70,
             color:      'rgb(119, 119, 119)',
             background: 'rgb(29, 233, 182)',
