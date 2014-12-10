@@ -670,6 +670,10 @@ CLASS({
     {
       name: 'tooltip',
       defaultValueFn: function() { return this.action.help; }
+    },
+    {
+      name: 'state',
+      defaultValue: 'default' // pressed, released
     }
   ],
 
@@ -681,14 +685,10 @@ CLASS({
     {
       name: 'onMouseDown',
       code: function(evt) {
-        if ( this.up_ ) return;
-        /*
-        if ( this.up_ ) {
-          this.up_();
-          this.up_ = false;
-        }
-        */
-        this.down_ && this.down_();
+        if ( this.state !== 'default' ) return;
+
+        this.state = 'pressed';
+
         if ( evt.type === 'touchstart' ) {
           var rect = this.$.getBoundingClientRect();
           var t = evt.touches[0];
@@ -704,18 +704,18 @@ CLASS({
           this.halo.y = this.height/2;
           this.halo.r = Math.min(28, Math.min(this.width, this.height)/2)+0.5;
           this.halo.alpha = 1;
-        }.bind(this), Movement.easeIn(1), function() { this.down_ = false; }.bind(this))();
+        }.bind(this), Movement.easeIn(1), this.onMouseUp)();
       }
     },
     {
       name: 'onMouseUp',
       code: function() {
-        // if ( ! this.down_ ) return;
-        this.down_ && this.down_();
-        this.down_ = false;
-        this.up_ = this.X.animate(
+        if ( this.state !== 'pressed' ) return;
+        this.state = 'released';
+        
+        this.X.animate(
           300,
-          function() { this.halo.r -= 2; this.halo.alpha = 0; }.bind(this), function() { this.up_ = false; }.bind(this))();
+          function() { this.halo.r -= 2; this.halo.alpha = 0; }.bind(this), function() { this.state = 'default' }.bind(this))();
       }
     }
   ],
@@ -739,6 +739,9 @@ CLASS({
 
         this.image_.src = this.iconUrl;
       }
+    },
+
+    fadeOutHalo: function() {
     },
 
     bindIsAvailable: function() {
