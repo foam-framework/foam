@@ -197,8 +197,12 @@ var TemplateCompiler = {
   },
   foamTag: function(e) {
     function buildAttrs(e, attrToDelete) {
-      var attrs = e.attributes.clone();
-      delete attrs[attrToDelete];
+      var attrs = {};
+      for ( var i = 0 ; i < e.attributes.length ; i++ ) {
+        var attr = e.attributes[i];
+        if ( attr.name !== attrToDelete )
+          attrs[attr.name] = attr.value;
+      }
       return attrs;
     }
 
@@ -207,25 +211,26 @@ var TemplateCompiler = {
     if ( fName ) {
       this.push("', self.createTemplateView('", fName, "',");
       this.push(JSON.stringify(buildAttrs(e, 'f')));
+      this.push(')');
     }
     // A Model
     else {
       var modelName = e.getAttribute('model');
       if ( modelName ) {
-        this.push("', this.X.sub({data: this.data}).", modelName, '.create(');
+        this.push("', ", modelName, '.create(');
         this.push(JSON.stringify(buildAttrs(e, 'model')));
+        this.push(', X.sub({data: this.data}))');
       } else {
         console.error('Foam tag must define either "model" or "f" attribute.');
       }
     }
 
     if ( e.children.length ) {
-      this.push(')');
       e.attributes = [];
-      this.push('.fromElement(elementFromString("' + e.outerHTML.replace(/\n/g, '\\n').replace(/"/g, '\\"') + '")');
+      this.push('.fromElement(elementFromString("' + e.outerHTML.replace(/\n/g, '\\n').replace(/"/g, '\\"') + '"))');
     }
 
-    this.push("),\n'");
+    this.push(",\n'");
   },
   'simple value': function(v) { this.push("',\n self.", v[1].join(''), ",\n'"); },
   'raw values tag': function (v) { this.push("',\n", v[1].join(''), ",\n'"); },
