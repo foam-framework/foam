@@ -89,8 +89,23 @@ function num(n) {
 var DEFAULT_OP = function(a1, a2) { return a2; };
 DEFAULT_OP.toString = function() { return ''; };
 
+function formatNumber(n) {
+  return typeof n === 'string' ? n              :
+         Number.isNaN(n)       ? 'Not a number' :
+         ! Number.isFinite(n)  ? '∞'            :
+                                 n              ;
+}
 
-CLASS({ name: 'History', properties: [ 'op', 'a2' ] });
+CLASS({
+  name: 'History',
+  properties: [
+    'op',
+    {
+      name: 'a2',
+      preSet: function(_, n) { return formatNumber(n); }
+    }
+  ]
+});
 
 
 CLASS({
@@ -324,11 +339,16 @@ CLASS({
   ],
 
   methods: {
+    error: function() {
+      setTimeout(function() { flare($$('calc-display')[0], '#f44336' /* red */); }, 100);
+    },
     init: function() {
       this.SUPER();
 
       Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
-        this.row1 = this.op + ( this.a2 !== '' ? '&nbsp;' + this.a2 : '' );
+        if ( Number.isNaN(this.a2) ) this.error();
+        var a2 = formatNumber(this.a2);
+        this.row1 = this.op + ( a2 !== '' ? '&nbsp;' + a2 : '' );
       }.bind(this)));
     },
     push: function(a2, opt_op) {
@@ -361,7 +381,7 @@ CLASS({
         this.editable = true;
         this.op = DEFAULT_OP;
         this.history = [].sink;
-  flare($$('calc-display')[0], '#2196F3' /* blue */);
+        flare($$('calc-display')[0], '#2196F3' /* blue */);
       }
     },
     {
