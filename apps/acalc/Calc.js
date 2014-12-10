@@ -16,15 +16,6 @@
  * limitations under the License.
  */
 
-function factorial(n) {
-  if ( n > 170 ) return 1/0;
-  var r = 1;
-  while ( n > 0 ) r *= n--;
-  return r;
-};
-function permutation(n, r) { return factorial(n) / factorial(n-r); };
-function combination(n, r) { return permutation(n, r) / factorial(r); };
-
 function trigFn(f) {
   return function(a) {
     return f(this.degreesMode ? a * Math.PI / 180 : a);
@@ -339,6 +330,17 @@ CLASS({
   ],
 
   methods: {
+    factorial: function(n) {
+      if ( n > 170 ) {
+        this.error();
+        return 1/0;
+      }
+      var r = 1;
+      while ( n > 0 ) r *= n--;
+      return r;
+    },
+    permutation: function(n, r) { return this.factorial(n) / this.factorial(n-r); },
+    combination: function(n, r) { return this.permutation(n, r) / this.factorial(r); },
     error: function() {
       setTimeout(function() { flare($$('calc-display')[0], '#f44336' /* red */); }, 100);
     },
@@ -368,8 +370,8 @@ CLASS({
     binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
     binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–'),
     binaryOp('pow',   [],                 Math.pow,                             'yⁿ'),
-    binaryOp('p',     [],                 permutation,                          'nPr'),
-    binaryOp('c',     [],                 combination,                          'nCr'),
+    binaryOp('p',     [],                 function(n,r) { return this.permutation(n,r); }, 'nPr'),
+    binaryOp('c',     [],                 function(n,r) { return this.combination(n,r); }, 'nCr'),
     binaryOp('root',  [],                 function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY'),
     {
       name: 'ac',
@@ -442,7 +444,7 @@ CLASS({
       name: 'rad',
       action: function() { this.degreesMode = false; }
     },
-    unaryOp('fact',   ['shift-49' /* ! */], factorial,             'x!'),
+    unaryOp('fact',   ['shift-49' /* ! */], function(n) { return this.factorial(n); }, 'x!'),
     unaryOp('inv',    [73 /* i */], function(a) { return 1.0/a; }, '1/x'),
     unaryOp('sin',    [], trigFn(Math.sin)),
     unaryOp('cos',    [], trigFn(Math.cos)),
