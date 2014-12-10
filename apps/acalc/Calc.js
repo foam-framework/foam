@@ -15,6 +15,11 @@
  * limitations under the License.
  */
 
+ // This accounts for binary-decimal conversion rounding (infinite 0.99999999)
+ // 12 places is just short of what javascript gives you, so it forces
+ // the number to round, which elimitates the spurious 9's. 
+ var DECIMAL_PLACES_PRECISION = 12;
+
 function trigFn(f) {
   return function(a) {
     return f(this.degreesMode ? a * Math.PI / 180 : a);
@@ -80,10 +85,12 @@ var DEFAULT_OP = function(a1, a2) { return a2; };
 DEFAULT_OP.toString = function() { return ''; };
 
 function formatNumber(n) {
-  return typeof n === 'string' ? n              :
+  // the regex below removes extra zeros from the end, or middle of exponentials
+  return typeof n === 'string' ? n :
          Number.isNaN(n)       ? 'Not a number' :
-         ! Number.isFinite(n)  ? '∞'            :
-                                 n              ;
+         ! Number.isFinite(n)  ? '∞' :
+                 parseFloat(n).toPrecision(DECIMAL_PLACES_PRECISION)
+                    .replace( /(?:(\d+\.\d*[1-9])|(\d+)(?:\.))(?:(?:0+)$|(?:0*)(e.*)$|$)/ ,"$1$2$3");
 }
 
 CLASS({
