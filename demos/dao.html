@@ -43,7 +43,8 @@ CLASS({
   properties: [ 'id', 'columnA', 'columnB' ]
 });
 
-var MyTableDAO = EasyDAO.create({model: MyTable, seqNo: true, daoType: 'IDBDAO', cache: true});
+//var MyTableDAO = EasyDAO.create({model: MyTable, seqNo: true, daoType: 'IDBDAO', cache: true});
+var MyTableDAO = EasyDAO.create({model: MyTable, seqNo: true, daoType: 'MDAO', cache: true});
 
 [
   MyTable.create({columnA: 'ABC', columnB: '123thd'}),
@@ -55,11 +56,10 @@ var MyTableDAO = EasyDAO.create({model: MyTable, seqNo: true, daoType: 'IDBDAO',
 ].select(MyTableDAO);
 
 MyTableDAO.where(AND(IN(MyTable.COLUMN_A, ['ABC', 'DFT']), EQ(MyTable.COLUMN_B, '123thd'))).select(function(mt) {
-  console.log(mt.toJSON());
+   console.log(mt.toJSON());
 });
 
 MyTableDAO.removeAll();
-
 
 // DAO Sample
 
