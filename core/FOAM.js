@@ -35,7 +35,7 @@ function $removeWindow(w) {
 /** Replacement for getElementById **/
 // TODO(kgr): remove this is deprecated, use X.$ instead()
 var $ = function (id) {
-  console.log('Deprecated use of GLOBAL.$.');
+//  console.log('Deprecated use of GLOBAL.$.');
   for ( var i = 0 ; i < $documents.length ; i++ ) {
     if ( document.FOAM_OBJECTS && document.FOAM_OBJECTS[id] )
       return document.FOAM_OBJECTS[id];
@@ -49,7 +49,7 @@ var $ = function (id) {
 /** Replacement for getElementByClassName **/
 // TODO(kgr): remove this is deprecated, use X.$$ instead()
 var $$ = function (cls) {
-  console.log('Deprecated use of GLOBAL.$$.');
+//  console.log('Deprecated use of GLOBAL.$$.');
   for ( var i = 0 ; i < $documents.length ; i++ ) {
     var ret = $documents[i].getElementsByClassName(cls);
 
