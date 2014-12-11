@@ -9,12 +9,7 @@
 <div id="%%id" class="calc">
   <div class="calc-display">
     <div class="inner-calc-display">
-      <foam f="history">
-        <div class="history">
-          {{this.data.op}} {{this.data.a2}}
-          <% if ( this.data.op.toString() ) { %><hr><% } %>
-        </div>
-      </foam>
+      $$history{ rowView: 'HistoryCitationView' }
       $$row1{mode: 'read-only', escapeHTML: false}
     </div>
   </div>

@@ -513,6 +513,7 @@ X.registerModel(CalcButton, 'ActionButton');
 CLASS({
   name: 'CalcView',
   requires: [
+    'HistoryCitationView',
     'SlidePanelView',
     'MainButtonsView',
     'SecondaryButtonsView',
@@ -636,6 +637,19 @@ CLASS({
               <div class="button-row"><div class="button">$$c</div></div>
             </div>
           </div>
+    */}
+  ]
+});
+
+CLASS({
+  name: 'HistoryCitationView',
+  extendsModel: 'DetailView',
+  templates: [
+    function toHTML() {/*
+      <div class="history">
+        {{this.data.op}} {{this.data.a2}}
+        <% if ( this.data.op.toString() ) { %><hr><% } %>
+      </div>
     */}
   ]
 });
