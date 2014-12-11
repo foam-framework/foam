@@ -26,7 +26,6 @@ cat \
   ../../core/layout.js \
   ../../core/daoView.js \
   ../../core/DetailView.js \
-  ../../core/cview.js \
   ../../core/cview2.js \
   ../../core/CViewPrimitives.js \
   ../../core/Diagramming.js \
