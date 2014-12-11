@@ -3,13 +3,7 @@ rm -rf $BUILD_DIR
 cp -r . $BUILD_DIR
 cat \
   ../../core/stdlib.js \
-  ../../core/WeakMap.js \
   ../../core/io.js \
-  ../../core/writer.js \
-  ../../core/socket.js \
-  ../../core/base64.js \
-  ../../core/encodings.js \
-  ../../core/utf8.js \
   ../../core/async.js \
   ../../core/parse.js \
   ../../core/event.js \
@@ -29,54 +23,20 @@ cat \
   ../../core/LayoutTraits.js \
   ../../core/value.js \
   ../../core/view.js \
-  ../../core/layout.js \
   ../../core/daoView.js \
-  ../../core/ChoiceView.js \
   ../../core/DetailView.js \
-  ../../core/TableView.js \
-  ../../core/cview.js \
   ../../core/cview2.js \
-  ../../core/StackView.js \
-  ../../core/RichTextView.js \
-  ../../core/listchoiceview.js \
-  ../../core/scroll.js \
   ../../core/CViewPrimitives.js \
   ../../core/Diagramming.js \
   ../../core/HTMLParser.js \
   ../../core/mlang.js \
-  ../../core/QueryParser.js \
-  ../../core/search.js \
-  ../../core/oam.js \
   ../../core/visitor.js \
-  ../../core/messaging.js \
   ../../core/dao.js \
-  ../../core/KeywordDAO.js \
   ../../core/arrayDAO.js \
-  ../../core/ClientDAO.js \
-  ../../core/diff.js \
-  ../../core/SplitDAO.js \
   ../../core/index.js \
-  ../../core/StackView.js \
-  ../../core/MementoMgr.js \
-  ../../core/DAOController.js \
-  ../../core/ThreePaneController.js \
-  ../../core/experimental/protobufparser.js \
-  ../../core/experimental/protobuf.js \
-  ../../core/models.js \
   ../../core/touch.js \
-  ../../core/glang.js \
-  ../../core/oauth.js \
-  ../../core/busy.js \
   ../../core/ChromeApp.js \
-  ../../core/SyncManager.js \
-  ../../lib/bookmarks/bookmark.js \
   ../../core/experimental/aview.js \
-  ../../lib/mdui/AppController.js \
-  ../../lib/mdui/view.js \
-  ../../lib/mdui/AutocompleteListView.js \
-  ../../lib/mdui/DetailView.js \
-  ../../core/CORE.js \
-  ../quickcompose/google-analytics-bundle.js \
   > "$BUILD_DIR/foam.js"
 
 # For code compression, uncomment the following line:

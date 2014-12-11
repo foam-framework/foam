@@ -2908,7 +2908,6 @@ CLASS({
   ]
 });
 
-
 CLASS({
   name: 'SimpleDynamicViewTrait',
   properties: [

@@ -183,7 +183,7 @@ var DOM = {
 
     if ( opt_document ) {
       var view;
-      if ( View.isInstance(obj) || CView.isInstance(obj) ) {
+      if ( View.isInstance(obj) || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) {
         view = obj;
       } else {
         var viewName = e.getAttribute('view');
@@ -1326,7 +1326,6 @@ CLASS({
 });
 
 
-
 CLASS({
   name: 'StaticHTML',
   extendsModel: 'View',
@@ -1442,8 +1441,6 @@ CLASS({
 });
 
 X.memento = X.WindowHashValue.create();
-
-
 
 
 CLASS({
@@ -1914,7 +1911,6 @@ CLASS({
 });
 
 
-
 /** Add Action Buttons to a decorated View. **/
 /* TODO:
    These are left over Todo's from the previous ActionBorder, not sure which still apply.
@@ -1991,6 +1987,19 @@ CLASS({
     { name: 'precision', defaultValue: undefined }
   ],
 
+  templates: [
+    function toHTML() {/*
+      <br>
+      <div>Output:</div>
+      <pre>
+        <div class="output" id="<%= this.setClass('error', function() { return this.parent.data.failed; }, this.id) %>">
+        </div>
+      </pre>
+    */},
+   function toInnerHTML() {/*
+     <%= TextFieldView.create({ data: this.data, mode: 'read-only', escapeHTML: false }) %>
+   */}
+  ],
   methods: {
     formatNumber: function(val) {
       if ( ! val ) return '0';
@@ -2191,7 +2200,6 @@ CLASS({
     */}
   ]
 });
-
 
 
 CLASS({
@@ -2496,5 +2504,3 @@ CLASS({
     }
   ]
 });
-
-
