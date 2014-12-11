@@ -723,8 +723,8 @@ CLASS({
         this.state_ = 'released';
 
         this.X.animate(
-          300,
-          function() { this.halo.r *= 0.99; this.halo.alpha = 0; }.bind(this), function() { this.state_ = 'default' }.bind(this))();
+          250,
+          function() { this.halo.alpha = 0; }.bind(this), Movement.easeIn(.5), function() { this.state_ = 'default' }.bind(this))();
       }
     }
   ],
@@ -785,7 +785,6 @@ CLASS({
       // this.addChild(this.halo);
       this.halo.view = this.view;
       this.halo.addListener(this.view.paint);
-
       if ( this.gestureManager ) {
         // TODO: Glow animations on touch.
         this.gestureManager.install(this.tapGesture);
