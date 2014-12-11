@@ -20,7 +20,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
   {
     name: 'Solar System',
     path: 'SolarSystem.html',
-    description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.  This was the first graphical FOAM demo to be written (in Fall 2011) and while it still runs, it isn\'t the best coding example.  I\'ve added the <b>old</b> keyword to this, and other older, non-modernized demos.',
+    description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.  This was the first graphical FOAM demo to be written (in 2011) and while it still runs, it isn\'t the best coding example.  I\'ve added the <b>old</b> keyword to this, and other older, non-modernized demos.',
     keywords: ['animation', 'reactive', 'old'],
     src: 'SolarSystem.js',
     image: 'SolarSystem.png',
