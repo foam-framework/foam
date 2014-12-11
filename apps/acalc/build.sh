@@ -23,7 +23,6 @@ cat \
   ../../core/LayoutTraits.js \
   ../../core/value.js \
   ../../core/view.js \
-  ../../core/layout.js \
   ../../core/daoView.js \
   ../../core/DetailView.js \
   ../../core/cview2.js \
@@ -38,7 +37,6 @@ cat \
   ../../core/touch.js \
   ../../core/ChromeApp.js \
   ../../core/experimental/aview.js \
-  ../../lib/mdui/view.js \
   > "$BUILD_DIR/foam.js"
 
 # For code compression, uncomment the following line:
