@@ -730,20 +730,19 @@ MODEL({
 
     /** @return a latch function which can be called to stop the animation. **/
     animate: function(duration, fn, opt_interp, opt_onEnd, opt_X) {
-      var setIntervalX   = ( opt_X && opt_X.setInterval   ) || setInterval;
-      var clearIntervalX = ( opt_X && opt_X.clearInterval ) || clearInterval;
+      var requestAnimationFrameX = ( opt_X && opt_X.requestAnimationFrame ) || requestAnimationFrame;
+      var stopped = false;
 
-      //console.assert( opt_X && opt_X.setInterval, 'opt_X or opt_X.setInterval not available');
+      // console.assert( opt_X && opt_X.requestAnimationFrame, 'opt_X or opt_X.requestAnimationFrame not available');
 
       if ( duration == 0 ) return Movement.seq(fn, opt_onEnd);
       var interp = opt_interp || Movement.linear;
 
       return function() {
         var ranges    = [];
-        var timer;
 
         function stop() {
-          clearIntervalX(timer);
+          stopped = true;
           opt_onEnd && opt_onEnd();
           opt_onEnd = null;
         }
@@ -758,24 +757,23 @@ MODEL({
 
         var startTime = Date.now();
 
-        if ( ranges.length > 0 ) {
-          timer = setIntervalX(function() {
-            var now = Date.now();
-            var p   = interp((Math.min(now, startTime + duration)-startTime)/duration);
-            var last = now >= startTime + duration;
+        function go() {
+          if ( stopped ) return;
+          var now = Date.now();
+          var p   = interp((Math.min(now, startTime + duration)-startTime)/duration);
+          var last = now >= startTime + duration;
 
-            for ( var i = 0 ; i < ranges.length ; i++ ) {
-              var r = ranges[i];
-              var obj = r[0], name = r[1], value1 = r[2], value2 = r[3];
+          for ( var i = 0 ; i < ranges.length ; i++ ) {
+            var r = ranges[i];
+            var obj = r[0], name = r[1], value1 = r[2], value2 = r[3];
 
-              obj[name] = last ? value2 : value1 + (value2-value1) * p;
-            }
+            obj[name] = last ? value2 : value1 + (value2-value1) * p;
+          }
 
-            if ( last ) stop();
-          }, 16);
-        } else {
-          timer = setIntervalX(stop, duration);
+          if ( last ) stop(); else requestAnimationFrameX(go);
         }
+
+        requestAnimationFrameX(ranges.length > 0 ? go : stop);
 
         return stop;
       };
