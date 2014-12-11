@@ -123,8 +123,9 @@ CLASS({
   methods: {
     init: function() { /* Connects resize listeners. */
       this.SUPER();
-      this.X.dynamic(function() { this.scalingRatio; this.width; this.height; }.bind(this),
-                     this.resize);
+      this.X.dynamic(
+        function() { this.scalingRatio; this.width; this.height; }.bind(this),
+        this.resize);
     },
 
     styleWidth:   function() { /* The CSS width string */ return (this.width) + 'px'; },
@@ -582,6 +583,7 @@ CLASS({
   extendsModel: 'foam.graphics.CView',
 
   requires: [ 'foam.graphics.Circle' ],
+  imports: [ 'gestureManager' ],
 
   properties: [
     {
@@ -669,25 +671,25 @@ CLASS({
     {
       name: 'tooltip',
       defaultValueFn: function() { return this.action.help; }
+    },
+    {
+      name: 'state_',
+      defaultValue: 'default' // pressed, released
     }
   ],
 
   listeners: [
     {
-      name: 'onClick',
+      name: 'tapClick',
       code: function() { this.action.callIfEnabled(this.X, this.data); }
     },
     {
       name: 'onMouseDown',
       code: function(evt) {
-        if ( this.up_ ) return;
-        /*
-        if ( this.up_ ) {
-          this.up_();
-          this.up_ = false;
-        }
-        */
-        this.down_ && this.down_();
+        if ( this.state_ !== 'default' ) return;
+
+        this.state_ = 'pressing';
+
         if ( evt.type === 'touchstart' ) {
           var rect = this.$.getBoundingClientRect();
           var t = evt.touches[0];
@@ -698,23 +700,31 @@ CLASS({
           this.halo.y = evt.offsetY;
         }
         this.halo.r = 5;
-        this.down_ = this.X.animate(150, function() {
+        this.X.animate(150, function() {
           this.halo.x = this.width/2;
           this.halo.y = this.height/2;
           this.halo.r = Math.min(28, Math.min(this.width, this.height)/2)+0.5;
           this.halo.alpha = 1;
-        }.bind(this), Movement.easeIn(1), function() { this.down_ = false; }.bind(this))();
+        }.bind(this), Movement.easeIn(1), function() {
+          if ( this.state_ === 'cancelled' ) {
+            this.state_ = 'pressed';
+            this.onMouseUp();
+          } else {
+            this.state_ = 'pressed';
+          }
+        }.bind(this))();
       }
     },
     {
       name: 'onMouseUp',
       code: function() {
-        // if ( ! this.down_ ) return;
-        this.down_ && this.down_();
-        this.down_ = false;
-        this.up_ = this.X.animate(
-          300,
-          function() { this.halo.r -= 2; this.halo.alpha = 0; }.bind(this), function() { this.up_ = false; }.bind(this))();
+        if ( this.state_ === 'pressing' ) { this.state_ = 'cancelled'; return; }
+        if ( this.state_ === 'cancelled' ) return;
+        this.state_ = 'released';
+
+        this.X.animate(
+          250,
+          function() { this.halo.alpha = 0; }.bind(this), Movement.easeIn(.5), function() { this.state_ = 'default' }.bind(this))();
       }
     }
   ],
@@ -775,12 +785,11 @@ CLASS({
       // this.addChild(this.halo);
       this.halo.view = this.view;
       this.halo.addListener(this.view.paint);
-
-      if ( this.X.gestureManager ) {
+      if ( this.gestureManager ) {
         // TODO: Glow animations on touch.
-        this.X.gestureManager.install(this.tapGesture);
+        this.gestureManager.install(this.tapGesture);
       } else {
-        this.$.addEventListener('click',      this.onClick);
+        this.$.addEventListener('click',      this.tapClick);
       }
 
       this.$.addEventListener('mousedown',   this.onMouseDown);
@@ -795,8 +804,8 @@ CLASS({
 
     destroy: function() {
       this.SUPER();
-      if ( this.X.gestureManager ) {
-        this.X.gestureManager.uninstall(this.tapGesture);
+      if ( this.gestureManager ) {
+        this.gestureManager.uninstall(this.tapGesture);
       }
     },
 

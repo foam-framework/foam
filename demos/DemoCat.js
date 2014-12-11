@@ -20,8 +20,8 @@ var demos = JSONUtil.arrayToObjArray(X, [
   {
     name: 'Solar System',
     path: 'SolarSystem.html',
-    description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.',
-    keywords: ['animation', 'reactive'],
+    description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.  This was the first graphical FOAM demo to be written (in 2011) and while it still runs, it isn\'t the best coding example.  I\'ve added the <b>old</b> keyword to this, and other older, non-modernized demos.',
+    keywords: ['animation', 'reactive', 'old'],
     src: 'SolarSystem.js',
     image: 'SolarSystem.png',
   },/*
@@ -45,7 +45,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
     name: 'Unix Simulator',
     path: 'UnixSimulator.html',
     description: "A simulator which demonstrates the advantage of UNIX's architecture over previous operating-sytems.",
-    keywords: ['simulation', 'animation', 'architecture'],
+    keywords: ['simulation', 'animation', 'architecture', 'old'],
     image: 'UnixSimulator.png',
     video: 'part1.ogv'
   },
@@ -53,7 +53,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
     name: 'Google Simulator',
     path: 'GoogleSimulator.html',
     description: 'A simulation of the growth of Google.',
-    keywords: ['simulation', 'animation', 'architecture'],
+    keywords: ['simulation', 'animation', 'architecture', 'old'],
     image: 'GoogleSimulator.png',
     video: 'part15.ogv'
   },

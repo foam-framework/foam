@@ -383,6 +383,32 @@ CLASS({
         ];
         this.X.window.location = this.endpoint + 'auth?' + params.join('&');
       }
+    },
+    setJsonpFuture: function(X, future) {
+      var agent = this;
+      future.set(function(url, params) {
+        var tries = 0;
+        params = params.clone();
+        params.push('access_token=' + encodeURIComponent(agent.accessToken));
+        return function(ret) {
+          function callback(data)  {
+            if ( data === null ) {
+              tries++;
+              if ( tries == 3 ) ret(null);
+              else {
+                agent.refresh(function(token) {
+                  params[params.length - 1] = 'access_token=' +
+                    encodeURIComponent(token);
+                  ajsonp(url, params)(callback)
+                });
+              }
+            } else {
+              ret(data);
+            }
+          }
+          ajsonp(url, params)(callback);
+        }
+      });
     }
   }
 });

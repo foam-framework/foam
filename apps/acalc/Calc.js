@@ -1,4 +1,3 @@
-// BUG: Press 'Log' on startup
 /**
  * @license
  * Copyright 2014 Google Inc. All Rights Reserved.
@@ -16,14 +15,10 @@
  * limitations under the License.
  */
 
-function factorial(n) {
-  if ( n > 170 ) return 1/0;
-  var r = 1;
-  while ( n > 0 ) r *= n--;
-  return r;
-};
-function permutation(n, r) { return factorial(n) / factorial(n-r); };
-function combination(n, r) { return permutation(n, r) / factorial(r); };
+ // This accounts for binary-decimal conversion rounding (infinite 0.99999999)
+ // 12 places is just short of what javascript gives you, so it forces
+ // the number to round, which elimitates the spurious 9's.
+ var DECIMAL_PLACES_PRECISION = 12;
 
 function trigFn(f) {
   return function(a) {
@@ -36,7 +31,6 @@ function invTrigFn(f) {
     return this.degreesMode ? f(a) / Math.PI * 180 : f(a);
   };
 }
-
 /** Make a Binary Action. **/
 function binaryOp(name, keys, f, sym) {
   f.toString = function() { return sym; };
@@ -45,9 +39,16 @@ function binaryOp(name, keys, f, sym) {
     label: sym,
     keyboardShortcuts: keys,
     action: function() {
-      if ( this.op != DEFAULT_OP ) this.equals();
-      this.push('', f);
-      this.editable = true;
+      if ( ! this.a2 ) {
+        // the previous operation should be replaced, since we can't
+        // finish this one without a second arg. The user probably hit one
+        // binay op, followed by another.
+        this.replace(f);
+      } else {
+        if ( this.op != DEFAULT_OP ) this.equals();
+        this.push('', f);
+        this.editable = true;
+      }
     }
   };
 }
@@ -89,14 +90,47 @@ function num(n) {
 var DEFAULT_OP = function(a1, a2) { return a2; };
 DEFAULT_OP.toString = function() { return ''; };
 
+function formatNumber(n) {
+  // the regex below removes extra zeros from the end, or middle of exponentials
+  return typeof n === 'string' ? n :
+         Number.isNaN(n)       ? 'Not a number' :
+         ! Number.isFinite(n)  ? '∞' :
+                 parseFloat(n).toPrecision(DECIMAL_PLACES_PRECISION)
+                    .replace( /(?:(\d+\.\d*[1-9])|(\d+)(?:\.))(?:(?:0+)$|(?:0*)(e.*)$|$)/ ,"$1$2$3");
+}
 
-CLASS({ name: 'History', properties: [ 'op', 'a2' ] });
+CLASS({
+  name: 'History',
+  properties: [
+    'op',
+    {
+      name: 'a2',
+      preSet: function(_, n) { return this.formatNumber(n); }
+    }
+  ],
+  methods: {
+    formatNumber: function(n) {
+      var nu = formatNumber(n) || '0';
+      // strip off trailing "."
+      return nu.replace(/(.+?)(?:\.$|$)/, "$1");
+    }
+  }
+});
 
 
 CLASS({
   name: 'Calc',
 
-  requires: [ 'CalcView' ],
+  requires: [
+    'CalcView',
+    'GestureManager',
+    'TouchManager'
+  ],
+
+  exports: [
+    'gestureManager',
+    'touchManager'
+  ],
 
   templates: [ function CSS() {/*
     * {
@@ -171,10 +205,11 @@ CLASS({
       position: absolute;
       top: 0;
       width: 100%;
-      z-index: 99;
+      z-index: 1;
     }
 
     .edge2 {
+      margin-top: -12px;
       background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%,
                                              rgba(0,0,0,0) 100%);
       top: 12px;
@@ -211,6 +246,7 @@ CLASS({
       border-left-width: 1px;
       border-left-style: solid;
       border-left-color: rgb(68, 68, 68);
+      background: #777;
     }
 
     .rhs-ops .button {
@@ -259,6 +295,7 @@ CLASS({
       flex-grow: 0;
       flex-shrink: 0;
       margin-bottom: -4px;
+      z-index: 5;
     }
 
     .history {
@@ -291,14 +328,49 @@ CLASS({
       name: 'row1',
       view: 'ALabel'
     },
+    {
+      name: 'touchManager',
+      factory: function() {
+        // TODO(braden): HACK This should be just exporting the property, but
+        // the context is not properly passed into views created using <foam>
+        // tags right now. Clean up this and gestureManager below.
+        var tm = this.TouchManager.create();
+        window.X.touchManager = tm;
+        return tm;
+      }
+    },
+    {
+      name: 'gestureManager',
+      factory: function() {
+        var gm = this.GestureManager.create();
+        window.X.gestureManager = gm;
+        return gm;
+      }
+    }
   ],
 
   methods: {
+    factorial: function(n) {
+      if ( n > 170 ) {
+        this.error();
+        return 1/0;
+      }
+      var r = 1;
+      while ( n > 0 ) r *= n--;
+      return r;
+    },
+    permutation: function(n, r) { return this.factorial(n) / this.factorial(n-r); },
+    combination: function(n, r) { return this.permutation(n, r) / this.factorial(r); },
+    error: function() {
+      setTimeout(function() { flare($$('calc-display')[0], '#f44336' /* red */); }, 100);
+    },
     init: function() {
       this.SUPER();
 
       Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
-        this.row1 = this.op + ( this.a2 !== '' ? '&nbsp;' + this.a2 : '' );
+        if ( Number.isNaN(this.a2) ) this.error();
+        var a2 = formatNumber(this.a2);
+        this.row1 = this.op + ( a2 !== '' ? '&nbsp;' + a2 : '' );
       }.bind(this)));
     },
     push: function(a2, opt_op) {
@@ -306,6 +378,9 @@ CLASS({
       this.a1 = this.a2;
       this.a2 = a2;
       this.op = opt_op || DEFAULT_OP;
+    },
+    replace: function(op) {
+      this.op = op || DEFAULT_OP;
     }
   },
 
@@ -318,8 +393,8 @@ CLASS({
     binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
     binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–'),
     binaryOp('pow',   [],                 Math.pow,                             'yⁿ'),
-    binaryOp('p',     [],                 permutation,                          'nPr'),
-    binaryOp('c',     [],                 combination,                          'nCr'),
+    binaryOp('p',     [],                 function(n,r) { return this.permutation(n,r); }, 'nPr'),
+    binaryOp('c',     [],                 function(n,r) { return this.combination(n,r); }, 'nCr'),
     binaryOp('root',  [],                 function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY'),
     {
       name: 'ac',
@@ -327,10 +402,11 @@ CLASS({
       // help: 'All Clear.',
       keyboardShortcuts: [ 65 /* a */, 67 /* c */ ],
       action: function() {
-        this.a2 = '0';
+        this.a2 = '';
         this.editable = true;
         this.op = DEFAULT_OP;
         this.history = [].sink;
+        flare($$('calc-display')[0], '#2196F3' /* blue */);
       }
     },
     {
@@ -344,7 +420,10 @@ CLASS({
       label: '.',
       keyboardShortcuts: [ 110, 190 ],
       action: function() {
-        if ( this.a2.toString().indexOf('.') == -1 ) this.a2 = this.a2 + '.';
+        if ( this.a2.toString().indexOf('.') == -1 ) {
+          this.a2 = (this.a2 ? this.a2 : '0') + '.';
+          this.editable = true;
+        }
       }
     },
     {
@@ -352,6 +431,7 @@ CLASS({
       label: '=',
       keyboardShortcuts: [ 187 /* '=' */, 13 /* <enter> */ ],
       action: function() {
+        if ( ! this.a2 ) return; // do nothing if the user hits '=' prematurely
         this.push(this.op(parseFloat(this.a1), parseFloat(this.a2)));
         this.editable = false;
       }
@@ -391,7 +471,7 @@ CLASS({
       name: 'rad',
       action: function() { this.degreesMode = false; }
     },
-    unaryOp('fact',   ['shift-49' /* ! */], factorial,             'x!'),
+    unaryOp('fact',   ['shift-49' /* ! */], function(n) { return this.factorial(n); }, 'x!'),
     unaryOp('inv',    [73 /* i */], function(a) { return 1.0/a; }, '1/x'),
     unaryOp('sin',    [], trigFn(Math.sin)),
     unaryOp('cos',    [], trigFn(Math.cos)),
@@ -430,31 +510,173 @@ var CalcButton = ActionButtonCView2.xbind({
 });
 X.registerModel(CalcButton, 'ActionButton');
 
-CLASS({ name: 'CalcView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-/*
+CLASS({
+  name: 'CalcView',
+  requires: [
+    'HistoryCitationView',
+    'SlidePanelView',
+    'MainButtonsView',
+    'SecondaryButtonsView',
+    'TertiaryButtonsView'
+  ],
+  exports: [
+    'data'
+  ],
+  properties: [
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'mainButtons',
+      defaultValue: 'MainButtonsView'
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'basicOperations',
+      defaultValue: 'BasicOperationsButtonView'
+    },
+  ],
+  extendsModel: 'DetailView',
+  templates: [ { name: 'toHTML' } ]
+});
+
+CLASS({
+  name: 'MainButtonsView',
+  extendsModel: 'DetailView',
+  templates: [
+    function toHTML() {/*
+      <div id="%%id" class="buttons button-row" style="background:#4b4b4b;">
+        <div class="button-column" style="flex-grow: 3">
+          <div class="button-row">
+            <div class="button">$$7</div><div class="button">$$8</div><div class="button">$$9</div>
+          </div>
+          <div class="button-row">
+            <div class="button">$$4</div><div class="button">$$5</div><div class="button">$$6</div>
+         </div>
+          <div class="button-row">
+            <div class="button">$$1</div><div class="button">$$2</div><div class="button">$$3</div>
+          </div>
+          <div class="button-row">
+            <div class="button">$$point</div><div class="button">$$0</div><div class="button">$$equals</div>
+          </div>
+        </div>
+      <%
+      this.X.registerModel(CalcButton.xbind({
+        background: '#777', width: 100, height: 70
+      }), 'ActionButton');
+      %>
+        <div class="button-column rhs-ops" style="flex-grow: 1">
+          <div class="button">$$ac</div>
+          <div class="button">$$plus</div>
+          <div class="button">$$minus</div>
+          <div class="button">$$div</div>
+          <div class="button">$$mult</div>
+        </div>
+      </div>
+    */}
+  ]
+});
+
+CLASS({
+  name: 'SecondaryButtonsView',
+  extendsModel: 'DetailView',
+  templates: [
+    function toHTML() {/*
+          <%
+          this.X.registerModel(CalcButton.xbind({
+            background: 'rgb(64, 189, 158)',
+            width:  60,
+            height: 58,
+            font:   '300 20px RobotoDraft'
+          }), 'ActionButton');
+          %>
+          <div id="%%id" class="buttons button-row secondaryButtons">
+            <div class="button-column" style="flex-grow: 1;">
+              <div class="button-row">
+                <div class="button">$$inv</div><div class="button">$$square</div><div class="button">$$sqroot</div>
+              </div>
+              <div class="button-row">
+                <div class="button">$$log</div><div class="button">$$pow</div><div class="button">$$root</div>
+              </div>
+              <div class="button-row">
+                <div class="button">$$ln</div><div class="button">$$exp</div><div class="button">$$e</div>
+              </div>
+              <div class="button-row">
+                <div class="button">$$sin </div><div class="button">$$cos</div><div class="button">$$tan</div>
+              </div>
+              <div class="button-row">
+                <div class="button">$$asin</div><div class="button">$$acos</div><div class="button">$$atan</div>
+              </div>
+              <div class="button-row">
+                <div class="button">$$sign</div><div class="button">$$percent</div><div class="button">$$pi</div>
+              </div>
+            </div>
+          </div>
+    */}
+  ]
+});
+
+CLASS({
+  name: 'TertiaryButtonsView',
+  extendsModel: 'DetailView',
+  templates: [
+    function toHTML() {/*
+          <%
+          this.X.registerModel(this.X.ActionButton.xbind({
+            width: 70,
+            height: 70,
+            color:      'rgb(119, 119, 119)',
+            background: 'rgb(29, 233, 182)',
+            font:       '300 20px RobotoDraft'
+          }), 'ActionButton');
+          %>
+          <div id="%%id" class="buttons button-row tertiaryButtons">
+            <div class="button-column" style="flex-grow: 1">
+              <div class="button-row"><div class="button">$$rad</div></div>
+              <div class="button-row"><div class="button">$$deg</div></div>
+              <div class="button-row"><div class="button">$$fact</div></div>
+              <div class="button-row"><div class="button">$$p</div></div>
+              <div class="button-row"><div class="button">$$c</div></div>
+            </div>
+          </div>
+    */}
+  ]
+});
+
+CLASS({
+  name: 'HistoryCitationView',
+  extendsModel: 'DetailView',
+  templates: [
+    function toHTML() {/*
+      <div class="history">
+        {{this.data.op}} {{this.data.a2}}
+        <% if ( this.data.op.toString() ) { %><hr><% } %>
+      </div>
+    */}
+  ]
+});
+
+// TODO(kgr): move to core when done.
 function flare(e, color) {
-  var eStyle  = window.getComputedStyle(e);
-  var w = toNum(eStyle.width);
-  var h = toNum(eStyle.height);
-  var c = foam.graphics.Circle.create({r: 20, width: w, height: h, x: w-25, y: h-25, color: color, xbackground: 'rgba(100, 0, 0, 0.2)'});
+  var w = e.clientWidth;
+  var h = e.clientHeight;
+  var c = foam.graphics.Circle.create({r: 0, width: w, height: h, x: w, y: h, color: color});
   var view = c.toView_();
   var div = document.createElement('div');
-  div.style = "position: absolute; width: 100%, height: 100%";
+  var dStyle = div.style;
+  dStyle.position = 'absolute';
+  dStyle.left = 0;
+  dStyle.zIndex = 4;
+
   var id = View.getPrototype().nextID();
-  div.id = this.id;
+  div.id = id;
   div.innerHTML = view.toHTML();
   e.appendChild(div);
   view.initHTML();
-//  Movement.animate(200, function() { c.r = Math.sqrt(w*w, h*h); })();
   Movement.compile([
-    [300, function() { c.r = Math.sqrt(w*w, h*h); }],
-    [200, function() { c.alpha = 0; }]
+    // MYSTERY(kgr): I don't know why the 1.3 is needed.
+    [500, function() { c.r = 1.3 * Math.sqrt(w*w, h*h); }],
+    [200, function() { c.alpha = 0; }],
+    function() { div.remove(); }
   ])();
 c.r$.addListener(EventService.framed(view.paint.bind(view)));
 c.alpha$.addListener(EventService.framed(view.paint.bind(view)));
 }
-
-setTimeout(function() {
-  flare($$('calc-display')[0], 'red');
-}, 500);
-*/

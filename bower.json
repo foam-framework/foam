@@ -1,13 +1,15 @@
 {
   "name": "foam",
-  "version": "0.2.0",
-  "homepage": "https://github.com/foam-framework/foam",
+  "version": "0.3.0",
+  "homepage": "https://foam-framework.github.io/foam",
   "authors": [
     "Kevin Greer <kgr@google.com>",
     "Adam Van Ymeren <adamvy@google.com>",
-    "Braden Shepherdson <braden@google.com>"
+    "Braden Shepherdson <braden@google.com>",
+    "Jackson Stone <jacksonic@google.com>",
+    "Mark Dittmer <markdittmer@google.com>"
   ],
-  "description": "Reactive, deeply MVC, metaprogramming Javascript framework. This is an alpha release! FOAM is evolving rapidly.",
+  "description": "A collection of powerful Javascript libraries: OO, MVC, reactive programming, data storage. Very beta! FOAM is evolving rapidly.",
   "main": "build/foam.js",
   "moduleType": [
     "globals"
@@ -21,13 +23,19 @@
   "ignore": [
     "**/.*",
     "apps",
+    "bower_components",
     "core",
     "demos",
+    "docs",
+    "hooks",
     "java",
+    "lib",
     "node",
     "node_modules",
-    "bower_components",
+    "orphanage",
+    "package.json",
+    "tests",
     "tools",
-    "tests"
+    "WORKFLOW.md"
   ]
 }
