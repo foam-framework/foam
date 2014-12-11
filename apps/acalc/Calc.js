@@ -31,7 +31,6 @@ function invTrigFn(f) {
     return this.degreesMode ? f(a) / Math.PI * 180 : f(a);
   };
 }
-
 /** Make a Binary Action. **/
 function binaryOp(name, keys, f, sym) {
   f.toString = function() { return sym; };
@@ -112,6 +111,7 @@ CLASS({
   methods: {
     formatNumber: function(n) {
       var nu = formatNumber(n);
+      if (!nu) { nu = '0'; }
       // strip off trailing "."
       return nu.replace(/(.+?)(?:\.$|$)/, "$1");
     }
