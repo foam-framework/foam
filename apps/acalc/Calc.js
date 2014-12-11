@@ -40,12 +40,11 @@ function binaryOp(name, keys, f, sym) {
     label: sym,
     keyboardShortcuts: keys,
     action: function() {
-      console.log(sym, ",", this.a1,",",  this.a2, " e",this.editable);
-      if (!this.a2) {
+      if ( ! this.a2 ) {
         // the previous operation should be replaced, since we can't
         // finish this one without a second arg. The user probably hit one
         // binay op, followed by another.
-        this.replace(f);        
+        this.replace(f);
       } else {
         if ( this.op != DEFAULT_OP ) this.equals();
         this.push('', f);
@@ -423,7 +422,7 @@ CLASS({
       keyboardShortcuts: [ 110, 190 ],
       action: function() {
         if ( this.a2.toString().indexOf('.') == -1 ) {
-          this.a2 = (this.a2? this.a2 : '0') + '.';
+          this.a2 = (this.a2 ? this.a2 : '0') + '.';
           this.editable = true;
         }
       }
@@ -433,7 +432,7 @@ CLASS({
       label: '=',
       keyboardShortcuts: [ 187 /* '=' */, 13 /* <enter> */ ],
       action: function() {
-        if (!this.a2) return; // do nothing if the user hits '=' prematurely
+        if ( ! this.a2 ) return; // do nothing if the user hits '=' prematurely
         this.push(this.op(parseFloat(this.a1), parseFloat(this.a2)));
         this.editable = false;
       }
