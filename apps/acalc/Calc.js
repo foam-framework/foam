@@ -15,6 +15,11 @@
  * limitations under the License.
  */
 
+ // This accounts for binary-decimal conversion rounding (infinite 0.99999999)
+ // 12 places is just short of what javascript gives you, so it forces
+ // the number to round, which elimitates the spurious 9's.
+ var DECIMAL_PLACES_PRECISION = 12;
+
 function trigFn(f) {
   return function(a) {
     return f(this.degreesMode ? a * Math.PI / 180 : a);
@@ -26,7 +31,6 @@ function invTrigFn(f) {
     return this.degreesMode ? f(a) / Math.PI * 180 : f(a);
   };
 }
-
 /** Make a Binary Action. **/
 function binaryOp(name, keys, f, sym) {
   f.toString = function() { return sym; };
@@ -35,9 +39,16 @@ function binaryOp(name, keys, f, sym) {
     label: sym,
     keyboardShortcuts: keys,
     action: function() {
-      if ( this.op != DEFAULT_OP ) this.equals();
-      this.push('', f);
-      this.editable = true;
+      if ( ! this.a2 ) {
+        // the previous operation should be replaced, since we can't
+        // finish this one without a second arg. The user probably hit one
+        // binay op, followed by another.
+        this.replace(f);
+      } else {
+        if ( this.op != DEFAULT_OP ) this.equals();
+        this.push('', f);
+        this.editable = true;
+      }
     }
   };
 }
@@ -80,10 +91,12 @@ var DEFAULT_OP = function(a1, a2) { return a2; };
 DEFAULT_OP.toString = function() { return ''; };
 
 function formatNumber(n) {
-  return typeof n === 'string' ? n              :
+  // the regex below removes extra zeros from the end, or middle of exponentials
+  return typeof n === 'string' ? n :
          Number.isNaN(n)       ? 'Not a number' :
-         ! Number.isFinite(n)  ? '∞'            :
-                                 n              ;
+         ! Number.isFinite(n)  ? '∞' :
+                 parseFloat(n).toPrecision(DECIMAL_PLACES_PRECISION)
+                    .replace( /(?:(\d+\.\d*[1-9])|(\d+)(?:\.))(?:(?:0+)$|(?:0*)(e.*)$|$)/ ,"$1$2$3");
 }
 
 CLASS({
@@ -92,9 +105,16 @@ CLASS({
     'op',
     {
       name: 'a2',
-      preSet: function(_, n) { return formatNumber(n); }
+      preSet: function(_, n) { return this.formatNumber(n); }
     }
-  ]
+  ],
+  methods: {
+    formatNumber: function(n) {
+      var nu = formatNumber(n) || '0';
+      // strip off trailing "."
+      return nu.replace(/(.+?)(?:\.$|$)/, "$1");
+    }
+  }
 });
 
 
@@ -185,7 +205,7 @@ CLASS({
       position: absolute;
       top: 0;
       width: 100%;
-      z-index: 99;
+      z-index: 1;
     }
 
     .edge2 {
@@ -275,6 +295,7 @@ CLASS({
       flex-grow: 0;
       flex-shrink: 0;
       margin-bottom: -4px;
+      z-index: 5;
     }
 
     .history {
@@ -357,6 +378,9 @@ CLASS({
       this.a1 = this.a2;
       this.a2 = a2;
       this.op = opt_op || DEFAULT_OP;
+    },
+    replace: function(op) {
+      this.op = op || DEFAULT_OP;
     }
   },
 
@@ -378,7 +402,7 @@ CLASS({
       // help: 'All Clear.',
       keyboardShortcuts: [ 65 /* a */, 67 /* c */ ],
       action: function() {
-        this.a2 = '0';
+        this.a2 = '';
         this.editable = true;
         this.op = DEFAULT_OP;
         this.history = [].sink;
@@ -396,7 +420,10 @@ CLASS({
       label: '.',
       keyboardShortcuts: [ 110, 190 ],
       action: function() {
-        if ( this.a2.toString().indexOf('.') == -1 ) this.a2 = this.a2 + '.';
+        if ( this.a2.toString().indexOf('.') == -1 ) {
+          this.a2 = (this.a2 ? this.a2 : '0') + '.';
+          this.editable = true;
+        }
       }
     },
     {
@@ -404,6 +431,7 @@ CLASS({
       label: '=',
       keyboardShortcuts: [ 187 /* '=' */, 13 /* <enter> */ ],
       action: function() {
+        if ( ! this.a2 ) return; // do nothing if the user hits '=' prematurely
         this.push(this.op(parseFloat(this.a1), parseFloat(this.a2)));
         this.editable = false;
       }
@@ -612,10 +640,8 @@ CLASS({
   ]
 });
 
+// TODO(kgr): move to core when done.
 function flare(e, color) {
-//  var eStyle  = window.getComputedStyle(e);
-//  var w = toNum(eStyle.width);
-//  var h = toNum(eStyle.height);
   var w = e.clientWidth;
   var h = e.clientHeight;
   var c = foam.graphics.Circle.create({r: 0, width: w, height: h, x: w, y: h, color: color});
@@ -624,6 +650,7 @@ function flare(e, color) {
   var dStyle = div.style;
   dStyle.position = 'absolute';
   dStyle.left = 0;
+  dStyle.zIndex = 4;
 
   var id = View.getPrototype().nextID();
   div.id = id;
