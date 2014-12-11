@@ -183,7 +183,7 @@ var DOM = {
 
     if ( opt_document ) {
       var view;
-      if ( View.isInstance(obj) || CView.isInstance(obj) ) {
+      if ( View.isInstance(obj) || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) {
         view = obj;
       } else {
         var viewName = e.getAttribute('view');
