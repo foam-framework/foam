@@ -393,6 +393,7 @@ CLASS({
       this.SUPER();
 
       this.documentViewRef.addListener(this.doScrollToFeature);
+      this.generateFeatureDAO();
     },
 
     onValueChange_: function() {
@@ -453,11 +454,15 @@ CLASS({
       this.featureDAO.removeAll();
       this.modelDAO.removeAll();
 
-      if (!this.data.model_ || this.data.model_.id !== 'Model') {
+      if ( ! this.data.model_ || this.data.model_.id !== 'Model' ) {
         console.warn("ModelDocView created with non-model instance: ", this.data);
         return;
       }
-
+      
+      if ( ! this.X.modelDAO ) {
+        // we aren't done init yet, so wait and our init(); will call us again
+        return;
+      }
       
       // Run through the features in the Model definition in this.data,
       // and load them into the feature DAO. Passing [] assumes we don't
@@ -487,9 +492,9 @@ CLASS({
 
       this.Model.properties.forEach(function(modProp) {
         var modPropVal = modelDef[modProp.name];
-        if (Array.isArray(modPropVal)) { // we only care to check inheritance on the array properties
+        if ( Array.isArray(modPropVal) ) { // we only care to check inheritance on the array properties
           modPropVal.forEach(function(feature) {
-            if (feature.name) { // only look at actual objects
+            if ( feature.name ) { // only look at actual objects
               // all features we hit are declared (or overridden) in this model
               var featTr = self.DocFeatureInheritanceTracker.create({
                     isDeclared:true,

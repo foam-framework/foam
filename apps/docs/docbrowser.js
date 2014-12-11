@@ -240,14 +240,22 @@ CLASS({
 CLASS({
   name: 'ModelDescriptionRowView',
   extendsModel: 'View',
+  traits: ['foam.experimental.views.DataConsumerTrait'],
 
   properties: [
     {
       name: 'data',
       help: 'The Model to describe',
       postSet: function() {
-        this.modelRef = this.data.package? this.data.package + "." + this.data.name : this.data.name;
-        this.modelName = this.data.package? "["+this.data.package + "]&nbsp;" + this.data.name : this.data.name;
+        this.modelRef = this.data.package ? 
+                          this.data.package + "." + this.data.name :
+                          this.data.name;
+        var shortPkg = this.data.package;
+        if ( shortPkg.length > 10 ) {
+          shortPkg = "..." + this.data.package.substring(
+                      this.data.package.length-10, this.data.package.length);
+        }
+        this.modelName = (shortPkg ? "["+ shortPkg + "]&nbsp;" : "") + this.data.name;
       }
     },
     {

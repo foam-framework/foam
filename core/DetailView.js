@@ -48,7 +48,6 @@ CLASS({
         the existing children.
       */},
       postSet: function(old, nu) {
-        console.log("DetailView "+this.model_.name+" set data ",nu);
         if ( nu && nu.model_ && this.model !== nu.model_ ) {
           // destroy children
           this.destroy();
@@ -61,7 +60,6 @@ CLASS({
           this.childData = nu; // just move the new data along
         }
         this.onValueChange_(); // sub-classes may handle to change as well
-        console.log("           "+this.model_.name+" childData:",this.childData);
       }
     },
     {

@@ -522,7 +522,8 @@ CLASS({
       delete this.instance_.$;
       
       this.SUPER();
-      this.selfX = this.originalContext_;
+      // TODO(jacksonic): we often call destroy() in templates, but not the new construct()
+      this.selfX = this.originalContext_.sub({data$: this.SimpleValue.create(this)});
     },
 
     close: function() {
@@ -1146,14 +1147,12 @@ CLASS({
     
     construct: function() {
       this.SUPER();
-      
-      console.log("PropView context data: ", this.originalContext_.data$, " P",this.parent);
-      
+          
       if ( this.args && this.args.model_ ) {
         var model = FOAM.lookup(this.args.model_, this.X);
         console.assert( model, 'Unknown View: ' + this.args.model_);
         // HACK to make sure model specification makes it into the create
-        if (this.args.model) this.prop.model = this.args.model;
+        if ( this.args.model ) this.prop.model = this.args.model;
         var view = model.create(this.prop, this.X);
         delete this.args.model_;
       } else {
@@ -1168,7 +1167,7 @@ CLASS({
       // if ( this.prop.description || this.prop.help ) view.tooltip = this.prop.description || this.prop.help;
 
       this.view = view;
-      this.bindData(this.data);
+      //this.bindData(this.data);
     }
   },
   
