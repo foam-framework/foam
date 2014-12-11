@@ -55,6 +55,7 @@ var files = [
   'LayoutTraits', // generic, non-view specific, so no predicate
   [ 'value', IN_BROWSER ],
   [ 'view', IN_BROWSER ],
+  [ 'view2', IN_BROWSER ],
   [ 'layout', IN_BROWSER ],
   [ 'daoView', IN_BROWSER ],
   [ 'ChoiceView', IN_BROWSER ],
@@ -75,6 +76,7 @@ var files = [
   'visitor',
   'messaging',
   'dao',
+  'dao2',
   'arrayDAO',
   'ClientDAO',
   'diff',
