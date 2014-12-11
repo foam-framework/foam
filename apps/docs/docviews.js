@@ -1286,7 +1286,6 @@ CLASS({
       postSet: function() {
         this.dao = this.data;
         this.childData = this.data;
-        this.updateHTML();
       }
     },
     {
@@ -1296,7 +1295,14 @@ CLASS({
     {
       name: 'featureType',
       help: 'The property name from which data is set (such as "properties" or "methods")',
-      type: 'String'
+      type: 'String',
+      postSet: function() {
+        // only render once we have both featureType and dao
+        if ( ! this.filteredDAO && this.dao ) {
+          this.filteredDAO = this.dao;
+        }
+
+      }
     },
     {
       name: 'featureDAO'
@@ -1306,7 +1312,10 @@ CLASS({
       model_: 'DAOProperty',
       defaultValue: [],
       onDAOUpdate: function() {
-        this.filteredDAO = this.dao;
+        // only render once we have both featureType and dao
+        if ( this.featureType ) {
+          this.filteredDAO = this.dao;
+        }
       }
     },
     {
