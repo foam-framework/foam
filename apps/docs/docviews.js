@@ -1459,7 +1459,10 @@ CLASS({
       }
     },
     {
-      name: 'count'
+      name: 'count',
+      postSet: function() {
+        this.updateHTML();
+      }
     }
   ],
 

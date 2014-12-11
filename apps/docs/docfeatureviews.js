@@ -104,6 +104,7 @@ CLASS({
   name: 'DocFeatureSubmodelRefView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocRefView',
+  traits: ['foam.experimental.views.DataConsumerTrait'],
   label: 'Documentation Feature sub-model Link Reference View',
   help: 'The view of a documentation reference link based on a Sub-Model.',
 
@@ -131,6 +132,7 @@ CLASS({
   name: 'DocFeatureModelRefView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocRefView',
+  traits: ['foam.experimental.views.DataConsumerTrait'],
   label: 'Documentation Feature Model Link Reference View',
   help: 'The view of a documentation reference link based on a Model.',
 
