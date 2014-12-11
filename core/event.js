@@ -34,7 +34,7 @@ MODEL({
   constants: {
     /** If listener thows this exception, it will be removed. **/
     UNSUBSCRIBE_EXCEPTION: 'unsubscribe',
-    
+
     /** Used as topic suffix to specify broadcast to all sub-topics. **/
     WILDCARD: "*"
   },
@@ -372,50 +372,50 @@ MODEL({
     propertyChange: function (property, oldValue, newValue) {
       // don't bother firing event if there are no listeners
       if ( ! this.subs_ ) return;
-      
+
       // don't fire event if value didn't change
       if ( property != null && (
-        oldValue === newValue || 
+        oldValue === newValue ||
           (/*NaN check*/(oldValue !== oldValue) && (newValue !== newValue)) )
          ) return;
-      
+
       this.publish(this.propertyTopic(property), oldValue, newValue);
     },
-    
+
     propertyChange_: function (propertyTopic, oldValue, newValue) {
       // don't bother firing event if there are no listeners
       if ( ! this.subs_ ) return;
-      
+
       // don't fire event if value didn't change
       if ( oldValue === newValue || (/*NaN check*/(oldValue !== oldValue) && (newValue !== newValue)) ) return;
-      
+
       this.publish(propertyTopic, oldValue, newValue);
     },
-    
+
     /** Indicates that one or more unspecified properties have changed. **/
     globalChange: function () {
       this.publish(this.propertyTopic(this.WILDCARD), null, null);
     },
-    
+
     addListener: function(listener) {
       console.assert(listener, 'Listener cannot be null.');
       // this.addPropertyListener([ this.PROPERTY_TOPIC ], listener);
       this.addPropertyListener(null, listener);
     },
-    
+
     removeListener: function(listener) {
       this.removePropertyListener(null, listener);
     },
-    
+
     /** @arg property the name of the property to listen to or 'null' to listen to all properties. **/
     addPropertyListener: function(property, listener) {
       this.subscribe(this.propertyTopic(property), listener);
     },
-    
+
     removePropertyListener: function(property, listener) {
       this.unsubscribe(this.propertyTopic(property), listener);
     },
-    
+
     /** Create a Value for the specified property. **/
     propertyValue: function(prop) {
       if ( ! prop ) throw 'Property Name required for propertyValue().';
@@ -424,8 +424,8 @@ MODEL({
     }
   }
 });
-  
-  
+
+
 var FunctionStack = {
   create: function() {
     var stack = [false];
@@ -644,19 +644,19 @@ MODEL({
 
     /** Combinator to create the composite of two functions. **/
     o: function(f1, f2) { return function(x) { return f1(f2(x)); }; },
-    
+
     /** Combinator to create the average of two functions. **/
     avg: function(f1, f2) { return function(x) { return (f1(x) + f2(x))/2; }; },
-    
+
     /** Constant speed. **/
     linear: function(x) { return x; },
-    
+
     /** Move to target value and then return back to original value. **/
     back: function(x) { return x < 0.5 ? 2*x : 2-2*x; },
-    
+
     /** Start slow and accelerate until half-way, then start slowing down. **/
     accelerate: function(x) { return (Math.sin(x * Math.PI - Math.PI/2)+1)/2; },
-    
+
     /** Start slow and ease-in to full speed. **/
     easeIn: function(a) {
       var v = 1/(1-a/2);
@@ -666,13 +666,13 @@ MODEL({
         return (a ? 0.5*x1*(x1/a)*v : 0) + x2*v;
       };
     },
-    
+
     /** Combinator to reverse behaviour of supplied function. **/
     reverse: function(f) { return function(x) { return 1-f(1-x); }; },
-    
+
     /** Reverse of easeIn. **/
     easeOut: function(b) { return Movement.reverse(Movement.easeIn(b)); },
-    
+
     /**
      * Cause an oscilation at the end of the movement.
      * @param b percentage of time to to spend bouncing [0, 1]
@@ -687,7 +687,7 @@ MODEL({
         return 1+(1-t)*2*a*Math.sin(2*c*Math.PI * t);
       };
     },
-    
+
     /**
      * Cause an bounce at the end of the movement.
      * @param b percentage of time to to spend bouncing [0, 1]
@@ -709,45 +709,45 @@ MODEL({
         return 1-(x-1+a)*v/2;
       };
     },
-    
+
     /** Move backwards a% before continuing to end. **/
     stepBack: function(a) {
       return function(x) {
         return ( x < a ) ? -x : -2*a+(1+2*a)*x;
       };
     },
-    
+
     /** Combination of easeIn and easeOut. **/
     ease: function(a, b) {
       return Movement.o(Movement.easeIn(a), Movement.easeOut(b));
     },
-    
+
     seq: function(f1, f2) {
       return ( f1 && f2 ) ? function() { f1.apply(this, argsToArray(arguments)); f2(); } :
       f1 ? f1
         : f2 ;
     },
-    
+
     /** @return a latch function which can be called to stop the animation. **/
     animate: function(duration, fn, opt_interp, opt_onEnd, opt_X) {
       var setIntervalX   = ( opt_X && opt_X.setInterval   ) || setInterval;
       var clearIntervalX = ( opt_X && opt_X.clearInterval ) || clearInterval;
-      
+
       //console.assert( opt_X && opt_X.setInterval, 'opt_X or opt_X.setInterval not available');
-      
+
       if ( duration == 0 ) return Movement.seq(fn, opt_onEnd);
       var interp = opt_interp || Movement.linear;
-      
+
       return function() {
         var ranges    = [];
         var timer;
-        
+
         function stop() {
           clearIntervalX(timer);
           opt_onEnd && opt_onEnd();
           opt_onEnd = null;
         }
-        
+
         if ( fn ) {
           Events.onSet.push(function(obj, name, value2) {
             ranges.push([obj, name, obj[name], value2]);
@@ -755,31 +755,32 @@ MODEL({
           fn.apply(this, argsToArray(arguments));
           Events.onSet.pop();
         }
-        
+
         var startTime = Date.now();
-        
+
         if ( ranges.length > 0 ) {
           timer = setIntervalX(function() {
             var now = Date.now();
             var p   = interp((Math.min(now, startTime + duration)-startTime)/duration);
-            
+            var last = now >= startTime + duration;
+
             for ( var i = 0 ; i < ranges.length ; i++ ) {
               var r = ranges[i];
               var obj = r[0], name = r[1], value1 = r[2], value2 = r[3];
-              
-              obj[name] = value1 + (value2-value1) * p;
+
+              obj[name] = last ? value2 : value1 + (value2-value1) * p;
             }
-            
-            if ( now >= startTime + duration ) stop();
+
+            if ( last ) stop();
           }, 16);
         } else {
           timer = setIntervalX(stop, duration);
         }
-        
+
         return stop;
       };
     },
-    
+
     // requires unsubscribe to work first (which it does now)
     /*
       animate2: function(timer, duration, fn) {
@@ -787,15 +788,15 @@ MODEL({
       var startTime = timer.time;
       Events.onSet.push(function(obj, name, value2) {
       var value1 = obj[name];
-      
+
       Events.dynamic(function() {
       var now = timer.time;
-      
+
       obj[name] = value1 + (value2-value1) * (now-startTime)/duration;
-      
+
       if ( now > startTime + duration ) throw EventService.UNSUBSCRIBE_EXCEPTION;
       });
-      
+
       return false;
       });
       fn.apply(this, argsToArray(arguments));
@@ -804,15 +805,15 @@ MODEL({
       };
       },
     */
-    
+
     // TODO: if this were an object then you could sub-class to modify playback
     compile: function (a, opt_rest) {
       function noop() {}
-      
+
       function isPause(op) {
         return Array.isArray(op) && op[0] == 0;
       }
-      
+
       function compilePause(op, rest) {
         return function() {
           document.onclick = function() {
@@ -821,20 +822,20 @@ MODEL({
           };
         };
       }
-      
+
       function isSimple(op) {
         return Array.isArray(op) && typeof op[0] === 'number';
       }
-      
+
       function compileSimple(op, rest) {
         op[3] = Movement.seq(op[3], rest);
         return function() { Movement.animate.apply(null, op)(); };
       }
-      
+
       function isParallel(op) {
         return Array.isArray(op) && Array.isArray(op[0]);
       }
-      
+
       function compileParallel(op, rest) {
         var join = (function(num) {
           return function() { --num || rest(); };
@@ -848,27 +849,27 @@ MODEL({
             Movement.compile(op[i], join)();
         };
       }
-      
+
       function compileFn(fn, rest) {
         return Movement.seq(fn, rest);
       }
-      
+
       function compile_(a, i) {
         if ( i >= a.length ) return opt_rest || noop;
-        
+
         var rest = compile_(a, i+1);
         var op = a[i];
-        
+
         if ( isPause(op)    ) return compilePause(op, rest);
         if ( isSimple(op)   ) return compileSimple(op, rest);
         if ( isParallel(op) ) return compileParallel(op, rest);
-        
+
         return compileFn(op, rest);
       }
-      
+
       return compile_(a, 0);
     },
-    
+
     onIntersect: function (o1, o2, fn) {
       if ( o1.model_.R ) {
         Events.dynamic(function() { o1.x; o1.y; o2.x; o2.y; }, function() {
@@ -891,19 +892,19 @@ MODEL({
         });
       }
     },
-    
+
     stepTowards: function(src, dst, maxStep) {
       var dx = src.x - dst.x;
       var dy = src.y - dst.y;
       var theta = Math.atan2(dy,dx);
       var r     = Math.sqrt(dx*dx+dy*dy);
       r = r < 0 ? Math.max(-maxStep, r) : Math.min(maxStep, r);
-      
+
       dst.x += r*Math.cos(-theta);
       dst.y -= r*Math.sin(-theta);
     },
-    
-    
+
+
     /**
      * Cause one object to move towards another at a specified rate.
      *
@@ -918,15 +919,15 @@ MODEL({
       var bodyY = body.propertyValue('y');
       var satX  = sat.propertyValue('x');
       var satY  = sat.propertyValue('y');
-      
+
       t.addListener(function() {
         var dx = bodyX.get() - satX.get();
         var dy = (bodyY.get() - satY.get());
         var theta = Math.atan2(dy,dx);
         var r     = Math.sqrt(dx*dx+dy*dy);
-        
+
         r = r < 0 ? Math.max(-v, r) : Math.min(v, r);
-        
+
         satX.set(satX.get() + r*Math.cos(-theta));
         satY.set(satY.get() - r*Math.sin(-theta));
       });
@@ -947,21 +948,21 @@ MODEL({
       var satX  = sat.x$;
       var satY  = sat.y$;
       var start = opt_start || 0;
-      
+
       t.addListener(EventService.framed(function() {
         var time = t.time;
         satX.set(bodyX.get() + r*Math.sin(time/p*Math.PI*2 + start));
         satY.set(bodyY.get() + r*Math.cos(time/p*Math.PI*2 + start));
       }));
     },
-    
+
     strut: function(mouse, c, dx, dy) {
       Events.dynamic(function() { mouse.x; mouse.y; }, function() {
         c.x = mouse.x + dx;
         c.y = mouse.y + dy;
       });
     },
-    
+
     friction: function(c, opt_coef) {
       var coef = opt_coef || 0.9;
       Events.dynamic(function() { c.vx; c.vy; }, function() {
@@ -969,7 +970,7 @@ MODEL({
         c.vy *= coef;
       });
     },
-    
+
     inertia: function(c) {
       Events.dynamic(function() { c.vx; c.vy; c.x; c.y; }, function() {
         // Dynamic Friction
@@ -980,7 +981,7 @@ MODEL({
         if ( c.y < 0.1 ) c.y = 0;
       });
     },
-    
+
     spring: function(mouse, c, dx, dy, opt_strength) {
       var strength = opt_strength || 8;
       Events.dynamic(function() { mouse.x; mouse.y; c.x; c.y; }, function() {
@@ -999,10 +1000,10 @@ MODEL({
         }
       });
     },
-    
+
     spring2: function(c1, c2, length, opt_strength) {
       var strength = opt_strength || 4;
-      
+
       Events.dynamic(function() { c1.x; c1.y; c2.x; c2.y; }, function() {
         var d = c1.distanceTo(c2);
         var a = Math.atan2(c2.y-c1.y, c2.x-c1.x);
