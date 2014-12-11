@@ -110,8 +110,7 @@ CLASS({
   ],
   methods: {
     formatNumber: function(n) {
-      var nu = formatNumber(n);
-      if (!nu) { nu = '0'; }
+      var nu = formatNumber(n) || '0';
       // strip off trailing "."
       return nu.replace(/(.+?)(?:\.$|$)/, "$1");
     }
