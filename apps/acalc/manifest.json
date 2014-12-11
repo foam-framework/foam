@@ -1,0 +1,15 @@
+{
+  "name": "Calculator",
+  "version": "1.0",
+  "manifest_version": 2,
+
+  "permissions": [],
+
+  "app": {
+    "background": {
+      "scripts": [
+        "bg.js"
+      ]
+    }
+  }
+}
