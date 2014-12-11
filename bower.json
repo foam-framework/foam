@@ -23,13 +23,19 @@
   "ignore": [
     "**/.*",
     "apps",
+    "bower_components",
     "core",
     "demos",
+    "docs",
+    "hooks",
     "java",
+    "lib",
     "node",
     "node_modules",
-    "bower_components",
+    "orphanage",
+    "package.json",
+    "tests",
     "tools",
-    "tests"
+    "WORKFLOW.md"
   ]
 }
