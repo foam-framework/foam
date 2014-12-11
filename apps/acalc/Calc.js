@@ -402,7 +402,7 @@ CLASS({
       // help: 'All Clear.',
       keyboardShortcuts: [ 65 /* a */, 67 /* c */ ],
       action: function() {
-        this.a2 = '0';
+        this.a2 = '';
         this.editable = true;
         this.op = DEFAULT_OP;
         this.history = [].sink;
