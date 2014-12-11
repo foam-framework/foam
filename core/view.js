@@ -1987,19 +1987,6 @@ CLASS({
     { name: 'precision', defaultValue: undefined }
   ],
 
-  templates: [
-    function toHTML() {/*
-      <br>
-      <div>Output:</div>
-      <pre>
-        <div class="output" id="<%= this.setClass('error', function() { return this.parent.data.failed; }, this.id) %>">
-        </div>
-      </pre>
-    */},
-   function toInnerHTML() {/*
-     <%= TextFieldView.create({ data: this.data, mode: 'read-only', escapeHTML: false }) %>
-   */}
-  ],
   methods: {
     formatNumber: function(val) {
       if ( ! val ) return '0';
