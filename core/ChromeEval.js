@@ -10,28 +10,34 @@ var __EVAL_CALLBACKS__ = {};
 var aeval = (function() {
   var nextID = 0;
 
+  var future = afuture();
+  if ( ! document.body ) window.addEventListener('load', future.set);
+  else future.set();
+
   return function(src) {
-    return function(ret) {
-      var id = 'c' + (nextID++);
+    return aseq(
+      future.get,
+      function(ret) {
+        var id = 'c' + (nextID++);
 
-      var newjs = ['__EVAL_CALLBACKS__["' + id + '"](' + src + ');'];
-      var blob  = new Blob(newjs, {type: 'text/javascript'});
-      var url   = window.URL.createObjectURL(blob);
+        var newjs = ['__EVAL_CALLBACKS__["' + id + '"](' + src + ');'];
+        var blob  = new Blob(newjs, {type: 'text/javascript'});
+        var url   = window.URL.createObjectURL(blob);
 
-      __EVAL_CALLBACKS__[id] = function(data) {
-        delete __EVAL_CALLBACKS__[id];
+        __EVAL_CALLBACKS__[id] = function(data) {
+          delete __EVAL_CALLBACKS__[id];
 
-        ret && ret.call(this, data);
-      };
+          ret && ret.call(this, data);
+        };
 
-      var script = document.createElement('script');
-      script.src = url;
-      script.onload = function() {
-        this.remove();
-        window.URL.revokeObjectURL(url);
-//        document.body.removeChild(this);
-      };
-      document.body.appendChild(script);
-    };
+        var script = document.createElement('script');
+        script.src = url;
+        script.onload = function() {
+          this.remove();
+          window.URL.revokeObjectURL(url);
+          //        document.body.removeChild(this);
+        };
+        document.body.appendChild(script);
+      });
   };
 })();
