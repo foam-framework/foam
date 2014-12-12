@@ -3,7 +3,6 @@ rm -rf $BUILD_DIR
 cp -r . $BUILD_DIR
 cat \
   ../../core/stdlib.js \
-  ../../core/io.js \
   ../../core/async.js \
   ../../core/parse.js \
   ../../core/event.js \
