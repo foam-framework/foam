@@ -39,7 +39,7 @@ function binaryOp(name, keys, f, sym) {
     label: sym,
     keyboardShortcuts: keys,
     action: function() {
-      if ( ! this.a2 ) {
+      if ( this.a2 == '' ) {
         // the previous operation should be replaced, since we can't
         // finish this one without a second arg. The user probably hit one
         // binay op, followed by another.
@@ -431,7 +431,7 @@ CLASS({
       label: '=',
       keyboardShortcuts: [ 187 /* '=' */, 13 /* <enter> */ ],
       action: function() {
-        if ( ! this.a2 ) return; // do nothing if the user hits '=' prematurely
+        if ( this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
         this.push(this.op(parseFloat(this.a1), parseFloat(this.a2)));
         this.editable = false;
       }
