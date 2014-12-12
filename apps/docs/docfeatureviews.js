@@ -76,7 +76,7 @@ CLASS({
   name: 'DocFeatureOverridesRefView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocRefView',
-  traits: ['foam.experimental.views.DataConsumerTrait'],
+  traits: ['foam.views.DataConsumerTrait'],
   label: 'Documentation Feature Overrides Reference Link View',
   help: "The view of a documentation reference link based on a Model's overrides.",
 
@@ -104,7 +104,7 @@ CLASS({
   name: 'DocFeatureSubmodelRefView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocRefView',
-  traits: ['foam.experimental.views.DataConsumerTrait'],
+  traits: ['foam.views.DataConsumerTrait'],
   label: 'Documentation Feature sub-model Link Reference View',
   help: 'The view of a documentation reference link based on a Sub-Model.',
 
@@ -132,7 +132,7 @@ CLASS({
   name: 'DocFeatureModelRefView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocRefView',
-  traits: ['foam.experimental.views.DataConsumerTrait'],
+  traits: ['foam.views.DataConsumerTrait'],
   label: 'Documentation Feature Model Link Reference View',
   help: 'The view of a documentation reference link based on a Model.',
 

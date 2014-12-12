@@ -240,7 +240,7 @@ CLASS({
 CLASS({
   name: 'ModelDescriptionRowView',
   extendsModel: 'View',
-  traits: ['foam.experimental.views.DataConsumerTrait'],
+  traits: ['foam.views.DataConsumerTrait'],
 
   properties: [
     {
