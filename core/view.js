@@ -225,322 +225,13 @@ window.addEventListener('load', function() { DOM.init(X); }, false);
 function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 
 
-// View
-CLASS({
-  name: 'DataProviderTrait',
-  package: 'foam.experimental.views',
-  
-  documentation: function() {/*
-    Trait for providers of a data property. It contains a $$DOC{ref:'.data'}
-    property and exports it by reference to the context.
-  */},
-  
-  //exports: ['data$ as data$'],
-  
-  properties: [
-    {
-      name: 'childData',
-      help: 'Child data value provided to consumers.',
-      documentation: function() {/* 
-        The value provided to consumers child (children) of this provider.
-      */},
-    },
-    {
-      name: 'originalContext_',
-      hidden: true,
-      factory: function() {
-        return this.X;
-      }
-    }
-  ],
-
-  methods: {
-    init: function() {
-      this.SUPER();
-      
-      // juggle context and export data$
-      this.X = this.originalContext_.sub({data$: this.childData$});
-    },
-       
-    destroy: function() {
-      /* Called to tear down children. Also let the previous child context
-        be garbage collected. */
-      this.X = this.originalContext_;
-      if (arguments.callee.caller.super_) this.SUPER();
-    },
-    
-    construct: function() {
-      /* Called to construct new content and children. Create a new context
-         for the children and export our data. */
-      if (arguments.callee.caller.super_) this.SUPER();
-      this.X = this.originalContext_.sub({data$: this.childData$});
-    }
-  }
-  
-});
- 
-  
-CLASS({
-  name: 'DataConsumerTrait',
-  package: 'foam.experimental.views',
-  
-  documentation: function() {/*
-    Trait for consumers of a data property. It contains 
-    an $$DOC{ref:'.data'}
-    property and imports it by reference from the context.
-  */},
-  
-  imports: ['data$'],
-  
-  properties: [
-    {
-      name: 'data',
-      help: 'The incoming data for this view to use.',
-    },
-  ]
-
-});
-
-CLASS({
-  name: 'ChildTreeTrait',
-  package: 'foam.experimental.views',
-  
-  properties: [
-    {
-      name: 'parent',
-      type: 'foam.experimental.views.ChildTreeTrait',
-      hidden: true
-    },
-    {
-      name: 'children',
-      type: 'Array[foam.experimental.views.ChildTreeTrait]',
-      factory: function() { return []; },
-      documentation: function() {/*
-        $$DOC{ref:'ChildTreeTrait',usePlural:true} children are arranged in a tree.
-      */}
-    }
-  ],
-  
-  methods: {
-    addChild: function(child) {
-      /*
-        Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
-        a sub-$$DOC{ref:'View'} is created, add it to the tree with this method.
-      */
-      if (arguments.callee.caller.super_) this.SUPER(child);
-
-      // Check prevents duplicate addChild() calls,
-      // which can happen when you use creatView() to create a sub-view (and it calls addChild)
-      // and then you write the View using TemplateOutput (which also calls addChild).
-      // That should all be cleaned up and all outputHTML() methods should use TemplateOutput.
-      if ( this.children.indexOf(child) != -1 ) return;
-
-      try {
-        child.parent = this;
-      } catch (x) { console.log(x); }
-
-      var children = this.children;
-      children.push(child);
-      this.children = children;
-
-      return this;
-    },
-
-    removeChild: function(child) {
-      /*
-        Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
-        a sub-$$DOC{ref:'View'} is destroyed, remove it from the tree with this method.
-      */
-      if (arguments.callee.caller.super_) this.SUPER(child);
-      
-      child.destroy();
-      this.children.deleteI(child);
-      child.parent = undefined;
-
-      return this;
-    },
-
-    addChildren: function() {
-      /* Adds multiple children at once. */
-      Array.prototype.forEach.call(arguments, this.addChild.bind(this));
-
-      return this;
-    },
-    
-    destroy: function() {
-      if (arguments.callee.caller.super_) this.SUPER();
-      
-      var list = this.children.slice();
-      Array.prototype.forEach.call(arguments, this.removeChild.bind(this));
-
-      return this;      
-    },
-    
-    construct: function() {
-      /* Template method. After a destroy(), construct() is called to fill in the object again. If
-         any special children need to be re-created, do it here. */
-      if (arguments.callee.caller.super_) this.SUPER();
-
-      return this;      
-    },
-    
-    deepPublish: function(topic) {
-      /*
-       Publish an event and cause all children to publish as well.
-       */
-      var count = this.publish.apply(this, arguments);
-
-      if ( this.children ) {
-        for ( var i = 0 ; i < this.children.length ; i++ ) {
-          var child = this.children[i];
-          count += child.deepPublish.apply(child, arguments);
-        }
-      }
-
-      return count;
-    }
-
-  }
-});
-
-
-CLASS({
-  name: 'BaseView',
-  label: 'View',
-  package: 'foam.experimental.views',
-  
-  traits: ['foam.experimental.views.DataProviderTrait',
-           'foam.experimental.views.ChildTreeTrait'],
-
-  requires: ['SimpleValue'],
-           
-  documentation: function() {/*
-    <p>$$DOC{ref:'View',usePlural:true} render data. This could be a specific
-       $$DOC{ref:'Model'} or a $$DOC{ref:'DAO'}. In the case of $$DOC{ref:'DetailView'},
-       <em>any</em> $$DOC{ref:'Model'} can be rendered by walking through the
-       $$DOC{ref:'Property',usePlural:true} of the data.
-    </p>
-    <p>$$DOC{ref:'View'} instances are arranged in a tree with parent-child links.
-       This represents containment in most cases, where a sub-view appears inside
-       its parent.
-    </p>
-  */},
-  
-  properties: [
-    {
-      name: 'selfX',
-      help: 'Context with data$ = self',
-      documentation: function() {/* 
-        The context provided to consumers (children) of this provider when constructed
-        from properties of this view.
-      */},
-    },
-  ],
-
-  constants: {
-    // TODO?: Model as Topics
-    ON_HIDE: ['onHide'], // Indicates that the View has been hidden
-    ON_SHOW: ['onShow']  // Indicates that the View is now being reshown
-  },
-
-  methods: {
-    
-    init: function() {
-      this.SUPER();
-      this.construct();
-    },
-    
-    construct: function() {
-      /* Create an additional context for children based on properties of this,
-        rather than data. */
-      this.SUPER();
-      this.selfX = this.originalContext_.sub({data$: this.SimpleValue.create(this)});
-    },
-
-    toView_: function() { return this; },
-
-    viewModel: function() {
-      /* The $$DOC{ref:'Model'} definition of this $$DOC{ref:'View'}. */
-      return this.model_;
-    },
-
-    createView: function(prop, opt_args) {
-      /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
-      var X = ( opt_args && opt_args.X ) || this.X;
-      var v = X.PropertyView.create({prop: prop, args: opt_args}, X);
-      this.addChild(v);
-      return v;
-    },
-    
-    createActionView: function(action, opt_args) {
-      /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info
-        specifically for $$DOC{ref:'Action',usePlural:true}. */
-      var X = ( opt_args && opt_args.X ) || this.X;
-      var modelName = opt_args && opt_args.model_ ?
-        opt_args.model_ :
-        'ActionButton'  ;
-      var v = X[modelName].create({action: action}).copyFrom(opt_args);
-
-      this[action.name + 'View'] = v;
-
-      return v;
-    },
-    
-    createTemplateView: function(name, opt_args) {
-      /*
-        Used by the $$DOC{ref:'Template',text:'$$propName'} sub-$$DOC{ref:'View'}
-        creation tag in $$DOC{ref:'Template',usePlural:true}.
-      */
-      
-      // Can't call viewModel() here, since DetailView overrides it but relies
-      // on falling back on view's implementation. TODO(jacksonic): figure it out
-      var o = this.model_[name.constantize()];
-      
-      if ( ! o ) throw 'Unknown View Name: ' + name;
-
-      var args = opt_args; // opt_args ? opt_args.clone() : {};
-      // for properties of this view, use our 'self' property as child data
-      args.X = this.selfX;
-
-      var v;
-      if ( Action.isInstance(o) )
-        v = this.createActionView(o, args);
-      else
-        v = this.createView(o, args);
-
-      return v;
-    },
-
-    destroy: function() {
-      /* Cleans up the DOM when regenerating content. You should call this before
-         creating new HTML in your $$DOC{ref:'.toInnerHTML'} or $$DOC{ref:'.toHTML'}. */
-      // TODO: remove listeners
-      this.invokeDestructors();
-      for ( var i = 0; i < this.children.length; i++ ) {
-        this.children[i].destroy();
-      }
-      delete this.instance_.$;
-      
-      this.SUPER();
-      // TODO(jacksonic): we often call destroy() in templates, but not the new construct()
-      this.selfX = this.originalContext_.sub({data$: this.SimpleValue.create(this)});
-    },
-
-    close: function() {
-      /* Call when permanently closing the $$DOC{ref:'View'}. */
-      this.$ && this.$.remove();
-      this.destroy();
-      this.publish('closed');
-    }
-  }
-});
-
-
+// ??? Should this have a 'data' property?
+// Or maybe a DataView and ModelView
 CLASS({
   name: 'View',
-  label: 'HTMLView',
-  extendsModel: 'foam.experimental.views.BaseView',
-  traits: ['foam.experimental.views.HTMLViewTrait'],
+  label: 'View',
+
+  //exports: [ 'myself$ as data$' ],
 
   documentation: function() {/*
     <p>$$DOC{ref:'View',usePlural:true} render data. This could be a specific
@@ -557,19 +248,7 @@ CLASS({
        at minimum you must implement $$DOC{ref:'.toHTML'} and $$DOC{ref:'.initHTML'}.
     </p>
   */},
-  
-});
 
-CLASS({
-  name: 'HTMLViewTrait',
-  label: 'HTMLViewTrait',
-  package: 'foam.experimental.views',
-  
-  documentation: function() {/*
-    The HTML implementation for $$DOC{ref:'View'}.
-  */},
-  
-  
   properties: [
     {
       name:  'id',
@@ -579,6 +258,25 @@ CLASS({
       documentation: function() {/*
         The DOM element id for the outermost tag of
         this $$DOC{ref:'View'}.
+      */}
+    },
+    {
+      name: 'parent',
+      type: 'View',
+      hidden: true
+    },
+    {
+      name: 'children',
+      type: 'Array[View]',
+      factory: function() { return []; },
+      documentation: function() {/*
+        <p>$$DOC{ref:'View',usePlural:true} are arranged in a tree. Each sub-view
+        contained inside this one is a child. Subviews can be created explicitly
+        or inside a template with the $$DOC{ref:'Template',text:"$$propName"}
+        tag.</p>
+        <p>Generally, sub-views are created around a property of the data that
+        this $$DOC{ref:'View'} is showing, each layer getting more specific.</p>
+
       */}
     },
     {
@@ -702,10 +400,30 @@ CLASS({
     }
   ],
 
+  constants: {
+    // TODO?: Model as Topics
+    ON_HIDE: ['onHide'], // Indicates that the View has been hidden
+    ON_SHOW: ['onShow']  // Indicates that the View is now being reshown
+  },
 
   methods: {
-    
     toView_: function() { return this; },
+
+    deepPublish: function(topic) {
+      /*
+       Publish an event and cause all children to publish as well.
+       */
+      var count = this.publish.apply(this, arguments);
+
+      if ( this.children ) {
+        for ( var i = 0 ; i < this.children.length ; i++ ) {
+          var child = this.children[i];
+          count += child.deepPublish.apply(child, arguments);
+        }
+      }
+
+      return count;
+    },
 
     strToHTML: function(str) {
       /*
@@ -747,12 +465,118 @@ CLASS({
       return '<' + tagName + ' id="' + id + '"></' + tagName + '>';
     },
 
+    bindSubView: function(view, prop) {
+      /*
+        Bind a sub-$$DOC{ref:'View'} to a $$DOC{ref:'Property'} of this.
+       */
+      view.setValue(this.propertyValue(prop.name));
+    },
+
+    viewModel: function() {
+      /* The $$DOC{ref:'Model'} definition of this $$DOC{ref:'View'}. */
+      return this.model_;
+    },
+
+    createView: function(prop, opt_args) {
+      /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
+      var X = ( opt_args && opt_args.X ) || this.X;
+      var v = X.PropertyView.create({prop: prop, args: opt_args}, X);
+      this.addChild(v);
+      return v;
+    },
+
+    createActionView: function(action, opt_args) {
+      /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info
+        specifically for $$DOC{ref:'Action',usePlural:true}. */
+      var X = ( opt_args && opt_args.X ) || this.X;
+      var modelName = opt_args && opt_args.model_ ?
+        opt_args.model_ :
+        'ActionButton'  ;
+      var v = X[modelName].create({action: action}).copyFrom(opt_args);
+
+      this[action.name + 'View'] = v;
+
+      return v;
+    },
+
+    createRelationshipView: function(r, opt_args) {
+      var X = ( opt_args && opt_args.X ) || this.X;
+      return X.RelationshipView.create({
+        relationship: r,
+        args: opt_args
+      });
+    },
+
+    createTemplateView: function(name, opt_args) {
+      /*
+        Used by the $$DOC{ref:'Template',text:'$$propName'} sub-$$DOC{ref:'View'}
+        creation tag in $$DOC{ref:'Template',usePlural:true}.
+      */
+
+      // Can't call viewModel() here, since DetailView overrides it but relies
+      // on falling back on view's implementation. TODO(jacksonic): figure it out
+      var o = this.model_[name.constantize()];
+
+      if ( ! o ) throw 'Unknown View Name: ' + name;
+
+      var args = opt_args; // opt_args ? opt_args.clone() : {};
+//      args.data = this;
+
+      if ( Action.isInstance(o) )
+        var v = this.createActionView(o, args);
+      else if ( Relationship.isInstance(o) )
+        v = this.createRelationshipView(o, args);
+      else
+        v = this.createView(o, args);
+        v.data = this;
+      return v;
+    },
 
     focus: function() {
       /* Cause the view to take focus. */
       if ( this.$ && this.$.focus ) this.$.focus();
     },
 
+    addChild: function(child) {
+      /*
+        Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
+        a sub-$$DOC{ref:'View'} is created, add it to the tree with this method.
+      */
+      if ( child.toView_ ) child = child.toView_(); // Maybe the check isn't needed.
+      // Check prevents duplicate addChild() calls,
+      // which can happen when you use creatView() to create a sub-view (and it calls addChild)
+      // and then you write the View using TemplateOutput (which also calls addChild).
+      // That should all be cleaned up and all outputHTML() methods should use TemplateOutput.
+      if ( this.children.indexOf(child) != -1 ) return;
+
+      try {
+        child.parent = this;
+      } catch (x) { console.log(x); }
+
+      var children = this.children;
+      children.push(child);
+      this.children = children;
+
+      return this;
+    },
+
+    removeChild: function(child) {
+      /*
+        Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
+        a sub-$$DOC{ref:'View'} is destroyed, remove it from the tree with this method.
+      */
+      this.children.deleteI(child);
+      child.parent = undefined;
+
+      return this;
+    },
+
+    addChildren: function() {
+      /* Adds multiple children at once. */
+      Array.prototype.forEach.call(arguments, this.addChild.bind(this));
+
+      return this;
+    },
 
     addShortcut: function(key, callback, context) {
       /* Add a keyboard shortcut. */
@@ -762,7 +586,7 @@ CLASS({
     // TODO: make use new static_ scope when available
     nextID: function() {
       /* Convenience method to return unique DOM element ids. */
-      return "viewNew" + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
+      return "view" + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
     },
 
     addInitializer: function(f) {
@@ -993,7 +817,7 @@ CLASS({
       if ( DetailView.isInstance(this) &&
           this.model &&
           this.model.actions )
-        init(this.model.actions, this.childData$);
+        init(this.model.actions, this.data$);
 
       if ( found ) {
         console.assert(this.$, 'View must define outer id when using keyboard shortcuts: ' + this.name_);
@@ -1002,18 +826,16 @@ CLASS({
       }
     },
 
-    construct: function() {
-      this.SUPER();
-      this.updateHTML();
-    },
-    
     destroy: function() {
       /* Cleans up the DOM when regenerating content. You should call this before
          creating new HTML in your $$DOC{ref:'.toInnerHTML'} or $$DOC{ref:'.toHTML'}. */
-      // TODO: remove listeners   
+      // TODO: remove listeners
       this.invokeDestructors();
+      for ( var i = 0; i < this.children.length; i++ ) {
+        this.children[i].destroy();
+      }
+      this.children = [];
       delete this.instance_.$;
-      this.SUPER();
     },
 
     close: function() {
@@ -1026,44 +848,34 @@ CLASS({
 });
 
 
-
-// PropertyView
-
-
 CLASS({
-  name: 'BasePropertyView',
-  package: 'foam.experimental.views',
-  extendsModel: 'foam.experimental.views.BaseView',
-//   traits: ['foam.experimental.views.DataProviderTrait',
-//            'foam.experimental.views.DataConsumerTrait',
-//            'foam.experimental.views.ChildTreeTrait'],
-  traits: ['foam.experimental.views.DataConsumerTrait'],
-  
+  name: 'PropertyView',
+
+  extendsModel: 'View',
+
   documentation: function() {/*
-    Apply this trait to a $$DOC{ref:'BaseView'} (such as $$DOC{ref:'HTMLView'}).</p>
-    <p>Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one
+    Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one
     $$DOC{ref:'Property'}. The $$DOC{ref:'View'} chosen can be based off the
     $$DOC{ref:'Property.view',text:'Property.view'} value, the $$DOC{ref:'.innerView'} value, or
     $$DOC{ref:'.args'}.model_.
   */},
 
+//  imports: ['data$'],
+//  exports: ['propValue$ as data$'],
+
   properties: [
-    {
-      name: 'data',
-      postSet: function(old, nu) {
-        this.unbindData(old);
-        this.bindData(nu);
-      }
-    },    
     {
       name: 'prop',
       type: 'Property',
       documentation: function() {/*
           The $$DOC{ref:'Property'} for which to generate a $$DOC{ref:'View'}.
+      */}
+    },
+    {
+      name: 'propValue',
+      documentation: function() {/*
+          The value of the $$DOC{ref:'Property'} of $$DOC{ref:'.data'}.
       */},
-      postSet: function(old, nu) {
-        if (!old) this.bindData(this.data);
-      }
     },
     {
       name: 'parent',
@@ -1075,6 +887,18 @@ CLASS({
       documentation: function() {/*
         The $$DOC{ref:'View'} to use as the parent container for the new
         sub-$$DOC{ref:'View'}.
+      */}
+    },
+    {
+      name: 'data',
+      postSet: function(oldData, data) {
+        this.unbindData(oldData);
+        this.bindData(data);
+      },
+      documentation: function() {/*
+        The data to feed into the new sub-$$DOC{ref:'View'}. The data set here
+        is linked bi-directionally to the $$DOC{ref:'View'}. Typically this
+        data is the property value.
       */}
     },
     {
@@ -1102,7 +926,33 @@ CLASS({
   ],
 
   methods: {
-    
+
+    init: function() {
+      /* Sets up the new sub-$$DOC{ref:'View'} immediately. */
+      this.SUPER();
+
+      if ( this.args && this.args.model_ ) {
+        var model = FOAM.lookup(this.args.model_, this.X);
+        console.assert( model, 'Unknown View: ' + this.args.model_);
+        // HACK to make sure model specification makes it into the create
+        if (this.args.model) this.prop.model = this.args.model;
+        var view = model.create(this.prop, this.X);
+        delete this.args.model_;
+      } else {
+        view = this.createViewFromProperty(this.prop);
+      }
+
+      view.copyFrom(this.args);
+      view.parent = this.parent;
+      view.prop = this.prop;
+
+      // TODO(kgr): re-enable when improved
+      // if ( this.prop.description || this.prop.help ) view.tooltip = this.prop.description || this.prop.help;
+
+      this.view = view;
+      this.bindData(this.data);
+    },
+
     fromElement: function(e) {
       this.view.fromElement(e);
       return this;
@@ -1126,81 +976,35 @@ CLASS({
     },
 
     unbindData: function(oldData) {
-      if (! oldData || !this.prop ) return;
+      /* Unbind the data from the old view. */
+      var view = this.view;
+      if ( ! view || ! oldData || ! oldData.model_ ) return;
       var pValue = oldData.propertyValue(this.prop.name);
-      Events.unlink(pValue, this.childData$);
+      Events.unlink(pValue, view.data$);
+      //Events.unlink(pValue, this.propValue$);
     },
 
     bindData: function(data) {
-      if (! data || !this.prop) return;
+      /* Bind data to the new view. */
+      var view = this.view;
+      if ( ! view || ! data || ! data.model_ ) return;
       var pValue = data.propertyValue(this.prop.name);
-      Events.link(pValue, this.childData$);
+      Events.link(pValue, view.data$);
+      //Events.link(pValue, this.propValue$);
     },
 
+    toHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ return this.view.toHTML(); },
 
     toString: function() { /* Name info. */ return 'PropertyView(' + this.prop.name + ', ' + this.view + ')'; },
 
-    destroy: function() { /* Passthrough to $$DOC{ref:'.view'} */
-      this.view.destroy();
-      this.SUPER();
-    },
-    
-    construct: function() {
-      this.SUPER();
-          
-      if ( this.args && this.args.model_ ) {
-        var model = FOAM.lookup(this.args.model_, this.X);
-        console.assert( model, 'Unknown View: ' + this.args.model_);
-        // HACK to make sure model specification makes it into the create
-        if ( this.args.model ) this.prop.model = this.args.model;
-        var view = model.create(this.prop, this.X);
-        delete this.args.model_;
-      } else {
-        view = this.createViewFromProperty(this.prop);
-      }
-
-      view.copyFrom(this.args);
-      view.parent = this.parent;
-      view.prop = this.prop;
-
-      // TODO(kgr): re-enable when improved
-      // if ( this.prop.description || this.prop.help ) view.tooltip = this.prop.description || this.prop.help;
-
-      this.view = view;
-      //this.bindData(this.data);
-    }
-  },
-  
-});
-
-CLASS({
-  name: 'PropertyView',
-  extendsModel: 'foam.experimental.views.BasePropertyView',
-  traits: ['foam.experimental.views.HTMLViewTrait',
-           'foam.experimental.views.HTMLPropertyViewTrait'], 
-
-  documentation: function() {/*
-    Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one
-    $$DOC{ref:'Property'}. The $$DOC{ref:'View'} chosen can be based off the
-    $$DOC{ref:'Property.view',text:'Property.view'} value, the $$DOC{ref:'.innerView'} value, or
-    $$DOC{ref:'.args'}.model_.
-  */},
-});
-
-CLASS({
-  name: 'HTMLPropertyViewTrait',
-  package: 'foam.experimental.views',
-  
-  methods: {
-    toHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ return this.view.toHTML(); },
     initHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ this.view.initHTML(); },
-  },
-  
+
+    destroy: function() { /* Passthrough to $$DOC{ref:'.view'} */
+      this.SUPER();
+      this.view.destroy();
+    }
+  }
 });
-
-
-
-
 
 
 // http://www.google.com/design/spec/components/tooltips.html#tooltips-usage
@@ -1496,7 +1300,6 @@ CLASS({
   label: 'Text Field',
 
   extendsModel: 'View',
-  traits: ['foam.experimental.views.DataConsumerTrait'],
 
   documentation: function() { /*
       The default $$DOC{ref:'View'} for a string. Supports autocomplete
@@ -1756,7 +1559,6 @@ CLASS({
 });
 
 
-
 CLASS({
   name: 'TextAreaView',
 
@@ -1779,11 +1581,10 @@ CLASS({
 });
 
 
-
 // TODO: add ability to set CSS class and/or id
 CLASS({
   name: 'ActionButton',
-  traits: ['foam.experimental.views.DataConsumerTrait'],
+
   extendsModel: 'View',
 
   properties: [
@@ -1793,6 +1594,9 @@ CLASS({
         old && old.removeListener(this.render)
         nu.addListener(this.render);
       }
+    },
+    {
+      name: 'data'
     },
     {
       name: 'className',
@@ -1958,7 +1762,6 @@ CLASS({
 });
 
 
-
 CLASS({
   name: 'AbstractNumberFieldView',
 
@@ -2015,7 +1818,6 @@ CLASS({
     valueToText: function(value) { return value ? value : '0'; }
   }
 });
-
 
 
 
@@ -2082,6 +1884,7 @@ CLASS({
   ]
 });
 
+
 CLASS({
   name: 'RegressionTestResultView',
   label: 'Regression Test Result View',
@@ -2146,6 +1949,7 @@ CLASS({
     */}
   ]
 });
+
 
 CLASS({
   name: 'UITestResultView',
@@ -2289,6 +2093,7 @@ CLASS({
     }
   }
 });
+
 
 CLASS({
   name: 'SlidePanelView',

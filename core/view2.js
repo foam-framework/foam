@@ -2806,7 +2806,6 @@ CLASS({
 
 CLASS({
   extendsModel: 'View',
-  traits: ['foam.experimental.views.DataConsumerTrait'],
 
   name: 'CollapsibleView',
 

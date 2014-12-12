@@ -19,7 +19,6 @@ CLASS({
   name: 'AbstractDAOView',
 
   extendsModel: 'View',
-  traits: ['foam.experimental.views.DataConsumerTrait'],
 
   documentation: function() { /*
      <p>For $$DOC{ref:'View',usePlural:true} that take data items from a $$DOC{ref:'DAO'}
@@ -34,11 +33,15 @@ CLASS({
   properties: [
     {
       name: 'data',
-      postSet: function(old, nu) {
-        if ( this.dao !== nu ) {
-          this.dao = nu;
+      postSet: function(oldDAO, dao) {
+        if ( this.dao !== dao ) {
+          this.dao = dao;
         }
-      }
+      },
+      documentation: function() { /*
+          Sets the $$DOC{ref:'DAO'} to render items from. Use $$DOC{ref:'.data'}
+          or $$DOC{ref:'.dao'} interchangeably.
+      */}
     },
     {
       model_: 'DAOProperty',
@@ -47,7 +50,9 @@ CLASS({
       help: 'An alias for the data property.',
       onDAOUpdate: 'onDAOUpdate',
       postSet: function(oldDAO, dao) {
-        if ( this.data !== dao ) {
+        if (!dao) {
+          this.data = "";
+        } else if ( this.data !== dao ) {
           this.data = dao;
         }
       },
@@ -60,8 +65,7 @@ CLASS({
 
   methods: {
     onDAOUpdate: function() { /* Implement this $$DOC{ref:'Method'} in
-          sub-models to respond to changes in $$DOC{ref:'.dao'}. */ 
-    },          
+          sub-models to respond to changes in $$DOC{ref:'.dao'}. */ }
   }
 });
 
@@ -327,7 +331,7 @@ CLASS({
       name: 'onRemove',
       code: function(src, topic, obj) {
         var self = this;
-        this.parentData = this.data.removeF({
+        this.data = this.data.removeF({
           f: function(o) {
             return o === self.property.f(obj);
           }
@@ -447,9 +451,7 @@ CLASS({
       }
       d.select({put: function(o) {
         if ( this.mode === 'read-write' ) o = o.model_.create(o, this.X); //.clone();
-        var X = this.X.sub({ data$: this.X.SimpleValue.create(o, this.X) });
-        var view = this.rowView({ model: o.model_}, X);
-//        var view = this.rowView({ data: o, model: o.model_}, X);
+        var view = this.rowView({data: o, model: o.model_}, this.X);
         // TODO: Something isn't working with the Context, fix
         view.DAO = this.dao;
         if ( this.mode === 'read-write' ) {

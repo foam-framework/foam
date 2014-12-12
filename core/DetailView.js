@@ -15,16 +15,13 @@
  * limitations under the License.
  */
 
- // DetailView
- 
- 
-
 CLASS({
-  name: 'BaseDetailView',
-  extendsModel: 'foam.experimental.views.BaseView',
-  traits: ['foam.experimental.views.DataConsumerTrait'],
-  package: 'foam.experimental.views',
-  
+  name: 'DetailView',
+  extendsModel: 'View',
+
+  imports: [ 'data' ],
+  //exports: [ 'data' ],
+
   documentation:function() {/*
     When a view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'DetailView'}
     is the place to start. Either using $$DOC{ref:'DetailView'} directly, implementing
@@ -37,34 +34,54 @@ CLASS({
     display the current values of your instance. Set $$DOC{ref:'.mode',usePlural:true}
     to indicate read-only if desired.
     </p>
+    <p>$$DOC{ref:'Model',usePlural:true} may specify a .toDetailHTML() $$DOC{ref:'Method'} or
+    $$DOC{ref:'Template'} to render their contents instead of
+    $$DOC{ref:'DetailView.defaultToHTML'}.
+    </p>
+    <p>For each $$DOC{ref:'Property'} in the $$DOC{ref:'.data'} instance specified,
+    a $$DOC{ref:'PropertyView'} is created that selects the appropriate $$DOC{ref:'View'}
+    to construct.
   */},
 
   properties: [
     {
-      name: 'data',
+      name: 'className',
+      defaultValue: 'detailView',
       documentation: function() {/*
-        Handles a model change, which requires that the child views be torn down.
-        If the data.model_ remains the same, the new data is simply propagated to
-        the existing children.
-      */},
-      postSet: function(old, nu) {
-        if ( nu && nu.model_ && this.model !== nu.model_ ) {
-          // destroy children
-          this.destroy();
-          // propagate data change (nowhere)
-          this.model = nu.model_;
-          this.childData = nu;
-          // rebuild children with new data
-          this.construct();
-        } else {
-          this.childData = nu; // just move the new data along
+          The CSS class names to use for HTML $$DOC{ref:'View',usePlural:true}.
+          Separate class names with spaces. Each instance of a $$DOC{ref:'DetailView'}
+          may have different classes specified.
+      */}
+    },
+    {
+      name:  'data',
+      postSet: function(_, data) {
+        if ( data && data.model_ && this.model !== data.model_ ) {
+          this.model = data.model_;
         }
-        this.onValueChange_(); // sub-classes may handle to change as well
-      }
+        this.onValueChange_();
+      },
+      documentation: function() {/*
+        The $$DOC{ref:'Model'} to view. The $$DOC{ref:'Property',usePlural:true}
+        of this $$DOC{ref:'Model'} instance will be examined and a $$DOC{ref:'PropertyView'}
+        created for each with editors for the current value.
+        </p>
+        <p>Sub-views of $$DOC{ref:'DetailView'} are passed this $$DOC{ref:'.data'}
+        property, from which $$DOC{ref:'PropertyView'} will extract its named
+        $$DOC{ref:'Property'}
+        and bind the property to the sub-view $$DOC{ref:'DetailView.data'}.
+      */}
     },
     {
       name:  'model',
       type:  'Model',
+      postSet: function(_, m) {
+        if ( this.$ ) {
+          this.children = []; // TODO(jacksonic): Why not updateHTML() instead of this? no destroy()!
+          this.$.outerHTML = this.toHTML();
+          this.initHTML();
+        }
+      },
       documentation: function() {/*
         The $$DOC{ref:'.model'} is extracted from $$DOC{ref:'.data'}, or can be
         set in advance when the type of $$DOC{ref:'.data'} is known. The $$DOC{ref:'Model'}
@@ -102,7 +119,6 @@ CLASS({
   ],
 
   methods: {
-
     // Template Method
     onValueChange_: function() { /* Override with value update code. */ },
 
@@ -115,68 +131,21 @@ CLASS({
          See $$DOC{ref:'View.createTemplateView'}. */
       if (this.viewModel()) {
         var o = this.viewModel().getFeature(name);
-        if ( o ) { 
-          if (Action.isInstance(o))
-            return this.createActionView(o, opt_args);
+        if ( o ) {
+          var v;
+          if ( Action.isInstance(o) )
+            v = this.createActionView(o, opt_args);
+          else if ( Relationship.isInstance(o) )
+            v = this.createRelationshipView(o, opt_args);
           else
-            return this.createView(o, opt_args);
+            v = this.createView(o, opt_args);
+            v.data$ = this.data$;
+  
+          return v;
         }
       }
       return this.SUPER(name, opt_args);
-    }
-
-  }
-});
-
-CLASS({
-  name: 'DetailView',
-  extendsModel: 'foam.experimental.views.BaseDetailView',
-  traits: ['foam.experimental.views.HTMLViewTrait',
-           'foam.experimental.views.HTMLDetailViewTrait'],
-
-  documentation:function() {/*
-    When a view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'DetailView'}
-    is the place to start. Either using $$DOC{ref:'DetailView'} directly, implementing
-    a .toDetailHTML() $$DOC{ref:'Method'} in your model, or extending
-    $$DOC{ref:'DetailView'} to add custom formatting.
-    </p>
-    <p>Set the $$DOC{ref:'.data'} $$DOC{ref:'Property'} to the $$DOC{ref:'Model'} instance
-    you want to display. $$DOC{ref:'DetailView'} will extract the $$DOC{ref:'Model'}
-    definition, create editors for the $$DOC{ref:'Property',usePlural:true}, and
-    display the current values of your instance. Set $$DOC{ref:'.mode',usePlural:true}
-    to indicate read-only if desired.
-    </p>
-    <p>$$DOC{ref:'Model',usePlural:true} may specify a .toDetailHTML() $$DOC{ref:'Method'} or
-    $$DOC{ref:'Template'} to render their contents instead of
-    $$DOC{ref:'DetailView.defaultToHTML'}.
-    </p>
-    <p>For each $$DOC{ref:'Property'} in the $$DOC{ref:'.data'} instance specified,
-    a $$DOC{ref:'PropertyView'} is created that selects the appropriate $$DOC{ref:'View'}
-    to construct.
-  */},
-});
-
-CLASS({
-  name: 'HTMLDetailViewTrait',
-  package: 'foam.experimental.views',
-  
-  documentation:function() {/*
-    The HTML implementation of $$DOC{ref:'foam.experimental.views.DetailView'}.
-  */},
-
-  properties: [
-    {
-      name: 'className',
-      defaultValue: 'detailView',
-      documentation: function() {/*
-          The CSS class names to use for HTML $$DOC{ref:'View',usePlural:true}.
-          Separate class names with spaces. Each instance of a $$DOC{ref:'DetailView'}
-          may have different classes specified.
-      */}
     },
-  ],
-
-  methods: {
 
     titleHTML: function() {
       /* Title text HTML formatter */
@@ -250,13 +219,17 @@ CLASS({
         if ( prop.hidden ) continue;
 
         var view = this.createView(prop);
+        view.data$ = this.data$;
         str += this.rowToHTML(prop, view);
       }
 
       str += this.endForm();
 
       if ( this.showRelationships ) {
-        var view = this.X.RelationshipsView.create();
+        var view = this.X.RelationshipsView.create({
+          data: this.data
+        });
+        view.data$ = this.data$;
         str += view.toHTML();
         this.addChild(view);
       }
@@ -269,53 +242,45 @@ CLASS({
 });
 
 
-
-// UpdateDetailView
-
-
 CLASS({
   name: 'UpdateDetailView',
-  extendsModel: 'foam.experimental.views.BaseUpdateDetailView',
-  traits: ['foam.experimental.views.HTMLViewTrait',
-           'foam.experimental.views.HTMLDetailViewTrait']
-});
+  extendsModel: 'DetailView',
 
-CLASS({
-  name: 'BaseUpdateDetailView',
-  extendsModel: 'foam.experimental.views.BaseDetailView',
-  package: 'foam.experimental.views',
-  
-  documentation:function() {/*
-    UNTESTED: proof of concept for data handling
-  */},
-
-  imports: ['DAO as dao'],
+  imports: [
+    'DAO as dao'
+  ],
 
   properties: [
     {
-      name: 'data',
+      name: 'rawData',
+      documentation: 'The uncloned original input data.',
       postSet: function(old, nu) {
-        // since we're cloning the propagated data, we have to listen
-        // for changes to the data and clone again 
-        if ( old ) old.removeListener(this.parentContentsChanged);
-        if ( nu ) nu.addListener(this.parentContentsChanged);
-        
-        if (!nu) return;
-        // propagate a clone and build children
-        this.childData = nu.deepClone();
-        this.originalData = nu.deepClone();
-  
-        this.data.addListener(function() {
-          // The user is making edits. Don't listen for parent changes,
-          // since we no longer want to react to updates to it.
-          this.version++;
-          this.data.removeListener(this.parentContentsChanged);
-        }.bind(this));
+        if ( old ) old.removeListener(this.rawUpdate);
+        if ( nu ) nu.addListener(this.rawUpdate);
       }
     },
     {
       name: 'originalData',
-      documentation: 'A clone of the parent data, for comparison with edits.'
+      documentation: 'A clone of the input data, for comparison with edits.'
+    },
+    {
+      name: 'data',
+      preSet: function(_, v) {
+        if ( ! v ) return;
+        this.rawData = v;
+        return v.deepClone();
+      },
+      postSet: function(_, data) {
+        if ( ! data ) return;
+        this.originalData = data.deepClone();
+        if ( ! this.model && data && data.model_ ) this.model = data.model_;
+        data.addListener(function() {
+          // The user is making edits. Drop rawData, since we no longer want
+          // to react to updates to it.
+          this.version++;
+          this.rawData = '';
+        }.bind(this));
+      }
     },
     {
       name: 'dao'
@@ -335,15 +300,13 @@ CLASS({
     }
   ],
 
-  
   listeners: [
     {
-      name: 'parentContentsChanged',
+      name: 'rawUpdate',
       code: function() {
-        // If this listener fires, the parent data has changed internally
-        // and the user hasn't edited our copy yet, so keep the clones updated.
-        this.childData.copyFrom(this.data);
-        this.originalData.copyFrom(this.data);
+        // If this listener fires, the raw data updated and the user hasn't
+        // changed anything.
+        this.data = this.rawData;
       }
     }
   ],
@@ -373,27 +336,71 @@ CLASS({
     {
       name:  'cancel',
       help:  'Cancel update.',
-      isAvailable: function() { this.version; return ! this.originalData.equals(this.childData); },
+      isAvailable: function() { this.version; return ! this.originalData.equals(this.data); },
       action: function() { this.stack.back(); }
     },
     {
       name:  'back',
-      isAvailable: function() { this.version; return this.originalData.equals(this.childData); },
+      isAvailable: function() { this.version; return this.originalData.equals(this.data); },
       action: function() { this.stack.back(); }
     },
     {
       name: 'reset',
-      isAvailable: function() { this.version; return ! this.originalData.equals(this.childData); },
-      action: function() { this.childData.copyFrom(this.originalData); } // or do we want data?
+      isAvailable: function() { this.version; return ! this.originalData.equals(this.data); },
+      action: function() { this.data.copyFrom(this.originalData); }
     }
   ]
 });
 
 
+CLASS({
+  name: 'RelationshipView',
+  extendsModel: 'View',
 
+  properties: [
+    {
+      name: 'relationship',
+      required: true
+    },
+    {
+      name: 'args'
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'viewModel',
+      defaultValue: 'DAOController'
+    },
+    {
+      name: 'data',
+      postSet: function() {
+        this.updateView();
+      }
+    },
+    {
+      name: 'view'
+    }
+  ],
 
-// RelationshipView
-
+  methods: {
+    init: function(args) {
+      this.SUPER(args);
+      if ( this.args && this.args.model_ ) this.viewModel = this.args.model_
+    },
+    updateView: function() {
+      if ( this.view ) this.view.destroy();
+      this.view = this.viewModel({
+        dao: this.data[this.relationship.name],
+        model: this.relationship.relatedModel
+      }, this.X).copyFrom(this.args);
+      if ( this.$ ) {
+        this.updateHTML();
+      }
+    }
+  },
+  templates: [
+    function toInnerHTML() {/* %%view */}
+  ]
+});
 
 
 CLASS({
