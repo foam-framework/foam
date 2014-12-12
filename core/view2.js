@@ -938,6 +938,11 @@ CLASS({
   name:  'ToolbarView',
   label: 'Toolbar',
 
+  requires: [
+    'ActionButton',
+    'MenuSeparator'
+  ],
+
   extendsModel: 'View',
 
   properties: [
@@ -1055,12 +1060,12 @@ CLASS({
     },
 
     addAction: function(a) {
-      var view = ActionButton.create({ action: a, data$: this.data$ });
+      var view = this.ActionButton.create({ action: a, data$: this.data$ });
       if ( a.children.length > 0 ) {
         var self = this;
         view.action = a.clone();
         view.action.action = function() {
-          var toolbar = ToolbarView.create({
+          var toolbar = this.X.ToolbarView.create({
             data$:    self.data$,
             document: self.document,
             left:     view.$.offsetLeft,
@@ -1076,7 +1081,7 @@ CLASS({
       actions.forEach(this.addAction.bind(this));
     },
     addSeparator: function() {
-      this.addChild(MenuSeparator.create());
+      this.addChild(this.MenuSeparator.create());
     }
   }
 });
