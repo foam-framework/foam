@@ -667,7 +667,7 @@ CLASS({
           var e = this.X.$(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           DOM.setClass(e, className, predicate());
-        });
+        }.bind(this));
       }.bind(this));
 
       return opt_id;
