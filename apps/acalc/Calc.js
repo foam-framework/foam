@@ -363,6 +363,11 @@ CLASS({
     combination: function(n, r) { return this.permutation(n, r) / this.factorial(r); },
     error: function() {
       setTimeout(function() { flare($$('calc-display')[0], '#f44336' /* red */); }, 100);
+      this.history.put(History.create(this));
+      this.a1 = 0;
+      this.a2 = '';
+      this.op = DEFAULT_OP;
+      this.editable = true;
     },
     init: function() {
       this.SUPER();
@@ -402,6 +407,7 @@ CLASS({
       // help: 'All Clear.',
       keyboardShortcuts: [ 65 /* a */, 67 /* c */ ],
       action: function() {
+        this.a1 = '0';
         this.a2 = '';
         this.editable = true;
         this.op = DEFAULT_OP;
