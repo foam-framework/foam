@@ -70,6 +70,7 @@ var files = [
   [ 'Diagramming', IN_BROWSER ],
   'HTMLParser',
   'mlang',
+  'mlang2',
   'QueryParser',
   'search',
   'oam',

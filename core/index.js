@@ -1319,7 +1319,7 @@ var MDAO = Model.create({
       // Clone the options to prevent 'limit' from being mutated in the original.
       if ( options ) options = {__proto__: options};
 
-      if ( DescribeExpr.isInstance(sink) ) {
+      if ( ExplainExpr.isInstance(sink) ) {
         var plan = this.index.plan(this.root, sink.arg1, options);
         sink.plan = 'cost: ' + plan.cost + ', ' + plan.toString();
         sink && sink.eof && sink.eof();
