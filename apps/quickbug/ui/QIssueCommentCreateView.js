@@ -2,19 +2,32 @@ CLASS({
   name: 'QIssueCommentCreateView',
   extendsModel: 'DetailView',
 
+  imports: [
+    'browser'
+  ],
+
+  requires: [
+    'ActionButton',
+    'PropertyView',
+    'QIssueComment',
+    'QIssueCommentUpdate',
+    'QIssueCommentUpdateDetailView',
+    'TextFieldView'
+  ],
+
   properties: [
-    { name: 'model', factory: function() { return this.X.QIssueComment; } },
+    { name: 'model', factory: function() { return this.QIssueComment; } },
     { model_: 'BooleanPropety', name: 'saving', defaultValue: false },
     { name: 'issue' },
-    { name: 'errorView', factory: function() { return TextFieldView.create({ mode: 'read-only' }); } },
+    { name: 'errorView', factory: function() { return this.TextFieldView.create({ mode: 'read-only' }); } },
     { name: 'dao' }
   ],
 
   methods: {
     makeUpdatesView: function() {
-      return this.X.PropertyView.create({
+      return this.PropertyView.create({
         innerView: 'QIssueCommentUpdateDetailView',
-        prop: this.X.QIssueComment.UPDATES
+        prop: this.QIssueComment.UPDATES
       });
       return view;
     }
@@ -50,7 +63,7 @@ CLASS({
         convertArray('cc');
 
         var comment = this.data.clone();
-        comment.updates = this.X.QIssueCommentUpdate.create(diff);
+        comment.updates = this.QIssueCommentUpdate.create(diff);
 
         // TODO: UI feedback while saving.
 
@@ -72,7 +85,7 @@ CLASS({
     {
       name: 'discard',
       isEnabled: function() { return ! this.saving; },
-      action: function() { this.X.browser.location.id = ''; }
+      action: function() { this.browser.location.id = ''; }
     }
   ]
 });
