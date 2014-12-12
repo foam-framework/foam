@@ -426,7 +426,10 @@ CLASS({
       label: '.',
       keyboardShortcuts: [ 110, 190 ],
       action: function() {
-        if ( this.a2.toString().indexOf('.') == -1 ) {
+        if ( ! this.editable ) {
+          this.push('0.');
+          this.editable = true;
+        } else if ( this.a2.toString().indexOf('.') == -1 ) {
           this.a2 = (this.a2 ? this.a2 : '0') + '.';
           this.editable = true;
         }
@@ -437,7 +440,7 @@ CLASS({
       label: '=',
       keyboardShortcuts: [ 187 /* '=' */, 13 /* <enter> */ ],
       action: function() {
-        if ( this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
+        if ( typeof(this.a2) === 'string' && this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
         this.push(this.op(parseFloat(this.a1), parseFloat(this.a2)));
         this.editable = false;
       }
