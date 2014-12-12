@@ -364,6 +364,11 @@ CLASS({
     combination: function(n, r) { return this.permutation(n, r) / this.factorial(r); },
     error: function() {
       setTimeout(function() { flare($$('calc-display')[0], '#f44336' /* red */); }, 100);
+      this.history.put(History.create(this));
+      this.a1 = 0;
+      this.a2 = '';
+      this.op = DEFAULT_OP;
+      this.editable = true;
     },
     init: function() {
       this.SUPER();
@@ -403,6 +408,7 @@ CLASS({
       // help: 'All Clear.',
       keyboardShortcuts: [ 65 /* a */, 67 /* c */ ],
       action: function() {
+        this.a1 = '0';
         this.a2 = '';
         this.editable = true;
         this.op = DEFAULT_OP;
@@ -421,7 +427,10 @@ CLASS({
       label: '.',
       keyboardShortcuts: [ 110, 190 ],
       action: function() {
-        if ( this.a2.toString().indexOf('.') == -1 ) {
+        if ( ! this.editable ) {
+          this.push('0.');
+          this.editable = true;
+        } else if ( this.a2.toString().indexOf('.') == -1 ) {
           this.a2 = (this.a2 ? this.a2 : '0') + '.';
           this.editable = true;
         }
@@ -432,7 +441,7 @@ CLASS({
       label: '=',
       keyboardShortcuts: [ 187 /* '=' */, 13 /* <enter> */ ],
       action: function() {
-        if ( this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
+        if ( typeof(this.a2) === 'string' && this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
         this.push(this.op(parseFloat(this.a1), parseFloat(this.a2)));
         this.editable = false;
       }
