@@ -99,6 +99,7 @@ function formatNumber(n) {
                     .replace( /(?:(\d+\.\d*[1-9])|(\d+)(?:\.))(?:(?:0+)$|(?:0*)(e.*)$|$)/ ,"$1$2$3");
 }
 
+
 CLASS({
   name: 'History',
   properties: [
@@ -265,7 +266,7 @@ CLASS({
       top: 100%;
       transition: top 0.3s ease;
       width: 100%;
-      padding-left: 140px;
+      padding-left: 90px;
     }
 
     .calc-display {
