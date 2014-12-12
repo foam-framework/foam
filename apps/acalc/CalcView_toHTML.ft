@@ -1,7 +1,7 @@
 <div style="position: relative;z-index: 100;">
   <div style="position: absolute;">
-    <span style="top: 0;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad">RAD</span>
-    <span style="top: 0;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg">DEG</span>
+    <span style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad">RAD</span>
+    <span style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg">DEG</span>
   </div>
 </div>
 
@@ -45,11 +45,13 @@
   this.X.window.addEventListener('resize', move);
   // Add mousewhell scrolling.
   this.X.document.addEventListener('mousewheel', EventService.framed(function(e) {
+console.log('e: ', e);
     var inner$ = self.$.querySelector('.inner-calc-display');
     var outer$ = self.$.querySelector('.calc-display');
     var outer  = window.getComputedStyle(outer$);
     var inner  = window.getComputedStyle(inner$);
-    var top = toNum(inner$.style.top);
+    var top    = toNum(inner$.style.top);
+console.log('top: ', top);
     inner$.style.top = Math.min(0, Math.max(toNum(outer.height)-toNum(inner.height)-11, top-e.deltaY)) + 'px';
   }));
 %>
