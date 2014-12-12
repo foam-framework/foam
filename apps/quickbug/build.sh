@@ -20,6 +20,7 @@ cat \
   ../../core/context.js \
   ../../core/JSONParser.js \
   ../../core/TemplateUtil.js \
+  ../../core/ChromeEval.js \
   ../../core/FOAM.js \
   ../../core/FObject.js \
   ../../core/BootstrapModel.js \
