@@ -731,7 +731,13 @@ CLASS({
 function flare(e, color) {
   var w = e.clientWidth;
   var h = e.clientHeight;
-  var c = foam.graphics.Circle.create({r: 0, width: w, height: h, x: w, y: h, color: color});
+  var c = foam.graphics.Circle.create({
+    r: 0,
+    width: w,
+    height: h,
+    x: w,
+    y: h,
+    color: color});
   var view = c.toView_();
   var div = document.createElement('div');
   var dStyle = div.style;
