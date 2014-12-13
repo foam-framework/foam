@@ -705,7 +705,7 @@ CLASS({
           this.halo.y = this.height/2;
           this.halo.r = Math.min(28, Math.min(this.width, this.height)/2)+0.5;
           this.halo.alpha = 1;
-        }.bind(this), Movement.easeIn(1), function() {
+        }.bind(this), Movement.easeIn(0.2), function() {
           if ( this.state_ === 'cancelled' ) {
             this.state_ = 'pressed';
             this.onMouseUp();
@@ -814,10 +814,10 @@ CLASS({
 
       c.clearRect(0, 0, this.width, this.height);
 
-      var r = this.width/2;
+      var r = Math.min(this.width, this.height)/2;
       c.fillStyle = this.background;
       c.beginPath();
-      c.arc(r, r, r, 0, Math.PI*2, true);
+      c.arc(this.width/2, this.height/2, r, 0, Math.PI*2, true);
       c.closePath();
       c.fill();
     },
