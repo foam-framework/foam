@@ -514,8 +514,8 @@ CLASS({
 var CalcButton = ActionButtonCView2.xbind({
   color:      'white',
   background: '#4b4b4b',
-  width:      66,
-  height:     60,
+  width:      75,
+  height:     75,
   font:       '300 32px RobotoDraft'
 });
 X.registerModel(CalcButton, 'ActionButton');
@@ -635,7 +635,7 @@ CLASS({
       this.X.registerModel(CalcButton.xbind({
         background: '#777',
         width:  74,
-        height: 50,
+        height: 60,
         font:   '300 24px RobotoDraft'
       }), 'ActionButton');
       %>
@@ -659,8 +659,8 @@ CLASS({
           <%
           this.X.registerModel(CalcButton.xbind({
             background: 'rgb(64, 189, 158)',
-            width:  44,
-            height: 44,
+            width:  50,
+            height: 50,
             font:   '300 20px RobotoDraft'
           }), 'ActionButton');
           %>
@@ -698,7 +698,7 @@ CLASS({
           <%
           this.X.registerModel(this.X.ActionButton.xbind({
             width: 70,
-            height: 50,
+            height: 60,
             color:      'rgb(119, 119, 119)',
             background: 'rgb(29, 233, 182)',
             font:       '300 20px RobotoDraft'
