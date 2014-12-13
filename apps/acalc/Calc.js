@@ -568,12 +568,12 @@ CLASS({
           <div class="edge2"></div>
           <%= this.SlidePanelView.create({
             minWidth: 250,
-            minPanelWidth: 280,
+            minPanelWidth: 200,
             panelRatio: 0.5,
             mainView: 'MainButtonsView',
             panelView: {
               factory_: 'SlidePanelView',
-              minWidth: 250,
+              minWidth: 200,
               minPanelWidth: 100,
               panelRatio: 0.2,
               mainView: 'SecondaryButtonsView',
