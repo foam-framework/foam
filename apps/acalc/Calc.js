@@ -193,7 +193,7 @@ CLASS({
     .calc-display, .calc-display:focus {
       border: none;
       letter-spacing: 1px;
-      line-height: 26px;
+      line-height: 28px;
       margin: 0;
       min-width: 140px;
       padding: 0 25pt 2pt 25pt;
@@ -233,7 +233,6 @@ CLASS({
       flex-wrap: nowrap;
       flex: 1 1 100%;
       justify-content: space-between;
-      xxxxxxxxxxxalign-items: stretch;
     }
 
     .button {
@@ -684,7 +683,7 @@ function flare(e, color) {
   view.initHTML();
   Movement.compile([
     // MYSTERY(kgr): I don't know why the 1.25 is needed.
-    [500, function() { c.r = 1.25 * Math.sqrt(w*w, h*h); }],
+    [400, function() { c.r = 1.25 * Math.sqrt(w*w, h*h); }],
     [200, function() { c.alpha = 0; }],
     function() { div.remove(); }
   ])();
