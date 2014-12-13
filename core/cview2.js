@@ -703,7 +703,7 @@ CLASS({
         this.X.animate(150, function() {
           this.halo.x = this.width/2;
           this.halo.y = this.height/2;
-          this.halo.r = Math.min(28, Math.min(this.width, this.height)/2)+0.5;
+          this.halo.r = Math.min(28, Math.min(this.width, this.height)/2);
           this.halo.alpha = 1;
         }.bind(this), Movement.easeIn(0.2), function() {
           if ( this.state_ === 'cancelled' ) {
