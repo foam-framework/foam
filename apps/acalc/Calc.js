@@ -697,7 +697,7 @@ CLASS({
     function toHTML() {/*
           <%
           this.X.registerModel(this.X.ActionButton.xbind({
-            width: 50,
+            width: 70,
             height: 50,
             color:      'rgb(119, 119, 119)',
             background: 'rgb(29, 233, 182)',
