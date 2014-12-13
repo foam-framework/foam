@@ -16,18 +16,18 @@
   <div class='keypad'>
   <div class="edge2"></div>
   <%= this.SlidePanelView.create({
-    minWidth: 360,
-     minPanelWidth: 400,
-     panelRatio: 0.4,
-     mainView: 'MainButtonsView',
-     panelView: {
-       factory_: 'SlidePanelView',
-       minWidth: 360,
-       minPanelWidth: 140,
-       panelRatio: 0.2,
-       mainView: 'SecondaryButtonsView',
-       panelView: 'TertiaryButtonsView'
-     }
+    minWidth: 250,
+    minPanelWidth: 280,
+    panelRatio: 0.5,
+    mainView: 'MainButtonsView',
+    panelView: {
+      factory_: 'SlidePanelView',
+      minWidth: 250,
+      minPanelWidth: 100,
+      panelRatio: 0.2,
+      mainView: 'SecondaryButtonsView',
+      panelView: 'TertiaryButtonsView'
+    }
    }) %>
   </div>
 </div>

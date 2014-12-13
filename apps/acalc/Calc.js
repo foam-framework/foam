@@ -31,6 +31,7 @@ function invTrigFn(f) {
     return this.degreesMode ? f(a) / Math.PI * 180 : f(a);
   };
 }
+
 /** Make a Binary Action. **/
 function binaryOp(name, keys, f, sym) {
   f.toString = function() { return sym; };
@@ -149,7 +150,7 @@ CLASS({
     body {
       -webkit-user-select: none;
       font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
-      font-size: 28px;
+      font-size: 20px;
       font-weight: 300;
       height: 100%;
       margin: 0;
@@ -179,9 +180,9 @@ CLASS({
 
     .deg, .rad {
       color: #b3b3b3;
-      font-size: 18px;
+      font-size: 16px;
       opacity: 0;
-      padding-left: 12px;
+      padding-left: 8px;
       transition: opacity 0.8s;
     }
 
@@ -192,9 +193,9 @@ CLASS({
     .calc-display, .calc-display:focus {
       border: none;
       letter-spacing: 1px;
-      line-height: 36px;
+      line-height: 26px;
       margin: 0;
-      min-width: 204px;
+      min-width: 140px;
       padding: 0 25pt 2pt 25pt;
       text-align: right;
     }
@@ -223,7 +224,7 @@ CLASS({
     .calc .buttons {
       flex: 1 1 100%;
       width: 100%;
-      height: 350px;
+      height: 300px;
     }
 
     .button-row {
@@ -232,7 +233,7 @@ CLASS({
       flex-wrap: nowrap;
       flex: 1 1 100%;
       justify-content: space-between;
-      align-items: stretch;
+      xxxxxxxxxxxalign-items: stretch;
     }
 
     .button {
@@ -304,7 +305,7 @@ CLASS({
     }
 
     .alabel {
-      font-size: 44px;
+      font-size: 34px;
       color: #b3b3b3
     }
   */}],
@@ -514,8 +515,8 @@ CLASS({
 var CalcButton = ActionButtonCView2.xbind({
   color:      'white',
   background: '#4b4b4b',
-  width:      95,
-  height:     85,
+  width:      66,
+  height:     60,
   font:       '300 32px RobotoDraft'
 });
 X.registerModel(CalcButton, 'ActionButton');
@@ -570,7 +571,10 @@ CLASS({
         </div>
       <%
       this.X.registerModel(CalcButton.xbind({
-        background: '#777', width: 100, height: 70
+        background: '#777',
+        width:  74,
+        height: 50,
+        font:   '300 24px RobotoDraft'
       }), 'ActionButton');
       %>
         <div class="button-column rhs-ops" style="flex-grow: 1">
@@ -593,8 +597,8 @@ CLASS({
           <%
           this.X.registerModel(CalcButton.xbind({
             background: 'rgb(64, 189, 158)',
-            width:  60,
-            height: 58,
+            width:  44,
+            height: 44,
             font:   '300 20px RobotoDraft'
           }), 'ActionButton');
           %>
@@ -631,8 +635,8 @@ CLASS({
     function toHTML() {/*
           <%
           this.X.registerModel(this.X.ActionButton.xbind({
-            width: 70,
-            height: 70,
+            width: 50,
+            height: 50,
             color:      'rgb(119, 119, 119)',
             background: 'rgb(29, 233, 182)',
             font:       '300 20px RobotoDraft'
@@ -656,10 +660,7 @@ CLASS({
   extendsModel: 'DetailView',
   templates: [
     function toHTML() {/*
-      <div class="history">
-        {{this.data.op}} {{this.data.a2}}
-        <% if ( this.data.op.toString() ) { %><hr><% } %>
-      </div>
+      <div class="history">{{this.data.op}} {{this.data.a2}}<% if ( this.data.op.toString() ) { %><hr><% } %></div>
     */}
   ]
 });
