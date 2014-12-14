@@ -3,6 +3,7 @@ CLASS({
   extendsModel: 'DetailView',
 
   requires: [
+    'ActionButton',
     'AutocompleteView',
     'LabelAutocompleteView',
     'StatusAutocompleteView'
@@ -74,8 +75,8 @@ CLASS({
       </td></tr>
       </tbody>
       </table>
-      <%= ActionButton.create({ action: this.model_.SAVE,    data: this }) %>
-      <%= ActionButton.create({ action: this.model_.DISCARD, data: this }) %>
+      <%= this.ActionButton.create({ action: this.model_.SAVE,    data: this }) %>
+      <%= this.ActionButton.create({ action: this.model_.DISCARD, data: this }) %>
       %%errorView
       </div>
       </div>

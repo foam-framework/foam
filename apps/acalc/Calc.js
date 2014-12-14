@@ -31,6 +31,7 @@ function invTrigFn(f) {
     return this.degreesMode ? f(a) / Math.PI * 180 : f(a);
   };
 }
+
 /** Make a Binary Action. **/
 function binaryOp(name, keys, f, sym) {
   f.toString = function() { return sym; };
@@ -149,7 +150,7 @@ CLASS({
     body {
       -webkit-user-select: none;
       font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
-      font-size: 28px;
+      font-size: 20px;
       font-weight: 300;
       height: 100%;
       margin: 0;
@@ -179,9 +180,9 @@ CLASS({
 
     .deg, .rad {
       color: #b3b3b3;
-      font-size: 18px;
+      font-size: 16px;
       opacity: 0;
-      padding-left: 12px;
+      padding-left: 8px;
       transition: opacity 0.8s;
     }
 
@@ -192,9 +193,9 @@ CLASS({
     .calc-display, .calc-display:focus {
       border: none;
       letter-spacing: 1px;
-      line-height: 36px;
+      line-height: 28px;
       margin: 0;
-      min-width: 204px;
+      min-width: 140px;
       padding: 0 25pt 2pt 25pt;
       text-align: right;
     }
@@ -223,7 +224,7 @@ CLASS({
     .calc .buttons {
       flex: 1 1 100%;
       width: 100%;
-      height: 350px;
+      height: 300px;
     }
 
     .button-row {
@@ -232,7 +233,6 @@ CLASS({
       flex-wrap: nowrap;
       flex: 1 1 100%;
       justify-content: space-between;
-      align-items: stretch;
     }
 
     .button {
@@ -304,7 +304,7 @@ CLASS({
     }
 
     .alabel {
-      font-size: 44px;
+      font-size: 34px;
       color: #b3b3b3
     }
   */}],
@@ -514,8 +514,8 @@ CLASS({
 var CalcButton = ActionButtonCView2.xbind({
   color:      'white',
   background: '#4b4b4b',
-  width:      95,
-  height:     85,
+  width:      75,
+  height:     75,
   font:       '300 32px RobotoDraft'
 });
 X.registerModel(CalcButton, 'ActionButton');
@@ -545,7 +545,70 @@ CLASS({
     },
   ],
   extendsModel: 'DetailView',
-  templates: [ { name: 'toHTML' } ]
+  templates: [
+    {
+      name: 'toHTML',
+      template: function() {/*
+        <div style="position: relative;z-index: 100;">
+          <div style="position: absolute;">
+            <span style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad">RAD</span>
+            <span style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg">DEG</span>
+          </div>
+        </div>
+
+        <div class="edge"></div>
+        <div id="%%id" class="calc">
+          <div class="calc-display">
+            <div class="inner-calc-display">
+              $$history{ rowView: 'HistoryCitationView' }
+              $$row1{mode: 'read-only', escapeHTML: false}
+            </div>
+          </div>
+          <div class='keypad'>
+          <div class="edge2"></div>
+          <%= this.SlidePanelView.create({
+            minWidth: 250,
+            minPanelWidth: 200,
+            panelRatio: 0.5,
+            mainView: 'MainButtonsView',
+            panelView: {
+              factory_: 'SlidePanelView',
+              minWidth: 200,
+              minPanelWidth: 100,
+              panelRatio: 0.2,
+              mainView: 'SecondaryButtonsView',
+              panelView: 'TertiaryButtonsView'
+            }
+           }) %>
+          </div>
+        </div>
+        <%
+          // This block causes the calc-display to scroll when updated.
+          // To remove this feature replace the .inner-calc-display 'transition:' and
+          // 'top:' styles with 'bottom: 0'.
+          var move = EventService.framed(EventService.framed(function() {
+            if ( ! this.$ ) return;
+            var outer$ = this.$.querySelector('.calc-display');
+            var inner$ = this.$.querySelector('.inner-calc-display');
+            inner$.style.top = outer$.clientHeight - inner$.clientHeight-11;
+          }.bind(this)));
+          Events.dynamic(function() { this.data.op; this.data.history; this.data.a1; this.data.a2; }.bind(this), move);
+          this.X.window.addEventListener('resize', move);
+          // Add mousewhell scrolling.
+          this.X.document.addEventListener('mousewheel', EventService.framed(function(e) {
+        console.log('e: ', e);
+            var inner$ = self.$.querySelector('.inner-calc-display');
+            var outer$ = self.$.querySelector('.calc-display');
+            var outer  = window.getComputedStyle(outer$);
+            var inner  = window.getComputedStyle(inner$);
+            var top    = toNum(inner$.style.top);
+        console.log('top: ', top);
+            inner$.style.top = Math.min(0, Math.max(toNum(outer.height)-toNum(inner.height)-11, top-e.deltaY)) + 'px';
+          }));
+        %>
+      */}
+    }
+  ]
 });
 
 CLASS({
@@ -570,7 +633,10 @@ CLASS({
         </div>
       <%
       this.X.registerModel(CalcButton.xbind({
-        background: '#777', width: 100, height: 70
+        background: '#777',
+        width:  74,
+        height: 60,
+        font:   '300 24px RobotoDraft'
       }), 'ActionButton');
       %>
         <div class="button-column rhs-ops" style="flex-grow: 1">
@@ -593,8 +659,8 @@ CLASS({
           <%
           this.X.registerModel(CalcButton.xbind({
             background: 'rgb(64, 189, 158)',
-            width:  60,
-            height: 58,
+            width:  50,
+            height: 50,
             font:   '300 20px RobotoDraft'
           }), 'ActionButton');
           %>
@@ -632,7 +698,7 @@ CLASS({
           <%
           this.X.registerModel(this.X.ActionButton.xbind({
             width: 70,
-            height: 70,
+            height: 60,
             color:      'rgb(119, 119, 119)',
             background: 'rgb(29, 233, 182)',
             font:       '300 20px RobotoDraft'
@@ -656,10 +722,7 @@ CLASS({
   extendsModel: 'DetailView',
   templates: [
     function toHTML() {/*
-      <div class="history">
-        {{this.data.op}} {{this.data.a2}}
-        <% if ( this.data.op.toString() ) { %><hr><% } %>
-      </div>
+      <div class="history">{{this.data.op}} {{this.data.a2}}<% if ( this.data.op.toString() ) { %><hr><% } %></div>
     */}
   ]
 });
@@ -668,7 +731,13 @@ CLASS({
 function flare(e, color) {
   var w = e.clientWidth;
   var h = e.clientHeight;
-  var c = foam.graphics.Circle.create({r: 0, width: w, height: h, x: w, y: h, color: color});
+  var c = foam.graphics.Circle.create({
+    r: 0,
+    width: w,
+    height: h,
+    x: w,
+    y: h,
+    color: color});
   var view = c.toView_();
   var div = document.createElement('div');
   var dStyle = div.style;
@@ -683,7 +752,7 @@ function flare(e, color) {
   view.initHTML();
   Movement.compile([
     // MYSTERY(kgr): I don't know why the 1.25 is needed.
-    [500, function() { c.r = 1.25 * Math.sqrt(w*w, h*h); }],
+    [400, function() { c.r = 1.25 * Math.sqrt(w*w, h*h); }],
     [200, function() { c.alpha = 0; }],
     function() { div.remove(); }
   ])();

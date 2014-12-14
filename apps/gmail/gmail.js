@@ -61,13 +61,18 @@ CLASS({
     'GMailUserInfo',
     'TouchManager',
     'GestureManager',
-    'EasyOAuth2'
+    'EasyOAuth2',
+    'lib.contacts.ContactNetworkDAO as ContactNetworkDAO',
+    'lib.contacts.Contact as Contact',
+    'MDAO',
+    'CachingDAO'
   ],
 
   exports: [
     'XHR',
     'touchManager',
-    'gestureManager'
+    'gestureManager',
+    'contactDAO as ContactDAO'
   ],
 
   properties: [
@@ -82,6 +87,12 @@ CLASS({
       }
     },
     {
+      name: 'jsonpFuture',
+      factory: function() {
+        return deferJsonP(this.X);
+      }
+    },
+    {
       name: 'touchManager',
       factory: function()  { return this.TouchManager.create(); }
     },
@@ -91,6 +102,9 @@ CLASS({
     },
     {
       name: 'oauth',
+      postSet: function(_, v) {
+        v.setJsonpFuture(this.X, this.jsonpFuture);
+      },
       factory: function() {
         return this.EasyOAuth2.create({
           clientId: "945476427475-oaso9hq95r8lnbp2rruo888rl3hmfuf8.apps.googleusercontent.com",
@@ -98,7 +112,8 @@ CLASS({
           scopes: [
             "https://www.googleapis.com/auth/userinfo.profile",
             "https://www.googleapis.com/auth/userinfo.email",
-            "https://mail.google.com/"
+            "https://mail.google.com/",
+            'https://www.google.com/m8/feeds'
           ]
         });        
       }
@@ -144,6 +159,15 @@ CLASS({
         return this.X.CachingDAO.create({
           src: this.X.GMailRestDAO.create({ model: FOAMGMailLabel, modelName: 'labels' }),
           cache: this.X.MDAO.create({ model: FOAMGMailLabel }),
+        });
+      }
+    },
+    {
+      name: 'contactDAO',
+      factory: function() {
+        return this.CachingDAO.create({
+          src: this.ContactNetworkDAO.create(),
+          cache: this.MDAO.create({ model: this.Contact })
         });
       }
     },

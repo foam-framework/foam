@@ -381,6 +381,11 @@ CLASS({
   name: 'GriddedStringArrayView',
   extendsModel: 'View',
 
+  requires: [
+    'ActionButton',
+    'TextFieldView'
+  ],
+
   properties: [
     {
       model_: 'StringProperty',
@@ -432,7 +437,7 @@ CLASS({
 
   methods: {
     toHTML: function() {
-      var link = ActionButton.create({
+      var link = this.ActionButton.create({
         action: this.model_.ADD,
         data: this
       });
@@ -447,7 +452,7 @@ CLASS({
       this.update();
     },
     field: function() {
-      return this.X.TextFieldView.create({
+      return this.TextFieldView.create({
         name: this.name,
         type: this.type,
         displayWidth: this.displayWidth,

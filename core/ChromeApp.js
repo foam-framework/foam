@@ -17,42 +17,6 @@
 
 /** Code Specific to Chrome Apps. **/
 
-TemplateUtil.compile = function() {
-  return function() {
-    return this.name_ + " wasn't required.  Models must be arequired()'ed for Templates to be compiled in Packaged Apps.";
-  };
-};
-
-var __EVAL_CALLBACKS__ = {};
-var aeval = (function() {
-  var nextID = 0;
-
-  return function(src) {
-    return function(ret) {
-      var id = 'c' + (nextID++);
-
-      var newjs = ['__EVAL_CALLBACKS__["' + id + '"](' + src + ');'];
-      var blob  = new Blob(newjs, {type: 'text/javascript'});
-      var url   = window.URL.createObjectURL(blob);
-
-      __EVAL_CALLBACKS__[id] = function(data) {
-        delete __EVAL_CALLBACKS__[id];
-
-        ret && ret.call(this, data);
-      };
-
-      var script = document.createElement('script');
-      script.src = url;
-      script.onload = function() {
-        this.remove();
-        window.URL.revokeObjectURL(url);
-//        document.body.removeChild(this);
-      };
-      document.body.appendChild(script);
-    };
-  };
-})();
-
 ajsonp = function(url, params, opt_method) {
   return axhr(url, opt_method ? opt_method : 'GET', params);
 };
