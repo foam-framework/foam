@@ -152,8 +152,8 @@ CLASS({
       var backingStoreRatio = this.canvas.backingStoreRatio ||
         this.canvas.webkitBackingStorePixelRatio || 1;
 
-      if ( devicePixelRatio !== backingStoreRatio )
-        this.scalingRatio = devicePixelRatio / backingStoreRatio;
+//      if ( devicePixelRatio !== backingStoreRatio )
+//        this.scalingRatio = devicePixelRatio / backingStoreRatio;
 
       var style = this.X.window.getComputedStyle(this.$);
 
