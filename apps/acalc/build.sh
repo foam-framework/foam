@@ -36,6 +36,7 @@ cat \
   ../../core/touch.js \
   ../../core/ChromeApp.js \
   ../../core/experimental/aview.js \
+  ../../js/foam/ui/md/Flare.js \
   > "$BUILD_DIR/foam.js"
 
 # For code compression, uncomment the following line:
