@@ -509,12 +509,12 @@ CLASS({
       name: 'start',
       type: 'diagram.LinkPoint[]',
       documentation: function () {/* The potential starting points of the link. */},
-      postSet: function () {
-        Events.dynamic(function() {
-          this.start.forEach(function (pt) {
-            pt.globalX; pt.globalY;
-            this.propertyChange('x',0, this.x);
-          }.bind(this));
+      postSet: function (old, nu) {
+        if (old) old.forEach(function (pt) {
+          pt.removeListener(this.propagatePointChange);
+        }.bind(this));
+        if (nu) nu.forEach(function (pt) {
+          pt.addListener(this.propagatePointChange);
         }.bind(this));
       }
     },
@@ -522,12 +522,12 @@ CLASS({
       name: 'end',
       type: 'diagram.LinkPoint[]',
       documentation: function () {/* The potential ending points of the link. */},
-      postSet: function () {
-        Events.dynamic(function () {
-          this.start.forEach(function (pt) {
-            pt.globalX; pt.globalY;
-            this.propertyChange('x',0, this.x);
-          }.bind(this));
+      postSet: function (old, nu) {
+        if (old) old.forEach(function (pt) {
+          pt.removeListener(this.propagatePointChange);
+        }.bind(this));
+        if (nu) nu.forEach(function (pt) {
+          pt.addListener(this.propagatePointChange);
         }.bind(this));
       }
     },
@@ -557,6 +557,16 @@ CLASS({
 
   ],
 
+  listeners: [
+    {
+      name: 'propagatePointChange',
+      code: function() {
+        // fake a prop change so the canvas repaints TODO(jacksonic): replace this
+        this.propertyChange('x', this.x, this.x+1);
+      }
+    }
+  ],
+  
   methods: {
     paintSelf: function()  {
       this.SUPER();
