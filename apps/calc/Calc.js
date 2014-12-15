@@ -38,7 +38,7 @@ function makeNum(n) {
 var DEFAULT_OP = function(a1) { return a1; };
 DEFAULT_OP.toString = function() { return ''; };
 
-/** A subclass of FloatFieldView which doesn't display 0 values. **/
+/** A subclass of  which doesn't display 0 values. **/
 CLASS({
   name:  'CalcFloatFieldView',
   extendsModel: 'FloatFieldView',
@@ -50,6 +50,8 @@ CLASS({ name: 'History', properties: [ 'op', 'a2' ] });
 CLASS({
   name: 'Calc',
 
+  requires: ['History'],
+
   properties: [
     { name: 'a1', defaultValue: '0' },
     { name: 'a2', defaultValue: 0 },
@@ -58,12 +60,12 @@ CLASS({
       preSet: function(oldOp, newOp) {
         if ( newOp !== DEFAULT_OP && oldOp !== DEFAULT_OP ) {
           var a3 = this.op(parseFloat(this.a1), parseFloat(this.a2));
-          this.history.put(History.create(this));
-          this.history.put(History.create({a2: a3}));
+          this.history.put(this.History.create(this));
+          this.history.put(this.History.create({a2: a3}));
           this.a1 = a3;
           this.a2 = 0;
         } else if ( this.a2 ) {
-          this.history.put(History.create({a2: this.a2}));
+          this.history.put(this.History.create({a2: this.a2}));
           this.a1 = this.a2;
           this.a2 = 0;
         }
@@ -130,7 +132,7 @@ CLASS({
         var a1 = this.a1;
         var a2 = this.a2;
         this.a1 = a2;
-        this.history.put(History.create(this));
+        this.history.put(this.History.create(this));
         this.a2 = this.op(parseFloat(a1), parseFloat(a2));
         this.op = DEFAULT_OP;
       }

@@ -731,7 +731,6 @@ MODEL({
     /** @return a latch function which can be called to stop the animation. **/
     animate: function(duration, fn, opt_interp, opt_onEnd, opt_X) {
       var requestAnimationFrameX = ( opt_X && opt_X.requestAnimationFrame ) || requestAnimationFrame;
-      var stopped = false;
 
       // console.assert( opt_X && opt_X.requestAnimationFrame, 'opt_X or opt_X.requestAnimationFrame not available');
 
@@ -740,6 +739,7 @@ MODEL({
 
       return function() {
         var ranges    = [];
+        var stopped = false;
 
         function stop() {
           stopped = true;

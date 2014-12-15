@@ -50,7 +50,7 @@ CLASS({
       this.SUPER();
       
       Events.dynamic(
-        function() { this.parent; },
+        function() { this.parent; }.bind(this),
         function() {
           if (this.dynamicListeners_ && this.dynamicListeners_.destroy) {
             this.dynamicListeners_.destroy();
@@ -362,27 +362,19 @@ CLASS({
     addLinkPoints: function() {
       {
         // make four points at our edges
-        var pt1 = this.LinkPoint.create({owner: this, name: '1', side: 'top'});
-        
-        //this.linkPoints.push(pt1);
+        var pt1 = this.LinkPoint.create({owner: this, name: 'blockTop', side: 'top'});
         this.myLinkPoints.push(pt1);
       }
       {
-        var pt2 = this.LinkPoint.create({owner: this, name: '2', side: 'bottom'});
-        
-        //this.linkPoints.push(pt2);
+        var pt2 = this.LinkPoint.create({owner: this, name: 'blockBottom', side: 'bottom'});
         this.myLinkPoints.push(pt2);
       }
       {
-        var pt3 = this.LinkPoint.create({owner: this, name: '3', side: 'left'});
-        
-        //this.linkPoints.push(pt3);
+        var pt3 = this.LinkPoint.create({owner: this, name: 'blockLeft', side: 'left'});
         this.myLinkPoints.push(pt3);
       }
       {
-        var pt4 = this.LinkPoint.create({owner: this, name: '4', side: 'right'});
-        
-        //this.linkPoints.push(pt4);
+        var pt4 = this.LinkPoint.create({owner: this, name: 'blockRight', side: 'right'});
         this.myLinkPoints.push(pt4);
       }
     }
@@ -439,15 +431,11 @@ CLASS({
     // TODO: account for movement that changes our parent but not our x,y,width,height
     addLinkPoints: function() {
       {
-        var pt3 = this.LinkPoint.create({owner: this, name: '3', side:'left'});
-        
-        //this.linkPoints.push(pt3);
+        var pt3 = this.LinkPoint.create({owner: this, name: 'sectionLeft', side:'left'});
         this.myLinkPoints.push(pt3);
       }
       {
-        var pt4 = this.LinkPoint.create({owner: this, name: '4', side:'right'});
-        
-        //this.linkPoints.push(pt4);
+        var pt4 = this.LinkPoint.create({owner: this, name: 'sectionRight', side:'right'});
         this.myLinkPoints.push(pt4);
       }
     }
@@ -456,6 +444,58 @@ CLASS({
 
 
 });
+
+CLASS({
+  name: 'SectionGroup',
+  package: 'diagram',
+  label: 'Section Group',
+
+  requires: ['diagram.Section'],
+  
+  extendsModel: 'diagram.Block',
+  
+  properties: [
+    {
+      name: 'orientation',
+      defaultValue: 'vertical'
+    },
+    {
+      name: 'titleSection',
+      type: 'diagram.Section'
+    },
+    {
+      name: 'title',
+      type: 'String',
+    },
+    {
+      name: 'titleFont',
+      type: 'String',
+      defaultValue: 'bold 14px Roboto'
+    }
+  ],
+  
+  methods: {
+    init: function() {
+      this.SUPER();
+      this.create();
+    },
+    create: function() {
+      if (!this.titleSection) {
+        this.titleSection = this.Section.create({title$: this.title$, titleFont$: this.titleFont$});
+        this.myLinkPoints$ = this.titleSection.myLinkPoints$;
+      }
+      this.addChild(this.titleSection);
+    },
+    addLinkPoints: function() {
+      // no points to add... we just use our title section's points
+    }
+
+  }
+
+
+});
+
+
 
 
 CLASS({
@@ -469,11 +509,27 @@ CLASS({
       name: 'start',
       type: 'diagram.LinkPoint[]',
       documentation: function () {/* The potential starting points of the link. */},
+      postSet: function () {
+        Events.dynamic(function() {
+          this.start.forEach(function (pt) {
+            pt.globalX; pt.globalY;
+            this.propertyChange('x',0, this.x);
+          }.bind(this));
+        }.bind(this));
+      }
     },
     {
       name: 'end',
       type: 'diagram.LinkPoint[]',
       documentation: function () {/* The potential ending points of the link. */},
+      postSet: function () {
+        Events.dynamic(function () {
+          this.start.forEach(function (pt) {
+            pt.globalX; pt.globalY;
+            this.propertyChange('x',0, this.x);
+          }.bind(this));
+        }.bind(this));
+      }
     },
     {
       name: 'style',

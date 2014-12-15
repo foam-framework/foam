@@ -16,6 +16,55 @@
  */
  
  
+
+CLASS({
+  name: 'DocDiagramTrait',
+  package: 'foam.documentation',
+  // enhances BaseDetailView to add diagram support
+  
+  requires: [
+    'diagram.Section',
+    'diagram.SectionGroup'
+  ],
+  
+  properties: [
+    {
+      name: 'diagramItem',
+      documentation: "The diagram item we create and are managing.",
+      type: 'diagram.Block'
+    },
+    
+  ],
+  
+  methods:{
+    construct: function() {
+      // create diagram nodes 
+    },
+    
+    destroy: function() {
+    
+    }
+  }
+  
+});
+
+
+CLASS({
+  name: 'ModelDocDiagram',
+  extendsModel: 'foam.views.BaseDetailView',
+  package: 'foam.documentation',
+  traits: ['foam.documentation.DocDiagramTrait'], 
+  
+  
+  documentation: function() {/*
+    A diagram block documenting one $$DOC{ref:'Model'}.
+  */},
+    
+});
+
+
+
+
  
  
  
