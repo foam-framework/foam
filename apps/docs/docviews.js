@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.documentation',
   extendsModel: 'foam.views.DetailView',
   label: 'Documentation View Base',
-  help: 'Base Model for documentation views.',
+  documentation: 'Base Model for documentation views.',
 
   imports: ['documentViewRef'],
 
@@ -116,7 +116,7 @@ CLASS({
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocView',
   label: 'Documentation View Full Page',
-  help: 'Base Model for full page documentation views.',
+  documentation: 'Base Model for full page documentation views.',
 
   requires: ['foam.documentation.FullPageDocView'],
  
@@ -144,7 +144,7 @@ CLASS({
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocView',
   label: 'Documentation View Full Page',
-  help: 'Base Model for full page documentation views.',
+  documentation: 'Base Model for full page documentation views.',
 
   documentation: function() {/*
     For full-page views, typically including full lists of all features,
@@ -167,7 +167,7 @@ CLASS({
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocView',
   label: 'Documentation View Summary',
-  help: 'Base Model for medium length summary documentation views.',
+  documentation: 'Base Model for medium length summary documentation views.',
 
   documentation: function() {/*
     For inline summaries, typically including properties but not full
@@ -190,7 +190,7 @@ CLASS({
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocView',
   label: 'Documentation View Row',
-  help: 'Base Model for one or two line documentation row views.',
+  documentation: 'Base Model for one or two line documentation row views.',
 
   documentation: function() {/*
     For one or two line row views, only including essential information,
@@ -223,7 +223,7 @@ CLASS({
 CLASS({
   name: 'DocModelInheritanceTracker',
   package: 'foam.documentation',
-  help: 'Stores inheritance information for a Model',
+  documentation: 'Stores inheritance information for a Model',
   documentation: function() { /*
       <p>Stores inheritance information for a $$DOC{ref:'Model'}. One
       instance per extending $$DOC{ref:'Model'} is stored in the
@@ -239,12 +239,12 @@ CLASS({
   properties: [
     {
       name: 'model',
-      help: 'The model name.',
+      documentation: 'The model name.',
       documentation: "The $$DOC{ref:'Model'} name."
     },
     {
       name: 'inheritanceLevel',
-      help: 'The inheritance level of model.',
+      documentation: 'The inheritance level of model.',
       documentation: "The inheritance level of $$DOC{ref:'.model'} (0 = root, no extendsModel specified)",
       defaultValue: 0
     },
@@ -254,7 +254,7 @@ CLASS({
 CLASS({
   name: 'DocFeatureInheritanceTracker',
   package: 'foam.documentation',
-  help: 'Stores inheritance information for a feature of a Model',
+  documentation: 'Stores inheritance information for a feature of a Model',
   documentation: function() { /*
       <p>Stores inheritance information for a feature of a $$DOC{ref:'Model'}
           in the this.featureDAO.
@@ -272,7 +272,6 @@ CLASS({
   properties: [
     {
       name: 'name',
-      help: 'The feature name.',
       documentation: "The feature name. This could be a $$DOC{ref:'Method'}, $$DOC{ref:'Property'}, or other feature. Feature names are assumed to be unique within the containing $$DOC{ref:'Model'}.",
       defaultValue: "",
       postSet: function() {
@@ -281,18 +280,15 @@ CLASS({
     },
     {
       name: 'isDeclared',
-      help: 'Indicates that the feature is declared in the containing Model.',
       documentation: "Indicates that the feature is declared in the containing $$DOC{ref:'Model'}.",
       defaultValue: false
     },
     {
       name: 'type',
-      help: 'The type (Model name string) of the feature, such as Property or Method.',
       documentation: "The type ($$DOC{ref:'Model.name', text:'Model name'} string) of the feature, such as $$DOC{ref:'Property'} or $$DOC{ref:'Method'}."
     },
     {
       name: 'feature',
-      help: 'A reference to the actual feature.',
       documentation: "A reference to the actual feature.",
       postSet: function() {
         this.name = this.feature.name;
@@ -303,7 +299,7 @@ CLASS({
     },
     {
       name: 'model',
-      help: 'The name of the Model to which the feature belongs.',
+      documentation: 'The name of the Model to which the feature belongs.',
       documentation: "The name of the $$DOC{ref:'Model'} to which the feature belongs.",
       postSet: function() {
         this.primaryKey = this.model + ":::" + this.name;
@@ -315,7 +311,6 @@ CLASS({
     },
     {
       name: 'inheritanceLevel',
-      help: 'Helper to look up the inheritance level of model.',
       documentation: "Helper to look up the inheritance level of $$DOC{ref:'.model'}",
       getter: function() {
         var modelTracker = [];
@@ -327,7 +322,6 @@ CLASS({
     },
     {
       name: 'fromTrait',
-      help: 'Indicates if the feature was inherited from a trait.',
       documentation: 'Indicates if the feature was inherited from a trait.',
       model_: 'BooleanProperty',
       defaultValue: false
@@ -341,24 +335,16 @@ CLASS({
 });
 
 CLASS({
-  name: 'ModelDocView',
+  name: 'DocModelFeatureDAOTrait',
   package: 'foam.documentation',
-  extendsModel: 'foam.documentation.DocView',
-  help: 'Displays the documentation of the given Model.',
+  documentation: "Generates a featureDAO of all the inherited features of a $$DOC{ref:'Model'}.",
 
   requires: ['foam.documentation.DocFeatureInheritanceTracker',
              'foam.documentation.DocModelInheritanceTracker',
              'Model',
              'MDAO'],
 
-  imports: ['documentViewRef'],
-
   exports: ['featureDAO', 'modelDAO'],
-
-  documentation: function() {/*
-    Displays the documentation for a given $$DOC{ref:'Model'}. The viewer will
-    destroy and re-generate sub-views when the $$DOC{ref:'.data'} changes.
-  */},
 
   properties: [
     {
@@ -376,74 +362,10 @@ CLASS({
       }
     },
   ],
-
-  listeners: [
-    {
-      name: 'doScrollToFeature',
-      isFramed: true,
-      code: function() {
-        this.scrollToFeature();
-      }
-    }
-  ],
-
+  
   methods: {
-
-    init: function() {
-      this.SUPER();
-
-      this.documentViewRef.addListener(this.doScrollToFeature);
-      this.generateFeatureDAO();
-    },
-
-    onValueChange_: function() {
-      this.processModelChange();
-    },
-    
-    destroy: function() {
-      this.SUPER();
-      this.documentViewRef.removeListener(this.doScrollToFeature);
-    },
-
-    processModelChange: function() {
-      // abort if it's too early //TODO: (we import data and run its postSet before the rest is set up)
-      if (!this.featureDAO || !this.modelDAO) return;
-      this.generateFeatureDAO();
-      this.updateHTML(); // not strictly necessary, but seems faster than allowing children to update individually
-    },
-
-    initInnerHTML: function() {
-      /* If a feature is present in the this.documentViewRef $$DOC{ref:'foam.documentation.DocRef'},
-        scroll to that location on the page. Otherwise scroll to the top. */
-      this.SUPER();
-      
-      this.scrollToFeature();
-    },
-
-    scrollToFeature: function() {
-      var self = this;
-      var ref = self.documentViewRef.get();
-      if (ref && ref.valid) {
-        if (! // if we don't find an element to scroll to:
-          ref.resolvedModelChain.slice(1).reverse().some(function(feature) {
-            if (feature && feature.name) {
-              element = this.X.$("scrollTarget_"+feature.name);
-              if (element) {
-                element.scrollIntoView(true);
-                return true;
-              }
-              else return false;
-            }
-          })
-        ) {
-          // if we didn't find an element to scroll, use main view
-          if (self.$) self.$.scrollIntoView(true);
-        }
-      }
-    },
-
-
-    generateFeatureDAO: function() {
+     
+    generateFeatureDAO: function(data) {
       /* Builds a feature DAO to sort out inheritance and overriding of
         $$DOC{ref:'Property',usePlural:true}, $$DOC{ref:'Method',usePlural:true},
         and other features. */
@@ -454,8 +376,8 @@ CLASS({
       this.featureDAO.removeAll();
       this.modelDAO.removeAll();
 
-      if ( ! this.data.model_ || this.data.model_.id !== 'Model' ) {
-        console.warn("ModelDocView created with non-model instance: ", this.data);
+      if ( ! data.model_ || data.model_.id !== 'Model' ) {
+        console.warn("ModelDocView created with non-model instance: ", data);
         return;
       }
       
@@ -468,7 +390,7 @@ CLASS({
       // and load them into the feature DAO. Passing [] assumes we don't
       // care about other models that extend this one. Finding such would
       // be a global search problem.
-      this.loadFeaturesOfModel(this.data, []);
+      this.loadFeaturesOfModel(data, []);
        
       //console.log("  FeatureDAO complete.", Date.now() - startTime);
 
@@ -574,14 +496,97 @@ CLASS({
       console.log(modelss);
     }
 
-  },
+  }
+
+  
+});
+
+CLASS({
+  name: 'ModelDocView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocView',
+  documentation: 'Displays the documentation of the given Model.',
+  traits: ['foam.documentation.DocModelFeatureDAOTrait'],
+  
+  documentation: function() {/*
+    Displays the documentation for a given $$DOC{ref:'Model'}. The viewer will
+    destroy and re-generate sub-views when the $$DOC{ref:'.data'} changes.
+  */},
+
+  imports: ['documentViewRef'],
+
+  listeners: [
+    {
+      name: 'doScrollToFeature',
+      isFramed: true,
+      code: function() {
+        this.scrollToFeature();
+      }
+    }
+  ],
+
+  methods: {
+
+    init: function() {
+      this.SUPER();
+
+      this.documentViewRef.addListener(this.doScrollToFeature);
+      this.generateFeatureDAO(this.data);
+    },
+
+    onValueChange_: function() {
+      this.processModelChange();
+    },
+    
+    destroy: function() {
+      this.SUPER();
+      this.documentViewRef.removeListener(this.doScrollToFeature);
+    },
+
+    processModelChange: function() {
+      // abort if it's too early //TODO: (we import data and run its postSet before the rest is set up)
+      if (!this.featureDAO || !this.modelDAO) return;
+      this.generateFeatureDAO(this.data);
+      this.updateHTML(); // not strictly necessary, but seems faster than allowing children to update individually
+    },
+
+    initInnerHTML: function() {
+      /* If a feature is present in the this.documentViewRef $$DOC{ref:'foam.documentation.DocRef'},
+        scroll to that location on the page. Otherwise scroll to the top. */
+      this.SUPER();
+      
+      this.scrollToFeature();
+    },
+
+    scrollToFeature: function() {
+      var self = this;
+      var ref = self.documentViewRef.get();
+      if (ref && ref.valid) {
+        if (! // if we don't find an element to scroll to:
+          ref.resolvedModelChain.slice(1).reverse().some(function(feature) {
+            if (feature && feature.name) {
+              element = this.X.$("scrollTarget_"+feature.name);
+              if (element) {
+                element.scrollIntoView(true);
+                return true;
+              }
+              else return false;
+            }
+          })
+        ) {
+          // if we didn't find an element to scroll, use main view
+          if (self.$) self.$.scrollIntoView(true);
+        }
+      }
+    }
+  }
 });
 
 CLASS({
   name: 'ModelFullPageDocView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.ModelDocView',
-  help: 'A full-page documentation view for Model instances.',
+  documentation: 'A full-page documentation view for Model instances.',
 
   documentation: "A full-page documentation view for $$DOC{ref:'Model'} instances.",
 
@@ -624,7 +629,7 @@ CLASS({
   name: 'ModelSummaryDocView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocView',
-  help: 'A summary documentation view for Model instances.',
+  documentation: 'A summary documentation view for Model instances.',
 
   documentation: "A summary documentation view for $$DOC{ref:'Model'} instances.",
 
@@ -673,7 +678,7 @@ CLASS({
   name: 'ModelRowDocView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocView',
-  help: 'A row documentation view for Model instances.',
+  documentation: 'A row documentation view for Model instances.',
 
   documentation: "A row documentation view for $$DOC{ref:'Model'} instances.",
 
@@ -693,7 +698,7 @@ CLASS({
   name: 'InterfaceFullPageDocView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.FullPageDocView',
-  help: 'A full-page documentation view for Interface instances.',
+  documentation: 'A full-page documentation view for Interface instances.',
 
   documentation: "A full-page documentation view for $$DOC{ref:'Interface'} instances.",
 
@@ -717,7 +722,7 @@ CLASS({
   name: 'InterfaceSummaryDocView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.SummaryDocView',
-  help: 'Displays the documentation of the given interface.',
+  documentation: 'Displays the documentation of the given interface.',
 
   methods: {
     onValueChange_: function() {
@@ -768,7 +773,7 @@ CLASS({
   name: 'DocumentationBookFullPageDocView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.FullPageDocView',
-  help: 'Displays the documentation of the given book.',
+  documentation: 'Displays the documentation of the given book.',
 
   templates: [
 
@@ -789,7 +794,7 @@ CLASS({
   name: 'DocumentationBookSummaryDocView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.SummaryDocView',
-  help: 'Displays the documentation of the given book.',
+  documentation: 'Displays the documentation of the given book.',
 
   methods: {
     onValueChange_: function() {
@@ -817,7 +822,7 @@ CLASS({
   name: 'DocumentationBookRowDocView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.RowDocView',
-  help: 'Displays the documentation of the given book.',
+  documentation: 'Displays the documentation of the given book.',
 
   templates: [
 
@@ -839,14 +844,14 @@ CLASS({
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocView',
   label: 'Documentation Body View Base',
-  help: 'Base Model for documentation body-text views.',
+  documentation: 'Base Model for documentation body-text views.',
 
   imports: ['documentViewRef'],
 
   properties: [
     {
       name: 'data',
-      help: 'The documentation to display.',
+      documentation: 'The documentation to display.',
       required: true,
       postSet: function() {
         if (this.data && this.data.body) {
@@ -897,7 +902,7 @@ CLASS({
 
   extendsModel: 'View',
   label: 'Documentation Reference View',
-  help: 'The view of a documentation reference link.',
+  documentation: 'The view of a documentation reference link.',
 
   requires: ['foam.documentation.DocRef as DocRef',
              'Documentation'],
@@ -913,7 +918,7 @@ CLASS({
 
     {
       name: 'ref',
-      help: 'Shortcut to set reference by string.',
+      documentation: 'Shortcut to set reference by string.',
       postSet: function() {
         this.docRef = this.DocRef.create({ ref: this.ref });
       },
@@ -924,7 +929,7 @@ CLASS({
     },
     {
       name: 'docRef',
-      help: 'The reference object.',
+      documentation: 'The reference object.',
       preSet: function(old,nu) { // accepts a string ref, or an DocRef object
         if (typeof nu === 'string') {
           return this.DocRef.create({ ref: nu });
@@ -943,7 +948,7 @@ CLASS({
     },
     {
       name: 'text',
-      help: 'Text to display instead of the referenced object&apos;s default label or name.',
+      documentation: 'Text to display instead of the referenced object&apos;s default label or name.',
       documentation: function() { /*
           Text to display instead of the referenced object&apos;s default label or name.
         */}
@@ -956,7 +961,7 @@ CLASS({
     {
       name: 'usePlural',
       defaultValue: false,
-      help: 'If true, use the Model.plural instead of Model.name in the link text.',
+      documentation: 'If true, use the Model.plural instead of Model.name in the link text.',
       documentation: function() { /*
           If true, use the $$DOC{ref:'Model.plural',text:'Model.plural'}
           instead of $$DOC{ref:'Model.name',text:'Model.name'} in the link text,
@@ -1054,7 +1059,7 @@ CLASS({
   name: 'DocRef',
   package: 'foam.documentation',
   label: 'Documentation Reference',
-  help: 'A reference to a documented Model or feature of a Model',
+  documentation: 'A reference to a documented Model or feature of a Model',
 
   imports: ['documentViewRef'],
 
@@ -1096,7 +1101,7 @@ CLASS({
     },
     {
       name: 'ref',
-      help: 'The reference to link. Must be of the form "Model", "Model.feature", or ".feature"',
+      documentation: 'The reference to link. Must be of the form "Model", "Model.feature", or ".feature"',
       postSet: function() {
         this.resolveReference(this.ref);
       },
@@ -1270,7 +1275,7 @@ CLASS({
   name: 'FeatureListDocView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocView',
-  help: 'Displays the documentation of the given feature list.',
+  documentation: 'Displays the documentation of the given feature list.',
 
   requires: [ 'foam.views.DAOListView',
               'CollapsibleView',
@@ -1283,7 +1288,7 @@ CLASS({
   properties: [
     {
       name:  'data',
-      help: 'The array property whose features to view.',
+      documentation: 'The array property whose features to view.',
       postSet: function() {
         this.dao = this.data;
         this.childData = this.data;
@@ -1291,11 +1296,11 @@ CLASS({
     },
     {
       name: 'model',
-      help: 'The model definition of the items in the data array.'
+      documentation: 'The model definition of the items in the data array.'
     },
     {
       name: 'featureType',
-      help: 'The property name from which data is set (such as "properties" or "methods")',
+      documentation: 'The property name from which data is set (such as "properties" or "methods")',
       type: 'String',
       postSet: function() {
         // only render once we have both featureType and dao
@@ -1435,7 +1440,7 @@ CLASS({
   name: 'DocFeatureCollapsedView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocBodyView',
-  help: 'A generic view for collapsed sets.',
+  documentation: 'A generic view for collapsed sets.',
 
   properties: [
     {
