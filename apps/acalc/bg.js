@@ -18,8 +18,8 @@
 chrome.app.runtime.onLaunched.addListener(function() {
   chrome.app.window.create('Calc.html', {
     innerBounds: {
-      width: 380,
-      height: 420
+      width: 392,
+      height: 500
     }
   });
 });

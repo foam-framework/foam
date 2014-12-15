@@ -137,7 +137,7 @@ CLASS({
 
     toHTML: function() { /* Creates the canvas element. */
       var className = this.className ? ' class="' + this.className + '"' : '';
-      return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + '"></canvas>';
+      return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + ';min-width:' + this.styleWidth() + ';min-height:' + this.styleHeight() + '"></canvas>';
     },
 
     initHTML: function() { /* Computes the scaling ratio from the window.devicePixelRatio
