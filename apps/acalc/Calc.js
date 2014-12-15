@@ -126,7 +126,8 @@ CLASS({
   requires: [
     'CalcView',
     'GestureManager',
-    'TouchManager'
+    'TouchManager',
+    'foam.ui.md.Flare'
   ],
 
   exports: [
@@ -363,7 +364,10 @@ CLASS({
     permutation: function(n, r) { return this.factorial(n) / this.factorial(n-r); },
     combination: function(n, r) { return this.permutation(n, r) / this.factorial(r); },
     error: function() {
-      setTimeout(function() { flare($$('calc-display')[0], '#f44336' /* red */); }, 100);
+      setTimeout(this.Flare.create({
+        element: $$('calc-display')[0],
+        color: '#f44336' /* red */
+      }).fire, 100);
       this.history.put(History.create(this));
       this.a1 = 0;
       this.a2 = '';
@@ -413,7 +417,10 @@ CLASS({
         this.editable = true;
         this.op = DEFAULT_OP;
         this.history = [].sink;
-        flare($$('calc-display')[0], '#2196F3' /* blue */);
+        this.Flare.create({
+          element: $$('calc-display')[0],
+          color: '#2196F3' /* blue */
+        }).fire();
       }
     },
     {
@@ -568,9 +575,10 @@ CLASS({
           <div class="edge2"></div>
           <%= this.SlidePanelView.create({
             minWidth: 250,
-            minPanelWidth: 200,
+            minPanelWidth: 250,
             panelRatio: 0.5,
             mainView: 'MainButtonsView',
+            stripWidth: 25,
             panelView: {
               factory_: 'SlidePanelView',
               minWidth: 200,
@@ -727,35 +735,3 @@ CLASS({
   ]
 });
 
-// TODO(kgr): move to core when done.
-function flare(e, color) {
-  var w = e.clientWidth;
-  var h = e.clientHeight;
-  var c = foam.graphics.Circle.create({
-    r: 0,
-    width: w,
-    height: h,
-    x: w,
-    y: h,
-    color: color});
-  var view = c.toView_();
-  var div = document.createElement('div');
-  var dStyle = div.style;
-  dStyle.position = 'absolute';
-  dStyle.left = 0;
-  dStyle.zIndex = 4;
-
-  var id = View.getPrototype().nextID();
-  div.id = id;
-  div.innerHTML = view.toHTML();
-  e.appendChild(div);
-  view.initHTML();
-  Movement.compile([
-    // MYSTERY(kgr): I don't know why the 1.25 is needed.
-    [400, function() { c.r = 1.25 * Math.sqrt(w*w, h*h); }],
-    [200, function() { c.alpha = 0; }],
-    function() { div.remove(); }
-  ])();
-c.r$.addListener(EventService.framed(view.paint.bind(view)));
-c.alpha$.addListener(EventService.framed(view.paint.bind(view)));
-}
