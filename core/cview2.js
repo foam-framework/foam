@@ -699,13 +699,14 @@ CLASS({
           this.halo.x = evt.offsetX;
           this.halo.y = evt.offsetY;
         }
-        this.halo.r = 5;
-        this.X.animate(150, function() {
+        this.halo.r = 2;
+        this.halo.alpha = 0.4;
+        this.X.animate(200, function() {
           this.halo.x = this.width/2;
           this.halo.y = this.height/2;
           this.halo.r = Math.min(28, Math.min(this.width, this.height)/2);
           this.halo.alpha = 1;
-        }.bind(this), Movement.easeIn(0.2), function() {
+        }.bind(this), function(a) { return a*a; }, function() {
           if ( this.state_ === 'cancelled' ) {
             this.state_ = 'pressed';
             this.onMouseUp();
