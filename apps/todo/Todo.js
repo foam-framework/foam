@@ -38,7 +38,8 @@
 				this.on('blur', toDisplay, this.textView.id);
 				this.textView.subscribe(this.textView.ESCAPE, toDisplay);
 				this.setClass('completed', function () { return this.data.completed; }.bind(this), this.id);
-			%> */} ]
+			%> */}
+		]
 	});
 
 	CLASS({
@@ -48,9 +49,10 @@
 				name: 'input',
 				setter: function (text) {
 					// This is a fake property that adds the todo when its value gets saved.
-					if ( ! text ) return;
-					this.dao.put(Todo.create({text: text}));
-					this.propertyChange('input', text, '');
+					if ( text ) {
+						this.dao.put(Todo.create({text: text}));
+						this.propertyChange('input', text, '');
+					}
 				},
 				view: { factory_: 'TextFieldView', placeholder: 'What needs to be done?' }
 			},
@@ -131,8 +133,7 @@
 				this.setClass('hidden', f, 'main');
 				this.setClass('hidden', f, 'footer');
 				Events.link(this.X.memento, this.queryView.label$);
-			%>
-			*/}
+			%>*/}
 		]
 	});
 })();
