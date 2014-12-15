@@ -487,17 +487,14 @@ CLASS({
     where: function(query) { /* Return a DAO that contains a filtered subset of this one. */
       // only use X if we are an invalid instance without a this.X
       return (this.X || X).FilteredDAO_.create({query: query, delegate: this});
-      //return filteredDAO(query, this);
     },
 
     limit: function(count) { /* Return a DAO that contains a count limited subset of this one. */
       return (this.X || X).LimitedDAO_.create({count:count, delegate:this});
-      //return limitedDAO(count, this);
     },
 
     skip: function(skip) { /* Return a DAO that contains a subset of this one, skipping initial items. */
       return (this.X || X).SkipDAO_.create({skip:skip, delegate:this});
-      //return skipDAO(skip, this);
     },
 
     orderBy: function() { /* Return a DAO that contains a subset of this one, ordered as specified. */
@@ -912,41 +909,6 @@ CLASS({
 });
 
 
-// deprecated. Use FilteredDAO_ model instead.
-function filteredDAO(query, dao) {
-  if ( query === TRUE ) return dao;
-
-  return {
-    __proto__: dao,
-    select: function(sink, options) {
-      return dao.select(sink, options ? {
-        __proto__: options,
-        query: options.query ?
-          AND(query, options.query) :
-          query
-      } : {query: query});
-    },
-    removeAll: function(sink, options) {
-      return dao.removeAll(sink, options ? {
-        __proto__: options,
-        query: options.query ?
-          AND(query, options.query) :
-          query
-      } : {query: query});
-    },
-    listen: function(sink, options) {
-      return dao.listen(sink, options ? {
-        __proto__: options,
-        query: options.query ?
-          AND(query, options.query) :
-          query
-      } : {query: query});
-    },
-    toString: function() {
-      return dao + '.where(' + query + ')';
-    }
-  };
-}
 CLASS({
   name: 'FilteredDAO_',
   extendsModel: 'ProxyDAO',
@@ -994,28 +956,6 @@ CLASS({
 });
 
 
-// Deprecated. Use OrderedDAO_ model instead.
-function orderedDAO(comparator, dao) {
-  //  comparator = toCompare(comparator);
-  //  if ( comparator.compare ) comparator = comparator.compare.bind(comparator);
-
-  return {
-    __proto__: dao,
-    select: function(sink, options) {
-      if ( options ) {
-        if ( ! options.order )
-          options = { __proto__: options, order: comparator };
-      } else {
-        options = {order: comparator};
-      }
-
-      return dao.select(sink, options);
-    },
-    toString: function() {
-      return dao + '.orderBy(' + comparator + ')';
-    }
-  };
-}
 CLASS({
   name: 'OrderedDAO_',
   extendsModel: 'ProxyDAO',
@@ -1114,30 +1054,6 @@ CLASS({
     }
   }
 });
-
-
-// deprecated. Use a SkipDAO_ instance instead.
-function skipDAO(skip, dao) {
-  if ( skip !== Math.floor(skip) ) console.warn('skip() called with non-integer value: ' + skip);
-  return {
-    __proto__: dao,
-    select: function(sink, options) {
-      if ( options ) {
-        options = {
-          __proto__: options,
-          skip: skip
-        };
-      } else {
-        options = { __proto__: options, skip: skip };
-      }
-
-      return dao.select(sink, options);
-    },
-    toString: function() {
-      return dao + '.skip(' + skip + ')';
-    }
-  };
-}
 
 
 CLASS({

@@ -102,7 +102,7 @@ CLASS({
     makeOp('div',   '\u00F7', [111, 191],         function(a1, a2) { return a1 / a2; }),
     makeOp('mult',  '\u00D7', [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }),
     makeOp('plus',  '+',      [107, 'shift-187'], function(a1, a2) { return a1 + a2; }),
-    makeOp('minus', '&#150;', [109, 189],         function(a1, a2) { return a1 - a2; }),
+    makeOp('minus', '–',      [109, 189],         function(a1, a2) { return a1 - a2; }),
     {
       name: 'ac',
       label: 'AC',

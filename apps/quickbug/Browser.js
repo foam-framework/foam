@@ -44,8 +44,9 @@ CLASS({
     'AddBookmarkDialog'
   ],
 
-  exportKeys: ['stack', 'browser'],
   exports: [
+    'as stack',
+    'as browser',
     'IssueDAO'
   ],
 

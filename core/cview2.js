@@ -137,7 +137,7 @@ CLASS({
 
     toHTML: function() { /* Creates the canvas element. */
       var className = this.className ? ' class="' + this.className + '"' : '';
-      return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + '"></canvas>';
+      return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + ';min-width:' + this.styleWidth() + ';min-height:' + this.styleHeight() + '"></canvas>';
     },
 
     initHTML: function() { /* Computes the scaling ratio from the window.devicePixelRatio
@@ -152,8 +152,8 @@ CLASS({
       var backingStoreRatio = this.canvas.backingStoreRatio ||
         this.canvas.webkitBackingStorePixelRatio || 1;
 
-      if ( devicePixelRatio !== backingStoreRatio )
-        this.scalingRatio = devicePixelRatio / backingStoreRatio;
+//      if ( devicePixelRatio !== backingStoreRatio )
+//        this.scalingRatio = devicePixelRatio / backingStoreRatio;
 
       var style = this.X.window.getComputedStyle(this.$);
 
@@ -703,9 +703,9 @@ CLASS({
         this.X.animate(150, function() {
           this.halo.x = this.width/2;
           this.halo.y = this.height/2;
-          this.halo.r = Math.min(28, Math.min(this.width, this.height)/2)+0.5;
+          this.halo.r = Math.min(28, Math.min(this.width, this.height)/2);
           this.halo.alpha = 1;
-        }.bind(this), Movement.easeIn(1), function() {
+        }.bind(this), Movement.easeIn(0.2), function() {
           if ( this.state_ === 'cancelled' ) {
             this.state_ = 'pressed';
             this.onMouseUp();
@@ -814,10 +814,10 @@ CLASS({
 
       c.clearRect(0, 0, this.width, this.height);
 
-      var r = this.width/2;
+      var r = Math.min(this.width, this.height)/2;
       c.fillStyle = this.background;
       c.beginPath();
-      c.arc(r, r, r, 0, Math.PI*2, true);
+      c.arc(this.width/2, this.height/2, r, 0, Math.PI*2, true);
       c.closePath();
       c.fill();
     },

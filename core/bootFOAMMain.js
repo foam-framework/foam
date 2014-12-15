@@ -23,9 +23,7 @@
   for ( var i = 0 ; i < files.length ; i++ ) {
     var p = Array.isArray(files[i]) ? files[i][1] : null;
     var f = Array.isArray(files[i]) ? files[i][0] : files[i];
-    if ( ! p || p() ) {
-      document.writeln('<script language="javascript" src="' + (FOAM_BOOT_DIR || "") + f + '.js"></script>\n');
-    }
+    if ( ! p || p() ) loadScript_(f + '.js');
   }
 })();
 

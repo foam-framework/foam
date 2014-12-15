@@ -292,7 +292,7 @@ CLASS({
       hidden: true,
       mode:   "read-only",
       getter: function() {
-        return this.instance_.$ ? this.instance_.$ : this.instance_.$ = this.X.document.getElementById(this.id);
+        return this.X.document.getElementById(this.id);
       },
       help: 'DOM Element.'
     },
@@ -667,7 +667,7 @@ CLASS({
           var e = this.X.$(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           DOM.setClass(e, className, predicate());
-        });
+        }.bind(this));
       }.bind(this));
 
       return opt_id;
