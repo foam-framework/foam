@@ -403,7 +403,10 @@ CLASS({
     },
     {
       model_: 'DocumentationProperty',
-      name: 'documentation'
+      name: 'documentation',
+      documentation: function() { /*
+          The developer documentation.
+      */}
     },
     {
       name:  'relatedModel',

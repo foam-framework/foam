@@ -18,7 +18,7 @@
 CLASS({
   name: 'DocView',
   package: 'foam.documentation',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.views.DetailView',
   label: 'Documentation View Base',
   help: 'Base Model for documentation views.',
 
@@ -101,7 +101,7 @@ CLASS({
 CLASS({
   name: 'TextualDAOListView',
   package: 'foam.documentation',
-  extendsModel: 'DAOListView',
+  extendsModel: 'foam.views.DAOListView',
     
   methods: {    
     // Template method
@@ -125,15 +125,6 @@ CLASS({
     DocumentationBook, or other thing.
   */},
 
-  properties: [
-    {
-      name: 'model',
-      postSet: function() {
-        this.updateHTML();
-      }
-    }
-  ],
-  
   templates: [
     function toInnerHTML() {/*
       <% this.destroy();
@@ -384,16 +375,6 @@ CLASS({
         return this.MDAO.create({model:this.DocModelInheritanceTracker, autoIndex:true});
       }
     },
-    {
-      name: 'data',
-      help: 'The model for which to display documentation.',
-      documentation: "The $$DOC{ref:'Model'} for which to display $$DOC{ref:'Documentation'}.",
-      postSet: function() {
-        if (this.data) {
-          this.processModelChange();
-        }
-      }
-    },
   ],
 
   listeners: [
@@ -412,8 +393,13 @@ CLASS({
       this.SUPER();
 
       this.documentViewRef.addListener(this.doScrollToFeature);
+      this.generateFeatureDAO();
     },
 
+    onValueChange_: function() {
+      this.processModelChange();
+    },
+    
     destroy: function() {
       this.SUPER();
       this.documentViewRef.removeListener(this.doScrollToFeature);
@@ -468,11 +454,15 @@ CLASS({
       this.featureDAO.removeAll();
       this.modelDAO.removeAll();
 
-      if (!this.data.model_ || this.data.model_.id !== 'Model') {
+      if ( ! this.data.model_ || this.data.model_.id !== 'Model' ) {
         console.warn("ModelDocView created with non-model instance: ", this.data);
         return;
       }
-
+      
+      if ( ! this.X.modelDAO ) {
+        // we aren't done init yet, so wait and our init(); will call us again
+        return;
+      }
       
       // Run through the features in the Model definition in this.data,
       // and load them into the feature DAO. Passing [] assumes we don't
@@ -502,9 +492,9 @@ CLASS({
 
       this.Model.properties.forEach(function(modProp) {
         var modPropVal = modelDef[modProp.name];
-        if (Array.isArray(modPropVal)) { // we only care to check inheritance on the array properties
+        if ( Array.isArray(modPropVal) ) { // we only care to check inheritance on the array properties
           modPropVal.forEach(function(feature) {
-            if (feature.name) { // only look at actual objects
+            if ( feature.name ) { // only look at actual objects
               // all features we hit are declared (or overridden) in this model
               var featTr = self.DocFeatureInheritanceTracker.create({
                     isDeclared:true,
@@ -715,7 +705,7 @@ CLASS({
         $$data{ model_: 'foam.documentation.SummaryDocView', model: this.data.model_ }
         <div class="members">
           <p class="feature-type-heading">Methods:</p>
-          <div class="memberList">$$methods{ model_: 'DAOListView', rowView: 'foam.documentation.SimpleRowDocView' }</div>
+          <div class="memberList">$$methods{ model_: 'foam.views.DAOListView', rowView: 'foam.documentation.SimpleRowDocView' }</div>
         </div>
 <%    } %>
     */}
@@ -866,6 +856,7 @@ CLASS({
         if (this.data && (!this.model || this.model !== this.data.model_)) {
           this.model = this.data.model_;
         }
+        this.childData = this.data;
         this.updateHTML();
       }
     },
@@ -1281,7 +1272,8 @@ CLASS({
   extendsModel: 'foam.documentation.DocView',
   help: 'Displays the documentation of the given feature list.',
 
-  requires: [ 'DAOListView',
+  requires: [ 'foam.views.DAOListView',
+              'CollapsibleView',
               'foam.documentation.DocFeatureCollapsedView',
               'foam.documentation.DocFeatureInheritanceTracker'
               ],
@@ -1294,7 +1286,7 @@ CLASS({
       help: 'The array property whose features to view.',
       postSet: function() {
         this.dao = this.data;
-        this.updateHTML();
+        this.childData = this.data;
       }
     },
     {
@@ -1304,7 +1296,14 @@ CLASS({
     {
       name: 'featureType',
       help: 'The property name from which data is set (such as "properties" or "methods")',
-      type: 'String'
+      type: 'String',
+      postSet: function() {
+        // only render once we have both featureType and dao
+        if ( ! this.filteredDAO && this.dao ) {
+          this.filteredDAO = this.dao;
+        }
+
+      }
     },
     {
       name: 'featureDAO'
@@ -1314,7 +1313,10 @@ CLASS({
       model_: 'DAOProperty',
       defaultValue: [],
       onDAOUpdate: function() {
-        this.filteredDAO = this.dao;
+        // only render once we have both featureType and dao
+        if ( this.featureType ) {
+          this.filteredDAO = this.dao;
+        }
       }
     },
     {
@@ -1413,7 +1415,7 @@ CLASS({
     <%    } else {
             if (this.hasFeatures) { %>
               <p class="feature-type-heading"><%=this.model.plural%>:</p>
-              <div class="memberList">$$selfFeaturesDAO{ model_: 'DAOListView', rowView: 'foam.documentation.RowDocView', model: this.model }</div>
+              <div class="memberList">$$selfFeaturesDAO{ model_: 'foam.views.DAOListView', rowView: 'foam.documentation.RowDocView', model: this.model }</div>
       <%    }
             if (this.hasInheritedFeatures) { %>
               <p class="feature-type-heading">Inherited <%=this.model.plural%>:</p>
@@ -1458,7 +1460,10 @@ CLASS({
       }
     },
     {
-      name: 'count'
+      name: 'count',
+      postSet: function() {
+        this.updateHTML();
+      }
     }
   ],
 

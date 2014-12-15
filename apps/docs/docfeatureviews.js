@@ -76,6 +76,7 @@ CLASS({
   name: 'DocFeatureOverridesRefView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocRefView',
+  traits: ['foam.views.DataConsumerTrait'],
   label: 'Documentation Feature Overrides Reference Link View',
   help: "The view of a documentation reference link based on a Model's overrides.",
 
@@ -103,6 +104,7 @@ CLASS({
   name: 'DocFeatureSubmodelRefView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocRefView',
+  traits: ['foam.views.DataConsumerTrait'],
   label: 'Documentation Feature sub-model Link Reference View',
   help: 'The view of a documentation reference link based on a Sub-Model.',
 
@@ -130,6 +132,7 @@ CLASS({
   name: 'DocFeatureModelRefView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocRefView',
+  traits: ['foam.views.DataConsumerTrait'],
   label: 'Documentation Feature Model Link Reference View',
   help: 'The view of a documentation reference link based on a Model.',
 
@@ -315,7 +318,7 @@ CLASS({
 //          if (!this.hasDAOContent) { %>
 //    <%    } else { %>
 //            <p class="feature-sub-heading"><%=this.featureName()%>:</p>
-//            <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</div>
+//            <div class="memberList">$$filteredDAO{ model_: 'foam.views.DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</div>
 //    <%    } %>
 //    */}
 //  ],
@@ -356,7 +359,7 @@ CLASS({
 //    function toInnerHTML()    {/*<%
 //          this.destroy();
 //          if (this.hasDAOContent) {
-//            %>(<span>$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</span>)<%
+//            %>(<span>$$filteredDAO{ model_: 'foam.views.DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</span>)<%
 //          } else {
 //            %>()<%
 //          }
@@ -395,7 +398,7 @@ CLASS({
     function toInnerHTML()    {/*
     <%    this.destroy();
           if (this.data) { %>
-            <div class="memberList">$$data{ model_: 'DAOListView', rowView: 'foam.documentation.DocumentationBookSummaryDocView', model: this.X.Documentation }</div>
+            <div class="memberList">$$data{ model_: 'foam.views.DAOListView', rowView: 'foam.documentation.DocumentationBookSummaryDocView', model: this.X.Documentation }</div>
     <%    } %>
     */}
   ]
@@ -435,15 +438,15 @@ CLASS({
 //    <%    } else {
 //            if (this.hasFeatures) { %>
 //              <p class="feature-type-heading"><%=this.featureName()%>:</p>
-//              <div class="memberList">$$selfFeaturesDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.selfFeaturesDAO, model: Model }</div>
+//              <div class="memberList">$$selfFeaturesDAO{ model_: 'foam.views.DAOListView', rowView: this.rowView, data: this.selfFeaturesDAO, model: Model }</div>
 //      <%    }
 //            if (this.hasInheritedFeatures) { %>
 //              <p class="feature-type-heading">Inherited <%=this.featureName()%>:</p>
 //      <%
-//              var fullView = this.X.DAOListView.create({ rowView: this.rowView, model: Property });
-//              var collapsedView = this.X.DocFeatureCollapsedView.create();
+//              var fullView = this.X.foam.views.DAOListView.create({ rowView: this.rowView, model: Property });
+//              var collapsedView = this.X.foam.documentation.DocFeatureCollapsedView.create();
 //              %>
-//              <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'CollapsibleView', data: this.inheritedFeaturesDAO, collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
+//              <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'foam.views.CollapsibleView', data: this.inheritedFeaturesDAO, collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
 //      <%    } %>
 //    <%    } %>
 //    */}

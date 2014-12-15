@@ -457,6 +457,58 @@ CLASS({
 
 });
 
+CLASS({
+  name: 'SectionGroup',
+  package: 'diagram',
+  label: 'Section Group',
+
+  requires: ['diagram.Section'],
+  
+  extendsModel: 'diagram.Block',
+  
+  properties: [
+    {
+      name: 'orientation',
+      defaultValue: 'vertical'
+    },
+    {
+      name: 'titleSection',
+      type: 'diagram.Section'
+    },
+    {
+      name: 'title',
+      type: 'String',
+    },
+    {
+      name: 'titleFont',
+      type: 'String',
+      defaultValue: 'bold 14px Roboto'
+    }
+  ],
+  
+  methods: {
+    init: function() {
+      this.SUPER();
+      this.create();
+    },
+    create: function() {
+      if (!this.titleSection) {
+        this.titleSection = this.Section.create({title$: this.title$, titleFont$: this.titleFont$});
+        this.myLinkPoints$ = this.titleSection.myLinkPoints$;
+      }
+      this.addChild(this.titleSection);
+    },
+    addLinkPoints: function() {
+      // no points to add... we just use our title section's points
+    }
+
+  }
+
+
+});
+
+
+
 
 CLASS({
   name: 'Link',
