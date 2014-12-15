@@ -158,6 +158,14 @@ CLASS({
           f: function(r) { return r.documented && r.undocumentedFeatureCount > 0; }
         },
         { 
+          name: 'Documented but less than 80% complete',
+          f: function(r) { 
+            return r.documented && 
+              r.documentedFeatureCount / 
+                (r.undocumentedFeatureCount+r.documentedFeatureCount) < 0.8;
+          }
+        },
+        { 
           name: 'Not Documented',
           f: function(r) { return !r.documented; }
         },
@@ -170,22 +178,27 @@ CLASS({
       criteria.forEach(function(c) {
         console.log("=====================");
         console.log(c.name);
+        var matchingCount = 0;
         for (var i = 0; i < reports.length; i++) {
           var r = reports[i];
           // log interesting ones        
           if (c.f(r)) {
+            matchingCount += 1;
             console.log("---------------------");
             console.log("Model "+r.model.id);
             console.log("Documentation " + (r.documented? "OK" : "NO"));
-            console.log("Features: " + (r.undocumentedFeatureCount > 0? "INCOMPLETE":"OK"));
-            console.log("        : " + r.documentedFeatureCount + "/" + (r.undocumentedFeatureCount+r.documentedFeatureCount));
-            if (r.undocumentedFeatureCount > 0) {
-              r.undocumentedFeatures.forEach(function(f) {
-                  console.log("      Missing feature docs: "+f.name);
-              });
+            if  ((r.undocumentedFeatureCount+r.documentedFeatureCount) > 0) {
+              console.log("Features: " + (r.undocumentedFeatureCount > 0? "INCOMPLETE":"OK"));
+              console.log("        : " + r.documentedFeatureCount / (r.undocumentedFeatureCount+r.documentedFeatureCount) * 100 + "%");
+              if (r.undocumentedFeatureCount > 0) {
+                r.undocumentedFeatures.forEach(function(f) {
+                    console.log("      Missing feature docs: "+f.name);
+                });
+              }
             }
           }
         }
+        console.log("---- total "+c.name+" "+matchingCount);
       }.bind(this));
       
     }
@@ -227,14 +240,22 @@ CLASS({
 CLASS({
   name: 'ModelDescriptionRowView',
   extendsModel: 'View',
+  traits: ['foam.views.DataConsumerTrait'],
 
   properties: [
     {
       name: 'data',
       help: 'The Model to describe',
       postSet: function() {
-        this.modelRef = this.data.package? this.data.package + "." + this.data.name : this.data.name;
-        this.modelName = this.data.package? "["+this.data.package + "]&nbsp;" + this.data.name : this.data.name;
+        this.modelRef = this.data.package ? 
+                          this.data.package + "." + this.data.name :
+                          this.data.name;
+        var shortPkg = this.data.package;
+        if ( shortPkg.length > 10 ) {
+          shortPkg = "..." + this.data.package.substring(
+                      this.data.package.length-10, this.data.package.length);
+        }
+        this.modelName = (shortPkg ? "["+ shortPkg + "]&nbsp;" : "") + this.data.name;
       }
     },
     {
