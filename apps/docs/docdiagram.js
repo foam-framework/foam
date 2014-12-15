@@ -18,48 +18,48 @@
  
 
 CLASS({
-  name: 'DocDiagram',
-  package: 'foam.documentation'
-});
-
-
-CLASS({
-  name: 'ModelDocDiagram',
-  extendsModel: 'diagram.Block',
-  traits: ['foam.views.DataConsumerTrait', 
-           'foam.views.DataProviderTrait',
-           'foam.views.ChildTreeTrait'], // TODO(jacksonic): put child tree trait into CView 
+  name: 'DocDiagramTrait',
+  package: 'foam.documentation',
+  // enhances BaseDetailView to add diagram support
   
   requires: [
     'diagram.Section',
     'diagram.SectionGroup'
   ],
   
+  properties: [
+    {
+      name: 'diagramItem',
+      documentation: "The diagram item we create and are managing.",
+      type: 'diagram.Block'
+    },
+    
+  ],
+  
+  methods:{
+    construct: function() {
+      // create diagram nodes 
+    },
+    
+    destroy: function() {
+    
+    }
+  }
+  
+});
+
+
+CLASS({
+  name: 'ModelDocDiagram',
+  extendsModel: 'foam.views.BaseDetailView',
+  package: 'foam.documentation',
+  traits: ['foam.documentation.DocDiagramTrait'], 
+  
+  
   documentation: function() {/*
     A diagram block documenting one $$DOC{ref:'Model'}.
   */},
     
-  methods:{
-    propagateParentChange: function(old, nu) {
-      // clean up children 
-      this.destroy();
-
-      // pass data on
-      this.SUPER(old,nu);
-      
-      // re-create children
-      this.processModelChange();      
-    },
-    
-    processModelChange: function() { /* Template Method. Override to iterate over features and 
-      build sections for them. */
-      //TODO(jacksonic): Use featureDAO
-      
-      // properties
-      
-      
-    }
-  }
 });
 
 
