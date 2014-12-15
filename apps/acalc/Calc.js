@@ -225,7 +225,7 @@ CLASS({
     .calc .buttons {
       flex: 1 1 100%;
       width: 100%;
-      height: 300px;
+      height: 252px;
     }
 
     .button-row {
@@ -521,8 +521,8 @@ CLASS({
 var CalcButton = ActionButtonCView2.xbind({
   color:      'white',
   background: '#4b4b4b',
-  width:      75,
-  height:     75,
+  width:      60,
+  height:     60,
   font:       '300 32px RobotoDraft'
 });
 X.registerModel(CalcButton, 'ActionButton');
@@ -642,8 +642,8 @@ CLASS({
       <%
       this.X.registerModel(CalcButton.xbind({
         background: '#777',
-        width:  74,
-        height: 60,
+        width:  70,
+        height: 50,
         font:   '300 24px RobotoDraft'
       }), 'ActionButton');
       %>
@@ -668,7 +668,7 @@ CLASS({
           this.X.registerModel(CalcButton.xbind({
             background: 'rgb(64, 189, 158)',
             width:  50,
-            height: 50,
+            height: 40,
             font:   '300 20px RobotoDraft'
           }), 'ActionButton');
           %>
@@ -706,7 +706,7 @@ CLASS({
           <%
           this.X.registerModel(this.X.ActionButton.xbind({
             width: 70,
-            height: 60,
+            height: 50,
             color:      'rgb(119, 119, 119)',
             background: 'rgb(29, 233, 182)',
             font:       '300 20px RobotoDraft'
@@ -734,4 +734,3 @@ CLASS({
     */}
   ]
 });
-
