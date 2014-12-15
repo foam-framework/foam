@@ -26,9 +26,9 @@ CLASS({
 CLASS({
   name: 'ModelDocDiagram',
   extendsModel: 'diagram.Block',
-  traits: ['foam.experimental.views.DataConsumerTrait', 
-           'foam.experimental.views.DataProviderTrait',
-           'foam.experimental.views.ChildTreeTrait'], // TODO(jacksonic): put child tree trait into CView 
+  traits: ['foam.views.DataConsumerTrait', 
+           'foam.views.DataProviderTrait',
+           'foam.views.ChildTreeTrait'], // TODO(jacksonic): put child tree trait into CView 
   
   requires: [
     'diagram.Section',

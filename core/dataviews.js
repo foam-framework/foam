@@ -20,7 +20,7 @@
 // View
 CLASS({
   name: 'DataProviderTrait',
-  package: 'foam.experimental.views',
+  package: 'foam.views',
   
   documentation: function() {/*
     Trait for providers of a data property. It contains a $$DOC{ref:'.data'}
@@ -74,7 +74,7 @@ CLASS({
   
 CLASS({
   name: 'DataConsumerTrait',
-  package: 'foam.experimental.views',
+  package: 'foam.views',
   
   documentation: function() {/*
     Trait for consumers of a data property. It contains 
@@ -95,17 +95,17 @@ CLASS({
 
 CLASS({
   name: 'ChildTreeTrait',
-  package: 'foam.experimental.views',
+  package: 'foam.views',
   
   properties: [
     {
       name: 'parent',
-      type: 'foam.experimental.views.ChildTreeTrait',
+      type: 'foam.views.ChildTreeTrait',
       hidden: true
     },
     {
       name: 'children',
-      type: 'Array[foam.experimental.views.ChildTreeTrait]',
+      type: 'Array[foam.views.ChildTreeTrait]',
       factory: function() { return []; },
       documentation: function() {/*
         $$DOC{ref:'ChildTreeTrait',usePlural:true} children are arranged in a tree.
@@ -199,10 +199,10 @@ CLASS({
 CLASS({
   name: 'BaseView',
   label: 'View',
-  package: 'foam.experimental.views',
+  package: 'foam.views',
   
-  traits: ['foam.experimental.views.DataProviderTrait',
-           'foam.experimental.views.ChildTreeTrait'],
+  traits: ['foam.views.DataProviderTrait',
+           'foam.views.ChildTreeTrait'],
 
   requires: ['SimpleValue'],
            
@@ -259,7 +259,7 @@ CLASS({
     createView: function(prop, opt_args) {
       /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.X;
-      var v = X.foam.experimental.views.PropertyView.create({prop: prop, args: opt_args}, X);
+      var v = X.foam.views.PropertyView.create({prop: prop, args: opt_args}, X);
       this.addChild(v);
       return v;
     },
@@ -270,7 +270,7 @@ CLASS({
       var X = ( opt_args && opt_args.X ) || this.X;
       var modelName = opt_args && opt_args.model_ ?
         opt_args.model_ :
-        'foam.experimental.views.ActionButton'  ;
+        'foam.views.ActionButton'  ;
       var v = FOAM.lookup(modelName, X).create({action: action}).copyFrom(opt_args);
 
       this[action.name + 'View'] = v;
@@ -330,10 +330,10 @@ CLASS({
 
 CLASS({
   name: 'View',
-  package: 'foam.experimental.views',
+  package: 'foam.views',
   label: 'HTMLView',
-  extendsModel: 'foam.experimental.views.BaseView',
-  traits: ['foam.experimental.views.HTMLViewTrait'],
+  extendsModel: 'foam.views.BaseView',
+  traits: ['foam.views.HTMLViewTrait'],
 
   documentation: function() {/*
     <p>$$DOC{ref:'View',usePlural:true} render data. This could be a specific
@@ -356,7 +356,7 @@ CLASS({
 CLASS({
   name: 'HTMLViewTrait',
   label: 'HTMLViewTrait',
-  package: 'foam.experimental.views',
+  package: 'foam.views',
   
   documentation: function() {/*
     The HTML implementation for $$DOC{ref:'View'}.
@@ -825,12 +825,12 @@ CLASS({
 
 CLASS({
   name: 'BasePropertyView',
-  package: 'foam.experimental.views',
-  extendsModel: 'foam.experimental.views.BaseView',
-//   traits: ['foam.experimental.views.DataProviderTrait',
-//            'foam.experimental.views.DataConsumerTrait',
-//            'foam.experimental.views.ChildTreeTrait'],
-  traits: ['foam.experimental.views.DataConsumerTrait'],
+  package: 'foam.views',
+  extendsModel: 'foam.views.BaseView',
+//   traits: ['foam.views.DataProviderTrait',
+//            'foam.views.DataConsumerTrait',
+//            'foam.views.ChildTreeTrait'],
+  traits: ['foam.views.DataConsumerTrait'],
   
   documentation: function() {/*
     Apply this trait to a $$DOC{ref:'BaseView'} (such as $$DOC{ref:'HTMLView'}).</p>
@@ -904,7 +904,7 @@ CLASS({
     createViewFromProperty: function(prop) {
       /* Helper to determine the $$DOC{ref:'View'} to use. */
       var viewName = this.innerView || prop.view
-      if ( ! viewName ) return this.X.foam.experimental.views.TextFieldView.create(prop);
+      if ( ! viewName ) return this.X.foam.views.TextFieldView.create(prop);
       if ( typeof viewName === 'string' ) return FOAM.lookup(viewName, this.X).create(prop);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
       if ( viewName.model_ ) { var v = viewName.model_.create(viewName, this.X).copyFrom(prop); v.id = this.nextID(); return v; }
@@ -968,10 +968,10 @@ CLASS({
 
 CLASS({
   name: 'PropertyView',
-  package: 'foam.experimental.views',
-  extendsModel: 'foam.experimental.views.BasePropertyView',
-  traits: ['foam.experimental.views.HTMLViewTrait',
-           'foam.experimental.views.HTMLPropertyViewTrait'], 
+  package: 'foam.views',
+  extendsModel: 'foam.views.BasePropertyView',
+  traits: ['foam.views.HTMLViewTrait',
+           'foam.views.HTMLPropertyViewTrait'], 
 
   documentation: function() {/*
     Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one
@@ -983,7 +983,7 @@ CLASS({
 
 CLASS({
   name: 'HTMLPropertyViewTrait',
-  package: 'foam.experimental.views',
+  package: 'foam.views',
   
   methods: {
     toHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ return this.view.toHTML(); },
@@ -997,9 +997,9 @@ CLASS({
 
 CLASS({
   name: 'BaseDetailView',
-  extendsModel: 'foam.experimental.views.BaseView',
-  traits: ['foam.experimental.views.DataConsumerTrait'],
-  package: 'foam.experimental.views',
+  extendsModel: 'foam.views.BaseView',
+  traits: ['foam.views.DataConsumerTrait'],
+  package: 'foam.views',
   
   documentation:function() {/*
     When a view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'DetailView'}
@@ -1106,9 +1106,10 @@ CLASS({
 
 CLASS({
   name: 'DetailView',
-  extendsModel: 'foam.experimental.views.BaseDetailView',
-  traits: ['foam.experimental.views.HTMLViewTrait',
-           'foam.experimental.views.HTMLDetailViewTrait'],
+  package: 'foam.views',
+  extendsModel: 'foam.views.BaseDetailView',
+  traits: ['foam.views.HTMLViewTrait',
+           'foam.views.HTMLDetailViewTrait'],
 
   documentation:function() {/*
     When a view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'DetailView'}
@@ -1134,10 +1135,10 @@ CLASS({
 
 CLASS({
   name: 'HTMLDetailViewTrait',
-  package: 'foam.experimental.views',
+  package: 'foam.views',
   
   documentation:function() {/*
-    The HTML implementation of $$DOC{ref:'foam.experimental.views.DetailView'}.
+    The HTML implementation of $$DOC{ref:'foam.views.DetailView'}.
   */},
 
   properties: [
@@ -1251,16 +1252,16 @@ CLASS({
 
 CLASS({
   name: 'UpdateDetailView',
-  package: 'foam.experimental.views',
-  extendsModel: 'foam.experimental.views.BaseUpdateDetailView',
-  traits: ['foam.experimental.views.HTMLViewTrait',
-           'foam.experimental.views.HTMLDetailViewTrait']
+  package: 'foam.views',
+  extendsModel: 'foam.views.BaseUpdateDetailView',
+  traits: ['foam.views.HTMLViewTrait',
+           'foam.views.HTMLDetailViewTrait']
 });
 
 CLASS({
   name: 'BaseUpdateDetailView',
-  extendsModel: 'foam.experimental.views.BaseDetailView',
-  package: 'foam.experimental.views',
+  extendsModel: 'foam.views.BaseDetailView',
+  package: 'foam.views',
   
   documentation:function() {/*
     UNTESTED: proof of concept for data handling
@@ -1369,17 +1370,17 @@ CLASS({
 // Bring in classic views and upgrade data handling
 CLASS({
   name:  'TextFieldView',
-  package: 'foam.experimental.views',
+  package: 'foam.views',
   label: 'Text Field',
 
   extendsModel: 'TextFieldView',
-  traits: ['foam.experimental.views.DataConsumerTrait'],
+  traits: ['foam.views.DataConsumerTrait'],
 });
 
 CLASS({
   name: 'ActionButton',
-  package: 'foam.experimental.views',
-  traits: ['foam.experimental.views.DataConsumerTrait'],
+  package: 'foam.views',
+  traits: ['foam.views.DataConsumerTrait'],
   extendsModel: 'ActionButton',
 });
 
@@ -1387,18 +1388,18 @@ CLASS({
 
 CLASS({
   name: 'AbstractDAOView',
-  package: 'foam.experimental.views',
+  package: 'foam.views',
 
   extendsModel: 'AbstractDAOView',
-  traits: ['foam.experimental.views.DataConsumerTrait'],
+  traits: ['foam.views.DataConsumerTrait'],
 
 });
 
 
 CLASS({
   name: 'DAOListView',
-  extendsModel: 'foam.experimental.views.AbstractDAOView',
-  package: 'foam.experimental.views',
+  extendsModel: 'foam.views.AbstractDAOView',
+  package: 'foam.views',
   
   // see updateHTML, item X.sub({data...}) for differences from old DAOListView
   

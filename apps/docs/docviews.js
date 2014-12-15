@@ -18,7 +18,7 @@
 CLASS({
   name: 'DocView',
   package: 'foam.documentation',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.views.DetailView',
   label: 'Documentation View Base',
   help: 'Base Model for documentation views.',
 
@@ -101,7 +101,7 @@ CLASS({
 CLASS({
   name: 'TextualDAOListView',
   package: 'foam.documentation',
-  extendsModel: 'DAOListView',
+  extendsModel: 'foam.views.DAOListView',
     
   methods: {    
     // Template method
@@ -705,7 +705,7 @@ CLASS({
         $$data{ model_: 'foam.documentation.SummaryDocView', model: this.data.model_ }
         <div class="members">
           <p class="feature-type-heading">Methods:</p>
-          <div class="memberList">$$methods{ model_: 'DAOListView', rowView: 'foam.documentation.SimpleRowDocView' }</div>
+          <div class="memberList">$$methods{ model_: 'foam.views.DAOListView', rowView: 'foam.documentation.SimpleRowDocView' }</div>
         </div>
 <%    } %>
     */}
@@ -1272,7 +1272,8 @@ CLASS({
   extendsModel: 'foam.documentation.DocView',
   help: 'Displays the documentation of the given feature list.',
 
-  requires: [ 'DAOListView',
+  requires: [ 'foam.views.DAOListView',
+              'CollapsibleView',
               'foam.documentation.DocFeatureCollapsedView',
               'foam.documentation.DocFeatureInheritanceTracker'
               ],
@@ -1414,7 +1415,7 @@ CLASS({
     <%    } else {
             if (this.hasFeatures) { %>
               <p class="feature-type-heading"><%=this.model.plural%>:</p>
-              <div class="memberList">$$selfFeaturesDAO{ model_: 'DAOListView', rowView: 'foam.documentation.RowDocView', model: this.model }</div>
+              <div class="memberList">$$selfFeaturesDAO{ model_: 'foam.views.DAOListView', rowView: 'foam.documentation.RowDocView', model: this.model }</div>
       <%    }
             if (this.hasInheritedFeatures) { %>
               <p class="feature-type-heading">Inherited <%=this.model.plural%>:</p>
