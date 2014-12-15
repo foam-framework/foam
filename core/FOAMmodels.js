@@ -98,5 +98,6 @@ var files = [
   [ '../apps/mailreader/email', IN_BROWSER ],
   [ '../lib/email/email', IN_BROWSER ],
   [ 'turntable', IN_BROWSER ],
-  [ 'CORE', IN_BROWSER ]
+  [ 'CORE', IN_BROWSER ],
+  '../js/node/dao/JSModelFileDAO'
 ];
