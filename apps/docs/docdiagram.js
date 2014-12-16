@@ -39,6 +39,7 @@ CLASS({
   methods:{
     construct: function() {
       // create diagram nodes 
+      
     },
     
     destroy: function() {
