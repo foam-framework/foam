@@ -471,7 +471,7 @@ CLASS({
     },
     {
       name: 'e',
-      label: 'E',
+      label: 'e',
       keyboardShortcuts: [69 /* e */],
       action: function() { this.a2 = Math.E; }
     },
