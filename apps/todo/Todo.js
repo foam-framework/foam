@@ -66,10 +66,6 @@
 				name: 'input',
 				setter: function (text) {
 					// This is a fake property that adds the todo when its value gets saved.
-					if ( text ) {
-						this.dao.put(Todo.create({text: text}));
-						this.propertyChange('input', text, '');
-					}
 					if (text) {
 						this.dao.put(Todo.create({text: text}));
 						this.propertyChange('input', text, '');
