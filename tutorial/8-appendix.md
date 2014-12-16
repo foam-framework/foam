@@ -1,7 +1,7 @@
 ---
 layout: tutorial
 permalink: /tutorial/8-appendix/
-tutorial: 8
+tutorial: 7
 ---
 
 This appendix introduces further details about some parts of FOAM that aren't necessary for the main tutorial.
@@ -210,13 +210,13 @@ is unnecessary). This button is always visible but only enabled when
 called. If the button is disabled, nothing happens on a click.
 
 
-## Methods on the all objects
+## Methods on all objects
 
 FOAM includes several properties and methods on all objects:
 
 - `model_`: Every object has a pointer to its `Model`. This is the Javascript
   representation of its class, the same object you passed to `CLASS()`.
-  - These representations have their own model, `Model`.
+    - These representations have their own model, `Model`.
 - `o.equals(x)` compares `o` and `x`
 - `o.compareTo(x)` returns the usual -1, 0 or 1.
 - `o.hashCode()` is similar to Java.
@@ -225,8 +225,7 @@ FOAM includes several properties and methods on all objects:
 - `o.deepClone()` is of course a deep copy.
 - `o.toJSON()` and `o.toXML()` return JSON or XML as a string. Parsers are
   included to read them in again.
-- `o.write(document)` writes the default view (see below) of the object into the
-  document.
+- `o.write(document)` writes the default view of the object into the document.
 
 ## DAOs
 
@@ -261,8 +260,8 @@ interface Sink {
 }
 {% endhighlight %}
 
-Every DAO is also a sink, making it trivial to pull data from one DAO into
-another.
+Note that every DAO is therefore also a Sink, making it trivial to pull data
+from one DAO into another: `sourceDAO.select(targetDAO)`.
 
 Here's an example of using the DAO interface to make a query:
 
