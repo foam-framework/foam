@@ -23,3 +23,5 @@ MODEL({
     }
   }
 });
+
+X.ModelDAO = X.foam.core.bootstrap.ModelFileDAO.create();

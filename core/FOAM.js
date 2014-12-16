@@ -128,12 +128,28 @@ FOAM.lookup = function(key, opt_X) {
 
 
 function arequire(modelName, opt_X) {
-  var X = opt_X || X;
+  var X = opt_X || GLOBAL.X;
   var model = FOAM.lookup(modelName, X);
 
   if ( ! model ) {
-    console.warn('Unknown Model in arequire: ', modelName);
-    return aconstant(undefined);
+    if ( ! X.ModelDAO ) {
+      console.warn('Unknown Model in arequire: ', modelName);
+      return aconstant(undefined);
+    }
+
+    var future = afuture();
+    X.ModelDAO.find(modelName, {
+      put: function(m) {
+        var m = FOAM.lookup(modelName, X);
+        arequireModel(m, X)(future.set);
+      },
+      error: function() {
+        var args = argsToArray(arguments);
+        console.warn.apply(console, 'Could not load model: ', [modelName].concat(args));
+        future.set(undefined);
+      }
+    });
+    return future.get;
   }
 
   /** This is so that if the model is arequire'd concurrently the
