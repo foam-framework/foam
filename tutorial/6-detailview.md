@@ -180,3 +180,5 @@ the larger version.
 And that's the complete app! Hopefully you now have a better feel for the steps
 of building a FOAM app, and are ready to start building your own.
 
+See the [Appendix]({{ site.baseurl }}/tutorial/8-appendix) for further reading.
+

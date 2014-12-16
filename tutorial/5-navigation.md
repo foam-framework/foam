@@ -15,6 +15,10 @@ show us a single phone's page or the list. Expand it to look like this:
 CLASS({
   name: 'ControllerView',
   extendsModel: 'DetailView',
+  requires: [
+    'PhoneCitationView',
+    'PhoneDetailView'
+  ],
   templates: [
     function toHTML() {/*
       <% if ( window.location.hash ) {
