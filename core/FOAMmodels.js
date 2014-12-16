@@ -16,6 +16,7 @@
  */
 
 function IN_BROWSER() { return typeof vm == "undefined" || vm.Script !== vm; }
+function IN_NODEJS() { return ! IN_BROWSER(); }
 
 var files = [
 //  ['ServiceWorker', function() { return window.navigator && navigator.serviceWorker; }],
@@ -99,5 +100,5 @@ var files = [
   [ '../lib/email/email', IN_BROWSER ],
   [ 'turntable', IN_BROWSER ],
   [ 'CORE', IN_BROWSER ],
-  '../js/node/dao/JSModelFileDAO'
+  [ '../js/node/dao/JSModelFileDAO.js', IN_NODEJS ]
 ];
