@@ -74,6 +74,9 @@ CLASS({
 
   templates: [
     function CSS() {/*
+      .gridtile {
+        background: white;
+      }
       .gridtile.priority-0 {
         border-color: #DB4437 !important;
       }
@@ -88,6 +91,12 @@ CLASS({
       }
       .gridtile.closed {
         opacity: 0.6;
+      }
+      .gridtile .owner {
+        border-radius: 2px;
+        color: white;
+        font-size: 12px;
+        padding: 1px 2px;
       }
     */},
 
@@ -110,7 +119,8 @@ CLASS({
           </tr>
           <tr>
             <td colspan="2">
-              <div><span id="<%= this.on('click', f, this.nextID()) %>">{{this.issue.summary}}</div></div>
+              <div><span id="<%= this.on('click', f, this.nextID()) %>">{{this.issue.summary}}</span></div>
+              <span class="owner" style="background:hsl(<%= Math.abs(this.issue.owner.hashCode() % 100) %>, 75%, 50%);"> {{this.issue.owner}} </span>
             </td>
           </tr>
         </tbody></table>
