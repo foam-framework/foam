@@ -342,12 +342,13 @@ function createView(rowSelectionValue, browser) {
               }).create({
                 model: X.QIssue,
                 accChoices: [
-                  [ MAP(X.QIssueTileView.create({browser: browser}), COL.create()), "Tiles" ],
-                  [ MAP(IdFormatter(browser), COL.create()),                      "IDs" ],
-                  [ X.ItemCount.create({browser: browser}),                         "Counts" ],
-                  [ PIE(X.QIssue.STATUS),                                           "Pie(Status)"  ],
-                  [ PIE(X.QIssue.PRIORITY, priColorMap),                            "Pie(Priority)" ]
-                  // [ PIE(X.QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
+                  [ MAP(X.QIssueTileView.create({browser: browser}), COL.create()),  'Tiles' ],
+                  [ MAP(X.QIssueTileView2.create({browser: browser}), COL.create()), 'Tiles+' ],
+                  [ MAP(IdFormatter(browser), COL.create()),                         'IDs' ],
+                  [ X.ItemCount.create({browser: browser}),                          'Counts' ],
+                  [ PIE(X.QIssue.STATUS),                                            'Pie(Status)'  ],
+                  [ PIE(X.QIssue.PRIORITY, priColorMap),                             'Pie(Priority)' ]
+                  // [ PIE(X.QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), 'PIE(State)' ]
                 ],
                 grid: /*GridByExpr*/X.DragAndDropGrid.create({dao: browser.filteredIssueDAO$Proxy})
            }, X);

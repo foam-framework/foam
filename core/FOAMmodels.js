@@ -100,5 +100,6 @@ var files = [
   [ '../lib/email/email', IN_BROWSER ],
   [ 'turntable', IN_BROWSER ],
   [ 'CORE', IN_BROWSER ],
-  [ '../js/node/dao/JSModelFileDAO.js', IN_NODEJS ]
+  [ '../js/foam/core/bootstrap/ModelFileDAO', IN_BROWSER ],
+  [ '../js/node/dao/JSModelFileDAO', IN_NODEJS ]
 ];

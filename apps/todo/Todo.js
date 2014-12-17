@@ -2,17 +2,21 @@
 	'use strict';
 	// Necessary JSHint options. CLASS is not a constructor, just a global function.
 	/* jshint newcap: false */
+	// These are provided by FOAM (up through EasyDAO) or defined in this file.
+	/* global CLASS, TRUE, SET, NOT, GROUP_BY, COUNT, EasyDAO, Todo, TodoDAO */
 	CLASS({
 		name: 'TodoDAO',
 		extendsModel: 'ProxyDAO',
-		methods: { put: function (issue, s) {
-			// If the user tried to put an empty text, remove the entry instead.
-			if ( ! issue.text ) {
-                          this.remove(issue.id, { remove: s && s.put });
-                        } else {
-                          this.SUPER(issue, s);
-                        }
-		}}
+		methods: {
+			put: function(issue, s) {
+				// If the user tried to put an empty text, remove the entry instead.
+				if (!issue.text) {
+					this.remove(issue.id, { remove: s && s.put });
+				} else {
+					this.SUPER(issue, s);
+				}
+			}
+		}
 	});
 
 	CLASS({
@@ -42,6 +46,19 @@
 		]
 	});
 
+	// Needed to massage the HTML to fit TodoMVC spec; it works without this.
+	CLASS({
+		name: 'TodoFilterView',
+		extendsModel: 'ChoiceListView',
+		methods: {
+			choiceToHTML: function(id, choice) {
+				var self = this;
+                                this.setClass('selected', function() { return self.label === choice[1]; }, id);
+                                return '<li><a id="' + id + '" class="choice">' + choice[1] + '</a></li>';
+			}
+		}
+	});
+
 	CLASS({
 		name: 'Controller',
 		properties: [
@@ -49,7 +66,7 @@
 				name: 'input',
 				setter: function (text) {
 					// This is a fake property that adds the todo when its value gets saved.
-					if ( text ) {
+					if (text) {
 						this.dao.put(Todo.create({text: text}));
 						this.propertyChange('input', text, '');
 					}
@@ -61,15 +78,15 @@
 			{ name: 'completedCount', model_: 'IntProperty' },
 			{ name: 'activeCount',    model_: 'IntProperty', postSet: function (_, c) { this.toggle = !c; }},
 			{ name: 'toggle',         model_: 'BooleanProperty', postSet: function (_, n) {
-				if ( n == this.activeCount > 0 ) {
-                                  this.dao.update(SET(Todo.COMPLETED, n));
-                                }
+					if ( n == this.activeCount > 0 ) {
+						this.dao.update(SET(Todo.COMPLETED, n));
+					}
 			}},
 			{
 				name: 'query',
 				postSet: function (_, q) { this.filteredDAO = this.dao.where(q); },
 				defaultValue: TRUE,
-				view: { factory_: 'ChoiceListView', choices: [ [ TRUE, 'All' ], [ NOT(Todo.COMPLETED), 'Active' ], [ Todo.COMPLETED, 'Completed' ] ] }
+				view: { factory_: 'TodoFilterView', choices: [ [ TRUE, 'All' ], [ NOT(Todo.COMPLETED), 'Active' ], [ Todo.COMPLETED, 'Completed' ] ] }
 			}
 		],
 		actions: [
@@ -132,8 +149,19 @@
 				var f = function () { return this.completedCount + this.activeCount == 0; }.bind(this.data);
 				this.setClass('hidden', f, 'main');
 				this.setClass('hidden', f, 'footer');
-				Events.link(this.X.memento, this.queryView.label$);
-			%>*/}
+				Events.relate(this.X.memento, this.queryView.label$,
+					function(memento) {
+						var s = memento && memento.substring(1);
+						var t = s ? s.capitalize() : 'All';
+                                                console.log('memento->label', memento, s, t);
+                                                return t;
+					},
+                                        function(label) { var s = '/' + label.toLowerCase(); console.log('label->memento', label, s); return s; });
+				this.addInitializer(function() {
+					$('new-todo').focus();
+				});
+			%>
+			*/}
 		]
 	});
 })();

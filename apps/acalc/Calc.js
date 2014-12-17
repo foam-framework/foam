@@ -127,6 +127,7 @@ CLASS({
     'CalcView',
     'GestureManager',
     'TouchManager',
+    'foam.ui.animated.Label',
     'foam.ui.md.Flare'
   ],
 
@@ -328,7 +329,7 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'row1',
-      view: 'ALabel'
+      view: 'foam.ui.animated.Label'
     },
     {
       name: 'touchManager',
@@ -470,7 +471,7 @@ CLASS({
     },
     {
       name: 'e',
-      label: 'E',
+      label: 'e',
       keyboardShortcuts: [69 /* e */],
       action: function() { this.a2 = Math.E; }
     },

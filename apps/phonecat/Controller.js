@@ -36,7 +36,12 @@ CLASS({ name: 'PhoneCitationView', extendsModel: 'DetailView', templates: [
 ]});
 
 
-CLASS({ name: 'PhoneDetailView',   extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+CLASS({
+  name: 'PhoneDetailView',
+  requires: [ 'foam.ui.animated.ImageView' ],
+  extendsModel: 'DetailView',
+  templates: [ { name: 'toHTML' } ]
+});
 
 
 CLASS({

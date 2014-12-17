@@ -5,7 +5,7 @@
   function checkmark(b) { return b ? '\u2713' : '\u2718'; }
 %>
 <div class="phone-images">
-  $$imageUrl{model_: 'AImageView', className: 'phone'}
+  $$imageUrl{model_: 'foam.ui.animated.ImageView', className: 'phone'}
 </div>
 
 
