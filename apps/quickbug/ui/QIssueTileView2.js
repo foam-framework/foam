@@ -95,7 +95,9 @@ CLASS({
       .gridtile .owner {
         border-radius: 2px;
         color: white;
+        display: inline-block;
         font-size: 12px;
+        margin-top: 3px;
         padding: 1px 2px;
       }
     */},
@@ -120,7 +122,7 @@ CLASS({
           <tr>
             <td colspan="2">
               <div><span id="<%= this.on('click', f, this.nextID()) %>">{{this.issue.summary}}</span></div>
-              <span class="owner" style="background:hsl(<%= Math.abs(this.issue.owner.hashCode() % 100) %>, 75%, 50%);"> {{this.issue.owner}} </span>
+              <span class="owner" style="background:hsl(<%= Math.abs(this.issue.owner.hashCode() % 360) %>, 75%, 50%);"> {{this.issue.owner}} </span>
             </td>
           </tr>
         </tbody></table>
