@@ -859,7 +859,8 @@ CLASS({
             arequire('QIssueDetailView'),
             arequire('QIssueLabel'),
             arequire('QIssueStatus'),
-            arequire('QIssueTileView')
+            arequire('QIssueTileView'),
+            arequire('QIssueTileView2')
           )(function () {
             $addWindow(window);
             var Y = self.X.subWindow(window, 'Browser Window');

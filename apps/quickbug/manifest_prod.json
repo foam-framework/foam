@@ -42,6 +42,7 @@
         "ui/QIssueCommentUpdateView.js",
         "ui/QIssueCommentUpdateDetailView.js",
         "ui/QIssueTileView.js",
+        "ui/QIssueTileView2.js",
         "ui/ConfigureProjectsView.js",
         "dao/DAO.js",
         "ui/View.js",
