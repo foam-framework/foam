@@ -20,7 +20,13 @@ CLASS({
         'High': 1,
         'Critical': 0
       }
-    }
+    },
+    {
+      name: 'openPredicate',
+      lazyFactory: function() {
+        return this.X.QueryParser.parseString(this.browser.project.openPredicate);
+      }
+    },
   ],
 
   methods: {
@@ -80,14 +86,20 @@ CLASS({
       .gridtile.priority-3 {
         border-color: #0F9D58 !important;
       }
+      .gridtile.closed {
+        opacity: 0.6;
+      }
     */},
 
     function toHTML() {/*
       <%
         var starView = PropertyView.create({prop: this.X.QIssue.STARRED, data: this.issue});
         var f = function() { this.browser.location.id = this.issue.id; };
+        var cls = 'gridtile';
+        cls += ' priority-' + this.dataToPriority(this.issue.priority);
+        if ( ! this.openPredicate.f(this.issue) ) cls += ' closed';
       %>
-      <div draggable="true" id="<%= this.on('dragstart', this.dragStart, this.id) %>" class="gridtile priority-<%= this.dataToPriority(this.issue.priority) %>">
+      <div draggable="true" id="<%= this.on('dragstart', this.dragStart, this.id) %>" class="<%= cls %>" >
         <table cellspacing="0" cellpadding="0"><tbody>
           <tr>
             <td class="id">
