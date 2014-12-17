@@ -27,7 +27,7 @@ CLASS({
     property and exports it by reference to the context.
   */},
   
-  //exports: ['data$ as data$'],
+  //exports: ['childData$ as data$'],
   
   properties: [
     {
@@ -826,11 +826,11 @@ CLASS({
 CLASS({
   name: 'BasePropertyView',
   package: 'foam.views',
-  extendsModel: 'foam.views.BaseView',
-//   traits: ['foam.views.DataProviderTrait',
-//            'foam.views.DataConsumerTrait',
-//            'foam.views.ChildTreeTrait'],
-  traits: ['foam.views.DataConsumerTrait'],
+//  extendsModel: 'foam.views.BaseView',
+   traits: ['foam.views.DataProviderTrait',
+            'foam.views.DataConsumerTrait',
+            'foam.views.ChildTreeTrait'],
+//  traits: ['foam.views.DataConsumerTrait'],
   
   documentation: function() {/*
     Apply this trait to a $$DOC{ref:'BaseView'} (such as $$DOC{ref:'HTMLView'}).</p>
@@ -895,7 +895,11 @@ CLASS({
   ],
 
   methods: {
-    
+    init: function() {
+      this.SUPER();
+      this.construct();
+    },
+
     fromElement: function(e) {
       this.view.fromElement(e);
       return this;
@@ -970,8 +974,9 @@ CLASS({
   name: 'PropertyView',
   package: 'foam.views',
   extendsModel: 'foam.views.BasePropertyView',
-  traits: ['foam.views.HTMLViewTrait',
-           'foam.views.HTMLPropertyViewTrait'], 
+//   traits: ['foam.views.HTMLViewTrait',
+//            'foam.views.HTMLPropertyViewTrait'], 
+  traits: ['foam.views.HTMLPropertyViewTrait'], 
 
   documentation: function() {/*
     Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one

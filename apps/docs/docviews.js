@@ -1425,8 +1425,8 @@ CLASS({
             if (this.hasInheritedFeatures) { %>
               <p class="feature-type-heading">Inherited <%=this.model.plural%>:</p>
       <%
-              var fullView = this.DAOListView.create({ rowView: 'foam.documentation.RowDocView', model: this.model });
-              var collapsedView = this.DocFeatureCollapsedView.create();
+              var fullView = this.DAOListView.create({ data$: this.inheritedFeaturesDAO$, rowView: 'foam.documentation.RowDocView', model: this.model });
+              var collapsedView = this.DocFeatureCollapsedView.create({data$: this.inheritedFeaturesDAO$});
               %>
               <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'CollapsibleView', collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
       <%    } %>
