@@ -402,6 +402,7 @@ CLASS({
         <p>Returns the inheritance level of model (0 = $$DOC{ref:'Model'}).
         </p>
         */
+       
       var isTrait = true;
       if (typeof traitInheritanceLevel == 'undefined') {
         traitInheritanceLevel = 0;
@@ -468,9 +469,11 @@ CLASS({
         // apparent inheritance chain before our extendsModel.
         if (model.traits && model.traits.length > 0) {
           model.traits.forEach(function(trait) {
+            var traitExtenderTrackers = previousExtenderTrackers.slice(0);
+            traitExtenderTrackers.push(newModelTr);
             this.loadFeaturesOfModel(
               FOAM.lookup(trait, this.X), 
-              previousExtenderTrackers.slice(0), 
+              traitExtenderTrackers, 
               newModelTr.inheritanceLevel);
           }.bind(this));
         }
@@ -1278,7 +1281,7 @@ CLASS({
   documentation: 'Displays the documentation of the given feature list.',
 
   requires: [ 'foam.views.DAOListView',
-              'CollapsibleView',
+              'foam.views.CollapsibleView',
               'foam.documentation.DocFeatureCollapsedView',
               'foam.documentation.DocFeatureInheritanceTracker'
               ],
@@ -1428,7 +1431,7 @@ CLASS({
               var fullView = this.DAOListView.create({ data$: this.inheritedFeaturesDAO$, rowView: 'foam.documentation.RowDocView', model: this.model });
               var collapsedView = this.DocFeatureCollapsedView.create({data$: this.inheritedFeaturesDAO$});
               %>
-              <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'CollapsibleView', collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
+              <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'foam.views.CollapsibleView', collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
       <%    } %>
     <%    } %>
     */}
