@@ -143,6 +143,7 @@ CLASS({
       this.children.deleteI(child);
       child.parent = undefined;
 
+      
       return this;
     },
 
@@ -157,7 +158,7 @@ CLASS({
       if (arguments.callee.caller.super_) this.SUPER();
       
       var list = this.children.slice();
-      Array.prototype.forEach.call(arguments, this.removeChild.bind(this));
+      Array.prototype.forEach.call(list, this.removeChild.bind(this));
 
       return this;      
     },
@@ -869,6 +870,7 @@ CLASS({
       name: 'parent',
       type: 'View',
       postSet: function(_, p) {
+        if (!p) return; // TODO(jacksonic): We shouldn't pretend we aren't part of the tree
         p[this.prop.name + 'View'] = this.view;
         if ( this.view ) this.view.parent = p;
       },
@@ -945,7 +947,8 @@ CLASS({
     toString: function() { /* Name info. */ return 'PropertyView(' + this.prop.name + ', ' + this.view + ')'; },
 
     destroy: function() { /* Passthrough to $$DOC{ref:'.view'} */
-      this.view.destroy();
+      this.unbindData(this.data);
+      //this.view.destroy(); addChild instead
       this.SUPER();
     },
     
@@ -971,6 +974,7 @@ CLASS({
       // if ( this.prop.description || this.prop.help ) view.tooltip = this.prop.description || this.prop.help;
 
       this.view = view;
+      this.addChild(view);
       //this.bindData(this.data);
     }
   },
@@ -1617,12 +1621,22 @@ CLASS({
   properties: [
     {
       name:  'fullView',
+      documentation: function() {/*
+        The large, expanded view to show.
+      */}
     },
     {
       name:  'collapsedView',
+      documentation: function() {/*
+        The small, hidden mode view to show.
+      */}
+
     },
     {
       name: 'collapsed',
+      documentation: function() {/*
+        Indicates if the collapsed or full view is shown. 
+      */},
       defaultValue: true,
       postSet: function() {
         if (this.collapsed) {
@@ -1640,9 +1654,13 @@ CLASS({
 
   methods: {
     toHTML: function() {
+      /* Just render both sub-views, and control their height to show or hide. */
+
       // TODO: don't render full view until expanded for the first time?
       if (this.collapsedView && this.fullView) {
         var retStr = this.collapsedView.toHTML() + this.fullView.toHTML();
+        this.addChild(this.collapsedView);
+        this.addChild(this.fullView);
       } else {
         console.warn(model_.id + " missing " 
             + ( this.collapsedView ? "" : "collapsedView" )
@@ -1653,14 +1671,16 @@ CLASS({
 
     initHTML: function() {
       this.SUPER();
+      /* Just render both sub-views, and control their height to show or hide. */
 
-      // to ensure we can hide by setting the height
-      this.collapsedView.$.style.display = "block";
-      this.fullView.$.style.display = "block";
-      this.collapsedView.$.style.overflow = "hidden";
-      this.fullView.$.style.overflow = "hidden";
-
-      this.collapsed = true;
+      if (this.collapsedView.$ && this.fullView.$) {        
+        // to ensure we can hide by setting the height
+        this.collapsedView.$.style.display = "block";
+        this.fullView.$.style.display = "block";
+        this.collapsedView.$.style.overflow = "hidden";
+        this.fullView.$.style.overflow = "hidden";
+        this.collapsed = true;
+      }
     }
   },
 
