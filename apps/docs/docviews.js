@@ -344,7 +344,8 @@ CLASS({
              'Model',
              'MDAO'],
 
-  exports: ['featureDAO', 'modelDAO'],
+  imports: ['masterModelList'],
+  exports: ['featureDAO', 'modelDAO', 'subModelDAO'],
 
   properties: [
     {
@@ -361,6 +362,13 @@ CLASS({
         return this.MDAO.create({model:this.DocModelInheritanceTracker, autoIndex:true});
       }
     },
+    {
+      name: 'subModelDAO',
+      model_: 'DAOProperty',
+      factory: function() {
+        return this.MDAO.create({model:this.Model, autoIndex:true});
+      }
+    },
   ],
   
   methods: {
@@ -375,6 +383,7 @@ CLASS({
 
       this.featureDAO.removeAll();
       this.modelDAO.removeAll();
+      this.subModelDAO.removeAll();
 
       if ( ! data.model_ || data.model_.id !== 'Model' ) {
         console.warn("ModelDocView created with non-model instance: ", data);
@@ -391,7 +400,8 @@ CLASS({
       // care about other models that extend this one. Finding such would
       // be a global search problem.
       this.loadFeaturesOfModel(data, []);
-       
+      this.findSubModels(data);
+      
       //console.log("  FeatureDAO complete.", Date.now() - startTime);
 
       //this.debugLogFeatureDAO();
@@ -497,6 +507,20 @@ CLASS({
       console.log("Model    DAO: ", this.modelDAO);
       this.modelDAO.select(modelss);
       console.log(modelss);
+    },
+    
+    findSubModels: function(data) {
+      if ( ! this.Model.isInstance(data) ) return;
+      
+      this.masterModelList.select(MAP(
+        function(obj) {
+          if ( data.isSubModel(obj) ) {
+            this.subModelDAO.put(obj);
+          }
+        }.bind(this)
+      ));
+      
+      console.log(this.subModelDAO);
     }
 
   }
@@ -632,10 +656,15 @@ CLASS({
   name: 'ModelSummaryDocView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocView',
-  documentation: 'A summary documentation view for Model instances.',
 
+  imports: ['subModelDAO'],
+  
   documentation: "A summary documentation view for $$DOC{ref:'Model'} instances.",
 
+  properties: [
+    'subModelDAO'
+  ],
+  
   methods: {
     onValueChange_: function() {
       this.updateHTML();
@@ -669,6 +698,7 @@ CLASS({
 <%        if (this.data.traits && this.data.traits.length > 0) { %>
             <p class="important">Traits: $$traits{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelRefView', mode: 'read-only' }</p>
 <%        } %>
+          <p class="important">Sub-models: $$subModelDAO{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelDataRefView', mode: 'read-only' }</p>
           </div>
           $$documentation{ model_: 'foam.documentation.DocBodyView' }
         </div>
