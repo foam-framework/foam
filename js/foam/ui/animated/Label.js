@@ -24,7 +24,7 @@ CLASS({
 
   methods: {
     toInnerHTML: function() {
-      return '<div style="white-space: nowrap;position:absolute;transition: left .3s ease;" class="f1"></div><div style="white-space: nowrap;display:inline;visibility:hidden;" class="f2"></div>';
+      return '<div style="white-space: nowrap;position:absolute;transition: left .3s ease;" class="f1"></div><div style="white-space: nowrap;display:inline;visibility:hidden;float: right;" class="f2"></div>';
     },
     initHTML: function() {
       this.data$.addListener(this.onDataChange);
@@ -44,7 +44,7 @@ CLASS({
         f1$.innerHTML = this.data;
         f2$.innerHTML = this.data;
 
-//      f1$.style.top  = f2$.offsetTop;
+//        f1$.style.top  = f2$.offsetTop;
         f1$.style.left = f2$.offsetLeft;
       }
     }
