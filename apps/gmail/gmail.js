@@ -70,9 +70,9 @@ CLASS({
     'TouchManager',
     'foam.ui.layout.ControllerOption',
     'foam.ui.layout.ResponsiveController',
-    'foam.ui.md.TwoPane as TwoPane'
+    'foam.ui.md.TwoPane as TwoPane',
     'lib.contacts.Contact as Contact',
-    'lib.contacts.ContactNetworkDAO as ContactNetworkDAO',
+    'lib.contacts.ContactNetworkDAO as ContactNetworkDAO'
   ],
 
   exports: [
