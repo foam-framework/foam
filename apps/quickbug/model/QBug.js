@@ -29,6 +29,10 @@ CLASS({
       defaultValue: 'https://code.google.com/p/'
     },
     {
+      name: 'jsonpFuture',
+      factory: function() { return deferJsonP(this.X); }
+    },
+    {
       name: 'user',
       type: 'QUser',
       postSet: function(oldValue, newValue) {
@@ -179,8 +183,6 @@ CLASS({
     },
 
     initOAuth: function(opt_clientId, opt_clientSecret) {
-      var jsonpFuture = deferJsonP(this.X);
-
       var self = this;
       this.persistentContext.bindObject('authAgent2', EasyOAuth2.xbind({
         clientId: opt_clientId ||
@@ -190,7 +192,7 @@ CLASS({
       }), {
         scopes: self.scopes
       })(function(oauth2) {
-        oauth2.setJsonpFuture(self.X, jsonpFuture);
+        oauth2.setJsonpFuture(self.X, self.jsonpFuture);
       });
     },
 
