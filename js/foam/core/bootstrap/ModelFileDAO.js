@@ -7,7 +7,7 @@ MODEL({
       var model = FOAM.lookup(key, X);
 
       var tag = this.X.document.createElement('script');
-      tag.src = '/js/' + key.replace(/\./g, '/') + '.js';
+      tag.src = FOAM_BOOT_DIR + '../js/' + key.replace(/\./g, '/') + '.js';
       this.X.document.head.appendChild(tag);
 
       tag.onload = function() {
