@@ -160,6 +160,9 @@ CLASS({
           options: this.options
         }, controller.X);
         this.stack.setTopView(this.FloatingView.create({ view: view }));
+
+        // TODO: Hack for positioned based view delay.
+        view.onResize();
       }
     },
     {
