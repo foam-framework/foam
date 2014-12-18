@@ -467,7 +467,8 @@ CLASS({
         } else {
           this.separatorToHTML(out); // optional separator
         }
-        
+
+        this.beforeRowToHTML(o, out);
         if ( this.X.selection$ ) {
           out.push('<div class="' + this.className + '-row' + '" id="' + this.on('click', (function() {
             this.selection = o;
@@ -477,6 +478,7 @@ CLASS({
         if ( this.X.selection$ ) {
           out.push('</div>');
         }
+        this.afterRowToHTML(o, out);
       }.bind(this)})(function() {
         var e = this.$;
 
@@ -503,6 +505,16 @@ CLASS({
     separatorToHTML: function(out) {
       /* Template method. Override to provide a separator if required. This
       method is called <em>before</em> each list item, except the first. Use
+      out.push("<myhtml>...") for efficiency. */
+    },
+    beforeRowToHTML: function(item, out) {
+      /* Template method. Override to provide a pre-row template if required.
+      This method is called <em>before</em> each list item. Use
+      out.push("<myhtml>...") for efficiency. */
+    },
+    afterRowToHTML: function(item, out) {
+      /* Template method. Override to provide a post-row template if required.
+      This method is called <em>after</em> each list item. Use
       out.push("<myhtml>...") for efficiency. */
     }
   },
