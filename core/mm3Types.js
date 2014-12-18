@@ -411,7 +411,8 @@ var ArrayProperty = Model.create({
     {
       name: 'preSet',
       defaultValue: function(_, a, prop) {
-        var m = this.X[prop.subType] || GLOBAL[prop.subType];
+        var m = FOAM.lookup(prop.subType, this.X) ||
+          FOAM.lookup(prop.subType, GLOBAL);
 
         // if ( ! Array.isArray(a) ) a = [a];  // ???: Is this a good idea?
         if ( ! m ) return a;
