@@ -29,24 +29,11 @@ CLASS({
   
   properties: [
     {
-      name: 'diagramItem',
+      name: 'diagramItems',
       documentation: "The diagram item we create and are managing.",
-      type: 'diagram.Block'
-    },
-    
-  ],
-  
-  methods:{
-    construct: function() {
-      // create diagram nodes 
-      
-    },
-    
-    destroy: function() {
-    
+      type: 'diagram.DiagramItemTrait[]'
     }
-  }
-  
+  ]
 });
 
 
@@ -54,13 +41,35 @@ CLASS({
   name: 'ModelDocDiagram',
   extendsModel: 'foam.views.BaseDetailView',
   package: 'foam.documentation',
-  traits: ['foam.documentation.DocDiagramTrait'], 
-  
-  
+  traits: ['foam.documentation.DocDiagramTrait',
+           'foam.documentation.DocModelFeatureDAOTrait'], 
+    
   documentation: function() {/*
     A diagram block documenting one $$DOC{ref:'Model'}.
   */},
+  
+  methods: {
+
+    construct: function() {
+      
+    },
+    destroy: function() {
+      
+    },
     
+    onValueChange_: function() {
+      this.processModelChange();
+    },
+
+    processModelChange: function() {
+      // abort if it's too early //TODO: (we import data and run its postSet before the rest is set up)
+      if (!this.featureDAO || !this.modelDAO) return;
+      this.generateFeatureDAO(this.data);
+    },
+
+
+
+  }
 });
 
 

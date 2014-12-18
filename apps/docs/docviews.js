@@ -344,7 +344,8 @@ CLASS({
              'Model',
              'MDAO'],
 
-  exports: ['featureDAO', 'modelDAO'],
+  imports: ['masterModelList'],
+  exports: ['featureDAO', 'modelDAO', 'subModelDAO'],
 
   properties: [
     {
@@ -361,6 +362,13 @@ CLASS({
         return this.MDAO.create({model:this.DocModelInheritanceTracker, autoIndex:true});
       }
     },
+    {
+      name: 'subModelDAO',
+      model_: 'DAOProperty',
+      factory: function() {
+        return this.MDAO.create({model:this.Model, autoIndex:true});
+      }
+    },
   ],
   
   methods: {
@@ -375,6 +383,7 @@ CLASS({
 
       this.featureDAO.removeAll();
       this.modelDAO.removeAll();
+      this.subModelDAO.removeAll();
 
       if ( ! data.model_ || data.model_.id !== 'Model' ) {
         console.warn("ModelDocView created with non-model instance: ", data);
@@ -391,7 +400,8 @@ CLASS({
       // care about other models that extend this one. Finding such would
       // be a global search problem.
       this.loadFeaturesOfModel(data, []);
-       
+      this.findSubModels(data);
+      
       //console.log("  FeatureDAO complete.", Date.now() - startTime);
 
       //this.debugLogFeatureDAO();
@@ -402,6 +412,7 @@ CLASS({
         <p>Returns the inheritance level of model (0 = $$DOC{ref:'Model'}).
         </p>
         */
+       
       var isTrait = true;
       if (typeof traitInheritanceLevel == 'undefined') {
         traitInheritanceLevel = 0;
@@ -468,9 +479,11 @@ CLASS({
         // apparent inheritance chain before our extendsModel.
         if (model.traits && model.traits.length > 0) {
           model.traits.forEach(function(trait) {
+            var traitExtenderTrackers = previousExtenderTrackers.slice(0);
+            traitExtenderTrackers.push(newModelTr);
             this.loadFeaturesOfModel(
               FOAM.lookup(trait, this.X), 
-              previousExtenderTrackers.slice(0), 
+              traitExtenderTrackers, 
               newModelTr.inheritanceLevel);
           }.bind(this));
         }
@@ -494,6 +507,20 @@ CLASS({
       console.log("Model    DAO: ", this.modelDAO);
       this.modelDAO.select(modelss);
       console.log(modelss);
+    },
+    
+    findSubModels: function(data) {
+      if ( ! this.Model.isInstance(data) ) return;
+      
+      this.masterModelList.select(MAP(
+        function(obj) {
+          if ( data.isSubModel(obj) ) {
+            this.subModelDAO.put(obj);
+          }
+        }.bind(this)
+      ));
+      
+      console.log(this.subModelDAO);
     }
 
   }
@@ -629,10 +656,15 @@ CLASS({
   name: 'ModelSummaryDocView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocView',
-  documentation: 'A summary documentation view for Model instances.',
 
+  imports: ['subModelDAO'],
+  
   documentation: "A summary documentation view for $$DOC{ref:'Model'} instances.",
 
+  properties: [
+    'subModelDAO'
+  ],
+  
   methods: {
     onValueChange_: function() {
       this.updateHTML();
@@ -666,6 +698,7 @@ CLASS({
 <%        if (this.data.traits && this.data.traits.length > 0) { %>
             <p class="important">Traits: $$traits{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelRefView', mode: 'read-only' }</p>
 <%        } %>
+          <p class="important">Sub-models: $$subModelDAO{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelDataRefView', mode: 'read-only' }</p>
           </div>
           $$documentation{ model_: 'foam.documentation.DocBodyView' }
         </div>
@@ -1278,7 +1311,7 @@ CLASS({
   documentation: 'Displays the documentation of the given feature list.',
 
   requires: [ 'foam.views.DAOListView',
-              'CollapsibleView',
+              'foam.views.CollapsibleView',
               'foam.documentation.DocFeatureCollapsedView',
               'foam.documentation.DocFeatureInheritanceTracker'
               ],
@@ -1425,10 +1458,10 @@ CLASS({
             if (this.hasInheritedFeatures) { %>
               <p class="feature-type-heading">Inherited <%=this.model.plural%>:</p>
       <%
-              var fullView = this.DAOListView.create({ rowView: 'foam.documentation.RowDocView', model: this.model });
-              var collapsedView = this.DocFeatureCollapsedView.create();
+              var fullView = this.DAOListView.create({ data$: this.inheritedFeaturesDAO$, rowView: 'foam.documentation.RowDocView', model: this.model });
+              var collapsedView = this.DocFeatureCollapsedView.create({data$: this.inheritedFeaturesDAO$});
               %>
-              <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'CollapsibleView', collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
+              <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'foam.views.CollapsibleView', collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
       <%    } %>
     <%    } %>
     */}

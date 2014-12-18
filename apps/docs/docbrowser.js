@@ -25,6 +25,8 @@ CLASS({
   
   requires: ['MDAO', 'DAOListView', 'foam.documentation.ModelCompletenessRecord as ModelCompletenessRecord'],
   
+  imports: ['masterModelList as dao'],
+  
   properties: [
     {
       name: 'search',
@@ -33,49 +35,6 @@ CLASS({
       name: 'searchView',
       factory: function() {
         return this.X.mdTextFieldView.create({ data$: this.search$, label:'Search', onKeyMode: true, displayWidth: 20 });
-      }
-    },
-    {
-      name: 'dao',
-      defaultValue: [],
-      factory: function() {
-        var newDAO = this.MDAO.create({model:Model});
-
-        //This is to make sure getPrototype is called, even if the model object
-        //has been created without a .create or .getPrototype having been called
-        //yet.
-        for ( var key in UNUSED_MODELS ) {
-          var modl = FOAM.lookup(key, this.X);
-          modl.getPrototype && modl.getPrototype();
-        }
-        for ( var key in USED_MODELS ) {
-          var modl = FOAM.lookup(key, this.X);
-          modl.getPrototype && modl.getPrototype();
-        }
-
-        // All models are now in USED_MODELS
-        for ( var key in USED_MODELS ) {
-          var m = FOAM.lookup(key, this.X);
-          if ( ! m.getPrototype ) continue;
-          m.getPrototype();
-          newDAO.put(m);
-        };
-
-        // Add in non-model things like Interfaces
-        for ( var key in NONMODEL_INSTANCES ) {
-          var m = FOAM.lookup(key, this.X);
-          newDAO.put(m);
-        };
-
-
-        // load up books
-        for (var key in this.X.developerDocs) {
-          newDAO.put(this.X.developerDocs[key]);
-        }
-
-        //this.generateCompletnessReport(newDAO);
-        
-        return newDAO;
       }
     },
     {
@@ -309,7 +268,8 @@ CLASS({
 
 CLASS({
   name: 'DocBrowserController',
-
+  requires: ['MDAO'],
+  
   documentation: function() {  /*
     <p>Some documentation for the $$DOC{ref:'.'} model.</p>
     <p>This should be expaneded to explain some of the interesting properties found here, such as $$DOC{ref:'.modelList'}.</p>
@@ -348,6 +308,9 @@ CLASS({
 
       if (this.SearchContext) return; // don't run twice
 
+      // load all models
+      this.createModelList();
+      
       // load developer guides
       RegisterDevDocs(this.X);
 
@@ -411,8 +374,49 @@ CLASS({
         if (ref.resolvedModelChain[0] !== this.selection) this.selection = ref.resolvedModelChain[0];
         location.hash = "#" + ref.resolvedRef;
       }
+    },
+    
+    createModelList: function() {
+      var newDAO = this.MDAO.create({model:Model});
+
+      //This is to make sure getPrototype is called, even if the model object
+      //has been created without a .create or .getPrototype having been called
+      //yet.
+      for ( var key in UNUSED_MODELS ) {
+        var modl = FOAM.lookup(key, this.X);
+        modl.getPrototype && modl.getPrototype();
+      }
+      for ( var key in USED_MODELS ) {
+        var modl = FOAM.lookup(key, this.X);
+        modl.getPrototype && modl.getPrototype();
+      }
+
+      // All models are now in USED_MODELS
+      for ( var key in USED_MODELS ) {
+        var m = FOAM.lookup(key, this.X);
+        if ( ! m.getPrototype ) continue;
+        m.getPrototype();
+        newDAO.put(m);
+      };
+
+      // Add in non-model things like Interfaces
+      for ( var key in NONMODEL_INSTANCES ) {
+        var m = FOAM.lookup(key, this.X);
+        newDAO.put(m);
+      };
+
+
+      // load up books
+      for (var key in this.X.developerDocs) {
+        newDAO.put(this.X.developerDocs[key]);
+      }
+
+      //this.generateCompletnessReport(newDAO);
+      
+      this.X.set("masterModelList", newDAO);
     }
 
+    
   },
 
   listeners: [
