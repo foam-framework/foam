@@ -21,19 +21,25 @@ CLASS({
   name: 'DocDiagramTrait',
   package: 'foam.documentation',
   // enhances BaseDetailView to add diagram support
-  
-  requires: [
-    'diagram.Section',
-    'diagram.SectionGroup'
-  ],
-  
+    
   properties: [
     {
-      name: 'diagramItems',
+      name: 'diagramItem',
       documentation: "The diagram item we create and are managing.",
-      type: 'diagram.DiagramItemTrait[]'
+      type: 'diagram.DiagramItemTrait'
     }
-  ]
+  ],
+  
+  methods: {
+    destroy: function() {
+      this.diagramItem.destroy();
+      this.diagramItem.parent = undefined;
+
+      this.diagramItem = undefined;
+      
+      this.SUPER();
+    }
+  }
 });
 
 
@@ -44,16 +50,15 @@ CLASS({
   traits: ['foam.documentation.DocDiagramTrait',
            'foam.documentation.DocModelFeatureDAOTrait'], 
     
+  requires: ['diagram.Block'],
+    
   documentation: function() {/*
     A diagram block documenting one $$DOC{ref:'Model'}.
   */},
   
   methods: {
-
     construct: function() {
-      
-    },
-    destroy: function() {
+      this.diagramItem = this.Block.create({ title: this.featureType });
       
     },
     
@@ -72,8 +77,81 @@ CLASS({
   }
 });
 
+CLASS({
+  name: 'FeatureListDiagram',
+  package: 'foam.documentation',
+  
+  requires: ['foam.documentation.FeatureDiagram'],
+  
+  traits: [ 'foam.views.ChildTreeTrait',
+            'foam.views.DataConsumerTrait',
+            'foam.views.DataProviderTrait',
+            'foam.documentation.DocDiagramTrait',
+            'foam.documentation.FeatureListLoaderTrait',
+            'foam.views.DAODataTrait'],
 
+  documentation: function() {/*
+    Renders a feature list (such as $$DOC{ref:'Model.properties'}, $$DOC{ref:'Model.methods'}, etc.) into
+    a diagram.
+  */},
 
+  methods: {
+    onDAOUpdate: function() {
+      this.destroy();
+      this.construct();
+    },
+    
+    construct: function() {
+      this.diagramItem = this.SectionGroup.create({ title: this.featureType });
+      
+      this.selfFeaturesDAO.select({ put: function(item) {
+        var X = this.childX.sub({ data$: this.childX.SimpleValue.create(o, this.childX) });
+        this.addChild(this.FeatureDiagram.create({ model: o.model_ }, X));
+      }.bind(this)});
+    },
+  
+    addChild: function(child) {
+      this.SUPER(child);
+      // add diagram node of the child to ours
+      if ( this.diagramItem && child.diagramItem ) this.diagramItem.addChild(child.diagramItem);
+    },
+    removeChild: function(child) {
+      this.SUPER(child);
+      if ( this.diagramItem &&  child.diagramItem ) this.diagramItem.removeChild(child.diagramItem);
+    }
+  }
+  
+});
+
+CLASS({
+  name: 'FeatureDiagram',
+  package: 'foam.documentation',
+  
+  traits: [ 'foam.views.ChildTreeTrait',
+            'foam.views.DataConsumerTrait',
+            'foam.views.DataProviderTrait',
+            'foam.documentation.DocDiagramTrait'],
+  
+  requires: ['diagram.Section'],
+  
+  documentation: function() {/*
+    The base model for feature-specific diagrams. Use PropertyFeatureDiagram,
+    MethodFeatureDiagram, etc. as needed to diagram a feature.
+  */},
+  
+  properties: [
+    {
+      name: 'data',
+      postSet: function() {
+        this.diagramItem.title = this.data.name;
+      }
+    }
+  ],
+  
+  construct: function() {
+    this.diagramItem = this.Section.create({ title: this.data.name });
+  }
+});
 
  
  

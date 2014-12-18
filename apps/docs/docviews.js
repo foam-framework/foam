@@ -1302,20 +1302,14 @@ CLASS({
 });
 
 
-
-
 CLASS({
-  name: 'FeatureListDocView',
+  name: 'FeatureListLoaderTrait',
   package: 'foam.documentation',
-  extendsModel: 'foam.documentation.DocView',
-  documentation: 'Displays the documentation of the given feature list.',
-
-  requires: [ 'foam.views.DAOListView',
-              'foam.views.CollapsibleView',
-              'foam.documentation.DocFeatureCollapsedView',
-              'foam.documentation.DocFeatureInheritanceTracker'
-              ],
-
+  documentation: 'Trait loads the documentation of the given feature list.',
+  
+  requires: [ 'foam.documentation.DocFeatureCollapsedView',
+              'foam.documentation.DocFeatureInheritanceTracker' ],
+  
   imports: ['featureDAO', 'documentViewRef'],
 
   properties: [
@@ -1388,7 +1382,8 @@ CLASS({
                 )
           .select(MAP(this.DocFeatureInheritanceTracker.FEATURE, this.inheritedFeaturesDAO));
 
-        this.updateHTML();
+        this.destroy();
+        this.construct();
       }
     },
     {
@@ -1438,11 +1433,29 @@ CLASS({
       documentation: function() { /*
           True if the $$DOC{ref:'.inheritedFeaturesDAO'} is not empty.
       */}
-    },
+    }
+  ],
+  
+  
+});
+
+
+CLASS({
+  name: 'FeatureListDocView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocView',
+  documentation: 'Displays the HTML documentation of the given feature list.',
+
+  requires: [ 'foam.views.DAOListView',
+              'foam.views.CollapsibleView' ],
+
+  traits: ['foam.documentation.FeatureListLoaderTrait'],
+
+  properties: [
     {
       name: 'tagName',
       defaultValue: 'div'
-    },
+    }
   ],
 
   templates: [
