@@ -278,7 +278,7 @@ CLASS({
    ]
 });
 
-var openComposeView = function(email) {
+var openComposeView = function(X, email) {
   DAOCreateController.getPrototype().newObj(email, EMailDAO);
 }
 

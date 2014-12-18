@@ -658,8 +658,7 @@ CLASS({
 });
 
 
-var openComposeView = function(email) {
-  var X = mgmail.controller.X;
+var openComposeView = function(X, email) {
   var view = X.FloatingView.create({
     view: X.EMailComposeView.create({
       data: email,

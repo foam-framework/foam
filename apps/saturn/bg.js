@@ -68,7 +68,7 @@ menu.addActions(FOAM([
    }
 ]));
 
-openComposeView = function(email) {
+openComposeView = function(X, email) {
   aseq(arequire('QuickEMailView'),
     arequire('QuickCompose'),
     arequire('LinkView'),
@@ -90,14 +90,14 @@ var actions = FOAM([
       name: 'compose',
       label: '',
       help: 'Compose a new email.',
-      action: function () {
+      action: function (X) {
         var id = Math.floor(Math.random() * 0xffffff).toVarintString();
         var email = EMail.create({
           from: userInfo.email,
           id: id,
           convId: id
         });
-        openComposeView(email);
+        openComposeView(X, email);
       }
    }
 ]).concat(Conversation.actions.filter(function(a) { return a.name !== "open"; }));
