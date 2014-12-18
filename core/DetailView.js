@@ -247,7 +247,8 @@ CLASS({
   extendsModel: 'DetailView',
 
   imports: [
-    'DAO as dao'
+    'DAO as dao',
+    'stack'
   ],
 
   properties: [
@@ -281,13 +282,6 @@ CLASS({
           this.rawData = '';
         }.bind(this));
       }
-    },
-    {
-      name: 'dao'
-    },
-    {
-      name: 'stack',
-      defaultValueFn: function() { return this.X.stack; }
     },
     {
       name: 'view'
