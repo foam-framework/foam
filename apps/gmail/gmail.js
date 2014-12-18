@@ -58,21 +58,33 @@ CLASS({
   extendsModel: 'View',
 
   requires: [
-    'GMailUserInfo',
-    'TouchManager',
-    'GestureManager',
+    'CachingDAO',
+    'ContextualizingDAO',
+    'DetailView',
+    'EMailView',
     'EasyOAuth2',
-    'lib.contacts.ContactNetworkDAO as ContactNetworkDAO',
-    'lib.contacts.Contact as Contact',
+    'FloatingView',
+    'GMailUserInfo',
+    'GestureManager',
     'MDAO',
-    'CachingDAO'
+    'TouchManager',
+    'foam.ui.layout.ControllerOption',
+    'foam.ui.layout.ResponsiveController',
+    'foam.ui.md.TwoPane as TwoPane'
+    'lib.contacts.Contact as Contact',
+    'lib.contacts.ContactNetworkDAO as ContactNetworkDAO',
   ],
 
   exports: [
     'XHR',
     'touchManager',
     'gestureManager',
-    'contactDAO as ContactDAO'
+    'contactDAO as ContactDAO',
+    'labelDao as LabelDAO',
+    'emailDao as EMailDAO',
+    'profile$ as profile$',
+    'as controller',
+    'stack'
   ],
 
   properties: [
@@ -119,11 +131,35 @@ CLASS({
       }
     },
     {
+      model_: 'ArrayProperty',
+      subType: 'foam.ui.layout.ControllerOption',
+      name: 'options',
+      factory: function() {
+        var self = this;
+        return [
+          this.ControllerOption.create({
+            controller: function() {
+              return self.DetailView.create({ data: self.controller}, self.controller.X);
+            },
+            minWidth: 0
+          }),
+          this.ControllerOption.create({
+            controller: function() {
+              return self.TwoPane.create({ data: self.controller }, self.controller.X)
+            },
+            minWidth: 600
+          })
+        ]
+      }
+    },
+    {
       name: 'controller',
       subType: 'AppController',
       postSet: function(_, controller) {
-        var view = controller.X.DetailView.create({data: controller});
-        this.stack.setTopView(FloatingView.create({ view: view }));
+        var view = this.ResponsiveController.create({
+          options: this.options
+        }, controller.X);
+        this.stack.setTopView(this.FloatingView.create({ view: view }));
       }
     },
     {
@@ -149,7 +185,7 @@ CLASS({
           .limit(100)
           .where(EQ(this.X.EMail.LABELS, "INBOX"))
           .select(dao.cache);
-        return dao;
+        return ContextualizingDAO.create({ delegate: dao });
       }
     },
     {
@@ -185,36 +221,29 @@ CLASS({
       }
     },
     {
-      // TODO: Populate this somehow
       name: 'profile',
-      description: 'Profile information of current user.',
-      factory: function() {
-        var xhr = this.X.XHR.create({ responseType: 'json' });
-        aseq(
-          function(ret) {
-            xhr.asend(ret, 'https://www.googleapis.com/oauth2/v1/userinfo');
-          }
-        )(function(resp) {
-          var user = this.GMailUserInfo.create();
-          user.fromJSON(resp);
-          this.profile = user;
-        }.bind(this));
-        return '';
-      }
+      description: 'Profile information of current user.'
     }
   ],
 
   methods: {
+    init: function(args) {
+      this.SUPER(args);
+      var xhr = this.X.XHR.create({ responseType: 'json' });
+
+      aseq(function(ret) {
+        xhr.asend(ret, 'https://www.googleapis.com/oauth2/v1/userinfo');
+      })(function(resp) {
+        var user = this.GMailUserInfo.create();
+        user.fromJSON(resp);
+        this.profile = user;
+      }.bind(this));
+    },
+
     toHTML: function() { return this.stack.toHTML(); },
 
     initHTML: function() {
       this.stack.initHTML();
-
-      var Y = this.X.sub({
-        stack: this.stack,
-        EMailDAO: this.emailDao,
-        mgmail: this, // TODO: this doesn't actually work.
-      }, 'GMAIL CONTEXT');
 
       var toTop = function(id) {
         return {
@@ -224,7 +253,7 @@ CLASS({
         };
       };
 
-      this.controller = Y.AppController.create({
+      this.controller = this.X.AppController.create({
         model: EMail,
         dao: this.emailDao,
         createAction: this.model_.COMPOSE,
@@ -238,7 +267,7 @@ CLASS({
         ],
         menuFactory: function() {
           return this.X.MenuView.create({
-            topSystemLabelDAO: this.X.mgmail.labelDao
+            topSystemLabelDAO: this.X.LabelDAO
                 .where(EQ(FOAMGMailLabel.getProperty('type'), 'system'))
                 .orderBy(
                   toTop('INBOX'),
@@ -246,7 +275,7 @@ CLASS({
                   toTop('DRAFT')
                 )
                 .limit(3),
-            bottomSystemLabelDAO: this.X.mgmail.labelDao
+            bottomSystemLabelDAO: this.X.LabelDAO
                 .where(AND(EQ(FOAMGMailLabel.getProperty('type'), 'system'),
                            NEQ(FOAMGMailLabel.ID, 'INBOX'),
                            NEQ(FOAMGMailLabel.ID, 'STARRED'),
@@ -255,7 +284,7 @@ CLASS({
                 .orderBy(toTop('SENT'),
                          toTop('SPAM'),
                          toTop('TRASH')),
-            userLabelDAO: this.X.mgmail.labelDao
+            userLabelDAO: this.X.LabelDAO
                 .where(NEQ(FOAMGMailLabel.getProperty('type'), 'system'))
                 .orderBy(FOAMGMailLabel.NAME)
           });
@@ -268,13 +297,22 @@ CLASS({
         }
       });
     },
-    openEmail: function(email) {
-      email = email.clone();
-      var v = this.controller.X.FloatingView.create({
-        view: this.controller.X.EMailView.create({data: email})
+    open: function(id) {
+      var self = this;
+      this.emailDao.find(id, {
+        put: function(m) {
+          m = m.deepClone();
+          m.markRead(self.controller.X);
+          var v = self.FloatingView.create({
+            view: self.EMailView.create({ data: m }, self.controller.X)
+          })
+          self.stack.pushView(v, '');
+        }
       });
-      email.markRead(this.controller.X);
-      this.stack.pushView(v, '');
+    },
+    openEmail: function(email) {
+      debugger;
+      this.open(email.id);
     },
     changeLabel: function(label) {
       if (label) {
@@ -393,6 +431,9 @@ CLASS({
 CLASS({
   name: 'EMailCitationView',
   extendsModel: 'DetailView',
+  imports: [
+    'controller'
+  ],
   properties: [
     { name: 'className', defaultValue: 'email-citation' },
     {
@@ -459,7 +500,7 @@ CLASS({
     function toHTML() {/*
       <%
         var id = this.setClass('unread', function() { return self.data && self.data.unread; }, this.id);
-        this.on('click', function() { this.X.mgmail.openEmail(this.data); }, this.id);
+        this.on('click', function() { this.controller.open(this.data.id); }, this.id);
       %>
 
       <div id="<%= id %>" %%cssClassAttr() >
@@ -488,6 +529,27 @@ CLASS({
    ]
 });
 
+CLASS({
+  name: 'ProfileView',
+  extendsModel: 'DetailView',
+  requires: ['GMailUserInfo'],
+  properties: [
+    {
+      model_: 'ModelProperty',
+      name: 'model',
+      factory: function() { return this.GMailUserInfo; }
+    }
+  ],
+  templates: [
+    function toHTML() {/*
+      <div id="%%id">
+        $$avatarUrl{ model_: 'ImageView' }
+        $$name{ mode: 'read-only',  extraClassName: 'name' }
+        $$email{ mode: 'read-only', extraClassName: 'email' }
+      </div>
+    */}
+  ]
+});
 
 CLASS({
   name: 'MenuView',
@@ -496,10 +558,12 @@ CLASS({
   requires: [
     'MenuLabelCitationView',
     'FOAMGMailLabel',
-    'ImageView',
-    'TextFieldView'
+    'ProfileView'
   ],
-  imports: ['mgmail'],
+  imports: [
+    'profile$',
+    'EMailDAO'
+  ],
   exports: ['counts'],
   properties: [
     {
@@ -522,7 +586,7 @@ CLASS({
       name: 'counts',
       factory: function() {
         var sink = GROUP_BY(EMail.LABELS, COUNT());
-        this.mgmail.emailDao.select(sink);
+        this.EMailDAO.select(sink);
         return sink;
       }
     }
@@ -531,9 +595,7 @@ CLASS({
     function toInnerHTML() {/*
       <div class="menuView">
         <div class="menuHeader">
-          <%= this.ImageView.create({ data: this.mgmail.profile.avatarUrl }) %><br>
-          <%= this.TextFieldView.create({ mode: 'read-only', extraClassName: 'name', data: this.mgmail.profile.name }) %><br>
-          <%= this.TextFieldView.create({ mode: 'read-only', extraClassName: 'email', data: this.mgmail.profile.email }) %>
+          <%= this.ProfileView.create({ data$: this.profile$ }) %>
         </div>
         $$topSystemLabelDAO
         <hr>
@@ -587,7 +649,10 @@ CLASS({
   name: 'MenuLabelCitationView',
   extendsModel: 'DetailView',
   requires: ['SimpleValue'],
-  imports: ['counts'],
+  imports: [
+    'counts',
+    'controller'
+  ],
   properties: [
     {
       name: 'count',
@@ -652,7 +717,7 @@ CLASS({
         $$label{mode: 'read-only', extraClassName: 'label' }
         $$count
       </div>
-      <% this.on('click', function() { this.X.mgmail.changeLabel(this.data); }, this.id); %>
+      <% this.on('click', function() { this.controller.changeLabel(this.data); }, this.id); %>
     */}
   ]
 });
