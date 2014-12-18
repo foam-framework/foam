@@ -129,6 +129,35 @@ CLASS({
 });
 
 CLASS({
+  name: 'DocFeatureModelDataRefView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocRefView',
+  traits: ['foam.views.DataConsumerTrait'],
+  label: 'Documentation Feature sub-model Link Reference View',
+  help: 'The view of a documentation reference link based on a Sub-Model.',
+
+  documentation: function() { /*
+    <p>An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
+    for notes on usage.</p>
+    */},
+
+  properties: [
+    {
+      name: 'data',
+      help: 'Shortcut to set reference by Model.',
+      postSet: function() {
+        this.ref = this.data.id;
+      },
+      documentation: function() { /*
+        The target reference Model definition. Use this instead of setting
+        $$DOC{ref:'.docRef'}, if you are referencing a $$DOC{ref:'Model'}.
+        */}
+    },
+  ],
+});
+
+
+CLASS({
   name: 'DocFeatureModelRefView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocRefView',

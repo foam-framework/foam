@@ -38,26 +38,20 @@ CLASS({
       */},
     },
     {
-      name: 'originalContext_',
-      hidden: true,
+      name: 'childX',
       factory: function() {
-        return this.X;
+        // juggle context and export data$
+        return this.X.sub({data$: this.childData$});
       }
     }
   ],
 
   methods: {
-    init: function() {
-      this.SUPER();
       
-      // juggle context and export data$
-      this.X = this.originalContext_.sub({data$: this.childData$});
-    },
-       
     destroy: function() {
       /* Called to tear down children. Also let the previous child context
         be garbage collected. */
-      this.X = this.originalContext_;
+      this.childX = this.X.sub();
       if (arguments.callee.caller.super_) this.SUPER();
     },
     
@@ -65,7 +59,7 @@ CLASS({
       /* Called to construct new content and children. Create a new context
          for the children and export our data. */
       if (arguments.callee.caller.super_) this.SUPER();
-      this.X = this.originalContext_.sub({data$: this.childData$});
+      this.childX = this.X.sub({data$: this.childData$});
     }
   }
   
@@ -149,6 +143,7 @@ CLASS({
       this.children.deleteI(child);
       child.parent = undefined;
 
+      
       return this;
     },
 
@@ -163,7 +158,7 @@ CLASS({
       if (arguments.callee.caller.super_) this.SUPER();
       
       var list = this.children.slice();
-      Array.prototype.forEach.call(arguments, this.removeChild.bind(this));
+      Array.prototype.forEach.call(list, this.removeChild.bind(this));
 
       return this;      
     },
@@ -195,6 +190,48 @@ CLASS({
   }
 });
 
+CLASS({
+  name: 'ViewActionsTrait',
+  package: 'foam.views',
+  
+  properties: [
+    {
+      model_: 'BooleanProperty',
+      name: 'showActions',
+      defaultValue: false,
+      postSet: function(oldValue, showActions) {
+        // TODO: No way to remove the decorator.
+        if ( ! oldValue && showActions ) {
+          this.addDecorator(this.X.ActionBorder.create());
+        }
+      },
+      documentation: function() {/*
+          If $$DOC{ref:'Action',usePlural:true} are set on this $$DOC{ref:'View'},
+          this property enables their automatic display in an $$DOC{ref:'ActionBorder'}.
+          If you do not want to show $$DOC{ref:'Action',usePlural:true} or want
+          to show them in a different way, leave this false.
+      */}
+    }
+  ],
+  
+  methods: {
+    createActionView: function(action, opt_args) {
+      /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info
+        specifically for $$DOC{ref:'Action',usePlural:true}. */
+      var X = ( opt_args && opt_args.X ) || this.childX;
+      var modelName = opt_args && opt_args.model_ ?
+        opt_args.model_ :
+        'foam.views.ActionButton'  ;
+      var v = FOAM.lookup(modelName, X).create({action: action}).copyFrom(opt_args);
+
+      this[action.name + 'View'] = v;
+
+      return v;
+    },
+ 
+  }
+ 
+});
 
 CLASS({
   name: 'BaseView',
@@ -202,9 +239,10 @@ CLASS({
   package: 'foam.views',
   
   traits: ['foam.views.DataProviderTrait',
-           'foam.views.ChildTreeTrait'],
+           'foam.views.ChildTreeTrait',
+           'foam.views.ViewActionsTrait'],
 
-  requires: ['SimpleValue'],
+  requires: ['SimpleReadOnlyValue'],
            
   documentation: function() {/*
     <p>$$DOC{ref:'View',usePlural:true} render data. This could be a specific
@@ -246,7 +284,8 @@ CLASS({
       /* Create an additional context for children based on properties of this,
         rather than data. */
       this.SUPER();
-      this.selfX = this.originalContext_.sub({data$: this.SimpleValue.create(this)});
+      // TODO(jacksonic): do we want to do this for each createTemplateView? That would prevent siblings from trying to change the data.
+      this.selfX = this.X.sub({data$: this.SimpleReadOnlyValue.create(this)});
     },
 
     toView_: function() { return this; },
@@ -258,26 +297,12 @@ CLASS({
 
     createView: function(prop, opt_args) {
       /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
-      var X = ( opt_args && opt_args.X ) || this.X;
+      var X = ( opt_args && opt_args.X ) || this.childX;
       var v = X.foam.views.PropertyView.create({prop: prop, args: opt_args}, X);
       this.addChild(v);
       return v;
     },
-    
-    createActionView: function(action, opt_args) {
-      /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info
-        specifically for $$DOC{ref:'Action',usePlural:true}. */
-      var X = ( opt_args && opt_args.X ) || this.X;
-      var modelName = opt_args && opt_args.model_ ?
-        opt_args.model_ :
-        'foam.views.ActionButton'  ;
-      var v = FOAM.lookup(modelName, X).create({action: action}).copyFrom(opt_args);
-
-      this[action.name + 'View'] = v;
-
-      return v;
-    },
-    
+       
     createTemplateView: function(name, opt_args) {
       /*
         Used by the $$DOC{ref:'Template',text:'$$propName'} sub-$$DOC{ref:'View'}
@@ -315,7 +340,7 @@ CLASS({
       
       this.SUPER();
       // TODO(jacksonic): we often call destroy() in templates, but not the new construct()
-      this.selfX = this.originalContext_.sub({data$: this.SimpleValue.create(this)});
+      this.selfX = this.X.sub({data$: this.SimpleReadOnlyValue.create(this)});
     },
 
     close: function() {
@@ -418,23 +443,6 @@ CLASS({
           For custom $$DOC{ref:'View',usePlural:true}, you may wish to add standard
           CSS classes in addition to user-specified ones. Set those here and
           they will be appended to those from $$DOC{ref:'.className'}.
-      */}
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'showActions',
-      defaultValue: false,
-      postSet: function(oldValue, showActions) {
-        // TODO: No way to remove the decorator.
-        if ( ! oldValue && showActions ) {
-          this.addDecorator(this.X.ActionBorder.create());
-        }
-      },
-      documentation: function() {/*
-          If $$DOC{ref:'Action',usePlural:true} are set on this $$DOC{ref:'View'},
-          this property enables their automatic display in an $$DOC{ref:'ActionBorder'}.
-          If you do not want to show $$DOC{ref:'Action',usePlural:true} or want
-          to show them in a different way, leave this false.
       */}
     },
     {
@@ -862,6 +870,7 @@ CLASS({
       name: 'parent',
       type: 'View',
       postSet: function(_, p) {
+        if (!p) return; // TODO(jacksonic): We shouldn't pretend we aren't part of the tree
         p[this.prop.name + 'View'] = this.view;
         if ( this.view ) this.view.parent = p;
       },
@@ -908,12 +917,12 @@ CLASS({
     createViewFromProperty: function(prop) {
       /* Helper to determine the $$DOC{ref:'View'} to use. */
       var viewName = this.innerView || prop.view
-      if ( ! viewName ) return this.X.foam.views.TextFieldView.create(prop);
-      if ( typeof viewName === 'string' ) return FOAM.lookup(viewName, this.X).create(prop);
+      if ( ! viewName ) return this.childX.foam.views.TextFieldView.create(prop, this.childX);
+      if ( typeof viewName === 'string' ) return FOAM.lookup(viewName, this.X).create(prop, this.childX);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
-      if ( viewName.model_ ) { var v = viewName.model_.create(viewName, this.X).copyFrom(prop); v.id = this.nextID(); return v; }
+      if ( viewName.model_ ) { var v = viewName.model_.create(viewName, this.childX).copyFrom(prop); v.id = this.nextID(); return v; }
       if ( viewName.factory_ ) {
-        var v = FOAM.lookup(viewName.factory_, this.X).create(viewName, this.X).copyFrom(prop);
+        var v = FOAM.lookup(viewName.factory_, this.X).create(viewName, this.childX).copyFrom(prop);
         v.id = this.nextID();
         return v;
       }
@@ -938,7 +947,8 @@ CLASS({
     toString: function() { /* Name info. */ return 'PropertyView(' + this.prop.name + ', ' + this.view + ')'; },
 
     destroy: function() { /* Passthrough to $$DOC{ref:'.view'} */
-      this.view.destroy();
+      this.unbindData(this.data);
+      //this.view.destroy(); addChild instead
       this.SUPER();
     },
     
@@ -946,11 +956,11 @@ CLASS({
       this.SUPER();
           
       if ( this.args && this.args.model_ ) {
-        var model = FOAM.lookup(this.args.model_, this.X);
+        var model = FOAM.lookup(this.args.model_, this.childX);
         console.assert( model, 'Unknown View: ' + this.args.model_);
         // HACK to make sure model specification makes it into the create
         if ( this.args.model ) this.prop.model = this.args.model;
-        var view = model.create(this.prop, this.X);
+        var view = model.create(this.prop, this.childX);
         delete this.args.model_;
       } else {
         view = this.createViewFromProperty(this.prop);
@@ -964,6 +974,7 @@ CLASS({
       // if ( this.prop.description || this.prop.help ) view.tooltip = this.prop.description || this.prop.help;
 
       this.view = view;
+      this.addChild(view);
       //this.bindData(this.data);
     }
   },
@@ -1238,7 +1249,7 @@ CLASS({
       str += this.endForm();
 
       if ( this.showRelationships ) {
-        var view = this.X.RelationshipsView.create();
+        var view = this.childX.RelationshipsView.create({}, this.childX);
         str += view.toHTML();
         this.addChild(view);
       }
@@ -1512,8 +1523,8 @@ CLASS({
         d = d.limit(this.chunkSize * this.chunksLoaded);
       }
       d.select({put: function(o) {
-        if ( this.mode === 'read-write' ) o = o.model_.create(o, this.X); //.clone();
-        var X = this.X.sub({ data$: this.X.SimpleValue.create(o, this.X) });
+        if ( this.mode === 'read-write' ) o = o.model_.create(o, this.childX); //.clone();
+        var X = this.X.sub({ data$: this.X.SimpleValue.create(o, this.childX) });
         var view = this.rowView({ model: o.model_}, X);
 //        var view = this.rowView({ data: o, model: o.model_}, X);
         // TODO: Something isn't working with the Context, fix
@@ -1597,5 +1608,103 @@ CLASS({
     }
   ]
 });
+
+
+CLASS({
+  name: 'CollapsibleView',
+  package: 'foam.views',
+  traits: ['foam.views.ChildTreeTrait',
+           'foam.views.DataConsumerTrait',
+           'foam.views.ViewActionsTrait',
+           'foam.views.HTMLViewTrait'],
+  
+  properties: [
+    {
+      name:  'fullView',
+      documentation: function() {/*
+        The large, expanded view to show.
+      */}
+    },
+    {
+      name:  'collapsedView',
+      documentation: function() {/*
+        The small, hidden mode view to show.
+      */}
+
+    },
+    {
+      name: 'collapsed',
+      documentation: function() {/*
+        Indicates if the collapsed or full view is shown. 
+      */},
+      defaultValue: true,
+      postSet: function() {
+        if (this.collapsed) {
+          this.collapsedView.$.style.height = "";
+          this.fullView.$.style.height = "0";
+
+        } else {
+          this.collapsedView.$.style.height = "0";
+          this.fullView.$.style.height = "";
+        }
+      }
+    }
+
+  ],
+
+  methods: {
+    toHTML: function() {
+      /* Just render both sub-views, and control their height to show or hide. */
+
+      // TODO: don't render full view until expanded for the first time?
+      if (this.collapsedView && this.fullView) {
+        var retStr = this.collapsedView.toHTML() + this.fullView.toHTML();
+        this.addChild(this.collapsedView);
+        this.addChild(this.fullView);
+      } else {
+        console.warn(model_.id + " missing " 
+            + ( this.collapsedView ? "" : "collapsedView" )
+            + ( this.fullView ? "" : "fulleView" ));
+      }
+      return retStr;
+    },
+
+    initHTML: function() {
+      this.SUPER();
+      /* Just render both sub-views, and control their height to show or hide. */
+
+      if (this.collapsedView.$ && this.fullView.$) {        
+        // to ensure we can hide by setting the height
+        this.collapsedView.$.style.display = "block";
+        this.fullView.$.style.display = "block";
+        this.collapsedView.$.style.overflow = "hidden";
+        this.fullView.$.style.overflow = "hidden";
+        this.collapsed = true;
+      }
+    }
+  },
+
+  actions: [
+    {
+      name:  'toggle',
+      help:  'Toggle collapsed state.',
+
+      labelFn: function() {
+        return this.collapsed? 'Expand' : 'Hide';
+      },
+      isAvailable: function() {
+        return true;
+      },
+      isEnabled: function() {
+        return true;//this.collapsedView.toHTML && this.fullView.toHTML;
+      },
+      action: function() {
+        this.collapsed = !this.collapsed;
+      }
+    },
+  ]
+});
+
+
 
 

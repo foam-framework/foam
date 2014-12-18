@@ -74,6 +74,9 @@ CLASS({
 
   templates: [
     function CSS() {/*
+      .gridtile {
+        background: white;
+      }
       .gridtile.priority-0 {
         border-color: #DB4437 !important;
       }
@@ -88,6 +91,20 @@ CLASS({
       }
       .gridtile.closed {
         opacity: 0.6;
+      }
+      .gridtile .owner {
+        border-radius: 2px;
+        color: white;
+        display: inline-block;
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 3px;
+        height: 16px;
+      }
+      .gridtile .blockInfo {
+        font-size: 12px;
+        float: right;
+        margin-top: 3px;
       }
     */},
 
@@ -110,7 +127,13 @@ CLASS({
           </tr>
           <tr>
             <td colspan="2">
-              <div><span id="<%= this.on('click', f, this.nextID()) %>">{{this.issue.summary}}</div></div>
+              <div><span id="<%= this.on('click', f, this.nextID()) %>">{{this.issue.summary}}</span></div>
+              <span style="padding: 1px 2px;">
+                <% if ( this.issue.owner ) { %> <span class="owner" style="background:hsl(<%= Math.abs(this.issue.owner.hashCode() % 360) %>, 50%, 50%);">&nbsp;{{this.issue.owner}}&nbsp;</span> <% } %>
+              </span>
+              <% if ( this.issue.blockedOn.length || this.issue.blocking.length ) { %>
+                <span class="blockInfo">{{this.issue.blockedOn.length}} / {{this.issue.blocking.length}}</span>
+              <% } %>
             </td>
           </tr>
         </tbody></table>
