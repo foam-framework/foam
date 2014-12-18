@@ -167,6 +167,10 @@ function arequireModel(model, X) {
 
     if ( model.extendsModel ) args.push(arequire(model.extendsModel, X));
 
+    for ( var i = 0; i < model.traits.length; i++ ) {
+      args.push(arequire(model.traits[i]));
+    }
+
     // TODO(kgr): eventually this should just call the arequire() method on the Model
     if ( model.templates ) for ( var i = 0 ; i < model.templates.length ; i++ ) {
       var t = model.templates[i];
@@ -178,6 +182,8 @@ function arequireModel(model, X) {
         };})(t)
       ));
     }
+
+    if ( args.length ) args = [aseq.apply(null, args)];
 
     // Also arequire required Models.
     for ( var i = 0 ; i < model.requires.length ; i++ ) {
