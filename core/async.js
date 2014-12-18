@@ -124,6 +124,20 @@ MODEL({
       };
     },
 
+    /** Execute afunc if the acond returns true */
+    function aaif(acond, afunc, aelse) {
+      return function(ret) {
+        var args = argsToArray(arguments);
+        args[0] = function(c) {
+          args[0] = ret;
+          if ( c ) afunc.apply(null, args);
+          else if ( aelse ) aelse.apply(null, args);
+          else ret();
+        };
+        acond.apply(null, args);
+      }
+    },
+
     /** Time an afunc. **/
     (function() {
       // Add a unique suffix to timer names in case multiple instances
