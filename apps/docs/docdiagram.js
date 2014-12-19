@@ -199,7 +199,6 @@ CLASS({
   ],
 
   methods: {
-
     construct: function() {
       this.SUPER();
       this.diagramItem.title = this.featureType.capitalize();
