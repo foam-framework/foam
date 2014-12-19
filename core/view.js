@@ -102,7 +102,7 @@ var DOM = {
       models.push(arequire(key));
     }
 
-    if ( e.getAttribute('view') ) models.push(arequire(e.getAttribute('view')));
+    if ( e && e.getAttribute('view') ) models.push(arequire(e.getAttribute('view')));
     models.push(arequire(e.getAttribute('model')));
 
     aseq(apar.apply(null, models), function(ret) {
