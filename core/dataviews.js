@@ -155,6 +155,8 @@ CLASS({
     },
     
     destroy: function() {
+      /* Destroys children and removes them from this. Override to include your own
+       cleanup code, but always call this.SUPER() after you are done. */
       if (arguments.callee.caller.super_) this.SUPER();
       
       var list = this.children.slice();
@@ -164,7 +166,7 @@ CLASS({
     },
     
     construct: function() {
-      /* Template method. After a destroy(), construct() is called to fill in the object again. If
+      /* After a destroy(), construct() is called to fill in the object again. If
          any special children need to be re-created, do it here. */
       if (arguments.callee.caller.super_) this.SUPER();
 
@@ -277,14 +279,15 @@ CLASS({
     
     init: function() {
       this.SUPER();
-      this.construct();
+      // DetailView may have already constructed based on a data initialization, so check
+      // if we should construct or not.
+      if ( ! (this.selfX && this.selfX.data$.value === this) ) this.construct();
     },
     
     construct: function() {
       /* Create an additional context for children based on properties of this,
         rather than data. */
       this.SUPER();
-      // TODO(jacksonic): do we want to do this for each createTemplateView? That would prevent siblings from trying to change the data.
       this.selfX = this.X.sub({data$: this.SimpleReadOnlyValue.create(this)});
     },
 

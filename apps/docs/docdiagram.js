@@ -128,7 +128,9 @@ CLASS({
         var diagramItem = this.Block.create({}, this.childX);
         diagramItem.addChild(
           this.Section.create({
-            title$: this.modelName$, titleFont: 'bold 16px Roboto'
+            title$: this.modelName$, titleFont: 'bold 16px Roboto',
+            background: 'rgba(64,64,255,255)',
+            color: 'white'
           }, this.childX)
         );
         return diagramItem;
@@ -193,13 +195,12 @@ CLASS({
     {
       name: 'diagramItem',
       factory: function() {
-        return this.SectionGroup.create({ title: this.featureType.capitalize() });
+        return this.SectionGroup.create({ title: this.featureType.capitalize(), titleBackground: 'rgba(200,200,200,255)' });
       }
     }
   ],
 
   methods: {
-
     construct: function() {
       this.SUPER();
       this.diagramItem.title = this.featureType.capitalize();

@@ -423,7 +423,7 @@ CLASS({
     init: function() {
       this.SUPER();
 
-      this.addChild(this.Label.create({text$: this.title$, font$: this.titleFont$}));
+      this.addChild(this.Label.create({text$: this.title$, font$: this.titleFont$, color$: this.color$}));
       this.verticalConstraints.max$ = this.verticalConstraints.preferred$Pix$;
 
       this.addLinkPoints();
@@ -471,6 +471,15 @@ CLASS({
       name: 'titleFont',
       type: 'String',
       defaultValue: 'bold 14px Roboto'
+    },
+    {
+      name: 'titleColor',
+      type: 'String',
+      defaultValue: 'black'
+    },
+    {
+      name: 'titleBackground',
+      type: 'String'
     }
   ],
   
@@ -481,7 +490,8 @@ CLASS({
     },
     construct: function() {
       if (!this.titleSection) {
-        this.titleSection = this.Section.create({title$: this.title$, titleFont$: this.titleFont$});
+        this.titleSection = this.Section.create({title$: this.title$, titleFont$: this.titleFont$, 
+                                  color$: this.titleColor$, background$: this.titleBackground$});
         this.myLinkPoints$ = this.titleSection.myLinkPoints$;
       }
       this.addChild(this.titleSection);

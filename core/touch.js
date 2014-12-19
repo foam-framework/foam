@@ -775,8 +775,7 @@ CLASS({
     'PinchTwistGesture',
     'ScrollGesture',
     'TapGesture',
-    'GestureTarget',
-    'EasyDAO'
+    'GestureTarget'
   ],
   imports: [
     'document',
@@ -801,18 +800,8 @@ CLASS({
     },
     {
       name: 'targets',
-      documentation: 'MDAO of gesture targets, indexed by the ID of their containing DOM element.',
-      factory: function() {
-        var dao = this.EasyDAO.create({
-          model: this.GestureTarget,
-          name: 'GestureTargetDAO',
-          seqNo: true,
-          seqProperty: this.GestureTarget.ID,
-          daoType: 'MDAO'
-        });
-        dao.addIndex(this.GestureTarget.CONTAINER_ID);
-        return dao;
-      }
+      documentation: 'Map of gesture targets, indexed by the ID of their containing DOM element.',
+      factory: function() { return {}; }
     },
     {
       name: 'active',
@@ -855,22 +844,32 @@ CLASS({
     },
 
     install: function(target) {
-      if ( target.containerID )
-        this.targets.put(target);
-      else console.warn('no container ID on touch target');
+      if ( target.containerID ) {
+        if ( ! this.targets[target.containerID] )
+          this.targets[target.containerID] = [];
+        this.targets[target.containerID].push(target);
+      } else console.warn('no container ID on touch target');
     },
     uninstall: function(target) {
-      this.targets.remove(target);
+      var arr = this.targets[target.containerID];
+      if ( ! arr ) return;
+      for ( var i = 0 ; i < arr.length ; i++ ) {
+        if ( arr[i] === target ) {
+          arr.splice(i, 1);
+          break;
+        }
+      }
+      if ( arr.length === 0 )
+        delete this.targets[target.containerID];
     },
 
     purge: function() {
       // Run through the targets DAO looking for any that don't exist on the DOM.
-      var arr = [];
-      this.targets.select(arr);
+      var keys = Object.keys(this.targets);
       var count = 0;
-      for ( var i = 0 ; i < arr.length ; i++ ) {
-        if ( ! this.document.getElementById(arr[i].containerID) ) {
-          this.targets.remove(arr[i]);
+      for ( var i = 0 ; i < keys.length ; i++ ) {
+        if ( ! this.document.getElementById(keys[i]) ) {
+          delete this.targets[keys[i]];
           count++;
         }
       }
@@ -887,11 +886,10 @@ CLASS({
       var e = this.X.document.elementFromPoint(x, y);
       while ( e ) {
         if ( e.id ) {
-          var sink = [];
-          this.targets.where(EQ(this.GestureTarget.CONTAINER_ID, e.id)).select(sink);
-          if ( sink.length ) {
-            for ( var i = 0 ; i < sink.length ; i++ ) {
-              var t = sink[i];
+          var matches = this.targets[e.id];
+          if ( matches && matches.length ) {
+            for ( var i = 0 ; i < matches.length ; i++ ) {
+              var t = matches[i];
               var g = this.gestures[t.gesture];
               if ( g && ( ! opt_predicate || opt_predicate(g) ) ) {
                 if ( ! this.active[g.name] ) this.active[g.name] = [];
