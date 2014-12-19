@@ -52,7 +52,9 @@ CLASS({
             'foam.views.DataConsumerTrait'],
   
   requires: ['foam.documentation.ModelDocDiagram',
+             'foam.documentation.ExtendsDiagram',
              'diagram.LinearLayout',
+             'diagram.LockToPreferredLayout',
              'foam.graphics.Spacer'],
   
   documentation: function() {/*
@@ -60,6 +62,13 @@ CLASS({
   */},
   
   properties: [
+    {
+      name: 'autoSizeLayout',
+      type: 'diagram.LockToPreferredLayout',
+      factory: function() {
+        return this.LockToPreferredLayout.create();
+      }
+    },
     {
       name: 'outerLayout',
       type: 'diagram.LinearLayout',
@@ -90,17 +99,22 @@ CLASS({
         this.mainLayout.addChild(this.Spacer.create());
         return modelDiagram;
       }
-    }
+    },
+    // {
+//       name: 'extendsDiagram',
+//       factory: function() {
+//         var extendsDiagram = this.ExtendsDiagram.create();
+//         this.extendsModelLayout.addChild(extendsDiagram.diagramItem);
+//         return extendsDiagram;
+//       }
+//     }
   ],
   
   methods: {
     init: function() {
       this.SUPER();
-      this.cview = this.outerLayout;
-      this.outerLayout.x = 0;
-      this.outerLayout.y = 0;
-      this.outerLayout.width = 300;
-      this.outerLayout.height = 250;
+      this.cview = this.autoSizeLayout;
+      this.autoSizeLayout.addChild(this.outerLayout);
       this.outerLayout.addChild(this.extendsModelLayout);
       this.outerLayout.addChild(this.mainLayout);
       
@@ -120,6 +134,69 @@ CLASS({
     }
   }  
 });
+//
+// CLASS({
+//   name: 'ExtendsDiagram',
+//   package: 'foam.documentation',
+//
+//   traits: [ 'foam.views.ChildTreeTrait',
+//             'foam.views.DataConsumerTrait',
+//             'foam.views.DataProducerTrait'],
+//
+//   requires: ['foam.documentation.ModelDocDiagram',
+//              'foam.documentation.ExtendsDiagram',
+//              'diagram.LinearLayout',
+//              'foam.graphics.Spacer'],
+//
+//   documentation: function() {/*
+//     A view that renders one model's extendsModel, and recursively builds another ExtendsModel.
+//   */},
+//
+//   properties: [
+//     {
+//       name: 'data',
+//       postSet: function() {
+//         this.destroy();
+//         this.childData = FOAM.lookup(data.extendsModel, this.X);
+//         this.construct();
+//       }
+//     },
+//     {
+//       name: 'diagramItem',
+//       type: 'diagram.LinearLayout',
+//       factory: function() {
+//         return this.LinearLayout.create({orientation:'vertical'});
+//       }
+//     },
+//     {
+//       name: 'modelDiagram',
+//       factory: function() {
+//         return this.ModelDocDiagram.create({}, this.X);
+//       }
+//     },
+//
+//   ],
+//
+//   methods: {
+//     construct: function() {
+//       this.SUPER();
+//
+//       if ( this.data && this.childData ) {
+//
+//       }
+//
+//       if (this.data) {
+//         this.diagramItem.addChild(this.modelDiagram.diagramItem);
+//       }
+//     },
+//
+//     destroy: function() {
+//
+//     }
+//
+//
+//   }
+// });
 
 
 CLASS({
