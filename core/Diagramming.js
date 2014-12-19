@@ -563,6 +563,15 @@ CLASS({
                  <li>generalization: hollow arrow at start</li>
                  <li>dependency: open arrow at end</li>
               </ul>*/},
+    },
+    {
+      name: 'parent',
+      postSet: function(old, nu) {
+        if (nu && nu.view && nu.view.cview) {
+          return nu.view.cview;
+        }
+        return nu;
+      }
     }
 
   ],
