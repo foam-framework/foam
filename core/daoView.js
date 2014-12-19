@@ -1065,7 +1065,7 @@ CLASS({
             if ( e ) e.style.display = self.spinnerBusyStatus.busy ? 'block' : 'none';
           });
         }); %>
-        <div id="%%scrollerID" style="overflow-y: scroll; width:100%; height: 100%;">
+        <div id="%%scrollerID" style="-webkit-overflow-scrolling: touch; overflow-y: scroll; width:100%; height: 100%;">
           <div id="%%containerID" style="position:relative;width:100%;height:100%; -webkit-transform: translate3d(0px, 0px, 0px);">
           </div>
         </div>
