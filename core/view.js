@@ -98,12 +98,11 @@ var DOM = {
       FOAM.lookup(e.getAttribute('view'), X);
       FOAM.lookup(e.getAttribute('model'), X);
       if ( e.getAttribute('view') ) models.push(arequire(e.getAttribute('view')));
+      if ( e.getAttribute('model') ) models.push(arequire(e.getAttribute('model')));
     }
     for ( var key in USED_MODELS ) {
       models.push(arequire(key));
     }
-
-    models.push(arequire(e.getAttribute('model')));
 
     aseq(apar.apply(null, models), function(ret) {
       for ( var i = 0 ; i < fs.length ; i++ ) {
