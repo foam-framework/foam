@@ -32,7 +32,6 @@ cat \
   ../../core/visitor.js \
   ../../core/dao.js \
   ../../core/arrayDAO.js \
-  ../../core/index.js \
   ../../core/touch.js \
   ../../core/ChromeApp.js \
   ../../js/foam/ui/animated/Label.js \
