@@ -668,6 +668,9 @@ CLASS({
         font-size:105%;
         font-weight:bold;
       }
+      div.clear {
+        clear: both;
+      }
       
       .feature-row {
         //border-top: 0.1em solid grey;
@@ -701,8 +704,7 @@ CLASS({
       }
       
       div.diagram {
-        width: 400px;
-        height: 300px;
+        float: right;
       }
       
     */},
