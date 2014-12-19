@@ -1,23 +1,23 @@
 CLASS({
   package: 'foam.ui.layout',
-  name: 'ResponsiveController',
+  name: 'ResponsiveView',
   extendsModel: 'View',
   requires: [
-    'foam.ui.layout.ControllerOption'
+    'foam.ui.layout.ResponsiveViewOption'
   ],
   imports: ['window'],
   properties: [
     {
       model_: 'ArrayProperty',
-      subType: 'foam.ui.layout.ControllerOption',
+      subType: 'foam.ui.layout.ResponsiveViewOption',
       name: 'options',
       preSet: function(_, v) {
-        return v.slice().sort(toCompare(this.ControllerOption.MIN_WIDTH));
+        return v.slice().sort(toCompare(this.ResponsiveViewOption.MIN_WIDTH));
       }
     },
     {
       name: 'current',
-      type: 'foam.ui.layout.ControllerOption',
+      type: 'foam.ui.layout.ResponsiveViewOption',
       postSet: function(old, v) {
         if ( old !== v ) this.updateHTML();
       }

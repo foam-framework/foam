@@ -68,9 +68,7 @@ CLASS({
     'GestureManager',
     'MDAO',
     'TouchManager',
-    'foam.ui.layout.ControllerOption',
-    'foam.ui.layout.ResponsiveController',
-    'foam.ui.md.TwoPane as TwoPane',
+    'foam.ui.md.ResponsiveAppControllerView',
     'lib.contacts.Contact as Contact',
     'lib.contacts.ContactNetworkDAO as ContactNetworkDAO'
   ],
@@ -131,35 +129,12 @@ CLASS({
       }
     },
     {
-      model_: 'ArrayProperty',
-      subType: 'foam.ui.layout.ControllerOption',
-      name: 'options',
-      factory: function() {
-        var self = this;
-        return [
-          this.ControllerOption.create({
-            controller: function() {
-              return self.DetailView.create({ data: self.controller}, self.controller.X);
-            },
-            minWidth: 0
-          }),
-          this.ControllerOption.create({
-            controller: function() {
-              return self.TwoPane.create({ data: self.controller }, self.controller.X)
-            },
-            minWidth: 600
-          })
-        ]
-      }
-    },
-    {
       name: 'controller',
       subType: 'AppController',
       postSet: function(_, controller) {
-        var view = this.ResponsiveController.create({
-          options: this.options
-        }, controller.X);
-        this.stack.setTopView(this.FloatingView.create({ view: view }));
+        var Y = this.controller.X.sub({ data: this.controller });
+        var view = this.ResponsiveAppControllerView.create(undefined, Y);
+        this.stack.setTopView(view);
 
         // TODO: Hack for positioned based view delay.
         view.onResize();
