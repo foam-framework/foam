@@ -91,20 +91,20 @@ var DOM = {
     if ( ! X.document.FOAM_OBJECTS ) X.document.FOAM_OBJECTS = {};
 
     var fs = X.document.querySelectorAll('foam');
+    var models = [];
     for ( var i = 0 ; i < fs.length ; i++ ) {
       var e = fs[i];
       // console.log(e.getAttribute('model'), e.getAttribute('view'));
       FOAM.lookup(e.getAttribute('view'), X);
       FOAM.lookup(e.getAttribute('model'), X);
+      if ( e.getAttribute('view') ) models.push(arequire(e.getAttribute('view')));
     }
-    var models = [];
     for ( var key in USED_MODELS ) {
       models.push(arequire(key));
     }
-    if ( e ) {
-      if ( e.getAttribute('view') ) models.push(arequire(e.getAttribute('view')));
-      models.push(arequire(e.getAttribute('model')));
-    }
+
+    models.push(arequire(e.getAttribute('model')));
+
     aseq(apar.apply(null, models), function(ret) {
       for ( var i = 0 ; i < fs.length ; i++ ) {
         this.initElement(fs[i], X, X.document);
