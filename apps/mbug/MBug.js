@@ -4,6 +4,7 @@ CLASS({
   description: 'Mobile QuickBug',
 
   requires: [
+    'foam.ui.md.ResponsiveAppControllerView',
     'AppController',
     'ChangeProjectView',
     'DetailView',
@@ -69,8 +70,15 @@ CLASS({
             return this.X.ChangeProjectView.create({data: project.user});
           }
         }, Y);
-        this.stack.setTopView(this.DetailView.create({data: pc}, pc.X));
+        var view = this.ResponsiveAppControllerView.create(undefined, pc.X.sub({
+          data: pc
+        }));
+
+        this.stack.setTopView(view);
         project.X = pc.X;
+
+        // TODO: Hack for positioned view layout delay.
+        view.onResize();
       }
     },
     {
