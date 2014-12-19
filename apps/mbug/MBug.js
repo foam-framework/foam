@@ -346,8 +346,7 @@ CLASS({
           <span class="project-name <%= self.X.projectName === project ? 'selected' : '' %>"><%= project %></span>
         </div>
         <% }); %>
-        </div>
-    </div>
+      </div>
     */}
  ]
 });
