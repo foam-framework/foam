@@ -623,6 +623,9 @@ CLASS({
 <%    this.destroy(); %>
 <%    if (this.data) {  %>
         $$data{ model_: 'foam.documentation.SummaryDocView', model: this.data.model_ }
+        <div class="diagram">
+        $$data{ model_: 'foam.documentation.DocDiagramView' }
+        </div>
         <div class="members">
           $$models{ model_: 'foam.documentation.FeatureListDocView', model: this.X.Model, featureType:'models' }
         </div>
@@ -1417,8 +1420,11 @@ CLASS({
     {
       name: 'hasFeatures',
       defaultValue: false,
-      postSet: function(_, nu) {
-        this.updateHTML();
+      postSet: function(old, nu) {
+        if (old !== nu) {
+          this.destroy();
+          this.construct();
+        }
       },
       documentation: function() { /*
           True if the $$DOC{ref:'.selfFeaturesDAO'} is not empty.
@@ -1427,8 +1433,11 @@ CLASS({
     {
       name: 'hasInheritedFeatures',
       defaultValue: false,
-      postSet: function(_, nu) {
-        this.updateHTML();
+      postSet: function(old, nu) {
+        if (old !== nu) {
+          this.destroy();
+          this.construct();
+        }
       },
       documentation: function() { /*
           True if the $$DOC{ref:'.inheritedFeaturesDAO'} is not empty.

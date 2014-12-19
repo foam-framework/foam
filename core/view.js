@@ -101,10 +101,10 @@ var DOM = {
     for ( var key in USED_MODELS ) {
       models.push(arequire(key));
     }
-
-    if ( e.getAttribute('view') ) models.push(arequire(e.getAttribute('view')));
-    models.push(arequire(e.getAttribute('model')));
-
+    if ( e ) {
+      if ( e.getAttribute('view') ) models.push(arequire(e.getAttribute('view')));
+      models.push(arequire(e.getAttribute('model')));
+    }
     aseq(apar.apply(null, models), function(ret) {
       for ( var i = 0 ; i < fs.length ; i++ ) {
         this.initElement(fs[i], X, X.document);

@@ -699,6 +699,12 @@ CLASS({
       .light {
         color: #444;
       }
+      
+      div.diagram {
+        width: 400px;
+        height: 300px;
+      }
+      
     */},
     function toHTML() {/*
       <div class="outermost" id="<%= this.id %>">

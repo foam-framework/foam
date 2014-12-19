@@ -477,9 +477,9 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      this.create();
+      this.construct();
     },
-    create: function() {
+    construct: function() {
       if (!this.titleSection) {
         this.titleSection = this.Section.create({title$: this.title$, titleFont$: this.titleFont$});
         this.myLinkPoints$ = this.titleSection.myLinkPoints$;

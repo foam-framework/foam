@@ -231,6 +231,7 @@ CLASS({
     {
       name: 'cview',
       postSet: function(_, cview) {
+        cview.view = this;
         this.X.dynamic(function() {
           this.width  = cview.x + cview.width;
           this.height = cview.y + cview.height;
@@ -298,7 +299,7 @@ CLASS({
         for ( var key in this.children ) {
           var child = this.children[key];
           child.view = view;
-          child.addListener(view.paint);
+          if (view) child.addListener(view.paint);
         }
       },
       hidden: true,

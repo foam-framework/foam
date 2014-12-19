@@ -331,13 +331,6 @@ CLASS({
     destroy: function() {
       /* Cleans up the DOM when regenerating content. You should call this before
          creating new HTML in your $$DOC{ref:'.toInnerHTML'} or $$DOC{ref:'.toHTML'}. */
-      // TODO: remove listeners
-      this.invokeDestructors();
-      for ( var i = 0; i < this.children.length; i++ ) {
-        this.children[i].destroy();
-      }
-      delete this.instance_.$;
-      
       this.SUPER();
       // TODO(jacksonic): we often call destroy() in templates, but not the new construct()
       this.selfX = this.X.sub({data$: this.SimpleReadOnlyValue.create(this)});
@@ -345,7 +338,6 @@ CLASS({
 
     close: function() {
       /* Call when permanently closing the $$DOC{ref:'View'}. */
-      this.$ && this.$.remove();
       this.destroy();
       this.publish('closed');
     }
