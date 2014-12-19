@@ -52,7 +52,8 @@ CLASS({
             'foam.views.DataConsumerTrait'],
   
   requires: ['foam.documentation.ModelDocDiagram',
-             'diagram.LinearLayout'],
+             'diagram.LinearLayout',
+             'foam.graphics.Spacer'],
   
   documentation: function() {/*
     A view that renders one model's diagram.
@@ -60,17 +61,33 @@ CLASS({
   
   properties: [
     {
+      name: 'outerLayout',
+      type: 'diagram.LinearLayout',
+      factory: function() {
+        return this.LinearLayout.create({orientation:'vertical'});
+      }
+    },
+    {
       name: 'mainLayout',
       type: 'diagram.LinearLayout',
       factory: function() {
-        return this.LinearLayout.create();
+        return this.LinearLayout.create({orientation:'horizontal'});
+      }
+    },
+    {
+      name: 'extendsModelLayout',
+      type: 'diagram.LinearLayout',
+      factory: function() {
+        return this.LinearLayout.create({orientation:'vertical'});
       }
     },
     {
       name: 'modelDiagram',
       factory: function() {
         var modelDiagram = this.ModelDocDiagram.create();
+        this.mainLayout.addChild(this.Spacer.create());
         this.mainLayout.addChild(modelDiagram.diagramItem);
+        this.mainLayout.addChild(this.Spacer.create());
         return modelDiagram;
       }
     }
@@ -79,11 +96,14 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      this.cview = this.mainLayout;
-      this.mainLayout.x = 0;
-      this.mainLayout.y = 0;
-      this.mainLayout.width = 300;
-      this.mainLayout.height = 250;
+      this.cview = this.outerLayout;
+      this.outerLayout.x = 0;
+      this.outerLayout.y = 0;
+      this.outerLayout.width = 300;
+      this.outerLayout.height = 250;
+      this.outerLayout.addChild(this.extendsModelLayout);
+      this.outerLayout.addChild(this.mainLayout);
+      
     },
     
     toHTML: function() {
@@ -148,7 +168,7 @@ CLASS({
     },
     
     onValueChange_: function() {
-      if (this.data) this.modelName = this.data.name;
+      if (this.data) this.modelName = this.data.id;
       this.processModelChange();
     },
 
