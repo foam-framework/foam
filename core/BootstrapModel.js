@@ -36,7 +36,7 @@ function defineLocalProperty(cls, name, factory) {
     var value = factory.call(this);
     Object.defineProperty(this, name, { value: value });
     return value;
-  } });
+  }, configurable: true });
 }
 
 this.Constant = null;
