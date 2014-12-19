@@ -1,0 +1,49 @@
+/////////////////// <%= this.data.appConfig.name %>: <%= this.data.appConfig.backgroundSource %> ///////////////////
+
+// Listens for the app launching then creates the window
+//
+// @see http://developer.chrome.com/trunk/apps/app.runtime.html
+// @see http://developer.chrome.com/trunk/apps/app.window.html
+//
+chrome.app.runtime.onLaunched.addListener(function() {
+  runApp();
+});
+
+
+//
+// Listens for the app restarting then re-creates the window.
+//
+// @see http://developer.chrome.com/trunk/apps/app.runtime.html
+//
+chrome.app.runtime.onRestarted.addListener(function() {
+  runApp();
+});
+
+
+//
+// Creates the window for the application.
+//
+// @see http://developer.chrome.com/trunk/apps/app.window.html
+//
+function runApp() {
+  chrome.app.window.create(
+      '<%= this.data.src %>',
+      {
+        id: '<%= this.data.windowID %>',
+        width: <%= this.data.width %>,
+        height: <%= this.data.height %>,
+        minWidth: <%= this.data.minWidth %>,
+        minHeight: <%= this.data.minHeight %>
+      },
+      function(win) {
+        var window = win.contentWindow;
+        window.onload = function() {
+          $addWindow(window);
+          var Y = X.subWindow(window, '<%= this.data.appConfig.name %>');
+          DOM.init(Y);
+        };
+        win.onClosed.addListener(function() {
+          $removeWindow(window);
+        });
+      });
+}

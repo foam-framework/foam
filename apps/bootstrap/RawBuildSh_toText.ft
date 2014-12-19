@@ -1,0 +1,18 @@
+#!/bin/bash
+
+<% if (self.data.cleanBeforeBuild) { %>
+  rm -rf $BUILD_DIR/foam.js
+<% } %>
+<% if (self.data.buildDir !== '.') { %>
+  cp \\ <% self.data.sources.forEach(function(sourceFileName) { %>
+    <%= self.data.sourceDir %>/<%= sourceFileName %> \\ <% }); %>
+    $BUILD_DIR/
+<% } %>
+<% if (self.data.rebuildFOAM || self.data.cleanBeforeBuild) { %>
+  <% self.data.foamCSS.forEach(function(cssFileName) { %>
+    cp <%= self.data.foamSourceDir %>/core/<%= cssFileName %> $BUILD_DIR/
+  <% }); %>
+  cat \\ <% self.data.foamSources.forEach(function(sourceFileName) { %>
+    <%= self.data.foamSourceDir %>/<%= sourceFileName %> \\ <% }); %>
+    > "$BUILD_DIR/foam.js"
+<% } %>

@@ -678,12 +678,14 @@ document.put = function(obj) {
 };
 
 
-// Promote webkit apis
+// Promote webkit apis; fallback on Node.js alternatives
 // TODO(kgr): this should be somewhere web specific
 
-window.requestFileSystem     = window.requestFileSystem || window.webkitRequestFileSystem;
-window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
-
+window.requestFileSystem     = window.requestFileSystem ||
+  window.webkitRequestFileSystem;
+window.requestAnimationFrame = window.requestAnimationFrame ||
+  window.webkitRequestAnimationFrame ||
+  window.setImmediate;
 if ( window.Blob ) {
   Blob.prototype.slice = Blob.prototype.slice || Blob.prototype.webkitSlice;
 }
