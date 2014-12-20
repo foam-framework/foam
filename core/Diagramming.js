@@ -563,15 +563,6 @@ CLASS({
                  <li>generalization: hollow arrow at start</li>
                  <li>dependency: open arrow at end</li>
               </ul>*/},
-    },
-    {
-      name: 'parent',
-      postSet: function(old, nu) {
-        if (nu && nu.view && nu.view.cview) {
-          return nu.view.cview;
-        }
-        return nu;
-      }
     }
 
   ],
@@ -580,7 +571,7 @@ CLASS({
     {
       name: 'propagatePointChange',
       code: function() {
-        // fake a prop change so the canvas repaints TODO(jacksonic): replace this
+        // fake a prop change so the canvas repaints TODO(jacksonic): replace this with a better notification system
         this.propertyChange('x', this.x, this.x+1);
       }
     }
@@ -592,6 +583,11 @@ CLASS({
 
       var c = this.canvas;
       c.save();
+
+      // get back to global coordinates
+      if (this.parent.globalX && this.parent.globalY) {
+        c.translate(-(this.parent.globalX + this.x), -(this.parent.globalY + this.y));
+      }
 
       var H = 0;
       var V = 1;
@@ -659,7 +655,7 @@ CLASS({
           }
           eDir = eDir / Math.abs(eDir); // normalize
         }
-        
+                
         if (sOr !== eOr) { // corner
           c.moveTo(s.x, s.y);
           if (sOr===H) {

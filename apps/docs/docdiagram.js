@@ -181,6 +181,11 @@ CLASS({
     {
       name: 'extended',
       documentation: "The other doc diagram item to point the arrow from."
+    },
+    {
+      name: 'spacing',
+      model_: 'IntProperty',
+      defaultValue: 45
     }
   ],
 
@@ -188,8 +193,9 @@ CLASS({
     init: function() {
       this.SUPER();
       
+      this.mainLayout.verticalConstraints.preferred = 0;
       this.diagramItem.addChild(this.mainLayout);
-      this.diagramItem.addChild(this.Spacer.create({fixedHeight: 30}));
+      this.diagramItem.addChild(this.Spacer.create({fixedHeight$: this.spacing$}));
     },
     
     construct: function() {
@@ -209,17 +215,17 @@ CLASS({
         
         // the arrow
                 // almost working, check extended
-        //this.addChild(this.DocLinkDiagram.create({ start: thisDiag, end: this.extended }));
+        this.addChild(this.DocLinkDiagram.create({ start: thisDiag, end$: this.extended$ }));
       }
     },
     
     addChild: function(child) {
       this.SUPER(child);
       // add diagram node of the child to ours
-      if ( this.diagramItem && child.diagramItem ) this.mainLayout.addChild(child.diagramItem);
+      if ( this.mainLayout && child.diagramItem ) this.mainLayout.addChild(child.diagramItem);
     },
     removeChild: function(child) {
-      if ( this.diagramItem &&  child.diagramItem ) this.mainLayout.removeChild(child.diagramItem);
+      if ( this.mainLayout &&  child.diagramItem ) this.mainLayout.removeChild(child.diagramItem);
       this.SUPER(child);
     }
   }
@@ -362,7 +368,6 @@ CLASS({
     construct: function() {
       this.SUPER();
       this.diagramItem.title = this.featureType.capitalize();
-      console.log("constructing FeatureListDiagram, already have children: ", this.children, this.diagramItem.children);
       this.selfFeaturesDAO.limit(5).select({ put: function(item) {
         var X = this.childX.sub({ data$: this.childX.SimpleValue.create(item, this.childX) });
         this.addChild(this.FeatureDiagram.create({ model: item.model_ }, X));

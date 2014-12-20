@@ -519,8 +519,6 @@ CLASS({
           }
         }.bind(this)
       ));
-      
-      console.log(this.subModelDAO);
     }
 
   }
