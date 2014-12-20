@@ -480,6 +480,10 @@ CLASS({
     {
       name: 'titleBackground',
       type: 'String'
+    },
+    {
+      name: 'titleBorder',
+      type: 'String'
     }
   ],
   
@@ -491,7 +495,7 @@ CLASS({
     construct: function() {
       if (!this.titleSection) {
         this.titleSection = this.Section.create({title$: this.title$, titleFont$: this.titleFont$, 
-                                  color$: this.titleColor$, background$: this.titleBackground$});
+                                  color$: this.titleColor$, background$: this.titleBackground$, border$: this.titleBorder$ });
         this.myLinkPoints$ = this.titleSection.myLinkPoints$;
       }
       this.addChild(this.titleSection);
