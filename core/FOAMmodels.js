@@ -58,6 +58,8 @@ var files = [
   [ 'view', IN_BROWSER ],
   [ 'view2', IN_BROWSER ],
   [ 'layout', IN_BROWSER ],
+  [ 'AbstractDAOView', IN_BROWSER ],
+  [ 'DAOListView', IN_BROWSER ],
   [ 'daoView', IN_BROWSER ],
   [ 'ChoiceView', IN_BROWSER ],
   [ 'DetailView', IN_BROWSER ],

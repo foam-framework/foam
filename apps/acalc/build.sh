@@ -22,7 +22,8 @@ cat \
   ../../core/mm5Misc.js \
   ../../core/value.js \
   ../../core/view.js \
-  ../../core/daoView.js \
+  ../../core/AbstractDAOView.js \
+  ../../core/DAOListView.js \
   ../../core/DetailView.js \
   ../../js/foam/graphics/AbstractCViewView.js \
   ../../js/foam/graphics/CView.js \
