@@ -35,7 +35,6 @@ cat \
   ../../core/dao.js \
   ../../core/arrayDAO.js \
   ../../core/touch.js \
-  ../../core/ChromeApp.js \
   ../../js/foam/ui/animated/Label.js \
   ../../js/foam/ui/md/Flare.js \
   > "$BUILD_DIR/foam.js"
