@@ -28,10 +28,7 @@ cat \
   ../../core/cview2.js \
   ../../core/CViewPrimitives.js \
   ../../core/HTMLParser.js \
-  ../../core/mlang.js \
   ../../core/visitor.js \
-  ../../core/dao.js \
-  ../../core/arrayDAO.js \
   ../../core/touch.js \
   ../../core/ChromeApp.js \
   ../../js/foam/ui/animated/Label.js \
