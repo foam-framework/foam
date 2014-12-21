@@ -127,6 +127,8 @@ CLASS({
     'CalcView',
     'GestureManager',
     'TouchManager',
+    'foam.graphics.CViewView',
+    'foam.graphics.ActionButtonCView',
     'foam.ui.animated.Label',
     'foam.ui.md.Flare'
   ],

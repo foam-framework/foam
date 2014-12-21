@@ -24,7 +24,11 @@ cat \
   ../../core/view.js \
   ../../core/daoView.js \
   ../../core/DetailView.js \
-  ../../core/cview2.js \
+  ../../js/foam/graphics/AbstractCViewView.js \
+  ../../js/foam/graphics/CView.js \
+  ../../js/foam/graphics/Circle.js \
+  ../../js/foam/graphics/CViewView.js \
+  ../../js/foam/graphics/ActionButtonCView.js \
   ../../core/HTMLParser.js \
   ../../core/mlang.js \
   ../../core/visitor.js \

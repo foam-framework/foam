@@ -63,7 +63,6 @@ var files = [
   [ 'DetailView', IN_BROWSER ],
   [ 'TableView', IN_BROWSER ],
   [ 'cview', IN_BROWSER ],
-  [ 'cview2', IN_BROWSER ],
   [ 'RichTextView', IN_BROWSER ],
   [ 'listchoiceview', IN_BROWSER ],
   [ 'scroll', IN_BROWSER ],
