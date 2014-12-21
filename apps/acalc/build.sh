@@ -20,7 +20,6 @@ cat \
   ../../core/mm3Types.js \
   ../../core/mm4Method.js \
   ../../core/mm5Misc.js \
-  ../../core/LayoutTraits.js \
   ../../core/value.js \
   ../../core/view.js \
   ../../core/daoView.js \
