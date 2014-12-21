@@ -30,7 +30,6 @@ cat \
   ../../js/foam/graphics/CViewView.js \
   ../../js/foam/graphics/ActionButtonCView.js \
   ../../core/HTMLParser.js \
-  ../../core/mlang.js \
   ../../core/visitor.js \
   ../../core/dao.js \
   ../../core/arrayDAO.js \
