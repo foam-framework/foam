@@ -25,7 +25,6 @@ cat \
   ../../core/daoView.js \
   ../../core/DetailView.js \
   ../../core/cview2.js \
-  ../../core/CViewPrimitives.js \
   ../../core/HTMLParser.js \
   ../../core/mlang.js \
   ../../core/visitor.js \
