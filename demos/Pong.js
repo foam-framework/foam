@@ -28,6 +28,8 @@ CLASS({
   extendsModel: 'View',
 
   requires: [
+    'Ball',
+    'Paddle',
     'foam.graphics.CView',
     'foam.graphics.Rectangle',
     'foam.physics.Collider'
