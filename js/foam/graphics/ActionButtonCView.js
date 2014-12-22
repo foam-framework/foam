@@ -123,12 +123,12 @@ CLASS({
         }
         this.halo.r = 2;
         this.halo.alpha = 0.4;
-        this.X.animate(200, function() {
+        this.X.animate(150, function() {
           this.halo.x = this.width/2;
           this.halo.y = this.height/2;
           this.halo.r = Math.min(28, Math.min(this.width, this.height)/2);
           this.halo.alpha = 1;
-        }.bind(this), function(a) { return a*a; }, function() {
+        }.bind(this), undefined, function() {
           if ( this.state_ === 'cancelled' ) {
             this.state_ = 'pressed';
             this.onMouseUp();
@@ -146,7 +146,7 @@ CLASS({
         this.state_ = 'released';
 
         this.X.animate(
-          250,
+          200,
           function() { this.halo.alpha = 0; }.bind(this), Movement.easeIn(.5), function() { this.state_ = 'default' }.bind(this))();
       }
     }
