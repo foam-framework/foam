@@ -1643,7 +1643,7 @@ CLASS({
         console.log("JS Error: ", x, text);
         this.setError(x);
 
-        return text;
+        return nop;
       }
     },
 
