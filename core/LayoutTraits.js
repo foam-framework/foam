@@ -347,9 +347,13 @@ CLASS({
       var itemSizes = [];
       var i = 0;
       this.children.forEach(function(child) {
-        constraintsF(child).setTotalSize(sz); // for percentages
-        itemSizes[i] = boundedF(constraintsF(child).preferred$Pix, constraintsF(child));
-        availableSpace -= itemSizes[i];
+        if ( constraintsF(child) ) {
+          constraintsF(child).setTotalSize(sz); // for percentages
+          itemSizes[i] = boundedF(constraintsF(child).preferred$Pix, constraintsF(child));
+          availableSpace -= itemSizes[i];          
+        } else {
+          itemSizes[i] = 0;
+        }
         i++;
       });
 
@@ -398,7 +402,7 @@ CLASS({
         var modifyTotal = 0;
         var i = 0;
         this.children.forEach(function(child) {
-          if (sizeOkF(i, child) // item is willing and able to shrink
+          if (constraintsF(child) && sizeOkF(i, child) // item is willing and able to shrink
               && factorF(child) > 0) {
             workingSet.push(i);
             modifyTotal += factorF(child);
@@ -408,7 +412,7 @@ CLASS({
         if (workingSet.length === 0) { // if no willing items, try the ones with factor 0
           i = 0;
           this.children.forEach(function(child) {
-            if (sizeOkF(i, child)) { // item is able to shrink, though not willing
+            if (constraintsF(child) && sizeOkF(i, child)) { // item is able to shrink, though not willing
               workingSet.push(i);
               modifyTotal += 1; // since constraintsF(child).shrinkFactor === 0
             }
@@ -417,10 +421,10 @@ CLASS({
         }
         if (workingSet.length === 0) {
           // absolutely nothing we can shrink. Abort!
-          if (isShrink)
-            console.warn("Layout failed to shrink due to minimum sizing: ", this, itemSizes, parentSizeF(this));
-          else
-            console.warn("Layout failed to stretch due to maximum sizing: ", this, itemSizes, parentSizeF(this));
+          // if (isShrink)
+          //   console.warn("Layout failed to shrink due to minimum sizing: ", this, itemSizes, parentSizeF(this));
+          // else
+          //   console.warn("Layout failed to stretch due to maximum sizing: ", this, itemSizes, parentSizeF(this));
           applySizesF(); // size it anyway
           return;
         }
@@ -465,16 +469,18 @@ CLASS({
         var i = 0;
         var pos = 0;
         this.children.forEach(function(child) {
-          // we didn't care about the off-axis before, so ensure it's set
-          opposedConstraintsF(child).setTotalSize(opposedParentSize);
+          if ( opposedConstraintsF(child) ) {
+            // we didn't care about the off-axis before, so ensure it's set
+            opposedConstraintsF(child).setTotalSize(opposedParentSize);
 
-          applySizeF(child, itemSizes[i]);
-          applyOpposedSizeF(child, opposedParentSize, boundedF, opposedConstraintsF);
+            applySizeF(child, itemSizes[i]);
+            applyOpposedSizeF(child, opposedParentSize, boundedF, opposedConstraintsF);
 
-          applyPositionF(child, pos);
-          applyOpposedPositionF(child, 0);
+            applyPositionF(child, pos);
+            applyOpposedPositionF(child, 0);
 
-          pos += itemSizes[i];
+            pos += itemSizes[i];
+          }
           i++;
         });
       }.bind(this);
@@ -522,17 +528,20 @@ CLASS({
       var totalSizes = { min:0, max: sz, preferred: 0 };
       var opposedTotalSizes = { min:0, max: opposedSz, preferred: 0 };
       self.children.forEach(function(child) {
-        constraintsF(child).setTotalSize(sz); // for percentages
-        opposedConstraintsF(child).setTotalSize(opposedSz);
+        if ( constraintsF(child) && opposedConstraintsF(child) ) {
+        
+          constraintsF(child).setTotalSize(sz); // for percentages
+          opposedConstraintsF(child).setTotalSize(opposedSz);
 
-        syncConstraints.forEach(function(cnst) {
-          totalSizes[cnst] += constraintsF(child)[cnst+'$Pix'];
-          // find smallest for min
-          if ((cnst==='max' && (opposedConstraintsF(child)[cnst+'$Pix'] < opposedTotalSizes[cnst]))
-             || (cnst!=='max' && (opposedConstraintsF(child)[cnst+'$Pix'] > opposedTotalSizes[cnst]))) {
-            opposedTotalSizes[cnst] = opposedConstraintsF(child)[cnst+'$Pix'];
-          }
-        });
+          syncConstraints.forEach(function(cnst) {
+            totalSizes[cnst] += constraintsF(child)[cnst+'$Pix'];
+            // find smallest for min
+            if ((cnst==='max' && (opposedConstraintsF(child)[cnst+'$Pix'] < opposedTotalSizes[cnst]))
+               || (cnst!=='max' && (opposedConstraintsF(child)[cnst+'$Pix'] > opposedTotalSizes[cnst]))) {
+              opposedTotalSizes[cnst] = opposedConstraintsF(child)[cnst+'$Pix'];
+            }
+          });
+        }
       });
       // apply if valid for our layout item traits
       syncConstraints.forEach(function(cnst) {

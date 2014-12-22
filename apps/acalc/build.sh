@@ -20,23 +20,44 @@ cat \
   ../../core/mm3Types.js \
   ../../core/mm4Method.js \
   ../../core/mm5Misc.js \
-  ../../core/LayoutTraits.js \
   ../../core/value.js \
   ../../core/view.js \
-  ../../core/daoView.js \
+  ../../core/AbstractDAOView.js \
+  ../../core/DAOListView.js \
   ../../core/DetailView.js \
-  ../../core/cview2.js \
-  ../../core/CViewPrimitives.js \
+  ../../js/foam/graphics/AbstractCViewView.js \
+  ../../js/foam/graphics/CView.js \
+  ../../js/foam/graphics/Circle.js \
+  ../../js/foam/graphics/CViewView.js \
+  ../../js/foam/graphics/ActionButtonCView.js \
   ../../core/HTMLParser.js \
-  ../../core/mlang.js \
   ../../core/visitor.js \
   ../../core/dao.js \
   ../../core/arrayDAO.js \
   ../../core/touch.js \
-  ../../core/ChromeApp.js \
   ../../js/foam/ui/animated/Label.js \
   ../../js/foam/ui/md/Flare.js \
+  | sed 's/^ *//g' \
+  | sed 's/  */ /g' \
+  | sed 's%^//.*%%g' \
+  | sed '/^$/d' \
+  | sed 's/ *( */(/g' \
+  | sed 's/ *) */)/g' \
+  | sed 's/ *{ */{/g' \
+  | sed 's/ *} */}/g' \
+  | sed 's/ *= */=/g' \
+  | sed 's/ *: */:/g' \
+  | sed 's/ *, */,/g' \
+  | sed 's/ *; */;/g' \
+  | sed 's/ *< */</g' \
+  | sed 's/ *> */>/g' \
+  | sed 's/ + /+/g' \
+  | sed 's/ *? */?/g' \
+  | sed 's/ *|| */||/g' \
   > "$BUILD_DIR/foam.js"
+
+#   | sed '/^\/\*.*/,/\*\// d' \
+
 
 # For code compression, uncomment the following line:
 # ~/node_modules/uglify-js/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"

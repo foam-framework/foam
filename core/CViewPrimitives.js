@@ -157,7 +157,17 @@ CLASS({
     {
       name:  'borderWidth',
       type:  'int',
-      defaultValue: 1
+      defaultValue: 1,
+      documentation: function() {/* 
+        The width to draw the border, straddling the item's edge. A width of 1 
+        will draw the item's rect exactly, a width of 2 will expand past the item's
+        edge by 1 pixel (depending on canvas scaling).</p>
+        <p>Note that a transparent border is still respected when drawing the
+        background. A default border of 1 will leave a 1 pixel transparent area around
+        the background fill, as if a border were to be drawn there. This can be
+        useful in situations when you want to fill inside a border that has been
+        drawn by an item underneath this item.
+      */}
     },
     {
       name: 'background',
@@ -179,7 +189,8 @@ CLASS({
         c.fillStyle = this.background;
 
         c.beginPath();
-        c.rect(0, 0, this.width, this.height);
+        var hbw = this.borderWidth/2;
+        c.rect(hbw, hbw, this.width-this.borderWidth, this.height-this.borderWidth);
         c.closePath();
         c.fill();
       }
@@ -238,6 +249,9 @@ CLASS({
       this.horizontalConstraints.preferred = 0;
       this.verticalConstraints.preferred = 0;
 
+      this.horizontalConstraints.stretchFactor$ = this.stretchFactor$;
+      this.verticalConstraints.stretchFactor$ = this.stretchFactor$;      
+
       // apply fixed settings if specified
       if (this.fixedWidth) this.fixedWidth = this.fixedWidth;
       if (this.fixedHeight) this.fixedHeight = this.fixedHeight;
@@ -275,6 +289,11 @@ CLASS({
         }
       }
     },
+    {
+      name: 'stretchFactor',
+      model_: 'IntProperty',
+      defaultValue: 1
+    }
   ]
 });
 

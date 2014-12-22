@@ -31,15 +31,15 @@ CLASS({
   ],
   
   methods: {
-    // destroy: function() {
-    //   if ( this.diagramItem ) {
-    //     this.diagramItem.destroy();
-    //     this.diagramItem.parent = undefined;
-    //
-    //     this.diagramItem = undefined;
-    //   }
-    //   this.SUPER();
-    // }
+    addChild: function(child) {
+      this.SUPER(child);
+      // add diagram node of the child to ours
+      if ( this.diagramItem && child.diagramItem ) this.diagramItem.addChild(child.diagramItem);
+    },
+    removeChild: function(child) {
+      if ( this.diagramItem &&  child.diagramItem ) this.diagramItem.removeChild(child.diagramItem);
+      this.SUPER(child);
+    }
   }
 });
 
@@ -52,7 +52,10 @@ CLASS({
             'foam.views.DataConsumerTrait'],
   
   requires: ['foam.documentation.ModelDocDiagram',
-             'diagram.LinearLayout'],
+             'foam.documentation.ExtendsDiagram',
+             'diagram.LinearLayout',
+             'diagram.LockToPreferredLayout',
+             'foam.graphics.Spacer'],
   
   documentation: function() {/*
     A view that renders one model's diagram.
@@ -60,18 +63,49 @@ CLASS({
   
   properties: [
     {
+      name: 'autoSizeLayout',
+      type: 'diagram.LockToPreferredLayout',
+      factory: function() {
+        return this.LockToPreferredLayout.create();
+      }
+    },
+    {
+      name: 'outerLayout',
+      type: 'diagram.LinearLayout',
+      factory: function() {
+        return this.LinearLayout.create({orientation:'vertical'});
+      }
+    },
+    {
       name: 'mainLayout',
       type: 'diagram.LinearLayout',
       factory: function() {
-        return this.LinearLayout.create();
+        return this.LinearLayout.create({orientation:'horizontal'});
+      }
+    },
+    {
+      name: 'extendsModelLayout',
+      type: 'diagram.LinearLayout',
+      factory: function() {
+        return this.LinearLayout.create({orientation:'vertical'});
       }
     },
     {
       name: 'modelDiagram',
       factory: function() {
         var modelDiagram = this.ModelDocDiagram.create();
+        this.mainLayout.addChild(this.Spacer.create());
         this.mainLayout.addChild(modelDiagram.diagramItem);
+        this.mainLayout.addChild(this.Spacer.create());
         return modelDiagram;
+      }
+    },
+    {
+      name: 'extendsDiagram',
+      factory: function() {
+        var extendsDiagram = this.ExtendsDiagram.create({ extended: this.modelDiagram });
+        this.extendsModelLayout.addChild(extendsDiagram.diagramItem);
+        return extendsDiagram;
       }
     }
   ],
@@ -79,11 +113,11 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      this.cview = this.mainLayout;
-      this.mainLayout.x = 0;
-      this.mainLayout.y = 0;
-      this.mainLayout.width = 300;
-      this.mainLayout.height = 250;
+      this.cview = this.autoSizeLayout;
+      this.autoSizeLayout.addChild(this.outerLayout);
+      this.outerLayout.addChild(this.extendsModelLayout);
+      this.outerLayout.addChild(this.mainLayout);
+      
     },
     
     toHTML: function() {
@@ -101,13 +135,143 @@ CLASS({
   }  
 });
 
+CLASS({
+  name: 'ExtendsDiagram',
+  package: 'foam.documentation',
+
+  traits: [ 'foam.views.ChildTreeTrait',
+            'foam.views.DataConsumerTrait',
+            'foam.views.DataProviderTrait'],
+
+  requires: ['foam.documentation.ModelDocDiagram',
+             'foam.documentation.DocLinkDiagram',
+             'diagram.LinearLayout',
+             'diagram.Link',
+             'foam.graphics.Spacer',  
+             'SimpleValue',
+             'foam.documentation.DocRef'],
+
+  documentation: function() {/*
+    A view that renders one model's extendsModel, and recursively builds another ExtendsModel.
+  */},
+
+  properties: [
+    {
+      name: 'data',
+      postSet: function() {
+        this.destroy();
+        this.childData = FOAM.lookup(this.data.extendsModel, this.X);
+        this.construct();
+      }
+    },
+    {
+      name: 'diagramItem',
+      type: 'diagram.LinearLayout',
+      factory: function() {
+        return this.LinearLayout.create({orientation:'vertical'});
+      }
+    },
+    {
+      name: 'mainLayout',
+      type: 'diagram.LinearLayout',
+      factory: function() {
+        return this.LinearLayout.create({orientation:'vertical'});
+      }
+    },
+    {
+      name: 'extended',
+      documentation: "The other doc diagram item to point the arrow from."
+    },
+    {
+      name: 'spacing',
+      model_: 'IntProperty',
+      defaultValue: 45
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+      
+      this.mainLayout.verticalConstraints.preferred = 0;
+      this.diagramItem.addChild(this.mainLayout);
+      this.diagramItem.addChild(this.Spacer.create({fixedHeight$: this.spacing$}));
+    },
+    
+    construct: function() {
+      this.SUPER();
+
+      this.childX.set('documentViewRef', this.SimpleValue.create(
+        this.DocRef.create({ ref: this.data.extendsModel })
+      ));
+
+      if (this.childData) {
+        var thisDiag = this.ModelDocDiagram.create({ model: this.childData }, this.childX);
+        if (this.childData.extendsModel ) {
+          this.addChild(this.X.foam.documentation.ExtendsDiagram.create({ extended: thisDiag }, this.childX));
+        }
+
+        this.addChild(thisDiag);
+        
+        // the arrow
+                // almost working, check extended
+        this.addChild(this.DocLinkDiagram.create({ start: thisDiag, end$: this.extended$ }));
+      }
+    },
+    
+    addChild: function(child) {
+      this.SUPER(child);
+      // add diagram node of the child to ours
+      if ( this.mainLayout && child.diagramItem ) this.mainLayout.addChild(child.diagramItem);
+    },
+    removeChild: function(child) {
+      if ( this.mainLayout &&  child.diagramItem ) this.mainLayout.removeChild(child.diagramItem);
+      this.SUPER(child);
+    }
+  }
+});
+
+CLASS({
+  name: 'DocLinkDiagram',
+  package: 'foam.documentation',
+
+  traits: [ 'foam.views.ChildTreeTrait',
+            'foam.documentation.DocDiagramTrait'],
+  
+  requires: ['diagram.Link'],
+  
+  properties: [
+    {
+      name: 'diagramItem',
+      type: 'diagram.LinearLayout',
+      factory: function() {
+        return this.Link.create({arrowStyle: 'generalization'});
+      }
+    },
+    {
+      name: 'start',
+      type: 'foam.documentation.DocDiagramTrait',
+      postSet: function() {
+        if (this.start && this.start.diagramItem) this.diagramItem.start = this.start.diagramItem.myLinkPoints;
+      }
+    },
+    {
+      name: 'end',
+      type: 'foam.documentation.DocDiagramTrait',
+      postSet: function() {
+        if (this.end && this.end.diagramItem) this.diagramItem.end = this.end.diagramItem.myLinkPoints;
+      }
+    }  
+  ]
+  
+  
+});
 
 CLASS({
   name: 'ModelDocDiagram',
   extendsModel: 'foam.views.BaseDetailView',
   package: 'foam.documentation',
-  traits: ['foam.documentation.DocDiagramTrait',
-           'foam.documentation.DocModelFeatureDAOTrait'], 
+  traits: ['foam.documentation.DocModelFeatureDAOTrait'], 
     
   requires: ['diagram.Block',
              'diagram.Section',
@@ -204,22 +368,12 @@ CLASS({
     construct: function() {
       this.SUPER();
       this.diagramItem.title = this.featureType.capitalize();
-      console.log("constructing FeatureListDiagram, already have children: ", this.children, this.diagramItem.children);
       this.selfFeaturesDAO.limit(5).select({ put: function(item) {
         var X = this.childX.sub({ data$: this.childX.SimpleValue.create(item, this.childX) });
         this.addChild(this.FeatureDiagram.create({ model: item.model_ }, X));
       }.bind(this)});
     },
   
-    addChild: function(child) {
-      this.SUPER(child);
-      // add diagram node of the child to ours
-      if ( this.diagramItem && child.diagramItem ) this.diagramItem.addChild(child.diagramItem);
-    },
-    removeChild: function(child) {
-      if ( this.diagramItem &&  child.diagramItem ) this.diagramItem.removeChild(child.diagramItem);
-      this.SUPER(child);
-    }
   }
   
 });

@@ -127,6 +127,8 @@ CLASS({
     'CalcView',
     'GestureManager',
     'TouchManager',
+    'foam.graphics.CViewView',
+    'foam.graphics.ActionButtonCView',
     'foam.ui.animated.Label',
     'foam.ui.md.Flare'
   ],
@@ -524,7 +526,7 @@ var CalcButton = ActionButtonCView2.xbind({
   background: '#4b4b4b',
   width:      60,
   height:     60,
-  font:       '300 32px RobotoDraft'
+  font:       '300 28px RobotoDraft'
 });
 X.registerModel(CalcButton, 'ActionButton');
 

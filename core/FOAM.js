@@ -145,7 +145,7 @@ function arequire(modelName, opt_X) {
       },
       error: function() {
         var args = argsToArray(arguments);
-        console.warn.apply(console, 'Could not load model: ', [modelName].concat(args));
+        console.warn.apply(console, ['Could not load model: ', modelName].concat(args));
         future.set(undefined);
       }
     });
@@ -188,7 +188,11 @@ function arequireModel(model, X) {
     for ( var i = 0 ; i < model.requires.length ; i++ ) {
       var r = model.requires[i];
       var m = r.split(' as ');
-      args.push(arequire(m[0]));
+      if ( m[0] == model.id ) {
+        console.warn("Model requires itself: " + model.id);
+      } else {
+        args.push(arequire(m[0]));
+      }
     }
 
     model.required__ = amemo(aseq(
