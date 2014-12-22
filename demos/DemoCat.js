@@ -260,6 +260,14 @@ var demos = JSONUtil.arrayToObjArray(X, [
     image: '../../apps/docs/images/Model_runtime2.png'
   },
   {
+    name: 'DAO Sync',
+    path: 'SyncDemo.html',
+    description: 'Demonstration of the sync protocol/implementation do synchronize two DAOs.',
+    keywords: ['dao', 'sync'],
+    image: 'sync.png',
+    src: 'SyncDemo.js',
+  },
+  {
     name: 'FOAM Demo Catalog',
     path: 'DemoCat.html',
     description: 'A FOAM Demo browser.  The demo you\'re currently running.',
