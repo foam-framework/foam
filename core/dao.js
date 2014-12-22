@@ -856,7 +856,8 @@ CLASS({
     },
 
     put: function(obj, sink) {
-      obj[this.property.name] = this.createGUID();
+      if ( ! obj.hasOwnProperty(this.property.name) )
+        obj[this.property.name] = this.createGUID();
 
       this.delegate.put(obj, sink);
     }
