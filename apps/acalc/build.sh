@@ -50,11 +50,13 @@ cat \
   | sed 's/ *, */,/g' \
   | sed 's/ *; */;/g' \
   | sed 's/ *< */</g' \
-  | sed 's/ *? */?/g' \
   | sed 's/ *> */>/g' \
+  | sed 's/ + /+/g' \
+  | sed 's/ *? */?/g' \
   | sed 's/ *|| */||/g' \
   > "$BUILD_DIR/foam.js"
 
+#   | sed '/^\/\*.*/,/\*\// d' \
 
 
 # For code compression, uncomment the following line:
