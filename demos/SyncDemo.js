@@ -177,14 +177,14 @@ CLASS({
       name: 'mutateRemoteObject',
       action: function() {
         this.writeRemoteDao.limit(1).update(
-          SET(this.Abc.DATA, 'Remote object modfiied at ' + new Date()));
+          SET(this.Abc.DATA, 'Remote object modified at ' + new Date()));
       }
     },
     {
       name: 'mutateLocalObject',
       action: function() {
         this.writeLocalDao.limit(1).update(
-          SET(this.Abc.DATA, 'Local object modfiied at ' + new Date()));
+          SET(this.Abc.DATA, 'Local object modified at ' + new Date()));
       }
     }
   ]
