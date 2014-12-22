@@ -37,8 +37,25 @@ cat \
   ../../core/touch.js \
   ../../js/foam/ui/animated/Label.js \
   ../../js/foam/ui/md/Flare.js \
-  | sed 's/^ *//' | sed 's%^//.*%%' | sed 's/\s+/ /' | sed '/^$/d' \
+  | sed 's/^ *//g' \
+  | sed 's/  */ /g' \
+  | sed 's%^//.*%%g' \
+  | sed '/^$/d' \
+  | sed 's/ *( */(/g' \
+  | sed 's/ *) */)/g' \
+  | sed 's/ *{ */{/g' \
+  | sed 's/ *} */}/g' \
+  | sed 's/ *= */=/g' \
+  | sed 's/ *: */:/g' \
+  | sed 's/ *, */,/g' \
+  | sed 's/ *; */;/g' \
+  | sed 's/ *< */</g' \
+  | sed 's/ *? */?/g' \
+  | sed 's/ *> */>/g' \
+  | sed 's/ *|| */||/g' \
   > "$BUILD_DIR/foam.js"
+
+
 
 # For code compression, uncomment the following line:
 # ~/node_modules/uglify-js/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"
