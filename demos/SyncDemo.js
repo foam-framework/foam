@@ -126,21 +126,28 @@ CLASS({
       }
     },
     {
+      name: 'localMergeDao',
+      view: 'DetailView',
+      factory: function() {
+        return this.MergeDAO.create({
+          delegate: this.localDao,
+          mergeStrategy: function(ret, oldValue, newValue) {
+            if ( oldValue.localVersion > newValue.localVersion ) {
+              console.log("Appending new data from server.");
+              newValue.data = oldValue.data + '<br/>' + newValue.data;
+            }
+            newValue.localVersion = oldValue.localVersion;
+            ret(newValue);
+          }
+        });
+      }
+    },
+    {
       name: 'syncManager',
       view: 'DetailView',
       factory: function() {
         return this.Sync.create({
-          local: this.MergeDAO.create({
-            delegate: this.localDao,
-            mergeStrategy: function(ret, oldValue, newValue) {
-              if ( oldValue.localVersion > newValue.localVersion ) {
-                console.log("Appending new data from server.");
-                newValue.data = oldValue.data + '<br/>' + newValue.data;
-              }
-              newValue.localVersion = oldValue.localVersion;
-              ret(newValue);
-            }
-          }),
+          local: this.localMergeDao,
           remote: this.remoteDao,
           remoteVersionProp: this.Abc.REMOTE_VERSION,
           localVersionProp: this.Abc.LOCAL_VERSION
