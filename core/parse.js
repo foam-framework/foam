@@ -46,12 +46,11 @@
 /** String PStream **/
 var StringPS = {
   create: function(str) {
-    return {
-      __proto__: this,
-      pos:   0,
-      str_:  [str],
-      tail_: []
-    };
+    var o = Object.create(this);
+    o.pos = 0;
+    o.str_ = [str];
+    o.tail_ = [];
+    return o;
   },
   set str(str) { this.str_[0] = str; },
   get head() { return this.pos >= this.str_[0].length ? null : this.str_[0].charAt(this.pos); },
