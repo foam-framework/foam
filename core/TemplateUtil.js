@@ -266,16 +266,19 @@ MODEL({
       return f;
     },
 
+    compile_: function(t, code) {
+      var args = ['opt_out'];
+      for ( var i = 0 ; i < t.args.length ; i++ ) {
+        args.push(t.args[i].name);
+      }
+      args.push(code);
+      return Function.apply(null, args);
+    },
     compile: function(t) {
       var code = TemplateCompiler.parseString(t.template);
 
       try {
-        var args = ['opt_out'];
-        for ( var i = 0 ; i < t.args.length ; i++ ) {
-          args.push(t.args[i].name);
-        }
-        args.push(code);
-        return Function.apply(null, args);
+        return this.compile_(t, code);
       } catch (err) {
         console.log('Template Error: ', err);
         console.log(code);
@@ -370,17 +373,20 @@ var aeval = function(src) {
 
 
 var aevalTemplate = function(t) {
+  var doEval_ = function(t, code) {
+    var args = ['opt_out'];
+    if ( t.args ) {
+      for ( var i = 0 ; i < t.args.length ; i++ ) {
+        args.push(t.args[i].name);
+      }
+    }
+    return aeval('function(' + args.join(',') + '){' + code + '}');
+  };
   var doEval = function(t) {
     var code = TemplateCompiler.parseString(t.template);
 
     try {
-      var args = ['opt_out'];
-      if (t.args) {
-        for ( var i = 0 ; i < t.args.length ; i++ ) {
-          args.push(t.args[i].name);
-        }
-      }
-      return aeval('function(' + args.join(',') + '){' + code + '}');
+      return doEval_(t, code);
     } catch (err) {
       console.log('Template Error: ', err);
       console.log(code);
