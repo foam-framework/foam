@@ -52,12 +52,14 @@ cat \
   | sed 's/ *; */;/g' \
   | sed 's/ *< */</g' \
   | sed 's/ *> */>/g' \
+  | sed 's/! /!/g' \
   | sed 's/ + /+/g' \
   | sed 's/ *? */?/g' \
   | sed 's/ *|| */||/g' \
   | sed ':a;N;$!ba;s/\n/_NL_/g' \
   | perl -pe 's#_NL_/\*.*?\*/##g' \
   | sed 's/_NL_}/}/g' \
+  | sed 's/{_NL_/{/g' \
   | sed 's/,_NL_/,/g' \
   | sed 's/_NL_/\n/g' \
   > "$BUILD_DIR/foam.js"
