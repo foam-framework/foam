@@ -222,7 +222,7 @@ function registerModel(model, opt_name) {
   var root = this;
 
   function contextualizeModel(path, model, name) {
-    if ( ! model.getPrototype ) debugger;
+    console.assert(model.getPrototype, 'Model missing getPrototype');
 
 //    console.log('contextulizeModel: ', model.name, ' in ', this.toString());
 
