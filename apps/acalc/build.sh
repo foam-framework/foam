@@ -40,6 +40,7 @@ cat \
   | sed 's/^ *//g' \
   | sed 's/  */ /g' \
   | sed 's%^//.*%%g' \
+  | sed 's% //.*%%g' \
   | sed '/^$/d' \
   | sed 's/ *( */(/g' \
   | sed 's/ *) */)/g' \
@@ -54,10 +55,12 @@ cat \
   | sed 's/ + /+/g' \
   | sed 's/ *? */?/g' \
   | sed 's/ *|| */||/g' \
+  | sed ':a;N;$!ba;s/\n/_NL_/g' \
+  | perl -pe 's#_NL_/\*.*?\*/##g' \
+  | sed 's/_NL_}/}/g' \
+  | sed 's/,_NL_/,/g' \
+  | sed 's/_NL_/\n/g' \
   > "$BUILD_DIR/foam.js"
-
-#   | sed '/^\/\*.*/,/\*\// d' \
-
 
 # For code compression, uncomment the following line:
 # ~/node_modules/uglify-js/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"
