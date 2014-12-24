@@ -47,7 +47,7 @@ function setValue(key, value) {
 /** Create a sub-context, populating with bindings from opt_args. **/
 function sub(opt_args, opt_name) {
 //  var sub = Object.create(this);
-  var sub = {__proto__: this};
+  var sub = Object.create(this);
 
   if ( opt_args ) for ( var key in opt_args ) {
     if ( opt_args.hasOwnProperty(key) ) {
