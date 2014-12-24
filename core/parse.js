@@ -342,8 +342,8 @@ function alt(/* vargs */) {
   };
 }
 
-function simpleAlt(/* vargs */) {
-// function alt(/* vargs */) {
+//function simpleAlt(/* vargs */) {
+function alt(/* vargs */) {
   var args = prepArgs(arguments);
 
   var f = function(ps) {
