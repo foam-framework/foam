@@ -22,11 +22,11 @@ var gestureManager = GestureManager.create();
 
 CLASS({
   name: 'ModelListController',
-  
+
   requires: ['MDAO', 'DAOListView', 'foam.documentation.ModelCompletenessRecord as ModelCompletenessRecord'],
-  
+
   imports: ['masterModelList as dao'],
-  
+
   properties: [
     {
       name: 'search',
@@ -53,23 +53,23 @@ CLASS({
       }
     }
   ],
-  
+
   methods: {
     generateCompletnessReport: function(models) {
       var modelList = [];
       models.select(modelList);
-      
+
       var reports = [];
       var totalUndoc = 0;
       var totalDoc = 0;
       var incomplete = 0;
       var complete = 0;
-      
+
       for (var i = 0; i < modelList.length; i++) {
         var m = modelList[i];
         if (Model.isInstance(m)) {
           var report = this.ModelCompletenessRecord.create({model: m});
-          
+
           if (m.documentation) {
             report.documented = true;
             totalDoc += 1;
@@ -77,12 +77,12 @@ CLASS({
             //console.log("nodoc: ", m);
             totalUndoc += 1;
           }
-            
+
           var features = m.getAllMyFeatures();
           if (features) features.forEach(function(feature) {
             // ignore hidden properties and methods ending in _
             if (!(
-                  feature.hidden || 
+                  feature.hidden ||
                   (feature.name && feature.name.indexOf("_", feature.name.length - 1) !== -1)
                ))
             {
@@ -94,53 +94,53 @@ CLASS({
               }
             }
           }.bind(this));
-          
+
           if (report.undocumentedFeatureCount > 0) {
             incomplete += 1;
           } else {
             complete += 1;
           }
-          
+
           reports.push(report);
         }
-      }        
-      
+      }
+
       console.log("Documentation Report ======================");
       console.log("Documented:   "+totalDoc);
       console.log("Undocumented: "+totalUndoc);
       console.log("Features complete: "+complete);
       console.log("Features missing:  "+incomplete);
-      
+
       var criteria = [
-        { 
+        {
           name: 'Documented but incomplete',
           f: function(r) { return r.documented && r.undocumentedFeatureCount > 0; }
         },
-        { 
+        {
           name: 'Documented but less than 80% complete',
-          f: function(r) { 
-            return r.documented && 
-              r.documentedFeatureCount / 
+          f: function(r) {
+            return r.documented &&
+              r.documentedFeatureCount /
                 (r.undocumentedFeatureCount+r.documentedFeatureCount) < 0.8;
           }
         },
-        { 
+        {
           name: 'Not Documented',
           f: function(r) { return !r.documented; }
         },
-        { 
+        {
           name: 'Documented and complete',
           f: function(r) { return r.documented && r.undocumentedFeatureCount <= 0; }
         },
-      ];        
-      
+      ];
+
       criteria.forEach(function(c) {
         console.log("=====================");
         console.log(c.name);
         var matchingCount = 0;
         for (var i = 0; i < reports.length; i++) {
           var r = reports[i];
-          // log interesting ones        
+          // log interesting ones
           if (c.f(r)) {
             matchingCount += 1;
             console.log("---------------------");
@@ -159,7 +159,7 @@ CLASS({
         }
         console.log("---- total "+c.name+" "+matchingCount);
       }.bind(this));
-      
+
     }
   }
 });
@@ -167,7 +167,7 @@ CLASS({
 CLASS({
   name: 'ModelCompletenessRecord',
   package: 'foam.documentation',
-  
+
   properties: [
     {
       name: 'model'
@@ -206,7 +206,7 @@ CLASS({
       name: 'data',
       help: 'The Model to describe',
       postSet: function() {
-        this.modelRef = this.data.package ? 
+        this.modelRef = this.data.package ?
                           this.data.package + "." + this.data.name :
                           this.data.name;
         var shortPkg = this.data.package;
@@ -269,7 +269,7 @@ CLASS({
 CLASS({
   name: 'DocBrowserController',
   requires: ['MDAO'],
-  
+
   documentation: function() {  /*
     <p>Some documentation for the $$DOC{ref:'.'} model.</p>
     <p>This should be expaneded to explain some of the interesting properties found here, such as $$DOC{ref:'.modelList'}.</p>
@@ -310,7 +310,7 @@ CLASS({
 
       // load all models
       this.createModelList();
-      
+
       // load developer guides
       RegisterDevDocs(this.X);
 
@@ -375,7 +375,7 @@ CLASS({
         location.hash = "#" + ref.resolvedRef;
       }
     },
-    
+
     createModelList: function() {
       var newDAO = this.MDAO.create({model:Model});
 
@@ -412,11 +412,11 @@ CLASS({
       }
 
       //this.generateCompletnessReport(newDAO);
-      
+
       this.X.set("masterModelList", newDAO);
     }
 
-    
+
   },
 
   listeners: [
@@ -436,7 +436,7 @@ CLASS({
       name: 'modelList',
       factory: function() {
         this.contextSetup();
-        return this.SearchContext.ModelListController.create({}, this.SearchContext);      
+        return this.SearchContext.ModelListController.create({}, this.SearchContext);
       }
     },
     {
@@ -478,7 +478,7 @@ CLASS({
 
         background-color: #e0e0e0;
         position: relative;
-        
+
       }
 
       .outermost {
@@ -543,7 +543,7 @@ CLASS({
         position: relative;
         display:flex;
         flex-direction: column;
-        
+
         flex-shrink: 1;
         flex-basis: 10000px;
       }
@@ -599,11 +599,11 @@ CLASS({
         overflow-y: scroll;
         padding: 1em;
       }
-      
+
       div.detailPane div.chapters h2 {
         font-size: 110%;
       }
-      
+
       div.search-field-container {
         flex-grow: 0;
         flex-shrink: 0;
@@ -611,7 +611,7 @@ CLASS({
         padding: 0;
         margin-left: -15;
       }
-      
+
       div.list-container {
         order: 2;
         flex-grow: 1;
@@ -621,7 +621,7 @@ CLASS({
       div.list-container span.docLink {
         border-bottom: none;
       }
-        
+
       div.members {
         margin-top: 1em;
         padding-left: 2em;
@@ -629,7 +629,7 @@ CLASS({
       div.memberList {
         padding-left: 2em;
       }
-      
+
       div.chapters div.memberList {
         padding-left: 0;
       }
@@ -637,13 +637,13 @@ CLASS({
       div.inherited {
         color: #333333;
       }
-      
+
       p.browse-list-entry {
         font-size:100%;
         font-weight: bold;
         line-height: 150%
       }
-      
+
       span.docLink {
         cursor: pointer;
         color: #000077;
@@ -652,7 +652,7 @@ CLASS({
 
       span.docLinkNoDocumentation {
         color: #770000;
-        
+
       }
 
       div.model-info-block {
@@ -671,7 +671,7 @@ CLASS({
       div.clear {
         clear: both;
       }
-      
+
       .feature-row {
         //border-top: 0.1em solid grey;
         margin-top: 1em;
@@ -702,11 +702,11 @@ CLASS({
       .light {
         color: #444;
       }
-      
+
       div.diagram {
         float: right;
       }
-      
+
     */},
     function toHTML() {/*
       <div class="outermost" id="<%= this.id %>">
@@ -734,5 +734,3 @@ CLASS({
 
 
 });
-
-

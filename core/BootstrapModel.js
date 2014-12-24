@@ -94,7 +94,7 @@ var BootstrapModel = {
 
     function addTraitToModel(traitModel, parentModel) {
       var parentName = parentModel && parentModel.id ? parentModel.id.replace(/\./g, '__') : '';
-      var traitName  = traitModel.id ? traitModel.id.replace(/\./g, '__') : ''
+      var traitName  = traitModel.id ? traitModel.id.replace(/\./g, '__') : '';
       var name       = parentName + '_ExtendedWith_' + traitName;
 
       if ( ! FOAM.lookup(name) ) {
@@ -118,7 +118,7 @@ var BootstrapModel = {
       var trait      = this.traits[i];
       var traitModel = FOAM.lookup(trait, this.X);
 
-      console.assert(traitModel, 'Unknow trait: ' + trait);
+      console.assert(traitModel, 'Unknown trait: ' + trait);
 
       if ( traitModel ) {
         extendsModel = addTraitToModel(traitModel, extendsModel);
@@ -361,12 +361,13 @@ var BootstrapModel = {
         var l = this.listeners[i];
         createListenerTrampoline(cls, l.name, l.code, l.isMerged, l.isFramed);
       }
-    } else if ( this.listeners )
+    } else if ( this.listeners ) {
       //          this.listeners.forEach(function(l, key) {
       // Workaround for crbug.com/258522
       Object_forEach(this.listeners, function(l, key) {
         createListenerTrampoline(cls, key, l);
       });
+    }
 
     // add topics
     //        this.topics && this.topics.forEach(function(t) {

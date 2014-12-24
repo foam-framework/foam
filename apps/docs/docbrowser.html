@@ -16,11 +16,15 @@
   </head>
   <body>
     <script>
-      Y = X.sub({}, 'baseX');
+      apar(
+        arequire('foam.graphics.CView')
+      )(function() {
+        Y = X.sub({}, 'baseX');
 
-      var controller = Y.DocBrowserController.create();
-      var view = Y.DocBrowserView.create({ data: controller });
-      view.write(document);
+        var controller = Y.DocBrowserController.create();
+        var view = Y.DocBrowserView.create({ data: controller });
+        view.write(document);
+      });
     </script>
   </body>
 </html>

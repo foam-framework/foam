@@ -1,6 +1,6 @@
 CLASS({
   name: 'ActionState',
-  package: 'foam.polymer.demo',
+  package: 'foam.ui.polymer.demo',
 
   properties: [
     { name: 'available', defaultValue: true },

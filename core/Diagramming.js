@@ -484,7 +484,12 @@ CLASS({
     {
       name: 'titleBorder',
       type: 'String'
+    },
+    {
+      name: 'titleBorderWidth',
+      type: 'String'
     }
+    
   ],
   
   methods: {
@@ -495,7 +500,8 @@ CLASS({
     construct: function() {
       if (!this.titleSection) {
         this.titleSection = this.Section.create({title$: this.title$, titleFont$: this.titleFont$, 
-                                  color$: this.titleColor$, background$: this.titleBackground$, border$: this.titleBorder$ });
+                                color$: this.titleColor$, background$: this.titleBackground$, border$: this.titleBorder$,
+                                borderWidth$: this.titleBorderWidth$  });
         this.myLinkPoints$ = this.titleSection.myLinkPoints$;
       }
       this.addChild(this.titleSection);
