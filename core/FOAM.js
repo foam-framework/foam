@@ -145,7 +145,7 @@ function arequire(modelName, opt_X) {
       },
       error: function() {
         var args = argsToArray(arguments);
-        console.warn.apply(console, 'Could not load model: ', [modelName].concat(args));
+        console.warn.apply(console, ['Could not load model: ', modelName].concat(args));
         future.set(undefined);
       }
     });
@@ -222,7 +222,7 @@ function registerModel(model, opt_name) {
   var root = this;
 
   function contextualizeModel(path, model, name) {
-    if ( ! model.getPrototype ) debugger;
+    console.assert(model.getPrototype, 'Model missing getPrototype');
 
 //    console.log('contextulizeModel: ', model.name, ' in ', this.toString());
 

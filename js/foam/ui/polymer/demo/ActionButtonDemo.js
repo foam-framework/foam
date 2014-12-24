@@ -1,19 +1,19 @@
 CLASS({
   name: 'ActionButtonDemo',
-  package: 'foam.polymer.demo',
+  package: 'foam.ui.polymer.demo',
   extendsModel: 'View',
   requires: [
     'Action',
-    'foam.polymer.ActionButton',
-    'foam.polymer.demo.ActionState'
+    'foam.ui.polymer.ActionButton',
+    'foam.ui.polymer.demo.ActionState'
   ],
   imports: ['log'],
 
   properties: [
     {
-      type: 'foam.polymer.demo.ActionState',
+      type: 'foam.ui.polymer.demo.ActionState',
       name: 'data',
-      view: 'foam.polymer.ActionButton',
+      view: 'foam.ui.polymer.ActionButton',
       factory: function() { return {}; }
     },
     {
@@ -59,14 +59,36 @@ CLASS({
           }
         });
       }
+    },
+    {
+      type: 'foam.ui.polymer.demo.ActionState',
+      name: 'raised',
+      view: { model_: 'foam.ui.polymer.ActionButton', raised: true },
+      factory: function() { return {}; }
+    },
+    {
+      type: 'Action',
+      name: 'raisedAction',
+      factory: function() {
+        return this.Action.create({
+          label: 'Raised',
+          action: function() {
+            this.log('Raised action committed');
+          }.bind(this)
+        });
+      }
     }
   ],
 
   templates: [
     function toHTML() {/*
-      $$data{ action: this.toggleAvailable }
-      $$data{ action: this.toggleEnabled }
-      $$data{ action: this.mainAction }
+      <div>
+        $$raised{ action: this.raisedAction }
+      </div><div>
+        $$data{ action: this.toggleAvailable }
+        $$data{ action: this.toggleEnabled }
+        $$data{ action: this.mainAction }
+      </div>
     */}
   ]
 });

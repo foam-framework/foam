@@ -158,8 +158,8 @@ CLASS({
       name:  'borderWidth',
       type:  'int',
       defaultValue: 1,
-      documentation: function() {/* 
-        The width to draw the border, straddling the item's edge. A width of 1 
+      documentation: function() {/*
+        The width to draw the border, straddling the item's edge. A width of 1
         will draw the item's rect exactly, a width of 2 will expand past the item's
         edge by 1 pixel (depending on canvas scaling).</p>
         <p>Note that a transparent border is still respected when drawing the
@@ -250,7 +250,7 @@ CLASS({
       this.verticalConstraints.preferred = 0;
 
       this.horizontalConstraints.stretchFactor$ = this.stretchFactor$;
-      this.verticalConstraints.stretchFactor$ = this.stretchFactor$;      
+      this.verticalConstraints.stretchFactor$ = this.stretchFactor$;
 
       // apply fixed settings if specified
       if (this.fixedWidth) this.fixedWidth = this.fixedWidth;

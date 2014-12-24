@@ -94,7 +94,7 @@ var BootstrapModel = {
 
     function addTraitToModel(traitModel, parentModel) {
       var parentName = parentModel && parentModel.id ? parentModel.id.replace(/\./g, '__') : '';
-      var traitName  = traitModel.id ? traitModel.id.replace(/\./g, '__') : ''
+      var traitName  = traitModel.id ? traitModel.id.replace(/\./g, '__') : '';
       var name       = parentName + '_ExtendedWith_' + traitName;
 
       if ( ! FOAM.lookup(name) ) {
@@ -106,7 +106,7 @@ var BootstrapModel = {
       }
 
       var ret = FOAM.lookup(name);
-      if ( ! ret ) debugger;
+      console.assert(ret, 'Unknown name.');
       return ret;
     }
 
@@ -118,7 +118,7 @@ var BootstrapModel = {
       var trait      = this.traits[i];
       var traitModel = FOAM.lookup(trait, this.X);
 
-      console.assert(traitModel, 'Unknow trait: ' + trait);
+      console.assert(traitModel, 'Unknown trait: ' + trait);
 
       if ( traitModel ) {
         extendsModel = addTraitToModel(traitModel, extendsModel);
@@ -136,10 +136,11 @@ var BootstrapModel = {
     // Install a custom constructor so that Objects are named properly
     // in the JS memory profiler.
     // Doesn't work for Model because of some Bootstrap ordering issues.
+    /*
     if ( this.name && this.name !== 'Model' && ! ( window.chrome && chrome.runtime && chrome.runtime.id ) ) {
       var s = '(function() { var XXX = function() { }; XXX.prototype = this; return function() { return new XXX(); }; })'.replace(/XXX/g, this.name);
       try { cls.create_ = eval(s).call(cls); } catch (e) { }
-    }
+    }*/
 
     /** Add a method to 'cls' and set it's name. **/
     function addMethod(name, method) {
@@ -285,7 +286,7 @@ var BootstrapModel = {
         Object.defineProperty(this, c.name, {value: c.value});
         // cls[c.name] = this[c.name] = c.value;
       } else {
-        debugger;
+        console.warn('Defining constant before Constant.');
       }
     }
 
@@ -360,12 +361,13 @@ var BootstrapModel = {
         var l = this.listeners[i];
         createListenerTrampoline(cls, l.name, l.code, l.isMerged, l.isFramed);
       }
-    } else if ( this.listeners )
+    } else if ( this.listeners ) {
       //          this.listeners.forEach(function(l, key) {
       // Workaround for crbug.com/258522
       Object_forEach(this.listeners, function(l, key) {
         createListenerTrampoline(cls, key, l);
       });
+    }
 
     // add topics
     //        this.topics && this.topics.forEach(function(t) {

@@ -5,6 +5,7 @@
  </head>
  <body bgcolor='black'>
   <script language="javascript">
+    arequire('foam.graphics.Circle')(function() {
     var space   = foam.graphics.CView.create({width: 2000, height: 1700, background: 'black'});
     var mouse   = Mouse.create();
     var colours = ['#33f','#f00','#fc0','#33f', '#cf0' ];
@@ -28,6 +29,7 @@
          function() { circle.r = 100; circle.alpha = 0; },
          Math.sqrt,
          function() { space.removeChild(circle); })();
+    });
     });
   </script>
  </body>

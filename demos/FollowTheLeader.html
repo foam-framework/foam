@@ -6,6 +6,7 @@
  </head>
  <body>
   <script language="javascript">
+    arequire('foam.graphics.Circle')(function() {
     var timer = Timer.create({});
     var space = foam.graphics.CView.create({
       width: 2000,
@@ -37,6 +38,7 @@
 
     space.paint();
     timer.start();
+    });
   </script>
 
  </body>

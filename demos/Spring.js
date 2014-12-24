@@ -1,3 +1,5 @@
+arequire('foam.graphics.Circle')(function() {
+
 var space   = foam.graphics.CView.create({width: 2000, height: 1700, background: 'white'});
 var mouse   = Mouse.create();
 
@@ -29,3 +31,5 @@ for ( var x = 0 ; x < N ; x++ ) {
     Movement.friction(c, 0.95);
   }
 }
+
+});
