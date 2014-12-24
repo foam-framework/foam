@@ -14,14 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
- 
 
 CLASS({
   name: 'DocDiagramTrait',
   package: 'foam.documentation',
   // enhances BaseDetailView to add diagram support
-    
+
   properties: [
     {
       name: 'diagramItem',
@@ -29,7 +27,7 @@ CLASS({
       type: 'diagram.DiagramItemTrait'
     }
   ],
-  
+
   methods: {
     addChild: function(child) {
       this.SUPER(child);
@@ -43,24 +41,29 @@ CLASS({
   }
 });
 
+
 CLASS({
   name: 'DocDiagramView',
-  extendsModel: 'CViewView',
+  extendsModel: 'foam.graphics.CViewView',
   package: 'foam.documentation',
-  
-  traits: [ 'foam.views.ChildTreeTrait',
-            'foam.views.DataConsumerTrait'],
-  
-  requires: ['foam.documentation.ModelDocDiagram',
-             'foam.documentation.ExtendsDiagram',
-             'diagram.LinearLayout',
-             'diagram.LockToPreferredLayout',
-             'foam.graphics.Spacer'],
-  
+
+  traits: [
+    'foam.views.ChildTreeTrait',
+    'foam.views.DataConsumerTrait'
+  ],
+
+  requires: [
+    'foam.documentation.ModelDocDiagram',
+    'foam.documentation.ExtendsDiagram',
+    'diagram.LinearLayout',
+    'diagram.LockToPreferredLayout',
+    'foam.graphics.Spacer'
+  ],
+
   documentation: function() {/*
     A view that renders one model's diagram.
   */},
-  
+
   properties: [
     {
       name: 'autoSizeLayout',
@@ -109,7 +112,7 @@ CLASS({
       }
     }
   ],
-  
+
   methods: {
     init: function() {
       this.SUPER();
@@ -117,22 +120,22 @@ CLASS({
       this.autoSizeLayout.addChild(this.outerLayout);
       this.outerLayout.addChild(this.extendsModelLayout);
       this.outerLayout.addChild(this.mainLayout);
-      
+
     },
-    
+
     toHTML: function() {
       this.destroy();
       ret = this.SUPER();
       this.construct();
       return ret;
     },
-    
+
     destroy: function() {
       //if ( this.modelDiagram && this.modelDiagram.diagramItem ) this.mainLayout.removeChild(this.modelDiagram.diagramItem);
       //this.modelDiagram = undefined;
       this.SUPER();
     }
-  }  
+  }
 });
 
 CLASS({
@@ -147,7 +150,7 @@ CLASS({
              'foam.documentation.DocLinkDiagram',
              'diagram.LinearLayout',
              'diagram.Link',
-             'foam.graphics.Spacer',  
+             'foam.graphics.Spacer',
              'SimpleValue',
              'foam.documentation.DocRef'],
 
@@ -192,12 +195,12 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      
+
       this.mainLayout.verticalConstraints.preferred = 0;
       this.diagramItem.addChild(this.mainLayout);
       this.diagramItem.addChild(this.Spacer.create({fixedHeight$: this.spacing$}));
     },
-    
+
     construct: function() {
       this.SUPER();
 
@@ -212,13 +215,13 @@ CLASS({
         }
 
         this.addChild(thisDiag);
-        
+
         // the arrow
                 // almost working, check extended
         this.addChild(this.DocLinkDiagram.create({ start: thisDiag, end$: this.extended$ }));
       }
     },
-    
+
     addChild: function(child) {
       this.SUPER(child);
       // add diagram node of the child to ours
@@ -237,9 +240,9 @@ CLASS({
 
   traits: [ 'foam.views.ChildTreeTrait',
             'foam.documentation.DocDiagramTrait'],
-  
+
   requires: ['diagram.Link'],
-  
+
   properties: [
     {
       name: 'diagramItem',
@@ -261,26 +264,26 @@ CLASS({
       postSet: function() {
         if (this.end && this.end.diagramItem) this.diagramItem.end = this.end.diagramItem.myLinkPoints;
       }
-    }  
+    }
   ]
-  
-  
+
+
 });
 
 CLASS({
   name: 'ModelDocDiagram',
   extendsModel: 'foam.views.BaseDetailView',
   package: 'foam.documentation',
-  traits: ['foam.documentation.DocModelFeatureDAOTrait'], 
-    
+  traits: ['foam.documentation.DocModelFeatureDAOTrait'],
+
   requires: ['diagram.Block',
              'diagram.Section',
              'foam.documentation.FeatureListDiagram'],
-    
+
   documentation: function() {/*
     A diagram block documenting one $$DOC{ref:'Model'}.
   */},
-  
+
   properties: [
     {
       name: 'modelName',
@@ -301,16 +304,16 @@ CLASS({
       }
     }
   ],
-  
+
   methods: {
-    
+
     construct: function() {
       this.SUPER();
-      this.createTemplateView('properties', { model_: 'foam.documentation.FeatureListDiagram', 
+      this.createTemplateView('properties', { model_: 'foam.documentation.FeatureListDiagram',
             model: this.X.Property, featureType:'properties' });
       //this.addChild(this.FeatureListDiagram.create({ model: this.X.Property, featureType:'properties' }, this.childX));
     },
-    
+
     onValueChange_: function() {
       if (this.data) this.modelName = this.data.name;
       this.processModelChange();
@@ -340,10 +343,10 @@ CLASS({
 CLASS({
   name: 'FeatureListDiagram',
   package: 'foam.documentation',
-  
+
   requires: ['foam.documentation.FeatureDiagram',
              'diagram.SectionGroup'],
-  
+
   traits: [ 'foam.views.ChildTreeTrait',
             'foam.views.DataConsumerTrait',
             'foam.views.DataProviderTrait',
@@ -354,7 +357,7 @@ CLASS({
     Renders a feature list (such as $$DOC{ref:'Model.properties'}, $$DOC{ref:'Model.methods'}, etc.) into
     a diagram.
   */},
-  
+
   properties: [
     {
       name: 'diagramItem',
@@ -373,27 +376,27 @@ CLASS({
         this.addChild(this.FeatureDiagram.create({ model: item.model_ }, X));
       }.bind(this)});
     },
-  
+
   }
-  
+
 });
 
 CLASS({
   name: 'FeatureDiagram',
   package: 'foam.documentation',
-  
+
   traits: [ 'foam.views.ChildTreeTrait',
             'foam.views.DataConsumerTrait',
             'foam.views.DataProviderTrait',
             'foam.documentation.DocDiagramTrait'],
-  
+
   requires: ['diagram.Section'],
-  
+
   documentation: function() {/*
     The base model for feature-specific diagrams. Use PropertyFeatureDiagram,
     MethodFeatureDiagram, etc. as needed to diagram a feature.
   */},
-  
+
   properties: [
     {
       name: 'data',
@@ -409,7 +412,3 @@ CLASS({
     }
   ],
 });
-
- 
- 
- 
