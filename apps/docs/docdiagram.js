@@ -46,20 +46,17 @@ CLASS({
   name: 'DocDiagramView',
   extendsModel: 'foam.graphics.CViewView',
   package: 'foam.documentation',
-
-  traits: [
-    'foam.views.ChildTreeTrait',
-    'foam.views.DataConsumerTrait'
-  ],
-
-  requires: [
-    'foam.documentation.ModelDocDiagram',
-    'foam.documentation.ExtendsDiagram',
-    'diagram.LinearLayout',
-    'diagram.LockToPreferredLayout',
-    'foam.graphics.Spacer'
-  ],
-
+  
+  traits: [ 'foam.views.ChildTreeTrait',
+            'foam.views.DataConsumerTrait'],
+  
+  requires: ['foam.documentation.ModelDocDiagram',
+             'foam.documentation.ExtendsDiagram',
+             'diagram.LinearLayout',
+             'diagram.Margin',
+             'diagram.LockToPreferredLayout',
+             'foam.graphics.Spacer'],
+  
   documentation: function() {/*
     A view that renders one model's diagram.
   */},
@@ -70,6 +67,13 @@ CLASS({
       type: 'diagram.LockToPreferredLayout',
       factory: function() {
         return this.LockToPreferredLayout.create();
+      }
+    },
+    {
+      name: 'outerMargin',
+      type: 'diagram.Margin',
+      factory: function() {
+        return this.Margin.create({ top: 5, left: 5, bottom: 5, right: 5 });
       }
     },
     {
@@ -117,7 +121,8 @@ CLASS({
     init: function() {
       this.SUPER();
       this.cview = this.autoSizeLayout;
-      this.autoSizeLayout.addChild(this.outerLayout);
+      this.autoSizeLayout.addChild(this.outerMargin);
+      this.outerMargin.addChild(this.outerLayout);
       this.outerLayout.addChild(this.extendsModelLayout);
       this.outerLayout.addChild(this.mainLayout);
 
@@ -292,7 +297,7 @@ CLASS({
     {
       name: 'diagramItem',
       factory: function() {
-        var diagramItem = this.Block.create({}, this.childX);
+        var diagramItem = this.Block.create({ border: 'black' }, this.childX);
         diagramItem.addChild(
           this.Section.create({
             title$: this.modelName$, titleFont: 'bold 16px Roboto',
@@ -362,7 +367,8 @@ CLASS({
     {
       name: 'diagramItem',
       factory: function() {
-        return this.SectionGroup.create({ title: this.featureType.capitalize(), titleBackground: 'rgba(200,200,200,255)' });
+        return this.SectionGroup.create({ title: this.featureType.capitalize(), titleBackground: 'rgba(200,200,200,255)',
+                                       titleBorderWidth: 2 });
       }
     }
   ],
@@ -407,7 +413,8 @@ CLASS({
     {
       name: 'diagramItem',
       factory: function() {
-        return this.Section.create({ title: ( this.data ? this.data.name : "" ), titleFont: '10px' });
+        return this.Section.create({ title: ( this.data ? this.data.name : "" ), titleFont: '10px',
+                                     border: 'rgba(0,0,0,0)' });
       }
     }
   ],
