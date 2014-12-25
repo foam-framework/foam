@@ -158,7 +158,9 @@ var HTMLParser = {
   START: sym('html'),
 
 // TODO(kgr): replace with repeat0
-  html: repeat(alt(
+  // Use simpleAlt() because endTag() doesn't always look ahead and will
+  // break the regular alt().
+  html: repeat(simpleAlt(
     sym('text'),
     sym('endTag'),
     sym('startTag'))),
@@ -253,3 +255,4 @@ test('<pA a="1" b="2">foo<b>bold</b></pA>');
 */
 
 TemplateParser.foamTag_ = FOAMTagParser.create().export('START');
+invalidateParsers();

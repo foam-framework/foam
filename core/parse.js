@@ -52,11 +52,30 @@ var StringPS = {
     o.tail_ = [];
     return o;
   },
-  set str(str) { this.str_[0] = str; },
+  set str(str) { this.str_[0] = str; this.tt = undefined; },
   get head() { return this.pos >= this.str_[0].length ? null : this.str_[0].charAt(this.pos); },
+  // TODO(kgr): next line is slow because it can't bet JITed, fix.
   get value() { return this.hasOwnProperty('value_') ? this.value_ : this.str_[0].charAt(this.pos-1); },
-  get tail() { return /*this.pos >= this.str_[0].length ? this : */this.tail_[0] || ( this.tail_[0] = { __proto__: this.__proto__, str_: this.str_, pos: this.pos+1, tail_: [] } ); },
-  setValue: function(value) { return { __proto__: this.__proto__, str_: this.str_, pos: this.pos, tail_: this.tail_, value_: value }; }
+  get tail() {
+    if ( ! this.tail_[0] ) {
+      var tail = Object.create(this.__proto__);
+      tail.str_ = this.str_;
+      tail.pos = this.pos+1;
+      tail.tail_ = [];
+      this.tail_[0] = tail;
+    }
+    return this.tail_[0];
+  },
+  setValue: function(value) {
+    var ret = Object.create(this.__proto__);
+
+    ret.str_ = this.str_;
+    ret.pos = this.pos;
+    ret.tail_ = this.tail_;
+    ret.value_ = value;
+
+    return ret;
+  }
 };
 
 function prep(arg) {
@@ -275,21 +294,24 @@ function seq1(n /*, vargs */) {
   return f;
 }
 
+var parserVersion_ = 1;
+function invalidateParsers() {
+  parserVersion_++;
+}
+
 function alt(/* vargs */) {
+  var SIMPLE_ALT = simpleAlt.apply(null, arguments);
   var args = prepArgs(arguments);
   var map  = {};
+  var parserVersion = parserVersion_;
 
   function nullParser() { return undefined; }
 
   function testParser(p, ps) {
     var c = ps.head;
     var trapPS = {
-      getValue: function() {
-        return this.value;
-      },
-      setValue: function(v) {
-        this.value = v;
-      },
+      getValue: function() { return this.value; },
+      setValue: function(v) { this.value = v; },
       value: ps.value,
       head: c
     };
@@ -299,12 +321,8 @@ function alt(/* vargs */) {
       goodChar = true;
       return {
         value: this.value,
-        getValue: function() {
-          return this.value;
-        },
-        setValue: function(v) {
-          this.value = v;
-        }
+        getValue: function() { return this.value; },
+        setValue: function(v) { this.value = v; }
       };
     });
 
@@ -338,12 +356,16 @@ function alt(/* vargs */) {
   }
 
   return function(ps) {
+    if ( parserVersion !== parserVersion_ ) {
+      map = {};
+      parserVersion = parserVersion_;
+    }
     return this.parse(getParserForChar.call(this, ps), ps);
   };
 }
 
-//function simpleAlt(/* vargs */) {
-function alt(/* vargs */) {
+function simpleAlt(/* vargs */) {
+//function alt(/* vargs */) {
   var args = prepArgs(arguments);
 
   var f = function(ps) {

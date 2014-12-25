@@ -509,7 +509,6 @@ var Model = {
             }
           } else {
             console.warn('Constant defined as Method: ', this.name + '.' + key);
-            debugger;
           }
 
           methods.push(method);
