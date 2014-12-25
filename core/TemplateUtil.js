@@ -238,7 +238,7 @@ var TemplateCompiler = {
   'live value tag': function (v) { this.push("',\nself.dynamicTag('span', function() { return ", v[1].join(''), "; }.bind(this)),\n'"); },
   'code tag': function (v) { this.push("');\n", v[1].join(''), ";out('"); },
   'single quote': function () { this.push("\\'"); },
-  newline: function () { this.push("\\n"); },
+  newline: function () { this.push('\\n'); },
   text: function(v) { this.push(v); }
 });
 
