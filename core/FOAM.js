@@ -167,7 +167,6 @@ function arequireModel(model, X) {
 
     if ( model.extendsModel ) args.push(arequire(model.extendsModel, X));
 
-
     // TODO(kgr): eventually this should just call the arequire() method on the Model
     for ( var i = 0; i < model.traits.length; i++ ) {
       args.push(arequire(model.traits[i]));
