@@ -1689,13 +1689,13 @@ CLASS({
       if ( ! this.q_ ) {
         var q = [fn];
         this.q_ = q;
-        setTimeout(function() {
+        EventService.async(function() {
           self.withStore_(mode, function(store) {
             // console.log('q length: ', q.length);
             if ( self.q_ == q ) self.q_ = undefined;
             for ( var i = 0 ; i < q.length ; i++ ) q[i](store);
           });
-        },0);
+        }, this.X)();
       } else {
         this.q_.push(fn);
         // Diminishing returns after 10000 per batch
