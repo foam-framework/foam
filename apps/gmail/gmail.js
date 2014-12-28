@@ -67,6 +67,7 @@ CLASS({
     'FloatingView',
     'GMailUserInfo',
     'GestureManager',
+    'IDBDAO',
     'MDAO',
     'TouchManager',
     'foam.ui.md.ResponsiveAppControllerView',
@@ -180,9 +181,15 @@ CLASS({
     {
       name: 'contactDAO',
       factory: function() {
+        /*
         return this.CachingDAO.create({
           src: this.ContactNetworkDAO.create(),
           cache: this.MDAO.create({ model: this.Contact })
+        });
+        */
+        return this.CachingDAO.create({
+          src: this.ContactNetworkDAO.create(),
+          cache: this.IDBDAO.create({ model: this.Contact })
         });
       }
     },
