@@ -2,7 +2,9 @@ CLASS({
   name: 'EMailComposeView',
   extendsModel: 'DetailView',
 
-  requires: [ 'mdTextFieldView as TextFieldView' ],
+  requires: [
+    'mdTextFieldView as TextFieldView',
+  ],
 
   actions: [
     {
