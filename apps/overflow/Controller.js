@@ -8,7 +8,11 @@ CLASS({
       model_: 'DAOProperty',
       view: { factory_: 'DAOListView', mode: 'read-only' },
       dynamicValue: function() {
-        return this.dao.where(CONTAINS_IC(SEQ(Question.TITLE, Question.QUESTION, Question.LABELS, Question.ANSWER), this.search));
+        return this.dao.where(CONTAINS_IC(SEQ(
+          Question.TITLE,
+          Question.QUESTION,
+          Question.LABELS,
+          Question.ANSWER), this.search));
       }
     }
   ],
@@ -21,31 +25,22 @@ CLASS({
   },
   templates: [
     function CSS() {/*
-      .thumbnail { margin-bottom: 40px; }
-      .screenshot {
-        border: 1px solid gray;
-        box-shadow: 5px 5px 15px gray;
-        margin-left: 30px;
-        margin-top: -38px;
-      }
-      span[name="description"] {
-        margin-top: 24px;
-        display: block;
-        width: 500px;
     */},
     function toDetailHTML() {/*
+        <h1>FOAM-Overflow</h1>
         &nbsp;&nbsp; Search: $$search
         <p>
-        <foam f="filteredDAO" className="questions" tagName="ul">
-            $$id <!-- $$created -->
-            <% if ( this.data.image ) { %> <br><a href="%%data.path"><img class="screenshot" width=250 height=250 src="democat/%%data.image"></a> <% } %>
-            Q. $$questionTitle
-            <p>$$question{mode: 'read-only', escapeHTML: false}</p>
-            <p>$$answer{mode: 'read-only', escapeHTML: false}</p>
+        <foam f="filteredDAO" className="questions" tagName="div">
+          <div>
+            $$id{mode: 'read-only'} <!-- $$created{mode: 'read-only'} -->
+            <b>Q. $$title{mode: 'read-only'}</b>
+            <% if ( this.data.question.trim().length ) { %><pre>$$question{mode: 'read-only', escapeHTML: false}</pre><% } %>
+            <pre>$$answer{mode: 'read-only', escapeHTML: false}</pre>
             <b>Labels:</b> <%= this.data.labels.join(', ') %><br>
             <% if ( this.data.src ) { %>
               <b>Source:</b> <a href="%%data.src">here</a><br>
             <% } %>
+          </div>
         </foam>
     */}
   ]

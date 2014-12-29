@@ -2,6 +2,7 @@ CLASS({
   name: 'Question',
   properties: [
     {
+      model_: 'IntProperty',
       name: 'id'
     },
     {
@@ -15,15 +16,19 @@ CLASS({
       name: 'created'
     },
     {
+      model_: 'StringArrayProperty',
       name: 'labels'
     },
     {
-      name: 'questionTitle'
+      model_: 'StringProperty',
+      name: 'title'
     },
     {
+      model_: 'StringProperty',
       name: 'question'
     },
     {
+      model_: 'StringProperty',
       name: 'answer'
     },
     {

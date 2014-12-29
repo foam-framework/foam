@@ -14,11 +14,12 @@ var questions = JSONUtil.arrayToObjArray(X, [
 */
   {
     id: 1,
-    questionTitle: 'How do I make my Models not go in the global namespace?',
+    title: 'How do I make my Models not go in the global namespace?',
+    labels: [ 'class', 'package', 'namespace' ],
     question: function() {/*
+    
 
-
-    *},
+    */},
     answer: function() {/*
       Specify their 'package'.
 
