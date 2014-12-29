@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-function IN_BROWSER() { return typeof vm == "undefined" || vm.Script !== vm; }
+function IN_BROWSER() { return typeof vm == "undefined" || ! vm.runInThisContext; }
 function IN_NODEJS() { return ! IN_BROWSER(); }
 
 var files = [
