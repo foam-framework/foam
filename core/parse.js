@@ -52,7 +52,7 @@ var StringPS = {
     o.tail_ = [];
     return o;
   },
-  set str(str) { this.str_[0] = str; this.tt = undefined; },
+  set str(str) { this.str_[0] = str; },
   get head() { return this.pos >= this.str_[0].length ? null : this.str_[0].charAt(this.pos); },
   // TODO(kgr): next line is slow because it can't bet JITed, fix.
   get value() { return this.hasOwnProperty('value_') ? this.value_ : this.str_[0].charAt(this.pos-1); },
@@ -75,6 +75,9 @@ var StringPS = {
     ret.value_ = value;
 
     return ret;
+  },
+  toString: function() {
+    return this.str_[0].substring(this.pos);
   }
 };
 
@@ -299,6 +302,25 @@ function invalidateParsers() {
   parserVersion_++;
 }
 
+function simpleAlt(/* vargs */) {
+//function alt(/* vargs */) {
+  var args = prepArgs(arguments);
+
+  var f = function(ps) {
+    for ( var i = 0 ; i < args.length ; i++ ) {
+      var res = this.parse(args[i], ps);
+
+      if ( res ) return res;
+    }
+
+    return undefined;
+  };
+
+  f.toString = function() { return 'alt(' + argsToArray(args).join(' | ') + ')'; };
+
+  return f;
+}
+
 function alt(/* vargs */) {
   var SIMPLE_ALT = simpleAlt.apply(null, arguments);
   var args = prepArgs(arguments);
@@ -360,27 +382,16 @@ function alt(/* vargs */) {
       map = {};
       parserVersion = parserVersion_;
     }
-    return this.parse(getParserForChar.call(this, ps), ps);
+    var r1 = this.parse(getParserForChar.call(this, ps), ps);
+    // If alt and simpleAlt don't return same value then uncomment this 
+    // section to find out where the problem is occuring.
+    /*
+    var r2 = this.parse(SIMPLE_ALT, ps);
+    if ( ! r1 !== ! r2 ) debugger;
+    if ( r1 && ( r1.pos !== r2.pos ) ) debugger;
+    */
+    return r1;
   };
-}
-
-function simpleAlt(/* vargs */) {
-//function alt(/* vargs */) {
-  var args = prepArgs(arguments);
-
-  var f = function(ps) {
-    for ( var i = 0 ; i < args.length ; i++ ) {
-      var res = this.parse(args[i], ps);
-
-      if ( res ) return res;
-    }
-
-    return undefined;
-  };
-
-  f.toString = function() { return 'alt(' + argsToArray(args).join(' | ') + ')'; };
-
-  return f;
 }
 
 /** Takes a parser which returns an array, and converts its result to a String. **/

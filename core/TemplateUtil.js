@@ -373,7 +373,9 @@ var aeval = function(src) {
 
 
 var aevalTemplate = function(t) {
-  var doEval_ = function(t, code) {
+  var doEval_ = function(t) {
+    var code = TemplateCompiler.parseString(t.template);
+
     var args = ['opt_out'];
     if ( t.args ) {
       for ( var i = 0 ; i < t.args.length ; i++ ) {
@@ -383,10 +385,8 @@ var aevalTemplate = function(t) {
     return aeval('function(' + args.join(',') + '){' + code + '}');
   };
   var doEval = function(t) {
-    var code = TemplateCompiler.parseString(t.template);
-
     try {
-      return doEval_(t, code);
+      return doEval_(t);
     } catch (err) {
       console.log('Template Error: ', err);
       console.log(code);

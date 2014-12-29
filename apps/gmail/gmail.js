@@ -58,6 +58,7 @@ CLASS({
   extendsModel: 'View',
 
   requires: [
+    'AppController',
     'CachingDAO',
     'ContextualizingDAO',
     'DetailView',
