@@ -161,6 +161,7 @@ var HTMLParser = {
   // Use simpleAlt() because endTag() doesn't always look ahead and will
   // break the regular alt().
   html: repeat(simpleAlt(
+    sym('comment'),
     sym('text'),
     sym('endTag'),
     sym('startTag'))),
@@ -182,6 +183,8 @@ var HTMLParser = {
   })(),
 
   endTag_: seq1(1, '</', sym('tagName'), '>'),
+
+  comment: seq('<!--', repeat(not('-->', anyChar)), '-->'),
 
   attributes: repeat(sym('attribute'), sym('whitespace')),
 
