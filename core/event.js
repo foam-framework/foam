@@ -153,8 +153,8 @@ MODEL({
     },
 
     /** Decroate a listener so that the event is delivered asynchronously. **/
-    async: function(listener) {
-      return this.delay(0, listener);
+    async: function(listener, opt_X) {
+      return this.delay(0, listener, opt_X);
     },
 
     delay: function(delay, listener, opt_X) {
