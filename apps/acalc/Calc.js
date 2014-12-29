@@ -20,6 +20,7 @@
  // the number to round, which elimitates the spurious 9's.
  var DECIMAL_PLACES_PRECISION = 12;
 
+console.profile();
 function trigFn(f) {
   return function(a) {
     return f(this.degreesMode ? a * Math.PI / 180 : a);
@@ -737,3 +738,6 @@ CLASS({
     */}
   ]
 });
+
+Calc.getPrototype();
+console.profileEnd();
