@@ -39,7 +39,8 @@ var StringProperty = Model.create({
     {
       name: 'preSet',
       defaultValue: function (_, v) {
-        return v === undefined || v === null ? '' : v.toString();
+        return v === undefined || v === null ? '' :
+        typeof v === 'function'              ? multiline(v) : v.toString() ;
       }
     },
     {
