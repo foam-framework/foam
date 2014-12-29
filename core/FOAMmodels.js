@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-function IN_BROWSER() { return typeof vm == "undefined" || vm.Script !== vm; }
+function IN_BROWSER() { return typeof vm == "undefined" || ! vm.runInThisContext; }
 function IN_NODEJS() { return ! IN_BROWSER(); }
 
 var files = [
@@ -23,7 +23,7 @@ var files = [
   ['firefox',  function() { return window.navigator && navigator.userAgent.indexOf('Firefox') != -1; }],
   ['funcName', function() { return ! Number.name; }],
   ['safari',   function() { return window.navigator && navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1; }],
-  [ 'i18n',    function() { return typeof vm == "undefined" || vm.Script !== vm; } ],
+  [ 'i18n',    IN_BROWSER ],
   'stdlib',
   ['WeakMap',  function() { return ! this['WeakMap']; }],
   'io',
