@@ -143,7 +143,7 @@ CLASS({
         Set the contents of the tooltip (rich) text in the view.
       */},
       code: function() {
-        if ( this.html ) this.tipContents.innerHTML = this.html;
+        if ( this.html ) this.tipContents.innerHTML   = this.html;
         else             this.tipContents.textContent = this.text;
       }
     },
@@ -171,7 +171,8 @@ CLASS({
        sub-tree.
      */},
       code: function(elem) {
-        if ( ! ( this.text && this.tooltip ) || this.attached ) return;
+        if ( ! ( ( this.text || this.html ) && this.tooltip ) ||
+             this.attached ) return;
 
         this.tooltip.setAttribute('id', this.id);
 
