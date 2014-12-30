@@ -15,8 +15,6 @@ var questions = JSONUtil.arrayToObjArray(X, [
     title: 'How do I make my Models not go in the global namespace?',
     labels: [ 'class', 'package', 'namespace' ],
     question: function() {/*
-    
-
     */},
     answer: function() {/*
       Specify their 'package'.
@@ -24,7 +22,7 @@ var questions = JSONUtil.arrayToObjArray(X, [
       Ex.
       CLASS({
         name: 'MyModel',
-        package: 'com.somedomain.myApp.somepackage'
+        <b>package: 'com.somedomain.myApp.somepackage'</b>
       });
 
       Is now accessed as com.somedomain.myApp.somepackage.MyModel.
@@ -70,6 +68,16 @@ var questions = JSONUtil.arrayToObjArray(X, [
   },
   {
     id: 5,
+    title: 'Where do I report/browse FOAM issues?',
+    labels: [ 'issue', 'bug', 'report' ],
+    question: function() {/*
+    */},
+    answer: function() {/*
+      <a href="http://issues.foamdev.com">http://issues.foamdev.com</a>
+    */},
+  },
+  {
+    id: 6,
     title: 'Where do I put my CSS?',
     labels: [ 'template', 'css' ],
     question: function() {/*
@@ -78,12 +86,42 @@ var questions = JSONUtil.arrayToObjArray(X, [
     */},
   },
   {
-    id: 6,
+    id: 7,
     title: 'Why can\'t I include instance variables in my CSS templates?',
     labels: [ 'template', 'css' ],
     question: function() {/*
     */},
     answer: function() {/*
+    */},
+  },
+  {
+    id: 8,
+    title: 'How do I dynamically set the CSS class of an element?',
+    labels: [ 'template', 'css' ],
+    question: function() {/*
+    */},
+    answer: function() {/*
+    */},
+  },
+  {
+    id: 9,
+    title: 'Can I store my tempates in their own files rather than embedded in Models?',
+    labels: [ 'template' ],
+    question: function() {/*
+    */},
+    answer: function() {/*
+    */},
+  },
+  {
+    id: 10,
+    title: 'Can I get my editor to provide syntax highlighting for FOAM templates?',
+    labels: [ 'template', 'editor' ],
+    question: function() {/*
+    */},
+    answer: function() {/*
+      Store your templates in an external file (see Q9) and then put your editor into Java Server Pages (JSP) mode.
+      FOAM reuses JSP syntax.
+      JSP's are a very common templating syntax and are supported by most popular editors.
     */},
   },
 

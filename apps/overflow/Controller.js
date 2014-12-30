@@ -39,7 +39,7 @@ CLASS({
             <% if ( this.data.question.trim().length ) { %><pre>$$question{mode: 'read-only', escapeHTML: false}</pre><% } %>
             <br>
             <b>A.</b><pre class="answer">$$answer{mode: 'read-only', escapeHTML: false}</pre>
-            <b>Labels:</b> <%= this.data.labels.join(', ') %><br>
+            <b>labels:</b> <%= this.data.labels.join(', ') %><br>
             <% if ( this.data.src ) { %>
               <b>Source:</b> <a href="%%data.src">here</a><br>
             <% } %>
