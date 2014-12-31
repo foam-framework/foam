@@ -124,5 +124,23 @@ var questions = JSONUtil.arrayToObjArray(X, [
       JSP's are a very common templating syntax and are supported by most popular editors.
     */},
   },
+  {
+    id: 11,
+    title: 'What does FOAM stand for?',
+    labels: [ 'general' ],
+    question: function() {/*
+    */},
+    answer: function() {/*
+    */},
+  },
+  {
+    id: 12,
+    title: 'What is "Reactive Programming"?',
+    labels: [ 'general' ],
+    question: function() {/*
+    */},
+    answer: function() {/*
+    */},
+  },
 
 ], Question).dao;
