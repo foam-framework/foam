@@ -25,20 +25,24 @@ CLASS({
   },
   templates: [
     function CSS() {/*
-      .answer { margin-top: -34px; }
+      code {
+        background: #eee;
+        display: inline-block;
+        margin-left: 30px;
+        padding: 16px;
+      }
     */},
     function toDetailHTML() {/*
         <h1>FOAM-Overflow</h1>
-        <a href="https://groups.google.com/forum/#!newtopic/foam-framework-discuss
-">Ask Question</a>
+        <a href="https://groups.google.com/forum/#!newtopic/foam-framework-discuss">Ask Question</a>
         &nbsp;&nbsp; Search: $$search
         <p>
         <foam f="filteredDAO" className="questions" tagName="div">
           <div>
-            <b>Q$$id{mode: 'read-only'}. $$title{mode: 'read-only'}</b>
+            <b><font size="+1">Q$$id{mode: 'read-only'}.</font> $$title{mode: 'read-only'}</b>
             <% if ( this.data.question.trim().length ) { %><pre>$$question{mode: 'read-only', escapeHTML: false}</pre><% } %>
             <br>
-            <b>A.</b><pre class="answer">$$answer{mode: 'read-only', escapeHTML: false}</pre>
+            <b><font size="+1">A.</font></b><pre class="answer">$$answer{mode: 'read-only', escapeHTML: false}</pre>
             <b>labels:</b> <%= this.data.labels.join(', ') %><br>
             <% if ( this.data.src ) { %>
               <b>Source:</b> <a href="%%data.src">here</a><br>
@@ -50,5 +54,5 @@ CLASS({
 });
 
 /*
-$$id{mode: 'read-only'} 
+$$id{mode: 'read-only'}
 */
