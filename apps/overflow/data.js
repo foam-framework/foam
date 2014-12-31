@@ -142,5 +142,72 @@ var questions = JSONUtil.arrayToObjArray(X, [
     answer: function() {/*
     */},
   },
+  {
+    id: 13,
+    title: 'OR or IN operation in IndexedDB?',
+    labels: [ 'indexeddb', 'dao' ],
+    src: 'http://stackoverflow.com/questions/22419703/or-or-in-operation-in-indexeddb',
+    question: function() {/*
+      Is there a way to do an OR or IN query on the same property in IndexedDB?
+
+In other words, how do I get the results for:
+
+<code>
+SELECT * FROM MyTable WHERE columnA IN ('ABC','DFT') AND columnB = '123thd'
+</code>
+    */},
+    answer: function() {/*
+The following code implements your question:
+
+<code>
+// Test IN and EQ
+
+// Define Your Table Structure
+CLASS({
+  name: 'MyTable',
+  properties: [ 'id', 'columnA', 'columnB' ]
+});
+
+// Build an IndexedDB table, with auto-seqNo and caching support
+var MyTableDAO = EasyDAO.create({model: MyTable, seqNo: true, daoType: 'IDBDAO', cache: true});
+
+// Populate some test data
+[
+  MyTable.create({columnA: 'ABC', columnB: '123thd'}),
+  MyTable.create({columnA: 'DFT', columnB: '123thd'}),
+  MyTable.create({columnA: 'XYZ', columnB: '123thd'}),
+  MyTable.create({columnA: 'ABC', columnB: '124thd'}),
+  MyTable.create({columnA: 'DFT', columnB: '124thd'}),
+  MyTable.create({columnA: 'XYZ', columnB: '124thd'})
+].select(MyTableDAO);
+
+// Perform your Query
+MyTableDAO.
+  where(AND(
+    IN(MyTable.COLUMN_A, ['ABC', 'DFT']),
+    EQ(MyTable.COLUMN_B, '123thd'))).
+  select(function(mt) {
+    console.log(mt.toJSON());
+});
+</code>
+
+Output:
+<code>
+{
+   "model_": "MyTable",
+   "id": 139,
+   "columnA": "ABC",
+   "columnB": "123thd"
+}
+{
+   "model_": "MyTable",
+   "id": 140,
+   "columnA": "DFT",
+   "columnB": "123thd"
+}
+<?code>
+    */},
+  },
+
 
 ], Question).dao;
