@@ -30,6 +30,7 @@ CLASS({
         display: inline-block;
         margin-left: 30px;
         padding: 16px;
+        padding-top: 0;
       }
     */},
     function toDetailHTML() {/*
@@ -39,9 +40,9 @@ CLASS({
         <p>
         <foam f="filteredDAO" className="questions" tagName="div">
           <div>
+            <hr>
             <b><font size="+1">Q$$id{mode: 'read-only'}.</font> $$title{mode: 'read-only'}</b>
-            <% if ( this.data.question.trim().length ) { %><pre>$$question{mode: 'read-only', escapeHTML: false}</pre><% } %>
-            <br>
+            <% if ( this.data.question.length ) { %><pre>$$question{mode: 'read-only', escapeHTML: false}</pre><% } else { %> <br> <% } %>
             <b><font size="+1">A.</font></b><pre class="answer">$$answer{mode: 'read-only', escapeHTML: false}</pre>
             <b>labels:</b> <%= this.data.labels.join(', ') %><br>
             <% if ( this.data.src ) { %>
