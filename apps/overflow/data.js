@@ -152,9 +152,7 @@ var questions = JSONUtil.arrayToObjArray(X, [
 
 In other words, how do I get the results for:
 
-<code>
-SELECT * FROM MyTable WHERE columnA IN ('ABC','DFT') AND columnB = '123thd'
-</code>
+<code>SELECT * FROM MyTable WHERE columnA IN ('ABC','DFT') AND columnB = '123thd'</code>
     */},
     answer: function() {/*
 The following code implements your question:
@@ -205,9 +203,92 @@ Output:
    "columnA": "DFT",
    "columnB": "123thd"
 }
-<?code>
+</code>
+
+This solution isn't IndexedDB specific and works with any DAO type.
     */},
   },
 
+  {
+    id: 14,
+    title: 'How do make a sorted compound query?',
+    src: 'http://stackoverflow.com/questions/12084177/in-indexeddb-is-there-a-way-to-make-a-sorted-compound-query',
+    labels: [ 'indexeddb', 'dao' ],
+    question: function() {/*
+Say a table has, name, ID, age, sex, education, etc. ID is the key and the table is also indexed for name, age and sex. I need all male students, older than 25, sorted by their names.
+
+This is easy in mySQL:
+
+<code>
+    SELECT * FROM table WHERE age > 25 AND sex = "M" ORDER BY name
+</code>
+IndexDB allows creation of an index and orders the query based on that index. But it doesn't allow multiple queries like age and sex. I found a small library called queryIndexedDB (https://github.com/philikon/queryIndexedDB) which allows compound queries but doesn't provide sorted results.
+
+So is there a way to make a sorted compound query, while using IndexedDB?
+    */},
+    answer: function() {/*
+The following code implements your question:
+
+<code>
+CLASS({
+  name: 'Person',
+  properties: [
+    { name: 'id' },
+    { name: 'name' },
+    { name: 'sex', defaultValue: 'M' },
+    { model_: 'IntProperty', name: 'age' }
+  ]
+});
+
+// Create an IndexedDB table with sequence no generation and caching.
+var dao = EasyDAO.create({model: Person, seqNo: true, daoType: 'IDBDAO', cache: true});
+
+// Add some test data.
+[
+  Person.create({id:'5', name:'John',  age:28, sex:'M'}),
+  Person.create({id:'6', name:'Daniel',age:29, sex:'F'}),
+  Person.create({id:'7', name:'Sam',   age:20, sex:'M'}),
+  Person.create({id:'8', name:'Allan', age:26, sex:'M'}),
+  Person.create({id:'9', name:'Kim',   age:18, sex:'F'}),
+].select(dao);
+
+
+// SELECT * FROM table WHERE age > 25 AND sex = "M" ORDER BY name
+dao.where(AND(GT(Person.AGE, 25), Person.SEX = 'M')).orderBy(Person.NAME).select(function(p) {
+  console.log(p.toJSON());
+});
+
+// Cleanup Data when done.
+dao.removeAll();
+<code>
+
+Output:
+<code>
+{
+   "model_": "Person",
+   "id": "8",
+   "name": "Allan",
+   "sex": "M",
+   "age": 26
+}
+{
+   "model_": "Person",
+   "id": "6",
+   "name": "Daniel",
+   "sex": "F",
+   "age": 29
+}
+{
+   "model_": "Person",
+   "id": "5",
+   "name": "John",
+   "sex": "M",
+   "age": 28
+}
+</code>
+
+This solution isn't IndexedDB specific and works with any DAO type.
+    */},
+  },
 
 ], Question).dao;
