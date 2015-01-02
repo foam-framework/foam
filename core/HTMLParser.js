@@ -97,7 +97,11 @@ CLASS({
         var out = '<' + this.nodeName;
         if ( this.id ) out += ' id="' + this.id + '"';
         for ( key in this.attributeMap_ ) {
-          out += ' ' + key + '="' + this.attributeMap_[key].value + '"';
+          var value = this.attributeMap_[key].value;
+
+          out += value == undefined ?
+            ' ' + key :
+            ' ' + key + '="' + this.attributeMap_[key].value + '"';
         }
         if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] &&
              ( ! this.OPTIONAL_CLOSE_TAGS[this.nodeName] || this.childNodes.length ) ) {
