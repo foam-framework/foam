@@ -185,8 +185,13 @@ var DOM = {
 
     if ( opt_document ) {
       var view;
-      if ( View.isInstance(obj) || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) {
+      if (
+        View.isInstance(obj) ||
+        ( 'CView' in GLOBAL && CView.isInstance(obj) ) )
+      {
         view = obj;
+      } else if ( obj.toView_ ) {
+        view = obj.toView_();
       } else {
         var viewName = e.getAttribute('view');
         var viewModel = viewName ? FOAM.lookup(viewName, X) : DetailView;
