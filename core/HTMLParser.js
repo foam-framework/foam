@@ -194,7 +194,7 @@ var HTMLParser = {
 
   text: str(plus(alt('<%', notChar('<')))),
 
-  attribute: seq(sym('label'), '=', sym('value')),
+  attribute: seq(sym('label'), optional(seq1(1, '=', sym('value')))),
 
   value: str(alt(
     plus(alt(range('a','z'), range('A', 'Z'), range('0', '9'))),
@@ -208,7 +208,7 @@ var HTMLParser = {
     this.stack = [ X.foam.html.Element.create({nodeName: 'html'}) ];
     return ret;
   },
-  attribute: function(xs) { return { name: xs[0], value: xs[2] }; },
+  attribute: function(xs) { return { name: xs[0], value: xs[1] }; },
   text: function(xs) { this.peek() && this.peek().appendChild(xs); },
   startTag: function(xs) {
     var tag = xs[1];
