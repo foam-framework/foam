@@ -40,6 +40,12 @@ CLASS({
     },
     {
       model_: 'StringProperty',
+      name: 'richText',
+      view: 'foam.ui.polymer.demo.ElementWithTooltip',
+      defaultValue: 'RichText'
+    },
+    {
+      model_: 'StringProperty',
       name: 'show',
       view: 'foam.ui.polymer.demo.ElementWithTooltip',
       defaultValue: 'Show'
@@ -72,6 +78,10 @@ CLASS({
         $$noArrow{ tooltipConfig: {
           text: 'Tooltip without arrow',
           noarrow: true
+        } }
+      </div><div class="centeredDiv">
+        $$richText{ tooltipConfig: {
+          html: 'Tooltip with <b>rich</b> <i>text</i>'
         } }
       </div><div class="centeredDiv">
         $$show{ tooltipConfig: {

@@ -124,5 +124,171 @@ var questions = JSONUtil.arrayToObjArray(X, [
       JSP's are a very common templating syntax and are supported by most popular editors.
     */},
   },
+  {
+    id: 11,
+    title: 'What does FOAM stand for?',
+    labels: [ 'general' ],
+    question: function() {/*
+    */},
+    answer: function() {/*
+    */},
+  },
+  {
+    id: 12,
+    title: 'What is "Reactive Programming"?',
+    labels: [ 'general' ],
+    question: function() {/*
+    */},
+    answer: function() {/*
+    */},
+  },
+  {
+    id: 13,
+    title: 'OR or IN operation in IndexedDB?',
+    labels: [ 'indexeddb', 'dao' ],
+    src: 'http://stackoverflow.com/questions/22419703/or-or-in-operation-in-indexeddb',
+    question: function() {/*
+      Is there a way to do an OR or IN query on the same property in IndexedDB?
+
+In other words, how do I get the results for:
+
+<code>SELECT * FROM MyTable WHERE columnA IN ('ABC','DFT') AND columnB = '123thd'</code>
+    */},
+    answer: function() {/*
+The following code implements your question:
+
+<code>
+// Test IN and EQ
+
+// Define Your Table Structure
+CLASS({
+  name: 'MyTable',
+  properties: [ 'id', 'columnA', 'columnB' ]
+});
+
+// Build an IndexedDB table, with auto-seqNo and caching support
+var MyTableDAO = EasyDAO.create({model: MyTable, seqNo: true, daoType: 'IDBDAO', cache: true});
+
+// Populate some test data
+[
+  MyTable.create({columnA: 'ABC', columnB: '123thd'}),
+  MyTable.create({columnA: 'DFT', columnB: '123thd'}),
+  MyTable.create({columnA: 'XYZ', columnB: '123thd'}),
+  MyTable.create({columnA: 'ABC', columnB: '124thd'}),
+  MyTable.create({columnA: 'DFT', columnB: '124thd'}),
+  MyTable.create({columnA: 'XYZ', columnB: '124thd'})
+].select(MyTableDAO);
+
+// Perform your Query
+MyTableDAO.
+  where(AND(
+    IN(MyTable.COLUMN_A, ['ABC', 'DFT']),
+    EQ(MyTable.COLUMN_B, '123thd'))).
+  select(function(mt) {
+    console.log(mt.toJSON());
+});
+</code>
+
+Output:
+<code>
+{
+   "model_": "MyTable",
+   "id": 139,
+   "columnA": "ABC",
+   "columnB": "123thd"
+}
+{
+   "model_": "MyTable",
+   "id": 140,
+   "columnA": "DFT",
+   "columnB": "123thd"
+}
+</code>
+
+This solution isn't IndexedDB specific and works with any DAO type.
+    */},
+  },
+
+  {
+    id: 14,
+    title: 'How do make a sorted compound query?',
+    src: 'http://stackoverflow.com/questions/12084177/in-indexeddb-is-there-a-way-to-make-a-sorted-compound-query',
+    labels: [ 'indexeddb', 'dao' ],
+    question: function() {/*
+Say a table has, name, ID, age, sex, education, etc. ID is the key and the table is also indexed for name, age and sex. I need all male students, older than 25, sorted by their names.
+
+This is easy in mySQL:
+
+<code>
+    SELECT * FROM table WHERE age > 25 AND sex = "M" ORDER BY name
+</code>
+IndexDB allows creation of an index and orders the query based on that index. But it doesn't allow multiple queries like age and sex. I found a small library called queryIndexedDB (https://github.com/philikon/queryIndexedDB) which allows compound queries but doesn't provide sorted results.
+
+So is there a way to make a sorted compound query, while using IndexedDB?
+    */},
+    answer: function() {/*
+The following code implements your question:
+
+<code>
+CLASS({
+  name: 'Person',
+  properties: [
+    { name: 'id' },
+    { name: 'name' },
+    { name: 'sex', defaultValue: 'M' },
+    { model_: 'IntProperty', name: 'age' }
+  ]
+});
+
+// Create an IndexedDB table with sequence no generation and caching.
+var dao = EasyDAO.create({model: Person, seqNo: true, daoType: 'IDBDAO', cache: true});
+
+// Add some test data.
+[
+  Person.create({id:'5', name:'John',  age:28, sex:'M'}),
+  Person.create({id:'6', name:'Daniel',age:29, sex:'F'}),
+  Person.create({id:'7', name:'Sam',   age:20, sex:'M'}),
+  Person.create({id:'8', name:'Allan', age:26, sex:'M'}),
+  Person.create({id:'9', name:'Kim',   age:18, sex:'F'}),
+].select(dao);
+
+
+// SELECT * FROM table WHERE age > 25 AND sex = "M" ORDER BY name
+dao.where(AND(GT(Person.AGE, 25), Person.SEX = 'M')).orderBy(Person.NAME).select(function(p) {
+  console.log(p.toJSON());
+});
+
+// Cleanup Data when done.
+dao.removeAll();
+<code>
+
+Output:
+<code>
+{
+   "model_": "Person",
+   "id": "8",
+   "name": "Allan",
+   "sex": "M",
+   "age": 26
+}
+{
+   "model_": "Person",
+   "id": "6",
+   "name": "Daniel",
+   "sex": "F",
+   "age": 29
+}
+{
+   "model_": "Person",
+   "id": "5",
+   "name": "John",
+   "sex": "M",
+   "age": 28
+}
+</code>
+
+This solution isn't IndexedDB specific and works with any DAO type.
+    */},
+  },
 
 ], Question).dao;

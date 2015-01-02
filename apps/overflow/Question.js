@@ -25,11 +25,13 @@ CLASS({
     },
     {
       model_: 'StringProperty',
-      name: 'question'
+      name: 'question',
+      preSet: function(_, q) { return StringProperty.PRE_SET.defaultValue(null, q).trim(); }
     },
     {
       model_: 'StringProperty',
-      name: 'answer'
+      name: 'answer',
+      preSet: function(_, q) { return StringProperty.PRE_SET.defaultValue(null, q).trim(); }
     },
     {
       name: 'src'

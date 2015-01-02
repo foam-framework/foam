@@ -35,11 +35,12 @@ cat \
   ../../core/view2.js \
   ../../core/layout.js \
   ../../core/daoView.js \
+  ../../core/AbstractDAOView.js \
+  ../../core/DAOListView.js \
   ../../core/ChoiceView.js \
   ../../core/DetailView.js \
   ../../core/TableView.js \
   ../../core/cview.js \
-  ../../core/cview2.js \
   ../../core/RichTextView.js \
   ../../core/listchoiceview.js \
   ../../core/scroll.js \
