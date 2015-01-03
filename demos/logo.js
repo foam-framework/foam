@@ -43,9 +43,9 @@ CLASS({
 //      if ( Math.random() > 0.2 ) return;
 
       //var Y = 210-80*Math.sin(this.timer.time/4000*(Math.PI*2));
-      var Y = 100;
+      var Y = 120;
 //      var X = 280-180*Math.sin(this.timer.time/4000*(Math.PI*2));
-      var X = 100+60+Math.random()*220;
+      var X = 110+Math.random()*310;
 
       var circle = Circle.create({
         x: X,
@@ -98,14 +98,29 @@ CLASS({
       this.SUPER();
       var c = this.canvas;
 
-      c.fillStyle = 'black';
-      c.fillRect(100, 0, 360, 120);
+      c.fillStyle = 'white';
+      c.fillRect(0, 0, 560, 140);
 
       c.font = '120px Georgia';
-      c.strokeStyle = 'black';
       c.fillStyle = 'rgba(0,0,0,1)';
+      c.strokeStyle = 'white';
+
+/*
+      c.shadowOffsetX = 5;
+      c.shadowOffsetY = 5;
+      c.shadowBlur = 8;
+      c.shadowColor = '#999';
+*/
+      c.lineWidth = 1;
+      c.strokeStyle = 'gray';
+      c.globalCompositeOperation = '';
+      c.strokeText(this.text, 100, 100);
       c.globalCompositeOperation = 'destination-out';
+
       c.fillText(this.text, 100, 100);
+
+//      c.lineWidth = 5;
+//      c.strokeText(this.text, 100, 100);
     }
   }
 });
