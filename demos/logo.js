@@ -38,6 +38,9 @@ CLASS({
   methods: {
     paintChildren: function() {
       this.SUPER();
+      this.addBubble();
+    },
+    addBubble: function() {
       var c = this.canvas;
 
       var Y = 120;
@@ -58,7 +61,6 @@ CLASS({
         [
           [4000, function() {
             circle.x = circle.x + Math.random()*100-50;
-//            circle.alpha = 0;
             circle.alpha = 0.2;
            },
            Math.sqrt
