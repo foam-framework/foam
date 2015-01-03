@@ -45,7 +45,7 @@ CLASS({
       //var Y = 210-80*Math.sin(this.timer.time/4000*(Math.PI*2));
       var Y = 100;
 //      var X = 280-180*Math.sin(this.timer.time/4000*(Math.PI*2));
-      var X = 100+40+Math.random()*220;
+      var X = 100+60+Math.random()*220;
 
       var circle = Circle.create({
         x: X,
@@ -61,7 +61,7 @@ CLASS({
       M.compile([
         [
           [4000, function() {
-            circle.x = circle.x + Math.random()*50;
+//            circle.x = circle.x + Math.random()*50;
 //            circle.alpha = 0;
             circle.alpha = 0.3;
            },
