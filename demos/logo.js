@@ -40,11 +40,7 @@ CLASS({
       this.SUPER();
       var c = this.canvas;
 
-//      if ( Math.random() > 0.2 ) return;
-
-      //var Y = 210-80*Math.sin(this.timer.time/4000*(Math.PI*2));
       var Y = 120;
-//      var X = 280-180*Math.sin(this.timer.time/4000*(Math.PI*2));
       var X = 110+Math.random()*310;
 
       var circle = Circle.create({
@@ -61,9 +57,9 @@ CLASS({
       M.compile([
         [
           [4000, function() {
-//            circle.x = circle.x + Math.random()*50;
+            circle.x = circle.x + Math.random()*100-50;
 //            circle.alpha = 0;
-            circle.alpha = 0.3;
+            circle.alpha = 0.2;
            },
            Math.sqrt
           ],
@@ -99,7 +95,7 @@ CLASS({
       var c = this.canvas;
 
       c.fillStyle = 'white';
-      c.fillRect(0, 0, 560, 140);
+      c.fillRect(0, 0, 700, 140);
 
       c.font = '120px Georgia';
       c.fillStyle = 'rgba(0,0,0,1)';
