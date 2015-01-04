@@ -39,7 +39,7 @@ CLASS({
         // in a SubModel of Window, ie. ChromeAppWindow
         if ( this.X.subDocument ) this.X.subDocument(w.document);
 
-        return w.document;
+        this.document = w.document;
       }
     },
     {
@@ -126,7 +126,11 @@ CLASS({
 
 
 // Using the existence of 'process' to determine that we're running in Node.
-X = this.subWindow(
-  window,
-  'DEFAULT WINDOW',
-  typeof process === 'object').sub({IN_WINDOW: false}, 'TOP-X');
+foam.ui.Window.create(
+  {
+    window: window,
+    name: 'DEFAULT WINDOW',
+    isBackground: typeof process === 'object'
+  },
+  { __proto__: X, sub: function() { return X; } }
+);
