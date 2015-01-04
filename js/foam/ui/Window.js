@@ -113,12 +113,19 @@ CLASS({
     },
     clearInterval: function(id) { this.window.clearInterval(id); },
     requestAnimationFrame: function(f) {
+      if ( this.isBackground ) return this.setTimeout(f, 16); 
+
       console.assert(
         this.window.requestAnimationFrame,
         'requestAnimationFrame not defined');
       return this.window.requestAnimationFrame(f);
     },
     cancelAnimationFrame: function(id) {
+      if ( this.isBackground ) {
+        this.clearTimeout(id);
+        return;
+      }
+
       this.window.cancelAnimationFrame && this.window.cancelAnimationFrame(id);
     }
   }
