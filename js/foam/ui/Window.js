@@ -8,7 +8,7 @@ CLASS({
     '$',
     'addStyle',
     'animate',
-    'cancelAnimationFrame'
+    'cancelAnimationFrame',
     'clearInterval',
     'clearTimeout',
     'console',
@@ -48,7 +48,7 @@ CLASS({
     {
       name: 'installedModels',
       lazyFactory: function() {
-        return this.documentinstalledModels || this.document.installedModels = {};
+        return this.document.installedModels || ( this.document.installedModels = {} );
       }
     },
     {
@@ -123,3 +123,10 @@ CLASS({
     }
   }
 });
+
+
+// Using the existence of 'process' to determine that we're running in Node.
+X = this.subWindow(
+  window,
+  'DEFAULT WINDOW',
+  typeof process === 'object').sub({IN_WINDOW: false}, 'TOP-X');
