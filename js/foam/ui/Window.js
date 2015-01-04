@@ -39,6 +39,7 @@ CLASS({
         // in a SubModel of Window, ie. ChromeAppWindow
         if ( this.X.subDocument ) this.X.subDocument(w.document);
 
+        w.X = this.X;
         this.document = w.document;
       }
     },

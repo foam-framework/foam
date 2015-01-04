@@ -29,6 +29,7 @@ cat \
   ../../core/mm3Types.js \
   ../../core/mm4Method.js \
   ../../core/mm5Misc.js \
+  ../../js/foam/ui/Window.js \
   ../../core/LayoutTraits.js \
   ../../core/value.js \
   ../../core/view.js \

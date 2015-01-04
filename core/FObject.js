@@ -133,7 +133,7 @@ var FObject = {
         var alias = exp[1] || exp[0];
 
         if ( key ) {
-          var asValue = key.charAt(key.length-1) == '$';
+          var asValue = key !== '$' && key != '$$' && key.charAt(key.length-1) == '$';
           if ( asValue ) key = key.slice(0, key.length-1);
 
           var prop = self.model_.getProperty(key);
