@@ -209,6 +209,8 @@ MODEL({
         return this.instance_['string'];
       },
       setter: function(nu) {
+        if ( ! nu ) return;
+        console.log('nu: ' + nu);
         var parts = nu.split('/');
         var path = [];
         for ( var i = 1 ; i < parts.length ; i += 2 ) {
@@ -312,7 +314,7 @@ MODEL({
             requestKey = 'update';
           } else {
             requestKey = 'insertAutoId';
-            var key = this.DatastoreKey.create({ string: this.keyPrefix });
+            var key = this.keyPrefix.deepClone();
             // Augment this key with a final segment, giving the kind.
             key.path.push({ kind: this.kind });
             serialized.key = { path: key.path };
@@ -342,7 +344,30 @@ MODEL({
       }.bind(this));
     },
 
-    select: function(sink, options) {
+    remove: function(id, sink) {
+      id = id.id || id;
+      var key = this.DatastoreKey.create({ string: id });
+      aseq(
+        this.datastore.withClientExecute('beginTransaction', {}),
+        function(ret, res) {
+          var req = {
+            transaction: res.transaction,
+            mode: 'TRANSACTIONAL',
+            mutation: {
+              delete: [{ path: key.path }]
+            }
+          };
+          this.datastore.withClientExecute('commit', req)(ret);
+        }.bind(this)
+      )(function(res) {
+        if ( res ) {
+          sink && sink.remove && sink.remove(id);
+          this.notify_('remove', [id]);
+        }
+      }.bind(this));
+    },
+
+    runQuery_: function(options, callback) {
       // Datastore doesn't support OR with a single query, only AND.
       // We also always add a filter on the __key__ for the ancestor, if the
       // prefix is set.
@@ -427,55 +452,82 @@ MODEL({
           };
         });
       }
+      if ( options.__datastore_projection )
+        req.query.projection = options.__datastore_projection;
 
       console.log('====== Request ========');
       console.log(require('util').inspect(req, { depth: null }));
 
+      this.datastore.withClientExecute('runQuery', req)(callback);
+    },
+
+    select: function(sink, options) {
       var future = afuture();
-      var afunc = aseq(
-        this.datastore.withClientExecute('runQuery', req),
-        function(ret, res) {
-          // TODO(braden): Handle Datastore's pagination of large single requests.
-          // We need to follow the DAO API of returning either all the values or
-          // up to the limit.
-          // We get a batch with some entries, and info about whether there are
-          // more.
+      this.runQuery_(options, function(res) {
+        // TODO(braden): Handle Datastore's pagination of large single requests.
+        // We need to follow the DAO API of returning either all the values or
+        // up to the limit.
+        // We get a batch with some entries, and info about whether there are
+        // more.
 
-          var rawEntries = res.batch.entityResults;
-          for ( var i = 0 ; i < rawEntries.length ; i++ ) {
-            var cooked = this.model.create();
-            cooked.fromDatastore(rawEntries[i].entity);
-            sink && sink.put && sink.put(cooked);
-          }
+        var rawEntries = res.batch.entityResults;
+        for ( var i = 0 ; i < rawEntries.length ; i++ ) {
+          var cooked = this.model.create();
+          cooked.fromDatastore(rawEntries[i].entity);
+          sink && sink.put && sink.put(cooked);
+        }
 
-          sink && sink.eof && sink.eof();
-          ret(sink);
-        }.bind(this)
-      )(future.set);
+        sink && sink.eof && sink.eof();
+        future.set(sink);
+      }.bind(this));
       return future.get;
     },
 
-    remove: function(id, sink) {
-      id = id.id || id;
-      var key = this.DatastoreKey.create({ string: id });
-      aseq(
-        this.datastore.withClientExecute('beginTransaction', {}),
-        function(ret, res) {
-          var req = {
-            transaction: res.transaction,
-            mode: 'TRANSACTIONAL',
-            mutation: {
-              delete: [{ path: key.path }]
+    removeAll: function(sink, options) {
+      var future = afuture();
+      var opts = {
+        __proto__: options,
+        __datastore_projection: [{
+          property: { name: '__key__' }
+          //aggregationFunction: 'FIRST'
+          // TODO(braden): The doc specifies sending the aggregation function,
+          // but it causes a 400 in practice because "aggregationFunction not
+          // allowed without group by", even though that's not what's happening
+          // here. We're aggregating multiple values for one property, not
+          // multiple entities.
+          // Anyway, projecting just the __key__ works fine without it.
+        }]
+      };
+      this.runQuery_(opts, function(res) {
+        console.log('removeAll res: ' + require('util').inspect(res, { depth: null }));
+        aseq(
+          this.datastore.withClientExecute('beginTransaction', {}),
+          function(ret, trans) {
+            var req = {
+              transaction: trans.transaction,
+              mode: 'TRANSACTIONAL',
+              mutation: {}
+            };
+
+            req.mutation.delete = res.batch.entityResults.map(function(e) {
+              return { path: e.entity.key.path };
+            });
+            this.datastore.withClientExecute('commit', req)(ret);
+          }.bind(this),
+          function(ret) {
+            // Since there wasn't an error, fire remove for each entity.
+            var items = res.batch.entityResults;
+            for ( var i = 0 ; i < items.length ; i++ ) {
+              var key = this.DatastoreKey.create({ path: items[i].entity.key.path }).string;
+              sink && sink.remove && sink.remove(key);
+              this.notify_('remove', [key]);
             }
-          };
-          this.datastore.withClientExecute('commit', req)(ret);
-        }.bind(this)
-      )(function(res) {
-        if ( res ) {
-          sink && sink.remove && sink.remove(id);
-          this.notify_('remove', [id]);
-        }
+            sink && sink.eof && sink.eof();
+            ret(sink);
+          }.bind(this)
+        )(future.set);
       }.bind(this));
+      return future.get;
     }
   }
 });
@@ -515,5 +567,16 @@ X.datastore = datastore;
 
 X.dao = X.DatastoreDAO.create({ model: X.Activity, keyPrefix: '/Couple/1001' });
 
-X.dao.orderBy(DESC(X.Activity.WEIGHT), X.Activity.TITLE).select(console.log.json);
+/*
+X.dao.put(X.Activity.create({ title: 'Test 1', weight: 8 }));
+X.dao.put(X.Activity.create({ title: 'Test 2', weight: 8 }));
+X.dao.put(X.Activity.create({ title: 'Test 3', weight: 8 }));
+*/
+
+/*
+X.dao.where(EQ(X.Activity.WEIGHT, 8)).removeAll({
+  remove: function(x) { console.log('removed ' + x); },
+  eof: function() { console.log('eof'); }
+});
+*/
 
