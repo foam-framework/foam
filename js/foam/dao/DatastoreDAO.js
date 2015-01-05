@@ -1,6 +1,3 @@
-// TODO: Remove this debugging code.
-require('../../../core/bootFOAMnode');
-
 MODEL({
   name: 'DatastorePropertyTrait',
   documentation: 'Enhances a property model with (de)serialization to Google Cloud Datastore\'s JSON format.',
@@ -79,7 +76,6 @@ MODEL({
       };
       if ( this.id ) {
         var key = this.DatastoreKey.create({ string: this.id });
-        console.log('key found', key.path, key.string);
         json.key = { path: key.path };
       }
 
@@ -209,8 +205,6 @@ MODEL({
         return this.instance_['string'];
       },
       setter: function(nu) {
-        if ( ! nu ) return;
-        console.log('nu: ' + nu);
         var parts = nu.split('/');
         var path = [];
         for ( var i = 1 ; i < parts.length ; i += 2 ) {
@@ -287,7 +281,7 @@ MODEL({
         // is error().
         if ( res.deferred && res.deferred.length ) {
           // TODO(braden): Handle "deferred".
-          console.warn('Deferred response to find(). Handle me somehow.');
+          console.warn('Deferred response to find(). Not implemented.');
         }
 
         if ( res.found && res.found.length ) {
@@ -307,7 +301,6 @@ MODEL({
         function(ret, res) {
           // This contains the key, if an ID is defined.
           var serialized = obj.toDatastore();
-          console.log('serialized', serialized);
 
           var requestKey;
           if ( obj.id ) {
@@ -326,12 +319,10 @@ MODEL({
             mutation: {}
           };
           req.mutation[requestKey] = [serialized];
-          console.log('request', require('util').inspect(req, { depth: null }));
           aseq(this.datastore.withClientExecute('commit', req))(ret);
         }.bind(this)
       )(function(res) {
         // The response contains insertAutoIdKeys, if applicable.
-        console.log('response', res);
         if ( res && res.mutationResult && res.mutationResult.insertAutoIdKeys ) {
           var key = this.DatastoreKey.create({ path: res.mutationResult.insertAutoIdKeys[0].path });
           obj = obj.clone();
@@ -399,7 +390,6 @@ MODEL({
             }
             var propName = next.arg1.datastoreKey;
             var value = next.arg1.toDatastore(next.arg2.f ? next.arg2.f() : next.arg2);
-            console.log('value: ' + value);
             clauses.push({
               propertyFilter: {
                 operator: operator,
@@ -455,9 +445,6 @@ MODEL({
       if ( options.__datastore_projection )
         req.query.projection = options.__datastore_projection;
 
-      console.log('====== Request ========');
-      console.log(require('util').inspect(req, { depth: null }));
-
       this.datastore.withClientExecute('runQuery', req)(callback);
     },
 
@@ -499,7 +486,6 @@ MODEL({
         }]
       };
       this.runQuery_(opts, function(res) {
-        console.log('removeAll res: ' + require('util').inspect(res, { depth: null }));
         aseq(
           this.datastore.withClientExecute('beginTransaction', {}),
           function(ret, trans) {
@@ -531,52 +517,4 @@ MODEL({
     }
   }
 });
-
-
-
-// DEBUG: Remove me.
-MODEL({
-  name: 'Activity',
-  traits: ['DatastoreSerializationTrait'],
-  properties: [
-    {
-      name: 'id'
-    },
-    {
-      model_: 'DatastoreStringProperty',
-      name: 'title',
-      documentation: 'The name of this activity.'
-    },
-    {
-      model_: 'DatastoreBooleanProperty',
-      name: 'isDeleted',
-      defaultValue: false
-    },
-    {
-      model_: 'DatastoreIntProperty',
-      name: 'weight'
-    }
-  ]
-});
-
-
-
-// Testing support.
-var datastore = X.Datastore.create({ datasetId: 'timetogetherapp' });
-X.datastore = datastore;
-
-X.dao = X.DatastoreDAO.create({ model: X.Activity, keyPrefix: '/Couple/1001' });
-
-/*
-X.dao.put(X.Activity.create({ title: 'Test 1', weight: 8 }));
-X.dao.put(X.Activity.create({ title: 'Test 2', weight: 8 }));
-X.dao.put(X.Activity.create({ title: 'Test 3', weight: 8 }));
-*/
-
-/*
-X.dao.where(EQ(X.Activity.WEIGHT, 8)).removeAll({
-  remove: function(x) { console.log('removed ' + x); },
-  eof: function() { console.log('eof'); }
-});
-*/
 
