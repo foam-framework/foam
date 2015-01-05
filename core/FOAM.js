@@ -164,6 +164,9 @@ function arequire(modelName, opt_X) {
 function arequireModel(model, X) {
   if ( ! model.required__ ) {
     var args = [];
+    var future = afuture();
+
+    model.required__ = future.get();
 
     if ( model.extendsModel ) args.push(arequire(model.extendsModel, X));
 
@@ -194,7 +197,7 @@ function arequireModel(model, X) {
       }
     }
 
-    model.required__ = amemo(aseq(
+    future.set(aseq(
       apar.apply(apar, args),
       aconstant(model)));
   }
