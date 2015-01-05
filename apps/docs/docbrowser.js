@@ -23,7 +23,10 @@ var gestureManager = GestureManager.create();
 CLASS({
   name: 'ModelListController',
 
-  requires: ['MDAO', 'DAOListView', 'foam.documentation.ModelCompletenessRecord as ModelCompletenessRecord'],
+  requires:['MDAO', 
+            'DAOListView',
+            'foam.documentation.ModelCompletenessRecord as ModelCompletenessRecord',
+            'mdTextFieldView'],
 
   imports: ['masterModelList as dao'],
 
@@ -34,7 +37,7 @@ CLASS({
     {
       name: 'searchView',
       factory: function() {
-        return this.X.mdTextFieldView.create({ data$: this.search$, label:'Search', onKeyMode: true, displayWidth: 20 });
+        return this.mdTextFieldView.create({ data$: this.search$, label:'Search', onKeyMode: true, displayWidth: 20 });
       }
     },
     {
@@ -201,6 +204,8 @@ CLASS({
   extendsModel: 'View',
   traits: ['foam.views.DataConsumerTrait'],
 
+  requires: ['SimpleValue'],
+
   properties: [
     {
       name: 'data',
@@ -230,7 +235,7 @@ CLASS({
     init: function() {
       // set up context // TODO: template is compile before we create subcontext
       this.X = this.X.sub({name:'ModelDescriptionRowView_X'});
-      this.X.documentationViewParentModel = this.X.SimpleValue.create({}, this.X);
+      this.X.documentationViewParentModel = this.SimpleValue.create();
 
       this.SUPER();
     }
@@ -268,7 +273,9 @@ CLASS({
 
 CLASS({
   name: 'DocBrowserController',
-  requires: ['MDAO'],
+  requires: ['MDAO',
+             'DocBrowserView',
+             'ControllerView'],
 
   documentation: function() {  /*
     <p>Some documentation for the $$DOC{ref:'.'} model.</p>
