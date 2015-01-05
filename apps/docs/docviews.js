@@ -118,7 +118,26 @@ CLASS({
   label: 'Documentation View Full Page',
   documentation: 'Base Model for full page documentation views.',
 
-  requires: ['foam.documentation.FullPageDocView'],
+  requires:  ['foam.documentation.FullPageDocView',
+              'foam.documentation.ModelFullPageDocView',
+              'foam.documentation.InterfaceFullPageDocView',
+              'foam.documentation.DocumentationBookFullPageDocView',
+  
+              'foam.documentation.PropertyRowDocView',
+              'foam.documentation.MethodRowDocView',
+              'foam.documentation.ActionRowDocView',
+              'foam.documentation.RelationshipRowDocView',
+              'foam.documentation.IssueRowDocView',
+              'foam.documentation.TemplateRowDocView',
+              
+              'foam.documentation.MethodSimpleRowDocView',
+              
+              'foam.documentation.ModelSummaryDocView',
+              'foam.documentation.InterfaceSummaryDocView',
+              'foam.documentation.DocumentationBookSummaryDocView'
+              
+
+  ],
  
   documentation: function() {/*
     Creates a sub-view appropriate for the specified data (such as a Model definition,
@@ -190,8 +209,7 @@ CLASS({
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocView',
   label: 'Documentation View Row',
-  documentation: 'Base Model for one or two line documentation row views.',
-
+  
   documentation: function() {/*
     For one or two line row views, only including essential information,
     subclass $$DOC{ref:'foam.documentation.RowDocView'}.</p>
@@ -614,8 +632,9 @@ CLASS({
 
   documentation: "A full-page documentation view for $$DOC{ref:'Model'} instances.",
 
-  requires: ['foam.documentation.SummaryDocView',
-             'foam.documentation.FeatureListDocView'],
+  requires:  ['foam.documentation.SummaryDocView',
+              'foam.documentation.FeatureListDocView',
+  ],
 
   templates: [
 
