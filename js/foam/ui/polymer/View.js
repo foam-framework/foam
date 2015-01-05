@@ -52,11 +52,11 @@ CLASS({
       }
     },
     {
-      name: 'updateAttributes',
+      name: 'updateProperties',
       code: function() {
-        if ( ! this.POLYMER_ATTRIBUTES ) return;
+        if ( ! this.POLYMER_PROPERTIES ) return;
 
-        this.POLYMER_ATTRIBUTES.forEach(function(attrName) {
+        this.POLYMER_PROPERTIES.forEach(function(attrName) {
           this.updateAttribute(attrName, undefined, this[attrName]);
         }.bind(this));
       }
@@ -65,7 +65,7 @@ CLASS({
       name: 'initHTML',
       code: function() {
         var rtn = this.SUPER();
-        this.updateAttributes();
+        this.updateProperties();
         return rtn;
       }
     }

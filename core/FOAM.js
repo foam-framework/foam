@@ -168,10 +168,13 @@ function arequireModel(model, X) {
     if ( model.extendsModel ) args.push(arequire(model.extendsModel, X));
 
     // TODO(kgr): eventually this should just call the arequire() method on the Model
-    for ( var i = 0; i < model.traits.length; i++ ) {
-      args.push(arequire(model.traits[i]));
+    var i;
+    if ( model.traits ) {
+      for ( i = 0; i < model.traits.length; i++ ) {
+        args.push(arequire(model.traits[i]));
+      }
     }
-    if ( model.templates ) for ( var i = 0 ; i < model.templates.length ; i++ ) {
+    if ( model.templates ) for ( i = 0 ; i < model.templates.length ; i++ ) {
       var t = model.templates[i];
       args.push(
         aevalTemplate(model.templates[i]),
@@ -184,13 +187,15 @@ function arequireModel(model, X) {
     if ( args.length ) args = [aseq.apply(null, args)];
 
     // Also arequire required Models.
-    for ( var i = 0 ; i < model.requires.length ; i++ ) {
-      var r = model.requires[i];
-      var m = r.split(' as ');
-      if ( m[0] == model.id ) {
-        console.warn("Model requires itself: " + model.id);
-      } else {
-        args.push(arequire(m[0]));
+    if ( model.requires ) {
+      for ( var i = 0 ; i < model.requires.length ; i++ ) {
+        var r = model.requires[i];
+        var m = r.split(' as ');
+        if ( m[0] == model.id ) {
+          console.warn("Model requires itself: " + model.id);
+        } else {
+          args.push(arequire(m[0]));
+        }
       }
     }
 

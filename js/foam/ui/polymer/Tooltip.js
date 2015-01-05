@@ -114,7 +114,7 @@ CLASS({
   constants: {
     HREF: '/bower_components/core-tooltip/core-tooltip.html',
     POSITIONS: ['top', 'bottom', 'left', 'right'],
-    POLYMER_ATTRIBUTES: [
+    POLYMER_PROPERTIES: [
       'noarrow',
       'position',
       'bottom',
@@ -133,7 +133,7 @@ CLASS({
         var rtn = this.SUPER();
         this.tooltip = this.document.createElement(this.tagName);
         this.tooltip.setAttribute('id', this.id);
-        this.updateAttributes();
+        this.updateProperties();
         return rtn;
       }
     },

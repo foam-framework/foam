@@ -61,7 +61,7 @@ CLASS({
 
   constants: {
     HREF: '/bower_components/paper-button/paper-button.html',
-    POLYMER_ATTRIBUTES: [
+    POLYMER_PROPERTIES: [
       'raised',
       'recenteringTouch',
       'fill'
