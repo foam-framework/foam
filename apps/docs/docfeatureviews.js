@@ -242,7 +242,6 @@ CLASS({
   ]
 });
 
-
 CLASS({
   name: 'MethodRowDocView',
   package: 'foam.documentation',
@@ -483,18 +482,4 @@ CLASS({
 
 //});
 
-//CLASS({
-//  name: 'DocInnerModelsRowView',
-//  extendsModel: 'DocFeatureRowView',
-//  help: 'A view for each item in a list of documented Methods, including arguments.',
-
-//  templates: [
-//    function toInnerHTML() {/*
-//      <div id="scrollTarget_<%=this.data.id%>">
-//        <p class="feature-heading">$$data{model_:this.X.DocFeatureSubmodelRefView}</p>
-//        <p><%=this.renderDocSourceHTML()%></p>
-//      </div>
-//    */}
-//  ]
-//});
 

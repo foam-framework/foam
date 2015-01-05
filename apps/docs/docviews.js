@@ -129,6 +129,7 @@ CLASS({
               'foam.documentation.RelationshipRowDocView',
               'foam.documentation.IssueRowDocView',
               'foam.documentation.TemplateRowDocView',
+              'foam.documentation.ModelRowDocView',
               
               'foam.documentation.MethodSimpleRowDocView',
               
@@ -739,20 +740,19 @@ CLASS({
   name: 'ModelRowDocView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocView',
-  documentation: 'A row documentation view for Model instances.',
 
+  requires: ['foam.documentation.DocFeatureSubmodelRefView'],
+  
   documentation: "A row documentation view for $$DOC{ref:'Model'} instances.",
 
-  templates: [
-
-    function toInnerHTML()    {/*
-<%    this.destroy(); %>
-<%    if (this.data) {  %>
-        <p class="important"><%=this.data.id%></p>
-<%    } %>
+ templates: [
+    function toInnerHTML() {/*
+      <div id="scrollTarget_<%=this.data.name%>">
+      <p class="feature-heading">$$data{model_: this.DocFeatureSubmodelRefView}</p>
+        <p>$$documentation{ model_: 'foam.documentation.DocBodyView' }</p>
+      </div>
     */}
   ]
-
 });
 
 CLASS({
