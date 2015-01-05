@@ -34,9 +34,9 @@ CLASS({
       }
     */},
     function toDetailHTML() {/*
-        <h1>FOAM-Overflow</h1>
-        <a href="https://groups.google.com/forum/#!newtopic/foam-framework-discuss">Ask Question</a>
+        <hr>
         &nbsp;&nbsp; Search: $$search
+        &nbsp;&nbsp;&nbsp;<a href="https://groups.google.com/forum/#!newtopic/foam-framework-discuss">Ask Question?</a>
         <p>
         <foam f="filteredDAO" className="questions" tagName="div">
           <div>

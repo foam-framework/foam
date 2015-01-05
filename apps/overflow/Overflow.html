@@ -3,9 +3,22 @@
   <meta charset="utf-8">
   <title>FOAM-Overflow Q&amp;A</title>
   <script language="javascript" src="../../core/bootFOAM.js"></script>
+  <script language="javascript" src="../../demos/logo.js"></script>
   <script language="javascript" src="Question.js"></script>
   <script language="javascript" src="data.js"></script>
   <script language="javascript" src="Controller.js"></script>
+  <style>
+    #view2 {
+      position: absolute;
+      left: 10px;
+    }
+  </style>
 </head>
-<body><foam id="cat" model="Controller"></foam></body>
+<body>
+  <div style="margin-left: 10px; margin-top: -60px;">
+    <foam model="Logo" onInit="this.timer.start()" width="600" height="110"></foam>
+    <foam id='logo2' model="Logo2" text="FOAM-Overflow" font="50px Georgia" width="600" height="110"></foam>
+  </div>
+  <foam id="cat" model="Controller"></foam>
+</body>
 </html>
