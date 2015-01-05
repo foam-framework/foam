@@ -36,7 +36,7 @@ MODEL({
     UNSUBSCRIBE_EXCEPTION: 'unsubscribe',
 
     /** Used as topic suffix to specify broadcast to all sub-topics. **/
-    WILDCARD: "*"
+    WILDCARD: '*'
   },
 
   methods: {

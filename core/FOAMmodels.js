@@ -53,6 +53,7 @@ var files = [
   'mm3Types',
   'mm4Method',
   'mm5Misc',
+  '../js/foam/ui/Window',
   'LayoutTraits', // generic, non-view specific, so no predicate
   [ 'value', IN_BROWSER ],
   [ 'view', IN_BROWSER ],

@@ -65,68 +65,11 @@ function sub(opt_args, opt_name) {
 function subWindow(w, opt_name, isBackground) {
   if ( ! w ) return this.sub();
 
-  var document        = this.subDocument ? this.subDocument(w.document) : w.document;
-  var installedModels = document.installedModels || ( document.installedModels = {});
-
-  var map = {
-    registerModel_: function(model) {
-      // TODO(kgr): If Traits have CSS then it will get installed more than once.
-      // TODO(kgr): Add package support.
-      for ( var m = model ; m && m.getPrototype ; m = m.extendsModel && this[m.extendsModel] ) {
-        if ( installedModels[m.id] ) return;
-        installedModels[m.id] = true;
-        arequireModel(m)(function(m) {
-          m.getPrototype().installInDocument(this, document);
-        }.bind(this));
-      }
-    },
-    addStyle: function(css) {
-      var s = document.createElement('style');
-      s.innerHTML = css;
-      this.document.head.appendChild(s);
-    },
-    isBackground: !!isBackground,
-    window: w,
-    document: document,
-    console: w.console,
-    log: w.console.log.bind(console),
-    warn: w.console.warn.bind(console),
-    info: w.console.info.bind(console),
-    error: w.console.error.bind(console),
-    $: function(id) {
-      if ( document.FOAM_OBJECTS && document.FOAM_OBJECTS[id] )
-        return document.FOAM_OBJECTS[id];
-
-      return document.getElementById(id);
-    },
-    $$: function(cls) {
-      return document.getElementsByClassName(cls);
-    },
-    dynamic: function(fn, opt_fn) { Events.dynamic(fn, opt_fn, this); },
-    animate: function(duration, fn, opt_interp, opt_onEnd) {
-      return Movement.animate(duration, fn, opt_interp, opt_onEnd, this);
-    },
-    memento: w.WindowHashValue && w.WindowHashValue.create({window: w}),
-    setTimeout: w.setTimeout.bind(w),
-    clearTimeout: w.clearTimeout.bind(w),
-    setInterval: w.setInterval.bind(w),
-    clearInterval: w.clearInterval.bind(w),
-    requestAnimationFrame: function(f) { console.assert(w.requestAnimationFrame, 'requestAnimationFrame not defined'); return w.requestAnimationFrame(f); },
-    cancelAnimationFrame: w.cancelAnimationFrame && w.cancelAnimationFrame.bind(w)
-  };
-
-  if ( isBackground ) {
-    map.requestAnimationFrame = function(f) { return w.setTimeout(f, 16); };
-    map.cancelAnimationFrame = map.clearTimeout;
-  }
-
-  var X = this.sub(map, opt_name);
-  w.X = X;
-  return X;
+  return foam.ui.Window.create({window: w, name: opt_name, isBackground: isBackground}, this).X;
 }
 
-// Using the existence of 'process' to determine that we're running in Node.
-var X = this.subWindow(window, 'DEFAULT WINDOW', typeof process === 'object').sub({IN_WINDOW: false}, 'TOP-X');
+var X = this.sub({});
+
 var _ROOT_X = X;
 
 var foam = {};

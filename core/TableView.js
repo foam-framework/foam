@@ -32,6 +32,8 @@ CLASS({
 
   label: 'Table View',
 
+  requires: [ 'EditColumnsView' ],
+
   properties: [
     {
       name:  'model',
@@ -194,7 +196,7 @@ CLASS({
     {
       name: 'onEditColumns',
       code: function(evt) {
-        var v = EditColumnsView.create({
+        var v = this.EditColumnsView.create({
           model:               this.model,
           properties:          this.properties || this.model.tableProperties,
           availableProperties: this.model.properties
