@@ -7,6 +7,18 @@
     <script language="javascript"
             src="../js/foam/ui/polymer/gen/ModelGenerator.js"></script>
 
+    <!--
+
+      Below is a list that approximates non-test and non-demo Polymer
+      component html files (as of 2015-01-05), installed via bower into
+      ../bower_components.
+
+      With these components installed, this document's DetailView will
+      contain a <textarea> with the JSON for an array of FOAM models that
+      wrap the associated Polymer components.
+
+    -->
+
     <link rel="import" href="../bower_components/core-a11y-keys/core-a11y-keys.html">
     <link rel="import" href="../bower_components/core-ajax/core-ajax.html">
     <link rel="import" href="../bower_components/core-ajax/core-xhr.html">
@@ -121,10 +133,14 @@
     <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
     <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 
-</head>
-<body>
+  </head>
+  <body>
 
-  <foam model="foam.ui.polymer.gen.ModelGenerator"></foam>
+    <p>When <i>Xhr Count</i> reaches 0, <i>Components JSON</i> below will
+      contain valid model definitions for all Polymer components included in
+      this document.</p>
 
-</body>
+    <foam model="foam.ui.polymer.gen.ModelGenerator"></foam>
+
+  </body>
 </html>
