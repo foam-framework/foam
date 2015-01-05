@@ -45,6 +45,28 @@ var questions = JSONUtil.arrayToObjArray(X, [
     question: function() {/*
     */},
     answer: function() {/*
+ Reactive functions, like isAvailable and isEnabled, need to be coded so that you call all of your dependencies every time.  So instead of doing:
+
+<code>
+return value1 && value2;
+</code>
+or:
+<code>
+return value1 || value2;
+</code>
+or
+<code>
+return value1 ? value2 : value3;
+</code>
+you do something like:
+<code>
+var v1 = value1;
+var v2 = value2;
+
+return v1 && v2;  (or v1 || v2, or whatever your expression is).
+</code>
+
+This is because FOAM will track all of the values that  you use in your expression to update it when any of those values change.  But if you do value1 && value2 and value1 is false, then value2 will never get called and FOAM won't know that you depend on it once value1 changes to true.
     */},
   },
   {
