@@ -275,7 +275,8 @@ CLASS({
   name: 'DocBrowserController',
   requires: ['MDAO',
              'DocBrowserView',
-             'ControllerView'],
+             'ControllerView',
+             'foam.documentation.DocViewPicker'],
 
   documentation: function() {  /*
     <p>Some documentation for the $$DOC{ref:'.'} model.</p>
@@ -389,28 +390,30 @@ CLASS({
       //This is to make sure getPrototype is called, even if the model object
       //has been created without a .create or .getPrototype having been called
       //yet.
-      for ( var key in UNUSED_MODELS ) {
-        var modl = FOAM.lookup(key, this.X);
-        modl.getPrototype && modl.getPrototype();
-      }
-      for ( var key in USED_MODELS ) {
-        var modl = FOAM.lookup(key, this.X);
-        modl.getPrototype && modl.getPrototype();
-      }
+//       for ( var key in UNUSED_MODELS ) {
+//         var modl = FOAM.lookup(key, this.X);
+//         modl.getPrototype && modl.getPrototype();
+//       }
+//       for ( var key in USED_MODELS ) {
+//         var modl = FOAM.lookup(key, this.X);
+//         modl.getPrototype && modl.getPrototype();
+//       }
 
       // All models are now in USED_MODELS
-      for ( var key in USED_MODELS ) {
-        var m = FOAM.lookup(key, this.X);
-        if ( ! m.getPrototype ) continue;
-        m.getPrototype();
-        newDAO.put(m);
-      };
-
-      // Add in non-model things like Interfaces
-      for ( var key in NONMODEL_INSTANCES ) {
-        var m = FOAM.lookup(key, this.X);
-        newDAO.put(m);
-      };
+      [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
+        for ( var key in collection ) {
+          var m = FOAM.lookup(key, this.X);
+          //if ( ! m.getPrototype ) continue;
+          //m.getPrototype();
+          newDAO.put(m);
+        };
+      }.bind(this));
+      
+//       // Add in non-model things like Interfaces
+//       for ( var key in NONMODEL_INSTANCES ) {
+//         var m = FOAM.lookup(key, this.X);
+//         newDAO.put(m);
+//       };
 
 
       // load up books

@@ -3,7 +3,6 @@
     <script src="debugMode.js"></script>
     <script language="javascript" src="../../core/bootFOAM.js"></script>
     <title>FOAM Documentation Browser</title>
-    <link rel="stylesheet" type="text/css" href="../../core/foam.css" />
     <!-- <link rel="stylesheet" type="text/css" href="docbrowser.css" /> -->
     <script src="docfeatureviews.js"></script>
     <script src="docviews.js"></script>
@@ -15,7 +14,7 @@
     <script src="../../core/dataviews.js"></script>
   </head>
   <body>
-    <script>
+<!--    <script>
       apar(
         arequire('foam.graphics.CView'),
         arequire('DocBrowserController'),
@@ -27,6 +26,7 @@
         var view = Y.DocBrowserView.create({ data: controller });
         view.write(document);
       });
-    </script>
-  </body>
+    </script> -->
+    <foam id="docbrowser" model="DocBrowserController" view="DocBrowserView">
+    </body>
 </html>

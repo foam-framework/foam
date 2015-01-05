@@ -1,0 +1,146 @@
+<html>
+  <head>
+
+    <title>Polymer => FOAM</title>
+
+    <script language="javascript" src="../core/bootFOAM.js"></script>
+    <script language="javascript"
+            src="../js/foam/ui/polymer/gen/ModelGenerator.js"></script>
+
+    <!--
+
+      Below is a list that approximates non-test and non-demo Polymer
+      component html files (as of 2015-01-05), installed via bower into
+      ../bower_components.
+
+      With these components installed, this document's DetailView will
+      contain a <textarea> with the JSON for an array of FOAM models that
+      wrap the associated Polymer components.
+
+    -->
+
+    <link rel="import" href="../bower_components/core-a11y-keys/core-a11y-keys.html">
+    <link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+    <link rel="import" href="../bower_components/core-ajax/core-xhr.html">
+    <link rel="import" href="../bower_components/core-ajax/demo-progress.html">
+    <link rel="import" href="../bower_components/core-animated-pages/core-animated-pages.html">
+    <link rel="import" href="../bower_components/core-animated-pages/transitions/cascade-transition.html">
+    <link rel="import" href="../bower_components/core-animated-pages/transitions/core-transition-pages.html">
+    <link rel="import" href="../bower_components/core-animated-pages/transitions/cross-fade.html">
+    <link rel="import" href="../bower_components/core-animated-pages/transitions/hero-transition.html">
+    <link rel="import" href="../bower_components/core-animated-pages/transitions/list-cascade.html">
+    <link rel="import" href="../bower_components/core-animated-pages/transitions/scale-up.html">
+    <link rel="import" href="../bower_components/core-animated-pages/transitions/slide-down.html">
+    <link rel="import" href="../bower_components/core-animated-pages/transitions/slide-from-bottom.html">
+    <link rel="import" href="../bower_components/core-animated-pages/transitions/slide-from-right.html">
+    <link rel="import" href="../bower_components/core-animated-pages/transitions/slide-up.html">
+    <link rel="import" href="../bower_components/core-animated-pages/transitions/tile-cascade.html">
+    <link rel="import" href="../bower_components/core-animation/core-animation-group.html">
+    <link rel="import" href="../bower_components/core-animation/core-animation.html">
+    <link rel="import" href="../bower_components/core-animation/web-animations.html">
+    <link rel="import" href="../bower_components/core-collapse/core-collapse.html">
+    <link rel="import" href="../bower_components/core-component-page/core-component-page.html">
+    <link rel="import" href="../bower_components/core-doc-viewer/core-doc-viewer.html">
+    <link rel="import" href="../bower_components/core-doc-viewer/elements/core-doc-page.html">
+    <link rel="import" href="../bower_components/core-doc-viewer/elements/core-doc-toc.html">
+    <link rel="import" href="../bower_components/core-drag-drop/core-drag-drop.html">
+    <link rel="import" href="../bower_components/core-drawer-panel/core-drawer-panel.html">
+    <link rel="import" href="../bower_components/core-dropdown/core-dropdown-base.html">
+    <link rel="import" href="../bower_components/core-dropdown/core-dropdown.html">
+    <link rel="import" href="../bower_components/core-dropdown-menu/core-dropdown-menu.html">
+    <link rel="import" href="../bower_components/core-elements/core-elements.html">
+    <link rel="import" href="../bower_components/core-field/core-field.html">
+    <link rel="import" href="../bower_components/core-focusable/core-focusable.html">
+    <link rel="import" href="../bower_components/core-header-panel/core-header-panel.html">
+    <link rel="import" href="../bower_components/core-icon/core-icon.html">
+    <link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
+    <link rel="import" href="../bower_components/core-icons/av-icons.html">
+    <link rel="import" href="../bower_components/core-icons/communication-icons.html">
+    <link rel="import" href="../bower_components/core-icons/core-icons.html">
+    <link rel="import" href="../bower_components/core-icons/device-icons.html">
+    <link rel="import" href="../bower_components/core-icons/editor-icons.html">
+    <link rel="import" href="../bower_components/core-icons/hardware-icons.html">
+    <link rel="import" href="../bower_components/core-icons/image-icons.html">
+    <link rel="import" href="../bower_components/core-icons/maps-icons.html">
+    <link rel="import" href="../bower_components/core-icons/notification-icons.html">
+    <link rel="import" href="../bower_components/core-icons/png-icons.html">
+    <link rel="import" href="../bower_components/core-icons/social-icons.html">
+    <link rel="import" href="../bower_components/core-iconset/core-iconset.html">
+    <link rel="import" href="../bower_components/core-iconset-svg/core-iconset-svg.html">
+    <link rel="import" href="../bower_components/core-iconset-svg/svg-sample-icons.html">
+    <link rel="import" href="../bower_components/core-image/core-image.html">
+    <link rel="import" href="../bower_components/core-input/core-input.html">
+    <link rel="import" href="../bower_components/core-item/core-item.html">
+    <link rel="import" href="../bower_components/core-label/core-label.html">
+    <link rel="import" href="../bower_components/core-layout-grid/core-layout-grid.html">
+    <link rel="import" href="../bower_components/core-layout-trbl/core-layout-trbl.html">
+    <link rel="import" href="../bower_components/core-layout-trbl/core-slide.html">
+    <link rel="import" href="../bower_components/core-list/core-list.html">
+    <link rel="import" href="../bower_components/core-localstorage/core-localstorage.html">
+    <link rel="import" href="../bower_components/core-media-query/core-media-query.html">
+    <link rel="import" href="../bower_components/core-menu/core-menu.html">
+    <link rel="import" href="../bower_components/core-menu/core-submenu.html">
+    <link rel="import" href="../bower_components/core-menu-button/core-menu-button.html">
+    <link rel="import" href="../bower_components/core-meta/core-meta.html">
+    <link rel="import" href="../bower_components/core-overlay/core-key-helper.html">
+    <link rel="import" href="../bower_components/core-overlay/core-overlay-layer.html">
+    <link rel="import" href="../bower_components/core-overlay/core-overlay.html">
+    <link rel="import" href="../bower_components/core-pages/core-pages.html">
+    <link rel="import" href="../bower_components/core-range/core-range.html">
+    <link rel="import" href="../bower_components/core-resizable/core-resizable.html">
+    <link rel="import" href="../bower_components/core-scaffold/core-scaffold.html">
+    <link rel="import" href="../bower_components/core-scroll-header-panel/core-scroll-header-panel.html">
+    <link rel="import" href="../bower_components/core-scroll-threshold/core-scroll-threshold.html">
+    <link rel="import" href="../bower_components/core-selection/core-selection.html">
+    <link rel="import" href="../bower_components/core-selector/core-selector.html">
+    <link rel="import" href="../bower_components/core-shared-lib/core-shared-lib.html">
+    <link rel="import" href="../bower_components/core-signals/core-signals.html">
+    <link rel="import" href="../bower_components/core-splitter/core-splitter.html">
+    <link rel="import" href="../bower_components/core-style/core-style-modified.html">
+    <link rel="import" href="../bower_components/core-style/elements.html">
+    <link rel="import" href="../bower_components/core-style/my-theme.html">
+    <link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
+    <link rel="import" href="../bower_components/core-tooltip/core-tooltip.html">
+    <link rel="import" href="../bower_components/core-transition/core-transition-css.html">
+    <link rel="import" href="../bower_components/core-transition/core-transition.html">
+    <link rel="import" href="../bower_components/paper-button/paper-button-base.html">
+    <link rel="import" href="../bower_components/paper-button/paper-button.html">
+    <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+    <link rel="import" href="../bower_components/paper-dialog/paper-action-dialog.html">
+    <link rel="import" href="../bower_components/paper-dialog/paper-dialog-base.html">
+    <link rel="import" href="../bower_components/paper-dialog/paper-dialog-transition.html">
+    <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+    <link rel="import" href="../bower_components/paper-dropdown/paper-dropdown-transition.html">
+    <link rel="import" href="../bower_components/paper-dropdown/paper-dropdown.html">
+    <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+    <link rel="import" href="../bower_components/paper-elements/paper-elements.html">
+    <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+    <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+    <link rel="import" href="../bower_components/paper-input/paper-autogrow-textarea.html">
+    <link rel="import" href="../bower_components/paper-input/paper-input-decorator.html">
+    <link rel="import" href="../bower_components/paper-input/paper-input.html">
+    <link rel="import" href="../bower_components/paper-item/paper-item.html">
+    <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+    <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+    <link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+    <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+    <link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+    <link rel="import" href="../bower_components/paper-shadow/paper-shadow.html">
+    <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+    <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+    <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+    <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+    <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+    <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+
+  </head>
+  <body>
+
+    <p>When <i>Xhr Count</i> reaches 0, <i>Components JSON</i> below will
+      contain valid model definitions for all Polymer components included in
+      this document.</p>
+
+    <foam model="foam.ui.polymer.gen.ModelGenerator"></foam>
+
+  </body>
+</html>

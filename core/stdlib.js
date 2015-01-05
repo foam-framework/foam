@@ -272,7 +272,12 @@ MODEL({
       name: '$UID',
       getter: (function() {
         var id = 1;
-        return function() { return this.$UID__ || (this.$UID__ = id++); };
+        return function() {
+          if (this.$UID__) return this.$UID__;
+          Object.defineProperty(this, '$UID__', { value: id });
+          ++id;
+          return this.$UID__;
+        };
       })()
     }
   ],
