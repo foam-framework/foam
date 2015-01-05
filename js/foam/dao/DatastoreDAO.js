@@ -54,45 +54,43 @@ MODEL({
 
 MODEL({
   name: 'DatastoreSerializationTrait',
-  properties: [
-    {
-      name: 'datastoreKeyMap_',
-      lazyFactory: function() {
-        var ps = this.model_.properties;
-        var map = {};
-        for ( var i = 0 ; i < ps.length ; i++ ) {
-          var prop = ps[i];
-          console.log(prop.name + ': ' + prop.datastoreKey);
-          if ( prop.datastoreKey ) {
-            map[prop.datastoreKey] = prop.name;
-          }
-        }
-        return map;
-      }
-    }
-  ],
-
+  requires: ['DatastoreKey'],
   methods: {
     // Takes the JSON-parsed object from the Datastore and pulls it apart into
     // the FOAM model.
     fromDatastore: function(json) {
       // Datastore object is a "key" field and "properties" object.
       // Ignoring the key for now, iterate the properties object.
-      var keys = Object.keys(json.properties);
-      for ( var i = 0 ; i < keys.length ; i++ ) {
-        var foamKey = this.datastoreKeyMap_[keys[i]];
-        if ( ! foamKey ) {
-          console.warn('Unhandled datastore property: ' + keys[i]);
-          continue;
+      var key = this.DatastoreKey.create({ path: json.key.path });
+      console.log('Determined key to be ' + key.string);
+      this.id = key.string;
+
+      for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
+        var prop = this.model_.properties[i];
+        if ( prop.datastoreKey ) {
+          this[prop.name] = prop.fromDatastore(json.properties[prop.datastoreKey]);
         }
-        console.log('Datastore key: ' + keys[i] + ', foamKey: ' + foamKey + ', constant: ' + foamKey.constantize());
-        var prop = this.model_[foamKey.constantize()];
-        if ( ! prop ) {
-          console.warn('Failed to find corresponding FOAM property ' + foamKey + ' for datastore property ' + keys[i]);
-          continue;
-        }
-        this[foamKey] = prop.fromDatastore(json.properties[keys[i]]);
       }
+    },
+
+    toDatastore: function() {
+      // Returns the serialized object with its key and properties.
+      var json = {
+        properties: {}
+      };
+      if ( this.id ) {
+        var key = this.DatastoreKey.create({ string: this.id });
+        console.log('key found', key.path, key.string);
+        json.key = { path: key.path };
+      }
+
+      for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
+        var prop = this.model_.properties[i];
+        if ( prop.datastoreKey ) {
+          json.properties[prop.datastoreKey] = prop.toDatastore(this[prop.name]);
+        }
+      }
+      return json;
     }
   }
 });
@@ -188,11 +186,48 @@ MODEL({
   }
 });
 
+MODEL({
+  name: 'DatastoreKey',
+  properties: [
+    {
+      name: 'path',
+      factory: function() { return []; },
+      postSet: function(old, nu) {
+        delete this.instance_['string'];
+      }
+    },
+    {
+      name: 'string',
+      getter: function() {
+        if ( ! this.instance_['string'] ) {
+          var str = '';
+          for ( var i = 0 ; i < this.path.length ; i++ ) {
+            str += '/' + this.path[i].kind + '/' + this.path[i].id;
+          }
+          this.instance_['string'] = str;
+        }
+
+        return this.instance_['string'];
+      },
+      setter: function(nu) {
+        var parts = nu.split('/');
+        var path = [];
+        for ( var i = 1 ; i < parts.length ; i += 2 ) {
+          path.push({ kind: parts[i], id: parts[i+1] });
+        }
+        this.path = path;
+        this.instance_['string'] = nu; // Needs to be at the end, or it will get overwritten.
+      }
+    }
+  ]
+});
+
 
 MODEL({
   name: 'DatastoreDAO',
   extendsModel: 'AbstractDAO',
   requires: [
+    'DatastoreKey'
   ],
 
   documentation: function() {/*
@@ -210,9 +245,14 @@ MODEL({
       required: true
     },
     {
+      name: 'kind',
+      documentation: 'The Datastore Entity kind for this DAO. Defaults to the model name.',
+      defaultValueFn: function() { return this.model.name; }
+    },
+    {
       name: 'keyPrefix',
-      documentation: 'Set this to a string ("/SomeEntity/someId/AnotherEntity/otherId") or [["SomeEntity", "someId"], ["AnotherEntity", "otherId"]].',
-      defaultValue: '',
+      documentation: 'Set this to a string ("/SomeEntity/someId/AnotherEntity/otherId") or [{ kind: "SomeEntity", id: "someId" }, { kind: "AnotherEntity", id: "otherId" }].',
+      factory: function() { return this.DatastoreKey.create(); },
       preSet: function(old, nu) {
         if ( Array.isArray(nu) ) {
           var str = '';
@@ -239,8 +279,8 @@ MODEL({
       // Currently ignoring this, and letting the consistency be the default
       // (strong for ancestor queries, ie. those with key length > 1, eventual
       // otherwise.
-      var keyPath = this.stringToKey(id);
-      var req = { keys: [{ path: keyPath }] };
+      var key = this.DatastoreKey.create({ string: id });
+      var req = { keys: [{ path: key.path }] };
 
       aseq(this.datastore.withClientExecute('lookup', req))(function(res) {
         // Response contains "found", "missing" and "deferred" sections.
@@ -262,19 +302,74 @@ MODEL({
       }.bind(this));
     },
 
-    // Turns a string key into a [{ kind: 'MyEntity', id: '123' }, ...] array.
-    stringToKey: function(id) {
-      var keyParts = id.split('/');
-      var keyPath = [];
-      // keyParts is, eg. ['', 'Foo', '123', 'Bar', '456'].
-      for ( var i = 1 ; i < keyParts.length ; i += 2 ) {
-        keyPath.push({
-          kind: keyParts[i],
-          id: keyParts[i+1]
-        });
+    put: function(obj, sink) {
+      aseq(
+        this.datastore.withClientExecute('beginTransaction', {}),
+        function(ret, res) {
+          // This contains the key, if an ID is defined.
+          var serialized = obj.toDatastore();
+          console.log('serialized', serialized);
+
+          var requestKey;
+          if ( obj.id ) {
+            requestKey = 'update';
+          } else {
+            requestKey = 'insertAutoId';
+            var key = this.DatastoreKey.create({ string: this.keyPrefix });
+            // Augment this key with a final segment, giving the kind.
+            key.path.push({ kind: this.kind });
+            serialized.key = { path: key.path };
+          }
+
+          var req = {
+            transaction: res.transaction,
+            mode: 'TRANSACTIONAL',
+            mutation: {}
+          };
+          req.mutation[requestKey] = [serialized];
+          console.log('request', require('util').inspect(req, { depth: null }));
+          aseq(this.datastore.withClientExecute('commit', req))(ret);
+        }.bind(this)
+      )(function(res) {
+        // The response contains insertAutoIdKeys, if applicable.
+        console.log('response', res);
+        if ( res && res.mutationResult && res.mutationResult.insertAutoIdKeys ) {
+          var key = this.DatastoreKey.create({ path: res.mutationResult.insertAutoIdKeys[0].path });
+          obj = obj.clone();
+          obj.id = key.string;
+        }
+
+        // Send a put.
+        this.notify_('put', [obj]);
+        sink && sink.put && sink.put(obj);
+      }.bind(this));
+    },
+
+    select: function(sink, options) {
+      // Datastore doesn't support OR with a single query, only AND.
+      // We also always add a filter on the __key__ for the ancestor, if the
+      // prefix is set.
+      // TODO(braden): Handle OR queries by merging several requests.
+      // TODO(braden): Handle Datastore's pagination of large single requests.
+      var query = options && options.query;
+      var clauses = [];
+      if ( query ) {
+        query = query.partialEval();
+        var q = [query];
+        while ( q.length ) {
+          var next = q.shift();
+          if ( AndExpr.isInstance(next) ) {
+            next.args.forEach(function(e) { q.push(e); });
+          } else if ( OrExpr.isInstance(next) ) {
+            console.warn('Cannot express OR conditions. Skipping the whole clause!');
+          } else if ( InExpr.isInstance(next) ) {
+            next.arg2.forEach(function(val) {
+              clauses.push({ 
+            // For any single expression, convert it appropriately.
+
+        }
       }
-      return keyPath;
-    }
+
   }
 });
 
@@ -285,6 +380,9 @@ MODEL({
   name: 'Activity',
   traits: ['DatastoreSerializationTrait'],
   properties: [
+    {
+      name: 'id'
+    },
     {
       model_: 'DatastoreStringProperty',
       name: 'title',
@@ -308,6 +406,13 @@ MODEL({
 var datastore = X.Datastore.create({ datasetId: 'timetogetherapp' });
 X.datastore = datastore;
 
-var dao = X.DatastoreDAO.create({ model: X.Activity });
-dao.find('/Couple/1001/Activity/7002', console.log.json);
+X.dao = X.DatastoreDAO.create({ model: X.Activity, keyPrefix: '/Couple/1001' });
+
+var act = X.Activity.create({
+  title: 'New test activity',
+  weight: 3,
+  isDeleted: false
+});
+
+X.dao.put(act, console.log.json);
 
