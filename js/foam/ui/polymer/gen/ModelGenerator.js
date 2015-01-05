@@ -42,7 +42,13 @@
     name: 'ModelGenerator',
     package: 'foam.ui.polymer.gen',
 
-    requires: ['XHR', 'foam.ui.polymer.gen.Queue'],
+    requires: [
+      'XHR',
+      'EasyDAO',
+      'DAOListView',
+      'foam.ui.polymer.gen.Queue',
+      'foam.ui.polymer.gen.DemoView'
+    ],
 
     constants: {
       BASE_MODEL: {
@@ -55,6 +61,17 @@
     },
 
     properties: [
+      {
+        model_: 'StringArrayProperty',
+        name: 'linksToLoad',
+        factory: function() {
+          return [
+            '../bower_components/paper-button/paper-button.html',
+            '../bower_components/paper-checkbox/paper-checkbox.html'
+          ];
+        },
+        view: 'TextAreaView'
+      },
       {
         type: 'foam.ui.polymer.gen.Queue',
         name: 'polymers',
@@ -69,7 +86,7 @@
       {
         model_: 'ArrayProperty',
         name: 'components',
-        factory: function() { return [];},
+        factory: function() { return []; },
         hidden: true
       },
       {
@@ -130,7 +147,53 @@
           ];
         },
         hidden: true
-      }
+      },
+      {
+        model_: 'BooleanProperty',
+        name: 'demosRendered',
+        defaultValue: false,
+        hidden: true
+      },
+      {
+        model_: 'StringArrayProperty',
+        name: 'demoNameWhitelist',
+        factory: function() {
+          return [
+            'paper'
+          ];
+        },
+        hidden: true
+      },
+      {
+        model_: 'StringArrayProperty',
+        name: 'demoNameBlacklist',
+        factory: function() {
+          return [
+            'base',
+            'demo',
+            'test'
+          ];
+        },
+        hidden: true
+      },
+      {
+        model_: 'IntProperty',
+        name: 'modelsLoadingCount',
+        defaultValue: 0
+      },
+      {
+        name: 'models',
+        view: {
+          model_: 'DAOListView',
+          rowView: 'foam.ui.polymer.gen.DemoView'
+        },
+        factory: function() {
+          return this.EasyDAO.create({
+            daoType: 'MDAO',
+            model: 'Model'
+          });
+        }
+      },
     ],
 
     methods: [
@@ -464,6 +527,65 @@
                 return name === 'value';
               }) ) { return value.value; }
           else       return value;
+        }
+      },
+      {
+        name: 'componentNameFilter',
+        code: function(name) {
+          return this.demoNameWhitelist.some(function(wlName) {
+            return name.indexOfIC(wlName) >= 0;
+          }) && ! this.demoNameBlacklist.some(function(blName) {
+            return name.indexOfIC(blName) >= 0;
+          });
+        }
+      }
+    ],
+
+    actions: [
+      {
+        name: 'loadLink',
+        label: 'Load Links',
+        action: function() {
+          var linksHTML = '';
+          this.linksToLoad.forEach(function(linkToLoad) {
+            var link = document.createElement('link');
+            link.setAttribute('rel', 'import');
+            link.setAttribute('href', linkToLoad);
+            document.head.appendChild(link);
+            linksHTML += link.outerHTML;
+          }.bind(this));
+          this.putLinks(linksHTML);
+          this.loadLinks();
+        }
+      },
+      {
+        name: 'importModels',
+        isEnabled: function() {
+          this.xhrCount;
+          return this.xhrCount <= 0;
+        },
+        action: function() {
+          this.components.forEach(function(comp) {
+            try {
+              CLASS(comp);
+              ++this.modelsLoadingCount;
+            } catch (e) { debugger; }
+          }.bind(this));
+          this.components.forEach(function(comp) {
+            try {
+              arequire(comp.package + '.' + comp.name)(
+                  function(model) {
+                    if ( this.componentNameFilter(model.name) ) {
+                      this.models.put(model);
+                    }
+                    --this.modelsLoadingCount;
+                    if ( this.modelsLoadingCount <= 0 ) {
+                      this.modelsLoadingCount = 0;
+                      this.linksToLoad = [];
+                    }
+                  }.bind(this));
+            } catch (e) { debugger; }
+          }.bind(this));
         }
       }
     ]
