@@ -442,6 +442,29 @@ MODEL({
         }.bind(this)
       )(future.set);
       return future.get;
+    },
+
+    remove: function(id, sink) {
+      id = id.id || id;
+      var key = this.DatastoreKey.create({ string: id });
+      aseq(
+        this.datastore.withClientExecute('beginTransaction', {}),
+        function(ret, res) {
+          var req = {
+            transaction: res.transaction,
+            mode: 'TRANSACTIONAL',
+            mutation: {
+              delete: [{ path: key.path }]
+            }
+          };
+          this.datastore.withClientExecute('commit', req)(ret);
+        }.bind(this)
+      )(function(res) {
+        if ( res ) {
+          sink && sink.remove && sink.remove(id);
+          this.notify_('remove', [id]);
+        }
+      }.bind(this));
     }
   }
 });
@@ -481,5 +504,4 @@ X.datastore = datastore;
 
 X.dao = X.DatastoreDAO.create({ model: X.Activity, keyPrefix: '/Couple/1001' });
 
-X.dao.where(EQ(X.Activity.WEIGHT, 5)).select(console.log.json);
 
