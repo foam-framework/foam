@@ -45,7 +45,7 @@ CLASS({
       var c = this.canvas;
 
       var Y = 120;
-      var X = 110+Math.random()*310;
+      var X = 10+Math.random()*310;
 
       var circle = Circle.create({
         x: X,
@@ -86,6 +86,10 @@ CLASS({
     {
       name: 'text',
       defaultValue: 'FOAM'
+    },
+    {
+      name: 'font',
+      defaultValue: '120px Georgia'
     }
   ],
 
@@ -97,7 +101,7 @@ CLASS({
       c.fillStyle = 'white';
       c.fillRect(0, 0, 700, 140);
 
-      c.font = '120px Georgia';
+      c.font = this.font;
       c.fillStyle = 'rgba(0,0,0,1)';
       c.strokeStyle = 'white';
 
@@ -110,10 +114,10 @@ CLASS({
       c.lineWidth = 1;
       c.strokeStyle = 'gray';
       c.globalCompositeOperation = '';
-      c.strokeText(this.text, 100, 100);
+      c.strokeText(this.text, 0, 100);
       c.globalCompositeOperation = 'destination-out';
 
-      c.fillText(this.text, 100, 100);
+      c.fillText(this.text, 0, 100);
 
 //      c.lineWidth = 5;
 //      c.strokeText(this.text, 100, 100);
