@@ -62,7 +62,6 @@ MODEL({
       // Datastore object is a "key" field and "properties" object.
       // Ignoring the key for now, iterate the properties object.
       var key = this.DatastoreKey.create({ path: json.key.path });
-      console.log('Determined key to be ' + key.string);
       this.id = key.string;
 
       for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
@@ -251,16 +250,14 @@ MODEL({
     },
     {
       name: 'keyPrefix',
-      documentation: 'Set this to a string ("/SomeEntity/someId/AnotherEntity/otherId") or [{ kind: "SomeEntity", id: "someId" }, { kind: "AnotherEntity", id: "otherId" }].',
+      documentation: 'Set this to a string ("/SomeEntity/someId/AnotherEntity/otherId"), array thus [{ kind: "SomeEntity", id: "someId" }, { kind: "AnotherEntity", id: "otherId" }], or DatastoreKey.',
       factory: function() { return this.DatastoreKey.create(); },
       preSet: function(old, nu) {
-        if ( Array.isArray(nu) ) {
-          var str = '';
-          for ( var i = 0 ; i < nu.length ; i++ ) {
-            str += '/' + nu[0] + '/' + nu[1];
-          }
-          return str;
-        }
+        if ( this.DatastoreKey.isInstance(nu) ) return nu;
+        if ( Array.isArray(nu) ) return this.DatastoreKey.create({ path: nu });
+        if ( typeof nu === 'string' ) return this.DatastoreKey.create({ string: nu });
+
+        console.warn('Unknown keyPrefix! ' + nu);
         return nu;
       }
     }
@@ -349,8 +346,8 @@ MODEL({
       // Datastore doesn't support OR with a single query, only AND.
       // We also always add a filter on the __key__ for the ancestor, if the
       // prefix is set.
+      // TODO(braden): Skip and limit.
       // TODO(braden): Handle OR queries by merging several requests.
-      // TODO(braden): Handle Datastore's pagination of large single requests.
       var query = options && options.query;
       var clauses = [];
       if ( query ) {
@@ -363,13 +360,90 @@ MODEL({
           } else if ( OrExpr.isInstance(next) ) {
             console.warn('Cannot express OR conditions. Skipping the whole clause!');
           } else if ( InExpr.isInstance(next) ) {
-            next.arg2.forEach(function(val) {
-              clauses.push({ 
-            // For any single expression, convert it appropriately.
-
+            console.warn('Datastore DAO cannot express IN expressions (equivalent to OR). Skipping the whole clause!');
+          } else {
+            // EQ, LT(E), GT(E).
+            var operator = EqExpr.isInstance(next) ? 'equal' :
+                LtExpr.isInstance(next) ? 'lessThan' :
+                LteExpr.isInstance(next) ? 'lessThanOrEqual' :
+                GtExpr.isInstance(next) ? 'greaterThan' :
+                GteExpr.isInstance(next) ? 'greaterThanOrEqual' : '';
+            if ( operator === '' ) {
+              console.warn('Unrecognized operator type: ' + next.model_.name);
+              continue;
+            }
+            var propName = next.arg1.datastoreKey;
+            var value = next.arg1.toDatastore(next.arg2.f ? next.arg2.f() : next.arg2);
+            console.log('value: ' + value);
+            clauses.push({
+              propertyFilter: {
+                operator: operator,
+                property: { name: propName },
+                value: value
+              }
+            });
+          }
         }
       }
 
+      if ( this.keyPrefix ) {
+        // Add ancestor filters for each segment of the prefix.
+        clauses.push({
+          propertyFilter: {
+            operator: 'hasAncestor',
+            property: { name: '__key__' },
+            value: { keyValue: { path: this.keyPrefix.path } }
+          }
+        });
+      }
+
+      // That's all the clauses. Now to build the whole query.
+      var req = {
+        query: {
+          kinds: [{ name: this.kind }]
+        }
+      };
+      if ( clauses.length === 1 ) {
+        req.query.filter = clauses[0];
+      } else if ( clauses.length > 1 ) {
+        req.query.filter = {
+          compositeFilter: {
+            operator: 'AND',
+            filters: clauses
+          }
+        };
+      }
+
+      console.log('====== Request ========');
+      console.log(require('util').inspect(req, { depth: null }));
+      console.log('=============================');
+
+      var future = afuture();
+      var afunc = aseq(
+        this.datastore.withClientExecute('runQuery', req),
+        function(ret, res) {
+          // TODO(braden): Handle Datastore's pagination of large single requests.
+          // We need to follow the DAO API of returning either all the values or
+          // up to the limit.
+          // We get a batch with some entries, and info about whether there are
+          // more.
+
+          console.log('====== Raw Response =====');
+          console.log(require('util').inspect(res, { depth: null }));
+          console.log('====== Sink Output ======');
+          var rawEntries = res.batch.entityResults;
+          for ( var i = 0 ; i < rawEntries.length ; i++ ) {
+            var cooked = this.model.create();
+            cooked.fromDatastore(rawEntries[i].entity);
+            sink && sink.put && sink.put(cooked);
+          }
+
+          sink && sink.eof && sink.eof();
+          ret(sink);
+        }.bind(this)
+      )(future.set);
+      return future.get;
+    }
   }
 });
 
@@ -408,11 +482,5 @@ X.datastore = datastore;
 
 X.dao = X.DatastoreDAO.create({ model: X.Activity, keyPrefix: '/Couple/1001' });
 
-var act = X.Activity.create({
-  title: 'New test activity',
-  weight: 3,
-  isDeleted: false
-});
-
-X.dao.put(act, console.log.json);
+X.dao.where(EQ(X.Activity.WEIGHT, 5)).select(console.log.json);
 
