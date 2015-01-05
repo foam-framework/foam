@@ -20,6 +20,7 @@ CLASS({
 
   constants: {
     COLOURS: ['#33f','#f00','#fc0','#33f','#3c0']
+    // COLOURS: ['#333','#aaa','#ccc','#888','#3999']
   },
 
   properties: [
@@ -50,8 +51,9 @@ CLASS({
         x: X,
         y: Y,
         r: 5,
+        alpha: 0.8,
         color: undefined,
-        borderWidth: 2,
+        borderWidth: 3,
         border: this.COLOURS[Math.floor(Math.random() * this.COLOURS.length)]});
 
       this.addChild(circle);
@@ -60,12 +62,8 @@ CLASS({
       M.compile([
         [
           [4000, function() {
-            circle.x = circle.x + Math.random()*100-50;
-            circle.alpha = 0.2;
-           },
-           Math.sqrt
-          ],
-          [4000, function() {
+            circle.x = circle.x + Math.random()*200-100;
+            circle.alpha = 0;
             circle.y = Y - 100 - Math.random() * 50;
             circle.r = 25 + Math.random() * 50;
             circle.borderWidth = 12;
