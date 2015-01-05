@@ -64,6 +64,7 @@ var questions = JSONUtil.arrayToObjArray(X, [
     question: function() {/*
     */},
     answer: function() {/*
+      <a href="http://foam-framework.github.io/foam/foam/apps/docs/docbrowser.html">http://foam-framework.github.io/foam/foam/apps/docs/docbrowser.html</a>
     */},
   },
   {
@@ -83,6 +84,35 @@ var questions = JSONUtil.arrayToObjArray(X, [
     question: function() {/*
     */},
     answer: function() {/*
+      You have a number of options: <ol>
+        <li>With your regular CSS</li> You can store your CSS in &lt;style&gt; blocks or or in external .css files, just as you normally would.
+        <li>Internal FOAM Templates</li> You can create a special FOAM template named 'CSS' which will automatically get installed into your document. Ex.
+        <code>
+          CLASS({
+            name: 'MyView',
+            templates: [
+              function CSS() {&#47;*
+                someSelector {
+                  ...
+                }
+                ...
+              *&#47;}
+            ],
+            ...
+          });
+        </code>
+        <li>External FOAM Templates</li> You can exclude the template body from your Model and then store the template in an external file.
+        <code>
+          CLASS({
+            name: 'MyView',
+            templates: [
+              { name: 'CSS' }
+            ],
+            ...
+          });
+        </code>
+        Then put your CSS in an external file named 'MyView_CSS.ft'.  This applies to all templates, not just CSS.  In general, if you don't include the template body in the Model, then FOAM will look in an external file named: ModelName_TemplateName.ft.
+      </ol>
     */},
   },
   {
@@ -92,6 +122,7 @@ var questions = JSONUtil.arrayToObjArray(X, [
     question: function() {/*
     */},
     answer: function() {/*
+CSS is static, ie. it's defined on the Model, not on the instance, so that it's installed in the document only once.  As such, it doesn't have access to instance variables.
     */},
   },
   {
@@ -110,6 +141,16 @@ var questions = JSONUtil.arrayToObjArray(X, [
     question: function() {/*
     */},
     answer: function() {/*
+        Yes, just exclude the template body and store the template in an external file named: 'MyModel_MyTemplate.ft'.  The 'ft' extension stands for 'FOAM Template'.
+        <code>
+          CLASS({
+            name: 'MyModel',
+            templates: [
+              { name: 'MyTemplate' }
+            ],
+            ...
+          });
+        </code>
     */},
   },
   {
@@ -119,9 +160,7 @@ var questions = JSONUtil.arrayToObjArray(X, [
     question: function() {/*
     */},
     answer: function() {/*
-      Store your templates in an external file (see Q9) and then put your editor into Java Server Pages (JSP) mode.
-      FOAM reuses JSP syntax.
-      JSP's are a very common templating syntax and are supported by most popular editors.
+      Store your templates in an external file (see Q9) and then put your editor into Java Server Pages (JSP) mode. FOAM reuses JSP syntax. JSP's are a very common templating syntax and are supported by most popular editors.
     */},
   },
   {
@@ -131,6 +170,7 @@ var questions = JSONUtil.arrayToObjArray(X, [
     question: function() {/*
     */},
     answer: function() {/*
+      Feature-Oriented Active Modeller.  Feature-Oriented refers to the way that FOAM's meta-model is implemented and extended.  Current features include: properties, methods, actions, templates, listeners, etc., but new features can be added to meet your modelling needs.  "Modeller" refers to the fact that FOAM is Model-Oriented and "Active" denotes that FOAM maintains your Models at runtime, ie. they're still active and available for runtime inspection.  They aren't static / don't disappear after compile-time.
     */},
   },
   {

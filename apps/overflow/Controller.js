@@ -32,6 +32,9 @@ CLASS({
         padding: 16px;
         padding-top: 0;
       }
+      * {
+        overflow-wrap: break-word;
+      }
     */},
     function toDetailHTML() {/*
         <hr>
