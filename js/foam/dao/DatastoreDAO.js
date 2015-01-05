@@ -174,7 +174,7 @@ MODEL({
         function(ret, client) {
           client[method](payload).execute(function(err, res) {
             if (err) {
-              console.error('Error in ' + method + ' call: ' + err);
+              console.error('Error in ' + method + ' call: ' + require('util').inspect(err, { depth: null }));
               return;
             }
             ret(res);
@@ -416,6 +416,17 @@ MODEL({
 
       if ( options.skip ) req.query.offset = options.skip;
       if ( options.limit ) req.query.limt = options.limit;
+      if ( options.order ) {
+        req.query.order = options.order.map(function(o) {
+          var dir = DescExpr.isInstance(o) ? 'DESCENDING' : 'ASCENDING';
+          return {
+            property: {
+              name: o.arg1 ? o.arg1.datastoreKey : o.datastoreKey
+            },
+            direction: dir
+          };
+        });
+      }
 
       console.log('====== Request ========');
       console.log(require('util').inspect(req, { depth: null }));
@@ -504,4 +515,5 @@ X.datastore = datastore;
 
 X.dao = X.DatastoreDAO.create({ model: X.Activity, keyPrefix: '/Couple/1001' });
 
+X.dao.orderBy(DESC(X.Activity.WEIGHT), X.Activity.TITLE).select(console.log.json);
 
