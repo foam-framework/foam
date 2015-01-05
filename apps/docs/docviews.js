@@ -611,9 +611,11 @@ CLASS({
   name: 'ModelFullPageDocView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.ModelDocView',
-  documentation: 'A full-page documentation view for Model instances.',
 
   documentation: "A full-page documentation view for $$DOC{ref:'Model'} instances.",
+
+  requires: ['foam.documentation.SummaryDocView',
+             'foam.documentation.FeatureListDocView'],
 
   templates: [
 
@@ -658,6 +660,11 @@ CLASS({
   imports: ['subModelDAO'],
   
   documentation: "A summary documentation view for $$DOC{ref:'Model'} instances.",
+
+  requires: ['foam.documentation.DocDiagramView',
+             'foam.documentation.TextualDAOListView',
+             'foam.documentation.DocFeatureModelRefView',
+             'foam.documentation.DocBodyView'],
 
   properties: [
     'subModelDAO'
@@ -733,7 +740,9 @@ CLASS({
   name: 'InterfaceFullPageDocView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.FullPageDocView',
-  documentation: 'A full-page documentation view for Interface instances.',
+
+  requires: ['foam.views.DAOListView',
+             'foam.documentation.SimpleRowDocView'],
 
   documentation: "A full-page documentation view for $$DOC{ref:'Interface'} instances.",
 
@@ -758,6 +767,10 @@ CLASS({
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.SummaryDocView',
   documentation: 'Displays the documentation of the given interface.',
+
+  requires: ['foam.documentation.TextualDAOListView',
+             'foam.documentation.DocFeatureModelRefView',
+             'foam.documentation.DocBodyView'],
 
   methods: {
     onValueChange_: function() {
@@ -810,6 +823,9 @@ CLASS({
   extendsModel: 'foam.documentation.FullPageDocView',
   documentation: 'Displays the documentation of the given book.',
 
+  requires: ['foam.documentation.DocumentationBookSummaryDocView',
+             'foam.documentation.DocChaptersView'],
+
   templates: [
 
     function toInnerHTML()    {/*
@@ -831,6 +847,8 @@ CLASS({
   extendsModel: 'foam.documentation.SummaryDocView',
   documentation: 'Displays the documentation of the given book.',
 
+  requires: ['foam.documentation.DocBodyView'],
+  
   methods: {
     onValueChange_: function() {
       this.updateHTML();
