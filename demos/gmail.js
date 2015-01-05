@@ -1,6 +1,7 @@
 CLASS({
   name: 'GMailSyncDemo',
   requires: [
+    'CachingDAO',
     'DelayedDAO',
     'SeqNoDAO',
     'foam.core.dao.CloningDAO',
@@ -10,7 +11,11 @@ CLASS({
     'EasyOAuth2',
     'FOAMGMailMessage',
     'MDAO',
+    'IDBDAO',
+    'FutureDAO',
     'GMailMessageDAO',
+    'PersistentContext',
+    'Binding'
   ],
   properties: [
     {
@@ -37,17 +42,31 @@ CLASS({
       name: 'remoteDao',
       hidden: true,
       factory: function() {
-        return this.GMailMessageDAO.create(undefined,
-                                           this.X.sub({
-                                             XHR: this.authedXhr
-                                           }));
+        var future = afuture()
+        var Y = this.X.sub({ XHR: this.authedXhr });
+        this.persistentContext.bindObject('remoteDao',
+                                          Y.GMailMessageDAO)(future.set);
+        return this.FutureDAO.create({ future: future.get });
+      }
+    },
+    {
+      name: 'persistentContext',
+      factory: function() {
+        return this.PersistentContext.create({
+          dao: this.IDBDAO.create({ model: this.Binding }),
+          predicate: NOT_TRANSIENT,
+          context: {}
+        });
       }
     },
     {
       name: 'localMDao',
       view: 'TableView',
       factory: function() {
-        return this.MDAO.create({ model: this.FOAMGMailMessage });
+        return this.CachingDAO.create({
+          cache: this.MDAO.create({ model: this.FOAMGMailMessage }),
+          src: this.IDBDAO.create({ model: this.FOAMGMailMessage })
+        });
       }
     },
     {
