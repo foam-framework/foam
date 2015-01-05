@@ -414,9 +414,11 @@ MODEL({
         };
       }
 
+      if ( options.skip ) req.query.offset = options.skip;
+      if ( options.limit ) req.query.limt = options.limit;
+
       console.log('====== Request ========');
       console.log(require('util').inspect(req, { depth: null }));
-      console.log('=============================');
 
       var future = afuture();
       var afunc = aseq(
@@ -428,9 +430,6 @@ MODEL({
           // We get a batch with some entries, and info about whether there are
           // more.
 
-          console.log('====== Raw Response =====');
-          console.log(require('util').inspect(res, { depth: null }));
-          console.log('====== Sink Output ======');
           var rawEntries = res.batch.entityResults;
           for ( var i = 0 ; i < rawEntries.length ; i++ ) {
             var cooked = this.model.create();
