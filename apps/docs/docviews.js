@@ -701,11 +701,11 @@ CLASS({
 <%    this.destroy(); %>
 <%    if (this.data) {  %>
         <div class="introduction">
-          <h1><%=this.data.name%></h1>
-          <div class="model-info-block">
           <div class="diagram">
             $$data{ model_: 'foam.documentation.DocDiagramView' }
           </div>
+          <h1><%=this.data.name%></h1>
+          <div class="model-info-block">
 <%        if (this.data.model_ && this.data.model_.id && this.data.model_.id != "Model") { %>
             <p class="important">Implements $$DOC{ref: this.data.model_.id }</p>
 <%        } else { %>
@@ -726,9 +726,9 @@ CLASS({
             <p class="important">Traits: $$traits{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelRefView', mode: 'read-only' }</p>
 <%        } %>
           <p class="important">Sub-models: $$subModelDAO{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelDataRefView', mode: 'read-only' }</p>
-          <div class="clear">&nbsp;</div>
           </div>
           $$documentation{ model_: 'foam.documentation.DocBodyView' }
+          <div class="clear">&nbsp;</div>
         </div>
 <%    } %>
     */}

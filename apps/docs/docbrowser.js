@@ -668,6 +668,8 @@ CLASS({
       div.model-info-block {
         padding: 1em;
         margin: 1em 0 1em 0;
+      }
+      div.introduction {
         border-top: 0.1em solid black;
         border-bottom: 0.1em solid black;
       }
@@ -714,6 +716,7 @@ CLASS({
       }
 
       div.diagram {
+        padding-top: 1em;
         float: right;
       }
 
