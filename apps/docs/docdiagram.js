@@ -327,7 +327,7 @@ CLASS({
     processModelChange: function() {
       // abort if it's too early //TODO: (we import data and run its postSet before the rest is set up)
       if (!this.featureDAO || !this.modelDAO) return;
-      this.generateFeatureDAO(this.data);
+      //this.generateFeatureDAO(this.data); // TODO: fix this for when we don't already have an X.featureDAO
     },
 
     addChild: function(child) {

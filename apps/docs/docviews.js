@@ -700,13 +700,15 @@ CLASS({
   
   templates: [
 
+//           <div class="diagram">
+//             $$data{ model_: 'foam.documentation.DocDiagramView' }
+//           </div>
+
+    
     function toInnerHTML()    {/*
 <%    this.destroy(); %>
 <%    if (this.data) {  %>
         <div class="introduction">
-          <div class="diagram">
-            $$data{ model_: 'foam.documentation.DocDiagramView' }
-          </div>
           <h1><%=this.data.name%></h1>
           <div class="model-info-block">
 <%        if (this.data.model_ && this.data.model_.id && this.data.model_.id != "Model") { %>
@@ -1432,7 +1434,7 @@ CLASS({
   listeners: [
     {
       name: 'rebuildSelfDAOs',
-      isMerged: 1000,
+      isMerged: 500,
       code: function() {
         console.log("Rebuilding...");
         var self = this;
