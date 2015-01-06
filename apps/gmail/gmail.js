@@ -59,6 +59,7 @@ CLASS({
 
   requires: [
     'AppController',
+    'EMail',
     'CachingDAO',
     'ContextualizingDAO',
     'DetailView',
@@ -72,7 +73,19 @@ CLASS({
     'TouchManager',
     'foam.ui.md.ResponsiveAppControllerView',
     'lib.contacts.Contact as Contact',
-    'lib.contacts.ContactNetworkDAO as ContactNetworkDAO'
+    'lib.contacts.ContactNetworkDAO as ContactNetworkDAO',
+    'CachingDAO',
+    'foam.core.dao.Sync',
+    'foam.core.dao.MergeDAO',
+    'foam.core.dao.VersionNoDAO',
+    'PersistentContext',
+    'Binding',
+    'FOAMGMailMessage',
+    'GMailMessageDAO',
+    'FutureDAO',
+    'GMailToEMailDAO',
+    'BusyStatus',
+    'BusyFlagTracker'
   ],
 
   exports: [
@@ -109,6 +122,10 @@ CLASS({
       factory: function()  { return this.TouchManager.create(); }
     },
     {
+      name: 'busyStatus',
+      factory: function() { return this.BusyStatus.create(); }
+    },
+    {
       name: 'gestureManager',
       factory: function() { return this.GestureManager.create(); }
     },
@@ -143,29 +160,84 @@ CLASS({
       }
     },
     {
+      name: 'persistentContext',
+      factory: function() {
+        var context = {};
+        return this.PersistentContext.create({
+          dao: this.IDBDAO.create({ model: this.Binding }),
+          predicate: NOT_TRANSIENT,
+          context: context
+        });
+      }
+    },
+    {
+      name: 'remoteDao',
+      factory: function() {
+        var future = afuture();
+        this.persistentContext.bindObject('remoteDao',
+                                          this.GMailMessageDAO)(future.set);
+        return this.FutureDAO.create({ future: future.get });
+      }
+    },
+    {
+      name: 'rawGmailDao',
+      factory: function() {
+        return this.CachingDAO.create({
+          delegate: this.MDAO.create({ model: this.FOAMGMailMessage }),
+          src: this.IDBDAO.create({
+            model: this.FOAMGMailMessage, useSimpleSerialization: false
+          })
+        });
+      }
+    },
+    {
+      name: 'versionedGmailDao',
+      factory: function() {
+        return this.VersionNoDAO.create({
+          delegate: this.rawGmailDao,
+          property: this.FOAMGMailMessage.CLIENT_VERSION
+        });
+      }
+    },
+    {
       name: 'emailDao',
       type: 'DAO',
       factory: function() {
-        var dao = this.X.LimitedLiveCachingDAO.create({
-          cacheLimit: 100,
-          src: this.X.GMailToEMailDAO.create({
-            delegate: this.X.GMailMessageDAO.create({})
-//            delegate: this.X.StoreAndForwardDAO.create({
-//              delegate: this.X.GMailMessageDAO.create({})
-//            })
-          }),
-          cache: this.X.CachingDAO.create({
-              src: this.X.IDBDAO.create({
-                  model: this.X.EMail
-              }),
-              cache: this.X.MDAO.create({ model: this.X.EMail })
+        return this.ContextualizingDAO.create({
+          delegate: this.CachingDAO.create({
+            src: this.GMailToEMailDAO.create({
+              delegate: this.versionedGmailDao
+            }),
+            delegate: this.MDAO.create({ model: this.EMail })
           })
         });
-        dao.src
-          .limit(100)
-          .where(EQ(this.X.EMail.LABELS, "INBOX"))
-          .select(dao.cache);
-        return ContextualizingDAO.create({ delegate: dao });
+      }
+    },
+    {
+      name: 'emailSync',
+      factory: function() {
+        var sync = this.Sync.create({
+          local: this.MergeDAO.create({
+            delegate: this.rawGmailDao,
+            mergeStrategy: function(ret, oldValue, newValue) {
+              newValue.clientVersion =
+                Math.max(oldValue.clientVersion, newValue.clientVersion);
+              ret(newValue);
+            }
+          }),
+          remote: this.remoteDao,
+          localVersionProp: this.FOAMGMailMessage.CLIENT_VERSION,
+          remoteVersionProp: this.FOAMGMailMessage.HISTORY_ID,
+          deletedProp: this.FOAMGMailMessage.DELETED,
+          initialSyncWindow: 100
+        });
+
+        this.BusyFlagTracker.create({
+          busyStatus: this.busyStatus,
+          target: sync.syncing$
+        });
+
+        return sync;
       }
     },
     {
@@ -174,7 +246,7 @@ CLASS({
       factory: function() {
         return this.X.CachingDAO.create({
           src: this.X.GMailRestDAO.create({ model: FOAMGMailLabel, modelName: 'labels' }),
-          cache: this.X.MDAO.create({ model: FOAMGMailLabel }),
+          delegate: this.X.MDAO.create({ model: FOAMGMailLabel }),
         });
       }
     },
@@ -189,7 +261,10 @@ CLASS({
         */
         return this.CachingDAO.create({
           src: this.ContactNetworkDAO.create(),
-          cache: this.IDBDAO.create({ model: this.Contact })
+          delegate: this.IDBDAO.create({
+            model: this.Contact,
+            useSimpleSerialization: false
+          })
         });
       }
     },
@@ -246,6 +321,7 @@ CLASS({
         citationView: 'EMailCitationView',
         queryParser: queryParser,
         editableCitationViews: true,
+        busyStatus: this.busyStatus,
         sortChoices: [
           [ DESC(EMail.TIMESTAMP), 'Newest First' ],
           [ EMail.TIMESTAMP,       'Oldest First' ],
