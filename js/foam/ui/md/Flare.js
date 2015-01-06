@@ -37,20 +37,19 @@ CLASS({
         dStyle.position = 'absolute';
         dStyle.left = 0;
         dStyle.zIndex = 4;
-        
+
         var id = View.getPrototype().nextID();
         div.id = id;
         div.innerHTML = view.toHTML();
         this.element.appendChild(div);
         view.initHTML();
-        
+
         Movement.compile([
-          // MYSTERY(kgr): I don't know why the 1.25 is needed.
-          [400, function() { c.r = 1.25 * Math.sqrt(w*w, h*h); }],
+          [400, function() { c.r = 1.25 * Math.sqrt(w*w + h*h); }],
           [200, function() { c.alpha = 0; }],
           function() { div.remove(); }
         ])();
-        
+
         c.r$.addListener(EventService.framed(view.paint.bind(view)));
         c.alpha$.addListener(EventService.framed(view.paint.bind(view)));
       }
