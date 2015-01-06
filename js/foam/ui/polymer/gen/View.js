@@ -4,7 +4,16 @@ CLASS({
 
   extendsModel: 'foam.ui.polymer.View',
 
-  methods: {
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'content',
+      defaultValue: ''
+    }
+  ],
+
+  methods: [
+    {
     name: 'postSet',
     code: function(propName) {
       if ( ! this.$ ) return;
@@ -19,7 +28,8 @@ CLASS({
         this.$.removeAttribute(propName);
       }
     }
-  },
+    }
+    ],
 
   templates: [
     function toHTML() {/*
@@ -33,7 +43,7 @@ CLASS({
              <% }
            }
          } %>
-      >
+      >{{this.content}}
      </{{{this.tagName}}}>
     */}
   ]

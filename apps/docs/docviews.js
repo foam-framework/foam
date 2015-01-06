@@ -129,6 +129,7 @@ CLASS({
               'foam.documentation.RelationshipRowDocView',
               'foam.documentation.IssueRowDocView',
               'foam.documentation.TemplateRowDocView',
+              'foam.documentation.ModelRowDocView',
               
               'foam.documentation.MethodSimpleRowDocView',
               
@@ -701,11 +702,11 @@ CLASS({
 <%    this.destroy(); %>
 <%    if (this.data) {  %>
         <div class="introduction">
-          <h1><%=this.data.name%></h1>
-          <div class="model-info-block">
           <div class="diagram">
             $$data{ model_: 'foam.documentation.DocDiagramView' }
           </div>
+          <h1><%=this.data.name%></h1>
+          <div class="model-info-block">
 <%        if (this.data.model_ && this.data.model_.id && this.data.model_.id != "Model") { %>
             <p class="important">Implements $$DOC{ref: this.data.model_.id }</p>
 <%        } else { %>
@@ -726,9 +727,9 @@ CLASS({
             <p class="important">Traits: $$traits{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelRefView', mode: 'read-only' }</p>
 <%        } %>
           <p class="important">Sub-models: $$subModelDAO{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelDataRefView', mode: 'read-only' }</p>
-          <div class="clear">&nbsp;</div>
           </div>
           $$documentation{ model_: 'foam.documentation.DocBodyView' }
+          <div class="clear">&nbsp;</div>
         </div>
 <%    } %>
     */}
@@ -739,20 +740,19 @@ CLASS({
   name: 'ModelRowDocView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocView',
-  documentation: 'A row documentation view for Model instances.',
 
+  requires: ['foam.documentation.DocFeatureSubmodelRefView'],
+  
   documentation: "A row documentation view for $$DOC{ref:'Model'} instances.",
 
-  templates: [
-
-    function toInnerHTML()    {/*
-<%    this.destroy(); %>
-<%    if (this.data) {  %>
-        <p class="important"><%=this.data.id%></p>
-<%    } %>
+ templates: [
+    function toInnerHTML() {/*
+      <div id="scrollTarget_<%=this.data.name%>">
+      <p class="feature-heading">$$data{model_: this.DocFeatureSubmodelRefView}</p>
+        <p>$$documentation{ model_: 'foam.documentation.DocBodyView' }</p>
+      </div>
     */}
   ]
-
 });
 
 CLASS({

@@ -25,7 +25,6 @@ CLASS({
 
   requires:['MDAO', 
             'DAOListView',
-            'foam.documentation.ModelCompletenessRecord as ModelCompletenessRecord',
             'mdTextFieldView'],
 
   imports: ['masterModelList as dao'],
@@ -57,114 +56,7 @@ CLASS({
     }
   ],
 
-  methods: {
-    generateCompletnessReport: function(models) {
-      var modelList = [];
-      models.select(modelList);
 
-      var reports = [];
-      var totalUndoc = 0;
-      var totalDoc = 0;
-      var incomplete = 0;
-      var complete = 0;
-
-      for (var i = 0; i < modelList.length; i++) {
-        var m = modelList[i];
-        if (Model.isInstance(m)) {
-          var report = this.ModelCompletenessRecord.create({model: m});
-
-          if (m.documentation) {
-            report.documented = true;
-            totalDoc += 1;
-          } else {
-            //console.log("nodoc: ", m);
-            totalUndoc += 1;
-          }
-
-          var features = m.getAllMyFeatures();
-          if (features) features.forEach(function(feature) {
-            // ignore hidden properties and methods ending in _
-            if (!(
-                  feature.hidden ||
-                  (feature.name && feature.name.indexOf("_", feature.name.length - 1) !== -1)
-               ))
-            {
-              if (feature.documentation) {
-                report.documentedFeatureCount += 1;
-              } else {
-                report.undocumentedFeatureCount += 1;
-                report.undocumentedFeatures.push(feature);
-              }
-            }
-          }.bind(this));
-
-          if (report.undocumentedFeatureCount > 0) {
-            incomplete += 1;
-          } else {
-            complete += 1;
-          }
-
-          reports.push(report);
-        }
-      }
-
-      console.log("Documentation Report ======================");
-      console.log("Documented:   "+totalDoc);
-      console.log("Undocumented: "+totalUndoc);
-      console.log("Features complete: "+complete);
-      console.log("Features missing:  "+incomplete);
-
-      var criteria = [
-        {
-          name: 'Documented but incomplete',
-          f: function(r) { return r.documented && r.undocumentedFeatureCount > 0; }
-        },
-        {
-          name: 'Documented but less than 80% complete',
-          f: function(r) {
-            return r.documented &&
-              r.documentedFeatureCount /
-                (r.undocumentedFeatureCount+r.documentedFeatureCount) < 0.8;
-          }
-        },
-        {
-          name: 'Not Documented',
-          f: function(r) { return !r.documented; }
-        },
-        {
-          name: 'Documented and complete',
-          f: function(r) { return r.documented && r.undocumentedFeatureCount <= 0; }
-        },
-      ];
-
-      criteria.forEach(function(c) {
-        console.log("=====================");
-        console.log(c.name);
-        var matchingCount = 0;
-        for (var i = 0; i < reports.length; i++) {
-          var r = reports[i];
-          // log interesting ones
-          if (c.f(r)) {
-            matchingCount += 1;
-            console.log("---------------------");
-            console.log("Model "+r.model.id);
-            console.log("Documentation " + (r.documented? "OK" : "NO"));
-            if  ((r.undocumentedFeatureCount+r.documentedFeatureCount) > 0) {
-              console.log("Features: " + (r.undocumentedFeatureCount > 0? "INCOMPLETE":"OK"));
-              console.log("        : " + r.documentedFeatureCount / (r.undocumentedFeatureCount+r.documentedFeatureCount) * 100 + "%");
-              if (r.undocumentedFeatureCount > 0) {
-                r.undocumentedFeatures.forEach(function(f) {
-                    console.log("      Missing feature docs: "+f.name);
-                });
-              }
-            }
-          }
-        }
-        console.log("---- total "+c.name+" "+matchingCount);
-      }.bind(this));
-
-    }
-  }
 });
 
 CLASS({
@@ -276,7 +168,8 @@ CLASS({
   requires: ['MDAO',
              'DocBrowserView',
              'ControllerView',
-             'foam.documentation.DocViewPicker'],
+             'foam.documentation.DocViewPicker',
+             'foam.documentation.ModelCompletenessRecord'],
 
   documentation: function() {  /*
     <p>Some documentation for the $$DOC{ref:'.'} model.</p>
@@ -424,8 +317,120 @@ CLASS({
       //this.generateCompletnessReport(newDAO);
 
       this.X.set("masterModelList", newDAO);
-    }
+    },
+  
+    generateCompletnessReport: function(models) {
+      var modelList = [];
+      models.select(modelList);
 
+      var reports = [];
+      var totalUndoc = 0;
+      var totalDoc = 0;
+      var incomplete = 0;
+      var complete = 0;
+      var featuresTotal = 0;
+      var featuresComplete = 0;
+
+      for (var i = 0; i < modelList.length; i++) {
+        var m = modelList[i];
+        if (Model.isInstance(m)) {
+          var report = this.ModelCompletenessRecord.create({model: m});
+
+          if (m.documentation) {
+            report.documented = true;
+            totalDoc += 1;
+          } else {
+            //console.log("nodoc: ", m);
+            totalUndoc += 1;
+          }
+
+          var features = m.getAllMyFeatures();
+          if (features) features.forEach(function(feature) {
+            // ignore hidden properties and methods ending in _
+            if (!(
+                  feature.hidden ||
+                  (feature.name && feature.name.indexOf("_", feature.name.length - 1) !== -1)
+               ))
+            {
+              if (m.documentation) featuresTotal += 1;
+              if (feature.documentation) {
+                report.documentedFeatureCount += 1;
+                if (m.documentation) featuresComplete += 1;
+              } else {
+                report.undocumentedFeatureCount += 1;
+                report.undocumentedFeatures.push(feature);
+              }
+            }
+          }.bind(this));
+
+          if (report.undocumentedFeatureCount > 0) {
+            incomplete += 1;
+          } else {
+            complete += 1;
+          }
+
+          reports.push(report);
+        }
+      }
+
+      console.log("Documentation Report ======================");
+      console.log("Documented:   "+totalDoc);
+      console.log("Undocumented: "+totalUndoc);
+      console.log("Models with Features complete: "+complete);
+      console.log("Models with Features missing:  "+incomplete);
+      console.log("Features complete: "+featuresComplete);
+      console.log("Features total:  "+featuresTotal);
+
+      var criteria = [
+        {
+          name: 'Documented but incomplete',
+          f: function(r) { return r.documented && r.undocumentedFeatureCount > 0; }
+        },
+        {
+          name: 'Documented but less than 80% complete',
+          f: function(r) {
+            return r.documented &&
+              r.documentedFeatureCount /
+                (r.undocumentedFeatureCount+r.documentedFeatureCount) < 0.8;
+          }
+        },
+        {
+          name: 'Not Documented',
+          f: function(r) { return !r.documented; }
+        },
+        {
+          name: 'Documented and complete',
+          f: function(r) { return r.documented && r.undocumentedFeatureCount <= 0; }
+        },
+      ];
+
+      criteria.forEach(function(c) {
+        console.log("=====================");
+        console.log(c.name);
+        var matchingCount = 0;
+        for (var i = 0; i < reports.length; i++) {
+          var r = reports[i];
+          // log interesting ones
+          if (c.f(r)) {
+            matchingCount += 1;
+            console.log("---------------------");
+            console.log("Model "+r.model.id);
+            console.log("Documentation " + (r.documented? "OK" : "NO"));
+            if  ((r.undocumentedFeatureCount+r.documentedFeatureCount) > 0) {
+              console.log("Features: " + (r.undocumentedFeatureCount > 0? "INCOMPLETE":"OK"));
+              console.log("        : " + r.documentedFeatureCount / (r.undocumentedFeatureCount+r.documentedFeatureCount) * 100 + "%");
+              if (r.undocumentedFeatureCount > 0) {
+                r.undocumentedFeatures.forEach(function(f) {
+                    console.log("      Missing feature docs: "+f.name);
+                });
+              }
+            }
+          }
+        }
+        console.log("---- total "+c.name+" "+matchingCount);
+      }.bind(this));
+
+    }
 
   },
 
@@ -668,6 +673,8 @@ CLASS({
       div.model-info-block {
         padding: 1em;
         margin: 1em 0 1em 0;
+      }
+      div.introduction {
         border-top: 0.1em solid black;
         border-bottom: 0.1em solid black;
       }
@@ -714,6 +721,7 @@ CLASS({
       }
 
       div.diagram {
+        padding-top: 1em;
         float: right;
       }
 

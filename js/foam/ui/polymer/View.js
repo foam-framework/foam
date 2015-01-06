@@ -30,7 +30,7 @@ CLASS({
     {
       name: 'maybeInitTooltip',
       code: function() {
-        if ( ! this.tooltip_ ) {
+        if ( this.tooltipModel && ! this.tooltip_ ) {
           this.tooltip_ = this.tooltipModel.create({
             text: this.tooltip,
             target: this.$
