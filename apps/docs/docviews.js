@@ -418,8 +418,10 @@ CLASS({
       // and load them into the feature DAO. Passing [] assumes we don't
       // care about other models that extend this one. Finding such would
       // be a global search problem.
-      this.loadFeaturesOfModel(data, []);
-      this.findSubModels(data);
+      this.X.setTimeout(function() {
+          this.loadFeaturesOfModel(data, []);
+          this.findSubModels(data);
+      }.bind(this), 200);
       
       //console.log("  FeatureDAO complete.", Date.now() - startTime);
 
@@ -698,13 +700,15 @@ CLASS({
   
   templates: [
 
+//           <div class="diagram">
+//             $$data{ model_: 'foam.documentation.DocDiagramView' }
+//           </div>
+
+    
     function toInnerHTML()    {/*
 <%    this.destroy(); %>
 <%    if (this.data) {  %>
         <div class="introduction">
-          <div class="diagram">
-            $$data{ model_: 'foam.documentation.DocDiagramView' }
-          </div>
           <h1><%=this.data.name%></h1>
           <div class="model-info-block">
 <%        if (this.data.model_ && this.data.model_.id && this.data.model_.id != "Model") { %>
@@ -1353,14 +1357,6 @@ CLASS({
 
   properties: [
     {
-      name:  'data',
-      documentation: 'The array property whose features to view.',
-      postSet: function() {
-        this.dao = this.data;
-        this.childData = this.data;
-      }
-    },
-    {
       name: 'model',
       documentation: 'The model definition of the items in the data array.'
     },
@@ -1369,60 +1365,14 @@ CLASS({
       documentation: 'The property name from which data is set (such as "properties" or "methods")',
       type: 'String',
       postSet: function() {
-        // only render once we have both featureType and dao
-        if ( ! this.filteredDAO && this.dao ) {
-          this.filteredDAO = this.dao;
-        }
-
+        this.rebuildSelfDAOs();
       }
     },
     {
-      name: 'featureDAO'
-    },
-    {
-      name:  'dao',
-      model_: 'DAOProperty',
-      defaultValue: [],
-      onDAOUpdate: function() {
-        // only render once we have both featureType and dao
-        if ( this.featureType ) {
-          this.filteredDAO = this.dao;
-        }
-      }
-    },
-    {
-      name:  'filteredDAO',
+      name: 'featureDAO',
       model_: 'DAOProperty',
       onDAOUpdate: function() {
-        var self = this;
-        if (!this.documentViewRef) {
-          console.warn("this.documentViewRef non-existent");
-        } else if (!this.documentViewRef.get()) {
-          console.warn("this.documentViewRef not set");
-        } else if (!this.documentViewRef.get().valid) {
-          console.warn("this.documentViewRef not valid");
-        }
-
-        this.selfFeaturesDAO = [].sink;
-        this.featureDAO
-          .where(
-                AND(AND(EQ(this.DocFeatureInheritanceTracker.MODEL, this.documentViewRef.get().resolvedRoot.resolvedModelChain[0].id),
-                        EQ(this.DocFeatureInheritanceTracker.IS_DECLARED, true)),
-                    CONTAINS(this.DocFeatureInheritanceTracker.TYPE, this.featureType))
-                )
-          .select(MAP(this.DocFeatureInheritanceTracker.FEATURE, this.selfFeaturesDAO));
-
-        this.inheritedFeaturesDAO = [].sink;
-        this.featureDAO
-          .where(
-                AND(AND(EQ(this.DocFeatureInheritanceTracker.MODEL, this.documentViewRef.get().resolvedRoot.resolvedModelChain[0].id),
-                        EQ(this.DocFeatureInheritanceTracker.IS_DECLARED, false)),
-                    CONTAINS(this.DocFeatureInheritanceTracker.TYPE, this.featureType))
-                )
-          .select(MAP(this.DocFeatureInheritanceTracker.FEATURE, this.inheritedFeaturesDAO));
-
-        this.destroy();
-        this.construct();
+        this.rebuildSelfDAOs();
       }
     },
     {
@@ -1481,6 +1431,45 @@ CLASS({
     }
   ],
   
+  listeners: [
+    {
+      name: 'rebuildSelfDAOs',
+      isMerged: 500,
+      code: function() {
+        console.log("Rebuilding...");
+        var self = this;
+        if (!this.documentViewRef) {
+          console.warn("this.documentViewRef non-existent");
+        } else if (!this.documentViewRef.get()) {
+          console.warn("this.documentViewRef not set");
+        } else if (!this.documentViewRef.get().valid) {
+          console.warn("this.documentViewRef not valid");
+        } else {
+    
+          this.selfFeaturesDAO = [].sink;
+          this.featureDAO
+            .where(
+                  AND(AND(EQ(this.DocFeatureInheritanceTracker.MODEL, this.documentViewRef.get().resolvedRoot.resolvedModelChain[0].id),
+                          EQ(this.DocFeatureInheritanceTracker.IS_DECLARED, true)),
+                      CONTAINS(this.DocFeatureInheritanceTracker.TYPE, this.featureType))
+                  )
+            .select(MAP(this.DocFeatureInheritanceTracker.FEATURE, this.selfFeaturesDAO));
+    
+          this.inheritedFeaturesDAO = [].sink;
+          this.featureDAO
+            .where(
+                  AND(AND(EQ(this.DocFeatureInheritanceTracker.MODEL, this.documentViewRef.get().resolvedRoot.resolvedModelChain[0].id),
+                          EQ(this.DocFeatureInheritanceTracker.IS_DECLARED, false)),
+                      CONTAINS(this.DocFeatureInheritanceTracker.TYPE, this.featureType))
+                  )
+            .select(MAP(this.DocFeatureInheritanceTracker.FEATURE, this.inheritedFeaturesDAO));
+    
+          this.destroy();
+          this.construct();
+        }
+      }
+    }
+  ]
   
 });
 
