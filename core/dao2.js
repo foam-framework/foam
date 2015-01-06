@@ -1853,7 +1853,7 @@ CLASS({
         };
         request.transaction.oncomplete = function() {
           sink && sink.eof && sink.eof();
-          future.set();
+          future.set(sink);
         };
         request.onerror = function(e) {
           sink && sink.error && sink.error('remove', e);
