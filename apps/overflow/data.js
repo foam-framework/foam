@@ -154,6 +154,12 @@ CSS is static, ie. it's defined on the Model, not on the instance, so that it's 
     question: function() {/*
     */},
     answer: function() {/*
+    The View Model has the following method:
+    <code>setClass(className, predicate, opt_id)</code>
+    which can be used to dynamically set the class of an element.
+    The argument 'predicate' is a reactive function and 'className' will be added when it returns true and removed when it returns false. If opt_id is supplied, then a new unique id will be generated.  This lets you inline calls to setClass when setting an element's id.  Ex.
+    <code>
+      &lt;span id="&lt;%= this.setClass('active', function() { return this.data.degreesMode; }) %>"&gt;DEG&lt;/span&gt;</code>
     */},
   },
   {
