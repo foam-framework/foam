@@ -132,3 +132,37 @@ CLASS({
     }
   ]
 });
+
+CLASS({
+  name: 'BusyFlagTracker',
+  properties: [
+    'busyStatus',
+    {
+      name: 'target',
+      postSet: function(oldTarget, newTarget) {
+        if ( this.callback ) {
+          this.callback();
+          this.callback = null;
+        }
+
+        if ( oldTarget ) oldTarget.remoteListener(this.onChange);
+        newTarget.addListener(this.onChange);
+      }
+    },
+    'callback'
+  ],
+  listeners: [
+    {
+      name: 'onChange',
+      code: function(_, _, oldValue, newValue) {
+        if ( newValue ) {
+          if ( this.callback ) this.callback();
+          this.callback = this.busyStatus.start();
+        } else {
+          this.callback();
+          this.callback = null;
+        }
+      }
+    }
+  ]
+});
