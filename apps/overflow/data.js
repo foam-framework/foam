@@ -11,6 +11,12 @@ var questions = JSONUtil.arrayToObjArray(X, [
   },
 */
   {
+    id: 0,
+    title: 'I don\'t have permission to ask a question on the newsgroup.',
+    labels: [ 'overflow' ],
+    answer: 'You must joing the foam-framework-discuss group before it will let you post messages / questions.'
+  },
+  {
     id: 1,
     title: 'How do I make my Models not go in the global namespace?',
     labels: [ 'class', 'package', 'namespace' ],
