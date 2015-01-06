@@ -36,6 +36,10 @@ CLASS({
       hidden: true,
     },
     {
+      name: 'deletedProp',
+      hidden: true
+    },
+    {
       model_: 'IntProperty',
       name: 'syncs'
     },
@@ -57,6 +61,10 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'syncedFromClient'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'purgedFromClient'
     }
   ],
   actions: [
@@ -91,14 +99,24 @@ CLASS({
                   ret((m && m.max) || 0);
                 });
               },
-              function(ret, remoteLocal) {
-                var local = self.local;
-                local = local.where(GT(self.localVersionProp, remoteLocal));
-                local.select(SEQ(self.remote, COUNT()))(ret);
-              })),
-          function(ret, downstream, upstream) {
+              apar(
+                function(ret, remoteLocal) {
+                  var local = self.local;
+                  local = local.where(GT(self.localVersionProp, remoteLocal));
+                  local.select(SEQ(self.remote, COUNT()))(ret);
+                },
+                function(ret, remoteLocal) {
+                  var local = self.local;
+                  local = local.where(
+                    AND(
+                      LTE(self.localVersionProp, remoteLocal),
+                      EQ(self.deletedProp, true)));
+                  local.removeAll(COUNT())(ret);
+                }))),
+          function(ret, downstream, upstream, purged) {
             self.syncedFromServer += downstream.args[1].count;
             self.syncedFromClient += upstream.args[1].count;
+            self.purgedFromClient -= purged.count;
             ret();
           })(function() {
             self.syncing = false;
