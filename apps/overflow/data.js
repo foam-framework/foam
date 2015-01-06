@@ -11,6 +11,12 @@ var questions = JSONUtil.arrayToObjArray(X, [
   },
 */
   {
+    id: 0,
+    title: 'I don\'t have permission to ask a question on the newsgroup.',
+    labels: [ 'overflow' ],
+    answer: 'You must joing the foam-framework-discuss group before it will let you post messages / questions.'
+  },
+  {
     id: 1,
     title: 'How do I make my Models not go in the global namespace?',
     labels: [ 'class', 'package', 'namespace' ],
@@ -154,6 +160,12 @@ CSS is static, ie. it's defined on the Model, not on the instance, so that it's 
     question: function() {/*
     */},
     answer: function() {/*
+    The View Model has the following method:
+    <code>setClass(className, predicate, opt_id)</code>
+    which can be used to dynamically set the class of an element.
+    The argument 'predicate' is a reactive function and 'className' will be added when it returns true and removed when it returns false. If opt_id is supplied, then a new unique id will be generated.  This lets you inline calls to setClass when setting an element's id.  Ex.
+    <code>
+      &lt;span id="&lt;%= this.setClass('active', function() { return this.data.degreesMode; }) %>"&gt;DEG&lt;/span&gt;</code>
     */},
   },
   {

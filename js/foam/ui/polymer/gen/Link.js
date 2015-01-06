@@ -16,24 +16,13 @@
  */
 
 CLASS({
-  package: 'foam.graphics',
-  name: 'Point',
-  package: 'canvas',
+  name: 'Link',
+  package: 'foam.ui.polymer.gen',
 
   properties: [
     {
-      model_: 'IntProperty',
-      name: 'x',
-      defaultValue: 0
-    },
-    {
-      model_: 'IntProperty',
-      name: 'y',
-      defaultValue: 0
+      model_: 'StringProperty',
+      name: 'href'
     }
-  ],
-
-  methods: {
-    toString: function() { return "canvas.Point("+this.x+", "+this.y+")"; }
-  }
-})
+  ]
+});

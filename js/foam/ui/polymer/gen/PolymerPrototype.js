@@ -16,24 +16,20 @@
  */
 
 CLASS({
-  package: 'foam.graphics',
-  name: 'Point',
-  package: 'canvas',
+  name: 'PolymerPrototype',
+  package: 'foam.ui.polymer.gen',
 
   properties: [
     {
-      model_: 'IntProperty',
-      name: 'x',
-      defaultValue: 0
+      name: 'id'
     },
     {
-      model_: 'IntProperty',
-      name: 'y',
-      defaultValue: 0
+      name: 'name',
+      defaultValue: 'PolymerPrototype'
+    },
+    {
+      name: 'proto',
+      factory: function() { return {}; }
     }
-  ],
-
-  methods: {
-    toString: function() { return "canvas.Point("+this.x+", "+this.y+")"; }
-  }
-})
+  ]
+});
