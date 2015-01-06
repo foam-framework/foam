@@ -275,6 +275,14 @@ var demos = JSONUtil.arrayToObjArray(X, [
     src: 'DemoCat.js',
     image: 'DemoCat.png'
   },
+  {
+    name: 'FOAM-Overflow',
+    path: '../apps/overflow/Overflow.html',
+    description: 'A simple searchable FOAM Question and Answer database',
+    keywords: ['docs', 'demo'],
+    src: '../apps/overflow/',
+    image: 'Overflow.png'
+  },
 ], Demo).dao;
 
 
