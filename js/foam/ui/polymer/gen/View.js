@@ -25,28 +25,22 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'content',
-      defaultValue: ''
+      defaultValue: '',
+      postSet: function() {
+        if ( this.$ ) this.$.textContent = this.content;
+      }
     }
   ],
 
   methods: [
     {
-    name: 'postSet',
-    code: function(propName) {
-      if ( ! this.$ ) return;
-      this.$[propName] = this[propName];
-      if ( this[propName] ) {
-        if ( this[propName] === true ) {
-          this.$.setAttribute(propName, '');
-        } else {
-          this.$.setAttribute(propName, this[propName]);
-        }
-      } else {
-        this.$.removeAttribute(propName);
+      name: 'postSet',
+      code: function(propName) {
+        if ( ! this.$ ) return;
+        this.$[propName] = this[propName];
       }
     }
-    }
-    ],
+  ],
 
   templates: [
     function toHTML() {/*

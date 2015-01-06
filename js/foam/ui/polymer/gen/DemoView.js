@@ -30,16 +30,42 @@ CLASS({
       }
     },
     {
-      name: 'instance'
+      name: 'instance',
+      postSet: function() {
+        if ( this.instance ) this.proxy = this.instance.proxy;
+      }
+    }
+  ],
+
+  methods: [
+    {
+      name: 'initHTML',
+      code: function() {
+        var rtn = this.SUPER();
+        this.instance.initHTML();
+        return rtn;
+      }
     }
   ],
 
   templates: [
     function toHTML() {/*
-      <% if ( this.instance ) { %>
-        $$instance{ model_: 'DetailView' }
-        <%= this.instance.toHTML() %>
-      <% } %>
+      <div id="{{{this.id}}}">
+        <% if ( this.instance ) { %>
+          <style>
+            div.detailAndPreviewContainer {
+              display: flex;
+              justify-content: space-around;
+              align-items: center;
+              align-content: center;
+            }
+          </style>
+          <div class="detailAndPreviewContainer">
+            $$instance{ model_: 'DetailView' }
+            <%= this.instance.toHTML() %>
+          </div>
+        <% } %>
+      </div>
     */}
   ]
 });
