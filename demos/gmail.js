@@ -85,8 +85,11 @@ CLASS({
       factory: function() {
         return this.MergeDAO.create({
           delegate: this.localMDao,
-          mergeStrategy: function(ret, o1, o2) {
-            ret(o1);
+          mergeStrategy: function(ret, oldValue, newValue) {
+            newValue.clientVersion = Math.max(
+              oldValue.clientVersion,
+              newValue.clientVersion);
+            ret(newValue);
           }
         });
       }
@@ -100,7 +103,7 @@ CLASS({
           remote: this.remoteDao,
           localVersionProp: this.FOAMGMailMessage.CLIENT_VERSION,
           remoteVersionProp: this.FOAMGMailMessage.HISTORY_ID,
-          initialSyncWindow: 10
+          initialSyncWindow: 1
         });
       }
     }
@@ -110,5 +113,33 @@ CLASS({
       this.SUPER(args);
       window.demo = this;
     }
-  }
+  },
+  actions: [
+    {
+      name: 'addDraft',
+      action: function() {
+        var body = 'Hello world';
+        var encoded = Base64Encoder.create({ urlSafe: true })
+          .encode(new Uint8Array(stringtoutf8(body)));
+
+        this.localVersionedDao.put(
+          this.FOAMGMailMessage.create({
+            labelIds: ['DRAFT'],
+            id: 'draft_' + Math.floor(Math.random() * 0xFFFFFFFF).toString(16),
+            payload: {
+              headers: [
+                {
+                  name: 'Content-Type',
+                  value: 'text/html'
+                }
+              ],
+              body: {
+                size: body.length,
+                data: encoded
+              }
+            }
+          }));
+      }
+    }
+  ]
 });
