@@ -125,7 +125,6 @@ CLASS({
       this.outerMargin.addChild(this.outerLayout);
       this.outerLayout.addChild(this.extendsModelLayout);
       this.outerLayout.addChild(this.mainLayout);
-
     },
 
     toHTML: function() {
