@@ -154,6 +154,7 @@ CLASS({
 
     body {
       -webkit-user-select: none;
+      -webkit-font-smoothing: antialiased;
       font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
       font-size: 20px;
       font-weight: 300;
