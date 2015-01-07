@@ -145,6 +145,28 @@ CLASS({
     DocumentationBook, or other thing.
   */},
 
+  properties: [
+    {
+      name: 'data',
+      documentation: function() {/*
+        Handles a model change, which requires that the child views be torn down.
+        If the data.model_ remains the same, the new data is simply propagated to
+        the existing children.
+      */},
+      postSet: function(old, nu) {
+        // destroy children
+        this.destroy();
+        // propagate data change (nowhere)
+        this.model = nu.model_;
+        this.childData = nu;
+        // rebuild children with new data
+        this.construct();
+
+        this.onValueChange_(); // sub-classes may handle to change as well
+      }
+    }
+  ],
+  
   templates: [
     function toInnerHTML() {/*
       <% this.destroy();
@@ -421,7 +443,7 @@ CLASS({
       this.X.setTimeout(function() {
           this.loadFeaturesOfModel(data, []);
           this.findSubModels(data);
-      }.bind(this), 200);
+      }.bind(this), 20);
       
       //console.log("  FeatureDAO complete.", Date.now() - startTime);
 
@@ -699,14 +721,14 @@ CLASS({
   },
   
   templates: [
-//             <div class="diagram">
-//             $$data{ model_: 'foam.documentation.DocDiagramView' }
-//           </div>
 
     function toInnerHTML()    {/*
 <%    this.destroy(); %>
 <%    if (this.data) {  %>
         <div class="introduction">
+          <div class="diagram">
+            $$data{ model_: 'foam.documentation.DocDiagramView' }
+          </div>
           <h1><%=this.data.name%></h1>
           <div class="model-info-block">
 <%        if (this.data.model_ && this.data.model_.id && this.data.model_.id != "Model") { %>
@@ -1434,7 +1456,6 @@ CLASS({
       name: 'rebuildSelfDAOs',
       isMerged: 500,
       code: function() {
-        console.log("Rebuilding...");
         var self = this;
         if (!this.documentViewRef) {
           console.warn("this.documentViewRef non-existent");

@@ -47,15 +47,6 @@ CLASS({
           }
         );
 
-        var pixFn = function(self, prop) {
-          var propVal = self[prop.name];
-          if ((typeof propVal === 'string' && propVal.indexOf('%') !== -1)) {
-            return (parseInt(propVal.replace('%','') || 0) / 100) * self.constraintValue_TotalSize_;
-          } else {
-            return parseInt(propVal || 0)
-          }
-        }
-
         this.defineProperty(
           {
             model_: 'IntProperty',
@@ -65,12 +56,6 @@ CLASS({
             documentation: function() { /* The calculated pixel size. */ },
           }
         );
-        this.constraintValue_TotalSize_$.addListener(function(self, msg) {
-          self[prop.name+"$Pix"] = pixFn(self, prop);
-        }.bind(this));
-        this[prop.name+"$"].addListener(function(self, msg) {
-          self[prop.name+"$Pix"] = pixFn(self, prop);
-        }.bind(this));
       }
     }
   ]
@@ -135,6 +120,27 @@ CLASS({
     init: function() {
       this.SUPER();
 
+      var self = this;
+      
+      var pixFn = function(self, prop) {
+        var propVal = self[prop];
+        if ((typeof propVal === 'string' && propVal.indexOf('%') !== -1)) {
+          return (parseInt(propVal.replace('%','') || 0) / 100) * self.constraintValue_TotalSize_;
+        } else {
+          return parseInt(propVal || 0);
+        }
+      };
+
+      // bind each property that needs updates on pixel total size
+      [ 'min', 'max', 'preferred' ].forEach( function(prop) { 
+        self.constraintValue_TotalSize_$.addListener(function(self, msg) {
+          self[prop+"$Pix"] = pixFn(self, prop);
+        }.bind(self));
+        self[prop+"$"].addListener(function(self, msg) {
+          self[prop+"$Pix"] = pixFn(self, prop);
+        }.bind(self));
+      }.bind(self));
+        
       this.min$.addListener(this.doConstraintChange);
       this.max$.addListener(this.doConstraintChange);
       this.preferred$.addListener(this.doConstraintChange);
@@ -201,6 +207,8 @@ CLASS({
   name: 'LayoutItemHorizontalTrait',
   package: 'layout',
 
+  requires: [ 'layout.LayoutItemLinearConstraints' ],
+  
   documentation: function() {/* This trait enables an item to be placed in
                                 a horizontal layout. If you do not  */},
 
@@ -211,7 +219,7 @@ CLASS({
       documentation: function() {/* Horizontal layout constraints. If undefined,
                               no constraints or preferences are assumed. */},
       factory: function() {
-        return this.X.layout.LayoutItemLinearConstraints.create();
+        return this.LayoutItemLinearConstraints.create();
       },
       view:'DetailView',
       postSet: function() {
@@ -235,21 +243,23 @@ CLASS({
   name: 'LayoutItemVerticalTrait',
   package: 'layout',
 
+  requires: [ 'layout.LayoutItemLinearConstraints' ],
+
   documentation: function() {/* This trait enables an item to be placed in
                                 a vertical layout. */},
 
-    properties: [
+  properties: [
     {
       name: 'verticalConstraints',
       type: 'layout.LayoutItemLinearConstraints',
       documentation: function() {/* Vertical layout constraints. If undefined,
                               no constraints or preferences are assumed. */},
       factory: function() {
-        return this.X.layout.LayoutItemLinearConstraints.create();
+        return this.LayoutItemLinearConstraints.create();
       },
       view:'DetailView',
       postSet: function() {
-        this.horizontalConstraints.subscribe(['layout'], this.doConstraintChange);
+        this.horizontalConstraints.subscribe(['constraintChange'], this.doConstraintChange);
       }
     }
   ],
@@ -303,7 +313,7 @@ CLASS({
   listeners: [
     {
       name: 'performLayout',
-      isFramed: true,
+      isMerged: 10,
       documentation: function() {/* Performs a full layout of child items. */},
       code: function(evt) {
         // a child has triggered this change, do we probably have to lay out
@@ -319,7 +329,6 @@ CLASS({
   methods: {
 
     calculateLayout: function() { /* lay out items along the primary axis */
-      
       // We are doing a layout operation, so we'll be clean now
       this.layoutDirty = false;
 

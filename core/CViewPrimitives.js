@@ -32,9 +32,9 @@ CLASS({
 
       var self = this;
       // if we change size, redo internal layout
-      this.X.dynamic(
-        function() { self.width; self.height; },
-        this.performLayout); // TODO: don't react to orientation-independent one
+       this.X.dynamic(
+         function() { self.width; self.height; },
+         this.performLayout); // TODO: don't react to orientation-independent one
     },
 
     addChild: function(child) { /* Adds a child $$DOC{ref:'foam.graphics.CView'} to the scene
@@ -89,7 +89,6 @@ CLASS({
       if (child.verticalConstraints) {
         child.verticalConstraints.subscribe(['constraintChange'], this.performLayout);
       }
-
     },
 
     removeChild: function(child) { /* Removes a child $$DOC{ref:'foam.graphics.CView'} from the scene. */
