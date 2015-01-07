@@ -678,6 +678,12 @@ var Model = {
         */}
 
     },
+    {
+      name: 'translationHint',
+      label: 'Description for Translation',
+      type: 'String',
+      defaultValueFn: function() { return this.name; }
+    },
     DocumentationBootstrap,
     {
       name: 'notes',

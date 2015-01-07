@@ -180,6 +180,12 @@ CLASS({
       documentation: function() { /*
             Keyboard shortcuts for the $$DOC{ref:'Action'}.
         */}
+    },
+    {
+      name: 'translationHint',
+      label: 'Description for Translation',
+      type: 'String',
+      defaultValue: ''
     }
   ],
   methods: {
