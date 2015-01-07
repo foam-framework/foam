@@ -1315,7 +1315,7 @@ var MDAO = Model.create({
           sink && sink.remove && sink.remove(a[i]);
         }
         sink && sink.eof && sink.eof();
-        future.set();
+        future.set(sink);
       }.bind(this));
       return future.get;
     },
