@@ -557,7 +557,7 @@ CLASS({
       
       this.masterModelList.select(MAP(
         function(obj) {
-          if ( data.isSubModel(obj) ) {
+          if ( data.isSubModel(obj) && data.id != obj.id ) {
             this.subModelDAO.put(obj);
           }
         }.bind(this)
