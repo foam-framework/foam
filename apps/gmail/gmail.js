@@ -397,6 +397,7 @@ CLASS({
         var view = this.X.FloatingView.create({
           view: this.X.EMailComposeView.create({
             data: this.X.EMail.create({
+              id: 'draft_' + Math.floor(Math.random() * 0xFFFFFFFF).toString(16),
               labels: ['DRAFT']
             })
           })
