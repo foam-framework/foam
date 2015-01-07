@@ -44,23 +44,20 @@ CLASS({
 
       // listen for changes to child layout constraints
       if (child.horizontalConstraints) {
-        child.horizontalConstraints.subscribe(['layout'], this.performLayout);
+        child.horizontalConstraints.subscribe(['constraintChange'], this.performLayout);
       }
       if (child.verticalConstraints) {
-        child.verticalConstraints.subscribe(['layout'], this.performLayout);
+        child.verticalConstraints.subscribe(['constraintChange'], this.performLayout);
       }
-
     },
 
     removeChild: function(child) { /* Removes a child $$DOC{ref:'foam.graphics.CView'} from the scene. */
       // unlisten
       if (child.horizontalConstraints) {
-        child.horizontalConstraints.unsubscribe(['layout'], this.performLayout);
-        child.horizontalConstraints.preferred$.removeListener(this.updatePreferredSize);
+        child.horizontalConstraints.unsubscribe(['constraintChange'], this.performLayout);
       }
       if (child.verticalConstraints) {
-        child.verticalConstraints.unsubscribe(['layout'], this.performLayout);
-        child.verticalConstraints.preferred$.removeListener(this.updatePreferredSize);
+        child.verticalConstraints.unsubscribe(['constraintChange'], this.performLayout);
       }
 
       this.SUPER(child);
@@ -87,20 +84,21 @@ CLASS({
 
       // listen for changes to child layout constraints
       if (child.horizontalConstraints) {
-        child.horizontalConstraints.subscribe(['layout'], this.performLayout);
+        child.horizontalConstraints.subscribe(['constraintChange'], this.performLayout);
       }
       if (child.verticalConstraints) {
-        child.verticalConstraints.subscribe(['layout'], this.performLayout);
+        child.verticalConstraints.subscribe(['constraintChange'], this.performLayout);
       }
 
     },
+
     removeChild: function(child) { /* Removes a child $$DOC{ref:'foam.graphics.CView'} from the scene. */
       // unlisten
       if (child.horizontalConstraints) {
-        child.horizontalConstraints.unsubscribe(['layout'], this.performLayout);
+        child.horizontalConstraints.unsubscribe(['constraintChange'], this.performLayout);
       }
       if (child.verticalConstraints) {
-        child.verticalConstraints.unsubscribe(['layout'], this.performLayout);
+        child.verticalConstraints.unsubscribe(['constraintChange'], this.performLayout);
       }
 
       this.SUPER(child);

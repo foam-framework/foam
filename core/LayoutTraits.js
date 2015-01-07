@@ -135,19 +135,18 @@ CLASS({
     init: function() {
       this.SUPER();
 
-      this.min$.addListener(this.doLayoutEvent);
-      this.max$.addListener(this.doLayoutEvent);
-      this.preferred$.addListener(this.doLayoutEvent);
-      this.stretchFactor$.addListener(this.doLayoutEvent);
-      this.shrinkFactor$.addListener(this.doLayoutEvent);
+      this.min$.addListener(this.doConstraintChange);
+      this.max$.addListener(this.doConstraintChange);
+      this.preferred$.addListener(this.doConstraintChange);
+      this.stretchFactor$.addListener(this.doConstraintChange);
+      this.shrinkFactor$.addListener(this.doConstraintChange);
     }
   },
   listeners: [
     {
-      name: 'doLayoutEvent',
-      isFramed: 'true',
+      name: 'doConstraintChange',
       code: function(evt) {
-        this.publish(['layout'], null);
+        this.publish(['constraintChange'], null);
       }
     }
   ]
@@ -216,17 +215,16 @@ CLASS({
       },
       view:'DetailView',
       postSet: function() {
-        this.horizontalConstraints.subscribe(['layout'], this.doLayoutEvent);
+        this.horizontalConstraints.subscribe(['constraintChange'], this.doConstraintChange);
       }
     }
-  ],
+  ],                                  
 
   listeners: [
     {
-      name: 'doLayoutEvent',
-      isFramed: 'true',
+      name: 'doConstraintChange',
       code: function(evt) {
-        this.publish(['layout'], null);
+        this.publish(['constraintChange'], null);
       }
     }
   ]
@@ -251,17 +249,16 @@ CLASS({
       },
       view:'DetailView',
       postSet: function() {
-        this.horizontalConstraints.subscribe(['layout'], this.doLayoutEvent);
+        this.horizontalConstraints.subscribe(['layout'], this.doConstraintChange);
       }
     }
   ],
 
   listeners: [
     {
-      name: 'doLayoutEvent',
-      isFramed: 'true',
+      name: 'doConstraintChange',
       code: function(evt) {
-        this.publish(['layout'], null);
+        this.publish(['constraintChange'], null);
       }
     }
   ]
@@ -295,6 +292,12 @@ CLASS({
       documentation: function() {/* If set to true, the layout will set
           its own min and max constraints by the sum of the content. */},
       postSet: function() { this.calculatePreferredSize(); }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'layoutDirty',
+      defaultValue: true,
+      hidden: true     
     }
   ],
   listeners: [
@@ -303,29 +306,30 @@ CLASS({
       isFramed: true,
       documentation: function() {/* Performs a full layout of child items. */},
       code: function(evt) {
-        this.calculateLayout();
+        // a child has triggered this change, do we probably have to lay out
+        this.layoutDirty = true;
+        // this change to our pref size may cause a parent to lay us out through a size change
+        this.calculatePreferredSize();
+        // If no parent caused us to change size and layout, force the layout operation
+        if ( this.layoutDirty ) this.calculateLayout();
       }
     },
-    {
-      name: 'updatePreferredSize',
-      isFramed: true,
-      documentation: function() {/* Performs a full layout of child items. */},
-      code: function(evt) {
-        this.calculatePreferredSize();
-      }
-    }
   ],
 
   methods: {
 
     calculateLayout: function() { /* lay out items along the primary axis */
+      
+      // We are doing a layout operation, so we'll be clean now
+      this.layoutDirty = false;
+
       // no children, nothing to do
       if (this.children.length <= 0) return;
 
       // size changes to ourself may impact percentage preferred size of some children,
       // so calculate it too. This calculateLayout operation doesn't depend on
       // anything that calculatePreferredSize() does.
-      this.calculatePreferredSize();
+      //this.calculatePreferredSize();
 
       // these helpers take care of orientation awareness
       var constraintsF = Function("item", "return item."+ this.orientation+"Constraints");
@@ -496,6 +500,7 @@ CLASS({
     },
     calculatePreferredSize: function() { /* Find the size of layout that accomodates all items
                                             at their preferred sizes. */
+                                           
       var self = this;
       var syncConstraints = ['preferred'];
 

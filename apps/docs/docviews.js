@@ -699,12 +699,10 @@ CLASS({
   },
   
   templates: [
-
-//           <div class="diagram">
+//             <div class="diagram">
 //             $$data{ model_: 'foam.documentation.DocDiagramView' }
 //           </div>
 
-    
     function toInnerHTML()    {/*
 <%    this.destroy(); %>
 <%    if (this.data) {  %>
