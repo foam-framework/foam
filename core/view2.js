@@ -3845,7 +3845,7 @@ CLASS({
       defaultValue: true,
       postSet: function(old, nu) {
         if ( ! this.$ ) return;
-        if ( old && ! nu ) this.$.innerHTML = '';
+        if ( ! nu ) this.$.innerHTML = '';
         else if ( ! old && nu ) {
           this.$.innerHTML = this.toInnerHTML();
           this.initInnerHTML();
@@ -3865,6 +3865,13 @@ CLASS({
 
   constants: {
     DURATION: '1333'
+  },
+
+  methods: {
+    initHTML: function() {
+      this.SUPER();
+      this.data = this.data;
+    }
   },
 
   templates: [
