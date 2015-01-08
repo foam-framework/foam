@@ -20,7 +20,8 @@
 // the number to round, which elimitates the spurious 9's.
 var DECIMAL_PLACES_PRECISION = 12;
 
-console.profile();
+// console.profile();
+
 function trigFn(f) {
   return function(a) {
     return f(this.degreesMode ? a * Math.PI / 180 : a);
@@ -43,7 +44,6 @@ function binaryOp(name, keys, f, sym, opt_longName) {
     translationHint: 'binary operator: ' + longName,
     keyboardShortcuts: keys,
     action: function() {
-console.log('binaryOp: ', sym);
       if ( this.a2 == '' ) {
         // the previous operation should be replaced, since we can't
         // finish this one without a second arg. The user probably hit one
@@ -69,7 +69,6 @@ function unaryOp(name, keys, f, opt_sym, opt_longName) {
     translationHint: 'short form for mathematical function: "' + longName + '"',
     keyboardShortcuts: keys,
     action: function() {
-console.log('unaryOp: ', sym, '   ', Date.now(), this.a2);
       this.op = f;
       this.push(f.call(this, this.a2));
       this.editable = false;
@@ -479,7 +478,6 @@ CLASS({
         if ( typeof(this.a2) === 'string' && this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
         if ( this.op == DEFAULT_OP ) {
           var last = this.history[this.history.length-1];
-          console.log('******* ', last.op, last.op.binary, last.a2, this.a2);
           if ( last.op.binary ) {
             this.push(this.a2);
             this.a2 = last.a2;
@@ -647,13 +645,11 @@ CLASS({
           this.X.window.addEventListener('resize', move);
           // Add mousewhell scrolling.
           this.X.document.addEventListener('mousewheel', EventService.framed(function(e) {
-        console.log('e: ', e);
             var inner$ = self.$.querySelector('.inner-calc-display');
             var outer$ = self.$.querySelector('.calc-display');
             var outer  = window.getComputedStyle(outer$);
             var inner  = window.getComputedStyle(inner$);
             var top    = toNum(inner$.style.top);
-        console.log('top: ', top);
             inner$.style.top = Math.min(0, Math.max(toNum(outer.height)-toNum(inner.height)-11, top-e.deltaY)) + 'px';
           }));
         %>
@@ -779,4 +775,5 @@ CLASS({
 });
 
 Calc.getPrototype();
-console.profileEnd();
+
+// console.profileEnd();
