@@ -364,5 +364,72 @@ Output:
 This solution isn't IndexedDB specific and works with any DAO type.
     */},
   },
+  {
+    id: 15,
+    title: 'Universal search in IndexedDB',
+    labels: [ 'indexeddb', 'dao' ],
+    question: function() {/*
+I want:
+
+SQL - Select id from tabla Where x='jon' or y='jon'
+
+data:
+  id, x , y
+  1, johnny, olivas
+  2, jonas, torres
+  3, jon, jonatis
+  4, alc, jonhson
+
+result = 2, 3, 4
+
+but using indexedDB
+    */},
+    answer: function() {/*
+The following code implements your question:
+<code>
+CLASS({
+  name: 'Tabla',
+  properties: [ 'id', 'a', 'b' ]
+});
+
+// Create an IndexedDB table with caching.
+var dao = EasyDAO.create({model: Tabla, daoType: 'IDBDAO', cache: true});
+
+// Add your test data.
+[
+  Tabla.create({id: 1, a: 'johnny', b: 'olivas'}),
+  Tabla.create({id: 2, a: 'jonas',  b: 'torres'}),
+  Tabla.create({id: 3, a: 'jon',    b: 'jonatis'}),
+  Tabla.create({id: 4, a: 'alc',    b: 'jonhson'})
+].select(dao);
+
+// Select id from tabla Where a='jon' or b='jon'
+// Except that I think you want to search for the string containing 'jon', not
+// just equaling it.  You could also use CONTAINS_IC to ignore-case or
+// STARTS_WITH to just check for matches at the beginning of the strings.
+
+dao.where(OR(CONTAINS(Tabla.A, 'jon'), CONTAINS(Tabla.B, 'jon'))).select(
+  function(t) { console.log(t.id); }
+);
+
+// Cleanup Data when done.
+dao.removeAll();
+</code>
+
+Output:
+<pre>
+2
+3
+4
+</pre>
+This also works:
+<code>
+dao.where(CONTAINS(SEQ(Tabla.A, Tabla.B), 'jon')).select(
+  function(t) { console.log(t.id); });
+</code>
+
+This solution isn't IndexedDB specific and works with any DAO type.
+    */},
+  },
 
 ], Question).dao;
