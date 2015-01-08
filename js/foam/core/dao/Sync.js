@@ -67,6 +67,18 @@ CLASS({
       name: 'purgedFromClient'
     }
   ],
+
+  methods: {
+    purge: function(ret, remoteLocal) {
+      var local = this.local;
+      local = local.where(
+        AND(
+          LTE(this.localVersionProp, remoteLocal),
+          EQ(this.deletedProp, true)));
+      local.removeAll(COUNT())(ret);
+    }
+  },
+
   actions: [
     {
       name: 'sync',
@@ -105,14 +117,7 @@ CLASS({
                   local = local.where(GT(self.localVersionProp, remoteLocal));
                   local.select(SEQ(self.remote, COUNT()))(ret);
                 },
-                function(ret, remoteLocal) {
-                  var local = self.local;
-                  local = local.where(
-                    AND(
-                      LTE(self.localVersionProp, remoteLocal),
-                      EQ(self.deletedProp, true)));
-                  local.removeAll(COUNT())(ret);
-                }))),
+                self.purge.bind(self)))),
           function(ret, downstream, upstream, purged) {
             self.syncedFromServer += downstream.args[1].count;
             self.syncedFromClient += upstream.args[1].count;
