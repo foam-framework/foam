@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
- // This accounts for binary-decimal conversion rounding (infinite 0.99999999)
- // 12 places is just short of what javascript gives you, so it forces
- // the number to round, which elimitates the spurious 9's.
- var DECIMAL_PLACES_PRECISION = 12;
+// This accounts for binary-decimal conversion rounding (infinite 0.99999999)
+// 12 places is just short of what javascript gives you, so it forces
+// the number to round, which elimitates the spurious 9's.
+var DECIMAL_PLACES_PRECISION = 12;
 
 console.profile();
 function trigFn(f) {
@@ -98,15 +98,30 @@ function num(n) {
 var DEFAULT_OP = function(a1, a2) { return a2; };
 DEFAULT_OP.toString = function() { return ''; };
 
-function formatNumber(n) {
-  // the regex below removes extra zeros from the end, or middle of exponentials
-  return typeof n === 'string' ? n :
-         Number.isNaN(n)       ? 'Not a number' :
-         ! Number.isFinite(n)  ? '∞' :
-                 parseFloat(n).toPrecision(DECIMAL_PLACES_PRECISION)
-                    .replace( /(?:(\d+\.\d*[1-9])|(\d+)(?:\.))(?:(?:0+)$|(?:0*)(e.*)$|$)/ ,"$1$2$3");
-}
-
+CLASS({
+  name: 'NumberFormatter',
+  messages: [
+    {
+      name: 'NaN',
+      value: 'Not a number',
+      translationHint: 'Description of a value that isn\'t a number'
+    }
+  ],
+  constants: [
+    {
+      name: 'formatNumber',
+      value: function(n) {
+        // the regex below removes extra zeros from the end,
+        // or middle of exponentials
+        return typeof n === 'string' ? n :
+            Number.isNaN(n)       ? this.NaN :
+            ! Number.isFinite(n)  ? '∞' :
+            parseFloat(n).toPrecision(DECIMAL_PLACES_PRECISION)
+            .replace( /(?:(\d+\.\d*[1-9])|(\d+)(?:\.))(?:(?:0+)$|(?:0*)(e.*)$|$)/ ,"$1$2$3");
+      }
+    }
+  ]
+});
 
 CLASS({
   name: 'History',
@@ -119,7 +134,7 @@ CLASS({
   ],
   methods: {
     formatNumber: function(n) {
-      var nu = formatNumber(n) || '0';
+      var nu = NumberFormatter.formatNumber(n) || '0';
       // strip off trailing "."
       return nu.replace(/(.+?)(?:\.$|$)/, "$1");
     }
@@ -391,7 +406,7 @@ CLASS({
 
       Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
         if ( Number.isNaN(this.a2) ) this.error();
-        var a2 = formatNumber(this.a2);
+        var a2 = NumberFormatter.formatNumber(this.a2);
         this.row1 = this.op + ( a2 !== '' ? '&nbsp;' + a2 : '' );
       }.bind(this)));
     },
@@ -527,7 +542,7 @@ CLASS({
     unaryOp('square', [], function(a) { return a*a; }, 'x²'),
     unaryOp('sqroot', [82 /* r */], Math.sqrt, '√'),
     unaryOp('log',    [], function(a) { return Math.log(a) / Math.LN10; }, 'log', 'logarithm'),
-    unaryOp('ln',     [], Math.log, 'natural logarithm'),
+    unaryOp('ln',     [], Math.log, 'ln', 'natural logarithm'),
     unaryOp('exp',    [], Math.exp, 'eⁿ')
   ]
 });

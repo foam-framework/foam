@@ -436,8 +436,61 @@ CLASS({
     {
       name:  'type',
       defaultValue: '',
-      help: 'Type of the constant.',
+      help: 'Type of the constant.'
     },
+    {
+      name: 'translationHint',
+      label: 'Description for Translation',
+      type: 'String',
+      defaultValue: ''
+    }
+  ]
+});
+
+
+CLASS({
+  name: 'Message',
+  plural: 'messages',
+
+  tableProperties: [
+    'name',
+    'value',
+    'translationHint'
+  ],
+
+  documentation: function() {/*
+  */},
+
+  properties: [
+    {
+      name:  'name',
+      type:  'String',
+      required: true,
+      displayWidth: 30,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'The coding identifier for the message.',
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
+         */}
+    },
+    {
+      name: 'value',
+      type: 'String',
+      help: 'The message itself.'
+    },
+    {
+      name: 'translationHint',
+      type: 'String',
+      displayWidth: 70,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'A brief description of this message and the context in which it used.',
+      documentation: function() { /* A human readable description of the
+        $$DOC{ref:'.'} and its context for the purpose of translation.
+      */}
+    }
   ]
 });
 

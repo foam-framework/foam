@@ -474,6 +474,36 @@ var Model = {
       }
     },
     {
+      name: 'messages',
+      type: 'Array[Message]',
+      subType: 'Constant',
+      view: 'ArrayView',
+      factory: function() { return []; },
+      defaultValue: [],
+      help: 'Messages associated with the entity.',
+      preSet: function(_, newValue) {
+        if ( ! GLOBAL.Message ) return newValue;
+
+        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Message);
+
+        // convert a map of values to an array of Message objects
+        var messages = [];
+
+        for ( var key in newValue ) {
+          var oldValue = newValue[key];
+
+          var message = Message.create({
+            name:  key,
+            value: oldValue
+          });
+
+          messages.push(message);
+        }
+
+        return messages;
+      }
+    },
+    {
       name: 'methods',
       type: 'Array[Method]',
       subType: 'Method',
