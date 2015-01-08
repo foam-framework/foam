@@ -349,7 +349,6 @@ CLASS({
       type: 'DAOProperty',
       factory: function() { return []; }
     }
-    
   ],
 
   methods: {
@@ -416,7 +415,7 @@ CLASS({
       name: 'myLinkPoints',
       type: 'DAOProperty',
       factory: function() { return []; }
-    }
+    },
   ],
 
   methods: {
@@ -489,7 +488,6 @@ CLASS({
       name: 'titleBorderWidth',
       type: 'String'
     }
-    
   ],
   
   methods: {
