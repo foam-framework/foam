@@ -75,7 +75,8 @@ CLASS({
     'lib.contacts.Contact as Contact',
     'lib.contacts.ContactNetworkDAO as ContactNetworkDAO',
     'CachingDAO',
-    'foam.core.dao.Sync',
+    'foam.lib.gmail.Sync',
+    'foam.lib.gmail.SyncDecorator',
     'foam.core.dao.MergeDAO',
     'foam.core.dao.VersionNoDAO',
     'PersistentContext',
@@ -217,19 +218,21 @@ CLASS({
       name: 'emailSync',
       factory: function() {
         var sync = this.Sync.create({
-          local: this.MergeDAO.create({
-            delegate: this.rawGmailDao,
-            mergeStrategy: function(ret, oldValue, newValue) {
-              newValue.clientVersion =
-                Math.max(oldValue.clientVersion, newValue.clientVersion);
-              ret(newValue);
-            }
+          local: this.SyncDecorator.create({
+            delegate: this.MergeDAO.create({
+              delegate: this.rawGmailDao,
+              mergeStrategy: function(ret, oldValue, newValue) {
+                newValue.clientVersion =
+                  Math.max(oldValue.clientVersion, newValue.clientVersion);
+                ret(newValue);
+              }
+            })
           }),
           remote: this.remoteDao,
           localVersionProp: this.FOAMGMailMessage.CLIENT_VERSION,
           remoteVersionProp: this.FOAMGMailMessage.HISTORY_ID,
           deletedProp: this.FOAMGMailMessage.DELETED,
-          initialSyncWindow: 100
+          initialSyncWindow: 10
         });
 
         this.BusyFlagTracker.create({
