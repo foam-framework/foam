@@ -188,7 +188,7 @@ CLASS({
     }
 
     .deg, .rad {
-      color: #b3b3b3;
+      color: #444;
       font-size: 16px;
       opacity: 0;
       padding-left: 8px;
@@ -309,12 +309,12 @@ CLASS({
     }
 
     .history {
-      color: #b3b3b3
+      color: #444;
     }
 
     .alabel {
       font-size: 34px;
-      color: #b3b3b3
+      color: #444;
     }
   */}],
 
