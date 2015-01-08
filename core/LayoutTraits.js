@@ -313,9 +313,10 @@ CLASS({
   listeners: [
     {
       name: 'performLayout',
-      //isMerged: 10,
+      //isMerged: 1000,
       documentation: function() {/* Performs a full layout of child items. */},
       code: function(evt) {
+//console.log("performLayout", this.$UID);
         // a child has triggered this change, do we probably have to lay out
         this.layoutDirty = true;
         // this change to our pref size may cause a parent to lay us out through a size change

@@ -242,7 +242,7 @@ CLASS({
   listeners: [
     {
       name: 'updatePosition',
-      isFramed: true,
+      //isFramed: true,
       code: function() {
         this.x = this.positioningFunctionX(this.owner.globalX);
         this.y = this.positioningFunctionY(this.owner.globalY);
@@ -313,6 +313,8 @@ CLASS({
   extendsModel: 'foam.graphics.LinearLayout',
   traits: ['diagram.DiagramItemTrait'],
 });
+
+
 CLASS({
   name: 'Margin',
   package: 'diagram',
@@ -336,8 +338,6 @@ CLASS({
 
   extendsModel: 'diagram.LinearLayout',
   traits: ['foam.graphics.BorderTrait'],
-  
-  //imports: ['linkPoints'],
 
   properties: [
     {
@@ -348,6 +348,10 @@ CLASS({
       name: 'myLinkPoints',
       type: 'DAOProperty',
       factory: function() { return []; }
+    },
+    {
+      name: 'alpha',
+      defaultValue: 0
     }
   ],
 
@@ -356,6 +360,8 @@ CLASS({
       this.SUPER();
 
       this.addLinkPoints();
+      
+      this.alpha = 1;
     },
     // TODO: account for movement that changes our parent but not our x,y,width,height
     addLinkPoints: function() {
@@ -416,6 +422,10 @@ CLASS({
       type: 'DAOProperty',
       factory: function() { return []; }
     },
+    {
+      name: 'clipping',
+      defaultValue: true
+    }
   ],
 
   methods: {
