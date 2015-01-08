@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
- // This accounts for binary-decimal conversion rounding (infinite 0.99999999)
- // 12 places is just short of what javascript gives you, so it forces
- // the number to round, which elimitates the spurious 9's.
- var DECIMAL_PLACES_PRECISION = 12;
+// This accounts for binary-decimal conversion rounding (infinite 0.99999999)
+// 12 places is just short of what javascript gives you, so it forces
+// the number to round, which elimitates the spurious 9's.
+var DECIMAL_PLACES_PRECISION = 12;
 
 console.profile();
 function trigFn(f) {
@@ -34,12 +34,13 @@ function invTrigFn(f) {
 }
 
 /** Make a Binary Action. **/
-function binaryOp(name, keys, f, sym) {
-  f.binary = true;
+function binaryOp(name, keys, f, sym, opt_longName) {
+  var longName = opt_longName || name;
   f.toString = function() { return sym; };
   return {
     name: name,
     label: sym,
+    translationHint: 'binary operator: ' + longName,
     keyboardShortcuts: keys,
     action: function() {
 console.log('binaryOp: ', sym);
@@ -57,13 +58,15 @@ console.log('binaryOp: ', sym);
   };
 }
 
-function unaryOp(name, keys, f, opt_sym) {
+function unaryOp(name, keys, f, opt_sym, opt_longName) {
   var sym = opt_sym || name;
+  var longName = opt_longName || name;
   f.toString = function() { return sym; };
 
   return {
     name: name,
     label: sym,
+    translationHint: 'short form for mathematical function: "' + longName + '"',
     keyboardShortcuts: keys,
     action: function() {
 console.log('unaryOp: ', sym, '   ', Date.now(), this.a2);
@@ -95,15 +98,30 @@ function num(n) {
 var DEFAULT_OP = function(a1, a2) { return a2; };
 DEFAULT_OP.toString = function() { return ''; };
 
-function formatNumber(n) {
-  // the regex below removes extra zeros from the end, or middle of exponentials
-  return typeof n === 'string' ? n :
-         Number.isNaN(n)       ? 'Not a number' :
-         ! Number.isFinite(n)  ? '∞' :
-                 parseFloat(n).toPrecision(DECIMAL_PLACES_PRECISION)
-                    .replace( /(?:(\d+\.\d*[1-9])|(\d+)(?:\.))(?:(?:0+)$|(?:0*)(e.*)$|$)/ ,"$1$2$3");
-}
-
+CLASS({
+  name: 'NumberFormatter',
+  messages: [
+    {
+      name: 'NaN',
+      value: 'Not a number',
+      translationHint: 'Description of a value that isn\'t a number'
+    }
+  ],
+  constants: [
+    {
+      name: 'formatNumber',
+      value: function(n) {
+        // the regex below removes extra zeros from the end,
+        // or middle of exponentials
+        return typeof n === 'string' ? n :
+            Number.isNaN(n)       ? this.NaN :
+            ! Number.isFinite(n)  ? '∞' :
+            parseFloat(n).toPrecision(DECIMAL_PLACES_PRECISION)
+            .replace( /(?:(\d+\.\d*[1-9])|(\d+)(?:\.))(?:(?:0+)$|(?:0*)(e.*)$|$)/ ,"$1$2$3");
+      }
+    }
+  ]
+});
 
 CLASS({
   name: 'History',
@@ -116,7 +134,7 @@ CLASS({
   ],
   methods: {
     formatNumber: function(n) {
-      var nu = formatNumber(n) || '0';
+      var nu = NumberFormatter.formatNumber(n) || '0';
       // strip off trailing "."
       return nu.replace(/(.+?)(?:\.$|$)/, "$1");
     }
@@ -126,6 +144,7 @@ CLASS({
 
 CLASS({
   name: 'Calc',
+  translationHint: 'Calculator',
 
   requires: [
     'CalcView',
@@ -387,7 +406,7 @@ CLASS({
 
       Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
         if ( Number.isNaN(this.a2) ) this.error();
-        var a2 = formatNumber(this.a2);
+        var a2 = NumberFormatter.formatNumber(this.a2);
         this.row1 = this.op + ( a2 !== '' ? '&nbsp;' + a2 : '' );
       }.bind(this)));
     },
@@ -406,17 +425,18 @@ CLASS({
     num(1), num(2), num(3),
     num(4), num(5), num(6),
     num(7), num(8), num(9), num(0),
-    binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7'),
-    binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7'),
-    binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
-    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–'),
-    binaryOp('pow',   [],                 Math.pow,                             'yⁿ'),
-    binaryOp('p',     [],                 function(n,r) { return this.permutation(n,r); }, 'nPr'),
-    binaryOp('c',     [],                 function(n,r) { return this.combination(n,r); }, 'nCr'),
+    binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7',         'division'),
+    binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7',         'multiplication'),
+    binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+',              'addition'),
+    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–',              'subtraction'),
+    binaryOp('pow',   [],                 Math.pow,                             'yⁿ',             'exponentiation'),
+    binaryOp('p',     [],                 function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations'),
+    binaryOp('c',     [],                 function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations'),
     binaryOp('root',  [],                 function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY'),
     {
       name: 'ac',
       label: 'AC',
+      translationHint: 'all clear (calculator button label)',
       // help: 'All Clear.',
       keyboardShortcuts: [ 65 /* a */, 67 /* c */ ],
       action: function() {
@@ -474,6 +494,8 @@ CLASS({
     },
     {
       name: 'backspace',
+      label: 'backspace',
+      translationHint: 'delete one input character',
       keyboardShortcuts: [ 8 /* backspace */ ],
       action: function() {
         this.a2 = this.a2.toString.length == 1 ?
@@ -501,25 +523,27 @@ CLASS({
     },
     {
       name: 'deg',
+      translationHint: 'short form for "degrees" calculator mode',
       action: function() { this.degreesMode = true; }
     },
     {
       name: 'rad',
+      translationHint: 'short form for "radians" calculator mode',
       action: function() { this.degreesMode = false; }
     },
     unaryOp('fact',   ['shift-49' /* ! */], function(n) { return this.factorial(n); }, 'x!'),
     unaryOp('inv',    [73 /* i */], function(a) { return 1.0/a; }, '1/x'),
-    unaryOp('sin',    [], trigFn(Math.sin)),
-    unaryOp('cos',    [], trigFn(Math.cos)),
-    unaryOp('tan',    [], trigFn(Math.tan)),
-    unaryOp('asin',   [], invTrigFn(Math.asin)),
-    unaryOp('acos',   [], invTrigFn(Math.acos)),
-    unaryOp('atan',   [], invTrigFn(Math.atan)),
+    unaryOp('sin',    [], trigFn(Math.sin), 'sin', 'sine'),
+    unaryOp('cos',    [], trigFn(Math.cos), 'cos', 'cosine'),
+    unaryOp('tan',    [], trigFn(Math.tan), 'tan', 'tangent'),
+    unaryOp('asin',   [], invTrigFn(Math.asin), 'asin', 'inverse-sine'),
+    unaryOp('acos',   [], invTrigFn(Math.acos), 'acos', 'inverse-cosine'),
+    unaryOp('atan',   [], invTrigFn(Math.atan), 'atan', 'inverse-tangent'),
     unaryOp('square', [], function(a) { return a*a; }, 'x²'),
     unaryOp('sqroot', [82 /* r */], Math.sqrt, '√'),
-    unaryOp('log',    [], function(a) { return Math.log(a) / Math.LN10; }),
-    unaryOp('ln',     [], Math.log),
-    unaryOp('exp',    [], Math.exp, 'eⁿ'),
+    unaryOp('log',    [], function(a) { return Math.log(a) / Math.LN10; }, 'log', 'logarithm'),
+    unaryOp('ln',     [], Math.log, 'ln', 'natural logarithm'),
+    unaryOp('exp',    [], Math.exp, 'eⁿ')
   ]
 });
 

@@ -313,7 +313,7 @@ CLASS({
   listeners: [
     {
       name: 'performLayout',
-      isMerged: 10,
+      //isMerged: 10,
       documentation: function() {/* Performs a full layout of child items. */},
       code: function(evt) {
         // a child has triggered this change, do we probably have to lay out

@@ -275,8 +275,10 @@ var BootstrapModel = {
       }
     }
 
+    var key;
+
     // add constants
-    for ( var key in this.constants ) {
+    for ( key in this.constants ) {
       var c = this.constants[key];
       if ( Constant ) {
         if ( ! Constant.isInstance(c) ) {
@@ -291,8 +293,24 @@ var BootstrapModel = {
       }
     }
 
+    // add messages
+    for ( key in this.messages ) {
+      var c = this.messages[key];
+      if ( Message ) {
+        if ( ! Message.isInstance(c) ) {
+          c = this.messages[key] = Message.create(c);
+        }
+        // TODO(kgr): only add to Proto when Model cleanup done.
+        Object.defineProperty(cls, c.name, {value: c.value});
+        Object.defineProperty(this, c.name, {value: c.value});
+        // cls[c.name] = this[c.name] = c.value;
+      } else {
+        console.warn('Defining message before Message.');
+      }
+    }
+
     // add methods
-    for ( var key in this.methods ) {
+    for ( key in this.methods ) {
       var m = this.methods[key];
       if ( Method && Method.isInstance(m) ) {
         addMethod(m.name, m.generateFunction());

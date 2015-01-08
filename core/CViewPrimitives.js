@@ -337,6 +337,10 @@ CLASS({
       defaultValue: false,
       documentation: function() {/* Indicates if the minimum size constraint should
         be the same as the preferred size, preventing font shrinking. */}
+    },
+    {
+      name: 'clipped',
+      defaultValue: true     
     }
   ],
 

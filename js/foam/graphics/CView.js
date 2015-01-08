@@ -160,6 +160,11 @@ CLASS({
       name: 'font',
       documentation: function() {/*
           The font to use for rendering text, in CSS string format: <code>'24px Roboto'</code>. */}
+    },
+    {
+      name: 'clipped',
+      model_: 'BooleanProperty',
+      defaultValue: false
     }
   ],
 
@@ -247,7 +252,10 @@ CLASS({
       }
       this.canvas.save();
       this.canvas.translate(this.x, this.y);
-      //this.erase(); // let the canvas AbstractCViewView take care of erasing the root node
+      if (this.clipped) {
+        this.canvas.rect(0,0,this.width,this.height);
+        this.canvas.clip();
+      }
       this.paintSelf();
       this.paintChildren();
       this.canvas.restore();
