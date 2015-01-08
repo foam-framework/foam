@@ -174,6 +174,7 @@ CLASS({
         var params = {cview: this};
         if ( this.className ) params.className = this.className;
         if ( this.tooltip )   params.tooltip   = this.tooltip;
+        if ( this.title )     params.title     = this.title;
         this.view = this.CViewView.create(params);
       }
       return this.view;
