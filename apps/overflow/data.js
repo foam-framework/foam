@@ -431,5 +431,46 @@ dao.where(CONTAINS(SEQ(Tabla.A, Tabla.B), 'jon')).select(
 This solution isn't IndexedDB specific and works with any DAO type.
     */},
   },
+  {
+    id: 16,
+    title: 'How do I emulate super in javascript?',
+    labels: [ 'class', 'super', 'OO' ],
+    src: 'http://stackoverflow.com/questions/8032566/emulate-super-in-javascript',
+    answer: function() {/*
+<code>
+CLASS({
+  name: 'Foo',
+  methods: { say: function() { console.log('foo'); } }
+});
+
+CLASS({
+  name: 'Bar',
+  extendsModel: 'Foo',
+  properties: [ { model_: 'IntProperty', name: 'counter' } ],
+  methods: {
+    say: function() {
+      this.SUPER();
+      this.counter++;
+      console.log('bar ' + this.counter);
+    }
+  }
+});
+
+var foo = Foo.create();
+var bar = Bar.create();
+
+foo.say();
+  foo
+
+bar.say();
+  foo
+  bar 1
+
+bar.say();
+  foo
+  bar 2
+</code>
+    */},
+  },
 
 ], Question).dao;
