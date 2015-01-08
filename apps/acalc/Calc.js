@@ -35,12 +35,14 @@ function invTrigFn(f) {
 
 /** Make a Binary Action. **/
 function binaryOp(name, keys, f, sym) {
+  f.binary = true;
   f.toString = function() { return sym; };
   return {
     name: name,
     label: sym,
     keyboardShortcuts: keys,
     action: function() {
+console.log('binaryOp: ', sym);
       if ( this.a2 == '' ) {
         // the previous operation should be replaced, since we can't
         // finish this one without a second arg. The user probably hit one
@@ -64,6 +66,7 @@ function unaryOp(name, keys, f, opt_sym) {
     label: sym,
     keyboardShortcuts: keys,
     action: function() {
+console.log('unaryOp: ', sym, '   ', Date.now(), this.a2);
       this.op = f;
       this.push(f.call(this, this.a2));
       this.editable = false;
@@ -454,6 +457,17 @@ CLASS({
       keyboardShortcuts: [ 187 /* '=' */, 13 /* <enter> */ ],
       action: function() {
         if ( typeof(this.a2) === 'string' && this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
+        if ( this.op == DEFAULT_OP ) {
+          var last = this.history[this.history.length-1];
+          console.log('******* ', last.op, last.op.binary, last.a2, this.a2);
+          if ( last.op.binary ) {
+            this.push(this.a2);
+            this.a2 = last.a2;
+          } else {
+            this.a1 = this.a2;
+          }
+          this.op = last.op;
+        }
         this.push(this.op(parseFloat(this.a1), parseFloat(this.a2)));
         this.editable = false;
       }
