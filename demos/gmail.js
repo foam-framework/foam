@@ -5,13 +5,14 @@ CLASS({
     'DelayedDAO',
     'SeqNoDAO',
     'foam.core.dao.CloningDAO',
-    'foam.core.dao.Sync',
     'foam.core.dao.MergeDAO',
     'foam.core.dao.VersionNoDAO',
+    'foam.lib.gmail.Sync',
+    'foam.lib.gmail.SyncDecorator',
     'EasyOAuth2',
     'FOAMGMailMessage',
     'MDAO',
-    'IDBDAO',
+    'MDAO as IDBDAO',
     'FutureDAO',
     'GMailMessageDAO',
     'PersistentContext',
@@ -61,7 +62,7 @@ CLASS({
     },
     {
       name: 'localMDao',
-      view: 'TableView',
+      view: 'DAOListView',
       factory: function() {
         return this.CachingDAO.create({
           cache: this.MDAO.create({ model: this.FOAMGMailMessage }),
@@ -99,10 +100,13 @@ CLASS({
       view: { factory_: 'DetailView', showActions: true },
       factory: function() {
         return this.Sync.create({
-          local: this.localMergeDao,
+          local: this.SyncDecorator.create({
+            delegate: this.localMergeDao
+          }),
           remote: this.remoteDao,
           localVersionProp: this.FOAMGMailMessage.CLIENT_VERSION,
           remoteVersionProp: this.FOAMGMailMessage.HISTORY_ID,
+          deletedProp: this.FOAMGMailMessage.DELETED,
           initialSyncWindow: 1
         });
       }
@@ -131,6 +135,46 @@ CLASS({
                 {
                   name: 'Content-Type',
                   value: 'text/html'
+                }
+              ],
+              body: {
+                size: body.length,
+                data: encoded
+              }
+            }
+          }));
+      }
+    },
+    {
+      name: 'sendCreatedDraft',
+      action: function() {
+        this.localVersionedDao.where(EQ(this.FOAMGMailMessage.ID, 'draft_111112')).update(SET(this.FOAMGMailMessage.IS_SENT, true));
+      }
+    },
+    {
+      name: 'createDraftToSend',
+      action: function() {
+        var body = 'Gmail Api Test Message';
+        var encoded = Base64Encoder.create({ urlSafe: true })
+          .encode(new Uint8Array(stringtoutf8(body)));
+
+        this.localVersionedDao.put(
+          this.FOAMGMailMessage.create({
+            labelIds: ['DRAFT'],
+            id: 'draft_111112',
+            payload: {
+              headers: [
+                {
+                  name: 'Content-Type',
+                  value: 'text/html'
+                },
+                {
+                  name: 'To',
+                  value: 'adamvy@google.com'
+                },
+                {
+                  name: 'Subject',
+                  value: 'Test Message 2'
                 }
               ],
               body: {
