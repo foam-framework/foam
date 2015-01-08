@@ -250,9 +250,15 @@ CLASS({
     { name: 'name', required: true }
   ],
 
+  constants: {
+    YES: 2,
+    MAYBE: 1,
+    NO: 0
+  },
+
   methods: {
     recognize: function(map) {
-      return false; // Returns true to indicate recognition, false to ignore.
+      return this.NO;
     },
 
     attach: function(handlers) {
@@ -279,6 +285,7 @@ CLASS({
 
 CLASS({
   name: 'ScrollGesture',
+  extendsModel: 'Gesture',
   help: 'Gesture that understands vertical or horizontal scrolling.',
 
   properties: [
@@ -349,12 +356,13 @@ CLASS({
       // - is not done and
       // - we are moving with momentum
 
-      if ( Object.keys(map).length !== 1 ) return false;
+      if ( Object.keys(map).length !== 1 ) return this.NO;
       var point = map[Object.keys(map)[0]];
 
-      return point.type != 'mouse' && ! point.done &&
-          ( Math.abs(this.isVertical ? point.totalY : point.totalX) > 10 ||
-            Math.abs(this.momentum) > 0 );
+      if ( point.type === 'mouse' || point.done ) return this.NO;
+      if ( Math.abs(this.momentum) > 0 ) return this.YES;
+      var delta = Math.abs(this.isVertical ? point.totalY : point.totalX);
+      return delta > 10 ? this.YES : this.MAYBE;
     },
 
     attach: function(map, handlers) {
@@ -542,6 +550,7 @@ CLASS({
 
 CLASS({
   name: 'TapGesture',
+  extendsModel: 'Gesture',
   help: 'Gesture that understands a quick, possible multi-point tap. Calls into the handler: tapClick(numberOfPoints).',
 
   properties: [
@@ -558,10 +567,20 @@ CLASS({
       // - multiple points that
       // - are all done and
       // - none of which has moved more than 10px net.
-      return Object.keys(map).every(function(key) {
+      var response;
+      var doneCount = 0;
+      var self = this;
+      var keys = Object.keys(map);
+      for ( var i = 0 ; i < keys.length ; i++ ) {
+        var key = keys[i];
         var p = map[key];
-        return p.done && Math.abs(p.totalX) < 10 && Math.abs(p.totalY) < 10;
-      });
+        if ( Math.abs(p.totalX) >= 10 && Math.abs(p.totalY) >= 10 ) {
+          return this.NO;
+        }
+        if ( p.done ) doneCount++;
+      }
+      if ( response === this.NO ) return response;
+      return doneCount === keys.length ? this.YES : this.MAYBE;
     },
 
     attach: function(map, handlers) {
@@ -578,6 +597,7 @@ CLASS({
 
 CLASS({
   name: 'DragGesture',
+  extendsModel: 'Gesture',
   help: 'Gesture that understands a hold and drag with mouse or one touch point.',
   properties: [
     {
@@ -593,12 +613,15 @@ CLASS({
       // - is not done and
       // - has begun to move
       // I conflict with: vertical and horizontal scrolling, when using touch.
-      if ( Object.keys(map).length > 1 ) return;
-      var point = map[Object.keys(map)[0]];
-      var r = ! point.done && (Math.abs(point.totalX) > 0 || Math.abs(point.totalY) > 0);
+      var keys = Object.keys(map);
+      if ( keys.length > 1 ) return this.NO;
+      var point = map[keys[0]];
+      if ( point.done ) return this.NO;
+      var delta = Math.max(Math.abs(point.totalX), Math.abs(point.totalY));
+      var r = delta >= 20 ? this.YES : this.MAYBE;
       // Need to preventDefault on touchmoves or Chrome can swipe for
       // back/forward.
-      if ( r ) point.shouldPreventDefault = true;
+      if ( r != this.NO ) point.shouldPreventDefault = true;
       return r;
     },
 
@@ -636,6 +659,7 @@ CLASS({
 
 CLASS({
   name: 'PinchTwistGesture',
+  extendsModel: 'Gesture',
   help: 'Gesture that understands a two-finger pinch/stretch and rotation',
   properties: [
     {
@@ -656,13 +680,13 @@ CLASS({
       // - two points that
       // - are both not done and
       // - have begun to move.
-      if ( Object.keys(map).length !== 2 ) return;
+      if ( Object.keys(map).length !== 2 ) return this.NO;
 
       var points = this.getPoints(map);
-      return ! points[0].done &&
-             ! points[1].done &&
-             ( points[0].dx !== 0 || points[0].dy !== 0 ) &&
-             ( points[1].dx !== 0 || points[1].dy !== 0 );
+      if ( points[0].done || points[1].done ) return this.NO;
+      var moved = ( points[0].dx !== 0 || points[0].dy !== 0 ) &&
+          ( points[1].dx !== 0 || points[1].dy !== 0 );
+      return moved ? this.YES : this.MAYBE;
     },
 
     attach: function(map, handlers) {
@@ -772,10 +796,11 @@ CLASS({
   name: 'GestureManager',
   requires: [
     'DragGesture',
+    'Gesture',
+    'GestureTarget',
     'PinchTwistGesture',
     'ScrollGesture',
-    'TapGesture',
-    'GestureTarget'
+    'TapGesture'
   ],
   imports: [
     'document',
@@ -905,15 +930,38 @@ CLASS({
     checkRecognition: function() {
       if ( this.recognized ) return;
       var self = this;
-      var match;
+      var matches = [];
       // TODO: Handle multiple matching gestures.
       Object.keys(this.active).forEach(function(name) {
-        if ( self.gestures[name].recognize(self.points) ) {
-          match = name;
+        var answer = self.gestures[name].recognize(self.points);
+        if ( answer >= self.Gesture.MAYBE ) {
+          matches.push([name, answer]);
         }
       });
 
-      if ( ! match ) return;
+      if ( matches.length === 0 ) return;
+
+      // There are three possibilities here:
+      // - If one or more gestures returned YES, the last one wins. The "last"
+      //   part is arbitrary, but that's how this code worked previously.
+      // - If a single gesture returned MAYBE, it becomes the only match.
+      // - If more than one gesture returned MAYBE, and none returned YES, then
+      //   there's no recognition yet, and we do nothing until one recognizes.
+      var lastYes = -1;
+      for ( var i = 0 ; i < matches.length ; i++ ) {
+        if ( matches[i][1] === this.Gesture.YES ) lastYes = i;
+      }
+
+      // If there were no YES answers, then all the matches are MAYBEs.
+      // If there are more than one MAYBE, return. Otherwise, we have our
+      // winner.
+      var match;
+      if ( lastYes < 0 ) {
+        if ( matches.length > 1 ) return; // No winner, so wait for one.
+        match = matches[0][0];
+      } else {
+        match = matches[lastYes][0];
+      }
 
       // Filter all the handlers to make sure none is a child of any already existing.
       // This prevents eg. two tap handlers firing when the tap is on an inner one.
@@ -1028,13 +1076,15 @@ CLASS({
       code: function(event) {
         // TODO: De-dupe me too.
         if ( ! this.points.mouse ) return;
+        this.points.mouse.x = event.pageX;
+        this.points.mouse.y = event.pageY;
         this.points.mouse.done = true;
         if ( ! this.recognized ) {
           this.checkRecognition();
         }
 
         delete this.points.mouse;
-        this.active = {}
+        this.active = {};
         this.recognized = undefined;
       }
     },
