@@ -1232,6 +1232,12 @@ var MDAO = Model.create({
     },
 
     put: function(obj, sink) {
+      if ( ! obj ) {
+        // TODO: Workaround for no 'update' event on DAOs.
+        this.notify_('put', [null])
+        return;
+      }
+
       var oldValue = this.map[obj.id];
       if ( oldValue ) {
         this.root = this.index.put(this.index.remove(this.root, oldValue), obj);
@@ -1309,7 +1315,7 @@ var MDAO = Model.create({
           sink && sink.remove && sink.remove(a[i]);
         }
         sink && sink.eof && sink.eof();
-        future.set();
+        future.set(sink);
       }.bind(this));
       return future.get;
     },

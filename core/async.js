@@ -55,7 +55,7 @@ MODEL({
       var args = arguments;
       return function (ret) {
         console.log.apply(console, args);
-        ret && ret.apply(this, [].shift.call(arguments));
+        ret && ret.apply(this, [].slice.call(arguments, 1));
       };
     },
 

@@ -1,16 +1,22 @@
 CLASS({
   name: 'GMailSyncDemo',
   requires: [
+    'CachingDAO',
     'DelayedDAO',
     'SeqNoDAO',
     'foam.core.dao.CloningDAO',
-    'foam.core.dao.Sync',
     'foam.core.dao.MergeDAO',
     'foam.core.dao.VersionNoDAO',
+    'foam.lib.gmail.Sync',
+    'foam.lib.gmail.SyncDecorator',
     'EasyOAuth2',
     'FOAMGMailMessage',
     'MDAO',
+    'MDAO as IDBDAO',
+    'FutureDAO',
     'GMailMessageDAO',
+    'PersistentContext',
+    'Binding'
   ],
   properties: [
     {
@@ -37,17 +43,31 @@ CLASS({
       name: 'remoteDao',
       hidden: true,
       factory: function() {
-        return this.GMailMessageDAO.create(undefined,
-                                           this.X.sub({
-                                             XHR: this.authedXhr
-                                           }));
+        var future = afuture()
+        var Y = this.X.sub({ XHR: this.authedXhr });
+        this.persistentContext.bindObject('remoteDao',
+                                          Y.GMailMessageDAO)(future.set);
+        return this.FutureDAO.create({ future: future.get });
+      }
+    },
+    {
+      name: 'persistentContext',
+      factory: function() {
+        return this.PersistentContext.create({
+          dao: this.IDBDAO.create({ model: this.Binding }),
+          predicate: NOT_TRANSIENT,
+          context: {}
+        });
       }
     },
     {
       name: 'localMDao',
-      view: 'TableView',
+      view: 'DAOListView',
       factory: function() {
-        return this.MDAO.create({ model: this.FOAMGMailMessage });
+        return this.CachingDAO.create({
+          cache: this.MDAO.create({ model: this.FOAMGMailMessage }),
+          src: this.IDBDAO.create({ model: this.FOAMGMailMessage })
+        });
       }
     },
     {
@@ -66,8 +86,11 @@ CLASS({
       factory: function() {
         return this.MergeDAO.create({
           delegate: this.localMDao,
-          mergeStrategy: function(ret, o1, o2) {
-            ret(o1);
+          mergeStrategy: function(ret, oldValue, newValue) {
+            newValue.clientVersion = Math.max(
+              oldValue.clientVersion,
+              newValue.clientVersion);
+            ret(newValue);
           }
         });
       }
@@ -77,11 +100,14 @@ CLASS({
       view: { factory_: 'DetailView', showActions: true },
       factory: function() {
         return this.Sync.create({
-          local: this.localMergeDao,
+          local: this.SyncDecorator.create({
+            delegate: this.localMergeDao
+          }),
           remote: this.remoteDao,
           localVersionProp: this.FOAMGMailMessage.CLIENT_VERSION,
           remoteVersionProp: this.FOAMGMailMessage.HISTORY_ID,
-          initialSyncWindow: 10
+          deletedProp: this.FOAMGMailMessage.DELETED,
+          initialSyncWindow: 1
         });
       }
     }
@@ -91,5 +117,73 @@ CLASS({
       this.SUPER(args);
       window.demo = this;
     }
-  }
+  },
+  actions: [
+    {
+      name: 'addDraft',
+      action: function() {
+        var body = 'Hello world';
+        var encoded = Base64Encoder.create({ urlSafe: true })
+          .encode(new Uint8Array(stringtoutf8(body)));
+
+        this.localVersionedDao.put(
+          this.FOAMGMailMessage.create({
+            labelIds: ['DRAFT'],
+            id: 'draft_' + Math.floor(Math.random() * 0xFFFFFFFF).toString(16),
+            payload: {
+              headers: [
+                {
+                  name: 'Content-Type',
+                  value: 'text/html'
+                }
+              ],
+              body: {
+                size: body.length,
+                data: encoded
+              }
+            }
+          }));
+      }
+    },
+    {
+      name: 'sendCreatedDraft',
+      action: function() {
+        this.localVersionedDao.where(EQ(this.FOAMGMailMessage.ID, 'draft_111112')).update(SET(this.FOAMGMailMessage.IS_SENT, true));
+      }
+    },
+    {
+      name: 'createDraftToSend',
+      action: function() {
+        var body = 'Gmail Api Test Message';
+        var encoded = Base64Encoder.create({ urlSafe: true })
+          .encode(new Uint8Array(stringtoutf8(body)));
+
+        this.localVersionedDao.put(
+          this.FOAMGMailMessage.create({
+            labelIds: ['DRAFT'],
+            id: 'draft_111112',
+            payload: {
+              headers: [
+                {
+                  name: 'Content-Type',
+                  value: 'text/html'
+                },
+                {
+                  name: 'To',
+                  value: 'adamvy@google.com'
+                },
+                {
+                  name: 'Subject',
+                  value: 'Test Message 2'
+                }
+              ],
+              body: {
+                size: body.length,
+                data: encoded
+              }
+            }
+          }));
+      }
+    }
+  ]
 });

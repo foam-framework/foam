@@ -976,7 +976,9 @@ CLASS({
       var mysink = {
         $UID: s.$UID,
         put: function(o, sink, fc) {
-          s.put && s.put(self.bToA(o), sink, fc);
+          // TODO: The check that o is valid is a workaround until we have
+          // an 'update' event on daos.
+          s.put && s.put(o && self.bToA(o), sink, fc);
         },
         remove: function(o, sink, fc) {
           s.remove && s.remove(self.bToA(o), sink, fc);
@@ -1851,7 +1853,7 @@ CLASS({
         };
         request.transaction.oncomplete = function() {
           sink && sink.eof && sink.eof();
-          future.set();
+          future.set(sink);
         };
         request.onerror = function(e) {
           sink && sink.error && sink.error('remove', e);

@@ -17,6 +17,163 @@
 
 CLASS({
   package: 'foam.graphics',
+  name: 'AnimatedPropertyTrait',
+  
+  properties: [
+    'duration', 'interpolation',
+    {
+      name: 'install',
+      defaultValue: function(prop) {      
+        this.defineProperty(
+          {
+            name: prop.name+"$Animation",
+            defaultValue: 0,
+            hidden: true,
+            documentation: function() { /* The animation controller. */ },
+          }
+        );
+        
+        // replace setter with animater
+        var actualSetter = this.__lookupSetter__(prop.name);
+        this.__defineSetter__(prop.name, function(nu) {
+          // setter will be called on the instance, so "this" is an instance now
+          this[prop.name+"$Animation"] && this[prop.name+"$Animation"]();
+
+          this[prop.name+"$Animation"] = Movement.animate(
+            prop.duration,
+            actualSetter.apply(this, nu),
+            prop.interpolation
+          );
+        });
+        
+      }
+    }
+  ],
+  
+  methods: {
+    animPropInstallFn: function(prop) {      
+      this.defineProperty(
+        {
+          name: prop.name+"$AnimationLatch",
+          defaultValue: 0,
+          hidden: true,
+          documentation: function() { /* The animation controller. */ },
+        }
+      );
+
+      var actualSetter = this.__lookupSetter__(prop.name);
+      this.defineProperty(
+        {
+          name: prop.name+"$AnimationSetValue",
+          defaultValue: 0,
+          hidden: true,
+          documentation: function() { /* The animation value setter. */ },
+          postSet: function(_, nu) {
+            //console.log("Anim internal set: ",  nu, this.$UID);
+            actualSetter.call(this, nu);
+          }
+        }
+      );
+      
+      // replace setter with animater
+      this.__defineSetter__(prop.name, function(nu) {
+        // setter will be called on the instance, so "this" is an instance now
+        //console.log("Anim SET: ",  nu, this.$UID);
+        
+        var latch = this[prop.name+"$AnimationLatch"] ;
+        latch && latch();
+        //this[prop.name+"$AnimationLatch"] && this[prop.name+"$AnimationLatch"]().stop();
+
+        var anim = Movement.animate(
+          500, //prop.duration,
+          function() { 
+            this[prop.name+"$AnimationSetValue"] = nu; 
+          }.bind(this),
+          Movement.linear//ease(1,1) // prop.interpolation
+        );
+        this[prop.name+"$AnimationLatch"] = anim();
+        
+//         console.log("Anim: ",  nu, this.$UID);
+//         this[prop.name+"$AnimationSetValue"] = nu;
+      }); 
+    } 
+  }
+
+});
+
+CLASS({
+  package: 'foam.graphics',
+  name: 'AnimatedIntProperty',
+  extendsModel: 'IntProperty',
+  
+  traits: ['foam.graphics.AnimatedPropertyTrait']
+});
+  
+
+CLASS({
+  package: 'foam.graphics',
+  name: 'AnimatedYTrait',
+  
+  requires: ['foam.graphics.AnimatedIntProperty'],
+  
+  properties: [
+     {
+      name: 'y',
+      //model_: 'AnimatedIntProperty',
+      //interpolation: Movement.ease(0.2, 0.2),
+      //duration: 500,
+      install: X.foam.graphics.AnimatedPropertyTrait.getFeature('animPropInstallFn').code
+
+    },
+  ],
+   
+ });
+
+
+
+CLASS({
+  package: 'foam.graphics',
+  name: 'AnimatedHeightTrait',
+  
+  requires: ['foam.graphics.AnimatedIntProperty'],
+  
+  properties: [
+    {
+      name: 'height',
+      //model_: 'AnimatedIntProperty',
+      //interpolation: Movement.ease(0.2, 0.2),
+      //duration: 500,
+      install: X.foam.graphics.AnimatedPropertyTrait.getFeature('animPropInstallFn').code
+
+    }
+  ],
+   
+ });
+ 
+
+
+CLASS({
+  package: 'foam.graphics',
+  name: 'AnimatedAlphaTrait',
+  
+  requires: ['foam.graphics.AnimatedIntProperty'],
+  
+  properties: [
+    {
+      name: 'height',
+      //model_: 'AnimatedIntProperty',
+      //interpolation: Movement.ease(0.2, 0.2),
+      //duration: 500,
+      install: X.foam.graphics.AnimatedPropertyTrait.getFeature('animPropInstallFn').code
+
+    }
+  ],
+   
+ });
+
+
+CLASS({
+  package: 'foam.graphics',
   name: 'LinearLayout',
   extendsModel: 'foam.graphics.CView',
 
