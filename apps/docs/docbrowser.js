@@ -209,11 +209,11 @@ CLASS({
 
       if (this.SearchContext) return; // don't run twice
 
-      // load all models
-      this.createModelList();
-
       // load developer guides
       RegisterDevDocs(this.X);
+
+      // load all models
+      this.createModelList();
 
       // search context uses a selection value to indicate the chosen Model to display
       this.SearchContext = this.X.sub({}, 'searchX');
