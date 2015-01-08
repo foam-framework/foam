@@ -972,6 +972,7 @@ CLASS({
       (this.objs_ || (this.objs_ = [])).push(obj);
     },
     eof: function() {
+      if ( ! this.objs_ ) return;
       for ( var i = 0 ; i < this.objs_.length ; i++ ) {
         var obj = this.objs_[i];
         var newObj = this.f(obj);
