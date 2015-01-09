@@ -100,14 +100,15 @@ CLASS({
       }
     },
     addStyle: function(css) {
+      if ( ! this.document || ! this.document.createElement ) return;
       var s = this.document.createElement('style');
       s.innerHTML = css;
       this.document.head.appendChild(s);
     },
-    log:   function() { this.console.log.apply(this.console, arguments); }, 
-    warn:  function() { this.console.warn.apply(this.console, arguments); }, 
-    info:  function() { this.console.info.apply(this.console, arguments); }, 
-    error: function() { this.console.error.apply(this.console, arguments); }, 
+    log:   function() { this.console.log.apply(this.console, arguments); },
+    warn:  function() { this.console.warn.apply(this.console, arguments); },
+    info:  function() { this.console.info.apply(this.console, arguments); },
+    error: function() { this.console.error.apply(this.console, arguments); },
     $: function(id) {
       return ( this.document.FOAM_OBJECTS && this.document.FOAM_OBJECTS[id] ) ?
         this.document.FOAM_OBJECTS[id] :
@@ -131,7 +132,7 @@ CLASS({
     },
     clearInterval: function(id) { this.window.clearInterval(id); },
     requestAnimationFrame: function(f) {
-      if ( this.isBackground ) return this.setTimeout(f, 16); 
+      if ( this.isBackground ) return this.setTimeout(f, 16);
 
       console.assert(
         this.window.requestAnimationFrame,

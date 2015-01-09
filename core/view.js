@@ -224,7 +224,9 @@ var DOM = {
 };
 
 
-window.addEventListener('load', function() { DOM.init(X); }, false);
+window &&
+  window.addEventListener &&
+  window.addEventListener('load', function() { DOM.init(X); }, false);
 
 
 // TODO: document and make non-global
