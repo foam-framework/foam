@@ -368,6 +368,7 @@ CLASS({
   properties: [
     {
       name: 'redirects',
+      transient: true,
       defaultValue: 0
     }
   ],
@@ -399,7 +400,8 @@ CLASS({
       return token;
     },
     refreshNow_: function(ret) {
-      if ( ! this.accessToken && this.redirects < 2 ) {
+      debugger;
+      if ( this.redirects < 2 ) {
         this.redirects += 1;
         var redirect =
           this.location.protocol + '//' +
