@@ -379,7 +379,6 @@ CLASS({
       });
     },
     openEmail: function(email) {
-      debugger;
       this.open(email.id);
     },
     changeLabel: function(label) {
