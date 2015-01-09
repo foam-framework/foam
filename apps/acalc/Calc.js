@@ -163,6 +163,7 @@ CLASS({
   templates: [ function CSS() {/*
     * {
       box-sizing: border-box;
+      outline: none;
     }
 
     html {
