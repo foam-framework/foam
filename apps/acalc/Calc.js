@@ -35,13 +35,15 @@ function invTrigFn(f) {
 }
 
 /** Make a Binary Action. **/
-function binaryOp(name, keys, f, sym, opt_longName) {
+function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
   var longName = opt_longName || name;
+  var speechLabel = opt_speechLabel || sym;
   f.toString = function() { return sym; };
   return {
     name: name,
     label: sym,
     translationHint: 'binary operator: ' + longName,
+    speechLabel: speechLabel,
     keyboardShortcuts: keys,
     action: function() {
       if ( this.a2 == '' ) {
@@ -58,15 +60,17 @@ function binaryOp(name, keys, f, sym, opt_longName) {
   };
 }
 
-function unaryOp(name, keys, f, opt_sym, opt_longName) {
+function unaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
   var sym = opt_sym || name;
   var longName = opt_longName || name;
+  var speechLabel = opt_speechLabel || sym;
   f.toString = function() { return sym; };
 
   return {
     name: name,
     label: sym,
     translationHint: 'short form for mathematical function: "' + longName + '"',
+    speechLabel: speechLabel,
     keyboardShortcuts: keys,
     action: function() {
       this.op = f;
@@ -429,13 +433,14 @@ CLASS({
     binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7',         'multiplication'),
     binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+',              'addition'),
     binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–',              'subtraction'),
-    binaryOp('pow',   [],                 Math.pow,                             'yⁿ',             'exponentiation'),
-    binaryOp('p',     [],                 function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations'),
-    binaryOp('c',     [],                 function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations'),
-    binaryOp('root',  [],                 function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY'),
+    binaryOp('pow',   [],                 Math.pow,                             'yⁿ',             'exponentiation', 'y to the power of n'),
+    binaryOp('p',     [],                 function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations', 'permutations'),
+    binaryOp('c',     [],                 function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations', 'combinations'),
+    binaryOp('root',  [],                 function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY', "n'th root" ),
     {
       name: 'ac',
       label: 'AC',
+      speechLabel: 'all clear',
       translationHint: 'all clear (calculator button label)',
       // help: 'All Clear.',
       keyboardShortcuts: [ 65 /* a */, 67 /* c */ ],
@@ -454,6 +459,7 @@ CLASS({
     {
       name: 'sign',
       label: '+/-',
+      speechLabel: 'negate',
       keyboardShortcuts: [ 78 /* n */ , 83 /* s */],
       action: function() { this.a2 = - this.a2; }
     },
@@ -517,32 +523,35 @@ CLASS({
     {
       name: 'percent',
       label: '%',
+      speechLabel: 'percent',
       keyboardShortcuts: [ 'shift-53' /* % */ ],
       action: function() { this.a2 /= 100.0; }
     },
     {
       name: 'deg',
+      speechLabel: 'switch to degrees',
       translationHint: 'short form for "degrees" calculator mode',
       action: function() { this.degreesMode = true; }
     },
     {
       name: 'rad',
+      speechLabel: 'switch to radians',
       translationHint: 'short form for "radians" calculator mode',
       action: function() { this.degreesMode = false; }
     },
-    unaryOp('fact',   ['shift-49' /* ! */], function(n) { return this.factorial(n); }, 'x!'),
-    unaryOp('inv',    [73 /* i */], function(a) { return 1.0/a; }, '1/x'),
-    unaryOp('sin',    [], trigFn(Math.sin), 'sin', 'sine'),
-    unaryOp('cos',    [], trigFn(Math.cos), 'cos', 'cosine'),
-    unaryOp('tan',    [], trigFn(Math.tan), 'tan', 'tangent'),
-    unaryOp('asin',   [], invTrigFn(Math.asin), 'asin', 'inverse-sine'),
-    unaryOp('acos',   [], invTrigFn(Math.acos), 'acos', 'inverse-cosine'),
-    unaryOp('atan',   [], invTrigFn(Math.atan), 'atan', 'inverse-tangent'),
-    unaryOp('square', [], function(a) { return a*a; }, 'x²'),
-    unaryOp('sqroot', [82 /* r */], Math.sqrt, '√'),
-    unaryOp('log',    [], function(a) { return Math.log(a) / Math.LN10; }, 'log', 'logarithm'),
-    unaryOp('ln',     [], Math.log, 'ln', 'natural logarithm'),
-    unaryOp('exp',    [], Math.exp, 'eⁿ')
+    unaryOp('fact',   ['shift-49' /* ! */], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
+    unaryOp('inv',    [73 /* i */], function(a) { return 1.0/a; }, '1/x', undefined, 'inverse'),
+    unaryOp('sin',    [], trigFn(Math.sin), 'sin', 'sine', 'sine'),
+    unaryOp('cos',    [], trigFn(Math.cos), 'cos', 'cosine', 'cosine'),
+    unaryOp('tan',    [], trigFn(Math.tan), 'tan', 'tangent', 'tangent'),
+    unaryOp('asin',   [], invTrigFn(Math.asin), 'asin', 'inverse-sine', 'arcsine'),
+    unaryOp('acos',   [], invTrigFn(Math.acos), 'acos', 'inverse-cosine', 'arccosine'),
+    unaryOp('atan',   [], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arctangent'),
+    unaryOp('square', [], function(a) { return a*a; }, 'x²', 'x squared'),
+    unaryOp('sqroot', [82 /* r */], Math.sqrt, '√', 'square root'),
+    unaryOp('log',    [], function(a) { return Math.log(a) / Math.LN10; }, 'log', 'logarithm', 'log base 10'),
+    unaryOp('ln',     [], Math.log, 'ln', 'natural logarithm', 'natural logarithm'),
+    unaryOp('exp',    [], Math.exp, 'eⁿ', undefined, 'e to the power of n')
   ]
 });
 
