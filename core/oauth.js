@@ -360,12 +360,20 @@ CLASS({
   name: 'OAuth2Redirect',
   extendsModel: 'OAuth2',
   help: 'OAuth2 strategy that uses the redirect.',
+  properties: [
+    {
+      name: 'attempts',
+      defaultValue: 0
+    }
+  ],
   methods: {
     refreshNow_: function(ret) {
       var location = this.X.window.location;
       var token = location.hash.match(/token=([^&]*)/);
       token = token && token[1];
-      if ( token ) {
+
+      if ( token && this.attempts < 2 ) {
+        this.attempts += 1;
         this.accessToken = token;
         ret(token);
       } else {
