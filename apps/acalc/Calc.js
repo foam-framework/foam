@@ -77,7 +77,6 @@ function unaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
     speechLabel: speechLabel,
     keyboardShortcuts: keys,
     action: function() {
-      console.log('unaryOp: ', sym, '   ', Date.now(), this.a2);
       this.op = f;
       this.push(f.call(this, this.a2));
       this.editable = false;
