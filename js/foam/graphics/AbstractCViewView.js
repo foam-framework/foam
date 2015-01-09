@@ -59,6 +59,7 @@ CLASS({
           $$DOC{ref:'.initHTML'}.
         */}
     },
+    'title',
     {
       model_: 'IntProperty',
       name:  'width',
@@ -137,7 +138,8 @@ CLASS({
 
     toHTML: function() { /* Creates the canvas element. */
       var className = this.className ? ' class="' + this.className + '"' : '';
-      return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + ';min-width:' + this.styleWidth() + ';min-height:' + this.styleHeight() + '"></canvas>';
+      var title = this.title ? ' aria-role="button" aria-label="' + this.title + '"' : '';
+      return '<canvas id="' + this.id + '"' + className + title +' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + ';min-width:' + this.styleWidth() + ';min-height:' + this.styleHeight() + '"></canvas>';
     },
 
     initHTML: function() { /* Computes the scaling ratio from the window.devicePixelRatio

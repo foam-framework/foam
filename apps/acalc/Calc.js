@@ -20,7 +20,8 @@
 // the number to round, which elimitates the spurious 9's.
 var DECIMAL_PLACES_PRECISION = 12;
 
-console.profile();
+// console.profile();
+
 function trigFn(f) {
   return function(a) {
     return f(this.degreesMode ? a * Math.PI / 180 : a);
@@ -43,7 +44,6 @@ function binaryOp(name, keys, f, sym, opt_longName) {
     translationHint: 'binary operator: ' + longName,
     keyboardShortcuts: keys,
     action: function() {
-console.log('binaryOp: ', sym);
       if ( this.a2 == '' ) {
         // the previous operation should be replaced, since we can't
         // finish this one without a second arg. The user probably hit one
@@ -69,7 +69,6 @@ function unaryOp(name, keys, f, opt_sym, opt_longName) {
     translationHint: 'short form for mathematical function: "' + longName + '"',
     keyboardShortcuts: keys,
     action: function() {
-console.log('unaryOp: ', sym, '   ', Date.now(), this.a2);
       this.op = f;
       this.push(f.call(this, this.a2));
       this.editable = false;
@@ -164,6 +163,7 @@ CLASS({
   templates: [ function CSS() {/*
     * {
       box-sizing: border-box;
+      outline: none;
     }
 
     html {
@@ -479,7 +479,6 @@ CLASS({
         if ( typeof(this.a2) === 'string' && this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
         if ( this.op == DEFAULT_OP ) {
           var last = this.history[this.history.length-1];
-          console.log('******* ', last.op, last.op.binary, last.a2, this.a2);
           if ( last.op.binary ) {
             this.push(this.a2);
             this.a2 = last.a2;
@@ -601,8 +600,8 @@ CLASS({
       template: function() {/*
         <div style="position: relative;z-index: 100;">
           <div style="position: absolute;">
-            <span style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad">RAD</span>
-            <span style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg">DEG</span>
+            <span style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="radians">RAD</span>
+            <span style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="degrees">DEG</span>
           </div>
         </div>
 
@@ -647,13 +646,11 @@ CLASS({
           this.X.window.addEventListener('resize', move);
           // Add mousewhell scrolling.
           this.X.document.addEventListener('mousewheel', EventService.framed(function(e) {
-        console.log('e: ', e);
             var inner$ = self.$.querySelector('.inner-calc-display');
             var outer$ = self.$.querySelector('.calc-display');
             var outer  = window.getComputedStyle(outer$);
             var inner  = window.getComputedStyle(inner$);
             var top    = toNum(inner$.style.top);
-        console.log('top: ', top);
             inner$.style.top = Math.min(0, Math.max(toNum(outer.height)-toNum(inner.height)-11, top-e.deltaY)) + 'px';
           }));
         %>
@@ -670,16 +667,16 @@ CLASS({
       <div id="%%id" class="buttons button-row" style="background:#4b4b4b;">
         <div class="button-column" style="flex-grow: 3">
           <div class="button-row">
-            <div class="button">$$7</div><div class="button">$$8</div><div class="button">$$9</div>
+            <div class="button" tabindex="1">$$7</div><div class="button" tabindex="2">$$8</div><div class="button" tabindex="3">$$9</div>
           </div>
           <div class="button-row">
-            <div class="button">$$4</div><div class="button">$$5</div><div class="button">$$6</div>
+            <div class="button" tabindex="4">$$4</div><div class="button" tabindex="5">$$5</div><div class="button" tabindex="6">$$6</div>
          </div>
           <div class="button-row">
-            <div class="button">$$1</div><div class="button">$$2</div><div class="button">$$3</div>
+            <div class="button" tabindex="6">$$1</div><div class="button" tabindex="7">$$2</div><div class="button" tabindex="8">$$3</div>
           </div>
           <div class="button-row">
-            <div class="button">$$point</div><div class="button">$$0</div><div class="button">$$equals</div>
+            <div class="button" tabindex="9">$$point</div><div class="button" tabindex="10">$$0</div><div class="button" tabindex="11">$$equals</div>
           </div>
         </div>
       <%
@@ -691,11 +688,11 @@ CLASS({
       }), 'ActionButton');
       %>
         <div class="button-column rhs-ops" style="flex-grow: 1">
-          <div class="button">$$ac</div>
-          <div class="button">$$plus</div>
-          <div class="button">$$minus</div>
-          <div class="button">$$div</div>
-          <div class="button">$$mult</div>
+          <div class="button" tabindex="21">$$ac</div>
+          <div class="button" tabindex="22">$$plus</div>
+          <div class="button" tabindex="23">$$minus</div>
+          <div class="button" tabindex="24">$$div</div>
+          <div class="button" tabindex="25">$$mult</div>
         </div>
       </div>
     */}
@@ -718,22 +715,22 @@ CLASS({
           <div id="%%id" class="buttons button-row secondaryButtons">
             <div class="button-column" style="flex-grow: 1;">
               <div class="button-row">
-                <div class="button">$$inv</div><div class="button">$$square</div><div class="button">$$sqroot</div>
+                <div class="button" tabindex="31">$$inv</div><div class="button" tabindex="32">$$square</div><div class="button" tabindex="33">$$sqroot</div>
               </div>
               <div class="button-row">
-                <div class="button">$$log</div><div class="button">$$pow</div><div class="button">$$root</div>
+                <div class="button" tabindex="34">$$log</div><div class="button" tabindex="35">$$pow</div><div class="button" tabindex="36">$$root</div>
               </div>
               <div class="button-row">
-                <div class="button">$$ln</div><div class="button">$$exp</div><div class="button">$$e</div>
+                <div class="button" tabindex="37">$$ln</div><div class="button" tabindex="38">$$exp</div><div class="button" tabindex="39">$$e</div>
               </div>
               <div class="button-row">
-                <div class="button">$$sin </div><div class="button">$$cos</div><div class="button">$$tan</div>
+                <div class="button" tabindex="40">$$sin </div><div class="button" tabindex="41">$$cos</div><div class="button" tabindex="42">$$tan</div>
               </div>
               <div class="button-row">
-                <div class="button">$$asin</div><div class="button">$$acos</div><div class="button">$$atan</div>
+                <div class="button" tabindex="43">$$asin</div><div class="button" tabindex="44">$$acos</div><div class="button" tabindex="45">$$atan</div>
               </div>
               <div class="button-row">
-                <div class="button">$$sign</div><div class="button">$$percent</div><div class="button">$$pi</div>
+                <div class="button" tabindex="46">$$sign</div><div class="button" tabindex="47">$$percent</div><div class="button" tabindex="48">$$pi</div>
               </div>
             </div>
           </div>
@@ -757,11 +754,11 @@ CLASS({
           %>
           <div id="%%id" class="buttons button-row tertiaryButtons">
             <div class="button-column" style="flex-grow: 1">
-              <div class="button-row"><div class="button">$$rad</div></div>
-              <div class="button-row"><div class="button">$$deg</div></div>
-              <div class="button-row"><div class="button">$$fact</div></div>
-              <div class="button-row"><div class="button">$$p</div></div>
-              <div class="button-row"><div class="button">$$c</div></div>
+              <div class="button-row"><div class="button" tabindex="51">$$rad</div></div>
+              <div class="button-row"><div class="button" tabindex="52">$$deg</div></div>
+              <div class="button-row"><div class="button" tabindex="53">$$fact</div></div>
+              <div class="button-row"><div class="button" tabindex="54">$$p</div></div>
+              <div class="button-row"><div class="button" tabindex="55">$$c</div></div>
             </div>
           </div>
     */}
@@ -779,4 +776,5 @@ CLASS({
 });
 
 Calc.getPrototype();
-console.profileEnd();
+
+// console.profileEnd();

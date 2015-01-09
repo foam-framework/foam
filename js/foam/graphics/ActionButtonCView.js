@@ -112,6 +112,10 @@ CLASS({
       defaultValueFn: function() { return this.action.help; }
     },
     {
+      name: 'title',
+      defaultValueFn: function() { return this.action.label; }
+    },
+    {
       name: 'state_',
       defaultValue: 'default' // pressed, released
     }
