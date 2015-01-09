@@ -666,16 +666,16 @@ CLASS({
       <div id="%%id" class="buttons button-row" style="background:#4b4b4b;">
         <div class="button-column" style="flex-grow: 3">
           <div class="button-row">
-            <div class="button">$$7</div><div class="button">$$8</div><div class="button">$$9</div>
+            <div class="button" tabindex="1">$$7</div><div class="button" tabindex="2">$$8</div><div class="button" tabindex="3">$$9</div>
           </div>
           <div class="button-row">
-            <div class="button">$$4</div><div class="button">$$5</div><div class="button">$$6</div>
+            <div class="button" tabindex="4">$$4</div><div class="button" tabindex="5">$$5</div><div class="button" tabindex="6">$$6</div>
          </div>
           <div class="button-row">
-            <div class="button">$$1</div><div class="button">$$2</div><div class="button">$$3</div>
+            <div class="button" tabindex="6">$$1</div><div class="button" tabindex="7">$$2</div><div class="button" tabindex="8">$$3</div>
           </div>
           <div class="button-row">
-            <div class="button">$$point</div><div class="button">$$0</div><div class="button">$$equals</div>
+            <div class="button" tabindex="9">$$point</div><div class="button" tabindex="10">$$0</div><div class="button" tabindex="11">$$equals</div>
           </div>
         </div>
       <%
@@ -687,11 +687,11 @@ CLASS({
       }), 'ActionButton');
       %>
         <div class="button-column rhs-ops" style="flex-grow: 1">
-          <div class="button">$$ac</div>
-          <div class="button">$$plus</div>
-          <div class="button">$$minus</div>
-          <div class="button">$$div</div>
-          <div class="button">$$mult</div>
+          <div class="button" tabindex="21">$$ac</div>
+          <div class="button" tabindex="22">$$plus</div>
+          <div class="button" tabindex="23">$$minus</div>
+          <div class="button" tabindex="24">$$div</div>
+          <div class="button" tabindex="25">$$mult</div>
         </div>
       </div>
     */}
@@ -714,22 +714,22 @@ CLASS({
           <div id="%%id" class="buttons button-row secondaryButtons">
             <div class="button-column" style="flex-grow: 1;">
               <div class="button-row">
-                <div class="button">$$inv</div><div class="button">$$square</div><div class="button">$$sqroot</div>
+                <div class="button" tabindex="31">$$inv</div><div class="button" tabindex="32">$$square</div><div class="button" tabindex="33">$$sqroot</div>
               </div>
               <div class="button-row">
-                <div class="button">$$log</div><div class="button">$$pow</div><div class="button">$$root</div>
+                <div class="button" tabindex="34">$$log</div><div class="button" tabindex="35">$$pow</div><div class="button" tabindex="36">$$root</div>
               </div>
               <div class="button-row">
-                <div class="button">$$ln</div><div class="button">$$exp</div><div class="button">$$e</div>
+                <div class="button" tabindex="37">$$ln</div><div class="button" tabindex="38">$$exp</div><div class="button" tabindex="39">$$e</div>
               </div>
               <div class="button-row">
-                <div class="button">$$sin </div><div class="button">$$cos</div><div class="button">$$tan</div>
+                <div class="button" tabindex="40">$$sin </div><div class="button" tabindex="41">$$cos</div><div class="button" tabindex="42">$$tan</div>
               </div>
               <div class="button-row">
-                <div class="button">$$asin</div><div class="button">$$acos</div><div class="button">$$atan</div>
+                <div class="button" tabindex="43">$$asin</div><div class="button" tabindex="44">$$acos</div><div class="button" tabindex="45">$$atan</div>
               </div>
               <div class="button-row">
-                <div class="button">$$sign</div><div class="button">$$percent</div><div class="button">$$pi</div>
+                <div class="button" tabindex="46">$$sign</div><div class="button" tabindex="47">$$percent</div><div class="button" tabindex="48">$$pi</div>
               </div>
             </div>
           </div>
@@ -753,11 +753,11 @@ CLASS({
           %>
           <div id="%%id" class="buttons button-row tertiaryButtons">
             <div class="button-column" style="flex-grow: 1">
-              <div class="button-row"><div class="button">$$rad</div></div>
-              <div class="button-row"><div class="button">$$deg</div></div>
-              <div class="button-row"><div class="button">$$fact</div></div>
-              <div class="button-row"><div class="button">$$p</div></div>
-              <div class="button-row"><div class="button">$$c</div></div>
+              <div class="button-row"><div class="button" tabindex="51">$$rad</div></div>
+              <div class="button-row"><div class="button" tabindex="52">$$deg</div></div>
+              <div class="button-row"><div class="button" tabindex="53">$$fact</div></div>
+              <div class="button-row"><div class="button" tabindex="54">$$p</div></div>
+              <div class="button-row"><div class="button" tabindex="55">$$c</div></div>
             </div>
           </div>
     */}
