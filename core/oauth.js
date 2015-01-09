@@ -400,7 +400,6 @@ CLASS({
       return token;
     },
     refreshNow_: function(ret) {
-      debugger;
       if ( this.redirects < 2 ) {
         this.redirects += 1;
         var redirect =
