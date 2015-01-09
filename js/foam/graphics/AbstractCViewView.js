@@ -59,7 +59,7 @@ CLASS({
           $$DOC{ref:'.initHTML'}.
         */}
     },
-    'title',
+    'speechLabel',
     {
       model_: 'IntProperty',
       name:  'width',
@@ -138,7 +138,8 @@ CLASS({
 
     toHTML: function() { /* Creates the canvas element. */
       var className = this.className ? ' class="' + this.className + '"' : '';
-      var title = this.title ? ' aria-role="button" aria-label="' + this.title + '"' : '';
+if ( this.action ) console.log('************ ', this.action.name, this.speechLabel, this.action.speechLabel);
+      var title = this.speechLabel ? ' aria-role="button" aria-label="' + this.speechLabel + '"' : '';
       return '<canvas id="' + this.id + '"' + className + title +' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + ';min-width:' + this.styleWidth() + ';min-height:' + this.styleHeight() + '"></canvas>';
     },
 

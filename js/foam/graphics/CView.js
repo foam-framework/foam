@@ -172,9 +172,9 @@ CLASS({
     toView_: function() { /* Internal. Creates a CViewView wrapper. */
       if ( ! this.view ) {
         var params = {cview: this};
-        if ( this.className ) params.className = this.className;
-        if ( this.tooltip )   params.tooltip   = this.tooltip;
-        if ( this.title )     params.title     = this.title;
+        if ( this.className )   params.className   = this.className;
+        if ( this.tooltip )     params.tooltip     = this.tooltip;
+        if ( this.speechLabel ) params.speechLabel = this.speechLabel;
         this.view = this.CViewView.create(params);
       }
       return this.view;
