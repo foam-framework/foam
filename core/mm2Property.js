@@ -69,6 +69,17 @@ var Property = {
          */}
     },
     {
+      name: 'speechLabel',
+      type: 'String',
+      required: false,
+      displayWidth: 70,
+      displayHeight: 1,
+      defaultValueFn: function() { return this.label; },
+      help: 'The speech label for the property.',
+      documentation: function() { /* A speakable label for the $$DOC{ref:'.'}. Used for accesibility.
+         */}
+    },
+    {
       name: 'tableLabel',
       type: 'String',
       displayWidth: 70,
