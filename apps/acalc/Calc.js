@@ -220,6 +220,7 @@ CLASS({
 
     .active {
       opacity: 1;
+      z-index: 2;
     }
 
     .calc-display, .calc-display:focus {
