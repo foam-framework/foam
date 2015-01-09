@@ -192,6 +192,7 @@ CLASS({
       }
     },
     {
+      model_: 'DAOProperty',
       name: 'versionedGmailDao',
       factory: function() {
         return this.VersionNoDAO.create({
@@ -294,6 +295,8 @@ CLASS({
     init: function(args) {
       this.SUPER(args);
       var xhr = this.X.XHR.create({ responseType: 'json' });
+
+      this.versionedGmailDao$Proxy.listen(this.doSync);
 
       aseq(function(ret) {
         xhr.asend(ret, 'https://www.googleapis.com/oauth2/v1/userinfo');
@@ -406,6 +409,15 @@ CLASS({
           })
         });
         this.X.stack.pushView(view, undefined, undefined, 'fromRight');
+      }
+    }
+  ],
+  listeners: [
+    {
+      name: 'doSync',
+      isMerged: 1000,
+      code: function() {
+        this.emailSync.sync();
       }
     }
   ]
