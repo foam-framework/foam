@@ -20,8 +20,7 @@
 // the number to round, which elimitates the spurious 9's.
 var DECIMAL_PLACES_PRECISION = 12;
 
-// console.profile();
-
+console.profile();
 function trigFn(f) {
   return function(a) {
     return f(this.degreesMode ? a * Math.PI / 180 : a);
@@ -34,12 +33,18 @@ function invTrigFn(f) {
   };
 }
 
+function maybeTranslate(actionHash, opt_longName) {
+  if ( opt_longName ) actionHash.translationHint =
+      'short form for mathematical function: "' + opt_longName + '"';
+  return actionHash;
+}
+
 /** Make a Binary Action. **/
 function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
   var longName = opt_longName || name;
   var speechLabel = opt_speechLabel || sym;
   f.toString = function() { return sym; };
-  return {
+  return maybeTranslate({
     name: name,
     label: sym,
     translationHint: 'binary operator: ' + longName,
@@ -57,7 +62,7 @@ function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
         this.editable = true;
       }
     }
-  };
+  }, opt_longName);
 }
 
 function unaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
@@ -65,19 +70,19 @@ function unaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
   var longName = opt_longName || name;
   var speechLabel = opt_speechLabel || sym;
   f.toString = function() { return sym; };
-
-  return {
+  return maybeTranslate({
     name: name,
     label: sym,
     translationHint: 'short form for mathematical function: "' + longName + '"',
     speechLabel: speechLabel,
     keyboardShortcuts: keys,
     action: function() {
+      console.log('unaryOp: ', sym, '   ', Date.now(), this.a2);
       this.op = f;
       this.push(f.call(this, this.a2));
       this.editable = false;
     }
-  };
+  }, opt_longName);
 }
 
 /** Make a 0-9 Number Action. **/
@@ -107,7 +112,7 @@ CLASS({
     {
       name: 'NaN',
       value: 'Not a number',
-      translationHint: 'Description of a value that isn\'t a number'
+      translationHint: 'description of a value that isn\'t a number'
     }
   ],
   constants: [
@@ -430,14 +435,14 @@ CLASS({
     num(1), num(2), num(3),
     num(4), num(5), num(6),
     num(7), num(8), num(9), num(0),
-    binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7',         'division'),
-    binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7',         'multiplication'),
-    binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+',              'addition'),
-    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–',              'subtraction', 'minus'),
-    binaryOp('pow',   [],                 Math.pow,                             'yⁿ',             'exponentiation', 'y to the power of n'),
-    binaryOp('p',     [],                 function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutation', 'permutation'),
-    binaryOp('c',     [],                 function(n,r) { return this.combination(n,r); }, 'nCr', 'combination', 'combination'),
-    binaryOp('root',  [],                 function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY', "n'th root", 'enth root'),
+    binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7'),
+    binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7'),
+    binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
+    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–'),
+    binaryOp('pow',   [],                 Math.pow,                             'yⁿ'),
+    binaryOp('p',     [],                 function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations (n permute r)'),
+    binaryOp('c',     [],                 function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations (n combine r))'),
+    binaryOp('root',  [],                 function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY'),
     {
       name: 'ac',
       label: 'AC',
@@ -786,5 +791,4 @@ CLASS({
 });
 
 Calc.getPrototype();
-
-// console.profileEnd();
+console.profileEnd();

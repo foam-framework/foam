@@ -57,7 +57,7 @@ CLASS({
          "model_": "Method",
          "name": "put",
          "code": function (obj, sink) {
-      var path = 
+      var path =
         this.path.normalize(this.prefix + this.path.sep +
                             obj.package.replace(/\./g, this.path.sep) +
                             this.path.sep + obj.name + '.js');
