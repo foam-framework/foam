@@ -360,36 +360,66 @@ CLASS({
   name: 'OAuth2Redirect',
   extendsModel: 'OAuth2',
   help: 'OAuth2 strategy that uses the redirect.',
+  imports: [
+    'window',
+    'location',
+    'setTimeout'
+  ],
   properties: [
     {
-      name: 'attempts',
+      name: 'redirects',
       defaultValue: 0
     }
   ],
+  constant: {
+    REDIRECTS_TIMEOUT: 30000
+  },
   methods: {
-    refreshNow_: function(ret) {
-      var location = this.X.window.location;
-      var token = location.hash.match(/token=([^&]*)/);
-      token = token && token[1];
+    init: function(args) {
+      this.loadState_();
+      var self = this;
 
-      if ( token && this.attempts < 2 ) {
-        this.attempts += 1;
-        this.accessToken = token;
-        ret(token);
-      } else {
+      this.setTimeout(function() {
+        self.redirects = 0;
+      }, this.REDIRECTS_TIMEOUT);
+
+      this.loadToken_();
+      this.SUPER(args);
+    },
+    loadState_: function() {
+      var state = this.location.hash.match(/state=([^&]*)/);
+      state = state && state[1];
+      if ( state ) this.redirects = parseInt(state);
+      return state;
+    },
+    loadToken_: function() {
+      var token = this.location.hash.match(/token=([^&]*)/);
+      token = token && token[1];
+      if ( token ) this.accessToken = token;
+      return token;
+    },
+    refreshNow_: function(ret) {
+      if ( ! this.accessToken && this.redirects < 2 ) {
+        this.redirects += 1;
         var redirect =
-          location.protocol + '//' +
-          location.host +
-          location.pathname +
-          location.search;
+          this.location.protocol + '//' +
+          this.location.host +
+          this.location.pathname +
+          this.location.search;
 
         var params = [
           'response_type=token',
           'client_id=' + encodeURIComponent(this.clientId),
           'redirect_uri=' + encodeURIComponent(redirect),
-          'scope=' + encodeURIComponent(this.scopes.join(' '))
+          'scope=' + encodeURIComponent(this.scopes.join(' ')),
+          'state=' + this.redirects
         ];
-        this.X.window.location = this.endpoint + 'auth?' + params.join('&');
+        this.window.location = this.endpoint + 'auth?' + params.join('&');
+        return;
+      } else {
+        // TODO: Handle permanent auth failure detected by repeated redirect
+        // attempts.
+        console.error("Failed to authenticated after ", this.redirects, "attempts.");
       }
     },
     setJsonpFuture: function(X, future) {
