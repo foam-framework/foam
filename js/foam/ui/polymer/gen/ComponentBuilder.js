@@ -23,8 +23,15 @@ CLASS({
   requires: [
     'XHR',
     'foam.ui.polymer.gen.Component',
+    'foam.ui.polymer.gen.ComponentNameBuilder',
+    'foam.ui.polymer.gen.ComponentAttributesBuilder',
     'foam.ui.polymer.gen.ComponentDependencyBuilder'
   ],
+
+  imports: [
+    'componentDAO as dao'
+  ],
+
 
   properties: [
     {
@@ -33,6 +40,16 @@ CLASS({
       factory: function() {
         return ['source'];
       }
+    },
+    {
+      name: 'nameBuilder',
+      type: 'foam.ui.polymer.gen.ComponentNameBuilder',
+      defaultValue: null
+    },
+    {
+      name: 'attrsBuilder',
+      type: 'foam.ui.polymer.gen.ComponentAttributesBuilder',
+      defaultValue: null
     },
     {
       name: 'depBuilder',
@@ -59,6 +76,8 @@ CLASS({
         xhr.asend(function(textContent) {
           this.comp.source = textContent;
           this.dao.put(this.comp);
+          this.nameBuilder = this.ComponentNameBuilder.create();
+          this.attrsBuilder = this.ComponentAttributesBuilder.create();
           this.depBuilder = this.ComponentDependencyBuilder.create();
         }.bind(this), url);
       }

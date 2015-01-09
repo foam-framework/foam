@@ -16,11 +16,15 @@
  */
 
 CLASS({
-  name: 'ComponentBuilderBase',
+  name: 'ComponentNameBuilder',
   package: 'foam.ui.polymer.gen',
+  extendsModel: 'foam.ui.polymer.gen.ComponentBuilderBase',
 
   imports: [
-    'comp'
+    'componentDAO as dao',
+    'parser',
+    'filterNodes',
+    'getNodeAttribute'
   ],
 
   properties: [
@@ -28,14 +32,14 @@ CLASS({
       model_: 'StringArrayProperty',
       name: 'provides',
       factory: function() {
-        return [];
+        return ['tagName', 'name'];
       }
     },
     {
       model_: 'StringArrayProperty',
       name: 'listensTo',
       factory: function() {
-        return [];
+        return ['source'];
       }
     }
   ],
@@ -44,28 +48,36 @@ CLASS({
     {
       name: 'init',
       code: function() {
-        var ret = this.SUPER();
-        this.listensTo.forEach(function(propName) {
-          Events.dynamic(function() {
-            var prop = this.comp[propName];
-            this.onChange();
-          }.bind(this));
-        }.bind(this));
-        return ret;
+        this.run();
+        return this.SUPER();
       }
     },
     {
       name: 'run',
       code: function() {
+        var node = this.filterNodes(
+            this.parser.parseString(this.comp.source),
+            function(node) {
+              return node.nodeName === 'polymer-element';
+            })[0];
+        if ( ! node ) return;
+        var tagName = this.getNodeAttribute(node, 'name');
+        if ( ! tagName ) return;
+        this.comp.tagName = tagName;
+        this.comp.name = this.getComponentName(tagName);
         this.dao.put(this.comp);
       }
-    }
-  ],
-  listeners: [
+    },
     {
-      name: 'onChange',
-      code: function() {
-        return this.run();
+      name: 'getComponentName',
+      code: function(tagName) {
+        var name = tagName.charAt(0).toUpperCase() + tagName.slice(1);
+        while ( name.indexOf('-') >= 0 ) {
+          name = name.slice(0, name.indexOf('-')) +
+              name.charAt(name.indexOf('-') + 1).toUpperCase() +
+              name.slice(name.indexOf('-') + 2);
+        }
+        return name;
       }
     }
   ]

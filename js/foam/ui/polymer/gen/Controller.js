@@ -24,10 +24,18 @@ CLASS({
     'MultiLineStringArrayView',
     'TableView',
     'foam.ui.polymer.gen.Component',
-    'foam.ui.polymer.gen.ComponentBuilder'
+    'foam.ui.polymer.gen.ComponentBuilder',
+    'foam.ui.polymer.gen.ComponentProperty'
   ],
   exports: [
-    'dao'
+    'componentDAO',
+    'propertyDAO',
+    'parser',
+    'canonicalizeURL',
+    'shortenURL',
+    'filterNodes',
+    'getNodeAttribute',
+    'ELLIPSIS'
   ],
 
   properties: [
@@ -43,23 +51,116 @@ CLASS({
       }
     },
     {
-      name: 'daoConfig',
+      name: 'componentDAOConfig',
       factory: function() {
         return {
           daoType: 'MDAO',
-          model: this.Component,
-          logging: true
+          model: this.Component
         };
       },
       hidden: true
     },
     {
-      name: 'dao',
+      name: 'componentDAO',
       label: 'Registered Components',
       view: 'TableView',
       factory: function() {
-        return this.EasyDAO.create(this.daoConfig);
+        return this.EasyDAO.create(this.componentDAOConfig);
       }
+    },
+    {
+      name: 'propertyDAOConfig',
+      factory: function() {
+        return {
+          daoType: 'MDAO',
+          model: this.ComponentProperty
+        };
+      },
+      hidden: true
+    },
+    {
+      name: 'propertyDAO',
+      label: 'Registered Component Properties',
+      view: 'TableView',
+      factory: function() {
+        return this.EasyDAO.create(this.propertyDAOConfig);
+      }
+    },
+    {
+      type: 'HTMLParser',
+      name: 'parser',
+      factory: function() { return HTMLParser.create(); },
+      hidden: true
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'canonicalizeURL',
+      factory: function() {
+        return function(url) {
+          var parts = url.split('/').filter(function(part) {
+            return part !== '.';
+          });
+          for ( var i = 1; i < parts.length; ++i ) {
+            if ( i > 0 && parts[i] === '..' && parts[i - 1] !== '..' ) {
+              parts = parts.slice(0, i - 1).concat(parts.slice(i + 1));
+              i = i - 2;
+            }
+          }
+          return parts.join('/');
+        };
+      }
+    },
+    {
+      model_: 'FunctionPropety',
+      name: 'shortenURL',
+      factory: function() {
+        return function(url) {
+          var firstIdx = url.indexOf('/');
+          var lastIdx  = url.lastIndexOf('/');
+          if ( firstIdx !== lastIdx )
+          return this.ELLIPSIS + url.slice(lastIdx);
+          else
+          return url;
+        };
+      }
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'filterNodes',
+      factory: function() {
+        return function(node, fltr, opt_acc) {
+          var acc = opt_acc || [];
+          if ( fltr(node) ) acc.push(node);
+          node.children.forEach(function(child) {
+            this.filterNodes(child, fltr, acc);
+          }.bind(this));
+          return acc;
+        };
+      },
+      hidden: true
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'getNodeAttribute',
+      factory: function() {
+        return function(node, attrName) {
+          var attr = node.attributes.filter(function(attr) {
+            return attr.name === attrName;
+          })[0];
+          if ( attr ) return attr.value;
+          else        return undefined;
+        };
+      },
+      hidden: true
+    },
+    {
+      model_: 'StringProperty',
+      name: 'ELLIPSIS',
+      defaultValue: '\u2026',
+      todo: function() {/*
+        TODO(markdittmer): This should be a constant, but we want to export it,
+        and exporting constants isn't supported (yet).
+      */}
     }
   ],
 
@@ -68,6 +169,7 @@ CLASS({
       name: 'init',
       code: function() {
         var ret = this.SUPER();
+        window.propertyDAO = this.propertyDAO;
         return ret;
       }
     },
@@ -75,33 +177,17 @@ CLASS({
       name: 'registerComponent',
       code: function(rawURL) {
         var url = this.canonicalizeURL(rawURL);
-        this.dao.find(url, {
+        this.componentDAO.find(url, {
           error: function(url) {
             this.ComponentBuilder.create(
                 {},
                 this.X.sub({
                   controller: this,
-                  canonicalizeURL: this.canonicalizeURL,
                   comp: this.Component.create({ url: url })
                 }));
           }.bind(this, url)
         });
       }
-    },
-    {
-      name: 'canonicalizeURL',
-      code: function(url) {
-        var parts = url.split('/').filter(function(part) {
-          return part !== '.';
-        });
-        for ( var i = 1; i < parts.length; ++i ) {
-          if ( i > 0 && parts[i] === '..' && parts[i - 1] !== '..' ) {
-            parts = parts.slice(0, i - 1).concat(parts.slice(i + 1));
-            i = i - 2;
-          }
-        }
-        return parts.join('/');
-     }
     }
   ],
 
@@ -110,6 +196,8 @@ CLASS({
       name: 'registerComponents',
       action: function() {
         this.componentsToRegister.forEach(this.registerComponent.bind(this));
+        this.componentsToRegister = [];
       }
     }
-  ]});
+  ]
+});

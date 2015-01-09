@@ -16,26 +16,27 @@
  */
 
 CLASS({
-  name: 'ComponentBuilderBase',
+  name: 'ComponentAttributesBuilder',
   package: 'foam.ui.polymer.gen',
+  extendsModel: 'foam.ui.polymer.gen.ComponentBuilderBase',
+
+  requires: [
+    'foam.ui.polymer.gen.ComponentProperty'
+  ],
 
   imports: [
-    'comp'
+    'propertyDAO as dao',
+    'parser',
+    'filterNodes',
+    'getNodeAttribute'
   ],
 
   properties: [
     {
       model_: 'StringArrayProperty',
-      name: 'provides',
-      factory: function() {
-        return [];
-      }
-    },
-    {
-      model_: 'StringArrayProperty',
       name: 'listensTo',
       factory: function() {
-        return [];
+        return ['source'];
       }
     }
   ],
@@ -44,28 +45,29 @@ CLASS({
     {
       name: 'init',
       code: function() {
-        var ret = this.SUPER();
-        this.listensTo.forEach(function(propName) {
-          Events.dynamic(function() {
-            var prop = this.comp[propName];
-            this.onChange();
-          }.bind(this));
-        }.bind(this));
-        return ret;
+        this.run();
+        return this.SUPER();
       }
     },
     {
       name: 'run',
       code: function() {
-        this.dao.put(this.comp);
-      }
-    }
-  ],
-  listeners: [
-    {
-      name: 'onChange',
-      code: function() {
-        return this.run();
+        var node = this.filterNodes(
+            this.parser.parseString(this.comp.source),
+            function(node) {
+              return node.nodeName === 'polymer-element';
+            })[0];
+        if ( ! node ) return;
+        var attrsStr = this.getNodeAttribute(node, 'attributes');
+        if ( ! attrsStr ) return;
+        var attrs = attrsStr.replace(/\s+/g, ' ').trim().split(' ');
+        attrs.forEach(function(attrName) {
+          if ( ! attrName ) return;
+          this.dao.put(this.ComponentProperty.create({
+            url: this.comp.url,
+            name: attrName
+          }));
+        }.bind(this));
       }
     }
   ]

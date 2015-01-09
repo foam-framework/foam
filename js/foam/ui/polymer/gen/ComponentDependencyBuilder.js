@@ -21,8 +21,11 @@ CLASS({
   extendsModel: 'foam.ui.polymer.gen.ComponentBuilderBase',
 
   imports: [
+    'componentDAO as dao',
     'canonicalizeURL',
-    'controller'
+    'controller',
+    'parser',
+    'filterNodes'
   ],
 
   properties: [
@@ -43,12 +46,6 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'dir'
-    },
-    {
-      type: 'HTMLParser',
-      name: 'parser',
-      factory: function() { return HTMLParser.create(); },
-      hidden: true
     }
   ],
 
@@ -93,17 +90,6 @@ CLASS({
       }
     },
     {
-      name: 'filterNodes',
-      code: function(node, fltr, opt_acc) {
-        var acc = opt_acc || [];
-        if ( fltr(node) ) acc.push(node);
-        node.children.forEach(function(child) {
-          this.filterNodes(child, fltr, acc);
-        }.bind(this));
-        return acc;
-      }
-    },
-    {
       name: 'importLinkFilter',
       code: function(node) {
         if ( node.nodeName !== 'link') return false;
@@ -131,32 +117,5 @@ CLASS({
         return '';
       }
     }
-  ],
-
-  actions: [
-    {
-      name: 'go',
-      action: function() {
-      }
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'onSomething',
-      code: function() {
-        return this;
-      }
-    }
-  ],
-
-  templates: [
-    function toHTML() {/*
-      <{{{this.tagName}}} id="{{{this.id}}}">
-        <% this.children.forEach(function(child) { %>
-          {{{child.toHTML()}}}
-        <% }); %>
-      </{{{this.tagName}}}>
-    */}
   ]
 });

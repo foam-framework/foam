@@ -23,14 +23,14 @@ CLASS({
     'MultiLineStringArrayView'
   ],
 
+  imports: [
+    'ELLIPSIS',
+    'shortenURL'
+  ],
+
   ids: ['url'],
 
   constants: [
-    {
-      name: 'ELLIPSIS',
-      type: 'String',
-      value: '\u2026'
-    },
     {
       name: 'SRC_HTML_PREFIX',
       type: 'String',
@@ -47,7 +47,20 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'url',
+      tableFormatter: function(url, self, tableView) {
+        return self.shortenURL(url);
+      },
       required: true
+    },
+    {
+      model_: 'StringProperty',
+      name: 'name',
+      defaultValue: ''
+    },
+    {
+      model_: 'StringProperty',
+      name: 'tagName',
+      defaultValue: ''
     },
     {
       model_: 'StringProperty',
@@ -82,21 +95,25 @@ CLASS({
       name: 'deps',
       view: 'MultiLineStringArrayView',
       tableFormatter: function(arr, self, tableView) {
-        return arr.join('<br />');
+        return arr.map(self.shortenURL.bind(self)).join('<br />');
       },
       factory: function() {
         return [];
       }
+    },
+    {
+      name: 'prototype',
+      hidden: true
+    }
+  ],
+
+  relationships: [
+    {
+      relatedModel: 'foam.ui.polymer.gen.ComponentProperty',
+      relatedProperty: 'url'
     }
   ],
 
   methods: [
-    {
-      name: 'init',
-      code: function() {
-        var ret = this.SUPER();
-        return ret;
-      }
-    }
   ]
 });
