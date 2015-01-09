@@ -62,6 +62,15 @@ CLASS({
          */}
     },
     {
+      name: 'speechLabel',
+      type: 'String',
+      displayWidth: 70,
+      displayHeight: 1,
+      defaultValueFn: function() { return this.label; },
+      help: 'The speech label for the action.',
+      documentation: "A speakable label for the $$DOC{ref:'.'}. Used for accessibility."
+    },
+    {
       name: 'help',
       label: 'Help Text',
       type: 'String',
