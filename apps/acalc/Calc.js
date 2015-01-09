@@ -436,7 +436,7 @@ CLASS({
     binaryOp('pow',   [],                 Math.pow,                             'yⁿ',             'exponentiation', 'y to the power of n'),
     binaryOp('p',     [],                 function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutation', 'permutation'),
     binaryOp('c',     [],                 function(n,r) { return this.combination(n,r); }, 'nCr', 'combination', 'combination'),
-    binaryOp('root',  [],                 function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY', "enth root", "n'th root"),
+    binaryOp('root',  [],                 function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY', "n'th root", 'enth root'),
     {
       name: 'ac',
       label: 'AC',
