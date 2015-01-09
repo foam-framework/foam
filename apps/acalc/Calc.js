@@ -436,7 +436,7 @@ CLASS({
     binaryOp('pow',   [],                 Math.pow,                             'yⁿ',             'exponentiation', 'y to the power of n'),
     binaryOp('p',     [],                 function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutation', 'permutation'),
     binaryOp('c',     [],                 function(n,r) { return this.combination(n,r); }, 'nCr', 'combination', 'combination'),
-    binaryOp('root',  [],                 function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY', "n'th root", "n'th root"),
+    binaryOp('root',  [],                 function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY', "enth root", "n'th root"),
     {
       name: 'ac',
       label: 'AC',
@@ -609,8 +609,8 @@ CLASS({
       template: function() {/*
         <div style="position: relative;z-index: 100;">
           <div style="position: absolute;">
-            <span style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="radians">RAD</span>
-            <span style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="degrees">DEG</span>
+            <span aria-label="radians" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="radians">RAD</span>
+            <span aria-label="degrees" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="degrees">DEG</span>
           </div>
         </div>
 
