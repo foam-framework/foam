@@ -397,6 +397,7 @@ CLASS({
         if ( action ) {
           action();
           evt.preventDefault();
+          evt.stopPropagation();
         }
       },
       documentation: function() {/*
