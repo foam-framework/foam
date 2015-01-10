@@ -15,22 +15,25 @@
  * limitations under the License.
  */
 
-CLASS({
-  package: 'foam.lib.gmail',
-  name: 'SyncDecorator',
-  extendsModel: 'ProxyDAO',
-  requires: [
-    'FOAMGMailMessage'
-  ],
-
+MODEL({
+  name: 'ModelFileDAO',
+  package: 'node.dao',
   methods: {
-    put: function(obj, sink) {
-      if ( obj.deleted ) {
-        this.delegate
-          .where(EQ(this.FOAMGMailMessage.MESSAGE_ID, obj.id))
-          .update(SET(this.FOAMGMailMessage.DELETED, true));
+    find: function (key, sink) {
+      var X = this.X;
+      var model = FOAM.lookup(key, X);
+
+      var fileName = FOAM_BOOT_DIR + '/../js/' + key.replace(/\./g, '/') + '.js';
+      require(fileName);
+
+      model = FOAM.lookup(key, X);
+      if ( ! model ) {
+        sink && sink.error && sink.error('Model load failed for: ', key);
+        return;
       }
-      this.SUPER(obj, sink);
+      sink && sink.put && sink.put(model);
     }
   }
 });
+
+X.ModelDAO = X.node.dao.ModelFileDAO.create();
