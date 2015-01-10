@@ -434,6 +434,7 @@ CLASS({
     num(4), num(5), num(6),
     num(7), num(8), num(9), num(0),
     binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7'),
+    binaryOp('mod',   [],                 function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
     binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7'),
     binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
     binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–'),
@@ -447,7 +448,7 @@ CLASS({
       speechLabel: 'all clear',
       translationHint: 'all clear (calculator button label)',
       // help: 'All Clear.',
-      keyboardShortcuts: [ 65 /* a */, 67 /* c */ ],
+      keyboardShortcuts: [ 27 /* escape */, 65 /* a */, 67 /* c */ ],
       action: function() {
         this.a1 = '0';
         this.a2 = '';
@@ -758,8 +759,8 @@ CLASS({
     function toHTML() {/*
           <%
           this.X.registerModel(this.X.ActionButton.xbind({
-            width: 70,
-            height: 50,
+            width:      70,
+            height:     40,
             color:      'rgb(119, 119, 119)',
             background: 'rgb(29, 233, 182)',
             font:       '300 20px RobotoDraft'
@@ -770,8 +771,9 @@ CLASS({
               <div class="button-row"><div class="button" tabindex="51">$$rad</div></div>
               <div class="button-row"><div class="button" tabindex="52">$$deg</div></div>
               <div class="button-row"><div class="button" tabindex="53">$$fact</div></div>
-              <div class="button-row"><div class="button" tabindex="54">$$p</div></div>
-              <div class="button-row"><div class="button" tabindex="55">$$c</div></div>
+              <div class="button-row"><div class="button" tabindex="54">$$mod</div></div>
+              <div class="button-row"><div class="button" tabindex="55">$$p</div></div>
+              <div class="button-row"><div class="button" tabindex="56">$$c</div></div>
             </div>
           </div>
     */}
