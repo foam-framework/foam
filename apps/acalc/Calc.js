@@ -612,7 +612,7 @@ CLASS({
       name: 'toHTML',
       template: function() {/*
         <div style="position: relative;z-index: 100;">
-          <div style="position: absolute;">
+          <div tabindex="1" style="position: absolute;">
             <span aria-label="radians" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="radians">RAD</span>
             <span aria-label="degrees" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="degrees">DEG</span>
           </div>
@@ -623,7 +623,7 @@ CLASS({
           <div class="calc-display">
             <div class="inner-calc-display">
               $$history{ rowView: 'HistoryCitationView' }
-              <div tabindex="1">$$row1{mode: 'read-only', escapeHTML: false}</div>
+              <div tabindex="2">$$row1{mode: 'read-only', escapeHTML: false}</div>
             </div>
           </div>
           <div class='keypad'>
@@ -680,16 +680,16 @@ CLASS({
       <div id="%%id" class="buttons button-row" style="background:#4b4b4b;">
         <div class="button-column" style="flex-grow: 3">
           <div class="button-row">
-            <div class="button" tabindex="2">$$7</div><div class="button" tabindex="3">$$8</div><div class="button" tabindex="4">$$9</div>
+            <div class="button" tabindex="4">$$7</div><div class="button" tabindex="5">$$8</div><div class="button" tabindex="6">$$9</div>
           </div>
           <div class="button-row">
-            <div class="button" tabindex="5">$$4</div><div class="button" tabindex="6">$$5</div><div class="button" tabindex="7">$$6</div>
+            <div class="button" tabindex="7">$$4</div><div class="button" tabindex="8">$$5</div><div class="button" tabindex="9">$$6</div>
          </div>
           <div class="button-row">
-            <div class="button" tabindex="8">$$1</div><div class="button" tabindex="9">$$2</div><div class="button" tabindex="10">$$3</div>
+            <div class="button" tabindex="10">$$1</div><div class="button" tabindex="11">$$2</div><div class="button" tabindex="12">$$3</div>
           </div>
           <div class="button-row">
-            <div class="button" tabindex="11">$$point</div><div class="button" tabindex="12">$$0</div><div class="button" tabindex="13">$$equals</div>
+            <div class="button" tabindex="13">$$point</div><div class="button" tabindex="14">$$0</div><div class="button" tabindex="15">$$equals</div>
           </div>
         </div>
       <%
