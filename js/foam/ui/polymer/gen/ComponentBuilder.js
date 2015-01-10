@@ -25,7 +25,8 @@ CLASS({
     'foam.ui.polymer.gen.Component',
     'foam.ui.polymer.gen.ComponentNameBuilder',
     'foam.ui.polymer.gen.ComponentAttributesBuilder',
-    'foam.ui.polymer.gen.ComponentDependencyBuilder'
+    'foam.ui.polymer.gen.ComponentDependencyBuilder',
+    'foam.ui.polymer.gen.PolymerPrototypeImporter'
   ],
 
   imports: [
@@ -55,6 +56,11 @@ CLASS({
       name: 'depBuilder',
       type: 'foam.ui.polymer.gen.ComponentDependencyBuilder',
       defaultValue: null
+    },
+    {
+      name: 'polyImporter',
+      type: 'foam.ui.polymer.gen.PolymerPrototypeImporter',
+      defaultValue: null
     }
   ],
 
@@ -79,6 +85,7 @@ CLASS({
           this.nameBuilder = this.ComponentNameBuilder.create();
           this.attrsBuilder = this.ComponentAttributesBuilder.create();
           this.depBuilder = this.ComponentDependencyBuilder.create();
+          this.polyImporter = this.PolymerPrototypeImporter.create();
         }.bind(this), url);
       }
     }

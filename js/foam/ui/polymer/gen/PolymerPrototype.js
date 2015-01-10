@@ -19,12 +19,11 @@ CLASS({
   name: 'PolymerPrototype',
   package: 'foam.ui.polymer.gen',
 
+  ids: ['tagName'],
+
   properties: [
     {
-      name: 'id'
-    },
-    {
-      name: 'name',
+      name: 'tagName',
       defaultValue: 'PolymerPrototype'
     },
     {

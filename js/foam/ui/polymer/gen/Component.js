@@ -59,6 +59,11 @@ CLASS({
     },
     {
       model_: 'StringProperty',
+      name: 'extends',
+      defaultValue: ''
+    },
+    {
+      model_: 'StringProperty',
       name: 'tagName',
       defaultValue: ''
     },
@@ -111,6 +116,10 @@ CLASS({
     {
       relatedModel: 'foam.ui.polymer.gen.ComponentProperty',
       relatedProperty: 'url'
+    },
+    {
+      relatedModel: 'foam.ui.polymer.gen.PolymerPrototype',
+      relatedProperty: 'tagName'
     }
   ],
 

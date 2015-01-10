@@ -60,6 +60,11 @@ CLASS({
       defaultValue: undefined
     },
     {
+      model_: 'FunctionProperty',
+      name: 'factory',
+      defaultValue: null
+    },
+    {
       model_: 'StringArrayProperty',
       name: 'importHints',
       view: 'MultiLineStringArrayView',

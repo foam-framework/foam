@@ -32,7 +32,7 @@ CLASS({
       model_: 'StringArrayProperty',
       name: 'provides',
       factory: function() {
-        return ['tagName', 'name'];
+        return ['tagName', 'name', 'extends'];
       }
     },
     {
@@ -63,8 +63,11 @@ CLASS({
         if ( ! node ) return;
         var tagName = this.getNodeAttribute(node, 'name');
         if ( ! tagName ) return;
+        var extendsTagName = this.getNodeAttribute(node, 'extends');
         this.comp.tagName = tagName;
         this.comp.name = this.getComponentName(tagName);
+        if ( extendsTagName )
+          this.comp.extends = this.getComponentName(extendsTagName);
         this.dao.put(this.comp);
       }
     },

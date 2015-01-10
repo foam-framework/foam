@@ -25,17 +25,25 @@ CLASS({
     'TableView',
     'foam.ui.polymer.gen.Component',
     'foam.ui.polymer.gen.ComponentBuilder',
-    'foam.ui.polymer.gen.ComponentProperty'
+    'foam.ui.polymer.gen.ComponentProperty',
+    'foam.ui.polymer.gen.PolymerPrototype',
+    'foam.ui.polymer.gen.PolymerPrototypeBuilder'
   ],
+
   exports: [
     'componentDAO',
     'propertyDAO',
+    'prototypeDAO',
     'parser',
     'canonicalizeURL',
     'shortenURL',
     'filterNodes',
     'getNodeAttribute',
     'ELLIPSIS'
+  ],
+
+  imports: [
+    'document'
   ],
 
   properties: [
@@ -87,6 +95,32 @@ CLASS({
       }
     },
     {
+      name: 'prototypeDAOConfig',
+      factory: function() {
+        return {
+          daoType: 'MDAO',
+          model: this.PolymerPrototype
+        };
+      },
+      hidden: true
+    },
+    {
+      name: 'prototypeDAO',
+      label: 'Component Prototypes',
+      view: 'TableView',
+      factory: function() {
+        return this.EasyDAO.create(this.prototypeDAOConfig);
+      }
+    },
+    {
+      name: 'polymerPrototypeBuilder',
+      type: 'foam.ui.polymer.gen.PolymerPrototypeBuilder',
+      factory: function() {
+        return this.PolymerPrototypeBuilder.create();
+      },
+      hidden: true
+    },
+    {
       type: 'HTMLParser',
       name: 'parser',
       factory: function() { return HTMLParser.create(); },
@@ -108,7 +142,8 @@ CLASS({
           }
           return parts.join('/');
         };
-      }
+      },
+      hidden: true
     },
     {
       model_: 'FunctionPropety',
@@ -122,7 +157,8 @@ CLASS({
           else
           return url;
         };
-      }
+      },
+      hidden: true
     },
     {
       model_: 'FunctionProperty',
@@ -160,7 +196,8 @@ CLASS({
       todo: function() {/*
         TODO(markdittmer): This should be a constant, but we want to export it,
         and exporting constants isn't supported (yet).
-      */}
+      */},
+      hidden: true
     }
   ],
 
@@ -185,8 +222,19 @@ CLASS({
                   controller: this,
                   comp: this.Component.create({ url: url })
                 }));
+            this.loadComponent(url);
           }.bind(this, url)
         });
+      }
+    },
+    {
+      name: 'loadComponent',
+      code: function(url) {
+        if (  this.document.querySelector('link[href="' + url + '"]') ) return;
+        var link = this.document.createElement('link');
+        link.setAttribute('rel', 'import');
+        link.setAttribute('href', url);
+        document.head.appendChild(link);
       }
     }
   ],
