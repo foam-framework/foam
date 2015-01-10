@@ -623,7 +623,7 @@ CLASS({
           <div class="calc-display">
             <div class="inner-calc-display">
               $$history{ rowView: 'HistoryCitationView' }
-              $$row1{mode: 'read-only', escapeHTML: false}
+              <div tabindex="1">$$row1{mode: 'read-only', escapeHTML: false}</div>
             </div>
           </div>
           <div class='keypad'>
@@ -680,16 +680,16 @@ CLASS({
       <div id="%%id" class="buttons button-row" style="background:#4b4b4b;">
         <div class="button-column" style="flex-grow: 3">
           <div class="button-row">
-            <div class="button" tabindex="1">$$7</div><div class="button" tabindex="2">$$8</div><div class="button" tabindex="3">$$9</div>
+            <div class="button" tabindex="2">$$7</div><div class="button" tabindex="3">$$8</div><div class="button" tabindex="4">$$9</div>
           </div>
           <div class="button-row">
-            <div class="button" tabindex="4">$$4</div><div class="button" tabindex="5">$$5</div><div class="button" tabindex="6">$$6</div>
+            <div class="button" tabindex="5">$$4</div><div class="button" tabindex="6">$$5</div><div class="button" tabindex="7">$$6</div>
          </div>
           <div class="button-row">
-            <div class="button" tabindex="6">$$1</div><div class="button" tabindex="7">$$2</div><div class="button" tabindex="8">$$3</div>
+            <div class="button" tabindex="8">$$1</div><div class="button" tabindex="9">$$2</div><div class="button" tabindex="10">$$3</div>
           </div>
           <div class="button-row">
-            <div class="button" tabindex="9">$$point</div><div class="button" tabindex="10">$$0</div><div class="button" tabindex="11">$$equals</div>
+            <div class="button" tabindex="11">$$point</div><div class="button" tabindex="12">$$0</div><div class="button" tabindex="13">$$equals</div>
           </div>
         </div>
       <%
