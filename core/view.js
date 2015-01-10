@@ -1226,7 +1226,10 @@ CLASS({
     'GestureTarget'
   ],
   imports: [
-    'gestureManager'
+    'clearTimeout',
+    'document',
+    'gestureManager',
+    'setTimeout'
   ],
 
   help: 'A controller that shows a main view with a small strip of the ' +
@@ -1360,6 +1363,9 @@ CLASS({
 
       // Resize first, then init the outer view, and finally the panel view.
       this.X.window.addEventListener('resize', this.onResize);
+
+      this.panel$().addEventListener('DOMFocusIn',  this.onFocusIn);
+      this.panel$().addEventListener('DOMFocusOut', this.onFocusOut);
       this.onResize();
       this.initChildren(); // We didn't call SUPER(), so we have to do this here.
     },
@@ -1375,6 +1381,41 @@ CLASS({
   },
 
   listeners: [
+    /*
+     * We get a focusOut and focusIn event when we switch between
+     * elements both within the side-panel.  To avoid studdering we
+     * delay the focusOut handling and then abort it if we focus on
+     * another child element before it fires.
+     */
+    {
+      name: 'onFocusIn',
+      isMerged: 1,
+      code: function(e) {
+        if ( this.focusOutId_ ) {
+          this.clearTimeout(this.focusOutId_);
+          this.focusOutId_ = undefined;
+        }
+        if ( this.expanded ) return;
+        this.expanded = true;
+        this.expandedByFocus = true;
+        this.document.body.scrollLeft = 0;
+        this.dir_ = 1;
+        this.snap();
+      }
+    },
+    {
+      name: 'onFocusOut',
+      isMerged: 1,
+      code: function(e) {
+        if ( ! this.expanded || ! this.expandedByFocus ) return;
+        this.focusOutId_ = this.setTimeout(function() {
+          this.expandedByFocus = false;
+          this.expanded = false;
+          this.dir_ = -1;
+          this.snap();
+        }.bind(this), 100);
+      }
+    },
     {
       name: 'onResize',
       isFramed: true,
