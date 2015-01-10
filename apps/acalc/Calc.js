@@ -177,7 +177,6 @@ CLASS({
     html {
       height: 100%;
       margin: 0;
-      overflow: hidden;
       padding: 0;
       width: 100%;
     }
@@ -189,10 +188,10 @@ CLASS({
       font-size: 20px;
       font-weight: 300;
       height: 100%;
+      left: 0;
       margin: 0;
-      margin: 0px;
       overflow: hidden;
-      padding: 0px;
+      padding: 0;
       width: 100%;
     }
 
@@ -216,7 +215,7 @@ CLASS({
 
     .deg, .rad {
       color: #444;
-      font-size: 16px;
+      font-size: 22px;
       opacity: 0;
       padding-left: 8px;
       transition: opacity 0.8s;
