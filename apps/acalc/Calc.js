@@ -320,7 +320,7 @@ CLASS({
     }
 
     .tertiaryButtons {
-      padding-left: 10px;
+      padding-left: 16px;
       background: rgb(29, 233, 182);
     }
 
@@ -638,8 +638,8 @@ CLASS({
             panelView: {
               factory_: 'SlidePanelView',
               minWidth: 200,
-              minPanelWidth: 100,
-              panelRatio: 0.2,
+              minPanelWidth: 210,
+              panelRatio: 0.5,
               mainView: 'SecondaryButtonsView',
               panelView: 'TertiaryButtonsView'
             }
@@ -681,16 +681,16 @@ CLASS({
       <div id="%%id" class="buttons button-row" style="background:#4b4b4b;">
         <div class="button-column" style="flex-grow: 3">
           <div class="button-row">
-            <div class="button" tabindex="4">$$7</div><div class="button" tabindex="5">$$8</div><div class="button" tabindex="6">$$9</div>
+            <div class="button" tabindex="101">$$7</div><div class="button" tabindex="102">$$8</div><div class="button" tabindex="103">$$9</div>
           </div>
           <div class="button-row">
-            <div class="button" tabindex="7">$$4</div><div class="button" tabindex="8">$$5</div><div class="button" tabindex="9">$$6</div>
+            <div class="button" tabindex="104">$$4</div><div class="button" tabindex="105">$$5</div><div class="button" tabindex="106">$$6</div>
          </div>
           <div class="button-row">
-            <div class="button" tabindex="10">$$1</div><div class="button" tabindex="11">$$2</div><div class="button" tabindex="12">$$3</div>
+            <div class="button" tabindex="107">$$1</div><div class="button" tabindex="108">$$2</div><div class="button" tabindex="108">$$3</div>
           </div>
           <div class="button-row">
-            <div class="button" tabindex="13">$$point</div><div class="button" tabindex="14">$$0</div><div class="button" tabindex="15">$$equals</div>
+            <div class="button" tabindex="109">$$point</div><div class="button" tabindex="110">$$0</div><div class="button" tabindex="111">$$equals</div>
           </div>
         </div>
       <%
@@ -698,15 +698,15 @@ CLASS({
         background: '#777',
         width:  70,
         height: 50,
-        font:   '300 24px RobotoDraft'
+        font:   '300 26px RobotoDraft'
       }), 'ActionButton');
       %>
         <div class="button-column rhs-ops" style="flex-grow: 1">
-          <div class="button" tabindex="21">$$ac</div>
-          <div class="button" tabindex="22">$$plus</div>
-          <div class="button" tabindex="23">$$minus</div>
-          <div class="button" tabindex="24">$$div</div>
-          <div class="button" tabindex="25">$$mult</div>
+          <div class="button" tabindex="201">$$ac</div>
+          <div class="button" tabindex="202">$$plus</div>
+          <div class="button" tabindex="203">$$minus</div>
+          <div class="button" tabindex="204">$$div</div>
+          <div class="button" tabindex="205">$$mult</div>
         </div>
       </div>
     */}
@@ -721,30 +721,24 @@ CLASS({
           <%
           this.X.registerModel(CalcButton.xbind({
             background: 'rgb(64, 189, 158)',
-            width:  50,
-            height: 40,
-            font:   '300 20px RobotoDraft'
+            width:  64,
+            height: 64,
+            font:   '300 26px RobotoDraft'
           }), 'ActionButton');
           %>
           <div id="%%id" class="buttons button-row secondaryButtons">
             <div class="button-column" style="flex-grow: 1;">
               <div class="button-row">
-                <div class="button" tabindex="31">$$inv</div><div class="button" tabindex="32">$$square</div><div class="button" tabindex="33">$$sqroot</div>
+                <div class="button" tabindex="301">$$inv</div><div class="button" tabindex="302">$$square</div><div class="button" tabindex="303">$$sqroot</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="34">$$log</div><div class="button" tabindex="35">$$pow</div><div class="button" tabindex="36">$$root</div>
+                <div class="button" tabindex="304">$$log</div><div class="button" tabindex="305">$$pow</div><div class="button" tabindex="306">$$root</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="37">$$ln</div><div class="button" tabindex="38">$$exp</div><div class="button" tabindex="39">$$e</div>
+                <div class="button" tabindex="307">$$ln</div><div class="button" tabindex="308">$$exp</div><div class="button" tabindex="309">$$e</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="40">$$sin </div><div class="button" tabindex="41">$$cos</div><div class="button" tabindex="42">$$tan</div>
-              </div>
-              <div class="button-row">
-                <div class="button" tabindex="43">$$asin</div><div class="button" tabindex="44">$$acos</div><div class="button" tabindex="45">$$atan</div>
-              </div>
-              <div class="button-row">
-                <div class="button" tabindex="46">$$sign</div><div class="button" tabindex="47">$$percent</div><div class="button" tabindex="48">$$pi</div>
+                <div class="button" tabindex="310">$$sign</div><div class="button" tabindex="311">$$percent</div><div class="button" tabindex="312">$$pi</div>
               </div>
             </div>
           </div>
@@ -759,21 +753,31 @@ CLASS({
     function toHTML() {/*
           <%
           this.X.registerModel(this.X.ActionButton.xbind({
-            width:      70,
-            height:     40,
+            width:      64,
+            height:     64,
             color:      'rgb(119, 119, 119)',
             background: 'rgb(29, 233, 182)',
-            font:       '300 20px RobotoDraft'
+            font:       '300 24px RobotoDraft'
           }), 'ActionButton');
           %>
           <div id="%%id" class="buttons button-row tertiaryButtons">
             <div class="button-column" style="flex-grow: 1">
-              <div class="button-row"><div class="button" tabindex="51">$$rad</div></div>
-              <div class="button-row"><div class="button" tabindex="52">$$deg</div></div>
-              <div class="button-row"><div class="button" tabindex="53">$$fact</div></div>
-              <div class="button-row"><div class="button" tabindex="54">$$mod</div></div>
-              <div class="button-row"><div class="button" tabindex="55">$$p</div></div>
-              <div class="button-row"><div class="button" tabindex="56">$$c</div></div>
+              <div class="button-row"><div class="button" tabindex="401">$$deg</div></div>
+              <div class="button-row"><div class="button" tabindex="404">$$sin</div></div>
+              <div class="button-row"><div class="button" tabindex="407">$$cos</div></div>
+              <div class="button-row"><div class="button" tabindex="410">$$tan</div></div>
+            </div>
+            <div class="button-column" style="flex-grow: 1">
+              <div class="button-row"><div class="button" tabindex="402">$$rad</div></div>
+              <div class="button-row"><div class="button" tabindex="405">$$asin</div></div>
+              <div class="button-row"><div class="button" tabindex="408">$$acos</div></div>
+              <div class="button-row"><div class="button" tabindex="411">$$atan</div></div>
+            </div>
+            <div class="button-column" style="flex-grow: 1">
+              <div class="button-row"><div class="button" tabindex="403">$$fact</div></div>
+              <div class="button-row"><div class="button" tabindex="406">$$mod</div></div>
+              <div class="button-row"><div class="button" tabindex="409">$$p</div></div>
+              <div class="button-row"><div class="button" tabindex="412">$$c</div></div>
             </div>
           </div>
     */}
