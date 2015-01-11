@@ -20,7 +20,8 @@
 // the number to round, which elimitates the spurious 9's.
 var DECIMAL_PLACES_PRECISION = 12;
 
-console.profile();
+// console.profile();
+
 function trigFn(f) {
   return function(a) {
     return f(this.degreesMode ? a * Math.PI / 180 : a);
@@ -311,7 +312,7 @@ CLASS({
     }
 
     .secondaryButtons {
-      padding-left: 10px;
+      padding-left: 16px;
       background: rgb(64, 189, 158);
     }
 
@@ -430,25 +431,18 @@ CLASS({
   },
 
   actions: [
-    num(1), num(2), num(3),
-    num(4), num(5), num(6),
-    num(7), num(8), num(9), num(0),
+    num(1), num(2), num(3), num(4), num(5), num(6), num(7), num(8), num(9), num(0),
     binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7'),
-    binaryOp('mod',   [],                 function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
     binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7'),
     binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
     binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–'),
-    binaryOp('pow',   [],                 Math.pow,                             'yⁿ'),
-    binaryOp('p',     [],                 function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations (n permute r)'),
-    binaryOp('c',     [],                 function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations (n combine r))'),
-    binaryOp('root',  [],                 function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY'),
     {
       name: 'ac',
       label: 'AC',
       speechLabel: 'all clear',
       translationHint: 'all clear (calculator button label)',
       // help: 'All Clear.',
-      keyboardShortcuts: [ 27 /* escape */, 65 /* a */, 67 /* c */ ],
+      keyboardShortcuts: [ 27 /* escape */ ],
       action: function() {
         this.a1 = '0';
         this.a2 = '';
@@ -465,7 +459,7 @@ CLASS({
       name: 'sign',
       label: '+/-',
       speechLabel: 'negate',
-      keyboardShortcuts: [ 78 /* n */ , 83 /* s */],
+      keyboardShortcuts: [ 'j' ],
       action: function() { this.a2 = - this.a2; }
     },
     {
@@ -490,6 +484,7 @@ CLASS({
         if ( typeof(this.a2) === 'string' && this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
         if ( this.op == DEFAULT_OP ) {
           var last = this.history[this.history.length-1];
+          if ( ! last ) return;
           if ( last.op.binary ) {
             this.push(this.a2);
             this.a2 = last.a2;
@@ -516,47 +511,60 @@ CLASS({
     {
       name: 'pi',
       label: 'π',
-      keyboardShortcuts: [80 /* p */],
+      keyboardShortcuts: ['l'],
       action: function() { this.a2 = Math.PI; }
     },
     {
       name: 'e',
       label: 'e',
-      keyboardShortcuts: [69 /* e */],
+      keyboardShortcuts: ['e'],
       action: function() { this.a2 = Math.E; }
     },
     {
       name: 'percent',
       label: '%',
       speechLabel: 'percent',
-      keyboardShortcuts: [ 'shift-53' /* % */ ],
+      keyboardShortcuts: [ 'k', 'shift-53' /* % */ ],
       action: function() { this.a2 /= 100.0; }
     },
     {
       name: 'deg',
       speechLabel: 'switch to degrees',
+      keyboardShortcuts: [ 'm' ],
       translationHint: 'short form for "degrees" calculator mode',
       action: function() { this.degreesMode = true; }
     },
     {
       name: 'rad',
       speechLabel: 'switch to radians',
+      keyboardShortcuts: [ 'n' ],
       translationHint: 'short form for "radians" calculator mode',
       action: function() { this.degreesMode = false; }
     },
-    unaryOp('fact',   ['shift-49' /* ! */], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
-    unaryOp('inv',    [73 /* i */], function(a) { return 1.0/a; }, '1/x', undefined, 'inverse'),
-    unaryOp('sin',    [], trigFn(Math.sin), 'sin', 'sine', 'sine'),
-    unaryOp('cos',    [], trigFn(Math.cos), 'cos', 'cosine', 'cosine'),
-    unaryOp('tan',    [], trigFn(Math.tan), 'tan', 'tangent', 'tangent'),
-    unaryOp('asin',   [], invTrigFn(Math.asin), 'asin', 'inverse-sine', 'arc sine'),
-    unaryOp('acos',   [], invTrigFn(Math.acos), 'acos', 'inverse-cosine', 'arc cosine'),
-    unaryOp('atan',   [], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arc tangent'),
-    unaryOp('square', [], function(a) { return a*a; }, 'x²', 'x squared'),
-    unaryOp('sqroot', [82 /* r */], Math.sqrt, '√', 'square root'),
-    unaryOp('log',    [], function(a) { return Math.log(a) / Math.LN10; }, 'log', 'logarithm', 'log base 10'),
-    unaryOp('ln',     [], Math.log, 'ln', 'natural logarithm', 'natural logarithm'),
-    unaryOp('exp',    [], Math.exp, 'eⁿ', undefined, 'e to the power of n')
+
+    unaryOp('inv',    ['a'], function(a) { return 1.0/a; }, '1/x', undefined, 'inverse'),
+    unaryOp('sqroot', ['b'], Math.sqrt, '√', 'square root'),
+    unaryOp('square', ['c'], function(a) { return a*a; }, 'x²', 'x squared'),
+
+    unaryOp('ln',     ['d'], Math.log, 'ln', 'natural logarithm', 'natural logarithm'),
+    unaryOp('exp',    ['f'], Math.exp, 'eⁿ', undefined, 'e to the power of n'),
+
+    unaryOp('log',    ['g'], function(a) { return Math.log(a) / Math.LN10; }, 'log', 'logarithm', 'log base 10'),
+    binaryOp('root',  ['h'], function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY'),
+    binaryOp('pow',   ['i'], Math.pow, 'yⁿ'),
+
+    unaryOp('sin',    ['p'], trigFn(Math.sin), 'sin', 'sine',    'sine'),
+    unaryOp('cos',    ['s'], trigFn(Math.cos), 'cos', 'cosine',  'cosine'),
+    unaryOp('tan',    ['v'], trigFn(Math.tan), 'tan', 'tangent', 'tangent'),
+
+    unaryOp('asin',   ['q'], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arc sine'),
+    unaryOp('acos',   ['t'], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arc cosine'),
+    unaryOp('atan',   ['w'], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arc tangent'),
+
+    unaryOp('fact',   ['o', 'shift-49' /* ! */], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
+    binaryOp('mod',   ['r'],                     function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
+    binaryOp('p',     ['u'],                     function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations (n permute r)'),
+    binaryOp('c',     ['x'],                     function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations (n combine r))')
   ]
 });
 
@@ -729,13 +737,13 @@ CLASS({
           <div id="%%id" class="buttons button-row secondaryButtons">
             <div class="button-column" style="flex-grow: 1;">
               <div class="button-row">
-                <div class="button" tabindex="301">$$inv</div><div class="button" tabindex="302">$$square</div><div class="button" tabindex="303">$$sqroot</div>
+                <div class="button" tabindex="301">$$inv</div><div class="button" tabindex="302">$$sqroot</div><div class="button" tabindex="303">$$square</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="304">$$log</div><div class="button" tabindex="305">$$pow</div><div class="button" tabindex="306">$$root</div>
+                <div class="button" tabindex="307">$$ln</div><div class="button" tabindex="308">$$e</div><div class="button" tabindex="309">$$exp</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="307">$$ln</div><div class="button" tabindex="308">$$exp</div><div class="button" tabindex="309">$$e</div>
+                <div class="button" tabindex="304">$$log</div><div class="button" tabindex="305">$$root</div><div class="button" tabindex="306">$$pow</div>
               </div>
               <div class="button-row">
                 <div class="button" tabindex="310">$$sign</div><div class="button" tabindex="311">$$percent</div><div class="button" tabindex="312">$$pi</div>
@@ -795,4 +803,4 @@ CLASS({
 });
 
 Calc.getPrototype();
-console.profileEnd();
+// console.profileEnd();
