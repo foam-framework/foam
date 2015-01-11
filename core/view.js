@@ -394,7 +394,7 @@ CLASS({
     {
       name: 'onKeyboardShortcut',
       code: function(evt) {
-        // console.log('***** key: ', this.evtToKeyCode(evt));
+        // console.log('***** key: ', this.evtToKeyCode(evt), evt);
         var action = this.keyMap_[this.evtToKeyCode(evt)];
         if ( action ) {
           action();
@@ -815,6 +815,9 @@ CLASS({
         actions.forEach(function(action) {
           for ( var j = 0 ; j < action.keyboardShortcuts.length ; j++ ) {
             var key = action.keyboardShortcuts[j];
+            // Treat single character strings as a character to be recognized
+            if ( typeof key === 'string' && key.length == 1 )
+              key = key.toUpperCase().charCodeAt(0);
             keyMap[key] = opt_value ?
               function() { action.callIfEnabled(self.X, opt_value.get()); } :
               action.callIfEnabled.bind(action, self.X, self) ;
@@ -833,6 +836,7 @@ CLASS({
         console.assert(this.$, 'View must define outer id when using keyboard shortcuts: ' + this.name_);
         this.keyMap_ = keyMap;
         this.$.parentElement.addEventListener('keydown', this.onKeyboardShortcut);
+        this.$.parentElement.addEventListener('keypress', function(evt) { console.log('press: ', evt); });
       }
     },
 
