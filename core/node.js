@@ -16,8 +16,5 @@
  */
 
 // TODO(markdittmer): We should model these in a FOAMy kind of way.
-var xmlshim = require('xmlshim');
-global.DOMParser = xmlshim.DOMParser;
-global.XMLSerializer = xmlshim.XMLSerializer;
 global.console.profile = function() {};
 global.console.profileEnd = function() {};

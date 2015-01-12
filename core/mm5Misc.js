@@ -154,6 +154,7 @@ CLASS({
       documentation: 'An array of child tests. Will be run in order after the parent test.'
     },
     {
+      model_: 'BooleanProperty',
       name: 'runChildTests',
       documentation: 'Whether the nested child tests should be run when this test is. Defaults to <tt>true</tt>, but some test runners set it to <tt>false</tt> so they can integrate with displaying the results.',
       transient: true,
