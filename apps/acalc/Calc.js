@@ -235,6 +235,7 @@ CLASS({
       min-width: 140px;
       padding: 0 25pt 2pt 25pt;
       text-align: right;
+      -webkit-user-select: text;
     }
 
     .edge {
