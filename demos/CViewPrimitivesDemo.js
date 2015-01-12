@@ -23,21 +23,22 @@ CLASS({
 });
 
 aseq(
-  arequire('diagram.Diagram'),
+  arequire('diagram.LockToPreferredLayout'),
   arequire('diagram.LinearLayout'),
   arequire('foam.graphics.Spacer'),
   arequire('diagram.Block'),
   arequire('diagram.Section'),
+  arequire('diagram.SectionGroup'),
   arequire('foam.graphics.Rectangle'),
   arequire('diagram.Margin'),
-  arequire('diagram.LockToPreferredLayout'),
+  arequire('diagram.DiagramRoot'),
   arequire('diagram.Link'),
   arequire('Mouse'),
   arequire('BorderLabel')
   )(
 function() {
    
-  var canv = X.diagram.Diagram.create({width: 1000, height: 300});
+  var canv = X.diagram.DiagramRoot.create({width: 1000, height: 300});
   canv.write(document);
   
   var outerLayout = X.diagram.LinearLayout.create({ width : 500, height: 300});
@@ -90,28 +91,28 @@ function() {
   vlay1.addChild(spacer1b);
   
   
-  var label1 = X.BorderLabel.create({
-         x: 60,
-         y: 25,
-         color: 'red',
-         width: 120,
-         height: 30,
-         text: 'Hello World',
-         border: 'red',
-         borderWidth: 2
+//   var label1 = X.BorderLabel.create({
+//          x: 60,
+//          y: 25,
+//          color: 'red',
+//          width: 120,
+//          height: 30,
+//          text: 'Hello World',
+//          border: 'red',
+//          borderWidth: 2
   
-  });
-  vlay1.addChild(label1);
+//   });
+//   vlay1.addChild(label1);
   
-  var rect3 = X.foam.graphics.Rectangle.create({
+  var rect3 = X.diagram.SectionGroup.create({
          x: 120,
          y: 30,
          border: 'red',
          width: 120,
          height: 30,
-  
-  });
-  vlay1.addChild(rect3);
+    });
+  rect3.verticalConstraints.max = 50;
+  outerLayout.addChild(rect3);
   
   var spacer2 = X.foam.graphics.Spacer.create({
     fixedHeight: 20,

@@ -26,7 +26,13 @@ CLASS({
           <p>Note that for the coordinate transformation to work, you must apply this trait to 
           all items in the parent/child chain. Everything in a diagram should inherit $$DOC{ref:'.'}. */},
 
+  ids: [ 'id' ],
+          
   properties: [
+    {
+      name: 'id',
+      getter: function() { return this.$UID; }
+    },
     {
       model_: 'IntProperty',
       name: 'globalX',
@@ -101,15 +107,17 @@ CLASS({
     
     getDiagramRoot: function() {
       /* Find the root element of the diagram. */
-      return parent ? parent.getDiagramRoot() : null;
+      return (this.parent && this.parent.getDiagramRoot) ? this.parent.getDiagramRoot() : null;
     },
     
     scanForLinkBlockers: function() {
       /* Recursively scan all children and have them report link blockers. */
-      this.children.forEach(function(c) {
-        this.addLinkBlocker(c);
-        c.scanForLinkBlockers && c.scanForLinkBlockers();
-      }.bind(this));
+      if ( ! this.isLinkBlocking ) {
+        this.children.forEach(function(c) {
+          this.addLinkBlocker(c);
+          c.scanForLinkBlockers && c.scanForLinkBlockers();
+        }.bind(this));
+      }
     }
   }
   
@@ -426,6 +434,12 @@ CLASS({
   traits: ['diagram.DiagramItemTrait', 'diagram.DiagramRootTrait'],
 });
 
+CLASS({
+  name: 'DiagramRoot',
+  package: 'diagram',
+  extendsModel: 'foam.graphics.CView',
+  traits: ['diagram.DiagramItemTrait', 'diagram.DiagramRootTrait'],
+});
 
 CLASS({
   name: 'Block',
@@ -811,7 +825,7 @@ CLASS({
         Take the smallest link distance. */
       var self = this;
       var BIG_VAL = 999999999;
-
+console.log("Selcting best points... ", self.start, self.end);
       var smallest = BIG_VAL;
       var byDist = {};
       self.start.forEach(function(startP) {
@@ -823,7 +837,8 @@ CLASS({
           var shortAxisDist = shortAxisOr===H? Math.abs(end.x - start.x) : Math.abs(end.y - start.y);
 
           // pick smallest connector path whose points won't make a bad connector
-          if (!this.isBannedConfiguration(startP, endP, start, end, H,V,directions,orientations, shortAxisOr, shortAxisDist)) {
+          if (  ! this.isBannedConfiguration(startP, endP, start, end, H,V,directions,orientations, shortAxisOr, shortAxisDist)
+             && ! this.isBlocked(startP, endP, start, end)) {
             // if we tie, try for the smallest short-axis (middle displacement)
             if (!byDist[dist] || byDist[dist].shortAxisDist > shortAxisDist) {
               if (dist < smallest) smallest = dist;
@@ -835,6 +850,7 @@ CLASS({
 
       if (!byDist[smallest]) {
         // no good points, so return something
+        console.log("No good link points");
         return { start: self.start[0], end: self.end[0], shortAxisDist: 0 };
       }
 
@@ -884,12 +900,49 @@ CLASS({
             && (eOr === H)? eDir !== hDir : eDir !== vDir;
       }
     },
-
+    isBlocked: function(startP, endP, offsS, offsE) {
+      /* Check whether any other blocking items are touching the bounding box
+      of this configuration */
+      var boundX1 = Math.min(/*startP.x, endP.x,*/ offsS.x, offsE.x);
+      var boundY1 = Math.min(/*startP.y, endP.y,*/ offsS.y, offsE.y);
+      var boundX2 = Math.max(/*startP.x, endP.x,*/ offsS.x, offsE.x);
+      var boundY2 = Math.max(/*startP.y, endP.y,*/ offsS.y, offsE.y);
+      var pad = 2;
+      var boundRect = { x1: boundX1+pad, x2: boundX2-pad, y1: boundY1+pad, y2: boundY2-pad }; 
+      var self = this;
+      
+      // TODO(jacksonic): Implement a quad tree index, or some kind of range index
+      var failed = false;
+      var root = startP.owner.getDiagramRoot();
+      if (root) {
+        console.log("checking blockers ---------------------------------");
+        root.linkBlockerDAO.select({ put: function(blocker) {
+            if ( ! failed && blocker !== startP.owner && blocker !== endP.owner ) {
+              var blockRect = { x1: blocker.globalX, x2: blocker.globalX + blocker.width,
+                                y1: blocker.globalY, y2: blocker.globalY + blocker.height };
+              if (self.isIntersecting(boundRect, blockRect)) {
+                failed = true;
+                console.log(" intersect!");
+              }
+            }
+        }});
+      }
+      return failed;
+    },
+    
     isPointInsideItem: function(point, item) {
       return point.x <= item.globalX+item.width
           && point.x >= item.globalX
           && point.y <= item.globalY+item.height
           && point.y >= item.globalY;
+    },
+    isIntersecting: function(rect1, rect2) {
+      console.log("CHecking insterect: ", rect1, rect2);
+      var isect = function(a,b) {
+        return ((a.x1 > b.x1 && a.x1 < b.x2) || (a.x2 > b.x1 && a.x2 < b.x2))
+            && ((a.y1 > b.y1 && a.y1 < b.y2) || (a.y2 > b.y1 && a.y2 < b.y2));       
+      }
+      return isect(rect1, rect2) || isect(rect2, rect1);
     },
 
     paintArrows: function(points, s, e) {
