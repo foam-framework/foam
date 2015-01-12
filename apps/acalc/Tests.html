@@ -1,0 +1,27 @@
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="../core/foam.css" />
+  <script language="javascript" src="../../core/bootFOAM.js"></script>
+  <script language="javascript" src="../../core/view2.js"></script>
+  <script language="javascript" src="Calc.js"></script>
+  <title>Calculator Unit Tests</title>
+  <style>
+    h3 {color: #444;}
+    .code {width:900px; white-space: pre; border: 1px solid; padding: 5px; font-family: monospace;}
+    .output {width:900px; white-space: pre; border: 1px solid; padding: 5px; color: blue;}
+    .error {border: 2px solid red;}
+    .description { margin-left: 20px; font-size: 115%; }
+  </style>
+ </head>
+ <body>
+   <foam id="test1" model="UnitTest" XXXview="UnitTestResultView" description="A UnitTest embedded in DOM" onInit='this.test()'>
+     <code>
+       this.log('Here I am');
+     </code>
+     <tests>
+       <foam model="UnitTest" description="A test"><code>this.log('Here again.');</code></foam>
+       <foam model="UnitTest" description="Another test"><code>this.log('Here again again.');</code></foam>
+     </tests>
+   </foam>
+ </body>
+</html>
