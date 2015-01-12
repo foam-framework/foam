@@ -335,7 +335,7 @@ CLASS({
         });
         var traitDiag = self.ModelDocDiagram.create({ model: Model }, X);
         self.addChild(traitDiag);
-        self.addChild(self.DocLinkDiagram.create({ start: traitDiag, end$: self.sourceDiag$ }));
+        //self.addChild(self.DocLinkDiagram.create({ start: traitDiag, end$: self.sourceDiag$ }));
     
       });
     },

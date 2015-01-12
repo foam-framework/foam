@@ -724,7 +724,7 @@ CLASS({
       var sideDirs = { left: -1, right: 1, top: -1, bottom: 1 };
       var orientations = { left: H, right: H, top: V, bottom: V };
 
-      var points = this.selectBestPoints(H,V,sideDirs,orientations);
+      var points = this.selectBestPoints(H,V,sideDirs,orientations, c);
       var s = points.start.offsetBy(this.arrowLength);
       var e = points.end.offsetBy(this.arrowLength);
 
@@ -820,12 +820,12 @@ CLASS({
       c.restore();
     },
 
-    selectBestPoints: function(H,V,directions,orientations) {
+    selectBestPoints: function(H,V,directions,orientations, canvas) {
       /* For each starting point, find the closest ending point.
         Take the smallest link distance. */
       var self = this;
       var BIG_VAL = 999999999;
-console.log("Selcting best points... ", self.start, self.end);
+//console.log("Selcting best points... ", self.start, self.end);
       var smallest = BIG_VAL;
       var byDist = {};
       self.start.forEach(function(startP) {
@@ -838,7 +838,7 @@ console.log("Selcting best points... ", self.start, self.end);
 
           // pick smallest connector path whose points won't make a bad connector
           if (  ! this.isBannedConfiguration(startP, endP, start, end, H,V,directions,orientations, shortAxisOr, shortAxisDist)
-             && ! this.isBlocked(startP, endP, start, end)) {
+             /*&& ! this.isBlocked(startP, endP, start, end, canvas)*/) {
             // if we tie, try for the smallest short-axis (middle displacement)
             if (!byDist[dist] || byDist[dist].shortAxisDist > shortAxisDist) {
               if (dist < smallest) smallest = dist;
@@ -850,10 +850,11 @@ console.log("Selcting best points... ", self.start, self.end);
 
       if (!byDist[smallest]) {
         // no good points, so return something
-        console.log("No good link points");
+        //console.log("No good link points", byDist);
         return { start: self.start[0], end: self.end[0], shortAxisDist: 0 };
       }
 
+      //console.log("    best points table:", byDist);
       return byDist[smallest];
     },
     
@@ -900,22 +901,24 @@ console.log("Selcting best points... ", self.start, self.end);
             && (eOr === H)? eDir !== hDir : eDir !== vDir;
       }
     },
-    isBlocked: function(startP, endP, offsS, offsE) {
+    isBlocked: function(startP, endP, offsS, offsE, canvas) {
       /* Check whether any other blocking items are touching the bounding box
       of this configuration */
-      var boundX1 = Math.min(/*startP.x, endP.x,*/ offsS.x, offsE.x);
-      var boundY1 = Math.min(/*startP.y, endP.y,*/ offsS.y, offsE.y);
-      var boundX2 = Math.max(/*startP.x, endP.x,*/ offsS.x, offsE.x);
-      var boundY2 = Math.max(/*startP.y, endP.y,*/ offsS.y, offsE.y);
+      console.log("Finding bounds for ---------------------------------",
+        startP, endP, offsS, offsE);
+      
+      var boundX1 = Math.min(startP.x, endP.x, offsS.x, offsE.x);
+      var boundY1 = Math.min(startP.y, endP.y, offsS.y, offsE.y);
+      var boundX2 = Math.max(startP.x, endP.x, offsS.x, offsE.x);
+      var boundY2 = Math.max(startP.y, endP.y, offsS.y, offsE.y);
       var pad = 2;
       var boundRect = { x1: boundX1+pad, x2: boundX2-pad, y1: boundY1+pad, y2: boundY2-pad }; 
       var self = this;
-      
       // TODO(jacksonic): Implement a quad tree index, or some kind of range index
       var failed = false;
       var root = startP.owner.getDiagramRoot();
       if (root) {
-        console.log("checking blockers ---------------------------------");
+        console.log("checking blockers ");
         root.linkBlockerDAO.select({ put: function(blocker) {
             if ( ! failed && blocker !== startP.owner && blocker !== endP.owner ) {
               var blockRect = { x1: blocker.globalX, x2: blocker.globalX + blocker.width,
@@ -923,6 +926,13 @@ console.log("Selcting best points... ", self.start, self.end);
               if (self.isIntersecting(boundRect, blockRect)) {
                 failed = true;
                 console.log(" intersect!");
+              }
+              else
+              {
+canvas.rect(boundRect.x1, boundRect.y1, boundRect.x2-boundRect.x1, boundRect.y2-boundRect.y1);
+canvas.stroke();
+canvas.rect(blockRect.x1, blockRect.y1, blockRect.x2-blockRect.x1, blockRect.y2-blockRect.y1);
+canvas.stroke();
               }
             }
         }});
