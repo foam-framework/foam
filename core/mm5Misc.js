@@ -90,7 +90,7 @@ CLASS({
       displayWidth: 80,
       displayHeight: 30,
       documentation: 'The code for the test. Should not include the <tt>function() { ... }</tt>, just the body. Should expect a <tt>ret</tt> parameter when the test is async, see $$DOC{ref: ".async", text: "above"}.',
-      fromElement: function(e) {
+      fromElement: function(e, p) {
         var txt = e.innerHTML;
 
         txt =
@@ -98,7 +98,7 @@ CLASS({
           this.async                        ? 'function(ret) {\n' + txt + '\n}' :
                                               'function() {\n'    + txt + '\n}' ;
 
-        return eval('(' + txt + ')');
+        this[p.name] = eval('(' + txt + ')');
       },
       preSet: function(_, value) {
         if ( typeof value === 'string' ) {
