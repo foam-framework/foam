@@ -153,6 +153,8 @@ var DOM = {
       var p   = model.getProperty(key);
 
       if ( p ) {
+        // Attributes of hte form #name are treated as a reference to
+        // another <foam> objects whose id is 'name'.
         if ( val.startsWith('#') ) {
           val = val.substring(1);
           val = X.$(val);
