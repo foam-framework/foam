@@ -1028,7 +1028,7 @@ CLASS({
 
         // TODO: De-dupe me with the code above in onTouchStart.
         if ( this.recognized ) {
-          this.recognized.addPoint(point);
+          this.recognized.addPoint && this.recognized.addPoint(point);
           return;
         }
 
