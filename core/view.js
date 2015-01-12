@@ -185,10 +185,7 @@ var DOM = {
 
     if ( opt_document ) {
       var view;
-      if (
-        View.isInstance(obj) ||
-        ( 'CView' in GLOBAL && CView.isInstance(obj) ) )
-      {
+      if ( View.isInstance(obj) || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) {
         view = obj;
       } else if ( obj.toView_ ) {
         view = obj.toView_();
@@ -1369,12 +1366,13 @@ CLASS({
       // Resize first, then init the outer view, and finally the panel view.
       this.X.window.addEventListener('resize', this.onResize);
 
-      this.panel$().addEventListener('DOMFocusIn',  this.onFocusIn);
-      this.panel$().addEventListener('DOMFocusOut', this.onFocusOut);
+      this.main$().addEventListener('DOMFocusIn',  this.onMainFocus);
+      this.panel$().addEventListener('DOMFocusIn', this.onPanelFocus);
       this.onResize();
       this.initChildren(); // We didn't call SUPER(), so we have to do this here.
     },
     snap: function() {
+      // if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) return;
       // TODO: Calculate the animation time based on how far the panel has to move
       Movement.animate(500, function() {
         this.panelX = this.dir_ > 0 ? 0 : 1000;
@@ -1386,39 +1384,27 @@ CLASS({
   },
 
   listeners: [
-    /*
-     * We get a focusOut and focusIn event when we switch between
-     * elements both within the side-panel.  To avoid studdering we
-     * delay the focusOut handling and then abort it if we focus on
-     * another child element before it fires.
-     */
     {
-      name: 'onFocusIn',
+      name: 'onPanelFocus',
       isMerged: 1,
       code: function(e) {
-        if ( this.focusOutId_ ) {
-          this.clearTimeout(this.focusOutId_);
-          this.focusOutId_ = undefined;
-        }
         if ( this.expanded ) return;
+        if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) return;
         this.expanded = true;
-        this.expandedByFocus = true;
         this.document.body.scrollLeft = 0;
         this.dir_ = 1;
         this.snap();
       }
     },
     {
-      name: 'onFocusOut',
+      name: 'onMainFocus',
       isMerged: 1,
       code: function(e) {
-        if ( ! this.expanded || ! this.expandedByFocus ) return;
-        this.focusOutId_ = this.setTimeout(function() {
-          this.expandedByFocus = false;
-          this.expanded = false;
-          this.dir_ = -1;
-          this.snap();
-        }.bind(this), 100);
+        if ( ! this.expanded ) return;
+        if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) return;
+        this.expanded = false;
+        this.dir_ = -1;
+        this.snap();
       }
     },
     {
@@ -1446,7 +1432,6 @@ CLASS({
     {
       name: 'dragStart',
       code: function(point) {
-        if ( this.expanded ) return;
         // Otherwise, bind panelX to the absolute X.
         var self = this;
         var originalX = this.panelX;
@@ -1458,7 +1443,6 @@ CLASS({
     {
       name: 'dragEnd',
       code: function(point) {
-        if ( this.expanded ) return;
         Events.unfollow(point.x$, this.panelX$);
         this.snap();
       }
