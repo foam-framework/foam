@@ -337,7 +337,7 @@ CLASS({
   requires: ['diagram.LinkPoint'],
 
   extendsModel: 'diagram.LinearLayout',
-  traits: ['foam.graphics.BorderTrait'],
+  traits: ['foam.graphics.BorderTrait', 'foam.graphics.AnimatedHeightTrait'],
 
   properties: [
     {

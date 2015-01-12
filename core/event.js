@@ -1013,6 +1013,58 @@ MODEL({
           c2.applyMomentum( strength * (length/d-1), a);
         }
       });
-    }
+    },
+    
+    createAnimatedPropertyInstallFn: function(duration, interpolation) {
+      /* Returns a function that can be assigned as a $$DOC{ref:'Property'}
+      $$DOC{ref:'Property.install'} function. Any assignments to the property
+      will be automatically animated.</p>
+      <p><code>
+      properties: [
+      &nbsp;&nbsp;  { name: 'myProperty',
+      &nbsp;&nbsp;&nbsp;&nbsp;    install: createAnimatedPropertyInstallFn(500, Movement.ease(0.2, 0.2)),
+      &nbsp;&nbsp;&nbsp;&nbsp;    ...
+      &nbsp;&nbsp;  }]
+      </code>*/
+      return function(prop) {
+        this.defineProperty(
+          {
+            name: prop.name+"$AnimationLatch",
+            defaultValue: 0,
+            hidden: true,
+            documentation: function() { /* The animation controller. */ },
+          }
+        );
+  
+        var actualSetter = this.__lookupSetter__(prop.name);
+        this.defineProperty(
+          {
+            name: prop.name+"$AnimationSetValue",
+            defaultValue: 0,
+            hidden: true,
+            documentation: function() { /* The animation value setter. */ },
+            postSet: function(_, nu) {
+              actualSetter.call(this, nu);
+            }
+          }
+        );
+        
+        // replace setter with animater
+        this.__defineSetter__(prop.name, function(nu) {
+          // setter will be called on the instance, so "this" is an instance now
+          var latch = this[prop.name+"$AnimationLatch"] ;
+          latch && latch();
+  
+          var anim = Movement.animate(
+            duration,
+            function() { 
+              this[prop.name+"$AnimationSetValue"] = nu; 
+            }.bind(this),
+            interpolation
+          );
+          this[prop.name+"$AnimationLatch"] = anim();
+        }); 
+      }; 
+    }   
   }
 });
