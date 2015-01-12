@@ -740,10 +740,10 @@ CLASS({
                 <div class="button" tabindex="301">$$inv</div><div class="button" tabindex="302">$$sqroot</div><div class="button" tabindex="303">$$square</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="307">$$ln</div><div class="button" tabindex="308">$$e</div><div class="button" tabindex="309">$$exp</div>
+                <div class="button" tabindex="304">$$ln</div><div class="button" tabindex="305">$$e</div><div class="button" tabindex="306">$$exp</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="304">$$log</div><div class="button" tabindex="305">$$root</div><div class="button" tabindex="306">$$pow</div>
+                <div class="button" tabindex="307">$$log</div><div class="button" tabindex="308">$$root</div><div class="button" tabindex="309">$$pow</div>
               </div>
               <div class="button-row">
                 <div class="button" tabindex="310">$$sign</div><div class="button" tabindex="311">$$percent</div><div class="button" tabindex="312">$$pi</div>
