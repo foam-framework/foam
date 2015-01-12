@@ -386,7 +386,7 @@ CLASS({
              'MDAO'],
 
   imports: ['masterModelList'],
-  exports: ['featureDAO', 'modelDAO', 'subModelDAO'],
+  exports: ['featureDAO', 'modelDAO', 'subModelDAO', 'traitUserDAO'],
 
   properties: [
     {
@@ -410,6 +410,13 @@ CLASS({
         return this.MDAO.create({model:this.Model, autoIndex:true});
       }
     },
+    {
+      name: 'traitUserDAO',
+      model_: 'DAOProperty',
+      factory: function() {
+        return this.MDAO.create({model:this.Model, autoIndex:true});
+      }
+    }
   ],
   
   methods: {
@@ -425,6 +432,7 @@ CLASS({
       this.featureDAO.removeAll();
       this.modelDAO.removeAll();
       this.subModelDAO.removeAll();
+      this.traitUserDAO.removeAll();
 
       if ( ! data.model_ || data.model_.id !== 'Model' ) {
         console.warn("ModelDocView created with non-model instance: ", data);
@@ -443,6 +451,7 @@ CLASS({
       this.X.setTimeout(function() {
           this.loadFeaturesOfModel(data, []);
           this.findSubModels(data);
+          this.findTraitUsers(data);
       }.bind(this), 20);
       
       //console.log("  FeatureDAO complete.", Date.now() - startTime);
@@ -532,7 +541,6 @@ CLASS({
         }
       }
 
-
       // the tracker is now complete
       this.modelDAO.put(newModelTr);
       return newModelTr.inheritanceLevel;
@@ -559,6 +567,18 @@ CLASS({
         function(obj) {
           if ( data.isSubModel(obj) && data.id != obj.id ) {
             this.subModelDAO.put(obj);
+          }
+        }.bind(this)
+      ));
+    },
+
+    findTraitUsers: function(data) {
+      if ( ! this.Model.isInstance(data) ) return;
+      
+      this.masterModelList.select(MAP(
+        function(obj) {
+          if ( obj.traits &&  obj.traits.indexOf(data.id) > -1 ) {
+            this.traitUserDAO.put(obj);
           }
         }.bind(this)
       ));
@@ -701,7 +721,7 @@ CLASS({
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocView',
 
-  imports: ['subModelDAO'],
+  imports: ['subModelDAO', 'traitUserDAO'],
   
   documentation: "A summary documentation view for $$DOC{ref:'Model'} instances.",
 
@@ -711,7 +731,8 @@ CLASS({
              'foam.documentation.DocBodyView'],
 
   properties: [
-    'subModelDAO'
+    'subModelDAO',
+    'traitUserDAO'
   ],
   
   methods: {
@@ -751,6 +772,7 @@ CLASS({
             <p class="important">Traits: $$traits{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelRefView', mode: 'read-only' }</p>
 <%        } %>
           <p class="important">Sub-models: $$subModelDAO{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelDataRefView', mode: 'read-only' }</p>
+          <p class="important">Used by: $$traitUserDAO{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelDataRefView', mode: 'read-only' }</p>
           </div>
           $$documentation{ model_: 'foam.documentation.DocBodyView' }
           <div class="clear">&nbsp;</div>

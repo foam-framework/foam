@@ -42,6 +42,11 @@ CLASS({
     {
       name: 'dynamicListeners_',
       hidden: true
+    },
+    {
+      name: 'isLinkBlocking',
+      model_: 'BooleanProperty',
+      defaultValue: false
     }
   ],
   
@@ -60,8 +65,51 @@ CLASS({
             this.globalY = this.parent.globalY + this.y;
           }.bind(this))
         }.bind(this)
-      );
-      
+      ); 
+    },
+    
+    addLinkBlocker: function(item) {
+      /* Called by child when added to a parent, to report that it can block
+      link routing. */
+      // Only do something if the item can actually block links
+      if ( item.isLinkBlocking ) {
+        // if we can block links, we've already reported it and as the
+        // child's container we should cover the child's rect already.
+        if ( ! this.isLinkBlocking ) {
+          this.parent && this.parent.addLinkBlocker && this.parent.addLinkBlocker(item); 
+        }
+      }
+    },
+    removeLinkBlocker: function(item) {
+      /* Called by child when removed from a parent, to report that it can 
+      no longer block link routing. */
+      // Removing something that isn't there won't hurt, so ignore the checks
+      this.parent && this.parent.removeLinkBlocker && this.parent.removeLinkBlocker(item); 
+    },
+    
+    addChild: function(child) {
+      /* Overridden to call $$DOC{ref:'addLinkBlocker'} if appropriate */
+      this.SUPER(child);     
+      this.addLinkBlocker(child);
+      child.scanForLinkBlockers && child.scanForLinkBlockers();
+    },
+    removeChild: function(child) {
+      /* Overridden to call $$DOC{ref:'removeLinkBlocker'} if appropriate */
+      this.removeLinkBlocker(child);
+      this.SUPER(child);
+    },
+    
+    getDiagramRoot: function() {
+      /* Find the root element of the diagram. */
+      return parent ? parent.getDiagramRoot() : null;
+    },
+    
+    scanForLinkBlockers: function() {
+      /* Recursively scan all children and have them report link blockers. */
+      this.children.forEach(function(c) {
+        this.addLinkBlocker(c);
+        c.scanForLinkBlockers && c.scanForLinkBlockers();
+      }.bind(this));
     }
   }
   
@@ -69,12 +117,54 @@ CLASS({
 
 
 CLASS({
-  name: 'Diagram',
+  name: 'DiagramRootTrait',
   package: 'diagram',
+  
+  requires: [ 'MDAO', 'diagram.DiagramItemTrait' ],
+  
+  documentation: function() {/*
+      Apply this trait to the model you wish to use as the root
+      element of your diagram.
+    */}, 
 
-  extendsModel: 'foam.graphics.CView',
-  traits: ['diagram.DiagramItemTrait'],
+  properties: [
+    {
+      name: 'linkBlockerDAO',
+      model_: 'DAOProperty',
+      factory: function() {
+        return this.MDAO.create({model:this.DiagramItemTrait, autoIndex:true});
+      }
+    }
+  ],
+  
+  methods: {
+    addLinkBlocker: function(item) {
+      /* Called by child when added to a parent, to report that it can block
+      link routing. */
+      if ( item.isLinkBlocking ) {
+        this.linkBlockerDAO.put(item);
+      }
+    },
 
+    removeLinkBlocker: function(item) {
+      /* Called by child when removed from a parent, to report that it can 
+      no longer block link routing. */
+      this.linkBlockerDAO.remove(item);
+    },
+    
+    getDiagramRoot: function() {
+      return this;
+    },
+    
+    scanForLinkBlockers: function() {
+      /* In this base case we can clear out the exisiting DAO of blockers,
+      since we will regenerate it anyway. */
+      this.linkBlockerDAO.removeAll();
+      this.SUPER();
+    }
+
+  }
+  
 });
 
 CLASS({
@@ -329,6 +419,13 @@ CLASS({
   traits: ['diagram.DiagramItemTrait'],
 });
 
+CLASS({
+  name: 'AutoSizeDiagramRoot',
+  package: 'diagram',
+  extendsModel: 'foam.graphics.LockToPreferredLayout',
+  traits: ['diagram.DiagramItemTrait', 'diagram.DiagramRootTrait'],
+});
+
 
 CLASS({
   name: 'Block',
@@ -337,7 +434,7 @@ CLASS({
   requires: ['diagram.LinkPoint'],
 
   extendsModel: 'diagram.LinearLayout',
-  traits: ['foam.graphics.BorderTrait', 'foam.graphics.AnimatedHeightTrait'],
+  traits: ['foam.graphics.BorderTrait'],
 
   properties: [
     {
@@ -352,6 +449,10 @@ CLASS({
     {
       name: 'alpha',
       defaultValue: 0
+    },
+    {
+      name: 'isLinkBlocking',
+      defaultValue: true
     }
   ],
 
@@ -363,7 +464,6 @@ CLASS({
       
       this.alpha = 1;
     },
-    // TODO: account for movement that changes our parent but not our x,y,width,height
     addLinkPoints: function() {
       {
         // make four points at our edges
@@ -396,8 +496,6 @@ CLASS({
 
   extendsModel: 'diagram.LinearLayout',
   traits: ['foam.graphics.BorderTrait'],
-
-  //imports: ['linkPoints'],
 
   properties: [
     {
@@ -734,7 +832,6 @@ CLASS({
           }
         }.bind(this));
       }.bind(this));
-
 
       if (!byDist[smallest]) {
         // no good points, so return something
