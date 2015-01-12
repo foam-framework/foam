@@ -590,7 +590,6 @@ var CalcButton = ActionButtonCView2.xbind({
   height:     60,
   font:       '300 28px RobotoDraft'
 });
-X.registerModel(CalcButton, 'ActionButton');
 
 CLASS({
   name: 'CalcView',
@@ -621,6 +620,7 @@ CLASS({
     {
       name: 'toHTML',
       template: function() {/*
+        <% X.registerModel(CalcButton, 'ActionButton'); %>
         <div style="position: relative;z-index: 100;">
           <div tabindex="1" style="position: absolute;">
             <span aria-label="radians" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="radians">RAD</span>
