@@ -52,9 +52,10 @@ CLASS({
   
   requires: ['foam.documentation.ModelDocDiagram',
              'foam.documentation.ExtendsDiagram',
+             'foam.documentation.TraitListDiagram',
              'diagram.LinearLayout',
              'diagram.Margin',
-             'diagram.LockToPreferredLayout',
+             'diagram.AutoSizeDiagramRoot',
              'foam.graphics.Spacer'],
   
   documentation: function() {/*
@@ -64,9 +65,9 @@ CLASS({
   properties: [
     {
       name: 'autoSizeLayout',
-      type: 'diagram.LockToPreferredLayout',
+      type: 'diagram.AutoSizeDiagramRoot',
       factory: function() {
-        return this.LockToPreferredLayout.create();
+        return this.AutoSizeDiagramRoot.create();
       }
     },
     {
@@ -78,6 +79,13 @@ CLASS({
     },
     {
       name: 'outerLayout',
+      type: 'diagram.LinearLayout',
+      factory: function() {
+        return this.LinearLayout.create({orientation:'horizontal'});
+      }
+    },
+    {
+      name: 'extendsLayout',
       type: 'diagram.LinearLayout',
       factory: function() {
         return this.LinearLayout.create({orientation:'vertical'});
@@ -98,12 +106,15 @@ CLASS({
       }
     },
     {
+      name: 'traitDiagram',
+      factory: function() {
+        return this.TraitListDiagram.create({ sourceDiag: this.modelDiagram });
+      }     
+    },
+    {
       name: 'modelDiagram',
       factory: function() {
         var modelDiagram = this.ModelDocDiagram.create();
-        this.mainLayout.addChild(this.Spacer.create());
-        this.mainLayout.addChild(modelDiagram.diagramItem);
-        this.mainLayout.addChild(this.Spacer.create());
         return modelDiagram;
       }
     },
@@ -114,17 +125,24 @@ CLASS({
         this.extendsModelLayout.addChild(extendsDiagram.diagramItem);
         return extendsDiagram;
       }
-    }
+    },
   ],
 
   methods: {
     init: function() {
       this.SUPER();
+
+      this.mainLayout.addChild(this.Spacer.create());
+      this.mainLayout.addChild(this.modelDiagram.diagramItem);
+      this.mainLayout.addChild(this.Spacer.create());
+      
       this.cview = this.autoSizeLayout;
       this.autoSizeLayout.addChild(this.outerMargin);
       this.outerMargin.addChild(this.outerLayout);
-      this.outerLayout.addChild(this.extendsModelLayout);
-      this.outerLayout.addChild(this.mainLayout);
+      this.outerLayout.addChild(this.traitDiagram.diagramItem);
+      this.outerLayout.addChild(this.extendsLayout);
+      this.extendsLayout.addChild(this.extendsModelLayout);
+      this.extendsLayout.addChild(this.mainLayout);
     },
 
     toHTML: function() {
@@ -238,6 +256,104 @@ CLASS({
   }
 });
 
+
+CLASS({
+  name: 'TraitListDiagram',
+  package: 'foam.documentation',
+
+  traits: [ 'foam.views.ChildTreeTrait',
+            'foam.views.DataConsumerTrait',
+            'foam.views.DataProviderTrait'],
+
+  requires: ['foam.documentation.ModelDocDiagram',
+             'foam.documentation.DocLinkDiagram',
+             'diagram.LinearLayout',
+             'diagram.Link',
+             'foam.graphics.Spacer',
+             'SimpleValue',
+             'foam.documentation.DocRef'],
+            
+  documentation: function() {/*
+    A view that renders one model's traits.
+  */},
+
+  properties: [
+    {
+      name: 'data',
+      postSet: function() {
+        this.destroy();
+        this.childData = FOAM.lookup(this.data, this.X);
+        this.construct();
+      }
+    },
+    {
+      name: 'diagramItem',
+      type: 'diagram.LinearLayout',
+      factory: function() {
+        return this.LinearLayout.create({orientation:'vertical'});
+      }
+    },
+    {
+      name: 'mainLayout',
+      type: 'diagram.LinearLayout',
+      factory: function() {
+        return this.LinearLayout.create({orientation:'horizontal'});
+      }
+    },
+    {
+      name: 'sourceDiag',
+      documentation: "The other doc diagram item to point the arrow from."
+    },
+    {
+      name: 'spacing',
+      model_: 'IntProperty',
+      defaultValue: 100
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      this.mainLayout.verticalConstraints.preferred = 0;
+      this.diagramItem.addChild(this.Spacer.create({stretchFactor: 1}));
+      this.diagramItem.addChild(this.mainLayout);
+      this.diagramItem.addChild(this.Spacer.create({fixedHeight$: this.spacing$}));
+    },
+
+    construct: function() {
+      this.SUPER();
+      var self = this;
+      
+      self.data.traits.forEach( function(trait) {
+      
+        var traitModel = FOAM.lookup(trait, self.X);
+        
+        var X = self.childX.sub({ 
+          data$: self.SimpleValue.create(traitModel, self.childX),
+          documentViewRef: self.SimpleValue.create(self.DocRef.create({ ref: trait }, self.childX))
+        });
+        var traitDiag = self.ModelDocDiagram.create({ model: Model }, X);
+        self.addChild(traitDiag);
+        self.addChild(self.DocLinkDiagram.create({ start: traitDiag, end$: self.sourceDiag$ }));
+    
+      });
+    },
+
+    addChild: function(child) {
+      this.SUPER(child);
+      // add diagram node of the child to ours
+      if ( this.mainLayout && child.diagramItem ) this.mainLayout.addChild(child.diagramItem);
+    },
+    removeChild: function(child) {
+      if ( this.mainLayout &&  child.diagramItem ) this.mainLayout.removeChild(child.diagramItem);
+      this.SUPER(child);
+    }
+  }
+});
+
+
+
 CLASS({
   name: 'DocLinkDiagram',
   package: 'foam.documentation',
@@ -259,14 +375,24 @@ CLASS({
       name: 'start',
       type: 'foam.documentation.DocDiagramTrait',
       postSet: function() {
-        if (this.start && this.start.diagramItem) this.diagramItem.start = this.start.diagramItem.myLinkPoints;
+        if ( ! this.start ) return;
+        
+        if (this.start.linkableItem) 
+          this.diagramItem.start = this.start.linkableItem.myLinkPoints;
+        else if (this.start.diagramItem)
+          this.diagramItem.start = this.start.diagramItem.myLinkPoints;
       }
     },
     {
       name: 'end',
       type: 'foam.documentation.DocDiagramTrait',
       postSet: function() {
-        if (this.end && this.end.diagramItem) this.diagramItem.end = this.end.diagramItem.myLinkPoints;
+        if ( ! this.end ) return;
+        
+        if (this.end.linkableItem) 
+          this.diagramItem.end = this.end.linkableItem.myLinkPoints;
+        else if (this.end.diagramItem)
+          this.diagramItem.end = this.end.diagramItem.myLinkPoints;
       }
     }
   ]
@@ -282,6 +408,7 @@ CLASS({
 
   requires: ['diagram.Block',
              'diagram.Section',
+             'diagram.Margin',
              'foam.documentation.FeatureListDiagram'],
 
   documentation: function() {/*
@@ -296,21 +423,33 @@ CLASS({
     {
       name: 'diagramItem',
       factory: function() {
-        var diagramItem = this.Block.create({ border: 'black' }, this.childX);
-        diagramItem.addChild(
+        var diagramItem = this.Margin.create({ bottom: 5, right: 5, left: 5, top: 5 }, this.childX);
+        return diagramItem;
+      }
+    },
+    {
+      name: 'linkableItem',
+      factory: function() {
+        var linkableItem = this.Block.create({ border: 'black' }, this.childX);
+        linkableItem.addChild(
           this.Section.create({
             title$: this.modelName$, titleFont: 'bold 16px Roboto',
             background: 'rgba(64,64,255,255)',
             color: 'white'
           }, this.childX)
         );
-        return diagramItem;
+        return linkableItem;
       }
     }
   ],
 
   methods: {
 
+    init: function() {
+      this.SUPER();
+      this.diagramItem.addChild(this.linkableItem);
+    },
+    
     construct: function() {
       this.SUPER();
       this.createTemplateView('properties', { model_: 'foam.documentation.FeatureListDiagram',
@@ -332,11 +471,11 @@ CLASS({
     addChild: function(child) {
       this.SUPER(child);
       // add diagram node of the child to ours (child is a PropertyView in our case)
-      // TODO(jacksonic): make a digram specific PropertyView trait to pass through diagramItem
-      if ( this.diagramItem && child.view && child.view.diagramItem ) this.diagramItem.addChild(child.view.diagramItem);
+      // TODO(jacksonic): make a digram specific PropertyView trait to pass through linkableItem
+      if ( this.linkableItem && child.view && child.view.diagramItem ) this.linkableItem.addChild(child.view.diagramItem);
     },
     removeChild: function(child) {
-      if ( this.diagramItem && child.view && child.view.diagramItem ) this.diagramItem.removeChild(child.view.diagramItem);
+      if ( this.linkableItem && child.view && child.view.diagramItem ) this.linkableItem.removeChild(child.view.diagramItem);
       this.SUPER(child);
     }
 
