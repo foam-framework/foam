@@ -178,6 +178,7 @@ CLASS({
     html {
       height: 100%;
       margin: 0;
+      overflow: initial;
       padding: 0;
       width: 100%;
     }
