@@ -691,7 +691,7 @@ CLASS({
   listeners: [
     {
       name: 'updateMargins',
-      isFramed: true,
+      //isFramed: true,
       documentation: function() {/* Adjusts child item. */},
       code: function(evt) {
         if (this.verticalConstraints) this.verticalConstraints.addAmount = this.top+this.bottom;

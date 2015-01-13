@@ -1476,7 +1476,7 @@ CLASS({
   listeners: [
     {
       name: 'rebuildSelfDAOs',
-      isMerged: 500,
+      isMerged: 100,
       code: function() {
         var self = this;
         if (!this.documentViewRef) {

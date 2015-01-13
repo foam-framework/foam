@@ -20,6 +20,19 @@
 
 CLASS({
   package: 'foam.graphics',
+  name: 'AnimatedXTrait',
+  
+  properties: [
+     {
+      name: 'x',
+      install: Movement.createAnimatedPropertyInstallFn(500, Movement.ease(1, 1))
+
+    },
+  ],
+   
+ });
+CLASS({
+  package: 'foam.graphics',
   name: 'AnimatedYTrait',
   
   properties: [
@@ -34,6 +47,19 @@ CLASS({
 
 
 
+CLASS({
+  package: 'foam.graphics',
+  name: 'AnimatedWidthTrait',
+  
+  properties: [
+    {
+      name: 'width',
+      install: Movement.createAnimatedPropertyInstallFn(500, Movement.ease(1, 1))
+
+    }
+  ],
+   
+ });
 CLASS({
   package: 'foam.graphics',
   name: 'AnimatedHeightTrait',
@@ -74,7 +100,7 @@ CLASS({
     'layout.LayoutItemHorizontalTrait',
     'layout.LayoutItemVerticalTrait'
   ],
-
+ 
   methods: {
     init: function() {
       this.SUPER();
@@ -124,7 +150,7 @@ CLASS({
       A simple layout for items not already in a layout. It will take the preferred
       size of its child and set the width and height of itself to match.
     */},
-
+  
   methods: {
     addChild: function(child) { /* Adds a child $$DOC{ref:'foam.graphics.CView'} to the scene
                                    under this. Add our listener for child constraint
@@ -155,7 +181,7 @@ CLASS({
   listeners: [
     {
       name: 'performLayout',
-      isFramed: true,
+      //isFramed: true,
       code: function() {
         // lock our size to the child's preferred size
         if (this.children[0]) {

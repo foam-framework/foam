@@ -287,13 +287,6 @@ CLASS({
       defaultValue: 0
     },
     {
-      model_: 'IntProperty',
-      name: 'distanceToClear',
-      defaultValue: 0,
-      documentation: function() {/* The distance from the link point to the edge of the 
-           owner (typically half the width or half the height for a centered link). */}
-    },
-    {
       name: 'dynamicListeners_',
       hidden: true
     }
@@ -311,7 +304,6 @@ CLASS({
          }.bind(this),
          function() { 
            this.updatePosition();
-           this.updateClearing();
           }.bind(this)
        );
     },
@@ -344,18 +336,6 @@ CLASS({
       code: function() {
         this.x = this.positioningFunctionX(this.owner.globalX);
         this.y = this.positioningFunctionY(this.owner.globalY);
-      }
-    },
-    {
-      name: 'updateClearing',
-      isFramed: true,
-      code: function() {
-        if(this.side === 'top' || this.side === 'bottom') {
-          this.distanceToClear = this.owner.width/2;
-        } else
-        if(this.side === 'left' || this.side === 'right') {
-          this.distanceToClear = this.owner.height/2;
-        }    
       }
     },
     {
@@ -409,7 +389,10 @@ CLASS({
   package: 'diagram',
   
   extendsModel: 'foam.graphics.LinearLayout',
-  traits: ['diagram.DiagramItemTrait'],
+  traits: ['diagram.DiagramItemTrait' ],
+  
+  
+  
 });
 
 
@@ -467,7 +450,8 @@ CLASS({
     {
       name: 'isLinkBlocking',
       defaultValue: true
-    }
+    },
+    
   ],
 
   methods: {
