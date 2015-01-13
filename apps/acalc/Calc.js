@@ -402,7 +402,7 @@ CLASS({
     permutation: function(n, r) { return this.factorial(n) / this.factorial(n-r); },
     combination: function(n, r) { return this.permutation(n, r) / this.factorial(r); },
     error: function() {
-      setTimeout(this.Flare.create({
+      if ( $$('calc-display')[0] ) setTimeout(this.Flare.create({
         element: $$('calc-display')[0],
         color: '#f44336' /* red */
       }).fire, 100);
@@ -451,7 +451,7 @@ CLASS({
         this.editable = true;
         this.op = DEFAULT_OP;
         this.history = [].sink;
-        this.Flare.create({
+        if ( $$('calc-display')[0] ) this.Flare.create({
           element: $$('calc-display')[0],
           color: '#2196F3' /* blue */
         }).fire();
