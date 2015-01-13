@@ -18,12 +18,26 @@
 MODEL({
   name: 'ModelFileDAO',
   package: 'node.dao',
+
+  properties: [
+    {
+      name: 'classpath',
+      factory: function() {
+        return NODE_CLASSPATH || FOAM_BOOT_DIR + '/../js';
+      }
+    }
+  ],
+
   methods: {
     find: function (key, sink) {
       var X = this.X;
       var model = FOAM.lookup(key, X);
+      if ( model ) {
+        sink && sink.put && sink.put(model);
+        return;
+      }
 
-      var fileName = FOAM_BOOT_DIR + '/../js/' + key.replace(/\./g, '/') + '.js';
+      var fileName = this.classpath + '/' + key.replace(/\./g, '/') + '.js';
       require(fileName);
 
       model = FOAM.lookup(key, X);
