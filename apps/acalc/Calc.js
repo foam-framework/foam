@@ -434,10 +434,10 @@ CLASS({
 
   actions: [
     num(1), num(2), num(3), num(4), num(5), num(6), num(7), num(8), num(9), num(0),
-    binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7'),
-    binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7'),
+    binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7', 'divide', 'divide'),
+    binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7', 'multiply', 'multiply'),
     binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
-    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–'),
+    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–', 'minus', 'minus'),
     {
       name: 'ac',
       label: 'AC',
@@ -467,6 +467,7 @@ CLASS({
     {
       name: 'point',
       label: '.',
+      speechLabel: 'point',
       keyboardShortcuts: [ 110, 190 ],
       action: function() {
         if ( ! this.editable ) {
@@ -552,15 +553,15 @@ CLASS({
     unaryOp('exp',    ['f'], Math.exp, 'eⁿ', undefined, 'e to the power of n'),
 
     unaryOp('log',    ['g'], function(a) { return Math.log(a) / Math.LN10; }, 'log', 'logarithm', 'log base 10'),
-    binaryOp('root',  ['h'], function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY'),
+    binaryOp('root',  ['h'], function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY', undefined, 'the enth root of y'),
     binaryOp('pow',   ['i'], Math.pow, 'yⁿ', undefined, 'y to the power of n'),
 
     unaryOp('sin',    ['p'], trigFn(Math.sin), 'sin', 'sine',    'sign'),
-    unaryOp('cos',    ['s'], trigFn(Math.cos), 'cos', 'cosine',  'cosign'),
+    unaryOp('cos',    ['s'], trigFn(Math.cos), 'cos', 'cosine',  'co-sign'),
     unaryOp('tan',    ['v'], trigFn(Math.tan), 'tan', 'tangent', 'tangent'),
 
     unaryOp('asin',   ['q'], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arc sign'),
-    unaryOp('acos',   ['t'], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arc cosign'),
+    unaryOp('acos',   ['t'], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arc co-sign'),
     unaryOp('atan',   ['w'], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arc tangent'),
 
     unaryOp('fact',   ['o', 'shift-49' /* ! */], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
