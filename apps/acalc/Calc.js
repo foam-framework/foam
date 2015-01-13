@@ -636,7 +636,7 @@ CLASS({
           <div class="calc-display">
             <div class="inner-calc-display">
               $$history{ rowView: 'HistoryCitationView' }
-              <div tabindex="2">$$row1{mode: 'read-only', escapeHTML: false}</div>
+              <div tabindex="3">$$row1{mode: 'read-only', escapeHTML: false}</div>
             </div>
           </div>
           <div class='keypad'>
@@ -733,8 +733,8 @@ CLASS({
           <%
           this.X.registerModel(CalcButton.xbind({
             background: 'rgb(64, 189, 158)',
-            width:  64,
-            height: 64,
+            width:  61,
+            height: 61,
             font:   '300 26px RobotoDraft'
           }), 'ActionButton');
           %>
@@ -801,7 +801,7 @@ CLASS({
   extendsModel: 'DetailView',
   templates: [
     function toHTML() {/*
-      <div class="history">{{this.data.op}} {{this.data.a2}}<% if ( this.data.op.toString() ) { %><hr><% } %></div>
+      <div class="history" tabindex="2">{{this.data.op}} {{this.data.a2}}<% if ( this.data.op.toString() ) { %><hr><% } %></div>
     */}
   ]
 });
