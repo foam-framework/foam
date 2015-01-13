@@ -32,7 +32,7 @@ CLASS({
       defaultValue: 0
     }
   ],
-
+  
   methods: {
     toString: function() { return "canvas.Point("+this.x+", "+this.y+")"; }
   }
