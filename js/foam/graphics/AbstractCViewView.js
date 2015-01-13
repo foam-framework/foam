@@ -95,10 +95,12 @@ CLASS({
       isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
-        this.$.width        = this.canvasWidth();
-        this.$.style.width  = this.styleWidth();
-        this.$.height       = this.canvasHeight();
-        this.$.style.height = this.styleHeight();
+        this.$.width           = this.canvasWidth();
+        this.$.style.width     = this.styleWidth();
+        this.$.style.minWidth  = this.styleWidth();
+        this.$.height          = this.canvasHeight();
+        this.$.style.height    = this.styleHeight();
+        this.$.style.minHeight = this.styleHeight();
         this.paint();
       },
       documentation: 'Reacts to resize events to fix the size of the canvas.'
