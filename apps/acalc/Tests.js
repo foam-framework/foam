@@ -25,6 +25,7 @@ apar(arequire('Calc'), arequire('TableView'))(function() {
   UnitTest.PASSED.tableWidth      = "70px";
   UnitTest.FAILED.tableWidth      = "70px";
   UnitTest.NAME.tableLabel        = '#';
+  UnitTest.DESCRIPTION.tableLabel = 'Input';
 
   var num = 1;
   function t(input, result) {
@@ -61,6 +62,8 @@ apar(arequire('Calc'), arequire('TableView'))(function() {
       t('1 point 1', 1.1),
       t('1 point 0 1', 1.01),
       t('1 point 0 0 1', 1.001),
+      t('1 point point point 0', 1),
+      t('1 point point point 1', 1.1),
       t('backspace', 0),
       t('1 backspace', 0),
       t('1 1 backspace', 1),
@@ -72,12 +75,55 @@ apar(arequire('Calc'), arequire('TableView'))(function() {
       t('1 plus 1 equals', 2),
       t('1 plus 2 equals', 3),
       t('2 plus 1 equals', 3),
-      t('1 plus 1 0 plus 1 0 0 equals', 111)
+      t('1 plus 1 0 plus 1 0 0 equals', 111),
+      t('0 minus 0 equals', 0),
+      t('0 minus 1 equals', -1),
+      t('1 minus 0 equals', 1),
+      t('1 minus 1 equals', 0),
+      t('1 minus 2 equals', -1),
+      t('2 minus 1 equals', 1),
+      t('1 minus 1 0 minus 1 0 0 equals', -109),
+      t('0 mult 0 equals', 0),
+      t('0 mult 1 equals', 0),
+      t('1 mult 0 equals', 0),
+      t('1 mult 1 equals', 1),
+      t('1 mult 2 equals', 2),
+      t('2 mult 1 equals', 2),
+      t('1 mult 1 0 mult 1 0 0 equals', 1000),
+//      t('0 div 0 equals', Number.NaN), // Works, but you can't compare NaN properly
+      t('0 div 1 equals', 0),
+      t('1 div 0 equals', Number.POSITIVE_INFINITY),
+      t('1 div 1 equals', 1),
+      t('1 plus 2 equals equals', 5),
+      t('1 plus 2 equals equals equals', 7),
+      t('1 mult 2 equals equals', 4),
+      t('1 mult 2 equals equals equals', 8),
+      t('pi', Math.PI),
+      t('e', Math.E),
+      t('1 percent', 0.01),
+      t('1 0 0 percent', 1),
+      t('deg 1 8 0 sin round', 0),
+      t('deg 9 0 sin', 1),
+      t('rad pi equals sin round', 0),
+      t('rad pi div 2 equals sin round', 1),
+      t('deg 1 sin asin round', 1),
+      t('rad 0 sin asin round', 0),
+      t('deg 1 cos acos round', 1),
+      t('rad 0 cos acos round', 0),
+      t('deg 1 tan atan round', 1),
+      t('rad 0 tan atan round', 0),
+
     ]
   });
 
   tests.test();
-  var tView = TableView.create({model: UnitTest, dao: tests.tests, properties: ['name', 'description', 'results', 'passed', 'failed']});
+  var tView = TableView.create({
+    model: UnitTest,
+    dao: tests.tests,
+    scrollEnabled: false,
+    rows: 1000,
+    properties: ['name', 'description', 'results', 'passed', 'failed']
+  });
 //  tView.write(document);
   $('output').innerHTML = tView.toHTML();
   tView.initHTML();
