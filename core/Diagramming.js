@@ -559,6 +559,11 @@ CLASS({
   
   extendsModel: 'diagram.Block',
   
+  documentation: function() {/*
+      A group of $$DOC{ref:'diagram.Section',usePlural:true}, with a heading.
+      Typically placed inside $$DOC{ref:'diagram.Block',usePlural:true}.
+    */},
+  
   properties: [
     {
       name: 'orientation',
