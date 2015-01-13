@@ -1333,7 +1333,16 @@ CLASS({
         });
       }
     },
-    'expanded'
+    {
+      name: 'opened',
+      help: 'If the panel us opened or not.',
+      defaultValue: false
+    },
+    {
+      name: 'expanded',
+      help: 'If the panel is wide enough to expand the panel permanently.',
+      defaultValue: false
+    }
   ],
 
   templates: [
@@ -1382,31 +1391,31 @@ CLASS({
     },
     main$: function() { return this.X.$(this.id + '-main'); },
     panel$: function() { return this.X.$(this.id + '-panel'); },
-    shadow$: function() { return this.X.$(this.id + '-shadow'); }
+    shadow$: function() { return this.X.$(this.id + '-shadow'); },
+    open: function() {
+      if ( this.expanded || this.opened ) return;
+      this.expanded = true;
+      this.dir_ = 1;
+      this.snap();
+    },
+    close: function() {
+      if ( this.expanded || ! this.opened ) return;
+      this.expanded = false;
+      this.dir_ = -1;
+      this.snap();
+    }
   },
 
   listeners: [
     {
       name: 'onPanelFocus',
       isMerged: 1,
-      code: function(e) {
-        if ( this.expanded ) return;
-        if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) return;
-        this.expanded = true;
-        this.dir_ = 1;
-        this.snap();
-      }
+      code: function(e) { this.open(); }
     },
     {
       name: 'onMainFocus',
       isMerged: 1,
-      code: function(e) {
-        if ( ! this.expanded ) return;
-        if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) return;
-        this.expanded = false;
-        this.dir_ = -1;
-        this.snap();
-      }
+      code: function(e) { this.close(); }
     },
     {
       name: 'onResize',
@@ -1433,6 +1442,7 @@ CLASS({
     {
       name: 'dragStart',
       code: function(point) {
+        if ( this.expanded ) return;
         // Otherwise, bind panelX to the absolute X.
         var self = this;
         var originalX = this.panelX;
@@ -1444,6 +1454,7 @@ CLASS({
     {
       name: 'dragEnd',
       code: function(point) {
+        if ( this.expanded ) return;
         Events.unfollow(point.x$, this.panelX$);
         this.snap();
       }
