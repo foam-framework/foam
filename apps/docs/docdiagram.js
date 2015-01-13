@@ -67,7 +67,8 @@ CLASS({
       name: 'autoSizeLayout',
       type: 'diagram.AutoSizeDiagramRoot',
       factory: function() {
-        return this.AutoSizeDiagramRoot.create();
+        // Set the root to NOT paint until we have finished construct()
+        return this.AutoSizeDiagramRoot.create({ suspended: true });
       }
     },
     {
@@ -154,11 +155,23 @@ CLASS({
       return ret;
     },
 
-    destroy: function() {
-      //if ( this.modelDiagram && this.modelDiagram.diagramItem ) this.mainLayout.removeChild(this.modelDiagram.diagramItem);
-      //this.modelDiagram = undefined;
+    construct: function() {
       this.SUPER();
+      // Crude delay to let the featureDAO children populate before painting.
+      // TODO(jacksonic): implement a better way for children to notify of async operations
+      X.setTimeout(function() { 
+        this.autoSizeLayout.suspended = false;
+        this.autoSizeLayout.paint();
+//console.log("          root painting active"); 
+      }.bind(this), 1000);  
+    },
+    
+    destroy: function() {
+      this.autoSizeLayout.suspended = true;
+//console.log("root painting OFF"); 
+      
     }
+    
   }
 });
 
@@ -516,10 +529,16 @@ CLASS({
     construct: function() {
       this.SUPER();
       this.diagramItem.title = this.featureType.capitalize();
-      this.selfFeaturesDAO.limit(5).select({ put: function(item) {
-        var X = this.childX.sub({ data$: this.childX.SimpleValue.create(item, this.childX) });
-        this.addChild(this.FeatureDiagram.create({ model: item.model_ }, X));
-      }.bind(this)});
+      this.selfFeaturesDAO.limit(5).select({ 
+        put: function(item) {
+          var X = this.childX.sub({ data$: this.childX.SimpleValue.create(item, this.childX) });
+          this.addChild(this.FeatureDiagram.create({ model: item.model_ }, X));
+//          console.log("    Adding child from featureDAO ");
+        }.bind(this),
+        eof: function() {
+//          console.log("    Done featureDAO ");
+        }
+      });
     },
 
   }

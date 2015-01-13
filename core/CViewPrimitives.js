@@ -136,6 +136,18 @@ CLASS({
       }
 
       this.SUPER(child);
+    },
+    
+    paintSelf: function() {
+      this.SUPER();
+      
+      // only calculate layout on paint
+      if ( this.layoutDirty ) {
+//console.log("calculateLayout ", this.$UID);
+        this.calculateLayout();
+        
+//console.log("  layout dirty? ", this.layoutDirty);
+      }
     }
   }
 });
@@ -151,6 +163,15 @@ CLASS({
       size of its child and set the width and height of itself to match.
     */},
   
+  properties: [
+    {
+      name: 'layoutDirty',
+      model_: 'BooleanProperty',
+      defaultValue: true,
+      hidden: true
+    }
+  ],
+    
   methods: {
     addChild: function(child) { /* Adds a child $$DOC{ref:'foam.graphics.CView'} to the scene
                                    under this. Add our listener for child constraint
@@ -176,24 +197,40 @@ CLASS({
       }
 
       this.SUPER(child);
+    },
+
+    paintSelf: function() {
+      this.SUPER();
+      
+      // only calculate layout on paint
+      if ( this.layoutDirty ) {
+        this.calculateLayout();
+      }
+    },
+    
+    calculateLayout: function() {
+      // lock our size to the child's preferred size
+      this.layoutDirty = false;
+      
+      if (this.children[0]) {
+        if (this.children[0].horizontalConstraints) {
+          this.width =  this.children[0].horizontalConstraints.preferred;
+          this.children[0].width = this.width;
+        }
+        if (this.children[0].verticalConstraints) {
+          this.height = this.children[0].verticalConstraints.preferred;
+          this.children[0].height = this.height;
+        }
+      }
     }
+
   },
   listeners: [
     {
       name: 'performLayout',
       //isFramed: true,
       code: function() {
-        // lock our size to the child's preferred size
-        if (this.children[0]) {
-          if (this.children[0].horizontalConstraints) {
-            this.width =  this.children[0].horizontalConstraints.preferred;
-            this.children[0].width = this.width;
-          }
-          if (this.children[0].verticalConstraints) {
-            this.height = this.children[0].verticalConstraints.preferred;
-            this.children[0].height = this.height;
-          }
-        }
+        this.layoutDirty = true;
       }
     }
   ]
@@ -448,7 +485,7 @@ CLASS({
   listeners: [
     {
       name: 'updatePreferred',
-      isFramed: true,
+      //isFramed: true,
       code: function() {
         var c = this.canvas;
         if (c) {
