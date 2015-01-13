@@ -610,7 +610,12 @@ CLASS({
           model_: 'IntProperty',
           name: 'addAmount',
           documentation: function() {/* The amount to add to the proxied pixel values. */},
-          defaultValue: 0
+          defaultValue: 0,
+          postSet: function(old,nu) {
+            this.preferred = this.data.preferred$Pix + nu; 
+            this.max = this.data.max$Pix + nu;
+            this.min = this.data.min$Pix + nu;
+          }
         }
       ]
     }
