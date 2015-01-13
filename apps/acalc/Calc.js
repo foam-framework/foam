@@ -546,27 +546,28 @@ CLASS({
 
     unaryOp('inv',    ['a'], function(a) { return 1.0/a; }, '1/x', undefined, 'inverse'),
     unaryOp('sqroot', ['b'], Math.sqrt, '√', 'square root'),
-    unaryOp('square', ['c'], function(a) { return a*a; }, 'x²', 'x squared'),
+    unaryOp('square', ['c'], function(a) { return a*a; }, 'x²', 'x squared', 'x squared'),
 
     unaryOp('ln',     ['d'], Math.log, 'ln', 'natural logarithm', 'natural logarithm'),
     unaryOp('exp',    ['f'], Math.exp, 'eⁿ', undefined, 'e to the power of n'),
 
     unaryOp('log',    ['g'], function(a) { return Math.log(a) / Math.LN10; }, 'log', 'logarithm', 'log base 10'),
     binaryOp('root',  ['h'], function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY'),
-    binaryOp('pow',   ['i'], Math.pow, 'yⁿ'),
+    binaryOp('pow',   ['i'], Math.pow, 'yⁿ', undefined, 'y to the power of n'),
 
-    unaryOp('sin',    ['p'], trigFn(Math.sin), 'sin', 'sine',    'sine'),
-    unaryOp('cos',    ['s'], trigFn(Math.cos), 'cos', 'cosine',  'cosine'),
+    unaryOp('sin',    ['p'], trigFn(Math.sin), 'sin', 'sine',    'sign'),
+    unaryOp('cos',    ['s'], trigFn(Math.cos), 'cos', 'cosine',  'cosign'),
     unaryOp('tan',    ['v'], trigFn(Math.tan), 'tan', 'tangent', 'tangent'),
 
-    unaryOp('asin',   ['q'], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arc sine'),
-    unaryOp('acos',   ['t'], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arc cosine'),
+    unaryOp('asin',   ['q'], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arc sign'),
+    unaryOp('acos',   ['t'], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arc cosign'),
     unaryOp('atan',   ['w'], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arc tangent'),
 
     unaryOp('fact',   ['o', 'shift-49' /* ! */], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
     binaryOp('mod',   ['r'],                     function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
-    binaryOp('p',     ['u'],                     function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations (n permute r)'),
-    binaryOp('c',     ['x'],                     function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations (n combine r))')
+    binaryOp('p',     ['u'],                     function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations (n permute r)', 'permutation'),
+    binaryOp('c',     ['x'],                     function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations (n combine r))', 'combination'),
+    unaryOp('round',  ['z'], Math.round, 'round') // Not shown in calculator, but makes unit tests easier to write
   ]
 });
 
