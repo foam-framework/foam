@@ -1391,7 +1391,6 @@ CLASS({
       isMerged: 1,
       code: function(e) {
         if ( this.expanded ) return;
-        this.document.body.scrollLeft = 0;
         if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) return;
         this.expanded = true;
         this.dir_ = 1;

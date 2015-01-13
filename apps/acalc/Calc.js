@@ -189,7 +189,7 @@ CLASS({
       font-size: 20px;
       font-weight: 300;
       height: 100%;
-      left: 0;
+      position: fixed;
       margin: 0;
       overflow: hidden;
       padding: 0;
