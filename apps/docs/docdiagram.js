@@ -143,6 +143,8 @@ CLASS({
       this.outerLayout.addChild(this.extendsLayout);
       this.extendsLayout.addChild(this.extendsModelLayout);
       this.extendsLayout.addChild(this.mainLayout);
+      
+      Events.follow(this.modelDiagram.diagramItem.height$, this.traitDiagram.spacing$);
     },
 
     toHTML: function() {
@@ -306,7 +308,7 @@ CLASS({
     {
       name: 'spacing',
       model_: 'IntProperty',
-      defaultValue: 100
+      defaultValue: 45
     }
   ],
 
