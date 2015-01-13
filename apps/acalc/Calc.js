@@ -172,7 +172,7 @@ CLASS({
   templates: [ function CSS() {/*
     * {
       box-sizing: border-box;
-      outline: none;
+      xxxoutline: none;
     }
 
     html {
@@ -709,7 +709,7 @@ CLASS({
       this.X.registerModel(CalcButton.xbind({
         background: '#777',
         width:  70,
-        height: 50,
+        height: 48,
         font:   '300 26px RobotoDraft'
       }), 'ActionButton');
       %>
@@ -765,8 +765,8 @@ CLASS({
     function toHTML() {/*
           <%
           this.X.registerModel(this.X.ActionButton.xbind({
-            width:      64,
-            height:     64,
+            width:      61,
+            height:     61,
             color:      'rgb(119, 119, 119)',
             background: 'rgb(29, 233, 182)',
             font:       '300 24px RobotoDraft'
