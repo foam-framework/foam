@@ -68,7 +68,7 @@ function subWindow(w, opt_name, isBackground) {
   return foam.ui.Window.create({window: w, name: opt_name, isBackground: isBackground}, this).X;
 }
 
-var X = this.sub({});
+var X = sub({});
 
 var _ROOT_X = X;
 

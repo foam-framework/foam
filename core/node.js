@@ -16,5 +16,9 @@
  */
 
 // TODO(markdittmer): We should model these in a FOAMy kind of way.
+var GLOBAL = global;
+global.GLOBAL = global;
+global.window = global;
+global.document = global;
 global.console.profile = function() {};
 global.console.profileEnd = function() {};
