@@ -20,9 +20,11 @@ apar(arequire('Calc'), arequire('TableView'))(function() {
   UnitTest.RESULTS.tableFormatter = function(val, obj, table) { return val; };
   UnitTest.PASSED.tableFormatter  = function(val) { return (val ? '<font color=green>' : '<font color=black>' ) + val + "</font>"; };
   UnitTest.FAILED.tableFormatter  = function(val) { return (val ? '<font color=red>' : '<font color=black>' ) + val + "</font>"; };
-  UnitTest.DESCRIPTION.tableWidth = "200px";
-  UnitTest.RESULTS.tableWidth     = "300px";
-  UnitTest.NAME.lable = '';
+  UnitTest.DESCRIPTION.tableWidth = "30%";
+  UnitTest.RESULTS.tableWidth     = "40%";
+  UnitTest.PASSED.tableWidth      = "70px";
+  UnitTest.FAILED.tableWidth      = "70px";
+  UnitTest.NAME.tableLabel        = '#';
 
   var num = 1;
   function t(input, result) {
@@ -47,6 +49,8 @@ apar(arequire('Calc'), arequire('TableView'))(function() {
       t('7', 7),
       t('8', 8),
       t('9', 9),
+      t('1 2 3 4 5 6 7 8 9', 123456789),
+      t('1 ac', 0),
       t('1 0', 10),
       t('0 1', 1),
       t('minus 1 0 equals', -10),
@@ -62,8 +66,13 @@ apar(arequire('Calc'), arequire('TableView'))(function() {
       t('1 1 backspace', 1),
       t('1 point 1 backspace', 1),
       t('1 sign sign', 1),
+      t('0 plus 0 equals', 0),
+      t('0 plus 1 equals', 1),
+      t('1 plus 0 equals', 1),
       t('1 plus 1 equals', 2),
-      t('1 plus 2 equals', 3)
+      t('1 plus 2 equals', 3),
+      t('2 plus 1 equals', 3),
+      t('1 plus 1 0 plus 1 0 0 equals', 111)
     ]
   });
 
