@@ -239,7 +239,6 @@ CLASS({
         this.addChild(thisDiag);
 
         // the arrow
-                // almost working, check extended
         this.addChild(this.DocLinkDiagram.create({ start: thisDiag, end$: this.extended$ }));
       }
     },
@@ -335,7 +334,7 @@ CLASS({
         });
         var traitDiag = self.ModelDocDiagram.create({ model: Model }, X);
         self.addChild(traitDiag);
-        //self.addChild(self.DocLinkDiagram.create({ start: traitDiag, end$: self.sourceDiag$ }));
+        self.addChild(self.DocLinkDiagram.create({ start: traitDiag, end$: self.sourceDiag$ }));
     
       });
     },

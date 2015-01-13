@@ -825,7 +825,6 @@ CLASS({
         Take the smallest link distance. */
       var self = this;
       var BIG_VAL = 999999999;
-//console.log("Selcting best points... ", self.start, self.end);
       var smallest = BIG_VAL;
       var byDist = {};
       self.start.forEach(function(startP) {
@@ -838,7 +837,7 @@ CLASS({
 
           // pick smallest connector path whose points won't make a bad connector
           if (  ! this.isBannedConfiguration(startP, endP, start, end, H,V,directions,orientations, shortAxisOr, shortAxisDist)
-             /*&& ! this.isBlocked(startP, endP, start, end, canvas)*/) {
+             && ! this.isBlocked(startP, endP, start, end, canvas)) {
             // if we tie, try for the smallest short-axis (middle displacement)
             if (!byDist[dist] || byDist[dist].shortAxisDist > shortAxisDist) {
               if (dist < smallest) smallest = dist;
@@ -850,11 +849,9 @@ CLASS({
 
       if (!byDist[smallest]) {
         // no good points, so return something
-        //console.log("No good link points", byDist);
         return { start: self.start[0], end: self.end[0], shortAxisDist: 0 };
       }
 
-      //console.log("    best points table:", byDist);
       return byDist[smallest];
     },
     
@@ -878,9 +875,9 @@ CLASS({
       var eDir = directions[endP.side];
 
       var hDir = endP.x - startP.x;
-      hDir /= Math.abs(hDir);
+      hDir /= -Math.abs(hDir);
       var vDir = endP.y - startP.y;
-      vDir /= Math.abs(vDir);
+      vDir /= -Math.abs(vDir);
 
       dist = Math.abs(offsS.x - offsE.x) + Math.abs(offsS.y - offsE.y); // connector ends (after arrows)
       rawDist = Math.abs(startP.x - endP.x) + Math.abs(startP.y - endP.y); // link points
@@ -904,9 +901,7 @@ CLASS({
     isBlocked: function(startP, endP, offsS, offsE, canvas) {
       /* Check whether any other blocking items are touching the bounding box
       of this configuration */
-      console.log("Finding bounds for ---------------------------------",
-        startP, endP, offsS, offsE);
-      
+     
       var boundX1 = Math.min(startP.x, endP.x, offsS.x, offsE.x);
       var boundY1 = Math.min(startP.y, endP.y, offsS.y, offsE.y);
       var boundX2 = Math.max(startP.x, endP.x, offsS.x, offsE.x);
@@ -918,21 +913,12 @@ CLASS({
       var failed = false;
       var root = startP.owner.getDiagramRoot();
       if (root) {
-        console.log("checking blockers ");
         root.linkBlockerDAO.select({ put: function(blocker) {
             if ( ! failed && blocker !== startP.owner && blocker !== endP.owner ) {
               var blockRect = { x1: blocker.globalX, x2: blocker.globalX + blocker.width,
                                 y1: blocker.globalY, y2: blocker.globalY + blocker.height };
               if (self.isIntersecting(boundRect, blockRect)) {
                 failed = true;
-                console.log(" intersect!");
-              }
-              else
-              {
-canvas.rect(boundRect.x1, boundRect.y1, boundRect.x2-boundRect.x1, boundRect.y2-boundRect.y1);
-canvas.stroke();
-canvas.rect(blockRect.x1, blockRect.y1, blockRect.x2-blockRect.x1, blockRect.y2-blockRect.y1);
-canvas.stroke();
               }
             }
         }});
@@ -947,7 +933,6 @@ canvas.stroke();
           && point.y >= item.globalY;
     },
     isIntersecting: function(rect1, rect2) {
-      console.log("CHecking insterect: ", rect1, rect2);
       var isect = function(a,b) {
         return ((a.x1 > b.x1 && a.x1 < b.x2) || (a.x2 > b.x1 && a.x2 < b.x2))
             && ((a.y1 > b.y1 && a.y1 < b.y2) || (a.y2 > b.y1 && a.y2 < b.y2));       
