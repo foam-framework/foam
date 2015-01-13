@@ -1394,13 +1394,13 @@ CLASS({
     shadow$: function() { return this.X.$(this.id + '-shadow'); },
     open: function() {
       if ( this.expanded || this.opened ) return;
-      this.expanded = true;
+      this.opened = true;
       this.dir_ = 1;
       this.snap();
     },
     close: function() {
       if ( this.expanded || ! this.opened ) return;
-      this.expanded = false;
+      this.opened = false;
       this.dir_ = -1;
       this.snap();
     }
