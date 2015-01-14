@@ -194,7 +194,7 @@ apar(arequire('Calc'), arequire('TableView'))(function() {
   var tView = TableView.create({
     model: UnitTest,
     dao: tests.tests,
-    scrollEnabled: false,
+    scrollEnabled: true,
     rows: 1000,
     properties: ['name', 'description', 'results', 'passed', 'failed']
   });
