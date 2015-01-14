@@ -1577,8 +1577,6 @@ CLASS({
         if ( this.mode === 'read-write' ) o = o.model_.create(o, this.childX); //.clone();
         var X = this.X.sub({ data$: this.X.SimpleValue.create(o, this.childX) });
         var view = this.rowView({ model: o.model_}, X);
-//        var view = this.rowView({ data: o, model: o.model_}, X);
-        // TODO: Something isn't working with the Context, fix
         view.DAO = this.dao;
         if ( this.mode === 'read-write' ) {
           o.addListener(function() {

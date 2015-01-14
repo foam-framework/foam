@@ -574,6 +574,10 @@ CLASS({
       defaultValue: 'black'
     },
     {
+      name: 'padding',
+      defaultValue: 5
+    },
+    {
       name: 'myLinkPoints',
       type: 'DAOProperty',
       factory: function() { return []; }
@@ -588,7 +592,12 @@ CLASS({
     init: function() {
       this.SUPER();
 
-      this.addChild(this.Label.create({text$: this.title$, font$: this.titleFont$, color$: this.color$}));
+      this.addChild(this.Label.create({
+        text$: this.title$,
+        font$: this.titleFont$,
+        color$: this.color$,
+        padding$: this.padding$
+      }));
       this.verticalConstraints.max$ = this.verticalConstraints.preferred$Pix$;
 
       this.addLinkPoints();
@@ -627,45 +636,57 @@ CLASS({
   properties: [
     {
       name: 'orientation',
-      defaultValue: 'vertical'
+      defaultValue: 'vertical',
+      documentation: function() {/* Force layout to vertical. */},
     },
     {
       name: 'titleSection',
-      type: 'diagram.Section'
+      type: 'diagram.Section',
+      documentation: function() {/* The $$DOC{ref:'diagram.Section'} created
+        to display the title text.
+      */},
     },
     {
       name: 'title',
       type: 'String',
+      documentation: function() {/* The title of the group. */},
     },
     {
       name: 'titleFont',
       type: 'String',
-      defaultValue: 'bold 14px Roboto'
+      defaultValue: 'bold 14px Roboto',
+      documentation: function() {/* The font to use to display the title. */},
     },
     {
       name: 'titleColor',
       type: 'String',
-      defaultValue: 'black'
+      defaultValue: 'black',
+      documentation: function() {/* The color to use to display the title. */},
     },
     {
       name: 'titleBackground',
-      type: 'String'
+      type: 'String',
+      documentation: function() {/* The background color to use to display the title. */},
     },
     {
       name: 'titleBorder',
-      type: 'String'
+      type: 'String',
+      documentation: function() {/* The border color to use to display the title. */},
     },
     {
       name: 'titleBorderWidth',
-      type: 'String'
+      type: 'String',
+      documentation: function() {/* The border width to use to display the title. */},
     },
     {
       name: 'clipping',
-      defaultValue: true
+      defaultValue: true,
+      documentation: function() {/* Force clipping to true to contain children. */},
     },
     {
       name: 'width',
-      install: null
+      install: null,
+      documentation: function() {/* Disables animation, if set in $$DOC{ref:'diagram.Block'}.  */},
     }
   ],
   
@@ -685,7 +706,7 @@ CLASS({
       this.addChild(this.titleSection);
     },
     addLinkPoints: function() {
-      // no points to add... we just use our title section's points
+      /* No points to add... we just use our title section's points. */
     }
 
   }

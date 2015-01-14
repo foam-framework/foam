@@ -771,8 +771,8 @@ CLASS({
 <%        if (this.data.traits && this.data.traits.length > 0) { %>
             <p class="important">Traits: $$traits{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelRefView', mode: 'read-only' }</p>
 <%        } %>
-          <p class="important">Sub-models: $$subModelDAO{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelDataRefView', mode: 'read-only' }</p>
-          <p class="important">Used by: $$traitUserDAO{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelDataRefView', mode: 'read-only' }</p>
+          $$subModelDAO{ model_: 'foam.documentation.SubModelOptionalView' }
+          $$traitUserDAO{ model_: 'foam.documentation.TraitUsersOptionalView' }
           </div>
           $$documentation{ model_: 'foam.documentation.DocBodyView' }
           <div class="clear">&nbsp;</div>
@@ -781,6 +781,51 @@ CLASS({
     */}
   ]
 });
+CLASS({
+  name: 'SubModelOptionalView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocOptionalView',
+ 
+  properties: [
+    {
+      name: 'data',
+      hidden: false
+    }
+  ],
+  
+  templates: [
+    function toInnerHTML()    {/*
+      <% if ( this.hasContent ) {  %>
+        <p class="important">Sub-models: $$data{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelDataRefView', mode: 'read-only' }</p>
+      <% } %>
+    */}
+  ]
+
+});
+CLASS({
+  name: 'TraitUsersOptionalView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocOptionalView',
+
+  properties: [
+    {
+      name: 'data',
+      hidden: false
+    }
+  ],
+
+  templates: [
+    function toInnerHTML()    {/*
+      <% if ( this.hasContent ) {  %>
+        <p class="important">Used by: $$data{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelDataRefView', mode: 'read-only' }</p>
+      <% } %>
+    */}
+  ]
+
+});
+    
+    
+
 
 CLASS({
   name: 'ModelRowDocView',
@@ -1599,5 +1644,48 @@ CLASS({
     */}
   ]
 });
+
+
+CLASS({
+  name: 'DocOptionalView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocView',
+  documentation: 'A view wrapper for hiding content if a DAO is empty.',
+
+  properties: [
+    {
+      name: 'data',
+      hidden: false,
+      postSet: function() {
+        this.childData = this.data;
+        if (this.data && this.data.select) {
+          this.dao = this.data;
+        } else {
+          this.dao = [];
+        }
+      }
+    },
+    {
+      name:  'dao',
+      model_: 'DAOProperty',
+      defaultValue: [],
+      onDAOUpdate: function() {
+        var self = this;
+        this.dao.select(COUNT())(function(c) {
+          self.hasContent = c.count > 0;
+        });
+      }
+    },
+    {
+      name: 'hasContent',
+      defaultValue: false,
+      postSet: function() {
+        this.updateHTML();
+      }
+    }
+  ]
+
+});
+
 
 
