@@ -45,6 +45,7 @@ function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
   var longName = opt_longName || name;
   var speechLabel = opt_speechLabel || sym;
   f.toString = function() { return sym; };
+  f.binary = true;
   return maybeTranslate({
     name: name,
     label: sym,
