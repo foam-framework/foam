@@ -413,7 +413,7 @@ CLASS({
 CLASS({
   name: 'LinearLayout',
   package: 'diagram',
-  
+   
   extendsModel: 'foam.graphics.LinearLayout',
   traits: ['diagram.DiagramItemTrait' ],
   
@@ -459,7 +459,8 @@ CLASS({
     as the root node of your diagram, to provide the shared structure necessary for 
     link routing and to automatically size your canvas. 
     Use $$DOC{ref:'diagram.DiagramRootTrait'} to create your own
-    specialized root type. */},
+    specialized root type. 
+  */},
 });
 
 CLASS({
