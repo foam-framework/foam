@@ -186,6 +186,10 @@ apar(arequire('Calc'), arequire('TableView'))(function() {
       t('point 4 round', 0),
       t('point 5 round', 1),
       t('point 6 round', 1),
+      t('fetch', 0),
+      t('1 store 2 fetch', 1),
+      t('1 store 2 store 3 fetch', 2),
+      t('1 store 2 store fetch', 2)
     ]
   });
 
