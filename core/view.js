@@ -798,6 +798,7 @@ CLASS({
     evtToKeyCode: function(evt) {
       /* Maps an event keycode to a string */
       var s = '';
+      if ( evt.altKey ) s += 'alt-';
       if ( evt.ctrlKey ) s += 'ctrl-';
       if ( evt.shiftKey ) s += 'shift-';
       s += evt.keyCode;
