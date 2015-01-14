@@ -97,6 +97,7 @@ We'll get back to the CSS shortly. First, let's add a second template, for the t
 CLASS({
   name: 'ControllerView',
   extendsModel: 'DetailView',
+  requires: ['PhoneCitationView'],
   templates: [
     function toHTML() {/*
       Search: $$search

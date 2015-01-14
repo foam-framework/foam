@@ -146,9 +146,15 @@ CLASS({
 
 CLASS({
   name: 'ControllerView',
-  extendsModel: 'DetailView'
+  extendsModel: 'DetailView',
+  requires: ['PhoneCitationView']
 });
 {% endhighlight %}
+
+Models should name every other model on which they depend - those they will
+create, or use in their templates - in `requires`. See the
+[Appendix]({{ site.baseurl }}/tutorial/8-appendix) for more details on
+`requires`, `imports`, `exports` and `arequire`.
 
 With this, the catalog page will be usable, though ugly. Update `index.html` to be the following:
 

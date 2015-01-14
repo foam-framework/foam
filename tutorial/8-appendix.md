@@ -1,7 +1,7 @@
 ---
 layout: tutorial
 permalink: /tutorial/8-appendix/
-tutorial: 8
+tutorial: 7
 ---
 
 This appendix introduces further details about some parts of FOAM that aren't necessary for the main tutorial.
@@ -124,6 +124,149 @@ can easily guess what they do:
 
 There are many more; most of these are defined in `core/mm3Types.js`.
 
+## Requires, Imports, Exports, and Contexts
+
+Most FOAM classes depend on others, often many of them. FOAM supports this
+in a declarative way. It also supports a style of dependency injection using
+*contexts*.
+
+### Requiring Dependencies
+
+As shown in the main tutorial, FOAM models should `require` their dependencies.
+A class has a `requires` array containing the names of those classes it needs:
+
+{% highlight js %}
+CLASS({
+  name: 'SomeClass',
+  requires: [
+    'SomeView',
+    'AnotherClass'
+  ]
+});
+{% endhighlight %}
+
+These classes are made available as `this.SomeView` and `this.AnotherClass`.
+Where `this` is available, it is best to use these rather than the globals
+`SomeView` and `AnotherClass`, because then they can be overridden with drop-in
+replacements by other classes, in a dependency injection fashion.
+
+### Async Loading
+
+In order to load a class, FOAM may need to perform async operations:
+- Fetch external templates via XHR.
+- Compile templates, inline or external, in a setting without synchronous
+  `eval`, such as a Chrome app.
+
+Because of this, FOAM requires that all classes be `arequire()`d by name, like
+this:
+
+{% highlight js %}
+arequire('SomeClass')()
+{% endhighlight %}
+
+But you won't need to do that yourself in most apps, for two reasons:
+
+1. `<foam>` tags automatically `arequire` what they need.
+2. When a class is `arequire`d, everything from its `requires` list is
+   `arequire`d too.
+
+Therefore, if you use a `<foam>` tag at the top level, and specify `requires`
+on all your classes, your app should load with no explicit `arequire`s.
+
+
+### Contexts and Dependency Injection
+
+Every instance in FOAM has a *context*. This is an object, spelled `this.X`,
+which is supplied at creation time. You generally won't need to reference
+`this.X` directly.
+
+Instead, you can add an `imports` array to a class:
+
+{% highlight js %}
+CLASS({
+  name: 'SomeClass',
+  imports: ['foo']
+});
+{% endhighlight %}
+
+At instance creation time, the supplied context will be checked for `foo`, and
+if found, it will be copied into a property on `SomeClass`, also called `foo`.
+
+Therefore inside `SomeClass`, you should refer to `this.foo`, not `this.X.foo`.
+
+If you want to export one of your properties to descendant objects, you can use
+exports:
+
+{% highlight js %}
+CLASS({
+  name: 'MyController',
+  requires: [
+    'GestureManager'
+  ],
+  exports: [
+    'gestureManager'
+  ],
+  properties: [
+    {
+      name: 'gestureManager',
+      factory: function() { return this.GestureManager.create(); }
+    }
+  ]
+});
+{% endhighlight %}
+
+### Contextual Creation
+
+All instances have a context, but it's rare to explicitly specify the context.
+The context for an instance is determined by the following rules in order:
+
+- If you supply the optional second argument to `create`, that context will be
+  used: `SomeClass.create({ foo: 'bar', someContext)`
+- If the class being instantiated was fetched from a context, that context will
+  be used: `var instance = someX.SomeClass.create()`, `instance.X` is `someX`.
+- If the class being instantiated was `require`d, then `this.X` will be used:
+  `var instance = this.SomeClass.create()` then `instance.X === this.X`.
+- If none of the above apply, eg. `SomeClass.create()`, the global context
+  (`window.X`) is used.
+    - These global models (`window.SomeClass`) are planned to be removed later
+      on, and the global context might also disappear.
+
+### Renaming
+
+In `requires`, `imports` and `exports`, you can rename a value. Examples:
+
+{% highlight js %}
+CLASS({
+  name: 'MyClass',
+  requires: [
+    'CViewActionButton as ActionButton',
+    'XHR'
+  ],
+  imports: [
+    'somethingOrOther as somethingElse'
+  ],
+  exports: [
+    'as myClass',
+    'authXHR as XHR'
+  ],
+  properties: [
+    {
+      name: 'authXHR',
+      factory: function() {
+        return this.XHR.xbind({ authAgent: ... });
+      }
+    }
+  ]
+});
+{% endhighlight %}
+
+- In this class and all its descendants, `ActionButton` is actually
+  `CViewActionButton`.
+- Similarly, `XHR` in all descendants will be the modified, authenticated `XHR`.
+- Note the `as myClass` `export`, which exports this instance to its children as
+  `myClass`.
+
+
 ## Methods on the Class
 
 On classes themselves, statically, there are a handful of useful methods and
@@ -210,13 +353,13 @@ is unnecessary). This button is always visible but only enabled when
 called. If the button is disabled, nothing happens on a click.
 
 
-## Methods on the all objects
+## Methods on all objects
 
 FOAM includes several properties and methods on all objects:
 
 - `model_`: Every object has a pointer to its `Model`. This is the Javascript
   representation of its class, the same object you passed to `CLASS()`.
-  - These representations have their own model, `Model`.
+    - These representations have their own model, `Model`.
 - `o.equals(x)` compares `o` and `x`
 - `o.compareTo(x)` returns the usual -1, 0 or 1.
 - `o.hashCode()` is similar to Java.
@@ -225,8 +368,7 @@ FOAM includes several properties and methods on all objects:
 - `o.deepClone()` is of course a deep copy.
 - `o.toJSON()` and `o.toXML()` return JSON or XML as a string. Parsers are
   included to read them in again.
-- `o.write(document)` writes the default view (see below) of the object into the
-  document.
+- `o.write(document)` writes the default view of the object into the document.
 
 ## DAOs
 
@@ -261,8 +403,8 @@ interface Sink {
 }
 {% endhighlight %}
 
-Every DAO is also a sink, making it trivial to pull data from one DAO into
-another.
+Note that every DAO is therefore also a Sink, making it trivial to pull data
+from one DAO into another: `sourceDAO.select(targetDAO)`.
 
 Here's an example of using the DAO interface to make a query:
 

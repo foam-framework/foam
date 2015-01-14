@@ -197,35 +197,22 @@ This fact is visible, for example, in the JSON serialization of a FOAM object,
 which includes `"model_": "MyClass"`.
 
 
-### Controllers - MOVE ME
+### Controllers
 
-We find that most applications fall into a few categories. With the right amount
-of abstraction on both your data and views, a generic and reusable controller
-for each archetype of app can be created.
+We find that most applications fall into one of a few categories. With the right
+amount of abstraction on both your data and views, a generic and reusable
+controller for each archetype of app can be created.
 
 For example, FOAM has a reusable `ThreePaneController` for the ubiquitous
 "list of filters on the left, table of items on upper right, and details of
 selected item on bottom right" style of app. (This archetype fits Gmail, Outlook
-and iTunes, for example.) On mobile, we have a reactive controller
-(`AppController`) that renders a vertical list and navigates to details when you
-tap, for phones. On tablets, it's the ubiquitous list on the left and details on
-the right. Animation and navigation are built into the controller, your app need
-only specify the views to use for list entries and detail pages, and the DAO of
-the data to display.
+and iTunes, for example.) Navigation is built into the controller, your app need
+only specify the views and provide a DAO.
 
-This is possible because we have so much metadata about the objects. The
-properties and actions for your classes are known at runtime. The generic
-controllers can add search and sort functionality based on the properties of
-your classes.
-
-These reusable controllers are a major reason why FOAM can be used to develop
-applications so rapidly - the functional portions of the app can be assembled
-very quickly, and the majority of development is then adjusting the custom
-templates and styling the app.
-
-Of course, if none of FOAM's controllers suit your needs, you can extend one or
-write your own. FOAM is a library, and you can use whichever parts of it suit
-your needs.
+These reusable controllers are a big part of why FOAM can develop applications
+so rapidly. Of course, if none of FOAM's controllers suit your needs, you can
+extend one or write your own. FOAM is a library, and it does not limit your
+options.
 
 
 ## Reactive Programming
