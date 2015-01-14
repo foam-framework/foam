@@ -293,7 +293,9 @@ CLASS({
       type: 'String', // TODO: should be ENUM
       defaultValue: 'horizontal',
       documentation: function() {/* Set to 'horizontal' or 'vertical'. */},
-      postSet: function()  { this.calculateLayout();  }
+      postSet: function()  {
+        this.layoutDirty = true; //this.calculateLayout();  
+      }
     },
     {
       model_: 'BooleanProperty',
@@ -322,7 +324,7 @@ CLASS({
         // this change to our pref size may cause a parent to lay us out through a size change
         this.calculatePreferredSize();
         // If no parent caused us to change size and layout, force the layout operation
-        if ( this.layoutDirty ) this.calculateLayout();
+        //if ( this.layoutDirty ) this.calculateLayout();
       }
     },
   ],

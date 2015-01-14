@@ -67,7 +67,8 @@ CLASS({
       name: 'autoSizeLayout',
       type: 'diagram.AutoSizeDiagramRoot',
       factory: function() {
-        return this.AutoSizeDiagramRoot.create();
+        // Set the root to NOT paint until we have finished construct()
+        return this.AutoSizeDiagramRoot.create({ suspended: true });
       }
     },
     {
@@ -154,11 +155,23 @@ CLASS({
       return ret;
     },
 
-    destroy: function() {
-      //if ( this.modelDiagram && this.modelDiagram.diagramItem ) this.mainLayout.removeChild(this.modelDiagram.diagramItem);
-      //this.modelDiagram = undefined;
+    construct: function() {
       this.SUPER();
+      // Crude delay to let the featureDAO children populate before painting.
+      // TODO(jacksonic): implement a better way for children to notify of async operations
+      X.setTimeout(function() { 
+        this.autoSizeLayout.suspended = false;
+        this.autoSizeLayout.paint();
+//console.log("          root painting active"); 
+      }.bind(this), 1000);  
+    },
+    
+    destroy: function() {
+      this.autoSizeLayout.suspended = true;
+//console.log("root painting OFF"); 
+      
     }
+    
   }
 });
 
@@ -422,6 +435,10 @@ CLASS({
       type: 'String'
     },
     {
+      name: 'packageName',
+      type: 'String'
+    },
+    {
       name: 'diagramItem',
       factory: function() {
         var diagramItem = this.Margin.create({ bottom: 5, right: 5, left: 5, top: 5 }, this.childX);
@@ -434,8 +451,19 @@ CLASS({
         var linkableItem = this.Block.create({ border: 'black' }, this.childX);
         linkableItem.addChild(
           this.Section.create({
+            title$: this.packageName$, titleFont: '8px Roboto',
+            background: 'rgba(64,64,255,255)',
+            border: 'rgba(0,0,0,0)',
+            borderWidth: 0,
+            color: 'white'
+          }, this.childX)
+        );
+        linkableItem.addChild(
+          this.Section.create({
             title$: this.modelName$, titleFont: 'bold 16px Roboto',
             background: 'rgba(64,64,255,255)',
+            border: 'rgba(0,0,0,0)',
+            borderWidth: 0,
             color: 'white'
           }, this.childX)
         );
@@ -459,7 +487,10 @@ CLASS({
     },
 
     onValueChange_: function() {
-      if (this.data) this.modelName = this.data.name;
+      if (this.data) {
+        this.modelName = this.data.name;
+        this.packageName = this.data.package;
+      }
       this.processModelChange();
     },
 
@@ -516,10 +547,16 @@ CLASS({
     construct: function() {
       this.SUPER();
       this.diagramItem.title = this.featureType.capitalize();
-      this.selfFeaturesDAO.limit(5).select({ put: function(item) {
-        var X = this.childX.sub({ data$: this.childX.SimpleValue.create(item, this.childX) });
-        this.addChild(this.FeatureDiagram.create({ model: item.model_ }, X));
-      }.bind(this)});
+      this.selfFeaturesDAO.limit(5).select({ 
+        put: function(item) {
+          var X = this.childX.sub({ data$: this.childX.SimpleValue.create(item, this.childX) });
+          this.addChild(this.FeatureDiagram.create({ model: item.model_ }, X));
+//          console.log("    Adding child from featureDAO ");
+        }.bind(this),
+        eof: function() {
+//          console.log("    Done featureDAO ");
+        }
+      });
     },
 
   }

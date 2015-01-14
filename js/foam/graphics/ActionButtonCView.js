@@ -124,7 +124,9 @@ CLASS({
   listeners: [
     {
       name: 'tapClick',
-      code: function() { this.action.callIfEnabled(this.X, this.data); }
+      code: function() {
+        this.action.callIfEnabled(this.X, this.data);
+      }
     },
     {
       name: 'onMouseDown',
@@ -221,8 +223,6 @@ CLASS({
         });
     },
 
-    tapClick: function() { this.onClick(); },
-
     initCView: function() {
       // Don't add halo as a child because we want to control
       // its paint order, but still set it up as though we had added it.
@@ -233,7 +233,7 @@ CLASS({
         // TODO: Glow animations on touch.
         this.gestureManager.install(this.tapGesture);
       } else {
-        this.$.addEventListener('click',      this.tapClick);
+        this.$.addEventListener('click',      function(e) { e.preventDefault(); this.tapClick(); }.bind(this));
       }
 
       this.$.addEventListener('mousedown',   this.onMouseDown);

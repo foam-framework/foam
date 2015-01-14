@@ -78,6 +78,16 @@ CLASS({
                                   or ready to paint ('active'). */}
     },
     {
+      name: 'suspended',
+      model_: 'BooleanProperty',
+      defaultValue: false,
+      documentation: function() {/*
+          Suspend painting. While this property is true, this 
+          $$DOC{ref:'foam.graphics.CView'} will not paint itself or its
+          children.
+        */},
+    },
+    {
       name: 'className',
       help: 'CSS class name(s), space separated. Used if adapted with a CViewView.',
       defaultValue: '',
@@ -246,11 +256,13 @@ CLASS({
 
     paint: function() { /* Translates the canvas to our ($$DOC{ref:'.x'}, $$DOC{ref:'.y'}),
                           does a $$DOC{ref:'.paintSelf'} then paints all the children. */
-      if ( ! this.$ ) return;
+      if ( ! this.$ ) return; // no canvas element, so do nothing
       if ( this.state === 'initial' ) {
         this.initCView();
         this.state = 'active';
       }
+      if ( this.suspended ) return; // we allowed initialization, but if suspended don't paint
+      
       this.canvas.save();
       this.canvas.translate(this.x, this.y);
       if (this.clipped) {
