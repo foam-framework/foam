@@ -435,6 +435,10 @@ CLASS({
       type: 'String'
     },
     {
+      name: 'packageName',
+      type: 'String'
+    },
+    {
       name: 'diagramItem',
       factory: function() {
         var diagramItem = this.Margin.create({ bottom: 5, right: 5, left: 5, top: 5 }, this.childX);
@@ -447,8 +451,19 @@ CLASS({
         var linkableItem = this.Block.create({ border: 'black' }, this.childX);
         linkableItem.addChild(
           this.Section.create({
+            title$: this.packageName$, titleFont: '8px Roboto',
+            background: 'rgba(64,64,255,255)',
+            border: 'rgba(0,0,0,0)',
+            borderWidth: 0,
+            color: 'white'
+          }, this.childX)
+        );
+        linkableItem.addChild(
+          this.Section.create({
             title$: this.modelName$, titleFont: 'bold 16px Roboto',
             background: 'rgba(64,64,255,255)',
+            border: 'rgba(0,0,0,0)',
+            borderWidth: 0,
             color: 'white'
           }, this.childX)
         );
@@ -472,7 +487,10 @@ CLASS({
     },
 
     onValueChange_: function() {
-      if (this.data) this.modelName = this.data.name;
+      if (this.data) {
+        this.modelName = this.data.name;
+        this.packageName = this.data.package;
+      }
       this.processModelChange();
     },
 

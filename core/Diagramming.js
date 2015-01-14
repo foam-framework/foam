@@ -52,7 +52,11 @@ CLASS({
     {
       name: 'isLinkBlocking',
       model_: 'BooleanProperty',
-      defaultValue: false
+      defaultValue: false,
+      documentation: function() {/* If true, this item will register itself with the 
+        root as a link routing blocking item. Links will attempt to avoid overlapping
+        this item when routing. 
+      */},
     }
   ],
   
@@ -132,7 +136,7 @@ CLASS({
   
   documentation: function() {/*
       Apply this trait to the model you wish to use as the root
-      element of your diagram.
+      element of your diagram. It adds support for link routing.
     */}, 
 
   properties: [
@@ -259,32 +263,50 @@ CLASS({
 
   ids: ['owner','name','side'],
 
+  documentation: function() {/* Represents one attachment point for a link.
+    The point tracks the owner to keep updated on changes to its global
+    canvas position.
+  */},
+  
   properties: [
     {
       name: 'side',
       type: 'String',
       defaultValue: 'right', // left, top, bottom, right
       //postSet: function() { this.updatePosition(); },
+      
+      documentation: function() {/* The side of the owner this link point
+        projects from: left, top, bottom, or right. 
+      */},
     },
     {
       name: 'name',
-      type: 'String'
+      type: 'String',
+      
+      documentation: function() {/* An optional name for the link. */},
     },
     {
       name: 'owner',
       preSet: function(old,nu) { this.unbindPositioning(); return nu; },
-      postSet: function() { this.bindPositioning(); }
+      postSet: function() { this.bindPositioning(); },
+      
+      documentation: function() {/* The object the link point is attached to. */},
     },
-
     {
       model_: 'IntProperty',
       name: 'x',
-      defaultValue: 0
+      defaultValue: 0,
+      documentation: function() {/* The global-coordinate x position of the link
+        point. 
+      */},
     },
     {
       model_: 'IntProperty',
       name: 'y',
-      defaultValue: 0
+      defaultValue: 0,
+      documentation: function() {/* The global-coordinate y position of the link
+        point. 
+      */},
     },
     {
       name: 'dynamicListeners_',
@@ -294,6 +316,7 @@ CLASS({
   
   methods: {
     bindPositioning: function() {
+      /* Set up listeners to track the owner's position and size changes. */
       if (!this.owner || !this.positioningFunctionX || !this.positioningFunctionY) 
         return;
       
@@ -308,12 +331,15 @@ CLASS({
        );
     },
     unbindPositioning: function() {
+      /* Unbind the listeners from any previous owner. */
       if (this.dynamicListeners_ && this.dynamicListeners_.destroy) {
         this.dynamicListeners_.destroy();
       }
     },
     
     offsetBy: function(amount) {
+      /* Return this point offset by the given amount, in the direction that this
+      link point projects from its owner. */
       if(this.side === 'top') {
         return { x: this.x, y: this.y - amount };
       } else
@@ -391,7 +417,10 @@ CLASS({
   extendsModel: 'foam.graphics.LinearLayout',
   traits: ['diagram.DiagramItemTrait' ],
   
-  
+  documentation: function() {/* Overridden from 
+    $$DOC{ref:'foam.graphics.LinearLayout'} to support diagrams
+    through $$DOC{ref:'diagram.DiagramItemTrait'}.
+  */},
   
 });
 
@@ -401,6 +430,11 @@ CLASS({
   package: 'diagram',
   extendsModel: 'foam.graphics.Margin',
   traits: ['diagram.DiagramItemTrait'],
+
+  documentation: function() {/* Overridden from 
+    $$DOC{ref:'foam.graphics.Margin'} to support diagrams
+    through $$DOC{ref:'diagram.DiagramItemTrait'}.
+  */},
 });
 
 CLASS({
@@ -408,6 +442,11 @@ CLASS({
   package: 'diagram',
   extendsModel: 'foam.graphics.LockToPreferredLayout',
   traits: ['diagram.DiagramItemTrait'],
+  
+  documentation: function() {/* Overridden from 
+    $$DOC{ref:'foam.graphics.LockToPreferredLayout'} to support diagrams
+    through $$DOC{ref:'diagram.DiagramItemTrait'}.
+  */},
 });
 
 CLASS({
@@ -415,6 +454,12 @@ CLASS({
   package: 'diagram',
   extendsModel: 'foam.graphics.LockToPreferredLayout',
   traits: ['diagram.DiagramItemTrait', 'diagram.DiagramRootTrait'],
+
+  documentation: function() {/* Use a $$DOC{ref:'diagram.AutoSizeDiagramRoot'}
+    as the root node of your diagram, to provide the shared structure necessary for 
+    link routing and to automatically size your canvas. 
+    Use $$DOC{ref:'diagram.DiagramRootTrait'} to create your own
+    specialized root type. */},
 });
 
 CLASS({
@@ -422,6 +467,11 @@ CLASS({
   package: 'diagram',
   extendsModel: 'foam.graphics.CView',
   traits: ['diagram.DiagramItemTrait', 'diagram.DiagramRootTrait'],
+  
+  documentation: function() {/* Use a $$DOC{ref:'diagram.DiagramRoot'} as the root
+    node of your diagram, to provide the shared structure necessary for 
+    link routing. Use $$DOC{ref:'diagram.DiagramRootTrait'} to create your own
+    specialized root type. */},
 });
 
 CLASS({
@@ -433,6 +483,13 @@ CLASS({
   extendsModel: 'diagram.LinearLayout',
   traits: ['foam.graphics.BorderTrait'],
 
+  
+  documentation: function() {/*
+    Represents one rectangular item. Typically used for a class or model representation.
+    $$DOC{ref:'diagram.Block',usePlural:true} include link points in the middle of each
+    edge, and will block other links from routing through them.
+  */},
+    
   properties: [
     {
       name: 'orientation',
@@ -618,6 +675,7 @@ CLASS({
       this.construct();
     },
     construct: function() {
+      /* Sets up the title section if not already there. */
       if (!this.titleSection) {
         this.titleSection = this.Section.create({title$: this.title$, titleFont$: this.titleFont$, 
                                 color$: this.titleColor$, background$: this.titleBackground$, border$: this.titleBorder$,
@@ -680,7 +738,8 @@ CLASS({
     {
       name: 'arrowLength',
       model_: 'IntProperty',
-      defaultValue: 20
+      defaultValue: 20,
+      documentation: function() {/* The pixel length of the arrowhead. */},
     },
     {
       name: 'arrowStyle',
@@ -856,6 +915,9 @@ CLASS({
     },
     
     isBannedConfiguration: function(startP, endP, offsS, offsE, H,V,directions,orientations,shortAxisOr, shortAxisDist) {
+      /* Returns true if the given set of points and directions produces a bad
+      looking link. This can include protruding back into the owner, creating
+      unecessary corners, or other problems. */
       var minimumPath = this.arrowLength*2;
 
       // don't allow points inside the other end's owner rect
@@ -900,7 +962,7 @@ CLASS({
     },
     isBlocked: function(startP, endP, offsS, offsE, canvas) {
       /* Check whether any other blocking items are touching the bounding box
-      of this configuration */
+      of this configuration. */
      
       var boundX1 = Math.min(startP.x, endP.x, offsS.x, offsE.x);
       var boundY1 = Math.min(startP.y, endP.y, offsS.y, offsE.y);
