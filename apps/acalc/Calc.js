@@ -351,6 +351,7 @@ CLASS({
 
   properties: [
     { name: 'degreesMode', defaultValue: false },
+    { name: 'memory', defaultValue: 0 },
     { name: 'a1', defaultValue: 0 },
     { name: 'a2', defaultValue: '' },
     { name: 'editable', defaultValue: true },
@@ -569,7 +570,22 @@ CLASS({
     binaryOp('mod',   ['r'],                     function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
     binaryOp('p',     ['u'],                     function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations (n permute r)', 'permutation'),
     binaryOp('c',     ['x'],                     function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations (n combine r))', 'combination'),
-    unaryOp('round',  ['z'], Math.round, 'round') // Not shown in calculator, but makes unit tests easier to write
+    unaryOp('round',  ['z'], Math.round, 'rnd', 'round', 'round'),
+    {
+      name: 'rand',
+      label: 'rand',
+      speechLabel: 'random',
+      keyboardShortcuts: ['y'],
+      action: function() { this.a2 = Math.random(); }
+    },
+    unaryOp('store',   ['shift-6'], function(n) { this.memory = n; return n; }, '>M', 'store in memory', 'store in memory'),
+    {
+      name: 'fetch',
+      label: 'M>',
+      speechLabel: 'fetch from memory',
+      keyboardShortcuts: ['shift-2'],
+      action: function() { this.push(this.memory); }
+    },
   ]
 });
 
@@ -742,16 +758,28 @@ CLASS({
           <div id="%%id" class="buttons button-row secondaryButtons">
             <div class="button-column" style="flex-grow: 1;">
               <div class="button-row">
-                <div class="button" tabindex="301">$$inv</div><div class="button" tabindex="302">$$sqroot</div><div class="button" tabindex="303">$$square</div>
+                <div class="button" tabindex="311">$$inv</div>
+                <div class="button" tabindex="312">$$sqroot</div>
+                <div class="button" tabindex="313">$$square</div>
+                <div class="button" tabindex="314">$$round</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="304">$$ln</div><div class="button" tabindex="305">$$e</div><div class="button" tabindex="306">$$exp</div>
+                <div class="button" tabindex="321">$$ln</div>
+                <div class="button" tabindex="322">$$e</div>
+                <div class="button" tabindex="323">$$exp</div>
+                <div class="button" tabindex="324">$$rand</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="307">$$log</div><div class="button" tabindex="308">$$root</div><div class="button" tabindex="309">$$pow</div>
+                <div class="button" tabindex="331">$$log</div>
+                <div class="button" tabindex="332">$$root</div>
+                <div class="button" tabindex="333">$$pow</div>
+                <div class="button" tabindex="334">$$store</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="310">$$sign</div><div class="button" tabindex="311">$$percent</div><div class="button" tabindex="312">$$pi</div>
+                <div class="button" tabindex="341">$$sign</div>
+                <div class="button" tabindex="342">$$percent</div>
+                <div class="button" tabindex="343">$$pi</div>
+                <div class="button" tabindex="344">$$fetch</div>
               </div>
             </div>
           </div>
