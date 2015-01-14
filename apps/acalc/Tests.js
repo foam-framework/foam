@@ -189,7 +189,8 @@ apar(arequire('Calc'), arequire('TableView'))(function() {
       t('fetch', 0),
       t('1 store 2 fetch', 1),
       t('1 store 2 store 3 fetch', 2),
-      t('1 store 2 store fetch', 2)
+      t('1 store 2 store fetch', 2),
+      t('1 store 9 equals 2 plus fetch equals', 3) 
     ]
   });
 

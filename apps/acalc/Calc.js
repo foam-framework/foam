@@ -584,7 +584,7 @@ CLASS({
       label: 'M>',
       speechLabel: 'fetch from memory',
       keyboardShortcuts: ['shift-2'],
-      action: function() { this.push(this.memory); }
+      action: function() { this.a2 = this.memory; }
     },
   ]
 });
