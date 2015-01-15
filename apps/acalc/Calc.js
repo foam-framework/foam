@@ -578,10 +578,10 @@ CLASS({
       keyboardShortcuts: ['y'],
       action: function() { this.a2 = Math.random(); }
     },
-    unaryOp('store',   ['shift-6'], function(n) { this.memory = n; return n; }, '>M', 'store in memory', 'store in memory'),
+    unaryOp('store',   ['shift-6'], function(n) { this.memory = n; return n; }, 'a=', 'store in memory', 'store in memory'),
     {
       name: 'fetch',
-      label: 'M>',
+      label: 'a',
       speechLabel: 'fetch from memory',
       keyboardShortcuts: ['shift-2'],
       action: function() { this.a2 = this.memory; }
@@ -758,28 +758,28 @@ CLASS({
           <div id="%%id" class="buttons button-row secondaryButtons">
             <div class="button-column" style="flex-grow: 1;">
               <div class="button-row">
-                <div class="button" tabindex="311">$$inv</div>
-                <div class="button" tabindex="312">$$sqroot</div>
-                <div class="button" tabindex="313">$$square</div>
-                <div class="button" tabindex="314">$$round</div>
+                <div class="button" tabindex="311">$$fetch</div>
+                <div class="button" tabindex="312">$$store</div>
+                <div class="button" tabindex="313">$$round</div>
+                <div class="button" tabindex="314">$$rand</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="321">$$ln</div>
-                <div class="button" tabindex="322">$$e</div>
+                <div class="button" tabindex="321">$$e</div>
+                <div class="button" tabindex="322">$$ln</div>
                 <div class="button" tabindex="323">$$exp</div>
-                <div class="button" tabindex="324">$$rand</div>
+                <div class="button" tabindex="324">$$inv</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="331">$$log</div>
-                <div class="button" tabindex="332">$$root</div>
+                <div class="button" tabindex="331">$$pi</div>
+                <div class="button" tabindex="332">$$log</div>
                 <div class="button" tabindex="333">$$pow</div>
-                <div class="button" tabindex="334">$$store</div>
+                <div class="button" tabindex="334">$$root</div>
               </div>
               <div class="button-row">
                 <div class="button" tabindex="341">$$sign</div>
                 <div class="button" tabindex="342">$$percent</div>
-                <div class="button" tabindex="343">$$pi</div>
-                <div class="button" tabindex="344">$$fetch</div>
+                <div class="button" tabindex="343">$$square</div>
+                <div class="button" tabindex="344">$$sqroot</div>
               </div>
             </div>
           </div>
