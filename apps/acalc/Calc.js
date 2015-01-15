@@ -317,7 +317,7 @@ CLASS({
     }
 
     .secondaryButtons {
-      padding-left: 16px;
+      padding-left: 18px;
       background: rgb(64, 189, 158);
     }
 
@@ -326,7 +326,7 @@ CLASS({
     }
 
     .tertiaryButtons {
-      padding-left: 16px;
+      padding-left: 18px;
       background: rgb(29, 233, 182);
     }
 
@@ -660,16 +660,16 @@ CLASS({
           <div class='keypad'>
           <div class="edge2"></div>
           <%= this.SlidePanelView.create({
-            minWidth: 250,
-            minPanelWidth: 250,
-            panelRatio: 0.5,
+            minWidth: 280,
+            minPanelWidth: 260,
+            panelRatio: 0.55,
             mainView: 'MainButtonsView',
             stripWidth: 25,
             panelView: {
               factory_: 'SlidePanelView',
-              minWidth: 200,
-              minPanelWidth: 210,
-              panelRatio: 0.5,
+              minWidth: 280,
+              minPanelWidth: 200,
+              panelRatio: 3/7,
               mainView: 'SecondaryButtonsView',
               panelView: 'TertiaryButtonsView'
             }
