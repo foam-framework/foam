@@ -508,10 +508,6 @@ CLASS({
     {
       name: 'isLinkBlocking',
       defaultValue: true
-    },
-    {
-      name: 'width',
-      install: Movement.createAnimatedPropertyInstallFn(200, Movement.easeOut(1))
     }
   ],
 
@@ -683,11 +679,6 @@ CLASS({
       name: 'clipping',
       defaultValue: true,
       documentation: function() {/* Force clipping to true to contain children. */},
-    },
-    {
-      name: 'width',
-      install: null,
-      documentation: function() {/* Disables animation, if set in $$DOC{ref:'diagram.Block'}.  */},
     }
   ],
   

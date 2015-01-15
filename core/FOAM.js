@@ -119,11 +119,54 @@ FOAM.browse = function(model, opt_dao, opt_X) {
 FOAM.lookup = function(key, opt_X) {
   if ( ! ( typeof key === 'string' ) ) return key;
 
-  var path = key.split('.');
+  var breakOutTraits = key.split(' with ');
+  
+  var baseModel = FOAM.basicLookup(breakOutTraits[0], opt_X);
+  
+  if ( breakOutTraits.length > 1 ) {
+    baseModel = FOAM.createTraitExtensionModels(baseModel,
+                      breakOutTraits[1].split(','));
+  }
+  
+  return baseModel;
+};
+
+FOAM.basicLookup = function(key, opt_X) {  
+  var path = key.trim().split('.');
   var root = opt_X || X;
   for ( var i = 0 ; root && i < path.length ; i++ ) root = root[path[i]];
-
+  
   return root;
+};
+
+FOAM.createTraitExtensionModels = function(baseModel, traitNames, opt_X) {
+  function mangleNameFn(name) { return name ? name.trim().replace(/\./g, '__') : ''; }
+  function mangleParentAndTrait(p, t) { 
+    return (p && p.id ? mangleNameFn(p.id) : '') 
+         + '_ExtendedWith_' 
+         + (t && t.id ? mangleNameFn(t.id) : '');  
+  }
+  var combinedModel = baseModel;
+  
+  traitNames.forEach( function(traitName) {
+    var traitModel = FOAM.basicLookup(traitName, opt_X);
+    console.assert(traitModel, 'FOAM.lookup(): Failed to find trait.');
+    var name = mangleParentAndTrait(combinedModel, traitModel);
+    
+    // if we haven't already created this combination of base+trait, create it
+    if ( ! FOAM.basicLookup(name, opt_X) ) {
+      var model = traitModel.deepClone();
+      model.package = "";
+      model.name = name;
+      model.extendsModel = combinedModel && combinedModel.id;
+      GLOBAL.X.registerModel(model); // TODO(jacksonic): use opt_X here?
+    }
+    
+    combinedModel = FOAM.basicLookup(name, opt_X);
+    console.assert(combinedModel, 'FOAM.lookup(): Failed to create trait extender model.');
+  });
+
+  return combinedModel;
 };
 
 

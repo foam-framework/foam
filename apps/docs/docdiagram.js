@@ -420,7 +420,7 @@ CLASS({
   package: 'foam.documentation',
   traits: ['foam.documentation.DocModelFeatureDAOTrait'],
 
-  requires: ['diagram.Block',
+  requires: ['diagram.Block with foam.graphics.AnimatedHeightTrait, foam.graphics.AnimatedWidthTrait as AnBlock',
              'diagram.Section',
              'diagram.Margin',
              'foam.documentation.FeatureListDiagram'],
@@ -448,7 +448,7 @@ CLASS({
     {
       name: 'linkableItem',
       factory: function() {
-        var linkableItem = this.Block.create({ border: 'black' }, this.childX);
+        var linkableItem = this.AnBlock.create({ border: 'black' }, this.childX);
         linkableItem.addChild(
           this.Section.create({
             title$: this.packageName$, titleFont: '8px Roboto',

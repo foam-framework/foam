@@ -187,28 +187,47 @@ CLASS({
       }
 
       return count;
-    },
+    }
+  }
+});
 
-    createParentInheritedPropertyInstallFn: function() {
-      /* Returns a function that can be assigned as a $$DOC{ref:'Property'}
-      $$DOC{ref:'Property.install'} function. The property will become
-      inherited from owner's .parent. New getter() and setter() methods
-      will be installed to check up the parent chain, and track local
-      set calls.</p>
-      <p><code>
-      properties: [
-      &nbsp;&nbsp;  { name: 'myProperty',
-      &nbsp;&nbsp;&nbsp;&nbsp;    install: createParentInheritedPropertyInstallFn(),
-      &nbsp;&nbsp;&nbsp;&nbsp;    ...
-      &nbsp;&nbsp;  }]
-      </code>*/
-      return function(prop) {
+CLASS({
+  name: 'InheritedPropertyTrait',
+  package: 'foam.views',
+    
+  documentation: function() {/* Add this trait to a $$DOC{ref:'Property'} 
+    to cause it to inherit its value from .parent, if possible.   
+  */},
+  
+  properties: [
+    {
+      name: 'install',
+      defaultValue: function(prop) {
+        /* A function that can be assigned as a $$DOC{ref:'Property'}
+        $$DOC{ref:'Property.install'} function. The property will become
+        inherited from owner's .parent. New getter() and setter() methods
+        will be installed to check up the parent chain, and track local
+        set calls.</p>
+        <p><code>
+        properties: [
+        &nbsp;&nbsp;  { name: 'myProperty',
+        &nbsp;&nbsp;&nbsp;&nbsp;    install: ChildTreeTrait.createParentInheritedPropertyInstallFn,
+        &nbsp;&nbsp;&nbsp;&nbsp;    ...
+        &nbsp;&nbsp;  }]
+        </code>*/
+        // How to deal with an existing install that also needs to run?
+
+        
         var actualSetter = this.__lookupSetter__(prop.name);
         var actualGetter = this.__lookupGetter__(prop.name);
         var actualInit = this.init;
         var propWriteFlagName = prop.name + "$writtenTo";
         
         var findParentValue = function(parent, propName) {
+          if ( ! parent ) {
+            console.warn("InheritedPropertyTrait-based property used on a model with no '.parent'!");
+            return undefined;
+          }
           if ( parent.hasOwnProperty(propName) ) {
             return parent[propName];
           } else {
@@ -252,10 +271,32 @@ CLASS({
           }
           return actualGetter.apply(this);
         }); 
-      }; 
+      }
     }
-  }
+  ]
 });
+
+CLASS({
+  name: 'InheritedIntProperty',
+  extendsModel: 'IntProperty',
+  package: 'foam.views',
+  traits: ['foam.views.InheritedPropertyTrait']  
+});
+
+CLASS({
+  name: 'InheritedProperty',
+  extendsModel: 'Property',
+  package: 'foam.views',
+  traits: ['foam.views.InheritedPropertyTrait']  
+});
+
+// How to deal with an existing install that also needs to run?
+// CLASS({
+//   name: 'InheritedDAOProperty',
+//   extendsModel: 'DAOProperty',
+//   package: 'foam.views',
+//   traits: ['foam.views.InheritedPropertyTrait']  
+// });
 
 CLASS({
   name: 'ViewActionsTrait',

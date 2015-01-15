@@ -92,39 +92,12 @@ var BootstrapModel = {
     // extra memory in DEBUG mode.
     if ( DEBUG ) BootstrapModel.saveDefinition(this);
 
-    function addTraitToModel(traitModel, parentModel) {
-      var parentName = parentModel && parentModel.id ? parentModel.id.replace(/\./g, '__') : '';
-      var traitName  = traitModel.id ? traitModel.id.replace(/\./g, '__') : '';
-      var name       = parentName + '_ExtendedWith_' + traitName;
-
-      if ( ! FOAM.lookup(name) ) {
-        var model = traitModel.deepClone();
-        model.package = "";
-        model.name = name;
-        model.extendsModel = parentModel && parentModel.id;
-        GLOBAL.X.registerModel(model);
-      }
-
-      var ret = FOAM.lookup(name);
-      console.assert(ret, 'Unknown name.');
-      return ret;
-    }
-
     if ( this.extendsModel && ! FOAM.lookup(this.extendsModel, this.X) ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
 
     var extendsModel = this.extendsModel && FOAM.lookup(this.extendsModel, this.X);
 
-    if ( this.traits ) for ( var i = 0 ; i < this.traits.length ; i++ ) {
-      var trait      = this.traits[i];
-      var traitModel = FOAM.lookup(trait, this.X);
-
-      console.assert(traitModel, 'Unknown trait: ' + trait);
-
-      if ( traitModel ) {
-        extendsModel = addTraitToModel(traitModel, extendsModel);
-      } else {
-        console.warn('Missing trait: ', trait, ', in Model: ', this.name);
-      }
+    if ( this.traits ) {
+      extendsModel = FOAM.createTraitExtensionModels(extendsModel, this.traits, this.X);
     }
 
     var proto  = extendsModel ? extendsModel.getPrototype() : FObject;
