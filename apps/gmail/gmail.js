@@ -86,7 +86,7 @@ CLASS({
     'FutureDAO',
     'GMailToEMailDAO',
     'BusyStatus',
-    'BusyFlagTracker'
+    'BusyFlagTracker',
   ],
 
   exports: [
@@ -99,6 +99,10 @@ CLASS({
     'profile$ as profile$',
     'as controller',
     'stack'
+  ],
+
+  imports: [
+    'setInterval'
   ],
 
   properties: [
@@ -291,12 +295,18 @@ CLASS({
     }
   ],
 
+  constants: {
+    SYNC_INTERVAL: 30000
+  },
+
   methods: {
     init: function(args) {
       this.SUPER(args);
       var xhr = this.X.XHR.create({ responseType: 'json' });
 
       this.versionedGmailDao$Proxy.listen(this.doSync);
+
+      this.setInterval(this.doSync, this.SYNC_INTERVAL);
 
       aseq(function(ret) {
         xhr.asend(ret, 'https://www.googleapis.com/oauth2/v1/userinfo');
@@ -320,6 +330,8 @@ CLASS({
         };
       };
 
+      var sync = this.emailSync;
+
       this.controller = this.X.AppController.create({
         model: EMail,
         dao: this.emailDao,
@@ -333,6 +345,15 @@ CLASS({
           [ EMail.TIMESTAMP,       'Oldest First' ],
           [ EMail.SUBJECT,         'Subject' ],
         ],
+        refreshAction: Action.create({
+          name: 'refresh',
+          label: '',
+          iconUrl: 'icons/ic_refresh_48px.svg',
+          isEnabled: function() { return ! sync.syncing; },
+          action: function() {
+            sync.sync();
+          }
+        }),
         menuFactory: function() {
           return this.X.MenuView.create({
             topSystemLabelDAO: this.X.LabelDAO
