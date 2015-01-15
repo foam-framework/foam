@@ -740,19 +740,29 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      var v = this.SimpleValue.create();
-      if ( this.counts.groups && this.counts.groups[this.data.name] ) {
-        this.link();
-      } else {
-        this.counts.addListener(this.link);
-      }
+      if ( this.counts.groups[this.data.name] ) this.bindGroup();
+      else this.bindCounts();
+    },
+    bindCounts: function() {
+      this.counts.addListener(this.bindGroup);
     }
   },
   listeners: [
     {
-      name: 'link',
+      name: 'bindGroup',
       code: function() {
-        Events.link(this.counts.groups[this.data.name].count$, this.count$);
+        if ( this.counts.groups[this.data.name] ) {
+          this.counts.removeListener(this.bindGroup);
+          this.counts.groups[this.data.name].addListener(this.updateCount);
+          this.updateCount();
+        }
+      }
+    },
+    {
+      name: 'updateCount',
+      code: function() {
+        if ( this.counts.groups[this.data.name] )
+          this.count = this.counts.groups[this.data.name].count;
       }
     }
   ],
