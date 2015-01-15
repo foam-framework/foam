@@ -130,10 +130,12 @@ apar(arequire('Calc'), arequire('TableView'))(function() {
       t('2 square', 4),
       t('1 0 square', 100),
       t('1 sign square', 1),
+      t('0 ln', Number.NEGATIVE_INFINITY),
       t('1 ln exp', 1),
       t('2 ln exp', 2),
       t('1 0 ln exp round', 10),
       t('point 1 log round', -1),
+      t('0 log', Number.NEGATIVE_INFINITY),
       t('1 log', 0),
       t('1 0 log', 1),
       t('1 0 0 log', 2),
@@ -190,7 +192,7 @@ apar(arequire('Calc'), arequire('TableView'))(function() {
       t('1 store 2 fetch', 1),
       t('1 store 2 store 3 fetch', 2),
       t('1 store 2 store fetch', 2),
-      t('1 store 9 equals 2 plus fetch equals', 3) 
+      t('1 store 9 equals 2 plus fetch equals', 3)
     ]
   });
 
