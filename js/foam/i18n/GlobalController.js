@@ -73,9 +73,9 @@ CLASS({
     {
       name: 'getBuilders',
       code: function() {
-        var builders = this.SUPER() || {};
-        builders.chromeMessages = this.ChromeMessagesBuilder.create();
-        return builders;
+        return {
+          chromeMessages: this.ChromeMessagesBuilder.create()
+        };
       }
     }
   ]
