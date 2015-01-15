@@ -56,6 +56,30 @@ CLASS({
             documentation: function() { /* The calculated pixel size. */ },
           }
         );
+        
+        var actualInit = this.init;
+        this.init = function() {
+          // this is now the instance
+          var self = this;
+          var pixFn = function(self, prop) {
+            var propVal = self[prop];
+            if ((typeof propVal === 'string' && propVal.indexOf('%') !== -1)) {
+              return (parseInt(propVal.replace('%','') || 0) / 100) * self.constraintValue_TotalSize_;
+            } else {
+              return parseInt(propVal || 0);
+            }
+          };
+    
+          // bind each prop.nameerty that needs updates on pixel total size
+          self.constraintValue_TotalSize_$.addListener(function(self, msg) {
+            self[prop.name+"$Pix"] = pixFn(self, prop.name);
+          }.bind(self));
+          self[prop.name+"$"].addListener(function(self, msg) {
+            self[prop.name+"$Pix"] = pixFn(self, prop.name);
+          }.bind(self));
+          
+          actualInit.apply(this, arguments);
+        }
       }
     }
   ]
@@ -119,28 +143,7 @@ CLASS({
     },
     init: function() {
       this.SUPER();
-
-      var self = this;
       
-      var pixFn = function(self, prop) {
-        var propVal = self[prop];
-        if ((typeof propVal === 'string' && propVal.indexOf('%') !== -1)) {
-          return (parseInt(propVal.replace('%','') || 0) / 100) * self.constraintValue_TotalSize_;
-        } else {
-          return parseInt(propVal || 0);
-        }
-      };
-
-      // bind each property that needs updates on pixel total size
-      [ 'min', 'max', 'preferred' ].forEach( function(prop) { 
-        self.constraintValue_TotalSize_$.addListener(function(self, msg) {
-          self[prop+"$Pix"] = pixFn(self, prop);
-        }.bind(self));
-        self[prop+"$"].addListener(function(self, msg) {
-          self[prop+"$Pix"] = pixFn(self, prop);
-        }.bind(self));
-      }.bind(self));
-        
       this.min$.addListener(this.doConstraintChange);
       this.max$.addListener(this.doConstraintChange);
       this.preferred$.addListener(this.doConstraintChange);

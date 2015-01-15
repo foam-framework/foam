@@ -82,7 +82,7 @@ CLASS({
           // Store name+proto in polymers queue for processing by
           // ModelGenerator.
           this.polymers.put(this.PolymerPrototype.create({
-            name: name,
+            tagName: name,
             proto: proto
           }));
         }.bind(this);
@@ -105,8 +105,7 @@ CLASS({
       factory: function() {
         return this.EasyDAO.create({
           daoType: 'MDAO',
-          model: 'foam.ui.polymer.gen.PolymerPrototype',
-          seqNo: true
+          model: 'foam.ui.polymer.gen.PolymerPrototype'
         });
       },
       hidden: true
@@ -437,7 +436,7 @@ CLASS({
     {
       name: 'storeComponentFromProto',
       code: function(p) {
-        var name = this.getComponentName(p.name);
+        var name = this.getComponentName(p.tagName);
         var comp = this.getOrCreateComponent(name);
 
         // Attributes either come from:

@@ -101,6 +101,13 @@ CLASS({
     'layout.LayoutItemVerticalTrait'
   ],
  
+  documentation: function() {/* A $$DOC{ref:'foam.graphics.CView'} based
+    linear layout. Use to lay out CView child items that include the 
+    $$DOC{ref:'layout.LayoutItemHorizontalTrait'}
+    $$DOC{ref:'layout.LayoutItemVerticalTrait'} or
+    traits depending on layout orientation.
+  */},
+  
   methods: {
     init: function() {
       this.SUPER();
@@ -139,6 +146,10 @@ CLASS({
     },
     
     paintSelf: function() {
+      /* To reduce the number of potential re-layout operations, only calculate
+      a dirty layout when painting. A property change will cause a repaint,
+      to $$DOC{ref:'layout.LinearLayoutTrait.layoutDirty'} changing to true will
+      cause a repaint. */
       this.SUPER();
       
       // only calculate layout on paint
@@ -200,6 +211,10 @@ CLASS({
     },
 
     paintSelf: function() {
+      /* To reduce the number of potential re-layout operations, only calculate
+      a dirty layout when painting. A property change will cause a repaint,
+      to $$DOC{ref:'layout.LinearLayoutTrait.layoutDirty'} changing to true will
+      cause a repaint. */
       this.SUPER();
       
       // only calculate layout on paint
@@ -209,7 +224,7 @@ CLASS({
     },
     
     calculateLayout: function() {
-      // lock our size to the child's preferred size
+      /* Locks our size to the child's preferred size. */
       this.layoutDirty = false;
       
       if (this.children[0]) {
@@ -247,6 +262,11 @@ CLASS({
     'layout.LayoutItemHorizontalTrait',
     'layout.LayoutItemVerticalTrait'
   ],
+  documentation: function() {/* A container that places a margin around
+    a single child item. The layout constraints of the child are adjusted
+    by the margin amount, and any size changes to the $$DOC{ref:'foam.graphics.Margin'}
+    container are relayed to the child.
+  */},
 });
 
 
@@ -512,7 +532,11 @@ CLASS({
             this.verticalConstraints.min = this.verticalConstraints.preferred;
         }
 
-      }
+      },
+      
+      documentation: function() {/* Calculates the preferred size of this 
+        $$DOC{ref:'foam.graphics.Label'} based on the actual text and font. 
+      */},
     }
   ]
 });

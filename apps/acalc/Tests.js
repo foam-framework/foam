@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+var tests;
 apar(arequire('Calc'), arequire('TableView'))(function() {
 
   UnitTest.RESULTS.tableFormatter = function(val, obj, table) { return val; };
@@ -35,7 +35,7 @@ apar(arequire('Calc'), arequire('TableView'))(function() {
       code: 'calc.ac();var ks = "' + input + '".split(" ");for ( var i = 0 ; i < ks.length ; i++ ) calc[ks[i]]();this.assert(calc.a2 == ' + result + ', "Expecting: " + ' + result + ' + " found: " + calc.a2);'
     });
   }
-  var tests = UnitTest.create({
+  tests = UnitTest.create({
     name: 'Tests',
     description: 'ACalc Unit Tests.',
     code: function() { calc = Calc.create(); },
@@ -130,27 +130,29 @@ apar(arequire('Calc'), arequire('TableView'))(function() {
       t('2 square', 4),
       t('1 0 square', 100),
       t('1 sign square', 1),
+      t('0 ln', Number.NEGATIVE_INFINITY),
       t('1 ln exp', 1),
       t('2 ln exp', 2),
       t('1 0 ln exp round', 10),
-      t('1 log pow 1 0 equals', 1),
-      t('2 log pow 1 0 equals', 2),
-      t('1 0 log pow 1 0 equals', 10),
-      t('1 0 0 log', 3),
-      t('1 0 0 0 log', 4),
+      t('point 1 log round', -1),
+      t('0 log', Number.NEGATIVE_INFINITY),
+      t('1 log', 0),
+      t('1 0 log', 1),
+      t('1 0 0 log', 2),
+      t('1 0 0 0 log round', 3),
       t('0 exp', 1),
       t('1 exp', Math.E),
-      t('1 0 0 root 2 equals', 10),
-      t('2 7 root 3 equals', 3),
-      t('0 pow 0 equals', 0),
+      t('2 root 1 0 0 equals', 10),
+      t('3 root 2 7 equals', 3),
+      t('0 pow 0 equals', 1),
       t('0 pow 1 equals', 0),
-      t('1 pow 0 equals', 0),
-      t('1 pow 1 equals', 0),
+      t('1 pow 0 equals', 1),
+      t('1 pow 1 equals', 1),
       t('0 pow 2 equals', 0),
       t('1 pow 2 equals', 1),
       t('2 pow 2 equals', 4),
-      t('1 sign fact', 0),
-      t('0 fact', 0),
+      t('1 sign fact', 1),
+      t('0 fact', 1),
       t('1 fact', 1),
       t('2 fact', 2),
       t('3 fact', 6),
@@ -169,7 +171,7 @@ apar(arequire('Calc'), arequire('TableView'))(function() {
       t('3 mod 3 equals', 0),
       t('4 mod 3 equals', 1),
       t('5 mod 3 equals', 2),
-      t('5 p 0 equals', 5),
+      t('5 p 0 equals', 1),
       t('5 p 1 equals', 5),
       t('5 p 2 equals', 20),
       t('5 p 3 equals', 60),
@@ -186,18 +188,33 @@ apar(arequire('Calc'), arequire('TableView'))(function() {
       t('point 4 round', 0),
       t('point 5 round', 1),
       t('point 6 round', 1),
+      t('fetch', 0),
+      t('1 store 2 fetch', 1),
+      t('1 store 2 store 3 fetch', 2),
+      t('1 store 2 store fetch', 2),
+      t('1 store 9 equals 2 plus fetch equals', 3)
     ]
   });
 
   tests.test();
+
   var tView = TableView.create({
     model: UnitTest,
     dao: tests.tests,
-    scrollEnabled: false,
+    scrollEnabled: true,
     rows: 1000,
     properties: ['name', 'description', 'results', 'passed', 'failed']
   });
-//  tView.write(document);
+
   $('output').innerHTML = tView.toHTML();
   tView.initHTML();
+
+  for ( var i = 0 ; i < tests.tests.length ; i++ ) {
+    var t = tests.tests[i];
+
+    tests.passed += t.passed;
+    tests.failed += t.failed;
+  }
+  $('passed').innerHTML = tests.passed;
+  $('failed').innerHTML = tests.failed;
 });

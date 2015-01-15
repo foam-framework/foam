@@ -187,8 +187,73 @@ CLASS({
       }
 
       return count;
-    }
+    },
 
+    createParentInheritedPropertyInstallFn: function() {
+      /* Returns a function that can be assigned as a $$DOC{ref:'Property'}
+      $$DOC{ref:'Property.install'} function. The property will become
+      inherited from owner's .parent. New getter() and setter() methods
+      will be installed to check up the parent chain, and track local
+      set calls.</p>
+      <p><code>
+      properties: [
+      &nbsp;&nbsp;  { name: 'myProperty',
+      &nbsp;&nbsp;&nbsp;&nbsp;    install: createParentInheritedPropertyInstallFn(),
+      &nbsp;&nbsp;&nbsp;&nbsp;    ...
+      &nbsp;&nbsp;  }]
+      </code>*/
+      return function(prop) {
+        var actualSetter = this.__lookupSetter__(prop.name);
+        var actualGetter = this.__lookupGetter__(prop.name);
+        var actualInit = this.init;
+        var propWriteFlagName = prop.name + "$writtenTo";
+        
+        var findParentValue = function(parent, propName) {
+          if ( parent.hasOwnProperty(propName) ) {
+            return parent[propName];
+          } else {
+            if ( parent.parent ) {
+              return findParentValue(parent.parent, propName);
+            } else {
+              return undefined;
+            }
+          }
+        };
+        
+        // replace init
+        this.init = function() {
+    //console.log("InheritedProp.init ", prop.name);
+          // this is now the instance        
+          this.parent$.addListener(function() {
+            if ( ! this.instance_[propWriteFlagName] )
+            {
+              // we are still inheriting the value, so grab the new parent's
+              var newVal = findParentValue(this.parent, prop.name);
+              actualSetter.apply(this, [newVal]);
+            }
+          }.bind(this));
+          
+          actualInit.apply(this, arguments);
+        }
+        
+        this.__defineSetter__(prop.name, function(nu) {
+    //console.log("InheritedProp.setter ", prop.name, nu);
+          // setter will be called on the instance, so "this" is an instance now
+          // reset to false if user sets undefined, otherwise set true
+          this.instance_[propWriteFlagName] = (typeof nu !== 'undefined');
+          return actualSetter.apply(this, [nu]);
+        }); 
+        this.__defineGetter__(prop.name, function() {
+    //console.log("InheritedProp.getter ", prop.name, findParentValue(this.parent, prop.name));
+          // getter will be called on the instance, so "this" is an instance now
+          if ( ! this.instance_[propWriteFlagName] ) {
+            // we haven't been written to, so inherit the value
+            return findParentValue(this.parent, prop.name);
+          }
+          return actualGetter.apply(this);
+        }); 
+      }; 
+    }
   }
 });
 
@@ -1577,8 +1642,6 @@ CLASS({
         if ( this.mode === 'read-write' ) o = o.model_.create(o, this.childX); //.clone();
         var X = this.X.sub({ data$: this.X.SimpleValue.create(o, this.childX) });
         var view = this.rowView({ model: o.model_}, X);
-//        var view = this.rowView({ data: o, model: o.model_}, X);
-        // TODO: Something isn't working with the Context, fix
         view.DAO = this.dao;
         if ( this.mode === 'read-write' ) {
           o.addListener(function() {

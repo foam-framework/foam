@@ -22,6 +22,8 @@ var DECIMAL_PLACES_PRECISION = 12;
 
 // console.profile();
 
+if ( ! 'log10' in Math ) Math.log10 = function(a) { return Math.log(a) / Math.LN10; };
+
 function trigFn(f) {
   return function(a) {
     return f(this.degreesMode ? a * Math.PI / 180 : a);
@@ -45,6 +47,7 @@ function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
   var longName = opt_longName || name;
   var speechLabel = opt_speechLabel || sym;
   f.toString = function() { return sym; };
+  f.binary = true;
   return maybeTranslate({
     name: name,
     label: sym,
@@ -314,7 +317,7 @@ CLASS({
     }
 
     .secondaryButtons {
-      padding-left: 16px;
+      padding-left: 18px;
       background: rgb(64, 189, 158);
     }
 
@@ -323,7 +326,7 @@ CLASS({
     }
 
     .tertiaryButtons {
-      padding-left: 16px;
+      padding-left: 18px;
       background: rgb(29, 233, 182);
     }
 
@@ -350,6 +353,7 @@ CLASS({
 
   properties: [
     { name: 'degreesMode', defaultValue: false },
+    { name: 'memory', defaultValue: 0 },
     { name: 'a1', defaultValue: 0 },
     { name: 'a2', defaultValue: '' },
     { name: 'editable', defaultValue: true },
@@ -461,7 +465,7 @@ CLASS({
       name: 'sign',
       label: '+/-',
       speechLabel: 'negate',
-      keyboardShortcuts: [ 'j' ],
+      keyboardShortcuts: [ 'm' ],
       action: function() { this.a2 = - this.a2; }
     },
     {
@@ -514,7 +518,7 @@ CLASS({
     {
       name: 'pi',
       label: 'π',
-      keyboardShortcuts: ['l'],
+      keyboardShortcuts: ['p'],
       action: function() { this.a2 = Math.PI; }
     },
     {
@@ -527,48 +531,62 @@ CLASS({
       name: 'percent',
       label: '%',
       speechLabel: 'percent',
-      keyboardShortcuts: [ 'k', 'shift-53' /* % */ ],
+      keyboardShortcuts: [ 'n', 'shift-53' /* % */ ],
       action: function() { this.a2 /= 100.0; }
     },
+
+    unaryOp('inv',    ['i'], function(a) { return 1.0/a; }, '1/x', undefined, 'inverse'),
+    unaryOp('sqroot', ['k'], Math.sqrt, '√', 'square root'),
+    unaryOp('square', ['q'], function(a) { return a*a; }, 'x²', 'x squared', 'x squared'),
+    unaryOp('ln',     ['f'], Math.log, 'ln', 'natural logarithm', 'natural logarithm'),
+    unaryOp('exp',    ['h'], Math.exp, 'eⁿ', undefined, 'e to the power of n'),
+    unaryOp('log',    ['g'], function(a) { return Math.log(a) / Math.LN10; }, 'log', 'logarithm', 'log base 10'),
+    binaryOp('root',  ['l'], function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY', undefined, 'the enth root of y'),
+    binaryOp('pow',   ['j'], Math.pow, 'yⁿ', undefined, 'y to the power of n'),
+
+    unaryOp('sin',    ['shift-68'], trigFn(Math.sin), 'sin', 'sine',    'sign'),
+    unaryOp('cos',    ['shift-71'], trigFn(Math.cos), 'cos', 'cosine',  'co-sign'),
+    unaryOp('tan',    ['shift-74'], trigFn(Math.tan), 'tan', 'tangent', 'tangent'),
+
     {
       name: 'deg',
       speechLabel: 'switch to degrees',
-      keyboardShortcuts: [ 'm' ],
+      keyboardShortcuts: [ 'shift-65' ],
       translationHint: 'short form for "degrees" calculator mode',
       action: function() { this.degreesMode = true; }
     },
     {
       name: 'rad',
       speechLabel: 'switch to radians',
-      keyboardShortcuts: [ 'n' ],
+      keyboardShortcuts: [ 'shift-66' ],
       translationHint: 'short form for "radians" calculator mode',
       action: function() { this.degreesMode = false; }
     },
 
-    unaryOp('inv',    ['a'], function(a) { return 1.0/a; }, '1/x', undefined, 'inverse'),
-    unaryOp('sqroot', ['b'], Math.sqrt, '√', 'square root'),
-    unaryOp('square', ['c'], function(a) { return a*a; }, 'x²', 'x squared', 'x squared'),
+    unaryOp('asin',   ['shift-69'], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arc sign'),
+    unaryOp('acos',   ['shift-72'], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arc co-sign'),
+    unaryOp('atan',   ['shift-75'], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arc tangent'),
 
-    unaryOp('ln',     ['d'], Math.log, 'ln', 'natural logarithm', 'natural logarithm'),
-    unaryOp('exp',    ['f'], Math.exp, 'eⁿ', undefined, 'e to the power of n'),
-
-    unaryOp('log',    ['g'], function(a) { return Math.log(a) / Math.LN10; }, 'log', 'logarithm', 'log base 10'),
-    binaryOp('root',  ['h'], function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY', undefined, 'the enth root of y'),
-    binaryOp('pow',   ['i'], Math.pow, 'yⁿ', undefined, 'y to the power of n'),
-
-    unaryOp('sin',    ['p'], trigFn(Math.sin), 'sin', 'sine',    'sign'),
-    unaryOp('cos',    ['s'], trigFn(Math.cos), 'cos', 'cosine',  'co-sign'),
-    unaryOp('tan',    ['v'], trigFn(Math.tan), 'tan', 'tangent', 'tangent'),
-
-    unaryOp('asin',   ['q'], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arc sign'),
-    unaryOp('acos',   ['t'], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arc co-sign'),
-    unaryOp('atan',   ['w'], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arc tangent'),
-
-    unaryOp('fact',   ['o', 'shift-49' /* ! */], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
-    binaryOp('mod',   ['r'],                     function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
-    binaryOp('p',     ['u'],                     function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations (n permute r)', 'permutation'),
-    binaryOp('c',     ['x'],                     function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations (n combine r))', 'combination'),
-    unaryOp('round',  ['z'], Math.round, 'round') // Not shown in calculator, but makes unit tests easier to write
+    unaryOp('fact',   ['shift-67' /* ! */], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
+    binaryOp('mod',   ['shift-70'],         function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
+    binaryOp('p',     ['shift-73'],         function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations (n permute r)', 'permutation'),
+    binaryOp('c',     ['shift-76'],         function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations (n combine r))', 'combination'),
+    unaryOp('round',  ['c'], Math.round, 'rnd', 'round', 'round'),
+    {
+      name: 'rand',
+      label: 'rand',
+      speechLabel: 'random',
+      keyboardShortcuts: ['d'],
+      action: function() { this.a2 = Math.random(); }
+    },
+    unaryOp('store',   ['b'], function(n) { this.memory = n; return n; }, 'a=', 'store in memory', 'store in memory'),
+    {
+      name: 'fetch',
+      label: 'a',
+      speechLabel: 'fetch from memory',
+      keyboardShortcuts: ['a'],
+      action: function() { this.a2 = this.memory; }
+    },
   ]
 });
 
@@ -642,16 +660,16 @@ CLASS({
           <div class='keypad'>
           <div class="edge2"></div>
           <%= this.SlidePanelView.create({
-            minWidth: 250,
-            minPanelWidth: 250,
-            panelRatio: 0.5,
+            minWidth: 280,
+            minPanelWidth: 260,
+            panelRatio: 0.55,
             mainView: 'MainButtonsView',
             stripWidth: 25,
             panelView: {
               factory_: 'SlidePanelView',
-              minWidth: 200,
-              minPanelWidth: 210,
-              panelRatio: 0.5,
+              minWidth: 280,
+              minPanelWidth: 200,
+              panelRatio: 3/7,
               mainView: 'SecondaryButtonsView',
               panelView: 'TertiaryButtonsView'
             }
@@ -741,16 +759,28 @@ CLASS({
           <div id="%%id" class="buttons button-row secondaryButtons">
             <div class="button-column" style="flex-grow: 1;">
               <div class="button-row">
-                <div class="button" tabindex="301">$$inv</div><div class="button" tabindex="302">$$sqroot</div><div class="button" tabindex="303">$$square</div>
+                <div class="button" tabindex="311">$$fetch</div>
+                <div class="button" tabindex="312">$$store</div>
+                <div class="button" tabindex="313">$$round</div>
+                <div class="button" tabindex="314">$$rand</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="304">$$ln</div><div class="button" tabindex="305">$$e</div><div class="button" tabindex="306">$$exp</div>
+                <div class="button" tabindex="321">$$e</div>
+                <div class="button" tabindex="322">$$ln</div>
+                <div class="button" tabindex="323">$$log</div>
+                <div class="button" tabindex="324">$$exp</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="307">$$log</div><div class="button" tabindex="308">$$root</div><div class="button" tabindex="309">$$pow</div>
+                <div class="button" tabindex="331">$$inv</div>
+                <div class="button" tabindex="332">$$pow</div>
+                <div class="button" tabindex="333">$$sqroot</div>
+                <div class="button" tabindex="334">$$root</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="310">$$sign</div><div class="button" tabindex="311">$$percent</div><div class="button" tabindex="312">$$pi</div>
+                <div class="button" tabindex="341">$$sign</div>
+                <div class="button" tabindex="342">$$percent</div>
+                <div class="button" tabindex="343">$$square</div>
+                <div class="button" tabindex="344">$$pi</div>
               </div>
             </div>
           </div>

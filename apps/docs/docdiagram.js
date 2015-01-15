@@ -452,6 +452,7 @@ CLASS({
         linkableItem.addChild(
           this.Section.create({
             title$: this.packageName$, titleFont: '8px Roboto',
+            padding: 3,
             background: 'rgba(64,64,255,255)',
             border: 'rgba(0,0,0,0)',
             borderWidth: 0,

@@ -31,6 +31,14 @@ CLASS({
     'getNodeAttribute'
   ],
 
+  constants: [
+    {
+      name: 'NOT_CUSTOM_ATTRIBUTES',
+      type: 'Array[String]',
+      value: ['name', 'extends', 'attributes', 'noscript', 'constructor']
+    }
+  ],
+
   properties: [
     {
       model_: 'StringArrayProperty',
@@ -58,6 +66,13 @@ CLASS({
               return node.nodeName === 'polymer-element';
             })[0];
         if ( ! node ) return;
+        this.getAttributesAttribute(node);
+        this.getCustomAttributes(node);
+      }
+    },
+    {
+      name: 'getAttributesAttribute',
+      code: function(node) {
         var attrsStr = this.getNodeAttribute(node, 'attributes');
         if ( ! attrsStr ) return;
         var attrs = attrsStr.replace(/\s+/g, ' ').trim().split(' ');
@@ -66,6 +81,24 @@ CLASS({
           this.dao.put(this.ComponentProperty.create({
             url: this.comp.url,
             name: attrName
+          }));
+        }.bind(this));
+      }
+    },
+    {
+      name: 'getCustomAttributes',
+      code: function(node) {
+        node.attributes.filter(function(attr) {
+          return ! this.NOT_CUSTOM_ATTRIBUTES.some(
+              function(attr, notCustomAttrName) {
+                return notCustomAttrName === attr.name;
+              }.bind(this, attr));
+        }.bind(this)).forEach(function(attr) {
+          this.dao.put(this.ComponentProperty.create({
+            url: this.comp.url,
+            name: attr.name,
+            propertyModel: 'StringProperty',
+            defaultValue: attr.value
           }));
         }.bind(this));
       }
