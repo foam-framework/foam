@@ -44,6 +44,7 @@ CLASS({
        <div class="header">
          <span class="default">
            $$name{mode: 'read-only', className: 'name'}
+           <% if ( this.data.refreshAction ) { out(this.createActionView(this.data.refreshAction, { data: this.data })); } %>
            <% if ( this.data.spinner ) { %>
              <span class="mdui-app-controller-spinner">
                <%= this.data.spinner %>
