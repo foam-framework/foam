@@ -22,6 +22,8 @@ var DECIMAL_PLACES_PRECISION = 12;
 
 // console.profile();
 
+if ( ! 'log10' in Math ) Math.log10 = function(a) { return Math.log(a) / Math.LN10; };
+
 function trigFn(f) {
   return function(a) {
     return f(this.degreesMode ? a * Math.PI / 180 : a);
