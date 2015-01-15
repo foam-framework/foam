@@ -115,7 +115,7 @@ CLASS({
     {
       name: 'modelDiagram',
       factory: function() {
-        var modelDiagram = this.ModelDocDiagram.create();
+        var modelDiagram = this.ModelDocDiagram.create({ titleColor: 'black' });
         return modelDiagram;
       }
     },
@@ -347,7 +347,7 @@ CLASS({
           data$: self.SimpleValue.create(traitModel, self.childX),
           documentViewRef: self.SimpleValue.create(self.DocRef.create({ ref: trait }, self.childX))
         });
-        var traitDiag = self.ModelDocDiagram.create({ model: Model }, X);
+        var traitDiag = self.ModelDocDiagram.create({ model: Model, titleColor: 'rgba(30,160,30,255)' }, X);
         self.addChild(traitDiag);
         self.addChild(self.DocLinkDiagram.create({ start: traitDiag, end$: self.sourceDiag$ }));
     
@@ -439,6 +439,10 @@ CLASS({
       type: 'String'
     },
     {
+      name: 'titleColor',
+      defaultValue: 'rgba(64,64,255,255)'
+    },
+    {
       name: 'diagramItem',
       factory: function() {
         var diagramItem = this.Margin.create({ bottom: 5, right: 5, left: 5, top: 5 }, this.childX);
@@ -453,7 +457,7 @@ CLASS({
           this.Section.create({
             title$: this.packageName$, titleFont: '8px Roboto',
             padding: 3,
-            background: 'rgba(64,64,255,255)',
+            background$: this.titleColor$,
             border: 'rgba(0,0,0,0)',
             borderWidth: 0,
             color: 'white'
@@ -462,7 +466,7 @@ CLASS({
         linkableItem.addChild(
           this.Section.create({
             title$: this.modelName$, titleFont: 'bold 16px Roboto',
-            background: 'rgba(64,64,255,255)',
+            background$: this.titleColor$,
             border: 'rgba(0,0,0,0)',
             borderWidth: 0,
             color: 'white'
@@ -539,7 +543,7 @@ CLASS({
       name: 'diagramItem',
       factory: function() {
         return this.SectionGroup.create({ title: this.featureType.capitalize(), titleBackground: 'rgba(200,200,200,255)',
-                                       titleBorderWidth: 2 });
+                                       titleBorderWidth: 0 });
       }
     }
   ],
