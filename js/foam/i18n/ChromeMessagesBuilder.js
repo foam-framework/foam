@@ -45,7 +45,7 @@ CLASS({
                         message: action.label,
                         description: modelPrefix +
                             action.translationHint +
-                            ' (UI label)'
+                            ' (text label)'
                       };
                 }
                 if ( action.speechLabel ) {
