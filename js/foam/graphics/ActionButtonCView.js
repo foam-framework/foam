@@ -252,7 +252,10 @@ CLASS({
         // TODO: Glow animations on touch.
         this.gestureManager.install(this.tapGesture);
       } else {
-        this.$.addEventListener('click', function(e) { e.preventDefault(); this.tapClick(); }.bind(this));
+        this.$.addEventListener('click', function(e) {
+          e.preventDefault();
+          this.tapClick();
+        }.bind(this));
       }
 
       // Pressing space when has focus causes a synthetic press
@@ -262,6 +265,12 @@ CLASS({
           e.stopPropagation();
           this.tapClick();
         }
+      }.bind(this));
+
+      // This is so that shift-search-spacebar performs a click with ChromeVox
+      // which otherwise only delivers mouseDown and mouseUp events but no click 
+      this.$.parentElement.addEventListener('click', function(e) {
+        this.tapClick();
       }.bind(this));
 
       this.$.addEventListener('mousedown',   this.onMouseDown);
