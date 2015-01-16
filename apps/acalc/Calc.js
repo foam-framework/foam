@@ -544,8 +544,8 @@ CLASS({
     binaryOp('root',  ['l'], function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY', undefined, 'the enth root of y'),
     binaryOp('pow',   ['j'], Math.pow, 'yⁿ', undefined, 'y to the power of n'),
 
-    unaryOp('sin',    ['shift-68'], trigFn(Math.sin), 'sin', 'sine',    'sign'),
-    unaryOp('cos',    ['shift-71'], trigFn(Math.cos), 'cos', 'cosine',  'co-sign'),
+    unaryOp('sin',    ['shift-68'], trigFn(Math.sin), 'sin', 'sine',    'sine'),
+    unaryOp('cos',    ['shift-71'], trigFn(Math.cos), 'cos', 'cosine',  'cosine'),
     unaryOp('tan',    ['shift-74'], trigFn(Math.tan), 'tan', 'tangent', 'tangent'),
 
     {
@@ -563,9 +563,9 @@ CLASS({
       action: function() { this.degreesMode = false; }
     },
 
-    unaryOp('asin',   ['shift-69'], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arc sign'),
-    unaryOp('acos',   ['shift-72'], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arc co-sign'),
-    unaryOp('atan',   ['shift-75'], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arc tangent'),
+    unaryOp('asin',   ['shift-69'], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arcsine'),
+    unaryOp('acos',   ['shift-72'], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arccosine'),
+    unaryOp('atan',   ['shift-75'], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arctangent'),
 
     unaryOp('fact',   ['shift-67' /* ! */], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
     binaryOp('mod',   ['shift-70'],         function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
