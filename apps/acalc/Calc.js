@@ -219,8 +219,9 @@ CLASS({
     }
 
     .deg, .rad {
-      color: #444;
+      color: #111;
       font-size: 22px;
+      font-weight: 400;
       opacity: 0;
       padding-left: 8px;
       transition: opacity 0.8s;
@@ -339,10 +340,6 @@ CLASS({
       flex-shrink: 0;
       margin-bottom: -4px;
       z-index: 5;
-    }
-
-    .history {
-      color: #444;
     }
 
     .alabel {
