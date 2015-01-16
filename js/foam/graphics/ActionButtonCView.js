@@ -233,8 +233,17 @@ CLASS({
         // TODO: Glow animations on touch.
         this.gestureManager.install(this.tapGesture);
       } else {
-        this.$.addEventListener('click',      function(e) { e.preventDefault(); this.tapClick(); }.bind(this));
+        this.$.addEventListener('click', function(e) { e.preventDefault(); this.tapClick(); }.bind(this));
       }
+
+      // Pressing space when has focus causes a synthetic press
+      this.$.parentElement.addEventListener('keypress', function(e) {
+        if ( e.charCode == 32 && ! ( e.altKey || e.ctrlKey || e.shiftKey ) ) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.tapClick();
+        }
+      }.bind(this));
 
       this.$.addEventListener('mousedown',   this.onMouseDown);
       this.$.addEventListener('mouseup',     this.onMouseUp);

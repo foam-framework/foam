@@ -175,7 +175,7 @@ CLASS({
   templates: [ function CSS() {/*
     * {
       box-sizing: border-box;
-      xxxoutline: none;
+      outline: none;
     }
 
     html {
@@ -219,8 +219,9 @@ CLASS({
     }
 
     .deg, .rad {
-      color: #444;
+      color: #111;
       font-size: 22px;
+      font-weight: 400;
       opacity: 0;
       padding-left: 8px;
       transition: opacity 0.8s;
@@ -341,10 +342,6 @@ CLASS({
       z-index: 5;
     }
 
-    .history {
-      color: #444;
-    }
-
     .alabel {
       font-size: 34px;
       color: #444;
@@ -455,10 +452,15 @@ CLASS({
         this.editable = true;
         this.op = DEFAULT_OP;
         this.history = [].sink;
-        if ( $$('calc-display')[0] ) this.Flare.create({
-          element: $$('calc-display')[0],
-          color: '#2196F3' /* blue */
-        }).fire();
+        if ( $$('calc-display')[0] ) {
+          var now = Date.now();
+          if ( this.lastFlare_ && now-this.lastFlare_ < 1000 ) return;
+          this.lastFlare_ = now;
+          this.Flare.create({
+            element: $$('calc-display')[0],
+            color: '#2196F3' /* blue */
+          }).fire();
+        }
       }
     },
     {
@@ -544,8 +546,8 @@ CLASS({
     binaryOp('root',  ['l'], function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY', undefined, 'the enth root of y'),
     binaryOp('pow',   ['j'], Math.pow, 'yⁿ', undefined, 'y to the power of n'),
 
-    unaryOp('sin',    ['shift-68'], trigFn(Math.sin), 'sin', 'sine',    'sign'),
-    unaryOp('cos',    ['shift-71'], trigFn(Math.cos), 'cos', 'cosine',  'co-sign'),
+    unaryOp('sin',    ['shift-68'], trigFn(Math.sin), 'sin', 'sine',    'sine'),
+    unaryOp('cos',    ['shift-71'], trigFn(Math.cos), 'cos', 'cosine',  'cosine'),
     unaryOp('tan',    ['shift-74'], trigFn(Math.tan), 'tan', 'tangent', 'tangent'),
 
     {
@@ -563,9 +565,9 @@ CLASS({
       action: function() { this.degreesMode = false; }
     },
 
-    unaryOp('asin',   ['shift-69'], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arc sign'),
-    unaryOp('acos',   ['shift-72'], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arc co-sign'),
-    unaryOp('atan',   ['shift-75'], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arc tangent'),
+    unaryOp('asin',   ['shift-69'], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arcsine'),
+    unaryOp('acos',   ['shift-72'], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arccosine'),
+    unaryOp('atan',   ['shift-75'], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arctangent'),
 
     unaryOp('fact',   ['shift-67' /* ! */], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
     binaryOp('mod',   ['shift-70'],         function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
@@ -797,7 +799,7 @@ CLASS({
           this.X.registerModel(this.X.ActionButton.xbind({
             width:      61,
             height:     61,
-            color:      'rgb(119, 119, 119)',
+            color:      'rgb(80, 80, 80)',
             background: 'rgb(29, 233, 182)',
             font:       '300 24px RobotoDraft'
           }), 'ActionButton');
