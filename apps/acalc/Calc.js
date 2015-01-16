@@ -175,7 +175,7 @@ CLASS({
   templates: [ function CSS() {/*
     * {
       box-sizing: border-box;
-      xxxoutline: none;
+      outline: none;
     }
 
     html {
