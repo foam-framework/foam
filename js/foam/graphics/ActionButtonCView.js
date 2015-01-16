@@ -221,6 +221,23 @@ CLASS({
             self.y = 0;
           }
         });
+
+      var b = this;
+      // Subscribe to action firing and show halo animation
+      b.data.subscribe(['action', this.action.name], function() {
+        b.$.parentElement.focus();
+        b.halo.r = 2;
+        b.halo.alpha = 0.4;
+        b.halo.x = b.width/2;
+        b.halo.y = b.height/2;
+        Movement.compile([
+          [150, function() {
+            b.halo.r = Math.min(28, Math.min(b.width, b.height)/2);
+            b.halo.alpha = 1;
+          }],
+          [200, function() { b.halo.alpha = 0; }]
+        ])();
+      }.bind(this));
     },
 
     initCView: function() {
