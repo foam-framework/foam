@@ -225,6 +225,7 @@ CLASS({
       var b = this;
       // Subscribe to action firing and show halo animation
       b.data.subscribe(['action', this.action.name], function() {
+        if ( b.state_ == 'pressing' ) return;
         b.$.parentElement.focus();
         b.halo.r = 2;
         b.halo.alpha = 0.4;
