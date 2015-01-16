@@ -794,7 +794,7 @@ CLASS({
           this.X.registerModel(this.X.ActionButton.xbind({
             width:      61,
             height:     61,
-            color:      'rgb(119, 119, 119)',
+            color:      'rgb(80, 80, 80)',
             background: 'rgb(29, 233, 182)',
             font:       '300 24px RobotoDraft'
           }), 'ActionButton');
