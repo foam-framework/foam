@@ -1,3 +1,6 @@
+BASEDIR=$(dirname "$0")
+cd "$BASEDIR"
+
 export BUILD_DIR=~/Downloads/acalc
 rm -rf $BUILD_DIR
 cp -r . $BUILD_DIR
@@ -64,6 +67,9 @@ cat \
   | sed 's/,_NL_/,/g' \
   | sed 's/_NL_/\n/g' \
   > "$BUILD_DIR/foam.js"
+
+# Delete unneeded files
+rm "$BUILD_DIR/Tests.js" "$BUILD_DIR/Tests.html" "$BUILD_DIR/build.sh" "$BUILD_DIR/package.sh" "$BUILD_DIR/*~"
 
 # For code compression, uncomment the following line:
 # ~/node_modules/uglify-js/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"
