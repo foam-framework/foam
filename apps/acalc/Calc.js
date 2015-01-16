@@ -452,10 +452,15 @@ CLASS({
         this.editable = true;
         this.op = DEFAULT_OP;
         this.history = [].sink;
-        if ( $$('calc-display')[0] ) this.Flare.create({
-          element: $$('calc-display')[0],
-          color: '#2196F3' /* blue */
-        }).fire();
+        if ( $$('calc-display')[0] ) {
+          var now = Date.now();
+          if ( this.lastFlare_ && now-this.lastFlare_ < 1000 ) return;
+          this.lastFlare_ = now;
+          this.Flare.create({
+            element: $$('calc-display')[0],
+            color: '#2196F3' /* blue */
+          }).fire();
+        }
       }
     },
     {
