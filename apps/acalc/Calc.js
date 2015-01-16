@@ -660,8 +660,8 @@ CLASS({
           <div class='keypad'>
           <div class="edge2"></div>
           <%= this.SlidePanelView.create({
-            minWidth: 280,
-            minPanelWidth: 260,
+            minWidth: 310,
+            minPanelWidth: 310,
             panelRatio: 0.55,
             mainView: 'MainButtonsView',
             stripWidth: 25,
