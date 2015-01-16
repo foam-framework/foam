@@ -65,6 +65,12 @@ cat \
   | sed 's/_NL_/\n/g' \
   > "$BUILD_DIR/foam.js"
 
+# Delete unneeded files
+rm "$BUILD_DIR/Tests.js" "$BUILD_DIR/Tests.html" "$BUILD_DIR/build.sh" "$BUILD_DIR/package.sh"
+
+# Delete emacs temporary files
+rm "$BUILD_DIR/*~"
+
 # For code compression, uncomment the following line:
 # ~/node_modules/uglify-js/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"
 
