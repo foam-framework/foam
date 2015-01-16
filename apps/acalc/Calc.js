@@ -219,8 +219,9 @@ CLASS({
     }
 
     .deg, .rad {
-      color: #444;
+      color: #111;
       font-size: 22px;
+      font-weight: 400;
       opacity: 0;
       padding-left: 8px;
       transition: opacity 0.8s;
@@ -341,10 +342,6 @@ CLASS({
       z-index: 5;
     }
 
-    .history {
-      color: #444;
-    }
-
     .alabel {
       font-size: 34px;
       color: #444;
@@ -455,10 +452,15 @@ CLASS({
         this.editable = true;
         this.op = DEFAULT_OP;
         this.history = [].sink;
-        if ( $$('calc-display')[0] ) this.Flare.create({
-          element: $$('calc-display')[0],
-          color: '#2196F3' /* blue */
-        }).fire();
+        if ( $$('calc-display')[0] ) {
+          var now = Date.now();
+          if ( this.lastFlare_ && now-this.lastFlare_ < 1000 ) return;
+          this.lastFlare_ = now;
+          this.Flare.create({
+            element: $$('calc-display')[0],
+            color: '#2196F3' /* blue */
+          }).fire();
+        }
       }
     },
     {
@@ -797,7 +799,7 @@ CLASS({
           this.X.registerModel(this.X.ActionButton.xbind({
             width:      61,
             height:     61,
-            color:      'rgb(119, 119, 119)',
+            color:      'rgb(80, 80, 80)',
             background: 'rgb(29, 233, 182)',
             font:       '300 24px RobotoDraft'
           }), 'ActionButton');
