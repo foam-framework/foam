@@ -201,7 +201,7 @@ CLASS({
     callIfEnabled: function(X, that) { /* Executes this action if $$DOC{ref:'.isEnabled'} is allows it. */
       if ( this.isEnabled.call(that, this) ) {
         this.action.call(that, X, this);
-        that.publish(['action', this.name]);
+        that.publish(['action', this.name], this);
       }
     }
   }
