@@ -46,7 +46,7 @@ function maybeTranslate(actionHash, opt_longName) {
 function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
   var longName = opt_longName || name;
   var speechLabel = opt_speechLabel || sym;
-  f.toString = function() { return sym; };
+  f.toString = function() { return '<span aria-label="' + speechLabel + '">' + sym + '</span>'; };
   f.binary = true;
   return maybeTranslate({
     name: name,
@@ -888,7 +888,7 @@ CLASS({
   extendsModel: 'DetailView',
   templates: [
     function toHTML() {/*
-      <div class="history" tabindex="2">{{this.data.op}} {{this.data.a2}}<% if ( this.data.op.toString() ) { %><hr><% } %></div>
+      <div class="history" tabindex="2">{{this.data.op}} {{this.data.a2}}<% if ( this.data.op.toString() ) { %><hr aria-label="equals" tabindex="2"><% } %></div>
     */}
   ]
 });
