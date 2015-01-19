@@ -268,7 +268,7 @@ CLASS({
         console.log(' click on parent: ', e, this.state_);
         e.preventDefault();
         e.stopPropagation();
-        if ( this.state_ !== 'released' ) this.tapClick();
+        if ( this.state_ !== 'released' && this.state_ !== 'cancelled' ) this.tapClick();
       }.bind(this));
 
       this.$.addEventListener('mousedown',   this.onMouseDown);
