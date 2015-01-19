@@ -543,7 +543,7 @@ function defineTTLProperty(obj, name, ttl, f) {
   });
 }
 
-defineTTLProperty(grammar, 'stringPS', 5000, function() { return StringPS.create(""); });
+defineTTLProperty(grammar, 'stringPS', 30000, function() { return StringPS.create(""); });
 
 
 var SkipGrammar = {
