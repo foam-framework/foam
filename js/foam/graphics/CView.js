@@ -185,6 +185,8 @@ CLASS({
         if ( this.className )   params.className   = this.className;
         if ( this.tooltip )     params.tooltip     = this.tooltip;
         if ( this.speechLabel ) params.speechLabel = this.speechLabel;
+        if ( this.tabIndex )    params.tabIndex    = this.tabIndex;
+        if ( this.role )        params.role        = this.role;
         this.view = this.CViewView.create(params);
       }
       return this.view;
