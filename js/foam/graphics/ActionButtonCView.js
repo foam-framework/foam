@@ -115,6 +115,8 @@ CLASS({
       name: 'speechLabel',
       defaultValueFn: function() { return this.action.speechLabel; }
     },
+    'tabIndex',
+    'role',
     {
       name: 'state_',
       defaultValue: 'default' // pressed, released
@@ -226,8 +228,6 @@ CLASS({
       // Subscribe to action firing and show halo animation
       b.data.subscribe(['action', this.action.name], function() {
         if ( b.state_ == 'pressing' ) return;
-        b.$.parentElement.blur();
-        b.$.parentElement.focus();
         b.halo.r = 2;
         b.halo.alpha = 0.4;
         b.halo.x = b.width/2;
@@ -251,15 +251,10 @@ CLASS({
       if ( this.gestureManager ) {
         // TODO: Glow animations on touch.
         this.gestureManager.install(this.tapGesture);
-      } else {
-        this.$.addEventListener('click', function(e) {
-          e.preventDefault();
-          this.tapClick();
-        }.bind(this));
       }
 
       // Pressing space when has focus causes a synthetic press
-      this.$.parentElement.addEventListener('keypress', function(e) {
+      this.$.addEventListener('keypress', function(e) {
         if ( e.charCode == 32 && ! ( e.altKey || e.ctrlKey || e.shiftKey ) ) {
           e.preventDefault();
           e.stopPropagation();
@@ -269,8 +264,11 @@ CLASS({
 
       // This is so that shift-search-spacebar performs a click with ChromeVox
       // which otherwise only delivers mouseDown and mouseUp events but no click 
-      this.$.parentElement.addEventListener('click', function(e) {
-        this.tapClick();
+      this.$.addEventListener('click', function(e) {
+        console.log(' click on parent: ', e, this.state_);
+        e.preventDefault();
+        e.stopPropagation();
+        if ( this.state_ !== 'released' ) this.tapClick();
       }.bind(this));
 
       this.$.addEventListener('mousedown',   this.onMouseDown);
