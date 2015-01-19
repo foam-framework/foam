@@ -1334,6 +1334,18 @@ CLASS({
       }
     },
     {
+      name: 'tapGesture',
+      hidden: true,
+      transient: true,
+      lazyFactory: function() {
+        return this.GestureTarget.create({
+          containerID: this.id + '-panel',
+          handler: this,
+          gesture: 'tap'
+        });
+      }
+    },
+    {
       name: 'opened',
       help: 'If the panel us opened or not.',
       defaultValue: false
@@ -1373,6 +1385,7 @@ CLASS({
   methods: {
     initHTML: function() {
       this.gestureManager.install(this.dragGesture);
+      this.gestureManager.install(this.tapGesture);
 
       // Resize first, then init the outer view, and finally the panel view.
       this.X.window.addEventListener('resize', this.onResize);
@@ -1440,6 +1453,15 @@ CLASS({
       }
     },
     {
+      name: 'tapClick',
+      code: function() {
+        console.log('tapclick', this.expanded, this.opened);
+        if ( this.expanded ) return;
+        if ( this.opened ) this.close();
+        else this.open();
+      }
+    },
+    {
       name: 'dragStart',
       code: function(point) {
         if ( this.expanded ) return;
@@ -1457,6 +1479,7 @@ CLASS({
         if ( this.expanded ) return;
         Events.unfollow(point.x$, this.panelX$);
         this.snap();
+        this.opened = ! this.opened;
       }
     }
   ]
