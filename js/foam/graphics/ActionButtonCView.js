@@ -126,13 +126,12 @@ CLASS({
   listeners: [
     {
       name: 'tapClick',
-      code: function() {
-        this.action.callIfEnabled(this.X, this.data);
-      }
+      code: function() { this.action.callIfEnabled(this.X, this.data); }
     },
     {
       name: 'onMouseDown',
       code: function(evt) {
+        // console.log('mouseDow: ', evt, this.state_);
         if ( this.state_ !== 'default' ) return;
 
         this.state_ = 'pressing';
@@ -165,7 +164,8 @@ CLASS({
     },
     {
       name: 'onMouseUp',
-      code: function() {
+      code: function(evt) {
+        // console.log('mouseUp: ', evt, this.state_);
         if ( this.state_ === 'pressing' ) { this.state_ = 'cancelled'; return; }
         if ( this.state_ === 'cancelled' ) return;
         this.state_ = 'released';
@@ -267,10 +267,10 @@ CLASS({
       // This is so that shift-search-spacebar performs a click with ChromeVox
       // which otherwise only delivers mouseDown and mouseUp events but no click 
       this.$.addEventListener('click', function(e) {
-        console.log(' click on parent: ', e, this.state_);
         e.preventDefault();
         e.stopPropagation();
-        if ( this.state_ !== 'released' && this.state_ !== 'cancelled' ) this.tapClick();
+        // If no X & Y then it was simulated by ChromeVox
+        if ( ! e.x && ! e.y ) this.tapClick();
       }.bind(this));
 
       this.$.addEventListener('mousedown',   this.onMouseDown);

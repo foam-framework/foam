@@ -626,7 +626,8 @@ CLASS({
   ],
   methods: {
     say: function(msg) {
-      // console.log('say: ', msg);
+      console.log('say: ', msg);
+      return;
       this.lastSaid = msg;
       var e = document.createTextNode(' ' + msg + ' ');
       e.id = this.nextID();
@@ -634,7 +635,7 @@ CLASS({
       setTimeout(function() { e.remove(); }, 30000);
     },
     toHTML: function() {
-      return '<output id="' + this.id + '" style="position:absolute;left:-1000000;" aria-relevant="additions" aria-live="assertive"></output>'
+      return '<output id="' + this.id + '" style="position:absolute;left:-1000000;" aria-live="polite"></output>'
     },
     initHTML: function() {
       this.SUPER();
