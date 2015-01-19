@@ -60,6 +60,8 @@ CLASS({
         */}
     },
     'speechLabel',
+    'role',
+    'tabIndex',
     {
       model_: 'IntProperty',
       name:  'width',
@@ -140,8 +142,11 @@ CLASS({
 
     toHTML: function() { /* Creates the canvas element. */
       var className = this.className ? ' class="' + this.className + '"' : '';
-      var title = this.speechLabel ? ' aria-role="button" aria-label="' + this.speechLabel + '"' : '';
-      return '<canvas id="' + this.id + '"' + className + title +' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + ';min-width:' + this.styleWidth() + ';min-height:' + this.styleHeight() + '"></canvas>';
+      var title     = this.speechLabel ? ' aria-role="button" aria-label="' + this.speechLabel + '"' : '';
+      var tabIndex  = this.tabIndex ? ' tabindex="' + this.tabIndex + '"' : '';
+      var role      = this.role ? ' role="' + this.role + '"' : '';
+
+      return '<canvas id="' + this.id + '"' + className + title + tabIndex + role + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + ';min-width:' + this.styleWidth() + ';min-height:' + this.styleHeight() + '"></canvas>';
     },
 
     initHTML: function() { /* Computes the scaling ratio from the window.devicePixelRatio
