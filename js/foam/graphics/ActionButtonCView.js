@@ -115,6 +115,8 @@ CLASS({
       name: 'speechLabel',
       defaultValueFn: function() { return this.action.speechLabel; }
     },
+    'tabIndex',
+    'role',
     {
       name: 'state_',
       defaultValue: 'default' // pressed, released
@@ -221,6 +223,23 @@ CLASS({
             self.y = 0;
           }
         });
+
+      var b = this;
+      // Subscribe to action firing and show halo animation
+      b.data.subscribe(['action', this.action.name], function() {
+        if ( b.state_ == 'pressing' ) return;
+        b.halo.r = 2;
+        b.halo.alpha = 0.4;
+        b.halo.x = b.width/2;
+        b.halo.y = b.height/2;
+        Movement.compile([
+          [150, function() {
+            b.halo.r = Math.min(28, Math.min(b.width, b.height)/2);
+            b.halo.alpha = 1;
+          }],
+          [200, function() { b.halo.alpha = 0; }]
+        ])();
+      }.bind(this));
     },
 
     initCView: function() {
@@ -232,9 +251,25 @@ CLASS({
       if ( this.gestureManager ) {
         // TODO: Glow animations on touch.
         this.gestureManager.install(this.tapGesture);
-      } else {
-        this.$.addEventListener('click',      function(e) { e.preventDefault(); this.tapClick(); }.bind(this));
       }
+
+      // Pressing space when has focus causes a synthetic press
+      this.$.addEventListener('keypress', function(e) {
+        if ( e.charCode == 32 && ! ( e.altKey || e.ctrlKey || e.shiftKey ) ) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.tapClick();
+        }
+      }.bind(this));
+
+      // This is so that shift-search-spacebar performs a click with ChromeVox
+      // which otherwise only delivers mouseDown and mouseUp events but no click 
+      this.$.addEventListener('click', function(e) {
+        console.log(' click on parent: ', e, this.state_);
+        e.preventDefault();
+        e.stopPropagation();
+        if ( this.state_ !== 'released' ) this.tapClick();
+      }.bind(this));
 
       this.$.addEventListener('mousedown',   this.onMouseDown);
       this.$.addEventListener('mouseup',     this.onMouseUp);

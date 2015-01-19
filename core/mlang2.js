@@ -1308,7 +1308,7 @@ function DESC(arg1) {
 }
 
 var JOIN = function(dao, key, sink) {
-  sink = sink || [];
+  sink = sink || [].sink;
   return {
     f: function(o) {
       var s = sink.clone();

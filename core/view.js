@@ -836,7 +836,6 @@ CLASS({
         console.assert(this.$, 'View must define outer id when using keyboard shortcuts: ' + this.name_);
         this.keyMap_ = keyMap;
         this.$.parentElement.addEventListener('keydown', this.onKeyboardShortcut);
-        this.$.parentElement.addEventListener('keypress', function(evt) { console.log('press: ', evt); });
       }
     },
 

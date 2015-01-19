@@ -74,6 +74,7 @@ function unaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
   var longName = opt_longName || name;
   var speechLabel = opt_speechLabel || sym;
   f.toString = function() { return sym; };
+  f.unary = true;
   return maybeTranslate({
     name: name,
     label: sym,
@@ -175,7 +176,7 @@ CLASS({
   templates: [ function CSS() {/*
     * {
       box-sizing: border-box;
-      xxxoutline: none;
+      outline: none;
     }
 
     html {
@@ -219,8 +220,9 @@ CLASS({
     }
 
     .deg, .rad {
-      color: #444;
+      color: #111;
       font-size: 22px;
+      font-weight: 400;
       opacity: 0;
       padding-left: 8px;
       transition: opacity 0.8s;
@@ -341,10 +343,6 @@ CLASS({
       z-index: 5;
     }
 
-    .history {
-      color: #444;
-    }
-
     .alabel {
       font-size: 34px;
       color: #444;
@@ -448,6 +446,7 @@ CLASS({
       speechLabel: 'all clear',
       translationHint: 'all clear (calculator button label)',
       // help: 'All Clear.',
+
       keyboardShortcuts: [ 27 /* escape */ ],
       action: function() {
         this.a1 = '0';
@@ -455,10 +454,15 @@ CLASS({
         this.editable = true;
         this.op = DEFAULT_OP;
         this.history = [].sink;
-        if ( $$('calc-display')[0] ) this.Flare.create({
-          element: $$('calc-display')[0],
-          color: '#2196F3' /* blue */
-        }).fire();
+        if ( $$('calc-display')[0] ) {
+          var now = Date.now();
+          if ( this.lastFlare_ && now-this.lastFlare_ < 1000 ) return;
+          this.lastFlare_ = now;
+          this.Flare.create({
+            element: $$('calc-display')[0],
+            color: '#2196F3' /* blue */
+          }).fire();
+        }
       }
     },
     {
@@ -486,6 +490,7 @@ CLASS({
     {
       name: 'equals',
       label: '=',
+      speechLabel: 'equals',
       keyboardShortcuts: [ 187 /* '=' */, 13 /* <enter> */ ],
       action: function() {
         if ( typeof(this.a2) === 'string' && this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
@@ -544,8 +549,8 @@ CLASS({
     binaryOp('root',  ['l'], function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY', undefined, 'the enth root of y'),
     binaryOp('pow',   ['j'], Math.pow, 'yⁿ', undefined, 'y to the power of n'),
 
-    unaryOp('sin',    ['shift-68'], trigFn(Math.sin), 'sin', 'sine',    'sign'),
-    unaryOp('cos',    ['shift-71'], trigFn(Math.cos), 'cos', 'cosine',  'co-sign'),
+    unaryOp('sin',    ['shift-68'], trigFn(Math.sin), 'sin', 'sine',    'sine'),
+    unaryOp('cos',    ['shift-71'], trigFn(Math.cos), 'cos', 'cosine',  'cosine'),
     unaryOp('tan',    ['shift-74'], trigFn(Math.tan), 'tan', 'tangent', 'tangent'),
 
     {
@@ -563,11 +568,11 @@ CLASS({
       action: function() { this.degreesMode = false; }
     },
 
-    unaryOp('asin',   ['shift-69'], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arc sign'),
-    unaryOp('acos',   ['shift-72'], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arc co-sign'),
-    unaryOp('atan',   ['shift-75'], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arc tangent'),
+    unaryOp('asin',   ['shift-69'], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arcsine'),
+    unaryOp('acos',   ['shift-72'], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arccosine'),
+    unaryOp('atan',   ['shift-75'], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arctangent'),
 
-    unaryOp('fact',   ['shift-67' /* ! */], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
+    unaryOp('fact',   ['shift-67', 'shift-49' /* ! */], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
     binaryOp('mod',   ['shift-70'],         function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
     binaryOp('p',     ['shift-73'],         function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations (n permute r)', 'permutation'),
     binaryOp('c',     ['shift-76'],         function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations (n combine r))', 'combination'),
@@ -590,6 +595,53 @@ CLASS({
   ]
 });
 
+CLASS({
+  name: 'CalcSpeechView',
+  extendsModel: 'View',
+  properties: [
+    'calc',
+    'lastSaid'
+  ],
+  listeners: [
+    {
+      name: 'onAction',
+      code: function(calc, topic, action) {
+        var last  = this.calc.history[this.calc.history.length-1];
+        var unary = last && last.op.unary; 
+        this.say(
+          action.name === 'equals' ?
+            action.speechLabel + ' ' + this.calc.a2 :
+          unary ?
+            action.speechLabel + ' equals ' + this.calc.a2 :
+            action.speechLabel);
+      }
+    }
+  ],
+  actions: [
+    {
+      name: 'repeat',
+      keyboardShortcuts: [ 'r' ],
+      action: function() { debugger; this.say(this.lastSaid); }
+    }
+  ],
+  methods: {
+    say: function(msg) {
+      // console.log('say: ', msg);
+      this.lastSaid = msg;
+      this.$.innerHTML = '';
+      setTimeout(function() { this.$.innerHTML = msg; }.bind(this), 16);
+    },
+    toHTML: function() {
+      return '<output id="' + this.id + '" style="position:absolute;left:-1000;" aria-live="polite"></output>'
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.calc.subscribe(['action'], this.onAction);
+    }
+  }
+});
+
+
 // HACK: The buttons don't draw using the Roboto font because it isn't loaded yet.
 // So we wait a second, to give the font time to load, then redraw all the buttons.
 // TODO: Something better.
@@ -609,7 +661,8 @@ var CalcButton = ActionButtonCView2.xbind({
   background: '#4b4b4b',
   width:      60,
   height:     60,
-  font:       '300 28px RobotoDraft'
+  font:       '300 28px RobotoDraft',
+  role:       'button'
 });
 
 CLASS({
@@ -647,6 +700,7 @@ CLASS({
             <span aria-label="radians" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="radians">RAD</span>
             <span aria-label="degrees" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="degrees">DEG</span>
           </div>
+          <%= CalcSpeechView.create({calc: this.data}) %>
         </div>
 
         <div class="edge"></div>
@@ -660,8 +714,8 @@ CLASS({
           <div class='keypad'>
           <div class="edge2"></div>
           <%= this.SlidePanelView.create({
-            minWidth: 280,
-            minPanelWidth: 260,
+            minWidth: 310,
+            minPanelWidth: 310,
             panelRatio: 0.55,
             mainView: 'MainButtonsView',
             stripWidth: 25,
@@ -711,16 +765,16 @@ CLASS({
       <div id="%%id" class="buttons button-row" style="background:#4b4b4b;">
         <div class="button-column" style="flex-grow: 3">
           <div class="button-row">
-            <div class="button" tabindex="101">$$7</div><div class="button" tabindex="102">$$8</div><div class="button" tabindex="103">$$9</div>
+            <div class="button">$$7{tabIndex: 101}</div> <div class="button">$$8{tabIndex: 102}</div> <div class="button">$$9{tabIndex: 103}</div>
           </div>
           <div class="button-row">
-            <div class="button" tabindex="104">$$4</div><div class="button" tabindex="105">$$5</div><div class="button" tabindex="106">$$6</div>
+            <div class="button">$$4{tabIndex: 104}</div><div class="button">$$5{tabIndex: 105}</div><div class="button">$$6{tabIndex: 106}</div>
          </div>
           <div class="button-row">
-            <div class="button" tabindex="107">$$1</div><div class="button" tabindex="108">$$2</div><div class="button" tabindex="108">$$3</div>
+            <div class="button">$$1{tabIndex: 107}</div><div class="button">$$2{tabIndex: 108}</div><div class="button">$$3{tabIndex: 109}</div>
           </div>
           <div class="button-row">
-            <div class="button" tabindex="109">$$point</div><div class="button" tabindex="110">$$0</div><div class="button" tabindex="111">$$equals</div>
+            <div class="button">$$point{tabIndex: 111}</div><div class="button">$$0{tabIndex: 111}</div><div class="button">$$equals{tabIndex: 112}</div>
           </div>
         </div>
       <%
@@ -732,11 +786,11 @@ CLASS({
       }), 'ActionButton');
       %>
         <div class="button-column rhs-ops" style="flex-grow: 1">
-          <div class="button" tabindex="201">$$ac</div>
-          <div class="button" tabindex="202">$$plus</div>
-          <div class="button" tabindex="203">$$minus</div>
-          <div class="button" tabindex="204">$$div</div>
-          <div class="button" tabindex="205">$$mult</div>
+          <div class="button">$$ac{tabIndex: 201}</div>
+          <div class="button">$$plus{tabIndex: 202}</div>
+          <div class="button">$$minus{tabIndex: 203}</div>
+          <div class="button">$$div{tabIndex: 204}</div>
+          <div class="button">$$mult{tabIndex: 205}</div>
         </div>
       </div>
     */}
@@ -759,28 +813,28 @@ CLASS({
           <div id="%%id" class="buttons button-row secondaryButtons">
             <div class="button-column" style="flex-grow: 1;">
               <div class="button-row">
-                <div class="button" tabindex="311">$$fetch</div>
-                <div class="button" tabindex="312">$$store</div>
-                <div class="button" tabindex="313">$$round</div>
-                <div class="button" tabindex="314">$$rand</div>
+                <div class="button">$$fetch{tabIndex: 311}</div>
+                <div class="button">$$store{tabIndex: 312}</div>
+                <div class="button">$$round{tabIndex: 313}</div>
+                <div class="button">$$rand{tabIndex: 314}</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="321">$$e</div>
-                <div class="button" tabindex="322">$$ln</div>
-                <div class="button" tabindex="323">$$log</div>
-                <div class="button" tabindex="324">$$exp</div>
+                <div class="button">$$e{tabIndex: 321}</div>
+                <div class="button">$$ln{tabIndex: 322}</div>
+                <div class="button">$$log{tabIndex: 323}</div>
+                <div class="button">$$exp{tabIndex: 324}</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="331">$$inv</div>
-                <div class="button" tabindex="332">$$pow</div>
-                <div class="button" tabindex="333">$$sqroot</div>
-                <div class="button" tabindex="334">$$root</div>
+                <div class="button">$$inv{tabIndex: 331}</div>
+                <div class="button">$$pow{tabIndex: 332}</div>
+                <div class="button">$$sqroot{tabIndex: 333}</div>
+                <div class="button">$$root{tabIndex: 334}</div>
               </div>
               <div class="button-row">
-                <div class="button" tabindex="341">$$sign</div>
-                <div class="button" tabindex="342">$$percent</div>
-                <div class="button" tabindex="343">$$square</div>
-                <div class="button" tabindex="344">$$pi</div>
+                <div class="button">$$sign{tabIndex: 341}</div>
+                <div class="button">$$percent{tabIndex: 342}</div>
+                <div class="button">$$square{tabIndex: 343}</div>
+                <div class="button">$$pi{tabIndex: 344}</div>
               </div>
             </div>
           </div>
@@ -797,29 +851,29 @@ CLASS({
           this.X.registerModel(this.X.ActionButton.xbind({
             width:      61,
             height:     61,
-            color:      'rgb(119, 119, 119)',
+            color:      'rgb(80, 80, 80)',
             background: 'rgb(29, 233, 182)',
             font:       '300 24px RobotoDraft'
           }), 'ActionButton');
           %>
           <div id="%%id" class="buttons button-row tertiaryButtons">
             <div class="button-column" style="flex-grow: 1">
-              <div class="button-row"><div class="button" tabindex="401">$$deg</div></div>
-              <div class="button-row"><div class="button" tabindex="404">$$sin</div></div>
-              <div class="button-row"><div class="button" tabindex="407">$$cos</div></div>
-              <div class="button-row"><div class="button" tabindex="410">$$tan</div></div>
+              <div class="button-row"><div class="button">$$deg{tabIndex: 401}</div></div>
+              <div class="button-row"><div class="button">$$sin{tabIndex: 404}</div></div>
+              <div class="button-row"><div class="button">$$cos{tabIndex: 407}</div></div>
+              <div class="button-row"><div class="button">$$tan{tabIndex: 410}</div></div>
             </div>
             <div class="button-column" style="flex-grow: 1">
-              <div class="button-row"><div class="button" tabindex="402">$$rad</div></div>
-              <div class="button-row"><div class="button" tabindex="405">$$asin</div></div>
-              <div class="button-row"><div class="button" tabindex="408">$$acos</div></div>
-              <div class="button-row"><div class="button" tabindex="411">$$atan</div></div>
+              <div class="button-row"><div class="button">$$rad{tabIndex: 402}</div></div>
+              <div class="button-row"><div class="button">$$asin{tabIndex: 405}</div></div>
+              <div class="button-row"><div class="button">$$acos{tabIndex: 408}</div></div>
+              <div class="button-row"><div class="button">$$atan{tabIndex: 411}</div></div>
             </div>
             <div class="button-column" style="flex-grow: 1">
-              <div class="button-row"><div class="button" tabindex="403">$$fact</div></div>
-              <div class="button-row"><div class="button" tabindex="406">$$mod</div></div>
-              <div class="button-row"><div class="button" tabindex="409">$$p</div></div>
-              <div class="button-row"><div class="button" tabindex="412">$$c</div></div>
+              <div class="button-row"><div class="button">$$fact{tabIndex: 403}</div></div>
+              <div class="button-row"><div class="button">$$mod{tabIndex: 406}</div></div>
+              <div class="button-row"><div class="button">$$p{tabIndex: 409}</div></div>
+              <div class="button-row"><div class="button">$$c{tabIndex: 412}</div></div>
             </div>
           </div>
     */}
