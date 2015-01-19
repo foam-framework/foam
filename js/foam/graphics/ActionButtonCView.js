@@ -172,7 +172,9 @@ CLASS({
 
         this.X.animate(
           200,
-          function() { this.halo.alpha = 0; }.bind(this), Movement.easeIn(.5), function() { this.state_ = 'default' }.bind(this))();
+          function() { this.halo.alpha = 0; }.bind(this),
+          Movement.easeIn(.5),
+          function() { this.state_ = 'default' }.bind(this))();
       }
     }
   ],
