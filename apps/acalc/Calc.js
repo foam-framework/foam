@@ -490,6 +490,7 @@ CLASS({
     {
       name: 'equals',
       label: '=',
+      speechLabel: 'equals',
       keyboardShortcuts: [ 187 /* '=' */, 13 /* <enter> */ ],
       action: function() {
         if ( typeof(this.a2) === 'string' && this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
@@ -596,10 +597,10 @@ CLASS({
 
 CLASS({
   name: 'CalcSpeechView',
-  extendsModel: 'DetailView',
+  extendsModel: 'View',
   properties: [
     'calc',
-    'lastSentence'
+    'lastSaid'
   ],
   listeners: [
     {
@@ -620,15 +621,13 @@ CLASS({
     {
       name: 'repeat',
       keyboardShortcuts: [ 'r' ],
-      action: function() {
-        this.say(this.lastSentence);
-      }
+      action: function() { debugger; this.say(this.lastSaid); }
     }
   ],
   methods: {
     say: function(msg) {
       // console.log('say: ', msg);
-      this.lastSentence = msg;
+      this.lastSaid = msg;
       this.$.innerHTML = '';
       setTimeout(function() { this.$.innerHTML = msg; }.bind(this), 16);
     },
@@ -636,6 +635,7 @@ CLASS({
       return '<output id="' + this.id + '" style="position:absolute;left:-1000;" aria-live="polite"></output>'
     },
     initHTML: function() {
+      this.SUPER();
       this.calc.subscribe(['action'], this.onAction);
     }
   }
