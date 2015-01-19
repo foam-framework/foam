@@ -628,11 +628,13 @@ CLASS({
     say: function(msg) {
       // console.log('say: ', msg);
       this.lastSaid = msg;
-      this.$.innerHTML = '';
-      setTimeout(function() { this.$.innerHTML = msg; }.bind(this), 16);
+      var e = document.createTextNode(' ' + msg + ' ');
+      e.id = this.nextID();
+      this.$.appendChild(e);
+      setTimeout(function() { e.remove(); }, 30000);
     },
     toHTML: function() {
-      return '<output id="' + this.id + '" style="position:absolute;left:-1000;" aria-live="polite"></output>'
+      return '<output id="' + this.id + '" style="position:absolute;left:-1000000;" aria-relevant="additions" aria-live="assertive"></output>'
     },
     initHTML: function() {
       this.SUPER();
