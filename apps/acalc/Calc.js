@@ -888,7 +888,7 @@ CLASS({
   extendsModel: 'DetailView',
   templates: [
     function toHTML() {/*
-      <div class="history" tabindex="2">{{this.data.op}} {{this.data.a2}}<% if ( this.data.op.toString() ) { %><hr aria-label="equals" tabindex="2"><% } %></div>
+      <div class="history" tabindex="2">{{{this.data.op}}} {{this.data.a2}}<% if ( this.data.op.toString() ) { %><hr aria-label="equals" tabindex="2"><% } %></div>
     */}
   ]
 });
