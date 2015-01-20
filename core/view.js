@@ -1214,7 +1214,7 @@ CLASS({
     },
     {
       name: 'value',
-      postSet: function(_, value) { debugger; this.element[this.property] = value; }
+      postSet: function(_, value) { this.element[this.property] = value; }
     },
     {
       name: 'firstListener_',
@@ -1230,14 +1230,14 @@ CLASS({
     
     get: function() { return this.value; },
 
-    set: function(value) { debugger; this.value = value; },
+    set: function(value) { this.value = value; },
 
     addListener: function(listener) {
       if ( this.firstListener_ ) {
         if ( this.event ) {
           this.element.addEventListener(
             this.event,
-            function() { debugger; },
+            function() { debugger; /* TODO */ },
             false);
         }
 
