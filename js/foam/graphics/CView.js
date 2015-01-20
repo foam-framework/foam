@@ -24,6 +24,8 @@ CLASS({
     'foam.graphics.PositionedCViewView',
     'foam.graphics.CViewView'
   ],
+  
+  traits: [ 'foam.patterns.ChildTreeTrait' ],
 
   documentation: function() {/*
       The base class for a canvas item. A $$DOC{ref:'.'} can be directly inserted
@@ -128,19 +130,19 @@ CLASS({
           The height of this view. Painting is not automatically clipped, so a view
           may render outside of its apparent rectangle. */}
     },
-    {
-      name: 'parent',
-      type: 'foam.graphics.CView'
-    },
-    {
-      name:  'children',
-      type:  'foam.graphics.CView[]',
-      factory: function() { return []; },
-      hidden: true,
-      documentation: function() {/*
-          Child views render relative to their parent, but are not clipped
-          by the parent's apparent rectangle. */}
-    },
+//     {
+//       name: 'parent',
+//       type: 'foam.graphics.CView'
+//     },
+//     {
+//       name:  'children',
+//       type:  'foam.graphics.CView[]',
+//       factory: function() { return []; },
+//       hidden: true,
+//       documentation: function() {/*
+//           Child views render relative to their parent, but are not clipped
+//           by the parent's apparent rectangle. */}
+//     },
     {
       name:  'alpha',
       type:  'float',
@@ -214,25 +216,24 @@ CLASS({
 
     addChild: function(child) { /* Adds a child $$DOC{ref:'foam.graphics.CView'} to the scene
                                    under this. */
-      this.children.push(child);
+      this.SUPER(child);
+
       if ( this.view ) {
         child.view = this.view;
         child.addListener(this.view.paint);
-      }
-      child.parent = this;
+      }     
       return this;
     },
 
-    addChildren: function() { /* Calls $$DOC{ref:'.addChild'} for each parameter. */
-      for ( var key in arguments ) this.addChild(arguments[key]);
-      return this;
-    },
+//     addChildren: function() { /* Calls $$DOC{ref:'.addChild'} for each parameter. */
+//       for ( var key in arguments ) this.addChild(arguments[key]);
+//       return this;
+//     },
 
     removeChild: function(child) { /* Removes a child from the scene. */
-      this.children.deleteI(child);
+      this.SUPER(child);
       child.view = undefined;
       child.removeListener(this.view.paint);
-      child.parent = undefined;
       return this;
     },
 
@@ -292,8 +293,8 @@ CLASS({
       }
     },
 
-    destroy: function() {
-      /* Implement me in submodels to do cleanup when the view is removed. */
-    }
+//     destroy: function() {
+//       /* Implement me in submodels to do cleanup when the view is removed. */
+//     }
   }
 });

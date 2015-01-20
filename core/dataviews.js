@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.views',
   
   documentation: function() {/* When used on a $$DOC{ref:'Property'} 
-    owned by a $$DOC{ref:'foam.views.ChildTreeTrait'}, this trait causes the
+    owned by a $$DOC{ref:'foam.patterns.ChildTreeTrait'}, this trait causes the
     property to get its value from the closest ancestor with that property
     defined. If the property value is set, it becomes set locally and will
     not be inherited until unset to <code>undefined</code>.
@@ -195,137 +195,7 @@ CLASS({
 
 });
 
-CLASS({
-  name: 'ChildTreeTrait',
-  package: 'foam.views',
-  
-  properties: [
-    {
-      name: 'parent',
-      type: 'foam.views.ChildTreeTrait',
-      hidden: true
-    },
-    {
-      name: 'children',
-      type: 'Array[foam.views.ChildTreeTrait]',
-      factory: function() { return []; },
-      documentation: function() {/*
-        $$DOC{ref:'ChildTreeTrait',usePlural:true} children are arranged in a tree.
-      */}
-    }
-  ],
-  
-  constants: [
-    {
-      name: 'ANCESTRY_CHANGE',
-      value: 'ancestryChange'
-    }
-  ],
-  
-  methods: {
-    init: function() {
-      this.SUPER();
-      
-      // begin an ancestry change when our parent changes
-      this.parent$.addListener( function(obj, topic, old, nu) {
-        // propagate an ancestry changes from our parent
-        if (old) old.unsubscribe(this.ANCESTRY_CHANGE, this.propagateAncestryChange );
-        if (nu) nu.subscribe(this.ANCESTRY_CHANGE, this.propagateAncestryChange );         
-        this.propagateAncestryChange();
-      }.bind(this) );
-      
-    },
-    
-    addChild: function(child) {
-      /*
-        Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
-        a sub-$$DOC{ref:'View'} is created, add it to the tree with this method.
-      */
-      if (arguments.callee.caller.super_) this.SUPER(child);
 
-      // Check prevents duplicate addChild() calls,
-      // which can happen when you use creatView() to create a sub-view (and it calls addChild)
-      // and then you write the View using TemplateOutput (which also calls addChild).
-      // That should all be cleaned up and all outputHTML() methods should use TemplateOutput.
-      if ( this.children.indexOf(child) != -1 ) return;
-
-      try {
-        child.parent = this;
-      } catch (x) { console.log(x); }
-
-      var children = this.children;
-      children.push(child);
-      this.children = children;
-
-      return this;
-    },
-
-    removeChild: function(child) {
-      /*
-        Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
-        a sub-$$DOC{ref:'View'} is destroyed, remove it from the tree with this method.
-      */
-      if (arguments.callee.caller.super_) this.SUPER(child);
-      
-      child.destroy();
-      this.children.deleteI(child);
-      child.parent = undefined;
-      
-      return this;
-    },
-
-    addChildren: function() {
-      /* Adds multiple children at once. */
-      //Array.prototype.forEach.call(arguments, this.addChild.bind(this));
-      for ( var key in arguments ) this.addChild(arguments[key]);
-      return this;
-    },
-    
-    destroy: function() {
-      /* Destroys children and removes them from this. Override to include your own
-       cleanup code, but always call this.SUPER() after you are done. */
-      if (arguments.callee.caller.super_) this.SUPER();
-      
-      var list = this.children.slice();
-      Array.prototype.forEach.call(list, this.removeChild.bind(this));
-
-      return this;      
-    },
-    
-    construct: function() {
-      /* After a destroy(), construct() is called to fill in the object again. If
-         any special children need to be re-created, do it here. */
-      if (arguments.callee.caller.super_) this.SUPER();
-
-      return this;      
-    },
-    
-    deepPublish: function(topic) {
-      /*
-       Publish an event and cause all children to publish as well.
-       */
-      var count = this.publish.apply(this, arguments);
-
-      if ( this.children ) {
-        for ( var i = 0 ; i < this.children.length ; i++ ) {
-          var child = this.children[i];
-          count += child.deepPublish.apply(child, arguments);
-        }
-      }
-
-      return count;
-    }
-  },
-  
-  listeners: [
-    {
-      name: 'propagateAncestryChange',
-      code: function() { 
-        this.publish(this.ANCESTRY_CHANGE);
-      }
-    }
-  ]
-});
 
 CLASS({
   name: 'ViewActionsTrait',
@@ -376,7 +246,7 @@ CLASS({
   package: 'foam.views',
   
   traits: ['foam.views.DataProviderTrait',
-           'foam.views.ChildTreeTrait',
+           'foam.patterns.ChildTreeTrait',
            'foam.views.ViewActionsTrait'],
 
   requires: ['SimpleReadOnlyValue'],
@@ -967,7 +837,7 @@ CLASS({
 //  extendsModel: 'foam.views.BaseView',
    traits: ['foam.views.DataProviderTrait',
             'foam.views.DataConsumerTrait',
-            'foam.views.ChildTreeTrait'],
+            'foam.patterns.ChildTreeTrait'],
 //  traits: ['foam.views.DataConsumerTrait'],
   
   documentation: function() {/*
@@ -1797,7 +1667,7 @@ CLASS({
 CLASS({
   name: 'CollapsibleView',
   package: 'foam.views',
-  traits: ['foam.views.ChildTreeTrait',
+  traits: ['foam.patterns.ChildTreeTrait',
            'foam.views.DataConsumerTrait',
            'foam.views.ViewActionsTrait',
            'foam.views.HTMLViewTrait'],
