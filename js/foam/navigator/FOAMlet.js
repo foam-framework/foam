@@ -21,27 +21,27 @@ CLASS({
 
   properties: [
     {
+      name: 'name',
       model_: 'StringProperty',
+    },
+    {
       name: 'iconURL',
+      model_: 'StringProperty',
       label: 'Icon',
       todo: multiline(function() {/*
         Add support for (1) rendering icons, and (2) icon import (upload, etc.)
       */})
     },
     {
-      model_: 'StringProperty',
-      name: 'name'
-    },
-    {
-      model_: 'DateTimeProperty',
       name: 'lastModified',
+      model_: 'DateTimeProperty',
       factory: function() {
         return Date.now();
       }
     },
     {
-      model_: 'StringArrayProperty',
       name: 'labels',
+      model_: 'StringArrayProperty',
       factory: function() { return [this.model_.label]; }
     }
   ],
