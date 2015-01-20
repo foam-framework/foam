@@ -714,7 +714,7 @@ CLASS({
           <div class="calc-display">
             <div class="inner-calc-display">
               $$history{ rowView: 'HistoryCitationView' }
-              <div tabindex="3">$$row1{mode: 'read-only', escapeHTML: false}</div>
+              <div>$$row1{mode: 'read-only', tabIndex: 3, escapeHTML: false}</div>
             </div>
           </div>
           <div class='keypad'>
