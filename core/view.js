@@ -1198,7 +1198,7 @@ var DomValue = {
 
 CLASS({
   name: 'DOMValue',
-  
+
   properties: [
     {
       name: 'element',
@@ -1227,7 +1227,7 @@ CLASS({
       this.SUPER();
       this.value = this.element[this.property];
     },
-    
+
     get: function() { return this.value; },
 
     set: function(value) { this.value = value; },
