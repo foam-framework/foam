@@ -21,6 +21,11 @@ CLASS({
 
   properties: [
     {
+      name: 'id',
+      mode: 'read-only',
+      hidden: true
+    },
+    {
       name: 'name',
       model_: 'StringProperty',
     },
