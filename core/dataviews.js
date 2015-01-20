@@ -15,7 +15,115 @@
  * limitations under the License.
  */
  
+CLASS({
+  name: 'InheritedPropertyTrait',
+  package: 'foam.views',
+  
+  documentation: function() {/* When used on a $$DOC{ref:'Property'} 
+    owned by a $$DOC{ref:'foam.views.ChildTreeTrait'}, this trait causes the
+    property to get its value from the closest ancestor with that property
+    defined. If the property value is set, it becomes set locally and will
+    not be inherited until unset to <code>undefined</code>.
+  */},
+  
+  properties: [
+    {
+      name: 'install',
+      defaultValue: function(prop) {
+        var actualSetter = this.__lookupSetter__(prop.name);
+        var actualGetter = this.__lookupGetter__(prop.name);
+        var actualInit = this.init;
+        var propWriteFlagName = prop.name + "$writtenTo";
+        var propListenerName = prop.name + "$inheritedListener";
+        var propSourceName = prop.name + "$inheritedSource";
+        var propSelf = this;
+        
+        var findParentValue = function(parent, propName) {
+          if ( parent.hasOwnProperty(propName) ) {
+            return parent[propName+"$"];
+          } else {
+            if ( parent.parent ) {
+              return findParentValue(parent.parent, propName);
+            } else {
+              return undefined;
+            }
+          }
+        };
+        var setUpListener = function() {
+          this.instance_[propSourceName] = findParentValue(this.parent, prop.name);
+          if ( this.instance_[propSourceName] ) {
+            this.instance_[propListenerName] = function(_,_,old,nu) {
+              actualSetter.apply(this, [nu]);
+            }.bind(this);
+            this.instance_[propSourceName].addListener(this.instance_[propListenerName] );
+          }
+        };
+        tearDownListener = function() {
+          if ( this.instance_[propSourceName] && this.instance_[propListenerName] ) {
+            this.instance_[propSourceName].removeListener(this.instance_[propListenerName]);
+          }
+          this.instance_[propSourceName] = undefined;
+          this.instance_[propListenerName] = undefined;          
+        };
+               
+        // replace init
+        this.init = function() {
+          // this is now the instance        
+          this.subscribe(this.ANCESTRY_CHANGE, function() {
+            if ( ! this.instance_[propWriteFlagName] )
+            {
+              // unbind the old listener
+              tearDownListener.apply(this);
+              // set up listener if we are inheriting
+              if ( ! this.instance_[propWriteFlagName] ) {
+                setUpListener.apply(this);
+              }
+            }
+          }.bind(this));
 
+          actualInit.apply(this, arguments);
+        }
+        
+        this.__defineSetter__(prop.name, function(nu) {
+          // setter will be called on the instance, so "this" is an instance now
+          // reset to false if user sets undefined, otherwise set true
+          if ( typeof nu !== 'undefined' ) {
+            if ( ! this.instance_[propWriteFlagName] ) {
+              this.instance_[propWriteFlagName] = true;
+              // written locally, so remove inherited value listener if present
+              tearDownListener.apply(this);
+            }
+          } else {
+            if ( ! this.instance_[propWriteFlagName] ) {             
+              this.instance_[propWriteFlagName] = false;
+              // We are now inheriting, so set up the listener
+              setUpListener.apply(this);
+            }            
+          }
+          // in any case call the actual setter with local-value or undefined
+          return actualSetter.apply(this, [nu]);
+        }); 
+        this.__defineGetter__(prop.name, function() {
+          // getter will be called on the instance, so "this" is an instance now
+          if ( ! this.instance_[propWriteFlagName] && this.instance_[propSourceName] ) {
+            // we haven't been written to, so inherit the value
+            return this.instance_[propSourceName].value;
+          } else {
+            return actualGetter.apply(this);
+          }
+        }); 
+      }
+    }
+  ]
+  
+});
+
+CLASS({
+  name: 'InheritedProperty',
+  extendsModel: 'Property',
+  package: 'foam.views',
+  traits: ['foam.views.InheritedPropertyTrait']
+});
 
 // View
 CLASS({
@@ -107,7 +215,27 @@ CLASS({
     }
   ],
   
+  constants: [
+    {
+      name: 'ANCESTRY_CHANGE',
+      value: 'ancestryChange'
+    }
+  ],
+  
   methods: {
+    init: function() {
+      this.SUPER();
+      
+      // begin an ancestry change when our parent changes
+      this.parent$.addListener( function(obj, topic, old, nu) {
+        // propagate an ancestry changes from our parent
+        if (old) old.unsubscribe(this.ANCESTRY_CHANGE, this.propagateAncestryChange );
+        if (nu) nu.subscribe(this.ANCESTRY_CHANGE, this.propagateAncestryChange );         
+        this.propagateAncestryChange();
+      }.bind(this) );
+      
+    },
+    
     addChild: function(child) {
       /*
         Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
@@ -142,15 +270,14 @@ CLASS({
       child.destroy();
       this.children.deleteI(child);
       child.parent = undefined;
-
       
       return this;
     },
 
     addChildren: function() {
       /* Adds multiple children at once. */
-      Array.prototype.forEach.call(arguments, this.addChild.bind(this));
-
+      //Array.prototype.forEach.call(arguments, this.addChild.bind(this));
+      for ( var key in arguments ) this.addChild(arguments[key]);
       return this;
     },
     
@@ -187,74 +314,17 @@ CLASS({
       }
 
       return count;
-    },
-
-    createParentInheritedPropertyInstallFn: function() {
-      /* Returns a function that can be assigned as a $$DOC{ref:'Property'}
-      $$DOC{ref:'Property.install'} function. The property will become
-      inherited from owner's .parent. New getter() and setter() methods
-      will be installed to check up the parent chain, and track local
-      set calls.</p>
-      <p><code>
-      properties: [
-      &nbsp;&nbsp;  { name: 'myProperty',
-      &nbsp;&nbsp;&nbsp;&nbsp;    install: createParentInheritedPropertyInstallFn(),
-      &nbsp;&nbsp;&nbsp;&nbsp;    ...
-      &nbsp;&nbsp;  }]
-      </code>*/
-      return function(prop) {
-        var actualSetter = this.__lookupSetter__(prop.name);
-        var actualGetter = this.__lookupGetter__(prop.name);
-        var actualInit = this.init;
-        var propWriteFlagName = prop.name + "$writtenTo";
-        
-        var findParentValue = function(parent, propName) {
-          if ( parent.hasOwnProperty(propName) ) {
-            return parent[propName];
-          } else {
-            if ( parent.parent ) {
-              return findParentValue(parent.parent, propName);
-            } else {
-              return undefined;
-            }
-          }
-        };
-        
-        // replace init
-        this.init = function() {
-    //console.log("InheritedProp.init ", prop.name);
-          // this is now the instance        
-          this.parent$.addListener(function() {
-            if ( ! this.instance_[propWriteFlagName] )
-            {
-              // we are still inheriting the value, so grab the new parent's
-              var newVal = findParentValue(this.parent, prop.name);
-              actualSetter.apply(this, [newVal]);
-            }
-          }.bind(this));
-          
-          actualInit.apply(this, arguments);
-        }
-        
-        this.__defineSetter__(prop.name, function(nu) {
-    //console.log("InheritedProp.setter ", prop.name, nu);
-          // setter will be called on the instance, so "this" is an instance now
-          // reset to false if user sets undefined, otherwise set true
-          this.instance_[propWriteFlagName] = (typeof nu !== 'undefined');
-          return actualSetter.apply(this, [nu]);
-        }); 
-        this.__defineGetter__(prop.name, function() {
-    //console.log("InheritedProp.getter ", prop.name, findParentValue(this.parent, prop.name));
-          // getter will be called on the instance, so "this" is an instance now
-          if ( ! this.instance_[propWriteFlagName] ) {
-            // we haven't been written to, so inherit the value
-            return findParentValue(this.parent, prop.name);
-          }
-          return actualGetter.apply(this);
-        }); 
-      }; 
     }
-  }
+  },
+  
+  listeners: [
+    {
+      name: 'propagateAncestryChange',
+      code: function() { 
+        this.publish(this.ANCESTRY_CHANGE);
+      }
+    }
+  ]
 });
 
 CLASS({
