@@ -1147,7 +1147,7 @@ CLASS({
 });
 
 
-// TODO: Model
+// TODO(kgr): replace all instances of DomValue with new modelled DOMValue.
 var DomValue = {
   DEFAULT_EVENT:    'change',
   DEFAULT_PROPERTY: 'value',
@@ -1251,7 +1251,7 @@ CLASS({
     },
 
     toString: function() {
-      return "DOMValue(" + this.event + ", " + this.property + ")";
+      return 'DOMValue(' + this.event + ', ' + this.property + ')';
     }
   }
 });
