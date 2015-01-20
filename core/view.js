@@ -239,7 +239,7 @@ CLASS({
   name: 'View',
   label: 'View',
 
-  //exports: [ 'myself$ as data$' ],
+  traits: ['foam.patterns.ChildTreeTrait'],
 
   documentation: function() {/*
     <p>$$DOC{ref:'View',usePlural:true} render data. This could be a specific
@@ -266,25 +266,6 @@ CLASS({
       documentation: function() {/*
         The DOM element id for the outermost tag of
         this $$DOC{ref:'View'}.
-      */}
-    },
-    {
-      name: 'parent',
-      type: 'View',
-      hidden: true
-    },
-    {
-      name: 'children',
-      type: 'Array[View]',
-      factory: function() { return []; },
-      documentation: function() {/*
-        <p>$$DOC{ref:'View',usePlural:true} are arranged in a tree. Each sub-view
-        contained inside this one is a child. Subviews can be created explicitly
-        or inside a template with the $$DOC{ref:'Template',text:"$$propName"}
-        tag.</p>
-        <p>Generally, sub-views are created around a property of the data that
-        this $$DOC{ref:'View'} is showing, each layer getting more specific.</p>
-
       */}
     },
     {
@@ -421,22 +402,6 @@ CLASS({
   methods: {
     toView_: function() { return this; },
 
-    deepPublish: function(topic) {
-      /*
-       Publish an event and cause all children to publish as well.
-       */
-      var count = this.publish.apply(this, arguments);
-
-      if ( this.children ) {
-        for ( var i = 0 ; i < this.children.length ; i++ ) {
-          var child = this.children[i];
-          count += child.deepPublish.apply(child, arguments);
-        }
-      }
-
-      return count;
-    },
-
     strToHTML: function(str) {
       /*
         Escape the string to make it HTML safe.
@@ -561,33 +526,7 @@ CLASS({
       // That should all be cleaned up and all outputHTML() methods should use TemplateOutput.
       if ( this.children.indexOf(child) != -1 ) return;
 
-      try {
-        child.parent = this;
-      } catch (x) { console.log(x); }
-
-      var children = this.children;
-      children.push(child);
-      this.children = children;
-
-      return this;
-    },
-
-    removeChild: function(child) {
-      /*
-        Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
-        a sub-$$DOC{ref:'View'} is destroyed, remove it from the tree with this method.
-      */
-      this.children.deleteI(child);
-      child.parent = undefined;
-
-      return this;
-    },
-
-    addChildren: function() {
-      /* Adds multiple children at once. */
-      Array.prototype.forEach.call(arguments, this.addChild.bind(this));
-
-      return this;
+      return this.SUPER();
     },
 
     addShortcut: function(key, callback, context) {
@@ -716,6 +655,11 @@ CLASS({
       if ( ! this.$ ) return;
 
       this.destroy();
+      this.construct();
+    },
+    
+    construct: function() { /* rebuilds the children of the view */
+      this.SUPER();
       this.$.innerHTML = this.toInnerHTML();
       this.initInnerHTML();
     },
@@ -848,10 +792,9 @@ CLASS({
          creating new HTML in your $$DOC{ref:'.toInnerHTML'} or $$DOC{ref:'.toHTML'}. */
       // TODO: remove listeners
       this.invokeDestructors();
-      for ( var i = 0; i < this.children.length; i++ ) {
-        this.children[i].destroy();
-      }
-      this.children = [];
+        
+      this.SUPER();
+      
       delete this.instance_.$;
     },
 
