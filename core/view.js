@@ -325,6 +325,9 @@ CLASS({
       name: 'tooltip'
     },
     {
+      name: 'tabIndex'
+    },
+    {
       name: 'extraClassName',
       defaultValue: '',
       documentation: function() {/*
