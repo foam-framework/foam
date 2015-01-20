@@ -26,8 +26,12 @@ CLASS({
     'ToolbarView',
     'foam.navigator.FOAMlet',
     'foam.navigator.Todo',
+    'foam.navigator.views.OverlayView',
+    'foam.navigator.views.SelectTypeView',
   ],
   exports: [
+    'dao',
+    'overlay',
   ],
 
   properties: [
@@ -101,18 +105,33 @@ CLASS({
           value$: this.table.selection$
         });
       }
-    }
+    },
+    {
+      name: 'overlay',
+      factory: function() {
+        return this.OverlayView.create();
+      }
+    },
   ],
 
-  methods: {
-  },
+  actions: [
+    {
+      name: 'newItem',
+      label: 'Create...',
+      action: function() {
+        this.overlay.open(this.SelectTypeView.create({ dao: [this.Todo].dao }));
+      }
+    }
+  ],
 
   templates: [
     function CSS() {/*
     */},
     function toInnerHTML() {/*
+      %%overlay
       Search: $$q
       Count: $$count
+      $$newItem
       %%toolbar
       %%table
     */}
