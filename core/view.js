@@ -836,6 +836,7 @@ CLASS({
         console.assert(this.$, 'View must define outer id when using keyboard shortcuts: ' + this.name_);
         this.keyMap_ = keyMap;
         this.$.parentElement.addEventListener('keydown', this.onKeyboardShortcut);
+//        this.X.document.body.addEventListener('keydown', this.onKeyboardShortcut);
       }
     },
 
@@ -1190,6 +1191,67 @@ var DomValue = {
     return "DomValue(" + this.event + ", " + this.property + ")";
   }
 };
+
+
+CLASS({
+  name: 'DOMValue',
+  
+  properties: [
+    {
+      name: 'element',
+      required: true
+    },
+    {
+      name: 'property',
+      defaultValue: 'value'
+    },
+    {
+      name: 'event',
+      defaultValue: 'change'
+    },
+    {
+      name: 'value',
+      postSet: function(_, value) { debugger; this.element[this.property] = value; }
+    },
+    {
+      name: 'firstListener_',
+      defaultValue: true
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+      this.value = this.element[this.property];
+    },
+    
+    get: function() { return this.value; },
+
+    set: function(value) { debugger; this.value = value; },
+
+    addListener: function(listener) {
+      if ( this.firstListener_ ) {
+        if ( this.event ) {
+          this.element.addEventListener(
+            this.event,
+            function() { debugger; },
+            false);
+        }
+
+        this.firstListener_ = false;
+      }
+      this.value$.addListener(listener);
+    },
+
+    removeListener: function(listener) {
+      this.value$.removeListener(listener);
+    },
+
+    toString: function() {
+      return "DOMValue(" + this.event + ", " + this.property + ")";
+    }
+  }
+});
 
 
 CLASS({
