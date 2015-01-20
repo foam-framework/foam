@@ -48,6 +48,7 @@ function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
   var speechLabel = opt_speechLabel || sym;
   f.toString = function() { return '<span aria-label="' + speechLabel + '">' + sym + '</span>'; };
   f.binary = true;
+  f.speechLabel = speechLabel;
   return maybeTranslate({
     name: name,
     label: sym,
@@ -75,6 +76,7 @@ function unaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
   var speechLabel = opt_speechLabel || sym;
   f.toString = function() { return sym; };
   f.unary = true;
+  f.speechLabel = speechLabel;
   return maybeTranslate({
     name: name,
     label: sym,
@@ -625,7 +627,30 @@ CLASS({
     {
       name: 'repeat',
       keyboardShortcuts: [ 'r' ],
-      action: function() { debugger; this.say(this.lastSaid); }
+      action: function() { this.say(this.lastSaid); }
+    },
+    {
+      name: 'sayState',
+      keyboardShortcuts: [ 's' ],
+      action: function() {
+        var last  = this.calc.history[this.calc.history.length-1];
+        if ( ! last ) {
+          this.say(this.calc.a2);
+        } else {
+          var unary = last && last.op.unary;
+          if ( this.calc.op !== DEFAULT_OP ) {
+            this.say(
+              unary ?
+                this.calc.a2 + ' ' + last.op.speechLabel :
+                last.a2 + ' ' + this.calc.op.speechLabel + ' ' + this.calc.a2 );
+          } else {
+            this.say(
+              unary ?
+                last.a2 + ' ' + last.op.speechLabel + ' equals ' + this.calc.a2 :
+                this.calc.history[this.calc.history.length-2].a2 + ' ' + last.op.speechLabel + ' ' + last.a2 + ' equals ' + this.calc.a2 );
+          }
+        }
+      }
     }
   ],
   methods: {
@@ -704,13 +729,13 @@ CLASS({
     {
       name: 'toHTML',
       template: function() {/*
+        <%= CalcSpeechView.create({calc: this.data}) %>
         <% X.registerModel(CalcButton, 'ActionButton'); %>
         <div style="position: relative;z-index: 100;">
           <div tabindex="1" style="position: absolute;">
             <span aria-label="radians" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="radians">RAD</span>
             <span aria-label="degrees" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="degrees">DEG</span>
           </div>
-          <%= CalcSpeechView.create({calc: this.data}) %>
         </div>
 
         <div class="edge"></div>
