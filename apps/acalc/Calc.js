@@ -242,6 +242,8 @@ CLASS({
       padding: 0 25pt 2pt 25pt;
       text-align: right;
       -webkit-user-select: text;
+      overflow-y: scroll;
+      overflow-x: hidden;
     }
 
     .edge {
@@ -307,10 +309,12 @@ CLASS({
     .inner-calc-display {
       position: absolute;
       right: 20pt;
-      top: 100%;
-      transition: top 0.3s ease;
+    top: 100%;
+    transition: top 0.3s ease;
+      xxxbottom: 5px;
       width: 100%;
       padding-left: 90px;
+      padding-bottom: 11px;
     }
 
     .calc-display {
@@ -627,7 +631,6 @@ CLASS({
   methods: {
     say: function(msg) {
       console.log('say: ', msg);
-      return;
       this.lastSaid = msg;
       var e = document.createTextNode(' ' + msg + ' ');
       e.id = this.nextID();
@@ -739,9 +742,10 @@ CLASS({
           // 'top:' styles with 'bottom: 0'.
           var move = EventService.framed(EventService.framed(function() {
             if ( ! this.$ ) return;
-            var outer$ = this.$.querySelector('.calc-display');
             var inner$ = this.$.querySelector('.inner-calc-display');
-            inner$.style.top = outer$.clientHeight - inner$.clientHeight-11;
+            var outer$ = this.$.querySelector('.calc-display');
+            var value = DOMValue.create({element: outer$, property: 'scrollTop' });
+            Movement.animate(300, function() { value.value = inner$.clientHeight; })();
           }.bind(this)));
           Events.dynamic(function() { this.data.op; this.data.history; this.data.a1; this.data.a2; }.bind(this), move);
           this.X.window.addEventListener('resize', move);
