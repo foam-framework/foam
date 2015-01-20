@@ -868,23 +868,19 @@ CLASS({
           }), 'ActionButton');
           %>
           <div id="%%id" class="buttons button-row tertiaryButtons">
-            <div class="button-column" style="flex-grow: 1">
-              <div class="button-row">$$deg{tabIndex: 401}</div>
-              <div class="button-row">$$sin{tabIndex: 404}</div>
-              <div class="button-row">$$cos{tabIndex: 407}</div>
-              <div class="button-row">$$tan{tabIndex: 410}</div>
-            </div>
-            <div class="button-column" style="flex-grow: 1">
-              <div class="button-row">$$rad{tabIndex: 402}</div>
-              <div class="button-row">$$asin{tabIndex: 405}</div>
-              <div class="button-row">$$acos{tabIndex: 408}</div>
-              <div class="button-row">$$atan{tabIndex: 411}</div>
-            </div>
-            <div class="button-column" style="flex-grow: 1">
-              <div class="button-row">$$fact{tabIndex: 403}</div>
-              <div class="button-row">$$mod{tabIndex: 406}</div>
-              <div class="button-row">$$p{tabIndex: 409}</div>
-              <div class="button-row">$$c{tabIndex: 412}</div>
+            <div class="button-column" style="flex-grow: 1;">
+              <div class="button-row">
+                $$deg{tabIndex: 411} $$rad{tabIndex: 412} $$fact{tabIndex: 413}
+              </div>
+              <div class="button-row">
+                $$sin{tabIndex: 421} $$asin{tabIndex: 422} $$mod{tabIndex: 423}
+              </div>
+              <div class="button-row">
+                $$cos{tabIndex: 431} $$acos{tabIndex: 432} $$p{tabIndex: 433}
+              </div>
+              <div class="button-row">
+                $$tan{tabIndex: 441} $$atan{tabIndex: 442} $$c{tabIndex: 443}
+              </div>
             </div>
           </div>
     */}
