@@ -130,19 +130,6 @@ CLASS({
           The height of this view. Painting is not automatically clipped, so a view
           may render outside of its apparent rectangle. */}
     },
-//     {
-//       name: 'parent',
-//       type: 'foam.graphics.CView'
-//     },
-//     {
-//       name:  'children',
-//       type:  'foam.graphics.CView[]',
-//       factory: function() { return []; },
-//       hidden: true,
-//       documentation: function() {/*
-//           Child views render relative to their parent, but are not clipped
-//           by the parent's apparent rectangle. */}
-//     },
     {
       name:  'alpha',
       type:  'float',
@@ -225,11 +212,6 @@ CLASS({
       return this;
     },
 
-//     addChildren: function() { /* Calls $$DOC{ref:'.addChild'} for each parameter. */
-//       for ( var key in arguments ) this.addChild(arguments[key]);
-//       return this;
-//     },
-
     removeChild: function(child) { /* Removes a child from the scene. */
       this.SUPER(child);
       child.view = undefined;
@@ -292,9 +274,5 @@ CLASS({
         return point;
       }
     },
-
-//     destroy: function() {
-//       /* Implement me in submodels to do cleanup when the view is removed. */
-//     }
   }
 });
