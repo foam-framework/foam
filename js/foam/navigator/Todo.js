@@ -24,16 +24,16 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'name',
-      mode: 'read-only'
-    },
-    {
-      model_: 'StringProperty',
-      name: 'summary'
+      required: true
     },
     {
       model_: 'IntProperty',
       name: 'priority',
-      defaultValue: 42
+      defaultValue: 3,
+      view: {
+        factory_: 'ChoiceListView',
+        choices: [1, 2, 3, 4, 5]
+      }
     },
     {
       type: 'Date',
@@ -43,27 +43,7 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'notes',
-      view: 'TextAreaView',
-      postSet: function(prev, next) {
-        if ( this.summary !== this.generateSummary(prev) ) return;
-        this.summary = this.generateSummary(next);
-      }
-    }
-  ],
-
-  methods: [
-    {
-      name: 'init',
-      code: function() {
-        this.SUPER();
-        this.name$ = this.summary$;
-      }
-    },
-    {
-      name: 'generateSummary',
-      code: function(notes) {
-        return notes.split(' ').slice(0, 5).join(' ');
-      }
+      view: 'TextAreaView'
     }
   ]
 });
