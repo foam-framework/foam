@@ -512,6 +512,10 @@ CLASS({
     {
       name: 'width',
       install: Movement.createAnimatedPropertyInstallFn(200, Movement.easeOut(1))
+    },
+    {
+      name: 'stretchy',
+      defaultValue: false
     }
   ],
 
@@ -586,7 +590,12 @@ CLASS({
     {
       name: 'clipping',
       defaultValue: true
+    },
+    {
+      name: 'stretchy',
+      defaultValue: false
     }
+
   ],
 
   methods: {

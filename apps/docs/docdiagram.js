@@ -144,8 +144,8 @@ CLASS({
       this.outerLayout.addChild(this.extendsLayout);
       this.extendsLayout.addChild(this.extendsModelLayout);
       this.extendsLayout.addChild(this.mainLayout);
-      
-      Events.follow(this.modelDiagram.diagramItem.height$, this.traitDiagram.spacing$);
+            
+      Events.follow(this.modelDiagram.diagramItem.verticalConstraints.preferred$, this.traitDiagram.spacing$);
     },
 
     toHTML: function() {
@@ -235,7 +235,10 @@ CLASS({
 
       this.mainLayout.verticalConstraints.preferred = 0;
       this.diagramItem.addChild(this.mainLayout);
-      this.diagramItem.addChild(this.Spacer.create({fixedHeight$: this.spacing$}));
+      var spacer = this.Spacer.create();
+      spacer.verticalConstraints.min$ = this.spacing$;
+      spacer.stretchFactor = 1;
+      this.diagramItem.addChild(spacer);
     },
 
     construct: function() {
@@ -453,6 +456,7 @@ CLASS({
       name: 'linkableItem',
       factory: function() {
         var linkableItem = this.Block.create({ border: 'black' }, this.childX);
+        //Events.follow(linkableItem.verticalConstraints.preferred$, linkableItem.verticalConstraints.max$);
         linkableItem.addChild(
           this.Section.create({
             title$: this.packageName$, titleFont: '8px Roboto',
