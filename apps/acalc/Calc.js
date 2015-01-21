@@ -605,35 +605,6 @@ CLASS({
 
 
 CLASS({
-  name: 'ZoomView',
-  extendsModel: 'View',
-  properties: [
-    {
-      name: 'zoom',
-      defaultValue: 1,
-      postSet: function(_, z) { this.X.document.body.style.zoom = z; }
-    }
-  ],
-  actions: [
-    {
-      name: 'zoomIn',
-      keyboardShortcuts: [ 'ctrl-shift-187', 'ctrl-187', 'shift-187' ],
-      action: function() { console.log('zoomIn'); this.zoom *= 1.1; }
-    },
-    {
-      name: 'zoomOut',
-      keyboardShortcuts: [ 'ctrl-shift-189', 'ctrl-189', 'shift-189' ],
-      action: function() { console.log('zoomOut'); this.zoom /= 1.1; }
-    },
-    {
-      name: 'zoomReset',
-      action: function() { this.zoom = 1.0; }
-    }
-  ]
-});
-
-
-CLASS({
   name: 'CalcSpeechView',
   extendsModel: 'View',
   properties: [
@@ -740,7 +711,8 @@ CLASS({
     'SlidePanelView',
     'MainButtonsView',
     'SecondaryButtonsView',
-    'TertiaryButtonsView'
+    'TertiaryButtonsView',
+    'foam.chromeapp.ui.ZoomView'
   ],
   exports: [
     'data'
@@ -763,7 +735,7 @@ CLASS({
       name: 'toHTML',
       template: function() {/*
         <%= CalcSpeechView.create({calc: this.data}) %>
-        <%= ZoomView.create() %>
+        <%= this.ZoomView.create() %>
         <% X.registerModel(CalcButton, 'ActionButton'); %>
         <div style="position: relative;z-index: 100;">
           <div tabindex="1" style="position: absolute;">
