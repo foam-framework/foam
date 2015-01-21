@@ -20,11 +20,13 @@ CLASS({
   package: 'foam.navigator',
   extendsModel: 'View',
   requires: [
+    'EasyDAO',
+    'FutureDAO',
     'TableView',
     'TextFieldView',
     'ToolbarView',
+    'foam.navigator.BrowserConfig',
     'foam.navigator.FOAMlet',
-    'foam.navigator.types.Todo',
     'foam.navigator.views.OverlayView',
     'foam.navigator.views.SelectTypeView',
     'foam.navigator.dao.MultiDAO'
@@ -45,9 +47,48 @@ CLASS({
 
   properties: [
     {
+      name: 'config',
+      documentation: 'Sets up the default BrowserConfig, which loads FOAMlets.',
+      factory: function() {
+        // The BrowserConfig DAO we'll be passing to the MultiDAO that drives
+        // the FOAMlet system.
+        var configDAO = this.EasyDAO.create({
+          model: this.BrowserConfig,
+          cache: true
+        });
+
+        // The future DAO handed temporarily to the MultiDAO to buy time while
+        // we check if we need to populate an empty configDAO.
+        var future = afuture();
+        var futureDAO = this.FutureDAO.create({
+          future: future.get
+        });
+
+        // Check if the configDAO is empty, and populate it with the default
+        // types if it is.
+        configDAO.select(COUNT())(function(c) {
+          if (c.count > 0) future.set(configDAO);
+          else {
+            [
+              this.BrowserConfig.create({ model: 'foam.navigator.types.Todo' })
+            ].dao.select(configDAO)(function() {
+              future.set(configDAO);
+            });
+          }
+        }.bind(this));
+
+        return this.BrowserConfig.create({
+          model: this.FOAMlet,
+          dao: this.MultiDAO.create({
+            configDAO: futureDAO
+          })
+        });
+      }
+    },
+    {
       name: 'dao',
       factory: function() {
-        return this.MultiDAO.create();
+        return this.config.dao;
       }
     },
     {
@@ -57,7 +98,7 @@ CLASS({
         // model-agnostic and simply turns any "foo:bar" into an axis search.
         // TODO(braden): Actually implement the sophisticated parsing here.
         return function(q) {
-          return CONTAINS_IC(this.FOAMlet.NAME, q);
+          return this.config.queryParser;
         };
       }
     },
@@ -84,7 +125,7 @@ CLASS({
       name: 'table',
       factory: function() {
         return this.TableView.create({
-          model: this.FOAMlet,
+          model: this.config.model,
           dao: this.dao,
           scrollEnabed: true,
           rows: 20
@@ -105,7 +146,7 @@ CLASS({
       name: 'toolbar',
       factory: function() {
         return this.ToolbarView.create({
-          actions: this.FOAMlet.actions,
+          actions: this.config.model.actions,
           value$: this.table.selection$
         });
       }
