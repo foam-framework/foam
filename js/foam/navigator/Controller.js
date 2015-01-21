@@ -25,13 +25,13 @@ CLASS({
     'TextFieldView',
     'ToolbarView',
     'foam.navigator.FOAMlet',
-    'foam.navigator.Todo',
+    'foam.navigator.types.Todo',
     'foam.navigator.views.OverlayView',
-    'foam.navigator.views.SelectTypeView',
+    'foam.navigator.views.SelectTypeView'
   ],
   exports: [
     'dao',
-    'overlay',
+    'overlay'
   ],
 
   properties: [
@@ -39,9 +39,8 @@ CLASS({
       name: 'dao',
       factory: function() {
         return this.EasyDAO.create({
-          model: this.Todo,
-          seqNo: true,
-          seqProperty: this.Todo.ID,
+          model: this.FOAMlet,
+          daoType: this.MultiDAO,
           cache: true
         });
       }
