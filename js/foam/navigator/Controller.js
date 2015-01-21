@@ -20,28 +20,36 @@ CLASS({
   package: 'foam.navigator',
   extendsModel: 'View',
   requires: [
-    'EasyDAO',
     'TableView',
     'TextFieldView',
     'ToolbarView',
     'foam.navigator.FOAMlet',
     'foam.navigator.types.Todo',
     'foam.navigator.views.OverlayView',
-    'foam.navigator.views.SelectTypeView'
+    'foam.navigator.views.SelectTypeView',
+    'foam.navigator.dao.MultiDAO'
   ],
   exports: [
     'dao',
     'overlay'
   ],
 
+  constants: [
+    {
+      name: 'FOAMLET_MODELS',
+      value: [
+        'foam.navigator.types.Todo'
+      ]
+    }
+  ],
+
   properties: [
     {
       name: 'dao',
       factory: function() {
-        return this.EasyDAO.create({
-          model: this.FOAMlet,
-          daoType: this.MultiDAO,
-          cache: true
+        return this.MultiDAO.create({
+          models: this.FOAMLET_MODELS,
+          daoType: 'IDB'
         });
       }
     },
@@ -118,7 +126,12 @@ CLASS({
       name: 'newItem',
       label: 'Create...',
       action: function() {
-        this.overlay.open(this.SelectTypeView.create({ dao: [this.Todo].dao }));
+        var models = this.FOAMLET_MODELS.map(function(fullName) {
+          return this[fullName.split('.').pop()];
+        }.bind(this));
+        this.overlay.open(this.SelectTypeView.create({
+          dao: models.dao
+        }));
       }
     }
   ],

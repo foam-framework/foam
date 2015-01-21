@@ -40,6 +40,10 @@ CLASS({
       factory: function() { return this.DEFAULT_MODELS.slice(0); }
     },
     {
+      name: 'daoType',
+      defaultValue: 'MDAO'
+    },
+    {
       name: 'daos',
       factory: function() { return {}; }
     },
@@ -108,7 +112,7 @@ CLASS({
             });
           })).aseq(function(ret) {
             sink && sink.eof && sink.eof();
-            ret();
+            ret && ret(sink);
           });
         }
       },
@@ -140,13 +144,11 @@ CLASS({
           var self = this;
           return apar.apply(null, this.models.map(function(modelName) {
             return self.daos[modelName].aseq(function(ret, dao) {
-              dao.select(proxySink, options)(function() {
-                ret();
-              });
+              dao.select(proxySink, options)(ret);
             });
           })).aseq(function(ret) {
             sink && sink.eof && sink.eof();
-            ret && ret();
+            ret && ret.call(null, sink);
           });
         }
       },
@@ -189,30 +191,12 @@ CLASS({
         }
       },
       {
-        name: 'where',
-        code: function(query) {
-          throw 'where() not supported on MultiDAO (yet)';
-        }
-      },
-      {
         name: 'limit',
         todo: 'This is an alright approximation, but we can probably do better',
         code: function(count) {
           this.models.forEach(function(modelName) {
             this.daos[modelName].limit(count);
           }.bind(this));
-        }
-      },
-      {
-        name: 'skip',
-        code: function(count) {
-          throw 'skip() not supported on MultiDAO (yet)';
-        }
-      },
-      {
-        name: 'orderBy',
-        code: function() {
-          throw 'orderBy() not supported on MultiDAO (yet)';
         }
       },
       {
@@ -225,9 +209,9 @@ CLASS({
               config: this.idDecoratorConfig,
               delegate: this.EasyDAO.create({
                 model: name,
-                daoType: 'MDAO',
+                daoType: this.daoType,
                 seqNo: true,
-                logging: true
+                cache: true
               })
             });
             this.addListenersToDAO(dao);
