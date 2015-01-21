@@ -19,11 +19,25 @@ CLASS({
   name: 'FOAMlet',
   package: 'foam.navigator',
 
+  tableProperties: [
+    'iconURL',
+    'type',
+    'name',
+    'labels',
+    'lastModified'
+  ],
+
+
   properties: [
     {
       name: 'id',
       mode: 'read-only',
       hidden: true
+    },
+    {
+      name: 'type',
+      tableWidth: 80,
+      defaultValueFn: function() { return this.model_.label; }
     },
     {
       name: 'name',
@@ -33,6 +47,8 @@ CLASS({
       name: 'iconURL',
       model_: 'StringProperty',
       label: 'Icon',
+      tableLabel: 'Icon',
+      tableWidth: 30,
       todo: multiline(function() {/*
         Add support for (1) rendering icons, and (2) icon import (upload, etc.)
       */})
@@ -40,6 +56,7 @@ CLASS({
     {
       name: 'lastModified',
       model_: 'DateTimeProperty',
+      tableWidth: 100,
       factory: function() {
         return Date.now();
       }
@@ -47,7 +64,7 @@ CLASS({
     {
       name: 'labels',
       model_: 'StringArrayProperty',
-      factory: function() { return [this.model_.label]; }
+      factory: function() { return []; }
     }
   ],
 
