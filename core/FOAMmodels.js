@@ -60,6 +60,7 @@ var files = [
   '../js/foam/ui/Window',
   'LayoutTraits', // generic, non-view specific, so no predicate
   [ 'value', IN_BROWSER ],
+  '../js/foam/patterns/ChildTreeTrait', // used in view, included here for backward compat of old apps
   'view',
   [ 'view2', IN_BROWSER ],
   'layout',
