@@ -42,6 +42,7 @@ cat \
   ../../core/touch.js \
   ../../js/foam/ui/animated/Label.js \
   ../../js/foam/ui/md/Flare.js \
+  ../../js/foam/chromeapp/ui/ZoomView.js \
   | sed 's/^ *//g' \
   | sed 's/  */ /g' \
   | sed 's%^//.*%%g' \
