@@ -130,7 +130,6 @@ FOAM.lookup = function(key, opt_X) {
 function arequire(modelName, opt_X) {
   var X = opt_X || GLOBAL.X;
   var model = FOAM.lookup(modelName, X);
-
   if ( ! model ) {
     if ( ! X.ModelDAO ) {
       console.warn('Unknown Model in arequire: ', modelName);

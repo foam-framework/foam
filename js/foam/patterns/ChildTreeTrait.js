@@ -61,7 +61,7 @@ CLASS({
         Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
         a sub-$$DOC{ref:'View'} is created, add it to the tree with this method.
       */
-      if (arguments.callee.caller.super_) this.SUPER(child);
+      //if (arguments.callee.caller.super_) this.SUPER(child);
 
       // Check prevents duplicate addChild() calls,
       // which can happen when you use creatView() to create a sub-view (and it calls addChild)
@@ -85,7 +85,7 @@ CLASS({
         Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
         a sub-$$DOC{ref:'View'} is destroyed, remove it from the tree with this method.
       */
-      if (arguments.callee.caller.super_) this.SUPER(child);
+      //if (arguments.callee.caller.super_) this.SUPER(child);
       
       child.destroy();
       this.children.deleteI(child);
@@ -96,15 +96,18 @@ CLASS({
 
     addChildren: function() {
       /* Adds multiple children at once. */
-      //Array.prototype.forEach.call(arguments, this.addChild.bind(this));
-      for ( var key in arguments ) this.addChild(arguments[key]);
+      if ( Array.isArray(arguments) ) {
+        Array.prototype.forEach.call(arguments, this.addChild.bind(this));
+      } else {
+        for ( var key in arguments ) this.addChild(arguments[key]);
+      }     
       return this;
     },
     
     destroy: function() {
       /* Destroys children and removes them from this. Override to include your own
        cleanup code, but always call this.SUPER() after you are done. */
-      if (arguments.callee.caller.super_) this.SUPER();
+      //if (arguments.callee.caller.super_) this.SUPER();
       
       var list = this.children.slice();
       Array.prototype.forEach.call(list, this.removeChild.bind(this));
@@ -115,7 +118,6 @@ CLASS({
     construct: function() {
       /* After a destroy(), construct() is called to fill in the object again. If
          any special children need to be re-created, do it here. */
-      if (arguments.callee.caller.super_) this.SUPER();
 
       return this;      
     },

@@ -47,7 +47,7 @@ CLASS({
   extendsModel: 'foam.graphics.CViewView',
   package: 'foam.documentation',
   
-  traits: [ 'foam.patterns.ChildTreeTrait',
+  traits: [ //'foam.patterns.ChildTreeTrait',
             'foam.views.DataConsumerTrait'],
   
   requires: ['foam.documentation.ModelDocDiagram',

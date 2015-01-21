@@ -47,10 +47,7 @@ CLASS({
     {
       name: 'dao',
       factory: function() {
-        return this.MultiDAO.create({
-          models: this.FOAMLET_MODELS,
-          daoType: 'IDB'
-        });
+        return this.MultiDAO.create();
       }
     },
     {
