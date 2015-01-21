@@ -735,7 +735,7 @@ CLASS({
       name: 'toHTML',
       template: function() {/*
         <%= CalcSpeechView.create({calc: this.data}) %>
-        <%= this.ZoomView.create() %>
+        <!-- <%= this.ZoomView.create() %> -->
         <% X.registerModel(CalcButton, 'ActionButton'); %>
         <div style="position: relative;z-index: 100;">
           <div tabindex="1" style="position: absolute;">
