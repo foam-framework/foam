@@ -44,12 +44,15 @@
      ga('send', 'pageview');
    </script>
   <script>
-    var Y = bootCORE(Application.create({
-      name: 'MBug'
-    }));
-    var w = Y.Window.create({ window: window });
-    var mbug = Y.MBug.create();
-    w.view = mbug;
+  aseq(
+    arequire('MBug'))(function() {
+      var Y = bootCORE(Application.create({
+        name: 'MBug'
+      }));
+      var w = Y.Window.create({ window: window });
+      var mbug = Y.MBug.create();
+      w.view = mbug;
+    });
   </script>
  </body>
 </html>

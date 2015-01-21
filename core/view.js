@@ -526,7 +526,7 @@ CLASS({
       // That should all be cleaned up and all outputHTML() methods should use TemplateOutput.
       if ( this.children.indexOf(child) != -1 ) return;
 
-      return this.SUPER();
+      return this.SUPER(child);
     },
 
     addShortcut: function(key, callback, context) {
@@ -660,6 +660,7 @@ CLASS({
     
     construct: function() { /* rebuilds the children of the view */
       this.SUPER();
+      if ( ! this.$ ) return;
       this.$.innerHTML = this.toInnerHTML();
       this.initInnerHTML();
     },
@@ -841,8 +842,9 @@ CLASS({
       name: 'parent',
       type: 'View',
       postSet: function(_, p) {
-        p[this.prop.name + 'View'] = this.view;
+        if ( p ) p[this.prop.name + 'View'] = this.view;
         if ( this.view ) this.view.parent = p;
+       
       },
       documentation: function() {/*
         The $$DOC{ref:'View'} to use as the parent container for the new
