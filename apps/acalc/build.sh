@@ -29,6 +29,7 @@ cat \
   ../../core/AbstractDAOView.js \
   ../../core/DAOListView.js \
   ../../core/DetailView.js \
+  ../../js/foam/patterns/ChildTreeTrait.js \
   ../../js/foam/graphics/AbstractCViewView.js \
   ../../js/foam/graphics/CView.js \
   ../../js/foam/graphics/Circle.js \

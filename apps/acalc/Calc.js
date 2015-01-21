@@ -112,6 +112,7 @@ function num(n) {
 var DEFAULT_OP = function(a1, a2) { return a2; };
 DEFAULT_OP.toString = function() { return ''; };
 
+
 CLASS({
   name: 'NumberFormatter',
   messages: [
@@ -136,6 +137,7 @@ CLASS({
     }
   ]
 });
+
 
 CLASS({
   name: 'History',
@@ -601,6 +603,36 @@ CLASS({
   ]
 });
 
+
+CLASS({
+  name: 'ZoomView',
+  extendsModel: 'View',
+  properties: [
+    {
+      name: 'zoom',
+      defaultValue: 1,
+      postSet: function(_, z) { this.X.document.body.style.zoom = z; }
+    }
+  ],
+  actions: [
+    {
+      name: 'zoomIn',
+      keyboardShortcuts: [ 'ctrl-shift-187', 'ctrl-187', 'shift-187' ],
+      action: function() { console.log('zoomIn'); this.zoom *= 1.1; }
+    },
+    {
+      name: 'zoomOut',
+      keyboardShortcuts: [ 'ctrl-shift-189', 'ctrl-189', 'shift-189' ],
+      action: function() { console.log('zoomOut'); this.zoom /= 1.1; }
+    },
+    {
+      name: 'zoomReset',
+      action: function() { this.zoom = 1.0; }
+    }
+  ]
+});
+
+
 CLASS({
   name: 'CalcSpeechView',
   extendsModel: 'View',
@@ -700,6 +732,7 @@ var CalcButton = ActionButtonCView2.xbind({
   role:       'button'
 });
 
+
 CLASS({
   name: 'CalcView',
   requires: [
@@ -730,6 +763,7 @@ CLASS({
       name: 'toHTML',
       template: function() {/*
         <%= CalcSpeechView.create({calc: this.data}) %>
+        <%= ZoomView.create() %>
         <% X.registerModel(CalcButton, 'ActionButton'); %>
         <div style="position: relative;z-index: 100;">
           <div tabindex="1" style="position: absolute;">
@@ -793,6 +827,7 @@ CLASS({
   ]
 });
 
+
 CLASS({
   name: 'MainButtonsView',
   extendsModel: 'DetailView',
@@ -832,6 +867,7 @@ CLASS({
     */}
   ]
 });
+
 
 CLASS({
   name: 'SecondaryButtonsView',
@@ -878,6 +914,7 @@ CLASS({
   ]
 });
 
+
 CLASS({
   name: 'TertiaryButtonsView',
   extendsModel: 'DetailView',
@@ -912,6 +949,7 @@ CLASS({
   ]
 });
 
+
 CLASS({
   name: 'HistoryCitationView',
   extendsModel: 'DetailView',
@@ -923,4 +961,5 @@ CLASS({
 });
 
 Calc.getPrototype();
+
 // console.profileEnd();

@@ -25,9 +25,13 @@ CLASS({
     'TextFieldView',
     'ToolbarView',
     'foam.navigator.FOAMlet',
-    'foam.navigator.Todo',
+    'foam.navigator.types.Todo',
+    'foam.navigator.views.OverlayView',
+    'foam.navigator.views.SelectTypeView'
   ],
   exports: [
+    'dao',
+    'overlay'
   ],
 
   properties: [
@@ -35,9 +39,8 @@ CLASS({
       name: 'dao',
       factory: function() {
         return this.EasyDAO.create({
-          model: this.Todo,
-          seqNo: true,
-          seqProperty: this.Todo.ID,
+          model: this.FOAMlet,
+          daoType: this.MultiDAO,
           cache: true
         });
       }
@@ -101,18 +104,33 @@ CLASS({
           value$: this.table.selection$
         });
       }
-    }
+    },
+    {
+      name: 'overlay',
+      factory: function() {
+        return this.OverlayView.create();
+      }
+    },
   ],
 
-  methods: {
-  },
+  actions: [
+    {
+      name: 'newItem',
+      label: 'Create...',
+      action: function() {
+        this.overlay.open(this.SelectTypeView.create({ dao: [this.Todo].dao }));
+      }
+    }
+  ],
 
   templates: [
     function CSS() {/*
     */},
     function toInnerHTML() {/*
+      %%overlay
       Search: $$q
       Count: $$count
+      $$newItem
       %%toolbar
       %%table
     */}
