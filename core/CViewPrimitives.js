@@ -159,7 +159,14 @@ CLASS({
         
 //console.log("  layout dirty? ", this.layoutDirty);
       }
-    }
+      
+      // Enable to debug layout
+//       var c = this.canvas;
+//       if ( c ) {
+//         c.rect(0,0,this.width,this.height);
+//         c.stroke();
+//       }
+      }
   }
 });
 

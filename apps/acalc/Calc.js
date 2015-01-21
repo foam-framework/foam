@@ -48,6 +48,7 @@ function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
   var speechLabel = opt_speechLabel || sym;
   f.toString = function() { return '<span aria-label="' + speechLabel + '">' + sym + '</span>'; };
   f.binary = true;
+  f.speechLabel = speechLabel;
   return maybeTranslate({
     name: name,
     label: sym,
@@ -75,6 +76,7 @@ function unaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
   var speechLabel = opt_speechLabel || sym;
   f.toString = function() { return sym; };
   f.unary = true;
+  f.speechLabel = speechLabel;
   return maybeTranslate({
     name: name,
     label: sym,
@@ -110,6 +112,7 @@ function num(n) {
 var DEFAULT_OP = function(a1, a2) { return a2; };
 DEFAULT_OP.toString = function() { return ''; };
 
+
 CLASS({
   name: 'NumberFormatter',
   messages: [
@@ -134,6 +137,7 @@ CLASS({
     }
   ]
 });
+
 
 CLASS({
   name: 'History',
@@ -242,6 +246,8 @@ CLASS({
       padding: 0 25pt 2pt 25pt;
       text-align: right;
       -webkit-user-select: text;
+      overflow-y: scroll;
+      overflow-x: hidden;
     }
 
     .edge {
@@ -307,10 +313,12 @@ CLASS({
     .inner-calc-display {
       position: absolute;
       right: 20pt;
-      top: 100%;
-      transition: top 0.3s ease;
+    top: 100%;
+    transition: top 0.3s ease;
+      xxxbottom: 5px;
       width: 100%;
       padding-left: 90px;
+      padding-bottom: 11px;
     }
 
     .calc-display {
@@ -595,6 +603,7 @@ CLASS({
   ]
 });
 
+
 CLASS({
   name: 'CalcSpeechView',
   extendsModel: 'View',
@@ -607,7 +616,7 @@ CLASS({
       name: 'onAction',
       code: function(calc, topic, action) {
         var last  = this.calc.history[this.calc.history.length-1];
-        var unary = last && last.op.unary; 
+        var unary = last && last.op.unary;
         this.say(
           action.name === 'equals' ?
             action.speechLabel + ' ' + this.calc.a2 :
@@ -621,13 +630,35 @@ CLASS({
     {
       name: 'repeat',
       keyboardShortcuts: [ 'r' ],
-      action: function() { debugger; this.say(this.lastSaid); }
+      action: function() { this.say(this.lastSaid); }
+    },
+    {
+      name: 'sayState',
+      keyboardShortcuts: [ 's' ],
+      action: function() {
+        var last  = this.calc.history[this.calc.history.length-1];
+        if ( ! last ) {
+          this.say(this.calc.a2);
+        } else {
+          var unary = last && last.op.unary;
+          if ( this.calc.op !== DEFAULT_OP ) {
+            this.say(
+              unary ?
+                this.calc.a2 + ' ' + last.op.speechLabel :
+                last.a2 + ' ' + this.calc.op.speechLabel + ' ' + this.calc.a2 );
+          } else {
+            this.say(
+              unary ?
+                last.a2 + ' ' + last.op.speechLabel + ' equals ' + this.calc.a2 :
+                this.calc.history[this.calc.history.length-2].a2 + ' ' + last.op.speechLabel + ' ' + last.a2 + ' equals ' + this.calc.a2 );
+          }
+        }
+      }
     }
   ],
   methods: {
     say: function(msg) {
       console.log('say: ', msg);
-      return;
       this.lastSaid = msg;
       var e = document.createTextNode(' ' + msg + ' ');
       e.id = this.nextID();
@@ -655,6 +686,10 @@ CLASS({
     init: function() {
       this.SUPER();
       setTimeout(function() { this.view.paint(); }.bind(this), 1000);
+    },
+    toView_: function() {
+      var v = this.SUPER();
+      return v.decorate('toHTML', function(SUPER) { return '<div class="button">' + SUPER.call(this) + '</div>';}, v.toHTML);
     }
   }
 });
@@ -668,6 +703,7 @@ var CalcButton = ActionButtonCView2.xbind({
   role:       'button'
 });
 
+
 CLASS({
   name: 'CalcView',
   requires: [
@@ -675,7 +711,8 @@ CLASS({
     'SlidePanelView',
     'MainButtonsView',
     'SecondaryButtonsView',
-    'TertiaryButtonsView'
+    'TertiaryButtonsView',
+    'foam.chromeapp.ui.ZoomView'
   ],
   exports: [
     'data'
@@ -697,13 +734,14 @@ CLASS({
     {
       name: 'toHTML',
       template: function() {/*
+        <%= CalcSpeechView.create({calc: this.data}) %>
+        <%= this.ZoomView.create() %>
         <% X.registerModel(CalcButton, 'ActionButton'); %>
         <div style="position: relative;z-index: 100;">
           <div tabindex="1" style="position: absolute;">
             <span aria-label="radians" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="radians">RAD</span>
             <span aria-label="degrees" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="degrees">DEG</span>
           </div>
-          <%= CalcSpeechView.create({calc: this.data}) %>
         </div>
 
         <div class="edge"></div>
@@ -711,7 +749,7 @@ CLASS({
           <div class="calc-display">
             <div class="inner-calc-display">
               $$history{ rowView: 'HistoryCitationView' }
-              <div tabindex="3">$$row1{mode: 'read-only', escapeHTML: false}</div>
+              <div>$$row1{mode: 'read-only', tabIndex: 3, escapeHTML: false}</div>
             </div>
           </div>
           <div class='keypad'>
@@ -739,9 +777,10 @@ CLASS({
           // 'top:' styles with 'bottom: 0'.
           var move = EventService.framed(EventService.framed(function() {
             if ( ! this.$ ) return;
-            var outer$ = this.$.querySelector('.calc-display');
             var inner$ = this.$.querySelector('.inner-calc-display');
-            inner$.style.top = outer$.clientHeight - inner$.clientHeight-11;
+            var outer$ = this.$.querySelector('.calc-display');
+            var value = DOMValue.create({element: outer$, property: 'scrollTop' });
+            Movement.animate(300, function() { value.value = inner$.clientHeight; })();
           }.bind(this)));
           Events.dynamic(function() { this.data.op; this.data.history; this.data.a1; this.data.a2; }.bind(this), move);
           this.X.window.addEventListener('resize', move);
@@ -760,6 +799,7 @@ CLASS({
   ]
 });
 
+
 CLASS({
   name: 'MainButtonsView',
   extendsModel: 'DetailView',
@@ -768,16 +808,16 @@ CLASS({
       <div id="%%id" class="buttons button-row" style="background:#4b4b4b;">
         <div class="button-column" style="flex-grow: 3">
           <div class="button-row">
-            <div class="button">$$7{tabIndex: 101}</div> <div class="button">$$8{tabIndex: 102}</div> <div class="button">$$9{tabIndex: 103}</div>
+            $$7{tabIndex: 101} $$8{tabIndex: 102} $$9{tabIndex: 103}
           </div>
           <div class="button-row">
-            <div class="button">$$4{tabIndex: 104}</div><div class="button">$$5{tabIndex: 105}</div><div class="button">$$6{tabIndex: 106}</div>
+            $$4{tabIndex: 104}$$5{tabIndex: 105}$$6{tabIndex: 106}
          </div>
           <div class="button-row">
-            <div class="button">$$1{tabIndex: 107}</div><div class="button">$$2{tabIndex: 108}</div><div class="button">$$3{tabIndex: 109}</div>
+            $$1{tabIndex: 107}$$2{tabIndex: 108}$$3{tabIndex: 109}
           </div>
           <div class="button-row">
-            <div class="button">$$point{tabIndex: 111}</div><div class="button">$$0{tabIndex: 111}</div><div class="button">$$equals{tabIndex: 112}</div>
+            $$point{tabIndex: 111}$$0{tabIndex: 111}$$equals{tabIndex: 112}
           </div>
         </div>
       <%
@@ -789,16 +829,17 @@ CLASS({
       }), 'ActionButton');
       %>
         <div class="button-column rhs-ops" style="flex-grow: 1">
-          <div class="button">$$ac{tabIndex: 201}</div>
-          <div class="button">$$plus{tabIndex: 202}</div>
-          <div class="button">$$minus{tabIndex: 203}</div>
-          <div class="button">$$div{tabIndex: 204}</div>
-          <div class="button">$$mult{tabIndex: 205}</div>
+          $$ac{tabIndex: 201}
+          $$plus{tabIndex: 202}
+          $$minus{tabIndex: 203}
+          $$div{tabIndex: 204}
+          $$mult{tabIndex: 205}
         </div>
       </div>
     */}
   ]
 });
+
 
 CLASS({
   name: 'SecondaryButtonsView',
@@ -816,34 +857,35 @@ CLASS({
           <div id="%%id" class="buttons button-row secondaryButtons">
             <div class="button-column" style="flex-grow: 1;">
               <div class="button-row">
-                <div class="button">$$fetch{tabIndex: 311}</div>
-                <div class="button">$$store{tabIndex: 312}</div>
-                <div class="button">$$round{tabIndex: 313}</div>
-                <div class="button">$$rand{tabIndex: 314}</div>
+                $$fetch{tabIndex: 311}
+                $$store{tabIndex: 312}
+                $$round{tabIndex: 313}
+                $$rand{tabIndex: 314}
               </div>
               <div class="button-row">
-                <div class="button">$$e{tabIndex: 321}</div>
-                <div class="button">$$ln{tabIndex: 322}</div>
-                <div class="button">$$log{tabIndex: 323}</div>
-                <div class="button">$$exp{tabIndex: 324}</div>
+                $$e{tabIndex: 321}
+                $$ln{tabIndex: 322}
+                $$log{tabIndex: 323}
+                $$exp{tabIndex: 324}
               </div>
               <div class="button-row">
-                <div class="button">$$inv{tabIndex: 331}</div>
-                <div class="button">$$pow{tabIndex: 332}</div>
-                <div class="button">$$sqroot{tabIndex: 333}</div>
-                <div class="button">$$root{tabIndex: 334}</div>
+                $$inv{tabIndex: 331}
+                $$pow{tabIndex: 332}
+                $$sqroot{tabIndex: 333}
+                $$root{tabIndex: 334}
               </div>
               <div class="button-row">
-                <div class="button">$$sign{tabIndex: 341}</div>
-                <div class="button">$$percent{tabIndex: 342}</div>
-                <div class="button">$$square{tabIndex: 343}</div>
-                <div class="button">$$pi{tabIndex: 344}</div>
+                $$sign{tabIndex: 341}
+                $$percent{tabIndex: 342}
+                $$square{tabIndex: 343}
+                $$pi{tabIndex: 344}
               </div>
             </div>
           </div>
     */}
   ]
 });
+
 
 CLASS({
   name: 'TertiaryButtonsView',
@@ -860,28 +902,25 @@ CLASS({
           }), 'ActionButton');
           %>
           <div id="%%id" class="buttons button-row tertiaryButtons">
-            <div class="button-column" style="flex-grow: 1">
-              <div class="button-row"><div class="button">$$deg{tabIndex: 401}</div></div>
-              <div class="button-row"><div class="button">$$sin{tabIndex: 404}</div></div>
-              <div class="button-row"><div class="button">$$cos{tabIndex: 407}</div></div>
-              <div class="button-row"><div class="button">$$tan{tabIndex: 410}</div></div>
-            </div>
-            <div class="button-column" style="flex-grow: 1">
-              <div class="button-row"><div class="button">$$rad{tabIndex: 402}</div></div>
-              <div class="button-row"><div class="button">$$asin{tabIndex: 405}</div></div>
-              <div class="button-row"><div class="button">$$acos{tabIndex: 408}</div></div>
-              <div class="button-row"><div class="button">$$atan{tabIndex: 411}</div></div>
-            </div>
-            <div class="button-column" style="flex-grow: 1">
-              <div class="button-row"><div class="button">$$fact{tabIndex: 403}</div></div>
-              <div class="button-row"><div class="button">$$mod{tabIndex: 406}</div></div>
-              <div class="button-row"><div class="button">$$p{tabIndex: 409}</div></div>
-              <div class="button-row"><div class="button">$$c{tabIndex: 412}</div></div>
+            <div class="button-column" style="flex-grow: 1;">
+              <div class="button-row">
+                $$deg{tabIndex: 411} $$rad{tabIndex: 412} $$fact{tabIndex: 413}
+              </div>
+              <div class="button-row">
+                $$sin{tabIndex: 421} $$asin{tabIndex: 422} $$mod{tabIndex: 423}
+              </div>
+              <div class="button-row">
+                $$cos{tabIndex: 431} $$acos{tabIndex: 432} $$p{tabIndex: 433}
+              </div>
+              <div class="button-row">
+                $$tan{tabIndex: 441} $$atan{tabIndex: 442} $$c{tabIndex: 443}
+              </div>
             </div>
           </div>
     */}
   ]
 });
+
 
 CLASS({
   name: 'HistoryCitationView',
@@ -894,4 +933,5 @@ CLASS({
 });
 
 Calc.getPrototype();
+
 // console.profileEnd();

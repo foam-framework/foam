@@ -41,7 +41,8 @@ CLASS({
 
   methods: {
     toInnerHTML: function() {
-      return '<div class="f1"></div><div class="f2"></div>';
+      var tabIndex  = this.tabIndex ? ' tabindex="' + this.tabIndex + '"' : '';
+      return '<div' + tabIndex + ' class="f1"></div><div class="f2"></div>';
     },
     initHTML: function() {
       this.data$.addListener(this.onDataChange);

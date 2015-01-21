@@ -23,7 +23,8 @@ MODEL({
     {
       name: 'classpath',
       factory: function() {
-        return NODE_CLASSPATH || FOAM_BOOT_DIR + '/../js';
+        return global.NODE_CLASSPATH ||
+            (global.FOAM_BOOT_DIR + '/../js');
       }
     }
   ],

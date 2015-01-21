@@ -29,6 +29,7 @@ cat \
   ../../core/AbstractDAOView.js \
   ../../core/DAOListView.js \
   ../../core/DetailView.js \
+  ../../js/foam/patterns/ChildTreeTrait.js \
   ../../js/foam/graphics/AbstractCViewView.js \
   ../../js/foam/graphics/CView.js \
   ../../js/foam/graphics/Circle.js \
@@ -41,6 +42,7 @@ cat \
   ../../core/touch.js \
   ../../js/foam/ui/animated/Label.js \
   ../../js/foam/ui/md/Flare.js \
+  ../../js/foam/chromeapp/ui/ZoomView.js \
   | sed 's/^ *//g' \
   | sed 's/  */ /g' \
   | sed 's%^//.*%%g' \

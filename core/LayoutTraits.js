@@ -110,7 +110,7 @@ CLASS({
     },
     {
       model_: 'layout.ConstraintProperty',
-      defaultValue: '100%',
+      defaultValue: 999999999,
       name: 'max',
       documentation: function() {/* The maximum size. */},
       type: 'layout.ConstraintProperty'
@@ -307,6 +307,17 @@ CLASS({
       documentation: function() {/* If set to true, the layout will set
           its own min and max constraints by the sum of the content. */},
       postSet: function() { this.calculatePreferredSize(); }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'stretchy',
+      defaultValue: true,
+      
+      documentation: function() {/* If true, the layout will set its stretch
+        and shrink factors to the largest value of its children. If you don't
+        want a stretchy child to cause your layout to become stretchy, set to
+        false.
+      */},
     },
     {
       model_: 'BooleanProperty',
@@ -517,11 +528,8 @@ CLASS({
                                             at their preferred sizes. */
                                            
       var self = this;
-      var syncConstraints = ['preferred'];
-
-      if (this.fitContents) { // sync all if fitting to contents
-        syncConstraints = ['min','max','preferred'];
-      }
+      var syncConstraints = this.fitContents ? ['min','max','preferred'] : ['preferred'];
+      var stretchConstraints = this.stretchy ? ['stretchFactor', 'shrinkFactor'] : []; 
 
       // no children, zero
       if (self.children.length <= 0) {
@@ -545,26 +553,36 @@ CLASS({
       var opposedSz = self.orientation==='horizontal'? self.height : self.width;
 
       // sum up preferred sizes
-      var totalSizes = { min:0, max: sz, preferred: 0 };
-      var opposedTotalSizes = { min:0, max: opposedSz, preferred: 0 };
+      var totalSizes = { min:0, max: sz, preferred: 0, stretchFactor: 0, shrinkFactor: 0 };
+      var opposedTotalSizes = { min:0, max: opposedSz, preferred: 0, stretchFactor: 0, shrinkFactor: 0 };
       self.children.forEach(function(child) {
         if ( constraintsF(child) && opposedConstraintsF(child) ) {
+          var childCnstr = constraintsF(child);
+          var opposedChildCnstr = opposedConstraintsF(child);
         
-          constraintsF(child).setTotalSize(sz); // for percentages
-          opposedConstraintsF(child).setTotalSize(opposedSz);
+          childCnstr.setTotalSize(sz); // for percentages
+          opposedChildCnstr.setTotalSize(opposedSz);
 
-          syncConstraints.forEach(function(cnst) {
-            totalSizes[cnst] += constraintsF(child)[cnst+'$Pix'];
+          syncConstraints.forEach(function(cnst) {           
+            totalSizes[cnst] += boundedF(childCnstr[cnst+'$Pix'], childCnstr);
             // find smallest for min
-            if ((cnst==='max' && (opposedConstraintsF(child)[cnst+'$Pix'] < opposedTotalSizes[cnst]))
-               || (cnst!=='max' && (opposedConstraintsF(child)[cnst+'$Pix'] > opposedTotalSizes[cnst]))) {
-              opposedTotalSizes[cnst] = opposedConstraintsF(child)[cnst+'$Pix'];
+            if ((cnst==='max' && (opposedChildCnstr[cnst+'$Pix'] < opposedTotalSizes[cnst]))
+               || (cnst!=='max' && (opposedChildCnstr[cnst+'$Pix'] > opposedTotalSizes[cnst]))) {
+              opposedTotalSizes[cnst] = opposedChildCnstr[cnst+'$Pix'];
             }
+          });
+          
+          // add up stretchFactor and shrinkFactor
+          stretchConstraints.forEach( function (factor) {
+            if ( childCnstr[factor] > totalSizes[factor] ) 
+              totalSizes[factor] = childCnstr[factor];
+            if ( opposedChildCnstr[factor] > opposedTotalSizes[factor] ) 
+              opposedTotalSizes[factor] = opposedChildCnstr[factor];
           });
         }
       });
       // apply if valid for our layout item traits
-      syncConstraints.forEach(function(cnst) {
+      syncConstraints.concat(stretchConstraints).forEach(function(cnst) {
         if (constraintsF(self)) constraintsF(self)[cnst] = totalSizes[cnst];
         if (opposedConstraintsF(self)) opposedConstraintsF(self)[cnst] = opposedTotalSizes[cnst];
       });

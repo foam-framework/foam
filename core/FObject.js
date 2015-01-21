@@ -625,7 +625,7 @@ var FObject = {
       this.models ? this.models : [],
       this.tests ? this.tests : [],
       this.relationships ? this.relationships : [],
-      this.issues? this.issues : []
+      this.issues ? this.issues : []
     ].map(function(list) {
       featureList = featureList.concat(list);
     });

@@ -325,6 +325,9 @@ CLASS({
       name: 'tooltip'
     },
     {
+      name: 'tabIndex'
+    },
+    {
       name: 'extraClassName',
       defaultValue: '',
       documentation: function() {/*
@@ -836,6 +839,7 @@ CLASS({
         console.assert(this.$, 'View must define outer id when using keyboard shortcuts: ' + this.name_);
         this.keyMap_ = keyMap;
         this.$.parentElement.addEventListener('keydown', this.onKeyboardShortcut);
+//        this.X.document.body.addEventListener('keydown', this.onKeyboardShortcut);
       }
     },
 
@@ -1143,7 +1147,7 @@ CLASS({
 });
 
 
-// TODO: Model
+// TODO(kgr): replace all instances of DomValue with new modelled DOMValue.
 var DomValue = {
   DEFAULT_EVENT:    'change',
   DEFAULT_PROPERTY: 'value',
@@ -1190,6 +1194,67 @@ var DomValue = {
     return "DomValue(" + this.event + ", " + this.property + ")";
   }
 };
+
+
+CLASS({
+  name: 'DOMValue',
+
+  properties: [
+    {
+      name: 'element',
+      required: true
+    },
+    {
+      name: 'property',
+      defaultValue: 'value'
+    },
+    {
+      name: 'event',
+      defaultValue: 'change'
+    },
+    {
+      name: 'value',
+      postSet: function(_, value) { this.element[this.property] = value; }
+    },
+    {
+      name: 'firstListener_',
+      defaultValue: true
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+      this.value = this.element[this.property];
+    },
+
+    get: function() { return this.value; },
+
+    set: function(value) { this.value = value; },
+
+    addListener: function(listener) {
+      if ( this.firstListener_ ) {
+        if ( this.event ) {
+          this.element.addEventListener(
+            this.event,
+            function() { debugger; /* TODO */ },
+            false);
+        }
+
+        this.firstListener_ = false;
+      }
+      this.value$.addListener(listener);
+    },
+
+    removeListener: function(listener) {
+      this.value$.removeListener(listener);
+    },
+
+    toString: function() {
+      return 'DOMValue(' + this.event + ', ' + this.property + ')';
+    }
+  }
+});
 
 
 CLASS({
@@ -1334,6 +1399,18 @@ CLASS({
       }
     },
     {
+      name: 'tapGesture',
+      hidden: true,
+      transient: true,
+      lazyFactory: function() {
+        return this.GestureTarget.create({
+          containerID: this.id + '-panel',
+          handler: this,
+          gesture: 'tap'
+        });
+      }
+    },
+    {
       name: 'opened',
       help: 'If the panel us opened or not.',
       defaultValue: false
@@ -1373,6 +1450,7 @@ CLASS({
   methods: {
     initHTML: function() {
       this.gestureManager.install(this.dragGesture);
+      this.gestureManager.install(this.tapGesture);
 
       // Resize first, then init the outer view, and finally the panel view.
       this.X.window.addEventListener('resize', this.onResize);
@@ -1440,6 +1518,15 @@ CLASS({
       }
     },
     {
+      name: 'tapClick',
+      code: function() {
+        console.log('tapclick', this.expanded, this.opened);
+        if ( this.expanded ) return;
+        if ( this.opened ) this.close();
+        else this.open();
+      }
+    },
+    {
       name: 'dragStart',
       code: function(point) {
         if ( this.expanded ) return;
@@ -1457,6 +1544,7 @@ CLASS({
         if ( this.expanded ) return;
         Events.unfollow(point.x$, this.panelX$);
         this.snap();
+        this.opened = ! this.opened;
       }
     }
   ]
