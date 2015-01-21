@@ -262,7 +262,7 @@ CLASS({
 
     .edge2 {
       margin-top: -12px;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%,
+      background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%,
                                              rgba(0,0,0,0) 100%);
       top: 12px;
       height: 12px;
@@ -735,7 +735,7 @@ CLASS({
       name: 'toHTML',
       template: function() {/*
         <%= CalcSpeechView.create({calc: this.data}) %>
-        <%= this.ZoomView.create() %>
+        <!-- <%= this.ZoomView.create() %> -->
         <% X.registerModel(CalcButton, 'ActionButton'); %>
         <div style="position: relative;z-index: 100;">
           <div tabindex="1" style="position: absolute;">

@@ -54,9 +54,13 @@ var files = [
   'mm3Types',
   'mm4Method',
   'mm5Misc',
+  [ '../js/foam/core/bootstrap/ModelFileDAO', IN_BROWSER ],
+  [ '../js/node/dao/ModelFileDAO', IN_NODEJS ],
+  [ '../js/node/dao/JSModelFileDAO', IN_NODEJS ],
   '../js/foam/ui/Window',
   'LayoutTraits', // generic, non-view specific, so no predicate
   [ 'value', IN_BROWSER ],
+  '../js/foam/patterns/ChildTreeTrait', // used in view, included here for backward compat of old apps
   'view',
   [ 'view2', IN_BROWSER ],
   'layout',
@@ -102,8 +106,5 @@ var files = [
   [ '../apps/mailreader/email', IN_BROWSER ],
   [ '../lib/email/email', IN_BROWSER ],
   [ 'turntable', IN_BROWSER ],
-  [ 'CORE', IN_BROWSER ],
-  [ '../js/foam/core/bootstrap/ModelFileDAO', IN_BROWSER ],
-  [ '../js/node/dao/ModelFileDAO', IN_NODEJS ],
-  [ '../js/node/dao/JSModelFileDAO', IN_NODEJS ]
+  [ 'CORE', IN_BROWSER ]
 ];

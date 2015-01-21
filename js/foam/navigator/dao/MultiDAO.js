@@ -22,22 +22,32 @@ CLASS({
 
   requires: [
     'EasyDAO',
+    'foam.navigator.BrowserConfig',
     'foam.navigator.dao.ModelIDDecoratorDAO',
     'foam.navigator.dao.IDConfig'
   ],
 
-  constants: [
-    {
-      name: 'DEFAULT_MODELS',
-      value: 'foam.navigator.types.Todo'
-    }
+  imports: [
+    'console'
   ],
 
   properties: [
     {
       name: 'models',
       model_: 'StringArrayProperty',
-      factory: function() { return this.DEFAULT_MODELS.slice(0); }
+      factory: function() { return []; }
+    },
+    {
+      name: 'configDAO',
+      model_: 'DAOProperty',
+      factory: function() {
+        return this.EasyDAO.create({
+          model: this.BrowserConfig,
+          daoType: 'IDB',
+          seqNo: true,
+          cache: true
+        });
+      }
     },
     {
       name: 'daos',
@@ -59,11 +69,11 @@ CLASS({
         name: 'init',
         code: function() {
           this.SUPER();
-          var modelNames = this.models;
-          this.models = [];
-          apar.apply(null, modelNames.map(function(modelName) {
-            return this.buildDAO(modelName);
-          }.bind(this)));
+          this.configDAO.pipe({
+            put: function(config) {
+              this.buildDAO(config);
+            }.bind(this)
+          });
         }
       },
       {
@@ -73,10 +83,9 @@ CLASS({
           var name = model.package ?
               model.package + '.' + model.name : model.name;
           if ( ! this.daos[name] ) {
-            this.buildDAO(name)(function(obj, opt_sink, ret, dao) {
-              dao.put(obj, opt_sink);
-              ret();
-            }.bind(this, obj, opt_sink));
+            var msg = 'Model: "' + name + '" unknown to MultiDAO';
+            this.console.warn(msg);
+            opt_sink && opt_sink.error(msg);
           } else {
             this.daos[name](function(dao) {
               dao.put(obj, opt_sink);
@@ -108,7 +117,7 @@ CLASS({
             });
           })).aseq(function(ret) {
             sink && sink.eof && sink.eof();
-            ret();
+            ret && ret(sink);
           });
         }
       },
@@ -140,13 +149,11 @@ CLASS({
           var self = this;
           return apar.apply(null, this.models.map(function(modelName) {
             return self.daos[modelName].aseq(function(ret, dao) {
-              dao.select(proxySink, options)(function() {
-                ret();
-              });
+              dao.select(proxySink, options)(ret);
             });
           })).aseq(function(ret) {
             sink && sink.eof && sink.eof();
-            ret && ret();
+            ret && ret.call(null, sink);
           });
         }
       },
@@ -189,12 +196,6 @@ CLASS({
         }
       },
       {
-        name: 'where',
-        code: function(query) {
-          throw 'where() not supported on MultiDAO (yet)';
-        }
-      },
-      {
         name: 'limit',
         todo: 'This is an alright approximation, but we can probably do better',
         code: function(count) {
@@ -204,37 +205,18 @@ CLASS({
         }
       },
       {
-        name: 'skip',
-        code: function(count) {
-          throw 'skip() not supported on MultiDAO (yet)';
-        }
-      },
-      {
-        name: 'orderBy',
-        code: function() {
-          throw 'orderBy() not supported on MultiDAO (yet)';
-        }
-      },
-      {
         name: 'buildDAO',
-        code: function(modelName) {
-          this.daos[modelName] = amemo(arequire(modelName).aseq(function(ret, model) {
-            var name = model.package ?
-                model.package + '.' + model.name : model.name;
-            var dao = this.ModelIDDecoratorDAO.create({
-              config: this.idDecoratorConfig,
-              delegate: this.EasyDAO.create({
-                model: name,
-                daoType: 'MDAO',
-                seqNo: true,
-                logging: true
-              })
-            });
-            this.addListenersToDAO(dao);
-            ret(dao);
-          }.bind(this)));
-          this.models.push(modelName);
-          return this.daos[modelName];
+        code: function(config) {
+          var model = config.model;
+          var modelName = model.package ?
+              model.package + '.' + model.name : model.name;
+          var decoratedConfigDAO = this.ModelIDDecoratorDAO.create({
+            config: this.idDecoratorConfig,
+            delegate: config.dao
+          });
+          this.addListenersToDAO(decoratedConfigDAO);
+          this.daos[modelName] = decoratedConfigDAO;
+          return decoratedConfigDAO;
         }
       },
       {

@@ -40,7 +40,8 @@ CLASS({
         if ( this.daoListeners_.length ) {
           if ( oldDAO ) oldDAO.unlisten(this.relay());
           newDAO.listen(this.relay());
-          this.notify_('put', []);
+          // FutureDAOs will put via the future. In that case, don't put here.
+          if ( ! FutureDAO.isInstance(oldDAO) ) this.notify_('put', []);
         }
       }
     },
