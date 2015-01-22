@@ -33,10 +33,6 @@
       }
     },
     {
-      name: model,
-      type: 'Model'
-    },
-    {
       name: 'id',
       getter: function() { return this.data && this.data.id; },      
       documentation: function() {/* $$DOC{ref:'id'} should match the wrapped object. */},
