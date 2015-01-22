@@ -58,7 +58,7 @@ var JSONUtil = {
       .replace(/"/g, '\\"')
       .replace(/[\x00-\x1f]/g, function(c) {
         return "\\u00" + ((c.charCodeAt(0) < 0x10) ?
-                          "0" + c.charCodeAt(0).toString(16) :
+                          '0' + c.charCodeAt(0).toString(16) :
                           c.charCodeAt(0).toString(16));
       });
   },
@@ -116,7 +116,7 @@ var JSONUtil = {
     __proto__: AbstractFormatter,
 
     stringify: function(obj) {
-      var buf = "";
+      var buf = '';
 
       this.output(function() {
         for (var i = 0; i < arguments.length; i++)
@@ -131,9 +131,9 @@ var JSONUtil = {
         this.outputArray_(out, obj);
       }
       else if ( typeof obj === 'string' ) {
-        out("\"");
+        out('"');
         out(JSONUtil.escape(obj));
-        out("\"");
+        out('"');
       }
       else if ( obj instanceof Function ) {
         out(obj);
@@ -147,18 +147,18 @@ var JSONUtil = {
         else
           this.outputMap_(out, obj);
       }
-      else if (typeof obj === "number") {
-        if (!isFinite(obj)) obj = null;
+      else if ( typeof obj === 'number' ) {
+        if ( ! isFinite(obj) ) obj = null;
         out(obj);
       }
       else {
-        if (obj === undefined) obj = null;
+        if ( obj === undefined ) obj = null;
         out(obj);
       }
     },
 
     outputObject_: function(out, obj) {
-      var str = "";
+      var str = '';
 
       out('{');
       this.outputModel_(out, obj);
@@ -172,7 +172,7 @@ var JSONUtil = {
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
           if ( val == prop.defaultValue ) continue;
-          if ( ! first ) out(",");
+          if ( ! first ) out(',');
           out(JSONUtil.keyify(prop.name), ':');
           this.output(out, val);
           first = false;
@@ -187,7 +187,7 @@ var JSONUtil = {
     },
 
     outputMap_: function(out, obj) {
-      var str   = "";
+      var str   = '';
       var first = true;
 
       out('{');
@@ -195,7 +195,7 @@ var JSONUtil = {
       for ( var key in obj ) {
         var val = obj[key];
 
-        if ( ! first ) out(",");
+        if ( ! first ) out(',');
         out(JSONUtil.keyify(key), ':');
         this.output(out, val);
 
@@ -208,7 +208,7 @@ var JSONUtil = {
     outputArray_: function(out, a) {
       if ( a.length == 0 ) { out('[]'); return out; }
 
-      var str   = "";
+      var str   = '';
       var first = true;
 
       out('[');
@@ -230,7 +230,7 @@ var JSONUtil = {
     __proto__: AbstractFormatter,
 
     stringify: function(obj) {
-      var buf = "";
+      var buf = '';
 
       this.output(function() {
         for (var i = 0; i < arguments.length; i++)
@@ -241,15 +241,15 @@ var JSONUtil = {
     },
 
     output: function(out, obj, opt_indent) {
-      var indent = opt_indent || "";
+      var indent = opt_indent || '';
 
       if ( Array.isArray(obj) ) {
         this.outputArray_(out, obj, indent);
       }
       else if ( typeof obj == 'string' ) {
-        out("\"");
+        out('"');
         out(JSONUtil.escape(obj));
-        out("\"");
+        out('"');
       }
       else if ( obj instanceof Function ) {
         out(obj);
@@ -262,19 +262,19 @@ var JSONUtil = {
           this.outputObject_(out, obj, indent);
         else
           this.outputMap_(out, obj, indent);
-      } else if (typeof obj === "number") {
-        if (!isFinite(obj)) obj = null;
+      } else if ( typeof obj === 'number' ) {
+        if ( ! isFinite(obj) ) obj = null;
         out(obj);
       } else {
-        if (obj === undefined) obj = null;
+        if ( obj === undefined ) obj = null;
         out(obj);
       }
     },
 
     outputObject_: function(out, obj, opt_indent) {
-      var indent       = opt_indent || "";
-      var nestedIndent = indent + "   ";
-      var str          = "";
+      var indent       = opt_indent || '';
+      var nestedIndent = indent + '   ';
+      var str          = '';
 
       out(/*"\n", */indent, '{\n');
       this.outputModel_(out, obj, nestedIndent);
@@ -289,13 +289,13 @@ var JSONUtil = {
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
           if ( ! first ) out(",\n");
-          out(nestedIndent, "\"", prop.name, "\"", ': ');
+          out(nestedIndent, '"', prop.name, '"', ': ');
           this.output(out, val, nestedIndent);
           first = false;
         }
       }
 
-      out("\n", indent, '}');
+      out('\n', indent, '}');
     },
 
     outputModel_: function(out, obj, indent) {
@@ -303,9 +303,9 @@ var JSONUtil = {
     },
 
     outputMap_: function(out, obj, opt_indent) {
-      var indent       = opt_indent || "";
-      var nestedIndent = indent + "   ";
-      var str          = "";
+      var indent       = opt_indent || '';
+      var nestedIndent = indent + '   ';
+      var str          = '';
       var first        = true;
 
       out(/*"\n",*/ indent, '{\n', nestedIndent);
@@ -314,22 +314,22 @@ var JSONUtil = {
       {
         var val = obj[key];
 
-        if ( ! first ) out(",\n");
+        if ( ! first ) out(',\n');
         out(nestedIndent, JSONUtil.keyify(key), ': ');
         this.output(out, val, nestedIndent);
 
         first = false;
       }
 
-      out("\n", indent, '}');
+      out('\n', indent, '}');
     },
 
     outputArray_: function(out, a, opt_indent) {
       if ( a.length == 0 ) { out('[]'); return out; }
 
-      var indent       = opt_indent || "";
-      var nestedIndent = indent + "   ";
-      var str          = "";
+      var indent       = opt_indent || '';
+      var nestedIndent = indent + '   ';
+      var str          = '';
       var first        = true;
 
       out('[\n');
@@ -346,7 +346,7 @@ var JSONUtil = {
         this.output(out, obj, nestedIndent);
       }
 
-      out("\n", indent, ']');
+      out('\n', indent, ']');
     }
   },
 
