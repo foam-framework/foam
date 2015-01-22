@@ -91,9 +91,7 @@ CLASS({
             this.console.warn(msg);
             opt_sink && opt_sink.error(msg);
           } else {
-            this.daos[name](function(dao) {
-              dao.put(obj, opt_sink);
-            });
+            this.daos[name].put(obj, opt_sink);
           }
         }
       },
@@ -101,10 +99,7 @@ CLASS({
         name: 'remove',
         code: function(id, opt_sink) {
           var modelName = this.idDecoratorConfig.getModelName(id);
-          this.daos[modelName].aseq(function(ret, dao) {
-            dao.remove(id, opt_sink);
-            ret();
-          });
+          this.daos[modelName].remove(id, opt_sink);
         }
       },
       {
@@ -171,9 +166,7 @@ CLASS({
         name: 'listen',
         code: function(sink) {
           this.models.forEach(function(modelName) {
-            this.daos[modelName](function(dao) {
-              dao.listen(sink);
-            });
+            this.daos[modelName].listen(sink);
           }.bind(this));
           this.listeners_.push(sink);
         }
@@ -182,7 +175,7 @@ CLASS({
         name: 'pipe',
         code: function(sink) {
           this.models.forEach(function(modelName) {
-            this.daos[modelName](function(dao) { dao.pipe(sink); });
+            this.daos[modelName].pipe(sink);
           }.bind(this));
         }
       },
@@ -190,9 +183,7 @@ CLASS({
         name: 'unlisten',
         code: function(sink) {
           this.models.forEach(function(modelName) {
-            this.daos[modelName](function(dao) {
-              dao.unlisten(sink);
-            });
+            this.daos[modelName].unlisten(sink);
           }.bind(this));
           this.listeners_ = this.listeners_.filter(function(listener) {
             return listener !== sink;
