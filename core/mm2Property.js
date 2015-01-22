@@ -541,6 +541,14 @@ var Property = {
       documentation: "Function to extract a value from a DOM Element."
     },
     {
+      name: 'toJSON',
+      defaultValue: function(visitor, output, o) {
+        if ( ! this.transient ) output[this.name] = visitor.visit(o[this.name]);
+      },
+      help: 'Function to extract from a DOM Element.',
+      documentation: "Function to extract a value from a DOM Element."
+    },
+    {
       name: 'autocompleter',
       subType: 'Autocompleter',
       help: 'Name or model for the autocompleter for this property.',

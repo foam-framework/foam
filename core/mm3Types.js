@@ -691,7 +691,13 @@ var ModelProperty = Model.create({
         }
         return FOAM.lookup(value, this.X);
       }
-    }
+    },
+    {
+      name: 'toJSON',
+      defaultValue: function(visitor, output, o) {
+        if ( ! this.transient ) output[this.name] = o[this.name].name;
+      }
+    },
   ]
 });
 

@@ -58,18 +58,21 @@ CLASS({
           if (view) child.addListener(view.paint);
         }
       },
+      transient: true,
       hidden: true,
       documentation: function() {/* The canvas view this scene draws into */ }
     },
     {
       name:  'canvas',
       getter: function() { return this.view && this.view.canvas; },
+      transient: true,
       hidden: true,
       documentation: function() {/* Safe getter for the canvas view this scene draws into */ }
     },
     {
       name:  '$',
       getter: function() { return this.view && this.view.$; },
+      transient: true,
       hidden: true,
       documentation: function() {/* Safe getter for the canvas DOM element this scene draws into */ }
     },
