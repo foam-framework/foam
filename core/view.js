@@ -1371,7 +1371,7 @@ CLASS({
   templates: [
     function CSS() {/*
       .SliderPanel .shadow {
-        background: linear-gradient(to left, rgba(0,0,0,0.3) 0%,
+        background: linear-gradient(to left, rgba(0,0,0,0.15) 0%,
                                              rgba(0,0,0,0) 100%);
         height: 100%;
         left: -8px;

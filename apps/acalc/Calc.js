@@ -899,7 +899,7 @@ CLASS({
             height:     61,
             color:      'rgb(80, 80, 80)',
             background: 'rgb(29, 233, 182)',
-            font:       '300 20px RobotoDraft'
+            font:       '300 18px RobotoDraft'
           }), 'ActionButton');
           %>
           <div id="%%id" class="buttons button-row tertiaryButtons">
