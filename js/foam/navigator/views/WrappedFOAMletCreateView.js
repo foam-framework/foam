@@ -16,33 +16,39 @@
  */
 
 CLASS({
-  name: 'CreateView',
+  name: 'WrappedFOAMletCreateView',
   package: 'foam.navigator.views',
-  extendsModel: 'View',
-  requires: [
-    'DetailView',
-  ],
-  imports: [
-    'dao',
-    'overlay'
-  ],
+  extendsModel: 'CreateView',
+
+  requires: [ 'foam.navigator.WrappedFOAMlet' ], 
+  
+  documentation: function() {/* Replaces CreateView to enable to creation of a
+    FOAMlet-wrapped object. 
+  */},
 
   properties: [
     {
-      name: 'model',
-      required: true
-    },
-    {
       name: 'label',
-      defaultValueFn: function() { return 'Create a new ' + this.model.label; }
+      defaultValueFn: function() { 
+        if ( this.model && this.model.model && this.model.model.label ) { 
+          return 'Create a new ' + this.model.model.label;
+        } else {
+          console.warn("Can't find WrappedFOAMlet model name!");
+          return 'Create a new ' + this.model_.label + "(name error!);
+        }
+      }
     },
     {
       name: 'innerView',
       factory: function() {
-        return this.DetailView.create({
-          model: this.model,
-          data: this.model.create()
-        });
+        if ( this.model && this.model.model && this.model.model ) { 
+          return this.DetailView.create({
+              model: this.model.model,
+              data: this.model.model.create()
+          });
+        } else {
+          console.warn("Can't find WrappedFOAMlet model.model!", this);
+        }
       }
     }
   ],
@@ -54,11 +60,14 @@ CLASS({
       // TODO(braden): Make this toggle enabled based on required fields and
       // form validation.
       action: function() {
-        this.dao.put(this.innerView.data, {
-          put: function(x) {
-            this.overlay.close();
-          }.bind(this)
-        });
+        this.dao.put(
+          this.model.create({ data: this.innerView.data }),
+          {
+            put: function(x) {
+              this.overlay.close();
+            }.bind(this)
+          }
+        );
       }
     }
   ],

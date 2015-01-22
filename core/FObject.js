@@ -28,8 +28,8 @@ var FObject = {
 
   create: function(args, opt_X) {
 
-    // check for a model-for-model replacement
-    if (args && args.model) {
+    // check for a model-for-model replacement, only if args.model is a Model instance
+    if ( args && args.model && (opt_X || X).Model.isInstance(args.model) ) {
 
       var replacementF = function(otherModel) {
         var replacementName = ((this.model_.package)? this.model_.package+"." : "")

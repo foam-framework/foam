@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+ 
 CLASS({
   name: 'FOAMlet',
   package: 'foam.navigator',
@@ -27,7 +28,6 @@ CLASS({
     'lastModified'
   ],
 
-
   properties: [
     {
       name: 'id',
@@ -37,7 +37,11 @@ CLASS({
     {
       name: 'type',
       tableWidth: 80,
-      defaultValueFn: function() { return this.model_.label; }
+    },
+    {
+      name: model,
+      type: 'Model',
+      hidden: true
     },
     {
       name: 'name',
@@ -57,37 +61,15 @@ CLASS({
       name: 'lastModified',
       model_: 'DateTimeProperty',
       tableWidth: 100,
-      factory: function() {
-        return Date.now();
-      }
     },
     {
       name: 'labels',
       model_: 'StringArrayProperty',
       factory: function() { return []; }
     }
-  ],
-
-  methods: [
-    {
-      name: 'init',
-      code: function() {
-        this.SUPER();
-        this.subscribe(
-            ['property'],
-            function(model, o, notificationData) {
-              if ( notificationData[0] !== 'property' ||
-                  notificationData[1] === 'lastModified' ||
-                  ! model || ! model.properties ) return;
-              var propName = notificationData[1];
-              var propMatch = model.properties.filter(function(propName, prop) {
-                return prop.name == propName;
-              }.bind(this, propName))[0];
-              if ( ! propMatch || propMatch.hidden ) return;
-              console.log('Updating lastModified');
-              o.lastModified = Date.now();
-            }.bind(this, this.model_));
-      }
-    }
   ]
 });
+ 
+ 
+
+

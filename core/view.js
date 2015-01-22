@@ -657,7 +657,7 @@ CLASS({
       this.destroy();
       this.construct();
     },
-    
+
     construct: function() { /* rebuilds the children of the view */
       this.SUPER();
       if ( ! this.$ ) return;
@@ -749,6 +749,7 @@ CLASS({
       if ( evt.altKey ) s += 'alt-';
       if ( evt.ctrlKey ) s += 'ctrl-';
       if ( evt.shiftKey ) s += 'shift-';
+      if ( evt.metaKey ) s += 'meta-';
       s += evt.keyCode;
       return s;
     },
@@ -793,9 +794,9 @@ CLASS({
          creating new HTML in your $$DOC{ref:'.toInnerHTML'} or $$DOC{ref:'.toHTML'}. */
       // TODO: remove listeners
       this.invokeDestructors();
-        
+
       this.SUPER();
-      
+
       delete this.instance_.$;
     },
 
@@ -844,7 +845,7 @@ CLASS({
       postSet: function(_, p) {
         if ( p ) p[this.prop.name + 'View'] = this.view;
         if ( this.view ) this.view.parent = p;
-       
+
       },
       documentation: function() {/*
         The $$DOC{ref:'View'} to use as the parent container for the new
@@ -1370,7 +1371,7 @@ CLASS({
   templates: [
     function CSS() {/*
       .SliderPanel .shadow {
-        background: linear-gradient(to left, rgba(0,0,0,0.3) 0%,
+        background: linear-gradient(to left, rgba(0,0,0,0.15) 0%,
                                              rgba(0,0,0,0) 100%);
         height: 100%;
         left: -8px;

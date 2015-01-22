@@ -824,12 +824,13 @@ CLASS({
       this.X.registerModel(CalcButton.xbind({
         background: '#777',
         width:  70,
-        height: 48,
+        height: 45,
         font:   '300 26px RobotoDraft'
       }), 'ActionButton');
       %>
-        <div class="button-column rhs-ops" style="flex-grow: 1">
-          $$ac{tabIndex: 201}
+        <div class="button-column rhs-ops" style="flex-grow: 1;padding-top: 7px; padding-bottom: 10px;">
+          $$ac{tabIndex: 201, font: '300 24px RobotoDraft'
+}
           $$plus{tabIndex: 202}
           $$minus{tabIndex: 203}
           $$div{tabIndex: 204}
@@ -851,7 +852,7 @@ CLASS({
             background: 'rgb(64, 189, 158)',
             width:  61,
             height: 61,
-            font:   '300 26px RobotoDraft'
+            font:   '300 20px RobotoDraft'
           }), 'ActionButton');
           %>
           <div id="%%id" class="buttons button-row secondaryButtons">
@@ -898,7 +899,7 @@ CLASS({
             height:     61,
             color:      'rgb(80, 80, 80)',
             background: 'rgb(29, 233, 182)',
-            font:       '300 24px RobotoDraft'
+            font:       '300 18px RobotoDraft'
           }), 'ActionButton');
           %>
           <div id="%%id" class="buttons button-row tertiaryButtons">

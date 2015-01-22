@@ -19,9 +19,11 @@ CLASS({
   name: 'BrowserConfig',
   package: 'foam.navigator',
 
+  documentation: function() {/*  */},
+  
   requires: [
     'EasyDAO',
-    'foam.navigator.FOAMlet'
+    'FutureDAO'
   ],
 
   constants: [
@@ -30,20 +32,24 @@ CLASS({
   properties: [
     {
       name: 'model',
-      model_: 'ModelProperty',
-      factory: function() {
-        return this.FOAMlet;
-      }
+      required: true
     },
     {
       name: 'dao',
-      model_: 'DAOProperty',
+      model_: 'FactoryProperty',
       factory: function() {
-        return this.EasyDAO.create({
-          model: this.model_,
-          daoType: 'IDB',
-          seqNo: true,
-          cache: true
+        return this.FutureDAO.create({
+          future: aseq(
+            arequire(this.model),
+            function(ret, model) {
+              ret(this.EasyDAO.create({
+                model: model,
+                cache: true,
+                seqNo: true,
+                daoType: 'IDB'
+              }));
+            }.bind(this)
+          )
         });
       }
     },
@@ -54,8 +60,7 @@ CLASS({
     {
       name: 'iconURL',
       model_: 'StringProperty',
-      label: 'Icon',
-      defaultValue: 'icon.png'
+      label: 'Icon'
     }
   ]
 });
