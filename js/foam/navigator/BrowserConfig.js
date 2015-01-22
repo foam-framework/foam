@@ -19,6 +19,8 @@ CLASS({
   name: 'BrowserConfig',
   package: 'foam.navigator',
 
+  documentation: function() {/*  */},
+  
   requires: [
     'EasyDAO',
     'FutureDAO'

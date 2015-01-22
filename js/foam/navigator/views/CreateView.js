@@ -34,7 +34,7 @@ CLASS({
     },
     {
       name: 'label',
-      defaultValueFn: function() { return 'Create a new ' + this.model_.label; }
+      defaultValueFn: function() { return 'Create a new ' + this.model.label; }
     },
     {
       name: 'innerView',
