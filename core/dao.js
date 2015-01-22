@@ -338,7 +338,8 @@ var ObjectToJSON = {
     return this.pop();
   },
   visitProperty: function(o, prop) {
-    this.top()[prop.name] = this.visit(o[prop.name]);
+    if ( !prop.transient )
+      this.top()[prop.name] = this.visit(o[prop.name]);
   },
 
   visitMap: function(o) {
