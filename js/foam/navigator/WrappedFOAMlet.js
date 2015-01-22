@@ -24,7 +24,7 @@
     based on existing models. Set data to be your instance, and the override
     or set the FOAMlet properties based on the instance.
   */},
-  
+
   properties: [
     {
       name: 'data',
@@ -33,8 +33,12 @@
       }
     },
     {
+      name: 'model',
+      type: 'Model'
+    },
+    {
       name: 'id',
-      getter: function() { return this.data && this.data.id; },      
+      getter: function() { return this.data && this.data.id; },
       documentation: function() {/* $$DOC{ref:'id'} should match the wrapped object. */},
     },
     {
@@ -71,6 +75,3 @@
   ]
 
 });
-
-
-

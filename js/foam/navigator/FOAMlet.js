@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
- 
+
 CLASS({
   name: 'FOAMlet',
   package: 'foam.navigator',
@@ -39,13 +39,13 @@ CLASS({
       tableWidth: 80,
     },
     {
-      name: model,
+      name: 'model',
       type: 'Model',
       hidden: true
     },
     {
       name: 'name',
-      model_: 'StringProperty',
+      model_: 'StringProperty'
     },
     {
       name: 'iconURL',
@@ -69,7 +69,3 @@ CLASS({
     }
   ]
 });
- 
- 
-
-

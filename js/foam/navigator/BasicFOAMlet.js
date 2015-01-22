@@ -23,14 +23,14 @@ CLASS({
   documentation: function() {/* A base model for native FOAMlets. If you are
     wrapping an existing model, use a $$DOC{ref:'foam.navigator.WrappedFOAMlet'}.
   */},
-  
+
   properties: [
     {
       name: 'type',
       defaultValueFn: function() { return this.model_.label; }
     },
     {
-      name: model,
+      name: 'model',
       defaultValueFn: function() { return this.model_; }
     }
 
@@ -59,4 +59,3 @@ CLASS({
     }
   ]
 });
-
