@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+ 
 CLASS({
   name: 'FOAMlet',
   package: 'foam.navigator',
@@ -27,7 +28,6 @@ CLASS({
     'lastModified'
   ],
 
-
   properties: [
     {
       name: 'id',
@@ -37,7 +37,6 @@ CLASS({
     {
       name: 'type',
       tableWidth: 80,
-      defaultValueFn: function() { return this.model_.label; }
     },
     {
       name: 'name',
@@ -57,14 +56,29 @@ CLASS({
       name: 'lastModified',
       model_: 'DateTimeProperty',
       tableWidth: 100,
-      factory: function() {
-        return Date.now();
-      }
     },
     {
       name: 'labels',
       model_: 'StringArrayProperty',
       factory: function() { return []; }
+    }
+  ]
+});
+ 
+ 
+CLASS({
+  name: 'BasicFOAMlet',
+  extendsModel: 'foam.navigator.FOAMlet',
+  package: 'foam.navigator',
+
+  documentation: function() {/* A base model for native FOAMlets. If you are
+    wrapping an existing model, use a $$DOC{ref:'foam.navigator.WrappedFOAMlet'}.
+  */},
+  
+  properties: [
+    {
+      name: 'type',
+      defaultValueFn: function() { return this.model_.label; }
     }
   ],
 
@@ -91,3 +105,67 @@ CLASS({
     }
   ]
 });
+
+CLASS({
+  name: 'WrappedFOAMlet',
+  extendsModel: 'foam.navigator.FOAMlet',
+  package: 'foam.navigator',
+
+  documentation: function() {/* A wrapper for $$DOC{ref:'foam.navigator.FOAMlet'}
+    based on existing models. Set data to be your instance, and the override
+    or set the FOAMlet properties based on the instance.
+  */},
+  
+  properties: [
+    {
+      name: 'data',
+      postSet: function(_,nu) {
+        this.model = data.model_;
+      }
+    },
+    {
+      name: model,
+      type: 'Model'
+    },
+    {
+      name: 'id',
+      getter: function() { return this.data && this.data.id; },      
+      documentation: function() {/* $$DOC{ref:'id'} should match the wrapped object. */},
+    },
+    {
+      name: 'type',
+      defaultValueFn: function() { return this.model && this.model.label; },
+      documentation: function() {/* Override this to extract the item's model label */}
+    },
+    {
+      name: 'name',
+      model_: 'StringProperty',
+      defaultValueFn: function() { return this.data && this.data.name; },
+      documentation: function() {/* Override this to extract a useful name */}
+    },
+    {
+      name: 'iconURL',
+      documentation: function() {/* Override this to extract a useful icon URL */},
+    },
+    {
+      name: 'lastModified',
+      model_: 'DateTimeProperty',
+      tableWidth: 100,
+      documentation: function() {/* Override this to extract and/or apply the last
+        modified time of the item, or something approximating it.
+      */},
+    },
+    {
+      name: 'labels',
+      model_: 'StringArrayProperty',
+      factory: function() { return []; },
+      documentation: function() {/* Override this to extract useful labels or tags
+        from the item.
+      */}
+    }
+  ]
+
+});
+
+
+

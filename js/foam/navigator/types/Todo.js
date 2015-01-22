@@ -18,7 +18,7 @@
 CLASS({
   name: 'Todo',
   package: 'foam.navigator.types',
-  extendsModel: 'foam.navigator.FOAMlet',
+  extendsModel: 'foam.navigator.BasicFOAMlet',
 
   properties: [
     {
