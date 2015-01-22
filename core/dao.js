@@ -333,7 +333,9 @@ var ObjectToJSON = {
   },
 
   visitObject: function(o) {
-    this.push({model_: o.model_.name});
+    this.push({
+      model_: (o.model_.package ? o.model_.package + '.' : '') + o.model_.name
+    });
     this.__proto__.visitObject.call(this, o);
     return this.pop();
   },
