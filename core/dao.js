@@ -374,7 +374,7 @@ var JSONToObject = {
   },
 
   visitObject: function(o) {
-    var model   = GLOBAL[o.model_];
+    var model   = FOAM.lookup(o.model_);
     if ( ! model ) throw ('Unknown Model: ', o.model_);
     var obj     = model.create();
 

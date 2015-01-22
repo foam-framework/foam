@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 CLASS({
   name: 'FOAMlet',
   package: 'foam.navigator',

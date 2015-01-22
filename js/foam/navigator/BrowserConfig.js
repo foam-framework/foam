@@ -31,31 +31,30 @@ CLASS({
 
   properties: [
     {
+      name: 'name',
+      defaultValueFn: function() {
+        return (this.model.package ? this.model.package + '.' : '') + this.model.name;
+      }
+    },
+    {
+      model_: 'ModelProperty',
       name: 'model',
       required: true
     },
     {
       name: 'dao',
-      model_: 'FactoryProperty',
-      factory: function() {
-        return this.FutureDAO.create({
-          future: aseq(
-            arequire(this.model),
-            function(ret, model) {
-              ret(this.EasyDAO.create({
-                model: model,
-                cache: true,
-                seqNo: true,
-                daoType: 'IDB'
-              }));
-            }.bind(this)
-          )
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.model,
+          cache: true,
+          seqNo: true,
+          daoType: 'IDB'
         });
       }
     },
     {
-      name: 'queryParserModelName',
-      model_: 'StringProperty'
+      model_: 'FunctionProperty',
+      name: 'queryParserFactory'
     },
     {
       name: 'iconURL',

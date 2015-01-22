@@ -33,7 +33,6 @@ CLASS({
       name: 'model',
       defaultValueFn: function() { return this.model_; }
     }
-
   ],
 
   methods: [

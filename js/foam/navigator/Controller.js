@@ -20,13 +20,16 @@ CLASS({
   package: 'foam.navigator',
   extendsModel: 'View',
   requires: [
-    'EasyDAO',
+    'CachingDAO',
     'FutureDAO',
+    'IDBDAO',
+    'MDAO',
     'TableView',
     'TextFieldView',
     'ToolbarView',
     'foam.navigator.BrowserConfig',
     'foam.navigator.FOAMlet',
+    'foam.navigator.types.Todo',
     'foam.navigator.views.OverlayView',
     'foam.navigator.views.SelectTypeView',
     'foam.navigator.dao.MultiDAO'
@@ -52,9 +55,16 @@ CLASS({
       factory: function() {
         // The BrowserConfig DAO we'll be passing to the MultiDAO that drives
         // the FOAMlet system.
-        var configDAO = this.EasyDAO.create({
-          model: this.BrowserConfig,
-          cache: true
+        // TODO(braden): This needs to arequire the model of incoming
+        // BrowserConfigs and delay the put until that's done. AsyncAdapterDAO?
+        // Doesn't exist yet, but it needs to exist soon.
+        var configDAO = this.CachingDAO.create({
+          cache: this.MDAO.create({ model: this.BrowserConfig }),
+          src: this.IDBDAO.create({
+            useSimpleSerialization: false,
+            name: 'FOAMletBrowserConfigs',
+            model: this.BrowserConfig
+          })
         });
 
         // The future DAO handed temporarily to the MultiDAO to buy time while
