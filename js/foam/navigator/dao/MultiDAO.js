@@ -40,6 +40,10 @@ CLASS({
     {
       name: 'configDAO',
       model_: 'DAOProperty',
+      documentation: multiline(function() {/*
+        A DAO of objects that must each have o.dao (a DAO) and o.model (a
+        model).
+      */}),
       factory: function() {
         return this.EasyDAO.create({
           model: this.BrowserConfig,
