@@ -177,186 +177,6 @@ CLASS({
     'touchManager'
   ],
 
-  templates: [ function CSS() {/*
-    * {
-      box-sizing: border-box;
-      outline: none;
-    }
-
-    html {
-      height: 100%;
-      margin: 0;
-      overflow: initial;
-      padding: 0;
-      width: 100%;
-    }
-
-    body {
-      -webkit-user-select: none;
-      -webkit-font-smoothing: antialiased;
-      font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
-      font-size: 20px;
-      font-weight: 300;
-      height: 100%;
-      position: fixed;
-      margin: 0;
-      overflow: hidden;
-      padding: 0;
-      width: 100%;
-    }
-
-    ::-webkit-scrollbar {
-      display: none;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      display: none;
-    }
-
-    .calc {
-      background-color: #eee;
-      border: 0;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      margin: 0;
-      padding: 0px;
-    }
-
-    .deg, .rad {
-      color: #111;
-      font-size: 22px;
-      font-weight: 400;
-      opacity: 0;
-      padding-left: 8px;
-      transition: opacity 0.8s;
-    }
-
-    .active {
-      opacity: 1;
-      z-index: 2;
-    }
-
-    .calc-display, .calc-display:focus {
-      border: none;
-      letter-spacing: 1px;
-      line-height: 28px;
-      margin: 0;
-      min-width: 140px;
-      padding: 0 25pt 2pt 25pt;
-      text-align: right;
-      -webkit-user-select: text;
-      overflow-y: scroll;
-      overflow-x: hidden;
-    }
-
-    .edge {
-      background: linear-gradient(to bottom, rgba(240,240,240,1) 0%,
-                                             rgba(240,240,240,0) 100%);
-      height: 20px;
-      position: absolute;
-      top: 0;
-      width: 100%;
-      z-index: 1;
-    }
-
-    .edge2 {
-      margin-top: -12px;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%,
-                                             rgba(0,0,0,0) 100%);
-      top: 12px;
-      height: 12px;
-      position: relative;
-      width: 100%;
-      z-index: 99;
-    }
-
-    .calc .buttons {
-      flex: 1 1 100%;
-      width: 100%;
-      height: 252px;
-    }
-
-    .button-row {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      flex: 1 1 100%;
-      justify-content: space-between;
-    }
-
-    .button {
-      flex-grow: 1;
-      justify-content: center;
-      display: flex;
-      align-items: center;
-      background-color: #4b4b4b;
-    }
-
-    .rhs-ops {
-      border-left-width: 1px;
-      border-left-style: solid;
-      border-left-color: rgb(68, 68, 68);
-      background: #777;
-    }
-
-    .rhs-ops .button {
-      background-color: #777;
-    }
-
-    .button-column {
-      display: flex;
-      flex-direction: column;
-      flex-wrap: nowrap;
-    }
-
-    .inner-calc-display {
-      position: absolute;
-      right: 20pt;
-    top: 100%;
-    transition: top 0.3s ease;
-      xxxbottom: 5px;
-      width: 100%;
-      padding-left: 90px;
-      padding-bottom: 11px;
-    }
-
-    .calc-display {
-      flex-grow: 5;
-      position: relative;
-    }
-
-    .secondaryButtons {
-      padding-left: 18px;
-      background: rgb(64, 189, 158);
-    }
-
-    .secondaryButtons .button {
-      background: rgb(64, 189, 158);
-    }
-
-    .tertiaryButtons {
-      padding-left: 18px;
-      background: rgb(29, 233, 182);
-    }
-
-    .tertiaryButtons .button {
-      background: rgb(29, 233, 182);
-    }
-
-    .keypad {
-      flex-grow: 0;
-      flex-shrink: 0;
-      margin-bottom: -4px;
-      z-index: 5;
-    }
-
-    .alabel {
-      font-size: 34px;
-      color: #444;
-    }
-  */}],
-
   properties: [
     { name: 'degreesMode', defaultValue: false },
     { name: 'memory', defaultValue: 0 },
@@ -731,6 +551,185 @@ CLASS({
   ],
   extendsModel: 'DetailView',
   templates: [
+    function CSS() {/*
+    * {
+      box-sizing: border-box;
+      outline: none;
+    }
+
+    html {
+      height: 100%;
+      margin: 0;
+      overflow: initial;
+      padding: 0;
+      width: 100%;
+    }
+
+    body {
+      -webkit-user-select: none;
+      -webkit-font-smoothing: antialiased;
+      font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
+      font-size: 20px;
+      font-weight: 300;
+      height: 100%;
+      position: fixed;
+      margin: 0;
+      overflow: hidden;
+      padding: 0;
+      width: 100%;
+    }
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      display: none;
+    }
+
+    .calc {
+      background-color: #eee;
+      border: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      margin: 0;
+      padding: 0px;
+    }
+
+    .deg, .rad {
+      color: #111;
+      font-size: 22px;
+      font-weight: 400;
+      opacity: 0;
+      padding-left: 8px;
+      transition: opacity 0.8s;
+    }
+
+    .active {
+      opacity: 1;
+      z-index: 2;
+    }
+
+    .calc-display, .calc-display:focus {
+      border: none;
+      letter-spacing: 1px;
+      line-height: 28px;
+      margin: 0;
+      min-width: 140px;
+      padding: 0 25pt 2pt 25pt;
+      text-align: right;
+      -webkit-user-select: text;
+      overflow-y: scroll;
+      overflow-x: hidden;
+    }
+
+    .edge {
+      background: linear-gradient(to bottom, rgba(240,240,240,1) 0%,
+                                             rgba(240,240,240,0) 100%);
+      height: 20px;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      z-index: 1;
+    }
+
+    .edge2 {
+      margin-top: -12px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%,
+                                             rgba(0,0,0,0) 100%);
+      top: 12px;
+      height: 12px;
+      position: relative;
+      width: 100%;
+      z-index: 99;
+    }
+
+    .calc .buttons {
+      flex: 1 1 100%;
+      width: 100%;
+      height: 252px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      flex: 1 1 100%;
+      justify-content: space-between;
+    }
+
+    .button {
+      flex-grow: 1;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      background-color: #4b4b4b;
+    }
+
+    .rhs-ops {
+      border-left-width: 1px;
+      border-left-style: solid;
+      border-left-color: rgb(68, 68, 68);
+      background: #777;
+    }
+
+    .rhs-ops .button {
+      background-color: #777;
+    }
+
+    .button-column {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+    }
+
+    .inner-calc-display {
+      position: absolute;
+      right: 20pt;
+    top: 100%;
+    transition: top 0.3s ease;
+      xxxbottom: 5px;
+      width: 100%;
+      padding-left: 90px;
+      padding-bottom: 11px;
+    }
+
+    .calc-display {
+      flex-grow: 5;
+      position: relative;
+    }
+
+    .secondaryButtons {
+      padding-left: 18px;
+      background: rgb(64, 189, 158);
+    }
+
+    .secondaryButtons .button {
+      background: rgb(64, 189, 158);
+    }
+
+    .tertiaryButtons {
+      padding-left: 18px;
+      background: rgb(29, 233, 182);
+    }
+
+    .tertiaryButtons .button {
+      background: rgb(29, 233, 182);
+    }
+
+    .keypad {
+      flex-grow: 0;
+      flex-shrink: 0;
+      margin-bottom: -4px;
+      z-index: 5;
+    }
+
+    .alabel {
+      font-size: 34px;
+      color: #444;
+    }
+  */},
     {
       name: 'toHTML',
       template: function() {/*
