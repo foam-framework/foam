@@ -695,7 +695,7 @@ var ModelProperty = Model.create({
     {
       name: 'toJSON',
       defaultValue: function(visitor, output, o) {
-        if ( ! this.transient ) output[this.name] = o[this.name].name;
+        if ( ! this.transient ) output[this.name] = o[this.name].id;
       }
     },
   ]
