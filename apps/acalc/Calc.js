@@ -702,11 +702,11 @@ CLASS({
 
     .secondaryButtons {
       padding-left: 18px;
-      background: rgb(64, 189, 158);
+      background: rgb(52, 153, 128);
     }
 
     .secondaryButtons .button {
-      background: rgb(64, 189, 158);
+      background: rgb(52, 153, 128);
     }
 
     .tertiaryButtons {
@@ -848,7 +848,7 @@ CLASS({
     function toHTML() {/*
           <%
           this.X.registerModel(CalcButton.xbind({
-            background: 'rgb(64, 189, 158)',
+            background: 'rgb(52, 153, 128)',
             width:  61,
             height: 61,
             font:   '300 20px RobotoDraft'
