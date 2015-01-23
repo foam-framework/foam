@@ -18,6 +18,10 @@ CLASS({
   name:  'Logo',
   extendsModel: 'foam.graphics.CView',
 
+  requires: [
+    'foam.graphics.Circle'
+  ],
+
   constants: {
     COLOURS: ['#33f','#f00','#fc0','#33f','#3c0']
     // COLOURS: ['#333','#aaa','#ccc','#888','#3999']
@@ -47,13 +51,13 @@ CLASS({
       var Y = 120;
       var X = 10+Math.random()*310;
 
-      var circle = Circle.create({
+      var circle = this.Circle.create({
         x: X,
         y: Y,
         r: 5,
         alpha: 0.8,
-        color: undefined,
-        borderWidth: 3,
+        color: null,
+        borderWidth: 1,
         border: this.COLOURS[Math.floor(Math.random() * this.COLOURS.length)]});
 
       this.addChild(circle);
@@ -66,7 +70,7 @@ CLASS({
             circle.alpha = 0;
             circle.y = Y - 100 - Math.random() * 50;
             circle.r = 25 + Math.random() * 50;
-            circle.borderWidth = 12;
+            circle.borderWidth = 10;
            },
            M.easeIn(0.5)
           ]
