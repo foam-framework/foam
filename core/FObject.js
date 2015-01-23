@@ -168,7 +168,7 @@ var FObject = {
 
       // Add shortcut create() method to Models
       self.addInitAgent(0, 'Add create() to Model', function(o, X) {
-        if ( o.name != 'Model' ) o.create = BootstrapModel.create;
+        if ( Model.isInstance(o) && o.name != 'Model' ) o.create = BootstrapModel.create;
       });
 
       // Works if sort is 'stable', which it isn't in Chrome
