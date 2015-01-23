@@ -289,6 +289,30 @@ var Property = {
       */}
     },
     {
+      model_: 'ViewFactoryProperty',
+      name: 'detailView',
+      type: 'view',
+      defaultValueFn: function() { return this.view; },
+      help: 'View component for the property when rendering within a DetailView.',
+      documentation: function() { /*
+        The default $$DOC{ref:'View'} to use when rendering the $$DOC{ref:'Property'}
+        as a part of a $$DOC{ref:'DetailView'}. Specify a string or an object with
+        factory_ and other properties specified.
+      */}
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'citationView',
+      type: 'view',
+      defaultValueFn: function() { return this.view; },
+      help: 'View component for the property when rendering within a CitationView.',
+      documentation: function() { /*
+        The default $$DOC{ref:'View'} to use when rendering the $$DOC{ref:'Property'}
+        as a part of a $$DOC{ref:'CitationView'}. Specify a string or an object with
+        factory_ and other properties specified.
+      */}
+    },
+    {
 //      model_: 'FunctionProperty',
       name: 'detailViewPreRow',
       defaultValue: function() { return ""; },
