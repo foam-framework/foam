@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.navigator',
 
   documentation: function() {/*  */},
-  
+
   requires: [
     'EasyDAO',
     'FutureDAO'
@@ -33,6 +33,7 @@ CLASS({
     {
       name: 'name',
       defaultValueFn: function() {
+        if ( ! this.model ) return '';
         return (this.model.package ? this.model.package + '.' : '') + this.model.name;
       }
     },
