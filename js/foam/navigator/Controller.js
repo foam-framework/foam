@@ -29,6 +29,7 @@ CLASS({
     'ToolbarView',
     'foam.navigator.BrowserConfig',
     'foam.navigator.FOAMlet',
+    'foam.navigator.FOAMletBrowserConfig',
     'foam.navigator.types.Todo',
     'foam.navigator.views.OverlayView',
     'foam.navigator.views.SelectTypeView',
@@ -39,60 +40,12 @@ CLASS({
     'overlay'
   ],
 
-  constants: [
-    {
-      name: 'FOAMLET_MODELS',
-      value: [
-        'foam.navigator.types.Todo'
-      ]
-    }
-  ],
-
   properties: [
     {
       name: 'config',
       documentation: 'Sets up the default BrowserConfig, which loads FOAMlets.',
       factory: function() {
-        // The BrowserConfig DAO we'll be passing to the MultiDAO that drives
-        // the FOAMlet system.
-        // TODO(braden): This needs to arequire the model of incoming
-        // BrowserConfigs and delay the put until that's done. AsyncAdapterDAO?
-        // Doesn't exist yet, but it needs to exist soon.
-        var configDAO = this.CachingDAO.create({
-          cache: this.MDAO.create({ model: this.BrowserConfig }),
-          src: this.IDBDAO.create({
-            useSimpleSerialization: false,
-            name: 'FOAMletBrowserConfigs',
-            model: this.BrowserConfig
-          })
-        });
-
-        // The future DAO handed temporarily to the MultiDAO to buy time while
-        // we check if we need to populate an empty configDAO.
-        var future = afuture();
-        var futureDAO = this.FutureDAO.create({
-          future: future.get
-        });
-
-        // Check if the configDAO is empty, and populate it with the default
-        // types if it is.
-        configDAO.select(COUNT())(function(c) {
-          if (c.count > 0) future.set(configDAO);
-          else {
-            [
-              this.BrowserConfig.create({ model: 'foam.navigator.types.Todo' })
-            ].dao.select(configDAO)(function() {
-              future.set(configDAO);
-            });
-          }
-        }.bind(this));
-
-        return this.BrowserConfig.create({
-          model: this.FOAMlet,
-          dao: this.MultiDAO.create({
-            configDAO: futureDAO
-          })
-        });
+        return this.FOAMletBrowserConfig.create();
       }
     },
     {
@@ -153,10 +106,22 @@ CLASS({
       }
     },
     {
-      name: 'toolbar',
+      name: 'itemToolbar',
+      documentation: 'The toolbar for each selected item.',
       factory: function() {
         return this.ToolbarView.create({
           actions: this.config.model.actions,
+          value$: this.table.selection$
+        });
+      }
+    },
+    {
+      name: 'configToolbar',
+      documentation: 'The toolbar for the whole config, with top-level ' +
+          'operations like creating new items.',
+      factory: function() {
+        return this.ToolbarView.create({
+          actions: this.config.model_.actions,
           value$: this.table.selection$
         });
       }
@@ -169,21 +134,6 @@ CLASS({
     },
   ],
 
-  actions: [
-    {
-      name: 'newItem',
-      label: 'Create...',
-      action: function() {
-        var models = this.FOAMLET_MODELS.map(function(fullName) {
-          return this[fullName.split('.').pop()];
-        }.bind(this));
-        this.overlay.open(this.SelectTypeView.create({
-          dao: models.dao
-        }));
-      }
-    }
-  ],
-
   templates: [
     function CSS() {/*
     */},
@@ -191,8 +141,8 @@ CLASS({
       %%overlay
       Search: $$q
       Count: $$count
-      $$newItem
-      %%toolbar
+      %%configToolbar
+      %%itemToolbar
       %%table
     */}
   ]
