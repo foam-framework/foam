@@ -1884,6 +1884,14 @@ CLASS({
       model_: 'BooleanPropery',
       name: 'openedAsMenu',
       defaultValue: false
+    },
+    {
+      name: 'tagName',
+      defaultValue: 'div'
+    },
+    {
+      name: 'className',
+      defaultValueFn: function() { return this.openedAsMenu ? 'ActionMenu' : 'ActionToolbar'; }
     }
   ],
 
@@ -1924,21 +1932,14 @@ CLASS({
       this.publish('closed');
     },
 
-    toHTML: function(opt_menuMode) {
+    toInnerHTML: function() {
       var str = '';
-      var cls = opt_menuMode ? 'ActionMenu' : 'ActionToolbar';
-
-      str += '<div id="' + this.id + '" class="' + cls + '">';
-
       for ( var i = 0 ; i < this.children.length ; i++ ) {
         str += this.preButton(this.children[i]) +
           this.children[i].toHTML() +
           (MenuSeparator.isInstance(this.children[i]) ?
            '' : this.postButton(this.children[i]));
       }
-
-      str += '</div>';
-
       return str;
     },
 

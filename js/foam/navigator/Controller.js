@@ -37,7 +37,8 @@ CLASS({
   ],
   exports: [
     'dao',
-    'overlay'
+    'overlay',
+    'selection$'
   ],
 
   properties: [
@@ -102,7 +103,14 @@ CLASS({
     {
       name: 'selection',
       postSet: function(old, nu) {
-        this.toolbar.actions = nu.model_.actions;
+        this.itemToolbar.destroy();
+        this.itemToolbar.addActions(nu.model_.actions);
+        this.itemToolbar.addActions(nu.model_.actions.map(function(a) {
+          a = a.clone();
+          a.action.bind(nu);
+          return a;
+        }));
+        this.itemToolbar.updateHTML();
       }
     },
     {
@@ -110,8 +118,8 @@ CLASS({
       documentation: 'The toolbar for each selected item.',
       factory: function() {
         return this.ToolbarView.create({
-          actions: this.config.model.actions,
-          value$: this.table.selection$
+          className: 'browser-action-bar',
+          extraClassName: 'browser-item-actions'
         });
       }
     },
@@ -120,10 +128,17 @@ CLASS({
       documentation: 'The toolbar for the whole config, with top-level ' +
           'operations like creating new items.',
       factory: function() {
-        return this.ToolbarView.create({
-          actions: this.config.model_.actions,
-          value$: this.table.selection$
+        var view = this.ToolbarView.create({
+          className: 'browser-action-bar',
+          extraClassName: 'browser-top-actions'
         });
+        var config = this.config;
+        view.addActions(this.config.model_.actions.map(function(a) {
+          a = a.clone();
+          a.action = a.action.bind(config);
+          return a;
+        }));
+        return view;
       }
     },
     {
@@ -136,14 +151,25 @@ CLASS({
 
   templates: [
     function CSS() {/*
+      .browser-top {
+        height: 40px;
+        line-height: 40px;
+      }
+
+      .browser-action-bar {
+      }
     */},
     function toInnerHTML() {/*
       %%overlay
-      Search: $$q
-      Count: $$count
+      <div class="browser-top">
+        Search: $$q
+        Count: $$count
+      </div>
       %%configToolbar
       %%itemToolbar
-      %%table
+      <div class="browser-main-view">
+        %%table
+      </div>
     */}
   ]
 });

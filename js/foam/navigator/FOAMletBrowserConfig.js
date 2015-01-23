@@ -28,6 +28,7 @@ CLASS({
     'foam.navigator.BrowserConfig',
     'foam.navigator.FOAMlet',
     'foam.navigator.types.Todo',
+    'foam.navigator.views.SelectTypeView',
   ],
 
   imports: [
@@ -96,13 +97,10 @@ CLASS({
       action: function() {
         var self = this;
         this.configDAO.select([])(function(configs) {
-          var names = configs.map(function(c) { return c.model.split('.').pop(); });
-          apar.apply(null, names.map(arequire))(function(models) {
-            self.overlay.open(self.SelectTypeView.create({
-              dao: models.dao
-            }));
-          });
-        });
+          this.overlay.open(this.SelectTypeView.create({
+            dao: configs.map(function(c) { return c.model; }).dao
+          }));
+        }.bind(this));
       }
     }
   ]

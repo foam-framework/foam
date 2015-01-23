@@ -31,7 +31,7 @@ CLASS({
       name: 'priority',
       defaultValue: 3,
       view: {
-        factory_: 'ChoiceListView',
+        factory_: 'ChoiceView',
         choices: [1, 2, 3, 4, 5]
       }
     },
