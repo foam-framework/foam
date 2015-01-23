@@ -335,6 +335,11 @@ CLASS({
       */}
     },
     {
+      name: 'propertyViewProperty',
+      type: 'Property',
+      defaultValueFn: function() { return this.X.Property.VIEW; }
+    },
+    {
       name: 'initializers_',
       factory: function() { return []; },
       documentation: function() {/*

@@ -19,8 +19,12 @@ CLASS({
   name: 'DetailView',
   extendsModel: 'View',
 
+  requires: [ 'Property' ],
   imports: [ 'data' ],
-  //exports: [ 'data' ],
+  exports: [
+    'propertyViewProperty'
+    // 'data'
+  ],
 
   documentation:function() {/*
     When a view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'DetailView'}
@@ -115,6 +119,11 @@ CLASS({
         Set true to create sub-views to display $$DOC{ref:'Relationship',usePlural:true}
         for the $$DOC{ref:'.model'}.
       */}
+    },
+    {
+      name: 'propertyViewProperty',
+      type: 'Property',
+      defaultValueFn: function() { return this.Property.DETAIL_VIEW; }
     }
   ],
 
@@ -140,7 +149,7 @@ CLASS({
           else
             v = this.createView(o, opt_args);
             v.data$ = this.data$;
-  
+
           return v;
         }
       }
@@ -239,6 +248,23 @@ CLASS({
       return str;
     }
   }
+});
+
+
+CLASS({
+  name: 'CitationView',
+
+  requires: [ 'Property' ],
+
+  exports: [ 'propertyViewProperty' ],
+
+  properties: [
+    {
+      name: 'propertyViewProperty',
+      type: 'Property',
+      defaultValueFn: function() { return this.Property.CITATION_VIEW; }
+    }
+  ]
 });
 
 
