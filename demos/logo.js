@@ -46,8 +46,9 @@ CLASS({
       this.addBubble();
     },
     addBubble: function() {
-      var c = this.canvas;
+      if ( Math.random() < 0.5 ) return;
 
+      var c = this.canvas;
       var Y = 120;
       var X = 10+Math.random()*310;
 
@@ -70,7 +71,7 @@ CLASS({
             circle.alpha = 0;
             circle.y = Y - 100 - Math.random() * 50;
             circle.r = 25 + Math.random() * 50;
-            circle.borderWidth = 10;
+            circle.borderWidth = 8;
            },
            M.easeIn(0.5)
           ]
