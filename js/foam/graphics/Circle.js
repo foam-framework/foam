@@ -38,6 +38,16 @@ CLASS({
       label: 'Radius',
       type: 'int',
       defaultValue: 20
+    },
+    {
+      name: 'startAngle',
+      defaultValue: 0
+    },
+    {
+      name: 'endAngle',
+      label: 'Radius',
+      type: 'int',
+      defaultValue: Math.PI*2
     }
   ],
 
@@ -48,22 +58,26 @@ CLASS({
 
       c.globalAlpha = this.alpha;
 
-      if ( this.border && this.r ) {
-        c.lineWidth = this.borderWidth;
-        c.strokeStyle = this.border;
-        c.beginPath();
-        c.arc(0, 0, this.r, 0, Math.PI*2, true);
-        c.closePath();
-        c.stroke();
-      }
+      if ( ! this.r ) return;
 
-      if ( this.color ) {
+      if ( this.color) {
+        c.beginPath();
+        c.moveTo(0,0);
+        c.arc(0, 0, this.r, -this.endAngle, -this.startAngle, false);
+        c.closePath();
+
         c.fillStyle = this.color;
+        c.fill();
+      }
+      if ( this.border ) {
+        c.lineWidth = this.borderWidth;
 
         c.beginPath();
-        c.arc(0, 0, this.r, 0, Math.PI*2, true);
+        c.arc(0, 0, this.r+this.borderWidth/2-0.1, -this.endAngle, -this.startAngle, false);
         c.closePath();
-        c.fill();
+
+        c.strokeStyle = this.border;
+        c.stroke();
       }
     }
   }
