@@ -42,6 +42,8 @@ CLASS({
         var h = this.element.clientHeight;
         var c = this.Circle.create({
           r: 0,
+          startAngle: Math.PI/2,
+          endAngle: Math.PI,
           width: w,
           height: h,
           x: this.startX * w,
@@ -51,8 +53,9 @@ CLASS({
         var view = c.toView_();
         var div = document.createElement('div');
         var dStyle = div.style;
-        dStyle.position = 'absolute';
+        dStyle.position = 'fixed';
         dStyle.left = 0;
+        dStyle.top = 0;
         dStyle.zIndex = 4;
 
         var id = View.getPrototype().nextID();
