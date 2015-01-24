@@ -226,6 +226,7 @@ CLASS({
           }
         });
 
+      /*
       var b = this;
       // Subscribe to action firing and show halo animation
       b.data.subscribe(['action', this.action.name], function() {
@@ -242,6 +243,7 @@ CLASS({
           [200, function() { b.halo.alpha = 0; }]
         ])();
       }.bind(this));
+      */
     },
 
     initCView: function() {
@@ -265,7 +267,7 @@ CLASS({
       }.bind(this));
 
       // This is so that shift-search-spacebar performs a click with ChromeVox
-      // which otherwise only delivers mouseDown and mouseUp events but no click 
+      // which otherwise only delivers mouseDown and mouseUp events but no click
       this.$.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
