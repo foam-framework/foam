@@ -1406,6 +1406,7 @@ CLASS({
       // Resize first, then init the outer view, and finally the panel view.
       this.X.window.addEventListener('resize', this.onResize);
 
+      this.main$().addEventListener('click',  this.onMainFocus);
       this.main$().addEventListener('DOMFocusIn',  this.onMainFocus);
       this.panel$().addEventListener('DOMFocusIn', this.onPanelFocus);
       this.onResize();
