@@ -248,7 +248,7 @@ CLASS({
       Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
         if ( Number.isNaN(this.a2) ) this.error();
         var a2 = NumberFormatter.formatNumber(this.a2);
-        this.row1 = this.op + ( a2 !== '' ? '&nbsp;' + a2 : '' );
+        this.row1 = '&nbsp;' + this.op + ( a2 !== '' ? '&nbsp;' + a2 : '' );
       }.bind(this)));
     },
     push: function(a2, opt_op) {
