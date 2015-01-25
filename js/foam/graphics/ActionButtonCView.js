@@ -131,7 +131,7 @@ CLASS({
     {
       name: 'onMouseDown',
       code: function(evt) {
-        // console.log('mouseDow: ', evt, this.state_);
+        // console.log('mouseDown: ', evt, this.state_);
         if ( this.state_ !== 'default' ) return;
 
         this.state_ = 'pressing';
@@ -165,6 +165,10 @@ CLASS({
     {
       name: 'onMouseUp',
       code: function(evt) {
+        // This line shouldn't be necessary but we're getting stray
+        // onMouseUp events when the cursor moves over the button.
+        if ( this.state_ === 'default' ) return;
+
         // console.log('mouseUp: ', evt, this.state_);
         if ( this.state_ === 'pressing' ) { this.state_ = 'cancelled'; return; }
         if ( this.state_ === 'cancelled' ) return;
