@@ -57,7 +57,7 @@ CLASS({
         white-space: nowrap;
       }
       .f1.animated {
-        transition: left .3s ease;
+        transition: left .4s;
       }
       .f2 {
         display: inline;
