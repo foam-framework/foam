@@ -478,7 +478,7 @@ CLASS({
   ],
   methods: {
     say: function(msg) {
-      console.log('say: ', msg);
+      // console.log('say: ', msg);
       this.lastSaid = msg;
       var e = document.createTextNode(' ' + msg + ' ');
       e.id = this.nextID();
