@@ -137,6 +137,7 @@ CLASS({
         name: 'select',
         todo: 'Need proper options support',
         code: function(sink, options) {
+          sink = sink || [].sink;
           var proxySink = {
             put: function(o) {
               sink && sink.put && sink.put(o);
@@ -146,14 +147,19 @@ CLASS({
             }
           };
           var self = this;
-          return apar.apply(null, this.models.map(function(modelName) {
-            return self.daos[modelName].aseq(function(ret, dao) {
-              dao.select(proxySink, options)(ret);
+          var future = afuture();
+
+          var pars = [];
+          this.models.forEach(function(modelName) {
+            pars.push(function(ret) {
+              self.daos[modelName].select(proxySink, options)(ret);
             });
-          })).aseq(function(ret) {
-            sink && sink.eof && sink.eof();
-            ret && ret.call(null, sink);
           });
+          apar.apply(null, pars)(function() {
+            sink.eof && sink.eof();
+            future.set(sink);
+          });
+          return future.get;
         }
       },
       {
