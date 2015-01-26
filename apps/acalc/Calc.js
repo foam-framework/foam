@@ -932,6 +932,16 @@ CLASS({
               </div>
             </div>
           </div>
+          <%
+            var l = function(_, _, _, degrees) {
+              this.degView.font = degrees ? '600 18px RobotoDraft' : '300 18px RobotoDraft';
+              this.radView.font = degrees ? '300 18px RobotoDraft' : '600 18px RobotoDraft';
+              if ( this.degView.canvas ) { this.degView.erase(); this.degView.paint(); }
+              if ( this.radView.canvas ) { this.radView.erase(); this.radView.paint(); }
+            }.bind(this);
+            this.data.degreesMode$.addListener(l);
+            l();
+          %>
     */}
   ]
 });
