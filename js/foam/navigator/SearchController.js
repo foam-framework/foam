@@ -7,6 +7,7 @@ CLASS({
     'foam.navigator.BrowserConfig',
     'foam.navigator.dao.MultiDAO',
     'foam.navigator.types.Mail',
+    'foam.navigator.dao.FOAMletDecoratorDAO',
     'foam.navigator.types.Todo',
     'CachingDAO',
     'IDBDAO',
@@ -43,14 +44,15 @@ CLASS({
           this.BrowserConfig.create({
             model: 'foam.navigator.types.Mail',
             dao: this.CachingDAO.create({
-              src: MailletDAO.create({
+              src: this.FOAMletDecoratorDAO.create({
+                foamletModel: this.Mail,
                 delegate: this.GMailToEMailDAO.create({
                   delegate: this.IDBDAO.create({
                     model: this.FOAMGMailMessage, useSimpleSerialization: false
                   })
                 }),
               }),
-              delegate: this.MDAO.create({ model: this.EMail })
+              delegate: this.MDAO.create({ model: this.Mail })
             })
           })
         ].dao;
