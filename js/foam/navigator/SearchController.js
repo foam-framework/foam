@@ -22,6 +22,7 @@ CLASS({
   requires: [
     'foam.navigator.views.GSnippet',
     'foam.navigator.views.EMailGSnippet',
+    'foam.navigator.views.ContactGSnippet',
     'foam.navigator.BrowserConfig',
     'foam.navigator.IssueConfig',
     'foam.navigator.dao.MultiDAO',
@@ -33,7 +34,8 @@ CLASS({
     'FOAMGMailMessage',
     'EMail',
     'MDAO',
-    'GMailToEMailDAO'
+    'GMailToEMailDAO',
+    'lib.contacts.Contact'
   ],
   properties: [
     {
@@ -53,6 +55,13 @@ CLASS({
                 })
               }),
               delegate: this.MDAO.create({ model: this.EMail })
+            })
+          }),
+          this.BrowserConfig.create({
+            model: this.Contact,
+            dao: this.IDBDAO.create({
+              model: this.Contact,
+              useSimpleSerialization: false
             })
           })
         ].dao;
