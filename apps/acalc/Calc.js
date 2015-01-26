@@ -240,6 +240,7 @@ CLASS({
       this.a1 = 0;
       this.a2 = '';
       this.op = DEFAULT_OP;
+      this.row1 = '';
       this.editable = true;
     },
     init: function() {
@@ -248,14 +249,15 @@ CLASS({
       Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
         if ( Number.isNaN(this.a2) ) this.error();
         var a2 = NumberFormatter.formatNumber(this.a2);
-        this.row1 = '&nbsp;' + this.op + ( a2 !== '' ? '&nbsp;' + a2 : '' );
+        this.row1 = this.op + ( a2 !== '' ? '&nbsp;' + a2 : '' );
       }.bind(this)));
     },
     push: function(a2, opt_op) {
+      this.row1 = '';
       this.history.put(History.create(this));
       this.a1 = this.a2;
-      this.a2 = a2;
       this.op = opt_op || DEFAULT_OP;
+      this.a2 = a2;
     },
     replace: function(op) {
       this.op = op || DEFAULT_OP;
@@ -277,6 +279,7 @@ CLASS({
 
       keyboardShortcuts: [ 27 /* escape */ ],
       action: function() {
+        this.row1 = '';
         this.a1 = '0';
         this.a2 = '';
         this.editable = true;

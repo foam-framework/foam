@@ -72,17 +72,19 @@ CLASS({
     {
       name: 'onDataChange',
 //      isFramed: true, // interferes with CSS animation
-      code: function() {
+      code: function(_, _, oldValue, newValue) {
         if ( ! this.$ ) return;
         var f1$ = this.$.querySelector('.f1');
         var f2$ = this.$.querySelector('.f2');
 
-        f1$.innerHTML = this.data;
-        f2$.innerHTML = this.data;
+        var data = this.data || '&nbsp;';
+        f1$.innerHTML = data;
+        f2$.innerHTML = data;
 
 //        f1$.style.top  = f2$.offsetTop;
         f1$.style.left = f2$.offsetLeft;
-        DOM.setClass(this.$.querySelector('.f1'), 'animated', true);
+        // Don't animate to the empty string
+        DOM.setClass(this.$.querySelector('.f1'), 'animated', this.data.length);
       }
     },
     {
