@@ -23,6 +23,7 @@ CLASS({
     'foam.navigator.views.GSnippet',
     'foam.navigator.views.EMailGSnippet',
     'foam.navigator.views.ContactGSnippet',
+    'foam.navigator.views.IssueGSnippet',
     'foam.navigator.BrowserConfig',
     'foam.navigator.IssueConfig',
     'foam.navigator.dao.MultiDAO',

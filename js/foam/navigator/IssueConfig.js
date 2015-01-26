@@ -36,15 +36,10 @@ CLASS({
     {
       name: 'dao',
       factory: function() {
-        var future = afuture();
-        var xhr = this.XHR.create();
-        xhr.asend(function(data) {
-          var dao = this.MDAO.create({ model: this.Issue });
-          var parsed = JSONUtil.parse(this.X, data);
-          parsed.dao.select(dao);
-          future.set(dao);
-        }.bind(this), '/apps/navigator/bugs.json');
-        return this.FutureDAO.create({ future: future });
+        return this.EasyDAO.create({
+          model: this.Issue,
+          cache: true
+        });
       }
     },
     {
