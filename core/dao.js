@@ -364,7 +364,7 @@ var JSONToObject = {
 
   visitString: function(o) {
     try {
-      return o.substr(0, 8) === 'function' ?
+      return o.substr(0, 9) === 'function(' ?
         eval('(' + o + ')') :
         o ;
     } catch (x) {
