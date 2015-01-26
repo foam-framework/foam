@@ -31,13 +31,7 @@ CLASS({
 
   properties: [
     {
-      name: 'models',
-      model_: 'StringArrayProperty',
-      factory: function() { return []; }
-    },
-    {
-      name: 'daos',
-      factory: function() { return {}; }
+      name: 'model'
     },
     {
       name: 'config',
@@ -88,7 +82,7 @@ CLASS({
       code: function(sink, id) {
         var objID = id;
         if ( objID && objID.id ) objID = objID.id;
-        var model = { name: objID && objID.split(':')[0] };
+        var model = { name: objID && this.config.getModelName(objID) };
         return {
           put: function(o) {
             sink && sink.put && this.put_.bind(this, sink)(o);
@@ -144,7 +138,19 @@ CLASS({
     {
       name: 'select',
       code: function(sink, options) {
-        return this.delegate.select(sink, options);
+        // TODO(braden): Handle queries for ID here.
+        return this.delegate.select({
+          put: this.put_.bind(this, sink),
+          eof: sink && sink.eof && sink.eof.bind(sink)
+        }, options);
+      }
+    },
+    {
+      name: 'removeAll',
+      code: function(sink, options) {
+        // TODO(braden): Handle queries for ID here. Since in removeAll it's
+        // dangerous to ignore a query, removeAll is disabled.
+        console.error('ModelIDDecoratorDAO does not implement removeAll');
       }
     }
   ]

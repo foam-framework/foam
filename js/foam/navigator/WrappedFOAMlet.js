@@ -29,7 +29,7 @@
     {
       name: 'data',
       postSet: function(_,nu) {
-        this.model = data.model_;
+        this.model = nu.model_;
       }
     },
     {

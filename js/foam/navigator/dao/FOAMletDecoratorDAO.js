@@ -26,7 +26,7 @@ CLASS({
 
   properties: [
     {
-      name: 'foamletModel',
+      name: 'model',
       model_: 'ModelProperty',
       documentation: function() {/* If a valid WrappedFOAMlet is not specified
         here, model-for-model will attempt to load the closest it can find.
@@ -35,15 +35,15 @@ CLASS({
   ],   
   
   methods: {
-    aToB: function(obj) { 
-      if ( this.foamletModel ) {
-        return this.foamletModel.create({ data: obj });
+    bToA: function(obj) { 
+      if ( this.model ) {
+        return this.model.create({ data: obj });
       } else {
         // try model-for-model if none was specified
         return this.WrappedFOAMlet.create({ model: obj.model_, data: obj });
       }
     },
-    bToA: function(obj) {
+    aToB: function(obj) {
       return obj.data;
     },
     adaptOptions_: function(opts) { return opts; }
