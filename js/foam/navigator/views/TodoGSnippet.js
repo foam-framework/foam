@@ -29,7 +29,7 @@ CLASS({
     {
       name: 'title',
       defaultValueFn: function() {
-        return this.data && this.data.name || '';
+        return this.data && this.data.name || 'Todo';
       }
     },
     {
@@ -40,9 +40,13 @@ CLASS({
         var basicMetadata = this.data.labels.map(function(label) {
           return this.GSnippetMetadatum.create({ text: label });
         }.bind(this));
-        var todoMetadata = ['Priority: ' + this.data.priority];
+        var todoMetadata = [
+          this.GSnippetMetadatum.create({ text: 'Priority: ' + this.data.priority})
+        ];
         if ( this.data.dueDate )
-          todoMetadata = todoMetadata.concat(['Due date: ' + this.data.dueDate]);
+          todoMetadata = todoMetadata.concat([
+            this.GSnippetMetadatum.create({ text: 'Due date: ' + this.data.dueDate })
+          ]);
         return todoMetadata.concat(basicMetadata);
       }
     },
