@@ -22,30 +22,13 @@ CLASS({
       factory: function() {
         var self = this;
 
-        var MailletDAO = Model.create({
-          extendsModel: 'AbstractAdapterDAO',
-          methods: {
-            aToB: function(a) {
-              return a.mail;
-            },
-            bToA: function(b) {
-              return self.Mail.create({
-                mail: b
-              });
-            },
-            adaptOptions_: function(options) {
-              return options;
-            }
-          }
-        });
-
         return [
           this.BrowserConfig.create({ model: 'foam.navigator.types.Todo' }),
           this.BrowserConfig.create({
             model: 'foam.navigator.types.Mail',
             dao: this.CachingDAO.create({
               src: this.FOAMletDecoratorDAO.create({
-                foamletModel: this.Mail,
+                model: this.Mail,
                 delegate: this.GMailToEMailDAO.create({
                   delegate: this.IDBDAO.create({
                     model: this.FOAMGMailMessage, useSimpleSerialization: false
