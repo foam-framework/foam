@@ -72,7 +72,7 @@ CLASS({
       name: 'doQuery',
       isMerged: 2,
       code: function() {
-        this.filteredDao = this.dao.where(MQL(this.query));
+        this.filteredDao = this.dao.where(MQL(this.query)).limit(10);
       }
     }
   ],
