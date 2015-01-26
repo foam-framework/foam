@@ -606,11 +606,13 @@ CLASS({
     }
 
     .deg, .rad {
+      background-color: #eee;
       color: #111;
       font-size: 22px;
       font-weight: 400;
       opacity: 0;
       padding-left: 8px;
+      padding-right: 10px;
       transition: opacity 0.8s;
     }
 
@@ -699,7 +701,7 @@ CLASS({
     transition: top 0.3s ease;
       xxxbottom: 5px;
       width: 100%;
-      padding-left: 90px;
+      padding-left: 50px;
       padding-bottom: 11px;
     }
 
