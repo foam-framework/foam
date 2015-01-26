@@ -91,25 +91,65 @@ CLASS({
         factory_: 'DAOListView',
         rowView: 'foam.navigator.views.GSnippet'
       }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'expanded',
+      defaultValue: false,
+      postSet: function(old, nu) {
+        if ( old != nu ) this.updateHTML();
+      }
     }
   ],
   listeners: [
     {
       name: 'doQuery',
       code: function() {
+        this.expanded = true;
         this.filteredDao = this.dao.where(MQL(this.query)).limit(10);
       }
     }
   ],
+  methods: {
+    updateHTML: function() {
+      if ( ! this.$ ) return;
+      this.$.outerHTML = this.toHTML();
+      this.initHTML();
+    },
+    initHTML: function() {
+      this.SUPER();
+      // TODO: Hack, should views should have a focus() method?
+      this.queryView.$.focus();
+    },
+    toHTML: function() {
+      return this.expanded ? this.expandedHTML() : this.collapsedHTML();
+    }
+  },
   templates: [
     function CSS() {/*
       .searchBox {
         width: 523px;
         font: 16px arial,sans-serif;
+        flex-grow: 0;
+        flex-string: 0;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        border: 0;
       }
     */},
-    function toHTML() {/*
-      <div id="<%= this.id %>" style="padding-top: 120px;">
+    function expandedHTML() {/*
+      <div id="<%= this.id %>">
+        <div style="background: #f1f1f1; height: 60px; display:flex; align-items: center;">
+          <div style="display: inline-block; flex-grow: 0; flex-shrink: 0; padding-right: 12px; margin-left: 12px; background: url('<%= this.logo %>') no-repeat; background-size: 92px 33px; height: 33px; width: 92px"></div>
+          $$query{ onKeyMode: true, extraClassName: 'searchBox' }
+        </div>
+        <div style="padding-top: 20px;">$$filteredDao</div>
+      </div>
+    */},
+    function collapsedHTML() {/*
+      <div id="<%= this.id %>" style="padding-top: 120px">
         <center>
           <div style="background: url('<%= this.logo %>') no-repeat; background-size: 269px 95px; height: 95px; width:269px; padding-bottom: 20px"></div>
           <div>$$query{ onKeyMode: true, extraClassName: 'searchBox' }</div>
