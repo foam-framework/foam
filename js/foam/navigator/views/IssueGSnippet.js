@@ -31,13 +31,13 @@ CLASS({
     {
       name: 'snippet',
       lazyFactory: function() {
-        return this.data && this.data.comment;
+        return this.data && this.data.comment.substring(0, 200);
       }
     },
     {
       name: 'url',
       lazyFactory: function() {
-        return 'https://b2.corp.google.com/issues/' + this.data.id;
+        return 'https://b2.corp.google.com/issues/' + this.data.id.split(':')[1];
       }
     },
     {

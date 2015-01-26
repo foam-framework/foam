@@ -55,6 +55,7 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="{{{this.id}}}" class="gsnippet">
+        <span class="gs-type">{{this.data.model_.label}}</span>
         <h3 class="gs-header">
           <a href="{{{this.url}}}">{{{this.title}}}</a>
         </h3>
@@ -67,6 +68,7 @@ CLASS({
     function CSS() {/*
       div.gsnippet {
         position: relative;
+        margin-bottom: 25px;
       }
       div.gsnippet a {
         text-decoration: none;
@@ -76,7 +78,7 @@ CLASS({
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: normal;
         margin: 0;
         padding: 0;
@@ -84,6 +86,13 @@ CLASS({
       div.gs-header a:link {
         cursor: pointer;
         color: #1a0dab;
+      }
+      span.gs-type {
+        color: #999;
+        float: left;
+        margin-left: -80px;
+        text-align: right;
+        width: 75px;
       }
       h3.gs-header a:visited {
         color: #609;

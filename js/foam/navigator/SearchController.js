@@ -142,6 +142,10 @@ CLASS({
         padding: 0;
         border: 0;
       }
+
+      .search-results {
+        padding: 20px 80px;
+      }
     */},
     function expandedHTML() {/*
       <div id="<%= this.id %>">
@@ -149,7 +153,7 @@ CLASS({
           <div style="display: inline-block; flex-grow: 0; flex-shrink: 0; padding-right: 12px; margin-left: 12px; background: url('<%= this.logo %>') no-repeat; background-size: 92px 33px; height: 33px; width: 92px"></div>
           $$query{ onKeyMode: true, extraClassName: 'searchBox' }
         </div>
-        <div style="padding-top: 20px;">$$filteredDao</div>
+        <div class="search-results">$$filteredDao</div>
       </div>
     */},
     function collapsedHTML() {/*
