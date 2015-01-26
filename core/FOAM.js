@@ -135,6 +135,15 @@ function arequire(modelName, opt_X) {
       console.warn('Unknown Model in arequire: ', modelName);
       return aconstant(undefined);
     }
+    
+    // check whether we have already hit the ModelDAO to load the model
+    if ( ! X.arequire$ModelLoadsInProgress ) {
+      X.set('arequire$ModelLoadsInProgress', {} );
+    } else {
+      if ( X.arequire$ModelLoadsInProgress[modelName] ) {
+        return X.arequire$ModelLoadsInProgress[modelName];
+      }
+    }
 
     var future = afuture();
     X.ModelDAO.find(modelName, {
@@ -148,7 +157,14 @@ function arequire(modelName, opt_X) {
         future.set(undefined);
       }
     });
+    
+    X.arequire$ModelLoadsInProgress[modelName] = future.get;
     return future.get;
+  } else {
+    // FOAM.lookup is now succeeding, so clear out the in-progress cache
+    if ( X.arequire$ModelLoadsInProgress ) {
+      delete X.arequire$ModelLoadsInProgress.modelName;
+    }
   }
 
   /** This is so that if the model is arequire'd concurrently the
