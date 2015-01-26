@@ -32,9 +32,13 @@ CLASS({
       <div class="gs-metadata">
         <% for ( var i = 0; i < this.data.length; ++i ) { %>
           <span>
-            <% if ( this.data[i].url ) { %><a href="{{{this.data[i].url}}}"><% } %>
-            <% if ( this.data[i].text ) { %>{{{this.data[i].text}}}<% } %>
-            <% if ( this.data[i].url ) { %></a><% } %>
+            <% if ( this.data[i].view ) { %>
+              {{{this.data[i].view.toHTML()}}}
+            <% } else { %>
+              <% if ( this.data[i].url ) { %><a href="{{{this.data[i].url}}}"><% } %>
+              <% if ( this.data[i].text ) { %>{{{this.data[i].text}}}<% } %>
+              <% if ( this.data[i].url ) { %></a><% } %>
+            <% } %>
           </span>
         <% } %>
       </div>
