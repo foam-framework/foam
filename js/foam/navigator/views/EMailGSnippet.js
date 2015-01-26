@@ -30,7 +30,7 @@ CLASS({
     {
       name: 'snippet',
       lazyFactory: function() {
-        return this.data.sippet;
+        return this.data.snippet;
       }
     },
     {
