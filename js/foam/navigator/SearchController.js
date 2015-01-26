@@ -5,7 +5,9 @@ CLASS({
   requires: [
     'foam.navigator.views.GSnippet',
     'foam.navigator.BrowserConfig',
+    'foam.navigator.IssueConfig',
     'foam.navigator.dao.MultiDAO',
+    'foam.navigator.types.Issue',
     'foam.navigator.types.Mail',
     'foam.navigator.dao.FOAMletDecoratorDAO',
     'foam.navigator.types.Todo',
@@ -41,6 +43,7 @@ CLASS({
 
         return [
           this.BrowserConfig.create({ model: 'foam.navigator.types.Todo' }),
+          this.IssueConfig.create(),
           this.BrowserConfig.create({
             model: 'foam.navigator.types.Mail',
             dao: this.CachingDAO.create({

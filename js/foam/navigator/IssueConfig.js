@@ -22,7 +22,6 @@ CLASS({
   requires: [
     'XHR',
     'foam.navigator.types.Issue',
-    'foam.navigator.types.IssueGSnippetView'
   ],
 
   properties: [
@@ -40,9 +39,8 @@ CLASS({
         var future = afuture();
         var xhr = this.XHR.create();
         xhr.asend(function(data) {
-          debugger;
           var dao = this.MDAO.create({ model: this.Issue });
-          var parsed = JSONUtil.parse(data);
+          var parsed = JSONUtil.parse(this.X, data);
           parsed.dao.select(dao);
           future.set(dao);
         }.bind(this), '/apps/navigator/bugs.json');
