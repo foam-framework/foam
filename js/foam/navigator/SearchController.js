@@ -21,12 +21,12 @@ CLASS({
   extendsModel: 'View',
   requires: [
     'foam.navigator.views.GSnippet',
+    'foam.navigator.views.EMailGSnippet',
     'foam.navigator.BrowserConfig',
     'foam.navigator.IssueConfig',
     'foam.navigator.dao.MultiDAO',
     'foam.navigator.types.Issue',
     'foam.navigator.types.Mail',
-    'foam.navigator.dao.FOAMletDecoratorDAO',
     'foam.navigator.types.Todo',
     'CachingDAO',
     'IDBDAO',
@@ -45,17 +45,14 @@ CLASS({
           this.BrowserConfig.create({ model: 'foam.navigator.types.Todo' }),
           this.IssueConfig.create(),
           this.BrowserConfig.create({
-            model: 'foam.navigator.types.Mail',
+            model: 'EMail',
             dao: this.CachingDAO.create({
-              src: this.FOAMletDecoratorDAO.create({
-                model: this.Mail,
-                delegate: this.GMailToEMailDAO.create({
-                  delegate: this.IDBDAO.create({
-                    model: this.FOAMGMailMessage, useSimpleSerialization: false
-                  })
-                }),
+              src: this.GMailToEMailDAO.create({
+                delegate: this.IDBDAO.create({
+                  model: this.FOAMGMailMessage, useSimpleSerialization: false
+                })
               }),
-              delegate: this.MDAO.create({ model: this.Mail })
+              delegate: this.MDAO.create({ model: this.EMail })
             })
           })
         ].dao;
