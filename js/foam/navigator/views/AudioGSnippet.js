@@ -16,20 +16,22 @@
  */
 
 CLASS({
-  name: 'TodoGSnippet',
+  name: 'AudioGSnippet',
   package: 'foam.navigator.views',
   extendsModel: 'foam.navigator.views.GSnippet',
 
   requires: [
     'foam.navigator.views.GSnippetMetadata',
-    'foam.navigator.views.GSnippetMetadatum'
+    'foam.navigator.views.GSnippetMetadatum',
+    'foam.navigator.views.AudioView',
+    'foam.navigator.types.AudioSource'
   ],
 
   properties: [
     {
       name: 'title',
       defaultValueFn: function() {
-        return this.data && this.data.name || 'Todo';
+        return this.data && this.data.title || 'Audio';
       }
     },
     {
@@ -40,22 +42,34 @@ CLASS({
         var basicMetadata = this.data.labels.map(function(label) {
           return this.GSnippetMetadatum.create({ text: label });
         }.bind(this));
-        var todoMetadata = [
-          this.GSnippetMetadatum.create({ text: 'Priority: ' + this.data.priority})
-        ];
-        if ( this.data.dueDate )
-          todoMetadata = todoMetadata.concat([
-            this.GSnippetMetadatum.create({ text: 'Due date: ' + this.data.dueDate })
-          ]);
-        return todoMetadata.concat(basicMetadata);
+        var audioMetadata = [];
+        var sources = this.AudioSource.isInstance(this.data.audioData) ?
+            [this.data.audioData] :
+            (this.data.audioData && this.data.audioData.sources || []);
+        if ( sources )
+          audioMetadata.push(this.GSnippetMetadatum.create({
+            view: this.AudioView.create({
+              data: this.data,
+              defaultControls: false
+            })
+          }));
+        var nameMap = {
+          creator: 'Artist',
+          collection: 'Album'
+        };
+        for ( var key in nameMap ) {
+          if ( nameMap.hasOwnProperty(key) && this.data[key] )
+            audioMetadata.push(this.GSnippetMetadatum.create({
+              text: nameMap[key] + ': ' + this.data[key]
+            }));
+        }
+        return audioMetadata.concat(basicMetadata);
       }
     },
     {
       name: 'snippet',
       defaultValueFn: function() {
-        return this.data && (
-            this.data.name + (this.data.notes ? (': ' + this.data.notes) : '')
-            ) || '';
+        return this.data && this.data.name || 'Musical selection';
       }
     }
   ]

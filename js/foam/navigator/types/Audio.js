@@ -64,11 +64,11 @@ CLASS({
       name: 'audioData',
       label: 'Audio File',
       type: 'foam.navigator.types.AudioSource',
-      preSet: function(_, next) {
-        if ( typeof next === 'string' ) {
-          return this.AudioSource.create({ src: next });
+      preSet: function(old, nu) {
+        if ( typeof nu === 'string' ) {
+          return this.AudioSource.create({ src: nu });
         } else {
-          return next;
+          return nu;
         }
       },
       view: 'foam.navigator.views.AudioView',

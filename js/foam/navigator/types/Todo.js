@@ -36,7 +36,7 @@ CLASS({
       }
     },
     {
-      type: 'Date',
+      model_: 'DateProperty',
       name: 'dueDate',
       defaultValue: null
     },
