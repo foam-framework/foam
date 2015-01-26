@@ -474,6 +474,11 @@ CLASS({
           }
         }
       }
+    },
+    {
+      name: 'sayModeState',
+      keyboardShortcuts: [ 't' ],
+      action: function() { this.say(this.calc.degreesMode ? 'degrees' : 'radians'); }
     }
   ],
   methods: {
