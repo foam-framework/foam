@@ -28,7 +28,7 @@ CLASS({
   properties: [
     {
       name: 'url',
-      defaultValue: '/'
+      defaultValue: '#'
     },
     {
       name: 'title',
@@ -37,7 +37,7 @@ CLASS({
     {
       name: 'metadata',
       view: 'foam.navigator.views.GSnippetMetadata',
-      factory: function() {
+      defaultValueFn: function() {
         return [
           this.GSnippetMetadatum.create({ text: 'snippet' }),
           this.GSnippetMetadatum.create({
