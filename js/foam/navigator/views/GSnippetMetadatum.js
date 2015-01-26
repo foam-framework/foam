@@ -18,7 +18,10 @@
 CLASS({
   name: 'GSnippetMetadatum',
   package: 'foam.navigator.views',
-  extendsModel: 'DetailView',
+  documentation: function() {/*
+    Specify $$DOC{.view} as a view object or $$DOC{.text} (and optionally
+    $$DOC{.url}).
+  */},
 
   properties: [
     {
@@ -28,6 +31,10 @@ CLASS({
     {
       name: 'url',
       model_: 'StringProperty'
+    },
+    {
+      name: 'view',
+      defaultValue: ''
     }
   ]
 });
