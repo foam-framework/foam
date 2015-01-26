@@ -39,15 +39,24 @@ var FObject = {
         if (replacementModel) {
           return replacementModel;
         } else {
-          // Follow the inheritance chain in case there's a more general model available
-          // check again using args.model's extendsModel
-          if (otherModel.extendsModel) {
-            var extend = FOAM.lookup(otherModel.extendsModel, opt_X || X);
-            if (extend) {
-              return replacementF(extend);
+          // try the specific's package
+          replacementName = ((otherModel.package)? otherModel.package+"." : "")
+                              + (otherModel.name? otherModel.name : otherModel)
+                              + this.model_.name;
+          replacementModel = FOAM.lookup(replacementName, opt_X || X);
+          if (replacementModel) {
+            return replacementModel;
+          } else {
+            // Follow the inheritance chain in case there's a more general model available
+            // check again using args.model's extendsModel
+            if (otherModel.extendsModel) {
+              var extend = FOAM.lookup(otherModel.extendsModel, opt_X || X);
+              if (extend) {
+                return replacementF(extend);
+              }
             }
+            return undefined;
           }
-          return undefined;
         }
       }.bind(this);
 
