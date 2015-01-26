@@ -16,7 +16,7 @@
  */
 
 CLASS({
-  name: 'EMailGSnippet',
+  name: 'IssueGSnippet',
   package: 'foam.navigator.views',
   extendsModel: 'foam.navigator.views.GSnippet',
 
@@ -24,26 +24,42 @@ CLASS({
     {
       name: 'title',
       lazyFactory: function() {
-        return this.data && this.data.subject;
+        console.log(this.data);
+        return this.data && this.data.title;
       }
     },
     {
       name: 'snippet',
       lazyFactory: function() {
-        return this.data.snippet;
+        return this.data && this.data.comment;
       }
     },
     {
       name: 'url',
       lazyFactory: function() {
-        return 'https://mail.google.com/mail/u/0#inbox/' + this.data.id.split(':')[1]
+        return 'https://b2.corp.google.com/issues/' + this.data.id;
       }
     },
     {
       name: 'metadata',
       lazyFactory: function() {
         return [
-          this.GSnippetMetadatum.create({ text: this.data.labels.join(',') })
+          this.GSnippetMetadatum.create({
+            label: 'Status',
+            text: this.data.status
+          }),
+          this.GSnippetMetadatum.create({
+            label: 'Reporter',
+            text: this.data.reporter
+          }),
+          this.GSnippetMetadatum.create({
+            label: 'Assignee',
+            text: this.data.assignee
+          }),
+          this.GSnippetMetadatum.create({
+            label: 'CCs',
+            text: this.data.cc.join(', ')
+          })
         ];
       }
     }

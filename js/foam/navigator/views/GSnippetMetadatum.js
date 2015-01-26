@@ -35,6 +35,10 @@ CLASS({
     {
       name: 'view',
       defaultValue: ''
+    },
+    {
+      name: 'label',
+      defaultValue: ''
     }
   ]
 });

@@ -31,15 +31,20 @@ CLASS({
     function toHTML() {/*
       <div class="gs-metadata">
         <% for ( var i = 0; i < this.data.length; ++i ) { %>
-          <span>
-            <% if ( this.data[i].view ) { %>
-              {{{this.data[i].view}}}
-            <% } else { %>
-              <% if ( this.data[i].url ) { %><a href="{{{this.data[i].url}}}"><% } %>
-              <% if ( this.data[i].text ) { %>{{{this.data[i].text}}}<% } %>
-              <% if ( this.data[i].url ) { %></a><% } %>
+          <div class="gs-metadatum">
+            <% if ( this.data[i].label ) { %>
+              <span class="gs-label">{{ this.data[i].label }}</span>
             <% } %>
-          </span>
+            <span>
+              <% if ( this.data[i].view ) { %>
+                {{{this.data[i].view}}}
+              <% } else { %>
+                <% if ( this.data[i].url ) { %><a href="{{{this.data[i].url}}}"><% } %>
+                <% if ( this.data[i].text ) { %>{{{this.data[i].text}}}<% } %>
+                <% if ( this.data[i].url ) { %></a><% } %>
+              <% } %>
+            </span>
+          </div>
         <% } %>
       </div>
     */},
@@ -57,6 +62,9 @@ CLASS({
         white-space: nowrap;
         line-height: 16px;
         padding: 0px 4px 0px 0px;
+      }
+      div.gs-metadata span.gs-label {
+        font-weight: bold;
       }
       div.gs-metadata a, div.gs-metadata a:link, div.gs-metadata a:visited {
         font-weight: bold;
