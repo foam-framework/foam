@@ -729,6 +729,11 @@ CLASS({
       font-size: 34px;
       color: #444;
     }
+
+    hr {
+      border-style: outset;
+      opacity: 0.5;
+    }
   */},
     {
       name: 'toHTML',
