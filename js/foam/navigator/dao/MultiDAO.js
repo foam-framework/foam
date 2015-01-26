@@ -211,6 +211,7 @@ CLASS({
           });
           this.addListenersToDAO(decoratedConfigDAO);
           this.daos[modelName] = decoratedConfigDAO;
+          this.models.push(modelName);
           return decoratedConfigDAO;
         }
       },
