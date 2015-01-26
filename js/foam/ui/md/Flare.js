@@ -56,7 +56,7 @@ CLASS({
         dStyle.position = 'fixed';
         dStyle.left = 0;
         dStyle.top = 0;
-        dStyle.zIndex = 4;
+        dStyle.zIndex = 101;
 
         var id = View.getPrototype().nextID();
         div.id = id;
