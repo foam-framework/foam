@@ -59,9 +59,12 @@ CLASS({
           }),
           this.BrowserConfig.create({
             model: this.Contact,
-            dao: this.IDBDAO.create({
-              model: this.Contact,
-              useSimpleSerialization: false
+            dao: this.CachingDAO.create({
+              src: this.IDBDAO.create({
+                model: this.Contact,
+                useSimpleSerialization: false
+              }),
+              delegate: this.MDAO.create({ model: this.Contact })
             })
           })
         ].dao;
