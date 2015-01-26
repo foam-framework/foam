@@ -25,6 +25,7 @@ CLASS({
     'foam.navigator.views.ContactGSnippet',
     'foam.navigator.views.IssueGSnippet',
     'foam.navigator.BrowserConfig',
+    'foam.navigator.FOAMlet',
     'foam.navigator.IssueConfig',
     'foam.navigator.dao.MultiDAO',
     'foam.navigator.types.Issue',
@@ -85,8 +86,7 @@ CLASS({
     },
     {
       model_: 'StringProperty',
-      name: 'query',
-      postSet: function() { this.doQuery(); }
+      name: 'query'
     },
     {
       model_: 'DAOProperty',
@@ -94,6 +94,13 @@ CLASS({
       view: {
         factory_: 'DAOListView',
         rowView: 'foam.navigator.views.GSnippet'
+      },
+      dynamicValue: function() {
+        this.modelFilter;
+        if (this.query && !this.expanded) this.expanded = true;
+        var modelQuery = this.modelFilter === 'All' ? TRUE :
+            EQ(this.FOAMlet.TYPE, this.modelFilter);
+        return this.dao && this.dao.where(AND(modelQuery, MQL(this.query))).limit(10);
       }
     },
     {
@@ -103,15 +110,23 @@ CLASS({
       postSet: function(old, nu) {
         if ( old != nu ) this.updateHTML();
       }
-    }
-  ],
-  listeners: [
+    },
     {
-      name: 'doQuery',
-      code: function() {
-        this.expanded = true;
-        this.filteredDao = this.dao.where(MQL(this.query)).limit(10);
+      name: 'modelNames',
+      factory: function() {
+        var configs = ['All'].sink;
+        this.configDao.select({
+          put: function(config) {
+            configs.push(config.model.label);
+          }
+        });
+        return configs;
       }
+    },
+    {
+      name: 'modelFilter',
+      defaultValue: 'All',
+      view: { factory_: 'ChoiceListView', extraClassName: 'model-names' }
     }
   ],
   methods: {
@@ -146,6 +161,19 @@ CLASS({
       .search-results {
         padding: 20px 80px;
       }
+      .filters {
+        border-bottom: 1px solid #ccc;
+        padding-left: 70px;
+        width: 100%;
+      }
+      .model-names .choice {
+        margin: 0;
+        padding: 0 12px 10px;
+      }
+      .model-names .choice.selected {
+        border-bottom: 3px solid #dd4b39;
+        color: #dd4b39;
+      }
     */},
     function expandedHTML() {/*
       <div id="<%= this.id %>">
@@ -153,6 +181,7 @@ CLASS({
           <div style="display: inline-block; flex-grow: 0; flex-shrink: 0; padding-right: 12px; margin-left: 12px; background: url('<%= this.logo %>') no-repeat; background-size: 92px 33px; height: 33px; width: 92px"></div>
           $$query{ onKeyMode: true, extraClassName: 'searchBox' }
         </div>
+        <div class="filters">$$modelFilter{ choices: this.modelNames }</div>
         <div class="search-results">$$filteredDao</div>
       </div>
     */},
