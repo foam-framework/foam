@@ -45,7 +45,7 @@ CLASS({
     },
     bToA: function(obj) {
       return obj.data;
-    }
+    },
     adaptOptions_: function(opts) { return opts; }
   }
 
