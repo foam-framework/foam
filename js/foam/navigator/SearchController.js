@@ -3,12 +3,71 @@ CLASS({
   package: 'foam.navigator',
   extendsModel: 'View',
   requires: [
-    'foam.navigator.views.GSnippet'
-  ],
-  imports: [
-    'dao'
+    'foam.navigator.views.GSnippet',
+    'foam.navigator.BrowserConfig',
+    'foam.navigator.dao.MultiDAO',
+    'foam.navigator.types.Mail',
+    'foam.navigator.types.Todo',
+    'CachingDAO',
+    'IDBDAO',
+    'FOAMGMailMessage',
+    'EMail',
+    'MDAO',
+    'GMailToEMailDAO'
   ],
   properties: [
+    {
+      name: 'configDao',
+      factory: function() {
+        var self = this;
+
+        var MailletDAO = Model.create({
+          extendsModel: 'AbstractAdapterDAO',
+          methods: {
+            aToB: function(a) {
+              return a.mail;
+            },
+            bToA: function(b) {
+              return self.Mail.create({
+                mail: b
+              });
+            },
+            adaptOptions_: function(options) {
+              return options;
+            }
+          }
+        });
+
+        return [
+          this.BrowserConfig.create({ model: 'foam.navigator.types.Todo' }),
+          this.BrowserConfig.create({
+            model: 'foam.navigator.types.Mail',
+            dao: this.CachingDAO.create({
+              src: MailletDAO.create({
+                delegate: this.GMailToEMailDAO.create({
+                  delegate: this.IDBDAO.create({
+                    model: this.FOAMGMailMessage, useSimpleSerialization: false
+                  })
+                }),
+              }),
+              delegate: this.MDAO.create({ model: this.EMail })
+            })
+          })
+        ].dao;
+      }
+    },
+    {
+      model_: 'DAOProperty',
+      name: 'dao',
+      factory: function() {
+        return this.MultiDAO.create({ configDAO: this.configDao });
+      }
+    },
+    {
+      name: 'logo',
+      defaultValue: 'https://www.google.ca/images/srpr/logo11w.png',
+      view: 'ImageView'
+    },
     {
       model_: 'StringProperty',
       name: 'query',
@@ -33,7 +92,20 @@ CLASS({
     }
   ],
   templates: [
-    function toHTML() {/* $$query{ onKeyMode: true } $$filteredDao */}
+    function CSS() {/*
+      .searchBox {
+        width: 523px;
+        font: 16px arial,sans-serif;
+      }
+    */},
+    function toHTML() {/*
+      <div id="<%= this.id %>" style="padding-top: 120px;">
+        <center>
+          <div style="background: url('<%= this.logo %>') no-repeat; background-size: 269px 95px; height: 95px; width:269px; padding-bottom: 20px"></div>
+          <div>$$query{ onKeyMode: true, extraClassName: 'searchBox' }</div>
+          <div>$$filteredDao</div>
+        </center>
+      </div> */}
   ]
 });
  
