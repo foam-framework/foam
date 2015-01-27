@@ -24,14 +24,13 @@ CLASS({
     {
       name: 'title',
       lazyFactory: function() {
-        console.log(this.data);
         return this.data && this.data.title;
       }
     },
     {
       name: 'snippet',
       lazyFactory: function() {
-        return this.data && this.data.comment.substring(0, 200);
+        return (this.data && this.data.comment && this.data.comment.substring(0, 200) || '');
       }
     },
     {
@@ -63,5 +62,24 @@ CLASS({
         ];
       }
     }
+  ],
+  
+  templates: [
+    function toHTML() {/*
+      <div id="{{{this.id}}}" class="gsnippet">
+        <span class="gs-type">
+          <img src="images/issue.png">
+        </span>
+        <div class="gs-heading">
+          <h3 class="gs-header">
+            <a href="{{{this.url}}}">{{{this.title}}}</a>
+          </h3>
+        </div>
+        $$metadata
+        <div class="gs-snippet">
+          {{{this.snippet}}}
+        </div>
+      </div>
+    */}
   ]
 });

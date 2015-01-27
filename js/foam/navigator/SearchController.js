@@ -139,13 +139,13 @@ CLASS({
     {
       name: 'modelNames',
       factory: function() {
-        var configs = ['All'].sink;
-        this.configDao.select({
-          put: function(config) {
-            configs.push(config.model.label);
-          }
-        });
-        return configs;
+        return [
+          'All',
+          'EMail',
+          'Todo',
+          'Audio',
+          'Contacts'
+        ].sink;
       }
     },
     {
