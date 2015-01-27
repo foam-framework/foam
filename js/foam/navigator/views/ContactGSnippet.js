@@ -22,7 +22,7 @@ CLASS({
   properties: [
     {
       name: 'title',
-      lazyFactory: function() { return this.data.title; }
+      lazyFactory: function() { return this.data.title || this.data.email; }
     },
     {
       name: 'snippet',
