@@ -49,7 +49,7 @@
  * YYYY-MM-DDTHH
  * YYYY-MM-DDTHH:MM
  */
-var QueryParserFactory = function(model) {
+var QueryParserFactory = function(model, opt_enableKeyword) {
   var g = {
     __proto__: grammar,
 
@@ -72,7 +72,8 @@ var QueryParserFactory = function(model) {
       sym('equals'),
       sym('before'),
       sym('after'),
-      sym('id')
+      sym('id'),
+      sym('keyword')
     ),
 
     paren: seq1(1, '(', sym('query'), ')'),
@@ -120,6 +121,15 @@ var QueryParserFactory = function(model) {
       ')'),
 
     valueList: alt(sym('compoundValue'), repeat(sym('value'), ',', 1)),
+
+    keyword: (function() {
+      var keyword_ = sym('keyword_');
+      return function(ps) {
+        return opt_enableKeyword && this.parse(keyword_, ps);
+      }
+    })(),
+
+    keyword_: str(plus(notChar(' '))),
 
     me: seq(literal_ic('me'), lookahead(not(sym('char')))),
 
@@ -272,6 +282,8 @@ var QueryParserFactory = function(model) {
         return expr;
       }
     },
+
+    keyword: function(v) { return KEYWORD(v); },
 
     negateValue: function(v) {
       v.negated = true;
