@@ -5,7 +5,12 @@ CLASS({
     'availability', 'battery', 'camera', 'connectivity', 'description',
     'display', 'hardware', 'sizeAndWeight', 'storage', 'details',
     { name: 'imageUrl', view: 'ImageView' },
-    { name: 'images', model_: 'StringArrayProperty' }
+    { name: 'images', model_: 'StringArrayProperty' },
+    {
+      name: 'type',
+      hidden: true,
+      defaultValue: 'Phone'
+    }
   ]
 });
 

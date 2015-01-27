@@ -55,10 +55,16 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="{{{this.id}}}" class="gsnippet">
-        <span class="gs-type">{{this.data.model_.label}}</span>
-        <h3 class="gs-header">
-          <a href="{{{this.url}}}">{{{this.title}}}</a>
-        </h3>
+        <div class="gs-heading">
+          <% if ( this.data.iconURL ) { %>
+            <img src="{{{this.data.iconURL}}}" class="gs-type">
+          <% } else { %>
+            <span class="gs-type">{{this.data.model_.label}}</span>
+          <% } %>
+          <h3 class="gs-header">
+            <a href="{{{this.url}}}">{{{this.title}}}</a>
+          </h3>
+        </div>
         $$metadata
         <div class="gs-snippet">
           {{{this.snippet}}}
@@ -73,8 +79,14 @@ CLASS({
       div.gsnippet a {
         text-decoration: none;
       }
+      div.gs-heading {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        align-content: center;
+      }
       h3.gs-header {
-        display: block;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -87,12 +99,9 @@ CLASS({
         cursor: pointer;
         color: #1a0dab;
       }
-      span.gs-type {
+      .gs-type {
         color: #999;
-        float: left;
-        margin-left: -80px;
-        text-align: right;
-        width: 75px;
+        padding: 0px 5px 0px 0px;
       }
       h3.gs-header a:visited {
         color: #609;
