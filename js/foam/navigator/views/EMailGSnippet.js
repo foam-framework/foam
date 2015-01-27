@@ -43,7 +43,8 @@ CLASS({
       name: 'metadata',
       lazyFactory: function() {
         return [
-          this.GSnippetMetadatum.create({ text: this.data.labels.join(',') })
+          this.GSnippetMetadatum.create({ label: 'From', text: this.data.from }),
+          this.GSnippetMetadatum.create({ label: 'Date', text: this.data.timestamp.toString() })
         ];
       }
     }
