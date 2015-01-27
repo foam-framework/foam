@@ -93,6 +93,10 @@ CLASS({
     },
     {
       name: 'reporter'
+    },
+    {
+      name: 'iconURL',
+      defaultValue: 'images/bug.png'
     }
   ]
 });
