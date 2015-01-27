@@ -68,7 +68,7 @@ CLASS({
     function toHTML() {/*
       <div id="{{{this.id}}}" class="gsnippet">
         <span class="gs-type">
-          <img src="images/issue.png">
+          <img src="images/bug.png">
         </span>
         <div class="gs-heading">
           <h3 class="gs-header">
