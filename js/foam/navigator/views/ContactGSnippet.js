@@ -26,9 +26,7 @@ CLASS({
     },
     {
       name: 'snippet',
-      lazyFactory: function() {
-        return 'email: ' + this.data.email;
-      },
+      defaultValue: '',
     },
     {
       name: 'url',
@@ -38,7 +36,11 @@ CLASS({
     },
     {
       name: 'metadata',
-      defaultValue: [],
+      lazyFactory: function() {
+        return [
+          this.GSnippetMetadatum.create({ label: 'EMail', text: this.data.email })
+        ];
+      }
     }
   ]
 });
