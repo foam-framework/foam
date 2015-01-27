@@ -340,7 +340,7 @@ var ObjectToJSON = {
     return this.pop();
   },
   visitProperty: function(o, prop) {
-    prop.toJSON(this, this.top(), o);
+    prop.propertyToJSON(this, this.top(), o);
   },
 
   visitMap: function(o) {

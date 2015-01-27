@@ -565,7 +565,7 @@ var Property = {
       documentation: "Function to extract a value from a DOM Element."
     },
     {
-      name: 'toJSON',
+      name: 'propertyToJSON',
       defaultValue: function(visitor, output, o) {
         if ( ! this.transient ) output[this.name] = visitor.visit(o[this.name]);
       },
