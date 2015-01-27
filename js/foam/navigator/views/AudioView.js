@@ -115,7 +115,7 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <audio id="{{{this.id}}}-audio" <% if ( this.defaultControls ) { %>controls<% } %> >
+      <audio id="{{{this.id}}}-audio" preload="none" <% if ( this.defaultControls ) { %>controls<% } %> >
       <% for ( var i = 0; i < this.sourceCollection.length; ++i ) {
         var src = this.sourceCollection[i]; %>
         <source src="{{{src.src}}}" type="{{{src.type}}}"></source>
