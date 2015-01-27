@@ -28,7 +28,8 @@ CLASS({
     'foam.navigator.BrowserConfig',
     'foam.navigator.FOAMlet',
     'foam.navigator.types.Todo',
-    'foam.navigator.views.SelectTypeView',
+    'foam.navigator.types.Audio',
+    'foam.navigator.views.SelectTypeView'
   ],
 
   imports: [
@@ -70,7 +71,8 @@ CLASS({
           if (c.count > 0) future.set(configDAO);
           else {
             [
-              this.BrowserConfig.create({ model: 'foam.navigator.types.Todo' })
+              this.BrowserConfig.create({ model: 'foam.navigator.types.Todo' }),
+              this.BrowserConfig.create({ model: 'foam.navigator.types.Audio' })
             ].dao.select(configDAO)(function() {
               future.set(configDAO);
             });

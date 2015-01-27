@@ -25,6 +25,8 @@ CLASS({
     'foam.navigator.views.ContactGSnippet',
     'foam.navigator.views.IssueGSnippet',
     'foam.navigator.views.PhoneGSnippet',
+    'foam.navigator.views.TodoGSnippet',
+    'foam.navigator.views.AudioGSnippet',
     'foam.navigator.BrowserConfig',
     'foam.navigator.FOAMlet',
     'foam.navigator.IssueConfig',
@@ -32,6 +34,7 @@ CLASS({
     'foam.navigator.types.Issue',
     'foam.navigator.types.Mail',
     'foam.navigator.types.Todo',
+    'foam.navigator.types.Audio',
     'CachingDAO',
     'IDBDAO',
     'FOAMGMailMessage',
@@ -41,6 +44,9 @@ CLASS({
     'lib.contacts.Contact',
     'Phone'
   ],
+  imports: [
+    'window'
+  ],
   properties: [
     {
       name: 'configDao',
@@ -48,7 +54,24 @@ CLASS({
         var self = this;
 
         return [
-          this.BrowserConfig.create({ model: 'foam.navigator.types.Todo' }),
+          this.BrowserConfig.create({
+            model: 'foam.navigator.types.Todo',
+            dao: this.CachingDAO.create({
+              src: this.IDBDAO.create({
+                model: this.Todo,
+                useSimpleSerialization: false
+              })
+            })
+          }),
+          this.BrowserConfig.create({
+            model: 'foam.navigator.types.Audio',
+            dao: this.CachingDAO.create({
+              src: this.IDBDAO.create({
+                model: this.Audio,
+                useSimpleSerialization: false
+              })
+            })
+          }),
           this.IssueConfig.create(),
           this.BrowserConfig.create({
             model: 'EMail',
@@ -138,11 +161,10 @@ CLASS({
           var modelQuery = this.modelFilter === 'All' ? TRUE :
               EQ(this.FOAMlet.TYPE, this.modelFilter);
           this.filteredDao = this.dao &&
-              this.dao.where(AND(modelQuery, MQL(this.query))).limit(30);
-        }.bind(this)
-      );
+              this.dao.where(AND(modelQuery, MQL(this.query))).limit(10);
+        }.bind(this));
+      this.maybeLoadData('Todo', 'Audio');
     },
-
     updateHTML: function() {
       if ( ! this.$ ) return;
       this.$.outerHTML = this.toHTML();
@@ -155,6 +177,21 @@ CLASS({
     },
     toHTML: function() {
       return this.expanded ? this.expandedHTML() : this.collapsedHTML();
+    },
+    maybeLoadData: function() {
+      var args = argsToArray(arguments);
+      args.forEach(function(modelName) {
+        this.dao.where(EQ(this.FOAMlet.TYPE, modelName)).select(COUNT())(
+            function(res) {
+              if ( res.count <= 0 && this.window[modelName + 'Data']) {
+                console.log('Adding canned data for ' + modelName);
+                this.window[modelName + 'Data'].forEach(function(item) {
+                  console.log('Putting', item, 'for', modelName);
+                  this.dao.put(item);
+                }.bind(this));
+              }
+            }.bind(this));
+      }.bind(this));
     }
   },
   templates: [
@@ -182,6 +219,7 @@ CLASS({
       .model-names .choice {
         margin: 0;
         padding: 0 12px 10px;
+        cursor: pointer;
       }
       .model-names .choice.selected {
         border-bottom: 3px solid #dd4b39;
@@ -208,4 +246,3 @@ CLASS({
       </div> */}
   ]
 });
- 
