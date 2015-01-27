@@ -60,7 +60,8 @@ CLASS({
               src: this.IDBDAO.create({
                 model: this.Todo,
                 useSimpleSerialization: false
-              })
+              }),
+              delegate: this.MDAO.create({ model: this.Audio })
             })
           }),
           this.BrowserConfig.create({
@@ -69,7 +70,8 @@ CLASS({
               src: this.IDBDAO.create({
                 model: this.Audio,
                 useSimpleSerialization: false
-              })
+              }),
+              delegate: this.MDAO.create({ model: this.Audio })
             })
           }),
           this.IssueConfig.create(),
