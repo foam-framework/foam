@@ -62,5 +62,24 @@ CLASS({
         ];
       }
     }
+  ],
+  
+  templates: [
+    function toHTML() {/*
+      <div id="{{{this.id}}}" class="gsnippet">
+        <span class="gs-type">
+          <img src="images/issue.png">
+        </span>
+        <div class="gs-heading">
+          <h3 class="gs-header">
+            <a href="{{{this.url}}}">{{{this.title}}}</a>
+          </h3>
+        </div>
+        $$metadata
+        <div class="gs-snippet">
+          {{{this.snippet}}}
+        </div>
+      </div>
+    */}
   ]
 });
