@@ -8,11 +8,14 @@ CLASS({
       model_: 'DAOProperty',
       view: { factory_: 'DAOListView', mode: 'read-only' },
       dynamicValue: function() {
+        return this.search.trim() ? this.dao.where(MQL(this.search)) : this.dao;
+        /*
         return this.dao.where(CONTAINS_IC(SEQ(
           Question.TITLE,
           Question.QUESTION,
           Question.LABELS,
           Question.ANSWER), this.search));
+          */
       }
     }
   ],
