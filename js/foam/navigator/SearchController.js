@@ -129,11 +129,10 @@ CLASS({
       Events.dynamic(
         function() { this.dao; this.query; this.modelFilter }.bind(this),
         function() {
-          console.log('dv');
           var modelQuery = this.modelFilter === 'All' ? TRUE :
               EQ(this.FOAMlet.TYPE, this.modelFilter);
           this.filteredDao = this.dao &&
-              this.dao.where(AND(modelQuery, MQL(this.query))).limit(10);
+              this.dao.where(AND(modelQuery, MQL(this.query))).limit(30);
         }.bind(this)
       );
     },

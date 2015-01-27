@@ -24,7 +24,7 @@ CLASS({
     {
       name: 'title',
       lazyFactory: function() {
-        return this.data && this.data.subject;
+        return this.data.subject || this.data.snippet || this.data.from;
       }
     },
     {
@@ -44,7 +44,8 @@ CLASS({
       lazyFactory: function() {
         return [
           this.GSnippetMetadatum.create({ label: 'From', text: this.data.from }),
-          this.GSnippetMetadatum.create({ label: 'Date', text: this.data.timestamp.toString() })
+          this.GSnippetMetadatum.create({ label: 'Date', text: this.data.timestamp.toString() }),
+          this.GSnippetMetadatum.create({ label: 'Labels', text: this.data.labels.join(',') })
         ];
       }
     }

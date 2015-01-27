@@ -22,13 +22,11 @@ CLASS({
   properties: [
     {
       name: 'title',
-      lazyFactory: function() { return this.data.title; }
+      lazyFactory: function() { return this.data.title || this.data.email; }
     },
     {
       name: 'snippet',
-      lazyFactory: function() {
-        return 'email: ' + this.data.email;
-      },
+      defaultValue: '',
     },
     {
       name: 'url',
@@ -38,7 +36,11 @@ CLASS({
     },
     {
       name: 'metadata',
-      defaultValue: [],
+      lazyFactory: function() {
+        return [
+          this.GSnippetMetadatum.create({ label: 'EMail', text: this.data.email })
+        ];
+      }
     }
   ]
 });
