@@ -55,5 +55,28 @@ CLASS({
         return this.data.description;
       }
     }
+  ],
+  
+  templates: [
+    function toHTML() {/*
+      <div id="{{{this.id}}}" class="gsnippet">
+        <span class="gs-type">
+          <% if ( this.data.imageUrl ) { %>
+            <img src="/apps/phonecat/{{{this.data.imageUrl}}}" width=40 height=40 />
+          <% } else { %>
+            <span>{{this.data.model_.label}}</span>
+          <% } %>
+        </span>
+        <div class="gs-heading">
+          <h3 class="gs-header">
+            <a href="{{{this.url}}}">{{{this.title}}}</a>
+          </h3>
+        </div>
+        $$metadata
+        <div class="gs-snippet">
+          {{{this.snippet}}}
+        </div>
+      </div>
+    */}
   ]
 });
