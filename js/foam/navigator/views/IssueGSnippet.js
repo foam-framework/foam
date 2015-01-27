@@ -24,7 +24,6 @@ CLASS({
     {
       name: 'title',
       lazyFactory: function() {
-        console.log(this.data);
         return this.data && this.data.title;
       }
     },
