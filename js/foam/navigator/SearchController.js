@@ -86,7 +86,8 @@ CLASS({
     },
     {
       model_: 'StringProperty',
-      name: 'query'
+      name: 'query',
+      postSet: function(old, nu) { if (nu) this.expanded = true; }
     },
     {
       model_: 'DAOProperty',
@@ -97,7 +98,6 @@ CLASS({
       },
       dynamicValue: function() {
         this.modelFilter;
-        if (this.query && !this.expanded) this.expanded = true;
         var modelQuery = this.modelFilter === 'All' ? TRUE :
             EQ(this.FOAMlet.TYPE, this.modelFilter);
         return this.dao && this.dao.where(AND(modelQuery, MQL(this.query))).limit(10);
