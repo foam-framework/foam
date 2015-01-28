@@ -16,29 +16,31 @@
  */
 
 CLASS({
-  name: 'GSnippetMetadatum',
+  name: 'ContactGSnippet',
   package: 'foam.navigator.views',
-  documentation: function() {/*
-    Specify $$DOC{.view} as a view object or $$DOC{.text} (and optionally
-    $$DOC{.url}).
-  */},
-
+  extendsModel: 'foam.navigator.views.GSnippet',
   properties: [
     {
-      name: 'text',
-      model_: 'StringProperty'
+      name: 'title',
+      lazyFactory: function() { return this.data.title || this.data.email; }
+    },
+    {
+      name: 'snippet',
+      defaultValue: '',
     },
     {
       name: 'url',
-      model_: 'StringProperty'
+      lazyFactory: function() {
+        return 'https://www.google.com/contacts/u/0/?cplus=0#contact/' + this.data.id.split(':')[1];
+      }
     },
     {
-      name: 'view',
-      defaultValue: ''
-    },
-    {
-      name: 'label',
-      defaultValue: ''
+      name: 'metadata',
+      lazyFactory: function() {
+        return [
+          this.GSnippetMetadatum.create({ label: 'EMail', text: this.data.email })
+        ];
+      }
     }
   ]
 });

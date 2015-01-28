@@ -149,6 +149,8 @@ CLASS({
     },
   ],
 
+  methods: { init: function() { this.SUPER(); window.ctlrDAO = this.dao; } },
+
   templates: [
     function CSS() {/*
       .browser-top {

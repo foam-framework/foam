@@ -1319,5 +1319,76 @@ var JOIN = function(dao, key, sink) {
 };
 
 
+CLASS({
+  name: 'MQLExpr',
+
+  extendsModel: 'UNARY',
+
+  documentation: 'Parse an MQL query string and use it as a predicate.',
+
+  properties: [
+    {
+      name: 'specializations_',
+      factory: function() { return {}; }
+    }
+  ],
+  methods: {
+    specialize: function(model) {
+      var qp = QueryParserFactory(model, true /* keyword enabled */);
+      return qp.parseString(this.arg1) || FALSE;
+    },
+    specialization: function(model) {
+      return this.specializations_[model.name] ||
+        ( this.specializations_[model.name] = this.specialize(model) );
+    },
+    // TODO: implement;
+    toSQL: function() { return this.arg1; },
+    toMQL: function() { return this.arg1; },
+
+    partialEval: function() { return this; },
+
+    f: function(obj) {
+      return this.specialization(obj.model_).f(obj);
+    }
+  }
+});
+
+
+function MQL(mql) { return MQLExpr.create({arg1: mql}); }
+
+
+CLASS({
+  name: 'KeywordExpr',
+
+  extendsModel: 'UNARY',
+
+  documentation: 'Keyword search.',
+
+  /*
+  properties: [
+    {
+      name: 'model',
+      factory: function() { return {}; }
+    }
+  ],
+  */
+  methods: {
+    toSQL: function() { return this.arg1; },
+    toMQL: function() { return this.arg1; },
+    partialEval: function() { return this; },
+    f: function(obj) {
+      // Escape Regex escape characters
+      var pattern = this.pattern_ ||
+        ( this.pattern_ = new RegExp(this.arg1.toString().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i') );
+
+      return this.pattern_.test(obj.toJSON());
+    }
+  }
+});
+
+
+function KEYWORD(word) { return KeywordExpr.create({arg1: word}); }
+
+
 // TODO: add other Date functions
 var MONTH = function(p) { return {f: function (o) { return p.f(o).getMonth(); } }; };

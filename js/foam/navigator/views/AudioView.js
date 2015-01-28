@@ -18,10 +18,11 @@
 CLASS({
   name: 'AudioView',
   package: 'foam.navigator.views',
-  extendsModel: 'View',
+  extendsModel: 'DetailView',
 
   imports: [
-    'PropertyView'
+    'PropertyView',
+    'document'
   ],
 
   properties: [
@@ -37,20 +38,97 @@ CLASS({
     {
       name: 'sourceCollection',
       dynamicValue: function() {
-        if ( Array.isArray(this.data) ) return this.data;
-        else                            return [this.data];
+        return this.data && [this.data.audioData];
+      }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'playing',
+      defaultValue: false
+    },
+    {
+      model_: 'StringProperty',
+      name: 'playImgURL',
+      defaultValue: 'images/play.png'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'pauseImgURL',
+      defaultValue: 'images/pause.png'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'initHTML',
+      code: function() {
+        var play = this.playElement();
+        var pause = this.pauseElement();
+        if ( play && pause && ! this.defaultControls ) {
+          play.addEventListener('click', this.onPlayPause);
+          pause.addEventListener('click', this.onPlayPause);
+        }
+      }
+    },
+    {
+      name: 'audioElement',
+      code: function() {
+        return this.document.getElementById(this.id + '-audio');
+      }
+    },
+    {
+      name: 'playElement',
+      code: function() {
+        return this.document.getElementById(this.id + '-play');
+      }
+    },
+    {
+      name: 'pauseElement',
+      code: function() {
+        return this.document.getElementById(this.id + '-pause');
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onPlayPause',
+      code: function() {
+        var audio = this.audioElement();
+        var play = this.playElement();
+        var pause = this.pauseElement();
+        if ( ! play || ! pause || ! audio ) return;
+        if ( this.playing ) {
+          pause.className = 'hide';
+          play.className = '';
+          audio.pause();
+          this.playing = false;
+        } else {
+          play.className = 'hide';
+          pause.className = '';
+          audio.play();
+          this.playing = true;
+        }
       }
     }
   ],
 
   templates: [
     function toHTML() {/*
-      <audio <% if ( this.defaultControls ) { %>controls<% } %> >
+      <audio id="{{{this.id}}}-audio" preload="none" <% if ( this.defaultControls ) { %>controls<% } %> >
       <% for ( var i = 0; i < this.sourceCollection.length; ++i ) {
         var src = this.sourceCollection[i]; %>
         <source src="{{{src.src}}}" type="{{{src.type}}}"></source>
       <% } %>
       </audio>
+      <% if ( ! this.defaultControls ) { %>
+        <img id="{{{this.id}}}-play" src="{{{this.playImgURL}}}" class=""></img>
+        <img id="{{{this.id}}}-pause" src="{{{this.pauseImgURL}}}" class="hide"></img>
+      <% } %>
+    */},
+    function CSS() {/*
+      img.hide { display: none; }
+
     */}
   ]
 });

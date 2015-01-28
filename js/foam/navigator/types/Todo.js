@@ -27,6 +27,13 @@ CLASS({
       required: true
     },
     {
+      name: 'iconURL',
+      view: 'ImageView',
+      defaultValueFn: function() {
+        return this.done ? 'images/todo-checked.png' : 'images/todo-empty.png';
+      }
+    },
+    {
       model_: 'IntProperty',
       name: 'priority',
       defaultValue: 3,
@@ -36,7 +43,7 @@ CLASS({
       }
     },
     {
-      type: 'Date',
+      model_: 'DateProperty',
       name: 'dueDate',
       defaultValue: null
     },
@@ -44,6 +51,11 @@ CLASS({
       model_: 'StringProperty',
       name: 'notes',
       view: 'TextAreaView'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'done',
+      defaultValue: false
     }
   ]
 });

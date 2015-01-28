@@ -340,7 +340,7 @@ var ObjectToJSON = {
     return this.pop();
   },
   visitProperty: function(o, prop) {
-    prop.toJSON(this, this.top(), o);
+    prop.propertyToJSON(this, this.top(), o);
   },
 
   visitMap: function(o) {
@@ -364,7 +364,7 @@ var JSONToObject = {
 
   visitString: function(o) {
     try {
-      return o.substr(0, 8) === 'function' ?
+      return o.substr(0, 9) === 'function(' ?
         eval('(' + o + ')') :
         o ;
     } catch (x) {

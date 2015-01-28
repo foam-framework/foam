@@ -79,6 +79,7 @@ CLASS({
     'foam.lib.gmail.SyncDecorator',
     'foam.core.dao.MergeDAO',
     'foam.core.dao.VersionNoDAO',
+    'foam.core.dao.StripPropertiesDAO',
     'PersistentContext',
     'Binding',
     'FOAMGMailMessage',
@@ -193,6 +194,16 @@ CLASS({
             model: this.FOAMGMailMessage, useSimpleSerialization: false
           })
         });
+      },
+      postSet: function(_, dao) {
+        dao.select(COUNT())(function(c) {
+          if ( c.count === 0 ) {
+            this.StripPropertiesDAO.create({
+                delegate: this.remoteDao,
+                propertyNames: ['historyId']
+            }).where(EQ(this.FOAMGMailMessage.LABEL_IDS, 'INBOX')).limit(100).select(dao);
+          }
+        }.bind(this));
       }
     },
     {
