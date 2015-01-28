@@ -276,6 +276,14 @@ var demos = JSONUtil.arrayToObjArray(X, [
     image: 'DemoCat.png'
   },
   {
+    name: 'FOAM Logo',
+    path: 'Logo.html',
+    description: 'Animated FOAM logo.',
+    keywords: ['demo', 'animation'],
+    src: 'logo.js',
+    image: 'Logo.png'
+  },
+  {
     name: 'FOAM-Overflow',
     path: '../apps/overflow/Overflow.html',
     description: 'A simple searchable FOAM Question and Answer database.',
