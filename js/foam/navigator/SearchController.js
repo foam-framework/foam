@@ -38,7 +38,7 @@ CLASS({
     'CachingDAO',
     'IDBDAO',
     'FOAMGMailMessage',
-    'EMail',
+    'foam.lib.email.EMail',
     'MDAO',
     'GMailToEMailDAO',
     'lib.contacts.Contact',
@@ -76,7 +76,7 @@ CLASS({
           }),
           this.IssueConfig.create(),
           this.BrowserConfig.create({
-            model: 'EMail',
+            model: 'foam.lib.email.EMail',
             dao: this.CachingDAO.create({
               src: this.GMailToEMailDAO.create({
                 delegate: this.IDBDAO.create({
