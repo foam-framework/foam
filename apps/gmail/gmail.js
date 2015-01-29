@@ -700,7 +700,8 @@ CLASS({
   requires: [
     'MenuLabelCitationView',
     'FOAMGMailLabel',
-    'ProfileView'
+    'ProfileView',
+    'foam.lib.email.EMail'
   ],
   imports: [
     'profile$',
@@ -727,7 +728,7 @@ CLASS({
     {
       name: 'counts',
       factory: function() {
-        var sink = GROUP_BY(EMail.LABELS, COUNT());
+        var sink = GROUP_BY(this.EMail.LABELS, COUNT());
         this.EMailDAO.select(sink);
         return sink;
       }
