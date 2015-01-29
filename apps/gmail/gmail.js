@@ -2,53 +2,80 @@
  * Material Design GMail.
  **/
 
-Object_forEach({
-  ARCHIVE:       'archive',
-  TRASH:         'delete',
-  REPLY:         'reply',
-  REPLY_ALL:     'reply_all',
-  SPAM:          'report',
-  FORWARD:       'forward',
-  STAR:          'star',
-  MOVE_TO_INBOX: 'inbox',
-  SEND:          'send',
-  MARK_UNREAD:   'markunread'
-}, function(image, name) {
-  EMail[name].copyFrom({iconUrl: 'icons/ic_' + image + '_black_24dp.png', label: ''});
-});
-
-
-/** Modify the default QueryParser so that label ids are looked up in the EMailLabels DAO. **/
-var queryParser = {
-  __proto__: QueryParserFactory(EMail),
-
-  id: sym('string'),
-
-  labelMatch: seq(alt('label','l'), alt(':', '='), sym('valueList'))
-}.addActions({
-  id: function(v) {
-     return OR(
-        CONTAINS_IC(EMail.TO, v),
-        CONTAINS_IC(EMail.FROM, v),
-        CONTAINS_IC(EMail.SUBJECT, v),
-        CONTAINS_IC(EMail.BODY, v));
-  },
-
-  labelMatch: function(v) {
-    var or = OR();
-    var values = v[2];
-    for ( var i = 0 ; i < values.length ; i++ ) {
-      or.args.push(EQ(EMail.LABELS, values[i]))
+CLASS({
+  package: 'com.google.mail',
+  name: 'EMailExtensionsAgent',
+  documentation: 'Modifies some EMail actions to include proper icons.',
+  requires: [
+    'foam.lib.email.EMail'
+  ],
+  methods: {
+    execute: function() {
+      var self = this;
+      Object_forEach({
+        ARCHIVE:       'archive',
+        TRASH:         'delete',
+        REPLY:         'reply',
+        REPLY_ALL:     'reply_all',
+        SPAM:          'report',
+        FORWARD:       'forward',
+        STAR:          'star',
+        MOVE_TO_INBOX: 'inbox',
+        SEND:          'send',
+        MARK_UNREAD:   'markunread'
+      }, function(image, name) {
+        self.EMail[name].copyFrom({iconUrl: 'icons/ic_' + image + '_black_24dp.png', label: ''});
+      });
     }
-    return or;
   }
 });
 
-queryParser.expr = alt(
-  sym('labelMatch'),
-  queryParser.export('expr')
-);
+CLASS({
+  package: 'com.google.mail',
+  name: 'QueryParser',
+  documentation: 'Provides a modified QueryParser so that label ids are looked up in the EMailLabels DAO',
 
+  requires: [
+    'foam.lib.email.EMail'
+  ],
+
+  properties: [
+    {
+      name: 'parser',
+      lazyFactory: function() {
+        var parser = {
+          __proto__: QueryParserFactory(this.EMail),
+
+          id: sym('string'),
+
+          labelMatch: seq(alt('label','l'), alt(':', '='), sym('valueList'))
+        }.addActions({
+          id: function(v) {
+            return OR(
+              CONTAINS_IC(this.EMail.TO, v),
+              CONTAINS_IC(this.EMail.FROM, v),
+              CONTAINS_IC(this.EMail.SUBJECT, v),
+              CONTAINS_IC(this.EMail.BODY, v));
+          },
+
+          labelMatch: function(v) {
+            var or = OR();
+            var values = v[2];
+            for ( var i = 0 ; i < values.length ; i++ ) {
+              or.args.push(EQ(this.EMail.LABELS, values[i]))
+            }
+            return or;
+          }
+        });
+
+        parser.expr = alt(
+          sym('labelMatch'),
+          parser.export('expr')
+        );
+      }
+    }
+  ]
+});
 
 CLASS({
   name: 'MGmail',
@@ -59,7 +86,7 @@ CLASS({
 
   requires: [
     'AppController',
-    'EMail',
+    'foam.lib.email.EMail',
     'CachingDAO',
     'ContextualizingDAO',
     'DetailView',
@@ -88,6 +115,8 @@ CLASS({
     'GMailToEMailDAO',
     'BusyStatus',
     'BusyFlagTracker',
+    'com.google.mail.EMailExtensionsAgent',
+    'com.google.mail.QueryParser'
   ],
 
   exports: [
@@ -313,6 +342,10 @@ CLASS({
   methods: {
     init: function(args) {
       this.SUPER(args);
+
+      // Install extensions to the EMail model.
+      this.EMailExtensionsAgent.create().execute();
+
       var xhr = this.X.XHR.create({ responseType: 'json' });
 
       this.versionedGmailDao$Proxy.listen(this.doSync);
@@ -344,17 +377,17 @@ CLASS({
       var sync = this.emailSync;
 
       this.controller = this.X.AppController.create({
-        model: EMail,
+        model: this.EMail,
         dao: this.emailDao,
         createAction: this.model_.COMPOSE,
         citationView: 'EMailCitationView',
-        queryParser: queryParser,
+        queryParser: this.QueryParser.create().parser,
         editableCitationViews: true,
         busyStatus: this.busyStatus,
         sortChoices: [
-          [ DESC(EMail.TIMESTAMP), 'Newest First' ],
-          [ EMail.TIMESTAMP,       'Oldest First' ],
-          [ EMail.SUBJECT,         'Subject' ],
+          [ DESC(this.EMail.TIMESTAMP), 'Newest First' ],
+          [ this.EMail.TIMESTAMP,       'Oldest First' ],
+          [ this.EMail.SUBJECT,         'Subject' ],
         ],
         refreshAction: Action.create({
           name: 'refresh',
