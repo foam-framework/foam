@@ -243,6 +243,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
     src: '../apps/todo/',
     image: 'Todo.png'
   },
+  /*
   {
     name: 'FOAM Code Browser',
     path: '../core/fobrowser.html',
@@ -251,6 +252,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
     src: '../core/fobrowser.js',
     image: 'FOBrowser.png'
   },
+*/
   {
     name: 'FOAM Documentation Browser',
     path: '../apps/docs/docbrowser.html',
