@@ -26,8 +26,7 @@ MODEL({
         sink && sink.put && sink.put(model);
         return;
       }
-                 
-      //var model = FOAM.lookup(key, X);
+
       var sourcePath = FOAM_BOOT_DIR + '../js/' + key.replace(/\./g, '/') + '.js';
       
       var tag = X.document.createElement('script');
