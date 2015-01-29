@@ -59,8 +59,8 @@ var $$ = function (cls) {
 };
 
 
-var FOAM = function(map, opt_X) {
-   var obj = JSONUtil.mapToObj(opt_X || X, map);
+var FOAM = function(map, opt_X, seq) {
+   var obj = JSONUtil.mapToObj(opt_X || X, map, undefined, seq);
    return obj;
 };
 
@@ -177,6 +177,15 @@ function arequire(modelName, opt_X) {
 
 
 function arequireModel(model, X) {
+  if ( model.ready__ ) {
+    var future = afuture();
+    model.ready__(function() {
+      delete model.ready__;
+      arequireModel(model, X)(future.set);
+    });
+    return future.get;
+  }
+
   if ( ! model.required__ ) {
     var args = [];
     var future = afuture();
@@ -307,7 +316,12 @@ function CLASS(m) {
         USED_MODELS[id] = true;
         delete UNUSED_MODELS[id];
         Object.defineProperty(path, m.name, {value: null, configurable: true});
-        // TODO: Workaround for apps that redefine the top level X
+
+        var work = [];
+        var obj = JSONUtil.mapToObj(X, m, Model, work);
+        if ( work.length > 0 ) obj.ready__ = aseq.apply(null, work);
+
+        // TODO: _ROOT_X is a workaround for apps that redefine the top level X
         _ROOT_X.registerModel(JSONUtil.mapToObj(X, m, Model));
         return this[m.name];
       },
