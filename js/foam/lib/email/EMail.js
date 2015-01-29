@@ -217,15 +217,7 @@ CLASS({
          "children": [],
          "keyboardShortcuts": [],
          "backOnComplete": true,
-         "action": function (X, action) {
-          var obj = this;
-          a.apply(obj, arguments);
-          var self = this;
-          var sink = action.backOnComplete ?
-            { put: function() { X.stack.back(); },
-              error: function() { X.stack.back(); } } : undefined;
-          X.EMailDAO && X.EMailDAO.put(obj, sink);
-        }
+         "action": function() { this.messageSent = true; }
       },
       {
          "model_": "Action",
@@ -285,15 +277,7 @@ CLASS({
          "help": "Star an email.",
          "children": [],
          "keyboardShortcuts": [],
-         "action": function (X, action) {
-          var obj = this;
-          a.apply(obj, arguments);
-          var self = this;
-          var sink = action.backOnComplete ?
-            { put: function() { X.stack.back(); },
-              error: function() { X.stack.back(); } } : undefined;
-          X.EMailDAO && X.EMailDAO.put(obj, sink);
-        }
+         "action": function() { this.toggleLabel('STARRED'); }
       },
       {
          "model_": "foam.lib.email.EMailMutationAction",
@@ -302,15 +286,7 @@ CLASS({
          "isAvailable": function () { return this.hasLabel('INBOX'); },
          "children": [],
          "keyboardShortcuts": [],
-         "action": function (X, action) {
-          var obj = this;
-          a.apply(obj, arguments);
-          var self = this;
-          var sink = action.backOnComplete ?
-            { put: function() { X.stack.back(); },
-              error: function() { X.stack.back(); } } : undefined;
-          X.EMailDAO && X.EMailDAO.put(obj, sink);
-        }
+         "action": function() { this.removeLabel('INBOX'); }
       },
       {
          "model_": "foam.lib.email.EMailMutationAction",
@@ -319,15 +295,11 @@ CLASS({
          "isAvailable": function () { return ! this.hasLabel('INBOX'); },
          "children": [],
          "keyboardShortcuts": [],
-         "action": function (X, action) {
-          var obj = this;
-          a.apply(obj, arguments);
-          var self = this;
-          var sink = action.backOnComplete ?
-            { put: function() { X.stack.back(); },
-              error: function() { X.stack.back(); } } : undefined;
-          X.EMailDAO && X.EMailDAO.put(obj, sink);
-        }
+         "action": function() {
+           this.addLabel('INBOX');
+           this.removeLabel('SPAM');
+           this.removeLabel('TRASH');
+         }
       },
       {
          "model_": "foam.lib.email.EMailMutationAction",
@@ -336,15 +308,10 @@ CLASS({
          "isAvailable": function () { return ! this.hasLabel('SPAM'); },
          "children": [],
          "keyboardShortcuts": [],
-         "action": function (X, action) {
-          var obj = this;
-          a.apply(obj, arguments);
-          var self = this;
-          var sink = action.backOnComplete ?
-            { put: function() { X.stack.back(); },
-              error: function() { X.stack.back(); } } : undefined;
-          X.EMailDAO && X.EMailDAO.put(obj, sink);
-        }
+         "action": function () {
+            this.removeLabel('INBOX');
+            this.addLabel('SPAM');
+         }
       },
       {
          "model_": "foam.lib.email.EMailMutationAction",
@@ -353,15 +320,10 @@ CLASS({
          "isAvailable": function () { return ! this.hasLabel('TRASH'); },
          "children": [],
          "keyboardShortcuts": [],
-         "action": function (X, action) {
-          var obj = this;
-          a.apply(obj, arguments);
-          var self = this;
-          var sink = action.backOnComplete ?
-            { put: function() { X.stack.back(); },
-              error: function() { X.stack.back(); } } : undefined;
-          X.EMailDAO && X.EMailDAO.put(obj, sink);
-        }
+         "action": function () {
+        this.removeLabel('INBOX');
+        this.addLabel('TRASH');
+      }
       },
       {
          "model_": "foam.lib.email.EMailMutationAction",
@@ -370,15 +332,7 @@ CLASS({
          "isAvailable": function () { return this.hasLabel('UNREAD'); },
          "children": [],
          "keyboardShortcuts": [],
-         "action": function (X, action) {
-          var obj = this;
-          a.apply(obj, arguments);
-          var self = this;
-          var sink = action.backOnComplete ?
-            { put: function() { X.stack.back(); },
-              error: function() { X.stack.back(); } } : undefined;
-          X.EMailDAO && X.EMailDAO.put(obj, sink);
-        }
+         "action": function () { this.removeLabel('UNREAD'); }
       },
       {
          "model_": "foam.lib.email.EMailMutationAction",
@@ -387,15 +341,7 @@ CLASS({
          "isAvailable": function () { return ! this.hasLabel('UNREAD'); },
          "children": [],
          "keyboardShortcuts": [],
-         "action": function (X, action) {
-          var obj = this;
-          a.apply(obj, arguments);
-          var self = this;
-          var sink = action.backOnComplete ?
-            { put: function() { X.stack.back(); },
-              error: function() { X.stack.back(); } } : undefined;
-          X.EMailDAO && X.EMailDAO.put(obj, sink);
-        }
+         "action": function () { this.addLabel('UNREAD'); }
       }
    ],
    "constants": [],
