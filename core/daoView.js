@@ -432,7 +432,7 @@ CLASS({
     },
     {
       name: 'cache',
-      model_: 'ArrayProprety',
+      model_: 'ArrayProperty',
       documentation: function() {/*
         <p>An array holding all the rows the <tt>ScrollView</tt> has loaded so far. Only a subset of these are visible (that is, rendered into a $$DOC{ref: "ScrollViewRow"} and stored in <tt>visibleRows</tt>).</p>
 
