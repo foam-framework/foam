@@ -67,13 +67,13 @@ var JSONUtil = {
     return eval('(' + str + ')');
   },
 
-  parse: function(X, str) {
-    return this.mapToObj(X, this.parseToMap(str));
+  parse: function(X, str, seq) {
+    return this.mapToObj(X, this.parseToMap(str), undefined, seq);
   },
 
-  arrayToObjArray: function(X, a, opt_defaultModel) {
+  arrayToObjArray: function(X, a, opt_defaultModel, seq) {
     for ( var i = 0 ; i < a.length ; i++ ) {
-      a[i] = this.mapToObj(X, a[i], opt_defaultModel);
+      a[i] = this.mapToObj(X, a[i], opt_defaultModel, seq);
     }
     return a;
   },
@@ -82,10 +82,10 @@ var JSONUtil = {
    * Convert JS-Maps which contain the 'model_' property, into
    * instances of that model.
    **/
-  mapToObj: function(X, obj, opt_defaultModel) {
+  mapToObj: function(X, obj, opt_defaultModel, seq) {
     if ( ! obj || typeof obj.model_ === 'object' ) return obj;
 
-    if ( Array.isArray(obj) ) return this.arrayToObjArray(X, obj);
+    if ( Array.isArray(obj) ) return this.arrayToObjArray(X, obj, undefined, seq);
 
     if ( obj instanceof Function ) return obj;
 
@@ -94,7 +94,7 @@ var JSONUtil = {
     if ( obj instanceof Object ) {
       var j = 0;
       for ( var key in obj ) {
-        if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(X, obj[key]);
+        if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(X, obj[key], null, seq);
         j++;
       }
 /*      var keys = Object.keys(obj);
@@ -105,8 +105,26 @@ var JSONUtil = {
 
       if ( opt_defaultModel && ! obj.model_ ) return opt_defaultModel.create(obj);
 
-      var newObj = FOAM.lookup(obj.model_, X);
-      return newObj ? newObj.create(obj, X) : obj;
+      if ( obj.model_ ) {
+        var newObj = FOAM.lookup(obj.model_, X);
+        if ( ! newObj && seq ) {
+          var future = afuture();
+          seq.push(future.get);
+          
+          arequire(obj.model_)(function(model) {
+            if ( ! model ) {
+              console.warn("Tried to load ", obj.model_, " on demand, but no luck.");
+              future.set(obj);
+              return;
+            }
+            var tmp = model.create(obj);
+            obj.become(tmp);
+            future.set(obj);
+          });
+        }
+        return newObj ? newObj.create(obj, X) : obj;
+      }
+      return obj
     }
 
     return obj;
@@ -183,7 +201,9 @@ var JSONUtil = {
     },
 
     outputModel_: function(out, obj) {
-      out('"model_":"', obj.model_.name, '",');
+      out('"model_":"')
+      if ( obj.model_.package ) out(obj.model_.package, '.')
+      out(obj.model_.name, '",');
     },
 
     outputMap_: function(out, obj) {
@@ -299,7 +319,9 @@ var JSONUtil = {
     },
 
     outputModel_: function(out, obj, indent) {
-      out(indent, '"model_": "', obj.model_.name, '",\n');
+      out(indent, '"model_": "')
+      if ( obj.model_.package ) out(obj.model_.package, '.')
+      out(obj.model_.name, '",\n');
     },
 
     outputMap_: function(out, obj, opt_indent) {
