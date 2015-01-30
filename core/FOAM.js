@@ -325,7 +325,7 @@ function CLASS(m) {
         if ( work.length > 0 ) model.ready__ = aseq.apply(null, work);
 
         // TODO: _ROOT_X is a workaround for apps that redefine the top level X
-        _ROOT_X.registerModel(JSONUtil.mapToObj(X, m, Model));
+        _ROOT_X.registerModel(model);
         return this[m.name];
       },
       configurable: true
