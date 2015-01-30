@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="core/foam.css" />
+    <script src="core/bootFOAM.js"></script>
+    <script src="lib/contacts/contacts.js"></script>
+    <script src="apps/phonecat/Phone.js"></script>
+    <script src="apps/phonecat/phones.js"></script>
+    <script src="apps/navigator/data/TodoData.js"></script>
+    <script src="apps/navigator/data/AudioData.js"></script>
+  </head>
+  <body>
+    <script>
+      // Read the query parameters and instantiate the model.
+      (function() {
+        var search = /([^&=]+)=?([^&]*)/g;
+        var query = window.location.search.substring(1);
+        var decode = function(s) {
+          return decodeURIComponent(s.replace(/\+/g, ' '));
+        };
+        var params = {};
+        var match;
+        while (match = search.exec(query)) {
+          params[decode(match[1])] = decode(match[2]);
+        }
+
+        var models = [];
+
+        var model = params.model || 'foam.navigator.Controller';
+
+        models.push(arequire(model));
+        delete params.model;
+
+        var viewmodel = params.view;
+        if ( viewmodel ) {
+          models.push(arequire(viewmodel));
+          delete params.view;
+        }
+
+      apar.apply(null, models).aseq(
+          function() {
+            var obj = FOAM.lookup(model, X).create(params);
+            var view;
+            if ( View.isInstance(obj) ) {
+              view = obj;
+            } else if ( viewmodel ) {
+              view = FOAM.lookup(viewmodel, X).create({ data: obj });
+            } else {
+              view = obj.toView_() || DetailView.create({ data: obj });
+            }
+            document.body.insertAdjacentHTML('beforeend', view.toHTML());
+            view.initHTML();
+          })();
+      })();
+    </script>
+  </body>
+</html>
