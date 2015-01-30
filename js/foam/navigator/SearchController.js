@@ -43,6 +43,8 @@ CLASS({
     'MDAO',
     'com.google.mail.GMailToEMailDAO',
     'foam.lib.contacts.Contact',
+    'foam.lib.contacts.Address',
+    'foam.lib.contacts.PhoneNumber',
     'Phone'
   ],
   imports: [
