@@ -43,8 +43,9 @@ CLASS({
     {
       name: 'parser',
       lazyFactory: function() {
+        var EMail = this.EMail;
         var parser = {
-          __proto__: QueryParserFactory(this.EMail),
+          __proto__: QueryParserFactory(EMail),
 
           id: sym('string'),
 
@@ -52,17 +53,17 @@ CLASS({
         }.addActions({
           id: function(v) {
             return OR(
-              CONTAINS_IC(this.EMail.TO, v),
-              CONTAINS_IC(this.EMail.FROM, v),
-              CONTAINS_IC(this.EMail.SUBJECT, v),
-              CONTAINS_IC(this.EMail.BODY, v));
+              CONTAINS_IC(EMail.TO, v),
+              CONTAINS_IC(EMail.FROM, v),
+              CONTAINS_IC(EMail.SUBJECT, v),
+              CONTAINS_IC(EMail.BODY, v));
           },
 
           labelMatch: function(v) {
             var or = OR();
             var values = v[2];
             for ( var i = 0 ; i < values.length ; i++ ) {
-              or.args.push(EQ(this.EMail.LABELS, values[i]))
+              or.args.push(EQ(EMail.LABELS, values[i]))
             }
             return or;
           }
@@ -72,6 +73,8 @@ CLASS({
           sym('labelMatch'),
           parser.export('expr')
         );
+
+        return parser;
       }
     }
   ]
