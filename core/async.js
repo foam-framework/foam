@@ -160,9 +160,11 @@ MODEL({
           var args = [function() {
             activeOps[str]--;
             var end = performance.now();
-            if ( opt_endCallback ) opt_endCallback(name, end - start);
-            else console.timeEnd(name);
-            ret && ret.apply(this, [].shift.call(a));
+            if ( opt_endCallback )
+              opt_endCallback(name, end - start);
+            else
+              console.timeEnd(name);
+            ret && ret.apply(this, arguments/*[].shift.call(a)*/);
           }];
           for ( var i = 1 ; i < a.length ; i++ ) args[i] = a[i];
           afunc.apply(this, args);
@@ -579,15 +581,15 @@ MODEL({
         });
       };
     },
-    
+
     function adelay(afunc, delay) {
       var queue = [];
       var timeout;
-      
+
       function pump() {
         if ( timeout ) return;
         if ( ! queue.length ) return;
-        
+
         var top = queue.shift();
         var f = top[0];
         var args = top[1];
@@ -596,21 +598,21 @@ MODEL({
           ret.apply(null, arguments);
           pump();
         };
-        
+
         timeout = setTimeout(function() {
           timeout = 0;
           f.apply(null, args);
         }, delay)
       }
-      
+
       return function() {
         var args = arguments;
-        
+
         queue.push([
           afunc,
           args
         ]);
-        
+
         pump();
       };
     }
