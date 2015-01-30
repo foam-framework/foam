@@ -58,7 +58,7 @@ CLASS({
             this.instance_[propSourceName].addListener(this.instance_[propListenerName] );
           }
         };
-        tearDownListener = function() {
+        var tearDownListener = function() {
           if ( this.instance_[propSourceName] && this.instance_[propListenerName] ) {
             this.instance_[propSourceName].removeListener(this.instance_[propListenerName]);
           }
