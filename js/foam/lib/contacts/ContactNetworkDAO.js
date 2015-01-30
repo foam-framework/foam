@@ -1,53 +1,56 @@
-/**
- * @license
- * Copyright 2014 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-MODEL({
-  package: 'lib.contacts',
-  name: 'ContactNetworkDAO',
-  extendsModel: 'AbstractDAO',
-
-  imports: [
-    'ajsonp',
-    'authAgent'
-  ],
-
-  requires: [
-    'lib.contacts.Contact as Contact',
-    'lib.contacts.PhoneNumber as PhoneNumber',
-    'lib.contacts.Address as Address'
-  ],
-
-  properties: [
-    {
-      name: 'url',
-      defaultValue: 'https://www.google.com/m8/feeds/contacts/default/full'
-    },
-    {
-      name: 'authAgent'
-    },
-    {
-      model_: 'IntProperty',
-      name: 'batchSize',
-      defaultValue: 1000
-    }
-  ],
-
-  methods: {
-    select: function(sink, options) {
+CLASS({
+   "model_": "Model",
+   "id": "foam.lib.contacts.ContactNetworkDAO",
+   "package": "foam.lib.contacts",
+   "name": "ContactNetworkDAO",
+   "extendsModel": "AbstractDAO",
+   "requires": [
+      "foam.lib.contacts.Contact as Contact",
+      "foam.lib.contacts.PhoneNumber as PhoneNumber",
+      "foam.lib.contacts.Address as Address"
+   ],
+   "imports": [
+      "ajsonp",
+      "authAgent"
+   ],
+   "exports": [],
+   "properties": [
+      {
+         "model_": "Property",
+         "name": "daoListeners_",
+         "hidden": true,
+         "transient": true,
+         "factory": function () { return []; }
+      },
+      {
+         "model_": "Property",
+         "name": "url",
+         "defaultValue": "https://www.google.com/m8/feeds/contacts/default/full"
+      },
+      {
+         "model_": "Property",
+         "name": "authAgent"
+      },
+      {
+         "model_": "IntProperty",
+         "name": "batchSize",
+         "defaultValue": 1000
+      },
+      {
+         "model_": "Property",
+         "name": "ajsonp",
+         "hidden": true,
+         "transient": true
+      }
+   ],
+   "actions": [],
+   "constants": [],
+   "messages": [],
+   "methods": [
+      {
+         "model_": "Method",
+         "name": "select",
+         "code": function (sink, options) {
       options = {
         __proto__: options
       };
@@ -140,7 +143,12 @@ MODEL({
           });
       return future.get;
     },
-    objFromJson: function(c) {
+         "args": []
+      },
+      {
+         "model_": "Method",
+         "name": "objFromJson",
+         "code": function (c) {
       var self = this;
       var obj = this.Contact.create({
         id:      c.id       ? c.id.$t.split('/').pop() : '',
@@ -161,6 +169,14 @@ MODEL({
         }));
       });
       return obj;
-    }
-  }
+    },
+         "args": []
+      }
+   ],
+   "listeners": [],
+   "templates": [],
+   "models": [],
+   "tests": [],
+   "relationships": [],
+   "issues": []
 });
