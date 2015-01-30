@@ -104,9 +104,6 @@ module.exports = function(grunt) {
           'core/glang.js',
           'core/oauth.js',
           'core/busy.js',
-          'apps/mailreader/view.js',
-          'apps/mailreader/email.js',
-          'lib/email/email.js',
           'core/turntable.js',
           'core/CORE.js'
         ]
