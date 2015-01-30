@@ -102,8 +102,6 @@ var files = [
   [ 'glang', IN_BROWSER ],
   'oauth',
   'busy',
-  [ '../apps/mailreader/view', IN_BROWSER ],
-  [ '../apps/mailreader/email', IN_BROWSER ],
   [ 'turntable', IN_BROWSER ],
   [ 'CORE', IN_BROWSER ]
 ];
