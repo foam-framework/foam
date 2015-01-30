@@ -48,6 +48,14 @@ CLASS({
       label: 'Radius',
       type: 'int',
       defaultValue: Math.PI*2
+    },
+    {
+      name: 'width',
+      defaultValueFn: function() { return 2*this.r; }
+    },
+    {
+      name: 'height',
+      defaultValueFn: function() { return 2*this.r; }
     }
   ],
 
