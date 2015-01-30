@@ -145,30 +145,32 @@ MODEL({
       var id = 1;
       var activeOps = {};
       return function atime(str, afunc, opt_endCallback, opt_startCallback) {
-        return function(ret) {
-          var name = str;
-          if ( activeOps[str] ) {
-            name += '-' + id++;
-            activeOps[str]++;
-          } else {
-            activeOps[str] = 1;
-          }
-          var start = performance.now();
-          if ( opt_startCallback ) opt_startCallback(name);
-          if ( ! opt_endCallback ) console.time(name);
-          var a = arguments;
-          var args = [function() {
+        return aseq(
+          function(ret) {
+            var name = str;
+            if ( activeOps[str] ) {
+              name += '-' + id++;
+              activeOps[str]++;
+            } else {
+              activeOps[str] = 1;
+            }
+            var start = performance.now();
+            if ( opt_startCallback ) opt_startCallback(name);
+            if ( ! opt_endCallback ) console.time(name);
+            ret.apply(null, [].slice.call(arguments, 1));
+          },
+          afunc,
+          function(ret) {
             activeOps[str]--;
-            var end = performance.now();
-            if ( opt_endCallback )
+            if ( opt_endCallback ) {
+              var end = performance.now();
               opt_endCallback(name, end - start);
-            else
+            } else {
               console.timeEnd(name);
-            ret && ret.apply(this, arguments/*[].shift.call(a)*/);
-          }];
-          for ( var i = 1 ; i < a.length ; i++ ) args[i] = a[i];
-          afunc.apply(this, args);
-        };
+            }
+            ret && ret.apply(null, [].slice.call(arguments, 1));
+          }
+        );
       };
     })(),
 
