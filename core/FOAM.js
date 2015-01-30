@@ -135,7 +135,7 @@ function arequire(modelName, opt_X) {
       console.warn('Unknown Model in arequire: ', modelName);
       return aconstant(undefined);
     }
-    
+
     // check whether we have already hit the ModelDAO to load the model
     if ( ! X.arequire$ModelLoadsInProgress ) {
       X.set('arequire$ModelLoadsInProgress', {} );
@@ -157,7 +157,7 @@ function arequire(modelName, opt_X) {
         future.set(undefined);
       }
     });
-    
+
     X.arequire$ModelLoadsInProgress[modelName] = future.get;
     return future.get;
   } else {
@@ -227,8 +227,11 @@ function arequireModel(model, X) {
     }
 
     aseq(
-      apar.apply(apar, args),
-      aconstant(model))(future.set);
+        apar.apply(apar, args),
+        (X && X.i18nModel && X.i18nModel.bind(this, model, X)) ||
+            aconstant(model))(future.set);
+  } else {
+    X && X.i18nModel && X.i18nModel(model, X);
   }
 
   return model.required__;

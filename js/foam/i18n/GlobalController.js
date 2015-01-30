@@ -20,7 +20,8 @@ CLASS({
   package: 'foam.i18n',
 
   requires: [
-    'foam.i18n.ChromeMessagesBuilder'
+    'foam.i18n.ChromeMessagesBuilder',
+    'foam.i18n.ChromeMessagesExtractor'
   ],
 
   imports: [
@@ -33,13 +34,47 @@ CLASS({
       factory: function() {
         return this.getBuilders();
       }
+    },
+    {
+      name: 'extractors',
+      factory: function() {
+        return this.getExtractors();
+      }
+    },
+    {
+      name: 'buildersList',
+      factory: function() { return []; }
+    },
+    {
+      name: 'extractorsList',
+      factory: function() { return []; }
     }
   ],
 
   methods: [
     {
-      name: 'visitModels',
+      name: 'init',
       code: function() {
+        this.SUPER();
+        var self = this;
+        ['builders', 'extractors'].forEach(function(baseName) {
+          Events.map(
+              self[baseName + '$'],
+              self[baseName + 'List$'],
+              function(hash) {
+                var arr = [];
+                Object.getOwnPropertyNames(hash).forEach(function(key) {
+                  arr.push(hash[key]);
+                });
+                return arr;
+              });
+        });
+      }
+    },
+    {
+      name: 'visitAllCurrentModels',
+      code: function(visitors) {
+        var self = this;
         var afuncs = [];
         [
           {
@@ -52,22 +87,27 @@ CLASS({
           }
         ].forEach(function(coll) {
           if (!coll.coll) {
-            this.console.warn('Attempt to build XMB from missing model' +
-                'collection: "' + coll.name + '"');
+            self.console.warn('Global 18n Controller: Attempt to visit ' +
+                'missing model collection: "' + coll.name + '"');
             return;
           }
           Object.getOwnPropertyNames(coll.coll).forEach(
               function(modelName) {
                 afuncs.push(arequire(modelName).aseq(function(ret, model) {
-                  Object.getOwnPropertyNames(this.builders).forEach(
-                      function(model, builderName) {
-                        this.builders[builderName].visitModel(model);
-                      }.bind(this, model));
+                  self.visitModel(visitors, model);
                   ret();
-                }.bind(this)));
-              }.bind(this));
-        }.bind(this));
+                }));
+              });
+        });
         return apar.apply(null, afuncs);
+      }
+    },
+    {
+      name: 'visitModel',
+      code: function(visitors, model) {
+        visitors.forEach(function(visitor) {
+          visitor.visitModel(model);
+        });
       }
     },
     {
@@ -77,6 +117,24 @@ CLASS({
           chromeMessages: this.ChromeMessagesBuilder.create()
         };
       }
+    },
+    {
+      name: 'getExtractors',
+      code: function() {
+        return {
+          chromeMessages: this.ChromeMessagesExtractor.create()
+        };
+      }
     }
   ]
 });
+
+X.i18nModel = (function() {
+  var i18nGC = X.foam.i18n.GlobalController.create();
+  i18nGC.visitAllCurrentModels(
+      i18nGC.buildersList.concat(i18nGC.extractorsList))(anop);
+  return function(model, X, ret) {
+    i18nGC.visitModel(i18nGC.buildersList.concat(i18nGC.extractorsList), model);
+    ret && ret(model);
+  };
+})();
