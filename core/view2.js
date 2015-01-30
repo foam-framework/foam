@@ -1881,7 +1881,7 @@ CLASS({
       name: 'document'
     },
     {
-      model_: 'BooleanPropery',
+      model_: 'BooleanProperty',
       name: 'openedAsMenu',
       defaultValue: false
     },
