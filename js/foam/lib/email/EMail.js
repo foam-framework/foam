@@ -125,8 +125,7 @@ CLASS({
          "postSet": function (_, a) {
         if ( a ) for ( var i = 0 ; i < a.length ; i++ ) a[i] = a[i].intern();
       },
-         "help": "Email labels.",
-         "view": "LabelView"
+         "help": "Email labels."
       },
       {
          "model_": "Property",

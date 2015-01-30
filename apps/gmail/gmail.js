@@ -662,7 +662,6 @@ CLASS({
             <div style='flex-grow: 1; -webkit-flex-grow: 1'>
               $$subject{mode: 'read-only', className: 'subject'}
               $$snippet{mode: 'read-only', className: 'snippet'}
-              $$labels{mode: 'read-only', className: 'labels'}
             </div>
             $$starred{
               model_: 'ImageBooleanView',
