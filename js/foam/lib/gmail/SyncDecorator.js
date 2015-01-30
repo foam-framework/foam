@@ -20,7 +20,7 @@ CLASS({
   name: 'SyncDecorator',
   extendsModel: 'ProxyDAO',
   requires: [
-    'FOAMGMailMessage'
+    'com.google.mail.FOAMGMailMessage'
   ],
 
   methods: {

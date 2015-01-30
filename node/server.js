@@ -21,9 +21,6 @@ var path = require('path');
 
 CLASS({
   name: 'NodeServer',
-  requires: [
-    'ErrorHandler',
-  ],
   properties: [
     {
       name: 'port',

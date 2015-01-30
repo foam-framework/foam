@@ -30,7 +30,6 @@ var files = [
   'io',
   'writer',
   'socket',
-  'base64',
   'encodings',
   'utf8',
   'async',
@@ -61,6 +60,7 @@ var files = [
   'LayoutTraits', // generic, non-view specific, so no predicate
   [ 'value', IN_BROWSER ],
   '../js/foam/patterns/ChildTreeTrait', // used in view, included here for backward compat of old apps
+  'base64',
   'view',
   [ 'view2', IN_BROWSER ],
   'layout',

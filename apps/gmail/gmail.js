@@ -43,8 +43,9 @@ CLASS({
     {
       name: 'parser',
       lazyFactory: function() {
+        var EMail = this.EMail;
         var parser = {
-          __proto__: QueryParserFactory(this.EMail),
+          __proto__: QueryParserFactory(EMail),
 
           id: sym('string'),
 
@@ -52,17 +53,17 @@ CLASS({
         }.addActions({
           id: function(v) {
             return OR(
-              CONTAINS_IC(this.EMail.TO, v),
-              CONTAINS_IC(this.EMail.FROM, v),
-              CONTAINS_IC(this.EMail.SUBJECT, v),
-              CONTAINS_IC(this.EMail.BODY, v));
+              CONTAINS_IC(EMail.TO, v),
+              CONTAINS_IC(EMail.FROM, v),
+              CONTAINS_IC(EMail.SUBJECT, v),
+              CONTAINS_IC(EMail.BODY, v));
           },
 
           labelMatch: function(v) {
             var or = OR();
             var values = v[2];
             for ( var i = 0 ; i < values.length ; i++ ) {
-              or.args.push(EQ(this.EMail.LABELS, values[i]))
+              or.args.push(EQ(EMail.LABELS, values[i]))
             }
             return or;
           }
@@ -72,6 +73,8 @@ CLASS({
           sym('labelMatch'),
           parser.export('expr')
         );
+
+        return parser;
       }
     }
   ]
@@ -109,12 +112,15 @@ CLASS({
     'foam.core.dao.StripPropertiesDAO',
     'PersistentContext',
     'Binding',
-    'FOAMGMailMessage',
-    'GMailMessageDAO',
+    'com.google.mail.FOAMGMailMessage',
+    'com.google.mail.GMailMessageDAO',
     'FutureDAO',
-    'GMailToEMailDAO',
+    'com.google.mail.GMailToEMailDAO',
+    'com.google.mail.GMailRestDAO',
+    'com.google.mail.FOAMGMailLabel',
     'BusyStatus',
     'BusyFlagTracker',
+    'XHR',
     'com.google.mail.EMailExtensionsAgent',
     'com.google.mail.QueryParser'
   ],
@@ -292,9 +298,9 @@ CLASS({
       name: 'labelDao',
       type: 'DAO',
       factory: function() {
-        return this.X.CachingDAO.create({
-          src: this.X.GMailRestDAO.create({ model: FOAMGMailLabel, modelName: 'labels' }),
-          delegate: this.X.MDAO.create({ model: FOAMGMailLabel }),
+        return this.CachingDAO.create({
+          src: this.GMailRestDAO.create({ model: this.FOAMGMailLabel, modelName: 'labels' }),
+          delegate: this.MDAO.create({ model: this.FOAMGMailLabel }),
         });
       }
     },
@@ -376,7 +382,7 @@ CLASS({
 
       var sync = this.emailSync;
 
-      this.controller = this.X.AppController.create({
+      this.controller = this.AppController.create({
         model: this.EMail,
         dao: this.emailDao,
         createAction: this.model_.COMPOSE,
@@ -401,7 +407,7 @@ CLASS({
         menuFactory: function() {
           return this.X.MenuView.create({
             topSystemLabelDAO: this.X.LabelDAO
-                .where(EQ(FOAMGMailLabel.getProperty('type'), 'system'))
+                .where(EQ(this.X.com.google.mail.FOAMGMailLabel.getProperty('type'), 'system'))
                 .orderBy(
                   toTop('INBOX'),
                   toTop('STARRED'),
@@ -409,22 +415,22 @@ CLASS({
                 )
                 .limit(3),
             bottomSystemLabelDAO: this.X.LabelDAO
-                .where(AND(EQ(FOAMGMailLabel.getProperty('type'), 'system'),
-                           NEQ(FOAMGMailLabel.ID, 'INBOX'),
-                           NEQ(FOAMGMailLabel.ID, 'STARRED'),
-                           NEQ(FOAMGMailLabel.ID, 'UNREAD'),
-                           NEQ(FOAMGMailLabel.ID, 'DRAFT')))
+                .where(AND(EQ(this.X.com.google.mail.FOAMGMailLabel.getProperty('type'), 'system'),
+                           NEQ(this.X.com.google.mail.FOAMGMailLabel.ID, 'INBOX'),
+                           NEQ(this.X.com.google.mail.FOAMGMailLabel.ID, 'STARRED'),
+                           NEQ(this.X.com.google.mail.FOAMGMailLabel.ID, 'UNREAD'),
+                           NEQ(this.X.com.google.mail.FOAMGMailLabel.ID, 'DRAFT')))
                 .orderBy(toTop('SENT'),
                          toTop('SPAM'),
                          toTop('TRASH')),
             userLabelDAO: this.X.LabelDAO
-                .where(NEQ(FOAMGMailLabel.getProperty('type'), 'system'))
-                .orderBy(FOAMGMailLabel.NAME)
+                .where(NEQ(this.X.com.google.mail.FOAMGMailLabel.getProperty('type'), 'system'))
+                .orderBy(this.X.com.google.mail.FOAMGMailLabel.NAME)
           });
         }
       });
       var self = this;
-      this.labelDao.where(EQ(FOAMGMailLabel.ID, 'INBOX')).select({
+      this.labelDao.where(EQ(this.FOAMGMailLabel.ID, 'INBOX')).select({
         put: function(inbox) {
           self.changeLabel(inbox);
         }
@@ -699,7 +705,7 @@ CLASS({
   traits: ['PositionedDOMViewTrait'],
   requires: [
     'MenuLabelCitationView',
-    'FOAMGMailLabel',
+    'com.google.mail.FOAMGMailLabel',
     'ProfileView',
     'foam.lib.email.EMail'
   ],
