@@ -20,7 +20,7 @@ CLASS({
   name: 'Sync',
   extendsModel: 'foam.core.dao.Sync',
   requires: [
-    'FOAMGMailMessage'
+    'com.google.mail.FOAMGMailMessage'
   ],
   methods: {
     purge: function(ret, remoteLocal) {

@@ -35,12 +35,13 @@ CLASS({
     'foam.navigator.types.Mail',
     'foam.navigator.types.Todo',
     'foam.navigator.types.Audio',
+    'foam.core.dao.VersionNoDAO',
     'CachingDAO',
     'IDBDAO',
-    'FOAMGMailMessage',
+    'com.google.mail.FOAMGMailMessage',
     'foam.lib.email.EMail',
     'MDAO',
-    'GMailToEMailDAO',
+    'com.google.mail.GMailToEMailDAO',
     'lib.contacts.Contact',
     'Phone'
   ],
@@ -79,8 +80,14 @@ CLASS({
             model: 'foam.lib.email.EMail',
             dao: this.CachingDAO.create({
               src: this.GMailToEMailDAO.create({
-                delegate: this.IDBDAO.create({
-                  model: this.FOAMGMailMessage, useSimpleSerialization: false
+                delegate: this.VersionNoDAO.create({
+                  delegate: this.CachingDAO.create({
+                    delegate: this.MDAO.create({ model: this.FOAMGMailMessage }),
+                    src: this.IDBDAO.create({
+                      model: this.FOAMGMailMessage, useSimpleSerialization: false
+                    })
+                  }),
+                  property: this.FOAMGMailMessage.CLIENT_VERSION
                 })
               }),
               delegate: this.MDAO.create({ model: this.EMail })
@@ -101,6 +108,12 @@ CLASS({
             dao: phones
           })
         ].dao;
+      },
+      postSet: function(_, value) {
+        for ( var i = 0; i < value.length; i++ ) {
+          var config = value[i];
+          this.X[config.model.name + 'DAO'] = config.dao;
+        }
       }
     },
     {
