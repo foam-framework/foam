@@ -394,7 +394,7 @@ var aevalTemplate = function(t) {
     }
   }
 
-  return aseq(
+  return atime('aevalTemplate: ' + t.name, aseq(
     t.futureTemplate,
-    function(ret, t) { doEval(t)(ret); });
+    function(ret, t) { doEval(t)(ret); }));
 };
