@@ -539,8 +539,8 @@ CLASS({
     'SlidePanelView',
     'MainButtonsView',
     'SecondaryButtonsView',
-    'TertiaryButtonsView',
-    'foam.chromeapp.ui.ZoomView'
+    'TertiaryButtonsView'
+    // 'foam.chromeapp.ui.ZoomView'
   ],
   exports: [
     'data'
