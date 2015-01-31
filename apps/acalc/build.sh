@@ -83,7 +83,3 @@ rm -f "$BUILD_DIR/Tests.js" "$BUILD_DIR/Tests.html" "$BUILD_DIR/build.sh" "$BUIL
 
 # For code compression, uncomment the following line:
 # ~/node_modules/uglify-js/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"
-
-#  ../../core/ChromeStorage.js \
-#  ../../demos/benchmark_data.json \
-#  ../../demos/photo.js \
