@@ -1,10 +1,11 @@
-BASEDIR=$(dirname "$0")
+BASEDIR=$(dirname "$1")
 cd "$BASEDIR"
 
 #   Templates.js \
 
 export BUILD_DIR=~/Downloads/acalc
 rm -rf $BUILD_DIR
+mkdir $BUILD_DIR
 cp -r . $BUILD_DIR
 cat \
   ../../core/stdlib.js \
@@ -44,6 +45,11 @@ cat \
   ../../core/touch.js \
   ../../js/foam/ui/animated/Label.js \
   ../../js/foam/ui/md/Flare.js \
+  ../../js/foam/i18n/Visitor.js \
+  ../../js/foam/i18n/MessagesBuilder.js \
+  ../../js/foam/i18n/ChromeMessagesBuilder.js \
+  ../../js/foam/i18n/ChromeMessagesExtractor.js \
+  ../../js/foam/i18n/GlobalController.js \
   Calc.js \
   | sed 's/^ *//g' \
   | sed 's/  */ /g' \
@@ -73,7 +79,7 @@ cat \
   > "$BUILD_DIR/foam.js"
 
 # Delete unneeded files
-rm "$BUILD_DIR/Tests.js" "$BUILD_DIR/Tests.html" "$BUILD_DIR/build.sh" "$BUILD_DIR/package.sh" "$BUILD_DIR/*~"
+rm -f "$BUILD_DIR/Tests.js" "$BUILD_DIR/Tests.html" "$BUILD_DIR/build.sh" "$BUILD_DIR/package.sh" "$BUILD_DIR/*~"
 
 # For code compression, uncomment the following line:
 # ~/node_modules/uglify-js/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"

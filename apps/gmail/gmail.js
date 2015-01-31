@@ -102,8 +102,8 @@ CLASS({
     'MDAO',
     'TouchManager',
     'foam.ui.md.ResponsiveAppControllerView',
-    'lib.contacts.Contact as Contact',
-    'lib.contacts.ContactNetworkDAO as ContactNetworkDAO',
+    'foam.lib.contacts.Contact as Contact',
+    'foam.lib.contacts.ContactNetworkDAO as ContactNetworkDAO',
     'CachingDAO',
     'foam.lib.gmail.Sync',
     'foam.lib.gmail.SyncDecorator',
@@ -662,7 +662,6 @@ CLASS({
             <div style='flex-grow: 1; -webkit-flex-grow: 1'>
               $$subject{mode: 'read-only', className: 'subject'}
               $$snippet{mode: 'read-only', className: 'snippet'}
-              $$labels{mode: 'read-only', className: 'labels'}
             </div>
             $$starred{
               model_: 'ImageBooleanView',

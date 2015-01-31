@@ -145,9 +145,9 @@ MODEL({
       var id = 1;
       var activeOps = {};
       return function atime(str, afunc, opt_endCallback, opt_startCallback) {
+        var name = str;
         return aseq(
           function(ret) {
-            var name = str;
             if ( activeOps[str] ) {
               name += '-' + id++;
               activeOps[str]++;

@@ -18,6 +18,7 @@
 CLASS({
   name: 'MessagesBuilder',
   package: 'foam.i18n',
+  extendsModel: 'foam.i18n.Visitor',
 
   imports: [
     'console'
@@ -31,15 +32,6 @@ CLASS({
   ],
 
   methods: [
-    {
-      name: 'visitModel',
-      code: function(model) {
-        this.console.warn(
-            'Message builder without visitModel implementation: ' +
-                this.name_);
-        return this.messageBundle;
-      }
-    },
     {
       name: 'messagesToString',
       code: function() {

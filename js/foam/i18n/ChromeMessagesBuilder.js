@@ -22,45 +22,45 @@ CLASS({
 
   methods: [
     {
-      name: 'visitModel',
-      code: function(model) {
+      name: 'visitMessage',
+      code: function(model, msg) {
+        var modelPrefix = model.translationHint ?
+            model.translationHint + ' ' : '';
+        var key = this.getMessageKey(model, msg);
+        this.messageBundle[key] = {
+          message: msg.value,
+          description: modelPrefix + msg.translationHint
+        };
+      }
+    },
+    {
+      name: 'visitAction',
+      code: function(model, action) {
         var modelPrefix = model.translationHint ?
             model.translationHint + ' ' : '';
         var key;
-        if ( model.messages ) model.messages.forEach(
-            function(model, msg) {
-              key = model.name + '__Message__' + msg.name;
-              this.messageBundle[key] = {
-                  message: msg.value,
-                  description: modelPrefix + msg.translationHint
-              };
-            }.bind(this, model));
-        if ( model.actions ) model.actions.forEach(
-            function(model, action) {
-              if ( action.translationHint ) {
-                if ( action.label ) {
-                  key = model.name + '__ActionLabel__' + action.name;
-                  this.messageBundle[key] =
-                      {
-                        message: action.label,
-                        description: modelPrefix +
-                            action.translationHint +
-                            ' (text label)'
-                      };
-                }
-                if ( action.speechLabel ) {
-                  key = model.name + '__ActionSpeechLabel__' + action.name;
-                  this.messageBundle[key] =
-                      {
-                        message: action.speechLabel,
-                        description: modelPrefix +
-                            action.translationHint +
-                            ' (speech label)'
-                      };
-                }
-              }
-            }.bind(this, model));
-        return this.messageBundle;
+        if ( action.translationHint ) {
+          if ( action.label ) {
+            key = this.getActionTextLabelKey(model, action);
+            this.messageBundle[key] =
+                {
+                  message: action.label,
+                  description: modelPrefix +
+                      action.translationHint +
+                      ' (text label)'
+                };
+          }
+          if ( action.speechLabel ) {
+            key = this.getActionSpeechLabelKey(model, action);
+            this.messageBundle[key] =
+                {
+                  message: action.speechLabel,
+                  description: modelPrefix +
+                      action.translationHint +
+                      ' (speech label)'
+                };
+          }
+        }
       }
     },
     {
