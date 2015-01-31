@@ -1,6 +1,8 @@
 BASEDIR=$(dirname "$1")
 cd "$BASEDIR"
 
+#   Templates.js \
+
 export BUILD_DIR=~/Downloads/acalc
 rm -rf $BUILD_DIR
 mkdir $BUILD_DIR
@@ -43,12 +45,12 @@ cat \
   ../../core/touch.js \
   ../../js/foam/ui/animated/Label.js \
   ../../js/foam/ui/md/Flare.js \
-  ../../js/foam/chromeapp/ui/ZoomView.js \
   ../../js/foam/i18n/Visitor.js \
   ../../js/foam/i18n/MessagesBuilder.js \
   ../../js/foam/i18n/ChromeMessagesBuilder.js \
   ../../js/foam/i18n/ChromeMessagesExtractor.js \
   ../../js/foam/i18n/GlobalController.js \
+  Calc.js \
   | sed 's/^ *//g' \
   | sed 's/  */ /g' \
   | sed 's%^//.*%%g' \

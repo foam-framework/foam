@@ -34,7 +34,7 @@ var aeval = (function() {
   return function(src) {
     return aseq(
       future.get,
-      function(ret) {
+      atime('aeval', function(ret) {
         var id = 'c' + (nextID++);
 
         var newjs = ['__EVAL_CALLBACKS__["' + id + '"](' + src + ');'];
@@ -43,7 +43,7 @@ var aeval = (function() {
 
         __EVAL_CALLBACKS__[id] = function(data) {
           delete __EVAL_CALLBACKS__[id];
-
+          // console.log(data);
           ret && ret.call(this, data);
         };
 
@@ -55,6 +55,43 @@ var aeval = (function() {
           //        document.body.removeChild(this);
         };
         document.body.appendChild(script);
-      });
+      }));
   };
 })();
+
+var TEMPLATE_FUNCTIONS = [];
+
+var aevalTemplate = function(t) {
+  var doEval_ = function(t) {
+    console.time('parse');
+    var code = TemplateCompiler.parseString(t.template);
+    console.timeEnd('parse');
+    var args = ['opt_out'];
+    if ( t.args ) {
+      for ( var i = 0 ; i < t.args.length ; i++ ) {
+        args.push(t.args[i].name);
+      }
+    }
+    return aeval('function(' + args.join(',') + '){' + code + '}');
+  };
+  var doEval = function(t) {
+    try {
+      return doEval_(t);
+    } catch (err) {
+      console.log('Template Error: ', err);
+      console.log(code);
+      return aconstant(function() {return 'TemplateError: Check console.';});
+    }
+  }
+
+  var i = TEMPLATE_FUNCTIONS.length;
+  TEMPLATE_FUNCTIONS[i] = '';
+  return aseq(
+    t.futureTemplate,
+    function(ret, t) { doEval(t)(ret); },
+    function(ret, f) {
+      TEMPLATE_FUNCTIONS[i] = f;
+      ret(f);
+    }
+  );
+};

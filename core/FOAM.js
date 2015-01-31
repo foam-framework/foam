@@ -119,11 +119,18 @@ FOAM.browse = function(model, opt_dao, opt_X) {
 FOAM.lookup = function(key, opt_X) {
   if ( ! ( typeof key === 'string' ) ) return key;
 
-  var path = key.split('.');
   var root = opt_X || X;
-  for ( var i = 0 ; root && i < path.length ; i++ ) root = root[path[i]];
+  var cache = root.hasOwnProperty('lookupCache_') ? root.lookupCache_ : ( root.lookupCache_ = {} );
 
-  return root;
+  var ret = cache[key];
+  if ( ! ret ) {
+    var path = key.split('.');
+    for ( var i = 0 ; root && i < path.length ; i++ ) root = root[path[i]];
+
+    ret = root;
+    cache[key] = ret;
+  }
+  return ret;
 };
 
 

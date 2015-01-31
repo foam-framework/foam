@@ -618,18 +618,19 @@ var Property = {
     toMQL: function() { return this.name; },
     toBQL: function() { return this.name; },
     initPropertyAgents: function(proto) {
-      var prop = this;
+      var prop   = this;
+      var name   = prop.name;
+      var name$_ = prop.name$_;
 
       /* Is handled by copyFrom(), but could be done here instead. */
-      proto.addInitAgent((this.postSet || this.setter) ? 9 : 0, this.name + ': ' + (this.postSet || this.setter ? 'copy arg (postSet)' : 'copy arg'), function(o, X, m) {
+      proto.addInitAgent((this.postSet || this.setter) ? 9 : 0, name + ': ' + (this.postSet || this.setter ? 'copy arg (postSet)' : 'copy arg'), function(o, X, m) {
         if ( ! m ) return;
-        if ( m.hasOwnProperty(prop.name)   ) o[prop.name]   = m[prop.name];
-        if ( m.hasOwnProperty(prop.name$_) ) o[prop.name$_] = m[prop.name$_];
+        if ( m.hasOwnProperty(name)   ) o[name]   = m[name];
+        if ( m.hasOwnProperty(name$_) ) o[name$_] = m[name$_];
       });
 
       if ( this.dynamicValue ) {
-        proto.addInitAgent(10, prop.name + ': dynamicValue', function(o, X) {
-          var name = prop.name;
+        proto.addInitAgent(10, name + ': dynamicValue', function(o, X) {
           var dynamicValue = prop.dynamicValue;
 
           Events.dynamic(
@@ -639,8 +640,8 @@ var Property = {
       }
 
       if ( this.factory ) {
-        proto.addInitAgent(11, prop.name + ': factory', function(o, X) {
-          if ( ! o.hasOwnProperty(this.name) ) o[prop.name];
+        proto.addInitAgent(11, name + ': factory', function(o, X) {
+          if ( ! o.hasOwnProperty(name) ) o[name];
         });
       }
     }
