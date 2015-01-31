@@ -113,7 +113,7 @@ var JSONUtil = {
           
           arequire(obj.model_)(function(model) {
             if ( ! model ) {
-              console.warn("Tried to load ", obj.model_, " on demand, but no luck.");
+              console.warn('Failed to dynamically load: ', obj.model_);
               future.set(obj);
               return;
             }
