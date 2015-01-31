@@ -371,8 +371,7 @@ var aeval = function(src) {
   return aconstant(eval('(' + src + ')'));
 };
 
-
-var aevalTemplate = function(t) {
+var evalTemplate = function(t) {
   var doEval_ = function(t) {
     var code = TemplateCompiler.parseString(t.template);
 
@@ -382,19 +381,36 @@ var aevalTemplate = function(t) {
         args.push(t.args[i].name);
       }
     }
-    return aeval('function(' + args.join(',') + '){' + code + '}');
+    return eval('(function(' + args.join(',') + '){' + code + '})');
   };
-  var doEval = function(t) {
-    try {
-      return doEval_(t);
-    } catch (err) {
-      console.log('Template Error: ', err);
-      console.log(code);
-      return aconstant(function() {return 'TemplateError: Check console.';});
-    }
+
+  try {
+    return doEval_(t);
+  } catch (err) {
+    console.log('Template Error: ', err);
+    console.log(code);
+    return function() { return 'TemplateError: Check console.'; };
+  }
+};
+
+
+var aevalTemplate = function(t) {
+  function lazyTemplate(t) {
+    var f;
+    return function() {
+      if ( ! f ) {
+        var name = 'eval template: ' + t.name;
+        console.time(name);
+        f = evalTemplate(t);
+        console.timeEnd(name);
+      }
+      return f.apply(this, arguments);
+    };
   }
 
-  return atime('aevalTemplate: ' + t.name, aseq(
+  return aseq(
     t.futureTemplate,
-    function(ret, t) { doEval(t)(ret); }));
+    function(ret, t) {
+      ret(lazyTemplate(t));
+    });
 };
