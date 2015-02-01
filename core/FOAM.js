@@ -323,16 +323,23 @@ function CLASS(m) {
 
     Object.defineProperty(path, m.name, {
       get: function () {
+        console.time('registerModel: ' + id);
+        if ( id === 'DAOListView' ) console.profile();
         USED_MODELS[id] = true;
         delete UNUSED_MODELS[id];
         Object.defineProperty(path, m.name, {value: null, configurable: true});
 
         var work = [];
+        console.time('buildModel: ' + id);
         var model = JSONUtil.mapToObj(X, m, Model, work);
+        console.timeEnd('buildModel: ' + id);
         if ( work.length > 0 ) model.ready__ = aseq.apply(null, work);
 
         // TODO: _ROOT_X is a workaround for apps that redefine the top level X
         _ROOT_X.registerModel(model);
+
+        console.timeEnd('registerModel: ' + id);
+        if ( id === 'DAOListView' ) console.profileEnd();
         return this[m.name];
       },
       configurable: true

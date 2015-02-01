@@ -80,6 +80,17 @@ MODEL({
       return g;
     },
 
+    function memoize1(f) {
+      var cache = {};
+      var g = function(arg) {
+        var key = arg.toString();
+        if ( ! cache.hasOwnProperty(key) ) cache[key] = f.call(this, arg);
+        return cache[key];
+      };
+      g.name = f.name;
+      return g;
+    },
+
     function constantFn(v) {
       /* Create a function which always returns the supplied constant value. */
       return function() { return v; };
@@ -265,6 +276,16 @@ MODEL({
   ]
 });
 
+var constantize = memoize1(function(str) {
+  // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
+  // TODO: add property to specify constantization. For now catch special case to avoid conflict with context this.X.
+  return str === 'x' ?
+    'X_' :
+    str.replace(/[a-z_][^0-9a-z_]/g, function(a) {
+      return a.substring(0,1) + '_' + a.substring(1,2);
+    }).toUpperCase();
+});
+
 
 MODEL({
   extendsProto: 'Object',
@@ -447,18 +468,6 @@ MODEL({
 
     function labelize() {
       return this.replace(/[a-z][A-Z]/g, function (a) { return a.charAt(0) + ' ' + a.charAt(1); }).capitalize();
-    },
-
-    function constantize() {
-      // TODO(kgr): speed up, currently is very slow
-      // console.log('constantize: ', this.toString());
-      // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
-      // TODO: add property to specify constantization. For now catch special case to avoid conflict with context this.X.
-      return this == 'x' ?
-        'X_' :
-        this.replace(/[a-z_][^0-9a-z_]/g, function(a) {
-          return a.substring(0,1) + '_' + a.substring(1,2);
-        }).toUpperCase();
     },
 
     function clone() { return this.toString(); },

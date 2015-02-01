@@ -226,7 +226,7 @@ CLASS({
       for ( var i = 0; i < props.length; i++ ) {
         var view = GroupBySearchView.create({
           dao: this.dao,
-          property: this.model[props[i].constantize()]
+          property: this.model[constantize(props[i])]
         });
         this.addChild(view);
         view.addPropertyListener(

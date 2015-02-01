@@ -687,7 +687,7 @@ Property = Model.create(Property);
 
 // Property properties are still Bootstrap Models, so upgrade them.
 for ( var i = 0 ; i < Property.properties.length ; i++ )
-  Property[Property.properties[i].name.constantize()] =
+  Property[constantize(Property.properties[i].name)] =
     Property.properties[i] = Property.create(Property.properties[i]);
 
 USED_MODELS.Property = Property;

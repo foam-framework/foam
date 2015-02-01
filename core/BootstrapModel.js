@@ -224,7 +224,7 @@ var BootstrapModel = {
         if ( superProp ) {
           p = superProp.clone().copyFrom(p);
           props[i] = p;
-          this[p.name.constantize()] = p;
+          this[constantize(p.name)] = p;
         }
       }
       cls.defineProperty(p);
@@ -235,13 +235,13 @@ var BootstrapModel = {
     if ( extendsModel ) {
       for ( var i = 0 ; i < extendsModel.properties.length ; i++ ) {
         var p = extendsModel.properties[i];
-        var name = p.name.constantize();
+        var name = constantize(p.name);
 
         if ( ! this[name] ) this[name] = p;
       }
       for ( i = 0 ; i < extendsModel.relationships.length ; i++ ) {
         var r = extendsModel.relationships[i];
-        var name = r.name.constantize();
+        var name = constantize(r.name);
 
         if ( ! this[name] ) this[name] = r;
       }
@@ -324,8 +324,7 @@ var BootstrapModel = {
     this.relationships && this.relationships.forEach(function(r) {
       // console.log('************** rel: ', r, r.name, r.label, r.relatedModel, r.relatedProperty);
 
-      //           this[r.name.constantize()] = r;
-      var name = r.name.constantize();
+      var name = constantize(r.name);
       if ( ! self[name] ) self[name] = r;
       defineLazyProperty(cls, r.name, function() {
         var m = this.X[r.relatedModel];
