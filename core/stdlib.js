@@ -71,11 +71,13 @@ MODEL({
   methods: [
     function memoize(f) {
       var cache = {};
-      return function() {
+      var g = function() {
         var key = argsToArray(arguments).toString();
         if ( ! cache.hasOwnProperty(key) ) cache[key] = f.apply(this, arguments);
         return cache[key];
       };
+      g.name = f.name;
+      return g;
     },
 
     function constantFn(v) {
@@ -448,10 +450,12 @@ MODEL({
     },
 
     function constantize() {
+      // TODO(kgr): speed up, currently is very slow
+      // console.log('constantize: ', this.toString());
       // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
       // TODO: add property to specify constantization. For now catch special case to avoid conflict with context this.X.
-      return this == "x" ?
-        "X_" :
+      return this == 'x' ?
+        'X_' :
         this.replace(/[a-z_][^0-9a-z_]/g, function(a) {
           return a.substring(0,1) + '_' + a.substring(1,2);
         }).toUpperCase();
