@@ -99,7 +99,7 @@ MODEL({
       sym('text')
     )),
 
-    'comment': seq('<!--', repeat(not('-->', anyChar)), '-->'),
+    'comment': seq1(1, '<!--', repeat0(not('-->', anyChar)), '-->'),
 
     'foamTag': sym('foamTag_'),
     'foamTag_': function() { }, // placeholder until gets filled in after HTMLParser is built
@@ -188,6 +188,7 @@ var TemplateCompiler = {
     this.out = [];
     return ret;
   },
+
   'create child': function(v) {
     var name = v[1].join('');
     this.push(
