@@ -2129,7 +2129,7 @@ CLASS({
       defaultValue: 'View',
       postSet: function(old, v) {
         if ( ! this.$ ) return;
-        this.removeChild(old);
+        this.removeAllChildren();
         var view = this.view();
         view.data = this.data;
         this.addChild(view);
