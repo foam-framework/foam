@@ -9,7 +9,6 @@ cat \
   ../../core/io.js \
   ../../core/writer.js \
   ../../core/socket.js \
-  ../../core/base64.js \
   ../../core/encodings.js \
   ../../core/utf8.js \
   ../../core/async.js \
@@ -31,7 +30,9 @@ cat \
   ../../core/mm5Misc.js \
   ../../js/foam/ui/Window.js \
   ../../core/LayoutTraits.js \
+  ../../js/foam/patterns/ChildTreeTrait.js \
   ../../core/value.js \
+  ../../core/base64.js \
   ../../core/view.js \
   ../../core/view2.js \
   ../../core/layout.js \

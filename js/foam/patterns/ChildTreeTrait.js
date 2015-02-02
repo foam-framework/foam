@@ -18,7 +18,7 @@
 CLASS({
   name: 'ChildTreeTrait',
   package: 'foam.patterns',
-  
+
   properties: [
     {
       name: 'parent',
@@ -34,28 +34,28 @@ CLASS({
       */}
     }
   ],
-  
+
   constants: [
     {
       name: 'ANCESTRY_CHANGE',
       value: 'ancestryChange'
     }
   ],
-  
+
   methods: {
     init: function() {
       this.SUPER();
-      
+
       // begin an ancestry change when our parent changes
       this.parent$.addListener( function(obj, topic, old, nu) {
         // propagate an ancestry changes from our parent
         if (old) old.unsubscribe(this.ANCESTRY_CHANGE, this.propagateAncestryChange );
-        if (nu) nu.subscribe(this.ANCESTRY_CHANGE, this.propagateAncestryChange );         
+        if (nu) nu.subscribe(this.ANCESTRY_CHANGE, this.propagateAncestryChange );
         this.propagateAncestryChange();
       }.bind(this) );
-      
+
     },
-    
+
     addChild: function(child) {
       /*
         Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
@@ -86,12 +86,17 @@ CLASS({
         a sub-$$DOC{ref:'View'} is destroyed, remove it from the tree with this method.
       */
       //if (arguments.callee.caller.super_) this.SUPER(child);
-      
+
       child.destroy();
       this.children.deleteI(child);
       child.parent = undefined;
-      
+
       return this;
+    },
+
+    removeAllChildren: function() {
+      var list = this.children.slice();
+      Array.prototype.forEach.call(list, this.removeChild.bind(this));
     },
 
     addChildren: function() {
@@ -100,28 +105,27 @@ CLASS({
         Array.prototype.forEach.call(arguments, this.addChild.bind(this));
       } else {
         for ( var key in arguments ) this.addChild(arguments[key]);
-      }     
+      }
       return this;
     },
-    
+
     destroy: function() {
       /* Destroys children and removes them from this. Override to include your own
        cleanup code, but always call this.SUPER() after you are done. */
       //if (arguments.callee.caller.super_) this.SUPER();
-      
-      var list = this.children.slice();
-      Array.prototype.forEach.call(list, this.removeChild.bind(this));
 
-      return this;      
+      this.removeAllChildren();
+
+      return this;
     },
-    
+
     construct: function() {
       /* After a destroy(), construct() is called to fill in the object again. If
          any special children need to be re-created, do it here. */
 
-      return this;      
+      return this;
     },
-    
+
     deepPublish: function(topic) {
       /*
        Publish an event and cause all children to publish as well.
@@ -138,14 +142,13 @@ CLASS({
       return count;
     }
   },
-  
+
   listeners: [
     {
       name: 'propagateAncestryChange',
-      code: function() { 
+      code: function() {
         this.publish(this.ANCESTRY_CHANGE);
       }
     }
   ]
 });
-
