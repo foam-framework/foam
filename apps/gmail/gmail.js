@@ -118,6 +118,7 @@ CLASS({
     'com.google.mail.GMailToEMailDAO',
     'com.google.mail.GMailRestDAO',
     'com.google.mail.FOAMGMailLabel',
+    'com.google.mail.ComposeView',
     'BusyStatus',
     'BusyFlagTracker',
     'XHR',
@@ -135,7 +136,8 @@ CLASS({
     'emailDao as EMailDAO',
     'profile$ as profile$',
     'as controller',
-    'stack'
+    'stack',
+    'openComposeView'
   ],
 
   imports: [
@@ -368,6 +370,15 @@ CLASS({
       }.bind(this));
     },
 
+    openComposeView: function(X, email) {
+      var view  = X.FloatingView.create({
+        view: this.ComposeView.create({
+          data: email,
+        }, this.controller.X)
+      });
+      this.stack.pushView(view, undefined, undefined, 'fromRight');
+    },
+
     toHTML: function() { return this.stack.toHTML(); },
 
     initHTML: function() {
@@ -472,7 +483,7 @@ CLASS({
       label: '+',
       action: function() {
         var view = this.X.FloatingView.create({
-          view: this.X.EMailComposeView.create({
+          view: this.X.com.google.mail.ComposeView.create({
             data: this.X.EMail.create({
               id: 'draft_' + Math.floor(Math.random() * 0xFFFFFFFF).toString(16),
               labels: ['DRAFT']
@@ -880,13 +891,3 @@ CLASS({
     */}
   ]
 });
-
-
-var openComposeView = function(X, email) {
-  var view = X.FloatingView.create({
-    view: X.EMailComposeView.create({
-      data: email,
-    })
-  });
-  X.stack.pushView(view, undefined, undefined, 'fromRight');
-};

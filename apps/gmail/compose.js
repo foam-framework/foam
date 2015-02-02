@@ -1,5 +1,6 @@
 CLASS({
-  name: 'EMailComposeView',
+  package: 'com.google.mail',
+  name: 'ComposeView',
   extendsModel: 'DetailView',
 
   requires: [
