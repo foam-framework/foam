@@ -167,13 +167,22 @@ function elementFromString(str) {
   return str.element || ( str.element = HTMLParser.create().parseString(str).children[0] );
 }
 
+var ConstantTemplate = function(str) { return function(opt_out) {
+  var out = opt_out ? opt_out : TemplateOutput.create(this);
+  out(str);
+  return out.toString();
+} };
 
 var TemplateCompiler = {
   __proto__: TemplateParser,
 
   out: [],
 
-  push: function() { this.out.push.apply(this.out, arguments); },
+  simple: true, // True iff the template is just one string literal.
+
+  push: function() { this.simple = false; this.pushSimple.apply(this, arguments); },
+
+  pushSimple: function() { this.out.push.apply(this.out, arguments); },
 
   header: 'var self = this; var X = this.X; var escapeHTML = XMLUtil.escape;' +
     'var out = opt_out ? opt_out : TemplateOutput.create(this);' +
@@ -184,9 +193,11 @@ var TemplateCompiler = {
 
 }.addActions({
   markup: function (v) {
-    var ret = this.header + this.out.join('') + this.footer;
+    var wasSimple = this.simple;
+    var ret = wasSimple ? null : this.header + this.out.join('') + this.footer ;
     this.out = [];
-    return ret;
+    this.simple = true;
+    return [wasSimple, ret];
   },
 
   'create child': function(v) {
@@ -238,9 +249,9 @@ var TemplateCompiler = {
   'values tag': function (v) { this.push("',\nescapeHTML(", v[1].join(''), "),\n'"); },
   'live value tag': function (v) { this.push("',\nself.dynamicTag('span', function() { return ", v[1].join(''), "; }.bind(this)),\n'"); },
   'code tag': function (v) { this.push("');\n", v[1].join(''), ";out('"); },
-  'single quote': function () { this.push("\\'"); },
-  newline: function () { this.push('\\n'); },
-  text: function(v) { this.push(v); }
+  'single quote': function () { this.pushSimple("\\'"); },
+  newline: function () { this.pushSimple('\\n'); },
+  text: function(v) { this.pushSimple(v); }
 });
 
 
@@ -278,8 +289,12 @@ MODEL({
     compile: function(t) {
       var code = TemplateCompiler.parseString(t.template);
 
+      // Simple case, just a string literal
+      if ( code[0] ) return ConstantTemplate(t.template);
+
+      // Need to compile an actual method
       try {
-        return this.compile_(t, code);
+        return this.compile_(t, code[1]);
       } catch (err) {
         console.log('Template Error: ', err);
         console.log(code);
@@ -376,13 +391,17 @@ var evalTemplate = function(t) {
   var doEval_ = function(t) {
     var code = TemplateCompiler.parseString(t.template);
 
+    // Simple case, just a string literal
+    if ( code[0] ) return ConstantTemplate(t.template);
+
+    // Need to compile an actual method
     var args = ['opt_out'];
     if ( t.args ) {
       for ( var i = 0 ; i < t.args.length ; i++ ) {
         args.push(t.args[i].name);
       }
     }
-    return eval('(function(' + args.join(',') + '){' + code + '})');
+    return eval('(function(' + args.join(',') + '){' + code[1] + '})');
   };
 
   try {
@@ -400,10 +419,10 @@ var aevalTemplate = function(t) {
     var f;
     return function() {
       if ( ! f ) {
-        var name = 'eval template: ' + t.name;
-        console.time(name);
+//        var name = 'eval template: ' + t.name;
+//        console.time(name);
         f = evalTemplate(t);
-        console.timeEnd(name);
+//        console.timeEnd(name);
       }
       return f.apply(this, arguments);
     };
