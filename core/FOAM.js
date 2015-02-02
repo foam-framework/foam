@@ -211,7 +211,7 @@ function arequireModel(model, X) {
     if ( model.templates ) for ( i = 0 ; i < model.templates.length ; i++ ) {
       var t = model.templates[i];
       args.push(
-        aevalTemplate(model.templates[i]),
+        aevalTemplate(model.templates[i], model),
         (function(t) { return function(ret, m) {
           model.getPrototype()[t.name] = m;
           ret();
