@@ -590,7 +590,7 @@ CLASS({
             r.data = x;
             r.y = h * self.rowHeight;
           } else {
-            var v = rowView.create({ model: x.model_, data: x });
+            var v = rowView.create({ model: x.model_, data: x }, this.X);
             var svr = ScrollViewRow.create({ data: x, id: v.nextID() });
             self.visibleRows[h] = svr;
 
@@ -802,7 +802,7 @@ CLASS({
         <% if ( this.rowHeight < 0 ) { %>
           <div id="<%= this.id + '-rowsize' %>" style="visibility: hidden">
             <%
-              this.rowSizeView = FOAM.lookup(this.rowView, this.X).create({ data: this.dao.model.create() });
+              this.rowSizeView = FOAM.lookup(this.rowView, this.X).create({ data: this.dao.model.create() }, this.X);
               out(this.rowSizeView.toHTML());
               this.addChild(this.rowSizeView);
             %>
