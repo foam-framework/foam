@@ -109,7 +109,7 @@ CLASS({
     },
     {
       name: 'sync',
-      lazyFactory: function() {
+      factory: function() {
         if ( this.withSync ) {
           var sync = this.Sync.create({
             local: this.SyncDecorator.create({
