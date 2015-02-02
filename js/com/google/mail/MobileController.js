@@ -8,44 +8,32 @@ CLASS({
 
   requires: [
     'AppController',
-    'com.google.mail.MenuView',
-    'foam.lib.email.EMail',
+    'BusyFlagTracker',
+    'BusyStatus',
     'CachingDAO',
-    'ContextualizingDAO',
     'DetailView',
-    'com.google.mail.EMailView',
-    'com.google.mail.EMailCitationView',
-    'com.google.mail.ProfileView',
     'FloatingView',
-    'com.google.mail.GMailUserInfo',
     'GestureManager',
     'IDBDAO',
     'MDAO',
+    'OAuth2Redirect as EasyOAuth2',
     'TouchManager',
-    'foam.ui.md.ResponsiveAppControllerView',
+    'XHR',
+    'com.google.mail.ComposeView',
+    'com.google.mail.EMailCitationView',
+    'com.google.mail.EMailDAO',
+    'com.google.mail.EMailExtensionsAgent',
+    'com.google.mail.EMailView',
+    'com.google.mail.FOAMGMailLabel',
+    'com.google.mail.GMailRestDAO',
+    'com.google.mail.GMailUserInfo',
+    'com.google.mail.MenuView',
+    'com.google.mail.ProfileView',
+    'com.google.mail.QueryParser',
     'foam.lib.contacts.Contact as Contact',
     'foam.lib.contacts.ContactNetworkDAO as ContactNetworkDAO',
-    'CachingDAO',
-    'foam.lib.gmail.Sync',
-    'foam.lib.gmail.SyncDecorator',
-    'foam.core.dao.MergeDAO',
-    'foam.core.dao.VersionNoDAO',
-    'foam.core.dao.StripPropertiesDAO',
-    'PersistentContext',
-    'Binding',
-    'com.google.mail.FOAMGMailMessage',
-    'com.google.mail.GMailMessageDAO',
-    'FutureDAO',
-    'com.google.mail.GMailToEMailDAO',
-    'com.google.mail.GMailRestDAO',
-    'com.google.mail.FOAMGMailLabel',
-    'com.google.mail.ComposeView',
-    'BusyStatus',
-    'BusyFlagTracker',
-    'XHR',
-    'com.google.mail.EMailExtensionsAgent',
-    'com.google.mail.QueryParser',
-    'OAuth2Redirect as EasyOAuth2',
+    'foam.lib.email.EMail',
+    'foam.ui.md.ResponsiveAppControllerView'
   ],
 
   exports: [
@@ -125,97 +113,15 @@ CLASS({
       }
     },
     {
-      name: 'persistentContext',
-      factory: function() {
-        var context = {};
-        return this.PersistentContext.create({
-          dao: this.IDBDAO.create({ model: this.Binding }),
-          predicate: NOT_TRANSIENT,
-          context: context
-        });
-      }
-    },
-    {
-      name: 'remoteDao',
-      factory: function() {
-        var future = afuture();
-        this.persistentContext.bindObject('remoteDao',
-                                          this.GMailMessageDAO)(future.set);
-        return this.FutureDAO.create({ future: future.get });
-      }
-    },
-    {
-      name: 'rawGmailDao',
-      factory: function() {
-        return this.CachingDAO.create({
-          delegate: this.MDAO.create({ model: this.FOAMGMailMessage }),
-          src: this.IDBDAO.create({
-            model: this.FOAMGMailMessage, useSimpleSerialization: false
-          })
-        });
-      },
-      postSet: function(_, dao) {
-        dao.select(COUNT())(function(c) {
-          if ( c.count === 0 ) {
-            this.StripPropertiesDAO.create({
-                delegate: this.remoteDao,
-                propertyNames: ['historyId']
-            }).where(EQ(this.FOAMGMailMessage.LABEL_IDS, 'INBOX')).limit(100).select(dao);
-          }
-        }.bind(this));
-      }
-    },
-    {
-      model_: 'DAOProperty',
-      name: 'versionedGmailDao',
-      factory: function() {
-        return this.VersionNoDAO.create({
-          delegate: this.rawGmailDao,
-          property: this.FOAMGMailMessage.CLIENT_VERSION
-        });
-      }
-    },
-    {
       name: 'emailDao',
-      type: 'DAO',
-      factory: function() {
-        return this.ContextualizingDAO.create({
-          delegate: this.CachingDAO.create({
-            src: this.GMailToEMailDAO.create({
-              delegate: this.versionedGmailDao
-            }),
-            delegate: this.MDAO.create({ model: this.EMail })
-          })
-        });
-      }
-    },
-    {
-      name: 'emailSync',
-      factory: function() {
-        var sync = this.Sync.create({
-          local: this.SyncDecorator.create({
-            delegate: this.MergeDAO.create({
-              delegate: this.rawGmailDao,
-              mergeStrategy: function(ret, oldValue, newValue) {
-                newValue.clientVersion =
-                  Math.max(oldValue.clientVersion, newValue.clientVersion);
-                ret(newValue);
-              }
-            })
-          }),
-          remote: this.remoteDao,
-          localVersionProp: this.FOAMGMailMessage.CLIENT_VERSION,
-          remoteVersionProp: this.FOAMGMailMessage.HISTORY_ID,
-          deletedProp: this.FOAMGMailMessage.DELETED,
-          initialSyncWindow: 10
-        });
-
-        this.BusyFlagTracker.create({
-          busyStatus: this.busyStatus,
-          target: sync.syncing$
-        });
-
-        return sync;
+      factory: function() { return this.EMailDAO.create(); },
+      postSet: function(_, dao) {
+        if ( dao.sync ) {
+          this.BusyFlagTracker.create({
+            busyStatus: this.busyStatus,
+            target: dao.sync.syncing$
+          });
+        }
       }
     },
     {
@@ -278,10 +184,6 @@ CLASS({
 
       var xhr = this.X.XHR.create({ responseType: 'json' });
 
-      this.versionedGmailDao$Proxy.listen(this.doSync);
-
-      this.setInterval(this.doSync, this.SYNC_INTERVAL);
-
       aseq(function(ret) {
         xhr.asend(ret, 'https://www.googleapis.com/oauth2/v1/userinfo');
       })(function(resp) {
@@ -313,7 +215,7 @@ CLASS({
         };
       };
 
-      var sync = this.emailSync;
+      var sync = this.emailDao.sync;
 
       this.controller = this.AppController.create({
         model: this.EMail,
