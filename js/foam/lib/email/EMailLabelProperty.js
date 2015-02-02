@@ -482,7 +482,7 @@ CLASS({
          "view": "FunctionView",
          "defaultValue": function (v, name) {
         var old = this.v;
-        var label = this.model_[name.constantize()].labelName;
+        var label = this.model_[constantize(name)].labelName;
         if ( v ) this.addLabel(label); else this.removeLabel(label);
         this.propertyChange_(this.propertyTopic(name), old, v);
       },
@@ -497,7 +497,7 @@ CLASS({
          "displayHeight": 3,
          "view": "FunctionView",
          "defaultValue": function (name) {
-        var label = this.model_[name.constantize()].labelName;
+        var label = this.model_[constantize(name)].labelName;
         return this.hasLabel(label);
       },
          "help": "The property's default value function."
