@@ -80,7 +80,7 @@ CLASS({
           this.IssueConfig.create(),
           this.BrowserConfig.create({
             model: 'foam.lib.email.EMail',
-            dao: this.EMailDAO.create()
+            dao: this.EMailDAO.create({ withSync: false })
           }),
           this.BrowserConfig.create({
             model: this.Contact,
