@@ -965,7 +965,8 @@ CLASS({
       documentation: "The string content of the uncompiled $$DOC{ref:'Template'} body."
     },
     {
-      name: 'futureTemplate'
+      name: 'futureTemplate',
+      transient: true
     },
     /*
        {
