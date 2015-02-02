@@ -34,7 +34,7 @@ var aeval = (function() {
   return function(src) {
     return aseq(
       future.get,
-      atime('aeval', function(ret) {
+      function(ret) {
         var id = 'c' + (nextID++);
 
         var newjs = ['__EVAL_CALLBACKS__["' + id + '"](' + src + ');'];
@@ -55,13 +55,13 @@ var aeval = (function() {
           //        document.body.removeChild(this);
         };
         document.body.appendChild(script);
-      }));
+      });
   };
 })();
 
 var TEMPLATE_FUNCTIONS = [];
 
-var aevalTemplate = function(t) {
+var aevalTemplate = function(t, model) {
   var doEval_ = function(t) {
 //    console.time('parse');
     var code = TemplateCompiler.parseString(t.template);
@@ -75,7 +75,8 @@ var aevalTemplate = function(t) {
         args.push(t.args[i].name);
       }
     }
-    return atime('eval ' + t.name, aeval('function(' + args.join(',') + '){' + code[1] + '}'));
+    debugger;
+    return atime('eval ' + model.id + '.' + t.name, aeval('function(' + args.join(',') + '){' + code[1] + '}'));
   };
   var doEval = function(t) {
     try {
