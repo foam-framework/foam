@@ -8,13 +8,16 @@ CLASS({
 
   requires: [
     'AppController',
+    'com.google.mail.MenuView',
     'foam.lib.email.EMail',
     'CachingDAO',
     'ContextualizingDAO',
     'DetailView',
-    'EMailView',
+    'com.google.mail.EMailView',
+    'com.google.mail.EMailCitationView',
+    'com.google.mail.ProfileView',
     'FloatingView',
-    'GMailUserInfo',
+    'com.google.mail.GMailUserInfo',
     'GestureManager',
     'IDBDAO',
     'MDAO',
@@ -316,7 +319,7 @@ CLASS({
         model: this.EMail,
         dao: this.emailDao,
         createAction: this.model_.COMPOSE,
-        citationView: 'EMailCitationView',
+        citationView: 'com.google.mail.EMailCitationView',
         queryParser: this.QueryParser.create().parser,
         editableCitationViews: true,
         busyStatus: this.busyStatus,
@@ -335,7 +338,7 @@ CLASS({
           }
         }),
         menuFactory: function() {
-          return this.X.MenuView.create({
+          return self.MenuView.create({
             topSystemLabelDAO: this.X.LabelDAO
                 .where(EQ(this.X.com.google.mail.FOAMGMailLabel.getProperty('type'), 'system'))
                 .orderBy(

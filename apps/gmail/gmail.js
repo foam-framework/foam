@@ -5,6 +5,7 @@
 
 CLASS({
   name: 'GMailUserInfo',
+  package: 'com.google.mail',
   properties: ['email', 'name', 'avatarUrl'],
   methods: {
     fromJSON: function(obj) {
@@ -18,6 +19,7 @@ CLASS({
 
 CLASS({
   name: 'EMailView',
+  package: 'com.google.mail',
   extendsModel: 'UpdateDetailView',
   properties: [
   ],
@@ -87,6 +89,7 @@ CLASS({
 
 CLASS({
   name: 'EMailCitationView',
+  package: 'com.google.mail',
   extendsModel: 'DetailView',
   imports: [
     'controller'
@@ -187,8 +190,9 @@ CLASS({
 
 CLASS({
   name: 'ProfileView',
+  package: 'com.google.mail',
   extendsModel: 'DetailView',
-  requires: ['GMailUserInfo'],
+  requires: ['com.google.mail.GMailUserInfo'],
   properties: [
     {
       model_: 'ModelProperty',
@@ -209,12 +213,14 @@ CLASS({
 
 CLASS({
   name: 'MenuView',
+  package: 'com.google.mail',
   extendsModel: 'View',
+  
   traits: ['PositionedDOMViewTrait'],
   requires: [
-    'MenuLabelCitationView',
+    'com.google.mail.MenuLabelCitationView',
     'com.google.mail.FOAMGMailLabel',
-    'ProfileView',
+    'com.google.mail.ProfileView',
     'foam.lib.email.EMail'
   ],
   imports: [
@@ -225,15 +231,15 @@ CLASS({
   properties: [
     {
       name: 'topSystemLabelDAO',
-      view: { factory_: 'DAOListView', rowView: 'MenuLabelCitationView' }
+      view: { factory_: 'DAOListView', rowView: 'com.google.mail.MenuLabelCitationView' }
     },
     {
       name: 'bottomSystemLabelDAO',
-      view: { factory_: 'DAOListView', rowView: 'MenuLabelCitationView' }
+      view: { factory_: 'DAOListView', rowView: 'com.google.mail.MenuLabelCitationView' }
     },
     {
       name: 'userLabelDAO',
-      view: { factory_: 'DAOListView', rowView: 'MenuLabelCitationView' }
+      view: { factory_: 'DAOListView', rowView: 'com.google.mail.MenuLabelCitationView' }
     },
     {
       name: 'preferredWidth',
@@ -304,6 +310,7 @@ CLASS({
 
 CLASS({
   name: 'MenuLabelCitationView',
+  package: 'com.google.mail',
   extendsModel: 'DetailView',
   requires: ['SimpleValue'],
   imports: [
