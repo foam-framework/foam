@@ -20,32 +20,32 @@ CLASS({
   package: 'foam.navigator',
   extendsModel: 'View',
   requires: [
-    'foam.navigator.views.GSnippet',
-    'foam.navigator.views.EMailGSnippet',
-    'foam.navigator.views.ContactGSnippet',
-    'foam.navigator.views.IssueGSnippet',
-    'foam.navigator.views.PhoneGSnippet',
-    'foam.navigator.views.TodoGSnippet',
-    'foam.navigator.views.AudioGSnippet',
+    'CachingDAO',
+    'IDBDAO',
+    'MDAO',
+    'Phone',
+    'com.google.mail.EMailDAO',
+    'com.google.mail.FOAMGMailMessage',
+    'foam.core.dao.VersionNoDAO',
+    'foam.lib.contacts.Address',
+    'foam.lib.contacts.Contact',
+    'foam.lib.contacts.PhoneNumber',
+    'foam.lib.email.EMail',
     'foam.navigator.BrowserConfig',
     'foam.navigator.FOAMlet',
     'foam.navigator.IssueConfig',
     'foam.navigator.dao.MultiDAO',
+    'foam.navigator.types.Audio',
     'foam.navigator.types.Issue',
     'foam.navigator.types.Mail',
     'foam.navigator.types.Todo',
-    'foam.navigator.types.Audio',
-    'foam.core.dao.VersionNoDAO',
-    'CachingDAO',
-    'IDBDAO',
-    'com.google.mail.FOAMGMailMessage',
-    'foam.lib.email.EMail',
-    'MDAO',
-    'com.google.mail.GMailToEMailDAO',
-    'foam.lib.contacts.Contact',
-    'foam.lib.contacts.Address',
-    'foam.lib.contacts.PhoneNumber',
-    'Phone'
+    'foam.navigator.views.AudioGSnippet',
+    'foam.navigator.views.ContactGSnippet',
+    'foam.navigator.views.EMailGSnippet',
+    'foam.navigator.views.GSnippet',
+    'foam.navigator.views.IssueGSnippet',
+    'foam.navigator.views.PhoneGSnippet',
+    'foam.navigator.views.TodoGSnippet'
   ],
   imports: [
     'window'
@@ -80,20 +80,7 @@ CLASS({
           this.IssueConfig.create(),
           this.BrowserConfig.create({
             model: 'foam.lib.email.EMail',
-            dao: this.CachingDAO.create({
-              src: this.GMailToEMailDAO.create({
-                delegate: this.VersionNoDAO.create({
-                  delegate: this.CachingDAO.create({
-                    delegate: this.MDAO.create({ model: this.FOAMGMailMessage }),
-                    src: this.IDBDAO.create({
-                      model: this.FOAMGMailMessage, useSimpleSerialization: false
-                    })
-                  }),
-                  property: this.FOAMGMailMessage.CLIENT_VERSION
-                })
-              }),
-              delegate: this.MDAO.create({ model: this.EMail })
-            })
+            dao: this.EMailDAO.create()
           }),
           this.BrowserConfig.create({
             model: this.Contact,
