@@ -186,23 +186,23 @@ var DOM = {
     }
 
     if ( opt_document ) {
+      var viewName = e.getAttribute('view');
       var view;
-      if ( View.isInstance(obj) || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) {
+      if ( viewName ) {
+        var viewModel = FOAM.lookup(viewName, X);
+        view = viewModel.create({ model: model, data: obj });
+      }
+      else if ( View.isInstance(obj) || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) {
         view = obj;
       } else if ( obj.toView_ ) {
         view = obj.toView_();
       } else {
-        var viewName = e.getAttribute('view');
-        var viewModel = viewName ? FOAM.lookup(viewName, X) : DetailView;
-        view = viewModel.create({model: model, data: obj});
-        if ( ! viewName ) {
-          // default value is 'true' if 'showActions' isn't specified.
-          var a = e.getAttribute('showActions');
-
-          view.showActions = a ?
+        var a = e.getAttribute('showActions');
+        var showActions = a ?
             a.equalsIC('y') || a.equalsIC('yes') || a.equalsIC('true') || a.equalsIC('t') :
             true ;
-        }
+
+        view = DetailView.create({ model: model, data: obj, showActions: showActions })
       }
 
       if ( e.id ) opt_document.FOAM_OBJECTS[e.id] = obj;

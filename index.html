@@ -30,22 +30,35 @@
         models.push(arequire(model));
         delete params.model;
 
-        var viewmodel = params.view;
-        if ( viewmodel ) {
-          models.push(arequire(viewmodel));
+        var viewName = params.view;
+        if ( viewName ) {
+          models.push(arequire(viewName));
           delete params.view;
         }
 
+        var showActions = params.showActions;
+        if ( showActions ) {
+          showActions = showActions.equalsIC('y') ||
+                        showActions.equalsIC('yes') ||
+                        showActions.equalsIC('true') ||
+                        showActions.equalsIC('t');
+        } else {
+          showActions = true;
+        }
+        delete params.showActions;
+      
       apar.apply(null, models).aseq(
           function() {
             var obj = FOAM.lookup(model, X).create(params);
             var view;
-            if ( View.isInstance(obj) ) {
+            if ( viewName ) {
+              view = FOAM.lookup(viewName, X).create({ data: obj });
+            } else if ( View.isInstance(obj) || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) {
               view = obj;
-            } else if ( viewmodel ) {
-              view = FOAM.lookup(viewmodel, X).create({ data: obj });
+            } else if ( obj.toView_ ) {
+              view = obj.toView_();
             } else {
-              view = obj.toView_() || DetailView.create({ data: obj });
+              view = DetailView.create({ data: obj, showActions: showActions });
             }
             document.body.insertAdjacentHTML('beforeend', view.toHTML());
             view.initHTML();
