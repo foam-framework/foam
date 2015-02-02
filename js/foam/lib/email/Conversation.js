@@ -78,13 +78,13 @@ CLASS({
             "help": "Reply to an email.",
             "children": [],
             "action": function (X) {
-        var replyMail = X.EMail.create({
+        var replyMail = X.foam.lib.email.EMail.create({
           to: [this.from],
           subject: this.subject,
           body: this.body,
           labels: ['DRAFT'],
         });
-        openComposeView(X, replyMail);
+        X.openComposeView(X, replyMail);
       },
             "keyboardShortcuts": []
          },
@@ -100,7 +100,7 @@ CLASS({
             "help": "Reply to all recipients of an email.",
             "children": [],
             "action": function (X) {
-        var replyMail = X.EMail.create({
+        var replyMail = X.foam.lib.email.EMail.create({
           to: [this.from],
           cc: this.cc,
           subject: 'Re.: ' + this.subject,
@@ -111,7 +111,7 @@ CLASS({
         for ( var i = 0 ; i < this.to ; i++ ) {
           replyMail.to.push(this.to[i]);
         }
-        openComposeView(X, replyMail);
+        X.openComposeView(X, replyMail);
       },
             "keyboardShortcuts": []
          },
@@ -127,12 +127,12 @@ CLASS({
             "help": "Forward an email.",
             "children": [],
             "action": function (X) {
-        var forwardedMail = X.EMail.create({
+        var forwardedMail = X.foam.lib.email.EMail.create({
           subject: this.subject,
           body: this.body,
           labels: ['DRAFT'],
         });
-        openComposeView(X, forwardedMail);
+        X.openComposeView(X, forwardedMail);
       },
             "keyboardShortcuts": []
          },
