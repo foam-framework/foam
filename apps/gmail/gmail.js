@@ -81,7 +81,8 @@ CLASS({
 });
 
 CLASS({
-  name: 'MGmail',
+  name: 'MobileController',
+  package: 'com.google.mail',
   description: 'Mobile Gmail',
   traits: ['PositionedDOMViewTrait'],
 
@@ -94,7 +95,6 @@ CLASS({
     'ContextualizingDAO',
     'DetailView',
     'EMailView',
-    'EasyOAuth2',
     'FloatingView',
     'GMailUserInfo',
     'GestureManager',
@@ -122,7 +122,8 @@ CLASS({
     'BusyFlagTracker',
     'XHR',
     'com.google.mail.EMailExtensionsAgent',
-    'com.google.mail.QueryParser'
+    'com.google.mail.QueryParser',
+    'OAuth2Redirect as EasyOAuth2',
   ],
 
   exports: [

@@ -153,6 +153,11 @@ CLASS({
 
 CLASS({
   name: 'Window',
+  extendsModel: 'View',
+  imports: [
+    'dynamic',
+    'window'
+  ],
   properties: [
     { model_: 'IntProperty', name: 'width' },
     { model_: 'IntProperty', name: 'height' },
@@ -166,27 +171,53 @@ CLASS({
       hidden: true
     },
     {
-      name: 'view',
-      type: 'View',
-      postSet: function(old, v) {
+      name: 'data',
+      postSet: function(_, v) {
         var self = this;
         v.x = 0;
         v.y = 0;
-        this.X.dynamic(
+
+        this.dynamic(
           function() { self.width; self.height; },
           function() {
             v.width  = self.width;
             v.height = self.height;
-            self.window.document.body.style.height = self.height + 'px';
           });
-        var s = this.window.document.body.style;
-        s.padding = '0px';
-        s.margin = '0px';
-        s.border = '0px';
-        this.window.document.body.insertAdjacentHTML('beforeend', v.toHTML());
-        v.initHTML();
+        if ( this.rendered ) this.updateHTML();
       }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'rendered',
+      defaultValue: false
     }
+  ],
+  methods: {
+    init: function(args) {
+      this.SUPER(args);
+      this.dynamic(function() { self.height; },
+                   function() {
+                     self.window.document.body.style.height = self.height + 'px';
+                   });
+    },
+    updateHTML: function() {
+      this.window.document.body.innerHTML = this.toHTML();
+      this.initHTML();
+    },
+    toHTML: function() {
+      this.rendered = true;
+      this.children = [this.data];
+      return this.data && this.data.toHTML();
+    }
+  },
+  templates: [
+    function CSS() {/*
+      .body {
+        padding: 0px;
+        margin: 0px;
+        border: 0px
+      }
+    */}
   ],
   listeners: [
     {

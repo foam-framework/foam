@@ -14,13 +14,6 @@
   <script language="javascript" src="compose.js"></script>
  </head>
  <body>
-  <script>
-    // TODO: In the EMailCitationView it refers to mgmail. It should use context but that's not working.
-    EasyOAuth2 = OAuth2Redirect;
-    var w = Window.create({ window: window });
-    arequire('MGmail')(function(m) {
-      w.view = m.create();
-    });
-  </script>
+   <foam model="com.google.mail.MobileController" view="Window"></foam>
  </body>
 </html>
