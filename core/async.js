@@ -63,7 +63,7 @@ MODEL({
     function aprofile(afunc) {
       return function(ret) {
         var a = argsToArray(arguments);
-        console.profile();
+        console.profile('aprofile');
         var ret2 = function () {
           console.profileEnd();
           ret && ret(arguments);

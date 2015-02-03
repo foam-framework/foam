@@ -63,3 +63,4 @@ ModelDAO.find(TRUE, {error: function() { console.log('Populating DAO...'); model
 var stack = StackView.create();
 stack.write(document);
 FOAM.browse(Model, ModelDAO);
+stack.layout();
