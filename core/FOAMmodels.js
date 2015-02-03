@@ -102,6 +102,5 @@ var files = [
   [ 'glang', IN_BROWSER ],
   'oauth',
   'busy',
-  [ 'turntable', IN_BROWSER ],
-  [ 'CORE', IN_BROWSER ]
+  [ 'turntable', IN_BROWSER ]
 ];

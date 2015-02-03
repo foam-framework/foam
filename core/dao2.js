@@ -2396,6 +2396,10 @@ CLASS({
   name: 'MigrationDAO',
   extendsModel: 'ProxyDAO',
 
+  imports: [
+    'daoVersionDao'
+  ],
+
   properties: [
     {
       name: 'delegate'
@@ -2420,7 +2424,7 @@ CLASS({
       var version;
       aseq(
         function(ret) {
-          self.X.DAOVersionDAO.find(self.name, {
+          self.daoVersionDao.find(self.name, {
             put: function(c) {
               version = c;
               ret();
@@ -2438,7 +2442,7 @@ CLASS({
           function updateVersion(ret, v) {
             var c = version.clone();
             c.version = v;
-            self.X.DAOVersionDAO.put(c, ret);
+            self.daoVersionDao.put(c, ret);
           }
 
           var rulesDAO = self.rules.dao;

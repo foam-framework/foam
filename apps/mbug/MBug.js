@@ -13,12 +13,22 @@ CLASS({
     'IssueView',
     'QBug',
     'StackView',
-    'TouchManager'
+    'TouchManager',
+    'IDBDAO',
+    'DAOVersion'
   ],
 
   traits: ['PositionedDOMViewTrait'],
 
+  exports: [
+    'daoVersionDao',
+  ],
+
   properties: [
+    {
+      name: 'daoVersionDao',
+      lazyFactory: function() { return this.IDBDAO.create({ model: this.DAOVersion }); }
+    },
     {
       name: 'qbug',
       label: 'QBug',

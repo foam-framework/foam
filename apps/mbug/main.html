@@ -43,16 +43,6 @@
      ga('create', 'UA-47217230-4', 'auto');
      ga('send', 'pageview');
    </script>
-  <script>
-  aseq(
-    arequire('MBug'))(function() {
-      var Y = bootCORE(Application.create({
-        name: 'MBug'
-      }));
-      var w = Y.Window.create({ window: window });
-      var mbug = Y.MBug.create();
-      w.view = mbug;
-    });
-  </script>
+  <foam model="MBug" view="Window"/>
  </body>
 </html>
