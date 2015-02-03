@@ -5,6 +5,7 @@ CLASS({
    "name": "ComposeView",
    "extendsModel": "DetailView",
    "requires": [
+      "foam.ui.md.ToolbarRichTextView",
       "foam.ui.md.TextFieldView",
       "Property"
    ],
