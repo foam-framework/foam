@@ -2,7 +2,6 @@ export BUILD_DIR=~/Downloads/mbug
 rm -rf $BUILD_DIR
 cp -r . $BUILD_DIR
 cp ../../core/foam.css $BUILD_DIR
-cp ../../lib/mdui/style.css $BUILD_DIR/mdui.css
 cat \
   ../../core/stdlib.js \
   ../../core/WeakMap.js \
@@ -73,7 +72,8 @@ cat \
   ../../core/ChromeApp.js \
   ../../core/SyncManager.js \
   ../../lib/bookmarks/bookmark.js \
-  ../../lib/mdui/AppController.js \
+  ../../js/foam/ui/md/AppController.js \
+  ../../js/foam/ui/md/SharedStyles.js \
   ../../lib/mdui/view.js \
   ../../lib/mdui/AutocompleteListView.js \
   ../../lib/mdui/DetailView.js \

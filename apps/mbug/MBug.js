@@ -269,7 +269,12 @@ CLASS({
 CLASS({
   name: 'ChangeProjectView',
   extendsModel: 'DetailView',
-  requires: [ 'ImageView' ],
+  requires: [
+    // TODO: Hack to ensure that the CSS for appcontroller comes before
+    // ChangeProjectView.
+    'foam.ui.md.AppController',
+    'ImageView'
+  ],
   traits: ['PositionedDOMViewTrait'],
 
   properties: [
