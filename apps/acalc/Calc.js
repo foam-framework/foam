@@ -444,7 +444,7 @@ CLASS({
           action.name === 'equals' ?
             action.speechLabel + ' ' + this.calc.a2 :
           unary ?
-            action.speechLabel + ' equals ' + this.calc.a2 :
+            action.speechLabel + Calc.EQUALS.speechLabel + this.calc.a2 :
             action.speechLabel);
       }
     }
@@ -472,8 +472,8 @@ CLASS({
           } else {
             this.say(
               unary ?
-                last.a2 + ' ' + last.op.speechLabel + ' equals ' + this.calc.a2 :
-                this.calc.history[this.calc.history.length-2].a2 + ' ' + last.op.speechLabel + ' ' + last.a2 + ' equals ' + this.calc.a2 );
+                last.a2 + ' ' + last.op.speechLabel + Calc.EQUALS.speechLabel + this.calc.a2 :
+                this.calc.history[this.calc.history.length-2].a2 + ' ' + last.op.speechLabel + ' ' + last.a2 + Calc.EQUALS.speechLabel + this.calc.a2 );
           }
         }
       }
@@ -954,7 +954,7 @@ CLASS({
   extendsModel: 'DetailView',
   templates: [
     function toHTML() {/*
-      <div class="history" tabindex="2">{{{this.data.op}}} {{this.data.a2}}<% if ( this.data.op.toString() ) { %><hr aria-label="equals" tabindex="2"><% } %></div>
+      <div class="history" tabindex="2">{{{this.data.op}}} {{this.data.a2}}<% if ( this.data.op.toString() ) { %><hr aria-label="{{Calc.EQUALS.speechLabel}}" tabindex="2"><% } %></div>
     */}
   ]
 });
