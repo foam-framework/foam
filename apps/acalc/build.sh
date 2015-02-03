@@ -1,4 +1,4 @@
-BASEDIR=$(dirname "$1")
+BASEDIR=$(dirname "$0")
 cd "$BASEDIR"
 
 #   Templates.js \
