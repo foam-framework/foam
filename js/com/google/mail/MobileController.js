@@ -7,7 +7,7 @@ CLASS({
   extendsModel: 'View',
 
   requires: [
-    'AppController',
+    'foam.ui.md.AppController',
     'BusyFlagTracker',
     'BusyStatus',
     'CachingDAO',
@@ -102,7 +102,7 @@ CLASS({
     },
     {
       name: 'controller',
-      subType: 'AppController',
+      type: 'foam.ui.md.AppController',
       postSet: function(_, controller) {
         var Y = this.controller.X.sub({ data: this.controller });
         var view = this.ResponsiveAppControllerView.create(undefined, Y);

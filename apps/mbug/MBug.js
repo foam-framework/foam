@@ -5,7 +5,7 @@ CLASS({
 
   requires: [
     'foam.ui.md.ResponsiveAppControllerView',
-    'AppController',
+    'foam.ui.md.AppController',
     'ChangeProjectView',
     'DetailView',
     'GestureManager',
