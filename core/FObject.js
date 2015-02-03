@@ -27,7 +27,7 @@ var FObject = {
   create_: function() { return Object.create(this); },
 
   create: function(args, opt_X) {
-
+    // console.log('**** create ', this.model_.name, this.model_.count__ = (this.model_.count__ || 0)+1);
     // check for a model-for-model replacement, only if args.model is a Model instance
     if ( args && args.model && (opt_X || X).Model.isInstance(args.model) ) {
 
