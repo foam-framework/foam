@@ -841,7 +841,7 @@ var ViewFactoryProperty = Model.create({
           var X = opt_X || this.X;
           var m = FOAM.lookup(f.factory_, X);
           console.assert(m, 'Unknown ViewFactory Model: ' + f.factory_);
-          return m.create(f, X);
+          return m.create(f, X).copyFrom(map);
         }.bind(this);
 
         if ( View.isInstance(f) ) return constantFn(f);
