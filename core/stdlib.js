@@ -526,11 +526,14 @@ MODEL({
     (function() {
       var oldBind    = Function.prototype.bind;
       var simpleBind = function(f, self) {
+        return function() { return f.apply(self, arguments); };
+        /*
         var ret = function() { return f.apply(self, arguments); };
         ret.toString = function bind() {
           return f.toString();
         };
         return ret;
+        */
       };
 
       return function bind(arg) {

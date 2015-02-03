@@ -104,12 +104,12 @@ var DOM = {
       models.push(arequire(key));
     }
 
-    atime('DOMInit', aprofile(aseq(apar.apply(null, models), function(ret) {
+    atime('DOMInit', aseq(apar.apply(null, models), function(ret) {
       for ( var i = 0 ; i < fs.length ; i++ ) {
         this.initElement(fs[i], X, X.document);
       }
       ret();
-    }.bind(this))))();
+    }.bind(this)))();
   },
 
   initElementChildren: function(e, X) {
