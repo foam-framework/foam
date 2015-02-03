@@ -69,6 +69,8 @@ cat \
   ../../core/../lib/email/email.js \
   ../../core/turntable.js \
   ../../core/CORE.js \
+  ../../js/foam/lib/bookmarks/Bookmark.js \
+  ../../js/foam/lib/bookmarks/AddBookmarksDialog.js \
   ../../lib/bookmarks/bookmark.js \
   ../../lib/mdui/AppController.js \
   ../../lib/mdui/view.js \

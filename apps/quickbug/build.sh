@@ -74,7 +74,8 @@ cat \
   ../../core/glang.js \
   ../../core/oauth.js \
   ../../core/busy.js \
-  ../../lib/bookmarks/bookmark.js \
+  ../../js/foam/lib/bookmarks/AddBookmarkDialog.js \
+  ../../js/foam/lib/bookmarks/Bookmark.js \
   ../../core/turntable.js \
   ../../core/ChromeApp.js \
   ../../core/ChromeStorage.js \
