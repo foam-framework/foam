@@ -23,6 +23,10 @@ CLASS({
     'baseURL'
   ],
 
+  requires: [
+    'foam.lib.bookmarks.Bookmark'
+  ],
+
   exports: [
     'IssueCommentDAO as QIssueCommentDAO',
     'StatusDAO',
@@ -188,18 +192,18 @@ CLASS({
       name: 'bookmarkDAO',
       lazyFactory: function() {
         var newDAO = this.X.EasyDAO.create({
-          model:   Bookmark,
-          name:    this.projectName + '_' + Bookmark.plural,
+          model:   this.Bookmark,
+          name:    this.projectName + '_' + this.Bookmark.plural,
           cache:   true,
           guid:    true,
           daoType: 'SYNC'
-        }).orderBy(Bookmark.ID);
+        }).orderBy(this.Bookmark.ID);
 
         // Migrate bookmarks from old DAO to new SyncStorage.
         // TODO: Remove this code after a couple versions when all data has been translated.
         var oldDAO = this.X.EasyDAO.create({
-          model:   Bookmark,
-          name:    this.projectName + '_' + Bookmark.plural,
+          model:   this.Bookmark,
+          name:    this.projectName + '_' + this.Bookmark.plural,
           cache:   true
         });
 

@@ -42,8 +42,7 @@ var Models = [
   'StackView',
   'NeedleMeter',
   'BatteryMeter',
-  'BatteryGraph',
-  'Bookmark'
+  'BatteryGraph'
 ];
 
 var sys = System.create({

@@ -7,7 +7,7 @@
   <script language="javascript" src="../../core/bootFOAM.js"></script>
   <script language="javascript" src="../../core/KeywordDAO.js"></script>
   <script language="javascript" src="../../core/SyncManager.js"></script>
-  <script language="javascript" src="../../lib/bookmarks/bookmark.js"></script>
+  <script language="javascript" src="../../js/foam/lib/bookmarks/Bookmark.js"></script>
   <script language="javascript" src="../quickbug/model/ImportedModels.js"></script>
   <script language="javascript" src="../quickbug/model/QIssue.js"></script>
   <script language="javascript" src="../quickbug/model/QIssuePerson.js"></script>
@@ -43,16 +43,6 @@
      ga('create', 'UA-47217230-4', 'auto');
      ga('send', 'pageview');
    </script>
-  <script>
-  aseq(
-    arequire('MBug'))(function() {
-      var Y = bootCORE(Application.create({
-        name: 'MBug'
-      }));
-      var w = Y.Window.create({ window: window });
-      var mbug = Y.MBug.create();
-      w.view = mbug;
-    });
-  </script>
+  <foam model="MBug" view="Window"/>
  </body>
 </html>
