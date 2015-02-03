@@ -607,4 +607,4 @@ function recopyModelFeatures(m) {
 for ( var id in USED_MODELS ) {
   recopyModelFeatures(FOAM.lookup(id));
 }
-USED_MODELS['Model'] = Model;
+USED_MODELS['Model'] = true;

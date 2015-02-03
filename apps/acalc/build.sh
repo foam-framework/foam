@@ -1,4 +1,4 @@
-BASEDIR=$(dirname "$1")
+BASEDIR=$(dirname "$0")
 cd "$BASEDIR"
 
 #   Templates.js \
@@ -18,6 +18,7 @@ cat \
   ../../core/JSONParser.js \
   ../../core/TemplateUtil.js \
   ../../core/ChromeEval.js \
+  Opt.js \
   ../../core/FOAM.js \
   ../../core/FObject.js \
   ../../core/BootstrapModel.js \

@@ -387,8 +387,9 @@ var aeval = function(src) {
   return aconstant(eval('(' + src + ')'));
 };
 
-var evalTemplate = function(t) {
+var evalTemplate = function(t, model) {
   var doEval_ = function(t) {
+    // console.log('evalTemplate ' + model.id + '.' + t.name);
     var code = TemplateCompiler.parseString(t.template);
 
     // Simple case, just a string literal
@@ -414,14 +415,14 @@ var evalTemplate = function(t) {
 };
 
 
-var aevalTemplate = function(t) {
+var aevalTemplate = function(t, model) {
   function lazyTemplate(t) {
     var f;
     return function() {
       if ( ! f ) {
 //        var name = 'eval template: ' + t.name;
 //        console.time(name);
-        f = evalTemplate(t);
+        f = evalTemplate(t, model);
 //        console.timeEnd(name);
       }
       return f.apply(this, arguments);

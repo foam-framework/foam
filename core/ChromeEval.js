@@ -75,8 +75,7 @@ var aevalTemplate = function(t, model) {
         args.push(t.args[i].name);
       }
     }
-    debugger;
-    return atime('eval ' + model.id + '.' + t.name, aeval('function(' + args.join(',') + '){' + code[1] + '}'));
+    return /*atime('eval ' + model.id + '.' + t.name,*/ aeval('function(' + args.join(',') + '){' + code[1] + '}');
   };
   var doEval = function(t) {
     try {
