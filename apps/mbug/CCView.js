@@ -34,7 +34,7 @@ CLASS({
   name: 'CitationView',
   extendsModel: 'foam.ui.md.DefaultRowView',
 
-  requires: [ 'foam.ui.md.MDMonogramStringView' ],
+  requires: [ 'foam.ui.md.MonogramStringView' ],
 
   properties: [ { name: 'className', defaultValue: 'CitationView' } ],
 
@@ -57,7 +57,7 @@ CLASS({
       }
     */},
     function toInnerHTML() {/*
-      <%= this.MDMonogramStringView.create({ data: this.data }) %>
+      <%= this.MonogramStringView.create({ data: this.data }) %>
       <div class="owner-name">{{ this.data }}</div>
       <span class="removeRow">$$removeRow</span>
     */}
@@ -70,7 +70,7 @@ CLASS({
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
     <div id="%%id" class="CitationView">
-      $$name{model_: 'foam.ui.md.MDMonogramStringView'}
+      $$name{model_: 'foam.ui.md.MonogramStringView'}
       <div class="owner-name">{{ this.data.name }}</div>
     </div>
   */} ]
