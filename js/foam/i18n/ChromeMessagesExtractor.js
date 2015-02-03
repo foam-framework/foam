@@ -29,8 +29,8 @@ CLASS({
       name: 'visitMessage',
       code: function(model, msg, msgIdx) {
         this.maybeSetMessage(
-            model.messages,
-            msgIdx,
+            model.messages[msgIdx],
+            'value',
             this.getMessageKey(model, msg));
       }
     },
@@ -48,7 +48,7 @@ CLASS({
             this.maybeSetMessage(
                 model.actions[actionIdx],
                 'speechLabel',
-                this.getActionTextLabelKey(model, action));
+                this.getActionSpeechLabelKey(model, action));
           }
         }
       }
