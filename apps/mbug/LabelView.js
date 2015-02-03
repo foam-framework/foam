@@ -1,6 +1,6 @@
 CLASS({
   name: 'IssueLabelView',
-  extendsModel: 'AutocompleteListView',
+  extendsModel: 'foam.ui.md.AutocompleteListView',
   requires: [
     'LabelCitationView',
     'LabelView'
@@ -29,7 +29,7 @@ CLASS({
 
 CLASS({
   name: 'LabelCitationView',
-  extendsModel: 'DefaultRowView',
+  extendsModel: 'foam.ui.md.DefaultRowView',
   traits: ['ColoredBackgroundTrait'],
   properties: [ { name: 'className', defaultValue: 'LabelCitationView' } ],
   templates: [

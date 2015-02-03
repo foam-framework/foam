@@ -16,7 +16,6 @@ window.onload = function() {
     arequire('AutocompleteView'),
     arequire('WindowHashValue'),
     arequire('SwipeAltView'),
-    arequire('AutocompleteListView'),
     arequire('VerticalScrollbarView'),
     arequire('ActionSheetView'),
     arequire('FloatingView'),

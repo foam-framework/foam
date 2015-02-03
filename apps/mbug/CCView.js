@@ -1,6 +1,6 @@
 CLASS({
   name: 'CCView',
-  extendsModel: 'AutocompleteListView',
+  extendsModel: 'foam.ui.md.AutocompleteListView',
 
   requires: [
     'CitationView',
@@ -32,7 +32,7 @@ CLASS({
 
 CLASS({
   name: 'CitationView',
-  extendsModel: 'DefaultRowView',
+  extendsModel: 'foam.ui.md.DefaultRowView',
 
   requires: [ 'MDMonogramStringView' ],
 
