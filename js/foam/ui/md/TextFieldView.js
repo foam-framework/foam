@@ -1,59 +1,6 @@
-/**
- * @license
- * Copyright 2014 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 CLASS({
-  name: 'mdDetailView',
-  extendsModel: 'DetailView',
-
-  properties: [
-    {
-      name: 'className',
-      defaultValue: 'mdDetailView'
-    }
-  ],
-  methods: {
-    init: function() {
-      // Register MD PropertyViews
-      this.X = this.X.sub();
-      this.X.registerModel(mdTextFieldView,  'TextFieldView');
-      this.X.registerModel(mdIntFieldView,   'IntFieldView');
-      this.X.registerModel(mdFloatFieldView, 'FloatFieldView');
-      this.SUPER();
-    },
-    titleHTML:    function() { return ''; },
-    startForm:    function() { return ''; },
-    endForm:      function() { return ''; },
-    startColumns: function() { return ''; },
-    nextColumn:   function() { return ''; },
-    endColumns:   function() { return ''; },
-    rowToHTML: function(prop, view) {
-      /* HTML formatter for each $$DOC{ref:'Property'} row. */
-      var str = "";
-
-      str += view.toHTML();
-      str += '<br>';
-
-      return str;
-    }
-  }
-
-});
-
-CLASS({
-  name: 'mdTextFieldView',
+  name: 'TextFieldView',
+  package: 'foam.ui.md',
   extendsModel: 'View',
 
   properties: [
@@ -216,16 +163,4 @@ CLASS({
       }
     }
   ]
-});
-
-
-CLASS({
-  name: 'mdIntFieldView',
-  extendsModel: 'mdTextFieldView'
-});
-
-
-CLASS({
-  name: 'mdFloatFieldView',
-  extendsModel: 'mdTextFieldView'
 });

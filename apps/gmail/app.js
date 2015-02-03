@@ -40,7 +40,7 @@ window.onload = function() {
     arequire('TextFieldView'),
     arequire('View'),
     arequire('foam.ui.md.AppController'),
-    arequire('foam.ui.md.MDMonogramStringView'),
+    arequire('foam.ui.md.MonogramStringView'),
     arequire('GMailDraft'),
     arequire('GMailHistory'),
     arequire('GMailLabel'),

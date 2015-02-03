@@ -1,3 +1,8 @@
+CLASS({
+  name: 'SharedStyles',
+  package: 'foam.ui.md',
+  templates: [
+    function CSS() {/*
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700);
 
 body {
@@ -155,3 +160,6 @@ canvas.createButton {
   box-shadow: 3px 3px 3px #aaa;
   border-radius: 30px;
 }
+*/},
+  ],
+});

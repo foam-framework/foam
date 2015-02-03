@@ -5,7 +5,8 @@ CLASS({
    "name": "ComposeView",
    "extendsModel": "DetailView",
    "requires": [
-      "mdTextFieldView as TextFieldView",
+      "foam.ui.md.ToolbarRichTextView",
+      "foam.ui.md.TextFieldView",
       "Property"
    ],
    "imports": [
@@ -168,7 +169,7 @@ CLASS({
          "model_": "Template",
          "name": "toHTML",
          "args": [],
-         "template": "\u000a      <div id=\"<%= this.id %>\" class=\"email-compose-view\">\u000a        <div class=\"header\">\u000a          $$back{className: 'backButton'}\u000a          $$subject{mode: 'read-only', className: 'subject'}\u000a        </div>\u000a        <div class=\"content\">\u000a        $$to{placeholder: 'To', model_: 'mdTextFieldView'} <br>\u000a        $$cc{placeholder: 'Cc', model_: 'mdTextFieldView'} <br>\u000a        $$bcc{placeholder: 'Bcc', model_: 'mdTextFieldView'} <br>\u000a        $$subject{ placeholder: 'Subject', onKeyMode: true, model_: 'mdTextFieldView'}\u000a        $$body{model_: 'foam.ui.md.ToolbarRichTextView', height: 300, placeholder: 'Message'}\u000a        </div>\u000a        $$send{background: '#259b24', radius: 24, iconUrl: 'images/send.png'}\u000a      </div>\u000a    ",
+         "template": "\u000a      <div id=\"<%= this.id %>\" class=\"email-compose-view\">\u000a        <div class=\"header\">\u000a          $$back{className: 'backButton'}\u000a          $$subject{mode: 'read-only', className: 'subject'}\u000a        </div>\u000a        <div class=\"content\">\u000a        $$to{placeholder: 'To', model_: 'foam.ui.md.TextFieldView'} <br>\u000a        $$cc{placeholder: 'Cc', model_: 'foam.ui.md.TextFieldView'} <br>\u000a        $$bcc{placeholder: 'Bcc', model_: 'foam.ui.md.TextFieldView'} <br>\u000a        $$subject{ placeholder: 'Subject', onKeyMode: true, model_: 'foam.ui.md.TextFieldView'}\u000a        $$body{model_: 'foam.ui.md.ToolbarRichTextView', height: 300, placeholder: 'Message'}\u000a        </div>\u000a        $$send{background: '#259b24', radius: 24, iconUrl: 'images/send.png'}\u000a      </div>\u000a    ",
       }
    ],
    "models": [],

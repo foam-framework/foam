@@ -25,7 +25,7 @@ CLASS({
 
   requires:['MDAO', 
             'DAOListView',
-            'mdTextFieldView'],
+            'foam.ui.md.TextFieldView'],
 
   imports: ['masterModelList as dao'],
 
@@ -36,7 +36,7 @@ CLASS({
     {
       name: 'searchView',
       factory: function() {
-        return this.mdTextFieldView.create({ data$: this.search$, label:'Search', onKeyMode: true, displayWidth: 20 });
+        return this.TextFieldView.create({ data$: this.search$, label:'Search', onKeyMode: true, displayWidth: 20 });
       }
     },
     {

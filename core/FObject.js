@@ -140,7 +140,10 @@ var FObject = {
               self.addInitAgent(1, 'export property ' + key, function(o, X) { X.setValue(alias, FOAM.lookup(prop.name$_, o)); });
             }
           } else {
-            self.addInitAgent(0, 'export method ' + key, function(o, X) { X.set(alias, o[key].bind(o)); });
+            self.addInitAgent(0, 'export other ' + key, function(o, X) {
+              var out = typeof o[key] === "function" ? o[key].bind(o) : o[key];
+              X.set(alias, out);
+            });
           }
         } else {
           // Exporting 'this'

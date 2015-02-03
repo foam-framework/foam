@@ -214,13 +214,13 @@ CLASS({
   extendsModel: 'DetailView',
   requires: [
     'ImageBooleanView',
-    'foam.ui.md.MDMonogramStringView',
+    'foam.ui.md.MonogramStringView',
     'PriorityCitationView'
   ],
   templates: [
     function toHTML() {/*
       <div id="<%= this.on('click', function() { this.X.mbug.editIssue(this.data); }) %>" class="issue-citation">
-        $$owner{model_: 'foam.ui.md.MDMonogramStringView'}
+        $$owner{model_: 'foam.ui.md.MonogramStringView'}
         <div class="middle">
           $$id{mode: 'read-only', className: 'id'}
         <% if ( this.data.pri ) { %>
@@ -246,13 +246,13 @@ CLASS({
   name: 'CommentView',
   extendsModel: 'DetailView',
 
-  requires: [ 'foam.ui.md.MDMonogramStringView' ],
+  requires: [ 'foam.ui.md.MonogramStringView' ],
 
   templates: [ function toHTML() {/*
     <div class="separator"></div>
     <div id="<%= this.id %>" class="comment-view">
        <span class="owner">
-         <%= this.MDMonogramStringView.create({data: this.data.author.name}) %>
+         <%= this.MonogramStringView.create({data: this.data.author.name}) %>
        </span>
        <span class="content">
          Commented by $$author<br>
@@ -269,7 +269,12 @@ CLASS({
 CLASS({
   name: 'ChangeProjectView',
   extendsModel: 'DetailView',
-  requires: [ 'ImageView' ],
+  requires: [
+    // TODO: Hack to ensure that the CSS for appcontroller comes before
+    // ChangeProjectView.
+    'foam.ui.md.AppController',
+    'ImageView'
+  ],
   traits: ['PositionedDOMViewTrait'],
 
   properties: [
@@ -346,7 +351,7 @@ CLASS({
     */},
     function toInnerHTML() {/*
       <div class="header">
-        $$email{model_: 'foam.ui.md.MDMonogramStringView'}
+        $$email{model_: 'foam.ui.md.MonogramStringView'}
         $$email{mode: 'display-only'}
         <br><br>
       </div>
