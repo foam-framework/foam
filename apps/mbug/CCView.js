@@ -34,7 +34,7 @@ CLASS({
   name: 'CitationView',
   extendsModel: 'foam.ui.md.DefaultRowView',
 
-  requires: [ 'MDMonogramStringView' ],
+  requires: [ 'foam.ui.md.MDMonogramStringView' ],
 
   properties: [ { name: 'className', defaultValue: 'CitationView' } ],
 
@@ -70,7 +70,7 @@ CLASS({
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
     <div id="%%id" class="CitationView">
-      $$name{model_: 'MDMonogramStringView'}
+      $$name{model_: 'foam.ui.md.MDMonogramStringView'}
       <div class="owner-name">{{ this.data.name }}</div>
     </div>
   */} ]

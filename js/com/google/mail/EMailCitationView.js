@@ -75,7 +75,7 @@ CLASS({
       %>
 
       <div id="<%= id %>" %%cssClassAttr() >
-        $$from{model_: 'MDMonogramStringView'}
+        $$from{model_: 'foam.ui.md.MDMonogramStringView'}
         <div style="flex: 1; -webkit-flex: 1">
           <div style="display: flex; display: -webkit-flex">
             $$from{mode: 'read-only', className: 'from', escapeHTML: true}

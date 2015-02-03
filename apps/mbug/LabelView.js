@@ -30,7 +30,7 @@ CLASS({
 CLASS({
   name: 'LabelCitationView',
   extendsModel: 'foam.ui.md.DefaultRowView',
-  traits: ['ColoredBackgroundTrait'],
+  traits: ['foam.ui.md.ColoredBackgroundTrait'],
   properties: [ { name: 'className', defaultValue: 'LabelCitationView' } ],
   templates: [
     function CSS() {/*
@@ -64,7 +64,7 @@ CLASS({
 CLASS({
   name: 'LabelView',
   extendsModel: 'DetailView',
-  traits: ['ColoredBackgroundTrait'],
+  traits: ['foam.ui.md.ColoredBackgroundTrait'],
   templates: [ function toHTML() {/*
     <div id="%%id" <%= this.generateColorStyle(this.data.label.match(/[^-]+/)[0]) %> class="IssueLabel">{{ this.data.label }}</div>
   */} ]

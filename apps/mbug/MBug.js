@@ -214,13 +214,13 @@ CLASS({
   extendsModel: 'DetailView',
   requires: [
     'ImageBooleanView',
-    'MDMonogramStringView',
+    'foam.ui.md.MDMonogramStringView',
     'PriorityCitationView'
   ],
   templates: [
     function toHTML() {/*
       <div id="<%= this.on('click', function() { this.X.mbug.editIssue(this.data); }) %>" class="issue-citation">
-        $$owner{model_: 'MDMonogramStringView'}
+        $$owner{model_: 'foam.ui.md.MDMonogramStringView'}
         <div class="middle">
           $$id{mode: 'read-only', className: 'id'}
         <% if ( this.data.pri ) { %>
@@ -246,7 +246,7 @@ CLASS({
   name: 'CommentView',
   extendsModel: 'DetailView',
 
-  requires: [ 'MDMonogramStringView' ],
+  requires: [ 'foam.ui.md.MDMonogramStringView' ],
 
   templates: [ function toHTML() {/*
     <div class="separator"></div>
@@ -346,7 +346,7 @@ CLASS({
     */},
     function toInnerHTML() {/*
       <div class="header">
-        $$email{model_: 'MDMonogramStringView'}
+        $$email{model_: 'foam.ui.md.MDMonogramStringView'}
         $$email{mode: 'display-only'}
         <br><br>
       </div>
