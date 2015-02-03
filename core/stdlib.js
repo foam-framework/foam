@@ -464,8 +464,6 @@ MODEL({
 
     function capitalize() { return this.charAt(0).toUpperCase() + this.slice(1); },
 
-    function capitalize() { return this.charAt(0).toUpperCase() + this.slice(1); },
-
     function labelize() {
       return this.replace(/[a-z][A-Z]/g, function (a) { return a.charAt(0) + ' ' + a.charAt(1); }).capitalize();
     },

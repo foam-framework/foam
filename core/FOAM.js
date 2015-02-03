@@ -117,6 +117,7 @@ FOAM.browse = function(model, opt_dao, opt_X) {
 
 
 FOAM.lookup = function(key, opt_X) {
+  if ( ! key ) return undefined;
   if ( ! ( typeof key === 'string' ) ) return key;
 
   var root = opt_X || X;
@@ -139,7 +140,7 @@ function arequire(modelName, opt_X) {
   var model = FOAM.lookup(modelName, X);
   if ( ! model ) {
     if ( ! X.ModelDAO ) {
-      console.warn('Unknown Model in arequire: ', modelName);
+      if ( modelName !== 'Template' ) console.warn('Unknown Model in arequire: ', modelName);
       return aconstant(undefined);
     }
 
@@ -211,7 +212,7 @@ function arequireModel(model, X) {
     if ( model.templates ) for ( i = 0 ; i < model.templates.length ; i++ ) {
       var t = model.templates[i];
       args.push(
-        aevalTemplate(model.templates[i]),
+        aevalTemplate(model.templates[i], model),
         (function(t) { return function(ret, m) {
           model.getPrototype()[t.name] = m;
           ret();
@@ -323,23 +324,21 @@ function CLASS(m) {
 
     Object.defineProperty(path, m.name, {
       get: function () {
-        console.time('registerModel: ' + id);
-        if ( id === 'DAOListView' ) console.profile();
+        // console.time('registerModel: ' + id);
         USED_MODELS[id] = true;
         delete UNUSED_MODELS[id];
         Object.defineProperty(path, m.name, {value: null, configurable: true});
 
         var work = [];
-        console.time('buildModel: ' + id);
+        // console.time('buildModel: ' + id);
         var model = JSONUtil.mapToObj(X, m, Model, work);
-        console.timeEnd('buildModel: ' + id);
+        // console.timeEnd('buildModel: ' + id);
         if ( work.length > 0 ) model.ready__ = aseq.apply(null, work);
 
         // TODO: _ROOT_X is a workaround for apps that redefine the top level X
         _ROOT_X.registerModel(model);
 
-        console.timeEnd('registerModel: ' + id);
-        if ( id === 'DAOListView' ) console.profileEnd();
+        // console.timeEnd('registerModel: ' + id);
         return this[m.name];
       },
       configurable: true

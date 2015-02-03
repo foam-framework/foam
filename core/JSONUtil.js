@@ -110,10 +110,11 @@ var JSONUtil = {
         if ( ! newObj && seq ) {
           var future = afuture();
           seq.push(future.get);
-          
+
           arequire(obj.model_)(function(model) {
             if ( ! model ) {
-              console.warn('Failed to dynamically load: ', obj.model_);
+               if ( obj.model_ !== 'Template' )
+                 console.warn('Failed to dynamically load: ', obj.model_);
               future.set(obj);
               return;
             }

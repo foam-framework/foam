@@ -24,35 +24,31 @@ var FObject = {
 
   name_: 'FObject',
 
+  replaceModel_: function(model, otherModel, X) {
+    while ( otherModel ) {
+      var replacementName =
+        ( model.package   ? model.package + '.' : '' ) +
+        ( otherModel.name ? otherModel.name     : otherModel ) + // TODO(jackson): Shouldn't there be a separator here?
+        model.name ;
+
+      var replacementModel = FOAM.lookup(replacementName, X);
+
+      if ( replacementModel ) return replacementModel;
+
+      otherModel = FOAM.lookup(otherModel.extendsModel, X);
+    }
+
+    return undefined;
+  },
+
   create_: function() { return Object.create(this); },
 
   create: function(args, opt_X) {
-
+    // console.log('**** create ', this.model_.name, this.model_.count__ = (this.model_.count__ || 0)+1);
     // check for a model-for-model replacement, only if args.model is a Model instance
     if ( args && args.model && (opt_X || X).Model.isInstance(args.model) ) {
-
-      var replacementF = function(otherModel) {
-        var replacementName = ((this.model_.package)? this.model_.package+"." : "")
-                              + (otherModel.name? otherModel.name : otherModel)
-                              + this.model_.name;
-        var replacementModel = FOAM.lookup(replacementName, opt_X || X);
-        if (replacementModel) {
-          return replacementModel;
-        } else {
-          // Follow the inheritance chain in case there's a more general model available
-          // check again using args.model's extendsModel
-          if (otherModel.extendsModel) {
-            var extend = FOAM.lookup(otherModel.extendsModel, opt_X || X);
-            if (extend) {
-              return replacementF(extend);
-            }
-          }
-          return undefined;
-        }
-      }.bind(this);
-
-      var ret = replacementF(args.model);
-      if (ret) return ret.create(args, opt_X);
+      var ret = this.replaceModel_(this.model_, args.model, opt_X || X);
+      if ( ret ) return ret.create(args, opt_X);
     }
 
     var o = this.create_(this);

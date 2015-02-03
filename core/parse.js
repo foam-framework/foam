@@ -383,7 +383,7 @@ function alt(/* vargs */) {
       parserVersion = parserVersion_;
     }
     var r1 = this.parse(getParserForChar.call(this, ps), ps);
-    // If alt and simpleAlt don't return same value then uncomment this 
+    // If alt and simpleAlt don't return same value then uncomment this
     // section to find out where the problem is occuring.
     /*
     var r2 = this.parse(SIMPLE_ALT, ps);
