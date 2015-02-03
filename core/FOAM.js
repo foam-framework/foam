@@ -117,6 +117,7 @@ FOAM.browse = function(model, opt_dao, opt_X) {
 
 
 FOAM.lookup = function(key, opt_X) {
+  if ( ! key ) return undefined;
   if ( ! ( typeof key === 'string' ) ) return key;
 
   var root = opt_X || X;
