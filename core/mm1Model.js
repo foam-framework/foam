@@ -709,6 +709,12 @@ var Model = {
 
     },
     {
+      name: 'i18nComplete_',
+      defaultValue: false,
+      hidden: true,
+      transient: true
+    },
+    {
       name: 'translationHint',
       label: 'Description for Translation',
       type: 'String',

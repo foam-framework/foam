@@ -105,9 +105,11 @@ CLASS({
     {
       name: 'visitModel',
       code: function(visitors, model) {
+        if ( model.i18nComplete_ ) return;
         visitors.forEach(function(visitor) {
           visitor.visitModel(model);
         });
+        model.i18nComplete_ = true;
       }
     },
     {

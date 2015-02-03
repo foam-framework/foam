@@ -301,9 +301,14 @@ var BootstrapModel = {
           c = this.messages[key] = Message.create(c);
         }
         // TODO(kgr): only add to Proto when Model cleanup done.
-        Object.defineProperty(cls, c.name, {value: c.value});
-        Object.defineProperty(this, c.name, {value: c.value});
-        // cls[c.name] = this[c.name] = c.value;
+        Object.defineProperty(
+            cls,
+            c.name,
+            { get: function() { return c.value; } });
+        Object.defineProperty(
+            this,
+            c.name,
+            { get: function() { return c.value; } });
       } else {
         console.warn('Defining message before Message.');
       }
