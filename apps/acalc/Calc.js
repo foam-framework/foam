@@ -125,6 +125,8 @@ CLASS({
   constants: [
     {
       name: 'formatNumber',
+      todo: multiline(function() {/* Add "infinity" to NumberFormatter
+        messages; this requires messages speechLabel support */}),
       value: function(n) {
         // the regex below removes extra zeros from the end,
         // or middle of exponentials
@@ -141,6 +143,11 @@ CLASS({
 
 CLASS({
   name: 'History',
+
+  requires: [
+    'NumberFormatter'
+  ],
+
   properties: [
     'op',
     {
@@ -169,7 +176,8 @@ CLASS({
     'foam.graphics.CViewView',
     'foam.graphics.ActionButtonCView',
     'foam.ui.animated.Label',
-    'foam.ui.md.Flare'
+    'foam.ui.md.Flare',
+    'History'
   ],
 
   exports: [
@@ -959,6 +967,7 @@ CLASS({
   ]
 });
 
-Calc.getPrototype();
+// History.getPrototype();
+// Calc.getPrototype();
 
 // console.profileEnd();
