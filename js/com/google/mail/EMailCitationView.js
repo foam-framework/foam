@@ -2,6 +2,9 @@ CLASS({
   name: 'EMailCitationView',
   package: 'com.google.mail',
   extendsModel: 'DetailView',
+  requires: [
+    'foam.ui.md.MonogramStringView'
+  ],
   imports: [
     'controller'
   ],
