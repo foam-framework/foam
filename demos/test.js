@@ -37,6 +37,7 @@ CLASS({
 var t = Test.create();
 t.write(document);
 
+var Bookmark = X.foam.lib.bookmarks.Bookmark;
 
 var aDAO = [].dao;
 

@@ -38,7 +38,6 @@ window.onload = function() {
     arequire('EMail'),
     arequire('EMailLabelProperty'),
     arequire('EMailMutationAction'),
-    arequire('AddBookmarkDialog'),
     arequire('TextFieldView'),
     arequire('View'),
     arequire('AppController'),

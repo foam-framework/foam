@@ -41,7 +41,8 @@ CLASS({
     'ChoiceView',
     'ImageView',
     'MementoMgr',
-    'AddBookmarkDialog'
+    'foam.lib.bookmarks.AddBookmarkDialog',
+    'foam.lib.bookmarks.Bookmark'
   ],
 
   exports: [
@@ -424,9 +425,9 @@ CLASS({
       help: 'Create Bookmark',
       action: function() {
         var anchor = this.addBookmarkView.$;
-        var view   = this.X.AddBookmarkDialog.create({
+        var view   = this.AddBookmarkDialog.create({
           dao: this.bookmarkDAO,
-          data: Bookmark.create({url: this.memento})
+          data: this.Bookmark.create({url: this.memento})
         });
 
         anchor.insertAdjacentHTML('beforebegin', view.toHTML());
@@ -556,7 +557,7 @@ CLASS({
 
       this.onSyncManagerUpdate();
 
-      this.bookmarkDAO.find(EQ(Bookmark.TITLE, 'Default'), {
+      this.bookmarkDAO.find(EQ(this.Bookmark.TITLE, 'Default'), {
         put: function(bookmark) {
           this.memento = bookmark.url;
           this.performQuery();
@@ -619,7 +620,6 @@ Please use labels and text to provide additional information.
         put: function(obj) {
           apar(
             arequire('CursorView'),
-            arequire('AddBookmarkDialog'),
             arequire('QIssueDetailView'),
             arequire('QIssueCreateView'),
             arequire('QIssueCommentCreateView'),
