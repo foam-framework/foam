@@ -38,7 +38,7 @@ CLASS({
   constants: [
     {
       name: 'ANCESTRY_CHANGE',
-      value: 'ancestryChange'
+      value: ['ancestryChange']
     }
   ],
 
@@ -47,13 +47,15 @@ CLASS({
       this.SUPER();
 
       // begin an ancestry change when our parent changes
+/*
+  // TODO(jackson): make faster
       this.parent$.addListener( function(obj, topic, old, nu) {
         // propagate an ancestry changes from our parent
         if (old) old.unsubscribe(this.ANCESTRY_CHANGE, this.propagateAncestryChange );
         if (nu) nu.subscribe(this.ANCESTRY_CHANGE, this.propagateAncestryChange );
         this.propagateAncestryChange();
       }.bind(this) );
-
+*/
     },
 
     addChild: function(child) {
