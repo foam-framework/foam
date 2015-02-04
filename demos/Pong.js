@@ -50,14 +50,17 @@ CLASS({
     },
     {
       name: 'ball',
+      view: 'DetailView',
       factory: function() { return Ball.create({color: 'white', r: 20}); }
     },
     {
       name: 'lPaddle',
+      view: 'DetailView',
       factory: function() { return Paddle.create(); }
     },
     {
       name: 'rPaddle',
+      view: 'DetailView',
       factory: function() { return Paddle.create(); }
     },
     {
@@ -161,7 +164,7 @@ CLASS({
   ],
 
   methods: {
-    initHTML: function() {
+    init: function() {
       this.SUPER();
 
       // Position Paddles
