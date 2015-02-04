@@ -930,10 +930,9 @@ CLASS({
       obj = this.aToB(obj);
       this.SUPER(obj, sink);
     },
-    select: function(sink, options) {
+    adaptSink_: function(sink) {
       var self = this;
-      sink = this.decorateSink_(sink, options);
-      var mysink = {
+      return {
         put: function(o, s, fc) {
           o = self.bToA(o);
           sink && sink.put && sink.put(o, s, fc);
@@ -942,6 +941,10 @@ CLASS({
           sink && sink.eof && sink.eof();
         }
       };
+    },
+    select: function(sink, options) {
+      sink = this.decorateSink_(sink, options);
+      var mysink = this.adaptSink_(sink);
       options = this.adaptOptions_(options);
       var future = afuture();
       this.SUPER(mysink, options)(function() { future.set(sink); });
