@@ -246,6 +246,17 @@ CLASS({
         return;
       }
 
+      // TODO: Hack to detect chat messages and skip them until
+      // the API is fixed not to include them or to mark them appropriately
+      // The GMail API returns chat messages as messages with no labels
+      // or timestamp.
+      if ( obj.payload.headers.length === 1 &&
+           obj.payload.headers[0].name === "From" ) {
+        obj.labelIds = ['CHAT', obj.labelIds];
+        ret(obj.labelIds);
+        return;
+      }
+
       aseq(
         aif(function() { return ( obj.labelIds.indexOf('DRAFT') != -1 &&
                                   obj.id.indexOf('draft_') != 0 ); },
@@ -282,6 +293,12 @@ CLASS({
           self.postProcessObject(ret, fc.error.bind(fc), data);
         },
         function(ret, o) {
+          // Skip chats, since they don't have timestamps and as such are pretty useless.
+          if ( o.labelIds[0] === 'CHAT' ) {
+            ret();
+            return;
+          }
+
           if ( ! fc.errorEvt ) sink.put(o, null, fc);
           ret();
         })(ret);
@@ -482,7 +499,8 @@ CLASS({
       this.SUPER(key, {
         put: function(o) {
           self.postProcessObject(function(obj) {
-            if ( obj && sink && sink.put ) sink.put(o);
+            if ( ! obj && sink ) sink.error();
+            else if ( sink && sink.put ) sink.put(o);
           }, ( sink && sink.error ) ? sink.error.bind(sink) : function(){}, o);
         },
         error: function(args) {
