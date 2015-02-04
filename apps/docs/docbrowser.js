@@ -168,6 +168,7 @@ CLASS({
   requires: ['MDAO',
              'DocBrowserView',
              'ControllerView',
+             'ModelListController',
              'foam.documentation.DocViewPicker',
              'foam.documentation.ModelCompletenessRecord'],
 
