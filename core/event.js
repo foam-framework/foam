@@ -67,6 +67,7 @@ MODEL({
      *        the smallest delay that humans aren't able to perceive.
      **/
     merged: function(listener, opt_delay, opt_X) {
+      var setTimeoutX = ( opt_X && opt_X.setTimeout ) || setTimeout;
       var delay = opt_delay || 16;
 
       return function() {
@@ -82,7 +83,7 @@ MODEL({
           if ( ! triggered ) {
             triggered = true;
             try {
-              ((opt_X && opt_X.setTimeout) || setTimeout)(
+              setTimeoutX(
                 function() {
                   triggered = false;
                   var args = argsToArray(lastArgs);
@@ -115,8 +116,7 @@ MODEL({
     // TODO: execute immediately from within a requestAnimationFrame
     framed: function(listener, opt_X) {
       opt_X = opt_X || this.X;
-      //    if ( ! opt_X ) debugger;
-      //    if ( opt_X.isBackground ) debugger;
+      var requestAnimationFrameX = ( opt_X && opt_X.requestAnimationFrame ) || requestAnimationFrame;
 
       return function() {
         var triggered    = false;
@@ -130,7 +130,7 @@ MODEL({
 
           if ( ! triggered ) {
             triggered = true;
-            ((opt_X && opt_X.requestAnimationFrame) || requestAnimationFrame)(
+            requestAnimationFrameX(
               function() {
                 triggered = false;
                 var args = argsToArray(lastArgs);
@@ -1014,7 +1014,7 @@ MODEL({
         }
       });
     },
-    
+
     createAnimatedPropertyInstallFn: function(duration, interpolation) {
       /* Returns a function that can be assigned as a $$DOC{ref:'Property'}
       $$DOC{ref:'Property.install'} function. Any assignments to the property
@@ -1035,7 +1035,7 @@ MODEL({
             documentation: function() { /* The animation controller. */ },
           }
         );
-  
+
         var actualSetter = this.__lookupSetter__(prop.name);
         this.defineProperty(
           {
@@ -1048,23 +1048,23 @@ MODEL({
             }
           }
         );
-        
+
         // replace setter with animater
         this.__defineSetter__(prop.name, function(nu) {
           // setter will be called on the instance, so "this" is an instance now
           var latch = this[prop.name+"$AnimationLatch"] ;
           latch && latch();
-  
+
           var anim = Movement.animate(
             duration,
-            function() { 
-              this[prop.name+"$AnimationSetValue"] = nu; 
+            function() {
+              this[prop.name+"$AnimationSetValue"] = nu;
             }.bind(this),
             interpolation
           );
           this[prop.name+"$AnimationLatch"] = anim();
-        }); 
-      }; 
-    }   
+        });
+      };
+    }
   }
 });
