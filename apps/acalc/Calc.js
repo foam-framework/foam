@@ -546,7 +546,7 @@ CLASS({
   name: 'CalcView',
   requires: [
     'HistoryCitationView',
-    'SlidePanelView',
+    'foam.ui.SlidePanel',
     'MainButtonsView',
     'SecondaryButtonsView',
     'TertiaryButtonsView'
@@ -778,14 +778,14 @@ CLASS({
           </div>
           <div class='keypad'>
           <div class="edge2"></div>
-          <%= this.SlidePanelView.create({
+          <%= this.SlidePanel.create({
             minWidth: 310,
             minPanelWidth: 310,
             panelRatio: 0.55,
             mainView: 'MainButtonsView',
             stripWidth: 25,
             panelView: {
-              factory_: 'SlidePanelView',
+              factory_: 'foam.ui.SlidePanel',
               minWidth: 280,
               minPanelWidth: 200,
               panelRatio: 3/7,

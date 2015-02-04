@@ -30,6 +30,7 @@ cat \
   ../../js/foam/ui/Window.js \
   ../../core/value.js \
   ../../core/view.js \
+  ../../js/foam/ui/SlidePanel.js \
   ../../core/AbstractDAOView.js \
   ../../core/DAOListView.js \
   ../../core/DetailView.js \
