@@ -88,25 +88,30 @@ CLASS({
       name: 'onBallMove',
       isFramed: true,
       code: function() {
+        var ball = this.ball;
+
+        if ( ball.velocity >  20 ) ball.velocity =  20;
+        if ( ball.velocity < -20 ) ball.velocity = -20;
+
         // Bounce off of top wall
-        if ( this.ball.y - this.ball.r <= 0 ) {
-          this.ball.vy = Math.abs(this.ball.vy);
+        if ( ball.y - ball.r <= 0 ) {
+          ball.vy = Math.abs(ball.vy);
         }
         // Bounce off of bottom wall
-        if ( this.ball.y + this.ball.r >= this.HEIGHT ) {
-          this.ball.vy = -Math.abs(this.ball.vy);
+        if ( ball.y + ball.r >= this.HEIGHT ) {
+          ball.vy = -Math.abs(ball.vy);
         }
         // Bounce off of left wall
-        if ( this.ball.x <= 0 ) {
+        if ( ball.x <= 0 ) {
           this.rScore++;
-          this.ball.x = 150;
-          this.ball.vx *= -1;
+          ball.x = 150;
+          ball.vx *= -1;
         }
         // Bounce off of right wall
-        if ( this.ball.x >= this.WIDTH ) {
+        if ( ball.x >= this.WIDTH ) {
           this.lScore++;
-          this.ball.x = this.WIDTH - 150;
-          this.ball.vx *= -1;
+          ball.x = this.WIDTH - 150;
+          ball.vx *= -1;
         }
         // Reset scores
         if ( this.lScore == 100 || this.rScore == 100 ) {
