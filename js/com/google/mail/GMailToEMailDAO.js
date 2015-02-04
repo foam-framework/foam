@@ -50,6 +50,17 @@ CLASS({
    "messages": [],
    "methods": [
       {
+        "model_": "Method",
+        "name": "adaptSink_",
+        "code": function(sink) {
+          if ( MaxExpr.isInstance(sink) &&
+               sink.arg1 == this.EMail.CLIENT_VERSION ) {
+            return MAX(this.FOAMGMailMessage.CLIENT_VERSION, sink.arg2);
+          }
+          return this.SUPER(sink);
+        }
+      },
+      {
          "model_": "Method",
          "name": "init",
          "code": function (args) {
@@ -156,7 +167,7 @@ CLASS({
         id: obj.id,
         convId: obj.threadId,
         labels: obj.labelIds,
-        historyId: obj.historyId,
+        serverVersion: obj.historyId,
         // attachments: obj.attachments,
         body: body,
         snippet: obj.snippet,
@@ -172,15 +183,28 @@ CLASS({
          "model_": "Method",
          "name": "adaptOptions_",
          "code": function (options) {
-      if ( options && options.query &&
-           EqExpr.isInstance(options.query) &&
-           this.EMail.LABELS === options.query.arg1 ) {
-        return {
-          query: EQ(this.FOAMGMailMessage.LABEL_IDS, options.query.arg2)
-        };
-      }
-      return {};
-    },
+           var newoptions = {};
+
+           if ( ! options ) return;
+
+           if ( options.limit ) newoptions.limit = options.limit;
+           if ( options.skip ) newoptions.skip = options.skip;
+
+           if ( options.query ) {
+             var query = options.query;
+             if ( EqExpr.isInstance(query) &&
+                  this.EMail.LABELS === query.arg1 ) {
+               newoptions.query = EQ(this.FOAMGMailMessage.LABEL_IDS, query.arg2);
+             } else if ( GtExpr.isInstance(query) &&
+                         query.arg1 == this.EMail.SERVER_VERSION ) {
+               newoptions.query = GT(this.FOAMGMailMessage.HISTORY_ID, query.arg2);
+             } else if ( MqlExpr.isInstance(query) ) {
+               newoptions.query = query;
+             }
+           }
+
+           return newoptions;
+         },
          "args": []
       }
    ],

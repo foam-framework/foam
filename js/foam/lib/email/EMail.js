@@ -193,6 +193,10 @@ CLASS({
          "model_": "IntProperty",
          "name": "clientVersion"
       },
+     {
+       "model_": "IntProperty",
+       "name": "serverVersion"
+     },
       {
          "model_": "Property",
          "name": "type",
