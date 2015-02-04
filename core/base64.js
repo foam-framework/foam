@@ -59,7 +59,7 @@ CLASS({
       name: 'chunk',
       defaultValue: 3
     },
-    { name: 'sink', factory: function() { return []; } }
+    { name: 'sink', factory: function() { return [].sink; } }
   ],
   methods: {
     lookup: function(data) {

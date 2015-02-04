@@ -133,7 +133,7 @@ CLASS({
         buffer += "\r\n";
 
         if ( p.body && p.body.size > 0 ) {
-          var decoder = self.Base64Decoder.create(this.X.IncrementalUtf8.create(), p.body.size);
+          var decoder = self.Base64Decoder.create({ sink: this.X.IncrementalUtf8.create(), bufsize: p.body.size });
           decoder.put(p.body.data);
           decoder.eof();
 

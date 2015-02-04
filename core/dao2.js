@@ -1236,6 +1236,10 @@ CLASS({
   name: 'BlobSerializeDAO',
   extendsModel: 'ProxyDAO',
 
+  requires: [
+    'Base64Encoder'
+  ],
+
   properties: [
     {
       model_: 'ArrayProperty',
@@ -1259,7 +1263,7 @@ CLASS({
             var reader = new FileReader();
             reader.onloadend = function() {
               var type = obj[prop.name].type;
-              obj[prop.name] = 'data:' + type + ';base64,' + Base64Encoder.encode(new Uint8Array(reader.result));
+              obj[prop.name] = 'data:' + type + ';base64,' + Base64Encoder.create().encode(new Uint8Array(reader.result));
               ret();
             }
 
@@ -1280,7 +1284,7 @@ CLASS({
         var type = value.substring(value.indexOf(':') + 1,
                                    value.indexOf(';'));
         value = value.substring(value.indexOf(';base64') + 7);
-        var decoder = Base64Decoder.create([]);
+        var decoder = Base64Decoder.create();
         decoder.put(value);
         decoder.eof();
         obj[prop.name] = new Blob(decoder.sink, { type: type });
