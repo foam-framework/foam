@@ -64,47 +64,34 @@ CLASS({
       }
     },
     {
-      name: 'rawGmailDao',
+      name: 'delegate',
+      type: 'DAO',
       factory: function() {
-        return this.CachingDAO.create({
-          delegate: this.MDAO.create({ model: this.FOAMGMailMessage }),
-          src: this.IDBDAO.create({
-            model: this.FOAMGMailMessage, useSimpleSerialization: false
+        return this.ContextualizingDAO.create({
+          delegate: this.VersionNoDAO.create({
+            property: this.EMail.CLIENT_VERSION,
+            delegate: this.cachingDAO
           })
         });
+      }
+    },
+    {
+      name: 'cachingDAO',
+      factory: function() {
+        return this.CachingDAO.create({
+          src: this.IDBDAO.create({ model: this.EMail }),
+          delegate: this.MDAO.create({ model: this.EMail })
+        })
       },
       postSet: function(_, dao) {
         dao.select(COUNT())(function(c) {
           if ( c.count === 0 ) {
             this.StripPropertiesDAO.create({
               delegate: this.remoteDao,
-              propertyNames: ['historyId']
-            }).where(EQ(this.FOAMGMailMessage.LABEL_IDS, 'INBOX')).limit(100).select(dao);
+              propertyNames: ['SERVER_ID']
+            }).where(EQ(this.EMail.LABELS, 'INBOX')).limit(100).select(dao);
           }
         }.bind(this));
-      }
-    },
-    {
-      name: 'versionedGmailDao',
-      factory: function() {
-        return this.VersionNoDAO.create({
-          delegate: this.rawGmailDao,
-          property: this.FOAMGMailMessage.CLIENT_VERSION
-        });
-      }
-    },
-    {
-      name: 'delegate',
-      type: 'DAO',
-      factory: function() {
-        return this.ContextualizingDAO.create({
-          delegate: this.CachingDAO.create({
-            src: this.GMailToEMailDAO.create({
-              delegate: this.versionedGmailDao
-            }),
-            delegate: this.MDAO.create({ model: this.EMail })
-          })
-        });
       }
     },
     {
@@ -114,7 +101,7 @@ CLASS({
           var sync = this.Sync.create({
             local: this.SyncDecorator.create({
               delegate: this.MergeDAO.create({
-                delegate: this.rawGmailDao,
+                delegate: this.cachingDAO,
                 mergeStrategy: function(ret, oldValue, newValue) {
                   newValue.clientVersion =
                     Math.max(oldValue.clientVersion, newValue.clientVersion);
@@ -122,14 +109,16 @@ CLASS({
                 }
               })
             }),
-            remote: this.remoteDao,
-            localVersionProp: this.FOAMGMailMessage.CLIENT_VERSION,
-            remoteVersionProp: this.FOAMGMailMessage.HISTORY_ID,
-            deletedProp: this.FOAMGMailMessage.DELETED,
+            remote: this.GMailToEMailDAO.create({
+              delegate: this.remoteDao
+            }),
+            localVersionProp: this.EMail.CLIENT_VERSION,
+            remoteVersionProp: this.EMail.SERVER_VERSION,
+            deletedProp: this.EMail.DELETED,
             initialSyncWindow: 10
           });
 
-          this.versionedGmailDao.listen(this.doSync);
+          this.delegate.listen(this.doSync);
           this.setInterval(this.doSync, this.syncInterval);
 
           return sync;

@@ -20,7 +20,7 @@ CLASS({
   name: 'Sync',
   extendsModel: 'foam.core.dao.Sync',
   requires: [
-    'com.google.mail.FOAMGMailMessage'
+    'foam.lib.email.EMail'
   ],
   methods: {
     purge: function(ret, remoteLocal) {
@@ -31,8 +31,8 @@ CLASS({
       this.SUPER(function(purged) {
         this.local
           .where(AND(LTE(this.localVersionProp, remoteLocal),
-                     EQ(this.FOAMGMailMessage.IS_SENT, true),
-                     EQ(this.FOAMGMailMessage.LABEL_IDS, 'DRAFT')))
+                     EQ(this.EMail.MESSAGE_SENT, true),
+                     EQ(this.EMail.LABELS, 'DRAFT')))
           .removeAll(purged)(ret);
       }.bind(this), remoteLocal);
     }
