@@ -10,6 +10,9 @@
        font-variant: normal;
        font-weight: normal;
     }
+    .panel {
+      flex: 1 1 auto;
+    }
   </style>
 
   <link rel="stylesheet" type="text/css" href="foam.css" />
@@ -29,8 +32,8 @@
   <title>FOAM Modeller</title>
  </head>
 
- <body>
-<div style="height:40px;background:whitesmoke;border-width: 0 0 1px;border: 0 solid #e5e5e5;">
+ <body style="display:flex;flex-direction: column;">
+<div style="height:40px;background:whitesmoke;border-width: 0 0 1px;border: 0 solid #e5e5e5;flex: 0 0 auto;">
 <font size=+3 face="catull" style="text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">
   <font color="#3333FF">F</font><font color="#FF0000">O</font><font color="#FFCC00">A</font><font color="#33CC00">M</font>
 <font color="#555555" >
@@ -40,8 +43,8 @@
 <a href="issue.html">Issues</a>
 <br/>
 <br/>
-
+<div style="display:flex;flex: 1 1 auto;">
 <script language="javascript" src="modeller.js"></script>
-
+</div>
  </body>
 </html>
