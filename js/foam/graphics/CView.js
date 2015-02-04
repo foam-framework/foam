@@ -24,7 +24,7 @@ CLASS({
     'foam.graphics.PositionedCViewView',
     'foam.graphics.CViewView'
   ],
-  
+
   traits: [ 'foam.patterns.ChildTreeTrait' ],
 
   documentation: function() {/*
@@ -55,7 +55,7 @@ CLASS({
         for ( var key in this.children ) {
           var child = this.children[key];
           child.view = view;
-          if (view) child.addListener(view.paint);
+          if ( view ) child.addListener(view.paint);
         }
       },
       transient: true,
@@ -87,7 +87,7 @@ CLASS({
       model_: 'BooleanProperty',
       defaultValue: false,
       documentation: function() {/*
-          Suspend painting. While this property is true, this 
+          Suspend painting. While this property is true, this
           $$DOC{ref:'foam.graphics.CView'} will not paint itself or its
           children.
         */},
@@ -211,7 +211,7 @@ CLASS({
       if ( this.view ) {
         child.view = this.view;
         child.addListener(this.view.paint);
-      }     
+      }
       return this;
     },
 
@@ -250,7 +250,7 @@ CLASS({
         this.state = 'active';
       }
       if ( this.suspended ) return; // we allowed initialization, but if suspended don't paint
-      
+
       this.canvas.save();
       this.canvas.translate(this.x, this.y);
       if (this.clipped) {

@@ -24,7 +24,7 @@
     "CalcView":true,
     "DetailView":true,
     "HistoryCitationView":true,
-    "SlidePanelView":true,
+    "foam.ui.SlidePanel":true,
     "GestureTarget":true,
     "MainButtonsView":true,
     "SecondaryButtonsView":true,
@@ -75,7 +75,7 @@
     'foam.ui.animated.Label.CSS' : true,
     'CalcView.toHTML' : true,
     'HistoryCitationView.toHTML' : true,
-    'SlidePanelView.toHTML' : true,
+    'foam.ui.SlidePanel.toHTML' : true,
     'MainButtonsView.toHTML' : true,
     'SecondaryButtonsView.toHTML' : true,
     'TertiaryButtonsView.toHTML' : true
@@ -88,6 +88,5 @@
       aevalTemplate_(t, model)  :
       aconstant(function() { return ''; }) ;
   };
-  
-})();
 
+})();

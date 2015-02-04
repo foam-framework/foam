@@ -520,7 +520,6 @@ CLASS({
       this.SUPER(child);
     }
 
-
   }
 });
 

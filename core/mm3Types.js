@@ -451,6 +451,12 @@ var ArrayProperty = Model.create({
       defaultValue: function() { return []; }
     },
     {
+      name: 'propertyToJSON',
+      defaultValue: function(visitor, output, o) {
+        if ( ! this.transient && o[this.name].length ) output[this.name] = o[this.name];
+      }
+    },
+    {
       name: 'install',
       defaultValue: function(prop) {
         defineLazyProperty(this, prop.name + '$Proxy', function() {
@@ -697,7 +703,7 @@ var ModelProperty = Model.create({
       defaultValue: function(visitor, output, o) {
         if ( ! this.transient ) output[this.name] = o[this.name].id;
       }
-    },
+    }
   ]
 });
 
@@ -886,7 +892,6 @@ var DocumentationProperty = Model.create({
   name: 'DocumentationProperty',
   help: 'Describes the documentation properties found on Models, Properties, Actions, Methods, etc.',
   documentation: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation.",
-
 
   properties: [
     {

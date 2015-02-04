@@ -36,20 +36,19 @@ function invTrigFn(f) {
   };
 }
 
-function maybeTranslate(actionHash, opt_longName) {
-  if ( opt_longName ) actionHash.translationHint =
+function createTranslatedAction(action, opt_longName) {
+  if ( opt_longName ) action.translationHint =
       'short form for mathematical function: "' + opt_longName + '"';
-  return actionHash;
+  return Action.create(action);
 }
 
 /** Make a Binary Action. **/
 function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
   var longName = opt_longName || name;
   var speechLabel = opt_speechLabel || sym;
-  f.toString = function() { return '<span aria-label="' + speechLabel + '">' + sym + '</span>'; };
   f.binary = true;
   f.speechLabel = speechLabel;
-  return maybeTranslate({
+  var action = createTranslatedAction({
     name: name,
     label: sym,
     translationHint: 'binary operator: ' + longName,
@@ -68,16 +67,17 @@ function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
       }
     }
   }, opt_longName);
+  f.toString = function() { return '<span aria-label="' + action.speechLabel + '">' + action.label + '</span>'; };
+  return action;
 }
 
 function unaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
   var sym = opt_sym || name;
   var longName = opt_longName || name;
   var speechLabel = opt_speechLabel || sym;
-  f.toString = function() { return sym; };
   f.unary = true;
   f.speechLabel = speechLabel;
-  return maybeTranslate({
+  var action = createTranslatedAction({
     name: name,
     label: sym,
     translationHint: 'short form for mathematical function: "' + longName + '"',
@@ -89,6 +89,8 @@ function unaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
       this.editable = false;
     }
   }, opt_longName);
+  f.toString = function() { return action.label; };
+  return action;
 }
 
 /** Make a 0-9 Number Action. **/
@@ -544,7 +546,7 @@ CLASS({
   name: 'CalcView',
   requires: [
     'HistoryCitationView',
-    'SlidePanelView',
+    'foam.ui.SlidePanel',
     'MainButtonsView',
     'SecondaryButtonsView',
     'TertiaryButtonsView'
@@ -761,8 +763,8 @@ CLASS({
         <% X.registerModel(CalcButton, 'ActionButton'); %>
         <div style="position: relative;z-index: 100;">
           <div tabindex="1" style="position: absolute;">
-            <span aria-label="radians" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="radians"></span>
-            <span aria-label="degrees" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="degrees">DEG</span>
+            <span aria-label="{{{Calc.RAD.label}}}" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="{{{Calc.RAD.label}}}"></span>
+            <span aria-label="{{{Calc.DEG.label}}}" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="{{{Calc.DEG.label}}}">{{{Calc.DEG.label}}}</span>
           </div>
         </div>
 
@@ -776,14 +778,14 @@ CLASS({
           </div>
           <div class='keypad'>
           <div class="edge2"></div>
-          <%= this.SlidePanelView.create({
+          <%= this.SlidePanel.create({
             minWidth: 310,
             minPanelWidth: 310,
             panelRatio: 0.55,
             mainView: 'MainButtonsView',
             stripWidth: 25,
             panelView: {
-              factory_: 'SlidePanelView',
+              factory_: 'foam.ui.SlidePanel',
               minWidth: 280,
               minPanelWidth: 200,
               panelRatio: 3/7,
