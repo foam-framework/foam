@@ -2620,8 +2620,9 @@ CLASS({
     put: function(obj, sink) {
       if ( obj.hasOwnProperty(this.property.name) ) {
         var offload = this.model.create({ id: obj.id });
+        if ( offload[this.property.name] === '' ) debugger;
         offload[this.property.name] = this.property.f(obj);
-        obj[this.property.name] = '';
+        obj.clearProperty(this.property.name);
         this.offloadDAO.put(offload);
       }
       this.delegate.put(obj, sink);
