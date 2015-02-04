@@ -416,6 +416,9 @@ var Model = {
       subType: 'Action',
       view: 'ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
       defaultValue: [],
       help: 'Actions associated with the entity.',
       preSet: function(_, newValue) {
@@ -449,6 +452,9 @@ var Model = {
       subType: 'Constant',
       view: 'ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
       defaultValue: [],
       help: 'Constants associated with the entity.',
       preSet: function(_, newValue) {
@@ -479,6 +485,9 @@ var Model = {
       subType: 'Constant',
       view: 'ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
       defaultValue: [],
       help: 'Messages associated with the entity.',
       preSet: function(_, newValue) {
@@ -509,6 +518,9 @@ var Model = {
       subType: 'Method',
       view: 'ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
       defaultValue: [],
       help: 'Methods associated with the entity.',
       preSet: function(_, newValue) {
@@ -572,6 +584,9 @@ var Model = {
       subType: 'Method',
       view: 'ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
       preSet: function(_, newValue) {
         if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Method);
         return newValue;
@@ -605,6 +620,9 @@ var Model = {
       subType: 'Template',
       view: 'ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
       defaultValue: [],
       postSet: function(_, templates) {
         TemplateUtil.expandModelTemplates(this);
@@ -624,6 +642,9 @@ var Model = {
       subType: 'Model',
       view: 'ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
       defaultValue: [],
       help: 'Sub-models embedded within this model.',
       documentation: function() { /*
@@ -639,6 +660,9 @@ var Model = {
       subType: 'UnitTest',
       view: 'ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
       defaultValue: [],
       help: 'Unit tests associated with this model.',
       documentation: function() { /*
@@ -651,6 +675,9 @@ var Model = {
       subType: 'Relationship',
       view: 'ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
       defaultValue: [],
       help: 'Relationships of this model to other models.',
       preSet: function(_, newValue) {
@@ -686,6 +713,9 @@ var Model = {
       subType: 'Issue',
       view: 'ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
       defaultValue: [],
       help: 'Issues associated with this model.',
       documentation: function() { /*

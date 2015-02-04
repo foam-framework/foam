@@ -272,7 +272,7 @@ var FObject = {
 
   toString: function() {
     // TODO: do something to detect loops which cause infinite recurrsions.
-// console.log(this.model_.name + "Prototype");
+    // console.log(this.model_.name + "Prototype");
     return this.model_.name + "Prototype";
     // return this.toJSON();
   },
