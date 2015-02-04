@@ -32,7 +32,7 @@ CLASS({
       defaultValue: function(prop) {
         var actualSetter = this.__lookupSetter__(prop.name);
         var actualGetter = this.__lookupGetter__(prop.name);
-        var actualInit = this.init;
+        var actualOnAncestryChange_ = this.onAncestryChange_;
         var propWriteFlagName = prop.name + "$writtenTo";
         var propListenerName = prop.name + "$inheritedListener";
         var propSourceName = prop.name + "$inheritedSource";
@@ -67,21 +67,18 @@ CLASS({
         };
                
         // replace init
-        this.init = function() {
+        this.onAncestryChange_ = function() {
           // this is now the instance        
-          this.subscribe(this.ANCESTRY_CHANGE, function() {
-            if ( ! this.instance_[propWriteFlagName] )
-            {
-              // unbind the old listener
-              tearDownListener.apply(this);
-              // set up listener if we are inheriting
-              if ( ! this.instance_[propWriteFlagName] ) {
-                setUpListener.apply(this);
-              }
+          if ( ! this.instance_[propWriteFlagName] ) {
+            // unbind the old listener
+            tearDownListener.apply(this);
+            // set up listener if we are inheriting
+            if ( ! this.instance_[propWriteFlagName] ) {
+              setUpListener.apply(this);
             }
-          }.bind(this));
+          }
 
-          actualInit.apply(this, arguments);
+          actualOnAncestryChange_.apply(this, arguments);
         }
         
         this.__defineSetter__(prop.name, function(nu) {

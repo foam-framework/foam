@@ -52,7 +52,7 @@ a {
   flex-shrink: 0;
   -webkit-flex-shrink: 0;
   padding: 0;
-  height: 50px;
+  height: 56px;
 }
 
 .mdui-app-controller .header .default {

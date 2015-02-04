@@ -35,27 +35,13 @@ CLASS({
     }
   ],
 
-  constants: [
-    {
-      name: 'ANCESTRY_CHANGE',
-      value: ['ancestryChange']
-    }
-  ],
-
   methods: {
-    init: function() {
-      this.SUPER();
+    
+    onAncestryChange_: function() {
+      /* Called when our parent or an ancestor's parent changes. Override to
+        react to ancestry changes. Remember to call <code>this.SUPER()</code>. */
 
-      // begin an ancestry change when our parent changes
-/*
-  // TODO(jackson): make faster
-      this.parent$.addListener( function(obj, topic, old, nu) {
-        // propagate an ancestry changes from our parent
-        if (old) old.unsubscribe(this.ANCESTRY_CHANGE, this.propagateAncestryChange );
-        if (nu) nu.subscribe(this.ANCESTRY_CHANGE, this.propagateAncestryChange );
-        this.propagateAncestryChange();
-      }.bind(this) );
-*/
+      Array.prototype.forEach.call(this.children, function(c) { c.onAncestryChange_() } );
     },
 
     addChild: function(child) {
@@ -74,6 +60,7 @@ CLASS({
       try {
         child.parent = this;
       } catch (x) { console.log(x); }
+      child.onAncestryChange_();
 
       var children = this.children;
       children.push(child);
@@ -92,6 +79,7 @@ CLASS({
       child.destroy();
       this.children.deleteI(child);
       child.parent = undefined;
+      child.onAncestryChange_();
 
       return this;
     },
@@ -143,14 +131,5 @@ CLASS({
 
       return count;
     }
-  },
-
-  listeners: [
-    {
-      name: 'propagateAncestryChange',
-      code: function() {
-        this.publish(this.ANCESTRY_CHANGE);
-      }
-    }
-  ]
+  }
 });
