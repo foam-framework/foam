@@ -39,7 +39,7 @@ CLASS({
     { model_: 'IntProperty', name: 'width' },
     { model_: 'IntProperty', name: 'height' },
     { name: 'tagName', defaultValue: 'div' },
-    { name: 'view', postSet: function() { this.updateHTML(); } }
+    { name: 'data', postSet: function() { this.updateHTML(); } }
   ],
   methods: {
     init: function() {
@@ -59,19 +59,19 @@ CLASS({
     }
   },
   templates: [
-    function toInnerHTML() {/*<%= this.view %>*/},
+    function toInnerHTML() {/*<%= this.data %>*/},
   ],
   listeners: [
     {
       name: 'layout',
       isFramed: true,
       code: function() {
-        if ( ! this.view ) return;
-        this.view.x = 0;
-        this.view.y = 0;
-        this.view.z = 0;
-        this.view.width = this.width;
-        this.view.height = this.height;
+        if ( ! this.data ) return;
+        this.data.x = 0;
+        this.data.y = 0;
+        this.data.z = 0;
+        this.data.width = this.width;
+        this.data.height = this.height;
       }
     },
     {

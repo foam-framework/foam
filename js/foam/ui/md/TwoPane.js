@@ -57,7 +57,7 @@ CLASS({
          </span>
        </div>
        <div class="panes">
-         <%= this.DOMPanel.create({ className: 'left-pane', view: this.data.menuFactory() }) %>
+         <%= this.DOMPanel.create({ className: 'left-pane', data: this.data.menuFactory() }) %>
          <div class="right-pane">
            %%data.filteredDAOView
            <% if ( this.data.createAction ) out(this.createActionView(this.data.createAction, { data: this.data, className: 'createButton', color: 'white', font: '30px Roboto Arial', alpha: 1, width: 44, height: 44, radius: 22, background: '#e51c23'})); %>
