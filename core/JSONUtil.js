@@ -182,7 +182,6 @@ var JSONUtil = {
       out('{');
       this.outputModel_(out, obj);
 
-      var first = true;
       for ( var key in obj.model_.properties ) {
         var prop = obj.model_.properties[key];
 
@@ -191,10 +190,9 @@ var JSONUtil = {
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
           if ( val == prop.defaultValue ) continue;
-          if ( ! first ) out(',');
+          out(',');
           out(JSONUtil.keyify(prop.name), ':');
           this.output(out, val);
-          first = false;
         }
       }
 
@@ -204,7 +202,7 @@ var JSONUtil = {
     outputModel_: function(out, obj) {
       out('"model_":"')
       if ( obj.model_.package ) out(obj.model_.package, '.')
-      out(obj.model_.name, '",');
+      out(obj.model_.name, '"');
     },
 
     outputMap_: function(out, obj) {
@@ -300,7 +298,6 @@ var JSONUtil = {
       out(/*"\n", */indent, '{\n');
       this.outputModel_(out, obj, nestedIndent);
 
-      var first = true;
       for ( var key in obj.model_.properties ) {
         var prop = obj.model_.properties[key];
 
@@ -309,10 +306,9 @@ var JSONUtil = {
         if ( prop.name === 'parent' ) continue;
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
-          if ( ! first ) out(",\n");
+          out(",\n");
           out(nestedIndent, '"', prop.name, '"', ': ');
           this.output(out, val, nestedIndent);
-          first = false;
         }
       }
 
@@ -322,7 +318,7 @@ var JSONUtil = {
     outputModel_: function(out, obj, indent) {
       out(indent, '"model_": "')
       if ( obj.model_.package ) out(obj.model_.package, '.')
-      out(obj.model_.name, '",\n');
+      out(obj.model_.name, '"');
     },
 
     outputMap_: function(out, obj, opt_indent) {
