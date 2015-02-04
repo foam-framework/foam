@@ -110,7 +110,10 @@ CLASS({
 
     updateHTML: function() {
       if ( ! this.dao || ! this.$ ) return;
-      if ( this.painting ) return;
+      if ( this.painting ) {
+        this.repaintRequired = true;
+        return;
+      }
       this.painting = true;
 
       var out = [];
@@ -151,6 +154,13 @@ CLASS({
           out.push('</div>');
         }
       }.bind(this)})(function() {
+        if (this.repaintRequired) {
+          this.repaintRequired = false;
+          this.painting = false;
+          this.realDAOUpdate();
+          return;
+        }
+
         var e = this.$;
 
         if ( ! e ) return;
