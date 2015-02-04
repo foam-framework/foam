@@ -52,6 +52,7 @@ cat \
   ../../js/foam/i18n/ChromeMessagesBuilder.js \
   ../../js/foam/i18n/ChromeMessagesExtractor.js \
   ../../js/foam/i18n/GlobalController.js \
+  CalcConfig.js \
   Calc.js \
   | sed 's/^ *//g' \
   | sed 's/  */ /g' \
