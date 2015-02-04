@@ -10,6 +10,7 @@ CLASS({
     'IDBDAO',
     'MDAO',
     'PersistentContext',
+    'PropertyOffloadDAO',
     'com.google.mail.FOAMGMailMessage',
     'com.google.mail.GMailMessageDAO',
     'com.google.mail.GMailToEMailDAO',
@@ -17,6 +18,7 @@ CLASS({
     'com.google.mail.SyncDecorator',
     'foam.core.dao.MergeDAO',
     'foam.core.dao.StripPropertiesDAO',
+    'foam.core.dao.CloningDAO',
     'foam.core.dao.VersionNoDAO',
     'foam.lib.email.EMail'
   ],
@@ -66,6 +68,16 @@ CLASS({
       }
     },
     {
+      name: 'bodyDAO',
+      factory: function() {
+        return this.IDBDAO.create({
+          model: this.EMail,
+          name: 'EMail-Bodies',
+          loadOnSelect: false
+        })
+      }
+    },
+    {
       name: 'delegate',
       type: 'DAO',
       factory: function() {
@@ -80,10 +92,16 @@ CLASS({
     {
       name: 'cachingDAO',
       factory: function() {
-        return this.CachingDAO.create({
-          src: this.IDBDAO.create({ model: this.EMail }),
-          delegate: this.MDAO.create({ model: this.EMail })
-        })
+        return this.PropertyOffloadDAO.create({
+          property: this.EMail.BODY,
+          offloadDAO: this.bodyDAO,
+          delegate: this.CloningDAO.create({
+            delegate: this.CachingDAO.create({
+              src: this.IDBDAO.create({ model: this.EMail }),
+              delegate: this.MDAO.create({ model: this.EMail })
+            })
+          })
+        });
       },
       postSet: function(_, dao) {
         dao.select(COUNT())(function(c) {

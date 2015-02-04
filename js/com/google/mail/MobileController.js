@@ -275,7 +275,6 @@ CLASS({
       var self = this;
       this.emailDao.find(id, {
         put: function(m) {
-          m = m.deepClone();
           m.markRead(self.controller.X);
           var v = self.FloatingView.create({
             view: self.EMailView.create({ data: m }, self.controller.X)
