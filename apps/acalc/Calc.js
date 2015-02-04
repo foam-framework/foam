@@ -514,33 +514,7 @@ CLASS({
 });
 
 
-// HACK: The buttons don't draw using the Roboto font because it isn't loaded yet.
-// So we wait a second, to give the font time to load, then redraw all the buttons.
-// TODO: Something better.
-CLASS({
-  name: 'ActionButtonCView2',
-  extendsModel: 'foam.graphics.ActionButtonCView',
-  methods: {
-    init: function() {
-      this.SUPER();
-      setTimeout(function() { this.view.paint(); }.bind(this), 1000);
-    },
-    toView_: function() {
-      var v = this.SUPER();
-      return v.decorate('toHTML', function(SUPER) { return '<div class="button">' + SUPER.call(this) + '</div>';}, v.toHTML);
-    }
-  }
-});
-
-var CalcButton = ActionButtonCView2.xbind({
-  color:      'white',
-  background: '#4b4b4b',
-  width:      60,
-  height:     60,
-  font:       '300 28px RobotoDraft',
-  role:       'button'
-});
-
+var CalcButton = getCalcButton();
 
 CLASS({
   name: 'CalcView',

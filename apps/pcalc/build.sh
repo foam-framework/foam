@@ -1,9 +1,21 @@
 BASEDIR=$(dirname "$0")
 cd "$BASEDIR"
 
-#   Templates.js \
+if [ ! -d ../../bower_components/paper-button ]; then
+    pushd ../../
+    sh ./get-polymer.sh > /dev/null
+    popd
+fi
 
-export BUILD_DIR=~/Downloads/acalc
+LINK_FILES=( "Calc.html" "AppCalc.html" "bg.js" "Calc.js" "Tests.html" "Opt.js" "fonts" "icons" "_locales" )
+
+for FILE in ${LINK_FILES[@]}; do
+  if [ ! -h "./$FILE" ]; then
+      ln -s "../acalc/$FILE" "./$FILE"
+  fi
+done
+
+export BUILD_DIR=~/Downloads/pcalc
 rm -rf $BUILD_DIR
 mkdir $BUILD_DIR
 cp -r . $BUILD_DIR
@@ -18,7 +30,6 @@ cat \
   ../../core/JSONParser.js \
   ../../core/TemplateUtil.js \
   ../../core/ChromeEval.js \
-  Opt.js \
   ../../core/FOAM.js \
   ../../core/FObject.js \
   ../../core/BootstrapModel.js \
@@ -30,16 +41,17 @@ cat \
   ../../js/foam/ui/Window.js \
   ../../core/value.js \
   ../../core/view.js \
-  ../../js/foam/ui/SlidePanel.js \
+  ../../core/view2.js \
+  ../../core/layout.js \
   ../../core/AbstractDAOView.js \
   ../../core/DAOListView.js \
   ../../core/DetailView.js \
   ../../js/foam/patterns/ChildTreeTrait.js \
   ../../js/foam/graphics/AbstractCViewView.js \
+  ../../js/foam/graphics/PositionedCViewView.js \
+  ../../js/foam/graphics/CViewView.js \
   ../../js/foam/graphics/CView.js \
   ../../js/foam/graphics/Circle.js \
-  ../../js/foam/graphics/CViewView.js \
-  ../../js/foam/graphics/ActionButtonCView.js \
   ../../core/HTMLParser.js \
   ../../core/visitor.js \
   ../../core/dao.js \
@@ -52,6 +64,13 @@ cat \
   ../../js/foam/i18n/ChromeMessagesBuilder.js \
   ../../js/foam/i18n/ChromeMessagesExtractor.js \
   ../../js/foam/i18n/GlobalController.js \
+  ../../js/foam/ui/polymer/View.js \
+  ../../js/foam/ui/polymer/gen/View.js \
+  ../../js/foam/ui/polymer/gen/AutoBinding.js \
+  ../../js/foam/ui/polymer/gen/PaperShadow.js \
+  ../../js/foam/ui/polymer/gen/PaperRipple.js \
+  ../../js/foam/ui/polymer/gen/PaperButtonBase.js \
+  ../../js/foam/ui/polymer/gen/PaperButton.js \
   CalcConfig.js \
   Calc.js \
   | sed 's/^ *//g' \

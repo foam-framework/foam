@@ -1161,7 +1161,7 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-  <span id="<%= this.id %>" style="position:relative"><div %%cssClassAttr() style="position:absolute"><%= this.view %></div></span>
+  <span id="<%= this.id %>" style="position:relative"><div <%= this.cssClassAttr() %> style="position:absolute"><%= this.view %></div></span>
     */}
   ]
 });

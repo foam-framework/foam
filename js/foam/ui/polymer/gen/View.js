@@ -45,17 +45,19 @@ CLASS({
   templates: [
     function toHTML() {/*
       <{{{this.tagName}}} id="{{{this.id}}}"
-      <% for ( var i = 0; i < this.POLYMER_PROPERTIES.length; ++i ) {
-           var propName = this.POLYMER_PROPERTIES[i];
-           if ( this[propName] ) { %>
-             <%= propName %>
-             <% if ( this[propName] !== true ) { %>
-               ="<%= this[propName] %>"
-             <% }
-           }
-         } %>
-      >{{this.content}}
-     </{{{this.tagName}}}>
+        class="{{{this.className}}} {{{this.extraClassName}}}"
+        <% for ( var i = 0; i < this.POLYMER_PROPERTIES.length; ++i ) {
+             var propName = this.POLYMER_PROPERTIES[i];
+             if ( this[propName] ) { %>
+               <%= propName %>
+               <% if ( this[propName] !== true ) { %>
+                 ="<%= this[propName] %>"
+               <% }
+             }
+           } %>
+        >
+        {{this.content}}
+      </{{{this.tagName}}}>
     */}
   ]
 });

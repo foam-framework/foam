@@ -19,8 +19,11 @@ CLASS({
   name: 'ContextMutablePropertyTrait',
   package: 'foam.patterns',
   
-  documentation: function() {/* For Properties that would otherwise be imported by reference
-    (imports: ['prop$']), this trait allows the property to be imported but unlinked
+  requires: ['SimpleValue'],
+  
+  documentation: function() {/* For Properties that would otherwise be imported
+    by reference (imports: ['prop$'], exports: ['prop$']), this trait allows
+    the property to be imported but unlinked
     when the value is changed locally. Children will see the new value, but ancestors
     will not. Ancestor changes are no longer propagated once a local change is made.
   */},
@@ -33,19 +36,31 @@ CLASS({
         var actualInit = this.init;
         var propXBindName = prop.name + "$";
         var propListenerName = prop.name + "$XListener";
+        var propImport = prop.name + "$ImportedValue";
+        var propHiddenExport = prop.name + "$ExportedValue";
          
         var setUpListener = function() {
           this.instance_[propListenerName] = function(_,_,old,nu) {
             // don't trigger our modified setter that captures non-inherited change events
             actualSetter.apply(this, [nu]);
           }.bind(this);
-          this.X[propXBindName].addListener(this.instance_[propListenerName] );
+          
+          this.instance_[propHiddenExport] = this.SimpleValue.create(this.X[propXBindName].value);
+          this.instance_[propImport] = this.X[propXBindName]; // save for future unlistening 
+          this.instance_[propImport].addListener(this.instance_[propListenerName] );
+          Events.follow(this[propXBindName], this.instance_[propImport]);
+          
+          // 'export' our hidden Value, replacing the imported one
+          this.X.set(propXBindName, this.instance_[propHiddenExport]);
+          this.instance_[propHiddenExport].addListener(this.instance_[propListenerName] );
+          Events.follow(this[propXBindName], this.instance_[propHiddenExport]);
         };
         var tearDownListener = function() {
           if ( this.instance_[propListenerName] ) {
-            this.X[propXBindName].removeListener(this.instance_[propListenerName]);
+            this.instance_[propImport].removeListener(this.instance_[propListenerName] );
+            Events.unfollow(this[propXBindName], this.instance_[propImport]);
           }
-          this.instance_[propListenerName] = undefined;          
+          this.instance_[propListenerName] = undefined;
         };
 
         // replace init
@@ -66,6 +81,7 @@ CLASS({
           
           return actualSetter.apply(this, [nu]);
         });
+      }
     }
   ]
   
