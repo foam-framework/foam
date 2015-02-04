@@ -1434,10 +1434,6 @@ CLASS({
       var X = this.X;
       this.delegate.find(id, {
         put: function(o) {
-          // TODO: Remove this when all DAOs clone on  .find()
-          o = o.clone();
-
-
           o.X = X;
           sink && sink.put && sink.put(o);
         },

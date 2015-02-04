@@ -67,6 +67,7 @@ CLASS({
         return this.DelayedDAO.create({
           delegate: this.GUIDDAO.create({
             delegate: this.CloningDAO.create({
+              onSelect: true,
               delegate: MDAO.create({ model: this.Abc }),
             })
           })
