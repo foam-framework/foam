@@ -105,10 +105,10 @@ FOAM.browse = function(model, opt_dao, opt_X) {
 
   if ( ! Y.stack ) {
     var w = opt_X ? opt_X.window : window;
-    var win = Y.Window.create({ window: w });
-
     Y.stack = Y.StackView.create();
-    win.view = Y.stack;
+    var win = Y.Window.create({ window: w, data: Y.stack });
+    document.body.insertAdjacentHTML('beforeend', win.toHTML());
+    win.initHTML();
     Y.stack.setTopView(ctrl);
   } else {
     Y.stack.pushView(ctrl);
