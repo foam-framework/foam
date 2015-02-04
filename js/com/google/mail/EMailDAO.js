@@ -58,7 +58,9 @@ CLASS({
           var future = afuture();
           this.persistentContext.bindObject('remoteDao',
                                             this.GMailMessageDAO)(future.set);
-          return this.FutureDAO.create({ future: future.get });
+          return this.GMailToEMailDAO.create({
+            delegate: this.FutureDAO.create({ future: future.get })
+          });
         }
         return this.NullDAO.create();
       }
@@ -88,7 +90,7 @@ CLASS({
           if ( c.count === 0 ) {
             this.StripPropertiesDAO.create({
               delegate: this.remoteDao,
-              propertyNames: ['SERVER_ID']
+              propertyNames: ['serverVersion']
             }).where(EQ(this.EMail.LABELS, 'INBOX')).limit(100).select(dao);
           }
         }.bind(this));
@@ -109,9 +111,7 @@ CLASS({
                 }
               })
             }),
-            remote: this.GMailToEMailDAO.create({
-              delegate: this.remoteDao
-            }),
+            remote: this.remoteDao,
             localVersionProp: this.EMail.CLIENT_VERSION,
             remoteVersionProp: this.EMail.SERVER_VERSION,
             deletedProp: this.EMail.DELETED,
