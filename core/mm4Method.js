@@ -992,9 +992,7 @@ CLASS({
     'name'
   ],
 
-  documentation: {
-    model_: 'Documentation',
-    body: function() {/*
+  documentation: function() {/*
       <p>The $$DOC{ref:'Documentation'} model is used to store documentation text to
       describe the use of other models. Set the $$DOC{ref:'Model.documentation'} property
       of your model and specify the body text:</p>
@@ -1009,8 +1007,7 @@ CLASS({
             "your doc text" </p>
         </li>
       </ul>
-    */}
-  },
+    */},
 
   properties: [
     {
