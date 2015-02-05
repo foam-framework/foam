@@ -215,6 +215,56 @@ var RegisterDevDocs = function(opt_X) {
 
   bookList.push(
     X.DocumentationBook.create({
+      name: 'DAO',
+      package: 'developerDocs',
+
+      label: "Data Access Objects",
+
+      body: function() {/*
+        Most applications require a data layer, whether that be a REST service, database, or file system.
+        FOAM abstracts all these behind the DAO and Sink interfaces. Since everything uses the same
+        interface, layers of caching, offline access, filtering, or merging can be added to any data
+        source. 
+      */},
+      chapters: [
+        {
+          name: 'api',
+          label: 'Using a DAO and Sink',
+          model_: 'Documentation',
+          body: function() {/*
+            A Sink is an object that can hold items. The interface has only four methods:</p>
+            <ul>
+              <li><code>put</code>: called to put an item into the Sink</li>
+              <li><code>remove</code>: called to remove an item into the Sink</li>
+              <li><code>eof</code>: called to indicate that operations are finished</li>
+              <li><code>error</code>: called to indicate an error has terminated operations</li>
+            </ul>
+            <p>This means that you can generate a Sink as simply as:</p>
+            <p><code>{ put: function(item) { console.log(item); } }</code></p>
+            <p>A DAO is a Sink with some extra querying methods:</p>
+            <ul>
+              <li><code>select</code>: dump the contents to the given Sink</li>
+              <li><code>where</code>: return a DAO equivalent to the current one filtered by the given predicates</li>
+              <li><code>listen</code>: continuouslyupdate the given sink with all future changes</li>
+              <li><code>pipe</code>: select() then listen()</li>
+            </ul>
+            <p>All DAO operations are asynchronous. When requesting a <code>select</code>, it will
+            return immediately but the Sink you have specified may not yet have been updated.</p>
+            <p><code>
+            var mySink = [].dao; // use an array as a DAO<br/>
+            myDAO.select(mySink); // select into it<br/>
+            // no guarantees mySink has anything yet!
+            </code></p>
+            <p>Since DAOs are asynchronous, you can't just ask for the number of items. To get
+            a count of the number of items in a DAO, use the COUNT() Sink:</p>
+            <p><code>myDAO.select(COUNT())(function(c) { console.log("my count is ", c); });</code></p>
+          */}
+        }
+      ]
+    })
+  );
+  bookList.push(
+    X.DocumentationBook.create({
       name: 'Context',
       package: 'developerDocs',
 
