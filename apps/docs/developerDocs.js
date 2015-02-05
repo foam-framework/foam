@@ -529,24 +529,44 @@ var RegisterDevDocs = function(opt_X) {
       label: "FOAM Views",
 
       body: function() {/*
-        <p>A $$DOC{ref:'View'} in FOAM is simply a $$DOC{ref:'Model'} designed to nest
-        inside other $$DOC{ref:'View',usePlural:true} and perform layout if necessary.
-        The currently available $$DOC{ref:'View',usePlural:true} are DOM based for browser
-        use, and have some HTML centric properties. You'll find the hardest part of your
-        $$DOC{ref:'View'} experience in tweaking your CSS.</p>
-
+        A $$DOC{ref:'View'} in FOAM is simply a $$DOC{ref:'Model'} designed to nest
+        inside other $$DOC{ref:'View',usePlural:true} and perform layout if necessary.</p>
+        <p>The currently available $$DOC{ref:'View',usePlural:true} support DOM for browser
+        use, and have some HTML centric properties. Unlike many frameworks the $$DOC{ref:'View'}
+        itself lives outside the DOM, managing elements in the tree but existing as a
+        separate object.
       */},
       chapters: [
         {
           name: 'html',
-          label: 'HTML Views',
+          label: 'HTML View Lifecycle',
           model_: 'Documentation',
           body: function() {/*
-            <p>Some peculiarities of rendering into the DOM include connecting of DOM
-            listeners. You should implement at a minimum $$DOC{ref:'View.toInnerHTML'}() (or
-            $$DOC{ref:'View.toHTML'}() if you want to create the outermost element, as well).</p>
-            <p>When rendering, call $$DOC{ref:'View.toHTML'}(), insert the result into the DOM, then
-            call $$DOC{ref:'View.initHTML'}() to finish connecting it up.</p>
+            An HTML $$DOC{ref:'View'} must have a few pieces:</p>
+            <ul>
+              <li>$$DOC{ref:'View.toHTML'}: the method that provides the DOM content as a string or as
+                FOAM $$DOC{ref:'Template'} output.</li>
+              <li>$$DOC{ref:'View.initHTML'}: called after the DOM content is inserted, listeners can 
+                be connected here.</li>
+            </ul>
+            By a minimum implementation of the above, you can provide static content. By extending 
+            $$DOC{ref:'View'}, you can add some flexibility:
+            <ul>
+              <li>$$DOC{ref:'View.toInnerHTML'}: $$DOC{ref:'View'} will create your outer element for you, 
+                call toInnerHTML() to create the content. Each time updateHTML() is called, toInnerHTML()
+                will be invoked again to generate new content.
+              </li>
+              <li>$$DOC{ref:'View.initInnerHTML'}: In the case where your toInnerHTML() creates a DOM listener,
+                you may have to initialize it here. In most cases you don't need to supply this method.
+              </li>
+            </ul>
+            <p>You will frequently see toHTML/toInnerHTML begin with a call to 
+            <code>this.$$DOC{ref:'View.destroy'}</code>. Since
+            the method is generating new content, and therefore new children, teh extra destroy() call ensures that
+            the previous children are cleaned up.</p>
+            <p>If you have parts of your content that change frequently, consider breaking that part into a
+            separate sub-view. Updating the content of a child does not require the parent to update (though
+            a parent update will destroy the child and rebuild it).
           */}
         },
         {
@@ -560,7 +580,7 @@ var RegisterDevDocs = function(opt_X) {
             A $$DOC{ref:'View.toInnerHTML'} or $$DOC{ref:'View.toHTML'} $$DOC{ref:'Template'} is a
             common use.
             </p>
-            <p>Use the $$DOC{ref:'.',text:'$$'}propertyName{...} tag syntax to insert sub-views
+            <p>Use the $$DOC{ref:'developerDocs.Views',text:'$$'}propertyName{...} tag syntax to insert sub-views
             based on a $$DOC{ref:'Property'},
             or just call <code>&lt;%= this.mySubViewProperty.toHTML() %&gt;</code> to
             inject some HTML directly. Remember to call $$DOC{ref:'View.initHTML'}()
