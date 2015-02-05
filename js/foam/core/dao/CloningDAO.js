@@ -53,7 +53,7 @@ CLASS({
           var clone = o.deepClone();
           sink && sink.put && sink.put(clone);
         },
-        error: sink && sink.eof && sink.eof.bind(sink)
+        error: sink && sink.error && sink.error.bind(sink)
       });
     }
   }
