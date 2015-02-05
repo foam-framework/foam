@@ -453,7 +453,8 @@ var ArrayProperty = Model.create({
     {
       name: 'propertyToJSON',
       defaultValue: function(visitor, output, o) {
-        if ( ! this.transient && o[this.name].length ) output[this.name] = o[this.name];
+        if ( ! this.transient && o[this.name].length )
+          output[this.name] = visitor.visitArray(o[this.name]);
       }
     },
     {
