@@ -123,34 +123,7 @@ CLASS({
 });
 
 
-CLASS({
-  name: 'BaseView',
-  package: 'foam.ui',
-  
-  requires: ['foam.patterns.ContextMutablePropertyTrait'],
-  
-  documentation: function() {/* Provides the base for any model that will
-   belong to a view tree. $$DOC{ref:'.data'} may be ignored, allowing it
-   to propagate through the context. If specified, $$DOC{ref:'.data'} will be exported
-   as data$ to child views.
-  */},
-  
-  properties: [
-    {
-      name: 'data',
-      model_: 'foam.patterns.ContextMutablePropertyTrait'
-    },
-    {
-      name: 'childData',
-      help: 'Child data value provided to consumers.',
-      documentation: function() {/* 
-        The value provided to consumers child (children) of this provider.
-      */}
-    }
-  ],
 
-    
-});
 
 
 // View

@@ -248,8 +248,6 @@ var RegisterDevDocs = function(opt_X) {
           the instances you create, list them in $$DOC{ref:'Model.exports'}.
           You can also export a $$DOC{ref:'Model'} definition or a $$DOC{ref:'Property'}
           holding a model definition to cause dependency injection.
-          Note that your $$DOC{ref:'Model.exports'} don't show up in your own context.
-          Only instances you create (and their children) will see them.
           </li>
           </ul>
           </p>
