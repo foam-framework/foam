@@ -74,32 +74,7 @@ CLASS({
     {
       name: 'visitAllCurrentModels',
       code: function(visitors) {
-        var self = this;
-        var afuncs = [];
-        [
-          {
-            name: 'USED_MODELS',
-            coll: USED_MODELS
-          },
-          {
-            name: 'UNUSED_MODELS',
-            coll: UNUSED_MODELS
-          }
-        ].forEach(function(coll) {
-          if (!coll.coll) {
-            self.console.warn('Global 18n Controller: Attempt to visit ' +
-                'missing model collection: "' + coll.name + '"');
-            return;
-          }
-          Object.getOwnPropertyNames(coll.coll).forEach(
-              function(modelName) {
-                afuncs.push(arequire(modelName).aseq(function(ret, model) {
-                  self.visitModel(visitors, model);
-                  ret();
-                }));
-              });
-        });
-        return apar.apply(null, afuncs);
+        Object_forEach(USED_MODELS, this.visitModel.bind(this, visitors));
       }
     },
     {
@@ -131,12 +106,12 @@ CLASS({
   ]
 });
 
-X.i18nModel = (function() {
+setTimeout(function() {
   var i18nGC = X.foam.i18n.GlobalController.create();
   i18nGC.visitAllCurrentModels(
-      i18nGC.buildersList.concat(i18nGC.extractorsList))(anop);
-  return function(model, X, ret) {
+    i18nGC.buildersList.concat(i18nGC.extractorsList));
+  window.X.i18nModel = function(model, X, ret) {
     i18nGC.visitModel(i18nGC.buildersList.concat(i18nGC.extractorsList), model);
     ret && ret(model);
   };
-})();
+}, 0);

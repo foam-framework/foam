@@ -50,12 +50,10 @@ CLASS({
     find: function(key, sink) {
       return this.SUPER(key, {
         put: function(o) {
-          console.log("CloningDAO Got obj: ",  o.$UID);
           var clone = o.deepClone();
-          console.log("CloningDAO clone is: ", clone.$UID);
           sink && sink.put && sink.put(clone);
         },
-        error: sink && sink.eof && sink.eof.bind(sink)
+        error: sink && sink.error && sink.error.bind(sink)
       });
     }
   }

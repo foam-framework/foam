@@ -38,7 +38,7 @@ CLASS({
         var propListenerName = prop.name + "$XListener";
         var propImport = prop.name + "$ImportedValue";
         var propHiddenExport = prop.name + "$ExportedValue";
-         
+        
         var setUpListener = function() {
           this.instance_[propListenerName] = function(_,_,old,nu) {
             // don't trigger our modified setter that captures non-inherited change events

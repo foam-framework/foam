@@ -1,3 +1,20 @@
+/**
+ * @license
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 CLASS({
    "model_": "Model",
    "id": "com.google.mail.GMailToEMailDAO",
@@ -141,42 +158,46 @@ CLASS({
       {
          "model_": "Method",
          "name": "bToA",
-         "code": function (obj) {
-      var self= this;
-      var decode = function (str) {
-        var decoder = self.Base64Decoder.create({ sink: this.X.IncrementalUtf8.create() });
-        decoder.put(str);
-        decoder.eof();
-        return decoder.sink.string;
-      }
-
-      var body = '';
-      if (obj.payload && obj.payload.body && obj.payload.body.data) {
-        body = decode(obj.payload.body.data);
-      } else {
-        var parts = obj.payload.parts || [];
-        for (var i = 0; i < parts.length; i++) {
-          if (parts[i].body.data && parts[i].mimeType == 'text/html') {
-            body = decode(obj.payload.parts[i].body.data);
-            break;
+        "code": function (obj) {
+          var self= this;
+          var decode = function (str) {
+            var decoder = self.Base64Decoder.create({ sink: this.X.IncrementalUtf8.create() });
+            decoder.put(str);
+            decoder.eof();
+            return decoder.sink.string;
           }
-        }
-      }
 
-      var args = {
-        id: obj.id,
-        convId: obj.threadId,
-        labels: obj.labelIds,
-        serverVersion: obj.historyId,
-        // attachments: obj.attachments,
-        body: body,
-        snippet: obj.snippet,
-        deleted: obj.deleted
-      };
-      this.readHeaders(obj.payload.headers || [], args);
+          var body = '';
 
-      return this.EMail.create(args);
-    },
+          // Find the html body.
+          var plainBody;
+          var richBody;
+
+          (function go(part) {
+            if ( part.mimeType === 'text/plain' ) plainBody = part;
+            else if ( part.mimeType === 'text/html' ) richBody = part;
+            else if ( part.parts ) {
+              for ( var i = 0; i < part.parts.length; i++ ) go(part.parts[i]);
+            }
+          })(obj.payload);
+
+          if ( richBody ) body = decode(richBody.body.data);
+          else if ( plainBody ) body = '<pre>' + decode(plainBody.body.data) + '</pre>';
+
+          var args = {
+            id: obj.id,
+            convId: obj.threadId,
+            labels: obj.labelIds,
+            serverVersion: obj.historyId,
+            // attachments: obj.attachments,
+            body: body,
+            snippet: obj.snippet,
+            deleted: obj.deleted
+          };
+          this.readHeaders(obj.payload.headers || [], args);
+
+          return this.EMail.create(args);
+        },
          "args": []
       },
       {
