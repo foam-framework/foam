@@ -131,12 +131,12 @@ CLASS({
   ]
 });
 
-X.i18nModel = (function() {
+setTimeout(function() {
   var i18nGC = X.foam.i18n.GlobalController.create();
   i18nGC.visitAllCurrentModels(
       i18nGC.buildersList.concat(i18nGC.extractorsList))(anop);
-  return function(model, X, ret) {
+  window.X.i18nModel = function(model, X, ret) {
     i18nGC.visitModel(i18nGC.buildersList.concat(i18nGC.extractorsList), model);
     ret && ret(model);
   };
-})();
+}, 0);
