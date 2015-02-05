@@ -59,7 +59,7 @@ var RegisterDevDocs = function(opt_X) {
       label: 'Welcome to FOAM',
 
       body: function() {/*
-        <p>Congratulations on choosing the Feature Oriented Active Modeler. This
+        Congratulations on choosing the Feature Oriented Active Modeler. This
         guide will walk you through the first steps of getting to know FOAM, and
         how concepts from traditional programming languages map into FOAM.</p>
         <p>Also see the other overviews:
@@ -67,8 +67,8 @@ var RegisterDevDocs = function(opt_X) {
           <li>$$DOC{ref:'developerDocs.Context',text:'Context and Dependency Injection'}</li>
           <li>$$DOC{ref:'developerDocs.Events',text:'Reactive Events and Binding'}</li>
           <li>$$DOC{ref:'developerDocs.Views',text:'Views and HTML'}</li>
+          <li>$$DOC{ref:'developerDocs.DAO',text:'Data Access Objects'}</li>        
         </ul>
-        </p>
       */},
 
       chapters: [
@@ -77,7 +77,7 @@ var RegisterDevDocs = function(opt_X) {
           label: 'What is FOAM, exactly?',
           model_: 'Documentation',
           body: function() {/*
-            <p>FOAM is a modeling system to describe data and how it behaves, and
+            <FOAM is a modeling system to describe data and how it behaves, and
             from that generate entire apps. Data can be
             items from a database, $$DOC{ref:'View',usePlural:true} in a UI, or moves
             that a chess piece can make. If it's a thing that can be described with
@@ -111,7 +111,7 @@ var RegisterDevDocs = function(opt_X) {
               on top of your $$DOC{ref:'RestDAO'}. Want to swap the whole thing out at
               run time? Hide it behind a $$DOC{ref:'ProxyDAO'}
               and your app won't know the difference.  </li>
-            </ul></p>
+            </ul>
           */}
         },
         {
@@ -119,7 +119,7 @@ var RegisterDevDocs = function(opt_X) {
           label: 'Why Model?',
           model_: 'Documentation',
           body: function() {/*
-            <p>Traditional object-oriented classes are useful abstractions that provide
+            Traditional object-oriented classes are useful abstractions that provide
             structure to code, keeping data and the code to manage it in one place.
             But how does one add meta-data to a class? Javadocs uses special comments
             hacked in with a special parser, outside of the core language. Runtime-accessible
@@ -159,7 +159,7 @@ var RegisterDevDocs = function(opt_X) {
             $$DOC{ref:'Model'} definitions themselves are easy to store in a $$DOC{ref:'DAO'},
             pulling in features as they need them. This enables dynamic loading (if your
             chosen language supports it, like Javascript), or
-            providing features and code to the client based on run-time decisions.</p>
+            providing features and code to the client based on run-time decisions.
           */}
         },
         {
@@ -167,7 +167,7 @@ var RegisterDevDocs = function(opt_X) {
           label: 'Models in Action',
           model_: 'Documentation',
           body: function() {/*
-            <p>You've defined a $$DOC{ref:'Model'} or two, but what happens then? You can pull
+            You've defined a $$DOC{ref:'Model'} or two, but what happens then? You can pull
             a copy of your $$DOC{ref:'Model'} from the root context with <code>X['MyModelName']</code>
             or <code>X.MyModelName</code>, and create an instance of it with
             <code>X.MyModelName.create({args},X)</code>. But what kind of object did you pull?
@@ -205,7 +205,7 @@ var RegisterDevDocs = function(opt_X) {
             How do they create themselves before they are defined? The answer is to cheat
             during the bootstrap process. Temporary placeholders are filled in to build up
             $$DOC{ref:'Model'} and its components, and replaced with the final versions
-            at the end of the process.</p>
+            at the end of the process.
           */}
         }
 
@@ -215,13 +215,63 @@ var RegisterDevDocs = function(opt_X) {
 
   bookList.push(
     X.DocumentationBook.create({
+      name: 'DAO',
+      package: 'developerDocs',
+
+      label: "Data Access Objects",
+
+      body: function() {/*
+        Most applications require a data layer, whether that be a REST service, database, or file system.
+        FOAM abstracts all these behind the DAO and Sink interfaces. Since everything uses the same
+        interface, layers of caching, offline access, filtering, or merging can be added to any data
+        source. 
+      */},
+      chapters: [
+        {
+          name: 'api',
+          label: 'Using a DAO and Sink',
+          model_: 'Documentation',
+          body: function() {/*
+            A Sink is an object that can hold items. The interface has only four methods:</p>
+            <ul>
+              <li><code>put</code>: called to put an item into the Sink</li>
+              <li><code>remove</code>: called to remove an item into the Sink</li>
+              <li><code>eof</code>: called to indicate that operations are finished</li>
+              <li><code>error</code>: called to indicate an error has terminated operations</li>
+            </ul>
+            <p>This means that you can generate a Sink as simply as:</p>
+            <p><code>{ put: function(item) { console.log(item); } }</code></p>
+            <p>A DAO is a Sink with some extra querying methods:</p>
+            <ul>
+              <li><code>select</code>: dump the contents to the given Sink</li>
+              <li><code>where</code>: return a DAO equivalent to the current one filtered by the given predicates</li>
+              <li><code>listen</code>: continuouslyupdate the given sink with all future changes</li>
+              <li><code>pipe</code>: select() then listen()</li>
+            </ul>
+            <p>All DAO operations are asynchronous. When requesting a <code>select</code>, it will
+            return immediately but the Sink you have specified may not yet have been updated.</p>
+            <p><code>
+            var mySink = [].dao; // use an array as a DAO<br/>
+            myDAO.select(mySink); // select into it<br/>
+            // no guarantees mySink has anything yet!
+            </code></p>
+            <p>Since DAOs are asynchronous, you can't just ask for the number of items. To get
+            a count of the number of items in a DAO, use the COUNT() Sink:</p>
+            <p><code>myDAO.select(COUNT())(function(c) { console.log("my count is ", c); });</code></p>
+          */}
+        }
+      ]
+    })
+  );
+  bookList.push(
+    X.DocumentationBook.create({
       name: 'Context',
       package: 'developerDocs',
 
       label: "Contexts",
 
       body: function() {/*
-        <p>Contexts are collections of external variables that provide a way to control the
+        Contexts are collections of external variables that provide a way to control the
           apparent global environment of each $$DOC{ref:'Model'} instance at
           run time. You can replace $$DOC{ref:'Model'} definitions, make values or references,
           and spawn sub-contexts to limit what your child instances can see. Internally,
@@ -248,8 +298,6 @@ var RegisterDevDocs = function(opt_X) {
           the instances you create, list them in $$DOC{ref:'Model.exports'}.
           You can also export a $$DOC{ref:'Model'} definition or a $$DOC{ref:'Property'}
           holding a model definition to cause dependency injection.
-          Note that your $$DOC{ref:'Model.exports'} don't show up in your own context.
-          Only instances you create (and their children) will see them.
           </li>
           </ul>
           </p>
@@ -258,7 +306,7 @@ var RegisterDevDocs = function(opt_X) {
           the parent, but the child <em>is</em> allowed to modify the contents
           of a $$DOC{ref:'Property'} the parent had previously exported.
           This means you can communicate information back up to parents
-          without knowing what those parents are, only that they exported a particular value.</p>
+          without knowing what those parents are, only that they exported a particular value.
         */},
       chapters: [
         {
@@ -266,7 +314,7 @@ var RegisterDevDocs = function(opt_X) {
           label: 'Context in Practice',
           model_: 'Documentation',
           body: function() {/*
-          <p>This example demonstrates how imports and exports are passed down through
+          This example demonstrates how imports and exports are passed down through
           the creation chain. In this example, <code>Bank</code> creates one or more
           <code>Accounts</code>, and <code>Account</code> creates a one or
           more <code>Transactions</code>.</p>
@@ -301,7 +349,7 @@ var RegisterDevDocs = function(opt_X) {
                 $$DOC{ref:'Model'} names can also be done for easy mocking.
                 </li>
               </ul>
-             </p>
+             
           */}
         }
       ]
@@ -423,12 +471,12 @@ var RegisterDevDocs = function(opt_X) {
       label: "The FOAM Event and Binding System",
 
       body: function() {/*
-        <p>Events and Data Binding are critical concepts in FOAM. Any property or
+        Events and Data Binding are critical concepts in FOAM. Any property or
         object can listen for and respond to events, or trigger events to other
         objects that may be listening to it. Data Binding automatically progagates
         value changes (including changes to the contents of a $$DOC{ref:'DAO'}) to
         bound objects, rippling values through the system without requiring any code
-        to move information from one step to the next.</p>
+        to move information from one step to the next.
       */},
       chapters: [
         {
@@ -436,7 +484,7 @@ var RegisterDevDocs = function(opt_X) {
           label: 'What are Events in FOAM?',
           model_: 'Documentation',
           body: function() {/*
-            <p>FOAM uses a publish/subscribe system for events between objects. Listeners
+            FOAM uses a publish/subscribe system for events between objects. Listeners
             must subscribe (or 'listen') to a particular sender object, and are notified
             when a published event is sent.</p>
             <p>The most common type of event is a property change, which is used to notify
@@ -444,7 +492,7 @@ var RegisterDevDocs = function(opt_X) {
             the system, reactive programming emerges.</p>
             <p>Animation is also handled by the event system, and by merging repeated events
             (such as multiple value changes during a single animation frame), the event system
-            efficiently handles very large sets of frequently triggered events.</p>
+            efficiently handles very large sets of frequently triggered events.
           */}
         },
         {
@@ -452,7 +500,7 @@ var RegisterDevDocs = function(opt_X) {
           label: 'Binding',
           model_: 'Documentation',
           body: function() {/*
-            <p>Binding takes care of the publishing and subscribing for you. Just use
+            Binding takes care of the publishing and subscribing for you. Just use
             <code>Events.follow(src,dst)</code> to bind
             a source value to a target value, and changes to the source will automatically
             be applied to the target:</p>
@@ -493,7 +541,7 @@ var RegisterDevDocs = function(opt_X) {
           label: 'Publishing and Subscribing',
           model_: 'Documentation',
           body: function() {/*
-            <p>To publish an event, simply invent a topic name. The topic is the type of
+            To publish an event, simply invent a topic name. The topic is the type of
             event, and used to filter listeners so they only receive notification when
             the topic they are interested in is triggered. Example topics would include
             'property', 'keydown', 'remove', 'selected', or whatever is relevant to your
@@ -505,7 +553,7 @@ var RegisterDevDocs = function(opt_X) {
             <code>this.publishAsync('topicName', opt_args)</code> will return immediately and notify
             the listeners later.</p>
             <p>Listeners receive the optional arguments, if provided. Property changes, for
-            instance, will send the old and new values for the listener to reference.</p>
+            instance, will send the old and new values for the listener to reference.
           */}
         },
         {
@@ -513,8 +561,8 @@ var RegisterDevDocs = function(opt_X) {
           label: 'Animation',
           model_: 'Documentation',
           body: function() {/*
-            <p>FOAM includes an animation building system that naturally extends the
-            event system. See event.js:Movement.</p>
+            FOAM includes an animation building system that naturally extends the
+            event system. See event.js:Movement.
           */}
         }
 
@@ -531,24 +579,44 @@ var RegisterDevDocs = function(opt_X) {
       label: "FOAM Views",
 
       body: function() {/*
-        <p>A $$DOC{ref:'View'} in FOAM is simply a $$DOC{ref:'Model'} designed to nest
-        inside other $$DOC{ref:'View',usePlural:true} and perform layout if necessary.
-        The currently available $$DOC{ref:'View',usePlural:true} are DOM based for browser
-        use, and have some HTML centric properties. You'll find the hardest part of your
-        $$DOC{ref:'View'} experience in tweaking your CSS.</p>
-
+        A $$DOC{ref:'View'} in FOAM is simply a $$DOC{ref:'Model'} designed to nest
+        inside other $$DOC{ref:'View',usePlural:true} and perform layout if necessary.</p>
+        <p>The currently available $$DOC{ref:'View',usePlural:true} support DOM for browser
+        use, and have some HTML centric properties. Unlike many frameworks the $$DOC{ref:'View'}
+        itself lives outside the DOM, managing elements in the tree but existing as a
+        separate object.
       */},
       chapters: [
         {
           name: 'html',
-          label: 'HTML Views',
+          label: 'HTML View Lifecycle',
           model_: 'Documentation',
           body: function() {/*
-            <p>Some peculiarities of rendering into the DOM include connecting of DOM
-            listeners. You should implement at a minimum $$DOC{ref:'View.toInnerHTML'}() (or
-            $$DOC{ref:'View.toHTML'}() if you want to create the outermost element, as well).</p>
-            <p>When rendering, call $$DOC{ref:'View.toHTML'}(), insert the result into the DOM, then
-            call $$DOC{ref:'View.initHTML'}() to finish connecting it up.</p>
+            An HTML $$DOC{ref:'View'} must have a few pieces:</p>
+            <ul>
+              <li>$$DOC{ref:'View.toHTML'}: the method that provides the DOM content as a string or as
+                FOAM $$DOC{ref:'Template'} output.</li>
+              <li>$$DOC{ref:'View.initHTML'}: called after the DOM content is inserted, listeners can 
+                be connected here.</li>
+            </ul>
+            By a minimum implementation of the above, you can provide static content. By extending 
+            $$DOC{ref:'View'}, you can add some flexibility:
+            <ul>
+              <li>$$DOC{ref:'View.toInnerHTML'}: $$DOC{ref:'View'} will create your outer element for you, 
+                call toInnerHTML() to create the content. Each time updateHTML() is called, toInnerHTML()
+                will be invoked again to generate new content.
+              </li>
+              <li>$$DOC{ref:'View.initInnerHTML'}: In the case where your toInnerHTML() creates a DOM listener,
+                you may have to initialize it here. In most cases you don't need to supply this method.
+              </li>
+            </ul>
+            <p>You will frequently see toHTML/toInnerHTML begin with a call to 
+            <code>this.$$DOC{ref:'View.destroy'}</code>. Since
+            the method is generating new content, and therefore new children, teh extra destroy() call ensures that
+            the previous children are cleaned up.</p>
+            <p>If you have parts of your content that change frequently, consider breaking that part into a
+            separate sub-view. Updating the content of a child does not require the parent to update (though
+            a parent update will destroy the child and rebuild it).
           */}
         },
         {
@@ -556,17 +624,17 @@ var RegisterDevDocs = function(opt_X) {
           label: 'Templates in Views',
           model_: 'Documentation',
           body: function() {/*
-            <p>$$DOC{ref:'Template',usePlural:true} provide a convenient way of
+            $$DOC{ref:'Template',usePlural:true} provide a convenient way of
             expressing blocks of HTML in your $$DOC{ref:'View',usePlural:true}.
             $$DOC{ref:'Template',usePlural:true} are compiled into $$DOC{ref:'Method',usePlural:true}.
             A $$DOC{ref:'View.toInnerHTML'} or $$DOC{ref:'View.toHTML'} $$DOC{ref:'Template'} is a
             common use.
             </p>
-            <p>Use the $$DOC{ref:'.',text:'$$'}propertyName{...} tag syntax to insert sub-views
+            <p>Use the $$DOC{ref:'developerDocs.Views',text:'$$'}propertyName{...} tag syntax to insert sub-views
             based on a $$DOC{ref:'Property'},
             or just call <code>&lt;%= this.mySubViewProperty.toHTML() %&gt;</code> to
             inject some HTML directly. Remember to call $$DOC{ref:'View.initHTML'}()
-            afterwards.</p>
+            afterwards.
           */}
         },
         {
@@ -574,7 +642,7 @@ var RegisterDevDocs = function(opt_X) {
           label: 'Automatic View Creation',
           model_: 'Documentation',
           body: function() {/*
-            <p>$$DOC{ref:'DetailView',usePlural:true} in FOAM feed from a $$DOC{ref:'DetailView.data'}
+            $$DOC{ref:'DetailView',usePlural:true} in FOAM feed from a $$DOC{ref:'DetailView.data'}
             $$DOC{ref:'Property'}, by default using introspection to examine all the
             $$DOC{ref:'Property',usePlural:true} of the $$DOC{ref:'Model'} provided
             and display them.</p>
@@ -582,7 +650,7 @@ var RegisterDevDocs = function(opt_X) {
             and it picks the appropriate $$DOC{ref:'View'} model.</p>
             <p>Often a $$DOC{ref:'Property.view'} will be specified as part of a
             $$DOC{ref:'Property'} definition. This instructs $$DOC{ref:'DetailView'}
-            exactly which type of $$DOC{ref:'View'} to use.</p>
+            exactly which type of $$DOC{ref:'View'} to use.
           */}
         },
         {
@@ -590,13 +658,13 @@ var RegisterDevDocs = function(opt_X) {
           label: 'CSS in Views',
           model_: 'Documentation',
           body: function() {/*
-            <p>You can attach CSS directly to your $$DOC{ref:'View'} by implementing the
+            You can attach CSS directly to your $$DOC{ref:'View'} by implementing the
             .CSS() $$DOC{ref:'Method'} or $$DOC{ref:'Template'}. When the view's
             $$DOC{ref:'Model'} is accessed, the CSS is installed into the document, ready
             for rendering.
             $$DOC{ref:'View',usePlural:true} can control their individual style attributes
             by setting $$DOC{ref:'View.extraClassName'} inside a submodel, or at run time by
-            setting $$DOC{ref:'View.className'}.</p>
+            setting $$DOC{ref:'View.className'}.
           */}
         }
 
@@ -612,7 +680,7 @@ var RegisterDevDocs = function(opt_X) {
       label: "Javascript Arrays as Data Access Objects",
 
         body: function() {/*
-          <p>To provide a convenient way to interact with Javascript libraries and
+          To provide a convenient way to interact with Javascript libraries and
           for quick coding, Javascript arrays are augmented with $$DOC{ref:'DAO'}
           methods in FOAM. This means you can pass an array as a $$DOC{ref:'Sink'}
           to receive output from a $$DOC{ref:'DAO.select',text:'.select(outArray)'},
@@ -632,7 +700,7 @@ var RegisterDevDocs = function(opt_X) {
                    myArray.dao; // myArray will now check for duplicates<br/>
                    ...</br>
                    myArray.sink; // switch back to fast mode. The contents are unchanged.<br/>
-          </code></p>
+          </code>
         */}
     })
   );

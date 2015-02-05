@@ -123,34 +123,7 @@ CLASS({
 });
 
 
-CLASS({
-  name: 'BaseView',
-  package: 'foam.ui',
-  
-  requires: ['foam.patterns.ContextMutablePropertyTrait'],
-  
-  documentation: function() {/* Provides the base for any model that will
-   belong to a view tree. $$DOC{ref:'.data'} may be ignored, allowing it
-   to propagate through the context. If specified, $$DOC{ref:'.data'} will be exported
-   as data$ to child views.
-  */},
-  
-  properties: [
-    {
-      name: 'data',
-      model_: 'foam.patterns.ContextMutablePropertyTrait'
-    },
-    {
-      name: 'childData',
-      help: 'Child data value provided to consumers.',
-      documentation: function() {/* 
-        The value provided to consumers child (children) of this provider.
-      */}
-    }
-  ],
 
-    
-});
 
 
 // View
@@ -1506,10 +1479,10 @@ CLASS({
   properties: [
     {
       model_: 'BooleanProperty',
-      name: 'hidden',
+      name: 'isHidden',
       defaultValue: false,
-      postSet: function(_, hidden) {
-        if ( this.dao && ! hidden ) this.onDAOUpdate();
+      postSet: function(_, isHidden) {
+        if ( this.dao && ! isHidden ) this.onDAOUpdate();
       }
     },
     {
@@ -1548,7 +1521,7 @@ CLASS({
     },
     {
       name: 'chunksLoaded',
-      hidden: true,
+      isHidden: true,
       defaultValue: 1,
       help: 'The number of chunks currently loaded.'
     }
@@ -1560,11 +1533,11 @@ CLASS({
 
       var self = this;
       this.subscribe(this.ON_HIDE, function() {
-        self.hidden = true;
+        self.isHidden = true;
       });
 
       this.subscribe(this.ON_SHOW, function() {
-        self.hidden = false;
+        self.isHidden = false;
       });
 
       // bind to selection, if present
@@ -1589,7 +1562,7 @@ CLASS({
         this.scrollContainer.addEventListener('scroll', this.onScroll, false);
       }
 
-      if ( ! this.hidden ) this.updateHTML();
+      if ( ! this.isHidden ) this.updateHTML();
     },
 
     updateHTML: function() {
@@ -1675,7 +1648,7 @@ CLASS({
       name: 'realDAOUpdate',
       isFramed: true,
       code: function() { 
-        if ( ! this.hidden ) this.updateHTML(); 
+        if ( ! this.isHidden ) this.updateHTML(); 
       }
     },
     {
