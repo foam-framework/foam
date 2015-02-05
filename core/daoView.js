@@ -583,6 +583,7 @@ CLASS({
         for ( var i = 0 ; i < homeless.length ; i++ ) {
           var h = homeless[i];
           var x = self.cache[h];
+          if (!x) continue;
 
           if ( this.extraRows.length ) {
             var r = this.extraRows.shift();
