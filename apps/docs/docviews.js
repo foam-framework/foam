@@ -135,7 +135,8 @@ CLASS({
               
               'foam.documentation.ModelSummaryDocView',
               'foam.documentation.InterfaceSummaryDocView',
-              'foam.documentation.DocumentationBookSummaryDocView'
+              'foam.documentation.DocumentationBookSummaryDocView',
+              'foam.documentation.DocChaptersView'
               
 
   ],

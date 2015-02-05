@@ -1506,10 +1506,10 @@ CLASS({
   properties: [
     {
       model_: 'BooleanProperty',
-      name: 'hidden',
+      name: 'isHidden',
       defaultValue: false,
-      postSet: function(_, hidden) {
-        if ( this.dao && ! hidden ) this.onDAOUpdate();
+      postSet: function(_, isHidden) {
+        if ( this.dao && ! isHidden ) this.onDAOUpdate();
       }
     },
     {
@@ -1548,7 +1548,7 @@ CLASS({
     },
     {
       name: 'chunksLoaded',
-      hidden: true,
+      isHidden: true,
       defaultValue: 1,
       help: 'The number of chunks currently loaded.'
     }
@@ -1560,11 +1560,11 @@ CLASS({
 
       var self = this;
       this.subscribe(this.ON_HIDE, function() {
-        self.hidden = true;
+        self.isHidden = true;
       });
 
       this.subscribe(this.ON_SHOW, function() {
-        self.hidden = false;
+        self.isHidden = false;
       });
 
       // bind to selection, if present
@@ -1589,7 +1589,7 @@ CLASS({
         this.scrollContainer.addEventListener('scroll', this.onScroll, false);
       }
 
-      if ( ! this.hidden ) this.updateHTML();
+      if ( ! this.isHidden ) this.updateHTML();
     },
 
     updateHTML: function() {
@@ -1675,7 +1675,7 @@ CLASS({
       name: 'realDAOUpdate',
       isFramed: true,
       code: function() { 
-        if ( ! this.hidden ) this.updateHTML(); 
+        if ( ! this.isHidden ) this.updateHTML(); 
       }
     },
     {
