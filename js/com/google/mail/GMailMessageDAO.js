@@ -539,46 +539,62 @@ CLASS({
       {
          "model_": "Method",
          "name": "selectFromHistory_",
-         "code": function (sink, historyId) {
-      sink = sink || [];
-      var fc = this.createFlowControl_();
-      var self = this;
-      var future = afuture();
-      this.historyDao.where(GT(this.GMailHistory.ID, historyId))
-        .select()(function(items) {
-          if ( items && items.length ) {
-            var pars = [];
-            items.forEach(function(i) {
-              i.messages.forEach(function(j) {
-                pars.push(function(ret) {
-                  self.find(j.id, {
-                    put: ret,
-                    error: ret
-                  });
-                });
-              });
-            });
-          }
-          aseq(
-            apar.apply(null, pars),
-            function(ret) {
-              var args = argsToArray(arguments);
-              args.shift();
-              for ( var i = 0; i < args.length && ! fc.stopped; i++ ) {
-                if ( fc.errorEvt ) {
-                  sink.error && sink.error(fc.errorEvt);
-                  future.set(sink);
-                  return;
-                }
-                if ( args[i] ) sink && sink.put(args[i], null, fc);
+        "code": function (sink, historyId) {
+          sink = sink || [];
+          var fc = this.createFlowControl_();
+          var self = this;
+          var future = afuture();
+          this.historyDao.where(GT(this.GMailHistory.ID, historyId))
+            .select()(function(items) {
+              if ( ! items || ! items.length ) {
+                future.set(sink);
+                return;
               }
-              sink.eof && sink.eof();
-              future.set(sink);
-              ret();
-            })(function(){});
-        });
-      return future.get;
-    },
+              var next = (function() {
+                var i = 0;
+                var j = 0;
+                var item = items[0];
+                return function me() {
+                  if ( ! item ) return null;
+                  if ( item.messages && item.messages[j] ) return item.messages[j++];
+                  j = 0;
+                  item = items[++i];
+                  return me();
+                }
+              })();
+              var current;
+              awhile(
+                function() {
+                  current = next();
+                  return current && ! fc.stopped;
+                },
+                aseq(
+                  function(ret) {
+                    self.find(current.id, {
+                      put: ret,
+                      error: function() {
+                        sink.error && sink.error.apply(sink, arguments);
+                        future.set(sink);
+                        return;
+                      }
+                    });
+                  },
+                  function(ret, obj) {
+                    if ( fc.errorEvt ) {
+                      sink.error && sink.error(fc.errorEvt);
+                      future.set(sink);
+                      return;
+                    }
+                    sink.put && sink.put(obj, null, fc);
+                    ret();
+                  }))(function() {
+                    sink.eof && sink.eof();
+                    future.set(sink);
+                    return;
+                  });
+            });
+          return future.get;
+        },
          "args": []
       },
       {
