@@ -51,7 +51,8 @@ CLASS({
     initHTML: function() {
       this.SUPER();
       this.window.addEventListener('resize', this.onResize);
-      this.onResize();
+      this.width = this.$.clientWidth;
+      this.height = this.$.clientHeight;
     },
     destroy: function() {
       this.SUPER();
