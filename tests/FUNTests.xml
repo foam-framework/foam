@@ -383,12 +383,57 @@
             this.assert(a.X.a, 'Objects fetched with .find have the correct context.');
             ret();
           }).bind(this));
+        }).bind(this))(ret);
+    }
+        </property>
+        <property name="tags">
+          <i>node</i>
+          <i>web</i>
+        </property>
+      </object>
+
+      <object model="UnitTest">
+        <property name="name">CloningDAO Test.</property>
+        <property name="description">Test functionality of CloningDAO.</property>
+        <property name="async">true</property>
+        <property name="code" type="function">function (ret) {
+      var Y = this.X.sub({
+        a: true
+      });
+      MODEL({
+        name: 'MyType',
+        properties: ['id', 'foo']
+      });
+      var dao = MDAO.create({ model: MyType });
+      var objs = [
+        MyType.create({ id: 1, foo: 'original' }),
+        MyType.create({ id: 2, foo: 'original' })
+      ];
+
+      objs.select(dao);
+
+      aseq(
+        arequire('foam.core.dao.CloningDAO'),
+        function(ret, model) {
+          dao = model.create({ delegate: dao });
+          ret();
+        },
+        (function(ret) {
+          dao.select()((function(a) {
+            for ( var i = 0; i &lt; a.length ; i++ ) {
+              a.foo = 'new';
+              this.assert(objs[i].foo === 'original', 'Selected objects are unchanged.');
+            }
+            ret();
+          }).bind(this));
         }).bind(this),
         (function(ret) {
-          for ( var i = 0; i &lt; objs.length ; i++ ) {
-            this.assert(!objs[i].X.a, 'Original objects are unchanged.');
-          }
-          ret();
+          dao.find(1, (function(a) {
+            this.assert(a.foo === 'original', 'find() also clones.');
+            a.foo = 'new';
+            this.assert(objs[0].foo === 'original', 'Objects fetched with .find are cloned');
+            ret();
+          }).bind(this));
         }).bind(this))(ret);
     }
         </property>
