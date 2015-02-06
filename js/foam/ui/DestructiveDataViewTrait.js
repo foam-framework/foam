@@ -49,22 +49,10 @@ CLASS({
       name: 'data',
       documentation: function() {/* The actual data used by the view. May be set
         directly to override the context import. Children will see changes to this
-        data through the context. */},
-      postSet: function(old, nu) {
-        // If not a change from import or export, the user wants to 
-        // set data directly and break the connection with our import
-        this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange;
-        if ( this.isImportEnabled_ && this.dataImport !== nu ) {
-          this.dataImport = nu;
-        }
-        if (  this.dataExportValue 
-           && this.dataExportValue.value !== nu ) {
-          this.dataExportValue.set(nu);
-        }
-      }
+        data through the context. */}
     },
     {
-      name: 'dataExportValue',
+      name: 'childDataValue',
       documentation: function() {/* Holds the exported SimpleValue instance.
         The instance may be thrown away and re-created to cut loose any children. 
       */}
@@ -90,11 +78,15 @@ CLASS({
   ],
   
   methods: {
+    init: function() {
+      this.SUPER();
+      this.data$.addListener(this.onDataChange);
+    },
     
     destroy: function() {
-      // tear down dataExportValue listener
-      this.dataExportValue.removeListener(this.onExportValueChange);
-      this.dataExportValue = null;
+      // tear down childDataValue listener
+      this.childDataValue.removeListener(this.onExportValueChange);
+      this.childDataValue = null;
       this.childX = this.X.sub();
       
       this.SUPER();
@@ -102,20 +94,41 @@ CLASS({
     construct: function() {
       this.SUPER();
       
-      // create dataExportValue value and
-      this.dataExportValue = this.SimpleValue.create(this.data);
-      this.dataExportValue.addListener(this.onExportValueChange);
-      this.childX = this.X.sub({ data$: this.dataExportValue });
+      // create childDataValue value and
+      this.childDataValue = this.SimpleValue.create(this.data);
+      this.childDataValue.addListener(this.onExportValueChange);
+      this.childX = this.X.sub({ data$: this.childDataValue });
     }
   },
   
   listeners: [
     {
       name: 'onExportValueChange',
+      documentation: function() {/* This listener tracks changes to our exported
+      value that children may make. */},
       code: function(_,_,old,nu) {
         this.isContextChange = true;
         this.data = nu;
         this.isContextChange = false;
+      }
+    },
+    {
+      name: 'onDataChange',
+      documentation: function() {/* This listener acts like a postSet for
+        data, but allows extenders to use postSet without destroying our
+        functionality. 
+      */},
+      code: function(_,_,old,nu) {
+        /* If not a change from import or export, the user wants to 
+         set data directly and break the connection with our import */
+        this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange;
+        if ( this.isImportEnabled_ && this.dataImport !== nu ) {
+          this.dataImport = nu;
+        }
+        if (  this.childDataValue 
+           && this.childDataValue.value !== nu ) {
+          this.childDataValue.set(nu);
+        }
       }
     }
   ]

@@ -45,15 +45,6 @@ CLASS({
       documentation: function() {/* The actual data used by the view. May be set
         directly to override the context import. Children will see changes to this
         data through the context. */},
-      postSet: function(old, nu) {
-        // If not a change from import or export, the user wants to 
-        // set data directly and break the connection with our import
-        this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange;
-        if ( this.isImportEnabled_ && this.dataImport !== nu ) {
-          this.dataImport = nu;
-        }
-        if ( this.dataExport !== nu ) this.dataExport = nu;
-      }
     },
     {
       name: 'dataExport',
@@ -80,6 +71,32 @@ CLASS({
       hidden: true
     }
     
+  ],
+  
+  methods: {
+    init: function() {
+      this.SUPER();
+      this.data$.addListener(this.onDataChange);
+    }
+  },
+  
+  listeners: [
+    {
+      name: 'onDataChange',
+      documentation: function() {/* This listener acts like a postSet for
+        data, but allows extenders to use postSet without destroying our
+        functionality. 
+      */},
+      code: function(_,_,old,nu) {
+        // If not a change from import or export, the user wants to 
+        // set data directly and break the connection with our import
+        this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange;
+        if ( this.isImportEnabled_ && this.dataImport !== nu ) {
+          this.dataImport = nu;
+        }
+        if ( this.dataExport !== nu ) this.dataExport = nu;
+      }
+    }
   ]
   
 });
