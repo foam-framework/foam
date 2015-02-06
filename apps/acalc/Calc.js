@@ -561,7 +561,7 @@ CLASS({
       -webkit-user-select: none;
       -webkit-font-smoothing: antialiased;
       font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
-      font-size: 20px;
+      font-size: 34px;
       font-weight: 300;
       height: 100%;
       position: fixed;
@@ -721,7 +721,6 @@ CLASS({
 
     .alabel {
       font-size: 34px;
-      color: #444;
     }
 
     hr {
@@ -778,7 +777,7 @@ CLASS({
             var inner$ = this.$.querySelector('.inner-calc-display');
             var outer$ = this.$.querySelector('.calc-display');
             var value = DOMValue.create({element: outer$, property: 'scrollTop' });
-            Movement.animate(300, function() { value.value = inner$.clientHeight; })();
+            Movement.animate(200, function() { value.value = inner$.clientHeight; })();
           }.bind(this)));
           Events.dynamic(function() { this.data.op; this.data.history; this.data.a1; this.data.a2; }.bind(this), move);
           this.X.window.addEventListener('resize', move);
