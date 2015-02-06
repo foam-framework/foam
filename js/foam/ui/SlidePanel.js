@@ -30,47 +30,6 @@ CLASS({
     'setTimeout'
   ],
 
-  constants: {
-    CLOSED: {
-      layout: function() {
-        return [ this.parentWidth - this.stripWidth, this.stripWidth, this.stripWidth ];
-      },
-      onResize: function() {
-        if ( this.parentWidth > this.minWidth + this.minPanelWidth )
-          this.nextState = this.EXPANDED;
-      },
-      open: function() { this.nextState = this.OPEN; }
-    },
-    EXPANDED: {
-      layout: function() {
-        var extraWidth = this.parentWidth - this.minWidth - this.minPanelWidth;
-        var panelWidth = extraWidth * this.panelRatio;
-        return [ this.parentWidth - panelWidth, panelWidth, panelWidth ];
-      },
-      onResize: function() {
-        if ( this.parentWidth < this.minWidth + this.minPanelWidth )
-          this.nextState = this.CLOSED;
-      },
-      close: function() { this.nextState = this.CLOSED; }
-    },
-    OPEN: {
-      layout: function() {
-        return [ this.parentWidth, this.minPanelWidth, this.panelWidth ];
-      },
-      onResize: function() {
-        if ( this.parentWidth > this.minWidth + this.minPanelWidth )
-          this.nextState = this.OPEN_EXPANDED;
-      }
-    },
-    OPEN_EXPANDED: {
-      layout: function() { return this.EXPANDED.size(); },
-      onResize: function() {
-        if ( this.parentWidth < this.minWidth + this.minPanelWidth )
-          this.nextState = this.OPEN;
-      }
-    }
-  },
-
   help: 'A controller that shows a main view with a small strip of the ' +
       'secondary view visible at the right edge. This "panel" can be dragged ' +
       'by a finger or mouse pointer to any position from its small strip to ' +
@@ -78,29 +37,6 @@ CLASS({
       'will always be visible.',
 
   properties: [
-    {
-      name: 'state'
-    },
-    {
-      name: 'nextState',
-      postSet: function(oldState, newState) {
-        if ( oldState === newState ) return;
-        Movement.animate(500, function() { this.progress = 1.0; }.bind(this))();
-      }
-    },
-    {
-      name: 'progress',
-      defaultValue: 0,
-      postSet: function(_, p) {
-console.log('progress: ', p);
-        var layout = this.interpolate(this.state, this.nextState);
-        this.mainWidth = layout[0];
-        this.panelWidth = layout[1];
-        this.panelX = this.parentWidth-layout[2];
-        if ( p >= 1.0 ) this.state = this.nextState;
-      }
-    },
-
     { model_: 'ViewFactoryProperty', name: 'mainView' },
     { model_: 'ViewFactoryProperty', name: 'panelView' },
     {
@@ -113,7 +49,7 @@ console.log('progress: ', p);
     },
     {
       model_: 'IntProperty',
-      name: 'mainWidth',
+      name: 'width',
       model_: 'IntProperty',
       hidden: true,
       help: 'Set internally by the resize handler',
@@ -131,6 +67,13 @@ console.log('progress: ', p);
         var e = this.panel$();
         return e ? toNum(this.X.window.getComputedStyle(e).width) : 250;
       }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'panelWidth',
+      hidden: true,
+      help: 'Set internally by the resize handler',
+      postSet: function(_, x) { this.panel$().style.width = x + 'px'; }
     },
     {
       model_: 'IntProperty',
@@ -197,6 +140,11 @@ console.log('progress: ', p);
       }
     },
     {
+      name: 'opened',
+      help: 'If the panel us opened or not.',
+      defaultValue: false
+    },
+    {
       name: 'expanded',
       help: 'If the panel is wide enough to expand the panel permanently.',
       defaultValue: false
@@ -241,8 +189,6 @@ console.log('progress: ', p);
 
   methods: {
     initHTML: function() {
-      this.state = this.nextState = this.CLOSED;
-
       this.gestureManager.install(this.dragGesture);
       this.gestureManager.install(this.tapGesture);
 
@@ -255,20 +201,28 @@ console.log('progress: ', p);
       this.onResize();
       this.initChildren(); // We didn't call SUPER(), so we have to do this here.
     },
-    interpolate: function(state1, state2) {
-      var layout1 = state1.layout.call(this);
-      var layout2 = state2.layout.call(this);
-      return [
-        layout1[0] * this.progress + layout2[0] * ( 1 - this.progress ),
-        layout1[1] * this.progress + layout2[1] * ( 1 - this.progress ),
-        layout1[2] * this.progress + layout2[2] * ( 1 - this.progress ),
-      ];
+    snap: function() {
+      // if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) return;
+      // TODO: Calculate the animation time based on how far the panel has to move
+      Movement.animate(500, function() {
+        this.panelX = this.dir_ > 0 ? 0 : 1000;
+      }.bind(this))();
     },
-    main$:   function() { return this.X.$(this.id + '-main'); },
-    panel$:  function() { return this.X.$(this.id + '-panel'); },
+    main$: function() { return this.X.$(this.id + '-main'); },
+    panel$: function() { return this.X.$(this.id + '-panel'); },
     shadow$: function() { return this.X.$(this.id + '-shadow'); },
-    open:    function() { this.state.open && this.state.open.call(this); },
-    close:   function() { this.state.close && this.state.close.call(this); },
+    open: function() {
+      if ( this.expanded || this.opened ) return;
+      this.opened = true;
+      this.dir_ = 1;
+      this.snap();
+    },
+    close: function() {
+      if ( this.expanded || ! this.opened ) return;
+      this.opened = false;
+      this.dir_ = -1;
+      this.snap();
+    }
   },
 
   listeners: [
@@ -287,14 +241,34 @@ console.log('progress: ', p);
       isFramed: true,
       code: function(e) {
         if ( ! this.$ ) return;
-        this.state.onResize.call(this);
+        if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) {
+          // if ( this.expanded ) return;
+          this.shadow$().style.display = 'none';
+          // Expaded mode. Show the two side by side, setting their widths
+          // based on the panelRatio.
+          this.panelWidth = Math.max(this.panelRatio * this.parentWidth, this.minPanelWidth);
+
+
+          this.width = this.parentWidth - this.panelWidth;
+          this.panelX = this.width;
+          this.expanded = true;
+        } else {
+          // if ( ! this.expanded ) return;
+          this.shadow$().style.display = 'inline';
+          this.width = Math.max(this.parentWidth - this.stripWidth, this.minWidth);
+          this.panelWidth = this.minPanelWidth;
+          this.panelX = this.width;
+          this.expanded = false;
+        }
       }
     },
     {
       name: 'tapClick',
       code: function() {
         console.log('tapclick', this.expanded, this.opened);
-        this.open();
+        if ( this.expanded ) return;
+        if ( this.opened ) this.close();
+        else this.open();
       }
     },
     {
@@ -311,7 +285,12 @@ console.log('progress: ', p);
     },
     {
       name: 'dragEnd',
-      code: function(point) { if ( this.dir_ > 0 ) this.close(); else this.open(); }
+      code: function(point) {
+        if ( this.expanded ) return;
+        Events.unfollow(point.x$, this.panelX$);
+        this.snap();
+        this.opened = ! this.opened;
+      }
     }
   ]
 });

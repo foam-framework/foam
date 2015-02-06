@@ -759,7 +759,12 @@ CLASS({
             mainView: 'MainButtonsView',
             stripWidth: 25,
             panelView: {
-              factory_: 'SecondaryButtonsView'
+              factory_: 'foam.ui.SlidePanel',
+              minWidth: 280,
+              minPanelWidth: 200,
+              panelRatio: 3/7,
+              mainView: 'SecondaryButtonsView',
+              panelView: 'TertiaryButtonsView'
             }
            }) %>
           </div>
