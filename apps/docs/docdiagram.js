@@ -343,9 +343,9 @@ CLASS({
       
         var traitModel = FOAM.lookup(trait, self.X);
         
-        var X = self.childX.sub({ 
-          data$: self.SimpleValue.create(traitModel, self.childX),
-          documentViewRef: self.SimpleValue.create(self.DocRef.create({ ref: trait }, self.childX))
+        var X = self.X.sub({ 
+          data$: self.SimpleValue.create(traitModel, self.X),
+          documentViewRef: self.SimpleValue.create(self.DocRef.create({ ref: trait }, self.X))
         });
         var traitDiag = self.ModelDocDiagram.create({ model: Model, titleColor: 'rgba(30,160,30,255)' }, X);
         self.addChild(traitDiag);

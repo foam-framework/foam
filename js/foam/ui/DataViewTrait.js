@@ -33,7 +33,7 @@ CLASS({
       documentation: function() {/* Handles the incoming data from the import
         context, and may be ignored if data is directly set. */},
       postSet: function(old, nu) {
-        if ( this.isImportEnabled_ ) {
+        if ( this.isImportEnabled_ && this.data != nu ) {
           this.isContextChange = true;
           this.data = nu;
           this.isContextChange = false;
@@ -52,9 +52,11 @@ CLASS({
         from data as a way to detect whether a change is local or from child
         context changes. */},
       postSet: function(old, nu) {
-        this.isContextChange = true;
-        this.data = nu;
-        this.isContextChange = false;
+        if ( this.data != nu ) {
+          this.isContextChange = true;
+          this.data = nu;
+          this.isContextChange = false;
+        }
       }      
     },
     {
@@ -94,7 +96,7 @@ CLASS({
         if ( this.isImportEnabled_ && this.dataImport !== nu ) {
           this.dataImport = nu;
         }
-        if ( this.childData !== nu ) this.childData = nu;
+        if ( this.childData != nu ) this.childData = nu;
       }
     }
   ]
