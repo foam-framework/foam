@@ -15,112 +15,14 @@
  * limitations under the License.
  */
  
-CLASS({
-  name: 'InheritedPropertyTrait',
-  package: 'foam.views',
-  
-  documentation: function() {/* When used on a $$DOC{ref:'Property'} 
-    owned by a $$DOC{ref:'foam.patterns.ChildTreeTrait'}, this trait causes the
-    property to get its value from the closest ancestor with that property
-    defined. If the property value is set, it becomes set locally and will
-    not be inherited until unset to <code>undefined</code>.
-  */},
-  
-  properties: [
-    {
-      name: 'install',
-      defaultValue: function(prop) {
-        var actualSetter = this.__lookupSetter__(prop.name);
-        var actualGetter = this.__lookupGetter__(prop.name);
-        var actualOnAncestryChange_ = this.onAncestryChange_;
-        var propWriteFlagName = prop.name + "$writtenTo";
-        var propListenerName = prop.name + "$inheritedListener";
-        var propSourceName = prop.name + "$inheritedSource";
-        var propSelf = this;
-        
-        var findParentValue = function(parent, propName) {
-          if ( parent.hasOwnProperty(propName) ) {
-            return parent[propName+"$"];
-          } else {
-            if ( parent.parent ) {
-              return findParentValue(parent.parent, propName);
-            } else {
-              return undefined;
-            }
-          }
-        };
-        var setUpListener = function() {
-          this.instance_[propSourceName] = findParentValue(this.parent, prop.name);
-          if ( this.instance_[propSourceName] ) {
-            this.instance_[propListenerName] = function(_,_,old,nu) {
-              actualSetter.apply(this, [nu]);
-            }.bind(this);
-            this.instance_[propSourceName].addListener(this.instance_[propListenerName] );
-          }
-        };
-        var tearDownListener = function() {
-          if ( this.instance_[propSourceName] && this.instance_[propListenerName] ) {
-            this.instance_[propSourceName].removeListener(this.instance_[propListenerName]);
-          }
-          this.instance_[propSourceName] = undefined;
-          this.instance_[propListenerName] = undefined;          
-        };
-               
-        // replace init
-        this.onAncestryChange_ = function() {
-          // this is now the instance        
-          if ( ! this.instance_[propWriteFlagName] ) {
-            // unbind the old listener
-            tearDownListener.apply(this);
-            // set up listener if we are inheriting
-            if ( ! this.instance_[propWriteFlagName] ) {
-              setUpListener.apply(this);
-            }
-          }
 
-          actualOnAncestryChange_.apply(this, arguments);
-        }
-        
-        this.__defineSetter__(prop.name, function(nu) {
-          // setter will be called on the instance, so "this" is an instance now
-          // reset to false if user sets undefined, otherwise set true
-          if ( typeof nu !== 'undefined' ) {
-            if ( ! this.instance_[propWriteFlagName] ) {
-              this.instance_[propWriteFlagName] = true;
-              // written locally, so remove inherited value listener if present
-              tearDownListener.apply(this);
-            }
-          } else {
-            if ( ! this.instance_[propWriteFlagName] ) {             
-              this.instance_[propWriteFlagName] = false;
-              // We are now inheriting, so set up the listener
-              setUpListener.apply(this);
-            }            
-          }
-          // in any case call the actual setter with local-value or undefined
-          return actualSetter.apply(this, [nu]);
-        }); 
-        this.__defineGetter__(prop.name, function() {
-          // getter will be called on the instance, so "this" is an instance now
-          if ( ! this.instance_[propWriteFlagName] && this.instance_[propSourceName] ) {
-            // we haven't been written to, so inherit the value
-            return this.instance_[propSourceName].value;
-          } else {
-            return actualGetter.apply(this);
-          }
-        }); 
-      }
-    }
-  ]
-  
-});
 
-CLASS({
-  name: 'InheritedProperty',
-  extendsModel: 'Property',
-  package: 'foam.views',
-  traits: ['foam.views.InheritedPropertyTrait']
-});
+// CLASS({
+//   name: 'InheritedProperty',
+//   extendsModel: 'Property',
+//   package: 'foam.views',
+//   traits: ['foam.patterns.InheritedPropertyTrait']
+// });
 
 // CLASS({
 //   name: 'ContextMutableProperty',
