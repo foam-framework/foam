@@ -36,7 +36,7 @@ CLASS({
   ],
 
   methods: {
-    
+
     onAncestryChange_: function() {
       /* Called when our parent or an ancestor's parent changes. Override to
         react to ancestry changes. Remember to call <code>this.SUPER()</code>. */
@@ -60,7 +60,7 @@ CLASS({
       try {
         child.parent = this;
       } catch (x) { console.log(x); }
-      child.onAncestryChange_();
+      child.onAncestryChange_ && child.onAncestryChange_();
 
       var children = this.children;
       children.push(child);
