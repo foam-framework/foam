@@ -7,6 +7,8 @@ if [ ! -d ../../bower_components/paper-button ]; then
     popd
 fi
 
+# TODO(markdittmer): It would be nice to avoid some of this symlinking, but
+# some things like the directories are easiest to manage this way.
 LINK_FILES=( "Calc.html" "AppCalc.html" "bg.js" "Calc.js" "Tests.html" "Opt.js" "fonts" "icons" "_locales" )
 
 for FILE in ${LINK_FILES[@]}; do

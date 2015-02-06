@@ -17,36 +17,62 @@
 
 CLASS({
   name: 'PolymerActionButton',
-  extendsModel: 'ActionButton',
-  traits: ['foam.ui.polymer.gen.PaperButton'],
-  properties: [
-    {
-      name: 'className',
-      defaultValue: 'polymer-action-button'
-    }
-  ],
-  methods: {
-    init: function() {
-      this.SUPER();
-      this.content$ = this.label$;
-    }
-  },
+  extendsModel: 'foam.ui.polymer.ActionButton',
 
   templates: [
-    function CSS() {/*
-      paper-button.polymer-action-button {
-        color: 'white',
-        background: '#4b4b4b',
-        width: 60px;
-        height: 60px;
-        font: 300 28px RobotoDraft;
-      }
-    */}
+    {
+      name: 'CSS',
+      todo: multiline(function() {/*
+        This template can go away (and just use ActionButton's template) once
+        the more specific stuff gets pushed into Calc.js.
+      */}),
+      template: function CSS() {/*
+        paper-button.polymerActionButton {
+          background-color: rgba(0, 0, 0, 0);
+          min-width: initial;
+          margin: initial;
+          flex-grow: 1;
+          justify-content: center;
+          display: flex;
+        }
+
+        paper-button.polymerActionButton::shadow #ripple {
+          color: rgb(241, 250, 65);
+        }
+
+        div.button {
+          flex: 1;
+          align-items: stretch;
+          margin: 1px;
+        }
+
+        div.button-column {
+          padding-top: 7px;
+          padding-bottom: 10px;
+        }
+
+        div.button [role=button] {
+          cursor: pointer;
+        }
+
+        div.secondaryButtons [role=button] {
+          text-transform: initial;
+        }
+
+        div.tertiaryButtons [role=button] {
+          text-transform: initial;
+        }
+      */}
+    }
   ]
 });
 
 function getCalcButton() {
-  return PolymerActionButton;
+  return PolymerActionButton.xbind({
+    color:      'white',
+    font:       '300 28px RobotoDraft',
+    role:       'button'
+  });
 }
 
 var inChromeApp = chrome && chrome.runtime && chrome.runtime.id;
@@ -57,5 +83,4 @@ if ( ! inChromeApp ) {
       'href',
       '../../bower_components/paper-button/paper-button.html');
   document.head.appendChild(paperButtonComponentLink);
-}
-// TODO(markdittmer): else load from Chrome App-friendly location
+} // else { TODO(markdittmer): load from Chrome App-friendly location.

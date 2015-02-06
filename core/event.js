@@ -773,7 +773,12 @@ MODEL({
           if ( last ) stop(); else requestAnimationFrameX(go);
         }
 
-        requestAnimationFrameX(ranges.length > 0 ? go : stop);
+        if ( ranges.length > 0 ) {
+          requestAnimationFrameX(go);
+        } else {
+          var setTimeoutX = ( opt_X && opt_X.setTimeout ) || setTimeout;
+          setTimeoutX(stop, duration);
+        }
 
         return stop;
       };

@@ -34,7 +34,7 @@ CLASS({
           return 'Create a new ' + this.model.model.label;
         } else {
           console.warn("Can't find WrappedFOAMlet model name!");
-          return 'Create a new ' + this.model_.label + "(name error!);
+          return 'Create a new ' + this.model_.label + ' (name error!)';
         }
       }
     },
