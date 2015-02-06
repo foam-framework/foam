@@ -122,6 +122,13 @@ CLASS({
   traits: ['foam.views.InheritedPropertyTrait']
 });
 
+// CLASS({
+//   name: 'ContextMutableProperty',
+//   extendsModel: 'Property',
+//   package: 'foam.views',
+//   traits: ['foam.patterns.ContextMutablePropertyTrait']
+// });
+
 
 
 
@@ -272,7 +279,7 @@ CLASS({
         The context provided to consumers (children) of this provider when constructed
         from properties of this view.
       */},
-    },
+    }
   ],
 
   constants: {

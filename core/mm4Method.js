@@ -1035,7 +1035,7 @@ CLASS({
       type: 'Template',
       defaultValue: '',
       help: 'The main content of the document.',
-      documentation: "The main body text of the document. Any valid template can be used, including the $$DOC{ref:'DocView'} specific $$DOC{ref:'DocView',text:'$$DOC{\"ref\"}'} and $$DOC{ref:'DocView',text:'$$THISDATA{}'} tags.",
+      documentation: "The main body text of the document. Any valid template can be used, including the $$DOC{ref:'foam.documentation.DocView'} specific $$DOC{ref:'foam.documentation.DocView',text:'$$DOC{\"ref\"}'} tag.",
       preSet: function(_, template) {
         return TemplateUtil.expandTemplate(this, template);
       }

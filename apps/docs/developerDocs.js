@@ -240,12 +240,12 @@ var RegisterDevDocs = function(opt_X) {
               <li><code>error</code>: called to indicate an error has terminated operations</li>
             </ul>
             <p>This means that you can generate a Sink as simply as:</p>
-            <p><code>{ put: function(item) { console.log(item); } }</code></p>
+            <p><code>{ put: function(item) { console.log(item); } } // logs each item (useful for debugging)</code></p>
             <p>A DAO is a Sink with some extra querying methods:</p>
             <ul>
               <li><code>select</code>: dump the contents to the given Sink</li>
               <li><code>where</code>: return a DAO equivalent to the current one filtered by the given predicates</li>
-              <li><code>listen</code>: continuouslyupdate the given sink with all future changes</li>
+              <li><code>listen</code>: continuously update the given sink with all future changes</li>
               <li><code>pipe</code>: select() then listen()</li>
             </ul>
             <p>All DAO operations are asynchronous. When requesting a <code>select</code>, it will
