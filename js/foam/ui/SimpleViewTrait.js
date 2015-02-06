@@ -28,11 +28,18 @@ CLASS({
   properties: [
     {
       name: 'data',
-      postSet: function() {
+      setter: function(nu) {
         this.children.forEach(function(child) {
-          child.data = this.data;
+          child.data = nu;
         }.bind(this));
       },
+      getter: function() {
+        if ( this.X.data$ ) {
+          return this.X.data$.value;
+        } else {
+          return undefined;
+        }
+      }
       documentation: function() {/* The postSet supplied here will
         propagate the change to children. Those children are responsible
         for either passing on the change or exporting to their contexts
