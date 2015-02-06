@@ -80,13 +80,30 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      this.data$.addListener(this.onDataChange);
+      this.data$.addListener(this.onDataChange_);
+    },    
+    
+    onChildValueChange: function(old,nu) {
+      /* Override to change the default update behavior: when the value
+        changes in the child context, propagate into $$DOC{ref:'.data'}. */
+      this.data = nu;      
+    },
+    
+    onDataChange: function(old,nu) {
+      /* Override to change the default update behavior: when 
+        $$DOC{ref:'.data'} changes, propagate to the child context. */
+      if (  this.childDataValue 
+         && this.childDataValue.value !== nu ) {
+        this.childDataValue.set(nu);
+      }
     },
     
     destroy: function() {
       // tear down childDataValue listener
-      this.childDataValue.removeListener(this.onExportValueChange);
-      this.childDataValue = null;
+      if ( this.childDataValue ) {
+        this.childDataValue.removeListener(this.onExportValueChange_);
+        this.childDataValue = null;
+      }
       this.childX = this.X.sub();
       
       this.SUPER();
@@ -95,25 +112,26 @@ CLASS({
       this.SUPER();
       
       // create childDataValue value and
-      this.childDataValue = this.SimpleValue.create(this.data);
-      this.childDataValue.addListener(this.onExportValueChange);
+      this.childDataValue = this.SimpleValue.create();
+      this.onDataChange(undefined, this.data); // initial set
+      this.childDataValue.addListener(this.onExportValueChange_);
       this.childX = this.X.sub({ data$: this.childDataValue });
     }
   },
   
   listeners: [
     {
-      name: 'onExportValueChange',
+      name: 'onExportValueChange_',
       documentation: function() {/* This listener tracks changes to our exported
       value that children may make. */},
       code: function(_,_,old,nu) {
         this.isContextChange = true;
-        this.data = nu;
+        this.onChildValueChange(old,nu);        
         this.isContextChange = false;
       }
     },
     {
-      name: 'onDataChange',
+      name: 'onDataChange_',
       documentation: function() {/* This listener acts like a postSet for
         data, but allows extenders to use postSet without destroying our
         functionality. 
@@ -125,10 +143,7 @@ CLASS({
         if ( this.isImportEnabled_ && this.dataImport !== nu ) {
           this.dataImport = nu;
         }
-        if (  this.childDataValue 
-           && this.childDataValue.value !== nu ) {
-          this.childDataValue.set(nu);
-        }
+        this.onDataChange(old,nu);
       }
     }
   ]

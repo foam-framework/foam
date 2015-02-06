@@ -35,75 +35,75 @@
 
 
 
-// View
-CLASS({
-  name: 'DataProviderTrait',
-  package: 'foam.views',
+// // View
+// CLASS({
+//   name: 'DataProviderTrait',
+//   package: 'foam.views',
   
-  documentation: function() {/*
-    Trait for providers of a data property. It contains a $$DOC{ref:'.data'}
-    property and exports it by reference to the context.
-  */},
+//   documentation: function() {/*
+//     Trait for providers of a data property. It contains a $$DOC{ref:'.data'}
+//     property and exports it by reference to the context.
+//   */},
   
-  //exports: ['childData$ as data$'],
+//   //exports: ['childDataValue as data$'],
   
-  properties: [
-    {
-      name: 'childData',
-      help: 'Child data value provided to consumers.',
-      documentation: function() {/* 
-        The value provided to consumers child (children) of this provider.
-      */},
-    },
-    {
-      name: 'childX',
-      factory: function() {
-        // juggle context and export data$
-        return this.X.sub({data$: this.childData$});
-      }
-    }
-  ],
+//   properties: [
+//     {
+//       name: 'childData',
+//       help: 'Child data value provided to consumers.',
+//       documentation: function() {/* 
+//         The value provided to consumers child (children) of this provider.
+//       */},
+//     },
+//     {
+//       name: 'childX',
+//       factory: function() {
+//         // juggle context and export data$
+//         return this.X.sub({data$: this.childDataValue});
+//       }
+//     }
+//   ],
 
-  methods: {
+//   methods: {
       
-    destroy: function() {
-      /* Called to tear down children. Also let the previous child context
-        be garbage collected. */
-      this.childX = this.X.sub();
-      if (arguments.callee.caller.super_) this.SUPER();
-    },
+//     destroy: function() {
+//       /* Called to tear down children. Also let the previous child context
+//         be garbage collected. */
+//       this.childX = this.X.sub();
+//       if (arguments.callee.caller.super_) this.SUPER();
+//     },
     
-    construct: function() {
-      /* Called to construct new content and children. Create a new context
-         for the children and export our data. */
-      if (arguments.callee.caller.super_) this.SUPER();
-      this.childX = this.X.sub({data$: this.childData$});
-    }
-  }
+//     construct: function() {
+//       /* Called to construct new content and children. Create a new context
+//          for the children and export our data. */
+//       if (arguments.callee.caller.super_) this.SUPER();
+//       this.childX = this.X.sub({data$: this.childDataValue});
+//     }
+//   }
   
-});
+// });
  
   
-CLASS({
-  name: 'DataConsumerTrait',
-  package: 'foam.views',
+// CLASS({
+//   name: 'DataConsumerTrait',
+//   package: 'foam.views',
   
-  documentation: function() {/*
-    Trait for consumers of a data property. It contains 
-    an $$DOC{ref:'.data'}
-    property and imports it by reference from the context.
-  */},
+//   documentation: function() {/*
+//     Trait for consumers of a data property. It contains 
+//     an $$DOC{ref:'.data'}
+//     property and imports it by reference from the context.
+//   */},
   
-  imports: ['data$'],
+//   imports: ['data$'],
   
-  properties: [
-    {
-      name: 'data',
-      help: 'The incoming data for this view to use.',
-    },
-  ]
+//   properties: [
+//     {
+//       name: 'data',
+//       help: 'The incoming data for this view to use.',
+//     },
+//   ]
 
-});
+// });
 
 
 
@@ -155,12 +155,13 @@ CLASS({
   label: 'View',
   package: 'foam.views',
   
-  traits: ['foam.views.DataProviderTrait',
-           'foam.patterns.ChildTreeTrait',
+  traits: ['foam.patterns.ChildTreeTrait',
+           'foam.ui.DestructiveDataViewTrait',
            'foam.views.ViewActionsTrait'],
 
-  requires: ['SimpleReadOnlyValue'],
-           
+  requires: ['SimpleReadOnlyValue',
+             'foam.views.PropertyView'],
+         
   documentation: function() {/*
     <p>$$DOC{ref:'View',usePlural:true} render data. This could be a specific
        $$DOC{ref:'Model'} or a $$DOC{ref:'DAO'}. In the case of $$DOC{ref:'DetailView'},
@@ -269,7 +270,7 @@ CLASS({
   label: 'HTMLView',
   extendsModel: 'foam.views.BaseView',
   traits: ['foam.views.HTMLViewTrait'],
-
+  
   documentation: function() {/*
     <p>$$DOC{ref:'View',usePlural:true} render data. This could be a specific
        $$DOC{ref:'Model'} or a $$DOC{ref:'DAO'}. In the case of $$DOC{ref:'DetailView'},
@@ -704,7 +705,7 @@ CLASS({
       if ( DetailView.isInstance(this) &&
           this.model &&
           this.model.actions )
-        init(this.model.actions, this.childData$);
+        init(this.model.actions, this.childDataValue);
 
       if ( found ) {
         console.assert(this.$, 'View must define outer id when using keyboard shortcuts: ' + this.name_);
@@ -745,10 +746,8 @@ CLASS({
   name: 'BasePropertyView',
   package: 'foam.views',
 //  extendsModel: 'foam.views.BaseView',
-   traits: ['foam.views.DataProviderTrait',
-            'foam.views.DataConsumerTrait',
-            'foam.patterns.ChildTreeTrait'],
-//  traits: ['foam.views.DataConsumerTrait'],
+   traits: ['foam.patterns.ChildTreeTrait',
+            'foam.ui.DestructiveDataViewTrait'],
   
   documentation: function() {/*
     Apply this trait to a $$DOC{ref:'BaseView'} (such as $$DOC{ref:'HTMLView'}).</p>
@@ -823,16 +822,25 @@ CLASS({
       this.view.fromElement(e);
       return this;
     },
+    
+    onChildValueChange: function() {
+       /* do nothing */
+    },
+    
+    onDataChange: function(old,nu) {
+        this.unbindData(old);
+        this.bindData(nu);
+    },
 
     createViewFromProperty: function(prop) {
       /* Helper to determine the $$DOC{ref:'View'} to use. */
       var viewName = this.innerView || prop.view
       if ( ! viewName ) return this.childX.foam.views.TextFieldView.create(prop, this.childX);
-      if ( typeof viewName === 'string' ) return FOAM.lookup(viewName, this.X).create(prop, this.childX);
+      if ( typeof viewName === 'string' ) return FOAM.lookup(viewName, this.childX).create(prop, this.childX);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
       if ( viewName.model_ ) { var v = viewName.model_.create(viewName, this.childX).copyFrom(prop); v.id = this.nextID(); return v; }
       if ( viewName.factory_ ) {
-        var v = FOAM.lookup(viewName.factory_, this.X).create(viewName, this.childX).copyFrom(prop);
+        var v = FOAM.lookup(viewName.factory_, this.childX).create(viewName, this.childX).copyFrom(prop);
         v.id = this.nextID();
         return v;
       }
@@ -844,13 +852,13 @@ CLASS({
     unbindData: function(oldData) {
       if (! oldData || !this.prop ) return;
       var pValue = oldData.propertyValue(this.prop.name);
-      Events.unlink(pValue, this.childData$);
+      Events.unlink(pValue, this.childDataValue);
     },
 
     bindData: function(data) {
       if (! data || !this.prop) return;
       var pValue = data.propertyValue(this.prop.name);
-      Events.link(pValue, this.childData$);
+      Events.link(pValue, this.childDataValue);
     },
 
 
@@ -924,7 +932,6 @@ CLASS({
 CLASS({
   name: 'BaseDetailView',
   extendsModel: 'foam.views.BaseView',
-  traits: ['foam.views.DataConsumerTrait'],
   package: 'foam.views',
   
   documentation:function() {/*
@@ -955,11 +962,11 @@ CLASS({
           this.destroy();
           // propagate data change (nowhere)
           this.model = nu.model_;
-          this.childData = nu;
+
           // rebuild children with new data
           this.construct();
         } else {
-          this.childData = nu; // just move the new data along
+          if ( this.childDataValue ) this.childDataValue.set(nu); // just move the new data along
         }
         this.onValueChange_(); // sub-classes may handle to change as well
       }
@@ -1206,7 +1213,7 @@ CLASS({
         
         if (!nu) return;
         // propagate a clone and build children
-        this.childData = nu.deepClone();
+        this.childDataValue.set(nu.deepClone());
         this.originalData = nu.deepClone();
   
         this.data.addListener(function() {
@@ -1246,7 +1253,7 @@ CLASS({
       code: function() {
         // If this listener fires, the parent data has changed internally
         // and the user hasn't edited our copy yet, so keep the clones updated.
-        this.childData.copyFrom(this.data);
+        this.childDataValue.value.copyFrom(this.data);
         this.originalData.copyFrom(this.data);
       }
     }
@@ -1277,18 +1284,18 @@ CLASS({
     {
       name:  'cancel',
       help:  'Cancel update.',
-      isAvailable: function() { this.version; return ! this.originalData.equals(this.childData); },
+      isAvailable: function() { this.version; return ! this.originalData.equals(this.childDataValue.value); },
       action: function() { this.stack.back(); }
     },
     {
       name:  'back',
-      isAvailable: function() { this.version; return this.originalData.equals(this.childData); },
+      isAvailable: function() { this.version; return this.originalData.equals(this.childDataValue.value); },
       action: function() { this.stack.back(); }
     },
     {
       name: 'reset',
-      isAvailable: function() { this.version; return ! this.originalData.equals(this.childData); },
-      action: function() { this.childData.copyFrom(this.originalData); } // or do we want data?
+      isAvailable: function() { this.version; return ! this.originalData.equals(this.childDataValue.value); },
+      action: function() { this.childDataValue.value.copyFrom(this.originalData); } // or do we want data?
     }
   ]
 });
@@ -1300,13 +1307,13 @@ CLASS({
   label: 'Text Field',
 
   extendsModel: 'TextFieldView',
-  traits: ['foam.views.DataConsumerTrait'],
+  traits: ['foam.ui.DataViewTrait']
 });
 
 CLASS({
   name: 'ActionButton',
   package: 'foam.views',
-  traits: ['foam.views.DataConsumerTrait'],
+  traits: ['foam.ui.DataViewTrait'],
   extendsModel: 'ActionButton',
 });
 
@@ -1380,8 +1387,7 @@ CLASS({
   package: 'foam.views',
   extendsModel: 'foam.views.BaseView',
   
-  traits: [ 'foam.views.DataConsumerTrait',
-            'foam.views.DAODataTrait',
+  traits: [ 'foam.views.DAODataTrait',
             'foam.views.HTMLViewTrait'], 
   // see updateHTML, item X.sub({data...}) for differences from old DAOListView
   
@@ -1578,7 +1584,7 @@ CLASS({
   name: 'CollapsibleView',
   package: 'foam.views',
   traits: ['foam.patterns.ChildTreeTrait',
-           'foam.views.DataConsumerTrait',
+           'foam.ui.SimpleViewTrait',
            'foam.views.ViewActionsTrait',
            'foam.views.HTMLViewTrait'],
   

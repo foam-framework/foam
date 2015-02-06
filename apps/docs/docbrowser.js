@@ -93,8 +93,7 @@ CLASS({
 
 CLASS({
   name: 'ModelDescriptionRowView',
-  extendsModel: 'View',
-  traits: ['foam.views.DataConsumerTrait'],
+  extendsModel: 'foam.views.View',
 
   requires: ['SimpleValue'],
 

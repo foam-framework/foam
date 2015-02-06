@@ -1064,7 +1064,7 @@ CLASS({
   name: 'DocRefView',
   package: 'foam.documentation',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.views.View',
   label: 'Documentation Reference View',
   documentation: 'The view of a documentation reference link.',
 

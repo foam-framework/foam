@@ -47,8 +47,7 @@ CLASS({
   extendsModel: 'foam.graphics.CViewView',
   package: 'foam.documentation',
   
-  traits: [ //'foam.patterns.ChildTreeTrait',
-            'foam.views.DataConsumerTrait'],
+  traits: [ 'foam.ui.SimpleViewTrait'],
   
   requires: ['foam.documentation.ModelDocDiagram',
              'foam.documentation.ExtendsDiagram',
@@ -180,8 +179,7 @@ CLASS({
   package: 'foam.documentation',
 
   traits: [ 'foam.patterns.ChildTreeTrait',
-            'foam.views.DataConsumerTrait',
-            'foam.views.DataProviderTrait'],
+            'foam.ui.DestructiveDataViewTrait'],
 
   requires: ['foam.documentation.ModelDocDiagram',
              'foam.documentation.DocLinkDiagram',
@@ -279,8 +277,7 @@ CLASS({
   package: 'foam.documentation',
 
   traits: [ 'foam.patterns.ChildTreeTrait',
-            'foam.views.DataConsumerTrait',
-            'foam.views.DataProviderTrait'],
+            'foam.ui.TransformingDataViewTrait'],
 
   requires: ['foam.documentation.ModelDocDiagram',
              'foam.documentation.DocLinkDiagram',
@@ -531,8 +528,7 @@ CLASS({
              'diagram.SectionGroup'],
 
   traits: [ 'foam.patterns.ChildTreeTrait',
-            'foam.views.DataConsumerTrait',
-            'foam.views.DataProviderTrait',
+            'foam.ui.DestructiveDataViewTrait',
             'foam.documentation.DocDiagramTrait',
             'foam.documentation.FeatureListLoaderTrait'],
 
@@ -576,8 +572,7 @@ CLASS({
   package: 'foam.documentation',
 
   traits: [ 'foam.patterns.ChildTreeTrait',
-            'foam.views.DataConsumerTrait',
-            'foam.views.DataProviderTrait',
+            'foam.ui.DataViewTrait',
             'foam.documentation.DocDiagramTrait'],
 
   requires: ['diagram.Section'],

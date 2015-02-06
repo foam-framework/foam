@@ -16,12 +16,13 @@
  */
 
 CLASS({
-  name: 'DataViewTrait',
+  name: 'TransformingDataViewTrait',
   package: 'foam.ui',
   
   documentation: function() {/* For Views that use $$DOC{ref:'.data'},
     this trait will pseudo-import the data$ reference from the context,
-    or allow setting of the $$DOC{ref:'.data'} property directly.
+    or allow setting of the $$DOC{ref:'.data'} property directly. You must
+    bridge data->childData and childData->data yourself.
   */},
 
   imports: ['data$ as dataImport$'],
@@ -51,11 +52,6 @@ CLASS({
       documentation: function() {/* The exported value. This is only separated
         from data as a way to detect whether a change is local or from child
         context changes. */},
-      postSet: function(old, nu) {
-        this.isContextChange = true;
-        this.data = nu;
-        this.isContextChange = false;
-      }      
     },
     {
       model_: 'BooleanProperty',
@@ -94,7 +90,6 @@ CLASS({
         if ( this.isImportEnabled_ && this.dataImport !== nu ) {
           this.dataImport = nu;
         }
-        if ( this.childData !== nu ) this.childData = nu;
       }
     }
   ]
