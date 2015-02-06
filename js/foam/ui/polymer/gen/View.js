@@ -29,23 +29,51 @@ CLASS({
       postSet: function() {
         if ( this.$ ) this.$.textContent = this.content;
       }
+    },
+    {
+      name: 'polymerProperties',
+      factory: function() { return {}; }
     }
   ],
 
   methods: [
     {
       name: 'postSet',
-      code: function(propName) {
+      code: function(propName, old, nu) {
+        this.polymerProperties[propName] = nu;
+        this.bindData();
+      }
+    },
+    {
+      name: 'bindData',
+      code: function() {
         if ( ! this.$ ) return;
-        this.$[propName] = this[propName];
+        Object.getOwnPropertyNames(this.polymerProperties).forEach(function(p) {
+          this.$[p] = this[p];
+        }.bind(this));
+      }
+    },
+    {
+      name: 'initHTML',
+      code: function() {
+        var rtn = this.SUPER();
+        this.bindData();
+        return rtn;
+      }
+    },
+    {
+      name: 'updateHTML',
+      code: function() {
+        var rtn = this.SUPER();
+        this.bindData();
+        return rtn;
       }
     }
   ],
 
   templates: [
     function toHTML() {/*
-      <{{{this.tagName}}} id="{{{this.id}}}"
-        class="{{{this.className}}} {{{this.extraClassName}}}"
+      <{{{this.tagName}}} id="{{{this.id}}}" <%= this.cssClassAttr() %>
         <% for ( var i = 0; i < this.POLYMER_PROPERTIES.length; ++i ) {
              var propName = this.POLYMER_PROPERTIES[i];
              if ( this[propName] ) { %>
@@ -56,8 +84,11 @@ CLASS({
              }
            } %>
         >
-        {{this.content}}
+        <%= this.toInnerHTML() %>
       </{{{this.tagName}}}>
+    */},
+    function toInnerHTML() {/*
+      {{this.content}}
     */}
   ]
 });

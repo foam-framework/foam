@@ -21,7 +21,7 @@ CLASS({
 
   extendsModel: 'foam.graphics.CView',
 
-  requires: [ 'foam.graphics.Circle' ],
+  requires: [ 'foam.ui.md.Halo' ],
   imports: [ 'gestureManager' ],
 
   properties: [
@@ -59,16 +59,16 @@ CLASS({
     },
     {
       name: 'halo',
-      factory: function() { return this.Circle.create({
-        alpha: 0,
-        r: 10,
-        color: this.haloColor
-        /* This gives a ring halo:
-        color: 'rgba(0,0,0,0)',
-        borderWidth: 12,
-        border: this.haloColor
-        */
-      });}
+      factory: function() {
+        return this.Halo.create({
+          alpha: 0,
+          r: 10,
+          color: this.haloColor
+          /* This gives a ring halo:
+          , style: 'ring'
+           */
+        });
+      }
     },
     {
       name:  'iconWidth',
@@ -127,59 +127,6 @@ CLASS({
     {
       name: 'tapClick',
       code: function() { this.action.callIfEnabled(this.X, this.data); }
-    },
-    {
-      name: 'onMouseDown',
-      code: function(evt) {
-        // console.log('mouseDown: ', evt, this.state_);
-        if ( this.state_ !== 'default' ) return;
-
-        this.state_ = 'pressing';
-
-        if ( evt.type === 'touchstart' ) {
-          var rect = this.$.getBoundingClientRect();
-          var t = evt.touches[0];
-          this.halo.x = t.pageX - rect.left;
-          this.halo.y = t.pageY - rect.top;
-        } else {
-          this.halo.x = evt.offsetX;
-          this.halo.y = evt.offsetY;
-        }
-        this.halo.r = 2;
-        this.halo.alpha = 0.4;
-        this.X.animate(150, function() {
-          this.halo.x = this.width/2;
-          this.halo.y = this.height/2;
-          this.halo.r = Math.min(28, Math.min(this.width, this.height)/2);
-          this.halo.alpha = 1;
-        }.bind(this), undefined, function() {
-          if ( this.state_ === 'cancelled' ) {
-            this.state_ = 'pressed';
-            this.onMouseUp();
-          } else {
-            this.state_ = 'pressed';
-          }
-        }.bind(this))();
-      }
-    },
-    {
-      name: 'onMouseUp',
-      code: function(evt) {
-        // This line shouldn't be necessary but we're getting stray
-        // onMouseUp events when the cursor moves over the button.
-        if ( this.state_ === 'default' ) return;
-
-        // console.log('mouseUp: ', evt, this.state_);
-        if ( this.state_ === 'pressing' ) { this.state_ = 'cancelled'; return; }
-        if ( this.state_ === 'cancelled' ) return;
-        this.state_ = 'released';
-
-        this.X.animate(
-          200,
-          function() { this.halo.alpha = 0; }.bind(this),
-          Movement.easeIn(.5),
-          function() { this.state_ = 'default' }.bind(this))();
-      }
     }
   ],
 
@@ -229,25 +176,6 @@ CLASS({
             self.y = 0;
           }
         });
-
-      /*
-      var b = this;
-      // Subscribe to action firing and show halo animation
-      b.data.subscribe(['action', this.action.name], function() {
-        if ( b.state_ !== 'default' ) return;
-        b.halo.r = 2;
-        b.halo.alpha = 0.4;
-        b.halo.x = b.width/2;
-        b.halo.y = b.height/2;
-        Movement.compile([
-          [150, function() {
-            b.halo.r = Math.min(28, Math.min(b.width, b.height)/2);
-            b.halo.alpha = 1;
-          }],
-          [200, function() { b.halo.alpha = 0; }]
-        ])();
-      }.bind(this));
-      */
     },
 
     initCView: function() {
@@ -278,15 +206,6 @@ CLASS({
         // If no X & Y then it was simulated by ChromeVox
         if ( ! e.x && ! e.y ) this.tapClick();
       }.bind(this));
-
-      this.$.addEventListener('mousedown',   this.onMouseDown);
-      this.$.addEventListener('mouseup',     this.onMouseUp);
-      this.$.addEventListener('mouseleave',  this.onMouseUp);
-
-      this.$.addEventListener('touchstart',  this.onMouseDown);
-      this.$.addEventListener('touchend',    this.onMouseUp);
-      this.$.addEventListener('touchleave',  this.onMouseUp);
-      this.$.addEventListener('touchcancel', this.onMouseUp);
     },
 
     destroy: function() {
