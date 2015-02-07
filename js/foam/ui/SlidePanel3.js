@@ -37,8 +37,7 @@ CLASS({
       onResize: function() {
         if ( this.parentWidth < this.minWidth + this.minPanelWidth )
           this.nextState = this.CLOSED;
-      },
-      close: function() { this.nextState = this.CLOSED; }
+      }
     },
     OPEN: {
       name: 'OPEN',
@@ -332,6 +331,3 @@ console.log('progress: ', p);
     }
   ]
 });
-
-
-// FIX SHADOW
