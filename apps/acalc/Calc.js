@@ -608,7 +608,7 @@ CLASS({
     .calc-display, .calc-display:focus {
       border: none;
       letter-spacing: 1px;
-      line-height: 28px;
+      line-height: 36px;
       margin: 0;
       min-width: 140px;
       padding: 0 25pt 2pt 25pt;
