@@ -92,9 +92,13 @@ CLASS({
     {
       name: 'desiredLayout',
       postSet: function(_, layout) {
+        if ( ! this.currentLayout ) {
+          this.currentLayout = layout;
+          return;
+        }
         var startLayout = this.currentLayout;
         var start = Date.now();
-        var end   = start + 200;
+        var end   = start + 1000;
         var animate = function() {
           var now = Date.now();
           var p = (now-start) / (end-start);
@@ -104,7 +108,8 @@ CLASS({
               startLayout[1] * ( 1 - p ) + layout[1] * p,
               startLayout[2] * ( 1 - p ) + layout[2] * p
             ];
-            this.X.requestAnimationFrame(animate);
+            if ( this.af_ ) this.X.cancelAnimationFrame(this.af_);
+            this.af_ = this.X.requestAnimationFrame(animate);
           } else {
             this.currentLayout = layout;
           }
