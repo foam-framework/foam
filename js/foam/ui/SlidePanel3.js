@@ -78,28 +78,40 @@ CLASS({
 //        if ( oldState === newState ) return;
         this.state = newState;
 
-        var layout = this.state.layout.call(this);
-        console.log(oldState.name + '  ->  ' + newState.name, layout);
-        this.mainWidth  = layout[0];
-        this.panelWidth = layout[1]+2;
-        this.panelX     = this.parentWidth-layout[2];
-
-        // Movement.animate(500, function() { this.progress = 1.0; }.bind(this))();
+        this.desiredLayout = this.state.layout.call(this);
       }
     },
     {
-      name: 'progress',
-      defaultValue: 0,
-      postSet: function(_, p) {
-console.log('progress: ', p);
-        var layout = this.interpolate(this.state, this.nextState);
-        this.mainWidth = layout[0];
-        this.panelWidth = layout[1];
-        this.panelX = this.parentWidth-layout[2];
-        if ( p >= 1.0 ) this.state = this.nextState;
+      name: 'currentLayout',
+      postSet: function(_, layout) {
+        this.mainWidth  = layout[0];
+        this.panelWidth = layout[1]+2;
+        this.panelX     = this.parentWidth-layout[2];
       }
     },
-
+    {
+      name: 'desiredLayout',
+      postSet: function(_, layout) {
+        var startLayout = this.currentLayout;
+        var start = Date.now();
+        var end   = start + 200;
+        var animate = function() {
+          var now = Date.now();
+          var p = (now-start) / (end-start);
+          if ( p < 1 ) {
+            this.currentLayout = [
+              startLayout[0] * ( 1 - p ) + layout[0] * p,
+              startLayout[1] * ( 1 - p ) + layout[1] * p,
+              startLayout[2] * ( 1 - p ) + layout[2] * p
+            ];
+            this.X.requestAnimationFrame(animate);
+          } else {
+            this.currentLayout = layout;
+          }
+        }.bind(this);
+        animate();
+      }
+    },
     { model_: 'ViewFactoryProperty', name: 'mainView' },
     { model_: 'ViewFactoryProperty', name: 'panelView' },
     {
