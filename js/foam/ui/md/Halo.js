@@ -19,16 +19,6 @@ CLASS({
   name:  'Halo',
   package: 'foam.ui.md',
 
-  todo: multiline(function() {/*
-    Better Material Design defaultValues:
-      easeInTime: 200
-      easeOutTime: 150
-      startAlpha: 0.8
-      pressedAlpha: 0.4
-
-    These should be changed after Calc launches with current settings.
-  */}),
-
   extendsModel: 'foam.graphics.Circle',
 
   constant: {
@@ -50,19 +40,19 @@ CLASS({
     },
     {
       name: 'easeInTime',
-      defaultValue: 150
-    },
-    {
-      name: 'easeOutTime',
       defaultValue: 200
     },
     {
+      name: 'easeOutTime',
+      defaultValue: 150
+    },
+    {
       name: 'startAlpha',
-      defaultValue: 0.4
+      defaultValue: 0.8
     },
     {
       name: 'pressedAlpha',
-      defaultValue: 1
+      defaultValue: 4
     },
     {
       name: 'finishAlpha',
