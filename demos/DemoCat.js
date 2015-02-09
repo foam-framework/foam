@@ -112,10 +112,10 @@ var demos = JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Collision',
-    path: 'Collision.html',
+    path: '/index.html?model=foam.demos.Collision',
     description: 'Demonstration of the physics engine and collision-detection.',
     keywords: ['physics', '14'],
-    src: 'Collision.js',
+    src: '/js/foam/demos/Collision.js',
     image: 'Collision.png'
   },
   {
