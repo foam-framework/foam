@@ -44,7 +44,11 @@ CLASS({
       name: 'data',
       documentation: function() {/* The actual data used by the view. May be set
         directly to override the context import. Children will see changes to this
-        data through the context. */},
+        data through the context. Override $$DOC{ref:'.onDataChange'}
+        instead of using a postSet here. */},
+      postSet: function(old, nu) {       
+        this.onDataChange(old, nu);
+      }
     },
     {
       name: 'childData',
@@ -76,35 +80,48 @@ CLASS({
   ],
   
   methods: {
-    init: function() {
-      this.SUPER();
-      this.data$.addListener(this.onDataChange);
-      // if we imported, our listener may need to fire immediately
-      if ( this.data ) {
-        this.onDataChange(null, null, undefined, this.data);
+    onDataChange: function(old, nu) { /* React to a change to $$DOC{ref:'.data'}.
+      Don't forget to call <code>this.SUPER(old,nu)</code> in your implementation. */
+      this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange;
+      if ( this.isImportEnabled_ && this.dataImport !== nu ) {
+        this.dataImport = nu;
       }
+      if ( this.childData !== nu ) {
+        this.childData = nu;
+      }
+      
+      return nu;
     }
   },
+//     init: function() {
+//       this.SUPER();
+//       //this.data$.addListener(this.onDataChange);
+//       // if we imported, our listener may need to fire immediately
+//       //if ( this.data ) {
+//       //  this.onDataChange(null, null, undefined, this.data);
+//       //}
+//     }
+//   },
   
-  listeners: [
-    {
-      name: 'onDataChange',
-      documentation: function() {/* This listener acts like a postSet for
-        data, but allows extenders to use postSet without destroying our
-        functionality. 
-      */},
-      code: function(_,_,old,nu) {
-        // If not a change from import or export, the user wants to 
-        // set data directly and break the connection with our import
-        this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange;
-        if ( this.isImportEnabled_ && this.dataImport !== nu ) {
-          this.dataImport = nu;
-        }
-        if ( this.childData !== nu ) {
-          this.childData = nu;
-        }
-      }
-    }
-  ]
+//   listeners: [
+//     {
+//       name: 'onDataChange',
+//       documentation: function() {/* This listener acts like a postSet for
+//         data, but allows extenders to use postSet without destroying our
+//         functionality. 
+//       */},
+//       code: function(_,_,old,nu) {
+//         // If not a change from import or export, the user wants to 
+//         // set data directly and break the connection with our import
+//         this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange;
+//         if ( this.isImportEnabled_ && this.dataImport !== nu ) {
+//           this.dataImport = nu;
+//         }
+//         if ( this.childData !== nu ) {
+//           this.childData = nu;
+//         }
+//       }
+//     }
+//   ]
   
 });

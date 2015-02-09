@@ -2402,6 +2402,20 @@ tada
             ]
           });
           CLASS({
+            name: 'DataC',
+            package: 'test.dvt',
+            properties: [
+              { name: 'label', defaultValue: 'c' }
+            ]
+          });
+          CLASS({
+            name: 'DataD',
+            package: 'test.dvt',
+            properties: [
+              { name: 'label', defaultValue: 'd' }
+            ]
+          });
+          CLASS({
             name: 'SimpleView',
             traits: ['foam.patterns.ChildTreeTrait','foam.ui.SimpleViewTrait'],
             package: 'test.dvt'
@@ -2410,13 +2424,12 @@ tada
             name: 'DataView',
             traits: ['foam.patterns.ChildTreeTrait','foam.ui.DataViewTrait'],
             package: 'test.dvt',
-            properties: [
-              {
-                name: 'data',
-                postSet: function() {
-                  console.log("DVT data change: ", this.data);
-                }
-             }]
+            methods: {
+              onDataChange: function(old,nu) {
+                this.SUPER(old,nu);
+                console.log("DVT data change: ", this.data);
+              }
+            }
           });
           CLASS({
             name: 'DestructiveDataView',
@@ -2579,13 +2592,29 @@ end
                   var d = this.X.SimpleValue.create(this.X.test.dvt.DataA.create({},this.X), this.X);
                   var dv = this.X.test.dvt.DataView.create({}, this.X.sub({ data$: d }));
                   dv.construct();
+                  this.log("Root data: ", d.value.label);
+                  this.log("DataView data: ", dv.data.label);
+                  this.log("DataView child data: ", dv.childData.label);
+                  this.log("Context data: ", dv.X.data$.value.label);
+
+                  this.log("\nChanging root context value, will propagate...");
+                  d.set(this.X.test.dvt.DataB.create({},this.X));
+                  this.log("Root data: ", d.value.label);
                   this.log("DataView data: ", dv.data.label);
                   this.log("DataView child data: ", dv.childData.label);
                   this.log("Context data: ", dv.X.data$.value.label);
                   
-                  this.log("Changing data...");
-                  var e = this.X.test.dvt.DataB.create({},this.X);
+                  this.log("\nChanging data, will break import connection...");
+                  var e = this.X.test.dvt.DataC.create({},this.X);
                   dv.data = e;
+                  this.log("Root data: ", d.value.label);
+                  this.log("DataView data: ", dv.data.label);
+                  this.log("DataView child data: ", dv.childData.label);
+                  this.log("Context data: ", dv.X.data$.value.label);
+
+                  this.log("\nChanging root context value, will only affect root...");
+                  d.set(this.X.test.dvt.DataD.create({},this.X));
+                  this.log("Root data: ", d.value.label);
                   this.log("DataView data: ", dv.data.label);
                   this.log("DataView child data: ", dv.childData.label);
                   this.log("Context data: ", dv.X.data$.value.label);
@@ -2603,14 +2632,30 @@ end
             </property>
             <property name="master">begin
 DVT data change: DataAPrototype
+Root data: a
 DataView data: a
 DataView child data: a
 Context data: a
-Changing data...
+
+Changing root context value, will propagate...
 DVT data change: DataBPrototype
+Root data: b
 DataView data: b
 DataView child data: b
 Context data: b
+
+Changing data, will break import connection...
+DVT data change: DataCPrototype
+Root data: b
+DataView data: c
+DataView child data: c
+Context data: c
+
+Changing root context value, will only affect root...
+Root data: d
+DataView data: c
+DataView child data: c
+Context data: c
 end
 </property>
           </object>
