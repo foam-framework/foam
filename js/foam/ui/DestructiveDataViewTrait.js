@@ -38,8 +38,9 @@ CLASS({
       documentation: function() {/* Handles the incoming data from the import
         context, and may be ignored if data is directly set. */},
       postSet: function(old, nu) {
-        if ( this.isImportEnabled_ && this.data != nu ) {
+        if ( this.isImportEnabled_ && this.data !== nu ) {
           this.isContextChange = true;
+console.log(this.name_, "DDVT dataImport setting data", nu);
           this.data = nu;
           this.isContextChange = false;
         }
@@ -86,6 +87,7 @@ CLASS({
     onChildValueChange: function(old,nu) {
       /* Override to change the default update behavior: when the value
         changes in the child context, propagate into $$DOC{ref:'.data'}. */
+console.log(this.name_, "DDVT childdData setting data", nu);
       this.data = nu;      
     },
     
@@ -93,7 +95,8 @@ CLASS({
       /* Override to change the default update behavior: when 
         $$DOC{ref:'.data'} changes, propagate to the child context. */
       if (  this.childDataValue 
-         && this.childDataValue.value != nu ) {
+         && this.childDataValue.value !== nu ) {
+console.log(this.name_, "DDVT data setting childData", nu);
         this.childDataValue.set(nu);
       }
     },
@@ -101,6 +104,7 @@ CLASS({
     destroy: function() {
       // tear down childDataValue listener
       if ( this.childDataValue ) {
+console.log(this.name_, "--- Destroy cutting loose ChildData...", this.childDataValue.value);      
         this.childDataValue.removeListener(this.onExportValueChange_);
         this.childDataValue = null;
       }
@@ -110,7 +114,7 @@ CLASS({
     },
     construct: function() {
       this.SUPER();
-      
+console.log(this.name_, "*** Construct Creating new ChildData...");      
       // create childDataValue value and
       this.childDataValue = this.SimpleValue.create();
       this.onDataChange(undefined, this.data); // initial set
@@ -140,7 +144,8 @@ CLASS({
         /* If not a change from import or export, the user wants to 
          set data directly and break the connection with our import */
         this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange;
-        if ( this.isImportEnabled_ && this.dataImport != nu ) {
+        if ( this.isImportEnabled_ && this.dataImport !== nu ) {
+console.log(this.name_, "DDVT data setting dataImport", nu);
           this.dataImport = nu;
         }
         this.onDataChange(old,nu);

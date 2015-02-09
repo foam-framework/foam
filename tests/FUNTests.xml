@@ -2296,12 +2296,9 @@ tada
 
         </property>
       </object>
+
       <object model="UnitTest">
         <property name="name">Lazy DAO Test</property>
-        <property name="tags">
-          <i>web</i>
-          <i>node</i>
-        </property>
         <property name="async">true</property>
         <property name="code" type="function">function (ret) {
               var Abc = Model.create({
@@ -2379,6 +2376,178 @@ tada
                   });
                 })(ret);
             }
+        </property>
+        <property name="tags">
+          <i>web</i>
+          <i>node</i>
+        </property>
+      </object>
+
+      <object model="UnitTest">
+        <property name="name">DataViewTrait</property>
+        <property name="description">Tests data handling traits for views.</property>
+        <property name="code" type="function">function anonymous() {
+          CLASS({
+            name: 'DataA',
+            package: 'test.dvt',
+            properties: [
+              { name: 'label', defaultValue: 'a' }
+            ]
+          });
+          CLASS({
+            name: 'DataB',
+            package: 'test.dvt',
+            properties: [
+              { name: 'label', defaultValue: 'b' }
+            ]
+          });
+          CLASS({
+            name: 'SimpleView',
+            traits: ['foam.patterns.ChildTreeTrait','foam.ui.SimpleViewTrait'],
+            package: 'test.dvt'
+          });
+          CLASS({
+            name: 'DataView',
+            traits: ['foam.patterns.ChildTreeTrait','foam.ui.DataViewTrait'],
+            package: 'test.dvt',
+            properties: [
+              {
+                name: 'data',
+                postSet: function() { console.log(this.name_, "data change", this.data.label); }
+              }
+            ]
+          });
+          CLASS({
+            name: 'DestructiveDataView',
+            traits: ['foam.patterns.ChildTreeTrait','foam.ui.DestructiveDataViewTrait'],
+            package: 'test.dvt',
+            
+            methods: {
+              onDataChange: function(old,nu) {
+                if ( nu &amp;&amp; nu.model_ &amp;&amp; this.model !== nu.model_ ) {
+                  // destroy children
+                  this.destroy();
+                  // propagate data change (nowhere)
+                  this.model = nu.model_;
+          
+                  // rebuild children with new data
+                  this.construct();
+                } else {
+                  if ( this.childDataValue ) this.childDataValue.set(nu); // just move the new data along
+                }
+                this.onValueChange_(); // sub-classes may handle to change as well
+              },
+              construct: function() {
+                this.log(this.name_, "constructing ", this.data.label);
+              },
+              destroy: function() {
+                this.log(this.name_, "destroying ", this.data.label);              
+              }
+            }
+          });
+          CLASS({
+            name: 'TransformingDataView',
+            traits: ['foam.patterns.ChildTreeTrait','foam.ui.TransformingDataViewTrait'],
+            package: 'test.dvt',
+            properties: [
+              {
+                name: 'data',
+                postSet: function() {
+                  this.log(this.name_, "data change", this.data.label); 
+                  this.childData = this.data.label;
+                }
+              },
+              {
+                name: 'childData',
+                postSet: function() {
+                  this.log(this.name_, "child change", this.childData); 
+                  this.data.label = this.childData;
+                }
+              }
+            ]
+          });
+
+        }
+        </property>
+        <property name="tags">
+          <i>web</i>
+          <i>node</i>
+        </property>
+        <property name="tests">
+          <object model="RegressionTest">
+            <property name="name">Setting data on a SimpleView passes data though the context</property>
+            <property name="description">Data should be set on the context so child views can see it.</property>
+            <property name="code" type="function">function anonymous() {
+              CLASS({
+                name: 'SimpleView_constructs_DataView',
+                package: 'test.dvt',
+                extendsModel: 'test.dvt.SimpleView',
+                requires: ['test.dvt.DataView'],
+                methods: {
+                  construct: function() {
+                    this.SUPER();
+                    this.addChild(this.DataView.create());
+                  }
+                }
+              });
+              
+              aseq( arequire('test.dvt.SimpleView_constructs_DataView'),
+                function(ret) {
+                  this.log("begin");
+                  var d = this.X.test.dvt.DataA.create(this.X);
+                  var sv = this.X.test.dvt.SimpleView_constructs_DataView.create({ data: d }, this.X);
+                  sv.construct();
+                  this.log("Simple data:", sv.data.label);
+                  this.log("Child DataView X.data: ", sv.children[0].X.data$.value.label);
+                  this.log("end");
+                  ret &amp;&amp; ret();
+                }.bind(this)
+              )();
+            }
+            </property>
+            <property name="tags">
+              <i>web</i>
+              <i>node</i>
+            </property>
+            <property name="master">begin
+Simple data:a
+Child DataView X.data: a
+end
+</property>
+          </object>
+
+          <object model="RegressionTest">
+            <property name="code" type="function">function anonymous() {
+            }
+            </property>
+            <property name="tags">
+              <i>web</i>
+              <i>node</i>
+            </property>
+          </object>
+
+          <object model="RegressionTest">
+            <property name="code" type="function">function anonymous() {
+            }
+            </property>
+            <property name="tags">
+              <i>web</i>
+              <i>node</i>
+            </property>
+            <property name="master">wew</property>
+          </object>
+
+          <object model="RegressionTest">
+            <property name="code" type="function">function anonymous() {
+            }
+            </property>
+            <property name="tags">
+              <i>web</i>
+              <i>node</i>
+            </property>
+            <property name="master">wee</property>
+          </object>
+
         </property>
       </object>
 

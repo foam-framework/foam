@@ -28,24 +28,35 @@ CLASS({
   properties: [
     {
       name: 'data',
-      setter: function(nu) {
+      postSet: function() {
         this.children.forEach(function(child) {
-          child.data = nu;
+          child.data = this.data;
         }.bind(this));
       },
-      getter: function() {
-        if ( this.X.data$ ) {
-          return this.X.data$.value;
-        } else {
-          return undefined;
-        }
-      },
+//       getter: function() {
+//         if ( this.X.data$ ) {
+//           return this.X.data$.value;
+//         } else {
+//           return undefined;
+//         }
+//       },
       documentation: function() {/* The postSet supplied here will
         propagate the change to children. Those children are responsible
         for either passing on the change or exporting to their contexts
         if they actually handle data.
       */},
     }
-  ]
+  ],
+  methods: {
+    addChild: function(child) {
+      this.SUPER(child);
+      if ( this.data ) {
+        // if our data was set on initialization, we didn't have children to 
+        // propagate it to yet. Since we can't export to the context, better
+        // set it now...
+        child.data = this.data;
+      }
+    }
+  }
   
 });

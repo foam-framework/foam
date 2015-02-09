@@ -33,8 +33,9 @@ CLASS({
       documentation: function() {/* Handles the incoming data from the import
         context, and may be ignored if data is directly set. */},
       postSet: function(old, nu) {
-        if ( this.isImportEnabled_ && this.data != nu ) {
+        if ( this.isImportEnabled_ && this.data !== nu ) {
           this.isContextChange = true;
+console.log(this.name_, "DVT importData setting data",nu);
           this.data = nu;
           this.isContextChange = false;
         }
@@ -52,8 +53,9 @@ CLASS({
         from data as a way to detect whether a change is local or from child
         context changes. */},
       postSet: function(old, nu) {
-        if ( this.data != nu ) {
+        if ( this.data !== nu ) {
           this.isContextChange = true;
+console.log(this.name_, "DVT childData setting data",nu);
           this.data = nu;
           this.isContextChange = false;
         }
@@ -94,9 +96,13 @@ CLASS({
         // set data directly and break the connection with our import
         this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange;
         if ( this.isImportEnabled_ && this.dataImport !== nu ) {
+console.log(this.name_, "DVT data setting importData",nu);
           this.dataImport = nu;
         }
-        if ( this.childData != nu ) this.childData = nu;
+        if ( this.childData !== nu ) {
+console.log(this.name_, "DVT data setting childData",nu);
+          this.childData = nu;
+        }
       }
     }
   ]

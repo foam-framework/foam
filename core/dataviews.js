@@ -760,10 +760,10 @@ CLASS({
   properties: [
     {
       name: 'data',
-      postSet: function(old, nu) {
-        this.unbindData(old);
-        this.bindData(nu);
-      }
+//       postSet: function(old, nu) {
+//         this.unbindData(old);
+//         this.bindData(nu);
+//       }
     },    
     {
       name: 'prop',
@@ -955,21 +955,7 @@ CLASS({
         Handles a model change, which requires that the child views be torn down.
         If the data.model_ remains the same, the new data is simply propagated to
         the existing children.
-      */},
-      postSet: function(old, nu) {
-        if ( nu && nu.model_ && this.model !== nu.model_ ) {
-          // destroy children
-          this.destroy();
-          // propagate data change (nowhere)
-          this.model = nu.model_;
-
-          // rebuild children with new data
-          this.construct();
-        } else {
-          if ( this.childDataValue ) this.childDataValue.set(nu); // just move the new data along
-        }
-        this.onValueChange_(); // sub-classes may handle to change as well
-      }
+      */}
     },
     {
       name:  'model',
@@ -1015,6 +1001,21 @@ CLASS({
     // Template Method
     onValueChange_: function() { /* Override with value update code. */ },
 
+    onDataChange: function(old,nu) {
+      if ( nu && nu.model_ && this.model !== nu.model_ ) {
+        // destroy children
+        this.destroy();
+        // propagate data change (nowhere)
+        this.model = nu.model_;
+
+        // rebuild children with new data
+        this.construct();
+      } else {
+        if ( this.childDataValue ) this.childDataValue.set(nu); // just move the new data along
+      }
+      this.onValueChange_(); // sub-classes may handle to change as well
+    },
+    
     viewModel: function() { /* The $$DOC{ref:'Model'} type of the $$DOC{ref:'.data'}. */
       return this.model;
     },
