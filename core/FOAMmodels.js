@@ -27,7 +27,6 @@ var files = [
   [ 'i18n',     IN_BROWSER ],
   'stdlib',
   ['WeakMap',  function() { return ! this['WeakMap']; }],
-  'io',
   'writer',
   'socket',
   'encodings',
