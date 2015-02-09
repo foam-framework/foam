@@ -27,7 +27,7 @@ MODEL({
         return;
       }
 
-      var sourcePath = FOAM_BOOT_DIR + '../js/' + key.replace(/\./g, '/') + '.js';
+      var sourcePath = window.FOAM_BOOT_DIR + '../js/' + key.replace(/\./g, '/') + '.js';
       
       var tag = X.document.createElement('script');
       tag.src = sourcePath;

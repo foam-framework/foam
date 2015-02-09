@@ -430,6 +430,22 @@ var BootstrapModel = {
     return cls;
   },
 
+  getAllRequires: function() {
+    var requires = {};
+    this.requires.forEach(function(r) { requires[r.split(' ')[0]] = true; });
+    this.traits.forEach(function(t) { requires[t] = true; });
+    if ( this.extendsModel ) requires[this.extendsModel] = true;
+
+    function setModel(o) { if ( o && o.model_ ) requires[o.model_.id] = true; }
+
+    this.properties.forEach(setModel);
+    this.actions.forEach(setModel);
+    this.templates.forEach(setModel);
+    this.listeners.forEach(setModel);
+
+    return Object.keys(requires);
+  },
+
   getPrototype: function() { /* Returns the definition $$DOC{ref:'Model'} of this instance. */
     return this.instance_.prototype_ || ( this.instance_.prototype_ = this.buildPrototype() );
   },

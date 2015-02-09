@@ -19,77 +19,182 @@ CLASS({
   name: 'ActionButton',
   package: 'foam.ui.polymer',
 
-  extendsModel: 'ActionButton',
-  traits: [
-    'foam.ui.polymer.View'
+  extendsModel: 'View',
+
+  requires: [
+    'foam.ui.polymer.gen.PaperButton'
   ],
-  requires: ['Action'],
-  imports: ['warn'],
+
+  constants: [
+    {
+      name: 'CSS_PROPERTIES',
+      value: [
+        'color',
+        'font'
+      ]
+    }
+  ],
 
   properties: [
     {
-      type: 'Action',
-      name: 'action',
-      factory: function() {
-        return this.Action.create({
-          action: function() {
-            this.warn('Polymer button: action not set:', this);
-            }.bind(this)
-        });
-      }
+      name: 'tagName',
+      defaultValue: 'div'
     },
     {
       name: 'className',
-      defaultValue: ''
+      defaultValue: 'button'
     },
     {
-      name: 'tagName',
-      defaultValue: 'paper-button'
+      name: 'label',
+      defaultValueFn: function() {
+        return this.data ?
+            this.action.labelFn.call(this.data, this.action) :
+            this.action.label;
+      },
+      postSet: function(_, nu) { this.render(); }
     },
     {
-      name: 'iconUrl',
-      defaultValue: false
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'raised',
-      defaultValue: false,
-      postSet: function(prev, next) {
-        this.updateAttribute('raised', prev, next);
+      name: 'button',
+      factory: function() {
+        return this.PaperButton.create({
+          className: 'polymerActionButton'
+        });
+      },
+      postSet: function(old, nu) {
+        if ( old ) Events.unlink(this.label$, old.content$);
+        if ( nu ) Events.link(this.label$, nu.content$);
+        this.render();
       }
     },
     {
-      model_: 'BooleanProperty',
-      name: 'recenteringTouch',
-      defaultValue: false,
-      postSet: function(prev, next) {
-        this.updateAttribute('recenteringTouch', prev, next);
+      name: 'action',
+      postSet: function(old, nu) {
+        old && old.removeListener(this.render);
+        nu.addListener(this.render);
+      },
+      postSet: function(_, nu) { this.render(); }
+    },
+    {
+      name:  'font',
+      type:  'String',
+      defaultValue: '',
+      postSet: function(_, nu) { this.updateStyleCSS(); }
+    },
+    {
+      name: 'data',
+      postSet: function(_, nu) { this.render(); }
+    },
+    {
+      name: 'showLabel',
+      defaultValueFn: function() { return this.action.showLabel; }
+    },
+    {
+      name: 'haloColor'
+    },
+    {
+      name:  'color',
+      label: 'Foreground Color',
+      type:  'String',
+      defaultValue: 'black',
+      postSet: function(_, nu) { this.updateStyleCSS(); }
+    },
+    {
+      name: 'tooltip',
+      defaultValueFn: function() { return this.action.help; }
+    },
+    {
+      name: 'speechLabel',
+      defaultValueFn: function() { return this.action.speechLabel; }
+    },
+    'tabIndex',
+    'role'
+  ],
+
+  listeners: [
+    {
+      name: 'render',
+      isFramed: true,
+      code: function() { this.updateHTML(); }
+    }
+  ],
+
+  methods: [
+    {
+      name: 'updateStyleCSS',
+      code: function() {
+        if ( this.button && this.button.$ ) {
+          var e = this.button.$;
+          var style = e.style;
+          this.CSS_PROPERTIES.forEach(function(key) {
+            style[key] = this[key];
+          }.bind(this));
+          this.button.updateHTML();
+        }
       }
     },
     {
-      model_: 'BooleanProperty',
-      name: 'fill',
-      defaultValue: true,
-      postSet: function(prev, next) {
-        this.updateAttribute('fill', prev, next);
+      name: 'updateHTML',
+      code: function() {
+        var rtn = this.SUPER();
+        this.updateStyleCSS();
+        return rtn;
+      }
+    },
+    {
+      name: 'initHTML',
+      code: function() {
+        this.SUPER();
+
+        var self = this;
+        var button = this.button;
+
+        // TODO(markdittmer): We should use this.on('click', ...) here, but the
+        // gesture manager seems to be broken. Really, we want to attach this
+        // to the button (but that too isn't working; perhaps it is Polymer's
+        // fault, or perhaps it's gesture manager).
+        this.$.addEventListener('click', function() {
+          self.action.callIfEnabled(self.X, self.data);
+        });
+
+        button.setAttribute('disabled', function() {
+          self.closeTooltip();
+          return self.action.isEnabled.call(self.data, self.action) ? undefined : 'disabled';
+        }, button.id);
+
+        button.setClass('available', function() {
+          self.closeTooltip();
+          return self.action.isAvailable.call(self.data, self.action);
+        }, button.id);
+
+        // this.X.dynamic(function() { self.action.labelFn.call(self.data, self.action); self.updateHTML(); });
+      }
+    },
+    {
+      name: 'toInnerHTML',
+      code: function() {
+        if ( ! this.button ) return '';
+        var innerHTML = this.button.toHTML() || '';
+        if ( ! this.haloColor ) return innerHTML;
+        var style = '<style>' + '#' + this.button.id +
+            '::shadow #ripple { color: ' + this.haloColor + '; }</style>';
+        return style + innerHTML;
       }
     }
   ],
 
-  constants: {
-    HREF: '/bower_components/paper-button/paper-button.html',
-    POLYMER_PROPERTIES: [
-      'raised',
-      'recenteringTouch',
-      'fill'
-    ]
-  },
-
   templates: [
-    function CSS() {/*
-      paper-button { display: none; }
-      paper-button.actionButton { display: none; }
-      paper-button.available { display: inline-block; }
-    */}
+    {
+      name: 'CSS',
+      template: function CSS() {/*
+        paper-button.polymerActionButton {
+          background-color: rgba(0, 0, 0, 0);
+          min-width: initial;
+          margin: initial;
+          flex-grow: 1;
+          justify-content: center;
+          display: flex;
+        }
+      */}
+    }
   ]
 });
