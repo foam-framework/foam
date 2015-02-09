@@ -23,7 +23,8 @@ CLASS({
    "properties": [
       {
          "model_": "Property",
-         "name": "charcode"
+        "name": "charcode",
+        defaultValue: null
       },
       {
          "model_": "Property",
@@ -45,7 +46,7 @@ CLASS({
          "code": function () {
       this.string = '';
       this.remaining = 0;
-      this.charcode = undefined;
+      this.charcode = null;
     },
          "args": []
       },
@@ -60,7 +61,7 @@ CLASS({
         }
         return;
       }
-      if (this.charcode == undefined) {
+      if (this.charcode == null) {
         this.charcode = byte;
         if (!(this.charcode & 0x80)) {
           this.remaining = 0;
@@ -96,11 +97,5 @@ CLASS({
     },
          "args": []
       }
-   ],
-   "listeners": [],
-   "templates": [],
-   "models": [],
-   "tests": [],
-   "relationships": [],
-   "issues": []
+   ]
 });
