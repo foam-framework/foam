@@ -2427,7 +2427,7 @@ tada
             methods: {
               onDataChange: function(old,nu) {
                 this.SUPER(old,nu);
-                console.log("DVT data change: ", this.data);
+                console.log("DVT data change: ", this.data.label);
               }
             }
           });
@@ -2540,7 +2540,7 @@ tada
               <i>node</i>
             </property>
             <property name="master">begin
-DVT data change: DataAPrototype
+DVT data change: a
 Simple data:a
 Child DataView X.data: a
 end
@@ -2572,7 +2572,7 @@ end
               <i>node</i>
             </property>
             <property name="master">begin
-DVT data change: DataAPrototype
+DVT data change: a
 Simple data:a
 Child SimpleView data: a
 Child DataView X.data: a
@@ -2631,21 +2631,21 @@ end
               <i>node</i>
             </property>
             <property name="master">begin
-DVT data change: DataAPrototype
+DVT data change: a
 Root data: a
 DataView data: a
 DataView child data: a
 Context data: a
 
 Changing root context value, will propagate...
-DVT data change: DataBPrototype
+DVT data change: b
 Root data: b
 DataView data: b
 DataView child data: b
 Context data: b
 
 Changing data, will break import connection...
-DVT data change: DataCPrototype
+DVT data change: c
 Root data: b
 DataView data: c
 DataView child data: c
