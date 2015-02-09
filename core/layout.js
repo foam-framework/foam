@@ -92,15 +92,6 @@ CLASS({
 });
 
 CLASS({
-  name: 'Point',
-  properties: [
-    { model_: 'IntProperty', name: 'x' },
-    { model_: 'IntProperty', name: 'y' }
-  ]
-});
-
-
-CLASS({
   name: 'FloatingView',
   extendsModel: 'View',
   traits: ['PositionedDOMViewTrait'],
