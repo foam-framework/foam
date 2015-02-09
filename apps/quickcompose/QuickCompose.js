@@ -105,7 +105,7 @@ var ContactView = {
               })
             }),
             valueView: ArrayTileView.create({
-              dao: DefaultObjectDAO.create({
+              dao: X.foam.core.dao.DefaultObjectDAO.create({
                 delegate: ContactAvatarDAO,
                 factory: function(q) {
                   var obj = Contact.create({});

@@ -51,10 +51,10 @@ CLASS({
   requires: [
     'AbcCitationView',
     'Abc',
-    'DelayedDAO',
     'SeqNoDAO',
     'GUIDDAO',
     'foam.core.dao.CloningDAO',
+    'foam.core.dao.DelayedDAO',
     'foam.core.dao.Sync',
     'foam.core.dao.MergeDAO',
     'foam.core.dao.VersionNoDAO'

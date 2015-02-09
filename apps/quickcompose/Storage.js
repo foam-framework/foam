@@ -56,7 +56,7 @@ console.timeEnd('ContactAvatarDAO');
 
 ContactDAO = EasyDAO.create({model: Contact, cache: true})
 
-ContactAvatarDAO = PropertyOffloadDAO.create({
+ContactAvatarDAO = X.foam.core.dao.PropertyOffloadDAO.create({
   property: Contact.AVATAR,
   model: Contact,
   offloadDAO: ContactAvatarDAO,
