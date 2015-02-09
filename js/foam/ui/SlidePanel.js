@@ -252,7 +252,7 @@ CLASS({
           <div style="width:0;position:absolute;"></div>
           <%= this.mainView() %>
         </div>
-        <div id="%%id-panel" style="position: absolute; top: 0; left: 0">
+        <div id="%%id-panel" class="panel">
           <div id="%%id-shadow" class="shadow"></div>
           <%= this.panelView() %>
         </div>
