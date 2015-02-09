@@ -180,7 +180,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
     image: 'TwoWayDataBinding.png'
   },
   {
-    name: 'Calculator',
+    name: 'Calculator (pure FOAM)',
     path: '../apps/calc/Calc.html',
     description: 'A simple calculator application.  Demonstrates the use of templates to completely change the appearance of a DetailView.',
     keywords: ['app', '14'],
@@ -193,6 +193,14 @@ var demos = JSONUtil.arrayToObjArray(X, [
     description: 'A calculator application with an animated Material-Design interface.',
     keywords: ['app', 'material-design', '14'],
     src: '../apps/acalc/',
+    image: 'ACalc.png'
+  },
+  {
+    name: 'Calculator (Material-Design, FOAM + Polymer)',
+    path: '../apps/pcalc/Calc.html',
+    description: 'A calculator applications that uses Polymer component views.',
+    keywords: ['app', 'material-design', 'polymer', '15'],
+    src: '../apps/pcalc/',
     image: 'ACalc.png'
   },
   {
