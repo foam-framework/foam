@@ -1,0 +1,146 @@
+CLASS({
+   "model_": "Model",
+   "id": "foam.util.Base64Encoder",
+   "package": "foam.util",
+   "name": "Base64Encoder",
+   "properties": [
+      {
+         "model_": "Property",
+         "name": "table",
+         "defaultValueFn": function () { return this.TABLE; }
+      },
+      {
+         "model_": "BooleanProperty",
+         "name": "urlSafe",
+         "postSet": function (_, v) {
+        this.table = this.TABLE.clone();
+        if ( v ) {
+          this.table[62] = '-';
+          this.table[63] = '_';
+        }
+      }
+      }
+   ],
+   "actions": [],
+   "constants": [
+      {
+         "model_": "Constant",
+         "name": "TABLE",
+         "value": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+            "Q",
+            "R",
+            "S",
+            "T",
+            "U",
+            "V",
+            "W",
+            "X",
+            "Y",
+            "Z",
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "h",
+            "i",
+            "j",
+            "k",
+            "l",
+            "m",
+            "n",
+            "o",
+            "p",
+            "q",
+            "r",
+            "s",
+            "t",
+            "u",
+            "v",
+            "w",
+            "x",
+            "y",
+            "z",
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "+",
+            "/"
+         ]
+      }
+   ],
+   "messages": [],
+   "methods": [
+      {
+         "model_": "Method",
+         "name": "encode",
+         "code": function (b, opt_break) {
+      var result = "";
+      var out;
+      if ( opt_break >= 0 ) {
+        var count = 0;
+        out = function(c) {
+          result += c;
+          count = (count + 1) % opt_break;
+          if ( count === 0 ) result += "\r\n";
+        };
+      } else {
+        out = function(c) { result += c; };
+      }
+
+      var view = new Uint8Array(b);
+      for ( var i = 0; i + 2 < b.byteLength; i += 3 ) {
+        out(this.table[view[i] >>> 2]);
+        out(this.table[((view[i] & 3) << 4) | (view[i+1] >>> 4)]);
+        out(this.table[((view[i+1] & 15) << 2) | (view[i+2] >>> 6)]);
+        out(this.table[view[i+2] & 63]);
+      }
+
+      if ( i < b.byteLength ) {
+        out(this.table[view[i] >>> 2]);
+        if ( i + 1 < b.byteLength ) {
+          out(this.table[((view[i] & 3) << 4) | (view[i+1] >>> 4)]);
+          out(this.table[((view[i+1] & 15) << 2)]);
+        } else {
+          out(this.table[((view[i] & 3) << 4)]);
+          out('=');
+        }
+        out('=');
+      }
+      return result;
+    },
+         "args": []
+      }
+   ],
+   "listeners": [],
+   "templates": [],
+   "models": [],
+   "tests": [],
+   "relationships": [],
+   "issues": []
+});
