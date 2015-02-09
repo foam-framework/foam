@@ -97,7 +97,7 @@ CLASS({
         }
         var startLayout = this.currentLayout;
         var start = Date.now();
-        var end   = start + 100;
+        var end   = start + 150;
         var animate = function() {
           var now = Date.now();
           var p = (now-start) / (end-start);
