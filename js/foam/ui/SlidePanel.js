@@ -240,11 +240,6 @@ CLASS({
         position: absolute;
         width: 8px;
       }
-      .SlidePanel .panel {
-        position: absolute;
-        top: 0;
-        left: -1;
-      }
     */},
     function toHTML() {/*
       <div id="%%id" style="display: inline-block;position: relative;" class="SlidePanel">
@@ -252,7 +247,7 @@ CLASS({
           <div style="width:0;position:absolute;"></div>
           <%= this.mainView() %>
         </div>
-        <div id="%%id-panel" class="panel">
+        <div id="%%id-panel" style="position: absolute; top: 0; left: -1;">
           <div id="%%id-shadow" class="shadow"></div>
           <%= this.panelView() %>
         </div>
