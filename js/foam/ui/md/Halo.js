@@ -107,9 +107,9 @@ CLASS({
         this.r = 2;
         this.alpha = this.startAlpha;
         this.X.animate(this.easeInTime, function() {
-          this.x = this.$.width/4;
-          this.y = this.$.height/4;
-          this.r = Math.min(28, Math.min(this.$.width, this.$.height)/4);
+          this.x = this.$.width/2;
+          this.y = this.$.height/2;
+          this.r = Math.min(28, Math.min(this.$.width, this.$.height)/2);
           this.alpha = this.pressedAlpha;
         }.bind(this), undefined, function() {
           if ( this.state_ === 'cancelled' ) {
