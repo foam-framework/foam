@@ -232,10 +232,6 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .SlidePanel {
-        display: flex;
-        position: relative;
-      }
       .SlidePanel .shadow {
         background: linear-gradient(to left, rgba(0,0,0,0.15) 0%,
                                              rgba(0,0,0,0) 100%);
@@ -244,8 +240,6 @@ CLASS({
         position: absolute;
         width: 8px;
       }
-      .SlidePanel .main {
-      }
       .SlidePanel .panel {
         position: absolute;
         top: 0;
@@ -253,12 +247,12 @@ CLASS({
       }
     */},
     function toHTML() {/*
-      <div id="%%id" class="SlidePanel">
-        <div id="%%id-main" class="main">
+      <div id="%%id" style="display: inline-block;position: relative;" class="SlidePanel">
+        <div id="%%id-main">
           <div style="width:0;position:absolute;"></div>
           <%= this.mainView() %>
         </div>
-        <div id="%%id-panel" class="panel">
+        <div id="%%id-panel" style="position: absolute; top: 0; left: 0">
           <div id="%%id-shadow" class="shadow"></div>
           <%= this.panelView() %>
         </div>

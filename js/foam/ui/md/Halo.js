@@ -19,16 +19,6 @@ CLASS({
   name:  'Halo',
   package: 'foam.ui.md',
 
-  todo: multiline(function() {/*
-    Better Material Design defaultValues:
-      easeInTime: 200
-      easeOutTime: 150
-      startAlpha: 0.8
-      pressedAlpha: 0.4
-
-    These should be changed after Calc launches with current settings.
-  */}),
-
   extendsModel: 'foam.graphics.Circle',
 
   constant: {
@@ -50,19 +40,19 @@ CLASS({
     },
     {
       name: 'easeInTime',
-      defaultValue: 150
-    },
-    {
-      name: 'easeOutTime',
       defaultValue: 200
     },
     {
+      name: 'easeOutTime',
+      defaultValue: 150
+    },
+    {
       name: 'startAlpha',
-      defaultValue: 0.4
+      defaultValue: 0.8
     },
     {
       name: 'pressedAlpha',
-      defaultValue: 1
+      defaultValue: 0.4
     },
     {
       name: 'finishAlpha',
@@ -117,9 +107,9 @@ CLASS({
         this.r = 2;
         this.alpha = this.startAlpha;
         this.X.animate(this.easeInTime, function() {
-          this.x = this.$.width/2;
-          this.y = this.$.height/2;
-          this.r = Math.min(28, Math.min(this.$.width, this.$.height)/2);
+          this.x = this.$.width/4;
+          this.y = this.$.height/4;
+          this.r = Math.min(28, Math.min(this.$.width, this.$.height)/4);
           this.alpha = this.pressedAlpha;
         }.bind(this), undefined, function() {
           if ( this.state_ === 'cancelled' ) {

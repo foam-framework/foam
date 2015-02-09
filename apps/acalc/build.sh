@@ -30,15 +30,18 @@ cat \
   ../../js/foam/ui/Window.js \
   ../../core/value.js \
   ../../core/view.js \
+  ../../core/layout.js \
   ../../js/foam/ui/SlidePanel.js \
   ../../core/AbstractDAOView.js \
   ../../core/DAOListView.js \
   ../../core/DetailView.js \
   ../../js/foam/patterns/ChildTreeTrait.js \
   ../../js/foam/graphics/AbstractCViewView.js \
+  ../../js/foam/graphics/PositionedCViewView.js \
   ../../js/foam/graphics/CView.js \
   ../../js/foam/graphics/Circle.js \
   ../../js/foam/graphics/CViewView.js \
+  ../../js/foam/ui/md/Halo.js \
   ../../js/foam/graphics/ActionButtonCView.js \
   ../../core/HTMLParser.js \
   ../../core/visitor.js \
