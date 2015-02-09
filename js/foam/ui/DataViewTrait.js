@@ -35,7 +35,6 @@ CLASS({
       postSet: function(old, nu) {
         if ( this.isImportEnabled_ && this.data !== nu ) {
           this.isContextChange = true;
-console.log(this.name_, "DVT importData setting data",nu);
           this.data = nu;
           this.isContextChange = false;
         }
@@ -55,7 +54,6 @@ console.log(this.name_, "DVT importData setting data",nu);
       postSet: function(old, nu) {
         if ( this.data !== nu ) {
           this.isContextChange = true;
-console.log(this.name_, "DVT childData setting data",nu);
           this.data = nu;
           this.isContextChange = false;
         }
@@ -81,6 +79,10 @@ console.log(this.name_, "DVT childData setting data",nu);
     init: function() {
       this.SUPER();
       this.data$.addListener(this.onDataChange);
+      // if we imported, our listener may need to fire immediately
+      if ( this.data ) {
+        this.onDataChange(null, null, undefined, this.data);
+      }
     }
   },
   
@@ -96,11 +98,9 @@ console.log(this.name_, "DVT childData setting data",nu);
         // set data directly and break the connection with our import
         this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange;
         if ( this.isImportEnabled_ && this.dataImport !== nu ) {
-console.log(this.name_, "DVT data setting importData",nu);
           this.dataImport = nu;
         }
         if ( this.childData !== nu ) {
-console.log(this.name_, "DVT data setting childData",nu);
           this.childData = nu;
         }
       }

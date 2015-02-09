@@ -2413,9 +2413,10 @@ tada
             properties: [
               {
                 name: 'data',
-                postSet: function() { console.log(this.name_, "data change", this.data.label); }
-              }
-            ]
+                postSet: function() {
+                  console.log("DVT data change: ", this.data);
+                }
+             }]
           });
           CLASS({
             name: 'DestructiveDataView',
@@ -2438,10 +2439,10 @@ tada
                 this.onValueChange_(); // sub-classes may handle to change as well
               },
               construct: function() {
-                this.log(this.name_, "constructing ", this.data.label);
+                console.log('DestructiveDataView construct');
               },
               destroy: function() {
-                this.log(this.name_, "destroying ", this.data.label);              
+                console.log('DestructiveDataView destroy');
               }
             }
           });
@@ -2467,6 +2468,33 @@ tada
             ]
           });
 
+          CLASS({
+            name: 'SimpleView_constructs_DataView',
+            package: 'test.dvt',
+            extendsModel: 'test.dvt.SimpleView',
+            requires: ['test.dvt.DataView'],
+            methods: {
+              construct: function() {
+                this.SUPER();
+                this.addChild(this.DataView.create());
+              }
+            }
+          });
+          CLASS({
+            name: 'SimpleView_constructs_SimpleView_constructs_DataView',
+            package: 'test.dvt',
+            extendsModel: 'test.dvt.SimpleView',
+            requires: ['test.dvt.SimpleView_constructs_DataView'],
+            methods: {
+              construct: function() {
+                this.SUPER();
+                var nu = this.SimpleView_constructs_DataView.create();
+                this.addChild(nu);
+                nu.construct();
+              }
+            }
+          });
+
         }
         </property>
         <property name="tags">
@@ -2477,19 +2505,8 @@ tada
           <object model="RegressionTest">
             <property name="name">Setting data on a SimpleView passes data though the context</property>
             <property name="description">Data should be set on the context so child views can see it.</property>
-            <property name="code" type="function">function anonymous() {
-              CLASS({
-                name: 'SimpleView_constructs_DataView',
-                package: 'test.dvt',
-                extendsModel: 'test.dvt.SimpleView',
-                requires: ['test.dvt.DataView'],
-                methods: {
-                  construct: function() {
-                    this.SUPER();
-                    this.addChild(this.DataView.create());
-                  }
-                }
-              });
+            <property name="async">true</property>
+            <property name="code" type="function">function (ret) {
               
               aseq( arequire('test.dvt.SimpleView_constructs_DataView'),
                 function(ret) {
@@ -2502,7 +2519,7 @@ tada
                   this.log("end");
                   ret &amp;&amp; ret();
                 }.bind(this)
-              )();
+              )(ret);
             }
             </property>
             <property name="tags">
@@ -2510,6 +2527,7 @@ tada
               <i>node</i>
             </property>
             <property name="master">begin
+DVT data change: DataAPrototype
 Simple data:a
 Child DataView X.data: a
 end
@@ -2517,35 +2535,84 @@ end
           </object>
 
           <object model="RegressionTest">
-            <property name="code" type="function">function anonymous() {
+            <property name="name">Setting data on nested SimpleViews passes data though the context</property>
+            <property name="description">Data should be set on the innermost nested SimpleView's child's context so child views can see it.</property>
+            <property name="async">true</property>
+            <property name="code" type="function">function (ret) {
+              aseq( arequire('test.dvt.SimpleView_constructs_SimpleView_constructs_DataView'),
+                function(ret) {
+                  this.log("begin");
+                  var d = this.X.test.dvt.DataA.create(this.X);
+                  var sv = this.X.test.dvt.SimpleView_constructs_SimpleView_constructs_DataView.create({ data: d }, this.X);
+                  sv.construct();
+                  this.log("Simple data:", sv.data.label);
+                  this.log("Child SimpleView data: ", sv.children[0].data.label);
+                  this.log("Child DataView X.data: ", sv.children[0].children[0].X.data$.value.label);
+                  this.log("end");
+                  ret &amp;&amp; ret();
+                }.bind(this)
+              )(ret);
             }
             </property>
             <property name="tags">
               <i>web</i>
               <i>node</i>
             </property>
+            <property name="master">begin
+DVT data change: DataAPrototype
+Simple data:a
+Child SimpleView data: a
+Child DataView X.data: a
+end
+</property>
           </object>
 
           <object model="RegressionTest">
-            <property name="code" type="function">function anonymous() {
+            <property name="name">DataView passes data through</property>
+            <property name="description">Data set on the context or changed through setting .data should propagate to children.</property>
+            <property name="async">true</property>
+            <property name="code" type="function">function (ret) {
+              aseq( arequire('test.dvt.DataView'),
+                    arequire('SimpleValue'),
+                function(ret) {
+                  this.log("begin");
+                  var d = this.X.SimpleValue.create(this.X.test.dvt.DataA.create({},this.X), this.X);
+                  var dv = this.X.test.dvt.DataView.create({}, this.X.sub({ data$: d }));
+                  dv.construct();
+                  this.log("DataView data: ", dv.data.label);
+                  this.log("DataView child data: ", dv.childData.label);
+                  this.log("Context data: ", dv.X.data$.value.label);
+                  
+                  this.log("Changing data...");
+                  var e = this.X.test.dvt.DataB.create({},this.X);
+                  dv.data = e;
+                  this.log("DataView data: ", dv.data.label);
+                  this.log("DataView child data: ", dv.childData.label);
+                  this.log("Context data: ", dv.X.data$.value.label);
+                  
+                  
+                  this.log("end");
+                  ret &amp;&amp; ret();
+                }.bind(this)
+              )(ret);
             }
             </property>
             <property name="tags">
               <i>web</i>
               <i>node</i>
             </property>
-            <property name="master">wew</property>
-          </object>
-
-          <object model="RegressionTest">
-            <property name="code" type="function">function anonymous() {
-            }
-            </property>
-            <property name="tags">
-              <i>web</i>
-              <i>node</i>
-            </property>
-            <property name="master">wee</property>
+            <property name="master">begin
+DVT data change: DataAPrototype
+DataView data: a
+DataView child data: a
+Context data: a
+Changing data...
+DVT data change: DataBPrototype
+DataView data: b
+DataView child data: b
+Context data: b
+end
+</property>
           </object>
 
         </property>
