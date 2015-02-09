@@ -269,8 +269,8 @@ CLASS({
       // or timestamp.
       if ( obj.payload.headers.length === 1 &&
            obj.payload.headers[0].name === "From" ) {
-        obj.labelIds = ['CHAT', obj.labelIds];
-        ret(obj.labelIds);
+        obj.labelIds = ['CHAT'].concat(obj.labelIds);
+        ret(obj);
         return;
       }
 
@@ -517,7 +517,7 @@ CLASS({
         put: function(o) {
           self.postProcessObject(function(obj) {
             if ( ! obj && sink ) sink.error();
-            else if ( sink && sink.put ) sink.put(o);
+            else if ( sink && sink.put ) sink.put(obj);
           }, ( sink && sink.error ) ? sink.error.bind(sink) : function(){}, o);
         },
         error: function(args) {
@@ -602,7 +602,8 @@ CLASS({
                       future.set(sink);
                       return;
                     }
-                    sink.put && sink.put(obj, null, fc);
+                    if ( obj.labelIds[0] != 'CHAT' )
+                      sink.put && sink.put(obj, null, fc);
                     ret();
                   }))(function() {
                     sink.eof && sink.eof();
