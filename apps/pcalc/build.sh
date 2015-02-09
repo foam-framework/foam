@@ -94,19 +94,7 @@ cat \
   | sed 's/_NL_/\n/g' \
   > "./foam.js"
 
-export LINKS=(
-  "../acalc/fonts"
-  "../acalc/icons"
-  "../acalc/_locales"
-)
-
-for LINK in ${LINKS[@]}; do
-  ln -s $LINK ./
-done
 vulcanize --inline --csp -o AppCalc.html AppCalc_.html
-for LINK in ${LINKS[@]}; do
-  rm $(basename $LINK)
-done
 
 export FILES=(
   "../acalc/Calc.html"
