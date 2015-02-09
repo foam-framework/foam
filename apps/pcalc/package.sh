@@ -1,10 +1,11 @@
 #!/bin/sh
 
 BASEDIR=$(dirname $0)
-sh "$BASEDIR"/build.sh
+# $BUILD_DIR and $NAME come from build.sh.
+source "$BASEDIR/build.sh"
 
 set -e
-cd ~/Downloads/pcalc
-zip -r pcalc.zip *
+cd $BUILD_DIR
+zip -r "$NAME.zip" *
 
-echo "Constructed pcalc.zip: " $HOME/Downloads/pcalc/pcalc.zip
+echo "Constructed zip: $BUILD_DIR/$NAME.zip"
