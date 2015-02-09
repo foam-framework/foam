@@ -1,5 +1,7 @@
 BASEDIR=$(dirname "$0")
 cd "$BASEDIR"
+export NAME="pcalc"
+export BUILD_DIR=~/Downloads/$NAME
 
 if [ ! -d ../../bower_components/paper-button ]; then
     pushd ../../
@@ -7,20 +9,6 @@ if [ ! -d ../../bower_components/paper-button ]; then
     popd
 fi
 
-# TODO(markdittmer): It would be nice to avoid some of this symlinking, but
-# some things like the directories are easiest to manage this way.
-LINK_FILES=( "Calc.html" "AppCalc.html" "bg.js" "Calc.js" "Tests.html" "Opt.js" "fonts" "icons" "_locales" )
-
-for FILE in ${LINK_FILES[@]}; do
-  if [ ! -h "./$FILE" ]; then
-      ln -s "../acalc/$FILE" "./$FILE"
-  fi
-done
-
-export BUILD_DIR=~/Downloads/pcalc
-rm -rf $BUILD_DIR
-mkdir $BUILD_DIR
-cp -r . $BUILD_DIR
 cat \
   ../../core/stdlib.js \
   ../../core/async.js \
@@ -45,6 +33,7 @@ cat \
   ../../core/view.js \
   ../../core/view2.js \
   ../../core/layout.js \
+  ../../js/foam/ui/SlidePanel.js \
   ../../core/AbstractDAOView.js \
   ../../core/DAOListView.js \
   ../../core/DetailView.js \
@@ -52,8 +41,10 @@ cat \
   ../../js/foam/graphics/AbstractCViewView.js \
   ../../js/foam/graphics/PositionedCViewView.js \
   ../../js/foam/graphics/CViewView.js \
+  ../../js/foam/graphics/ActionButtonCView.js \
   ../../js/foam/graphics/CView.js \
   ../../js/foam/graphics/Circle.js \
+  ../../js/foam/ui/md/Halo.js \
   ../../core/HTMLParser.js \
   ../../core/visitor.js \
   ../../core/dao.js \
@@ -73,8 +64,9 @@ cat \
   ../../js/foam/ui/polymer/gen/PaperRipple.js \
   ../../js/foam/ui/polymer/gen/PaperButtonBase.js \
   ../../js/foam/ui/polymer/gen/PaperButton.js \
+  ../../js/foam/ui/polymer/ActionButton.js \
   CalcConfig.js \
-  Calc.js \
+  ../acalc/Calc.js \
   | sed 's/^ *//g' \
   | sed 's/  */ /g' \
   | sed 's%^//.*%%g' \
@@ -100,18 +92,46 @@ cat \
   | sed 's/{_NL_/{/g' \
   | sed 's/,_NL_/,/g' \
   | sed 's/_NL_/\n/g' \
-  > "$BUILD_DIR/foam.js"
+  > "./foam.js"
+
+export LINKS=(
+  "../acalc/fonts"
+  "../acalc/icons"
+  "../acalc/_locales"
+)
+
+for LINK in ${LINKS[@]}; do
+  ln -s $LINK ./
+done
+vulcanize --inline --csp -o AppCalc.html AppCalc_.html
+for LINK in ${LINKS[@]}; do
+  rm $(basename $LINK)
+done
+
+export FILES=(
+  "../acalc/Calc.html"
+  "../acalc/bg.js"
+  "../acalc/Calc.js"
+  "../acalc/fonts"
+  "../acalc/icons"
+  "../acalc/_locales"
+  "CalcConfig.js"
+  "AppCalc.html"
+  "AppCalc.js"
+  "manifest.json"
+)
+
+rm -rf $BUILD_DIR
+mkdir $BUILD_DIR
+for FILE in ${FILES[@]}; do
+  cp -r $FILE $BUILD_DIR/
+done
 
 # Delete unneeded files
 rm -f \
-  "$BUILD_DIR/Calc.js" \
-  "$BUILD_DIR/Calc.html" \
-  "$BUILD_DIR/Opt.js" \
-  "$BUILD_DIR/Tests.js" \
-  "$BUILD_DIR/Tests.html" \
-  "$BUILD_DIR/build.sh" \
-  "$BUILD_DIR/package.sh" \
-  "$BUILD_DIR/*~" \
+  "foam.js" \
+  "AppCalc.html" \
+  "AppCalc.js"
 
 # For code compression, uncomment the following line:
 # ~/node_modules/uglify-js/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"

@@ -30,6 +30,55 @@ CLASS({
     'setTimeout'
   ],
 
+  constants: {
+    CLOSED: {
+      name: 'CLOSED',
+      layout: function() {
+        return [ this.parentWidth - this.stripWidth, this.minPanelWidth, this.stripWidth ];
+      },
+      onResize: function() {
+        if ( this.parentWidth > this.minWidth + this.minPanelWidth )
+          this.state = this.EXPANDED;
+      },
+      toggle: function() { this.open(); },
+      open: function() { this.state = this.OPEN; },
+      over: true
+    },
+    EXPANDED: {
+      name: 'EXPANDED',
+      layout: function() {
+        var extraWidth = this.parentWidth - this.minWidth - this.minPanelWidth;
+        var panelWidth = this.minPanelWidth + extraWidth * this.panelRatio;
+        return [ this.parentWidth - panelWidth, panelWidth, panelWidth ];
+      },
+      onResize: function() {
+        if ( this.parentWidth < this.minWidth + this.minPanelWidth )
+          this.state = this.CLOSED;
+      }
+    },
+    OPEN: {
+      name: 'OPEN',
+      layout: function() {
+        return [ this.parentWidth - this.stripWidth, this.minPanelWidth, this.panelWidth ];
+      },
+      onResize: function() {
+        if ( this.parentWidth > this.minWidth + this.minPanelWidth )
+          this.state = this.OPEN_EXPANDED;
+      },
+      close: function() { this.state = this.CLOSED; },
+      toggle: function() { this.close(); },
+      over: true
+    },
+    OPEN_EXPANDED: {
+      name: 'OPEN_EXPANDED',
+      layout: function() { return this.EXPANDED.layout.call(this); },
+      onResize: function() {
+        if ( this.parentWidth < this.minWidth + this.minPanelWidth )
+          this.state = this.OPEN;
+      }
+    }
+  },
+
   help: 'A controller that shows a main view with a small strip of the ' +
       'secondary view visible at the right edge. This "panel" can be dragged ' +
       'by a finger or mouse pointer to any position from its small strip to ' +
@@ -37,6 +86,55 @@ CLASS({
       'will always be visible.',
 
   properties: [
+    {
+      name: 'state',
+      postSet: function(oldState, newState) {
+        var layout = this.state.layout.call(this);
+        if ( oldState === newState && ! this.af_ ) {
+          this.currentLayout = layout;
+        } else {
+          this.desiredLayout = layout;
+        }
+      }
+    },
+    {
+      name: 'currentLayout',
+      postSet: function(_, layout) {
+        this.panelWidth = Math.max(layout[1]+2, this.minPanelWidth);
+        this.panelX     = Math.min(this.parentWidth-this.stripWidth, this.parentWidth-layout[2]);
+        this.mainWidth  = Math.max(layout[0], this.panelX);
+      }
+    },
+    {
+      name: 'desiredLayout',
+      postSet: function(_, layout) {
+        if ( ! this.currentLayout ) {
+          this.currentLayout = layout;
+          return;
+        }
+        var startLayout = this.currentLayout;
+        var start = Date.now();
+        var end   = start + 150;
+        var animate = function() {
+          var now = Date.now();
+          var p = (now-start) / (end-start);
+          if ( p < 1 ) {
+            var mainWidth =
+            this.currentLayout = [
+              startLayout[0] * ( 1 - p ) + layout[0] * p,
+              startLayout[1] * ( 1 - p ) + layout[1] * p,
+              startLayout[2] * ( 1 - p ) + layout[2] * p
+            ];
+            if ( this.af_ ) this.X.cancelAnimationFrame(this.af_);
+            this.af_ = this.X.requestAnimationFrame(animate);
+          } else {
+            this.currentLayout = layout;
+            this.af_ = null;
+          }
+        }.bind(this);
+        animate();
+      }
+    },
     { model_: 'ViewFactoryProperty', name: 'mainView' },
     { model_: 'ViewFactoryProperty', name: 'panelView' },
     {
@@ -49,12 +147,22 @@ CLASS({
     },
     {
       model_: 'IntProperty',
-      name: 'width',
+      name: 'mainWidth',
       model_: 'IntProperty',
       hidden: true,
       help: 'Set internally by the resize handler',
       postSet: function(_, x) {
         this.main$().style.width = x + 'px';
+      }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'panelWidth',
+      model_: 'IntProperty',
+      hidden: true,
+      help: 'Set internally by the resize handler',
+      postSet: function(_, x) {
+        this.panel$().style.width = (x+1) + 'px';
       }
     },
     {
@@ -67,13 +175,6 @@ CLASS({
         var e = this.panel$();
         return e ? toNum(this.X.window.getComputedStyle(e).width) : 250;
       }
-    },
-    {
-      model_: 'IntProperty',
-      name: 'panelWidth',
-      hidden: true,
-      help: 'Set internally by the resize handler',
-      postSet: function(_, x) { this.panel$().style.width = x + 'px'; }
     },
     {
       model_: 'IntProperty',
@@ -140,11 +241,6 @@ CLASS({
       }
     },
     {
-      name: 'opened',
-      help: 'If the panel us opened or not.',
-      defaultValue: false
-    },
-    {
       name: 'expanded',
       help: 'If the panel is wide enough to expand the panel permanently.',
       defaultValue: false
@@ -160,7 +256,7 @@ CLASS({
         left: -8px;
         position: absolute;
         width: 8px;
-        }
+      }
     */},
     function toHTML() {/*
       <div id="%%id" style="display: inline-block;position: relative;" class="SlidePanel">
@@ -168,7 +264,7 @@ CLASS({
           <div style="width:0;position:absolute;"></div>
           <%= this.mainView() %>
         </div>
-        <div id="%%id-panel" style="position: absolute; top: 0; left: 0">
+        <div id="%%id-panel" style="position: absolute; top: 0; left: -1;">
           <div id="%%id-shadow" class="shadow"></div>
           <%= this.panelView() %>
         </div>
@@ -178,6 +274,8 @@ CLASS({
 
   methods: {
     initHTML: function() {
+      this.state = this.state = this.CLOSED;
+
       this.gestureManager.install(this.dragGesture);
       this.gestureManager.install(this.tapGesture);
 
@@ -190,28 +288,21 @@ CLASS({
       this.onResize();
       this.initChildren(); // We didn't call SUPER(), so we have to do this here.
     },
-    snap: function() {
-      // if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) return;
-      // TODO: Calculate the animation time based on how far the panel has to move
-      Movement.animate(500, function() {
-        this.panelX = this.dir_ > 0 ? 0 : 1000;
-      }.bind(this))();
+    interpolate: function(state1, state2) {
+      var layout1 = state1.layout.call(this);
+      var layout2 = state2.layout.call(this);
+      return [
+        layout1[0] * this.progress + layout2[0] * ( 1 - this.progress ),
+        layout1[1] * this.progress + layout2[1] * ( 1 - this.progress ),
+        layout1[2] * this.progress + layout2[2] * ( 1 - this.progress ),
+      ];
     },
-    main$: function() { return this.X.$(this.id + '-main'); },
-    panel$: function() { return this.X.$(this.id + '-panel'); },
+    main$:   function() { return this.X.$(this.id + '-main'); },
+    panel$:  function() { return this.X.$(this.id + '-panel'); },
     shadow$: function() { return this.X.$(this.id + '-shadow'); },
-    open: function() {
-      if ( this.expanded || this.opened ) return;
-      this.opened = true;
-      this.dir_ = 1;
-      this.snap();
-    },
-    close: function() {
-      if ( this.expanded || ! this.opened ) return;
-      this.opened = false;
-      this.dir_ = -1;
-      this.snap();
-    }
+    open:    function() { this.state.open && this.state.open.call(this); },
+    close:   function() { this.state.close && this.state.close.call(this); },
+    toggle:  function() { this.state.toggle && this.state.toggle.call(this); }
   },
 
   listeners: [
@@ -230,31 +321,21 @@ CLASS({
       isFramed: true,
       code: function(e) {
         if ( ! this.$ ) return;
-        if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) {
-          this.shadow$().style.display = 'none';
-          // Expaded mode. Show the two side by side, setting their widths
-          // based on the panelRatio.
-          this.panelWidth = Math.max(this.panelRatio * this.parentWidth, this.minPanelWidth);
-          this.width = this.parentWidth - this.panelWidth;
-          this.panelX = this.width;
-          this.expanded = true;
-        } else {
-          this.shadow$().style.display = 'inline';
-          this.width = Math.max(this.parentWidth - this.stripWidth, this.minWidth);
-          this.panelWidth = this.minPanelWidth;
-          this.panelX = this.width;
-          this.expanded = false;
-        }
+        this.state.onResize.call(this);
+        this.shadow$().style.display = this.state.over ? 'inline' : 'none';
+        this.state = this.state;
+        var parentWidth = this.parentWidth;
+        // TODO(kgr): temporary hack in case SlidePanel's are nested and
+        // the the inner one needs to be re-layedout after the outer one
+        // changes its size.  Being resized should also fire an onResize event.
+        this.X.setTimeout(function() {
+          if ( this.parentWidth !== parentWidth ) this.onResize();
+        }.bind(this), 100);
       }
     },
     {
       name: 'tapClick',
-      code: function() {
-        console.log('tapclick', this.expanded, this.opened);
-        if ( this.expanded ) return;
-        if ( this.opened ) this.close();
-        else this.open();
-      }
+      code: function() { this.toggle(); }
     },
     {
       name: 'dragStart',
@@ -271,10 +352,8 @@ CLASS({
     {
       name: 'dragEnd',
       code: function(point) {
-        if ( this.expanded ) return;
-        Events.unfollow(point.x$, this.panelX$);
-        this.snap();
-        this.opened = ! this.opened;
+        if ( this.dir_ < 0 ) this.close(); else this.open();
+        this.state = this.state;
       }
     }
   ]
