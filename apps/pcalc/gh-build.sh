@@ -1,7 +1,16 @@
 BASEDIR=$(dirname "$0")
 cd "$BASEDIR"
 
+# Assuming we're in the foam submodule of the gh-pages branch:
+
+# Get out of foam submodule
+pushd ../../../
+
 ON_GH_PAGES_BRANCH=`git branch | grep '^[*] gh-pages$'`
+
+# Come back to the intended working directory
+popd
+
 if [ "$ON_GH_PAGES_BRANCH" == "" ]; then
     echo "ERROR: Only for use in gh-pages branch"
     exit 1
