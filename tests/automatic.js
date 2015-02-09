@@ -55,8 +55,11 @@ function testsComplete() {
 
 modelDAO.select({
   put: function(m) {
-    m.tests && m.tests.dao.where(X.childTestsFilter).select({
-      put: function(t){ allTests.push(t.clone()); }
+    _ROOT_X.registerModel(m);
+    arequire(m.id)(function() {
+      m.tests && m.tests.dao.where(X.childTestsFilter).select({
+        put: function(t){ allTests.push(t.clone()); }
+      });
     });
   }
 })(function() {
