@@ -186,6 +186,10 @@ CLASS({
 
   extendsModel: 'View',
 
+  requires: [
+    'foam.util.Base64Decoder'
+  ],
+
   properties: [
     {
       model_: 'StringProperty',
@@ -397,7 +401,7 @@ CLASS({
               });
             } else if ( node.src.startsWith('data:') ) {
               var type = node.src.substring(5, node.src.indexOf(';'));
-              var decoder = Base64Decoder.create({ bufsize: node.src.length });
+              var decoder = self.Base64Decoder.create({ bufsize: node.src.length });
               decoder.put(node.src.substring(node.src.indexOf('base64,') + 7));
               decoder.eof();
 

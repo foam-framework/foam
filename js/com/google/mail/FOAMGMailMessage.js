@@ -24,7 +24,8 @@ CLASS({
    "plural": "messages",
    "requires": [
       "foam.util.Base64Decoder",
-      "foam.util.Base64Encoder"
+      "foam.util.Base64Encoder",
+      "foam.util.encodings.IncrementalUtf8"
    ],
    "imports": [],
    "exports": [],
@@ -150,7 +151,7 @@ CLASS({
         buffer += "\r\n";
 
         if ( p.body && p.body.size > 0 ) {
-          var decoder = self.Base64Decoder.create({ sink: this.X.IncrementalUtf8.create(), bufsize: p.body.size });
+          var decoder = self.Base64Decoder.create({ sink: this.IncrementalUtf8.create(), bufsize: p.body.size });
           decoder.put(p.body.data);
           decoder.eof();
 
