@@ -68,6 +68,10 @@ CLASS({
           , style: 'ring'
            */
         });
+      },
+      postSet: function(old, nu) {
+        if ( old ) this.removeChild(old);
+        if ( nu ) this.addChild(nu);
       }
     },
     {
