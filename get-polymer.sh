@@ -35,5 +35,9 @@ else
   echo "You do not have apt-get. Attempting install ASSUMING you have bower (see http://bower.io)."
 fi
 
+echo "Attempting to install Polymer/polymer using bower."
 $BOWER install Polymer/polymer
+echo "Attempting to install Polymer/paper-elements using bower."
 $BOWER install Polymer/paper-elements
+echo "Attempting to install vulcanize using npm."
+sudo $NPM install -g vulcanize
