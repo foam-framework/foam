@@ -29,8 +29,6 @@ var files = [
   ['WeakMap',  function() { return ! this['WeakMap']; }],
   'writer',
   'socket',
-  'encodings',
-  'utf8',
   'async',
   'parse',
   'event',

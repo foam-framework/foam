@@ -272,7 +272,29 @@ MODEL({
       return [rect.left, rect.top];
     },
 
-    function nop() { /** NOP function. **/ }
+    function nop() { /** NOP function. **/ },
+
+    function stringtoutf8(str) {
+      var res = [];
+      for (var i = 0; i < str.length; i++) {
+        var code = str.charCodeAt(i);
+
+        var count = 0;
+        if ( code < 0x80 ) {
+          res.push(code);
+          continue;
+        }
+
+        // while(code > (0x40 >> count)) {
+        //     res.push(code & 0x3f);
+        //     count++;
+        //     code = code >> 7;
+        // }
+        // var header = 0x80 >> count;
+        // res.push(code | header)
+      }
+      return res;
+    }
   ]
 });
 
@@ -642,7 +664,6 @@ MODEL({
   ]
 });
 
-
 function defineProperties(proto, fns) {
   for ( var key in fns ) {
     try {
@@ -724,3 +745,16 @@ if ( window.XMLHttpRequest ) {
     xhr.send(opt_data);
   };
 }
+
+String.fromCharCode = (function() {
+  var oldLookup = String.fromCharCode;
+  var lookupTable = [];
+  return function(a) {
+    if (arguments.length == 1) return lookupTable[a] || (lookupTable[a] = oldLookup(a));
+    var result = "";
+    for (var i = 0; i < arguments.length; i++) {
+      result += lookupTable[arguments[i]] || (lookupTable[arguments[i]] = oldLookup(arguments[i]));
+    }
+    return result;
+  };
+})();
