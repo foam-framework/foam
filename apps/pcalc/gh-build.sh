@@ -1,10 +1,12 @@
 BASEDIR=$(dirname "$0")
-cd "$BASEDIR"
+
+# Pushd to popd just before sourcing build.sh
+pushd "$BASEDIR" > /dev/null
 
 # Assuming we're in the foam submodule of the gh-pages branch:
 
 # Get out of foam submodule
-pushd ../../../ > /dev/null
+pushd ../../../  > /dev/null
 
 ON_GH_PAGES_BRANCH=`git branch | grep '^[*] gh-pages$'`
 
@@ -16,16 +18,20 @@ if [ "$ON_GH_PAGES_BRANCH" == "" ]; then
     exit 1
 fi
 
-# build.sh export BUILD_DIR
-BUILD_OUTPUT=`source ./build.sh`
+# build.sh expects to start in our original directory
+popd > /dev/null
 
-if [ "$BUILD_OUTPUT" != "" ]; then
-    echo "ERROR: Expected no output from build.sh (actual output below)"
-    echo "$BUILD_OUTPUT"
-    exit 1
-fi
+# build.sh export BUILD_DIR
+source $BASEDIR/build.sh
+
+# BUILD_DIR may be relative to BASEDIR, so push it back
+pushd "$BASEDIR" > /dev/null
 
 export PCALC_GH_DIR=../../../pcalc
 
-rm -rf "$PCALC_GH_DIR/*"
-cp -r "$BUILD_DIR/*" "$PCALC_GH_DIR/"
+mkdir -p "$PCALC_GH_DIR"
+rm -rf $PCALC_GH_DIR/*
+cp -r $BUILD_DIR/* $PCALC_GH_DIR/
+
+# Don't leave our BASEDIR on the dir stack
+popd > /dev/null

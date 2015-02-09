@@ -1,5 +1,5 @@
 BASEDIR=$(dirname "$0")
-cd "$BASEDIR"
+pushd "$BASEDIR" > /dev/null
 export NAME="pcalc"
 export BUILD_DIR=~/Downloads/$NAME
 
@@ -123,3 +123,5 @@ rm -f \
 
 # For code compression, uncomment the following line:
 # ~/node_modules/uglify-js/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"
+
+popd > /dev/null
