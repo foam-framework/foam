@@ -30662,18 +30662,6 @@ font:'300 28px RobotoDraft',
 role:'button'
 });
 }
-var inChromeApp=chrome && chrome.runtime && chrome.runtime.id;
-var inGithubPages=window.location.href.match(/http[:][/][/][^/?]*github[.]io/);
-if(!inChromeApp){
-var paperButtonComponentLink=document.createElement('link');
-paperButtonComponentLink.setAttribute('rel','import');
-paperButtonComponentLink.setAttribute(
-'href',
-inGithubPages?
-'paper-button.html':
-'../../bower_components/paper-button/paper-button.html');
-document.head.appendChild(paperButtonComponentLink);
-}
 /**
 * @license
 * Copyright 2014 Google Inc. All Rights Reserved.

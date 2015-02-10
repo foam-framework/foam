@@ -74,16 +74,3 @@ function getCalcButton() {
     role:       'button'
   });
 }
-
-var inChromeApp = chrome && chrome.runtime && chrome.runtime.id;
-var inGithubPages = window.location.href.match(/http[:][/][/][^/?]*github[.]io/);
-if ( ! inChromeApp ) {
-  var paperButtonComponentLink = document.createElement('link');
-  paperButtonComponentLink.setAttribute('rel', 'import');
-  paperButtonComponentLink.setAttribute(
-      'href',
-      inGithubPages ?
-          'paper-button.html' :
-          '../../bower_components/paper-button/paper-button.html');
-  document.head.appendChild(paperButtonComponentLink);
-} // else { TODO(markdittmer): load from Chrome App-friendly location.
