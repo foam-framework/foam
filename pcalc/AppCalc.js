@@ -25705,7 +25705,7 @@ return;
 }
 var startLayout=this.currentLayout;
 var start=Date.now();
-var end=start+150;
+var end=start+200;
 var animate=function(){
 var now=Date.now();
 var p=(now-start)/(end-start);
@@ -25753,7 +25753,7 @@ model_:'IntProperty',
 hidden:true,
 help:'Set internally by the resize handler',
 postSet:function(_,x){
-this.panel$().style.width=(x+1)+ 'px';
+this.panel$().style.width=(x+2)+ 'px';
 }
 },
 {
@@ -25788,15 +25788,9 @@ defaultValue:0.5
 {
 model_:'IntProperty',
 name:'panelX',
-preSet:function(oldX,x){
+postSet:function(oldX,x){
+if(this.currentLayout)this.currentLayout[2]=this.parentWidth-x;
 if(oldX !==x)this.dir_=oldX.compareTo(x);
-if(x<=this.parentWidth - this.panelWidth)
-return this.parentWidth - this.panelWidth;
-if(x>=this.parentWidth - this.stripWidth)
-return this.parentWidth - this.stripWidth;
-return x;
-},
-postSet:function(_,x){
 this.panel$().style.webkitTransform='translate3d('+x+'px,0,0)';
 }
 },
@@ -25918,15 +25912,25 @@ if(this.expanded)return;
 var self=this;
 var originalX=this.panelX;
 Events.map(point.x$,this.panelX$,function(x){
-return originalX+point.totalX;
-});
+var x=originalX+point.totalX;
+if(x<=this.parentWidth - this.panelWidth)
+return this.parentWidth - this.panelWidth;
+if(x>=this.parentWidth - this.stripWidth)
+return this.parentWidth - this.stripWidth;
+return x;
+}.bind(this));
 }
 },
 {
 name:'dragEnd',
 code:function(point){
+var currentLayout=this.currentLayout;
+if(this.af_)this.X.cancelAnimationFrame(this.af_);
+this.af_=null;
 if(this.dir_<0)this.close();else this.open();
-this.state=this.state;
+var layout=this.state.layout.call(this);
+this.currentLayout=currentLayout;
+this.desiredLayout=layout;
 }
 }
 ]
@@ -30298,6 +30302,10 @@ POLYMER_PROPERTIES:[
 'recenteringTouch',
 'fill',
 'role'
+],
+CSS_PROPERTIES:[
+'color',
+'font'
 ]
 },
 properties:[
@@ -30370,6 +30378,19 @@ name:'rippleInitialOpacity',
 defaultValue:0.4
 },
 {
+name:'color',
+label:'Foreground Color',
+type:'String',
+defaultValue:'black',
+postSet:function(){this.updateStyleCSS();}
+},
+{
+name:'font',
+type:'String',
+defaultValue:'',
+postSet:function(){this.updateStyleCSS();}
+},
+{
 model_:'FunctionProperty',
 name:'polymerDownAction_',
 defaultValue:anop
@@ -30387,6 +30408,12 @@ this.$.$.ripple.initialOpacity=this.rippleInitialOpacity;
 ],
 methods:[
 {
+name:'init',
+code:function(){
+this.SUPER();
+}
+},
+{
 name:'bindDownAction',
 code:function(){
 if(this.$ && this.$.downAction !==this.polymerDownAction){
@@ -30398,17 +30425,34 @@ this.$.downAction=this.polymerDownAction;
 {
 name:'initHTML',
 code:function(){
+var self=this;
+this.on(
+'click',
+function(gesture){self.publish(['click'],gesture);},
+this.id);
 var rtn=this.SUPER();
 this.bindDownAction();
+this.updateStyleCSS();
+console.log('paper-button.initHTML',this.id);
 return rtn;
 }
 },
 {
-name:'updateHTML',
+name:'destroy',
 code:function(){
 var rtn=this.SUPER();
-this.bindDownAction();
+console.log('paper-button.destroy',this.id);
 return rtn;
+}
+},
+{
+name:'updateStyleCSS',
+code:function(){
+if(!this.$)return;
+var self=this;
+this.CSS_PROPERTIES.forEach(function(propName){
+self.$.style[propName]=self[propName];
+});
 }
 }
 ]
@@ -30436,15 +30480,6 @@ extendsModel:'View',
 requires:[
 'foam.ui.polymer.gen.PaperButton'
 ],
-constants:[
-{
-name:'CSS_PROPERTIES',
-value:[
-'color',
-'font'
-]
-}
-],
 properties:[
 {
 name:'tagName',
@@ -30460,8 +30495,7 @@ defaultValueFn:function(){
 return this.data?
 this.action.labelFn.call(this.data,this.action):
 this.action.label;
-},
-postSet:function(_,nu){this.render();}
+}
 },
 {
 name:'button',
@@ -30471,28 +30505,21 @@ className:'polymerActionButton'
 });
 },
 postSet:function(old,nu){
-if(old)Events.unlink(this.label$,old.content$);
-if(nu)Events.link(this.label$,nu.content$);
-this.render();
+if(old){
+old.unsubscribe(['click'],this.onClick);
+Events.unlink(this.label$,old.content$);
+}
+if(nu){
+nu.subscribe(['click'],this.onClick);
+Events.link(this.label$,nu.content$);
+}
 }
 },
 {
-name:'action',
-postSet:function(old,nu){
-old && old.removeListener(this.render);
-nu.addListener(this.render);
-},
-postSet:function(_,nu){this.render();}
+name:'action'
 },
 {
-name:'font',
-type:'String',
-defaultValue:'',
-postSet:function(_,nu){this.updateStyleCSS();}
-},
-{
-name:'data',
-postSet:function(_,nu){this.render();}
+name:'data'
 },
 {
 name:'showLabel',
@@ -30502,13 +30529,6 @@ defaultValueFn:function(){return this.action.showLabel;}
 name:'haloColor'
 },
 {
-name:'color',
-label:'Foreground Color',
-type:'String',
-defaultValue:'black',
-postSet:function(_,nu){this.updateStyleCSS();}
-},
-{
 name:'tooltip',
 defaultValueFn:function(){return this.action.help;}
 },
@@ -30516,62 +30536,37 @@ defaultValueFn:function(){return this.action.help;}
 name:'speechLabel',
 defaultValueFn:function(){return this.action.speechLabel;}
 },
+{
+name:'color',
+label:'Foreground Color',
+type:'String',
+postSet:function(_,nu){this.button.color=nu;}
+},
+{
+name:'font',
+type:'String',
+postSet:function(_,nu){this.button.font=nu;}
+},
 'tabIndex',
 'role'
 ],
 listeners:[
 {
-name:'render',
-isFramed:true,
-code:function(){this.updateHTML();}
+name:'onClick',
+code:function(){
+if(!this.action)debugger;
+if(typeof this.action.callIfEnabled !=='function')debugger;
+this.action.callIfEnabled(this.X,this.data);
+}
 }
 ],
 methods:[
-{
-name:'updateStyleCSS',
-code:function(){
-if(this.button && this.button.$){
-var e=this.button.$;
-var style=e.style;
-this.CSS_PROPERTIES.forEach(function(key){
-style[key]=this[key];
-}.bind(this));
-this.button.updateHTML();
-}
-}
-},
-{
-name:'updateHTML',
-code:function(){
-var rtn=this.SUPER();
-this.updateStyleCSS();
-return rtn;
-}
-},
-{
-name:'initHTML',
-code:function(){
-this.SUPER();
-var self=this;
-var button=this.button;
-this.$.addEventListener('click',function(){
-self.action.callIfEnabled(self.X,self.data);
-});
-button.setAttribute('disabled',function(){
-self.closeTooltip();
-return self.action.isEnabled.call(self.data,self.action)?undefined:'disabled';
-},button.id);
-button.setClass('available',function(){
-self.closeTooltip();
-return self.action.isAvailable.call(self.data,self.action);
-},button.id);
-}
-},
 {
 name:'toInnerHTML',
 code:function(){
 if(!this.button)return '';
 var innerHTML=this.button.toHTML()||'';
+this.addChild(this.button);
 if(!this.haloColor)return innerHTML;
 var style='<style>'+'#'+this.button.id +
 '::shadow #ripple{color:'+this.haloColor+';}</style>';
@@ -30680,6 +30675,9 @@ role:'button'
 */
 var DECIMAL_PLACES_PRECISION=12;
 if(!'log10' in Math)Math.log10=function(a){return Math.log(a)/ Math.LN10;};
+function gamma(z){
+return Math.sqrt(2 * Math.PI / z)* Math.pow((1 / Math.E)*(z+1 /(12 * z - 1 /(10 * z))),z);
+}
 function trigFn(f){
 return function(a){
 return f(this.degreesMode?a * Math.PI / 180:a);
@@ -30863,6 +30861,8 @@ if(n>170){
 this.error();
 return 1/0;
 }
+n=parseFloat(n);
+if(!Number.isInteger(n))return gamma(n+1);
 var r=1;
 while(n>0)r *=n--;
 return r;
@@ -31288,14 +31288,14 @@ flex-grow:5;
 position:relative;
 }
 .secondaryButtons{
-padding-left:18px;
+padding-left:30px;
 background:rgb(52,153,128);
 }
 .secondaryButtons .button{
 background:rgb(52,153,128);
 }
 .tertiaryButtons{
-padding-left:18px;
+padding-left:35px;
 background:rgb(29,233,182);
 }
 .tertiaryButtons .button{
@@ -31339,14 +31339,15 @@ $$history{rowView:'HistoryCitationView'}
 <div class="edge2"></div>
 <%=this.SlidePanel.create({
 minWidth:310,
-minPanelWidth:310,
+minPanelWidth:320,
 panelRatio:0.55,
 mainView:'MainButtonsView',
-stripWidth:25,
+stripWidth:30,
 panelView:{
 factory_:'foam.ui.SlidePanel',
-minWidth:280,
-minPanelWidth:200,
+stripWidth:30,
+minWidth:320,
+minPanelWidth:220,
 panelRatio:3/7,
 mainView:'SecondaryButtonsView',
 panelView:'TertiaryButtonsView'
