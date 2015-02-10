@@ -239,6 +239,8 @@ CLASS({
         this.error();
         return 1/0;
       }
+      n = parseFloat(n);
+      if ( ! Number.isInteger(n) ) return gamma(n+1);
       var r = 1;
       while ( n > 0 ) r *= n--;
       return r;
