@@ -318,7 +318,7 @@ CLASS({
         // changes its size.  Being resized should also fire an onResize event.
         this.X.setTimeout(function() {
           if ( this.parentWidth !== parentWidth ) this.onResize();
-        }.bind(this), 100);
+        }.bind(this), 205);
       }
     },
     {
