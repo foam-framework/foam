@@ -162,7 +162,7 @@ CLASS({
       hidden: true,
       help: 'Set internally by the resize handler',
       postSet: function(_, x) {
-        this.panel$().style.width = (x+1) + 'px';
+        this.panel$().style.width = (x+2) + 'px';
       }
     },
     {
