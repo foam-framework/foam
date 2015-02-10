@@ -114,7 +114,7 @@ CLASS({
         }
         var startLayout = this.currentLayout;
         var start = Date.now();
-        var end   = start + 150;
+        var end   = start + 200;
         var animate = function() {
           var now = Date.now();
           var p = (now-start) / (end-start);
@@ -198,21 +198,9 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'panelX',
-      //defaultValueFn: function() { this.width - this.stripWidth; },
-      preSet: function(oldX, x) {
+      postSet: function(oldX, x) {
+        if ( this.currentLayout ) this.currentLayout[2] = this.parentWidth-x;
         if ( oldX !== x ) this.dir_ = oldX.compareTo(x);
-
-        // Bound it between its left and right limits: full open and just the
-        // strip.
-        if ( x <= this.parentWidth - this.panelWidth )
-          return this.parentWidth - this.panelWidth;
-
-        if ( x >= this.parentWidth - this.stripWidth )
-          return this.parentWidth - this.stripWidth;
-
-        return x;
-      },
-      postSet: function(_, x) {
         this.panel$().style.webkitTransform = 'translate3d(' + x + 'px, 0,0)';
       }
     },
@@ -345,15 +333,30 @@ CLASS({
         var self = this;
         var originalX = this.panelX;
         Events.map(point.x$, this.panelX$, function(x) {
-          return originalX + point.totalX;
-        });
+          var x = originalX + point.totalX;
+
+          // Bound it between its left and right limits: full open and just the
+          // strip.
+          if ( x <= this.parentWidth - this.panelWidth )
+            return this.parentWidth - this.panelWidth;
+
+          if ( x >= this.parentWidth - this.stripWidth )
+            return this.parentWidth - this.stripWidth;
+
+          return x;
+        }.bind(this));
       }
     },
     {
       name: 'dragEnd',
       code: function(point) {
+        var currentLayout = this.currentLayout;
+        if ( this.af_ ) this.X.cancelAnimationFrame(this.af_);
+        this.af_ = null;
         if ( this.dir_ < 0 ) this.close(); else this.open();
-        this.state = this.state;
+        var layout = this.state.layout.call(this);
+        this.currentLayout = currentLayout;
+        this.desiredLayout = layout;
       }
     }
   ]
