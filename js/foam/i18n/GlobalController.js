@@ -74,7 +74,21 @@ CLASS({
     {
       name: 'visitAllCurrentModels',
       code: function(visitors) {
-        Object_forEach(USED_MODELS, this.visitModel.bind(this, visitors));
+        var self = this;
+        Object_forEach(USED_MODELS, function(_, modelName) {
+          self.visitModel(visitors, FOAM.lookup(modelName));
+        });
+      }
+    },
+    {
+      name: 'visitAllKnownModels',
+      code: function(visitors) {
+        var self = this;
+        ['USED_MODELS', 'UNUSED_MODELS'].forEach(function(collName) {
+          Object_forEach(GLOBAL[collName], function(_, modelName) {
+            self.visitModel(visitors, FOAM.lookup(modelName));
+          });
+        });
       }
     },
     {
