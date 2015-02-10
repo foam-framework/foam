@@ -2443,19 +2443,34 @@ tada
                   this.destroy();
                   // propagate data change (nowhere)
                   this.model = nu.model_;
-          
+                  this.SUPER(old,nu);
+                  
                   // rebuild children with new data
                   this.construct();
                 } else {
-                  if ( this.childDataValue ) this.childDataValue.set(nu); // just move the new data along
+                  this.SUPER(old,nu);
                 }
-                this.onValueChange_(); // sub-classes may handle to change as well
               },
               construct: function() {
+                this.SUPER();
                 console.log('DestructiveDataView construct');
               },
               destroy: function() {
+                this.SUPER();
                 console.log('DestructiveDataView destroy');
+              }
+            }
+          });
+          CLASS({
+            name: 'DestructiveDataView_constructs_DataView',
+            extendsModel: 'test.dvt.DestructiveDataView',
+            package: 'test.dvt',
+            requires: ['test.dvt.DataView'],
+            
+            methods: {
+              construct: function() {
+                this.SUPER();
+                this.addChild(this.DataView.create({}, this.childX));
               }
             }
           });
@@ -2656,6 +2671,188 @@ Root data: d
 DataView data: c
 DataView child data: c
 Context data: c
+end
+</property>
+          </object>
+
+          <object model="RegressionTest">
+            <property name="name">DestructiveDataView</property>
+            <property name="description">Data set on the context or changed through setting .data should propagate to children.</property>
+            <property name="async">true</property>
+            <property name="code" type="function">function (ret) {
+              aseq( arequire('test.dvt.DestructiveDataView'),
+                    arequire('SimpleValue'),
+                function(ret) {
+                  this.log("begin");
+                  var d = this.X.SimpleValue.create(this.X.test.dvt.DataA.create({},this.X), this.X);
+                  var dv = this.X.test.dvt.DestructiveDataView.create({}, this.X.sub({ data$: d }));
+                  
+                  //dv.construct(); // don't need to call this, setting data will call it
+                  
+                  this.log("Root data: ", d.value.label);
+                  this.log("DDataView data: ", dv.data.label);
+                  this.log("DDataView child data: ", dv.childDataValue.value.label);
+                  this.log("Child Context data: ", dv.childX.data$.value.label);
+
+                  this.log("\nChanging root context value, will destroy and construct...");
+                  d.set(this.X.test.dvt.DataB.create({},this.X));
+                  this.log("Root data: ", d.value.label);
+                  this.log("DDataView data: ", dv.data.label);
+                  this.log("DDataView child data: ", dv.childDataValue.value.label);
+                  this.log("Child Context data: ", dv.childX.data$.value.label);
+
+                  this.log("\nChanging data but same model_. will not destroy or construct...");
+                  d.set(this.X.test.dvt.DataB.create({ label: 'b2' },this.X));
+                  this.log("Root data: ", d.value.label);
+                  this.log("DDataView data: ", dv.data.label);
+                  this.log("DDataView child data: ", dv.childDataValue.value.label);
+                  this.log("Child Context data: ", dv.childX.data$.value.label);
+                  
+                  this.log("\nSetting directly, will destroy and construct...");
+                  dv.data = this.X.test.dvt.DataC.create({},this.X);
+                  this.log("Root data: ", d.value.label);
+                  this.log("DDataView data: ", dv.data.label);
+                  this.log("DDataView child data: ", dv.childDataValue.value.label);
+                  this.log("Child Context data: ", dv.childX.data$.value.label);
+
+                  this.log("\nChanging root context value, will do nothing...");
+                  d.set(this.X.test.dvt.DataD.create({},this.X));
+                  this.log("Root data: ", d.value.label);
+                  this.log("DDataView data: ", dv.data.label);
+                  this.log("DDataView child data: ", dv.childDataValue.value.label);
+                  this.log("Child Context data: ", dv.childX.data$.value.label);
+                  
+                  this.log("end");
+                  ret &amp;&amp; ret();
+                }.bind(this)
+              )(ret);
+            }
+            </property>
+            <property name="tags">
+              <i>web</i>
+              <i>node</i>
+            </property>
+            <property name="master">begin
+DestructiveDataView destroy
+DestructiveDataView construct
+Root data: a
+DDataView data: a
+DDataView child data: a
+Child Context data: a
+
+Changing root context value, will destroy and construct...
+DestructiveDataView destroy
+DestructiveDataView construct
+Root data: b
+DDataView data: b
+DDataView child data: b
+Child Context data: b
+
+Changing data but same model_. will not destroy or construct...
+Root data: b2
+DDataView data: b2
+DDataView child data: b2
+Child Context data: b2
+
+Setting directly, will destroy and construct...
+DestructiveDataView destroy
+DestructiveDataView construct
+Root data: b2
+DDataView data: c
+DDataView child data: c
+Child Context data: c
+
+Changing root context value, will do nothing...
+Root data: d
+DDataView data: c
+DDataView child data: c
+Child Context data: c
+end
+</property>
+          </object>
+
+          <object model="RegressionTest">
+            <property name="name">DestructiveDataView cuts loose</property>
+            <property name="description">On a destroy and construct, DestructiveDataView throws away the old children and does not send further updates.</property>
+            <property name="async">true</property>
+            <property name="code" type="function">function (ret) {
+              aseq( arequire('test.dvt.DestructiveDataView_constructs_DataView'),
+                    arequire('SimpleValue'),
+                function(ret) {
+                  this.log("begin");
+                  var d = this.X.SimpleValue.create(this.X.test.dvt.DataA.create({},this.X), this.X);
+                  var dv = this.X.test.dvt.DestructiveDataView_constructs_DataView.create({}, this.X.sub({ data$: d }));
+                  
+                  this.log("Root data: ", d.value.label);
+                  this.log("DDataView data: ", dv.data.label);
+                  this.log("DDataView child data: ", dv.childDataValue.value.label);
+                  this.log("Child Context data: ", dv.childX.data$.value.label);
+                  var child1 = dv.children[0];
+                  this.log("Child DataView dataA: ", child1.data.label);
+
+                  this.log("\nChanging root context value, will destroy and construct...");
+                  d.set(this.X.test.dvt.DataB.create({},this.X));
+                  this.log("Root data: ", d.value.label);
+                  this.log("DDataView data: ", dv.data.label);
+                  this.log("DDataView child data: ", dv.childDataValue.value.label);
+                  this.log("Child Context data: ", dv.childX.data$.value.label);
+                  var child2 = dv.children[0];
+                  this.log("Child DataView dataB: ", child2.data.label);
+                  this.log("Previous Child DataView dataA: ", child1.data.label);
+
+                  this.log("\nSetting directly, will destroy and construct...");
+                  dv.data = this.X.test.dvt.DataC.create({},this.X);
+                  this.log("Root data: ", d.value.label);
+                  this.log("DDataView data: ", dv.data.label);
+                  this.log("DDataView child data: ", dv.childDataValue.value.label);
+                  this.log("Child Context data: ", dv.childX.data$.value.label);
+                  var child3 = dv.children[0];
+                  this.log("Child DataView dataC: ", child3.data.label);
+                  this.log("Previous Child DataView dataB: ", child2.data.label);
+                  this.log("Previous Child DataView dataA: ", child1.data.label);
+                  
+                  this.log("end");
+                  ret &amp;&amp; ret();
+                }.bind(this)
+              )(ret);
+            }
+            </property>
+            <property name="tags">
+              <i>web</i>
+              <i>node</i>
+            </property>
+            <property name="master">begin
+DestructiveDataView destroy
+DestructiveDataView construct
+DVT data change: a
+Root data: a
+DDataView data: a
+DDataView child data: a
+Child Context data: a
+Child DataView dataA: a
+
+Changing root context value, will destroy and construct...
+DestructiveDataView destroy
+DestructiveDataView construct
+DVT data change: b
+Root data: b
+DDataView data: b
+DDataView child data: b
+Child Context data: b
+Child DataView dataB: b
+Previous Child DataView dataA: a
+
+Setting directly, will destroy and construct...
+DestructiveDataView destroy
+DestructiveDataView construct
+DVT data change: c
+Root data: b
+DDataView data: c
+DDataView child data: c
+Child Context data: c
+Child DataView dataC: c
+Previous Child DataView dataB: b
+Previous Child DataView dataA: a
 end
 </property>
           </object>

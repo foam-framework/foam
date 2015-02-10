@@ -49,7 +49,16 @@ CLASS({
       name: 'data',
       documentation: function() {/* The actual data used by the view. May be set
         directly to override the context import. Children will see changes to this
-        data through the context. */}
+        data through the context. */},
+      postSet: function(old,nu) {
+         /* If not a change from import or export, the user wants to 
+         set data directly and break the connection with our import */
+        this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange;
+        if ( this.isImportEnabled_ && this.dataImport !== nu ) {
+          this.dataImport = nu;
+        }
+        this.onDataChange(old,nu);
+      }
     },
     {
       name: 'childDataValue',
@@ -78,14 +87,6 @@ CLASS({
   ],
   
   methods: {
-    init: function() {
-      this.SUPER();
-      this.data$.addListener(this.onDataChange_);
-      if ( this.data ) {
-        this.onDataChange_(null, null, undefined, this.data);
-      }
-
-    },    
     
     onChildValueChange: function(old,nu) {
       /* Override to change the default update behavior: when the value
@@ -115,8 +116,7 @@ CLASS({
     construct: function() {
       this.SUPER();
       // create childDataValue value and
-      this.childDataValue = this.SimpleValue.create();
-      this.onDataChange(undefined, this.data); // initial set
+      this.childDataValue = this.SimpleValue.create(this.data);
       this.childDataValue.addListener(this.onExportValueChange_);
       this.childX = this.X.sub({ data$: this.childDataValue });
     }
@@ -131,22 +131,6 @@ CLASS({
         this.isContextChange = true;
         this.onChildValueChange(old,nu);        
         this.isContextChange = false;
-      }
-    },
-    {
-      name: 'onDataChange_',
-      documentation: function() {/* This listener acts like a postSet for
-        data, but allows extenders to use postSet without destroying our
-        functionality. 
-      */},
-      code: function(_,_,old,nu) {
-        /* If not a change from import or export, the user wants to 
-         set data directly and break the connection with our import */
-        this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange;
-        if ( this.isImportEnabled_ && this.dataImport !== nu ) {
-          this.dataImport = nu;
-        }
-        this.onDataChange(old,nu);
       }
     }
   ]
