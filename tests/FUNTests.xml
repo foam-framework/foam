@@ -2438,19 +2438,12 @@ tada
             package: 'test.dvt',
             
             methods: {
-              onDataChange: function(old,nu) {
-                if ( nu &amp;&amp; nu.model_ &amp;&amp; this.model !== nu.model_ ) {
-                  // destroy children
-                  this.destroy();
-                  // propagate data change (nowhere)
-                  this.model = nu.model_;
-                  this.SUPER(old,nu);
-                  
-                  // rebuild children with new data
-                  this.construct();
-                } else {
-                  this.SUPER(old,nu);
-                }
+              shouldDestroy: function(old,nu) {
+                return nu &amp;&amp; nu.model_ &amp;&amp; this.model !== nu.model_;
+              },
+              onDataChange: function(old, nu) {
+                this.SUPER(old,nu);
+                this.model = nu.model_;
               },
               construct: function() {
                 this.SUPER();

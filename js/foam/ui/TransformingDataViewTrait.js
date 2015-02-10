@@ -21,8 +21,8 @@ CLASS({
   
   documentation: function() {/* For Views that use $$DOC{ref:'.data'},
     this trait will pseudo-import the data$ reference from the context,
-    or allow setting of the $$DOC{ref:'.data'} property directly. You must
-    bridge data->childData and childData->data yourself.
+    or allow setting of the $$DOC{ref:'.data'} property directly. Transformation
+    steps are applied when the import data or child data changes.
   */},
 
   imports: ['data$ as dataImport$'],
@@ -35,9 +35,9 @@ CLASS({
         context, and may be ignored if data is directly set. */},
       postSet: function(old, nu) {
         if ( this.isImportEnabled_ && this.data !== nu ) {
-          this.isContextChange = true;
+          this.isContextChange_ = true;
           this.data = nu;
-          this.isContextChange = false;
+          this.isContextChange_ = false;
         }
       }
     },
@@ -45,13 +45,24 @@ CLASS({
       name: 'data',
       documentation: function() {/* The actual data used by the view. May be set
         directly to override the context import. Children will see changes to this
-        data through the context. */},
+        data through the context. Override $$DOC{ref:'.onDataChange'}
+        instead of using a postSet here. */},
+      postSet: function(old, nu) {       
+        if ( ! this.isInternalSetter_ ) this.onDataChange(old, nu);
+      }
     },
     {
       name: 'childData',
       documentation: function() {/* The exported value. This is only separated
         from data as a way to detect whether a change is local or from child
         context changes. */},
+      postSet: function(old, nu) {
+        if ( ! this.isInternalSetter_ && this.data !== nu ) {
+          this.isContextChange_ = true;
+          this.xformFromChild(nu);
+          this.isContextChange_ = false;
+        }
+      }      
     },
     {
       model_: 'BooleanProperty',
@@ -65,33 +76,45 @@ CLASS({
       name: 'isImportEnabled_',
       defaultValue: true,
       hidden: true
-    }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'isInternalSetter_',
+      defaultValue: false,
+      transient: true,
+      hidden: true
+    },
+
     
   ],
   
   methods: {
-    init: function() {
-      this.SUPER();
-      this.data$.addListener(this.onDataChange);
-    }
-  },
-  
-  listeners: [
-    {
-      name: 'onDataChange',
-      documentation: function() {/* This listener acts like a postSet for
-        data, but allows extenders to use postSet without destroying our
-        functionality. 
-      */},
-      code: function(_,_,old,nu) {
-        // If not a change from import or export, the user wants to 
-        // set data directly and break the connection with our import
-        this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange;
-        if ( this.isImportEnabled_ && this.dataImport !== nu ) {
-          this.dataImport = nu;
-        }
+    onDataChange: function(old, nu) { /* React to a change to $$DOC{ref:'.data'}.
+      Don't forget to call <code>this.SUPER(old,nu)</code> in your implementation. */
+      this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange_;
+      if ( this.isImportEnabled_ && this.dataImport !== nu ) {
+        this.dataImport = nu;
       }
+      this.xformToChild(nu);
+    },
+    xformToChild: function(nuData) {
+      /* Override to set childData given nuData */
+      this.internalSetChildData_(nuData);
+    },
+    xformFromChild: function(nuChildData) {
+      /* Override to set data given nuChildData */
+      this.internalSetData_(nuData);      
+    },
+    internalSetData_: function(nu) {
+      this.isInternalSetter_ = true;
+      this.data = nu;
+      this.isInternalSetter_ = false;
+    },
+    internalSetChildData_: function(nu) {
+      this.isInternalSetter_ = true;
+      this.childData = nu;
+      this.isInternalSetter_ = false;      
     }
-  ]
+  }
   
 });

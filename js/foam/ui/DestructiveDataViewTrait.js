@@ -39,9 +39,9 @@ CLASS({
         context, and may be ignored if data is directly set. */},
       postSet: function(old, nu) {
         if ( this.isImportEnabled_ && this.data !== nu ) {
-          this.isContextChange = true;
+          this.isContextChange_ = true;
           this.data = nu;
-          this.isContextChange = false;
+          this.isContextChange_ = false;
         }
       }
     },
@@ -51,9 +51,9 @@ CLASS({
         directly to override the context import. Children will see changes to this
         data through the context. */},
       postSet: function(old,nu) {
-         /* If not a change from import or export, the user wants to 
-         set data directly and break the connection with our import */
-        this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange;
+        /* If not a change from import or export, the user wants to 
+        set data directly and break the connection with our import */
+        this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange_;
         if ( this.isImportEnabled_ && this.dataImport !== nu ) {
           this.dataImport = nu;
         }
@@ -97,10 +97,28 @@ CLASS({
     onDataChange: function(old,nu) {
       /* Override to change the default update behavior: when 
         $$DOC{ref:'.data'} changes, propagate to the child context. */
-      if (  this.childDataValue 
-         && this.childDataValue.value !== nu ) {
-        this.childDataValue.set(nu);
+      
+      if ( this.shouldDestroy(old,nu) ) {
+        // destroy children
+        this.destroy();
+        // rebuild children with new data (propagation will happen implicitly)
+        this.construct();
+      } else {
+        // otherwise propagate value to existing children
+        if (  this.childDataValue 
+           && this.childDataValue.value !== nu ) {
+          this.childDataValue.set(nu);
+        }
       }
+  
+    },
+    
+    shouldDestroy: function(old,nu) {
+      /* Override to provide the destruct condition. When data changes,
+         this method is called. Return true to destroy(), cut loose children
+         and construct(). Return false to retain children and just propagate
+         the data change. */
+      return true;
     },
     
     destroy: function() {
@@ -114,8 +132,10 @@ CLASS({
       this.SUPER();
     },
     construct: function() {
+      /* Construct new children, and ensure that this.data is propagated to them.
+         $$DOC{ref:'.childDataValue'} and $$DOC{ref:'.childX'} are set up here. */
       this.SUPER();
-      // create childDataValue value and
+      // create childDataValue value and initialize it
       this.childDataValue = this.SimpleValue.create(this.data);
       this.childDataValue.addListener(this.onExportValueChange_);
       this.childX = this.X.sub({ data$: this.childDataValue });
@@ -128,9 +148,9 @@ CLASS({
       documentation: function() {/* This listener tracks changes to our exported
       value that children may make. */},
       code: function(_,_,old,nu) {
-        this.isContextChange = true;
+        this.isContextChange_ = true;
         this.onChildValueChange(old,nu);        
-        this.isContextChange = false;
+        this.isContextChange_ = false;
       }
     }
   ]
