@@ -701,7 +701,7 @@ CLASS({
     }
 
     .secondaryButtons {
-      padding-left: 18px;
+      padding-left: 30px;
       background: rgb(52, 153, 128);
     }
 
@@ -710,7 +710,7 @@ CLASS({
     }
 
     .tertiaryButtons {
-      padding-left: 18px;
+      padding-left: 35px;
       background: rgb(29, 233, 182);
     }
 
@@ -759,14 +759,15 @@ CLASS({
           <div class="edge2"></div>
           <%= this.SlidePanel.create({
             minWidth: 310,
-            minPanelWidth: 310,
+            minPanelWidth: 320,
             panelRatio: 0.55,
             mainView: 'MainButtonsView',
-            stripWidth: 25,
+            stripWidth: 30,
             panelView: {
               factory_: 'foam.ui.SlidePanel',
-              minWidth: 280,
-              minPanelWidth: 200,
+              stripWidth: 30,
+              minWidth: 320,
+              minPanelWidth: 220,
               panelRatio: 3/7,
               mainView: 'SecondaryButtonsView',
               panelView: 'TertiaryButtonsView'
