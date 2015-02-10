@@ -363,9 +363,11 @@ CLASS({
       translationHint: 'delete one input character',
       keyboardShortcuts: [ 8 /* backspace */ ],
       action: function() {
-        this.a2 = this.a2.toString.length == 1 ?
-          '0' :
-          this.a2.toString().substring(0, this.a2.length-1) ;
+        if ( this.a2.toString().length ) {
+          this.a2 = this.a2.toString().substring(0, this.a2.length-1);
+        } else {
+          this.op = DEFAULT_OP;
+        }
       }
     },
     {
