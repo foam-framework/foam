@@ -19,10 +19,10 @@ function launchCalc() {
   chrome.app.window.create('AppCalc.html', {
     id: 'Calculator',
     innerBounds: {
-      minWidth: 510,
-      minHeight: 440,
-      width: 500,
-      height: 600
+      minWidth: 330,
+      minHeight: 340,
+      width: 350,
+      height: 450
     }
   });
 }
