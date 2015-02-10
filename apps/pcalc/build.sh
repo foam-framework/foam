@@ -27,7 +27,7 @@ fi
 if [ ! -d ../../bower_components/paper-button ]; then
     pushd ../../ > /dev/null
     echo "Cannot find Polymer components. Attempting to get Polymer..."
-    sh ./get-polymer.sh > /dev/null
+    sh ./get-polymer.sh
     popd > /dev/null
 fi
 
