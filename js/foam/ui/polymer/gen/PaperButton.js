@@ -28,6 +28,10 @@ CLASS({
       'recenteringTouch',
       'fill',
       'role'
+    ],
+    CSS_PROPERTIES: [
+      'color',
+      'font'
     ]
   },
   properties: [
@@ -100,6 +104,19 @@ CLASS({
       defaultValue: 0.4
     },
     {
+      name:  'color',
+      label: 'Foreground Color',
+      type:  'String',
+      defaultValue: 'black',
+      postSet: function() { this.updateStyleCSS(); }
+    },
+    {
+      name:  'font',
+      type:  'String',
+      defaultValue: '',
+      postSet: function() { this.updateStyleCSS(); }
+    },
+    {
       model_: 'FunctionProperty',
       name: 'polymerDownAction_',
       defaultValue: anop
@@ -120,6 +137,12 @@ CLASS({
 
   methods: [
     {
+      name: 'init',
+      code: function() {
+        this.SUPER();
+      }
+    },
+    {
       name: 'bindDownAction',
       code: function() {
         if ( this.$ && this.$.downAction !== this.polymerDownAction ) {
@@ -131,17 +154,34 @@ CLASS({
     {
       name: 'initHTML',
       code: function() {
+        var self = this;
+        this.on(
+            'click',
+            function(gesture) { self.publish(['click'], gesture); },
+            this.id);
         var rtn = this.SUPER();
         this.bindDownAction();
+        this.updateStyleCSS();
+        console.log('paper-button.initHTML', this.id);
         return rtn;
       }
     },
     {
-      name: 'updateHTML',
+      name: 'destroy',
       code: function() {
         var rtn = this.SUPER();
-        this.bindDownAction();
+        console.log('paper-button.destroy', this.id);
         return rtn;
+      }
+    },
+    {
+      name: 'updateStyleCSS',
+      code: function() {
+        if ( ! this.$ ) return;
+        var self = this;
+        this.CSS_PROPERTIES.forEach(function(propName) {
+          self.$.style[propName] = self[propName];
+        });
       }
     }
   ]

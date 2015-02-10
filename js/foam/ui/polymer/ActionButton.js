@@ -25,16 +25,6 @@ CLASS({
     'foam.ui.polymer.gen.PaperButton'
   ],
 
-  constants: [
-    {
-      name: 'CSS_PROPERTIES',
-      value: [
-        'color',
-        'font'
-      ]
-    }
-  ],
-
   properties: [
     {
       name: 'tagName',
@@ -50,8 +40,7 @@ CLASS({
         return this.data ?
             this.action.labelFn.call(this.data, this.action) :
             this.action.label;
-      },
-      postSet: function(_, nu) { this.render(); }
+      }
     },
     {
       name: 'button',
@@ -61,28 +50,21 @@ CLASS({
         });
       },
       postSet: function(old, nu) {
-        if ( old ) Events.unlink(this.label$, old.content$);
-        if ( nu ) Events.link(this.label$, nu.content$);
-        this.render();
+        if ( old ) {
+          old.unsubscribe(['click'], this.onClick);
+          Events.unlink(this.label$, old.content$);
+        }
+        if ( nu ) {
+          nu.subscribe(['click'], this.onClick);
+          Events.link(this.label$, nu.content$);
+        }
       }
     },
     {
-      name: 'action',
-      postSet: function(old, nu) {
-        old && old.removeListener(this.render);
-        nu.addListener(this.render);
-      },
-      postSet: function(_, nu) { this.render(); }
+      name: 'action'
     },
     {
-      name:  'font',
-      type:  'String',
-      defaultValue: '',
-      postSet: function(_, nu) { this.updateStyleCSS(); }
-    },
-    {
-      name: 'data',
-      postSet: function(_, nu) { this.render(); }
+      name: 'data'
     },
     {
       name: 'showLabel',
@@ -92,13 +74,6 @@ CLASS({
       name: 'haloColor'
     },
     {
-      name:  'color',
-      label: 'Foreground Color',
-      type:  'String',
-      defaultValue: 'black',
-      postSet: function(_, nu) { this.updateStyleCSS(); }
-    },
-    {
       name: 'tooltip',
       defaultValueFn: function() { return this.action.help; }
     },
@@ -106,74 +81,39 @@ CLASS({
       name: 'speechLabel',
       defaultValueFn: function() { return this.action.speechLabel; }
     },
+    {
+      name:  'color',
+      label: 'Foreground Color',
+      type:  'String',
+      postSet: function(_, nu) { this.button.color = nu; }
+    },
+    {
+      name:  'font',
+      type:  'String',
+      postSet: function(_, nu) { this.button.font = nu; }
+    },
     'tabIndex',
     'role'
   ],
 
   listeners: [
     {
-      name: 'render',
-      isFramed: true,
-      code: function() { this.updateHTML(); }
+      name: 'onClick',
+      code: function() {
+        if ( ! this.action ) debugger;
+        if ( typeof this.action.callIfEnabled !== 'function' ) debugger;
+        this.action.callIfEnabled(this.X, this.data);
+      }
     }
   ],
 
   methods: [
     {
-      name: 'updateStyleCSS',
-      code: function() {
-        if ( this.button && this.button.$ ) {
-          var e = this.button.$;
-          var style = e.style;
-          this.CSS_PROPERTIES.forEach(function(key) {
-            style[key] = this[key];
-          }.bind(this));
-          this.button.updateHTML();
-        }
-      }
-    },
-    {
-      name: 'updateHTML',
-      code: function() {
-        var rtn = this.SUPER();
-        this.updateStyleCSS();
-        return rtn;
-      }
-    },
-    {
-      name: 'initHTML',
-      code: function() {
-        this.SUPER();
-
-        var self = this;
-        var button = this.button;
-
-        // TODO(markdittmer): We should use this.on('click', ...) here, but the
-        // gesture manager seems to be broken. Really, we want to attach this
-        // to the button (but that too isn't working; perhaps it is Polymer's
-        // fault, or perhaps it's gesture manager).
-        this.$.addEventListener('click', function() {
-          self.action.callIfEnabled(self.X, self.data);
-        });
-
-        button.setAttribute('disabled', function() {
-          self.closeTooltip();
-          return self.action.isEnabled.call(self.data, self.action) ? undefined : 'disabled';
-        }, button.id);
-
-        button.setClass('available', function() {
-          self.closeTooltip();
-          return self.action.isAvailable.call(self.data, self.action);
-        }, button.id);
-
-        // this.X.dynamic(function() { self.action.labelFn.call(self.data, self.action); self.updateHTML(); });
-      }
-    },
-    {
       name: 'toInnerHTML',
       code: function() {
         if ( ! this.button ) return '';
         var innerHTML = this.button.toHTML() || '';
+        this.addChild(this.button);
         if ( ! this.haloColor ) return innerHTML;
         var style = '<style>' + '#' + this.button.id +
             '::shadow #ripple { color: ' + this.haloColor + '; }</style>';

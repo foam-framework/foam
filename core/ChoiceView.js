@@ -30,12 +30,12 @@ CLASS({
     },
     {
       name: 'data',
-      help: 'The value of the current choice (ie. [value, label] -> value).',
+      help: 'The value of the current choice (ie. [value, text] -> value).',
       postSet: function(_, d) {
         for ( var i = 0 ; i < this.choices.length ; i++ ) {
           if ( this.choices[i][0] === d ) {
             if ( this.index !== i ) {
-              this.label = this.choices[i][1];
+              this.text = this.choices[i][1];
               this.index = i;
             }
             return;
@@ -47,8 +47,8 @@ CLASS({
       }
     },
     {
-      name: 'label',
-      help: 'The label of the current choice (ie. [value, label] -> label).',
+      name: 'text',
+      help: 'The user-visible text of the current choice (ie. [value, text] -> text).',
       postSet: function(_, d) {
         for ( var i = 0 ; i < this.choices.length ; i++ ) {
           if ( this.choices[i][1] === d ) {
@@ -61,7 +61,7 @@ CLASS({
     // See above; choice works the same as data.
     {
       name: 'choice',
-      help: 'The current choice (ie. [value, label]).',
+      help: 'The current choice (ie. [value, text]).',
       getter: function() {
         var value = this.data;
         for ( var i = 0 ; i < this.choices.length ; i++ ) {
@@ -73,14 +73,14 @@ CLASS({
       setter: function(choice) {
         var oldValue = this.choice;
         this.data = choice[0];
-        this.label = choice[1];
+        this.text = choice[1];
         this.propertyChange('choice', oldValue, this.choice);
       }
     },
     {
       name:  'choices',
       type:  'Array[StringField]',
-      documentation: 'Array of [value, label] choices.  Simple String values will be upgraded to [value, value]. Can also be a map, in which case this becomes a [key, value] map in enumeration order.',
+      documentation: 'Array of [value, text] choices.  Simple String values will be upgraded to [value, value]. Can also be a map, in which case this becomes a [key, value] map in enumeration order.',
       defaultValue: [],
       preSet: function(_, a) {
         // If a is a map, instead of an array, we make [key, value] pairs.
@@ -429,10 +429,10 @@ CLASS({
       var self = this;
       this.choices.forEach(function(choice) {
         var value  = choice[0];
-        var label  = choice[1];
+        var text  = choice[1];
         var id     = self.nextID();
 
-        out += label + ':<input type="radio" name="';
+        out += text + ':<input type="radio" name="';
         out += self.id;
         out += '" value="';
         out += value;
