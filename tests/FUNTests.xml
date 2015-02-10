@@ -2472,22 +2472,19 @@ tada
             name: 'TransformingDataView',
             traits: ['foam.patterns.ChildTreeTrait','foam.ui.TransformingDataViewTrait'],
             package: 'test.dvt',
-            properties: [
-              {
-                name: 'data',
-                postSet: function() {
-                  this.log(this.name_, "data change", this.data.label); 
-                  this.childData = this.data.label;
-                }
+
+            methods: {
+              xformToChild: function(nuData) {
+                var xformed = nuData.label + "XX";
+                console.log("Transform ", nuData.label, " to ", xformed); 
+                this.SUPER(xformed);
               },
-              {
-                name: 'childData',
-                postSet: function() {
-                  this.log(this.name_, "child change", this.childData); 
-                  this.data.label = this.childData;
-                }
+              xformFromChild: function(nuChildData) {
+                var xformed = nuChildData + "xx";
+                console.log("Un-transform ", xformed," back into ", this.data.label);
+                this.data.label = xformed;
               }
-            ]
+            }
           });
 
           CLASS({
@@ -2847,6 +2844,100 @@ Child Context data: c
 Child DataView dataC: c
 Previous Child DataView dataB: b
 Previous Child DataView dataA: a
+end
+</property>
+          </object>
+
+          <object model="RegressionTest">
+            <property name="name">TransformingDataView</property>
+            <property name="description">In addition to DataViewTrait behavior, the value is transformed before children see it.</property>
+            <property name="async">true</property>
+            <property name="code" type="function">function (ret) {
+              aseq( arequire('test.dvt.TransformingDataView'),
+                    arequire('SimpleValue'),
+                function(ret) {
+                  this.log("begin");
+                  var d = this.X.SimpleValue.create(this.X.test.dvt.DataA.create({},this.X), this.X);
+                  var dv = this.X.test.dvt.TransformingDataView.create({}, this.X.sub({ data$: d }));
+                  
+                  this.log("Root data: ", d.value.label);
+                  this.log("XDataView data: ", dv.data.label);
+                  this.log("XDataView child data: ", dv.childData);
+                  this.log("Child Context data: ", dv.X.data$.value);
+
+                  this.log("\nChild data is transformed back...");
+                  dv.X.data$.set("New");
+                  this.log("Root data: ", d.value.label);
+                  this.log("XDataView data: ", dv.data.label);
+                  this.log("XDataView child data: ", dv.childData);
+                  this.log("Child Context data: ", dv.X.data$.value);
+                  
+                  this.log("\nChanging data, will break import connection...");
+                  var e = this.X.test.dvt.DataB.create({},this.X);
+                  dv.data = e;
+                  this.log("Root data: ", d.value.label);
+                  this.log("DataView data: ", dv.data.label);
+                  this.log("DataView child data: ", dv.childData);
+                  this.log("Context data: ", dv.X.data$.value);
+
+                  this.log("\nChanging root context value, will only affect root...");
+                  d.set(this.X.test.dvt.DataD.create({},this.X));
+                  this.log("Root data: ", d.value.label);
+                  this.log("DataView data: ", dv.data.label);
+                  this.log("DataView child data: ", dv.childData);
+                  this.log("Context data: ", dv.X.data$.value);
+
+                  this.log("\nChild data is transformed back, will not affect root...");
+                  dv.X.data$.set("noRoot");
+                  this.log("Root data: ", d.value.label);
+                  this.log("XDataView data: ", dv.data.label);
+                  this.log("XDataView child data: ", dv.childData);
+                  this.log("Child Context data: ", dv.X.data$.value);
+                  
+                  
+                  this.log("end");
+                  ret &amp;&amp; ret();
+                }.bind(this)
+              )(ret);
+            }
+            </property>
+            <property name="tags">
+              <i>web</i>
+              <i>node</i>
+            </property>
+            <property name="master">begin
+Transform a to aXX
+Root data: a
+XDataView data: a
+XDataView child data: aXX
+Child Context data: aXX
+
+Child data is transformed back...
+Un-transform Newxx back into a
+Root data: Newxx
+XDataView data: Newxx
+XDataView child data: New
+Child Context data: New
+
+Changing data, will break import connection...
+Transform b to bXX
+Root data: Newxx
+DataView data: b
+DataView child data: bXX
+Context data: bXX
+
+Changing root context value, will only affect root...
+Root data: d
+DataView data: b
+DataView child data: bXX
+Context data: bXX
+
+Child data is transformed back, will not affect root...
+Un-transform noRootxx back into b
+Root data: d
+XDataView data: noRootxx
+XDataView child data: noRoot
+Child Context data: noRoot
 end
 </property>
           </object>
