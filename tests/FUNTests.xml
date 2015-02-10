@@ -2474,12 +2474,12 @@ tada
             package: 'test.dvt',
 
             methods: {
-              xformToChild: function(nuData) {
+              xformToChild: function(old, nuData) {
                 var xformed = nuData.label + "XX";
                 console.log("Transform ", nuData.label, " to ", xformed); 
-                this.SUPER(xformed);
+                this.SUPER(old, xformed);
               },
-              xformFromChild: function(nuChildData) {
+              xformFromChild: function(old, nuChildData) {
                 var xformed = nuChildData + "xx";
                 console.log("Un-transform ", xformed," back into ", this.data.label);
                 this.data.label = xformed;

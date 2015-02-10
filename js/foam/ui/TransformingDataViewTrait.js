@@ -59,7 +59,7 @@ CLASS({
       postSet: function(old, nu) {
         if ( ! this.isInternalSetter_ && this.data !== nu ) {
           this.isContextChange_ = true;
-          this.xformFromChild(nu);
+          this.xformFromChild(old, nu);
           this.isContextChange_ = false;
         }
       }      
@@ -95,13 +95,13 @@ CLASS({
       if ( this.isImportEnabled_ && this.dataImport !== nu ) {
         this.dataImport = nu;
       }
-      this.xformToChild(nu);
+      this.xformToChild(old, nu);
     },
-    xformToChild: function(nuData) {
+    xformToChild: function(oldData, nuData) {
       /* Override to set childData given nuData */
       this.internalSetChildData_(nuData);
     },
-    xformFromChild: function(nuChildData) {
+    xformFromChild: function(oldChildData, nuChildData) {
       /* Override to set data given nuChildData */
       this.internalSetData_(nuData);      
     },
