@@ -262,11 +262,6 @@ CLASS({
           gesture: 'tap'
         });
       }
-    },
-    {
-      name: 'expanded',
-      help: 'If the panel is wide enough to expand the panel permanently.',
-      defaultValue: false
     }
   ],
 
@@ -373,7 +368,7 @@ CLASS({
     {
       name: 'dragStart',
       code: function(point) {
-        if ( this.expanded ) return;
+        if ( this.state === this.OPEN || this.state === CLOSED ) return;
         // Otherwise, bind panelX to the absolute X.
         var self = this;
         var originalX = this.panelX;
