@@ -82,7 +82,7 @@ CLASS({
     }
     .md-text-field-input {
       background: transparent;
-      border-bottom: 1px solid #B3E5FC;
+      border-bottom: 1px solid #e0e0e0 !important;
       border: none;
       color: #444;
       flex-grow: 1;
