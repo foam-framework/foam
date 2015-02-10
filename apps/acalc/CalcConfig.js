@@ -33,7 +33,7 @@ CLASS({
   }
 });
 
-function getCalcButton() {
+getCalcButton = function() {
   return ActionButtonCView2.xbind({
     color:      'white',
     background: '#4b4b4b',
@@ -42,4 +42,4 @@ function getCalcButton() {
     font:       '300 28px RobotoDraft',
     role:       'button'
   });
-}
+};

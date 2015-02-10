@@ -31,6 +31,8 @@ CLASS({
   ],
 
   constants: {
+    ANIMATION_DELAY: 200,
+
     CLOSED: {
       name: 'CLOSED',
       layout: function() {
@@ -114,7 +116,7 @@ CLASS({
         }
         var startLayout = this.currentLayout;
         var start = Date.now();
-        var end   = start + 200;
+        var end   = start + this.ANIMATION_DELAY;
         var animate = function() {
           var now = Date.now();
           var p = (now-start) / (end-start);
@@ -318,7 +320,7 @@ CLASS({
         // changes its size.  Being resized should also fire an onResize event.
         this.X.setTimeout(function() {
           if ( this.parentWidth !== parentWidth ) this.onResize();
-        }.bind(this), 100);
+        }.bind(this), this.ANIMATION_DELAY + 10);
       }
     },
     {

@@ -67,10 +67,10 @@ CLASS({
   ]
 });
 
-function getCalcButton() {
+getCalcButton = function() {
   return PolymerActionButton.xbind({
     color:      'white',
     font:       '300 28px RobotoDraft',
     role:       'button'
   });
-}
+};
