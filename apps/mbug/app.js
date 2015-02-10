@@ -13,7 +13,7 @@ window.onload = function() {
 
   arequire('MBug')(
     function() {
-      var w = Y.Window.create({ window: window });
+      var w = Y.foam.ui.layout.Window.create({ window: window }, Y);
       mbug = Y.MBug.create();
       w.view = mbug;
     });

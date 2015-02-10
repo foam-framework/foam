@@ -20,7 +20,7 @@ CLASS({
    "id": "com.google.mail.GMailToEMailDAO",
    "package": "com.google.mail",
    "name": "GMailToEMailDAO",
-   "extendsModel": "AbstractAdapterDAO",
+   "extendsModel": "foam.core.dao.AbstractAdapterDAO",
    "requires": [
       "foam.lib.email.EMail",
       "com.google.mail.FOAMGMailMessage",

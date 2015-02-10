@@ -53,7 +53,7 @@
 		methods: {
 			choiceToHTML: function(id, choice) {
 				var self = this;
-                                this.setClass('selected', function() { return self.label === choice[1]; }, id);
+                                this.setClass('selected', function() { return self.text === choice[1]; }, id);
                                 return '<li><a id="' + id + '" class="choice">' + choice[1] + '</a></li>';
 			}
 		}
@@ -149,7 +149,7 @@
 				var f = function () { return this.completedCount + this.activeCount == 0; }.bind(this.data);
 				this.setClass('hidden', f, 'main');
 				this.setClass('hidden', f, 'footer');
-				Events.relate(this.X.memento, this.queryView.label$,
+				Events.relate(this.X.memento, this.queryView.text$,
 					function(memento) {
 						var s = memento && memento.substring(1);
 						var t = s ? s.capitalize() : 'All';

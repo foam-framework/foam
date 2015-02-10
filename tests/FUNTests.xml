@@ -6,6 +6,7 @@
     <property name="requires">
       <i>foam.util.Base64Encoder</i>
       <i>foam.util.Base64Decoder</i>
+      <i>foam.core.dao.ManuallyDelayedDAO</i>
     </property>
     <property name="tests">
       <object model="UITest">
@@ -2309,7 +2310,7 @@ tada
                 ]
               });
                 
-              var src = ManuallyDelayedDAO.create({ delegate: [
+              var src = this.foam.core.dao.ManuallyDelayedDAO.create({ delegate: [
                 Abc.create({ a: 1, b: 'a'}),
                 Abc.create({ a: 2, b: 'a'}),
                 Abc.create({ a: 3, b: 'b'}),

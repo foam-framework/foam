@@ -159,6 +159,8 @@ apar(arequire('Calc'), arequire('TableView'))(function() {
       t('4 fact', 24),
       t('1 0 fact', 3628800),
       t('1 0 0 0 fact', Number.POSITIVE_INFINITY),
+      t('1 point 5 fact mult 1 0 0 0 equals round', 1329),
+      t('5 point 5 fact mult 1 0 0 0 equals round', 287885),
       t('0 mod 2 equals', 0),
       t('1 mod 2 equals', 1),
       t('2 mod 2 equals', 0),

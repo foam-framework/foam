@@ -1,6 +1,6 @@
-/**
+/*
  * @license
- * Copyright 2014 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-function launchCalc() {
-  chrome.app.window.create('AppCalc.html', {
-    id: 'Calculator',
-    innerBounds: {
-      minWidth: 330,
-      minHeight: 340,
-      width: 350,
-      height: 450
+CLASS({
+  name: 'ErrorDAO',
+  package: 'foam.core.dao',
+  extendsModel: 'AbstractDAO',
+  methods: {
+    put: function(obj, sink) {
+      sink && sink.error && sink.error('put', obj);
+    },
+    remove: function(obj, sink) {
+      sink && sink.error && sink.error('remove', obj);
     }
-  });
-}
-
-chrome.app.runtime.onLaunched.addListener(launchCalc);
+  }
+});

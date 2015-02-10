@@ -61,6 +61,6 @@ ModelDAO.find(TRUE, {error: function() { console.log('Populating DAO...'); model
 // ModelDAO = ModelDAO.orderBy(Model.NAME);
 
 var stack = StackView.create();
-X.DOMPanel.create({ data: stack, extraClassName: 'panel' }).write(document);
+X.foam.ui.layout.DOMPanel.create({ data: stack, extraClassName: 'panel' }).write(document);
 FOAM.browse(Model, ModelDAO);
 stack.layout();
