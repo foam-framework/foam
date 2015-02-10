@@ -108,6 +108,7 @@ function num(n) {
         this.editable = true;
       } else {
         if ( this.a2 == '0' && ! n ) return;
+        if ( this.a2.length >= 14 ) return;
         this.a2 = this.a2 == '0' ? n : this.a2.toString() + n;
       }
     }
