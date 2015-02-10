@@ -291,7 +291,7 @@ CLASS({
       translationHint: 'all clear (calculator button label)',
       // help: 'All Clear.',
 
-      keyboardShortcuts: [ 27 /* escape */ ],
+      keyboardShortcuts: [ 'a', 'c' ],
       action: function() {
         this.row1 = '';
         this.a1 = '0';
@@ -314,7 +314,7 @@ CLASS({
       name: 'sign',
       label: '+/-',
       speechLabel: 'negate',
-      keyboardShortcuts: [ 'm' ],
+      keyboardShortcuts: [ 'n' ],
       action: function() { this.a2 = - this.a2; }
     },
     {
@@ -381,60 +381,60 @@ CLASS({
       name: 'percent',
       label: '%',
       speechLabel: 'percent',
-      keyboardShortcuts: [ 'n', 'shift-53' /* % */ ],
+      keyboardShortcuts: [ 'shift-53' /* % */ ],
       action: function() { this.a2 /= 100.0; }
     },
 
     unaryOp('inv',    ['i'], function(a) { return 1.0/a; }, '1/x', undefined, 'inverse'),
-    unaryOp('sqroot', ['k'], Math.sqrt, '√', 'square root'),
-    unaryOp('square', ['q'], function(a) { return a*a; }, 'x²', 'x squared', 'x squared'),
-    unaryOp('ln',     ['f'], Math.log, 'ln', 'natural logarithm', 'natural logarithm'),
-    unaryOp('exp',    ['h'], Math.exp, 'eⁿ', undefined, 'e to the power of n'),
-    unaryOp('log',    ['g'], function(a) { return Math.log(a) / Math.LN10; }, 'log', 'logarithm', 'log base 10'),
-    binaryOp('root',  ['l'], function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY', undefined, 'the enth root of y'),
-    binaryOp('pow',   ['j'], Math.pow, 'yⁿ', undefined, 'y to the power of n'),
+    unaryOp('sqroot', [], Math.sqrt, '√', 'square root'),
+    unaryOp('square', ['shift-50' /* @ */], function(a) { return a*a; }, 'x²', 'x squared', 'x squared'),
+    unaryOp('ln',     [], Math.log, 'ln', 'natural logarithm', 'natural logarithm'),
+    unaryOp('exp',    [], Math.exp, 'eⁿ', undefined, 'e to the power of n'),
+    unaryOp('log',    [], function(a) { return Math.log(a) / Math.LN10; }, 'log', 'logarithm', 'log base 10'),
+    binaryOp('root',  [], function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY', undefined, 'the enth root of y'),
+    binaryOp('pow',   ['^'], Math.pow, 'yⁿ', undefined, 'y to the power of n'),
 
-    unaryOp('sin',    ['shift-68'], trigFn(Math.sin), 'sin', 'sine',    'sine'),
-    unaryOp('cos',    ['shift-71'], trigFn(Math.cos), 'cos', 'cosine',  'cosine'),
-    unaryOp('tan',    ['shift-74'], trigFn(Math.tan), 'tan', 'tangent', 'tangent'),
+    unaryOp('sin',    [], trigFn(Math.sin), 'sin', 'sine',    'sine'),
+    unaryOp('cos',    [], trigFn(Math.cos), 'cos', 'cosine',  'cosine'),
+    unaryOp('tan',    [], trigFn(Math.tan), 'tan', 'tangent', 'tangent'),
 
     {
       name: 'deg',
       speechLabel: 'switch to degrees',
-      keyboardShortcuts: [ 'shift-65' ],
+      keyboardShortcuts: [],
       translationHint: 'short form for "degrees" calculator mode',
       action: function() { this.degreesMode = true; }
     },
     {
       name: 'rad',
       speechLabel: 'switch to radians',
-      keyboardShortcuts: [ 'shift-66' ],
+      keyboardShortcuts: [],
       translationHint: 'short form for "radians" calculator mode',
       action: function() { this.degreesMode = false; }
     },
 
-    unaryOp('asin',   ['shift-69'], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arcsine'),
-    unaryOp('acos',   ['shift-72'], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arccosine'),
-    unaryOp('atan',   ['shift-75'], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arctangent'),
+    unaryOp('asin',   [], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arcsine'),
+    unaryOp('acos',   [], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arccosine'),
+    unaryOp('atan',   [], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arctangent'),
 
-    unaryOp('fact',   ['shift-67', 'shift-49' /* ! */], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
-    binaryOp('mod',   ['shift-70'],         function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
-    binaryOp('p',     ['shift-73'],         function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations (n permute r)', 'permutation'),
-    binaryOp('c',     ['shift-76'],         function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations (n combine r))', 'combination'),
-    unaryOp('round',  ['c'], Math.round, 'rnd', 'round', 'round'),
+    unaryOp('fact',   [ 'shift-49' /* ! */], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
+    binaryOp('mod',   [],         function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
+    binaryOp('p',     [],         function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations (n permute r)', 'permutation'),
+    binaryOp('c',     [],         function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations (n combine r))', 'combination'),
+    unaryOp('round',  [], Math.round, 'rnd', 'round', 'round'),
     {
       name: 'rand',
       label: 'rand',
       speechLabel: 'random',
-      keyboardShortcuts: ['d'],
+      keyboardShortcuts: [],
       action: function() { this.a2 = Math.random(); }
     },
-    unaryOp('store',   ['b'], function(n) { this.memory = n; return n; }, 'a=', 'store in memory', 'store in memory'),
+    unaryOp('store',   [], function(n) { this.memory = n; return n; }, 'a=', 'store in memory', 'store in memory'),
     {
       name: 'fetch',
       label: 'a',
       speechLabel: 'fetch from memory',
-      keyboardShortcuts: ['a'],
+      keyboardShortcuts: [],
       action: function() { this.a2 = this.memory; }
     },
   ]
@@ -565,7 +565,7 @@ CLASS({
       -webkit-user-select: none;
       -webkit-font-smoothing: antialiased;
       font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
-      font-size: 20px;
+      font-size: 34px;
       font-weight: 300;
       height: 100%;
       position: fixed;
@@ -612,7 +612,7 @@ CLASS({
     .calc-display, .calc-display:focus {
       border: none;
       letter-spacing: 1px;
-      line-height: 28px;
+      line-height: 36px;
       margin: 0;
       min-width: 140px;
       padding: 0 25pt 2pt 25pt;
@@ -725,7 +725,6 @@ CLASS({
 
     .alabel {
       font-size: 34px;
-      color: #444;
     }
 
     hr {
@@ -782,7 +781,7 @@ CLASS({
             var inner$ = this.$.querySelector('.inner-calc-display');
             var outer$ = this.$.querySelector('.calc-display');
             var value = DOMValue.create({element: outer$, property: 'scrollTop' });
-            Movement.animate(300, function() { value.value = inner$.clientHeight; })();
+            Movement.animate(200, function() { value.value = inner$.clientHeight; })();
           }.bind(this)));
           Events.dynamic(function() { this.data.op; this.data.history; this.data.a1; this.data.a2; }.bind(this), move);
           this.X.window.addEventListener('resize', move);

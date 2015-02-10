@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui.md',
   name: 'TwoPane',
   requires: [
-    'DOMPanel'
+    'foam.ui.layout.DOMPanel'
   ],
   extendsModel: 'DetailView',
   properties: [

@@ -22,7 +22,9 @@ CLASS({
    "name": "MBOXLoader",
    "requires": [
       "foam.lib.email.MBOXParser",
-      "foam.lib.email.EMail"
+      "foam.lib.email.EMail",
+      "foam.util.encodings.IncrementalUtf8"
+      "foam.util.encodings.QuotedPrintable"
    ],
    "properties": [
       {
@@ -165,10 +167,10 @@ CLASS({
               // TODO: Standardize encoding and charset interfaces.
               // Make them fetched from the context on demand.
               if ( this.b.encoding && this.b.encoding == 'quoted-printable' ) {
-                var decoder = QuotedPrintable;
+                var decoder = self.QuotedPrintable;
 
                 if ( this.b.charset && this.b.charset == 'UTF-8' ) {
-                  var charset = IncrementalUtf8.create();
+                  var charset = self.IncrementalUtf8.create();
                 } else {
                   charset = {
                     string: "",

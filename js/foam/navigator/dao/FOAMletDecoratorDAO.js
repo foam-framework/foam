@@ -18,7 +18,7 @@
 CLASS({
   name: 'FOAMletDecoratorDAO',
   package: 'foam.navigator.dao',
-  extendsModel: 'AbstractAdapterDAO',
+  extendsModel: 'foam.core.dao.AbstractAdapterDAO',
 
   requires: [
     'foam.navigator.WrappedFOAMlet'

@@ -27,11 +27,8 @@ var files = [
   [ 'i18n',     IN_BROWSER ],
   'stdlib',
   ['WeakMap',  function() { return ! this['WeakMap']; }],
-  'io',
   'writer',
   'socket',
-  'encodings',
-  'utf8',
   'async',
   'parse',
   'event',
@@ -60,7 +57,6 @@ var files = [
   'LayoutTraits', // generic, non-view specific, so no predicate
   'value',
   '../js/foam/patterns/ChildTreeTrait', // used in view, included here for backward compat of old apps
-  'base64',
   'view',
   'view2',
   'layout',

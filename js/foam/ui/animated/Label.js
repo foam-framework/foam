@@ -57,7 +57,7 @@ CLASS({
         white-space: nowrap;
       }
       .f1.animated {
-        transition: left .4s;
+        transition: left .2s;
       }
       .f2 {
         display: inline;
@@ -71,7 +71,7 @@ CLASS({
   listeners: [
     {
       name: 'onDataChange',
-//      isFramed: true, // interferes with CSS animation
+      isFramed: true,
       code: function(_, _, oldValue, newValue) {
         if ( ! this.$ ) return;
         var f1$ = this.$.querySelector('.f1');
@@ -81,7 +81,6 @@ CLASS({
         f1$.innerHTML = data;
         f2$.innerHTML = data;
 
-//        f1$.style.top  = f2$.offsetTop;
         f1$.style.left = f2$.offsetLeft;
         // Don't animate to the empty string
         DOM.setClass(this.$.querySelector('.f1'), 'animated', this.data.length);

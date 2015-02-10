@@ -73,7 +73,9 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <{{{this.tagName}}} id="{{{this.id}}}" <%= this.cssClassAttr() %>
+      <{{{this.tagName}}}
+        id="{{{this.id}}}"
+        <%= this.cssClassAttr() %>
         <% for ( var i = 0; i < this.POLYMER_PROPERTIES.length; ++i ) {
              var propName = this.POLYMER_PROPERTIES[i];
              if ( this[propName] ) { %>

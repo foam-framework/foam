@@ -20,12 +20,13 @@ CLASS({
    "id": "com.google.mail.GMailToEMailDAO",
    "package": "com.google.mail",
    "name": "GMailToEMailDAO",
-   "extendsModel": "AbstractAdapterDAO",
+   "extendsModel": "foam.core.dao.AbstractAdapterDAO",
    "requires": [
       "foam.lib.email.EMail",
       "com.google.mail.FOAMGMailMessage",
       "foam.util.Base64Encoder",
-      "foam.util.Base64Decoder"
+      "foam.util.Base64Decoder",
+      "foam.util.encodings.IncrementalUtf8"
    ],
    "imports": [],
    "exports": [],
@@ -161,7 +162,7 @@ CLASS({
         "code": function (obj) {
           var self= this;
           var decode = function (str) {
-            var decoder = self.Base64Decoder.create({ sink: this.X.IncrementalUtf8.create() });
+            var decoder = self.Base64Decoder.create({ sink: self.IncrementalUtf8.create() });
             decoder.put(str);
             decoder.eof();
             return decoder.sink.string;
