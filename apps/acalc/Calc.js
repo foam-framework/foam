@@ -570,7 +570,7 @@ CLASS({
       -webkit-user-select: none;
       -webkit-font-smoothing: antialiased;
       font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
-      font-size: 34px;
+      font-size: 30px;
       font-weight: 300;
       height: 100%;
       position: fixed;
@@ -718,7 +718,7 @@ CLASS({
     }
 
     .alabel {
-      font-size: 34px;
+      font-size: 30px;
     }
 
     hr {
