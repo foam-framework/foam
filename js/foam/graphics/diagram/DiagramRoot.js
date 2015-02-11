@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2014 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,15 @@
  * limitations under the License.
  */
 
-function launchCalc() {
-  chrome.app.window.create('AppCalc.html', {
-    id: 'Calculator',
-    innerBounds: {
-      minWidth: 350,
-      minHeight: 340,
-      width: 350,
-      height: 450
-    }
-  });
-}
 
-chrome.app.runtime.onLaunched.addListener(launchCalc);
+CLASS({
+  name: 'DiagramRoot',
+  package: 'foam.graphics.diagram',
+  extendsModel: 'foam.graphics.CView',
+  traits: ['foam.graphics.diagram.DiagramItemTrait', 'foam.graphics.diagram.DiagramRootTrait'],
+  
+  documentation: function() {/* Use a $$DOC{ref:'foam.graphics.diagram.DiagramRoot'} as the root
+    node of your diagram, to provide the shared structure necessary for 
+    link routing. Use $$DOC{ref:'foam.graphics.diagram.DiagramRootTrait'} to create your own
+    specialized root type. */},
+});

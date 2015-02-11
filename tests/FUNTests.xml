@@ -1902,7 +1902,7 @@ f1 end
         <property name="description">Tests generic foam.graphics.LinearLayoutTrait layout handling</property>
         <property name="code" type="function">function anonymous() {
   // Prepare a trait host model with the bare essential properties
-  MODEL({ name: 'LinLayTest', traits: [ 'layout.LinearLayoutTrait' ],
+  MODEL({ name: 'LinLayTest', traits: [ 'foam.patterns.layout.LinearLayoutTrait' ],
     properties: [
       'width', 'height',
       {
@@ -1912,7 +1912,7 @@ f1 end
     ]
   });
   // prepare a layout item trait host model
-  MODEL({ name: 'LayItem', traits: [ 'layout.LayoutItemHorizontalTrait', 'layout.LayoutItemVerticalTrait'  ],
+  MODEL({ name: 'LayItem', traits: [ 'foam.patterns.layout.LayoutItemHorizontalTrait', 'foam.patterns.layout.LayoutItemVerticalTrait'  ],
     properties: [
       'width', 'height', 'x', 'y'
     ]

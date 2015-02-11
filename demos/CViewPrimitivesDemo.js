@@ -23,39 +23,39 @@ CLASS({
 });
 
 aseq(
-  arequire('diagram.LockToPreferredLayout'),
-  arequire('diagram.LinearLayout'),
+  arequire('foam.graphics.diagram.LockToPreferredLayout'),
+  arequire('foam.graphics.diagram.LinearLayout'),
   arequire('foam.graphics.Spacer'),
-  arequire('diagram.Block'),
-  arequire('diagram.Section'),
-  arequire('diagram.SectionGroup'),
+  arequire('foam.graphics.diagram.Block'),
+  arequire('foam.graphics.diagram.Section'),
+  arequire('foam.graphics.diagram.SectionGroup'),
   arequire('foam.graphics.Rectangle'),
-  arequire('diagram.Margin'),
-  arequire('diagram.DiagramRoot'),
-  arequire('diagram.Link'),
+  arequire('foam.graphics.diagram.Margin'),
+  arequire('foam.graphics.diagram.DiagramRoot'),
+  arequire('foam.graphics.diagram.Link'),
   arequire('Mouse'),
   arequire('BorderLabel')
   )(
 function() {
    
-  var canv = X.diagram.DiagramRoot.create({width: 1000, height: 300});
+  var canv = X.foam.graphics.diagram.DiagramRoot.create({width: 1000, height: 300});
   canv.write(document);
   
-  var outerLayout = X.diagram.LinearLayout.create({ width : 500, height: 300});
+  var outerLayout = X.foam.graphics.diagram.LinearLayout.create({ width : 500, height: 300});
   canv.addChild(outerLayout);
   
   var spacer1e = X.foam.graphics.Spacer.create({ fixedWidth: 200 });
   outerLayout.addChild(spacer1e);
   
-  var vlay1 = X.diagram.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
+  var vlay1 = X.foam.graphics.diagram.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
   outerLayout.addChild(vlay1);
-  var vlay2 = X.diagram.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
+  var vlay2 = X.foam.graphics.diagram.LinearLayout.create({width: 120, height: 300, orientation: 'vertical'});
   outerLayout.addChild(vlay2);
     
   var spacer1 = X.foam.graphics.Spacer.create({ });
   vlay1.addChild(spacer1);
   
-  var block1 = X.diagram.Block.create({
+  var block1 = X.foam.graphics.diagram.Block.create({
          x: 0,
          y: 20,
          border: 'black',
@@ -71,11 +71,11 @@ function() {
   
   vlay1.addChild(block1);
   
-  var sect1 = X.diagram.Section.create({
+  var sect1 = X.foam.graphics.diagram.Section.create({
     title: 'A Model'
   }, canv.X);
   block1.addChild(sect1);
-  var sect2 = X.diagram.Section.create({
+  var sect2 = X.foam.graphics.diagram.Section.create({
     title: 'propertyName',
     titleFont: '12px Roboto'
   }, canv.X);
@@ -104,7 +104,7 @@ function() {
 //   });
 //   vlay1.addChild(label1);
   
-  var rect3 = X.diagram.SectionGroup.create({
+  var rect3 = X.foam.graphics.diagram.SectionGroup.create({
          x: 120,
          y: 30,
          border: 'red',
@@ -125,7 +125,7 @@ function() {
   spacer5.verticalConstraints.stretchFactor = 3;
   vlay2.addChild(spacer5);
   
-  var block2 = X.diagram.Block.create({
+  var block2 = X.foam.graphics.diagram.Block.create({
          x: 120,
          y: 0,
          border: 'green',
@@ -134,20 +134,20 @@ function() {
          height: 50,
   
   }, canv.X);
-  var block2Margin = X.diagram.Margin.create({ left: 8, top: 8, bottom: 8, right: 8, width: 80, height: 80});
+  var block2Margin = X.foam.graphics.diagram.Margin.create({ left: 8, top: 8, bottom: 8, right: 8, width: 80, height: 80});
   block2Margin.addChild(block2);
   //vlay2.addChild(block2Margin);
   
-  var block2LockerLayout = X.diagram.LockToPreferredLayout.create({}, canv.X);
+  var block2LockerLayout = X.foam.graphics.diagram.LockToPreferredLayout.create({}, canv.X);
   block2LockerLayout.addChild(block2Margin);
   
   canv.addChild(block2LockerLayout);
   
-  var sect1b = X.diagram.Section.create({
+  var sect1b = X.foam.graphics.diagram.Section.create({
     title: 'More Model'
   }, canv.X);
   block2.addChild(sect1b);
-  var sect2b = X.diagram.Section.create({
+  var sect2b = X.foam.graphics.diagram.Section.create({
     title: 'imports',
     titleFont: 'italic 12px Roboto'
   }, canv.X);
@@ -157,12 +157,12 @@ function() {
   block2.addChild(spacer3);
   
   
-  var link = X.diagram.Link.create({color: 'blue', arrowStyle:'generalization'}, canv.X);
+  var link = X.foam.graphics.diagram.Link.create({color: 'blue', arrowStyle:'generalization'}, canv.X);
   link.start = block1.myLinkPoints;
   link.end = block2.myLinkPoints;
   canv.addChild(link);
   
-  var link2 = X.diagram.Link.create({color: 'blue', arrowStyle:'composition'}, canv.X);
+  var link2 = X.foam.graphics.diagram.Link.create({color: 'blue', arrowStyle:'composition'}, canv.X);
   link2.start = sect1.myLinkPoints;
   link2.end = sect1b.myLinkPoints;
   canv.addChild(link2);

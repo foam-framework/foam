@@ -28,7 +28,6 @@ cat \
   ../../core/mm4Method.js \
   ../../core/mm5Misc.js \
   ../../js/foam/ui/Window.js \
-  ../../core/LayoutTraits.js \
   ../../core/value.js \
   ../../core/view.js \
   ../../core/layout.js \
@@ -42,8 +41,6 @@ cat \
   ../../core/RichTextView.js \
   ../../core/listchoiceview.js \
   ../../core/scroll.js \
-  ../../core/CViewPrimitives.js \
-  ../../core/Diagramming.js \
   ../../core/HTMLParser.js \
   ../../core/mlang.js \
   ../../core/QueryParser.js \

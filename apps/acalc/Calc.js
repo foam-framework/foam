@@ -24,6 +24,10 @@ var DECIMAL_PLACES_PRECISION = 12;
 
 if ( ! 'log10' in Math ) Math.log10 = function(a) { return Math.log(a) / Math.LN10; };
 
+function gamma(z) {
+  return Math.sqrt(2 * Math.PI / z) * Math.pow((1 / Math.E) * (z + 1 / (12 * z - 1 / (10 * z))), z);
+}
+
 function trigFn(f) {
   return function(a) {
     return f(this.degreesMode ? a * Math.PI / 180 : a);
@@ -104,6 +108,7 @@ function num(n) {
         this.editable = true;
       } else {
         if ( this.a2 == '0' && ! n ) return;
+        if ( this.a2.length >= 18 ) return;
         this.a2 = this.a2 == '0' ? n : this.a2.toString() + n;
       }
     }
@@ -235,6 +240,8 @@ CLASS({
         this.error();
         return 1/0;
       }
+      n = parseFloat(n);
+      if ( ! Number.isInteger(n) ) return gamma(n+1);
       var r = 1;
       while ( n > 0 ) r *= n--;
       return r;
@@ -356,9 +363,11 @@ CLASS({
       translationHint: 'delete one input character',
       keyboardShortcuts: [ 8 /* backspace */ ],
       action: function() {
-        this.a2 = this.a2.toString.length == 1 ?
-          '0' :
-          this.a2.toString().substring(0, this.a2.length-1) ;
+        if ( this.a2.toString().length ) {
+          this.a2 = this.a2.toString().substring(0, this.a2.length-1);
+        } else {
+          this.op = DEFAULT_OP;
+        }
       }
     },
     {
@@ -561,7 +570,7 @@ CLASS({
       -webkit-user-select: none;
       -webkit-font-smoothing: antialiased;
       font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
-      font-size: 34px;
+      font-size: 30px;
       font-weight: 300;
       height: 100%;
       position: fixed;
@@ -621,22 +630,11 @@ CLASS({
     .edge {
       background: linear-gradient(to bottom, rgba(240,240,240,1) 0%,
                                              rgba(240,240,240,0) 100%);
-      height: 20px;
+      height: 10px;
       position: absolute;
       top: 0;
       width: 100%;
       z-index: 1;
-    }
-
-    .edge2 {
-      margin-top: -12px;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%,
-                                             rgba(0,0,0,0) 100%);
-      top: 12px;
-      height: 12px;
-      position: relative;
-      width: 100%;
-      z-index: 99;
     }
 
     .calc .buttons {
@@ -695,7 +693,7 @@ CLASS({
     }
 
     .secondaryButtons {
-      padding-left: 18px;
+      padding-left: 30px;
       background: rgb(52, 153, 128);
     }
 
@@ -704,7 +702,7 @@ CLASS({
     }
 
     .tertiaryButtons {
-      padding-left: 18px;
+      padding-left: 35px;
       background: rgb(29, 233, 182);
     }
 
@@ -720,7 +718,7 @@ CLASS({
     }
 
     .alabel {
-      font-size: 34px;
+      font-size: 30px;
     }
 
     hr {
@@ -736,8 +734,8 @@ CLASS({
         <% X.registerModel(CalcButton, 'ActionButton'); %>
         <div style="position: relative;z-index: 100;">
           <div tabindex="1" style="position: absolute;">
-            <span aria-label="{{{Calc.RAD.label}}}" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="{{{Calc.RAD.label}}}"></span>
-            <span aria-label="{{{Calc.DEG.label}}}" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="{{{Calc.DEG.label}}}">{{{Calc.DEG.label}}}</span>
+            <span aria-label="{{{Calc.RAD.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="{{{Calc.RAD.label}}}"></span>
+            <span aria-label="{{{Calc.DEG.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="{{{Calc.DEG.label}}}"></span>
           </div>
         </div>
 
@@ -753,14 +751,15 @@ CLASS({
           <div class="edge2"></div>
           <%= this.SlidePanel.create({
             minWidth: 310,
-            minPanelWidth: 310,
+            minPanelWidth: 320,
             panelRatio: 0.55,
             mainView: 'MainButtonsView',
-            stripWidth: 25,
+            stripWidth: 30,
             panelView: {
               factory_: 'foam.ui.SlidePanel',
-              minWidth: 280,
-              minPanelWidth: 200,
+              stripWidth: 30,
+              minWidth: 320,
+              minPanelWidth: 220,
               panelRatio: 3/7,
               mainView: 'SecondaryButtonsView',
               panelView: 'TertiaryButtonsView'
@@ -937,7 +936,7 @@ CLASS({
   extendsModel: 'DetailView',
   templates: [
     function toHTML() {/*
-      <div class="history" tabindex="2">{{{this.data.op}}} {{this.data.a2}}<% if ( this.data.op.toString() ) { %><hr aria-label="{{Calc.EQUALS.speechLabel}}" tabindex="2"><% } %></div>
+      <div class="history" tabindex="2">{{{this.data.op}}}&nbsp;{{this.data.a2}}<% if ( this.data.op.toString() ) { %><hr aria-label="{{Calc.EQUALS.speechLabel}}" tabindex="2"><% } %></div>
     */}
   ]
 });

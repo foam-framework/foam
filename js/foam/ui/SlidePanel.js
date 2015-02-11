@@ -31,6 +31,33 @@ CLASS({
   ],
 
   constants: {
+    ANIMATION_DELAY: 200,
+
+    LEFT: {
+      panelX: function(x) {
+        return this.parentWidth - x - this.panelWidth;
+      },
+      invPanelX: function(x) {
+        return x - this.parentWidth + this.panelWidth;
+      },
+      mainX: function() {
+        return this.parentWidth - this.mainWidth;
+      },
+      dragDir: -1
+    },
+    RIGHT: {
+      panelX: function(x) {
+        return x;
+      },
+      invPanelX: function(x) {
+        return x;
+      },
+      mainX: function() {
+        return 0;
+      },
+      dragDir: 1
+    },
+
     CLOSED: {
       name: 'CLOSED',
       layout: function() {
@@ -59,7 +86,7 @@ CLASS({
     OPEN: {
       name: 'OPEN',
       layout: function() {
-        return [ this.parentWidth - this.stripWidth, this.minPanelWidth, this.panelWidth ];
+        return [ this.parentWidth - this.stripWidth, this.minPanelWidth, this.minPanelWidth ];
       },
       onResize: function() {
         if ( this.parentWidth > this.minWidth + this.minPanelWidth )
@@ -86,6 +113,10 @@ CLASS({
       'will always be visible.',
 
   properties: [
+    {
+      name: 'side',
+      lazyFactory: function() { return this.RIGHT; }
+    },
     {
       name: 'state',
       postSet: function(oldState, newState) {
@@ -114,7 +145,7 @@ CLASS({
         }
         var startLayout = this.currentLayout;
         var start = Date.now();
-        var end   = start + 150;
+        var end   = start + this.ANIMATION_DELAY;
         var animate = function() {
           var now = Date.now();
           var p = (now-start) / (end-start);
@@ -153,6 +184,9 @@ CLASS({
       help: 'Set internally by the resize handler',
       postSet: function(_, x) {
         this.main$().style.width = x + 'px';
+        var x = this.side.mainX.call(this);
+        this.main$().style.webkitTransform = 'translate3d(' + x + 'px, 0,0)';
+
       }
     },
     {
@@ -162,7 +196,7 @@ CLASS({
       hidden: true,
       help: 'Set internally by the resize handler',
       postSet: function(_, x) {
-        this.panel$().style.width = (x+1) + 'px';
+        this.panel$().style.width = (x+2) + 'px';
       }
     },
     {
@@ -198,21 +232,10 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'panelX',
-      //defaultValueFn: function() { this.width - this.stripWidth; },
-      preSet: function(oldX, x) {
+      postSet: function(oldX, x) {
+        if ( this.currentLayout ) this.currentLayout[2] = this.parentWidth-x;
         if ( oldX !== x ) this.dir_ = oldX.compareTo(x);
-
-        // Bound it between its left and right limits: full open and just the
-        // strip.
-        if ( x <= this.parentWidth - this.panelWidth )
-          return this.parentWidth - this.panelWidth;
-
-        if ( x >= this.parentWidth - this.stripWidth )
-          return this.parentWidth - this.stripWidth;
-
-        return x;
-      },
-      postSet: function(_, x) {
+        x = this.side.panelX.call(this, x);
         this.panel$().style.webkitTransform = 'translate3d(' + x + 'px, 0,0)';
       }
     },
@@ -239,23 +262,27 @@ CLASS({
           gesture: 'tap'
         });
       }
-    },
-    {
-      name: 'expanded',
-      help: 'If the panel is wide enough to expand the panel permanently.',
-      defaultValue: false
     }
   ],
 
   templates: [
     function CSS() {/*
-      .SlidePanel .shadow {
+      .SlidePanel .left-shadow {
         background: linear-gradient(to left, rgba(0,0,0,0.15) 0%,
                                              rgba(0,0,0,0) 100%);
         height: 100%;
         left: -8px;
         position: absolute;
         width: 8px;
+      }
+      .SlidePanel .right-shadow {
+        background: linear-gradient(to right, rgba(0,0,0,0.15) 0%,
+                                             rgba(0,0,0,0) 100%);
+        height: 100%;
+        right: -8px;
+        position: absolute;
+        width: 8px;
+        top: 0;
       }
     */},
     function toHTML() {/*
@@ -265,8 +292,9 @@ CLASS({
           <%= this.mainView() %>
         </div>
         <div id="%%id-panel" style="position: absolute; top: 0; left: -1;">
-          <div id="%%id-shadow" class="shadow"></div>
+          <% if ( this.side === this.RIGHT ) { %> <div id="%%id-shadow" class="left-shadow"></div> <% } %>
           <%= this.panelView() %>
+          <% if ( this.side === this.LEFT ) { %> <div id="%%id-shadow" class="right-shadow"></div> <% } %>>
         </div>
       </div>
     */}
@@ -330,7 +358,7 @@ CLASS({
         // changes its size.  Being resized should also fire an onResize event.
         this.X.setTimeout(function() {
           if ( this.parentWidth !== parentWidth ) this.onResize();
-        }.bind(this), 100);
+        }.bind(this), this.ANIMATION_DELAY + 50);
       }
     },
     {
@@ -340,20 +368,35 @@ CLASS({
     {
       name: 'dragStart',
       code: function(point) {
-        if ( this.expanded ) return;
+        if ( this.state === this.OPEN || this.state === CLOSED ) return;
         // Otherwise, bind panelX to the absolute X.
         var self = this;
         var originalX = this.panelX;
         Events.map(point.x$, this.panelX$, function(x) {
-          return originalX + point.totalX;
-        });
+          x = this.side.invPanelX.call(this, originalX + this.side.dragDir * point.totalX);
+
+          // Bound it between its left and right limits: full open and just the
+          // strip.
+          if ( x <= this.parentWidth - this.panelWidth )
+            return this.parentWidth - this.panelWidth;
+
+          if ( x >= this.parentWidth - this.stripWidth )
+            return this.parentWidth - this.stripWidth;
+
+          return x;
+        }.bind(this));
       }
     },
     {
       name: 'dragEnd',
       code: function(point) {
+        var currentLayout = this.currentLayout;
+        if ( this.af_ ) this.X.cancelAnimationFrame(this.af_);
+        this.af_ = null;
         if ( this.dir_ < 0 ) this.close(); else this.open();
-        this.state = this.state;
+        var layout = this.state.layout.call(this);
+        this.currentLayout = currentLayout;
+        this.desiredLayout = layout;
       }
     }
   ]
