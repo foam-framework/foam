@@ -18,7 +18,7 @@
 // This accounts for binary-decimal conversion rounding (infinite 0.99999999)
 // 12 places is just short of what javascript gives you, so it forces
 // the number to round, which elimitates the spurious 9's.
-var DECIMAL_PLACES_PRECISION = 12;
+var DECIMAL_PLACES_PRECISION = 11;
 
 // console.profile();
 
@@ -570,7 +570,7 @@ CLASS({
       -webkit-user-select: none;
       -webkit-font-smoothing: antialiased;
       font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
-      font-size: 30px;
+      font-size: 28px;
       font-weight: 300;
       height: 100%;
       position: fixed;
@@ -718,7 +718,7 @@ CLASS({
     }
 
     .alabel {
-      font-size: 30px;
+      font-size: 28px;
     }
 
     hr {

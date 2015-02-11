@@ -19,7 +19,7 @@ function launchCalc() {
   chrome.app.window.create('AppCalc.html', {
     id: 'Calculator',
     innerBounds: {
-      minWidth: 330,
+      minWidth: 350,
       minHeight: 340,
       width: 350,
       height: 450
