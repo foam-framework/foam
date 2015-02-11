@@ -90,8 +90,8 @@ CLASS({
     },
        
     xformToChild: function(old,nu) {
-        this.unbindData(old);
-        this.bindData(nu);
+      this.unbindData(old);
+      this.bindData(nu);
     },
     xformFromChild: function(old,nu) {
       //nop, since we bind a two-way listener in bindData()
@@ -117,13 +117,13 @@ CLASS({
     unbindData: function(oldData) {
       if (! oldData || !this.prop ) return;
       var pValue = oldData.propertyValue(this.prop.name);
-      Events.unlink(pValue, this.childData);
+      Events.unlink(pValue, this.childData$);
     },
 
     bindData: function(data) {
       if (! data || !this.prop) return;
       var pValue = data.propertyValue(this.prop.name);
-      Events.link(pValue, this.childData);
+      Events.link(pValue, this.childData$);
     },
 
 
@@ -137,7 +137,11 @@ CLASS({
     
     construct: function() {
       this.SUPER();
-          
+
+      if ( this.data && ! this.childData ) {
+        this.bindData(this.data);
+      }
+
       if ( this.args && this.args.model_ ) {
         var model = FOAM.lookup(this.args.model_, this.X);
         console.assert( model, 'Unknown View: ' + this.args.model_);
@@ -158,7 +162,6 @@ CLASS({
 
       this.view = view;
       this.addChild(view);
-      //this.bindData(this.data);
     }
   },
   

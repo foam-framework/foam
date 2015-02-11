@@ -63,7 +63,7 @@ CLASS({
     {
       name: 'childDataValue',
       documentation: function() {/* Holds the exported SimpleValue instance.
-        The instance may be thrown away and re-created to cut loose any children. 
+        The instance will be thrown away and re-created to cut loose any children. 
       */}
     },
     {

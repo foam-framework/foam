@@ -3322,7 +3322,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanValue',
+      model_: 'BooleanProperty',
       name: 'usePlaceholder',
       defaultValue: true,
       postSet: function(_, newValue) {

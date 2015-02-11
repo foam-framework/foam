@@ -159,7 +159,7 @@ CLASS({
            'foam.views.ViewActionsTrait'],
 
   requires: ['SimpleReadOnlyValue',
-             'foam.views.PropertyView'],
+             'foam.ui.PropertyView'],
 
   documentation: function() {/*
     <p>$$DOC{ref:'View',usePlural:true} render data. This could be a specific
@@ -216,7 +216,7 @@ CLASS({
     createView: function(prop, opt_args) {
       /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.childX;
-      var v = X.foam.views.PropertyView.create({prop: prop, args: opt_args}, X);
+      var v = X.foam.ui.PropertyView.create({prop: prop, args: opt_args}, X);
       this.addChild(v);
       return v;
     },
@@ -748,6 +748,8 @@ CLASS({
   extendsModel: 'foam.views.BaseView',
   package: 'foam.views',
   
+  traits: ['foam.ui.DestructiveDataViewTrait'],
+  
   documentation:function() {/*
     When a view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'DetailView'}
     is the place to start. Either using $$DOC{ref:'DetailView'} directly, implementing
@@ -763,14 +765,6 @@ CLASS({
   */},
 
   properties: [
-    {
-      name: 'data',
-      documentation: function() {/*
-        Handles a model change, which requires that the child views be torn down.
-        If the data.model_ remains the same, the new data is simply propagated to
-        the existing children.
-      */}
-    },
     {
       name:  'model',
       type:  'Model',
@@ -815,19 +809,15 @@ CLASS({
     // Template Method
     onValueChange_: function() { /* Override with value update code. */ },
 
-    onDataChange: function(old,nu) {
-      if ( nu && nu.model_ && this.model !== nu.model_ ) {
-        // destroy children
-        this.destroy();
-        // propagate data change (nowhere)
-        this.model = nu.model_;
-
-        // rebuild children with new data
-        this.construct();
-      } else {
-        if ( this.childDataValue ) this.childDataValue.set(nu); // just move the new data along
-      }
-      this.onValueChange_(); // sub-classes may handle to change as well
+    onDataChange: function(old, nu) {
+      this.model = nu.model_;
+      this.SUPER(old,nu);
+      this.onValueChange_();
+    },
+    
+    shouldDestroy: function(old,nu) {
+      if ( ! old || ! old.model_ || ! nu || ! nu.model_ ) return true;
+      return old.model_ !== nu.model_;
     },
     
     viewModel: function() { /* The $$DOC{ref:'Model'} type of the $$DOC{ref:'.data'}. */
@@ -1006,114 +996,6 @@ CLASS({
            'foam.views.HTMLDetailViewTrait']
 });
 
-CLASS({
-  name: 'BaseUpdateDetailView',
-  extendsModel: 'foam.views.BaseDetailView',
-  package: 'foam.views',
-  
-  documentation:function() {/*
-    UNTESTED: proof of concept for data handling
-  */},
-
-  imports: ['DAO as dao'],
-
-  properties: [
-    {
-      name: 'data',
-      postSet: function(old, nu) {
-        // since we're cloning the propagated data, we have to listen
-        // for changes to the data and clone again 
-        if ( old ) old.removeListener(this.parentContentsChanged);
-        if ( nu ) nu.addListener(this.parentContentsChanged);
-        
-        if (!nu) return;
-        // propagate a clone and build children
-        this.childDataValue.set(nu.deepClone());
-        this.originalData = nu.deepClone();
-  
-        this.data.addListener(function() {
-          // The user is making edits. Don't listen for parent changes,
-          // since we no longer want to react to updates to it.
-          this.version++;
-          this.data.removeListener(this.parentContentsChanged);
-        }.bind(this));
-      }
-    },
-    {
-      name: 'originalData',
-      documentation: 'A clone of the parent data, for comparison with edits.'
-    },
-    {
-      name: 'dao'
-    },
-    {
-      name: 'stack',
-      defaultValueFn: function() { return this.X.stack; }
-    },
-    {
-      name: 'view'
-    },
-    {
-      // Version of the data which changes whenever any property of the data is updated.
-      // Used to help trigger isEnabled / isAvailable in Actions.
-      model_: 'IntProperty',
-      name: 'version'
-    }
-  ],
-
-  
-  listeners: [
-    {
-      name: 'parentContentsChanged',
-      code: function() {
-        // If this listener fires, the parent data has changed internally
-        // and the user hasn't edited our copy yet, so keep the clones updated.
-        this.childDataValue.value.copyFrom(this.data);
-        this.originalData.copyFrom(this.data);
-      }
-    }
-  ],
-
-  actions: [
-    {
-      name:  'save',
-      help:  'Save updates.',
-
-      isAvailable: function() { this.version; return ! this.originalData.equals(this.data); },
-      action: function() {
-        var self = this;
-        var obj  = this.data;
-        this.stack.back();
-
-        this.dao.put(obj, {
-          put: function() {
-            console.log("Saving: ", obj.toJSON());
-            self.originalData.copyFrom(obj);
-          },
-          error: function() {
-            console.error("Error saving", arguments);
-          }
-        });
-      }
-    },
-    {
-      name:  'cancel',
-      help:  'Cancel update.',
-      isAvailable: function() { this.version; return ! this.originalData.equals(this.childDataValue.value); },
-      action: function() { this.stack.back(); }
-    },
-    {
-      name:  'back',
-      isAvailable: function() { this.version; return this.originalData.equals(this.childDataValue.value); },
-      action: function() { this.stack.back(); }
-    },
-    {
-      name: 'reset',
-      isAvailable: function() { this.version; return ! this.originalData.equals(this.childDataValue.value); },
-      action: function() { this.childDataValue.value.copyFrom(this.originalData); } // or do we want data?
-    }
-  ]
-});
 
 // Bring in classic views and upgrade data handling
 CLASS({

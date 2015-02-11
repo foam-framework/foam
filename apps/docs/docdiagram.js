@@ -525,10 +525,11 @@ CLASS({
   package: 'foam.documentation',
 
   requires: ['foam.documentation.FeatureDiagram',
-             'foam.graphics.diagram.SectionGroup'],
+             'foam.graphics.diagram.SectionGroup',
+             'SimpleValue'],
 
   traits: [ 'foam.patterns.ChildTreeTrait',
-            'foam.ui.DestructiveDataViewTrait',
+            'foam.ui.TransformingDataViewTrait',
             'foam.documentation.DocDiagramTrait',
             'foam.documentation.FeatureListLoaderTrait'],
 
@@ -553,7 +554,7 @@ CLASS({
       this.diagramItem.title = this.featureType.capitalize();
       this.selfFeaturesDAO.limit(5).select({ 
         put: function(item) {
-          var X = this.childX.sub({ data$: this.childX.SimpleValue.create(item, this.childX) });
+          var X = this.X.sub({ data$: this.SimpleValue.create(item, this.childX) });
           this.addChild(this.FeatureDiagram.create({ model: item.model_ }, X));
 //          console.log("    Adding child from featureDAO ");
         }.bind(this),

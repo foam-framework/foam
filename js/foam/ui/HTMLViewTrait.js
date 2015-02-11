@@ -1,4 +1,20 @@
-
+/**
+ * @license
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
 CLASS({
   name: 'HTMLViewTrait',
   package: 'foam.ui',
@@ -473,99 +489,4 @@ CLASS({
   }
 });
 
-
-//     {
-//       model_: 'BooleanProperty',
-//       name: 'showActions',
-//       defaultValue: false,
-//       postSet: function(oldValue, showActions) {
-//         // TODO: No way to remove the decorator.
-//         if ( ! oldValue && showActions ) {
-//           this.addDecorator(this.X.ActionBorder.create());
-//         }
-//       },
-//       documentation: function() {/*
-//           If $$DOC{ref:'Action',usePlural:true} are set on this $$DOC{ref:'View'},
-//           this property enables their automatic display in an $$DOC{ref:'ActionBorder'}.
-//           If you do not want to show $$DOC{ref:'Action',usePlural:true} or want
-//           to show them in a different way, leave this false.
-//       */}
-//     },
-
-    
-//         viewModel: function() {
-//       /* The $$DOC{ref:'Model'} definition of this $$DOC{ref:'View'}. */
-//       return this.model_;
-//     },
-
-//     createView: function(prop, opt_args) {
-//       /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
-//       var X = ( opt_args && opt_args.X ) || this.X;
-//       var v = X.PropertyView.create({prop: prop, args: opt_args}, X);
-//       this.addChild(v);
-//       return v;
-//     },
-
-//     createActionView: function(action, opt_args) {
-//       /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info
-//         specifically for $$DOC{ref:'Action',usePlural:true}. */
-//       var X = ( opt_args && opt_args.X ) || this.X;
-//       var modelName = opt_args && opt_args.model_ ?
-//         opt_args.model_ :
-//         'ActionButton'  ;
-//       var v = X[modelName].create({action: action}).copyFrom(opt_args);
-
-//       this[action.name + 'View'] = v;
-
-//       return v;
-//     },
-
-//     createRelationshipView: function(r, opt_args) {
-//       var X = ( opt_args && opt_args.X ) || this.X;
-//       return X.RelationshipView.create({
-//         relationship: r,
-//         args: opt_args
-//       });
-//     },
-
-//     createTemplateView: function(name, opt_args) {
-//       /*
-//         Used by the $$DOC{ref:'Template',text:'$$propName'} sub-$$DOC{ref:'View'}
-//         creation tag in $$DOC{ref:'Template',usePlural:true}.
-//       */
-
-//       // Can't call viewModel() here, since DetailView overrides it but relies
-//       // on falling back on view's implementation. TODO(jacksonic): figure it out
-//       var o = this.model_[constantize(name)];
-
-//       if ( ! o ) throw 'Unknown View Name: ' + name;
-
-//       var args = opt_args; // opt_args ? opt_args.clone() : {};
-// //      args.data = this;
-
-//       if ( Action.isInstance(o) )
-//         var v = this.createActionView(o, args);
-//       else if ( Relationship.isInstance(o) )
-//         v = this.createRelationshipView(o, args);
-//       else
-//         v = this.createView(o, args);
-//         v.data = this;
-//       return v;
-//     },
-//     dynamicTag: function(tagName, f) {
-//       /*
-//         Creates a dynamic HTML tag whose content will be automatically updated.
-//        */
-//       var id = this.nextID();
-
-//       this.addInitializer(function() {
-//         this.X.dynamic(function() {
-//           var html = f();
-//           var e = this.X.$(id);
-//           if ( e ) e.innerHTML = html;
-//         }.bind(this));
-//       }.bind(this));
-
-//       return '<' + tagName + ' id="' + id + '"></' + tagName + '>';
-//     },
 
