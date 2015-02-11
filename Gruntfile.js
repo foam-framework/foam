@@ -77,7 +77,6 @@ module.exports = function(grunt) {
           'core/RichTextView.js',
           'core/listchoiceview.js',
           'core/scroll.js',
-          'core/Diagramming.js',
           'core/HTMLParser.js',
           'core/mlang.js',
           'core/QueryParser.js',

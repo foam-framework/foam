@@ -69,7 +69,6 @@ var files = [
   'RichTextView',
   'listchoiceview',
   'scroll',
-  'Diagramming',
   'HTMLParser',
   'mlang',
   'mlang2',

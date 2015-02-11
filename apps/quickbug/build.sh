@@ -29,7 +29,6 @@ cat \
   ../../core/mm4Method.js \
   ../../core/mm5Misc.js \
   ../../js/foam/ui/Window.js \
-  ../../core/LayoutTraits.js \
   ../../js/foam/patterns/ChildTreeTrait.js \
   ../../core/value.js \
   ../../core/base64.js \
@@ -46,8 +45,6 @@ cat \
   ../../core/RichTextView.js \
   ../../core/listchoiceview.js \
   ../../core/scroll.js \
-  ../../core/CViewPrimitives.js \
-  ../../core/Diagramming.js \
   ../../core/HTMLParser.js \
   ../../core/mlang.js \
   ../../core/mlang2.js \
