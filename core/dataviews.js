@@ -156,12 +156,11 @@ CLASS({
   package: 'foam.views',
   
   traits: ['foam.patterns.ChildTreeTrait',
-           'foam.ui.DestructiveDataViewTrait',
            'foam.views.ViewActionsTrait'],
 
   requires: ['SimpleReadOnlyValue',
              'foam.views.PropertyView'],
-         
+
   documentation: function() {/*
     <p>$$DOC{ref:'View',usePlural:true} render data. This could be a specific
        $$DOC{ref:'Model'} or a $$DOC{ref:'DAO'}. In the case of $$DOC{ref:'DetailView'},
@@ -587,13 +586,8 @@ CLASS({
     },
 
     updateHTML: function() {
-      /* Cause the HTML content to be recreated using a call to
-        $$DOC{ref:'.toInnerHTML'}. */
-      if ( ! this.$ ) return;
-
       this.destroy();
-      this.$.innerHTML = this.toInnerHTML();
-      this.initInnerHTML();
+      this.construct();
     },
 
     toInnerHTML: function() {
@@ -715,8 +709,13 @@ CLASS({
     },
 
     construct: function() {
+      /* Cause the HTML content to be recreated using a call to
+        $$DOC{ref:'.toInnerHTML'}. */
       this.SUPER();
-      this.updateHTML();
+      if ( ! this.$ ) return;
+
+      this.$.innerHTML = this.toInnerHTML();
+      this.initInnerHTML();
     },
     
     destroy: function() {
@@ -740,191 +739,6 @@ CLASS({
 
 
 // PropertyView
-
-
-CLASS({
-  name: 'BasePropertyView',
-  package: 'foam.views',
-//  extendsModel: 'foam.views.BaseView',
-   traits: ['foam.patterns.ChildTreeTrait',
-            'foam.ui.DestructiveDataViewTrait'],
-  
-  documentation: function() {/*
-    Apply this trait to a $$DOC{ref:'BaseView'} (such as $$DOC{ref:'HTMLView'}).</p>
-    <p>Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one
-    $$DOC{ref:'Property'}. The $$DOC{ref:'View'} chosen can be based off the
-    $$DOC{ref:'Property.view',text:'Property.view'} value, the $$DOC{ref:'.innerView'} value, or
-    $$DOC{ref:'.args'}.model_.
-  */},
-
-  properties: [
-    {
-      name: 'data',
-//       postSet: function(old, nu) {
-//         this.unbindData(old);
-//         this.bindData(nu);
-//       }
-    },    
-    {
-      name: 'prop',
-      type: 'Property',
-      documentation: function() {/*
-          The $$DOC{ref:'Property'} for which to generate a $$DOC{ref:'View'}.
-      */},
-      postSet: function(old, nu) {
-        if (!old) this.bindData(this.data);
-      }
-    },
-    {
-      name: 'parent',
-      type: 'View',
-      postSet: function(_, p) {
-        if (!p) return; // TODO(jacksonic): We shouldn't pretend we aren't part of the tree
-        p[this.prop.name + 'View'] = this.view;
-        if ( this.view ) this.view.parent = p;
-      },
-      documentation: function() {/*
-        The $$DOC{ref:'View'} to use as the parent container for the new
-        sub-$$DOC{ref:'View'}.
-      */}
-    },
-    {
-      name: 'innerView',
-      help: 'Override for prop.view',
-      documentation: function() {/*
-        The optional name of the desired sub-$$DOC{ref:'View'}. If not specified,
-        prop.$$DOC{ref:'Property.view'} is used.
-      */}
-    },
-    {
-      name: 'view',
-      type: 'View',
-      documentation: function() {/*
-        The new sub-$$DOC{ref:'View'} generated for the given $$DOC{ref:'Property'}.
-      */}
-    },
-    {
-      name: 'args',
-      documentation: function() {/*
-        Optional arguments to be used for sub-$$DOC{ref:'View'} creation. args.model_
-        in particular specifies the exact $$DOC{ref:'View'} to use.
-      */}
-    }
-  ],
-
-  methods: {
-    init: function() {
-      this.SUPER();
-      this.construct();
-    },
-
-    fromElement: function(e) {
-      this.view.fromElement(e);
-      return this;
-    },
-    
-    onChildValueChange: function() {
-       /* do nothing */
-    },
-    
-    onDataChange: function(old,nu) {
-        this.unbindData(old);
-        this.bindData(nu);
-    },
-
-    createViewFromProperty: function(prop) {
-      /* Helper to determine the $$DOC{ref:'View'} to use. */
-      var viewName = this.innerView || prop.view
-      if ( ! viewName ) return this.childX.foam.views.TextFieldView.create(prop, this.childX);
-      if ( typeof viewName === 'string' ) return FOAM.lookup(viewName, this.childX).create(prop, this.childX);
-      if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
-      if ( viewName.model_ ) { var v = viewName.model_.create(viewName, this.childX).copyFrom(prop); v.id = this.nextID(); return v; }
-      if ( viewName.factory_ ) {
-        var v = FOAM.lookup(viewName.factory_, this.childX).create(viewName, this.childX).copyFrom(prop);
-        v.id = this.nextID();
-        return v;
-      }
-      if ( typeof viewName === 'function' ) return viewName(prop, this);
-
-      return viewName.create(prop);
-    },
-
-    unbindData: function(oldData) {
-      if (! oldData || !this.prop ) return;
-      var pValue = oldData.propertyValue(this.prop.name);
-      Events.unlink(pValue, this.childDataValue);
-    },
-
-    bindData: function(data) {
-      if (! data || !this.prop) return;
-      var pValue = data.propertyValue(this.prop.name);
-      Events.link(pValue, this.childDataValue);
-    },
-
-
-    toString: function() { /* Name info. */ return 'PropertyView(' + this.prop.name + ', ' + this.view + ')'; },
-
-    destroy: function() { /* Passthrough to $$DOC{ref:'.view'} */
-      this.unbindData(this.data);
-      //this.view.destroy(); addChild instead
-      this.SUPER();
-    },
-    
-    construct: function() {
-      this.SUPER();
-          
-      if ( this.args && this.args.model_ ) {
-        var model = FOAM.lookup(this.args.model_, this.childX);
-        console.assert( model, 'Unknown View: ' + this.args.model_);
-        // HACK to make sure model specification makes it into the create
-        if ( this.args.model ) this.prop.model = this.args.model;
-        var view = model.create(this.prop, this.childX);
-        delete this.args.model_;
-      } else {
-        view = this.createViewFromProperty(this.prop);
-      }
-
-      view.copyFrom(this.args);
-      view.parent = this.parent;
-      view.prop = this.prop;
-
-      // TODO(kgr): re-enable when improved
-      // if ( this.prop.description || this.prop.help ) view.tooltip = this.prop.description || this.prop.help;
-
-      this.view = view;
-      this.addChild(view);
-      //this.bindData(this.data);
-    }
-  },
-  
-});
-
-CLASS({
-  name: 'PropertyView',
-  package: 'foam.views',
-  extendsModel: 'foam.views.BasePropertyView',
-//   traits: ['foam.views.HTMLViewTrait',
-//            'foam.views.HTMLPropertyViewTrait'], 
-  traits: ['foam.views.HTMLPropertyViewTrait'], 
-
-  documentation: function() {/*
-    Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one
-    $$DOC{ref:'Property'}. The $$DOC{ref:'View'} chosen can be based off the
-    $$DOC{ref:'Property.view',text:'Property.view'} value, the $$DOC{ref:'.innerView'} value, or
-    $$DOC{ref:'.args'}.model_.
-  */},
-});
-
-CLASS({
-  name: 'HTMLPropertyViewTrait',
-  package: 'foam.views',
-  
-  methods: {
-    toHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ return this.view.toHTML(); },
-    initHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ this.view.initHTML(); },
-  },
-  
-});
 
 
  

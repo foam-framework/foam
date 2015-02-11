@@ -164,31 +164,6 @@ CLASS({
   
 });
 
-CLASS({
-  name: 'PropertyView',
-  package: 'foam.views',
-  extendsModel: 'foam.views.BasePropertyView',
-//   traits: ['foam.views.HTMLViewTrait',
-//            'foam.views.HTMLPropertyViewTrait'], 
-  traits: ['foam.views.HTMLPropertyViewTrait'], 
 
-  documentation: function() {/*
-    Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one
-    $$DOC{ref:'Property'}. The $$DOC{ref:'View'} chosen can be based off the
-    $$DOC{ref:'Property.view',text:'Property.view'} value, the $$DOC{ref:'.innerView'} value, or
-    $$DOC{ref:'.args'}.model_.
-  */},
-});
-
-CLASS({
-  name: 'HTMLPropertyViewTrait',
-  package: 'foam.views',
-  
-  methods: {
-    toHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ return this.view.toHTML(); },
-    initHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ this.view.initHTML(); },
-  },
-  
-});
 
 
