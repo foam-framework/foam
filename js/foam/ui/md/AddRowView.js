@@ -69,27 +69,66 @@ CLASS({
 
   properties: [
     {
-      name: 'data',
+      model_: 'ViewFactoryProperty',
+      name: 'rowView',
+      required: true
+    },
+    {
+      name: 'data'
+    },
+    {
+      name: 'softData',
+      documentation: 'The object currently under consideration.',
+      factory: function() {
+        this.dao.find(this.data, {
+          put: function(x) { this.softData = x; }.bind(this)
+        });
+        return '';
+      },
       postSet: function(old, nu) {
-        console.log('data', old, nu);
-        this.q = nu;
+        if (nu) {
+          this.q = this.objectToQuery(nu);
+          this.selected = true;
+        }
       }
     },
     {
       name: 'q',
-      label: 'Search users',
+      label: 'Search',
       view: {
         factory_: 'foam.ui.md.TextFieldView',
         onKeyMode: true,
         floatingLabel: false
       },
       postSet: function(old, nu) {
-        console.log('q', old, nu);
+        this.selected = false;
+      }
+    },
+    {
+      name: 'selected'
+    },
+    {
+      name: 'subType',
+      documentation: 'Based on ReferenceProperty, the name of the type.'
+    },
+    {
+      name: 'subKey',
+      documentation: 'The mLang expression for looking up the key from a ' +
+          'whole object. Defaults to .ID',
+      factory: function() {
+        return FOAM.lookup(this.subType, this.X).ID;
       }
     },
     {
       model_: 'DAOProperty',
       name: 'dao',
+      documentation: 'The DAO used to look up the models. Defaults to ' +
+          'mySubTypeDAO for subType == "MySubType".',
+      factory: function() {
+        var name = this.subType[0].toLowerCase() + this.subType.substring(1);
+        var daoName = name + 'DAO';
+        return this.X[daoName];
+      }
     },
     {
       name: 'wrappedDAO',
@@ -103,11 +142,9 @@ CLASS({
       model_: 'DAOProperty',
       name: 'filteredDAO',
       dynamicValue: function() {
-        console.log('filteredDAO update');
         this.q; this.wrappedDAO; this.limit;
         var q = this.q ? this.queryFactory(this.q) : TRUE;
         var dao = this.wrappedDAO.where(q).limit(this.limit);
-        dao.select(COUNT())(console.log.json);
         return dao;
       },
       view: {
@@ -119,7 +156,12 @@ CLASS({
     },
     {
       name: 'queryFactory',
-      defaultValue: TRUE
+      defaultValue: function(q) { return STARTS_WITH_IC(this.subKey, q); }
+    },
+    {
+      name: 'objectToQuery',
+      documentation: 'Turns an object from the DAO into a query string.',
+      defaultValue: function(obj) { return obj.id || obj; }
     },
     {
       // TODO: DAO should be pre-limited instead
@@ -144,11 +186,22 @@ CLASS({
       defaultValue: true
     },
     {
+      name: 'returnOnSelect',
+      documentation: 'When true, updates $$DOC{ref:".data"} and returns when ' +
+          'the user chooses an entry. When false, the query is updated to ' +
+          'match the selected row.',
+      defaultValue: true
+    },
+    {
       name: 'selection',
       postSet: function(old, nu) {
         if (nu) {
-          this.data = nu.id;
-          this.doClose();
+          if (this.returnOnSelect) {
+            this.data = this.subKey.f(nu);
+            this.doClose();
+          } else {
+            this.softData = nu;
+          }
         }
       }
     }
@@ -178,7 +231,7 @@ CLASS({
     */},
     function toInnerHTML() {/*
       <div class="header">
-        $$close $$cancel
+        $$cancel $$accept
         $$q{ extraClassName: 'grow', clearAction: true }
       </div>
       <div class="arvBody" id="%%bodyId">
@@ -199,28 +252,22 @@ CLASS({
 
   actions: [
     {
-      name: 'close',
-      label: '',
-      iconUrl: 'images/ic_arrow_back_24dp.png',
-      isAvailable: function() { return this.q === this.data; },
-      action: function() {
-        this.doClose();
-      }
-    },
-    {
       name: 'cancel',
       label: '',
       iconUrl: 'images/ic_clear_24dp.png',
-      isAvailable: function() { return this.q !== this.data; },
+      isAvailable: function() { return !this.selected; },
       action: function() {
         this.doClose();
       }
     },
     {
       name: 'accept',
+      label: '',
+      iconUrl: 'images/ic_done_24dp.png',
       keyboardShortcuts: [ 13 /* enter */ ],
+      isAvailable: function() { return this.selected; },
       action: function() {
-        this.data = this.q;
+        this.data = this.softData;
         this.doClose();
       }
     }
