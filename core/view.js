@@ -418,7 +418,7 @@ CLASS({
 
       // Can't call viewModel() here, since DetailView overrides it but relies
       // on falling back on view's implementation. TODO(jacksonic): figure it out
-      var o = this.model_[constantize(name)];
+      var o = this.model_.getFeature(name);
 
       if ( ! o ) throw 'Unknown View Name: ' + name;
 
