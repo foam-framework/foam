@@ -232,7 +232,8 @@ CLASS({
         };
       };
 
-      var sync = this.emailDao.sync;
+      if ( this.emailDao.withSync )
+        var sync = this.emailDao.sync;
 
       this.controller = this.AppController.create({
         model: this.EMail,
@@ -251,9 +252,9 @@ CLASS({
           name: 'refresh',
           label: '',
           iconUrl: 'icons/ic_refresh_48px.svg',
-          isEnabled: function() { return ! sync.syncing; },
+          isEnabled: function() { return ! ( sync && sync.syncing ); },
           action: function() {
-            sync.sync();
+            sync && sync.sync();
           }
         }),
         menuFactory: function() {
@@ -330,15 +331,6 @@ CLASS({
           }, this.X)
         });
         this.X.stack.pushView(view, undefined, undefined, 'fromRight');
-      }
-    }
-  ],
-  listeners: [
-    {
-      name: 'doSync',
-      isMerged: 1000,
-      code: function() {
-        this.emailSync.sync();
       }
     }
   ],
