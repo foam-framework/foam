@@ -368,7 +368,7 @@ CLASS({
     {
       name: 'dragStart',
       code: function(point) {
-        if ( this.state === this.OPEN || this.state === CLOSED ) return;
+        if ( this.state === this.EXPANDED || this.state === this.OPEN_EXPANDED ) return;
         // Otherwise, bind panelX to the absolute X.
         var self = this;
         var originalX = this.panelX;

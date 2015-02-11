@@ -64,24 +64,21 @@ CLASS({
           dao: this.IDBDAO.create({
             model: this.Binding,
             name: 'EMailDAO-Bindings',
-            predicate: NOT_TRANSIENT,
-            context: context
-          })
+          }),
+          predicate: NOT_TRANSIENT,
+          context: context
         });
       }
     },
     {
       name: 'remoteDao',
-      lazyFactory: function() {
-        if ( this.withSync ) {
-          var future = afuture();
-          this.persistentContext.bindObject('remoteDao',
-                                            this.GMailMessageDAO)(future.set);
-          return this.GMailToEMailDAO.create({
-            delegate: this.FutureDAO.create({ future: future.get })
-          });
-        }
-        return this.NullDAO.create();
+      factory: function() {
+        var future = afuture();
+        this.persistentContext.bindObject('remoteDao',
+                                          this.GMailMessageDAO)(future.set);
+        return this.GMailToEMailDAO.create({
+          delegate: this.FutureDAO.create({ future: future.get })
+        });
       }
     },
     {
@@ -140,8 +137,10 @@ CLASS({
               delegate: this.MergeDAO.create({
                 delegate: this.cachingDAO,
                 mergeStrategy: function(ret, oldValue, newValue) {
-                  newValue.clientVersion =
-                    Math.max(oldValue.clientVersion, newValue.clientVersion);
+                  if ( newValue.clientVersion < oldValue.clientVersion ) {
+                    newValue.labelIds = oldValue.labelIds;
+                    newValue.clientVersion = oldValue.clientVersion;
+                  }
                   ret(newValue);
                 }
               })
