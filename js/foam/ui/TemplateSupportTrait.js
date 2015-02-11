@@ -25,7 +25,7 @@ CLASS({
     to create children through $$ notation.
   */},
 
-  methods: [
+  methods: {
   
     createView: function(prop, opt_args) {
       /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
