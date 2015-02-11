@@ -18,7 +18,7 @@
 // This accounts for binary-decimal conversion rounding (infinite 0.99999999)
 // 12 places is just short of what javascript gives you, so it forces
 // the number to round, which elimitates the spurious 9's.
-var DECIMAL_PLACES_PRECISION = 11;
+var DECIMAL_PLACES_PRECISION = 12;
 
 // console.profile();
 
@@ -108,7 +108,7 @@ function num(n) {
         this.editable = true;
       } else {
         if ( this.a2 == '0' && ! n ) return;
-        if ( this.a2.length >= 14 ) return;
+        if ( this.a2.length >= 18 ) return;
         this.a2 = this.a2 == '0' ? n : this.a2.toString() + n;
       }
     }
@@ -570,7 +570,7 @@ CLASS({
       -webkit-user-select: none;
       -webkit-font-smoothing: antialiased;
       font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
-      font-size: 28px;
+      font-size: 30px;
       font-weight: 300;
       height: 100%;
       position: fixed;
@@ -718,7 +718,7 @@ CLASS({
     }
 
     .alabel {
-      font-size: 28px;
+      font-size: 30px;
     }
 
     hr {
@@ -735,7 +735,7 @@ CLASS({
         <div style="position: relative;z-index: 100;">
           <div tabindex="1" style="position: absolute;">
             <span aria-label="{{{Calc.RAD.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="{{{Calc.RAD.label}}}"></span>
-            <span aria-label="{{{Calc.DEG.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="{{{Calc.DEG.label}}}">{{{Calc.DEG.label}}}</span>
+            <span aria-label="{{{Calc.DEG.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="{{{Calc.DEG.label}}}"></span>
           </div>
         </div>
 
