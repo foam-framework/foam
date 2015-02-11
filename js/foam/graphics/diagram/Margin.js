@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2014 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-function launchCalc() {
-  chrome.app.window.create('AppCalc.html', {
-    id: 'Calculator',
-    innerBounds: {
-      minWidth: 350,
-      minHeight: 340,
-      width: 350,
-      height: 450
-    }
-  });
-}
+ 
+CLASS({
+  name: 'Margin',
+  package: 'foam.graphics.diagram',
+  extendsModel: 'foam.graphics.Margin',
+  traits: ['foam.graphics.diagram.DiagramItemTrait'],
 
-chrome.app.runtime.onLaunched.addListener(launchCalc);
+  documentation: function() {/* Overridden from 
+    $$DOC{ref:'foam.graphics.Margin'} to support diagrams
+    through $$DOC{ref:'foam.graphics.diagram.DiagramItemTrait'}.
+  */},
+});
+

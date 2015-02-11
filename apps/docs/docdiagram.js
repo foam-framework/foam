@@ -24,7 +24,7 @@ CLASS({
     {
       name: 'diagramItem',
       documentation: "The diagram item we create and are managing.",
-      type: 'diagram.DiagramItemTrait'
+      type: 'foam.graphics.diagram.DiagramItemTrait'
     }
   ],
 
@@ -52,9 +52,9 @@ CLASS({
   requires: ['foam.documentation.ModelDocDiagram',
              'foam.documentation.ExtendsDiagram',
              'foam.documentation.TraitListDiagram',
-             'diagram.LinearLayout',
-             'diagram.Margin',
-             'diagram.AutoSizeDiagramRoot',
+             'foam.graphics.diagram.LinearLayout',
+             'foam.graphics.diagram.Margin',
+             'foam.graphics.diagram.AutoSizeDiagramRoot',
              'foam.graphics.Spacer'],
   
   documentation: function() {/*
@@ -64,7 +64,7 @@ CLASS({
   properties: [
     {
       name: 'autoSizeLayout',
-      type: 'diagram.AutoSizeDiagramRoot',
+      type: 'foam.graphics.diagram.AutoSizeDiagramRoot',
       factory: function() {
         // Set the root to NOT paint until we have finished construct()
         return this.AutoSizeDiagramRoot.create({ suspended: true });
@@ -72,35 +72,35 @@ CLASS({
     },
     {
       name: 'outerMargin',
-      type: 'diagram.Margin',
+      type: 'foam.graphics.diagram.Margin',
       factory: function() {
         return this.Margin.create({ top: 5, left: 5, bottom: 5, right: 5 });
       }
     },
     {
       name: 'outerLayout',
-      type: 'diagram.LinearLayout',
+      type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.LinearLayout.create({orientation:'horizontal'});
       }
     },
     {
       name: 'extendsLayout',
-      type: 'diagram.LinearLayout',
+      type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.LinearLayout.create({orientation:'vertical'});
       }
     },
     {
       name: 'mainLayout',
-      type: 'diagram.LinearLayout',
+      type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.LinearLayout.create({orientation:'horizontal'});
       }
     },
     {
       name: 'extendsModelLayout',
-      type: 'diagram.LinearLayout',
+      type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.LinearLayout.create({orientation:'vertical'});
       }
@@ -183,8 +183,8 @@ CLASS({
 
   requires: ['foam.documentation.ModelDocDiagram',
              'foam.documentation.DocLinkDiagram',
-             'diagram.LinearLayout',
-             'diagram.Link',
+             'foam.graphics.diagram.LinearLayout',
+             'foam.graphics.diagram.Link',
              'foam.graphics.Spacer',
              'SimpleValue',
              'foam.documentation.DocRef'],
@@ -204,14 +204,14 @@ CLASS({
     },
     {
       name: 'diagramItem',
-      type: 'diagram.LinearLayout',
+      type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.LinearLayout.create({orientation:'vertical'});
       }
     },
     {
       name: 'mainLayout',
-      type: 'diagram.LinearLayout',
+      type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.LinearLayout.create({orientation:'vertical'});
       }
@@ -281,8 +281,8 @@ CLASS({
 
   requires: ['foam.documentation.ModelDocDiagram',
              'foam.documentation.DocLinkDiagram',
-             'diagram.LinearLayout',
-             'diagram.Link',
+             'foam.graphics.diagram.LinearLayout',
+             'foam.graphics.diagram.Link',
              'foam.graphics.Spacer',
              'SimpleValue',
              'foam.documentation.DocRef'],
@@ -302,14 +302,14 @@ CLASS({
     },
     {
       name: 'diagramItem',
-      type: 'diagram.LinearLayout',
+      type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.LinearLayout.create({orientation:'vertical'});
       }
     },
     {
       name: 'mainLayout',
-      type: 'diagram.LinearLayout',
+      type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.LinearLayout.create({orientation:'horizontal'});
       }
@@ -375,12 +375,12 @@ CLASS({
   traits: [ 'foam.patterns.ChildTreeTrait',
             'foam.documentation.DocDiagramTrait'],
 
-  requires: ['diagram.Link'],
+  requires: ['foam.graphics.diagram.Link'],
 
   properties: [
     {
       name: 'diagramItem',
-      type: 'diagram.LinearLayout',
+      type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.Link.create({arrowStyle: 'generalization'});
       }
@@ -420,9 +420,9 @@ CLASS({
   package: 'foam.documentation',
   traits: ['foam.documentation.DocModelFeatureDAOTrait'],
 
-  requires: ['diagram.Block',
-             'diagram.Section',
-             'diagram.Margin',
+  requires: ['foam.graphics.diagram.Block',
+             'foam.graphics.diagram.Section',
+             'foam.graphics.diagram.Margin',
              'foam.documentation.FeatureListDiagram'],
 
   documentation: function() {/*
@@ -525,7 +525,7 @@ CLASS({
   package: 'foam.documentation',
 
   requires: ['foam.documentation.FeatureDiagram',
-             'diagram.SectionGroup'],
+             'foam.graphics.diagram.SectionGroup'],
 
   traits: [ 'foam.patterns.ChildTreeTrait',
             'foam.ui.DestructiveDataViewTrait',
@@ -575,7 +575,7 @@ CLASS({
             'foam.ui.DataViewTrait',
             'foam.documentation.DocDiagramTrait'],
 
-  requires: ['diagram.Section'],
+  requires: ['foam.graphics.diagram.Section'],
 
   documentation: function() {/*
     The base model for feature-specific diagrams. Use PropertyFeatureDiagram,

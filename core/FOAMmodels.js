@@ -54,7 +54,6 @@ var files = [
   [ '../js/node/dao/ModelFileDAO', IN_NODEJS ],
   [ '../js/node/dao/JSModelFileDAO', IN_NODEJS ],
   '../js/foam/ui/Window',
-  'LayoutTraits', // generic, non-view specific, so no predicate
   'value',
   '../js/foam/patterns/ChildTreeTrait', // used in view, included here for backward compat of old apps
   'view',
@@ -70,8 +69,6 @@ var files = [
   'RichTextView',
   'listchoiceview',
   'scroll',
-  'CViewPrimitives',
-  'Diagramming',
   'HTMLParser',
   'mlang',
   'mlang2',
