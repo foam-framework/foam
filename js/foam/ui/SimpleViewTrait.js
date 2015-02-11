@@ -18,13 +18,13 @@
 CLASS({
   name: 'SimpleViewTrait',
   package: 'foam.ui',
-  
+
   documentation: function() {/* For Views that do not use $$DOC{ref:'.data'},
     this trait will still allow cooperation with Views that do. If you
     plan to export or import data, do not use this trait. This trait expects
     to be applied after $$DOC{ref:'foam.patterns.ChildTreeTrait'}.
   */},
-  
+
   properties: [
     {
       name: 'data',
@@ -47,5 +47,5 @@ CLASS({
       */}
     }
   ]
-  
+
 });
