@@ -86,7 +86,7 @@ CLASS({
     OPEN: {
       name: 'OPEN',
       layout: function() {
-        return [ this.parentWidth - this.stripWidth, this.minPanelWidth, this.panelWidth ];
+        return [ this.parentWidth - this.stripWidth, this.minPanelWidth, this.minPanelWidth ];
       },
       onResize: function() {
         if ( this.parentWidth > this.minWidth + this.minPanelWidth )
