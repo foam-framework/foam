@@ -140,8 +140,10 @@ CLASS({
               delegate: this.MergeDAO.create({
                 delegate: this.cachingDAO,
                 mergeStrategy: function(ret, oldValue, newValue) {
-                  newValue.clientVersion =
-                    Math.max(oldValue.clientVersion, newValue.clientVersion);
+                  if ( newValue.clientVersion < oldValue.clientVersion ) {
+                    newValue.labelIds = oldValue.labelIds;
+                    newValue.clientVersion = oldValue.clientVersion;
+                  }
                   ret(newValue);
                 }
               })
