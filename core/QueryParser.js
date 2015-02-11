@@ -171,22 +171,22 @@ var QueryParserFactory = function(model, opt_enableKeyword) {
 
   var fields = [];
 
-  for ( var i = 0 ; i < model.properties.length ; i++ ) {
-    var prop = model.properties[i];
+  for ( var i = 0 ; i < model.properties_.length ; i++ ) {
+    var prop = model.properties_[i];
     fields.push(literal_ic(prop.name, prop));
   }
 
   // Aliases
-  for ( var i = 0 ; i < model.properties.length ; i++ ) {
-    var prop = model.properties[i];
+  for ( var i = 0 ; i < model.properties_.length ; i++ ) {
+    var prop = model.properties_[i];
 
     for ( var j = 0 ; j < prop.aliases.length ; j++ )
       if ( prop.aliases[j] ) fields.push(literal_ic(prop.aliases[j], prop));
   }
 
   // ShortNames
-  for ( var i = 0 ; i < model.properties.length ; i++ ) {
-    var prop = model.properties[i];
+  for ( var i = 0 ; i < model.properties_.length ; i++ ) {
+    var prop = model.properties_[i];
 
     if ( prop.shortName ) fields.push(literal_ic(prop.shortName, prop));
   }

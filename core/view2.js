@@ -1756,8 +1756,8 @@ CLASS({
 
       // TODO: Either make behave like DetailView or else
       // make a mode of DetailView.
-      for ( var i = 0 ; i < model.properties.length ; i++ ) {
-        var prop = model.properties[i];
+      for ( var i = 0 ; i < model.properties_.length ; i++ ) {
+        var prop = model.properties_[i];
 
         if ( prop.hidden ) continue;
 
@@ -1810,8 +1810,8 @@ CLASS({
       out.push(model.help);
       out.push('</div>');
 
-      for ( var i = 0 ; i < model.properties.length ; i++ ) {
-        var prop = model.properties[i];
+      for ( var i = 0 ; i < model.properties_.length ; i++ ) {
+        var prop = model.properties_[i];
 
         if ( prop.hidden ) continue;
 

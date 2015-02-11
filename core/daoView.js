@@ -98,7 +98,7 @@ CLASS({
       var choices = [
         [ { f: function() { return ''; } }, 'none' ]
       ];
-      this.model.properties.orderBy(Property.LABEL).select({put: function(p) {
+      this.model.properties_.orderBy(Property.LABEL).select({put: function(p) {
         choices.push([p, p.label]);
       }});
       this.row.choices = choices;

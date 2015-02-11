@@ -404,8 +404,8 @@ CLASS({
               var newValues = {};
 
               // Create initial values
-              for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
-                var p = this.model_.properties[i];
+              for ( var i = 0 ; i < this.model_.properties_.length ; i++ ) {
+                var p = this.model_.properties_[i];
 
                 if ( LabelArrayProperty.isInstance(p) ) {
                   newValues[p.name] = [];
@@ -748,7 +748,7 @@ CLASS({
 
       this.X.QIssue.getPrototype();
 
-      this.X.QIssue.properties.forEach(function(p) {
+      this.X.QIssue.properties_.forEach(function(p) {
         if ( ! p["tableFormatter"] ) {
           p["tableFormatter"] = function(v) {
             return v || '----';

@@ -227,7 +227,7 @@ var Model = {
       defaultValueFn: function() {
         var id = this.getProperty('id');
         if ( id ) return ['id'];
-        return this.properties.length ? [this.properties[0].name] : [];
+        return this.properties_.length ? [this.properties_[0].name] : [];
       },
       help: 'Properties which make up unique id.',
       documentation: function() { /* An optional list of names of $$DOC{ref:'Property',usePlural:true} from
@@ -354,7 +354,7 @@ var Model = {
       view: 'StringArrayView',
       displayWidth: 70,
       lazyFactory: function() {
-        return this.properties.map(function(o) { return o.name; });
+        return this.properties_.map(function(o) { return o.name; });
       },
       help: 'Properties to be displayed in table view. Defaults to all properties.',
       documentation: function() { /* Indicates the $$DOC{ref:'Property',usePlural:true} to display when viewing a list of instances
@@ -787,6 +787,30 @@ var Model = {
       defaultValue: '',
       help: 'Factory to create the action object for deleting this object',
         documentation: function() { /* Factory to create the action object for deleting this object  */}
+    },
+    {
+      name: 'properties_',
+      transient: true,
+      hidden: true,
+      help: 'Runtime properties of the model.'
+    },
+    {
+      name: 'imports_',
+      transient: true,
+      hidden: true,
+      help: 'Runtime imports of the model.',
+    },
+    {
+      name: 'exports_',
+      transient: true,
+      hidden: true,
+      help: 'Runtime exports of the model.'
+    },
+    {
+      name: 'actions_',
+      transient: true,
+      hidden: true,
+      help: 'Runtime actions of the model.'
     }
   ],
 

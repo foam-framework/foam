@@ -58,8 +58,8 @@ var Visitor = {
   visitDate: function(o) { return o; },
 
   visitObject: function(o) {
-    for ( var key in o.model_.properties ) {
-      var prop = o.model_.properties[key];
+    for ( var key in o.model_.properties_ ) {
+      var prop = o.model_.properties_[key];
 
       if ( prop.name in o.instance_ ) {
         this.visitProperty(o, prop);

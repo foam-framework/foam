@@ -98,16 +98,6 @@ var DOM = {
       }
     }
 
-    function findProperty(name) {
-      for ( var j = 0 ; j < model.properties.length ; j++ ) {
-        var p = model.properties[j];
-
-        if ( p.name.toUpperCase() == name ) return p;
-      }
-
-      return null;
-    }
-
     var obj = model.create(undefined, X);
     obj.fromElement(e);
 

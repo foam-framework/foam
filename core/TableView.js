@@ -199,7 +199,7 @@ CLASS({
         var v = this.EditColumnsView.create({
           model:               this.model,
           properties:          this.properties || this.model.tableProperties,
-          availableProperties: this.model.properties
+          availableProperties: this.model.properties_
         });
 
         v.addPropertyListener('properties', function() {

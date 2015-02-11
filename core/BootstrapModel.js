@@ -160,7 +160,8 @@ var BootstrapModel = {
       cls.model_[m.name] = cls[m.name] = JSONUtil.mapToObj(X, m, Model);
     });
 
-    if ( extendsModel ) this.requires = this.requires.concat(extendsModel.requires);
+// TODO(adamvy): This shouldn't be required, commenting out for now.
+//    if ( extendsModel ) this.requires = this.requires.concat(extendsModel.requires);
     // build requires
     Object_forEach(this.requires, function(i) {
       var imp  = i.split(' as ');
@@ -180,8 +181,7 @@ var BootstrapModel = {
       });
     });
 
-    if ( ! this.properties ) this.properties = [];
-    var props = this.properties;
+    var props = this.properties_ = this.properties.clone() || [];
 
     function findProp(name) {
       for ( var i = 0 ; i < props.length ; i++ ) {
@@ -191,9 +191,11 @@ var BootstrapModel = {
       return -1;
     }
 
-    if ( extendsModel ) this.imports = this.imports.concat(extendsModel.imports);
+    this.imports_ = this.imports;
+    if ( extendsModel ) this.imports_ = this.imports_.concat(extendsModel.imports_);
+
     // build imports as psedo-properties
-    Object_forEach(this.imports, function(i) {
+    Object_forEach(this.imports_, function(i) {
       var imp   = i.split(' as ');
       var key   = imp[0];
       var alias = imp[1] || imp[0];
@@ -231,10 +233,10 @@ var BootstrapModel = {
     }
     this.propertyMap_ = null;
 
-    // Copy parent Model's Property Contants to this Model.
+    // Copy parent Model's Property and Relationship Contants to this Model.
     if ( extendsModel ) {
-      for ( var i = 0 ; i < extendsModel.properties.length ; i++ ) {
-        var p = extendsModel.properties[i];
+      for ( var i = 0 ; i < extendsModel.properties_.length ; i++ ) {
+        var p = extendsModel.properties_[i];
         var name = constantize(p.name);
 
         if ( ! this[name] ) this[name] = p;
@@ -248,18 +250,16 @@ var BootstrapModel = {
     }
 
     // Handle 'exports'
-    if ( extendsModel ) this.exports = this.exports.concat(extendsModel.exports);
+    this.exports_ = this.exports ? this.exports.clone() : [];
+    if ( extendsModel ) this.exports_ = this.exports_.concat(extendsModel.exports_);
 
     // templates
     this.templates && Object_forEach(this.templates, function(t) {
       addMethod(t.name, TemplateUtil.lazyCompile(t));
     });
 
-    // mix-in mixins
-    // Workaround for crbug.com/258522
-    // this.mixins && Object_forEach(this.mixins, function(m) { /* TODO: something */ });
-
-    // add action
+    // add actions
+    this.actions_ = [];
     if ( this.actions ) {
       for ( var i = 0 ; i < this.actions.length ; i++ ) {
         (function(a) {
@@ -267,9 +267,9 @@ var BootstrapModel = {
             var superAction = extendsModel.getAction(a.name);
             if ( superAction ) {
               a = superAction.clone().copyFrom(a);
-              this.actions[i] = a;
             }
           }
+          this.actions_[i] = a;
           addMethod(a.name, function(opt_x) { a.callIfEnabled(opt_x || this.X, this); });
         }.bind(this))(this.actions[i]);
       }
@@ -403,17 +403,17 @@ var BootstrapModel = {
 
     // copy parent model's properties and actions into this model
     if ( extendsModel ) {
-      for ( var i = extendsModel.properties.length-1 ; i >= 0 ; i-- ) {
-        var p = extendsModel.properties[i];
+      for ( var i = extendsModel.properties_.length-1 ; i >= 0 ; i-- ) {
+        var p = extendsModel.properties_[i];
         if ( ! ( this.getProperty && this.getPropertyWithoutCache_(p.name) ) )
-          this.properties.unshift(p);
+          this.properties_.unshift(p);
       }
       this.propertyMap_ = null;
-      this.actions = extendsModel.actions.concat(this.actions);
+      this.actions_ = extendsModel.actions_.concat(this.actions_);
     }
 
     // build primary key getter and setter
-    if ( this.properties.length > 0 && ! cls.__lookupGetter__('id') ) {
+    if ( this.properties_.length > 0 && ! cls.__lookupGetter__('id') ) {
       var primaryKey = this.ids;
 
       if ( primaryKey.length == 1 ) {
@@ -493,8 +493,8 @@ var BootstrapModel = {
   },
 
   getPropertyWithoutCache_: function(name) { /* Internal use only. */
-    for ( var i = 0 ; i < this.properties.length ; i++ ) {
-      var p = this.properties[i];
+    for ( var i = 0 ; i < this.properties_.length ; i++ ) {
+      var p = this.properties_[i];
 
       if ( p.name === name ) return p;
     }
@@ -506,12 +506,12 @@ var BootstrapModel = {
     // NOTE: propertyMap_ is invalidated in a few places
     // when properties[] is updated.
     if ( ! this.propertyMap_ ) {
-      if ( ! this.properties.length ) return undefined;
+      if ( ! this.properties_.length ) return undefined;
 
       var m = {};
 
-      for ( var i = 0 ; i < this.properties.length ; i++ ) {
-        var prop = this.properties[i];
+      for ( var i = 0 ; i < this.properties_.length ; i++ ) {
+        var prop = this.properties_[i];
         m[prop.name] = prop;
       }
 
@@ -522,14 +522,14 @@ var BootstrapModel = {
   },
 
   getAction: function(name) { /* Returns the requested $$DOC{ref:'Action'} of this instance. */
-    for ( var i = 0 ; i < this.actions.length ; i++ )
-      if ( this.actions[i].name === name ) return this.actions[i];
+    for ( var i = 0 ; i < this.actions_.length ; i++ )
+      if ( this.actions_[i].name === name ) return this.actions_[i];
   },
 
   hashCode: function() {
     var string = "";
-    for ( var key in this.properties ) {
-      string += this.properties[key].toString();
+    for ( var key in this.properties_ ) {
+      string += this.properties_[key].toString();
     }
     return string.hashCode();
   },

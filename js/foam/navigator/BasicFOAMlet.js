@@ -45,9 +45,9 @@ CLASS({
             function(model, o, notificationData) {
               if ( notificationData[0] !== 'property' ||
                   notificationData[1] === 'lastModified' ||
-                  ! model || ! model.properties ) return;
+                  ! model || ! model.properties_ ) return;
               var propName = notificationData[1];
-              var propMatch = model.properties.filter(function(propName, prop) {
+              var propMatch = model.properties_.filter(function(propName, prop) {
                 return prop.name == propName;
               }.bind(this, propName))[0];
               if ( ! propMatch || propMatch.hidden ) return;
