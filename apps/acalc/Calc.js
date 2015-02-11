@@ -630,22 +630,11 @@ CLASS({
     .edge {
       background: linear-gradient(to bottom, rgba(240,240,240,1) 0%,
                                              rgba(240,240,240,0) 100%);
-      height: 20px;
+      height: 10px;
       position: absolute;
       top: 0;
       width: 100%;
       z-index: 1;
-    }
-
-    .edge2 {
-      margin-top: -12px;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%,
-                                             rgba(0,0,0,0) 100%);
-      top: 12px;
-      height: 12px;
-      position: relative;
-      width: 100%;
-      z-index: 99;
     }
 
     .calc .buttons {
@@ -745,8 +734,8 @@ CLASS({
         <% X.registerModel(CalcButton, 'ActionButton'); %>
         <div style="position: relative;z-index: 100;">
           <div tabindex="1" style="position: absolute;">
-            <span aria-label="{{{Calc.RAD.label}}}" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="{{{Calc.RAD.label}}}"></span>
-            <span aria-label="{{{Calc.DEG.label}}}" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="{{{Calc.DEG.label}}}">{{{Calc.DEG.label}}}</span>
+            <span aria-label="{{{Calc.RAD.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="{{{Calc.RAD.label}}}"></span>
+            <span aria-label="{{{Calc.DEG.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="{{{Calc.DEG.label}}}">{{{Calc.DEG.label}}}</span>
           </div>
         </div>
 
