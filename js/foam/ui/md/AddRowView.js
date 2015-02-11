@@ -27,7 +27,6 @@ CLASS({
 
   imports: [
     'queryFactory',
-    'rowView',
     'stack'
   ],
 
@@ -71,7 +70,7 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'rowView',
-      required: true
+      defaultValue: 'foam.ui.md.TextFieldView'
     },
     {
       name: 'data'
@@ -81,7 +80,7 @@ CLASS({
       documentation: 'The object currently under consideration.',
       factory: function() {
         this.dao.find(this.data, {
-          put: function(x) { this.softData = x; }.bind(this)
+          put: function(x) { debugger; this.softData = x; }.bind(this)
         });
         return '';
       },
@@ -161,7 +160,9 @@ CLASS({
     {
       name: 'objectToQuery',
       documentation: 'Turns an object from the DAO into a query string.',
-      defaultValue: function(obj) { return obj.id || obj; }
+      factory: function() {
+        return function(obj) { return this.subKey.f(obj); }.bind(this);
+      }
     },
     {
       // TODO: DAO should be pre-limited instead
