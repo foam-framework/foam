@@ -2160,7 +2160,7 @@ CLASS({
       defaultValue: 'View'
     },
     {
-      model_: 'DOMElementProperty',
+      model_: 'foam.core.types.DOMElementProperty',
       name: 'viewContainer'
     }
   ],

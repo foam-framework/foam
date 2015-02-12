@@ -26,7 +26,7 @@ CLASS({
     },
     {
 
-      model_: 'StringEnumProperty',
+      model_: 'foam.core.types.StringEnumProperty',
       name: 'type',
       defaultValue: 'BUG',
       view: 'ChoiceView',
@@ -39,7 +39,7 @@ CLASS({
       ]
     },
     {
-      model_: 'StringEnumProperty',
+      model_: 'foam.core.types.StringEnumProperty',
       name: 'status',
       defaultValue: 'NEW',
       view: 'ChoiceView',
@@ -57,14 +57,14 @@ CLASS({
       ]
     },
     {
-      model_: 'StringEnumProperty',
+      model_: 'foam.core.types.StringEnumProperty',
       name: 'priority',
       defaultValue: 'P2',
       view: 'ChoiceView',
       choices: ['P0', 'P1', 'P2', 'P3', 'P4']
     },
     {
-      model_: 'StringEnumProperty',
+      model_: 'foam.core.types.StringEnumProperty',
       name: 'severity',
       defaultValue: 'S2',
       view: 'ChoiceView',

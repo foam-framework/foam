@@ -33,7 +33,7 @@ CLASS({
          "name": "incomingView"
       },
       {
-         "model_": "StringEnumProperty",
+         "model_": "foam.core.types.StringEnumProperty",
          "name": "direction",
          "defaultValue": "horizontal",
          "choices": [
