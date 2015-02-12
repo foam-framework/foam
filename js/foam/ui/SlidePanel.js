@@ -294,7 +294,7 @@ CLASS({
         <div id="%%id-panel" style="position: absolute; top: 0; left: -1;">
           <% if ( this.side === this.RIGHT ) { %> <div id="%%id-shadow" class="left-shadow"></div> <% } %>
           <%= this.panelView() %>
-          <% if ( this.side === this.LEFT ) { %> <div id="%%id-shadow" class="right-shadow"></div> <% } %>>
+          <% if ( this.side === this.LEFT ) { %> <div id="%%id-shadow" class="right-shadow"></div> <% } %>
         </div>
       </div>
     */}
