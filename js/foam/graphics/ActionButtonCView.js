@@ -236,8 +236,6 @@ CLASS({
 
     paintSelf: function() {
       var c = this.canvas;
-console.log('button paint ', this.action.name);
-debugger;
       this.halo.paint();
 
       if ( this.font ) c.font = this.font;
