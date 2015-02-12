@@ -18,7 +18,7 @@ CLASS({
     'DAOVersion'
   ],
 
-  traits: ['PositionedDOMViewTrait'],
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   exports: [
     'daoVersionDao',
@@ -275,7 +275,7 @@ CLASS({
     'foam.ui.md.AppController',
     'ImageView'
   ],
-  traits: ['PositionedDOMViewTrait'],
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   properties: [
     { name: 'preferredWidth', defaultValue: 304 },

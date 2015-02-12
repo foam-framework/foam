@@ -19,7 +19,7 @@ CLASS({
   name: 'MobileController',
   package: 'com.google.mail',
   description: 'Mobile Gmail',
-  traits: ['PositionedDOMViewTrait'],
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   extendsModel: 'View',
 
@@ -29,7 +29,7 @@ CLASS({
     'BusyStatus',
     'CachingDAO',
     'DetailView',
-    'FloatingView',
+    'foam.ui.layout.FloatingView',
     'GestureManager',
     'IDBDAO',
     'MDAO',
@@ -211,7 +211,7 @@ CLASS({
     },
 
     openComposeView: function(X, email) {
-      var view  = X.FloatingView.create({
+      var view  = X.foam.ui.layout.FloatingView.create({
         view: this.ComposeView.create({
           data: email,
         }, this.controller.X)
@@ -322,7 +322,7 @@ CLASS({
       name: 'compose',
       label: '+',
       action: function() {
-        var view = this.X.FloatingView.create({
+        var view = this.X.foam.ui.layout.FloatingView.create({
           view: this.X.com.google.mail.ComposeView.create({
             data: this.X.foam.lib.email.EMail.create({
               id: 'draft_' + Math.floor(Math.random() * 0xFFFFFFFF).toString(16),

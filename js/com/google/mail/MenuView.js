@@ -20,7 +20,7 @@ CLASS({
   package: 'com.google.mail',
   extendsModel: 'View',
   
-  traits: ['PositionedDOMViewTrait'],
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
   requires: [
     'com.google.mail.MenuLabelCitationView',
     'com.google.mail.FOAMGMailLabel',

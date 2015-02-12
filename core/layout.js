@@ -17,6 +17,7 @@
 
 CLASS({
   name: 'PositionedViewTrait',
+  package: 'foam.ui.layout',
   properties: [
     { model_: 'FloatProperty', name: 'x',               units: 'px', defaultValue: 0 },
     { model_: 'FloatProperty', name: 'y',               units: 'px', defaultValue: 0 },
@@ -30,7 +31,8 @@ CLASS({
 
 CLASS({
   name: 'PositionedDOMViewTrait',
-  traits: ['PositionedViewTrait'],
+  package: 'foam.ui.layout',
+  traits: ['foam.ui.layout.PositionedViewTrait'],
   properties: [
     {
       name: 'tagName',
@@ -93,8 +95,9 @@ CLASS({
 
 CLASS({
   name: 'FloatingView',
+  package: 'foam.ui.layout',
   extendsModel: 'View',
-  traits: ['PositionedDOMViewTrait'],
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
   properties: [
     { name: 'view' },
     { name: 'width',  defaultValue: 300 },
@@ -109,7 +112,8 @@ CLASS({
 
 CLASS({
   name: 'ViewSlider',
-  traits: ['PositionedDOMViewTrait'],
+  package: 'foam.ui.layout',
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
   extendsModel: 'View',
   properties: [
     {
@@ -243,7 +247,8 @@ CLASS({
 
 CLASS({
   name: 'OverlaySlider',
-  traits: ['PositionedDOMViewTrait'],
+  package: 'foam.ui.layout',
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
   extendsModel: 'View',
   properties: [
     {

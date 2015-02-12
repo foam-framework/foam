@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.graphics',
   name: 'PositionedCViewView',
   extendsModel: 'foam.graphics.AbstractCViewView',
-  traits: ['PositionedDOMViewTrait'],
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
   properties: [
     {
       name: 'tagName',

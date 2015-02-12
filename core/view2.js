@@ -3684,7 +3684,7 @@ CLASS({
 CLASS({
   name: 'ActionSheetView',
   extendsModel: 'View',
-  traits: ['PositionedDOMViewTrait'],
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   properties: [
     'actions',
