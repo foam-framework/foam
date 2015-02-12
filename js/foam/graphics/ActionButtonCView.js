@@ -149,9 +149,7 @@ CLASS({
           if ( ! this.iconWidth  ) this.iconWidth  = this.image_.width;
           if ( ! this.iconHeight ) this.iconHeight = this.image_.height;
           if ( this.canvas ) {
-            this.canvas.save();
-            this.paint();
-            this.canvas.restore();
+            this.view.paint();
           }
         }.bind(this);
 
@@ -238,7 +236,8 @@ CLASS({
 
     paintSelf: function() {
       var c = this.canvas;
-
+console.log('button paint ', this.action.name);
+debugger;
       this.halo.paint();
 
       if ( this.font ) c.font = this.font;

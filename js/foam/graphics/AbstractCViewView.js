@@ -49,8 +49,7 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'scalingRatio',
-      preSet: function(_, v) { if ( v < 0 ) return 1; return v; },
-      postSet: function(_, v) { /* console.log('Scaling to: ' , v); */ },
+      preSet: function(_, v) { return v < 0 ? 1 : v ; },
       defaultValue: 1,
       documentation: function() {/*
           If scaling is required to render the canvas at a higher resolution than
@@ -113,10 +112,12 @@ CLASS({
       code: function() {
         if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
         this.canvas.save();
+console.log('scaling: ', this.scalingRatio);
         this.canvas.scale(this.scalingRatio, this.scalingRatio);
         this.cview.erase();
         this.cview.paint();
         this.canvas.restore();
+console.log('restored: ');
       },
       documentation: function() {/*
           Clears the canvas and triggers a repaint of the root $$DOC{ref:'foam.graphics.CView'}
