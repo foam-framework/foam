@@ -24,7 +24,7 @@ CLASS({
   name: 'ModelListController',
 
   requires:['MDAO', 
-            'DAOListView',
+            'foam.ui.DAOListView',
             'foam.ui.md.TextFieldView'],
 
   imports: ['masterModelList as dao'],
@@ -93,26 +93,15 @@ CLASS({
 
 CLASS({
   name: 'ModelDescriptionRowView',
-  extendsModel: 'foam.ui.View',
-
+  
+  traits: ['foam.patterns.ChildTreeTrait',
+           'foam.ui.DataViewTrait',
+           'foam.ui.TemplateSupportTrait',
+           'foam.ui.HTMLViewTrait'], 
+  
   requires: ['SimpleValue'],
 
   properties: [
-    {
-      name: 'data',
-      help: 'The Model to describe',
-      postSet: function() {
-        this.modelRef = this.data.package ?
-                          this.data.package + "." + this.data.name :
-                          this.data.name;
-        var shortPkg = this.data.package;
-        if ( shortPkg.length > 10 ) {
-          shortPkg = "..." + this.data.package.substring(
-                      this.data.package.length-10, this.data.package.length);
-        }
-        this.modelName = (shortPkg ? "["+ shortPkg + "]&nbsp;" : "") + this.data.name;
-      }
-    },
     {
       name: 'modelName',
       help: 'The Model package and name.'
@@ -129,6 +118,19 @@ CLASS({
       this.X.documentationViewParentModel = this.SimpleValue.create();
 
       this.SUPER();
+    },
+    
+    onDataChange: function(old,nu) {
+      this.SUPER(old,nu);
+      this.modelRef = this.data.package ?
+                        this.data.package + "." + this.data.name :
+                        this.data.name;
+      var shortPkg = this.data.package;
+      if ( shortPkg.length > 10 ) {
+        shortPkg = "..." + this.data.package.substring(
+                    this.data.package.length-10, this.data.package.length);
+      }
+      this.modelName = (shortPkg ? "["+ shortPkg + "]&nbsp;" : "") + this.data.name;
     }
   },
   templates: [ // TODO: the data gets set on the modelNameView... screws it up
@@ -141,7 +143,7 @@ CLASS({
 
 CLASS({
   name: 'ControllerView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   methods: {
     initHTML: function() {
@@ -475,7 +477,7 @@ CLASS({
 
 CLASS({
   name: 'DocBrowserView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   methods: {
    initHTML: function() {

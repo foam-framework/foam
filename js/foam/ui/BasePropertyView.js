@@ -75,6 +75,11 @@ CLASS({
         Optional arguments to be used for sub-$$DOC{ref:'View'} creation. args.model_
         in particular specifies the exact $$DOC{ref:'View'} to use.
       */}
+    },
+    {
+      name: 'bound_',
+      model_: 'BooleanProperty',
+      defaultValue: false
     }
   ],
 
@@ -115,15 +120,17 @@ CLASS({
     },
 
     unbindData: function(oldData) {
-      if (! oldData || !this.prop ) return;
+      if ( ! this.bound_ || ! oldData || ! this.prop ) return;
       var pValue = oldData.propertyValue(this.prop.name);
       Events.unlink(pValue, this.childData$);
+      this.bound_ = false;
     },
 
     bindData: function(data) {
-      if (! data || !this.prop) return;
+      if ( this.bound_ || ! data || ! this.prop) return;
       var pValue = data.propertyValue(this.prop.name);
       Events.link(pValue, this.childData$);
+      this.bound_ = true;
     },
 
 
@@ -138,9 +145,8 @@ CLASS({
     construct: function() {
       this.SUPER();
 
-      if ( this.data && ! this.childData ) {
-        this.bindData(this.data);
-      }
+      // if not bound yet and we do have data set, bind it
+      this.bindData(this.data);
 
       if ( this.args && this.args.model_ ) {
         var model = FOAM.lookup(this.args.model_, this.X);

@@ -419,6 +419,7 @@ CLASS({
   package: 'foam.documentation',
   traits: ['foam.patterns.ChildTreeTrait',
            'foam.ui.DestructiveDataViewTrait',
+           'foam.ui.TemplateSupportTrait',
            'foam.documentation.DocModelFeatureDAOTrait'],
 
   requires: ['foam.graphics.diagram.Block',
@@ -493,7 +494,8 @@ CLASS({
       //this.addChild(this.FeatureListDiagram.create({ model: this.X.Property, featureType:'properties' }, this.childX));
     },
 
-    onValueChange_: function() {
+    onDataChange: function(old,nu) {
+      this.SUPER(old,nu);
       if (this.data) {
         this.modelName = this.data.name;
         this.packageName = this.data.package;

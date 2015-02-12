@@ -25,6 +25,8 @@ CLASS({
            'foam.ui.ViewActionsTrait',
            'foam.ui.TemplateSupportTrait'],
   
+  requires: ['Property'],
+           
   exports: [ 'propertyViewProperty' ],
 
   documentation: function() {/*

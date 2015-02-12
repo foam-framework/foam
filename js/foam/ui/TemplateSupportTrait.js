@@ -79,21 +79,21 @@ CLASS({
             v = this.createView(o, args);
           return v;
         }
-      } else { // fallback to check our own properties
-        var o = this.model_.getFeature(name);  
-        if ( ! o ) throw 'Unknown View Name: ' + name;
-  
-        // export self as data
-        args.X = this.X.sub({ data$: this.SimpleReadOnlyValue.create(this) });
-        
-        if ( Action.isInstance(o) )
-          var v = this.createActionView(o, args);
-        else if ( Relationship.isInstance(o) )
-          v = this.createRelationshipView(o, args);
-        else
-          v = this.createView(o, args);
-        return v;
-      }
+      } 
+      // fallback to check our own properties
+      var o = this.model_.getFeature(name);  
+      if ( ! o ) throw 'Unknown View Name: ' + name;
+
+      // export self as data
+      args.X = this.X.sub({ data$: this.SimpleReadOnlyValue.create(this) });
+
+      if ( Action.isInstance(o) )
+        var v = this.createActionView(o, args);
+      else if ( Relationship.isInstance(o) )
+        v = this.createRelationshipView(o, args);
+      else
+        v = this.createView(o, args);
+      return v;
     },
     
     dynamicTag: function(tagName, f) {

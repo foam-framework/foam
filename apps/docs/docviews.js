@@ -176,7 +176,7 @@ CLASS({
 
   templates: [
     function toInnerHTML() {/*
-      <% this.destroy(); debugger;
+      <% this.destroy();
       if (this.data && this.model) { %>
         $$data{model_: 'foam.documentation.FullPageDocView', model: this.model }
   <%  } %>
@@ -1018,25 +1018,22 @@ CLASS({
 
   imports: ['documentViewRef'],
 
-  properties: [
-    {
-      name: 'data',
-      documentation: 'The documentation to display.',
-      required: true,
-      postSet: function() {
-        if (this.data && this.data.body) {
-          this.renderDocSourceHTML = TemplateUtil.lazyCompile(this.data.body);
-        }
-        
-        if (this.data && (!this.model || this.model !== this.data.model_)) {
-          this.model = this.data.model_;
-        }
-        this.childData = this.data;
-        this.updateHTML();
-      }
-    },
-  ],
   methods: {
+    onDataChange: function(old,nu) {
+      this.SUPER(old,nu);
+
+      if (this.data && this.data.body) {
+        this.renderDocSourceHTML = TemplateUtil.lazyCompile(this.data.body);
+      }
+
+      if (this.data && (!this.model || this.model !== this.data.model_)) {
+        this.model = this.data.model_;
+      }
+      this.childData = this.data;
+      this.updateHTML();
+    },
+
+
     renderDocSourceHTML: function() {
       // only update if we have all required data
       if (this.data.body && this.documentViewRef
@@ -1070,10 +1067,14 @@ CLASS({
   name: 'DocRefView',
   package: 'foam.documentation',
 
-  extendsModel: 'foam.ui.View',
   label: 'Documentation Reference View',
   documentation: 'The view of a documentation reference link.',
 
+  traits: ['foam.patterns.ChildTreeTrait',
+           'foam.ui.LeafDataViewTrait',
+           'foam.ui.TemplateSupportTrait',
+           'foam.ui.HTMLViewTrait'],
+  
   requires: ['foam.documentation.DocRef as DocRef',
              'Documentation'],
 
@@ -1148,6 +1149,13 @@ CLASS({
     }
   ],
 
+  methods: {
+    onDataChange: function(old,nu) {
+      this.SUPER(old,nu);
+      this.ref = nu;
+    }
+  },
+  
   templates: [
     // kept tight to avoid HTML adding whitespace around it
     function toInnerHTML()    {/*<%

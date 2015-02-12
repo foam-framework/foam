@@ -80,25 +80,19 @@ CLASS({
   help: "The view of a documentation reference link based on a Model's overrides.",
 
   documentation: function() { /*
-    <p>An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
-    for notes on usage.</p>
-    */},
-
-  properties: [
-    {
-      name: 'data',
-      help: 'Shortcut to set reference by Model name.',
-      postSet: function() {
-        this.ref = this.data.model + "." + this.data.name;
-        this.text = (this.data.fromTrait? "(T)" : "") + this.data.model;
-      },
-      documentation: function() { /*
-        The target reference Model definition. Use this instead of setting
-        $$DOC{ref:'.docRef'}, if you are referencing a $$DOC{ref:'Model'}.
-        */}
-    },
-  ],
+    An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
+    for notes on usage. Set $$DOC{ref:'.data'} to be a DocFeatureInheritanceTracker instance.
+  */},
+  
+  methods: {
+    onDataChange: function(old,nu) {
+      this.SUPER(old,nu);
+      this.ref = this.data.model + "." + this.data.name;
+      this.text = (this.data.fromTrait? "(T)" : "") + this.data.model;
+    }
+  }
 });
+
 CLASS({
   name: 'DocFeatureSubmodelRefView',
   package: 'foam.documentation',
@@ -107,23 +101,16 @@ CLASS({
   help: 'The view of a documentation reference link based on a Sub-Model.',
 
   documentation: function() { /*
-    <p>An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
-    for notes on usage.</p>
+    An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
+    for notes on usage. Set $$DOC{ref:'.data'} to an instance of a model.
     */},
 
-  properties: [
-    {
-      name: 'data',
-      help: 'Shortcut to set reference by Model.',
-      postSet: function() {
-        this.ref = "."+this.data.name;
-      },
-      documentation: function() { /*
-        The target reference Model definition. Use this instead of setting
-        $$DOC{ref:'.docRef'}, if you are referencing a $$DOC{ref:'Model'}.
-        */}
-    },
-  ],
+  methods: {
+    onDataChange: function(old,nu) {
+      this.SUPER(old,nu);
+      this.ref = "."+this.data.name;
+    }
+  }
 });
 
 CLASS({
@@ -134,23 +121,16 @@ CLASS({
   help: 'The view of a documentation reference link based on a Sub-Model.',
 
   documentation: function() { /*
-    <p>An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
-    for notes on usage.</p>
+    An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
+    for notes on usage. Set $$DOC{ref:'.data'} to an instance of a model.
     */},
 
-  properties: [
-    {
-      name: 'data',
-      help: 'Shortcut to set reference by Model.',
-      postSet: function() {
-        this.ref = this.data.id;
-      },
-      documentation: function() { /*
-        The target reference Model definition. Use this instead of setting
-        $$DOC{ref:'.docRef'}, if you are referencing a $$DOC{ref:'Model'}.
-        */}
-    },
-  ],
+  methods: {
+    onDataChange: function(old,nu) {
+      this.SUPER(old,nu);
+      this.ref = this.data.id;
+    }
+  }
 });
 
 
@@ -162,28 +142,22 @@ CLASS({
   help: 'The view of a documentation reference link based on a Model.',
 
   documentation: function() { /*
-    <p>An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
-    for notes on usage.</p>
+    An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
+    for notes on usage. Set $$DOC{ref:'.data'} to a model name.
     */},
 
-  properties: [
-    {
-      name: 'data',
-      help: 'Shortcut to set reference by Model name.',
-      postSet: function() {
-        this.ref = this.data;
-        if (this.docRef.valid) {
-          this.text = this.docRef.resolvedModelChain[0].name;
-        } else {
-          this.text = this.data;
-        }
-      },
-      documentation: function() { /*
-        The target reference Model definition. Use this instead of setting
-        $$DOC{ref:'.docRef'}, if you are referencing a $$DOC{ref:'Model'}.
-        */}
-    },
-  ],
+  methods: {
+    onDataChange: function(old,nu) {
+      this.SUPER(old,nu);
+      this.ref = this.data;
+      if (this.docRef.valid) {
+        this.text = this.docRef.resolvedModelChain[0].name;
+      } else {
+        this.text = "[INVALID]"+this.data;
+      }
+    }
+  }
+
 });
 
 
