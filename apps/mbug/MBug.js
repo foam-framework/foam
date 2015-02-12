@@ -6,6 +6,7 @@ CLASS({
   requires: [
     'foam.ui.md.ResponsiveAppControllerView',
     'foam.ui.md.AppController',
+    'foam.core.dao.SplitDAO',
     'ChangeProjectView',
     'DetailView',
     'GestureManager',
@@ -51,7 +52,7 @@ CLASS({
 
         project.IssueNetworkDAO.batchSize = 25;
 
-        Y.issueDAO = Y.SplitDAO.create({
+        Y.issueDAO = this.SplitDAO.create({
           model: Y.QIssue,
           remote: project.IssueNetworkDAO,
           placeholderFactory: constantFn(
@@ -61,7 +62,7 @@ CLASS({
               summary: 'Loading...',
               starred: false
             }))
-        });
+        }, Y);
 
         Y.issueDAO = Y.KeywordDAO.create({
           delegate: Y.issueDAO

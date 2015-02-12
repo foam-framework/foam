@@ -80,7 +80,6 @@ var files = [
   'dao2',
   'arrayDAO',
   'diff',
-  'SplitDAO',
   'index',
   [ 'StackView', IN_BROWSER ],
   [ 'MementoMgr', IN_BROWSER ],
