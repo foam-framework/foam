@@ -92,7 +92,7 @@ CLASS({
 });
 
 
-GeneratedQIssue.properties_.forEach(function(p) {
+GeneratedQIssue.properties.forEach(function(p) {
   if ( ! p["tableFormatter"] ) {
     p["tableFormatter"] = function(v) {
       return v || '----';
