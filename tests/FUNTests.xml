@@ -2418,12 +2418,12 @@ tada
           });
           CLASS({
             name: 'SimpleView',
-            traits: ['foam.patterns.ChildTreeTrait','foam.ui.SimpleViewTrait'],
+            extendsModel: 'foam.ui.SimpleView',
             package: 'test.dvt'
           });
           CLASS({
             name: 'DataView',
-            traits: ['foam.patterns.ChildTreeTrait','foam.ui.DataViewTrait'],
+            extendsModel: 'foam.ui.DataView',
             package: 'test.dvt',
             methods: {
               onDataChange: function(old,nu) {
@@ -2434,7 +2434,7 @@ tada
           });
           CLASS({
             name: 'DestructiveDataView',
-            traits: ['foam.patterns.ChildTreeTrait','foam.ui.DestructiveDataViewTrait'],
+            extendsModel: 'foam.ui.DestructiveDataView',
             package: 'test.dvt',
             
             methods: {
@@ -2470,7 +2470,7 @@ tada
           });
           CLASS({
             name: 'TransformingDataView',
-            traits: ['foam.patterns.ChildTreeTrait','foam.ui.TransformingDataViewTrait'],
+            extendsModel: 'foam.ui.TransformingDataView',
             package: 'test.dvt',
 
             methods: {
