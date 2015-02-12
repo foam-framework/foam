@@ -2,15 +2,15 @@ export BUILD_DIR=~/Downloads/mbug
 rm -rf $BUILD_DIR
 cp -r . $BUILD_DIR
 cp ../../core/foam.css $BUILD_DIR
+
+# TODO(markdittmer): This includes lots of stuff we don't actually need.
+LIB_SRCS=`find ../../js -type f | grep '\.js$' | grep -v 'foam\/ui\/Window\.js' | grep -v 'foam\/patterns\/ChildTreeTrait\.js'`
+
 cat \
   ../../core/stdlib.js \
   ../../core/WeakMap.js \
-  ../../core/io.js \
   ../../core/writer.js \
   ../../core/socket.js \
-  ../../core/base64.js \
-  ../../core/encodings.js \
-  ../../core/utf8.js \
   ../../core/async.js \
   ../../core/parse.js \
   ../../core/event.js \
@@ -19,6 +19,7 @@ cat \
   ../../core/context.js \
   ../../core/JSONParser.js \
   ../../core/TemplateUtil.js \
+  ../../core/ChromeEval.js \
   ../../core/FOAM.js \
   ../../core/FObject.js \
   ../../core/BootstrapModel.js \
@@ -29,26 +30,29 @@ cat \
   ../../core/mm5Misc.js \
   ../../js/foam/ui/Window.js \
   ../../core/value.js \
+  ../../js/foam/patterns/ChildTreeTrait.js \
   ../../core/view.js \
+  ../../core/view2.js \
   ../../core/layout.js \
   ../../core/daoView.js \
   ../../core/ChoiceView.js \
   ../../core/DetailView.js \
   ../../core/TableView.js \
   ../../core/cview.js \
-  ../../core/cview2.js \
   ../../core/StackView.js \
   ../../core/RichTextView.js \
   ../../core/listchoiceview.js \
   ../../core/scroll.js \
   ../../core/HTMLParser.js \
   ../../core/mlang.js \
+  ../../core/mlang2.js \
   ../../core/QueryParser.js \
   ../../core/search.js \
   ../../core/oam.js \
   ../../core/visitor.js \
   ../../core/messaging.js \
   ../../core/dao.js \
+  ../../core/dao2.js \
   ../../core/KeywordDAO.js \
   ../../core/arrayDAO.js \
   ../../core/ClientDAO.js \
@@ -68,13 +72,9 @@ cat \
   ../../core/busy.js \
   ../../core/ChromeApp.js \
   ../../core/SyncManager.js \
-  ../../lib/bookmarks/bookmark.js \
-  ../../js/foam/ui/md/AppController.js \
-  ../../js/foam/ui/md/SharedStyles.js \
-  ../../lib/mdui/view.js \
-  ../../lib/mdui/AutocompleteListView.js \
-  ../../lib/mdui/DetailView.js \
-  ../../core/CORE.js \
+  ../../core/AbstractDAOView.js \
+  ../../core/DAOListView.js \
+  $LIB_SRCS \
   ../quickcompose/google-analytics-bundle.js \
   > "$BUILD_DIR/foam.js"
 
