@@ -89,6 +89,5 @@ var files = [
   'models',
   'touch',
   [ 'glang', IN_BROWSER ],
-  'oauth',
-  [ 'turntable', IN_BROWSER ]
+  'oauth'
 ];
