@@ -39,12 +39,12 @@ CLASS({
         } else {
           return undefined;
         }
-      }
+      },
       documentation: function() {/* The postSet supplied here will
         propagate the change to children. Those children are responsible
         for either passing on the change or exporting to their contexts
         if they actually handle data.
-      */},
+      */}
     }
   ]
   
