@@ -506,7 +506,9 @@ var BootstrapModel = {
     // NOTE: propertyMap_ is invalidated in a few places
     // when properties[] is updated.
     if ( ! this.propertyMap_ ) {
-      if ( ! this.properties_.length ) return undefined;
+      if ( ! this.properties_ ) {
+        this.getPrototype();
+      }
 
       var m = {};
 
