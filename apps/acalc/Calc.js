@@ -359,7 +359,7 @@ CLASS({
     },
     {
       name: 'backspace',
-      label: '←',
+      label: '⌫',
       speechLabel: 'backspace',
       translationHint: 'delete one input character',
       keyboardShortcuts: [ 8 /* backspace */ ],
