@@ -359,7 +359,8 @@ CLASS({
     },
     {
       name: 'backspace',
-      label: 'backspace',
+      label: '←',
+      speechLabel: 'backspace',
       translationHint: 'delete one input character',
       keyboardShortcuts: [ 8 /* backspace */ ],
       action: function() {
@@ -854,10 +855,10 @@ CLASS({
           <div id="%%id" class="buttons button-row secondaryButtons">
             <div class="button-column" style="flex-grow: 1;">
               <div class="button-row">
-                $$fetch{tabIndex: 311}
-                $$store{tabIndex: 312}
-                $$round{tabIndex: 313}
-                $$rand{tabIndex: 314}
+                $$backspace{tabIndex: 311}
+                $$round{tabIndex: 312}
+                $$fetch{tabIndex: 313}
+                $$store{tabIndex: 314}
               </div>
               <div class="button-row">
                 $$e{tabIndex: 321}
