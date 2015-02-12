@@ -251,8 +251,9 @@ CLASS({
   ],
 
   constants: {
-    YES: 2,
-    MAYBE: 1,
+    YES: 3,
+    MAYBE: 2,
+    WAIT: 1,
     NO: 0
   },
 
@@ -580,7 +581,7 @@ CLASS({
         if ( p.done ) doneCount++;
       }
       if ( response === this.NO ) return response;
-      return doneCount === keys.length ? this.YES : this.MAYBE;
+      return doneCount === keys.length ? this.YES : this.WAIT;
     },
 
     attach: function(map, handlers) {
@@ -588,6 +589,7 @@ CLASS({
       // Just sent the tapClick(numberOfPoints) message to the handlers.
       if  ( ! handlers || ! handlers.length ) return;
       var points = Object.keys(map).length;
+      console.log('TapGesture: invoke handlers');
       handlers.forEach(function(h) {
         h && h.tapClick && h.tapClick(points);
       });
@@ -934,7 +936,7 @@ CLASS({
       // TODO: Handle multiple matching gestures.
       Object.keys(this.active).forEach(function(name) {
         var answer = self.gestures[name].recognize(self.points);
-        if ( answer >= self.Gesture.MAYBE ) {
+        if ( answer >= self.Gesture.WAIT ) {
           matches.push([name, answer]);
         }
       });
@@ -947,20 +949,32 @@ CLASS({
       // - If a single gesture returned MAYBE, it becomes the only match.
       // - If more than one gesture returned MAYBE, and none returned YES, then
       //   there's no recognition yet, and we do nothing until one recognizes.
-      var lastYes = -1;
-      for ( var i = 0 ; i < matches.length ; i++ ) {
-        if ( matches[i][1] === this.Gesture.YES ) lastYes = i;
-      }
+      var last = {
+        'YES': -1,
+        'MAYBE': -1
+      };
+      Object_forEach(last, function(_, key) {
+        for ( var i = 0 ; i < matches.length ; i++ ) {
+          if ( matches[i][1] === this.Gesture[key] ) last[key] = i;
+        }
+      });
 
       // If there were no YES answers, then all the matches are MAYBEs.
       // If there are more than one MAYBE, return. Otherwise, we have our
       // winner.
       var match;
-      if ( lastYes < 0 ) {
-        if ( matches.length > 1 ) return; // No winner, so wait for one.
-        match = matches[0][0];
+      if ( last.YES < 0 ) {
+        // If we have more than one WAIT or MAYBE, or
+        // we have no MAYBEs, then there is no winner yet.
+        if ( matches.length > 1 ||
+            last.MAYBE < 0 ) {
+              console.log('Multiple matches or no maybes');
+              return;
+            }
+
+        match = matches[last.MAYBE][0];
       } else {
-        match = matches[lastYes][0];
+        match = matches[last.YES][0];
       }
 
       // Filter all the handlers to make sure none is a child of any already existing.
@@ -1159,4 +1173,3 @@ CLASS({
     }
   ]
 });
-
