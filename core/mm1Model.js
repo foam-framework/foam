@@ -109,7 +109,8 @@ var Model = {
 
   properties: [
     {
-      name: 'id'
+      name: 'id',
+      transient: true
     },
     {
       name:  'sourcePath',
