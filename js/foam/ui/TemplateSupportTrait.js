@@ -22,7 +22,7 @@ CLASS({
   requires: ['foam.ui.PropertyView', 'ActionButton', 'SimpleReadOnlyValue'],
   
   documentation: function() {/* For Views that need to support templates
-    to create children through $$ notation.
+    to create children through $$DOC{ref:'.',text:'$$'} notation.
   */},
 
   methods: {
