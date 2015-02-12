@@ -36,6 +36,7 @@ CLASS({
     'OAuth2Redirect as EasyOAuth2',
     'TouchManager',
     'XHR',
+    'StackView',
     'com.google.mail.ComposeView',
     'com.google.mail.EMailCitationView',
     'com.google.mail.EMailDAO',
