@@ -65,6 +65,9 @@ CLASS({
       } else {
         Events.follow(this.data$, this.softData$);
       }
+    },
+    focus: function() {
+      this.$input.focus();
     }
   },
   templates: [

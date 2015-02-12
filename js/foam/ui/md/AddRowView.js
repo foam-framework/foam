@@ -110,7 +110,8 @@ CLASS({
       }
     },
     {
-      name: 'selected'
+      name: 'selected',
+      defaultValue: false
     },
     {
       name: 'subType',
@@ -243,6 +244,7 @@ CLASS({
       <div class="arvBody" id="%%bodyId">
         $$filteredDAO{ rowView: this.rowView }
       </div>
+      <% this.addInitializer(function() { self.qView.focus(); }); %>
     */}
   ],
 
