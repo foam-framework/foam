@@ -52,7 +52,7 @@ var StringProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'TextFieldView'
+      defaultValue: 'foam.ui.TextFieldView'
     },
     {
       name: 'pattern',
@@ -532,7 +532,7 @@ var ReferenceProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'TextFieldView'
+      defaultValue: 'foam.ui.TextFieldView'
 // TODO: Uncomment when all usages of ReferenceProperty/ReferenceArrayProperty fixed.
 //      defaultValue: 'KeyView'
     },

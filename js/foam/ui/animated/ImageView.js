@@ -19,13 +19,10 @@ CLASS({
   package: 'foam.ui.animated',
   name: 'ImageView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.DataView',
+  traits: ['foam.ui.HTMLViewTrait'],
 
   properties: [
-    {
-      name: 'data',
-      postSet: function() { this.onDataChange(); }
-    },
     {
       name: 'displayWidth',
       postSet: function(_, newValue) {
@@ -48,11 +45,14 @@ CLASS({
     }
   ],
 
-  listeners: [
+  methods: [
     {
       name: 'onDataChange',
-      code: function() {
+      code: function(old,nu) {
+        this.SUPER(old,nu);
+console.log("ImageView data ", nu);        
         if ( ! this.$ ) return;
+console.log("    Good!");        
         var $ = this.$;
         var height = $.querySelector('img').height;
         var newImage = '<img ' + this.cssClassAttr() + ' src="' + this.data + '" style="position: absolute;transition:top .4s;top:' + height + '">';

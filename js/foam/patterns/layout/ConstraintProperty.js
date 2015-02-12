@@ -27,7 +27,7 @@ CLASS({
   properties: [
     {
       name: 'view',
-      defaultValue: 'TextFieldView'
+      defaultValue: 'foam.ui.TextFieldView'
     },
     {
       name: 'install',

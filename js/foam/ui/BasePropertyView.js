@@ -21,6 +21,8 @@ CLASS({
   package: 'foam.ui',
   extendsModel: 'foam.ui.TransformingDataView',
   
+  requires: ['foam.ui.TextFieldView'],
+  
   documentation: function() {/*
     Apply this trait to a $$DOC{ref:'BaseView'} (such as $$DOC{ref:'HTMLView'}).</p>
     <p>Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one
@@ -104,13 +106,21 @@ CLASS({
     createViewFromProperty: function(prop) {
       /* Helper to determine the $$DOC{ref:'View'} to use. */
       var viewName = this.innerView || prop.view
-      if ( ! viewName ) return this.X.foam.ui.TextFieldView.create(prop, this.X);
+      if ( ! viewName ) return this.TextFieldView.create(prop, this.X);
       if ( typeof viewName === 'string' ) return FOAM.lookup(viewName, this.X).create(prop, this.X);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
-      if ( viewName.model_ ) { var v = viewName.model_.create(viewName, this.X).copyFrom(prop); v.id = this.nextID(); return v; }
+      if ( viewName.model_ ) { 
+        var v = viewName.model_.create(viewName, this.X);
+        var vId = v.id;
+        v.copyFrom(prop);
+        v.id = vId;
+        return v; 
+      }
       if ( viewName.factory_ ) {
-        var v = FOAM.lookup(viewName.factory_, this.X).create(viewName, this.X).copyFrom(prop);
-        v.id = this.nextID();
+        var v = FOAM.lookup(viewName.factory_, this.X).create(viewName, this.X);
+        var vId = v.id;
+        v.copyFrom(prop);
+        v.id = vId;
         return v;
       }
       if ( typeof viewName === 'function' ) return viewName(prop, this);

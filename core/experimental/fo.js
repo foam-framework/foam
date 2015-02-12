@@ -900,7 +900,7 @@ var featureDAO = [
   }],
   ['Property', 'Property', {
     name: 'view',
-    defaultValue: 'TextFieldView'
+    defaultValue: 'foam.ui.TextFieldView'
   }],
   ['Property', 'Property', {
     name: 'detailViewPreRow',
@@ -1134,7 +1134,7 @@ var featureDAO = [
   ['ReferenceProperty', 'StringProperty', {
     name: 'view',
     // TODO: should be 'KeyView'
-    defaultValue: 'TextFieldView'
+    defaultValue: 'foam.ui.TextFieldView'
   }],
 
   [null, 'Model', {

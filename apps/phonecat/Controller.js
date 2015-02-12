@@ -1,5 +1,7 @@
 CLASS({
-  requires: ['PhoneCitationView', 'PhoneDetailView'],
+  requires: ['PhoneCitationView', 
+             'PhoneDetailView',
+             'foam.ui.DAOListView'],
 
   name: 'Controller',
   properties: [
@@ -16,7 +18,7 @@ CLASS({
     {
       name: 'filteredDAO',
       model_: 'DAOProperty',
-      view: { factory_: 'DAOListView', rowView: 'PhoneCitationView', mode: 'read-only' },
+      view: { factory_: 'foam.ui.DAOListView', rowView: 'PhoneCitationView', mode: 'read-only' },
       dynamicValue: function() {
         return this.dao.orderBy(this.order).where(CONTAINS_IC(SEQ(Phone.NAME, Phone.SNIPPET), this.search));
       }
@@ -25,7 +27,7 @@ CLASS({
 });
 
 
-CLASS({ name: 'PhoneCitationView', extendsModel: 'DetailView', templates: [
+CLASS({ name: 'PhoneCitationView', extendsModel: 'foam.ui.DetailView', templates: [
   function toHTML() {/*
       <li class="thumbnail">
         <a href="#{{this.data.id}}" class="thumb">$$imageUrl</a>
@@ -39,14 +41,14 @@ CLASS({ name: 'PhoneCitationView', extendsModel: 'DetailView', templates: [
 CLASS({
   name: 'PhoneDetailView',
   requires: [ 'foam.ui.animated.ImageView' ],
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   templates: [ { name: 'toHTML' } ]
 });
 
 
 CLASS({
   name: 'ControllerView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   templates: [
     function toHTML() {/*
       <% if ( window.location.hash ) {
