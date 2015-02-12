@@ -90,6 +90,5 @@ var files = [
   'touch',
   [ 'glang', IN_BROWSER ],
   'oauth',
-  'busy',
   [ 'turntable', IN_BROWSER ]
 ];
