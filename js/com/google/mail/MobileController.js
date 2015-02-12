@@ -25,8 +25,8 @@ CLASS({
 
   requires: [
     'foam.ui.md.AppController',
-    'BusyFlagTracker',
-    'BusyStatus',
+    'foam.util.busy.BusyFlagTracker',
+    'foam.util.busy.BusyStatus',
     'CachingDAO',
     'DetailView',
     'foam.ui.layout.FloatingView',

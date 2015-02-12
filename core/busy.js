@@ -17,6 +17,7 @@
 
 CLASS({
   name: 'BusyStatus',
+  package: 'foam.util.busy',
   documentation: '<p>Sets an output property to true when any "process" is ' +
       'active. Any code that needs to indicate a busy state can call ' +
       '$$DOC{ref:".start"}, which returns a completion function. When the ' +
@@ -135,6 +136,7 @@ CLASS({
 
 CLASS({
   name: 'BusyFlagTracker',
+  package: 'foam.util.busy',
   properties: [
     'busyStatus',
     {
