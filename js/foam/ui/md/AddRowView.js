@@ -79,10 +79,16 @@ CLASS({
       name: 'softData',
       documentation: 'The object currently under consideration.',
       factory: function() {
+        var found = false;
         this.dao.find(this.data, {
-          put: function(x) { debugger; this.softData = x; }.bind(this)
+          put: function(x) {
+            found = true;
+            this.softData = x;
+          }.bind(this)
         });
-        return '';
+        // Synchronous DAOs will already have called put, and I don't want to
+        // overwrite the value.
+        return found ? this.softData : '';
       },
       postSet: function(old, nu) {
         if (nu) {
@@ -132,7 +138,6 @@ CLASS({
     {
       name: 'wrappedDAO',
       factory: function() {
-        console.log('hide on single', this.hideListOnSingle);
         return this.hideListOnSingle ?
             this.SingleEntryHidingDAO.create({ delegate: this.dao }) : this.dao;
       }
@@ -268,7 +273,8 @@ CLASS({
       keyboardShortcuts: [ 13 /* enter */ ],
       isAvailable: function() { return this.selected; },
       action: function() {
-        this.data = this.softData;
+        var key = this.subKey.f(this.softData);
+        this.data = key;
         this.doClose();
       }
     }
