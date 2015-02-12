@@ -100,7 +100,7 @@ CLASS({
     createViewFromProperty: function(prop) {
       /* Helper to determine the $$DOC{ref:'View'} to use. */
       var viewName = this.innerView || prop.view
-      if ( ! viewName ) return this.X.foam.views.TextFieldView.create(prop, this.X);
+      if ( ! viewName ) return this.X.foam.ui.TextFieldView.create(prop, this.X);
       if ( typeof viewName === 'string' ) return FOAM.lookup(viewName, this.X).create(prop, this.X);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
       if ( viewName.model_ ) { var v = viewName.model_.create(viewName, this.X).copyFrom(prop); v.id = this.nextID(); return v; }

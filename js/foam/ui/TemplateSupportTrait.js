@@ -19,7 +19,7 @@ CLASS({
   name: 'TemplateSupportTrait',
   package: 'foam.ui',
   
-  requires: ['foam.ui.PropertyView', 'ActionButton'],
+  requires: ['foam.ui.PropertyView', 'ActionButton', 'SimpleReadOnlyValue'],
   
   documentation: function() {/* For Views that need to support templates
     to create children through $$ notation.
@@ -30,7 +30,7 @@ CLASS({
     createView: function(prop, opt_args) {
       /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.X;
-      var v = X.PropertyView.create({prop: prop, args: opt_args}, X);
+      var v = this.PropertyView.create({prop: prop, args: opt_args}, X);
       this.addChild(v);
       return v;
     },
@@ -42,7 +42,7 @@ CLASS({
       var modelName = opt_args && opt_args.model_ ?
         opt_args.model_ :
         'ActionButton'  ;
-      var v = X[modelName].create({action: action}).copyFrom(opt_args);
+      var v = FOAM.lookup(modelName, X).create({action: action}).copyFrom(opt_args);
 
       this[action.name + 'View'] = v;
 
@@ -51,7 +51,7 @@ CLASS({
 
     createRelationshipView: function(r, opt_args) {
       var X = ( opt_args && opt_args.X ) || this.X;
-      return X.RelationshipView.create({
+      return X.foam.ui.RelationshipView.create({
         relationship: r,
         args: opt_args
       });
@@ -66,8 +66,8 @@ CLASS({
       var X = this.childX || this.X;
       // Look for the property on our data first
       var myData = this.childDataValue || this.data$;
-      if ( myData && myData.model_ ) {
-        var o = myData.model_.getFeature(name);
+      if ( myData && myData.value && myData.value.model_ ) {
+        var o = myData.value.model_.getFeature(name);
         if ( o ) {
           args.X = X.sub({ data$: myData });
           var v;

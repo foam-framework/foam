@@ -21,6 +21,8 @@ CLASS({
   package: 'foam.ui',
   extendsModel: 'foam.ui.DetailView',
 
+  documentation: function() {/* TODO: foam.ui.DetailView has some trouble requiring this,
+    perhaps due to this extending it... */},
   templates: [
     function toHTML() {/*
       <%

@@ -18,7 +18,7 @@
 CLASS({
   name: 'DocView',
   package: 'foam.documentation',
-  extendsModel: 'foam.views.DetailView',
+  extendsModel: 'foam.ui.DetailView',
   label: 'Documentation View Base',
   documentation: 'Base Model for documentation views.',
 
@@ -101,7 +101,7 @@ CLASS({
 CLASS({
   name: 'TextualDAOListView',
   package: 'foam.documentation',
-  extendsModel: 'foam.views.DAOListView',
+  extendsModel: 'foam.ui.DAOListView',
     
   methods: {    
     // Template method
@@ -146,31 +146,37 @@ CLASS({
     DocumentationBook, or other thing.
   */},
 
-  properties: [
-    {
-      name: 'data',
-      documentation: function() {/*
-        Handles a model change, which requires that the child views be torn down.
-        If the data.model_ remains the same, the new data is simply propagated to
-        the existing children.
-      */},
-      postSet: function(old, nu) {
-        // destroy children
-        this.destroy();
-        // propagate data change (nowhere)
-        this.model = nu.model_;
-        this.childData = nu;
-        // rebuild children with new data
-        this.construct();
+//   properties: [
+//     {
+//       name: 'data',
+//       documentation: function() {/*
+//         Handles a model change, which requires that the child views be torn down.
+//         If the data.model_ remains the same, the new data is simply propagated to
+//         the existing children.
+//       */},
+//       postSet: function(old, nu) {
+//         // destroy children
+//         this.destroy();
+//         // propagate data change (nowhere)
+//         this.model = nu.model_;
+//         this.childData = nu;
+//         // rebuild children with new data
+//         this.construct();
 
-        this.onValueChange_(); // sub-classes may handle to change as well
-      }
-    }
-  ],
+//         this.onValueChange_(); // sub-classes may handle to change as well
+//       }
+//     }
+//   ],
   
+  methods: {
+    shouldDestroy: function(old,nu) {
+      return true;
+    }
+  },
+
   templates: [
     function toInnerHTML() {/*
-      <% this.destroy();
+      <% this.destroy(); debugger;
       if (this.data && this.model) { %>
         $$data{model_: 'foam.documentation.FullPageDocView', model: this.model }
   <%  } %>
@@ -852,7 +858,7 @@ CLASS({
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.FullPageDocView',
 
-  requires: ['foam.views.DAOListView',
+  requires: ['foam.ui.DAOListView',
              'foam.documentation.SimpleRowDocView'],
 
   documentation: "A full-page documentation view for $$DOC{ref:'Interface'} instances.",
@@ -865,7 +871,7 @@ CLASS({
         $$data{ model_: 'foam.documentation.SummaryDocView', model: this.data.model_ }
         <div class="members">
           <p class="feature-type-heading">Methods:</p>
-          <div class="memberList">$$methods{ model_: 'foam.views.DAOListView', rowView: 'foam.documentation.SimpleRowDocView' }</div>
+          <div class="memberList">$$methods{ model_: 'foam.ui.DAOListView', rowView: 'foam.documentation.SimpleRowDocView' }</div>
         </div>
 <%    } %>
     */}
@@ -1064,7 +1070,7 @@ CLASS({
   name: 'DocRefView',
   package: 'foam.documentation',
 
-  extendsModel: 'foam.views.View',
+  extendsModel: 'foam.ui.View',
   label: 'Documentation Reference View',
   documentation: 'The view of a documentation reference link.',
 
@@ -1567,8 +1573,8 @@ CLASS({
   extendsModel: 'foam.documentation.DocView',
   documentation: 'Displays the HTML documentation of the given feature list.',
 
-  requires: [ 'foam.views.DAOListView',
-              'foam.views.CollapsibleView' ],
+  requires: [ 'foam.ui.DAOListView',
+              'foam.ui.CollapsibleView' ],
 
   traits: ['foam.documentation.FeatureListLoaderTrait'],
 
@@ -1587,7 +1593,7 @@ CLASS({
     <%    } else {
             if (this.hasFeatures) { %>
               <p class="feature-type-heading"><%=this.model.plural%>:</p>
-              <div class="memberList">$$selfFeaturesDAO{ model_: 'foam.views.DAOListView', rowView: 'foam.documentation.RowDocView', model: this.model }</div>
+              <div class="memberList">$$selfFeaturesDAO{ model_: 'foam.ui.DAOListView', rowView: 'foam.documentation.RowDocView', model: this.model }</div>
       <%    }
             if (this.hasInheritedFeatures) { %>
               <p class="feature-type-heading">Inherited <%=this.model.plural%>:</p>
@@ -1595,7 +1601,7 @@ CLASS({
               var fullView = this.DAOListView.create({ data$: this.inheritedFeaturesDAO$, rowView: 'foam.documentation.RowDocView', model: this.model });
               var collapsedView = this.DocFeatureCollapsedView.create({data$: this.inheritedFeaturesDAO$});
               %>
-              <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'foam.views.CollapsibleView', collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
+              <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'foam.ui.CollapsibleView', collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
       <%    } %>
     <%    } %>
     */}

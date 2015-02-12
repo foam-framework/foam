@@ -93,7 +93,7 @@ CLASS({
 
 CLASS({
   name: 'ModelDescriptionRowView',
-  extendsModel: 'foam.views.View',
+  extendsModel: 'foam.ui.View',
 
   requires: ['SimpleValue'],
 

@@ -25,10 +25,10 @@ CLASS({
            'foam.ui.ViewActionsTrait',
            'foam.ui.TemplateSupportTrait'],
   
-  requires: [ 'Property', 'foam.ui.RelationshipsView' ],
+  requires: [ 'Property'],//, 'foam.ui.RelationshipsView' ],
   exports: [ 'propertyViewProperty' ],
 
-  documentation:function() {/*
+  documentation: function() {/*
     When a default view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'DetailView'}
     is the place to start. Either using $$DOC{ref:'DetailView'} directly, implementing
     a .toDetailHTML() $$DOC{ref:'Method'} in your model, or extending

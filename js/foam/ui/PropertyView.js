@@ -32,7 +32,7 @@ CLASS({
 
 CLASS({
   name: 'HTMLPropertyViewTrait',
-  package: 'foam.views',
+  package: 'foam.ui',
   
   methods: {
     toHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ return this.view.toHTML(); },

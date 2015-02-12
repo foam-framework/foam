@@ -416,9 +416,10 @@ CLASS({
 
 CLASS({
   name: 'ModelDocDiagram',
-  extendsModel: 'foam.views.BaseDetailView',
   package: 'foam.documentation',
-  traits: ['foam.documentation.DocModelFeatureDAOTrait'],
+  traits: ['foam.patterns.ChildTreeTrait',
+           'foam.ui.DestructiveDataViewTrait',
+           'foam.documentation.DocModelFeatureDAOTrait'],
 
   requires: ['foam.graphics.diagram.Block',
              'foam.graphics.diagram.Section',
