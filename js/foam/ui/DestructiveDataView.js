@@ -16,8 +16,9 @@
  */
 
 CLASS({
-  name: 'DestructiveDataViewTrait',
+  name: 'DestructiveDataView',
   package: 'foam.ui',
+  extendsModel: 'foam.patterns.ChildTreeTrait',
   
   requires: ['SimpleValue'],
   

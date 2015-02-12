@@ -16,13 +16,13 @@
  */
 
 CLASS({
-  name: 'TransformingDataViewTrait',
+  name: 'DataView',
   package: 'foam.ui',
-  
+  extendsModel: 'foam.patterns.ChildTreeTrait',
+
   documentation: function() {/* For Views that use $$DOC{ref:'.data'},
     this trait will pseudo-import the data$ reference from the context,
-    or allow setting of the $$DOC{ref:'.data'} property directly. Transformation
-    steps are applied when the import data or child data changes.
+    or allow setting of the $$DOC{ref:'.data'} property directly.
   */},
 
   imports: ['data$ as dataImport$'],
@@ -34,7 +34,7 @@ CLASS({
       documentation: function() {/* Handles the incoming data from the import
         context, and may be ignored if data is directly set. */},
       postSet: function(old, nu) {
-        if ( this.isImportEnabled_ && ! equals(this.data, nu) ) {
+        if ( this.isImportEnabled_ && this.data !== nu ) {
           this.isContextChange_ = true;
           this.data = nu;
           this.isContextChange_ = false;
@@ -48,7 +48,7 @@ CLASS({
         data through the context. Override $$DOC{ref:'.onDataChange'}
         instead of using a postSet here. */},
       postSet: function(old, nu) {       
-        if ( ! this.isInternalSetter_ ) this.onDataChange(old, nu);
+        this.onDataChange(old, nu);
       }
     },
     {
@@ -57,9 +57,9 @@ CLASS({
         from data as a way to detect whether a change is local or from child
         context changes. */},
       postSet: function(old, nu) {
-        if ( ! this.isInternalSetter_ && ! equals(this.data, nu) ) {
+        if ( this.data !== nu ) {
           this.isContextChange_ = true;
-          this.xformFromChild(old, nu);
+          this.data = nu;
           this.isContextChange_ = false;
         }
       }      
@@ -76,15 +76,7 @@ CLASS({
       name: 'isImportEnabled_',
       defaultValue: true,
       hidden: true
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'isInternalSetter_',
-      defaultValue: false,
-      transient: true,
-      hidden: true
-    },
-
+    }
     
   ],
   
@@ -92,28 +84,12 @@ CLASS({
     onDataChange: function(old, nu) { /* React to a change to $$DOC{ref:'.data'}.
       Don't forget to call <code>this.SUPER(old,nu)</code> in your implementation. */
       this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange_;
-      if ( this.isImportEnabled_ && ! equals(this.dataImport, nu) ) {
+      if ( this.isImportEnabled_ && this.dataImport !== nu ) {
         this.dataImport = nu;
       }
-      this.xformToChild(old, nu);
-    },
-    xformToChild: function(oldData, nuData) {
-      /* Override to set childData given nuData */
-      this.internalSetChildData_(nuData);
-    },
-    xformFromChild: function(oldChildData, nuChildData) {
-      /* Override to set data given nuChildData */
-      this.internalSetData_(nuChildData);      
-    },
-    internalSetData_: function(nu) {
-      this.isInternalSetter_ = true;
-      this.data = nu;
-      this.isInternalSetter_ = false;
-    },
-    internalSetChildData_: function(nu) {
-      this.isInternalSetter_ = true;
-      this.childData = nu;
-      this.isInternalSetter_ = false;      
+      if ( this.childData !== nu ) {
+        this.childData = nu;
+      }
     }
   }
   

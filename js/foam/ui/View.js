@@ -19,9 +19,8 @@ CLASS({
   name: 'View',
   package: 'foam.ui',
 
-  traits: ['foam.patterns.ChildTreeTrait',
-           'foam.ui.SimpleViewTrait',
-           'foam.ui.HTMLViewTrait',
+  extendsModel: 'foam.ui.SimpleView',
+  traits: ['foam.ui.HTMLViewTrait',
            'foam.ui.ViewActionsTrait',
            'foam.ui.TemplateSupportTrait'],
   

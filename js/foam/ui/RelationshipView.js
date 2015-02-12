@@ -19,9 +19,8 @@
 CLASS({
   name: 'RelationshipView',
   package: 'foam.ui',
-  traits: ['foam.patterns.ChildTreeTrait',
-           'foam.ui.DataViewTrait',
-           'foam.ui.HTMLViewTrait',
+  extendsModel: 'foam.ui.DataView',
+  traits: ['foam.ui.HTMLViewTrait',
            'foam.ui.TemplateSupportTrait'],
 
   properties: [

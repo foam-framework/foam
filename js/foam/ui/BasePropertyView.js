@@ -19,8 +19,7 @@
 CLASS({
   name: 'BasePropertyView',
   package: 'foam.ui',
-  traits: ['foam.patterns.ChildTreeTrait',
-           'foam.ui.TransformingDataViewTrait'],
+  extendsModel: 'foam.ui.TransformingDataView',
   
   documentation: function() {/*
     Apply this trait to a $$DOC{ref:'BaseView'} (such as $$DOC{ref:'HTMLView'}).</p>

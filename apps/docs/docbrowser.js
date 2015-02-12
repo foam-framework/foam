@@ -93,10 +93,8 @@ CLASS({
 
 CLASS({
   name: 'ModelDescriptionRowView',
-  
-  traits: ['foam.patterns.ChildTreeTrait',
-           'foam.ui.DataViewTrait',
-           'foam.ui.TemplateSupportTrait',
+  extendsModel: 'foam.ui.DataView',
+  traits: ['foam.ui.TemplateSupportTrait',
            'foam.ui.HTMLViewTrait'], 
   
   requires: ['SimpleValue'],

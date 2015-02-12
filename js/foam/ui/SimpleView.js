@@ -16,9 +16,10 @@
  */
 
 CLASS({
-  name: 'SimpleViewTrait',
+  name: 'SimpleView',
   package: 'foam.ui',
-  
+  extendsModel: 'foam.patterns.ChildTreeTrait',
+
   documentation: function() {/* For Views that do not use $$DOC{ref:'.data'},
     this trait will still allow cooperation with Views that do. If you
     plan to export or import data, do not use this trait. This trait expects

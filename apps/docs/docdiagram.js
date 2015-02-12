@@ -47,8 +47,6 @@ CLASS({
   extendsModel: 'foam.graphics.CViewView',
   package: 'foam.documentation',
   
-  traits: [ 'foam.ui.SimpleViewTrait'],
-  
   requires: ['foam.documentation.ModelDocDiagram',
              'foam.documentation.ExtendsDiagram',
              'foam.documentation.TraitListDiagram',
@@ -178,8 +176,7 @@ CLASS({
   name: 'ExtendsDiagram',
   package: 'foam.documentation',
 
-  traits: [ 'foam.patterns.ChildTreeTrait',
-            'foam.ui.DestructiveDataViewTrait'],
+  extendsModel: 'foam.ui.DestructiveDataView',
 
   requires: ['foam.documentation.ModelDocDiagram',
              'foam.documentation.DocLinkDiagram',
@@ -275,8 +272,7 @@ CLASS({
   name: 'TraitListDiagram',
   package: 'foam.documentation',
 
-  traits: [ 'foam.patterns.ChildTreeTrait',
-            'foam.ui.TransformingDataViewTrait'],
+  extendsModel: 'foam.ui.TransformingDataView',
 
   requires: ['foam.documentation.ModelDocDiagram',
              'foam.documentation.DocLinkDiagram',
@@ -416,9 +412,8 @@ CLASS({
 CLASS({
   name: 'ModelDocDiagram',
   package: 'foam.documentation',
-  traits: ['foam.patterns.ChildTreeTrait',
-           'foam.ui.DestructiveDataViewTrait',
-           'foam.ui.TemplateSupportTrait',
+  extendsModel: 'foam.ui.DestructiveDataView',
+  traits: ['foam.ui.TemplateSupportTrait',
            'foam.documentation.DocModelFeatureDAOTrait'],
 
   requires: ['foam.graphics.diagram.Block',
@@ -530,9 +525,8 @@ CLASS({
              'foam.graphics.diagram.SectionGroup',
              'SimpleValue'],
 
-  traits: [ 'foam.patterns.ChildTreeTrait',
-            'foam.ui.TransformingDataViewTrait',
-            'foam.documentation.DocDiagramTrait',
+  extendsModel: 'foam.ui.TransformingDataView',
+  traits: [ 'foam.documentation.DocDiagramTrait',
             'foam.documentation.FeatureListLoaderTrait'],
 
   documentation: function() {/*
@@ -573,10 +567,8 @@ CLASS({
 CLASS({
   name: 'FeatureDiagram',
   package: 'foam.documentation',
-
-  traits: [ 'foam.patterns.ChildTreeTrait',
-            'foam.ui.DataViewTrait',
-            'foam.documentation.DocDiagramTrait'],
+  extendsModel: 'foam.ui.DataView',
+  traits: [ 'foam.documentation.DocDiagramTrait'],
 
   requires: ['foam.graphics.diagram.Section'],
 

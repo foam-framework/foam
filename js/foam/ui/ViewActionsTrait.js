@@ -19,7 +19,8 @@
 CLASS({
   name: 'ViewActionsTrait',
   package: 'foam.ui',
-  
+  requires: ['foam.ui.ActionButton'],
+
   properties: [
     {
       model_: 'BooleanProperty',
@@ -44,7 +45,7 @@ CLASS({
     createActionView: function(action, opt_args) {
       /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info
         specifically for $$DOC{ref:'Action',usePlural:true}. */
-      var X = ( opt_args && opt_args.X ) || this.childX;
+      var X = ( opt_args && opt_args.X ) || this.childX || this.X;
       var modelName = opt_args && opt_args.model_ ?
         opt_args.model_ :
         'foam.ui.ActionButton'  ;

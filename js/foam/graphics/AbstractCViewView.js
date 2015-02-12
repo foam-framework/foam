@@ -18,7 +18,9 @@
 CLASS({
   package: 'foam.graphics',
   name: 'AbstractCViewView',
-  extendsModel: 'View',
+ 
+  extendsModel: 'foam.ui.SimpleView',
+  traits: ['foam.ui.HTMLViewTrait'],
 
   documentation: function() {  /*
     Forming the DOM component for a $$DOC{ref:'foam.graphics.CView',text:'canvas view'},

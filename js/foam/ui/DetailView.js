@@ -19,9 +19,8 @@ CLASS({
   name: 'DetailView',
   package: 'foam.ui',
 
-  traits: ['foam.patterns.ChildTreeTrait',
-           'foam.ui.DestructiveDataViewTrait',
-           'foam.ui.HTMLViewTrait',
+  extendsModel: 'foam.ui.DestructiveDataView',
+  traits: ['foam.ui.HTMLViewTrait',
            'foam.ui.ViewActionsTrait',
            'foam.ui.TemplateSupportTrait'],
   

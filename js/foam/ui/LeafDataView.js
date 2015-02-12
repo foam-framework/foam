@@ -16,9 +16,10 @@
  */
 
 CLASS({
-  name: 'LeafDataViewTrait',
+  name: 'LeafDataView',
   package: 'foam.ui',
-  
+  extendsModel: 'foam.patterns.ChildTreeTrait',
+
   documentation: function() {/* For Views that use $$DOC{ref:'.data'},
     but do not pass it along to any children, use this trait.
   */},
