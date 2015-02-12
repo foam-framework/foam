@@ -41,7 +41,7 @@ CLASS({
       /* Called when our parent or an ancestor's parent changes. Override to
         react to ancestry changes. Remember to call <code>this.SUPER()</code>. */
 
-      Array.prototype.forEach.call(this.children, function(c) { c.onAncestryChange_() } );
+      Array.prototype.forEach.call(this.children, function(c) { c.onAncestryChange_ && c.onAncestryChange_() } );
     },
 
     addChild: function(child) {
