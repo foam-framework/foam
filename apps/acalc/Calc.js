@@ -640,7 +640,7 @@ CLASS({
     .edge {
       background: linear-gradient(to bottom, rgba(240,240,240,1) 0%,
                                              rgba(240,240,240,0) 100%);
-      height: 10px;
+      height: 20px;
       position: absolute;
       top: 0;
       width: 100%;
