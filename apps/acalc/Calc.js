@@ -853,7 +853,7 @@ CLASS({
           <div id="%%id" class="buttons button-row secondaryButtons">
             <div class="button-column" style="flex-grow: 1;">
               <div class="button-row">
-                $$backspace{tabIndex: 311}
+                $$backspace{tabIndex: 311, label: '⌫'}
                 $$round{tabIndex: 312}
                 $$fetch{tabIndex: 313}
                 $$store{tabIndex: 314}
