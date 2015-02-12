@@ -19,10 +19,10 @@ CLASS({
 var demos = JSONUtil.arrayToObjArray(X, [
   {
     name: 'Solar System',
-    path: 'SolarSystem.html',
+    path: '/index.html?model=foam.demos.SolarSystem',
     description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.  This was the first graphical FOAM demo to be written (in 2011).  I\'ve added the <b>old</b> keyword to this, and other older, non-modernized demos.',
     keywords: ['animation', 'reactive', 'old'],
-    src: 'SolarSystem.js',
+    src: '/js/foam/demos/SolarSystem.js',
     image: 'SolarSystem.png',
   },
   {
