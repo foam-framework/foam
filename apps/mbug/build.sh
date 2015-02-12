@@ -4,7 +4,7 @@ cp -r . $BUILD_DIR
 cp ../../core/foam.css $BUILD_DIR
 
 # TODO(markdittmer): This includes lots of stuff we don't actually need.
-LIB_SRCS=`find ../../js -type f | grep '\.js$' | grep -v 'foam\/ui\/Window\.js' | grep -v 'foam\/patterns\/ChildTreeTrait\.js'`
+LIB_SRCS=`find ../../js -type f | grep '\.js$' | grep -v 'node\/' | grep -v 'foam\/ui\/Window\.js' | grep -v 'foam\/patterns\/ChildTreeTrait\.js'`
 
 cat \
   ../../core/stdlib.js \

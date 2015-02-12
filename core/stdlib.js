@@ -17,7 +17,6 @@
 
 var DEBUG  = DEBUG || false;
 var GLOBAL = GLOBAL || this;
-var global = global || GLOBAL;
 
 function MODEL(model) {
   var proto;
