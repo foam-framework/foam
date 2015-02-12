@@ -31,7 +31,7 @@ CLASS({
   ],
 
   constants: {
-    ANIMATION_DELAY: 200,
+    ANIMATION_DELAY: 150,
 
     LEFT: {
       panelX: function(x) {
