@@ -24,16 +24,8 @@ var demos = JSONUtil.arrayToObjArray(X, [
     keywords: ['animation', 'reactive', 'old'],
     src: 'SolarSystem.js',
     image: 'SolarSystem.png',
-  },/*
-  {
-    name: 'Canvas Scrolling',
-    path: 'canvasscrolling.html',
-    description: 'A demonstration of high-performance canvas (DOM-less) scrolling..',
-    keywords: ['canvas'],
-    src: 'canvasscrolling.js',
-    image: 'canvasscrolling.png',
   },
-  */{
+  {
     name: 'Reactive Clocks',
     path: 'ReactiveClocks.html',
     description: 'A simple demo of reactive programming.  The first clocks reacts to the position of the mouse while the second clock reacts to the position of the first clock and to time.  Reacting to time essentially gives you an animation system for free.',
@@ -300,6 +292,13 @@ var demos = JSONUtil.arrayToObjArray(X, [
     keywords: ['docs', 'demo'],
     src: '../apps/overflow/',
     image: 'Overflow.png'
+  },
+  {
+    name: 'FOAM Modeller',
+    path: '/index.html?model=foam.apps.Modeller',
+    description: 'A demo of the IDE potential for FOAM due to its meta-modelling.',
+    keywords: ['dev', 'ide', 'model'],
+    src: '/js/foam/apps/Modeller.js'
   }
 ], Demo).dao;
 
