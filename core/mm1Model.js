@@ -798,7 +798,7 @@ var Model = {
       name: 'imports_',
       transient: true,
       hidden: true,
-      help: 'Runtime imports of the model.',
+      help: 'Runtime imports of the model.'
     },
     {
       name: 'exports_',
