@@ -31,7 +31,7 @@ CLASS({
       documentation: function() {/* Handles the incoming data from the import
         context, and may be ignored if data is directly set. */},
       postSet: function(old, nu) {
-        if ( this.isImportEnabled_ && this.data !== nu ) {
+        if ( this.isImportEnabled_ && ! equals(this.data, nu) ) {
           this.isContextChange_ = true;
           this.data = nu;
           this.isContextChange_ = false;
@@ -68,7 +68,7 @@ CLASS({
     onDataChange: function(old, nu) { /* React to a change to $$DOC{ref:'.data'}.
       Don't forget to call <code>this.SUPER(old,nu)</code> in your implementation. */
       this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange_;
-      if ( this.isImportEnabled_ && this.dataImport !== nu ) {
+      if ( this.isImportEnabled_ && !equals(this.dataImport, nu) ) {
         this.dataImport = nu;
       }
     },

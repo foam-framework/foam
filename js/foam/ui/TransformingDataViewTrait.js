@@ -34,7 +34,7 @@ CLASS({
       documentation: function() {/* Handles the incoming data from the import
         context, and may be ignored if data is directly set. */},
       postSet: function(old, nu) {
-        if ( this.isImportEnabled_ && this.data !== nu ) {
+        if ( this.isImportEnabled_ && ! equals(this.data, nu) ) {
           this.isContextChange_ = true;
           this.data = nu;
           this.isContextChange_ = false;
@@ -57,7 +57,7 @@ CLASS({
         from data as a way to detect whether a change is local or from child
         context changes. */},
       postSet: function(old, nu) {
-        if ( ! this.isInternalSetter_ && this.data !== nu ) {
+        if ( ! this.isInternalSetter_ && ! equals(this.data, nu) ) {
           this.isContextChange_ = true;
           this.xformFromChild(old, nu);
           this.isContextChange_ = false;
@@ -92,7 +92,7 @@ CLASS({
     onDataChange: function(old, nu) { /* React to a change to $$DOC{ref:'.data'}.
       Don't forget to call <code>this.SUPER(old,nu)</code> in your implementation. */
       this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange_;
-      if ( this.isImportEnabled_ && this.dataImport !== nu ) {
+      if ( this.isImportEnabled_ && ! equals(this.dataImport, nu) ) {
         this.dataImport = nu;
       }
       this.xformToChild(old, nu);
@@ -103,7 +103,7 @@ CLASS({
     },
     xformFromChild: function(oldChildData, nuChildData) {
       /* Override to set data given nuChildData */
-      this.internalSetData_(nuData);      
+      this.internalSetData_(nuChildData);      
     },
     internalSetData_: function(nu) {
       this.isInternalSetter_ = true;

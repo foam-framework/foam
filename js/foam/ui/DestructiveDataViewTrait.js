@@ -38,7 +38,7 @@ CLASS({
       documentation: function() {/* Handles the incoming data from the import
         context, and may be ignored if data is directly set. */},
       postSet: function(old, nu) {
-        if ( this.isImportEnabled_ && this.data !== nu ) {
+        if ( this.isImportEnabled_ && ! equals(this.data, nu) ) {
           this.isContextChange_ = true;
           this.data = nu;
           this.isContextChange_ = false;
@@ -54,7 +54,7 @@ CLASS({
         /* If not a change from import or export, the user wants to 
         set data directly and break the connection with our import */
         this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange_;
-        if ( this.isImportEnabled_ && this.dataImport !== nu ) {
+        if ( this.isImportEnabled_ && ! equals(this.dataImport, nu) ) {
           this.dataImport = nu;
         }
         this.onDataChange(old,nu);
@@ -106,7 +106,7 @@ CLASS({
       } else {
         // otherwise propagate value to existing children
         if (  this.childDataValue 
-           && this.childDataValue.value !== nu ) {
+           && ! equals(this.childDataValue.value, nu) ) {
           this.childDataValue.set(nu);
         }
       }

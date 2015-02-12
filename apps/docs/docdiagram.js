@@ -195,14 +195,6 @@ CLASS({
 
   properties: [
     {
-      name: 'data',
-      postSet: function() {
-        this.destroy();
-        this.childData = FOAM.lookup(this.data.extendsModel, this.X);
-        this.construct();
-      }
-    },
-    {
       name: 'diagramItem',
       type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
@@ -239,16 +231,23 @@ CLASS({
       this.diagramItem.addChild(spacer);
     },
 
+    shouldDestroy: function(old,nu) {
+      return true;
+    },
+    
     construct: function() {
       this.SUPER();
-
+      // don't just copy data, find extendsModel and send that to children
+      this.childDataValue.removeListener(this.onExportValueChange_);
+      this.childDataValue.set(FOAM.lookup(this.data.extendsModel, this.X));
+            
       this.childX.set('documentViewRef', this.SimpleValue.create(
         this.DocRef.create({ ref: this.data.extendsModel })
       ));
 
-      if (this.childData) {
-        var thisDiag = this.ModelDocDiagram.create({ model: this.childData }, this.childX);
-        if (this.childData.extendsModel ) {
+      if (this.childDataValue.value) {
+        var thisDiag = this.ModelDocDiagram.create({ model: this.childDataValue.value }, this.childX);
+        if ( this.childDataValue.value.extendsModel ) {
           this.addChild(this.X.foam.documentation.ExtendsDiagram.create({ extended: thisDiag }, this.childX));
         }
 
