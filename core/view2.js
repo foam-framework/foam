@@ -213,17 +213,6 @@ CLASS({
   },
 
   methods: {
-    focus: function() {
-      var self = this;
-      if ( this.X.gestureManager ) {
-        this.X.gestureManager.onNextRealClick(function() {
-          self.$ && self.$.focus && self.$.focus();
-        });
-      } else {
-        self.$ && self.$.focus && self.$.focus();
-      }
-    },
-
     toHTML: function() {
       /* Selects read-only versus read-write DOM output */
       return this.mode === 'read-write' ?

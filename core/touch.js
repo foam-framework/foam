@@ -191,6 +191,7 @@ CLASS({
     {
       name: 'onTouchEnd',
       code: function(e) {
+        if ( e.cancelable ) e.preventDefault();
         this.detach(e.target);
 
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
@@ -850,11 +851,6 @@ CLASS({
     {
       name: 'scrollViewTargets',
       defaultValue: 0
-    },
-    {
-      name: 'realClickHandlers',
-      documentation: 'Array of handlers to invoke on the next actual click.',
-      factory: function() { return []; }
     }
   ],
 
@@ -868,7 +864,6 @@ CLASS({
       this.document.addEventListener('mousedown', this.onMouseDown);
       this.document.addEventListener('mousemove', this.onMouseMove);
       this.document.addEventListener('mouseup', this.onMouseUp);
-      this.document.addEventListener('click', this.onClick);
       this.document.addEventListener('wheel', this.onWheel);
       this.document.addEventListener('contextmenu', this.onContextMenu);
     },
@@ -996,9 +991,6 @@ CLASS({
       this.active = {};
       this.recognized = null;
       this.points = {};
-    },
-    onNextRealClick: function(handler) {
-      this.realClickHandlers.push(handler);
     }
   },
 
@@ -1097,16 +1089,6 @@ CLASS({
       }
     },
     {
-      name: 'onClick',
-      code: function(event) {
-        console.log('Calling onClick');
-        if ( ! this.realClickHandlers.length ) return;
-        console.log('Executing onClick');
-        this.realClickHandlers.forEach(function(h) { h(); });
-        this.realClickHandlers = [];
-      }
-    },
-    {
       name: 'onWheel',
       code: function(event) {
         if ( this.wheelTimer ) {
@@ -1177,3 +1159,4 @@ CLASS({
     }
   ]
 });
+
