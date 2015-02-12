@@ -31,7 +31,7 @@ CLASS({
   ],
 
   constants: {
-    ANIMATION_DELAY: 200,
+    ANIMATION_DELAY: 150,
 
     LEFT: {
       panelX: function(x) {
@@ -358,7 +358,7 @@ CLASS({
         // changes its size.  Being resized should also fire an onResize event.
         this.X.setTimeout(function() {
           if ( this.parentWidth !== parentWidth ) this.onResize();
-        }.bind(this), this.ANIMATION_DELAY + 50);
+        }.bind(this), this.ANIMATION_DELAY + 10);
       }
     },
     {
