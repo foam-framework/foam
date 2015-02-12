@@ -181,7 +181,7 @@ var BootstrapModel = {
       });
     });
 
-    var props = this.properties_ = this.properties.clone() || [];
+    var props = this.properties_ = this.properties ? this.properties.clone() : [];
 
     function findProp(name) {
       for ( var i = 0 ; i < props.length ; i++ ) {
