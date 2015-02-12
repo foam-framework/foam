@@ -79,7 +79,6 @@ var files = [
   'dao',
   'dao2',
   'arrayDAO',
-  'ClientDAO',
   'diff',
   'SplitDAO',
   'index',
