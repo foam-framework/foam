@@ -16,23 +16,6 @@
  */
 
 CLASS({
-  name: 'FloatingView',
-  package: 'foam.ui.layout',
-  extendsModel: 'View',
-  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
-  properties: [
-    { name: 'view' },
-    { name: 'width',  defaultValue: 300 },
-    { name: 'height', defaultValue: 300 },
-    { name: 'className', defaultValue: 'floatingView' }
-  ],
-  templates: [
-    function toInnerHTML() {/* %%view */}
-  ]
-});
-
-
-CLASS({
   name: 'ViewSlider',
   package: 'foam.ui.layout',
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
