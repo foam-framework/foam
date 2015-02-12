@@ -589,7 +589,6 @@ CLASS({
       // Just sent the tapClick(numberOfPoints) message to the handlers.
       if  ( ! handlers || ! handlers.length ) return;
       var points = Object.keys(map).length;
-      console.log('TapGesture: invoke handlers');
       handlers.forEach(function(h) {
         h && h.tapClick && h.tapClick(points);
       });
@@ -966,11 +965,7 @@ CLASS({
       if ( last.YES < 0 ) {
         // If we have more than one WAIT or MAYBE, or
         // we have no MAYBEs, then there is no winner yet.
-        if ( matches.length > 1 ||
-            last.MAYBE < 0 ) {
-              console.log('Multiple matches or no maybes');
-              return;
-            }
+        if ( matches.length > 1 || last.MAYBE < 0 ) return;
 
         match = matches[last.MAYBE][0];
       } else {
