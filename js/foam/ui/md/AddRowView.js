@@ -180,10 +180,6 @@ CLASS({
       defaultValue: 'AddRowView'
     },
     {
-      name: 'bodyId',
-      factory: function() { return this.nextID(); }
-    },
-    {
       name: 'scrollerID',
       factory: function() { return this.nextID(); }
     },
@@ -241,7 +237,7 @@ CLASS({
         $$cancel $$accept
         $$q{ extraClassName: 'grow', clearAction: true }
       </div>
-      <div class="arvBody" id="%%bodyId">
+      <div class="arvBody" id="%%scrollerID">
         $$filteredDAO{ rowView: this.rowView }
       </div>
       <% this.addInitializer(function() { self.qView.focus(); }); %>
