@@ -45,6 +45,10 @@ CLASS({
       }
     },
     {
+      name: 'label',
+      defaultValue: ''
+    },
+    {
       name: 'showLabel',
       defaultValueFn: function() { return this.action.showLabel; }
     },
@@ -254,7 +258,7 @@ CLASS({
       }
 
       c.fillText(
-        this.action.labelFn.call(this.data, this.action),
+        this.label || this.action.labelFn.call(this.data, this.action),
         this.x+this.width/2,
         this.y+this.height/2);
     }

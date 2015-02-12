@@ -31,7 +31,7 @@ CLASS({
   ],
 
   constants: {
-    ANIMATION_DELAY: 200,
+    ANIMATION_DELAY: 150,
 
     LEFT: {
       panelX: function(x) {
@@ -294,7 +294,7 @@ CLASS({
         <div id="%%id-panel" style="position: absolute; top: 0; left: -1;">
           <% if ( this.side === this.RIGHT ) { %> <div id="%%id-shadow" class="left-shadow"></div> <% } %>
           <%= this.panelView() %>
-          <% if ( this.side === this.LEFT ) { %> <div id="%%id-shadow" class="right-shadow"></div> <% } %>>
+          <% if ( this.side === this.LEFT ) { %> <div id="%%id-shadow" class="right-shadow"></div> <% } %>
         </div>
       </div>
     */}
@@ -358,7 +358,7 @@ CLASS({
         // changes its size.  Being resized should also fire an onResize event.
         this.X.setTimeout(function() {
           if ( this.parentWidth !== parentWidth ) this.onResize();
-        }.bind(this), this.ANIMATION_DELAY + 50);
+        }.bind(this), this.ANIMATION_DELAY + 10);
       }
     },
     {

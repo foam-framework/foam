@@ -57,7 +57,10 @@ CLASS({
         this.error("controller is required");
         process.exit(1);
       }
-      arequire(this.controller)(this.execute_.bind(this));
+      var view = this.defaultView ? arequire(this.defaultView) : anop;
+      aseq(
+        view,
+        arequire(this.controller))(this.execute_.bind(this));
     },
     buildCoreJS_: function(ret) {
       var i = 0;
@@ -97,7 +100,7 @@ CLASS({
       var visited = {};
       var error = this.error;
 
-      (function add(require) {
+      function add(require) {
         if ( visited[require] ) return;
         visited[require] = true;
 
@@ -108,7 +111,9 @@ CLASS({
         if ( model.package ) models[model.id] = model;
 
         model.getAllRequires().forEach(add);
-      })(this.controller);
+      };
+      add(this.controller);
+      if ( this.defaultView ) add(this.defaultView);
 
       var contents = '';
 

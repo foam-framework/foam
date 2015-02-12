@@ -359,10 +359,20 @@ CLASS({
     },
     {
       name: 'backspace',
-      label: 'backspace',
+      label: '⌫',
+      speechLabel: 'backspace',
       translationHint: 'delete one input character',
       keyboardShortcuts: [ 8 /* backspace */ ],
       action: function() {
+        // This block will make backspace act like all-clear if the user has done a ctrl-A
+        // to select all of the text.
+        var selection = this.X.window.getSelection().toString();
+        if ( selection && selection.split('\n').length == this.history.length + 1 ) {
+          this.ac();
+          this.X.window.getSelection().removeAllRanges();
+          return;
+        }
+
         if ( this.a2.toString().length ) {
           this.a2 = this.a2.toString().substring(0, this.a2.length-1);
         } else {
@@ -679,8 +689,7 @@ CLASS({
     .inner-calc-display {
       position: absolute;
       right: 20pt;
-    top: 100%;
-    transition: top 0.3s ease;
+      top: 100%;
       xxxbottom: 5px;
       width: 100%;
       padding-left: 50px;
@@ -780,15 +789,14 @@ CLASS({
           }.bind(this)));
           Events.dynamic(function() { this.data.op; this.data.history; this.data.a1; this.data.a2; }.bind(this), move);
           this.X.window.addEventListener('resize', move);
-          // Add mousewhell scrolling.
-          this.X.document.addEventListener('mousewheel', EventService.framed(function(e) {
-            var inner$ = self.$.querySelector('.inner-calc-display');
-            var outer$ = self.$.querySelector('.calc-display');
-            var outer  = window.getComputedStyle(outer$);
-            var inner  = window.getComputedStyle(inner$);
-            var top    = toNum(inner$.style.top);
-            inner$.style.top = Math.min(0, Math.max(toNum(outer.height)-toNum(inner.height)-11, top-e.deltaY)) + 'px';
-          }));
+          // Prevent scrolling above history output
+          this.addInitializer(function() {
+            var outer$ = this.$.querySelector('.calc-display');
+            outer$.addEventListener('scroll', function(e) {
+              if ( outer$.scrollTop < outer$.clientHeight )
+                outer$.scrollTop = outer$.clientHeight;
+            });
+            }.bind(this));
         %>
       */}
     }
@@ -854,10 +862,10 @@ CLASS({
           <div id="%%id" class="buttons button-row secondaryButtons">
             <div class="button-column" style="flex-grow: 1;">
               <div class="button-row">
-                $$fetch{tabIndex: 311}
-                $$store{tabIndex: 312}
-                $$round{tabIndex: 313}
-                $$rand{tabIndex: 314}
+                $$backspace{tabIndex: 311, label: '⌫'}
+                $$round{tabIndex: 312}
+                $$fetch{tabIndex: 313}
+                $$store{tabIndex: 314}
               </div>
               <div class="button-row">
                 $$e{tabIndex: 321}
