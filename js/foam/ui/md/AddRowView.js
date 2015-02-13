@@ -27,6 +27,7 @@ CLASS({
 
   imports: [
     'queryFactory',
+    'rowView',
     'stack'
   ],
 
@@ -121,8 +122,10 @@ CLASS({
       name: 'subKey',
       documentation: 'The mLang expression for looking up the key from a ' +
           'whole object. Defaults to .ID',
-      factory: function() {
-        return FOAM.lookup(this.subType, this.X).ID;
+      defaultValue: 'ID',
+      preSet: function(old, nu) {
+        return typeof nu === 'string' ?
+            FOAM.lookup(this.subType + '.' + nu, this.X) : nu;
       }
     },
     {
