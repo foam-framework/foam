@@ -55,15 +55,15 @@ var FObject = {
     o.instance_ = {};
     o.X = (opt_X || X).sub({});
 
-    if ( this.model_.imports && this.model_.imports.length ) {
-      if ( ! Object.prototype.hasOwnProperty.call(this, 'imports_') ) {
-        this.imports_ = this.model_.imports.map(function(e) {
+    if ( this.model_.imports_ && this.model_.imports_.length ) {
+      if ( ! Object.prototype.hasOwnProperty.call(this, 'imports__') ) {
+        this.imports__ = this.model_.imports_.map(function(e) {
           var s = e.split(' as ');
           return [s[0], s[1] || s[0]];
         });
       }
-      for ( var i = 0 ; i < this.imports_.length ; i++ ) {
-        var im = this.imports_[i];
+      for ( var i = 0 ; i < this.imports__.length ; i++ ) {
+        var im = this.imports__[i];
         // Don't import from Context if explicitly passed in args
         if ( ! args || ! args.hasOwnProperty(im[1]) ) o[im[1]] = o.X[im[0]];
       }
@@ -120,7 +120,7 @@ var FObject = {
       var self = this;
 
       // Four cases for export: 'this', a method, a property value$, a property
-      Object_forEach(this.model_.exports, function(e) {
+      Object_forEach(this.model_.exports_, function(e) {
         var exp = e.split('as ');
 
         if ( exp.length == 0 ) return;
@@ -151,7 +151,7 @@ var FObject = {
         }
       });
 
-      this.model_.properties.forEach(function(prop) {
+      this.model_.properties_.forEach(function(prop) {
         if ( prop.initPropertyAgents ) {
           prop.initPropertyAgents(self);
         } else {
@@ -195,8 +195,8 @@ var FObject = {
     // Build a map of properties keyed off of either 'name' or 'singular'
     if ( ! elements ) {
       elements = {};
-      for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
-        var p = this.model_.properties[i];
+      for ( var i = 0 ; i < this.model_.properties_.length ; i++ ) {
+        var p = this.model_.properties_[i];
         elements[p.name] = p;
         elements[p.name.toUpperCase()] = p;
         if ( p.singular ) {
@@ -283,7 +283,7 @@ var FObject = {
   },
 
   writeActions: function(other, out) {
-    for ( var i = 0, property ; property = this.model_.properties[i] ; i++ ) {
+    for ( var i = 0, property ; property = this.model_.properties_[i] ; i++ ) {
       if ( property.actionFactory ) {
         var actions = property.actionFactory(this, property.f(this), property.f(other));
         for (var j = 0; j < actions.length; j++)
@@ -302,7 +302,7 @@ var FObject = {
       return this.model_.name.compareTo(other.model_.name) || 1;
     }
 
-    var ps = this.model_.properties;
+    var ps = this.model_.properties_;
 
     for ( var i = 0 ; i < ps.length ; i++ ) {
       var r = ps[i].compare(this, other);
@@ -316,7 +316,7 @@ var FObject = {
   diff: function(other) {
     var diff = {};
 
-    for ( var i = 0, property; property = this.model_.properties[i]; i++ ) {
+    for ( var i = 0, property; property = this.model_.properties_[i]; i++ ) {
       if ( Array.isArray(property.f(this)) ) {
         var subdiff = property.f(this).diff(property.f(other));
         if ( subdiff.added.length !== 0 || subdiff.removed.length !== 0 ) {
@@ -462,8 +462,8 @@ var FObject = {
   hashCode: function() {
     var hash = 17;
 
-    for ( var i = 0; i < this.model_.properties.length ; i++ ) {
-      var prop = this[this.model_.properties[i].name];
+    for ( var i = 0; i < this.model_.properties_.length ; i++ ) {
+      var prop = this[this.model_.properties_[i].name];
       var code = ! prop ? 0 :
         prop.hashCode   ? prop.hashCode()
                         : prop.toString().hashCode();
@@ -484,8 +484,8 @@ var FObject = {
 
   // TODO: this should be monkey-patched from a 'ProtoBuf' library
   outProtobuf: function(out) {
-    for ( var i = 0; i < this.model_.properties.length; i++ ) {
-      var prop = this.model_.properties[i];
+    for ( var i = 0; i < this.model_.properties_.length; i++ ) {
+      var prop = this.model_.properties_[i];
       if ( Number.isFinite(prop.prototag) )
         prop.outProtobuf(this, out);
     }
@@ -548,7 +548,7 @@ var FObject = {
 */
 
     if ( src && this.model_ ) {
-      var ps = this.model_.properties;
+      var ps = this.model_.properties_;
       for ( var i = 0 ; i < ps.length ; i++ ) {
         var prop = ps[i];
         if ( src.hasOwnProperty(prop.name) ) this[prop.name] = src[prop.name];
@@ -599,8 +599,8 @@ var FObject = {
   getMyFeature: function(featureName) {
     featureName = featureName.toUpperCase();
     return [
-      this.properties ? this.properties : [],
-      this.actions ? this.actions : [],
+      this.properties_ ? this.properties_ : [],
+      this.actions_ ? this.actions_ : [],
       this.methods ? this.methods : [],
       this.listeners ? this.listeners : [],
       this.templates ? this.templates : [],
@@ -616,8 +616,8 @@ var FObject = {
   getAllMyFeatures: function() {
     var featureList = [];
     [
-      this.properties ? this.properties : [],
-      this.actions ? this.actions : [],
+      this.properties_ ? this.properties_ : [],
+      this.actions_ ? this.actions_ : [],
       this.methods ? this.methods : [],
       this.listeners ? this.listeners : [],
       this.templates ? this.templates : [],

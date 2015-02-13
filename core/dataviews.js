@@ -499,7 +499,7 @@ CLASS({
       if ( event === 'click' && this.X.gestureManager ) {
         var self = this;
         var manager = this.X.gestureManager;
-        var target = this.X.GestureTarget.create({
+        var target = this.X.foam.input.touch.GestureTarget.create({
           containerID: opt_id,
           handler: {
             tapClick: function() {
@@ -1147,8 +1147,8 @@ CLASS({
       str += this.startForm();
       str += this.titleHTML();
 
-      for ( var i = 0 ; i < model.properties.length ; i++ ) {
-        var prop = model.properties[i];
+      for ( var i = 0 ; i < model.properties_.length ; i++ ) {
+        var prop = model.properties_[i];
 
         if ( prop.hidden ) continue;
 

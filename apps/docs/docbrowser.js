@@ -16,9 +16,9 @@
  */
 
 
-var touchManager = TouchManager.create({});
+var touchManager = X.foam.input.touch.TouchManager.create({});
 touchManager.install(document);
-var gestureManager = GestureManager.create();
+var gestureManager = X.foam.input.touch.GestureManager.create();
 
 CLASS({
   name: 'ModelListController',

@@ -544,7 +544,8 @@ CLASS({
         }, this.X));
 
         view.$.style.top = (pos[1]-2) + 'px';
-        view.$.style.left = (pos[0]-toNum(s.width)+30) + 'px';
+        var left = Math.max(0, pos[0] - toNum(s.width) + 30);
+        view.$.style.left = left + 'px';
         view.$.style.maxHeight = (Math.max(200, this.X.window.innerHeight-pos[1]-10)) + 'px';
         view.initHTML();
 

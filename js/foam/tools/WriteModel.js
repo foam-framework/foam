@@ -24,6 +24,7 @@ CLASS({
   properties: [
     {
       name: 'name',
+      help: 'ID of the model to serialize',
       required: true
     }
   ],

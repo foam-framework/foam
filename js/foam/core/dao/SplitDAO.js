@@ -1,6 +1,6 @@
-/**
+/*
  * @license
- * Copyright 2012 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,42 +14,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
-  name: 'SplitDAO',
-
-  requires: [
-    'MDAO'
-  ],
-
-  extendsModel: 'ProxyDAO',
-
-  properties: [
-    {
-      name:  'model',
-      label: 'Model',
-      type:  'Model',
-      hidden: true,
-      required: true
-    },
-    {
-      name: 'remote',
-      type: 'DAO',
-      mode: "read-only",
-      hidden: true,
-      required: true
-    },
-    {
-      model_: 'FunctionProperty',
-      name: 'placeholderFactory'
-    },
-    {
-      model_: 'IntProperty',
-      name: 'staleTimeout',
-      defaultValue: 5000
-    },
-    {
-      name: 'delegate',
-      factory: function() {
+   "model_": "Model",
+   "package": "foam.core.dao",
+   "name": "SplitDAO",
+   "extendsModel": "ProxyDAO",
+   "requires": [
+      "MDAO"
+   ],
+   "properties": [
+      {
+         "model_": "Property",
+         "name": "model",
+         "label": "Model",
+         "type": "Model",
+         "required": true,
+         "hidden": true
+      },
+      {
+         "model_": "Property",
+         "name": "remote",
+         "type": "DAO",
+         "mode": "read-only",
+         "required": true,
+         "hidden": true
+      },
+      {
+         "model_": "FunctionProperty",
+         "name": "placeholderFactory"
+      },
+      {
+         "model_": "IntProperty",
+         "name": "staleTimeout",
+         "defaultValue": 5000
+      },
+      {
+         "model_": "Property",
+         "name": "delegate",
+         "factory": function () {
         // TODO: Cleanup the index setup, it shouldn't be this hard.
         var dao = this.MDAO.create({
           model: this.model,
@@ -64,11 +67,16 @@ CLASS({
         dao.root = [[]];
         return dao;
       }
-    }
-  ],
-
-  methods: {
-    init: function() {
+      }
+   ],
+   "actions": [],
+   "constants": [],
+   "messages": [],
+   "methods": [
+      {
+         "model_": "Method",
+         "name": "init",
+         "code": function () {
       this.SUPER();
       var self = this;
       this.remote.listen({
@@ -82,16 +90,28 @@ CLASS({
         }
       });
     },
-
-    put: function(obj, sink) {
+         "args": []
+      },
+      {
+         "model_": "Method",
+         "name": "put",
+         "code": function (obj, sink) {
       this.remote.put(obj, sink);
     },
-
-    remove: function(obj, sink) {
+         "args": []
+      },
+      {
+         "model_": "Method",
+         "name": "remove",
+         "code": function (obj, sink) {
       this.remote.remove(obj, sink);
     },
-
-    find: function(key, sink) {
+         "args": []
+      },
+      {
+         "model_": "Method",
+         "name": "find",
+         "code": function (key, sink) {
       var remote = this.remote;
       var delegate = this.delegate
       this.SUPER(key, {
@@ -107,6 +127,14 @@ CLASS({
           })
         }
       });
-    }
-  }
+    },
+         "args": []
+      }
+   ],
+   "listeners": [],
+   "templates": [],
+   "models": [],
+   "tests": [],
+   "relationships": [],
+   "issues": []
 });

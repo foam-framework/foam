@@ -98,16 +98,6 @@ var DOM = {
       }
     }
 
-    function findProperty(name) {
-      for ( var j = 0 ; j < model.properties.length ; j++ ) {
-        var p = model.properties[j];
-
-        if ( p.name.toUpperCase() == name ) return p;
-      }
-
-      return null;
-    }
-
     var obj = model.create(undefined, X);
     obj.fromElement(e);
 
@@ -428,7 +418,7 @@ CLASS({
 
       // Can't call viewModel() here, since DetailView overrides it but relies
       // on falling back on view's implementation. TODO(jacksonic): figure it out
-      var o = this.model_[constantize(name)];
+      var o = this.model_.getFeature(name);
 
       if ( ! o ) throw 'Unknown View Name: ' + name;
 
@@ -499,7 +489,7 @@ CLASS({
       if ( event === 'click' && this.X.gestureManager ) {
         var self = this;
         var manager = this.X.gestureManager;
-        var target = this.X.GestureTarget.create({
+        var target = this.X.foam.input.touch.GestureTarget.create({
           containerID: opt_id,
           handler: {
             tapClick: function() {

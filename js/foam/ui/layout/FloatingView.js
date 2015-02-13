@@ -1,4 +1,4 @@
-/**
+/*
  * @license
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -17,22 +17,31 @@
 
 CLASS({
    "model_": "Model",
-   "id": "com.google.mail.GMailHistory",
-   "package": "com.google.mail",
-   "name": "GMailHistory",
-   "plural": "history",
+   "package": "foam.ui.layout",
+   "name": "FloatingView",
+   "extendsModel": "View",
+   "traits": [
+      "foam.ui.layout.PositionedDOMViewTrait"
+   ],
    "properties": [
       {
-         "model_": "StringProperty",
-         "name": "id",
-         "help": "The mailbox sequence ID."
+         "model_": "Property",
+         "name": "view"
       },
       {
-         "model_": "ReferenceArrayProperty",
-         "name": "messages",
-         "help": "The messages that changed in this history record.",
-         "subType": "Message",
-         "subKey": "ID"
+         "model_": "Property",
+         "name": "width",
+         "defaultValue": 300
+      },
+      {
+         "model_": "Property",
+         "name": "height",
+         "defaultValue": 300
+      },
+      {
+         "model_": "Property",
+         "name": "className",
+         "defaultValue": "floatingView"
       }
    ],
    "actions": [],
@@ -40,7 +49,14 @@ CLASS({
    "messages": [],
    "methods": [],
    "listeners": [],
-   "templates": [],
+   "templates": [
+      {
+         "model_": "Template",
+         "name": "toInnerHTML",
+         "args": [],
+         "template": " %%view "
+      }
+   ],
    "models": [],
    "tests": [],
    "relationships": [],

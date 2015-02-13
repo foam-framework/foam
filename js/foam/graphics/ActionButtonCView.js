@@ -21,7 +21,10 @@ CLASS({
 
   extendsModel: 'foam.graphics.CView',
 
-  requires: [ 'foam.ui.md.Halo' ],
+  requires: [
+    'foam.ui.md.Halo',
+    'foam.input.touch.GestureTarget'
+  ],
   imports: [ 'gestureManager' ],
 
   properties: [
@@ -101,7 +104,7 @@ CLASS({
       hidden: true,
       transient: true,
       lazyFactory: function() {
-        return this.X.GestureTarget.create({
+        return this.GestureTarget.create({
           containerID: this.view.id,
           handler: this,
           gesture: 'tap'

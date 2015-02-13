@@ -199,7 +199,7 @@ CLASS({
         var v = this.EditColumnsView.create({
           model:               this.model,
           properties:          this.properties || this.model.tableProperties,
-          availableProperties: this.model.properties
+          availableProperties: this.model.properties_
         });
 
         v.addPropertyListener('properties', function() {
@@ -291,7 +291,7 @@ CLASS({
         };
 
         if ( this.X.gestureManager ) {
-          this.X.gestureManager.install(this.X.GestureTarget.create({
+          this.X.gestureManager.install(this.X.foam.input.touch.GestureTarget.create({
             containerID: this.id,
             handler: this,
             getElement: function() { return this.container.$.parentElement; },

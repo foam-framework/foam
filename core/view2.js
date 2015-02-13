@@ -1756,8 +1756,8 @@ CLASS({
 
       // TODO: Either make behave like DetailView or else
       // make a mode of DetailView.
-      for ( var i = 0 ; i < model.properties.length ; i++ ) {
-        var prop = model.properties[i];
+      for ( var i = 0 ; i < model.properties_.length ; i++ ) {
+        var prop = model.properties_[i];
 
         if ( prop.hidden ) continue;
 
@@ -1810,8 +1810,8 @@ CLASS({
       out.push(model.help);
       out.push('</div>');
 
-      for ( var i = 0 ; i < model.properties.length ; i++ ) {
-        var prop = model.properties[i];
+      for ( var i = 0 ; i < model.properties_.length ; i++ ) {
+        var prop = model.properties_[i];
 
         if ( prop.hidden ) continue;
 
@@ -2160,7 +2160,7 @@ CLASS({
       defaultValue: 'View'
     },
     {
-      model_: 'DOMElementProperty',
+      model_: 'foam.core.types.DOMElementProperty',
       name: 'viewContainer'
     }
   ],
@@ -2631,55 +2631,29 @@ CLASS({
 CLASS({
   name: 'ArrayListView',
   extendsModel: 'View',
-
+  traits: ['SimpleDynamicViewTrait'],
   properties: [
     {
-      name: 'data',
-      postSet: function(oldValue, newValue) {
-        this.update();
-      }
+      model_: 'ViewFactoryProperty',
+      name: 'rowView',
+      required: true
     },
     {
-      model_: 'ModelProperty',
-      name: 'listView'
+      name: 'className',
+      defaultValue: 'array-list'
     },
     {
-      model_: 'ModelProperty',
-      name: 'subType'
+      name: 'tagName',
+      defaultValue: 'div'
     }
   ],
 
-  methods: {
-    toHTML: function() {
-      return '<div id="' + this.id + '"></div>';
-    },
-    initHTML: function() {
-      this.SUPER();
-      this.update();
-    }
-  },
-
-  listeners: [
-    {
-      name: 'update',
-      isFramed: true,
-      code: function() {
-        if ( ! this.$ ) return;
-        this.$.innerHTML = '';
-
-        var objs = this.data;
-        var children = new Array(objs.length);
-
-        for ( var i = 0; i < objs.length; i++ ) {
-          var view = this.listView.create();
-          children[i] = view;
-          view.data = objs[i];
-        }
-
-        this.$.innerHTML = children.map(function(c) { return c.toHTML(); }).join('');
-        children.forEach(function(c) { c.initHTML(); });
-      }
-    }
+  templates: [
+    function toInnerHTML() {/*
+      <% for ( var i = 0 ; i < this.data.length ; i++ ) { %>
+        <%= this.rowView({ data: this.data[i] }) %>
+      <% } %>
+    */}
   ]
 });
 
@@ -2698,7 +2672,7 @@ CLASS({
       name: 'data',
       postSet: function(_, value) {
         var self = this;
-        var subKey = FOAM.lookup(this.subKey, this.X);
+        var subKey = FOAM.lookup(this.subType + '.' + this.subKey, this.X);
         var sink = { put: function(o) { self.innerData = o; } };
         if ( subKey.name === 'id' ) this.dao.find(value, sink);
         else this.dao.where(EQ(subKey, value)).limit(1).select(sink);
@@ -2744,7 +2718,7 @@ CLASS({
       name: 'data',
       postSet: function(_, value) {
         var self = this;
-        var subKey = FOAM.lookup(this.subKey, this.X);
+        var subKey = FOAM.lookup(this.subType + '.' + this.subKey, this.X);
         this.innerData = this.dao.where(IN(subKey, value));
       }
     },
@@ -3053,7 +3027,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanValue',
+      model_: 'BooleanProperty',
       name: 'usePlaceholder',
       defaultValue: true,
       postSet: function(_, newValue) {
@@ -3415,7 +3389,7 @@ CLASS({
 CLASS({
   name: 'ActionSheetView',
   extendsModel: 'View',
-  traits: ['PositionedDOMViewTrait'],
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   properties: [
     'actions',

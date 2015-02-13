@@ -19,7 +19,7 @@ CLASS({
   name: 'AddRowView',
   package: 'foam.ui.md',
   extendsModel: 'View',
-  traits: ['PositionedDOMViewTrait', 'VerticalScrollNativeTrait'],
+  traits: ['foam.ui.layout.PositionedDOMViewTrait', 'foam.input.touch.VerticalScrollNativeTrait'],
 
   requires: [
     'foam.ui.md.ToolbarCSS'
@@ -27,6 +27,7 @@ CLASS({
 
   imports: [
     'queryFactory',
+    'rowView',
     'stack'
   ],
 
@@ -121,8 +122,10 @@ CLASS({
       name: 'subKey',
       documentation: 'The mLang expression for looking up the key from a ' +
           'whole object. Defaults to .ID',
-      factory: function() {
-        return FOAM.lookup(this.subType, this.X).ID;
+      defaultValue: 'ID',
+      preSet: function(old, nu) {
+        return typeof nu === 'string' ?
+            FOAM.lookup(this.subType + '.' + nu, this.X) : nu;
       }
     },
     {

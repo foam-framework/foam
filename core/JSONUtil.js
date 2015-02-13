@@ -182,8 +182,8 @@ var JSONUtil = {
       out('{');
       this.outputModel_(out, obj);
 
-      for ( var key in obj.model_.properties ) {
-        var prop = obj.model_.properties[key];
+      for ( var key in obj.model_.properties_ ) {
+        var prop = obj.model_.properties_[key];
 
         if ( ! this.p(prop) ) continue;
 
@@ -298,8 +298,8 @@ var JSONUtil = {
       out(/*"\n", */indent, '{\n');
       this.outputModel_(out, obj, nestedIndent);
 
-      for ( var key in obj.model_.properties ) {
-        var prop = obj.model_.properties[key];
+      for ( var key in obj.model_.properties_ ) {
+        var prop = obj.model_.properties_[key];
 
         if ( ! this.p(prop) ) continue;
 

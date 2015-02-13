@@ -169,7 +169,7 @@ var Y = this.X.subWindow(window);
 Y.registerModel(MomentumTouch, 'FOAMTouch');
 Y.registerModel(MomentumTouchManager, 'TouchManager');
 
-var touch = Y.TouchManager.create({});
+var touch = Y.foam.input.touch.TouchManager.create({});
 touch.install(document);
 
 touch.subscribe(touch.TOUCH_START, function(_, _, t) {

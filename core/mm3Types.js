@@ -519,7 +519,7 @@ var ReferenceProperty = Model.create({
       name: 'subKey',
       type: 'EXPR',
       displayWidth: 20,
-      factory: function() { return this.subType + '.ID'; },
+      defaultValue: 'ID',
       help: 'The foreign key that this property references.'
     },
     {
@@ -939,6 +939,7 @@ var DocumentationProperty = Model.create({
 
 CLASS({
   name: 'EnumPropertyTrait',
+  package: 'foam.core.types',
   properties: [
     {
       name: 'choices',
@@ -956,12 +957,14 @@ CLASS({
 
 CLASS({
   name: 'StringEnumProperty',
-  traits: ['EnumPropertyTrait'],
+  package: 'foam.core.types',
+  traits: ['foam.core.types.EnumPropertyTrait'],
   extendsModel: 'StringProperty'
 });
 
 CLASS({
   name: 'DOMElementProperty',
+  package: 'foam.core.types',
   extendsModel: 'StringProperty',
   properties: [
     {

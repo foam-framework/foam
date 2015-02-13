@@ -80,7 +80,7 @@ CLASS({
 CLASS({
   name: 'LabelStringEnumProperty',
   extendsModel: 'LabelStringProperty',
-  traits: ['EnumPropertyTrait'],
+  traits: ['foam.core.types.EnumPropertyTrait'],
   properties: [
     {
       name: 'postSet',

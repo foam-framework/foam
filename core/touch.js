@@ -17,6 +17,7 @@
 
 CLASS({
   name: 'InputPoint',
+  package: 'foam.input.touch',
   properties: [
     'id', 'type',
     { name: 'done', model_: 'BooleanProperty' },
@@ -83,6 +84,11 @@ CLASS({
 
 CLASS({
   name: 'TouchManager',
+  package: 'foam.input.touch',
+
+  requires: [
+    'foam.input.touch.InputPoint'
+  ],
 
   properties: [
     { name: 'touches', factory: function() { return {}; } }
@@ -122,7 +128,7 @@ CLASS({
     },
 
     touchStart: function(i, t, e) {
-      this.touches[i] = this.X.InputPoint.create({
+      this.touches[i] = this.InputPoint.create({
         id: i,
         type: 'touch',
         x: t.pageX,
@@ -244,6 +250,7 @@ CLASS({
 
 CLASS({
   name: 'Gesture',
+  package: 'foam.input.touch',
   help: 'Installed in the GestureManager to watch for a particular kind of gesture',
 
   properties: [
@@ -292,7 +299,8 @@ CLASS({
 
 CLASS({
   name: 'ScrollGesture',
-  extendsModel: 'Gesture',
+  package: 'foam.input.touch',
+  extendsModel: 'foam.input.touch.Gesture',
   help: 'Gesture that understands vertical or horizontal scrolling.',
 
   properties: [
@@ -512,6 +520,10 @@ CLASS({
 
 CLASS({
   name: 'VerticalScrollNativeTrait',
+  package: 'foam.input.touch',
+  requires: [
+    'foam.input.touch.GestureTarget'
+  ],
   documentation: 'Makes (part of) a View scroll vertically. Expects scrollerID to be a property, giving the DOM ID of the element with overflow:scroll or similar. Any onScroll listener will be called on each scroll event, as per the verticalScrollNative gesture. NB: this.onScroll should be a listener, because this trait does not bind it.',
   properties: [
     {
@@ -529,7 +541,7 @@ CLASS({
           console.warn('VerticalScrollNativeTrait attached to View without a scrollerID property set.');
           return '';
         }
-        return this.X.GestureTarget.create({
+        return this.GestureTarget.create({
           containerID: this.scrollerID,
           handler: this,
           gesture: 'verticalScrollNative'
@@ -557,7 +569,8 @@ CLASS({
 
 CLASS({
   name: 'TapGesture',
-  extendsModel: 'Gesture',
+  package: 'foam.input.touch',
+  extendsModel: 'foam.input.touch.Gesture',
   help: 'Gesture that understands a quick, possible multi-point tap. Calls into the handler: tapClick(numberOfPoints).',
 
   properties: [
@@ -604,7 +617,8 @@ CLASS({
 
 CLASS({
   name: 'DragGesture',
-  extendsModel: 'Gesture',
+  package: 'foam.input.touch',
+  extendsModel: 'foam.input.touch.Gesture',
   help: 'Gesture that understands a hold and drag with mouse or one touch point.',
   properties: [
     {
@@ -666,7 +680,8 @@ CLASS({
 
 CLASS({
   name: 'PinchTwistGesture',
-  extendsModel: 'Gesture',
+  package: 'foam.input.touch',
+  extendsModel: 'foam.input.touch.Gesture',
   help: 'Gesture that understands a two-finger pinch/stretch and rotation',
   properties: [
     {
@@ -776,6 +791,7 @@ CLASS({
 
 CLASS({
   name: 'GestureTarget',
+  package: 'foam.input.touch',
   help: 'Created by each view that wants to receive gestures.',
   properties: [
     { name: 'id' },
@@ -801,13 +817,15 @@ CLASS({
 
 CLASS({
   name: 'GestureManager',
+  package: 'foam.input.touch',
   requires: [
-    'DragGesture',
-    'Gesture',
-    'GestureTarget',
-    'PinchTwistGesture',
-    'ScrollGesture',
-    'TapGesture'
+    'foam.input.touch.DragGesture',
+    'foam.input.touch.Gesture',
+    'foam.input.touch.GestureTarget',
+    'foam.input.touch.PinchTwistGesture',
+    'foam.input.touch.ScrollGesture',
+    'foam.input.touch.TapGesture',
+    'foam.input.touch.InputPoint'
   ],
   imports: [
     'document',
@@ -1036,7 +1054,7 @@ CLASS({
       name: 'onMouseDown',
       code: function(event) {
         // Build the InputPoint for it.
-        var point = this.X.InputPoint.create({
+        var point = this.InputPoint.create({
           id: 'mouse',
           type: 'mouse',
           x: event.pageX,
@@ -1119,7 +1137,7 @@ CLASS({
           if ( this.recognized || Object.keys(this.points).length > 0) return;
 
           // New wheel event. Create an input point for it.
-          var wheel = InputPoint.create({
+          var wheel = this.InputPoint.create({
             id: 'wheel',
             type: 'wheel',
             x: event.pageX,

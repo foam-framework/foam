@@ -23,6 +23,21 @@ arequire(process.argv[2])(function(model) {
     process.exit(1);
   }
 
+  function usage(m) {
+    console.log(m.id, " options:");
+    for ( var i = 0 ; i < m.properties.length ; i++ ) {
+      console.log("  ", m.properties[i].name, ": ", m.properties[i].help);
+    }
+    console.log("");
+    console.log("");
+    if ( m.extendsModel ) usage(FOAM.lookup(m.extendsModel, X));
+  }
+
+  if ( process.argv[3] == '--help' ) {
+    usage(model);
+    return;
+  }
+
   var args = {};
   for ( var i = 3; i < process.argv.length; i++ ) {
     var regex = /[^\\]=/g;

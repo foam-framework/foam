@@ -177,8 +177,8 @@ CLASS({
 
   requires: [
     'CalcView',
-    'GestureManager',
-    'TouchManager',
+    'foam.input.touch.GestureManager',
+    'foam.input.touch.TouchManager',
     'foam.graphics.CViewView',
     'foam.graphics.ActionButtonCView',
     'foam.ui.animated.Label',
@@ -218,7 +218,7 @@ CLASS({
         // TODO(braden): HACK This should be just exporting the property, but
         // the context is not properly passed into views created using <foam>
         // tags right now. Clean up this and gestureManager below.
-        var tm = this.TouchManager.create();
+        var tm = this.foam.input.touch.TouchManager.create();
         window.X.touchManager = tm;
         return tm;
       }

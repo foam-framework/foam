@@ -58,7 +58,6 @@ var files = [
   '../js/foam/patterns/ChildTreeTrait', // used in view, included here for backward compat of old apps
   'view',
   'view2',
-  'layout',
   'AbstractDAOView',
   'DAOListView',
   'daoView',
@@ -80,20 +79,15 @@ var files = [
   'dao',
   'dao2',
   'arrayDAO',
-  'ClientDAO',
   'diff',
-  'SplitDAO',
   'index',
   [ 'StackView', IN_BROWSER ],
   [ 'MementoMgr', IN_BROWSER ],
   [ 'DAOController', IN_BROWSER ],
-  [ 'ThreePaneController', IN_BROWSER ],
   'experimental/protobufparser',
   'experimental/protobuf',
   'models',
   'touch',
   [ 'glang', IN_BROWSER ],
-  'oauth',
-  'busy',
-  [ 'turntable', IN_BROWSER ]
+  'oauth'
 ];

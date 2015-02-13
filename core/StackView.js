@@ -25,12 +25,12 @@ CLASS({
   extendsModel: 'View',
 
   requires: [
-    'ViewSlider',
-    'OverlaySlider',
-    'FloatingView'
+    'foam.ui.layout.ViewSlider',
+    'foam.ui.layout.OverlaySlider',
+    'foam.ui.layout.FloatingView'
   ],
 
-  traits: ['PositionedDOMViewTrait'],
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   properties: [
     {

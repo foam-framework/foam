@@ -1,4 +1,4 @@
-/**
+/*
  * @license
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -17,32 +17,50 @@
 
 CLASS({
    "model_": "Model",
-   "id": "com.google.mail.GMailThread",
-   "package": "com.google.mail",
-   "name": "GMailThread",
-   "plural": "threads",
+   "package": "foam.ui.layout",
+   "name": "PositionedViewTrait",
    "properties": [
       {
-         "model_": "StringProperty",
-         "name": "historyId",
-         "help": "The ID of the last history record that modified this thread."
+         "model_": "FloatProperty",
+         "name": "x",
+         "units": "px",
+         "defaultValue": 0
       },
       {
-         "model_": "StringProperty",
-         "name": "id",
-         "help": "The unique ID of the thread."
+         "model_": "FloatProperty",
+         "name": "y",
+         "units": "px",
+         "defaultValue": 0
       },
       {
-         "model_": "ReferenceArrayProperty",
-         "name": "messages",
-         "help": "The list of messages in the thread.",
-         "subType": "Message",
-         "subKey": "ID"
+         "model_": "FloatProperty",
+         "name": "z",
+         "units": "px",
+         "defaultValue": 0
       },
       {
-         "model_": "StringProperty",
-         "name": "snippet",
-         "help": "A short part of the message text."
+         "model_": "IntProperty",
+         "name": "width",
+         "units": "px",
+         "defaultValue": 100
+      },
+      {
+         "model_": "IntProperty",
+         "name": "height",
+         "units": "px",
+         "defaultValue": 100
+      },
+      {
+         "model_": "IntProperty",
+         "name": "preferredWidth",
+         "units": "px",
+         "defaultValue": 100
+      },
+      {
+         "model_": "IntProperty",
+         "name": "preferredHeight",
+         "units": "px",
+         "defaultValue": 100
       }
    ],
    "actions": [],
