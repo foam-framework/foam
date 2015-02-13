@@ -27,6 +27,7 @@ CLASS({
 
   imports: [
     'queryFactory',
+    'rowView',
     'stack'
   ],
 
