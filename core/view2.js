@@ -2903,55 +2903,29 @@ CLASS({
 CLASS({
   name: 'ArrayListView',
   extendsModel: 'View',
-
+  traits: ['SimpleDynamicViewTrait'],
   properties: [
     {
-      name: 'data',
-      postSet: function(oldValue, newValue) {
-        this.update();
-      }
+      model_: 'ViewFactoryProperty',
+      name: 'rowView',
+      required: true
     },
     {
-      model_: 'ModelProperty',
-      name: 'listView'
+      name: 'className',
+      defaultValue: 'array-list'
     },
     {
-      model_: 'ModelProperty',
-      name: 'subType'
+      name: 'tagName',
+      defaultValue: 'div'
     }
   ],
 
-  methods: {
-    toHTML: function() {
-      return '<div id="' + this.id + '"></div>';
-    },
-    initHTML: function() {
-      this.SUPER();
-      this.update();
-    }
-  },
-
-  listeners: [
-    {
-      name: 'update',
-      isFramed: true,
-      code: function() {
-        if ( ! this.$ ) return;
-        this.$.innerHTML = '';
-
-        var objs = this.data;
-        var children = new Array(objs.length);
-
-        for ( var i = 0; i < objs.length; i++ ) {
-          var view = this.listView.create();
-          children[i] = view;
-          view.data = objs[i];
-        }
-
-        this.$.innerHTML = children.map(function(c) { return c.toHTML(); }).join('');
-        children.forEach(function(c) { c.initHTML(); });
-      }
-    }
+  templates: [
+    function toInnerHTML() {/*
+      <% for ( var i = 0 ; i < this.data.length ; i++ ) { %>
+        <%= this.rowView({ data: this.data[i] }) %>
+      <% } %>
+    */}
   ]
 });
 
