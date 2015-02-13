@@ -1137,7 +1137,7 @@ CLASS({
           if ( this.recognized || Object.keys(this.points).length > 0) return;
 
           // New wheel event. Create an input point for it.
-          var wheel = InputPoint.create({
+          var wheel = this.InputPoint.create({
             id: 'wheel',
             type: 'wheel',
             x: event.pageX,
