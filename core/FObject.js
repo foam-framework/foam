@@ -120,7 +120,7 @@ var FObject = {
       var self = this;
 
       // Four cases for export: 'this', a method, a property value$, a property
-      Object_forEach(this.model_.exports, function(e) {
+      Object_forEach(this.model_.exports_, function(e) {
         var exp = e.split('as ');
 
         if ( exp.length == 0 ) return;
