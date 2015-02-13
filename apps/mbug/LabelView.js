@@ -48,7 +48,7 @@ CLASS({
         padding-left: 28px;
       }
       .IssueLabel canvas {
-        background: rgba(0,0,0,0);
+        background: rgba(0,0,0,0) !important;
       }
     */},
     function toInnerHTML() {/*
