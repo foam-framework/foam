@@ -136,9 +136,9 @@ Y.TouchInput.install(document);
 */
 
 var Y = this.X.subWindow(window);
-Y.touchManager = Y.TouchManager.create({});
+Y.touchManager = Y.foam.input.touch.TouchManager.create({});
 Y.touchManager.install(document);
-Y.gestureManager = Y.GestureManager.create();
+Y.gestureManager = Y.foam.input.touch.GestureManager.create();
 
 var view = Y.ScrollView.create({
   model: Contact,

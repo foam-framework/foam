@@ -2190,6 +2190,9 @@ CLASS({
 CLASS({
   name: 'SwipeAltView',
   extendsModel: 'View',
+  requires: [
+    'foam.input.touch.GestureTarget'
+  ],
 
   properties: [
     {
@@ -2263,7 +2266,7 @@ CLASS({
       hidden: true,
       transient: true,
       factory: function() {
-        return this.X.GestureTarget.create({
+        return this.GestureTarget.create({
           containerID: this.id,
           handler: this,
           gesture: 'horizontalScroll'

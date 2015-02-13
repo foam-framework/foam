@@ -21,7 +21,7 @@ CLASS({
   extendsModel: 'View',
 
   requires: [
-    'GestureTarget'
+    'foam.input.touch.GestureTarget'
   ],
   imports: [
     'clearTimeout',

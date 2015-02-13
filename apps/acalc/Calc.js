@@ -178,8 +178,8 @@ CLASS({
 
   requires: [
     'CalcView',
-    'GestureManager',
-    'TouchManager',
+    'foam.input.touch.GestureManager',
+    'foam.input.touch.TouchManager',
     'foam.graphics.CViewView',
     'foam.graphics.ActionButtonCView',
     'foam.ui.animated.Label',

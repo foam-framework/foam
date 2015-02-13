@@ -19,7 +19,7 @@ CLASS({
   name: 'AddRowView',
   package: 'foam.ui.md',
   extendsModel: 'View',
-  traits: ['foam.ui.layout.PositionedDOMViewTrait', 'VerticalScrollNativeTrait'],
+  traits: ['foam.ui.layout.PositionedDOMViewTrait', 'foam.input.touch.VerticalScrollNativeTrait'],
 
   imports: [
     'addRowToList',

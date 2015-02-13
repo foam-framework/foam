@@ -64,7 +64,7 @@ CLASS({
 
       if ( this.X.gestureManager ) {
         var manager = this.X.gestureManager;
-        var target = this.X.GestureTarget.create({
+        var target = this.X.foam.input.touch.GestureTarget.create({
           containerID: this.view.id,
           handler: this,
           gesture: 'verticalScrollMomentum'

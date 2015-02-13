@@ -291,7 +291,7 @@ CLASS({
         };
 
         if ( this.X.gestureManager ) {
-          this.X.gestureManager.install(this.X.GestureTarget.create({
+          this.X.gestureManager.install(this.X.foam.input.touch.GestureTarget.create({
             containerID: this.id,
             handler: this,
             getElement: function() { return this.container.$.parentElement; },

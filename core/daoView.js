@@ -347,7 +347,7 @@ CLASS({
     'foam.util.busy.BusyStatus'
   ],
 
-  traits: ['VerticalScrollNativeTrait'],
+  traits: ['foam.input.touch.VerticalScrollNativeTrait'],
 
   documentation: function() {/*
     <p>Infinite scrolling view. Expects a $$DOC{ref: ".dao"} and displays a subset of the data at a time, minimizing the amount of DOM creation and manipulation.</p>
