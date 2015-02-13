@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui.animated',
   name: 'ImageView',
 
-  extendsModel: 'foam.ui.DataView',
+  extendsModel: 'foam.ui.LeafDataView',
   traits: ['foam.ui.HTMLViewTrait'],
 
   properties: [
@@ -45,28 +45,6 @@ CLASS({
     }
   ],
 
-  methods: [
-    {
-      name: 'onDataChange',
-      code: function(old,nu) {
-        this.SUPER(old,nu);
-console.log("ImageView data ", nu);        
-        if ( ! this.$ ) return;
-console.log("    Good!");        
-        var $ = this.$;
-        var height = $.querySelector('img').height;
-        var newImage = '<img ' + this.cssClassAttr() + ' src="' + this.data + '" style="position: absolute;transition:top .4s;top:' + height + '">';
-        $.insertAdjacentHTML('beforeend', newImage);
-        var vs = $.querySelectorAll('img');
-        if ( vs.length == 3 ) vs[0].remove();
-        setTimeout(function() {
-          vs[vs.length-2].style.top = '-' + height +'px';
-          vs[vs.length-1].style.top = 0;
-        }, 1);
-      }
-    }
-  ],
-
   methods: {
     initHTML: function() {
       this.SUPER();
@@ -76,6 +54,20 @@ console.log("    Good!");
     },
     toHTML: function() {
       return '<span id="' + this.id + '"><img ' + this.cssClassAttr() + ' src="' + this.data + '" style="position: absolute;transition:top .4s;top:0"></span>' ;
+    },
+    onDataChange: function(old,nu) {
+      this.SUPER(old,nu);
+      if ( ! this.$ ) return;
+      var $ = this.$;
+      var height = $.querySelector('img').height;
+      var newImage = '<img ' + this.cssClassAttr() + ' src="' + this.data + '" style="position: absolute;transition:top .4s;top:' + height + '">';
+      $.insertAdjacentHTML('beforeend', newImage);
+      var vs = $.querySelectorAll('img');
+      if ( vs.length == 3 ) vs[0].remove();
+      setTimeout(function() {
+        vs[vs.length-2].style.top = '-' + height +'px';
+        vs[vs.length-1].style.top = 0;
+      }, 1);
     }
   }
 });
