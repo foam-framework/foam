@@ -121,11 +121,11 @@ CLASS({
     {
       name: 'subKey',
       documentation: 'The mLang expression for looking up the key from a ' +
-          'whole object. Defaults to .ID',
-      defaultValue: 'ID',
+          'whole object. Set as a string. Defaults to .ID',
+      factory: function() { return 'ID'; },
       preSet: function(old, nu) {
         return typeof nu === 'string' ?
-            FOAM.lookup(this.subType + '.' + nu, this.X) : nu;
+            FOAM.lookup(this.subType + '.' + constantize(nu), this.X) : nu;
       }
     },
     {

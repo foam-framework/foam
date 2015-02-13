@@ -171,6 +171,7 @@ input[name=q]::-webkit-input-placeholder {
 .md-floating-label-container {
   align-items: center;
   display: flex;
+  padding: 40px 16px 8px;
   position: relative;
 }
 
@@ -179,7 +180,6 @@ input[name=q]::-webkit-input-placeholder {
   flex-grow: 1;
   font-size: 12px;
   font-weight: 500;
-  margin-left: 16px;
   position: absolute;
   top: 16px;
   z-index: 0;
