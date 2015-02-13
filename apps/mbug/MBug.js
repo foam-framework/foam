@@ -1,18 +1,18 @@
 CLASS({
   name: 'MBug',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   description: 'Mobile QuickBug',
 
   requires: [
     'foam.ui.md.ResponsiveAppControllerView',
     'foam.ui.md.AppController',
     'ChangeProjectView',
-    'DetailView',
+    'foam.ui.DetailView',
     'GestureManager',
     'IssueCitationView',
     'IssueView',
     'QBug',
-    'StackView',
+    'foam.ui.StackView',
     'TouchManager',
     'IDBDAO',
     'DAOVersion'
@@ -93,7 +93,7 @@ CLASS({
     },
     {
       name: 'stack',
-      subType: 'StackView',
+      subType: 'foam.ui.StackView',
       factory: function() { return this.StackView.create(); },
       postSet: function(old, v) {
         if ( old ) {
@@ -160,7 +160,7 @@ CLASS({
 
 CLASS({
   name: 'PriorityView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   properties: [
     { name: 'data', postSet: function() { this.updateHTML(); } },
     {
@@ -211,9 +211,9 @@ CLASS({
 
 CLASS({
   name: 'IssueCitationView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   requires: [
-    'ImageBooleanView',
+    'foam.ui.ImageBooleanView',
     'foam.ui.md.MonogramStringView',
     'PriorityCitationView'
   ],
@@ -231,7 +231,7 @@ CLASS({
           $$summary{mode: 'read-only'}
         </div>
         $$starred{
-          model_: 'ImageBooleanView',
+          model_: 'foam.ui.ImageBooleanView',
           className:  'star',
           trueImage:  'images/ic_star_24dp.png',
           falseImage: 'images/ic_star_outline_24dp.png'
@@ -244,7 +244,7 @@ CLASS({
 
 CLASS({
   name: 'CommentView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   requires: [ 'foam.ui.md.MonogramStringView' ],
 
@@ -268,7 +268,7 @@ CLASS({
 // used to show and select available projects.
 CLASS({
   name: 'ChangeProjectView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   requires: [
     // TODO: Hack to ensure that the CSS for appcontroller comes before
     // ChangeProjectView.

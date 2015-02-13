@@ -19,16 +19,20 @@ CLASS({
   name: 'MonogramStringView',
   package: 'foam.ui.md',
 
-  extendsModel: 'View',
-  traits: ['foam.ui.md.ColoredBackgroundTrait'],
+  extendsModel: 'foam.ui.LeafDataView',
+  traits: ['foam.ui.HTMLViewTrait',
+           'foam.ui.md.ColoredBackgroundTrait'],
 
   properties: [
-    { name: 'data',      postSet: function() { this.updateHTML(); } },
     { name: 'className', defaultValue: 'monogram-string-view' },
     { name: 'tooltip',   defaultValueFn: function() { return this.data; } }
   ],
 
   methods: {
+    onDataChange: function(old,nu) {
+      this.SUPER(old,nu);
+      this.updateHTML();
+    },
     generateColor: function(data) {
       return data ? this.SUPER(data) : 'url(images/silhouette.png)';
     },

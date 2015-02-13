@@ -5,8 +5,8 @@ CLASS({
   requires: [
     'CCView',
     'CommentView',
-    'DAOListView',
-    'ImageBooleanView',
+    'foam.ui.DAOListView',
+    'foam.ui.ImageBooleanView',
     'IssueLabelView',
     'PopupChoiceView',
     'PriorityView',
@@ -49,7 +49,7 @@ CLASS({
           <span class="expand"></span>
           $$save
           $$starred{
-            model_: 'ImageBooleanView',
+            model_: 'foam.ui.ImageBooleanView',
             className:  'star',
             trueImage:  'images/ic_star_white_24dp.png',
             falseImage: 'images/ic_star_outline_white_24dp.png'
@@ -105,7 +105,7 @@ CLASS({
           <div class="separator separator1"></div>
           $$content{model_: 'foam.ui.md.TextFieldView', label: 'Add Comment', onKeyMode: true, extraClassName: 'content-view' }
           $$comments{
-            model_: 'DAOListView',
+            model_: 'foam.ui.DAOListView',
             dao: this.data.comments.orderBy(DESC(QIssueComment.PUBLISHED)),
             mode: 'read-only',
             rowView: 'CommentView' }
