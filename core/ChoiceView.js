@@ -582,8 +582,8 @@ CLASS({
       }
 
       out += '<span class="action">';
-      this.model_.OPEN.iconUrl = this.iconUrl;
-      var button = this.createActionView(this.model_.OPEN, {data: this}).toView_();
+      this.model_.getAction('open').iconUrl = this.iconUrl;
+      var button = this.createActionView(this.model_.getAction('open'), {data: this}).toView_();
 
       this.addChild(button);
 
