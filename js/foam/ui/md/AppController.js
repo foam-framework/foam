@@ -27,7 +27,7 @@ CLASS({
     'PredicatedView',
     'ScrollView',
     'SpinnerView',
-    'SwipeAltView',
+    'foam.ui.SwipeAltView',
     'ViewChoice'
   ],
 

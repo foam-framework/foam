@@ -15,7 +15,7 @@ window.onload = function() {
     arequire('Tooltip'),
     arequire('AutocompleteView'),
     arequire('WindowHashValue'),
-    arequire('SwipeAltView'),
+    arequire('foam.ui.SwipeAltView'),
     arequire('VerticalScrollbarView'),
     arequire('ActionSheetView'),
     arequire('FloatingView'),
