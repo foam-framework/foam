@@ -78,7 +78,7 @@ CLASS({
       name: 'swipeGesture',
       hidden: true,
       transient: true,
-      lazyFactory: function() {
+      factory: function() {
         return this.GestureTarget.create({
           containerID: this.id,
           handler: this,

@@ -259,7 +259,7 @@ var BootstrapModel = {
     });
 
     // add actions
-    this.actions_ = [];
+    this.actions_ = this.actions ? this.actions.clone() : [];
     if ( this.actions ) {
       for ( var i = 0 ; i < this.actions.length ; i++ ) {
         (function(a) {
@@ -409,7 +409,11 @@ var BootstrapModel = {
           this.properties_.unshift(p);
       }
       this.propertyMap_ = null;
-      this.actions_ = extendsModel.actions_.concat(this.actions_);
+      for ( var i = extendsModel.actions_.length - 1 ; i >= 0 ; i-- ) {
+        var a = extendsModel.actions_[i];
+        if ( ! ( this.getAction && this.getAction(a.name) ) )
+          this.actions_.unshift(a);
+      }
     }
 
     // build primary key getter and setter
