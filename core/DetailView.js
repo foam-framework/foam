@@ -301,7 +301,8 @@ CLASS({
         if ( ! data ) return;
         this.originalData = data.deepClone();
         if ( ! this.model && data && data.model_ ) this.model = data.model_;
-        data.addListener(function() {
+        // TODO(braden): Change this back to data.addListener when that's fixed.
+        data.subscribe(['property'], function() {
           // The user is making edits. Drop rawData, since we no longer want
           // to react to updates to it.
           this.version++;

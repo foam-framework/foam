@@ -23,7 +23,7 @@ CLASS({
    "requires": [
       "foam.lib.email.MBOXParser",
       "foam.lib.email.EMail",
-      "foam.util.encodings.IncrementalUtf8"
+      "foam.util.encodings.IncrementalUtf8",
       "foam.util.encodings.QuotedPrintable"
    ],
    "properties": [

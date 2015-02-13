@@ -257,9 +257,16 @@ CLASS({
     { name: 'name', required: true }
   ],
 
+  // YES   = "This gesture was definitely recognized."
+  // NO    = "This gesture is definietly not recognized."
+  // MAYBE = "This gesture might be recognized. If nothing else is recognized,
+  //          default to this one."
+  // WAIT  = "We are not done attempting to recognize this gesture yet. Do not
+  //          default to any MAYBEs until we are."
   constants: {
-    YES: 2,
-    MAYBE: 1,
+    YES: 3,
+    MAYBE: 2,
+    WAIT: 1,
     NO: 0
   },
 
@@ -593,7 +600,7 @@ CLASS({
         if ( p.done ) doneCount++;
       }
       if ( response === this.NO ) return response;
-      return doneCount === keys.length ? this.YES : this.MAYBE;
+      return doneCount === keys.length ? this.YES : this.WAIT;
     },
 
     attach: function(map, handlers) {
@@ -952,31 +959,41 @@ CLASS({
       // TODO: Handle multiple matching gestures.
       Object.keys(this.active).forEach(function(name) {
         var answer = self.gestures[name].recognize(self.points);
-        if ( answer >= self.Gesture.MAYBE ) {
+        if ( answer >= self.Gesture.WAIT ) {
           matches.push([name, answer]);
         }
       });
 
       if ( matches.length === 0 ) return;
 
-      // There are three possibilities here:
+      // There are four possibilities here:
       // - If one or more gestures returned YES, the last one wins. The "last"
       //   part is arbitrary, but that's how this code worked previously.
       // - If a single gesture returned MAYBE, it becomes the only match.
+      // - If a one or more  gesture returned WAIT, and none returned YES or
+      //   MAYBE then there's no recognition yet, and we do nothing until one
+      //   recognizes.
       // - If more than one gesture returned MAYBE, and none returned YES, then
       //   there's no recognition yet, and we do nothing until one recognizes.
-      var lastYes = -1;
-      for ( var i = 0 ; i < matches.length ; i++ ) {
+      var i, lastYes = -1;
+      for ( i = 0 ; i < matches.length ; i++ ) {
         if ( matches[i][1] === this.Gesture.YES ) lastYes = i;
+      }
+      var lastMaybe = -1;
+      for ( i = 0 ; i < matches.length ; i++ ) {
+        if ( matches[i][1] === this.Gesture.MAYBE ) lastMaybe = i;
       }
 
       // If there were no YES answers, then all the matches are MAYBEs.
-      // If there are more than one MAYBE, return. Otherwise, we have our
-      // winner.
+      // If there is a WAIT or more than one WAIT/MAYBE, return. Otherwise, we
+      // have our winner.
       var match;
       if ( lastYes < 0 ) {
-        if ( matches.length > 1 ) return; // No winner, so wait for one.
-        match = matches[0][0];
+        // If we have more than one WAIT/MAYBE, or
+        // we have no MAYBEs, then there is no winner yet.
+        if ( matches.length > 1 || lastMaybe < 0 ) return;
+
+        match = matches[lastMaybe][0];
       } else {
         match = matches[lastYes][0];
       }
@@ -985,7 +1002,7 @@ CLASS({
       // This prevents eg. two tap handlers firing when the tap is on an inner one.
       var matched = this.active[match];
       var legal = [];
-      for ( var i = 0 ; i < matched.length ; i++ ) {
+      for ( i = 0 ; i < matched.length ; i++ ) {
         var m = matched[i].getElement();
         var contained = 0;
         for ( var j = 0 ; j < matched.length ; j++ ) {
@@ -1177,4 +1194,3 @@ CLASS({
     }
   ]
 });
-

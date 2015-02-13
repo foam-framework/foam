@@ -253,7 +253,7 @@ CLASS({
 
       this.canvas.save();
       this.canvas.translate(this.x, this.y);
-      if (this.clipped) {
+      if ( this.clipped ) {
         this.canvas.rect(0,0,this.width,this.height);
         this.canvas.clip();
       }

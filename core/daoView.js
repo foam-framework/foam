@@ -525,7 +525,7 @@ CLASS({
         this.$.style.height = '100%';
       }
 
-      this.$.ownerDocument.defaultView.addEventListener('resize', this.onResize);
+      this.addScrollListener();
       this.onResize();
 
       // Grab the height of the -rowsize div, then drop that div.
@@ -646,6 +646,8 @@ CLASS({
       this.loadedBottom = -1;
       this.oldVisibleBottom = -1;
       this.oldVisibleTop = -1;
+
+      this.removeScrollListener();
     },
 
     // Clears all cached data, when the DAO changes.
@@ -664,6 +666,15 @@ CLASS({
       this.loadedBottom = -1;
       this.oldVisibleBottom = -1;
       this.oldVisibleTop = -1;
+    },
+
+    addScrollListener: function() {
+      console.log('Attempt to add scroll listener');
+      if ( this.$ ) this.$.ownerDocument.defaultView.addEventListener('resize', this.onResize);
+    },
+    removeScrollListener: function() {
+      console.log('Attempt to remove scroll listener');
+      if ( this.$ ) this.$.ownerDocument.defaultView.removeEventListener('resize', this.onResize);
     }
   },
 

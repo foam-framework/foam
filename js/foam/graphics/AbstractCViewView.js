@@ -49,8 +49,7 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'scalingRatio',
-      preSet: function(_, v) { if ( v < 0 ) return 1; return v; },
-      postSet: function(_, v) { /* console.log('Scaling to: ' , v); */ },
+      preSet: function(_, v) { return v < 0 ? 1 : v ; },
       defaultValue: 1,
       documentation: function() {/*
           If scaling is required to render the canvas at a higher resolution than

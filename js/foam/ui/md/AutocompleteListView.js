@@ -21,11 +21,13 @@ CLASS({
   package: 'foam.ui.md',
   extendsModel: 'View',
 
-  requires: [ 'foam.ui.md.AddRowView' ],
+  requires: [
+    'foam.ui.md.AddRowView',
+    'SimpleValue'
+  ],
   imports: [ 'stack' ],
   exports: [
     'acRowView as rowView',
-    'addRowToList',
     'queryFactory',
     'removeRowFromList',
     'srcDAO as dao'
@@ -134,6 +136,10 @@ CLASS({
       iconUrl: 'images/ic_add_24dp.png',
       action: function() {
         var view = this.AddRowView.create();
+        view.data$.addListener(function(obj, topic, old, nu) {
+          this.addRowToList(nu);
+        }.bind(this));
+
         this.stack.pushView(view);
         view.focus();
       }

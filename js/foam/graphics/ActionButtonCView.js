@@ -48,6 +48,10 @@ CLASS({
       }
     },
     {
+      name: 'label',
+      defaultValue: ''
+    },
+    {
       name: 'showLabel',
       defaultValueFn: function() { return this.action.showLabel; }
     },
@@ -148,9 +152,7 @@ CLASS({
           if ( ! this.iconWidth  ) this.iconWidth  = this.image_.width;
           if ( ! this.iconHeight ) this.iconHeight = this.image_.height;
           if ( this.canvas ) {
-            this.canvas.save();
-            this.paint();
-            this.canvas.restore();
+            this.view.paint();
           }
         }.bind(this);
 
@@ -237,7 +239,6 @@ CLASS({
 
     paintSelf: function() {
       var c = this.canvas;
-
       this.halo.paint();
 
       if ( this.font ) c.font = this.font;
@@ -257,7 +258,7 @@ CLASS({
       }
 
       c.fillText(
-        this.action.labelFn.call(this.data, this.action),
+        this.label || this.action.labelFn.call(this.data, this.action),
         this.x+this.width/2,
         this.y+this.height/2);
     }
