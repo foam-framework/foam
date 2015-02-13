@@ -84,7 +84,6 @@ var files = [
   [ 'StackView', IN_BROWSER ],
   [ 'MementoMgr', IN_BROWSER ],
   [ 'DAOController', IN_BROWSER ],
-  'experimental/protobufparser',
   'experimental/protobuf',
   'models',
   'touch',
