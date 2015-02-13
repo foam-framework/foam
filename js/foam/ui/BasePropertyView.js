@@ -25,8 +25,8 @@ CLASS({
   
   documentation: function() {/*
     Apply this trait to a $$DOC{ref:'BaseView'} (such as $$DOC{ref:'HTMLView'}).</p>
-    <p>Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one
-    $$DOC{ref:'Property'}. The $$DOC{ref:'View'} chosen can be based off the
+    <p>Used by $$DOC{ref:'foam.ui.DetailView'} to generate a sub-$$DOC{ref:'foam.ui.View'} for one
+    $$DOC{ref:'Property'}. The $$DOC{ref:'foam.ui.View'} chosen can be based off the
     $$DOC{ref:'Property.view',text:'Property.view'} value, the $$DOC{ref:'.innerView'} value, or
     $$DOC{ref:'.args'}.model_.
   */},
@@ -36,7 +36,7 @@ CLASS({
       name: 'prop',
       type: 'Property',
       documentation: function() {/*
-          The $$DOC{ref:'Property'} for which to generate a $$DOC{ref:'View'}.
+          The $$DOC{ref:'Property'} for which to generate a $$DOC{ref:'foam.ui.View'}.
       */},
       postSet: function(old, nu) {
         if (!old) this.bindData(this.data);
@@ -44,37 +44,37 @@ CLASS({
     },
     {
       name: 'parent',
-      type: 'View',
+      type: 'foam.ui.View',
       postSet: function(_, p) {
         if (!p) return; // TODO(jacksonic): We shouldn't pretend we aren't part of the tree
-        p[this.prop.name + 'View'] = this.view;
+        p[this.prop.name + 'foam.ui.View'] = this.view;
         if ( this.view ) this.view.parent = p;
       },
       documentation: function() {/*
-        The $$DOC{ref:'View'} to use as the parent container for the new
-        sub-$$DOC{ref:'View'}.
+        The $$DOC{ref:'foam.ui.View'} to use as the parent container for the new
+        sub-$$DOC{ref:'foam.ui.View'}.
       */}
     },
     {
       name: 'innerView',
       help: 'Override for prop.view',
       documentation: function() {/*
-        The optional name of the desired sub-$$DOC{ref:'View'}. If not specified,
+        The optional name of the desired sub-$$DOC{ref:'foam.ui.View'}. If not specified,
         prop.$$DOC{ref:'Property.view'} is used.
       */}
     },
     {
       name: 'view',
-      type: 'View',
+      type: 'foam.ui.View',
       documentation: function() {/*
-        The new sub-$$DOC{ref:'View'} generated for the given $$DOC{ref:'Property'}.
+        The new sub-$$DOC{ref:'foam.ui.View'} generated for the given $$DOC{ref:'Property'}.
       */}
     },
     {
       name: 'args',
       documentation: function() {/*
-        Optional arguments to be used for sub-$$DOC{ref:'View'} creation. args.model_
-        in particular specifies the exact $$DOC{ref:'View'} to use.
+        Optional arguments to be used for sub-$$DOC{ref:'foam.ui.View'} creation. args.model_
+        in particular specifies the exact $$DOC{ref:'foam.ui.View'} to use.
       */}
     },
     {
@@ -104,7 +104,7 @@ CLASS({
     },
 
     createViewFromProperty: function(prop) {
-      /* Helper to determine the $$DOC{ref:'View'} to use. */
+      /* Helper to determine the $$DOC{ref:'foam.ui.View'} to use. */
       var viewName = this.innerView || prop.view
       if ( ! viewName ) return this.TextFieldView.create(prop, this.X);
       if ( typeof viewName === 'string' ) return FOAM.lookup(viewName, this.X).create(prop, this.X);

@@ -180,10 +180,10 @@ var FObject = {
         function(o1, o2) { return o1[2] - o2[2]; }));
 
       // For debugging, prints list of init agents.
-      
+      /*
       for ( var i = 0 ; i < agents.length ; i++ )
         console.log(i, agents[i][0], agents[i][1].toString());
-      
+      */
     }
 
     return this.initAgents_;

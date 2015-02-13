@@ -29,13 +29,13 @@ CLASS({
   exports: [ 'propertyViewProperty' ],
 
   documentation: function() {/*
-    When a default view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'DetailView'}
-    is the place to start. Either using $$DOC{ref:'DetailView'} directly, implementing
+    When a default view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'foam.ui.DetailView'}
+    is the place to start. Either using $$DOC{ref:'foam.ui.DetailView'} directly, implementing
     a .toDetailHTML() $$DOC{ref:'Method'} in your model, or extending
-    $$DOC{ref:'DetailView'} to add custom formatting.
+    $$DOC{ref:'foam.ui.DetailView'} to add custom formatting.
     </p>
     <p>Set the $$DOC{ref:'.data'} $$DOC{ref:'Property'} to the $$DOC{ref:'Model'} instance
-    you want to display. $$DOC{ref:'DetailView'} will extract the $$DOC{ref:'Model'}
+    you want to display. $$DOC{ref:'foam.ui.DetailView'} will extract the $$DOC{ref:'Model'}
     definition, create editors for the $$DOC{ref:'Property',usePlural:true}, and
     display the current values of your instance. Set $$DOC{ref:'.mode',usePlural:true}
     to indicate read-only if desired.
@@ -45,7 +45,7 @@ CLASS({
     $$DOC{ref:'DetailView.defaultToHTML'}.
     </p>
     <p>For each $$DOC{ref:'Property'} in the $$DOC{ref:'.data'} instance specified,
-    a $$DOC{ref:'PropertyView'} is created that selects the appropriate $$DOC{ref:'View'}
+    a $$DOC{ref:'PropertyView'} is created that selects the appropriate $$DOC{ref:'foam.ui.View'}
     to construct.
   */},
 

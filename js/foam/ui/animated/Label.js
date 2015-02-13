@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui.animated',
   name: 'Label',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   imports: [ 'window' ],
 

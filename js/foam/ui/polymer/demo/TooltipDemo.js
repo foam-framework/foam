@@ -18,7 +18,7 @@
 CLASS({
   name: 'TooltipDemo',
   package: 'foam.ui.polymer.demo',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   requires: [
     'foam.ui.polymer.demo.ElementWithTooltip',
     'foam.ui.polymer.Tooltip'

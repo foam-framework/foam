@@ -25,7 +25,7 @@ CLASS({
   traits: ['foam.ui.HTMLViewTrait'],
 
   documentation: function() { /*
-      The default $$DOC{ref:'View'} for a string. Supports autocomplete
+      The default $$DOC{ref:'foam.ui.View'} for a string. Supports autocomplete
       when an autocompleter is installed in $$DOC{ref:'.autocompleter'}.
   */},
 

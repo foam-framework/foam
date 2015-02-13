@@ -28,7 +28,7 @@ CLASS({
   methods: {
   
     createView: function(prop, opt_args) {
-      /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
+      /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.X;
       var v = this.PropertyView.create({prop: prop, args: opt_args}, X);
       this.addChild(v);
@@ -36,7 +36,7 @@ CLASS({
     },
 
     createActionView: function(action, opt_args) {
-      /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info
+      /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info
         specifically for $$DOC{ref:'Action',usePlural:true}. */
       var X = ( opt_args && opt_args.X ) || this.X;
       var modelName = opt_args && opt_args.model_ ?
@@ -44,7 +44,7 @@ CLASS({
         'ActionButton'  ;
       var v = FOAM.lookup(modelName, X).create({action: action}).copyFrom(opt_args);
 
-      this[action.name + 'View'] = v;
+      this[action.name + 'foam.ui.View'] = v;
 
       return v;
     },
@@ -59,7 +59,7 @@ CLASS({
 
     createTemplateView: function(name, opt_args) {
       /*
-        Used by the $$DOC{ref:'Template',text:'$$propName'} sub-$$DOC{ref:'View'}
+        Used by the $$DOC{ref:'Template',text:'$$propName'} sub-$$DOC{ref:'foam.ui.View'}
         creation tag in $$DOC{ref:'Template',usePlural:true}.
       */
       var args = opt_args || {};

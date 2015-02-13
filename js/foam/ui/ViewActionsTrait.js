@@ -33,7 +33,7 @@ CLASS({
         }
       },
       documentation: function() {/*
-          If $$DOC{ref:'Action',usePlural:true} are set on this $$DOC{ref:'View'},
+          If $$DOC{ref:'Action',usePlural:true} are set on this $$DOC{ref:'foam.ui.View'},
           this property enables their automatic display in an $$DOC{ref:'ActionBorder'}.
           If you do not want to show $$DOC{ref:'Action',usePlural:true} or want
           to show them in a different way, leave this false.
@@ -43,7 +43,7 @@ CLASS({
   
   methods: {
     createActionView: function(action, opt_args) {
-      /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info
+      /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info
         specifically for $$DOC{ref:'Action',usePlural:true}. */
       var X = ( opt_args && opt_args.X ) || this.childX || this.X;
       var modelName = opt_args && opt_args.model_ ?
@@ -51,7 +51,7 @@ CLASS({
         'foam.ui.ActionButton'  ;
       var v = FOAM.lookup(modelName, X).create({action: action}).copyFrom(opt_args);
 
-      this[action.name + 'View'] = v;
+      this[action.name + 'foam.ui.View'] = v;
 
       return v;
     },

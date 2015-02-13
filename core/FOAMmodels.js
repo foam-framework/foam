@@ -81,7 +81,6 @@ var files = [
   'arrayDAO',
   'diff',
   'index',
-  [ 'StackView', IN_BROWSER ],
   [ 'MementoMgr', IN_BROWSER ],
   [ 'DAOController', IN_BROWSER ],
   'experimental/protobufparser',

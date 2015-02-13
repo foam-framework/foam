@@ -26,9 +26,9 @@ CLASS({
   package: 'foam.ui',
 
   requires: [
-    'ViewSlider',
-    'OverlaySlider',
-    'FloatingView'
+    'foam.ui.layout.ViewSlider',
+    'foam.ui.layout.OverlaySlider',
+    'foam.ui.layout.FloatingView'
   ],
 
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],

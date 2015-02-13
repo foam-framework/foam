@@ -21,7 +21,7 @@ CLASS({
   package: 'foam.ui',
   
   documentation: function() { /*
-     <p>For $$DOC{ref:'View',usePlural:true} that take data items from a $$DOC{ref:'DAO'}
+     <p>For $$DOC{ref:'foam.ui.View',usePlural:true} that take data items from a $$DOC{ref:'DAO'}
      and display them all, $$DOC{ref:'.'} provides the basic interface. Set or bind
      either $$DOC{ref:'.data'} or $$DOC{ref:'.dao'} to your source $$DOC{ref:'DAO'}.</p>
      <p>Call $$DOC{ref:'.onDAOUpdate'} to indicate a data change that should be

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui.layout',
   name: 'ResponsiveView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   requires: [
     'foam.ui.layout.ResponsiveViewOption'
   ],

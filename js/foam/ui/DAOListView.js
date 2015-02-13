@@ -39,7 +39,7 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'rowView',
-      defaultValue: 'DetailView'
+      defaultValue: 'foam.ui.DetailView'
     },
     {
       name: 'mode',

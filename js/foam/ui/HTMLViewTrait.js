@@ -23,7 +23,7 @@ CLASS({
   requires: ['foam.input.touch.GestureTarget'],
 
   documentation: function() {/*
-    The HTML implementation for $$DOC{ref:'View'}.
+    The HTML implementation for $$DOC{ref:'foam.ui.View'}.
   */},
 
   properties: [
@@ -34,7 +34,7 @@ CLASS({
       factory: function() { return this.instance_.id || this.nextID(); },
       documentation: function() {/*
         The DOM element id for the outermost tag of
-        this $$DOC{ref:'View'}.
+        this $$DOC{ref:'foam.ui.View'}.
       */}
     },
     {
@@ -58,7 +58,7 @@ CLASS({
       name: 'tagName',
       defaultValue: 'span',
       documentation: function() {/*
-          The HTML tag name to use for HTML $$DOC{ref:'View',usePlural:true}.
+          The HTML tag name to use for HTML $$DOC{ref:'foam.ui.View',usePlural:true}.
       */}
     },
     {
@@ -66,8 +66,8 @@ CLASS({
       help: 'CSS class name(s), space separated.',
       defaultValue: '',
       documentation: function() {/*
-          The CSS class names to use for HTML $$DOC{ref:'View',usePlural:true}.
-          Separate class names with spaces. Each instance of a $$DOC{ref:'View'}
+          The CSS class names to use for HTML $$DOC{ref:'foam.ui.View',usePlural:true}.
+          Separate class names with spaces. Each instance of a $$DOC{ref:'foam.ui.View'}
           may have different classes specified.
       */}
     },
@@ -81,7 +81,7 @@ CLASS({
       name: 'extraClassName',
       defaultValue: '',
       documentation: function() {/*
-          For custom $$DOC{ref:'View',usePlural:true}, you may wish to add standard
+          For custom $$DOC{ref:'foam.ui.View',usePlural:true}, you may wish to add standard
           CSS classes in addition to user-specified ones. Set those here and
           they will be appended to those from $$DOC{ref:'.className'}.
       */}
@@ -97,7 +97,7 @@ CLASS({
       documentation: function() {/*
           When creating new HTML content, intializers are run. This corresponds
           to the lifecycle of the HTML (which may be replaced by toHTML() at any
-          time), not the lifecycle of this $$DOC{ref:'View'}.
+          time), not the lifecycle of this $$DOC{ref:'foam.ui.View'}.
       */}
     },
     {
@@ -106,7 +106,7 @@ CLASS({
       documentation: function() {/*
           When destroying HTML content, destructors are run. This corresponds
           to the lifecycle of the HTML (which may be replaced by toHTML() at any
-          time), not the lifecycle of this $$DOC{ref:'View'}.
+          time), not the lifecycle of this $$DOC{ref:'foam.ui.View'}.
       */}
     }
   ],
@@ -145,7 +145,7 @@ CLASS({
       documentation: function() {/*
           Automatic mapping of keyboard events to $$DOC{ref:'Action'} trigger.
           To handle keyboard shortcuts, create and attach $$DOC{ref:'Action',usePlural:true}
-          to your $$DOC{ref:'View'}.
+          to your $$DOC{ref:'foam.ui.View'}.
       */}
     }
   ],
@@ -168,7 +168,7 @@ CLASS({
 
     cssClassAttr: function() {
       /*
-        Returns the full CSS class to use for the $$DOC{ref:'View'} DOM element.
+        Returns the full CSS class to use for the $$DOC{ref:'foam.ui.View'} DOM element.
        */
       if ( ! this.className && ! this.extraClassName ) return '';
 
@@ -185,7 +185,7 @@ CLASS({
 
     bindSubView: function(view, prop) {
       /*
-        Bind a sub-$$DOC{ref:'View'} to a $$DOC{ref:'Property'} of this.
+        Bind a sub-$$DOC{ref:'foam.ui.View'} to a $$DOC{ref:'Property'} of this.
        */
       view.setValue(this.propertyValue(prop.name));
     },
@@ -198,8 +198,8 @@ CLASS({
 
     addChild: function(child) {
       /*
-        Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
-        a sub-$$DOC{ref:'View'} is created, add it to the tree with this method.
+        Maintains the tree structure of $$DOC{ref:'foam.ui.View',usePlural:true}. When
+        a sub-$$DOC{ref:'foam.ui.View'} is created, add it to the tree with this method.
       */
       if ( child.toView_ ) child = child.toView_(); // Maybe the check isn't needed.
       // Check prevents duplicate addChild() calls,
@@ -361,7 +361,7 @@ CLASS({
 
     toHTML: function() {
       /* Generates the complete HTML content of this view, including outermost
-        element. This element is managed by $$DOC{ref:'View'}, so in most cases
+        element. This element is managed by $$DOC{ref:'foam.ui.View'}, so in most cases
         you should use $$DOC{ref:'.toInnerHTML'} to generate your content. */
       this.invokeDestructors();
       return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + '>' +
@@ -386,7 +386,7 @@ CLASS({
 
     initInnerHTML: function() {
       /* Initialize this View and all of it's children. Usually just call
-         $$DOC{ref:'.initHTML'} instead. When implementing a new $$DOC{ref:'View'}
+         $$DOC{ref:'.initHTML'} instead. When implementing a new $$DOC{ref:'foam.ui.View'}
          and adding listeners (including <code>this.on('click')</code>) that
          will be destroyed each time $$DOC{ref:'.toInnerHTML'} is called, you
          will have to override this $$DOC{ref:'Method'} and add them here.
@@ -483,7 +483,7 @@ CLASS({
     },
 
     close: function() {
-      /* Call when permanently closing the $$DOC{ref:'View'}. */
+      /* Call when permanently closing the $$DOC{ref:'foam.ui.View'}. */
       this.$ && this.$.remove();
       this.destroy();
       this.publish('closed');

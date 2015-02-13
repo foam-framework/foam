@@ -18,7 +18,7 @@
 CLASS({
   name: 'DOMPanel',
   package: 'foam.ui.layout',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   imports: [
     'window'
   ],

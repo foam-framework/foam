@@ -16,10 +16,10 @@
  */
 
 CLASS({
-  name: 'View',
+  name: 'foam.ui.View',
   package: 'foam.ui.polymer',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

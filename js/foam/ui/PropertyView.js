@@ -23,8 +23,8 @@ CLASS({
   traits: ['foam.ui.HTMLPropertyViewTrait'], 
 
   documentation: function() {/*
-    Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one
-    $$DOC{ref:'Property'}. The $$DOC{ref:'View'} chosen can be based off the
+    Used by $$DOC{ref:'foam.ui.DetailView'} to generate a sub-$$DOC{ref:'foam.ui.View'} for one
+    $$DOC{ref:'Property'}. The $$DOC{ref:'foam.ui.View'} chosen can be based off the
     $$DOC{ref:'Property.view',text:'Property.view'} value, the $$DOC{ref:'.innerView'} value, or
     $$DOC{ref:'.args'}.model_.
   */},

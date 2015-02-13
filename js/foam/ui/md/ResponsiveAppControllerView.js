@@ -23,7 +23,7 @@ CLASS({
   requires: [
     'foam.ui.layout.ResponsiveViewOption',
     'foam.ui.md.TwoPane',
-    'DetailView'
+    'foam.ui.DetailView'
   ],
 
   properties: [
@@ -32,7 +32,7 @@ CLASS({
       factory: function() {
         return [
           this.ResponsiveViewOption.create({
-            controller: 'DetailView',
+            controller: 'foam.ui.DetailView',
             minWidth: 0
           }),
           this.ResponsiveViewOption.create({
