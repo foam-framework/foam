@@ -46,6 +46,11 @@ CLASS({
       documentation: 'Set true for the floating label (see MD spec) by ' +
           'default, but can be disabled where the label is redundant.',
       defaultValue: true
+    },
+    {
+      name: 'clearAction',
+      documentation: 'When true, will show an X for clearing the text box.',
+      defaultValue: false
     }
   ],
   methods: {
@@ -60,54 +65,58 @@ CLASS({
       } else {
         Events.follow(this.data$, this.softData$);
       }
+    },
+    focus: function() {
+      this.$input.focus();
     }
   },
   templates: [
     function CSS() {/*
-    .md-text-field-container {
-      width: 100%;
-      display: flex;
-      position: relative;
-    }
-    .md-text-field-label {
-      position: absolute;
-      top: 40px;
-      font-size: 14px;
-      font-weight: 500;
-      color: #999;
-      transition: font-size 0.5s, top 0.5s;
-      flex-grow: 1;
-      margin-left: 16px;
-      z-index: 0;
-    }
-    .md-text-field-input {
-      background: transparent;
-      border-bottom: 1px solid #B3E5FC;
-      border: none;
-      color: #444;
-      flex-grow: 1;
-      font-family: Roboto;
-      font-size: 14px;
-      margin: 40px 0 8px 16px;
-      padding: 0 0 7px 0;
-      resize: none;
-      z-index: 1;
-    }
-    .md-text-field-container.md-text-field-no-label .md-text-field-input {
-      font-size: 16px;
-      margin: 8px 0;
-      padding: 8px 2px;
-    }
+      .md-text-field-container {
+        align-items: center;
+        width: 100%;
+        display: flex;
+        position: relative;
+      }
+      .md-text-field-label {
+        position: absolute;
+        top: 40px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #999;
+        transition: font-size 0.5s, top 0.5s;
+        flex-grow: 1;
+        margin-left: 16px;
+        z-index: 0;
+      }
+      .md-text-field-input {
+        background: transparent;
+        border-bottom: 1px solid #e0e0e0 !important;
+        border: none;
+        color: #444;
+        flex-grow: 1;
+        font-family: Roboto;
+        font-size: 14px;
+        margin: 40px 16px 8px;
+        padding: 0 0 7px 0;
+        resize: none;
+        z-index: 1;
+      }
+      .md-text-field-container.md-text-field-no-label .md-text-field-input {
+        font-size: 16px;
+        margin: 8px 0;
+        padding: 8px 2px;
+      }
 
-    .md-text-field-input:focus {
-      border-bottom: 2px solid #0288D1;
-      padding: 0 0 6px 0;
-      outline: none;
-    }
-    .md-text-field-label-offset {
-      font-size: 12px;
-      top: 16px;
-    }
+      .md-text-field-input:focus {
+        border-bottom: 2px solid #0288D1;
+        padding: 0 0 6px 0;
+        outline: none;
+      }
+      .md-text-field-label-offset {
+        font-size: 12px;
+        top: 16px;
+      }
     */},
     function toHTML() {/*
       <%
@@ -139,9 +148,24 @@ CLASS({
         <% } else { %>
           <input id="{{{input}}}" type="text" class="md-text-field-input"
               <%= this.floatingLabel ? '' : 'placeholder="' + this.label + '"' %> />
+          <% if ( this.clearAction ) { %>
+            $$clear
+          <% } %>
         <% } %>
       </div>
     */}
+  ],
+
+  actions: [
+    {
+      name: 'clear',
+      label: '',
+      iconUrl: 'images/ic_cancel_24dp.png',
+      isAvailable: function() { return !! this.softData.length; },
+      action: function() {
+        this.softData = '';
+      }
+    }
   ],
 
   listeners: [

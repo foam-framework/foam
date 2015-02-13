@@ -31,7 +31,7 @@ CLASS({
     'FloatingView'
   ],
 
-  traits: ['PositionedDOMViewTrait'],
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   properties: [
     {

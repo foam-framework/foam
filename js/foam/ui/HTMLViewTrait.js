@@ -20,6 +20,8 @@ CLASS({
   package: 'foam.ui',
   label: 'HTMLView',
 
+  requires: ['foam.input.touch.GestureTarget'],
+
   documentation: function() {/*
     The HTML implementation for $$DOC{ref:'View'}.
   */},
@@ -243,7 +245,7 @@ CLASS({
       if ( event === 'click' && this.X.gestureManager ) {
         var self = this;
         var manager = this.X.gestureManager;
-        var target = this.X.GestureTarget.create({
+        var target = this.GestureTarget.create({
           containerID: opt_id,
           handler: {
             tapClick: function() {

@@ -1756,8 +1756,8 @@ CLASS({
 
       // TODO: Either make behave like DetailView or else
       // make a mode of DetailView.
-      for ( var i = 0 ; i < model.properties.length ; i++ ) {
-        var prop = model.properties[i];
+      for ( var i = 0 ; i < model.properties_.length ; i++ ) {
+        var prop = model.properties_[i];
 
         if ( prop.hidden ) continue;
 
@@ -1810,8 +1810,8 @@ CLASS({
       out.push(model.help);
       out.push('</div>');
 
-      for ( var i = 0 ; i < model.properties.length ; i++ ) {
-        var prop = model.properties[i];
+      for ( var i = 0 ; i < model.properties_.length ; i++ ) {
+        var prop = model.properties_[i];
 
         if ( prop.hidden ) continue;
 
@@ -2160,7 +2160,7 @@ CLASS({
       defaultValue: 'View'
     },
     {
-      model_: 'DOMElementProperty',
+      model_: 'foam.core.types.DOMElementProperty',
       name: 'viewContainer'
     }
   ],
@@ -2190,6 +2190,9 @@ CLASS({
 CLASS({
   name: 'SwipeAltView',
   extendsModel: 'View',
+  requires: [
+    'foam.input.touch.GestureTarget'
+  ],
 
   properties: [
     {
@@ -2263,7 +2266,7 @@ CLASS({
       hidden: true,
       transient: true,
       factory: function() {
-        return this.X.GestureTarget.create({
+        return this.GestureTarget.create({
           containerID: this.id,
           handler: this,
           gesture: 'horizontalScroll'
@@ -3684,7 +3687,7 @@ CLASS({
 CLASS({
   name: 'ActionSheetView',
   extendsModel: 'View',
-  traits: ['PositionedDOMViewTrait'],
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   properties: [
     'actions',

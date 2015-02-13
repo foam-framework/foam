@@ -16,6 +16,21 @@
  */
  
 
+// CLASS({
+//   name: 'InheritedProperty',
+//   extendsModel: 'Property',
+//   package: 'foam.views',
+//   traits: ['foam.patterns.InheritedPropertyTrait']
+// });
+
+// CLASS({
+//   name: 'ContextMutableProperty',
+//   extendsModel: 'Property',
+//   package: 'foam.views',
+//   traits: ['foam.patterns.ContextMutablePropertyTrait']
+// });
+
+
 
 //
 // CLASS({

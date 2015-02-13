@@ -15,86 +15,88 @@
  * limitations under the License.
  */
 
-// Asynchronous eval workaround for lack of eval in Chrome Apps.
 
-TemplateUtil.compile = function() {
-  return function() {
-    return this.name_ + " wasn't required.  Models must be arequired()'ed for Templates to be compiled in Packaged Apps.";
+// Asynchronous eval workaround for lack of eval in Chrome Apps. Do not add
+// workaround in Cordova Chrome Apps.
+if ( ! (window.cordova && window.chrome) ) {
+  TemplateUtil.compile = function() {
+    return function() {
+      return this.name_ + " wasn't required.  Models must be arequired()'ed for Templates to be compiled in Packaged Apps.";
+    };
   };
-};
 
-var __EVAL_CALLBACKS__ = {};
-var aeval = (function() {
-  var nextID = 0;
+  var __EVAL_CALLBACKS__ = {};
+  var aeval = (function() {
+    var nextID = 0;
 
-  var future = afuture();
-  if ( ! document.body ) window.addEventListener('load', future.set);
-  else future.set();
+    var future = afuture();
+    if ( ! document.body ) window.addEventListener('load', future.set);
+    else future.set();
 
-  return function(src) {
-    return aseq(
-      future.get,
-      function(ret) {
-        var id = 'c' + (nextID++);
+    return function(src) {
+      return aseq(
+          future.get,
+          function(ret) {
+            var id = 'c' + (nextID++);
 
-        var newjs = ['__EVAL_CALLBACKS__["' + id + '"](' + src + ');'];
-        var blob  = new Blob(newjs, {type: 'text/javascript'});
-        var url   = window.URL.createObjectURL(blob);
+            var newjs = ['__EVAL_CALLBACKS__["' + id + '"](' + src + ');'];
+            var blob  = new Blob(newjs, {type: 'text/javascript'});
+            var url   = window.URL.createObjectURL(blob);
 
-        __EVAL_CALLBACKS__[id] = function(data) {
-          delete __EVAL_CALLBACKS__[id];
-          // console.log(data);
-          ret && ret.call(this, data);
-        };
+            __EVAL_CALLBACKS__[id] = function(data) {
+              delete __EVAL_CALLBACKS__[id];
+              // console.log(data);
+              ret && ret.call(this, data);
+            };
 
-        var script = document.createElement('script');
-        script.src = url;
-        script.onload = function() {
-          this.remove();
-          window.URL.revokeObjectURL(url);
-          //        document.body.removeChild(this);
-        };
-        document.body.appendChild(script);
-      });
-  };
-})();
+            var script = document.createElement('script');
+            script.src = url;
+            script.onload = function() {
+              this.remove();
+              window.URL.revokeObjectURL(url);
+              //        document.body.removeChild(this);
+            };
+            document.body.appendChild(script);
+          });
+    };
+  })();
 
-var TEMPLATE_FUNCTIONS = [];
+  var TEMPLATE_FUNCTIONS = [];
 
-var aevalTemplate = function(t, model) {
-  var doEval_ = function(t) {
-//    console.time('parse');
-    var code = TemplateCompiler.parseString(t.template);
-//    console.timeEnd('parse');
+  var aevalTemplate = function(t, model) {
+    var doEval_ = function(t) {
+      //    console.time('parse');
+      var code = TemplateCompiler.parseString(t.template);
+      //    console.timeEnd('parse');
 
-    if ( code[0] ) return aconstant(ConstantTemplate(t.template));
+      if ( code[0] ) return aconstant(ConstantTemplate(t.template));
 
-    var args = ['opt_out'];
-    if ( t.args ) {
-      for ( var i = 0 ; i < t.args.length ; i++ ) {
-        args.push(t.args[i].name);
+      var args = ['opt_out'];
+      if ( t.args ) {
+        for ( var i = 0 ; i < t.args.length ; i++ ) {
+          args.push(t.args[i].name);
+        }
       }
-    }
-    return /*atime('eval ' + model.id + '.' + t.name,*/ aeval('function(' + args.join(',') + '){' + code[1] + '}');
-  };
-  var doEval = function(t) {
-    try {
-      return doEval_(t);
-    } catch (err) {
-      console.log('Template Error: ', err);
-      console.log(code);
-      return aconstant(function() {return 'TemplateError: Check console.';});
-    }
-  }
+      return /*atime('eval ' + model.id + '.' + t.name,*/ aeval('function(' + args.join(',') + '){' + code[1] + '}');
+    };
+    var doEval = function(t) {
+      try {
+        return doEval_(t);
+      } catch (err) {
+        console.log('Template Error: ', err);
+        console.log(code);
+        return aconstant(function() {return 'TemplateError: Check console.';});
+      }
+    };
 
-  var i = TEMPLATE_FUNCTIONS.length;
-  TEMPLATE_FUNCTIONS[i] = '';
-  return aseq(
-    t.futureTemplate,
-    function(ret, t) { doEval(t)(ret); },
-    function(ret, f) {
-      TEMPLATE_FUNCTIONS[i] = f;
-      ret(f);
-    }
-  );
-};
+    var i = TEMPLATE_FUNCTIONS.length;
+    TEMPLATE_FUNCTIONS[i] = '';
+    return aseq(
+        t.futureTemplate,
+        function(ret, t) { doEval(t)(ret); },
+        function(ret, f) {
+          TEMPLATE_FUNCTIONS[i] = f;
+          ret(f);
+        });
+  };
+}

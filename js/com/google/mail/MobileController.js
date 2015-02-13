@@ -19,23 +19,24 @@ CLASS({
   name: 'MobileController',
   package: 'com.google.mail',
   description: 'Mobile Gmail',
-  traits: ['PositionedDOMViewTrait'],
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   extendsModel: 'View',
 
   requires: [
     'foam.ui.md.AppController',
-    'BusyFlagTracker',
-    'BusyStatus',
+    'foam.util.busy.BusyFlagTracker',
+    'foam.util.busy.BusyStatus',
     'CachingDAO',
     'DetailView',
-    'FloatingView',
-    'GestureManager',
+    'foam.ui.layout.FloatingView',
+    'foam.input.touch.GestureManager',
     'IDBDAO',
     'MDAO',
-    'OAuth2Redirect as EasyOAuth2',
-    'TouchManager',
+    'foam.oauth2.OAuth2Redirect as Auth',
+    'foam.input.touch.TouchManager',
     'XHR',
+    'StackView',
     'com.google.mail.ComposeView',
     'com.google.mail.EMailCitationView',
     'com.google.mail.EMailDAO',
@@ -105,7 +106,7 @@ CLASS({
         v.setJsonpFuture(this.X, this.jsonpFuture);
       },
       factory: function() {
-        return this.EasyOAuth2.create({
+        return this.Auth.create({
           clientId: "945476427475-oaso9hq95r8lnbp2rruo888rl3hmfuf8.apps.googleusercontent.com",
           clientSecret: "GTkp929u268_SXAiHitESs-1",
           scopes: [
@@ -211,7 +212,7 @@ CLASS({
     },
 
     openComposeView: function(X, email) {
-      var view  = X.FloatingView.create({
+      var view  = X.foam.ui.layout.FloatingView.create({
         view: this.ComposeView.create({
           data: email,
         }, this.controller.X)
@@ -322,7 +323,7 @@ CLASS({
       name: 'compose',
       label: '+',
       action: function() {
-        var view = this.X.FloatingView.create({
+        var view = this.X.foam.ui.layout.FloatingView.create({
           view: this.X.com.google.mail.ComposeView.create({
             data: this.X.foam.lib.email.EMail.create({
               id: 'draft_' + Math.floor(Math.random() * 0xFFFFFFFF).toString(16),

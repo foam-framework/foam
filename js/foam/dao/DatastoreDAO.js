@@ -78,8 +78,8 @@ MODEL({
       var key = this.DatastoreKey.create({ path: json.key.path });
       this.id = key.string;
 
-      for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
-        var prop = this.model_.properties[i];
+      for ( var i = 0 ; i < this.model_.properties_.length ; i++ ) {
+        var prop = this.model_.properties_[i];
         if ( prop.datastoreKey ) {
           this[prop.name] = prop.fromDatastore(json.properties[prop.datastoreKey]);
         }
@@ -96,8 +96,8 @@ MODEL({
         json.key = { path: key.path };
       }
 
-      for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
-        var prop = this.model_.properties[i];
+      for ( var i = 0 ; i < this.model_.properties_.length ; i++ ) {
+        var prop = this.model_.properties_[i];
         if ( prop.datastoreKey ) {
           json.properties[prop.datastoreKey] = prop.toDatastore(this[prop.name]);
         }

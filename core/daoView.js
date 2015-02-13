@@ -98,7 +98,7 @@ CLASS({
       var choices = [
         [ { f: function() { return ''; } }, 'none' ]
       ];
-      this.model.properties.orderBy(Property.LABEL).select({put: function(p) {
+      this.model.properties_.orderBy(Property.LABEL).select({put: function(p) {
         choices.push([p, p.label]);
       }});
       this.row.choices = choices;
@@ -343,8 +343,11 @@ CLASS({
 CLASS({
   name: 'ScrollView',
   extendsModel: 'AbstractDAOView',
+  requires: [
+    'foam.util.busy.BusyStatus'
+  ],
 
-  traits: ['VerticalScrollNativeTrait'],
+  traits: ['foam.input.touch.VerticalScrollNativeTrait'],
 
   documentation: function() {/*
     <p>Infinite scrolling view. Expects a $$DOC{ref: ".dao"} and displays a subset of the data at a time, minimizing the amount of DOM creation and manipulation.</p>
@@ -494,7 +497,7 @@ CLASS({
     {
       name: 'spinnerBusyStatus',
       factory: function() {
-        return this.X.BusyStatus.create();
+        return this.BusyStatus.create();
       }
     },
     {
@@ -522,7 +525,7 @@ CLASS({
         this.$.style.height = '100%';
       }
 
-      this.$.ownerDocument.defaultView.addEventListener('resize', this.onResize);
+      this.addScrollListener();
       this.onResize();
 
       // Grab the height of the -rowsize div, then drop that div.
@@ -643,6 +646,8 @@ CLASS({
       this.loadedBottom = -1;
       this.oldVisibleBottom = -1;
       this.oldVisibleTop = -1;
+
+      this.removeScrollListener();
     },
 
     // Clears all cached data, when the DAO changes.
@@ -661,6 +666,15 @@ CLASS({
       this.loadedBottom = -1;
       this.oldVisibleBottom = -1;
       this.oldVisibleTop = -1;
+    },
+
+    addScrollListener: function() {
+      console.log('Attempt to add scroll listener');
+      if ( this.$ ) this.$.ownerDocument.defaultView.addEventListener('resize', this.onResize);
+    },
+    removeScrollListener: function() {
+      console.log('Attempt to remove scroll listener');
+      if ( this.$ ) this.$.ownerDocument.defaultView.removeEventListener('resize', this.onResize);
     }
   },
 

@@ -144,7 +144,7 @@ function asendjson(path) {
 }
 
 // This fetches all the tests up front.
-var clientDAO = ClientDAO.create({
+var clientDAO = X.foam.core.dao.ClientDAO.create({
   asend: asendjson(window.location.origin + '/api'),
   model: Model
 });

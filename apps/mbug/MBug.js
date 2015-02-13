@@ -6,19 +6,20 @@ CLASS({
   requires: [
     'foam.ui.md.ResponsiveAppControllerView',
     'foam.ui.md.AppController',
+    'foam.core.dao.SplitDAO',
     'ChangeProjectView',
     'foam.ui.DetailView',
-    'GestureManager',
+    'foam.input.touch.GestureManager',
     'IssueCitationView',
     'IssueView',
     'QBug',
     'foam.ui.StackView',
-    'TouchManager',
+    'foam.input.touch.TouchManager',
     'IDBDAO',
     'DAOVersion'
   ],
 
-  traits: ['PositionedDOMViewTrait'],
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   exports: [
     'daoVersionDao',
@@ -51,7 +52,7 @@ CLASS({
 
         project.IssueNetworkDAO.batchSize = 25;
 
-        Y.issueDAO = Y.SplitDAO.create({
+        Y.issueDAO = this.SplitDAO.create({
           model: Y.QIssue,
           remote: project.IssueNetworkDAO,
           placeholderFactory: constantFn(
@@ -61,7 +62,7 @@ CLASS({
               summary: 'Loading...',
               starred: false
             }))
-        });
+        }, Y);
 
         Y.issueDAO = Y.KeywordDAO.create({
           delegate: Y.issueDAO
@@ -275,7 +276,7 @@ CLASS({
     'foam.ui.md.AppController',
     'ImageView'
   ],
-  traits: ['PositionedDOMViewTrait'],
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   properties: [
     { name: 'preferredWidth', defaultValue: 304 },

@@ -223,7 +223,7 @@ CLASS({
   },
   templates: [
     function toDetailHTML() {/*
-    <div id="<%= this.setClass('searchMode', function() { return self.data.searchMode; }, this.id) %>"  class="mdui-app-controller">
+    <div id="<%= this.id %>"  class="mdui-app-controller">
        <div class="header">
          <span class="default">
            $$menu
@@ -251,13 +251,18 @@ CLASS({
             self.qView.$.placeholder = "Search " + v.views[v.index].label.toLowerCase();
           });
         }
-        self.data.searchMode$.addListener(EventService.merged(function() {
-          self.qView.$.focus();
-        }, 100));
+        self.data.searchMode$.addListener(function() {
+          // The setClass() must be done manually from this context because:
+          // 1. The AppController does not have access to its view (self).
+          // 2. Setting the class first, then invoking self.qView.focus() must occur in the context
+          //    of a mouseup/touchend handler in order for the virtual keyboard to appear correctly.
+          DOM.setClass(self.X.$(self.id), 'searchMode', self.data.searchMode);
+          if ( self.data.searchMode ) self.qView.focus();
+        }, 100);
       });
 
       this.on('touchstart', function(){ console.log('blurring'); self.qView.$.blur(); }, this.data.filteredDAOView.id);
-      this.on('click', function(){ console.log('focusing'); self.qView.$.focus(); }, this.qView.id);
+      this.on('click', function(){ console.log('focusing'); self.qView.focus(); }, this.qView.id);
     %>
   */},
     function CSS() {/*

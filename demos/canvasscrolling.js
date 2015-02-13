@@ -85,7 +85,7 @@ CLASS({
 
       if ( this.X.gestureManager ) {
         var manager = this.X.gestureManager;
-        var target = this.X.GestureTarget.create({
+        var target = this.X.foam.input.touch.GestureTarget.create({
           containerID: this.view.id,
           handler: this,
           gesture: 'verticalScrollMomentum'
@@ -4675,8 +4675,8 @@ var dao = JSONUtil.arrayToObjArray(X, [
 
 dao.dao;
 
-this.X.touchManager = this.X.TouchManager.create({});
-var gestureManager = this.X.GestureManager.create({});
+this.X.touchManager = this.X.foam.input.touch.TouchManager.create({});
+var gestureManager = this.X.foam.input.touch.GestureManager.create({});
 
 var scroller = this.X.ExperimentalScrollView.create({ dao: dao });
 

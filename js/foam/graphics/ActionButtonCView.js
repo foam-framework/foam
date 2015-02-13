@@ -21,7 +21,10 @@ CLASS({
 
   extendsModel: 'foam.graphics.CView',
 
-  requires: [ 'foam.ui.md.Halo' ],
+  requires: [
+    'foam.ui.md.Halo',
+    'foam.input.touch.GestureTarget'
+  ],
   imports: [ 'gestureManager' ],
 
   properties: [
@@ -101,7 +104,7 @@ CLASS({
       hidden: true,
       transient: true,
       lazyFactory: function() {
-        return this.X.GestureTarget.create({
+        return this.GestureTarget.create({
           containerID: this.view.id,
           handler: this,
           gesture: 'tap'
@@ -149,9 +152,7 @@ CLASS({
           if ( ! this.iconWidth  ) this.iconWidth  = this.image_.width;
           if ( ! this.iconHeight ) this.iconHeight = this.image_.height;
           if ( this.canvas ) {
-            this.canvas.save();
-            this.paint();
-            this.canvas.restore();
+            this.view.paint();
           }
         }.bind(this);
 
@@ -238,7 +239,6 @@ CLASS({
 
     paintSelf: function() {
       var c = this.canvas;
-
       this.halo.paint();
 
       if ( this.font ) c.font = this.font;

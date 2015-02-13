@@ -19,25 +19,18 @@ CLASS({
 var demos = JSONUtil.arrayToObjArray(X, [
   {
     name: 'Solar System',
-    path: 'SolarSystem.html',
+    path: '/index.html?model=foam.demos.SolarSystem',
     description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.  This was the first graphical FOAM demo to be written (in 2011).  I\'ve added the <b>old</b> keyword to this, and other older, non-modernized demos.',
     keywords: ['animation', 'reactive', 'old'],
-    src: 'SolarSystem.js',
+    src: '/js/foam/demos/SolarSystem.js',
     image: 'SolarSystem.png',
-  },/*
-  {
-    name: 'Canvas Scrolling',
-    path: 'canvasscrolling.html',
-    description: 'A demonstration of high-performance canvas (DOM-less) scrolling..',
-    keywords: ['canvas'],
-    src: 'canvasscrolling.js',
-    image: 'canvasscrolling.png',
   },
-  */{
+  {
     name: 'Reactive Clocks',
-    path: 'ReactiveClocks.html',
+    path: '/index.html?model=foam.demos.ReactiveClocks',
     description: 'A simple demo of reactive programming.  The first clocks reacts to the position of the mouse while the second clock reacts to the position of the first clock and to time.  Reacting to time essentially gives you an animation system for free.',
     keywords: ['animation', 'reactive'],
+    src: '/js/foam/demos/ReactiveClocks.js',
     image: 'ReactiveClocks.png',
     video: 'part11.ogv'
   },
@@ -300,6 +293,13 @@ var demos = JSONUtil.arrayToObjArray(X, [
     keywords: ['docs', 'demo'],
     src: '../apps/overflow/',
     image: 'Overflow.png'
+  },
+  {
+    name: 'FOAM Modeller',
+    path: '/index.html?model=foam.apps.Modeller',
+    description: 'A demo of the IDE potential for FOAM due to its meta-modelling.',
+    keywords: ['dev', 'ide', 'model'],
+    src: '/js/foam/apps/Modeller.js'
   }
 ], Demo).dao;
 

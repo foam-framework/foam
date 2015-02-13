@@ -1,7 +1,7 @@
 CLASS({
   name: 'IssueView',
   extendsModel: 'UpdateDetailView',
-  traits: ['VerticalScrollNativeTrait'],
+  traits: ['foam.input.touch.VerticalScrollNativeTrait'],
   requires: [
     'CCView',
     'CommentView',

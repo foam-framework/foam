@@ -25,7 +25,7 @@ CLASS({
     plan to export or import data, do not use this trait. This trait expects
     to be applied after $$DOC{ref:'foam.patterns.ChildTreeTrait'}.
   */},
-  
+
   properties: [
     {
       name: 'data',
@@ -41,7 +41,7 @@ CLASS({
         propagate the change to children. Those children are responsible
         for either passing on the change or exporting to their contexts
         if they actually handle data.
-      */},
+      */}
     }
   ],
   methods: {

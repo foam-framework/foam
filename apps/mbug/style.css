@@ -1,3 +1,5 @@
+html, body { overflow: initial; }
+
 .actionButton-enterSearchMode {
   margin: 4px 0;
 }

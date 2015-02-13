@@ -109,7 +109,7 @@ CLASS({
               }
 
               var buffer = new Buffer(
-                self.apache2Header() + "CLASS(" + obj.toJSON() + ");\n");
+                self.apache2Header() + "CLASS(" + JSONUtil.where(NOT_TRANSIENT).stringify(obj) + ");\n");
               var offset = 0;
 
               awhile(

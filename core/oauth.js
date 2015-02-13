@@ -15,79 +15,12 @@
  * limitations under the License.
  */
 
-var OAuthXhr = {
-  create: function(xhr, responsetype, agent) {
-    xhr.responseType = responsetype;
-    return {
-      __proto__: this,
-      xhr: xhr,
-      agent: agent
-    };
-  },
-
-  set responseType(type) {
-    this.xhr.responseType = type;
-  },
-  get responseType() {
-    return this.xhr.responseType;
-  },
-
-  asend: function(ret, method, url, payload) {
-    var self = this;
-    var finished = false;
-    var attempts = 0;
-    awhile(
-      function() { return !finished; },
-      aseq(
-        function(ret) {
-          self.xhr.open(method, url);
-          self.xhr.setRequestHeader('Authorization', 'Bearer ' + self.agent.accessToken);
-          // TODO: This should be added by a decorator, or via a parameter.
-          self.xhr.setRequestHeader("Content-Type", "application/json");
-          self.xhr.asend(ret, payload);
-        },
-        function(ret) {
-          if ( self.xhr.status == 401 ) {
-            if (attempts >= 2) {
-              finished = true;
-              ret();
-              return;
-            }
-            attempts++;
-            self.agent.refresh(ret);
-            return;
-          }
-          finished = true;
-          ret(self.xhr.response, self.xhr.status);
-        }))(ret);
-  }
-};
-
-CLASS({
-  name: 'OAuthXhrFactory',
-  label: 'OAuthXhrFactory',
-
-  properties: [
-    {
-      name: 'authAgent',
-      type: 'AuthAgent',
-      required: true
-    },
-    {
-      model_: 'StringProperty',
-      name: 'responseType'
-    }
-  ],
-
-  methods: {
-    make: function() {
-      return OAuthXhr.create(new XMLHttpRequest(), this.responseType, this.authAgent);
-    }
-  }
-});
-
 CLASS({
   name: 'OAuth2',
+  package: 'foam.oauth2',
+  requires: [
+    'XHR',
+  ],
   label: 'OAuth 2.0',
 
   properties: [
@@ -133,19 +66,19 @@ CLASS({
     setJsonpFuture: function(X, future) {
       var agent = this;
       future.set((function() {
-        var factory = X.OAuthXhrFactory.create({
+        var factory = agent.XHR.xbind({
           authAgent: agent,
-          responseType: "json"
-        });
+          responseType: "json",
+          retries: 3
+        })
 
         return function(url, params, opt_method, opt_payload) {
           return function(ret) {
-            var xhr = factory.make();
-            xhr.responseType = "json";
+            var xhr = factory.create();
             return xhr.asend(ret,
-                             opt_method ? opt_method : "GET",
                              url + (params ? '?' + params.join('&') : ''),
-                             opt_payload);
+                             opt_payload,
+                             opt_method ? opt_method : "GET");
           };
         };
       })());
@@ -169,9 +102,10 @@ function deferJsonP(X) {
 
 CLASS({
   name: 'OAuth2WebClient',
+  package: 'foam.oauth2',
   help: 'Strategy for OAuth2 when running as a web page.',
 
-  extendsModel: 'OAuth2',
+  extendsModel: 'foam.oauth2.OAuth2',
 
   methods: {
     refreshNow_: function(ret, opt_forceInteractive) {
@@ -206,9 +140,10 @@ CLASS({
 
 CLASS({
   name: 'OAuth2ChromeApp',
+  package: 'foam.oauth2',
   help: 'Strategy for OAuth2 when running as a Chrome App',
 
-  extendsModel: 'OAuth2',
+  extendsModel: 'foam.oauth2.OAuth2',
 
   properties: [
     {
@@ -341,7 +276,8 @@ CLASS({
 
 CLASS({
   name: 'OAuth2ChromeIdentity',
-  extendsModel: 'OAuth2',
+  package: 'foam.oauth2',
+  extendsModel: 'foam.oauth2.OAuth2',
   help: 'OAuth2 strategy that uses the Chrome identity API',
   methods: {
     refreshNow_: function(ret) {
@@ -358,7 +294,8 @@ CLASS({
 
 CLASS({
   name: 'OAuth2Redirect',
-  extendsModel: 'OAuth2',
+  package: 'foam.oauth2',
+  extendsModel: 'foam.oauth2.OAuth2',
   help: 'OAuth2 strategy that uses the redirect.',
   imports: [
     'window',
@@ -454,7 +391,8 @@ CLASS({
 
 CLASS({
   name: 'OAuth2RedirectWithServer',
-  extendsModel: 'OAuth2',
+  package: 'foam.oauth2',
+  extendsModel: 'foam.oauth2.OAuth2',
   documentation: 'OAuth2 strategy that redirects the whole page. Uses the ' +
       'web server flow, so you need a server. Expects to find the access ' +
       'access token in LocalStorage, under the key "__foam_oauth_token". If ' +
@@ -485,9 +423,9 @@ CLASS({
 
 // TODO: Register model for model, or fix the facade.
 if ( window.cordova || window.PhoneGap || window.phonegap) {
-  var EasyOAuth2 = OAuth2ChromeIdentity
+  var EasyOAuth2 = X.foam.oauth2.OAuth2ChromeIdentity
 } else if ( window.chrome && window.chrome.runtime && window.chrome.runtime.id ) {
-  EasyOAuth2 = OAuth2ChromeApp;
+  EasyOAuth2 = X.foam.oauth2.OAuth2ChromeApp;
 } else {
-  EasyOAuth2 = OAuth2WebClient;
+  EasyOAuth2 = X.foam.oauth2.OAuth2WebClient;
 }

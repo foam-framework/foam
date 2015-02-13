@@ -1,6 +1,6 @@
-/**
+/*
  * @license
- * Copyright 2013 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,36 @@
  */
 
 CLASS({
-  name: 'ClientDAO',
-  extendsModel: 'AbstractDAO',
-
-  properties: [
-    {
-      name: 'asend',
-      help: 'afunc used to send request to the DAOServer.',
-      required: true
-    },
-    {
-      name: 'model',
-      required: true
-    },
-    {
-      name: 'subject',
-      factory: function() { return this.model.name + 'DAO'; }
-    },
-  ],
-
-  methods: {
-    oneShot_: function(method, params, sink) {
+   "model_": "Model",
+   "package": "foam.core.dao",
+   "name": "ClientDAO",
+   "extendsModel": "AbstractDAO",
+   "properties": [
+      {
+         "model_": "Property",
+         "name": "asend",
+         "required": true,
+         "help": "afunc used to send request to the DAOServer."
+      },
+      {
+         "model_": "Property",
+         "name": "model",
+         "required": true
+      },
+      {
+         "model_": "Property",
+         "name": "subject",
+         "factory": function () { return this.model.name + 'DAO'; }
+      }
+   ],
+   "actions": [],
+   "constants": [],
+   "messages": [],
+   "methods": [
+      {
+         "model_": "Method",
+         "name": "oneShot_",
+         "code": function (method, params, sink) {
       var self = this;
       this.asend(function(resp) {
         if ( !sink ) return;
@@ -57,16 +66,36 @@ CLASS({
         params: params
       });
     },
-    put: function(obj, sink) {
+         "args": []
+      },
+      {
+         "model_": "Method",
+         "name": "put",
+         "code": function (obj, sink) {
       this.oneShot_('put', [obj], sink);
     },
-    remove: function(obj, sink) {
+         "args": []
+      },
+      {
+         "model_": "Method",
+         "name": "remove",
+         "code": function (obj, sink) {
       this.oneShot_('remove', [obj], sink);
     },
-    find: function(q, sink) {
+         "args": []
+      },
+      {
+         "model_": "Method",
+         "name": "find",
+         "code": function (q, sink) {
       this.oneShot_('find', [q], sink);
     },
-    removeAll: function(sink, options) {
+         "args": []
+      },
+      {
+         "model_": "Method",
+         "name": "removeAll",
+         "code": function (sink, options) {
       // If sink.remove is not defined, we can skip the expensive returning of data.
       // If we need results back, the server returns an array of removed values.
       var hasSink = !!(sink && sink.remove);
@@ -84,7 +113,12 @@ CLASS({
       });
       return future;
     },
-    select: function(sink, options) {
+         "args": []
+      },
+      {
+         "model_": "Method",
+         "name": "select",
+         "code": function (sink, options) {
       sink = sink || [];
       var future = afuture();
 
@@ -128,6 +162,14 @@ CLASS({
       }
 
       return future.get;
-    }
-  }
+    },
+         "args": []
+      }
+   ],
+   "listeners": [],
+   "templates": [],
+   "models": [],
+   "tests": [],
+   "relationships": [],
+   "issues": []
 });

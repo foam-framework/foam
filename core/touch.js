@@ -17,6 +17,7 @@
 
 CLASS({
   name: 'InputPoint',
+  package: 'foam.input.touch',
   properties: [
     'id', 'type',
     { name: 'done', model_: 'BooleanProperty' },
@@ -83,6 +84,11 @@ CLASS({
 
 CLASS({
   name: 'TouchManager',
+  package: 'foam.input.touch',
+
+  requires: [
+    'foam.input.touch.InputPoint'
+  ],
 
   properties: [
     { name: 'touches', factory: function() { return {}; } }
@@ -122,7 +128,7 @@ CLASS({
     },
 
     touchStart: function(i, t, e) {
-      this.touches[i] = this.X.InputPoint.create({
+      this.touches[i] = this.InputPoint.create({
         id: i,
         type: 'touch',
         x: t.pageX,
@@ -244,15 +250,23 @@ CLASS({
 
 CLASS({
   name: 'Gesture',
+  package: 'foam.input.touch',
   help: 'Installed in the GestureManager to watch for a particular kind of gesture',
 
   properties: [
     { name: 'name', required: true }
   ],
 
+  // YES   = "This gesture was definitely recognized."
+  // NO    = "This gesture is definietly not recognized."
+  // MAYBE = "This gesture might be recognized. If nothing else is recognized,
+  //          default to this one."
+  // WAIT  = "We are not done attempting to recognize this gesture yet. Do not
+  //          default to any MAYBEs until we are."
   constants: {
-    YES: 2,
-    MAYBE: 1,
+    YES: 3,
+    MAYBE: 2,
+    WAIT: 1,
     NO: 0
   },
 
@@ -285,7 +299,8 @@ CLASS({
 
 CLASS({
   name: 'ScrollGesture',
-  extendsModel: 'Gesture',
+  package: 'foam.input.touch',
+  extendsModel: 'foam.input.touch.Gesture',
   help: 'Gesture that understands vertical or horizontal scrolling.',
 
   properties: [
@@ -505,6 +520,10 @@ CLASS({
 
 CLASS({
   name: 'VerticalScrollNativeTrait',
+  package: 'foam.input.touch',
+  requires: [
+    'foam.input.touch.GestureTarget'
+  ],
   documentation: 'Makes (part of) a View scroll vertically. Expects scrollerID to be a property, giving the DOM ID of the element with overflow:scroll or similar. Any onScroll listener will be called on each scroll event, as per the verticalScrollNative gesture. NB: this.onScroll should be a listener, because this trait does not bind it.',
   properties: [
     {
@@ -522,7 +541,7 @@ CLASS({
           console.warn('VerticalScrollNativeTrait attached to View without a scrollerID property set.');
           return '';
         }
-        return this.X.GestureTarget.create({
+        return this.GestureTarget.create({
           containerID: this.scrollerID,
           handler: this,
           gesture: 'verticalScrollNative'
@@ -550,7 +569,8 @@ CLASS({
 
 CLASS({
   name: 'TapGesture',
-  extendsModel: 'Gesture',
+  package: 'foam.input.touch',
+  extendsModel: 'foam.input.touch.Gesture',
   help: 'Gesture that understands a quick, possible multi-point tap. Calls into the handler: tapClick(numberOfPoints).',
 
   properties: [
@@ -580,7 +600,7 @@ CLASS({
         if ( p.done ) doneCount++;
       }
       if ( response === this.NO ) return response;
-      return doneCount === keys.length ? this.YES : this.MAYBE;
+      return doneCount === keys.length ? this.YES : this.WAIT;
     },
 
     attach: function(map, handlers) {
@@ -597,7 +617,8 @@ CLASS({
 
 CLASS({
   name: 'DragGesture',
-  extendsModel: 'Gesture',
+  package: 'foam.input.touch',
+  extendsModel: 'foam.input.touch.Gesture',
   help: 'Gesture that understands a hold and drag with mouse or one touch point.',
   properties: [
     {
@@ -659,7 +680,8 @@ CLASS({
 
 CLASS({
   name: 'PinchTwistGesture',
-  extendsModel: 'Gesture',
+  package: 'foam.input.touch',
+  extendsModel: 'foam.input.touch.Gesture',
   help: 'Gesture that understands a two-finger pinch/stretch and rotation',
   properties: [
     {
@@ -769,6 +791,7 @@ CLASS({
 
 CLASS({
   name: 'GestureTarget',
+  package: 'foam.input.touch',
   help: 'Created by each view that wants to receive gestures.',
   properties: [
     { name: 'id' },
@@ -794,13 +817,15 @@ CLASS({
 
 CLASS({
   name: 'GestureManager',
+  package: 'foam.input.touch',
   requires: [
-    'DragGesture',
-    'Gesture',
-    'GestureTarget',
-    'PinchTwistGesture',
-    'ScrollGesture',
-    'TapGesture'
+    'foam.input.touch.DragGesture',
+    'foam.input.touch.Gesture',
+    'foam.input.touch.GestureTarget',
+    'foam.input.touch.PinchTwistGesture',
+    'foam.input.touch.ScrollGesture',
+    'foam.input.touch.TapGesture',
+    'foam.input.touch.InputPoint'
   ],
   imports: [
     'document',
@@ -934,31 +959,41 @@ CLASS({
       // TODO: Handle multiple matching gestures.
       Object.keys(this.active).forEach(function(name) {
         var answer = self.gestures[name].recognize(self.points);
-        if ( answer >= self.Gesture.MAYBE ) {
+        if ( answer >= self.Gesture.WAIT ) {
           matches.push([name, answer]);
         }
       });
 
       if ( matches.length === 0 ) return;
 
-      // There are three possibilities here:
+      // There are four possibilities here:
       // - If one or more gestures returned YES, the last one wins. The "last"
       //   part is arbitrary, but that's how this code worked previously.
       // - If a single gesture returned MAYBE, it becomes the only match.
+      // - If a one or more  gesture returned WAIT, and none returned YES or
+      //   MAYBE then there's no recognition yet, and we do nothing until one
+      //   recognizes.
       // - If more than one gesture returned MAYBE, and none returned YES, then
       //   there's no recognition yet, and we do nothing until one recognizes.
-      var lastYes = -1;
-      for ( var i = 0 ; i < matches.length ; i++ ) {
+      var i, lastYes = -1;
+      for ( i = 0 ; i < matches.length ; i++ ) {
         if ( matches[i][1] === this.Gesture.YES ) lastYes = i;
+      }
+      var lastMaybe = -1;
+      for ( i = 0 ; i < matches.length ; i++ ) {
+        if ( matches[i][1] === this.Gesture.MAYBE ) lastMaybe = i;
       }
 
       // If there were no YES answers, then all the matches are MAYBEs.
-      // If there are more than one MAYBE, return. Otherwise, we have our
-      // winner.
+      // If there is a WAIT or more than one WAIT/MAYBE, return. Otherwise, we
+      // have our winner.
       var match;
       if ( lastYes < 0 ) {
-        if ( matches.length > 1 ) return; // No winner, so wait for one.
-        match = matches[0][0];
+        // If we have more than one WAIT/MAYBE, or
+        // we have no MAYBEs, then there is no winner yet.
+        if ( matches.length > 1 || lastMaybe < 0 ) return;
+
+        match = matches[lastMaybe][0];
       } else {
         match = matches[lastYes][0];
       }
@@ -967,7 +1002,7 @@ CLASS({
       // This prevents eg. two tap handlers firing when the tap is on an inner one.
       var matched = this.active[match];
       var legal = [];
-      for ( var i = 0 ; i < matched.length ; i++ ) {
+      for ( i = 0 ; i < matched.length ; i++ ) {
         var m = matched[i].getElement();
         var contained = 0;
         for ( var j = 0 ; j < matched.length ; j++ ) {
@@ -1019,7 +1054,7 @@ CLASS({
       name: 'onMouseDown',
       code: function(event) {
         // Build the InputPoint for it.
-        var point = this.X.InputPoint.create({
+        var point = this.InputPoint.create({
           id: 'mouse',
           type: 'mouse',
           x: event.pageX,
@@ -1102,7 +1137,7 @@ CLASS({
           if ( this.recognized || Object.keys(this.points).length > 0) return;
 
           // New wheel event. Create an input point for it.
-          var wheel = InputPoint.create({
+          var wheel = this.InputPoint.create({
             id: 'wheel',
             type: 'wheel',
             x: event.pageX,
@@ -1159,4 +1194,3 @@ CLASS({
     }
   ]
 });
-
