@@ -2,6 +2,7 @@ CLASS({
   package: 'foam.ui',
   name: 'SwipeAltView',
   extendsModel: 'View',
+
   requires: [
     'foam.input.touch.GestureTarget'
   ],
@@ -61,6 +62,7 @@ CLASS({
     {
       name: 'width',
       help: 'Set when we know the width',
+      getter: function() { return this.$.clientWidth; },
       hidden: true
     },
     {
@@ -142,7 +144,6 @@ CLASS({
       // TODO: Stop re-rendering if it's slow or causes flicker or whatever.
 
       this.slider = this.$.children[0];
-      this.width  = this.$.clientWidth;
 
       var str = [];
       for ( var i = 0 ; i < this.views.length ; i++ ) {
@@ -199,7 +200,6 @@ CLASS({
           return;
         }
 
-        this.width = this.$.clientWidth;
         var self = this;
         var frame = window.requestAnimationFrame(function() {
           self.x = self.index * self.width;
