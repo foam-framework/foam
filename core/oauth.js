@@ -17,6 +17,10 @@
 
 CLASS({
   name: 'OAuth2',
+  package: 'foam.oauth2',
+  requires: [
+    'XHR',
+  ],
   label: 'OAuth 2.0',
 
   properties: [
@@ -62,19 +66,19 @@ CLASS({
     setJsonpFuture: function(X, future) {
       var agent = this;
       future.set((function() {
-        var factory = X.OAuthXhrFactory.create({
+        var factory = agent.XHR.xbind({
           authAgent: agent,
-          responseType: "json"
-        });
+          responseType: "json",
+          retries: 3
+        })
 
         return function(url, params, opt_method, opt_payload) {
           return function(ret) {
-            var xhr = factory.make();
-            xhr.responseType = "json";
+            var xhr = factory.create();
             return xhr.asend(ret,
-                             opt_method ? opt_method : "GET",
                              url + (params ? '?' + params.join('&') : ''),
-                             opt_payload);
+                             opt_payload,
+                             opt_method ? opt_method : "GET");
           };
         };
       })());
@@ -98,9 +102,10 @@ function deferJsonP(X) {
 
 CLASS({
   name: 'OAuth2WebClient',
+  package: 'foam.oauth2',
   help: 'Strategy for OAuth2 when running as a web page.',
 
-  extendsModel: 'OAuth2',
+  extendsModel: 'foam.oauth2.OAuth2',
 
   methods: {
     refreshNow_: function(ret, opt_forceInteractive) {
@@ -135,9 +140,10 @@ CLASS({
 
 CLASS({
   name: 'OAuth2ChromeApp',
+  package: 'foam.oauth2',
   help: 'Strategy for OAuth2 when running as a Chrome App',
 
-  extendsModel: 'OAuth2',
+  extendsModel: 'foam.oauth2.OAuth2',
 
   properties: [
     {
@@ -270,7 +276,8 @@ CLASS({
 
 CLASS({
   name: 'OAuth2ChromeIdentity',
-  extendsModel: 'OAuth2',
+  package: 'foam.oauth2',
+  extendsModel: 'foam.oauth2.OAuth2',
   help: 'OAuth2 strategy that uses the Chrome identity API',
   methods: {
     refreshNow_: function(ret) {
@@ -287,7 +294,8 @@ CLASS({
 
 CLASS({
   name: 'OAuth2Redirect',
-  extendsModel: 'OAuth2',
+  package: 'foam.oauth2',
+  extendsModel: 'foam.oauth2.OAuth2',
   help: 'OAuth2 strategy that uses the redirect.',
   imports: [
     'window',
@@ -383,7 +391,8 @@ CLASS({
 
 CLASS({
   name: 'OAuth2RedirectWithServer',
-  extendsModel: 'OAuth2',
+  package: 'foam.oauth2',
+  extendsModel: 'foam.oauth2.OAuth2',
   documentation: 'OAuth2 strategy that redirects the whole page. Uses the ' +
       'web server flow, so you need a server. Expects to find the access ' +
       'access token in LocalStorage, under the key "__foam_oauth_token". If ' +
@@ -414,9 +423,9 @@ CLASS({
 
 // TODO: Register model for model, or fix the facade.
 if ( window.cordova || window.PhoneGap || window.phonegap) {
-  var EasyOAuth2 = OAuth2ChromeIdentity
+  var EasyOAuth2 = X.foam.oauth2.OAuth2ChromeIdentity
 } else if ( window.chrome && window.chrome.runtime && window.chrome.runtime.id ) {
-  EasyOAuth2 = OAuth2ChromeApp;
+  EasyOAuth2 = X.foam.oauth2.OAuth2ChromeApp;
 } else {
-  EasyOAuth2 = OAuth2WebClient;
+  EasyOAuth2 = X.foam.oauth2.OAuth2WebClient;
 }

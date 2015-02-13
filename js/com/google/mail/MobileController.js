@@ -33,7 +33,7 @@ CLASS({
     'GestureManager',
     'IDBDAO',
     'MDAO',
-    'OAuth2Redirect as EasyOAuth2',
+    'foam.oauth2.OAuth2Redirect as Auth',
     'TouchManager',
     'XHR',
     'StackView',
@@ -106,7 +106,7 @@ CLASS({
         v.setJsonpFuture(this.X, this.jsonpFuture);
       },
       factory: function() {
-        return this.EasyOAuth2.create({
+        return this.Auth.create({
           clientId: "945476427475-oaso9hq95r8lnbp2rruo888rl3hmfuf8.apps.googleusercontent.com",
           clientSecret: "GTkp929u268_SXAiHitESs-1",
           scopes: [
