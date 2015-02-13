@@ -32,7 +32,7 @@ CLASS({
          "name": "messages",
          "help": "The messages that changed in this history record.",
          "subType": "Message",
-         "subKey": ".ID"
+         "subKey": "ID"
       }
    ],
    "actions": [],

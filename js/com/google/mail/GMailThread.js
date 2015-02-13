@@ -37,7 +37,7 @@ CLASS({
          "name": "messages",
          "help": "The list of messages in the thread.",
          "subType": "Message",
-         "subKey": ".ID"
+         "subKey": "ID"
       },
       {
          "model_": "StringProperty",

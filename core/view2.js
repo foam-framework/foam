@@ -2970,7 +2970,7 @@ CLASS({
       name: 'data',
       postSet: function(_, value) {
         var self = this;
-        var subKey = FOAM.lookup(this.subKey, this.X);
+        var subKey = FOAM.lookup(this.subType + '.' + this.subKey, this.X);
         var sink = { put: function(o) { self.innerData = o; } };
         if ( subKey.name === 'id' ) this.dao.find(value, sink);
         else this.dao.where(EQ(subKey, value)).limit(1).select(sink);
@@ -3016,7 +3016,7 @@ CLASS({
       name: 'data',
       postSet: function(_, value) {
         var self = this;
-        var subKey = FOAM.lookup(this.subKey, this.X);
+        var subKey = FOAM.lookup(this.subType + '.' + this.subKey, this.X);
         this.innerData = this.dao.where(IN(subKey, value));
       }
     },

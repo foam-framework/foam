@@ -519,7 +519,7 @@ var ReferenceProperty = Model.create({
       name: 'subKey',
       type: 'EXPR',
       displayWidth: 20,
-      factory: function() { return this.subType + '.ID'; },
+      defaultValue: 'ID',
       help: 'The foreign key that this property references.'
     },
     {
