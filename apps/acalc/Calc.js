@@ -310,6 +310,7 @@ CLASS({
             element: $$('calc-display')[0],
             color: '#2196F3' /* blue */
           }).fire();
+          this.X.window.getSelection().removeAllRanges();
         }
       }
     },
@@ -369,7 +370,6 @@ CLASS({
         var selection = this.X.window.getSelection().toString();
         if ( selection && selection.split('\n').length == this.history.length + 1 ) {
           this.ac();
-          this.X.window.getSelection().removeAllRanges();
           return;
         }
 
