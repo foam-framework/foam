@@ -115,7 +115,8 @@ var Model = {
     {
       name:  'sourcePath',
       help: 'Source location of this Model.',
-      defaultValue: ''
+      defaultValue: '',
+      transient: true
     },
     {
       name:  'abstract',
