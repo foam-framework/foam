@@ -47,9 +47,15 @@ var AbstractFormatter = {
 
 var JSONUtil = {
 
+  keys_: {},
+
   keyify: function(str) {
-    // TODO: check if contains single-quote or other characters
-    return '"' + str + '"';
+    return this.keys_[str] || (
+      this.keys_[str] = 
+        /^[a-zA-Z\$_][0-9a-zA-Z$_]*$/.test(str) ?
+        str :
+        '"' + str + '"'
+    );
   },
 
   escape: function(str) {
@@ -201,7 +207,7 @@ var JSONUtil = {
     },
 
     outputModel_: function(out, obj) {
-      out('"model_":"')
+      out('model_:"')
       if ( obj.model_.package ) out(obj.model_.package, '.')
       out(obj.model_.name, '"');
     },
@@ -310,7 +316,7 @@ var JSONUtil = {
           if ( val == prop.defaultValue ) continue;
           if ( Array.isArray(val) && ! val.length ) continue;
           out(',\n');
-          out(nestedIndent, '"', prop.name, '"', ': ');
+          out(nestedIndent, JSONUtil.keyify(prop.name), ':');
           this.output(out, val, nestedIndent);
         }
       }
@@ -319,7 +325,7 @@ var JSONUtil = {
     },
 
     outputModel_: function(out, obj, indent) {
-      out(indent, '"model_": "')
+      out(indent, 'model_: "')
       if ( obj.model_.package ) out(obj.model_.package, '.')
       out(obj.model_.name, '"');
     },
