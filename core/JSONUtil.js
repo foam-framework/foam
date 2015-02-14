@@ -190,6 +190,7 @@ var JSONUtil = {
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
           if ( val == prop.defaultValue ) continue;
+          if ( Array.isArray(val) && ! val.length ) continue;
           out(',');
           out(JSONUtil.keyify(prop.name), ':');
           this.output(out, val);
@@ -306,7 +307,9 @@ var JSONUtil = {
         if ( prop.name === 'parent' ) continue;
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
-          out(",\n");
+          if ( val == prop.defaultValue ) continue;
+          if ( Array.isArray(val) && ! val.length ) continue;
+          out(',\n');
           out(nestedIndent, '"', prop.name, '"', ': ');
           this.output(out, val, nestedIndent);
         }
