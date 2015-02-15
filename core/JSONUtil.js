@@ -198,7 +198,7 @@ var JSONUtil = {
           if ( val == prop.defaultValue ) continue;
           if ( Array.isArray(val) && ! val.length ) continue;
           out(',');
-          out(JSONUtil.keyify(prop.name), ':');
+          out(JSONUtil.keyify(prop.name), ': ');
           this.output(out, val);
         }
       }
@@ -222,7 +222,7 @@ var JSONUtil = {
         var val = obj[key];
 
         if ( ! first ) out(',');
-        out(JSONUtil.keyify(key), ':');
+        out(JSONUtil.keyify(key), ': ');
         this.output(out, val);
 
         first = false;
@@ -316,7 +316,7 @@ var JSONUtil = {
           if ( val == prop.defaultValue ) continue;
           if ( Array.isArray(val) && ! val.length ) continue;
           out(',\n');
-          out(nestedIndent, JSONUtil.keyify(prop.name), ':');
+          out(nestedIndent, JSONUtil.keyify(prop.name), ': ');
           this.output(out, val, nestedIndent);
         }
       }
