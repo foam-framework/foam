@@ -182,11 +182,15 @@ var JSONUtil = {
       }
     },
 
-    outputObject_: function(out, obj) {
-      var str = '';
+    outputObject_: function(out, obj, opt_defaultModel) {
+      var str   = '';
+      var first = true;
 
       out('{');
-      this.outputModel_(out, obj);
+      if ( obj.model_.id !== opt_defaultModel ) {
+        this.outputModel_(out, obj);
+        first = false;
+     }
 
       for ( var key in obj.model_.properties_ ) {
         var prop = obj.model_.properties_[key];
@@ -197,9 +201,10 @@ var JSONUtil = {
           var val = obj[prop.name];
           if ( val == prop.defaultValue ) continue;
           if ( Array.isArray(val) && ! val.length ) continue;
-          out(',');
+          if ( ! first ) out(',');
           out(JSONUtil.keyify(prop.name), ': ');
           this.output(out, val);
+          first = false;
         }
       }
 
@@ -231,7 +236,7 @@ var JSONUtil = {
       out('}');
     },
 
-    outputArray_: function(out, a) {
+    outputArray_: function(out, a, opt_defaultModel) {
       if ( a.length == 0 ) { out('[]'); return out; }
 
       var str   = '';
@@ -271,7 +276,7 @@ var JSONUtil = {
       var indent = opt_indent || '';
 
       if ( Array.isArray(obj) ) {
-        this.outputArray_(out, obj, indent);
+        this.outputArray_(out, obj, null, indent);
       }
       else if ( typeof obj == 'string' ) {
         out('"');
@@ -286,7 +291,7 @@ var JSONUtil = {
       }
       else if ( obj instanceof Object ) {
         if ( obj.model_ )
-          this.outputObject_(out, obj, indent);
+          this.outputObject_(out, obj, null, indent);
         else
           this.outputMap_(out, obj, indent);
       } else if ( typeof obj === 'number' ) {
@@ -298,13 +303,17 @@ var JSONUtil = {
       }
     },
 
-    outputObject_: function(out, obj, opt_indent) {
+    outputObject_: function(out, obj, opt_defaultModel, opt_indent) {
       var indent       = opt_indent || '';
       var nestedIndent = indent + '   ';
       var str          = '';
+      var first        = true;
 
       out(/*"\n", */indent, '{\n');
-      this.outputModel_(out, obj, nestedIndent);
+      if ( obj.model_.id !== opt_defaultModel ) {
+        this.outputModel_(out, obj, nestedIndent);
+        first = false;
+      }
 
       for ( var key in obj.model_.properties_ ) {
         var prop = obj.model_.properties_[key];
@@ -316,9 +325,14 @@ var JSONUtil = {
           var val = obj[prop.name];
           if ( val == prop.defaultValue ) continue;
           if ( Array.isArray(val) && ! val.length ) continue;
-          out(',\n');
+          if ( ! first ) out(',\n');
           out(nestedIndent, JSONUtil.keyify(prop.name), ': ');
-          this.output(out, val, nestedIndent);
+          if ( Array.isArray(val) && prop.subType ) {
+            this.outputArray_(out, val, prop.subType, nestedIndent);
+          } else {
+            this.output(out, val, nestedIndent);
+          }
+          first = false; 
         }
       }
 
@@ -326,9 +340,7 @@ var JSONUtil = {
     },
 
     outputModel_: function(out, obj, indent) {
-      out(indent, 'model_: "')
-      if ( obj.model_.package ) out(obj.model_.package, '.')
-      out(obj.model_.name, '"');
+      out(indent, 'model_: "', obj.model_.id, '"');
     },
 
     outputMap_: function(out, obj, opt_indent) {
@@ -353,7 +365,7 @@ var JSONUtil = {
       out('\n', indent, '}');
     },
 
-    outputArray_: function(out, a, opt_indent) {
+    outputArray_: function(out, a, opt_defaultModel, opt_indent) {
       if ( a.length == 0 ) { out('[]'); return out; }
 
       var indent       = opt_indent || '';
@@ -368,11 +380,12 @@ var JSONUtil = {
 
         if ( ! first ) out(',\n');
 
-        if ( typeof obj == 'string' ) {
+        if ( typeof obj === 'string' ) {
           out(nestedIndent);
+          this.output(out, obj, nestedIndent);
+        } else {
+          this.outputObject_(out, obj, opt_defaultModel, nestedIndent);
         }
-
-        this.output(out, obj, nestedIndent);
       }
 
       out('\n', indent, ']');
