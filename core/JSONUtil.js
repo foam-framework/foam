@@ -161,7 +161,7 @@ var JSONUtil = {
         out('"');
       }
       else if ( obj instanceof Function ) {
-        out(obj);
+        this.outputFunction_(out, obj);
       }
       else if ( obj instanceof Date ) {
         out(obj.getTime());
@@ -248,10 +248,11 @@ var JSONUtil = {
       }
 
       out(']');
-    }
+    },
+
+    outputFunction_: function(out, obj) { out(obj); }
   },
-
-
+    
   pretty: {
     __proto__: AbstractFormatter,
 
@@ -278,7 +279,7 @@ var JSONUtil = {
         out('"');
       }
       else if ( obj instanceof Function ) {
-        out(obj);
+        this.outputFunction_(out, obj, indent);
       }
       else if ( obj instanceof Date ) {
         out("new Date('", obj, "')");
@@ -375,6 +376,30 @@ var JSONUtil = {
       }
 
       out('\n', indent, ']');
+    },
+
+    outputFunction_: function(out, obj, indent) {
+      var str = obj.toString();
+      var lines = str.split('\n');
+      
+      if ( lines.length == 1 ) { out(str); return; }
+      
+      var minIndent = 10000;
+      for ( var i = 0 ; i < lines.length ; i++ ) {
+        var j = 0;
+        for ( ; j < lines[i].length && lines[i].charAt(j) === ' ' && j < minIndent ; j++ );
+        if ( j > 0 && j < minIndent ) minIndent = j;
+      }
+      
+      if ( minIndent === 10000 ) { out(str); return; }
+
+      for ( var i = 0 ; i < lines.length ; i++ ) {
+        if ( lines[i].length && lines[i].charAt(0) === ' ' ) {
+          lines[i] = indent + lines[i].substring(minIndent);
+        }
+        out(lines[i]);
+        if ( i < lines.length-1 ) out('\n');
+      }
     }
   },
 
