@@ -20,6 +20,11 @@ CLASS({
   name: 'UnchainablePrePostPropertyTrait',
   package: 'foam.patterns',
   
+  documentation: function() {/* Changes the default 'replacement' behaviour of
+    preSet and postSet to set-once. Attempting to set a preSet or postSet more than
+    once results in an assert.
+  */},
+
   properties: [
     {
       name: 'preSet',
@@ -30,7 +35,7 @@ CLASS({
       */},
       preSet: function(oldPreFn, nuPreFn) {
         if ( ! oldPreFn ) return nuPreFn;
-        console.assert("Override of preSet not allowed: ", this.name_, this.name, oldPreFn, nuPreFn);        
+        console.assert(false, "Override of preSet not allowed: ", this.name_, this.name, oldPreFn, nuPreFn);        
       }
     },
     {
@@ -42,9 +47,8 @@ CLASS({
         Inherited postset functions are not allowed and will assert.
       */},
       preSet: function(oldPostFn, nuPostFn) {
-        /* Yes, this is meta. */
         if ( ! oldPostFn ) return nuPostFn;
-        console.assert("Override of postSet not allowed: ", this.name_, this.name, oldPostFn, nuPostFn);        
+        console.assert(false, "Override of postSet not allowed: ", this.name_, this.name, oldPostFn, nuPostFn);        
       }
     }
   ]

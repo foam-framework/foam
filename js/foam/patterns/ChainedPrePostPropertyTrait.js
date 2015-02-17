@@ -20,6 +20,11 @@ CLASS({
   name: 'ChainedPrePostPropertyTrait',
   package: 'foam.patterns',
   
+  documentation: function() {/* Changes the default 'replacement' behaviour of
+    preSet and postSet to chaining. Presets are called in most-derived to base
+    order, and postSets are called base to most-derived.
+  */},
+  
   properties: [
     {
       name: 'preSet',

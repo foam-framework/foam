@@ -45,15 +45,15 @@ CLASS({
         });
       }
     },
-    {
-      name: 'data',
-      help: 'Generic data field for the views. Proxied to all the child views.',
-      postSet: function(old, nu) {
-        this.views.forEach(function(c) {
-          c.view().data = nu;
-        });
-      }
-    },
+//     {
+//       name: 'data',
+//       help: 'Generic data field for the views. Proxied to all the child views.',
+//       postSet: function(old, nu) {
+//         this.views.forEach(function(c) {
+//           c.view().data = nu;
+//         });
+//       }
+//     },
     {
       name: 'slider',
       help: 'Internal element which gets translated around',
