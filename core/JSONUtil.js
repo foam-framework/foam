@@ -47,9 +47,15 @@ var AbstractFormatter = {
 
 var JSONUtil = {
 
+  keys_: {},
+
   keyify: function(str) {
-    // TODO: check if contains single-quote or other characters
-    return '"' + str + '"';
+    return this.keys_[str] || (
+      this.keys_[str] = 
+        /^[a-zA-Z\$_][0-9a-zA-Z$_]*$/.test(str) ?
+        str :
+        '"' + str + '"'
+    );
   },
 
   escape: function(str) {
@@ -155,7 +161,7 @@ var JSONUtil = {
         out('"');
       }
       else if ( obj instanceof Function ) {
-        out(obj);
+        this.outputFunction_(out, obj);
       }
       else if ( obj instanceof Date ) {
         out(obj.getTime());
@@ -176,11 +182,15 @@ var JSONUtil = {
       }
     },
 
-    outputObject_: function(out, obj) {
-      var str = '';
+    outputObject_: function(out, obj, opt_defaultModel) {
+      var str   = '';
+      var first = true;
 
       out('{');
-      this.outputModel_(out, obj);
+      if ( obj.model_.id !== opt_defaultModel ) {
+        this.outputModel_(out, obj);
+        first = false;
+     }
 
       for ( var key in obj.model_.properties_ ) {
         var prop = obj.model_.properties_[key];
@@ -190,9 +200,11 @@ var JSONUtil = {
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
           if ( val == prop.defaultValue ) continue;
-          out(',');
-          out(JSONUtil.keyify(prop.name), ':');
+          if ( Array.isArray(val) && ! val.length ) continue;
+          if ( ! first ) out(',');
+          out(JSONUtil.keyify(prop.name), ': ');
           this.output(out, val);
+          first = false;
         }
       }
 
@@ -200,7 +212,7 @@ var JSONUtil = {
     },
 
     outputModel_: function(out, obj) {
-      out('"model_":"')
+      out('model_:"')
       if ( obj.model_.package ) out(obj.model_.package, '.')
       out(obj.model_.name, '"');
     },
@@ -215,7 +227,7 @@ var JSONUtil = {
         var val = obj[key];
 
         if ( ! first ) out(',');
-        out(JSONUtil.keyify(key), ':');
+        out(JSONUtil.keyify(key), ': ');
         this.output(out, val);
 
         first = false;
@@ -224,7 +236,7 @@ var JSONUtil = {
       out('}');
     },
 
-    outputArray_: function(out, a) {
+    outputArray_: function(out, a, opt_defaultModel) {
       if ( a.length == 0 ) { out('[]'); return out; }
 
       var str   = '';
@@ -241,10 +253,11 @@ var JSONUtil = {
       }
 
       out(']');
-    }
+    },
+
+    outputFunction_: function(out, obj) { out(obj); }
   },
-
-
+    
   pretty: {
     __proto__: AbstractFormatter,
 
@@ -263,7 +276,7 @@ var JSONUtil = {
       var indent = opt_indent || '';
 
       if ( Array.isArray(obj) ) {
-        this.outputArray_(out, obj, indent);
+        this.outputArray_(out, obj, null, indent);
       }
       else if ( typeof obj == 'string' ) {
         out('"');
@@ -271,14 +284,14 @@ var JSONUtil = {
         out('"');
       }
       else if ( obj instanceof Function ) {
-        out(obj);
+        this.outputFunction_(out, obj, indent);
       }
       else if ( obj instanceof Date ) {
         out("new Date('", obj, "')");
       }
       else if ( obj instanceof Object ) {
         if ( obj.model_ )
-          this.outputObject_(out, obj, indent);
+          this.outputObject_(out, obj, null, indent);
         else
           this.outputMap_(out, obj, indent);
       } else if ( typeof obj === 'number' ) {
@@ -290,13 +303,17 @@ var JSONUtil = {
       }
     },
 
-    outputObject_: function(out, obj, opt_indent) {
+    outputObject_: function(out, obj, opt_defaultModel, opt_indent) {
       var indent       = opt_indent || '';
       var nestedIndent = indent + '   ';
       var str          = '';
+      var first        = true;
 
       out(/*"\n", */indent, '{\n');
-      this.outputModel_(out, obj, nestedIndent);
+      if ( obj.model_.id !== opt_defaultModel ) {
+        this.outputModel_(out, obj, nestedIndent);
+        first = false;
+      }
 
       for ( var key in obj.model_.properties_ ) {
         var prop = obj.model_.properties_[key];
@@ -306,9 +323,16 @@ var JSONUtil = {
         if ( prop.name === 'parent' ) continue;
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
-          out(",\n");
-          out(nestedIndent, '"', prop.name, '"', ': ');
-          this.output(out, val, nestedIndent);
+          if ( val == prop.defaultValue ) continue;
+          if ( Array.isArray(val) && ! val.length ) continue;
+          if ( ! first ) out(',\n');
+          out(nestedIndent, JSONUtil.keyify(prop.name), ': ');
+          if ( Array.isArray(val) && prop.subType ) {
+            this.outputArray_(out, val, prop.subType, nestedIndent);
+          } else {
+            this.output(out, val, nestedIndent);
+          }
+          first = false; 
         }
       }
 
@@ -316,9 +340,7 @@ var JSONUtil = {
     },
 
     outputModel_: function(out, obj, indent) {
-      out(indent, '"model_": "')
-      if ( obj.model_.package ) out(obj.model_.package, '.')
-      out(obj.model_.name, '"');
+      out(indent, 'model_: "', obj.model_.id, '"');
     },
 
     outputMap_: function(out, obj, opt_indent) {
@@ -343,7 +365,7 @@ var JSONUtil = {
       out('\n', indent, '}');
     },
 
-    outputArray_: function(out, a, opt_indent) {
+    outputArray_: function(out, a, opt_defaultModel, opt_indent) {
       if ( a.length == 0 ) { out('[]'); return out; }
 
       var indent       = opt_indent || '';
@@ -358,14 +380,39 @@ var JSONUtil = {
 
         if ( ! first ) out(',\n');
 
-        if ( typeof obj == 'string' ) {
+        if ( typeof obj === 'string' ) {
           out(nestedIndent);
+          this.output(out, obj, nestedIndent);
+        } else {
+          this.outputObject_(out, obj, opt_defaultModel, nestedIndent);
         }
-
-        this.output(out, obj, nestedIndent);
       }
 
       out('\n', indent, ']');
+    },
+
+    outputFunction_: function(out, obj, indent) {
+      var str = obj.toString();
+      var lines = str.split('\n');
+      
+      if ( lines.length == 1 ) { out(str); return; }
+      
+      var minIndent = 10000;
+      for ( var i = 0 ; i < lines.length ; i++ ) {
+        var j = 0;
+        for ( ; j < lines[i].length && lines[i].charAt(j) === ' ' && j < minIndent ; j++ );
+        if ( j > 0 && j < minIndent ) minIndent = j;
+      }
+      
+      if ( minIndent === 10000 ) { out(str); return; }
+
+      for ( var i = 0 ; i < lines.length ; i++ ) {
+        if ( lines[i].length && lines[i].charAt(0) === ' ' ) {
+          lines[i] = indent + lines[i].substring(minIndent);
+        }
+        out(lines[i]);
+        if ( i < lines.length-1 ) out('\n');
+      }
     }
   },
 

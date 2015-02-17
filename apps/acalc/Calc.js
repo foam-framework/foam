@@ -310,6 +310,7 @@ CLASS({
             element: $$('calc-display')[0],
             color: '#2196F3' /* blue */
           }).fire();
+          this.X.window.getSelection().removeAllRanges();
         }
       }
     },
@@ -364,12 +365,13 @@ CLASS({
       translationHint: 'delete one input character',
       keyboardShortcuts: [ 8 /* backspace */ ],
       action: function() {
+        if ( ! this.editable ) return;
+
         // This block will make backspace act like all-clear if the user has done a ctrl-A
         // to select all of the text.
         var selection = this.X.window.getSelection().toString();
         if ( selection && selection.split('\n').length == this.history.length + 1 ) {
           this.ac();
-          this.X.window.getSelection().removeAllRanges();
           return;
         }
 

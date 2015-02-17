@@ -353,12 +353,18 @@ CLASS({
         this.shadow$().style.display = this.state.over ? 'inline' : 'none';
         this.state = this.state;
         var parentWidth = this.parentWidth;
+
         // TODO(kgr): temporary hack in case SlidePanel's are nested and
         // the the inner one needs to be re-layedout after the outer one
         // changes its size.  Being resized should also fire an onResize event.
-        this.X.setTimeout(function() {
-          if ( this.parentWidth !== parentWidth ) this.onResize();
-        }.bind(this), this.ANIMATION_DELAY + 10);
+        for ( var i = 1 ; i < 12 ; i++ ) {
+          this.X.setTimeout(function() {
+            if ( this.parentWidth !== parentWidth ) {
+              parentWidth = this.parentWidth;
+              this.onResize();
+            }
+          }.bind(this), i * ( this.ANIMATION_DELAY + 30 ) / 10);
+        }
       }
     },
     {
