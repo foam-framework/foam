@@ -438,8 +438,16 @@ var Property = {
       help: 'An adapter function called before normal setter logic.',
       documentation: function() { /*
         Allows you to modify the incoming value before it is set. Parameters <code>(old, nu)</code> are
-        supplied with the old and new value. Return the value you want to be set.
-      */}
+        supplied with the old and new value. Return the value you want to be set. Inherited 
+        preset functions are executed in order from the most-derived up to the base.
+      */},
+      preSet: function(oldPreFn, nuPreFn) {
+        /* Yes, this is meta. */
+        if ( ! oldPreFn ) return nuPreFn;       
+        return function(old, nu, prop) {
+          return oldPreFn.call(this, old, nuPreFn.call(this, old, nu, prop), prop);
+        };
+      }
     },
     {
       name: 'postSet',
@@ -453,8 +461,19 @@ var Property = {
       documentation: function() { /*
         Allows you to react after the value of the $$DOC{ref:'Property'} has been set,
         but before property change event is fired.
-        Parameters <code>(old, nu)</code> are supplied with the old and new value.
-      */}
+        Parameters <code>(old, nu)</code> are supplied with the old and new value. 
+        Inherited postset functions are executed from base-implementation first down to 
+        most-derived. The parameters passed are the original change, regardless of
+        any tampering the functions do to the property value.
+      */},
+      preSet: function(oldPostFn, nuPostFn) {
+        /* Yes, this is meta. */
+        if ( ! oldPostFn ) return nuPostFn;
+        return function(old, nu, prop) {
+          oldPostFn.call(this, old, nu, prop);
+          nuPostFn.call(this, old, nu, prop);
+        };
+      }
     },
     {
       name: 'setter',

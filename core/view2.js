@@ -2132,7 +2132,7 @@ CLASS({
 
 CLASS({
   name: 'GalleryView',
-  extendsModel: 'SwipeAltView',
+  extendsModel: 'foam.ui.SwipeAltView',
 
   properties: [
     {

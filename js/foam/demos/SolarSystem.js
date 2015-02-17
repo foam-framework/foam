@@ -21,12 +21,12 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'Circle as Planet',
+    'foam.graphics.Circle as Planet',
     'Timer',
     'Turntable',
     'Graph',
     'EyeCView',
-    'ClockView',
+    'foam.demos.ClockView',
     'PieGraph',
     'EyesCView',
     'foam.graphics.CView',

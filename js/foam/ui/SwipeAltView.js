@@ -1,7 +1,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'SwipeAltView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [
     'foam.input.touch.GestureTarget'
