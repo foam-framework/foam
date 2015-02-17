@@ -30,8 +30,8 @@ CLASS({
       name: 'style',
       documentation: 'solid|ring',
       defaultValue: 'solid',
-      postSet: function(_, nu) {
-        if ( nu !== this.RING_INNER_COLOR ) this.setColorAndBorder();
+      postSet: function(_, style) {
+        if ( style !== this.RING_INNER_COLOR ) this.setColorAndBorder();
       }
     },
     {
@@ -90,7 +90,6 @@ CLASS({
     {
       name: 'onMouseDown',
       code: function(evt) {
-        // console.log('mouseDown: ', evt, this.state_);
         if ( this.state_ !== 'default' ) return;
 
         this.state_ = 'pressing';
@@ -128,7 +127,6 @@ CLASS({
         // onMouseUp events when the cursor moves over the button.
         if ( this.state_ === 'default' ) return;
 
-        // console.log('mouseUp: ', evt, this.state_);
         if ( this.state_ === 'pressing' ) { this.state_ = 'cancelled'; return; }
         if ( this.state_ === 'cancelled' ) return;
         this.state_ = 'released';
@@ -137,7 +135,7 @@ CLASS({
           this.easeOutTime,
           function() { this.alpha = this.finishAlpha; }.bind(this),
           Movement.easeIn(.5),
-          function() { this.state_ = 'default'; }.bind(this))();
+          function() { if ( this.state_ === 'released' ) this.state_ = 'default'; }.bind(this))();
       }
     }
   ]
