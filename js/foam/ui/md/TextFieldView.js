@@ -48,6 +48,12 @@ CLASS({
       defaultValue: true
     },
     {
+      model_: 'BooleanProperty',
+      name: 'growable',
+      documentation: 'Set true if this text area should grow with the text.',
+      defaultValue: false
+    },
+    {
       name: 'clearAction',
       documentation: 'When true, will show an X for clearing the text box.',
       defaultValue: false
@@ -56,7 +62,8 @@ CLASS({
   methods: {
     initHTML: function() {
       this.SUPER();
-      this.softValue = DomValue.create(this.$input, 'input');
+      this.softValue = DomValue.create(this.$input, 'input',
+          this.growable ? 'textContent' : 'value');
       this.softValue.set(this.data);
       Events.link(this.softValue, this.softData$);
 
@@ -143,7 +150,10 @@ CLASS({
         <% if (this.floatingLabel) { %>
           <label id="{{{label}}}" class="md-text-field-label">%%label</label>
         <% } %>
-        <% if ( this.displayHeight > 1 ) { %>
+        <% if ( this.growable ) { %>
+          <div id="{{{input}}}" class="md-text-field-input" contenteditable>
+          </div>
+        <% } else if ( this.displayHeight > 1 ) { %>
           <textarea id="{{{input}}}" type="text" class="md-text-field-input" rows="{{{this.displayHeight}}}"></textarea>
         <% } else { %>
           <input id="{{{input}}}" type="text" class="md-text-field-input"
