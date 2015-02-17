@@ -539,6 +539,7 @@ var CalcButton = getCalcButton();
 
 CLASS({
   name: 'CalcView',
+  extendsModel: 'DetailView',
   requires: [
     'HistoryCitationView',
     'foam.ui.SlidePanel',
@@ -562,7 +563,6 @@ CLASS({
       defaultValue: 'BasicOperationsButtonView'
     },
   ],
-  extendsModel: 'DetailView',
   templates: [
     function CSS() {/*
     * {
@@ -758,7 +758,7 @@ CLASS({
               <div>$$row1{mode: 'read-only', tabIndex: 3, escapeHTML: false}</div>
             </div>
           </div>
-          <div class='keypad'>
+          <div class="keypad">
           <div class="edge2"></div>
           <%= this.SlidePanel.create({
             minWidth: 310,
@@ -798,7 +798,8 @@ CLASS({
               if ( outer$.scrollTop < outer$.clientHeight )
                 outer$.scrollTop = outer$.clientHeight;
             });
-            }.bind(this));
+            this.$.querySelector('.keypad').addEventListener('mousedown', function(e) { e.preventDefault(); return false; });
+          }.bind(this));
         %>
       */}
     }

@@ -33,6 +33,8 @@
  **/
 
 var AbstractFormatter = {
+  keyify: function(str) { return '"' + str + '"'; },
+
   /** @param p a predicate function or an mLang **/
   where: function(p) {
     return {
@@ -46,17 +48,6 @@ var AbstractFormatter = {
 
 
 var JSONUtil = {
-
-  keys_: {},
-
-  keyify: function(str) {
-    return this.keys_[str] || (
-      this.keys_[str] = 
-        /^[a-zA-Z\$_][0-9a-zA-Z$_]*$/.test(str) ?
-        str :
-        '"' + str + '"'
-    );
-  },
 
   escape: function(str) {
     return str
@@ -202,7 +193,7 @@ var JSONUtil = {
           if ( val == prop.defaultValue ) continue;
           if ( Array.isArray(val) && ! val.length ) continue;
           if ( ! first ) out(',');
-          out(JSONUtil.keyify(prop.name), ': ');
+          out(this.keyify(prop.name), ': ');
           this.output(out, val);
           first = false;
         }
@@ -227,7 +218,7 @@ var JSONUtil = {
         var val = obj[key];
 
         if ( ! first ) out(',');
-        out(JSONUtil.keyify(key), ': ');
+        out(this.keyify(key), ': ');
         this.output(out, val);
 
         first = false;
@@ -310,7 +301,7 @@ var JSONUtil = {
       var first        = true;
 
       out(/*"\n", */indent, '{\n');
-      if ( obj.model_.id !== opt_defaultModel ) {
+      if ( obj.model_.id && obj.model_.id !== opt_defaultModel ) {
         this.outputModel_(out, obj, nestedIndent);
         first = false;
       }
@@ -326,13 +317,13 @@ var JSONUtil = {
           if ( val == prop.defaultValue ) continue;
           if ( Array.isArray(val) && ! val.length ) continue;
           if ( ! first ) out(',\n');
-          out(nestedIndent, JSONUtil.keyify(prop.name), ': ');
+          out(nestedIndent, this.keyify(prop.name), ': ');
           if ( Array.isArray(val) && prop.subType ) {
             this.outputArray_(out, val, prop.subType, nestedIndent);
           } else {
             this.output(out, val, nestedIndent);
           }
-          first = false; 
+          first = false;
         }
       }
 
@@ -340,7 +331,7 @@ var JSONUtil = {
     },
 
     outputModel_: function(out, obj, indent) {
-      out(indent, 'model_: "', obj.model_.id, '"');
+      out(indent, '"model_": "', obj.model_.id, '"');
     },
 
     outputMap_: function(out, obj, opt_indent) {
@@ -356,7 +347,7 @@ var JSONUtil = {
         var val = obj[key];
 
         if ( ! first ) out(',\n');
-        out(nestedIndent, JSONUtil.keyify(key), ': ');
+        out(nestedIndent, this.keyify(key), ': ');
         this.output(out, val, nestedIndent);
 
         first = false;
@@ -380,7 +371,7 @@ var JSONUtil = {
 
         if ( ! first ) out(',\n');
 
-        if ( typeof obj === 'string' ) {
+        if ( typeof obj === 'string' || typeof obj === 'number' ) {
           out(nestedIndent);
           this.output(out, obj, nestedIndent);
         } else {
@@ -394,16 +385,16 @@ var JSONUtil = {
     outputFunction_: function(out, obj, indent) {
       var str = obj.toString();
       var lines = str.split('\n');
-      
+
       if ( lines.length == 1 ) { out(str); return; }
-      
+
       var minIndent = 10000;
       for ( var i = 0 ; i < lines.length ; i++ ) {
         var j = 0;
         for ( ; j < lines[i].length && lines[i].charAt(j) === ' ' && j < minIndent ; j++ );
         if ( j > 0 && j < minIndent ) minIndent = j;
       }
-      
+
       if ( minIndent === 10000 ) { out(str); return; }
 
       for ( var i = 0 ; i < lines.length ; i++ ) {
@@ -429,6 +420,25 @@ var JSONUtil = {
     }
   }
 
+};
+
+JSONUtil.prettyModel = {
+  __proto__: JSONUtil.pretty,
+
+  outputModel_: function(out, obj, indent) {
+    out(indent, 'model_: "', obj.model_.id, '"');
+  },
+
+  keys_: {},
+
+  keyify: function(str) {
+    return this.keys_[str] || (
+      this.keys_[str] =
+        /^[a-zA-Z\$_][0-9a-zA-Z$_]*$/.test(str) ?
+        str :
+        '"' + str + '"'
+    );
+  }
 };
 
 JSONUtil.stringify = JSONUtil.pretty.stringify.bind(JSONUtil.pretty);

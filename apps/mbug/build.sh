@@ -34,7 +34,6 @@ cat \
   ../../core/view.js \
   ../../core/view2.js \
   ../../js/foam/ui/SwipeAltView.js \
-  ../../core/layout.js \
   ../../core/daoView.js \
   ../../core/ChoiceView.js \
   ../../core/DetailView.js \
