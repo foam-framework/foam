@@ -24,21 +24,9 @@ CLASS({
     but do not pass it along to any children, use this trait.
   */},
 
-  imports: ['data$ as dataImport$'],
+  imports: ['data$'],
       
   properties: [
-    {
-      name: 'dataImport',
-      documentation: function() {/* Handles the incoming data from the import
-        context, and may be ignored if data is directly set. */},
-      postSet: function(old, nu) {
-        if ( this.isImportEnabled_ && ! equals(this.data, nu) ) {
-          this.isContextChange_ = true;
-          this.data = nu;
-          this.isContextChange_ = false;
-        }
-      }
-    },
     {
       name: 'data',
       documentation: function() {/* The actual data used by the view. May be set
@@ -48,31 +36,13 @@ CLASS({
       postSet: function(old, nu) {       
         this.onDataChange(old, nu);
       }
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'isContextChange_',
-      defaultValue: false,
-      transient: true,
-      hidden: true
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'isImportEnabled_',
-      defaultValue: true,
-      hidden: true
-    },
-    
+    }
   ],
   
   methods: {
     onDataChange: function(old, nu) { /* React to a change to $$DOC{ref:'.data'}.
-      Don't forget to call <code>this.SUPER(old,nu)</code> in your implementation. */
-      this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange_;
-      if ( this.isImportEnabled_ && !equals(this.dataImport, nu) ) {
-        this.dataImport = nu;
-      }
-    },
+      Don't forget to call <code>this.SUPER(old,nu)</code> in your implementation. */ 
+    }
   }
   
 });
