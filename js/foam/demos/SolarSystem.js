@@ -29,11 +29,12 @@ CLASS({
     'ClockView',
     'PieGraph',
     'EyesCView',
-    'Canvas'
+    'foam.graphics.CView',
+    'foam.ui.DetailView'
   ],
 
   properties: [
-    { name: 'space', factory: function(){ return this.Canvas.create({ width: 800, height: 600, background: '#000'}); } },
+    { name: 'space', factory: function(){ return this.CView.create({ width: 800, height: 600, background: '#000'}); } },
     {
       name: 'timer',
       view: { factory_: 'foam.ui.DetailView', showActions: true },
@@ -42,12 +43,12 @@ CLASS({
     { name: 'turntable', factory: function() { return this.Turntable.create(); } },
     {
       name: 'sun',
-      view: { factory_: 'DetailView', showActions: true }
+      view: { factory_: 'foam.ui.DetailView', showActions: true }
     },
     'venus',
     {
       name: 'earth',
-      view: { factory_: 'DetailView', showActions: true }
+      view: { factory_: 'foam.ui.DetailView', showActions: true }
     },
     'moon', 'apollo', 'mars', 'mmoos'
   ],
