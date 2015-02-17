@@ -1,0 +1,20 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>FOAM Phone Gallery - Crawlable Version</title>
+  <script language="javascript" src="../../core/bootFOAM.js"></script>
+  <script language="javascript" src="Phone.js"></script>
+  <script language="javascript" src="phones.js"></script>
+  <script language="javascript" src="CrawableController.js"></script>
+</head>
+<body>
+  <script>
+    var crawlable = CrawableController.create({
+      dao: phones,
+      applicationURL:   'http://localhost:8000/apps/phonecat/Cat.html',
+      applicationIdURL: 'http://localhost:8000/apps/phonecat/Cat.html#'
+    });
+    crawlable.write(document);
+  </script>
+</body>
+</html>
