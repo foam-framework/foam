@@ -758,7 +758,7 @@ CLASS({
               <div>$$row1{mode: 'read-only', tabIndex: 3, escapeHTML: false}</div>
             </div>
           </div>
-          <div class='keypad'>
+          <div class="keypad">
           <div class="edge2"></div>
           <%= this.SlidePanel.create({
             minWidth: 310,
