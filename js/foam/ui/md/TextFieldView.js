@@ -98,8 +98,10 @@ CLASS({
       }
       .md-text-field-input {
         background: transparent;
-        border-bottom: 1px solid #e0e0e0 !important;
-        border: none;
+        border-bottom: 1px solid #e0e0e0;
+        border-left: none;
+        border-right: none;
+        border-top: none;
         color: #444;
         flex-grow: 1;
         font-family: Roboto;
@@ -116,7 +118,7 @@ CLASS({
       }
 
       .md-text-field-input:focus {
-        border-bottom: 2px solid #0288D1;
+        border-bottom: 2px solid #4285f4;
         padding: 0 0 6px 0;
         outline: none;
       }
