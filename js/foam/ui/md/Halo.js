@@ -83,6 +83,13 @@ CLASS({
         this.$.addEventListener('touchleave',  this.onMouseUp);
         this.$.addEventListener('touchcancel', this.onMouseUp);
       }
+    },
+    {
+      name: 'isTouchInRect',
+      code: function(t, rect) {
+        return t.pageX >= rect.left && t.pageX <= rect.right &&
+            t.pageY >= rect.top && t.pageY <= rect.bottom;
+      }
     }
   ],
 
@@ -95,10 +102,20 @@ CLASS({
         this.state_ = 'pressing';
 
         if ( evt.type === 'touchstart' ) {
-          var rect = this.$.getBoundingClientRect();
-          var t = evt.touches[0];
-          this.x = t.pageX - rect.left;
-          this.y = t.pageY - rect.top;
+          var rect = this.$.getBoundingClientRect(), touchFound = false, t;
+          for ( var i = 0; i < evt.touches.length; ++i ) {
+            t = evt.touches[i];
+            if ( this.isTouchInRect(t, rect) ) { touchFound = true; break; }
+          }
+          if ( touchFound ) {
+            this.x = t.pageX - rect.left;
+            this.y = t.pageY - rect.top;
+          } else {
+            // Default to center of element.
+            console.warn('No touches', evt.touches, 'in element rect', rect);
+            this.x = rect.width / 2;
+            this.y = rect.height / 2;
+          }
         } else {
           this.x = evt.offsetX;
           this.y = evt.offsetY;
