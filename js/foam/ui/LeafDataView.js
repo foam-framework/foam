@@ -28,6 +28,7 @@ CLASS({
       
   properties: [
     {
+      model_: 'foam.patterns.ChainedPrePostProperty',
       name: 'data',
       documentation: function() {/* The actual data used by the view. May be set
         directly to override the context import. Children will see changes to this

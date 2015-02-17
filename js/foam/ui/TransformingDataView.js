@@ -31,6 +31,7 @@ CLASS({
     
   properties: [
     {
+      model_: 'foam.patterns.ChainedPrePostProperty',
       name: 'dataImport',
       documentation: function() {/* Handles the incoming data from the import
         context, and may be ignored if data is directly set. */},
@@ -43,6 +44,7 @@ CLASS({
       }
     },
     {
+      model_: 'foam.patterns.ChainedPrePostProperty',
       name: 'data',
       documentation: function() {/* The actual data used by the view. May be set
         directly to override the context import. Children will see changes to this
@@ -53,6 +55,7 @@ CLASS({
       }
     },
     {
+      model_: 'foam.patterns.ChainedPrePostProperty',
       name: 'childData',
       documentation: function() {/* The exported value. This is only separated
         from data as a way to detect whether a change is local or from child

@@ -46,17 +46,13 @@ CLASS({
             var mapFn = function(val) {
               return val + this.addAmount
             }.bind(this);
-            
-            Events.unfollow(this.data.preferred$Pix$, this.preferred$);
-            Events.unfollow(this.data.max$Pix$, this.max$);
-            Events.unfollow(this.data.min$Pix$, this.min$);
-            
+
             Events.map(this.data.preferred$Pix$, this.preferred$, mapFn);
             Events.map(this.data.max$Pix$, this.max$, mapFn);
             Events.map(this.data.min$Pix$, this.min$, mapFn);
 
-            //Events.follow(this.data.stretchFactor$, this.stretchFactor$);
-            //Events.follow(this.data.shrinkFactor$, this.shrinkFactor$);
+            Events.follow(this.data.stretchFactor$, this.stretchFactor$);
+            Events.follow(this.data.shrinkFactor$, this.shrinkFactor$);
           }
         },
         {

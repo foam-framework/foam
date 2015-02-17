@@ -20,6 +20,8 @@ CLASS({
   package: 'foam.ui',
   extendsModel: 'foam.patterns.ChildTreeTrait',
 
+  requires: ['foam.patterns.UnchainablePrePostProperty'],
+  
   documentation: function() {/* For Views that do not use $$DOC{ref:'.data'},
     this trait will still allow cooperation with Views that do. If you
     plan to export or import data, do not use this trait. This trait expects
@@ -28,6 +30,7 @@ CLASS({
 
   properties: [
     {
+      model_: 'foam.patterns.UnchainablePrePostProperty',
       name: 'data',
       postSet: function() {
         this.children.forEach(function(child) {
