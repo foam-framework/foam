@@ -1,18 +1,20 @@
 CLASS({
   requires: ['PhoneCitationView', 
              'PhoneDetailView',
-             'foam.ui.DAOListView'],
+             'foam.ui.DAOListView',
+             'foam.ui.TextFieldView',
+             'foam.ui.ChoiceView'],
 
   name: 'Controller',
   properties: [
     {
       name: 'search',
-      view: { factory_: 'TextFieldView', onKeyMode: true },
+      view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true },
     },
     {
       name: 'order',
       defaultValue: Phone.NAME,
-      view: { factory_: 'ChoiceView', choices: [ [ Phone.NAME, 'Alphabetical' ], [ Phone.AGE, 'Newest' ] ] },
+      view: { factory_: 'foam.ui.ChoiceView', choices: [ [ Phone.NAME, 'Alphabetical' ], [ Phone.AGE, 'Newest' ] ] },
     },
     { name: 'dao', defaultValue: phones },
     {
