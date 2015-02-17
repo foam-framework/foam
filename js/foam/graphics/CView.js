@@ -102,7 +102,7 @@ CLASS({
     {
       name:  'x',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 0,
       documentation: function() {/*
           The X offset of this view relative to its parent. */}
@@ -110,7 +110,7 @@ CLASS({
     {
       name:  'y',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 0,
       documentation: function() {/*
           The Y offset of this view relative to its parent. */}
@@ -118,7 +118,7 @@ CLASS({
     {
       name:  'width',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 10,
       documentation: function() {/*
           The width of this view. Painting is not automatically clipped, so a view
@@ -127,7 +127,7 @@ CLASS({
     {
       name:  'height',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 10,
       documentation: function() {/*
           The height of this view. Painting is not automatically clipped, so a view

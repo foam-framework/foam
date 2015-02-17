@@ -21,7 +21,7 @@ CLASS({
   
   extendsModel: 'foam.graphics.CView',
   
-  requires: ['foam.graphics.Circle'],
+  requires: ['foam.graphics.Circle', 'foam.ui.IntFieldView'],
   
   label: 'Clock',
 
@@ -36,7 +36,7 @@ CLASS({
       type:  'foam.graphics.Circle',
       paint: true,
       factory: function() {
-        return this.Circle.create({x:this.x,y:this.y,r:this.r,color:this.color,parent:this});
+        return this.Circle.create({r:this.r,color:this.color});  
       }
     },
     {
@@ -44,21 +44,21 @@ CLASS({
       type:  'foam.graphics.Circle',
       paint: true,
       factory: function() {
-        return this.Circle.create({x:this.x,y:this.y,r:this.r-3,color:'white',parent:this});
+        return this.Circle.create({r:this.r-3,color:'white'});  
       }
     },
     {
       name:  'r',
       label: 'Radius',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 100
     },
     {
       name:  'a',
       label: 'Rotation',
       type:  'float',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 0
     },
     {
@@ -66,7 +66,7 @@ CLASS({
       type:  'Hand',
       paint: true,
       factory: function() {
-        return this.Hand.create({x:this.x,y:this.y,r:this.r-15,width:7,color:'green',parent:this});
+        return this.Hand.create({r:this.r-15,width:7,color:'green'});
       }
     },
     {
@@ -74,7 +74,7 @@ CLASS({
       type:  'Hand',
       paint: true,
       factory: function() {
-        return this.Hand.create({x:this.x,y:this.y,r:this.r-6,width:5,color:'blue',parent:this});
+        return this.Hand.create({r:this.r-6,width:5,color:'blue'});
       }
     },
     {
@@ -82,24 +82,37 @@ CLASS({
       type:  'Hand',
       paint: true,
       factory: function() {
-        return this.Hand.create({x:this.x,y:this.y,r:this.r-6,width:3,color:'red',parent:this});
+        return this.Hand.create({r:this.r-6,width:3,color:'red'});
       }
     }
 
   ],
 
   methods: {
-    paint: function() {
+    init: function() {
+      this.SUPER();
+      this.construct();
+    },
+    
+    construct: function() {
+      this.SUPER();
+      
+      this.addChild(this.lid);
+      this.addChild(this.white);
+      this.addChild(this.hourHand);
+      this.addChild(this.minuteHand);
+      this.addChild(this.secondHand);
+    },
+
+    paintSelf: function() {
       this.canvas.save();
 
-      this.canvas.translate(this.x, this.y);
       this.canvas.rotate(this.a);
-      this.canvas.translate(-this.x, -this.y);
 
       var date = new Date();
 
-      this.secondHand.x = this.hourHand.x = this.minuteHand.x = this.lid.x = this.white.x = this.x;
-      this.secondHand.y = this.hourHand.y = this.minuteHand.y = this.lid.y = this.white.y = this.y;
+      //this.secondHand.x = this.hourHand.x = this.minuteHand.x = this.lid.x = this.white.x = this.x;
+      //this.secondHand.y = this.hourHand.y = this.minuteHand.y = this.lid.y = this.white.y = this.y;
 
       this.secondHand.a = Math.PI/2 - Math.PI*2 * date.getSeconds() / 60 ;
       this.minuteHand.a = Math.PI/2 - Math.PI*2 * date.getMinutes() / 60 ;
@@ -133,7 +146,7 @@ CLASS({
           model_: 'Property',
           name: 'width',
           type: 'int',
-          view: 'IntFieldView',
+          view: 'foam.ui.IntFieldView',
           defaultValue: 5
         },
         {
@@ -141,15 +154,15 @@ CLASS({
           name: 'r',
           label: 'Radius',
           type: 'int',
-          view: 'IntFieldView',
+          view: 'foam.ui.IntFieldView',
           defaultValue: 100
         },
         {
           model_: 'Property',
           name: 'a',
-          label: 'Alpha',
+          label: 'Rotation',
           type: 'int',
-          view: 'IntFieldView',
+          view: 'foam.ui.IntFieldView',
           defaultValue: 100
         }
       ],
@@ -163,8 +176,8 @@ CLASS({
             var canvas = this.parent.canvas;
 
             canvas.beginPath();
-            canvas.moveTo(this.x,this.y);
-            canvas.lineTo(this.x+this.r*Math.cos(this.a),this.y-this.r*Math.sin(this.a));
+            canvas.moveTo(0,0);
+            canvas.lineTo(this.r*Math.cos(this.a),-this.r*Math.sin(this.a));
             canvas.closePath();
 
             canvas.lineWidth = this.width;

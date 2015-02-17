@@ -568,63 +568,6 @@ CLASS({
 });
 
 
-CLASS({
-  name: 'AbstractNumberFieldView',
-
-  extendsModel: 'TextFieldView',
-  abstractModel: true,
-
-  properties: [
-    { name: 'type', defaultValue: 'number' },
-    { name: 'step' }
-  ],
-
-  methods: {
-    extraAttributes: function() {
-      return this.step ? ' step="' + this.step + '"' : '';
-    }
-  }
-});
-
-
-CLASS({
-  name: 'FloatFieldView',
-
-  extendsModel: 'AbstractNumberFieldView',
-
-  properties: [
-    { name: 'precision', defaultValue: undefined }
-  ],
-
-  methods: {
-    formatNumber: function(val) {
-      if ( ! val ) return '0';
-      val = val.toFixed(this.precision);
-      var i = val.length-1;
-      for ( ; i > 0 && val.charAt(i) === '0' ; i-- );
-      return val.substring(0, val.charAt(i) === '.' ? i : i+1);
-    },
-    valueToText: function(val) {
-      return this.hasOwnProperty('precision') ?
-        this.formatNumber(val) :
-        '' + val ;
-    },
-    textToValue: function(text) { return parseFloat(text) || 0; }
-  }
-});
-
-
-CLASS({
-  name: 'IntFieldView',
-
-  extendsModel: 'AbstractNumberFieldView',
-
-  methods: {
-    textToValue: function(text) { return parseInt(text) || '0'; },
-    valueToText: function(value) { return value ? value : '0'; }
-  }
-});
-
 
 
 CLASS({
@@ -2040,13 +1983,13 @@ CLASS({
     {
       name: 'x',
       type: 'int',
-      view: 'IntFieldView',
+      view: 'foam.ui.IntFieldView',
       defaultValue: 0
     },
     {
       name: 'y',
       type: 'int',
-      view: 'IntFieldView',
+      view: 'foam.ui.IntFieldView',
       defaultValue: 0
     }
   ],

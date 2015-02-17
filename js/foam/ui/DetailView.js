@@ -24,7 +24,11 @@ CLASS({
            'foam.ui.ViewActionsTrait',
            'foam.ui.TemplateSupportTrait'],
   
-  requires: [ 'Property'],//, 'foam.ui.RelationshipsView' ],
+  requires: [ 'Property', 
+              'foam.ui.TextFieldView',
+              'foam.ui.IntFieldView',
+              'foam.ui.FloatFieldView'], 
+              //, 'foam.ui.RelationshipsView' ],
   exports: [ 'propertyViewProperty' ],
 
   documentation: function() {/*

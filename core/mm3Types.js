@@ -243,7 +243,7 @@ var IntProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'IntFieldView'
+      defaultValue: 'foam.ui.IntFieldView'
     },
     {
       name: 'preSet',
@@ -301,7 +301,7 @@ var FloatProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'FloatFieldView'
+      defaultValue: 'foam.ui.FloatFieldView'
     },
     {
       name: 'preSet',

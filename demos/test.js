@@ -24,12 +24,12 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'intStepView',
-      view: { factory_: 'IntFieldView', step: 10 }
+      view: { factory_: 'foam.ui.IntFieldView', step: 10 }
     },
     {
       model_: 'FloatProperty',
       name: 'floatStepView',
-      view: { factory_: 'FloatFieldView', step: .1 }
+      view: { factory_: 'foam.ui.FloatFieldView', step: .1 }
     }
   ]
 });

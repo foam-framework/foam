@@ -116,25 +116,25 @@ CLASS({
     {
       name:  'x',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 10
     },
     {
       name:  'y',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 10
     },
     {
       name:  'width',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 10
     },
     {
       name:  'height',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 10
     },
     {
@@ -660,13 +660,13 @@ CLASS({
     {
       name:  'width',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 5
     },
     {
       name:  'height',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 5
     },
     {

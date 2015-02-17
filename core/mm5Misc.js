@@ -65,7 +65,7 @@ CLASS({
       transient: true,
       displayWidth: 8,
       displayHeight: 1,
-      view: 'IntFieldView',
+      view: 'foam.ui.IntFieldView',
       documentation: 'Number of assertions which have passed.'
     },
     {

@@ -41,7 +41,7 @@ DEFAULT_OP.toString = function() { return ''; };
 /** A subclass of  which doesn't display 0 values. **/
 CLASS({
   name:  'CalcFloatFieldView',
-  extendsModel: 'FloatFieldView',
+  extendsModel: 'foam.ui.FloatFieldView',
   methods: { valueToText: function(v) { return v == 0 ? '' : v.toString(); } }
 });
 
