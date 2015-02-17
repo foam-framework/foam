@@ -30,7 +30,8 @@ CLASS({
 
   methods: {
     generateColor: function(data) {
-      return data ? this.SUPER(data) : 'url(images/silhouette.png)';
+      return data ? this.SUPER(data) :
+          'url(images/silhouette.png) center no-repeat #e0e0e0';
     },
     updateHTML: function() {
       if ( this.$ ) this.$.style.background = this.generateColor(this.data);
