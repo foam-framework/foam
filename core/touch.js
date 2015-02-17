@@ -594,7 +594,7 @@ CLASS({
       for ( var i = 0 ; i < keys.length ; i++ ) {
         var key = keys[i];
         var p = map[key];
-        if ( Math.abs(p.totalX) >= 10 && Math.abs(p.totalY) >= 10 ) {
+        if ( Math.abs(p.totalX) >= 10 || Math.abs(p.totalY) >= 10 ) {
           return this.NO;
         }
         if ( p.done ) doneCount++;
