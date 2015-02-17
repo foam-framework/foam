@@ -81,6 +81,8 @@ CLASS({
             return this.X.ChangeProjectView.create({data: project.user});
           }
         }, Y);
+        this.stack.setTopView(this.DetailView.create({data: pc}, pc.X));
+        /*
         var view = this.ResponsiveAppControllerView.create(undefined, pc.X.sub({
           data: pc
         }));
@@ -90,6 +92,7 @@ CLASS({
 
         // TODO: Hack for positioned view layout delay.
         view.onResize();
+        */
       }
     },
     {

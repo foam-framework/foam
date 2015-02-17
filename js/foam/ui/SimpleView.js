@@ -47,7 +47,7 @@ CLASS({
   methods: {
     addChild: function(child) {
       this.SUPER(child);
-      if ( this.data ) {
+      if ( this.data && child.data !== this ) {
         // if our data was set on initialization, we didn't have children to 
         // propagate it to yet. Since we can't export to the context, better
         // set it now...

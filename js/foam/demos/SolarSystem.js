@@ -18,7 +18,7 @@
 CLASS({
   name: 'SolarSystem',
   package: 'foam.demos',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [
     'Circle as Planet',
@@ -36,7 +36,7 @@ CLASS({
     { name: 'space', factory: function(){ return this.Canvas.create({ width: 800, height: 600, background: '#000'}); } },
     {
       name: 'timer',
-      view: { factory_: 'DetailView', showActions: true },
+      view: { factory_: 'foam.ui.DetailView', showActions: true },
       factory: function() { return this.Timer.create(); }
     },
     { name: 'turntable', factory: function() { return this.Turntable.create(); } },

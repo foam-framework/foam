@@ -90,7 +90,8 @@ html, body { overflow: initial; }
 
 .issue-edit .header {
   background: #3e50b4;
-  height: 160px;
+  display: block;
+  height: initial;
   flex-shrink: 0;
   width: 100%;
   -webkit-transform: translate3d(0,0,10px);
@@ -118,6 +119,7 @@ html, body { overflow: initial; }
   margin-bottom: 8px;
   min-height: 80px;
   padding: 0px 16px;
+  word-wrap: break-word;
 }
 
 .issue-edit .toolbar {

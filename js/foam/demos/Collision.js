@@ -18,7 +18,7 @@
 CLASS({
   name: 'Collision',
   package: 'foam.demos',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [
     'Mouse',

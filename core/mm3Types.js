@@ -519,7 +519,7 @@ var ReferenceProperty = Model.create({
       name: 'subKey',
       type: 'EXPR',
       displayWidth: 20,
-      factory: function() { return this.subType + '.ID'; },
+      defaultValue: 'ID',
       help: 'The foreign key that this property references.'
     },
     {
@@ -810,6 +810,8 @@ var ViewFactoryProperty = Model.create({
       name: 'preSet',
       doc: "Can be specified as either a function, a Model, a Model path, or a JSON object.",
       defaultValue: function(_, f) {
+        // Undefined values
+        if ( ! f ) return f;
         // A Factory Function
         if ( typeof f === 'function' ) return f;
 

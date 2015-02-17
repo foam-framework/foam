@@ -168,6 +168,23 @@ input[name=q]::-webkit-input-placeholder {
   padding: 0;
 }
 
+.md-floating-label-container {
+  align-items: center;
+  display: flex;
+  padding: 40px 16px 8px;
+  position: relative;
+}
+
+.md-floating-label {
+  color: #999;
+  flex-grow: 1;
+  font-size: 12px;
+  font-weight: 500;
+  position: absolute;
+  top: 16px;
+  z-index: 0;
+}
+
 canvas.createButton {
   position: absolute;
   bottom: 10px;

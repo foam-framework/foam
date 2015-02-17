@@ -16,7 +16,6 @@
  */
 
 CLASS({
-   "model_": "Model",
    "package": "foam.ui.layout",
    "name": "ViewSlider",
    "extendsModel": "foam.ui.View",
@@ -37,14 +36,14 @@ CLASS({
          "name": "direction",
          "defaultValue": "horizontal",
          "choices": [
-[
+           [
                "horizontal",
                "horizontal"
-            ],
-[
+           ],
+           [
                "vertical",
                "vertical"
-            ]
+           ]
          ]
       },
       {
@@ -62,9 +61,6 @@ CLASS({
          "name": "latch"
       }
    ],
-   "actions": [],
-   "constants": [],
-   "messages": [],
    "methods": [
       {
          "model_": "Method",
@@ -198,9 +194,5 @@ CLASS({
          "args": [],
          "template": " <%= this.view %> "
       }
-   ],
-   "models": [],
-   "tests": [],
-   "relationships": [],
-   "issues": []
+   ]
 });
