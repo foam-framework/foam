@@ -19,8 +19,10 @@
 CLASS({
   name: 'AutocompleteListView',
   package: 'foam.ui.md',
-  extendsModel: 'foam.ui.View',
+  extendsModel: 'foam.ui.DataView',
 
+  traits: ['foam.ui.HTMLViewTrait', 'foam.ui.TemplateSupportTrait'],
+  
   requires: [
     'foam.ui.md.AddRowView',
     'SimpleValue'
