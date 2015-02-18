@@ -26,10 +26,10 @@ CLASS({
       code: function(model, msg) {
         var modelPrefix = model.translationHint ?
             model.translationHint + ' ' : '';
-        var key = this.getMessageKey(model, msg).hashCode();
+        var key = this.getIntKey(this.getMessageKey(model, msg));
         this.messageBundle[key] = {
           message: msg.value,
-          description: modelPrefixc + msg.translationHint
+          description: modelPrefix + msg.translationHint
         };
       }
     },
@@ -41,7 +41,7 @@ CLASS({
         var key;
         if ( action.translationHint ) {
           if ( action.label ) {
-            key = this.getActionTextLabelKey(model, action).hashCode();
+            key = this.getIntKey(this.getActionTextLabelKey(model, action));
             this.messageBundle[key] =
                 {
                   message: action.label,
@@ -51,7 +51,7 @@ CLASS({
                 };
           }
           if ( action.speechLabel ) {
-            key = this.getActionSpeechLabelKey(model, action).hashCode();
+            key = this.getIntKey(this.getActionSpeechLabelKey(model, action));
             this.messageBundle[key] =
                 {
                   message: action.speechLabel,
