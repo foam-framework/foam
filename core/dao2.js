@@ -1313,8 +1313,9 @@ CLASS({
   properties: [
     {
       name: 'cache',
-      postSet: function(_, d) {
-        d.listen(this.relay());
+      postSet: function(old, nu) {
+        if (old) this.unlisten(old);
+        if (nu) this.listen(nu);
       }
     },
     {
@@ -1392,7 +1393,6 @@ CLASS({
 
       var key = this.selectKey(sink, options);
       var future = afuture();
-      var delegateFuture = afuture();
       var self = this;
 
       var entry = this.selects[key];
@@ -1401,8 +1401,6 @@ CLASS({
            Date.now() - this.selects[key][1] > this.staleTimeout ) {
         this.selects[key] = entry = [afuture(), Date.now()];
         this.delegate.select(this.cache, options)(entry[0].set);
-      } else {
-        delegateFuture.set();
       }
 
       function readFromCache() {
