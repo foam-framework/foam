@@ -340,7 +340,7 @@ var FObject = {
     var name = prop.name;
     prop.name$_ = name + '$';
 
-    // TODO: add caching
+    // Add a 'name$' psedo-property if not already defined
     if ( ! this.__lookupGetter__(prop.name$_) ) {
       Object.defineProperty(this, prop.name$_, {
         get: function() { return this.propertyValue(name); },
@@ -360,7 +360,6 @@ var FObject = {
         };
       } else if ( prop.factory ) {
         getter = function() {
-//          console.log('.');
           if ( typeof this.instance_[name] == 'undefined' ) {
             this.instance_[name] = null; // prevents infinite recursion
             // console.log('Ahead of order factory: ', prop.name);
@@ -440,6 +439,12 @@ var FObject = {
         setter = (function(setter, preSet) { return function(oldValue, newValue) {
           setter.call(this, oldValue, preSet.call(this, oldValue, newValue, prop));
         }; })(setter, prop.preSet);
+      }
+
+      if ( prop.adapt ) {
+        setter = (function(setter, adapt) { return function(oldValue, newValue) {
+          setter.call(this, oldValue, adapt.call(this, oldValue, newValue, prop));
+        }; })(setter, prop.adapt);
       }
 
       /* TODO: New version that doesn't trigger lazyFactory or getter. */
