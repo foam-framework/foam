@@ -428,6 +428,20 @@ var Property = {
       */}
     },
     {
+      name: 'adapt',
+      type: 'Function',
+      required: false,
+      displayWidth: 70,
+      displayHeight: 3,
+      view: 'FunctionView',
+      defaultValue: '',
+      help: 'An adapter function called before preSet.',
+      documentation: function() { /*
+        Allows you to modify the incoming value before it is set. Parameters <code>(old, nu)</code> are
+        supplied with the old and new value. Return the value you want to be set.
+      */}
+    },
+    {
       name: 'preSet',
       type: 'Function',
       required: false,

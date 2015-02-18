@@ -37,7 +37,7 @@ var StringProperty = Model.create({
       help: 'The FOAM type of this property.'
     },
     {
-      name: 'preSet',
+      name: 'adapt',
       defaultValue: function (_, v) {
         return v === undefined || v === null ? '' :
         typeof v === 'function'              ? multiline(v) : v.toString() ;
@@ -99,7 +99,7 @@ var BooleanProperty = Model.create({
       defaultValue: false
     },
     {
-      name: 'preSet',
+      name: 'adapt',
       defaultValue: function (_, v) { return !!v; }
     },
     {
@@ -162,7 +162,7 @@ var DateProperty = Model.create({
       help: 'The protobuf tag number for this field.'
     },
     {
-      name: 'preSet',
+      name: 'adapt',
       defaultValue: function (_, d) {
         return typeof d === 'string' ? new Date(d) : d;
       }
@@ -201,7 +201,7 @@ var DateTimeProperty = Model.create({
       help: 'The FOAM type of this property.'
     },
     {
-      name: 'preSet',
+      name: 'adapt',
       defaultValue: function(_, d) {
         if ( typeof d === 'number' ) return new Date(d);
         if ( typeof d === 'string' ) return new Date(d);
@@ -246,7 +246,7 @@ var IntProperty = Model.create({
       defaultValue: 'foam.ui.IntFieldView'
     },
     {
-      name: 'preSet',
+      name: 'adapt',
       defaultValue: function (_, v) { return parseInt(v || 0); }
     },
     {
@@ -304,7 +304,7 @@ var FloatProperty = Model.create({
       defaultValue: 'foam.ui.FloatFieldView'
     },
     {
-      name: 'preSet',
+      name: 'adapt',
       defaultValue: function (_, v) { return parseFloat(v || 0.0); }
     },
     {
@@ -362,7 +362,7 @@ var FunctionProperty = Model.create({
       }
     },
     {
-      name: 'preSet',
+      name: 'adapt',
       defaultValue: function(_, value) {
         if ( typeof value === 'string' ) {
           return value.startsWith('function') ?
@@ -410,7 +410,7 @@ var ArrayProperty = Model.create({
       defaultValueFn: function() { return this.subType; }
     },
     {
-      name: 'preSet',
+      name: 'adapt',
       defaultValue: function(_, a, prop) {
         var m = FOAM.lookup(prop.subType, this.X) ||
           FOAM.lookup(prop.subType, GLOBAL);
@@ -581,7 +581,7 @@ var StringArrayProperty = Model.create({
       defaultValue: 50
     },
     {
-      name: 'preSet',
+      name: 'adapt',
       defaultValue: function(_, v) { return Array.isArray(v) ? v : [v]; }
     },
     {
@@ -717,7 +717,7 @@ var ViewProperty = Model.create({
 
   properties: [
     {
-      name: 'preSet',
+      name: 'adapt',
       doc: "Can be specified as either a function, a Model, a Model path, or a JSON object.",
       defaultValue: function(_, f) {
         if ( typeof f === 'function' ) return f;
@@ -739,7 +739,7 @@ var ViewProperty = Model.create({
     },
     {
       name: 'defaultValue',
-      preSet: function(_, f) { return ViewProperty.PRE_SET.defaultValue.call(this, null, f); }
+      adapt: function(_, f) { return ViewProperty.ADAPT.defaultValue.call(this, null, f); }
     }
   ]
 });
