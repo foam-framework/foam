@@ -19,9 +19,12 @@ CLASS({
   name: 'DestructiveDataView',
   package: 'foam.ui',
   extendsModel: 'foam.patterns.ChildTreeTrait',
-  
-  requires: ['SimpleValue'],
-  
+
+  requires: [
+    'SimpleValue',
+    'foam.patterns.ChainedPrePostProperty'
+  ],
+
   documentation: function() {/* For Views that use $$DOC{ref:'.data'},
     this trait will pseudo-import the data$ reference from the context,
     or allow setting of the $$DOC{ref:'.data'} property directly. Additionally,
@@ -32,7 +35,7 @@ CLASS({
   */},
 
   imports: ['data$ as dataImport$'],
-    
+
   properties: [
     {
       model_: 'foam.patterns.ChainedPrePostProperty',
@@ -54,7 +57,7 @@ CLASS({
         directly to override the context import. Children will see changes to this
         data through the context. */},
       postSet: function(old,nu) {
-        /* If not a change from import or export, the user wants to 
+        /* If not a change from import or export, the user wants to
         set data directly and break the connection with our import */
         this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange_;
         if ( this.isImportEnabled_ && ! equals(this.dataImport, nu) ) {
@@ -66,7 +69,7 @@ CLASS({
     {
       name: 'childDataValue',
       documentation: function() {/* Holds the exported SimpleValue instance.
-        The instance will be thrown away and re-created to cut loose any children. 
+        The instance will be thrown away and re-created to cut loose any children.
       */}
     },
     {
@@ -88,19 +91,19 @@ CLASS({
       hidden: true
     }
   ],
-  
+
   methods: {
-    
+
     onChildValueChange: function(old,nu) {
       /* Override to change the default update behavior: when the value
         changes in the child context, propagate into $$DOC{ref:'.data'}. */
-      this.data = nu;      
+      this.data = nu;
     },
-    
+
     onDataChange: function(old,nu) {
-      /* Override to change the default update behavior: when 
+      /* Override to change the default update behavior: when
         $$DOC{ref:'.data'} changes, propagate to the child context. */
-      
+
       if ( this.shouldDestroy(old,nu) ) {
         // destroy children
         this.destroy();
@@ -108,14 +111,14 @@ CLASS({
         this.construct();
       } else {
         // otherwise propagate value to existing children
-        if (  this.childDataValue 
+        if (  this.childDataValue
            && ! equals(this.childDataValue.value, nu) ) {
           this.childDataValue.set(nu);
         }
       }
-  
+
     },
-    
+
     shouldDestroy: function(old,nu) {
       /* Override to provide the destruct condition. When data changes,
          this method is called. Return true to destroy(), cut loose children
@@ -123,7 +126,7 @@ CLASS({
          the data change. */
       return true;
     },
-    
+
     destroy: function() {
       // tear down childDataValue listener
       if ( this.childDataValue ) {
@@ -131,7 +134,7 @@ CLASS({
         this.childDataValue = null;
       }
       this.childX = this.X.sub();
-      
+
       this.SUPER();
     },
     construct: function() {
@@ -144,7 +147,7 @@ CLASS({
       this.childX = this.X.sub({ data$: this.childDataValue });
     }
   },
-  
+
   listeners: [
     {
       name: 'onExportValueChange_',
@@ -152,10 +155,10 @@ CLASS({
       value that children may make. */},
       code: function(_,_,old,nu) {
         this.isContextChange_ = true;
-        this.onChildValueChange(old,nu);        
+        this.onChildValueChange(old,nu);
         this.isContextChange_ = false;
       }
     }
   ]
-  
+
 });

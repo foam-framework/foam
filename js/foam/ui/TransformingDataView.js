@@ -28,7 +28,7 @@ CLASS({
 
   imports: ['data$ as dataImport$'],
   exports: ['childData$ as data$'],
-    
+
   properties: [
     {
       model_: 'foam.patterns.ChainedPrePostProperty',
@@ -50,7 +50,7 @@ CLASS({
         directly to override the context import. Children will see changes to this
         data through the context. Override $$DOC{ref:'.onDataChange'}
         instead of using a postSet here. */},
-      postSet: function(old, nu) {       
+      postSet: function(old, nu) {
         if ( ! this.isInternalSetter_ ) this.onDataChange(old, nu);
       }
     },
@@ -66,7 +66,7 @@ CLASS({
           this.xformFromChild(old, nu);
           this.isContextChange_ = false;
         }
-      }      
+      }
     },
     {
       model_: 'BooleanProperty',
@@ -89,9 +89,9 @@ CLASS({
       hidden: true
     },
 
-    
+
   ],
-  
+
   methods: {
     onDataChange: function(old, nu) { /* React to a change to $$DOC{ref:'.data'}.
       Don't forget to call <code>this.SUPER(old,nu)</code> in your implementation. */
@@ -107,7 +107,7 @@ CLASS({
     },
     xformFromChild: function(oldChildData, nuChildData) {
       /* Override to set data given nuChildData */
-      this.internalSetData_(nuChildData);      
+      this.internalSetData_(nuChildData);
     },
     internalSetData_: function(nu) {
       this.isInternalSetter_ = true;
@@ -117,8 +117,8 @@ CLASS({
     internalSetChildData_: function(nu) {
       this.isInternalSetter_ = true;
       this.childData = nu;
-      this.isInternalSetter_ = false;      
+      this.isInternalSetter_ = false;
     }
   }
-  
+
 });
