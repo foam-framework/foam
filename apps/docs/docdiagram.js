@@ -272,7 +272,7 @@ CLASS({
   name: 'TraitListDiagram',
   package: 'foam.documentation',
 
-  extendsModel: 'foam.ui.TransformingDataView',
+  extendsModel: 'foam.ui.LeafDataView',
 
   requires: ['foam.documentation.ModelDocDiagram',
              'foam.documentation.DocLinkDiagram',
@@ -339,10 +339,9 @@ CLASS({
         var traitModel = FOAM.lookup(trait, self.X);
         
         var X = self.X.sub({ 
-          data$: self.SimpleValue.create(traitModel, self.X),
           documentViewRef: self.SimpleValue.create(self.DocRef.create({ ref: trait }, self.X))
         });
-        var traitDiag = self.ModelDocDiagram.create({ model: Model, titleColor: 'rgba(30,160,30,255)' }, X);
+        var traitDiag = self.ModelDocDiagram.create({ model: Model, data$: this.data$, titleColor: 'rgba(30,160,30,255)' }, X);
         self.addChild(traitDiag);
         self.addChild(self.DocLinkDiagram.create({ start: traitDiag, end$: self.sourceDiag$ }));
     
@@ -525,7 +524,7 @@ CLASS({
              'foam.graphics.diagram.SectionGroup',
              'SimpleValue'],
 
-  extendsModel: 'foam.ui.TransformingDataView',
+  extendsModel: 'foam.ui.LeafDataView',
   traits: [ 'foam.documentation.DocDiagramTrait',
             'foam.documentation.FeatureListLoaderTrait'],
 
@@ -550,8 +549,7 @@ CLASS({
       this.diagramItem.title = this.featureType.capitalize();
       this.selfFeaturesDAO.limit(5).select({ 
         put: function(item) {
-          var X = this.X.sub({ data$: this.SimpleValue.create(item, this.childX) });
-          this.addChild(this.FeatureDiagram.create({ model: item.model_ }, X));
+          this.addChild(this.FeatureDiagram.create({ model: item.model_, data$: this.data$ }));
 //          console.log("    Adding child from featureDAO ");
         }.bind(this),
         eof: function() {

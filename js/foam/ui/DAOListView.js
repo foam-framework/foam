@@ -132,8 +132,9 @@ CLASS({
       }
       d.select({put: function(o) {
         if ( this.mode === 'read-write' ) o = o.model_.create(o, this.X); //.clone();
-        var X = this.X.sub({ data$: this.X.SimpleValue.create(o, this.X) });
+        var X = this.X;
         var view = this.rowView({ model: o.model_}, X);
+        view.data = o;
         view.DAO = this.dao;
         if ( this.mode === 'read-write' ) {
           o.addListener(function() {

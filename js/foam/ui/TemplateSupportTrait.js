@@ -26,12 +26,18 @@ CLASS({
   */},
 
   methods: {
-  
+    
+    addSelfDataChild: function(child) {
+      /* For views created from properties of this view (not our data),
+         this method sets the child's data to this. */
+      child.data = this;
+      this.addChild(child);
+    },
+    
     createView: function(prop, opt_args) {
       /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.X;
       var v = this.PropertyView.create({prop: prop, args: opt_args}, X);
-      this.addChild(v);
       return v;
     },
 
@@ -77,6 +83,8 @@ CLASS({
             v = this.createRelationshipView(o, args);
           else
             v = this.createView(o, args);
+          // link data and add child view
+          this.addDataChild(v);          
           return v;
         }
       } 
@@ -93,6 +101,8 @@ CLASS({
         v = this.createRelationshipView(o, args);
       else
         v = this.createView(o, args);
+      // set this-as-data and add child view
+      this.addSelfDataChild(v);          
       return v;
     },
     

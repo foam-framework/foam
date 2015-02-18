@@ -20,42 +20,31 @@ CLASS({
   package: 'foam.ui',
   extendsModel: 'foam.patterns.ChildTreeTrait',
 
-  requires: ['foam.patterns.UnchainablePrePostProperty'],
-  
-  documentation: function() {/* For Views that do not use $$DOC{ref:'.data'},
-    this trait will still allow cooperation with Views that do. If you
-    plan to export or import data, do not use this trait. This trait expects
-    to be applied after $$DOC{ref:'foam.patterns.ChildTreeTrait'}.
+  documentation: function() {/* For Views that use $$DOC{ref:'.data'},
+    this trait will pseudo-import the data$ reference from the context,
+    or allow setting of the $$DOC{ref:'.data'} property directly.
   */},
 
   properties: [
     {
-      model_: 'foam.patterns.UnchainablePrePostProperty',
       name: 'data',
-      postSet: function() {
-        this.children.forEach(function(child) {
-          // special case for BaseView, since it exports itself to certain children
-          if ( child.data !== this ) {
-            child.data = this.data;
-          }
-        }.bind(this));
-      },
-      documentation: function() {/* The postSet supplied here will
-        propagate the change to children. Those children are responsible
-        for either passing on the change or exporting to their contexts
-        if they actually handle data.
+      documentation: function() {/* The actual data used by the view.
+        Children's data will be bidirectionally bound to this property.
+        If you want to give your children differing data, use
+        $$DOC{ref:'foam.ui.LeafDataView'} or
+        $$DOC{ref:'foam.ui.DestructiveDataView'}.
       */}
     }
   ],
+  
   methods: {
     addChild: function(child) {
       this.SUPER(child);
-      if ( this.data && child.data !== this ) {
-        // if our data was set on initialization, we didn't have children to 
-        // propagate it to yet. Since we can't export to the context, better
-        // set it now...
-        child.data = this.data;
-      }
+      Events.link(this.data$, child.data$);
+    },
+    removeChild: function(child) {
+      Events.unlink(this.data$, child.data$);
+      this.SUPER(child);
     }
   }
   

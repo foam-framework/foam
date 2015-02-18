@@ -24,27 +24,13 @@ CLASS({
     but do not pass it along to any children, use this trait.
   */},
 
-  requires: ['foam.patterns.ChainedPrePostProperty'],
-  imports: ['data$'],
-
   properties: [
     {
-      model_: 'foam.patterns.ChainedPrePostProperty',
       name: 'data',
-      documentation: function() {/* The actual data used by the view. May be set
-        directly to override the context import. Children will see changes to this
-        data through the context. Override $$DOC{ref:'.onDataChange'}
-        instead of using a postSet here. */},
-      postSet: function(old, nu) {
-        this.onDataChange(old, nu);
-      }
+      documentation: function() {/* The actual data used by the view.
+        Not progated to children, as it is assumed no children are present.
+         */}
     }
-  ],
-
-  methods: {
-    onDataChange: function(old, nu) { /* React to a change to $$DOC{ref:'.data'}.
-      Don't forget to call <code>this.SUPER(old,nu)</code> in your implementation. */
-    }
-  }
-
+  ]
+    
 });

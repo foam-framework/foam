@@ -19,7 +19,7 @@
 CLASS({
   name: 'BasePropertyView',
   package: 'foam.ui',
-  extendsModel: 'foam.ui.TransformingDataView',
+  extendsModel: 'foam.ui.LeafDataView',
   
   requires: ['foam.ui.TextFieldView'],
   
@@ -39,8 +39,22 @@ CLASS({
           The $$DOC{ref:'Property'} for which to generate a $$DOC{ref:'foam.ui.View'}.
       */},
       postSet: function(old, nu) {
-        if (!old) this.bindData(this.data);
+        if ( old && this.bound_ ) this.unbindData(this.data);
+        if ( nu && ! this.bound_ ) this.bindData(this.data);
       }
+    },
+    {
+      name: 'data',
+      documentation: function() {/*
+          The $$DOC{ref:'.data'} for which to generate a $$DOC{ref:'foam.ui.View'}.
+      */},
+      postSet: function(old, nu) {
+        if ( old && this.bound_ ) this.unbindData(old);
+        if ( nu ) this.bindData(nu);
+      }
+    },
+    {
+      name: 'childData'
     },
     {
       name: 'parent',
@@ -95,14 +109,6 @@ CLASS({
       return this;
     },
        
-    xformToChild: function(old,nu) {
-      this.unbindData(old);
-      this.bindData(nu);
-    },
-    xformFromChild: function(old,nu) {
-      //nop, since we bind a two-way listener in bindData()
-    },
-
     createViewFromProperty: function(prop) {
       /* Helper to determine the $$DOC{ref:'foam.ui.View'} to use. */
       var viewName = this.innerView || prop.view
@@ -171,6 +177,7 @@ CLASS({
       view.copyFrom(this.args);
       view.parent = this.parent;
       view.prop = this.prop;
+      view.data$ = this.childData$;
 
       // TODO(kgr): re-enable when improved
       // if ( this.prop.description || this.prop.help ) view.tooltip = this.prop.description || this.prop.help;

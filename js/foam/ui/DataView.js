@@ -18,79 +18,12 @@
 CLASS({
   name: 'DataView',
   package: 'foam.ui',
-  extendsModel: 'foam.patterns.ChildTreeTrait',
+  extendsModel: 'foam.ui.SimpleView',
 
   documentation: function() {/* For Views that use $$DOC{ref:'.data'},
     this trait will pseudo-import the data$ reference from the context,
     or allow setting of the $$DOC{ref:'.data'} property directly.
   */},
 
-  imports: ['data$ as dataImport$'],
-  exports: ['childData$ as data$'],
-    
-  properties: [
-    {
-      name: 'dataImport',
-      documentation: function() {/* Handles the incoming data from the import
-        context, and may be ignored if data is directly set. */},
-      postSet: function(old, nu) {
-        if ( this.isImportEnabled_ && this.data !== nu ) {
-          this.isContextChange_ = true;
-          this.data = nu;
-          this.isContextChange_ = false;
-        }
-      }
-    },
-    {
-      name: 'data',
-      documentation: function() {/* The actual data used by the view. May be set
-        directly to override the context import. Children will see changes to this
-        data through the context. Override $$DOC{ref:'.onDataChange'}
-        instead of using a postSet here. */},
-      postSet: function(old, nu) {       
-        this.onDataChange(old, nu);
-      }
-    },
-    {
-      name: 'childData',
-      documentation: function() {/* The exported value. This is only separated
-        from data as a way to detect whether a change is local or from child
-        context changes. */},
-      postSet: function(old, nu) {
-        if ( this.data !== nu ) {
-          this.isContextChange_ = true;
-          this.data = nu;
-          this.isContextChange_ = false;
-        }
-      }      
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'isContextChange_',
-      defaultValue: false,
-      transient: true,
-      hidden: true
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'isImportEnabled_',
-      defaultValue: true,
-      hidden: true
-    }
-    
-  ],
-  
-  methods: {
-    onDataChange: function(old, nu) { /* React to a change to $$DOC{ref:'.data'}.
-      Don't forget to call <code>this.SUPER(old,nu)</code> in your implementation. */
-      this.isImportEnabled_ = this.isImportEnabled_ && this.isContextChange_;
-      if ( this.isImportEnabled_ && this.dataImport !== nu ) {
-        this.dataImport = nu;
-      }
-      if ( this.childData !== nu ) {
-        this.childData = nu;
-      }
-    }
-  }
   
 });

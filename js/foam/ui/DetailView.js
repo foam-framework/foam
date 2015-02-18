@@ -54,6 +54,12 @@ CLASS({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(old,nu) {
+        this.model = nu.model_;
+      }
+    },
+    {
       name:  'model',
       type:  'Model',
     },
@@ -91,13 +97,6 @@ CLASS({
 
   methods: {
     // Template Method
-    onValueChange_: function() { /* Override with value update code. */ },
-
-    onDataChange: function(old, nu) {
-      this.model = nu.model_;
-      this.SUPER(old,nu);
-      this.onValueChange_();
-    },
     
     shouldDestroy: function(old,nu) {
       if ( ! old || ! old.model_ || ! nu || ! nu.model_ ) return true;
