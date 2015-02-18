@@ -261,5 +261,15 @@ test('<pA a="1">foo</pA>');
 test('<pA a="1" b="2">foo<b>bold</b></pA>');
 */
 
-TemplateParser.foamTag_ = FOAMTagParser.create().export('START');
+//TemplateParser.foamTag_ = FOAMTagParser.create().export('START');
+TemplateParser.foamTag_ = (function() {
+  var start = literal_ic('<foam');
+  var html = HTMLParser.create().export('START');
+
+  return function(ps) {
+    var res = this.parse(start, ps) && this.parse(html, ps);
+    return res && res.setValue(res.value.childNodes[0]);
+  };
+})();
+
 invalidateParsers();

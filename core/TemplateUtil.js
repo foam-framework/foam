@@ -27,56 +27,6 @@
  *    $$feature(<whitespace>|<): output the View or Action for the current Value
  */
 
-var FOAMTagParser = {
-  __proto__: grammar,
-
-  create: function() {
-    return {
-      __proto__: this,
-      html: HTMLParser.create().export('START')
-    };
-  },
-
-  START: sym('tag'),
-
-  tag: seq(
-    '<',
-    literal_ic('foam'),
-    sym('whitespace'),
-    sym('attributes'),
-    sym('whitespace'),
-    alt(sym('closed'), sym('matching'))
-  ),
-
-  closed: literal('/>'),
-
-  matching: seq1(1,'>', sym('html'), sym('endTag')),
-
-  endTag: seq1(1, '</', literal_ic('foam'), '>'),
-
-  label: str(plus(notChars(' =/\t\r\n<>\'"'))),
-
-  attributes: repeat(sym('attribute'), sym('whitespace')),
-
-  attribute: seq(sym('label'), '=', sym('value')),
-
-  value: str(alt(
-    plus(alt(range('a','z'), range('A', 'Z'), range('0', '9'))),
-    seq1(1, '"', repeat(notChar('"')), '"')
-  )),
-
-  whitespace: repeat(alt(' ', '\t', '\r', '\n'))
-
-}.addActions({
-  attribute: function(xs) { return { name: xs[0], value: xs[2] }; },
-  tag: function(xs) {
-    return X.foam.html.Element.create({nodeName: xs[1], attributes: xs[3], childNodes: xs[5]});
-  },
-  closed:   function()   { return []; },
-  matching: function(xs) { return xs.children; }
-});
-
-
 MODEL({
   name: 'TemplateParser',
   extendsModel: 'grammar',
