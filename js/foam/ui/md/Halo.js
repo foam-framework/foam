@@ -30,8 +30,8 @@ CLASS({
       name: 'style',
       documentation: 'solid|ring',
       defaultValue: 'solid',
-      postSet: function(_, nu) {
-        if ( nu !== this.RING_INNER_COLOR ) this.setColorAndBorder();
+      postSet: function(_, style) {
+        if ( style !== this.RING_INNER_COLOR ) this.setColorAndBorder();
       }
     },
     {
@@ -83,6 +83,13 @@ CLASS({
         this.$.addEventListener('touchleave',  this.onMouseUp);
         this.$.addEventListener('touchcancel', this.onMouseUp);
       }
+    },
+    {
+      name: 'isTouchInRect',
+      code: function(t, rect) {
+        return t.pageX >= rect.left && t.pageX <= rect.right &&
+            t.pageY >= rect.top && t.pageY <= rect.bottom;
+      }
     }
   ],
 
@@ -90,16 +97,25 @@ CLASS({
     {
       name: 'onMouseDown',
       code: function(evt) {
-        // console.log('mouseDown: ', evt, this.state_);
         if ( this.state_ !== 'default' ) return;
 
         this.state_ = 'pressing';
 
         if ( evt.type === 'touchstart' ) {
-          var rect = this.$.getBoundingClientRect();
-          var t = evt.touches[0];
-          this.x = t.pageX - rect.left;
-          this.y = t.pageY - rect.top;
+          var rect = this.$.getBoundingClientRect(), touchFound = false, t;
+          for ( var i = 0; i < evt.touches.length; ++i ) {
+            t = evt.touches[i];
+            if ( this.isTouchInRect(t, rect) ) { touchFound = true; break; }
+          }
+          if ( touchFound ) {
+            this.x = t.pageX - rect.left;
+            this.y = t.pageY - rect.top;
+          } else {
+            // Default to center of element.
+            console.warn('No touches', evt.touches, 'in element rect', rect);
+            this.x = rect.width / 2;
+            this.y = rect.height / 2;
+          }
         } else {
           this.x = evt.offsetX;
           this.y = evt.offsetY;
@@ -128,7 +144,6 @@ CLASS({
         // onMouseUp events when the cursor moves over the button.
         if ( this.state_ === 'default' ) return;
 
-        // console.log('mouseUp: ', evt, this.state_);
         if ( this.state_ === 'pressing' ) { this.state_ = 'cancelled'; return; }
         if ( this.state_ === 'cancelled' ) return;
         this.state_ = 'released';
@@ -137,7 +152,7 @@ CLASS({
           this.easeOutTime,
           function() { this.alpha = this.finishAlpha; }.bind(this),
           Movement.easeIn(.5),
-          function() { this.state_ = 'default'; }.bind(this))();
+          function() { if ( this.state_ === 'released' ) this.state_ = 'default'; }.bind(this))();
       }
     }
   ]

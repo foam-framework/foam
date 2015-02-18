@@ -48,6 +48,12 @@ CLASS({
       defaultValue: true
     },
     {
+      model_: 'BooleanProperty',
+      name: 'growable',
+      documentation: 'Set true if this text area should grow with the text.',
+      defaultValue: false
+    },
+    {
       name: 'clearAction',
       documentation: 'When true, will show an X for clearing the text box.',
       defaultValue: false
@@ -56,7 +62,8 @@ CLASS({
   methods: {
     initHTML: function() {
       this.SUPER();
-      this.softValue = DomValue.create(this.$input, 'input');
+      this.softValue = DomValue.create(this.$input, 'input',
+          this.growable ? 'textContent' : 'value');
       this.softValue.set(this.data);
       Events.link(this.softValue, this.softData$);
 
@@ -91,8 +98,10 @@ CLASS({
       }
       .md-text-field-input {
         background: transparent;
-        border-bottom: 1px solid #e0e0e0 !important;
-        border: none;
+        border-bottom: 1px solid #e0e0e0;
+        border-left: none;
+        border-right: none;
+        border-top: none;
         color: #444;
         flex-grow: 1;
         font-family: Roboto;
@@ -109,7 +118,7 @@ CLASS({
       }
 
       .md-text-field-input:focus {
-        border-bottom: 2px solid #0288D1;
+        border-bottom: 2px solid #4285f4;
         padding: 0 0 6px 0;
         outline: none;
       }
@@ -143,7 +152,10 @@ CLASS({
         <% if (this.floatingLabel) { %>
           <label id="{{{label}}}" class="md-text-field-label">%%label</label>
         <% } %>
-        <% if ( this.displayHeight > 1 ) { %>
+        <% if ( this.growable ) { %>
+          <div id="{{{input}}}" class="md-text-field-input" contenteditable>
+          </div>
+        <% } else if ( this.displayHeight > 1 ) { %>
           <textarea id="{{{input}}}" type="text" class="md-text-field-input" rows="{{{this.displayHeight}}}"></textarea>
         <% } else { %>
           <input id="{{{input}}}" type="text" class="md-text-field-input"

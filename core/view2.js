@@ -2696,7 +2696,7 @@ CLASS({
   methods: {
     toHTML: function() {
       this.children = [];
-      var view = FOAM.lookup(this.innerView).create({ model: this.model, mode: this.mode, data$: this.innerData$ });
+      var view = FOAM.lookup(this.innerView).create({ id: this.id, model: this.model, mode: this.mode, data$: this.innerData$ });
       this.addChild(view);
       return view.toHTML();
     }
