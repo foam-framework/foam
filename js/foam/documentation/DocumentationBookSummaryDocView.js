@@ -16,21 +16,30 @@
  */
 
 CLASS({
-  name: 'DocFeatureModelDataRefView',
+  name: 'DocumentationBookSummaryDocView',
   package: 'foam.documentation',
-  extendsModel: 'foam.documentation.DocRefView',
-  label: 'Documentation Feature sub-model Link Reference View',
-  help: 'The view of a documentation reference link based on a Sub-Model.',
+  extendsModel: 'foam.documentation.SummaryDocView',
+  documentation: 'Displays the documentation of the given book.',
 
-  documentation: function() { /*
-    An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
-    for notes on usage. Set $$DOC{ref:'.data'} to an instance of a model.
-    */},
+  requires: ['foam.documentation.DocBodyView'],
 
   methods: {
-    onDataChange: function(old,nu) {
-      this.SUPER(old,nu);
-      this.ref = this.data.id;
+    onValueChange_: function() {
+      this.updateHTML();
     }
-  }
+  },
+
+  templates: [
+
+    function toInnerHTML()    {/*
+<%    this.destroy(); %>
+<%    if (this.data) {  %>
+        <div id="scrollTarget_<%=this.data.name%>" class="introduction">
+          <h2><%=this.data.label%></h2>
+          $$data{ model_: 'foam.documentation.DocBodyView' }
+        </div>
+<%    } %>
+    */}
+  ]
+
 });

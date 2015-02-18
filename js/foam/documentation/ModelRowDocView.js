@@ -16,21 +16,20 @@
  */
 
 CLASS({
-  name: 'DocFeatureModelDataRefView',
+  name: 'ModelRowDocView',
   package: 'foam.documentation',
-  extendsModel: 'foam.documentation.DocRefView',
-  label: 'Documentation Feature sub-model Link Reference View',
-  help: 'The view of a documentation reference link based on a Sub-Model.',
+  extendsModel: 'foam.documentation.DocView',
 
-  documentation: function() { /*
-    An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
-    for notes on usage. Set $$DOC{ref:'.data'} to an instance of a model.
-    */},
+  requires: ['foam.documentation.DocFeatureSubmodelRefView'],
 
-  methods: {
-    onDataChange: function(old,nu) {
-      this.SUPER(old,nu);
-      this.ref = this.data.id;
-    }
-  }
+  documentation: "A row documentation view for $$DOC{ref:'Model'} instances.",
+
+ templates: [
+    function toInnerHTML() {/*
+      <div id="scrollTarget_<%=this.data.name%>">
+      <p class="feature-heading">$$data{model_: this.DocFeatureSubmodelRefView}</p>
+        <p>$$documentation{ model_: 'foam.documentation.DocBodyView' }</p>
+      </div>
+    */}
+  ]
 });

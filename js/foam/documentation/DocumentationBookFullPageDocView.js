@@ -16,21 +16,25 @@
  */
 
 CLASS({
-  name: 'DocFeatureModelDataRefView',
+  name: 'DocumentationBookFullPageDocView',
   package: 'foam.documentation',
-  extendsModel: 'foam.documentation.DocRefView',
-  label: 'Documentation Feature sub-model Link Reference View',
-  help: 'The view of a documentation reference link based on a Sub-Model.',
+  extendsModel: 'foam.documentation.FullPageDocView',
+  documentation: 'Displays the documentation of the given book.',
 
-  documentation: function() { /*
-    An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
-    for notes on usage. Set $$DOC{ref:'.data'} to an instance of a model.
-    */},
+  requires: ['foam.documentation.DocumentationBookSummaryDocView',
+             'foam.documentation.DocChaptersView'],
 
-  methods: {
-    onDataChange: function(old,nu) {
-      this.SUPER(old,nu);
-      this.ref = this.data.id;
-    }
-  }
+  templates: [
+
+    function toInnerHTML()    {/*
+<%    this.destroy(); %>
+<%    if (this.data) {  %>
+        $$data{ model_: 'foam.documentation.DocumentationBookSummaryDocView' }
+        <div class="chapters">
+          $$chapters{ model_: 'foam.documentation.DocChaptersView' }
+        </div>
+<%    } %>
+    */}
+  ]
+
 });

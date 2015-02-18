@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2014 Google Inc. All Rights Reserved
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,3 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+CLASS({
+  name: 'TraitUsersOptionalView',
+  package: 'foam.documentation',
+  extendsModel: 'foam.documentation.DocOptionalView',
+
+  properties: [
+    {
+      name: 'data',
+      hidden: false
+    }
+  ],
+
+  templates: [
+    function toInnerHTML()    {/*
+      <% if ( this.hasContent ) {  %>
+        <p class="important">Used by: $$data{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelDataRefView', mode: 'read-only' }</p>
+      <% } %>
+    */}
+  ]
+
+});

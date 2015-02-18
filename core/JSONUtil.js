@@ -104,7 +104,7 @@ var JSONUtil = {
 
       if ( obj.model_ ) {
         var newObj = FOAM.lookup(obj.model_, X);
-        if ( ! newObj && seq ) {
+        if ( ( ! newObj || newObj.ready__ ) && seq ) {
           var future = afuture();
           seq.push(future.get);
 
@@ -248,7 +248,7 @@ var JSONUtil = {
 
     outputFunction_: function(out, obj) { out(obj); }
   },
-    
+
   pretty: {
     __proto__: AbstractFormatter,
 
