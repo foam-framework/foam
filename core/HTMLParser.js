@@ -188,7 +188,7 @@ var HTMLParser = {
 
   endTag_: seq1(1, '</', sym('tagName'), '>'),
 
-  comment: seq('<!--', repeat(not('-->', anyChar)), '-->'),
+  comment: seq('<!--', repeat0(not('-->', anyChar)), '-->'),
 
   attributes: repeat(sym('attribute'), sym('whitespace')),
 
@@ -205,7 +205,7 @@ var HTMLParser = {
     seq1(1, '"', repeat(notChar('"')), '"')
   )),
 
-  whitespace: repeat(alt(' ', '\t', '\r', '\n'))
+  whitespace: repeat0(alt(' ', '\t', '\r', '\n'))
 }.addActions({
   START: function(xs) {
     var ret = this.stack[0];
