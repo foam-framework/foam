@@ -27,11 +27,13 @@ CLASS({
     for notes on usage. Set $$DOC{ref:'.data'} to be a DocFeatureInheritanceTracker instance.
   */},
 
-  methods: {
-    onDataChange: function(old,nu) {
-      this.SUPER(old,nu);
-      this.ref = this.data.model + "." + this.data.name;
-      this.text = (this.data.fromTrait? "(T)" : "") + this.data.model;
+  properties: [
+    {
+      name: 'data',
+      postSet: function(old,nu) {
+        this.ref = this.data.model + "." + this.data.name;
+        this.text = (this.data.fromTrait? "(T)" : "") + this.data.model;
+      }
     }
-  }
+  ]
 });

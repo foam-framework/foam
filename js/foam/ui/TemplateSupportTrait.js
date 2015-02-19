@@ -69,13 +69,12 @@ CLASS({
         creation tag in $$DOC{ref:'Template',usePlural:true}.
       */
       var args = opt_args || {};
-      var X = this.childX || this.X;
+      var X = this.X;
       // Look for the property on our data first
-      var myData = this.childDataValue || this.data$;
+      var myData = this.data$;
       if ( myData && myData.value && myData.value.model_ ) {
         var o = myData.value.model_.getFeature(name);
         if ( o ) {
-          args.X = X.sub({ data$: myData });
           var v;
           if ( Action.isInstance(o) )
             v = this.createActionView(o, args);
@@ -91,9 +90,6 @@ CLASS({
       // fallback to check our own properties
       var o = this.model_.getFeature(name);  
       if ( ! o ) throw 'Unknown View Name: ' + name;
-
-      // export self as data
-      args.X = this.X.sub({ data$: this.SimpleReadOnlyValue.create(this) });
 
       if ( Action.isInstance(o) )
         var v = this.createActionView(o, args);

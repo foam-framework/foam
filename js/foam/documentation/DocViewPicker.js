@@ -40,7 +40,10 @@ CLASS({
               'foam.documentation.ModelSummaryDocView',
               'foam.documentation.InterfaceSummaryDocView',
               'foam.documentation.DocumentationBookSummaryDocView',
-              'foam.documentation.DocChaptersView'
+              'foam.documentation.DocChaptersView',
+              
+              'foam.documentation.SubModelOptionalView',
+              'foam.documentation.TraitUsersOptionalView'
 
 
   ],
@@ -49,28 +52,6 @@ CLASS({
     Creates a sub-view appropriate for the specified data (such as a Model definition,
     DocumentationBook, or other thing.
   */},
-
-  properties: [
-    {
-      name: 'data',
-      documentation: function() {/*
-        Handles a model change, which requires that the child views be torn down.
-        If the data.model_ remains the same, the new data is simply propagated to
-        the existing children.
-      */},
-      postSet: function(old, nu) {
-        // destroy children
-        this.destroy();
-        // propagate data change (nowhere)
-        this.model = nu.model_;
-        this.childData = nu;
-        // rebuild children with new data
-        this.construct();
-
-        this.onValueChange_(); // sub-classes may handle to change as well
-      }
-    }
-  ],
 
   templates: [
     function toInnerHTML() {/*

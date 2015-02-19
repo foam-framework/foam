@@ -38,24 +38,6 @@ CLASS({
 
       properties: [
         {
-          name: 'data',
-          documentation: function() {/* Overridden to introduce $$DOC{ref:'.addAmount'}. */},
-          postSet: function() {
-            if (!this.data) return;
-
-            var mapFn = function(val) {
-              return val + this.addAmount
-            }.bind(this);
-
-            Events.map(this.data.preferred$Pix$, this.preferred$, mapFn);
-            Events.map(this.data.max$Pix$, this.max$, mapFn);
-            Events.map(this.data.min$Pix$, this.min$, mapFn);
-
-            Events.follow(this.data.stretchFactor$, this.stretchFactor$);
-            Events.follow(this.data.shrinkFactor$, this.shrinkFactor$);
-          }
-        },
-        {
           model_: 'IntProperty',
           name: 'addAmount',
           documentation: function() {/* The amount to add to the proxied pixel values. */},
@@ -66,7 +48,25 @@ CLASS({
             this.min = this.data.min$Pix + nu;
           }
         }
-      ]
+      ],
+      
+      methods: {
+        bind: function(nu) {
+          // no SUPER, we don't want it
+          if (!nu) return;
+
+          var mapFn = function(val) {
+            return val + this.addAmount
+          }.bind(this);
+
+          Events.map(nu.preferred$Pix$, this.preferred$, mapFn);
+          Events.map(nu.max$Pix$, this.max$, mapFn);
+          Events.map(nu.min$Pix$, this.min$, mapFn);
+
+          Events.follow(nu.stretchFactor$, this.stretchFactor$);
+          Events.follow(nu.shrinkFactor$, this.shrinkFactor$);
+        }        
+      }
     }
   ],
 

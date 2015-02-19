@@ -31,6 +31,14 @@ CLASS({
   exports: ['dao$ as daoViewCurrentDAO$'],
 
   properties: [
+       {
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( this.dao !== nu ) {
+          this.dao = nu;
+        }        
+      }
+    }, 
     {
       model_: 'DAOProperty',
       name: 'dao',
@@ -52,12 +60,6 @@ CLASS({
   ],
 
   methods: {
-    onDataChange: function(old,nu) {
-      this.SUPER(old,nu);
-      if ( this.dao !== nu ) {
-        this.dao = nu;
-      }
-    },
     
     onDAOUpdate: function() { /* Implement this $$DOC{ref:'Method'} in
           sub-models to respond to changes in $$DOC{ref:'.dao'}. */ }

@@ -27,10 +27,12 @@ CLASS({
     for notes on usage. Set $$DOC{ref:'.data'} to an instance of a model.
     */},
 
-  methods: {
-    onDataChange: function(old,nu) {
-      this.SUPER(old,nu);
-      this.ref = this.data.id;
+  properties: [
+    {
+      name: 'data',
+      postSet: function(old,nu) {
+        this.ref = this.data.id;
+      }
     }
-  }
+  ]
 });

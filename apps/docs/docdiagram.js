@@ -106,20 +106,20 @@ CLASS({
     {
       name: 'traitDiagram',
       factory: function() {
-        return this.TraitListDiagram.create({ sourceDiag: this.modelDiagram });
+        return this.TraitListDiagram.create({ data$: this.data$, sourceDiag: this.modelDiagram });
       }     
     },
     {
       name: 'modelDiagram',
       factory: function() {
-        var modelDiagram = this.ModelDocDiagram.create({ titleColor: 'black' });
+        var modelDiagram = this.ModelDocDiagram.create({ data$: this.data$, titleColor: 'black' });
         return modelDiagram;
       }
     },
     {
       name: 'extendsDiagram',
       factory: function() {
-        var extendsDiagram = this.ExtendsDiagram.create({ extended: this.modelDiagram });
+        var extendsDiagram = this.ExtendsDiagram.create({ data$: this.data$, extended: this.modelDiagram });
         this.extendsModelLayout.addChild(extendsDiagram.diagramItem);
         return extendsDiagram;
       }
@@ -192,6 +192,9 @@ CLASS({
 
   properties: [
     {
+      name: 'childData'
+    },
+    {
       name: 'diagramItem',
       type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
@@ -235,17 +238,17 @@ CLASS({
     construct: function() {
       this.SUPER();
       // don't just copy data, find extendsModel and send that to children
-      this.childDataValue.removeListener(this.onExportValueChange_);
-      this.childDataValue.set(FOAM.lookup(this.data.extendsModel, this.X));
+      var childData = FOAM.lookup(this.data.extendsModel, this.X);
             
-      this.childX.set('documentViewRef', this.SimpleValue.create(
-        this.DocRef.create({ ref: this.data.extendsModel })
-      ));
+      var childX = this.X.sub({ 
+        documentViewRef: this.SimpleValue.create(
+          this.DocRef.create({ ref: this.data.extendsModel })
+      )});
 
-      if (this.childDataValue.value) {
-        var thisDiag = this.ModelDocDiagram.create({ model: this.childDataValue.value }, this.childX);
-        if ( this.childDataValue.value.extendsModel ) {
-          this.addChild(this.X.foam.documentation.ExtendsDiagram.create({ extended: thisDiag }, this.childX));
+      if (childData) {
+        var thisDiag = this.ModelDocDiagram.create({ data: childData, model: childData }, childX);
+        if ( childData.extendsModel ) {
+          this.addChild(this.X.foam.documentation.ExtendsDiagram.create({ data: childData, extended: thisDiag }, childX));
         }
 
         this.addChild(thisDiag);
@@ -289,10 +292,11 @@ CLASS({
   properties: [
     {
       name: 'data',
-      postSet: function() {
-        this.destroy();
-        this.childData = FOAM.lookup(this.data, this.X);
-        this.construct();
+      adapt: function(old, nu) {
+        if ( typeof nu == 'string' ) {
+          return FOAM.lookup(nu, this.X);
+        }
+        return nu;
       }
     },
     {
@@ -341,7 +345,7 @@ CLASS({
         var X = self.X.sub({ 
           documentViewRef: self.SimpleValue.create(self.DocRef.create({ ref: trait }, self.X))
         });
-        var traitDiag = self.ModelDocDiagram.create({ model: Model, data$: this.data$, titleColor: 'rgba(30,160,30,255)' }, X);
+        var traitDiag = self.ModelDocDiagram.create({ model: Model, data: traitModel, titleColor: 'rgba(30,160,30,255)' }, X);
         self.addChild(traitDiag);
         self.addChild(self.DocLinkDiagram.create({ start: traitDiag, end$: self.sourceDiag$ }));
     
@@ -426,6 +430,16 @@ CLASS({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(old,nu) {
+        if (this.data) {
+          this.modelName = this.data.name;
+          this.packageName = this.data.package;
+        }
+        this.processModelChange();
+      }
+    },
+    {
       name: 'modelName',
       type: 'String'
     },
@@ -440,14 +454,14 @@ CLASS({
     {
       name: 'diagramItem',
       factory: function() {
-        var diagramItem = this.Margin.create({ bottom: 5, right: 5, left: 5, top: 5 }, this.childX);
+        var diagramItem = this.Margin.create({ bottom: 5, right: 5, left: 5, top: 5 });
         return diagramItem;
       }
     },
     {
       name: 'linkableItem',
       factory: function() {
-        var linkableItem = this.Block.create({ border: 'black' }, this.childX);
+        var linkableItem = this.Block.create({ border: 'black' });
         //Events.follow(linkableItem.verticalConstraints.preferred$, linkableItem.verticalConstraints.max$);
         linkableItem.addChild(
           this.Section.create({
@@ -457,7 +471,7 @@ CLASS({
             border: 'rgba(0,0,0,0)',
             borderWidth: 0,
             color: 'white'
-          }, this.childX)
+          })
         );
         linkableItem.addChild(
           this.Section.create({
@@ -466,7 +480,7 @@ CLASS({
             border: 'rgba(0,0,0,0)',
             borderWidth: 0,
             color: 'white'
-          }, this.childX)
+          })
         );
         return linkableItem;
       }
@@ -484,22 +498,11 @@ CLASS({
       this.SUPER();
       this.createTemplateView('properties', { model_: 'foam.documentation.FeatureListDiagram',
             model: this.X.Property, featureType:'properties' });
-      //this.addChild(this.FeatureListDiagram.create({ model: this.X.Property, featureType:'properties' }, this.childX));
-    },
-
-    onDataChange: function(old,nu) {
-      this.SUPER(old,nu);
-      if (this.data) {
-        this.modelName = this.data.name;
-        this.packageName = this.data.package;
-      }
-      this.processModelChange();
     },
 
     processModelChange: function() {
       // abort if it's too early //TODO: (we import data and run its postSet before the rest is set up)
       if (!this.featureDAO || !this.modelDAO) return;
-      //this.generateFeatureDAO(this.data); // TODO: fix this for when we don't already have an X.featureDAO
     },
 
     addChild: function(child) {
@@ -549,7 +552,7 @@ CLASS({
       this.diagramItem.title = this.featureType.capitalize();
       this.selfFeaturesDAO.limit(5).select({ 
         put: function(item) {
-          this.addChild(this.FeatureDiagram.create({ model: item.model_, data$: this.data$ }));
+          this.addChild(this.FeatureDiagram.create({ model: item.model_, data: item }));
 //          console.log("    Adding child from featureDAO ");
         }.bind(this),
         eof: function() {

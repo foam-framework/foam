@@ -68,7 +68,7 @@ CLASS({
     destroy: function() {
       // unlink children
       this.dataLinkedChildren.forEach(function(child) {
-        Events.unlink(child.data$, this.data$);
+        Events.unfollow(this.data$, child.data$);
       }.bind(this));
       this.dataLinkedChildren = [];
       
@@ -77,7 +77,7 @@ CLASS({
     addDataChild: function(child) {
       /* For children that link to data$, this method tracks them
         for disconnection when we destroy. */
-      Events.link(child.data$, this.data$);
+      Events.follow(this.data$, child.data$);
       this.dataLinkedChildren.push(child);
       this.addChild(child);
     }

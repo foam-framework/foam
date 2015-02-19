@@ -101,6 +101,20 @@ CLASS({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(old,nu) {
+        this.modelRef = this.data.package ?
+                          this.data.package + "." + this.data.name :
+                          this.data.name;
+        var shortPkg = this.data.package;
+  //       if ( shortPkg.length > 20 ) {
+  //         shortPkg = "..." + this.data.package.substring(
+  //                     this.data.package.length-10, this.data.package.length);
+  //       }
+        this.modelName = (shortPkg ? "["+ shortPkg + "] <br/>" : "") + this.data.name;
+      }
+    },
+    {
       name: 'modelName',
       help: 'The Model package and name.'
     },
@@ -116,20 +130,8 @@ CLASS({
       this.X.documentationViewParentModel = this.SimpleValue.create();
 
       this.SUPER();
-    },
-    
-    onDataChange: function(old,nu) {
-      this.SUPER(old,nu);
-      this.modelRef = this.data.package ?
-                        this.data.package + "." + this.data.name :
-                        this.data.name;
-      var shortPkg = this.data.package;
-//       if ( shortPkg.length > 20 ) {
-//         shortPkg = "..." + this.data.package.substring(
-//                     this.data.package.length-10, this.data.package.length);
-//       }
-      this.modelName = (shortPkg ? "["+ shortPkg + "] <br/>" : "") + this.data.name;
     }
+    
   },
   templates: [ // TODO: the data gets set on the modelNameView... screws it up
     function toInnerHTML() {/*

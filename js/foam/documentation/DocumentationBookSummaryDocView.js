@@ -23,14 +23,16 @@ CLASS({
 
   requires: ['foam.documentation.DocBodyView'],
 
-  methods: {
-    onValueChange_: function() {
-      this.updateHTML();
-    }
-  },
+  properties: [
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        this.updateHTML();      
+      }
+    },    
+  ],
 
   templates: [
-
     function toInnerHTML()    {/*
 <%    this.destroy(); %>
 <%    if (this.data) {  %>

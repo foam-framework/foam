@@ -30,6 +30,27 @@ CLASS({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(old, nu) {
+        // since we're cloning the propagated data, we have to listen
+        // for changes to the data and clone again 
+        if ( old ) old.removeListener(this.parentContentsChanged);
+        if ( nu ) nu.addListener(this.parentContentsChanged);
+        
+        if (!nu) return;
+        // propagate a clone and build children
+        this.childDataValue.set(nu.deepClone());
+        this.originalData = nu.deepClone();
+  
+        this.data.addListener(function() {
+          // The user is making edits. Don't listen for parent changes,
+          // since we no longer want to react to updates to it.
+          this.version++;
+          this.data.removeListener(this.parentContentsChanged);
+        }.bind(this));
+      }
+    },
+    {
       name: 'originalData',
       documentation: 'A clone of the parent data, for comparison with edits.'
     },
@@ -50,28 +71,6 @@ CLASS({
       name: 'version'
     }
   ],
-
-  methods: {
-    onDataChange(old,nu) {
-      this.SUPER(old,nu);
-      // since we're cloning the propagated data, we have to listen
-      // for changes to the data and clone again 
-      if ( old ) old.removeListener(this.parentContentsChanged);
-      if ( nu ) nu.addListener(this.parentContentsChanged);
-      
-      if (!nu) return;
-      // propagate a clone and build children
-      this.childDataValue.set(nu.deepClone());
-      this.originalData = nu.deepClone();
-
-      this.data.addListener(function() {
-        // The user is making edits. Don't listen for parent changes,
-        // since we no longer want to react to updates to it.
-        this.version++;
-        this.data.removeListener(this.parentContentsChanged);
-      }.bind(this));
-    }
-  },
   
   listeners: [
     {

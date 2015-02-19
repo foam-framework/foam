@@ -31,14 +31,14 @@ CLASS({
 
   properties: [
     'subModelDAO',
-    'traitUserDAO'
+    'traitUserDAO',
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        this.updateHTML();      
+      }
+    },    
   ],
-
-  methods: {
-    onValueChange_: function() {
-      this.updateHTML();
-    }
-  },
 
   templates: [
 

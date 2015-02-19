@@ -20,9 +20,7 @@ CLASS({
   package: 'foam.ui',
   extendsModel: 'foam.ui.SimpleView',
 
-  documentation: function() {/* For Views that use $$DOC{ref:'.data'},
-    this trait will pseudo-import the data$ reference from the context,
-    or allow setting of the $$DOC{ref:'.data'} property directly.
+  documentation: function() {/* For Views that use $$DOC{ref:'.data'}.
   */},
 
   

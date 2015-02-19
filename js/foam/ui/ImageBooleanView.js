@@ -8,6 +8,12 @@ CLASS({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(old, nu) {
+        this.updateHTML();      
+      }
+    },
+    {
       name:  'name',
       label: 'Name',
       type:  'String',
@@ -28,10 +34,6 @@ CLASS({
   ],
 
   methods: {
-    onDataChange: function(old,nu) {
-      this.SUPER(old,nu);
-      this.updateHTML();
-    },
     image: function() {
       return this.data ? this.trueImage : this.falseImage;
     },

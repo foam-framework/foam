@@ -39,6 +39,15 @@ CLASS({
     }
   ],
 
+  properties: [
+    {
+      name: 'data',
+      postSet: function(old,nu) {
+        this.processModelChange();
+      }
+    }
+  ],
+  
   methods: {
 
     init: function() {
@@ -46,10 +55,6 @@ CLASS({
 
       this.documentViewRef.addListener(this.doScrollToFeature);
       this.generateFeatureDAO(this.data);
-    },
-
-    onValueChange_: function() {
-      this.processModelChange();
     },
 
     destroy: function() {

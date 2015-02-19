@@ -138,6 +138,22 @@ CLASS({
       model_: 'DAOProperty',
       name: 'dao',
       onDAOUpdate: 'onDAOUpdate'
+    },
+    {
+      name: 'data',
+      postSet: function(old,nu) {
+        for ( var i = 0 ; i < this.choices.length ; i++ ) {
+          if ( this.choices[i][0] === nu ) {
+            if ( this.index !== i ) {
+              this.text = this.choices[i][1];
+              this.index = i;
+            }
+            return;
+          }
+        }
+        if ( nu && this.choices.length )
+          console.warn('ChoiceView data set to invalid choice: ', nu);
+      }
     }
   ],
 
@@ -160,21 +176,7 @@ CLASS({
 
       this.dao = this.dao;
     },
-
-    onDataChange: function(old,d) {
-      for ( var i = 0 ; i < this.choices.length ; i++ ) {
-        if ( this.choices[i][0] === d ) {
-          if ( this.index !== i ) {
-            this.text = this.choices[i][1];
-            this.index = i;
-          }
-          return;
-        }
-      }
-      if ( d && this.choices.length )
-        console.warn('ChoiceView data set to invalid choice: ', d);
-    },
-    
+   
     findChoiceIC: function(name) {
       name = name.toLowerCase();
       for ( var i = 0 ; i < this.choices.length ; i++ ) {

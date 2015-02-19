@@ -26,11 +26,13 @@ CLASS({
     An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
     for notes on usage. Set $$DOC{ref:'.data'} to an instance of a model.
     */},
-
-  methods: {
-    onDataChange: function(old,nu) {
-      this.SUPER(old,nu);
-      this.ref = "."+this.data.name;
+  
+  properties: [
+    {
+      name: 'data',
+      postSet: function(old,nu) {
+        this.ref = "."+this.data.name;
+      }
     }
-  }
+  ]
 });

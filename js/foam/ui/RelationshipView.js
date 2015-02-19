@@ -25,6 +25,13 @@ CLASS({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(old, nu) {
+        this.destroy();
+        this.construct();
+      }
+    },
+    {
       name: 'relationship',
       required: true
     },
@@ -45,11 +52,6 @@ CLASS({
     init: function(args) {
       this.SUPER(args);
       if ( this.args && this.args.model_ ) this.viewModel = this.args.model_
-    },
-    onDataChange(old,nu) {
-      this.SUPER(old,nu);
-      this.destroy();
-      this.construct();
     },
     construct: function() {
       this.SUPER();

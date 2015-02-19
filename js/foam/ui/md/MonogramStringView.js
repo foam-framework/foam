@@ -25,14 +25,16 @@ CLASS({
 
   properties: [
     { name: 'className', defaultValue: 'monogram-string-view' },
-    { name: 'tooltip',   defaultValueFn: function() { return this.data; } }
+    { name: 'tooltip',   defaultValueFn: function() { return this.data; } },
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        this.updateHTML();      
+      }
+    },    
   ],
 
   methods: {
-    onDataChange: function(old,nu) {
-      this.SUPER(old,nu);
-      this.updateHTML();
-    },
     generateColor: function(data) {
       return data ? this.SUPER(data) :
           'url(images/silhouette.png) center no-repeat #e0e0e0';

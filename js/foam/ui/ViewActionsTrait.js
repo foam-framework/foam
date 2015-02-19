@@ -45,7 +45,7 @@ CLASS({
     createActionView: function(action, opt_args) {
       /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info
         specifically for $$DOC{ref:'Action',usePlural:true}. */
-      var X = ( opt_args && opt_args.X ) || this.childX || this.X;
+      var X = ( opt_args && opt_args.X ) || this.X;
       var modelName = opt_args && opt_args.model_ ?
         opt_args.model_ :
         'foam.ui.ActionButton'  ;
