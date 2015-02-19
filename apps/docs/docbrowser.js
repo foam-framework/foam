@@ -16,9 +16,8 @@
  */
 
 
-var touchManager = X.foam.input.touch.TouchManager.create({});
-touchManager.install(document);
-var gestureManager = X.foam.input.touch.GestureManager.create();
+var touchManager;
+var gestureManager;
 
 CLASS({
   name: 'ModelListController',
@@ -171,7 +170,10 @@ CLASS({
              'ControllerView',
              'ModelListController',
              'foam.documentation.DocViewPicker',
-             'foam.documentation.ModelCompletenessRecord'],
+             'foam.documentation.ModelCompletenessRecord',
+             'foam.input.touch.TouchManager',
+             'foam.input.touch.GestureManager'
+  ],
 
   documentation: function() {  /*
     <p>Some documentation for the $$DOC{ref:'.'} model.</p>

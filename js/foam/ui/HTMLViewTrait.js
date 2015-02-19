@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.ui',
   label: 'HTMLView',
 
-  requires: ['foam.input.touch.GestureTarget'],
+  requires: ['foam.input.touch.GestureTarget', 'foam.ui.DetailView'],
 
   documentation: function() {/*
     The HTML implementation for $$DOC{ref:'foam.ui.View'}.
