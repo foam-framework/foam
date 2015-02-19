@@ -16,10 +16,11 @@ CLASS({
     function toDetailHTML() {/*
       <h1>Flow Demo</h1>
 
-      <circle color="red" x="200" y="100" r="80"/>
+      <circle color="yellow" x="200" y="100" r="80"/>
+
+      <circle color="blue" x="200" y="100" r="20"/>
 
       <solar></solar>
     */}
   ]
 });
-  
