@@ -163,11 +163,21 @@ var HTMLParser = {
 
   // Use simpleAlt() because endTag() doesn't always look ahead and will
   // break the regular alt().
-  html: repeat0(simpleAlt(
+  html: repeat0(sym('htmlPart')),
+
+  htmlPart: simpleAlt(
     sym('comment'),
     sym('text'),
     sym('endTag'),
-    sym('startTag'))),
+    sym('startTag')),
+
+  tag: seq(
+    sym('startTag'),
+    repeat(seq1(1, sym('matchingHTML'), sym('htmlPart')))),
+
+  matchingHTML: function(ps) {
+    return this.stack.length > 1 ? ps : null;
+  },
 
   startTag: seq(
     '<',
@@ -207,6 +217,11 @@ var HTMLParser = {
   whitespace: repeat0(alt(' ', '\t', '\r', '\n'))
 }.addActions({
   START: function(xs) {
+    var ret = this.stack[0];
+    this.stack = [ X.foam.html.Element.create({nodeName: 'html'}) ];
+    return ret;
+  },
+  tag: function(xs) {
     var ret = this.stack[0];
     this.stack = [ X.foam.html.Element.create({nodeName: 'html'}) ];
     return ret;
@@ -273,13 +288,14 @@ X.registerElement = (function() {
           sort(function(o1, o2) { return o2.compareTo(o1); }).
           map(function(k) { return literal_ic(k); })));
 
-      var html = HTMLParser.create().export('START');
+      var html = HTMLParser.create().export('tag');
 
       return function(ps) {
         var res = this.parse(start, ps) && this.parse(html, ps);
         if ( ! res ) return null;
-        var elem = res.value.childNodes[0];
+        var elem  = res.value.childNodes[0];
         var model = registry[elem.nodeName];
+        console.log('**** ', res.value.toString());
         if ( model ) elem.setAttribute('model', model);
         return res.setValue(elem);
       };

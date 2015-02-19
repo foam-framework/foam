@@ -9,6 +9,7 @@ CLASS({
       this.SUPER(args);
       this.X.registerElement('solar',  'foam.demos.SolarSystem'); 
       this.X.registerElement('circle', 'foam.graphics.Circle'); 
+      this.X.registerElement('email', 'com.google.mail.MobileController');
     }
   },
 
@@ -16,11 +17,11 @@ CLASS({
     function toDetailHTML() {/*
       <h1>Flow Demo</h1>
 
-      <circle color="yellow" x="200" y="100" r="80"/>
+      <circle color="yellow" x="200" y="100" r="80"/><br>
 
-      <circle color="blue" x="200" y="100" r="20"/>
+      <circle color="blue" x="200" y="20" r="20"/>
 
-      <solar></solar>
+      <solar/>
     */}
   ]
 });
