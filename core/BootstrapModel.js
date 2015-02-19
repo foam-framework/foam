@@ -229,19 +229,19 @@ var BootstrapModel = {
           // A more element way to do this would be to have a ModelProperty
           // which has a ModelPropertyProperty called 'reduceWithSuper'.
           if ( p0.adapt && superProp.adapt ) {
-            console.log('(DEBUG) sub adapt: ', p.name);
+            console.log('(DEBUG) sub adapt: ', this.name + '.' + p.name);
             p.adapt = (function(a1, a2) { return function (oldValue, newValue) {
               return a2.call(this, oldValue, this.a1.call(this, oldValue, newValue));
             };})(p0.adapt, superProp.adapt);
           }
           if ( p0.preSet && superProp.preSet ) {
-            console.log('(DEBUG) sub preSet: ', p.name);
+            console.log('(DEBUG) sub preSet: ', this.name + '.' + p.name);
             p.preSet = (function(a1, a2) { return function (oldValue, newValue) {
               return a2.call(this, oldValue, this.a1.call(this, oldValue, newValue));
             };})(p0.preSet, superProp.preSet);
           }
           if ( p0.postSet && superProp.postSet ) {
-            console.log('(DEBUG) sub postSet: ', p.name);
+            console.log('(DEBUG) sub postSet: ', this.name + '.' + p.name);
             p.postSet = (function(a1, a2) { return function (oldValue, newValue) {
               a1.call(this, oldValue, newValue);
               a2.call(this, oldValue, newValue);
