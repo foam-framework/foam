@@ -261,15 +261,33 @@ test('<pA a="1">foo</pA>');
 test('<pA a="1" b="2">foo<b>bold</b></pA>');
 */
 
-//TemplateParser.foamTag_ = FOAMTagParser.create().export('START');
-TemplateParser.foamTag_ = (function() {
-  var start = literal_ic('<foam');
-  var html = HTMLParser.create().export('START');
+X.registerElement = (function() {
+  var registry = { };
 
-  return function(ps) {
-    var res = this.parse(start, ps) && this.parse(html, ps);
-    return res && res.setValue(res.value.childNodes[0]);
+  return function(name, model) {
+    console.log('registerElement: ', name);
+    registry[name] = model;
+
+    TemplateParser.foamTag_ = (function() {
+      var start = seq('<', simpleAlt.apply(null,
+        Object.keys(registry).
+          sort(function(o1, o2) { return o2.compareTo(o1); }).
+          map(function(k) { return literal_ic(k); })));
+
+      var html = HTMLParser.create().export('START');
+
+      return function(ps) {
+        var res = this.parse(start, ps) && this.parse(html, ps);
+        if ( ! res ) return null;
+        var elem = res.value.childNodes[0];
+        var model = registry[elem.nodeName];
+        if ( model ) elem.setAttribute('model', model);
+        return res.setValue(elem);
+      };
+    })();
+    invalidateParsers();
   };
+
 })();
 
-invalidateParsers();
+X.registerElement('foam', null);
