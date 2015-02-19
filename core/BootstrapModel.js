@@ -231,13 +231,13 @@ var BootstrapModel = {
           if ( p0.adapt && superProp.adapt ) {
             console.log('(DEBUG) sub adapt: ', this.name + '.' + p.name);
             p.adapt = (function(a1, a2) { return function (oldValue, newValue) {
-              return a2.call(this, oldValue, this.a1.call(this, oldValue, newValue));
+              return a2.call(this, oldValue, a1.call(this, oldValue, newValue));
             };})(p0.adapt, superProp.adapt);
           }
           if ( p0.preSet && superProp.preSet ) {
             console.log('(DEBUG) sub preSet: ', this.name + '.' + p.name);
             p.preSet = (function(a1, a2) { return function (oldValue, newValue) {
-              return a2.call(this, oldValue, this.a1.call(this, oldValue, newValue));
+              return a2.call(this, oldValue, a1.call(this, oldValue, newValue));
             };})(p0.preSet, superProp.preSet);
           }
           if ( p0.postSet && superProp.postSet ) {
