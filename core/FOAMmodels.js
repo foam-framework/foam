@@ -85,7 +85,7 @@ var files = [
   'MementoMgr',
 //  'foam.ui.DAOController',
   'models',
-  'touch',
+//  'touch',
   [ 'glang', IN_BROWSER ],
   'oauth'
 ];

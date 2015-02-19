@@ -156,12 +156,14 @@ function arequire(modelName, opt_X) {
     X.ModelDAO.find(modelName, {
       put: function(m) {
         var m = FOAM.lookup(modelName, X);
+        delete X.arequire$ModelLoadsInProgress[modelName];
         arequireModel(m, X)(future.set);
       },
       error: function() {
         var args = argsToArray(arguments);
         console.warn.apply(console, ['Could not load model: ', modelName].concat(args));
         future.set(undefined);
+        delete X.arequire$ModelLoadsInProgress[modelName];
       }
     });
 
@@ -169,9 +171,9 @@ function arequire(modelName, opt_X) {
     return future.get;
   } else {
     // FOAM.lookup is now succeeding, so clear out the in-progress cache
-    if ( X.arequire$ModelLoadsInProgress ) {
-      delete X.arequire$ModelLoadsInProgress.modelName;
-    }
+//    if ( X.arequire$ModelLoadsInProgress ) {
+//      delete X.arequire$ModelLoadsInProgress.modelName;
+//    }
   }
 
   /** This is so that if the model is arequire'd concurrently the
@@ -183,29 +185,66 @@ function arequire(modelName, opt_X) {
 }
 
 
-function arequireModel(model, X) {
+function arequireModel(model, opt_X) {
+  var X = opt_X || GLOBAL.X;
+
+  // if we're already requiring the model, just return the previous future
+  if ( ! X.arequire$ModelRequiresInProgress ) {
+    X.set('arequire$ModelRequiresInProgress', {} );
+  } else {
+    if ( X.arequire$ModelRequiresInProgress[model.id] ) {
+//      return X.arequire$ModelRequiresInProgress[model.id];
+    }
+  } 
+  
   if ( model.ready__ ) {
     var future = afuture();
     model.ready__(function() {
       delete model.ready__;
       arequireModel(model, X)(future.set);
     });
+    X.arequire$ModelRequiresInProgress[model.id] = future.get;
     return future.get;
   }
-
+  
   if ( ! model.required__ ) {
     var args = [];
     var future = afuture();
 
     model.required__ = future.get;
+    X.arequire$ModelRequiresInProgress[model.id] = future.get;
+    
+    if ( model.extendsModel ) {
+      args.push(arequire(model.extendsModel, X));
 
-    if ( model.extendsModel ) args.push(arequire(model.extendsModel, X));
-
+      if ( DEBUG && X.arequire$ModelRequiresInProgress[model.id] ) {
+        X.arequire$ModelRequiresInProgress[model.id].requiringExtended = X.arequire$ModelRequiresInProgress[model.extendsModel]// model.extendsModel;
+        arequire(model.extendsModel, X)(
+          function() { 
+            console.log("areq extends complete: ", model.id, model.extendsModel); 
+            delete X.arequire$ModelRequiresInProgress[model.id].requiringExtended; //ret && ret(); 
+          }
+        );
+      }
+    }
+ 
     // TODO(kgr): eventually this should just call the arequire() method on the Model
     var i;
     if ( model.traits ) {
       for ( i = 0; i < model.traits.length; i++ ) {
-        args.push(arequire(model.traits[i]));
+        args.push(arequire(model.traits[i], X));
+        if ( DEBUG && X.arequire$ModelRequiresInProgress[model.id] ) {
+          if ( !  X.arequire$ModelRequiresInProgress[model.id].requiringTraits )
+            X.arequire$ModelRequiresInProgress[model.id].requiringTraits = {}
+          X.arequire$ModelRequiresInProgress[model.id].requiringTraits[model.traits[i]] = X.arequire$ModelRequiresInProgress[model.traits[i]];
+          var trait = model.traits[i];
+          arequire(trait, X)( 
+            function() { 
+              console.log("areq trait complete: ", model.id, model.traits[i]);
+              delete X.arequire$ModelRequiresInProgress[model.id].requiringTraits[model.traits[i]]; //ret && ret(); 
+            }
+          );
+        }
       }
     }
     if ( model.templates ) for ( i = 0 ; i < model.templates.length ; i++ ) {
@@ -228,7 +267,17 @@ function arequireModel(model, X) {
         if ( m[0] == model.id ) {
           console.warn("Model requires itself: " + model.id);
         } else {
-          args.push(arequire(m[0]));
+          args.push(arequire(m[0], X));
+          if ( DEBUG && X.arequire$ModelRequiresInProgress[model.id] ) {
+            if ( !  X.arequire$ModelRequiresInProgress[model.id].requiringRequires )
+              X.arequire$ModelRequiresInProgress[model.id].requiringRequires = {}
+            X.arequire$ModelRequiresInProgress[model.id].requiringRequires[m[0]] = X.arequire$ModelRequiresInProgress[m[0]];
+            arequire(m[0], X)(
+              function() {
+                console.log("areq requires complete: ", model.id, m[0]);
+                delete X.arequire$ModelRequiresInProgress[model.id].requiringRequires[m[0]]; //ret && ret();
+            });
+          }
         }
       }
     }
