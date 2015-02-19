@@ -390,10 +390,11 @@ var Model = {
 
           if ( typeof p === 'string' ) newValue[i] = p = { name: p };
 
+          if ( p.name == 'priority' && p.model_ == 'LabelStringEnumProperty' ) debugger;
           if ( ! p.model_ ) {
             p = newValue[i] = Property.create(p);
           } else if ( typeof p.model_ === 'string' ) {
-            p = newValue[i] = FOAM(p);
+            p = newValue[i] = JSONUtil.mapToObj(this.X, p);
           }
 
           // create property constant

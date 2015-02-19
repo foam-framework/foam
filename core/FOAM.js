@@ -185,15 +185,6 @@ function arequire(modelName, opt_X) {
 
 
 function arequireModel(model, X) {
-  if ( model.ready__ ) {
-    var future = afuture();
-    model.ready__(function() {
-      delete model.ready__;
-      arequireModel(model, X)(future.set);
-    });
-    return future.get;
-  }
-
   if ( ! model.required__ ) {
     var args = [];
     var future = afuture();
@@ -237,7 +228,10 @@ function arequireModel(model, X) {
     aseq(
         apar.apply(apar, args),
         (X && X.i18nModel && X.i18nModel.bind(this, model, X)) ||
-            aconstant(model))(future.set);
+            aconstant(model))(function(m) {
+              m.finished__ = true;
+              future.set(m);
+            });
   } else {
     X && X.i18nModel && X.i18nModel(model, X);
   }
@@ -333,7 +327,10 @@ function CLASS(m) {
         // console.time('buildModel: ' + id);
         var model = JSONUtil.mapToObj(X, m, Model, work);
         // console.timeEnd('buildModel: ' + id);
-        if ( work.length > 0 ) model.ready__ = aseq.apply(null, work);
+        if ( work.length > 0 && model.required__ )
+          model.required__ = aseq(
+            aseq.apply(null, work),
+            model.required__);
 
         // TODO: _ROOT_X is a workaround for apps that redefine the top level X
         _ROOT_X.registerModel(model);
