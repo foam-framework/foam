@@ -161,10 +161,9 @@ var HTMLParser = {
 
   START: sym('html'),
 
-// TODO(kgr): replace with repeat0
   // Use simpleAlt() because endTag() doesn't always look ahead and will
   // break the regular alt().
-  html: repeat(simpleAlt(
+  html: repeat0(simpleAlt(
     sym('comment'),
     sym('text'),
     sym('endTag'),
