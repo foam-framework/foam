@@ -47,7 +47,7 @@ CLASS({
 
 CLASS({
   name: 'CrawableController',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   requires: [ 'CrawableDetailView' ],
   exports: [ 'applicationURL', 'applicationIdURL' ],
   properties: [

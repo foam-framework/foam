@@ -78,7 +78,7 @@ CLASS({
       model_: 'StringProperty',
       name: 'mode',
       defaultValue: 'read-write',
-      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] },
+      view: { factory_: 'foam.ui.ChoiceView', choices: ['read-only', 'read-write', 'final'] },
       documentation: function() { /* Can be 'read-only', 'read-write' or 'final'. */}
     },
     {

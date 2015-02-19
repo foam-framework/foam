@@ -17,7 +17,7 @@
 
 CLASS({
   name: 'DetailView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [ 'Property' ],
   imports: [ 'data' ],
@@ -43,7 +43,7 @@ CLASS({
     $$DOC{ref:'DetailView.defaultToHTML'}.
     </p>
     <p>For each $$DOC{ref:'Property'} in the $$DOC{ref:'.data'} instance specified,
-    a $$DOC{ref:'PropertyView'} is created that selects the appropriate $$DOC{ref:'View'}
+    a $$DOC{ref:'PropertyView'} is created that selects the appropriate $$DOC{ref:'foam.ui.View'}
     to construct.
   */},
 
@@ -52,7 +52,7 @@ CLASS({
       name: 'className',
       defaultValue: 'detailView',
       documentation: function() {/*
-          The CSS class names to use for HTML $$DOC{ref:'View',usePlural:true}.
+          The CSS class names to use for HTML $$DOC{ref:'foam.ui.View',usePlural:true}.
           Separate class names with spaces. Each instance of a $$DOC{ref:'DetailView'}
           may have different classes specified.
       */}
@@ -99,7 +99,7 @@ CLASS({
       name: 'title',
       defaultValueFn: function() { return "Edit " + this.model.label; },
       documentation: function() {/*
-        <p>The display title for the $$DOC{ref:'View'}.
+        <p>The display title for the $$DOC{ref:'foam.ui.View'}.
         </p>
       */}
     },
@@ -198,7 +198,7 @@ CLASS({
 
     // If the Model supplies a toDetailHTML method, then use it instead.
     toHTML: function() {
-      /* Overridden to create the complete HTML content for the $$DOC{ref:'View'}.</p>
+      /* Overridden to create the complete HTML content for the $$DOC{ref:'foam.ui.View'}.</p>
          <p>$$DOC{ref:'Model',usePlural:true} may specify a .toDetailHTML() $$DOC{ref:'Method'} or
          $$DOC{ref:'Template'} to render their contents instead of the
           $$DOC{ref:'DetailView.defaultToHTML'} we supply here.
@@ -376,7 +376,7 @@ CLASS({
 
 CLASS({
   name: 'RelationshipView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -389,7 +389,7 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'viewModel',
-      defaultValue: 'DAOController'
+      defaultValue: 'foam.ui.DAOController'
     },
     {
       name: 'data',

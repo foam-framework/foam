@@ -38,8 +38,8 @@ var Models = [
   'Turntable',
   'PowerInfo',
   'Backlite',
-  'DAOController',
-  'StackView',
+  'foam.ui.DAOController',
+  'foam.ui.StackView',
   'NeedleMeter',
   'BatteryMeter',
   'BatteryGraph'

@@ -889,12 +889,12 @@ CLASS({
   ],
 
   documentation: function() {/*
-    <p>A $$DOC{ref:'.'} is processed to create a method that generates content for a $$DOC{ref:'View'}.
+    <p>A $$DOC{ref:'.'} is processed to create a method that generates content for a $$DOC{ref:'foam.ui.View'}.
     Sub-views can be created from inside the
     $$DOC{ref:'Template'} using special tags. The content is lazily processed, so the first time you ask for
     a $$DOC{ref:'Template'}
     the content is compiled, tags expanded and sub-views created. Generally a template is included in a
-    $$DOC{ref:'View'}, since after compilation a method is created and attached to the $$DOC{ref:'View'}
+    $$DOC{ref:'foam.ui.View'}, since after compilation a method is created and attached to the $$DOC{ref:'foam.ui.View'}
     containing the template.
     </p>
     <p>For convenience, $$DOC{ref:'Template',usePlural:true} can be specified as a function with a block

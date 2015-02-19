@@ -28,7 +28,7 @@ MementoMgr.FORTH.help = '';
 CLASS({
   name: 'Browser',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [
     'AlternateView',
@@ -38,7 +38,7 @@ CLASS({
     'QIssuesSplitDAO',
     'Timer',
     'TextFieldView',
-    'ChoiceView',
+    'foam.ui.ChoiceView',
     'ImageView',
     'MementoMgr',
     'foam.lib.bookmarks.AddBookmarkDialog',

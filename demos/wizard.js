@@ -83,7 +83,7 @@ var OptionalServiceView = FOAM({
 
   name: 'OptionalServiceView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -126,7 +126,7 @@ var CompositeServiceView = FOAM({
 
   name: 'CompositeDetailView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

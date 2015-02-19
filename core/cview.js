@@ -19,7 +19,7 @@
 // TODO: add a 'mouse' property which creates and connects a Mouse model.
 CLASS({
   name: 'Canvas',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -649,7 +649,7 @@ CLASS({
       defaultValue: 'Line',
       // TODO: fix the view, it's not storabe
       view: {
-        factory_: 'ChoiceView',
+        factory_: 'foam.ui.ChoiceView',
         choices: [
           'Bar',
           'Line',

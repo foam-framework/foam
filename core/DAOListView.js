@@ -36,7 +36,7 @@ CLASS({
     {
       name: 'mode',
       defaultValue: 'read-write',
-      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] }
+      view: { factory_: 'foam.ui.ChoiceView', choices: ['read-only', 'read-write', 'final'] }
     },
     {
       name: 'useSelection',

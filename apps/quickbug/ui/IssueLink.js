@@ -1,6 +1,6 @@
 CLASS({
   name: 'IssueLink',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

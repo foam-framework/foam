@@ -157,22 +157,22 @@ function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 // ??? Should this have a 'data' property?
 // Or maybe a DataView and ModelView
 CLASS({
-  name: 'View',
-  label: 'View',
+  name: 'foam.ui.View',
+  label: 'foam.ui.View',
 
   traits: ['foam.patterns.ChildTreeTrait'],
 
   documentation: function() {/*
-    <p>$$DOC{ref:'View',usePlural:true} render data. This could be a specific
+    <p>$$DOC{ref:'foam.ui.View',usePlural:true} render data. This could be a specific
        $$DOC{ref:'Model'} or a $$DOC{ref:'DAO'}. In the case of $$DOC{ref:'DetailView'},
        <em>any</em> $$DOC{ref:'Model'} can be rendered by walking through the
        $$DOC{ref:'Property',usePlural:true} of the data.
     </p>
-    <p>$$DOC{ref:'View'} instances are arranged in a tree with parent-child links.
+    <p>$$DOC{ref:'foam.ui.View'} instances are arranged in a tree with parent-child links.
        This represents containment in most cases, where a sub-view appears inside
        its parent.
     </p>
-    <p>HTML $$DOC{ref:'View',usePlural:true} should provide a $$DOC{ref:'.toInnerHTML'}
+    <p>HTML $$DOC{ref:'foam.ui.View',usePlural:true} should provide a $$DOC{ref:'.toInnerHTML'}
        $$DOC{ref:'Method'} or $$DOC{ref:'Template'}. If direct control is required,
        at minimum you must implement $$DOC{ref:'.toHTML'} and $$DOC{ref:'.initHTML'}.
     </p>
@@ -186,7 +186,7 @@ CLASS({
       factory: function() { return this.instance_.id || this.nextID(); },
       documentation: function() {/*
         The DOM element id for the outermost tag of
-        this $$DOC{ref:'View'}.
+        this $$DOC{ref:'foam.ui.View'}.
       */}
     },
     {
@@ -210,7 +210,7 @@ CLASS({
       name: 'tagName',
       defaultValue: 'span',
       documentation: function() {/*
-          The HTML tag name to use for HTML $$DOC{ref:'View',usePlural:true}.
+          The HTML tag name to use for HTML $$DOC{ref:'foam.ui.View',usePlural:true}.
       */}
     },
     {
@@ -218,8 +218,8 @@ CLASS({
       help: 'CSS class name(s), space separated.',
       defaultValue: '',
       documentation: function() {/*
-          The CSS class names to use for HTML $$DOC{ref:'View',usePlural:true}.
-          Separate class names with spaces. Each instance of a $$DOC{ref:'View'}
+          The CSS class names to use for HTML $$DOC{ref:'foam.ui.View',usePlural:true}.
+          Separate class names with spaces. Each instance of a $$DOC{ref:'foam.ui.View'}
           may have different classes specified.
       */}
     },
@@ -233,7 +233,7 @@ CLASS({
       name: 'extraClassName',
       defaultValue: '',
       documentation: function() {/*
-          For custom $$DOC{ref:'View',usePlural:true}, you may wish to add standard
+          For custom $$DOC{ref:'foam.ui.View',usePlural:true}, you may wish to add standard
           CSS classes in addition to user-specified ones. Set those here and
           they will be appended to those from $$DOC{ref:'.className'}.
       */}
@@ -249,7 +249,7 @@ CLASS({
         }
       },
       documentation: function() {/*
-          If $$DOC{ref:'Action',usePlural:true} are set on this $$DOC{ref:'View'},
+          If $$DOC{ref:'Action',usePlural:true} are set on this $$DOC{ref:'foam.ui.View'},
           this property enables their automatic display in an $$DOC{ref:'ActionBorder'}.
           If you do not want to show $$DOC{ref:'Action',usePlural:true} or want
           to show them in a different way, leave this false.
@@ -266,7 +266,7 @@ CLASS({
       documentation: function() {/*
           When creating new HTML content, intializers are run. This corresponds
           to the lifecycle of the HTML (which may be replaced by toHTML() at any
-          time), not the lifecycle of this $$DOC{ref:'View'}.
+          time), not the lifecycle of this $$DOC{ref:'foam.ui.View'}.
       */}
     },
     {
@@ -275,7 +275,7 @@ CLASS({
       documentation: function() {/*
           When destroying HTML content, destructors are run. This corresponds
           to the lifecycle of the HTML (which may be replaced by toHTML() at any
-          time), not the lifecycle of this $$DOC{ref:'View'}.
+          time), not the lifecycle of this $$DOC{ref:'foam.ui.View'}.
       */}
     }
   ],
@@ -314,7 +314,7 @@ CLASS({
       documentation: function() {/*
           Automatic mapping of keyboard events to $$DOC{ref:'Action'} trigger.
           To handle keyboard shortcuts, create and attach $$DOC{ref:'Action',usePlural:true}
-          to your $$DOC{ref:'View'}.
+          to your $$DOC{ref:'foam.ui.View'}.
       */}
     }
   ],
@@ -337,7 +337,7 @@ CLASS({
 
     cssClassAttr: function() {
       /*
-        Returns the full CSS class to use for the $$DOC{ref:'View'} DOM element.
+        Returns the full CSS class to use for the $$DOC{ref:'foam.ui.View'} DOM element.
        */
       if ( ! this.className && ! this.extraClassName ) return '';
 
@@ -370,18 +370,18 @@ CLASS({
 
     bindSubView: function(view, prop) {
       /*
-        Bind a sub-$$DOC{ref:'View'} to a $$DOC{ref:'Property'} of this.
+        Bind a sub-$$DOC{ref:'foam.ui.View'} to a $$DOC{ref:'Property'} of this.
        */
       view.setValue(this.propertyValue(prop.name));
     },
 
     viewModel: function() {
-      /* The $$DOC{ref:'Model'} definition of this $$DOC{ref:'View'}. */
+      /* The $$DOC{ref:'Model'} definition of this $$DOC{ref:'foam.ui.View'}. */
       return this.model_;
     },
 
     createView: function(prop, opt_args) {
-      /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
+      /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.X;
       var v = X.PropertyView.create({prop: prop, args: opt_args}, X);
       this.addChild(v);
@@ -389,7 +389,7 @@ CLASS({
     },
 
     createActionView: function(action, opt_args) {
-      /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info
+      /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info
         specifically for $$DOC{ref:'Action',usePlural:true}. */
       var X = ( opt_args && opt_args.X ) || this.X;
       var modelName = opt_args && opt_args.model_ ?
@@ -397,7 +397,7 @@ CLASS({
         'ActionButton'  ;
       var v = X[modelName].create({action: action}).copyFrom(opt_args);
 
-      this[action.name + 'View'] = v;
+      this[action.name + 'foam.ui.View'] = v;
 
       return v;
     },
@@ -412,7 +412,7 @@ CLASS({
 
     createTemplateView: function(name, opt_args) {
       /*
-        Used by the $$DOC{ref:'Template',text:'$$propName'} sub-$$DOC{ref:'View'}
+        Used by the $$DOC{ref:'Template',text:'$$propName'} sub-$$DOC{ref:'foam.ui.View'}
         creation tag in $$DOC{ref:'Template',usePlural:true}.
       */
 
@@ -442,8 +442,8 @@ CLASS({
 
     addChild: function(child) {
       /*
-        Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
-        a sub-$$DOC{ref:'View'} is created, add it to the tree with this method.
+        Maintains the tree structure of $$DOC{ref:'foam.ui.View',usePlural:true}. When
+        a sub-$$DOC{ref:'foam.ui.View'} is created, add it to the tree with this method.
       */
       if ( child.toView_ ) child = child.toView_(); // Maybe the check isn't needed.
       // Check prevents duplicate addChild() calls,
@@ -605,7 +605,7 @@ CLASS({
 
     toHTML: function() {
       /* Generates the complete HTML content of this view, including outermost
-        element. This element is managed by $$DOC{ref:'View'}, so in most cases
+        element. This element is managed by $$DOC{ref:'foam.ui.View'}, so in most cases
         you should use $$DOC{ref:'.toInnerHTML'} to generate your content. */
       this.invokeDestructors();
       return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + '>' +
@@ -630,7 +630,7 @@ CLASS({
 
     initInnerHTML: function() {
       /* Initialize this View and all of it's children. Usually just call
-         $$DOC{ref:'.initHTML'} instead. When implementing a new $$DOC{ref:'View'}
+         $$DOC{ref:'.initHTML'} instead. When implementing a new $$DOC{ref:'foam.ui.View'}
          and adding listeners (including <code>this.on('click')</code>) that
          will be destroyed each time $$DOC{ref:'.toInnerHTML'} is called, you
          will have to override this $$DOC{ref:'Method'} and add them here.
@@ -727,7 +727,7 @@ CLASS({
     },
 
     close: function() {
-      /* Call when permanently closing the $$DOC{ref:'View'}. */
+      /* Call when permanently closing the $$DOC{ref:'foam.ui.View'}. */
       this.$ && this.$.remove();
       this.destroy();
       this.publish('closed');
@@ -739,11 +739,11 @@ CLASS({
 CLASS({
   name: 'PropertyView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   documentation: function() {/*
-    Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'View'} for one
-    $$DOC{ref:'Property'}. The $$DOC{ref:'View'} chosen can be based off the
+    Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'foam.ui.View'} for one
+    $$DOC{ref:'Property'}. The $$DOC{ref:'foam.ui.View'} chosen can be based off the
     $$DOC{ref:'Property.view',text:'Property.view'} value, the $$DOC{ref:'.innerView'} value, or
     $$DOC{ref:'.args'}.model_.
   */},
@@ -756,7 +756,7 @@ CLASS({
       name: 'prop',
       type: 'Property',
       documentation: function() {/*
-          The $$DOC{ref:'Property'} for which to generate a $$DOC{ref:'View'}.
+          The $$DOC{ref:'Property'} for which to generate a $$DOC{ref:'foam.ui.View'}.
       */}
     },
     {
@@ -767,15 +767,15 @@ CLASS({
     },
     {
       name: 'parent',
-      type: 'View',
+      type: 'foam.ui.View',
       postSet: function(_, p) {
-        if ( p ) p[this.prop.name + 'View'] = this.view;
+        if ( p ) p[this.prop.name + 'foam.ui.View'] = this.view;
         if ( this.view ) this.view.parent = p;
 
       },
       documentation: function() {/*
-        The $$DOC{ref:'View'} to use as the parent container for the new
-        sub-$$DOC{ref:'View'}.
+        The $$DOC{ref:'foam.ui.View'} to use as the parent container for the new
+        sub-$$DOC{ref:'foam.ui.View'}.
       */}
     },
     {
@@ -785,8 +785,8 @@ CLASS({
         this.bindData(data);
       },
       documentation: function() {/*
-        The data to feed into the new sub-$$DOC{ref:'View'}. The data set here
-        is linked bi-directionally to the $$DOC{ref:'View'}. Typically this
+        The data to feed into the new sub-$$DOC{ref:'foam.ui.View'}. The data set here
+        is linked bi-directionally to the $$DOC{ref:'foam.ui.View'}. Typically this
         data is the property value.
       */}
     },
@@ -794,22 +794,22 @@ CLASS({
       name: 'innerView',
       help: 'Override for prop.view',
       documentation: function() {/*
-        The optional name of the desired sub-$$DOC{ref:'View'}. If not specified,
+        The optional name of the desired sub-$$DOC{ref:'foam.ui.View'}. If not specified,
         prop.$$DOC{ref:'Property.view'} is used.
       */}
     },
     {
       name: 'view',
-      type: 'View',
+      type: 'foam.ui.View',
       documentation: function() {/*
-        The new sub-$$DOC{ref:'View'} generated for the given $$DOC{ref:'Property'}.
+        The new sub-$$DOC{ref:'foam.ui.View'} generated for the given $$DOC{ref:'Property'}.
       */}
     },
     {
       name: 'args',
       documentation: function() {/*
-        Optional arguments to be used for sub-$$DOC{ref:'View'} creation. args.model_
-        in particular specifies the exact $$DOC{ref:'View'} to use.
+        Optional arguments to be used for sub-$$DOC{ref:'foam.ui.View'} creation. args.model_
+        in particular specifies the exact $$DOC{ref:'foam.ui.View'} to use.
       */}
     }
   ],
@@ -817,7 +817,7 @@ CLASS({
   methods: {
 
     init: function() {
-      /* Sets up the new sub-$$DOC{ref:'View'} immediately. */
+      /* Sets up the new sub-$$DOC{ref:'foam.ui.View'} immediately. */
       this.SUPER();
 
       if ( this.args && this.args.model_ ) {
@@ -848,7 +848,7 @@ CLASS({
     },
 
     createViewFromProperty: function(prop) {
-      /* Helper to determine the $$DOC{ref:'View'} to use. */
+      /* Helper to determine the $$DOC{ref:'foam.ui.View'} to use. */
       var viewName = this.innerView || prop.view
       if ( ! viewName ) return this.X.TextFieldView.create(prop);
       if ( typeof viewName === 'string' ) return FOAM.lookup(viewName, this.X).create(prop);
@@ -900,7 +900,7 @@ CLASS({
 CLASS({
   name: 'Tooltip',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

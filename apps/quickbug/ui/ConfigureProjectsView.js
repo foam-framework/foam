@@ -25,7 +25,7 @@ CLASS({
           <b>Preferred projects:</b>
           $$preferredProjects
           <br>
-          <b>Default project:</b> $$defaultProject{model_: 'ChoiceView', choices$: this.data.preferredProjects$}
+          <b>Default project:</b> $$defaultProject{model_: 'foam.ui.ChoiceView', choices$: this.data.preferredProjects$}
         </div>
     */}
   ]

@@ -128,7 +128,7 @@ CLASS({
 
 CLASS({
   name: 'IssueDropCell',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -380,7 +380,7 @@ function createView(rowSelectionValue, browser) {
 
 CLASS({
   name: 'GriddedStringArrayView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [
     'ActionButton',

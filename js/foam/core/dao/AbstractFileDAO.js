@@ -38,7 +38,7 @@ CLASS({
       name:  'type',
       label: 'Filesystem Type',
       type:  'String',
-      view: { factory_: 'ChoiceView', choices: ['Persistent', 'Temporary'] },
+      view: { factory_: 'foam.ui.ChoiceView', choices: ['Persistent', 'Temporary'] },
       defaultValue: 'Persistent'
     }
   ],

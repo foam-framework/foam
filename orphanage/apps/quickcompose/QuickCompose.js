@@ -37,7 +37,7 @@ installImage('BLOCK_QUOTE',          'quote_text');
 
 var AttachmentView = FOAM({
   model_: 'Model',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   name: 'AttachmentView',
 
@@ -173,7 +173,7 @@ var QuickCompose = FOAM({
 
   name: 'QuickCompose',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

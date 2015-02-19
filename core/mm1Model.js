@@ -301,7 +301,7 @@ var Model = {
            as strings of the form:
           <code>PropertyName [as Alias]</code>.</p>
           <p>Properties you wish to share with other instances you create
-            (like sub-$$DOC{ref:'View',usePlural:true})
+            (like sub-$$DOC{ref:'foam.ui.View',usePlural:true})
             can be exported automatically by listing them here.
             You are automatically sub-contexted, so your parent context does not
             see exported properties. In other words, exports are seen by children,
@@ -444,7 +444,7 @@ var Model = {
       },
       documentation: function() { /*
         <p>$$DOC{ref:'Action',usePlural:true} implement a behavior and attach a label, icon, and typically a
-        button-like $$DOC{ref:'View'} or menu item to activate the behavior.</p>
+        button-like $$DOC{ref:'foam.ui.View'} or menu item to activate the behavior.</p>
         */}
 
     },
@@ -633,7 +633,7 @@ var Model = {
       help: 'Templates associated with this entity.',
       documentation: function() { /*
         The $$DOC{ref:'Template',usePlural:true} to process and install into instances of this
-        $$DOC{ref:'Model'}. $$DOC{ref:'View',usePlural:true} created inside each $$DOC{ref:'Template'}
+        $$DOC{ref:'Model'}. $$DOC{ref:'foam.ui.View',usePlural:true} created inside each $$DOC{ref:'Template'}
         using the $$DOC{ref:'.templates',text:'$$propertyName{args}'} view creation tag become available
         as <code>myInstance.propertyNameView</code>.
         */}

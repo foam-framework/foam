@@ -107,7 +107,7 @@ CLASS({
 
 CLASS({
   name: 'QIssueLabelsView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

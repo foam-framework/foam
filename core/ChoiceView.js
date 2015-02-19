@@ -17,7 +17,7 @@
 CLASS({
   name: 'AbstractChoiceView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     // This is the real, final choice. The internals use index only.
@@ -202,7 +202,7 @@ CLASS({
       name: 'orientation',
       defaultValue: 'horizontal',
       view: {
-        factory_: 'ChoiceView',
+        factory_: 'foam.ui.ChoiceView',
         choices: [
           [ 'horizontal', 'Horizontal' ],
           [ 'vertical',   'Vertical'   ]
@@ -305,7 +305,7 @@ CLASS({
 
 
 CLASS({
-  name:  'ChoiceView',
+  name:  'foam.ui.ChoiceView',
 
   extendsModel: 'AbstractChoiceView',
 
@@ -416,7 +416,7 @@ CLASS({
 CLASS({
   name: 'RadioBoxView',
 
-  extendsModel: 'ChoiceView',
+  extendsModel: 'foam.ui.ChoiceView',
 
   methods: {
     toHTML: function() {

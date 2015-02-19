@@ -93,7 +93,7 @@ CLASS({
 
 CLASS({
   name: 'ModelDescriptionRowView',
-  extendsModel: 'foam.ui.DataView',
+  extendsModel: 'foam.ui.LeafDataView',
   traits: ['foam.ui.TemplateSupportTrait',
            'foam.ui.HTMLViewTrait'], 
   
@@ -297,10 +297,10 @@ CLASS({
       // All models are now in USED_MODELS
       [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
         for ( var key in collection ) {
-          var m = FOAM.lookup(key, this.X);
-          //if ( ! m.getPrototype ) continue;
-          //m.getPrototype();
-          newDAO.put(m);
+          // go async: as the requires complete, newDAO will fill in
+          arequire(key)( function(m) {
+            newDAO.put(m);
+          });
         };
       }.bind(this));
       
@@ -309,7 +309,6 @@ CLASS({
 //         var m = FOAM.lookup(key, this.X);
 //         newDAO.put(m);
 //       };
-
 
       // load up books
       for (var key in this.X.developerDocs) {

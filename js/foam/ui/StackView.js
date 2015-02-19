@@ -21,7 +21,7 @@
    Browser history support.
 */
 CLASS({
-  name: 'StackView',
+  name: 'foam.ui.StackView',
   extendsModel: 'foam.ui.View',
   package: 'foam.ui',
 

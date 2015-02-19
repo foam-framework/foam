@@ -47,7 +47,7 @@ var ApplicationPower = Model.create({
          type: 'String',
          // todo: curry arguments
          view: {
-           factory_: 'ChoiceView',
+           factory_: 'foam.ui.ChoiceView',
            choices: [
              'Foreground',
              'Open',

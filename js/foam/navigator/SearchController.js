@@ -18,7 +18,7 @@
 CLASS({
   name: 'SearchController',
   package: 'foam.navigator',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   requires: [
     'CachingDAO',
     'IDBDAO',

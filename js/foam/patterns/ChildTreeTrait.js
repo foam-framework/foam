@@ -46,8 +46,8 @@ CLASS({
 
     addChild: function(child) {
       /*
-        Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
-        a sub-$$DOC{ref:'View'} is created, add it to the tree with this method.
+        Maintains the tree structure of $$DOC{ref:'foam.ui.View',usePlural:true}. When
+        a sub-$$DOC{ref:'foam.ui.View'} is created, add it to the tree with this method.
       */
       //if (arguments.callee.caller.super_) this.SUPER(child);
 
@@ -71,8 +71,8 @@ CLASS({
 
     removeChild: function(child) {
       /*
-        Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
-        a sub-$$DOC{ref:'View'} is destroyed, remove it from the tree with this method.
+        Maintains the tree structure of $$DOC{ref:'foam.ui.View',usePlural:true}. When
+        a sub-$$DOC{ref:'foam.ui.View'} is destroyed, remove it from the tree with this method.
       */
       //if (arguments.callee.caller.super_) this.SUPER(child);
 

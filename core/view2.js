@@ -17,7 +17,7 @@
 
 CLASS({
   name: 'StaticHTML',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   properties: [
     {
       model_: 'StringProperty',
@@ -56,7 +56,7 @@ CLASS({
 CLASS({
   name: 'BlobImageView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   help: 'Image view for rendering a blob as an image.',
 
@@ -105,10 +105,10 @@ CLASS({
   name:  'TextFieldView',
   label: 'Text Field',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   documentation: function() { /*
-      The default $$DOC{ref:'View'} for a string. Supports autocomplete
+      The default $$DOC{ref:'foam.ui.View'} for a string. Supports autocomplete
       when an autocompleter is installed in $$DOC{ref:'.autocompleter'}.
   */},
 
@@ -161,7 +161,7 @@ CLASS({
       model_: 'StringProperty',
       name: 'mode',
       defaultValue: 'read-write',
-      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] },
+      view: { factory_: 'foam.ui.ChoiceView', choices: ['read-only', 'read-write', 'final'] },
       documentation: function() { /* Can be 'read-only', 'read-write' or 'final'. */}
     },
     {
@@ -391,7 +391,7 @@ CLASS({
 CLASS({
   name: 'ActionButton',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -572,7 +572,7 @@ CLASS({
 
 CLASS({
   name: 'UnitTestResultView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -744,7 +744,7 @@ CLASS({
 
 CLASS({
   name: 'FutureView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   // Works as follows: when it starts up, it will create a 10ms timer.
   // When the future is set, it begins listening to it.
   // In general, the 10ms timer expires before the future does, and then it
@@ -847,12 +847,12 @@ CLASS({
 CLASS({
   name: 'PopupView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
       name: 'view',
-      type: 'View',
+      type: 'foam.ui.View',
     },
     {
       name: 'x'
@@ -1112,7 +1112,7 @@ CLASS({
 CLASS({
   name: 'ImageView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1216,7 +1216,7 @@ CLASS({
   name:  'DateTimeFieldView',
   label: 'Date-Time Field',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1292,7 +1292,7 @@ CLASS({
   name:  'HTMLView',
   label: 'HTML Field',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1345,7 +1345,7 @@ CLASS({
 CLASS({
   name: 'RoleView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1400,7 +1400,7 @@ CLASS({
 CLASS({
   name: 'BooleanView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1438,7 +1438,7 @@ CLASS({
 CLASS({
   name: 'ImageBooleanView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1511,7 +1511,7 @@ CLASS({
 CLASS({
   name: 'CSSImageBooleanView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     'data',
@@ -1671,7 +1671,7 @@ CLASS({
 CLASS({
   name: 'SummaryView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1732,7 +1732,7 @@ CLASS({
 CLASS({
   name: 'HelpView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1789,7 +1789,7 @@ CLASS({
     'MenuSeparator'
   ],
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1936,7 +1936,7 @@ CLASS({
 CLASS({
   name: 'ProgressView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -2044,7 +2044,7 @@ CLASS({
 CLASS({
   name: 'AlternateView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     'data',
@@ -2069,7 +2069,7 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'view',
-      defaultValue: 'View',
+      defaultValue: 'foam.ui.View',
       postSet: function(old, v) {
         if ( ! this.$ ) return;
         this.removeAllChildren();
@@ -2100,7 +2100,7 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'headerView',
-      defaultValue: 'View'
+      defaultValue: 'foam.ui.View'
     },
     {
       model_: 'foam.core.types.DOMElementProperty',
@@ -2188,7 +2188,7 @@ CLASS({
 
 CLASS({
   name: 'GalleryImageView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [ 'source' ],
 
@@ -2300,7 +2300,7 @@ CLASS({
 
 CLASS({
   name: 'MultiLineStringArrayView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -2342,7 +2342,7 @@ CLASS({
     {
       model_: 'Model',
       name: 'RowView',
-      extendsModel: 'View',
+      extendsModel: 'foam.ui.View',
       properties: [
         'field',
         {
@@ -2487,7 +2487,7 @@ CLASS({
 
 
 CLASS({
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   name: 'SplitView',
 
@@ -2535,7 +2535,7 @@ CLASS({
   name: 'ListValueView',
   help: 'Combines an input view with a value view for the edited value.',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -2573,7 +2573,7 @@ CLASS({
 
 CLASS({
   name: 'ArrayListView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   traits: ['SimpleDynamicViewTrait'],
   properties: [
     {
@@ -2603,7 +2603,7 @@ CLASS({
 
 CLASS({
   name: 'KeyView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -2649,7 +2649,7 @@ CLASS({
 
 CLASS({
   name: 'DAOKeyView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -2694,7 +2694,7 @@ CLASS({
 CLASS({
   name: 'AutocompleteListView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -2717,7 +2717,7 @@ CLASS({
     },
     {
       name: 'innerView',
-      type: 'View',
+      type: 'foam.ui.View',
       preSet: function(_, value) {
         if ( typeof value === "string" ) value = GLOBAL[value];
         return value;
@@ -2853,7 +2853,7 @@ CLASS({
 
 CLASS({
   name: 'ViewSwitcher',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   help: 'A view which cycles between an array of views.',
 
@@ -3111,7 +3111,7 @@ CLASS({
  */
 CLASS({
   name: 'VerticalScrollbarView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -3331,7 +3331,7 @@ CLASS({
 
 CLASS({
   name: 'ActionSheetView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   properties: [
@@ -3361,7 +3361,7 @@ CLASS({
 
 
 CLASS({
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   name: 'CollapsibleView',
 
@@ -3479,7 +3479,7 @@ CLASS({
 
 CLASS({
   name: 'SpinnerView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   documentation: 'Renders a spinner in the Material Design style. Has a ' +
       '$$DOC{ref:".data"} property and acts like a $$DOC{ref:"BooleanView"}, ' +
       'that creates and destroys and the spinner when the value changes.',

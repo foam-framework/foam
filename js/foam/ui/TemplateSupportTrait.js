@@ -19,7 +19,7 @@ CLASS({
   name: 'TemplateSupportTrait',
   package: 'foam.ui',
   
-  requires: ['foam.ui.PropertyView', 'ActionButton', 'SimpleReadOnlyValue'],
+  requires: ['foam.ui.PropertyView', 'foam.ui.ActionButton', 'SimpleReadOnlyValue'],
   
   documentation: function() {/* For Views that need to support templates
     to create children through $$DOC{ref:'.',text:'$$'} notation.

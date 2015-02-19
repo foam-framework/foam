@@ -478,7 +478,7 @@ CLASS({
     {
       name: 'severity',
       view: {
-        factory_: 'ChoiceView',
+        factory_: 'foam.ui.ChoiceView',
         choices: [
           'Feature',
           'Minor',
@@ -495,7 +495,7 @@ CLASS({
       type: 'String',
       required: true,
       view: {
-        factory_: 'ChoiceView',
+        factory_: 'foam.ui.ChoiceView',
         choices: [
           'Open',
           'Accepted',

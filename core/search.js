@@ -16,7 +16,7 @@
  */
 CLASS({
   name:  'GroupBySearchView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   label: 'GroupBy Search View',
 
@@ -133,7 +133,7 @@ CLASS({
 CLASS({
   name:  'TextSearchView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -204,7 +204,7 @@ CLASS({
 
 CLASS({
   name: 'SearchView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

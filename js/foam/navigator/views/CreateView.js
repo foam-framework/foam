@@ -18,7 +18,7 @@
 CLASS({
   name: 'CreateView',
   package: 'foam.navigator.views',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   requires: [
     'DetailView',
   ],

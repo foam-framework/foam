@@ -21,7 +21,7 @@ CLASS({
   description: 'Mobile Gmail',
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [
     'foam.ui.md.AppController',
@@ -36,7 +36,7 @@ CLASS({
     'foam.oauth2.OAuth2Redirect as Auth',
     'foam.input.touch.TouchManager',
     'XHR',
-    'StackView',
+    'foam.ui.StackView',
     'com.google.mail.ComposeView',
     'com.google.mail.EMailCitationView',
     'com.google.mail.EMailDAO',
@@ -172,7 +172,7 @@ CLASS({
     },
     {
       name: 'stack',
-      subType: 'StackView',
+      subType: 'foam.ui.StackView',
       factory: function() { return this.X.StackView.create(); },
       postSet: function(old, v) {
         if ( old ) {

@@ -23,19 +23,19 @@ CLASS({
   properties: [
     {
       name: 'row',
-      type: 'ChoiceView',
+      type: 'foam.ui.ChoiceView',
       factory: function() { return this.X.ChoiceView.create(); }
     },
     {
       name: 'col',
       label: 'column',
-      type: 'ChoiceView',
+      type: 'foam.ui.ChoiceView',
       factory: function() { return this.X.ChoiceView.create(); }
     },
     {
       name: 'acc',
       label: 'accumulator',
-      type: 'ChoiceView',
+      type: 'foam.ui.ChoiceView',
       factory: function() { return this.X.ChoiceView.create(); }
     },
     {
@@ -48,7 +48,7 @@ CLASS({
       name: 'scrollMode',
       type: 'String',
       defaultValue: 'Bars',
-      view: { factory_: 'ChoiceView', choices: [ 'Bars', 'Warp' ] }
+      view: { factory_: 'foam.ui.ChoiceView', choices: [ 'Bars', 'Warp' ] }
     },
     {
       name: 'model',
@@ -482,7 +482,7 @@ CLASS({
       name: 'mode',
       defaultValue: 'read-write',
       documentation: 'Indicates whether this view should be read-write or read-only. In read-write mode, listens for changes to every visible row, and updates the DAO if they change.',
-      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] }
+      view: { factory_: 'foam.ui.ChoiceView', choices: ['read-only', 'read-write', 'final'] }
     },
     {
       name: 'oldVisibleTop',
@@ -843,7 +843,7 @@ CLASS({
 
 CLASS({
   name: 'PredicatedView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

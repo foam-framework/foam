@@ -25,7 +25,7 @@ CLASS({
 
 CLASS({
   name: 'Pong',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [
     'Ball',

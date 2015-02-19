@@ -27,7 +27,7 @@ CLASS({
       name: 'orientation',
       defaultValue: 'horizontal',
       view: {
-        factory_: 'ChoiceView',
+        factory_: 'foam.ui.ChoiceView',
         choices: [
           [ 'horizontal', 'Horizontal' ],
           [ 'vertical',   'Vertical'   ]

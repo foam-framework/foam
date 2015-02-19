@@ -952,7 +952,7 @@ CLASS({
     },
     {
       name: 'view',
-      defaultValue: 'ChoiceView'
+      defaultValue: 'foam.ui.ChoiceView'
     }
   ]
 });

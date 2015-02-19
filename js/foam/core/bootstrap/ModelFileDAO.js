@@ -21,8 +21,10 @@ MODEL({
   methods: {  
     find: function (key, sink) {
       var X = this.X;
+console.log("ModelFileDAO ", key);
       var model = FOAM.lookup(key, X);
       if ( model ) {
+console.log("   already loaded ", key);
         sink && sink.put && sink.put(model);
         return;
       }
@@ -40,6 +42,7 @@ MODEL({
           sink && sink.error && sink.error('Model load failed for: ', key);
           return;
         }
+console.log("   delay loaded ", key);
         sink && sink.put && sink.put(model);
       }.bind(this.X.document.head);
     }
