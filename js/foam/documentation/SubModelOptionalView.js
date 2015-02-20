@@ -19,6 +19,8 @@ CLASS({
   name: 'SubModelOptionalView',
   package: 'foam.documentation',
   extendsModel: 'foam.documentation.DocOptionalView',
+  
+  requires: ['foam.documentation.DocFeatureModelDataRefView'],
 
   properties: [
     {

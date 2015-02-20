@@ -74,6 +74,7 @@ CLASS({
       var myData = this.data$;
       if ( myData && myData.value && myData.value.model_ ) {
         var o = myData.value.model_.getFeature(name);
+        //args.data$ = myData;
         if ( o ) {
           var v;
           if ( Action.isInstance(o) )
@@ -90,6 +91,7 @@ CLASS({
       // fallback to check our own properties
       var o = this.model_.getFeature(name);  
       if ( ! o ) throw 'Unknown View Name: ' + name;
+      //args.data = this;
 
       if ( Action.isInstance(o) )
         var v = this.createActionView(o, args);
