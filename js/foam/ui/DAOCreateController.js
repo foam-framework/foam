@@ -29,7 +29,7 @@ CLASS({
     {
       name:  'data',
       label: 'New Object',
-      view: 'DetailView',
+      view: 'foam.ui.DetailView',
       factory: function() { return this.model.create(); }
     },
     {

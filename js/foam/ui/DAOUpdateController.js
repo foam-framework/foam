@@ -23,6 +23,8 @@ CLASS({
   
   extendsModel: 'foam.ui.View',
 
+  requires: ['foam.ui.AlternateView'],
+
   properties: [
     {
       name:  'data',
@@ -86,14 +88,14 @@ CLASS({
     init: function() {
       this.SUPER();
 
-      this.view = this.X.AlternateView.create({
+      this.view = this.AlternateView.create({
         selection: 'GUI',
         data: this.data,
         views: [
           {
             model_: 'ViewChoice',
             label:  'GUI',
-            view:   'DetailView'
+            view:   'foam.ui.DetailView'
           },
           {
             model_: 'ViewChoice',
