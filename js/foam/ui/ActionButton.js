@@ -22,7 +22,7 @@ CLASS({
   name: 'ActionButton',
   package: 'foam.ui',
 
-  extendsModel: 'foam.ui.DataView',
+  extendsModel: 'foam.ui.LeafDataView',
   traits: ['foam.ui.HTMLViewTrait'],
 
   properties: [
@@ -34,7 +34,10 @@ CLASS({
       }
     },
     {
-      name: 'data'
+      name: 'data',
+      postSet: function(old,nu) {
+        console.log("wee");
+      }
     },
     {
       name: 'className',

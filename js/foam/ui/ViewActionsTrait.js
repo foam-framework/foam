@@ -19,7 +19,7 @@
 CLASS({
   name: 'ViewActionsTrait',
   package: 'foam.ui',
-  requires: ['foam.ui.ActionButton'],
+  requires: ['foam.ui.ActionButton', 'foam.ui.ActionBorder'],
 
   properties: [
     {
@@ -29,7 +29,7 @@ CLASS({
       postSet: function(oldValue, showActions) {
         // TODO: No way to remove the decorator.
         if ( ! oldValue && showActions ) {
-          this.addDecorator(this.X.ActionBorder.create());
+          this.addDecorator(this.ActionBorder.create());
         }
       },
       documentation: function() {/*

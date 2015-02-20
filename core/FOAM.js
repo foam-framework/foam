@@ -154,7 +154,7 @@ function arequire(modelName, opt_X) {
     }
     var future = afuture();
     X.ModelDAO.find(modelName, {
-      put: function(m) {
+      put: function(loadedModel) {
         var m = FOAM.lookup(modelName, X);
         delete X.arequire$ModelLoadsInProgress[modelName];
         arequireModel(m, X)(future.set);
@@ -169,13 +169,8 @@ function arequire(modelName, opt_X) {
 
     X.arequire$ModelLoadsInProgress[modelName] = future.get;
     return future.get;
-  } else {
-    // FOAM.lookup is now succeeding, so clear out the in-progress cache
-//    if ( X.arequire$ModelLoadsInProgress ) {
-//      delete X.arequire$ModelLoadsInProgress.modelName;
-//    }
   }
-
+  
   /** This is so that if the model is arequire'd concurrently the
    *  initialization isn't done more than once.
    **/
@@ -188,14 +183,16 @@ function arequire(modelName, opt_X) {
 function arequireModel(model, opt_X) {
   var X = opt_X || GLOBAL.X;
 
-  // if we're already requiring the model, just return the previous future
-  if ( ! X.arequire$ModelRequiresInProgress ) {
-    X.set('arequire$ModelRequiresInProgress', {} );
-  } else {
-    if ( X.arequire$ModelRequiresInProgress[model.id] ) {
-//      return X.arequire$ModelRequiresInProgress[model.id];
-    }
-  } 
+//console.log("arequireModel ", model.id);
+
+//   // if we're already requiring the model, just return the previous future
+//   if ( ! X.arequire$ModelRequiresInProgress ) {
+//     X.set('arequire$ModelRequiresInProgress', {} );
+//   } else {
+//     if ( X.arequire$ModelRequiresInProgress[model.id] ) {
+// //      return X.arequire$ModelRequiresInProgress[model.id];
+//     }
+//   }
   
   if ( model.ready__ ) {
     var future = afuture();
@@ -203,7 +200,9 @@ function arequireModel(model, opt_X) {
       delete model.ready__;
       arequireModel(model, X)(future.set);
     });
-    X.arequire$ModelRequiresInProgress[model.id] = future.get;
+    // var oldFuture = X.arequire$ModelRequiresInProgress[model.id];
+    // X.arequire$ModelRequiresInProgress[model.id] = future.get;
+    // X.arequire$ModelRequiresInProgress[model.id].oldFuture = oldFuture;
     return future.get;
   }
   
@@ -212,20 +211,22 @@ function arequireModel(model, opt_X) {
     var future = afuture();
 
     model.required__ = future.get;
-    X.arequire$ModelRequiresInProgress[model.id] = future.get;
+//    X.arequire$ModelRequiresInProgress[model.id] = future.get;
+    var modelId = model.id;
     
     if ( model.extendsModel ) {
       args.push(arequire(model.extendsModel, X));
 
-      if ( DEBUG && X.arequire$ModelRequiresInProgress[model.id] ) {
-        X.arequire$ModelRequiresInProgress[model.id].requiringExtended = X.arequire$ModelRequiresInProgress[model.extendsModel]// model.extendsModel;
-        arequire(model.extendsModel, X)(
-          function() { 
-            console.log("areq extends complete: ", model.id, model.extendsModel); 
-            delete X.arequire$ModelRequiresInProgress[model.id].requiringExtended; //ret && ret(); 
-          }
-        );
-      }
+      // if ( DEBUG && X.arequire$ModelRequiresInProgress[model.id] ) {
+      //   var reqFutGet = arequire(model.extendsModel, X);
+      //   X.arequire$ModelRequiresInProgress[model.id].requiringExtended = reqFutGet; // model.extendsModel;
+      //   reqFutGet(
+      //     function() {
+      //       console.log("areq extends complete: ", modelId, model.extendsModel);
+      //       delete X.arequire$ModelRequiresInProgress[modelId].requiringExtended; //ret && ret();
+      //     }
+      //   );
+      // }
     }
  
     // TODO(kgr): eventually this should just call the arequire() method on the Model
@@ -233,18 +234,18 @@ function arequireModel(model, opt_X) {
     if ( model.traits ) {
       for ( i = 0; i < model.traits.length; i++ ) {
         args.push(arequire(model.traits[i], X));
-        if ( DEBUG && X.arequire$ModelRequiresInProgress[model.id] ) {
-          if ( !  X.arequire$ModelRequiresInProgress[model.id].requiringTraits )
-            X.arequire$ModelRequiresInProgress[model.id].requiringTraits = {}
-          X.arequire$ModelRequiresInProgress[model.id].requiringTraits[model.traits[i]] = X.arequire$ModelRequiresInProgress[model.traits[i]];
-          var trait = model.traits[i];
-          arequire(trait, X)( 
-            function() { 
-              console.log("areq trait complete: ", model.id, model.traits[i]);
-              delete X.arequire$ModelRequiresInProgress[model.id].requiringTraits[model.traits[i]]; //ret && ret(); 
-            }
-          );
-        }
+        // if ( DEBUG && X.arequire$ModelRequiresInProgress[model.id] ) {
+        //   if ( !  X.arequire$ModelRequiresInProgress[model.id].requiringTraits )
+        //     X.arequire$ModelRequiresInProgress[model.id].requiringTraits = {}
+        //   X.arequire$ModelRequiresInProgress[model.id].requiringTraits[model.traits[i]] = arequire(model.traits[i], X)
+        //   var trait = model.traits[i];
+        //   arequire(trait, X)(
+        //     function(m) {
+        //       console.log("areq trait complete: ", modelId, m.id);
+        //       delete X.arequire$ModelRequiresInProgress[modelId].requiringTraits[m.id]; //ret && ret();
+        //     }
+        //   );
+        // }
       }
     }
     if ( model.templates ) for ( i = 0 ; i < model.templates.length ; i++ ) {
@@ -268,16 +269,18 @@ function arequireModel(model, opt_X) {
           console.warn("Model requires itself: " + model.id);
         } else {
           args.push(arequire(m[0], X));
-          if ( DEBUG && X.arequire$ModelRequiresInProgress[model.id] ) {
-            if ( !  X.arequire$ModelRequiresInProgress[model.id].requiringRequires )
-              X.arequire$ModelRequiresInProgress[model.id].requiringRequires = {}
-            X.arequire$ModelRequiresInProgress[model.id].requiringRequires[m[0]] = X.arequire$ModelRequiresInProgress[m[0]];
-            arequire(m[0], X)(
-              function() {
-                console.log("areq requires complete: ", model.id, m[0]);
-                delete X.arequire$ModelRequiresInProgress[model.id].requiringRequires[m[0]]; //ret && ret();
-            });
-          }
+          // if ( DEBUG && X.arequire$ModelRequiresInProgress[model.id] ) {
+          //   if ( !  X.arequire$ModelRequiresInProgress[model.id].requiringRequires )
+          //     X.arequire$ModelRequiresInProgress[model.id].requiringRequires = {}
+          //   reqModel = m[0];
+          //   reqFutGet = arequire(reqModel, X);
+          //   X.arequire$ModelRequiresInProgress[model.id].requiringRequires[reqModel] = reqFutGet;
+          //   reqFutGet(
+          //     function(m) {
+          //       console.log("areq requires complete: ", modelId,m.id);
+          //       delete X.arequire$ModelRequiresInProgress[modelId].requiringRequires[m.id]; //ret && ret();
+          //   });
+          // }
         }
       }
     }
@@ -290,6 +293,7 @@ function arequireModel(model, opt_X) {
     X && X.i18nModel && X.i18nModel(model, X);
   }
 
+//  model.required__(function() { console.log("future done for ", model.id); });
   return model.required__;
 }
 

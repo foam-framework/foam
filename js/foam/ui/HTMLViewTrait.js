@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.ui',
   label: 'HTMLView',
 
-  requires: ['foam.input.touch.GestureTarget', 'foam.ui.DetailView'],
+  requires: ['foam.input.touch.GestureTarget'],
 
   documentation: function() {/*
     The HTML implementation for $$DOC{ref:'foam.ui.View'}.
@@ -458,7 +458,7 @@ CLASS({
       }
 
       init(this.model_.actions);
-      if ( DetailView.isInstance(this) &&
+      if ( this.X.foam.ui.DetailView.isInstance(this) &&
           this.model &&
           this.model.actions )
         init(this.model.actions, this.data$);

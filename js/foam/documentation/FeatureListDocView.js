@@ -22,7 +22,8 @@ CLASS({
   documentation: 'Displays the HTML documentation of the given feature list.',
 
   requires: [ 'foam.ui.DAOListView',
-              'foam.ui.CollapsibleView' ],
+              'foam.ui.CollapsibleView',
+              'foam.documentation.DocFeatureCollapsedView'],
 
   traits: ['foam.documentation.FeatureListLoaderTrait'],
 

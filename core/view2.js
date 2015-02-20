@@ -521,54 +521,6 @@ CLASS({
 });
 
 
-/** Add Action Buttons to a decorated View. **/
-/* TODO:
-   These are left over Todo's from the previous ActionBorder, not sure which still apply.
-
-   The view needs a standard interface to determine it's Model (getModel())
-   listen for changes to Model and change buttons displayed and enabled
-   isAvailable
-*/
-CLASS({
-  name: 'ActionBorder',
-
-  methods: {
-    toHTML: function(border, delegate, args) {
-      var str = "";
-      str += delegate.apply(this, args);
-      str += '<div class="actionToolbar">';
-
-      // Actions on the View, are bound to the view
-      var actions = this.model_.actions;
-      for ( var i = 0 ; i < actions.length; i++ ) {
-        var v = this.createActionView(actions[i]);
-        v.data = this;
-        str += ' ' + v.toView_().toHTML() + ' ';
-        this.addChild(v);
-      }
-
-      // This is poor design, we should defer to the view and polymorphism
-      // to make the distinction.
-      if ( DetailView.isInstance(this) ) {
-
-        // Actions on the data are bound to the data
-        actions = this.model.actions;
-        for ( var i = 0 ; i < actions.length; i++ ) {
-          var v = this.createActionView(actions[i]);
-          v.data$ = this.data$;
-          str += ' ' + v.toView_().toHTML() + ' ';
-          this.addChild(v);
-        }
-      }
-
-      str += '</div>';
-      return str;
-    }
-  }
-});
-
-
-
 
 CLASS({
   name: 'UnitTestResultView',

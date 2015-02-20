@@ -21,6 +21,8 @@ CLASS({
   extendsModel: 'foam.documentation.DocFeatureView',
   help: 'A view for documentation of each item in a list of properties.',
 
+  requires: ['foam.documentation.DocFeatureOverridesRefView'],
+
   templates: [
     function toInnerHTML() {/*
       <div id="scrollTarget_<%=this.data.name%>">
