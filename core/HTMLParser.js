@@ -224,7 +224,7 @@ var HTMLParser = {
   tag: function(xs) {
     var ret = this.stack[0];
     this.stack = [ X.foam.html.Element.create({nodeName: 'html'}) ];
-    return ret;
+    return ret.childNodes[0];
   },
   attribute: function(xs) { return { name: xs[0], value: xs[1] }; },
   text: function(xs) { this.peek() && this.peek().appendChild(xs); },
@@ -293,7 +293,7 @@ X.registerElement = (function() {
       return function(ps) {
         var res = this.parse(start, ps) && this.parse(html, ps);
         if ( ! res ) return null;
-        var elem  = res.value.childNodes[0];
+        var elem  = res.value;
         var model = registry[elem.nodeName];
         console.log('**** ', res.value.toString());
         if ( model ) elem.setAttribute('model', model);
