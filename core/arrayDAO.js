@@ -126,7 +126,7 @@ defineProperties(Array.prototype, {
     return obj.id || obj.$UID;
   },
   put: function(obj, sink) {
-    for ( var idx in this ) {
+    for ( var idx = 0; idx < this.length; idx++ ) {
       if ( this[idx].id === obj.id ) {
         this[idx] = obj;
         sink && sink.put && sink.put(obj);
@@ -142,14 +142,14 @@ defineProperties(Array.prototype, {
   },
   find: function(query, sink) {
     if ( query.f ) {
-      for (var idx in this) {
+      for ( var idx = 0 ; idx < this.length; idx++ ) {
         if ( query.f(this[idx]) ) {
           sink && sink.put && sink.put(this[idx]);
           return;
         }
       }
     } else {
-      for (var idx in this) {
+      for ( var idx = 0 ; idx < this.length; idx++ ) {
         if ( this[idx].id === query ) {
           sink && sink.put && sink.put(this[idx]);
           return;
@@ -166,7 +166,7 @@ defineProperties(Array.prototype, {
     }
     var objId = obj.id;
     var id = (objId !== undefined && objId !== '') ? objId : obj;
-    for ( var idx in this ) {
+    for ( var idx = 0 ; idx < this.length; idx++ ) {
       if ( this[idx].id === id ) {
         var rem = this.splice(idx,1)[0];
 //        this.notify_('remove', rem);
