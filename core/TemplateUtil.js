@@ -117,11 +117,19 @@ function elementFromString(str) {
   return str.element || ( str.element = HTMLParser.create().parseString(str).children[0] );
 }
 
-var ConstantTemplate = function(str) { return function(opt_out) {
-  var out = opt_out ? opt_out : TemplateOutput.create(this);
-  out(str);
-  return out.toString();
-} };
+var ConstantTemplate = function(str) {
+  var f = function(opt_out) {
+    var out = opt_out ? opt_out : TemplateOutput.create(this);
+    out(str);
+    return out.toString();
+  };
+
+  f.toString = function() {
+    return 'function(opt_out) { var out = opt_out ? opt_out : TemplateOutput.create(this);\n  out("' + str.replace(/\n/g, "\\n").replace(/"/g, '\\"') + '");\n  return out.toString(); }';
+  }
+
+  return f;
+};
 
 var TemplateCompiler = {
   __proto__: TemplateParser,
