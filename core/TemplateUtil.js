@@ -215,9 +215,11 @@ MODEL({
 
       var f = function() {
         if ( ! delegate ) {
-          if ( ! t.template )
+          if ( t.code ) delegate = t.code;
+          else if ( ! t.template )
             throw 'Must arequire() template model before use for ' + this.name_ + '.' + t.name;
-          delegate = TemplateUtil.compile(Template.isInstance(t) ? t : Template.create(t));
+          else 
+            delegate = TemplateUtil.compile(Template.isInstance(t) ? t : Template.create(t));
         }
 
         return delegate.apply(this, arguments);
@@ -233,10 +235,11 @@ MODEL({
       for ( var i = 0 ; i < t.args.length ; i++ ) {
         args.push(t.args[i].name);
       }
-      args.push(code);
-      return Function.apply(null, args);
+      return eval('(function(' + args.join(',') + '){' + code + '})');
     },
     compile: function(t) {
+      if ( t.code ) return t.code;
+
       var code = TemplateCompiler.parseString(t.template);
 
       // Simple case, just a string literal
@@ -288,7 +291,7 @@ MODEL({
           name: 'body',
           template: t
         });
-      } else if ( ! t.template ) {
+      } else if ( ! t.template && ! t.code ) {
         var future = afuture();
         var path   = self.sourcePath;
 
@@ -337,51 +340,10 @@ var aeval = function(src) {
   return aconstant(eval('(' + src + ')'));
 };
 
-var evalTemplate = function(t, model) {
-  var doEval_ = function(t) {
-    // console.log('evalTemplate ' + model.id + '.' + t.name);
-    var code = TemplateCompiler.parseString(t.template);
-
-    // Simple case, just a string literal
-    if ( code[0] ) return ConstantTemplate(t.template);
-
-    // Need to compile an actual method
-    var args = ['opt_out'];
-    if ( t.args ) {
-      for ( var i = 0 ; i < t.args.length ; i++ ) {
-        args.push(t.args[i].name);
-      }
-    }
-    return eval('(function(' + args.join(',') + '){' + code[1] + '})');
-  };
-
-  try {
-    return doEval_(t);
-  } catch (err) {
-    console.log('Template Error: ', err);
-    console.log(code);
-    return function() { return 'TemplateError: Check console.'; };
-  }
-};
-
-
 var aevalTemplate = function(t, model) {
-  function lazyTemplate(t) {
-    var f;
-    return function() {
-      if ( ! f ) {
-//        var name = 'eval template: ' + t.name;
-//        console.time(name);
-        f = evalTemplate(t, model);
-//        console.timeEnd(name);
-      }
-      return f.apply(this, arguments);
-    };
-  }
-
   return aseq(
     t.futureTemplate,
     function(ret, t) {
-      ret(lazyTemplate(t));
+      ret(TemplateUtil.lazyCompile(t));
     });
 };

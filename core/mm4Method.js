@@ -968,6 +968,10 @@ CLASS({
       name: 'futureTemplate',
       transient: true
     },
+    {
+      name: 'code',
+      transient: true
+    },
     /*
        {
        name: 'templates',
