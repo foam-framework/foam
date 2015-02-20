@@ -69,7 +69,6 @@ CLASS({
 
               if ( prop.name in obj.instance_ ) {
                 var val = obj[prop.name];
-                if ( val == prop.defaultValue ) continue;
                 if ( Array.isArray(val) && ! val.length ) continue;
                 if ( ! first ) out(',');
                 out(this.keyify(prop.name), ': ');
