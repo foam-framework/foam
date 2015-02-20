@@ -42,6 +42,11 @@ CLASS({
       required: true
     },
     {
+      model_: 'BooleanProperty',
+      name: 'precompileTemplates',
+      defaultValue: false
+    },
+    {
       name: 'formatter',
       factory: function() {
         return {
@@ -163,12 +168,17 @@ CLASS({
       }));
       for ( var i = 0; i < ids.length; i++ ) {
         var model = models[ids[i]];
-        for ( var j = 0 ; j < model.templates.length ; j++ ) {
-          model.templates[j].code = TemplateUtil.compile(model.templates[j]);
-          model.templates[j].clearProperty('template');
+        if ( this.precompileTemplates ) {
+          for ( var j = 0 ; j < model.templates.length ; j++ ) {
+            model.templates[j].code = TemplateUtil.compile(model.templates[j]);
+            model.templates[j].clearProperty('template');
+          }
         }
         contents += 'CLASS(';
-        contents += this.formatter.where(NOT_TRANSIENT).stringify(models[ids[i]]);
+        if ( this.precompileTemplates )
+          contents += this.formatter.where(NOT_TRANSIENT).stringify(models[ids[i]]);
+        else
+          contents += JSONUtil.compact.where(NOT_TRANSIENT).stringify(models[ids[i]]);
         contents += ')\n';
       }
 
@@ -180,6 +190,7 @@ CLASS({
       }
       this.log("Building   ", model.id);
       this.log("Target is: ", this.targetPath);
+      this.log(this.precompileTemplates ? '' : 'NOT ', 'pre-compiling templates.');
 
       var self = this;
       aseq(
