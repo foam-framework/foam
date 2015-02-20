@@ -171,16 +171,18 @@ CLASS({
          "displayWidth": 80,
          "defaultValue": "",
          "preSet": function (_, a) {
-        return function(X, action) {
-          var obj = this;
-          a.apply(obj, arguments);
-          var self = this;
-          var sink = action.backOnComplete ?
-            { put: function() { X.stack.back(); },
-              error: function() { X.stack.back(); } } : undefined;
-          X.EMailDAO && X.EMailDAO.put(obj, sink);
-        };
-      }
+           var f = function(X, action) {
+             var obj = this;
+             a.apply(obj, arguments);
+             var self = this;
+             var sink = action.backOnComplete ?
+               { put: function() { X.stack.back(); },
+                 error: function() { X.stack.back(); } } : undefined;
+             X.EMailDAO && X.EMailDAO.put(obj, sink);
+           };
+           f.toString = function() { return a.toString(); };
+           return f
+         }
       }
    ],
    "actions": [],
