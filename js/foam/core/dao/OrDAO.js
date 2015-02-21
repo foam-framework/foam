@@ -17,6 +17,7 @@
 
 CLASS({
   name: 'OrDAO',
+  package: 'foam.core.dao',
   extendsModel: 'ProxyDAO',
 
   documentation: 'Looks up things in primary, then in delegate. Supports find() only!',
@@ -33,7 +34,7 @@ CLASS({
       id = id.id || id;
       this.primary.find(id, {
         put: sink.put.bind(sink),
-        error: function() { this.delegate.find(id, sink); }
+        error: function() { this.delegate.find(id, sink); }.bind(this)
       });
     }
   }
