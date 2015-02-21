@@ -56,7 +56,9 @@ var DOM = {
     return a;
   },
 
-  /** opt_document -- if supplied the object's view will be added to the document. **/
+  /**
+   * opt_document -- if supplied the object's view will be added to the document.
+   **/
   initElement: function(e, X, opt_document) {
     // If was a sub-object for an object that has already been displayed,
     // then it will no longer be in the DOM and doesn't need to be shown.
@@ -84,7 +86,7 @@ var DOM = {
       var p   = model.getProperty(key);
 
       if ( p ) {
-        // Attributes of hte form #name are treated as a reference to
+        // Attributes of the form #name are treated as a reference to
         // another <foam> objects whose id is 'name'.
         if ( val.startsWith('#') ) {
           val = val.substring(1);
@@ -102,9 +104,7 @@ var DOM = {
     obj.fromElement(e);
 
     var onLoad = e.getAttribute('oninit');
-    if ( onLoad ) {
-      Function(onLoad).bind(obj)();
-    }
+    if ( onLoad ) Function(onLoad).bind(obj)();
 
     if ( opt_document ) {
       var viewName = e.getAttribute('view');
