@@ -2,14 +2,20 @@ CLASS({
   package: 'foam.demos',
   name: 'Flow',
 
-  requires: [ 'foam.demos.SolarSystem', 'foam.graphics.Circle' ],
+  // TODO(kgr): this shouldn't be required
+  requires: [
+    'foam.demos.SolarSystem',
+    'foam.graphics.Circle',
+    'foam.flow.Section'
+  ],
 
   methods: {
     init: function(args) {
       this.SUPER(args);
-      this.X.registerElement('solar',  'foam.demos.SolarSystem'); 
-      this.X.registerElement('circle', 'foam.graphics.Circle'); 
-      this.X.registerElement('email', 'com.google.mail.MobileController');
+      this.X.registerElement('solar',   'foam.demos.SolarSystem'); 
+      this.X.registerElement('circle',  'foam.graphics.Circle'); 
+      this.X.registerElement('email',   'com.google.mail.MobileController');
+      this.X.registerElement('section', 'foam.flow.Section');
     }
   },
 
@@ -21,7 +27,11 @@ CLASS({
 
       <circle color="blue" x="200" y="20" r="20"/>
 
-      <solar/>
+      <!-- <solar/> -->
+
+      <section title="Chapter 1">
+        This is chapter 1.
+      </section>
     */}
   ]
 });
