@@ -28,14 +28,32 @@ CLASS({
         return this.SUPER(e);
       }
 
-      console.log('inner ********: ', e.innerHTML);
       this.inner = e.innerHTML;
       return this;
     }
   },
 
   templates: [
-    function toHTML() {/*<div class="flow-section"><a name="section-%%title"></a><a href="#toc">%%title<!--<%= this.inner({}, this.X)%>-->%%inner</a></div>*/},
+    function CSS() {/*
+      .flow-section-header {
+        font-size: 16px;
+      }
+      .flow-section-header a {
+        text-decoration-line: none;
+       }
+      .flow-section-body {
+        margin: 18px;
+      }
+    */},
+    function toHTML() {/*
+      <div class="flow-section">
+        <div class="flow-section-header">
+          <a name="section-%%title"></a><a href="#toc">%%title</a>
+        </div>
+        <div class="flow-section-body">
+          <%= this.inner() %>
+        </div>
+      </div> */},
     function toDetailHTML() {/*<a href="#section-{{this.data.title}}">{{this.data.title}}</a><br>*/}
   ]
 });

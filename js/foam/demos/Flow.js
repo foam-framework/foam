@@ -49,9 +49,7 @@ CLASS({
         This is chapter 2.
       </section>
 
-      <circle color="yellow" x="200" y="50" r="40"/><br>
-
-      <circle color="blue" x="200" y="20" r="20"/>
+      <circle color="blue" x="100" y="20" r="20"/>
 
       <!-- <solar/> -->
 
