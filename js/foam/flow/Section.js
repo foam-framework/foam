@@ -14,6 +14,11 @@ CLASS({
   ],
 
   methods: {
+    init: function() {
+      this.SUPER();
+      this.X.FLOWX && this.X.FLOWX.toc && this.X.FLOWX.toc.sections.put(this);
+    },
+
     /** Allow inner to be optional when defined using HTML. **/
     fromElement: function(e) {
       debugger;
@@ -28,6 +33,7 @@ CLASS({
   },
 
   templates: [
-    function toHTML() {/*<div class="flow-section">%%title<!--<%= this.inner({}, this.X)%>-->%%inner</div>*/}
+    function toHTML() {/*<div class="flow-section">%%title<!--<%= this.inner({}, this.X)%>-->%%inner</div>*/},
+    function toDetailHTML() {/*{{this.data.title}}<br>*/}
   ]
 });
