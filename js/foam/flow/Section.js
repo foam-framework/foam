@@ -33,7 +33,7 @@ CLASS({
   },
 
   templates: [
-    function toHTML() {/*<div class="flow-section">%%title<!--<%= this.inner({}, this.X)%>-->%%inner</div>*/},
-    function toDetailHTML() {/*{{this.data.title}}<br>*/}
+    function toHTML() {/*<div class="flow-section"><a name="section-%%title"></a><a href="#toc">%%title<!--<%= this.inner({}, this.X)%>-->%%inner</a></div>*/},
+    function toDetailHTML() {/*<a href="#section-{{this.data.title}}">{{this.data.title}}</a><br>*/}
   ]
 });

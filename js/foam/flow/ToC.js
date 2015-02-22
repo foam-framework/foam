@@ -24,6 +24,7 @@ CLASS({
   templates: [
     function toHTML() {/*
       <hr>
+        <a name="toc"></a>
         <h2>Table of Contents</h2>
         <blockquote>
           $$sections{mode: 'read-only'}

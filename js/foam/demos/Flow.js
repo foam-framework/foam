@@ -43,6 +43,10 @@ CLASS({
 
       <!-- <solar/> -->
 
+      <section title="Chapter 3">
+        This is chapter 3.
+      </section>
+
     */}
   ]
 });
