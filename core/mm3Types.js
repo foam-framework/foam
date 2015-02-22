@@ -798,7 +798,7 @@ var ViewFactoryProperty = Model.create({
   properties: [
     {
       name: 'defaultValue',
-      preSet: function(_, f) { return ViewFactoryProperty.PRE_SET.defaultValue.call(this, null, f); }
+      preSet: function(_, f) { return ViewFactoryProperty.ADAPT.defaultValue.call(this, null, f); }
     },
     {
       name: 'fromElement',
@@ -807,7 +807,7 @@ var ViewFactoryProperty = Model.create({
       }
     },
     {
-      name: 'preSet',
+      name: 'adapt',
       doc: "Can be specified as either a function, a Model, a Model path, or a JSON object.",
       defaultValue: function(_, f) {
         // Undefined values
