@@ -195,7 +195,7 @@ var TemplateCompiler = {
       }
     }
 
-    if ( e.children.length ) {
+    if ( e.childNodes.length ) {
       e.attributes = [];
       this.push('.fromElement(elementFromString("' + e.outerHTML.replace(/\n/g, '\\n').replace(/"/g, '\\"') + '"))');
     }
