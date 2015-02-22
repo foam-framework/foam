@@ -295,7 +295,6 @@ X.registerElement = (function() {
         if ( ! res ) return null;
         var elem  = res.value;
         var model = registry[elem.nodeName];
-        console.log('**** ', res.value.toString());
         if ( model ) elem.setAttribute('model', model);
         return res.setValue(elem);
       };

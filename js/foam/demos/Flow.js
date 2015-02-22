@@ -8,18 +8,30 @@ CLASS({
     'foam.demos.SolarSystem',
     'foam.graphics.Circle',
     'foam.flow.ToC',
-    'foam.flow.Section'
+    'foam.flow.Section',
+    'foam.flow.CodeSample'
+  ],
+
+  exports: [ 'sections' ],
+
+  properties: [
+    {
+      model_: 'DAOProperty',
+      name: 'sections',
+      view: 'DAOListView',
+      factory: function() { return []; }
+    }
   ],
 
   methods: {
     init: function(args) {
       this.SUPER(args);
-      this.X.FLOWX = this.X;
-      this.X.registerElement('solar',   'foam.demos.SolarSystem'); 
-      this.X.registerElement('circle',  'foam.graphics.Circle'); 
-      this.X.registerElement('email',   'com.google.mail.MobileController');
-      this.X.registerElement('toc',     'foam.flow.ToC');
-      this.X.registerElement('section', 'foam.flow.Section');
+      this.X.registerElement('solar',       'foam.demos.SolarSystem'); 
+      this.X.registerElement('circle',      'foam.graphics.Circle'); 
+      this.X.registerElement('email',       'com.google.mail.MobileController');
+      this.X.registerElement('toc',         'foam.flow.ToC');
+      this.X.registerElement('section',     'foam.flow.Section');
+      this.X.registerElement('code-sample', 'foam.flow.CodeSample');
     }
   },
 
@@ -37,7 +49,7 @@ CLASS({
         This is chapter 2.
       </section>
 
-      <circle color="yellow" x="200" y="100" r="80"/><br>
+      <circle color="yellow" x="200" y="50" r="40"/><br>
 
       <circle color="blue" x="200" y="20" r="20"/>
 
@@ -47,6 +59,20 @@ CLASS({
         This is chapter 3.
       </section>
 
+      Sample 1:
+      <code-sample code="1+2;"/>
+
+      Sample 2:
+      <code-sample>
+        42*42;
+      </code-sample>
+
+      Sample 3:
+      <code-sample>
+        <code>"hello world!";</code>
+      </code-sample>
+
+      The end.
     */}
   ]
 });

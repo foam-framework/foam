@@ -4,6 +4,8 @@ CLASS({
   label: 'Table of Contents',
   extendsModel: 'View',
 
+  imports: [ 'sections' ],
+
   properties: [
     {
       model_: 'DAOProperty',
@@ -16,8 +18,6 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      console.log('**** step 2');
-      this.X.FLOWX.toc = this;
     }
   },
 
