@@ -29,8 +29,6 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-console.log('*** ' , this.parentSection);
-
       this.parentSection && this.parentSection.addSubSection(this);
     },
 
