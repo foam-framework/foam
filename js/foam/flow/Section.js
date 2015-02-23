@@ -3,10 +3,14 @@ CLASS({
   name: 'Section',
   extendsModel: 'View',
 
-  imports: [ 'sections' ],
-  exports: [ 'subSections as sections' ],
+  imports: [ 'parentSection' ],
+  exports: [ 'as parentSection' ],
 
   properties: [
+    {
+      name: 'ordinal',
+      defaultValue: ''
+    },
     {
       name: 'title'
     },
@@ -25,7 +29,9 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      this.sections && this.sections.put(this);
+console.log('*** ' , this.parentSection);
+
+      this.parentSection && this.parentSection.addSubSection(this);
     },
 
     /** Allow inner to be optional when defined using HTML. **/
@@ -37,6 +43,11 @@ CLASS({
 
       this.inner = e.innerHTML;
       return this;
+    },
+
+    addSubSection: function(section) {
+      this.subSections.push(section);
+      section.ordinal = this.ordinal + this.subSections.length + '.';
     }
   },
 
@@ -56,7 +67,7 @@ CLASS({
     function toHTML() {/*
       <div class="flow-section">
         <div class="flow-section-header">
-          <a name="section-%%title"></a><a href="#toc">%%title</a>
+          <a name="section-%%ordinal"></a><a href="#toc">%%ordinal %%title</a>
         </div>
         <div class="flow-section-body">
           <%= this.inner() %>
@@ -64,7 +75,7 @@ CLASS({
       </div>
     */},
     function toDetailHTML() {/*
-      <a href="#section-{{this.data.title}}">{{this.data.title}}</a><br>
+      <a href="#section-{{this.data.ordinal}}">{{this.data.ordinal}} {{this.data.title}}</a><br>
       <blockquote>
         $$subSections{mode: 'read-only'}
       </blockquote>
