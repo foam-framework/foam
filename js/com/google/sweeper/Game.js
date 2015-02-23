@@ -36,6 +36,12 @@ CLASS({
   ],
 
   templates: [
+    function CSS() {/*
+      body {
+        -webkit-user-select: none;
+      }
+
+    */},
     function toHTML() {/*
       $$time{mode: 'read-only'}
       <br>
