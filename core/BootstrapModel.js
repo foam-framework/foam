@@ -243,8 +243,8 @@ var BootstrapModel = {
           if ( p0.postSet && superProp.postSet ) {
             console.log('(DEBUG) sub postSet: ', this.name + '.' + p.name);
             p.postSet = (function(a1, a2) { return function (oldValue, newValue, prop) {
-              a1.call(this, oldValue, newValue, prop);
               a2.call(this, oldValue, newValue, prop);
+              a1.call(this, oldValue, newValue, prop);
             };})(p0.postSet, superProp.postSet);
           }
           props[i] = p;

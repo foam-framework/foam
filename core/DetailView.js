@@ -405,7 +405,7 @@ CLASS({
   methods: {
     init: function(args) {
       this.SUPER(args);
-      if ( this.args && this.args.model_ ) this.viewModel = this.args.model_
+      if ( this.args && this.args.model_ ) this.viewModel = this.args.model_;
     },
     updateView: function() {
       if ( this.view ) this.view.destroy();
