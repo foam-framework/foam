@@ -61,8 +61,8 @@ CLASS({
         display: none;
       }
       .sweeper-cell.marked {
-        background: lightgreen;
-        color: lightgreen;
+        background-color: #bbb;
+        background-image: url('js/com/google/sweeper/flag.png');
       }
     */}
   ],
