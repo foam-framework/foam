@@ -64,20 +64,21 @@ CLASS({
 
       <section title="Chapter 3">
         This is chapter 3.
+
+        Sample 1:
+        <code-sample code="return 1+2;"/>
+
+        Sample 2:
+        <code-sample>
+          return 42*42;
+        </code-sample>
+
+        Sample 3:
+        <code-sample>
+          <code>return "hello world!";</code>
+        </code-sample>
+
       </section>
-
-      Sample 1:
-      <code-sample code="return 1+2;"/>
-
-      Sample 2:
-      <code-sample>
-        return 42*42;
-      </code-sample>
-
-      Sample 3:
-      <code-sample>
-        <code>return "hello world!";</code>
-      </code-sample>
 
       The end.
     */}
