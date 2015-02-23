@@ -7,6 +7,7 @@ CLASS({
     {
       // model_: 'FunctionProperty',
       name: 'code',
+      preSet: function(_, txt) { return txt.trim(); },
       postSet: function(_, txt) {
         var fn = eval('(function() {\n'    + txt + '\n})');
         
@@ -32,14 +33,24 @@ CLASS({
   },
 
   templates: [
+    function CSS() {/*
+      .flow-code-sample, .flow-code-sample-output{
+         border: 1px solid gray;
+         padding: 8px;
+         margin: 18px 0;
+         width: 600px;
+      }
+    */},
     function toHTML() {/*
-      <pre class="flow-code-sample">
+      <blockquote>
+      <div class="flow-code-sample">
         %%code
-      </pre>
+      </div>
       Output:
-      <pre class="flow-code-sample-output">
+      <div class="flow-code-sample-output">
         %%output
-      </pre>
+      </div>
+      </blockquote>
     */}
   ]
 });
