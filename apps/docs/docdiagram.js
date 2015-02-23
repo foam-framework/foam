@@ -192,9 +192,6 @@ CLASS({
 
   properties: [
     {
-      name: 'childData'
-    },
-    {
       name: 'diagramItem',
       type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
