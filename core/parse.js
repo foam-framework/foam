@@ -306,6 +306,8 @@ function simpleAlt(/* vargs */) {
 //function alt(/* vargs */) {
   var args = prepArgs(arguments);
 
+  if ( args.length == 1 ) return args[0];
+
   var f = function(ps) {
     for ( var i = 0 ; i < args.length ; i++ ) {
       var res = this.parse(args[i], ps);

@@ -55,8 +55,11 @@ CLASS({
   properties: [
     {
       name: 'data',
-      postSet: function(old,nu) {
-        this.model = nu.model_;
+      preSet: function(old,nu) {
+        if ( nu.model_ ) {
+          this.model = nu.model_;
+        }
+        return nu;
       }
     },
     {
@@ -175,7 +178,8 @@ CLASS({
         if ( prop.hidden ) continue;
 
         var view = this.createView(prop);
-        view.data$ = this.data$;
+        //view.data$ = this.data$;
+        this.addDataChild(view);
         str += this.rowToHTML(prop, view);
       }
 
@@ -185,9 +189,9 @@ CLASS({
         var view = this.RelationshipsView.create({
           data: this.data
         });
-        view.data$ = this.data$;
+        //view.data$ = this.data$;
+        this.addDataChild(view);
         str += view.toHTML();
-        this.addChild(view);
       }
 
       str += '</div>';

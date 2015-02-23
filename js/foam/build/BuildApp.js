@@ -29,14 +29,58 @@ CLASS({
   properties: [
     {
       name: 'controller',
+      help: 'Name of the main controller/model to create',
       required: true
     },
     {
-      name: 'defaultView'
+      name: 'defaultView',
+      help: "Default view of the controller to use.  If not set, the controller will be used as view (if it is one), or DetailView will be used"
     },
     {
       name: 'targetPath',
-      require: true
+      help: "Directory to write output files to.  Will be created if it doesn't exist.",
+      required: true
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'precompileTemplates',
+      defaultValue: false
+    },
+    {
+      name: 'formatter',
+      factory: function() {
+        return {
+          __proto__: JSONUtil.compact,
+          outputObject_: function(out, obj, opt_defaultModel) {
+            var first = true;
+
+            out('{');
+            if ( obj.model_.id !== opt_defaultModel ) {
+              this.outputModel_(out, obj);
+              first = false;
+            }
+
+            if ( Template.isInstance(obj) ) var isTemplate = true;
+
+            for ( var key in obj.model_.properties_ ) {
+              var prop = obj.model_.properties_[key];
+
+              if ( ! this.p(prop) && ( ! isTemplate || prop.name !== 'code' ) ) continue;
+
+              if ( prop.name in obj.instance_ ) {
+                var val = obj[prop.name];
+                if ( Array.isArray(val) && ! val.length ) continue;
+                if ( ! first ) out(',');
+                out(this.keyify(prop.name), ': ');
+                this.output(out, val);
+                first = false;
+              }
+            }
+
+            out('}');
+          }
+        };
+      }
     },
     {
       name: 'path',
@@ -89,7 +133,6 @@ CLASS({
               });
             }.bind(this),
             function(ret, file) {
-              corejs += '// Copied from ' + file.path;
               corejs += '\n';
               corejs += file.contents;
               ret();
@@ -123,8 +166,18 @@ CLASS({
         contents: ids.join('\n')
       }));
       for ( var i = 0; i < ids.length; i++ ) {
+        var model = models[ids[i]];
+        if ( this.precompileTemplates ) {
+          for ( var j = 0 ; j < model.templates.length ; j++ ) {
+            model.templates[j].code = TemplateUtil.compile(model.templates[j]);
+            model.templates[j].clearProperty('template');
+          }
+        }
         contents += 'CLASS(';
-        contents += JSONUtil.compact.where(NOT_TRANSIENT).stringify(models[ids[i]]);
+        if ( this.precompileTemplates )
+          contents += this.formatter.where(NOT_TRANSIENT).stringify(models[ids[i]]);
+        else
+          contents += JSONUtil.compact.where(NOT_TRANSIENT).stringify(models[ids[i]]);
         contents += ')\n';
       }
 
@@ -136,6 +189,7 @@ CLASS({
       }
       this.log("Building   ", model.id);
       this.log("Target is: ", this.targetPath);
+      this.log(this.precompileTemplates ? '' : 'NOT ', 'pre-compiling templates.');
 
       var self = this;
       aseq(

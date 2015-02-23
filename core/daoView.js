@@ -290,6 +290,9 @@ CLASS({
 CLASS({
   name: 'ScrollViewRow',
   documentation: 'Wrapper for a single row in a $$DOC{ref: "ScrollView"}. Users should not need to create these. TODO: I should be a submodel of ScrollView once that\'s possible.',
+  requires: [
+    'DetailView'
+  ],
   properties: [
     {
       name: 'data',
@@ -297,7 +300,7 @@ CLASS({
         if ( this.view ) {
           this.view.data = nu;
           // DetailViews will update on data changing, but others won't.
-          if ( ! DetailView.isInstance(this.view) ) {
+          if ( ! this.DetailView.isInstance(this.view) ) {
             var e = $(this.id);
             e.innerHTML = this.view.toHTML();
             this.view.initHTML();

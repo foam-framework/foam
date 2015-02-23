@@ -18,7 +18,7 @@
 CLASS({
   name: 'LeafDataView',
   package: 'foam.ui',
-  extendsModel: 'foam.patterns.ChildTreeTrait',
+  extendsModel: 'foam.ui.BaseView',
 
   documentation: function() {/* For Views that use $$DOC{ref:'.data'},
     but do not pass it along to any children, use this trait.
@@ -31,6 +31,17 @@ CLASS({
         Not progated to children, as it is assumed no children are present.
          */}
     }
-  ]
+  ],
+  
+  methods: {
+    addDataChild: function(child) {
+      /* Don't pass data, just do a regular addChild. */
+      this.addChild(child);
+    },
+    addSelfDataChild: function(child) {
+      /* Don't pass self as data, just do a regular addChild. */
+      this.addChild(child);
+    }
+  }
     
 });

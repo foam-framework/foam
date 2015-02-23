@@ -26,14 +26,7 @@ CLASS({
   */},
 
   methods: {
-    
-    addSelfDataChild: function(child) {
-      /* For views created from properties of this view (not our data),
-         this method sets the child's data to this. */
-      child.data = this;
-      this.addChild(child);
-    },
-    
+       
     createView: function(prop, opt_args) {
       /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.X;

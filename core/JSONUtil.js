@@ -104,9 +104,9 @@ var JSONUtil = {
 
       if ( obj.model_ ) {
         var newObj = FOAM.lookup(obj.model_, X);
-        if ( ( ! newObj || newObj.ready__ ) && seq ) {
+        if ( ( ! newObj || ! newObj.finished__ ) ) {
           var future = afuture();
-          seq.push(future.get);
+          seq && seq.push(future.get);
 
           arequire(obj.model_)(function(model) {
             if ( ! model ) {
@@ -119,6 +119,8 @@ var JSONUtil = {
             obj.become(tmp);
             future.set(obj);
           });
+
+          return obj;
         }
         return newObj ? newObj.create(obj, X) : obj;
       }
@@ -190,7 +192,6 @@ var JSONUtil = {
 
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
-          if ( val == prop.defaultValue ) continue;
           if ( Array.isArray(val) && ! val.length ) continue;
           if ( ! first ) out(',');
           out(this.keyify(prop.name), ': ');
@@ -314,7 +315,6 @@ var JSONUtil = {
         if ( prop.name === 'parent' ) continue;
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
-          if ( val == prop.defaultValue ) continue;
           if ( Array.isArray(val) && ! val.length ) continue;
           if ( ! first ) out(',\n');
           out(nestedIndent, this.keyify(prop.name), ': ');

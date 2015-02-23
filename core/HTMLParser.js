@@ -161,14 +161,23 @@ var HTMLParser = {
 
   START: sym('html'),
 
-// TODO(kgr): replace with repeat0
   // Use simpleAlt() because endTag() doesn't always look ahead and will
   // break the regular alt().
-  html: repeat(simpleAlt(
+  html: repeat0(sym('htmlPart')),
+
+  htmlPart: simpleAlt(
     sym('comment'),
     sym('text'),
     sym('endTag'),
-    sym('startTag'))),
+    sym('startTag')),
+
+  tag: seq(
+    sym('startTag'),
+    repeat(seq1(1, sym('matchingHTML'), sym('htmlPart')))),
+
+  matchingHTML: function(ps) {
+    return this.stack.length > 1 ? ps : null;
+  },
 
   startTag: seq(
     '<',
@@ -188,7 +197,7 @@ var HTMLParser = {
 
   endTag_: seq1(1, '</', sym('tagName'), '>'),
 
-  comment: seq('<!--', repeat(not('-->', anyChar)), '-->'),
+  comment: seq('<!--', repeat0(not('-->', anyChar)), '-->'),
 
   attributes: repeat(sym('attribute'), sym('whitespace')),
 
@@ -205,12 +214,17 @@ var HTMLParser = {
     seq1(1, '"', repeat(notChar('"')), '"')
   )),
 
-  whitespace: repeat(alt(' ', '\t', '\r', '\n'))
+  whitespace: repeat0(alt(' ', '\t', '\r', '\n'))
 }.addActions({
   START: function(xs) {
     var ret = this.stack[0];
     this.stack = [ X.foam.html.Element.create({nodeName: 'html'}) ];
     return ret;
+  },
+  tag: function(xs) {
+    var ret = this.stack[0];
+    this.stack = [ X.foam.html.Element.create({nodeName: 'html'}) ];
+    return ret.childNodes[0];
   },
   attribute: function(xs) { return { name: xs[0], value: xs[1] }; },
   text: function(xs) { this.peek() && this.peek().appendChild(xs); },
@@ -261,5 +275,33 @@ test('<pA a="1">foo</pA>');
 test('<pA a="1" b="2">foo<b>bold</b></pA>');
 */
 
-TemplateParser.foamTag_ = FOAMTagParser.create().export('START');
-invalidateParsers();
+X.registerElement = (function() {
+  var registry = { };
+
+  return function(name, model) {
+    console.log('registerElement: ', name);
+    registry[name] = model;
+
+    TemplateParser.foamTag_ = (function() {
+      var start = seq('<', simpleAlt.apply(null,
+        Object.keys(registry).
+          sort(function(o1, o2) { return o2.compareTo(o1); }).
+          map(function(k) { return literal_ic(k); })));
+
+      var html = HTMLParser.create().export('tag');
+
+      return function(ps) {
+        var res = this.parse(start, ps) && this.parse(html, ps);
+        if ( ! res ) return null;
+        var elem  = res.value;
+        var model = registry[elem.nodeName];
+        if ( model ) elem.setAttribute('model', model);
+        return res.setValue(elem);
+      };
+    })();
+    invalidateParsers();
+  };
+
+})();
+
+X.registerElement('foam', null);

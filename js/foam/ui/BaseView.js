@@ -16,9 +16,9 @@
  */
 
 CLASS({
-  name: 'SimpleView',
+  name: 'BaseView',
   package: 'foam.ui',
-  extendsModel: 'foam.ui.BaseView',
+  extendsModel: 'foam.patterns.ChildTreeTrait',
 
   documentation: function() {/* For Views that use $$DOC{ref:'.data'},
     this trait will pseudo-import the data$ reference from the context,
@@ -34,7 +34,23 @@ CLASS({
         $$DOC{ref:'foam.ui.LeafDataView'} or
         $$DOC{ref:'foam.ui.DestructiveDataView'}.
       */}
+    },
+  ],
+  
+  methods: {
+    addDataChild: function(child) {
+      /* For children that link to data$, this method tracks them
+        for disconnection when we destroy. */
+      Events.link(this.data$, child.data$);
+      this.addChild(child);
+    },
+    
+    addSelfDataChild: function(child) {
+      /* For views created from properties of this view (not our data),
+         this method sets the child's data to this. */
+      child.data = this;
+      this.addChild(child);
     }
-  ]
+  }
   
 });

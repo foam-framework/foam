@@ -232,7 +232,7 @@ CLASS({
         console.log('PersistentContext', 'updating', name);
         this.dao.put(this.X.Binding.create({
           id:    name,
-          value: JSONUtil.compact.where(this.predicate).stringify(obj),
+          value: JSONUtil.where(this.predicate).stringify(obj),
           version: version
         }));
       }).bind(this), undefined, this.X));

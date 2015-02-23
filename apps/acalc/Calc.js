@@ -46,6 +46,8 @@ function createTranslatedAction(action, opt_longName) {
   return Action.create(action);
 }
 
+// TODO(kgr): model binaryOp and unaryOp as new types of Actions
+// this will allow the model to be serialized and edited in a FOAM IDE
 /** Make a Binary Action. **/
 function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
   var longName = opt_longName || name;

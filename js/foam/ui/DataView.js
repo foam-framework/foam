@@ -18,7 +18,7 @@
 CLASS({
   name: 'DataView',
   package: 'foam.ui',
-  extendsModel: 'foam.ui.SimpleView',
+  extendsModel: 'foam.ui.BaseView',
 
   documentation: function() {/* For Views that use $$DOC{ref:'.data'}.
   */},

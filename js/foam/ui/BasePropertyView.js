@@ -19,7 +19,7 @@
 CLASS({
   name: 'BasePropertyView',
   package: 'foam.ui',
-  extendsModel: 'foam.ui.LeafDataView',
+  extendsModel: 'foam.ui.BaseView',
   
   requires: ['foam.ui.TextFieldView'],
   
@@ -177,13 +177,17 @@ CLASS({
       view.copyFrom(this.args);
       view.parent = this.parent;
       view.prop = this.prop;
-      view.data$ = this.childData$;
 
       // TODO(kgr): re-enable when improved
       // if ( this.prop.description || this.prop.help ) view.tooltip = this.prop.description || this.prop.help;
 
       this.view = view;
-      this.addChild(view);
+      this.addDataChild(view);
+    },
+    
+    addDataChild: function(child) {
+      Events.link(this.childData$, child.data$);
+      this.addChild(child);
     }
   },
   

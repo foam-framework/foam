@@ -92,8 +92,8 @@ CLASS({
       // TODO: don't render full view until expanded for the first time?
       if (this.collapsedView && this.fullView) {
         var retStr = this.collapsedView.toHTML() + this.fullView.toHTML();
-        this.addChild(this.collapsedView);
-        this.addChild(this.fullView);
+        this.addDataChild(this.collapsedView);
+        this.addDataChild(this.fullView);
       } else {
         console.warn(model_.id + " missing " 
             + ( this.collapsedView ? "" : "collapsedView" )

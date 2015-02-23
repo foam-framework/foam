@@ -465,6 +465,15 @@ CLASS({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(old, nu) {
+        if (this.$ && this.mode === 'read-only') {
+          this.$.outerHTML = this.toHTML();
+          this.initHTML();
+        }
+      }
+    },
+    {
       name: 'linkLabel'
     },
     {
@@ -559,7 +568,7 @@ CLASS({
   methods: {
     toHTML: function() {
       if ( this.mode === 'read-only' ) {
-        return '<span id="' + id + '" class="popupChoiceView-readonly">' +
+        return '<span id="' + this.id + '" class="popupChoiceView-readonly">' +
             ((this.choice && this.choice[1]) || '') + '</span>';
       } else {
         return this.SUPER();
