@@ -27,7 +27,8 @@ CLASS({
   requires: [ 'Property', 
               'foam.ui.TextFieldView',
               'foam.ui.IntFieldView',
-              'foam.ui.FloatFieldView'], 
+              'foam.ui.FloatFieldView',
+              'foam.ui.DAOController'], 
               //, 'foam.ui.RelationshipsView' ],
   exports: [ 'propertyViewProperty' ],
 
@@ -129,7 +130,7 @@ CLASS({
       if ( prop.detailViewPreRow ) str += prop.detailViewPreRow(this);
 
       str += '<tr class="detail-' + prop.name + '">';
-      if ( DAOController.isInstance(view) ) {
+      if ( this.DAOController.isInstance(view) ) {
         str += "<td colspan=2><div class=detailArrayLabel>" + prop.label + "</div>";
         str += view.toHTML();
         str += '</td>';
@@ -172,8 +173,8 @@ CLASS({
       str += this.startForm();
       str += this.titleHTML();
 
-      for ( var i = 0 ; i < model.properties.length ; i++ ) {
-        var prop = model.properties[i];
+      for ( var i = 0 ; i < model.properties_.length ; i++ ) {
+        var prop = model.properties_[i];
 
         if ( prop.hidden ) continue;
 

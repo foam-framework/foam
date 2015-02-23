@@ -79,7 +79,7 @@ CLASS({
         return;
       }
 
-      if ( ! this.X.modelDAO ) {
+      if ( ! this.Y.modelDAO ) {
         // we aren't done init yet, so wait and our init(); will call us again
         return;
       }
@@ -88,7 +88,7 @@ CLASS({
       // and load them into the feature DAO. Passing [] assumes we don't
       // care about other models that extend this one. Finding such would
       // be a global search problem.
-      this.X.setTimeout(function() {
+      this.Y.setTimeout(function() {
           this.loadFeaturesOfModel(data, []);
           this.findSubModels(data);
           this.findTraitUsers(data);
@@ -164,7 +164,7 @@ CLASS({
           // inheritance level will bubble back up the stack once we know where the bottom is.
           // pass a copy of previousExtenderTrackers so we know what to update in the traits section after.
           newModelTr.inheritanceLevel = 1 + this.loadFeaturesOfModel(
-                            FOAM.lookup(model.extendsModel, this.X), previousExtenderTrackers.slice(0));
+                            FOAM.lookup(model.extendsModel, this.Y), previousExtenderTrackers.slice(0));
         }
 
         // Process traits with the same inheritance level we were assigned, since they appear first in the
@@ -174,7 +174,7 @@ CLASS({
             var traitExtenderTrackers = previousExtenderTrackers.slice(0);
             traitExtenderTrackers.push(newModelTr);
             this.loadFeaturesOfModel(
-              FOAM.lookup(trait, this.X),
+              FOAM.lookup(trait, this.Y),
               traitExtenderTrackers,
               newModelTr.inheritanceLevel);
           }.bind(this));

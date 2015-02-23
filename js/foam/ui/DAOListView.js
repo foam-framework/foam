@@ -25,7 +25,6 @@ CLASS({
   traits: ['foam.ui.TemplateSupportTrait',
            'foam.ui.DAODataViewTrait',
            'foam.ui.HTMLViewTrait'], 
-  // see updateHTML, item X.sub({data...}) for differences from old DAOListView
   
   properties: [
     {

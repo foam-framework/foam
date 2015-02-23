@@ -39,11 +39,11 @@ CLASS({
 
   templates: [
     function toInnerHTML()    {/*
-    <%    this.destroy();
+    <%    this.destroy(); console.log("featurelist hasFeatures: ", this.hasFeatures);
           if (!this.hasFeatures && !this.hasInheritedFeatures) { %>
           <% //  <p class="feature-type-heading">No <%=this.model.plural%>.</p> %>
     <%    } else {
-            if (this.hasFeatures) { %>
+            if (this.hasFeatures) {  %>
               <p class="feature-type-heading"><%=this.model.plural%>:</p>
               <div class="memberList">$$selfFeaturesDAO{ model_: 'foam.ui.DAOListView', rowView: 'foam.documentation.RowDocView', model: this.model }</div>
       <%    }

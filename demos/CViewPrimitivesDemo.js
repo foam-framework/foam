@@ -33,6 +33,7 @@ aseq(
   arequire('foam.graphics.diagram.Margin'),
   arequire('foam.graphics.diagram.DiagramRoot'),
   arequire('foam.graphics.diagram.Link'),
+  arequire('foam.ui.DetailView'),
   arequire('Mouse'),
   arequire('BorderLabel')
   )(
@@ -185,7 +186,7 @@ function() {
   var editors = [block2, block2Margin, sect1b, sect2b, outerLayout];
   
   editors.forEach(function(thing) {
-    var editor = X.DetailView.create({ data: thing});
+    var editor = X.foam.ui.DetailView.create({ data: thing});
     editor.write(document);
   
   });
