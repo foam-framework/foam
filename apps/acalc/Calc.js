@@ -272,7 +272,9 @@ CLASS({
       }.bind(this)));
     },
     push: function(a2, opt_op) {
-      this.row1 = '';
+      if ( a2 != this.a2 ||
+           ( opt_op || DEFAULT_OP ) != this.op )
+        this.row1 = '';
       this.history.put(History.create(this));
       this.a1 = this.a2;
       this.op = opt_op || DEFAULT_OP;
