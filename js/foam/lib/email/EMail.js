@@ -232,7 +232,7 @@ CLASS({
          "model_": "foam.lib.email.EMailMutationAction",
          "name": "send",
          "help": "Send the email.",
-         "isAvailable": function () { return this.isDraft; },
+         "isAvailable": function () { debugger; return this.isDraft; },
          "isEnabled": function () { return ! this.messageSent; },
          "children": [],
          "keyboardShortcuts": [],

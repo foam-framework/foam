@@ -59,7 +59,7 @@ CLASS({
           }),
           index$: this.index$,
           className: 'swipeAltHeader foamChoiceListView horizontal'
-        });
+        }, this.Y);
       }
     },
     {

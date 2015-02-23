@@ -167,6 +167,8 @@ CLASS({
 
       var contents = '';
 
+      delete models['foam.apps.calc.Calc'];
+
       var ids = Object.keys(models);
       this.fileDAO.put(this.File.create({
         path: this.targetPath + this.path.sep + 'MANIFEST',

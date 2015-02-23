@@ -87,7 +87,7 @@ CLASS({
       // tear down childDataValue listener
       this.childDataValue.removeListener(this.onExportValueChange);
       this.childDataValue = null;
-      this.childX = this.X.sub();
+      this.childX = this.Y.sub();
       
       this.SUPER();
     },
@@ -97,7 +97,7 @@ CLASS({
       // create childDataValue value and
       this.childDataValue = this.SimpleValue.create(this.data);
       this.childDataValue.addListener(this.onExportValueChange);
-      this.childX = this.X.sub({ data$: this.childDataValue });
+      this.childX = this.Y.sub({ data$: this.childDataValue });
     }
   },
   
