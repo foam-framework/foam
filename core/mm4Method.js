@@ -610,7 +610,7 @@ CLASS({
         var multilineComment = /^\s*function\s*\([\$\s\w\,]*?\)\s*{\s*\/\*([\s\S]*?)\*\/[\s\S]*$|^\s*\/\*([\s\S]*?)\*\/([\s\S]*)/.exec(this.code.toString());
         if ( multilineComment ) {
           var bodyFn = multilineComment[1];
-          this.documentation = this.X.Documentation.create({
+          this.documentation = this.Y.Documentation.create({
             name: this.name,
             body: bodyFn
           })
@@ -1060,17 +1060,17 @@ CLASS({
         var foamalized = [];
         // create models if necessary
         nu.forEach(function(chapter) {
-          if (chapter && typeof self.X.Documentation != "undefined" && self.X.Documentation // a source has to exist (otherwise we'll return undefined below)
+          if (chapter && typeof self.Y.Documentation != "undefined" && self.Y.Documentation // a source has to exist (otherwise we'll return undefined below)
               && (  !chapter.model_ // but we don't know if the user set model_
                  || !chapter.model_.getPrototype // model_ could be a string
-                 || !self.X.Documentation.isInstance(chapter) // check for correct type
+                 || !self.Y.Documentation.isInstance(chapter) // check for correct type
               ) ) {
             // So in this case we have something in documentation, but it's not of the
             // "Documentation" model type, so FOAMalize it.
             if (chapter.body) {
-              foamalized.push(self.X.Documentation.create( chapter ));
+              foamalized.push(self.Y.Documentation.create( chapter ));
             } else {
-              foamalized.push(self.X.Documentation.create({ body: chapter }));
+              foamalized.push(self.Y.Documentation.create({ body: chapter }));
             }
           } else {
             foamalized.push(chapter);

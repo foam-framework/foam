@@ -37,7 +37,7 @@ CLASS({
         var actionSheet = this.X.ActionSheetView.create({
           data: this.data,
           actions: this.data.model_.actions,
-        });
+        }, this.Y);
         this.X.stack.slideView(actionSheet);
       },
     },

@@ -237,7 +237,7 @@ CLASS({
       if ( this.showRelationships ) {
         var view = this.X.RelationshipsView.create({
           data: this.data
-        });
+        }, this.Y);
         view.data$ = this.data$;
         str += view.toHTML();
         this.addChild(view);
@@ -412,7 +412,7 @@ CLASS({
       this.view = this.viewModel({
         dao: this.data[this.relationship.name],
         model: this.relationship.relatedModel
-      }, this.X).copyFrom(this.args);
+      }, this.Y).copyFrom(this.args);
       if ( this.$ ) {
         this.updateHTML();
       }
@@ -435,7 +435,7 @@ CLASS({
           out(this.X.RelationshipView.create({
             data$: this.data$,
             relationship: relationship
-          }));
+          }, this.Y));
         }
       %>
     */}

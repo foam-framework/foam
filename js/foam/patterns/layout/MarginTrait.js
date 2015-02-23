@@ -105,8 +105,8 @@ CLASS({
     init: function() {
       this.SUPER();
 
-      this.horizontalConstraints = this.X.foam.patterns.layout.MarginTrait.MarginProxy.create({},this.X);
-      this.verticalConstraints = this.X.foam.patterns.layout.MarginTrait.MarginProxy.create({},this.X);
+      this.horizontalConstraints = this.X.foam.patterns.layout.MarginTrait.MarginProxy.create({},this.Y);
+      this.verticalConstraints = this.X.foam.patterns.layout.MarginTrait.MarginProxy.create({},this.Y);
 
       Events.dynamic(
         function(){ this.top; this.left; this.right; this.bottom;

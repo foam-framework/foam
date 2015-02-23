@@ -116,10 +116,10 @@ CLASS({
       <% if ( isArray ) { %>
         <% for ( var i = 0 ; i < this.data.length ; i++ ) {
           var d = this.data[i]; %>
-          <div><%= this.rowView({data: d}, this.X) %></div>
+          <div><%= this.rowView({data: d}, this.Y) %></div>
         <% } %>
       <% } else { %>
-        <div id="<%= this.on('click', function() { self.addRow(); }) %>" <%= this.rowView({data: this.data}, this.X) %></div>
+        <div id="<%= this.on('click', function() { self.addRow(); }) %>" <%= this.rowView({data: this.data}, this.Y) %></div>
       <% } %>
     */}
   ],

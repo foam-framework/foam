@@ -186,14 +186,14 @@ CLASS({
       // Copy the test methods into the context.=
       // The context becomes "this" inside the tests.
       // The UnitTest object itself becomes this.test inside tests.
-      this.X = this.X.sub({}, this.name);
-      this.X.log    = this.log.bind(this);
-      this.X.jlog   = this.jlog.bind(this);
-      this.X.assert = this.assert.bind(this);
-      this.X.fail   = this.fail.bind(this);
-      this.X.ok     = this.ok.bind(this);
-      this.X.append = this.append.bind(this);
-      this.X.test   = this;
+      this.Y = this.Y.sub({}, this.name);
+      this.Y.log    = this.log.bind(this);
+      this.Y.jlog   = this.jlog.bind(this);
+      this.Y.assert = this.assert.bind(this);
+      this.Y.fail   = this.fail.bind(this);
+      this.Y.ok     = this.ok.bind(this);
+      this.Y.append = this.append.bind(this);
+      this.Y.test   = this;
 
       this.results = '';
 
@@ -208,11 +208,11 @@ CLASS({
 
       afuncs.push(function(ret) {
         oldLog = console.log;
-        console.log = self.log.bind(self.X);
+        console.log = self.log.bind(self.Y);
         ret();
       });
 
-      afuncs.push(this.async ? code.bind(this.X) : code.abind(this.X));
+      afuncs.push(this.async ? code.bind(this.Y) : code.abind(this.Y));
 
       afuncs.push(function(ret) {
         console.log = oldLog;
@@ -229,7 +229,7 @@ CLASS({
             var afuncsInner = [];
             innerTests.forEach(function(test) {
               afuncsInner.push(function(ret) {
-                test.X = self.X.sub();
+                test.X = self.Y.sub();
                 test.atest()(ret);
               });
             });

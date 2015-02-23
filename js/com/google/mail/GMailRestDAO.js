@@ -72,7 +72,7 @@ CLASS({
          "model_": "Property",
          "name": "xhr",
          "transient": true,
-         "factory": function () { return this.X.XHR.create({ responseType: 'json' }); }
+         "factory": function () { return this.X.XHR.create({ responseType: 'json' }, this.Y); }
       },
       {
          "model_": "Property",

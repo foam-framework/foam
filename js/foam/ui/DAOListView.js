@@ -131,8 +131,8 @@ CLASS({
         d = d.limit(this.chunkSize * this.chunksLoaded);
       }
       d.select({put: function(o) {
-        if ( this.mode === 'read-write' ) o = o.model_.create(o, this.X); //.clone();
-        var X = this.X;
+        if ( this.mode === 'read-write' ) o = o.model_.create(o, this.Y); //.clone();
+        var X = this.Y;
         var view = this.rowView({ model: o.model_, data: o }, X);
         view.DAO = this.dao;
         if ( this.mode === 'read-write' ) {

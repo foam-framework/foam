@@ -45,13 +45,13 @@ CLASS({
             actualSetter.apply(this, [nu]);
           }.bind(this);
           
-          this.instance_[propHiddenExport] = this.SimpleValue.create(this.X[propXBindName].value);
-          this.instance_[propImport] = this.X[propXBindName]; // save for future unlistening 
+          this.instance_[propHiddenExport] = this.SimpleValue.create(this.Y[propXBindName].value);
+          this.instance_[propImport] = this.Y[propXBindName]; // save for future unlistening 
           this.instance_[propImport].addListener(this.instance_[propListenerName] );
           Events.follow(this[propXBindName], this.instance_[propImport]);
           
           // 'export' our hidden Value, replacing the imported one
-          this.X.set(propXBindName, this.instance_[propHiddenExport]);
+          this.Y.set(propXBindName, this.instance_[propHiddenExport]);
           this.instance_[propHiddenExport].addListener(this.instance_[propListenerName] );
           Events.follow(this[propXBindName], this.instance_[propHiddenExport]);
         };

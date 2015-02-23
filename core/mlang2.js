@@ -1184,19 +1184,19 @@ CLASS({
       }
     },
     where: function(query) {
-      return (this.X || X).FilteredDAO_.create({query: query, delegate: this});
+      return (this.Y || X).FilteredDAO_.create({query: query, delegate: this});
       //return filteredDAO(query, this);
     },
     limit: function(count) {
-      return (this.X || X).LimitedDAO_.create({count:count, delegate:this});
+      return (this.Y || X).LimitedDAO_.create({count:count, delegate:this});
       //return limitedDAO(count, this);
     },
     skip: function(skip) {
-      return (this.X || X).SkipDAO_.create({skip:skip, delegate:this});
+      return (this.Y || X).SkipDAO_.create({skip:skip, delegate:this});
       //return skipDAO(skip, this);
     },
     orderBy: function() {
-      return (this.X || X).OrderedDAO_.create({ comparator: arguments.length == 1 ? arguments[0] : argsToArray(arguments), delegate: this });
+      return (this.Y || X).OrderedDAO_.create({ comparator: arguments.length == 1 ? arguments[0] : argsToArray(arguments), delegate: this });
     },
     listen: function() {},
     unlisten: function() {},

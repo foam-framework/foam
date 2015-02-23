@@ -512,7 +512,7 @@ CLASS({
           data: this.data,
           choices: this.choices,
           autoSetData: this.autoSetData
-        });
+        }, this.Y);
 
         var pos = findViewportXY(this.$.querySelector('.action'));
         var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());

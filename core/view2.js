@@ -258,7 +258,7 @@ CLASS({
       var view = this.autocompleteView = this.X.AutocompleteView.create({
         autocompleter: this.autocompleter,
         target: this
-      });
+      }, this.Y);
 
       this.bindAutocompleteEvents(view);
     },
@@ -638,10 +638,10 @@ CLASS({
           </tr>
           <tr>
             <td class="output" id="<%= this.setClass('error', function() { return this.test.regression; }, this.masterID) %>">
-              <% this.masterView = FOAM.lookup(this.masterView, this.X).create({ data$: this.test.master$ }); out(this.masterView); %>
+              <% this.masterView = FOAM.lookup(this.masterView, this.X).create({ data$: this.test.master$ }, this.Y); out(this.masterView); %>
             </td>
             <td class="output" id="<%= this.setClass('error', function() { return this.test.regression; }, this.liveID) %>">
-              <% this.liveView = FOAM.lookup(this.liveView, this.X).create({ data$: this.test.results$ }); out(this.liveView); %>
+              <% this.liveView = FOAM.lookup(this.liveView, this.X).create({ data$: this.test.results$ }, this.X); out(this.liveView); %>
             </td>
           </tr>
         </tbody>
@@ -911,7 +911,7 @@ CLASS({
     autocomplete: function(partial) {
       if ( ! this.completer ) {
         var proto = FOAM.lookup(this.autocompleter, this.X);
-        this.completer = proto.create();
+        this.completer = proto.create(null, this.Y);
       }
       if ( ! this.view ) {
         this.view = this.makeView();
@@ -930,7 +930,7 @@ CLASS({
         mode: 'final',
         objToChoice: this.completer.f,
         useSelection: true
-      });
+      }, this.Y);
     },
 
     init: function(args) {
@@ -1869,7 +1869,7 @@ CLASS({
             document: self.document,
             left:     view.$.offsetLeft,
             top:      view.$.offsetTop
-          });
+          }, this.Y);
           toolbar.addActions(a.children);
           toolbar.openAsMenu(view);
         };
@@ -2252,7 +2252,7 @@ CLASS({
           onKeyMode: this.onKeyMode,
           autocomplete: this.autocomplete,
           autocompleter: this.autocompleter
-        })
+        }, this.Y)
       });
       return view;
     },

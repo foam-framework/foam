@@ -24,19 +24,19 @@ CLASS({
     {
       name: 'row',
       type: 'foam.ui.ChoiceView',
-      factory: function() { return this.X.ChoiceView.create(); }
+      factory: function() { return this.Y.ChoiceView.create(); }
     },
     {
       name: 'col',
       label: 'column',
       type: 'foam.ui.ChoiceView',
-      factory: function() { return this.X.ChoiceView.create(); }
+      factory: function() { return this.Y.ChoiceView.create(); }
     },
     {
       name: 'acc',
       label: 'accumulator',
       type: 'foam.ui.ChoiceView',
-      factory: function() { return this.X.ChoiceView.create(); }
+      factory: function() { return this.Y.ChoiceView.create(); }
     },
     {
       name: 'accChoices',
@@ -57,7 +57,7 @@ CLASS({
     {
       name: 'grid',
       type: 'GridByExpr',
-      factory: function() { return this.X.GridByExpr.create(); }
+      factory: function() { return this.Y.GridByExpr.create(); }
     }
   ],
 
@@ -86,7 +86,7 @@ CLASS({
           self.$.innerHTML = html;
           g.initHTML();
         } else {
-          var cview = this.X.GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
+          var cview = this.Y.GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
           self.$.innerHTML = cview.toHTML();
           cview.initHTML();
           cview.paint();
@@ -417,7 +417,7 @@ CLASS({
       name: 'rowView',
       documentation: 'The view for each row. Can specify a <tt>preferredHeight</tt>, which will become the <tt>rowHeight</tt> for the <tt>ScrollView</tt> if <tt>rowHeight</tt> is not set explicitly.',
       postSet: function(_, nu) {
-        var view = FOAM.lookup(nu, this.X);
+        var view = FOAM.lookup(nu, this.Y);
         if ( view.PREFERRED_HEIGHT && this.rowHeight < 0 )
           this.rowHeight = view.create({ model: this.dao.model }).preferredHeight;
       }
@@ -515,7 +515,7 @@ CLASS({
     {
       name: 'spinner',
       factory: function() {
-        return this.X.SpinnerView.create({ data$: this.spinnerBusyStatus.busy$ });
+        return this.Y.SpinnerView.create({ data$: this.spinnerBusyStatus.busy$ });
       }
     }
   ],
@@ -585,7 +585,7 @@ CLASS({
       if ( homeless.length ) {
         var html = [];
         var newViews = [];
-        var rowView = FOAM.lookup(this.rowView, this.X);
+        var rowView = FOAM.lookup(this.rowView, this.Y);
         for ( var i = 0 ; i < homeless.length ; i++ ) {
           var h = homeless[i];
           var x = self.cache[h];
@@ -597,7 +597,7 @@ CLASS({
             r.data = x;
             r.y = h * self.rowHeight;
           } else {
-            var v = rowView.create({ model: x.model_, data: x }, this.X);
+            var v = rowView.create({ model: x.model_, data: x }, this.Y);
             var svr = ScrollViewRow.create({ data: x, id: v.nextID() });
             self.visibleRows[h] = svr;
 
@@ -820,7 +820,7 @@ CLASS({
         <% if ( this.rowHeight < 0 ) { %>
           <div id="<%= this.id + '-rowsize' %>" style="visibility: hidden">
             <%
-              this.rowSizeView = FOAM.lookup(this.rowView, this.X).create({ data: this.dao.model.create() }, this.X);
+              this.rowSizeView = FOAM.lookup(this.rowView, this.Y).create({ data: this.dao.model.create() }, this.Y);
               out(this.rowSizeView.toHTML());
               this.addChild(this.rowSizeView);
             %>
@@ -866,7 +866,7 @@ CLASS({
       name: 'view',
       required: true,
       preSet: function(_, v) {
-        if ( typeof v === 'string' ) v = FOAM.lookup(v, this.X);
+        if ( typeof v === 'string' ) v = FOAM.lookup(v, this.Y);
         this.children = [v];
         v.data = v.dao = this.predicatedDAO$Proxy;
         return v;
@@ -877,7 +877,7 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      this.X = this.X.sub({DAO: this.predicatedDAO$Proxy});
+      this.Y = this.Y.sub({DAO: this.predicatedDAO$Proxy});
     },
     toHTML: function() { return this.view.toHTML(); },
     initHTML: function() { this.view.initHTML(); }

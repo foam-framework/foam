@@ -170,7 +170,7 @@ var BootstrapModel = {
       var key  = imp[1] || path[path.length-1];
 
       defineLocalProperty(cls, key, function() {
-        var Y     = this.X;
+        var Y     = this.Y;
         var model = FOAM.lookup(m, this.X);
         console.assert(model, 'Unknown Model: ' + m + ' in ' + this.name_);
         var proto = model.getPrototype();

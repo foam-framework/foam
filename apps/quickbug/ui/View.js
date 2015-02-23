@@ -113,7 +113,7 @@ CLASS({
         dao: this.dao,
         props: [this.xFunc, this.yFunc],
         values: [x, y]
-      });
+      }, this.Y);
       this.children.push(cell);
       return cell.toHTML();
     },
@@ -298,7 +298,7 @@ var QIssueTableView = FOAM({
 
 
 function createView(rowSelectionValue, browser) {
-  var X = browser.X;
+  var X = browser.Y;
   var location = browser.location;
 
   return X.AlternateView.create({
@@ -316,7 +316,7 @@ function createView(rowSelectionValue, browser) {
             columnResizeEnabled: true,
             scrollEnabled:       true,
             editColumnsEnabled:  true
-          }, browser.X);
+          }, browser.Y);
 
           tableView.sortOrder$  = location.sort$;
           tableView.properties$ = location.colspec$;

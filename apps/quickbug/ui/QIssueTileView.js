@@ -25,7 +25,7 @@ CLASS({
 
     // Implement Adapter
     f: function(issue) {
-      var view = this.X.QIssueTileView.create({ browser: this.browser });
+      var view = this.X.QIssueTileView.create({ browser: this.browser }, self.Y);
       view.put(issue);
       return view;
     },

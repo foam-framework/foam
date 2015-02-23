@@ -50,7 +50,7 @@ CLASS({
       name: 'selection',
       help: 'Backward compatibility for selection mode. Create a X.selection$ value in your context instead.',
       factory: function() {
-        return this.X.SimpleValue.create();
+        return this.Y.SimpleValue.create();
       }
     },
     {
@@ -126,8 +126,8 @@ CLASS({
         d = d.limit(this.chunkSize * this.chunksLoaded);
       }
       d.select({put: function(o) {
-        if ( this.mode === 'read-write' ) o = o.model_.create(o, this.X); //.clone();
-        var view = this.rowView({data: o, model: o.model_}, this.X);
+        if ( this.mode === 'read-write' ) o = o.model_.create(o, this.Y); //.clone();
+        var view = this.rowView({data: o, model: o.model_}, this.Y);
         // TODO: Something isn't working with the Context, fix
         view.DAO = this.dao;
         if ( this.mode === 'read-write' ) {
