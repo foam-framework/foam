@@ -16,7 +16,7 @@
  */
 
 CLASS({
-  name: 'DAOListView',
+  name: 'foam.ui.DAOListView',
   extendsModel: 'AbstractDAOView',
 
   properties: [

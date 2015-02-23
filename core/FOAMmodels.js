@@ -58,8 +58,8 @@ var files = [
 //  '../js/foam/patterns/ChildTreeTrait', // used in view, included here for backward compat of old apps
   'view',
   'view2',
-//  'AbstractDAOView',
-//  'DAOListView',
+  'AbstractDAOView',
+//  'foam.ui.DAOListView',
   'daoView',
 //  'foam.ui.ChoiceView',
 //  'foam.ui.DetailView',

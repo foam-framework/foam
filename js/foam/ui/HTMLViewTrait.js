@@ -458,9 +458,8 @@ CLASS({
       }
 
       init(this.model_.actions);
-      if ( this.X.foam.ui.DetailView.isInstance(this) &&
-          this.model &&
-          this.model.actions )
+      if ( this.model &&
+           this.model.actions )
         init(this.model.actions, this.data$);
 
       if ( found ) {

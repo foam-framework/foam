@@ -22,7 +22,7 @@ CLASS({
   requires: [
     'foam.graphics.ActionButtonCView',
     'foam.ui.md.SharedStyles',
-    'DAOListView',
+    'foam.ui.DAOListView',
     'PopupChoiceView',
     'PredicatedView',
     'ScrollView',

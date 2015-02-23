@@ -54,7 +54,17 @@ CLASS({
       name: 'propertyViewProperty',
       type: 'Property',
       defaultValueFn: function() { return this.Property.DETAIL_VIEW; }
+    },
+    {
+      name: 'data',
+      documentation: function() {/* The actual data used by the view.
+      */},
+      postSet: function(old, nu) {
+        this.destroy();
+        this.construct();
+      }
     }
+
   ]
 });
 

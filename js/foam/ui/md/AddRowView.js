@@ -156,7 +156,7 @@ CLASS({
         return dao;
       },
       view: {
-        factory_: 'DAOListView',
+        factory_: 'foam.ui.DAOListView',
         className: 'rows',
         tagName: 'div',
         useSelection: true

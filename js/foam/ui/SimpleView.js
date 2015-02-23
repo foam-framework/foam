@@ -33,7 +33,7 @@ CLASS({
         If you want to give your children differing data, use
         $$DOC{ref:'foam.ui.LeafDataView'} or
         $$DOC{ref:'foam.ui.DestructiveDataView'}.
-      */}
+      */},
     }
   ]
   

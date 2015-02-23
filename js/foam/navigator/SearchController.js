@@ -126,7 +126,7 @@ CLASS({
       model_: 'DAOProperty',
       name: 'filteredDao',
       view: {
-        factory_: 'DAOListView',
+        factory_: 'foam.ui.DAOListView',
         rowView: 'foam.navigator.views.GSnippet'
       }
     },

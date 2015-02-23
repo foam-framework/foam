@@ -10,7 +10,7 @@ CLASS({
     {
       model_: 'DAOProperty',
       name: 'sections',
-      view: 'DAOListView',
+      view: 'foam.ui.DAOListView',
       factory: function() { return []; }
     }
   ],

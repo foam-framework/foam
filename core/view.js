@@ -399,7 +399,7 @@ CLASS({
         'ActionButton'  ;
       var v = X[modelName].create({action: action}, Y).copyFrom(opt_args);
 
-      this[action.name + 'foam.ui.View'] = v;
+      this[action.name + 'View'] = v;
 
       return v;
     },

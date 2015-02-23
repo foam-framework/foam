@@ -96,7 +96,7 @@ var RegisterDevDocs = function(opt_X) {
               <li>A generic two-pane controller can run an email app or a bug tracker without
               any changes: just swap out the Data Access Object ($$DOC{ref:'DAO'}) and the
               $$DOC{ref:'Model',usePlural:true} for the data items.</li>
-              <li>Throw your $$DOC{ref:'DAO'} into a $$DOC{ref:'DAOListView'} and the
+              <li>Throw your $$DOC{ref:'DAO'} into a $$DOC{ref:'foam.ui.DAOListView'} and the
               user can browse the collection. Want a grid? Throw in a $$DOC{ref:'GridView'}
               instead. Not sure which? Let $$DOC{ref:'foam.ui.DetailView'} pick the view at run
               time.</li>

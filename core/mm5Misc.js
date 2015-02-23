@@ -150,7 +150,7 @@ CLASS({
       name: 'tests',
       subType: 'UnitTest',
       label: 'Tests',
-      view: 'DAOListView',
+      view: 'foam.ui.DAOListView',
       documentation: 'An array of child tests. Will be run in order after the parent test.'
     },
     {

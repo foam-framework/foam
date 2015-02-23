@@ -22,7 +22,7 @@ CLASS({
   requires: [
     'XHR',
     'EasyDAO',
-    'DAOListView',
+    'foam.ui.DAOListView',
     'foam.ui.polymer.gen.PolymerPrototype',
     'foam.ui.polymer.gen.FunctionWrapper',
     'foam.ui.polymer.gen.DemoView',
@@ -210,7 +210,7 @@ CLASS({
     {
       name: 'models',
       view: {
-        model_: 'DAOListView',
+        model_: 'foam.ui.DAOListView',
         rowView: 'foam.ui.polymer.gen.DemoView'
       },
       factory: function() {

@@ -2540,7 +2540,7 @@ CLASS({
     { name: 'subKey' },
     {
       name: 'innerView',
-      defaultValue: 'DAOListView'
+      defaultValue: 'foam.ui.DAOListView'
     },
     'dataView'
   ],

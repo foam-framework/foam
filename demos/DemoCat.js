@@ -312,7 +312,7 @@ CLASS({
     {
       name: 'filteredDAO',
       model_: 'DAOProperty',
-      view: { factory_: 'DAOListView', mode: 'read-only' },
+      view: { factory_: 'foam.ui.DAOListView', mode: 'read-only' },
       dynamicValue: function() {
         return this.dao.where(CONTAINS_IC(SEQ(Demo.NAME, Demo.DESCRIPTION, Demo.KEYWORDS), this.search));
       }

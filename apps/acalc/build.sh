@@ -29,11 +29,10 @@ cat \
   ../../core/mm5Misc.js \
   ../../js/foam/ui/Window.js \
   ../../core/value.js \
-  ../../core/view.js \
   ../../js/foam/ui/SlidePanel.js \
   ../../core/AbstractDAOView.js \
-  ../../core/DAOListView.js \
-  ../../core/DetailView.js \
+  ../../js/foam/ui/DAOListView.js \
+  ../../js/foam/ui/DetailView.js \
   ../../js/foam/patterns/ChildTreeTrait.js \
   ../../js/foam/graphics/AbstractCViewView.js \
   ../../js/foam/graphics/PositionedCViewView.js \

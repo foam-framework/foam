@@ -186,7 +186,8 @@ CLASS({
     'foam.graphics.ActionButtonCView',
     'foam.ui.animated.Label',
     'foam.ui.md.Flare',
-    'History'
+    'History',
+    'foam.ui.DAOListView'
   ],
 
   exports: [
@@ -207,7 +208,7 @@ CLASS({
     {
       model_: 'ArrayProperty',
       name: 'history',
-      view: 'DAOListView',
+      view: 'foam.ui.DAOListView',
       factory: function() { return [].sink; }
     },
     {
@@ -541,7 +542,7 @@ var CalcButton = getCalcButton();
 
 CLASS({
   name: 'CalcView',
-  extendsModel: 'foam.ui.DetailView',
+  extendsModel: 'foam.ui.View',
   requires: [
     'HistoryCitationView',
     'foam.ui.SlidePanel',
@@ -550,9 +551,9 @@ CLASS({
     'TertiaryButtonsView'
     // 'foam.chromeapp.ui.ZoomView'
   ],
-  exports: [
-    'data'
-  ],
+//  exports: [
+//    'data'
+//  ],
   properties: [
     {
       model_: 'ViewFactoryProperty',
@@ -740,8 +741,9 @@ CLASS({
     }
   */},
     {
-      name: 'toHTML',
+      name: 'toInnerHTML',
       template: function() {/*
+        <% if ( ! this.data ) return "Calc"; %>
         <%= CalcSpeechView.create({calc: this.data}) %>
         <!-- <%= this.ZoomView.create() %> -->
         <% X.registerModel(CalcButton, 'ActionButton'); %>
@@ -763,6 +765,7 @@ CLASS({
           <div class="keypad">
           <div class="edge2"></div>
           <%= this.SlidePanel.create({
+            data$: this.data$,
             minWidth: 310,
             minPanelWidth: 320,
             panelRatio: 0.55,
@@ -811,9 +814,10 @@ CLASS({
 
 CLASS({
   name: 'MainButtonsView',
-  extendsModel: 'foam.ui.DetailView',
+  extendsModel: 'foam.ui.View',
   templates: [
-    function toHTML() {/*
+    function toInnerHTML() {/*
+      <% if ( ! this.data ) return "MainButtonsView"; %>
       <div id="%%id" class="buttons button-row" style="background:#4b4b4b;">
         <div class="button-column" style="flex-grow: 3">
           <div class="button-row">
@@ -853,10 +857,11 @@ CLASS({
 
 CLASS({
   name: 'SecondaryButtonsView',
-  extendsModel: 'foam.ui.DetailView',
+  extendsModel: 'foam.ui.View',
   templates: [
-    function toHTML() {/*
-          <%
+    function toInnerHTML() {/*
+        <% if ( ! this.data ) return "SecondaryButtonsView"; %>
+        <%
           this.X.registerModel(CalcButton.xbind({
             background: 'rgb(52, 153, 128)',
             width:  61,
@@ -899,9 +904,10 @@ CLASS({
 
 CLASS({
   name: 'TertiaryButtonsView',
-  extendsModel: 'foam.ui.DetailView',
+  extendsModel: 'foam.ui.View',
   templates: [
-    function toHTML() {/*
+    function toInnerHTML() {/*
+          <% if ( ! this.data ) return "TertiaryButtonsView"; %>
           <%
           this.X.registerModel(this.X.ActionButton.xbind({
             width:      61,
@@ -946,9 +952,10 @@ CLASS({
 
 CLASS({
   name: 'HistoryCitationView',
-  extendsModel: 'foam.ui.DetailView',
+  extendsModel: 'foam.ui.View',
   templates: [
-    function toHTML() {/*
+    function toInnerHTML() {/*
+      <% if ( ! this.data ) return "HistoryCitationView"; %>
       <div class="history" tabindex="2">{{{this.data.op}}}&nbsp;{{this.data.a2}}<% if ( this.data.op.toString() ) { %><hr aria-label="{{Calc.EQUALS.speechLabel}}" tabindex="2"><% } %></div>
     */}
   ]

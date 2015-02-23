@@ -61,7 +61,7 @@ CLASS({
       model_: 'DAOProperty',
       name: 'dao',
       view: {
-        factory_: 'DAOListView',
+        factory_: 'foam.ui.DAOListView',
         rowView: 'CrawableRowView'
       }
     }

@@ -17,7 +17,7 @@ CLASS({
     {
       model_: 'DAOProperty',
       name: 'subSections',
-      view: 'DAOListView',
+      view: 'foam.ui.DAOListView',
       factory: function() { return []; }
     }
   ],

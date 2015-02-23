@@ -59,7 +59,7 @@ CLASS({
       model_: 'ArrayProperty',
       name: 'p2',
       subType: 'Bookmark',
-      view: { factory_: 'ArrayView', model: 'Bookmark', daoView: 'DAOListView' }
+      view: { factory_: 'ArrayView', model: 'Bookmark', daoView: 'foam.ui.DAOListView' }
     }
   ]
 });

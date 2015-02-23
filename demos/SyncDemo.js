@@ -74,7 +74,7 @@ CLASS({
         });
       },
       view: {
-        factory_: 'DAOListView',
+        factory_: 'foam.ui.DAOListView',
         rowView: 'AbcCitationView'
       }
     },
@@ -102,7 +102,7 @@ CLASS({
         });
       },
       view: {
-        factory_: 'DAOListView',
+        factory_: 'foam.ui.DAOListView',
         rowView: 'AbcCitationView'
       }
     },
