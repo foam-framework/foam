@@ -64,12 +64,13 @@ CLASS({
       name: 'cellUncovered',
       code: function(cell) {
         if ( cell.mineCount ) return;
-        var d = [ [ 1, 0 ], [ -1, 0 ], [ 0, 1 ], [ 0, -1 ] ];
-        for ( var i = 0 ; i < d.length ; i++ ) {
-          try {
-            var c = this.cells[cell.y+d[i][0]][cell.x+d[i][1]];
-            if ( ! c.mined ) c.covered = false;
-          } catch(x) {}
+        for ( var x = -1 ; x <= 1 ; x++ ) {
+          for ( var y = -1 ; y <= 1 ; y++ ) {
+            try {
+              var c = this.cells[cell.y+y][cell.x+x];
+              if ( ! c.mined ) c.covered = false;
+            } catch(x) {}
+          }
         }
       }
     }

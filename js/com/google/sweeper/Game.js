@@ -26,7 +26,7 @@ CLASS({
       this.SUPER();
 
       this.time$ = this.timer.second$;
-      this.timer.start();
+//      this.timer.start();
     }
   },
 

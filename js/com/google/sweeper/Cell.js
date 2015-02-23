@@ -42,8 +42,8 @@ CLASS({
       .sweeper-cell {
         display: table-cell;
         border: 1px solid black;
-        width: 20px;
-        height: 20px;
+        width: 24px;
+        height: 24px;
       }
       .sweeper-cell.covered {
         background: #bbb;
