@@ -43,6 +43,15 @@ CLASS({
 
       <section title="Chapter 1">
         This is chapter 1.
+
+        <section title="Sub-Chapter 1a">
+          Sub-Chapter Stuff
+        </section>
+
+        <section title="Sub-Chapter 1b">
+          More Sub-Chapter Stuff
+        </section>
+
       </section>
 
       <section title="Chapter 2">

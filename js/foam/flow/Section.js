@@ -4,6 +4,7 @@ CLASS({
   extendsModel: 'View',
 
   imports: [ 'sections' ],
+  exports: [ 'subSections as sections' ],
 
   properties: [
     {
@@ -12,6 +13,12 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'inner'
+    },
+    {
+      model_: 'DAOProperty',
+      name: 'subSections',
+      view: 'DAOListView',
+      factory: function() { return []; }
     }
   ],
 
@@ -37,6 +44,7 @@ CLASS({
     function CSS() {/*
       .flow-section-header {
         font-size: 16px;
+        margin-top: 18px;
       }
       .flow-section-header a {
         text-decoration-line: none;
@@ -53,7 +61,13 @@ CLASS({
         <div class="flow-section-body">
           <%= this.inner() %>
         </div>
-      </div> */},
-    function toDetailHTML() {/*<a href="#section-{{this.data.title}}">{{this.data.title}}</a><br>*/}
+      </div>
+    */},
+    function toDetailHTML() {/*
+      <a href="#section-{{this.data.title}}">{{this.data.title}}</a><br>
+      <blockquote>
+        $$subSections{mode: 'read-only'}
+      </blockquote>
+    */}
   ]
 });
