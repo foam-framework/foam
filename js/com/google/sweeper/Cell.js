@@ -29,7 +29,7 @@ CLASS({
     {
       model_: 'BooleanProperty',
       name: 'mined',
-      factory: function() { return Math.random() < 0.2; }
+      factory: function() { return Math.random() < 0.18; }
     },
     {
       name: 'className',

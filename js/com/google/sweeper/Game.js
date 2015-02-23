@@ -12,10 +12,6 @@ CLASS({
       name: 'time'
     },
     {
-      name: 'timer',
-      factory: function() { return Timer.create(); }
-    },
-    {
       name: 'board',
       lazyFactory: function() { return this.Board.create(); }
     }
@@ -24,11 +20,20 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-
-      this.time$ = this.timer.second$;
-//      this.timer.start();
+      this.tick();
     }
   },
+
+  listeners: [
+    {
+      name: 'tick',
+      isMerged: 1000,
+      code: function() {
+        this.time++;
+        this.tick();
+      }
+    }
+  ],
 
   templates: [
     function toHTML() {/*
