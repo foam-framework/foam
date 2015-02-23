@@ -17,7 +17,7 @@
 
 CLASS({
   name: 'ConfigureProjectsView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   templates: [
     function toHTML() {/*

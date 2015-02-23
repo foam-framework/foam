@@ -73,7 +73,7 @@ CLASS({
 
 CLASS({
   name: 'ContactRowView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   properties: [
     {

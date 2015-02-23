@@ -296,7 +296,7 @@ var Property = {
       help: 'View component for the property when rendering within a DetailView.',
       documentation: function() { /*
         The default $$DOC{ref:'foam.ui.View'} to use when rendering the $$DOC{ref:'Property'}
-        as a part of a $$DOC{ref:'DetailView'}. Specify a string or an object with
+        as a part of a $$DOC{ref:'foam.ui.DetailView'}. Specify a string or an object with
         factory_ and other properties specified.
       */}
     },
@@ -319,7 +319,7 @@ var Property = {
       help: 'Inject HTML before row in DetailView.',
       documentation: function() { /*
         An optional function to
-        inject HTML before the row in $$DOC{ref:'DetailView'}.
+        inject HTML before the row in $$DOC{ref:'foam.ui.DetailView'}.
       */}
     },
     {
@@ -329,7 +329,7 @@ var Property = {
       help: 'Inject HTML before row in DetailView.',
       documentation: function() { /*
         An optional function to
-        inject HTML after the row in $$DOC{ref:'DetailView'}.
+        inject HTML after the row in $$DOC{ref:'foam.ui.DetailView'}.
       */}
     },
     {
@@ -345,7 +345,7 @@ var Property = {
       help: 'The property\'s default value.',
       documentation: function() { /*
         An optional function to
-        inject HTML before the row in $$DOC{ref:'DetailView'}.
+        inject HTML before the row in $$DOC{ref:'foam.ui.DetailView'}.
       */}
     },
     {

@@ -29,7 +29,7 @@ CLASS({
     {
       name: 'b',
       subType: 'B',
-      view: { factory_: 'DetailView', model: B },
+      view: { factory_: 'foam.ui.DetailView', model: B },
       factory: function() { return B.create({id: 1, b:'nested B'}); }
     },
     {

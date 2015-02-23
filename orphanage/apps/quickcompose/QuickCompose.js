@@ -140,7 +140,7 @@ QuickEMail.create({});
 var QuickEMailView = Model.create({
   name: 'QuickEMailView',
 
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   properties: [
     {

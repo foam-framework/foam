@@ -1,6 +1,6 @@
 CLASS({
   name: 'QIssueDetailView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   properties: [
     {

@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.navigator.views',
   extendsModel: 'foam.ui.View',
   requires: [
-    'DetailView',
+    'foam.ui.DetailView',
   ],
   imports: [
     'dao',

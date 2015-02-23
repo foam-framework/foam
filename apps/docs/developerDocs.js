@@ -98,7 +98,7 @@ var RegisterDevDocs = function(opt_X) {
               $$DOC{ref:'Model',usePlural:true} for the data items.</li>
               <li>Throw your $$DOC{ref:'DAO'} into a $$DOC{ref:'DAOListView'} and the
               user can browse the collection. Want a grid? Throw in a $$DOC{ref:'GridView'}
-              instead. Not sure which? Let $$DOC{ref:'DetailView'} pick the view at run
+              instead. Not sure which? Let $$DOC{ref:'foam.ui.DetailView'} pick the view at run
               time.</li>
               <li>Need to communicate something to or from a child object, but don't
               want to be burdened with knowing what type it is or if it exists?
@@ -642,14 +642,14 @@ var RegisterDevDocs = function(opt_X) {
           label: 'Automatic View Creation',
           model_: 'Documentation',
           body: function() {/*
-            $$DOC{ref:'DetailView',usePlural:true} in FOAM feed from a $$DOC{ref:'DetailView.data'}
+            $$DOC{ref:'foam.ui.DetailView',usePlural:true} in FOAM feed from a $$DOC{ref:'DetailView.data'}
             $$DOC{ref:'Property'}, by default using introspection to examine all the
             $$DOC{ref:'Property',usePlural:true} of the $$DOC{ref:'Model'} provided
             and display them.</p>
             <p>A $$DOC{ref:'PropertyView'} is created to process each $$DOC{ref:'Property'},
             and it picks the appropriate $$DOC{ref:'foam.ui.View'} model.</p>
             <p>Often a $$DOC{ref:'Property.view'} will be specified as part of a
-            $$DOC{ref:'Property'} definition. This instructs $$DOC{ref:'DetailView'}
+            $$DOC{ref:'Property'} definition. This instructs $$DOC{ref:'foam.ui.DetailView'}
             exactly which type of $$DOC{ref:'foam.ui.View'} to use.
           */}
         },

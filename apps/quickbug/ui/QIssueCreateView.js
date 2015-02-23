@@ -1,6 +1,6 @@
 CLASS({
   name: 'QIssueCreateView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   requires: [
     'ActionButton',

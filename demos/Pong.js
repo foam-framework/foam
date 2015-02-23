@@ -50,17 +50,17 @@ CLASS({
     },
     {
       name: 'ball',
-      view: 'DetailView',
+      view: 'foam.ui.DetailView',
       factory: function() { return Ball.create({color: 'white', r: 20}); }
     },
     {
       name: 'lPaddle',
-      view: 'DetailView',
+      view: 'foam.ui.DetailView',
       factory: function() { return Paddle.create(); }
     },
     {
       name: 'rPaddle',
-      view: 'DetailView',
+      view: 'foam.ui.DetailView',
       factory: function() { return Paddle.create(); }
     },
     {

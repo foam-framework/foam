@@ -80,7 +80,7 @@ CLASS({
 CLASS({
   name: 'LinkView',
 
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   properties: [
     {

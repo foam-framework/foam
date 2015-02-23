@@ -62,7 +62,7 @@ var files = [
 //  'DAOListView',
   'daoView',
 //  'foam.ui.ChoiceView',
-//  'DetailView',
+//  'foam.ui.DetailView',
   'TableView',
   'cview',
   'RichTextView',

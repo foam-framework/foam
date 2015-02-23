@@ -164,7 +164,7 @@ CLASS({
 
   documentation: function() {/*
     <p>$$DOC{ref:'foam.ui.View',usePlural:true} render data. This could be a specific
-       $$DOC{ref:'Model'} or a $$DOC{ref:'DAO'}. In the case of $$DOC{ref:'DetailView'},
+       $$DOC{ref:'Model'} or a $$DOC{ref:'DAO'}. In the case of $$DOC{ref:'foam.ui.DetailView'},
        <em>any</em> $$DOC{ref:'Model'} can be rendered by walking through the
        $$DOC{ref:'Property',usePlural:true} of the data.
     </p>
@@ -745,7 +745,7 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   documentation: function() {/*
-    Used by $$DOC{ref:'DetailView'} to generate a sub-$$DOC{ref:'foam.ui.View'} for one
+    Used by $$DOC{ref:'foam.ui.DetailView'} to generate a sub-$$DOC{ref:'foam.ui.View'} for one
     $$DOC{ref:'Property'}. The $$DOC{ref:'foam.ui.View'} chosen can be based off the
     $$DOC{ref:'Property.view',text:'Property.view'} value, the $$DOC{ref:'.innerView'} value, or
     $$DOC{ref:'.args'}.model_.

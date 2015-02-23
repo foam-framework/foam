@@ -28,7 +28,7 @@ CLASS({
     'foam.util.busy.BusyFlagTracker',
     'foam.util.busy.BusyStatus',
     'CachingDAO',
-    'DetailView',
+    'foam.ui.DetailView',
     'foam.ui.layout.FloatingView',
     'foam.input.touch.GestureManager',
     'IDBDAO',

@@ -1986,7 +1986,7 @@ CLASS({
       model_: 'ViewFactoryProperty',
       name: 'view',
       type: 'view',
-      defaultValue: 'DetailView',
+      defaultValue: 'foam.ui.DetailView',
       help: 'View factory.'
     }
   ]
@@ -2074,7 +2074,7 @@ CLASS({
         {
           model_: 'ViewChoice',
           label:  'GUI',
-          view:   'DetailView'
+          view:   'foam.ui.DetailView'
         },
         {
           model_: 'ViewChoice',
@@ -2496,7 +2496,7 @@ CLASS({
     { name: 'subKey' },
     {
       name: 'innerView',
-      defaultValue: 'DetailView'
+      defaultValue: 'foam.ui.DetailView'
     },
   ],
 

@@ -315,7 +315,7 @@ var Model = {
                  &nbsp;&nbsp;&nbsp;&nbsp; name: 'proper',<br/>
                 <br/>
                  &nbsp;&nbsp;&nbsp;&nbsp; // This property will create a DetailView for us<br/>
-                 &nbsp;&nbsp;&nbsp;&nbsp; view: { factory_: 'DetailView',<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp; view: { factory_: 'foam.ui.DetailView',<br/>
                 <br/>
                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the properties our creator exported.<br/>
                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imports: [ 'myProperty', 'parentName' ],<br/>

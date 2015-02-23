@@ -16,7 +16,7 @@
  */
 
 CLASS({
-  name: 'DetailView',
+  name: 'foam.ui.DetailView',
   extendsModel: 'foam.ui.View',
 
   requires: [ 'Property' ],
@@ -27,13 +27,13 @@ CLASS({
   ],
 
   documentation:function() {/*
-    When a view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'DetailView'}
-    is the place to start. Either using $$DOC{ref:'DetailView'} directly, implementing
+    When a view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'foam.ui.DetailView'}
+    is the place to start. Either using $$DOC{ref:'foam.ui.DetailView'} directly, implementing
     a .toDetailHTML() $$DOC{ref:'Method'} in your model, or extending
-    $$DOC{ref:'DetailView'} to add custom formatting.
+    $$DOC{ref:'foam.ui.DetailView'} to add custom formatting.
     </p>
     <p>Set the $$DOC{ref:'.data'} $$DOC{ref:'Property'} to the $$DOC{ref:'Model'} instance
-    you want to display. $$DOC{ref:'DetailView'} will extract the $$DOC{ref:'Model'}
+    you want to display. $$DOC{ref:'foam.ui.DetailView'} will extract the $$DOC{ref:'Model'}
     definition, create editors for the $$DOC{ref:'Property',usePlural:true}, and
     display the current values of your instance. Set $$DOC{ref:'.mode',usePlural:true}
     to indicate read-only if desired.
@@ -53,7 +53,7 @@ CLASS({
       defaultValue: 'detailView',
       documentation: function() {/*
           The CSS class names to use for HTML $$DOC{ref:'foam.ui.View',usePlural:true}.
-          Separate class names with spaces. Each instance of a $$DOC{ref:'DetailView'}
+          Separate class names with spaces. Each instance of a $$DOC{ref:'foam.ui.DetailView'}
           may have different classes specified.
       */}
     },
@@ -70,7 +70,7 @@ CLASS({
         of this $$DOC{ref:'Model'} instance will be examined and a $$DOC{ref:'PropertyView'}
         created for each with editors for the current value.
         </p>
-        <p>Sub-views of $$DOC{ref:'DetailView'} are passed this $$DOC{ref:'.data'}
+        <p>Sub-views of $$DOC{ref:'foam.ui.DetailView'} are passed this $$DOC{ref:'.data'}
         property, from which $$DOC{ref:'PropertyView'} will extract its named
         $$DOC{ref:'Property'}
         and bind the property to the sub-view $$DOC{ref:'DetailView.data'}.
@@ -89,7 +89,7 @@ CLASS({
       documentation: function() {/*
         The $$DOC{ref:'.model'} is extracted from $$DOC{ref:'.data'}, or can be
         set in advance when the type of $$DOC{ref:'.data'} is known. The $$DOC{ref:'Model'}
-        is used to set up the structure of the $$DOC{ref:'DetailView'}, by examining the
+        is used to set up the structure of the $$DOC{ref:'foam.ui.DetailView'}, by examining the
         $$DOC{ref:'Property',usePlural:true}. Changing the $$DOC{ref:'.data'} out
         for another instance of the same $$DOC{ref:'Model'} will refresh the contents
         of the sub-views without destroying and re-creating them.
@@ -270,7 +270,7 @@ CLASS({
 
 CLASS({
   name: 'UpdateDetailView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   imports: [
     'DAO as dao',
@@ -426,7 +426,7 @@ CLASS({
 
 CLASS({
   name: 'RelationshipsView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   templates: [
     function toHTML() {/*

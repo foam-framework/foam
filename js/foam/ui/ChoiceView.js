@@ -17,11 +17,13 @@
 
 
 CLASS({
-  name:  'foam.ui.ChoiceView',
+  name:  'ChoiceView',
   package: 'foam.ui',
 
   extendsModel: 'foam.ui.AbstractChoiceView',
 
+  requires: ['foam.ui.View'],
+  
   /*
    * <select size="">
    *    <choice value="" selected></choice>
@@ -83,7 +85,7 @@ CLASS({
       }
 
       this.$.innerHTML = out.join('');
-      View.getPrototype().initHTML.call(this);
+      this.View.getPrototype().initHTML.call(this);
     },
 
     initHTML: function() {

@@ -29,7 +29,7 @@ CLASS({
        
     createView: function(prop, opt_args) {
       /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info. */
-      var X = ( opt_args && opt_args.X ) || this.X;
+      var X = ( opt_args && opt_args.X ) || this.Y;
       var v = this.PropertyView.create({prop: prop, args: opt_args}, X);
       return v;
     },
@@ -37,7 +37,7 @@ CLASS({
     createActionView: function(action, opt_args) {
       /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info
         specifically for $$DOC{ref:'Action',usePlural:true}. */
-      var X = ( opt_args && opt_args.X ) || this.X;
+      var X = ( opt_args && opt_args.X ) || this.Y;
       var modelName = opt_args && opt_args.model_ ?
         opt_args.model_ :
         'ActionButton'  ;
@@ -49,7 +49,7 @@ CLASS({
     },
 
     createRelationshipView: function(r, opt_args) {
-      var X = ( opt_args && opt_args.X ) || this.X;
+      var X = ( opt_args && opt_args.X ) || this.Y;
       return X.foam.ui.RelationshipView.create({
         relationship: r,
         args: opt_args
@@ -62,7 +62,7 @@ CLASS({
         creation tag in $$DOC{ref:'Template',usePlural:true}.
       */
       var args = opt_args || {};
-      var X = this.X;
+      var X = this.Y;
       // Look for the property on our data first
       var myData = this.data$;
       if ( myData && myData.value && myData.value.model_ ) {

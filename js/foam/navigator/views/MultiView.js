@@ -21,7 +21,7 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'DetailView'
+    'foam.ui.DetailView'
   ],
 
   properties: [

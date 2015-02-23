@@ -16,7 +16,7 @@
  */
 CLASS({
   name: 'DemoView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   properties: ['childView', 'resultsCallback', 'childrenCallback', 'initHTMLFuture'],
   templates: [ { name: 'toHTML' } ],
   methods: {

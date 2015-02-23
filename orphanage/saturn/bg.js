@@ -421,7 +421,7 @@ chrome.runtime.onMessageExternal.addListener(function(message, sender, sendRespo
 var MessageView = FOAM({
   model_: 'Model',
   name: 'MessageView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   properties: [
     {
@@ -472,7 +472,7 @@ var MessageView = FOAM({
 var ConversationView = FOAM({
   model_: 'Model',
   name: 'ConversationView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   methods: {
     toHTML: function() {

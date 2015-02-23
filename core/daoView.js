@@ -291,7 +291,7 @@ CLASS({
   name: 'ScrollViewRow',
   documentation: 'Wrapper for a single row in a $$DOC{ref: "ScrollView"}. Users should not need to create these. TODO: I should be a submodel of ScrollView once that\'s possible.',
   requires: [
-    'DetailView'
+    'foam.ui.DetailView'
   ],
   properties: [
     {

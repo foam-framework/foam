@@ -547,7 +547,7 @@ CLASS({
       defaultValue: 'BasicOperationsButtonView'
     },
   ],
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   templates: [
     function CSS() {/*
     * {
@@ -806,7 +806,7 @@ CLASS({
 
 CLASS({
   name: 'MainButtonsView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   templates: [
     function toHTML() {/*
       <div id="%%id" class="buttons button-row" style="background:#4b4b4b;">
@@ -848,7 +848,7 @@ CLASS({
 
 CLASS({
   name: 'SecondaryButtonsView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   templates: [
     function toHTML() {/*
           <%
@@ -894,7 +894,7 @@ CLASS({
 
 CLASS({
   name: 'TertiaryButtonsView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   templates: [
     function toHTML() {/*
           <%
@@ -941,7 +941,7 @@ CLASS({
 
 CLASS({
   name: 'HistoryCitationView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   templates: [
     function toHTML() {/*
       <div class="history" tabindex="2">{{{this.data.op}}} {{this.data.a2}}<% if ( this.data.op.toString() ) { %><hr aria-label="{{Calc.EQUALS.speechLabel}}" tabindex="2"><% } %></div>

@@ -827,7 +827,7 @@ var ViewFactoryProperty = Model.create({
             if ( ! viewModel ) {
                 viewModel = VIEW_CACHE[f] = Model.create({
                   name: 'InnerDetailView' + this.$UID,
-                  extendsModel: 'DetailView',
+                  extendsModel: 'foam.ui.DetailView',
                   templates:[{name: 'toHTML', template: f}]
                 });
               // TODO(kgr): this isn't right because compiling the View
@@ -925,7 +925,7 @@ var DocumentationProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'DetailView'
+      defaultValue: 'foam.ui.DetailView'
     },
     {
       name: 'help',

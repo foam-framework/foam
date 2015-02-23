@@ -1,7 +1,7 @@
 CLASS({
   name: 'CrawableDetailView',
   imports: [ 'applicationURL', 'applicationIdURL' ],
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   properties: [
     { name: 'title', defaultValueFn: function() { return this.model.label; } }
   ],
@@ -36,7 +36,7 @@ CLASS({
 CLASS({
   name: 'CrawableRowView',
   requires: [ 'foam.ui.animated.ImageView' ],
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   templates: [
     function toHTML() {/*
       <a href="#{{this.data.id}}">{{this.data.name}}</a><br>

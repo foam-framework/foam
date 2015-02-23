@@ -86,7 +86,7 @@ window.onload = function() {
     arequire('PopupChoiceView'),
     arequire('AbstractChoiceView'),
     arequire('AbstractDAOView'),
-    arequire('DetailView'),
+    arequire('foam.ui.DetailView'),
     arequire('ActionButtonCView'),
     arequire('foam.graphics.CView'),
     arequire('Circle2'),
