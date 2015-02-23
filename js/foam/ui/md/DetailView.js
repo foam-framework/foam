@@ -35,10 +35,10 @@ CLASS({
   methods: {
     init: function() {
       // Register MD PropertyViews
-      this.X = this.X.sub();
-      this.X.registerModel(this.TextFieldView,  'TextFieldView');
-      this.X.registerModel(this.IntFieldView,   'IntFieldView');
-      this.X.registerModel(this.FloatFieldView, 'FloatFieldView');
+      this.Y = this.Y.sub();
+      this.Y.registerModel(this.TextFieldView,  'TextFieldView');
+      this.Y.registerModel(this.IntFieldView,   'IntFieldView');
+      this.Y.registerModel(this.FloatFieldView, 'FloatFieldView');
       this.SUPER();
     },
     titleHTML:    function() { return ''; },

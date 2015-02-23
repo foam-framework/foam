@@ -33,6 +33,11 @@ CLASS({
       required: true
     },
     {
+      model_: 'StringArrayProperty',
+      name: 'coreFiles',
+      adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
+    },
+    {
       name: 'defaultView',
       help: "Default view of the controller to use.  If not set, the controller will be used as view (if it is one), or DetailView will be used"
     },
@@ -111,11 +116,13 @@ CLASS({
       var self = this;
       var corejs = '';
       var file;
+      if ( this.coreFiles ) var myfiles = this.coreFiles;
+      else myfiles = files;
       awhile(
-        function() { return i < files.length; },
+        function() { return i < myfiles.length; },
         aif(
           function() {
-            file = files[i++];
+            file = myfiles[i++];
             if ( Array.isArray(file) ) {
               if ( file[1] != IN_BROWSER ) return false;
               file = file[0];
@@ -159,6 +166,8 @@ CLASS({
       if ( this.defaultView ) add(this.defaultView);
 
       var contents = '';
+
+      delete models['foam.apps.calc.Calc'];
 
       var ids = Object.keys(models);
       this.fileDAO.put(this.File.create({
@@ -232,6 +241,6 @@ CLASS({
     }
   },
   templates: [
-    function HTML() {/*<html><head><script src="foam.js"></script></head><body><foam model="<%= this.controller %>"<% if ( this.defaultView ) { %> view="<%= this.defaultView %>"<% } %>></foam></body></html>*/}
+    function HTML() {/*<html><head><meta charset="utf-8"><script src="foam.js"></script></head><body><foam model="<%= this.controller %>"<% if ( this.defaultView ) { %> view="<%= this.defaultView %>"<% } %>></foam></body></html>*/}
   ]
 });

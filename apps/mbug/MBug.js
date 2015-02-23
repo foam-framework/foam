@@ -46,7 +46,7 @@ CLASS({
       name: 'project',
       subType: 'QProject',
       postSet: function(_, project) {
-        var Y = project.X;
+        var Y = project.Y;
         Y.project     = project;
         Y.projectName = project.projectName;
 
@@ -78,10 +78,10 @@ CLASS({
           sortChoices: project.defaultSortChoices,
           filterChoices: project.defaultFilterChoices,
           menuFactory: function() {
-            return this.X.ChangeProjectView.create({data: project.user});
+            return this.X.ChangeProjectView.create({data: project.user}, this.Y);
           }
         }, Y);
-        this.stack.setTopView(this.DetailView.create({data: pc}, pc.X));
+        this.stack.setTopView(this.DetailView.create({data: pc}, pc.Y));
         /*
         var view = this.ResponsiveAppControllerView.create(undefined, pc.X.sub({
           data: pc
@@ -118,7 +118,7 @@ CLASS({
     },
     toHTML: function() { return this.stack.toHTML(); },
     projectContext: function() {
-      return this.qbug.X.sub({
+      return this.qbug.Y.sub({
         mbug:              this,
         baseURL:           this.qbug.baseURL,
         user:              this.qbug.user,
@@ -145,7 +145,7 @@ CLASS({
       if ( issue.id == 0 && issue.summary == 'Loading...' ) return;
 
       // TODO: clone issue, and add listener which saves on updates
-      var v = this.project.X.IssueView.create({dao: this.project.X.issueDAO, data: issue.deepClone()});
+      var v = this.project.Y.IssueView.create({dao: this.project.Y.issueDAO, data: issue.deepClone()});
       this.stack.pushView(v, '');
     },
     setProject: function(projectName) {

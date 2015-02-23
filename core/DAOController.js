@@ -53,7 +53,7 @@ CLASS({
       defaultValue: false,
       postSet: function(_, value) {
         if ( value ) {
-          this.addDecorator(this.X.SearchBorder.create({
+          this.addDecorator(this.Y.SearchBorder.create({
             model: this.model,
             data: this.data
           }));
@@ -67,7 +67,7 @@ CLASS({
       name:  'new',
       help:  'Create a new record.',
       action: function() {
-        var createView = this.X.DAOCreateController.create({
+        var createView = this.Y.DAOCreateController.create({
           model: this.model,
           dao:   this.dao,
           showActions: true
@@ -93,7 +93,7 @@ CLASS({
         for ( var i = 0 ; i < this.model.actions.length ; i++ ) {
           var action = this.model.actions[i];
 
-          var newAction = this.X.Action.create(action);
+          var newAction = this.Y.Action.create(action);
           newAction.action = function (oldAction) {
             return function() {
               oldAction.call(obj);
@@ -104,7 +104,7 @@ CLASS({
         }
 
         console.log(["selection: ", this.selection]);
-        var updateView = this.X.DAOUpdateController.create({
+        var updateView = this.Y.DAOUpdateController.create({
           data:  this.selection/*.deepClone()*/,
           model: this.model,
           dao:   this.dao,
@@ -165,7 +165,7 @@ CLASS({
         if ( ! obj ) return;
 
         this.X.stack.setPreview(
-          this.X.SummaryView.create({
+          this.Y.SummaryView.create({
             model: this.model,
             data: this.daoView.selection
           }));
@@ -228,7 +228,7 @@ CLASS({
 
       action: function() {
         var model = this.data.model_;
-        var helpView = this.X.HelpView.create(model);
+        var helpView = this.Y.HelpView.create(model);
         this.X.stack.pushView(helpView);
       }
     }
@@ -299,7 +299,7 @@ CLASS({
 
       action: function() {
         var model = this.data.model_;
-        var helpView = this.X.HelpView.create(model);
+        var helpView = this.Y.HelpView.create(model);
         this.X.stack.pushView(helpView);
       }
     }
@@ -309,7 +309,7 @@ CLASS({
     init: function() {
       this.SUPER();
 
-      this.view = this.X.AlternateView.create({
+      this.view = this.Y.AlternateView.create({
         selection: 'GUI',
         data: this.data,
         views: [

@@ -69,7 +69,7 @@ CLASS({
         return this.viewFactory({
           model: this.data.model_,
           data$: this.data$
-        }, this.X);
+        }, this.Y);
       }
     }
   ]

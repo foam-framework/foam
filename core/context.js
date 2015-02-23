@@ -65,7 +65,7 @@ function sub(opt_args, opt_name) {
 function subWindow(w, opt_name, isBackground) {
   if ( ! w ) return this.sub();
 
-  return foam.ui.Window.create({window: w, name: opt_name, isBackground: isBackground}, this).X;
+  return foam.ui.Window.create({window: w, name: opt_name, isBackground: isBackground}, this).Y;
 }
 
 var X = sub({});

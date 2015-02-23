@@ -29,9 +29,9 @@ CLASS({
 
   exports: [
     'IssueCommentDAO as QIssueCommentDAO',
-    'StatusDAO',
-    'LabelDAO',
-    'PersonDAO'
+    'StatusDAO as issueStatusDAO',
+    'LabelDAO as issueLabelDAO',
+    'PersonDAO as issuePersonDAO'
   ],
 
   properties: [
@@ -103,10 +103,10 @@ CLASS({
     {
       name: 'IssueMDAO',
       lazyFactory: function() {
-        var dao  = this.X.MDAO.create({model: this.X.QIssue});
-        var auto = this.X.AutoIndex.create(dao);
+        var dao  = this.X.MDAO.create({model: this.Y.QIssue}, this.Y);
+        var auto = this.X.AutoIndex.create(dao, this.Y);
 
-        auto.addIndex(this.X.QIssue.STATUS);
+        auto.addIndex(this.Y.QIssue.STATUS);
         dao.addRawIndex(auto);
 
         return dao;
@@ -116,8 +116,8 @@ CLASS({
       name: 'IssueIDBDAO',
       lazyFactory: function() {
         return this.X.EasyDAO.create({
-          model: this.X.QIssue,
-          name: this.projectName + '_' + this.X.QIssue.plural,
+          model: this.Y.QIssue,
+          name: this.projectName + '_' + this.Y.QIssue.plural,
           migrationRules: [
             MigrationRule.create({
               modelName: 'QIssue',
@@ -128,7 +128,7 @@ CLASS({
               }
             })
           ]
-        });
+        }, this.Y);
       },
       transient: true
     },
@@ -136,7 +136,7 @@ CLASS({
       name: 'IssueCachingDAO',
       lazyFactory: function() {
         console.log('Creating IssueCachingDAO.');
-        return this.X.CachingDAO.create({cache: this.IssueMDAO, src: this.IssueIDBDAO});
+        return this.X.CachingDAO.create({cache: this.IssueMDAO, src: this.IssueIDBDAO}, this.Y);
       },
       transient: true
     },
@@ -153,8 +153,8 @@ CLASS({
           delegate: this.X.QIssueCommentNetworkDAO.create({
             model: this.X.QIssueComment,
             url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
-          })
-        });
+          }, this.Y)
+        }, this.Y);
       }
     },
     {
@@ -163,7 +163,7 @@ CLASS({
       factory: function() {
         return this.X.QIssueCommentUpdateDAO.create({
           delegate: this.IssueCommentNetworkDAO
-        });
+        }, this.Y);
       }
     },
     {
@@ -172,9 +172,9 @@ CLASS({
         return this.X.IssueRestDAO.create({
           url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
           IssueCommentDAO: this.IssueCommentNetworkDAO,
-          model: this.X.QIssue,
+          model: this.Y.QIssue,
           batchSize: 500
-        });
+        }, this.Y);
       },
       postSet: function(_, v) {
         this.IssueCommentDAO.IssueNetworkDAO = v;
@@ -255,9 +255,9 @@ CLASS({
       name: 'defaultSortChoices',
       lazyFactory: function() {
         return [
-          [ DESC(this.X.QIssue.MODIFIED), 'Last modified' ],
-          [ this.X.QIssue.PRI,            'Priority' ],
-          [ DESC(this.X.QIssue.ID),       'Issue ID' ]
+          [ DESC(this.Y.QIssue.MODIFIED), 'Last modified' ],
+          [ this.Y.QIssue.PRI,            'Priority' ],
+          [ DESC(this.Y.QIssue.ID),       'Issue ID' ]
         ];
       }
     },
@@ -289,7 +289,7 @@ CLASS({
         this.IssueMDAO.select(COUNT())(function (c) { this.issueCount = c.count; }.bind(this));
 
         var self = this;
-        this.IssueMDAO.select(GROUP_BY(this.X.QIssue.CC, COUNT()))(function(g) {
+        this.IssueMDAO.select(GROUP_BY(this.Y.QIssue.CC, COUNT()))(function(g) {
           Object.keys(g.groups).forEach(function(key) {
             self.PersonDAO.find(key, { error: function() {
               self.PersonDAO.put(IssuePerson.create({ name: key }));
@@ -338,7 +338,7 @@ CLASS({
         return propertyLabels_[l] = false;
       }
 
-      this.X.registerModel(Model.create({
+      this.Y.registerModel(Model.create({
         extendsModel: 'GeneratedQIssue',
 
         name: 'QIssue',
@@ -716,7 +716,7 @@ CLASS({
               issueId: this.id,
               content: other.content,
               updates: this.X.QIssueCommentUpdate.create(diff)
-            });
+            }, this.Y);
 
             out(comment);
           },
@@ -733,7 +733,7 @@ CLASS({
                 status: this.status,
                 summary: this.summary
               })
-            })
+            }, this.Y)
           }
         },
         relationships: [
@@ -746,9 +746,9 @@ CLASS({
         ]
       }));
 
-      this.X.QIssue.getPrototype();
+      this.Y.QIssue.getPrototype();
 
-      this.X.QIssue.properties_.forEach(function(p) {
+      this.Y.QIssue.properties_.forEach(function(p) {
         if ( ! p["tableFormatter"] ) {
           p["tableFormatter"] = function(v) {
             return v || '----';
@@ -756,12 +756,12 @@ CLASS({
         }
       });
 
-      this.X.QIssue.LABELS.toMQL = function() { return 'label'; };
-      this.X.QIssue.AUTHOR.toMQL = function() { return 'reporter'; };
+      this.Y.QIssue.LABELS.toMQL = function() { return 'label'; };
+      this.Y.QIssue.AUTHOR.toMQL = function() { return 'reporter'; };
 
-      this.X.QueryParser = {
-        X: this.X,
-        __proto__: QueryParserFactory(this.X.QIssue),
+      this.Y.QueryParser = {
+        X: this.Y,
+        __proto__: QueryParserFactory(this.Y.QIssue),
 
         isOpen: literal_ic('is:open'),
 
@@ -807,9 +807,9 @@ CLASS({
       });
 
 
-      this.X.QueryParser.expr = alt(
+      this.Y.QueryParser.expr = alt(
         sym('isOpen'),
-        this.X.QueryParser.export('expr'),
+        this.Y.QueryParser.export('expr'),
         sym('stars'),
         sym('labelMatch'),
         sym('summary')
@@ -824,10 +824,10 @@ CLASS({
           syncInterval: 60*5,
           batchSize: 500,
         }), {
-          queryParser: this.X.QueryParser,
+          queryParser: this.Y.QueryParser,
           srcDAO: this.IssueNetworkDAO,
           dstDAO: this.IssueCachingDAO,
-          modifiedProperty: this.X.QIssue.MODIFIED
+          modifiedProperty: this.Y.QIssue.MODIFIED
         })(function(manager) {
           this.syncManager = manager;
           this.syncManagerFuture.set(manager);
@@ -836,9 +836,9 @@ CLASS({
 
         if ( this.projectName !== 'chromium' ) {
           this.defaultSortChoices = [
-            [ DESC(this.X.QIssue.MODIFIED), 'Last modified' ],
-            [ this.X.QIssue.PRIORITY,       'Priority' ],
-            [ DESC(this.X.QIssue.ID),       'Issue ID' ]
+            [ DESC(this.Y.QIssue.MODIFIED), 'Last modified' ],
+            [ this.Y.QIssue.PRIORITY,       'Priority' ],
+            [ DESC(this.Y.QIssue.ID),       'Issue ID' ]
           ];
         }
       }
@@ -867,7 +867,7 @@ CLASS({
             arequire('QIssueTileView2')
           )(function () {
             $addWindow(window);
-            var Y = self.X.subWindow(window, 'Browser Window');
+            var Y = self.Y.subWindow(window, 'Browser Window');
             var b = Y.ChromeAppBrowser.create({project: self});
             Y.touchManager = Y.foam.input.touch.TouchManager.create({});
             window.browser = b; // for debugging
@@ -891,7 +891,7 @@ CLASS({
 
     /** Create a Browser for use in a hosted app. **/
     createBrowser: function(window) {
-      var b = this.X.Browser.create({project: this, window: window});
+      var b = this.X.Browser.create({project: this, window: window}, this.Y);
       window.browser = b;
       return b;
     },
@@ -904,7 +904,7 @@ CLASS({
           var window = w.contentWindow;
           w.contentWindow.onload = function() {
             $addWindow(window);
-            var Y = self.X.subWindow(window, 'Sync Config')
+            var Y = self.Y.subWindow(window, 'Sync Config')
             var b = Y.DetailView.create({
               model: Y.SyncManager,
               title: '<img style="vertical-align:bottom;" src="images/refresh.png"> Sync Config: ' + self.projectName,

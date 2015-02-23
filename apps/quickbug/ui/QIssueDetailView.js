@@ -27,7 +27,7 @@ CLASS({
       name: 'cursorView',
       factory: function() {
         return this.X.CursorView.create({
-          data: this.X.Cursor.create({dao: this.cursorIssueDAO$Proxy})});
+          data: this.X.Cursor.create({dao: this.cursorIssueDAO$Proxy})}, this.Y);
       }
     },
     {
@@ -35,7 +35,7 @@ CLASS({
       factory: function() {
         return this.X.BlockView.create({
           property: this.X.QIssue.BLOCKING,
-          ids: this.data.blocking});
+          ids: this.data.blocking}, this.Y);
       }
     },
     {
@@ -43,7 +43,7 @@ CLASS({
       factory: function() {
         return this.X.BlockView.create({
           property: this.X.QIssue.BLOCKED_ON,
-          ids: this.data.blockedOn});
+          ids: this.data.blockedOn}, this.y);
       }
     },
     'newCommentView'
@@ -71,10 +71,10 @@ CLASS({
         dao: this.data.comments,
         issue$: this.data$,
         data: this.data.newComment()
-      });
+      }, this.Y);
     },
     clView: function() {
-      return this.X.QIssueCLView.create({dao: this.data.comments});
+      return this.X.QIssueCLView.create({dao: this.data.comments}, this.Y);
     },
     toHTML: function() {
       return '<div id="' + this.id + '">' + this.toInnerHTML() + '</div>';

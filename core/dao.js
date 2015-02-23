@@ -487,20 +487,20 @@ CLASS({
     },
 
     where: function(query) { /* Return a DAO that contains a filtered subset of this one. */
-      // only use X if we are an invalid instance without a this.X
-      return (this.X || X).FilteredDAO_.create({query: query, delegate: this});
+      // only use X if we are an invalid instance without a this.Y
+      return (this.Y || X).FilteredDAO_.create({query: query, delegate: this});
     },
 
     limit: function(count) { /* Return a DAO that contains a count limited subset of this one. */
-      return (this.X || X).LimitedDAO_.create({count:count, delegate:this});
+      return (this.Y || X).LimitedDAO_.create({count:count, delegate:this});
     },
 
     skip: function(skip) { /* Return a DAO that contains a subset of this one, skipping initial items. */
-      return (this.X || X).SkipDAO_.create({skip:skip, delegate:this});
+      return (this.Y || X).SkipDAO_.create({skip:skip, delegate:this});
     },
 
     orderBy: function() { /* Return a DAO that contains a subset of this one, ordered as specified. */
-      return (this.X || X).OrderedDAO_.create({ comparator: arguments.length == 1 ? arguments[0] : argsToArray(arguments), delegate: this });
+      return (this.Y || X).OrderedDAO_.create({ comparator: arguments.length == 1 ? arguments[0] : argsToArray(arguments), delegate: this });
     },
 
     unlisten: function(sink) { /* Stop sending updates to the given sink. */

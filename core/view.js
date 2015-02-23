@@ -245,7 +245,7 @@ CLASS({
       postSet: function(oldValue, showActions) {
         // TODO: No way to remove the decorator.
         if ( ! oldValue && showActions ) {
-          this.addDecorator(this.X.ActionBorder.create());
+          this.addDecorator(this.Y.ActionBorder.create());
         }
       },
       documentation: function() {/*
@@ -285,7 +285,7 @@ CLASS({
       name: 'openTooltip',
       code: function(e) {
         console.assert(! this.tooltip_, 'Tooltip already defined');
-        this.tooltip_ = this.X.Tooltip.create({
+        this.tooltip_ = this.Y.Tooltip.create({
           text:   this.tooltip,
           target: this.$
         });
@@ -383,7 +383,8 @@ CLASS({
     createView: function(prop, opt_args) {
       /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.X;
-      var v = X.PropertyView.create({prop: prop, args: opt_args}, X);
+      var Y = ( opt_args && opt_args.X ) || this.Y;
+      var v = X.PropertyView.create({prop: prop, args: opt_args}, Y);
       this.addChild(v);
       return v;
     },
@@ -392,10 +393,11 @@ CLASS({
       /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info
         specifically for $$DOC{ref:'Action',usePlural:true}. */
       var X = ( opt_args && opt_args.X ) || this.X;
+      var Y = ( opt_args && opt_args.X ) || this.Y;
       var modelName = opt_args && opt_args.model_ ?
         opt_args.model_ :
         'ActionButton'  ;
-      var v = X[modelName].create({action: action}).copyFrom(opt_args);
+      var v = X[modelName].create({action: action}, Y).copyFrom(opt_args);
 
       this[action.name + 'View'] = v;
 
@@ -404,10 +406,11 @@ CLASS({
 
     createRelationshipView: function(r, opt_args) {
       var X = ( opt_args && opt_args.X ) || this.X;
+      var Y = ( opt_args && opt_args.X ) || this.Y;
       return X.RelationshipView.create({
         relationship: r,
         args: opt_args
-      });
+      }, Y);
     },
 
     createTemplateView: function(name, opt_args) {
@@ -501,7 +504,7 @@ CLASS({
             }
           },
           gesture: 'tap'
-        });
+        }, this.Y);
 
         manager.install(target);
         this.addDestructor(function() {
@@ -825,7 +828,7 @@ CLASS({
         console.assert( model, 'Unknown View: ' + this.args.model_);
         // HACK to make sure model specification makes it into the create
         if (this.args.model) this.prop.model = this.args.model;
-        var view = model.create(this.prop, this.X);
+        var view = model.create(this.prop, this.Y);
         delete this.args.model_;
       } else {
         view = this.createViewFromProperty(this.prop);
@@ -850,12 +853,12 @@ CLASS({
     createViewFromProperty: function(prop) {
       /* Helper to determine the $$DOC{ref:'View'} to use. */
       var viewName = this.innerView || prop.view
-      if ( ! viewName ) return this.X.TextFieldView.create(prop);
-      if ( typeof viewName === 'string' ) return FOAM.lookup(viewName, this.X).create(prop);
+      if ( ! viewName ) return this.X.TextFieldView.create(prop, this.Y);
+      if ( typeof viewName === 'string' ) return FOAM.lookup(viewName, this.X).create(prop, this.Y);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
-      if ( viewName.model_ ) { var v = viewName.model_.create(viewName, this.X).copyFrom(prop); v.id = this.nextID(); return v; }
+      if ( viewName.model_ ) { var v = viewName.model_.create(viewName, this.Y).copyFrom(prop); v.id = this.nextID(); return v; }
       if ( viewName.factory_ ) {
-        var v = FOAM.lookup(viewName.factory_, this.X).create(viewName, this.X).copyFrom(prop);
+        var v = FOAM.lookup(viewName.factory_, this.X).create(viewName, this.Y).copyFrom(prop);
         v.id = this.nextID();
         return v;
       }

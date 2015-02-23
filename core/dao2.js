@@ -842,7 +842,7 @@ CLASS({
             delegate: dao,
             rules: this.migrationRules,
             name: this.model.name + "_" + daoModel.name + "_" + this.name
-          });
+          }, thist.Y);
         }
         if ( this.cache ) {
           this.mdao = MDAO.create(params);
@@ -967,7 +967,7 @@ CLASS({
   extendsModel: 'ProxyDAO',
   methods: {
     find: function(id, sink) {
-      var X = this.X;
+      var X = this.Y;
       this.delegate.find(id, {
         put: function(o) {
           o.X = X;
@@ -1770,7 +1770,7 @@ CLASS({
       this.SUPER();
 
       var objs = localStorage.getItem(this.name);
-      if ( objs ) JSONUtil.parse(this.X, objs).select(this);
+      if ( objs ) JSONUtil.parse(this.Y, objs).select(this);
 
       this.addRawIndex({
         execute: function() {},
