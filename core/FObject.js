@@ -53,7 +53,8 @@ var FObject = {
 
     var o = this.create_(this);
     o.instance_ = {};
-    o.X = (opt_X || X).sub({});
+    o.X = (opt_X || X);
+    o.Y = o.X.sub({});
 
     if ( this.model_.imports_ && this.model_.imports_.length ) {
       if ( ! Object.prototype.hasOwnProperty.call(this, 'imports__') ) {
@@ -73,7 +74,7 @@ var FObject = {
 
     if ( o.model_ ) {
       var agents = this.initAgents();
-      for ( var i = 0 ; i < agents.length ; i++ ) agents[i][1](o, o.X, args);
+      for ( var i = 0 ; i < agents.length ; i++ ) agents[i][1](o, o.X, o.Y, args);
     }
 
     o.init(args);
@@ -135,19 +136,19 @@ var FObject = {
           var prop = self.model_.getProperty(key);
           if ( prop ) {
             if ( asValue ) {
-              self.addInitAgent(1, 'export property value ' + key, function(o, X) { X.set(alias, FOAM.lookup(prop.name$_, o)); });
+              self.addInitAgent(1, 'export property value ' + key, function(o, X, Y) { Y.set(alias, FOAM.lookup(prop.name$_, o)); });
             } else {
-              self.addInitAgent(1, 'export property ' + key, function(o, X) { X.setValue(alias, FOAM.lookup(prop.name$_, o)); });
+              self.addInitAgent(1, 'export property ' + key, function(o, X, Y) { Y.setValue(alias, FOAM.lookup(prop.name$_, o)); });
             }
           } else {
-            self.addInitAgent(0, 'export other ' + key, function(o, X) {
+            self.addInitAgent(0, 'export other ' + key, function(o, X, Y) {
               var out = typeof o[key] === "function" ? o[key].bind(o) : o[key];
-              X.set(alias, out);
+              Y.set(alias, out);
             });
           }
         } else {
           // Exporting 'this'
-          self.addInitAgent(0, 'export this', function(o, X) { X.set(alias, o); });
+          self.addInitAgent(0, 'export this', function(o, X, Y) { Y.set(alias, o); });
         }
       });
 
@@ -158,7 +159,7 @@ var FObject = {
           self.addInitAgent(
             0,
             'set proto-property ' + prop.name,
-            function(o, X, m) {
+            function(o, X, Y, m) {
               if ( m && m.hasOwnProperty(prop.name) )
                 o[prop.name] = m[prop.name];
             });
@@ -166,7 +167,7 @@ var FObject = {
       });
 
       // Add shortcut create() method to Models
-      self.addInitAgent(0, 'Add create() to Model', function(o, X) {
+      self.addInitAgent(0, 'Add create() to Model', function(o, X, Y) {
         if ( Model.isInstance(o) && o.name != 'Model' ) o.create = BootstrapModel.create;
       });
 
@@ -501,6 +502,7 @@ var FObject = {
     var c = Object.create(this.__proto__);
     c.instance_ = {};
     c.X = this.X;
+    c.Y = this.Y;
     for ( var key in this.instance_ ) {
       var value = this[key];
       // The commented out (original) implementation was causing
