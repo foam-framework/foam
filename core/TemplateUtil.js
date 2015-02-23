@@ -189,7 +189,7 @@ var TemplateCompiler = {
       if ( modelName ) {
         this.push("', X.", modelName, '.create(');
         this.push(JSON.stringify(buildAttrs(e, 'model')));
-        this.push(', Y.sub({data: this.data}))');
+        this.push(', Y.sub({data: this.data}))'); // TODO(kgr): this seems a little hackish.  Do something better.
       } else {
         console.error('Foam tag must define either "model" or "f" attribute.');
       }

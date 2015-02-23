@@ -26,6 +26,14 @@ var demos = JSONUtil.arrayToObjArray(X, [
     image: 'SolarSystem.png',
   },
   {
+    name: 'MineSweeper',
+    path: '/index.html?model=com.google.sweeper.Game',
+    description: 'A Minesweeper game.',
+    keywords: ['game'],
+    src: '/js/com/google/sweeper/Game.js',
+    image: 'SolarSystem.png',
+  },
+  {
     name: 'Reactive Clocks',
     path: '/index.html?model=foam.demos.ReactiveClocks',
     description: 'A simple demo of reactive programming.  The first clocks reacts to the position of the mouse while the second clock reacts to the position of the first clock and to time.  Reacting to time essentially gives you an animation system for free.',

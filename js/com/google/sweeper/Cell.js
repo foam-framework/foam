@@ -1,3 +1,4 @@
+// Flag image from www.icons-land.com
 CLASS({
   package: 'com.google.sweeper',
   name: 'Cell',
