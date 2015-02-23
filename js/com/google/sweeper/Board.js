@@ -10,11 +10,11 @@ CLASS({
   properties: [
     {
       name: 'width',
-      defaultValue: 8
+      defaultValue: 14
     },
     {
       name: 'height',
-      defaultValue: 8
+      defaultValue: 14
     },
     {
       name: 'cells',
@@ -63,6 +63,7 @@ CLASS({
     {
       name: 'cellUncovered',
       code: function(cell) {
+        if ( cell.mineCount ) return;
         var d = [ [ 1, 0 ], [ -1, 0 ], [ 0, 1 ], [ 0, -1 ] ];
         for ( var i = 0 ; i < d.length ; i++ ) {
           try {
