@@ -187,7 +187,7 @@ var TemplateCompiler = {
     else {
       var modelName = e.getAttribute('model');
       if ( modelName ) {
-        this.push("', Y.", modelName, '.create(');
+        this.push("', X.", modelName, '.create(');
         this.push(JSON.stringify(buildAttrs(e, 'model')));
         this.push(', Y.sub({data: this.data}))');
       } else {
