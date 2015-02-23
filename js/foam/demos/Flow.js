@@ -67,16 +67,16 @@ CLASS({
       </section>
 
       Sample 1:
-      <code-sample code="1+2;"/>
+      <code-sample code="return 1+2;"/>
 
       Sample 2:
       <code-sample>
-        42*42;
+        return 42*42;
       </code-sample>
 
       Sample 3:
       <code-sample>
-        <code>"hello world!";</code>
+        <code>return "hello world!";</code>
       </code-sample>
 
       The end.

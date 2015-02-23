@@ -100,7 +100,7 @@ CLASS({
 
         this[p.name] = eval('(' + txt + ')');
       },
-      preSet: function(_, value) {
+      adapt: function(_, value) {
         if ( typeof value === 'string' ) {
           if ( value.startsWith('function') ) {
             value = eval('(' + value + ')');
@@ -114,9 +114,9 @@ CLASS({
         if ( typeof value === 'function' && this.async && value.length === 0 ) {
           var str = value.toString();
           return eval('(function(ret)' + str.substring(str.indexOf('{')) + ')');
-        } else {
-          return value;
         }
+
+        return value;
       }
     },
     {

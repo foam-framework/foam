@@ -5,7 +5,16 @@ CLASS({
 
   properties: [
     {
-      name: 'code'
+      // model_: 'FunctionProperty',
+      name: 'code',
+      postSet: function(_, txt) {
+        var fn = eval('(function() {\n'    + txt + '\n})');
+        
+        this.output = fn();
+      }
+    },
+    {
+      name: 'output'
     }
   ],
 
@@ -24,8 +33,12 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <pre class="float-code-sample">
+      <pre class="flow-code-sample">
         %%code
+      </pre>
+      Output:
+      <pre class="flow-code-sample-output">
+        %%output
       </pre>
     */}
   ]
