@@ -1,3 +1,4 @@
+// Flag image from www.icons-land.com
 CLASS({
   package: 'com.google.sweeper',
   name: 'Cell',
@@ -6,6 +7,9 @@ CLASS({
 
   imports: [ 'board' ],
 
+  constants: {
+    COUNT_COLOURS: [ '', 'green', 'blue', 'orange', 'red', 'red', 'red', 'red' ],
+  },
   properties: [
     {
       name: 'x'
@@ -40,18 +44,26 @@ CLASS({
   templates: [
     function CSS() {/*
       .sweeper-cell {
-        display: table-cell;
         border: 1px solid black;
-        width: 24px;
+        display: table-cell;
         height: 24px;
+        text-align: center;
+        vertical-align: middle;
+        width: 24px;
+        font-weight: bold;
       }
       .sweeper-cell.covered {
         background: #bbb;
-        color: #bbb;
+      }
+      .sweeper-cell.covered font {
+        display: none;
+      }
+      .sweeper-cell.marked font {
+        display: none;
       }
       .sweeper-cell.marked {
-        background: lightgreen;
-        color: lightgreen;
+        background-color: #bbb;
+        background-image: url('js/com/google/sweeper/flag.png');
       }
     */}
   ],
@@ -59,8 +71,8 @@ CLASS({
   methods: {
     toInnerHTML: function() {
       this.mineCount = this.board.getMineCount(this);
-      return this.mined ? ' X' :
-        this.mineCount ? this.mineCount : ' ';
+      return this.mined ? '<font color="black">X</font>' :
+        this.mineCount ? '<font color="' + this.COUNT_COLOURS[this.mineCount] + '">' + this.mineCount + '</font>' : '';
     },
     initHTML: function() {
       this.setClass(
@@ -81,7 +93,7 @@ CLASS({
     {
       name: 'sweep',
       code: function(e) {
-        console.log(e.which);
+        // console.log(e.which);
         this.covered = false;
         e.preventDefault();
         e.stopPropagation();

@@ -189,7 +189,7 @@ var TemplateCompiler = {
       if ( modelName ) {
         this.push("', X.", modelName, '.create(');
         this.push(JSON.stringify(buildAttrs(e, 'model')));
-        this.push(', X.sub({data: this.data}))');
+        this.push(', Y.sub({data: this.data}))'); // TODO(kgr): this seems a little hackish.  Do something better.
       } else {
         console.error('Foam tag must define either "model" or "f" attribute.');
       }
@@ -226,7 +226,7 @@ MODEL({
           if ( t.code ) delegate = t.code;
           else if ( ! t.template )
             throw 'Must arequire() template model before use for ' + this.name_ + '.' + t.name;
-          else 
+          else
             delegate = TemplateUtil.compile(Template.isInstance(t) ? t : Template.create(t));
         }
 
