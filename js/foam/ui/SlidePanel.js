@@ -131,7 +131,7 @@ CLASS({
     {
       name: 'currentLayout',
       postSet: function(_, layout) {
-        this.panelWidth = Math.max(layout[1]+2, this.minPanelWidth);
+        this.panelWidth = Math.max(layout[1], this.minPanelWidth);
         this.panelX     = Math.min(this.parentWidth-this.stripWidth, this.parentWidth-layout[2]);
         this.mainWidth  = Math.max(layout[0], this.panelX);
       }
