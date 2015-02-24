@@ -117,9 +117,12 @@ CLASS({
 
     construct: function() {
       if ( ! this.dao || ! this.$ ) return;
-      if ( this.painting ) return;
+      if ( this.painting ) {
+        this.repaintRequired = true;
+        return;
+      }
       this.painting = true;
-
+console.log("DAOListView update:", this.dao);
       var out = [];
       this.children = [];
       this.initializers_ = [];
@@ -131,8 +134,8 @@ CLASS({
       }
       d.select({put: function(o) {
         if ( this.mode === 'read-write' ) o = o.model_.create(o, this.Y); //.clone();
-        var X = this.Y;
-        var view = this.rowView({ model: o.model_, data: o }, X);
+        var view = this.rowView({data: o, model: o.model_}, this.Y);
+        // TODO: Something isn't working with the Context, fix
         view.DAO = this.dao;
         if ( this.mode === 'read-write' ) {
           o.addListener(function() {
@@ -158,6 +161,13 @@ CLASS({
           out.push('</div>');
         }
       }.bind(this)})(function() {
+        if (this.repaintRequired) {
+          this.repaintRequired = false;
+          this.painting = false;
+          this.realDAOUpdate();
+          return;
+        }
+
         var e = this.$;
 
         if ( ! e ) return;
