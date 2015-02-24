@@ -52,6 +52,16 @@ CLASS({
       defaultValue: false
     },
     {
+      model_: 'StringArrayProperty',
+      name: 'extraFiles',
+      adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'blacklistModels',
+      adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
+    },
+    {
       name: 'formatter',
       factory: function() {
         return {
@@ -118,6 +128,7 @@ CLASS({
       var file;
       if ( this.coreFiles ) var myfiles = this.coreFiles;
       else myfiles = files;
+      myfiles = myfiles.concat(this.extraFiles);
       awhile(
         function() { return i < myfiles.length; },
         aif(
@@ -149,6 +160,7 @@ CLASS({
       var models = {};
       var visited = {};
       var error = this.error;
+      var self = this;
 
       function add(require) {
         if ( visited[require] ) return;
@@ -158,7 +170,8 @@ CLASS({
         if ( ! model ) {
           error("Could not load model: ", require);
         }
-        if ( model.package ) models[model.id] = model;
+        if ( model.package &&
+             self.blacklistModels.indexOf(model.id) != -1 ) models[model.id] = model;
 
         model.getAllRequires().forEach(add);
       };
