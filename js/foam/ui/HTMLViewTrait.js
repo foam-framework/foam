@@ -134,7 +134,7 @@ CLASS({
     {
       name: 'onKeyboardShortcut',
       code: function(evt) {
-         console.log('***** key: ', this.evtToKeyCode(evt), evt);
+        // console.log('***** key: ', this.evtToKeyCode(evt), evt);
         var action = this.keyMap_[this.evtToKeyCode(evt)];
         if ( action ) {
           action();
