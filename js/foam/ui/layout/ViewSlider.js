@@ -16,147 +16,147 @@
  */
 
 CLASS({
-   "package": "foam.ui.layout",
-   "name": "ViewSlider",
-   "extendsModel": "View",
-   "traits": [
-      "foam.ui.layout.PositionedDOMViewTrait"
-   ],
-   "properties": [
-      {
-         "model_": "Property",
-         "name": "view"
-      },
-      {
-         "model_": "Property",
-         "name": "incomingView"
-      },
-      {
-         "model_": "foam.core.types.StringEnumProperty",
-         "name": "direction",
-         "defaultValue": "horizontal",
-         "choices": [
-           [
-               "horizontal",
-               "horizontal"
-           ],
-           [
-               "vertical",
-               "vertical"
-           ]
-         ]
-      },
-      {
-         "model_": "BooleanProperty",
-         "name": "reverse",
-         "defaultValue": false
-      },
-      {
-         "model_": "FloatProperty",
-         "name": "slideAmount",
-         "defaultValue": 0
-      },
-      {
-         "model_": "Property",
-         "name": "latch"
-      }
-   ],
-   "methods": [
-      {
-         "model_": "Method",
-         "name": "init",
-         "code": function () {
-      this.SUPER();
-      var self = this;
-      this.X.dynamic(
-        function() {
-          self.width;
-          self.height;
-          self.direction;
-          self.slideAmount;
-          self.reverse;
-        },
-        this.layout);
+  "package": "foam.ui.layout",
+  "name": "ViewSlider",
+  "extendsModel": "View",
+  "traits": [
+    "foam.ui.layout.PositionedDOMViewTrait"
+  ],
+  "properties": [
+    {
+      "model_": "Property",
+      "name": "view"
     },
-         "args": []
-      },
-      {
-         "model_": "Method",
-         "name": "toHTML",
-         "code": function () {
-      this.children = [];
-      return this.SUPER();
+    {
+      "model_": "Property",
+      "name": "incomingView"
     },
-         "args": []
-      },
-      {
-         "model_": "Method",
-         "name": "initHTML",
-         "code": function () {
-      this.layout();
-      this.SUPER();
+    {
+      "model_": "foam.core.types.StringEnumProperty",
+      "name": "direction",
+      "defaultValue": "horizontal",
+      "choices": [
+        [
+          "horizontal",
+          "horizontal"
+        ],
+        [
+          "vertical",
+          "vertical"
+        ]
+      ]
     },
-         "args": []
-      },
-      {
-         "model_": "Method",
-         "name": "setView",
-         "code": function (view) {
-      if ( this.view ) {
-        this.view.destroy();
-        this.$.removeChild(this.view.$);
-      }
-      this.view = view;
-      this.layout();
-      this.$.insertAdjacentHTML('beforeend', view.toHTML());
-      view.initHTML();
+    {
+      "model_": "BooleanProperty",
+      "name": "reverse",
+      "defaultValue": false
     },
-         "args": []
-      },
-      {
-         "model_": "Method",
-         "name": "slideView",
-         "code": function (view, opt_interp, opt_time, opt_delay) {
-      if ( ! this.$ ) return;
-
-      if ( this.latch ) {
-        this.latch();
-        this.latch = '';
-      }
-
-      this.incomingView = view;
-      this.layout();
-      this.$.insertAdjacentHTML('beforeend', view.toHTML());
-      view.initHTML();
-
-      opt_interp = opt_interp || Movement.easeOut(1);
-      opt_time = opt_time || 300;
-
-      var self = this;
-
-      var fn = function() { self.slideAmount = 1.0; };
-
-      window.setTimeout(function() {
-        self.latch = this.X.animate(opt_time, fn, opt_interp, function() {
-          if ( self.view ) {
-            self.$.removeChild(self.view.$);
-            self.view.destroy();
-          }
-          self.view = view;
-          self.incomingView = '';
-          self.latch = '';
-          self.slideAmount = 0;
-        })();
-      }, opt_delay || 0)
+    {
+      "model_": "FloatProperty",
+      "name": "slideAmount",
+      "defaultValue": 0
     },
-         "args": []
-      }
-   ],
-   "listeners": [
-      {
-         "model_": "Method",
-         "name": "layout",
-         "code": function () {
+    {
+      "model_": "Property",
+      "name": "latch"
+    }
+  ],
+  "methods": [
+    {
+      "model_": "Method",
+      "name": "init",
+      "code": function () {
+        this.SUPER();
+        var self = this;
+        this.X.dynamic(
+            function() {
+              self.width;
+              self.height;
+              self.direction;
+              self.slideAmount;
+              self.reverse;
+            },
+            this.layout);
+      },
+      "args": []
+    },
+    {
+      "model_": "Method",
+      "name": "toHTML",
+      "code": function () {
+        this.children = [];
+        return this.SUPER();
+      },
+      "args": []
+    },
+    {
+      "model_": "Method",
+      "name": "initHTML",
+      "code": function () {
+        this.layout();
+        this.SUPER();
+      },
+      "args": []
+    },
+    {
+      "model_": "Method",
+      "name": "setView",
+      "code": function (view) {
+        if ( this.view ) {
+          this.view.destroy();
+          this.$.removeChild(this.view.$);
+        }
+        this.view = view;
+        this.layout();
+        this.$.insertAdjacentHTML('beforeend', view.toHTML());
+        view.initHTML();
+      },
+      "args": []
+    },
+    {
+      "model_": "Method",
+      "name": "slideView",
+      "code": function (view, opt_interp, opt_time, opt_delay) {
+        if ( ! this.$ ) return;
+
+        if ( this.latch ) {
+          this.latch();
+          this.latch = '';
+        }
+
+        this.incomingView = view;
+        this.layout();
+        this.$.insertAdjacentHTML('beforeend', view.toHTML());
+        view.initHTML();
+
+        opt_interp = opt_interp || Movement.easeOut(1);
+        opt_time = opt_time || 300;
+
+        var self = this;
+
+        var fn = function() { self.slideAmount = 1.0; };
+
+        window.setTimeout(function() {
+          self.latch = this.X.animate(opt_time, fn, opt_interp, function() {
+            if ( self.view ) {
+              self.$.removeChild(self.view.$);
+              self.view.destroy();
+            }
+            self.view = view;
+            self.incomingView = '';
+            self.latch = '';
+            self.slideAmount = 0;
+          })();
+        }, opt_delay || 0);
+      },
+      "args": []
+    }
+  ],
+  "listeners": [
+    {
+      "model_": "Method",
+      "name": "layout",
+      "code": function () {
         this.view.width = this.width;
         this.view.height = this.height;
 
@@ -184,15 +184,15 @@ CLASS({
           }
         }
       },
-         "args": []
-      }
-   ],
-   "templates": [
-      {
-         "model_": "Template",
-         "name": "toInnerHTML",
-         "args": [],
-         "template": " <%= this.view %> "
-      }
-   ]
+      "args": []
+    }
+  ],
+  "templates": [
+    {
+      "model_": "Template",
+      "name": "toInnerHTML",
+      "args": [],
+      "template": " <%= this.view %> "
+    }
+  ]
 });
