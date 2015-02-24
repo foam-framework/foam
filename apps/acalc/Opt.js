@@ -48,8 +48,8 @@
     "Model":true,
     "foam.apps.calc.NumberFormatter":true,
     "foam.input.touch.PinchTwistGesture":true,
-    "PositionedDOMViewTrait":true,
-    "PositionedViewTrait":true,
+    "foam.ui.layout.PositionedDOMViewTrait":true,
+    "foam.ui.layout.PositionedViewTrait":true,
     "Property":true,
     "PropertyView":true,
     "Relationship":true,
@@ -93,6 +93,6 @@
   var aevalTemplate_ = aevalTemplate;
 
   GLOBAL.aevalTemplate = function(t, model) {
-    aconstant(function() { return ''; }) ;
+    return aconstant(t.code ? t.code : function() { return ''; }) ;
   };
 })();
