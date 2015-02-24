@@ -52,6 +52,22 @@ CLASS({
       defaultValue: false
     },
     {
+      model_: 'StringArrayProperty',
+      name: 'extraFiles',
+      adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'blacklistModels',
+      adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'outputManifest',
+      defaultValue: false,
+      help: 'Set to true to write out a MANIFEST file listing all included models.'
+    },
+    {
       name: 'formatter',
       factory: function() {
         return {
@@ -106,6 +122,11 @@ CLASS({
         this.error("controller is required");
         process.exit(1);
       }
+
+      for ( var i = 0 ; i < this.extraFiles.length ; i++ ) {
+        require(FOAM_BOOT_DIR + this.path.sep + this.extraFiles[i] + '.js');
+      }
+
       var view = this.defaultView ? arequire(this.defaultView) : anop;
       aseq(
         view,
@@ -118,6 +139,7 @@ CLASS({
       var file;
       if ( this.coreFiles ) var myfiles = this.coreFiles;
       else myfiles = files;
+      myfiles = myfiles.concat(this.extraFiles);
       awhile(
         function() { return i < myfiles.length; },
         aif(
@@ -149,6 +171,7 @@ CLASS({
       var models = {};
       var visited = {};
       var error = this.error;
+      var self = this;
 
       function add(require) {
         if ( visited[require] ) return;
@@ -158,7 +181,10 @@ CLASS({
         if ( ! model ) {
           error("Could not load model: ", require);
         }
-        if ( model.package ) models[model.id] = model;
+        if ( model.package &&
+             self.blacklistModels.indexOf(model.id) == -1 ) {
+          models[model.id] = model;
+        }
 
         model.getAllRequires().forEach(add);
       };
@@ -167,13 +193,14 @@ CLASS({
 
       var contents = '';
 
-      delete models['foam.apps.calc.Calc'];
-
       var ids = Object.keys(models);
-      this.fileDAO.put(this.File.create({
-        path: this.targetPath + this.path.sep + 'MANIFEST',
-        contents: ids.join('\n')
-      }));
+      if ( this.outputManifest ) {
+        this.fileDAO.put(this.File.create({
+          path: this.targetPath + this.path.sep + 'MANIFEST',
+          contents: ids.join('\n')
+        }));
+      }
+
       for ( var i = 0; i < ids.length; i++ ) {
         var model = models[ids[i]];
         if ( this.precompileTemplates ) {
