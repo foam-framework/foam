@@ -134,7 +134,7 @@ CLASS({
     {
       name: 'onKeyboardShortcut',
       code: function(evt) {
-        // console.log('***** key: ', this.evtToKeyCode(evt), evt);
+         console.log('***** key: ', this.evtToKeyCode(evt), evt);
         var action = this.keyMap_[this.evtToKeyCode(evt)];
         if ( action ) {
           action();
@@ -458,9 +458,9 @@ CLASS({
       }
 
       init(this.model_.actions);
-      if ( this.model &&
-           this.model.actions )
-        init(this.model.actions, this.data$);
+      if ( this.data && this.data.model_ &&
+           this.data.model_.actions )
+        init(this.data.model_.actions, this.data$);
 
       if ( found ) {
         console.assert(this.$, 'View must define outer id when using keyboard shortcuts: ' + this.name_);
