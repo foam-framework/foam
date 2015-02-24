@@ -26,7 +26,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
     image: 'SolarSystem.png',
   },
   {
-    name: 'MineSweeper',
+    name: 'Minesweeper',
     path: '/index.html?model=com.google.sweeper.Game',
     description: 'A Minesweeper game.',
     keywords: ['game'],
