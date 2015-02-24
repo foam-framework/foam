@@ -150,10 +150,12 @@ CLASS({
       this.publish(this.TOUCH_MOVE, this.touch);
     },
     touchEnd: function(i, t, e) {
-      this.touches[i].x = t.pageX;
-      this.touches[i].y = t.pageY;
-      this.touches[i].done = true;
-      this.publish(this.TOUCH_END, this.touches[i]);
+      var touch = this.touches[i];
+      touch.x = t.pageX;
+      touch.y = t.pageY;
+      touch.done = true;
+      this.publish(this.TOUCH_END, touch);
+      if ( touch.shouldPreventDefault && e.cancelable ) e.preventDefault();
       delete this.touches[i];
     },
     touchCancel: function(i, t, e) {
@@ -197,7 +199,6 @@ CLASS({
     {
       name: 'onTouchEnd',
       code: function(e) {
-        if ( e.cancelable ) e.preventDefault();
         this.detach(e.target);
 
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
@@ -385,6 +386,8 @@ CLASS({
       this.handlers = handlers || [];
 
       if ( this.nativeScrolling ) return;
+
+      Object_forEach(map, function(p) { p.shouldPreventDefault = true; });
 
       (this.isVertical ? point.y$ : point.x$).addListener(this.onDelta);
       point.done$.addListener(this.onDone);
@@ -607,7 +610,11 @@ CLASS({
       // Nothing to listen for; the tap has already fired when this recognizes.
       // Just sent the tapClick(numberOfPoints) message to the handlers.
       if  ( ! handlers || ! handlers.length ) return;
-      var points = Object.keys(map).length;
+      var points = 0;
+      Object_forEach(map, function(point) {
+        points++;
+        point.shouldPreventDefault = true;
+      });
       handlers.forEach(function(h) {
         h && h.tapClick && h.tapClick(points);
       });
@@ -723,6 +730,7 @@ CLASS({
       // A user of this gesture should save the original values on pinchStart,
       // and adjust them by the values from each pinchMove to update the UI.
       // See demos/pinchgesture.html.
+      Object_forEach(map, function(p) { p.shouldPreventDefault = true; });
       this.points = this.getPoints(map);
       this.handlers = handlers || [];
 
