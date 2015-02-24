@@ -741,9 +741,8 @@ CLASS({
     }
   */},
     {
-      name: 'toInnerHTML',
+      name: 'toHTML',
       template: function() {/*
-        <% if ( ! this.data ) return "Calc"; %>
         <%= CalcSpeechView.create({calc: this.data}) %>
         <!-- <%= this.ZoomView.create() %> -->
         <% X.registerModel(CalcButton, 'ActionButton'); %>
@@ -765,7 +764,7 @@ CLASS({
           <div class="keypad">
           <div class="edge2"></div>
           <%= this.SlidePanel.create({
-            data$: this.data$,
+            data: this.data,
             minWidth: 310,
             minPanelWidth: 320,
             panelRatio: 0.55,
@@ -816,8 +815,7 @@ CLASS({
   name: 'MainButtonsView',
   extendsModel: 'foam.ui.View',
   templates: [
-    function toInnerHTML() {/*
-      <% if ( ! this.data ) return "MainButtonsView"; %>
+    function toHTML() {/*
       <div id="%%id" class="buttons button-row" style="background:#4b4b4b;">
         <div class="button-column" style="flex-grow: 3">
           <div class="button-row">
@@ -859,8 +857,7 @@ CLASS({
   name: 'SecondaryButtonsView',
   extendsModel: 'foam.ui.View',
   templates: [
-    function toInnerHTML() {/*
-        <% if ( ! this.data ) return "SecondaryButtonsView"; %>
+    function toHTML() {/*
         <%
           this.X.registerModel(CalcButton.xbind({
             background: 'rgb(52, 153, 128)',
@@ -906,8 +903,7 @@ CLASS({
   name: 'TertiaryButtonsView',
   extendsModel: 'foam.ui.View',
   templates: [
-    function toInnerHTML() {/*
-          <% if ( ! this.data ) return "TertiaryButtonsView"; %>
+    function toHTML() {/*
           <%
           this.X.registerModel(this.X.ActionButton.xbind({
             width:      61,
@@ -955,7 +951,6 @@ CLASS({
   extendsModel: 'foam.ui.View',
   templates: [
     function toInnerHTML() {/*
-      <% if ( ! this.data ) return "HistoryCitationView"; %>
       <div class="history" tabindex="2">{{{this.data.op}}}&nbsp;{{this.data.a2}}<% if ( this.data.op.toString() ) { %><hr aria-label="{{Calc.EQUALS.speechLabel}}" tabindex="2"><% } %></div>
     */}
   ]
