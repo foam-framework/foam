@@ -116,6 +116,11 @@ CLASS({
         this.error("controller is required");
         process.exit(1);
       }
+
+      for ( var i = 0 ; i < this.extraFiles.length ; i++ ) {
+        require(FOAM_BOOT_DIR + this.path.sep + this.extraFiles[i] + '.js');
+      }
+
       var view = this.defaultView ? arequire(this.defaultView) : anop;
       aseq(
         view,
