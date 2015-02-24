@@ -31,7 +31,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
     description: 'A Minesweeper game.',
     keywords: ['game'],
     src: '/js/com/google/sweeper/Game.js',
-    image: 'SolarSystem.png',
+    image: 'Minesweeper.png',
   },
   {
     name: 'Reactive Clocks',
