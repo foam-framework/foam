@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-
- 
 CLASS({
   name: 'InputPoint',
   package: 'foam.input.touch',
@@ -82,4 +80,5 @@ CLASS({
     }
   ]
 });
+
 

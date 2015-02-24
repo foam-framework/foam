@@ -16,6 +16,7 @@
  */
  
  
+
 CLASS({
   name: 'PinchTwistGesture',
   package: 'foam.input.touch',
@@ -61,6 +62,7 @@ CLASS({
       // A user of this gesture should save the original values on pinchStart,
       // and adjust them by the values from each pinchMove to update the UI.
       // See demos/pinchgesture.html.
+      Object_forEach(map, function(p) { p.shouldPreventDefault = true; });
       this.points = this.getPoints(map);
       this.handlers = handlers || [];
 

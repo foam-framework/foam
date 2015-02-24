@@ -4,7 +4,7 @@ CLASS({
   label: 'Table of Contents',
   extendsModel: 'View',
 
-  imports: [ 'sections' ],
+  imports: [ 'parentSection' ],
 
   properties: [
     {
@@ -15,14 +15,9 @@ CLASS({
     }
   ],
 
-  methods: {
-    init: function() {
-      this.SUPER();
-    }
-  },
-
   templates: [
     function toHTML() {/*
+      <%  this.sections = this.parentSection.subSections; %>
       <hr>
         <a name="toc"></a>
         <h2>Table of Contents</h2>

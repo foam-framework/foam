@@ -104,6 +104,8 @@ CLASS({
 
       if ( this.nativeScrolling ) return;
 
+      Object_forEach(map, function(p) { p.shouldPreventDefault = true; });
+
       (this.isVertical ? point.y$ : point.x$).addListener(this.onDelta);
       point.done$.addListener(this.onDone);
 

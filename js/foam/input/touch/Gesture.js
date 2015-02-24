@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
- 
 CLASS({
   name: 'Gesture',
   package: 'foam.input.touch',
@@ -63,4 +62,5 @@ CLASS({
     */
   }
 });
+
 

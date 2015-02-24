@@ -1,7 +1,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'Flow',
-  extendsModel: 'View',
+  extendsModel: 'foam.flow.Section',
 
   // TODO(kgr): eventually, this shouldn't be required
   requires: [
@@ -12,22 +12,14 @@ CLASS({
     'foam.flow.CodeSample'
   ],
 
-  exports: [ 'sections' ],
-
   properties: [
-    {
-      model_: 'DAOProperty',
-      name: 'sections',
-      view: 'foam.ui.DAOListView',
-      factory: function() { return []; }
-    }
   ],
 
   methods: {
     init: function(args) {
       this.SUPER(args);
-      this.X.registerElement('solar',       'foam.demos.SolarSystem'); 
-      this.X.registerElement('circle',      'foam.graphics.Circle'); 
+      this.X.registerElement('solar',       'foam.demos.SolarSystem');
+      this.X.registerElement('circle',      'foam.graphics.Circle');
       this.X.registerElement('email',       'com.google.mail.MobileController');
       this.X.registerElement('toc',         'foam.flow.ToC');
       this.X.registerElement('section',     'foam.flow.Section');
@@ -41,20 +33,26 @@ CLASS({
 
       <toc/>
 
-      <section title="Chapter 1">
+      <section title="Chapter">
         This is chapter 1.
 
-        <section title="Sub-Chapter 1a">
+        <section title="Sub-Chapter">
           Sub-Chapter Stuff
+          <section title="Sub-Sub-Chapter">
+            Sub-Sub-Chapter Stuff
+          </section>
+          <section title="Sub-Sub-Chapter">
+            Sub-Sub-Chapter Stuff
+          </section>
         </section>
 
-        <section title="Sub-Chapter 1b">
+        <section title="Sub-Chapter">
           More Sub-Chapter Stuff
         </section>
 
       </section>
 
-      <section title="Chapter 2">
+      <section title="Chapter">
         This is chapter 2.
       </section>
 
@@ -62,7 +60,7 @@ CLASS({
 
       <!-- <solar/> -->
 
-      <section title="Chapter 3">
+      <section title="Chapter">
         This is chapter 3.
 
         Sample 1:

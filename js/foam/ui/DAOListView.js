@@ -122,7 +122,6 @@ CLASS({
         return;
       }
       this.painting = true;
-console.log("DAOListView update:", this.dao);
       var out = [];
       this.children = [];
       this.initializers_ = [];

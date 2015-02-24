@@ -83,10 +83,12 @@ CLASS({
       this.publish(this.TOUCH_MOVE, this.touch);
     },
     touchEnd: function(i, t, e) {
-      this.touches[i].x = t.pageX;
-      this.touches[i].y = t.pageY;
-      this.touches[i].done = true;
-      this.publish(this.TOUCH_END, this.touches[i]);
+      var touch = this.touches[i];
+      touch.x = t.pageX;
+      touch.y = t.pageY;
+      touch.done = true;
+      this.publish(this.TOUCH_END, touch);
+      if ( touch.shouldPreventDefault && e.cancelable ) e.preventDefault();
       delete this.touches[i];
     },
     touchCancel: function(i, t, e) {
@@ -130,7 +132,6 @@ CLASS({
     {
       name: 'onTouchEnd',
       code: function(e) {
-        if ( e.cancelable ) e.preventDefault();
         this.detach(e.target);
 
         for ( var i = 0; i < e.changedTouches.length; i++ ) {

@@ -15,6 +15,7 @@
  * limitations under the License.
  */
  
+
 CLASS({
   name: 'DragGesture',
   package: 'foam.input.touch',
