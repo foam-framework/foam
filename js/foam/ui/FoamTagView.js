@@ -1,0 +1,109 @@
+CLASS({
+  package: 'foam.ui',
+  name: 'FoamTagView',
+  extendsModel: 'View',
+
+  requires: [ 'foam.html.Element' ],
+
+  imports: [ 'document' ],
+
+  constants: {
+    RESERVED_ATTRS: { model: true, view: true, id: true, oninit: true, showactions: true }
+  },
+
+  properties: [
+    {
+      name: 'element'
+    },
+    {
+      name: 'className',
+      defaultValue: 'foam-tag'
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+      
+      if ( ! this.Element.isInstance(this.element) ) this.install();
+    },
+    install: function() {
+      var e = this.element;
+      var models = [];
+      var modelName = e.getAttribute('model' /*_*/);
+      var viewName  = e.getAttribute('view' /*_*/);
+
+      if ( modelName ) models.push(arequire(modelName));
+      if ( viewName  ) models.push(arequire(viewName));
+
+      console.log('****** ', e.toString());
+
+      aseq(apar.apply(null, models), function(ret) {
+        var model = FOAM.lookup(modelName, this.X);
+
+        console.log('**** 2 : ', model);
+
+        if ( ! model ) {
+          this.error('Unknown Model: ', modelName);
+          return;
+        }
+
+        model.getPrototype();
+
+        var obj = model.create(undefined, X);
+        obj.fromElement(e);
+
+        var view;
+
+        if ( viewName ) {
+          var viewModel = FOAM.lookup(viewName, X);
+          view = viewModel.create({ model: model, data: obj });
+        } else if ( View.isInstance(obj) || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) {
+        view = obj;
+      } else if ( obj.toView_ ) {
+          view = obj.toView_();
+        } else {
+          view = DetailView.create({
+            model: model,
+            data: obj,
+            showActions: this.isTrue(e.getAttribute('showActions'))
+          });
+        }
+
+        if ( e.id ) this.document.FOAM_OBJECTS[e.id] = obj;
+        obj.view_ = view;
+        this.holder().outerHTML = view.toHTML();
+        view.initHTML();
+      }.bind(this))();
+    },
+    holder: function() {
+      // TODO(kgr): Add an outerHTML setter to foam.html.Element instead
+      return this.Element.isInstance(this.element) ? this.$ : this.element;
+    },
+    error: function(msg) {
+      console.error(msg);
+      this.holder.innerHTML = msg;
+    },
+    isTrue: function(a) {
+      return a && ( 
+        a.equalsIC('y')    ||
+        a.equalsIC('yes')  ||
+        a.equalsIC('true') ||
+        a.equalsIC('t') );
+    },
+    xxxtoHTML: function() {
+
+    },
+    initHTML: function() {
+      this.install();
+    }
+  },
+
+  templates: [
+    function CSS() {/*
+       .foam-tag {
+         background: pink;
+       }
+    */}
+  ]
+});
