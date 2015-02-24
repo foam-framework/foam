@@ -90,23 +90,9 @@
     if ( usedModels[id] ) class_(m);
   };
 
-  var templates = {
-    'CalcView.CSS' : true,
-    'foam.ui.animated.Label.CSS' : true,
-    'CalcView.toHTML' : true,
-    'HistoryCitationView.toHTML' : true,
-    'foam.ui.SlidePanel.toHTML' : true,
-    'MainButtonsView.toHTML' : true,
-    'SecondaryButtonsView.toHTML' : true,
-    'TertiaryButtonsView.toHTML' : true
-  };
-
   var aevalTemplate_ = aevalTemplate;
 
   GLOBAL.aevalTemplate = function(t, model) {
-    return templates[model.id + '.' + t.name] ?
-      aevalTemplate_(t, model)  :
-      aconstant(function() { return ''; }) ;
+    aconstant(function() { return ''; }) ;
   };
-
 })();
