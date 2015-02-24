@@ -171,7 +171,9 @@ CLASS({
           error("Could not load model: ", require);
         }
         if ( model.package &&
-             self.blacklistModels.indexOf(model.id) != -1 ) models[model.id] = model;
+             self.blacklistModels.indexOf(model.id) == -1 ) {
+          models[model.id] = model;
+        }
 
         model.getAllRequires().forEach(add);
       };
