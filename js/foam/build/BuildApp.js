@@ -62,6 +62,12 @@ CLASS({
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
     {
+      model_: 'BooleanProperty',
+      name: 'outputManifest',
+      defaultValue: false,
+      help: 'Set to true to write out a MANIFEST file listing all included models.'
+    },
+    {
       name: 'formatter',
       factory: function() {
         return {
@@ -187,13 +193,14 @@ CLASS({
 
       var contents = '';
 
-      delete models['foam.apps.calc.Calc'];
-
       var ids = Object.keys(models);
-      this.fileDAO.put(this.File.create({
-        path: this.targetPath + this.path.sep + 'MANIFEST',
-        contents: ids.join('\n')
-      }));
+      if ( this.outputManifest ) {
+        this.fileDAO.put(this.File.create({
+          path: this.targetPath + this.path.sep + 'MANIFEST',
+          contents: ids.join('\n')
+        }));
+      }
+
       for ( var i = 0; i < ids.length; i++ ) {
         var model = models[ids[i]];
         if ( this.precompileTemplates ) {
