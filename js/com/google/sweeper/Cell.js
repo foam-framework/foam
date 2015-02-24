@@ -53,7 +53,7 @@ CLASS({
         font-weight: bold;
       }
       .sweeper-cell.covered {
-        background: #bbb;
+        background: #ccc;
       }
       .sweeper-cell.covered font {
         display: none;
@@ -62,7 +62,7 @@ CLASS({
         display: none;
       }
       .sweeper-cell.marked {
-        background-color: #bbb;
+        background-color: #ccc;
         background-image: url('js/com/google/sweeper/flag.png');
       }
     */}
