@@ -63,10 +63,17 @@ CLASS({
       } else if ( obj.toView_ ) {
           view = obj.toView_();
         } else {
+          var a = this.element.getAttribute('showActions');
+          var showActions = ! a || ( 
+            a.equalsIC('y')    ||
+              a.equalsIC('yes')  ||
+              a.equalsIC('true') ||
+              a.equalsIC('t') );
+
           view = DetailView.create({
             model: model,
             data: obj,
-            showActions: this.isTrue(e.getAttribute('showActions'))
+            showActions: showActions
           });
         }
 
@@ -83,16 +90,6 @@ CLASS({
     error: function(msg) {
       console.error(msg);
       this.holder.innerHTML = msg;
-    },
-    isTrue: function(a) {
-      return a && ( 
-        a.equalsIC('y')    ||
-        a.equalsIC('yes')  ||
-        a.equalsIC('true') ||
-        a.equalsIC('t') );
-    },
-    xxxtoHTML: function() {
-
     },
     initHTML: function() {
       this.install();
