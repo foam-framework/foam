@@ -157,13 +157,13 @@ function arequire(modelName, opt_X) {
     X.ModelDAO.find(modelName, {
       put: function(m) {
         var m = FOAM.lookup(modelName, X);
-        delete X.arequire$ModelLoadsInProgress.modelName;
+        delete X.arequire$ModelLoadsInProgress[modelName];
         arequireModel(m, X)(future.set);
       },
       error: function() {
         var args = argsToArray(arguments);
         console.warn.apply(console, ['Could not load model: ', modelName].concat(args));
-        delete X.arequire$ModelLoadsInProgress.modelName;
+        delete X.arequire$ModelLoadsInProgress[modelName];
         future.set(undefined);
       }
     });
