@@ -27,7 +27,9 @@ CLASS({
     { model_: 'IntProperty', name: 'width' },
     { model_: 'IntProperty', name: 'height' },
     { name: 'tagName', defaultValue: 'div' },
-    { name: 'data', postSet: function() { this.updateHTML(); } }
+    { name: 'data', postSet: function() { 
+      this.updateHTML(); 
+    } }
   ],
   methods: {
     init: function() {

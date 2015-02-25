@@ -32,10 +32,12 @@ CLASS({
       factory: function() {
         return [
           this.ResponsiveViewOption.create({
+            data$: this.data$,
             controller: 'foam.ui.DetailView',
             minWidth: 0
           }),
           this.ResponsiveViewOption.create({
+            data$: this.data$,
             controller: 'foam.ui.md.TwoPane',
             minWidth: 600
           })          

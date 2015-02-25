@@ -8,7 +8,7 @@ CLASS({
     'foam.ui.DAOListView',
     'foam.ui.ImageBooleanView',
     'IssueLabelView',
-    'PopupChoiceView',
+    'foam.ui.PopupChoiceView',
     'PriorityView',
     'foam.ui.md.TextFieldView'
   ],
@@ -69,14 +69,14 @@ CLASS({
           <% if ( this.data.pri ) { %>
             $$pri{ model_: 'PriorityView' }
             $$pri{
-              model_: 'PopupChoiceView',
+              model_: 'foam.ui.PopupChoiceView',
               iconUrl: 'images/ic_arrow_drop_down_24dp.png',
               showValue: true
             }
           <% } else { %>
             $$priority{ model_: 'PriorityView' }
             $$priority{
-              model_: 'PopupChoiceView',
+              model_: 'foam.ui.PopupChoiceView',
               iconUrl: 'images/ic_arrow_drop_down_24dp.png',
               showValue: true
             }
@@ -85,7 +85,7 @@ CLASS({
           <div class="choice">
             <img src="images/ic_keep_24dp.png" class="status-icon">
             $$status{
-                model_: 'PopupChoiceView',
+                model_: 'foam.ui.PopupChoiceView',
                 iconUrl: 'images/ic_arrow_drop_down_24dp.png',
                 showValue: true,
                 dao: this.X.StatusDAO,

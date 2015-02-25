@@ -122,8 +122,8 @@ CLASS({
       name: 'controller',
       type: 'foam.ui.md.AppController',
       postSet: function(_, controller) {
-        var Y = this.controller.Y.sub({ data: this.controller });
-        var view = this.ResponsiveAppControllerView.create(undefined, Y);
+        var Y = this.controller.Y.sub();
+        var view = this.ResponsiveAppControllerView.create({ data: this.controller }, Y);
         this.stack.setTopView(view);
 
         // TODO: Hack for positioned based view delay.
@@ -173,7 +173,7 @@ CLASS({
     {
       name: 'stack',
       subType: 'foam.ui.StackView',
-      factory: function() { return this.X.StackView.create(null, this.Y); },
+      factory: function() { return this.StackView.create(null, this.Y); },
       postSet: function(old, v) {
         if ( old ) {
           Events.unfollow(this.width$, old.width$);

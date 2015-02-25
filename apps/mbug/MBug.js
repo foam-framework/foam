@@ -83,9 +83,7 @@ CLASS({
         }, Y);
         this.stack.setTopView(this.DetailView.create({data: pc}, pc.Y));
         /*
-        var view = this.ResponsiveAppControllerView.create(undefined, pc.X.sub({
-          data: pc
-        }));
+        var view = this.ResponsiveAppControllerView.create({ data: pc }, pc.X);
 
         this.stack.setTopView(view);
         project.X = pc.X;

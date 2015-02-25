@@ -23,7 +23,7 @@ CLASS({
     'foam.graphics.ActionButtonCView',
     'foam.ui.md.SharedStyles',
     'foam.ui.DAOListView',
-    'PopupChoiceView',
+    'foam.ui.PopupChoiceView',
     'PredicatedView',
     'ScrollView',
     'SpinnerView',

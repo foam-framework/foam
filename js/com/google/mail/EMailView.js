@@ -18,7 +18,7 @@
 CLASS({
   name: 'EMailView',
   package: 'com.google.mail',
-  extendsModel: 'UpdateDetailView',
+  extendsModel: 'foam.ui.UpdateDetailView',
   properties: [
   ],
   actions: [

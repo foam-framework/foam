@@ -31,6 +31,7 @@ CLASS({
       /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.Y;
       var v = this.PropertyView.create({prop: prop, args: opt_args}, X);
+      this[prop.name + 'View'] = v;
       return v;
     },
 
@@ -50,10 +51,11 @@ CLASS({
 
     createRelationshipView: function(r, opt_args) {
       var X = ( opt_args && opt_args.X ) || this.Y;
-      return X.foam.ui.RelationshipView.create({
+      this[r.name + 'View'] = X.foam.ui.RelationshipView.create({
         relationship: r,
         args: opt_args
-      });
+      });;
+      return this[r.name + 'View'];
     },
 
     createTemplateView: function(name, opt_args) {

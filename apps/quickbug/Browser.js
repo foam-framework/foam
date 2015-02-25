@@ -38,7 +38,7 @@ CLASS({
     'QIssuesSplitDAO',
     'Timer',
     'TextFieldView',
-    'foam.ui.ChoiceView',
+    'foam.ui.PopupChoiceView',
     'ImageView',
     'MementoMgr',
     'foam.lib.bookmarks.AddBookmarkDialog',
