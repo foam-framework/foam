@@ -39,6 +39,7 @@ CLASS({
       var models = [];
       var modelName = e.getAttribute('model' /*_*/);
       var viewName  = e.getAttribute('view' /*_*/);
+      var onInit    = e.getAttribute('oninit' /*_*/);
 
       if ( modelName ) models.push(arequire(modelName));
       if ( viewName  ) models.push(arequire(viewName));
@@ -84,6 +85,10 @@ CLASS({
         obj.view_ = view;
         this.holder().outerHTML = view.toHTML();
         view.initHTML();
+        
+        if ( onInit )
+          aeval('function() { ' + onInit + ' }')(function(f) { f.call(obj); });
+
       }.bind(this))();
     },
     holder: function() {
