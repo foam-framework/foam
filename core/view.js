@@ -284,11 +284,12 @@ CLASS({
     {
       name: 'openTooltip',
       code: function(e) {
-        console.assert(! this.tooltip_, 'Tooltip already defined');
-        this.tooltip_ = this.Y.Tooltip.create({
-          text:   this.tooltip,
-          target: this.$
-        });
+        arequire('Tooltip')(function(Tooltip) {
+          this.tooltip_ = Tooltip.create({
+            text:   this.tooltip,
+            target: this.$
+          }, this.Y);
+        }.bind(this));
       }
     },
     {
