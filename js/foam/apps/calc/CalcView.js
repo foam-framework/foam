@@ -207,7 +207,7 @@ CLASS({
       template: function() {/*
         <%= this.CalcSpeechView.create({calc: this.data}) %>
         <!-- <%= this.ZoomView.create() %> -->
-        <% X.registerModel(this.CalcButton, 'ActionButton'); %>
+        <% X.registerModel(this.CalcButton, 'foam.ui.ActionButton'); %>
         <div style="position: relative;z-index: 100;">
           <div tabindex="1" style="position: absolute;">
             <span aria-label="{{{Calc.RAD.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="{{{Calc.RAD.label}}}"></span>

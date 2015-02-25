@@ -124,7 +124,7 @@ CLASS({
       this.Y.registerModel(this.X.foam.graphics.ActionButtonCView.xbind({
         background: 'white',
         radius: 18
-      }), 'ActionButton');
+      }), 'foam.ui.ActionButton');
     },
     toHTML: function() { return this.SUPER() + this.toolbar(); }
   }

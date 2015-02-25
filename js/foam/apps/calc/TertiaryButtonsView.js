@@ -23,7 +23,7 @@ CLASS({
             color:      'rgb(80, 80, 80)',
             background: 'rgb(29, 233, 182)',
             font:       '300 18px RobotoDraft'
-          }), 'ActionButton');
+          }), 'foam.ui.ActionButton');
           %>
           <div id="%%id" class="buttons button-row tertiaryButtons">
             <div class="button-column" style="flex-grow: 1;">

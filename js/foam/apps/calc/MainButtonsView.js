@@ -39,7 +39,7 @@ CLASS({
         width:  70,
         height: 45,
         font:   '300 26px RobotoDraft'
-      }), 'ActionButton');
+      }), 'foam.ui.ActionButton');
       %>
         <div class="button-column rhs-ops" style="flex-grow: 1;padding-top: 7px; padding-bottom: 10px;">
           $$ac{tabIndex: 201, font: '300 24px RobotoDraft'

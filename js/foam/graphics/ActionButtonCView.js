@@ -44,7 +44,6 @@ CLASS({
     {
       name: 'data',
       postSet: function() {
-        console.log("ActionButtonCView set data ", this.data, this.$UID);
         this.bindIsAvailable();
       }
     },
