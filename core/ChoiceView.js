@@ -462,6 +462,7 @@ CLASS({
   name: 'PopupChoiceView',
 
   extendsModel: 'AbstractChoiceView',
+  traits: ['foam.input.touch.VerticalScrollNativeTrait'],
 
   properties: [
     {
@@ -498,6 +499,12 @@ CLASS({
     {
       name: 'mode',
       defaultValue: 'read-write'
+    },
+    {
+      name: 'scrollerID',
+      factory: function() {
+        return this.id + '-popup-list-scroller';
+      }
     }
   ],
 
@@ -508,6 +515,7 @@ CLASS({
       action: function() {
         var self = this;
         var view = this.X.ChoiceListView.create({
+          id: this.scrollerID,
           className: 'popupChoiceList',
           data: this.data,
           choices: this.choices,
@@ -539,11 +547,16 @@ CLASS({
           remove();
         }
 
+        var removeListener;
         function remove() {
-          self.X.document.removeEventListener('touchstart', remove);
+          self.X.document.removeEventListener('touchstart', removeListener);
           self.X.document.removeEventListener('mousemove',  mouseMove);
-          if ( view.$ ) view.$.remove();
+          if ( view.$ ) view.$.outerHTML = '';
         }
+        removeListener = function(evt) {
+          if (view && view.$ && view.$.contains(evt.target)) return;
+          remove();
+        };
 
         // I don't know why the 'animate' is required, but it sometimes
         // doesn't remove the view without it.
@@ -558,8 +571,7 @@ CLASS({
         view.$.style.maxHeight = (Math.max(200, this.X.window.innerHeight-pos[1]-10)) + 'px';
         view.initHTML();
 
-        this.X.document.addEventListener('touchstart',  remove);
-        view.$.addEventListener('click',                remove);
+        this.X.document.addEventListener('touchstart',  removeListener);
         this.X.document.addEventListener('mousemove',   mouseMove);
       }
     }
