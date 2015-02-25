@@ -56,7 +56,11 @@ CLASS({
     {
       name: 'maybeSetMessage',
       code: function(obj, objKey, msgKey) {
-        var i18nMessage = chrome.i18n.getMessage(msgKey);
+        var i18nMessage =
+            GLOBAL.chrome &&
+            GLOBAL.chrome.i18n &&
+            GLOBAL.chrome.i18n.getMessage &&
+            GLOBAL.chrome.i18n.getMessage(msgKey);
         if ( i18nMessage ) {
           obj[objKey] = i18nMessage;
         } else {
