@@ -41,7 +41,7 @@ CLASS({
           if ( oldDAO ) oldDAO.unlisten(this.relay());
           newDAO.listen(this.relay());
           // FutureDAOs will put via the future. In that case, don't put here.
-          if ( ! FutureDAO.isInstance(oldDAO) ) this.notify_('put', []);
+          if ( ! FutureDAO.isInstance(oldDAO) ) this.notify_('reset', []);
         }
       }
     },
@@ -67,6 +67,7 @@ CLASS({
         this.relay_ = {
           put:    function() { self.notify_('put', arguments);    },
           remove: function() { self.notify_('remove', arguments); },
+          reset: function() { self.notify_('reset', arguments); },
           toString: function() { return 'RELAY(' + this.$UID + ', ' + self.model_.name + ', ' + self.delegate + ')'; }
         };
       }

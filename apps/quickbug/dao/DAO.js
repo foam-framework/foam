@@ -366,24 +366,20 @@ CLASS({
   listeners: [
     {
       model_: 'Method',
-      name: 'mergedPutNotify',
+      name: 'mergedResetNotify',
       isMerged: 1000,
-      code: function() { this.notify_('put', []); }
-    },
-    {
-      model_: 'Method',
-      name: 'mergedRemoveNotify',
-      isMerged: 1000,
-      code: function() { this.notify_('remove', []); }
+      code: function() { this.notify_('reset', []); }
     }
   ],
 
    methods: {
      init: function() {
        this.SUPER();
+       function reset() { this.invalidate(); this.mergedResetNotify(); }.bind(this);
        this.relay_ = {
-         put:    function() { this.invalidate(); this.mergedPutNotify();    }.bind(this),
-         remove: function() { this.invalidate(); this.mergedRemoveNotify(); }.bind(this)
+         put: reset,
+         remove: reset,
+         reset: reset
        };
 
        this.remoteListener_ = {
