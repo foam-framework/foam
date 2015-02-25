@@ -108,8 +108,10 @@ CLASS({
         }
         this.view = view;
         this.layout();
-        if ( this.$ ) this.$.insertAdjacentHTML('beforeend', view.toHTML());
-        view.initHTML();
+        if ( this.$ ) {
+          this.$.insertAdjacentHTML('beforeend', view.toHTML());
+          view.initHTML();
+        }
       },
       "args": []
     },
