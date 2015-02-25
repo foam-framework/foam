@@ -29,18 +29,12 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'realIdx',
-      defaultValue: -1,
-      postSet: function(_, nu) {
-        console.log('realIdx', nu);
-      }
+      defaultValue: -1
     },
     {
       model_: 'IntProperty',
       name: 'uiIdx',
-      defaultValue: -1,
-      postSet: function(_, nu) {
-        console.log('uiIdx', nu);
-      }
+      defaultValue: -1
     },
     {
       model_: 'ArrayProperty',
@@ -49,17 +43,23 @@ CLASS({
     },
     {
       name: 'slider',
-      lazyFactory: function() { return this.ViewSlider.create(); },
+      lazyFactory: function() {
+        var slider = this.ViewSlider.create();
+        Events.link(this.sliderView$, slider.view$);
+        return slider;
+      },
       postSet: function(old, nu) {
-        if ( old ) old.view$.removeListener(this.onSliderDone);
-        if ( nu ) nu.view$.addListener(this.onSliderDone);
+        if ( old ) Events.unlink(this.sliderView$, old.view$);
+        if ( nu ) Events.link(this.sliderView$, nu.view$);
+      }
+    },
+    {
+      name: 'sliderView',
+      postSet: function(old, nu) {
+        this.onSliderDone(old, nu);
       }
     }
   ],
-
-  constants: {
-    EASE_ACCELERATION: 0.9
-  },
 
   methods: {
     init: function() {
@@ -73,7 +73,6 @@ CLASS({
     pushView_: function(view) {
       view = this.maybeWrapView(view);
       this.arr.push(view);
-      console.log('arr', this.arr);
       this.propertyChange('arr', this.arr, this.arr);
       return view;
     },
@@ -93,7 +92,6 @@ CLASS({
         this.arr[i].destroy();
       }
       this.arr = [];
-      console.log('arr', this.arr);
       this.realIdx = 0;
       this.uiIdx = 0;
       this.transitionView(this.pushView_(view), 'none');
@@ -106,6 +104,12 @@ CLASS({
       if ( this.queuedListeners.length === 0 ) return;
       var listenerName = this.queuedListeners.shift();
       this[listenerName]();
+    },
+    layout_: function() {
+      this.slider.x = 0;
+      this.slider.y = 0;
+      this.slider.width = this.width;
+      this.slider.height = this.height;
     }
   },
 
@@ -113,10 +117,7 @@ CLASS({
     {
       name: 'layout',
       code: function() {
-        this.slider.x = 0;
-        this.slider.y = 0;
-        this.slider.width = this.width;
-        this.slider.height = this.height;
+        this.layout_();
       }
     },
     {
@@ -139,7 +140,9 @@ CLASS({
     },
     {
       name: 'onSliderDone',
-      code: function() { this.maybeDequeueListener(); }
+      code: function(old, nu) {
+        this.maybeDequeueListener();
+      }
     }
   ],
 
@@ -149,7 +152,7 @@ CLASS({
 
   actions: [
     {
-      name:  'goBack',
+      name:  'back',
       label: '<',
       help:  'Go to previous view',
 
@@ -162,7 +165,7 @@ CLASS({
       }
     },
     {
-      name:  'goForth',
+      name:  'forth',
       label: '>',
       help:  'Go to next view.',
       isEnabled: function() {
