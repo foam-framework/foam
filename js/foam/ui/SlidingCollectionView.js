@@ -56,7 +56,7 @@ CLASS({
     {
       name: 'sliderView',
       postSet: function(old, nu) {
-        this.onSliderDone();
+        this.onSliderDone(old, nu);
       }
     }
   ],
@@ -140,7 +140,7 @@ CLASS({
     },
     {
       name: 'onSliderDone',
-      code: function() {
+      code: function(old, nu) {
         this.maybeDequeueListener();
       }
     }
