@@ -179,6 +179,7 @@ CLASS({
         if ( this.speechLabel ) params.speechLabel = this.speechLabel;
         if ( this.tabIndex )    params.tabIndex    = this.tabIndex;
         if ( this.role )        params.role        = this.role;
+        if ( this.data$ )       params.data$       = this.data$;
         this.view = this.CViewView.create(params);
       }
       return this.view;

@@ -137,7 +137,9 @@ CLASS({
   listeners: [
     {
       name: 'tapClick',
-      code: function() { this.action.callIfEnabled(this.X, this.data); }
+      code: function() { 
+        this.action.callIfEnabled(this.X, this.data); 
+      }
     }
   ],
 
@@ -229,12 +231,13 @@ CLASS({
 
       c.clearRect(0, 0, this.width, this.height);
 
-//       var r = Math.min(this.width, this.height)/2;
-//       c.fillStyle = this.background;
-//       c.beginPath();
-//       c.arc(this.width/2, this.height/2, r, 0, Math.PI*2, true);
-//       c.closePath();
-//       c.fill();
+      // TODO(jacksonic): Why is drawing a circle the default behaviour?
+      var r = Math.min(this.width, this.height)/2;
+      c.fillStyle = this.background;
+      c.beginPath();
+      c.arc(this.width/2, this.height/2, r, 0, Math.PI*2, true);
+      c.closePath();
+      c.fill();
     },
 
     paintSelf: function() {
