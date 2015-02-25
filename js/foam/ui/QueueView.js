@@ -15,14 +15,6 @@ CLASS({
   extendsModel: 'foam.ui.SlidingCollectionView',
 
   methods: {
-    pushView: function(view) {
-      return this.pushView_(view);
-    },
-    back: function() {
-      return this.goBack();
-    },
-    forth: function() {
-      return this.goForth();
-    }
+    pushView: function(view) { return this.pushView_(view); }
   }
 });
