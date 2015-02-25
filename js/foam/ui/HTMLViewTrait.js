@@ -381,7 +381,7 @@ CLASS({
     },
 
     maybeInitTooltip: function() {
-      if ( ! this.tooltip ) return;
+      if ( ! this.tooltip || ! this.$ ) return;
       this.$.addEventListener('mouseenter', this.openTooltip);
       this.$.addEventListener('mouseleave', this.closeTooltip);
     },

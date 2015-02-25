@@ -155,7 +155,6 @@ CLASS({
         if ( data && data.model_ && this.model !== data.model_ ) {
           this.model = data.model_;
         }
-        this.onValueChange_();
       }
       }
    ],

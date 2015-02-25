@@ -22,6 +22,8 @@ CLASS({
 
   extendsModel: 'foam.ui.AbstractChoiceView',
 
+  requires: ['foam.ui.ChoiceListView'],
+  
   properties: [
     {
       name: 'linkLabel'
@@ -57,7 +59,7 @@ CLASS({
       labelFn: function() { return this.linkLabel; },
       action: function() {
         var self = this;
-        var view = this.X.ChoiceListView.create({
+        var view = this.ChoiceListView.create({
           className: 'popupChoiceList',
           data: this.data,
           choices: this.choices,

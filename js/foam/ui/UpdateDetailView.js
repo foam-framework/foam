@@ -18,48 +18,46 @@
  
 CLASS({
   name: 'UpdateDetailView',
-  extendsModel: 'foam.ui.DetailView',
   package: 'foam.ui',
-  
-  documentation:function() {/*
-    Provides a detailview that allows user changes and puts them back to a DAO.
-    TODO(jacksonic): This could easily be a trait as there is no DOM dependent code here.
-  */},
+  extendsModel: 'foam.ui.DetailView',
 
-  imports: ['DAO as dao'],
+  imports: [
+    'DAO as dao',
+    'stack'
+  ],
 
   properties: [
     {
-      name: 'data',
+      name: 'rawData',
+      documentation: 'The uncloned original input data.',
       postSet: function(old, nu) {
-        // since we're cloning the propagated data, we have to listen
-        // for changes to the data and clone again 
-        if ( old ) old.removeListener(this.parentContentsChanged);
-        if ( nu ) nu.addListener(this.parentContentsChanged);
-        
-        if (!nu) return;
-        // propagate a clone and build children
-        this.childDataValue.set(nu.deepClone());
-        this.originalData = nu.deepClone();
-  
-        this.data.addListener(function() {
-          // The user is making edits. Don't listen for parent changes,
-          // since we no longer want to react to updates to it.
-          this.version++;
-          this.data.removeListener(this.parentContentsChanged);
-        }.bind(this));
+        if ( old ) old.removeListener(this.rawUpdate);
+        if ( nu ) nu.addListener(this.rawUpdate);
       }
     },
     {
       name: 'originalData',
-      documentation: 'A clone of the parent data, for comparison with edits.'
+      documentation: 'A clone of the input data, for comparison with edits.'
     },
     {
-      name: 'dao'
-    },
-    {
-      name: 'stack',
-      defaultValueFn: function() { return this.X.stack; }
+      name: 'data',
+      preSet: function(_, v) {
+        if ( ! v ) return;
+        this.rawData = v;
+        return v.deepClone();
+      },
+      postSet: function(_, data) {
+        if ( ! data ) return;
+        this.originalData = data.deepClone();
+        if ( ! this.model && data && data.model_ ) this.model = data.model_;
+        // TODO(braden): Change this back to data.addListener when that's fixed.
+        data.subscribe(['property'], function() {
+          // The user is making edits. Drop rawData, since we no longer want
+          // to react to updates to it.
+          this.version++;
+          this.rawData = '';
+        }.bind(this));
+      }
     },
     {
       name: 'view'
@@ -71,15 +69,14 @@ CLASS({
       name: 'version'
     }
   ],
-  
+
   listeners: [
     {
-      name: 'parentContentsChanged',
+      name: 'rawUpdate',
       code: function() {
-        // If this listener fires, the parent data has changed internally
-        // and the user hasn't edited our copy yet, so keep the clones updated.
-        this.childDataValue.value.copyFrom(this.data);
-        this.originalData.copyFrom(this.data);
+        // If this listener fires, the raw data updated and the user hasn't
+        // changed anything.
+        this.data = this.rawData;
       }
     }
   ],
@@ -109,18 +106,18 @@ CLASS({
     {
       name:  'cancel',
       help:  'Cancel update.',
-      isAvailable: function() { this.version; return ! this.originalData.equals(this.childDataValue.value); },
+      isAvailable: function() { this.version; return ! this.originalData.equals(this.data); },
       action: function() { this.stack.back(); }
     },
     {
       name:  'back',
-      isAvailable: function() { this.version; return this.originalData.equals(this.childDataValue.value); },
+      isAvailable: function() { this.version; return this.originalData.equals(this.data); },
       action: function() { this.stack.back(); }
     },
     {
       name: 'reset',
-      isAvailable: function() { this.version; return ! this.originalData.equals(this.childDataValue.value); },
-      action: function() { this.childDataValue.value.copyFrom(this.originalData); } // or do we want data?
+      isAvailable: function() { this.version; return ! this.originalData.equals(this.data); },
+      action: function() { this.data.copyFrom(this.originalData); }
     }
   ]
 });

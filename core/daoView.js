@@ -328,7 +328,6 @@ CLASS({
   ],
   methods: {
     destroy: function( isParentDestroyed ) {
-      this.SUPER(isParentDestroyed);
       this.view.destroy(isParentDestroyed);
     }
   }
