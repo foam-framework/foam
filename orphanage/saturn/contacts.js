@@ -291,7 +291,7 @@ var Contact = FOAM({
         {
             name: 'avatar',
             type: 'String',
-            view: 'ImageView',
+            view: 'foam.ui.ImageView',
             defaultValueFn: function() {
                 var key = this.title ? this.title[0].toUpperCase() : (
                   this.email ? this.email[0].toUpperCase() : '' );

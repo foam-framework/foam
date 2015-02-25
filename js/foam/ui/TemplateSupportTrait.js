@@ -35,19 +35,20 @@ CLASS({
       return v;
     },
 
-    createActionView: function(action, opt_args) {
-      /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info
-        specifically for $$DOC{ref:'Action',usePlural:true}. */
-      var X = ( opt_args && opt_args.X ) || this.Y;
-      var modelName = opt_args && opt_args.model_ ?
-        opt_args.model_ :
-        'ActionButton'  ;
-      var v = FOAM.lookup(modelName, X).create({action: action}).copyFrom(opt_args);
+//     createActionView: function(action, opt_args) {
+//       /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info
+//         specifically for $$DOC{ref:'Action',usePlural:true}. */
+//       var X = ( opt_args && opt_args.X ) || this.X;
+//       var modelName = opt_args && opt_args.model_ ?
+//         opt_args.model_ :
+//         'foam.ui.ActionButton'  ;
+//       var v = FOAM.lookup(modelName, X).create({action: action}).copyFrom(opt_args);
 
-      this[action.name + 'View'] = v;
+//       this[action.name + 'View'] = v;
 
-      return v;
-    },
+//       return v;
+//     },
+ 
 
     createRelationshipView: function(r, opt_args) {
       var X = ( opt_args && opt_args.X ) || this.Y;

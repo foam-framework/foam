@@ -62,7 +62,7 @@ CLASS({
       {
          "model_": "Property",
          "name": "iconUrl",
-         "view": "ImageView",
+         "view": "foam.ui.ImageView",
          "defaultValueFn": function () {
         if ( this.ICONS[this.name] ) return this.ICONS[this.name];
         return 'icons/ic_label_black_24dp.png';

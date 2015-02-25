@@ -75,6 +75,7 @@ CLASS({
   ],
 
   methods: {
+   
     toHTML: function() {
       var superResult = this.SUPER(); // get the destructors done before doing our work
 

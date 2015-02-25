@@ -115,7 +115,7 @@ CLASS({
     {
       name: 'logo',
       defaultValue: 'https://www.google.ca/images/srpr/logo11w.png',
-      view: 'ImageView'
+      view: 'foam.ui.ImageView'
     },
     {
       model_: 'StringProperty',

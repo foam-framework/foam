@@ -21,7 +21,8 @@ CLASS({
 
   extendsModel: 'foam.ui.LeafDataView',
   traits: ['foam.ui.HTMLViewTrait',
-           'foam.ui.TemplateSupportTrait'],
+           'foam.ui.TemplateSupportTrait',
+           'foam.ui.ViewActionsTrait'],
 
   properties: [
     // This is the real, final choice. The internals use index only.

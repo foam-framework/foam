@@ -1063,7 +1063,7 @@ CLASS({
 });
 
 CLASS({
-  name: 'ImageView',
+  name: 'foam.ui.ImageView',
 
   extendsModel: 'foam.ui.View',
 

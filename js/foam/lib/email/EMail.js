@@ -223,7 +223,7 @@ CLASS({
       {
          "model_": "Property",
          "name": "iconURL",
-         "view": "ImageView",
+         "view": "foam.ui.ImageView",
          "defaultValue": "images/email.png"
       }
    ],

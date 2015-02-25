@@ -39,7 +39,7 @@ CLASS({
     'Timer',
     'TextFieldView',
     'foam.ui.PopupChoiceView',
-    'ImageView',
+    'foam.ui.ImageView',
     'MementoMgr',
     'foam.lib.bookmarks.AddBookmarkDialog',
     'foam.lib.bookmarks.Bookmark'

@@ -33,15 +33,15 @@ CLASS({
     }
   ],
   
-  methods: {
-    addDataChild: function(child) {
-      /* Don't pass data, just do a regular addChild. */
-      this.addChild(child);
-    },
-    addSelfDataChild: function(child) {
-      /* Don't pass self as data, just do a regular addChild. */
-      this.addChild(child);
-    }
-  }
+//   methods: {
+//     addDataChild: function(child) {
+//       /* Don't pass data, just do a regular addChild. */
+//       this.addChild(child);
+//     },
+//     addSelfDataChild: function(child) {
+//       /* Don't pass self as data, just do a regular addChild. */
+//       this.addChild(child);
+//     }
+//   }
     
 });

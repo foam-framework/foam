@@ -19,7 +19,7 @@ CLASS({
   name: 'ProfileView',
   package: 'com.google.mail',
   extendsModel: 'foam.ui.DetailView',
-  requires: ['com.google.mail.GMailUserInfo'],
+  requires: ['com.google.mail.GMailUserInfo', 'foam.ui.ImageView'],
   properties: [
     {
       model_: 'ModelProperty',
@@ -30,7 +30,7 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id">
-        $$avatarUrl{ model_: 'ImageView' }
+        $$avatarUrl{ model_: 'foam.ui.ImageView' }
         $$name{ mode: 'read-only',  extraClassName: 'name' }
         $$email{ mode: 'read-only', extraClassName: 'email' }
       </div>

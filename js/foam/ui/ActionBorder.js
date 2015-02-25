@@ -41,8 +41,8 @@ CLASS({
       for ( var i = 0 ; i < actions.length; i++ ) {
         var v = this.createActionView(actions[i]);
         //v.data = this;
-        str += ' ' + v.toView_().toHTML() + ' ';
         this.addSelfDataChild(v);
+        str += ' ' + v.toView_().toHTML() + ' ';
       }
 
       // This is poor design, we should defer to the view and polymorphism
@@ -54,8 +54,8 @@ CLASS({
         for ( var i = 0 ; i < actions.length; i++ ) {
           var v = this.createActionView(actions[i]);
           //v.data$ = this.data$;
-          str += ' ' + v.toView_().toHTML() + ' ';
           this.addDataChild(v);
+          str += ' ' + v.toView_().toHTML() + ' ';
         }
       }
 

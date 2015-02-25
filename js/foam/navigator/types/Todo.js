@@ -28,7 +28,7 @@ CLASS({
     },
     {
       name: 'iconURL',
-      view: 'ImageView',
+      view: 'foam.ui.ImageView',
       defaultValueFn: function() {
         return this.done ? 'images/todo-checked.png' : 'images/todo-empty.png';
       }
