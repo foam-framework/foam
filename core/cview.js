@@ -630,8 +630,8 @@ CLASS({
       c.fillRect(2, 2, parseInt(this.value.get()), 16);
     },
 
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       this.value.removeListener(this.listener_);
     }
   }

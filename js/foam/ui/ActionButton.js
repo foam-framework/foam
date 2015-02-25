@@ -34,10 +34,7 @@ CLASS({
       }
     },
     {
-      name: 'data',
-      postSet: function(old,nu) {
-        console.log("wee");
-      }
+      name: 'data'
     },
     {
       name: 'className',

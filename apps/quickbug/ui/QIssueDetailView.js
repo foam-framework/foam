@@ -62,8 +62,8 @@ CLASS({
   ],
 
   methods: {
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       if ( this.data ) this.data.removeListener(this.doSave);
     },
     commentCreateView: function() {

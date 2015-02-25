@@ -163,7 +163,8 @@ CLASS({
       }.bind(this), 1000);  
     },
     
-    destroy: function() {
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       this.autoSizeLayout.suspended = true;
 //console.log("root painting OFF"); 
       

@@ -217,8 +217,8 @@ CLASS({
       }.bind(this));
     },
 
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       if ( this.gestureManager ) {
         this.gestureManager.uninstall(this.tapGesture);
       }

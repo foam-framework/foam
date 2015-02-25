@@ -330,8 +330,8 @@ CLASS({
       return value;
     },
 
-    destroy: function() { /* Unlinks key handler. */
-      this.SUPER();
+    destroy: function( isParentDestroyed ) { /* Unlinks key handler. */
+      this.SUPER(isParentDestroyed);
       Events.unlink(this.domValue, this.data$);
     }
   },
@@ -788,7 +788,8 @@ CLASS({
       this.SUPER();
       (this.future.get || this.future)(this.onFuture);
     },
-    destroy: function() {
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       if ( this.spinner ) this.spinner.destroy();
       if ( this.childView ) this.childView.destroy();
     }
@@ -852,8 +853,8 @@ CLASS({
     close: function() {
       this.$ && this.$.remove();
     },
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       this.close();
       this.view.destroy();
     }
@@ -1286,8 +1287,8 @@ CLASS({
       }
     },
 
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       Events.unlink(this.domValue, this.data$);
     }
   }
@@ -1341,8 +1342,8 @@ CLASS({
       return str;
     },
 
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       Events.unlink(this.domValue, this.data$);
     }
   }
@@ -1379,8 +1380,8 @@ CLASS({
       Events.link(this.data$, this.domValue);
     },
 
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       Events.unlink(this.domValue, this.data$);
     }
   }

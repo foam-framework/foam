@@ -57,8 +57,8 @@ CLASS({
       this.generateFeatureDAO(this.data);
     },
 
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       this.documentViewRef.removeListener(this.doScrollToFeature);
     },
 

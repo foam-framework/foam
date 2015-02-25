@@ -65,14 +65,18 @@ CLASS({
          the data change. */
       return true;
     },    
-    destroy: function() {
-      // unlink children
-      this.dataLinkedChildren.forEach(function(child) {
-        Events.unfollow(this.data$, child.data$);
-      }.bind(this));
-      this.dataLinkedChildren = [];
-      
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      if ( ! isParentDestroyed ) {
+        // unlink children
+        this.dataLinkedChildren.forEach(function(child) {
+          Events.unfollow(this.data$, child.data$);
+        }.bind(this));
+        this.dataLinkedChildren = [];
+      } else {
+        var parentName = this.parent.name_;
+        this.data$.addListener(function() { console.warn("Data changed after fast-destroy! ", this.name_, parentName); }.bind(this));  
+      }
+      this.SUPER( isParentDestroyed );
     },
     addDataChild: function(child) {
       /* For children that link to data$, this method tracks them

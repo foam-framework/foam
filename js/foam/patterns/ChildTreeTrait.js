@@ -73,20 +73,23 @@ CLASS({
       /*
         Maintains the tree structure of $$DOC{ref:'foam.ui.View',usePlural:true}. When
         a sub-$$DOC{ref:'foam.ui.View'} is destroyed, remove it from the tree with this method.
+        The isParentDestroyed argument is passed to the child's destroy().
       */
       //if (arguments.callee.caller.super_) this.SUPER(child);
 
-      child.destroy();
+      child.destroy( true );
       this.children.deleteI(child);
       child.parent = undefined;
-      child.onAncestryChange_();
+      //child.onAncestryChange_();
 
       return this;
     },
 
-    removeAllChildren: function() {
+    removeAllChildren: function( isParentDestroyed ) {
       var list = this.children.slice();
-      Array.prototype.forEach.call(list, this.removeChild.bind(this));
+      Array.prototype.forEach.call(list, function(child) {
+        this.removeChild(child);
+      }.bind(this));
     },
 
     addChildren: function() {
@@ -99,12 +102,21 @@ CLASS({
       return this;
     },
 
-    destroy: function() {
+    destroy: function( isParentDestroyed ) {
       /* Destroys children and removes them from this. Override to include your own
-       cleanup code, but always call this.SUPER() after you are done. */
-      //if (arguments.callee.caller.super_) this.SUPER();
+       cleanup code, but always call this.SUPER(isParentDestroyed) 
+       after you are done. When isParentDestroyed is true, your parent has already
+       been destroyed. You may choose to omit unecessary cleanup. */
 
-      this.removeAllChildren();
+      if ( isParentDestroyed ) {
+//        console.log(this.name_, " FAST destroying ", this.children.length," children");
+        Array.prototype.forEach.call(this.children, function(child) {
+          child.destroy(true);
+        });
+      } else { 
+//        console.log(this.name_, " SLOW removing ", this.children.length," children--------------------------------------");
+        this.removeAllChildren();
+      }
 
       return this;
     },

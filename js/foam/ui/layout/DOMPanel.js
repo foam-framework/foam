@@ -42,8 +42,8 @@ CLASS({
       this.width = this.$.clientWidth;
       this.height = this.$.clientHeight;
     },
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       if ( this.window ) this.window.removeEventListener('resize', this.onResize);
     }
   },

@@ -39,8 +39,8 @@ CLASS({
   
   methods: {
     addDataChild: function(child) {
-      /* For children that link to data$, this method tracks them
-        for disconnection when we destroy. */
+      /* For children that link to data$. Override to track the 
+        connections, if required. */
       Events.link(this.data$, child.data$);
       this.addChild(child);
     },

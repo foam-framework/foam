@@ -486,8 +486,8 @@ CLASS({
       }
     },
 
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       Events.unlink(this.domValue, this.value);
     },
 

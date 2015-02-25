@@ -151,10 +151,11 @@ CLASS({
 
     toString: function() { /* Name info. */ return 'PropertyView(' + this.prop.name + ', ' + this.view + ')'; },
 
-    destroy: function() { /* Passthrough to $$DOC{ref:'.view'} */
-      this.unbindData(this.data);
-      //this.view.destroy(); addChild instead
-      this.SUPER();
+    destroy: function( isParentDestroyed ) { /* Passthrough to $$DOC{ref:'.view'} */
+      if ( ! isParentDestroyed ) {
+        this.unbindData(this.data);
+      }
+      this.SUPER( isParentDestroyed );
     },
     
     construct: function() {

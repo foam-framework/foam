@@ -327,8 +327,9 @@ CLASS({
     }
   ],
   methods: {
-    destroy: function() {
-      this.view.destroy();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
+      this.view.destroy(isParentDestroyed);
     }
   }
 });
@@ -631,8 +632,8 @@ CLASS({
     },
 
     // Clears all caches and saved rows and everything.
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       var keys = Object.keys(this.visibleRows);
       for ( var i = 0; i < keys.length; i++ ) {
         this.visibleRows[keys[i]].destroy();

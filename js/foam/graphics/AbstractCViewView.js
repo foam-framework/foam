@@ -175,9 +175,9 @@ CLASS({
       this.paint();
     },
 
-    destroy: function() { /* Call to clean up this and child views. */
-      this.SUPER();
-      this.cview.destroy();
+    destroy: function( isParentDestroyed ) { /* Call to clean up this and child views. */
+      this.SUPER(isParentDestroyed);
+      this.cview.destroy(isParentDestroyed);
     }
   }
 });

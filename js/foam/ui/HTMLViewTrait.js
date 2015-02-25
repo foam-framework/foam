@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.ui',
   label: 'HTMLView',
 
-  requires: ['foam.input.touch.GestureTarget'],
+  requires: ['foam.input.touch.GestureTarget'], // tooltip!
 
   documentation: function() {/*
     The HTML implementation for $$DOC{ref:'foam.ui.View'}.
@@ -116,7 +116,7 @@ CLASS({
       name: 'openTooltip',
       code: function(e) {
         console.assert(! this.tooltip_, 'Tooltip already defined');
-        this.tooltip_ = this.X.Tooltip.create({
+        this.tooltip_ = this.X.foam.ui.Tooltip.create({
           text:   this.tooltip,
           target: this.$
         });
@@ -470,13 +470,13 @@ CLASS({
       }
     },
 
-    destroy: function() {
+    destroy: function( isParentDestroyed ) {
       /* Cleans up the DOM when regenerating content. You should call this before
          creating new HTML in your $$DOC{ref:'.toInnerHTML'} or $$DOC{ref:'.toHTML'}. */
       // TODO: remove listeners
       this.invokeDestructors();
 
-      this.SUPER();
+      this.SUPER(isParentDestroyed);
 
       delete this.instance_.$;
     },

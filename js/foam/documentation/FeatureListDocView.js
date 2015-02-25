@@ -39,7 +39,7 @@ CLASS({
 
   templates: [
     function toInnerHTML()    {/*
-    <%    this.destroy(); console.log("featurelist hasFeatures: ", this.hasFeatures);
+    <%    this.destroy(); 
           if (!this.hasFeatures && !this.hasInheritedFeatures) { %>
           <% //  <p class="feature-type-heading">No <%=this.model.plural%>.</p> %>
     <%    } else {

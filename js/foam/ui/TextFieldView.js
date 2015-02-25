@@ -247,8 +247,8 @@ CLASS({
       return value;
     },
 
-    destroy: function() { /* Unlinks key handler. */
-      this.SUPER();
+    destroy: function( isParentDestroyed ) { /* Unlinks key handler. */
+      this.SUPER(isParentDestroyed);
       Events.unlink(this.domValue, this.data$);
     }
   },

@@ -188,8 +188,8 @@ CLASS({
       }, 0);
     },
 
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       this.X.gestureManager.uninstall(this.swipeGesture);
       this.views.forEach(function(c) { c.view().destroy(); });
     },

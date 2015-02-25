@@ -56,8 +56,8 @@ CLASS({
       if ( this.onScroll )
         this.scroller$.addEventListener('scroll', this.onScroll);
     },
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       this.X.gestureManager.uninstall(this.scrollGesture);
       if ( this.onScroll && this.scroller$ )
         this.scroller$.removeEventListener('scroll', this.onScroll)
