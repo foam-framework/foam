@@ -31,7 +31,7 @@ CLASS({
         this.maybeSetMessage(
             model.messages[msgIdx],
             'value',
-            this.getIntKey(this.getMessageKey(model, msg)));
+            this.getMessageKey(model, msg).hashCode());
       }
     },
     {
@@ -42,13 +42,13 @@ CLASS({
             this.maybeSetMessage(
                 model.actions[actionIdx],
                 'label',
-                this.getIntKey(this.getActionTextLabelKey(model, action)));
+                this.getActionTextLabelKey(model, action).hashCode());
           }
           if ( action.speechLabel ) {
             this.maybeSetMessage(
                 model.actions[actionIdx],
                 'speechLabel',
-                this.getIntKey(this.getActionSpeechLabelKey(model, action)));
+                this.getActionSpeechLabelKey(model, action).hashCode());
           }
         }
       }
