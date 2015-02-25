@@ -64,7 +64,6 @@ var DOM = {
     // then it will no longer be in the DOM and doesn't need to be shown.
     if ( opt_document && ! opt_document.body.contains(e) ) return;
 
-    var args = {};
     var modelName = e.getAttribute('model');
     var model = FOAM.lookup(modelName, X);
 
@@ -78,27 +77,6 @@ var DOM = {
     // with the parent model's properties until after the prototype is
     // created.  TODO: remove after FO
     model.getPrototype();
-
-    for ( var i = 0 ; i < e.attributes.length ; i++ ) {
-      var a   = e.attributes[i];
-      var key = a.name;
-      var val = a.value;
-      var p   = model.getProperty(key);
-
-      if ( p ) {
-        // Attributes of the form #name are treated as a reference to
-        // another <foam> objects whose id is 'name'.
-        if ( val.startsWith('#') ) {
-          val = val.substring(1);
-          val = X.$(val);
-        }
-        args[key] = val;
-      } else {
-        if ( ! {model:true, view:true, id:true, oninit:true, showactions:true}[key] ) {
-          console.log('unknown attribute: ', key);
-        }
-      }
-    }
 
     var obj = model.create(undefined, X);
     obj.fromElement(e);
@@ -284,11 +262,12 @@ CLASS({
     {
       name: 'openTooltip',
       code: function(e) {
-        console.assert(! this.tooltip_, 'Tooltip already defined');
-        this.tooltip_ = this.Y.Tooltip.create({
-          text:   this.tooltip,
-          target: this.$
-        });
+        arequire('Tooltip')(function(Tooltip) {
+          this.tooltip_ = Tooltip.create({
+            text:   this.tooltip,
+            target: this.$
+          }, this.Y);
+        }.bind(this));
       }
     },
     {

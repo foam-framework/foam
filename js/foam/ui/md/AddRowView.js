@@ -26,6 +26,7 @@ CLASS({
   ],
 
   imports: [
+    'dao',
     'queryFactory',
     'rowView',
     'stack'
