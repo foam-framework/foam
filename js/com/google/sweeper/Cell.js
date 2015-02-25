@@ -1,3 +1,14 @@
+/**
+ * @license
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the License);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 // Flag image from www.icons-land.com
 CLASS({
   package: 'com.google.sweeper',
@@ -53,7 +64,7 @@ CLASS({
         font-weight: bold;
       }
       .sweeper-cell.covered {
-        background: #bbb;
+        background: #ccc;
       }
       .sweeper-cell.covered font {
         display: none;
@@ -62,7 +73,7 @@ CLASS({
         display: none;
       }
       .sweeper-cell.marked {
-        background-color: #bbb;
+        background-color: #ccc;
         background-image: url('js/com/google/sweeper/flag.png');
       }
     */}

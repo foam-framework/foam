@@ -23,8 +23,10 @@
     "ActionButtonCView2":true,
     "Arg":true,
     "Calc":true,
-    "CalcSpeechView":true,
-    "CalcView":true,
+    "foam.apps.calc.CalcSpeechView":true,
+    "foam.apps.calc.CalcView":true,
+    "foam.apps.calc.CalcButton":true,
+    "foam.apps.calc.Fonts":true,
     "Constant":true,
     "CountExpr":true,
     "DAOController":true,
@@ -36,27 +38,27 @@
     "foam.input.touch.Gesture":true,
     "foam.input.touch.GestureManager":true,
     "foam.input.touch.GestureTarget":true,
-    "History":true,
-    "HistoryCitationView":true,
+    "foam.apps.calc.History":true,
+    "foam.apps.calc.HistoryCitationView":true,
     "foam.input.touch.InputPoint": true,
     "Interface":true,
-    "MainButtonsView":true,
+    "foam.apps.calc.MainButtonsView":true,
     "Message":true,
     "Method":true,
     "Model":true,
-    "NumberFormatter":true,
+    "foam.apps.calc.NumberFormatter":true,
     "foam.input.touch.PinchTwistGesture":true,
-    "PositionedDOMViewTrait":true,
-    "PositionedViewTrait":true,
+    "foam.ui.layout.PositionedDOMViewTrait":true,
+    "foam.ui.layout.PositionedViewTrait":true,
     "Property":true,
     "PropertyView":true,
     "Relationship":true,
     "foam.input.touch.ScrollGesture":true,
-    "SecondaryButtonsView":true,
+    "foam.apps.calc.SecondaryButtonsView":true,
     "SimpleValue":true,
     "foam.input.touch.TapGesture":true,
     "Template":true,
-    "TertiaryButtonsView":true,
+    "foam.apps.calc.TertiaryButtonsView":true,
     "foam.input.touch.TouchManager":true,
     "View":true,
     "WindowHashValue":true,
@@ -88,23 +90,9 @@
     if ( usedModels[id] ) class_(m);
   };
 
-  var templates = {
-    'CalcView.CSS' : true,
-    'foam.ui.animated.Label.CSS' : true,
-    'CalcView.toHTML' : true,
-    'HistoryCitationView.toHTML' : true,
-    'foam.ui.SlidePanel.toHTML' : true,
-    'MainButtonsView.toHTML' : true,
-    'SecondaryButtonsView.toHTML' : true,
-    'TertiaryButtonsView.toHTML' : true
-  };
-
   var aevalTemplate_ = aevalTemplate;
 
   GLOBAL.aevalTemplate = function(t, model) {
-    return templates[model.id + '.' + t.name] ?
-      aevalTemplate_(t, model)  :
-      aconstant(function() { return ''; }) ;
+    return aconstant(t.code ? t.code : function() { return ''; }) ;
   };
-
 })();
