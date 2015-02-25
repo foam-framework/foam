@@ -364,8 +364,9 @@ function registerModel(model, opt_name) {
   // update the cache if this model was already FOAM.lookup'd
   if ( root.hasOwnProperty('lookupCache_') ) {
     var cache = root.lookupCache_;
-    if ( cache[key] ) {
-      cache[key] = model;
+    var modelRegName = (package ? package + "." : "") + name;
+    if ( cache[modelRegName] ) {
+      cache[modelRegName] = model;
     }
   }
 
