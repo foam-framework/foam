@@ -105,12 +105,14 @@ CLASS({
       "code": function (view) {
         if ( this.view ) {
           this.view.destroy();
-          this.$.removeChild(this.view.$);
+          if ( this.$ ) this.$.removeChild(this.view.$);
         }
         this.view = view;
         this.layout();
-        this.$.insertAdjacentHTML('beforeend', view.toHTML());
-        view.initHTML();
+        if ( this.$ ) {
+          this.$.insertAdjacentHTML('beforeend', view.toHTML());
+          view.initHTML();
+        }
       },
       "args": []
     },

@@ -73,12 +73,6 @@ CLASS({
       }
     },
     {
-      name: 'getIntKey',
-      code: function(strKey) {
-        return Math.abs(strKey.hashCode());
-      }
-    },
-    {
       name: 'visitMessage',
       code: function(model) {
         this.console.warn(

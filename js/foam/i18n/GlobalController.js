@@ -120,12 +120,15 @@ CLASS({
   ]
 });
 
-setTimeout(function() {
-  var i18nGC = X.foam.i18n.GlobalController.create();
+arequire('foam.i18n.GlobalController')(function(GlobalController) {
+  console.log('Create i18n Global Controller');
+  var i18nGC = GlobalController.create();
+  console.log('i18n Global Controller: Visiting current models');
   i18nGC.visitAllCurrentModels(
     i18nGC.buildersList.concat(i18nGC.extractorsList));
   window.X.i18nModel = function(model, X, ret) {
+    console.log('i18n Global Controller: Visiting new model');
     i18nGC.visitModel(i18nGC.buildersList.concat(i18nGC.extractorsList), model);
     ret && ret(model);
   };
-}, 0);
+});

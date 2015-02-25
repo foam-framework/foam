@@ -31,7 +31,7 @@ CLASS({
         this.maybeSetMessage(
             model.messages[msgIdx],
             'value',
-            this.getIntKey(this.getMessageKey(model, msg)));
+            this.getMessageKey(model, msg));
       }
     },
     {
@@ -42,13 +42,13 @@ CLASS({
             this.maybeSetMessage(
                 model.actions[actionIdx],
                 'label',
-                this.getIntKey(this.getActionTextLabelKey(model, action)));
+                this.getActionTextLabelKey(model, action));
           }
           if ( action.speechLabel ) {
             this.maybeSetMessage(
                 model.actions[actionIdx],
                 'speechLabel',
-                this.getIntKey(this.getActionSpeechLabelKey(model, action)));
+                this.getActionSpeechLabelKey(model, action));
           }
         }
       }
@@ -56,7 +56,11 @@ CLASS({
     {
       name: 'maybeSetMessage',
       code: function(obj, objKey, msgKey) {
-        var i18nMessage = chrome.i18n.getMessage(msgKey);
+        var i18nMessage =
+            GLOBAL.chrome &&
+            GLOBAL.chrome.i18n &&
+            GLOBAL.chrome.i18n.getMessage &&
+            GLOBAL.chrome.i18n.getMessage(msgKey);
         if ( i18nMessage ) {
           obj[objKey] = i18nMessage;
         } else {

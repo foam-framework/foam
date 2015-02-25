@@ -26,7 +26,7 @@ CLASS({
       code: function(model, msg) {
         var modelPrefix = model.translationHint ?
             model.translationHint + ' ' : '';
-        var key = this.getIntKey(this.getMessageKey(model, msg));
+        var key = this.getMessageKey(model, msg);
         this.messageBundle[key] = {
           message: msg.value,
           description: modelPrefix + msg.translationHint
@@ -41,7 +41,7 @@ CLASS({
         var key;
         if ( action.translationHint ) {
           if ( action.label ) {
-            key = this.getIntKey(this.getActionTextLabelKey(model, action));
+            key = this.getActionTextLabelKey(model, action);
             this.messageBundle[key] =
                 {
                   message: action.label,
@@ -51,7 +51,7 @@ CLASS({
                 };
           }
           if ( action.speechLabel ) {
-            key = this.getIntKey(this.getActionSpeechLabelKey(model, action));
+            key = this.getActionSpeechLabelKey(model, action);
             this.messageBundle[key] =
                 {
                   message: action.speechLabel,

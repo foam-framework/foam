@@ -41,7 +41,7 @@ CLASS({
           if ( oldDAO ) oldDAO.unlisten(this.relay());
           newDAO.listen(this.relay());
           // FutureDAOs will put via the future. In that case, don't put here.
-          if ( ! FutureDAO.isInstance(oldDAO) ) this.notify_('put', []);
+          if ( ! FutureDAO.isInstance(oldDAO) ) this.notify_('reset', []);
         }
       }
     },
@@ -67,6 +67,7 @@ CLASS({
         this.relay_ = {
           put:    function() { self.notify_('put', arguments);    },
           remove: function() { self.notify_('remove', arguments); },
+          reset: function() { self.notify_('reset', arguments); },
           toString: function() { return 'RELAY(' + this.$UID + ', ' + self.model_.name + ', ' + self.delegate + ')'; }
         };
       }
@@ -1433,6 +1434,12 @@ CLASS({
           'select.'
     },
     {
+      name: 'finds',
+      factory: function() {
+        return {};
+      }
+    },
+    {
       name: 'selects',
       factory: function() { return {}; }
     },
@@ -1452,6 +1459,12 @@ CLASS({
     find: function(id, sink) {
       var self = this;
 
+      // Check the in-flight finds and attach myself if there's one for this id.
+      if ( this.finds[id] ) {
+        this.finds[id].push(sink);
+        return;
+      }
+
       var mysink = {
         put: this.refreshOnCacheHit ?
             function() {
@@ -1460,15 +1473,34 @@ CLASS({
             } :
             sink.put.bind(sink),
         error: function() {
+          // Another request may have come in the meantime, so check again for
+          // an in-flight find for this ID.
+          if (self.finds[id]) {
+            self.finds[id].push(sink);
+            return;
+          }
+          self.finds[id] = [sink];
           self.delegate.find(id, {
             put: function(obj) {
               var args = arguments;
               self.cache.put(obj, {
-                put: function() { sink.put.apply(sink, args); }
+                put: function() {
+                  var finds = self.finds[id];
+                  for (var i = 0; i < finds.length; i++ ) {
+                    var s = finds[i];
+                    s && s.put && s.put.apply(s, args);
+                  }
+                  delete self.finds[id];
+                }
               });
             },
             error: function() {
-              sink && sink.error && sink.error.apply(sink, arguments);
+              var finds = self.finds[id];
+              for (var i = 0; i < finds.length; i++ ) {
+                var s = finds[i];
+                s && s.error && s.error.apply(sink, arguments);
+              }
+              delete self.finds[id];
             }
           });
         }

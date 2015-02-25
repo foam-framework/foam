@@ -361,6 +361,14 @@ function registerModel(model, opt_name) {
     contextualizeModel(root, model, name)
   }
 
+  // update the cache if this model was already FOAM.lookup'd
+  if ( root.hasOwnProperty('lookupCache_') ) {
+    var cache = root.lookupCache_;
+    if ( cache[key] ) {
+      cache[key] = model;
+    }
+  }
+
   this.registerModel_(model);
 }
 

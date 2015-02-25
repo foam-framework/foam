@@ -71,7 +71,7 @@ CLASS({
     setPreview: function(){ console.warn('Preview removed from stack view, do it yourself.'); },
     pushView: function(view, opt_label, opt_back, opt_transition) {
       if ( ! opt_back ) {
-        var prev = this.stack[this.stack.length];
+        var prev = this.stack[this.stack.length - 1];
         if ( prev ) prev.destroy();
         this.redo.length = 0;
         this.propertyChange('redo', this.redo, this.redo);

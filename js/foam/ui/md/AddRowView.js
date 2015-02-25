@@ -26,7 +26,10 @@ CLASS({
   ],
 
   imports: [
+    'dao',
+    'hideListOnSingle',
     'queryFactory',
+    'returnOnSelect',
     'rowView',
     'stack'
   ],
@@ -188,8 +191,8 @@ CLASS({
     },
     {
       name: 'hideListOnSingle',
-      documentation: 'When true (the default), the suggestion list disappears when there is only one match. When false it is always visible.',
-      defaultValue: true
+      documentation: 'When true, the suggestion list disappears when there is only one match. When false it is always visible. The default (false) is generally mobile-friendly, while true is better on desktop.',
+      defaultValue: false
     },
     {
       name: 'returnOnSelect',

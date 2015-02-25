@@ -2378,7 +2378,11 @@ CLASS({
   properties: [
     {
       name: 'dao',
-      factory: function() { return this.X[this.subType + 'DAO']; }
+      factory: function() {
+        if (!this.subType) return undefined;
+        var lowercase = this.subType[0].toLowerCase() + this.subType.substring(1);
+        return this.X[lowercase + 'DAO'] || this.X[this.subType + 'DAO'];
+      }
     },
     { name: 'mode' },
     {
@@ -2401,6 +2405,7 @@ CLASS({
     },
     { name: 'subKey' },
     {
+      model_: 'ViewFactoryProperty',
       name: 'innerView',
       defaultValue: 'foam.ui.DetailView'
     },
@@ -2409,7 +2414,12 @@ CLASS({
   methods: {
     toHTML: function() {
       this.children = [];
-      var view = FOAM.lookup(this.innerView).create({ id: this.id, model: this.model, mode: this.mode, data$: this.innerData$ });
+      var view = this.innerView({
+        id: this.id,
+        model: this.model,
+        mode: this.mode,
+        data$: this.innerData$
+      });
       this.addChild(view);
       return view.toHTML();
     }
@@ -2424,13 +2434,16 @@ CLASS({
   properties: [
     {
       name: 'dao',
-      factory: function() { return this.X[this.subType + 'DAO']; }
+      factory: function() {
+        if (!this.subType) return undefined;
+        var lowercase = this.subType[0].toLowerCase() + this.subType.substring(1);
+        return this.X[lowercase + 'DAO'] || this.X[this.subType + 'DAO'];
+      }
     },
     { name: 'mode' },
     {
       name: 'data',
       postSet: function(_, value) {
-        var self = this;
         var subKey = FOAM.lookup(this.subType + '.' + this.subKey, this.X);
         this.innerData = this.dao.where(IN(subKey, value));
       }
@@ -2445,6 +2458,7 @@ CLASS({
     },
     { name: 'subKey' },
     {
+      model_: 'ViewFactoryProperty',
       name: 'innerView',
       defaultValue: 'foam.ui.DAOListView'
     },
@@ -2454,7 +2468,11 @@ CLASS({
   methods: {
     toHTML: function() {
       this.children = [];
-      var view = FOAM.lookup(this.innerView).create({ model: this.model, mode: this.mode, data$: this.innerData$ });
+      var view = this.innerView({
+        model: this.model,
+        mode: this.mode,
+        data$: this.innerData$
+      });
       this.addChild(view);
       return view.toHTML();
     }

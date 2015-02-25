@@ -24,6 +24,11 @@ CLASS({
 
   properties: [
     {
+      model_: 'ViewFactoryProperty',
+      name: 'innerView',
+      defaultValue: 'DetailView'
+    },
+    {
       name: 'data'
     },
     {
@@ -35,10 +40,20 @@ CLASS({
   templates: [
     function CSS() {/*
       .DefaultRowView {
+        align-items: center;
+        display: flex;
+        height: 72px;
+        justify-content: space-between;
+        line-height: 48px;
+        overflow: hidden;
+        padding: 4px 0 4px 8px;
         white-space: nowrap;
       }
     */},
-    function toInnerHTML() {/* %%data $$removeRow */}
+    function toInnerHTML() {/*
+      <%= this.innerView({ data: this.data }, this.Y) %>
+      $$removeRow
+    */}
   ],
 
   actions: [
