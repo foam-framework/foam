@@ -16,7 +16,8 @@ CLASS({
     'StackView',
     'foam.input.touch.TouchManager',
     'IDBDAO',
-    'DAOVersion'
+    'DAOVersion',
+    'foam.core.dao.KeywordDAO'
   ],
 
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
@@ -65,7 +66,8 @@ CLASS({
         }, Y);
 
         Y.issueDAO = Y.KeywordDAO.create({
-          delegate: Y.issueDAO
+          delegate: Y.issueDAO,
+          DefaultQuery: DefaultQuery
         });
 
         var pc = this.AppController.create({

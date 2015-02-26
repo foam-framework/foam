@@ -14,25 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-CLASS({
-  name: 'KeywordsTrait',
-
-  properties: [
-    {
-      model_: 'StringArrayProperty',
-      name: 'keywords',
-      preSet: function(_, a) {
-        for ( var i = 0 ; i < a.length ; i++ ) a[i] = a[i].intern();
-        a.sort();
-        return a;
-      }
-    }
-  ]
-});
-
 
 CLASS({
   name: 'KeywordDAO',
+  package: 'foam.core.dao',
 
   extendsModel: 'ProxyDAO',
 
@@ -40,6 +25,9 @@ CLASS({
     {
       name: 'idMap',
       factory: function() { return {}; }
+    },
+    {
+      name: 'DefaultQuery',
     }
     /*
       TODO: add a DAO for persisting keyword mappings
@@ -54,9 +42,9 @@ CLASS({
       this.SUPER();
 
       var keywords = this;
-      var oldF     = DefaultQuery.getPrototype().f;
+      var oldF     = this.DefaultQuery.getPrototype().f;
 
-      DefaultQuery.getPrototype().f = function(obj) {
+      this.DefaultQuery.getPrototype().f = function(obj) {
         return keywords.match(obj.id, this.arg1) || oldF.call(this, obj);
       };
     },
@@ -96,14 +84,14 @@ CLASS({
       };
 
       // TODO(kgr): This is a bit hackish, replace with visitor support
-      DefaultQuery.getPrototype().partialEval = function() {
-        var q = DefaultQuery.create(this);
+      this.DefaultQuery.getPrototype().partialEval = function() {
+        var q = keywords.DefaultQuery.create(this);
         // console.log('**** ', this.arg1);
         arg1 = this.arg1.intern();
         return q;
       };
       var newQuery = query.partialEval();
-      delete DefaultQuery.getPrototype()['partialEval'];
+      delete this.DefaultQuery.getPrototype()['partialEval'];
 
       var newOptions = { __proto__: options, query: newQuery };
 
