@@ -813,7 +813,7 @@ var ViewFactoryProperty = Model.create({
     },
     {
       name: 'adapt',
-      doc: "Can be specified as either a function, a Model, a Model path, or a JSON object.",
+      doc: "Can be specified as either a function, String markup, a Model, a Model path, or a JSON object.",
       defaultValue: function(_, f) {
         // Undefined values
         if ( ! f ) return f;
