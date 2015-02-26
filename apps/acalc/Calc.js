@@ -347,8 +347,8 @@ CLASS({
       action: function() { this.a2 /= 100.0; }
     },
 
-    unaryOp('inv',    ['i'], function(a) { return 1.0/a; }, '1/x', undefined, 'inverse'),
-    unaryOp('sqroot', [], Math.sqrt, '√', 'square root'),
+    unaryOp('inv',    ['i'], function(a) { return 1.0/a; }, '1/x', undefined, 'inverse', 'inverse'),
+    unaryOp('sqroot', [], Math.sqrt, '√', 'square root', 'square root'),
     unaryOp('square', ['shift-50' /* @ */], function(a) { return a*a; }, 'x²', 'x squared', 'x squared'),
     unaryOp('ln',     [], Math.log, 'ln', 'natural logarithm', 'natural logarithm'),
     unaryOp('exp',    [], Math.exp, 'eⁿ', undefined, 'e to the power of n'),
