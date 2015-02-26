@@ -89,7 +89,8 @@
     "foam.ui.Window":true,
     "foam.ui.animated.Label":true,
     "foam.ui.md.Flare":true,
-    "foam.ui.md.Halo":true
+    "foam.ui.md.Halo":true,
+    "foam.ui.FoamTagView":true
   };
 
   var class_ = CLASS;

@@ -515,17 +515,11 @@ var Model = {
       }
     },
     {
+      model_: 'ArrayProperty',
       name: 'methods',
-      type: 'Array[Method]',
       subType: 'Method',
-      view: 'ArrayView',
-      factory: function() { return []; },
-      propertyToJSON: function(visitor, output, o) {
-        if ( o[this.name].length ) output[this.name] = o[this.name];
-      },
-      defaultValue: [],
       help: 'Methods associated with the entity.',
-      preSet: function(_, newValue) {
+      adapt: function(_, newValue) {
         if ( ! Method ) return newValue;
 
         if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Method);

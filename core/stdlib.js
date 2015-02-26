@@ -313,6 +313,11 @@ var constantize = memoize1(function(str) {
   }).toUpperCase();
 });
 
+var capitalize = memoize1(function(str) {
+  // switchFromProperyName to //SwitchFromPropertyName
+  return str[0].toUpperCase() + str.substring(1);
+});
+
 MODEL({
   extendsProto: 'Object',
 
