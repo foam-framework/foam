@@ -375,7 +375,7 @@ CLASS({
    methods: {
      init: function() {
        this.SUPER();
-       function reset() { this.invalidate(); this.mergedResetNotify(); }.bind(this);
+       var reset = function() { this.invalidate(); this.mergedResetNotify(); }.bind(this);
        this.relay_ = {
          put: reset,
          remove: reset,

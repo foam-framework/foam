@@ -166,45 +166,25 @@ var TemplateCompiler = {
       "),\n'");
   },
   foamTag: function(e) {
-    function buildAttrs(e, attrToDelete) {
-      var attrs = {};
-      for ( var i = 0 ; i < e.attributes.length ; i++ ) {
-        var attr = e.attributes[i];
-        if ( attr.name !== attrToDelete )
-          attrs[attr.name] = attr.value;
-      }
-      return attrs;
-    }
-
     // A Feature
     var fName = e.getAttribute('f');
     if ( fName ) {
-      this.push("', self.createTemplateView('", fName, "',");
-      this.push(JSON.stringify(buildAttrs(e, 'f')));
-      this.push(')');
+      this.push("', self.createTemplateView('", fName, "',{}).fromElement(FOAM(");
+      this.push(JSONUtil.where(NOT_TRANSIENT).stringify(e));
+      this.push('))');
     }
     // A Model
     else {
-      var modelName = e.getAttribute('model');
-      if ( modelName ) {
-        this.push("', X.", modelName, '.create(');
-        this.push(JSON.stringify(buildAttrs(e, 'model')));
-        this.push(', Y.sub({data: this.data}))'); // TODO(kgr): this seems a little hackish.  Do something better.
-      } else {
-        console.error('Foam tag must define either "model" or "f" attribute.');
-      }
-    }
-
-    if ( e.childNodes.length ) {
-      e.attributes = [];
-      this.push('.fromElement(elementFromString("' + e.outerHTML.replace(/\n/g, '\\n').replace(/"/g, '\\"') + '"))');
+      this.push("', X.foam.ui.FoamTagView.create({element: FOAM(");
+      this.push(JSONUtil.where(NOT_TRANSIENT).stringify(e));
+      this.push(')}, Y.sub({data: this.data}))'); // TODO(kgr): this seems a litt
     }
 
     this.push(",\n'");
   },
   'simple value': function(v) { this.push("',\n self.", v[1].join(''), ",\n'"); },
   'raw values tag': function (v) { this.push("',\n", v[1].join(''), ",\n'"); },
-  'values tag': function (v) { this.push("',\nescapeHTML(", v[1].join(''), "),\n'"); },
+  'values tag':     function (v) { this.push("',\nescapeHTML(", v[1].join(''), "),\n'"); },
   'live value tag': function (v) { this.push("',\nself.dynamicTag('span', function() { return ", v[1].join(''), "; }.bind(this)),\n'"); },
   'code tag': function (v) { this.push("');\n", v[1].join(''), ";out('"); },
   'single quote': function () { this.pushSimple("\\'"); },
@@ -243,6 +223,7 @@ MODEL({
       for ( var i = 0 ; i < t.args.length ; i++ ) {
         args.push(t.args[i].name);
       }
+//console.log(code);
       return eval('(function(' + args.join(',') + '){' + code + '})');
     },
     compile: function(t) {

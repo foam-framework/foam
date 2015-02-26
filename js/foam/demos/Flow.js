@@ -14,15 +14,6 @@ CLASS({
   name: 'Flow',
   extendsModel: 'foam.flow.Section',
 
-  // TODO(kgr): eventually, this shouldn't be required
-  requires: [
-    'foam.demos.SolarSystem',
-    'foam.graphics.Circle',
-    'foam.flow.ToC',
-    'foam.flow.Section',
-    'foam.flow.CodeSample'
-  ],
-
   properties: [
   ],
 

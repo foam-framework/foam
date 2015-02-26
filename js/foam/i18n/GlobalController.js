@@ -20,8 +20,8 @@ CLASS({
   package: 'foam.i18n',
 
   requires: [
-    'foam.i18n.ChromeMessagesBuilder',
-    'foam.i18n.ChromeMessagesExtractor'
+    'foam.i18n.ChromeMessagesExtractor',
+    'foam.i18n.ChromeMessagesInjector'
   ],
 
   imports: [
@@ -30,23 +30,23 @@ CLASS({
 
   properties: [
     {
-      name: 'builders',
-      factory: function() {
-        return this.getBuilders();
-      }
-    },
-    {
       name: 'extractors',
       factory: function() {
         return this.getExtractors();
       }
     },
     {
-      name: 'buildersList',
-      factory: function() { return []; }
+      name: 'injectors',
+      factory: function() {
+        return this.getInjectors();
+      }
     },
     {
       name: 'extractorsList',
+      factory: function() { return []; }
+    },
+    {
+      name: 'injectorsList',
       factory: function() { return []; }
     }
   ],
@@ -57,7 +57,7 @@ CLASS({
       code: function() {
         this.SUPER();
         var self = this;
-        ['builders', 'extractors'].forEach(function(baseName) {
+        ['extractors', 'injectors'].forEach(function(baseName) {
           Events.map(
               self[baseName + '$'],
               self[baseName + 'List$'],
@@ -102,18 +102,18 @@ CLASS({
       }
     },
     {
-      name: 'getBuilders',
-      code: function() {
-        return {
-          chromeMessages: this.ChromeMessagesBuilder.create()
-        };
-      }
-    },
-    {
       name: 'getExtractors',
       code: function() {
         return {
           chromeMessages: this.ChromeMessagesExtractor.create()
+        };
+      }
+    },
+    {
+      name: 'getInjectors',
+      code: function() {
+        return {
+          chromeMessages: this.ChromeMessagesInjector.create()
         };
       }
     }
@@ -125,10 +125,10 @@ arequire('foam.i18n.GlobalController')(function(GlobalController) {
   var i18nGC = GlobalController.create();
   console.log('i18n Global Controller: Visiting current models');
   i18nGC.visitAllCurrentModels(
-    i18nGC.buildersList.concat(i18nGC.extractorsList));
+    i18nGC.extractorsList.concat(i18nGC.injectorsList));
   window.X.i18nModel = function(model, X, ret) {
     console.log('i18n Global Controller: Visiting new model');
-    i18nGC.visitModel(i18nGC.buildersList.concat(i18nGC.extractorsList), model);
+    i18nGC.visitModel(i18nGC.extractorsList.concat(i18nGC.injectorsList), model);
     ret && ret(model);
   };
 });
