@@ -78,6 +78,6 @@ CLASS({
     }
   ],
   templates: [
-    function toInnerHTML() {/*<%= this.current ? this.current.controller({ data$: this.data$ }) : '' %>*/}
+    function toInnerHTML() {/*<% this.destroy(); %><%= this.current ? this.current.controller({ data$: this.data$ }) : '' %>*/}
   ]
 });

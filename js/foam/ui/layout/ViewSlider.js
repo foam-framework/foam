@@ -129,6 +129,7 @@ CLASS({
 
         this.incomingView = view;
         this.layout();
+        view.destroy();
         this.$.insertAdjacentHTML('beforeend', view.toHTML());
         view.initHTML();
 

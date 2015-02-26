@@ -49,6 +49,7 @@ CLASS({
       }
     */},
     function toHTML() {/*
+      <% this.destroy(); %>
       <div id="<%= this.id %>" class="email-view">
         <div class="header">
           $$back{radius: 22, className: 'backButton'}
