@@ -54,7 +54,7 @@ CLASS({
 
         model.getPrototype();
 
-        var obj = model.create(undefined, X);
+        var obj = model.create(null, X);
         obj.fromElement(e);
 
         var view;
