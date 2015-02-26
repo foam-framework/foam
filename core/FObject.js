@@ -465,6 +465,14 @@ var FObject = {
     prop.install && prop.install.call(this, prop);
   },
 
+  addMethod: function(name, method) {
+    if ( this.__proto__[name] ) {
+      override(this, name, method);
+    } else {
+      this[name] = method;
+    }
+  },
+
   hashCode: function() {
     var hash = 17;
 
