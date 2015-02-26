@@ -1,6 +1,6 @@
 CLASS({
   name: 'IssueView',
-  extendsModel: 'UpdateDetailView',
+  extendsModel: 'foam.ui.UpdateDetailView',
   traits: ['foam.input.touch.VerticalScrollNativeTrait'],
   requires: [
     'CCView',
