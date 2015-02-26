@@ -157,13 +157,13 @@ function arequire(modelName, opt_X) {
     X.ModelDAO.find(modelName, {
       put: function(m) {
         var m = FOAM.lookup(modelName, X);
-        delete X.arequire$ModelLoadsInProgress.modelName;
+        delete X.arequire$ModelLoadsInProgress[modelName];
         arequireModel(m, X)(future.set);
       },
       error: function() {
         var args = argsToArray(arguments);
         console.warn.apply(console, ['Could not load model: ', modelName].concat(args));
-        delete X.arequire$ModelLoadsInProgress.modelName;
+        delete X.arequire$ModelLoadsInProgress[modelName];
         future.set(undefined);
       }
     });
@@ -295,6 +295,15 @@ function registerModel(model, opt_name) {
     Object.defineProperty(path, name, { value: model, configurable: true });
   } else {
     contextualizeModel(root, model, name)
+  }
+
+  // update the cache if this model was already FOAM.lookup'd
+  if ( root.hasOwnProperty('lookupCache_') ) {
+    var cache = root.lookupCache_;
+    var modelRegName = (package ? package + '.' : '') + name;
+    if ( cache[modelRegName] ) {
+      cache[modelRegName] = model;
+    }
   }
 
   this.registerModel_(model);

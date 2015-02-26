@@ -32,21 +32,25 @@ MODEL({
   methods: {
     find: function (key, sink) {
       var X = this.X;
-      var model = FOAM.lookup(key, X);
-      if ( model ) {
+      try {
+        var model = FOAM.lookup(key, X);
+        if ( model ) {
+          sink && sink.put && sink.put(model);
+          return;
+        }
+
+        var fileName = this.classpath + '/' + key.replace(/\./g, '/') + '.js';
+        require(fileName);
+
+        model = FOAM.lookup(key, X);
+        if ( ! model ) {
+          sink && sink.error && sink.error('Model load failed for: ', key);
+          return;
+        }
         sink && sink.put && sink.put(model);
-        return;
+      } catch(e) {
+        sink && sink.error && sink.error(e);
       }
-
-      var fileName = this.classpath + '/' + key.replace(/\./g, '/') + '.js';
-      require(fileName);
-
-      model = FOAM.lookup(key, X);
-      if ( ! model ) {
-        sink && sink.error && sink.error('Model load failed for: ', key);
-        return;
-      }
-      sink && sink.put && sink.put(model);
     }
   }
 });

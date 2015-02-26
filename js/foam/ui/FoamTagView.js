@@ -18,10 +18,6 @@ CLASS({
 
   imports: [ 'document' ],
 
-  constants: {
-    RESERVED_ATTRS: { model: true, view: true, id: true, oninit: true, showactions: true }
-  },
-
   properties: [
     {
       name: 'element'
@@ -43,16 +39,13 @@ CLASS({
       var models = [];
       var modelName = e.getAttribute('model' /*_*/);
       var viewName  = e.getAttribute('view' /*_*/);
+      var onInit    = e.getAttribute('oninit' /*_*/);
 
       if ( modelName ) models.push(arequire(modelName));
       if ( viewName  ) models.push(arequire(viewName));
 
-      console.log('****** ', e.toString());
-
       aseq(apar.apply(null, models), function(ret) {
         var model = FOAM.lookup(modelName, this.X);
-
-        console.log('**** 2 : ', model);
 
         if ( ! model ) {
           this.error('Unknown Model: ', modelName);
@@ -61,7 +54,7 @@ CLASS({
 
         model.getPrototype();
 
-        var obj = model.create(undefined, X);
+        var obj = model.create(null, X);
         obj.fromElement(e);
 
         var view;
@@ -92,6 +85,10 @@ CLASS({
         obj.view_ = view;
         this.holder().outerHTML = view.toHTML();
         view.initHTML();
+        
+        if ( onInit )
+          aeval('function() { ' + onInit + ' }')(function(f) { f.call(obj); });
+
       }.bind(this))();
     },
     holder: function() {
