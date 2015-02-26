@@ -16,9 +16,9 @@
  */
 
 CLASS({
-  name: 'ChromeMessagesBuilder',
+  name: 'ChromeMessagesExtractor',
   package: 'foam.i18n',
-  extendsModel: 'foam.i18n.MessagesBuilder',
+  extendsModel: 'foam.i18n.MessagesExtractor',
 
   methods: [
     {
