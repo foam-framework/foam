@@ -1535,10 +1535,8 @@ CLASS({
           }
 
           var rulesDAO = self.rules.dao;
-
           rulesDAO
-            .where(AND(GT(MigrationRule.VERSION, version.version),
-                       LTE(MigrationRule.VERSION, self.X.App.version)))
+            .where(AND(GT(MigrationRule.VERSION, version.version)))
             .select()(function(rules) {
               var seq = [];
               for ( var i = 0; i < rules.length; i++ ) {
