@@ -230,7 +230,7 @@ CLASS({
     num(1), num(2), num(3), num(4), num(5), num(6), num(7), num(8), num(9), num(0),
     binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7', 'divide', 'divide'),
     binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7', 'multiply', 'multiply'),
-    binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
+    binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+', 'plus', 'plus'),
     binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–', 'minus', 'minus'),
     {
       name: 'ac',
