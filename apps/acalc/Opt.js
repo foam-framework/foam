@@ -71,7 +71,7 @@
     "foam.graphics.PositionedCViewView":true,
     "foam.html.Element":true,
     "foam.i18n.ChromeMessagesBuilder":true,
-    "foam.i18n.ChromeMessagesExtractor":true,
+    "foam.i18n.ChromeMessagesInjector":true,
     "foam.i18n.GlobalController":true,
     "foam.i18n.MessagesBuilder":true,
     "foam.i18n.Visitor":true,

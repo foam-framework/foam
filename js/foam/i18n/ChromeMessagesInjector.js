@@ -16,7 +16,7 @@
  */
 
 CLASS({
-  name: 'ChromeMessagesExtractor',
+  name: 'ChromeMessagesInjector',
   package: 'foam.i18n',
   extendsModel: 'foam.i18n.Visitor',
 
@@ -64,7 +64,7 @@ CLASS({
         if ( i18nMessage ) {
           obj[objKey] = i18nMessage;
         } else {
-          this.console.warn('ChromeMessagesExtractor: "' + msgKey +
+          this.console.warn('ChromeMessagesInjector: "' + msgKey +
               '": No such message');
         }
       }

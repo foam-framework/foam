@@ -21,7 +21,7 @@ CLASS({
 
   requires: [
     'foam.i18n.ChromeMessagesBuilder',
-    'foam.i18n.ChromeMessagesExtractor'
+    'foam.i18n.ChromeMessagesInjector'
   ],
 
   imports: [
@@ -36,9 +36,9 @@ CLASS({
       }
     },
     {
-      name: 'extractors',
+      name: 'injectors',
       factory: function() {
-        return this.getExtractors();
+        return this.getInjectors();
       }
     },
     {
@@ -46,7 +46,7 @@ CLASS({
       factory: function() { return []; }
     },
     {
-      name: 'extractorsList',
+      name: 'injectorsList',
       factory: function() { return []; }
     }
   ],
@@ -57,7 +57,7 @@ CLASS({
       code: function() {
         this.SUPER();
         var self = this;
-        ['builders', 'extractors'].forEach(function(baseName) {
+        ['builders', 'injectors'].forEach(function(baseName) {
           Events.map(
               self[baseName + '$'],
               self[baseName + 'List$'],
@@ -110,10 +110,10 @@ CLASS({
       }
     },
     {
-      name: 'getExtractors',
+      name: 'getInjectors',
       code: function() {
         return {
-          chromeMessages: this.ChromeMessagesExtractor.create()
+          chromeMessages: this.ChromeMessagesInjector.create()
         };
       }
     }
@@ -125,10 +125,10 @@ arequire('foam.i18n.GlobalController')(function(GlobalController) {
   var i18nGC = GlobalController.create();
   console.log('i18n Global Controller: Visiting current models');
   i18nGC.visitAllCurrentModels(
-    i18nGC.buildersList.concat(i18nGC.extractorsList));
+    i18nGC.buildersList.concat(i18nGC.injectorsList));
   window.X.i18nModel = function(model, X, ret) {
     console.log('i18n Global Controller: Visiting new model');
-    i18nGC.visitModel(i18nGC.buildersList.concat(i18nGC.extractorsList), model);
+    i18nGC.visitModel(i18nGC.buildersList.concat(i18nGC.injectorsList), model);
     ret && ret(model);
   };
 });
