@@ -222,7 +222,7 @@ var FObject = {
           p.fromString.call(this, val, p);
         }
       } else {
-        if ( ! { id: true, model: true, view: true }[attr.name] )
+        if ( ! { id: true, model: true, view: true, showactions: true, oninit: true }[attr.name] )
           console.warn('Unknown attribute name: "' + attr.name + '"');
       }
     }

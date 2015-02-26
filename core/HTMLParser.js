@@ -71,6 +71,7 @@ CLASS({
     },
     {
       name: 'attributeMap_',
+      transient: true,
       factory: function() { return {}; }
     },
     {
@@ -87,12 +88,14 @@ CLASS({
     },
     {
       name: 'children',
+      transient: true,
       getter: function() {
         return this.childNodes.filter(function(c) { return typeof c !== 'string'; });
       }
     },
     {
       name: 'outerHTML',
+      transient: true,
       getter: function() {
         var out = '<' + this.nodeName;
         if ( this.id ) out += ' id="' + this.id + '"';
@@ -115,6 +118,7 @@ CLASS({
     },
     {
       name: 'innerHTML',
+      transient: true,
       getter: function() {
         var out = '';
         for ( var i = 0 ; i < this.childNodes.length ; i++ )

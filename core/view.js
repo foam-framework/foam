@@ -24,7 +24,6 @@ var DOM = {
     var models = [];
     for ( var i = 0 ; i < fs.length ; i++ ) {
       var e = fs[i];
-      // console.log(e.getAttribute('model'), e.getAttribute('view'));
       FOAM.lookup(e.getAttribute('view'), X);
       FOAM.lookup(e.getAttribute('model'), X);
       if ( e.getAttribute('view') ) models.push(arequire(e.getAttribute('view')));
@@ -36,9 +35,18 @@ var DOM = {
 
     atime('DOMInit', aseq(apar.apply(null, models), function(ret) {
       for ( var i = 0 ; i < fs.length ; i++ ) {
-        this.initElement(fs[i], X, X.document);
+        var e = fs[i];
+        // Check that the node is still in the DOM
+        // (It won't be if it was the child of another FOAM tag.)
+        var node = e;
+        var body = X.document.body;
+        while ( node && node !== body ) node = node.parentNode;
+        if ( node ) {
+          this.initElement(e, X, X.document);
+          e.innerHTML = '';
+        }
+        ret();
       }
-      ret();
     }.bind(this)))();
   },
 
@@ -60,6 +68,13 @@ var DOM = {
    * opt_document -- if supplied the object's view will be added to the document.
    **/
   initElement: function(e, X, opt_document) {
+    arequire('foam.ui.FoamTagView')(function (FoamTagView) {
+      FoamTagView.create({ element: e }, X);
+    });
+  },
+  
+  // TODO(kgr): remove this when the FoamTagView is fully tested
+  xxxinitElement: function(e, X, opt_document) {
     // If was a sub-object for an object that has already been displayed,
     // then it will no longer be in the DOM and doesn't need to be shown.
     if ( opt_document && ! opt_document.body.contains(e) ) return;
