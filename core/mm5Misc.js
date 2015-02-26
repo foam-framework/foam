@@ -572,14 +572,9 @@ CLASS({
   for ( var i = 0 ; i < Model.templates.length ; i++ )
     Model.templates[i] = JSONUtil.mapToObj(X, Model.templates[i]);
 
-  (function() {
-    var a = Model.properties;
-    for ( var i = 0 ; i < a.length ; i++ ) {
-      if ( ! Property.isInstance(a[i]) ) {
-        a[i] = Property.getPrototype().create(a[i]);
-      }
-    }
-  })();
+  Model.properties = Model.properties;
+  delete Model.instance_.prototype_;
+  Model = Model.create(Model);
 })();
 
 // Go back over each model so far, assigning the new Model to remove any reference

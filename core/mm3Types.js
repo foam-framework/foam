@@ -472,6 +472,12 @@ var ArrayProperty = Model.create({
             configurable: true
           };
         });
+
+        this.addMethod('get' + capitalize(prop.singular), function(id) {
+          for ( var i = 0; i < this[prop.name].length; i++ ) {
+            if ( this[prop.name][i].id === id ) return this[prop.name][i];
+          }
+        });
       }
     },
     {

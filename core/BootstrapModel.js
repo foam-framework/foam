@@ -142,15 +142,6 @@ var BootstrapModel = {
       try { cls.create_ = eval(s).call(cls); } catch (e) { }
     }*/
 
-    /** Add a method to 'cls' and set it's name. **/
-    function addMethod(name, method) {
-      if ( cls.__proto__[name] ) {
-        override(cls, name, method);
-      } else {
-        cls[name] = method;
-      }
-    }
-
     // add sub-models
     //        this.models && this.models.forEach(function(m) {
     //          cls[m.name] = JSONUtil.mapToObj(m);
@@ -277,7 +268,7 @@ var BootstrapModel = {
 
     // templates
     this.templates && Object_forEach(this.templates, function(t) {
-      addMethod(t.name, TemplateUtil.lazyCompile(t));
+      cls.addMethod(t.name, TemplateUtil.lazyCompile(t));
     });
 
     // add actions
@@ -292,7 +283,7 @@ var BootstrapModel = {
             }
           }
           this.actions_[i] = a;
-          addMethod(a.name, function(opt_x) { a.callIfEnabled(opt_x || this.X, this); });
+          cls.addMethod(a.name, function(opt_x) { a.callIfEnabled(opt_x || this.X, this); });
         }.bind(this))(this.actions[i]);
       }
     }
@@ -340,9 +331,9 @@ var BootstrapModel = {
     for ( key in this.methods ) {
       var m = this.methods[key];
       if ( Method && Method.isInstance(m) ) {
-        addMethod(m.name, m.generateFunction());
+        cls.addMethod(m.name, m.generateFunction());
       } else {
-        addMethod(key, m);
+        cls.addMethod(key, m);
       }
     }
 

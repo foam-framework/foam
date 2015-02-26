@@ -66,7 +66,7 @@ var FObject = {
       for ( var i = 0 ; i < this.imports__.length ; i++ ) {
         var im = this.imports__[i];
         // Don't import from Context if explicitly passed in args
-        if ( ! args || ! args.hasOwnProperty(im[1]) ) o[im[1]] = o.X[im[0]];
+        if ( ( ! args || ! args.hasOwnProperty(im[1]) ) && typeof o.X[im[0]] !== 'undefined' ) o[im[1]] = o.X[im[0]];
       }
     }
 
@@ -463,6 +463,14 @@ var FObject = {
 
     // Let the property install other features into the Prototype
     prop.install && prop.install.call(this, prop);
+  },
+
+  addMethod: function(name, method) {
+    if ( this.__proto__[name] ) {
+      override(this, name, method);
+    } else {
+      this[name] = method;
+    }
   },
 
   hashCode: function() {
