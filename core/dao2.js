@@ -1213,6 +1213,24 @@ CLASS({
 
       var future = afuture();
       var self = this;
+
+
+      // If the caller doesn't care to see the objects as they get removed,
+      // then just nuke them in one go.
+      if ( ! options && ! ( sink && sink.remove ) ) {
+        this.withStore('readwrite', function(store) {
+          var req = store.clear();
+          req.onsuccess = function() {
+            future.set();
+          };
+          req.onerror = function() {
+            future.set();
+          };
+        });
+        return future.get;
+      }
+
+
       this.withStore('readwrite', function(store) {
         var request = store.openCursor();
         request.onsuccess = function(e) {
