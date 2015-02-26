@@ -24,7 +24,9 @@ CLASS({
   ],
   requires: [
     'foam.dao.NodeFileDAO as FileDAO',
-    'foam.dao.File'
+    'foam.dao.File',
+    'foam.core.dao.OrDAO',
+    'node.dao.ModelFileDAO'
   ],
   properties: [
     {
@@ -49,16 +51,26 @@ CLASS({
     {
       model_: 'BooleanProperty',
       name: 'precompileTemplates',
+      help: 'True to precompile templates of models loaded from the ModelDAO.',
       defaultValue: false
     },
     {
       model_: 'StringArrayProperty',
       name: 'extraFiles',
+      help: 'Extra files to both load during the build process, and include in the built image.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
     {
       model_: 'StringArrayProperty',
+      name: 'extraModels',
+      help: 'Extra models to include in the image regardless of if they were arequired or not.',
+      adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; },
+      factory: function() { return ['foam.ui.FoamTagView']; }
+    },
+    {
+      model_: 'StringArrayProperty',
       name: 'blacklistModels',
+      help: 'Models to unconditionally exclude from the image, even if they are listed as required.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
     {
@@ -110,6 +122,12 @@ CLASS({
     {
       name: 'fileDAO',
       factory: function() { return this.FileDAO.create(); }
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'extraClassPaths',
+      help: 'List of extra .js hierarchies to load models from.  Paths will be checked in the order given, finally falling back to the main FOAM js/ hierarchy.',
+      adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     }
   ],
   methods: {
@@ -123,13 +141,29 @@ CLASS({
         process.exit(1);
       }
 
+      for ( var i = this.extraClassPaths.length - 1; i >= 0; i-- ) {
+        this.X.ModelDAO = this.OrDAO.create({
+          primary: this.ModelFileDAO.create({
+            classpath: this.extraClassPaths[i]
+          }),
+          delegate: this.X.ModelDAO
+        });
+      }
+
       for ( var i = 0 ; i < this.extraFiles.length ; i++ ) {
         require(FOAM_BOOT_DIR + this.path.sep + this.extraFiles[i] + '.js');
       }
 
       var view = this.defaultView ? arequire(this.defaultView) : anop;
+
+
+      var seq = [view];
+      for ( var i = 0; i < this.extraModels.length ; i++ ) {
+        seq.push(arequire(this.extraModels[i]));
+      }
+
       aseq(
-        view,
+        aseq.apply(null, seq),
         arequire(this.controller))(this.execute_.bind(this));
     },
     buildCoreJS_: function(ret) {
@@ -137,7 +171,7 @@ CLASS({
       var self = this;
       var corejs = '';
       var file;
-      if ( this.coreFiles ) var myfiles = this.coreFiles;
+      if ( this.coreFiles.length ) var myfiles = this.coreFiles;
       else myfiles = files;
       myfiles = myfiles.concat(this.extraFiles);
       awhile(
@@ -190,6 +224,10 @@ CLASS({
       };
       add(this.controller);
       if ( this.defaultView ) add(this.defaultView);
+
+      for ( var i = 0; i < this.extraModels.length ; i++ ) {
+        add(this.extraModels[i]);
+      }
 
       var contents = '';
 
