@@ -1633,11 +1633,13 @@ CLASS({
              this.objToJson(value, extra)
             )(
         function(resp, status) {
-          if ( status !== 200 ) {
+          var obj;
+
+          if ( ( status !== undefined && status !== 200 ) ||
+               ( obj = self.jsonToObj(resp, extra) ) ) {
             sink && sink.error && sink.error([resp, status]);
             return;
           }
-          var obj = self.jsonToObj(resp, extra);
           sink && sink.put && sink.put(obj);
           self.notify_('put', [obj]);
         });
