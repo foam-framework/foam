@@ -34,7 +34,7 @@ CLASS({
     /** Allow inner to be optional when defined using HTML. **/
     fromElement: function(e) {
       var children = e.children;
-      if ( children.length == 1 && children[0].nodeName === 'code' ) {
+      if ( e.childNodes.length == 0 || children.length == 1 && children[0].nodeName === 'code' ) {
         return this.SUPER(e);
       }
 
