@@ -45,12 +45,13 @@ CLASS({
     }
   ],
   methods: {
-    initHTML: function() {
+    initInnerHTML: function() {
       this.SUPER();
       this.window.addEventListener('resize', this.onResize);
       this.onResize_();
     },
-    destory: function() {
+    destroy: function(isParentDestroyed) {
+      this.SUPER(isParentDestroyed);
       this.window.removeEventListener('resize', this.onResize);
     },
     onResize_: function() {
