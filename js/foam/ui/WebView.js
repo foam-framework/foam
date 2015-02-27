@@ -43,6 +43,7 @@ CLASS({
       // This is a lazy way of handling the change in size when things like
       // images load asynchronously.
       this.intervalId = this.window.setInterval(this.onResize, 500);
+      this.onResize();
     },
     destroy: function() {
       this.window.clearInterval(this.intervalId);
