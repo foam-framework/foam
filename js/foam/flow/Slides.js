@@ -81,13 +81,20 @@ CLASS({
         xxxborder: 1px solid black;
         padding: 10px;
       }
+      .flow-slides-controls input {
+        vertical-align: top;
+        width: 40px;
+      }
+      .flow-slides-controls .actionButton-back {
+        margin-left: 100px;
+      }
     */},
     function toInnerHTML() {/*
       <div class="flow-slides-slide">
         <%= this.currentSlide() %>
       </div>
       <div class="flow-slides-controls">
-        $$back $$forth   $$position{dispalyWidth: 5} of {{this.slides.length}}
+        $$position of {{this.slides.length}} $$back $$forth
       </div>
     */}
   ]
