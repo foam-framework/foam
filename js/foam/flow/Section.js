@@ -28,10 +28,29 @@ CLASS({
       name: 'title'
     },
     {
+      model_: 'StringProperty',
+      name: 'fullTitle',
+      getter: function() {
+        return (this.enumerate ? this.ordinal + ' ' : '') + this.title;
+      }
+    },
+    {
       model_: 'DAOProperty',
       name: 'subSections',
       view: 'DAOListView',
       factory: function() { return []; }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'enumerate',
+      defaultValue: true
+    },
+    {
+      model_: 'StringProperty',
+      name: 'sectionAnchor',
+      getter: function() {
+        return 'section-' + this.fullTitle.toLowerCase().replace('.', '').replace(' ', '-');
+      }
     }
   ],
 
@@ -39,17 +58,6 @@ CLASS({
     init: function() {
       this.SUPER();
       this.parentSection && this.parentSection.addSubSection(this);
-    },
-
-    /** Allow inner to be optional when defined using HTML. **/
-    fromElement: function(e) {
-      this.SUPER(e);
-      var children = e.children;
-      if ( children.length !== 1 || children[0].nodeName !== 'inner' ) {
-        this.inner = e.innerHTML;
-      }
-
-      return this;
     },
 
     addSubSection: function(section) {
@@ -65,20 +73,33 @@ CLASS({
         font-size: 16px;
         margin-top: 18px;
       }
+
       heading a {
         text-decoration: none;
        }
+
+      flow-section {
+        display: block;
+      }
+
+      @media print {
+
+        book > flow-section {
+          page-break-after: always;
+        }
+
+      }
     */},
     function toHTML() {/*
       <flow-section>
         <heading>
-          <a name="section-%%ordinal"></a><a href="#toc">%%ordinal %%title</a>
+          <a name="%%sectionAnchor"></a><a href="#toc">%%fullTitle</a>
         </heading>
         <%= this.inner() %>
       </flow-section>
     */},
     function toDetailHTML() {/*
-      <a href="#section-{{this.ordinal}}">{{this.ordinal}} {{this.title}}</a><br>
+      <a href="#{{this.data.sectionAnchor}}">{{{this.data.fullTitle}}}</a><br />
       <blockquote>
         $$subSections{mode: 'read-only'}
       </blockquote>

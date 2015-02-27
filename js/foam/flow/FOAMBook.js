@@ -13,7 +13,9 @@
 CLASS({
   name: 'FOAMBook',
   package: 'foam.flow',
-  extendsModel: 'foam.flow.Element',
+  extendsModel: 'foam.flow.Section',
+
+  exports: [ 'glossaryTerms' ],
 
   constants: { ELEMENT: 'foam-book' },
 
@@ -23,13 +25,17 @@ CLASS({
     'foam.flow.SubTitle',
     'foam.flow.Author',
     'foam.flow.ToC',
-    'foam.flow.Section'
+    'foam.flow.Section',
+    'foam.flow.GlossaryTerm',
+    'foam.flow.Glossary'
   ],
 
   properties: [
     {
-      name: 'bookTitle',
-      type: 'foam.flow.BookTitle'
+      model_: 'ArrayProperty',
+      name: 'glossaryTerms',
+      type: 'Array[foam.flow.GlossaryTerm]',
+      factory: function() { return []; }
     }
   ],
 

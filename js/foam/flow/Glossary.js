@@ -11,18 +11,27 @@
 
 CLASS({
   package: 'foam.flow',
-  name: 'ToC',
-  label: 'Table of Contents',
-  extendsModel: 'foam.flow.Element',
+  name: 'Glossary',
+  extendsModel: 'foam.flow.Section',
 
-  imports: [ 'parentSection' ],
+  imports: [ 'glossaryTerms' ],
 
-  constants: { ELEMENT: 'toc' },
+  constants: { ELEMENT: 'glossary' },
 
   properties: [
     {
+      name: 'title',
+      defaultValue: 'Glossary'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'enumerate',
+      defaultValue: false
+    },
+    {
       model_: 'DAOProperty',
-      name: 'sections',
+      name: 'terms',
+      todo: 'Sort alphabetically',
       view: 'DAOListView',
       factory: function() { return []; }
     }
@@ -30,28 +39,23 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <% this.sections = this.parentSection.subSections; %>
-        <flow-toc>
-          <a name="toc"></a>
+      <% this.terms = this.glossaryTerms; %>
+        <flow-glossary>
+          <a name="glossary"></a>
           <heading>
-            Table of Contents
+            Glossary
           </heading>
           <blockquote>
-            $$sections{mode: 'read-only'}
+            $$terms{mode: 'read-only'}
           </blockquote>
-        </flow-toc>
+        </flow-glossary>
     */},
     function CSS() {/*
-      flow-toc { display: block }
-
-      flow-toc a {
-        text-decoration: none;
-        color: #444;
-      }
+      flow-glossary { display: block }
 
       @media print {
 
-        flow-toc {
+        flow-glossary {
           page-break-after: always;
         }
 
