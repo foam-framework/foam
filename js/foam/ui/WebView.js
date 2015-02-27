@@ -39,7 +39,7 @@ CLASS({
     initHTML: function() {
       this.SUPER();
 
-      var iframe = document.getElementById(this.id);
+      var iframe = this.$;
       iframe.contentDocument.write(this.data);
 
       // This is a lazy way of handling the change in size when things like
@@ -60,12 +60,11 @@ CLASS({
       name: 'onResize',
       isMerged: 500,
       code: function() {
-        var iframe = document.getElementById(this.id);
         // If the height of the content gets smaller on resize (e.g. because the
         // window got wider) then that won't be reflected in the scrollHeight so
         // set the size to 0 first and then use the scrollHeight.
-        iframe.style.height = 0;
-        iframe.style.height = iframe.contentDocument.body.scrollHeight;
+        this.$.style.height = 0;
+        this.$.style.height = this.$.contentDocument.body.scrollHeight;
       }
     }
   ]
