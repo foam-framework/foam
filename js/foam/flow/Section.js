@@ -28,10 +28,6 @@ CLASS({
       name: 'title'
     },
     {
-      model_: 'ViewFactoryProperty',
-      name: 'inner'
-    },
-    {
       model_: 'DAOProperty',
       name: 'subSections',
       view: 'DAOListView',
@@ -64,29 +60,25 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .flow-section-header {
+      heading {
+        display: block;
         font-size: 16px;
         margin-top: 18px;
       }
-      .flow-section-header a {
-        text-decoration-line: none;
+      heading a {
+        text-decoration: none;
        }
-      .flow-section-body {
-        margin: 18px;
-      }
     */},
     function toHTML() {/*
-      <div class="flow-section">
-        <div class="flow-section-header">
+      <flow-section>
+        <heading>
           <a name="section-%%ordinal"></a><a href="#toc">%%ordinal %%title</a>
-        </div>
-        <div class="flow-section-body">
-          <%= this.inner() %>
-        </div>
-      </div>
+        </heading>
+        <%= this.inner() %>
+      </flow-section>
     */},
     function toDetailHTML() {/*
-      <a href="#section-{{this.data.ordinal}}">{{this.data.ordinal}} {{this.data.title}}</a><br>
+      <a href="#section-{{this.ordinal}}">{{this.ordinal}} {{this.title}}</a><br>
       <blockquote>
         $$subSections{mode: 'read-only'}
       </blockquote>

@@ -31,13 +31,24 @@ CLASS({
   templates: [
     function toHTML() {/*
       <%  this.sections = this.parentSection.subSections; %>
-      <hr>
-        <a name="toc"></a>
-        <h2>Table of Contents</h2>
-        <blockquote>
-          $$sections{mode: 'read-only'}
-        </blockquote>
-      <hr>
+        <flow-toc>
+          <a name="toc"></a>
+          <heading>Table of Contents</heading>
+          <blockquote>
+            $$sections{mode: 'read-only'}
+          </blockquote>
+        </flow-toc>
+    */},
+    function CSS() {/*
+      flow-toc { display: block }
+
+      @media print {
+
+        flow-toc {
+          page-break-after: always;
+        }
+
+      }
     */}
   ]
 });

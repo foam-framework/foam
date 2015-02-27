@@ -18,10 +18,6 @@ CLASS({
 
   properties: [
     {
-      name: 'data',
-      factory: function() { return this; }
-    },
-    {
       model_: 'StringProperty',
       name: 'firstName'
     },
@@ -104,6 +100,22 @@ CLASS({
   templates: [
     function toHTML() {/*
       <flow-author id="%%id">%%shortFullName</flow-author>
+    */},
+    function CSS() {/*
+      @media not print {
+
+        flow-title-page > flow-author {
+          margin-top: 3px;
+        }
+
+      }
+
+      @media print {
+        title-page > author {
+          margin-top: 0.05in;
+        }
+
+      }
     */}
   ]
 });

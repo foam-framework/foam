@@ -1,10 +1,20 @@
 <book-container id="%%id">
   <book>
     <title-page>
-      <doc-title>%%title</doc-title>
-      <% if ( this.subTitle ) { %><sub-title>%%subTitle</sub-title><% } %>
+      <book-title>
+        FOAM
+      </book-title>
+      <sub-title>
+        The Good Parts
+      </sub-title>
+      <author>
+        <firstName>Kevin</firstName>
+        <lastName>Greer</lastName>
+      </author>
       <author>
         <firstName>Mark</firstName>
+        <middleName>Stephen</middleName>
+        <lastName>Dittmer</lastName>
       </author>
     </title-page>
     <toc />

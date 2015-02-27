@@ -54,7 +54,7 @@ title-page > * {
 
 @media not print {
 
-    title-page > doc-title {
+    title-page > book-title {
         font-weight: bold;
         font-size: 80px;
         margin-top: 20px;
@@ -88,7 +88,7 @@ title-page > * {
         page-break-after: always;
     }
 
-    title-page > doc-title {
+    title-page > book-title {
         font-weight: bold;
         font-size: 32pt;
         margin-top: 1in;
