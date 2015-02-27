@@ -65,10 +65,10 @@ CLASS({
             }))
         }, Y);
 
-        Y.issueDAO = Y.KeywordDAO.create({
+        Y.issueDAO = this.KeywordDAO.create({
           delegate: Y.issueDAO,
           DefaultQuery: DefaultQuery
-        });
+        }, Y);
 
         var pc = this.AppController.create({
           name: project.projectName,
