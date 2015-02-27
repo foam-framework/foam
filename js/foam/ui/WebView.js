@@ -54,7 +54,7 @@ CLASS({
       name: 'onResize',
       isMerged: 500,
       code: function() {
-        this.$.style.height = this.$.contentDocument.documentElement.clientHeight;
+        this.$.style.height = this.$.contentDocument.documentElement.offsetHeight;
       }
     }
   ]
