@@ -21,7 +21,8 @@ CLASS({
   package: 'foam.ui',
   extendsModel: 'foam.ui.DataView',
   traits: ['foam.ui.HTMLViewTrait',
-           'foam.ui.TemplateSupportTrait'],
+           'foam.ui.TemplateSupportTrait',
+           'foam.ui.ViewActionsTrait'],
 
   properties: [
     {
@@ -59,7 +60,7 @@ CLASS({
         dao: this.data[this.relationship.name],
         model: this.relationship.relatedModel
       }, this.X).copyFrom(this.args);
-      this.addChild(view);
+      this.addChild(this.view);
     }
   },
   templates: [

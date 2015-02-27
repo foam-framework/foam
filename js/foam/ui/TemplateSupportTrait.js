@@ -26,7 +26,13 @@ CLASS({
   */},
 
   methods: {
-       
+    init: function() {
+      this.SUPER();
+      
+      // HACK: when dependency cycles can resolve, move this to requires
+      arequire('foam.ui.RelationshipView');
+    },
+        
     createView: function(prop, opt_args) {
       /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.Y;

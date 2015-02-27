@@ -26,7 +26,7 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'innerView',
-      defaultValue: 'DetailView'
+      defaultValue: 'foam.ui.DetailView'
     },
     {
       name: 'data'

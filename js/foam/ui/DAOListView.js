@@ -24,7 +24,8 @@ CLASS({
   extendsModel: 'foam.ui.LeafDataView',
   traits: ['foam.ui.TemplateSupportTrait',
            'foam.ui.DAODataViewTrait',
-           'foam.ui.HTMLViewTrait'], 
+           'foam.ui.HTMLViewTrait', 
+           'foam.ui.ViewActionsTrait'], 
   
   properties: [
     {

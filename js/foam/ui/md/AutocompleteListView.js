@@ -21,7 +21,7 @@ CLASS({
   package: 'foam.ui.md',
   extendsModel: 'foam.ui.DataView',
 
-  traits: ['foam.ui.HTMLViewTrait', 'foam.ui.TemplateSupportTrait'],
+  traits: ['foam.ui.HTMLViewTrait', 'foam.ui.TemplateSupportTrait', 'foam.ui.ViewActionsTrait'],
   
   requires: [
     'foam.ui.md.AddRowView',

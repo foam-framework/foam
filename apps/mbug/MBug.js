@@ -165,7 +165,7 @@ CLASS({
 CLASS({
   name: 'PriorityView',
   extendsModel: 'foam.ui.DataView',
-  traits: ['foam.ui.HTMLViewTrait', 'foam.ui.TemplateSupportTrait'],
+  traits: ['foam.ui.HTMLViewTrait', 'foam.ui.TemplateSupportTrait',  'foam.ui.ViewActionsTrait'],
   properties: [
     { name: 'data', postSet: function() { this.updateHTML(); } },
     {
