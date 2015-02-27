@@ -12,10 +12,12 @@
 CLASS({
   package: 'foam.flow',
   name: 'Section',
-  extendsModel: 'View',
+  extendsModel: 'foam.flow.Element',
 
   imports: [ 'parentSection' ],
   exports: [ 'as parentSection' ],
+
+  constants: { ELEMENT: 'section' },
 
   properties: [
     {
