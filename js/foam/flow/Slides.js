@@ -34,6 +34,9 @@ CLASS({
       name: 'position',
       displayWidth: 5,
       defaultValue: 1,
+      preSet: function(o, n) {
+        return Math.max(1, Math.min(n, this.slides.length));
+      },
       postSet: function(_, p) {
         if ( ! this.$ ) return;
         var v = this.currentSlide();
