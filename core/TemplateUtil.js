@@ -293,7 +293,6 @@ MODEL({
         xhr.asend(function(data) {
           t.template = data;
           future.set(Template.create(t));
-          t.futureTemplate = undefined;
         });
       } else if ( typeof t.template === 'function' ) {
         t.template = multiline(t.template);

@@ -1,0 +1,15 @@
+<book-container id="%%id">
+  <book>
+    <title-page>
+      <doc-title>%%title</doc-title>
+      <% if ( this.subTitle ) { %><sub-title>%%subTitle</sub-title><% } %>
+      <author>
+        <firstName>Mark</firstName>
+      </author>
+    </title-page>
+    <toc />
+    <section title="Introduction">
+      Welcome to the wonderful world of FOAM!
+    </section>
+  </book>
+</book-container>
