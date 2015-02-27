@@ -378,7 +378,7 @@ var JSONUtil = {
           if ( obj.model_ )
             this.outputObject_(out, obj, nestedIndent);
           else
-            this.outputMap_(out, obj, opt_defaultModel, nestedIndent);
+            this.outputMap_(out, obj, nestedIndent);
         }
       }
 

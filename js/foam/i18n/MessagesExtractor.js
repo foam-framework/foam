@@ -16,7 +16,7 @@
  */
 
 CLASS({
-  name: 'MessagesBuilder',
+  name: 'MessagesExtractor',
   package: 'foam.i18n',
   extendsModel: 'foam.i18n.Visitor',
 
@@ -36,7 +36,7 @@ CLASS({
       name: 'messagesToString',
       code: function() {
         this.console.warn(
-            'Message builder without messagesToString implementation: ' +
+            'Message extractor without messagesToString implementation: ' +
                 this.name_);
         return '';
       }
