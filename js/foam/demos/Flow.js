@@ -26,6 +26,7 @@ CLASS({
       this.X.registerElement('toc',         'foam.flow.ToC');
       this.X.registerElement('section',     'foam.flow.Section');
       this.X.registerElement('code-sample', 'foam.flow.CodeSample');
+      this.X.registerElement('slides',      'foam.flow.Slides');
     }
   },
 
@@ -79,6 +80,20 @@ CLASS({
         </code-sample>
 
       </section>
+
+      Slides:
+
+      <slides>
+        <slide><circle color="red"   x="100" y="45" r="40"/></slide>
+        <slide><circle color="green" x="150" y="45" r="40"/></slide>
+        <slide><circle color="blue"  x="200" y="45" r="40"/></slide>
+        <slide>A Slide without a circle!</slide>
+        <slide>
+          Two to make up for the last slide:
+          <circle color="yellow"  x="200" y="45" r="40"/>
+          <circle color="purple"  x="200" y="45" r="40"/>
+        </slide>
+      </slides>
 
       The end.
     */}

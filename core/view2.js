@@ -539,7 +539,7 @@ CLASS({
       str += '<div class="actionToolbar">';
 
       // Actions on the View, are bound to the view
-      var actions = this.model_.actions;
+      var actions = this.model_.actions_;
       for ( var i = 0 ; i < actions.length; i++ ) {
         var v = this.createActionView(actions[i]);
         v.data = this;
@@ -552,7 +552,7 @@ CLASS({
       if ( DetailView.isInstance(this) ) {
 
         // Actions on the data are bound to the data
-        actions = this.model.actions;
+        actions = this.model.actions_;
         for ( var i = 0 ; i < actions.length; i++ ) {
           var v = this.createActionView(actions[i]);
           v.data$ = this.data$;
