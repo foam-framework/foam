@@ -31,12 +31,13 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      
+
       if ( ! this.Element.isInstance(this.element) ) this.install();
     },
     install: function() {
       var e = this.element;
       var models = [];
+      var style     = e.getAttribute('style' /*_*/);
       var modelName = e.getAttribute('model' /*_*/);
       var viewName  = e.getAttribute('view' /*_*/);
       var onInit    = e.getAttribute('oninit' /*_*/);
@@ -68,7 +69,7 @@ CLASS({
           view = obj.toView_();
         } else {
           var a = this.element.getAttribute('showActions');
-          var showActions = ! a || ( 
+          var showActions = ! a || (
             a.equalsIC('y')    ||
               a.equalsIC('yes')  ||
               a.equalsIC('true') ||
@@ -84,8 +85,11 @@ CLASS({
         if ( e.id ) this.document.FOAM_OBJECTS[e.id] = obj;
         obj.view_ = view;
         this.holder().outerHTML = view.toHTML();
+        if ( style ) {
+          view.$.setAttribute('style', style);
+        }
         view.initHTML();
-        
+
         if ( onInit )
           aeval('function() { ' + onInit + ' }')(function(f) { f.call(obj); });
 
