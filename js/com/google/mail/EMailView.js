@@ -21,6 +21,9 @@ CLASS({
   extendsModel: 'UpdateDetailView',
   properties: [
   ],
+  requires: [
+    "foam.ui.WebView",
+  ],
   actions: [
     {
       name: 'back',
@@ -77,7 +80,7 @@ CLASS({
               falseImage: 'images/ic_star_outline_24dp.png'
             }
           </div>
-          $$body{ mode: 'read-only', className: 'body', escapeHTML: false }
+          $$body{ model_: 'foam.ui.WebView', className: 'body' }
         </div>
       </div>
     */}
