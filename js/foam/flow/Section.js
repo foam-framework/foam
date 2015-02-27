@@ -45,12 +45,12 @@ CLASS({
 
     /** Allow inner to be optional when defined using HTML. **/
     fromElement: function(e) {
+      this.SUPER(e);
       var children = e.children;
-      if ( children.length == 1 && children[0].nodeName === 'inner' ) {
-        return this.SUPER(e);
+      if ( children.length !== 1 || children[0].nodeName !== 'inner' ) {
+        this.inner = e.innerHTML;
       }
 
-      this.inner = e.innerHTML;
       return this;
     },
 
