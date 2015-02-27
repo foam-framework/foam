@@ -864,7 +864,7 @@ var ViewFactoryProperty = Model.create({
           return m.create(f, opt_X || this.Y).copyFrom(map);
         }.bind(this);
 
-        if ( View.isInstance(f) ) return constantFn(f);
+        if ( this.X.foam.ui.View.isInstance(f) ) return constantFn(f);
 
         console.error('******* Invalid Factory: ', f);
         return f;

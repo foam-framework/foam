@@ -65,7 +65,7 @@ CLASS({
             }))
         }, Y);
 
-        Y.issueDAO = Y.KeywordDAO.create({
+        Y.issueDAO = this.KeywordDAO.create({
           delegate: Y.issueDAO,
           DefaultQuery: DefaultQuery
         });

@@ -21,7 +21,8 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'foam.input.touch.GestureTarget'
+    'foam.input.touch.GestureTarget',
+    'foam.ui.ChoiceListView'
   ],
 
   properties: [
@@ -53,7 +54,7 @@ CLASS({
       name: 'headerView',
       help: 'Optional View to be displayed in header.',
       factory: function() {
-        return this.X.ChoiceListView.create({
+        return this.ChoiceListView.create({
           choices: this.views.map(function(x) {
             return x.label;
           }),
