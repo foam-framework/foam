@@ -1213,6 +1213,24 @@ CLASS({
 
       var future = afuture();
       var self = this;
+
+
+      // If the caller doesn't care to see the objects as they get removed,
+      // then just nuke them in one go.
+      if ( ! options && ! ( sink && sink.remove ) ) {
+        this.withStore('readwrite', function(store) {
+          var req = store.clear();
+          req.onsuccess = function() {
+            future.set();
+          };
+          req.onerror = function() {
+            future.set();
+          };
+        });
+        return future.get;
+      }
+
+
       this.withStore('readwrite', function(store) {
         var request = store.openCursor();
         request.onsuccess = function(e) {
@@ -1535,10 +1553,8 @@ CLASS({
           }
 
           var rulesDAO = self.rules.dao;
-
           rulesDAO
-            .where(AND(GT(MigrationRule.VERSION, version.version),
-                       LTE(MigrationRule.VERSION, self.X.App.version)))
+            .where(AND(GT(MigrationRule.VERSION, version.version)))
             .select()(function(rules) {
               var seq = [];
               for ( var i = 0; i < rules.length; i++ ) {
@@ -1635,11 +1651,13 @@ CLASS({
              this.objToJson(value, extra)
             )(
         function(resp, status) {
-          if ( status !== 200 ) {
+          var obj;
+
+          if ( ( status !== undefined && status !== 200 ) ||
+               ( obj = self.jsonToObj(resp, extra) ) ) {
             sink && sink.error && sink.error([resp, status]);
             return;
           }
-          var obj = self.jsonToObj(resp, extra);
           sink && sink.put && sink.put(obj);
           self.notify_('put', [obj]);
         });
