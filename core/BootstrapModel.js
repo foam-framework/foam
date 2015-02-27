@@ -345,7 +345,7 @@ var BootstrapModel = {
       var name = constantize(r.name);
       if ( ! self[name] ) self[name] = r;
       defineLazyProperty(cls, r.name, function() {
-        var m = this.X[r.relatedModel];
+        var m = FOAM.lookup(r.relatedModel, this.X);
         var lcName = m.name[0].toLowerCase() + m.name.substring(1);
         var dao = this.X[lcName + 'DAO'] || this.X[m.name + 'DAO'] ||
             this.X[m.plural];

@@ -231,7 +231,7 @@ CLASS({
     num(1), num(2), num(3), num(4), num(5), num(6), num(7), num(8), num(9), num(0),
     binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7', 'divide', 'divide'),
     binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7', 'multiply', 'multiply'),
-    binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
+    binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+', 'plus', 'plus'),
     binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–', 'minus', 'minus'),
     {
       name: 'ac',
@@ -348,8 +348,8 @@ CLASS({
       action: function() { this.a2 /= 100.0; }
     },
 
-    unaryOp('inv',    ['i'], function(a) { return 1.0/a; }, '1/x', undefined, 'inverse'),
-    unaryOp('sqroot', [], Math.sqrt, '√', 'square root'),
+    unaryOp('inv',    ['i'], function(a) { return 1.0/a; }, '1/x', undefined, 'inverse', 'inverse'),
+    unaryOp('sqroot', [], Math.sqrt, '√', 'square root', 'square root'),
     unaryOp('square', ['shift-50' /* @ */], function(a) { return a*a; }, 'x²', 'x squared', 'x squared'),
     unaryOp('ln',     [], Math.log, 'ln', 'natural logarithm', 'natural logarithm'),
     unaryOp('exp',    [], Math.exp, 'eⁿ', undefined, 'e to the power of n'),

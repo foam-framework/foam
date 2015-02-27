@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2014 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,29 +16,17 @@
  */
 
 CLASS({
-  name: 'MessagesBuilder',
-  package: 'foam.i18n',
-  extendsModel: 'foam.i18n.Visitor',
-
-  imports: [
-    'console'
-  ],
+  name: 'KeywordsTrait',
+  package: 'foam.core.dao',
 
   properties: [
     {
-      name: 'messageBundle',
-      factory: function() { return {}; }
-    }
-  ],
-
-  methods: [
-    {
-      name: 'messagesToString',
-      code: function() {
-        this.console.warn(
-            'Message builder without messagesToString implementation: ' +
-                this.name_);
-        return '';
+      model_: 'StringArrayProperty',
+      name: 'keywords',
+      preSet: function(_, a) {
+        for ( var i = 0 ; i < a.length ; i++ ) a[i] = a[i].intern();
+        a.sort();
+        return a;
       }
     }
   ]

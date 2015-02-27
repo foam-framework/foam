@@ -68,9 +68,7 @@ var DOM = {
    * opt_document -- if supplied the object's view will be added to the document.
    **/
   initElement: function(e, X, opt_document) {
-    arequire('foam.ui.FoamTagView')(function (FoamTagView) {
-      FoamTagView.create({ element: e }, X);
-    });
+    foam.ui.FoamTagView.create({ element: e }, X);
   },
   
   // TODO(kgr): remove this when the FoamTagView is fully tested

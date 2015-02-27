@@ -178,6 +178,12 @@ var Property = {
       documentation: "A short alternate $$DOC{ref:'.name'} to be used for compact encoding."
     },
     {
+      name: 'singular',
+      type: 'String',
+      required: false,
+      displayWidth: 70
+    },
+    {
       name: 'aliases',
       type: 'Array[String]',
       view: 'StringArrayView',
