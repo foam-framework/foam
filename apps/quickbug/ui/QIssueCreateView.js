@@ -3,7 +3,7 @@ CLASS({
   extendsModel: 'foam.ui.DetailView',
 
   requires: [
-    'ActionButton',
+    'foam.ui. ActionButton',
     'AutocompleteView',
     'LabelAutocompleteView',
     'StatusAutocompleteView'

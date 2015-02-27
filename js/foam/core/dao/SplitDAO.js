@@ -16,43 +16,31 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "package": "foam.core.dao",
-   "name": "SplitDAO",
-   "extendsModel": "ProxyDAO",
-   "requires": [
-      "MDAO"
-   ],
-   "properties": [
-      {
-         "model_": "Property",
-         "name": "model",
-         "label": "Model",
-         "type": "Model",
-         "required": true,
-         "hidden": true
-      },
-      {
-         "model_": "Property",
-         "name": "remote",
-         "type": "DAO",
-         "mode": "read-only",
-         "required": true,
-         "hidden": true
-      },
-      {
-         "model_": "FunctionProperty",
-         "name": "placeholderFactory"
-      },
-      {
-         "model_": "IntProperty",
-         "name": "staleTimeout",
-         "defaultValue": 5000
-      },
-      {
-         "model_": "Property",
-         "name": "delegate",
-         "factory": function () {
+  "model_": "Model",
+  "package": "foam.core.dao",
+  "name": "SplitDAO",
+  "extendsModel": "ProxyDAO",
+  "requires": [
+    "MDAO"
+  ],
+  "properties": [
+    {
+      "name": "remote",
+      "required": true,
+      "hidden": true
+    },
+    {
+      "model_": "FunctionProperty",
+      "name": "placeholderFactory"
+    },
+    {
+      "model_": "IntProperty",
+      "name": "staleTimeout",
+      "defaultValue": 5000
+    },
+    {
+      "name": "delegate",
+      "factory": function () {
         // TODO: Cleanup the index setup, it shouldn't be this hard.
         var dao = this.MDAO.create({
           model: this.model,
@@ -67,74 +55,60 @@ CLASS({
         dao.root = [[]];
         return dao;
       }
+    }
+  ],
+  "methods": [
+    {
+      "model_": "Method",
+      "name": "init",
+      "code": function () {
+        this.SUPER();
+        var self = this;
+        this.remote.listen({
+          put: function(obj) {
+            self.delegate.put(obj);
+          },
+          remove: function(obj) {
+            self.delegate.remove(obj);
+          }
+        });
       }
-   ],
-   "actions": [],
-   "constants": [],
-   "messages": [],
-   "methods": [
-      {
-         "model_": "Method",
-         "name": "init",
-         "code": function () {
-      this.SUPER();
-      var self = this;
-      this.remote.listen({
-        put: function(obj) {
-          debugger;
-          self.delegate.put(obj);
-        },
-        remove: function(obj) {
-          debugger;
-          self.delegate.remove(obj);
-        }
-      });
     },
-         "args": []
-      },
-      {
-         "model_": "Method",
-         "name": "put",
-         "code": function (obj, sink) {
-      this.remote.put(obj, sink);
-    },
-         "args": []
-      },
-      {
-         "model_": "Method",
-         "name": "remove",
-         "code": function (obj, sink) {
-      this.remote.remove(obj, sink);
-    },
-         "args": []
-      },
-      {
-         "model_": "Method",
-         "name": "find",
-         "code": function (key, sink) {
-      var remote = this.remote;
-      var delegate = this.delegate
-      this.SUPER(key, {
-        put: function(obj) {
-        },
-        error: function() {
-          remote.find(key, {
-            put: function(obj) {
-              sink && sink.put && sink.put(obj);
-              delegate.put(obj);
-            },
-            error: (sink && sink.error) ? sink.error.bind(sink) : undefined
-          })
-        }
-      });
-    },
-         "args": []
+    {
+      "model_": "Method",
+      "name": "put",
+      "code": function (obj, sink) {
+        this.remote.put(obj, sink);
       }
-   ],
-   "listeners": [],
-   "templates": [],
-   "models": [],
-   "tests": [],
-   "relationships": [],
-   "issues": []
+    },
+    {
+      "model_": "Method",
+      "name": "remove",
+      "code": function (obj, sink) {
+        this.remote.remove(obj, sink);
+      }
+    },
+    {
+      "model_": "Method",
+      "name": "find",
+      "code": function (key, sink) {
+        var remote = this.remote;
+        var delegate = this.delegate
+        this.SUPER(key, {
+          put: function(obj) {
+            sink && sink.put && sink.put(obj);
+          },
+          error: function() {
+            remote.find(key, {
+              put: function(obj) {
+                sink && sink.put && sink.put(obj);
+                delegate.put(obj);
+              },
+              error: (sink && sink.error) ? sink.error.bind(sink) : undefined
+            })
+          }
+        });
+      }
+    }
+  ]
 });

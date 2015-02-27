@@ -34,6 +34,9 @@ CLASS({
       name: 'position',
       displayWidth: 5,
       defaultValue: 1,
+      preSet: function(o, n) {
+        return Math.max(1, Math.min(n, this.slides.length));
+      },
       postSet: function(_, p) {
         if ( ! this.$ ) return;
         var v = this.currentSlide();
@@ -78,13 +81,20 @@ CLASS({
         xxxborder: 1px solid black;
         padding: 10px;
       }
+      .flow-slides-controls input {
+        vertical-align: top;
+        width: 40px;
+      }
+      .flow-slides-controls .actionButton-back {
+        margin-left: 100px;
+      }
     */},
     function toInnerHTML() {/*
       <div class="flow-slides-slide">
         <%= this.currentSlide() %>
       </div>
       <div class="flow-slides-controls">
-        $$back $$forth   $$position{dispalyWidth: 5} of {{this.slides.length}}
+        $$position of {{this.slides.length}} $$back $$forth
       </div>
     */}
   ]

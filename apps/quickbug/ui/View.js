@@ -383,7 +383,7 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'ActionButton',
+    'foam.ui. ActionButton',
     'TextFieldView'
   ],
 

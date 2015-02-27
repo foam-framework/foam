@@ -1,0 +1,64 @@
+<h1>Flow Demo</h1>
+
+<toc/>
+
+<section title="Chapter">
+  This is chapter 1.
+
+  <section title="Sub-Chapter">
+    Sub-Chapter Stuff
+    <section title="Sub-Sub-Chapter">
+      Sub-Sub-Chapter Stuff
+    </section>
+    <section title="Sub-Sub-Chapter">
+      Sub-Sub-Chapter Stuff
+    </section>
+  </section>
+
+  <section title="Sub-Chapter">
+    More Sub-Chapter Stuff
+  </section>
+
+</section>
+
+<section title="Chapter">
+  This is chapter 2.
+</section>
+
+<circle color="blue" x="100" y="20" r="20"/>
+
+<!-- <solar/> -->
+
+<section title="Chapter">
+  This is chapter 3.
+
+  Sample 1:
+  <code-sample code="return 1+2;"/>
+
+  Sample 2:
+  <code-sample>
+    return 42*42;
+  </code-sample>
+
+  Sample 3:
+  <code-sample>
+    <code>return "hello world!";</code>
+  </code-sample>
+
+</section>
+
+Slides:
+
+<slides>
+  <slide><circle color="red"   x="100" y="45" r="40"/></slide>
+  <slide><circle color="green" x="150" y="45" r="40"/></slide>
+  <slide><circle color="blue"  x="200" y="45" r="40"/></slide>
+  <slide>A Slide without a circle!</slide>
+  <slide>
+    Two to make up for the last slide:
+    <circle color="yellow"  x="200" y="45" r="40"/>
+    <circle color="purple"  x="200" y="45" r="40"/>
+  </slide>
+</slides>
+
+The end.

@@ -392,7 +392,7 @@ CLASS({
 CLASS({
   name: 'ActionLink',
 
-  extendsModel: 'ActionButton',
+  extendsModel: 'foam.ui. ActionButton',
 
   properties: [
     {
@@ -1643,7 +1643,7 @@ CLASS({
   label: 'Toolbar',
 
   requires: [
-    'ActionButton',
+    'foam.ui. ActionButton',
     'MenuSeparator'
   ],
 
