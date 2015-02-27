@@ -488,7 +488,7 @@ var ArrayProperty = Model.create({
         var a = [];
         for ( var i = 0 ; i < children.length ; i++ ) {
           var o = model.create(null, this.Y);
-          o.fromElement(children[i]);
+          o.fromElement(children[i], p);
           a.push(o);
         }
         this[p.name] = a;
@@ -823,6 +823,7 @@ var ViewFactoryProperty = Model.create({
       defaultValue: function(_, f) {
         // Undefined values
         if ( ! f ) return f;
+
         // A Factory Function
         if ( typeof f === 'function' ) return f;
 
