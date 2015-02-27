@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.flow',
   name: 'CodeSample',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

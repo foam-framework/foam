@@ -14,7 +14,7 @@ CLASS({
   package: 'com.google.sweeper',
   name: 'Game',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [ 'com.google.sweeper.Board' ],
 
