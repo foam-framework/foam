@@ -45,7 +45,7 @@ CLASS({
           //  Movement.strut(mouse, c, (x-2)*20, (y-2)*20);
           Movement.spring(mouse, c, (x-(N-1)/2)*20, (y-(N-1)/2)*20);
           Movement.inertia(c);
-          Movement.friction(c, 0.95);
+          Movement.friction(c, 0.85);
         }
       }
     }
