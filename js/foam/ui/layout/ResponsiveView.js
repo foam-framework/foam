@@ -50,7 +50,7 @@ CLASS({
       this.window.addEventListener('resize', this.onResize);
       this.onResize_();
     },
-    destory: function() {
+    destroy: function() {
       this.window.removeEventListener('resize', this.onResize);
     },
     onResize_: function() {
