@@ -17,8 +17,6 @@ CLASS({
   imports: [ 'parentSection' ],
   exports: [ 'as parentSection' ],
 
-  constants: { ELEMENT: 'section' },
-
   properties: [
     {
       name: 'ordinal',

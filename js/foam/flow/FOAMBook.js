@@ -17,8 +17,6 @@ CLASS({
 
   exports: [ 'glossaryTerms' ],
 
-  constants: { ELEMENT: 'foam-book' },
-
   requires: [
     'EasyDAO',
     'foam.flow.TitlePage',

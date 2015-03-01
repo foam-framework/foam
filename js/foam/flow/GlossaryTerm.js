@@ -16,8 +16,6 @@ CLASS({
 
   imports: [ 'glossaryTerms' ],
 
-  constants: { ELEMENT: 'glossary-term' },
-
   properties: [
     {
       model_: 'StringProperty',

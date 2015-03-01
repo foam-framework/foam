@@ -14,7 +14,9 @@ CLASS({
   package: 'foam.flow',
   extendsModel: 'foam.ui.View',
 
-  constants: { ELEMENT: 'flow-element' },
+  requires: [
+    'foam.Name'
+  ],
 
   properties: [
     {
@@ -26,7 +28,9 @@ CLASS({
   methods: {
     installInDocument: function(X, document) {
       this.SUPER.apply(this, arguments);
-      this.X.registerElement(this.ELEMENT, this.model_.package + '.' + this.name_);
+      this.X.registerElement(
+          this.ELEMENT_NAME || this.X.foam.Name.create({ initial: this.name_ }).toTagName(),
+          this.model_.package + '.' + this.name_);
     },
 
     /** Allow inner to be optional when defined using HTML. **/
