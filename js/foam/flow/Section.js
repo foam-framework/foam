@@ -49,7 +49,7 @@ CLASS({
       model_: 'StringProperty',
       name: 'sectionAnchor',
       getter: function() {
-        return 'section-' + this.fullTitle.toLowerCase().replace('.', '').replace(' ', '-');
+        return 'section--' + this.fullTitle.toLowerCase().replace('.', '').replace(' ', '-');
       }
     }
   ],
