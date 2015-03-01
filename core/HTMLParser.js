@@ -149,7 +149,6 @@ CLASS({
     removeChild: function(c) {
       for ( var i = 0; i < this.childNodes.length; ++i ) {
         if ( this.childNodes[i] === c ) {
-          debugger;
           this.childNodes.splice(i, 1);
           break;
         }

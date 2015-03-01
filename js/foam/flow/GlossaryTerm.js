@@ -50,20 +50,23 @@ CLASS({
   methods: {
     fromElement: function(e) {
       this.SUPER(e);
+      // Prevent overwrite of existing term's definition. First definition wins.
       if ( this.definition ) {
-        console.log(this.id);
         this.glossaryTerms.find(this.id, {
-          put: function() {
-            console.warn(
-                'Duplicate glossary term definitions. Discarding latter: "' +
-                    this.definition + '"');
+          put: function(term) {
+            if ( ! term.definition ) {
+              this.glossaryTerms.put(this);
+            } else {
+              console.warn(
+                  'Duplicate glossary term definitions. Discarding latter: "' +
+                      this.definition + '"');
+            }
           }.bind(this),
           error: function() {
             this.glossaryTerms.put(this);
           }.bind(this)
         });
       } else {
-        console.log(this.id);
         this.glossaryTerms.put(this);
       }
     }
