@@ -12,11 +12,10 @@ CLASS({
 
   properties: [
     { name: 'timer' },
-    { name: 'n',          defaultValue: 6 },
-    { name: 'width',      defaultValue: 1000 },
-    { name: 'height',     defaultValue: 800 },
-    { name: 'background', defaultValue: 'white' },
-    { name: 'mouse',      factory: function() { return Mouse.create(); } },
+    { name: 'n',          defaultValue: 7 },
+    { name: 'width',      defaultValue: 800 },
+    { name: 'height',     defaultValue: 600 },
+    { name: 'background', defaultValue: '#ccf' },
     { name: 'collider',   factory: function() {
       return this.Collider.create();
     }},
@@ -36,41 +35,55 @@ CLASS({
 
       this.addChild(this.anchor);
 
-      var N     = this.n;
-      var mouse = this.mouse;
-
-      mouse.connect(this.$);
+      var N = this.n;
 
       for ( var x = 0 ; x < N ; x++ ) {
         for ( var y = 0 ; y < N ; y++ ) {
           var c = this.PhysicalCircle.create({
-            r: 25,
-            x: 600+(x-(N-1)/2)*70,
-            y: 400+(y-(N-1)/2)*70,
-            color: 'hsl(' + x/N*100 + ',' + (70+y/N*30) + '%, 60%)'
+            r: 15,
+            x: 400+(x-(N-1)/2)*70,
+            y: 200+(y-(N-1)/2)*70,
+            borderWidth: 6,
+            color: 'white',
+            border: 'hsl(' + x/N*100 + ',' + (70+y/N*30) + '%, 60%)'
           });
           this.addChild(c);
-          
-          Movement.gravity(c, 0.008);
+
+          c.y$.addListener(function(c) {
+            if ( c.y > this.height+50 ) {
+              c.y = -50;
+            }
+          }.bind(this, c));
+
+          Movement.gravity(c, 0.03);
           Movement.inertia(c);
-          Movement.friction(c, 0.98);
+          Movement.friction(c, 0.96);
           this.bounceOnWalls(c, this.width, this.height);
           this.collider.add(c);
         }
       }
 
+      var count = 0;
       this.timer.i$.addListener(function() {
         if ( this.timer.i % 10 ) return;
+        if ( count++ == 100 ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+
         var b = this.PhysicalCircle.create({
           r: 3,
-          x: 500+Math.random()*200,
+          x: this.width * Math.random(),
           y: this.height,
           color: 'white',
           borderWidth: 1,
           border: 'blue',
-          mass: 0.5
+          mass: 0.3
         });
 
+        b.y$.addListener(function() {
+          if ( b.y < 1 ) {
+            b.y = this.height;
+            b.x = this.width * Math.random();
+          }
+        }.bind(this, b));
         b.vy = -4;
         Movement.inertia(b);
         Movement.gravity(b, -0.2);
@@ -85,10 +98,9 @@ CLASS({
 
     bounceOnWalls: function (c, w, h) {
       Events.dynamic(function() { c.x; c.y; }, function() {
-        if ( c.x < c.r ) c.vx = Math.abs(c.vx);
-        if ( c.x > w - c.r ) c.vx = -Math.abs(c.vx);
-        if ( c.y < c.r ) c.vy = Math.abs(c.vy);
-        if ( c.y > h - c.r ) c.vy = -Math.abs(c.vy);
+        var r = c.r + c.borderWidth;
+        if ( c.x < r ) c.vx = Math.abs(c.vx);
+        if ( c.x > w - r ) c.vx = -Math.abs(c.vx);
       });
     }
   }
