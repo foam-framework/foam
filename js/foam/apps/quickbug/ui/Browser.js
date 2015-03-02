@@ -18,7 +18,7 @@
 CLASS({
   name: 'Browser',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [
     'AlternateView',
@@ -31,11 +31,11 @@ CLASS({
     'foam.apps.quickbug.dao.QIssuesSplitDAO',
     'Timer',
     'TextFieldView',
-    'ChoiceView',
-    'ChoiceListView',
-    'PopupChoiceView',
+    'foam.ui.ChoiceView',
+    'foam.ui.ChoiceListView',
+    'foam.ui.PopupChoiceView',
     'PopupView',
-    'ImageView',
+    'foam.ui.ImageView',
     'MementoMgr',
     'foam.lib.bookmarks.AddBookmarkDialog',
     'foam.lib.bookmarks.Bookmark',

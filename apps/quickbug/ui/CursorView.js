@@ -85,7 +85,7 @@ CLASS({
 CLASS({
   name: 'CursorView',
 
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   methods: {
     initHTML: function() {

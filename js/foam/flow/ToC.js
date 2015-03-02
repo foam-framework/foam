@@ -13,7 +13,9 @@ CLASS({
   package: 'foam.flow',
   name: 'ToC',
   label: 'Table of Contents',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
+
+  requires: ['foam.ui.DAOListView'],
 
   imports: [ 'parentSection' ],
 
@@ -21,21 +23,39 @@ CLASS({
     {
       model_: 'DAOProperty',
       name: 'sections',
-      view: 'DAOListView',
+      view: 'foam.ui.DAOListView',
       factory: function() { return []; }
     }
   ],
 
   templates: [
     function toHTML() {/*
-      <%  this.sections = this.parentSection.subSections; %>
-      <hr>
-        <a name="toc"></a>
-        <h2>Table of Contents</h2>
-        <blockquote>
-          $$sections{mode: 'read-only'}
-        </blockquote>
-      <hr>
+      <% this.sections = this.parentSection.subSections; %>
+        <flow-toc>
+          <a name="toc"></a>
+          <heading>
+            Table of Contents
+          </heading>
+          <blockquote>
+            $$sections{mode: 'read-only'}
+          </blockquote>
+        </flow-toc>
+    */},
+    function CSS() {/*
+      flow-toc { display: block }
+
+      flow-toc a {
+        text-decoration: none;
+        color: #444;
+      }
+
+      @media print {
+
+        flow-toc {
+          page-break-after: always;
+        }
+
+      }
     */}
   ]
 });

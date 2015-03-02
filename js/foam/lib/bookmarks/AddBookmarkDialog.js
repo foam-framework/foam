@@ -19,7 +19,7 @@ CLASS({
   name: 'AddBookmarkDialog',
   package: 'foam.lib.bookmarks',
 
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   properties: [
     {

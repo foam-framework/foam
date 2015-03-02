@@ -80,6 +80,11 @@ CLASS({
       help: 'Set to true to write out a MANIFEST file listing all included models.'
     },
     {
+      name: 'htmlFileName',
+      help: 'Name of the main html file to produce.',
+      defaultValue: 'main.html'
+    },
+    {
       name: 'formatter',
       factory: function() {
         return {
@@ -269,7 +274,7 @@ CLASS({
       aseq(
         function(ret) {
           var file = this.File.create({
-            path: this.targetPath + this.path.sep + 'main.html',
+            path: this.targetPath + this.path.sep + this.htmlFileName,
             contents: this.HTML()
           });
 

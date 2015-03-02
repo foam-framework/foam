@@ -16,7 +16,7 @@
  */
 
 CLASS({
-  name: 'Tooltip',
+  name: 'foam.ui.Tooltip',
   package: 'foam.ui.polymer',
 
   extendsModel: 'foam.ui.polymer.View',

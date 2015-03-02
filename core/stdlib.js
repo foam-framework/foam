@@ -107,6 +107,11 @@ MODEL({
       return s1 < s2 ? -1 : 1;
     },
 
+    function equals(a, b) {
+      /* returns true if the values are equal or both undefined. */
+      return (a === b) || (a !== a && b !== b);
+    },
+    
     function toCompare(c) {
       if ( Array.isArray(c) ) return CompoundComparator.apply(null, c);
 
@@ -581,6 +586,16 @@ MODEL({
         return f1.call(this, f2.apply(this, argsToArray(arguments)));
       };
     }
+  ]
+});
+
+
+
+MODEL({
+  extendsObject: 'Math',
+
+  methods: [
+    function sign(n) { return n > 0 ? 1 : -1; }
   ]
 });
 

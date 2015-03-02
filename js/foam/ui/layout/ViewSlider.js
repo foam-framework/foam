@@ -16,9 +16,10 @@
  */
 
 CLASS({
+
   "package": "foam.ui.layout",
   "name": "ViewSlider",
-  "extendsModel": "View",
+  "extendsModel": "foam.ui.View",
   "traits": [
     "foam.ui.layout.PositionedDOMViewTrait"
   ],
@@ -128,6 +129,7 @@ CLASS({
 
         this.incomingView = view;
         this.layout();
+        view.destroy();
         this.$.insertAdjacentHTML('beforeend', view.toHTML());
         view.initHTML();
 

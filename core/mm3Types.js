@@ -52,7 +52,7 @@ var StringProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'TextFieldView'
+      defaultValue: 'foam.ui.TextFieldView'
     },
     {
       name: 'pattern',
@@ -243,7 +243,7 @@ var IntProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'IntFieldView'
+      defaultValue: 'foam.ui.IntFieldView'
     },
     {
       name: 'adapt',
@@ -301,7 +301,7 @@ var FloatProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'FloatFieldView'
+      defaultValue: 'foam.ui.FloatFieldView'
     },
     {
       name: 'adapt',
@@ -543,7 +543,7 @@ var ReferenceProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'TextFieldView'
+      defaultValue: 'foam.ui.TextFieldView'
 // TODO: Uncomment when all usages of ReferenceProperty/ReferenceArrayProperty fixed.
 //      defaultValue: 'KeyView'
     },
@@ -839,7 +839,7 @@ var ViewFactoryProperty = Model.create({
             if ( ! viewModel ) {
                 viewModel = VIEW_CACHE[f] = Model.create({
                   name: 'InnerDetailView' + this.$UID,
-                  extendsModel: 'DetailView',
+                  extendsModel: 'foam.ui.DetailView',
                   templates:[{name: 'toHTML', template: f}]
                 });
               // TODO(kgr): this isn't right because compiling the View
@@ -864,7 +864,7 @@ var ViewFactoryProperty = Model.create({
           return m.create(f, opt_X || this.Y).copyFrom(map);
         }.bind(this);
 
-        if ( View.isInstance(f) ) return constantFn(f);
+        if ( this.X.foam.ui.View.isInstance(f) ) return constantFn(f);
 
         console.error('******* Invalid Factory: ', f);
         return f;
@@ -937,7 +937,7 @@ var DocumentationProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'DetailView'
+      defaultValue: 'foam.ui.DetailView'
     },
     {
       name: 'help',
@@ -963,7 +963,7 @@ CLASS({
     },
     {
       name: 'view',
-      defaultValue: 'ChoiceView'
+      defaultValue: 'foam.ui.ChoiceView'
     }
   ]
 });

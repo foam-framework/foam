@@ -5,7 +5,7 @@
  **/
 CLASS({
   name: 'BlockView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

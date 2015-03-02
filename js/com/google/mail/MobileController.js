@@ -21,14 +21,14 @@ CLASS({
   description: 'Mobile Gmail',
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [
     'foam.ui.md.AppController',
     'foam.util.busy.BusyFlagTracker',
     'foam.util.busy.BusyStatus',
     'CachingDAO',
-    'DetailView',
+    'foam.ui.DetailView',
     'foam.ui.layout.FloatingView',
     'foam.input.touch.GestureManager',
     'IDBDAO',
@@ -36,7 +36,7 @@ CLASS({
     'foam.oauth2.OAuth2Redirect as Auth',
     'foam.input.touch.TouchManager',
     'XHR',
-    'StackView',
+    'foam.ui.StackView',
     'com.google.mail.ComposeView',
     'com.google.mail.EMailCitationView',
     'com.google.mail.EMailDAO',
@@ -122,8 +122,8 @@ CLASS({
       name: 'controller',
       type: 'foam.ui.md.AppController',
       postSet: function(_, controller) {
-        var Y = this.controller.Y.sub({ data: this.controller });
-        var view = this.ResponsiveAppControllerView.create(undefined, Y);
+        var Y = this.controller.Y.sub();
+        var view = this.ResponsiveAppControllerView.create({ data: this.controller }, Y);
         this.stack.setTopView(view);
 
         // TODO: Hack for positioned based view delay.
@@ -172,8 +172,8 @@ CLASS({
     },
     {
       name: 'stack',
-      subType: 'StackView',
-      factory: function() { return this.X.StackView.create(null, this.Y); },
+      subType: 'foam.ui.StackView',
+      factory: function() { return this.StackView.create(null, this.Y); },
       postSet: function(old, v) {
         if ( old ) {
           Events.unfollow(this.width$, old.width$);

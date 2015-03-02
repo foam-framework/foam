@@ -29,7 +29,7 @@ CLASS({
       model_: 'foam.core.types.StringEnumProperty',
       name: 'type',
       defaultValue: 'BUG',
-      view: 'ChoiceView',
+      view: 'foam.ui.ChoiceView',
       choices: [
         ['BUG', 'Bug'],
         ['FEATURE_REQUEST', 'Feature Request'],
@@ -42,7 +42,7 @@ CLASS({
       model_: 'foam.core.types.StringEnumProperty',
       name: 'status',
       defaultValue: 'NEW',
-      view: 'ChoiceView',
+      view: 'foam.ui.ChoiceView',
       choices: [
         ['NEW', 'New'],
         ['ASSIGNED', 'Assigned'],
@@ -60,14 +60,14 @@ CLASS({
       model_: 'foam.core.types.StringEnumProperty',
       name: 'priority',
       defaultValue: 'P2',
-      view: 'ChoiceView',
+      view: 'foam.ui.ChoiceView',
       choices: ['P0', 'P1', 'P2', 'P3', 'P4']
     },
     {
       model_: 'foam.core.types.StringEnumProperty',
       name: 'severity',
       defaultValue: 'S2',
-      view: 'ChoiceView',
+      view: 'foam.ui.ChoiceView',
       choices: ['S0', 'S1', 'S2', 'S3', 'S4']
     },
     {

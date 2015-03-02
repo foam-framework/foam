@@ -18,7 +18,7 @@
 CLASS({
   name: 'TextFieldView',
   package: 'foam.ui.md',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

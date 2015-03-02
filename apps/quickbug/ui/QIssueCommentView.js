@@ -1,6 +1,6 @@
 CLASS({
   name: 'QIssueCommentView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   properties: [
     { name: 'model', factory: function() { return this.X.QIssueComment; } }

@@ -22,8 +22,8 @@ CLASS({
   requires: [
     'foam.graphics.ActionButtonCView',
     'foam.ui.md.SharedStyles',
-    'DAOListView',
-    'PopupChoiceView',
+    'foam.ui.DAOListView',
+    'foam.ui.PopupChoiceView',
     'PredicatedView',
     'ScrollView',
     'SpinnerView',
@@ -31,9 +31,9 @@ CLASS({
     'ViewChoice'
   ],
 
-  exports: [
-    'ActionButton'
-  ],
+//   exports: [
+//     'ActionButton'
+//   ],
 
   properties: [
     {
@@ -163,18 +163,18 @@ CLASS({
       name: 'createAction',
       type: 'Action'
     },
-    {
-      name: 'ActionButton',
-      lazyFactory: function() {
-        return this.ActionButtonCView.xbind({
-          alpha:      1,
-          width:      48,
-          height:     44,
-          iconWidth:  24,
-          iconHeight: 24
-        });
-      }
-    }
+//     {
+//       name: 'ActionButton',
+//       lazyFactory: function() {
+//         return this.ActionButtonCView.xbind({
+//           alpha:      1,
+//           width:      48,
+//           height:     44,
+//           iconWidth:  24,
+//           iconHeight: 24
+//         });
+//       }
+//     }
   ],
   actions: [
     {
@@ -211,6 +211,14 @@ CLASS({
     init: function() {
       this.SUPER();
 
+      this.Y.registerModel(this.ActionButtonCView.xbind({
+        alpha:      1,
+        width:      48,
+        height:     44,
+        iconWidth:  24,
+        iconHeight: 24
+      }), 'foam.ui.ActionButton');
+      
       var self = this;
       Events.dynamic(
         function() { self.sortOrder; self.q; },

@@ -18,7 +18,7 @@
 CLASS({
   name: 'OverlayView',
   package: 'foam.navigator.views',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   properties: [
     {
       name: 'delegate'

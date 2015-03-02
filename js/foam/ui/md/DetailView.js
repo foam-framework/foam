@@ -16,9 +16,9 @@
  */
 
 CLASS({
-  name: 'DetailView',
+  name: 'foam.ui.DetailView',
   package: 'foam.ui.md',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   requires: [
     'foam.ui.md.TextFieldView',

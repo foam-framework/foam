@@ -18,7 +18,7 @@
 CLASS({
   name: 'SelectTypeView',
   package: 'foam.navigator.views',
-  extendsModel: 'DAOListView',
+  extendsModel: 'foam.ui.DAOListView',
   label: 'Create what type?',
   requires: [
     'foam.navigator.views.CreateView',

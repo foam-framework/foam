@@ -18,14 +18,14 @@ CLASS({
   properties: [
     { name: 'color', defaultValue: 'white' },
     { name: 'r',     defaultValue: 30 },
-    { name: 'mass',  defaultValue: foam.physics.Physical.INFINITE_MASS }
+    { name: 'mass',  factory: function() { return foam.physics.Physical.INFINITE_MASS; } }
   ]
 });
 
 
 CLASS({
   name: 'Pong',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [
     'Ball',
@@ -50,17 +50,17 @@ CLASS({
     },
     {
       name: 'ball',
-      view: 'DetailView',
+      view: 'foam.ui.DetailView',
       factory: function() { return Ball.create({color: 'white', r: 20}); }
     },
     {
       name: 'lPaddle',
-      view: 'DetailView',
+      view: 'foam.ui.DetailView',
       factory: function() { return Paddle.create(); }
     },
     {
       name: 'rPaddle',
-      view: 'DetailView',
+      view: 'foam.ui.DetailView',
       factory: function() { return Paddle.create(); }
     },
     {

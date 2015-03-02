@@ -41,7 +41,7 @@ DEFAULT_OP.toString = function() { return ''; };
 /** A subclass of  which doesn't display 0 values. **/
 CLASS({
   name:  'CalcFloatFieldView',
-  extendsModel: 'FloatFieldView',
+  extendsModel: 'foam.ui.FloatFieldView',
   methods: { valueToText: function(v) { return v == 0 ? '' : v.toString(); } }
 });
 
@@ -80,7 +80,7 @@ CLASS({
     {
       model_: 'ArrayProperty',
       name: 'history',
-      view: 'DAOListView',
+      view: 'foam.ui.DAOListView',
       factory: function() { return [].sink; }
     }
   ],
@@ -147,4 +147,4 @@ CLASS({
   ]
 });
 
-CLASS({ name: 'CalcView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+CLASS({ name: 'CalcView', extendsModel: 'foam.ui.DetailView', templates: [ { name: 'toHTML' } ] });

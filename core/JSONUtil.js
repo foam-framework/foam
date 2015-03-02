@@ -204,7 +204,7 @@ var JSONUtil = {
     },
 
     outputModel_: function(out, obj) {
-      out('"model_":"')
+      out('model_:"')
       if ( obj.model_.package ) out(obj.model_.package, '.')
       out(obj.model_.name, '"');
     },

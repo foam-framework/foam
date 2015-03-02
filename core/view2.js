@@ -17,7 +17,7 @@
 
 CLASS({
   name: 'StaticHTML',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   properties: [
     {
       model_: 'StringProperty',
@@ -56,7 +56,7 @@ CLASS({
 CLASS({
   name: 'BlobImageView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   help: 'Image view for rendering a blob as an image.',
 
@@ -105,10 +105,10 @@ CLASS({
   name:  'TextFieldView',
   label: 'Text Field',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   documentation: function() { /*
-      The default $$DOC{ref:'View'} for a string. Supports autocomplete
+      The default $$DOC{ref:'foam.ui.View'} for a string. Supports autocomplete
       when an autocompleter is installed in $$DOC{ref:'.autocompleter'}.
   */},
 
@@ -161,7 +161,7 @@ CLASS({
       model_: 'StringProperty',
       name: 'mode',
       defaultValue: 'read-write',
-      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] },
+      view: { factory_: 'foam.ui.ChoiceView', choices: ['read-only', 'read-write', 'final'] },
       documentation: function() { /* Can be 'read-only', 'read-write' or 'final'. */}
     },
     {
@@ -330,8 +330,8 @@ CLASS({
       return value;
     },
 
-    destroy: function() { /* Unlinks key handler. */
-      this.SUPER();
+    destroy: function( isParentDestroyed ) { /* Unlinks key handler. */
+      this.SUPER(isParentDestroyed);
       Events.unlink(this.domValue, this.data$);
     }
   },
@@ -387,107 +387,12 @@ CLASS({
 });
 
 
-// TODO: add ability to set CSS class and/or id
-CLASS({
-  name: 'ActionButton',
-
-  extendsModel: 'View',
-
-  properties: [
-    {
-      name: 'action',
-      postSet: function(old, nu) {
-        old && old.removeListener(this.render)
-        nu.addListener(this.render);
-      }
-    },
-    {
-      name: 'data'
-    },
-    {
-      name: 'className',
-      factory: function() { return 'actionButton actionButton-' + this.action.name; }
-    },
-    {
-      name: 'tagName',
-      defaultValue: 'button'
-    },
-    {
-      name: 'showLabel',
-      defaultValueFn: function() { return this.action.showLabel; }
-    },
-    {
-      name: 'label',
-      defaultValueFn: function() {
-        return this.data ?
-            this.action.labelFn.call(this.data, this.action) :
-            this.action.label;
-      }
-    },
-    {
-      name: 'iconUrl',
-      defaultValueFn: function() { return this.action.iconUrl; }
-    },
-    {
-      name: 'tooltip',
-      defaultValueFn: function() { return this.action.help; }
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'render',
-      isFramed: true,
-      code: function() { this.updateHTML(); }
-    }
-  ],
-
-  methods: {
-    toHTML: function() {
-      var superResult = this.SUPER(); // get the destructors done before doing our work
-
-      var self = this;
-
-      this.on('click', function() {
-        self.action.callIfEnabled(self.X, self.data);
-      }, this.id);
-
-      this.setAttribute('disabled', function() {
-        self.closeTooltip();
-        return self.action.isEnabled.call(self.data, self.action) ? undefined : 'disabled';
-      }, this.id);
-
-      this.setClass('available', function() {
-        self.closeTooltip();
-        return self.action.isAvailable.call(self.data, self.action);
-      }, this.id);
-
-      this.X.dynamic(function() { self.action.labelFn.call(self.data, self.action); self.updateHTML(); });
-
-      return superResult;
-    },
-
-    toInnerHTML: function() {
-      var out = '';
-
-      if ( this.iconUrl ) {
-        out += '<img src="' + XMLUtil.escapeAttr(this.iconUrl) + '">';
-      }
-
-      if ( this.showLabel ) {
-        out += this.label;
-      }
-
-      return out;
-    }
-  }
-});
 
 
 CLASS({
   name: 'ActionLink',
 
-  extendsModel: 'ActionButton',
+  extendsModel: 'foam.ui. ActionButton',
 
   properties: [
     {
@@ -521,115 +426,10 @@ CLASS({
 });
 
 
-/** Add Action Buttons to a decorated View. **/
-/* TODO:
-   These are left over Todo's from the previous ActionBorder, not sure which still apply.
-
-   The view needs a standard interface to determine it's Model (getModel())
-   listen for changes to Model and change buttons displayed and enabled
-   isAvailable
-*/
-CLASS({
-  name: 'ActionBorder',
-
-  methods: {
-    toHTML: function(border, delegate, args) {
-      var str = "";
-      str += delegate.apply(this, args);
-      str += '<div class="actionToolbar">';
-
-      // Actions on the View, are bound to the view
-      var actions = this.model_.actions_;
-      for ( var i = 0 ; i < actions.length; i++ ) {
-        var v = this.createActionView(actions[i]);
-        v.data = this;
-        str += ' ' + v.toView_().toHTML() + ' ';
-        this.addChild(v);
-      }
-
-      // This is poor design, we should defer to the view and polymorphism
-      // to make the distinction.
-      if ( DetailView.isInstance(this) ) {
-
-        // Actions on the data are bound to the data
-        actions = this.model.actions_;
-        for ( var i = 0 ; i < actions.length; i++ ) {
-          var v = this.createActionView(actions[i]);
-          v.data$ = this.data$;
-          str += ' ' + v.toView_().toHTML() + ' ';
-          this.addChild(v);
-        }
-      }
-
-      str += '</div>';
-      return str;
-    }
-  }
-});
-
-
-CLASS({
-  name: 'AbstractNumberFieldView',
-
-  extendsModel: 'TextFieldView',
-  abstractModel: true,
-
-  properties: [
-    { name: 'type', defaultValue: 'number' },
-    { name: 'step' }
-  ],
-
-  methods: {
-    extraAttributes: function() {
-      return this.step ? ' step="' + this.step + '"' : '';
-    }
-  }
-});
-
-
-CLASS({
-  name: 'FloatFieldView',
-
-  extendsModel: 'AbstractNumberFieldView',
-
-  properties: [
-    { name: 'precision', defaultValue: undefined }
-  ],
-
-  methods: {
-    formatNumber: function(val) {
-      if ( ! val ) return '0';
-      val = val.toFixed(this.precision);
-      var i = val.length-1;
-      for ( ; i > 0 && val.charAt(i) === '0' ; i-- );
-      return val.substring(0, val.charAt(i) === '.' ? i : i+1);
-    },
-    valueToText: function(val) {
-      return this.hasOwnProperty('precision') ?
-        this.formatNumber(val) :
-        '' + val ;
-    },
-    textToValue: function(text) { return parseFloat(text) || 0; }
-  }
-});
-
-
-CLASS({
-  name: 'IntFieldView',
-
-  extendsModel: 'AbstractNumberFieldView',
-
-  methods: {
-    textToValue: function(text) { return parseInt(text) || '0'; },
-    valueToText: function(value) { return value ? value : '0'; }
-  }
-});
-
-
 
 CLASS({
   name: 'UnitTestResultView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -801,7 +601,7 @@ CLASS({
 
 CLASS({
   name: 'FutureView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   // Works as follows: when it starts up, it will create a 10ms timer.
   // When the future is set, it begins listening to it.
   // In general, the 10ms timer expires before the future does, and then it
@@ -893,7 +693,8 @@ CLASS({
       this.SUPER();
       (this.future.get || this.future)(this.onFuture);
     },
-    destroy: function() {
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       if ( this.spinner ) this.spinner.destroy();
       if ( this.childView ) this.childView.destroy();
     }
@@ -904,12 +705,12 @@ CLASS({
 CLASS({
   name: 'PopupView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
       name: 'view',
-      type: 'View',
+      type: 'foam.ui.View',
     },
     {
       name: 'x'
@@ -957,8 +758,8 @@ CLASS({
     close: function() {
       this.$ && this.$.remove();
     },
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       this.close();
       this.view.destroy();
     }
@@ -1167,9 +968,9 @@ CLASS({
 });
 
 CLASS({
-  name: 'ImageView',
+  name: 'foam.ui.ImageView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1273,7 +1074,7 @@ CLASS({
   name:  'DateTimeFieldView',
   label: 'Date-Time Field',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1349,7 +1150,7 @@ CLASS({
   name:  'HTMLView',
   label: 'HTML Field',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1391,8 +1192,8 @@ CLASS({
       }
     },
 
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       Events.unlink(this.domValue, this.data$);
     }
   }
@@ -1402,7 +1203,7 @@ CLASS({
 CLASS({
   name: 'RoleView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1446,8 +1247,8 @@ CLASS({
       return str;
     },
 
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       Events.unlink(this.domValue, this.data$);
     }
   }
@@ -1457,7 +1258,7 @@ CLASS({
 CLASS({
   name: 'BooleanView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1484,8 +1285,8 @@ CLASS({
       Events.link(this.data$, this.domValue);
     },
 
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       Events.unlink(this.domValue, this.data$);
     }
   }
@@ -1495,7 +1296,7 @@ CLASS({
 CLASS({
   name: 'ImageBooleanView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1568,7 +1369,7 @@ CLASS({
 CLASS({
   name: 'CSSImageBooleanView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     'data',
@@ -1728,7 +1529,7 @@ CLASS({
 CLASS({
   name: 'SummaryView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1789,7 +1590,7 @@ CLASS({
 CLASS({
   name: 'HelpView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1842,7 +1643,7 @@ CLASS({
   label: 'Toolbar',
 
   requires: [
-    'ActionButton',
+    'foam.ui. ActionButton',
     'MenuSeparator'
   ],
 
@@ -1850,7 +1651,7 @@ CLASS({
     'document'
   ],
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -1993,7 +1794,7 @@ CLASS({
 CLASS({
   name: 'ProgressView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -2040,13 +1841,13 @@ CLASS({
     {
       name: 'x',
       type: 'int',
-      view: 'IntFieldView',
+      view: 'foam.ui.IntFieldView',
       defaultValue: 0
     },
     {
       name: 'y',
       type: 'int',
-      view: 'IntFieldView',
+      view: 'foam.ui.IntFieldView',
       defaultValue: 0
     }
   ],
@@ -2091,105 +1892,17 @@ CLASS({
       model_: 'ViewFactoryProperty',
       name: 'view',
       type: 'view',
-      defaultValue: 'DetailView',
+      defaultValue: 'foam.ui.DetailView',
       help: 'View factory.'
     }
   ]
 });
 
 
-CLASS({
-  name: 'AlternateView',
-
-  extendsModel: 'View',
-
-  properties: [
-    'data',
-    {
-      name: 'dao',
-      getter: function() { return this.data; },
-      setter: function(dao) { this.data = dao; }
-    },
-    {
-      model_: 'ArrayProperty',
-      name: 'views',
-      subType: 'ViewChoice',
-      help: 'View choices.'
-    },
-    {
-      name: 'choice',
-      postSet: function(_, v) {
-        this.view = v.view;
-      },
-      hidden: true
-    },
-    {
-      model_: 'ViewFactoryProperty',
-      name: 'view',
-      defaultValue: 'View',
-      postSet: function(old, v) {
-        if ( ! this.$ ) return;
-        this.removeAllChildren();
-        var view = this.view();
-        view.data = this.data;
-        this.addChild(view);
-        this.viewContainer.innerHTML = view.toHTML();
-        view.initHTML();
-      },
-      hidden: true
-    },
-    {
-      name: 'mode',
-      getter: function() { return this.choice.label; },
-      setter: function(label) {
-        for ( var i = 0 ; i < this.views.length ; i++ ) {
-          if ( this.views[i].label === label ) {
-            var oldValue = this.mode;
-
-            this.choice = this.views[i];
-
-            this.propertyChange('mode', oldValue, label);
-            return;
-          }
-        }
-      }
-    },
-    {
-      model_: 'ViewFactoryProperty',
-      name: 'headerView',
-      defaultValue: 'View'
-    },
-    {
-      model_: 'foam.core.types.DOMElementProperty',
-      name: 'viewContainer'
-    }
-  ],
-
-  templates: [
-    function choiceButton(_, i, length, choice) {/*<%
-        var id = this.on('click', function() { self.choice = choice; });
-        this.setClass('mode_button_active', function() { return self.choice === choice; }, id);
-      %><a id="<%= id %>" class="buttonify<%= i == 0 ? ' capsule_left' : '' %><%=
-                                              i == length - 1 ? ' capsule_right' : '' %>"><%= choice.label %></a>*/},
-    function toHTML() {/*
-      <div id="<%= this.id %>" class="AltViewOuter column" style="margin-bottom:5px;">
-        <div class="altViewButtons rigid">
-          <%= this.headerView() %>
-          <% for ( var i = 0, choice; choice = this.views[i]; i++ ) {
-               this.choiceButton(out, i, this.views.length, choice);
-           } %>
-        </div>
-        <br/>
-        <div class="altView column" id="<%= this.viewContainer = this.nextID() %>"><%= this.view({ data$: this.data$ }) %></div>
-      </div>
-    */}
-  ]
-});
-
 
 CLASS({
   name: 'GalleryView',
-  extendsModel: 'SwipeAltView',
+  extendsModel: 'foam.ui.SwipeAltView',
 
   properties: [
     {
@@ -2245,7 +1958,7 @@ CLASS({
 
 CLASS({
   name: 'GalleryImageView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [ 'source' ],
 
@@ -2267,7 +1980,7 @@ CLASS({
         {
           model_: 'ViewChoice',
           label:  'GUI',
-          view:   'DetailView'
+          view:   'foam.ui.DetailView'
         },
         {
           model_: 'ViewChoice',
@@ -2357,7 +2070,7 @@ CLASS({
 
 CLASS({
   name: 'MultiLineStringArrayView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -2399,7 +2112,7 @@ CLASS({
     {
       model_: 'Model',
       name: 'RowView',
-      extendsModel: 'View',
+      extendsModel: 'foam.ui.View',
       properties: [
         'field',
         {
@@ -2544,7 +2257,7 @@ CLASS({
 
 
 CLASS({
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   name: 'SplitView',
 
@@ -2592,7 +2305,7 @@ CLASS({
   name: 'ListValueView',
   help: 'Combines an input view with a value view for the edited value.',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -2630,7 +2343,7 @@ CLASS({
 
 CLASS({
   name: 'ArrayListView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   traits: ['SimpleDynamicViewTrait'],
   properties: [
     {
@@ -2660,7 +2373,7 @@ CLASS({
 
 CLASS({
   name: 'KeyView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -2694,7 +2407,7 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'innerView',
-      defaultValue: 'DetailView'
+      defaultValue: 'foam.ui.DetailView'
     },
   ],
 
@@ -2716,7 +2429,7 @@ CLASS({
 
 CLASS({
   name: 'DAOKeyView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -2747,7 +2460,7 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'innerView',
-      defaultValue: 'DAOListView'
+      defaultValue: 'foam.ui.DAOListView'
     },
     'dataView'
   ],
@@ -2769,7 +2482,7 @@ CLASS({
 CLASS({
   name: 'AutocompleteListView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -2792,7 +2505,7 @@ CLASS({
     },
     {
       name: 'innerView',
-      type: 'View',
+      type: 'foam.ui.View',
       preSet: function(_, value) {
         if ( typeof value === "string" ) value = GLOBAL[value];
         return value;
@@ -2928,7 +2641,7 @@ CLASS({
 
 CLASS({
   name: 'ViewSwitcher',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   help: 'A view which cycles between an array of views.',
 
@@ -3186,7 +2899,7 @@ CLASS({
  */
 CLASS({
   name: 'VerticalScrollbarView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -3406,7 +3119,7 @@ CLASS({
 
 CLASS({
   name: 'ActionSheetView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   properties: [
@@ -3436,7 +3149,7 @@ CLASS({
 
 
 CLASS({
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   name: 'CollapsibleView',
 
@@ -3554,7 +3267,7 @@ CLASS({
 
 CLASS({
   name: 'SpinnerView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   documentation: 'Renders a spinner in the Material Design style. Has a ' +
       '$$DOC{ref:".data"} property and acts like a $$DOC{ref:"BooleanView"}, ' +
       'that creates and destroys and the spinner when the value changes.',

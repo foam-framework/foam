@@ -17,17 +17,18 @@
 
 CLASS({
   name: 'IssueView',
+
   package: 'foam.apps.mbug.ui',
-  extendsModel: 'UpdateDetailView',
+  extendsModel: 'foam.ui.UpdateDetailView',
   traits: ['foam.input.touch.VerticalScrollNativeTrait'],
   requires: [
     'foam.apps.mbug.ui.CCView',
     'foam.apps.mbug.ui.CommentView',
     'foam.apps.quickbug.model.QIssueComment',
-    'DAOListView',
-    'ImageBooleanView',
+    'foam.ui.DAOListView',
+    'foam.ui.ImageBooleanView',
     'foam.apps.mbug.ui.IssueLabelView',
-    'PopupChoiceView',
+    'foam.ui.PopupChoiceView',
     'foam.apps.mbug.ui.PriorityView',
     'foam.ui.md.TextFieldView'
   ],
@@ -68,7 +69,7 @@ CLASS({
           <span class="expand"></span>
           $$save
           $$starred{
-            model_: 'ImageBooleanView',
+            model_: 'foam.ui.ImageBooleanView',
             className:  'star',
             trueImage:  'images/ic_star_white_24dp.png',
             falseImage: 'images/ic_star_outline_white_24dp.png'
@@ -88,14 +89,14 @@ CLASS({
           <% if ( this.data.pri ) { %>
             $$pri{ model_: 'foam.apps.mbug.ui.PriorityView' }
             $$pri{
-              model_: 'PopupChoiceView',
+              model_: 'foam.ui.PopupChoiceView',
               iconUrl: 'images/ic_arrow_drop_down_24dp.png',
               showValue: true
             }
           <% } else { %>
             $$priority{ model_: 'foam.apps.mbug.ui.PriorityView' }
             $$priority{
-              model_: 'PopupChoiceView',
+              model_: 'foam.ui.PopupChoiceView',
               iconUrl: 'images/ic_arrow_drop_down_24dp.png',
               showValue: true
             }
@@ -104,7 +105,7 @@ CLASS({
           <div class="choice">
             <img src="images/ic_keep_24dp.png" class="status-icon">
             $$status{
-                model_: 'PopupChoiceView',
+                model_: 'foam.ui.PopupChoiceView',
                 iconUrl: 'images/ic_arrow_drop_down_24dp.png',
                 showValue: true,
                 dao: this.X.StatusDAO,
@@ -124,7 +125,7 @@ CLASS({
           <div class="separator separator1"></div>
           $$content{model_: 'foam.ui.md.TextFieldView', label: 'Add Comment', onKeyMode: true, extraClassName: 'content-view' }
           $$comments{
-            model_: 'DAOListView',
+            model_: 'foam.ui.DAOListView',
             dao: this.data.comments.orderBy(DESC(this.QIssueComment.PUBLISHED)),
             mode: 'read-only',
             rowView: 'foam.apps.mbug.ui.CommentView' }

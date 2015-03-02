@@ -21,8 +21,8 @@
    Browser history support.
 */
 CLASS({
-  name: 'StackView',
-  extendsModel: 'View',
+  name: 'foam.ui.StackView',
+  extendsModel: 'foam.ui.View',
 
   requires: [
     'foam.ui.layout.ViewSlider',

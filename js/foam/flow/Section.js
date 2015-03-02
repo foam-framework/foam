@@ -12,10 +12,12 @@
 CLASS({
   package: 'foam.flow',
   name: 'Section',
-  extendsModel: 'View',
+  extendsModel: 'foam.flow.Element',
 
   imports: [ 'parentSection' ],
   exports: [ 'as parentSection' ],
+
+  constants: { ELEMENT: 'section' },
 
   properties: [
     {
@@ -26,14 +28,29 @@ CLASS({
       name: 'title'
     },
     {
-      model_: 'ViewFactoryProperty',
-      name: 'inner'
+      model_: 'StringProperty',
+      name: 'fullTitle',
+      getter: function() {
+        return (this.enumerate ? this.ordinal + ' ' : '') + this.title;
+      }
     },
     {
       model_: 'DAOProperty',
       name: 'subSections',
-      view: 'DAOListView',
+      view: 'foam.ui.DAOListView',
       factory: function() { return []; }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'enumerate',
+      defaultValue: true
+    },
+    {
+      model_: 'StringProperty',
+      name: 'sectionAnchor',
+      getter: function() {
+        return 'section-' + this.fullTitle.toLowerCase().replace('.', '').replace(' ', '-');
+      }
     }
   ],
 
@@ -41,17 +58,6 @@ CLASS({
     init: function() {
       this.SUPER();
       this.parentSection && this.parentSection.addSubSection(this);
-    },
-
-    /** Allow inner to be optional when defined using HTML. **/
-    fromElement: function(e) {
-      var children = e.children;
-      if ( children.length == 1 && children[0].nodeName === 'inner' ) {
-        return this.SUPER(e);
-      }
-
-      this.inner = e.innerHTML;
-      return this;
     },
 
     addSubSection: function(section) {
@@ -62,29 +68,38 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .flow-section-header {
+      heading {
+        display: block;
         font-size: 16px;
         margin-top: 18px;
       }
-      .flow-section-header a {
-        text-decoration-line: none;
+
+      heading a {
+        text-decoration: none;
        }
-      .flow-section-body {
-        margin: 18px;
+
+      flow-section {
+        display: block;
+      }
+
+      @media print {
+
+        book > flow-section {
+          page-break-after: always;
+        }
+
       }
     */},
     function toHTML() {/*
-      <div class="flow-section">
-        <div class="flow-section-header">
-          <a name="section-%%ordinal"></a><a href="#toc">%%ordinal %%title</a>
-        </div>
-        <div class="flow-section-body">
-          <%= this.inner() %>
-        </div>
-      </div>
+      <flow-section>
+        <heading>
+          <a name="%%sectionAnchor"></a><a href="#toc">%%fullTitle</a>
+        </heading>
+        <%= this.inner() %>
+      </flow-section>
     */},
     function toDetailHTML() {/*
-      <a href="#section-{{this.data.ordinal}}">{{this.data.ordinal}} {{this.data.title}}</a><br>
+      <a href="#{{this.data.sectionAnchor}}">{{{this.data.fullTitle}}}</a><br />
       <blockquote>
         $$subSections{mode: 'read-only'}
       </blockquote>

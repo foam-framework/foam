@@ -18,12 +18,12 @@
 CLASS({
   name: 'ChangeProjectView',
   package: 'foam.apps.mbug.ui',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   requires: [
     // TODO: Hack to ensure that the CSS for appcontroller comes before
     // ChangeProjectView.
     'foam.ui.md.AppController',
-    'ImageView'
+    'foam.ui.ImageView'
   ],
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 

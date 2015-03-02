@@ -127,7 +127,8 @@ CLASS({
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
     'foam.ui.animated.Label',
-    'foam.ui.md.Flare'
+    'foam.ui.md.Flare',
+    'foam.ui.DAOListView'
   ],
 
   exports: [
@@ -148,7 +149,7 @@ CLASS({
     {
       model_: 'ArrayProperty',
       name: 'history',
-      view: 'DAOListView',
+      view: 'foam.ui.DAOListView',
       factory: function() { return [].sink; }
     },
     {
@@ -401,3 +402,4 @@ CLASS({
     },
   ]
 });
+

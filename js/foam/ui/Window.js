@@ -118,10 +118,10 @@ CLASS({
       return this.document.getElementsByClassName(cls);
     },
     dynamic: function(fn, opt_fn) {
-      Events.dynamic(fn, opt_fn, this.X);
+      Events.dynamic(fn, opt_fn, this.Y);
     },
     animate: function(duration, fn, opt_interp, opt_onEnd) {
-      return Movement.animate(duration, fn, opt_interp, opt_onEnd, this.X);
+      return Movement.animate(duration, fn, opt_interp, opt_onEnd, this.Y);
     },
     setTimeout: function(f, t) {
       return this.window.setTimeout.apply(this.window, arguments);

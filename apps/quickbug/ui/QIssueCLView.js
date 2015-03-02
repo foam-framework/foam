@@ -1,6 +1,6 @@
 CLASS({
   name: 'QIssueCLView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     { name: 'dao' }

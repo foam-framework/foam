@@ -23,19 +23,19 @@ CLASS({
   properties: [
     {
       name: 'row',
-      type: 'ChoiceView',
+      type: 'foam.ui.ChoiceView',
       factory: function() { return this.Y.ChoiceView.create(); }
     },
     {
       name: 'col',
       label: 'column',
-      type: 'ChoiceView',
+      type: 'foam.ui.ChoiceView',
       factory: function() { return this.Y.ChoiceView.create(); }
     },
     {
       name: 'acc',
       label: 'accumulator',
-      type: 'ChoiceView',
+      type: 'foam.ui.ChoiceView',
       factory: function() { return this.Y.ChoiceView.create(); }
     },
     {
@@ -48,7 +48,7 @@ CLASS({
       name: 'scrollMode',
       type: 'String',
       defaultValue: 'Bars',
-      view: { factory_: 'ChoiceView', choices: [ 'Bars', 'Warp' ] }
+      view: { factory_: 'foam.ui.ChoiceView', choices: [ 'Bars', 'Warp' ] }
     },
     {
       name: 'model',
@@ -291,7 +291,7 @@ CLASS({
   name: 'ScrollViewRow',
   documentation: 'Wrapper for a single row in a $$DOC{ref: "ScrollView"}. Users should not need to create these. TODO: I should be a submodel of ScrollView once that\'s possible.',
   requires: [
-    'DetailView'
+    'foam.ui.DetailView'
   ],
   properties: [
     {
@@ -327,8 +327,8 @@ CLASS({
     }
   ],
   methods: {
-    destroy: function() {
-      this.view.destroy();
+    destroy: function( isParentDestroyed ) {
+      this.view.destroy(isParentDestroyed);
     }
   }
 });
@@ -485,7 +485,7 @@ CLASS({
       name: 'mode',
       defaultValue: 'read-write',
       documentation: 'Indicates whether this view should be read-write or read-only. In read-write mode, listens for changes to every visible row, and updates the DAO if they change.',
-      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] }
+      view: { factory_: 'foam.ui.ChoiceView', choices: ['read-only', 'read-write', 'final'] }
     },
     {
       name: 'oldVisibleTop',
@@ -631,8 +631,8 @@ CLASS({
     },
 
     // Clears all caches and saved rows and everything.
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       var keys = Object.keys(this.visibleRows);
       for ( var i = 0; i < keys.length; i++ ) {
         this.visibleRows[keys[i]].destroy();
@@ -846,7 +846,7 @@ CLASS({
 
 CLASS({
   name: 'PredicatedView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

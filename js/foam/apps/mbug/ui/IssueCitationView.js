@@ -18,7 +18,7 @@
 CLASS({
   name: 'IssueCitationView',
   package: 'foam.apps.mbug.ui',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   requires: [
     'ImageBooleanView',
     'foam.ui.md.MonogramStringView',

@@ -46,7 +46,7 @@ CLASS({
            type: 'String',
            required: true,
            view: {
-             factory_: 'ChoiceView',
+             factory_: 'foam.ui.ChoiceView',
              choices: [
                'Property',
                'Method',

@@ -28,7 +28,7 @@ CLASS({
     },
     {
       name: 'iconURL',
-      view: 'ImageView',
+      view: 'foam.ui.ImageView',
       defaultValueFn: function() {
         return this.done ? 'images/todo-checked.png' : 'images/todo-empty.png';
       }
@@ -38,7 +38,7 @@ CLASS({
       name: 'priority',
       defaultValue: 3,
       view: {
-        factory_: 'ChoiceView',
+        factory_: 'foam.ui.ChoiceView',
         choices: [1, 2, 3, 4, 5]
       }
     },

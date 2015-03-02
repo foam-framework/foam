@@ -18,7 +18,7 @@
 CLASS({
   name: 'QIssueCommentAuthorView',
   package: 'foam.apps.quickbug.ui',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   methods: {
     updateSubViews: function() {

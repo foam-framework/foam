@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'FoamTagView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [ 'foam.html.Element' ],
 
@@ -31,12 +31,13 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      
+
       if ( ! this.Element.isInstance(this.element) ) this.install();
     },
     install: function() {
       var e = this.element;
       var models = [];
+      var style     = e.getAttribute('style' /*_*/);
       var modelName = e.getAttribute('model' /*_*/);
       var viewName  = e.getAttribute('view' /*_*/);
       var onInit    = e.getAttribute('oninit' /*_*/);
@@ -54,27 +55,27 @@ CLASS({
 
         model.getPrototype();
 
-        var obj = model.create(null, X);
+        var obj = model.create(null, this.X);
         obj.fromElement(e);
 
         var view;
 
         if ( viewName ) {
-          var viewModel = FOAM.lookup(viewName, X);
+          var viewModel = FOAM.lookup(viewName, this.X);
           view = viewModel.create({ model: model, data: obj });
-        } else if ( View.isInstance(obj) || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) {
-        view = obj;
-      } else if ( obj.toView_ ) {
+        } else if ( X.foam.ui.View.isInstance(obj) ) {
+          view = obj;
+        } else if ( obj.toView_ ) {
           view = obj.toView_();
         } else {
           var a = this.element.getAttribute('showActions');
-          var showActions = ! a || ( 
+          var showActions = ! a || (
             a.equalsIC('y')    ||
               a.equalsIC('yes')  ||
               a.equalsIC('true') ||
               a.equalsIC('t') );
 
-          view = DetailView.create({
+          view = X.foam.ui.DetailView.create({
             model: model,
             data: obj,
             showActions: showActions
@@ -84,8 +85,11 @@ CLASS({
         if ( e.id ) this.document.FOAM_OBJECTS[e.id] = obj;
         obj.view_ = view;
         this.holder().outerHTML = view.toHTML();
+        if ( style ) {
+          view.$.setAttribute('style', style);
+        }
         view.initHTML();
-        
+
         if ( onInit )
           aeval('function() { ' + onInit + ' }')(function(f) { f.call(obj); });
 

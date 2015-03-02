@@ -30,7 +30,7 @@ CLASS({
       name:  'r',
       label: 'Radius',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 100
     },
     {
@@ -156,14 +156,14 @@ CLASS({
       name:  'r',
       label: 'Radius',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 100
     },
     {
       name:  'a',
       label: 'Rotation',
       type:  'float',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 0
     },
     {
@@ -238,7 +238,7 @@ CLASS({
           model_: 'Property',
           name: 'width',
           type: 'int',
-          view: 'IntFieldView',
+          view: 'foam.ui.IntFieldView',
           defaultValue: 5
         },
         {
@@ -246,7 +246,7 @@ CLASS({
           name: 'r',
           label: 'Radius',
           type: 'int',
-          view: 'IntFieldView',
+          view: 'foam.ui.IntFieldView',
           defaultValue: 100
         },
         {
@@ -254,7 +254,7 @@ CLASS({
           name: 'a',
           label: 'Alpha',
           type: 'int',
-          view: 'IntFieldView',
+          view: 'foam.ui.IntFieldView',
           defaultValue: 100
         }
       ],
@@ -387,7 +387,7 @@ var System = FOAM({
     {
       name:  'mouse',
       type:  'Mouse',
-      view: { factory_: 'DetailView', model: Mouse },
+      view: { factory_: 'foam.ui.DetailView', model: Mouse },
       factory: function() {
         return Mouse.create();
       }
@@ -396,7 +396,7 @@ var System = FOAM({
       model_: 'Property',
       name: 'alpha',
       type: 'int',
-      view: 'IntFieldView',
+      view: 'foam.ui.IntFieldView',
       defaultValue: 1
     }
   ],
@@ -738,7 +738,7 @@ CLASS({
       name:  'r',
       label: 'Radius',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 150
     },
     {
@@ -765,7 +765,7 @@ CLASS({
       name:  'rpm',
       label: 'RPM',
       type:  'float',
-      view:  'FloatFieldView',
+      view:  'foam.ui.FloatFieldView',
       help:  'Rotations Per Minute. Standard values: 33, 45, and 78.',
       defaultValue: 33
     },

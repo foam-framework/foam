@@ -29,7 +29,7 @@ CLASS({
   name: 'ThreePaneController',
   label: 'ThreePaneController',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -145,7 +145,7 @@ CLASS({
     },
     {
       name: 'table',
-      type: 'View',
+      type: 'foam.ui.View',
       factory: function() {
         return TableView.create({
             model: this.model,
@@ -163,7 +163,7 @@ CLASS({
     },
     {
       name: 'toolbar',
-      type: 'View',
+      type: 'foam.ui.View',
       factory: function() {
         return ToolbarView.create({
           actions: this.model.actions,
@@ -177,7 +177,7 @@ CLASS({
     },
     {
       name: 'editView',
-      type: 'View',
+      type: 'foam.ui.View',
       factory: function() {
         return DetailView.create({model: this.model}/*, this.table.selection*/);
       },

@@ -34,7 +34,7 @@ var ListChoiceViewRenderer = {
 CLASS({
   name:  'ListChoiceView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

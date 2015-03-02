@@ -20,7 +20,7 @@ CLASS({
    "id": "com.google.mail.ComposeView",
    "package": "com.google.mail",
    "name": "ComposeView",
-   "extendsModel": "DetailView",
+   "extendsModel": "foam.ui.DetailView",
    "requires": [
       "foam.ui.md.ToolbarRichTextView",
       "foam.ui.md.TextFieldView",
@@ -155,7 +155,6 @@ CLASS({
         if ( data && data.model_ && this.model !== data.model_ ) {
           this.model = data.model_;
         }
-        this.onValueChange_();
       }
       }
    ],

@@ -16,7 +16,7 @@
  */
 
 CLASS({
-  name: 'DAOListView',
+  name: 'foam.ui.DAOListView',
   extendsModel: 'AbstractDAOView',
 
   properties: [
@@ -31,12 +31,12 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'rowView',
-      defaultValue: 'DetailView'
+      defaultValue: 'foam.ui.DetailView'
     },
     {
       name: 'mode',
       defaultValue: 'read-write',
-      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] }
+      view: { factory_: 'foam.ui.ChoiceView', choices: ['read-only', 'read-write', 'final'] }
     },
     {
       name: 'useSelection',

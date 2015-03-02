@@ -18,7 +18,7 @@
 CLASS({
   name: 'MBug',
   package: 'foam.apps.mbug',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   description: 'Mobile QuickBug',
 
   requires: [
@@ -26,13 +26,13 @@ CLASS({
     'foam.ui.md.AppController',
     'foam.core.dao.SplitDAO',
     'foam.apps.mbug.ui.ChangeProjectView',
-    'DetailView',
+    'foam.ui.DetailView',
     'foam.input.touch.GestureManager',
     'foam.apps.mbug.ui.IssueCitationView',
     'foam.apps.mbug.ui.IssueView',
     'foam.apps.quickbug.model.DefaultQuery',
     'foam.apps.quickbug.model.QBug',
-    'StackView',
+    'foam.ui.StackView',
     'foam.input.touch.TouchManager',
     'IDBDAO',
     'foam.core.dao.KeywordDAO',
@@ -129,7 +129,7 @@ CLASS({
     },
     {
       name: 'stack',
-      subType: 'StackView',
+      subType: 'foam.ui.StackView',
       factory: function() { return this.StackView.create(); },
       postSet: function(old, v) {
         if ( old ) {

@@ -1,6 +1,6 @@
 CLASS({
   name: 'QIssueDetailView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   properties: [
     {
@@ -62,8 +62,8 @@ CLASS({
   ],
 
   methods: {
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       if ( this.data ) this.data.removeListener(this.doSave);
     },
     commentCreateView: function() {
@@ -107,7 +107,7 @@ CLASS({
 
 CLASS({
   name: 'QIssueLabelsView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

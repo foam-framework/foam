@@ -2,7 +2,7 @@ CLASS({
   name: 'QIssueTileView2',
   label: 'QIssue Tile View',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

@@ -26,12 +26,12 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'question',
-      preSet: function(_, q) { return StringProperty.PRE_SET.defaultValue(null, q).trim(); }
+      preSet: function(_, q) { return StringProperty.ADAPT.defaultValue(null, q).trim(); }
     },
     {
       model_: 'StringProperty',
       name: 'answer',
-      preSet: function(_, q) { return StringProperty.PRE_SET.defaultValue(null, q).trim(); }
+      preSet: function(_, q) { return StringProperty.ADAPT.defaultValue(null, q).trim(); }
     },
     {
       name: 'src'

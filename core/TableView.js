@@ -521,7 +521,7 @@ CLASS({
 CLASS({
   name: 'EditColumnsView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

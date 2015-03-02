@@ -73,7 +73,7 @@
             </div>&nbsp;
           </td>
           <td class="qvt">
-            $$comments{ model_: 'DAOListView', rowView: 'QIssueCommentView', mode: 'read-only' }
+            $$comments{ model_: 'foam.ui.DAOListView', rowView: 'QIssueCommentView', mode: 'read-only' }
           </td>
         </tr>
       </tbody>

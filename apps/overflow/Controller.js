@@ -6,7 +6,7 @@ CLASS({
     {
       name: 'filteredDAO',
       model_: 'DAOProperty',
-      view: { factory_: 'DAOListView', mode: 'read-only' },
+      view: { factory_: 'foam.ui.DAOListView', mode: 'read-only' },
       dynamicValue: function() {
         return this.search.trim() ? this.dao.where(MQL(this.search)) : this.dao;
         /*

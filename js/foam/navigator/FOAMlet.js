@@ -50,7 +50,7 @@ CLASS({
       name: 'iconURL',
       model_: 'StringProperty',
       label: 'Icon',
-      view: 'ImageView',
+      view: 'foam.ui.ImageView',
       tableLabel: 'Icon',
       tableWidth: 30,
       todo: multiline(function() {/*

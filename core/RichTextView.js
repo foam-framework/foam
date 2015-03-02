@@ -80,7 +80,7 @@ CLASS({
 CLASS({
   name: 'LinkView',
 
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   properties: [
     {
@@ -138,7 +138,7 @@ CLASS({
 CLASS({
   name: 'ColorPickerView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -184,7 +184,7 @@ CLASS({
 CLASS({
   name: 'RichTextView',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [
     'foam.util.Base64Decoder'
@@ -205,7 +205,7 @@ CLASS({
       name:  'mode',
       type:  'String',
       defaultValue: 'read-write',
-      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] }
+      view: { factory_: 'foam.ui.ChoiceView', choices: ['read-only', 'read-write', 'final'] }
     },
     {
       name:  'data',
@@ -486,8 +486,8 @@ CLASS({
       }
     },
 
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       Events.unlink(this.domValue, this.value);
     },
 

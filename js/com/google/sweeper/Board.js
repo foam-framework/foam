@@ -13,7 +13,7 @@ CLASS({
   package: 'com.google.sweeper',
   name: 'Board',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [ 'com.google.sweeper.Cell' ],
   exports: [ 'as board' ],

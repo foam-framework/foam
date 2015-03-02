@@ -65,7 +65,7 @@ CLASS({
       transient: true,
       displayWidth: 8,
       displayHeight: 1,
-      view: 'IntFieldView',
+      view: 'foam.ui.IntFieldView',
       documentation: 'Number of assertions which have passed.'
     },
     {
@@ -150,7 +150,7 @@ CLASS({
       name: 'tests',
       subType: 'UnitTest',
       label: 'Tests',
-      view: 'DAOListView',
+      view: 'foam.ui.DAOListView',
       documentation: 'An array of child tests. Will be run in order after the parent test.'
     },
     {
@@ -478,7 +478,7 @@ CLASS({
     {
       name: 'severity',
       view: {
-        factory_: 'ChoiceView',
+        factory_: 'foam.ui.ChoiceView',
         choices: [
           'Feature',
           'Minor',
@@ -495,7 +495,7 @@ CLASS({
       type: 'String',
       required: true,
       view: {
-        factory_: 'ChoiceView',
+        factory_: 'foam.ui.ChoiceView',
         choices: [
           'Open',
           'Accepted',

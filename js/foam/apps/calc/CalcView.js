@@ -12,7 +12,7 @@
 CLASS({
   name: 'CalcView',
   package: 'foam.apps.calc',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.View',
   requires: [
     'foam.apps.calc.HistoryCitationView',
     'foam.ui.SlidePanel',
@@ -22,6 +22,7 @@ CLASS({
     'foam.apps.calc.CalcButton',
     'foam.apps.calc.CalcSpeechView',
     'foam.apps.calc.Fonts'
+    
     // 'foam.chromeapp.ui.ZoomView'
   ],
   exports: [
@@ -206,7 +207,7 @@ CLASS({
       template: function() {/*
         <%= this.CalcSpeechView.create({calc: this.data}) %>
         <!-- <%= this.ZoomView.create() %> -->
-        <% X.registerModel(this.CalcButton, 'ActionButton'); %>
+        <% X.registerModel(this.CalcButton, 'foam.ui.ActionButton'); %>
         <div style="position: relative;z-index: 100;">
           <div tabindex="1" style="position: absolute;">
             <span aria-label="{{{Calc.RAD.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="{{{Calc.RAD.label}}}"></span>
@@ -225,6 +226,7 @@ CLASS({
           <div class="keypad">
           <div class="edge2"></div>
           <%= this.SlidePanel.create({
+            data: this.data,
             minWidth: 310,
             minPanelWidth: 320,
             panelRatio: 0.55,

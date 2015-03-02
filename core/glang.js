@@ -27,7 +27,7 @@ CLASS({
     {
       name:  'r',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       postSet: function(_, r) { this.width = this.height = 2*r+2; },
       defaultValue: 50
     },

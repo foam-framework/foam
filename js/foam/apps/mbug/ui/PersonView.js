@@ -21,7 +21,7 @@ CLASS({
   requires: [
     'foam.ui.md.MonogramStringView'
   ],
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   templates: [ function toHTML() {/*
     <div id="%%id" class="CitationView">
       $$name{model_: 'foam.ui.md.MonogramStringView'}

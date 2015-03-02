@@ -18,7 +18,7 @@
 CLASS({
   name: 'AddRowView',
   package: 'foam.ui.md',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   traits: ['foam.ui.layout.PositionedDOMViewTrait', 'foam.input.touch.VerticalScrollNativeTrait'],
 
   requires: [
@@ -159,7 +159,7 @@ CLASS({
         return dao;
       },
       view: {
-        factory_: 'DAOListView',
+        factory_: 'foam.ui.DAOListView',
         className: 'rows',
         tagName: 'div',
         useSelection: true

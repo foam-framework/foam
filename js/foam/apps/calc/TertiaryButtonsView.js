@@ -12,17 +12,18 @@
 CLASS({
   name: 'TertiaryButtonsView',
   package: 'foam.apps.calc',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.View',
+  requires: ['foam.apps.calc.CalcButton'],
   templates: [
     function toHTML() {/*
           <%
-          this.X.registerModel(this.X.ActionButton.xbind({
+          this.X.registerModel(this.CalcButton.xbind({
             width:      61,
             height:     61,
             color:      'rgb(80, 80, 80)',
             background: 'rgb(29, 233, 182)',
             font:       '300 18px RobotoDraft'
-          }), 'ActionButton');
+          }), 'foam.ui.ActionButton');
           %>
           <div id="%%id" class="buttons button-row tertiaryButtons">
             <div class="button-column" style="flex-grow: 1;">

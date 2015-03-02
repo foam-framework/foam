@@ -19,7 +19,7 @@
 // TODO: add a 'mouse' property which creates and connects a Mouse model.
 CLASS({
   name: 'Canvas',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -116,25 +116,25 @@ CLASS({
     {
       name:  'x',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 10
     },
     {
       name:  'y',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 10
     },
     {
       name:  'width',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 10
     },
     {
       name:  'height',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 10
     },
     {
@@ -630,8 +630,8 @@ CLASS({
       c.fillRect(2, 2, parseInt(this.value.get()), 16);
     },
 
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       this.value.removeListener(this.listener_);
     }
   }
@@ -649,7 +649,7 @@ CLASS({
       defaultValue: 'Line',
       // TODO: fix the view, it's not storabe
       view: {
-        factory_: 'ChoiceView',
+        factory_: 'foam.ui.ChoiceView',
         choices: [
           'Bar',
           'Line',
@@ -660,13 +660,13 @@ CLASS({
     {
       name:  'width',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 5
     },
     {
       name:  'height',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 5
     },
     {
