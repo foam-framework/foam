@@ -330,6 +330,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
 
 CLASS({
   name: 'Controller',
+  requires: [ 'foam.ui.DAOListView' ],
   properties: [
     { name: 'search', view: { factory_: 'TextFieldView', onKeyMode: true } },
     { name: 'dao', defaultValue: demos },
