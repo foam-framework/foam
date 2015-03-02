@@ -14,7 +14,8 @@ CLASS({
   name: 'FoamTagView',
   extendsModel: 'foam.ui.View',
 
-  requires: [ 'foam.html.Element' ],
+  requires: [ 'foam.html.Element',
+              'foam.ui.DetailView' ],
 
   imports: [ 'document' ],
 

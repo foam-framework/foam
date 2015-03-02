@@ -69,7 +69,7 @@ CLASS({
     {
       name: 'q',
       view: {
-        factory_: 'TextFieldView',
+        factory_: 'foam.ui.TextFieldView',
         name: 'search',
         type: 'search',
         onKeyMode: true,
@@ -79,7 +79,7 @@ CLASS({
     {
       name: 'count',
       view: {
-        factory_: 'TextFieldView',
+        factory_: 'foam.ui.TextFieldView',
         name: 'count',
         mode: 'read-only',
         displayWidth: 10

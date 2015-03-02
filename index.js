@@ -41,12 +41,12 @@
       var view;
       if ( viewName ) {
         view = FOAM.lookup(viewName, X).create({ data: obj });
-      } else if ( View.isInstance(obj) || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) {
+      } else if ( X.foam.ui.View.isInstance(obj) || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) { // OLD CView, not foam.graphics.CView
         view = obj;
       } else if ( obj.toView_ ) {
         view = obj.toView_();
       } else {
-        view = DetailView.create({ data: obj, showActions: showActions });
+        view = X.foam.ui.DetailView.create({ data: obj, showActions: showActions });
       }
       document.body.insertAdjacentHTML('beforeend', view.toHTML());
       view.initHTML();

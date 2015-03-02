@@ -7,7 +7,7 @@ CLASS({
   ],
 
   requires: [
-    'foam.ui. ActionButton',
+    'foam.ui.ActionButton',
     'PropertyView',
     'QIssueComment',
     'QIssueCommentUpdate',
