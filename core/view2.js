@@ -2380,8 +2380,9 @@ CLASS({
       name: 'dao',
       factory: function() {
         if (!this.subType) return undefined;
-        var lowercase = this.subType[0].toLowerCase() + this.subType.substring(1);
-        return this.X[lowercase + 'DAO'] || this.X[this.subType + 'DAO'];
+        var basename = this.subType.split('.').pop();
+        var lowercase = basename[0].toLowerCase() + basename.substring(1);
+        return this.X[lowercase + 'DAO'] || this.X[basename + 'DAO'];
       }
     },
     { name: 'mode' },
@@ -2401,7 +2402,7 @@ CLASS({
     { name: 'subType' },
     {
       name: 'model',
-      defaultValueFn: function() { return this.X[this.subType]; }
+      defaultValueFn: function() { return FOAM.lookup(this.subType, this.X); }
     },
     { name: 'subKey' },
     {
@@ -2436,8 +2437,9 @@ CLASS({
       name: 'dao',
       factory: function() {
         if (!this.subType) return undefined;
-        var lowercase = this.subType[0].toLowerCase() + this.subType.substring(1);
-        return this.X[lowercase + 'DAO'] || this.X[this.subType + 'DAO'];
+        var basename = this.subType.split('.').pop();
+        var lowercase = basename[0].toLowerCase() + basename.substring(1);
+        return this.X[lowercase + 'DAO'] || this.X[basename + 'DAO'];
       }
     },
     { name: 'mode' },
@@ -2454,7 +2456,7 @@ CLASS({
     { name: 'subType' },
     {
       name: 'model',
-      defaultValueFn: function() { return this.X[this.subType]; }
+      defaultValueFn: function() { return FOAM.lookup(this.subType, this.X); }
     },
     { name: 'subKey' },
     {
