@@ -62,7 +62,7 @@ title-page > * {
 @media not print {
 
     body {
-	font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
+	book: Roboto, 'Helvetica Neue', Helvetica, Arial;
     }
 
     title-page > book-title {
@@ -91,7 +91,7 @@ title-page > * {
 
 @media print {
 
-    body {
+    book {
 	font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
     }
 
