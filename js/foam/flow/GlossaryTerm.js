@@ -21,8 +21,10 @@ CLASS({
       model_: 'StringProperty',
       name: 'id',
       getter: function() {
-        return this.term.toLowerCase().replace(' ', '-') +
-            (this.sense ? '--' + this.sense.toLowerCase().replace(' ', '-') : '');
+        return this.replaceAll(this.term.toLowerCase(), ' ', '-') +
+            (this.sense ?
+            '--' + this.replaceAll(this.sense.toLowerCase(), ' ', '-') :
+            '');
       }
     },
     {

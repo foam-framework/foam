@@ -26,6 +26,15 @@ CLASS({
   ],
 
   methods: {
+    replaceAll: function(str, a, b) {
+      var next = str, prev = '';
+      while ( prev !== next) {
+        prev = next;
+        next = next.replace(a, b);
+      }
+      return next;
+    },
+
     installInDocument: function(X, document) {
       this.SUPER.apply(this, arguments);
       this.X.registerElement(

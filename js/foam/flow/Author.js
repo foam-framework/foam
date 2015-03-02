@@ -27,12 +27,7 @@ CLASS({
       factory: function() { return []; },
       preSet: function(old, nu) {
         if ( typeof nu !== 'string' ) return nu;
-        var next = nu.trim(), prev = '';
-        while ( prev !== next) {
-          prev = next;
-          next = next.replace(/[ \t\n\r][ \t\r\n]/g, ' ');
-        }
-        return next;
+        return this.replaceAll(nu.trim(), /[ \t\n\r][ \t\r\n]/g, ' ');
       }
     },
     {
