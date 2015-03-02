@@ -41,7 +41,9 @@
       var view;
       if ( viewName ) {
         view = FOAM.lookup(viewName, X).create({ data: obj });
-      } else if ( X.foam.ui.View.isInstance(obj) || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) { // OLD CView, not foam.graphics.CView
+        // 'CView' refers to old CView
+        // TODO(kgr): remove this check when CView's converted to foam.graphics.CView
+      } else if ( X.foam.ui.View.isInstance(obj) || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) { 
         view = obj;
       } else if ( obj.toView_ ) {
         view = obj.toView_();

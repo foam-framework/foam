@@ -68,11 +68,11 @@ var DOM = {
    * opt_document -- if supplied the object's view will be added to the document.
    **/
   initElement: function(e, X, opt_document) {
-    arequire('foam.ui.FoamTagView')(function(m) {
-      foam.ui.FoamTagView.create({ element: e }, X); 
+    arequire('foam.ui.FoamTagView')(function(t) {
+      foam.ui.FoamTagView.create({ element: e }, X);
     });
   },
-  
+
   // TODO(kgr): remove this when the FoamTagView is fully tested
   xxxinitElement: function(e, X, opt_document) {
     // If was a sub-object for an object that has already been displayed,

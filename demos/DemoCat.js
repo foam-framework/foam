@@ -332,7 +332,6 @@ CLASS({
   name: 'Controller',
   requires: ['foam.ui.TextFieldView',
              'foam.ui.DAOListView'],
-  
   properties: [
     { name: 'search', view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true } },
     { name: 'dao', defaultValue: demos },
