@@ -15,61 +15,6 @@
  * limitations under the License.
  */
 
-Math.sign = function(n) { return n > 0 ? 1 : -1; };
-
-CLASS({
-  package: 'foam.physics',
-  name: 'Physical',
-  properties: [
-    { model_: 'FloatProperty', name: 'vx',   defaultValue: 0 },
-    { model_: 'FloatProperty', name: 'vy',   defaultValue: 0 },
-    {
-      model_: 'FloatProperty',
-      name: 'velocity',
-      getter: function() { return Movement.distance(this.vx, this.vy); },
-      setter: function(v) { this.setVelocityAndAngle(v, this.angleOfVelocity); }
-    },
-    {
-      model_: 'FloatProperty',
-      name: 'angleOfVelocity',
-      getter: function() { return Math.atan2(this.vy, this.vx); },
-      setter: function(a) { this.setVelocityAndAngle(this.velocity, a); }
-    },
-    { model_: 'FloatProperty', name: 'mass', defaultValue: 1 }
-  ],
-
-  constants: {
-    INFINITE_MASS: 10000
-  },
-
-  methods: {
-    intersects: function(c) {
-      return Movement.distance(this.x-c.x, this.y-c.y) <= this.r + this.borderWidth + c.r + c.borderWidth;
-    },
-    applyMomentum: function(m, a) {
-      this.vx += (m * Math.cos(a) / this.mass);
-      this.vy += (m * Math.sin(a) / this.mass);
-    },
-    momentumAtAngle: function(a) {
-      if ( this.mass == this.INFINITE_MASS ) return 0;
-      var v = this.velocityAtAngle(a);
-      return v * this.mass;
-    },
-    velocityAtAngle: function(a) {
-      if ( this.mass == this.INFINITE_MASS ) return 0;
-      return Math.cos(a-this.angleOfVelocity) * this.velocity;
-    },
-    setVelocityAndAngle: function(v, a) {
-      this.vx = v * Math.cos(a);
-      this.vy = v * Math.sin(a);
-    },
-    distanceTo: function(other) {
-      return Movement.distance(this.x-other.x, this.y-other.y);
-    }
-  }
-});
-
-
 /** Collision detection manager. **/
 CLASS({
   package: 'foam.physics',
