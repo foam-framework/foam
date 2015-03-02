@@ -1,13 +1,5 @@
 CLASS({
   package: 'foam.demos.physics',
-  name: 'PhysicalCircle',
-  extendsModel: 'foam.graphics.Circle',
-  traits: [ 'foam.physics.Physical' ]
-});
-
-
-CLASS({
-  package: 'foam.demos.physics',
   name: 'Spring',
   extendsModel: 'foam.graphics.CView',
 
