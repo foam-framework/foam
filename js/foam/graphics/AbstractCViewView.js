@@ -49,9 +49,9 @@ CLASS({
       documentation: 'CSS class name(s), space separated.'
     },
     {
-      model_: 'IntProperty',
+      model_: 'FloatProperty',
       name: 'scalingRatio',
-      preSet: function(_, v) { return v < 0 ? 1 : v ; },
+      preSet: function(_, v) { return v <= 0 ? 1 : v ; },
       defaultValue: 1,
       documentation: function() {/*
           If scaling is required to render the canvas at a higher resolution than
