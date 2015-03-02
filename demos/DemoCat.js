@@ -113,27 +113,43 @@ var demos = JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Collision',
-    path: '/index.html?model=foam.demos.Collision',
+    path: '/index.html?model=foam.demos.physics.Collision',
     description: 'Demonstration of the physics engine and collision-detection.',
     keywords: ['physics', '14'],
-    src: '/js/foam/demos/Collision.js',
+    src: '/js/foam/demos/physics/Collision.js',
     image: 'Collision.png'
   },
   {
     name: 'Collision With Spring',
-    path: 'CollisionWithSpring.html',
+    path: '/index.html?model=foam.demos.physics.CollisionWithSpring',
     description: 'A simple physics simulation which shows the use of springs and collision detection.',
     keywords: ['physics', '14'],
-    src: 'CollisionWithSpring.js',
+    src: '/js/foam/demos/physics/CollisionWithSpring.js',
     image: 'CollisionWithSpring.png'
   },
   {
     name: 'Spring',
-    path: 'Spring.html',
+    path: '/index.html?model=foam.demos.physics.Spring',
     description: 'Addictive spring physics simulation.',
     keywords: ['physics', '14'],
-    src: 'Spring.js',
+    src: '/js/foam/demos/physics/Spring.js',
     image: 'Spring.png'
+  },
+  {
+    name: 'Baloons',
+    path: '/index.html?model=foam.demos.physics.Baloons',
+    description: 'Collision detection with inflatable baloons.',
+    keywords: ['physics', '14'],
+    src: '/js/foam/demos/physics/Baloons.js',
+    image: 'Baloons.png'
+  },
+  {
+    name: 'Bubbles',
+    path: '/index.html?model=foam.demos.physics.Bubbles',
+    description: 'Demonstrates use of gravity.  Negative gravity makes bubbles rise.',
+    keywords: ['physics', '14'],
+    src: '/js/foam/demos/physics/Bubbles.js',
+    image: 'Bubbles.png'
   },
   {
     name: 'Trait Graphics',

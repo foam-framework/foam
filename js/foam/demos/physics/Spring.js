@@ -1,17 +1,9 @@
 CLASS({
-  package: 'foam.demos',
-  name: 'PhysicalCircle',
-  extendsModel: 'foam.graphics.Circle',
-  traits: [ 'foam.physics.Physical' ]
-});
-
-
-CLASS({
-  package: 'foam.demos',
+  package: 'foam.demos.physics',
   name: 'Spring',
   extendsModel: 'foam.graphics.CView',
 
-  requires: [ 'foam.demos.PhysicalCircle' ],
+  requires: [ 'foam.demos.physics.PhysicalCircle' ],
 
   properties: [
     { name: 'n',          defaultValue: 17 },
@@ -41,7 +33,7 @@ CLASS({
             color: 'hsl(' + x/N*100 + ',' + (70+y/N*30) + '%, 60%)'
           });
           this.addChild(c);
-          
+
           //  Movement.strut(mouse, c, (x-2)*20, (y-2)*20);
           Movement.spring(mouse, c, (x-(N-1)/2)*20, (y-(N-1)/2)*20);
           Movement.inertia(c);
@@ -51,4 +43,3 @@ CLASS({
     }
   }
 });
-      

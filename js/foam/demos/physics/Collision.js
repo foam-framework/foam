@@ -16,15 +16,15 @@
  */
 
 CLASS({
+  package: 'foam.demos.physics',
   name: 'Collision',
-  package: 'foam.demos',
   extendsModel: 'foam.ui.View',
 
   requires: [
     'Mouse',
     'foam.graphics.CView',
     'foam.physics.Collider',
-    'foam.graphics.Circle'
+    'foam.demos.physics.PhysicalCircle'
   ],
 
   imports: [
@@ -49,11 +49,11 @@ CLASS({
     },
     {
       name: 'bumper',
-      factory: function() { return this.Circ.create({ r: 30, color: 'gray' }); }
+      factory: function() { return this.PhysicalCircle.create({ r: 30, color: 'gray' }); }
     },
     {
       name: 'anchor',
-      factory: function() { return this.Circ.create({ r: 0, x: 1400, y: 400, color: 'white' }) }
+      factory: function() { return this.PhysicalCircle.create({ r: 0, x: 1400, y: 400, color: 'white' }) }
     }
   ],
 
@@ -71,7 +71,7 @@ CLASS({
       var N = 7;
       for ( var x = 0 ; x < N ; x++ ) {
         for ( var y = 0 ; y < N ; y++ ) {
-          var c = this.Circ.create({
+          var c = this.PhysicalCircle.create({
             r: x == (N-1)/2 ? 32 : x % 2 ? 25 : 10,
             x: 600+(x-(N-1)/2)*100,
             y: 400+(y-(N-1)/2)*100,
@@ -114,13 +114,5 @@ CLASS({
         if ( c.y > h - c.r ) c.vy = -Math.abs(c.vy);
       });
     }
-  },
-
-  models: [
-    {
-      name: 'Circ',
-      extendsModel: 'foam.graphics.Circle',
-      traits: ['foam.physics.Physical']
-    }
-  ]
+  }
 });
