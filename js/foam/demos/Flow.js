@@ -27,8 +27,6 @@ CLASS({
     init: function() {
       this.SUPER.apply(this, arguments);
       this.X.registerElement('circle', 'foam.graphics.Circle');
-      this.X.registerElement('code-sample', 'foam.flow.CodeSample');
-      this.X.registerElement('slides', 'foam.flow.Slides');
     }
   },
 
