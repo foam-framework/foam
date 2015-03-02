@@ -581,7 +581,7 @@ var FObject = {
   toXML: function() { return XMLUtil.stringify(this); },
 
   write: function(document, opt_view) {
-    var view = (opt_view || DetailView).create({
+    var view = (opt_view || X.foam.ui.DetailView).create({
       model: this.model_,
       data: this,
       showActions: true
