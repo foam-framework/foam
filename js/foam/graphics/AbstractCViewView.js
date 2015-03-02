@@ -158,7 +158,7 @@ CLASS({
 
       this.canvas = this.$.getContext('2d');
 
-      var devicePixelRatio = this.X.window.devicePixelRatio|| 1;
+      var devicePixelRatio = this.X.window.devicePixelRatio || 1;
       var backingStoreRatio = this.canvas.backingStoreRatio ||
         this.canvas.webkitBackingStorePixelRatio || 1;
 
