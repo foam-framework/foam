@@ -14,8 +14,11 @@ CLASS({
   name: 'FoamTagView',
   extendsModel: 'foam.ui.View',
 
-  requires: [ 'foam.html.Element',
-              'foam.ui.DetailView' ],
+  requires: [
+    'foam.html.Element',
+    'foam.ui.View',
+    'foam.ui.DetailView' // TODO(kgr): arequire() manually, only if required
+  ],
 
   imports: [ 'document' ],
 
