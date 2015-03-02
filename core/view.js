@@ -73,61 +73,6 @@ var DOM = {
     });
   },
 
-  // TODO(kgr): remove this when the FoamTagView is fully tested
-  xxxinitElement: function(e, X, opt_document) {
-    // If was a sub-object for an object that has already been displayed,
-    // then it will no longer be in the DOM and doesn't need to be shown.
-    if ( opt_document && ! opt_document.body.contains(e) ) return;
-
-    var modelName = e.getAttribute('model');
-    var model = FOAM.lookup(modelName, X);
-
-    if ( ! model ) {
-      console.error('Unknown Model: ', modelName);
-      e.outerHTML = 'Unknown Model: ' + modelName;
-      return;
-    }
-
-    // This is because of a bug that the model.properties isn't populated
-    // with the parent model's properties until after the prototype is
-    // created.  TODO: remove after FO
-    model.getPrototype();
-
-    var obj = model.create(undefined, X);
-    obj.fromElement(e);
-
-    var onLoad = e.getAttribute('oninit');
-    if ( onLoad ) Function(onLoad).bind(obj)();
-
-    if ( opt_document ) {
-      var viewName = e.getAttribute('view');
-      var view;
-      if ( viewName ) {
-        var viewModel = FOAM.lookup(viewName, X);
-        view = viewModel.create({ model: model, data: obj });
-      }
-      else if ( View.isInstance(obj) || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) {
-        view = obj;
-      } else if ( obj.toView_ ) {
-        view = obj.toView_();
-      } else {
-        var a = e.getAttribute('showActions');
-        var showActions = a ?
-            a.equalsIC('y') || a.equalsIC('yes') || a.equalsIC('true') || a.equalsIC('t') :
-            true ;
-
-        view = X.foam.ui.DetailView.create({ model: model, data: obj, showActions: showActions })
-      }
-
-      if ( e.id ) opt_document.FOAM_OBJECTS[e.id] = obj;
-      obj.view_ = view;
-      e.outerHTML = view.toHTML();
-      view.initHTML();
-    }
-
-    return obj;
-  },
-
   setClass: function(e, className, opt_enabled) {
     var oldClassName = e.className || '';
     var enabled = opt_enabled === undefined ? true : opt_enabled;
