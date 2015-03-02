@@ -74,7 +74,7 @@ CLASS({
         } else {
           var a = this.element.getAttribute('showActions');
           var showActions = ! a || (
-            a.equalsIC('y')    ||
+            a.equalsIC('y')      ||
               a.equalsIC('yes')  ||
               a.equalsIC('true') ||
               a.equalsIC('t') );
