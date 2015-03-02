@@ -67,7 +67,7 @@ CLASS({
         if ( viewName ) {
           var viewModel = FOAM.lookup(viewName, this.X);
           view = viewModel.create({ model: model, data: obj });
-        } else if ( X.foam.ui.View.isInstance(obj) ) {
+        } else if ( this.X.foam.ui.View.isInstance(obj) ) {
           view = obj;
         } else if ( obj.toView_ ) {
           view = obj.toView_();
@@ -79,7 +79,7 @@ CLASS({
               a.equalsIC('true') ||
               a.equalsIC('t') );
 
-          view = X.foam.ui.DetailView.create({
+          view = this.X.foam.ui.DetailView.create({
             model: model,
             data: obj,
             showActions: showActions
