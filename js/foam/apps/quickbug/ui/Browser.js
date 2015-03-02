@@ -17,6 +17,7 @@
 
 CLASS({
   name: 'Browser',
+  package: 'foam.apps.quickbug.ui',
 
   extendsModel: 'foam.ui.View',
 
