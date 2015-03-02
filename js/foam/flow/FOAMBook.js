@@ -13,41 +13,29 @@
 CLASS({
   name: 'FOAMBook',
   package: 'foam.flow',
-  extendsModel: 'foam.ui.View',
+  extendsModel: 'foam.flow.Section',
+
+  exports: [ 'glossaryTerms' ],
+
+  constants: { ELEMENT: 'foam-book' },
 
   requires: [
+    'foam.flow.TitlePage',
+    'foam.flow.BookTitle',
+    'foam.flow.SubTitle',
     'foam.flow.Author',
     'foam.flow.ToC',
-    'foam.flow.Section'
+    'foam.flow.Section',
+    'foam.flow.GlossaryTerm',
+    'foam.flow.Glossary'
   ],
-  imports: [ 'registerElement' ],
 
   properties: [
     {
-      model_: 'StringProperty',
-      name: 'title',
-      defaultValue: 'FOAM'
-    },
-    {
-      model_: 'StringProperty',
-      name: 'subTitle',
-      defaultValue: 'The Good Parts'
-    },
-    {
       model_: 'ArrayProperty',
-      name: 'authors',
-      singular: 'author',
-      type: 'Array[foam.flow.Author]',
-      factory: function() {
-        return [
-          this.Author.create({
-            firstName: 'John',
-            middleNames: ['Jonny', 'Smitty'],
-            lastName: 'Smith',
-            email: 'john@smith.com'
-          })
-        ];
-      }
+      name: 'glossaryTerms',
+      type: 'Array[foam.flow.GlossaryTerm]',
+      factory: function() { return []; }
     }
   ],
 

@@ -1,3 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700);
+
 book-container {
     position: relative;
     min-height:100%;
@@ -22,6 +24,11 @@ title-page {
     flex-direction: column;
     align-items: center;
     width: 100%;
+}
+
+heading a {
+  text-decoration: none;
+  color: #444;
 }
 
 @media (max-width: 800px) {
@@ -54,7 +61,11 @@ title-page > * {
 
 @media not print {
 
-    title-page > doc-title {
+    body {
+	font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
+    }
+
+    title-page > book-title {
         font-weight: bold;
         font-size: 80px;
         margin-top: 20px;
@@ -70,7 +81,7 @@ title-page > * {
     }
 
     <% for ( var i = 0; i < 5; ++i ) { %>
-      <% for ( var j = 0; j < i; ++j ) { %>flow-section <% } %>heading {
+      <% for ( var j = 0; j < i; ++j ) { %>section <% } %>heading {
         font-size: <%= 20 + ((5 - i) * 5) %>px;
         margin-bottom: <%= 5 + (5 - i) %>px;
       }
@@ -80,6 +91,10 @@ title-page > * {
 
 @media print {
 
+    body {
+	font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    }
+
     @page :first {
         margin: 2in 2in 2in 2in;
     }
@@ -88,7 +103,7 @@ title-page > * {
         page-break-after: always;
     }
 
-    title-page > doc-title {
+    title-page > book-title {
         font-weight: bold;
         font-size: 32pt;
         margin-top: 1in;
@@ -112,7 +127,7 @@ title-page > * {
     }
 
     <% for ( var i = 0; i < 5; ++i ) { %>
-      <% for ( var j = 0; j < i; ++j ) { %>flow-section <% } %>header {
+      <% for ( var j = 0; j < i; ++j ) { %>section <% } %>heading {
         font-size: <%= 12 + ((5 - i) * 2) %>pt;
         margin-bottom: <%= (5 - i) * 2 %>px;
       }

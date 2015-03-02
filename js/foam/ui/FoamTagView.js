@@ -55,13 +55,13 @@ CLASS({
 
         model.getPrototype();
 
-        var obj = model.create(null, X);
+        var obj = model.create(null, this.X);
         obj.fromElement(e);
 
         var view;
 
         if ( viewName ) {
-          var viewModel = FOAM.lookup(viewName, X);
+          var viewModel = FOAM.lookup(viewName, this.X);
           view = viewModel.create({ model: model, data: obj });
         } else if ( X.foam.ui.View.isInstance(obj) ) {
           view = obj;

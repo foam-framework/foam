@@ -16,10 +16,28 @@ CLASS({
 
   constants: { ELEMENT: 'flow-element' },
 
+  properties: [
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'inner'
+    }
+  ],
+
   methods: {
     installInDocument: function(X, document) {
       this.SUPER.apply(this, arguments);
       this.X.registerElement(this.ELEMENT, this.model_.package + '.' + this.name_);
+    },
+
+    /** Allow inner to be optional when defined using HTML. **/
+    fromElement: function(e) {
+      this.SUPER(e);
+      var children = e.children;
+      if ( children.length !== 1 || children[0].nodeName !== 'inner' ) {
+        this.inner = e.innerHTML;
+      }
+
+      return this;
     }
   }
 });

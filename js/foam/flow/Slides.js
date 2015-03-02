@@ -72,7 +72,6 @@ CLASS({
   templates: [
     function CSS() {/*
       .flow-slides {
-        border: 1px solid black;
       }
       .flow-slides-slide {
         border: 1px solid black;

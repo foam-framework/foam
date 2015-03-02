@@ -47,6 +47,8 @@
 
 </section>
 
+<foam model="foam.demos.Spring" n="10" width="500" height="500" />
+
 Slides:
 
 <slides>
