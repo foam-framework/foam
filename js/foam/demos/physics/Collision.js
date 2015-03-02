@@ -16,8 +16,8 @@
  */
 
 CLASS({
+  package: 'foam.demos.physics',
   name: 'Collision',
-  package: 'foam.demos',
   extendsModel: 'View',
 
   requires: [

@@ -1,11 +1,11 @@
 CLASS({
-  package: 'foam.demos',
+  package: 'foam.demos.physics',
   name: 'BaloonsWithBubbles',
   extendsModel: 'foam.graphics.CView',
 
   requires: [
     'foam.physics.Collider',
-    'foam.demos.PhysicalCircle'
+    'foam.demos.physics.PhysicalCircle'
   ],
 
   imports: [ 'timer' ],
