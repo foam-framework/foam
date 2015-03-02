@@ -43,12 +43,18 @@
         view = FOAM.lookup(viewName, X).create({ data: obj });
         // 'CView' refers to old CView
         // TODO(kgr): remove this check when CView's converted to foam.graphics.CView
-      } else if ( X.foam.ui.View.isInstance(obj) || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) { 
+      } else if (  ( FOAM.lookup('foam.ui.View', X) && X.foam.ui.View.isInstance(obj) )
+                || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) { 
         view = obj;
       } else if ( obj.toView_ ) {
         view = obj.toView_();
       } else {
-        view = X.foam.ui.DetailView.create({ data: obj, showActions: showActions });
+        arequire('foam.ui.DetailView')(function(m) {
+          view = m.create({ data: obj, showActions: showActions });
+          document.body.insertAdjacentHTML('beforeend', view.toHTML());
+          view.initHTML();
+        });
+        return;
       }
       document.body.insertAdjacentHTML('beforeend', view.toHTML());
       view.initHTML();
