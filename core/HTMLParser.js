@@ -289,10 +289,10 @@ test('<pA a="1">foo</pA>');
 test('<pA a="1" b="2">foo<b>bold</b></pA>');
 */
 
-X.registerElement = (function() {
+(function() {
   var registry = { };
 
-  return function(name, model) {
+  X.registerElement = function(name, model) {
     console.log('registerElement: ', name);
     registry[name] = model;
 
@@ -316,6 +316,9 @@ X.registerElement = (function() {
     invalidateParsers();
   };
 
+  X.elementModel = function(name) {
+    return registry[name];
+  };
 })();
 
 X.registerElement('foam', null);
