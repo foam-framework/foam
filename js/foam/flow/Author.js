@@ -14,8 +14,6 @@ CLASS({
   package: 'foam.flow',
   extendsModel: 'foam.flow.Element',
 
-  constants: { ELEMENT: 'author' },
-
   properties: [
     {
       model_: 'StringProperty',

@@ -14,8 +14,6 @@ CLASS({
   package: 'foam.flow',
   extendsModel: 'foam.flow.Element',
 
-  constants: { ELEMENT: 'book-title' },
-
   templates: [
     function toHTML() {/*
       <flow-book-title id="%%id"><%= this.inner() %></flow-book-title>
