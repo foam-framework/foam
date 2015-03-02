@@ -870,7 +870,7 @@ var ViewFactoryProperty = Model.create({
             return m.create(f, opt_X || this.Y).copyFrom(map);
           }.bind(this);
 
-          ret.toString = function() { return f.toString(); };
+          ret.toString = function() { return JSON.stringify(f); };
           return ret;
         }
 
