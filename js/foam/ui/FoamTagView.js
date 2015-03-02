@@ -17,7 +17,7 @@ CLASS({
   requires: [
     'foam.html.Element',
     'foam.ui.View',
-    'foam.ui.DetailView'
+    'foam.ui.DetailView' // TODO(kgr): arequire() manually, only if required
   ],
 
   imports: [ 'document' ],
