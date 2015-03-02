@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+html, body {
+  margin: 0px;
+  padding: 0px;
+}
+
 body {
   font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
   font-size: 12px;
