@@ -1,6 +1,6 @@
 CLASS({
   package: 'foam.demos.physics',
-  name: 'BaloonsWithBubbles',
+  name: 'Bubbles',
   extendsModel: 'foam.graphics.CView',
 
   requires: [
