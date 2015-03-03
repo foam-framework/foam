@@ -15,6 +15,7 @@ CLASS({
   label: 'Table of Contents',
   extendsModel: 'foam.flow.Element',
 
+  requires: [ 'foam.ui.DAOListView' ],
   imports: [ 'parentSection' ],
 
   constants: { ELEMENT_NAME: 'toc' },
