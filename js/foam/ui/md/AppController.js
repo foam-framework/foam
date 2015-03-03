@@ -269,8 +269,8 @@ CLASS({
         }, 100);
       });
 
-      this.on('touchstart', function(){ console.log('blurring'); self.qView.$.blur(); }, this.data.filteredDAOView.id);
-      this.on('click', function(){ console.log('focusing'); self.qView.focus(); }, this.qView.id);
+      this.on('touchstart', function(){ self.qView.$ && self.qView.$.blur(); }, this.data.filteredDAOView.id);
+      this.on('click', function(){ self.qView.focus(); }, this.qView.id);
     %>
   */},
     function CSS() {/*
