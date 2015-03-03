@@ -77,14 +77,12 @@ CLASS({
     paintSelf: function() {
       // point pupil towards target
       if ( this.target_ ) {
-        var t = this.target_.mapToCanvas({x: this.target_.x, y: this.target_.y});
-        var o = this.mapToCanvas({x: this.x, y: this.y});
-        var dx = o.x - t.x;
-        var dy = o.y - t.y;
+        var dx = this.canvasX - this.target_.canvasX;
+        var dy = this.canvasY - this.target_.canvasY;
         var theta = Math.atan2(dy,dx);
         var r     = Math.sqrt(dx*dx+dy*dy);
-        this.pupil.x = -this.r * 0.63 * Math.cos(-theta);
-        this.pupil.y = this.r * 0.63 * Math.sin(-theta);
+        this.pupil.x = -this.r * 0.6 * Math.cos(-theta);
+        this.pupil.y =  this.r * 0.6 * Math.sin(-theta);
       }
 
       this.canvas.translate(this.x, this.y);
