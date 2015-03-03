@@ -1,16 +1,47 @@
+/**
+ * @license
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 CLASS({
   name: 'QIssueTileView2',
+  package: 'foam.apps.quickbug.ui',
   label: 'QIssue Tile View',
 
   extendsModel: 'foam.ui.View',
 
+  requires: [
+    'PropertyView'
+  ],
+
+  imports: [
+    'QueryParser'
+  ],
+
   properties: [
+    {
+      name: 'QIssue',
+      defaultValueFn: function() {
+        return this.X.QIssue;
+      }
+    },
     {
       name:  'browser'
     },
     {
       name:  'issue',
-      type:  'QIssue'
     },
     {
       name: 'map',
@@ -24,7 +55,7 @@ CLASS({
     {
       name: 'openPredicate',
       lazyFactory: function() {
-        return this.X.QueryParser.parseString(this.browser.project.openPredicate);
+        return this.QueryParser.parseString(this.browser.project.openPredicate);
       }
     },
   ],
@@ -40,7 +71,7 @@ CLASS({
 
     // Implement Adapter
     f: function(issue) {
-      var view = this.X.QIssueTileView2.create({ browser: this.browser }, self.Y);
+      var view = this.model_.create({ browser: this.browser }, this.Y);
       view.put(issue);
       return view;
     },
@@ -110,7 +141,7 @@ CLASS({
 
     function toHTML() {/*
       <%
-        var starView = PropertyView.create({prop: this.X.QIssue.STARRED, data: this.issue});
+        var starView = this.PropertyView.create({prop: this.QIssue.STARRED, data: this.issue});
         var f = function() { this.browser.location.id = this.issue.id; };
         var cls = 'gridtile';
         cls += ' priority-' + this.dataToPriority(this.issue.priority);
