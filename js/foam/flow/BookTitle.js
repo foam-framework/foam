@@ -43,7 +43,6 @@ CLASS({
 
       }
 
-
       @media print {
 
         flow-book-title {

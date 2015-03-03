@@ -1,6 +1,8 @@
 <book-container id="%%id">
   <book>
+
     <watermark><watermark-text>DRAFT</watermark-text></watermark>
+
     <title-page>
       <book-title>
         FOAM
@@ -20,7 +22,9 @@
         <lastName>Dittmer</lastName>
       </author>
     </title-page>
+
     <toc />
+
     <section>
       <title>Introduction</title>
       <p>
@@ -33,5 +37,6 @@
     </section>
 
     <glossary />
+
   </book>
 </book-container>

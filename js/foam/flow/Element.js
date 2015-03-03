@@ -26,6 +26,16 @@ CLASS({
   ],
 
   methods: {
+    init: function() {
+      this.SUPER.apply(this, arguments);
+      this.tagName = this.getTagName();
+    },
+
+    getTagName: function() {
+      return this.ELEMENT_NAME ||
+          this.X.foam.Name.create({ initial: this.name_ }).toTagName();
+    },
+
     replaceAll: function(str, a, b) {
       var next = str, prev = '';
       while ( prev !== next) {
@@ -38,7 +48,7 @@ CLASS({
     installInDocument: function(X, document) {
       this.SUPER.apply(this, arguments);
       this.X.registerElement(
-          this.ELEMENT_NAME || this.X.foam.Name.create({ initial: this.name_ }).toTagName(),
+          this.getTagName(),
           this.model_.package + '.' + this.name_);
     },
 
