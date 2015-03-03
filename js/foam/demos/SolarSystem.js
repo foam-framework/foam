@@ -23,12 +23,12 @@ CLASS({
   requires: [
     'foam.graphics.Circle as Planet',
     'Timer',
-    'Turntable',
+    'foam.graphics.Turntable',
     'Graph',
-    'EyeCView',
+    'foam.demos.graphics.EyeCView',
     'foam.demos.ClockView',
     'PieGraph',
-    'EyesCView',
+    'foam.demos.graphics.EyesCView',
     'foam.graphics.CView',
     'foam.ui.DetailView'
   ],
@@ -41,6 +41,7 @@ CLASS({
       factory: function() { return this.Timer.create(); }
     },
     { name: 'turntable', factory: function() { return this.Turntable.create(); } },
+    { name: 'turntableView'},
     {
       name: 'sun',
       view: { factory_: 'foam.ui.DetailView', showActions: true }
@@ -84,8 +85,6 @@ CLASS({
         Movement.orbit(this.timer, this.mars, this.mmoons[i], 30+i*10, 1500+500*i);
       }
 
-      Events.link(this.timer.time$, this.turntable.time$);
-
       var clock = this.ClockView.create({x:700,y:90,r:80,color:'red'});
       this.space.addChild(clock);
 
@@ -103,12 +102,15 @@ CLASS({
       var eyes = this.EyesCView.create({x:600,y:470});
       this.space.addChild(eyes);
       eyes.watch(this.earth);
+      
+      this.turntableView = this.turntable.toView_();
+      Events.link(this.timer.time$, this.turntable.time$);
     },
 
     initHTML: function() {
       this.SUPER();
       this.timer.start();
-      this.turntable.initHTML();
+      this.turntableView.initHTML();
     }
   },
 
@@ -118,7 +120,7 @@ CLASS({
       <td valign="top">$$timer</td>
       <td valign="top">$$sun</td>
       <td valign="top">$$earth</td>
-      </tr></table><%= this.turntable.toHTML() %>
+      </tr></table><%= this.turntableView.toHTML() %>
     */}
   ]
 });
