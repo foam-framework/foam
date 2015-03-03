@@ -43,7 +43,14 @@ CLASS({
     'foam.apps.quickbug.ui.QIssueCreateView',
     'foam.apps.quickbug.ui.QIssueDetailView',
     'foam.apps.quickbug.ui.QIssuePreviewBorder',
-    'foam.core.dao.WaitCursorDAO'
+    'foam.apps.quickbug.ui.QIssueTableView',
+    'foam.apps.quickbug.ui.QIssueTileView',
+    'foam.apps.quickbug.ui.QIssueTileView2',
+    'foam.apps.quickbug.ui.ColExpr',
+    'foam.apps.quickbug.ui.ItemCount',
+    'foam.apps.quickbug.ui.DragAndDropGrid',
+    'foam.core.dao.WaitCursorDAO',
+    'ViewChoice'
   ],
 
   exports: [
@@ -62,6 +69,10 @@ CLASS({
     'previewID',
     'favouritesMenu',
     'createMenu',
+    {
+      name: 'QIssue',
+      defaultValueFn: function() { return this.X.QIssue; }
+    },
     {
       name: 'qbug',
       scope: 'project',
@@ -102,7 +113,7 @@ CLASS({
       factory: function() {
         return this.QIssuesSplitDAO.create({
           local: this.project.IssueDAO,
-          model: this.X.QIssue,
+          model: this.QIssue,
           remote: this.project.IssueNetworkDAO
         });
 
@@ -202,7 +213,7 @@ CLASS({
     {
       name: 'view',
       factory: function() {
-        var view = createView(this.rowSelection$, this);
+        var view = this.createView(this.rowSelection$, this);
         view.choice$ = this.location.mode$;
         return view;
       }
@@ -500,8 +511,8 @@ CLASS({
 
       this.memento = '';
 
-      this.location.y = this.X.QIssue.OWNER;
-      this.location.x = this.X.QIssue.STATUS;
+      this.location.y = this.QIssue.OWNER;
+      this.location.x = this.QIssue.STATUS;
 
       this.searchField.data$.addListener(this.onSearch);
       Events.follow(this.location.q$, this.searchField.data$);
@@ -569,6 +580,97 @@ CLASS({
         error: function () {
           this.performQuery();
         }.bind(this)
+      });
+    },
+
+    createView: function(rowSelectionValue) {
+      var browser = this;
+
+      return this.AlternateView.create({
+        dao: this.filteredIssueDAO$Proxy,
+        headerView: this.countField,
+        views: [
+          this.ViewChoice.create({
+            label: 'List',
+            view: function() {
+              var tableView = browser.QIssueTableView.create({
+                model:               browser.QIssue,
+                dao:                 browser.filteredIssueDAO$Proxy,
+                browser:             browser,
+                hardSelection$:      rowSelectionValue,
+                columnResizeEnabled: true,
+                scrollEnabled:       true,
+                editColumnsEnabled:  true
+              });
+
+              tableView.sortOrder$  = browser.location.sort$;
+              tableView.properties$ = browser.location.colspec$;
+              return tableView;
+            }
+          }),
+          this.ViewChoice.create({
+            label: 'Grid',
+            view: function() {
+              // TODO: this is a bit complex because it was written before Contexts. Fix.
+              var g = Model.create({
+                name: 'QIssueGridView',
+                extendsModel: 'GridView',
+                methods: {
+                  filteredDAO: function() {
+                    return ( this.acc.choice && this.acc.choice[1] === 'Tiles' ) ?
+                      this.dao.limit(2000) :
+                      this.dao ;
+                  }
+                }
+              }).create({
+                model: browser.QIssue,
+                accChoices: [
+                  [ MAP(browser.QIssueTileView.create({browser: browser}), browser.ColExpr.create()),  'Tiles' ],
+                  [ MAP(browser.QIssueTileView2.create({browser: browser}), browser.ColExpr.create()), 'Tiles+' ],
+                  [
+                    MAP({
+                      f: function(i) {
+                        var url = browser.url + '/issues/detail?id=' + i.id;
+                        return '<a target="_blank" href="' + url + '">' + i.id + '</a>&nbsp;';
+                      }
+                    }, browser.ColExpr.create()), 'IDs' ],
+                  [ browser.ItemCount.create({browser: browser}),                          'Counts' ],
+                  [ PIE(browser.QIssue.STATUS),                                            'Pie(Status)'  ],
+                  [
+                    PIE(browser.QIssue.PRIORITY, {
+                      colorMap: {
+                        Critical: 'hsl(   0, 100%, 70%)',
+                        High:     'hsl(-340, 100%, 70%)',
+                        Medium:   'hsl(-320, 100%, 70%)',
+                        Low:      'hsl(-300, 100%, 70%)',
+                        '':       'lightgray'
+                      }
+                    }), 'Pie(Priority)' ]
+                ],
+                grid: browser.DragAndDropGrid.create({dao: browser.filteredIssueDAO$Proxy})
+              }, browser.Y);
+
+              g.row.data$   = browser.location.y$;
+              g.col.data$   = browser.location.x$;
+              g.scrollMode$ = browser.location.scroll$;
+
+              // TODO: cleanup this block
+              function setAcc() {
+                var acc = g.accChoices[0];
+                for ( var i = 1 ; i < g.accChoices.length ; i++ ) {
+                  if ( location.cells === g.accChoices[i][1].toLowerCase() ) acc = g.accChoices[i];
+                }
+                g.acc.choice = acc;
+              }
+              setAcc(location.cells);
+
+              g.acc.data$.addListener(function(choice) { browser.location.cells = g.acc.label.toLowerCase(); });
+              browser.location.cells$.addListener(setAcc);
+
+              return g;
+            }
+          })
+        ]
       });
     },
 
