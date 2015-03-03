@@ -13,6 +13,29 @@ book {
   background: #fff;
   padding: 100px 4% 4% 4%;
   box-shadow: 0px 0px 20px #888;
+  z-index: 2;
+}
+
+book watermark {
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: -1;
+  color: #eee;
+  font-size: 100px;
+  transform: rotate(45deg);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 book p {

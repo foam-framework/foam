@@ -1,5 +1,6 @@
 <book-container id="%%id">
   <book>
+    <watermark><watermark-text>DRAFT</watermark-text></watermark>
     <title-page>
       <book-title>
         FOAM
