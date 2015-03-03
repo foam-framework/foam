@@ -29,11 +29,33 @@ CLASS({
   ],
 
   methods: {
-    updateSubViews: function() {
-      if ( ! this.$ ) return;
-      this.$.innerHTML = this.render();
+    init: function() {
+      this.data$.addListener(this.newData);
+      this.newData();
+      this.SUPER();
+    },
+    destroy: function() {
+      this.data = '';
+      this.data$.removeListener(this.newData);
     }
   },
+
+  listeners: [
+    {
+      name: 'newData'
+      code: function(src, topic, old, nu) {
+        if ( old ) old.removeListener(this.update);
+        if ( nu ) nu.addListener(this.update);
+      }
+    },
+    {
+      name: 'update',
+      code: function() {
+        if ( ! this.$ ) return;
+        this.$.innerHTML = this.render();
+      }
+    }
+  ],
 
   templates: [
     { name: 'toHTML', template: '<div id="<%= this.id %>"></div>' },
