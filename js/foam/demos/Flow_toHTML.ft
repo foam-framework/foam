@@ -7,6 +7,9 @@
 
   <section title="Sub-Chapter">
     Sub-Chapter Stuff
+    <foam model="foam.demos.graphics.EyeCView" background="pink" x="75" y="75" width="300" height="300"/>
+    <foam model="foam.demos.graphics.EyesCView" background="aqua" width="600" height="200"/>
+
     <section title="Sub-Sub-Chapter">
       Sub-Sub-Chapter Stuff
     </section>
@@ -47,7 +50,7 @@
 
 </section>
 
-<foam model="foam.demos.Spring" n="10" width="500" height="500" />
+<foam model="foam.demos.physics.Spring" n="10" width="500" height="500" />
 
 Slides:
 

@@ -36,7 +36,9 @@ CLASS({
       name: 'cview',
       type: 'foam.graphics.CView',
       postSet: function(_, cview) {
-        cview.view = this;
+        cview.view  = this;
+        this.width  = cview.x + cview.width;
+        this.height = cview.y + cview.height;
       },
       documentation: function() {/*
           The $$DOC{ref:'foam.graphics.CView'} root node that contains all the content to render.
