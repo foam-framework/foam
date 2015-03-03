@@ -18,6 +18,8 @@ CLASS({
   name:  'Dragon',
   extendsModel: 'CView',
 
+  requires: ['foam.demos.graphics.EyesCView'],
+
   constants: {
     colours: ['#33f','#f00','#fc0','#33f','#3c0']
   },
@@ -32,7 +34,7 @@ CLASS({
       type:  'EyesCView',
       paint: true,
       factory: function() {
-        return EyesCView.create({x:500,y:500,r:this.r*10,parent:this});
+        return this.EyesCView.create({x:500,y:500,r:this.r*10,parent:this});
       }
     },
     {

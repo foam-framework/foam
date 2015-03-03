@@ -1,6 +1,8 @@
 CLASS({
   name: 'Test',
 
+  requires: ['foam.ui.ChoiceListView'],
+  
   properties: [
     {
       name: 'color',
@@ -31,7 +33,7 @@ CLASS({
         fr: 'Nombre'
       }),
       view: {
-        factory_: 'ChoiceListView',
+        factory_: 'foam.ui.ChoiceListView',
         choices: [
           [
             'One',
@@ -64,12 +66,20 @@ CLASS({
 });
 
 var t = Test.create();
-var v = DetailView.create({
-  data: t,
-  title: lm({
-    en: 'Edit Test',
-    es: 'Editar Prueba',
-    fr: 'Modifier Essai'
-  })
+
+apar( 
+  arequire('foam.ui.DetailView'),
+  arequire('Test')
+  )(function(m) {
+  var v = X.foam.ui.DetailView.create({
+    data: t,
+    title: lm({
+      en: 'Edit Test',
+      es: 'Editar Prueba',
+      fr: 'Modifier Essai'
+    })
+  });
+  document.body.innerHTML = document.body.innerHTML + v.toHTML();
+  v.initHTML();
 });
-v.write(document);
+
