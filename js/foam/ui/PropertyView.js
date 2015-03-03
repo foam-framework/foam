@@ -20,7 +20,10 @@ CLASS({
   name: 'PropertyView',
   package: 'foam.ui',
   extendsModel: 'foam.ui.BasePropertyView',
-  traits: ['foam.ui.HTMLPropertyViewTrait'], 
+  traits: [
+    'foam.ui.HTMLViewTrait',
+    'foam.ui.HTMLPropertyViewTrait'
+  ],
 
   documentation: function() {/*
     Used by $$DOC{ref:'foam.ui.DetailView'} to generate a sub-$$DOC{ref:'foam.ui.View'} for one
