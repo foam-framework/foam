@@ -114,8 +114,12 @@ CLASS({
       code: function() {
         if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
         this.canvas.save();
+        this.canvas.clearRect(0, 0, this.width, this.height);
+        this.canvas.fillStyle = this.cview.background;
+        this.canvas.fillRect(0, 0, this.width, this.height);
+
         this.canvas.scale(this.scalingRatio, this.scalingRatio);
-        this.cview.erase();
+        this.canvas.translate(this.cview.x, this.cview.y);
         this.cview.paint();
         this.canvas.restore();
       },
