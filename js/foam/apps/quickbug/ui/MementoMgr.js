@@ -15,12 +15,18 @@
  * limitations under the License.
  */
 
-// Force installation of features.
-MementoMgr.getPrototype();
-
-MementoMgr.BACK.iconUrl = 'images/back.png';
-MementoMgr.FORTH.iconUrl = 'images/forth.png';
-MementoMgr.BACK.label = '';
-MementoMgr.FORTH.label = '';
-MementoMgr.BACK.help = '';
-MementoMgr.FORTH.help = '';
+CLASS({
+  name: 'MementoMgr',
+  package: 'foam.apps.quickbug.ui',
+  extendsModel: 'MementoMgr',
+  actions: [
+    {
+      name: 'back',
+      iconUrl: 'images/back.png'
+    },
+    {
+      name: 'forth',
+      iconUrl: 'images/forth.png'
+    }
+  ]
+});

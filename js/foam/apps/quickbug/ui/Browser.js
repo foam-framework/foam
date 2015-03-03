@@ -37,7 +37,7 @@ CLASS({
     'foam.ui.PopupChoiceView',
     'PopupView',
     'foam.ui.ImageView',
-    'MementoMgr',
+    'foam.apps.quickbug.ui.MementoMgr',
     'foam.lib.bookmarks.AddBookmarkDialog',
     'foam.lib.bookmarks.Bookmark',
     'foam.apps.quickbug.ui.QIssueCreateView',
