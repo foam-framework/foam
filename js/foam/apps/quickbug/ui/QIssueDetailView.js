@@ -1,6 +1,32 @@
+/**
+ * @license
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 CLASS({
   name: 'QIssueDetailView',
+  package: 'foam.apps.quickbug.ui',
   extendsModel: 'foam.ui.DetailView',
+
+  requires: [
+    'foam.apps.quickbug.ui.CursorView',
+    'foam.apps.quickbug.ui.QIssueCommentCreateView',
+    'foam.apps.quickbug.ui.QIssueCLView',
+    'foam.apps.quickbug.ui.BlockView',
+    'foam.apps.quickbug.model.Cursor'
+  ],
 
   properties: [
     {
@@ -26,24 +52,24 @@ CLASS({
     {
       name: 'cursorView',
       factory: function() {
-        return this.X.CursorView.create({
-          data: this.X.Cursor.create({dao: this.cursorIssueDAO$Proxy})}, this.Y);
+        return this.CursorView.create({
+          data: this.Cursor.create({dao: this.cursorIssueDAO$Proxy})});
       }
     },
     {
       name: 'blockingView',
       factory: function() {
-        return this.X.BlockView.create({
-          property: this.X.QIssue.BLOCKING,
+        return this.BlockView.create({
+          property: this.model.BLOCKING,
           ids: this.data.blocking}, this.Y);
       }
     },
     {
       name: 'blockedOnView',
       factory: function() {
-        return this.X.BlockView.create({
-          property: this.X.QIssue.BLOCKED_ON,
-          ids: this.data.blockedOn}, this.y);
+        return this.BlockView.create({
+          property: this.model.BLOCKED_ON,
+          ids: this.data.blockedOn});
       }
     },
     'newCommentView'
@@ -67,14 +93,14 @@ CLASS({
       if ( this.data ) this.data.removeListener(this.doSave);
     },
     commentCreateView: function() {
-      return this.newCommentView = this.X.QIssueCommentCreateView.create({
+      return this.newCommentView = this.QIssueCommentCreateView.create({
         dao: this.data.comments,
         issue$: this.data$,
         data: this.data.newComment()
-      }, this.Y);
+      });
     },
     clView: function() {
-      return this.X.QIssueCLView.create({dao: this.data.comments}, this.Y);
+      return this.QIssueCLView.create({dao: this.data.comments});
     },
     toHTML: function() {
       return '<div id="' + this.id + '">' + this.toInnerHTML() + '</div>';
@@ -86,7 +112,7 @@ CLASS({
     },
     refresh: function() {
       var self = this;
-      self.issueDAO.where(EQ(this.X.QIssue.ID, self.data.id)).listen(
+      self.issueDAO.where(EQ(this.model.ID, self.data.id)).listen(
         EventService.oneTime(function() {
           self.issueDAO.find(self.data.id, {
             put: function(issue) {
@@ -101,50 +127,5 @@ CLASS({
 
   templates: [
     { name: 'toInnerHTML' }
-  ]
-});
-
-
-CLASS({
-  name: 'QIssueLabelsView',
-  extendsModel: 'foam.ui.View',
-
-  properties: [
-    {
-      name: 'data',
-      factory: function() { return SimpleValue.create([]); },
-      postSet: function() { this.update(); }
-    }
-  ],
-
-  methods: {
-    toHTML: function() { return '<div id="' + this.id + '"></div>'; },
-    initHTML: function() { this.SUPER(); this.update(); }
-  },
-
-  listeners: [
-    {
-      name: 'update',
-      isFramed: true,
-      code: function() {
-        if ( ! this.$ ) return;
-
-        var value = this.data.sort(function (o1, o2) {
-          return o1.toLowerCase().compareTo(o2.toLowerCase());
-        });
-        var out = "";
-        for ( var i = 0; i < value.length; i++ ) {
-          var start = value[i].substring(0, value[i].indexOf('-') + 1);
-          var rest  = value[i].substring(value[i].indexOf('-') + 1);
-
-          if ( start != 'Restrict-' ) {
-            out += '<div><b>' +
-              this.strToHTML(start) + '</b>' +
-              this.strToHTML(rest) + '</div>';
-          }
-        }
-        this.$.innerHTML = out;
-      }
-    }
   ]
 });

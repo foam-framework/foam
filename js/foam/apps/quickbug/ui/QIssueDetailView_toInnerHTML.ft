@@ -53,7 +53,7 @@
                   %%blockingView
                 </div>
                 <br>
-                <% if ( STARTS_WITH(this.X.QIssue.LABELS, 'Restrict-View-Google').f(this.data) ) { %>
+                <% if ( STARTS_WITH(this.model.LABELS, 'Restrict-View-Google').f(this.data) ) { %>
                 <div class="issue_restrictions">
                   <div class="restrictions_header">
                     <img src="images/restrict.png"> Restricted
@@ -73,7 +73,7 @@
             </div>&nbsp;
           </td>
           <td class="qvt">
-            $$comments{ model_: 'foam.ui.DAOListView', rowView: 'QIssueCommentView', mode: 'read-only' }
+            $$comments{ model_: 'foam.ui.DAOListView', rowView: 'foam.apps.quickbug.ui.QIssueCommentView', mode: 'read-only' }
           </td>
         </tr>
       </tbody>
