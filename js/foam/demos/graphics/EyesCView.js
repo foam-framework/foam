@@ -9,15 +9,19 @@ CLASS({
 
   properties: [
     {
+      name: 'r',
+      defaultValue: 50
+    },
+    {
       name:  'leftEye',
       factory: function() {
-        return this.EyeCView.create({x:65, y:85, r:50, color:'red'});
+        return this.EyeCView.create({x:this.r * 65.0 / 50.0, y:85, r: this.r, color:'red'});
       }
     },
     {
       name:  'rightEye',
       factory: function() {
-        return this.EyeCView.create({x:140, y:88, r:48, color:'yellow'});
+        return this.EyeCView.create({x:this.r * 65.0 / 50.0 + this.r * 75 / 50, y:88, r: 0.98 * this.r, color:'yellow'});
       }
     },
     { name: 'width',  defaultValue: 300 },
