@@ -15,15 +15,12 @@ CLASS({
   extendsModel: 'foam.flow.Element',
 
   templates: [
-    function toHTML() {/*
-      <flow-book-title id="%%id"><%= this.inner() %></flow-book-title>
-    */},
     function CSS() {/*
       @media not print {
 
         @media (max-width: 800px) {
 
-          flow-book-title {
+          book-title {
             font-weight: bold;
             font-size: 70px;
             margin-top: 15px;
@@ -33,7 +30,7 @@ CLASS({
 
         @media (min-width: 800px) {
 
-          flow-book-title {
+          book-title {
             font-weight: bold;
             font-size: 80px;
             margin-top: 20px;
@@ -45,7 +42,7 @@ CLASS({
 
       @media print {
 
-        flow-book-title {
+        book-title {
           font-weight: bold;
           font-size: 32pt;
           margin-top: 1in;

@@ -73,37 +73,35 @@ CLASS({
   },
 
   templates: [
-    function toHTML() {/*
-      <flow-term><a href="#%%termAnchor">%%term</a></flow-term>
-    */},
+    function toInnerHTML() {/* <a href="#%%termAnchor">%%term</a> */},
     function toDetailHTML() {/*
-      <flow-glossary-term><a name="{{this.data.termAnchor}}"></a>
+      <term-definition><a name="{{this.data.termAnchor}}"></a>
         <term>{{{this.data.term}}}</term>
         <% if ( this.data.sense ) { %><sense>({{{this.data.sense}}})</sense><% } %>
         <definition>{{{this.data.definition}}}</definition>
-      </flow-glossary-term>
+      </term-definition>
     */},
     function CSS() {/*
-      flow-term a {
+      glossary-term a {
         text-decoration: none;
-        color: inherit;
       }
 
-      flow-glossary-term definition {
+      term-definition definition {
         display: block;
       }
+
       @media not print {
 
-        flow-term, flow-glossary-term term {
+        glossary-term a, term-definition term {
           color: #080;
           font-family: Consolas, "Courier New", monospace;
           font-weight: bold;
           background: #eee;
-          padding: 0px 1px 0px 1px;
+          padding: 0px 4px 0px 4px;
           border-radius: 3px;
         }
 
-        flow-glossary-term definition {
+        term-definition definition {
           margin-top: 10px;
           margin-bottom: 13px;
         }
@@ -112,16 +110,16 @@ CLASS({
 
       @media print {
 
-        flow-term, flow-glossary-term term {
+        glossary-term a, term-definition term {
           text-transform: capitalize;
 
         }
 
-        flow-glossary-term term {
+        term-definition term {
           font-weight: bold;
         }
 
-        flow-glossary-term definition {
+        term-definition definition {
           margin-top: 6pt;
           margin-bottom: 8pt;
         }

@@ -19,12 +19,14 @@ CLASS({
 
   requires: [
     'EasyDAO',
+    'foam.flow.Watermark',
     'foam.flow.TitlePage',
     'foam.flow.BookTitle',
     'foam.flow.SubTitle',
     'foam.flow.Author',
     'foam.flow.ToC',
     'foam.flow.Section',
+    'foam.flow.Aside',
     'foam.flow.GlossaryTerm',
     'foam.flow.Glossary'
   ],

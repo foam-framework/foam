@@ -45,23 +45,22 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .flow-code-sample, .flow-code-sample-output{
-         border: 1px solid gray;
-         padding: 8px;
-         margin: 18px 0;
-         width: 600px;
+      code-sample > sample-code, code-sample > sample-output {
+        padding: 8px;
+        margin: 18px 0;
+        width: 600px;
+        border: 1px solid #000;
+        display: block;
       }
     */},
-    function toHTML() {/*
-      <blockquote>
-      <div class="flow-code-sample">
+    function toInnerHTML() {/*
+      <sample-code>
         %%code
-      </div>
+      </sample-code>
       Output:
-      <div class="flow-code-sample-output">
+      <sample-output>
         %%output
-      </div>
-      </blockquote>
+      </sample-output>
     */}
   ]
 });

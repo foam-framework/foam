@@ -40,13 +40,9 @@ CLASS({
       postSet: function(_, p) {
         if ( ! this.$ ) return;
         var v = this.currentSlide();
-        this.$.querySelector('.flow-slides-slide').innerHTML = v.toHTML();
+        this.$.querySelector('deck').innerHTML = v.toHTML();
         v.initHTML();
       }
-    },
-    {
-      name: 'className',
-      defaultValue: 'flow-slides'
     }
   ],
 
@@ -71,30 +67,38 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .flow-slides {
+      slides * {
+        box-sizing: border-box;
       }
-      .flow-slides-slide {
+      slides, slides > deck, slides > controls {
+        display: block;
+      }
+      slides > deck {
+        width: 100%;
+        height: 90%;
         border: 1px solid black;
       }
-      .flow-slides-controls {
-        xxxborder: 1px solid black;
+      slides > controls {
+        width: 100%;
+        height: 10%;
+        border: 1px solid black;
         padding: 10px;
       }
-      .flow-slides-controls input {
+      slides > controls input {
         vertical-align: top;
         width: 40px;
       }
-      .flow-slides-controls .actionButton-back {
+      slides > controls .actionButton-back {
         margin-left: 100px;
       }
     */},
     function toInnerHTML() {/*
-      <div class="flow-slides-slide">
+      <deck>
         <%= this.currentSlide() %>
-      </div>
-      <div class="flow-slides-controls">
+      </deck>
+      <controls>
         $$position of {{this.slides.length}} $$back $$forth
-      </div>
+      </controls>
     */}
   ]
 });

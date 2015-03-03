@@ -1,7 +1,7 @@
 <book-container id="%%id">
   <book>
 
-    <watermark><watermark-text>DRAFT</watermark-text></watermark>
+    <watermark><text>draft</text></watermark>
 
     <title-page>
       <book-title>
@@ -34,6 +34,9 @@
           <definition>Feature-Oriented Active Modeller</definition>
         </glossary-term>!
       </p>
+      <aside>
+        FOAM is awesome!
+      </aside>
     </section>
 
     <glossary />
