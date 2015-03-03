@@ -76,8 +76,16 @@ CLASS({
     watch: function(target) { this.target_ = target; },
     paintSelf: function() {
       // point pupil towards target
-      if ( this.target_ )
-        Movement.stepTowards(this.target_, this.pupil, this.r-26);
+      if ( this.target_ ) {
+        var t = this.target_.mapToCanvas({x: this.target_.x, y: this.target_.y});
+        var o = this.mapToCanvas({x: this.x, y: this.y});
+        var dx = o.x - t.x;
+        var dy = o.y - t.y;
+        var theta = Math.atan2(dy,dx);
+        var r     = Math.sqrt(dx*dx+dy*dy);
+        this.pupil.x = -this.r * 0.63 * Math.cos(-theta);
+        this.pupil.y = this.r * 0.63 * Math.sin(-theta);
+      }
 
       this.canvas.translate(this.x, this.y);
       this.canvas.rotate(-Math.PI/40);

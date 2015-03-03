@@ -272,11 +272,9 @@ CLASS({
     mapToCanvas: function(point) { /* Maps a coordinate from this to the canvas.
                     Useful for sharing a point between sibling or cousin items. */
       this.mapToParent(point);
-      if (this.parent && this.parent.mapToCanvas) {
-        return this.parent.mapToCanvas(point);
-      } else {
-        return point;
-      }
+      if ( this.parent && this.parent.mapToCanvas )
+        this.parent.mapToCanvas(point);
+      return point;
     },
   }
 });
