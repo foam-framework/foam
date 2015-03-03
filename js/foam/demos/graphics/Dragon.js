@@ -59,7 +59,7 @@ CLASS({
     },
     {
       name:  'height',
-      defaultValue: 1000
+      defaultValue: 800
     },
     {
       name:  'x',
@@ -164,7 +164,7 @@ CLASS({
       var circle = this.Circle.create({
         r: 0,
         y: -this.r*6,
-        color: undefined,
+        color: 'white',
         borderWidth: 2,
         border: this.COLOURS[Math.floor(Math.random() * this.COLOURS.length)]});
 
