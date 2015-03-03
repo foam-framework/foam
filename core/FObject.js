@@ -581,6 +581,7 @@ var FObject = {
   toXML: function() { return XMLUtil.stringify(this); },
 
   write: function(document, opt_view) {
+    console.warn("FObject.write() for ", this.model_.id," is not safe when called from async code.");
     var view = (opt_view || X.foam.ui.DetailView).create({
       model: this.model_,
       data: this,
@@ -589,6 +590,14 @@ var FObject = {
 
     document.writeln(view.toHTML());
     view.initHTML();
+  },
+
+  defaultView: function(opt_view) {
+    return (opt_view || X.foam.ui.DetailView).create({
+      model: this.model_,
+      data: this,
+      showActions: true
+    });
   },
 
   decorate: function(name, func, that) {

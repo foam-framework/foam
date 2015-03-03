@@ -1,40 +1,53 @@
-var timer  = Timer.create();
+var timer;
 apar(
    arequire('foam.ui.StackView'),
-   arequire('foam.ui.DetailView')
+   arequire('foam.ui.DetailView'),
+   arequire('foam.graphics.Turntable'),
+   arequire('foam.demos.graphics.Dragon')
 )(function() {
+  timer = Timer.create();
 
-  var tt     = Turntable.create();
-  var dragon = Dragon.create({
+  var tt     = X.foam.graphics.Turntable.create();
+  var dragon = X.foam.demos.graphics.Dragon.create({
     width:  1000,
     height: 800,
     timer:  timer
   });
+  var dragonModelView = Dragon.defaultView();
+  var dragonView = dragon.toView_();
+  var timerView = timer.defaultView();
+  var ttView = tt.toView_();
+  
+  X.set('stack', X.foam.ui.StackView.create());
 
-  tt.time$ = timer.time$;
+  document.body.innerHTML = document.body.innerHTML +
+    "<table><tr><td width=100% colspan=2>" +
+    X.stack.toHTML() +
+    "</td></tr><tr><td>" +
+    dragonModelView.toHTML() +
+    "</td><td width=60% valign=top><div>" +
+    dragonView.toHTML() +
+    "<table><tr><td>" +
+    timerView.toHTML() +
+    "</td><td>" + 
+    ttView.toHTML() +
+    "</td></tr></table>" +
+    "</div></td></tr></tabel>";
 
-  var stack = X.foam.ui.StackView.create();
+  X.stack.initHTML();
+  dragonModelView.initHTML();
+  dragonView.initHTML();
+  timerView.initHTML();
+  ttView.initHTML();
 
-  document.writeln("<table><tr><td width=100% colspan=2>");
-  stack.write(document);
-  document.writeln("</td></tr><tr><td>");
-  Dragon.write(document);
-  document.writeln("</td><td width=60% valign=top><div>");
-  dragon.write(document);
-  stack.setPreview(dragon);
-  stack.setPreview = function() {};
-  document.writeln("<table><tr><td>");
-  timer.write(document);
-  document.writeln("</td><td>");
-  tt.write(document);
-  document.writeln("</td></tr></table>");
-  document.writeln("</div></td></tr></tabel>");
+  X.stack.setPreview(dragon);
+  X.stack.setPreview = function() {};
 
   tt.paint();
   dragon.paint();
 
   var dmouse = Mouse.create();
-  dmouse.connect(dragon.parent.$);
+  dmouse.connect(dragonView.$);
   dragon.eyes.watch(dmouse);
 
   Dragon.methods.forEach(function(meth) {
@@ -47,6 +60,8 @@ apar(
       }
     });
   });
+
+  tt.time$ = timer.time$;
 
   timer.start();
 });
