@@ -1,16 +1,39 @@
+/**
+ * @license
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 CLASS({
   name: 'IssueLink',
+  package: 'foam.apps.quickbug.ui',
   extendsModel: 'foam.ui.View',
+
+  imports: [
+    'issueDAO',
+    'browser'
+  ],
+
+  requires: [
+    'foam.apps.quickbug.ui.BlockView',
+    'foam.apps.quickbug.ui.QIssueTileView',
+    'PopupView'
+  ],
 
   properties: [
     {
       name: 'issue'
-    },
-    {
-      name: 'issueDAO',
-      scope: 'X',
-      // TODO: should be renamed from IssueDAO to issueDAO in X
-      defaultValueFn: function() { return this.X.IssueDAO; }
     },
     {
       name: 'property',
@@ -47,11 +70,11 @@ CLASS({
           var ids = issue[self.property.name];
 
           if ( ids.length ) {
-            var subView = self.X.BlockView.create({
+            var subView = self.BlockView.create({
               property: self.property,
               maxDepth: self.maxDepth-1,
               ids:      ids
-            }, self.Y);
+            });
 
             self.$.insertAdjacentHTML(
               'afterend',
@@ -67,7 +90,7 @@ CLASS({
   listeners: [
     {
       name: 'editIssue',
-      code: function(id) { this.parent.X.browser.location.id = id; }
+      code: function(id) { this.browser.location.id = id; }
     },
     {
       name: 'startPreview',
@@ -76,11 +99,11 @@ CLASS({
 
         var self = this;
         this.issueDAO.find(id, { put: function(issue) {
-          self.currentPreview = self.X.PopupView.create({
+          self.currentPreview = self.PopupView.create({
             x: e.x+30,
             y: e.y-20,
-            view: self.X.QIssueTileView.create({issue: issue}, self.Y)
-          }, self.Y);
+            view: self.QIssueTileView.create({issue: issue})
+          });
 
           self.currentPreview.open(self);
         }});
