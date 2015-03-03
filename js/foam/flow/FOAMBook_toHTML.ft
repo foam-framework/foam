@@ -22,11 +22,13 @@
     <toc />
     <section>
       <title>Introduction</title>
-      Welcome to the wonderful world of
-      <glossary-term>
-        <term>FOAM</term>
-        <definition>Feature-Oriented Active Modeller</definition>
-      </glossary-term>!
+      <p>
+        Welcome to the wonderful world of
+        <glossary-term>
+          <term>FOAM</term>
+          <definition>Feature-Oriented Active Modeller</definition>
+        </glossary-term>!
+      </p>
     </section>
 
     <glossary />

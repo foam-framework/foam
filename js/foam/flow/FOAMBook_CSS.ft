@@ -31,28 +31,15 @@ heading a {
   color: #444;
 }
 
-@media (max-width: 800px) {
-
-  book {
-    width: 100%;
-  }
-
-  book p {
-    width: 100%;
-  }
-
+aside {
+  padding: 10px;
+  margin: 0px 10px 10px 10px;
+  right: 10px;
+  float: right;
 }
 
-@media (min-width: 800px) {
-
-  book {
-    width: 80%;
-  }
-
-  book p {
-    width: 70%;
-  }
-
+book aside p {
+  width: initial;
 }
 
 title-page > * {
@@ -65,27 +52,84 @@ title-page > * {
     book: Roboto, 'Helvetica Neue', Helvetica, Arial;
   }
 
-  title-page > book-title {
-    font-weight: bold;
-    font-size: 80px;
-    margin-top: 20px;
-  }
-
-  title-page > sub-title {
-    margin: 10px;
-    font-size: 40px;
-  }
-
   title-page > author {
     margin-top: 3px;
   }
 
-  <% for ( var i = 0; i < 5; ++i ) { %>
-    <% for ( var j = 0; j < i; ++j ) { %>section <% } %>heading {
-      font-size: <%= 20 + ((5 - i) * 5) %>px;
-      margin-bottom: <%= 5 + (5 - i) %>px;
+  aside {
+    box-shadow: 5px 5px 20px #888;
+    margin: 8px;
+  }
+
+  @media (max-width: 800px) {
+
+    book {
+      width: 100%;
     }
-  <% } %>
+
+    book p {
+      width: 100%;
+    }
+
+    aside {
+      width: 50%;
+    }
+
+    title-page > book-title {
+      font-weight: bold;
+      font-size: 70px;
+      margin-top: 5px;
+    }
+
+    title-page > sub-title {
+      margin: 5px;
+      font-size: 30px;
+    }
+
+    <% for ( var i = 0; i < 5; ++i ) { %>
+      <% for ( var j = 0; j < i; ++j ) { %>section <% } %>heading {
+	font-size: <%= 10 + ((5 - i) * 3) %>px;
+	margin-bottom: <%= 3 + (5 - i) %>px;
+      }
+    <% } %>
+
+  }
+
+  @media (min-width: 800px) {
+
+    book {
+      width: 80%;
+    }
+
+    book p {
+      width: 70%;
+    }
+
+    aside {
+      min-width: 300px;
+      max-width: 25%;
+      border: 0px;
+    }
+
+    title-page > book-title {
+      font-weight: bold;
+      font-size: 80px;
+      margin-top: 5px;
+    }
+
+    title-page > sub-title {
+      margin: 10px;
+      font-size: 40px;
+    }
+
+    <% for ( var i = 0; i < 5; ++i ) { %>
+      <% for ( var j = 0; j < i; ++j ) { %>section <% } %>heading {
+	font-size: <%= 20 + ((5 - i) * 5) %>px;
+	margin-bottom: <%= 5 + (5 - i) %>px;
+      }
+    <% } %>
+
+  }
 
 }
 
@@ -132,5 +176,12 @@ title-page > * {
       margin-bottom: <%= (5 - i) * 2 %>px;
     }
   <% } %>
+
+  aside {
+    width: 50%;
+    border: 6px double #000 !important;
+    margin: 6pt;
+    page-break-inside: avoid;
+  }
 
 }
