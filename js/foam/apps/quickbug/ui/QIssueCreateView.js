@@ -1,12 +1,37 @@
+/**
+ * @license
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 CLASS({
   name: 'QIssueCreateView',
+  package: 'foam.apps.quickbug.ui',
   extendsModel: 'foam.ui.DetailView',
 
   requires: [
-    'foam.ui. ActionButton',
+    'foam.ui.ActionButton',
     'AutocompleteView',
-    'LabelAutocompleteView',
-    'StatusAutocompleteView'
+    'foam.apps.quickbug.LabelAutocompleteView',
+    'foam.apps.quickbug.StatusAutocompleteView',
+    'TextFieldView',
+    'foam.apps.quickbug.ui.GriddedStringArrayView'
+  ],
+
+  imports: [
+    'issueDAO',
+    'browser'
   ],
 
   properties: [
@@ -19,7 +44,7 @@ CLASS({
       name: 'saving',
       defaultValue: false
     },
-    { name: 'errorView', factory: function() { return TextFieldView.create({ mode: 'read-only' }); } },
+    { name: 'errorView', factory: function() { return this.TextFieldView.create({ mode: 'read-only' }); } },
   ],
 
   actions: [
@@ -31,11 +56,11 @@ CLASS({
         var self = this;
         this.saving = true;
         this.errorView.data = "";
-        this.X.IssueDAO.put(this.data, {
+        this.issueDAO.put(this.data, {
           put: function(obj) {
             self.saving = false;
-            self.X.browser.location.createMode = false;
-            self.X.browser.location.id = obj.id;
+            self.browser.location.createMode = false;
+            self.browser.location.id = obj.id;
           },
           error: function() {
             self.saving = false;
@@ -49,7 +74,7 @@ CLASS({
       label: 'Discard',
       isEnabled: function() { return ! this.saving },
       action: function() {
-        this.X.browser.location.createMode = false;
+        this.browser.location.createMode = false;
       }
     },
   ],
@@ -64,14 +89,14 @@ CLASS({
       <tr><td>Summary:</td><td>$$summary</td></tr>
       <tr><td>Description:</td><td>$$description</td></tr>
       <tr><td>Status:</td><td>
-        <% var Y = this.Y.sub(); Y.registerModel(StatusAutocompleteView, 'AutocompleteView'); %>
+        <% var Y = this.Y.sub(); Y.registerModel(this.StatusAutocompleteView, 'AutocompleteView'); %>
         $$status{ X: Y }
       </td></tr>
       <tr><td>Owner:</td><td>$$owner</td></tr>
       <tr><td>Cc:</td><td>$$cc</td></tr>
       <tr><td>Labels:</td><td>
-        <% Y = this.Y.sub(); Y.registerModel(LabelAutocompleteView, 'AutocompleteView'); %>
-        $$labels{ X: Y, model_: 'GriddedStringArrayView' }
+        <% Y = this.Y.sub(); Y.registerModel(this.LabelAutocompleteView, 'AutocompleteView'); %>
+        $$labels{ X: Y, model_: 'foam.apps.quickbug.ui.GriddedStringArrayView' }
       </td></tr>
       </tbody>
       </table>
