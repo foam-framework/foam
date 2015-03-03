@@ -221,6 +221,8 @@ var HTMLParser = {
   whitespace: repeat0(alt(' ', '\t', '\r', '\n'))
 }.addActions({
   START: function(xs) {
+    // TODO(kgr): I think that this might be a bug if we get a failed compile then
+    // we might not reset state properly.
     var ret = this.stack[0];
     this.stack = [ X.foam.html.Element.create({nodeName: 'html'}) ];
     return ret;

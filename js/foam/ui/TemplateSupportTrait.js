@@ -37,7 +37,7 @@ CLASS({
       /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.Y;
       var v = this.PropertyView.create({prop: prop, args: opt_args}, X);
-      this[prop.name + 'View'] = v;
+      this[prop.name + 'View'] = v.view;
       return v;
     },
 

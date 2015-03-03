@@ -1835,6 +1835,11 @@ var ArrayView = {
 */
 
 CLASS({
+  name: 'ArrayView',
+  extendsModel: 'foam.ui.DAOController'
+})
+
+CLASS({
   name: 'Mouse',
 
   properties: [
