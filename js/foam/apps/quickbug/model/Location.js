@@ -16,35 +16,22 @@
  */
 
 CLASS({
-  name: 'LocationProperty',
-
-  extendsModel: 'Property',
-
-  properties: [
-    { name: 'toMemento',      defaultValue:   function(o) { return o; } },
-    { name: 'fromMemento',    defaultValue:   function(o) { return o; } },
-    { name: 'toURL',          defaultValueFn: function()  { return this.toMemento; } },
-    { name: 'defaultMemento', defaultValue:   null }
-  ]
-});
-
-
-CLASS({
   name: 'Location',
+  package: 'foam.apps.quickbug.model',
 
   properties: [
     {
-      model_: 'LocationProperty',
+      model_: 'foam.apps.quickbug.types.LocationProperty',
       name: 'id'
     },
     {
-      model_: 'LocationProperty',
+      model_: 'foam.apps.quickbug.types.LocationProperty',
       name: 'createMode',
       defaultValue: false,
       preSet: function(_, v) { return v === "false" ? false : !!v; }
     },
     {
-      model_: 'LocationProperty',
+      model_: 'foam.apps.quickbug.types.LocationProperty',
       name: 'can',
       // The memento is the can# stored in the 3rd element of the choice
       // The value of 'can' is the value stored in the 1st element of the choice
@@ -64,7 +51,7 @@ CLASS({
       defaultMemento: 2 // Open issues
     },
     {
-      model_: 'LocationProperty',
+      model_: 'foam.apps.quickbug.types.LocationProperty',
       name: 'q',
       defaultValue: '',
       toURL: function(q) {
@@ -73,7 +60,7 @@ CLASS({
       }
     },
     {
-      model_: 'LocationProperty',
+      model_: 'foam.apps.quickbug.types.LocationProperty',
       name: 'mode',
       defaultMemento: 'list',
       toMemento: function(mode) { return mode ? mode.label.toLowerCase() : 'list'; },
@@ -86,7 +73,7 @@ CLASS({
       }
     },
     {
-      model_: 'LocationProperty',
+      model_: 'foam.apps.quickbug.types.LocationProperty',
       name: 'colspec',
       preSet: function(_, a) {
         if ( a ) {
@@ -108,7 +95,7 @@ CLASS({
       fromMemento: function(colspec) { return colspec ? colspec.split(' ') : null; }
     },
     {
-      model_: 'LocationProperty',
+      model_: 'foam.apps.quickbug.types.LocationProperty',
       name: 'sort',
       toMemento: function(sortOrder) { console.log('sort to memento: ', sortOrder.toMQL()); return sortOrder.toMQL(); },
       fromMemento: function(sort) {
@@ -137,29 +124,29 @@ CLASS({
       }
     },
     {
-      model_: 'LocationProperty',
+      model_: 'foam.apps.quickbug.types.LocationProperty',
       name: 'cells',
       defaultMemento: 'tiles'
     },
     {
-      model_: 'LocationProperty',
+      model_: 'foam.apps.quickbug.types.LocationProperty',
       name: 'y',
       toMemento: function(y) { return y.name; },
       fromMemento: function(name) { return this.X.QIssue.getProperty(name); }
     },
     {
-      model_: 'LocationProperty',
+      model_: 'foam.apps.quickbug.types.LocationProperty',
       name: 'x',
       toMemento: function(x) { return x.name; },
       fromMemento: function(name) { return this.X.QIssue.getProperty(name); }
     },
     {
-      model_: 'LocationProperty',
+      model_: 'foam.apps.quickbug.types.LocationProperty',
       name: 'scroll',
       defaultMemento: 'Bars'
     },
     {
-      model_: 'LocationProperty',
+      model_: 'foam.apps.quickbug.types.LocationProperty',
       name: 'createIssueTemplate'
     }
   ],
