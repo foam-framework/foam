@@ -1,29 +1,29 @@
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700);
 
 book-container {
-    position: relative;
-    min-height:100%;
-    display: flex;
-    justify-content: center;
-    align-items: stretch;
-    background: #eee;
+  position: relative;
+  min-height:100%;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  background: #eee;
 }
 
 book {
-    background: #fff;
-    padding: 100px 4% 4% 4%;
-    box-shadow: 0px 0px 20px #888;
+  background: #fff;
+  padding: 100px 4% 4% 4%;
+  box-shadow: 0px 0px 20px #888;
 }
 
 book p {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 title-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 heading a {
@@ -33,104 +33,104 @@ heading a {
 
 @media (max-width: 800px) {
 
-    book {
-        width: 100%;
-    }
+  book {
+    width: 100%;
+  }
 
-    book p {
-        width: 100%;
-    }
+  book p {
+    width: 100%;
+  }
 
 }
 
 @media (min-width: 800px) {
 
-    book {
-        width: 80%;
-    }
+  book {
+    width: 80%;
+  }
 
-    book p {
-        width: 70%;
-    }
+  book p {
+    width: 70%;
+  }
 
 }
 
 title-page > * {
-    display: block;
+  display: block;
 }
 
 @media not print {
 
-    body {
-	book: Roboto, 'Helvetica Neue', Helvetica, Arial;
-    }
+  body {
+    book: Roboto, 'Helvetica Neue', Helvetica, Arial;
+  }
 
-    title-page > book-title {
-        font-weight: bold;
-        font-size: 80px;
-        margin-top: 20px;
-    }
+  title-page > book-title {
+    font-weight: bold;
+    font-size: 80px;
+    margin-top: 20px;
+  }
 
-    title-page > sub-title {
-        margin: 10px;
-        font-size: 40px;
-    }
+  title-page > sub-title {
+    margin: 10px;
+    font-size: 40px;
+  }
 
-    title-page > author {
-        margin-top: 3px;
-    }
+  title-page > author {
+    margin-top: 3px;
+  }
 
-    <% for ( var i = 0; i < 5; ++i ) { %>
-      <% for ( var j = 0; j < i; ++j ) { %>section <% } %>heading {
-        font-size: <%= 20 + ((5 - i) * 5) %>px;
-        margin-bottom: <%= 5 + (5 - i) %>px;
-      }
-    <% } %>
+  <% for ( var i = 0; i < 5; ++i ) { %>
+    <% for ( var j = 0; j < i; ++j ) { %>section <% } %>heading {
+      font-size: <%= 20 + ((5 - i) * 5) %>px;
+      margin-bottom: <%= 5 + (5 - i) %>px;
+    }
+  <% } %>
 
 }
 
 @media print {
 
-    book {
-	font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
-    }
+  book {
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  }
 
-    @page :first {
-        margin: 2in 2in 2in 2in;
-    }
+  @page :first {
+    margin: 2in 2in 2in 2in;
+  }
 
-    title-page {
-        page-break-after: always;
-    }
+  title-page {
+    page-break-after: always;
+  }
 
-    title-page > book-title {
-        font-weight: bold;
-        font-size: 32pt;
-        margin-top: 1in;
-    }
+  title-page > book-title {
+    font-weight: bold;
+    font-size: 32pt;
+    margin-top: 1in;
+  }
 
-    title-page > sub-title {
-        margin-top: 0.5in;
-        font-size: 24pt;
-    }
+  title-page > sub-title {
+    margin-top: 0.5in;
+    font-size: 24pt;
+  }
 
-    title-page > author {
-        margin-top: 0.05in;
-    }
+  title-page > author {
+    margin-top: 0.05in;
+  }
 
-    @page :left {
-        margin: 1in 1.5in 1in 1in;
-    }
+  @page :left {
+    margin: 1in 1.5in 1in 1in;
+  }
 
-    @page :right {
-        margin: 1in 1in 1in 1.5in;
-    }
+  @page :right {
+    margin: 1in 1in 1in 1.5in;
+  }
 
-    <% for ( var i = 0; i < 5; ++i ) { %>
-      <% for ( var j = 0; j < i; ++j ) { %>section <% } %>heading {
-        font-size: <%= 12 + ((5 - i) * 2) %>pt;
-        margin-bottom: <%= (5 - i) * 2 %>px;
-      }
-    <% } %>
+  <% for ( var i = 0; i < 5; ++i ) { %>
+    <% for ( var j = 0; j < i; ++j ) { %>section <% } %>heading {
+      font-size: <%= 12 + ((5 - i) * 2) %>pt;
+      margin-bottom: <%= (5 - i) * 2 %>px;
+    }
+  <% } %>
 
 }
