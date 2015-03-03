@@ -183,7 +183,9 @@ CLASS({
     'foam.graphics.ActionButtonCView',
     'foam.ui.animated.Label',
     'foam.ui.md.Flare',
-    'History'
+    'History',
+    'PolymerActionButton',
+    'foam.ui.polymer.gen.View'
   ],
 
   exports: [
@@ -529,7 +531,7 @@ CLASS({
     'foam.ui.SlidePanel',
     'MainButtonsView',
     'SecondaryButtonsView',
-    'TertiaryButtonsView'
+    'TertiaryButtonsView',
     // 'foam.chromeapp.ui.ZoomView'
   ],
   exports: [

@@ -147,4 +147,9 @@ CLASS({
   ]
 });
 
-CLASS({ name: 'CalcView', extendsModel: 'foam.ui.DetailView', templates: [ { name: 'toHTML' } ] });
+CLASS({ 
+  name: 'CalcView',
+  extendsModel: 'foam.ui.DetailView',
+  requires: ['foam.ui.DAOListView'],
+  templates: [ { name: 'toHTML' } ] 
+});
