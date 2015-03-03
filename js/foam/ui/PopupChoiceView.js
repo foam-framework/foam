@@ -156,8 +156,9 @@ CLASS({
       }
 
       out += '<span class="action">';
-      this.model_.OPEN.iconUrl = this.iconUrl;
-      var button = this.createActionView(this.model_.OPEN).toView_();
+      var action = this.model_.getAction('open');
+      action.iconUrl = this.iconUrl;
+      var button = this.createActionView(action).toView_();
 
       this.addSelfDataChild(button);
 

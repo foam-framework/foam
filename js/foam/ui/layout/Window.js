@@ -61,6 +61,7 @@ CLASS({
   methods: {
     init: function(args) {
       this.SUPER(args);
+      var self = this;
       this.dynamic(function() { self.height; },
                    function() {
                      self.window.document.body.style.height = self.height + 'px';
