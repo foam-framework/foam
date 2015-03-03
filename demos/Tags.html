@@ -10,7 +10,7 @@
    <table><tr>
        <td valign=top>
          <foam id="timer" model="Timer" onInit="this.start()"></foam>
-         <foam id="tt" model="Turntable" onInit="this.time$ = $('timer').time$"></foam>
+         <foam id="tt" model="foam.graphics.Turntable" onInit="this.time$ = $('timer').time$"></foam>
        </td>
        <td>
          <foam id="dragon" model="Dragon" timer="#timer" width="950" height="1000"></foam>

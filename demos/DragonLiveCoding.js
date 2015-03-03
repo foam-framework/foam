@@ -1,5 +1,5 @@
 var timer  = Timer.create();
-var tt     = Turntable.create();
+var tt     = foam.graphics.Turntable.create();
 var dragon = Dragon.create({
   width:  1000,
   height: 800,

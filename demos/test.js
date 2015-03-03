@@ -451,7 +451,7 @@ var dragon = Dragon.create({
   timer: timer
 });
 
-var tt = Turntable.create();
+var tt = foam.graphics.Turntable.create();
 //    space.addChild(tt);
 tt.write(document);
 tt.paint();
