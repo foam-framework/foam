@@ -14,8 +14,6 @@ CLASS({
   package: 'foam.flow',
   extendsModel: 'foam.flow.Element',
 
-  constants: { ELEMENT: 'book-title' },
-
   templates: [
     function toHTML() {/*
       <flow-book-title id="%%id"><%= this.inner() %></flow-book-title>
@@ -23,10 +21,24 @@ CLASS({
     function CSS() {/*
       @media not print {
 
-        flow-book-title {
-          font-weight: bold;
-          font-size: 80px;
-          margin-top: 20px;
+        @media (max-width: 800px) {
+
+          flow-book-title {
+            font-weight: bold;
+            font-size: 70px;
+            margin-top: 15px;
+          }
+
+        }
+
+        @media (min-width: 800px) {
+
+          flow-book-title {
+            font-weight: bold;
+            font-size: 80px;
+            margin-top: 20px;
+          }
+
         }
 
       }

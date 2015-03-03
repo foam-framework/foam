@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.flow',
   name: 'Slides',
-  extendsModel: 'foam.ui.View',
+  extendsModel: 'foam.flow.Element',
 
   properties: [
     {

@@ -14,9 +14,8 @@ CLASS({
   name: 'Glossary',
   extendsModel: 'foam.flow.Section',
 
+  requires: [ 'foam.ui.DAOListView' ],
   imports: [ 'glossaryTerms' ],
-
-  constants: { ELEMENT: 'glossary' },
 
   properties: [
     {
@@ -32,7 +31,7 @@ CLASS({
       model_: 'DAOProperty',
       name: 'terms',
       todo: 'Sort alphabetically',
-      view: 'DAOListView',
+      view: 'foam.ui.DAOListView',
       factory: function() { return []; }
     }
   ],

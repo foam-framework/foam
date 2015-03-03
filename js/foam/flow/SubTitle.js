@@ -14,8 +14,6 @@ CLASS({
   package: 'foam.flow',
   extendsModel: 'foam.flow.Element',
 
-  constants: { ELEMENT: 'sub-title' },
-
   templates: [
     function toHTML() {/*
       <flow-sub-title id="%%id"><%= this.inner() %></flow-book-title>
@@ -23,14 +21,27 @@ CLASS({
     function CSS() {/*
       @media not print {
 
-        flow-sub-title {
-          margin: 10px;
-          font-size: 40px;
+        @media (max-width: 800px) {
+
+          flow-sub-title {
+            margin: 5px;
+            font-size: 30px;
+          }
+
+        }
+
+        @media (min-width: 800px) {
+
+          flow-sub-title {
+            margin: 10px;
+            font-size: 40px;
+          }
+
         }
 
       }
 
-      @media not print {
+      @media print {
 
         flow-sub-title {
           margin-top: 0.5in;

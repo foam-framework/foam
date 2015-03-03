@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.flow',
   name: 'CodeSample',
-  extendsModel: 'foam.ui.View',
+  extendsModel: 'foam.flow.Element',
 
   properties: [
     {
@@ -21,7 +21,7 @@ CLASS({
       preSet: function(_, txt) { return txt.trim(); },
       postSet: function(_, txt) {
         var fn = eval('(function() {\n'    + txt + '\n})');
-        
+
         this.output = fn();
       }
     },

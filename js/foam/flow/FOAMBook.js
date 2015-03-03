@@ -17,9 +17,8 @@ CLASS({
 
   exports: [ 'glossaryTerms' ],
 
-  constants: { ELEMENT: 'foam-book' },
-
   requires: [
+    'EasyDAO',
     'foam.flow.TitlePage',
     'foam.flow.BookTitle',
     'foam.flow.SubTitle',
@@ -32,10 +31,14 @@ CLASS({
 
   properties: [
     {
-      model_: 'ArrayProperty',
+      model_: 'DAOProperty',
       name: 'glossaryTerms',
-      type: 'Array[foam.flow.GlossaryTerm]',
-      factory: function() { return []; }
+      factory: function() {
+        return this.EasyDAO.create({
+          model: this.GlossaryTerm,
+          daoType: 'MDAO'
+        }).orderBy(this.GlossaryTerm.ID);
+      }
     }
   ],
 

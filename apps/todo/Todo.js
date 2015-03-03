@@ -49,7 +49,7 @@
 	// Needed to massage the HTML to fit TodoMVC spec; it works without this.
 	CLASS({
 		name: 'TodoFilterView',
-		extendsModel: 'ChoiceListView',
+		extendsModel: 'foam.ui.ChoiceListView',
 		methods: {
 			choiceToHTML: function(id, choice) {
 				var self = this;
@@ -61,7 +61,7 @@
 
 	CLASS({
 		name: 'Controller',
-    requires: ['foam.ui.TextFieldView'],
+    requires: ['foam.ui.TextFieldView', 'foam.ui.DAOListView', 'TodoFilterView'],
 		properties: [
 			{
 				name: 'input',

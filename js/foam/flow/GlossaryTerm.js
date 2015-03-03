@@ -16,12 +16,24 @@ CLASS({
 
   imports: [ 'glossaryTerms' ],
 
-  constants: { ELEMENT: 'glossary-term' },
-
   properties: [
     {
       model_: 'StringProperty',
+      name: 'id',
+      getter: function() {
+        return this.replaceAll(this.term.toLowerCase(), ' ', '-') +
+            (this.sense ?
+            '--' + this.replaceAll(this.sense.toLowerCase(), ' ', '-') :
+            '');
+      }
+    },
+    {
+      model_: 'StringProperty',
       name: 'term'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'sense'
     },
     {
       model_: 'StringProperty',
@@ -30,16 +42,33 @@ CLASS({
     {
       name: 'termAnchor',
       getter: function() {
-        return 'term-' + this.term.toLowerCase().replace(' ', '-');
+        return 'term--' + this.id;
       }
     }
   ],
 
   methods: {
-    init: function() {
-      this.SUPER();
-      // TODO: Support name and sense-based disambiguation.
-      this.glossaryTerms.push(this);
+    fromElement: function(e) {
+      this.SUPER(e);
+      // Prevent overwrite of existing term's definition. First definition wins.
+      if ( this.definition ) {
+        this.glossaryTerms.find(this.id, {
+          put: function(term) {
+            if ( ! term.definition ) {
+              this.glossaryTerms.put(this);
+            } else {
+              console.warn(
+                  'Duplicate glossary term definitions. Discarding latter: "' +
+                      this.definition + '"');
+            }
+          }.bind(this),
+          error: function() {
+            this.glossaryTerms.put(this);
+          }.bind(this)
+        });
+      } else {
+        this.glossaryTerms.put(this);
+      }
     }
   },
 
@@ -50,6 +79,7 @@ CLASS({
     function toDetailHTML() {/*
       <flow-glossary-term><a name="{{this.data.termAnchor}}"></a>
         <term>{{{this.data.term}}}</term>
+        <% if ( this.data.sense ) { %><sense>({{{this.data.sense}}})</sense><% } %>
         <definition>{{{this.data.definition}}}</definition>
       </flow-glossary-term>
     */},
@@ -69,11 +99,13 @@ CLASS({
           font-family: Consolas, "Courier New", monospace;
           font-weight: bold;
           background: #eee;
-          padding: 5px;
+          padding: 0px 1px 0px 1px;
+          border-radius: 3px;
         }
 
         flow-glossary-term definition {
           margin-top: 10px;
+          margin-bottom: 13px;
         }
 
       }
@@ -91,6 +123,7 @@ CLASS({
 
         flow-glossary-term definition {
           margin-top: 6pt;
+          margin-bottom: 8pt;
         }
 
       }

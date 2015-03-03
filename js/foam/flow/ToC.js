@@ -13,11 +13,12 @@ CLASS({
   package: 'foam.flow',
   name: 'ToC',
   label: 'Table of Contents',
-  extendsModel: 'foam.ui.View',
+  extendsModel: 'foam.flow.Element',
 
-  requires: ['foam.ui.DAOListView'],
-
+  requires: [ 'foam.ui.DAOListView' ],
   imports: [ 'parentSection' ],
+
+  constants: { ELEMENT_NAME: 'toc' },
 
   properties: [
     {

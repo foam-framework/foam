@@ -17,8 +17,6 @@ CLASS({
   imports: [ 'parentSection' ],
   exports: [ 'as parentSection' ],
 
-  constants: { ELEMENT: 'section' },
-
   properties: [
     {
       name: 'ordinal',
@@ -49,7 +47,7 @@ CLASS({
       model_: 'StringProperty',
       name: 'sectionAnchor',
       getter: function() {
-        return 'section-' + this.fullTitle.toLowerCase().replace('.', '').replace(' ', '-');
+        return this.replaceAll('section--' + this.fullTitle.toLowerCase(), /[. ]/, '-');
       }
     }
   ],
