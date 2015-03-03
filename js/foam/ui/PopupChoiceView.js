@@ -167,5 +167,26 @@ CLASS({
 
       return out;
     }
-  }
+  },
+
+  templates: [
+    function CSS() {/*
+      .popupChoiceList {
+        border: 2px solid grey;
+        background: white;
+        display: table-footer-group;
+        overflow-y: auto;
+        position: absolute;
+        top: 20;
+        left: 50;
+        margin: 0;
+      }
+
+      .popupChoiceList li {
+        display: block;
+        margin: 15px;
+        margin-left: -20px;
+      }
+    */}
+  ]
 });
