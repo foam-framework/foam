@@ -6,9 +6,10 @@
   This is chapter 1.
 
   <section title="Sub-Chapter">
-    Sub-Chapter Stuff
-    <foam model="foam.demos.graphics.EyeCView" background="pink" x="75" y="75" width="300" height="300"/>
-    <foam model="foam.demos.graphics.EyesCView" background="aqua" width="600" height="200"/>
+    Sub-Chapter Stuff<br>
+    <foam model="foam.demos.graphics.EyeCView"/>
+    <foam model="foam.demos.graphics.EyesCView"/>
+    <foam model="foam.demos.graphics.Dragon"/>
 
     <section title="Sub-Sub-Chapter">
       Sub-Sub-Chapter Stuff
