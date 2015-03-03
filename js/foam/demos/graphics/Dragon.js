@@ -19,7 +19,10 @@ CLASS({
   name:  'Dragon',
   extendsModel: 'foam.graphics.CView',
 
-  requires: [ 'foam.graphics.Circle' ],
+  requires: [
+    'foam.demos.graphics.EyesCView',
+    'foam.graphics.Circle'
+  ],
   imports: [ 'timer' ],
 
   constants: {
@@ -31,37 +34,40 @@ CLASS({
       name: 'i',
       defaultValue: 1
     },
-    /*
     {
       name:  'eyes',
       type:  'EyesCView',
       paint: true,
       factory: function() {
-        return EyesCView.create({x:500,y:500,r:this.r*10,parent:this});
+        return this.EyesCView.create({x:-45, y: -160, r: 25});
       }
     },
-    */
     {
       name:  'color',
       type:  'String',
       defaultValue: 'red'
     },
     {
+      model_: 'IntProperty',
       name:  'r',
       label: 'Radius',
-      type:  'int',
-      view:  'foam.ui.IntFieldView',
       defaultValue: 10
     },
     {
       name:  'width',
-      type:  'int',
-      defaultValue: 200
+      defaultValue: 1000
     },
     {
       name:  'height',
-      type:  'int',
-      defaultValue: 200
+      defaultValue: 1000
+    },
+    {
+      name:  'x',
+      defaultValue: 500
+    },
+    {
+      name:  'y',
+      defaultValueFn: function() { return 350-30*Math.sin(this.timer.time/4000*(Math.PI*2)); }
     },
     {
       name:  'backgroundColor',
@@ -82,12 +88,12 @@ CLASS({
     initCView: function() {
       this.SUPER();
 
+      this.addChild(this.eyes);
+
       if ( ! this.timer ) {
         this.timer = Timer.create();
         this.timer.start();
       }
-
-      this.width = this.height = 1000;
     },
     dot: function(r) {
       var c = this.canvas;
@@ -134,9 +140,6 @@ CLASS({
 
       c.save();
       try {
-        c.translate(500,250);
-        c.translate(0, -30*Math.sin(this.timer.time/4000*(Math.PI*2)));
-
         // tail
         c.save();this.tail(this.r, Math.sin(this.timer.time/4000*(Math.PI*2))*Math.PI/10);c.restore();
 
@@ -151,14 +154,6 @@ CLASS({
         this.dot(this.r);
         c.translate(0,2*-this.r);
         this.dot(this.r*.8);
-
-        // eyes
-        /*
-        c.scale(0.38, 0.38);
-        c.translate(-80,-140);
-        c.translate(-500,-500);
-        this.eyes.paint();
-        */
       } catch(x) {
         console.log(x);
       }
@@ -166,12 +161,9 @@ CLASS({
 
       if ( Math.random() > 0.2 ) return;
 
-      var Y = 210-30*Math.sin(this.timer.time/4000*(Math.PI*2));
-
       var circle = this.Circle.create({
-        x: 500,
-        y: Y,
         r: 0,
+        y: -this.r*6,
         color: undefined,
         borderWidth: 2,
         border: this.COLOURS[Math.floor(Math.random() * this.COLOURS.length)]});
@@ -183,13 +175,13 @@ CLASS({
       M.compile([
         [
           [4000, function() {
-            circle.x = 350 - Math.random()*150;
+            circle.x = circle.x - Math.random()*150 - 200;
             circle.alpha = 0;
            },
            Math.sqrt
           ],
           [4000, function() {
-            circle.y = Y - 150 - Math.random() * 50;
+            circle.y = circle.y - 150 - Math.random() * 50;
             circle.r = 25 + Math.random() * 50;
             circle.borderWidth = 12;
            },

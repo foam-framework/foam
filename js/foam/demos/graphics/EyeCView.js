@@ -32,7 +32,7 @@ CLASS({
       type:  'Circle',
       paint: true,
       factory: function() {
-        return this.Circle.create({r: this.r-10, color: 'white'});
+        return this.Circle.create({r: this.r*0.8, color: 'white'});
       }
     },
     {
@@ -40,11 +40,11 @@ CLASS({
       type:  'Circle',
       paint: true,
       factory: function() {
-        return this.Circle.create({r: 10, color: 'black'});
+        return this.Circle.create({r: this.r / 5, color: 'black'});
       }
     },
-    { name: 'x',      defaultValueFn: function() { return 30 + this.r; } },
-    { name: 'y',      defaultValueFn: function() { return ( 30 + this.r ) * 1.3; } },
+    { name: 'x',      defaultValueFn: function() { return 2 * this.r; } },
+    { name: 'y',      defaultValueFn: function() { return ( 2 * this.r ) * 1.3; } },
     { name: 'width',  defaultValue: 150 },
     { name: 'height', defaultValue: 150 },
   ],
