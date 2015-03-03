@@ -1,9 +1,9 @@
 CLASS({
   name: 'QIssueCreateView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   requires: [
-    'ActionButton',
+    'foam.ui.ActionButton',
     'AutocompleteView',
     'LabelAutocompleteView',
     'StatusAutocompleteView'
@@ -64,13 +64,13 @@ CLASS({
       <tr><td>Summary:</td><td>$$summary</td></tr>
       <tr><td>Description:</td><td>$$description</td></tr>
       <tr><td>Status:</td><td>
-        <% var Y = this.X.sub(); Y.registerModel(StatusAutocompleteView, 'AutocompleteView'); %>
+        <% var Y = this.Y.sub(); Y.registerModel(StatusAutocompleteView, 'AutocompleteView'); %>
         $$status{ X: Y }
       </td></tr>
       <tr><td>Owner:</td><td>$$owner</td></tr>
       <tr><td>Cc:</td><td>$$cc</td></tr>
       <tr><td>Labels:</td><td>
-        <% Y = this.X.sub(); Y.registerModel(LabelAutocompleteView, 'AutocompleteView'); %>
+        <% Y = this.Y.sub(); Y.registerModel(LabelAutocompleteView, 'AutocompleteView'); %>
         $$labels{ X: Y, model_: 'GriddedStringArrayView' }
       </td></tr>
       </tbody>

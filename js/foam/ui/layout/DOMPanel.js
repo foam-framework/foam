@@ -18,7 +18,8 @@
 CLASS({
   name: 'DOMPanel',
   package: 'foam.ui.layout',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.DataView',
+  traits: ['foam.ui.HTMLViewTrait', 'foam.ui.TemplateSupportTrait',  'foam.ui.ViewActionsTrait'],
   imports: [
     'window'
   ],
@@ -26,7 +27,9 @@ CLASS({
     { model_: 'IntProperty', name: 'width' },
     { model_: 'IntProperty', name: 'height' },
     { name: 'tagName', defaultValue: 'div' },
-    { name: 'data', postSet: function() { this.updateHTML(); } }
+    { name: 'data', postSet: function() { 
+      this.updateHTML(); 
+    } }
   ],
   methods: {
     init: function() {
@@ -41,8 +44,8 @@ CLASS({
       this.width = this.$.clientWidth;
       this.height = this.$.clientHeight;
     },
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       if ( this.window ) this.window.removeEventListener('resize', this.onResize);
     }
   },

@@ -90,7 +90,7 @@ var Address = FOAM({
 var ContactSmallTileView = FOAM({
   model_: 'Model',
 
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   name: 'ContactSmallTileView',
 
@@ -126,7 +126,7 @@ var ContactSmallTileView = FOAM({
 var ContactListTileView = Model.create({
   name: 'ContactListTileView',
 
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   templates: [
     {
@@ -291,7 +291,7 @@ var Contact = FOAM({
         {
             name: 'avatar',
             type: 'String',
-            view: 'ImageView',
+            view: 'foam.ui.ImageView',
             defaultValueFn: function() {
                 var key = this.title ? this.title[0].toUpperCase() : (
                   this.email ? this.email[0].toUpperCase() : '' );

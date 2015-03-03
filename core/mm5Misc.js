@@ -65,7 +65,7 @@ CLASS({
       transient: true,
       displayWidth: 8,
       displayHeight: 1,
-      view: 'IntFieldView',
+      view: 'foam.ui.IntFieldView',
       documentation: 'Number of assertions which have passed.'
     },
     {
@@ -100,7 +100,7 @@ CLASS({
 
         this[p.name] = eval('(' + txt + ')');
       },
-      preSet: function(_, value) {
+      adapt: function(_, value) {
         if ( typeof value === 'string' ) {
           if ( value.startsWith('function') ) {
             value = eval('(' + value + ')');
@@ -114,9 +114,9 @@ CLASS({
         if ( typeof value === 'function' && this.async && value.length === 0 ) {
           var str = value.toString();
           return eval('(function(ret)' + str.substring(str.indexOf('{')) + ')');
-        } else {
-          return value;
         }
+
+        return value;
       }
     },
     {
@@ -150,7 +150,7 @@ CLASS({
       name: 'tests',
       subType: 'UnitTest',
       label: 'Tests',
-      view: 'DAOListView',
+      view: 'foam.ui.DAOListView',
       documentation: 'An array of child tests. Will be run in order after the parent test.'
     },
     {
@@ -186,14 +186,14 @@ CLASS({
       // Copy the test methods into the context.=
       // The context becomes "this" inside the tests.
       // The UnitTest object itself becomes this.test inside tests.
-      this.X = this.X.sub({}, this.name);
-      this.X.log    = this.log.bind(this);
-      this.X.jlog   = this.jlog.bind(this);
-      this.X.assert = this.assert.bind(this);
-      this.X.fail   = this.fail.bind(this);
-      this.X.ok     = this.ok.bind(this);
-      this.X.append = this.append.bind(this);
-      this.X.test   = this;
+      this.Y = this.Y.sub({}, this.name);
+      this.Y.log    = this.log.bind(this);
+      this.Y.jlog   = this.jlog.bind(this);
+      this.Y.assert = this.assert.bind(this);
+      this.Y.fail   = this.fail.bind(this);
+      this.Y.ok     = this.ok.bind(this);
+      this.Y.append = this.append.bind(this);
+      this.Y.test   = this;
 
       this.results = '';
 
@@ -208,11 +208,11 @@ CLASS({
 
       afuncs.push(function(ret) {
         oldLog = console.log;
-        console.log = self.log.bind(self.X);
+        console.log = self.log.bind(self.Y);
         ret();
       });
 
-      afuncs.push(this.async ? code.bind(this.X) : code.abind(this.X));
+      afuncs.push(this.async ? code.bind(this.Y) : code.abind(this.Y));
 
       afuncs.push(function(ret) {
         console.log = oldLog;
@@ -229,7 +229,7 @@ CLASS({
             var afuncsInner = [];
             innerTests.forEach(function(test) {
               afuncsInner.push(function(ret) {
-                test.X = self.X.sub();
+                test.X = self.Y.sub();
                 test.atest()(ret);
               });
             });
@@ -478,7 +478,7 @@ CLASS({
     {
       name: 'severity',
       view: {
-        factory_: 'ChoiceView',
+        factory_: 'foam.ui.ChoiceView',
         choices: [
           'Feature',
           'Minor',
@@ -495,7 +495,7 @@ CLASS({
       type: 'String',
       required: true,
       view: {
-        factory_: 'ChoiceView',
+        factory_: 'foam.ui.ChoiceView',
         choices: [
           'Open',
           'Accepted',
@@ -572,14 +572,9 @@ CLASS({
   for ( var i = 0 ; i < Model.templates.length ; i++ )
     Model.templates[i] = JSONUtil.mapToObj(X, Model.templates[i]);
 
-  (function() {
-    var a = Model.properties;
-    for ( var i = 0 ; i < a.length ; i++ ) {
-      if ( ! Property.isInstance(a[i]) ) {
-        a[i] = Property.getPrototype().create(a[i]);
-      }
-    }
-  })();
+  Model.properties = Model.properties;
+  delete Model.instance_.prototype_;
+  Model = Model.create(Model);
 })();
 
 // Go back over each model so far, assigning the new Model to remove any reference

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui.layout',
   name: 'ResponsiveView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   requires: [
     'foam.ui.layout.ResponsiveViewOption'
   ],
@@ -45,12 +45,13 @@ CLASS({
     }
   ],
   methods: {
-    initHTML: function() {
+    initInnerHTML: function() {
       this.SUPER();
       this.window.addEventListener('resize', this.onResize);
       this.onResize_();
     },
-    destory: function() {
+    destroy: function(isParentDestroyed) {
+      this.SUPER(isParentDestroyed);
       this.window.removeEventListener('resize', this.onResize);
     },
     onResize_: function() {
@@ -77,6 +78,6 @@ CLASS({
     }
   ],
   templates: [
-    function toInnerHTML() {/*<%= this.current ? this.current.controller() : '' %>*/}
+    function toInnerHTML() {/*<% this.destroy(); %><%= this.current ? this.current.controller({ data$: this.data$ }) : '' %>*/}
   ]
 });

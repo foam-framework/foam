@@ -1232,12 +1232,6 @@ var MDAO = Model.create({
     },
 
     put: function(obj, sink) {
-      if ( ! obj ) {
-        // TODO: Workaround for no 'update' event on DAOs.
-        this.notify_('put', [null])
-        return;
-      }
-
       var oldValue = this.map[obj.id];
       if ( oldValue ) {
         this.root = this.index.put(this.index.remove(this.root, oldValue), obj);

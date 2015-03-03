@@ -16,15 +16,14 @@
  */
 
 
-var touchManager = X.foam.input.touch.TouchManager.create({});
-touchManager.install(document);
-var gestureManager = X.foam.input.touch.GestureManager.create();
+var touchManager;
+var gestureManager;
 
 CLASS({
   name: 'ModelListController',
 
   requires:['MDAO', 
-            'DAOListView',
+            'foam.ui.DAOListView',
             'foam.ui.md.TextFieldView'],
 
   imports: ['masterModelList as dao'],
@@ -93,25 +92,25 @@ CLASS({
 
 CLASS({
   name: 'ModelDescriptionRowView',
-  extendsModel: 'View',
-  traits: ['foam.views.DataConsumerTrait'],
-
+  extendsModel: 'foam.ui.LeafDataView',
+  traits: ['foam.ui.TemplateSupportTrait',
+           'foam.ui.HTMLViewTrait'], 
+  
   requires: ['SimpleValue'],
 
   properties: [
     {
       name: 'data',
-      help: 'The Model to describe',
-      postSet: function() {
+      postSet: function(old,nu) {
         this.modelRef = this.data.package ?
                           this.data.package + "." + this.data.name :
                           this.data.name;
         var shortPkg = this.data.package;
-        if ( shortPkg.length > 10 ) {
-          shortPkg = "..." + this.data.package.substring(
-                      this.data.package.length-10, this.data.package.length);
-        }
-        this.modelName = (shortPkg ? "["+ shortPkg + "]&nbsp;" : "") + this.data.name;
+  //       if ( shortPkg.length > 20 ) {
+  //         shortPkg = "..." + this.data.package.substring(
+  //                     this.data.package.length-10, this.data.package.length);
+  //       }
+        this.modelName = (shortPkg ? "["+ shortPkg + "] <br/>" : "") + this.data.name;
       }
     },
     {
@@ -131,6 +130,7 @@ CLASS({
 
       this.SUPER();
     }
+    
   },
   templates: [ // TODO: the data gets set on the modelNameView... screws it up
     function toInnerHTML() {/*
@@ -142,7 +142,7 @@ CLASS({
 
 CLASS({
   name: 'ControllerView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   methods: {
     initHTML: function() {
@@ -170,7 +170,10 @@ CLASS({
              'ControllerView',
              'ModelListController',
              'foam.documentation.DocViewPicker',
-             'foam.documentation.ModelCompletenessRecord'],
+             'foam.documentation.ModelCompletenessRecord',
+             'foam.input.touch.TouchManager',
+             'foam.input.touch.GestureManager'
+  ],
 
   documentation: function() {  /*
     <p>Some documentation for the $$DOC{ref:'.'} model.</p>
@@ -296,10 +299,10 @@ CLASS({
       // All models are now in USED_MODELS
       [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
         for ( var key in collection ) {
-          var m = FOAM.lookup(key, this.X);
-          //if ( ! m.getPrototype ) continue;
-          //m.getPrototype();
-          newDAO.put(m);
+          // go async: as the requires complete, newDAO will fill in
+          arequire(key)( function(m) {
+            newDAO.put(m);
+          });
         };
       }.bind(this));
       
@@ -308,7 +311,6 @@ CLASS({
 //         var m = FOAM.lookup(key, this.X);
 //         newDAO.put(m);
 //       };
-
 
       // load up books
       for (var key in this.X.developerDocs) {
@@ -476,7 +478,7 @@ CLASS({
 
 CLASS({
   name: 'DocBrowserView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   methods: {
    initHTML: function() {
@@ -629,6 +631,7 @@ CLASS({
       }
 
       div.list-container {
+        font-size: 80%;
         order: 2;
         flex-grow: 1;
         overflow-y:scroll;

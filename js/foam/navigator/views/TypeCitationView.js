@@ -18,7 +18,7 @@
 CLASS({
   name: 'TypeCitationView',
   package: 'foam.navigator.views',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   properties: [
     {
       name: 'className',

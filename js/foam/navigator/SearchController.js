@@ -18,7 +18,7 @@
 CLASS({
   name: 'SearchController',
   package: 'foam.navigator',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   requires: [
     'CachingDAO',
     'IDBDAO',
@@ -115,7 +115,7 @@ CLASS({
     {
       name: 'logo',
       defaultValue: 'https://www.google.ca/images/srpr/logo11w.png',
-      view: 'ImageView'
+      view: 'foam.ui.ImageView'
     },
     {
       model_: 'StringProperty',
@@ -126,7 +126,7 @@ CLASS({
       model_: 'DAOProperty',
       name: 'filteredDao',
       view: {
-        factory_: 'DAOListView',
+        factory_: 'foam.ui.DAOListView',
         rowView: 'foam.navigator.views.GSnippet'
       }
     },

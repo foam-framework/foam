@@ -7,7 +7,12 @@
  </head>
  <body>
   <script language="javascript">
-    var timer  = Timer.create({interval:20});
+   var timer;
+   apar(
+      arequire('foam.ui.View'),
+      arequire('foam.ui.DetailView')
+   )(function() {
+    timer  = Timer.create({interval:20});
     var space  = Canvas.create({width: 1000, height: 750, background:'#fff'});
 
 //    timer.write(document);
@@ -170,7 +175,7 @@
     document.write('</td></tr></table>');
 */
     grow();
-
+  });
   </script>
  </body>
 </html>

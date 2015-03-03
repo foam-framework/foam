@@ -1,13 +1,13 @@
 CLASS({
   name: 'QIssueCommentCreateView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   imports: [
     'browser'
   ],
 
   requires: [
-    'ActionButton',
+    'foam.ui.ActionButton',
     'PropertyView',
     'QIssueComment',
     'QIssueCommentUpdate',

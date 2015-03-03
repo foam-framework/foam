@@ -18,7 +18,7 @@
 CLASS({
   name: 'DefaultACRowView',
   package: 'foam.ui.md',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [ 'data' ],
 

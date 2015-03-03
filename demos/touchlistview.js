@@ -85,7 +85,7 @@ dao.put(Contact.create({ first: "Zachary", last:   "Hayes", email: "Zachary@Haye
 
 CLASS({
   name: 'ContactRowView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

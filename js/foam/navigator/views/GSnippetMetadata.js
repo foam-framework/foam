@@ -18,7 +18,7 @@
 CLASS({
   name: 'GSnippetMetadata',
   package: 'foam.navigator.views',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

@@ -33,7 +33,7 @@ CLASS({
       factory: function() {
         return this.LayoutItemLinearConstraints.create();
       },
-      view:'DetailView',
+      view:'foam.ui.DetailView',
       postSet: function() {
         this.horizontalConstraints.subscribe(['constraintChange'], this.doConstraintChange);
       }

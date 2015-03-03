@@ -18,7 +18,7 @@
 CLASS({
   name: 'DemoView',
   package: 'foam.ui.polymer.gen',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -61,7 +61,7 @@ CLASS({
             }
           </style>
           <div class="detailAndPreviewContainer">
-            $$instance{ model_: 'DetailView' }
+            $$instance{ model_: 'foam.ui.DetailView' }
             <%= this.instance.toHTML() %>
           </div>
         <% } %>

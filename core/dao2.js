@@ -41,7 +41,7 @@ CLASS({
           if ( oldDAO ) oldDAO.unlisten(this.relay());
           newDAO.listen(this.relay());
           // FutureDAOs will put via the future. In that case, don't put here.
-          if ( ! FutureDAO.isInstance(oldDAO) ) this.notify_('put', []);
+          if ( ! FutureDAO.isInstance(oldDAO) ) this.notify_('reset', []);
         }
       }
     },
@@ -67,6 +67,7 @@ CLASS({
         this.relay_ = {
           put:    function() { self.notify_('put', arguments);    },
           remove: function() { self.notify_('remove', arguments); },
+          reset: function() { self.notify_('reset', arguments); },
           toString: function() { return 'RELAY(' + this.$UID + ', ' + self.model_.name + ', ' + self.delegate + ')'; }
         };
       }
@@ -711,6 +712,98 @@ CLASS({
 
 
 CLASS({
+  name: 'FakeEasyDAO',
+  extendsModel: 'ProxyDAO',
+
+  help: 'A facade for easy DAO setup.',
+
+  documentation: function() {/*
+    <p>If you don't know which $$DOC{ref:'DAO'} implementation to choose, $$DOC{ref:'EasyDAO'} is
+    ready to help. Simply <code>this.X.EasyDAO.create()</code> and set the flags
+    to indicate what behavior you're looking for. Under the hood, $$DOC{ref:'EasyDAO'}
+    will create one or more $$DOC{ref:'DAO'} instances to service your requirements.
+    </p>
+    <p>Since $$DOC{ref:'EasyDAO'} is a proxy, just use it like you would any other
+    $$DOC{ref:'DAO'}, without worrying about the internal $$DOC{ref:'DAO'} doing the
+    work.
+    </p>
+  */},
+
+  properties: [
+//     {
+//       name: 'name',
+//       defaultValueFn: function() { return this.model.plural; },
+//       documentation: "The developer-friendly name for this $$DOC{ref:'.'}."
+//     },
+//     {
+//       model_: 'BooleanProperty',
+//       name: 'seqNo',
+//       defaultValue: false,
+//       documentation: "Have $$DOC{ref:'.'} use a sequence number to index items. Note that $$DOC{ref:'.seqNo'} and $$DOC{ref:'.guid'} features are mutually exclusive."
+//     },
+//     {
+//       model_: 'BooleanProperty',
+//       name: 'guid',
+//       label: 'GUID',
+//       defaultValue: false,
+//       documentation: "Have $$DOC{ref:'.'} generate guids to index items. Note that $$DOC{ref:'.seqNo'} and $$DOC{ref:'.guid'} features are mutually exclusive."
+//     },
+//     {
+//       name: 'seqProperty',
+//       type: 'Property',
+//       documentation: "The property on your items to use to store the sequence number or guid. This is required for $$DOC{ref:'.seqNo'} or $$DOC{ref:'.guid'} mode."
+//     },
+//     {
+//       model_: 'BooleanProperty',
+//       name: 'cache',
+//       defaultValue: false,
+//       documentation: "Enable local caching of the $$DOC{ref:'DAO'}."
+//     },
+//     {
+//       model_: 'BooleanProperty',
+//       name: 'logging',
+//       defaultValue: false,
+//       documentation: "Enable logging on the $$DOC{ref:'DAO'}."
+//     },
+//     {
+//       model_: 'BooleanProperty',
+//       name: 'timing',
+//       defaultValue: false,
+//       documentation: "Enable time tracking for concurrent $$DOC{ref:'DAO'} operations."
+//     },
+//     {
+//       name: 'daoType',
+//       defaultValue: 'IDBDAO',
+//       documentation: function() { /*
+//           <p>Selects the basic functionality this $$DOC{ref:'EasyDAO'} should provide.
+//           You can specify an instance of a DAO model definition such as
+//           $$DOC{ref:'MDAO'}, or a constant indicating your requirements.</p>
+//           <p>Choices are:</p>
+//           <ul>
+//             <li>$$DOC{ref:'.ALIASES',text:'IDB'}: Use IndexDB for storage.</li>
+//             <li>$$DOC{ref:'.ALIASES',text:'LOCAL'}: Use local storage (for Chrome Apps, this will use local, non-synced storage).</li>
+//             <li>$$DOC{ref:'.ALIASES',text:'SYNC'}: Use synchronized storage (for Chrome Apps, this will use Chrome Sync storage).</li>
+//           </ul>
+//        */}
+//     },
+//     {
+//       model_: 'BooleanProperty',
+//       name: 'autoIndex',
+//       defaultValue: false,
+//       documentation: "Automatically generate an index."
+//     },
+//     {
+//       model_: 'ArrayProperty',
+//       name: 'migrationRules',
+//       subType: 'MigrationRule',
+//       documentation: "Creates an internal $$DOC{ref:'MigrationDAO'} and applies the given array of $$DOC{ref:'MigrationRule'}."
+//     }
+   ],
+
+
+});
+
+CLASS({
   name: 'EasyDAO',
   extendsModel: 'ProxyDAO',
 
@@ -842,7 +935,7 @@ CLASS({
             delegate: dao,
             rules: this.migrationRules,
             name: this.model.name + "_" + daoModel.name + "_" + this.name
-          });
+          }, thist.Y);
         }
         if ( this.cache ) {
           this.mdao = MDAO.create(params);
@@ -967,7 +1060,7 @@ CLASS({
   extendsModel: 'ProxyDAO',
   methods: {
     find: function(id, sink) {
-      var X = this.X;
+      var X = this.Y;
       this.delegate.find(id, {
         put: function(o) {
           o.X = X;
@@ -1212,6 +1305,24 @@ CLASS({
 
       var future = afuture();
       var self = this;
+
+
+      // If the caller doesn't care to see the objects as they get removed,
+      // then just nuke them in one go.
+      if ( ! options && ! ( sink && sink.remove ) ) {
+        this.withStore('readwrite', function(store) {
+          var req = store.clear();
+          req.onsuccess = function() {
+            future.set();
+          };
+          req.onerror = function() {
+            future.set();
+          };
+        });
+        return future.get;
+      }
+
+
       this.withStore('readwrite', function(store) {
         var request = store.openCursor();
         request.onsuccess = function(e) {
@@ -1313,8 +1424,9 @@ CLASS({
   properties: [
     {
       name: 'cache',
-      postSet: function(_, d) {
-        d.listen(this.relay());
+      postSet: function(old, nu) {
+        if (old) this.unlisten(old);
+        if (nu) this.listen(nu);
       }
     },
     {
@@ -1340,6 +1452,12 @@ CLASS({
           'select.'
     },
     {
+      name: 'finds',
+      factory: function() {
+        return {};
+      }
+    },
+    {
       name: 'selects',
       factory: function() { return {}; }
     },
@@ -1359,6 +1477,12 @@ CLASS({
     find: function(id, sink) {
       var self = this;
 
+      // Check the in-flight finds and attach myself if there's one for this id.
+      if ( this.finds[id] ) {
+        this.finds[id].push(sink);
+        return;
+      }
+
       var mysink = {
         put: this.refreshOnCacheHit ?
             function() {
@@ -1367,15 +1491,34 @@ CLASS({
             } :
             sink.put.bind(sink),
         error: function() {
+          // Another request may have come in the meantime, so check again for
+          // an in-flight find for this ID.
+          if (self.finds[id]) {
+            self.finds[id].push(sink);
+            return;
+          }
+          self.finds[id] = [sink];
           self.delegate.find(id, {
             put: function(obj) {
               var args = arguments;
               self.cache.put(obj, {
-                put: function() { sink.put.apply(sink, args); }
+                put: function() {
+                  var finds = self.finds[id];
+                  for (var i = 0; i < finds.length; i++ ) {
+                    var s = finds[i];
+                    s && s.put && s.put.apply(s, args);
+                  }
+                  delete self.finds[id];
+                }
               });
             },
             error: function() {
-              sink && sink.error && sink.error.apply(sink, arguments);
+              var finds = self.finds[id];
+              for (var i = 0; i < finds.length; i++ ) {
+                var s = finds[i];
+                s && s.error && s.error.apply(sink, arguments);
+              }
+              delete self.finds[id];
             }
           });
         }
@@ -1392,7 +1535,6 @@ CLASS({
 
       var key = this.selectKey(sink, options);
       var future = afuture();
-      var delegateFuture = afuture();
       var self = this;
 
       var entry = this.selects[key];
@@ -1401,8 +1543,6 @@ CLASS({
            Date.now() - this.selects[key][1] > this.staleTimeout ) {
         this.selects[key] = entry = [afuture(), Date.now()];
         this.delegate.select(this.cache, options)(entry[0].set);
-      } else {
-        delegateFuture.set();
       }
 
       function readFromCache() {
@@ -1505,10 +1645,8 @@ CLASS({
           }
 
           var rulesDAO = self.rules.dao;
-
           rulesDAO
-            .where(AND(GT(MigrationRule.VERSION, version.version),
-                       LTE(MigrationRule.VERSION, self.X.App.version)))
+            .where(AND(GT(MigrationRule.VERSION, version.version)))
             .select()(function(rules) {
               var seq = [];
               for ( var i = 0; i < rules.length; i++ ) {
@@ -1605,11 +1743,13 @@ CLASS({
              this.objToJson(value, extra)
             )(
         function(resp, status) {
-          if ( status !== 200 ) {
+          var obj;
+
+          if ( ( status !== undefined && status !== 200 ) ||
+               ( obj = self.jsonToObj(resp, extra) ) ) {
             sink && sink.error && sink.error([resp, status]);
             return;
           }
-          var obj = self.jsonToObj(resp, extra);
           sink && sink.put && sink.put(obj);
           self.notify_('put', [obj]);
         });
@@ -1772,7 +1912,7 @@ CLASS({
       this.SUPER();
 
       var objs = localStorage.getItem(this.name);
-      if ( objs ) JSONUtil.parse(this.X, objs).select(this);
+      if ( objs ) JSONUtil.parse(this.Y, objs).select(this);
 
       this.addRawIndex({
         execute: function() {},

@@ -111,7 +111,7 @@ CLASS({
          "model_": "Property",
          "name": "avatar",
          "type": "String",
-         "view": "ImageView",
+         "view": "foam.ui.ImageView",
          "defaultValueFn": function () {
         var key = this.title ? this.title[0].toUpperCase() : (
           this.email ? this.email[0].toUpperCase() : '' );
@@ -121,7 +121,7 @@ CLASS({
       {
          "model_": "Property",
          "name": "iconURL",
-         "view": "ImageView",
+         "view": "foam.ui.ImageView",
          "defaultValue": "images/contact.png"
       },
       {

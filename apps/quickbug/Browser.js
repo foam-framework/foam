@@ -28,7 +28,7 @@ MementoMgr.FORTH.help = '';
 CLASS({
   name: 'Browser',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [
     'AlternateView',
@@ -38,8 +38,8 @@ CLASS({
     'QIssuesSplitDAO',
     'Timer',
     'TextFieldView',
-    'ChoiceView',
-    'ImageView',
+    'foam.ui.PopupChoiceView',
+    'foam.ui.ImageView',
     'MementoMgr',
     'foam.lib.bookmarks.AddBookmarkDialog',
     'foam.lib.bookmarks.Bookmark'
@@ -116,7 +116,7 @@ CLASS({
       name: 'bookmarksMenu',
       factory: function() {
         var self = this;
-        var Y = this.X.sub({
+        var Y = this.Y.sub({
           ChoiceListView: Model.create({
             name: 'ChoiceListView',
             extendsModel: 'ChoiceListView',
@@ -371,7 +371,7 @@ CLASS({
           horizontal: false,
           data: this,
           document: this.X.document
-        });
+        }, this.Y);
 
         view.addChild(StaticHTML.create({ content: '<b>Projects</b>' }));
         view.addActions(
@@ -461,7 +461,7 @@ CLASS({
           horizontal: false,
           data: this,
           document: this.X.document
-        });
+        }, this.Y);
 
         var self = this;
 
@@ -578,7 +578,7 @@ CLASS({
             status: prompt.status,
             summary: prompt.title,
             description: prompt.description
-          });
+          }, this.Y);
           break;
         }
       }
@@ -595,7 +595,7 @@ Please use labels and text to provide additional information.
 */}),
             status: 'New',
             summary: 'Enter a one-line summary.'
-          });
+          }, this.Y);
       }
 
 
@@ -606,7 +606,7 @@ Please use labels and text to provide additional information.
         var v = self.X.QIssueCreateView.create({
           data: data,
           mode: 'read-write'
-        });
+        }, self.Y);
         self.pushView(v);
       });
     },
@@ -636,7 +636,7 @@ Please use labels and text to provide additional information.
               cursorIssueDAO:   self.location.sort ?
                 self.filteredIssueDAO.orderBy(self.location.sort) :
                 self.filteredIssueDAO
-            });
+            }, self.Y);
             self.pushView(v);
 //            w.focus();
           });
@@ -689,7 +689,7 @@ Please use labels and text to provide additional information.
             QIssueDAO: self.IssueDAO,
             mode: 'read-only',
             url: self.url
-          }).addDecorator(self.X.QIssuePreviewBorder.create());
+          }, self.Y).addDecorator(self.X.QIssuePreviewBorder.create(null, self.Y));
 
           var popup = self.currentPreview = self.X.PopupView.create({
             x: e.x + 25,
@@ -700,7 +700,7 @@ Please use labels and text to provide additional information.
                 Math.min(screenHeight-HEIGHT-180, e.y - HEIGHT/2))),
             height: HEIGHT,
             view: v
-          });
+          }, self.Y);
 
           popup.open(self.view);
         }

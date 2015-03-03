@@ -168,7 +168,7 @@ CLASS({
 CLASS({
   name:  'ScrollBorder',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

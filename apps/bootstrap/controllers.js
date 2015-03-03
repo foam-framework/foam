@@ -2,13 +2,13 @@
 
 CLASS({
   name: 'AppController',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   traits: ['DynamicViewListenerTrait'],
   requires: [
     'AppConfig',
     'AppManifest',
     'WindowConfig',
-    'DetailView',
+    'foam.ui.DetailView',
     'TextAreaValueView'
   ],
 
@@ -16,7 +16,7 @@ CLASS({
     {
       type: 'AppConfig',
       name: 'appConfig',
-      view: 'DetailView',
+      view: 'foam.ui.DetailView',
       factory: function() {
         return AppConfig.create();
       }
@@ -32,7 +32,7 @@ CLASS({
     {
       type: 'AppManifest',
       name: 'appManifest',
-      view: 'DetailView',
+      view: 'foam.ui.DetailView',
       factory: function() {
         return AppManifest.create({ appConfig: this.appConfig });
       }
@@ -40,7 +40,7 @@ CLASS({
     {
       type: 'WindowConfig',
       name: 'windowConfig',
-      view: 'DetailView',
+      view: 'foam.ui.DetailView',
       factory: function() {
         return WindowConfig.create({ appConfig: this.appConfig });
       }

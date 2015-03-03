@@ -192,7 +192,6 @@ var JSONUtil = {
 
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
-          if ( val == prop.defaultValue ) continue;
           if ( Array.isArray(val) && ! val.length ) continue;
           if ( ! first ) out(',');
           out(this.keyify(prop.name), ': ');
@@ -205,7 +204,7 @@ var JSONUtil = {
     },
 
     outputModel_: function(out, obj) {
-      out('"model_":"')
+      out('model_:"')
       if ( obj.model_.package ) out(obj.model_.package, '.')
       out(obj.model_.name, '"');
     },
@@ -316,7 +315,6 @@ var JSONUtil = {
         if ( prop.name === 'parent' ) continue;
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
-          if ( val == prop.defaultValue ) continue;
           if ( Array.isArray(val) && ! val.length ) continue;
           if ( ! first ) out(',\n');
           out(nestedIndent, this.keyify(prop.name), ': ');
@@ -377,7 +375,10 @@ var JSONUtil = {
           out(nestedIndent);
           this.output(out, obj, nestedIndent);
         } else {
-          this.outputObject_(out, obj, opt_defaultModel, nestedIndent);
+          if ( obj.model_ )
+            this.outputObject_(out, obj, nestedIndent);
+          else
+            this.outputMap_(out, obj, nestedIndent);
         }
       }
 

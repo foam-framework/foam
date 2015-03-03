@@ -18,7 +18,9 @@
 CLASS({
   package: 'foam.graphics',
   name: 'AbstractCViewView',
-  extendsModel: 'View',
+ 
+  extendsModel: 'foam.ui.SimpleView',
+  traits: ['foam.ui.HTMLViewTrait'],
 
   documentation: function() {  /*
     Forming the DOM component for a $$DOC{ref:'foam.graphics.CView',text:'canvas view'},
@@ -47,9 +49,9 @@ CLASS({
       documentation: 'CSS class name(s), space separated.'
     },
     {
-      model_: 'IntProperty',
+      model_: 'FloatProperty',
       name: 'scalingRatio',
-      preSet: function(_, v) { return v < 0 ? 1 : v ; },
+      preSet: function(_, v) { return v <= 0 ? 1 : v ; },
       defaultValue: 1,
       documentation: function() {/*
           If scaling is required to render the canvas at a higher resolution than
@@ -156,7 +158,7 @@ CLASS({
 
       this.canvas = this.$.getContext('2d');
 
-      var devicePixelRatio = this.X.window.devicePixelRatio|| 1;
+      var devicePixelRatio = this.X.window.devicePixelRatio || 1;
       var backingStoreRatio = this.canvas.backingStoreRatio ||
         this.canvas.webkitBackingStorePixelRatio || 1;
 
@@ -173,9 +175,9 @@ CLASS({
       this.paint();
     },
 
-    destroy: function() { /* Call to clean up this and child views. */
-      this.SUPER();
-      this.cview.destroy();
+    destroy: function( isParentDestroyed ) { /* Call to clean up this and child views. */
+      this.SUPER(isParentDestroyed);
+      this.cview.destroy(isParentDestroyed);
     }
   }
 });

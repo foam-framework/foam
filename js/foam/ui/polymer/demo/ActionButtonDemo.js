@@ -18,7 +18,7 @@
 CLASS({
   name: 'ActionButtonDemo',
   package: 'foam.ui.polymer.demo',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   requires: [
     'Action',
     'foam.ui.polymer.ActionButton',

@@ -5,7 +5,7 @@
  **/
 CLASS({
   name: 'BlockView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -42,7 +42,7 @@ CLASS({
           issue: issue,
           property: this.property,
           maxDepth: this.maxDepth
-        });
+        }, this.Y);
 
         s += '<div>' + view.toHTML() + '</div>'
         this.addChild(view);

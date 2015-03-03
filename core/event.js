@@ -634,7 +634,6 @@ var Events = {
 */
 
 
-// TODO(kgr): Model
 MODEL({
   name: 'Movement',
 
@@ -971,6 +970,15 @@ MODEL({
       Events.dynamic(function() { c.vx; c.vy; }, function() {
         c.vx *= coef;
         c.vy *= coef;
+      });
+    },
+
+    gravity: function(c, opt_a, opt_theta) {
+      // TODO(kgr): implement opt_theta, the ability to control the direction
+      var a = opt_a || 1;
+      var theta = opt_theta || Math.PI * 1.5;
+      Events.dynamic(function() { c.vx; c.vy; }, function() {
+        c.vy += a;
       });
     },
 

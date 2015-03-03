@@ -18,7 +18,7 @@
 CLASS({
   name: 'EMailView',
   package: 'com.google.mail',
-  extendsModel: 'UpdateDetailView',
+  extendsModel: 'foam.ui.UpdateDetailView',
   properties: [
   ],
   actions: [
@@ -37,7 +37,7 @@ CLASS({
         var actionSheet = this.X.ActionSheetView.create({
           data: this.data,
           actions: this.data.model_.actions,
-        });
+        }, this.Y);
         this.X.stack.slideView(actionSheet);
       },
     },
@@ -49,6 +49,7 @@ CLASS({
       }
     */},
     function toHTML() {/*
+      <% this.destroy(); %>
       <div id="<%= this.id %>" class="email-view">
         <div class="header">
           $$back{radius: 22, className: 'backButton'}

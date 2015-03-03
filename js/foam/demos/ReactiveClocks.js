@@ -16,24 +16,27 @@
  */
 
 CLASS({
-  name: 'ReactiveClocks',
   package: 'foam.demos',
-  extendsModel: 'View',
+
+  name: 'ReactiveClocks',
+  extendsModel: 'foam.ui.View',
+
   requires: [
-    'Timer',
-    'Canvas',
     'Mouse',
-    'ClockView',
+    'Timer',
+    'foam.demos.ClockView',
+    'foam.graphics.CView',
+    'foam.ui.DetailView'
   ],
 
   properties: [
     {
       name: 'timer',
-      view: { factory_: 'DetailView', showActions: true },
+      view: { factory_: 'foam.ui.DetailView', showActions: true },
       factory: function() { return this.Timer.create(); }
     },
-    { name: 'mouse', factory: function() { return this.Mouse.create(); } },
-    { name: 'space', factory: function() { return this.Canvas.create({width: 4000, height: 3000, background:'#fff'}); } },
+    { name: 'mouse',  factory: function() { return this.Mouse.create(); } },
+    { name: 'space',  factory: function() { return this.CView.create({width: 1920, height: 1080, background:'white'}); } },
     { name: 'clock1', factory: function() { return this.ClockView.create({x:300, y:300, r:60, color:'red'}); } },
     { name: 'clock2', factory: function() { return this.ClockView.create({x:0, y:0, r:60, color:'green'}); } }
   ],

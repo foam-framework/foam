@@ -230,12 +230,12 @@ CLASS({
        */
       obj.addListener(EventService.merged((function() {
         console.log('PersistentContext', 'updating', name);
-        this.dao.put(this.X.Binding.create({
+        this.dao.put(this.Y.Binding.create({
           id:    name,
           value: JSONUtil.where(this.predicate).stringify(obj),
           version: version
         }));
-      }).bind(this), undefined, this.X));
+      }).bind(this), undefined, this.Y));
     },
     bindObjects: function(a) {
       // TODO: implement
@@ -273,7 +273,7 @@ CLASS({
             //                  var obj = JSONUtil.parse(binding.value);
             //                  var obj = JSON.parse(binding.value);
             var json = JSON.parse(binding.value);
-            var obj = JSONUtil.mapToObj(this.X, json);
+            var obj = JSONUtil.mapToObj(this.Y, json);
             obj.copyFrom(transientValues);
             this.context[name] = obj;
             this.manage(name, obj, version);

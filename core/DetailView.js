@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'DetailView',
-  extendsModel: 'View',
+  name: 'foam.ui.DetailView',
+  extendsModel: 'foam.ui.View',
 
   requires: [ 'Property' ],
   imports: [ 'data' ],
@@ -27,13 +27,13 @@ CLASS({
   ],
 
   documentation:function() {/*
-    When a view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'DetailView'}
-    is the place to start. Either using $$DOC{ref:'DetailView'} directly, implementing
+    When a view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'foam.ui.DetailView'}
+    is the place to start. Either using $$DOC{ref:'foam.ui.DetailView'} directly, implementing
     a .toDetailHTML() $$DOC{ref:'Method'} in your model, or extending
-    $$DOC{ref:'DetailView'} to add custom formatting.
+    $$DOC{ref:'foam.ui.DetailView'} to add custom formatting.
     </p>
     <p>Set the $$DOC{ref:'.data'} $$DOC{ref:'Property'} to the $$DOC{ref:'Model'} instance
-    you want to display. $$DOC{ref:'DetailView'} will extract the $$DOC{ref:'Model'}
+    you want to display. $$DOC{ref:'foam.ui.DetailView'} will extract the $$DOC{ref:'Model'}
     definition, create editors for the $$DOC{ref:'Property',usePlural:true}, and
     display the current values of your instance. Set $$DOC{ref:'.mode',usePlural:true}
     to indicate read-only if desired.
@@ -43,7 +43,7 @@ CLASS({
     $$DOC{ref:'DetailView.defaultToHTML'}.
     </p>
     <p>For each $$DOC{ref:'Property'} in the $$DOC{ref:'.data'} instance specified,
-    a $$DOC{ref:'PropertyView'} is created that selects the appropriate $$DOC{ref:'View'}
+    a $$DOC{ref:'PropertyView'} is created that selects the appropriate $$DOC{ref:'foam.ui.View'}
     to construct.
   */},
 
@@ -52,8 +52,8 @@ CLASS({
       name: 'className',
       defaultValue: 'detailView',
       documentation: function() {/*
-          The CSS class names to use for HTML $$DOC{ref:'View',usePlural:true}.
-          Separate class names with spaces. Each instance of a $$DOC{ref:'DetailView'}
+          The CSS class names to use for HTML $$DOC{ref:'foam.ui.View',usePlural:true}.
+          Separate class names with spaces. Each instance of a $$DOC{ref:'foam.ui.DetailView'}
           may have different classes specified.
       */}
     },
@@ -70,7 +70,7 @@ CLASS({
         of this $$DOC{ref:'Model'} instance will be examined and a $$DOC{ref:'PropertyView'}
         created for each with editors for the current value.
         </p>
-        <p>Sub-views of $$DOC{ref:'DetailView'} are passed this $$DOC{ref:'.data'}
+        <p>Sub-views of $$DOC{ref:'foam.ui.DetailView'} are passed this $$DOC{ref:'.data'}
         property, from which $$DOC{ref:'PropertyView'} will extract its named
         $$DOC{ref:'Property'}
         and bind the property to the sub-view $$DOC{ref:'DetailView.data'}.
@@ -89,7 +89,7 @@ CLASS({
       documentation: function() {/*
         The $$DOC{ref:'.model'} is extracted from $$DOC{ref:'.data'}, or can be
         set in advance when the type of $$DOC{ref:'.data'} is known. The $$DOC{ref:'Model'}
-        is used to set up the structure of the $$DOC{ref:'DetailView'}, by examining the
+        is used to set up the structure of the $$DOC{ref:'foam.ui.DetailView'}, by examining the
         $$DOC{ref:'Property',usePlural:true}. Changing the $$DOC{ref:'.data'} out
         for another instance of the same $$DOC{ref:'Model'} will refresh the contents
         of the sub-views without destroying and re-creating them.
@@ -99,7 +99,7 @@ CLASS({
       name: 'title',
       defaultValueFn: function() { return "Edit " + this.model.label; },
       documentation: function() {/*
-        <p>The display title for the $$DOC{ref:'View'}.
+        <p>The display title for the $$DOC{ref:'foam.ui.View'}.
         </p>
       */}
     },
@@ -198,7 +198,7 @@ CLASS({
 
     // If the Model supplies a toDetailHTML method, then use it instead.
     toHTML: function() {
-      /* Overridden to create the complete HTML content for the $$DOC{ref:'View'}.</p>
+      /* Overridden to create the complete HTML content for the $$DOC{ref:'foam.ui.View'}.</p>
          <p>$$DOC{ref:'Model',usePlural:true} may specify a .toDetailHTML() $$DOC{ref:'Method'} or
          $$DOC{ref:'Template'} to render their contents instead of the
           $$DOC{ref:'DetailView.defaultToHTML'} we supply here.
@@ -237,7 +237,7 @@ CLASS({
       if ( this.showRelationships ) {
         var view = this.X.RelationshipsView.create({
           data: this.data
-        });
+        }, this.Y);
         view.data$ = this.data$;
         str += view.toHTML();
         this.addChild(view);
@@ -270,7 +270,7 @@ CLASS({
 
 CLASS({
   name: 'UpdateDetailView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   imports: [
     'DAO as dao',
@@ -376,7 +376,7 @@ CLASS({
 
 CLASS({
   name: 'RelationshipView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -389,7 +389,7 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'viewModel',
-      defaultValue: 'DAOController'
+      defaultValue: 'foam.ui.DAOController'
     },
     {
       name: 'data',
@@ -405,14 +405,14 @@ CLASS({
   methods: {
     init: function(args) {
       this.SUPER(args);
-      if ( this.args && this.args.model_ ) this.viewModel = this.args.model_
+      if ( this.args && this.args.model_ ) this.viewModel = this.args.model_;
     },
     updateView: function() {
       if ( this.view ) this.view.destroy();
       this.view = this.viewModel({
         dao: this.data[this.relationship.name],
         model: this.relationship.relatedModel
-      }, this.X).copyFrom(this.args);
+      }, this.Y).copyFrom(this.args);
       if ( this.$ ) {
         this.updateHTML();
       }
@@ -426,7 +426,7 @@ CLASS({
 
 CLASS({
   name: 'RelationshipsView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   templates: [
     function toHTML() {/*
@@ -435,7 +435,7 @@ CLASS({
           out(this.X.RelationshipView.create({
             data$: this.data$,
             relationship: relationship
-          }));
+          }, this.Y));
         }
       %>
     */}

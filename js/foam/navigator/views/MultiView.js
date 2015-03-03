@@ -18,10 +18,10 @@
 CLASS({
   name: 'MultiView',
   package: 'foam.navigator.views',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [
-    'DetailView'
+    'foam.ui.DetailView'
   ],
 
   properties: [
@@ -69,7 +69,7 @@ CLASS({
         return this.viewFactory({
           model: this.data.model_,
           data$: this.data$
-        }, this.X);
+        }, this.Y);
       }
     }
   ]

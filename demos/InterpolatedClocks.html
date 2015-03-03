@@ -8,6 +8,11 @@
  <body>
   Click screen to roll time.
   <script language="javascript">
+  var timer;
+  apar(
+     arequire('foam.ui.View'),
+     arequire('foam.ui.DetailView')
+  )(function() {
     var space = Canvas.create({width: 3500, height: 2700, background:'#fff'});
     space.write(document);
 
@@ -66,6 +71,7 @@
     };
 
     space.paint();
+  });
   </script>
  </body>
 </html>

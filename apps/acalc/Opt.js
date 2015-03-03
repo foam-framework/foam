@@ -23,42 +23,53 @@
     "ActionButtonCView2":true,
     "Arg":true,
     "Calc":true,
-    "CalcSpeechView":true,
-    "CalcView":true,
+    "foam.apps.calc.CalcSpeechView":true,
+    "foam.apps.calc.CalcView":true,
+    "foam.apps.calc.CalcButton":true,
+    "foam.apps.calc.Fonts":true,
     "Constant":true,
     "CountExpr":true,
     "DAOController":true,
-    "DAOListView":true,
+    "foam.ui.DAOListView":true,
     "DOMValue":true,
-    "DetailView":true,
+    "foam.ui.DetailView":false,
     "foam.input.touch.DragGesture":true,
     "Expr":true,
     "foam.input.touch.Gesture":true,
     "foam.input.touch.GestureManager":true,
     "foam.input.touch.GestureTarget":true,
-    "History":true,
-    "HistoryCitationView":true,
+    "foam.apps.calc.History":true,
+    "foam.apps.calc.HistoryCitationView":true,
     "foam.input.touch.InputPoint": true,
     "Interface":true,
-    "MainButtonsView":true,
+    "foam.apps.calc.MainButtonsView":true,
     "Message":true,
     "Method":true,
     "Model":true,
-    "NumberFormatter":true,
+    "foam.apps.calc.NumberFormatter":true,
     "foam.input.touch.PinchTwistGesture":true,
-    "PositionedDOMViewTrait":true,
-    "PositionedViewTrait":true,
+    "foam.ui.layout.PositionedDOMViewTrait":true,
+    "foam.ui.layout.PositionedViewTrait":true,
     "Property":true,
-    "PropertyView":true,
+    "foam.ui.PropertyView":true,
     "Relationship":true,
     "foam.input.touch.ScrollGesture":true,
-    "SecondaryButtonsView":true,
+    "foam.apps.calc.SecondaryButtonsView":true,
     "SimpleValue":true,
     "foam.input.touch.TapGesture":true,
     "Template":true,
-    "TertiaryButtonsView":true,
+    "foam.apps.calc.TertiaryButtonsView":true,
     "foam.input.touch.TouchManager":true,
-    "View":true,
+    "foam.ui.View":true,
+    "foam.ui.SimpleView":true,
+    "foam.ui.BaseView":true,
+    "foam.ui.HTMLViewTrait":true,
+    "foam.ui.HTMLPropertyViewTrait":true,
+    "foam.ui.ViewActionsTrait":true,
+    "foam.ui.LeafDataView":true,
+    "foam.ui.TemplateSupportTrait":true,
+    "foam.ui.DAODataViewTrait":true,
+    "foam.ui.BasePropertyView":true,
     "WindowHashValue":true,
     "foam.core.bootstrap.ModelFileDAO":true,
     "foam.graphics.AbstractCViewView":true,
@@ -68,17 +79,18 @@
     "foam.graphics.Circle":true,
     "foam.graphics.PositionedCViewView":true,
     "foam.html.Element":true,
-    "foam.i18n.ChromeMessagesBuilder":true,
     "foam.i18n.ChromeMessagesExtractor":true,
+    "foam.i18n.ChromeMessagesInjector":true,
     "foam.i18n.GlobalController":true,
-    "foam.i18n.MessagesBuilder":true,
+    "foam.i18n.MessagesExtractor":true,
     "foam.i18n.Visitor":true,
     "foam.patterns.ChildTreeTrait":true,
     "foam.ui.SlidePanel":true,
     "foam.ui.Window":true,
     "foam.ui.animated.Label":true,
     "foam.ui.md.Flare":true,
-    "foam.ui.md.Halo":true
+    "foam.ui.md.Halo":true,
+    "foam.ui.FoamTagView":true
   };
 
   var class_ = CLASS;
@@ -88,23 +100,9 @@
     if ( usedModels[id] ) class_(m);
   };
 
-  var templates = {
-    'CalcView.CSS' : true,
-    'foam.ui.animated.Label.CSS' : true,
-    'CalcView.toHTML' : true,
-    'HistoryCitationView.toHTML' : true,
-    'foam.ui.SlidePanel.toHTML' : true,
-    'MainButtonsView.toHTML' : true,
-    'SecondaryButtonsView.toHTML' : true,
-    'TertiaryButtonsView.toHTML' : true
-  };
-
   var aevalTemplate_ = aevalTemplate;
 
   GLOBAL.aevalTemplate = function(t, model) {
-    return templates[model.id + '.' + t.name] ?
-      aevalTemplate_(t, model)  :
-      aconstant(function() { return ''; }) ;
+    return aconstant(t.code ? t.code : function() { return ''; }) ;
   };
-
 })();

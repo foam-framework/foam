@@ -52,7 +52,7 @@ var StringProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'TextFieldView'
+      defaultValue: 'foam.ui.TextFieldView'
     },
     {
       name: 'pattern',
@@ -243,7 +243,7 @@ var IntProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'IntFieldView'
+      defaultValue: 'foam.ui.IntFieldView'
     },
     {
       name: 'adapt',
@@ -301,7 +301,7 @@ var FloatProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'FloatFieldView'
+      defaultValue: 'foam.ui.FloatFieldView'
     },
     {
       name: 'adapt',
@@ -472,15 +472,26 @@ var ArrayProperty = Model.create({
             configurable: true
           };
         });
+
+        this.addMethod('get' + capitalize(prop.singular), function(id) {
+          for ( var i = 0; i < this[prop.name].length; i++ ) {
+            if ( this[prop.name][i].id === id ) return this[prop.name][i];
+          }
+        });
       }
     },
     {
       name: 'fromElement',
       defaultValue: function(e, p) {
         var model = FOAM.lookup(e.getAttribute('model') || p.subType, this.X);
-        var o = model.create(null, this.X);
-        o.fromElement(e);
-        this[p.name] = this[p.name].pushF(o);
+        var children = e.children;
+        var a = [];
+        for ( var i = 0 ; i < children.length ; i++ ) {
+          var o = model.create(null, this.Y);
+          o.fromElement(children[i], p);
+          a.push(o);
+        }
+        this[p.name] = a;
       }
     },
     {
@@ -532,7 +543,7 @@ var ReferenceProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'TextFieldView'
+      defaultValue: 'foam.ui.TextFieldView'
 // TODO: Uncomment when all usages of ReferenceProperty/ReferenceArrayProperty fixed.
 //      defaultValue: 'KeyView'
     },
@@ -724,13 +735,13 @@ var ViewProperty = Model.create({
 
         if ( typeof f === 'string' ) {
           return function(d, opt_X) {
-            return FOAM.lookup(f, opt_X || this.X).create(d);
+            return FOAM.lookup(f, opt_X || this.X).create(d, opt_X || this.Y);
           }.bind(this);
         }
 
         if ( typeof f.create === 'function' ) return f.create.bind(f);
         if ( typeof f.model_ === 'string' ) return function(d, opt_X) {
-          return FOAM(f, opt_X || this.X).copyFrom(d);
+          return FOAM(f, opt_X || this.Y).copyFrom(d);
         }
 
         console.error('******* Unknown view factory: ', f);
@@ -761,7 +772,7 @@ var FactoryProperty = Model.create({
 
         // A String Path to a Model
         if ( typeof f === 'string' ) return function(map, opt_X) {
-          return FOAM.lookup(f, opt_X || this.X).create(map);
+          return FOAM.lookup(f, opt_X || this.X).create(map, opt_X || this.Y);
         }.bind(this);
 
         // An actual Model
@@ -772,7 +783,7 @@ var FactoryProperty = Model.create({
           var X = opt_X || this.X;
           var m = FOAM.lookup(f.factory_, X);
           console.assert(m, 'Unknown Factory Model: ' + f.factory_);
-          return m.create(f, X);
+          return m.create(f, opt_X || this.Y);
         }.bind(this);
 
         console.error('******* Invalid Factory: ', f);
@@ -798,7 +809,7 @@ var ViewFactoryProperty = Model.create({
   properties: [
     {
       name: 'defaultValue',
-      preSet: function(_, f) { return ViewFactoryProperty.PRE_SET.defaultValue.call(this, null, f); }
+      preSet: function(_, f) { return ViewFactoryProperty.ADAPT.defaultValue.call(this, null, f); }
     },
     {
       name: 'fromElement',
@@ -807,13 +818,16 @@ var ViewFactoryProperty = Model.create({
       }
     },
     {
-      name: 'preSet',
-      doc: "Can be specified as either a function, a Model, a Model path, or a JSON object.",
+      name: 'adapt',
+      doc: "Can be specified as either a function, String markup, a Model, a Model path, or a JSON object.",
       defaultValue: function(_, f) {
         // Undefined values
         if ( ! f ) return f;
+
         // A Factory Function
         if ( typeof f === 'function' ) return f;
+
+        var ret;
 
         // A String Path to a Model
         if ( typeof f === 'string' ) {
@@ -827,33 +841,40 @@ var ViewFactoryProperty = Model.create({
             if ( ! viewModel ) {
                 viewModel = VIEW_CACHE[f] = Model.create({
                   name: 'InnerDetailView' + this.$UID,
-                  extendsModel: 'DetailView',
+                  extendsModel: 'foam.ui.DetailView',
                   templates:[{name: 'toHTML', template: f}]
                 });
               // TODO(kgr): this isn't right because compiling the View
               // template is async.  Should create a FutureView to handle this.
               arequireModel(viewModel);
             }
-            return function(args, X) { return viewModel.create(args, X || this.X); };
+            var ret = function(args, X) { return viewModel.create(args, X || this.Y); };
+          } else {
+            ret = function(map, opt_X) {
+              return FOAM.lookup(f, opt_X || this.X).create(map, opt_X || this.Y);
+            }.bind(this);
           }
 
-          return function(map, opt_X) {
-            return FOAM.lookup(f, opt_X || this.X).create(map, opt_X || this.X);
-          }.bind(this);
+          ret.toString = function() { return '"' + f + '"'; };
+          return ret;
         }
 
         // An actual Model
         if ( Model.isInstance(f) ) return f.create.bind(f);
 
         // A JSON Model Factory: { factory_ : 'ModelName', arg1: value1, ... }
-        if ( f.factory_ ) return function(map, opt_X) {
-          var X = opt_X || this.X;
-          var m = FOAM.lookup(f.factory_, X);
-          console.assert(m, 'Unknown ViewFactory Model: ' + f.factory_);
-          return m.create(f, X).copyFrom(map);
-        }.bind(this);
+        if ( f.factory_ ) {
+          ret = function(map, opt_X) {
+            var m = FOAM.lookup(f.factory_, opt_X || this.X);
+            console.assert(m, 'Unknown ViewFactory Model: ' + f.factory_);
+            return m.create(f, opt_X || this.Y).copyFrom(map);
+          }.bind(this);
 
-        if ( View.isInstance(f) ) return constantFn(f);
+          ret.toString = function() { return JSON.stringify(f); };
+          return ret;
+        }
+
+        if ( this.X.foam.ui.View.isInstance(f) ) return constantFn(f);
 
         console.error('******* Invalid Factory: ', f);
         return f;
@@ -926,7 +947,7 @@ var DocumentationProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'DetailView'
+      defaultValue: 'foam.ui.DetailView'
     },
     {
       name: 'help',
@@ -952,7 +973,7 @@ CLASS({
     },
     {
       name: 'view',
-      defaultValue: 'ChoiceView'
+      defaultValue: 'foam.ui.ChoiceView'
     }
   ]
 });

@@ -18,10 +18,11 @@
 CLASS({
   package: 'foam.ui',
   name: 'SwipeAltView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [
-    'foam.input.touch.GestureTarget'
+    'foam.input.touch.GestureTarget',
+    'foam.ui.ChoiceListView'
   ],
 
   properties: [
@@ -53,24 +54,24 @@ CLASS({
       name: 'headerView',
       help: 'Optional View to be displayed in header.',
       factory: function() {
-        return this.X.ChoiceListView.create({
+        return this.ChoiceListView.create({
           choices: this.views.map(function(x) {
             return x.label;
           }),
           index$: this.index$,
           className: 'swipeAltHeader foamChoiceListView horizontal'
-        });
+        }, this.Y);
       }
     },
-    {
-      name: 'data',
-      help: 'Generic data field for the views. Proxied to all the child views.',
-      postSet: function(old, nu) {
-        this.views.forEach(function(c) {
-          c.view().data = nu;
-        });
-      }
-    },
+//     {
+//       name: 'data',
+//       help: 'Generic data field for the views. Proxied to all the child views.',
+//       postSet: function(old, nu) {
+//         this.views.forEach(function(c) {
+//           c.view().data = nu;
+//         });
+//       }
+//     },
     {
       name: 'slider',
       help: 'Internal element which gets translated around',
@@ -188,8 +189,8 @@ CLASS({
       }, 0);
     },
 
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       this.X.gestureManager.uninstall(this.swipeGesture);
       this.views.forEach(function(c) { c.view().destroy(); });
     },

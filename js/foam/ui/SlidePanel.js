@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'SlidePanel',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [
     'foam.input.touch.GestureTarget'
@@ -131,7 +131,7 @@ CLASS({
     {
       name: 'currentLayout',
       postSet: function(_, layout) {
-        this.panelWidth = Math.max(layout[1]+2, this.minPanelWidth);
+        this.panelWidth = Math.max(layout[1], this.minPanelWidth);
         this.panelX     = Math.min(this.parentWidth-this.stripWidth, this.parentWidth-layout[2]);
         this.mainWidth  = Math.max(layout[0], this.panelX);
       }
@@ -289,11 +289,11 @@ CLASS({
       <div id="%%id" style="display: inline-block;position: relative;" class="SlidePanel">
         <div id="%%id-main">
           <div style="width:0;position:absolute;"></div>
-          <%= this.mainView() %>
+          <%= this.mainView({ data$: this.data$ }) %>
         </div>
         <div id="%%id-panel" style="position: absolute; top: 0; left: -1;">
           <% if ( this.side === this.RIGHT ) { %> <div id="%%id-shadow" class="left-shadow"></div> <% } %>
-          <%= this.panelView() %>
+          <%= this.panelView({ data$: this.data$ }) %>
           <% if ( this.side === this.LEFT ) { %> <div id="%%id-shadow" class="right-shadow"></div> <% } %>
         </div>
       </div>

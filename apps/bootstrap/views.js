@@ -1,6 +1,6 @@
 CLASS({
   name: 'ValueView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     { name: 'label', defaultValue: 'Value' },
@@ -143,7 +143,7 @@ CLASS({
 
 CLASS({
   name: 'TextAreaValueView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   traits: ['DynamicViewListenerTrait'],
 
   properties: [

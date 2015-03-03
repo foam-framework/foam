@@ -32,20 +32,12 @@ CLASS({
       type: 'foam.patterns.layout.LayoutItemLinearConstraints',
       preSet: function(old,nu) {
         if (old) {
-          Events.unfollow(old.preferred$Pix$, this.preferred$);
-          Events.unfollow(old.max$Pix$, this.max$);
-          Events.unfollow(old.min$Pix$, this.min$);
-          Events.unfollow(old.stretchFactor$, this.stretchFactor$);
-          Events.unfollow(old.shrinkFactor$, this.shrinkFactor$);
+          this.unbind(old);
         }
         return nu;
       },
       postSet: function() {
-        Events.follow(this.data.preferred$Pix$, this.preferred$);
-        Events.follow(this.data.max$Pix$, this.max$);
-        Events.follow(this.data.min$Pix$, this.min$);
-        Events.follow(this.data.stretchFactor$, this.stretchFactor$);
-        Events.follow(this.data.shrinkFactor$, this.shrinkFactor$);
+        this.bind(this.data);
       }
     }
   ],
@@ -55,6 +47,20 @@ CLASS({
       if (this.data) {
         this.data.setTotalSize(size);
       }
+    },
+    bind: function(nu) {
+      Events.follow(nu.preferred$Pix$, this.preferred$);
+      Events.follow(nu.max$Pix$, this.max$);
+      Events.follow(nu.min$Pix$, this.min$);
+      Events.follow(nu.stretchFactor$, this.stretchFactor$);
+      Events.follow(nu.shrinkFactor$, this.shrinkFactor$);
+    },
+    unbind: function(old) {
+      Events.unfollow(old.preferred$Pix$, this.preferred$);
+      Events.unfollow(old.max$Pix$, this.max$);
+      Events.unfollow(old.min$Pix$, this.min$);
+      Events.unfollow(old.stretchFactor$, this.stretchFactor$);
+      Events.unfollow(old.shrinkFactor$, this.shrinkFactor$);
     }
   }
 

@@ -75,10 +75,10 @@ CLASS({
         return function(url, params, opt_method, opt_payload) {
           return function(ret) {
             var xhr = factory.create();
-            return xhr.asend(ret,
-                             url + (params ? '?' + params.join('&') : ''),
-                             opt_payload,
-                             opt_method ? opt_method : "GET");
+            xhr.asend(function(data, xhr) { ret(data, xhr.status); },
+                      url + (params ? '?' + params.join('&') : ''),
+                      opt_payload,
+                      opt_method ? opt_method : "GET");
           };
         };
       })());

@@ -12,7 +12,7 @@
       s = s.replace(
         issue,
         function(_, _, issue) {
-          var view = self.X.IssueLink.create({issue: issue});
+          var view = self.X.IssueLink.create({issue: issue}, self.Y);
           self.addChild(view);
           return view.toHTML();
         });

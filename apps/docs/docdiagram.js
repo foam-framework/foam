@@ -47,9 +47,6 @@ CLASS({
   extendsModel: 'foam.graphics.CViewView',
   package: 'foam.documentation',
   
-  traits: [ //'foam.patterns.ChildTreeTrait',
-            'foam.views.DataConsumerTrait'],
-  
   requires: ['foam.documentation.ModelDocDiagram',
              'foam.documentation.ExtendsDiagram',
              'foam.documentation.TraitListDiagram',
@@ -109,20 +106,20 @@ CLASS({
     {
       name: 'traitDiagram',
       factory: function() {
-        return this.TraitListDiagram.create({ sourceDiag: this.modelDiagram });
+        return this.TraitListDiagram.create({ data$: this.data$, sourceDiag: this.modelDiagram });
       }     
     },
     {
       name: 'modelDiagram',
       factory: function() {
-        var modelDiagram = this.ModelDocDiagram.create({ titleColor: 'black' });
+        var modelDiagram = this.ModelDocDiagram.create({ data$: this.data$, titleColor: 'black' });
         return modelDiagram;
       }
     },
     {
       name: 'extendsDiagram',
       factory: function() {
-        var extendsDiagram = this.ExtendsDiagram.create({ extended: this.modelDiagram });
+        var extendsDiagram = this.ExtendsDiagram.create({ data$: this.data$, extended: this.modelDiagram });
         this.extendsModelLayout.addChild(extendsDiagram.diagramItem);
         return extendsDiagram;
       }
@@ -166,7 +163,8 @@ CLASS({
       }.bind(this), 1000);  
     },
     
-    destroy: function() {
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       this.autoSizeLayout.suspended = true;
 //console.log("root painting OFF"); 
       
@@ -179,9 +177,7 @@ CLASS({
   name: 'ExtendsDiagram',
   package: 'foam.documentation',
 
-  traits: [ 'foam.patterns.ChildTreeTrait',
-            'foam.views.DataConsumerTrait',
-            'foam.views.DataProviderTrait'],
+  extendsModel: 'foam.ui.DestructiveDataView',
 
   requires: ['foam.documentation.ModelDocDiagram',
              'foam.documentation.DocLinkDiagram',
@@ -196,14 +192,6 @@ CLASS({
   */},
 
   properties: [
-    {
-      name: 'data',
-      postSet: function() {
-        this.destroy();
-        this.childData = FOAM.lookup(this.data.extendsModel, this.X);
-        this.construct();
-      }
-    },
     {
       name: 'diagramItem',
       type: 'foam.graphics.diagram.LinearLayout',
@@ -241,17 +229,24 @@ CLASS({
       this.diagramItem.addChild(spacer);
     },
 
+    shouldDestroy: function(old,nu) {
+      return true;
+    },
+    
     construct: function() {
       this.SUPER();
+      // don't just copy data, find extendsModel and send that to children
+      var childData = FOAM.lookup(this.data.extendsModel, this.X);
+            
+      var childX = this.X.sub({ 
+        documentViewRef: this.SimpleValue.create(
+          this.DocRef.create({ ref: this.data.extendsModel })
+      )});
 
-      this.childX.set('documentViewRef', this.SimpleValue.create(
-        this.DocRef.create({ ref: this.data.extendsModel })
-      ));
-
-      if (this.childData) {
-        var thisDiag = this.ModelDocDiagram.create({ model: this.childData }, this.childX);
-        if (this.childData.extendsModel ) {
-          this.addChild(this.X.foam.documentation.ExtendsDiagram.create({ extended: thisDiag }, this.childX));
+      if (childData) {
+        var thisDiag = this.ModelDocDiagram.create({ data: childData, model: childData }, childX);
+        if ( childData.extendsModel ) {
+          this.addChild(this.X.foam.documentation.ExtendsDiagram.create({ data: childData, extended: thisDiag }, childX));
         }
 
         this.addChild(thisDiag);
@@ -278,9 +273,7 @@ CLASS({
   name: 'TraitListDiagram',
   package: 'foam.documentation',
 
-  traits: [ 'foam.patterns.ChildTreeTrait',
-            'foam.views.DataConsumerTrait',
-            'foam.views.DataProviderTrait'],
+  extendsModel: 'foam.ui.LeafDataView',
 
   requires: ['foam.documentation.ModelDocDiagram',
              'foam.documentation.DocLinkDiagram',
@@ -297,10 +290,11 @@ CLASS({
   properties: [
     {
       name: 'data',
-      postSet: function() {
-        this.destroy();
-        this.childData = FOAM.lookup(this.data, this.X);
-        this.construct();
+      adapt: function(old, nu) {
+        if ( typeof nu == 'string' ) {
+          return FOAM.lookup(nu, this.X);
+        }
+        return nu;
       }
     },
     {
@@ -346,11 +340,10 @@ CLASS({
       
         var traitModel = FOAM.lookup(trait, self.X);
         
-        var X = self.childX.sub({ 
-          data$: self.SimpleValue.create(traitModel, self.childX),
-          documentViewRef: self.SimpleValue.create(self.DocRef.create({ ref: trait }, self.childX))
+        var X = self.X.sub({ 
+          documentViewRef: self.SimpleValue.create(self.DocRef.create({ ref: trait }, self.X))
         });
-        var traitDiag = self.ModelDocDiagram.create({ model: Model, titleColor: 'rgba(30,160,30,255)' }, X);
+        var traitDiag = self.ModelDocDiagram.create({ model: Model, data: traitModel, titleColor: 'rgba(30,160,30,255)' }, X);
         self.addChild(traitDiag);
         self.addChild(self.DocLinkDiagram.create({ start: traitDiag, end$: self.sourceDiag$ }));
     
@@ -419,9 +412,10 @@ CLASS({
 
 CLASS({
   name: 'ModelDocDiagram',
-  extendsModel: 'foam.views.BaseDetailView',
   package: 'foam.documentation',
-  traits: ['foam.documentation.DocModelFeatureDAOTrait'],
+  extendsModel: 'foam.ui.DestructiveDataView',
+  traits: ['foam.ui.TemplateSupportTrait',
+           'foam.documentation.DocModelFeatureDAOTrait'],
 
   requires: ['foam.graphics.diagram.Block',
              'foam.graphics.diagram.Section',
@@ -433,6 +427,16 @@ CLASS({
   */},
 
   properties: [
+    {
+      name: 'data',
+      postSet: function(old,nu) {
+        if (this.data) {
+          this.modelName = this.data.name;
+          this.packageName = this.data.package;
+        }
+        this.processModelChange();
+      }
+    },
     {
       name: 'modelName',
       type: 'String'
@@ -448,14 +452,14 @@ CLASS({
     {
       name: 'diagramItem',
       factory: function() {
-        var diagramItem = this.Margin.create({ bottom: 5, right: 5, left: 5, top: 5 }, this.childX);
+        var diagramItem = this.Margin.create({ bottom: 5, right: 5, left: 5, top: 5 });
         return diagramItem;
       }
     },
     {
       name: 'linkableItem',
       factory: function() {
-        var linkableItem = this.Block.create({ border: 'black' }, this.childX);
+        var linkableItem = this.Block.create({ border: 'black' });
         //Events.follow(linkableItem.verticalConstraints.preferred$, linkableItem.verticalConstraints.max$);
         linkableItem.addChild(
           this.Section.create({
@@ -465,7 +469,7 @@ CLASS({
             border: 'rgba(0,0,0,0)',
             borderWidth: 0,
             color: 'white'
-          }, this.childX)
+          })
         );
         linkableItem.addChild(
           this.Section.create({
@@ -474,7 +478,7 @@ CLASS({
             border: 'rgba(0,0,0,0)',
             borderWidth: 0,
             color: 'white'
-          }, this.childX)
+          })
         );
         return linkableItem;
       }
@@ -492,21 +496,11 @@ CLASS({
       this.SUPER();
       this.createTemplateView('properties', { model_: 'foam.documentation.FeatureListDiagram',
             model: this.X.Property, featureType:'properties' });
-      //this.addChild(this.FeatureListDiagram.create({ model: this.X.Property, featureType:'properties' }, this.childX));
-    },
-
-    onValueChange_: function() {
-      if (this.data) {
-        this.modelName = this.data.name;
-        this.packageName = this.data.package;
-      }
-      this.processModelChange();
     },
 
     processModelChange: function() {
       // abort if it's too early //TODO: (we import data and run its postSet before the rest is set up)
       if (!this.featureDAO || !this.modelDAO) return;
-      //this.generateFeatureDAO(this.data); // TODO: fix this for when we don't already have an X.featureDAO
     },
 
     addChild: function(child) {
@@ -528,12 +522,11 @@ CLASS({
   package: 'foam.documentation',
 
   requires: ['foam.documentation.FeatureDiagram',
-             'foam.graphics.diagram.SectionGroup'],
+             'foam.graphics.diagram.SectionGroup',
+             'SimpleValue'],
 
-  traits: [ 'foam.patterns.ChildTreeTrait',
-            'foam.views.DataConsumerTrait',
-            'foam.views.DataProviderTrait',
-            'foam.documentation.DocDiagramTrait',
+  extendsModel: 'foam.ui.LeafDataView',
+  traits: [ 'foam.documentation.DocDiagramTrait',
             'foam.documentation.FeatureListLoaderTrait'],
 
   documentation: function() {/*
@@ -557,8 +550,7 @@ CLASS({
       this.diagramItem.title = this.featureType.capitalize();
       this.selfFeaturesDAO.limit(5).select({ 
         put: function(item) {
-          var X = this.childX.sub({ data$: this.childX.SimpleValue.create(item, this.childX) });
-          this.addChild(this.FeatureDiagram.create({ model: item.model_ }, X));
+          this.addChild(this.FeatureDiagram.create({ model: item.model_, data: item }));
 //          console.log("    Adding child from featureDAO ");
         }.bind(this),
         eof: function() {
@@ -574,11 +566,8 @@ CLASS({
 CLASS({
   name: 'FeatureDiagram',
   package: 'foam.documentation',
-
-  traits: [ 'foam.patterns.ChildTreeTrait',
-            'foam.views.DataConsumerTrait',
-            'foam.views.DataProviderTrait',
-            'foam.documentation.DocDiagramTrait'],
+  extendsModel: 'foam.ui.DataView',
+  traits: [ 'foam.documentation.DocDiagramTrait'],
 
   requires: ['foam.graphics.diagram.Section'],
 

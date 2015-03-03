@@ -18,7 +18,7 @@
 CLASS({
   name: 'AddRowView',
   package: 'foam.ui.md',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   traits: ['foam.ui.layout.PositionedDOMViewTrait', 'foam.input.touch.VerticalScrollNativeTrait'],
 
   requires: [
@@ -26,7 +26,10 @@ CLASS({
   ],
 
   imports: [
+    'dao',
+    'hideListOnSingle',
     'queryFactory',
+    'returnOnSelect',
     'rowView',
     'stack'
   ],
@@ -134,7 +137,8 @@ CLASS({
       documentation: 'The DAO used to look up the models. Defaults to ' +
           'mySubTypeDAO for subType == "MySubType".',
       factory: function() {
-        var name = this.subType[0].toLowerCase() + this.subType.substring(1);
+        var basename = this.subType.split('.').pop();
+        var name = basename[0].toLowerCase() + basename.substring(1);
         var daoName = name + 'DAO';
         return this.X[daoName];
       }
@@ -156,7 +160,7 @@ CLASS({
         return dao;
       },
       view: {
-        factory_: 'DAOListView',
+        factory_: 'foam.ui.DAOListView',
         className: 'rows',
         tagName: 'div',
         useSelection: true
@@ -188,8 +192,8 @@ CLASS({
     },
     {
       name: 'hideListOnSingle',
-      documentation: 'When true (the default), the suggestion list disappears when there is only one match. When false it is always visible.',
-      defaultValue: true
+      documentation: 'When true, the suggestion list disappears when there is only one match. When false it is always visible. The default (false) is generally mobile-friendly, while true is better on desktop.',
+      defaultValue: false
     },
     {
       name: 'returnOnSelect',

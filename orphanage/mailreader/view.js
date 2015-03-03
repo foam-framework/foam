@@ -17,7 +17,7 @@
 CLASS({
    name:  'LabelView',
 
-   extendsModel: 'View',
+   extendsModel: 'foam.ui.View',
 
    properties: [
       {

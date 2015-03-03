@@ -18,8 +18,8 @@
 CLASS({
   name: 'ProfileView',
   package: 'com.google.mail',
-  extendsModel: 'DetailView',
-  requires: ['com.google.mail.GMailUserInfo'],
+  extendsModel: 'foam.ui.View',
+  requires: ['com.google.mail.GMailUserInfo', 'foam.ui.ImageView'],
   properties: [
     {
       model_: 'ModelProperty',
@@ -28,12 +28,12 @@ CLASS({
     }
   ],
   templates: [
-    function toHTML() {/*
-      <div id="%%id">
-        $$avatarUrl{ model_: 'ImageView' }
-        $$name{ mode: 'read-only',  extraClassName: 'name' }
-        $$email{ mode: 'read-only', extraClassName: 'email' }
-      </div>
+    function toInnerHTML() {/*
+      <% if (this.data) { %>
+          $$avatarUrl{ model_: 'foam.ui.ImageView' }
+          $$name{ mode: 'read-only',  extraClassName: 'name' }
+          $$email{ mode: 'read-only', extraClassName: 'email' }
+      <% } %>
     */}
   ]
 });

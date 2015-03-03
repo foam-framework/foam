@@ -142,15 +142,6 @@ var BootstrapModel = {
       try { cls.create_ = eval(s).call(cls); } catch (e) { }
     }*/
 
-    /** Add a method to 'cls' and set it's name. **/
-    function addMethod(name, method) {
-      if ( cls.__proto__[name] ) {
-        override(cls, name, method);
-      } else {
-        cls[name] = method;
-      }
-    }
-
     // add sub-models
     //        this.models && this.models.forEach(function(m) {
     //          cls[m.name] = JSONUtil.mapToObj(m);
@@ -170,7 +161,7 @@ var BootstrapModel = {
       var key  = imp[1] || path[path.length-1];
 
       defineLocalProperty(cls, key, function() {
-        var Y     = this.X;
+        var Y     = this.Y;
         var model = FOAM.lookup(m, this.X);
         console.assert(model, 'Unknown Model: ' + m + ' in ' + this.name_);
         var proto = model.getPrototype();
@@ -243,8 +234,8 @@ var BootstrapModel = {
           if ( p0.postSet && superProp.postSet ) {
             console.log('(DEBUG) sub postSet: ', this.name + '.' + p.name);
             p.postSet = (function(a1, a2) { return function (oldValue, newValue, prop) {
-              a1.call(this, oldValue, newValue, prop);
               a2.call(this, oldValue, newValue, prop);
+              a1.call(this, oldValue, newValue, prop);
             };})(p0.postSet, superProp.postSet);
           }
           props[i] = p;
@@ -277,7 +268,7 @@ var BootstrapModel = {
 
     // templates
     this.templates && Object_forEach(this.templates, function(t) {
-      addMethod(t.name, TemplateUtil.lazyCompile(t));
+      cls.addMethod(t.name, TemplateUtil.lazyCompile(t));
     });
 
     // add actions
@@ -292,7 +283,7 @@ var BootstrapModel = {
             }
           }
           this.actions_[i] = a;
-          addMethod(a.name, function(opt_x) { a.callIfEnabled(opt_x || this.X, this); });
+          cls.addMethod(a.name, function(opt_x) { a.callIfEnabled(opt_x || this.X, this); });
         }.bind(this))(this.actions[i]);
       }
     }
@@ -340,9 +331,9 @@ var BootstrapModel = {
     for ( key in this.methods ) {
       var m = this.methods[key];
       if ( Method && Method.isInstance(m) ) {
-        addMethod(m.name, m.generateFunction());
+        cls.addMethod(m.name, m.generateFunction());
       } else {
-        addMethod(key, m);
+        cls.addMethod(key, m);
       }
     }
 
@@ -354,7 +345,7 @@ var BootstrapModel = {
       var name = constantize(r.name);
       if ( ! self[name] ) self[name] = r;
       defineLazyProperty(cls, r.name, function() {
-        var m = this.X[r.relatedModel];
+        var m = FOAM.lookup(r.relatedModel, this.X);
         var lcName = m.name[0].toLowerCase() + m.name.substring(1);
         var dao = this.X[lcName + 'DAO'] || this.X[m.name + 'DAO'] ||
             this.X[m.plural];

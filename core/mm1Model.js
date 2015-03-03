@@ -19,7 +19,7 @@ var BinaryProtoGrammar;
 var DocumentationBootstrap = {
   name: 'documentation',
   type: 'Documentation',
-  view: function() { return DetailView.create({model: Documentation}); },
+  view: function() { return X.foam.ui.DetailView.create({model: Documentation}); },
   help: 'Documentation associated with this entity.',
   documentation: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation.",
   setter: function(nu) {
@@ -301,7 +301,7 @@ var Model = {
            as strings of the form:
           <code>PropertyName [as Alias]</code>.</p>
           <p>Properties you wish to share with other instances you create
-            (like sub-$$DOC{ref:'View',usePlural:true})
+            (like sub-$$DOC{ref:'foam.ui.View',usePlural:true})
             can be exported automatically by listing them here.
             You are automatically sub-contexted, so your parent context does not
             see exported properties. In other words, exports are seen by children,
@@ -315,7 +315,7 @@ var Model = {
                  &nbsp;&nbsp;&nbsp;&nbsp; name: 'proper',<br/>
                 <br/>
                  &nbsp;&nbsp;&nbsp;&nbsp; // This property will create a DetailView for us<br/>
-                 &nbsp;&nbsp;&nbsp;&nbsp; view: { factory_: 'DetailView',<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp; view: { factory_: 'foam.ui.DetailView',<br/>
                 <br/>
                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the properties our creator exported.<br/>
                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imports: [ 'myProperty', 'parentName' ],<br/>
@@ -390,7 +390,6 @@ var Model = {
 
           if ( typeof p === 'string' ) newValue[i] = p = { name: p };
 
-          if ( p.name == 'priority' && p.model_ == 'LabelStringEnumProperty' ) debugger;
           if ( ! p.model_ ) {
             p = newValue[i] = Property.create(p);
           } else if ( typeof p.model_ === 'string' ) {
@@ -445,7 +444,7 @@ var Model = {
       },
       documentation: function() { /*
         <p>$$DOC{ref:'Action',usePlural:true} implement a behavior and attach a label, icon, and typically a
-        button-like $$DOC{ref:'View'} or menu item to activate the behavior.</p>
+        button-like $$DOC{ref:'foam.ui.View'} or menu item to activate the behavior.</p>
         */}
 
     },
@@ -516,17 +515,11 @@ var Model = {
       }
     },
     {
+      model_: 'ArrayProperty',
       name: 'methods',
-      type: 'Array[Method]',
       subType: 'Method',
-      view: 'ArrayView',
-      factory: function() { return []; },
-      propertyToJSON: function(visitor, output, o) {
-        if ( o[this.name].length ) output[this.name] = o[this.name];
-      },
-      defaultValue: [],
       help: 'Methods associated with the entity.',
-      preSet: function(_, newValue) {
+      adapt: function(_, newValue) {
         if ( ! Method ) return newValue;
 
         if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Method);
@@ -634,7 +627,7 @@ var Model = {
       help: 'Templates associated with this entity.',
       documentation: function() { /*
         The $$DOC{ref:'Template',usePlural:true} to process and install into instances of this
-        $$DOC{ref:'Model'}. $$DOC{ref:'View',usePlural:true} created inside each $$DOC{ref:'Template'}
+        $$DOC{ref:'Model'}. $$DOC{ref:'foam.ui.View',usePlural:true} created inside each $$DOC{ref:'Template'}
         using the $$DOC{ref:'.templates',text:'$$propertyName{args}'} view creation tag become available
         as <code>myInstance.propertyNameView</code>.
         */}

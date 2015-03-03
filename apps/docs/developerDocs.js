@@ -79,7 +79,7 @@ var RegisterDevDocs = function(opt_X) {
           body: function() {/*
             <FOAM is a modeling system to describe data and how it behaves, and
             from that generate entire apps. Data can be
-            items from a database, $$DOC{ref:'View',usePlural:true} in a UI, or moves
+            items from a database, $$DOC{ref:'foam.ui.View',usePlural:true} in a UI, or moves
             that a chess piece can make. If it's a thing that can be described with
             attributes and behaviors, it can be a $$DOC{ref:'Model'}.</p>
             <p>To share functionality between similar $$DOC{ref:'Model',usePlural:true}, you
@@ -96,9 +96,9 @@ var RegisterDevDocs = function(opt_X) {
               <li>A generic two-pane controller can run an email app or a bug tracker without
               any changes: just swap out the Data Access Object ($$DOC{ref:'DAO'}) and the
               $$DOC{ref:'Model',usePlural:true} for the data items.</li>
-              <li>Throw your $$DOC{ref:'DAO'} into a $$DOC{ref:'DAOListView'} and the
+              <li>Throw your $$DOC{ref:'DAO'} into a $$DOC{ref:'foam.ui.DAOListView'} and the
               user can browse the collection. Want a grid? Throw in a $$DOC{ref:'GridView'}
-              instead. Not sure which? Let $$DOC{ref:'DetailView'} pick the view at run
+              instead. Not sure which? Let $$DOC{ref:'foam.ui.DetailView'} pick the view at run
               time.</li>
               <li>Need to communicate something to or from a child object, but don't
               want to be burdened with knowing what type it is or if it exists?
@@ -579,10 +579,10 @@ var RegisterDevDocs = function(opt_X) {
       label: "FOAM Views",
 
       body: function() {/*
-        A $$DOC{ref:'View'} in FOAM is simply a $$DOC{ref:'Model'} designed to nest
-        inside other $$DOC{ref:'View',usePlural:true} and perform layout if necessary.</p>
-        <p>The currently available $$DOC{ref:'View',usePlural:true} support DOM for browser
-        use, and have some HTML centric properties. Unlike many frameworks the $$DOC{ref:'View'}
+        A $$DOC{ref:'foam.ui.View'} in FOAM is simply a $$DOC{ref:'Model'} designed to nest
+        inside other $$DOC{ref:'foam.ui.View',usePlural:true} and perform layout if necessary.</p>
+        <p>The currently available $$DOC{ref:'foam.ui.View',usePlural:true} support DOM for browser
+        use, and have some HTML centric properties. Unlike many frameworks the $$DOC{ref:'foam.ui.View'}
         itself lives outside the DOM, managing elements in the tree but existing as a
         separate object.
       */},
@@ -592,7 +592,7 @@ var RegisterDevDocs = function(opt_X) {
           label: 'HTML View Lifecycle',
           model_: 'Documentation',
           body: function() {/*
-            An HTML $$DOC{ref:'View'} must have a few pieces:</p>
+            An HTML $$DOC{ref:'foam.ui.View'} must have a few pieces:</p>
             <ul>
               <li>$$DOC{ref:'View.toHTML'}: the method that provides the DOM content as a string or as
                 FOAM $$DOC{ref:'Template'} output.</li>
@@ -600,9 +600,9 @@ var RegisterDevDocs = function(opt_X) {
                 be connected here.</li>
             </ul>
             By a minimum implementation of the above, you can provide static content. By extending 
-            $$DOC{ref:'View'}, you can add some flexibility:
+            $$DOC{ref:'foam.ui.View'}, you can add some flexibility:
             <ul>
-              <li>$$DOC{ref:'View.toInnerHTML'}: $$DOC{ref:'View'} will create your outer element for you, 
+              <li>$$DOC{ref:'View.toInnerHTML'}: $$DOC{ref:'foam.ui.View'} will create your outer element for you, 
                 call toInnerHTML() to create the content. Each time updateHTML() is called, toInnerHTML()
                 will be invoked again to generate new content.
               </li>
@@ -625,7 +625,7 @@ var RegisterDevDocs = function(opt_X) {
           model_: 'Documentation',
           body: function() {/*
             $$DOC{ref:'Template',usePlural:true} provide a convenient way of
-            expressing blocks of HTML in your $$DOC{ref:'View',usePlural:true}.
+            expressing blocks of HTML in your $$DOC{ref:'foam.ui.View',usePlural:true}.
             $$DOC{ref:'Template',usePlural:true} are compiled into $$DOC{ref:'Method',usePlural:true}.
             A $$DOC{ref:'View.toInnerHTML'} or $$DOC{ref:'View.toHTML'} $$DOC{ref:'Template'} is a
             common use.
@@ -642,15 +642,15 @@ var RegisterDevDocs = function(opt_X) {
           label: 'Automatic View Creation',
           model_: 'Documentation',
           body: function() {/*
-            $$DOC{ref:'DetailView',usePlural:true} in FOAM feed from a $$DOC{ref:'DetailView.data'}
+            $$DOC{ref:'foam.ui.DetailView',usePlural:true} in FOAM feed from a $$DOC{ref:'DetailView.data'}
             $$DOC{ref:'Property'}, by default using introspection to examine all the
             $$DOC{ref:'Property',usePlural:true} of the $$DOC{ref:'Model'} provided
             and display them.</p>
             <p>A $$DOC{ref:'PropertyView'} is created to process each $$DOC{ref:'Property'},
-            and it picks the appropriate $$DOC{ref:'View'} model.</p>
+            and it picks the appropriate $$DOC{ref:'foam.ui.View'} model.</p>
             <p>Often a $$DOC{ref:'Property.view'} will be specified as part of a
-            $$DOC{ref:'Property'} definition. This instructs $$DOC{ref:'DetailView'}
-            exactly which type of $$DOC{ref:'View'} to use.
+            $$DOC{ref:'Property'} definition. This instructs $$DOC{ref:'foam.ui.DetailView'}
+            exactly which type of $$DOC{ref:'foam.ui.View'} to use.
           */}
         },
         {
@@ -658,11 +658,11 @@ var RegisterDevDocs = function(opt_X) {
           label: 'CSS in Views',
           model_: 'Documentation',
           body: function() {/*
-            You can attach CSS directly to your $$DOC{ref:'View'} by implementing the
+            You can attach CSS directly to your $$DOC{ref:'foam.ui.View'} by implementing the
             .CSS() $$DOC{ref:'Method'} or $$DOC{ref:'Template'}. When the view's
             $$DOC{ref:'Model'} is accessed, the CSS is installed into the document, ready
             for rendering.
-            $$DOC{ref:'View',usePlural:true} can control their individual style attributes
+            $$DOC{ref:'foam.ui.View',usePlural:true} can control their individual style attributes
             by setting $$DOC{ref:'View.extraClassName'} inside a submodel, or at run time by
             setting $$DOC{ref:'View.className'}.
           */}

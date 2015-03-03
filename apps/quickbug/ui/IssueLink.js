@@ -1,6 +1,6 @@
 CLASS({
   name: 'IssueLink',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -51,7 +51,7 @@ CLASS({
               property: self.property,
               maxDepth: self.maxDepth-1,
               ids:      ids
-            });
+            }, self.Y);
 
             self.$.insertAdjacentHTML(
               'afterend',
@@ -79,8 +79,8 @@ CLASS({
           self.currentPreview = self.X.PopupView.create({
             x: e.x+30,
             y: e.y-20,
-            view: self.X.QIssueTileView.create({issue: issue})
-          });
+            view: self.X.QIssueTileView.create({issue: issue}, self.Y)
+          }, self.Y);
 
           self.currentPreview.open(self);
         }});

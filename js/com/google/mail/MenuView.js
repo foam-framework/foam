@@ -18,7 +18,7 @@
 CLASS({
   name: 'MenuView',
   package: 'com.google.mail',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
   requires: [
@@ -35,15 +35,15 @@ CLASS({
   properties: [
     {
       name: 'topSystemLabelDAO',
-      view: { factory_: 'DAOListView', rowView: 'com.google.mail.MenuLabelCitationView' }
+      view: { factory_: 'foam.ui.DAOListView', rowView: 'com.google.mail.MenuLabelCitationView' }
     },
     {
       name: 'bottomSystemLabelDAO',
-      view: { factory_: 'DAOListView', rowView: 'com.google.mail.MenuLabelCitationView' }
+      view: { factory_: 'foam.ui.DAOListView', rowView: 'com.google.mail.MenuLabelCitationView' }
     },
     {
       name: 'userLabelDAO',
-      view: { factory_: 'DAOListView', rowView: 'com.google.mail.MenuLabelCitationView' }
+      view: { factory_: 'foam.ui.DAOListView', rowView: 'com.google.mail.MenuLabelCitationView' }
     },
     {
       name: 'preferredWidth',

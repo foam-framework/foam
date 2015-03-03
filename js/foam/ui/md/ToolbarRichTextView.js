@@ -120,11 +120,11 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      this.X = this.X = this.X.sub();
-      this.X.registerModel(X.foam.graphics.ActionButtonCView.xbind({
+      this.Y = this.Y = this.Y.sub();
+      this.Y.registerModel(this.X.foam.graphics.ActionButtonCView.xbind({
         background: 'white',
         radius: 18
-      }), 'ActionButton');
+      }), 'foam.ui.ActionButton');
     },
     toHTML: function() { return this.SUPER() + this.toolbar(); }
   }

@@ -117,11 +117,19 @@ function elementFromString(str) {
   return str.element || ( str.element = HTMLParser.create().parseString(str).children[0] );
 }
 
-var ConstantTemplate = function(str) { return function(opt_out) {
-  var out = opt_out ? opt_out : TemplateOutput.create(this);
-  out(str);
-  return out.toString();
-} };
+var ConstantTemplate = function(str) {
+  var f = function(opt_out) {
+    var out = opt_out ? opt_out : TemplateOutput.create(this);
+    out(str);
+    return out.toString();
+  };
+
+  f.toString = function() {
+    return 'function(opt_out) { var out = opt_out ? opt_out : TemplateOutput.create(this);\n  out("' + str.replace(/\n/g, "\\n").replace(/"/g, '\\"') + '");\n  return out.toString(); }';
+  }
+
+  return f;
+};
 
 var TemplateCompiler = {
   __proto__: TemplateParser,
@@ -134,7 +142,7 @@ var TemplateCompiler = {
 
   pushSimple: function() { this.out.push.apply(this.out, arguments); },
 
-  header: 'var self = this; var X = this.X; var escapeHTML = XMLUtil.escape;' +
+  header: 'var self = this; var X = this.X; var Y = this.Y; var escapeHTML = XMLUtil.escape;' +
     'var out = opt_out ? opt_out : TemplateOutput.create(this);' +
     "out('",
 
@@ -158,45 +166,25 @@ var TemplateCompiler = {
       "),\n'");
   },
   foamTag: function(e) {
-    function buildAttrs(e, attrToDelete) {
-      var attrs = {};
-      for ( var i = 0 ; i < e.attributes.length ; i++ ) {
-        var attr = e.attributes[i];
-        if ( attr.name !== attrToDelete )
-          attrs[attr.name] = attr.value;
-      }
-      return attrs;
-    }
-
     // A Feature
     var fName = e.getAttribute('f');
     if ( fName ) {
-      this.push("', self.createTemplateView('", fName, "',");
-      this.push(JSON.stringify(buildAttrs(e, 'f')));
-      this.push(')');
+      this.push("', self.createTemplateView('", fName, "',{}).fromElement(FOAM(");
+      this.push(JSONUtil.where(NOT_TRANSIENT).stringify(e));
+      this.push('))');
     }
     // A Model
     else {
-      var modelName = e.getAttribute('model');
-      if ( modelName ) {
-        this.push("', X.", modelName, '.create(');
-        this.push(JSON.stringify(buildAttrs(e, 'model')));
-        this.push(', X.sub({data: this.data}))');
-      } else {
-        console.error('Foam tag must define either "model" or "f" attribute.');
-      }
-    }
-
-    if ( e.children.length ) {
-      e.attributes = [];
-      this.push('.fromElement(elementFromString("' + e.outerHTML.replace(/\n/g, '\\n').replace(/"/g, '\\"') + '"))');
+      this.push("', X.foam.ui.FoamTagView.create({element: FOAM(");
+      this.push(JSONUtil.where(NOT_TRANSIENT).stringify(e));
+      this.push(')}, Y.sub({data: this.data}))'); // TODO(kgr): this seems a litt
     }
 
     this.push(",\n'");
   },
   'simple value': function(v) { this.push("',\n self.", v[1].join(''), ",\n'"); },
   'raw values tag': function (v) { this.push("',\n", v[1].join(''), ",\n'"); },
-  'values tag': function (v) { this.push("',\nescapeHTML(", v[1].join(''), "),\n'"); },
+  'values tag':     function (v) { this.push("',\nescapeHTML(", v[1].join(''), "),\n'"); },
   'live value tag': function (v) { this.push("',\nself.dynamicTag('span', function() { return ", v[1].join(''), "; }.bind(this)),\n'"); },
   'code tag': function (v) { this.push("');\n", v[1].join(''), ";out('"); },
   'single quote': function () { this.pushSimple("\\'"); },
@@ -215,9 +203,11 @@ MODEL({
 
       var f = function() {
         if ( ! delegate ) {
-          if ( ! t.template )
+          if ( t.code ) delegate = t.code;
+          else if ( ! t.template )
             throw 'Must arequire() template model before use for ' + this.name_ + '.' + t.name;
-          delegate = TemplateUtil.compile(Template.isInstance(t) ? t : Template.create(t));
+          else
+            delegate = TemplateUtil.compile(Template.isInstance(t) ? t : Template.create(t));
         }
 
         return delegate.apply(this, arguments);
@@ -233,10 +223,12 @@ MODEL({
       for ( var i = 0 ; i < t.args.length ; i++ ) {
         args.push(t.args[i].name);
       }
-      args.push(code);
-      return Function.apply(null, args);
+//console.log(code);
+      return eval('(function(' + args.join(',') + '){' + code + '})');
     },
     compile: function(t) {
+      if ( t.code ) return t.code;
+
       var code = TemplateCompiler.parseString(t.template);
 
       // Simple case, just a string literal
@@ -288,7 +280,7 @@ MODEL({
           name: 'body',
           template: t
         });
-      } else if ( ! t.template ) {
+      } else if ( ! t.template && ! t.code ) {
         var future = afuture();
         var path   = self.sourcePath;
 
@@ -301,7 +293,6 @@ MODEL({
         xhr.asend(function(data) {
           t.template = data;
           future.set(Template.create(t));
-          t.futureTemplate = undefined;
         });
       } else if ( typeof t.template === 'function' ) {
         t.template = multiline(t.template);
@@ -337,51 +328,10 @@ var aeval = function(src) {
   return aconstant(eval('(' + src + ')'));
 };
 
-var evalTemplate = function(t, model) {
-  var doEval_ = function(t) {
-    // console.log('evalTemplate ' + model.id + '.' + t.name);
-    var code = TemplateCompiler.parseString(t.template);
-
-    // Simple case, just a string literal
-    if ( code[0] ) return ConstantTemplate(t.template);
-
-    // Need to compile an actual method
-    var args = ['opt_out'];
-    if ( t.args ) {
-      for ( var i = 0 ; i < t.args.length ; i++ ) {
-        args.push(t.args[i].name);
-      }
-    }
-    return eval('(function(' + args.join(',') + '){' + code[1] + '})');
-  };
-
-  try {
-    return doEval_(t);
-  } catch (err) {
-    console.log('Template Error: ', err);
-    console.log(code);
-    return function() { return 'TemplateError: Check console.'; };
-  }
-};
-
-
 var aevalTemplate = function(t, model) {
-  function lazyTemplate(t) {
-    var f;
-    return function() {
-      if ( ! f ) {
-//        var name = 'eval template: ' + t.name;
-//        console.time(name);
-        f = evalTemplate(t, model);
-//        console.timeEnd(name);
-      }
-      return f.apply(this, arguments);
-    };
-  }
-
   return aseq(
     t.futureTemplate,
     function(ret, t) {
-      ret(lazyTemplate(t));
+      ret(TemplateUtil.lazyCompile(t));
     });
 };

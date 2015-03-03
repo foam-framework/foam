@@ -25,7 +25,7 @@ CLASS({
       name: 'StoreAndForwardOperation',
       properties: [
         { model_: 'IntProperty', name: 'id' },
-        { model_: 'StringProperty', name: 'method', view: { factory_: 'ChoiceView', choices: ['put', 'remove'] } },
+        { model_: 'StringProperty', name: 'method', view: { factory_: 'foam.ui.ChoiceView', choices: ['put', 'remove'] } },
         { name: 'obj' },
       ]
     }

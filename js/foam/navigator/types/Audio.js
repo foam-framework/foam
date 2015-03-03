@@ -41,7 +41,7 @@ CLASS({
     {
       name: 'iconURL',
       defaultValue: 'images/audio.png',
-      view: 'ImageView',
+      view: 'foam.ui.ImageView',
       todo: 'tableFormatter: This should be the view\'s concern',
       tableFormatter: function(iconURL, self) {
         debugger;

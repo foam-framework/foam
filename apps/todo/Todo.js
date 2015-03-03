@@ -61,6 +61,7 @@
 
 	CLASS({
 		name: 'Controller',
+    requires: ['foam.ui.TextFieldView'],
 		properties: [
 			{
 				name: 'input',
@@ -71,10 +72,10 @@
 						this.propertyChange('input', text, '');
 					}
 				},
-				view: { factory_: 'TextFieldView', placeholder: 'What needs to be done?' }
+				view: { factory_: 'foam.ui.TextFieldView', placeholder: 'What needs to be done?' }
 			},
 			{ name: 'dao' },
-			{ name: 'filteredDAO',    model_: 'DAOProperty', view: 'DAOListView' },
+			{ name: 'filteredDAO',    model_: 'DAOProperty', view: 'foam.ui.DAOListView' },
 			{ name: 'completedCount', model_: 'IntProperty' },
 			{ name: 'activeCount',    model_: 'IntProperty', postSet: function (_, c) { this.toggle = !c; }},
 			{ name: 'toggle',         model_: 'BooleanProperty', postSet: function (_, n) {

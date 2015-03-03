@@ -18,7 +18,7 @@
 CLASS({
   name: 'ControllerView',
   package: 'foam.ui.polymer.gen',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   properties: [
     {

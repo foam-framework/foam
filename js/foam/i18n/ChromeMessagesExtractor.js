@@ -18,51 +18,55 @@
 CLASS({
   name: 'ChromeMessagesExtractor',
   package: 'foam.i18n',
-  extendsModel: 'foam.i18n.Visitor',
-
-  imports: [
-    'console'
-  ],
+  extendsModel: 'foam.i18n.MessagesExtractor',
 
   methods: [
     {
       name: 'visitMessage',
-      code: function(model, msg, msgIdx) {
-        this.maybeSetMessage(
-            model.messages[msgIdx],
-            'value',
-            this.getMessageKey(model, msg));
+      code: function(model, msg) {
+        var modelPrefix = model.translationHint ?
+            model.translationHint + ' ' : '';
+        var key = this.getMessageKey(model, msg);
+        this.messageBundle[key] = {
+          message: msg.value,
+          description: modelPrefix + msg.translationHint
+        };
       }
     },
     {
       name: 'visitAction',
-      code: function(model, action, actionIdx) {
+      code: function(model, action) {
+        var modelPrefix = model.translationHint ?
+            model.translationHint + ' ' : '';
+        var key;
         if ( action.translationHint ) {
           if ( action.label ) {
-            this.maybeSetMessage(
-                model.actions[actionIdx],
-                'label',
-                this.getActionTextLabelKey(model, action));
+            key = this.getActionTextLabelKey(model, action);
+            this.messageBundle[key] =
+                {
+                  message: action.label,
+                  description: modelPrefix +
+                      action.translationHint +
+                      ' (text label)'
+                };
           }
           if ( action.speechLabel ) {
-            this.maybeSetMessage(
-                model.actions[actionIdx],
-                'speechLabel',
-                this.getActionSpeechLabelKey(model, action));
+            key = this.getActionSpeechLabelKey(model, action);
+            this.messageBundle[key] =
+                {
+                  message: action.speechLabel,
+                  description: modelPrefix +
+                      action.translationHint +
+                      ' (speech label)'
+                };
           }
         }
       }
     },
     {
-      name: 'maybeSetMessage',
-      code: function(obj, objKey, msgKey) {
-        var i18nMessage = chrome.i18n.getMessage(msgKey);
-        if ( i18nMessage ) {
-          obj[objKey] = i18nMessage;
-        } else {
-          this.console.warn('ChromeMessagesExtractor: "' + msgKey +
-              '": No such message');
-        }
+      name: 'messagesToString',
+      code: function() {
+        return JSON.stringify(this.messageBundle);
       }
     }
   ]

@@ -28,7 +28,7 @@ CLASS({
 
 CLASS({
   name: 'AbcCitationView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   templates: [
     function toHTML() {/*
       <div style="border 1px grey;" id="%%id">
@@ -74,7 +74,7 @@ CLASS({
         });
       },
       view: {
-        factory_: 'DAOListView',
+        factory_: 'foam.ui.DAOListView',
         rowView: 'AbcCitationView'
       }
     },
@@ -102,7 +102,7 @@ CLASS({
         });
       },
       view: {
-        factory_: 'DAOListView',
+        factory_: 'foam.ui.DAOListView',
         rowView: 'AbcCitationView'
       }
     },
@@ -128,7 +128,7 @@ CLASS({
     },
     {
       name: 'localMergeDao',
-      view: 'DetailView',
+      view: 'foam.ui.DetailView',
       factory: function() {
         return this.MergeDAO.create({
           delegate: this.localDao,
@@ -145,7 +145,7 @@ CLASS({
     },
     {
       name: 'syncManager',
-      view: 'DetailView',
+      view: 'foam.ui.DetailView',
       factory: function() {
         return this.Sync.create({
           local: this.localMergeDao,

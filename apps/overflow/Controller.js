@@ -1,12 +1,14 @@
 CLASS({
   name: 'Controller',
+  requires: ['foam.ui.DAOListView'],
+
   properties: [
     { name: 'search', view: { factory_: 'TextFieldView', onKeyMode: true } },
     { name: 'dao', defaultValue: questions },
     {
       name: 'filteredDAO',
       model_: 'DAOProperty',
-      view: { factory_: 'DAOListView', mode: 'read-only' },
+      view: { factory_: 'foam.ui.DAOListView', mode: 'read-only' },
       dynamicValue: function() {
         return this.search.trim() ? this.dao.where(MQL(this.search)) : this.dao;
         /*

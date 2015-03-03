@@ -59,7 +59,7 @@ CLASS({
         dStyle.zIndex = 4;
         // dStyle.zIndex = 101;
 
-        var id = View.getPrototype().nextID();
+        var id = this.X.foam.ui.View.getPrototype().nextID();
         div.id = id;
         div.innerHTML = view.toHTML();
         this.element.appendChild(div);

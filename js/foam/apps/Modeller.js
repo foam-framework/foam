@@ -18,10 +18,10 @@
 CLASS({
   name: 'Modeller',
   package: 'foam.apps',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [
-    'StackView',
+    'foam.ui.StackView',
     'StorageDAO',
     'Model',
     'foam.ui.layout.DOMPanel'

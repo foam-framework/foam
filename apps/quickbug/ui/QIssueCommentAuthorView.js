@@ -1,6 +1,6 @@
 CLASS({
   name: 'QIssueCommentAuthorView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   properties: [
     { name: 'model', defaultValue: IssuePerson }

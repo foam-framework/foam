@@ -19,7 +19,7 @@ CLASS({
   name: 'PositionedAppControllerView',
   package: 'foam.ui.md',
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   requires: [ 'CanvasScrollView', ],
 
@@ -32,7 +32,7 @@ CLASS({
     toInnerHTML: function() {
       this.destroy();
       var out = "";
-      var renderer = FOAM.lookup(this.data.citationRenderer, this.X);
+      var renderer = FOAM.lookup(this.data.citationRenderer, this.Y);
 
       var view = this.filteredDAOView = this.CanvasScrollView({
         dao: this.data.filteredDAO$Proxy,

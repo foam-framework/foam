@@ -97,7 +97,7 @@ var Property = {
       required: true,
       // todo: curry arguments
       view: {
-        factory_: 'ChoiceView',
+        factory_: 'foam.ui.ChoiceView',
         choices: [
           'Array',
           'Boolean',
@@ -178,6 +178,12 @@ var Property = {
       documentation: "A short alternate $$DOC{ref:'.name'} to be used for compact encoding."
     },
     {
+      name: 'singular',
+      type: 'String',
+      required: false,
+      displayWidth: 70
+    },
+    {
       name: 'aliases',
       type: 'Array[String]',
       view: 'StringArrayView',
@@ -191,7 +197,7 @@ var Property = {
       name: 'mode',
       type: 'String',
       defaultValue: 'read-write',
-      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] },
+      view: { factory_: 'foam.ui.ChoiceView', choices: ['read-only', 'read-write', 'final'] },
       documentation: function() { /*
         To restrict modification to a $$DOC{ref:'Property'}, the $$DOC{ref:'.mode'} can be set to read-only
         to block changes, or to final to block overriding this $$DOC{ref:'Property'} in descendents of
@@ -281,10 +287,10 @@ var Property = {
       model_: 'ViewFactoryProperty',
       name: 'view',
       type: 'view',
-      defaultValue: 'TextFieldView',
+      defaultValue: 'foam.ui.TextFieldView',
       help: 'View component for the property.',
       documentation: function() { /*
-        The default $$DOC{ref:'View'} to use when rendering the $$DOC{ref:'Property'}.
+        The default $$DOC{ref:'foam.ui.View'} to use when rendering the $$DOC{ref:'Property'}.
         Specify a string or an object with factory_ and other properties specified.
       */}
     },
@@ -295,8 +301,8 @@ var Property = {
       defaultValueFn: function() { return this.view; },
       help: 'View component for the property when rendering within a DetailView.',
       documentation: function() { /*
-        The default $$DOC{ref:'View'} to use when rendering the $$DOC{ref:'Property'}
-        as a part of a $$DOC{ref:'DetailView'}. Specify a string or an object with
+        The default $$DOC{ref:'foam.ui.View'} to use when rendering the $$DOC{ref:'Property'}
+        as a part of a $$DOC{ref:'foam.ui.DetailView'}. Specify a string or an object with
         factory_ and other properties specified.
       */}
     },
@@ -307,7 +313,7 @@ var Property = {
       defaultValueFn: function() { return this.view; },
       help: 'View component for the property when rendering within a CitationView.',
       documentation: function() { /*
-        The default $$DOC{ref:'View'} to use when rendering the $$DOC{ref:'Property'}
+        The default $$DOC{ref:'foam.ui.View'} to use when rendering the $$DOC{ref:'Property'}
         as a part of a $$DOC{ref:'CitationView'}. Specify a string or an object with
         factory_ and other properties specified.
       */}
@@ -319,7 +325,7 @@ var Property = {
       help: 'Inject HTML before row in DetailView.',
       documentation: function() { /*
         An optional function to
-        inject HTML before the row in $$DOC{ref:'DetailView'}.
+        inject HTML before the row in $$DOC{ref:'foam.ui.DetailView'}.
       */}
     },
     {
@@ -329,7 +335,7 @@ var Property = {
       help: 'Inject HTML before row in DetailView.',
       documentation: function() { /*
         An optional function to
-        inject HTML after the row in $$DOC{ref:'DetailView'}.
+        inject HTML after the row in $$DOC{ref:'foam.ui.DetailView'}.
       */}
     },
     {
@@ -345,7 +351,7 @@ var Property = {
       help: 'The property\'s default value.',
       documentation: function() { /*
         An optional function to
-        inject HTML before the row in $$DOC{ref:'DetailView'}.
+        inject HTML before the row in $$DOC{ref:'foam.ui.DetailView'}.
       */}
     },
     {
@@ -467,7 +473,7 @@ var Property = {
       documentation: function() { /*
         Allows you to react after the value of the $$DOC{ref:'Property'} has been set,
         but before property change event is fired.
-        Parameters <code>(old, nu)</code> are supplied with the old and new value.
+        Parameters <code>(old, nu)</code> are supplied with the old and new value. 
       */}
     },
     {
@@ -637,14 +643,14 @@ var Property = {
       var name$_ = prop.name$_;
 
       /* Is handled by copyFrom(), but could be done here instead. */
-      proto.addInitAgent((this.postSet || this.setter) ? 9 : 0, name + ': ' + (this.postSet || this.setter ? 'copy arg (postSet)' : 'copy arg'), function(o, X, m) {
+      proto.addInitAgent((this.postSet || this.setter) ? 9 : 0, name + ': ' + (this.postSet || this.setter ? 'copy arg (postSet)' : 'copy arg'), function(o, X, Y, m) {
         if ( ! m ) return;
         if ( m.hasOwnProperty(name)   ) o[name]   = m[name];
         if ( m.hasOwnProperty(name$_) ) o[name$_] = m[name$_];
       });
 
       if ( this.dynamicValue ) {
-        proto.addInitAgent(10, name + ': dynamicValue', function(o, X) {
+        proto.addInitAgent(10, name + ': dynamicValue', function(o, X, Y) {
           var dynamicValue = prop.dynamicValue;
 
           Events.dynamic(
@@ -654,7 +660,7 @@ var Property = {
       }
 
       if ( this.factory ) {
-        proto.addInitAgent(11, name + ': factory', function(o, X) {
+        proto.addInitAgent(11, name + ': factory', function(o, X, Y) {
           if ( ! o.hasOwnProperty(name) ) o[name];
         });
       }

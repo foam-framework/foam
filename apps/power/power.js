@@ -47,7 +47,7 @@ var ApplicationPower = Model.create({
          type: 'String',
          // todo: curry arguments
          view: {
-           factory_: 'ChoiceView',
+           factory_: 'foam.ui.ChoiceView',
            choices: [
              'Foreground',
              'Open',
@@ -73,7 +73,7 @@ var Power = Model.create({
      {
          name:  'battery',
          type:  'float',
-         view:  'FloatFieldView',
+         view:  'foam.ui.FloatFieldView',
          help:  'Percentage of battery power remaining.',
          units: '%',
          defaultValue: 100
@@ -81,7 +81,7 @@ var Power = Model.create({
       {
          name:  'watts',
          type:  'float',
-         view:  'FloatFieldView',
+         view:  'foam.ui.FloatFieldView',
          help:  'Power drain.',
          units: 'watts',
          defaultValue: 3
@@ -98,7 +98,7 @@ var Power = Model.create({
          name: 'cell',
          label: '3G',
          type: 'float',
-         view:  'FloatFieldView',
+         view:  'foam.ui.FloatFieldView',
          defaultValue: 5,
          help: 'Indicates if currently recharging.'
       },
@@ -113,14 +113,14 @@ var Power = Model.create({
       {
          name: 'USB',
          type: 'float',
-         view:  'FloatFieldView',
+         view:  'foam.ui.FloatFieldView',
          defaultValue: 5,
          help: 'Power currently being drawn from USB connectors.'
       },
       {
          name: 'CPU',
          type: 'float',
-         view: 'FloatFieldView',
+         view: 'foam.ui.FloatFieldView',
          defaultValue: 10,
          help: 'CPU activity.'
       },
@@ -128,7 +128,7 @@ var Power = Model.create({
          name: 'GPU',
          label: 'Graphics',
          type: 'float',
-         view:  'FloatFieldView',
+         view:  'foam.ui.FloatFieldView',
          defaultValue: 15,
          help: 'GPU activity.'
       },
@@ -136,7 +136,7 @@ var Power = Model.create({
          name: 'backlite',
          label: 'Display',
          type: 'int',
-         view:  'IntFieldView',
+         view:  'foam.ui.IntFieldView',
          defaultValue: 10,
          help: 'Backlite level.'
       },
@@ -484,7 +484,7 @@ var BatteryMeter = Model.create({
      {
          name:  'battery',
          type:  'float',
-         view:  'FloatFieldView',
+         view:  'foam.ui.FloatFieldView',
          help:  'Percentage of battery power remaining.',
          units: '%',
          defaultValue: 100
@@ -598,7 +598,7 @@ var NeedleMeter = Model.create({
      {
          name:  'value',
          type:  'float',
-         view:  'FloatFieldView',
+         view:  'foam.ui.FloatFieldView',
          help:  'Value.',
          defaultValue: 1
      },
@@ -606,7 +606,7 @@ var NeedleMeter = Model.create({
          name:  'maxValue',
          label: 'Max. Value',
          type:  'float',
-         view:  'FloatFieldView',
+         view:  'foam.ui.FloatFieldView',
          help:  'Maximum Value.',
          defaultValue: 10
       },

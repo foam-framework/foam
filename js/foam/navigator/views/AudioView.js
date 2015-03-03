@@ -18,7 +18,7 @@
 CLASS({
   name: 'AudioView',
   package: 'foam.navigator.views',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   imports: [
     'PropertyView',

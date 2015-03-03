@@ -21,14 +21,14 @@ CLASS({
   description: 'Mobile Gmail',
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   requires: [
     'foam.ui.md.AppController',
     'foam.util.busy.BusyFlagTracker',
     'foam.util.busy.BusyStatus',
     'CachingDAO',
-    'DetailView',
+    'foam.ui.DetailView',
     'foam.ui.layout.FloatingView',
     'foam.input.touch.GestureManager',
     'IDBDAO',
@@ -36,7 +36,7 @@ CLASS({
     'foam.oauth2.OAuth2Redirect as Auth',
     'foam.input.touch.TouchManager',
     'XHR',
-    'StackView',
+    'foam.ui.StackView',
     'com.google.mail.ComposeView',
     'com.google.mail.EMailCitationView',
     'com.google.mail.EMailDAO',
@@ -122,8 +122,8 @@ CLASS({
       name: 'controller',
       type: 'foam.ui.md.AppController',
       postSet: function(_, controller) {
-        var Y = this.controller.X.sub({ data: this.controller });
-        var view = this.ResponsiveAppControllerView.create(undefined, Y);
+        var Y = this.controller.Y.sub();
+        var view = this.ResponsiveAppControllerView.create({ data: this.controller }, Y);
         this.stack.setTopView(view);
 
         // TODO: Hack for positioned based view delay.
@@ -172,8 +172,8 @@ CLASS({
     },
     {
       name: 'stack',
-      subType: 'StackView',
-      factory: function() { return this.X.StackView.create(); },
+      subType: 'foam.ui.StackView',
+      factory: function() { return this.StackView.create(null, this.Y); },
       postSet: function(old, v) {
         if ( old ) {
           Events.unfollow(this.width$, old.width$);
@@ -200,7 +200,7 @@ CLASS({
       // Install extensions to the EMail model.
       this.EMailExtensionsAgent.create().execute();
 
-      var xhr = this.X.XHR.create({ responseType: 'json' });
+      var xhr = this.Y.XHR.create({ responseType: 'json' });
 
       aseq(function(ret) {
         xhr.asend(ret, 'https://www.googleapis.com/oauth2/v1/userinfo');
@@ -215,7 +215,7 @@ CLASS({
       var view  = X.foam.ui.layout.FloatingView.create({
         view: this.ComposeView.create({
           data: email,
-        }, this.controller.X)
+        }, this.controller.Y)
       });
       this.stack.pushView(view, undefined, undefined, 'fromRight');
     },
@@ -294,9 +294,9 @@ CLASS({
       var self = this;
       this.emailDao.find(id, {
         put: function(m) {
-          m.markRead(self.controller.X);
+          m.markRead(self.controller.Y);
           var v = self.FloatingView.create({
-            view: self.EMailView.create({ data: m }, self.controller.X)
+            view: self.EMailView.create({ data: m }, self.controller.Y)
           })
           self.stack.pushView(v, '');
         }
@@ -329,7 +329,7 @@ CLASS({
               id: 'draft_' + Math.floor(Math.random() * 0xFFFFFFFF).toString(16),
               labels: ['DRAFT']
             })
-          }, this.X)
+          }, this.Y)
         });
         this.X.stack.pushView(view, undefined, undefined, 'fromRight');
       }

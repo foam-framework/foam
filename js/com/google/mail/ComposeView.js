@@ -20,7 +20,7 @@ CLASS({
    "id": "com.google.mail.ComposeView",
    "package": "com.google.mail",
    "name": "ComposeView",
-   "extendsModel": "DetailView",
+   "extendsModel": "foam.ui.DetailView",
    "requires": [
       "foam.ui.md.ToolbarRichTextView",
       "foam.ui.md.TextFieldView",
@@ -92,7 +92,7 @@ CLASS({
          "postSet": function (oldValue, showActions) {
         // TODO: No way to remove the decorator.
         if ( ! oldValue && showActions ) {
-          this.addDecorator(this.X.ActionBorder.create());
+          this.addDecorator(this.X.ActionBorder.create(null, this.Y));
         }
       },
          "defaultValue": false
@@ -155,7 +155,6 @@ CLASS({
         if ( data && data.model_ && this.model !== data.model_ ) {
           this.model = data.model_;
         }
-        this.onValueChange_();
       }
       }
    ],

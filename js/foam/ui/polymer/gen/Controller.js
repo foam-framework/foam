@@ -218,7 +218,7 @@ CLASS({
           error: function(url) {
             this.ComponentBuilder.create(
                 {},
-                this.X.sub({
+                this.Y.sub({
                   controller: this,
                   comp: this.Component.create({ url: url })
                 }));

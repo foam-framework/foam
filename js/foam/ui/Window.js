@@ -56,7 +56,7 @@ CLASS({
         // in a SubModel of Window, ie. ChromeAppWindow
         if ( this.X.subDocument ) this.X.subDocument(w.document);
 
-        w.X = this.X;
+        w.X = this.Y;
         this.document = w.document;
       }
     },
@@ -118,10 +118,10 @@ CLASS({
       return this.document.getElementsByClassName(cls);
     },
     dynamic: function(fn, opt_fn) {
-      Events.dynamic(fn, opt_fn, this.X);
+      Events.dynamic(fn, opt_fn, this.Y);
     },
     animate: function(duration, fn, opt_interp, opt_onEnd) {
-      return Movement.animate(duration, fn, opt_interp, opt_onEnd, this.X);
+      return Movement.animate(duration, fn, opt_interp, opt_onEnd, this.Y);
     },
     setTimeout: function(f, t) {
       return this.window.setTimeout.apply(this.window, arguments);

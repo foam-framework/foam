@@ -1,6 +1,6 @@
 CLASS({
   name: 'MBug',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   description: 'Mobile QuickBug',
 
   requires: [
@@ -8,15 +8,16 @@ CLASS({
     'foam.ui.md.AppController',
     'foam.core.dao.SplitDAO',
     'ChangeProjectView',
-    'DetailView',
+    'foam.ui.DetailView',
     'foam.input.touch.GestureManager',
     'IssueCitationView',
     'IssueView',
     'QBug',
-    'StackView',
+    'foam.ui.StackView',
     'foam.input.touch.TouchManager',
     'IDBDAO',
-    'DAOVersion'
+    'DAOVersion',
+    'foam.core.dao.KeywordDAO'
   ],
 
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
@@ -46,7 +47,7 @@ CLASS({
       name: 'project',
       subType: 'QProject',
       postSet: function(_, project) {
-        var Y = project.X;
+        var Y = project.Y;
         Y.project     = project;
         Y.projectName = project.projectName;
 
@@ -64,8 +65,9 @@ CLASS({
             }))
         }, Y);
 
-        Y.issueDAO = Y.KeywordDAO.create({
-          delegate: Y.issueDAO
+        Y.issueDAO = this.KeywordDAO.create({
+          delegate: Y.issueDAO,
+          DefaultQuery: DefaultQuery
         });
 
         var pc = this.AppController.create({
@@ -78,14 +80,12 @@ CLASS({
           sortChoices: project.defaultSortChoices,
           filterChoices: project.defaultFilterChoices,
           menuFactory: function() {
-            return this.X.ChangeProjectView.create({data: project.user});
+            return this.X.ChangeProjectView.create({data: project.user}, this.Y);
           }
         }, Y);
-        this.stack.setTopView(this.DetailView.create({data: pc}, pc.X));
+        this.stack.setTopView(this.DetailView.create({data: pc}, pc.Y));
         /*
-        var view = this.ResponsiveAppControllerView.create(undefined, pc.X.sub({
-          data: pc
-        }));
+        var view = this.ResponsiveAppControllerView.create({ data: pc }, pc.X);
 
         this.stack.setTopView(view);
         project.X = pc.X;
@@ -97,7 +97,7 @@ CLASS({
     },
     {
       name: 'stack',
-      subType: 'StackView',
+      subType: 'foam.ui.StackView',
       factory: function() { return this.StackView.create(); },
       postSet: function(old, v) {
         if ( old ) {
@@ -118,7 +118,7 @@ CLASS({
     },
     toHTML: function() { return this.stack.toHTML(); },
     projectContext: function() {
-      return this.qbug.X.sub({
+      return this.qbug.Y.sub({
         mbug:              this,
         baseURL:           this.qbug.baseURL,
         user:              this.qbug.user,
@@ -145,7 +145,7 @@ CLASS({
       if ( issue.id == 0 && issue.summary == 'Loading...' ) return;
 
       // TODO: clone issue, and add listener which saves on updates
-      var v = this.project.X.IssueView.create({dao: this.project.X.issueDAO, data: issue.deepClone()});
+      var v = this.project.Y.IssueView.create({dao: this.project.Y.issueDAO, data: issue.deepClone()});
       this.stack.pushView(v, '');
     },
     setProject: function(projectName) {
@@ -164,7 +164,8 @@ CLASS({
 
 CLASS({
   name: 'PriorityView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.DataView',
+  traits: ['foam.ui.HTMLViewTrait', 'foam.ui.TemplateSupportTrait',  'foam.ui.ViewActionsTrait'],
   properties: [
     { name: 'data', postSet: function() { this.updateHTML(); } },
     {
@@ -215,9 +216,9 @@ CLASS({
 
 CLASS({
   name: 'IssueCitationView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   requires: [
-    'ImageBooleanView',
+    'foam.ui.ImageBooleanView',
     'foam.ui.md.MonogramStringView',
     'PriorityCitationView'
   ],
@@ -235,7 +236,7 @@ CLASS({
           $$summary{mode: 'read-only'}
         </div>
         $$starred{
-          model_: 'ImageBooleanView',
+          model_: 'foam.ui.ImageBooleanView',
           className:  'star',
           trueImage:  'images/ic_star_24dp.png',
           falseImage: 'images/ic_star_outline_24dp.png'
@@ -248,7 +249,7 @@ CLASS({
 
 CLASS({
   name: 'CommentView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   requires: [ 'foam.ui.md.MonogramStringView' ],
 
@@ -272,12 +273,12 @@ CLASS({
 // used to show and select available projects.
 CLASS({
   name: 'ChangeProjectView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   requires: [
     // TODO: Hack to ensure that the CSS for appcontroller comes before
     // ChangeProjectView.
     'foam.ui.md.AppController',
-    'ImageView'
+    'foam.ui.ImageView'
   ],
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 

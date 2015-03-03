@@ -1,0 +1,249 @@
+/**
+ * @license
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+CLASS({
+  name: 'QBug',
+  package: 'foam.apps.quickbug.model',
+  label: 'Quick Bug',
+
+  requires: [
+    'PersistentContext',
+    'IDBDAO',
+    'MigrationDAO',
+    'MigrationRule',
+    'Binding',
+    'RestDAO',
+    'LazyCacheDAO',
+    'foam.apps.quickbug.dao.ProjectNetworkDAO',
+    'foam.apps.quickbug.model.imported.Project',
+    'foam.apps.quickbug.model.QUser',
+    'foam.apps.quickbug.model.QProject',
+  ],
+
+  properties: [
+    {
+      name: 'baseURL',
+      defaultValue: 'https://code.google.com/p/'
+    },
+    {
+      name: 'jsonpFuture',
+      transient: true,
+      factory: function() { return deferJsonP(this.X); }
+    },
+    {
+      name: 'user',
+      type: 'foam.apps.quickbug.model.QUser',
+      postSet: function(oldValue, newValue) {
+        oldValue && oldValue.removePropertyListener('email', this.onUserUpdate);
+        newValue.addPropertyListener('email', this.onUserUpdate);
+        this.onUserUpdate();
+      }
+    },
+    {
+      name: 'userFuture',
+      transient: true,
+      factory: function() { return afuture(); }
+    },
+    {
+      name: 'persistentContext',
+      transient: true,
+      factory: function() {
+        return this.PersistentContext.create({
+          dao: this.IDBDAO.create({ model: this.Binding }),
+          context: this
+        });
+      }
+    },
+    {
+      name: 'projectNetworkDAO',
+      factory: function() {
+        return this.ProjectNetworkDAO.create();
+      },
+      transient: true
+    },
+    {
+      name: 'ProjectDAO',
+      transient: true,
+      factory: function() {
+        return this.LazyCacheDAO.create({
+          cache: this.MigrationDAO.create({
+            name: 'project-dao',
+            delegate: this.IDBDAO.create({
+              model: this.Project,
+              useSimpleSerialization: false
+            }),
+            rules: [
+              this.MigrationRule.create({
+                modelName: 'QProject',
+                version: 3,
+                migration: function(ret, dao) {
+                  dao.removeAll()(ret);
+                }
+              })
+            ]
+          }),
+          delegate: this.projectNetworkDAO
+        });
+      }
+    },
+    {
+      // Cache of QProject objects
+      name: 'projects_',
+      factory: function() { return {}; },
+      transient: true
+    },
+    {
+      name: 'defaultProjectName',
+      defaultValue: 'chromium'
+    },
+    {
+      name: 'authAgent2'
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'scopes',
+      factory: function() {
+        return [
+          "https://www.googleapis.com/auth/userinfo.email",
+          "https://www.googleapis.com/auth/projecthosting"
+        ];
+      }
+    }
+  ],
+
+  methods: {
+    init: function(args) {
+      // Fix up the imported models.
+
+      this.X.foam.apps.quickbug.model.imported.Issue.properties.forEach(function(p) {
+        if ( ! p["tableFormatter"] ) {
+          p["tableFormatter"] = function(v) {
+            return v || '----';
+          };
+        }
+        if ( ! p["tableWidth"] ) {
+          p["tableWidth"] = '80px;'
+        }
+      });
+
+      this.X.foam.apps.quickbug.model.imported.IssuePerson.ids = ['name'];
+
+      this.SUPER(args);
+      var self = this;
+
+      this.initOAuth(args && args.authClientId, args && args.authClientSecret);
+
+      this.persistentContext.bindObject('user', this.QUser, undefined, 2)(function(user) {
+        self.userFuture.set(user);
+        self.refreshUser();
+      });
+    },
+
+    initOAuth: function(opt_clientId, opt_clientSecret) {
+      var self = this;
+      this.persistentContext.bindObject('authAgent2', EasyOAuth2.xbind({
+        clientId: opt_clientId ||
+          '18229540903-ajaqivrvb8vu3c1viaq4drg3847vt9nq.apps.googleusercontent.com',
+        clientSecret: opt_clientSecret ||
+          'mbxy7-eZlosojSZgHTRT15o9'
+      }), {
+        scopes: self.scopes
+      }, 2)(function(oauth2) {
+        oauth2.setJsonpFuture(self.X, self.jsonpFuture);
+      });
+    },
+
+    refreshUser: function() {
+      var self = this;
+      this.userFuture.get(function(user) {
+        self.X.ajsonp("https://www.googleapis.com/oauth2/v1/userinfo", ["alt=json"])(
+          function(response) {
+            if ( response ) {
+              user.email = response.email;
+            }
+          });
+
+        self.X.ajsonp("https://www.googleapis.com/projecthosting/v2/users/me")(
+          function(response) {
+            response && user.copyFrom(response);
+          });
+      });
+    },
+
+    findProject: function(projectName, sink, opt_X) {
+      if ( this.projects_[projectName] ) {
+        sink.put(this.projects_[projectName]);
+        return;
+      }
+
+      var self = this;
+
+      this.ProjectDAO.find(projectName, {
+        __proto__: sink,
+        put: function(project) {
+          var p = self.QProject.create({
+            qbug: self,
+            project: project
+          }, (opt_X || self.Y));
+
+          self.projects_[projectName] = p;
+
+          sink.put(p);
+        },
+        error: function() {
+          sink.error && sink.error();
+        }
+      });
+    },
+
+    getDefaultProject: function(sink, opt_X) {
+      this.findProject(this.defaultProjectName, sink, opt_X);
+    },
+
+    launchBrowser: function(opt_projectName, opt_url, opt_X) {
+      var self = this;
+      this.userFuture.get(function(user) {
+        self.findProject(opt_projectName || user.defaultProject, {
+          put: function(p) {
+            console.log('launch: ', p);
+            p.launchBrowser(opt_url);
+          },
+          error: function() {
+            metricsSrv.sendException('Failed to find default project.');
+            console.warn("Couldn't find default project, default to ", self.defaultProjectName);
+            if ( opt_projectName === self.defaultProjectName) {
+              // TODO: Some sort of error view that we couldn't find the project.
+              console.error("Couldn't find a project, you're probably offline.");
+              metricsSrv.sendException('Failed to find project.', true);
+              return;
+            }
+            self.launchBrowser(self.defaultProjectName, undefined, opt_X);
+          },
+        }, opt_X);
+      });
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onUserUpdate',
+      code: function() {
+        this.X.ME = this.user.email;
+      }
+    }
+  ]
+});

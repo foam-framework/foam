@@ -24,12 +24,12 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'intStepView',
-      view: { factory_: 'IntFieldView', step: 10 }
+      view: { factory_: 'foam.ui.IntFieldView', step: 10 }
     },
     {
       model_: 'FloatProperty',
       name: 'floatStepView',
-      view: { factory_: 'FloatFieldView', step: .1 }
+      view: { factory_: 'foam.ui.FloatFieldView', step: .1 }
     }
   ]
 });
@@ -59,7 +59,7 @@ CLASS({
       model_: 'ArrayProperty',
       name: 'p2',
       subType: 'Bookmark',
-      view: { factory_: 'ArrayView', model: 'Bookmark', daoView: 'DAOListView' }
+      view: { factory_: 'ArrayView', model: 'Bookmark', daoView: 'foam.ui.DAOListView' }
     }
   ]
 });

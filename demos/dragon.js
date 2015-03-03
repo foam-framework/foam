@@ -44,7 +44,7 @@ CLASS({
       name:  'r',
       label: 'Radius',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 10
     },
     {

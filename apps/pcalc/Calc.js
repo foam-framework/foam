@@ -204,7 +204,7 @@ CLASS({
     {
       model_: 'ArrayProperty',
       name: 'history',
-      view: 'DAOListView',
+      view: 'foam.ui.DAOListView',
       factory: function() { return [].sink; }
     },
     {
@@ -445,7 +445,7 @@ CLASS({
 
 CLASS({
   name: 'CalcSpeechView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
   properties: [
     'calc',
     'lastSaid'
@@ -547,7 +547,7 @@ CLASS({
       defaultValue: 'BasicOperationsButtonView'
     },
   ],
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   templates: [
     function CSS() {/*
     * {
@@ -739,7 +739,7 @@ CLASS({
       template: function() {/*
         <%= CalcSpeechView.create({calc: this.data}) %>
         <!-- <%= this.ZoomView.create() %> -->
-        <% X.registerModel(CalcButton, 'ActionButton'); %>
+        <% X.registerModel(CalcButton, 'foam.ui.ActionButton'); %>
         <div style="position: relative;z-index: 100;">
           <div tabindex="1" style="position: absolute;">
             <span aria-label="{{{Calc.RAD.label}}}" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="{{{Calc.RAD.label}}}"></span>
@@ -806,7 +806,7 @@ CLASS({
 
 CLASS({
   name: 'MainButtonsView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   templates: [
     function toHTML() {/*
       <div id="%%id" class="buttons button-row" style="background:#4b4b4b;">
@@ -830,7 +830,7 @@ CLASS({
         width:  70,
         height: 45,
         font:   '300 26px RobotoDraft'
-      }), 'ActionButton');
+      }), 'foam.ui.ActionButton');
       %>
         <div class="button-column rhs-ops" style="flex-grow: 1;padding-top: 7px; padding-bottom: 10px;">
           $$ac{tabIndex: 201, font: '300 24px RobotoDraft'
@@ -848,7 +848,7 @@ CLASS({
 
 CLASS({
   name: 'SecondaryButtonsView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   templates: [
     function toHTML() {/*
           <%
@@ -857,7 +857,7 @@ CLASS({
             width:  61,
             height: 61,
             font:   '300 20px RobotoDraft'
-          }), 'ActionButton');
+          }), 'foam.ui.ActionButton');
           %>
           <div id="%%id" class="buttons button-row secondaryButtons">
             <div class="button-column" style="flex-grow: 1;">
@@ -894,7 +894,7 @@ CLASS({
 
 CLASS({
   name: 'TertiaryButtonsView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   templates: [
     function toHTML() {/*
           <%
@@ -904,7 +904,7 @@ CLASS({
             color:      'rgb(80, 80, 80)',
             background: 'rgb(29, 233, 182)',
             font:       '300 18px RobotoDraft'
-          }), 'ActionButton');
+          }), 'foam.ui.ActionButton');
           %>
           <div id="%%id" class="buttons button-row tertiaryButtons">
             <div class="button-column" style="flex-grow: 1;">
@@ -941,7 +941,7 @@ CLASS({
 
 CLASS({
   name: 'HistoryCitationView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   templates: [
     function toHTML() {/*
       <div class="history" tabindex="2">{{{this.data.op}}} {{this.data.a2}}<% if ( this.data.op.toString() ) { %><hr aria-label="{{Calc.EQUALS.speechLabel}}" tabindex="2"><% } %></div>
