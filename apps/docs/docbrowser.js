@@ -293,6 +293,7 @@ CLASS({
 //         var modl = FOAM.lookup(key, this.X);
 //         modl.getPrototype && modl.getPrototype();
 //       }
+      //this.X.ModelDAO.select(newDAO);
 
       // All models are now in USED_MODELS
       [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {

@@ -18,6 +18,7 @@
 MODEL({
   name: 'ModelFileDAO',
   package: 'foam.core.bootstrap',
+  
   methods: {  
     find: function (key, sink) {
       var X = this.X;
@@ -42,6 +43,48 @@ MODEL({
         }
         sink && sink.put && sink.put(model);
       }.bind(this.X.document.head);
+    },
+    
+    select: function(sink) {
+      // parse directory listing, if available
+      var sourcePath = window.FOAM_BOOT_DIR + '../js';
+      this.scrapeDirectory(sourcePath, "", sink);
+    },
+    
+    scrapeDirectory: function(dir, pkg, sink) {
+      var request = new XMLHttpRequest();
+      request.open("GET", dir);
+      request.addEventListener("readystatechange", function(e) {
+        if (request.readyState === 4) {
+          // find javascript files
+          var fre = /.*?(?:href=\")(.*?).js\".*?/gmi;
+          fre.sticky = true;
+          var files = [];
+          var fmatch;
+          do {
+            if ( fmatch = fre.exec(request.response) ) files.push(fmatch[1]);
+          } while ( fmatch );
+          files.forEach(function(d) {
+            //find(pkg ? pkg+"."+d : d, sink);
+            arequire(pkg ? pkg+"."+d : d)( function(m) {
+                sink.put(m);
+            });
+          }.bind(this));         
+
+          // find subdirectories
+          var re = /.*?(?:href=\")(.*?)\/\".*?/gm;
+          re.sticky = true;
+          var dirs = [];
+          var match;
+          do {
+            if ( match = re.exec(request.response) ) dirs.push(match[1]);
+          } while ( match );
+          dirs.forEach(function(d) {
+            this.scrapeDirectory(dir + '/' + d, pkg ? pkg+"."+d : d, sink);
+          }.bind(this));
+        }
+      }.bind(this));
+      request.send();           
     }
   }
 });

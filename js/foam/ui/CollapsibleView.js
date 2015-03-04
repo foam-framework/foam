@@ -112,7 +112,7 @@ CLASS({
         this.fullView.$.style.overflow = "hidden";
         this.collapsed = true;
       }
-    }
+    }    
   },
 
   actions: [
