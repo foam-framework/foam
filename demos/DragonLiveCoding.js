@@ -7,13 +7,14 @@ apar(
 )(function() {
   timer = Timer.create();
 
+  var Dragon = X.foam.demos.graphics.Dragon;
   var tt     = X.foam.graphics.Turntable.create();
-  var dragon = X.foam.demos.graphics.Dragon.create({
+  var dragon = Dragon.create({
     width:  1000,
     height: 800,
     timer:  timer
   });
-  var dragonModelView = Dragon.defaultView();
+  var dragonModelView = foam.demos.graphics.Dragon.defaultView();
   var dragonView = dragon.toView_();
   var timerView = timer.defaultView();
   var ttView = tt.toView_();

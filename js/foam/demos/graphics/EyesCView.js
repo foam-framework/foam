@@ -38,7 +38,7 @@ CLASS({
     {
       name:  'rightEye',
       factory: function() {
-        return this.EyeCView.create({x:this.r * 65.0 / 50.0 + this.r * 75 / 50, y:88, r: 0.98 * this.r, color:'yellow'});
+        return this.EyeCView.create({x:this.r * 65.0 / 50.0 + this.r * 85 / 50, y:88, r: 0.98 * this.r, color:'yellow'});
       }
     },
     { name: 'width',  defaultValue: 300 },
