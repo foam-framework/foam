@@ -3,10 +3,21 @@ CLASS({
   package: 'foam.apps.quickbug.controller',
 
   requires: [
-    'foam.apps.quickbug.model.QBug'
+    'foam.apps.quickbug.model.QBug',
+    'NullDAO'
+  ],
+
+  exports: [
+    'metricDAO'
   ],
 
   properties: [
+    {
+      name: 'metricDAO',
+      factory: function() {
+        return this.NullDAO.create();
+      }
+    },
     {
       name: 'qb',
       factory: function() {
