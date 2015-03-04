@@ -66,8 +66,6 @@ CLASS({
             this.glossaryTerms.put(this);
           }.bind(this)
         });
-      } else {
-        this.glossaryTerms.put(this);
       }
     }
   },
