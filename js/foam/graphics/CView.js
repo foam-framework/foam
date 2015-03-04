@@ -100,14 +100,14 @@ CLASS({
           Only used if this is the root node adapted with a $$DOC{ref:'CViewView'}. */}
     },
     {
-      model_: 'IntProperty',
+      model_: 'FloatProperty',
       name:  'x',
       defaultValue: 0,
       documentation: function() {/*
           The X offset of this view relative to its parent. */}
     },
     {
-      model_: 'IntProperty',
+      model_: 'FloatProperty',
       name:  'y',
       defaultValue: 0,
       documentation: function() {/*
