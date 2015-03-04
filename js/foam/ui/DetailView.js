@@ -19,10 +19,10 @@ CLASS({
   name: 'DetailView',
   package: 'foam.ui',
 
-  extendsModel: 'foam.ui.DestructiveDataView',
-  traits: ['foam.ui.HTMLViewTrait',
-           'foam.ui.ViewActionsTrait',
-           'foam.ui.TemplateSupportTrait'],
+  extendsModel: 'foam.ui.View',
+//   traits: ['foam.ui.HTMLViewTrait',
+//            'foam.ui.ViewActionsTrait',
+//            'foam.ui.TemplateSupportTrait'],
   
   requires: [ 'Property', 
               'foam.ui.TextFieldView',

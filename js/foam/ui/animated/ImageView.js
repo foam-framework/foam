@@ -19,8 +19,7 @@ CLASS({
   package: 'foam.ui.animated',
   name: 'ImageView',
 
-  extendsModel: 'foam.ui.LeafDataView',
-  traits: ['foam.ui.HTMLViewTrait'],
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

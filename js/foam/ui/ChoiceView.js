@@ -22,7 +22,7 @@ CLASS({
 
   extendsModel: 'foam.ui.AbstractChoiceView',
 
-  requires: ['foam.ui.View'],
+  //requires: ['foam.ui.View'],
   
   /*
    * <select size="">

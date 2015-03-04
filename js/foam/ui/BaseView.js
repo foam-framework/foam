@@ -31,7 +31,7 @@ CLASS({
       documentation: function() {/* The actual data used by the view.
         Children's data will be bidirectionally bound to this property.
         If you want to give your children differing data, use
-        $$DOC{ref:'foam.ui.LeafDataView'} or
+        $$DOC{ref:'foam.ui.View'} or
         $$DOC{ref:'foam.ui.DestructiveDataView'}.
       */}
     },
@@ -47,7 +47,7 @@ CLASS({
     
     addSelfDataChild: function(child) {
       /* For views created from properties of this view (not our data),
-         this method sets the child's data to this. */
+         this method sets the child's data to 'this'. */
       child.data = this;
       this.addChild(child);
     }

@@ -19,10 +19,7 @@ CLASS({
   name: 'AbstractChoiceView',
   package: 'foam.ui',
 
-  extendsModel: 'foam.ui.LeafDataView',
-  traits: ['foam.ui.HTMLViewTrait',
-           'foam.ui.TemplateSupportTrait',
-           'foam.ui.ViewActionsTrait'],
+  extendsModel: 'foam.ui.View',
 
   properties: [
     // This is the real, final choice. The internals use index only.

@@ -16,7 +16,7 @@
  */
 
 CLASS({
-  name: 'foam.ui.DetailView',
+  name: 'DetailView',
   package: 'foam.ui.md',
   extendsModel: 'foam.ui.DetailView',
 

@@ -273,7 +273,7 @@ CLASS({
   name: 'TraitListDiagram',
   package: 'foam.documentation',
 
-  extendsModel: 'foam.ui.LeafDataView',
+  extendsModel: 'foam.ui.BaseView',
 
   requires: ['foam.documentation.ModelDocDiagram',
              'foam.documentation.DocLinkDiagram',
@@ -525,7 +525,7 @@ CLASS({
              'foam.graphics.diagram.SectionGroup',
              'SimpleValue'],
 
-  extendsModel: 'foam.ui.LeafDataView',
+  extendsModel: 'foam.ui.BaseView',
   traits: [ 'foam.documentation.DocDiagramTrait',
             'foam.documentation.FeatureListLoaderTrait'],
 
