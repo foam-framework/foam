@@ -23,8 +23,8 @@ CLASS({
   requires: [
     'foam.ui.ActionButton',
     'AutocompleteView',
-    'foam.apps.quickbug.LabelAutocompleteView',
-    'foam.apps.quickbug.StatusAutocompleteView',
+    'foam.apps.quickbug.ui.LabelAutocompleteView',
+    'foam.apps.quickbug.ui.StatusAutocompleteView',
     'TextFieldView',
     'foam.apps.quickbug.ui.GriddedStringArrayView'
   ],
