@@ -896,14 +896,11 @@ CLASS({
           var window = self.window = w.contentWindow;
 
           arequire('foam.apps.quickbug.ui.ChromeAppBrowser')(
-            function () {
+            function (model) {
               $addWindow(window);
               var Y = self.Y.subWindow(window, 'Browser Window');
-              var b = Y.ChromeAppBrowser.create({project: self});
+              var b = model.create({project: self});
               Y.touchManager = Y.foam.input.touch.TouchManager.create({});
-              window.browser = b; // for debugging
-              BROWSERS.push(b); // for debugging
-              w.browser = b;
               window.document.firstChild.innerHTML = b.toHTML();
               b.initHTML();
               if ( opt_url ) b.maybeSetLegacyUrl(opt_url);
@@ -916,8 +913,6 @@ CLASS({
 
         w.onClosed.addListener(function() {
           $removeWindow(window);
-          // for debugging
-          BROWSERS.deleteI(window);
         });
       });
     },
