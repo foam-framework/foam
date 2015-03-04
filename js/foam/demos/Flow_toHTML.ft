@@ -8,9 +8,9 @@
 
     <section title="Sub-Chapter">
       Sub-Chapter Stuff<br>
-    <foam model="foam.demos.graphics.EyeCView"/>
+<!--    <foam model="foam.demos.graphics.EyeCView"/> -->
     <foam model="foam.demos.graphics.EyesCView"/>
-    <foam model="foam.demos.graphics.Dragon"/>
+<!--    <foam model="foam.demos.graphics.Dragon"/> -->
 
       <section title="Sub-Sub-Chapter">
         Sub-Sub-Chapter Stuff
