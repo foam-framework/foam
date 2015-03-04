@@ -34,6 +34,7 @@ CLASS({
     'foam.apps.quickbug.dao.QIssueCommentNetworkDAO',
     'foam.apps.quickbug.dao.QIssueCommentUpdateDAO',
     'foam.apps.quickbug.dao.IssueRestDAO',
+    'foam.apps.quickbug.dao.SyncManager',
     'foam.apps.quickbug.model.imported.IssuePerson',
     'foam.apps.quickbug.model.imported.Issue',
     'foam.apps.quickbug.model.LabelStringEnumProperty',
@@ -862,7 +863,7 @@ CLASS({
       if ( ! this.X.DontSyncProjectData ) {
         this.IssueDAO.listen(this.onDAOUpdate);
 
-        this.persistentContext.bindObject('syncManager', SyncManager.xbind({
+        this.persistentContext.bindObject('syncManager', this.SyncManager.xbind({
           syncInterval: 60*5,
           batchSize: 500,
         }), {
@@ -870,7 +871,7 @@ CLASS({
           srcDAO: this.IssueNetworkDAO,
           dstDAO: this.IssueCachingDAO,
           modifiedProperty: this.QIssueModel.MODIFIED
-        })(function(manager) {
+        }, 2)(function(manager) {
           this.syncManager = manager;
           this.syncManagerFuture.set(manager);
           manager.start();
