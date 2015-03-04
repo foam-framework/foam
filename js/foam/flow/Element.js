@@ -77,5 +77,9 @@ CLASS({
 
       return this;
     }
-  }
+  },
+
+  templates: [
+    function toInnerHTML() {/* <%= this.inner() %> */}
+  ]
 });

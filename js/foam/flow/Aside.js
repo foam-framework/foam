@@ -10,28 +10,45 @@
  */
 
 CLASS({
-  name: 'SubTitle',
+  name: 'Aside',
   package: 'foam.flow',
   extendsModel: 'foam.flow.Element',
 
   templates: [
     function CSS() {/*
+      aside {
+        background: #fff;
+        padding: 10px;
+        margin: 0px 10px 10px 10px;
+        right: 10px;
+        float: right;
+      }
+
+      aside p {
+        width: initial;
+      }
+
       @media not print {
+
+        aside {
+          box-shadow: 5px 5px 20px #888;
+          margin: 8px;
+        }
 
         @media (max-width: 800px) {
 
-          sub-title {
-            margin: 5px;
-            font-size: 30px;
+          aside {
+            width: 50%;
           }
 
         }
 
         @media (min-width: 800px) {
 
-          sub-title {
-            margin: 10px;
-            font-size: 40px;
+          aside {
+            min-width: 300px;
+            max-width: 25%;
+            border: 0px;
           }
 
         }
@@ -40,9 +57,11 @@ CLASS({
 
       @media print {
 
-        sub-title {
-          margin-top: 0.5in;
-          font-size: 24pt;
+        aside {
+          width: 50%;
+          border: 6px double #000;
+          margin: 6pt;
+          page-break-inside: avoid;
         }
 
       }

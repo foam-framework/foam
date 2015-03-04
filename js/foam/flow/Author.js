@@ -91,13 +91,11 @@ CLASS({
   ],
 
   templates: [
-    function toHTML() {/*
-      <flow-author id="%%id">%%shortFullName</flow-author>
-    */},
+    function toInnerHTML() {/* %%shortFullName */},
     function CSS() {/*
       @media not print {
 
-        flow-title-page > flow-author {
+        title-page > author {
           margin-top: 3px;
         }
 

@@ -37,9 +37,8 @@ CLASS({
   ],
 
   templates: [
-    function toHTML() {/*
+    function toInnerHTML() {/*
       <% this.terms = this.glossaryTerms; %>
-        <flow-glossary>
           <a name="glossary"></a>
           <heading>
             Glossary
@@ -47,14 +46,16 @@ CLASS({
           <blockquote>
             $$terms{mode: 'read-only'}
           </blockquote>
-        </flow-glossary>
     */},
     function CSS() {/*
-      flow-glossary { display: block }
+      book > glossary {
+        display: block;
+        clear: both;
+      }
 
       @media print {
 
-        flow-glossary {
+        glossary {
           page-break-after: always;
         }
 

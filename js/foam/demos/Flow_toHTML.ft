@@ -56,7 +56,7 @@
 
 Slides:
 
-  <slides>
+  <slides style="width: 600px; height: 400px;">
     <slide><circle color="red"   x="100" y="45" r="40"/></slide>
     <slide><circle color="green" x="150" y="45" r="40"/></slide>
     <slide><circle color="blue"  x="200" y="45" r="40"/></slide>
