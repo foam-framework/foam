@@ -21,8 +21,7 @@ CLASS({
   extendsModel: 'GridByExpr',
 
   requires: [
-    'foam.apps.quickbug.ui.IssueDropCell',
-    'foam.apps.quickbug.grammars.VersionParser'
+    'foam.apps.quickbug.ui.IssueDropCell'
   ],
 
   properties: [
@@ -36,7 +35,7 @@ CLASS({
       var m = {};
 
       function toKey(o) {
-        return m[o] || ( m[o] = this.VersionParser.parseString(o) );
+        return m[o] || ( m[o] = VersionParser.parseString(o) );
       }
 
       return function(o1, o2) {
