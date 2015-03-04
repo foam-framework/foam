@@ -183,7 +183,7 @@ CLASS({
 
     destroy: function( isParentDestroyed ) { /* Call to clean up this and child views. */
       this.SUPER(isParentDestroyed);
-      this.cview.destroy(isParentDestroyed);
+      if ( this.cview ) this.cview.destroy(isParentDestroyed);
     }
   }
 });

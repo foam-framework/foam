@@ -566,7 +566,7 @@ CLASS({
 CLASS({
   name: 'FeatureDiagram',
   package: 'foam.documentation',
-  extendsModel: 'foam.ui.DataView',
+  extendsModel: 'foam.ui.BaseView',
   traits: [ 'foam.documentation.DocDiagramTrait'],
 
   requires: ['foam.graphics.diagram.Section'],

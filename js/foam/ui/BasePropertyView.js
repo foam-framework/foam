@@ -152,9 +152,9 @@ CLASS({
     toString: function() { /* Name info. */ return 'PropertyView(' + this.prop.name + ', ' + this.view + ')'; },
 
     destroy: function( isParentDestroyed ) { /* Passthrough to $$DOC{ref:'.view'} */
-      if ( ! isParentDestroyed ) {
-        this.unbindData(this.data);
-      }
+      // always unbind, since if our parent was the top level destroy we need
+      // to unhook if we were created as an addSelfDataChild
+      this.unbindData(this.data);
       this.SUPER( isParentDestroyed );
     },
     
