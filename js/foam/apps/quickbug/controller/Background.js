@@ -21,6 +21,7 @@ CLASS({
 
   requires: [
     'foam.apps.quickbug.model.QBug',
+    'foam.apps.quickbug.ui.ChromeAppBrowser',
     'NullDAO',
     'IDBDAO',
     'DAOVersion'
@@ -54,16 +55,19 @@ CLASS({
     init: function(args) {
       this.SUPER(args)
       if ( chrome.app && chrome.app.runtime ) {
-        chrome.app.runtime.onLaunched.addListener(this.onLaunch);
+        chrome.app.runtime.onLaunched.addListener(this.onLaunched);
         chrome.runtime.onMessageExternal.addListener(this.onMessageExternal);
       }
     },
+    launch: function(varargs){
+      this.qb.launchBrowser.apply(this.qb, arguments);
+    }
   },
   listeners: [
     {
       name: 'onLaunched',
       code: function() {
-        this.qb.launchBrowser.apply(this.qb, arguments);
+        this.launch();
       }
     },
     {
@@ -74,7 +78,7 @@ CLASS({
           var start = msg.url.indexOf('/p/') + 3;
           var end = msg.url.indexOf('/', start);
           var project = msg.url.substring(start, end);
-          this.onLaunched(project, msg.url);
+          this.launch(project, msg.url);
         }
       }
     }
