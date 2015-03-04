@@ -45,7 +45,8 @@ CLASS({
     'IDBDAO',
     'Timer',
     'PersistentContext',
-    'Binding'
+    'Binding',
+    'foam.metrics.Metric'
   ],
 
   exports: [
@@ -58,6 +59,10 @@ CLASS({
     'PersonDAO as PersonDAO',
     'openPredicate',
     'QueryParser'
+  ],
+
+  imports: [
+    'metricDAO'
   ],
 
   properties: [
@@ -902,7 +907,9 @@ CLASS({
               b.initHTML();
               if ( opt_url ) b.maybeSetLegacyUrl(opt_url);
               w.focus();
-              metricsSrv.sendAppView('Browser');
+              self.metricDAO.put(self.Metric.create({
+                name: 'browserLaunched'
+              }));
             });
         };
 
