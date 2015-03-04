@@ -8,7 +8,7 @@
         FOAM
       </book-title>
       <sub-title>
-        The Good Parts
+        The Good, The Bad, and The Awesome
       </sub-title>
       <author>
         <firstName>Kevin</firstName>
@@ -27,16 +27,134 @@
 
     <section>
       <title>Introduction</title>
+      <aside class="tldr">
+        FOAM is a meta-programming framework, implemented in Javascript, for
+        modelling applications and their components at a high level. This
+        facilitates rapid development and deployment across various languages
+        and platforms. FOAM is a framework, not a language, compiler, or
+        transpiler. The purpose of this book is to provide a thorough
+        introduction to programming with FOAM.
+      </aside>
       <p>
         Welcome to the wonderful world of
         <glossary-term>
           <term>FOAM</term>
-          <definition>Feature-Oriented Active Modeller</definition>
+          <definition>
+            Feature-Oriented Active Modeller. A meta-programming
+            framework for rapid software development, and the subject of this
+            book.
+          </definition>
         </glossary-term>!
       </p>
-      <aside>
-        FOAM is awesome!
-      </aside>
+      <section>
+        <title>What is FOAM?</title>
+        <p>
+          FOAM stands for Feature-Oriented Active Modeller. FOAM is a
+          meta-programming framework for rapid software development. FOAM is
+          implemented in Javascript, but the framework is language agnostic
+          (more on that in the next section). For now, let's spell it out.
+        </p>
+        <p class="first-cap">
+          F is for <i>feature</i>. In FOAM, a
+          <glossary-term>
+            <term>Feature</term>
+            <definition>
+              Features are units of data and behaviour, made as small as
+              possible, to facilitate reuse through composition of many
+              features.
+            </definition>
+          </glossary-term> is a fine-grained unit of encapsulation for data
+          and behaviours. Behaviours are really a special sort of data in
+          FOAM, but let's not get ahead of ourselves. Features should be as
+          small as possible to facilitate flexible composition of features
+          into <glossary-term>
+            <term>Models</term>
+            <definition>
+              Models are essentially collections of
+              <glossary-term><term>features</term></glossary-term>. FOAM's
+              core model builder supports a variety of standard features,
+              such as
+              <glossary-term><term>properties</term></glossary-term>,
+              <glossary-term><term>methods</term></glossary-term>,
+              <glossary-term><term>actions</term></glossary-term>
+              (user-initiated methods),
+              <glossary-term><term>listeners</term></glossary-term>
+              (pre-bound methods),
+              <glossary-term><term>templates</term></glossary-term> (HTML,
+              CSS, and others),
+              <glossary-term><term>packages</term></glossary-term> (with
+              dependency injection).
+            </definition>
+          </glossary-term>.
+        </p>
+        <p class="first-cap">
+          O is for <i>oriented</i> (as in <i>feature-oriented</i>). Not
+          featureful (bloated with features). Not feature-driven
+          (everything's a feature). Feature-oriented. This means that FOAM is
+          strongly encourages encapsulating things into simple features that
+          can be composed to give rise to complex things. Truth be told, FOAM
+          is model-driven, but that's jumping ahead again.
+        </p>
+        <aside>
+          In addition to being <i>active</i>, FOAM is
+          also <i>reactive</i>. Many of the tools in the FOAM toolbox
+          encourage reactive programming. This allows developers to define
+          their application in terms of responding to data changes or events
+          when it is natural to do so.
+        </aside>
+        <p class="first-cap">
+          A is for <i>active</i>. To understand what this means, we need to
+          understand FOAM's perspective on data and behaviours. By data we
+          mean represented information (constants, variables, numbers,
+          strings, and the like). By behavoiurs we mean something that's
+          runnable (code, functions, procedures, methods, and so on). FOAM
+          deliberately blurs the line between the two. After all, behaviours
+          need to be represented; so behaviours are simply data represented
+          for a special purpose: computationally manipulating other data. In
+          FOAM, there is virtually no distinction between the two. Code is
+          simply data that can manipulate other data. In this sense, FOAM
+          code changes itself. For example, all FOAM classes --
+          called <glossary-term><term>Models</term></glossary-term> -- are
+          actually data objects that can be modified and extended at run
+          time.
+        </p>
+        <p class="first-cap">
+          M is for <i>modeller</i>. As mentioned above, FOAM objects are
+          instances of FOAM
+          <glossary-term><term>Models</term></glossary-term>, which are
+          composed of features.
+          <glossary-term><term>Models</term></glossary-term> are the basic
+          building block for developing FOAM applications, hence the FOAM
+          framework is a toolset for <i>modelling</i> applications. It's
+          worth noting that FOAM makes heavy use of the <i>MVC pattern</i> to
+          structure an environment for modelling applications. We have found
+          this approach to be a flexible and concise means for expressing
+          common patterns that arise in developing applications. If you are
+          unfamiliar with MVC, we encourage you to learn the basics before
+          reading this book. Not only is much of FOAM itself written using
+          MVC, but the toolset encourages developers to adopt this approach
+          when appropriate.
+        </p>
+        <p>
+          Make sense? Some of these terms are probably unfamiliar, so let's
+          recap. FOAM is a modelling framework for expressing <i>concepts</i>
+          at a high level. These <i>concepts</i> are realized by constructing
+          FOAM
+          <glossary-term><term>Models</term></glossary-term>, which resemble
+          classes in languages like Java and C++. FOAM encourages
+          expressing <i>concepts</i> through small
+          <glossary-term><term>Features</term></glossary-term> that can be
+          combined to give rise to a
+          <glossary-term><term>Model</term></glossary-term> of
+          the <i>concept</i> you have in mind.
+        </p>
+        <p>
+          When you start building something with FOAM, remember this:
+        </p>
+        <p class="center">
+          <b><i>Model the concept. Express it through features.</i></b>
+        </p>
+      </section>
     </section>
 
     <glossary />
