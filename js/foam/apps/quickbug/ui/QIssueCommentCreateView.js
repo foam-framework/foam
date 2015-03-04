@@ -26,7 +26,7 @@ CLASS({
 
   requires: [
     'foam.ui.ActionButton',
-    'PropertyView',
+    'foam.ui.PropertyView',
     'foam.apps.quickbug.model.QIssueComment',
     'foam.apps.quickbug.model.QIssueCommentUpdate',
     'foam.apps.quickbug.ui.QIssueCommentUpdateDetailView',
