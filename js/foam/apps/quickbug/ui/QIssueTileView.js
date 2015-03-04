@@ -21,7 +21,7 @@ CLASS({
   label: 'QIssue Tile View',
 
   requires: [
-    'PropertyView'
+    'foam.ui.PropertyView'
   ],
 
   extendsModel: 'foam.ui.View',
