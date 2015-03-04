@@ -29,21 +29,20 @@ CLASS({
   properties: [
     {
       name: 'eyes',
-      factory: function() { return this.Eyes.create({x: 225, y: 225}); }
+      factory: function() { return this.Eyes.create({x: 200, y: 150}); }
     },
     {
       name: 'mouse',
       factory: function() { return Mouse.create(); }
     },
-    { name: 'width',  defaultValue: 600 },
-    { name: 'height', defaultValue: 600 }
+    { name: 'width',  defaultValue: 2000 },
+    { name: 'height', defaultValue: 2000 }
   ],
 
   methods: {
     initCView: function() {
       this.addChild(this.eyes);
       this.mouse.connect(this.$);
-      this.background = '#ddd';
       this.mouse.addPropertyListener(null, function() {
         this.view.paint();
       }.bind(this));
