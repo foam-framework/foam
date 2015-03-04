@@ -1,0 +1,53 @@
+/**
+ * @license
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+CLASS({
+  package: 'foam.demos.graphics',
+  name:  'EyesDemo',
+
+  extendsModel: 'foam.graphics.CView',
+
+  requires: [
+//    'foam.demos.graphics.EyeCView as Eyes'
+    'foam.demos.graphics.EyesCView as Eyes'
+  ],
+
+  properties: [
+    {
+      name: 'eyes',
+      factory: function() { return this.Eyes.create({x: 225, y: 225}); }
+    },
+    {
+      name: 'mouse',
+      factory: function() { return Mouse.create(); }
+    },
+    { name: 'width',  defaultValue: 600 },
+    { name: 'height', defaultValue: 600 }
+  ],
+
+  methods: {
+    initCView: function() {
+      this.addChild(this.eyes);
+      this.mouse.connect(this.$);
+      this.background = '#ddd';
+      this.mouse.addPropertyListener(null, function() {
+        this.view.paint();
+      }.bind(this));
+      this.eyes.watch(this.mouse);
+    }
+  }
+});
