@@ -74,9 +74,10 @@ CLASS({
 
       heading a {
         text-decoration: none;
+        color: inherit;
        }
 
-      section {
+      book > section {
         display: block;
         clear: both;
       }

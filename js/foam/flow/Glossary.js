@@ -48,7 +48,7 @@ CLASS({
           </blockquote>
     */},
     function CSS() {/*
-      glossary {
+      book > glossary {
         display: block;
         clear: both;
       }

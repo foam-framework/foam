@@ -16,8 +16,24 @@ book {
   z-index: 2;
 }
 
+book watermark {
+  position: fixed;
+}
+
 book p {
   margin-bottom: 10px;
+}
+
+book p.first-cap::first-letter, book first-cap {
+  font-size: 200%;
+  font-weight: bold;
+  color: #080;
+}
+
+book p.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media not print {
