@@ -1854,7 +1854,9 @@ CLASS({
       type: 'int',
       view: 'foam.ui.IntFieldView',
       defaultValue: 0
-    }
+    },
+    { name: 'canvasX', getter: function() { return this.x; } }, 
+    { name: 'canvasY', getter: function() { return this.y; } }, 
   ],
   methods: {
     connect: function(e) {
