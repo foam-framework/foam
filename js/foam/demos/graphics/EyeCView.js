@@ -31,7 +31,7 @@ CLASS({
       defaultValue: 'red'
     },
     {
-      model_: 'IntProperty',
+      model_: 'FloatProperty',
       name:  'r',
       label: 'Radius',
       defaultValue: 50
@@ -77,14 +77,22 @@ CLASS({
     paintSelf: function() {
       // point pupil towards target
       if ( this.target_ ) {
-        var dx = this.canvasX - this.target_.canvasX;
-        var dy = this.canvasY - this.target_.canvasY;
+        var dx = this.pupil.canvasX - this.target_.canvasX;
+        var dy = this.pupil.canvasY - this.target_.canvasY;
         var theta = Math.atan2(dy,dx);
-        var r     = Math.sqrt(dx*dx+dy*dy);
-        this.pupil.x = -this.r * 0.6 * Math.cos(-theta);
-        this.pupil.y =  this.r * 0.6 * Math.sin(-theta);
+        var r     = Math.min(this.r, Math.sqrt(dx*dx+dy*dy));
+        var newX = -r * 0.6 * Math.cos(-theta);
+        var newY =  r * 0.6 * Math.sin(-theta);
+        // Don't bother moving the pupil only a small distance to avoid eye
+        // jittering.
+        if ( Movement.distance(this.pupil.x - newX, this.pupil.y - newY) > 2 ) {
+          this.pupil.x = newX;
+          this.pupil.y = newY;
+        }
       }
 
+      // TODO: rotation and scaling need to be part of CView so that we can
+      // adjust in input accordingly.
       this.canvas.translate(this.x, this.y);
       this.canvas.rotate(-Math.PI/40);
       this.canvas.scale(1.0, 1.3);
