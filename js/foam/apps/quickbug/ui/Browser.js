@@ -22,11 +22,13 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'AlternateView',
+    'foam.ui.AlternateView',
+    'foam.ui.ActionButton',
+    'ActionLink',
     'ToolbarView',
     'StaticHTML',
     'Action',
-    'CursorView',
+    'foam.apps.quickbug.ui.CursorView',
     'foam.ui.RelationshipView',
     'foam.apps.quickbug.model.Location',
     'foam.apps.quickbug.dao.QIssuesSplitDAO',
@@ -838,13 +840,12 @@ Please use labels and text to provide additional information.
   templates: [
     function toHTML() {/*
 <%
-  var X = this.Y;
   var manifest = chrome.runtime.getManifest();
-  var browserLink  = X.ActionLink.create(  {action: this.model_.LAUNCH_BROWSER, data: this});
-  var linkButton   = X.ActionButton.create({action: this.model_.LINK,           data: this});
-  var syncLink     = X.ActionLink.create(  {action: this.model_.LAUNCH_SYNC,    data: this});
-  var backButton   = X.ActionButton.create({action: MementoMgr.BACK,            data: this.mementoMgr});
-  var forthButton  = X.ActionButton.create({action: MementoMgr.FORTH,           data: this.mementoMgr});
+  var browserLink  = this.ActionLink.create(  {action: this.model_.LAUNCH_BROWSER, data: this});
+  var linkButton   = this.ActionButton.create({action: this.model_.LINK,           data: this});
+  var syncLink     = this.ActionLink.create(  {action: this.model_.LAUNCH_SYNC,    data: this});
+  var backButton   = this.ActionButton.create({action: MementoMgr.BACK,            data: this.mementoMgr});
+  var forthButton  = this.ActionButton.create({action: MementoMgr.FORTH,           data: this.mementoMgr});
 %>
 <head>
   <link rel="stylesheet" type="text/css" href="foam.css" />
