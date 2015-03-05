@@ -23,10 +23,7 @@ CLASS({
     'foam.graphics.Circle'
   ],
 
-  constants: {
-    COLOURS: ['#33f','#f00','#fc0','#33f','#3c0']
-    // COLOURS: ['#333','#aaa','#ccc','#888','#3999']
-  },
+  imports: [ 'colours$' ],
 
   properties: [
     {
@@ -62,7 +59,7 @@ CLASS({
         alpha: 0.8,
         color: null,
         borderWidth: 1,
-        border: this.COLOURS[Math.floor(Math.random() * this.COLOURS.length)]});
+        border: this.colours[Math.floor(Math.random() * this.colours.length)]});
 
       this.addChild(circle);
       var M = Movement;
@@ -91,7 +88,7 @@ CLASS({
   name:  'LogoForeground',
   extendsModel: 'foam.graphics.CView',
 
-  imports: [ 'text', 'xxxfont' ],
+  imports: [ 'text$', 'font$' ],
 
   properties: [
     { name: 'className', defaultValue: 'logo-foreground' }
@@ -140,22 +137,26 @@ CLASS({
     'foam.demos.graphics.LogoBackground'
   ],
  
-  exports: [ 'text', 'font' ],
+  exports: [ 'text$', 'font$', 'colours$' ],
 
   properties: [
+    {
+      model_: 'StringArrayProperty',
+      name: 'colours',
+      factory: function() { return ['#33f','#f00','#fc0','#33f','#3c0']; }
+    },
     {
       name: 'text',
       defaultValue: 'FOAM'
     },
     {
       name: 'font',
-      postSet: function(_, font) { console.log('font: ', font); },
       defaultValue: '120px Georgia'
     },
     {
       name: 'foreground',
       factory: function() {
-        return this.LogoForeground.create({width: this.width, height: this.height, font$: this.font$});
+        return this.LogoForeground.create({width: this.width, height: this.height});
       }
     },
     {
