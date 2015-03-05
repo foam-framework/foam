@@ -164,7 +164,8 @@ CLASS({
       }
     },
     { name: 'width',  defaultValue: 600 },
-    { name: 'height', defaultValue: 200 }
+    { name: 'height', defaultValue: 200 },
+    { name: 'className', defaultValue: 'logo' }
   ],
 
   templates: [
