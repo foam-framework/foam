@@ -17,7 +17,7 @@
 
 CLASS({
   name: 'QIssuePreviewBorder',
-  package: 'foam.apps.quickbug.ui.QIssuePreviewBorder',
+  package: 'foam.apps.quickbug.ui',
   help: 'Wraps a QIssueDetailView in a manner appropriate for a popup.',
 
   methods: {
