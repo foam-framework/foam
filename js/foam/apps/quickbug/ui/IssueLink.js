@@ -26,7 +26,6 @@ CLASS({
   ],
 
   requires: [
-    'foam.apps.quickbug.ui.BlockView',
     'foam.apps.quickbug.ui.QIssueTileView',
     'PopupView'
   ],
@@ -70,7 +69,7 @@ CLASS({
           var ids = issue[self.property.name];
 
           if ( ids.length ) {
-            var subView = self.BlockView.create({
+            var subView = FOAM.lookup('foam.apps.quickbug.ui.BlockView', self.X).create({
               property: self.property,
               maxDepth: self.maxDepth-1,
               ids:      ids

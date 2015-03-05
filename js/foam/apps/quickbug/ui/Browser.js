@@ -52,6 +52,7 @@ CLASS({
     'foam.apps.quickbug.ui.ItemCount',
     'foam.apps.quickbug.ui.DragAndDropGrid',
     'foam.core.dao.WaitCursorDAO',
+    'foam.metrics.Metric',
     'ViewChoice'
   ],
 
@@ -62,7 +63,7 @@ CLASS({
   ],
 
   imports: [
-    'metricsService',
+    'metricDAO',
     'document'
   ],
 
@@ -138,7 +139,8 @@ CLASS({
         var Y = this.Y.sub();
         Y.registerModel(Model.create({
           name: 'ChoiceListView',
-          extendsModel: 'ChoiceListView',
+          package: 'foam.ui',
+          extendsModel: 'foam.ui.ChoiceListView',
           methods: {
             choiceToHTML: function(id, choice) {
               var id2 = this.nextID();
@@ -153,7 +155,7 @@ CLASS({
         // TODO: this was a bad idea to make this a ChoiceView because
         // it only fires events when the data changes, not when you select
         // an item like a regular menu.  Make into something else.
-        var v = Y.PopupChoiceView.create({
+        var v = this.PopupChoiceView.create({
           autoSetData: false,
           objToChoice: function(b) { return [b.url, b.title, b]; },
           dao: this.bookmarkDAO,
@@ -322,7 +324,9 @@ CLASS({
           this.X.QueryParser.parseString(this.location.can) || TRUE,
           this.X.QueryParser.parseString(this.location.q) || TRUE
         ).partialEval());
-        this.metricsService.sendEvent('Browser', 'Query');
+        this.metricDAO.put(this.Metric.create({
+          name: 'browserQuery'
+        }));
       }
     },
     {
@@ -403,11 +407,11 @@ CLASS({
           }));
 
         view.addSeparator();
-        view.addAction(this.model_.FIND_PROJECTS);
-        view.addAction(this.model_.CREATE_PROJECT);
+        view.addAction(this.FIND_PROJECTS);
+        view.addAction(this.CREATE_PROJECT);
 
         view.addSeparator();
-        view.addAction(this.model_.CONFIG_PROJECTS);
+        view.addAction(this.CONFIG_PROJECTS);
 
         view.left = this.favouritesView.$.offsetLeft;
         view.top = this.favouritesView.$.offsetTop + this.favouritesView.$.offsetHeight;
@@ -841,9 +845,9 @@ Please use labels and text to provide additional information.
     function toHTML() {/*
 <%
   var manifest = chrome.runtime.getManifest();
-  var browserLink  = this.ActionLink.create(  {action: this.model_.LAUNCH_BROWSER, data: this});
-  var linkButton   = this.ActionButton.create({action: this.model_.LINK,           data: this});
-  var syncLink     = this.ActionLink.create(  {action: this.model_.LAUNCH_SYNC,    data: this});
+  var browserLink  = this.ActionLink.create(  {action: this.LAUNCH_BROWSER, data: this});
+  var linkButton   = this.ActionButton.create({action: this.LINK,           data: this});
+  var syncLink     = this.ActionLink.create(  {action: this.LAUNCH_SYNC,    data: this});
   var backButton   = this.ActionButton.create({action: MementoMgr.BACK,            data: this.mementoMgr});
   var forthButton  = this.ActionButton.create({action: MementoMgr.FORTH,           data: this.mementoMgr});
 %>

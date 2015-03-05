@@ -22,6 +22,8 @@ CLASS({
   requires: [
     'foam.apps.quickbug.model.QBug',
     'foam.apps.quickbug.ui.ChromeAppBrowser',
+    'foam.core.dao.ChromeSyncStorageDAO',
+    'foam.input.touch.TouchManager',
     'NullDAO',
     'IDBDAO',
     'DAOVersion'

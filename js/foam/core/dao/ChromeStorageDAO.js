@@ -17,6 +17,7 @@
 
 CLASS({
   name: 'ChromeStorageDAO',
+  package: 'foam.core.dao',
   label: 'Chrome Storage DAO',
 
   extendsModel: 'AbstractDAO',
@@ -161,19 +162,4 @@ CLASS({
       return future.get;
     }
   }
-});
-
-
-CLASS({
-  name: 'ChromeSyncStorageDAO',
-  label: 'Chrome Sync Storage DAO',
-
-  extendsModel: 'ChromeStorageDAO',
-
-  properties: [
-    {
-      name:  'store',
-      defaultValueFn: function() { return chrome.storage.sync; }
-    }
-  ]
 });

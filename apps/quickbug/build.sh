@@ -29,7 +29,7 @@ directory images
 file empty.html
 
 cd ../../
-node --harmony tools/foam.js foam.build.BuildChromeApp controller=foam.apps.quickbug.controller.Background targetPath="$BUILD_DIR"
+node --harmony tools/foam.js foam.build.BuildChromeApp controller=foam.apps.quickbug.controller.Background targetPath="$BUILD_DIR" precompileTemplates
 
 # For code compression, uncomment the following line:
 # ~/node_modules/uglify-js/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"

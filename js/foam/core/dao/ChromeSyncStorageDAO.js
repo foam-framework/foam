@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2013 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,16 @@
  */
 
 CLASS({
-  name: 'QIssuePreviewBorder',
-  package: 'foam.apps.quickbug.ui',
-  help: 'Wraps a QIssueDetailView in a manner appropriate for a popup.',
+  name: 'ChromeSyncStorageDAO',
+  package: 'foam.core.dao',
+  label: 'Chrome Sync Storage DAO',
 
-  methods: {
-    toHTML: function(border, delegate, args) {
-      return '<div id="' + this.id + '" ' +
-        'class="QIssuePreview" ' +
-        'style="position:absolute;height:500px;width:875px;background:white">' +
-        this.toInnerHTML() +
-        '</div>';
+  extendsModel: 'foam.core.dao.ChromeStorageDAO',
+
+  properties: [
+    {
+      name:  'store',
+      defaultValueFn: function() { return chrome.storage.sync; }
     }
-  }
+  ]
 });

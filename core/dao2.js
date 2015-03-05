@@ -914,12 +914,12 @@ CLASS({
       this.SUPER(args);
 
       if ( window.chrome && chrome.storage ) {
-        this.ALIASES.LOCAL = 'ChromeStorageDAO';
-        this.ALIASES.SYNC  = 'ChromeSyncStorageDAO';
+        this.ALIASES.LOCAL = 'foam.core.dao.ChromeStorageDAO';
+        this.ALIASES.SYNC  = 'foam.core.dao.ChromeSyncStorageDAO';
       }
 
       var daoType  = typeof this.daoType === 'string' ? this.ALIASES[this.daoType] || this.daoType : this.daoType;
-      var daoModel = typeof daoType === 'string' ? GLOBAL[daoType] : daoType;
+      var daoModel = typeof daoType === 'string' ? FOAM.lookup(daoType, this.X) : daoType;
       var params   = { model: this.model, autoIndex: this.autoIndex };
 
       if ( this.name  ) params.name = this.name;
