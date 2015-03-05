@@ -935,7 +935,7 @@ CLASS({
             delegate: dao,
             rules: this.migrationRules,
             name: this.model.name + "_" + daoModel.name + "_" + this.name
-          }, thist.Y);
+          }, this.Y);
         }
         if ( this.cache ) {
           this.mdao = MDAO.create(params);

@@ -1647,6 +1647,10 @@ CLASS({
     'MenuSeparator'
   ],
 
+  imports: [
+    'document'
+  ],
+
   extendsModel: 'foam.ui.View',
 
   properties: [
@@ -1676,10 +1680,6 @@ CLASS({
     },
     {
       name: 'right'
-    },
-    {
-      // TODO: This should just come from X instead
-      name: 'document'
     },
     {
       model_: 'BooleanProperty',

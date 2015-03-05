@@ -593,51 +593,7 @@ function limitedDAO(count, dao) {
 }
 
 
-var WaitCursorDAO = FOAM({
-  model_: 'Model',
-  name: 'WaitCursorDAO',
-  extendsModel: 'ProxyDAO',
-
-  properties: [
-    {
-      name: 'count',
-      defaultValue: 0,
-      postSet: function(oldValue, newValue) {
-        if ( ! this.window ) return;
-        if ( oldValue == 0 ) DOM.setClass(this.window.document.body, 'waiting');
-        else if ( newValue == 0 ) DOM.setClass(this.window.document.body, 'waiting', false);
-      }
-    },
-    {
-      name: 'window'
-    }
-  ],
-
-  methods: {
-    select: function(sink, options) {
-      var self = this;
-      var future = afuture();
-
-      this.count++;
-      var f = function() {
-        self.delegate.select(sink, options)(function(sink) {
-          try {
-            future.set(sink);
-          } finally {
-          // ???: Do we need to call this asynchronously if count == 0?
-            self.count--;
-          }
-        });
-      };
-
-      // Need to delay when turning on hourglass to give DOM a chance to update
-      if ( this.count > 1 ) { f(); } else { this.window.setTimeout(f, 1); };
-
-      return future.get;
-    }
-  }
-});
-
+var WaitCursorDAO = 
 
 // Experimental, convert all functions into sinks
 Function.prototype.put    = function() { this.apply(this, arguments); };

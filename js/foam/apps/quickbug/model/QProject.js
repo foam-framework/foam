@@ -34,6 +34,7 @@ CLASS({
     'foam.apps.quickbug.dao.QIssueCommentNetworkDAO',
     'foam.apps.quickbug.dao.QIssueCommentUpdateDAO',
     'foam.apps.quickbug.dao.IssueRestDAO',
+    'foam.apps.quickbug.dao.SyncManager',
     'foam.apps.quickbug.model.imported.IssuePerson',
     'foam.apps.quickbug.model.imported.Issue',
     'foam.apps.quickbug.model.LabelStringEnumProperty',
@@ -45,7 +46,8 @@ CLASS({
     'IDBDAO',
     'Timer',
     'PersistentContext',
-    'Binding'
+    'Binding',
+    'foam.metrics.Metric'
   ],
 
   exports: [
@@ -58,6 +60,10 @@ CLASS({
     'PersonDAO as PersonDAO',
     'openPredicate',
     'QueryParser'
+  ],
+
+  imports: [
+    'metricDAO'
   ],
 
   properties: [
@@ -857,7 +863,7 @@ CLASS({
       if ( ! this.X.DontSyncProjectData ) {
         this.IssueDAO.listen(this.onDAOUpdate);
 
-        this.persistentContext.bindObject('syncManager', SyncManager.xbind({
+        this.persistentContext.bindObject('syncManager', this.SyncManager.xbind({
           syncInterval: 60*5,
           batchSize: 500,
         }), {
@@ -865,7 +871,7 @@ CLASS({
           srcDAO: this.IssueNetworkDAO,
           dstDAO: this.IssueCachingDAO,
           modifiedProperty: this.QIssueModel.MODIFIED
-        })(function(manager) {
+        }, 2)(function(manager) {
           this.syncManager = manager;
           this.syncManagerFuture.set(manager);
           manager.start();
@@ -890,26 +896,23 @@ CLASS({
           var window = self.window = w.contentWindow;
 
           arequire('foam.apps.quickbug.ui.ChromeAppBrowser')(
-            function () {
+            function (model) {
               $addWindow(window);
               var Y = self.Y.subWindow(window, 'Browser Window');
-              var b = Y.ChromeAppBrowser.create({project: self});
+              var b = model.create({project: self});
               Y.touchManager = Y.foam.input.touch.TouchManager.create({});
-              window.browser = b; // for debugging
-              BROWSERS.push(b); // for debugging
-              w.browser = b;
               window.document.firstChild.innerHTML = b.toHTML();
               b.initHTML();
               if ( opt_url ) b.maybeSetLegacyUrl(opt_url);
               w.focus();
-              metricsSrv.sendAppView('Browser');
+              self.metricDAO.put(self.Metric.create({
+                name: 'browserLaunched'
+              }));
             });
         };
 
         w.onClosed.addListener(function() {
           $removeWindow(window);
-          // for debugging
-          BROWSERS.deleteI(window);
         });
       });
     },

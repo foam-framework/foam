@@ -21,7 +21,7 @@ CLASS({
   extendsModel: 'AutocompleteView',
 
   requires: [
-    'ChoiceListView'
+    'foam.ui.ChoiceListView'
   ],
 
   methods: {

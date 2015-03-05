@@ -251,19 +251,19 @@ CLASS({
       c.textBaseline = 'middle';
       c.fillStyle    = this.color;
 
-      if ( this.image_ && this.image_.width ) {
+      if ( this.image_ && this.image_.complete ) {
         c.drawImage(
           this.image_,
           this.x + (this.width  - this.iconWidth)/2,
           this.y + (this.height - this.iconHeight)/2,
           this.iconWidth,
           this.iconHeight);
+      } else {
+        c.fillText(
+          this.label || this.action.labelFn.call(this.data, this.action),
+          this.x+this.width/2,
+          this.y+this.height/2);
       }
-
-      c.fillText(
-        this.label || this.action.labelFn.call(this.data, this.action),
-        this.x+this.width/2,
-        this.y+this.height/2);
     }
   }
 });
