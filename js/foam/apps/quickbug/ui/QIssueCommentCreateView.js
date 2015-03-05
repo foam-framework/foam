@@ -35,7 +35,7 @@ CLASS({
 
   properties: [
     { name: 'model', factory: function() { return this.QIssueComment; } },
-    { model_: 'BooleanPropety', name: 'saving', defaultValue: false },
+    { model_: 'BooleanProperty', name: 'saving', defaultValue: false },
     { name: 'issue' },
     { name: 'errorView', factory: function() { return this.TextFieldView.create({ mode: 'read-only' }); } },
     { name: 'dao' }
@@ -50,10 +50,6 @@ CLASS({
       return view;
     }
   },
-
-  templates: [
-    { name: 'toHTML' }
-  ],
 
   actions: [
     {
@@ -105,5 +101,31 @@ CLASS({
       isEnabled: function() { return ! this.saving; },
       action: function() { this.browser.location.id = ''; }
     }
+  ],
+
+  templates: [
+    function toHTML() {/*
+<%
+   var saveButton = this.ActionButton.create({ action: this.model_.SAVE,       data: this });
+   var discardButton = this.ActionButton.create({ action: this.model_.DISCARD, data: this });
+%>
+<div id="<%= this.id %>">
+  <table cellpadding="0" cellspacing="0" border="0">
+    <tbody><tr>
+        <td>
+          $$content
+        </td>
+      </tr>
+      <tr>
+        <td>
+          %%makeUpdatesView()
+          <%= saveButton %>
+          <%= discardButton %>
+          %%errorView
+        </td>
+      </tr>
+  </tbody></table>
+</div>
+*/}
   ]
 });
