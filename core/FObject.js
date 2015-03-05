@@ -215,7 +215,12 @@ var FObject = {
       if ( p ) {
         if ( val.startsWith('#') ) {
           val = val.substring(1);
-          this[attr.name] = $(val);
+          var $val = $(val);
+          if ( $val ) {
+            this[attr.name] = $(val);
+          } else {
+            p.fromString.call(this, val, p);
+          }
         } else {
           // Call fromString() for attribute values because they're
           // String values, not Elements.
