@@ -154,7 +154,7 @@ CLASS({
       iframe.style.display = "none";
       document.body.appendChild(iframe);
       var bootTag = iframe.contentDocument.createElement('script');
-      bootTag.src = window.FOAM_BOOT_DIR + '/bootFOAM.js';
+      bootTag.src = window.FOAM_BOOT_DIR + 'bootFOAM.js';
       iframe.contentDocument.head.appendChild(bootTag);
       
       var subListX = this.X.sub({ document: iframe.contentDocument }, 'subListX');
