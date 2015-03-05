@@ -16,11 +16,9 @@
  */
 
 
-var touchManager;
-var gestureManager;
-
 CLASS({
   name: 'ModelListController',
+  package: 'foam.documentation',
 
   requires:['MDAO', 
             'foam.ui.DAOListView',
@@ -93,7 +91,8 @@ CLASS({
 CLASS({
   name: 'ModelDescriptionRowView',
   extendsModel: 'foam.ui.View',
-  
+  package: 'foam.documentation',
+
   requires: ['SimpleValue'],
 
   properties: [
@@ -141,6 +140,7 @@ CLASS({
 CLASS({
   name: 'ControllerView',
   extendsModel: 'foam.ui.DetailView',
+  package: 'foam.documentation',
 
   methods: {
     initHTML: function() {
@@ -163,6 +163,7 @@ CLASS({
 
 CLASS({
   name: 'DocBrowserController',
+  package: 'foam.documentation',
   requires: ['MDAO',
              'DocBrowserView',
              'ControllerView',
@@ -293,7 +294,16 @@ CLASS({
 //         var modl = FOAM.lookup(key, this.X);
 //         modl.getPrototype && modl.getPrototype();
 //       }
-      //this.X.ModelDAO.select(newDAO);
+      var iframe = document.createElement('iframe');
+      iframe.style.display = "none";
+      document.body.appendChild(iframe);
+      var bootTag = iframe.contentDocument.createElement('script');
+      bootTag.src = window.FOAM_BOOT_DIR + '/bootFOAM.js';
+      iframe.contentDocument.head.appendChild(bootTag);
+      
+      var subListX = this.X.sub({ document: iframe.contentDocument }, 'subListX');
+      subListX.set('ModelDAO', subListX.foam.core.bootstrap.ModelFileDAO.create({}, subListX));
+      subListX.ModelDAO.select(newDAO);
 
       // All models are now in USED_MODELS
       [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
@@ -477,6 +487,8 @@ CLASS({
 
 CLASS({
   name: 'DocBrowserView',
+  package: 'foam.documentation',
+
   extendsModel: 'foam.ui.DetailView',
 
   methods: {

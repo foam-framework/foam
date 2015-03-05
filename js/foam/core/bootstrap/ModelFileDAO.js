@@ -66,8 +66,8 @@ MODEL({
           } while ( fmatch );
           files.forEach(function(d) {
             //find(pkg ? pkg+"."+d : d, sink);
-            arequire(pkg ? pkg+"."+d : d)( function(m) {
-                sink.put(m);
+            arequire(pkg ? pkg+"."+d : d, this.X)( function(m) {
+              if ( m ) sink.put(m);
             });
           }.bind(this));         
 
