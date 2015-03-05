@@ -19,10 +19,10 @@ CLASS({
   name: 'DetailView',
   package: 'foam.ui',
 
-  extendsModel: 'foam.ui.DestructiveDataView',
-  traits: ['foam.ui.HTMLViewTrait',
-           'foam.ui.ViewActionsTrait',
-           'foam.ui.TemplateSupportTrait'],
+  extendsModel: 'foam.ui.View',
+//   traits: ['foam.ui.HTMLViewTrait',
+//            'foam.ui.ViewActionsTrait',
+//            'foam.ui.TemplateSupportTrait'],
   
   requires: [ 'Property', 
               'foam.ui.TextFieldView',
@@ -54,6 +54,15 @@ CLASS({
   */},
 
   properties: [
+    {
+      name: 'className',
+      defaultValue: 'detailView',
+      documentation: function() {/*
+          The CSS class names to use for HTML $$DOC{ref:'foam.ui.View',usePlural:true}.
+          Separate class names with spaces. Each instance of a $$DOC{ref:'foam.ui.DetailView'}
+          may have different classes specified.
+      */}
+    },
     {
       name: 'data',
       preSet: function(old,nu) {
@@ -199,7 +208,72 @@ CLASS({
 
       return str;
     }
-  }
+  },
+  
+  templates: [
+    {
+      name: 'CSS',
+      template: function CSS() {/*                 
+          .detailView {
+            border: solid 2px #dddddd;
+            background: #fafafa;
+            width: 99%;
+          }
+          
+          .detailView .heading {
+            float: left;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+          }
+          
+          .detailView .propertyLabel {
+            font-size: 14px;
+            display: block;
+            font-weight: bold;
+            text-align: right;
+            float: left;
+          }
+          
+          .detailView input {
+            font-size: 12px;
+            padding: 4px 2px;
+            border: solid 1px #aacfe4;
+            margin: 2px 0 0px 10px;
+          }
+          
+          .detailView textarea {
+            float: left;
+            font-size: 12px;
+            padding: 4px 2px;
+            border: solid 1px #aacfe4;
+            margin: 2px 0 0px 10px;
+            width: 98%;
+            overflow: auto;
+          }
+          
+          .detailView select {
+            font-size: 12px;
+            padding: 4px 2px;
+            border: solid 1px #aacfe4;
+            margin: 2px 0 0px 10px;
+          }
+          
+          .detailView .label {
+            vertical-align: top;
+          }
+          
+          .detailArrayLabel {
+            font-size: medium;
+          }
+          
+          .detailArrayLabel .foamTable {
+            margin: 1px;
+            width: 99%;
+          }
+      */}
+    }
+  ]
 });
 
 

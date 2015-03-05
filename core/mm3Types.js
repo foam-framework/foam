@@ -827,6 +827,8 @@ var ViewFactoryProperty = Model.create({
         // A Factory Function
         if ( typeof f === 'function' ) return f;
 
+        var ret;
+
         // A String Path to a Model
         if ( typeof f === 'string' ) {
           // if not a valid model path then treat as a template
@@ -846,23 +848,31 @@ var ViewFactoryProperty = Model.create({
               // template is async.  Should create a FutureView to handle this.
               arequireModel(viewModel);
             }
-            return function(args, X) { return viewModel.create(args, X || this.Y); };
+            var ret = function(args, X) { return viewModel.create(args, X || this.Y); };
+          } else {
+            ret = function(map, opt_X) {
+              return FOAM.lookup(f, opt_X || this.X).create(map, opt_X || this.Y);
+            }.bind(this);
           }
 
-          return function(map, opt_X) {
-            return FOAM.lookup(f, opt_X || this.X).create(map, opt_X || this.Y);
-          }.bind(this);
+          ret.toString = function() { return '"' + f + '"'; };
+          return ret;
         }
 
         // An actual Model
         if ( Model.isInstance(f) ) return f.create.bind(f);
 
         // A JSON Model Factory: { factory_ : 'ModelName', arg1: value1, ... }
-        if ( f.factory_ ) return function(map, opt_X) {
-          var m = FOAM.lookup(f.factory_, opt_X || this.X);
-          console.assert(m, 'Unknown ViewFactory Model: ' + f.factory_);
-          return m.create(f, opt_X || this.Y).copyFrom(map);
-        }.bind(this);
+        if ( f.factory_ ) {
+          ret = function(map, opt_X) {
+            var m = FOAM.lookup(f.factory_, opt_X || this.X);
+            console.assert(m, 'Unknown ViewFactory Model: ' + f.factory_);
+            return m.create(f, opt_X || this.Y).copyFrom(map);
+          }.bind(this);
+
+          ret.toString = function() { return JSON.stringify(f); };
+          return ret;
+        }
 
         if ( this.X.foam.ui.View.isInstance(f) ) return constantFn(f);
 

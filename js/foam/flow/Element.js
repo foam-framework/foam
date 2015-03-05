@@ -14,7 +14,9 @@ CLASS({
   package: 'foam.flow',
   extendsModel: 'foam.ui.View',
 
-  constants: { ELEMENT: 'flow-element' },
+  requires: [
+    'foam.Name'
+  ],
 
   properties: [
     {
@@ -24,20 +26,60 @@ CLASS({
   ],
 
   methods: {
+    init: function() {
+      this.SUPER.apply(this, arguments);
+      this.tagName = this.getTagName();
+    },
+
+    getTagName: function() {
+      return this.ELEMENT_NAME ||
+          this.X.foam.Name.create({ initial: this.name_ }).toTagName();
+    },
+
+    replaceAll: function(str, a, b) {
+      var next = str, prev = '';
+      while ( prev !== next) {
+        prev = next;
+        next = next.replace(a, b);
+      }
+      return next;
+    },
+
     installInDocument: function(X, document) {
       this.SUPER.apply(this, arguments);
-      this.X.registerElement(this.ELEMENT, this.model_.package + '.' + this.name_);
+      this.X.registerElement(
+          this.getTagName(),
+          this.model_.package + '.' + this.name_);
     },
 
     /** Allow inner to be optional when defined using HTML. **/
     fromElement: function(e) {
+      // Import nodes that model properties.
       this.SUPER(e);
-      var children = e.children;
-      if ( children.length !== 1 || children[0].nodeName !== 'inner' ) {
+      // Remove nodes that model properties.
+      if ( e.children.length !== 1 || e.children[0].nodeName !== 'inner' ) {
+        var childrenToRemove = [];
+        for ( var i = 0; i < e.children.length; ++i ) {
+          var child = e.children[i];
+          for ( var j = 0; j < this.model_.properties_.length; ++j ) {
+            var prop = this.model_.properties_[j];
+            if ( child.nodeName === prop.name ) {
+              childrenToRemove.push(child);
+              break;
+            }
+          }
+        }
+        for ( i = 0; i < childrenToRemove.length; ++i ) {
+          e.removeChild(childrenToRemove[i]);
+        }
         this.inner = e.innerHTML;
       }
 
       return this;
     }
-  }
+  },
+
+  templates: [
+    function toInnerHTML() {/* <%= this.inner() %> */}
+  ]
 });

@@ -181,20 +181,57 @@ function arequire(modelName, opt_X) {
 }
 
 
-function arequireModel(model, X) {
+function arequireModel(model, param_X) {
   if ( ! model.required__ ) {
     var args = [];
     var future = afuture();
 
     model.required__ = future.get;
 
-    if ( model.extendsModel ) args.push(arequire(model.extendsModel, X));
+    var opt_X = param_X || X;
+
+// To debug a dependency cycle, uncomment the CYCLE DEBUG sections below.
+// Run your code, and when it hangs examine the unsatisfied models in 
+// X.arequire$ModelRequiresInProgress
+    
+// // CYCLE DEBUG
+// var modelName = model.id.clone();
+// var dbgX = X;
+// console.log("X param: ", param_X && param_X.$UID, " dbgX: ", dbgX.$UID);
+// if ( ! dbgX.arequire$ModelRequiresInProgress ) {
+//   dbgX.set('arequire$ModelRequiresInProgress', {} );
+// } 
+// if ( ! dbgX.arequire$ModelRequiresInProgress[modelName] ) {
+//   dbgX.arequire$ModelRequiresInProgress[modelName] = { uid: model.$UID, extendsModel: "", traits: {}, requires: {} };
+//   future.get(function(m) {
+//     delete dbgX.arequire$ModelRequiresInProgress[m.id];
+//   });
+// }
+// // CYCLE DEBUG
+    
+    if ( model.extendsModel ) args.push(arequire(model.extendsModel, opt_X));
+
+// // CYCLE DEBUG
+// if ( model.extendsModel ) {
+//   dbgX.arequire$ModelRequiresInProgress[modelName].extendsModel = model.extendsModel;
+//   arequire(model.extendsModel, opt_X)(function(m) {
+//     dbgX.arequire$ModelRequiresInProgress[modelName].extendsModel = "";
+//   });
+// }
+// // CYCLE DEBUG
 
     // TODO(kgr): eventually this should just call the arequire() method on the Model
     var i;
     if ( model.traits ) {
       for ( i = 0; i < model.traits.length; i++ ) {
         args.push(arequire(model.traits[i]));
+// // CYCLE DEBUG
+// var trait = model.traits[i].clone();
+// dbgX.arequire$ModelRequiresInProgress[modelName].traits[trait] = true; 
+// if (trait == 'foam.ui.HTMLViewTrait' && modelName == 'foam.ui.View')arequire(trait, opt_X)(function(m) {
+//   delete dbgX.arequire$ModelRequiresInProgress[modelName].traits[m.id];
+// });
+// // CYCLE DEBUG
       }
     }
     if ( model.templates ) for ( i = 0 ; i < model.templates.length ; i++ ) {
@@ -218,19 +255,26 @@ function arequireModel(model, X) {
           console.warn("Model requires itself: " + model.id);
         } else {
           args.push(arequire(m[0]));
+// // CYCLE DEBUG
+// var require = m[0].clone();
+// dbgX.arequire$ModelRequiresInProgress[modelName].requires[require] = true; 
+// arequire(require, opt_X)(function(m) {
+//   delete dbgX.arequire$ModelRequiresInProgress[modelName].requires[m.id];
+// });
+// // CYCLE DEBUG
         }
       }
     }
 
     aseq(
         apar.apply(apar, args),
-        (X && X.i18nModel && X.i18nModel.bind(this, model, X)) ||
+        (opt_X && opt_X.i18nModel && opt_X.i18nModel.bind(this, model, opt_X)) ||
             aconstant(model))(function(m) {
               m.finished__ = true;
               future.set(m);
             });
   } else {
-    X && X.i18nModel && X.i18nModel(model, X);
+    opt_X && opt_X.i18nModel && opt_X.i18nModel(model, opt_X);
   }
 
   return model.required__;
@@ -302,6 +346,7 @@ function registerModel(model, opt_name) {
     var cache = root.lookupCache_;
     var modelRegName = (package ? package + '.' : '') + name;
     if ( cache[modelRegName] ) {
+      console.log(" CACHE replaced ",cache[modelRegName], " with ", model );
       cache[modelRegName] = model;
     }
   }

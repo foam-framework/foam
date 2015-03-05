@@ -137,7 +137,8 @@ CLASS({
       documentation: 'The DAO used to look up the models. Defaults to ' +
           'mySubTypeDAO for subType == "MySubType".',
       factory: function() {
-        var name = this.subType[0].toLowerCase() + this.subType.substring(1);
+        var basename = this.subType.split('.').pop();
+        var name = basename[0].toLowerCase() + basename.substring(1);
         var daoName = name + 'DAO';
         return this.X[daoName];
       }

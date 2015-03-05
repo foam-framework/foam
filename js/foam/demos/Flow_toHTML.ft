@@ -1,66 +1,72 @@
-<h1>Flow Demo</h1>
+<div style="margin: 10px;">
+  <h1>Flow Demo</h1>
 
-<toc/>
+  <toc />
 
-<section title="Chapter">
-  This is chapter 1.
+  <section title="Chapter">
+    This is chapter 1.
 
-  <section title="Sub-Chapter">
-    Sub-Chapter Stuff
-    <section title="Sub-Sub-Chapter">
-      Sub-Sub-Chapter Stuff
+    <section title="Sub-Chapter">
+      Sub-Chapter Stuff<br>
+<!--    <foam model="foam.demos.graphics.EyeCView"/> -->
+    <foam model="foam.demos.graphics.EyesCView"/>
+<!--    <foam model="foam.demos.graphics.Dragon"/> -->
+
+      <section title="Sub-Sub-Chapter">
+        Sub-Sub-Chapter Stuff
+      </section>
+      <section title="Sub-Sub-Chapter">
+        Sub-Sub-Chapter Stuff
+      </section>
     </section>
-    <section title="Sub-Sub-Chapter">
-      Sub-Sub-Chapter Stuff
+
+    <section title="Sub-Chapter">
+      More Sub-Chapter Stuff
     </section>
+
   </section>
 
-  <section title="Sub-Chapter">
-    More Sub-Chapter Stuff
+  <section title="Chapter">
+    This is chapter 2.
   </section>
 
-</section>
+  <circle color="blue" x="100" y="20" r="20"/>
 
-<section title="Chapter">
-  This is chapter 2.
-</section>
+  <!-- <solar/> -->
 
-<circle color="blue" x="100" y="20" r="20"/>
+  <section title="Chapter">
+    This is chapter 3.
 
-<!-- <solar/> -->
+    Sample 1:
+    <code-sample code="return 1+2;"/>
 
-<section title="Chapter">
-  This is chapter 3.
+    Sample 2:
+    <code-sample>
+      return 42*42;
+    </code-sample>
 
-  Sample 1:
-  <code-sample code="return 1+2;"/>
+    Sample 3:
+    <code-sample>
+      <code>return "hello world!";</code>
+    </code-sample>
 
-  Sample 2:
-  <code-sample>
-    return 42*42;
-  </code-sample>
+  </section>
 
-  Sample 3:
-  <code-sample>
-    <code>return "hello world!";</code>
-  </code-sample>
-
-</section>
-
-<foam model="foam.demos.Spring" n="10" width="500" height="500" />
+<foam model="foam.demos.physics.Spring" n="10" width="500" height="500" />
 
 Slides:
 
-<slides>
-  <slide><circle color="red"   x="100" y="45" r="40"/></slide>
-  <slide><circle color="green" x="150" y="45" r="40"/></slide>
-  <slide><circle color="blue"  x="200" y="45" r="40"/></slide>
-  <slide>A Slide without a circle!</slide>
-  <slide>
-    Two to make up for the last slide:
-    <circle color="yellow"  x="200" y="45" r="40"/>
-    <circle color="purple"  x="200" y="45" r="40"/>
-  </slide>
-</slides>
+  <slides style="width: 600px; height: 400px;">
+    <slide><circle color="red"   x="100" y="45" r="40"/></slide>
+    <slide><circle color="green" x="150" y="45" r="40"/></slide>
+    <slide><circle color="blue"  x="200" y="45" r="40"/></slide>
+    <slide>A Slide without a circle!</slide>
+    <slide>
+      Two to make up for the last slide:
+      <circle color="yellow"  x="200" y="45" r="40"/>
+      <circle color="purple"  x="200" y="45" r="40"/>
+    </slide>
+  </slides>
 
-The end.
+  The end.
+</div>

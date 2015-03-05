@@ -21,11 +21,8 @@ CLASS({
   
   requires: ['SimpleValue'],
   
-  extendsModel: 'foam.ui.LeafDataView',
-  traits: ['foam.ui.TemplateSupportTrait',
-           'foam.ui.DAODataViewTrait',
-           'foam.ui.HTMLViewTrait', 
-           'foam.ui.ViewActionsTrait'], 
+  extendsModel: 'foam.ui.View',
+  traits: ['foam.ui.DAODataViewTrait'], 
   
   properties: [
     {

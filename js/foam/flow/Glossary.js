@@ -14,9 +14,8 @@ CLASS({
   name: 'Glossary',
   extendsModel: 'foam.flow.Section',
 
+  requires: [ 'foam.ui.DAOListView' ],
   imports: [ 'glossaryTerms' ],
-
-  constants: { ELEMENT: 'glossary' },
 
   properties: [
     {
@@ -32,15 +31,14 @@ CLASS({
       model_: 'DAOProperty',
       name: 'terms',
       todo: 'Sort alphabetically',
-      view: 'DAOListView',
+      view: 'foam.ui.DAOListView',
       factory: function() { return []; }
     }
   ],
 
   templates: [
-    function toHTML() {/*
+    function toInnerHTML() {/*
       <% this.terms = this.glossaryTerms; %>
-        <flow-glossary>
           <a name="glossary"></a>
           <heading>
             Glossary
@@ -48,14 +46,16 @@ CLASS({
           <blockquote>
             $$terms{mode: 'read-only'}
           </blockquote>
-        </flow-glossary>
     */},
     function CSS() {/*
-      flow-glossary { display: block }
+      book > glossary {
+        display: block;
+        clear: both;
+      }
 
       @media print {
 
-        flow-glossary {
+        glossary {
           page-break-after: always;
         }
 

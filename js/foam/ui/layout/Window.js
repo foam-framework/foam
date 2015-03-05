@@ -18,7 +18,7 @@
 CLASS({
   name: 'Window',
   package: 'foam.ui.layout',
-  extendsModel: 'foam.ui.DataView',
+  extendsModel: 'foam.ui.BaseView',
   traits: ['foam.ui.HTMLViewTrait', 'foam.ui.TemplateSupportTrait',  'foam.ui.ViewActionsTrait'],
   imports: [
     'dynamic',
@@ -61,6 +61,7 @@ CLASS({
   methods: {
     init: function(args) {
       this.SUPER(args);
+      var self = this;
       this.dynamic(function() { self.height; },
                    function() {
                      self.window.document.body.style.height = self.height + 'px';

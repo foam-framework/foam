@@ -183,7 +183,9 @@ CLASS({
     'foam.graphics.ActionButtonCView',
     'foam.ui.animated.Label',
     'foam.ui.md.Flare',
-    'History'
+    'History',
+    'PolymerActionButton',
+    'foam.ui.polymer.gen.View'
   ],
 
   exports: [
@@ -529,7 +531,7 @@ CLASS({
     'foam.ui.SlidePanel',
     'MainButtonsView',
     'SecondaryButtonsView',
-    'TertiaryButtonsView'
+    'TertiaryButtonsView',
     // 'foam.chromeapp.ui.ZoomView'
   ],
   exports: [
@@ -739,7 +741,7 @@ CLASS({
       template: function() {/*
         <%= CalcSpeechView.create({calc: this.data}) %>
         <!-- <%= this.ZoomView.create() %> -->
-        <% X.registerModel(CalcButton, 'foam.ui. ActionButton'); %>
+        <% X.registerModel(CalcButton, 'foam.ui.ActionButton'); %>
         <div style="position: relative;z-index: 100;">
           <div tabindex="1" style="position: absolute;">
             <span aria-label="{{{Calc.RAD.label}}}" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="{{{Calc.RAD.label}}}"></span>
@@ -830,7 +832,7 @@ CLASS({
         width:  70,
         height: 45,
         font:   '300 26px RobotoDraft'
-      }), 'foam.ui. ActionButton');
+      }), 'foam.ui.ActionButton');
       %>
         <div class="button-column rhs-ops" style="flex-grow: 1;padding-top: 7px; padding-bottom: 10px;">
           $$ac{tabIndex: 201, font: '300 24px RobotoDraft'
@@ -857,7 +859,7 @@ CLASS({
             width:  61,
             height: 61,
             font:   '300 20px RobotoDraft'
-          }), 'foam.ui. ActionButton');
+          }), 'foam.ui.ActionButton');
           %>
           <div id="%%id" class="buttons button-row secondaryButtons">
             <div class="button-column" style="flex-grow: 1;">
@@ -904,7 +906,7 @@ CLASS({
             color:      'rgb(80, 80, 80)',
             background: 'rgb(29, 233, 182)',
             font:       '300 18px RobotoDraft'
-          }), 'foam.ui. ActionButton');
+          }), 'foam.ui.ActionButton');
           %>
           <div id="%%id" class="buttons button-row tertiaryButtons">
             <div class="button-column" style="flex-grow: 1;">

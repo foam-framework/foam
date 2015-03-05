@@ -61,7 +61,6 @@
     "foam.apps.calc.TertiaryButtonsView":true,
     "foam.input.touch.TouchManager":true,
     "foam.ui.View":true,
-    "foam.ui.SimpleView":true,
     "foam.ui.BaseView":true,
     "foam.ui.HTMLViewTrait":true,
     "foam.ui.HTMLPropertyViewTrait":true,

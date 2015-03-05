@@ -13,11 +13,12 @@ CLASS({
   package: 'foam.flow',
   name: 'ToC',
   label: 'Table of Contents',
-  extendsModel: 'foam.ui.View',
+  extendsModel: 'foam.flow.Element',
 
-  requires: ['foam.ui.DAOListView'],
-
+  requires: [ 'foam.ui.DAOListView' ],
   imports: [ 'parentSection' ],
+
+  constants: { ELEMENT_NAME: 'toc' },
 
   properties: [
     {
@@ -29,29 +30,27 @@ CLASS({
   ],
 
   templates: [
-    function toHTML() {/*
+    function toInnerHTML() {/*
       <% this.sections = this.parentSection.subSections; %>
-        <flow-toc>
-          <a name="toc"></a>
-          <heading>
-            Table of Contents
-          </heading>
-          <blockquote>
-            $$sections{mode: 'read-only'}
-          </blockquote>
-        </flow-toc>
+      <a name="toc"></a>
+      <heading>
+        Table of Contents
+      </heading>
+      <blockquote>
+        $$sections{mode: 'read-only'}
+      </blockquote>
     */},
     function CSS() {/*
-      flow-toc { display: block }
+      toc { display: block }
 
-      flow-toc a {
+      toc a {
         text-decoration: none;
         color: #444;
       }
 
       @media print {
 
-        flow-toc {
+        toc {
           page-break-after: always;
         }
 

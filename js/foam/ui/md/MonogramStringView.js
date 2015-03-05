@@ -19,9 +19,8 @@ CLASS({
   name: 'MonogramStringView',
   package: 'foam.ui.md',
 
-  extendsModel: 'foam.ui.LeafDataView',
-  traits: ['foam.ui.HTMLViewTrait',
-           'foam.ui.md.ColoredBackgroundTrait'],
+  extendsModel: 'foam.ui.View',
+  traits: ['foam.ui.md.ColoredBackgroundTrait'],
 
   properties: [
     { name: 'className', defaultValue: 'monogram-string-view' },

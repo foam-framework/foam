@@ -171,6 +171,7 @@ CLASS({
   ],
 
   methods: {
+    toView_: function() { return this; },
     toHTML: function() {
       // If being added to HTML directly, then needs to create own Canvas as parent.
       // Calling addChild() will set this.parent = canvas.

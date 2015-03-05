@@ -100,42 +100,46 @@ CLASS({
           Only used if this is the root node adapted with a $$DOC{ref:'CViewView'}. */}
     },
     {
+      model_: 'FloatProperty',
       name:  'x',
-      type:  'int',
-      view:  'foam.ui.IntFieldView',
       defaultValue: 0,
       documentation: function() {/*
           The X offset of this view relative to its parent. */}
     },
     {
+      model_: 'FloatProperty',
       name:  'y',
-      type:  'int',
-      view:  'foam.ui.IntFieldView',
       defaultValue: 0,
       documentation: function() {/*
           The Y offset of this view relative to its parent. */}
     },
     {
+      name: 'canvasX',
+      getter: function() { return this.x + ( this.parent ? this.parent.canvasX : 0 ); }
+    },
+    {
+      name: 'canvasY',
+      getter: function() { return this.y + ( this.parent ? this.parent.canvasY : 0 ); }
+    },
+    {
+      model_: 'IntProperty',
       name:  'width',
-      type:  'int',
-      view:  'foam.ui.IntFieldView',
       defaultValue: 10,
       documentation: function() {/*
           The width of this view. Painting is not automatically clipped, so a view
           may render outside of its apparent rectangle. */},
     },
     {
+      model_: 'IntProperty',
       name:  'height',
-      type:  'int',
-      view:  'foam.ui.IntFieldView',
       defaultValue: 10,
       documentation: function() {/*
           The height of this view. Painting is not automatically clipped, so a view
           may render outside of its apparent rectangle. */}
     },
     {
+      model_: 'FloatProperty',
       name:  'alpha',
-      type:  'float',
       defaultValue: 1,
       documentation: function() {/*
           The desired opacity of the content, from 0:transparent to 1:opaque.
@@ -272,11 +276,9 @@ CLASS({
     mapToCanvas: function(point) { /* Maps a coordinate from this to the canvas.
                     Useful for sharing a point between sibling or cousin items. */
       this.mapToParent(point);
-      if (this.parent && this.parent.mapToCanvas) {
-        return this.parent.mapToCanvas(point);
-      } else {
-        return point;
-      }
+      if ( this.parent && this.parent.mapToCanvas )
+        this.parent.mapToCanvas(point);
+      return point;
     },
   }
 });

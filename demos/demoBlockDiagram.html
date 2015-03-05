@@ -6,7 +6,12 @@
  </head>
  <body>
   <script language="javascript">
-    var timer = Timer.create({});
+   var timer;
+   apar(
+      arequire('foam.ui.View'),
+      arequire('foam.ui.DetailView')
+   )(function() {
+    timer = Timer.create({});
     var space = Canvas.create({width: 2000, height: 1200, background: 'white'});
 
     space.paintChildren = function() {
@@ -117,6 +122,7 @@
        }, B],
        [9000, function() { dev.x = 475; }, M.ease(0.2, 0.2)],
     ])();
+  });
   </script>
  </body>
 </html>

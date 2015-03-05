@@ -156,8 +156,9 @@ CLASS({
       }
 
       out += '<span class="action">';
-      this.model_.OPEN.iconUrl = this.iconUrl;
-      var button = this.createActionView(this.model_.OPEN).toView_();
+      var action = this.model_.getAction('open');
+      action.iconUrl = this.iconUrl;
+      var button = this.createActionView(action).toView_();
 
       this.addSelfDataChild(button);
 
@@ -166,5 +167,26 @@ CLASS({
 
       return out;
     }
-  }
+  },
+
+  templates: [
+    function CSS() {/*
+      .popupChoiceList {
+        border: 2px solid grey;
+        background: white;
+        display: table-footer-group;
+        overflow-y: auto;
+        position: absolute;
+        top: 20;
+        left: 50;
+        margin: 0;
+      }
+
+      .popupChoiceList li {
+        display: block;
+        margin: 15px;
+        margin-left: -20px;
+      }
+    */}
+  ]
 });

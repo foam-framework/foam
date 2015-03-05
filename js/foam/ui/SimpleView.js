@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2014 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,23 +18,46 @@
 CLASS({
   name: 'SimpleView',
   package: 'foam.ui',
-  extendsModel: 'foam.ui.BaseView',
 
-  documentation: function() {/* For Views that use $$DOC{ref:'.data'},
-    this trait will pseudo-import the data$ reference from the context,
-    or allow setting of the $$DOC{ref:'.data'} property directly.
+  extendsModel: 'foam.ui.BaseView',
+  traits: ['foam.ui.HTMLViewTrait',
+           'foam.ui.ViewActionsTrait',
+           'foam.ui.TemplateSupportTrait'],
+  
+  requires: ['Property'],
+           
+  exports: [ 'propertyViewProperty' ],
+
+  documentation: function() {/*
+    When a default view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'foam.ui.DetailView'}
+    is the place to start. Either using $$DOC{ref:'foam.ui.DetailView'} directly, implementing
+    a .toDetailHTML() $$DOC{ref:'Method'} in your model, or extending
+    $$DOC{ref:'foam.ui.DetailView'} to add custom formatting.
+    </p>
+    <p>Set the $$DOC{ref:'.data'} $$DOC{ref:'Property'} to the $$DOC{ref:'Model'} instance
+    you want to display. $$DOC{ref:'foam.ui.DetailView'} will extract the $$DOC{ref:'Model'}
+    definition, create editors for the $$DOC{ref:'Property',usePlural:true}, and
+    display the current values of your instance. Set $$DOC{ref:'.mode',usePlural:true}
+    to indicate read-only if desired.
+    </p>
+    <p>$$DOC{ref:'Model',usePlural:true} may specify a .toDetailHTML() $$DOC{ref:'Method'} or
+    $$DOC{ref:'Template'} to render their contents instead of
+    $$DOC{ref:'DetailView.defaultToHTML'}.
+    </p>
+    <p>For each $$DOC{ref:'Property'} in the $$DOC{ref:'.data'} instance specified,
+    a $$DOC{ref:'PropertyView'} is created that selects the appropriate $$DOC{ref:'foam.ui.View'}
+    to construct.
   */},
 
   properties: [
     {
-      name: 'data',
-      documentation: function() {/* The actual data used by the view.
-        Children's data will be bidirectionally bound to this property.
-        If you want to give your children differing data, use
-        $$DOC{ref:'foam.ui.LeafDataView'} or
-        $$DOC{ref:'foam.ui.DestructiveDataView'}.
-      */},
+      name: 'propertyViewProperty',
+      type: 'Property',
+      defaultValueFn: function() { return this.Property.DETAIL_VIEW; }
     }
+
   ]
-  
 });
+
+
+

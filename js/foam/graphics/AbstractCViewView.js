@@ -19,8 +19,7 @@ CLASS({
   package: 'foam.graphics',
   name: 'AbstractCViewView',
  
-  extendsModel: 'foam.ui.SimpleView',
-  traits: ['foam.ui.HTMLViewTrait'],
+  extendsModel: 'foam.ui.View',
 
   documentation: function() {  /*
     Forming the DOM component for a $$DOC{ref:'foam.graphics.CView',text:'canvas view'},
@@ -36,7 +35,9 @@ CLASS({
       name: 'cview',
       type: 'foam.graphics.CView',
       postSet: function(_, cview) {
-        cview.view = this;
+        cview.view  = this;
+        this.width  = cview.x + cview.width;
+        this.height = cview.y + cview.height;
       },
       documentation: function() {/*
           The $$DOC{ref:'foam.graphics.CView'} root node that contains all the content to render.
@@ -114,9 +115,14 @@ CLASS({
       code: function() {
         if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
         this.canvas.save();
+
+        this.canvas.clearRect(0, 0, this.canvasWidth(), this.canvasHeight());
+        this.canvas.fillStyle = this.cview.background;
+        this.canvas.fillRect(0, 0, this.canvasWidth(), this.canvasHeight());
+
         this.canvas.scale(this.scalingRatio, this.scalingRatio);
-        this.cview.erase();
         this.cview.paint();
+
         this.canvas.restore();
       },
       documentation: function() {/*
@@ -177,7 +183,7 @@ CLASS({
 
     destroy: function( isParentDestroyed ) { /* Call to clean up this and child views. */
       this.SUPER(isParentDestroyed);
-      this.cview.destroy(isParentDestroyed);
+      if ( this.cview ) this.cview.destroy(isParentDestroyed);
     }
   }
 });

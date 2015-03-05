@@ -21,15 +21,15 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'foam.graphics.Circle as Planet',
-    'Timer',
-    'Turntable',
     'Graph',
-    'EyeCView',
-    'foam.demos.ClockView',
     'PieGraph',
-    'EyesCView',
+    'Timer',
+    'foam.demos.ClockView',
+    'foam.demos.graphics.EyeCView',
+    'foam.demos.graphics.EyesCView',
     'foam.graphics.CView',
+    'foam.graphics.Circle as Planet',
+    'foam.graphics.Turntable',
     'foam.ui.DetailView'
   ],
 
@@ -41,6 +41,7 @@ CLASS({
       factory: function() { return this.Timer.create(); }
     },
     { name: 'turntable', factory: function() { return this.Turntable.create(); } },
+    { name: 'turntableView'},
     {
       name: 'sun',
       view: { factory_: 'foam.ui.DetailView', showActions: true }
@@ -84,12 +85,11 @@ CLASS({
         Movement.orbit(this.timer, this.mars, this.mmoons[i], 30+i*10, 1500+500*i);
       }
 
-      Events.link(this.timer.time$, this.turntable.time$);
-
       var clock = this.ClockView.create({x:700,y:90,r:80,color:'red'});
       this.space.addChild(clock);
 
-      var eye = this.EyeCView.create({x:60,y:60,r:50,color:'red'});
+ //     var eye = this.EyeCView.create({x:60,y:60,r:50,color:'red'});
+      var eye = this.EyeCView.create({x:800,y:670,r:50,color:'red'});
       this.space.addChild(eye);
       eye.watch(this.mars);
 
@@ -97,18 +97,22 @@ CLASS({
       this.space.addChild(graph);
       graph.watch(this.apollo.y$);    
 
-      var pie = this.PieGraph.create({lineColor: 'white', r:50, x:20, y:150});
+      var pie = this.PieGraph.create({lineColor: 'white', r:50, x:20, y:250});
       this.space.addChild(pie);
 
-      var eyes = this.EyesCView.create({x:600,y:470});
+//      var eyes = this.EyesCView.create({x:600,y:470});
+      var eyes = this.EyesCView.create({x:1,y:1});
       this.space.addChild(eyes);
-      eyes.watch(this.earth);
+      eyes.watch(this.mars);
+      
+      this.turntableView = this.turntable.toView_();
+      Events.link(this.timer.time$, this.turntable.time$);
     },
 
     initHTML: function() {
       this.SUPER();
       this.timer.start();
-      this.turntable.initHTML();
+      this.turntableView.initHTML();
     }
   },
 
@@ -118,7 +122,7 @@ CLASS({
       <td valign="top">$$timer</td>
       <td valign="top">$$sun</td>
       <td valign="top">$$earth</td>
-      </tr></table><%= this.turntable.toHTML() %>
+      </tr></table><%= this.turntableView.toHTML() %>
     */}
   ]
 });

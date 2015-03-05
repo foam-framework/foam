@@ -22,7 +22,7 @@ CLASS({
   name: 'ActionButton',
   package: 'foam.ui',
 
-  extendsModel: 'foam.ui.LeafDataView',
+  extendsModel: 'foam.ui.BaseView', // not extending View prevents cycle with TemplateSupportTrait
   traits: ['foam.ui.HTMLViewTrait'],
 
   properties: [

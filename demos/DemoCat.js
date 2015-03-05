@@ -18,6 +18,14 @@ CLASS({
 
 var demos = JSONUtil.arrayToObjArray(X, [
   {
+    name: 'Googley Eyes',
+    path: '/index.html?model=foam.demos.graphics.EyesDemo',
+    description: 'A Googley version of the old xeyes app.  Follows your mouse.',
+    keywords: ['graphics', 'reactive'],
+    src: '/js/foam/demos/graphics/EyesDemo.js',
+    image: 'Eyes.png',
+  },
+  {
     name: 'Solar System',
     path: '/index.html?model=foam.demos.SolarSystem',
     description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.  This was the first graphical FOAM demo to be written (in 2011).  I\'ve added the <b>old</b> keyword to this, and other older, non-modernized demos.',
@@ -330,8 +338,10 @@ var demos = JSONUtil.arrayToObjArray(X, [
 
 CLASS({
   name: 'Controller',
+  requires: ['foam.ui.TextFieldView',
+             'foam.ui.DAOListView'],
   properties: [
-    { name: 'search', view: { factory_: 'TextFieldView', onKeyMode: true } },
+    { name: 'search', view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true } },
     { name: 'dao', defaultValue: demos },
     {
       name: 'filteredDAO',

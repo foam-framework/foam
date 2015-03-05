@@ -10,23 +10,23 @@
  */
 
 CLASS({
-  package: 'foam.demos',
   name: 'Flow',
+  package: 'foam.demos',
   extendsModel: 'foam.flow.Section',
 
-  properties: [
+  constants: { ELEMENT_NAME: 'foam-demos-flow' },
+
+  requires: [
+    'foam.flow.ToC',
+    'foam.graphics.Circle',
+    'foam.flow.CodeSample',
+    'foam.flow.Slides'
   ],
 
   methods: {
-    init: function(args) {
-      this.SUPER(args);
-      this.X.registerElement('solar',       'foam.demos.SolarSystem');
-      this.X.registerElement('circle',      'foam.graphics.Circle');
-      this.X.registerElement('email',       'com.google.mail.MobileController');
-      this.X.registerElement('toc',         'foam.flow.ToC');
-      this.X.registerElement('section',     'foam.flow.Section');
-      this.X.registerElement('code-sample', 'foam.flow.CodeSample');
-      this.X.registerElement('slides',      'foam.flow.Slides');
+    init: function() {
+      this.SUPER.apply(this, arguments);
+      this.X.registerElement('circle', 'foam.graphics.Circle');
     }
   },
 
@@ -37,8 +37,6 @@ CLASS({
         height: 300px;
       }
     */},
-    {
-      name: 'toHTML'
-    }
+    { name: 'toHTML' }
   ]
 });

@@ -18,7 +18,7 @@
 CLASS({
   name: 'DOMPanel',
   package: 'foam.ui.layout',
-  extendsModel: 'foam.ui.DataView',
+  extendsModel: 'foam.ui.BaseView',
   traits: ['foam.ui.HTMLViewTrait', 'foam.ui.TemplateSupportTrait',  'foam.ui.ViewActionsTrait'],
   imports: [
     'window'

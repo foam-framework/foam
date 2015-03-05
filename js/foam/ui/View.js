@@ -19,7 +19,7 @@ CLASS({
   name: 'View',
   package: 'foam.ui',
 
-  extendsModel: 'foam.ui.SimpleView',
+  extendsModel: 'foam.ui.DestructiveDataView',
   traits: ['foam.ui.HTMLViewTrait',
            'foam.ui.ViewActionsTrait',
            'foam.ui.TemplateSupportTrait'],
@@ -54,16 +54,16 @@ CLASS({
       name: 'propertyViewProperty',
       type: 'Property',
       defaultValueFn: function() { return this.Property.DETAIL_VIEW; }
-    },
-    {
-      name: 'data',
-      documentation: function() {/* The actual data used by the view.
-      */},
-      postSet: function(old, nu) {
-        this.destroy();
-        this.construct();
-      }
     }
+//     {
+//       name: 'data',
+//       documentation: function() {/* The actual data used by the view.
+//       */},
+//       postSet: function(old, nu) {
+//         this.destroy();
+//         this.construct();
+//       }
+//     }
 
   ]
 });

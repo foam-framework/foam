@@ -47,9 +47,7 @@
 CLASS({
   name: 'CollapsibleView',
   package: 'foam.ui',
-  extendsModel: 'foam.ui.SimpleView',
-  traits: ['foam.ui.ViewActionsTrait',
-           'foam.ui.HTMLViewTrait'],
+  extendsModel: 'foam.ui.View',
   
   properties: [
     {
@@ -114,7 +112,7 @@ CLASS({
         this.fullView.$.style.overflow = "hidden";
         this.collapsed = true;
       }
-    }
+    }    
   },
 
   actions: [

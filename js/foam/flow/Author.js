@@ -14,8 +14,6 @@ CLASS({
   package: 'foam.flow',
   extendsModel: 'foam.flow.Element',
 
-  constants: { ELEMENT: 'author' },
-
   properties: [
     {
       model_: 'StringProperty',
@@ -29,12 +27,7 @@ CLASS({
       factory: function() { return []; },
       preSet: function(old, nu) {
         if ( typeof nu !== 'string' ) return nu;
-        var next = nu.trim(), prev = '';
-        while ( prev !== next) {
-          prev = next;
-          next = next.replace(/[ \t\n\r][ \t\r\n]/g, ' ');
-        }
-        return next;
+        return this.replaceAll(nu.trim(), /[ \t\n\r][ \t\r\n]/g, ' ');
       }
     },
     {
@@ -98,13 +91,11 @@ CLASS({
   ],
 
   templates: [
-    function toHTML() {/*
-      <flow-author id="%%id">%%shortFullName</flow-author>
-    */},
+    function toInnerHTML() {/* %%shortFullName */},
     function CSS() {/*
       @media not print {
 
-        flow-title-page > flow-author {
+        title-page > author {
           margin-top: 3px;
         }
 

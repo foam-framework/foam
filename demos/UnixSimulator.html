@@ -7,7 +7,13 @@
  </head>
  <body>
   <script language="javascript">
-    var timer  = Timer.create({interval:20});
+  var timer;
+  apar(
+     arequire('foam.ui.View'),
+     arequire('foam.ui.DetailView')
+  )(
+   function() {
+    timer  = Timer.create({interval:20});
     var graphs = Canvas.create({width: 400, height: 700, background:'#fff'});
     var space  = Canvas.create({width: 450, height: 700, background:'#fff'});
     var space2 = Canvas.create({width: 450, height: 700, background:'#fff'});
@@ -156,6 +162,7 @@
     document.write('</td><td>');
     sys2.write(document);
     document.write('</td></tr></table>');
+  });
   </script>
 
  </body>

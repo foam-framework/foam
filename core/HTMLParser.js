@@ -146,6 +146,14 @@ CLASS({
       return attr && attr.value;
     },
     appendChild: function(c) { this.childNodes.push(c); },
+    removeChild: function(c) {
+      for ( var i = 0; i < this.childNodes.length; ++i ) {
+        if ( this.childNodes[i] === c ) {
+          this.childNodes.splice(i, 1);
+          break;
+        }
+      }
+    },
     toString: function() { return this.outerHTML; }
   }
 });
@@ -221,6 +229,8 @@ var HTMLParser = {
   whitespace: repeat0(alt(' ', '\t', '\r', '\n'))
 }.addActions({
   START: function(xs) {
+    // TODO(kgr): I think that this might be a bug if we get a failed compile then
+    // we might not reset state properly.
     var ret = this.stack[0];
     this.stack = [ X.foam.html.Element.create({nodeName: 'html'}) ];
     return ret;
@@ -279,10 +289,10 @@ test('<pA a="1">foo</pA>');
 test('<pA a="1" b="2">foo<b>bold</b></pA>');
 */
 
-X.registerElement = (function() {
+(function() {
   var registry = { };
 
-  return function(name, model) {
+  X.registerElement = function(name, model) {
     console.log('registerElement: ', name);
     registry[name] = model;
 
@@ -306,6 +316,9 @@ X.registerElement = (function() {
     invalidateParsers();
   };
 
+  X.elementModel = function(name) {
+    return registry[name];
+  };
 })();
 
 X.registerElement('foam', null);

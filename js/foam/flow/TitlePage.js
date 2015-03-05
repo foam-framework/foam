@@ -14,27 +14,22 @@ CLASS({
   package: 'foam.flow',
   extendsModel: 'foam.flow.Element',
 
-  constants: { ELEMENT: 'title-page' },
-
   templates: [
-    function toHTML() {/*
-      <flow-title-page id="%%id"><%= this.inner() %></flow-book-title>
-    */},
     function CSS() {/*
-      flow-title-page {
+      title-page {
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 100%;
       }
 
-      flow-title-page > * {
+      title-page > * {
         display: block;
       }
 
       @media print {
 
-        flow-title-page {
+        title-page {
           page-break-after: always;
         }
 

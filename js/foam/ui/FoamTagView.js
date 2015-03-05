@@ -14,7 +14,11 @@ CLASS({
   name: 'FoamTagView',
   extendsModel: 'foam.ui.View',
 
-  requires: [ 'foam.html.Element' ],
+  requires: [
+    'foam.html.Element',
+    'foam.ui.View',
+    'foam.ui.DetailView' // TODO(kgr): arequire() manually, only if required
+  ],
 
   imports: [ 'document' ],
 
@@ -63,19 +67,19 @@ CLASS({
         if ( viewName ) {
           var viewModel = FOAM.lookup(viewName, this.X);
           view = viewModel.create({ model: model, data: obj });
-        } else if ( X.foam.ui.View.isInstance(obj) ) {
+        } else if ( this.X.foam.ui.View.isInstance(obj) ) {
           view = obj;
         } else if ( obj.toView_ ) {
           view = obj.toView_();
         } else {
           var a = this.element.getAttribute('showActions');
           var showActions = ! a || (
-            a.equalsIC('y')    ||
+            a.equalsIC('y')      ||
               a.equalsIC('yes')  ||
               a.equalsIC('true') ||
               a.equalsIC('t') );
 
-          view = X.foam.ui.DetailView.create({
+          view = this.X.foam.ui.DetailView.create({
             model: model,
             data: obj,
             showActions: showActions

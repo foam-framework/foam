@@ -21,8 +21,8 @@ CLASS({
   label: 'Text Field',
   package: 'foam.ui',
   
-  extendsModel: 'foam.ui.LeafDataView',
-  traits: ['foam.ui.HTMLViewTrait'],
+  extendsModel: 'foam.ui.BaseView',
+  traits: ['foam.ui.HTMLViewTrait', 'foam.ui.ViewActionsTrait'], // TemplateSupportTrait removed to prevent cycle 
 
   documentation: function() { /*
       The default $$DOC{ref:'foam.ui.View'} for a string. Supports autocomplete
