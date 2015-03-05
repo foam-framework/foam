@@ -23,7 +23,7 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'PropertyView'
+    'foam.ui.PropertyView'
   ],
 
   imports: [
