@@ -21,7 +21,7 @@ CLASS({
   extendsModel: 'CountExpr',
 
   requires: [
-    'View',
+    'foam.ui.View',
     'foam.apps.quickbug.model.Location'
   ],
 
