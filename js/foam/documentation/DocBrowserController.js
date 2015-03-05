@@ -157,10 +157,11 @@ CLASS({
       bootTag.src = window.FOAM_BOOT_DIR + 'bootFOAM.js';
       iframe.contentDocument.head.appendChild(bootTag);
       
-      var subListX = this.X.sub({ document: iframe.contentDocument }, 'subListX');
+      var subListX = this.X.subWindow(window, 'subListX', true);
+      subListX.installedModels = [];
       subListX.set('ModelDAO', subListX.foam.core.bootstrap.ModelFileDAO.create({}, subListX));
       subListX.ModelDAO.select(newDAO);
-
+      
       // All models are now in USED_MODELS
       [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
         for ( var key in collection ) {

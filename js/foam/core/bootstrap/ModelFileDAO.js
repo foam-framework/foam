@@ -33,9 +33,12 @@ MODEL({
       var tag = X.document.createElement('script');
       tag.src = sourcePath;
       X.document.head.appendChild(tag);
-
+      var myX = X;
+      console.log("myX "+myX.NAME);
+      
       tag.onload = function() {
-        var model = FOAM.lookup(key, X);
+        console.log("myX "+myX.NAME);
+        var model = FOAM.lookup(key, myX);
         if ( ! model ) {
           console.warn('Model load failed for: ', key);
           sink && sink.error && sink.error('Model load failed for: ', key);
@@ -66,6 +69,7 @@ MODEL({
           } while ( fmatch );
           files.forEach(function(d) {
             //find(pkg ? pkg+"."+d : d, sink);
+            console.log("areqX ", this.X.NAME);
             arequire(pkg ? pkg+"."+d : d, this.X)( function(m) {
               if ( m ) sink.put(m);
             });
