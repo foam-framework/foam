@@ -91,7 +91,7 @@ CLASS({
   name:  'LogoForeground',
   extendsModel: 'foam.graphics.CView',
 
-  imports: [ 'text', 'font' ],
+  imports: [ 'text', 'xxxfont' ],
 
   properties: [
     { name: 'className', defaultValue: 'logo-foreground' }
@@ -149,12 +149,13 @@ CLASS({
     },
     {
       name: 'font',
+      postSet: function(_, font) { console.log('font: ', font); },
       defaultValue: '120px Georgia'
     },
     {
       name: 'foreground',
       factory: function() {
-        return this.LogoForeground.create({width: this.width, height: this.height});
+        return this.LogoForeground.create({width: this.width, height: this.height, font$: this.font$});
       }
     },
     {
