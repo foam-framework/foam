@@ -36,12 +36,8 @@ if ( ! this.FOAM_BOOT_DIR ) {
 }
 
 function loadScript_(filename) {
-//  document.writeln(
-//    '<script type="text/javascript" src="' + FOAM_BOOT_DIR + filename + '"></script>\n');
-  var newTag = document.createElement('script');
-  newTag.src = FOAM_BOOT_DIR + filename;
-  newTag.async = false;
-  document.head.appendChild(newTag);
+  document.writeln(
+    '<script type="text/javascript" src="' + FOAM_BOOT_DIR + filename + '"></script>\n');
 }
 
 loadScript_('FOAMmodels.js');

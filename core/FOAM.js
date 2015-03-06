@@ -351,7 +351,7 @@ function registerModel(model, opt_name) {
     }
   }
 
-  this.registerModel_(model);
+  //this.registerModel_(model); // no longer required
 }
 
 
@@ -410,8 +410,3 @@ function INTERFACE(imodel) {
   NONMODEL_INSTANCES[id] = true;
 }
 
-
-/** Called when a Model is registered. **/
-function registerModel_(m) {
-  // NOP
-}

@@ -150,19 +150,8 @@ CLASS({
 //         var modl = FOAM.lookup(key, this.X);
 //         modl.getPrototype && modl.getPrototype();
 //       }
-      // var iframe = document.createElement('iframe');
-//       iframe.style.display = "none";
-//       document.body.appendChild(iframe);
-//       var bootTag = iframe.contentDocument.createElement('script');
-//       bootTag.src = window.FOAM_BOOT_DIR + 'bootFOAM.js';
-//       iframe.contentDocument.head.appendChild(bootTag);
-      
-      var subListX = this.X; //this.X.subWindow(window, 'subListX', true);
-      // subListX.set('registerModel_', function(m) {
-      //   console.log("GOOD REG ", m.name);
-      // });
-      // subListX.set('ModelDAO', subListX.foam.core.bootstrap.ModelFileDAO.create({}, subListX));
-      subListX.ModelDAO.select(newDAO);
+
+      X.ModelDAO.select(newDAO);
       
       // All models are now in USED_MODELS
       // [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {

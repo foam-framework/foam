@@ -35,8 +35,7 @@ CLASS({
     'info',
     'log',
     'memento',
-    'registerModel_',
-    'processCSS',
+    'installModelCSS',
     'requestAnimationFrame',
     'setInterval',
     'setTimeout',
@@ -86,13 +85,8 @@ CLASS({
   ],
 
   methods: {
-    registerModel_: function(m) {
-      // arequireModel(m)(function(m) {
-      //   m.getPrototype();
-      // });
-    },
     
-    processCSS: function(model) {
+    installModelCSS: function(model) {
       var X        = this.X;
       var document = this.document;
 
