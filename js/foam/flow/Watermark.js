@@ -31,7 +31,7 @@ CLASS({
         left: 0px;
         right: 0px;
         z-index: -1;
-        color: #eee;
+        color: #f3f3f3;
         font-size: 100px;
         text-align: center;
         display: flex;
