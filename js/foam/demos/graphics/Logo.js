@@ -33,17 +33,17 @@ CLASS({
         var self = this;
         timer.start();
         Events.dynamic(
-          function() { self.timer.time; },
-          function() { self.paint(); });
+          function() { timer.time; },
+          function() { self.addBubble(); self.paint(); });
       }
     },
     { name: 'className', defaultValue: 'logo-background' }
   ],
 
   methods: {
-    paintChildren: function() {
-      this.SUPER();
-      this.addBubble();
+    stop: function() {
+      this.timer.stop();
+      for ( var i in this.children ) this.children[i].stop();
     },
     addBubble: function() {
       if ( Math.random() < 0.5 ) return;
@@ -62,22 +62,19 @@ CLASS({
         border: this.colours[Math.floor(Math.random() * this.colours.length)]});
 
       this.addChild(circle);
-      var M = Movement;
-
-      M.compile([
-        [
-          [4000, function() {
-            circle.x = circle.x + Math.random()*200-100;
-            circle.alpha = 0;
-            circle.y = Y - 100 - Math.random() * 50;
-            circle.r = 25 + Math.random() * 50;
-            circle.borderWidth = 8;
-           },
-           M.easeIn(0.5)
-          ]
-        ],
-        (function() { this.removeChild(circle); }).bind(this)
-      ])();
+      circle.stop = Movement.animate(
+        4000,
+        function() {
+          circle.x = circle.x + Math.random()*200-100;
+          circle.alpha = 0;
+          circle.y = Y - 100 - Math.random() * 50;
+          circle.r = 25 + Math.random() * 50;
+          circle.borderWidth = 8;
+        },
+        Movement.easeIn(0.5),
+        (function() {
+          if ( this.timer.isStarted ) this.removeChild(circle);
+        }).bind(this))();
     }
   }
 });
@@ -141,6 +138,10 @@ CLASS({
 
   properties: [
     {
+      name: 'duration',
+      defaultValue: 0
+    },
+    {
       model_: 'StringArrayProperty',
       name: 'colours',
       factory: function() { return ['#33f','#f00','#fc0','#33f','#3c0']; }
@@ -165,10 +166,22 @@ CLASS({
         return this.LogoBackground.create({width: this.width, height: this.height});
       }
     },
-    { name: 'width',  defaultValue: 600 },
-    { name: 'height', defaultValue: 200 },
+    { name: 'width',     defaultValue: 600 },
+    { name: 'height',    defaultValue: 200 },
     { name: 'className', defaultValue: 'logo' }
   ],
+
+  methods: {
+    initHTML: function() {
+      this.SUPER();
+
+      if ( this.duration ) {
+        this.X.setTimeout(
+          this.background.stop.bind(this.background),
+          this.duration);
+      }
+    }
+  },
 
   templates: [
     function toInnerHTML() {/* <%= this.background, this.foreground %> */},
