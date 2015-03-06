@@ -10,9 +10,8 @@
 
  <body>
 
-<script id='demo' language="javascript">
+<script id='demo' language="xjavascript">
 
-  
 CLASS({
   name: 'Tabla',
   properties: [ 'id', 'a', 'b' ]
@@ -419,7 +418,6 @@ dao.select(document);
   <div id='output'></div>
 
   <script language="javascript">
-  arequire('foam.ui.View')(function() {
     var demo = $('demo');
     var out  = $('output');
     var log_ = function(o) {
@@ -440,7 +438,6 @@ dao.select(document);
       log_(' <br><code>' + l + '</code>');
       eval(l);
     }
-  });
   </script>
 
  </body>
