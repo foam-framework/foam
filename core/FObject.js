@@ -79,9 +79,6 @@ var FObject = {
 
     o.init(args);
 
-    // process our model CSS (only happens once per window)
-    o.X.installModelCSS && o.X.installModelCSS(this.model_);
-
     return o;
   },
 
