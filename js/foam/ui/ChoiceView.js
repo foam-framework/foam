@@ -22,8 +22,6 @@ CLASS({
 
   extendsModel: 'foam.ui.AbstractChoiceView',
 
-  //requires: ['foam.ui.View'],
-  
   /*
    * <select size="">
    *    <choice value="" selected></choice>
@@ -47,54 +45,29 @@ CLASS({
     }
   ],
 
+  templates: [
+    function toHTML() {/* <select id="<%= this.id %>" name="<%= this.name %>" size="<%= this.size %>><% this.toInnerHTML(out); %></select>*/},
+    function toInnerHTML() {/*
+<% if ( this.helpText ) { %>
+<option disabled="disabled"><%= escapeHTML(this.helpText) %></option>
+<% } %>
+<% for ( var i = 0, choice; choice = this.choices[i]; i++ ) { %>
+<option id="<%= this.on('click', this.onClick,
+this.on('mouseover', this.onMouseOver,
+this.on('mouseout', this.onMouseOut))) %>" <% if ( choice[0] === this.data ) { %>selected<% } %> value="<%= i %>"><%= escapeHTML(choice[1].toString()) %></option>
+<% } %>
+*/}
+
+  ],
+
   methods: {
     toHTML: function() {
       return '<select id="' + this.id + '" name="' + this.name + '" size=' + this.size + '/></select>';
     },
 
-    updateHTML: function() {
-      if ( ! this.$ ) return;
-      var out = [];
-
-      if ( this.helpText ) {
-        out.push('<option disabled="disabled">');
-        out.push(this.helpText);
-        out.push('</option>');
-      }
-
-      for ( var i = 0 ; i < this.choices.length ; i++ ) {
-        var choice = this.choices[i];
-        var id     = this.nextID();
-
-        try {
-          this.on('click', this.onClick, id);
-          this.on('mouseover', this.onMouseOver, id);
-          this.on('mouseout', this.onMouseOut, id);
-        } catch (x) {
-          // Fails on iPad, which is okay, because this feature doesn't make
-          // sense on the iPad anyway.
-        }
-
-        out.push('\t<option id="' + id + '"');
-
-        if ( choice[0] === this.data ) out.push(' selected');
-        out.push(' value="');
-        out.push(i + '">');
-        out.push(choice[1].toString());
-        out.push('</option>');
-      }
-
-      this.$.innerHTML = out.join('');
-      this.View.getPrototype().initHTML.call(this);
-    },
-
     initHTML: function() {
       this.SUPER();
-
-      var e = this.$;
-
-      this.updateHTML();
-      this.domValue = DomValue.create(e);
+      this.domValue = DomValue.create(this.$);
       Events.link(this.index$, this.domValue);
     }
   },

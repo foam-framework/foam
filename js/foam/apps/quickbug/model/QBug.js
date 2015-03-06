@@ -32,6 +32,11 @@ CLASS({
     'foam.apps.quickbug.model.imported.Project',
     'foam.apps.quickbug.model.QUser',
     'foam.apps.quickbug.model.QProject',
+    'foam.metrics.Metric'
+  ],
+
+  imports: [
+    'metricDAO'
   ],
 
   properties: [
@@ -223,12 +228,18 @@ CLASS({
             p.launchBrowser(opt_url);
           },
           error: function() {
-            metricsSrv.sendException('Failed to find default project.');
+            self.metricDAO.put(self.Metric.create({
+              type: 'error',
+              name: 'defaultProjectNotFound'
+            }));
             console.warn("Couldn't find default project, default to ", self.defaultProjectName);
             if ( opt_projectName === self.defaultProjectName) {
               // TODO: Some sort of error view that we couldn't find the project.
               console.error("Couldn't find a project, you're probably offline.");
-              metricsSrv.sendException('Failed to find project.', true);
+              self.metricDAO.put(self.Metric.create({
+                type: 'error',
+                name: 'noProjectFound'
+              }));
               return;
             }
             self.launchBrowser(self.defaultProjectName, undefined, opt_X);

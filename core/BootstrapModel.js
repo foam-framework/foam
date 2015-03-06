@@ -283,6 +283,8 @@ var BootstrapModel = {
             }
           }
           this.actions_[i] = a;
+          if ( ! Object.prototype.hasOwnProperty.call(cls, constantize(a.name)) )
+            cls[constantize(a.name)] = a;
           cls.addMethod(a.name, function(opt_x) { a.callIfEnabled(opt_x || this.X, this); });
         }.bind(this))(this.actions[i]);
       }

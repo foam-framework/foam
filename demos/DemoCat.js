@@ -312,10 +312,10 @@ var demos = JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'FOAM Logo',
-    path: 'Logo.html',
+    path: '/index.html?model=foam.demos.graphics.Logo',
     description: 'Animated FOAM logo.',
     keywords: ['demo', 'animation'],
-    src: 'logo.js',
+    src: '/js/foam/demos/graphics/Logo.js',
     image: 'Logo.png'
   },
   {

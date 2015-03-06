@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.apps.quickbug.ui',
   extendsModel: 'AutocompleteView',
   requires: [
-    'ChoiceListView'
+    'foam.ui.ChoiceListView'
   ],
   methods: {
     makeView: function() {

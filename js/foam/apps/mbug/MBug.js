@@ -38,19 +38,33 @@ CLASS({
     'foam.core.dao.KeywordDAO',
     'DAOVersion',
     'ContextualizingDAO',
-    'foam.core.dao.CloningDAO'
+    'foam.core.dao.CloningDAO',
+    'com.google.analytics.WebMetricsReportingDAO',
+    'foam.metrics.Metric'
   ],
 
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   exports: [
     'daoVersionDao',
+    'metricDAO'
   ],
 
   properties: [
     {
       name: 'daoVersionDao',
       lazyFactory: function() { return this.IDBDAO.create({ model: this.DAOVersion }); }
+    },
+    {
+      name: 'metricDAO',
+      factory: function() {
+        return this.WebMetricsReportingDAO.create({
+          propertyId: 'UA-47217230-4',
+          clientId: '1',
+          appName: 'MBug',
+          appVersion: '1.0.7'
+        })
+      }
     },
     {
       model_: 'BooleanProperty',
@@ -99,6 +113,11 @@ CLASS({
             }, Y)
           }, Y)
         }, Y);
+
+        this.metricDAO.put(this.Metric.create({
+          name: 'launchApp'
+        }));
+
 
         var pc = this.AppController.create({
           name: project.projectName,

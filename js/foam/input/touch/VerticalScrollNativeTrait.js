@@ -51,14 +51,18 @@ CLASS({
   methods: {
     initHTML: function() {
       this.SUPER();
-      this.X.gestureManager.install(this.scrollGesture);
+      if ( this.X.gestureManager ) {
+        this.X.gestureManager.install(this.scrollGesture);
+      }
       /* Checks for this.onScroll. If found, will attach a scroll event listener for it. */
       if ( this.onScroll )
         this.scroller$.addEventListener('scroll', this.onScroll);
     },
     destroy: function( isParentDestroyed ) {
       this.SUPER(isParentDestroyed);
-      this.X.gestureManager.uninstall(this.scrollGesture);
+      if ( this.X.gestureManager ) {
+        this.X.gestureManager.uninstall(this.scrollGesture);
+      }
       if ( this.onScroll && this.scroller$ )
         this.scroller$.removeEventListener('scroll', this.onScroll)
     }
