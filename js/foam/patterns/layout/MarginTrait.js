@@ -104,7 +104,6 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-
       this.horizontalConstraints = this.MarginProxy.create({},this.Y);
       this.verticalConstraints = this.MarginProxy.create({},this.Y);
 
