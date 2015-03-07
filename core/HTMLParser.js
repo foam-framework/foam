@@ -297,10 +297,13 @@ test('<pA a="1" b="2">foo<b>bold</b></pA>');
     registry[name] = model;
 
     TemplateParser.foamTag_ = (function() {
-      var start = seq('<', simpleAlt.apply(null,
-        Object.keys(registry).
-          sort(function(o1, o2) { return o2.compareTo(o1); }).
-          map(function(k) { return literal_ic(k); })));
+      var start = seq(
+        '<',
+        simpleAlt.apply(null,
+          Object.keys(registry).
+            sort(function(o1, o2) { return o2.compareTo(o1); }).
+            map(function(k) { return literal_ic(k); })),
+        alt('/', ' '));
 
       var html = HTMLParser.create().export('tag');
 
