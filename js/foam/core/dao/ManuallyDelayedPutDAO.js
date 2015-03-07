@@ -16,47 +16,34 @@
  */
 
 CLASS({
-  name: 'ManuallyDelayedDAO',
+  name: 'ManuallyDelayedPutDAO',
   package: 'foam.core.dao',
   extendsModel: 'ProxyDAO',
+
+  requires: [ 'ProxyDAO' ],
+
   properties: [
     {
       name: 'pending',
       factory: function() { return []; }
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'put_',
+      factory: function() { return this.ProxyDAO.getFeature('put').code; }
     }
   ],
+
   methods: {
-    select: function(sink, options) {
-      var future = afuture();
-
-      sink = sink || [].sink;
-
-      var daofuture = this.delegate.select(undefined, options);
-
-      var fc = this.createFlowControl_();
-
-      this.pending.push(function(ret) {
-        daofuture(function(a) {
-          for ( var i = 0; i < a.length && ! fc.stopped; i++ ) {
-            sink.put(a[i], null, fc);
-            if ( fc.errorEvt ) {
-              sink.error && sink.error(fc.errorEvt);
-            }
-          }
-          if ( ! fc.errorEvt ) {
-            sink.eof && sink.eof();
-          }
-          future.set(sink);
-          ret();
-        });
-      });
-
-      return future.get;
+    put: function(o, sink) {
+      this.pending.push({ o: o, sink: sink });
     },
-    join: function(ret) {
-      var pending = this.pending;
+    join: function() {
+      var puts = this.pending;
+      for ( var i = 0; i < puts.length; ++i ) {
+        this.put_(puts[i].o, puts[i].sink);
+      }
       this.pending = [];
-      apar.apply(null, pending)(ret);
     }
   }
 });
