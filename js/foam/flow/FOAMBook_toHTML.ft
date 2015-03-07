@@ -5,7 +5,7 @@
 
     <title-page>
       <book-title>
-        <foam style="margin-left: -95px; margin-top: -122px; position: absolute;" model="foam.demos.graphics.Logo" width="300" height="50" font="70px Georgia" colours="#333 #aaa #ccc #888 #999" duration="15000">
+        <foam style="margin-left: -95px; margin-top: -122px; position: absolute;" model="foam.demos.graphics.Logo" width="300" height="50" font="70px Georgia" colours="#555 #666 #777 #888 #444" duration="15000">
         </foam>
       </book-title>
       <sub-title>

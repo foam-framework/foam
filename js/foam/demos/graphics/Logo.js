@@ -46,8 +46,6 @@ CLASS({
       for ( var i in this.children ) this.children[i].stop();
     },
     addBubble: function() {
-      if ( Math.random() < 0.5 ) return;
-
       var c = this.canvas;
       var Y = 120;
       var X = 10+Math.random()*310;
