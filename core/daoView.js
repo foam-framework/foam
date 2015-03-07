@@ -417,7 +417,7 @@ CLASS({
       name: 'rowView',
       documentation: 'The view for each row. Can specify a <tt>preferredHeight</tt>, which will become the <tt>rowHeight</tt> for the <tt>ScrollView</tt> if <tt>rowHeight</tt> is not set explicitly.',
       postSet: function(_, nu) {
-        var view = FOAM.lookup(nu, this.Y);
+        var view = this.Y.lookup(nu);
         if ( view.PREFERRED_HEIGHT && this.rowHeight < 0 )
           this.rowHeight = view.create({ model: this.dao.model }).preferredHeight;
       }
@@ -585,11 +585,11 @@ CLASS({
       if ( homeless.length ) {
         var html = [];
         var newViews = [];
-        var rowView = FOAM.lookup(this.rowView, this.Y);
+        var rowView = this.Y.lookup(this.rowView);
         for ( var i = 0 ; i < homeless.length ; i++ ) {
           var h = homeless[i];
           var x = self.cache[h];
-          if (!x) continue;
+          if ( ! x ) continue;
 
           if ( this.extraRows.length ) {
             var r = this.extraRows.shift();
@@ -820,7 +820,7 @@ CLASS({
         <% if ( this.rowHeight < 0 ) { %>
           <div id="<%= this.id + '-rowsize' %>" style="visibility: hidden">
             <%
-              this.rowSizeView = FOAM.lookup(this.rowView, this.Y).create({ data: this.dao.model.create() }, this.Y);
+              this.rowSizeView = this.Y.lookup(this.rowView).create({ data: this.dao.model.create() }, this.Y);
               out(this.rowSizeView.toHTML());
               this.addChild(this.rowSizeView);
             %>
@@ -866,7 +866,7 @@ CLASS({
       name: 'view',
       required: true,
       preSet: function(_, v) {
-        if ( typeof v === 'string' ) v = FOAM.lookup(v, this.Y);
+        if ( typeof v === 'string' ) v = this.Y.lookup(v);
         this.children = [v];
         v.data = v.dao = this.predicatedDAO$Proxy;
         return v;

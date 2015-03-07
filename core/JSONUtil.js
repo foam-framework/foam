@@ -103,7 +103,7 @@ var JSONUtil = {
       if ( opt_defaultModel && ! obj.model_ ) return opt_defaultModel.create(obj);
 
       if ( obj.model_ ) {
-        var newObj = FOAM.lookup(obj.model_, X);
+        var newObj = X.lookup(obj.model_);
         if ( ( ! newObj || ! newObj.finished__ ) ) {
           var future = afuture();
           seq && seq.push(future.get);

@@ -412,8 +412,7 @@ var ArrayProperty = Model.create({
     {
       name: 'adapt',
       defaultValue: function(_, a, prop) {
-        var m = FOAM.lookup(prop.subType, this.X) ||
-          FOAM.lookup(prop.subType, GLOBAL);
+        var m = this.X.lookup(prop.subType) || GLOBAL.lookup(prop.subType);
 
         // if ( ! Array.isArray(a) ) a = [a];  // ???: Is this a good idea?
         if ( ! m ) return a;
@@ -483,7 +482,7 @@ var ArrayProperty = Model.create({
     {
       name: 'fromElement',
       defaultValue: function(e, p) {
-        var model = FOAM.lookup(e.getAttribute('model') || p.subType, this.X);
+        var model = this.X.lookup(e.getAttribute('model') || p.subType);
         var children = e.children;
         var a = [];
         for ( var i = 0 ; i < children.length ; i++ ) {
@@ -707,7 +706,7 @@ var ModelProperty = Model.create({
           else
             value = prop.defaultValue;
         }
-        return FOAM.lookup(value, this.X);
+        return this.X.lookup(value);
       }
     },
     {
@@ -735,7 +734,7 @@ var ViewProperty = Model.create({
 
         if ( typeof f === 'string' ) {
           return function(d, opt_X) {
-            return FOAM.lookup(f, opt_X || this.X).create(d, opt_X || this.Y);
+            return (opt_X || this.X).lookup(f).create(d, opt_X || this.Y);
           }.bind(this);
         }
 
@@ -772,7 +771,7 @@ var FactoryProperty = Model.create({
 
         // A String Path to a Model
         if ( typeof f === 'string' ) return function(map, opt_X) {
-          return FOAM.lookup(f, opt_X || this.X).create(map, opt_X || this.Y);
+          return (opt_X || this.X).lookup(f).create(map, opt_X || this.Y);
         }.bind(this);
 
         // An actual Model
@@ -781,7 +780,7 @@ var FactoryProperty = Model.create({
         // A JSON Model Factory: { factory_ : 'ModelName', arg1: value1, ... }
         if ( f.factory_ ) return function(map, opt_X) {
           var X = opt_X || this.X;
-          var m = FOAM.lookup(f.factory_, X);
+          var m = X.lookup(f.factory_);
           console.assert(m, 'Unknown Factory Model: ' + f.factory_);
           return m.create(f, opt_X || this.Y);
         }.bind(this);
@@ -851,7 +850,7 @@ var ViewFactoryProperty = Model.create({
             var ret = function(args, X) { return viewModel.create(args, X || this.Y); };
           } else {
             ret = function(map, opt_X) {
-              return FOAM.lookup(f, opt_X || this.X).create(map, opt_X || this.Y);
+              return (opt_X || this.X).lookup(f).create(map, opt_X || this.Y);
             }.bind(this);
           }
 
@@ -865,7 +864,7 @@ var ViewFactoryProperty = Model.create({
         // A JSON Model Factory: { factory_ : 'ModelName', arg1: value1, ... }
         if ( f.factory_ ) {
           ret = function(map, opt_X) {
-            var m = FOAM.lookup(f.factory_, opt_X || this.X);
+            var m = (opt_X || this.X).lookup(f.factory_);
             console.assert(m, 'Unknown ViewFactory Model: ' + f.factory_);
             return m.create(f, opt_X || this.Y).copyFrom(map);
           }.bind(this);

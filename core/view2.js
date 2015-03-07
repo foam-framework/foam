@@ -543,10 +543,10 @@ CLASS({
           </tr>
           <tr>
             <td class="output" id="<%= this.setClass('error', function() { return this.test.regression; }, this.masterID) %>">
-              <% this.masterView = FOAM.lookup(this.masterView, this.X).create({ data$: this.test.master$ }, this.Y); out(this.masterView); %>
+              <% this.masterView = this.X.lookup(this.masterView).create({ data$: this.test.master$ }, this.Y); out(this.masterView); %>
             </td>
             <td class="output" id="<%= this.setClass('error', function() { return this.test.regression; }, this.liveID) %>">
-              <% this.liveView = FOAM.lookup(this.liveView, this.X).create({ data$: this.test.results$ }, this.X); out(this.liveView); %>
+              <% this.liveView = this.X.lookup(this.liveView).create({ data$: this.test.results$ }, this.X); out(this.liveView); %>
             </td>
           </tr>
         </tbody>
@@ -816,7 +816,7 @@ CLASS({
   methods: {
     autocomplete: function(partial) {
       if ( ! this.completer ) {
-        var proto = FOAM.lookup(this.autocompleter, this.X);
+        var proto = this.X.lookup(this.autocompleter);
         this.completer = proto.create(null, this.Y);
       }
       if ( ! this.view ) {
@@ -2397,7 +2397,7 @@ CLASS({
       name: 'data',
       postSet: function(_, value) {
         var self = this;
-        var subKey = FOAM.lookup(this.subType + '.' + this.subKey, this.X);
+        var subKey = this.X.lookup(this.subType + '.' + this.subKey);
         var sink = { put: function(o) { self.innerData = o; } };
         if ( subKey.name === 'id' ) this.dao.find(value, sink);
         else this.dao.where(EQ(subKey, value)).limit(1).select(sink);
@@ -2409,7 +2409,7 @@ CLASS({
     { name: 'subType' },
     {
       name: 'model',
-      defaultValueFn: function() { return FOAM.lookup(this.subType, this.X); }
+      defaultValueFn: function() { return this.X.lookup(this.subType); }
     },
     { name: 'subKey' },
     {
@@ -2453,7 +2453,7 @@ CLASS({
     {
       name: 'data',
       postSet: function(_, value) {
-        var subKey = FOAM.lookup(this.subType + '.' + this.subKey, this.X);
+        var subKey = this.X.lookup(this.subType + '.' + this.subKey);
         this.innerData = this.dao.where(IN(subKey, value));
       }
     },
@@ -2463,7 +2463,7 @@ CLASS({
     { name: 'subType' },
     {
       name: 'model',
-      defaultValueFn: function() { return FOAM.lookup(this.subType, this.X); }
+      defaultValueFn: function() { return this.X.lookup(this.subType); }
     },
     { name: 'subKey' },
     {

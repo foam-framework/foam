@@ -24,8 +24,8 @@ var DOM = {
     var models = [];
     for ( var i = 0 ; i < fs.length ; i++ ) {
       var e = fs[i];
-      FOAM.lookup(e.getAttribute('view'), X);
-      FOAM.lookup(e.getAttribute('model'), X);
+      X.lookup(e.getAttribute('view'));
+      X.lookup(e.getAttribute('model'));
       if ( e.getAttribute('view') ) models.push(arequire(e.getAttribute('view')));
       if ( e.getAttribute('model') ) models.push(arequire(e.getAttribute('model')));
     }

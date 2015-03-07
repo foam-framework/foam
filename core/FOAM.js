@@ -35,7 +35,7 @@ function $removeWindow(w) {
 /** Replacement for getElementById **/
 // TODO(kgr): remove this is deprecated, use X.$ instead()
 var $ = function (id) {
-//  console.log('Deprecated use of GLOBAL.$.');
+  console.log('Deprecated use of GLOBAL.$.');
   for ( var i = 0 ; i < $documents.length ; i++ ) {
     if ( document.FOAM_OBJECTS && document.FOAM_OBJECTS[id] )
       return document.FOAM_OBJECTS[id];
@@ -49,7 +49,7 @@ var $ = function (id) {
 /** Replacement for getElementByClassName **/
 // TODO(kgr): remove this is deprecated, use X.$$ instead()
 var $$ = function (cls) {
-//  console.log('Deprecated use of GLOBAL.$$.');
+  console.log('Deprecated use of GLOBAL.$$.');
   for ( var i = 0 ; i < $documents.length ; i++ ) {
     var ret = $documents[i].getElementsByClassName(cls);
 
@@ -117,6 +117,7 @@ FOAM.browse = function(model, opt_dao, opt_X) {
 
 
 FOAM.lookup = function(key, opt_X) {
+//   console.warn('Deprecated use of FOAM.lookup.  Use X.lookup instead.'); 
   if ( ! key ) return undefined;
   if ( ! ( typeof key === 'string' ) ) return key;
 
@@ -137,7 +138,7 @@ FOAM.lookup = function(key, opt_X) {
 
 function arequire(modelName, opt_X) {
   var X = opt_X || GLOBAL.X;
-  var model = FOAM.lookup(modelName, X);
+  var model = X.lookup(modelName);
   if ( ! model ) {
     if ( ! X.ModelDAO ) {
       if ( modelName !== 'Template' ) console.warn('Unknown Model in arequire: ', modelName);
@@ -156,7 +157,7 @@ function arequire(modelName, opt_X) {
     var future = afuture();
     X.ModelDAO.find(modelName, {
       put: function(m) {
-        var m = FOAM.lookup(modelName, X);
+        var m = X.lookup(modelName);
         delete X.arequire$ModelLoadsInProgress[modelName];
         arequireModel(m, X)(future.set);
       },
@@ -286,7 +287,7 @@ var FOAM_POWERED = '<a style="text-decoration:none;" href="https://github.com/fo
 <font color="#3333FF">F</font><font color="#FF0000">O</font><font color="#FFCC00">A</font><font color="#33CC00">M</font>\
 <font color="#555555" > POWERED</font></font></a>';
 
-
+/** Lookup a '.'-separated package path, creating sub-packages as required. **/
 function packagePath(X, path) {
   function packagePath_(Y, path, i) {
     return i == path.length ? Y : packagePath_(Y[path[i]] || ( Y[path[i]] = {} ), path, i+1);
