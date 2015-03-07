@@ -37,13 +37,13 @@
 
   apar.apply(null, models).aseq(
     function() {
-      var obj = FOAM.lookup(model, X).create(params);
+      var obj = X.lookup(model).create(params);
       var view;
       if ( viewName ) {
-        view = FOAM.lookup(viewName, X).create({ data: obj });
+        view = X.lookup(viewName).create({ data: obj });
         // 'CView' refers to old CView
         // TODO(kgr): remove this check when CView's converted to foam.graphics.CView
-      } else if (  ( FOAM.lookup('foam.ui.View', X) && X.foam.ui.View.isInstance(obj) )
+      } else if (  ( X.lookup('foam.ui.View') && X.foam.ui.View.isInstance(obj) )
                 || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) { 
         view = obj;
       } else if ( obj.toView_ ) {
