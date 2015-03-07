@@ -16,157 +16,14 @@
  */
 
 
-var touchManager;
-var gestureManager;
-
-CLASS({
-  name: 'ModelListController',
-
-  requires:['MDAO', 
-            'foam.ui.DAOListView',
-            'foam.ui.md.TextFieldView'],
-
-  imports: ['masterModelList as dao'],
-
-  properties: [
-    {
-      name: 'search',
-    },
-    {
-      name: 'searchView',
-      factory: function() {
-        return this.TextFieldView.create({ data$: this.search$, label:'Search', onKeyMode: true, displayWidth: 20 });
-      }
-    },
-    {
-      name: 'filteredDAO',
-      model_: 'DAOProperty',
-
-      dynamicValue: function() {
-        return this.dao.orderBy(this.order)
-            .where(OR(CONTAINS_IC(Model.NAME, this.search), CONTAINS_IC(Model.PACKAGE, this.search)));
-      }
-    },
-    {
-      name: 'filteredDAOView',
-      factory: function() {
-        return this.DAOListView.create({ data$: this.filteredDAO$, rowView: 'ModelDescriptionRowView' });
-      }
-    }
-  ],
-
-
-});
-
-CLASS({
-  name: 'ModelCompletenessRecord',
-  package: 'foam.documentation',
-
-  properties: [
-    {
-      name: 'model'
-    },
-    {
-      name: 'documented',
-      model_: 'BooleanProperty',
-      defaultValue: false
-    },
-    {
-      name: 'undocumentedFeatureCount',
-      model_: 'IntProperty',
-      defaultValue: 0
-    },
-    {
-      name: 'documentedFeatureCount',
-      model_: 'IntProperty',
-      defaultValue: 0
-    },
-    {
-      name: 'undocumentedFeatures',
-      model_: 'StringArrayProperty',
-      factory: function() { return []; }
-    }
-  ]
-});
-
-
-CLASS({
-  name: 'ModelDescriptionRowView',
-  extendsModel: 'foam.ui.View',
-  
-  requires: ['SimpleValue'],
-
-  properties: [
-    {
-      name: 'data',
-      postSet: function(old,nu) {
-        this.modelRef = this.data.package ?
-                          this.data.package + "." + this.data.name :
-                          this.data.name;
-        var shortPkg = this.data.package;
-  //       if ( shortPkg.length > 20 ) {
-  //         shortPkg = "..." + this.data.package.substring(
-  //                     this.data.package.length-10, this.data.package.length);
-  //       }
-        this.modelName = (shortPkg ? "["+ shortPkg + "] <br/>" : "") + this.data.name;
-      }
-    },
-    {
-      name: 'modelName',
-      help: 'The Model package and name.'
-    },
-    {
-      name: 'modelRef'
-    }
-  ],
-
-  methods: {
-    init: function() {
-      // set up context // TODO: template is compile before we create subcontext
-      this.X = this.X.sub({name:'ModelDescriptionRowView_X'});
-      this.X.documentationViewParentModel = this.SimpleValue.create();
-
-      this.SUPER();
-    }
-    
-  },
-  templates: [ // TODO: the data gets set on the modelNameView... screws it up
-    function toInnerHTML() {/*
-      <p class="browse-list-entry">$$modelName{model_:'foam.documentation.DocRefView', ref$: this.modelRef$, text$: this.modelName$}</p>
-    */}
-  ]
-});
-
-
-CLASS({
-  name: 'ControllerView',
-  extendsModel: 'foam.ui.DetailView',
-
-  methods: {
-    initHTML: function() {
-      this.data.searchView.initHTML();
-      this.data.filteredDAOView.initHTML();
-    }
-  },
-
-  templates: [
-    function toHTML() {/*
-      <div class="search-field-container"><%=this.data.searchView.toHTML()%></div>
-      <div class="list-container">
-        <div><%=this.data.filteredDAOView.toHTML()%></div>
-      </div>
-    */}
-  ]
-});
-
-
 
 CLASS({
   name: 'DocBrowserController',
+  package: 'foam.documentation',
   requires: ['MDAO',
-             'DocBrowserView',
-             'ControllerView',
-             'ModelListController',
+             'foam.documentation.DocBrowserView',
+             'foam.documentation.ControllerView',
+             'foam.documentation.ModelListController',
              'foam.documentation.DocViewPicker',
              'foam.documentation.ModelCompletenessRecord',
              'foam.input.touch.TouchManager',
@@ -212,7 +69,7 @@ CLASS({
       if (this.SearchContext) return; // don't run twice
 
       // load developer guides
-      RegisterDevDocs(this.X);
+      this.X.RegisterDevDocs && this.X.RegisterDevDocs(this.X);
 
       // load all models
       this.createModelList();
@@ -293,17 +150,18 @@ CLASS({
 //         var modl = FOAM.lookup(key, this.X);
 //         modl.getPrototype && modl.getPrototype();
 //       }
-      //this.X.ModelDAO.select(newDAO);
 
+      X.ModelDAO.select(newDAO);
+      
       // All models are now in USED_MODELS
-      [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
-        for ( var key in collection ) {
-          // go async: as the requires complete, newDAO will fill in
-          arequire(key)( function(m) {
-            newDAO.put(m);
-          });
-        };
-      }.bind(this));
+      // [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
+      //   for ( var key in collection ) {
+      //     // go async: as the requires complete, newDAO will fill in
+      //     arequire(key)( function(m) {
+      //       newDAO.put(m);
+      //     });
+      //   };
+      // }.bind(this));
       
 //       // Add in non-model things like Interfaces
 //       for ( var key in NONMODEL_INSTANCES ) {
@@ -453,14 +311,14 @@ CLASS({
       name: 'modelList',
       factory: function() {
         this.contextSetup();
-        return this.SearchContext.ModelListController.create({}, this.SearchContext);
+        return this.ModelListController.create({}, this.SearchContext);
       }
     },
     {
       name: 'modelListView',
       factory: function() {
         this.contextSetup();
-        return this.SearchContext.ControllerView.create({ model: ModelListController,
+        return this.ControllerView.create({ model: this.ModelListController,
                                                           data$: this.modelList$ }, this.SearchContext);
       }
     },
@@ -468,290 +326,10 @@ CLASS({
       name: 'selectionView',
       factory: function() {
         this.contextSetup();
-        return this.DetailContext.foam.documentation.DocViewPicker.create({ data$: this.selection$ }, this.DetailContext);
+        return this.DocViewPicker.create({ data$: this.selection$ }, this.DetailContext);
       }
     },
   ]
 
 });
 
-CLASS({
-  name: 'DocBrowserView',
-  extendsModel: 'foam.ui.DetailView',
-
-  methods: {
-   initHTML: function() {
-     this.data.modelListView.initHTML();
-     this.data.selectionView.initHTML();
-   }
-  },
-
-  templates: [
-    function CSS() {/*
-      body {
-        margin: 0px;
-        font-family: 'Roboto', sans-serif;
-        font-size: inherit;
-
-        background-color: #e0e0e0;
-        position: relative;
-
-      }
-
-      .outermost {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .docbrowser-header {
-        height: 90px;
-        position: relative;
-        color: #fff;
-        z-index: 1;
-        flex-shrink: 0;
-      }
-
-      .docbrowser-header-inner {
-        background-color: #5555FF;
-        position: absolute;
-        height: 120px;
-        width: 100%;
-        flex-shrink: 0;
-      }
-
-      .docbrowser-header-flex-container {
-        display: flex;
-        flex-shrink: 0;
-        justify-content: space-around;
-        margin: 0 50px;
-      }
-      .docbrowser-header-contents {
-        flex-grow: 1;
-        flex-shrink: 0;
-        max-width: 1280px;
-
-        display: flex;
-        justify-content: space-between;
-      }
-
-      .docbrowser-title {
-        font-weight: lighter;
-        font-size: 250%;
-        margin-top: 20px;
-      }
-      .docbrowser-tabs {
-        font-size: 120%;
-        font-weight: lighter;
-        margin-top: 40px;
-        margin-right: 20px;
-      }
-      .docbrowser-tab {
-        margin-left: 50px;
-      }
-      .docbrowser-tab.enabled {
-        font-weight: normal;
-      }
-
-      .outer-container {
-        margin: 0 30px;
-        z-index: 2;
-        position: relative;
-        display:flex;
-        flex-direction: column;
-
-        flex-shrink: 1;
-        flex-basis: 10000px;
-      }
-      .outer-flex-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        margin-bottom: 60px;
-        width: 100%;
-        flex-grow: 1;
- //       height: 83%;
-      }
-      .inner-container {
-        background-color: #fff;
-        border: 1px solid #888;
-        border-radius: 12px;
-        flex-grow: 1000;
-        flex-shrink: 1;
-        flex-basis: 1px;
-        max-width: 1280px;
-        padding: 15px;
-        box-shadow: 0px 5px 5px #888888;
-        display:flex;
-      }
-
-      input {
-        font-family: inherit;
-        font-size: inherit;
-      }
-
-      p {
-        padding-bottom: 0.5em;
-      }
-      li {
-        padding-bottom: 0.5em;
-      }
-
-      div.listPane {
-        min-width: 200px;
-        flex-basis: 200px;
-        order: 1;
-        padding: 1em;
-        flex-grow: 0;
-        overflow-x: hidden;
-
-        display: flex;
-        flex-direction: column;
-      }
-
-      div.detailPane {
-        order: 2;
-        flex-grow: 10;
-        overflow-y: scroll;
-        padding: 1em;
-      }
-
-      div.detailPane div.chapters h2 {
-        font-size: 110%;
-      }
-
-      div.search-field-container {
-        flex-grow: 0;
-        flex-shrink: 0;
-        order: 1;
-        padding: 0;
-        margin-left: -15;
-      }
-
-      div.list-container {
-        font-size: 80%;
-        order: 2;
-        flex-grow: 1;
-        overflow-y:scroll;
-        overflow-x:hidden;
-      }
-      div.list-container span.docLink {
-        border-bottom: none;
-      }
-
-      div.members {
-        margin-top: 1em;
-        padding-left: 2em;
-      }
-      div.memberList {
-        padding-left: 2em;
-      }
-
-      div.chapters div.memberList {
-        padding-left: 0;
-      }
-
-      div.inherited {
-        color: #333333;
-      }
-
-      p.browse-list-entry {
-        font-size:100%;
-        font-weight: bold;
-        line-height: 150%
-      }
-
-      span.docLink {
-        cursor: pointer;
-        color: #000077;
-        border-bottom: 0.1em dotted #999;
-      }
-
-      span.docLinkNoDocumentation {
-        color: #770000;
-
-      }
-
-      div.model-info-block {
-        padding: 1em;
-        margin: 1em 0 1em 0;
-      }
-      div.introduction {
-        border-top: 0.1em solid black;
-        border-bottom: 0.1em solid black;
-      }
-      div.model-info-block p.note {
-        font-size:105%;
-      }
-      div.model-info-block p.important {
-        font-size:105%;
-        font-weight:bold;
-      }
-      div.clear {
-        clear: both;
-      }
-
-      .feature-row {
-        //border-top: 0.1em solid grey;
-        margin-top: 1em;
-        margin-bottom: 1em;
-      }
-
-      p.inheritance-info {
-        font-size: 90%;
-        padding-left: 1em;
-      }
-
-      .feature-type-heading {
-        font-weight: bold;
-        font-size: 150%;
-      }
-      .feature-heading {
-        font-weight: bold;
-        font-size: 125%;
-      }
-      .feature-sub-heading {
-        font-weight: bold;
-        font-size: 100%;
-      }
-      .feature-type {
-        float:right;
-      }
-
-      .light {
-        color: #444;
-      }
-
-      div.diagram {
-        padding-top: 1em;
-        float: right;
-      }
-
-    */},
-    function toHTML() {/*
-      <div class="outermost" id="<%= this.id %>">
-        <div class="docbrowser-header">
-          <div class="docbrowser-header-inner">
-            <div class="docbrowser-header-flex-container">
-              <div class="docbrowser-header-contents">
-                <div class="docbrowser-title"><img src="images/browsertitle-lg.png" alt="FOAM API Reference"/></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="<%= this.id %>-outer-container" class="outer-container">
-          <div class="outer-flex-container">
-            <div id="<%= this.id %>-inner-container" class="inner-container">
-                <div class="listPane"><%=this.data.modelListView.toHTML()%></div>
-                <div class="detailPane"><%=this.data.selectionView.toHTML()%></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    */}
-  ]
-
-
-});

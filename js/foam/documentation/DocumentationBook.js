@@ -19,6 +19,7 @@
 // DocumentationBook and not submodels.
 CLASS({
   name: 'DocumentationBook',
+  package: 'foam.documentation',
   extendsModel: 'Documentation',
   label: 'Documentation Book',
   plural: 'DocumentationBooks',
@@ -47,7 +48,7 @@ var RegisterDevDocs = function(opt_X) {
   var X = opt_X? opt_X : X;
 
   if (!X.developerDocs) {
-    X['developerDocs'] = {};
+    X.set('developerDocs', {});
   }
 
   var bookList = [];

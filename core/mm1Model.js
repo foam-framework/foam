@@ -641,6 +641,15 @@ var Model = {
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
       },
+      adapt: function(_, newValue) {
+        if ( ! Model ) return newValue;
+        return Array.isArray(newValue) ? JSONUtil.arrayToObjArray(this.X, newValue, Model) : newValue;
+      },
+      postSet: function() {
+        this.models.forEach(function(m) {
+          this[m.name] = m;
+        }.bind(this));
+      },
       defaultValue: [],
       help: 'Sub-models embedded within this model.',
       documentation: function() { /*
