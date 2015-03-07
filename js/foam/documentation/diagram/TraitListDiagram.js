@@ -16,18 +16,20 @@
  */
 
 CLASS({
-  name: 'TraitListDiagram',
   package: 'foam.documentation.diagram',
+  name: 'TraitListDiagram',
 
   extendsModel: 'foam.ui.BaseView',
 
-  requires: ['foam.documentation.diagram.ModelDocDiagram',
-             'foam.documentation.diagram.DocLinkDiagram',
-             'foam.graphics.diagram.LinearLayout',
-             'foam.graphics.diagram.Link',
-             'foam.graphics.Spacer',
-             'SimpleValue',
-             'foam.documentation.DocRef'],
+  requires: [
+    'foam.documentation.diagram.ModelDocDiagram',
+    'foam.documentation.diagram.DocLinkDiagram',
+    'foam.graphics.diagram.LinearLayout',
+    'foam.graphics.diagram.Link',
+    'foam.graphics.Spacer',
+    'SimpleValue',
+    'foam.documentation.DocRef'
+  ],
             
   documentation: function() {/*
     A view that renders one model's traits.
@@ -38,7 +40,7 @@ CLASS({
       name: 'data',
       adapt: function(old, nu) {
         if ( typeof nu == 'string' ) {
-          return FOAM.lookup(nu, this.X);
+          return this.X.lookup(nu);
         }
         return nu;
       }
@@ -84,7 +86,7 @@ CLASS({
       
       self.data.traits.forEach( function(trait) {
       
-        var traitModel = FOAM.lookup(trait, self.X);
+        var traitModel = self.X.lookup(trait);
         
         var X = self.X.sub({ 
           documentViewRef: self.SimpleValue.create(self.DocRef.create({ ref: trait }, self.X))

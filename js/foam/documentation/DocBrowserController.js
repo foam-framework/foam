@@ -18,16 +18,18 @@
 
 
 CLASS({
-  name: 'DocBrowserController',
   package: 'foam.documentation',
-  requires: ['MDAO',
-             'foam.documentation.DocBrowserView',
-             'foam.documentation.ControllerView',
-             'foam.documentation.ModelListController',
-             'foam.documentation.DocViewPicker',
-             'foam.documentation.ModelCompletenessRecord',
-             'foam.input.touch.TouchManager',
-             'foam.input.touch.GestureManager'
+  name: 'DocBrowserController',
+
+  requires: [
+    'MDAO',
+    'foam.documentation.DocBrowserView',
+    'foam.documentation.ControllerView',
+    'foam.documentation.ModelListController',
+    'foam.documentation.DocViewPicker',
+    'foam.documentation.ModelCompletenessRecord',
+    'foam.input.touch.TouchManager',
+    'foam.input.touch.GestureManager'
   ],
 
   documentation: function() {  /*

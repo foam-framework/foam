@@ -19,18 +19,18 @@ require('../core/bootFOAMnode.js');
 
 arequire(process.argv[2])(function(model) {
   if ( ! model ) {
-    console.log("ERRROR: Could not find model", process.argv[2]);
+    console.log('ERRROR: Could not find model', process.argv[2]);
     process.exit(1);
   }
 
   function usage(m) {
-    console.log(m.id, " options:");
+    console.log(m.id, ' options:');
     for ( var i = 0 ; i < m.properties.length ; i++ ) {
-      console.log("  ", m.properties[i].name, ": ", m.properties[i].help);
+      console.log("  ", m.properties[i].name, ': ', m.properties[i].help);
     }
-    console.log("");
-    console.log("");
-    if ( m.extendsModel ) usage(FOAM.lookup(m.extendsModel, X));
+    console.log('');
+    console.log('');
+    if ( m.extendsModel ) usage(X.lookup(m.extendsModel));
   }
 
   if ( process.argv[3] == '--help' ) {

@@ -16,18 +16,20 @@
  */
 
 CLASS({
-  name: 'ExtendsDiagram',
   package: 'foam.documentation.diagram',
+  name: 'ExtendsDiagram',
 
   extendsModel: 'foam.ui.DestructiveDataView',
 
-  requires: ['foam.documentation.diagram.ModelDocDiagram',
-             'foam.documentation.diagram.DocLinkDiagram',
-             'foam.graphics.diagram.LinearLayout',
-             'foam.graphics.diagram.Link',
-             'foam.graphics.Spacer',
-             'SimpleValue',
-             'foam.documentation.DocRef'],
+  requires: [
+    'foam.documentation.diagram.ModelDocDiagram',
+    'foam.documentation.diagram.DocLinkDiagram',
+    'foam.graphics.diagram.LinearLayout',
+    'foam.graphics.diagram.Link',
+    'foam.graphics.Spacer',
+    'SimpleValue',
+    'foam.documentation.DocRef'
+  ],
 
   documentation: function() {/*
     A view that renders one model's extendsModel, and recursively builds another ExtendsModel.
@@ -78,7 +80,7 @@ CLASS({
     construct: function() {
       this.SUPER();
       // don't just copy data, find extendsModel and send that to children
-      var childData = FOAM.lookup(this.data.extendsModel, this.X);
+      var childData = this.X.FOAM.lookup(this.data.extendsModel);
             
       var childX = this.X.sub({ 
         documentViewRef: this.SimpleValue.create(
