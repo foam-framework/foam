@@ -117,7 +117,7 @@ FOAM.browse = function(model, opt_dao, opt_X) {
 
 
 FOAM.lookup = function(key, opt_X) {
-//   console.warn('Deprecated use of FOAM.lookup.  Use X.lookup instead.'); 
+  console.warn('Deprecated use of FOAM.lookup.  Use X.lookup instead.'); 
   if ( ! key ) return undefined;
   if ( ! ( typeof key === 'string' ) ) return key;
 

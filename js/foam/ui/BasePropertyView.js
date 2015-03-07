@@ -113,7 +113,7 @@ CLASS({
       /* Helper to determine the $$DOC{ref:'foam.ui.View'} to use. */
       var viewName = this.innerView || prop.view
       if ( ! viewName ) return this.TextFieldView.create(prop, this.Y);
-      if ( typeof viewName === 'string' ) return FOAM.lookup(viewName, this.Y).create(prop, this.Y);
+      if ( typeof viewName === 'string' ) return this.Y.lookup(viewName).create(prop, this.Y);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
       if ( viewName.model_ ) { 
         var v = viewName.model_.create(viewName, this.X);
@@ -123,7 +123,7 @@ CLASS({
         return v; 
       }
       if ( viewName.factory_ ) {
-        var v = FOAM.lookup(viewName.factory_, this.X).create(viewName, this.X);
+        var v = this.X.lookup(viewName.factory_).create(viewName, this.X);
         var vId = v.id;
         v.copyFrom(prop);
         v.id = vId;
@@ -165,7 +165,7 @@ CLASS({
       this.bindData(this.data);
 
       if ( this.args && this.args.model_ ) {
-        var model = FOAM.lookup(this.args.model_, this.Y);
+        var model = this.Y.lookup(this.args.model_);
         console.assert( model, 'Unknown View: ' + this.args.model_);
         // HACK to make sure model specification makes it into the create
         if ( this.args.model ) this.prop.model = this.args.model;

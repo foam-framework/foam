@@ -22,7 +22,7 @@ MODEL({
   methods: {  
     find: function (key, sink) {
       var X = this.X;
-      var model = FOAM.lookup(key, X);
+      var model = X.lookup(key);
       if ( model ) {
         sink && sink.put && sink.put(model);
         return;
@@ -35,7 +35,7 @@ MODEL({
       X.document.head.appendChild(tag);
       
       tag.onload = function() {
-        var model = FOAM.lookup(key, X);
+        var model = X.lookup(key);
         if ( ! model ) {
           console.warn('Model load failed for: ', key);
           sink && sink.error && sink.error('Model load failed for: ', key);
