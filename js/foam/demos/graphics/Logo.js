@@ -164,8 +164,8 @@ CLASS({
         return this.LogoBackground.create({width: this.width, height: this.height});
       }
     },
-    { name: 'width',     defaultValue: 600 },
-    { name: 'height',    defaultValue: 200 },
+    { name: 'width',     defaultValue: 400 },
+    { name: 'height',    defaultValue: 102 },
     { name: 'className', defaultValue: 'logo' }
   ],
 
