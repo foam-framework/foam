@@ -362,6 +362,10 @@ option[selected]{
   background-color: #dfdfdf;
 }
 
+.actionButton img {
+  vertical-align: middle;
+}
+
 .scrollSpacer {
   height: 52;
 }
