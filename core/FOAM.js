@@ -116,26 +116,6 @@ FOAM.browse = function(model, opt_dao, opt_X) {
 };
 
 
-FOAM.lookup = function(key, opt_X) {
-  console.warn('Deprecated use of FOAM.lookup.  Use X.lookup instead.'); 
-  if ( ! key ) return undefined;
-  if ( ! ( typeof key === 'string' ) ) return key;
-
-  var root = opt_X || X;
-  var cache = root.hasOwnProperty('lookupCache_') ? root.lookupCache_ : ( root.lookupCache_ = {} );
-
-  var ret = cache[key];
-  if ( ! ret ) {
-    var path = key.split('.');
-    for ( var i = 0 ; root && i < path.length ; i++ ) root = root[path[i]];
-
-    ret = root;
-    cache[key] = ret;
-  }
-  return ret;
-};
-
-
 function arequire(modelName, opt_X) {
   var X = opt_X || GLOBAL.X;
   var model = X.lookup(modelName);
