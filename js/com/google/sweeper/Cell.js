@@ -56,7 +56,7 @@ CLASS({
   templates: [
     function CSS() {/*
       .sweeper-cell {
-        border: 1px solid black;
+        border: 1px solid gray;
         display: table-cell;
         height: 24px;
         text-align: center;
@@ -65,6 +65,7 @@ CLASS({
         font-weight: bold;
       }
       .sweeper-cell.covered {
+        box-shadow: -2px -2px 10px rgba(0,0,0,.25) inset, 2px 2px 10px white inset;        
         background: #ccc;
       }
       .sweeper-cell.covered font {
