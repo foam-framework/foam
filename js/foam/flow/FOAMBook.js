@@ -15,10 +15,12 @@ CLASS({
   package: 'foam.flow',
   extendsModel: 'foam.flow.Section',
 
-  exports: [ 'glossaryTerms' ],
 
   requires: [
     'EasyDAO',
+    'foam.graphics.ActionButtonCView',
+    'foam.input.touch.TouchManager',
+    'foam.input.touch.GestureManager',
     'foam.flow.Watermark',
     'foam.flow.TitlePage',
     'foam.flow.BookTitle',
@@ -26,9 +28,16 @@ CLASS({
     'foam.flow.Author',
     'foam.flow.ToC',
     'foam.flow.Section',
+    'foam.flow.AceEditor',
+    'foam.flow.CodeSample',
     'foam.flow.Aside',
     'foam.flow.GlossaryTerm',
     'foam.flow.Glossary'
+  ],
+  exports: [
+    'glossaryTerms',
+    'editorModel',
+    'actionButtonModel'
   ],
 
   properties: [
@@ -40,6 +49,34 @@ CLASS({
           model: this.GlossaryTerm,
           daoType: 'MDAO'
         }).orderBy(this.GlossaryTerm.ID);
+      }
+    },
+    {
+      name: 'editorModel',
+      factory: function() {
+        this.X.registerElement('editor', 'foam.flow.AceEditor');
+        return this.AceEditor;
+      }
+    },
+    {
+      name: 'actionButtonModel',
+      factory: function() {
+        return this.ActionButtonCView;
+      }
+    }
+  ],
+
+  methods: [
+    {
+      name: 'init',
+      code: function() {
+        this.SUPER.apply(this, arguments);
+        if ( ! this.X.touchManager ) {
+          this.X.touchManager = this.TouchManager.create();
+        }
+        if ( ! this.X.gestureManager ) {
+          this.X.gestureManager = this.GestureManager.create();
+        }
       }
     }
   ],

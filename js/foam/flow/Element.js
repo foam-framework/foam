@@ -80,6 +80,6 @@ CLASS({
   },
 
   templates: [
-    function toInnerHTML() {/* <%= this.inner() %> */}
+    function toInnerHTML() {/*<%= this.inner() %>*/}
   ]
 });

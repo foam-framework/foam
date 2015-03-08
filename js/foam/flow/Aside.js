@@ -22,6 +22,7 @@ CLASS({
         margin: 0px 10px 10px 10px;
         right: 10px;
         float: right;
+        position: relative;
       }
 
       aside p {

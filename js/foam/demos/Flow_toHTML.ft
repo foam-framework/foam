@@ -37,17 +37,17 @@
   <section title="Chapter">
     This is chapter 3.
 
-    Sample 1:
-    <code-sample code="return 1+2;"/>
+    <code-sample title="Code Sample 1" src="console.log(1+2);" />
 
-    Sample 2:
-    <code-sample>
-      return 42*42;
+    <code-sample title="Code Sample 2">
+      <src>console.warn("Danger, Will Robinson!");</src>
     </code-sample>
 
     Sample 3:
     <code-sample>
-      <code>return "hello world!";</code>
+      <title>Code Sample 3</title>
+      <src>console.assert(true, "Error: Truth is falsity!");
+console.assert(false, "Expected error: Falsity is falsity.");</src>
     </code-sample>
 
   </section>

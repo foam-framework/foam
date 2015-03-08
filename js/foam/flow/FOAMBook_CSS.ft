@@ -39,7 +39,7 @@ book p.center {
 @media not print {
 
   body {
-    book: Roboto, 'Helvetica Neue', Helvetica, Arial;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial;
   }
 
   @media (max-width: 800px) {
