@@ -57,15 +57,16 @@ CLASS({
       .sweeper-cell {
         border: 1px solid gray;
         display: table-cell;
-        height: 24px;
+        font-size: 20px;
+        font-weight: bold;
+        height: 26px;
         text-align: center;
         vertical-align: middle;
-        width: 24px;
-        font-weight: bold;
+        width: 26px;
       }
       .sweeper-cell.covered {
-        box-shadow: -2px -2px 10px rgba(0,0,0,.25) inset, 2px 2px 10px white inset;        
         background: #ccc;
+        box-shadow: -2px -2px 10px rgba(0,0,0,.25) inset, 2px 2px 10px white inset;        
       }
       .sweeper-cell.covered font {
         display: none;
@@ -76,6 +77,7 @@ CLASS({
       .sweeper-cell.marked {
         background-color: #ccc;
         background-image: url('js/com/google/sweeper/flag.png');
+        background-repeat: no-repeat;
       }
     */}
   ],
