@@ -9,7 +9,6 @@
  *     http://www.apache.org/licenses/LICENSE-2.0
  */
 
-// Flag image from www.icons-land.com
 CLASS({
   package: 'com.google.sweeper',
   name: 'Cell',
