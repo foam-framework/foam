@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-
-
 CLASS({
   package: 'foam.documentation',
   name: 'DocBrowserController',

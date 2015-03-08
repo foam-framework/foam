@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-
 CLASS({
-  name: 'ViewActionsTrait',
   package: 'foam.ui',
+  name: 'ViewActionsTrait',
   requires: ['foam.ui.ActionButton', 'foam.ui.ActionBorder'],
 
   properties: [
@@ -49,14 +48,12 @@ CLASS({
       var modelName = opt_args && opt_args.model_ ?
         opt_args.model_ :
         'foam.ui.ActionButton'  ;
-      var v = FOAM.lookup(modelName, X).create({action: action}, X).copyFrom(opt_args);
+      var v = X.lookup(modelName, X).create({action: action}).copyFrom(opt_args);
 
       this[action.name + 'View'] = v;
 
       return v;
-    },
- 
+    }
   }
- 
 });
 

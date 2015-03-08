@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'MBug',
   package: 'foam.apps.mbug',
+  name: 'MBug',
   extendsModel: 'foam.ui.View',
   description: 'Mobile QuickBug',
 
@@ -129,7 +129,7 @@ CLASS({
           sortChoices: project.defaultSortChoices,
           filterChoices: project.defaultFilterChoices,
           menuFactory: function() {
-            return FOAM.lookup('foam.apps.mbug.ui.ChangeProjectView', this.X).create({data: project.user}, this.Y);
+            return this.X.lookup('foam.apps.mbug.ui.ChangeProjectView').create({data: project.user}, this.Y);
           }
         }, Y);
         this.stack.setTopView(this.DetailView.create({data: pc}, pc.Y));

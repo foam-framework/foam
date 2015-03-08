@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'AddRowView',
   package: 'foam.ui.md',
+  name: 'AddRowView',
   extendsModel: 'foam.ui.View',
   traits: ['foam.ui.layout.PositionedDOMViewTrait', 'foam.input.touch.VerticalScrollNativeTrait'],
 
@@ -128,7 +128,7 @@ CLASS({
       factory: function() { return 'ID'; },
       preSet: function(old, nu) {
         return typeof nu === 'string' ?
-            FOAM.lookup(this.subType + '.' + constantize(nu), this.X) : nu;
+          this.X.lookup(this.subType + '.' + constantize(nu)) : nu;
       }
     },
     {

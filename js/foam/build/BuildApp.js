@@ -16,8 +16,9 @@
  */
 
 CLASS({
-  name: "BuildApp",
   package: 'foam.build',
+  name: "BuildApp",
+
   imports: [
     'log',
     'error'
@@ -216,7 +217,7 @@ CLASS({
         if ( visited[require] ) return;
         visited[require] = true;
 
-        var model = FOAM.lookup(require, X);
+        var model = X.lookup(require);
         if ( ! model ) {
           error("Could not load model: ", require);
         }

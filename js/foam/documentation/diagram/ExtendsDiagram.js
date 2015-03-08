@@ -80,7 +80,7 @@ CLASS({
     construct: function() {
       this.SUPER();
       // don't just copy data, find extendsModel and send that to children
-      var childData = this.X.FOAM.lookup(this.data.extendsModel);
+      var childData = this.X.lookup(this.data.extendsModel);
             
       var childX = this.X.sub({ 
         documentViewRef: this.SimpleValue.create(
