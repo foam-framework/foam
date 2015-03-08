@@ -21,6 +21,7 @@ CLASS({
   constants: {
     COUNT_COLOURS: [ '', 'green', 'blue', 'orange', 'red', 'red', 'red', 'red' ],
   },
+
   properties: [
     {
       name: 'x'
