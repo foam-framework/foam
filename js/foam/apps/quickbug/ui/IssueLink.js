@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'IssueLink',
   package: 'foam.apps.quickbug.ui',
+  name: 'IssueLink',
   extendsModel: 'foam.ui.View',
 
   imports: [
@@ -69,7 +69,7 @@ CLASS({
           var ids = issue[self.property.name];
 
           if ( ids.length ) {
-            var subView = FOAM.lookup('foam.apps.quickbug.ui.BlockView', self.X).create({
+            var subView = self.X.lookup('foam.apps.quickbug.ui.BlockView').create({
               property: self.property,
               maxDepth: self.maxDepth-1,
               ids:      ids

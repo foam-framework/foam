@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'QIssueComment',
   package: 'foam.apps.quickbug.model',
+  name: 'QIssueComment',
   extendsModel: 'foam.apps.quickbug.model.imported.IssueComment',
 
   ids: [ 'id' ],
@@ -34,7 +34,7 @@ CLASS({
       view: 'foam.apps.quickbug.ui.QIssueCommentAuthorView',
       subType: 'foam.apps.quickbug.model.imported.IssuePerson',
       preSet: function(_, newValue, prop) {
-        if ( ! newValue.model_ ) return FOAM.lookup(prop.subType, this.X).create(newValue);
+        if ( ! newValue.model_ ) return this.X.lookup(prop.subType).create(newValue);
         return newValue;
       }
     },
@@ -43,8 +43,7 @@ CLASS({
       subType: 'foam.apps.quickbug.model.QIssueCommentUpdate',
       view: 'foam.apps.quickbug.ui.QIssueCommentUpdateView',
       preSet: function(_, newValue, prop) {
-        if ( ! newValue.model_ ) return FOAM.lookup(prop.subType, this.X).create(newValue);
-        return newValue;
+        return newValue.model_ ? newValue : this.X.lookup(prop.subType).create(newValue);
       }
     },
     {
