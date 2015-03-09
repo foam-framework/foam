@@ -479,6 +479,15 @@ MODEL({
       var func = args.shift();
       return this.map(function(x) { return x[func] && x[func].apply(x[func], args); });
     }
+  ],
+
+  properties: [
+    {
+      name: 'memento',
+      getter: function() {
+        throw "Array's can not be memorized properly as a memento.";
+      }
+    }
   ]
 });
 
