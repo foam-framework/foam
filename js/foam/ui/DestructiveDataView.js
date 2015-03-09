@@ -74,9 +74,9 @@ CLASS({
         this.dataLinkedChildren = [];
       } else {
         var parentName = this.parent.name_;
-        this.data$.addListener(function() {
-          console.warn("Data changed after fast-destroy! ", this.name_, parentName);
-        }.bind(this));  
+//         this.data$.addListener(function() {
+//           console.warn("Data changed after fast-destroy! ", this.name_, parentName);
+//         }.bind(this));  
       }
       this.SUPER( isParentDestroyed );
     },
