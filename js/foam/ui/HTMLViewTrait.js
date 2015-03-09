@@ -221,7 +221,7 @@ CLASS({
     // TODO: make use new static_ scope when available
     nextID: function() {
       /* Convenience method to return unique DOM element ids. */
-      return "viewN" + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
+      return "view" + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
     },
 
     addInitializer: function(f) {

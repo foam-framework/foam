@@ -23,16 +23,25 @@
     var space2 = Canvas.create({width: 450, height: 700, background:'#fff'});
 
     document.writeln("<table><tr><td>");
-    space.write(document);
+    var spaceView = space.write(document);
     document.writeln("</td><td>");
-    graphs.write(document);
+    var graphsView = graphs.write(document);
     document.writeln("</td><td>");
-    space2.write(document);
+    var space2View = space2.write(document);
     document.writeln("</td><tr></table>");
 
     document.writeln('<div style="display:inline-block">');
-    timer.write(document);
+    var timerView = timer.write(document);
     document.writeln('</div>');
+   
+   console.log("graphsView");
+    graphsView.initHTML();
+    console.log("spaceView");
+    spaceView.initHTML();
+    console.log("space2View");
+    space2View.initHTML();
+    console.log("timerView");
+    timerView.initHTML();
 
     var sys = System.create({
       parent: space,
@@ -91,8 +100,8 @@
           sys.efficiencyGraph.maxValue = sys2.efficiencyGraph.maxValue = Math.max(1000, sys.efficiencyGraph.lastValue(), sys2.efficiencyGraph.lastValue());
           sys.codeGraph.maxValue = sys2.codeGraph.maxValue = Math.max(1000, sys.codeGraph.lastValue(), sys2.codeGraph.lastValue());
         }
-    });
-
+    });   
+    
    // space.paint();
    timer.start();
 
@@ -144,7 +153,7 @@
       }
       dim(sys);
       dim(sys2);
-      for ( var i = 0 ; i < 100 /*systems.length*/ ; i++ ) {
+      for ( var i = 0 ; i < 100 ; i++ ) {
         setTimeout((function(i) { return function() {
           proto.parent = space2;
           var sys = proto.clone();
@@ -162,10 +171,16 @@
    }
 
     document.write('<table><tr><td>');
-    sys.write(document);
+    var sysView = sys.write(document);
     document.write('</td><td>');
-    sys2.write(document);
+    var sys2View = sys2.write(document);
     document.write('</td></tr></table>');
+    
+    console.log("sysView");
+    sysView.initHTML();
+    console.log("sys2View");
+    sys2View.initHTML();
+
   });
   </script>
 
