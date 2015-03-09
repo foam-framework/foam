@@ -21,6 +21,8 @@ var System = FOAM({
 
   name:  'System',
 
+  requires: ['foam.input.Mouse'],
+  
   properties: [
     {
       name:  'parent',
@@ -118,7 +120,7 @@ var System = FOAM({
     },
     {
       name:  'mouse',
-      type:  'Mouse',
+      type:  'foam.input.Mouse',
       view: { factory_: 'foam.ui.DetailView', model: Mouse },
       factory: function() {
         return Mouse.create();

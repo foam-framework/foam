@@ -1042,7 +1042,7 @@ CLASS({
     },
     {
       name: 'mouse',
-      factory: function() { return this.X.Mouse.create(); }
+      factory: function() { return this.X.foam.input.Mouse.create(); }
     }
   ],
 
