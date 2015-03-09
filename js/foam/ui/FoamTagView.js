@@ -50,7 +50,7 @@ CLASS({
       if ( viewName  ) models.push(arequire(viewName));
 
       aseq(apar.apply(null, models), function(ret) {
-        var model = FOAM.lookup(modelName, this.X);
+        var model = this.X.lookup(modelName);
 
         if ( ! model ) {
           this.error('Unknown Model: ', modelName);
@@ -65,7 +65,7 @@ CLASS({
         var view;
 
         if ( viewName ) {
-          var viewModel = FOAM.lookup(viewName, this.X);
+          var viewModel = this.X.lookup(viewName);
           view = viewModel.create({ model: model, data: obj });
         } else if ( this.X.foam.ui.View.isInstance(obj) ) {
           view = obj;

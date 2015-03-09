@@ -15,6 +15,25 @@
  * limitations under the License.
  */
 
+function lookup(key) {
+  if ( ! key ) return undefined;
+  if ( ! ( typeof key === 'string' ) ) return key;
+  
+  var root  = this
+  var cache = root.hasOwnProperty('lookupCache_') ? root.lookupCache_ : ( root.lookupCache_ = {} );
+  
+  var ret = cache[key];
+  if ( ! ret ) {
+    var path = key.split('.');
+    for ( var i = 0 ; root && i < path.length ; i++ ) root = root[path[i]];
+    
+    ret = root;
+    cache[key] = ret;
+  }
+  return ret;
+}
+
+
 /** Update a Context binding. **/
 function set(key, value) {
   // It looks like the chrome debug console is overwriting sub.window
@@ -72,8 +91,7 @@ var X = sub({});
 
 var _ROOT_X = X;
 
-var foam = {};
-X.foam = foam;
+var foam = X.foam = {};
 
 var registerFactory = function(model, factory) {
   // TODO

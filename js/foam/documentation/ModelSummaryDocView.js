@@ -24,7 +24,7 @@ CLASS({
 
   documentation: "A summary documentation view for $$DOC{ref:'Model'} instances.",
 
-  requires: ['foam.documentation.DocDiagramView',
+  requires: ['foam.documentation.diagram.DocDiagramView',
              'foam.documentation.TextualDAOListView',
              'foam.documentation.DocFeatureModelRefView',
              'foam.documentation.DocBodyView'],
@@ -47,7 +47,7 @@ CLASS({
 <%    if (this.data) {  %>
         <div class="introduction">
           <div class="diagram">
-            $$data{ model_: 'foam.documentation.DocDiagramView' }
+            $$data{ model_: 'foam.documentation.diagram.DocDiagramView' }
           </div>
           <h1><%=this.data.name%></h1>
           <div class="model-info-block">

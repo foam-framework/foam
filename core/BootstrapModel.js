@@ -97,7 +97,7 @@ var BootstrapModel = {
       var traitName  = traitModel.id ? traitModel.id.replace(/\./g, '__') : '';
       var name       = parentName + '_ExtendedWith_' + traitName;
 
-      if ( ! FOAM.lookup(name) ) {
+      if ( ! lookup(name) ) {
         var model = traitModel.deepClone();
         model.package = "";
         model.name = name;
@@ -105,18 +105,18 @@ var BootstrapModel = {
         GLOBAL.X.registerModel(model);
       }
 
-      var ret = FOAM.lookup(name);
-      console.assert(ret, 'Unknown name.');
+      var ret = GLOBAL.X.lookup(name);
+      console.assert(ret, 'Error adding Trait to Model, unknown name: ', name);
       return ret;
     }
 
-    if ( this.extendsModel && ! FOAM.lookup(this.extendsModel, this.X) ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
+    if ( this.extendsModel && ! this.X.lookup(this.extendsModel) ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
 
-    var extendsModel = this.extendsModel && FOAM.lookup(this.extendsModel, this.X);
+    var extendsModel = this.extendsModel && this.X.lookup(this.extendsModel);
 
     if ( this.traits ) for ( var i = 0 ; i < this.traits.length ; i++ ) {
       var trait      = this.traits[i];
-      var traitModel = FOAM.lookup(trait, this.X);
+      var traitModel = this.X.lookup(trait);
 
       console.assert(traitModel, 'Unknown trait: ' + trait);
 
@@ -162,7 +162,7 @@ var BootstrapModel = {
 
       defineLocalProperty(cls, key, function() {
         var Y     = this.Y;
-        var model = FOAM.lookup(m, this.X);
+        var model = this.X.lookup(m);
         console.assert(model, 'Unknown Model: ' + m + ' in ' + this.name_);
         var proto = model.getPrototype();
         return {
@@ -347,7 +347,7 @@ var BootstrapModel = {
       var name = constantize(r.name);
       if ( ! self[name] ) self[name] = r;
       defineLazyProperty(cls, r.name, function() {
-        var m = FOAM.lookup(r.relatedModel, this.X);
+        var m = this.X.lookup(r.relatedModel);
         var lcName = m.name[0].toLowerCase() + m.name.substring(1);
         var dao = this.X[lcName + 'DAO'] || this.X[m.name + 'DAO'] ||
             this.X[m.plural];

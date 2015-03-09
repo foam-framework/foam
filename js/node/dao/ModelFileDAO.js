@@ -33,7 +33,7 @@ MODEL({
     find: function (key, sink) {
       var X = this.X;
       try {
-        var model = FOAM.lookup(key, X);
+        var model = X.lookup(key);
         if ( model ) {
           sink && sink.put && sink.put(model);
           return;
@@ -42,7 +42,7 @@ MODEL({
         var fileName = this.classpath + '/' + key.replace(/\./g, '/') + '.js';
         require(fileName);
 
-        model = FOAM.lookup(key, X);
+        model = X.lookup(key);
         if ( ! model ) {
           sink && sink.error && sink.error('Model load failed for: ', key);
           return;

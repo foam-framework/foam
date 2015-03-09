@@ -105,7 +105,7 @@ CLASS({
                   color: #333;
                   height: 110px;">
         <%
-          var avatar = FOAM.lookup(this.avatarView).create({ data$: this.data$ });
+          var avatar = lookup(this.avatarView).create({ data$: this.data$ });
           this.addChild(avatar);
           out(avatar.toHTML());
         %>

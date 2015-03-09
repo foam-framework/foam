@@ -87,7 +87,7 @@ CLASS({
         @media (max-width: 800px) {
 
           <% for ( var i = 0; i < 5; ++i ) { %>
-            <% for ( var j = 0; j < i; ++j ) { %>section<% } %> > heading {
+            <% for ( var j = 0; j < i; ++j ) { %>section <% } %> > heading {
               font-size: <%= 10 + ((5 - i) * 3) %>px;
               margin-bottom: <%= 3 + (5 - i) %>px;
             }
@@ -103,7 +103,7 @@ CLASS({
           }
 
           <% for ( var i = 0; i < 5; ++i ) { %>
-            <% for ( var j = 0; j < i; ++j ) { %>section<% } %> > heading {
+            <% for ( var j = 0; j < i; ++j ) { %>section <% } %> > heading {
               font-size: <%= 20 + ((5 - i) * 5) %>px;
               margin-bottom: <%= 5 + (5 - i) %>px;
             }
@@ -120,7 +120,7 @@ CLASS({
         }
 
         <% for ( var i = 0; i < 5; ++i ) { %>
-          <% for ( var j = 0; j < i; ++j ) { %>section<% } %> > heading {
+          <% for ( var j = 0; j < i; ++j ) { %>section <% } %> > heading {
             font-size: <%= 12 + ((5 - i) * 2) %>pt;
             margin-bottom: <%= (5 - i) * 2 %>px;
           }

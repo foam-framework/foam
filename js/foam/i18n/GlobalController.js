@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'GlobalController',
   package: 'foam.i18n',
+  name: 'GlobalController',
 
   requires: [
     'foam.i18n.ChromeMessagesExtractor',
@@ -76,7 +76,7 @@ CLASS({
       code: function(visitors) {
         var self = this;
         Object_forEach(USED_MODELS, function(_, modelName) {
-          self.visitModel(visitors, FOAM.lookup(modelName));
+          self.visitModel(visitors, lookup(modelName));
         });
       }
     },
@@ -86,7 +86,7 @@ CLASS({
         var self = this;
         ['USED_MODELS', 'UNUSED_MODELS'].forEach(function(collName) {
           Object_forEach(GLOBAL[collName], function(_, modelName) {
-            self.visitModel(visitors, FOAM.lookup(modelName));
+            self.visitModel(visitors, lookup(modelName));
           });
         });
       }

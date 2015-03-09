@@ -919,7 +919,7 @@ CLASS({
       }
 
       var daoType  = typeof this.daoType === 'string' ? this.ALIASES[this.daoType] || this.daoType : this.daoType;
-      var daoModel = typeof daoType === 'string' ? FOAM.lookup(daoType, this.X) : daoType;
+      var daoModel = typeof daoType === 'string' ? this.X.lookup(daoType) : daoType;
       var params   = { model: this.model, autoIndex: this.autoIndex };
 
       if ( this.name  ) params.name = this.name;

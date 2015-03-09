@@ -75,6 +75,7 @@ CLASS({
       name: 'cellUncovered',
       code: function(cell) {
         if ( cell.mineCount ) return;
+        this.X.setTimeout(function() {
         for ( var x = -1 ; x <= 1 ; x++ ) {
           for ( var y = -1 ; y <= 1 ; y++ ) {
             try {
@@ -82,7 +83,7 @@ CLASS({
               if ( ! c.mined ) c.covered = false;
             } catch(x) {}
           }
-        }
+        }}.bind(this), 32);
       }
     }
   ]

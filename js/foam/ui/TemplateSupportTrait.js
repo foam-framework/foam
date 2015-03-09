@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'TemplateSupportTrait',
   package: 'foam.ui',
+  name: 'TemplateSupportTrait',
   
   requires: ['foam.ui.PropertyView', 'foam.ui.ActionButton', 'SimpleReadOnlyValue'],
   

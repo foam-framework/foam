@@ -133,4 +133,4 @@ CLASS({
 });
 
 
-var ArrayView = DAOController;
+//var ArrayView = DAOController;

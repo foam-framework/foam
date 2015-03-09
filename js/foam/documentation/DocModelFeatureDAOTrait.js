@@ -16,16 +16,18 @@
  */
 
 CLASS({
-  name: 'DocModelFeatureDAOTrait',
   package: 'foam.documentation',
+  name: 'DocModelFeatureDAOTrait',
   documentation: "Generates a featureDAO of all the inherited features of a $$DOC{ref:'Model'}.",
 
-  requires: ['foam.documentation.DocFeatureInheritanceTracker',
-             'foam.documentation.DocModelInheritanceTracker',
-             'Model',
-             'MDAO'],
+  requires: [
+    'foam.documentation.DocFeatureInheritanceTracker',
+    'foam.documentation.DocModelInheritanceTracker',
+    'Model',
+    'MDAO'
+  ],
 
-  imports: ['masterModelList'],
+  imports: [ 'masterModelList' ],
   exports: ['featureDAO', 'modelDAO', 'subModelDAO', 'traitUserDAO'],
 
   properties: [
@@ -154,7 +156,7 @@ CLASS({
         }
       });
 
-      if (!isTrait) {
+      if ( ! isTrait ) {
         // Check if we extend something, and recurse.
         if (!model.extendsModel) {
           newModelTr.inheritanceLevel = 0;
@@ -164,7 +166,7 @@ CLASS({
           // inheritance level will bubble back up the stack once we know where the bottom is.
           // pass a copy of previousExtenderTrackers so we know what to update in the traits section after.
           newModelTr.inheritanceLevel = 1 + this.loadFeaturesOfModel(
-                            FOAM.lookup(model.extendsModel, this.Y), previousExtenderTrackers.slice(0));
+            this.Y.lookup(model.extendsModel), previousExtenderTrackers.slice(0));
         }
 
         // Process traits with the same inheritance level we were assigned, since they appear first in the
@@ -174,7 +176,7 @@ CLASS({
             var traitExtenderTrackers = previousExtenderTrackers.slice(0);
             traitExtenderTrackers.push(newModelTr);
             this.loadFeaturesOfModel(
-              FOAM.lookup(trait, this.Y),
+              this.Y.lookup(trait),
               traitExtenderTrackers,
               newModelTr.inheritanceLevel);
           }.bind(this));

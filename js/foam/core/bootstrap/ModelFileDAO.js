@@ -22,7 +22,7 @@ MODEL({
   methods: {  
     find: function (key, sink) {
       var X = this.X;
-      var model = FOAM.lookup(key, X);
+      var model = X.lookup(key);
       if ( model ) {
         sink && sink.put && sink.put(model);
         return;
@@ -33,9 +33,9 @@ MODEL({
       var tag = X.document.createElement('script');
       tag.src = sourcePath;
       X.document.head.appendChild(tag);
-
+      
       tag.onload = function() {
-        var model = FOAM.lookup(key, X);
+        var model = X.lookup(key);
         if ( ! model ) {
           console.warn('Model load failed for: ', key);
           sink && sink.error && sink.error('Model load failed for: ', key);
@@ -66,9 +66,8 @@ MODEL({
           } while ( fmatch );
           files.forEach(function(d) {
             //find(pkg ? pkg+"."+d : d, sink);
-            arequire(pkg ? pkg+"."+d : d)( function(m) {
-                sink.put(m);
-            });
+            //console.log("areqX ", this.X.NAME);
+            this.find(pkg ? pkg+"."+d : d, sink);
           }.bind(this));         
 
           // find subdirectories

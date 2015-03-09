@@ -18,12 +18,12 @@
 CLASS({
   name: 'DAOListView',
   package: 'foam.ui',
-  
+
   requires: ['SimpleValue'],
-  
+
   extendsModel: 'foam.ui.View',
-  traits: ['foam.ui.DAODataViewTrait'], 
-  
+  traits: ['foam.ui.DAODataViewTrait'],
+
   properties: [
     {
       model_: 'BooleanProperty',
@@ -72,6 +72,18 @@ CLASS({
       isHidden: true,
       defaultValue: 1,
       help: 'The number of chunks currently loaded.'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'painting',
+      defaultValue: false,
+      transient: true
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'repaintRequired',
+      defaultValue: false,
+      transient: true
     }
   ],
 
@@ -141,13 +153,13 @@ CLASS({
           }.bind(this, o));
         }
         this.addChild(view);
-        
+
         if (!doneFirstItem) {
           doneFirstItem = true;
         } else {
           this.separatorToHTML(out); // optional separator
         }
-        
+
         if ( this.X.selection$ ) {
           out.push('<div class="' + this.className + '-row' + '" id="' + this.on('click', (function() {
             this.selection = o;
@@ -185,7 +197,7 @@ CLASS({
         this.rowView = e.innerHTML;
       }
     },
-    
+
     // Template method
     separatorToHTML: function(out) {
       /* Template method. Override to provide a separator if required. This
@@ -204,8 +216,8 @@ CLASS({
     {
       name: 'realDAOUpdate',
       isFramed: true,
-      code: function() { 
-        if ( ! this.isHidden ) this.updateHTML(); 
+      code: function() {
+        if ( ! this.isHidden ) this.updateHTML();
       }
     },
     {

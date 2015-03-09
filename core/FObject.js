@@ -31,11 +31,11 @@ var FObject = {
         ( otherModel.name ? otherModel.name     : otherModel ) + // TODO(jackson): Shouldn't there be a separator here?
         model.name ;
 
-      var replacementModel = FOAM.lookup(replacementName, X);
+      var replacementModel = X.lookup(replacementName);
 
       if ( replacementModel ) return replacementModel;
 
-      otherModel = FOAM.lookup(otherModel.extendsModel, X);
+      otherModel = X.lookup(otherModel.extendsModel);
     }
 
     return undefined;
@@ -136,9 +136,9 @@ var FObject = {
           var prop = self.model_.getProperty(key);
           if ( prop ) {
             if ( asValue ) {
-              self.addInitAgent(1, 'export property value ' + key, function(o, X, Y) { Y.set(alias, FOAM.lookup(prop.name$_, o)); });
+              self.addInitAgent(1, 'export property value ' + key, function(o, X, Y) { Y.set(alias, o[prop.name$_]); });
             } else {
-              self.addInitAgent(1, 'export property ' + key, function(o, X, Y) { Y.setValue(alias, FOAM.lookup(prop.name$_, o)); });
+              self.addInitAgent(1, 'export property ' + key, function(o, X, Y) { Y.setValue(alias, o[prop.name$_]); });
             }
           } else {
             self.addInitAgent(0, 'export other ' + key, function(o, X, Y) {
@@ -666,7 +666,7 @@ var FObject = {
     var feature = this.getMyFeature(featureName);
 
     if ( ! feature && this.extendsModel ) {
-      var ext = FOAM.lookup(this.extendsModel, this.X);
+      var ext = this.X.lookup(this.extendsModel);
       if ( ext ) {
         return ext.getFeature(featureName);
       }
@@ -680,7 +680,7 @@ var FObject = {
     var featureList = this.getAllMyFeatures();
 
     if ( this.extendsModel ) {
-      var ext = FOAM.lookup(this.extendsModel, this.X);
+      var ext = this.X.lookup(this.extendsModel);
       if ( ext ) {
         ext.getAllFeatures().map(function(subFeat) {
           var subName = subFeat.name.toUpperCase();

@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'QProject',
   package: 'foam.apps.quickbug.model',
+  name: 'QProject',
 
   tableProperties: [
     'projectName',
@@ -417,10 +417,10 @@ CLASS({
                 for ( var i = 0 ; i < this.model_.properties_.length ; i++ ) {
                   var p = this.model_.properties_[i];
 
-                  if ( FOAM.lookup('foam.apps.quickbug.model.LabelArrayProperty', this.X).isInstance(p) ) {
+                  if ( this.X.lookup('foam.apps.quickbug.model.LabelArrayProperty').isInstance(p) ) {
                     newValues[p.name] = [];
-                  } else if ( FOAM.lookup('foam.apps.quickbug.model.LabelStringProperty', this.X).isInstance(p) ) {
-                    newValues[p.name] = "";
+                  } else if ( this.X.lookup('foam.apps.quickbug.model.LabelStringProperty').isInstance(p) ) {
+                    newValues[p.name] = '';
                   }
                 }
 
@@ -722,18 +722,18 @@ CLASS({
               convertArray('iteration');
               convertArray('week');
 
-              var comment = FOAM.lookup('foam.apps.quickbug.model.QIssueComment', this.X).create({
+              var comment = this.X.lookup('foam.apps.quickbug.model.QIssueComment').create({
                 issueId: this.id,
                 content: other.content,
-                updates: FOAM.lookup('foam.apps.quickbug.model.QIssueCommentUpdate', this.X).create(diff)
+                updates: this.X.lookup('foam.apps.quickbug.model.QIssueCommentUpdate').create(diff)
               }, this.Y);
 
               out(comment);
             },
             newComment: function() {
-              return FOAM.lookup('foam.apps.quickbug.model.QIssueComment', this.X).create({
+              return this.X.lookup('foam.apps.quickbug.model.QIssueComment').create({
                 issueId: this.id,
-                updates: FOAM.lookup('foam.apps.quickbug.model.QIssueCommentUpdate', this.X).create({
+                updates: this.X.lookup('foam.apps.quickbug.model.QIssueCommentUpdate').create({
                   labels: this.labels.clone(),
                   owner: this.owner,
                   blockedOn: this.blockedOn.clone(),
@@ -820,7 +820,7 @@ CLASS({
           },
 
           summary: function(v) {
-            return FOAM.lookup('foam.apps.quickbug.model.DefaultQuery', this.X).create({arg1: v});
+            return this.X.lookup('foam.apps.quickbug.model.DefaultQuery').create({arg1: v});
           }
         });
         parser.expr = alt(

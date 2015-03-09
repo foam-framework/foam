@@ -16,15 +16,17 @@
  */
 
 CLASS({
-  name: 'ProjectNetworkDAO',
   package: 'foam.apps.quickbug.dao',
+  name: 'ProjectNetworkDAO',
   extendsModel: 'RestDAO',
+
   requires: [
     'foam.apps.quickbug.model.imported.Project',
     'foam.apps.quickbug.model.imported.IssuePerson',
     'foam.apps.quickbug.model.QIssueStatus',
     'foam.apps.quickbug.model.QIssueLabel'
   ],
+
   properties: [
     {
       name: 'url',
@@ -32,7 +34,7 @@ CLASS({
     },
     {
       name: 'model',
-      defaultValueFn: function() { return FOAM.lookup('foam.apps.quickbug.model.imported.Project', this.X); }
+      defaultValueFn: function() { return this.X.lookup('foam.apps.quickbug.model.imported.Project'); }
     }
   ],
   methods: {
