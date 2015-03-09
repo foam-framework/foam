@@ -26,7 +26,8 @@ CLASS({
     'foam.demos.MemorableObject',
     'foam.demos.SubMemorableObject',
     'foam.memento.FragmentMementoMgr',
-    'foam.ui.JSView'
+    'foam.ui.JSView',
+    'foam.ui.StringArrayView'
   ],
 
   properties: [
