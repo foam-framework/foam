@@ -69,7 +69,6 @@
     "foam.ui.TemplateSupportTrait":true,
     "foam.ui.DAODataViewTrait":true,
     "foam.ui.BasePropertyView":true,
-    "WindowHashValue":true,
     "foam.core.bootstrap.ModelFileDAO":true,
     "foam.graphics.AbstractCViewView":true,
     "foam.graphics.ActionButtonCView":true,
