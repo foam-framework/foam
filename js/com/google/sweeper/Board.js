@@ -41,11 +41,12 @@ CLASS({
         }
         return cells;
       }
-    }
+    },
+    { name: 'className', defaultValue: 'sweeper-board' }
   ],
 
   methods: {
-    toHTML: function() {
+    toInnerHTML: function() {
       var out = '';
       for ( var row = 0 ; row < this.height ; row++ ) {
         out += '<div class="board-row">';
@@ -69,6 +70,16 @@ CLASS({
       return c;
     }
   },
+
+  templates: [
+    function CSS() {/*
+      .sweeper-board {
+        border: 1px solid gray;
+        display: inline-block;
+        margin: 24px;
+      }
+    */}
+  ],
 
   listeners: [
     {

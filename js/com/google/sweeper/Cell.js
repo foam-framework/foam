@@ -57,7 +57,7 @@ CLASS({
       .sweeper-cell {
         border: 1px solid gray;
         display: table-cell;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: bold;
         height: 26px;
         text-align: center;
