@@ -625,6 +625,12 @@ var Property = {
       documentation: function() { /*
         Indicates if the $$DOC{ref:'Property'} can only have a single value.
       */}
+    },
+    {
+      name: 'memorable',
+      type: 'Boolean',
+      help: 'True if this value should be included in a memento for this object.',
+      defaultValue: false
     }
   ],
 
