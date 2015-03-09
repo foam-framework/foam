@@ -60,7 +60,6 @@ var files = [
   'AbstractDAOView',
   'daoView',
   'cview',
-  'RichTextView',
   'listchoiceview',
   'scroll',
   'HTMLParser',

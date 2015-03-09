@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2012 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,180 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * TODO:
- *    handle multiple-selection
- *    map <enter> key to <br>
- *    support removing/toggling an attribute
- *    check that the selected text is actually part of the element
- *    add the rest of the common styling options
- *    improve L&F
- */
-
-CLASS({
-  name: 'Link',
-  properties: [
-    {
-      name: 'richTextView'
-    },
-    {
-      name: 'label',
-      displayWidth: 28
-    },
-    {
-      name: 'link',
-      displayWidth: 19,
-      view: { factory_: 'foam.ui.TextFieldView', placeholder: 'Type or paste link.' },
-      preSet: function(_, value) {
-        value = value.trim();
-        // Disallow javascript URL's
-        if ( value.toLowerCase().startsWith('javascript:') ) value = '';
-        return value;
-      }
-    }
-  ],
-  methods: {
-    open: function(x, y) {
-      var view = LinkView.create({model: Link, data: this});
-      this.richTextView.$.parentNode.insertAdjacentHTML('beforebegin', view.toHTML());
-      view.$.style.left = x + this.richTextView.$.offsetLeft;
-      view.$.style.top = y + this.richTextView.$.offsetTop;
-      view.initHTML();
-      this.view = view;
-    }
-  },
-  actions: [
-    {
-      name:  'insert',
-      label: 'Apply',
-      help:  'Insert this link into the document.',
-
-      action: function() {
-        var a   = document.createElement('a');
-        var txt = document.createTextNode(this.label);
-        a.href = this.link;
-        a.appendChild(txt);
-
-        this.richTextView.insertElement(a);
-
-        this.view.close();
-      }
-    }
-  ]
-});
-
-
-CLASS({
-  name: 'LinkView',
-
-  extendsModel: 'foam.ui.DetailView',
-
-  properties: [
-    {
-      name: 'insertButton',
-      factory: function() {
-        return ActionButton.create({
-          action: Link.INSERT,
-          data: this.data
-        });
-      }
-    }
-  ],
-
-  methods: {
-    init: function() {
-      this.SUPER();
-      this.addChild(this.insertButton);
-    },
-    initHTML: function() {
-      this.SUPER();
-      this.$.addEventListener('keyup', this.keyUp);
-      this.labelView.focus();
-    },
-    close: function() { this.$.remove(); }
-  },
-
-  listeners: [
-    {
-      name: 'keyUp',
-      code: function(e) {
-        if ( e.keyCode == 27 /* Esc */ ) {
-          e.stopPropagation();
-          this.close();
-        }
-      }
-    }
-  ],
-
-  templates: [
-    {
-      name: "toHTML",
-      template:
-        '<div id="<%= this.id %>" class="linkDialog" style="position:absolute">\
-        <table><tr>\
-        <th>Text</th><td>$$label</td></tr><tr>\
-        <th>Link</th><td>$$link\
-        %%insertButton</td>\
-        </tr></table>\
-        </div>'
-    }
-  ]
-});
-
-
-CLASS({
-  name: 'ColorPickerView',
-
-  extendsModel: 'foam.ui.View',
-
-  properties: [
-    {
-      name: 'data'
-    }
-  ],
-
-  methods: {
-    toHTML: function() {
-      var out = '<table>';
-      out += '<tr>';
-      var self = this;
-      var cell = function(r, g, b) {
-        var value = 'rgb(' + r + ',' + g + ',' + b + ')';
-
-        out += '<td class="pickerCell"><div id="' +
-          self.on('click', function(e) {
-            self.data = value;
-            e.preventDefault();
-          }) +
-          '" class="pickerDiv" style="background-color: ' + value + '"></div></td>';
-      };
-      for ( var col = 0; col < 8; col++ ) {
-        var shade = Math.floor(255 * col / 7);
-        cell(shade, shade, shade);
-      }
-      out += '</tr><tr>';
-      cell(255, 0, 0);
-      cell(255, 153, 0);
-      cell(255, 255, 0);
-      cell(0, 255, 0);
-      cell(0, 255, 255);
-      cell(0, 0, 255);
-      cell(153, 0, 255);
-      cell(255, 0, 255);
-      out += '</tr></table>';
-      return out;
-    }
-  }
-});
-
 
 CLASS({
   name: 'RichTextView',
+  package: 'foam.ui',
 
   extendsModel: 'foam.ui.SimpleView',
 
   requires: [
-    'foam.util.Base64Decoder'
+    'foam.util.Base64Decoder',
+    'foam.ui.Link'
   ],
 
   properties: [
@@ -540,7 +376,7 @@ CLASS({
       help: 'Insert link (Ctrl-K)',
       action: function () {
         // TODO: determine the actual location to position
-        Link.create({
+        this.Link.create({
           richTextView: this,
           label: this.getSelectionText()}).open(5,120);
       }
