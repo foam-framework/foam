@@ -20,6 +20,10 @@ CLASS({
   package: 'foam.core.dao',
   extendsModel: 'AbstractDAO',
 
+  requires: [
+    'foam.core.dao.KeyCollector'
+  ],
+
   properties: [
     {
       name: 'model',
@@ -39,7 +43,7 @@ CLASS({
           "var a = importScripts;",
           "importScripts = function(scripts) { \nfor (var i = 0; i < arguments.length; i++) \na(url + arguments[i]); \n};\n",
           "try { importScripts('bootFOAMWorker.js'); } catch(e) { \n console.error(e); }\n",
-          "WorkerDelegate.create({ dao: [] });\n"
+          "WorkerDelegate.create({ dao: [].dao });\n"
         ];
         return new Worker(window.URL.createObjectURL(
           new Blob(workerscript, { type: "text/javascript" })));
@@ -151,7 +155,7 @@ CLASS({
           }).bind(this),
           sink && sink.error && sink.error.bind(sink));
       } else {
-        var mysink = KeyCollector.create();
+        var mysink = this.KeyCollector.create();
         request = {
           sink: mysink,
           options: options
