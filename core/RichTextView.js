@@ -184,7 +184,7 @@ CLASS({
 CLASS({
   name: 'RichTextView',
 
-  extendsModel: 'foam.ui.View',
+  extendsModel: 'foam.ui.SimpleView',
 
   requires: [
     'foam.util.Base64Decoder'

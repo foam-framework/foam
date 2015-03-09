@@ -49,7 +49,6 @@
         "core/daoView.js",
         "core/ChoiceView.js",
         "core/DetailView.js",
-        "core/TableView.js",
         "core/cview.js",
         "core/MementoMgr.js",
         "core/listchoiceview.js",

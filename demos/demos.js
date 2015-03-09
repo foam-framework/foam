@@ -121,9 +121,9 @@ var System = FOAM({
     {
       name:  'mouse',
       type:  'foam.input.Mouse',
-      view: { factory_: 'foam.ui.DetailView', model: Mouse },
+      view: { factory_: 'foam.ui.DetailView', model: this.Mouse },
       factory: function() {
-        return Mouse.create();
+        return this.Mouse.create();
       }
     },
     {

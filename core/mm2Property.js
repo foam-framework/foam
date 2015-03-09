@@ -502,7 +502,7 @@ var Property = {
       view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'Function to format value for display in TableView.',
-      documentation: "A function to format the value for display in a $$DOC{ref:'TableView'}."
+      documentation: "A function to format the value for display in a $$DOC{ref:'foam.ui.TableView'}."
     },
     {
       name: 'summaryFormatter',
@@ -523,7 +523,7 @@ var Property = {
       required: false,
       defaultValue: '',
       help: 'Table View Column Width.',
-      documentation: "A Suggestion for $$DOC{ref:'TableView'} column width."
+      documentation: "A Suggestion for $$DOC{ref:'foam.ui.TableView'} column width."
     },
     {
       name: 'help',

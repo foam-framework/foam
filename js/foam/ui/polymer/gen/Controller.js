@@ -22,7 +22,7 @@ CLASS({
   requires: [
     'EasyDAO',
     'foam.ui.MultiLineStringArrayView',
-    'TableView',
+    'foam.ui.TableView',
     'foam.ui.polymer.gen.Component',
     'foam.ui.polymer.gen.ComponentBuilder',
     'foam.ui.polymer.gen.ComponentProperty',
@@ -71,7 +71,7 @@ CLASS({
     {
       name: 'componentDAO',
       label: 'Registered Components',
-      view: 'TableView',
+      view: 'foam.ui.TableView',
       factory: function() {
         return this.EasyDAO.create(this.componentDAOConfig);
       }
@@ -89,7 +89,7 @@ CLASS({
     {
       name: 'propertyDAO',
       label: 'Registered Component Properties',
-      view: 'TableView',
+      view: 'foam.ui.TableView',
       factory: function() {
         return this.EasyDAO.create(this.propertyDAOConfig);
       }
@@ -107,7 +107,7 @@ CLASS({
     {
       name: 'prototypeDAO',
       label: 'Component Prototypes',
-      view: 'TableView',
+      view: 'foam.ui.TableView',
       factory: function() {
         return this.EasyDAO.create(this.prototypeDAOConfig);
       }

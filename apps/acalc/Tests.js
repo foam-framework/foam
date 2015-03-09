@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 var tests;
-apar(arequire('Calc'), arequire('TableView'))(function() {
+apar(arequire('Calc'), arequire('foam.ui.TableView'))(function() {
 
   UnitTest.RESULTS.tableFormatter = function(val, obj, table) { return val; };
   UnitTest.PASSED.tableFormatter  = function(val) { return (val ? '<font color=green>' : '<font color=black>' ) + val + "</font>"; };

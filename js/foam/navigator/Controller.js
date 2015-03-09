@@ -24,7 +24,7 @@ CLASS({
     'FutureDAO',
     'IDBDAO',
     'MDAO',
-    'TableView',
+    'foam.ui.TableView',
     'foam.ui.TextFieldView',
     'foam.ui.ToolbarView',
     'foam.navigator.BrowserConfig',

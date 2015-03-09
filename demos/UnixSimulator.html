@@ -10,7 +10,11 @@
   var timer;
   apar(
      arequire('foam.ui.View'),
-     arequire('foam.ui.DetailView')
+     arequire('foam.ui.DetailView'),
+     arequire('System'),
+     arequire('foam.ui.StringArrayView'),
+     arequire('Label'),
+     arequire('Timer')
   )(
    function() {
     timer  = Timer.create({interval:20});
