@@ -69,7 +69,7 @@ CLASS({
         dStyle.zIndex = 4;
         // dStyle.zIndex = 101;
 
-        var id = this.X.foam.ui.View.getPrototype().nextID();
+        var id = this.X.lookup('foam.ui.View').getPrototype().nextID();
         div.id = id;
         div.innerHTML = view.toHTML();
 

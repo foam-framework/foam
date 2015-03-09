@@ -19,7 +19,8 @@ CLASS({
   name: 'LayoutItemHorizontalTrait',
   package: 'foam.patterns.layout',
 
-  requires: [ 'foam.patterns.layout.LayoutItemLinearConstraints' ],
+  requires: ['foam.patterns.layout.LayoutItemLinearConstraints',
+             'foam.patterns.layout.ConstraintProperty'],
   
   documentation: function() {/* This trait enables an item to be placed in
                                 a horizontal layout. If you do not  */},

@@ -873,7 +873,7 @@ var ViewFactoryProperty = Model.create({
           return ret;
         }
 
-        if ( this.X.foam.ui.BaseView.isInstance(f) ) return constantFn(f);
+        if ( this.X.lookup('foam.ui.BaseView').isInstance(f) ) return constantFn(f);
 
         console.error('******* Invalid Factory: ', f);
         return f;

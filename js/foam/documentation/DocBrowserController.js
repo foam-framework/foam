@@ -139,29 +139,17 @@ CLASS({
     createModelList: function() {
       var newDAO = this.MDAO.create({model:Model});
 
-      //This is to make sure getPrototype is called, even if the model object
-      //has been created without a .create or .getPrototype having been called
-      //yet.
-//       for ( var key in UNUSED_MODELS ) {
-//         var modl = FOAM.lookup(key, this.X);
-//         modl.getPrototype && modl.getPrototype();
-//       }
-//       for ( var key in USED_MODELS ) {
-//         var modl = FOAM.lookup(key, this.X);
-//         modl.getPrototype && modl.getPrototype();
-//       }
-
-      X.ModelDAO.select(newDAO);
+      //X.ModelDAO.select(newDAO);
       
       // All models are now in USED_MODELS
-      // [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
-      //   for ( var key in collection ) {
-      //     // go async: as the requires complete, newDAO will fill in
-      //     arequire(key)( function(m) {
-      //       newDAO.put(m);
-      //     });
-      //   };
-      // }.bind(this));
+      [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
+        for ( var key in collection ) {
+          // go async: as the requires complete, newDAO will fill in
+          arequire(key)( function(m) {
+            newDAO.put(m);
+          });
+        };
+      }.bind(this));
       
 //       // Add in non-model things like Interfaces
 //       for ( var key in NONMODEL_INSTANCES ) {
