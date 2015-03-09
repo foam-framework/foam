@@ -18,7 +18,7 @@
 CLASS({
   name: 'ToolbarRichTextView',
   package: 'foam.ui.md',
-  extendsModel: 'RichTextView',
+  extendsModel: 'foam.ui.RichTextView',
 
   templates: [
     function CSS() {/*
