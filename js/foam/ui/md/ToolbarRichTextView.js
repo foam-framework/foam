@@ -121,7 +121,7 @@ CLASS({
     init: function() {
       this.SUPER();
       this.Y = this.Y = this.Y.sub();
-      this.Y.registerModel(this.X.foam.graphics.ActionButtonCView.xbind({
+      this.Y.registerModel(this.X.lookup('foam.graphics.ActionButtonCView').xbind({
         background: 'white',
         radius: 18
       }), 'foam.ui.ActionButton');

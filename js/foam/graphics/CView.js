@@ -128,6 +128,9 @@ CLASS({
       documentation: function() {/*
           The width of this view. Painting is not automatically clipped, so a view
           may render outside of its apparent rectangle. */},
+      postSet: function() {
+        console.log("Cview width postSet");
+      }
     },
     {
       model_: 'IntProperty',

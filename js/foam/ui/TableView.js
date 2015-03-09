@@ -28,11 +28,13 @@
 */
 CLASS({
   name: 'TableView',
+  package: 'foam.ui',
   extendsModel: 'AbstractDAOView',
 
   label: 'Table View',
 
-  requires: [ 'foam.ui.EditColumnsView' ],
+  requires: [ 'foam.ui.EditColumnsView',
+              'foam.input.touch.GestureTarget' ],
 
   properties: [
     {
@@ -291,7 +293,7 @@ CLASS({
         };
 
         if ( this.X.gestureManager ) {
-          this.X.gestureManager.install(this.X.foam.input.touch.GestureTarget.create({
+          this.X.gestureManager.install(this.GestureTarget.create({
             containerID: this.id,
             handler: this,
             getElement: function() { return this.container.$.parentElement; },
