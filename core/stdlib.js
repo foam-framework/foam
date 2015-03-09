@@ -96,6 +96,20 @@ MODEL({
       return function() { return v; };
     },
 
+    function latchFn(f) {
+      var tripped = false;
+      var val;
+      /* Create a function which always returns the supplied constant value. */
+      return function() {
+        if ( ! tripped ) {
+          tripped = true;
+          val = f();
+          f = undefined;
+        }
+        return val;
+      };
+    },
+
     function argsToArray(args) {
       var array = new Array(args.length);
       for ( var i = 0; i < args.length; i++ ) array[i] = args[i];
@@ -111,7 +125,7 @@ MODEL({
       /* returns true if the values are equal or both undefined. */
       return (a === b) || (a !== a && b !== b);
     },
-    
+
     function toCompare(c) {
       if ( Array.isArray(c) ) return CompoundComparator.apply(null, c);
 
