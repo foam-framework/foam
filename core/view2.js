@@ -1475,7 +1475,7 @@ CLASS({
 CLASS({
   name: 'JSView',
 
-  extendsModel: 'TextAreaView',
+  extendsModel: 'foam.ui.TextFieldView',
 
   properties: [
     { name: 'displayWidth',  defaultValue: 100 },
@@ -2018,7 +2018,7 @@ CLASS({
 CLASS({
   name: 'StringArrayView',
 
-  extendsModel: 'TextFieldView',
+  extendsModel: 'foam.ui.TextFieldView',
 
   methods: {
     findCurrentValues: function() {
