@@ -31,7 +31,7 @@ CLASS({
     {
       model_: 'ArrayProperty',
       name: 'views',
-      subType: 'ViewChoice',
+      subType: 'foam.ui.ViewChoice',
       help: 'View choices.'
     },
     {

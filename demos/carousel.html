@@ -21,23 +21,23 @@
       dao.put(Person.create({ id: 3, name: 'Carol', sex: 'F' }));
       dao.put(Person.create({ id: 4, name: 'Dave' }));
 
-      var view = SwipeAltView.create({
+      var view = this.X.foam.ui.SwipeAltView.create({
         views: [
-          ViewChoice.create({
+          this.X.foam.ui.ViewChoice.create({
             label: 'All',
-            view: DAOListView.create({
+            view: this.X.foam.ui.DAOListView.create({
               dao: dao
             })
           }),
-          ViewChoice.create({
+          this.X.foam.ui.ViewChoice.create({
             label: 'Men',
-            view: DAOListView.create({
+            view: this.X.foam.ui.DAOListView.create({
               dao: dao.where(EQ(Person.SEX, 'M'))
             })
           }),
-          ViewChoice.create({
+          this.X.foam.ui.ViewChoice.create({
             label: 'Women',
-            view: DAOListView.create({
+            view: this.X.foam.ui.DAOListView.create({
               dao: dao.where(EQ(Person.SEX, 'F'))
             })
           })

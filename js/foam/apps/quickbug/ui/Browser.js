@@ -37,7 +37,7 @@ CLASS({
     'foam.ui.ChoiceView',
     'foam.ui.ChoiceListView',
     'foam.ui.PopupChoiceView',
-    'PopupView',
+    'foam.ui.PopupView',
     'foam.ui.ImageView',
     'foam.apps.quickbug.ui.MementoMgr',
     'foam.lib.bookmarks.AddBookmarkDialog',
@@ -53,7 +53,7 @@ CLASS({
     'foam.apps.quickbug.ui.DragAndDropGrid',
     'foam.core.dao.WaitCursorDAO',
     'foam.metrics.Metric',
-    'ViewChoice'
+    'foam.ui.ViewChoice'
   ],
 
   exports: [

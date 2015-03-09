@@ -75,7 +75,7 @@ CLASS({
               </div>
             </div>
             $$starred{
-              model_: 'ImageBooleanView',
+              model_: 'foam.ui.ImageBooleanView',
               className:  'actionButton',
               trueImage:  'images/ic_star_24dp.png',
               falseImage: 'images/ic_star_outline_24dp.png'

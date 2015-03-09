@@ -26,9 +26,9 @@ CLASS({
     'foam.ui.PopupChoiceView',
     'PredicatedView',
     'ScrollView',
-    'SpinnerView',
+    'foam.ui.SpinnerView',
     'foam.ui.SwipeAltView',
-    'ViewChoice'
+    'foam.ui.ViewChoice'
   ],
 
 //   exports: [

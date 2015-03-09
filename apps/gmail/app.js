@@ -13,7 +13,7 @@ window.onload = function() {
     arequire('Template'),
     arequire('Relationship'),
     arequire('foam.ui.Tooltip'),
-    arequire('AutocompleteView'),
+    arequire('foam.ui.AutocompleteView'),
     arequire('WindowHashValue'),
     arequire('foam.ui.SwipeAltView'),
     arequire('VerticalScrollbarView'),
@@ -106,7 +106,7 @@ window.onload = function() {
     arequire('ScrollViewRow'),
     arequire('RelativeDateTimeFieldView'),
     arequire('DateTimeFieldView'),
-    arequire('ImageBooleanView'))(function() {
+    arequire('foam.ui.ImageBooleanView'))(function() {
       var w = Y.Window.create({ window: window });
       mgmail = Y.MGmail.create({});
       w.view = mgmail;

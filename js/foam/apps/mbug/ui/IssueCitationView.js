@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.apps.mbug.ui',
   extendsModel: 'foam.ui.DetailView',
   requires: [
-    'ImageBooleanView',
+    'foam.ui.ImageBooleanView',
     'foam.ui.md.MonogramStringView',
     'foam.apps.mbug.ui.PriorityCitationView'
   ],
@@ -41,7 +41,7 @@ CLASS({
           $$summary{mode: 'read-only'}
         </div>
         $$starred{
-          model_: 'ImageBooleanView',
+          model_: 'foam.ui.ImageBooleanView',
           className:  'star',
           trueImage:  'images/ic_star_24dp.png',
           falseImage: 'images/ic_star_outline_24dp.png'

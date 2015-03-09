@@ -107,7 +107,7 @@ CLASS({
               $$snippet{mode: 'read-only', className: 'snippet'}
             </div>
             $$starred{
-              model_: 'ImageBooleanView',
+              model_: 'foam.ui.ImageBooleanView',
               className:  'star',
               trueImage:  'images/ic_star_24dp.png',
               falseImage: 'images/ic_star_outline_24dp.png'

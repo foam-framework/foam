@@ -93,27 +93,27 @@ CLASS({
         data: this.data,
         views: [
           {
-            model_: 'ViewChoice',
+            model_: 'foam.ui.ViewChoice',
             label:  'GUI',
             view:   'foam.ui.DetailView'
           },
           {
-            model_: 'ViewChoice',
+            model_: 'foam.ui.ViewChoice',
             label:  'JS',
             view:   'foam.ui.JSView'
           },
           {
-            model_: 'ViewChoice',
+            model_: 'foam.ui.ViewChoice',
             label:  'XML',
             view:   'XMLView'
           }/*,
              {
-             model_: 'ViewChoice',
+             model_: 'foam.ui.ViewChoice',
              label:  'UML',
              view:   'XMLView'
              },
              {
-             model_: 'ViewChoice',
+             model_: 'foam.ui.ViewChoice',
              label:  'Split',
              view:   'SplitView'
              }*/
