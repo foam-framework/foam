@@ -132,7 +132,7 @@ CLASS({
       name: 'results',
       type: 'String',
       mode: 'read-only',
-      view: 'UnitTestResultView',
+      view: 'foam.ui.UnitTestResultView',
       transient: true,
       required: true,
       displayWidth: 80,
@@ -297,7 +297,7 @@ CLASS({
     },
     {
       name: 'results',
-      view: 'RegressionTestResultView'
+      view: 'foam.ui.RegressionTestResultView'
     },
     {
       model_: 'BooleanProperty',
@@ -337,7 +337,7 @@ CLASS({
   properties: [
     {
       name: 'results',
-      view: 'UITestResultView'
+      view: 'foam.ui.UITestResultView'
     },
     {
       name: 'runChildTests',
@@ -554,7 +554,7 @@ CLASS({
       name: 'notes',
       displayWidth: 75,
       displayHeight: 20,
-      view: 'TextAreaView',
+      view: 'foam.ui.TextAreaView',
       documentation: function() { /* Notes describing $$DOC{ref:'Issue'}. */ },
       help: 'Notes describing issue.'
     }

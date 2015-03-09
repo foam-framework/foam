@@ -29,8 +29,8 @@ CLASS({
     {
       name: 'views',
       type: 'Array',
-      subType: 'ViewChoice',
-      view: 'ArrayView',
+      subType: 'foam.ui.ViewChoice',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       help: 'View Choices'
     },

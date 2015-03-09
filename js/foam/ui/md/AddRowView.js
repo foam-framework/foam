@@ -16,9 +16,9 @@
  */
 
 CLASS({
-  package: 'foam.ui.md',
   name: 'AddRowView',
-  extendsModel: 'foam.ui.View',
+  package: 'foam.ui.md',
+  extendsModel: 'foam.ui.SimpleView',
   traits: ['foam.ui.layout.PositionedDOMViewTrait', 'foam.input.touch.VerticalScrollNativeTrait'],
 
   requires: [

@@ -27,7 +27,7 @@ CLASS({
   properties: [
     {
       name: 'count',
-      view: { factory_: 'TextFieldView', mode: 'read-only', extraClassName: 'count' }
+      view: { factory_: 'foam.ui.TextFieldView', mode: 'read-only', extraClassName: 'count' }
     }
   ],
 

@@ -295,7 +295,7 @@ function registerModel(model, opt_name) {
     var cache = root.lookupCache_;
     var modelRegName = (package ? package + '.' : '') + name;
     if ( cache[modelRegName] ) {
-      console.log(" CACHE replaced ",cache[modelRegName], " with ", model );
+      console.log("registerModel: in lookupCache_, replaced model ", modelRegName );
       cache[modelRegName] = model;
     }
   }

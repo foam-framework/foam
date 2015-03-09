@@ -37,7 +37,7 @@ CLASS({
     },
     {
       name: 'dao',
-      view: 'TableView'
+      view: 'foam.ui.TableView'
     },
     {
       name: 'data',
@@ -145,7 +145,7 @@ CLASS({
   },
 
   templates: [
-    function toInnerHTML() {/* $$dao{model_: 'TableView', model: this.model}*/}
+    function toInnerHTML() {/* $$dao{model_: 'foam.ui.TableView', model: this.model}*/}
   ],
 
   listeners: [

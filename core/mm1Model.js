@@ -225,7 +225,7 @@ var Model = {
       name: 'ids',
       label: 'Key Properties',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValueFn: function() {
         var id = this.getProperty('id');
         if ( id ) return ['id'];
@@ -242,7 +242,7 @@ var Model = {
     {
       name: 'requires',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Model imports.',
       documentation: function() { /*
@@ -264,7 +264,7 @@ var Model = {
     {
       name: 'imports',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Context imports.',
       documentation: function() { /*
@@ -293,7 +293,7 @@ var Model = {
     {
       name: 'exports',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Context exports.',
       documentation: function() { /*
@@ -336,7 +336,7 @@ var Model = {
     {
       name: 'implements',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Interfaces implemented by this Model.',
       documentation: function() { /* $$DOC{ref:'Interface',usePlural:true} implemented by this $$DOC{ref:'Model'} .*/}
@@ -344,7 +344,7 @@ var Model = {
     {
       name: 'traits',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Traits to mix-into this Model.',
       documentation: function() { /* Traits allow you to mix extra features into your $$DOC{ref:'Model'}
@@ -353,7 +353,7 @@ var Model = {
     {
       name: 'tableProperties',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       displayWidth: 70,
       lazyFactory: function() {
         return this.properties_.map(function(o) { return o.name; });
@@ -365,7 +365,7 @@ var Model = {
     {
       name: 'searchProperties',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       displayWidth: 70,
       defaultValueFn: function() {
         return this.tableProperties;
@@ -378,7 +378,7 @@ var Model = {
       name: 'properties',
       type: 'Array[Property]',
       subType: 'Property',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       defaultValue: [],
       help: 'Properties associated with the entity.',
@@ -416,7 +416,7 @@ var Model = {
       name: 'actions',
       type: 'Array[Action]',
       subType: 'Action',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -452,7 +452,7 @@ var Model = {
       name: 'constants',
       type: 'Array[Constant]',
       subType: 'Constant',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -485,7 +485,7 @@ var Model = {
       name: 'messages',
       type: 'Array[Message]',
       subType: 'Constant',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -578,7 +578,7 @@ var Model = {
       name: 'listeners',
       type: 'Array[Method]',
       subType: 'Method',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -604,7 +604,7 @@ var Model = {
       name: 'topics',
       type: 'Array[topic]',
       subType: 'Topic',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       defaultValue: [],
       help: 'Event topics associated with the entity.'
@@ -614,7 +614,7 @@ var Model = {
       name: 'templates',
       type: 'Array[Template]',
       subType: 'Template',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -636,7 +636,7 @@ var Model = {
       name: 'models',
       type: 'Array[Model]',
       subType: 'Model',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -663,7 +663,7 @@ var Model = {
       label: 'Unit Tests',
       type: 'Array[Unit Test]',
       subType: 'UnitTest',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -678,7 +678,7 @@ var Model = {
     {
       name: 'relationships',
       subType: 'Relationship',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -716,7 +716,7 @@ var Model = {
       name: 'issues',
       type: 'Array[Issue]',
       subType: 'Issue',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -734,7 +734,7 @@ var Model = {
       type: 'String',
       displayWidth: 70,
       displayHeight: 6,
-      view: 'TextAreaView',
+      view: 'foam.ui.TextAreaView',
       defaultValue: '',
       help: 'Help text associated with the entity.',
       documentation: function() { /*
@@ -761,7 +761,7 @@ var Model = {
       type: 'String',
       displayWidth: 70,
       displayHeight: 6,
-      view: 'TextAreaView',
+      view: 'foam.ui.TextAreaView',
       defaultValue: '',
       help: 'Internal documentation associated with this entity.',
       documentation: function() { /*
@@ -776,7 +776,7 @@ var Model = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'Factory to create the action object for creating this object',
       documentation: function() { /* Factory to create the action object for creating this object  */}
@@ -788,7 +788,7 @@ var Model = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'Factory to create the action object for deleting this object',
         documentation: function() { /* Factory to create the action object for deleting this object  */}

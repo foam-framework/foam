@@ -20,7 +20,9 @@ CLASS({
   package: 'com.google.mail',
   extendsModel: 'foam.ui.DetailView',
   requires: [
-    'foam.ui.md.MonogramStringView'
+    'foam.ui.md.MonogramStringView',
+    'foam.ui.RelativeDateTimeFieldView',
+    'foam.ui.ImageBooleanView'
   ],
   imports: [
     'controller'
@@ -99,7 +101,7 @@ CLASS({
         <div style="flex: 1; -webkit-flex: 1">
           <div style="display: flex; display: -webkit-flex">
             $$from{mode: 'read-only', className: 'from', escapeHTML: true}
-            $$timestamp{ model_: 'RelativeDateTimeFieldView', mode: 'read-only', className: 'timestamp' }
+            $$timestamp{ model_: 'foam.ui.RelativeDateTimeFieldView', mode: 'read-only', className: 'timestamp' }
           </div>
           <div style="display: flex; display: -webkit-flex">
             <div style='flex-grow: 1; -webkit-flex-grow: 1'>
@@ -107,7 +109,7 @@ CLASS({
               $$snippet{mode: 'read-only', className: 'snippet'}
             </div>
             $$starred{
-              model_: 'ImageBooleanView',
+              model_: 'foam.ui.ImageBooleanView',
               className:  'star',
               trueImage:  'images/ic_star_24dp.png',
               falseImage: 'images/ic_star_outline_24dp.png'

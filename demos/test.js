@@ -10,7 +10,7 @@ CLASS({
     },
     {
       name: 'reqView',
-      view: { factory_: 'TextFieldView', required: true }
+      view: { factory_: 'foam.ui.TextFieldView', required: true }
     },
     {
       model_: 'StringProperty',
@@ -19,7 +19,7 @@ CLASS({
     },
     {
       name: 'patternView',
-      view: { factory_: 'TextFieldView', pattern: '###' }
+      view: { factory_: 'foam.ui.TextFieldView', pattern: '###' }
     },
     {
       model_: 'IntProperty',
@@ -59,7 +59,7 @@ CLASS({
       model_: 'ArrayProperty',
       name: 'p2',
       subType: 'Bookmark',
-      view: { factory_: 'ArrayView', model: 'Bookmark', daoView: 'foam.ui.DAOListView' }
+      view: { factory_: 'foam.ui.ArrayView', model: 'Bookmark', daoView: 'foam.ui.DAOListView' }
     }
   ]
 });

@@ -38,7 +38,7 @@ var ApplicationPower = Model.create({
       {
          name: 'active',
          type: 'Boolean',
-         view: 'BooleanView',
+         view: 'foam.ui.BooleanView',
          defaultValue: false,
          help: 'Indicates if currently active.'
       },
@@ -90,7 +90,7 @@ var Power = Model.create({
          name: 'recharging',
          label: 'Charging',
          type: 'Boolean',
-         view: 'BooleanView',
+         view: 'foam.ui.BooleanView',
          defaultValue: false,
          help: 'Indicates if currently recharging.'
       },
@@ -106,7 +106,7 @@ var Power = Model.create({
          name: 'wifi',
          label: 'WiFi',
          type: 'Boolean',
-         view: 'BooleanView',
+         view: 'foam.ui.BooleanView',
          defaultValue: false,
          help: 'Indicates if currently recharging.'
       },
@@ -144,7 +144,7 @@ var Power = Model.create({
          name: 'applications',
          type: 'Array[ApplicationPower]',
          subType: 'ApplicationPower',
-         view: 'ArrayView',
+         view: 'foam.ui.ArrayView',
          defaultValue: [],
          help: 'Application power information.'
       }
@@ -185,7 +185,7 @@ var CloseApp = Model.create({
       {
          name: 'enabled',
          type: 'Boolean',
-         view: 'BooleanView',
+         view: 'foam.ui.BooleanView',
          defaultValue: true,
          help: 'Indicates if currently enabled.'
       },
@@ -370,7 +370,7 @@ var BatteryGraph = Model.create({
        {
            name: 'displayProjection',
            type: 'Boolean',
-           view: 'BooleanView',
+           view: 'foam.ui.BooleanView',
            defaultValue: true,
            help: 'Enable the display of battery projections.'
        }
@@ -493,7 +493,7 @@ var BatteryMeter = Model.create({
          name: 'recharging',
          label: 'Charging',
          type: 'Boolean',
-         view: 'BooleanView',
+         view: 'foam.ui.BooleanView',
          defaultValue: false,
          help: 'Indicates if currently recharging.'
       },

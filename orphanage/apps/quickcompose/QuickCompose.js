@@ -128,7 +128,7 @@ var QuickEMail = FOAM({
     { name: 'to',  displayWidth: 55, view: ContactView },
     { name: 'cc',  displayWidth: 55, view: ContactView },
     { name: 'bcc', displayWidth: 55, view: ContactView },
-    { name: 'subject',     displayWidth: 55, view: { factory_: 'TextFieldView', placeholder: 'Subject', onKeyMode: true } },
+    { name: 'subject',     displayWidth: 55, view: { factory_: 'foam.ui.TextFieldView', placeholder: 'Subject', onKeyMode: true } },
     { name: 'attachments', view: 'AttachmentView' },
     { name: 'body',        view: { factory_: 'RichTextView', height: 100, onKeyMode: true, placeholder: 'Message' } }
   ]

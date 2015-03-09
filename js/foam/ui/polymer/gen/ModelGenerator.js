@@ -98,7 +98,7 @@ CLASS({
           '../bower_components/paper-checkbox/paper-checkbox.html'
         ];
       },
-      view: 'TextAreaView'
+      view: 'foam.ui.TextAreaView'
     },
     {
       name: 'polymers',
@@ -118,7 +118,7 @@ CLASS({
     },
     {
       name: 'componentsJSON',
-      view: 'TextAreaView',
+      view: 'foam.ui.TextAreaView',
       defaultValue: ''
     },
     {

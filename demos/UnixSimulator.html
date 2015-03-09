@@ -10,7 +10,11 @@
   var timer;
   apar(
      arequire('foam.ui.View'),
-     arequire('foam.ui.DetailView')
+     arequire('foam.ui.DetailView'),
+     arequire('System'),
+     arequire('foam.ui.StringArrayView'),
+     arequire('Label'),
+     arequire('Timer')
   )(
    function() {
     timer  = Timer.create({interval:20});
@@ -18,17 +22,26 @@
     var space  = Canvas.create({width: 450, height: 700, background:'#fff'});
     var space2 = Canvas.create({width: 450, height: 700, background:'#fff'});
 
-    document.writeln("<table><tr><td>");
-    space.write(document);
-    document.writeln("</td><td>");
-    graphs.write(document);
-    document.writeln("</td><td>");
-    space2.write(document);
-    document.writeln("</td><tr></table>");
+    document.body.innerHTML = document.body.innerHTML + ("<table><tr><td>");
+    var spaceView = space.write(document);
+    document.body.innerHTML = document.body.innerHTML + ("</td><td>");
+    var graphsView = graphs.write(document);
+    document.body.innerHTML = document.body.innerHTML + ("</td><td>");
+    var space2View = space2.write(document);
+    document.body.innerHTML = document.body.innerHTML + ("</td><tr></table>");
 
-    document.writeln('<div style="display:inline-block">');
-    timer.write(document);
-    document.writeln('</div>');
+    document.body.innerHTML = document.body.innerHTML + ('<div style="display:inline-block">');
+    var timerView = timer.write(document);
+    document.body.innerHTML = document.body.innerHTML + ('</div>');
+
+    console.log("graphsView");
+    graphsView.initHTML();
+    console.log("spaceView");
+    spaceView.initHTML();
+    console.log("space2View");
+    space2View.initHTML();
+    console.log("timerView");
+    timerView.initHTML();
 
     var sys = System.create({
       parent: space,
@@ -47,7 +60,19 @@
       features: sys.features,
       entities: sys.entities
     });
+    
+    document.body.innerHTML = document.body.innerHTML + ('<table><tr><td>');
+    var sysView = sys.write(document);
+    document.body.innerHTML = document.body.innerHTML + ('</td><td>');
+    var sys2View = sys2.write(document);
+    document.body.innerHTML = document.body.innerHTML + ('</td></tr></table>');
+    
+    console.log("sysView");
+    sysView.initHTML();
+    console.log("sys2View");
+    sys2View.initHTML();
 
+    
     graphs.addChildren(
       sys.codeGraph,
       sys.utilityGraph,
@@ -87,8 +112,8 @@
           sys.efficiencyGraph.maxValue = sys2.efficiencyGraph.maxValue = Math.max(1000, sys.efficiencyGraph.lastValue(), sys2.efficiencyGraph.lastValue());
           sys.codeGraph.maxValue = sys2.codeGraph.maxValue = Math.max(1000, sys.codeGraph.lastValue(), sys2.codeGraph.lastValue());
         }
-    });
-
+    });   
+    
    // space.paint();
    timer.start();
 
@@ -140,7 +165,7 @@
       }
       dim(sys);
       dim(sys2);
-      for ( var i = 0 ; i < 100 /*systems.length*/ ; i++ ) {
+      for ( var i = 0 ; i < 100 ; i++ ) {
         setTimeout((function(i) { return function() {
           proto.parent = space2;
           var sys = proto.clone();
@@ -157,11 +182,6 @@
       }
    }
 
-    document.write('<table><tr><td>');
-    sys.write(document);
-    document.write('</td><td>');
-    sys2.write(document);
-    document.write('</td></tr></table>');
   });
   </script>
 

@@ -22,10 +22,10 @@ CLASS({
 
   requires: [
     'foam.ui.ActionButton',
-    'AutocompleteView',
+    'foam.ui.AutocompleteView',
     'foam.apps.quickbug.ui.LabelAutocompleteView',
     'foam.apps.quickbug.ui.StatusAutocompleteView',
-    'TextFieldView',
+    'foam.ui.TextFieldView',
     'foam.apps.quickbug.ui.GriddedStringArrayView'
   ],
 
@@ -89,13 +89,13 @@ CLASS({
       <tr><td>Summary:</td><td>$$summary</td></tr>
       <tr><td>Description:</td><td>$$description</td></tr>
       <tr><td>Status:</td><td>
-        <% var Y = this.Y.sub(); Y.registerModel(this.StatusAutocompleteView, 'AutocompleteView'); %>
+        <% var Y = this.Y.sub(); Y.registerModel(this.StatusAutocompleteView, 'foam.ui.AutocompleteView'); %>
         $$status{ X: Y }
       </td></tr>
       <tr><td>Owner:</td><td>$$owner</td></tr>
       <tr><td>Cc:</td><td>$$cc</td></tr>
       <tr><td>Labels:</td><td>
-        <% Y = this.Y.sub(); Y.registerModel(this.LabelAutocompleteView, 'AutocompleteView'); %>
+        <% Y = this.Y.sub(); Y.registerModel(this.LabelAutocompleteView, 'foam.ui.AutocompleteView'); %>
         $$labels{ X: Y, model_: 'foam.apps.quickbug.ui.GriddedStringArrayView' }
       </td></tr>
       </tbody>

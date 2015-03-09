@@ -111,7 +111,7 @@ var rootFeatureSet = [
   }],
 
 
-  ['TextFieldView', 'Method', function toHTML() {
+  ['foam.ui.TextFieldView', 'Method', function toHTML() {
     return
   }],
 
@@ -121,7 +121,7 @@ var rootFeatureSet = [
     setter: function(text) {
       this.todoDAO.put(Todo.create({ text: text }));
     },
-    view: { model_: 'TextFieldView', placeholder: 'What needs to be done?' }
+    view: { model_: 'foam.ui.TextFieldView', placeholder: 'What needs to be done?' }
   }],
   ['TodoController', 'Property', {
     name: 'todoDAO'
