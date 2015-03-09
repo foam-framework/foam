@@ -738,7 +738,7 @@ CLASS({
       required: false,
       displayWidth: 70,
       displayHeight: 3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: function (x) { return x; },
       help: 'The graph\'s data function.'
     }

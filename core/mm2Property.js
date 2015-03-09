@@ -230,7 +230,7 @@ var Property = {
     {
       name: 'required',
       type: 'Boolean',
-      view: 'BooleanView',
+      view: 'foam.ui.BooleanView',
       defaultValue: true,
       help: 'Indicates if the property is a required field.',
       documentation: function() { /*
@@ -241,7 +241,7 @@ var Property = {
     {
       name: 'hidden',
       type: 'Boolean',
-      view: 'BooleanView',
+      view: 'foam.ui.BooleanView',
       defaultValue: false,
       help: 'Indicates if the property is hidden.',
       documentation: function() { /*
@@ -253,7 +253,7 @@ var Property = {
     {
       name: 'transient',
       type: 'Boolean',
-      view: 'BooleanView',
+      view: 'foam.ui.BooleanView',
       defaultValue: false,
       help: 'Indicates if the property is transient.',
       documentation: function() { /*
@@ -362,7 +362,7 @@ var Property = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       postSet: function(old, nu) {
         if ( nu && this.defaultValue ) this.defaultValue = undefined;
@@ -381,7 +381,7 @@ var Property = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: "A dynamic function which computes the property's value.",
       documentation: function() { /*
@@ -398,7 +398,7 @@ var Property = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'Factory for creating initial value when new object instantiated.',
       documentation: function() { /*
@@ -411,7 +411,7 @@ var Property = {
       name: 'lazyFactory',
       type: 'Function',
       required: false,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       help: 'Factory for creating the initial value. Only called when the property is accessed for the first time.',
       documentation: function() { /*
         Like the $$DOC{ref:'.factory'} function, but only evaulated when this $$DOC{ref:'Property'} is
@@ -424,7 +424,7 @@ var Property = {
       required: false,
       displayWidth: 70,
       displayHeight: 3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'The property\'s default value function.',
       documentation: function() { /*
@@ -439,7 +439,7 @@ var Property = {
       required: false,
       displayWidth: 70,
       displayHeight: 3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'An adapter function called before preSet.',
       documentation: function() { /*
@@ -453,7 +453,7 @@ var Property = {
       required: false,
       displayWidth: 70,
       displayHeight: 3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'An adapter function called before normal setter logic.',
       documentation: function() { /*
@@ -467,7 +467,7 @@ var Property = {
       required: false,
       displayWidth: 70,
       displayHeight: 3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'A function called after normal setter logic, but before property change event fired.',
       documentation: function() { /*
@@ -482,7 +482,7 @@ var Property = {
       required: false,
       displayWidth: 70,
       displayHeight: 3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'The property\'s default value function.',
       documentation: function() { /*
@@ -499,7 +499,7 @@ var Property = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'Function to format value for display in TableView.',
       documentation: "A function to format the value for display in a $$DOC{ref:'TableView'}."
@@ -512,7 +512,7 @@ var Property = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'Function to format value for display in SummaryView.',
       documentation: "A function to format the value for display in a $$DOC{ref:'SummaryView'}."
@@ -532,7 +532,7 @@ var Property = {
       required: false,
       displayWidth: 70,
       displayHeight: 6,
-      view: 'TextAreaView',
+      view: 'foam.ui.TextAreaView',
       defaultValue: '',
       help: 'Help text associated with the property.',
       documentation: function() { /*
@@ -556,7 +556,7 @@ var Property = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'Factory to create the action objects for taking this property from value A to value B',
       documentation: "Factory to create the $$DOC{ref:'Action'} objects for taking this $$DOC{ref:'Property'} from value A to value B"
@@ -564,7 +564,7 @@ var Property = {
     {
       name: 'compareProperty',
       type: 'Function',
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       displayWidth: 70,
       displayHeight: 5,
       defaultValue: function(o1, o2) {
@@ -607,7 +607,7 @@ var Property = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: "A function which installs additional features into the Model's prototype.",
       documentation: function() { /*
@@ -619,7 +619,7 @@ var Property = {
     {
       name: 'exclusive',
       type: 'Boolean',
-      view: 'BooleanView',
+      view: 'foam.ui.BooleanView',
       defaultValue: true,
       help: 'Indicates if the property can only have a single value.',
       documentation: function() { /*

@@ -92,7 +92,7 @@ var BooleanProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'BooleanView'
+      defaultValue: 'foam.ui.BooleanView'
     },
     {
       name: 'defaultValue',
@@ -345,7 +345,7 @@ var FunctionProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'FunctionView'
+      defaultValue: 'foam.ui.FunctionView'
     },
     {
       name: 'defaultValue',
@@ -443,7 +443,7 @@ var ArrayProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'ArrayView'
+      defaultValue: 'foam.ui.ArrayView'
     },
     {
       name: 'factory',
@@ -644,7 +644,7 @@ var DAOProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'ArrayView'
+      defaultValue: 'foam.ui.ArrayView'
     },
     {
 //      model_: 'FunctionProperty',

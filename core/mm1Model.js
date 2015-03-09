@@ -378,7 +378,7 @@ var Model = {
       name: 'properties',
       type: 'Array[Property]',
       subType: 'Property',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       defaultValue: [],
       help: 'Properties associated with the entity.',
@@ -416,7 +416,7 @@ var Model = {
       name: 'actions',
       type: 'Array[Action]',
       subType: 'Action',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -452,7 +452,7 @@ var Model = {
       name: 'constants',
       type: 'Array[Constant]',
       subType: 'Constant',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -485,7 +485,7 @@ var Model = {
       name: 'messages',
       type: 'Array[Message]',
       subType: 'Constant',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -578,7 +578,7 @@ var Model = {
       name: 'listeners',
       type: 'Array[Method]',
       subType: 'Method',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -604,7 +604,7 @@ var Model = {
       name: 'topics',
       type: 'Array[topic]',
       subType: 'Topic',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       defaultValue: [],
       help: 'Event topics associated with the entity.'
@@ -614,7 +614,7 @@ var Model = {
       name: 'templates',
       type: 'Array[Template]',
       subType: 'Template',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -636,7 +636,7 @@ var Model = {
       name: 'models',
       type: 'Array[Model]',
       subType: 'Model',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -663,7 +663,7 @@ var Model = {
       label: 'Unit Tests',
       type: 'Array[Unit Test]',
       subType: 'UnitTest',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -678,7 +678,7 @@ var Model = {
     {
       name: 'relationships',
       subType: 'Relationship',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -716,7 +716,7 @@ var Model = {
       name: 'issues',
       type: 'Array[Issue]',
       subType: 'Issue',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -734,7 +734,7 @@ var Model = {
       type: 'String',
       displayWidth: 70,
       displayHeight: 6,
-      view: 'TextAreaView',
+      view: 'foam.ui.TextAreaView',
       defaultValue: '',
       help: 'Help text associated with the entity.',
       documentation: function() { /*
@@ -761,7 +761,7 @@ var Model = {
       type: 'String',
       displayWidth: 70,
       displayHeight: 6,
-      view: 'TextAreaView',
+      view: 'foam.ui.TextAreaView',
       defaultValue: '',
       help: 'Internal documentation associated with this entity.',
       documentation: function() { /*
@@ -776,7 +776,7 @@ var Model = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'Factory to create the action object for creating this object',
       documentation: function() { /* Factory to create the action object for creating this object  */}
@@ -788,7 +788,7 @@ var Model = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'Factory to create the action object for deleting this object',
         documentation: function() { /* Factory to create the action object for deleting this object  */}
