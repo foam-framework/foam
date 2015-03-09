@@ -22,19 +22,19 @@
     var space  = Canvas.create({width: 450, height: 700, background:'#fff'});
     var space2 = Canvas.create({width: 450, height: 700, background:'#fff'});
 
-    document.writeln("<table><tr><td>");
+    document.body.innerHTML = document.body.innerHTML + ("<table><tr><td>");
     var spaceView = space.write(document);
-    document.writeln("</td><td>");
+    document.body.innerHTML = document.body.innerHTML + ("</td><td>");
     var graphsView = graphs.write(document);
-    document.writeln("</td><td>");
+    document.body.innerHTML = document.body.innerHTML + ("</td><td>");
     var space2View = space2.write(document);
-    document.writeln("</td><tr></table>");
+    document.body.innerHTML = document.body.innerHTML + ("</td><tr></table>");
 
-    document.writeln('<div style="display:inline-block">');
+    document.body.innerHTML = document.body.innerHTML + ('<div style="display:inline-block">');
     var timerView = timer.write(document);
-    document.writeln('</div>');
-   
-   console.log("graphsView");
+    document.body.innerHTML = document.body.innerHTML + ('</div>');
+
+    console.log("graphsView");
     graphsView.initHTML();
     console.log("spaceView");
     spaceView.initHTML();
@@ -60,7 +60,19 @@
       features: sys.features,
       entities: sys.entities
     });
+    
+    document.body.innerHTML = document.body.innerHTML + ('<table><tr><td>');
+    var sysView = sys.write(document);
+    document.body.innerHTML = document.body.innerHTML + ('</td><td>');
+    var sys2View = sys2.write(document);
+    document.body.innerHTML = document.body.innerHTML + ('</td></tr></table>');
+    
+    console.log("sysView");
+    sysView.initHTML();
+    console.log("sys2View");
+    sys2View.initHTML();
 
+    
     graphs.addChildren(
       sys.codeGraph,
       sys.utilityGraph,
@@ -169,17 +181,6 @@
         }})(i), (i+1)*2000);
       }
    }
-
-    document.write('<table><tr><td>');
-    var sysView = sys.write(document);
-    document.write('</td><td>');
-    var sys2View = sys2.write(document);
-    document.write('</td></tr></table>');
-    
-    console.log("sysView");
-    sysView.initHTML();
-    console.log("sys2View");
-    sys2View.initHTML();
 
   });
   </script>
