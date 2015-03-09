@@ -272,7 +272,7 @@ CLASS({
     },
     {
       name: 'mementoMgr',
-      factory: function() { return this.MementoMgr.create({memento: this.memento$}); }
+      factory: function() { return this.MementoMgr.create({mementoValue: this.memento$}); }
     }
   ],
 
