@@ -83,7 +83,6 @@ var files = [
   'diff',
   'index',
 //'foam.ui.StackView',
-  'MementoMgr',
 //  'foam.ui.DAOController',
   'models',
 //  'touch',

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2014 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   name: 'MementoMgr',
+  package: 'foam.memento',
 
   properties: [
     {
-      name: 'memento'
+      name: 'mementoValue'
     },
     {
       name:  'stack',
@@ -40,7 +42,7 @@ CLASS({
       isEnabled:   function() { return this.stack.length; },
       action:      function() {
       this.dumpState('preBack');
-        this.redo.push(this.memento.value);
+        this.redo.push(this.memento.get());
         this.restore(this.stack.pop());
         this.propertyChange('stack', '', this.stack);
         this.propertyChange('redo', '', this.redo);
@@ -55,7 +57,7 @@ CLASS({
       isEnabled:   function() { return this.redo.length; },
       action:      function() {
       this.dumpState('preForth');
-        this.remember(this.memento.value);
+        this.remember(this.memento.get());
         this.restore(this.redo.pop());
         this.propertyChange('stack', '', this.stack);
         this.propertyChange('redo', '', this.redo);
