@@ -47,7 +47,17 @@ CLASS({
    "actions": [],
    "constants": [],
    "messages": [],
-   "methods": [],
+   "methods": [
+     {
+       "model_": "Method",
+       "name": "destroy",
+       "args": [],
+       "code": function() {
+         this.SUPER();
+         this.view.destroy();
+       }
+     }
+   ],
    "listeners": [],
    "templates": [
       {

@@ -64,7 +64,7 @@ CLASS({
         font-weight: bold;
       }
       .sweeper-cell.covered {
-        box-shadow: -2px -2px 10px rgba(0,0,0,.25) inset, 2px 2px 10px white inset;        
+        box-shadow: -2px -2px 10px rgba(0,0,0,.25) inset, 2px 2px 10px white inset;
         background: #ccc;
       }
       .sweeper-cell.covered font {
@@ -83,7 +83,7 @@ CLASS({
   methods: {
     toInnerHTML: function() {
       this.mineCount = this.board.getMineCount(this);
-      return this.mined ? '<font color="black">X</font>' :
+      return this.mined ? '<font color="black"><img src="js/com/google/sweeper/mine.jpg"></font>' :
         this.mineCount ? '<font color="' + this.COUNT_COLOURS[this.mineCount] + '">' + this.mineCount + '</font>' : '';
     },
     initHTML: function() {

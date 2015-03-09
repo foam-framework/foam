@@ -8,6 +8,7 @@
  <body>
   <script language="javascript">
    var timer;
+   var turnFOAM;
    apar(
       arequire('foam.ui.View'),
       arequire('foam.ui.DetailView')
@@ -122,9 +123,9 @@
    }
 */
 
-   function turnFOAM() {
+   turnFOAM = function() {
      sys.forEach(function(sys) { sys.architecture = System.getPrototype().foam; });
-   }
+   };
 
    function grow() {
      var M = Movement;
