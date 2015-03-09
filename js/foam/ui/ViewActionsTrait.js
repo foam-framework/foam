@@ -48,7 +48,7 @@ CLASS({
       var modelName = opt_args && opt_args.model_ ?
         opt_args.model_ :
         'foam.ui.ActionButton'  ;
-      var v = X.lookup(modelName, X).create({action: action}).copyFrom(opt_args);
+      var v = X.lookup(modelName, X).create({action: action}, X).copyFrom(opt_args);
 
       this[action.name + 'View'] = v;
 
