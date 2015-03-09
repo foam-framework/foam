@@ -72,12 +72,12 @@ CLASS({
           Events.unfollow(this.data$, child.data$);
         }.bind(this));
         this.dataLinkedChildren = [];
-      } else {
-        var parentName = this.parent.name_;
+      }// else {
+//        var parentName = this.parent.name_;
 //         this.data$.addListener(function() {
 //           console.warn("Data changed after fast-destroy! ", this.name_, parentName);
 //         }.bind(this));  
-      }
+//      }
       this.SUPER( isParentDestroyed );
     },
     addDataChild: function(child) {
