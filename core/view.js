@@ -200,33 +200,3 @@ CLASS({
     }
   }
 });
-
-
-CLASS({
-  name: 'WindowHashValue',
-
-  properties: [
-    {
-      name: 'window',
-      defaultValueFn: function() { return this.X.window; }
-    }
-  ],
-
-  methods: {
-    get: function() { return this.window.location.hash ? this.window.location.hash.substring(1) : ''; },
-
-    set: function(value) { this.window.location.hash = value; },
-
-    addListener: function(listener) {
-      this.window.addEventListener('hashchange', listener, false);
-    },
-
-    removeListener: function(listener) {
-      this.window.removeEventListener('hashchange', listener, false);
-    },
-
-    toString: function() { return "WindowHashValue(" + this.get() + ")"; }
-  }
-});
-
-X.memento = X.WindowHashValue.create();
