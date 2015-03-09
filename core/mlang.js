@@ -46,8 +46,7 @@ CLASS({
   documentation: 'Parent model for all mLang expressions. Contains default implementations for many methods.',
 
   methods: {
-    // Mustang Query Language
-    toMQL: function() { /* Outputs Mustang Query Language for this expression. */ return this.label_; },
+    toMQL: function() { /* Outputs MQL for this expression. */ return this.label_; },
     toSQL: function() { /* Outputs SQL for this expression. */ return this.label_; },
     toBQL: function() { /* Outputs yet another query language for this expression. */ return this.label_; },
     toString: function() {

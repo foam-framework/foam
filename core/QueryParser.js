@@ -16,7 +16,7 @@
  */
 
 /**
- * Generic Mustang-like query-language parser generator.
+ * Generic Google-like query-language parser generator.
  *
  * key:value                  key contains "value"
  * key=value                  key exactly matches "value"
