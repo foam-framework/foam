@@ -347,7 +347,8 @@ CLASS({
   name: 'ScrollView',
   extendsModel: 'AbstractDAOView',
   requires: [
-    'foam.util.busy.BusyStatus'
+    'foam.util.busy.BusyStatus',
+    'foam.ui.SpinnerView'
   ],
 
   traits: ['foam.input.touch.VerticalScrollNativeTrait'],
@@ -515,7 +516,7 @@ CLASS({
     {
       name: 'spinner',
       factory: function() {
-        return this.Y.SpinnerView.create({ data$: this.spinnerBusyStatus.busy$ });
+        return this.SpinnerView.create({ data$: this.spinnerBusyStatus.busy$ });
       }
     }
   ],

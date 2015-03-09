@@ -186,7 +186,7 @@ var Property = {
     {
       name: 'aliases',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValue: [],
       help: 'Alternate names for this property.',
       documentation: function() { /*

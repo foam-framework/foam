@@ -1148,7 +1148,7 @@ var featureDAO = [
   }],
   ['StringArrayProperty', 'StringProperty', {
     name: 'view',
-    defaultValue: 'StringArrayView'
+    defaultValue: 'foam.ui.StringArrayView'
   }],
   [null, 'Model', { name: 'DateProperty' }],
   ['DateProperty', 'Extends', 'Property'],
@@ -1207,7 +1207,7 @@ var featureDAO = [
   }],
   ['DateTimeProperty', 'StringProperty', {
     name: 'view',
-    defaultValue: 'DateTimeFieldView'
+    defaultValue: 'foam.ui.DateTimeFieldView'
   }],
 
   [null, 'Model', { name: 'FloatProperty' }],

@@ -46,28 +46,28 @@ CLASS({
          "label": "File Name",
          "type": "String",
          "displayWidth": 50,
-         "view": "TextFieldView"
+         "view": "foam.ui.TextFieldView"
       },
       {
          "model_": "Property",
          "name": "type",
          "type": "String",
          "displayWidth": 30,
-         "view": "TextFieldView"
+         "view": "foam.ui.TextFieldView"
       },
       {
          "model_": "Property",
          "name": "size",
          "type": "int",
          "displayWidth": 10,
-         "view": "TextFieldView"
+         "view": "foam.ui.TextFieldView"
       },
       {
          "model_": "Property",
          "name": "position",
          "type": "int",
          "displayWidth": 10,
-         "view": "TextFieldView"
+         "view": "foam.ui.TextFieldView"
       },
       {
          "model_": "Property",

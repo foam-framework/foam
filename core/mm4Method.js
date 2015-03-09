@@ -780,7 +780,7 @@ CLASS({
     {
       name: 'extends',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       help: 'Interfaces extended by this interface.',
       documentation: function() { /*
         The other $$DOC{ref:'Interface',usePlural:true} this $$DOC{ref:'Interface'} inherits

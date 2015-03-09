@@ -210,7 +210,7 @@ var DateTimeProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'DateTimeFieldView'
+      defaultValue: 'foam.ui.DateTimeFieldView'
     }
   ]
 });
@@ -607,7 +607,7 @@ var StringArrayProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'StringArrayView'
+      defaultValue: 'foam.ui.StringArrayView'
     },
     {
       name: 'prototag',
@@ -900,7 +900,7 @@ var ReferenceArrayProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'StringArrayView',
+      defaultValue: 'foam.ui.StringArrayView',
 // TODO: Uncomment when all usages of ReferenceProperty/ReferenceArrayProperty fixed.
 //      defaultValue: 'DAOKeyView'
     }

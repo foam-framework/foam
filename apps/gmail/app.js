@@ -104,8 +104,8 @@ window.onload = function() {
     arequire('LtExpr'),
     arequire('LteExpr'),
     arequire('ScrollViewRow'),
-    arequire('RelativeDateTimeFieldView'),
-    arequire('DateTimeFieldView'),
+    arequire('foam.ui.RelativeDateTimeFieldView'),
+    arequire('foam.ui.DateTimeFieldView'),
     arequire('foam.ui.ImageBooleanView'))(function() {
       var w = Y.Window.create({ window: window });
       mgmail = Y.MGmail.create({});

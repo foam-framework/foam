@@ -25,7 +25,7 @@ CLASS({
     { name: 'status', autocompleter: 'foam.apps.quickbug.model.StatusCompleter' },
     { name: 'owner', autocompleter: 'foam.apps.quickbug.model.PersonCompleter' },
     { name: 'labels', view: 'GriddedStringArrayView', autocompleter: 'foam.apps.quickbug.LabelCompleter' },
-    { name: 'cc', view: 'StringArrayView', autocompleter: 'foam.apps.quickbug.model.PersonCompleter', displayWidth: 120 },
+    { name: 'cc', view: 'foam.ui.StringArrayView', autocompleter: 'foam.apps.quickbug.model.PersonCompleter', displayWidth: 120 },
     { name: 'blockedOn', view: 'foam.ui.MultiLineStringArrayView' }
   ],
 

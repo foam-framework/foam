@@ -71,14 +71,14 @@ var System = FOAM({
     {
       name: 'features',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValue: [],
       help: 'Features to be implemented be Entity.'
     },
     {
       name: 'entities',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValue: [],
       help: 'Data entities to be supported.'
     },

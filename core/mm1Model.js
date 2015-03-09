@@ -225,7 +225,7 @@ var Model = {
       name: 'ids',
       label: 'Key Properties',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValueFn: function() {
         var id = this.getProperty('id');
         if ( id ) return ['id'];
@@ -242,7 +242,7 @@ var Model = {
     {
       name: 'requires',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Model imports.',
       documentation: function() { /*
@@ -264,7 +264,7 @@ var Model = {
     {
       name: 'imports',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Context imports.',
       documentation: function() { /*
@@ -293,7 +293,7 @@ var Model = {
     {
       name: 'exports',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Context exports.',
       documentation: function() { /*
@@ -336,7 +336,7 @@ var Model = {
     {
       name: 'implements',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Interfaces implemented by this Model.',
       documentation: function() { /* $$DOC{ref:'Interface',usePlural:true} implemented by this $$DOC{ref:'Model'} .*/}
@@ -344,7 +344,7 @@ var Model = {
     {
       name: 'traits',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Traits to mix-into this Model.',
       documentation: function() { /* Traits allow you to mix extra features into your $$DOC{ref:'Model'}
@@ -353,7 +353,7 @@ var Model = {
     {
       name: 'tableProperties',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       displayWidth: 70,
       lazyFactory: function() {
         return this.properties_.map(function(o) { return o.name; });
@@ -365,7 +365,7 @@ var Model = {
     {
       name: 'searchProperties',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       displayWidth: 70,
       defaultValueFn: function() {
         return this.tableProperties;
