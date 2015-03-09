@@ -150,14 +150,6 @@
 				var f = function () { return this.completedCount + this.activeCount == 0; }.bind(this.data);
 				this.setClass('hidden', f, 'main');
 				this.setClass('hidden', f, 'footer');
-				Events.relate(this.X.memento, this.queryView.text$,
-					function(memento) {
-						var s = memento && memento.substring(1);
-						var t = s ? s.capitalize() : 'All';
-                                                console.log('memento->label', memento, s, t);
-                                                return t;
-					},
-                                        function(label) { var s = '/' + label.toLowerCase(); console.log('label->memento', label, s); return s; });
 				this.addInitializer(function() {
 					$('new-todo').focus();
 				});
