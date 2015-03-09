@@ -100,7 +100,7 @@ CLASS({
           {
             model_: 'ViewChoice',
             label:  'JS',
-            view:   'JSView'
+            view:   'foam.ui.JSView'
           },
           {
             model_: 'ViewChoice',

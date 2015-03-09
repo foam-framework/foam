@@ -35,7 +35,7 @@ CLASS({
         this.dao.put(Todo.create({text: text}));
         this.propertyChange('input', text, '');
       },
-      view: { factory_: 'TextFieldView', placeholder: 'What needs to be done?' }
+      view: { factory_: 'foam.ui.TextFieldView', placeholder: 'What needs to be done?' }
     },
     { name: 'dao' },
     { name: 'filteredDAO',    model_: 'DAOProperty', view: 'foam.ui.DAOListView' },

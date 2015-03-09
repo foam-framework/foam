@@ -37,7 +37,7 @@ CLASS({
     {
       name: 'link',
       displayWidth: 19,
-      view: { factory_: 'TextFieldView', placeholder: 'Type or paste link.' },
+      view: { factory_: 'foam.ui.TextFieldView', placeholder: 'Type or paste link.' },
       preSet: function(_, value) {
         value = value.trim();
         // Disallow javascript URL's

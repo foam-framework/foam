@@ -36,7 +36,7 @@ CLASS({
     init: function() {
       // Register MD PropertyViews
       this.Y = this.Y.sub();
-      this.Y.registerModel(this.TextFieldView,  'TextFieldView');
+      this.Y.registerModel(this.TextFieldView,  'foam.ui.TextFieldView');
       this.Y.registerModel(this.IntFieldView,   'IntFieldView');
       this.Y.registerModel(this.FloatFieldView, 'FloatFieldView');
       this.SUPER();

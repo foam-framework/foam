@@ -21,7 +21,7 @@ CLASS({
 
   requires: [
     'EasyDAO',
-    'MultiLineStringArrayView',
+    'foam.ui.MultiLineStringArrayView',
     'TableView',
     'foam.ui.polymer.gen.Component',
     'foam.ui.polymer.gen.ComponentBuilder',
@@ -50,7 +50,7 @@ CLASS({
     {
       model_: 'StringArrayProperty',
       name: 'componentsToRegister',
-      view: 'MultiLineStringArrayView',
+      view: 'foam.ui.MultiLineStringArrayView',
       factory: function() {
         return [
           '../bower_components/paper-button/paper-button.html',

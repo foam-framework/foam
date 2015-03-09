@@ -25,7 +25,7 @@ CLASS({
     'AutocompleteView',
     'foam.apps.quickbug.ui.LabelAutocompleteView',
     'foam.apps.quickbug.ui.StatusAutocompleteView',
-    'TextFieldView',
+    'foam.ui.TextFieldView',
     'foam.apps.quickbug.ui.GriddedStringArrayView'
   ],
 

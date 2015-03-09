@@ -24,9 +24,9 @@ CLASS({
   requires: [
     'foam.ui.AlternateView',
     'foam.ui.ActionButton',
-    'ActionLink',
-    'ToolbarView',
-    'StaticHTML',
+    'foam.ui.ActionLink',
+    'foam.ui.ToolbarView',
+    'foam.ui.StaticHTML',
     'Action',
     'foam.apps.quickbug.ui.CursorView',
     'foam.ui.RelationshipView',
@@ -204,7 +204,7 @@ CLASS({
     },
     {
       name: 'countField',
-      type: 'TextFieldView',
+      type: 'foam.ui.TextFieldView',
       factory: function() {
         return this.TextFieldView.create({
           name: 'count',
@@ -859,7 +859,7 @@ Please use labels and text to provide additional information.
 </head>
 <body id="{{this.id}}" class="column"><div class="column expand" style="height:100%;">
  <div class="topHeader row" style="align-items:center;">
-  <%= backButton, forthButton %> %%refreshImg <span class="expand"></span> <span>$$newIssue{model_: 'ActionLink'} | $$changeUser{model_: 'ActionLink'} | $$favourites{model_: 'ActionLink'} | %%bookmarksMenu | <%= syncLink %> | <%= browserLink %> |<%= linkButton %></span>
+  <%= backButton, forthButton %> %%refreshImg <span class="expand"></span> <span>$$newIssue{model_: 'foam.ui.ActionLink'} | $$changeUser{model_: 'foam.ui.ActionLink'} | $$favourites{model_: 'foam.ui.ActionLink'} | %%bookmarksMenu | <%= syncLink %> | <%= browserLink %> |<%= linkButton %></span>
  </div>
  <div class="stack" style="display:none;">
  </div>

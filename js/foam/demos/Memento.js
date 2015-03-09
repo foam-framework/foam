@@ -26,7 +26,7 @@ CLASS({
     'foam.demos.MemorableObject',
     'foam.demos.SubMemorableObject',
     'foam.memento.FragmentMementoMgr',
-    'JSView'
+    'foam.ui.JSView'
   ],
 
   properties: [
@@ -47,7 +47,7 @@ CLASS({
     },
     {
       name: 'memento',
-      view: 'JSView',
+      view: 'foam.ui.JSView',
       hidden: false
     },
     {

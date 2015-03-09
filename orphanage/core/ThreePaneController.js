@@ -70,7 +70,7 @@ CLASS({
     },
     {
       name: 'searchField',
-      type: 'TextFieldView',
+      type: 'foam.ui.TextFieldView',
       factory: function() {
         return TextFieldView.create({
           name: 'search',
@@ -86,7 +86,7 @@ CLASS({
     },
     {
       name: 'countField',
-      type: 'TextFieldView',
+      type: 'foam.ui.TextFieldView',
       factory: function() {
         return TextFieldView.create({
           name: 'count',

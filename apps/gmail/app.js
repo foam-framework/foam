@@ -37,7 +37,7 @@ window.onload = function() {
     arequire('EMail'),
     arequire('EMailLabelProperty'),
     arequire('EMailMutationAction'),
-    arequire('TextFieldView'),
+    arequire('foam.ui.TextFieldView'),
     arequire('foam.ui.View'),
     arequire('foam.ui.md.AppController'),
     arequire('foam.ui.md.MonogramStringView'),

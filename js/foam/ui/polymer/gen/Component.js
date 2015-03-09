@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.ui.polymer.gen',
 
   requires: [
-    'MultiLineStringArrayView'
+    'foam.ui.MultiLineStringArrayView'
   ],
 
   imports: [
@@ -70,7 +70,7 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'source',
-      view: 'MultiLineStringArrayView',
+      view: 'foam.ui.MultiLineStringArrayView',
       tableFormatter: function(src, self, tableView) {
         var size = 128;
         var escapeHTML = self.X.XMLUtil.escape;
@@ -98,7 +98,7 @@ CLASS({
     {
       model_: 'StringArrayProperty',
       name: 'deps',
-      view: 'MultiLineStringArrayView',
+      view: 'foam.ui.MultiLineStringArrayView',
       tableFormatter: function(arr, self, tableView) {
         return arr.map(self.shortenURL.bind(self)).join('<br />');
       },
