@@ -39,7 +39,7 @@ CLASS({
       </td>
     </tr>
     <tr><th>Status:</th><td class="inplace" colspan="2">
-        <% var Y = this.Y.sub(); Y.registerModel(this.StatusAutocompleteView, 'AutocompleteView'); %>
+        <% var Y = this.Y.sub(); Y.registerModel(this.StatusAutocompleteView, 'foam.ui.AutocompleteView'); %>
         $$status{ X: Y }
       </td>
     </tr>
@@ -54,7 +54,7 @@ CLASS({
     <tr><th class="vt">Labels:<br>
       </th>
       <td class="labelediting" colspan="2">
-        <% Y = this.Y.sub(); Y.registerModel(this.LabelAutocompleteView, 'AutocompleteView'); %>
+        <% Y = this.Y.sub(); Y.registerModel(this.LabelAutocompleteView, 'foam.ui.AutocompleteView'); %>
         $$labels{ X: Y }
       </td>
     </tr>

@@ -93,7 +93,7 @@ CLASS({
     {
       name: 'default',
       type: 'Boolean',
-      view: 'BooleanView',
+      view: 'foam.ui.BooleanView',
       defaultValue: false,
       help: 'Indicates if this is the default action.',
       documentation: function() { /*
@@ -157,7 +157,7 @@ CLASS({
       type: 'Array',
       factory: function() { return []; },
       subType: 'Action',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       help: 'Child actions of this action.',
       persistent: false,
       documentation: function() { /*
@@ -600,7 +600,7 @@ CLASS({
       type: 'Function',
       displayWidth: 80,
       displayHeight: 30,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       help: 'Javascript code to implement this method.',
       postSet: function() {
         if ( ! DEBUG ) return;
@@ -645,7 +645,7 @@ CLASS({
       name: 'args',
       type: 'Array[Arg]',
       subType: 'Arg',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       defaultValue: [],
       help: 'Method arguments.',
@@ -780,7 +780,7 @@ CLASS({
     {
       name: 'extends',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       help: 'Interfaces extended by this interface.',
       documentation: function() { /*
         The other $$DOC{ref:'Interface',usePlural:true} this $$DOC{ref:'Interface'} inherits
@@ -807,7 +807,7 @@ CLASS({
       label: 'Help Text',
       displayWidth: 70,
       displayHeight: 6,
-      view: 'TextAreaView',
+      view: 'foam.ui.TextAreaView',
       help: 'Help text associated with the argument.',
       documentation: function() { /*
           This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
@@ -823,7 +823,7 @@ CLASS({
       name: 'methods',
       type: 'Array[Method]',
       subType: 'Method',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       defaultValue: [],
       help: 'Methods associated with the interface.',
@@ -943,7 +943,7 @@ CLASS({
       name: 'args',
       type: 'Array[Arg]',
       subType: 'Arg',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       defaultValue: [],
       help: 'Method arguments.',
@@ -958,7 +958,7 @@ CLASS({
       displayHeight: 30,
       rows: 30, cols: 80,
       defaultValue: '',
-      view: 'TextAreaView',
+      view: 'foam.ui.TextAreaView',
       // Doesn't work because of bootstrapping issues.
       // preSet: function(_, t) { return typeof t === 'function' ? multiline(t) : t ; },
       help: 'Template text. <%= expr %> or <% out(...); %>',
@@ -977,7 +977,7 @@ CLASS({
        name: 'templates',
        type: 'Array[Template]',
        subType: 'Template',
-       view: 'ArrayView',
+       view: 'foam.ui.ArrayView',
        defaultValue: [],
        help: 'Sub-templates of this template.'
        },*/
@@ -1049,7 +1049,7 @@ CLASS({
       name: 'chapters',
       type: 'Array[Document]',
       subtype: 'Documentation',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       defaultValue: [],
       help: 'Sub-documents comprising the full body of this document.',

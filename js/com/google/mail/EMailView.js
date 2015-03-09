@@ -23,6 +23,11 @@ CLASS({
   ],
   requires: [
     "foam.ui.WebView",
+    'foam.ui.md.MonogramStringView',
+    'foam.ui.RelativeDateTimeFieldView',
+    'foam.ui.ImageBooleanView',
+    'foam.ui.ActionSheetView',
+    'foam.ui.StringArrayView'
   ],
   actions: [
     {
@@ -37,7 +42,7 @@ CLASS({
       isEnabled: function() { return true; },
       iconUrl: 'icons/ic_more_horiz_white_24dp.png',
       action: function() {
-        var actionSheet = this.X.ActionSheetView.create({
+        var actionSheet = this.ActionSheetView.create({
           data: this.data,
           actions: this.data.model_.actions,
         }, this.Y);
@@ -71,11 +76,11 @@ CLASS({
                 $$to{mode: 'read-only'}
                 $$cc{mode: 'read-only'}
                 <br>
-                $$timestamp{ model_: 'RelativeDateTimeFieldView', mode: 'read-only', className: 'timestamp' }
+                $$timestamp{ model_: 'foam.ui.RelativeDateTimeFieldView', mode: 'read-only', className: 'timestamp' }
               </div>
             </div>
             $$starred{
-              model_: 'ImageBooleanView',
+              model_: 'foam.ui.ImageBooleanView',
               className:  'actionButton',
               trueImage:  'images/ic_star_24dp.png',
               falseImage: 'images/ic_star_outline_24dp.png'

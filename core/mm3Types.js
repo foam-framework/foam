@@ -92,7 +92,7 @@ var BooleanProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'BooleanView'
+      defaultValue: 'foam.ui.BooleanView'
     },
     {
       name: 'defaultValue',
@@ -210,7 +210,7 @@ var DateTimeProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'DateTimeFieldView'
+      defaultValue: 'foam.ui.DateTimeFieldView'
     }
   ]
 });
@@ -345,7 +345,7 @@ var FunctionProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'FunctionView'
+      defaultValue: 'foam.ui.FunctionView'
     },
     {
       name: 'defaultValue',
@@ -443,7 +443,7 @@ var ArrayProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'ArrayView'
+      defaultValue: 'foam.ui.ArrayView'
     },
     {
       name: 'factory',
@@ -607,7 +607,7 @@ var StringArrayProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'StringArrayView'
+      defaultValue: 'foam.ui.StringArrayView'
     },
     {
       name: 'prototag',
@@ -644,7 +644,7 @@ var DAOProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'ArrayView'
+      defaultValue: 'foam.ui.ArrayView'
     },
     {
 //      model_: 'FunctionProperty',
@@ -900,7 +900,7 @@ var ReferenceArrayProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'StringArrayView',
+      defaultValue: 'foam.ui.StringArrayView',
 // TODO: Uncomment when all usages of ReferenceProperty/ReferenceArrayProperty fixed.
 //      defaultValue: 'DAOKeyView'
     }

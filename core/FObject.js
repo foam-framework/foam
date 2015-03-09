@@ -593,9 +593,8 @@ var FObject = {
       showActions: true
     });
 
-    //document.writeln(view.toHTML());
-    document.body.innerHTML = document.body.innerHTML + view.toHTML();
-    return view;
+    document.writeln(view.toHTML());
+    view.initHTML();
   },
 
   defaultView: function(opt_view) {

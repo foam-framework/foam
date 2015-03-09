@@ -1026,7 +1026,7 @@ var featureDAO = [
   }],
   ['BooleanProperty', 'StringProperty', {
     name: 'view',
-    defaultValue: 'BooleanView'
+    defaultValue: 'foam.ui.BooleanView'
   }],
   ['Property', 'BooleanProperty', {
     name: 'required',
@@ -1049,7 +1049,7 @@ var featureDAO = [
   }],
   ['FunctionProperty', 'StringProperty', {
     name: 'view',
-    defaultValue: 'FunctionView'
+    defaultValue: 'foam.ui.FunctionView'
   }],
 
   ['Property', 'FunctionProperty', {
@@ -1110,7 +1110,7 @@ var featureDAO = [
   }],
   ['ArrayProperty', 'StringProperty', {
     name: 'view',
-    defaultvlaue: 'ArrayView'
+    defaultvlaue: 'foam.ui.ArrayView'
   }],
   ['ArrayProperty', 'FunctionProperty', {
     name: 'factory',
@@ -1148,7 +1148,7 @@ var featureDAO = [
   }],
   ['StringArrayProperty', 'StringProperty', {
     name: 'view',
-    defaultValue: 'StringArrayView'
+    defaultValue: 'foam.ui.StringArrayView'
   }],
   [null, 'Model', { name: 'DateProperty' }],
   ['DateProperty', 'Extends', 'Property'],
@@ -1207,7 +1207,7 @@ var featureDAO = [
   }],
   ['DateTimeProperty', 'StringProperty', {
     name: 'view',
-    defaultValue: 'DateTimeFieldView'
+    defaultValue: 'foam.ui.DateTimeFieldView'
   }],
 
   [null, 'Model', { name: 'FloatProperty' }],
@@ -1485,14 +1485,14 @@ var featureDAO = [
     displayHeight: 30,
     rows: 30, cols: 80,
     defaultValue: '',
-    view: 'TextAreaView',
+    view: 'foam.ui.TextAreaView',
     help: 'Template text. <%= expr %> or <% out(...); %>'
   }],
   /*['Template', 'Property', {
     name: 'templates',
     type: 'Array[Template]',
     subType: 'Template',
-    view: 'ArrayView',
+    view: 'foam.ui.ArrayView',
     defaultValue: [],
     help: 'Sub-templates of this template.'
     }]*/
@@ -1664,7 +1664,7 @@ var featureDAO = [
   ['Model', 'ArrayProperty', {
     name: 'templates',
     subType: 'Template',
-    view: 'ArrayView',
+    view: 'foam.ui.ArrayView',
     getter: function() {
       var ret = [];
       // TODO sould this be a local forEach?

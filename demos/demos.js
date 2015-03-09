@@ -21,6 +21,8 @@ var System = FOAM({
 
   name:  'System',
 
+  requires: ['foam.input.Mouse'],
+  
   properties: [
     {
       name:  'parent',
@@ -69,14 +71,14 @@ var System = FOAM({
     {
       name: 'features',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValue: [],
       help: 'Features to be implemented be Entity.'
     },
     {
       name: 'entities',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValue: [],
       help: 'Data entities to be supported.'
     },
@@ -118,10 +120,10 @@ var System = FOAM({
     },
     {
       name:  'mouse',
-      type:  'Mouse',
-      view: { factory_: 'foam.ui.DetailView', model: Mouse },
+      type:  'foam.input.Mouse',
+      view: { factory_: 'foam.ui.DetailView', model: this.Mouse },
       factory: function() {
-        return Mouse.create();
+        return this.Mouse.create();
       }
     },
     {

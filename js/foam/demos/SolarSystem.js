@@ -30,7 +30,8 @@ CLASS({
     'foam.graphics.CView',
     'foam.graphics.Circle as Planet',
     'foam.graphics.Turntable',
-    'foam.ui.DetailView'
+    'foam.ui.DetailView',
+    'foam.ui.BooleanView'
   ],
 
   properties: [

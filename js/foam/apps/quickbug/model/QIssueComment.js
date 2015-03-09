@@ -48,7 +48,7 @@ CLASS({
     },
     {
       name: 'published',
-      view: 'RelativeDateTimeFieldView'
+      view: 'foam.ui.RelativeDateTimeFieldView'
     },
     {
       model_: 'ReferenceProperty',

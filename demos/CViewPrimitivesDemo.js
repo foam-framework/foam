@@ -34,7 +34,7 @@ aseq(
   arequire('foam.graphics.diagram.DiagramRoot'),
   arequire('foam.graphics.diagram.Link'),
   arequire('foam.ui.DetailView'),
-  arequire('Mouse'),
+  arequire('foam.input.Mouse'),
   arequire('BorderLabel')
   )(
 function() {
@@ -170,7 +170,7 @@ function() {
   
   
   //vlay1.performLayout();
-  var mouse = X.Mouse.create();
+  var mouse = X.foam.input.Mouse.create();
   mouse.connect(canv.$);
   
   Events.dynamic(function() { mouse.x; mouse.y; }, function() {

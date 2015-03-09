@@ -172,16 +172,16 @@ function arequireModel(model, param_X) {
     var opt_X = param_X || X;
 
 // To debug a dependency cycle, uncomment the CYCLE DEBUG sections below.
-// Run your code, and when it hangs examine the unsatisfied models in 
+// Run your code, and when it hangs examine the unsatisfied models in
 // X.arequire$ModelRequiresInProgress
-    
+
 // // CYCLE DEBUG
 // var modelName = model.id.clone();
 // var dbgX = X;
 // console.log("X param: ", param_X && param_X.$UID, " dbgX: ", dbgX.$UID);
 // if ( ! dbgX.arequire$ModelRequiresInProgress ) {
 //   dbgX.set('arequire$ModelRequiresInProgress', {} );
-// } 
+// }
 // if ( ! dbgX.arequire$ModelRequiresInProgress[modelName] ) {
 //   dbgX.arequire$ModelRequiresInProgress[modelName] = { uid: model.$UID, extendsModel: "", traits: {}, requires: {} };
 //   future.get(function(m) {
@@ -189,7 +189,7 @@ function arequireModel(model, param_X) {
 //   });
 // }
 // // CYCLE DEBUG
-    
+
     if ( model.extendsModel ) args.push(arequire(model.extendsModel, opt_X));
 
 // // CYCLE DEBUG
@@ -208,7 +208,7 @@ function arequireModel(model, param_X) {
         args.push(arequire(model.traits[i]));
 // // CYCLE DEBUG
 // var trait = model.traits[i].clone();
-// dbgX.arequire$ModelRequiresInProgress[modelName].traits[trait] = true; 
+// dbgX.arequire$ModelRequiresInProgress[modelName].traits[trait] = true;
 // if (trait == 'foam.ui.HTMLViewTrait' && modelName == 'foam.ui.View')arequire(trait, opt_X)(function(m) {
 //   delete dbgX.arequire$ModelRequiresInProgress[modelName].traits[m.id];
 // });
@@ -238,7 +238,7 @@ function arequireModel(model, param_X) {
           args.push(arequire(m[0]));
 // // CYCLE DEBUG
 // var require = m[0].clone();
-// dbgX.arequire$ModelRequiresInProgress[modelName].requires[require] = true; 
+// dbgX.arequire$ModelRequiresInProgress[modelName].requires[require] = true;
 // arequire(require, opt_X)(function(m) {
 //   delete dbgX.arequire$ModelRequiresInProgress[modelName].requires[m.id];
 // });
@@ -277,35 +277,7 @@ function packagePath(X, path) {
 
 
 function registerModel(model, opt_name) {
-  var root = this;
-
-  function contextualizeModel(path, model, name) {
-    console.assert(model.getPrototype, 'Model missing getPrototype');
-
-//    console.log('contextulizeModel: ', model.name, ' in ', this.toString());
-
-    // Model which creates Objects with Context X
-    var xModel = root == X ? model : {
-      __proto__: model,
-      create: function(args, opt_X) {
-        return model.create(args, opt_X || root);
-      }
-    };
-
-    Object.defineProperty(
-      path,
-      name,
-      {
-        get: function() {
-          var THIS = this.__this__ || this;
-          if ( THIS === root ) return xModel;
-          THIS.registerModel(model, name);
-          return THIS[name];
-        },
-        configurable: true
-      });
-  }
-
+  var root    = this;
   var name    = model.name;
   var package = model.package;
 
@@ -315,19 +287,15 @@ function registerModel(model, opt_name) {
     package = a.join('.');
   }
 
-  if ( package ) {
-    var path = packagePath(root, package);
-    Object.defineProperty(path, name, { value: model, configurable: true });
-  } else {
-    contextualizeModel(root, model, name)
-  }
+  var path = packagePath(root, package);
+  Object.defineProperty(path, name, { value: model, configurable: true });
 
   // update the cache if this model was already FOAM.lookup'd
   if ( root.hasOwnProperty('lookupCache_') ) {
     var cache = root.lookupCache_;
     var modelRegName = (package ? package + '.' : '') + name;
     if ( cache[modelRegName] ) {
-      console.log(" CACHE replaced ",cache[modelRegName], " with ", model );
+      console.log("registerModel: in lookupCache_, replaced model ", modelRegName );
       cache[modelRegName] = model;
     }
   }

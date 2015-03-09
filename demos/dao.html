@@ -372,6 +372,7 @@ var OrderItemDAO = [
   OrderItem.create({id: 4, orderId: 2, title: 'Item 2', amount: 999.99}),
   OrderItem.create({id: 5, orderId: 2, title: 'Item 3', amount: 62.45})
 ].dao;
+X.OrderItemDAO = OrderItemDAO; 
 
 OrderHeaderDAO.select(function(header) {
   console.log(header.id, ' ', header.title);
@@ -418,6 +419,10 @@ dao.select(document);
   <div id='output'></div>
 
   <script language="javascript">
+  apar(arequire('foam.ui.TableView'),
+       arequire('foam.ui.View'),
+       arequire('foam.ui.DetailView')
+    )(function() {
     var demo = $('demo');
     var out  = $('output');
     var log_ = function(o) {
@@ -438,6 +443,8 @@ dao.select(document);
       log_(' <br><code>' + l + '</code>');
       eval(l);
     }
+  });
+    
   </script>
 
  </body>

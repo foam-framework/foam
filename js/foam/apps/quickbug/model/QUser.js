@@ -36,7 +36,7 @@ CLASS({
     {
       model_: 'StringArrayProperty',
       name: 'preferredProjects',
-      view: 'MultiLineStringArrayView',
+      view: 'foam.ui.MultiLineStringArrayView',
       // Temporary fix for QuickBug v.1.10 which broke the project list
       // TODO: remove next line after a while
       preSet: function(_, a) {

@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.ui.polymer.gen',
 
   requires: [
-    'MultiLineStringArrayView'
+    'foam.ui.MultiLineStringArrayView'
   ],
 
   imports: [
@@ -67,7 +67,7 @@ CLASS({
     {
       model_: 'StringArrayProperty',
       name: 'importHints',
-      view: 'MultiLineStringArrayView',
+      view: 'foam.ui.MultiLineStringArrayView',
       factory: function() { return []; }
     }
   ]

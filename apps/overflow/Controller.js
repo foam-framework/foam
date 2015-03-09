@@ -3,7 +3,7 @@ CLASS({
   requires: ['foam.ui.DAOListView'],
 
   properties: [
-    { name: 'search', view: { factory_: 'TextFieldView', onKeyMode: true } },
+    { name: 'search', view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true } },
     { name: 'dao', defaultValue: questions },
     {
       name: 'filteredDAO',

@@ -26,9 +26,9 @@ CLASS({
     'foam.ui.PopupChoiceView',
     'PredicatedView',
     'ScrollView',
-    'SpinnerView',
+    'foam.ui.SpinnerView',
     'foam.ui.SwipeAltView',
-    'ViewChoice'
+    'foam.ui.ViewChoice'
   ],
 
 //   exports: [
@@ -134,7 +134,7 @@ CLASS({
     {
       name: 'q',
       displayWidth: 25,
-      view: {factory_: 'TextFieldView', type: 'search', onKeyMode: true, placeholder: 'Search'} // TODO: change placeholder?
+      view: {factory_: 'foam.ui.TextFieldView', type: 'search', onKeyMode: true, placeholder: 'Search'} // TODO: change placeholder?
     },
     {
       model_: 'FunctionProperty',

@@ -21,8 +21,8 @@ CLASS({
 
   requires: [
     'EasyDAO',
-    'MultiLineStringArrayView',
-    'TableView',
+    'foam.ui.MultiLineStringArrayView',
+    'foam.ui.TableView',
     'foam.ui.polymer.gen.Component',
     'foam.ui.polymer.gen.ComponentBuilder',
     'foam.ui.polymer.gen.ComponentProperty',
@@ -50,7 +50,7 @@ CLASS({
     {
       model_: 'StringArrayProperty',
       name: 'componentsToRegister',
-      view: 'MultiLineStringArrayView',
+      view: 'foam.ui.MultiLineStringArrayView',
       factory: function() {
         return [
           '../bower_components/paper-button/paper-button.html',
@@ -71,7 +71,7 @@ CLASS({
     {
       name: 'componentDAO',
       label: 'Registered Components',
-      view: 'TableView',
+      view: 'foam.ui.TableView',
       factory: function() {
         return this.EasyDAO.create(this.componentDAOConfig);
       }
@@ -89,7 +89,7 @@ CLASS({
     {
       name: 'propertyDAO',
       label: 'Registered Component Properties',
-      view: 'TableView',
+      view: 'foam.ui.TableView',
       factory: function() {
         return this.EasyDAO.create(this.propertyDAOConfig);
       }
@@ -107,7 +107,7 @@ CLASS({
     {
       name: 'prototypeDAO',
       label: 'Component Prototypes',
-      view: 'TableView',
+      view: 'foam.ui.TableView',
       factory: function() {
         return this.EasyDAO.create(this.prototypeDAOConfig);
       }

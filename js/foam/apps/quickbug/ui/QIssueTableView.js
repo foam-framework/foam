@@ -19,7 +19,7 @@ CLASS({
   name: 'QIssueTableView',
   package: 'foam.apps.quickbug.ui',
 
-  extendsModel: 'TableView',
+  extendsModel: 'foam.ui.TableView',
 
   properties: [
     { name: 'browser' }

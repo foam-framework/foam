@@ -23,7 +23,7 @@ var Models = [
   'Unit Tests',
   'Issues',
   'Timer',
-  'Mouse',
+  'foam.input.Mouse',
   'EyeCView',
   'EyesCView',
   'ClockView',

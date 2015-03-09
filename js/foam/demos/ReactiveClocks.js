@@ -22,7 +22,7 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'Mouse',
+    'foam.input.Mouse',
     'Timer',
     'foam.demos.ClockView',
     'foam.graphics.CView',

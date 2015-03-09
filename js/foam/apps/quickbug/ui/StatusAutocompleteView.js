@@ -18,7 +18,7 @@
 CLASS({
   name: 'StatusAutocompleteView',
   package: 'foam.apps.quickbug.ui',
-  extendsModel: 'AutocompleteView',
+  extendsModel: 'foam.ui.AutocompleteView',
 
   requires: [
     'foam.ui.ChoiceListView'
