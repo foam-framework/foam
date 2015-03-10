@@ -15,12 +15,13 @@ apar(
   arequire('foam.graphics.MotionBlur'),
   arequire('foam.graphics.Shadow'),
   arequire('ShadowCircle'),
-  arequire('BlurCircle')
+  arequire('BlurCircle'),
+  arequire('foam.input.Mouse')
   )(function() {
 
 
 var space   = foam.graphics.CView.create({width: 2000, height: 1700});
-var mouse   = Mouse.create();
+var mouse   = foam.input.Mouse.create();
 
 space.write(document);
 mouse.connect(space.$);
