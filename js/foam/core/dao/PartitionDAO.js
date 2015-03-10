@@ -20,6 +20,11 @@ CLASS({
   package: 'foam.core.dao',
   extendsModel: 'AbstractDAO',
 
+  requires: [
+    'foam.core.dao.OrderedCollectorSink',
+    'foam.core.dao.CollectorSink'
+  ],
+
   properties: [
     {
       name: 'partitions',
@@ -88,9 +93,9 @@ CLASS({
         var mysink = sink;
       } else {
         if ( options.order ) {
-          mysink = OrderedCollectorSink.create({ comparator: options.order });
+          mysink = this.OrderedCollectorSink.create({ comparator: options.order });
         } else {
-          mysink = CollectorSink.create({});
+          mysink = this.CollectorSink.create({});
         }
         if ( 'limit' in options ) sink = limitedSink(options.limit, sink);
         if ( options.skip ) sink = skipSink(options.skip, sink);

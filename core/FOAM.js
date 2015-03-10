@@ -122,7 +122,7 @@ function arequire(modelName, opt_X) {
   if ( ! model ) {
     if ( ! X.ModelDAO ) {
       if ( modelName !== 'Template' ) console.warn('Unknown Model in arequire: ', modelName);
-      return aconstant(undefined);
+      return aconstant();
     }
 
     // check whether we have already hit the ModelDAO to load the model
@@ -172,16 +172,16 @@ function arequireModel(model, param_X) {
     var opt_X = param_X || X;
 
 // To debug a dependency cycle, uncomment the CYCLE DEBUG sections below.
-// Run your code, and when it hangs examine the unsatisfied models in 
+// Run your code, and when it hangs examine the unsatisfied models in
 // X.arequire$ModelRequiresInProgress
-    
+
 // // CYCLE DEBUG
 // var modelName = model.id.clone();
 // var dbgX = X;
 // console.log("X param: ", param_X && param_X.$UID, " dbgX: ", dbgX.$UID);
 // if ( ! dbgX.arequire$ModelRequiresInProgress ) {
 //   dbgX.set('arequire$ModelRequiresInProgress', {} );
-// } 
+// }
 // if ( ! dbgX.arequire$ModelRequiresInProgress[modelName] ) {
 //   dbgX.arequire$ModelRequiresInProgress[modelName] = { uid: model.$UID, extendsModel: "", traits: {}, requires: {} };
 //   future.get(function(m) {
@@ -189,7 +189,7 @@ function arequireModel(model, param_X) {
 //   });
 // }
 // // CYCLE DEBUG
-    
+
     if ( model.extendsModel ) args.push(arequire(model.extendsModel, opt_X));
 
 // // CYCLE DEBUG
@@ -205,10 +205,10 @@ function arequireModel(model, param_X) {
     var i;
     if ( model.traits ) {
       for ( i = 0; i < model.traits.length; i++ ) {
-        args.push(arequire(model.traits[i]));
+        args.push(arequire(model.traits[i], opt_X));
 // // CYCLE DEBUG
 // var trait = model.traits[i].clone();
-// dbgX.arequire$ModelRequiresInProgress[modelName].traits[trait] = true; 
+// dbgX.arequire$ModelRequiresInProgress[modelName].traits[trait] = true;
 // if (trait == 'foam.ui.HTMLViewTrait' && modelName == 'foam.ui.View')arequire(trait, opt_X)(function(m) {
 //   delete dbgX.arequire$ModelRequiresInProgress[modelName].traits[m.id];
 // });
@@ -235,10 +235,10 @@ function arequireModel(model, param_X) {
         if ( m[0] == model.id ) {
           console.warn("Model requires itself: " + model.id);
         } else {
-          args.push(arequire(m[0]));
+          args.push(arequire(m[0], opt_X));
 // // CYCLE DEBUG
 // var require = m[0].clone();
-// dbgX.arequire$ModelRequiresInProgress[modelName].requires[require] = true; 
+// dbgX.arequire$ModelRequiresInProgress[modelName].requires[require] = true;
 // arequire(require, opt_X)(function(m) {
 //   delete dbgX.arequire$ModelRequiresInProgress[modelName].requires[m.id];
 // });
@@ -270,42 +270,20 @@ var FOAM_POWERED = '<a style="text-decoration:none;" href="https://github.com/fo
 /** Lookup a '.'-separated package path, creating sub-packages as required. **/
 function packagePath(X, path) {
   function packagePath_(Y, path, i) {
-    return i == path.length ? Y : packagePath_(Y[path[i]] || ( Y[path[i]] = {} ), path, i+1);
+    if ( i === path.length ) return Y;
+    if ( ! Y[path[i]] ) {
+      Y[path[i]] = {};
+      // console.log('************ Creating sub-path: ', path[i]);
+      if ( i == 0 ) GLOBAL[path[i]] = Y[path[i]];
+    }
+    return packagePath_(Y[path[i]], path, i+1);
   }
-  return path ? packagePath_(X, path.split('.'), 0) : X;
+  return path ? packagePath_(X, path.split('.'), 0) : GLOBAL;
 }
 
 
 function registerModel(model, opt_name) {
-  var root = this;
-
-  function contextualizeModel(path, model, name) {
-    console.assert(model.getPrototype, 'Model missing getPrototype');
-
-//    console.log('contextulizeModel: ', model.name, ' in ', this.toString());
-
-    // Model which creates Objects with Context X
-    var xModel = root == X ? model : {
-      __proto__: model,
-      create: function(args, opt_X) {
-        return model.create(args, opt_X || root);
-      }
-    };
-
-    Object.defineProperty(
-      path,
-      name,
-      {
-        get: function() {
-          var THIS = this.__this__ || this;
-          if ( THIS === root ) return xModel;
-          THIS.registerModel(model, name);
-          return THIS[name];
-        },
-        configurable: true
-      });
-  }
-
+  var root    = model.package ? this : GLOBAL;
   var name    = model.name;
   var package = model.package;
 
@@ -315,24 +293,21 @@ function registerModel(model, opt_name) {
     package = a.join('.');
   }
 
-  if ( package ) {
-    var path = packagePath(root, package);
-    Object.defineProperty(path, name, { value: model, configurable: true });
-  } else {
-    contextualizeModel(root, model, name)
-  }
+  var path = packagePath(root, package);
+  Object.defineProperty(path, name, { value: model, configurable: true });
 
+  // TODO: this is broken
   // update the cache if this model was already FOAM.lookup'd
   if ( root.hasOwnProperty('lookupCache_') ) {
     var cache = root.lookupCache_;
     var modelRegName = (package ? package + '.' : '') + name;
     if ( cache[modelRegName] ) {
-      console.log(" CACHE replaced ",cache[modelRegName], " with ", model );
+      console.log("registerModel: in lookupCache_, replaced model ", modelRegName );
       cache[modelRegName] = model;
     }
   }
 
-  this.registerModel_(model);
+  this.onRegisterModel(model);
 }
 
 
@@ -348,6 +323,7 @@ function CLASS(m) {
     if ( ! m.package )
       Object.defineProperty(GLOBAL, m.name, { get: function() { return path[m.name]; }, configurable: true });
 
+    //console.log("Model Getting defined: ", m.name, X.NAME);
     Object.defineProperty(path, m.name, {
       get: function () {
         // console.time('registerModel: ' + id);
@@ -359,16 +335,16 @@ function CLASS(m) {
         // console.time('buildModel: ' + id);
         var model = JSONUtil.mapToObj(X, m, Model, work);
         // console.timeEnd('buildModel: ' + id);
-        if ( work.length > 0 && model.required__ )
+        if ( work.length > 0 && model.required__ ) {
           model.required__ = aseq(
             aseq.apply(null, work),
             model.required__);
+        }
 
-        // TODO: _ROOT_X is a workaround for apps that redefine the top level X
-        _ROOT_X.registerModel(model);
+        X.registerModel(model);
 
         // console.timeEnd('registerModel: ' + id);
-        return this[m.name];
+        return model;
       },
       configurable: true
     });
@@ -393,6 +369,6 @@ function INTERFACE(imodel) {
 
 
 /** Called when a Model is registered. **/
-function registerModel_(m) {
+function onRegisterModel(m) {
   // NOP
 }

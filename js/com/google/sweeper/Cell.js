@@ -85,7 +85,7 @@ CLASS({
   methods: {
     toInnerHTML: function() {
       this.mineCount = this.board.getMineCount(this);
-      return this.mined ? '<font color="black">X</font>' :
+      return this.mined ? '<font color="black"><img src="js/com/google/sweeper/mine.jpg"></font>' :
         this.mineCount ? '<font color="' + this.COUNT_COLOURS[this.mineCount] + '">' + this.mineCount + '</font>' : '';
     },
     initHTML: function() {

@@ -31,9 +31,6 @@ cat \
   ../../core/view.js \
   ../../core/layout.js \
   ../../core/daoView.js \
-  ../../core/ChoiceView.js \
-  ../../core/DetailView.js \
-  ../../core/TableView.js \
   ../../core/cview.js \
   ../../core/cview2.js \
   ../../core/RichTextView.js \

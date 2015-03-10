@@ -16,20 +16,21 @@
  */
 
 CLASS({
-  name: 'DetailView',
   package: 'foam.ui',
+  name: 'DetailView',
 
   extendsModel: 'foam.ui.View',
 //   traits: ['foam.ui.HTMLViewTrait',
 //            'foam.ui.ViewActionsTrait',
 //            'foam.ui.TemplateSupportTrait'],
-  
-  requires: [ 'Property', 
-              'foam.ui.TextFieldView',
-              'foam.ui.IntFieldView',
-              'foam.ui.FloatFieldView',
-              'foam.ui.DAOController'], 
-              //, 'foam.ui.RelationshipsView' ],
+
+  requires: [
+    'Property',
+    'foam.ui.TextFieldView',
+    'foam.ui.IntFieldView',
+    'foam.ui.FloatFieldView',
+    'foam.ui.DAOController'
+  ],
   exports: [ 'propertyViewProperty' ],
 
   documentation: function() {/*
@@ -110,7 +111,7 @@ CLASS({
 
   methods: {
     // Template Method
-    
+
     shouldDestroy: function(old,nu) {
       if ( ! old || ! old.model_ || ! nu || ! nu.model_ ) return true;
       return old.model_ !== nu.model_;
@@ -209,24 +210,24 @@ CLASS({
       return str;
     }
   },
-  
+
   templates: [
     {
       name: 'CSS',
-      template: function CSS() {/*                 
+      template: function CSS() {/*
           .detailView {
             border: solid 2px #dddddd;
             background: #fafafa;
             width: 99%;
           }
-          
+
           .detailView .heading {
             float: left;
             font-size: 14px;
             font-weight: bold;
             margin-bottom: 8px;
           }
-          
+
           .detailView .propertyLabel {
             font-size: 14px;
             display: block;
@@ -234,14 +235,14 @@ CLASS({
             text-align: right;
             float: left;
           }
-          
+
           .detailView input {
             font-size: 12px;
             padding: 4px 2px;
             border: solid 1px #aacfe4;
             margin: 2px 0 0px 10px;
           }
-          
+
           .detailView textarea {
             float: left;
             font-size: 12px;
@@ -251,22 +252,22 @@ CLASS({
             width: 98%;
             overflow: auto;
           }
-          
+
           .detailView select {
             font-size: 12px;
             padding: 4px 2px;
             border: solid 1px #aacfe4;
             margin: 2px 0 0px 10px;
           }
-          
+
           .detailView .label {
             vertical-align: top;
           }
-          
+
           .detailArrayLabel {
             font-size: medium;
           }
-          
+
           .detailArrayLabel .foamTable {
             margin: 1px;
             width: 99%;
@@ -275,6 +276,3 @@ CLASS({
     }
   ]
 });
-
-
-

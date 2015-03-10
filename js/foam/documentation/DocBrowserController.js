@@ -27,7 +27,8 @@ CLASS({
     'foam.documentation.DocViewPicker',
     'foam.documentation.ModelCompletenessRecord',
     'foam.input.touch.TouchManager',
-    'foam.input.touch.GestureManager'
+    'foam.input.touch.GestureManager',
+    'foam.core.bootstrap.ModelFileDAO'
   ],
 
   documentation: function() {  /*
@@ -139,29 +140,26 @@ CLASS({
     createModelList: function() {
       var newDAO = this.MDAO.create({model:Model});
 
-      //This is to make sure getPrototype is called, even if the model object
-      //has been created without a .create or .getPrototype having been called
-      //yet.
-//       for ( var key in UNUSED_MODELS ) {
-//         var modl = FOAM.lookup(key, this.X);
-//         modl.getPrototype && modl.getPrototype();
-//       }
-//       for ( var key in USED_MODELS ) {
-//         var modl = FOAM.lookup(key, this.X);
-//         modl.getPrototype && modl.getPrototype();
-//       }
-
-      X.ModelDAO.select(newDAO);
-      
+      // create subcontext to safely load all models
+      var loaderX = this.Y.sub({}, "LoaderX");
+      console.log("loader X: ", loaderX.NAME, loaderX.$UID);
+//       loaderX.set('ModelDAO', this.ModelFileDAO.create({}, loaderX));
+//       loaderX.set('onRegisterModel', function(m) { console.log("Good onRegisterModel: ", m.id); }); 
+//       loaderX.set('lookup', lookup); 
+      loaderX.ModelDAO = this.ModelFileDAO.create({}, loaderX);
+      loaderX.onRegisterModel = function(m) { console.log("Good onRegisterModel: ", m.id); }; 
+      loaderX.lookup = lookup; 
+      loaderX.ModelDAO.select(newDAO);
+           
       // All models are now in USED_MODELS
-      // [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
-      //   for ( var key in collection ) {
-      //     // go async: as the requires complete, newDAO will fill in
-      //     arequire(key)( function(m) {
-      //       newDAO.put(m);
-      //     });
-      //   };
-      // }.bind(this));
+//       [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
+//         for ( var key in collection ) {
+//           // go async: as the requires complete, newDAO will fill in
+//           arequire(key)( function(m) {
+//             newDAO.put(m);
+//           });
+//         };
+//       }.bind(this));
       
 //       // Add in non-model things like Interfaces
 //       for ( var key in NONMODEL_INSTANCES ) {

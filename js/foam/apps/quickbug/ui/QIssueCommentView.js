@@ -47,7 +47,7 @@ CLASS({
 
   listeners: [
     {
-      name: 'newData'
+      name: 'newData',
       code: function(src, topic, old, nu) {
         if ( old ) old.removeListener(this.update);
         if ( nu ) nu.addListener(this.update);

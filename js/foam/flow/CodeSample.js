@@ -2,7 +2,7 @@
  * @license
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the License);
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -10,57 +10,160 @@
  */
 
 CLASS({
-  package: 'foam.flow',
   name: 'CodeSample',
+  package: 'foam.flow',
   extendsModel: 'foam.flow.Element',
+
+  requires: [
+    'EasyDAO',
+    'foam.ui.ActionButton',
+    'foam.flow.VirtualConsole',
+    'foam.flow.VirtualConsoleView',
+    'foam.flow.Editor'
+  ],
+
+  imports: [
+    'document',
+    'editorModel',
+    'actionButtonModel'
+  ],
 
   properties: [
     {
-      // model_: 'FunctionProperty',
-      name: 'code',
-      preSet: function(_, txt) { return txt.trim(); },
-      postSet: function(_, txt) {
-        var fn = eval('(function() {\n'    + txt + '\n})');
-
-        this.output = fn();
-      }
+      model_: 'StringProperty',
+      name: 'extraClassName',
+      defaultValue: 'loading'
     },
     {
-      name: 'output'
+      model_: 'StringProperty',
+      name: 'title',
+      defaultValue: 'Example'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'src',
+      defaultValue: 'console.log("Hello world!");'
+    },
+    {
+      name: 'virtualConsole',
+      type: 'foam.flow.VirtualConsole',
+      factory: function() {
+        return this.VirtualConsole.create();
+      },
+      view: 'foam.flow.VirtualConsoleView'
+    },
+    {
+      name: 'editor',
+      factory: function() {
+        var editor = (this.editorModel ? this.editorModel : this.Editor).create();
+        editor.subscribe(['loaded'], this.onEditorLoaded);
+        return editor;
+      }
     }
   ],
 
-  methods: {
-    /** Allow inner to be optional when defined using HTML. **/
-    fromElement: function(e) {
-      var children = e.children;
-      if ( e.childNodes.length == 0 || children.length == 1 && children[0].nodeName === 'code' ) {
-        return this.SUPER(e);
+  methods: [
+    {
+      name: 'initHTML',
+      code: function() {
+        this.SUPER.apply(this, arguments);
+        if ( this.editor ) {
+          this.editor.src = this.src;
+          if ( this.editor.src$ ) this.src$ = this.editor.src$;
+        }
       }
-
-      this.code = e.innerHTML;
-      return this;
     }
-  },
+  ],
+
+  actions: [
+    {
+      name: 'run',
+      iconUrl: 'https://www.gstatic.com/images/icons/material/system/1x/play_arrow_white_24dp.png',
+      action: function() {
+        this.virtualConsoleView.reset();
+        this.virtualConsole.watchConsole();
+        try {
+          eval('(function(){'    + this.src + '})')();
+        } catch (e) {
+          this.virtualConsole.error(e.toString());
+        } finally {
+          this.virtualConsole.resetConsole();
+        }
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onEditorLoaded',
+      todo: 'We should probably have a spinner and/or placeholder until this fires.',
+      code: function() {
+        // TODO(markdittmer): This should automatically updated our classname.
+        // Why doesn't it?
+        this.extraClassName = '';
+        if ( ! this.$ ) return;
+        this.$.className = this.cssClassAttr().slice(7, -1);
+      }
+    }
+  ],
 
   templates: [
-    function CSS() {/*
-      code-sample > sample-code, code-sample > sample-output {
-        padding: 8px;
-        margin: 18px 0;
-        width: 600px;
-        border: 1px solid #000;
-        display: block;
+    function toInnerHTML() {/*
+      <heading>
+        %%title
+      </heading>
+      <top-split>
+        <editors>
+          %%editor
+        </editors>
+        <actions>
+          <% out(this.createActionView(
+                  this.model_.getAction('run'),
+                  {
+                    model_: this.actionButtonModel || 'foam.ui.ActionButton',
+                    data: this,
+                    className: 'actionButton playButton',
+                    color: 'white',
+                    font: '30px Roboto Arial',
+                    alpha: 1.0,
+                    width: 38,
+                    height: 38,
+                    radius: 18,
+                    background: '#e51c23'
+                  })); %>
+        </actions>
+      </top-split>
+      $$virtualConsole{
+        minLines: 8,
+        maxLines: 8
       }
     */},
-    function toInnerHTML() {/*
-      <sample-code>
-        %%code
-      </sample-code>
-      Output:
-      <sample-output>
-        %%output
-      </sample-output>
+    function CSS() {/*
+      code-sample.loading {
+        display: none;
+      }
+      code-sample editors {
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch;
+        border-bottom: 1px solid #eee;
+      }
+      code-sample top-split {
+        display: block;
+        position: relative;
+        z-index: 10;
+      }
+      code-sample actions {
+        position: absolute;
+        right: 30px;
+        bottom: -18px;
+      }
+      code-sample canvas.playButton {
+        background: rgba(0,0,0,0);
+        box-shadow: 3px 3px 3px #aaa;
+        border-radius: 30px;
+      }
     */}
+
   ]
 });

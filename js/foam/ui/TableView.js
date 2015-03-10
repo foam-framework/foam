@@ -28,11 +28,13 @@
 */
 CLASS({
   name: 'TableView',
+  package: 'foam.ui',
   extendsModel: 'AbstractDAOView',
 
   label: 'Table View',
 
-  requires: [ 'EditColumnsView' ],
+  requires: [ 'foam.ui.EditColumnsView',
+              'foam.input.touch.GestureTarget' ],
 
   properties: [
     {
@@ -291,7 +293,7 @@ CLASS({
         };
 
         if ( this.X.gestureManager ) {
-          this.X.gestureManager.install(this.X.foam.input.touch.GestureTarget.create({
+          this.X.gestureManager.install(this.GestureTarget.create({
             containerID: this.id,
             handler: this,
             getElement: function() { return this.container.$.parentElement; },
@@ -518,66 +520,3 @@ CLASS({
 });
 
 
-CLASS({
-  name: 'EditColumnsView',
-
-  extendsModel: 'foam.ui.View',
-
-  properties: [
-    {
-      name: 'model',
-      type: 'Model'
-    },
-    {
-      model_: 'StringArrayProperty',
-      name: 'properties'
-    },
-    {
-      model_: 'StringArrayProperty',
-      name: 'availableProperties'
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'onAddColumn',
-      code: function(prop) {
-        this.properties = this.properties.concat([prop]);
-      }
-    },
-    {
-      name: 'onRemoveColumn',
-      code: function(prop) {
-        this.properties = this.properties.deleteF(prop);
-      }
-    }
-  ],
-
-  methods: {
-    toHTML: function() {
-      var s = '<span id="' + this.id + '" class="editColumnView" style="overflow-y: scroll;position: absolute;right: 0.96;background: white;top: 138px;border: 1px solid black;">'
-
-      s += 'Show columns:';
-      s += '<table>';
-
-      // Currently Selected Properties
-      for ( var i = 0 ; i < this.properties.length ; i++ ) {
-        var p = this.model.getProperty(this.properties[i]);
-        s += '<tr><td id="' + this.on('click', this.onRemoveColumn.bind(this, p.name)) + '">&nbsp;&#x2666;&nbsp;' + p.label + '</td></tr>';
-      }
-
-      // Available but not Selected Properties
-      for ( var i = 0 ; i < this.availableProperties.length ; i++ ) {
-        var p = this.availableProperties[i];
-        if ( this.properties.indexOf(p.name) == -1 ) {
-          s += '<tr><td id="' + this.on('click', this.onAddColumn.bind(this, p.name)) + '">&nbsp;&nbsp;&nbsp;&nbsp;' + p.label + '</td></tr>';
-        }
-      }
-
-      s += '</table>';
-      s += '</span>';
-
-      return s;
-    }
-  }
-});

@@ -1,4 +1,4 @@
-/**
+a:/**
  * @license
  * Copyright 2012 Google Inc. All Rights Reserved.
  *
@@ -23,6 +23,7 @@ CLASS({
     {
       name: 'parser',
       factory: function() {
+        var X = this.X;
         return {
           __proto__: grammar,
 
@@ -144,6 +145,9 @@ CLASS({
           quoteEscape: seq('\\"'),
 
         }.addActions({
+          package: function(a) {
+            this.currentPackage = a[1];
+          },
 
           quoteEscape: function(a) {
             return ['"'];
@@ -154,15 +158,19 @@ CLASS({
           },
 
           enum: function(a) {
-            var e = {};
+            var constants = {};
             var name = a[1];
             var values = a[3];
             for ( var i = 0 ; i < values.length ; i++ ) {
               var value = values[i];
-              e[value[0]] = value[1][1];
+              constants[value[0]] = value[1][1];
             }
-            e.type = 'Enum';
-            (this.ctx || GLOBAL)[name] = e;
+            var m = Model.create({
+              name: name,
+              package: this.currentPackage,
+              constants: constants
+            });
+            return m;
           },
 
           userType: function(a) {
@@ -197,16 +205,23 @@ CLASS({
 
           message: function(a) {
             var properties = [];
+            var models = [];
             for (var i = 0; i < a[2].length; i++) {
-              if (a[2][i] && Property.isInstance(a[2][i])) {
+              if ( ! a[2][i] ) continue;
+
+              if ( Property.isInstance(a[2][i]) ) {
                 properties.push(a[2][i]);
+              } else if ( Model.isInstance(a[2][i]) ) {
+                models.push(a[2][i]);
               }
             }
-            var model = Model.create({
+            var args = {
               name: a[1],
-              properties: properties
-            });
-            (this.ctx || GLOBAL)[a[1]] = model;
+              properties: properties,
+              models: models
+            };
+            if ( this.currentPackage ) args.package = this.currentPackage;
+            var model = Model.create(args);
             return model;
           },
 

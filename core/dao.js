@@ -374,8 +374,8 @@ var JSONToObject = {
   },
 
   visitObject: function(o) {
-    var model   = lookup(o.model_);
-    if ( ! model ) throw ('Unknown Model: ', o.model_);
+    var model   = X.lookup(o.model_);
+    if ( ! model ) throw new Error('Unknown Model: ' + o.model_);
     var obj     = model.create();
 
     //    o.forEach((function(value, key) {

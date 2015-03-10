@@ -303,7 +303,7 @@ test('<pA a="1" b="2">foo<b>bold</b></pA>');
           Object.keys(registry).
             sort(function(o1, o2) { return o2.compareTo(o1); }).
             map(function(k) { return literal_ic(k); })),
-        alt('/', ' '));
+        alt('/', ' ', '>'));
 
       var html = HTMLParser.create().export('tag');
 

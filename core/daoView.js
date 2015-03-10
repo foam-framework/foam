@@ -301,7 +301,7 @@ CLASS({
           this.view.data = nu;
           // DetailViews will update on data changing, but others won't.
           if ( ! this.DetailView.isInstance(this.view) ) {
-            var e = $(this.id);
+            var e = this.X.$(this.id);
             e.innerHTML = this.view.toHTML();
             this.view.initHTML();
           }
@@ -321,7 +321,8 @@ CLASS({
       name: 'y',
       postSet: function(old, nu) {
         if ( this.view && this.id && old !== nu ) {
-          $(this.id).style.webkitTransform = 'translate3d(0px,' + nu + 'px, 0px)';
+          // TODO(kg): this.X.$(this.id) should be the same as this.$, but that doesn't work for some unknown reason.
+          this.X.$(this.id).style.webkitTransform = 'translate3d(0px,' + nu + 'px, 0px)';
         }
       }
     }
@@ -347,7 +348,8 @@ CLASS({
   name: 'ScrollView',
   extendsModel: 'AbstractDAOView',
   requires: [
-    'foam.util.busy.BusyStatus'
+    'foam.util.busy.BusyStatus',
+    'foam.ui.SpinnerView'
   ],
 
   traits: ['foam.input.touch.VerticalScrollNativeTrait'],
@@ -515,7 +517,7 @@ CLASS({
     {
       name: 'spinner',
       factory: function() {
-        return this.Y.SpinnerView.create({ data$: this.spinnerBusyStatus.busy$ });
+        return this.SpinnerView.create({ data$: this.spinnerBusyStatus.busy$ });
       }
     }
   ],
@@ -831,7 +833,7 @@ CLASS({
         </div>
         <% this.addInitializer(function(){
           self.spinnerBusyStatus.busy$.addListener(function() {
-            var e = $(self.spinnerContainerID);
+            var e = this.X.$(self.spinnerContainerID);
             if ( e ) e.style.display = self.spinnerBusyStatus.busy ? 'block' : 'none';
           });
         }); %>

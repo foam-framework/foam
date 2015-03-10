@@ -19,6 +19,7 @@ CLASS({
   package: 'foam.graphics',
   name: 'CanvasScrollView',
   extendsModel: 'foam.graphics.CView',
+  requires: [ 'foam.input.touch.GestureTarget' ],
   properties: [
     {
       model_: 'DAOProperty',
@@ -64,7 +65,7 @@ CLASS({
 
       if ( this.X.gestureManager ) {
         var manager = this.X.gestureManager;
-        var target = this.X.foam.input.touch.GestureTarget.create({
+        var target = this.GestureTarget.create({
           containerID: this.view.id,
           handler: this,
           gesture: 'verticalScrollMomentum'

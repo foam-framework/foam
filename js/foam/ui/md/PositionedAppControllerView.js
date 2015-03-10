@@ -21,7 +21,7 @@ CLASS({
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
   extendsModel: 'foam.ui.DetailView',
 
-  requires: [ 'CanvasScrollView', ],
+  requires: [ 'foam.graphics.CanvasScrollView' ],
 
   methods: {
     init: function() {

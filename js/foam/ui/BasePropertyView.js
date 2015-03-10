@@ -109,29 +109,37 @@ CLASS({
       return this;
     },
        
-    createViewFromProperty: function(prop) {
+    createViewFromProperty: function(prop, ret) {
       /* Helper to determine the $$DOC{ref:'foam.ui.View'} to use. */
       var viewName = this.innerView || prop.view
-      if ( ! viewName ) return this.TextFieldView.create(prop, this.Y);
-      if ( typeof viewName === 'string' ) return this.Y.lookup(viewName).create(prop, this.Y);
-      if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
-      if ( viewName.model_ ) { 
+      if ( ! viewName ) ret(this.TextFieldView.create(prop, this.Y));
+      else if ( typeof viewName === 'string' ) {
+//        var m = this.Y.lookup(viewName);
+//        if ( m ) ret(m.create(prop, this.Y));
+//        else 
+          arequire(viewName, this.X)(function(m) { ret(m.create(prop, this.Y)); }.bind(this) );
+      }
+      else if ( viewName.model_ && typeof viewName.model_ === 'string' ) {
+        var m = FOAM(prop.view);
+        arequireModel(m, this.X)(ret);
+      }
+      else if ( viewName.model_ ) { 
         var v = viewName.model_.create(viewName, this.X);
         var vId = v.id;
         v.copyFrom(prop);
         v.id = vId;
-        return v; 
+        ret(v); 
       }
-      if ( viewName.factory_ ) {
+      else if ( viewName.factory_ ) {
         var v = this.X.lookup(viewName.factory_).create(viewName, this.X);
         var vId = v.id;
         v.copyFrom(prop);
         v.id = vId;
-        return v;
+        ret(v);
       }
-      if ( typeof viewName === 'function' ) return viewName(prop, this);
+      else if ( typeof viewName === 'function' ) ret(viewName(prop, this));
 
-      return viewName.create(prop);
+      else ret(viewName.create(prop));
     },
 
     unbindData: function(oldData) {
@@ -158,9 +166,9 @@ CLASS({
       this.SUPER( isParentDestroyed );
     },
     
+    finishPropertyRender: function() { /* Implement to render your property. */ },
+    
     construct: function() {
-      this.SUPER();
-
       // if not bound yet and we do have data set, bind it
       this.bindData(this.data);
 
@@ -171,10 +179,17 @@ CLASS({
         if ( this.args.model ) this.prop.model = this.args.model;
         var view = model.create(this.prop, this.Y);
         delete this.args.model_;
+        // syncronous case
+        this.finishConstruct(view, this.finishPropertyRender.bind(this));
       } else {
-        view = this.createViewFromProperty(this.prop);
+        view = this.createViewFromProperty(this.prop, 
+                 function(v) { 
+                   this.finishConstruct(v, this.finishPropertyRender.bind(this));
+                 }.bind(this));
       }
+    },
 
+    finishConstruct: function(view, ret) {
       view.copyFrom(this.args);
       view.parent = this.parent;
       view.prop = this.prop;
@@ -184,6 +199,8 @@ CLASS({
 
       this.view = view;
       this.addDataChild(view);
+            
+      ret && ret();
     },
     
     addDataChild: function(child) {

@@ -34,8 +34,9 @@ CLASS({
     'error',
     'info',
     'log',
+    'lookup',
     'memento',
-    'registerModel_',
+    'onRegisterModel',
     'requestAnimationFrame',
     'setInterval',
     'setTimeout',
@@ -44,6 +45,10 @@ CLASS({
   ],
 
   properties: [
+    {
+      name: 'registeredModels',
+      factory: function() { return {}; }
+    },
     {
       model_: 'StringProperty',
       name: 'name',
@@ -85,8 +90,18 @@ CLASS({
   ],
 
   methods: {
-    registerModel_: function(model) {
-      var X        = this.X;
+    lookup: function(key) {
+      var ret = GLOBAL.lookup.call(this.Y, key);
+      // var ret = this.X.lookup(key);
+      if ( ret && ! this.registeredModels[key] ) {
+        // console.log('Registering Model: ', key);
+        this.registeredModels[key] = true;
+        this.onRegisterModel(ret);
+      }
+      return ret;
+    },
+    onRegisterModel: function(model) {
+      var Y        = this.Y;
       var document = this.document;
 
       // TODO(kgr): If Traits have CSS then it will get installed more than once.
@@ -94,8 +109,8 @@ CLASS({
       for ( var m = model ; m && m.getPrototype ; m = m.extendsModel && this[m.extendsModel] ) {
         if ( this.installedModels[m.id] ) return;
         this.installedModels[m.id] = true;
-        arequireModel(m)(function(m) {
-          m.getPrototype().installInDocument(X, document);
+        arequireModel(m, this.Y)(function(m) {
+          m.getPrototype().installInDocument(Y, document);
         });
       }
     },
@@ -152,11 +167,13 @@ CLASS({
 
 
 // Using the existence of 'process' to determine that we're running in Node.
-foam.ui.Window.create(
-  {
-    window: window,
-    name: 'DEFAULT WINDOW',
-    isBackground: typeof process === 'object'
-  },
-  { __proto__: X, sub: function() { return X; } }
-);
+(function() {
+  var w = foam.ui.Window.create(
+    {
+      window: window,
+      name: 'DEFAULT WINDOW',
+      isBackground: typeof process === 'object'
+    }, X
+  );
+  FObject.X = X = w.Y;
+})();

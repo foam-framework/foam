@@ -21,7 +21,7 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'Mouse',
+    'foam.input.Mouse',
     'foam.graphics.CView',
     'foam.physics.Collider',
     'foam.demos.physics.PhysicalCircle'

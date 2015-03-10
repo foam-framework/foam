@@ -20,14 +20,14 @@ CLASS({
   name: 'Spring',
   extendsModel: 'foam.graphics.CView',
 
-  requires: [ 'foam.demos.physics.PhysicalCircle' ],
+  requires: [ 'foam.demos.physics.PhysicalCircle', 'foam.input.Mouse' ],
 
   properties: [
     { name: 'n',          defaultValue: 17 },
     { name: 'width',      defaultValue: 2000 },
     { name: 'height',     defaultValue: 1700 },
     { name: 'background', defaultValue: 'white' },
-    { name: 'mouse',      factory: function() { return Mouse.create(); } }
+    { name: 'mouse',      factory: function() { return this.Mouse.create(); } }
   ],
 
   methods: {
@@ -40,7 +40,6 @@ CLASS({
       mouse.connect(this.$);
       mouse.x = mouse.y = 220;
 
-
       for ( var x = 0 ; x < N ; x++ ) {
         for ( var y = 0 ; y < N ; y++ ) {
           var c = this.PhysicalCircle.create({
@@ -51,10 +50,9 @@ CLASS({
           });
           this.addChild(c);
 
-          //  Movement.strut(mouse, c, (x-2)*20, (y-2)*20);
           Movement.spring(mouse, c, (x-(N-1)/2)*20, (y-(N-1)/2)*20);
           Movement.inertia(c);
-          Movement.friction(c, 0.85);
+          Movement.friction(c, 0.96);
         }
       }
     }

@@ -73,7 +73,7 @@ CLASS({
          "factory": function () { return new Date(); },
          "tableWidth": "100",
          "displayWidth": 45,
-         "view": "TextFieldView",
+         "view": "foam.ui.TextFieldView",
          "preSet": function (_, d) {
         return ( typeof d === 'string' || typeof d === 'number' ) ? new Date(d) : d;
       }
@@ -133,7 +133,7 @@ CLASS({
          "mode": "read-write",
          "required": true,
          "displayWidth": 100,
-         "view": "TextFieldView",
+         "view": "foam.ui.TextFieldView",
          "tableWidth": "45%"
       },
       {
@@ -168,7 +168,7 @@ CLASS({
       },
          "help": "Email message body.",
          "displayHeight": 20,
-         "view": "TextFieldView"
+         "view": "foam.ui.TextFieldView"
       },
       {
          "model_": "foam.lib.email.EMailLabelProperty",

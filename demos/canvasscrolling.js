@@ -1,6 +1,8 @@
 CLASS({
   name: 'ExperimentalScrollView',
   extendsModel: 'foam.graphics.CView',
+  requires: ['foam.input.touch.GestureTarget'],
+  
   constants: {
     colors: 'e8ad62 9b26af 6639b6 4184f3 02a8f3 00bbd3 009587 0e9c57 9e9c57 8ac249 ccdb38 ffea3a f3b300 ff9700 ff5621 785447'.split(' '),
     priorityColors: 'DB4437 F4B400 4285F4 0F9D58'.split(' '),
@@ -85,7 +87,7 @@ CLASS({
 
       if ( this.X.gestureManager ) {
         var manager = this.X.gestureManager;
-        var target = this.X.foam.input.touch.GestureTarget.create({
+        var target = this.GestureTarget.create({
           containerID: this.view.id,
           handler: this,
           gesture: 'verticalScrollMomentum'
@@ -4675,8 +4677,8 @@ var dao = JSONUtil.arrayToObjArray(X, [
 
 dao.dao;
 
-this.X.touchManager = this.X.foam.input.touch.TouchManager.create({});
-var gestureManager = this.X.foam.input.touch.GestureManager.create({});
+this.X.touchManager = this.X.lookup('foam.input.touch.TouchManager').create({});
+var gestureManager = this.X.lookup('foam.input.touch.GestureManager').create({});
 
 var scroller = this.X.ExperimentalScrollView.create({ dao: dao });
 

@@ -27,7 +27,7 @@ CLASS({
 
   requires: [
     'foam.apps.quickbug.ui.QIssueTileView',
-    'PopupView'
+    'foam.ui.PopupView'
   ],
 
   properties: [

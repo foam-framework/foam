@@ -31,6 +31,14 @@ CLASS({
     {
       name: 'startY',
       defaultValue: 1
+    },
+    {
+      name: 'cssPosition',
+      defaultValue: 'fixed'
+    },
+    {
+      name: 'state',
+      defaultValue: 'detached'
     }
   ],
 
@@ -42,10 +50,12 @@ CLASS({
         var h = this.element.clientHeight;
         var c = this.Circle.create({
           r: 0,
-          startAngle: Math.PI/2,
-          endAngle: Math.PI,
+          // TODO(kgr): Optimize based on startX/Y position.
+          // startAngle: Math.PI/2,
+          // endAngle: Math.PI,
           width: w,
           height: h,
+          
           x: this.startX * w,
           y: this.startY * h,
           color: this.color
@@ -53,22 +63,26 @@ CLASS({
         var view = c.toView_();
         var div = document.createElement('div');
         var dStyle = div.style;
-        dStyle.position = 'fixed';
+        dStyle.position = this.cssPosition;
         dStyle.left = 0;
         dStyle.top = 0;
         dStyle.zIndex = 4;
         // dStyle.zIndex = 101;
 
-        var id = this.X.foam.ui.View.getPrototype().nextID();
+        var id = this.X.lookup('foam.ui.View').getPrototype().nextID();
         div.id = id;
         div.innerHTML = view.toHTML();
+
+        this.state = 'growing';
+
         this.element.appendChild(div);
         view.initHTML();
 
         Movement.compile([
           [400, function() { c.r = 1.25 * Math.sqrt(w*w + h*h); }],
+          function() { this.state = 'fading'; }.bind(this),
           [200, function() { c.alpha = 0; }],
-          function() { div.remove(); }
+          function() { div.remove(); this.state = 'detached'; }.bind(this)
         ])();
 
         c.r$.addListener(EventService.framed(view.paint.bind(view)));

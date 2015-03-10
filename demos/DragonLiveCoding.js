@@ -3,7 +3,8 @@ apar(
    arequire('foam.ui.StackView'),
    arequire('foam.ui.DetailView'),
    arequire('foam.graphics.Turntable'),
-   arequire('foam.demos.graphics.Dragon')
+   arequire('foam.demos.graphics.Dragon'),
+   arequire('foam.input.Mouse')
 )(function() {
   timer = Timer.create();
 
@@ -47,7 +48,7 @@ apar(
   tt.paint();
   dragon.paint();
 
-  var dmouse = Mouse.create();
+  var dmouse = X.foam.input.Mouse.create();
   dmouse.connect(dragonView.$);
   dragon.eyes.watch(dmouse);
 

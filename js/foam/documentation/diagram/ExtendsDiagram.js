@@ -90,7 +90,7 @@ CLASS({
       if (childData) {
         var thisDiag = this.ModelDocDiagram.create({ data: childData, model: childData }, childX);
         if ( childData.extendsModel ) {
-          this.addChild(this.X.foam.documentation.diagram.ExtendsDiagram.create({ data: childData, extended: thisDiag }, childX));
+          this.addChild(this.X.lookup('foam.documentation.diagram.ExtendsDiagram').create({ data: childData, extended: thisDiag }, childX));
         }
 
         this.addChild(thisDiag);

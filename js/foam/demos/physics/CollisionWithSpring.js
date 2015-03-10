@@ -22,7 +22,8 @@ CLASS({
 
   requires: [
     'foam.physics.Collider',
-    'foam.demos.physics.PhysicalCircle'
+    'foam.demos.physics.PhysicalCircle',
+    'foam.input.Mouse'
   ],
 
   properties: [
@@ -30,7 +31,7 @@ CLASS({
     { name: 'width',      defaultValue: 1500 },
     { name: 'height',     defaultValue: 1000 },
     { name: 'background', defaultValue: 'white' },
-    { name: 'mouse',      factory: function() { return Mouse.create(); } },
+    { name: 'mouse',      factory: function() { return this.Mouse.create(); } },
     { name: 'collider',   factory: function() {
       return this.Collider.create();
     }},

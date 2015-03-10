@@ -727,6 +727,8 @@ MODEL({
         : f2 ;
     },
 
+    liveAnimations_: 0,
+
     /** @return a latch function which can be called to stop the animation. **/
     animate: function(duration, fn, opt_interp, opt_onEnd, opt_X) {
       var requestAnimationFrameX = ( opt_X && opt_X.requestAnimationFrame ) || requestAnimationFrame;
@@ -741,6 +743,20 @@ MODEL({
         var stopped = false;
 
         function stop() {
+          if ( ! stopped ) {
+            if ( Movement.liveAnimations_ === 1 ) {
+              var tasks = Movement.idleTasks_;
+              if ( tasks && tasks.length > 0 ) {
+                Movement.idleTasks_ = [];
+                setTimeout(function() {
+                  for ( var i = 0 ; i < tasks.length ; i++ ) {
+                    Movement.whenIdle(tasks[i]);
+                  }
+                }, 0);
+              }
+            }
+            Movement.liveAnimations_--;
+          }
           stopped = true;
           opt_onEnd && opt_onEnd();
           opt_onEnd = null;
@@ -773,6 +789,7 @@ MODEL({
         }
 
         if ( ranges.length > 0 ) {
+          Movement.liveAnimations_++;
           requestAnimationFrameX(go);
         } else {
           var setTimeoutX = ( opt_X && opt_X.setTimeout ) || setTimeout;
@@ -781,6 +798,19 @@ MODEL({
 
         return stop;
       };
+    },
+
+    whenIdle: function(task) {
+      // Given a function, one of two things will happen:
+      // - If an animation is in progress, the task is postponed until no
+      //   animations are running.
+      // - With no animation running, the task is processed immediately.
+      if ( Movement.liveAnimations_ > 0 ) {
+        if ( ! Movement.idleTasks_ ) Movement.idleTasks_ = [];
+        Movement.idleTasks_.push(task);
+      } else {
+        task();
+      }
     },
 
     // requires unsubscribe to work first (which it does now)

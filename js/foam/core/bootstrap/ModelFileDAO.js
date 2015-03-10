@@ -27,6 +27,7 @@ MODEL({
         sink && sink.put && sink.put(model);
         return;
       }
+      //if (! X.NAME) console.log("MFD X: ", X.NAME, X.$UID, key);
 
       var sourcePath = window.FOAM_BOOT_DIR + '../js/' + key.replace(/\./g, '/') + '.js';
       

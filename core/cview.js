@@ -738,7 +738,7 @@ CLASS({
       required: false,
       displayWidth: 70,
       displayHeight: 3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: function (x) { return x; },
       help: 'The graph\'s data function.'
     }
@@ -1025,6 +1025,8 @@ CLASS({
   extendsModel: 'CView',
   label: 'GridCView',
 
+  requires: ['foam.input.Mouse'],
+  
   properties: [
     {
       name: 'grid',
@@ -1042,7 +1044,7 @@ CLASS({
     },
     {
       name: 'mouse',
-      factory: function() { return this.X.Mouse.create(); }
+      factory: function() { return this.Mouse.create(); }
     }
   ],
 

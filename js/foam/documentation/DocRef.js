@@ -216,7 +216,7 @@ CLASS({
 
       this.resolvedModelChain = newResolvedModelChain;
       this.resolvedRef = newResolvedRef;
-      this.resolvedRoot = this.X.foam.documentation.DocRef.create({
+      this.resolvedRoot = this.X.lookup('foam.documentation.DocRef').create({
           resolvedModelChain: [ this.resolvedModelChain[0] ],
           resolvedRef: newResolvedRoot,
           valid: true,

@@ -18,7 +18,7 @@
 CLASS({
   name: 'MementoMgr',
   package: 'foam.apps.quickbug.ui',
-  extendsModel: 'MementoMgr',
+  extendsModel: 'foam.memento.MementoMgr',
   actions: [
     {
       name: 'back',

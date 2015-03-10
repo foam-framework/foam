@@ -26,34 +26,79 @@
 
     <toc />
 
+    <section enumerate="false">
+      <title>Forward</title>
+      <p>
+        This book is a gentle introduction to FOAM programming. The book
+        assumes that you have some experience programming in
+        Javascript. Experience with object-oriented languages such as Java or
+        C++ is helpful, but not necessary. Whenever possible, the book
+        teaching FOAM programming through interactive examples. So, let's get
+        to it.
+      </p>
+      <aside style="height: 400px;">
+        <code-sample>
+          <title>Example Code</title>
+          <src>console.log("Hello World!");</src>
+        </code-sample>
+      </aside>
+    </section>
+
     <section>
       <title>Introduction</title>
+      <p>
+        Welcome to the wonderful world of FOAM!
+      </p>
+      <section>
+        <title>What is FOAM?</title>
+        <p>
+          FOAM is a Javascipt framework for rapid application development. FOAM
+          emphasizes detailed class specification, reactive programming, and
+          modular design. If you're unfamiliar with any of these concepts,
+          don't worry. There will be lots of chances for learning-by-doing as
+          we go along.
+        </p>
+      </section>
+      <section>
+        <title>What FOAM Isn't</title>
+        <p>
+          <b>FOAM is not a language.</b> FOAM, the framework, and FOAM
+          applications are written in Javascript. No extension required
+          (ECMAScript 6, or otherwise).
+        </p>
+        <p>
+          <b>FOAM is not a transpiler.</b> FOAM does support some simple
+          templating for HTML and CSS, but these templates very lightweight;
+          their syntax is straightforward and they are translated by the
+          framework to HTML/CSS/Javascript lightning fast.
+        </p>
+      </section>
+    </section>
+
+    <section>
+      <title>Errors, Omissions, and Lies</title>
       <aside class="tldr">
         FOAM is a meta-programming framework, implemented in Javascript, for
         modelling applications and their components at a high level. This
         facilitates rapid development and deployment across various languages
         and platforms. FOAM is a framework, not a language, compiler, or
-        transpiler. The purpose of this book is to provide a thorough
-        introduction to programming with FOAM.
+        transpiler.
       </aside>
       <p>
-        Welcome to the wonderful world of
-        <glossary-term>
-          <term>FOAM</term>
-          <definition>
-            Feature-Oriented Active Modeller. A meta-programming
-            framework for rapid software development, and the subject of this
-            book.
-          </definition>
-        </glossary-term>!
+        If you've spent time poking around in the FOAM codebase, you might
+        think that there's more to this FOAM thing than
+        yet-another-Javascript-framework. You'd be right. This section
+        contains some truths about FOAM that are difficult to introduce
+        before you're familiar with the basics of the framework.
       </p>
       <section>
-        <title>What is FOAM?</title>
+        <title>What is FOAM, <i>Really</i>?</title>
         <p>
-          FOAM stands for Feature-Oriented Active Modeller. FOAM is a
-          meta-programming framework for rapid software development. FOAM is
-          implemented in Javascript, but the framework is language agnostic
-          (more on that in the next section). For now, let's spell it out.
+          "FOAM" is, in fact, an acronym. FOAM stands for Feature-Oriented
+          Active Modeller. FOAM is a meta-programming framework for rapid
+          software development. FOAM is implemented in Javascript, but the
+          framework is language agnostic (more on that in the next
+          section). For now, let's spell it out.
         </p>
         <p class="first-cap">
           F is for <i>feature</i>. In FOAM, a
@@ -154,6 +199,30 @@
         </p>
         <p class="center">
           <b><i>Model the concept. Express it through features.</i></b>
+        </p>
+      </section>
+      <section enumerate="false">
+        <title>What FOAM Isn't, <i>Really</i></title>
+        <p>
+          <b>FOAM is not a language. Really.</b> FOAM's meta-programming
+          features allow it to interact with various languages and
+          environments, but that still doesn't make FOAM a language unto
+          itself. FOAM code is written in Javascript.
+        </p>
+        <p>
+          <b>FOAM is not a transpiler. Really.</b> FOAM classes are modelled
+          at a higher level than the language-level. This allows FOAM to
+          generate code in various languages, but <i>that is not what a
+          transpiler does</i>. A transpiler directly and completely simulates
+          all the features of one language in some other language. Many
+          transpilers generate inefficient code not because they are poorly
+          written, but because the source language and target language have
+          radically different opinions on how code should be written. Hence,
+          simulating one language in the other is slow. Modelling classes at
+          a high level, <i>above</i> the language-level, allows FOAM to
+          construct performant code in a variety of environments by being
+          less opinionated about the implementation details than a typical
+          programming language.
         </p>
       </section>
     </section>

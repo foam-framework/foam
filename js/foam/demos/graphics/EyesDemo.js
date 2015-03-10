@@ -23,7 +23,8 @@ CLASS({
 
   requires: [
 //    'foam.demos.graphics.EyeCView as Eyes'
-    'foam.demos.graphics.EyesCView as Eyes'
+    'foam.demos.graphics.EyesCView as Eyes',
+    'foam.input.Mouse'
   ],
 
   properties: [
@@ -33,7 +34,7 @@ CLASS({
     },
     {
       name: 'mouse',
-      factory: function() { return Mouse.create(); }
+      factory: function() { return this.Mouse.create(); }
     },
     { name: 'width',  defaultValue: 2000 },
     { name: 'height', defaultValue: 2000 }

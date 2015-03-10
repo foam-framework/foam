@@ -50,7 +50,7 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'notes',
-      view: 'TextAreaView'
+      view: 'foam.ui.TextAreaView'
     },
     {
       model_: 'BooleanProperty',

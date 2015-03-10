@@ -96,6 +96,20 @@ MODEL({
       return function() { return v; };
     },
 
+    function latchFn(f) {
+      var tripped = false;
+      var val;
+      /* Create a function which always returns the supplied constant value. */
+      return function() {
+        if ( ! tripped ) {
+          tripped = true;
+          val = f();
+          f = undefined;
+        }
+        return val;
+      };
+    },
+
     function argsToArray(args) {
       var array = new Array(args.length);
       for ( var i = 0; i < args.length; i++ ) array[i] = args[i];
@@ -111,7 +125,7 @@ MODEL({
       /* returns true if the values are equal or both undefined. */
       return (a === b) || (a !== a && b !== b);
     },
-    
+
     function toCompare(c) {
       if ( Array.isArray(c) ) return CompoundComparator.apply(null, c);
 
@@ -327,8 +341,9 @@ MODEL({
       getter: (function() {
         var id = 1;
         return function() {
-          if (this.$UID__) return this.$UID__;
-          Object.defineProperty(this, '$UID__', { value: id });
+          if ( this.hasOwnProperty('$UID__') ) return this.$UID__;
+          this.$UID__ = id;
+//          Object.defineProperty(this, '$UID__', { value: id });
           ++id;
           return this.$UID__;
         };
@@ -478,6 +493,15 @@ MODEL({
       var args = Array.prototype.slice.call(arguments, 0);
       var func = args.shift();
       return this.map(function(x) { return x[func] && x[func].apply(x[func], args); });
+    }
+  ],
+
+  properties: [
+    {
+      name: 'memento',
+      getter: function() {
+        throw "Array's can not be memorized properly as a memento.";
+      }
     }
   ]
 });

@@ -127,7 +127,7 @@ CLASS({
       defaultValue: 10,
       documentation: function() {/*
           The width of this view. Painting is not automatically clipped, so a view
-          may render outside of its apparent rectangle. */},
+          may render outside of its apparent rectangle. */}
     },
     {
       model_: 'IntProperty',

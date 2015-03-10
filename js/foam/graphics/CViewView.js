@@ -29,12 +29,10 @@ CLASS({
       name: 'cview',
       postSet: function(_, cview) {
         cview.view = this;
-        /*
         this.X.dynamic(function() {
           this.width  = cview.x + cview.width;
           this.height = cview.y + cview.height;
         }.bind(this));
-        */
       }
     }
   ]

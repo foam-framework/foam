@@ -24,6 +24,8 @@
     delete params.view;
   }
 
+  models.push(arequire('foam.ui.View'));
+
   var showActions = params.showActions;
   if ( showActions ) {
     showActions = showActions.equalsIC('y')    ||
@@ -43,8 +45,8 @@
         view = X.lookup(viewName).create({ data: obj });
         // 'CView' refers to old CView
         // TODO(kgr): remove this check when CView's converted to foam.graphics.CView
-      } else if (  ( X.lookup('foam.ui.View') && X.foam.ui.View.isInstance(obj) )
-                || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) { 
+      } else if (  ( X.lookup('foam.ui.View').isInstance(obj) )
+                   || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) {
         view = obj;
       } else if ( obj.toView_ ) {
         view = obj.toView_();

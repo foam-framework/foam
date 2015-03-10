@@ -92,7 +92,7 @@ var BooleanProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'BooleanView'
+      defaultValue: 'foam.ui.BooleanView'
     },
     {
       name: 'defaultValue',
@@ -210,7 +210,7 @@ var DateTimeProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'DateTimeFieldView'
+      defaultValue: 'foam.ui.DateTimeFieldView'
     }
   ]
 });
@@ -247,7 +247,9 @@ var IntProperty = Model.create({
     },
     {
       name: 'adapt',
-      defaultValue: function (_, v) { return parseInt(v || 0); }
+      defaultValue: function (_, v) {
+        return typeof v === 'number' ? Math.round(v) : v ? parseInt(v) : 0 ;
+      }
     },
     {
       name: 'defaultValue',
@@ -305,7 +307,9 @@ var FloatProperty = Model.create({
     },
     {
       name: 'adapt',
-      defaultValue: function (_, v) { return parseFloat(v || 0.0); }
+      defaultValue: function (_, v) {
+        return typeof v === 'number' ? v : v ? parseFloat(v) : 0.0 ;
+      }
     },
     {
       name: 'prototag',
@@ -345,7 +349,7 @@ var FunctionProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'FunctionView'
+      defaultValue: 'foam.ui.FunctionView'
     },
     {
       name: 'defaultValue',
@@ -443,7 +447,7 @@ var ArrayProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'ArrayView'
+      defaultValue: 'foam.ui.ArrayView'
     },
     {
       name: 'factory',
@@ -607,7 +611,7 @@ var StringArrayProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'StringArrayView'
+      defaultValue: 'foam.ui.StringArrayView'
     },
     {
       name: 'prototag',
@@ -644,7 +648,7 @@ var DAOProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'ArrayView'
+      defaultValue: 'foam.ui.ArrayView'
     },
     {
 //      model_: 'FunctionProperty',
@@ -873,7 +877,7 @@ var ViewFactoryProperty = Model.create({
           return ret;
         }
 
-        if ( this.X.foam.ui.BaseView.isInstance(f) ) return constantFn(f);
+        if ( this.X.lookup('foam.ui.BaseView').isInstance(f) ) return constantFn(f);
 
         console.error('******* Invalid Factory: ', f);
         return f;
@@ -900,7 +904,7 @@ var ReferenceArrayProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'StringArrayView',
+      defaultValue: 'foam.ui.StringArrayView',
 // TODO: Uncomment when all usages of ReferenceProperty/ReferenceArrayProperty fixed.
 //      defaultValue: 'DAOKeyView'
     }
@@ -956,42 +960,5 @@ var DocumentationProperty = Model.create({
       name: 'documentation',
       factory: function() { return "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation."; }
    }
-  ]
-});
-
-CLASS({
-  name: 'EnumPropertyTrait',
-  package: 'foam.core.types',
-  properties: [
-    {
-      name: 'choices',
-      type: 'Array',
-      help: 'Array of [value, label] choices.',
-      preSet: function(_, a) { return a.map(function(c) { return Array.isArray(c) ? c : [c, c]; }); },
-      required: true
-    },
-    {
-      name: 'view',
-      defaultValue: 'foam.ui.ChoiceView'
-    }
-  ]
-});
-
-CLASS({
-  name: 'StringEnumProperty',
-  package: 'foam.core.types',
-  traits: ['foam.core.types.EnumPropertyTrait'],
-  extendsModel: 'StringProperty'
-});
-
-CLASS({
-  name: 'DOMElementProperty',
-  package: 'foam.core.types',
-  extendsModel: 'StringProperty',
-  properties: [
-    {
-      name: 'getter',
-      defaultValue: function(name) { return this.X.document.getElementById(this.instance_[name]); }
-    }
   ]
 });

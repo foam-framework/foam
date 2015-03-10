@@ -33,7 +33,7 @@ CLASS({
 
     getTagName: function() {
       return this.ELEMENT_NAME ||
-          this.X.foam.Name.create({ initial: this.name_ }).toTagName();
+          this.Name.create({ initial: this.name_ }).toTagName();
     },
 
     replaceAll: function(str, a, b) {
@@ -80,6 +80,6 @@ CLASS({
   },
 
   templates: [
-    function toInnerHTML() {/* <%= this.inner() %> */}
+    function toInnerHTML() {/*<%= this.inner() %>*/}
   ]
 });

@@ -62,7 +62,7 @@ CLASS({
     'autocompleter',
     {
       model_: 'ArrayProperty',
-      subType: 'TextFieldView',
+      subType: 'foam.ui.TextFieldView',
       name: 'inputs'
     },
     {

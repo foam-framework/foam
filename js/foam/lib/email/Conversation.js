@@ -49,7 +49,7 @@ CLASS({
           sanitizedSubject ;
       },
          "tableWidth": "45%",
-         "view": "TextFieldView"
+         "view": "foam.ui.TextFieldView"
       },
       {
          "model_": "DateProperty",
