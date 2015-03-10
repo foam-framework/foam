@@ -36,7 +36,7 @@ CLASS({
     'log',
     'lookup',
     'memento',
-    'registerModel_',
+    'onRegisterModel',
     'requestAnimationFrame',
     'setInterval',
     'setTimeout',
@@ -45,6 +45,10 @@ CLASS({
   ],
 
   properties: [
+    {
+      name: 'registeredModels',
+      factory: function() { return {}; }
+    },
     {
       model_: 'StringProperty',
       name: 'name',
@@ -88,9 +92,14 @@ CLASS({
   methods: {
     lookup: function(key) {
       var ret = this.X.lookup(key);
+      if ( ret && ! this.registeredModels[key] ) {
+        // console.log('Registering Model: ', key);
+        this.registeredModels[key] = true;
+        this.onRegisterModel(ret);
+      }
       return ret;
     },
-    registerModel_: function(model) {
+    onRegisterModel: function(model) {
       var Y        = this.Y;
       var document = this.document;
 

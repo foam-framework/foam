@@ -307,7 +307,7 @@ function registerModel(model, opt_name) {
     }
   }
 
-  this.registerModel_(model);
+  this.onRegisterModel(model);
 }
 
 
@@ -368,6 +368,6 @@ function INTERFACE(imodel) {
 
 
 /** Called when a Model is registered. **/
-function registerModel_(m) {
+function onRegisterModel(m) {
   // NOP
 }
