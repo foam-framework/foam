@@ -19,9 +19,41 @@ CLASS({
   name: 'HTMLPropertyViewTrait',
   package: 'foam.ui',
   
+  properties: [
+    {
+      name:  'id',
+      label: 'Element ID',
+      type:  'String',
+      factory: function() { return this.instance_.id || this.nextID()+"PROP"; },
+      documentation: function() {/*
+        The DOM element id for the outermost tag of
+        this $$DOC{ref:'foam.ui.View'}.
+      */}
+    }
+  ],
+  
   methods: {
-    toHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ return this.view.toHTML(); },
-    initHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ this.view.initHTML(); },
+    finishPropertyRender: function() {
+      this.SUPER();
+      if ( ! this.$ ) return;
+      this.$.outerHTML = this.toInnerHTML();
+      this.initInnerHTML();
+    },
+    
+    toInnerHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */ 
+      return this.view ? this.view.toHTML() : ""; 
+    },
+    
+    toHTML: function() {
+      /* If the view is ready, pass through to it. Otherwise create a place
+      holder tag with our id, which we replace later. */
+      this.invokeDestructors();
+      return this.view? this.toInnerHTML() : this.SUPER();
+    },
+    
+    initHTML: function() {
+      this.view && this.view.initHTML();
+    }
   }
 });
 

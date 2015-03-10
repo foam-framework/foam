@@ -873,7 +873,7 @@ var ViewFactoryProperty = Model.create({
           return ret;
         }
 
-        if ( this.X.foam.ui.BaseView.isInstance(f) ) return constantFn(f);
+        if ( this.X.lookup('foam.ui.BaseView').isInstance(f) ) return constantFn(f);
 
         console.error('******* Invalid Factory: ', f);
         return f;
@@ -956,42 +956,5 @@ var DocumentationProperty = Model.create({
       name: 'documentation',
       factory: function() { return "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation."; }
    }
-  ]
-});
-
-CLASS({
-  name: 'EnumPropertyTrait',
-  package: 'foam.core.types',
-  properties: [
-    {
-      name: 'choices',
-      type: 'Array',
-      help: 'Array of [value, label] choices.',
-      preSet: function(_, a) { return a.map(function(c) { return Array.isArray(c) ? c : [c, c]; }); },
-      required: true
-    },
-    {
-      name: 'view',
-      defaultValue: 'foam.ui.ChoiceView'
-    }
-  ]
-});
-
-CLASS({
-  name: 'StringEnumProperty',
-  package: 'foam.core.types',
-  traits: ['foam.core.types.EnumPropertyTrait'],
-  extendsModel: 'StringProperty'
-});
-
-CLASS({
-  name: 'DOMElementProperty',
-  package: 'foam.core.types',
-  extendsModel: 'StringProperty',
-  properties: [
-    {
-      name: 'getter',
-      defaultValue: function(name) { return this.X.document.getElementById(this.instance_[name]); }
-    }
   ]
 });

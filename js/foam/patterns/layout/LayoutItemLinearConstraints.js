@@ -20,6 +20,8 @@ CLASS({
   name: 'LayoutItemLinearConstraints',
   package: 'foam.patterns.layout',
 
+  requires: ['foam.patterns.layout.ConstraintProperty'],
+  
   documentation: function() {/* The information layout items provide for a
                             single axis of linear layout. */},
 

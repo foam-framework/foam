@@ -1025,6 +1025,8 @@ CLASS({
   extendsModel: 'CView',
   label: 'GridCView',
 
+  requires: ['foam.input.Mouse'],
+  
   properties: [
     {
       name: 'grid',
@@ -1042,7 +1044,7 @@ CLASS({
     },
     {
       name: 'mouse',
-      factory: function() { return this.X.foam.input.Mouse.create(); }
+      factory: function() { return this.Mouse.create(); }
     }
   ],
 

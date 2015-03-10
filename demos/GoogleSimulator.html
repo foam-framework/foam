@@ -11,7 +11,9 @@
    var turnFOAM;
    apar(
       arequire('foam.ui.View'),
-      arequire('foam.ui.DetailView')
+      arequire('foam.ui.DetailView'),
+      arequire('System'),
+      arequire('Canvas')
    )(function() {
     timer  = Timer.create({interval:20});
     var space  = Canvas.create({width: 1000, height: 750, background:'#fff'});

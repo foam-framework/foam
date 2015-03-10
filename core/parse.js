@@ -335,7 +335,7 @@ function alt(/* vargs */) {
     var c = ps.head;
     var trapPS = {
       getValue: function() { return this.value; },
-      setValue: function(v) { this.value = v; },
+      setValue: function(v) { this.value = v; return this; },
       value: ps.value,
       head: c
     };

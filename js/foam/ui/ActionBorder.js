@@ -47,7 +47,7 @@ CLASS({
 
       // This is poor design, we should defer to the view and polymorphism
       // to make the distinction.
-      if ( this.X.foam.ui.DetailView.isInstance(this) ) {
+      if ( this.X.lookup('foam.ui.DetailView').isInstance(this) ) {
 
         // Actions on the data are bound to the data
         actions = this.model.actions;

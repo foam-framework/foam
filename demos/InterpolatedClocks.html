@@ -11,12 +11,16 @@
   var timer;
   apar(
      arequire('foam.ui.View'),
-     arequire('foam.ui.DetailView')
+     arequire('foam.ui.DetailView'),
+     arequire('foam.input.Mouse'),
+     arequire('foam.demos.ClockView'),
+     arequire('Graph'),
+     arequire('Canvas')
   )(function() {
     var space = Canvas.create({width: 3500, height: 2700, background:'#fff'});
     space.write(document);
 
-    var mouse = Mouse.create();
+    var mouse = X.foam.input.Mouse.create();
     mouse.connect(space.$);
 
     var M = Movement;
@@ -43,7 +47,7 @@
 
     var clocks = [], graphs = [], ms = [];
     for ( var i = 0 ; i < is.length ; i++ ) {
-      clocks[i] = ClockView.create({x:250,y:50+i*100,r:40,color:is[i][1]});
+      clocks[i] = X.foam.demos.ClockView.create({x:250,y:50+i*100,r:40,color:is[i][1]});
       graphs[i] = Graph.create({x:5,y:50+i*100,width:200,height:95,style:'Line',graphColor:null,lineWidth:2,drawShadow:false,capColor:is[i][1], data:[]});
       space.addChild(clocks[i]);
       space.addChild(graphs[i]);

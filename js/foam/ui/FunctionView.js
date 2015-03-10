@@ -20,7 +20,8 @@ CLASS({
   package: 'foam.ui',
   
   extendsModel: 'foam.ui.TextFieldView',
-
+  requires: ['foam.ui.TextFieldView'],
+    
   properties: [
     {
       name: 'onKeyMode',
@@ -36,7 +37,7 @@ CLASS({
     },
     {
       name: 'errorView',
-      factory: function() { return TextFieldView.create({mode:'read-only'}); }
+      factory: function() { return this.TextFieldView.create({mode:'read-only'}); }
     }
   ],
 
