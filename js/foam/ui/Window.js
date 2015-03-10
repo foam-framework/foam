@@ -109,7 +109,7 @@ CLASS({
       for ( var m = model ; m && m.getPrototype ; m = m.extendsModel && this[m.extendsModel] ) {
         if ( this.installedModels[m.id] ) return;
         this.installedModels[m.id] = true;
-        arequireModel(m)(function(m) {
+        arequireModel(m, this.Y)(function(m) {
           m.getPrototype().installInDocument(Y, document);
         });
       }

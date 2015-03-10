@@ -205,7 +205,7 @@ function arequireModel(model, param_X) {
     var i;
     if ( model.traits ) {
       for ( i = 0; i < model.traits.length; i++ ) {
-        args.push(arequire(model.traits[i]));
+        args.push(arequire(model.traits[i], opt_X));
 // // CYCLE DEBUG
 // var trait = model.traits[i].clone();
 // dbgX.arequire$ModelRequiresInProgress[modelName].traits[trait] = true;
@@ -235,7 +235,7 @@ function arequireModel(model, param_X) {
         if ( m[0] == model.id ) {
           console.warn("Model requires itself: " + model.id);
         } else {
-          args.push(arequire(m[0]));
+          args.push(arequire(m[0], opt_X));
 // // CYCLE DEBUG
 // var require = m[0].clone();
 // dbgX.arequire$ModelRequiresInProgress[modelName].requires[require] = true;
@@ -323,6 +323,7 @@ function CLASS(m) {
     if ( ! m.package )
       Object.defineProperty(GLOBAL, m.name, { get: function() { return path[m.name]; }, configurable: true });
 
+    //console.log("Model Getting defined: ", m.name, X.NAME);
     Object.defineProperty(path, m.name, {
       get: function () {
         // console.time('registerModel: ' + id);
