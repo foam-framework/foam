@@ -746,12 +746,14 @@ MODEL({
           if ( ! stopped ) {
             if ( Movement.liveAnimations_ === 1 ) {
               var tasks = Movement.idleTasks_;
-              Movement.idleTasks_ = [];
-              setTimeout(function() {
-                for ( var i = 0 ; i < tasks.length ; i++ ) {
-                  Movement.whenIdle(tasks[i]);
-                }
-              }, 0);
+              if ( tasks && tasks.length > 0 ) {
+                Movement.idleTasks_ = [];
+                setTimeout(function() {
+                  for ( var i = 0 ; i < tasks.length ; i++ ) {
+                    Movement.whenIdle(tasks[i]);
+                  }
+                }, 0);
+              }
             }
             Movement.liveAnimations_--;
           }
