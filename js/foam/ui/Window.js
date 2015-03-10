@@ -174,5 +174,5 @@ CLASS({
       isBackground: typeof process === 'object'
     }, X
   );
-  _ROOT_X = FObject.X = X = w.Y;
+  FObject.X = X = w.Y;
 })();
