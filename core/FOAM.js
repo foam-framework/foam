@@ -122,7 +122,7 @@ function arequire(modelName, opt_X) {
   if ( ! model ) {
     if ( ! X.ModelDAO ) {
       if ( modelName !== 'Template' ) console.warn('Unknown Model in arequire: ', modelName);
-      return aconstant(undefined);
+      return aconstant();
     }
 
     // check whether we have already hit the ModelDAO to load the model
