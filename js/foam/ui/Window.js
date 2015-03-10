@@ -91,7 +91,8 @@ CLASS({
 
   methods: {
     lookup: function(key) {
-      var ret = this.X.lookup(key);
+      var ret = GLOBAL.lookup.call(this.Y, key);
+      // var ret = this.X.lookup(key);
       if ( ret && ! this.registeredModels[key] ) {
         // console.log('Registering Model: ', key);
         this.registeredModels[key] = true;
