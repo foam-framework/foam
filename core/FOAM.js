@@ -270,14 +270,20 @@ var FOAM_POWERED = '<a style="text-decoration:none;" href="https://github.com/fo
 /** Lookup a '.'-separated package path, creating sub-packages as required. **/
 function packagePath(X, path) {
   function packagePath_(Y, path, i) {
-    return i == path.length ? Y : packagePath_(Y[path[i]] || ( Y[path[i]] = {} ), path, i+1);
+    if ( i === path.length ) return Y;
+    if ( ! Y[path[i]] ) {
+      Y[path[i]] = {};
+      // console.log('************ Creating sub-path: ', path[i]);
+      if ( i == 0 ) GLOBAL[path[i]] = Y[path[i]];
+    }
+    return packagePath_(Y[path[i]], path, i+1);
   }
-  return path ? packagePath_(X, path.split('.'), 0) : X;
+  return path ? packagePath_(X, path.split('.'), 0) : GLOBAL;
 }
 
 
 function registerModel(model, opt_name) {
-  var root    = this;
+  var root    = model.package ? this : GLOBAL;
   var name    = model.name;
   var package = model.package;
 
@@ -290,6 +296,7 @@ function registerModel(model, opt_name) {
   var path = packagePath(root, package);
   Object.defineProperty(path, name, { value: model, configurable: true });
 
+  // TODO: this is broken
   // update the cache if this model was already FOAM.lookup'd
   if ( root.hasOwnProperty('lookupCache_') ) {
     var cache = root.lookupCache_;
@@ -327,16 +334,16 @@ function CLASS(m) {
         // console.time('buildModel: ' + id);
         var model = JSONUtil.mapToObj(X, m, Model, work);
         // console.timeEnd('buildModel: ' + id);
-        if ( work.length > 0 && model.required__ )
+        if ( work.length > 0 && model.required__ ) {
           model.required__ = aseq(
             aseq.apply(null, work),
             model.required__);
+        }
 
-        // TODO: _ROOT_X is a workaround for apps that redefine the top level X
-        _ROOT_X.registerModel(model);
+        X.registerModel(model);
 
         // console.timeEnd('registerModel: ' + id);
-        return this[m.name];
+        return model;
       },
       configurable: true
     });
