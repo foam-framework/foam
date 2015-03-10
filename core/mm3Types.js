@@ -247,7 +247,9 @@ var IntProperty = Model.create({
     },
     {
       name: 'adapt',
-      defaultValue: function (_, v) { return parseInt(v || 0); }
+      defaultValue: function (_, v) {
+        return typeof v === 'number' ? Math.round(v) : v ? parseInt(v) : 0 ;
+      }
     },
     {
       name: 'defaultValue',
@@ -305,7 +307,9 @@ var FloatProperty = Model.create({
     },
     {
       name: 'adapt',
-      defaultValue: function (_, v) { return parseFloat(v || 0.0); }
+      defaultValue: function (_, v) {
+        return typeof v === 'number' ? v : v ? parseFloat(v) : 0.0 ;
+      }
     },
     {
       name: 'prototag',
