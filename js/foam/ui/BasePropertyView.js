@@ -114,9 +114,10 @@ CLASS({
       var viewName = this.innerView || prop.view
       if ( ! viewName ) ret(this.TextFieldView.create(prop, this.Y));
       else if ( typeof viewName === 'string' ) {
-        var m = this.Y.lookup(viewName);
-        if ( m ) ret(m.create(prop, this.Y));
-        else arequire(viewName, this.X)(function(m) { ret(m.create(prop, this.Y)); }.bind(this) );
+//        var m = this.Y.lookup(viewName);
+//        if ( m ) ret(m.create(prop, this.Y));
+//        else 
+          arequire(viewName, this.X)(function(m) { ret(m.create(prop, this.Y)); }.bind(this) );
       }
       else if ( viewName.model_ && typeof viewName.model_ === 'string' ) {
         var m = FOAM(prop.view);
