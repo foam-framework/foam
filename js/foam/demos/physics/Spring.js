@@ -20,14 +20,14 @@ CLASS({
   name: 'Spring',
   extendsModel: 'foam.graphics.CView',
 
-  requires: [ 'foam.demos.physics.PhysicalCircle' ],
+  requires: [ 'foam.demos.physics.PhysicalCircle', 'foam.input.Mouse' ],
 
   properties: [
     { name: 'n',          defaultValue: 17 },
     { name: 'width',      defaultValue: 2000 },
     { name: 'height',     defaultValue: 1700 },
     { name: 'background', defaultValue: 'white' },
-    { name: 'mouse',      factory: function() { return Mouse.create(); } }
+    { name: 'mouse',      factory: function() { return this.Mouse.create(); } }
   ],
 
   methods: {
