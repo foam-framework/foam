@@ -18,17 +18,22 @@
 function lookup(key) {
   if ( ! key ) return undefined;
   if ( ! ( typeof key === 'string' ) ) return key;
-  
+
   var root  = this
-  var cache = root.hasOwnProperty('lookupCache_') ? root.lookupCache_ : ( root.lookupCache_ = {} );
-  
-  var ret = cache[key];
+  var cache = this.lookupCache_;
+
+  var ret = null; // cache[key];
   if ( ! ret ) {
     var path = key.split('.');
     for ( var i = 0 ; root && i < path.length ; i++ ) root = root[path[i]];
-    
+
     ret = root;
-    cache[key] = ret;
+    /*
+    if ( ret ) {
+      cache[key] = ret;
+      console.log('******* caching: ', key);
+    }
+    */
   }
   return ret;
 }
@@ -65,7 +70,6 @@ function setValue(key, value) {
 
 /** Create a sub-context, populating with bindings from opt_args. **/
 function sub(opt_args, opt_name) {
-//  var sub = Object.create(this);
   var sub = Object.create(this);
 
   if ( opt_args ) for ( var key in opt_args ) {
@@ -73,10 +77,16 @@ function sub(opt_args, opt_name) {
       sub.set(key, opt_args[key]);
     }
   }
+
   if ( opt_name ) {
     sub.NAME = opt_name;
     sub.toString = function() { return 'CONTEXT(' + opt_name + ')'; };
+//    sub.toString = function() { return 'CONTEXT(' + opt_name + ', ' + this.toString() + ')'; };
   }
+
+//  console.assert(this.lookupCache_, 'Missing cache.');
+//  sub.lookupCache_ = Object.create(this.lookupCache_);
+
   return sub;
 }
 
@@ -88,8 +98,6 @@ function subWindow(w, opt_name, isBackground) {
 }
 
 var X = sub({});
-
-var _ROOT_X = X;
 
 var foam = X.foam = {};
 

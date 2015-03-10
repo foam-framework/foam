@@ -34,6 +34,7 @@ CLASS({
     'error',
     'info',
     'log',
+    'lookup',
     'memento',
     'registerModel_',
     'requestAnimationFrame',
@@ -85,8 +86,12 @@ CLASS({
   ],
 
   methods: {
+    lookup: function(key) {
+      var ret = this.X.lookup(key);
+      return ret;
+    },
     registerModel_: function(model) {
-      var X        = this.X;
+      var Y        = this.Y;
       var document = this.document;
 
       // TODO(kgr): If Traits have CSS then it will get installed more than once.
@@ -95,7 +100,7 @@ CLASS({
         if ( this.installedModels[m.id] ) return;
         this.installedModels[m.id] = true;
         arequireModel(m)(function(m) {
-          m.getPrototype().installInDocument(X, document);
+          m.getPrototype().installInDocument(Y, document);
         });
       }
     },
@@ -152,11 +157,13 @@ CLASS({
 
 
 // Using the existence of 'process' to determine that we're running in Node.
-foam.ui.Window.create(
-  {
-    window: window,
-    name: 'DEFAULT WINDOW',
-    isBackground: typeof process === 'object'
-  },
-  { __proto__: X, sub: function() { return X; } }
-);
+(function() {
+  var w = foam.ui.Window.create(
+    {
+      window: window,
+      name: 'DEFAULT WINDOW',
+      isBackground: typeof process === 'object'
+    }, X
+  );
+  _ROOT_X = FObject.X = X = w.Y;
+})();
