@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 CLASS({
-  name: 'HTMLViewTrait',
   package: 'foam.ui',
+  name: 'HTMLViewTrait',
   label: 'HTMLView',
 
   requires: ['foam.input.touch.GestureTarget'], // tooltip!
@@ -46,9 +46,11 @@ CLASS({
       */}
     },
     {
+      // TODO(kgr): rename this because it conflicts with X.$.
       name:   '$',
       hidden: true,
       mode:   "read-only",
+      setter: function() { debugger; },
       getter: function() {
         return this.X.document.getElementById(this.id);
       },
@@ -72,7 +74,7 @@ CLASS({
       */}
     },
     {
-      name: 'tooltip'                            
+      name: 'tooltip'
     },
     {
       name: 'tabIndex'
@@ -491,5 +493,3 @@ CLASS({
     }
   }
 });
-
-

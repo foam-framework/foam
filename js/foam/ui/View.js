@@ -16,16 +16,18 @@
  */
 
 CLASS({
-  name: 'View',
   package: 'foam.ui',
+  name: 'View',
 
   extendsModel: 'foam.ui.DestructiveDataView',
-  traits: ['foam.ui.HTMLViewTrait',
-           'foam.ui.ViewActionsTrait',
-           'foam.ui.TemplateSupportTrait'],
-  
+
+  traits: [
+    'foam.ui.HTMLViewTrait',
+    'foam.ui.ViewActionsTrait',
+    'foam.ui.TemplateSupportTrait'
+  ],
+
   requires: ['Property'],
-           
   exports: [ 'propertyViewProperty' ],
 
   documentation: function() {/*
@@ -67,6 +69,3 @@ CLASS({
 
   ]
 });
-
-
-
