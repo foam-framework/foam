@@ -77,6 +77,8 @@ CLASS({
         width: 100%;
         height: 90%;
         border: 1px solid black;
+        overflow: auto;
+        border: 1px solid gray;
       }
       slides > controls {
         width: 100%;
