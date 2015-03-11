@@ -62,11 +62,12 @@ Slides:
     <slide><circle color="blue"  x="200" y="45" r="40"/></slide>
     <slide>A Slide without a circle!</slide>
     <slide>
-      Two to make up for the last slide:
+      Two to make up for the last slide:<br>
       <circle color="yellow"  x="200" y="45" r="40"/>
       <circle color="purple"  x="200" y="45" r="40"/>
     </slide>
   </slides>
 
+  <foam model="foam.demos.pong.Pong"/>
   The end.
 </div>
