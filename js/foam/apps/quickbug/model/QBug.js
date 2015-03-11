@@ -26,7 +26,7 @@ CLASS({
     'MigrationDAO',
     'MigrationRule',
     'Binding',
-    'RestDAO',
+    'foam.core.dao.RestDAO',
     'LazyCacheDAO',
     'foam.apps.quickbug.dao.ProjectNetworkDAO',
     'foam.apps.quickbug.model.imported.Project',
