@@ -20,7 +20,7 @@ CLASS({
    "id": "com.google.mail.GMailRestDAO",
    "package": "com.google.mail",
    "name": "GMailRestDAO",
-   "extendsModel": "RestDAO",
+   "extendsModel": "foam.core.dao.RestDAO",
    "requires": [
       "com.google.mail.GMailHistory"
    ],

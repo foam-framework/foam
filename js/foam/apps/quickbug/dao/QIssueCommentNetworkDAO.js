@@ -18,7 +18,7 @@
 CLASS({
   name: 'QIssueCommentNetworkDAO',
   package: 'foam.apps.quickbug.dao',
-  extendsModel: 'RestDAO',
+  extendsModel: 'foam.core.dao.RestDAO',
 
   requires: [
     'foam.apps.quickbug.model.QIssueComment',

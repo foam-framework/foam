@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2012 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,20 @@
  * limitations under the License.
  */
 
-defineProperties(Array.prototype, {
-    diff: function(other) {
-        var added = other.slice(0);
-        var removed = [];
-        for (var i = 0; i < this.length; i++) {
-            for (var j = 0; j < added.length; j++) {
-                if (this[i].compareTo(added[j]) == 0) {
-                    added.splice(j, 1);
-                    j--;
-                    break;
-                }
-            }
-            if (j == added.length) removed.push(this[i]);
-        }
-        return { added: added, removed: removed };
+CLASS({
+  name: 'OAuth2ChromeIdentity',
+  package: 'foam.oauth2',
+  extendsModel: 'foam.oauth2.OAuth2',
+  help: 'OAuth2 strategy that uses the Chrome identity API',
+  methods: {
+    refreshNow_: function(ret) {
+      var self = this;
+      chrome.identity.getAuthToken({
+        interactive: true
+      }, function(token) {
+        self.accessToken = token;
+        ret(self.accessToken);
+      });
     }
+  }
 });

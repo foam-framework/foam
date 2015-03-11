@@ -390,6 +390,22 @@ MODEL({
       for ( var i = 0 ; i < l ; i++ ) f(this[i], i, this);
     },
 
+    function diff(other) {
+      var added = other.slice(0);
+      var removed = [];
+      for (var i = 0; i < this.length; i++) {
+        for (var j = 0; j < added.length; j++) {
+          if (this[i].compareTo(added[j]) == 0) {
+            added.splice(j, 1);
+            j--;
+            break;
+          }
+        }
+        if (j == added.length) removed.push(this[i]);
+      }
+      return { added: added, removed: removed };
+    },
+
     function binaryInsert(item) {
       /* binaryInsert into a sorted array, removing duplicates */
       var start = 0;

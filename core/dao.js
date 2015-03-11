@@ -564,37 +564,6 @@ CLASS({
   }
 });
 
-
-// deprecated. Use a LimitedDAO_ instance instead.
-function limitedDAO(count, dao) {
-  return {
-    __proto__: dao,
-    select: function(sink, options) {
-      if ( options ) {
-        if ( 'limit' in options ) {
-          options = {
-            __proto__: options,
-            limit: Math.min(count, options.limit)
-          };
-        } else {
-          options = { __proto__: options, limit: count };
-        }
-      }
-      else {
-        options = { limit: count };
-      }
-
-      return dao.select(sink, options);
-    },
-    toString: function() {
-      return dao + '.limit(' + count + ')';
-    }
-  };
-}
-
-
-var WaitCursorDAO = 
-
 // Experimental, convert all functions into sinks
 Function.prototype.put    = function() { this.apply(this, arguments); };
 Function.prototype.remove = function() { this.apply(this, arguments); };
