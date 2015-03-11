@@ -39,7 +39,8 @@ CLASS({
       },
       postSet: function(_, p) {
         if ( ! this.$ ) return;
-        var v = this.currentSlide();
+        this.currentSlide_ && this.currentSlide_.destroy && this.currentSlide_.destroy();
+        var v = this.currentSlide_ = this.currentSlide();
         this.$.querySelector('deck').innerHTML = v.toHTML();
         v.initHTML();
       }
