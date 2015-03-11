@@ -179,14 +179,14 @@ function() {
   Events.dynamic(function() { mouse.x; mouse.y; }, function() {
     //outerLayout.width = mouse.x;
     //outerLayout.height = mouse.y;
-    block2.x = mouse.x;
-    block2.y = mouse.y;
+    block2Margin.x = mouse.x;
+    block2Margin.y = mouse.y;
   });
   
   
   ///////////////////Editors
   
-  var editors = [block2, block1];//, block2Margin, sect1b, sect2b, outerLayout];
+  var editors = [block2, block2Margin, sect1b, sect2b, outerLayout];
 
   editors.forEach(function(thing) {
     var editor = X.lookup('foam.ui.DetailView').create({ data: thing });

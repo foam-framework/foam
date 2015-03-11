@@ -183,7 +183,7 @@ CLASS({
 
     destroy: function( isParentDestroyed ) { /* Call to clean up this and child views. */
       this.SUPER(isParentDestroyed);
-      if ( this.cview ) this.cview.destroy(isParentDestroyed);
+      //if ( this.cview ) this.cview.destroy(isParentDestroyed); // child cviews are in a different tree than we are (the parent BaseView tree)
     }
   }
 });
