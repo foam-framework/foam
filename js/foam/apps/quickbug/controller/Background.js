@@ -21,6 +21,7 @@ CLASS({
 
   requires: [
     'foam.apps.quickbug.model.QBug',
+    'foam.oauth2.AutoOAuth2',
     'foam.apps.quickbug.ui.ChromeAppBrowser',
     'foam.core.dao.ChromeSyncStorageDAO',
     'foam.input.touch.TouchManager',
@@ -38,6 +39,10 @@ CLASS({
     {
       name: 'daoVersionDao',
       lazyFactory: function() { return this.IDBDAO.create({ model: this.DAOVersion }); }
+    },
+    {
+      name: 'autoOAuth2',
+      factory: function() { return this.AutoOAuth2.create(); }
     },
     {
       name: 'metricDAO',
