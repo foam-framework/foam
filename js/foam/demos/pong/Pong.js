@@ -1,4 +1,5 @@
 CLASS({
+  package: 'foam.demos.pong',
   name: 'Ball',
   extendsModel: 'foam.graphics.Circle',
   traits: ['foam.physics.Physical', 'foam.graphics.MotionBlur'],
@@ -12,6 +13,7 @@ CLASS({
 
 
 CLASS({
+  package: 'foam.demos.pong',
   name: 'Paddle',
   extendsModel: 'foam.graphics.Circle',
   traits: ['foam.physics.Physical', 'foam.graphics.Shadow'],
@@ -24,12 +26,13 @@ CLASS({
 
 
 CLASS({
+  package: 'foam.demos.pong',
   name: 'Pong',
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'Ball',
-    'Paddle',
+    'foam.demos.pong.Ball',
+    'foam.demos.pong.Paddle',
     'foam.graphics.CView',
     'foam.graphics.Rectangle',
     'foam.physics.Collider'
@@ -51,17 +54,17 @@ CLASS({
     {
       name: 'ball',
       view: 'foam.ui.DetailView',
-      factory: function() { return Ball.create({color: 'white', r: 20}); }
+      factory: function() { return this.Ball.create({color: 'white', r: 20}); }
     },
     {
       name: 'lPaddle',
       view: 'foam.ui.DetailView',
-      factory: function() { return Paddle.create(); }
+      factory: function() { return this.Paddle.create(); }
     },
     {
       name: 'rPaddle',
       view: 'foam.ui.DetailView',
-      factory: function() { return Paddle.create(); }
+      factory: function() { return this.Paddle.create(); }
     },
     {
       name: 'table',

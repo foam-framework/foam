@@ -106,10 +106,10 @@ var demos = JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Pong',
-    path: 'Pong.html',
+    path: '/index.html?model=foam.demos.pong.Pong',
     description: 'A simple pong game which demonstrates the both the use of graphical traits (motion blur and shadow) and of the physics engine.',
     keywords: ['animation', 'game', 'physics', 'traits', '14'],
-    src: 'Pong.js',
+    src: '/js/foam/demos/pong/Pong.js',
     image: 'Pong.png'
   },
   {
