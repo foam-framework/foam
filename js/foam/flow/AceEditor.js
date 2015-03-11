@@ -102,6 +102,12 @@ CLASS({
       }
     },
     {
+      name: 'onAceLoadFailed',
+      code: function() {
+        this.publish(['load-failed']);
+      }
+    },
+    {
       name: 'onSrcChange',
       code: function(e) {
         var editorSrc = this.editor.getValue();
