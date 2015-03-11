@@ -91,6 +91,7 @@ CLASS({
       name: 'onBallMove',
       isFramed: true,
       code: function() {
+        if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
         var ball = this.ball;
 
         if ( ball.velocity >  20 ) ball.velocity =  20;
