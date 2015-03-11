@@ -592,9 +592,6 @@ function limitedDAO(count, dao) {
   };
 }
 
-
-var WaitCursorDAO = 
-
 // Experimental, convert all functions into sinks
 Function.prototype.put    = function() { this.apply(this, arguments); };
 Function.prototype.remove = function() { this.apply(this, arguments); };
