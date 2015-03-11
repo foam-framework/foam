@@ -629,8 +629,8 @@ CLASS({
     // Aliases for daoType
     ALIASES: {
       IDB:   'IDBDAO',
-      LOCAL: 'StorageDAO', // Switches to 'ChromeStorageDAO' for Chrome Apps
-      SYNC:  'StorageDAO'  // Switches to 'ChromeSyncStorageDAO' for Chrome Apps
+      LOCAL: 'foam.core.dao.StorageDAO', // Switches to 'ChromeStorageDAO' for Chrome Apps
+      SYNC:  'foam.core.dao.StorageDAO'  // Switches to 'ChromeSyncStorageDAO' for Chrome Apps
     }
   },
 
@@ -1621,55 +1621,3 @@ CLASS({
     }
   }
 });
-
-
-
-CLASS({
-  name: 'StorageDAO',
-
-  extendsModel: 'MDAO',
-
-  properties: [
-    {
-      name:  'name',
-      label: 'Store Name',
-      type:  'String',
-      defaultValueFn: function() {
-        return this.model.plural;
-      }
-    }
-  ],
-
-  methods: {
-    init: function() {
-      this.SUPER();
-
-      var objs = localStorage.getItem(this.name);
-      if ( objs ) JSONUtil.parse(this.Y, objs).select(this);
-
-      this.addRawIndex({
-        execute: function() {},
-        bulkLoad: function() {},
-        toString: function() { return "StorageDAO Update"; },
-        plan: function() {
-          return { cost: Number.MAX_VALUE };
-        },
-        put: this.updated,
-        remove: this.updated
-      });
-    }
-  },
-
-  listeners: [
-    {
-      name: 'updated',
-      isMerged: 100,
-      code: function() {
-        this.select()(function(a) {
-          localStorage.setItem(this.name, JSONUtil.compact.where(NOT_TRANSIENT).stringify(a));
-        }.bind(this));
-      }
-    }
-  ]
-});
-

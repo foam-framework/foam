@@ -22,7 +22,7 @@ CLASS({
 
   requires: [
     'foam.ui.StackView',
-    'StorageDAO',
+    'foam.core.dao.StorageDAO',
     'Model',
     'foam.ui.layout.DOMPanel'
   ],

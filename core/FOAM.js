@@ -93,8 +93,7 @@ FOAM.browse = function(model, opt_dao, opt_X) {
    var dao = opt_dao || Y[model.name + 'DAO'] || Y[model.plural];
 
    if ( ! dao ) {
-      dao = Y.StorageDAO.create({ model: model });
-      Y[model.name + 'DAO'] = dao;
+      Y[model.name + 'DAO'] = [].dao;
    }
 
    var ctrl = Y.DAOController.create({
