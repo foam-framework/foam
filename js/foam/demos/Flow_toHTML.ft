@@ -52,11 +52,10 @@ console.assert(false, "Expected error: Falsity is falsity.");</src>
 
   </section>
 
-<foam model="foam.demos.physics.Spring" n="10" width="500" height="500" />
-
 Slides:
 
-  <slides style="width: 600px; height: 400px;">
+  <slides style="width: 820px; height: 450px;">
+    <slide><foam model="foam.demos.physics.Spring" n="10" width="500" height="400"/></slide>
     <slide><circle color="red"   x="100" y="45" r="40"/></slide>
     <slide><circle color="green" x="150" y="45" r="40"/></slide>
     <slide><circle color="blue"  x="200" y="45" r="40"/></slide>
@@ -66,8 +65,8 @@ Slides:
       <circle color="yellow"  x="200" y="45" r="40"/>
       <circle color="purple"  x="200" y="45" r="40"/>
     </slide>
+    <slide><foam model="foam.demos.pong.Pong"/></slide>
   </slides>
 
-  <foam model="foam.demos.pong.Pong"/>
   The end.
 </div>
