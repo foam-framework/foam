@@ -32,8 +32,10 @@ CLASS({
     },
 
     getTagName: function() {
-      return this.ELEMENT_NAME ||
-          this.Name.create({ initial: this.name_ }).toTagName();
+      if (this.ELEMENT_NAME) return this.ELEMENT_NAME;
+      var Name = this.X.lookup('foam.Name');
+      if (Name) return Name.create({ initial: this.name_ }).toTagName();
+      return 'foam-flow-element';
     },
 
     replaceAll: function(str, a, b) {
