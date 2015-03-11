@@ -136,7 +136,13 @@ CLASS({
           this.addRowToList(nu);
         }.bind(this));
 
-        this.stack.pushView(view);
+        // TODO(braden): This used to slide in from the left, but it has been
+        // disabled because mobile browsers try to scroll the input field into
+        // view when it's supposed to be offscreen to the right. It results in a
+        // really janky flow: the text box appears midway across the screen,
+        // slides halfway off to the left, and then jumps back into place.
+        this.stack.pushView(view, undefined /* label */, undefined /* back */,
+            'none' /* transition */);
         view.focus();
       }
     }

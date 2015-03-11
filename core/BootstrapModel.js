@@ -148,8 +148,9 @@ var BootstrapModel = {
     //        });
     // Workaround for crbug.com/258552
     this.models && Object_forEach(this.models, function(m) {
-      cls.model_[m.name] = cls[m.name] = JSONUtil.mapToObj(X, m, Model);
-    });
+      //cls.model_[m.name] = cls[m.name] = JSONUtil.mapToObj(X, m, Model);
+      cls[m.name] = this[m.name];
+    }.bind(this));
 
 // TODO(adamvy): This shouldn't be required, commenting out for now.
 //    if ( extendsModel ) this.requires = this.requires.concat(extendsModel.requires);
