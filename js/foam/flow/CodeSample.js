@@ -117,21 +117,24 @@ CLASS({
     {
       name: 'onEditorLoadFailed',
       isFramed: true,
-      code: function() {
-        if ( this.editorModel === this.Editor ) {
-          console.error('CodeSample: Failed to load code editor');
-          if ( this.$ ) {
-            var container = this.$.querySelector('editors') || this.$;
-            container.innerHTML = '';
-            container.textContent = this.src;
-            // TODO(markdittmer): This should automatically updated our
-            // classname. Why doesn't it?
-            this.extraClassName = '';
-            this.$.className = this.cssClassAttr().slice(7, -1);
-          }
-        } else {
+      code: function(_, topics) {
+        var editorModelName = topics[1];
+        if ( editorModelName !== 'foam.flow.Editor' ) {
           this.editor = this.Editor.create();
           this.updateHTML();
+          return;
+        }
+
+        // Failed to load editor: this.Editor. Just output src as textContent.
+        console.error('CodeSample: Failed to load code editor');
+        if ( this.$ ) {
+          var container = this.$.querySelector('editors') || this.$;
+          container.innerHTML = '';
+          container.textContent = this.src;
+          // TODO(markdittmer): This should automatically updated our classname.
+          // Why doesn't it?
+          this.extraClassName = '';
+          this.$.className = this.cssClassAttr().slice(7, -1);
         }
       }
     }

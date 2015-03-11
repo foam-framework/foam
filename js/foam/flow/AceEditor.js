@@ -98,13 +98,13 @@ CLASS({
         editor.setValue(this.src.trim());
         editor.clearSelection();
         editor.getSession().on('change', this.onSrcChange);
-        this.publish(['loaded']);
+        this.publish(['loaded', 'foam.flow.AceEditor']);
       }
     },
     {
       name: 'onAceLoadFailed',
       code: function() {
-        this.publish(['load-failed']);
+        this.publish(['load-failed', 'foam.flow.AceEditor']);
       }
     },
     {
