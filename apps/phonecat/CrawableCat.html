@@ -8,13 +8,6 @@
   <script language="javascript" src="CrawableController.js"></script>
 </head>
 <body>
-  <script>
-    var crawlable = CrawableController.create({
-      dao: phones,
-      applicationURL:   'http://localhost:8000/apps/phonecat/Cat.html',
-      applicationIdURL: 'http://localhost:8000/apps/phonecat/Cat.html#'
-    });
-    crawlable.write(document);
-  </script>
+  <foam model="PhoneCrawableController"/>
 </body>
 </html>
