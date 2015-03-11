@@ -341,10 +341,9 @@ MODEL({
       getter: (function() {
         var id = 1;
         return function() {
-          if ( this.hasOwnProperty('$UID__') ) return this.$UID__;
+          if ( Object.hasOwnProperty.call(this, '$UID__') ) return this.$UID__;
           this.$UID__ = id;
-//          Object.defineProperty(this, '$UID__', { value: id });
-          ++id;
+          id++;
           return this.$UID__;
         };
       })()
