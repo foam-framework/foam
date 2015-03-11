@@ -32,7 +32,7 @@ CLASS({
   properties: [
     {
       name: 'id',
-      getter: function() { return this.$UID; }
+      getter: function() { return this.$UID__; }
     },
     {
       model_: 'IntProperty',
@@ -62,21 +62,17 @@ CLASS({
   ],
   
   methods: {
-    init: function() { /* Sets up a listener on inherited $$DOC{ref:'foam.graphics.CView.parent'}. */
-      this.SUPER();
-      
-      Events.dynamic(
-        function() { this.parent; }.bind(this),
-        function() {
-          if (this.dynamicListeners_ && this.dynamicListeners_.destroy) {
-            this.dynamicListeners_.destroy();
-          }
-          this.dynamicListeners_ = Events.dynamic(function() { 
-            this.globalX = this.parent.globalX + this.x;
-            this.globalY = this.parent.globalY + this.y;
-          }.bind(this))
-        }.bind(this)
-      ); 
+
+    onAncestryChange_: function() {
+      if (this.dynamicListeners_ && this.dynamicListeners_.destroy) {
+        this.dynamicListeners_.destroy();
+      }
+      if ( this.parent ) {
+        this.dynamicListeners_ = Events.dynamic(function() { 
+          this.globalX = this.parent.globalX + this.x;
+          this.globalY = this.parent.globalY + this.y;
+        }.bind(this));
+      }
     },
     
     addLinkBlocker: function(item) {
