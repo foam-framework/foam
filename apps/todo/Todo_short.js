@@ -69,7 +69,7 @@ CLASS({
     init: function() {
       this.SUPER();
       this.filteredDAO = this.dao = TodoDAO.create({
-        delegate: EasyDAO.create({model: Todo, seqNo: true, daoType: 'StorageDAO', name: 'todos-foam'}) });
+        delegate: EasyDAO.create({model: Todo, seqNo: true, daoType: 'LOCAL', name: 'todos-foam'}) });
       this.dao.listen(this.onDAOUpdate);
       this.onDAOUpdate();
     }},
