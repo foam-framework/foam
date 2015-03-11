@@ -540,6 +540,11 @@ CLASS({
   name: 'EasyDAO',
   extendsModel: 'ProxyDAO',
 
+  requires: [
+    'foam.core.dao.StorageDAO',
+    'foam.core.dao.MigrationDAO'
+  ],
+
   help: 'A facade for easy DAO setup.',
 
   documentation: function() {/*
@@ -620,7 +625,7 @@ CLASS({
     {
       model_: 'ArrayProperty',
       name: 'migrationRules',
-      subType: 'MigrationRule',
+      subType: 'foam.core.dao.MigrationRule',
       documentation: "Creates an internal $$DOC{ref:'MigrationDAO'} and applies the given array of $$DOC{ref:'MigrationRule'}."
     }
   ],
@@ -1303,110 +1308,3 @@ CLASS({
     'version'
   ]
 });
-
-CLASS({
-  name: 'MigrationRule',
-  ids: ['modelName'],
-  properties: [
-    {
-      model_: 'StringProperty',
-      name: 'modelName',
-    },
-    {
-      model_: 'IntProperty',
-      name: 'version'
-    },
-    {
-      model_: 'FunctionProperty',
-      name: 'migration'
-    }
-  ]
-});
-
-
-CLASS({
-  name: 'MigrationDAO',
-  extendsModel: 'ProxyDAO',
-
-  imports: [
-    'daoVersionDao'
-  ],
-
-  properties: [
-    {
-      name: 'delegate'
-    },
-    {
-      model_: 'ArrayProperty',
-      subType: 'MigrationRule',
-      name: 'rules'
-    },
-    {
-      name: 'name'
-    }
-  ],
-
-  methods: {
-    init: function() {
-      var dao = this.delegate;
-      var future = afuture()
-      this.delegate = FutureDAO.create({future: future.get});
-
-      var self = this;
-      var version;
-      aseq(
-        function(ret) {
-          self.daoVersionDao.find(self.name, {
-            put: function(c) {
-              version = c;
-              ret();
-            },
-            error: function() {
-              version = DAOVersion.create({
-                name: self.name,
-                version: 0
-              });
-              ret();
-            }
-          });
-        },
-        function(ret) {
-          function updateVersion(ret, v) {
-            var c = version.clone();
-            c.version = v;
-            self.daoVersionDao.put(c, ret);
-          }
-
-          var rulesDAO = self.rules.dao;
-          rulesDAO
-            .where(AND(GT(MigrationRule.VERSION, version.version)))
-            .select()(function(rules) {
-              var seq = [];
-              for ( var i = 0; i < rules.length; i++ ) {
-                     (function(rule) {
-                       seq.push(
-                         aseq(
-                           function(ret) {
-                             rule.migration(ret, dao);
-                           },
-                           function(ret) {
-                             updateVersion(ret, rule.version);
-                           }));
-                     })(self.rules[i]);
-              }
-              if ( seq.length > 0 ) aseq.apply(null, seq)(ret);
-              else ret();
-            });
-        })(function() {
-          future.set(dao);
-        });
-      this.SUPER();
-    }
-  }
-});
-
-
-
-
-
-

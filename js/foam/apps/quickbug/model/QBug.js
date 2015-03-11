@@ -23,8 +23,8 @@ CLASS({
   requires: [
     'PersistentContext',
     'IDBDAO',
-    'MigrationDAO',
-    'MigrationRule',
+    'foam.core.dao.MigrationDAO',
+    'foam.core.dao.MigrationRule',
     'Binding',
     'foam.core.dao.RestDAO',
     'LazyCacheDAO',
