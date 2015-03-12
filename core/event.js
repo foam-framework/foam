@@ -744,6 +744,11 @@ MODEL({
 
         function stop() {
           if ( ! stopped ) {
+            Movement.liveAnimations_--;
+            stopped = true;
+            opt_onEnd && opt_onEnd();
+            opt_onEnd = null;
+
             if ( Movement.liveAnimations_ === 1 ) {
               var tasks = Movement.idleTasks_;
               if ( tasks && tasks.length > 0 ) {
@@ -751,11 +756,7 @@ MODEL({
                 for ( var i = 0 ; i < tasks.length ; i++ ) tasks[i]();
               }
             }
-            Movement.liveAnimations_--;
           }
-          stopped = true;
-          opt_onEnd && opt_onEnd();
-          opt_onEnd = null;
         }
 
         if ( fn ) {
