@@ -36,7 +36,7 @@
         teaching FOAM programming through interactive examples. So, let's get
         to it.
       </p>
-      <aside style="height: 400px;">
+      <aside extraClassName="wide">
         <code-sample>
           <title>Example Code</title>
           <src>console.log("Hello World!");</src>

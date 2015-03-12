@@ -25,7 +25,7 @@ CLASS({
   imports: [
     'document',
     'editorModel',
-    'actionButtonModel'
+    // 'actionButtonModel'
   ],
 
   properties: [
@@ -51,6 +51,11 @@ CLASS({
         return this.VirtualConsole.create();
       },
       view: 'foam.flow.VirtualConsoleView'
+    },
+    {
+      model_: 'ModelProperty',
+      name: 'actionButtonModel',
+      factory: function() { return this.ActionButton; }
     },
     {
       name: 'editor',
@@ -89,6 +94,7 @@ CLASS({
       name: 'run',
       iconUrl: 'https://www.gstatic.com/images/icons/material/system/1x/play_arrow_white_24dp.png',
       action: function() {
+        debugger;
         this.virtualConsoleView.reset();
         this.virtualConsole.watchConsole();
         try {
@@ -150,20 +156,17 @@ CLASS({
           %%editor
         </editors>
         <actions>
-          <% out(this.createActionView(
-                  this.model_.getAction('run'),
-                  {
-                    model_: this.actionButtonModel || 'foam.ui.ActionButton',
-                    data: this,
-                    className: 'actionButton playButton',
-                    color: 'white',
-                    font: '30px Roboto Arial',
-                    alpha: 1.0,
-                    width: 38,
-                    height: 38,
-                    radius: 18,
-                    background: '#e51c23'
-                  })); %>
+          $$run{
+            model_: this.actionButtonModel,
+            className: 'actionButton playButton',
+            color: 'white',
+            font: '30px Roboto Arial',
+            alpha: 1.0,
+            width: 38,
+            height: 38,
+            radius: 18,
+            background: '#e51c23'
+          }
         </actions>
       </top-split>
       $$virtualConsole{
@@ -172,6 +175,16 @@ CLASS({
       }
     */},
     function CSS() {/*
+      code-sample {
+        display: block;
+        border-radius: inherit;
+      }
+      code-sample > heading {
+        border-top-left-radius: inherit;
+        border-top-right-radius: inherit;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+      }
       code-sample.loading {
         display: none;
       }
@@ -193,8 +206,31 @@ CLASS({
       }
       code-sample canvas.playButton {
         background: rgba(0,0,0,0);
-        box-shadow: 3px 3px 3px #aaa;
-        border-radius: 30px;
+        box-shadow: 2px 2px 7px #aaa;
+        border-radius: 50%;
+      }
+
+      @media not print {
+
+        aside code-sample > * {
+          margin: 10px;
+        }
+
+        aside code-sample > heading {
+          font-size: 25px;
+          margin: 0px;
+          padding: 3px 10px 3px 10px;
+          background: #F4B400;
+        }
+
+      }
+
+      @media print {
+
+        aside code-sample > heading {
+          font-size: 14pt;
+        }
+
       }
     */}
 
