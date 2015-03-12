@@ -75,7 +75,6 @@ var files = [
   'arrayDAO',
   'index',
   'models',
-//  'touch',
   [ 'glang', IN_BROWSER ],
   'oauth'
 ];
