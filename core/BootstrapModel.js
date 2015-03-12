@@ -32,7 +32,7 @@
 
 function defineLocalProperty(cls, name, factory) {
   Object.defineProperty(cls, name, { get: function() {
-    if ( this == cls ) return null;
+    console.assert(this !== cls, 'Called property getter from prototype: ' + name);
     var value = factory.call(this);
     Object.defineProperty(this, name, { value: value });
     return value;
