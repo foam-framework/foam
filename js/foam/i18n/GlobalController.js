@@ -121,14 +121,11 @@ CLASS({
 });
 
 arequire('foam.i18n.GlobalController')(function(GlobalController) {
-  console.log('Create i18n Global Controller');
   var i18nGC = GlobalController.create();
-  console.log('i18n Global Controller: Visiting current models');
   // TODO(markdittmer): We need a more reasonable way to trigger extraction.
   // i18nGC.visitAllCurrentModels(
   //   i18nGC.extractorsList.concat(i18nGC.injectorsList));
   window.X.i18nModel = function(model, X, ret) {
-    console.log('i18n Global Controller: Visiting new model');
     i18nGC.visitModel(
         // i18nGC.extractorsList.concat(
             i18nGC.injectorsList
