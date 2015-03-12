@@ -102,6 +102,7 @@ var BootstrapModel = {
         model.package = "";
         model.name = name;
         model.extendsModel = parentModel && parentModel.id;
+        model.models = traitModel.models; // unclone sub-models, we don't want multiple copies of them floating around
         GLOBAL.X.registerModel(model);
       }
 
@@ -148,8 +149,9 @@ var BootstrapModel = {
     //        });
     // Workaround for crbug.com/258552
     this.models && Object_forEach(this.models, function(m) {
-      cls.model_[m.name] = cls[m.name] = JSONUtil.mapToObj(X, m, Model);
-    });
+      //cls.model_[m.name] = cls[m.name] = JSONUtil.mapToObj(X, m, Model);
+      if ( this[m.name] ) cls[m.name] = this[m.name];
+    }.bind(this));
 
 // TODO(adamvy): This shouldn't be required, commenting out for now.
 //    if ( extendsModel ) this.requires = this.requires.concat(extendsModel.requires);

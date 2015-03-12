@@ -132,14 +132,12 @@ CLASS({
       X.setTimeout(function() { 
         this.autoSizeLayout.suspended = false;
         this.autoSizeLayout.paint();
-//console.log("          root painting active"); 
       }.bind(this), 1000);  
     },
     
     destroy: function( isParentDestroyed ) {
       this.SUPER(isParentDestroyed);
       this.autoSizeLayout.suspended = true;
-//console.log("root painting OFF"); 
       
     }
     

@@ -73,7 +73,6 @@ var files = [
   'dao',
   'dao2',
   'arrayDAO',
-  'diff',
   'index',
   'models',
 //  'touch',

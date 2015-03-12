@@ -50,16 +50,29 @@ CLASS({
         var h = this.element.clientHeight;
         var c = this.Circle.create({
           r: 0,
-          // TODO(kgr): Optimize based on startX/Y position.
-          // startAngle: Math.PI/2,
-          // endAngle: Math.PI,
           width: w,
           height: h,
-          
+
           x: this.startX * w,
           y: this.startY * h,
           color: this.color
         });
+
+        // Only draw one quarter of the Circle if we're starting in a corder.
+        if ( this.startX == 0 && this.startY == 0 ) {
+          c.startAngle = Math.PI * 1.5;
+          c.endAngle   = Math.PI * 2;
+        } else if ( this.startX == 0 && this.startY == 1 ) {
+          c.startAngle = 0;
+          c.endAngle   = Math.PI / 2;
+        } else if ( this.startX == 1 && this.startY == 0 ) {
+          c.startAngle = Math.PI;
+          c.endAngle   = Math.PI * 1.5;
+        } else if ( this.startX == 1 && this.startY == 1 ) {
+          c.startAngle = Math.PI / 2;
+          c.endAngle   = Math.PI;
+        }
+
         var view = c.toView_();
         var div = document.createElement('div');
         var dStyle = div.style;

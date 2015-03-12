@@ -55,9 +55,18 @@ CLASS({
     {
       name: 'editor',
       factory: function() {
-        var editor = (this.editorModel ? this.editorModel : this.Editor).create();
-        editor.subscribe(['loaded'], this.onEditorLoaded);
-        return editor;
+        return (this.editorModel ? this.editorModel : this.Editor).create();
+      },
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( old ) {
+          old.unsubscribe(['loaded'], this.onEditorLoaded);
+          old.unsubscribe(['load-failed'], this.onEditorLoadFailed);
+        }
+        if ( nu ) {
+          nu.subscribe(['loaded'], this.onEditorLoaded);
+          nu.subscribe(['load-failed'], this.onEditorLoadFailed);
+        }
       }
     }
   ],
@@ -103,6 +112,30 @@ CLASS({
         this.extraClassName = '';
         if ( ! this.$ ) return;
         this.$.className = this.cssClassAttr().slice(7, -1);
+      }
+    },
+    {
+      name: 'onEditorLoadFailed',
+      isFramed: true,
+      code: function(_, topics) {
+        var editorModelName = topics[1];
+        if ( editorModelName !== 'foam.flow.Editor' ) {
+          this.editor = this.Editor.create();
+          this.updateHTML();
+          return;
+        }
+
+        // Failed to load editor: this.Editor. Just output src as textContent.
+        console.error('CodeSample: Failed to load code editor');
+        if ( this.$ ) {
+          var container = this.$.querySelector('editors') || this.$;
+          container.innerHTML = '';
+          container.textContent = this.src;
+          // TODO(markdittmer): This should automatically updated our classname.
+          // Why doesn't it?
+          this.extraClassName = '';
+          this.$.className = this.cssClassAttr().slice(7, -1);
+        }
       }
     }
   ],

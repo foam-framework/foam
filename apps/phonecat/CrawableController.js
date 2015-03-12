@@ -7,9 +7,8 @@ CLASS({
   ],
   methods: {
     rowToHTML: function(prop, view) {
-      debugger;
       var str = '';
-      var val = this.data[prop.name] 
+      var val = this.data[prop.name]
 
       if ( ! val ) return '';
 
@@ -33,13 +32,15 @@ CLASS({
   }
 });
 
+
 CLASS({
   name: 'CrawableRowView',
   requires: [ 'foam.ui.animated.ImageView' ],
   extendsModel: 'foam.ui.DetailView',
   templates: [
     function toHTML() {/*
-      <a href="#{{this.data.id}}">{{this.data.name}}</a><br>
+      <!-- /CrawableCat.html#{{this.data.id}}<br>
+      --><a href="#{{this.data.id}}">{{this.data.name}}</a><br>
     */}
   ]
 });
@@ -48,7 +49,7 @@ CLASS({
 CLASS({
   name: 'CrawableController',
   extendsModel: 'foam.ui.View',
-  requires: [ 'CrawableDetailView' ],
+  requires: [ 'CrawableDetailView', 'foam.ui.DAOListView' ],
   exports: [ 'applicationURL', 'applicationIdURL' ],
   properties: [
     {
@@ -80,7 +81,7 @@ CLASS({
 //        window.setTimeout(
 //          function() { window.location = self.applicationIdURL + id; },
 //          1000);
-         
+
         return view.toHTML();
       } else { %>
         $$dao
@@ -102,4 +103,15 @@ CLASS({
       }.bind(this));
     }
   }
+});
+
+
+CLASS({
+  name: 'PhoneCrawableController',
+  extendsModel: 'CrawableController',
+  properties: [
+    { name: 'dao',              defaultValue: phones },
+    { name: 'applicationURL',   defaultValue: 'http://localhost:8000/apps/phonecat/Cat.html' },
+    { name: 'applicationIdURL', defaultValue: 'http://localhost:8000/apps/phonecat/Cat.html#' }
+  ]
 });

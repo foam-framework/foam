@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2012 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,22 @@
  * limitations under the License.
  */
 
-
-function deferJsonP(X) {
-  var future = afuture();
-  X.ajsonp = function() {
-    var args = arguments;
-    return function(ret) {
-      future.get(function(f) {
-        f.apply(undefined, args)(ret);
-      });
-    };
-  };
-
-  return future;
-}
-
-// TODO: Register model for model, or fix the facade.
+CLASS({
+  name: 'MigrationRule',
+  package: 'foam.core.dao',
+  ids: ['modelName'],
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'modelName',
+    },
+    {
+      model_: 'IntProperty',
+      name: 'version'
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'migration'
+    }
+  ]
+});

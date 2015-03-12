@@ -1189,7 +1189,6 @@ CLASS({
     },
     limit: function(count) {
       return (this.Y || X).LimitedDAO_.create({count:count, delegate:this});
-      //return limitedDAO(count, this);
     },
     skip: function(skip) {
       return (this.Y || X).SkipDAO_.create({skip:skip, delegate:this});

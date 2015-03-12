@@ -27,6 +27,11 @@ CLASS({
 
   properties: [
     {
+      model_: 'IntProperty',
+      name: 'counter',
+      defaultValue: 0
+    },
+    {
       model_: 'DAOProperty',
       name: 'console_',
       factory: function() {

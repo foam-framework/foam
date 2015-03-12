@@ -215,9 +215,9 @@ var FObject = {
       if ( p ) {
         if ( val.startsWith('#') ) {
           val = val.substring(1);
-          var $val = $(val);
+          var $val = this.X.$(val);
           if ( $val ) {
-            this[attr.name] = $(val);
+            this[attr.name] = this.X.$(val);
           } else {
             p.fromString.call(this, val, p);
           }

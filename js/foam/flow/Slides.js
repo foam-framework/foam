@@ -39,7 +39,8 @@ CLASS({
       },
       postSet: function(_, p) {
         if ( ! this.$ ) return;
-        var v = this.currentSlide();
+        this.currentSlide_ && this.currentSlide_.destroy && this.currentSlide_.destroy();
+        var v = this.currentSlide_ = this.currentSlide();
         this.$.querySelector('deck').innerHTML = v.toHTML();
         v.initHTML();
       }
@@ -77,6 +78,8 @@ CLASS({
         width: 100%;
         height: 90%;
         border: 1px solid black;
+        overflow: auto;
+        border: 1px solid gray;
       }
       slides > controls {
         width: 100%;

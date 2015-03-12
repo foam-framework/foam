@@ -1,4 +1,22 @@
+/**
+ * @license
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 CLASS({
+  package: 'foam.demos.pong',
   name: 'Ball',
   extendsModel: 'foam.graphics.Circle',
   traits: ['foam.physics.Physical', 'foam.graphics.MotionBlur'],
@@ -12,6 +30,7 @@ CLASS({
 
 
 CLASS({
+  package: 'foam.demos.pong',
   name: 'Paddle',
   extendsModel: 'foam.graphics.Circle',
   traits: ['foam.physics.Physical', 'foam.graphics.Shadow'],
@@ -24,12 +43,13 @@ CLASS({
 
 
 CLASS({
+  package: 'foam.demos.pong',
   name: 'Pong',
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'Ball',
-    'Paddle',
+    'foam.demos.pong.Ball',
+    'foam.demos.pong.Paddle',
     'foam.graphics.CView',
     'foam.graphics.Rectangle',
     'foam.physics.Collider'
@@ -51,17 +71,17 @@ CLASS({
     {
       name: 'ball',
       view: 'foam.ui.DetailView',
-      factory: function() { return Ball.create({color: 'white', r: 20}); }
+      factory: function() { return this.Ball.create({color: 'white', r: 20}); }
     },
     {
       name: 'lPaddle',
       view: 'foam.ui.DetailView',
-      factory: function() { return Paddle.create(); }
+      factory: function() { return this.Paddle.create(); }
     },
     {
       name: 'rPaddle',
       view: 'foam.ui.DetailView',
-      factory: function() { return Paddle.create(); }
+      factory: function() { return this.Paddle.create(); }
     },
     {
       name: 'table',
@@ -88,6 +108,7 @@ CLASS({
       name: 'onBallMove',
       isFramed: true,
       code: function() {
+        if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
         var ball = this.ball;
 
         if ( ball.velocity >  20 ) ball.velocity =  20;
@@ -148,17 +169,17 @@ CLASS({
     function CSS() {/*
       span[name="lScore"] {
         color: white;
-        position: absolute;
-        top: 20;
+        position: relative;
+        top: 80;
         left: 300;
         font-family: sans-serif;
         font-size: 70px;
       }
       span[name="rScore"] {
         color: white;
-        position: absolute;
-        top: 20;
-        left: 450;
+        position: relative;
+        top: 80;
+        left: 420;
         font-family: sans-serif;
         font-size: 70px;
       }

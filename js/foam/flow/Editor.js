@@ -47,7 +47,7 @@ CLASS({
         if ( ! this.$ ) return;
         this.$.addEventListener('input', this.onSrcChange);
         this.$.setAttribute('contenteditable', 'true');
-        this.publish(['loaded']);
+        this.publish(['loaded', 'foam.flow.Editor']);
       }
     }
   ],

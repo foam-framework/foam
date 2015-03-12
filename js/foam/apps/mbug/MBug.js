@@ -32,6 +32,7 @@ CLASS({
     'foam.apps.mbug.ui.IssueView',
     'foam.apps.quickbug.model.DefaultQuery',
     'foam.apps.quickbug.model.QBug',
+    'foam.oauth2.AutoOAuth2',
     'foam.ui.StackView',
     'foam.input.touch.TouchManager',
     'IDBDAO',
@@ -40,7 +41,8 @@ CLASS({
     'ContextualizingDAO',
     'foam.core.dao.CloningDAO',
     'com.google.analytics.WebMetricsReportingDAO',
-    'foam.metrics.Metric'
+    'foam.metrics.Metric',
+    'foam.oauth2.OAuth2WebClient'
   ],
 
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
@@ -54,6 +56,10 @@ CLASS({
     {
       name: 'daoVersionDao',
       lazyFactory: function() { return this.IDBDAO.create({ model: this.DAOVersion }); }
+    },
+    {
+      name: 'autoOAuth2',
+      factory: function() { return this.AutoOAuth2.create(); }
     },
     {
       name: 'metricDAO',

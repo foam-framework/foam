@@ -22,7 +22,7 @@ CLASS({
 
 });
 
-aseq(
+apar(
   arequire('foam.graphics.diagram.LockToPreferredLayout'),
   arequire('foam.graphics.diagram.LinearLayout'),
   arequire('foam.graphics.Spacer'),
@@ -148,7 +148,7 @@ function() {
   block2LockerLayout.addChild(block2Margin);
   
   canv.addChild(block2LockerLayout);
-  
+
   var sect1b = X.lookup('foam.graphics.diagram.Section').create({
     title: 'More Model'
   }, canv.X);
@@ -179,19 +179,19 @@ function() {
   Events.dynamic(function() { mouse.x; mouse.y; }, function() {
     //outerLayout.width = mouse.x;
     //outerLayout.height = mouse.y;
-    block2.x = mouse.x;
-    block2.y = mouse.y;
+    block2Margin.x = mouse.x;
+    block2Margin.y = mouse.y;
   });
   
   
   ///////////////////Editors
   
   var editors = [block2, block2Margin, sect1b, sect2b, outerLayout];
-  
+
   editors.forEach(function(thing) {
     var editor = X.lookup('foam.ui.DetailView').create({ data: thing });
     editor.write(document);
-  
+
   });
   
 });

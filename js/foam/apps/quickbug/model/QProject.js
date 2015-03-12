@@ -40,6 +40,7 @@ CLASS({
     'foam.apps.quickbug.model.LabelStringEnumProperty',
     'foam.apps.quickbug.model.LabelArrayProperty',
     'foam.apps.quickbug.model.DefaultQuery',
+    'foam.core.dao.MigrationRule',
     'EasyDAO',
     'CachingDAO',
     'LazyCacheDAO',
@@ -150,7 +151,7 @@ CLASS({
           model: this.QIssueModel,
           name: this.projectName + '_' + this.QIssueModel.plural,
           migrationRules: [
-            MigrationRule.create({
+            this.MigrationRule.create({
               modelName: 'QIssue',
               version: 120,
               migration: function(ret, dao) {
