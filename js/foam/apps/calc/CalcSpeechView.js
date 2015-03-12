@@ -33,7 +33,7 @@ CLASS({
           action.name === 'equals' ?
             action.speechLabel + ' ' + this.calc.a2 :
           unary ?
-            action.speechLabel + Calc.EQUALS.speechLabel + this.calc.a2 :
+            action.speechLabel + ' ' + Calc.EQUALS.speechLabel + ' ' + this.calc.a2 :
             action.speechLabel);
       }
     }
@@ -61,8 +61,8 @@ CLASS({
           } else {
             this.say(
               unary ?
-                last.a2 + ' ' + last.op.speechLabel + Calc.EQUALS.speechLabel + this.calc.a2 :
-                this.calc.history[this.calc.history.length-2].a2 + ' ' + last.op.speechLabel + ' ' + last.a2 + Calc.EQUALS.speechLabel + this.calc.a2 );
+                last.a2 + ' ' + last.op.speechLabel + ' ' + Calc.EQUALS.speechLabel + ' ' + this.calc.a2 :
+                this.calc.history[this.calc.history.length-2].a2 + ' ' + last.op.speechLabel + ' ' + last.a2 + ' ' + Calc.EQUALS.speechLabel + ' ' + this.calc.a2 );
           }
         }
       }
