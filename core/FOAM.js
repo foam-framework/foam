@@ -120,7 +120,7 @@ function arequire(modelName, opt_X) {
   var model = X.lookup(modelName);
   if ( ! model ) {
     if ( ! X.ModelDAO ) {
-      if ( modelName !== 'Template' ) console.warn('Unknown Model in arequire: ', modelName);
+      // if ( modelName !== 'Template' ) console.warn('Unknown Model in arequire: ', modelName);
       return aconstant();
     }
 
@@ -297,11 +297,11 @@ function registerModel(model, opt_name) {
 
   // TODO: this is broken
   // update the cache if this model was already FOAM.lookup'd
-  if ( root.hasOwnProperty('lookupCache_') ) {
+  if ( root.lookupCache_ ) {
     var cache = root.lookupCache_;
     var modelRegName = (package ? package + '.' : '') + name;
     if ( cache[modelRegName] ) {
-      console.log("registerModel: in lookupCache_, replaced model ", modelRegName );
+      // console.log("registerModel: in lookupCache_, replaced model ", modelRegName );
       cache[modelRegName] = model;
     }
   }

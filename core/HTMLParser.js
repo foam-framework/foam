@@ -293,7 +293,7 @@ test('<pA a="1" b="2">foo<b>bold</b></pA>');
   var registry = { };
 
   X.registerElement = function(name, model) {
-    console.log('registerElement: ', name);
+//    console.log('registerElement: ', name);
     registry[name] = model;
 
     TemplateParser.foamTag_ = (function() {
