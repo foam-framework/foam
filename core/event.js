@@ -749,11 +749,21 @@ MODEL({
             opt_onEnd && opt_onEnd();
             opt_onEnd = null;
 
-            if ( Movement.liveAnimations_ === 1 ) {
+            if ( Movement.liveAnimations_ === 0 ) {
               var tasks = Movement.idleTasks_;
               if ( tasks && tasks.length > 0 ) {
                 Movement.idleTasks_ = [];
-                for ( var i = 0 ; i < tasks.length ; i++ ) tasks[i]();
+                setTimeout(function() {
+                  // Since this is called asynchronously, there might be a new
+                  // animation. If so, queue up the tasks again.
+                  var i;
+                  if (Movement.liveAnimations_ > 0) {
+                    for ( i = 0 ; i < tasks.length ; i++ )
+                      Movement.idleTasks_.push(tasks[i]);
+                  } else {
+                    for ( i = 0 ; i < tasks.length ; i++ ) tasks[i]();
+                  }
+                }, 0);
               }
             }
           }
