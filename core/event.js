@@ -748,11 +748,7 @@ MODEL({
               var tasks = Movement.idleTasks_;
               if ( tasks && tasks.length > 0 ) {
                 Movement.idleTasks_ = [];
-                setTimeout(function() {
-                  for ( var i = 0 ; i < tasks.length ; i++ ) {
-                    Movement.whenIdle(tasks[i]);
-                  }
-                }, 0);
+                for ( var i = 0 ; i < tasks.length ; i++ ) tasks[i]();
               }
             }
             Movement.liveAnimations_--;
@@ -800,17 +796,17 @@ MODEL({
       };
     },
 
-    whenIdle: function(task) {
-      // Given a function, one of two things will happen:
-      // - If an animation is in progress, the task is postponed until no
-      //   animations are running.
-      // - With no animation running, the task is processed immediately.
-      if ( Movement.liveAnimations_ > 0 ) {
-        if ( ! Movement.idleTasks_ ) Movement.idleTasks_ = [];
-        Movement.idleTasks_.push(task);
-      } else {
-        task();
-      }
+    whenIdle: function(fn) {
+      // Decorate a function to defer execution until no animations are running
+      return function() {
+        if ( Movement.liveAnimations_ > 0 ) {
+          if ( ! Movement.idleTasks_ ) Movement.idleTasks_ = [];
+          var args = arguments;
+          Movement.idleTasks_.push(function() { fn.apply(fn, args); });
+        } else {
+          fn.apply(fn, arguments);
+        }
+      };
     },
 
     // requires unsubscribe to work first (which it does now)
