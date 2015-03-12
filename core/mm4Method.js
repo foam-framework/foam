@@ -654,6 +654,13 @@ CLASS({
         */}
     },
     {
+      name: 'whenIdle',
+      help: 'Should this listener be deferred until the system is idle (ie. not running any animations).',
+      documentation: function() { /*
+          For a listener $$DOC{ref:'Method'}, indicates that the events should be delayed until animations are finished.
+        */}
+    },
+    {
       name: 'isMerged',
       help: 'As a listener, should this be merged?',
       documentation: function() { /*
