@@ -20,21 +20,24 @@ function lookup(key) {
   if ( ! ( typeof key === 'string' ) ) return key;
 
   var root  = this
-  var cache = this.lookupCache_;
 
-  var ret = null; // cache[key];
+  var cache;
+
+  if ( this.hasOwnProperty('lookupCache_') ) {
+    cache = this.lookupCache_;
+  } else {
+    cache = this.lookupCache_ = {};
+  }
+
+  var ret = cache[key];
+
   if ( ! ret ) {
     var path = key.split('.');
     for ( var i = 0 ; root && i < path.length ; i++ ) root = root[path[i]];
-
     ret = root;
-    /*
-    if ( ret ) {
-      cache[key] = ret;
-      console.log('******* caching: ', key);
-    }
-    */
+    if ( ret ) cache[key] = ret;
   }
+
   return ret;
 }
 
