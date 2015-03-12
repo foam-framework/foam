@@ -197,6 +197,7 @@ CLASS({
       help: 'Set internally by the resize handler',
       postSet: function(_, x) {
         this.panel$().style.width = (x+2) + 'px';
+        this.panelView_ && this.panelView_.onResize && this.panelView_.onResize();
       }
     },
     {
@@ -293,7 +294,7 @@ CLASS({
         </div>
         <div id="%%id-panel" style="position: absolute; top: 0; left: -1;">
           <% if ( this.side === this.RIGHT ) { %> <div id="%%id-shadow" class="left-shadow"></div> <% } %>
-          <%= this.panelView({ data$: this.data$ }) %>
+          <%= (this.panelView_ = this.panelView({ data$: this.data$ })) %>
           <% if ( this.side === this.LEFT ) { %> <div id="%%id-shadow" class="right-shadow"></div> <% } %>
         </div>
       </div>
@@ -313,8 +314,8 @@ CLASS({
       this.main$().addEventListener('click',       this.onMainFocus);
       this.main$().addEventListener('DOMFocusIn',  this.onMainFocus);
       this.panel$().addEventListener('DOMFocusIn', this.onPanelFocus);
-      this.onResize();
       this.initChildren(); // We didn't call SUPER(), so we have to do this here.
+      this.onResize();
     },
     interpolate: function(state1, state2) {
       var layout1 = state1.layout.call(this);
@@ -353,18 +354,6 @@ CLASS({
         this.shadow$().style.display = this.state.over ? 'inline' : 'none';
         this.state = this.state;
         var parentWidth = this.parentWidth;
-
-        // TODO(kgr): temporary hack in case SlidePanel's are nested and
-        // the the inner one needs to be re-layedout after the outer one
-        // changes its size.  Being resized should also fire an onResize event.
-        for ( var i = 1 ; i < 12 ; i++ ) {
-          this.X.setTimeout(function() {
-            if ( this.parentWidth !== parentWidth ) {
-              parentWidth = this.parentWidth;
-              this.onResize();
-            }
-          }.bind(this), i * ( this.ANIMATION_DELAY + 30 ) / 10);
-        }
       }
     },
     {
