@@ -33,7 +33,7 @@ CLASS({
         this.cview; this.width; this.height;
       }.bind(this), function() {
         if ( ! this.cview ) return;
-        this.cview.width = this.width;
+        this.cview.width  = this.width;
         this.cview.height = this.height;
       }.bind(this));
     },
@@ -48,12 +48,12 @@ CLASS({
       isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
-        this.$.width = this.canvasWidth();
-        this.$.style.width = this.styleWidth();
-        this.$.height = this.canvasHeight();
+        this.$.width        = this.canvasWidth();
+        this.$.style.width  = this.styleWidth();
+        this.$.height       = this.canvasHeight();
         this.$.style.height = this.styleHeight();
-        this.cview.width = this.width;
-        this.cview.height = this.height;
+        this.cview.width    = this.width;
+        this.cview.height   = this.height;
         this.paint();
       }
     }

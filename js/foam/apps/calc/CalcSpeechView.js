@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 CLASS({
-  name: 'CalcSpeechView',
   package: 'foam.apps.calc',
+  name: 'CalcSpeechView',
   extendsModel: 'foam.ui.View',
   properties: [
     'calc',
@@ -25,6 +25,7 @@ CLASS({
   listeners: [
     {
       name: 'onAction',
+      whenIdle: true,
       code: function(calc, topic, action) {
         var last  = this.calc.history[this.calc.history.length-1];
         var unary = last && last.op.unary;
@@ -79,7 +80,7 @@ CLASS({
       var e = document.createTextNode(' ' + msg + ' ');
       e.id = this.nextID();
       this.$.appendChild(e);
-      setTimeout(function() { e.remove(); }, 30000);
+      setTimeout(Movement.whenIdle(function() { e.remove(); }), 15000);
     },
     toHTML: function() {
       return '<output id="' + this.id + '" style="position:absolute;left:-1000000;" aria-live="polite"></output>'

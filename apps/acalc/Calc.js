@@ -193,14 +193,14 @@ CLASS({
     permutation: function(n, r) { return this.factorial(n) / this.factorial(n-r); },
     combination: function(n, r) { return this.permutation(n, r) / this.factorial(r); },
     error: function() {
-      if ( $$('calc-display')[0] ) setTimeout(this.Flare.create({
-        element: $$('calc-display')[0],
+      if ( this.X.$$('calc-display')[0] ) setTimeout(this.Flare.create({
+        element: this.X.$$('calc-display')[0],
         color: '#f44336' /* red */
       }).fire, 100);
       this.history.put(this.History.create(this));
-      this.a1 = 0;
-      this.a2 = '';
-      this.op = DEFAULT_OP;
+      this.a1   = 0;
+      this.a2   = '';
+      this.op   = DEFAULT_OP;
       this.row1 = '';
       this.editable = true;
     },
@@ -242,18 +242,18 @@ CLASS({
 
       keyboardShortcuts: [ 'a', 'c' ],
       action: function() {
-        this.row1 = '';
-        this.a1 = '0';
-        this.a2 = '';
+        this.row1     = '';
+        this.a1       = '0';
+        this.a2       = '';
         this.editable = true;
-        this.op = DEFAULT_OP;
+        this.op       = DEFAULT_OP;
         this.history = [].sink;
-        if ( $$('calc-display')[0] ) {
+        if ( this.X.$$('calc-display')[0] ) {
           var now = Date.now();
           if ( this.lastFlare_ && now-this.lastFlare_ < 1000 ) return;
           this.lastFlare_ = now;
           this.Flare.create({
-            element: $$('calc-display')[0],
+            element: this.X.$$('calc-display')[0],
             color: '#2196F3' /* blue */
           }).fire();
           this.X.window.getSelection().removeAllRanges();
@@ -402,4 +402,3 @@ CLASS({
     },
   ]
 });
-

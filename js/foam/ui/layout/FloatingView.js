@@ -34,6 +34,12 @@ CLASS({
          "defaultValue": 300
       },
       {
+        "name": "preferredWidth",
+        "defaultValueFn": function() {
+          return this.view.preferredWidth;
+        }
+      },
+      {
          "model_": "Property",
          "name": "height",
          "defaultValue": 300
