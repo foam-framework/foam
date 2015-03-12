@@ -68,6 +68,7 @@
     "foam.ui.LeafDataView":true,
     "foam.ui.TemplateSupportTrait":true,
     "foam.ui.DAODataViewTrait":true,
+    "foam.ui.DestructiveDataView":true,
     "foam.ui.BasePropertyView":true,
     "foam.core.bootstrap.ModelFileDAO":true,
     "foam.graphics.AbstractCViewView":true,
