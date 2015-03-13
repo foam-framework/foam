@@ -258,8 +258,8 @@ CLASS({
         var point = this.InputPoint.create({
           id: 'mouse',
           type: 'mouse',
-          x: event.pageX,
-          y: event.pageY
+          x: event.clientX,
+          y: event.clientY
         });
 
         // TODO: De-dupe me with the code above in onTouchStart.
@@ -290,8 +290,8 @@ CLASS({
         // No reaction unless we have an active mouse point.
         if ( ! this.points.mouse ) return;
         // If one does exist, update its coordinates.
-        this.points.mouse.x = event.pageX;
-        this.points.mouse.y = event.pageY;
+        this.points.mouse.x = event.clientX;
+        this.points.mouse.y = event.clientY;
         this.checkRecognition();
       }
     },
@@ -312,8 +312,8 @@ CLASS({
       code: function(event) {
         // TODO: De-dupe me too.
         if ( ! this.points.mouse ) return;
-        this.points.mouse.x = event.pageX;
-        this.points.mouse.y = event.pageY;
+        this.points.mouse.x = event.clientX;
+        this.points.mouse.y = event.clientY;
         this.points.mouse.done = true;
         if ( ! this.recognized ) {
           this.checkRecognition();
@@ -341,8 +341,8 @@ CLASS({
           var wheel = this.InputPoint.create({
             id: 'wheel',
             type: 'wheel',
-            x: event.pageX,
-            y: event.pageY
+            x: event.clientX,
+            y: event.clientY
           });
 
           // Now immediately feed this to the appropriate ScrollGesture.

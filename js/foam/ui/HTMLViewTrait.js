@@ -355,9 +355,14 @@ CLASS({
 
     construct: function() { /* rebuilds the children of the view */
       this.SUPER();
+      this.generateContent();
+    },
+    
+    generateContent: function() {
+      /* by default, uses toInnerHTML() to generate content. Override to do something else. */
       if ( ! this.$ ) return;
       this.$.innerHTML = this.toInnerHTML();
-      this.initInnerHTML();
+      this.initInnerHTML();      
     },
 
     toInnerHTML: function() {
