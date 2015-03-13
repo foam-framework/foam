@@ -24,13 +24,19 @@ CLASS({
   requires: [
     'foam.apps.mbug.ui.CCView',
     'foam.apps.mbug.ui.CommentView',
+    'foam.apps.mbug.ui.IssueLabelView',
+    'foam.apps.mbug.ui.PriorityView',
     'foam.apps.quickbug.model.QIssueComment',
+    'foam.apps.quickbug.model.imported.IssuePerson',
     'foam.ui.DAOListView',
     'foam.ui.ImageBooleanView',
-    'foam.apps.mbug.ui.IssueLabelView',
     'foam.ui.PopupChoiceView',
-    'foam.apps.mbug.ui.PriorityView',
+    'foam.ui.md.AddRowView',
     'foam.ui.md.TextFieldView'
+  ],
+  imports: [
+    'PersonDAO',
+    'stack'
   ],
   properties: [
     {
@@ -53,6 +59,20 @@ CLASS({
       name: 'save',
       label: '',
       iconUrl: 'images/ic_done_24dp.png'
+    }
+  ],
+  listeners: [
+    {
+      name: 'onOwnerClick',
+      code: function() {
+        this.stack.pushView(this.AddRowView.create({
+          dao: this.PersonDAO,
+          data$: this.data.owner$,
+          subType: this.IssuePerson,
+          subKey: this.IssuePerson.NAME,
+          rowView: 'foam.apps.mbug.ui.PersonView'
+        }));
+      }
     }
   ],
   templates: [
@@ -114,7 +134,10 @@ CLASS({
           </div>
 
           <div class="separator separator1"></div>
-          $$owner{model_: 'foam.apps.mbug.ui.CCView'}
+          <div id="owner" class="owner">
+            $$owner{model_: 'foam.apps.mbug.ui.CitationView'}
+          </div>
+          <% this.on('click', this.onOwnerClick, 'owner'); %>
 
           <div class="separator separator1"></div>
           $$cc{model_: 'foam.apps.mbug.ui.CCView'}
