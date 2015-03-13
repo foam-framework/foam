@@ -771,6 +771,11 @@ CLASS({
 
   properties: [
     {
+      name: 'id',
+      transient: true,
+      factory: function() { return this.package ? this.package + '.' + this.name : this.name; }
+    },
+    {
       name:  'name',
       required: true,
       help: 'Interface name.',
