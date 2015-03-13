@@ -295,7 +295,7 @@ CLASS({
         if ( typeof(this.a2) === 'string' && this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
         if ( this.op == DEFAULT_OP ) {
           var last = this.history[this.history.length-1];
-          if ( ! last ) return;
+          if ( ! last || last.op === DEFAULT_OP ) return;
           if ( last.op.binary ) {
             this.push(this.a2);
             this.a2 = last.a2;
