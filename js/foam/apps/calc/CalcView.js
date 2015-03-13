@@ -66,6 +66,7 @@ CLASS({
         var data = evt.clipboardData.getData('text/plain');
         for ( var i = 0 ; i < data.length ; i++ ) {
           var c = data.charAt(i);
+          if ( c === '-' ) this.data['0']();
           var cmd = CMD[c];
           if ( cmd ) this.data[cmd]();
         }
