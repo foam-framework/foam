@@ -118,7 +118,7 @@ CLASS({
 //      c.lineWidth = 5;
 //      c.strokeText(this.text, 100, 100);
     }
-  }  
+  }
 });
 
 
@@ -131,7 +131,7 @@ CLASS({
     'foam.demos.graphics.LogoForeground',
     'foam.demos.graphics.LogoBackground'
   ],
- 
+
   exports: [ 'text$', 'font$', 'colours$' ],
 
   properties: [
@@ -182,10 +182,21 @@ CLASS({
   },
 
   templates: [
-    function toInnerHTML() {/* <%= this.background, this.foreground %> */},
+    function toInnerHTML() {/* <%= this.background, this.foreground %>$$text{ tagName: 'logo-text', mode: 'read-only' } */},
     function CSS() {/*
       .logo-foreground { position: absolute; left: 0; }
       .logo-background { position: absolute; left: 0; z-index: -1; }
+      @media not print { logo-text { display: none; } }
+      @media print {
+        .logo {
+          height: initial !important;
+          margin: initial !important;
+          padding: initial !important;
+          position: initial !important;
+        }
+        .logo-foreground, .logo-background { display: none; }
+        logo-text { display: block; }
+      }
     */}
   ]
 });
