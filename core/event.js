@@ -440,7 +440,11 @@ var FunctionStack = {
 
 var PropertyValue = {
   create: function(obj, prop) {
-    return { __proto__: this, $UID: obj.$UID + '.' + prop, obj: obj, prop: prop };
+    var o = Object.create(this);
+    o.$UID = obj.$UID + '.' + prop;
+    o.obj  = obj;
+    o.prop = prop;
+    return o;
   },
 
   get: function() { return this.obj[this.prop]; },
