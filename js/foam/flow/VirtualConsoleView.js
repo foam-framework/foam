@@ -27,7 +27,7 @@ CLASS({
     },
     {
       name: 'flare',
-      type: 'foam.ui.md',
+      type: 'foam.ui.md.Flare',
       postSet: function(old, nu) {
         if ( old === nu ) return;
         if ( old ) old.state$.removeListener(this.onFlareStateChange);
@@ -47,7 +47,8 @@ CLASS({
           color: 'rgb(241, 250, 65)',
           cssPosition: 'absolute',
           startX: 0.9,
-          startY: 0.0
+          startY: 0.0,
+          fadeTime: 600
         });
 
         // Change this.$ CSS class when flare enters or leaves detached state.

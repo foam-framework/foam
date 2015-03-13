@@ -11,10 +11,6 @@ book-container {
 
 book {
   background: #fff;
-  /* TODO(markdittmer): Abstract this into watermark class. */
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='600px' width='320px'><text x='30' y='90' fill='#f3f3f3' font-family='Roboto, \"Helvetica Neue\", Helvetica, Arial' font-size='100px' transform='rotate(30 20,40)'>DRAFT</text></svg>");
-  background-position: center;
-  background-repeat: repeat-y;
   padding: 100px 4% 4% 4%;
   box-shadow: 0px 0px 20px #888;
   z-index: 2;
@@ -62,6 +58,7 @@ book p.center {
 
     book {
       width: 80%;
+      max-width: 1200px;
     }
 
     book p {

@@ -40,6 +40,7 @@ CLASS({
         aside.wide {
           min-width: initial;
           max-width: initial;
+          width: initial;
         }
 
         @media (max-width: 800px) {
@@ -79,11 +80,9 @@ CLASS({
         }
 
         aside.wide {
-          float: none;
-          margin-left: 10pt;
+          width: 90%;
         }
-
-      }
+    }
     */}
   ]
 });

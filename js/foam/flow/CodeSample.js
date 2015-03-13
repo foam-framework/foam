@@ -25,7 +25,7 @@ CLASS({
   imports: [
     'document',
     'editorModel',
-    // 'actionButtonModel'
+    'actionButtonModel'
   ],
 
   properties: [
@@ -94,7 +94,6 @@ CLASS({
       name: 'run',
       iconUrl: 'https://www.gstatic.com/images/icons/material/system/1x/play_arrow_white_24dp.png',
       action: function() {
-        debugger;
         this.virtualConsoleView.reset();
         this.virtualConsole.watchConsole();
         try {
@@ -113,7 +112,7 @@ CLASS({
       name: 'onEditorLoaded',
       todo: 'We should probably have a spinner and/or placeholder until this fires.',
       code: function() {
-        // TODO(markdittmer): This should automatically updated our classname.
+        // TODO(markdittmer): This should automatically update our classname.
         // Why doesn't it?
         this.extraClassName = '';
         if ( ! this.$ ) return;
@@ -137,7 +136,7 @@ CLASS({
           var container = this.$.querySelector('editors') || this.$;
           container.innerHTML = '';
           container.textContent = this.src;
-          // TODO(markdittmer): This should automatically updated our classname.
+          // TODO(markdittmer): This should automatically update our classname.
           // Why doesn't it?
           this.extraClassName = '';
           this.$.className = this.cssClassAttr().slice(7, -1);
@@ -227,8 +226,17 @@ CLASS({
 
       @media print {
 
-        aside code-sample > heading {
+        code-sample > heading {
           font-size: 14pt;
+          margin-left: 3pt;
+        }
+
+        code-sample > top-split {
+          margin: 3pt;
+        }
+
+        code-sample actions, code-sample virtual-console {
+          display: none;
         }
 
       }
