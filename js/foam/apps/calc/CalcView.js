@@ -10,9 +10,10 @@
  */
 
 CLASS({
-  name: 'CalcView',
   package: 'foam.apps.calc',
+  name: 'CalcView',
   extendsModel: 'foam.ui.View',
+
   requires: [
     'foam.apps.calc.HistoryCitationView',
     'foam.ui.SlidePanel',
@@ -26,10 +27,11 @@ CLASS({
     'foam.ui.animated.Label'
     // 'foam.chromeapp.ui.ZoomView'
   ],
+
   exports: [
     'data'
   ],
-  
+
   properties: [
     {
       model_: 'StringProperty',
@@ -47,7 +49,30 @@ CLASS({
       }
     }
   ],
-  
+
+  methods: {
+    initHTML: function() {
+      this.SUPER();
+      this.$.addEventListener('paste', this.onPaste);
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onPaste',
+      whenIdle: true,
+      code: function(evt) {
+        var CMD = { '0': '0', '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7', '8': '8', '9': '9', '+': 'plus', '-': 'minus', '*': 'mult', '/': 'div', '%': 'percent', '=': 'equals' };
+        var data = evt.clipboardData.getData('text/plain');
+        for ( var i = 0 ; i < data.length ; i++ ) {
+          var c = data.charAt(i);
+          var cmd = CMD[c];
+          if ( cmd ) this.data[cmd]();
+        }
+      }
+    }
+  ],
+
   templates: [
     function CSS() {/*
     * {
