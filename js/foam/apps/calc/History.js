@@ -28,7 +28,8 @@ CLASS({
     formatNumber: function(n) {
       var nu = this.NumberFormatter.formatNumber(n) || '0';
       // strip off trailing "."
-      return nu.replace(/(.+?)(?:\.$|$)/, "$1");
+      nu = nu.replace(/(.+?)(?:\.$|$)/, "$1");
+      return this.NumberFormatter.i18nNumber(nu);
     }
   }
 });

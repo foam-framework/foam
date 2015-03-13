@@ -21,13 +21,32 @@ CLASS({
     'foam.apps.calc.TertiaryButtonsView',
     'foam.apps.calc.CalcButton',
     'foam.apps.calc.CalcSpeechView',
-    'foam.apps.calc.Fonts'
-    
+    'foam.apps.calc.Fonts',
+    'foam.apps.calc.NumberFormatter',
+    'foam.ui.animated.Label'
     // 'foam.chromeapp.ui.ZoomView'
   ],
   exports: [
     'data'
   ],
+  
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'row1Formatted',
+      view: 'foam.ui.animated.Label',
+      preSet: function(_,nu) {
+        return this.NumberFormatter.i18nNumber(nu);
+      }
+    },
+    {
+      name: 'data',
+      postSet: function() {
+        Events.follow(this.data.row1$, this.row1Formatted$);
+      }
+    }
+  ],
+  
   templates: [
     function CSS() {/*
     * {
@@ -220,7 +239,7 @@ CLASS({
           <div class="calc-display">
             <div class="inner-calc-display">
               $$history{ rowView: 'foam.apps.calc.HistoryCitationView' }
-              <div>$$row1{mode: 'read-only', tabIndex: 3, escapeHTML: false}</div>
+              <div>$$row1Formatted{mode: 'read-only', tabIndex: 3, escapeHTML: false}</div>
             </div>
           </div>
           <div class="keypad">

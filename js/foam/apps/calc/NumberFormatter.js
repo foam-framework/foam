@@ -9,6 +9,9 @@
  *     http://www.apache.org/licenses/LICENSE-2.0
  */
 
+// TODO: Move into NumberFormatter
+var CALC_useComma = (0.5).toLocaleString(window.navigator.languages[0]).substring(1,2) == ',';
+
 CLASS({
   name: 'NumberFormatter',
   package: 'foam.apps.calc',
@@ -33,6 +36,14 @@ CLASS({
             parseFloat(n).toPrecision(12)
             .replace( /(?:(\d+\.\d*[1-9])|(\d+)(?:\.))(?:(?:0+)$|(?:0*)(e.*)$|$)/ ,"$1$2$3");
       }
+    },
+    {
+      name: 'i18nNumber',
+      value: function(n) {
+        
+        return CALC_useComma ? n.replace(/\./g, ',') : n;
+      }
     }
   ]
+  
 });
