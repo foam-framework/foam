@@ -36,12 +36,13 @@ CLASS({
       name: 'row1Formatted',
       view: 'foam.ui.animated.Label',
       preSet: function(_,nu) {
-        return this.NumberFormatter.i18nNumber(nu);
+        return this.numberFormatter.i18nNumber(nu);
       }
     },
     {
       name: 'data',
       postSet: function() {
+        this.numberFormatter = this.data.numberFormatter;
         Events.follow(this.data.row1$, this.row1Formatted$);
       }
     }

@@ -20,12 +20,29 @@ CLASS({
       translationHint: 'description of a value that isn\'t a number'
     }
   ],
-  constants: [
+  properties: [
+    {
+      model_: 'BooleanProperty',
+      name: 'useComma'
+    }
+  ],
+  methods: [
+    {
+      name: 'init',
+      code: function() {
+        if  ( chrome && chrome.i18n ) {
+          chrome.i18n.getAcceptLanguages(function(m){ this.useComma = (0.5).toLocaleString(m[0]).substring(1,2) == ','; }.bind(this)) 
+        } else {
+          var lang = window.navigator.languages[0];
+          this.useComma = (0.5).toLocaleString(lang).substring(1,2) == ',';
+        }
+      }
+    },
     {
       name: 'formatNumber',
       todo: multiline(function() {/* Add "infinity" to NumberFormatter
         messages; this requires messages speechLabel support */}),
-      value: function(n) {
+      code: function(n) {
         // the regex below removes extra zeros from the end,
         // or middle of exponentials
         return typeof n === 'string' ? n :
@@ -37,11 +54,8 @@ CLASS({
     },
     {
       name: 'i18nNumber',
-      value: function(n) {
-        // TODO: Move into NumberFormatter
-        var CALC_useComma = (0.5).toLocaleString(window.navigator.languages[0]).substring(1,2) == ',';
-        
-        return CALC_useComma ? n.replace(/\./g, ',') : n;
+      code: function(n) {
+        return this.useComma ? n.replace(/\./g, ',') : n;
       }
     }
   ]

@@ -137,6 +137,10 @@ CLASS({
   ],
 
   properties: [
+    {
+      name: 'numberFormatter',
+      factory: function() { return this.NumberFormatter.create(); }
+    },
     { name: 'degreesMode', defaultValue: false },
     { name: 'memory', defaultValue: 0 },
     { name: 'a1', defaultValue: 0 },
@@ -209,7 +213,7 @@ CLASS({
 
       Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
         if ( Number.isNaN(this.a2) ) this.error();
-        var a2 = this.NumberFormatter.formatNumber(this.a2);
+        var a2 = this.numberFormatter.formatNumber(this.a2);
         this.row1 = this.op + ( a2 !== '' ? '&nbsp;' + a2 : '' );
       }.bind(this)));
     },
