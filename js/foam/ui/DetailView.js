@@ -171,6 +171,8 @@ CLASS({
           $$DOC{ref:'DetailView.defaultToHTML'} we supply here.
       */
 
+      if ( ! this.data ) return '<span id="' + this.id + '"></span>';
+
       if ( ! this.model ) throw "DetailView: either 'data' or 'model' must be specified.";
 
       return (this.model.getPrototype().toDetailHTML || this.defaultToHTML).call(this);
