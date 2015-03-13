@@ -91,16 +91,20 @@ var TemplateOutput = {
     var f = function(/* arguments */) {
       for ( var i = 0 ; i < arguments.length ; i++ ) {
         var o = arguments[i];
-        if ( o && o.toView_ ) o = o.toView_();
-        if ( ! ( o === null || o === undefined ) ) {
-          if ( o.appendHTML ) {
-            o.appendHTML(this);
-          } else if ( o.toHTML ) {
-            buf += o.toHTML();
-          } else {
-            buf += o;
+        if ( typeof o === 'string' ) {
+          buf += o;
+        } else {
+          if ( o && o.toView_ ) o = o.toView_();
+          if ( ! ( o === null || o === undefined ) ) {
+            if ( o.appendHTML ) {
+              o.appendHTML(this);
+            } else if ( o.toHTML ) {
+              buf += o.toHTML();
+            } else {
+              buf += o;
+            }
+            if ( o.initHTML && obj.addChild ) obj.addChild(o);
           }
-          if ( o.initHTML && obj.addChild ) obj.addChild(o);
         }
       }
     };
