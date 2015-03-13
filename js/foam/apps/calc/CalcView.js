@@ -66,7 +66,8 @@ CLASS({
         var data = evt.clipboardData.getData('text/plain');
         for ( var i = 0 ; i < data.length ; i++ ) {
           var c = data.charAt(i);
-          if ( c === '-' ) this.data['0']();
+          // If history is empty and the first character is '-' then insert a 0 to subtract from
+          if ( c === '-' && ! i && ! this.data.history.length && ! this.data.row1 ) this.data['0']();
           var cmd = CMD[c];
           if ( cmd ) this.data[cmd]();
         }
