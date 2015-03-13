@@ -65,7 +65,9 @@ CLASS({
     {
       name: 'onData',
       code: function(data, src) {
-        var obj = JSONUtil.mapToObj(this.X, data);
+        var work = [anop];
+        var obj = JSONUtil.mapToObj(this.X, data, undefined, work);
+
         if ( ! obj ) {
           throw new Error("Failed to decode data: " + data);
         }
@@ -73,10 +75,13 @@ CLASS({
           throw new Error("No sink waiting for " + obj.id);
         }
 
-        for ( var i = 0 ; i < this.pending[obj.id].length ; i++ ) {
-          var sink = this.pending[obj.id][i];
-          sink && sink.put && sink.put(obj);
-        }
+        aseq.apply(null, work)(
+          function() {
+            for ( var i = 0 ; i < this.pending[obj.id].length ; i++ ) {
+              var sink = this.pending[obj.id][i];
+              sink && sink.put && sink.put(obj);
+            }
+          }.bind(this));
       }
     }
   ]
