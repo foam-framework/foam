@@ -273,7 +273,7 @@ CLASS({
     },
     {
       name: 'point',
-      label: '.',
+      labelFn: function() { return this.numberFormatter.useComma ? ',' : '.'; },
       speechLabel: 'point',
       keyboardShortcuts: [ '.', ',' ],
       action: function() {
