@@ -75,7 +75,7 @@ CLASS({
 
           var rulesDAO = self.rules.dao;
           rulesDAO
-            .where(AND(GT(this.MigrationRule.VERSION, version.version)))
+            .where(AND(GT(self.MigrationRule.VERSION, version.version)))
             .select()(function(rules) {
               var seq = [];
               for ( var i = 0; i < rules.length; i++ ) {
