@@ -145,12 +145,12 @@ CLASS({
   actions: [
     {
       name: 'lUp',
-      keyboardShortcuts: [ 81 /* q */ ],
+      keyboardShortcuts: [ 'q' ],
       action: function() { this.lPaddle.y -= this.PADDLE_SPEED; }
     },
     {
       name: 'lDown',
-      keyboardShortcuts: [ 65 /* a */ ],
+      keyboardShortcuts: [ 'a' ],
       action: function() { this.lPaddle.y += this.PADDLE_SPEED; }
     },
     {
