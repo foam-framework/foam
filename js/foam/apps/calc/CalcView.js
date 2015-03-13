@@ -63,6 +63,9 @@ CLASS({
       whenIdle: true,
       code: function(evt) {
         var CMD = { '0': '0', '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7', '8': '8', '9': '9', '+': 'plus', '-': 'minus', '*': 'mult', '/': 'div', '%': 'percent', '=': 'equals' };
+
+        CMD[this.data.numberFormatter.useComma ? ',' : '.'] = 'point';
+
         var data = evt.clipboardData.getData('text/plain');
         for ( var i = 0 ; i < data.length ; i++ ) {
           var c = data.charAt(i);

@@ -9,10 +9,9 @@
  *     http://www.apache.org/licenses/LICENSE-2.0
  */
 
-
 CLASS({
-  name: 'NumberFormatter',
   package: 'foam.apps.calc',
+  name: 'NumberFormatter',
   messages: [
     {
       name: 'NaN',
