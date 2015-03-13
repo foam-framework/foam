@@ -117,6 +117,12 @@ CLASS({
       return old.model_ !== nu.model_;
     },
 
+    generateContent: function() { /* rebuilds the children of the view */
+      if ( ! this.$ ) return;
+      this.$.outerHTML = this.toHTML();
+      this.initHTML();
+    },
+
     titleHTML: function() {
       /* Title text HTML formatter */
       var title = this.title;
