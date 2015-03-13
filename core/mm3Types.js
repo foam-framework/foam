@@ -929,24 +929,24 @@ var DocumentationProperty = Model.create({
     { // Note: defaultValue: for the getter function didn't work. factory: does.
       name: 'getter',
       type: 'Function',
-      factory: function() { return function() {
-        var doc = this.instance_.documentation;
+      defaultValue: function(name) {
+        var doc = this.instance_[name]
         if (doc && typeof Documentation != "undefined" && Documentation // a source has to exist (otherwise we'll return undefined below)
             && (  !doc.model_ // but we don't know if the user set model_
-               || !doc.model_.getPrototype // model_ could be a string
-               || !Documentation.isInstance(doc) // check for correct type
-            ) ) {
+                  || !doc.model_.getPrototype // model_ could be a string
+                  || !Documentation.isInstance(doc) // check for correct type
+               ) ) {
           // So in this case we have something in documentation, but it's not of the
           // "Documentation" model type, so FOAMalize it.
           if (doc.body) {
-            this.instance_.documentation = Documentation.create( doc );
+            this.instance_[name] = Documentation.create( doc );
           } else {
-            this.instance_.documentation = Documentation.create({ body: doc });
+            this.instance_[name] = Documentation.create({ body: doc });
           }
         }
         // otherwise return the previously FOAMalized model or undefined if nothing specified.
-        return this.instance_.documentation;
-      }; }
+        return this.instance_[name];
+      }
     },
     {
       name: 'view',
