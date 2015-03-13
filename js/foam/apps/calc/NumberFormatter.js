@@ -9,8 +9,6 @@
  *     http://www.apache.org/licenses/LICENSE-2.0
  */
 
-// TODO: Move into NumberFormatter
-var CALC_useComma = (0.5).toLocaleString(window.navigator.languages[0]).substring(1,2) == ',';
 
 CLASS({
   name: 'NumberFormatter',
@@ -40,6 +38,8 @@ CLASS({
     {
       name: 'i18nNumber',
       value: function(n) {
+        // TODO: Move into NumberFormatter
+        var CALC_useComma = (0.5).toLocaleString(window.navigator.languages[0]).substring(1,2) == ',';
         
         return CALC_useComma ? n.replace(/\./g, ',') : n;
       }
