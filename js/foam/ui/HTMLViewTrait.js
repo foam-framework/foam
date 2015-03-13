@@ -26,6 +26,11 @@ CLASS({
     The HTML implementation for $$DOC{ref:'foam.ui.View'}.
   */},
 
+  constants: {
+    // Keys which respond to keydown but not keypress
+    KEYPRESS_CODES: { 8: true, 37: true, 38: true, 39: true, 40: true }
+  },
+
   properties: [
     {
       name:  'id',
@@ -138,13 +143,17 @@ CLASS({
     {
       name: 'onKeyboardShortcut',
       code: function(evt) {
-        // console.log('***** key: ', this.evtToKeyCode(evt), evt);
-        var action = this.keyMap_[this.evtToKeyCode(evt)];
+        if ( evt.type === 'keydown' && ! { 8: true, 37: true, 38: true, 39: true, 40: true }[evt.which] ) return;
+
+        // TODO(kgr): this should work
+        // if ( evt.type === 'keydown' && ! this.KEYPRESS_CODES[evt.which] ) return;
+
+        var action = this.keyMap_[this.evtToCharCode(evt)];
         if ( action ) {
           action();
+        }
           evt.preventDefault();
           evt.stopPropagation();
-        }
       },
       documentation: function() {/*
           Automatic mapping of keyboard events to $$DOC{ref:'Action'} trigger.
@@ -429,14 +438,14 @@ CLASS({
       this.destructors_ = [];
     },
 
-    evtToKeyCode: function(evt) {
+    evtToCharCode: function(evt) {
       /* Maps an event keycode to a string */
       var s = '';
-      if ( evt.altKey ) s += 'alt-';
-      if ( evt.ctrlKey ) s += 'ctrl-';
-      if ( evt.shiftKey ) s += 'shift-';
-      if ( evt.metaKey ) s += 'meta-';
-      s += evt.keyCode;
+      if ( evt.altKey   ) s += 'alt-';
+      if ( evt.ctrlKey  ) s += 'ctrl-';
+      if ( evt.shiftKey && evt.type === 'keydown' ) s += 'shift-';
+      if ( evt.metaKey  ) s += 'meta-';
+      s += String.fromCharCode(evt.type === 'keydown' ? evt.which : evt.charCode);
       return s;
     },
 
@@ -451,8 +460,8 @@ CLASS({
           for ( var j = 0 ; j < action.keyboardShortcuts.length ; j++ ) {
             var key = action.keyboardShortcuts[j];
             // Treat single character strings as a character to be recognized
-            if ( typeof key === 'string' && key.length == 1 )
-              key = key.toUpperCase().charCodeAt(0);
+            if ( typeof key === 'number' )
+              key = String.fromCharCode(key);
             keyMap[key] = opt_value ?
               function() { action.callIfEnabled(self.X, opt_value.get()); } :
               action.callIfEnabled.bind(action, self.X, self) ;
@@ -469,8 +478,8 @@ CLASS({
       if ( found ) {
         console.assert(this.$, 'View must define outer id when using keyboard shortcuts: ' + this.name_);
         this.keyMap_ = keyMap;
-        this.$.parentElement.addEventListener('keydown', this.onKeyboardShortcut);
-//        this.X.document.body.addEventListener('keydown', this.onKeyboardShortcut);
+        this.$.parentElement.addEventListener('keydown',  this.onKeyboardShortcut);
+        this.$.parentElement.addEventListener('keypress', this.onKeyboardShortcut);
       }
     },
 

@@ -96,7 +96,7 @@ function unaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
 function num(n) {
   return {
     name: n.toString(),
-    keyboardShortcuts: [48+n /* 0 */ , 96+n /* keypad-0 */],
+    keyboardShortcuts: [ n + '' ],
     action: function() {
       if ( ! this.editable ) {
         this.push(n);
@@ -137,6 +137,10 @@ CLASS({
   ],
 
   properties: [
+    {
+      name: 'numberFormatter',
+      factory: function() { return this.NumberFormatter.create(); }
+    },
     { name: 'degreesMode', defaultValue: false },
     { name: 'memory', defaultValue: 0 },
     { name: 'a1', defaultValue: 0 },
@@ -209,7 +213,7 @@ CLASS({
 
       Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
         if ( Number.isNaN(this.a2) ) this.error();
-        var a2 = this.NumberFormatter.formatNumber(this.a2);
+        var a2 = this.numberFormatter.formatNumber(this.a2);
         this.row1 = this.op + ( a2 !== '' ? '&nbsp;' + a2 : '' );
       }.bind(this)));
     },
@@ -229,10 +233,10 @@ CLASS({
 
   actions: [
     num(1), num(2), num(3), num(4), num(5), num(6), num(7), num(8), num(9), num(0),
-    binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7', 'divide', 'divide'),
-    binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7', 'multiply', 'multiply'),
-    binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+', 'plus', 'plus'),
-    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–', 'minus', 'minus'),
+    binaryOp('div',   ['/'], function(a1, a2) { return a1 / a2; }, '\u00F7', 'divide', 'divide'),
+    binaryOp('mult',  ['*'], function(a1, a2) { return a1 * a2; }, '\u00D7', 'multiply', 'multiply'),
+    binaryOp('plus',  ['+'], function(a1, a2) { return a1 + a2; }, '+', 'plus', 'plus'),
+    binaryOp('minus', ['-'], function(a1, a2) { return a1 - a2; }, '–', 'minus', 'minus'),
     {
       name: 'ac',
       label: 'AC',
@@ -269,9 +273,9 @@ CLASS({
     },
     {
       name: 'point',
-      label: '.',
+      labelFn: function() { return this.numberFormatter.useComma ? ',' : '.'; },
       speechLabel: 'point',
-      keyboardShortcuts: [ 110, 190 ],
+      keyboardShortcuts: [ '.', ',' ],
       action: function() {
         if ( ! this.editable ) {
           this.push('0.');
@@ -286,12 +290,12 @@ CLASS({
       name: 'equals',
       label: '=',
       speechLabel: 'equals',
-      keyboardShortcuts: [ 187 /* '=' */, 13 /* <enter> */ ],
+      keyboardShortcuts: [ '=', 13 /* <enter> */ ],
       action: function() {
         if ( typeof(this.a2) === 'string' && this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
         if ( this.op == DEFAULT_OP ) {
           var last = this.history[this.history.length-1];
-          if ( ! last ) return;
+          if ( ! last || last.op === DEFAULT_OP ) return;
           if ( last.op.binary ) {
             this.push(this.a2);
             this.a2 = last.a2;
@@ -344,13 +348,13 @@ CLASS({
       name: 'percent',
       label: '%',
       speechLabel: 'percent',
-      keyboardShortcuts: [ 'shift-53' /* % */ ],
+      keyboardShortcuts: [ '%' ],
       action: function() { this.a2 /= 100.0; }
     },
 
     unaryOp('inv',    ['i'], function(a) { return 1.0/a; }, '1/x', undefined, 'inverse', 'inverse'),
     unaryOp('sqroot', [], Math.sqrt, '√', 'square root', 'square root'),
-    unaryOp('square', ['shift-50' /* @ */], function(a) { return a*a; }, 'x²', 'x squared', 'x squared'),
+    unaryOp('square', ['@'], function(a) { return a*a; }, 'x²', 'x squared', 'x squared'),
     unaryOp('ln',     [], Math.log, 'ln', 'natural logarithm', 'natural logarithm'),
     unaryOp('exp',    [], Math.exp, 'eⁿ', undefined, 'e to the power of n'),
     unaryOp('log',    [], function(a) { return Math.log(a) / Math.LN10; }, 'log', 'logarithm', 'log base 10'),
@@ -380,10 +384,10 @@ CLASS({
     unaryOp('acos',   [], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arccosine'),
     unaryOp('atan',   [], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arctangent'),
 
-    unaryOp('fact',   [ 'shift-49' /* ! */], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
-    binaryOp('mod',   [],         function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
-    binaryOp('p',     [],         function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations (n permute r)', 'permutation'),
-    binaryOp('c',     [],         function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations (n combine r))', 'combination'),
+    unaryOp('fact',   ['!'], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
+    binaryOp('mod',   [],    function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
+    binaryOp('p',     [],    function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations (n permute r)', 'permutation'),
+    binaryOp('c',     [],    function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations (n combine r))', 'combination'),
     unaryOp('round',  [], Math.round, 'rnd', 'round', 'round'),
     {
       name: 'rand',

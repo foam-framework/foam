@@ -18,6 +18,7 @@ CLASS({
   ],
 
   properties: [
+    'numberFormatter',
     'op',
     {
       name: 'a2',
@@ -26,9 +27,10 @@ CLASS({
   ],
   methods: {
     formatNumber: function(n) {
-      var nu = this.NumberFormatter.formatNumber(n) || '0';
+      var nu = this.numberFormatter.formatNumber(n) || '0';
       // strip off trailing "."
-      return nu.replace(/(.+?)(?:\.$|$)/, "$1");
+      nu = nu.replace(/(.+?)(?:\.$|$)/, "$1");
+      return this.numberFormatter.i18nNumber(nu);
     }
   }
 });
