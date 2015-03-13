@@ -36,13 +36,14 @@ CLASS({
         display: inline-block;
         text-align: right;
         padding-right: 13px;
+        font-weight: bold;
         -webkit-touch-callout: none;
         -webkit-user-select: none;
         -khtml-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
-        background: #ddd;
+        background: #E0E0E0;
       }
       log-entry > log, log-entry > warn, log-entry > error {
         padding-left: 4px;

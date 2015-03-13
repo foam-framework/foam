@@ -168,10 +168,12 @@ CLASS({
           }
         </actions>
       </top-split>
-      $$virtualConsole{
-        minLines: 8,
-        maxLines: 8
-      }
+      <bottom-split>
+        $$virtualConsole{
+          minLines: 8,
+          maxLines: 8
+        }
+      </bottom-split>
     */},
     function CSS() {/*
       code-sample {
@@ -191,12 +193,27 @@ CLASS({
         display: flex;
         justify-content: space-between;
         align-items: stretch;
-        border-bottom: 1px solid #eee;
       }
-      code-sample top-split {
+      code-sample > top-split, code-sample > bottom-split {
         display: block;
         position: relative;
+      }
+      code-sample > top-split {
         z-index: 10;
+      }
+      code-sample > top-split::before {
+        bottom: -4px;
+        content: '';
+        height: 4px;
+        left: 0;
+        position: absolute;
+        right: 0;
+        background-image: -webkit-linear-gradient(top,rgba(0,0,0,.12) 0%,rgba(0,0,0,0) 100%);
+        background-image: linear-gradient(to bottom,rgba(0,0,0,.12) 0%,rgba(0,0,0,0) 100%);
+      }
+      code-sample > bottom-split {
+        z-index: 5;
+        background: #E0E0E0;
       }
       code-sample actions {
         position: absolute;
@@ -211,14 +228,10 @@ CLASS({
 
       @media not print {
 
-        aside code-sample > * {
-          margin: 10px;
-        }
-
         aside code-sample > heading {
           font-size: 25px;
           margin: 0px;
-          padding: 3px 10px 3px 10px;
+          padding: 10px 10px 10px 10px;
           background: #F4B400;
         }
 
@@ -241,6 +254,5 @@ CLASS({
 
       }
     */}
-
   ]
 });

@@ -103,6 +103,7 @@ CLASS({
       virtual-console {
         display: block;
         position: relative;
+        padding-top: 5px;
         min-height: 4em;
         max-height: 8em;
         font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
