@@ -145,7 +145,7 @@ CLASS({
   },
 
   templates: [
-    function toInnerHTML() {/* $$dao{model_: 'foam.ui.TableView', model: this.model}*/}
+    function toInnerHTML() {/* $$dao{ model: this.model } */}
   ],
 
   listeners: [
