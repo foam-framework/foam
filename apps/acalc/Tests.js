@@ -194,14 +194,14 @@ apar(arequire('Calc'), arequire('foam.ui.TableView'))(function() {
       t('1 store 2 fetch', 1),
       t('1 store 2 store 3 fetch', 2),
       t('1 store 2 store fetch', 2),
-      t('1 store 9 equals 2 plus fetch equals', 3),
+      t('1 store plus 1 equals 2 plus fetch equals', 3),
       t('1 2 3 plus 1 equals 1 equals', 1)
     ]
   });
 
   tests.test();
 
-  var tView = TableView.create({
+  var tView = foam.ui.TableView.create({
     model: UnitTest,
     dao: tests.tests,
     scrollEnabled: true,
@@ -209,7 +209,7 @@ apar(arequire('Calc'), arequire('foam.ui.TableView'))(function() {
     properties: ['name', 'description', 'results', 'passed', 'failed']
   });
 
-  $('output').innerHTML = tView.toHTML();
+  X.$('output').innerHTML = tView.toHTML();
   tView.initHTML();
 
   for ( var i = 0 ; i < tests.tests.length ; i++ ) {
@@ -218,6 +218,6 @@ apar(arequire('Calc'), arequire('foam.ui.TableView'))(function() {
     tests.passed += t.passed;
     tests.failed += t.failed;
   }
-  $('passed').innerHTML = tests.passed;
-  $('failed').innerHTML = tests.failed;
+  X.$('passed').innerHTML = tests.passed;
+  X.$('failed').innerHTML = tests.failed;
 });

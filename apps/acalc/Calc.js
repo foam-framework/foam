@@ -136,6 +136,10 @@ CLASS({
     'touchManager'
   ],
 
+  constants: {
+    MAX_HISTORY: 30
+  },
+
   properties: [
     {
       name: 'numberFormatter',
@@ -222,6 +226,7 @@ CLASS({
            ( opt_op || DEFAULT_OP ) != this.op )
         this.row1 = '';
       this.history.put(this.History.create(this));
+      while ( this.history.length > this.MAX_HISTORY ) this.history.shift();
       this.a1 = this.a2;
       this.op = opt_op || DEFAULT_OP;
       this.a2 = a2;

@@ -370,8 +370,8 @@ var FunctionProperty = Model.create({
       defaultValue: function(_, value) {
         if ( typeof value === 'string' ) {
           return value.startsWith('function') ?
-              eval('(' + value + ')') :
-              new Function(value);
+            eval('(' + value + ')') :
+            new Function(value);
         }
         return value;
       }
