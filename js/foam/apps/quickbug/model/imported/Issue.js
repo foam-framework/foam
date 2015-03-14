@@ -87,7 +87,6 @@ CLASS({
       name: 'owner',
       subType: 'IssuePerson',
       help: 'Person to whom this issue is currently assigned.',
-      subType: 'IssuePerson'
     },
     {
       model_: 'DateProperty',

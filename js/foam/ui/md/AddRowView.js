@@ -207,7 +207,7 @@ CLASS({
       postSet: function(old, nu) {
         if (nu) {
           if (this.returnOnSelect) {
-            this.data = this.subKey.f(nu);
+            this.data = this.subKey ? this.subKey.f(nu) : nu;
             this.doClose();
           } else {
             this.softData = nu;
@@ -275,10 +275,10 @@ CLASS({
       name: 'accept',
       label: '',
       iconUrl: 'images/ic_done_24dp.png',
-      keyboardShortcuts: [ 13 /* enter */ ],
+      //keyboardShortcuts: [ 13 /* enter */ ],
       isAvailable: function() { return this.selected; },
       action: function() {
-        var key = this.subKey.f(this.softData);
+        var key = this.subKey ? this.subKey.f(this.softData) : this.softData;
         this.data = key;
         this.doClose();
       }

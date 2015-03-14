@@ -22,15 +22,25 @@ CLASS({
   extendsModel: 'foam.ui.UpdateDetailView',
   traits: ['foam.input.touch.VerticalScrollNativeTrait'],
   requires: [
-    'foam.apps.mbug.ui.CCView',
+    'foam.apps.mbug.ui.CitationView',
     'foam.apps.mbug.ui.CommentView',
+    'foam.apps.mbug.ui.IssueLabelView',
+    'foam.apps.mbug.ui.PersonView',
+    'foam.apps.mbug.ui.PriorityView',
     'foam.apps.quickbug.model.QIssueComment',
+    'foam.apps.quickbug.model.QIssueLabel',
+    'foam.apps.quickbug.model.imported.IssuePerson',
     'foam.ui.DAOListView',
     'foam.ui.ImageBooleanView',
-    'foam.apps.mbug.ui.IssueLabelView',
     'foam.ui.PopupChoiceView',
-    'foam.apps.mbug.ui.PriorityView',
+    'foam.ui.md.AddRowView',
+    'foam.ui.md.AutocompleteListView',
     'foam.ui.md.TextFieldView'
+  ],
+  imports: [
+    'PersonDAO',
+    'issueLabelDAO',
+    'stack'
   ],
   properties: [
     {
@@ -55,10 +65,30 @@ CLASS({
       iconUrl: 'images/ic_done_24dp.png'
     }
   ],
+  listeners: [
+    {
+      name: 'onOwnerClick',
+      code: function() {
+        // TODO(braden): Disabling the transition here because it's janky.
+        // The browser tries to focus the input box right away, and that
+        // makes it scroll to the right and screw up the slide transition.
+        this.stack.pushView(this.AddRowView.create({
+          dao: this.PersonDAO,
+          data$: this.data.owner$,
+          subType: this.IssuePerson,
+          subKey: this.IssuePerson.NAME,
+          rowView: 'foam.apps.mbug.ui.PersonView'
+        }), undefined, undefined, 'none');
+      }
+    }
+  ],
   templates: [
     function CSS() {/*
       .content-view {
         margin-top: -24px;
+      }
+      .CitationView {
+        padding-left: 8px;
       }
     */},
     function headerToHTML() {/*
@@ -114,13 +144,46 @@ CLASS({
           </div>
 
           <div class="separator separator1"></div>
-          $$owner{model_: 'foam.apps.mbug.ui.CCView'}
+          <div id="owner" class="owner">
+            $$owner{model_: 'foam.apps.mbug.ui.CitationView'}
+          </div>
+          <% this.on('click', this.onOwnerClick, 'owner'); %>
 
           <div class="separator separator1"></div>
-          $$cc{model_: 'foam.apps.mbug.ui.CCView'}
+          <% out(this.AutocompleteListView.create({
+            data$: this.data.cc$,
+            label: 'CCs',
+            inline: true,
+            srcDAO: this.PersonDAO,
+            rowView: 'foam.apps.mbug.ui.CitationView',
+            acRowView: 'foam.apps.mbug.ui.PersonView',
+            prop: X.ReferenceArrayProperty.create({
+              name: 'cc',
+              label: 'CCs',
+              subType: this.IssuePerson,
+              subKey: this.IssuePerson.NAME
+            }),
+            queryFactory: function(q) {
+              return STARTS_WITH_IC(self.IssuePerson.NAME, q);
+            }
+          })); %>
 
           <div class="separator separator1"></div>
-          $$labels{model_: 'foam.apps.mbug.ui.IssueLabelView'}
+          <% out(this.AutocompleteListView.create({
+            data$: this.data.labels$,
+            srcDAO: this.issueLabelDAO,
+            inline: true,
+            rowView: 'foam.apps.mbug.ui.LabelCitationView',
+            acRowView: 'foam.apps.mbug.ui.LabelView',
+            prop: X.ReferenceArrayProperty.create({
+              name: 'labels',
+              subType: this.QIssueLabel,
+              subKey: this.QIssueLabel.LABEL
+            }),
+            queryFactory: function(q) {
+              return STARTS_WITH_IC(self.QIssueLabel.LABEL, q);
+            }
+          })); %>
 
           <div class="separator separator1"></div>
           $$content{model_: 'foam.ui.md.TextFieldView', label: 'Add Comment', onKeyMode: true, extraClassName: 'content-view' }
