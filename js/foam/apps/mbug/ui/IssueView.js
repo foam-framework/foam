@@ -28,6 +28,7 @@ CLASS({
     'foam.apps.mbug.ui.PersonView',
     'foam.apps.mbug.ui.PriorityView',
     'foam.apps.quickbug.model.QIssueComment',
+    'foam.apps.quickbug.model.QIssueLabel',
     'foam.apps.quickbug.model.imported.IssuePerson',
     'foam.ui.DAOListView',
     'foam.ui.ImageBooleanView',
@@ -38,6 +39,7 @@ CLASS({
   ],
   imports: [
     'PersonDAO',
+    'issueLabelDAO',
     'stack'
   ],
   properties: [
@@ -151,10 +153,10 @@ CLASS({
           <% out(this.AutocompleteListView.create({
             data$: this.data.cc$,
             label: 'CCs',
+            inline: true,
             srcDAO: this.PersonDAO,
             rowView: 'foam.apps.mbug.ui.CitationView',
             acRowView: 'foam.apps.mbug.ui.PersonView',
-            inline: true,
             prop: X.ReferenceArrayProperty.create({
               name: 'cc',
               label: 'CCs',
@@ -167,7 +169,21 @@ CLASS({
           })); %>
 
           <div class="separator separator1"></div>
-          $$labels{model_: 'foam.apps.mbug.ui.IssueLabelView'}
+          <% out(this.AutocompleteListView.create({
+            data$: this.data.labels$,
+            srcDAO: this.issueLabelDAO,
+            inline: true,
+            rowView: 'foam.apps.mbug.ui.LabelCitationView',
+            acRowView: 'foam.apps.mbug.ui.LabelView',
+            prop: X.ReferenceArrayProperty.create({
+              name: 'labels',
+              subType: this.QIssueLabel,
+              subKey: this.QIssueLabel.LABEL
+            }),
+            queryFactory: function(q) {
+              return STARTS_WITH_IC(self.QIssueLabel.LABEL, q);
+            }
+          })); %>
 
           <div class="separator separator1"></div>
           $$content{model_: 'foam.ui.md.TextFieldView', label: 'Add Comment', onKeyMode: true, extraClassName: 'content-view' }
