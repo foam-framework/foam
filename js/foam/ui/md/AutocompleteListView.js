@@ -67,6 +67,11 @@ CLASS({
       defaultValue: 'DefaultRowView'
     },
     {
+      name: 'inline',
+      documentation: 'When true, no header is displayed.',
+      defaultValue: false
+    },
+    {
       name: 'className',
       defaultValueFn: function() {
         return 'md-autocomplete-list ' + (Array.isArray(this.data) ? 'array' : 'single');
@@ -91,14 +96,32 @@ CLASS({
         line-height: 48px;
         padding: 4px 0 4px 8px;
       }
+
+      .inline-header {
+        align-items: center;
+        display: flex;
+      }
+      .inline-header .text {
+        flex-grow: 1;
+        flex-shrink: 0;
+        font-size: 20px;
+        padding: 0 10px;
+      }
     */},
     function toInnerHTML() {/*
       <% var isArray = Array.isArray(this.data); %>
-      <div class="header">
-        $$back
-        <span class="grow header-text">%%label</span>
-        <% if ( isArray ) { %> $$addRow <% } %>
-      </div>
+      <% if ( this.inline ) { %>
+        <div class="inline-header">
+          <span class="text">%%label</span>
+          <% if ( isArray ) { %> $$addRow <% } %>
+        </div>
+      <% } else { %>
+        <div class="header">
+          $$back
+          <span class="grow header-text">%%label</span>
+          <% if ( isArray ) { %> $$addRow <% } %>
+        </div>
+      <% } %>
       <div id="<%= this.scrollerID %>" class="body" style="overflow-y: auto">
         <% if ( isArray ) { %>
           <% for ( var i = 0 ; i < this.data.length ; i++ ) { %>
@@ -107,6 +130,7 @@ CLASS({
         <% } else { %>
           <div id="<%= this.on('click', function() { self.addRow(); }) %>" <%= this.rowView({data: this.data}, this.Y) %></div>
         <% } %>
+      </div>
     */}
   ],
 
