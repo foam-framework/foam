@@ -189,7 +189,7 @@ CLASS({
       this.stack.initHTML();
 
       var self = this;
-      this.qbug.userFuture.get(function(user) {
+      this.qbug.userReady.get(function(user) {
         self.qbug.findProject(user.defaultProject, {
           put: function(p) {
             self.project = p;

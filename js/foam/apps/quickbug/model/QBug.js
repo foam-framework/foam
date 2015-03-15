@@ -64,6 +64,10 @@ CLASS({
       factory: function() { return afuture(); }
     },
     {
+      name: 'userReady',
+      factory: function() { return afuture(); }
+    },
+    {
       name: 'persistentContext',
       transient: true,
       factory: function() {
@@ -154,7 +158,8 @@ CLASS({
 
       this.persistentContext.bindObject('user', this.QUser, undefined, 2)(function(user) {
         self.userFuture.set(user);
-        self.refreshUser();
+        if ( user.email ) self.userReady.set(user);
+        else self.refreshUser();
       });
     },
 
@@ -176,17 +181,13 @@ CLASS({
     refreshUser: function() {
       var self = this;
       this.userFuture.get(function(user) {
-        self.X.ajsonp("https://www.googleapis.com/oauth2/v1/userinfo", ["alt=json"])(
-          function(response) {
-            if ( response ) {
-              user.email = response.email;
-            }
-          });
-
-        self.X.ajsonp("https://www.googleapis.com/projecthosting/v2/users/me")(
-          function(response) {
-            response && user.copyFrom(response);
-          });
+        apar(
+          self.X.ajsonp("https://www.googleapis.com/oauth2/v1/userinfo", ["alt=json"]),
+          self.X.ajsonp("https://www.googleapis.com/projecthosting/v2/users/me"))(function(resp1, status1, resp2, status2) {
+            if ( resp1 ) user.email = resp1.email;
+            if ( resp2 ) user.copyFrom(resp2);
+            self.userReady.set(user);
+          })
       });
     },
 
@@ -222,7 +223,7 @@ CLASS({
 
     launchBrowser: function(opt_projectName, opt_url, opt_X) {
       var self = this;
-      this.userFuture.get(function(user) {
+      this.userReady.get(function(user) {
         self.findProject(opt_projectName || user.defaultProject, {
           put: function(p) {
             console.log('launch: ', p);
