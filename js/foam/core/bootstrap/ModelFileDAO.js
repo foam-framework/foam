@@ -16,8 +16,8 @@
  */
 
 MODEL({
-  name: 'ModelFileDAO',
   package: 'foam.core.bootstrap',
+  name: 'ModelFileDAO',
   
   methods: {  
     find: function (key, sink) {
