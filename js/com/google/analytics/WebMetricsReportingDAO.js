@@ -26,18 +26,8 @@ CLASS({
 
   methods: {
     send_: function(o, data, sink) {
-      var e = this.document.createElement('script');
-      e.onload = function() {
-        sink && sink.put && sink.put(o);
-        e.remove();
-      };
-      e.onerror = function() {
-        sink && sink.error && sink.error();
-        e.remove();
-      };
+      var e = this.document.createElement('img');
       e.src = this.endpoint + "?" + data;
-
-      this.document.head.appendChild(e);
     }
   }
 });
