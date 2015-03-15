@@ -207,7 +207,8 @@ MODEL({
 
       var f = function() {
         if ( ! delegate ) {
-          if ( t.code ) delegate = t.code;
+          if ( t.code )
+            delegate = t.code;
           else if ( ! t.template )
             throw 'Must arequire() template model before use for ' + this.name_ + '.' + t.name;
           else
@@ -227,13 +228,14 @@ MODEL({
       for ( var i = 0 ; i < t.args.length ; i++ ) {
         args.push(t.args[i].name);
       }
-//console.log(code);
       return eval('(function(' + args.join(',') + '){' + code + '})');
     },
     compile: function(t) {
       if ( t.code ) return t.code;
 
+      // console.time('parse-template-' + t.name);
       var code = TemplateCompiler.parseString(t.template);
+      // console.timeEnd('parse-template-' + t.name);
 
       // Simple case, just a string literal
       if ( code[0] ) return ConstantTemplate(t.template);
@@ -309,9 +311,7 @@ MODEL({
       // yet defined at bootstrap time. Use a Template object definition with a bare
       // string template body in those cases.
       if ( ! t.template$ ) {
-        t = ( typeof X.Template !== 'undefined' ) ?
-          JSONUtil.mapToObj(X, t, X.Template) :
-          JSONUtil.mapToObj(X, t) ; // safe for bootstrap, but won't do anything in that case.
+        t = ( typeof X.Template !== 'undefined' ) ? JSONUtil.mapToObj(X, t, X.Template) : t ;
       }
 
       return t;
@@ -319,7 +319,7 @@ MODEL({
 
     expandModelTemplates: function(self) {
       var templates = self.templates;
-      for (var i = 0; i < templates.length; i++) {
+      for ( var i = 0; i < templates.length; i++ ) {
         templates[i] = TemplateUtil.expandTemplate(self, templates[i]);
       }
     }
