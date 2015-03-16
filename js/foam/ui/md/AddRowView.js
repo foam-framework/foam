@@ -203,6 +203,12 @@ CLASS({
       defaultValue: true
     },
     {
+      name: 'allowFocus',
+      documentation: 'Set false to prevent the usual behavior of focusing ' +
+          'the input box. This can cause nasty scroll jank on mobile.',
+      defaultValue: true
+    },
+    {
       name: 'selection',
       postSet: function(old, nu) {
         if (nu) {
@@ -247,7 +253,7 @@ CLASS({
       <div class="arvBody" id="%%scrollerID">
         $$filteredDAO{ rowView: this.rowView }
       </div>
-      <% this.addInitializer(function() { self.qView.focus(); }); %>
+      <% this.addInitializer(function() { if (self.allowFocus) self.qView.focus(); }); %>
     */}
   ],
 
