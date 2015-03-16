@@ -60,6 +60,7 @@ CLASS({
       defaultValue: 0
     },
     { model_: 'BooleanProperty', name: 'sliderOpen', defaultValue: false },
+    { model_: 'foam.core.types.DOMElementProperty', name: 'slideArea' },
     'slideLatch'
   ],
 
@@ -92,7 +93,7 @@ CLASS({
       view.height = this.height;
       view.z = 0;
 
-      this.$.insertAdjacentHTML('beforeend', view.toHTML());
+      this.slideArea.insertAdjacentHTML('beforeend', view.toHTML());
       view.initHTML();
 
       if ( opt_transition == 'none' ) {
@@ -149,7 +150,11 @@ CLASS({
         this.overlaySlider.width = this.width;
         this.overlaySlider.height = this.height;
 
-        if ( this.$ ) this.$.scrollLeft = 0;
+        if ( this.slideArea ) {
+          this.slideArea.scrollLeft = 0;
+          this.slideArea.style.width = this.styleWidth();
+          this.slideArea.style.height = this.styleHeight();
+        }
 
         for ( var i = 0; i < this.stack.length ; i++ ) {
           this.stack[i].x = ((i - this.slideAmount)*this.width);
@@ -167,7 +172,7 @@ CLASS({
     }
   ],
   templates: [
-    function toInnerHTML() {/* %%overlaySlider %%slider */}
+    function toInnerHTML() {/* %%overlaySlider <div id="<%= this.slideArea = this.nextID() %>" style="position:absolute;overflow:hidden"></div> */}
   ],
   actions: [
     {
@@ -194,6 +199,7 @@ CLASS({
               self.overlaySlider.view = '';
             })();
         } else {
+          var view = this.stack.pop();
           this.currentView -= 1;
           if ( this.transitionLatch ) this.transitionLatch();
           this.transitionLatch = Movement.animate(
@@ -204,6 +210,7 @@ CLASS({
             Movement.easeOut(1),
             function() {
               this.transitionLatch = '';
+              view.$ && view.$.remove();
             }.bind(this)
           )();
         }
@@ -215,6 +222,7 @@ CLASS({
       help:  'Undo the previous back.',
       isEnabled: function() { return this.currentView < this.stack.length - 1; },
       action: function() {
+        throw new Error("Unimplemented");
         this.currentView += 1;
         Movement.animate(
           300,
