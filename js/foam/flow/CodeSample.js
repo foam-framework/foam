@@ -15,6 +15,7 @@ CLASS({
   extendsModel: 'foam.flow.Element',
 
   requires: [
+    'Model',
     'EasyDAO',
     'foam.ui.ActionButton',
     'foam.flow.VirtualConsole',
@@ -97,9 +98,10 @@ CLASS({
         this.virtualConsoleView.reset();
         this.virtualConsole.watchConsole();
         try {
-          eval('(function(){'    + this.src + '})')();
+          var X = this.X.sub();
+          eval('(function(X){'    + this.src + '}).call(null, X)');
         } catch (e) {
-          this.virtualConsole.error(e.toString());
+          this.virtualConsole.onError(e.toString());
         } finally {
           this.virtualConsole.resetConsole();
         }

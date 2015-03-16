@@ -38,10 +38,16 @@
       </p>
       <aside extraClassName="wide">
         <code-sample>
-          <title>Example Code</title>
-          <src>console.log("Hello World!");</src>
+          <title>Your First Modelled Class</title>
+          <src>CLASS({
+            name: 'Person',
+            package: 'foam.sandbox',
+            properties:
+          });</src>
         </code-sample>
       </aside>
+      <p>
+        Take a look at <b>Your First Modelled Class</b>.
     </section>
 
     <section>
