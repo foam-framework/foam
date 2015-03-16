@@ -16,7 +16,6 @@
  */
 
 CLASS({
-
   "package": "foam.ui.layout",
   "name": "ViewSlider",
   "extendsModel": "foam.ui.View",
@@ -25,11 +24,9 @@ CLASS({
   ],
   "properties": [
     {
-      "model_": "Property",
       "name": "view"
     },
     {
-      "model_": "Property",
       "name": "incomingView"
     },
     {
@@ -58,7 +55,6 @@ CLASS({
       "defaultValue": 0
     },
     {
-      "model_": "Property",
       "name": "latch"
     }
   ],
@@ -78,8 +74,7 @@ CLASS({
               self.reverse;
             },
             this.layout);
-      },
-      "args": []
+      }
     },
     {
       "model_": "Method",
@@ -87,8 +82,7 @@ CLASS({
       "code": function () {
         this.children = [];
         return this.SUPER();
-      },
-      "args": []
+      }
     },
     {
       "model_": "Method",
@@ -96,8 +90,7 @@ CLASS({
       "code": function () {
         this.layout();
         this.SUPER();
-      },
-      "args": []
+      }
     },
     {
       "model_": "Method",
