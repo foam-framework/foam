@@ -674,11 +674,9 @@ CLASS({
     },
 
     addScrollListener: function() {
-      console.log('Attempt to add scroll listener');
       if ( this.$ ) this.$.ownerDocument.defaultView.addEventListener('resize', this.onResize);
     },
     removeScrollListener: function() {
-      console.log('Attempt to remove scroll listener');
       if ( this.$ ) this.$.ownerDocument.defaultView.removeEventListener('resize', this.onResize);
     }
   },

@@ -28,24 +28,26 @@ CLASS({
     'mbug'
   ],
   templates: [
-    function toHTML() {/*
-      <div id="<%= this.on('click', function() { this.mbug.editIssue(this.data.id); }) %>" class="issue-citation">
-        $$owner{model_: 'foam.ui.md.MonogramStringView'}
-        <div class="middle">
-          $$id{mode: 'read-only', className: 'id'}
-        <% if ( this.data.pri ) { %>
-          $$pri{ model_: 'foam.apps.mbug.ui.PriorityCitationView' }
-        <% } else { %>
-          $$priority{ model_: 'foam.apps.mbug.ui.PriorityCitationView' }
-        <% } %><br>
-          $$summary{mode: 'read-only'}
+    function toHTML() {/* 
+      <div id=<%= this.id %> >
+        <div id="<%= this.on('click', function() { this.mbug.editIssue(this.data.id); }) %>" class="issue-citation">
+          $$owner{model_: 'foam.ui.md.MonogramStringView'}
+          <div class="middle">
+            $$id{mode: 'read-only', className: 'id'}
+          <% if ( this.data.pri ) { %>
+            $$pri{ model_: 'foam.apps.mbug.ui.PriorityCitationView' }
+          <% } else { %>
+            $$priority{ model_: 'foam.apps.mbug.ui.PriorityCitationView' }
+          <% } %><br>
+            $$summary{mode: 'read-only'}
+          </div>
+          $$starred{
+            model_: 'foam.ui.ImageBooleanView',
+            className:  'star',
+            trueImage:  'images/ic_star_24dp.png',
+            falseImage: 'images/ic_star_outline_24dp.png'
+          }
         </div>
-        $$starred{
-          model_: 'foam.ui.ImageBooleanView',
-          className:  'star',
-          trueImage:  'images/ic_star_24dp.png',
-          falseImage: 'images/ic_star_outline_24dp.png'
-        }
       </div>
     */}
    ]
