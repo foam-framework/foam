@@ -102,10 +102,15 @@ CLASS({
         display: flex;
       }
       .inline-header .text {
+        color: #999;
         flex-grow: 1;
         flex-shrink: 0;
-        font-size: 20px;
-        padding: 0 10px;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 0 16px;
+      }
+      .inline-header .actionButtonCView-addRow {
+        opacity: 0.76;
       }
     */},
     function toInnerHTML() {/*
@@ -159,14 +164,9 @@ CLASS({
         view.data$.addListener(function(obj, topic, old, nu) {
           this.addRowToList(nu);
         }.bind(this));
+        view.allowFocus = false;
 
-        // TODO(braden): This used to slide in from the left, but it has been
-        // disabled because mobile browsers try to scroll the input field into
-        // view when it's supposed to be offscreen to the right. It results in a
-        // really janky flow: the text box appears midway across the screen,
-        // slides halfway off to the left, and then jumps back into place.
-        this.stack.pushView(view, undefined /* label */, undefined /* back */,
-            'none' /* transition */);
+        this.stack.pushView(view);
         view.focus();
       }
     }
