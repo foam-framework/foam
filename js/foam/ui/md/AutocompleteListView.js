@@ -102,10 +102,15 @@ CLASS({
         display: flex;
       }
       .inline-header .text {
+        color: #999;
         flex-grow: 1;
         flex-shrink: 0;
-        font-size: 20px;
-        padding: 0 10px;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 0 16px;
+      }
+      .inline-header .actionButtonCView-addRow {
+        opacity: 0.76;
       }
     */},
     function toInnerHTML() {/*
