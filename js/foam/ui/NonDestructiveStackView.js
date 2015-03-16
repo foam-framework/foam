@@ -106,7 +106,7 @@ CLASS({
           function() {
             this.slideAmount = this.currentView;
           }.bind(this),
-          Movement.easeOut(1),
+          Movement.easeOut(this.EASE_ACCELERATION),
           function() {
             this.transitionLatch = '';
           }.bind(this))();
@@ -199,7 +199,7 @@ CLASS({
               self.overlaySlider.view = '';
             })();
         } else {
-          var view = this.stack.pop();
+          var view = this.stack[this.currentView];
           this.currentView -= 1;
           if ( this.transitionLatch ) this.transitionLatch();
           this.transitionLatch = Movement.animate(
@@ -207,8 +207,9 @@ CLASS({
             function() {
               this.slideAmount = this.currentView;
             }.bind(this),
-            Movement.easeOut(1),
+            Movement.easeOut(this.EASE_ACCELERATION),
             function() {
+              this.stack.pop();
               this.transitionLatch = '';
               view.$ && view.$.remove();
             }.bind(this)
