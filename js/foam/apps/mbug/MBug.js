@@ -443,6 +443,12 @@ html, body { overflow: initial; }
   border-radius: 2px;
   padding: 8px 0;
   min-width: 190px;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+
 }
 
 .popupChoiceList li {
@@ -670,6 +676,11 @@ ul.swipeAltHeader {
   margin: 0;
   overflow: hidden;
   padding: 0 0 0 56px;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
 }
 
 .popupChoiceView, .actionButton {

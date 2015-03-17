@@ -57,8 +57,6 @@ var files = [
   'value',
   'view',
   '../js/foam/ui/FoamTagView',
-  'AbstractDAOView',
-  'daoView',
   'cview',
   'listchoiceview',
   'scroll',
