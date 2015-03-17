@@ -98,7 +98,7 @@ CLASS({
       return out.join('');
     },
 
-    initHTML: function() {
+    initInnerHTML: function() {
       this.SUPER();
       this.updateSelected();
     },
