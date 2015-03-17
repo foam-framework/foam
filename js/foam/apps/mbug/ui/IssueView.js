@@ -26,6 +26,7 @@ CLASS({
     'foam.apps.mbug.ui.CitationRowView',
     'foam.apps.mbug.ui.CommentView',
     'foam.apps.mbug.ui.LabelCitationView',
+    'foam.apps.mbug.ui.LabelView',
     'foam.apps.mbug.ui.PersonView',
     'foam.apps.mbug.ui.PriorityView',
     'foam.apps.quickbug.model.QIssueComment',
