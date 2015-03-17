@@ -91,11 +91,6 @@ CLASS({
         self.height;
       }, this.resizeContainer);
     },
-    installInDocument: function(X, d) {
-      this.SUPER(X, d);
-      var sheet = d.createElement('style');
-      this.STYLESHEET = sheet;
-    },
     setTopView: function(view) {
       if ( ! view.model_.Z ) view = this.FloatingView.create({ view: view });
 
