@@ -104,6 +104,7 @@ CLASS({
       }
     },
     setTopView: function(view) {
+      if ( this.slideArea ) this.slideArea.innerHTML = '';
       this.stack = [];
       this.currentView = -1;
       this.pushView(view, undefined, undefined, 'none');
@@ -191,7 +192,7 @@ CLASS({
       label: '<',
       help:  'Go to previous view',
 
-      isEnabled: function() { return ! this.transitionLatch; this.currentView > 0 || this.sliderOpen; },
+      isEnabled: function() { return this.currentView > 0 || this.sliderOpen; },
       action: function() {
         if ( this.sliderOpen ) {
           if ( this.slideLatch ) {
