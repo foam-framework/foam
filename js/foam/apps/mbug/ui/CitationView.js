@@ -33,7 +33,7 @@ CLASS({
       label: '',
       iconUrl: 'images/ic_clear_black_24dp.png',
       action: function() { 
-        this.data = ""; 
+        this.data = ""; // buganizer api doesn't support resetting owner 
       }
     }
   ],
@@ -59,7 +59,7 @@ CLASS({
     function toInnerHTML() {/*
       <%= this.MonogramStringView.create({ data: this.data }) %>
       <div class="owner-name">{{ this.data }}</div>
-      <span class="removeRow">$$clear</span>
     */}
+//      <span class="removeRow">$$clear</span>
   ]
 });
