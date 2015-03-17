@@ -100,22 +100,27 @@ CLASS({
         this.slideAmount = this.currentView;
         this.layout();
       } else {
-        if ( this.transitionLatch ) this.transitionLatch();
-        this.transitionLatch = Movement.animate(
-          300,
-          function() {
-            this.slideAmount = this.currentView;
-          }.bind(this),
-          Movement.easeOut(1),
-          function() {
-            this.transitionLatch = '';
-          }.bind(this))();
+        this.doTransition(this.currentView);
       }
     },
     setTopView: function(view) {
       this.stack = [];
       this.currentView = -1;
       this.pushView(view, undefined, undefined, 'none');
+    },
+    doTransition: function(targetAmount) {
+      if ( this.transitionLatch ) this.transitionLatch();
+      this.transitionLatch = Movement.animate(
+        300,
+        function() {
+          this.slideAmount = this.currentView;
+        }.bind(this),
+        Movement.easeOut(1),
+        function() {
+          this.transitionLatch = '';
+          //              view.$ && view.$.remove();
+        }.bind(this)
+      )();
     },
     slideView: function(view, opt_label, opt_side, opt_delay) {
       if ( ! view.model_.Z ) view = this.FloatingView.create({ view: view });
@@ -142,6 +147,16 @@ CLASS({
   },
   listeners: [
     {
+      name: 'fixLayout',
+      isMerged: 100,
+      code: function() {
+        if ( ! this.slideArea ) return;
+        this.slideArea.scrollLeft = 0;
+        this.slideArea.style.width = this.styleWidth();
+        this.slideArea.style.height = this.styleHeight();
+      }
+    },
+    {
       name: 'layout',
       code: function() {
         this.overlaySlider.x = 0;
@@ -150,11 +165,7 @@ CLASS({
         this.overlaySlider.width = this.width;
         this.overlaySlider.height = this.height;
 
-        if ( this.slideArea ) {
-          this.slideArea.scrollLeft = 0;
-          this.slideArea.style.width = this.styleWidth();
-          this.slideArea.style.height = this.styleHeight();
-        }
+        this.fixLayout();
 
         for ( var i = 0; i < this.stack.length ; i++ ) {
           this.stack[i].x = ((i - this.slideAmount)*this.width);
@@ -199,20 +210,8 @@ CLASS({
               self.overlaySlider.view = '';
             })();
         } else {
-          var view = this.stack.pop();
           this.currentView -= 1;
-          if ( this.transitionLatch ) this.transitionLatch();
-          this.transitionLatch = Movement.animate(
-            300,
-            function() {
-              this.slideAmount = this.currentView;
-            }.bind(this),
-            Movement.easeOut(1),
-            function() {
-              this.transitionLatch = '';
-              view.$ && view.$.remove();
-            }.bind(this)
-          )();
+          this.doTransition(this.currentView);
         }
       }
     },
