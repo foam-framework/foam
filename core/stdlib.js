@@ -194,6 +194,9 @@ MODEL({
         remove: function(obj, s, fc) {
           if ( sink.remove && ( ! obj || predicate.f(obj) ) ) sink.remove(obj, s, fc);
         },
+        reset: function() {
+          sink.reset();
+        },
         toString: function() {
           return 'PredicatedSink(' +
             sink.$UID + ', ' + predicate + ', ' + sink + ')';
