@@ -1,5 +1,5 @@
 {
-  "name": "Calculator",
+  "name": "__MSG_Calc_Message_CalcName__",
   "version": "2.1.0",
   "manifest_version": 2,
   "default_locale": "en",
