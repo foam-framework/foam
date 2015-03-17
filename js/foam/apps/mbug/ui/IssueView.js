@@ -23,6 +23,7 @@ CLASS({
   traits: ['foam.input.touch.VerticalScrollNativeTrait'],
   requires: [
     'foam.apps.mbug.ui.CitationView',
+    'foam.apps.mbug.ui.CitationRowView',
     'foam.apps.mbug.ui.CommentView',
     'foam.apps.mbug.ui.LabelCitationView',
     'foam.apps.mbug.ui.PersonView',
@@ -154,7 +155,7 @@ CLASS({
             data$: this.data.cc$,
             inline: true,
             srcDAO: this.PersonDAO,
-            rowView: 'foam.apps.mbug.ui.CitationView',
+            rowView: 'foam.apps.mbug.ui.CitationRowView',
             acRowView: 'foam.apps.mbug.ui.PersonView',
             prop: X.ReferenceArrayProperty.create({
               name: 'cc',
