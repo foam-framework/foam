@@ -42,7 +42,8 @@ CLASS({
     'foam.core.dao.CloningDAO',
     'com.google.analytics.WebMetricsReportingDAO',
     'foam.metrics.Metric',
-    'foam.oauth2.OAuth2WebClient'
+    'foam.oauth2.OAuth2WebClient',
+    'foam.graphics.ActionButtonCView'
   ],
 
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
@@ -69,7 +70,7 @@ CLASS({
           clientId: '1',
           appName: 'MBug',
           appVersion: '1.0.7'
-        })
+        });
       }
     },
     {
@@ -172,6 +173,10 @@ CLASS({
       this.SUPER();
       this.X.touchManager   = this.TouchManager.create();
       this.X.gestureManager = this.GestureManager.create();
+      debugger;
+      this.Y.registerModel(this.ActionButtonCView.xbind({
+        haloColor: 'rgb(255,255,255)'
+      }), 'foam.graphics.ActionButtonCView');
     },
     toHTML: function() { return this.stack.toHTML(); },
     projectContext: function() {
@@ -219,7 +224,7 @@ CLASS({
       });
 
       // TODO: clone issue, and add listener which saves on updates
-      
+
     },
     setProject: function(projectName) {
       var self = this;

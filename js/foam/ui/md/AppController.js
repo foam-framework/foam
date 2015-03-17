@@ -211,6 +211,7 @@ CLASS({
     init: function() {
       this.SUPER();
 
+      debugger;
       this.Y.registerModel(this.ActionButtonCView.xbind({
         alpha:      1,
         width:      48,

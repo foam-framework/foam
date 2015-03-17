@@ -22,7 +22,7 @@ CLASS({
 
   requires: [
     'foam.input.touch.GestureTarget',
-    'foam.ui.ChoiceListView'
+    'foam.ui.md.ChoiceListView'
   ],
 
   properties: [
