@@ -40,6 +40,13 @@ CLASS({
       this[prop.name + 'View'] = v.view;
       return v;
     },
+    
+    removeChild: function(child) {
+      if ( this.PropertyView.isInstance(child) && child.prop ) {
+        delete this[child.prop.name + 'View'];
+      }
+      this.SUPER(child);
+    },
 
 //     createActionView: function(action, opt_args) {
 //       /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info

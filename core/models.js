@@ -258,7 +258,7 @@ CLASS({
           var obj = factory.create();
           obj.copyFrom(transientValues);
           this.context[name] = obj;
-          this.manage(name, obj);
+          this.manage(name, obj, version);
           future.set(obj);
         }).bind(this);
 

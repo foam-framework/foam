@@ -33,7 +33,7 @@ CLASS({
     'foam.apps.quickbug.model.DefaultQuery',
     'foam.apps.quickbug.model.QBug',
     'foam.oauth2.AutoOAuth2',
-    'foam.ui.StackView',
+    'foam.ui.NonDestructiveStackView as StackView',
     'foam.input.touch.TouchManager',
     'IDBDAO',
     'foam.core.dao.KeywordDAO',
@@ -189,7 +189,7 @@ CLASS({
       this.stack.initHTML();
 
       var self = this;
-      this.qbug.userFuture.get(function(user) {
+      this.qbug.userReady.get(function(user) {
         self.qbug.findProject(user.defaultProject, {
           put: function(p) {
             self.project = p;

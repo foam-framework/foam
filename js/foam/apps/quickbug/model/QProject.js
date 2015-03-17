@@ -25,29 +25,30 @@ CLASS({
   ],
 
   requires: [
-    'foam.lib.bookmarks.Bookmark',
+    'Binding',
+    'CachingDAO',
+    'EasyDAO',
+    'IDBDAO',
+    'LazyCacheDAO',
     'MDAO',
-    'foam.apps.quickbug.model.QIssueLabel',
-    'foam.apps.quickbug.model.QIssueStatus',
-    'foam.apps.quickbug.model.QIssueComment',
-    'foam.apps.quickbug.model.QIssueCommentUpdate',
+    'PersistentContext',
+    'Timer',
+    'foam.apps.quickbug.dao.IssueRestDAO',
     'foam.apps.quickbug.dao.QIssueCommentNetworkDAO',
     'foam.apps.quickbug.dao.QIssueCommentUpdateDAO',
-    'foam.apps.quickbug.dao.IssueRestDAO',
     'foam.apps.quickbug.dao.SyncManager',
-    'foam.apps.quickbug.model.imported.IssuePerson',
-    'foam.apps.quickbug.model.imported.Issue',
-    'foam.apps.quickbug.model.LabelStringEnumProperty',
-    'foam.apps.quickbug.model.LabelArrayProperty',
     'foam.apps.quickbug.model.DefaultQuery',
+    'foam.apps.quickbug.model.LabelArrayProperty',
+    'foam.apps.quickbug.model.LabelStringEnumProperty',
+    'foam.apps.quickbug.model.LabelStringProperty',
+    'foam.apps.quickbug.model.QIssueComment',
+    'foam.apps.quickbug.model.QIssueCommentUpdate',
+    'foam.apps.quickbug.model.QIssueLabel',
+    'foam.apps.quickbug.model.QIssueStatus',
+    'foam.apps.quickbug.model.imported.Issue',
+    'foam.apps.quickbug.model.imported.IssuePerson',
     'foam.core.dao.MigrationRule',
-    'EasyDAO',
-    'CachingDAO',
-    'LazyCacheDAO',
-    'IDBDAO',
-    'Timer',
-    'PersistentContext',
-    'Binding',
+    'foam.lib.bookmarks.Bookmark',
     'foam.metrics.Metric'
   ],
 
@@ -417,10 +418,10 @@ CLASS({
                 // Create initial values
                 for ( var i = 0 ; i < this.model_.properties_.length ; i++ ) {
                   var p = this.model_.properties_[i];
-
-                  if ( this.X.lookup('foam.apps.quickbug.model.LabelArrayProperty').isInstance(p) ) {
+                  
+                  if ( p.name_ === 'LabelArrayProperty' ) {
                     newValues[p.name] = [];
-                  } else if ( this.X.lookup('foam.apps.quickbug.model.LabelStringProperty').isInstance(p) ) {
+                  } else if ( p.name_ === 'LabelStringProperty' ) {
                     newValues[p.name] = '';
                   }
                 }

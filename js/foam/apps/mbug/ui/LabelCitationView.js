@@ -39,6 +39,9 @@ CLASS({
       .IssueLabel canvas {
         background: rgba(0,0,0,0) !important;
       }
+      .LabelCitationView {
+        margin-left: 16px;
+      }
     */},
     function toInnerHTML() {/*
       <div class="IssueLabel" <%= this.generateColorStyle(this.data.match(/[^-]+/)[0]) %>>

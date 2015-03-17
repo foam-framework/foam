@@ -153,9 +153,7 @@ CLASS({
         this.image_.onload = function() {
           if ( ! this.iconWidth  ) this.iconWidth  = this.image_.width;
           if ( ! this.iconHeight ) this.iconHeight = this.image_.height;
-          if ( this.canvas ) {
-            this.view.paint();
-          }
+          this.view.$ && this.view.paint();
         }.bind(this);
 
         this.image_.src = this.iconUrl;

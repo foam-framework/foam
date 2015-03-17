@@ -61,7 +61,7 @@ CLASS({
       type: 'foam.ui.View',
       postSet: function(_, p) {
         if (!p) return; // TODO(jacksonic): We shouldn't pretend we aren't part of the tree
-        p[this.prop.name + 'foam.ui.View'] = this.view;
+        p[this.prop.name + 'View'] = this.view;
         if ( this.view ) this.view.parent = p;
       },
       documentation: function() {/*

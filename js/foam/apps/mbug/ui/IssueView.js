@@ -24,7 +24,7 @@ CLASS({
   requires: [
     'foam.apps.mbug.ui.CitationView',
     'foam.apps.mbug.ui.CommentView',
-    'foam.apps.mbug.ui.IssueLabelView',
+    'foam.apps.mbug.ui.LabelCitationView',
     'foam.apps.mbug.ui.PersonView',
     'foam.apps.mbug.ui.PriorityView',
     'foam.apps.quickbug.model.QIssueComment',
@@ -88,7 +88,7 @@ CLASS({
         margin-top: -24px;
       }
       .CitationView {
-        padding-left: 8px;
+        padding-left: 16px;
       }
     */},
     function headerToHTML() {/*
@@ -152,14 +152,12 @@ CLASS({
           <div class="separator separator1"></div>
           <% out(this.AutocompleteListView.create({
             data$: this.data.cc$,
-            label: 'CCs',
             inline: true,
             srcDAO: this.PersonDAO,
             rowView: 'foam.apps.mbug.ui.CitationView',
             acRowView: 'foam.apps.mbug.ui.PersonView',
             prop: X.ReferenceArrayProperty.create({
               name: 'cc',
-              label: 'CCs',
               subType: this.IssuePerson,
               subKey: this.IssuePerson.NAME
             }),

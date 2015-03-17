@@ -162,7 +162,7 @@ CLASS({
           myparams.push('maxResults=' + batch);
           myparams.push('startIndex=' + index);
 
-          self.ajsonp(url, myparams)(function(data) {
+          self.ajsonp(url, myparams)(Movement.whenIdle(function(data) {
             // Short-circuit count.
             // TODO: This count is wrong for queries that use
             if ( CountExpr.isInstance(sink) ) {
@@ -205,7 +205,7 @@ CLASS({
             if ( ! data || index >= data.totalResults ) finished = true;
             if ( skipped >= self.skipThreshold ) finished = true;
             ret();
-          });
+          }));
         })(function() { sink && sink.eof && sink.eof(); fut.set(sink); });
 
       return fut.get;

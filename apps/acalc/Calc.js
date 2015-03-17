@@ -201,6 +201,7 @@ CLASS({
     permutation: function(n, r) { return this.factorial(n) / this.factorial(n-r); },
     combination: function(n, r) { return this.permutation(n, r) / this.factorial(r); },
     error: function() {
+      // TODO(kgr): Move to CalcView
       if ( this.X.$$('calc-display')[0] ) setTimeout(this.Flare.create({
         element: this.X.$$('calc-display')[0],
         color: '#f44336' /* red */
@@ -257,6 +258,7 @@ CLASS({
         this.editable = true;
         this.op       = DEFAULT_OP;
         this.history = [].sink;
+        // TODO(kgr): Move to CalcView
         if ( this.X.$$('calc-display')[0] ) {
           var now = Date.now();
           if ( this.lastFlare_ && now-this.lastFlare_ < 1000 ) return;

@@ -20,9 +20,11 @@ CLASS({
   name: 'Label',
 
   extendsModel: 'foam.ui.BaseView',
-  traits: ['foam.ui.HTMLViewTrait',
-           'foam.ui.ViewActionsTrait',
-           'foam.ui.TemplateSupportTrait'],
+  traits: [
+    'foam.ui.HTMLViewTrait',
+    'foam.ui.ViewActionsTrait',
+    'foam.ui.TemplateSupportTrait'
+  ],
 
   imports: [ 'window' ],
 
@@ -85,8 +87,9 @@ CLASS({
         f2$.innerHTML = data;
 
         f1$.style.left = f2$.offsetLeft;
-        // Don't animate to the empty string
-        DOM.setClass(this.$.querySelector('.f1'), 'animated', this.data.length);
+        // Don't animate to the empty string, or prefix changes
+        var animate = this.data.length && ( oldValue.startsWith(newValue) || newValue.startsWith(oldValue) );
+        DOM.setClass(this.$.querySelector('.f1'), 'animated', animate);
       }
     },
     {
