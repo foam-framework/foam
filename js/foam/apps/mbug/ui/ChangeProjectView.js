@@ -49,7 +49,6 @@ CLASS({
       .change-project-view .header {
         width: 100%;
         height: 172px;
-        display: initial;
         margin-bottom: 0;
         background-image: url('images/projectBackground.png');
       }
@@ -57,7 +56,7 @@ CLASS({
       .change-project-view span[name=email] {
         color: white;
         display: block;
-        margin-top: 20px;
+        margin-top: 40;
         padding-left: 16px;
         font-weight: 500;
         font-size: 16px;
