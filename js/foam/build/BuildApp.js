@@ -17,7 +17,7 @@
 
 CLASS({
   package: 'foam.build',
-  name: "BuildApp",
+  name: 'BuildApp',
 
   imports: [
     'log',
@@ -90,6 +90,8 @@ CLASS({
       factory: function() {
         return {
           __proto__: JSONUtil.compact,
+          keys_: {},
+          keyify: JSONUtil.prettyModel.keyify,
           outputObject_: function(out, obj, opt_defaultModel) {
             var first = true;
 
@@ -106,12 +108,28 @@ CLASS({
 
               if ( ! this.p(prop) && ( ! isTemplate || prop.name !== 'code' ) ) continue;
 
+              if ( prop.name === 'documentation' ) continue;
+
               if ( prop.name in obj.instance_ ) {
                 var val = obj[prop.name];
                 if ( Array.isArray(val) && ! val.length ) continue;
                 if ( ! first ) out(',');
                 out(this.keyify(prop.name), ': ');
-                this.output(out, val);
+
+                if ( prop.name === 'methods' && false ) {
+                  out('{');
+                  var ff = true;
+                  for ( var i = 0 ; i < val.length ; i++ ) {
+                    if ( ! ff ) out(',');
+
+                    out(this.keyify(val[i].name), ': ');
+                    out(val[i].code);
+                    ff = false;
+                  }
+                  out('}');
+                } else {
+                  this.output(out, val);
+                }
                 first = false;
               }
             }
