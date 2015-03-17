@@ -202,6 +202,10 @@ CLASS({
       factory: function() {
         return this.SpinnerView.create({ data$: this.spinnerBusyStatus.busy$ });
       }
+    },
+    {
+      name: 'help',
+      type: 'String'
     }
   ],
 
@@ -414,6 +418,14 @@ CLASS({
       */},
       code: function() {
         if ( ! this.$ ) return;
+        
+        var helpOverlay = this.X.document.getElementById(this.id+"_Help");
+        if ( helpOverlay && this.count == 0 ) {
+          helpOverlay.style.display = ""; 
+        } else {
+          if ( helpOverlay ) helpOverlay.style.display = "none";           
+        }
+        
         // Calculate visibleIndex based on scrollTop.
         // If the visible rows are inside the cache, just expand the cached area
         // to keep 3*runway rows on each side, up to the edges of the data.
@@ -500,6 +512,9 @@ CLASS({
     function toHTML() {/*
       <% this.destroy(); %>
       <div id="%%id" style="overflow:hidden;position:relative">
+        <div id="<%=this.id%>_Help" class="helpText" style="display: none; width: 100%; height: 100%">
+          <%= this.help %>
+        </div>
         <% if ( this.rowHeight < 0 ) { %>
           <div id="<%= this.id + '-rowsize' %>" style="visibility: hidden">
             <%

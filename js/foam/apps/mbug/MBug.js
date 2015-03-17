@@ -739,6 +739,12 @@ ul.swipeAltHeader {
 .comment-view {
   margin-left: 16px;
 }
+
+.helpText {
+  color: grey;
+  align-items: center;
+}
+
 */}
   ]
 });
