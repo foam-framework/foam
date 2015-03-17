@@ -767,7 +767,7 @@ MODEL({
                   } else {
                     for ( i = 0 ; i < tasks.length ; i++ ) tasks[i]();
                   }
-                }, 0);
+                }, 20);
               }
             }
           }

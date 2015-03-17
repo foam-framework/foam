@@ -49,10 +49,15 @@ CLASS({
       documentation: 'The Future for this View. Returns a View.'
     },
     {
+      name: 'preSpinnerTime',
+      documentation: 'Time in milliseconds to wait before showing a spinner.',
+      defaultValue: 500
+    },
+    {
       name: 'timer',
       hidden: true,
       factory: function() {
-        return this.setTimeout(this.onTimer, 500);
+        return this.setTimeout(this.onTimer, this.preSpinnerTime);
       }
     },
     {
@@ -93,8 +98,10 @@ CLASS({
           el = this.$;
         }
         this.childView = view;
-        el.outerHTML = view.toHTML();
-        view.initHTML();
+        if (el) {
+          el.outerHTML = view.toHTML();
+          view.initHTML();
+        }
       }
     }
   ],
