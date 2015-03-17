@@ -49,6 +49,7 @@ CLASS({
     'foam.apps.quickbug.model.imported.IssuePerson',
     'foam.core.dao.MigrationRule',
     'foam.lib.bookmarks.Bookmark',
+    'foam.core.dao.WhenIdleDAO',
     'foam.metrics.Metric'
   ],
 
@@ -194,8 +195,10 @@ CLASS({
       model_: 'DAOProperty',
       name: 'IssueCommentDAO',
       factory: function() {
-        return this.QIssueCommentUpdateDAO.create({
-          delegate: this.IssueCommentNetworkDAO
+        return this.WhenIdleDAO.create({
+          delegate: this.QIssueCommentUpdateDAO.create({
+            delegate: this.IssueCommentNetworkDAO
+          })
         });
       }
     },
@@ -210,7 +213,7 @@ CLASS({
         });
       },
       postSet: function(_, v) {
-        this.IssueCommentDAO.IssueNetworkDAO = v;
+        this.IssueCommentDAO.delegate.IssueNetworkDAO = v;
       },
       transient: true
     },
