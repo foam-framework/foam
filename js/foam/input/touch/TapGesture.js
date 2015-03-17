@@ -63,9 +63,8 @@ CLASS({
         point.shouldPreventDefault = true;
       });
       handlers.forEach(function(h) {
-        h && h.tapClick && h.tapClick(points);
+        h && h.tapClick && h.tapClick(map);
       });
     }
   }
 });
-
