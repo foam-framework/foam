@@ -862,6 +862,14 @@ CLASS({
     init: function(args) {
       this.SUPER(args);
 
+      if ( this.projectName !== 'chromium' ) {
+        this.defaultSortChoices = [
+          [ DESC(this.QIssueModel.MODIFIED), 'Last modified' ],
+          [ this.QIssueModel.PRIORITY,       'Priority' ],
+          [ DESC(this.QIssueModel.ID),       'Issue ID' ]
+        ];
+      }
+
       if ( ! this.X.DontSyncProjectData ) {
         this.IssueDAO.listen(this.onDAOUpdate);
 
@@ -878,14 +886,6 @@ CLASS({
           this.syncManagerFuture.set(manager);
           manager.start();
         }.bind(this));
-
-        if ( this.projectName !== 'chromium' ) {
-          this.defaultSortChoices = [
-            [ DESC(this.QIssueModel.MODIFIED), 'Last modified' ],
-            [ this.QIssueModel.PRIORITY,       'Priority' ],
-            [ DESC(this.QIssueModel.ID),       'Issue ID' ]
-          ];
-        }
       }
     },
 
