@@ -33,7 +33,7 @@ CLASS({
     'foam.apps.quickbug.model.DefaultQuery',
     'foam.apps.quickbug.model.QBug',
     'foam.oauth2.AutoOAuth2',
-    'foam.ui.NonDestructiveStackView as StackView',
+    'foam.ui.layout.CSSStackView as StackView',
     'foam.input.touch.TouchManager',
     'IDBDAO',
     'foam.core.dao.KeywordDAO',
