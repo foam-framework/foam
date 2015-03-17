@@ -139,8 +139,8 @@ CLASS({
         if ( ! this.innerContainer ) return;
         this.innerContainer.style.width = this.stack.length * this.width + 'px';
         this.innerContainer.style.height = this.height + 'px';
-        this.containerViewport.style.width = this.width + 'px';
-        this.containerViewport.style.height = this.height + 'px';
+        this.containerViewport.style.width = this.styleWidth();
+        this.containerViewport.style.height = this.styleHeight();
       }
     },
     {
@@ -150,8 +150,18 @@ CLASS({
       }
     },
     {
+      name: 'fixLayout',
+      isMerged: 100,
+      code: function() {
+        if ( ! this.containerViewport ) return;
+        this.containerViewport.scrollLeft = 0;
+      }
+    },
+    {
       name: 'layout',
       code: function() {
+        this.fixLayout();
+
         for ( var i = 0; i < this.stack.length ; i++ ){
           this.stack[i].x = i * this.width;
           this.stack[i].y = 0;
