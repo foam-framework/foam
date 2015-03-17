@@ -620,7 +620,7 @@ CLASS({
               // TODO: this is a bit complex because it was written before Contexts. Fix.
               var g = Model.create({
                 name: 'QIssueGridView',
-                extendsModel: 'GridView',
+                extendsModel: 'foam.ui.GridView',
                 methods: {
                   filteredDAO: function() {
                     return ( this.acc.choice && this.acc.choice[1] === 'Tiles' ) ?

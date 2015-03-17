@@ -18,7 +18,6 @@
 (function () {
   var usedModels = {
     "AbstractDAO":true,
-    "AbstractDAOView":true,
     "Action":true,
     "ActionButtonCView2":true,
     "Arg":true,
@@ -70,6 +69,7 @@
     "foam.ui.DAODataViewTrait":true,
     "foam.ui.DestructiveDataView":true,
     "foam.ui.BasePropertyView":true,
+    "foam.ui.AbstractDAOView":true,
     "foam.core.bootstrap.ModelFileDAO":true,
     "foam.graphics.AbstractCViewView":true,
     "foam.graphics.ActionButtonCView":true,

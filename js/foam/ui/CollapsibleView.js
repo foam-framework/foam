@@ -14,35 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-
-// CLASS({
-//   name: 'InheritedProperty',
-//   extendsModel: 'Property',
-//   package: 'foam.views',
-//   traits: ['foam.patterns.InheritedPropertyTrait']
-// });
-
-// CLASS({
-//   name: 'ContextMutableProperty',
-//   extendsModel: 'Property',
-//   package: 'foam.views',
-//   traits: ['foam.patterns.ContextMutablePropertyTrait']
-// });
-
-
-
-//
-// CLASS({
-//   name: 'AbstractDAOView',
-//   package: 'foam.ui',
-//
-//   extendsModel: 'AbstractDAOView',
-//   traits: ['foam.ui.DataConsumerTrait'],
-//
-// });
-
-
 
 CLASS({
   name: 'CollapsibleView',
