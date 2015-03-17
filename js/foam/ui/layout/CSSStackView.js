@@ -22,6 +22,7 @@ CLASS({
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   requires: [
+    'foam.ui.layout.CSSOverlaySlider as OverlaySlider',
     'foam.ui.layout.FloatingView'
   ],
 
@@ -46,7 +47,17 @@ CLASS({
       defaultValue: -1
     },
     {
-      name: 'slideLatch'
+      name: 'overlaySlider',
+      factory: function() { return this.OverlaySlider.create(); },
+      postSet: function(old, v) {
+        if ( old ) old.unsubscribe(['click'], this.overlayBack);
+        v.subscribe(['click'], this.overlayBack);
+      }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'sliderOpen',
+      defaultValue: false
     },
     {
       model_: 'foam.core.types.DOMElementProperty',
@@ -69,6 +80,7 @@ CLASS({
       this.dynamic(function() {
         self.width;
         self.height;
+        self.sliderOpen;
       }, this.layout);
       this.dynamic(function() {
         self.currentView;
@@ -97,6 +109,17 @@ CLASS({
       view.initHTML();
     },
     setPreview: function() {},
+    slideView: function(view, opt_label, opt_side, opt_delay) {
+      if ( ! view.model_.Z ) view = this.FloatingView.create({ view: view });
+
+      if ( this.sliderOpen ) {
+        this.overlaySlider.close(true);
+        this.sliderOpen = false;
+      }
+
+      this.sliderOpen = true;
+      this.overlaySlider.open(view);
+    },
     pushView: function(view, opt_label, opt_back, opt_transition) {
       if ( ! view.model_.Z ) view = this.FloatingView.create({ view: view });
 
@@ -125,13 +148,24 @@ CLASS({
     {
       name: 'back',
       action: function() {
-        this.animating = true;
-        this.currentView = this.currentView - 1;
+        if ( this.sliderOpen ) {
+          this.overlaySlider.close();
+          this.sliderOpen = false;
+        } else {
+          this.animating = true;
+          this.currentView = this.currentView - 1;
+        }
       }
     }
   ],
 
   listeners: [
+    {
+      name: 'overlayBack',
+      code: function() {
+        if ( this.sliderOpen ) this.back();
+      }
+    },
     {
       name: 'resizeContainer',
       isFramed: true,
@@ -162,6 +196,11 @@ CLASS({
       code: function() {
         this.fixLayout();
 
+        this.overlaySlider.x = 0;
+        this.overlaySlider.y = 0;
+        this.overlaySlider.z = this.sliderOpen ? 1 : 0;
+        this.overlaySlider.width = this.width;
+        this.overlaySlider.height = this.height;
         for ( var i = 0; i < this.stack.length ; i++ ){
           this.stack[i].x = i * this.width;
           this.stack[i].y = 0;
@@ -179,16 +218,6 @@ CLASS({
         this.innerContainer.style.webkitTransform =
           'translate3d(' + -1 * this.currentView * this.width + 'px, 0px, 0px)';
       }
-    },
-    {
-      name: 'onAnimationStart',
-      code: function() {
-      }
-    },
-    {
-      name: 'onAnimationEnd',
-      code: function() {
-      }
     }
   ],
 
@@ -198,7 +227,7 @@ CLASS({
   -webkit-transition: -webkit-transform 300ms ease-in;
 }
 */},
-    function toInnerHTML() {/*<div id="<%= this.containerViewport = this.nextID() %>" style="overflow:hidden;position:absolute"><div id="<%= this.innerContainer = this.setClass('cssslider-animate', function() { self.animating; }) %>"></div></div>*/}
+    function toInnerHTML() {/*<%= this.overlaySlider %><div id="<%= this.containerViewport = this.nextID() %>" style="overflow:hidden;position:absolute"><div id="<%= this.innerContainer = this.setClass('cssslider-animate', function() { self.animating; }) %>"></div></div>*/}
   ]
 });
 
