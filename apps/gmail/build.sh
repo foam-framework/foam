@@ -30,7 +30,6 @@ cat \
   ../../core/value.js \
   ../../core/view.js \
   ../../core/layout.js \
-  ../../core/daoView.js \
   ../../core/cview.js \
   ../../core/cview2.js \
   ../../core/RichTextView.js \

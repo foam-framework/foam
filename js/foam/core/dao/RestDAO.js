@@ -112,7 +112,7 @@ CLASS({
       if ( options ) {
         index += options.skip || 0;
 
-        var query = options.query;
+        var query = options.query.partialEval();
         var url;
 
         if ( query ) {

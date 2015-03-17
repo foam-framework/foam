@@ -118,7 +118,7 @@ CLASS({
       for ( var i = 0 ; i < this.children.length ; i++ ) {
         str += this.preButton(this.children[i]) +
           this.children[i].toHTML() +
-          (MenuSeparator.isInstance(this.children[i]) ?
+          (this.MenuSeparator.isInstance(this.children[i]) ?
            '' : this.postButton(this.children[i]));
       }
       return str;

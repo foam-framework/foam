@@ -72,7 +72,7 @@ CLASS({
 
 CLASS({
   name: 'TestsView',
-  extendsModel: 'AbstractDAOView',
+  extendsModel: 'foam.ui.AbstractDAOView',
 
   properties: [
     {

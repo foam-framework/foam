@@ -24,8 +24,8 @@ CLASS({
     'foam.ui.md.SharedStyles',
     'foam.ui.DAOListView',
     'foam.ui.PopupChoiceView',
-    'PredicatedView',
-    'ScrollView',
+    'foam.ui.PredicatedView',
+    'foam.ui.ScrollView',
     'foam.ui.SpinnerView',
     'foam.ui.SwipeAltView',
     'foam.ui.ViewChoice'

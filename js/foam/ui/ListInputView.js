@@ -18,7 +18,7 @@
 CLASS({
   name: 'ListInputView',
 
-  extendsModel: 'AbstractDAOView',
+  extendsModel: 'foam.ui.AbstractDAOView',
   package: 'foam.ui',
 
   properties: [

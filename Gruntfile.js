@@ -68,7 +68,6 @@ module.exports = function(grunt) {
           'core/value.js',
           'core/view.js',
           'core/layout.js',
-          'core/daoView.js',
           'core/ChoiceView.js',
           'core/DetailView.js',
           'core/TableView.js',

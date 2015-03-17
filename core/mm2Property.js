@@ -673,18 +673,18 @@ var Property = {
     }
   },
 
-  templates: [
-    {
-      model_: 'Template',
-      name: 'closureSource',
-      description: 'Closure Externs JavaScript Source',
-      template:
-      '/**\n' +
-        ' * @type {<%= this.javascriptType %>}\n' +
-        ' */\n' +
-        '<%= arguments[1] %>.prototype.<%= this.name %> = undefined;'
-    }
-  ],
+  //templates: [
+  //  {
+  //    model_: 'Template',
+  //    name: 'closureSource',
+  //    description: 'Closure Externs JavaScript Source',
+  //    template:
+  //    '/**\n' +
+  //      ' * @type {<%= this.javascriptType %>}\n' +
+  //      ' */\n' +
+  //      '<%= arguments[1] %>.prototype.<%= this.name %> = undefined;'
+  //  }
+  //],
 
   toString: function() { return "Property"; }
 };

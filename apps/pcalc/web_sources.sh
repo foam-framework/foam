@@ -23,7 +23,7 @@ export SOURCES=(
   "../../core/view2.js"
   "../../core/layout.js"
   "../../js/foam/ui/SlidePanel.js"
-  "../../core/AbstractDAOView.js"
+  "../../js/foam/ui/AbstractDAOView.js"
   "../../core/DAOListView.js"
   "../../core/DetailView.js"
   "../../js/foam/patterns/ChildTreeTrait.js"

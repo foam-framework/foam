@@ -830,6 +830,8 @@ var PositionIndex = {
 
   put: function(s, newValue) {
     if ( s.feedback === newValue.id ) return s;
+    if ( this.query && ! this.query.f(newValue) ) return s;
+
     var compare = toCompare(this.order);
 
     for ( var i = 0; i < s.length; i++ ) {
