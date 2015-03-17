@@ -437,7 +437,7 @@ CLASS({
       return this.delegate.select(sink, options);
     },
     toString: function() {
-      return this.delegate + '.where(' + this.comparator + ')';
+      return this.delegate + '.orderBy(' + this.comparator + ')';
     }
   }
 
