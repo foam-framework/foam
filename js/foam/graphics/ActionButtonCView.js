@@ -137,8 +137,8 @@ CLASS({
   listeners: [
     {
       name: 'tapClick',
-      code: function() { 
-        this.action.callIfEnabled(this.X, this.data); 
+      code: function() {
+        this.action.callIfEnabled(this.X, this.data);
       }
     }
   ],
@@ -191,8 +191,10 @@ CLASS({
       // Don't add halo as a child because we want to control
       // its paint order, but still set it up as though we had added it.
       // this.addChild(this.halo);
-      this.halo.view = this.view;
-      this.halo.addListener(this.view.paint);
+      if ( this.halo ) {
+        this.halo.view = this.view;
+        this.halo.addListener(this.view.paint);
+      }
       if ( this.gestureManager ) {
         // TODO: Glow animations on touch.
         this.gestureManager.install(this.tapGesture);
@@ -240,7 +242,7 @@ CLASS({
 
     paintSelf: function() {
       var c = this.canvas;
-      this.halo.paint();
+      if ( this.halo ) this.halo.paint();
 
       if ( this.font ) c.font = this.font;
 
