@@ -218,7 +218,7 @@ CLASS({
         iconWidth:  24,
         iconHeight: 24
       }), 'foam.ui.ActionButton');
-      
+
       var self = this;
       Events.dynamic(
         function() { self.sortOrder; self.q; },
@@ -242,10 +242,10 @@ CLASS({
                <%= this.data.spinner %>
              </span>
            <% } %>
-           $$enterSearchMode %%data.sortOrderView
+           $$enterSearchMode{halo: ''} %%data.sortOrderView
          </span>
          <span class="search">
-           $$leaveSearchMode{className: 'backButton'} $$q
+           $$leaveSearchMode{className: 'backButton', halo: ''} $$q
          </span>
        </div>
        %%data.filteredDAOView
