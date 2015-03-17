@@ -16,28 +16,14 @@
  */
 
 CLASS({
-  name: 'CitationView',
+  name: 'CitationRowView',
   package: 'foam.apps.mbug.ui',
-  extendsModel: 'foam.ui.SimpleView',
+  extendsModel: 'foam.ui.md.DefaultRowView',
 
   requires: [ 'foam.ui.md.MonogramStringView' ],
 
-  properties: [
-    { name: 'className', defaultValue: 'CitationView' },
-    { name: 'data', postSet: function() { this.updateHTML(); } }
-  ],
+  properties: [ { name: 'className', defaultValue: 'CitationView' } ],
 
-  actions: [
-    {
-      name: 'clear',
-      label: '',
-      iconUrl: 'images/ic_clear_black_24dp.png',
-      action: function() { 
-        this.data = ""; // buganizer api doesn't support resetting owner 
-      }
-    }
-  ],
-  
   templates: [
     function CSS() {/*
       .CitationView {
@@ -59,7 +45,7 @@ CLASS({
     function toInnerHTML() {/*
       <%= this.MonogramStringView.create({ data: this.data }) %>
       <div class="owner-name">{{ this.data }}</div>
+      <span class="removeRow">$$removeRow</span>
     */}
-//      <span class="removeRow">$$clear</span>
   ]
 });
