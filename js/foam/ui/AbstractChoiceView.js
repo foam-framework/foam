@@ -21,6 +21,8 @@ CLASS({
 
   extendsModel: 'foam.ui.View',
 
+  requires: ['foam.ui.Choice'],
+  
   properties: [
     // This is the real, final choice. The internals use index only.
     // When useSelection is enabled, data is not set until a final choice is made.

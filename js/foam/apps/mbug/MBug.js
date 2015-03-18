@@ -135,6 +135,7 @@ CLASS({
           citationView: 'foam.apps.mbug.ui.IssueCitationView',
           sortChoices: project.defaultSortChoices,
           filterChoices: project.defaultFilterChoices,
+          viewChoices: project.defaultViewChoices,
           menuFactory: function() {
             return this.X.lookup('foam.apps.mbug.ui.ChangeProjectView').create({data: project.user}, this.Y);
           }

@@ -83,6 +83,9 @@ CLASS({
       name: 'filterChoices'
     },
     {
+      name: 'viewChoices'
+    },
+    {
       name: 'filteredDAO',
       model_: 'DAOProperty',
       help: 'Top-level filtered DAO. Further filtered by each canned query.'
@@ -107,16 +110,17 @@ CLASS({
           runway: 500
         });
 
-        if ( ! this.filterChoices ) return DAOListView.create({ dao: this.filteredDAO$Proxy });
+        if ( ! this.viewChoices && ! this.filterChoices ) return DAOListView.create({ dao: this.filteredDAO$Proxy });
         var self = this;
-        var views = this.filterChoices.map(function(filter) {
+        var choices = this.viewChoices ? this.viewChoices : this.filterChoices;
+        var views = choices.map(function(filter) {
             return self.ViewChoice.create({
               view: self.PredicatedView.create({
                 predicate: ( typeof filter[0] === "string" ?
                              self.queryParser.parseString(filter[0]) :
                              filter[0] ) || TRUE,
                 dao: self.filteredDAO$Proxy,
-                view: DAOListView.create()
+                view: DAOListView.create( { help: filter.help } )
               }),
 
               label: filter[1]

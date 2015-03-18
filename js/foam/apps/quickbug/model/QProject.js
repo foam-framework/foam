@@ -315,6 +315,21 @@ CLASS({
       }
     },
     {
+      name: 'defaultViewChoices',
+      factory: function() {
+        var open = 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged';
+        var filters = this.defaultFilterChoices.slice();
+        for ( var i = 0; i < filters.length; i++ ) {
+          filters[i].filter = filters[i][0];
+          filters[i].label = filters[i][1];
+        }
+        filters[0].help = "There are no open issues.";
+        filters[1].help = "There are no starred issues. Click the star icon next to an open issue to add it to this list.";
+        filters[2].help = "There are no open issues owned by you."; 
+        return filters;
+      }
+    },
+    {
       name: 'QIssueModel',
       factory: function() {
         var labelToProperty = {

@@ -19,7 +19,7 @@
 CLASS({
   name: 'ViewChoice',
   package: 'foam.ui',
-  
+  extendsModel: 'foam.ui.Choice',
 
   tableProperties: [
     'label',
@@ -27,13 +27,6 @@ CLASS({
   ],
 
   properties: [
-    {
-      name: 'label',
-      type: 'String',
-      displayWidth: 20,
-      defaultValue: '',
-      help: "View's label."
-    },
     {
       model_: 'ViewFactoryProperty',
       name: 'view',
