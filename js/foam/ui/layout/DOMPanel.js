@@ -43,6 +43,7 @@ CLASS({
       this.window.addEventListener('resize', this.onResize);
       this.width = this.$.clientWidth;
       this.height = this.$.clientHeight;
+      this.onResize();
     },
     destroy: function( isParentDestroyed ) {
       this.SUPER(isParentDestroyed);
