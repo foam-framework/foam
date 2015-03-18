@@ -173,7 +173,6 @@ CLASS({
       this.SUPER();
       this.X.touchManager   = this.TouchManager.create();
       this.X.gestureManager = this.GestureManager.create();
-      debugger;
       this.Y.registerModel(this.ActionButtonCView.xbind({
         haloColor: 'rgb(255,255,255)'
       }), 'foam.graphics.ActionButtonCView');
