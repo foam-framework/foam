@@ -435,12 +435,14 @@ JSONUtil.prettyModel = {
   keys_: {},
 
   keyify: function(str) {
-    return this.keys_[str] || (
+    if ( ! this.keys_.hasOwnProperty(str) ) {
       this.keys_[str] =
         /^[a-zA-Z\$_][0-9a-zA-Z$_]*$/.test(str) ?
         str :
-        '"' + str + '"'
-    );
+        '"' + str + '"';
+    }
+
+    return this.keys_[str];
   }
 };
 
