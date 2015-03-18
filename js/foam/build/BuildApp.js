@@ -116,7 +116,7 @@ CLASS({
                 if ( ! first ) out(',');
                 out(this.keyify(prop.name), ': ');
 
-                if ( prop.name === 'methods' && false ) {
+                if ( prop.name === 'methods' ) {
                   out('{');
                   var ff = true;
                   for ( var i = 0 ; i < val.length ; i++ ) {
