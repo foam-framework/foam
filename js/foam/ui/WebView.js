@@ -32,6 +32,13 @@ CLASS({
     },
   ],
   methods: {
+    init: function() {
+      this.SUPER();
+      this.data$.addListener(function() {
+        this.$.outerHTML = this.toHTML();
+        this.initHTML();
+      }.bind(this));
+    },
     toHTML: function() {
       var id = this.id;
       return '<iframe id="' + id + '"></iframe>';
@@ -54,7 +61,12 @@ CLASS({
       name: 'onResize',
       isMerged: 500,
       code: function() {
-        this.$.style.height = this.$.contentDocument.documentElement.offsetHeight;
+        if ( ! this.$ ) {
+          this.window.clearInterval(this.intervalId);
+          return;
+        }
+        if ( this.$.contentDocument.documentElement )
+          this.$.style.height = this.$.contentDocument.documentElement.offsetHeight;
       }
     }
   ]
