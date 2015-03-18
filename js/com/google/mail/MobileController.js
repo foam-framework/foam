@@ -36,7 +36,7 @@ CLASS({
     'foam.oauth2.OAuth2Redirect as Auth',
     'foam.input.touch.TouchManager',
     'XHR',
-    'foam.ui.StackView',
+    'foam.ui.layout.CSSStackView as StackView',
     'com.google.mail.ComposeView',
     'com.google.mail.EMailCitationView',
     'com.google.mail.EMailDAO',
@@ -236,6 +236,8 @@ CLASS({
       if ( this.emailDao.withSync )
         var sync = this.emailDao.sync;
 
+      var self = this;
+
       this.controller = this.AppController.create({
         model: this.EMail,
         dao: this.emailDao,
@@ -283,7 +285,6 @@ CLASS({
           });
         }
       });
-      var self = this;
       this.labelDao.where(EQ(this.FOAMGMailLabel.ID, 'INBOX')).select({
         put: function(inbox) {
           self.changeLabel(inbox);
