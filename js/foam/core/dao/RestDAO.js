@@ -85,7 +85,7 @@ CLASS({
           var obj;
 
           if ( ( status !== undefined && status !== 200 ) ||
-               ( obj = self.jsonToObj(resp, extra) ) ) {
+               ( ! ( obj = self.jsonToObj(resp, extra) ) ) ) {
             sink && sink.error && sink.error([resp, status]);
             return;
           }

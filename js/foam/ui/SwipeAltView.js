@@ -22,7 +22,7 @@ CLASS({
 
   requires: [
     'foam.input.touch.GestureTarget',
-    'foam.ui.ChoiceListView'
+    'foam.ui.md.ChoiceListView'
   ],
 
   properties: [
@@ -274,7 +274,6 @@ CLASS({
         overflow: hidden;
         min-width: 240px;
         width: 100%;
-        height: 100%;
       }
 
       .swipeAltSlider {

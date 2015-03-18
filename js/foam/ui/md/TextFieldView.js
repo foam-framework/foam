@@ -75,6 +75,9 @@ CLASS({
     },
     focus: function() {
       this.$input.focus();
+    },
+    blur: function() {
+      this.$input && this.$input.blur();
     }
   },
   templates: [

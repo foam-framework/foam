@@ -56,20 +56,20 @@ CLASS({
     {
       name: 'getMessageKey',
       code: function(model, msg) {
-        return model.name + '__Message__' + msg.name;
+        return model.name + '_Message_' + msg.name;
       }
     },
     {
       name: 'getActionTextLabelKey',
       code: function(model, action) {
-        return model.name + '__ActionLabel__' + action.name;
+        return model.name + '_ActionLabel_' + action.name;
 
       }
     },
     {
       name: 'getActionSpeechLabelKey',
       code: function(model, action) {
-        return model.name + '__ActionSpeechLabel__' + action.name;
+        return model.name + '_ActionSpeechLabel_' + action.name;
       }
     },
     {

@@ -263,6 +263,7 @@ CLASS({
       if ( this.closed_ ) return;
       this.closed_ = true;
 
+      this.qView.blur();
       this.stack.back();
     }
   },

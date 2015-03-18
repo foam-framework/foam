@@ -140,6 +140,14 @@ CLASS({
     MAX_HISTORY: 30
   },
 
+  messages: [
+    {
+      name: 'CalcName',
+      value: 'Calculator',
+      translationHint: 'name of application for performing simple calculations'
+    }
+  ],
+
   properties: [
     {
       name: 'numberFormatter',
@@ -276,6 +284,7 @@ CLASS({
       label: '+/-',
       speechLabel: 'negate',
       keyboardShortcuts: [ 'n' ],
+      translationHint: 'switch positive/negative sign of number',
       action: function() { this.a2 = - this.a2; }
     },
     {
@@ -283,6 +292,7 @@ CLASS({
       labelFn: function() { return this.numberFormatter.useComma ? ',' : '.'; },
       speechLabel: 'point',
       keyboardShortcuts: [ '.', ',' ],
+      translationHint: 'decimal point',
       action: function() {
         if ( ! this.editable ) {
           this.push('0.');
@@ -298,6 +308,7 @@ CLASS({
       label: '=',
       speechLabel: 'equals',
       keyboardShortcuts: [ '=', 13 /* <enter> */ ],
+      translationHint: 'compute operation and display result',
       action: function() {
         if ( typeof(this.a2) === 'string' && this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
         if ( this.op == DEFAULT_OP ) {
@@ -343,12 +354,14 @@ CLASS({
       name: 'pi',
       label: 'π',
       keyboardShortcuts: ['p'],
+      translationHint: 'mathematical constant, pi',
       action: function() { this.a2 = Math.PI; }
     },
     {
       name: 'e',
       label: 'e',
       keyboardShortcuts: ['e'],
+      translationHint: 'mathematical constant, e',
       action: function() { this.a2 = Math.E; }
     },
     {
@@ -356,6 +369,7 @@ CLASS({
       label: '%',
       speechLabel: 'percent',
       keyboardShortcuts: [ '%' ],
+      translationHint: 'convert number to percentage',
       action: function() { this.a2 /= 100.0; }
     },
 
@@ -401,6 +415,7 @@ CLASS({
       label: 'rand',
       speechLabel: 'random',
       keyboardShortcuts: [],
+      translationHint: 'generate random number',
       action: function() { this.a2 = Math.random(); }
     },
     unaryOp('store',   [], function(n) { this.memory = n; return n; }, 'a=', 'store in memory', 'store in memory'),
@@ -409,7 +424,8 @@ CLASS({
       label: 'a',
       speechLabel: 'fetch from memory',
       keyboardShortcuts: [],
+      translationHint: 'load memorized number',
       action: function() { this.a2 = this.memory; }
-    },
+    }
   ]
 });

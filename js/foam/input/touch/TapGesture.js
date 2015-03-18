@@ -55,7 +55,7 @@ CLASS({
 
     attach: function(map, handlers) {
       // Nothing to listen for; the tap has already fired when this recognizes.
-      // Just sent the tapClick(numberOfPoints) message to the handlers.
+      // Just sent the tapClick(pointMap) message to the handlers.
       if  ( ! handlers || ! handlers.length ) return;
       var points = 0;
       Object_forEach(map, function(point) {
@@ -63,9 +63,8 @@ CLASS({
         point.shouldPreventDefault = true;
       });
       handlers.forEach(function(h) {
-        h && h.tapClick && h.tapClick(points);
+        h && h.tapClick && h.tapClick(map);
       });
     }
   }
 });
-

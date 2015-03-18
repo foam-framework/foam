@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 CLASS({
   name: 'AbstractChoiceView',
   package: 'foam.ui',
@@ -56,7 +56,7 @@ CLASS({
       },
       setter: function(choice) {
         var oldValue = this.choice;
-        this.data = choice[0];
+        if ( this.autoSetData ) this.data = choice[0];
         this.text = choice[1];
         this.propertyChange('choice', oldValue, this.choice);
       }
@@ -119,7 +119,7 @@ CLASS({
       postSet: function(_, i) {
         // If useSelection is enabled, don't update data or choice.
         if ( this.useSelection ) return;
-        if ( this.data !== this.choices[i][0] ) this.data = this.choices[i][0];
+        if ( this.autoSetData && this.data !== this.choices[i][0] ) this.data = this.choices[i][0];
       }
     },
     {
@@ -174,7 +174,7 @@ CLASS({
 
       this.dao = this.dao;
     },
-   
+
     findChoiceIC: function(name) {
       name = name.toLowerCase();
       for ( var i = 0 ; i < this.choices.length ; i++ ) {
@@ -190,5 +190,3 @@ CLASS({
     }
   }
 });
-
-
