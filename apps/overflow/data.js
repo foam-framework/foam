@@ -241,7 +241,7 @@ CLASS({
 });
 
 // Build an IndexedDB table, with auto-seqNo and caching support
-var MyTableDAO = EasyDAO.create({model: MyTable, seqNo: true, daoType: 'foam.dao.IDBDAO', cache: true});
+var MyTableDAO = X.lookup('foam.dao.EasyDAO').create({model: MyTable, seqNo: true, daoType: 'foam.dao.IDBDAO', cache: true});
 
 // Populate some test data
 [
@@ -315,7 +315,7 @@ CLASS({
 });
 
 // Create an IndexedDB table with sequence no generation and caching.
-var dao = EasyDAO.create({model: Person, seqNo: true, daoType: 'foam.dao.IDBDAO', cache: true});
+var dao = X.lookup('foam.dao.EasyDAO').create({model: Person, seqNo: true, daoType: 'foam.dao.IDBDAO', cache: true});
 
 // Add some test data.
 [
@@ -393,7 +393,7 @@ CLASS({
 });
 
 // Create an IndexedDB table with caching.
-var dao = EasyDAO.create({model: Tabla, daoType: 'foam.dao.IDBDAO', cache: true});
+var dao = X.lookup('foam.dao.EasyDAO').create({model: Tabla, daoType: 'foam.dao.IDBDAO', cache: true});
 
 // Add your test data.
 [

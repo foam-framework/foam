@@ -43,7 +43,7 @@ CLASS({
 });
 
 
-var dao = EasyDAO.create({model: 'A', daoType: 'MDAO', seqNo: true});
+var dao = X.lookup('foam.dao.EasyDAO').create({model: 'A', daoType: 'MDAO', seqNo: true});
 
 dao.put(A.create({a: 'a1'}));
 //dao.put(A.create({a: 'a2'}));

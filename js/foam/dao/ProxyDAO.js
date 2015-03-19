@@ -21,6 +21,8 @@ CLASS({
   
   extendsModel: 'AbstractDAO',
 
+  requires: ["foam.dao.NullDAO"],
+  
   documentation: function() {/*
     Provides a proxy to the $$DOC{ref:'.delegate'} DAO, and allows swapping out the
     $$DOC{ref:'.delegate'} transparently
@@ -36,7 +38,7 @@ CLASS({
       required: true,
       transient: true,
       documentation: "The internal DAO to proxy.",
-      factory: function() { return this.X.lookup('NullDAO').create(); }, // TODO: use singleton
+      factory: function() { return this.NullDAO.create(); }, // TODO: use singleton
       postSet: function(oldDAO, newDAO) {
         if ( this.daoListeners_.length ) {
           if ( oldDAO ) oldDAO.unlisten(this.relay());
@@ -68,7 +70,6 @@ CLASS({
   methods: {
     init: function() { 
       arequire('foam.dao.FutureDAO');
-      arequire('foam.dao.NullDAO');
       
       this.SUPER(); 
     },

@@ -17,7 +17,7 @@
 
  
 CLASS({
-  name: 'foam.dao.SeqNoDAO',
+  name: 'SeqNoDAO',
   label: 'foam.dao.SeqNoDAO',
   package: 'foam.dao',
 

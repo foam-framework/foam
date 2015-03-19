@@ -22,7 +22,11 @@ CLASS({
 
   requires: [
     'foam.core.dao.StorageDAO',
-    'foam.core.dao.MigrationDAO'
+    'foam.core.dao.MigrationDAO',
+    'foam.dao.CachingDAO',
+    'foam.dao.SeqNoDAO',
+    'MDAO',
+    'foam.dao.GUIDDAO'
   ],
 
   help: 'A facade for easy DAO setup.',
@@ -149,15 +153,15 @@ CLASS({
         this.mdao = dao;
       } else {
         if ( this.migrationRules && this.migrationRules.length ) {
-          dao = this.X.MigrationDAO.create({
+          dao = this.MigrationDAO.create({
             delegate: dao,
             rules: this.migrationRules,
             name: this.model.name + "_" + daoModel.name + "_" + this.name
           }, this.Y);
         }
         if ( this.cache ) {
-          this.mdao = MDAO.create(params);
-          dao = CachingDAO.create({cache: this.mdao, src: dao, model: this.model});
+          this.mdao = this.MDAO.create(params);
+          dao = this.CachingDAO.create({cache: this.mdao, src: dao, model: this.model});
         }
       }
 
@@ -166,13 +170,13 @@ CLASS({
       if ( this.seqNo ) {
         var args = {__proto__: params, delegate: dao, model: this.model};
         if ( this.seqProperty ) args.property = this.seqProperty;
-        dao = SeqNoDAO.create(args);
+        dao = this.SeqNoDAO.create(args);
       }
 
       if ( this.guid ) {
         var args = {__proto__: params, delegate: dao, model: this.model};
         if ( this.seqProperty ) args.property = this.seqProperty;
-        dao = GUIDDAO.create(args);
+        dao = this.GUIDDAO.create(args);
       }
 
       if ( this.timing  ) dao = TimingDAO.create(this.name + 'DAO', dao);
