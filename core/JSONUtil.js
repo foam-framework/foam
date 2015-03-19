@@ -46,6 +46,17 @@ var AbstractFormatter = {
     return buf;
   },
 
+  stringifyObject: function(obj, opt_defaultModel) {
+    var buf = '';
+    
+    this.outputObject_(function() {
+      for (var i = 0; i < arguments.length; i++)
+        buf += arguments[i];
+    }, obj, opt_defaultModel);
+    
+    return buf;
+  },
+
   /** @param p a predicate function or an mLang **/
   where: function(p) {
     return {
@@ -445,8 +456,9 @@ JSONUtil.prettyModel = {
   }
 };
 
-JSONUtil.stringify = JSONUtil.pretty.stringify.bind(JSONUtil.pretty);
-JSONUtil.output = JSONUtil.pretty.output.bind(JSONUtil.pretty);;
-JSONUtil.where = JSONUtil.pretty.where.bind(JSONUtil.pretty);;
+JSONUtil.stringify       = JSONUtil.pretty.stringify.bind(JSONUtil.pretty);
+JSONUtil.stringifyObject = JSONUtil.pretty.stringifyObject.bind(JSONUtil.pretty);
+JSONUtil.output          = JSONUtil.pretty.output.bind(JSONUtil.pretty);;
+JSONUtil.where           = JSONUtil.pretty.where.bind(JSONUtil.pretty);;
 
 var NOT_TRANSIENT = function(prop) { return ! prop.transient; };
