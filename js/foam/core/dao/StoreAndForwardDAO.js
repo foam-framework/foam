@@ -18,7 +18,7 @@
 CLASS({
   name: 'StoreAndForwardDAO',
   package: 'foam.core.dao',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   models: [
     {

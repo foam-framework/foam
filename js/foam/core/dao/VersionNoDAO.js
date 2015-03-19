@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.core.dao',
   name: 'VersionNoDAO',
 
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   properties: [
     {

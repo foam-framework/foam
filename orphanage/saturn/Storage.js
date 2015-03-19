@@ -77,7 +77,7 @@ EMailDAO = EMailBodyDAO.create({
 
 var EMailThreadingDAO = FOAM({
   model_: 'Model',
-  extendsModel: 'AbstractDAO',
+  extendsModel: 'foam.dao.AbstractDAO',
 
   properties: [
     {

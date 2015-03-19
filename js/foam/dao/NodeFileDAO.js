@@ -18,7 +18,7 @@
 CLASS({
   name: 'NodeFileDAO',
   package: 'foam.dao',
-  extendsModel: 'AbstractDAO',
+  extendsModel: 'foam.dao.AbstractDAO',
   requires: [
     'foam.dao.File'
   ],

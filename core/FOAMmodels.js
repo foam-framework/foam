@@ -68,6 +68,8 @@ var files = [
   'oam',
   'visitor',
   'messaging',
+  '../js/foam/dao/AbstractDAO',
+  '../js/foam/dao/ProxyDAO',
   'dao',
   'dao2',
   'arrayDAO',

@@ -1144,7 +1144,7 @@ var AutoIndex = {
 
 
 var MDAO = Model.create({
-  extendsModel: 'AbstractDAO',
+  extendsModel: 'foam.dao.AbstractDAO',
 
   name: 'MDAO',
   label: 'Indexed DAO',

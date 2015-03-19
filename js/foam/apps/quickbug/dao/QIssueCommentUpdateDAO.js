@@ -19,7 +19,7 @@ CLASS({
   name: 'QIssueCommentUpdateDAO',
   package: 'foam.apps.quickbug.dao',
   help: 'Decorates a comment dao, and on put, updates an associated issue dao.',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   properties: [
     'IssueNetworkDAO'

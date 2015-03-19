@@ -18,7 +18,7 @@
 CLASS({
   name: 'ActionFactoryDAO',
   package: 'foam.core.dao',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
   label: 'ActionFactoryDAO',
 
   properties: [

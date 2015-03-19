@@ -18,7 +18,7 @@
 CLASS({
   name: 'MultiDAO',
   package: 'foam.navigator.dao',
-  extendsModel: 'AbstractDAO',
+  extendsModel: 'foam.dao.AbstractDAO',
 
   requires: [
     'EasyDAO',

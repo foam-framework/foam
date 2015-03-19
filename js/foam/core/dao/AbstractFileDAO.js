@@ -18,7 +18,7 @@
 CLASS({
   name: 'AbstractFileDAO',
   package: 'foam.core.dao',
-  extendsModel: 'AbstractDAO',
+  extendsModel: 'foam.dao.AbstractDAO',
 
   properties: [
     {

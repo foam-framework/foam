@@ -6,7 +6,7 @@
 	/* global CLASS, TRUE, SET, NOT, GROUP_BY, COUNT, EasyDAO, Todo, TodoDAO */
 	CLASS({
 		name: 'TodoDAO',
-		extendsModel: 'ProxyDAO',
+		extendsModel: 'foam.dao.ProxyDAO',
 		methods: {
 			put: function(issue, s) {
 				// If the user tried to put an empty text, remove the entry instead.

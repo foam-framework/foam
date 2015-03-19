@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.core.dao',
   label: 'Chrome Storage DAO',
 
-  extendsModel: 'AbstractDAO',
+  extendsModel: 'foam.dao.AbstractDAO',
 
   properties: [
     {

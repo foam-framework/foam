@@ -237,7 +237,7 @@ MODEL({
 
 MODEL({
   name: 'DatastoreDAO',
-  extendsModel: 'AbstractDAO',
+  extendsModel: 'foam.dao.AbstractDAO',
   requires: [
     'DatastoreKey'
   ],

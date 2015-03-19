@@ -19,7 +19,7 @@ CLASS({
   name: 'KeywordDAO',
   package: 'foam.core.dao',
 
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   properties: [
     {

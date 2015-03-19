@@ -18,7 +18,7 @@
 CLASS({
   name: 'SplitDAO',
   package: 'com.google.mail',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
   requires: [
     'foam.core.dao.StripPropertiesDAO',
     'com.google.mail.GMailMessageDAO',

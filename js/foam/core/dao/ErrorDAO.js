@@ -18,7 +18,7 @@
 CLASS({
   name: 'ErrorDAO',
   package: 'foam.core.dao',
-  extendsModel: 'AbstractDAO',
+  extendsModel: 'foam.dao.AbstractDAO',
   methods: {
     put: function(obj, sink) {
       sink && sink.error && sink.error('put', obj);
