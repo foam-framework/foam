@@ -43,7 +43,7 @@ book code {
 @media not print {
 
   body {
-    font-family: 14px/normal Roboto, 'Helvetica Neue', Helvetica, Arial;
+    font: 14px/normal Roboto, 'Helvetica Neue', Helvetica, Arial;
     line-height: 1.4em;
   }
 
