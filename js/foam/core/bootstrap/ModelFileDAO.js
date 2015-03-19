@@ -33,6 +33,7 @@ MODEL({
       
       var tag = X.document.createElement('script');
       tag.src = sourcePath;
+      tag.async = true;
       X.document.head.appendChild(tag);
       
       tag.onload = function() {
