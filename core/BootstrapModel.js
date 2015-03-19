@@ -591,18 +591,13 @@ var BootstrapModel = {
       if ( this.templates ) for ( i = 0 ; i < this.templates.length ; i++ ) {
         var t = this.templates[i];
         args.push(
-          aseq(
-          function(ret) {
-            if ( model.name === 'SharedStyles' ) debugger;
-            ret();
-          },
           aif(!t.code,
               aseq(
                 aevalTemplate(this.templates[i], this),
                 (function(t) { return function(ret, m) {
                   t.code = m;
                   ret();
-                };})(t)))));
+                };})(t))));
       }
       if ( args.length ) args = [aseq.apply(null, args)];
 
