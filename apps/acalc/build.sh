@@ -19,8 +19,8 @@ node --harmony tools/foam.js foam.build.BuildApp controller=Calc defaultView=foa
 
 cd "$BUILD_DIR"
 # Code compression.
-#uglifyjs foam.js -c unused=false > foam-min.js
-#mv foam-min.js foam.js
+uglifyjs foam.js -c unused=false > foam-min.js
+mv foam-min.js foam.js
 
 mv main.html AppCalc.html
 popd
