@@ -5,7 +5,17 @@
 
     <title-page>
       <book-title>
-        <foam style="margin-left: -95px; margin-top: -122px; min-height:70px; height:70px; position: absolute;" model="foam.demos.graphics.Logo" width="300" height="100" font="70px Georgia" colours="#555 #666 #777 #888 #444" duration="15000">
+        <foam style="margin-left: -95px; margin-top: -122px; min-height:70px;
+                     height:70px; position: absolute;"
+              model="foam.demos.graphics.Logo" width="300" height="100"
+              font="70px Georgia" duration="15000">
+          <colour>#FCE8B2</colour>
+          <colour>#F7CB4D</colour>
+          <colour>#F4B400</colour>
+          <colour>#F09300</colour>
+          <colour>#F4B400</colour>
+          <colour>#DB4437</colour>
+          <colour>#616161</colour>
         </foam>
       </book-title>
       <sub-title>
