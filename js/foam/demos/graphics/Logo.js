@@ -57,7 +57,7 @@ CLASS({
         alpha: 0.8,
         color: null,
         borderWidth: 1,
-        border: this.colours[Math.floor(Math.random() * this.colours.length)]});
+        border: this.colours[Math.floor(Math.random() * this.colours.length)]}) || '#000000';
 
       this.addChild(circle);
       circle.stop = Movement.animate(
@@ -134,6 +134,8 @@ CLASS({
 
   exports: [ 'text$', 'font$', 'colours$' ],
 
+  constants: { DEFAULT_COLOURS: ['#33f','#f00','#fc0','#33f','#3c0'] },
+
   properties: [
     {
       name: 'duration',
@@ -142,7 +144,8 @@ CLASS({
     {
       model_: 'StringArrayProperty',
       name: 'colours',
-      factory: function() { return ['#33f','#f00','#fc0','#33f','#3c0']; }
+      singular: 'colour',
+      factory: function() { return []; }
     },
     {
       name: 'text',
@@ -172,6 +175,9 @@ CLASS({
   methods: {
     initHTML: function() {
       this.SUPER();
+
+      if ( this.colours.length === 0 )
+        this.colours = this.DEFAULT_COLOURS.slice(0);
 
       if ( this.duration ) {
         this.X.setTimeout(

@@ -43,7 +43,9 @@ MODEL({
           sink && sink.error && sink.error('Model load failed for: ', key);
           return;
         }
-        sink && sink.put && sink.put(model);
+        model.arequire()(function(m) {
+          sink && sink.put && sink.put(m);
+        });
       }.bind(this.X.document.head);
     },
     

@@ -121,7 +121,7 @@ CLASS({
       }
       else if ( viewName.model_ && typeof viewName.model_ === 'string' ) {
         var m = FOAM(prop.view);
-        arequireModel(m, this.X)(ret);
+        m.arequire()(ret);
       }
       else if ( viewName.model_ ) {
         var v = viewName.model_.create(viewName, this.X);

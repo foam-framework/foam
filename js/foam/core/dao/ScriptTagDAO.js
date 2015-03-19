@@ -65,7 +65,7 @@ CLASS({
     {
       name: 'onData',
       code: function(data, src) {
-        var work = [anop];
+        var work = [];
         var obj = JSONUtil.mapToObj(this.X, data, undefined, work);
 
         if ( ! obj ) {
@@ -75,8 +75,13 @@ CLASS({
           throw new Error("No sink waiting for " + obj.id);
         }
 
+        work.push(
+          function(ret) {
+            if ( obj.arequire ) obj.arequire(ret);
+            else ret();
+          });
         aseq.apply(null, work)(
-          function() {
+          function(ret) {
             for ( var i = 0 ; i < this.pending[obj.id].length ; i++ ) {
               var sink = this.pending[obj.id][i];
               sink && sink.put && sink.put(obj);

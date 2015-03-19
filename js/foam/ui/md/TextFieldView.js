@@ -25,7 +25,7 @@ CLASS({
       name: 'className',
       defaultValueFn: function() {
         return 'md-text-field-container' + (this.floatingLabel ?
-            '' : ' md-text-field-no-label');
+            '' : ' md-text-field-no-label') + (this.mode == 'read-only' ? ' disabled' : '');
       }
     },
     { name: 'data' },
@@ -57,7 +57,17 @@ CLASS({
       name: 'clearAction',
       documentation: 'When true, will show an X for clearing the text box.',
       defaultValue: false
-    }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'mode',
+      defaultValue: 'read-write',
+      view: {
+        factory_: 'foam.ui.ChoiceView',
+        choices: ['read-only', 'read-write'],
+      },
+      documentation: function() { /* Can be 'read-only', or 'read-write'. */}
+    },
   ],
   methods: {
     initHTML: function() {
@@ -107,12 +117,15 @@ CLASS({
         border-top: none;
         color: #444;
         flex-grow: 1;
-        font-family: Roboto;
+        font-family: Roboto, RobotoDraft;
         font-size: 14px;
         margin: 40px 16px 8px;
         padding: 0 0 7px 0;
         resize: none;
         z-index: 1;
+      }
+      .disabled .md-text-field-input {
+        border-bottom: none;
       }
       .md-text-field-container.md-text-field-no-label .md-text-field-input {
         font-size: 16px;
@@ -156,13 +169,13 @@ CLASS({
           <label id="{{{label}}}" class="md-text-field-label">%%label</label>
         <% } %>
         <% if ( this.growable ) { %>
-          <div id="{{{input}}}" class="md-text-field-input" contenteditable>
+          <div id="{{{input}}}" class="md-text-field-input"<%= this.mode == 'read-write' ? ' contenteditable' : '' %>>
           </div>
         <% } else if ( this.displayHeight > 1 ) { %>
-          <textarea id="{{{input}}}" type="text" class="md-text-field-input" rows="{{{this.displayHeight}}}"></textarea>
+          <textarea id="{{{input}}}" type="text" class="md-text-field-input" rows="{{{this.displayHeight}}}"<%= this.mode == 'read-only' ? ' disabled' : '' %>></textarea>
         <% } else { %>
           <input id="{{{input}}}" type="text" class="md-text-field-input"
-              <%= this.floatingLabel ? '' : 'placeholder="' + this.label + '"' %> />
+              <%= this.floatingLabel ? '' : 'placeholder="' + this.label + '"' %><%= this.mode == 'read-only' ? ' disabled' : '' %> />
           <% if ( this.clearAction ) { %>
             $$clear
           <% } %>
@@ -194,6 +207,10 @@ CLASS({
       name: 'onBlur',
       code: function() {
         this.focused = false;
+        if (this.growable) {
+          // contenteditable doesn't fire onChange.
+          this.data = this.softData;
+        }
       }
     },
     {

@@ -851,7 +851,7 @@ CLASS({
                 });
               // TODO(kgr): this isn't right because compiling the View
               // template is async.  Should create a FutureView to handle this.
-              arequireModel(viewModel);
+              viewModel.arequire();
             }
             var ret = function(args, X) { return viewModel.create(args, X || this.Y); };
           } else {

@@ -136,9 +136,9 @@ function arequire(modelName, opt_X) {
     var future = afuture();
     X.ModelDAO.find(modelName, {
       put: function(m) {
-        var m = X.lookup(modelName);
         delete X.arequire$ModelLoadsInProgress[modelName];
-        arequireModel(m, X)(future.set);
+        X.registerModel(m);
+        future.set(m);
       },
       error: function() {
         var args = argsToArray(arguments);
@@ -152,114 +152,8 @@ function arequire(modelName, opt_X) {
     return future.get;
   }
 
-  /** This is so that if the model is arequire'd concurrently the
-   *  initialization isn't done more than once.
-   **/
-  if ( ! model ) { console.log(modelName, 'not found'); return; }
-
-  return arequireModel(model, X);
+  return model.arequire()
 }
-
-
-function arequireModel(model, param_X) {
-  if ( ! model.required__ ) {
-    var args = [];
-    var future = afuture();
-
-    model.required__ = future.get;
-
-    var opt_X = param_X || X;
-
-// To debug a dependency cycle, uncomment the CYCLE DEBUG sections below.
-// Run your code, and when it hangs examine the unsatisfied models in
-// X.arequire$ModelRequiresInProgress
-
-// // CYCLE DEBUG
-// var modelName = model.id.clone();
-// var dbgX = X;
-// console.log("X param: ", param_X && param_X.$UID, " dbgX: ", dbgX.$UID);
-// if ( ! dbgX.arequire$ModelRequiresInProgress ) {
-//   dbgX.set('arequire$ModelRequiresInProgress', {} );
-// }
-// if ( ! dbgX.arequire$ModelRequiresInProgress[modelName] ) {
-//   dbgX.arequire$ModelRequiresInProgress[modelName] = { uid: model.$UID, extendsModel: "", traits: {}, requires: {} };
-//   future.get(function(m) {
-//     delete dbgX.arequire$ModelRequiresInProgress[m.id];
-//   });
-// }
-// // CYCLE DEBUG
-
-    if ( model.extendsModel ) args.push(arequire(model.extendsModel, opt_X));
-
-// // CYCLE DEBUG
-// if ( model.extendsModel ) {
-//   dbgX.arequire$ModelRequiresInProgress[modelName].extendsModel = model.extendsModel;
-//   arequire(model.extendsModel, opt_X)(function(m) {
-//     dbgX.arequire$ModelRequiresInProgress[modelName].extendsModel = "";
-//   });
-// }
-// // CYCLE DEBUG
-
-    // TODO(kgr): eventually this should just call the arequire() method on the Model
-    var i;
-    if ( model.traits ) {
-      for ( i = 0; i < model.traits.length; i++ ) {
-        args.push(arequire(model.traits[i], opt_X));
-// // CYCLE DEBUG
-// var trait = model.traits[i].clone();
-// dbgX.arequire$ModelRequiresInProgress[modelName].traits[trait] = true;
-// if (trait == 'foam.ui.HTMLViewTrait' && modelName == 'foam.ui.View')arequire(trait, opt_X)(function(m) {
-//   delete dbgX.arequire$ModelRequiresInProgress[modelName].traits[m.id];
-// });
-// // CYCLE DEBUG
-      }
-    }
-    if ( model.templates ) for ( i = 0 ; i < model.templates.length ; i++ ) {
-      var t = model.templates[i];
-      args.push(
-        aevalTemplate(model.templates[i], model),
-        (function(t) { return function(ret, m) {
-          model.getPrototype()[t.name] = m;
-          ret();
-        };})(t)
-      );
-    }
-    if ( args.length ) args = [aseq.apply(null, args)];
-
-    // Also arequire required Models.
-    if ( model.requires ) {
-      for ( var i = 0 ; i < model.requires.length ; i++ ) {
-        var r = model.requires[i];
-        var m = r.split(' as ');
-        if ( m[0] == model.id ) {
-          console.warn("Model requires itself: " + model.id);
-        } else {
-          args.push(arequire(m[0], opt_X));
-// // CYCLE DEBUG
-// var require = m[0].clone();
-// dbgX.arequire$ModelRequiresInProgress[modelName].requires[require] = true;
-// arequire(require, opt_X)(function(m) {
-//   delete dbgX.arequire$ModelRequiresInProgress[modelName].requires[m.id];
-// });
-// // CYCLE DEBUG
-        }
-      }
-    }
-
-    aseq(
-        apar.apply(apar, args),
-        (opt_X && opt_X.i18nModel && opt_X.i18nModel.bind(this, model, opt_X)) ||
-            aconstant(model))(function(m) {
-              m.finished__ = true;
-              future.set(m);
-            });
-  } else {
-    opt_X && opt_X.i18nModel && opt_X.i18nModel(model, opt_X);
-  }
-
-  return model.required__;
-}
-
 
 var FOAM_POWERED = '<a style="text-decoration:none;" href="https://github.com/foam-framework/foam/" target="_blank">\
 <font size=+1 face="catull" style="text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">\
@@ -334,10 +228,9 @@ function CLASS(m) {
         // console.time('buildModel: ' + id);
         var model = JSONUtil.mapToObj(X, m, Model, work);
         // console.timeEnd('buildModel: ' + id);
-        if ( work.length > 0 && model.required__ ) {
-          model.required__ = aseq(
-            aseq.apply(null, work),
-            model.required__);
+
+        if ( work.length > 0 ) {
+          model.extra__ = aseq.apply(null, work);
         }
 
         X.registerModel(model);

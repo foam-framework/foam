@@ -92,6 +92,10 @@ var BootstrapModel = {
     // extra memory in DEBUG mode.
     if ( DEBUG ) BootstrapModel.saveDefinition(this);
 
+    if ( ! this.finished__ && this.package) {
+      console.warn("Building prototype of ", this.id, " before being ready.");
+    }
+
     function addTraitToModel(traitModel, parentModel) {
       var parentName = parentModel && parentModel.id ? parentModel.id.replace(/\./g, '__') : '';
       var traitName  = traitModel.id ? traitModel.id.replace(/\./g, '__') : '';
@@ -270,7 +274,7 @@ var BootstrapModel = {
 
     // templates
     this.templates && Object_forEach(this.templates, function(t) {
-      cls.addMethod(t.name, TemplateUtil.lazyCompile(t));
+      cls.addMethod(t.name, t.code ? t.code : TemplateUtil.lazyCompile(t));
     });
 
     // add actions
@@ -564,7 +568,62 @@ var BootstrapModel = {
     return obj && obj.model_ && this.isSubModel(obj.model_);
   },
 
-  toString: function() { return "BootstrapModel(" + this.name + ")"; }
+  toString: function() { return "BootstrapModel(" + this.name + ")"; },
+
+  arequire: function() {
+    if ( this.required__ ) return this.required__;
+
+    var future = afuture();
+    this.required__ = future.get;
+
+    var go = function() {
+      var args = [];
+
+      if ( this.extendsModel ) args.push(arequire(this.extendsModel, this.X));
+
+      var i;
+      if ( this.traits ) {
+        for ( i = 0; i < this.traits.length; i++ ) {
+          args.push(arequire(this.traits[i], this.X));
+        }
+      }
+      var model = this;
+      if ( this.templates ) for ( i = 0 ; i < this.templates.length ; i++ ) {
+        var t = this.templates[i];
+        args.push(
+          aif(!t.code,
+              aseq(
+                aevalTemplate(this.templates[i], this),
+                (function(t) { return function(ret, m) {
+                  t.code = m;
+                  ret();
+                };})(t))));
+      }
+      if ( args.length ) args = [aseq.apply(null, args)];
+
+      if ( this.requires ) {
+        for ( var i = 0 ; i < this.requires.length ; i++ ) {
+          var r = this.requires[i];
+          var m = r.split(' as ');
+          if ( m[0] == this.id ) {
+            console.warn("Model requires itself: " + this.id);
+          } else {
+            args.push(arequire(m[0], this.X));
+          }
+        }
+      }
+
+      apar.apply(apar, args)(function() {
+        this.finished__ = true;
+        future.set(this);
+      }.bind(this));
+    }.bind(this);
+
+    if ( this.extra__ ) this.extra__(go);
+    else go();
+
+    return this.required__
+  }
 };
 
 /*

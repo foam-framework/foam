@@ -701,7 +701,8 @@ Model.methods = {
   getPrototype:             BootstrapModel.getPrototype,
   isSubModel:               BootstrapModel.isSubModel,
   isInstance:               BootstrapModel.isInstance,
-  getAllRequires:           BootstrapModel.getAllRequires
+  getAllRequires:           BootstrapModel.getAllRequires,
+  arequire:                 BootstrapModel.arequire
 };
 
 // This is the coolest line of code that I've ever written
