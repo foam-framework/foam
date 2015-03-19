@@ -1,0 +1,201 @@
+/**
+ * @license
+ * Copyright 2014 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+CLASS({
+  name: 'EasyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
+  package: 'foam.dao',
+
+  requires: [
+    'foam.core.dao.StorageDAO',
+    'foam.core.dao.MigrationDAO'
+  ],
+
+  help: 'A facade for easy DAO setup.',
+
+  documentation: function() {/*
+    <p>If you don't know which $$DOC{ref:'DAO'} implementation to choose, $$DOC{ref:'EasyDAO'} is
+    ready to help. Simply <code>this.X.EasyDAO.create()</code> and set the flags
+    to indicate what behavior you're looking for. Under the hood, $$DOC{ref:'EasyDAO'}
+    will create one or more $$DOC{ref:'DAO'} instances to service your requirements.
+    </p>
+    <p>Since $$DOC{ref:'EasyDAO'} is a proxy, just use it like you would any other
+    $$DOC{ref:'DAO'}, without worrying about the internal $$DOC{ref:'DAO'} doing the
+    work.
+    </p>
+  */},
+
+  properties: [
+    {
+      name: 'name',
+      defaultValueFn: function() { return this.model.plural; },
+      documentation: "The developer-friendly name for this $$DOC{ref:'.'}."
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'seqNo',
+      defaultValue: false,
+      documentation: "Have $$DOC{ref:'.'} use a sequence number to index items. Note that $$DOC{ref:'.seqNo'} and $$DOC{ref:'.guid'} features are mutually exclusive."
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'guid',
+      label: 'GUID',
+      defaultValue: false,
+      documentation: "Have $$DOC{ref:'.'} generate guids to index items. Note that $$DOC{ref:'.seqNo'} and $$DOC{ref:'.guid'} features are mutually exclusive."
+    },
+    {
+      name: 'seqProperty',
+      type: 'Property',
+      documentation: "The property on your items to use to store the sequence number or guid. This is required for $$DOC{ref:'.seqNo'} or $$DOC{ref:'.guid'} mode."
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'cache',
+      defaultValue: false,
+      documentation: "Enable local caching of the $$DOC{ref:'DAO'}."
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'logging',
+      defaultValue: false,
+      documentation: "Enable logging on the $$DOC{ref:'DAO'}."
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'timing',
+      defaultValue: false,
+      documentation: "Enable time tracking for concurrent $$DOC{ref:'DAO'} operations."
+    },
+    {
+      name: 'daoType',
+      defaultValue: 'IDBDAO',
+      documentation: function() { /*
+          <p>Selects the basic functionality this $$DOC{ref:'EasyDAO'} should provide.
+          You can specify an instance of a DAO model definition such as
+          $$DOC{ref:'MDAO'}, or a constant indicating your requirements.</p>
+          <p>Choices are:</p>
+          <ul>
+            <li>$$DOC{ref:'.ALIASES',text:'IDB'}: Use IndexDB for storage.</li>
+            <li>$$DOC{ref:'.ALIASES',text:'LOCAL'}: Use local storage (for Chrome Apps, this will use local, non-synced storage).</li>
+            <li>$$DOC{ref:'.ALIASES',text:'SYNC'}: Use synchronized storage (for Chrome Apps, this will use Chrome Sync storage).</li>
+          </ul>
+       */}
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'autoIndex',
+      defaultValue: false,
+      documentation: "Automatically generate an index."
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'migrationRules',
+      subType: 'foam.core.dao.MigrationRule',
+      documentation: "Creates an internal $$DOC{ref:'MigrationDAO'} and applies the given array of $$DOC{ref:'MigrationRule'}."
+    }
+  ],
+
+  constants: {
+    // Aliases for daoType
+    ALIASES: {
+      IDB:   'IDBDAO',
+      LOCAL: 'foam.core.dao.StorageDAO', // Switches to 'ChromeStorageDAO' for Chrome Apps
+      SYNC:  'foam.core.dao.StorageDAO'  // Switches to 'ChromeSyncStorageDAO' for Chrome Apps
+    }
+  },
+
+  methods: {
+    init: function(args) {
+      /*
+        <p>On initialization, the $$DOC{ref:'.'} creates an appropriate chain of
+        internal $$DOC{ref:'DAO'} instances based on the $$DOC{ref:'.'}
+        property settings.</p>
+        <p>This process is transparent to the developer, and you can use your
+        $$DOC{ref:'.'} like any other $$DOC{ref:'DAO'}.</p>
+      */
+
+      this.SUPER(args);
+
+      if ( window.chrome && chrome.storage ) {
+        this.ALIASES.LOCAL = 'foam.core.dao.ChromeStorageDAO';
+        this.ALIASES.SYNC  = 'foam.core.dao.ChromeSyncStorageDAO';
+      }
+
+      var daoType  = typeof this.daoType === 'string' ? this.ALIASES[this.daoType] || this.daoType : this.daoType;
+      var daoModel = typeof daoType === 'string' ? this.X.lookup(daoType) : daoType;
+      var params   = { model: this.model, autoIndex: this.autoIndex };
+
+      if ( this.name  ) params.name = this.name;
+      if ( this.seqNo || this.guid ) params.property = this.seqProperty;
+
+      var dao = daoModel.create(params);
+
+      if ( MDAO.isInstance(dao) ) {
+        this.mdao = dao;
+      } else {
+        if ( this.migrationRules && this.migrationRules.length ) {
+          dao = this.X.MigrationDAO.create({
+            delegate: dao,
+            rules: this.migrationRules,
+            name: this.model.name + "_" + daoModel.name + "_" + this.name
+          }, this.Y);
+        }
+        if ( this.cache ) {
+          this.mdao = MDAO.create(params);
+          dao = CachingDAO.create({cache: this.mdao, src: dao, model: this.model});
+        }
+      }
+
+      if ( this.seqNo && this.guid ) throw "EasyDAO 'seqNo' and 'guid' features are mutually exclusive.";
+
+      if ( this.seqNo ) {
+        var args = {__proto__: params, delegate: dao, model: this.model};
+        if ( this.seqProperty ) args.property = this.seqProperty;
+        dao = SeqNoDAO.create(args);
+      }
+
+      if ( this.guid ) {
+        var args = {__proto__: params, delegate: dao, model: this.model};
+        if ( this.seqProperty ) args.property = this.seqProperty;
+        dao = GUIDDAO.create(args);
+      }
+
+      if ( this.timing  ) dao = TimingDAO.create(this.name + 'DAO', dao);
+      if ( this.logging ) dao = LoggingDAO.create(dao);
+
+      this.delegate = dao;
+    },
+
+    addIndex: function() {
+      /* <p>Only relevant if $$DOC{ref:'.cache'} is true or if $$DOC{ref:'.daoType'}
+         was set to $$DOC{ref:'MDAO'}, but harmless otherwise.</p>
+         <p>See $$DOC{ref:'MDAO.addIndex', text:'MDAO.addIndex()'}.</p> */
+      this.mdao && this.mdao.addIndex.apply(this.mdao, arguments);
+      return this;
+    },
+
+    addRawIndex: function() {
+      /* <p>Only relevant if $$DOC{ref:'.cache'} is true or if $$DOC{ref:'.daoType'}
+         was set to $$DOC{ref:'MDAO'}, but harmless otherwise.</p>
+         <p>See $$DOC{ref:'MDAO.addRawIndex', text:'MDAO.addRawIndex()'}. */
+      this.mdao && this.mdao.addRawIndex.apply(this.mdao, arguments);
+      return this;
+    }
+  }
+});
+

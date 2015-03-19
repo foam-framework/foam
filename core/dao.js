@@ -173,6 +173,177 @@ var JSONToObject = {
   visitArrayElement: function (arr, i) { arr[i] = this.visit(arr[i]); }
 };
 
+CLASS({
+  name: 'FilteredDAO_',
+  extendsModel: 'foam.dao.ProxyDAO',
+
+  documentation: function() {/*
+        <p>Internal use only.</p>
+      */},
+
+  properties: [
+    {
+      name: 'query',
+      required: true
+    }
+  ],
+  methods: {
+    select: function(sink, options) {
+      return this.delegate.select(sink, options ? {
+        __proto__: options,
+        query: options.query ?
+          AND(this.query, options.query) :
+          this.query
+      } : {query: this.query});
+    },
+    removeAll: function(sink, options) {
+      return this.delegate.removeAll(sink, options ? {
+        __proto__: options,
+        query: options.query ?
+          AND(this.query, options.query) :
+          this.query
+      } : {query: this.query});
+    },
+    listen: function(sink, options) {
+      return this.delegate.listen(sink, options ? {
+        __proto__: options,
+        query: options.query ?
+          AND(this.query, options.query) :
+          this.query
+      } : {query: this.query});
+    },
+    toString: function() {
+      return this.delegate + '.where(' + this.query + ')';
+    }
+  }
+
+});
+
+
+CLASS({
+  name: 'OrderedDAO_',
+  extendsModel: 'foam.dao.ProxyDAO',
+
+  documentation: function() {/*
+        <p>Internal use only.</p>
+      */},
+
+  properties: [
+    {
+      name: 'comparator',
+      required: true
+    }
+  ],
+  methods: {
+    select: function(sink, options) {
+      if ( options ) {
+        if ( ! options.order )
+          options = { __proto__: options, order: this.comparator };
+      } else {
+        options = {order: this.comparator};
+      }
+
+      return this.delegate.select(sink, options);
+    },
+    toString: function() {
+      return this.delegate + '.orderBy(' + this.comparator + ')';
+    }
+  }
+
+});
+
+
+CLASS({
+  name: 'LimitedDAO_',
+  extendsModel: 'foam.dao.ProxyDAO',
+
+  documentation: function() {/*
+        <p>Internal use only.</p>
+      */},
+
+  properties: [
+    {
+      name: 'count',
+      required: true
+    }
+  ],
+  methods: {
+    select: function(sink, options) {
+      if ( options ) {
+        if ( 'limit' in options ) {
+          options = {
+            __proto__: options,
+            limit: Math.min(this.count, options.limit)
+          };
+        } else {
+          options = { __proto__: options, limit: this.count };
+        }
+      }
+      else {
+        options = { limit: this.count };
+      }
+
+      return this.delegate.select(sink, options);
+    },
+    toString: function() {
+      return this.delegate + '.limit(' + this.count + ')';
+    }
+  }
+});
+
+
+CLASS({
+  name: 'SkipDAO_',
+  extendsModel: 'foam.dao.ProxyDAO',
+
+  documentation: function() {/*
+        <p>Internal use only.</p>
+      */},
+
+  properties: [
+    {
+      name: 'skip',
+      required: true,
+      postSet: function() {
+        if ( this.skip !== Math.floor(this.skip) )
+          console.warn('skip() called with non-integer value: ' + this.skip);
+      }
+    }
+  ],
+  methods: {
+    select: function(sink, options) {
+      if ( options ) {
+        options = {
+          __proto__: options,
+          skip: this.skip
+        };
+      } else {
+        options = { __proto__: options, skip: this.skip };
+      }
+
+      return this.delegate.select(sink, options);
+    },
+    toString: function() {
+      return this.delegate + '.skip(' + this.skip + ')';
+    }
+  }
+});
+
+function atxn(afunc) {
+  return function(ret) {
+    if ( GLOBAL.__TXN__ ) {
+      afunc.apply(this, arguments);
+    } else {
+      GLOBAL.__TXN__ = {};
+      var a = argsToArray(arguments);
+      a[0] = function() {
+        GLOBAL.__TXN__ = undefined;
+        ret();
+      };
+      afunc.apply(this, a);
+    }
+  };
+}
 
 
 CLASS({
