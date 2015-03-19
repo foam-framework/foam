@@ -63,13 +63,30 @@ CLASS({
       c.save();
 
       c.globalAlpha = this.alpha;
-     
-      if ( this.background ) {
-        if ( this.dropShadow > 0 ) {
-          c.shadowBlur = this.dropShadow;
-          c.shadowColor = "black";
-        }
 
+      // create a clip region that cuts out the object's rect and draws
+      // the shadow around it. The fill color affects the shadow darkness,
+      // so we need to be able to fill with black without actually drawing
+      // the black part.
+      if ( this.dropShadow > 0 ) {
+        c.save();
+        c.moveTo(this.width,this.height);
+        c.lineTo(this.width,0);
+        c.lineTo(0,0);
+        c.lineTo(0, this.height);
+        c.lineTo(this.width,this.height);
+        c.closePath();
+        c.rect(-100,-100,this.width+200,this.height+200);      
+        c.clip();
+        c.shadowBlur = this.dropShadow;
+        c.shadowColor = "black";
+        c.fillStyle = "black";
+        c.fillRect(0,0,this.width,this.height);
+        c.restore();
+      }
+
+      
+      if ( this.background ) {
         c.fillStyle = this.background;
 
         c.beginPath();
