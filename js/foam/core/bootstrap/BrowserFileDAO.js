@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2014 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-CLASS({
-  name: 'ScriptTagDAO',
-  package: 'foam.core.dao',
-
+MODEL({
+  package: 'foam.core.bootstrap',
+  name: 'BrowserFileDAO',
+  
   imports: [
     'document',
     'window'
@@ -29,18 +29,22 @@ CLASS({
       name: 'pending',
       factory: function() { return {}; }
     },
+    {
+      name: 'preload',
+      factory: function() { return {}; }
+    }
   ],
-    
 
   methods: {
-    init: function(args) {
-      this.SUPER();
-      this.window.__DATA = this.onData;
-    },
     toURL_: function(key) {
       return window.FOAM_BOOT_DIR + '../js/' + key.replace(/\./g, '/') + '.js';
     },
     find: function(key, sink) {
+      if ( this.preload[key] ) {
+        sink && sink.put && sink.put(this.preload[key]);
+        return;
+      }
+
       if ( this.pending[key] ) this.pending[key].push(sink);
       else this.pending[key] = [sink];
 
@@ -65,21 +69,19 @@ CLASS({
     {
       name: 'onData',
       code: function(data, src) {
-        var work = [];
+        var work = [anop];
         var obj = JSONUtil.mapToObj(this.X, data, undefined, work);
 
         if ( ! obj ) {
           throw new Error("Failed to decode data: " + data);
         }
         if ( ! this.pending[obj.id] ) {
-          throw new Error("No sink waiting for " + obj.id);
+          // Workaround for legacy apps that include extra models via
+          // additional script tags.
+          this.preload[obj.id] = obj;
+          return;
         }
 
-        work.push(
-          function(ret) {
-            if ( obj.arequire ) obj.arequire(ret);
-            else ret();
-          });
         aseq.apply(null, work)(
           function(ret) {
             for ( var i = 0 ; i < this.pending[obj.id].length ; i++ ) {
