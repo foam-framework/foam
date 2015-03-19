@@ -195,7 +195,11 @@ var JSONUtil = {
           if ( Array.isArray(val) && ! val.length ) continue;
           if ( ! first ) out(',');
           out(this.keyify(prop.name), ': ');
-          this.output(out, val);
+          if ( Array.isArray(val) && prop.subType ) {
+            this.outputArray_(out, val, prop.subType);
+          } else {
+            this.output(out, val);
+          }
           first = false;
         }
       }
@@ -241,7 +245,14 @@ var JSONUtil = {
 
         if ( ! first ) out(',');
 
-        this.output(out, obj);
+        if ( typeof obj === 'string' || typeof obj === 'number' ) {
+          this.output(out, obj);
+        } else {
+          if ( obj.model_ )
+            this.outputObject_(out, obj, opt_defaultModel);
+          else
+            this.outputMap_(out, obj);
+        }
       }
 
       out(']');
@@ -342,8 +353,7 @@ var JSONUtil = {
 
       out(/*"\n",*/ indent, '{\n', nestedIndent);
 
-      for ( var key in obj )
-      {
+      for ( var key in obj ) {
         var val = obj[key];
 
         if ( ! first ) out(',\n');
@@ -376,7 +386,7 @@ var JSONUtil = {
           this.output(out, obj, nestedIndent);
         } else {
           if ( obj.model_ )
-            this.outputObject_(out, obj, nestedIndent);
+            this.outputObject_(out, obj, opt_defaultModel, nestedIndent);
           else
             this.outputMap_(out, obj, nestedIndent);
         }

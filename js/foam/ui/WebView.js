@@ -46,7 +46,7 @@ CLASS({
     initHTML: function() {
       this.SUPER();
 
-      this.$.contentDocument.write(this.data);
+      this.$.contentDocument.write('<div>' + this.data + '</div>');
       // This is a lazy way of handling the change in size when things like
       // images load asynchronously.
       this.intervalId = this.window.setInterval(this.onResize, 500);
@@ -66,7 +66,7 @@ CLASS({
           return;
         }
         if ( this.$.contentDocument.documentElement )
-          this.$.style.height = this.$.contentDocument.documentElement.offsetHeight;
+          this.$.style.height = this.$.contentDocument.body.children[0].clientHeight + 16;
       }
     }
   ]
