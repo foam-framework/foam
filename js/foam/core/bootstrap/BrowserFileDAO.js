@@ -42,6 +42,7 @@ MODEL({
     find: function(key, sink) {
       if ( this.preload[key] ) {
         sink && sink.put && sink.put(this.preload[key]);
+        delete this.preload[key];
         return;
       }
 
