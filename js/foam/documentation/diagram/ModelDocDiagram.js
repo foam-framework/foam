@@ -39,7 +39,7 @@ CLASS({
           this.modelName = this.data.name;
           this.packageName = this.data.package;
         }
-        this.processModelChange();
+        //this.processModelChange();
       }
     },
     {
