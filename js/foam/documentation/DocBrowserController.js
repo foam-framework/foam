@@ -140,12 +140,23 @@ CLASS({
       }
     },
 
-    requestNavigation: function(ref) {
-      if (ref.valid) {
+    requestNavigation: function(newRef) {
+      var setRef = function(ref) {
         this.DetailContext.documentViewRef.set(ref);
         this.SearchContext.selection$.set(ref.resolvedRoot.resolvedModelChain[0]); // selection wants a Model object
         if (ref.resolvedModelChain[0] !== this.selection) this.selection = ref.resolvedModelChain[0];
         location.hash = "#" + ref.resolvedRef;
+      }.bind(this);
+      if (newRef.valid) {
+        setRef(newRef);
+      } else {
+        this.DetailContext.arequire(newRef.ref, this.DetailContext)(function(m) {
+          var newNewRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
+          if (newNewRef.valid) {
+            setRef(newNewRef); // not fully recursive as we only want to try loading once
+            this.DetailContext.masterModelList.put(m);
+          }
+        }.bind(this));         
       }
     },
 
