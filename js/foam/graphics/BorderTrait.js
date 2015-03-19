@@ -46,6 +46,11 @@ CLASS({
     {
       name: 'background',
       defaultValue: 'rgba(0,0,0,0)'
+    },
+    {
+      name: 'dropShadow',
+      documentation: function() {/* Drop shadow thickness in pixels. */},      
+      defaultValue: 0
     }
   ],
 
@@ -58,8 +63,13 @@ CLASS({
       c.save();
 
       c.globalAlpha = this.alpha;
-
+     
       if ( this.background ) {
+        if ( this.dropShadow > 0 ) {
+          c.shadowBlur = this.dropShadow;
+          c.shadowColor = "black";
+        }
+
         c.fillStyle = this.background;
 
         c.beginPath();

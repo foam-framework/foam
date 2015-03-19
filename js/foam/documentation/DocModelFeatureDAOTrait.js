@@ -27,7 +27,7 @@ CLASS({
     'MDAO'
   ],
 
-  imports: [ 'masterModelList' ],
+  imports: [ 'masterModelList', 'featureDAO' ],
   exports: ['featureDAO', 'modelDAO', 'subModelDAO', 'traitUserDAO'],
 
   properties: [
