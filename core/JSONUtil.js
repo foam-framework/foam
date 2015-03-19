@@ -35,6 +35,17 @@
 var AbstractFormatter = {
   keyify: function(str) { return '"' + str + '"'; },
 
+  stringify: function(obj) {
+    var buf = '';
+    
+    this.output(function() {
+      for (var i = 0; i < arguments.length; i++)
+        buf += arguments[i];
+    }, obj);
+    
+    return buf;
+  },
+
   /** @param p a predicate function or an mLang **/
   where: function(p) {
     return {
@@ -132,17 +143,6 @@ var JSONUtil = {
 
   compact: {
     __proto__: AbstractFormatter,
-
-    stringify: function(obj) {
-      var buf = '';
-
-      this.output(function() {
-        for (var i = 0; i < arguments.length; i++)
-          buf += arguments[i];
-      }, obj);
-
-      return buf;
-    },
 
     output: function(out, obj) {
       if ( Array.isArray(obj) ) {
@@ -263,17 +263,6 @@ var JSONUtil = {
 
   pretty: {
     __proto__: AbstractFormatter,
-
-    stringify: function(obj) {
-      var buf = '';
-
-      this.output(function() {
-        for (var i = 0; i < arguments.length; i++)
-          buf += arguments[i];
-      }, obj);
-
-      return buf;
-    },
 
     output: function(out, obj, opt_indent) {
       var indent = opt_indent || '';
