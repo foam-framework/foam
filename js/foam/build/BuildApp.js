@@ -272,10 +272,8 @@ CLASS({
           }
         }
         contents += 'CLASS(';
-        if ( this.precompileTemplates )
-          contents += this.formatter.where(NOT_TRANSIENT).stringify(models[ids[i]]);
-        else
-          contents += JSONUtil.compact.where(NOT_TRANSIENT).stringify(models[ids[i]]);
+        var formatter = this.precompileTemplates ? this.formatter : JSONUtil.compact;
+        contents += formatter.where(NOT_TRANSIENT).stringifyObject(models[ids[i]], 'Model');
         contents += ')\n';
       }
 
@@ -283,10 +281,10 @@ CLASS({
     },
     execute_: function(model) {
       if ( ! model ) {
-        this.error("Could not find model: ", this.controller);
+        this.error('Could not find model: ', this.controller);
       }
-      this.log("Building   ", model.id);
-      this.log("Target is: ", this.targetPath);
+      this.log('Building   ', model.id);
+      this.log('Target is: ', this.targetPath);
       this.log(this.precompileTemplates ? '' : 'NOT ', 'pre-compiling templates.');
 
       var self = this;
@@ -297,7 +295,7 @@ CLASS({
             contents: this.HTML()
           });
 
-          console.log("Writing: ", file.path);
+          console.log('Writing: ', file.path);
           this.fileDAO.put(file, {
             put: ret,
             error: function() {
@@ -314,11 +312,11 @@ CLASS({
             path: this.targetPath + this.path.sep + 'foam.js',
             contents: corejs + appjs
           });
-          console.log("Writing: ", file.path);
+          console.log('Writing: ', file.path);
           this.fileDAO.put(file, {
             put: ret,
             error: function() {
-              self.error("ERROR writing file: ", file.path);
+              self.error('ERROR writing file: ', file.path);
               process.exit(1);
             }
           });

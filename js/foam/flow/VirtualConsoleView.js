@@ -27,7 +27,7 @@ CLASS({
     },
     {
       name: 'flare',
-      type: 'foam.ui.md',
+      type: 'foam.ui.md.Flare',
       postSet: function(old, nu) {
         if ( old === nu ) return;
         if ( old ) old.state$.removeListener(this.onFlareStateChange);
@@ -44,10 +44,11 @@ CLASS({
         // Setup flare that will be fired by this.reset() action.
         this.flare = this.Flare.create({
           element: this.$,
-          color: 'rgb(241, 250, 65)',
+          color: 'rgb(240,147,0)',
           cssPosition: 'absolute',
           startX: 0.9,
-          startY: 0.0
+          startY: 0.0,
+          fadeTime: 600
         });
 
         // Change this.$ CSS class when flare enters or leaves detached state.
@@ -102,6 +103,7 @@ CLASS({
       virtual-console {
         display: block;
         position: relative;
+        padding-top: 5px;
         min-height: 4em;
         max-height: 8em;
         font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;

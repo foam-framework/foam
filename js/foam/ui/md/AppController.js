@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'AppController',
   package: 'foam.ui.md',
+  name: 'AppController',
 
   requires: [
     'foam.graphics.ActionButtonCView',

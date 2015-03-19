@@ -77,6 +77,9 @@ CLASS({
         if ( ! this.X.gestureManager ) {
           this.X.gestureManager = this.GestureManager.create();
         }
+        this.X.registerModel(this.ActionButtonCView.xbind({
+          haloColor: 'rgb(240,147,0)'
+        }),'foam.graphics.ActionButtonCView');
       }
     }
   ],
