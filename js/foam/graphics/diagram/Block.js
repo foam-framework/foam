@@ -61,7 +61,7 @@ CLASS({
     {
       name: 'dropShadow',
       defaultValue: 10
-    }
+    },
   ],
 
   methods: {
