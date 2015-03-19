@@ -10,7 +10,7 @@
  */
 
 CLASS({
-  name: 'Editor',
+  name: 'CodeView',
   package: 'foam.flow',
   extendsModel: 'foam.flow.Element',
   traits: [ 'foam.flow.MultilineViewTrait' ],
@@ -47,7 +47,7 @@ CLASS({
         if ( ! this.$ ) return;
         this.$.addEventListener('input', this.onSrcChange);
         this.$.setAttribute('contenteditable', 'true');
-        this.publish(['loaded', 'foam.flow.Editor']);
+        this.publish(['loaded', 'foam.flow.CodeView']);
       }
     }
   ],
@@ -63,10 +63,10 @@ CLASS({
   ],
 
   templates: [
-    // Support both <editor>...</editor> and %%myEditor.
+    // Support both <code-view>...</code-view> and %%myCodeView.
     function toInnerHTML() {/*<% if ( this.inner ) { %><%= this.inner() %><% } else { %><%= this.src %><% } %>*/},
     function CSS() {/*
-      editor {
+      code-view {
         display: block;
         position: relative;
         min-height: 10em;

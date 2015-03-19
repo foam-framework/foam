@@ -10,7 +10,7 @@
  */
 
 CLASS({
-  name: 'AceEditor',
+  name: 'AceCodeView',
   package: 'foam.flow',
   extendsModel: 'foam.flow.Element',
 
@@ -52,16 +52,16 @@ CLASS({
       name: 'src',
       defaultValue: 'console.log("Hello world!");',
       postSet: function(_, nu) {
-        if ( ! this.editor ) return;
-        var editorSrc = this.editor.getValue();
-        if ( editorSrc !== nu ) {
-          this.editor.setValue(nu);
-          this.editor.clearSelection();
+        if ( ! this.codeView ) return;
+        var codeViewSrc = this.codeView.getValue();
+        if ( codeViewSrc !== nu ) {
+          this.codeView.setValue(nu);
+          this.codeView.clearSelection();
         }
       }
     },
     {
-      name: 'editor'
+      name: 'codeView'
     }
   ],
 
@@ -87,40 +87,40 @@ CLASS({
     {
       name: 'onAceLoaded',
       code: function() {
-        var editor = this.editor = GLOBAL.ace.edit(this.$);
-        editor.setOptions({
+        var codeView = this.codeView = GLOBAL.ace.edit(this.$);
+        codeView.setOptions({
           theme: this.aceTheme,
           mode: this.aceMode,
           tabSize: this.aceTabSize,
           minLines: this.aceMinLines,
           maxLines: this.aceMaxLines
         });
-        editor.setValue(this.src.trim());
-        editor.clearSelection();
-        editor.getSession().on('change', this.onSrcChange);
-        this.publish(['loaded', 'foam.flow.AceEditor']);
+        codeView.setValue(this.src.trim());
+        codeView.clearSelection();
+        codeView.getSession().on('change', this.onSrcChange);
+        this.publish(['loaded', 'foam.flow.AceCodeView']);
       }
     },
     {
       name: 'onAceLoadFailed',
       code: function() {
-        this.publish(['load-failed', 'foam.flow.AceEditor']);
+        this.publish(['load-failed', 'foam.flow.AceCodeView']);
       }
     },
     {
       name: 'onSrcChange',
       code: function(e) {
-        var editorSrc = this.editor.getValue();
-        if ( editorSrc !== this.src ) this.src = editorSrc;
+        var codeViewSrc = this.codeView.getValue();
+        if ( codeViewSrc !== this.src ) this.src = codeViewSrc;
       }
     }
   ],
 
   templates: [
-    // Support both <ace-editor>...</ace-editor> and %%myAceEditor.
+    // Support both <ace-code-view>...</ace-code-view> and %%myAceCodeView.
     function toInnerHTML() {/*<% if ( this.inner ) { %><%= this.inner() %><% } else { %><%= this.src %><% } %>*/},
     function CSS() {/*
-      ace-editor {
+      ace-code-view {
         display: block;
         font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
         flex-grow: 1;

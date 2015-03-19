@@ -28,7 +28,7 @@ CLASS({
     'foam.flow.Author',
     'foam.flow.ToC',
     'foam.flow.Section',
-    'foam.flow.AceEditor',
+    'foam.flow.AceCodeView',
     'foam.flow.CodeSample',
     'foam.flow.Aside',
     'foam.flow.GlossaryTerm',
@@ -36,7 +36,7 @@ CLASS({
   ],
   exports: [
     'glossaryTerms',
-    'editorModel',
+    'codeViewModel',
     'actionButtonModel'
   ],
 
@@ -52,10 +52,10 @@ CLASS({
       }
     },
     {
-      name: 'editorModel',
+      name: 'codeViewModel',
       factory: function() {
-        this.X.registerElement('editor', 'foam.flow.AceEditor');
-        return this.AceEditor;
+        this.X.registerElement('code-view', 'foam.flow.AceCodeView');
+        return this.AceCodeView;
       }
     },
     {

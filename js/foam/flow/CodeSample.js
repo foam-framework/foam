@@ -20,12 +20,12 @@ CLASS({
     'foam.ui.ActionButton',
     'foam.flow.VirtualConsole',
     'foam.flow.VirtualConsoleView',
-    'foam.flow.Editor'
+    'foam.flow.CodeView'
   ],
 
   imports: [
     'document',
-    'editorModel',
+    'codeViewModel',
     'actionButtonModel'
   ],
 
@@ -64,19 +64,19 @@ CLASS({
       factory: function() { return this.ActionButton; }
     },
     {
-      name: 'editor',
+      name: 'codeView',
       factory: function() {
-        return (this.editorModel ? this.editorModel : this.Editor).create();
+        return (this.codeViewModel ? this.codeViewModel : this.CodeView).create();
       },
       postSet: function(old, nu) {
         if ( old === nu ) return;
         if ( old ) {
-          old.unsubscribe(['loaded'], this.onEditorLoaded);
-          old.unsubscribe(['load-failed'], this.onEditorLoadFailed);
+          old.unsubscribe(['loaded'], this.onCodeViewLoaded);
+          old.unsubscribe(['load-failed'], this.onCodeViewLoadFailed);
         }
         if ( nu ) {
-          nu.subscribe(['loaded'], this.onEditorLoaded);
-          nu.subscribe(['load-failed'], this.onEditorLoadFailed);
+          nu.subscribe(['loaded'], this.onCodeViewLoaded);
+          nu.subscribe(['load-failed'], this.onCodeViewLoadFailed);
         }
       }
     }
@@ -87,9 +87,9 @@ CLASS({
       name: 'initHTML',
       code: function() {
         this.SUPER.apply(this, arguments);
-        if ( this.editor ) {
-          this.editor.src = this.src;
-          if ( this.editor.src$ ) this.src$ = this.editor.src$;
+        if ( this.codeView ) {
+          this.codeView.src = this.src;
+          if ( this.codeView.src$ ) this.src$ = this.codeView.src$;
         }
       }
     }
@@ -116,7 +116,7 @@ CLASS({
 
   listeners: [
     {
-      name: 'onEditorLoaded',
+      name: 'onCodeViewLoaded',
       todo: 'We should probably have a spinner and/or placeholder until this fires.',
       code: function() {
         // TODO(markdittmer): This should automatically update our classname.
@@ -127,20 +127,20 @@ CLASS({
       }
     },
     {
-      name: 'onEditorLoadFailed',
+      name: 'onCodeViewLoadFailed',
       isFramed: true,
       code: function(_, topics) {
-        var editorModelName = topics[1];
-        if ( editorModelName !== 'foam.flow.Editor' ) {
-          this.editor = this.Editor.create();
+        var codeViewModelName = topics[1];
+        if ( codeViewModelName !== 'foam.flow.CodeView' ) {
+          this.codeView = this.CodeView.create();
           this.updateHTML();
           return;
         }
 
-        // Failed to load editor: this.Editor. Just output src as textContent.
-        console.error('CodeSample: Failed to load code editor');
+        // Failed to load codeView: this.CodeView. Just output src as textContent.
+        console.error('CodeSample: Failed to load code view');
         if ( this.$ ) {
-          var container = this.$.querySelector('editors') || this.$;
+          var container = this.$.querySelector('code-views') || this.$;
           container.innerHTML = '';
           container.textContent = this.src;
           // TODO(markdittmer): This should automatically update our classname.
@@ -158,9 +158,9 @@ CLASS({
         %%title
       </heading>
       <top-split>
-        <editors>
-          %%editor
-        </editors>
+        <code-views>
+          %%codeView
+        </code-views>
         <actions>
           $$run{
             model_: this.actionButtonModel,
@@ -197,7 +197,7 @@ CLASS({
       code-sample.loading {
         display: none;
       }
-      code-sample editors {
+      code-sample code-views {
         display: flex;
         justify-content: space-between;
         align-items: stretch;
@@ -261,7 +261,7 @@ CLASS({
           margin: 3pt;
         }
 
-        code-sample editors, code-sample actions, code-sample virtual-console {
+        code-sample code-views, code-sample actions, code-sample virtual-console {
           display: none;
         }
 
