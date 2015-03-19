@@ -22,12 +22,12 @@ CLASS({
 
   requires: [
     'PersistentContext',
-    'IDBDAO',
+    'foam.dao.IDBDAO',
     'foam.core.dao.MigrationDAO',
     'foam.core.dao.MigrationRule',
     'Binding',
     'foam.core.dao.RestDAO',
-    'LazyCacheDAO',
+    'foam.dao.LazyCacheDAO',
     'foam.apps.quickbug.dao.ProjectNetworkDAO',
     'foam.apps.quickbug.model.imported.Project',
     'foam.apps.quickbug.model.QUser',

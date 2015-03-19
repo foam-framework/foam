@@ -28,12 +28,12 @@ CLASS({
   help: 'A facade for easy DAO setup.',
 
   documentation: function() {/*
-    <p>If you don't know which $$DOC{ref:'DAO'} implementation to choose, $$DOC{ref:'EasyDAO'} is
+    <p>If you don't know which $$DOC{ref:'DAO'} implementation to choose, $$DOC{ref:'foam.dao.EasyDAO'} is
     ready to help. Simply <code>this.X.EasyDAO.create()</code> and set the flags
-    to indicate what behavior you're looking for. Under the hood, $$DOC{ref:'EasyDAO'}
+    to indicate what behavior you're looking for. Under the hood, $$DOC{ref:'foam.dao.EasyDAO'}
     will create one or more $$DOC{ref:'DAO'} instances to service your requirements.
     </p>
-    <p>Since $$DOC{ref:'EasyDAO'} is a proxy, just use it like you would any other
+    <p>Since $$DOC{ref:'foam.dao.EasyDAO'} is a proxy, just use it like you would any other
     $$DOC{ref:'DAO'}, without worrying about the internal $$DOC{ref:'DAO'} doing the
     work.
     </p>
@@ -83,9 +83,9 @@ CLASS({
     },
     {
       name: 'daoType',
-      defaultValue: 'IDBDAO',
+      defaultValue: 'foam.dao.IDBDAO',
       documentation: function() { /*
-          <p>Selects the basic functionality this $$DOC{ref:'EasyDAO'} should provide.
+          <p>Selects the basic functionality this $$DOC{ref:'foam.dao.EasyDAO'} should provide.
           You can specify an instance of a DAO model definition such as
           $$DOC{ref:'MDAO'}, or a constant indicating your requirements.</p>
           <p>Choices are:</p>
@@ -113,7 +113,7 @@ CLASS({
   constants: {
     // Aliases for daoType
     ALIASES: {
-      IDB:   'IDBDAO',
+      IDB:   'foam.dao.IDBDAO',
       LOCAL: 'foam.core.dao.StorageDAO', // Switches to 'ChromeStorageDAO' for Chrome Apps
       SYNC:  'foam.core.dao.StorageDAO'  // Switches to 'ChromeSyncStorageDAO' for Chrome Apps
     }

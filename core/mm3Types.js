@@ -640,6 +640,8 @@ CLASS({
   name: 'DAOProperty',
   help: "Describes a DAO property.",
 
+  requires: ['foam.dao.FutureDAO'],
+  
   properties: [
     {
       name: 'type',
@@ -660,7 +662,7 @@ CLASS({
         defineLazyProperty(this, prop.name + '$Proxy', function() {
           if ( ! this[prop.name] ) {
             var future = afuture();
-            var delegate = FutureDAO.create({
+            var delegate = prop.FutureDAO.create({
               future: future.get
             });
           } else

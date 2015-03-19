@@ -20,9 +20,9 @@ CLASS({
   package: 'foam.navigator',
   extendsModel: 'foam.ui.View',
   requires: [
-    'CachingDAO',
-    'FutureDAO',
-    'IDBDAO',
+    'foam.dao.CachingDAO',
+    'foam.dao.FutureDAO',
+    'foam.dao.IDBDAO',
     'MDAO',
     'foam.ui.TableView',
     'foam.ui.TextFieldView',

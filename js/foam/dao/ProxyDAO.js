@@ -36,13 +36,18 @@ CLASS({
       required: true,
       transient: true,
       documentation: "The internal DAO to proxy.",
-      factory: function() { return NullDAO.create(); }, // TODO: use singleton
+      factory: function() { return this.X.lookup('NullDAO').create(); }, // TODO: use singleton
       postSet: function(oldDAO, newDAO) {
         if ( this.daoListeners_.length ) {
           if ( oldDAO ) oldDAO.unlisten(this.relay());
           newDAO.listen(this.relay());
           // FutureDAOs will put via the future. In that case, don't put here.
-          if ( ! FutureDAO.isInstance(oldDAO) ) this.notify_('reset', []);
+          // TODO(jacksonic): these lookups would love to be requires when we support cycles.
+          if ( this.X.lookup('FutureDAO') && this.X.lookup('FutureDAO').isInstance(oldDAO) ) {
+            // do nothing
+          } else {
+            this.notify_('reset', []);
+          }
         }
       }
     },
@@ -61,6 +66,13 @@ CLASS({
   ],
 
   methods: {
+    init: function() { 
+      arequire('foam.dao.FutureDAO');
+      arequire('foam.dao.NullDAO');
+      
+      this.SUPER(); 
+    },
+
     relay: function() { /* Sets up relay for listening to delegate changes. */
       if ( ! this.relay_ ) {
         var self = this;

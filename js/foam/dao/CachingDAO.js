@@ -21,6 +21,8 @@ CLASS({
 
   extendsModel: 'foam.dao.ProxyDAO',
 
+  requires: ['foam.dao.FutureDAO'],
+  
   properties: [
     {
       name: 'src'
@@ -45,7 +47,7 @@ CLASS({
       var cache = this.cache;
 
       var futureDelegate = afuture();
-      this.cache = FutureDAO.create({future: futureDelegate.get});
+      this.cache = this.FutureDAO.create({future: futureDelegate.get});
 
       src.select(cache)(function() {
         // Actually means that cache listens to changes in the src.

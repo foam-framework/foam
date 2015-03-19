@@ -27,7 +27,7 @@ CLASS({
 
 CLASS({
   name: 'Controller',
-  requires: ['EasyDAO'],
+  requires: ['foam.dao.EasyDAO'],
   properties: [
     {
       name: 'input',

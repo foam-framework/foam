@@ -17,8 +17,8 @@
 
  
 CLASS({
-  name: 'SeqNoDAO',
-  label: 'SeqNoDAO',
+  name: 'foam.dao.SeqNoDAO',
+  label: 'foam.dao.SeqNoDAO',
   package: 'foam.dao',
 
   extendsModel: 'foam.dao.ProxyDAO',

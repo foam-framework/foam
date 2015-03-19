@@ -18,7 +18,7 @@
 
 CLASS({
   name: 'GUIDDAO',
-  label: 'GUIDDAO',
+  label: 'foam.dao.GUIDDAO',
   package: 'foam.dao',
 
   extendsModel: 'foam.dao.ProxyDAO',

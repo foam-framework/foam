@@ -108,7 +108,7 @@ var RegisterDevDocs = function(opt_X) {
               and a reference gets propagated to objects you create.
               $$DOC{ref:'developerDocs.Events.chapters.binding',text:'Bind'}
               it to a property and you'll get value changes automatically propagated.</li>
-              <li>Need to cache data from your back end? Throw a $$DOC{ref:'CachingDAO'}
+              <li>Need to cache data from your back end? Throw a $$DOC{ref:'foam.dao.CachingDAO'}
               on top of your $$DOC{ref:'RestDAO'}. Want to swap the whole thing out at
               run time? Hide it behind a $$DOC{ref:'foam.dao.ProxyDAO'}
               and your app won't know the difference.  </li>

@@ -70,7 +70,6 @@ var files = [
   'messaging',
   '../js/foam/dao/ProxyDAO',
   'dao',
-  'dao2',
   'arrayDAO',
   'index',
   'models',
