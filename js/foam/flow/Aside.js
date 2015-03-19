@@ -18,8 +18,7 @@ CLASS({
     function CSS() {/*
       aside, .aside {
         background: #fff;
-        margin: 0px 10px 10px 10px;
-        right: 10px;
+        margin: 10px;
         float: right;
         position: relative;
       }
@@ -32,7 +31,7 @@ CLASS({
 
         aside, .aside {
           box-shadow: 2px 2px 7px #aaa;
-          margin: 8px;
+          margin: 0px 10px 10px 15px;
           border: 0px;
           border-radius: 2px;
         }

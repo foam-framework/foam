@@ -45,7 +45,7 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'aceMaxLines',
-      defaultValue: 15
+      defaultValue: 25
     },
     {
       model_: 'StringProperty',

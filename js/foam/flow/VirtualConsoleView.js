@@ -44,7 +44,7 @@ CLASS({
         // Setup flare that will be fired by this.reset() action.
         this.flare = this.Flare.create({
           element: this.$,
-          color: 'rgb(241, 250, 65)',
+          color: 'rgb(240,147,0)',
           cssPosition: 'absolute',
           startX: 0.9,
           startY: 0.0,

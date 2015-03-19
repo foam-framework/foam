@@ -43,7 +43,12 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'src',
-      defaultValue: 'console.log("Hello world!");'
+      defaultValue: 'console.log("Hello world!");',
+      view: {
+        factory_: 'foam.ui.TextFieldView',
+        mode: 'read-only',
+        className: 'src'
+      }
     },
     {
       name: 'virtualConsole',
@@ -169,6 +174,7 @@ CLASS({
             background: '#e51c23'
           }
         </actions>
+        $$src
       </top-split>
       <bottom-split>
         $$virtualConsole{
@@ -182,7 +188,7 @@ CLASS({
         display: block;
         border-radius: inherit;
       }
-      code-sample > heading {
+      code-sample heading {
         border-top-left-radius: inherit;
         border-top-right-radius: inherit;
         border-bottom-left-radius: 0px;
@@ -196,14 +202,14 @@ CLASS({
         justify-content: space-between;
         align-items: stretch;
       }
-      code-sample > top-split, code-sample > bottom-split {
+      code-sample top-split, code-sample bottom-split {
         display: block;
         position: relative;
       }
-      code-sample > top-split {
+      code-sample top-split {
         z-index: 10;
       }
-      code-sample > top-split::before {
+      code-sample top-split::before {
         bottom: -4px;
         content: '';
         height: 4px;
@@ -213,7 +219,7 @@ CLASS({
         background-image: -webkit-linear-gradient(top,rgba(0,0,0,.12) 0%,rgba(0,0,0,0) 100%);
         background-image: linear-gradient(to bottom,rgba(0,0,0,.12) 0%,rgba(0,0,0,0) 100%);
       }
-      code-sample > bottom-split {
+      code-sample bottom-split {
         z-index: 5;
         background: #E0E0E0;
       }
@@ -221,6 +227,7 @@ CLASS({
         position: absolute;
         right: 30px;
         bottom: -18px;
+        z-index: 15;
       }
       code-sample canvas.playButton {
         background: rgba(0,0,0,0);
@@ -230,28 +237,40 @@ CLASS({
 
       @media not print {
 
-        aside code-sample > heading {
+        aside code-sample heading {
           font-size: 25px;
           margin: 0px;
           padding: 10px 10px 10px 10px;
           background: #F4B400;
         }
 
+        code-sample .src {
+          display: none;
+        }
+
       }
 
       @media print {
 
-        code-sample > heading {
+        code-sample heading {
           font-size: 14pt;
-          margin-left: 3pt;
+          margin: 6pt;
         }
 
-        code-sample > top-split {
+        code-sample top-split {
           margin: 3pt;
         }
 
-        code-sample actions, code-sample virtual-console {
+        code-sample editors, code-sample actions, code-sample virtual-console {
           display: none;
+        }
+
+        code-sample .src {
+          display: block;
+          font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+          white-space: pre-wrap;
+          margin: 3pt;
+          page-break-inside: avoid;
         }
 
       }
