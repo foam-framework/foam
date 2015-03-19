@@ -55,6 +55,10 @@ CLASS({
       .actionButtonCView-moreActions {
         margin-right: 10px;
       }
+      .email-view {
+        overflow-y: scroll;
+        height: 100%;
+      }
     */},
     function toHTML() {/*
       <% this.destroy(); %>
