@@ -625,6 +625,12 @@ CLASS({
       defaultValue: false
     },
     {
+      name: 'fromString',
+      defaultValue: function(s, p) {
+        this[p.name] = s.split(',');
+      }
+    },
+    {
       name: 'fromElement',
       defaultValue: function(e, p) {
         this[p.name] = this[p.name].pushF(e.innerHTML);
@@ -969,4 +975,3 @@ CLASS({
    }
   ]
 });
-
