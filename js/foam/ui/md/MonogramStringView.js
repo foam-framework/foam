@@ -53,6 +53,7 @@ CLASS({
         align-items: center;
         border-radius: 20px;
         border: 1px solid rgba(0,0,0,.1);
+        box-sizing: border-box;
         color: #fff;
         display: -webkit-inline-flex;
         display: inline-flex;
