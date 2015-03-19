@@ -22,28 +22,28 @@ CLASS({
   description: 'Mobile QuickBug',
 
   requires: [
-    'foam.ui.md.ResponsiveAppControllerView',
-    'foam.ui.md.AppController',
-    'foam.core.dao.SplitDAO',
+    'ContextualizingDAO',
+    'DAOVersion',
+    'IDBDAO',
+    'com.google.analytics.WebMetricsReportingDAO',
     'foam.apps.mbug.ui.ChangeProjectView',
-    'foam.ui.DetailView',
-    'foam.input.touch.GestureManager',
     'foam.apps.mbug.ui.IssueCitationView',
     'foam.apps.mbug.ui.IssueView',
     'foam.apps.quickbug.model.DefaultQuery',
     'foam.apps.quickbug.model.QBug',
-    'foam.oauth2.AutoOAuth2',
-    'foam.ui.layout.CSSStackView as StackView',
-    'foam.input.touch.TouchManager',
-    'IDBDAO',
-    'foam.core.dao.KeywordDAO',
-    'DAOVersion',
-    'ContextualizingDAO',
     'foam.core.dao.CloningDAO',
-    'com.google.analytics.WebMetricsReportingDAO',
+    'foam.core.dao.KeywordDAO',
+    'foam.core.dao.SplitDAO',
+    'foam.graphics.ActionButtonCView',
+    'foam.input.touch.GestureManager',
+    'foam.input.touch.TouchManager',
     'foam.metrics.Metric',
+    'foam.oauth2.AutoOAuth2',
     'foam.oauth2.OAuth2WebClient',
-    'foam.graphics.ActionButtonCView'
+    'foam.ui.DetailView',
+    'foam.ui.layout.CSSStackView as StackView',
+    'foam.ui.md.AppController',
+    'foam.ui.md.ResponsiveAppControllerView'
   ],
 
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
@@ -676,7 +676,7 @@ ul.swipeAltHeader {
   background: #3e50b4;
   box-shadow: 0 1px 1px rgba(0,0,0,.25);
   color: white;
-  height: 48px;
+  height: 45px;
   margin: 0;
   overflow: hidden;
   padding: 0 0 0 56px;
