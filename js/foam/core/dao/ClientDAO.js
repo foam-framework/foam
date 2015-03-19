@@ -19,7 +19,7 @@ CLASS({
    "model_": "Model",
    "package": "foam.core.dao",
    "name": "ClientDAO",
-   "extendsModel": "foam.dao.AbstractDAO",
+   "extendsModel": "AbstractDAO",
    "properties": [
       {
          "model_": "Property",

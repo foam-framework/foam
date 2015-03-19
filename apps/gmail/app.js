@@ -29,7 +29,7 @@ window.onload = function() {
     arequire('RelationshipsView'),
     arequire('LinkView'),
     arequire('Expr'),
-    arequire('foam.dao.AbstractDAO'),
+    arequire('AbstractDAO'),
     arequire('foam.ui.StackView'),
     arequire('foam.ui.DAOController'),
     arequire('foam.ui.DAOCreateController'),

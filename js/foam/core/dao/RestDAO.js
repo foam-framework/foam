@@ -18,7 +18,7 @@
 CLASS({
   name: 'RestDAO',
   package: 'foam.core.dao',
-  extendsModel: 'foam.dao.AbstractDAO',
+  extendsModel: 'AbstractDAO',
 
   imports: [
     'ajsonp'

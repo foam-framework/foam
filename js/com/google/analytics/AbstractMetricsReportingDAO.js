@@ -18,7 +18,7 @@
 CLASS({
   name: 'AbstractMetricsReportingDAO',
   package: 'com.google.analytics',
-  extendsModel: 'foam.dao.AbstractDAO',
+  extendsModel: 'AbstractDAO',
 
   properties: [
     {

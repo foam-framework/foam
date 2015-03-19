@@ -129,7 +129,7 @@ CLASS({
     'foam.ui.animated.Label',
     'foam.ui.md.Flare',
     'foam.ui.DAOListView',
-    'foam.dao.AbstractDAO'
+    'AbstractDAO'
   ],
 
   exports: [

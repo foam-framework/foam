@@ -16,23 +16,16 @@
  */
 
 
-arequire('foam.dao.AbstractDAO')(function(m) {
-  // Copy AbstractDAO methods in Array prototype
+(function() {
+  // Copy X.AbstractDAO methods in Array prototype
+
   var pmap = {};
-  for ( var key in m.methods ) {
-    pmap[m.methods[key].name] = m.methods[key].code;
+  for ( var key in AbstractDAO.methods ) {
+    pmap[AbstractDAO.methods[key].name] = AbstractDAO.methods[key].code;
   }
 
   defineProperties(Array.prototype, pmap);
-});
-
-defineLazyProperty(Array.prototype, 'daoListeners_', function() {
-  return {
-    value: [],
-    configurable: true
-  };
-});
-
+})();
 
 defineLazyProperty(Array.prototype, 'daoListeners_', function() {
   return {
@@ -72,16 +65,10 @@ Object.defineProperty(Array.prototype, 'sink', {
   writeable: true
 });
 
-
-arequire('foam.dao.AbstractDAO')(function(m) {
-  defineProperties(Array.prototype, {
-    listen:   m.getPrototype().listen,
-    unlisten: m.getPrototype().unlisten,
-    notify_:  m.getPrototype().notify_,
-  });
-});
-  
 defineProperties(Array.prototype, {
+  listen:   AbstractDAO.getPrototype().listen,
+  unlisten: AbstractDAO.getPrototype().unlisten,
+  notify_:  AbstractDAO.getPrototype().notify_,
 /*
   listen:   function() { },
   unlisten: function() { },

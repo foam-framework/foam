@@ -153,7 +153,7 @@ var ContactAvatarNetworkDAO = FOAM({
 
   name: 'ContactAvatarNetworkDAO',
 
-  extendsModel: 'foam.dao.AbstractDAO',
+  extendsModel: 'AbstractDAO',
 
   properties: [
     {

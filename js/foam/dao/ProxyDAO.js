@@ -19,7 +19,7 @@ CLASS({
   name: 'ProxyDAO',
   package: 'foam.dao',
   
-  extendsModel: 'foam.dao.AbstractDAO',
+  extendsModel: 'AbstractDAO',
 
   documentation: function() {/*
     Provides a proxy to the $$DOC{ref:'.delegate'} DAO, and allows swapping out the

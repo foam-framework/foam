@@ -18,7 +18,7 @@
 CLASS({
   name: 'QIssuesSplitDAO',
   package: 'foam.apps.quickbug.dao',
-  extendsModel: 'foam.dao.AbstractDAO',
+  extendsModel: 'AbstractDAO',
 
   requires: [
     'MDAO',

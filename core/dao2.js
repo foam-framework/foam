@@ -723,7 +723,7 @@ CLASS({
   name: 'IDBDAO',
   label: 'IndexedDB DAO',
 
-  extendsModel: 'foam.dao.AbstractDAO',
+  extendsModel: 'AbstractDAO',
 
   properties: [
     {

@@ -3,7 +3,7 @@ var mongo = require('mongodb');
 
 global.MongoDAO = FOAM({
   model_: 'Model',
-  extendsModel: 'foam.dao.AbstractDAO',
+  extendsModel: 'AbstractDAO',
 
   name: 'MongoDAO',
   label: 'MongoDB DAO',

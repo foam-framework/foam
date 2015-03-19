@@ -177,7 +177,6 @@ var JSONToObject = {
 
 CLASS({
   name: 'AbstractDAO',
-  package: 'foam.dao',
   
   documentation: function() {/*
     The base for most DAO implementations, $$DOC{ref:'.'} provides basic facilities for
