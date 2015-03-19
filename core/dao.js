@@ -174,15 +174,23 @@ var JSONToObject = {
 };
 
 
+
 CLASS({
   name: 'AbstractDAO',
-
+  
   documentation: function() {/*
     The base for most DAO implementations, $$DOC{ref:'.'} provides basic facilities for
     $$DOC{ref:'.where'}, $$DOC{ref:'.limit'}, $$DOC{ref:'.skip'}, and $$DOC{ref:'.orderBy'}
     operations, and provides for notifications of updates through $$DOC{ref:'.listen'}.
   */},
 
+  requires: [
+//     'FilteredDAO_', // can't require these due to cycle back to AbstractDAO.
+//     'LimitedDAO_',
+//     'SkipDAO_',
+//     'OrderedDAO_'
+  ],
+  
   properties: [
     {
       name: 'daoListeners_',
@@ -193,6 +201,15 @@ CLASS({
   ],
 
   methods: {
+    init: function() {
+      arequire('FilteredDAO_');
+      arequire('LimitedDAO_');
+      arequire('SkipDAO_');
+      arequire('OrderedDAO_');
+      
+      this.SUPER();
+    },
+    
     update: function(expr) { /* Applies a change to the DAO contents. */
       return this.select(UPDATE(expr, this));
     },
@@ -269,19 +286,19 @@ CLASS({
 
     where: function(query) { /* Return a DAO that contains a filtered subset of this one. */
       // only use X if we are an invalid instance without a this.Y
-      return (this.Y || X).FilteredDAO_.create({query: query, delegate: this});
+      return (this.Y || X).lookup('FilteredDAO_').create({query: query, delegate: this});
     },
 
     limit: function(count) { /* Return a DAO that contains a count limited subset of this one. */
-      return (this.Y || X).LimitedDAO_.create({count:count, delegate:this});
+      return (this.Y || X).lookup('LimitedDAO_').create({count:count, delegate:this});
     },
 
     skip: function(skip) { /* Return a DAO that contains a subset of this one, skipping initial items. */
-      return (this.Y || X).SkipDAO_.create({skip:skip, delegate:this});
+      return (this.Y || X).lookup('SkipDAO_').create({skip:skip, delegate:this});
     },
 
     orderBy: function() { /* Return a DAO that contains a subset of this one, ordered as specified. */
-      return (this.Y || X).OrderedDAO_.create({ comparator: arguments.length == 1 ? arguments[0] : argsToArray(arguments), delegate: this });
+      return (this.Y || X).lookup('OrderedDAO_').create({ comparator: arguments.length == 1 ? arguments[0] : argsToArray(arguments), delegate: this });
     },
 
     unlisten: function(sink) { /* Stop sending updates to the given sink. */
@@ -344,6 +361,7 @@ CLASS({
     }
   }
 });
+
 
 // Experimental, convert all functions into sinks
 Function.prototype.put    = function() { this.apply(this, arguments); };

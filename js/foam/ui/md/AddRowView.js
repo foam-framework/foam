@@ -42,7 +42,7 @@ CLASS({
     {
       model_: 'Model',
       name: 'SingleEntryHidingDAO',
-      extendsModel: 'ProxyDAO',
+      extendsModel: 'foam.dao.ProxyDAO',
       methods: {
         select: function(sink, options) {
           var firstEntry;

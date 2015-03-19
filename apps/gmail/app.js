@@ -65,7 +65,7 @@ window.onload = function() {
     arequire('OAuth2'),
     arequire('XHR'),
     arequire('LimitedLiveCachingDAO'),
-    arequire('ProxyDAO'),
+    arequire('foam.dao.ProxyDAO'),
     arequire('GMailToEMailDAO'),
     arequire('AbstractAdapterDAO'),
     arequire('GMailMessageDAO'),

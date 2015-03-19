@@ -18,7 +18,7 @@
 CLASS({
   name: 'PropertyOffloadDAO',
   package: 'foam.core.dao',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   properties: [
     {

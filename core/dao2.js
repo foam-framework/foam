@@ -15,116 +15,13 @@
  * limitations under the License.
  */
 
-CLASS({
-  name: 'ProxyDAO',
-
-  extendsModel: 'AbstractDAO',
-
-  documentation: function() {/*
-    Provides a proxy to the $$DOC{ref:'.delegate'} DAO, and allows swapping out the
-    $$DOC{ref:'.delegate'} transparently
-    to any listeners of this $$DOC{ref:'.'}.
-  */},
-
-  properties: [
-    {
-      name: 'delegate',
-      type: 'DAO',
-      mode: "read-only",
-      hidden: true,
-      required: true,
-      transient: true,
-      documentation: "The internal DAO to proxy.",
-      factory: function() { return NullDAO.create(); }, // TODO: use singleton
-      postSet: function(oldDAO, newDAO) {
-        if ( this.daoListeners_.length ) {
-          if ( oldDAO ) oldDAO.unlisten(this.relay());
-          newDAO.listen(this.relay());
-          // FutureDAOs will put via the future. In that case, don't put here.
-          if ( ! FutureDAO.isInstance(oldDAO) ) this.notify_('reset', []);
-        }
-      }
-    },
-    {
-      model_: 'ModelProperty',
-      name: 'model',
-      type: 'Model',
-      defaultValueFn: function() { return this.delegate.model; },
-      documentation: function() { /*
-          <p>Determines the expected $$DOC{ref:'Model'} type for the items
-            in this $$DOC{ref:'DAO'}.</p>
-          <p>The properties of the $$DOC{ref:'Model'} definition specified
-            here may be used when filtering and indexing.</p>
-      */}
-    }
-  ],
-
-  methods: {
-    relay: function() { /* Sets up relay for listening to delegate changes. */
-      if ( ! this.relay_ ) {
-        var self = this;
-
-        this.relay_ = {
-          put:    function() { self.notify_('put', arguments);    },
-          remove: function() { self.notify_('remove', arguments); },
-          reset: function() { self.notify_('reset', arguments); },
-          toString: function() { return 'RELAY(' + this.$UID + ', ' + self.model_.name + ', ' + self.delegate + ')'; }
-        };
-      }
-
-      return this.relay_;
-    },
-
-    put: function(value, sink) { /* Passthrough to delegate. */
-      this.delegate.put(value, sink);
-    },
-
-    remove: function(query, sink) { /* Passthrough to delegate. */
-      this.delegate.remove(query, sink);
-    },
-
-    removeAll: function() { /* Passthrough to delegate. */
-      return this.delegate.removeAll.apply(this.delegate, arguments);
-    },
-
-    find: function(key, sink) { /* Passthrough to delegate. */
-      this.delegate.find(key, sink);
-    },
-
-    select: function(sink, options) { /* Passthrough to delegate. */
-      return this.delegate.select(sink, options);
-    },
-
-    listen: function(sink, options) { /* Passthrough to delegate, using $$DOC{ref:'.relay'}. */
-      // Adding first listener, so listen to delegate
-      if ( ! this.daoListeners_.length && this.delegate ) {
-        this.delegate.listen(this.relay());
-      }
-
-      this.SUPER(sink, options);
-    },
-
-    unlisten: function(sink) { /* Passthrough to delegate, using $$DOC{ref:'.relay'}. */
-      this.SUPER(sink);
-
-      // Remove last listener, so unlisten to delegate
-      if ( ! this.daoListeners_.length && this.delegate ) {
-        this.delegate.unlisten(this.relay());
-      }
-    },
-
-    toString: function() { /* String representation. */
-      return this.name_ + '(' + this.delegate + ')';
-    }
-  }
-});
 
 
 /** A DAO proxy that delays operations until the delegate is set in the future. **/
 CLASS({
   name: 'FutureDAO',
 
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   documentation: function() {/*
     A DAO proxy that delays operations until the delegate is set, at some time in the future.
@@ -233,7 +130,7 @@ CLASS({
   name: 'SeqNoDAO',
   label: 'SeqNoDAO',
 
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   properties: [
     {
@@ -286,7 +183,7 @@ CLASS({
   name: 'GUIDDAO',
   label: 'GUIDDAO',
 
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   properties: [
     {
@@ -322,7 +219,7 @@ CLASS({
 CLASS({
   name: 'CachingDAO',
 
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   properties: [
     {
@@ -366,7 +263,7 @@ CLASS({
 
 CLASS({
   name: 'FilteredDAO_',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   documentation: function() {/*
         <p>Internal use only.</p>
@@ -413,7 +310,7 @@ CLASS({
 
 CLASS({
   name: 'OrderedDAO_',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   documentation: function() {/*
         <p>Internal use only.</p>
@@ -446,7 +343,7 @@ CLASS({
 
 CLASS({
   name: 'LimitedDAO_',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   documentation: function() {/*
         <p>Internal use only.</p>
@@ -485,7 +382,7 @@ CLASS({
 
 CLASS({
   name: 'SkipDAO_',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   documentation: function() {/*
         <p>Internal use only.</p>
@@ -538,7 +435,7 @@ function atxn(afunc) {
 
 CLASS({
   name: 'EasyDAO',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   requires: [
     'foam.core.dao.StorageDAO',
@@ -746,7 +643,7 @@ CLASS({
 
 CLASS({
   name: 'BusyStatusDAO',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
   imports: [
     'busyStatus'
   ],
@@ -795,7 +692,7 @@ CLASS({
 
 CLASS({
   name: 'ContextualizingDAO',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
   methods: {
     find: function(id, sink) {
       var X = this.Y;
@@ -1157,7 +1054,7 @@ CLASS({
 CLASS({
   name: 'LazyCacheDAO',
 
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   properties: [
     {

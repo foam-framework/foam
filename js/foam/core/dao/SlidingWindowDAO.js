@@ -18,7 +18,7 @@
 CLASS({
   name: 'SlidingWindowDAO',
   package: 'foam.core.dao',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
   help: 'A DAO decorator which reduces network calls by caching a chunk of data around a given query for a period of time.',
   properties: [
     {
