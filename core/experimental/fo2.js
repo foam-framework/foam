@@ -167,7 +167,7 @@ var rootFeatureSet = [
     name: 'init',
     code: function() {
       this.SUPER();
-      this.todoDAO = EasyDAO.create({
+      this.todoDAO = X.lookup('foam.dao.EasyDAO').create({
         model: Todo,
         seqNo: true,
         cache: true,

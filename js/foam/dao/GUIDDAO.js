@@ -15,37 +15,41 @@
  * limitations under the License.
  */
 
+
 CLASS({
-  package: 'foam.core.dao',
-  name: 'MergeDAO',
+  name: 'GUIDDAO',
+  label: 'foam.dao.GUIDDAO',
+  package: 'foam.dao',
+
   extendsModel: 'foam.dao.ProxyDAO',
 
   properties: [
     {
-      model_: 'FunctionProperty',
-      name: 'mergeStrategy',
-      required: true
+      name: 'property',
+      type: 'Property',
+      required: true,
+      hidden: true,
+      defaultValueFn: function() {
+        return this.delegate.model ? this.delegate.model.ID : undefined;
+      },
+      transient: true
     }
   ],
 
   methods: {
-    put: function(obj, sink) {
-      var self = this;
-      this.delegate.find(obj.id, {
-        put: function(oldValue) {
-          aseq(
-            function(ret) {
-              self.mergeStrategy(ret, oldValue, obj);
-            },
-            function(ret, obj) {
-              self.delegate.put(obj, sink);
-            })();
-        },
-        error: function() {
-          // TODO: Distinguish internal versus external errors.
-          self.delegate.put(obj, sink);
-        }
+    createGUID: function() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
       });
+    },
+
+    put: function(obj, sink) {
+      if ( ! obj.hasOwnProperty(this.property.name) )
+        obj[this.property.name] = this.createGUID();
+
+      this.delegate.put(obj, sink);
     }
   }
 });
+

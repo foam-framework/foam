@@ -18,7 +18,7 @@
 CLASS({
   name: 'ModelIDDecoratorDAO',
   package: 'foam.navigator.dao',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   requires: [
     'foam.navigator.dao.IDConfig'

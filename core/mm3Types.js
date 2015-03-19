@@ -464,7 +464,7 @@ CLASS({
       name: 'install',
       defaultValue: function(prop) {
         defineLazyProperty(this, prop.name + '$Proxy', function() {
-          var proxy = ProxyDAO.create({delegate: this[prop.name].dao});
+          var proxy = this.X.lookup('foam.dao.ProxyDAO').create({delegate: this[prop.name].dao});
 
           this.addPropertyListener(prop.name, function(_, _, _, a) {
             proxy.delegate = a.dao;
@@ -646,6 +646,8 @@ CLASS({
   name: 'DAOProperty',
   help: "Describes a DAO property.",
 
+  requires: ['foam.dao.FutureDAO'],
+  
   properties: [
     {
       name: 'type',
@@ -666,13 +668,13 @@ CLASS({
         defineLazyProperty(this, prop.name + '$Proxy', function() {
           if ( ! this[prop.name] ) {
             var future = afuture();
-            var delegate = FutureDAO.create({
+            var delegate = prop.FutureDAO.create({
               future: future.get
             });
           } else
             delegate = this[prop.name];
 
-          var proxy = ProxyDAO.create({delegate: delegate});
+          var proxy = this.X.lookup('foam.dao.ProxyDAO').create({delegate: delegate});
 
           this.addPropertyListener(prop.name, function(_, _, _, dao) {
             if ( future ) {

@@ -15,7 +15,7 @@ CLASS({
   todo: 'This isn\'t a FLOW view. It should probably live somewhere else.',
 
   requires: [
-    'EasyDAO',
+    'foam.dao.EasyDAO',
     'foam.core.dao.ManuallyDelayedPutDAO',
     'foam.ui.DAOListView',
     'foam.flow.LogEntry',

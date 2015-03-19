@@ -18,10 +18,12 @@
 CLASS({
   name: 'MigrationDAO',
   package: 'foam.core.dao',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   requires: [
-    'foam.core.dao.MigrationRule'
+    'foam.core.dao.MigrationRule',
+    'foam.dao.FutureDAO',
+    'foam.dao.DAOVersion'
   ],
 
   imports: [
@@ -46,7 +48,7 @@ CLASS({
     init: function() {
       var dao = this.delegate;
       var future = afuture()
-      this.delegate = FutureDAO.create({future: future.get});
+      this.delegate = this.FutureDAO.create({future: future.get});
 
       var self = this;
       var version;
@@ -58,7 +60,7 @@ CLASS({
               ret();
             },
             error: function() {
-              version = DAOVersion.create({
+              version = this.DAOVersion.create({
                 name: self.name,
                 version: 0
               });

@@ -15,23 +15,33 @@
  * limitations under the License.
  */
 
+ 
 CLASS({
-  package: 'foam.core.dao',
-  name: 'VersionNoDAO',
+  name: 'SeqNoDAO',
+  label: 'foam.dao.SeqNoDAO',
+  package: 'foam.dao',
 
   extendsModel: 'foam.dao.ProxyDAO',
 
+  documentation: function() {/* 
+   Set a specified properties value with an auto-increment
+   sequence number on DAO.put() if the properties value
+   is set to the properties default value.
+  */},
   properties: [
     {
       name: 'property',
       type: 'Property',
       required: true,
       hidden: true,
+      defaultValueFn: function() {
+        return this.delegate.model ? this.delegate.model.ID : undefined;
+      },
       transient: true
     },
     {
       model_: 'IntProperty',
-      name: 'version',
+      name: 'sequenceValue',
       defaultValue: 1
     }
   ],
@@ -45,14 +55,18 @@ CLASS({
 
       // Scan all DAO values to find the largest
       this.delegate.select(MAX(this.property))(function(max) {
-        if ( max.max ) this.version = max.max + 1;
+        if ( max.max ) this.sequenceValue = max.max + 1;
         future.set(true);
       }.bind(this));
     },
     put: function(obj, sink) {
       this.WHEN_READY(function() {
         var val = this.property.f(obj);
-        obj[this.property.name] = this.version++;
+
+        if ( val == this.property.defaultValue ) {
+          obj[this.property.name] = this.sequenceValue++;
+        }
+
         this.delegate.put(obj, sink);
       }.bind(this));
     }

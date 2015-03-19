@@ -26,10 +26,10 @@ CLASS({
 
   requires: [
     'Binding',
-    'CachingDAO',
-    'EasyDAO',
-    'IDBDAO',
-    'LazyCacheDAO',
+    'foam.dao.CachingDAO',
+    'foam.dao.EasyDAO',
+    'foam.dao.IDBDAO',
+    'foam.dao.LazyCacheDAO',
     'MDAO',
     'PersistentContext',
     'Timer',

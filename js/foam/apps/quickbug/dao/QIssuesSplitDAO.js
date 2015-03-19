@@ -22,7 +22,7 @@ CLASS({
 
   requires: [
     'MDAO',
-    'FutureDAO'
+    'foam.dao.FutureDAO'
   ],
 
   properties: [

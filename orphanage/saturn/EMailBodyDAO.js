@@ -18,7 +18,7 @@
 
 var EMailBodyDAO = FOAM({
    model_: 'Model',
-   extendsModel: 'ProxyDAO',
+   extendsModel: 'foam.dao.ProxyDAO',
 
    name: 'EMailBodyDAO',
 

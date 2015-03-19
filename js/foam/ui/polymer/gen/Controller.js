@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.ui.polymer.gen',
 
   requires: [
-    'EasyDAO',
+    'foam.dao.EasyDAO',
     'foam.ui.MultiLineStringArrayView',
     'foam.ui.TableView',
     'foam.ui.polymer.gen.Component',

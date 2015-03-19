@@ -1,5 +1,5 @@
 CLASS({
-  name: 'TodoDAO', extendsModel: 'ProxyDAO',
+  name: 'TodoDAO', extendsModel: 'foam.dao.ProxyDAO',
   methods: { put: function(issue, s) {
     if (!issue.text) this.remove(issue.id, { remove: s && s.put }); else this.SUPER(issue, s);
   }}});
@@ -27,7 +27,7 @@ CLASS({
 
 CLASS({
   name: 'Controller',
-  requires: ['EasyDAO'],
+  requires: ['foam.dao.EasyDAO'],
   properties: [
     {
       name: 'input',

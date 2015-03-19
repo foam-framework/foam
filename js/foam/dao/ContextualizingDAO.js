@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2014 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,21 @@
  */
 
 CLASS({
-  name: 'WhenIdleDAO',
-  package: 'foam.core.dao',
+  name: 'ContextualizingDAO',
   extendsModel: 'foam.dao.ProxyDAO',
-  help: 'Defers operations using Movement.whenIdle',
-
+  package: 'foam.dao',
   methods: {
-    select: function(sink, options) {
-      var future = afuture();
-      this.delay(0, function() {
-        Movement.whenIdle(function() {
-          this.delegate.select(sink, options)(future.set);
-        }.bind(this))();
-      }.bind(this))();
-      return future.get;
+    find: function(id, sink) {
+      var X = this.Y;
+      this.delegate.find(id, {
+        put: function(o) {
+          o.X = X;
+          sink && sink.put && sink.put(o);
+        },
+        error: function() {
+          sink && sink.error && sink.error.apply(sink, arguments);
+        }
+      });
     }
   }
 });

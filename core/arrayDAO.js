@@ -17,7 +17,7 @@
 
 
 (function() {
-  // Copy AbstractDAO methods in Array prototype
+  // Copy X.AbstractDAO methods in Array prototype
 
   var pmap = {};
   for ( var key in AbstractDAO.methods ) {

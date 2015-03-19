@@ -1,6 +1,6 @@
-/*
+/**
  * @license
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2014 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,17 @@
  */
 
 CLASS({
-  name: 'LimitedLiveCachingDAO',
-  package: 'foam.core.dao',
+  name: 'CachingDAO',
+  package: 'foam.dao',
 
   extendsModel: 'foam.dao.ProxyDAO',
 
+  requires: ['foam.dao.FutureDAO'],
+  
   properties: [
     {
       name: 'src'
     },
-    { model_: 'IntProperty', name: 'cacheLimit', defaultValue: 100 },
     {
       name: 'cache',
       help: 'Alias for delegate.',
@@ -45,9 +46,14 @@ CLASS({
       var src   = this.src;
       var cache = this.cache;
 
-      src.limit(this.cacheLimit).select(cache)(function() {
+      var futureDelegate = afuture();
+      this.cache = this.FutureDAO.create({future: futureDelegate.get});
+
+      src.select(cache)(function() {
         // Actually means that cache listens to changes in the src.
         src.listen(cache);
+        futureDelegate.set(cache);
+        this.cache = cache;
       }.bind(this));
     },
     put: function(obj, sink) { this.src.put(obj, sink); },
@@ -55,3 +61,5 @@ CLASS({
     removeAll: function(sink, options) { return this.src.removeAll(sink, options); }
   }
 });
+
+

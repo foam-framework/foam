@@ -22,9 +22,9 @@ CLASS({
   description: 'Mobile QuickBug',
 
   requires: [
-    'ContextualizingDAO',
-    'DAOVersion',
-    'IDBDAO',
+    'foam.dao.ContextualizingDAO',
+    'foam.dao.DAOVersion',
+    'foam.dao.IDBDAO',
     'com.google.analytics.WebMetricsReportingDAO',
     'foam.apps.mbug.ui.ChangeProjectView',
     'foam.apps.mbug.ui.IssueCitationView',

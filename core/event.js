@@ -454,7 +454,7 @@ var PropertyValue = {
   asDAO: function() {
     console.warn('ProperytValue.asDAO() deprecated.  Use property$Proxy instead.');
     if ( ! this.proxy ) {
-      this.proxy = ProxyDAO.create({delegate: this.get()});
+      this.proxy = this.X.lookup('foam.daoProxyDAO').create({delegate: this.get()});
       this.addListener(function() { proxy.delegate = this.get(); }.bind(this));
     }
     return this.proxy;
