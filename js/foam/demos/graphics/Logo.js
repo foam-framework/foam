@@ -57,7 +57,7 @@ CLASS({
         alpha: 0.8,
         color: null,
         borderWidth: 1,
-        border: this.colours[Math.floor(Math.random() * this.colours.length)]});
+        border: this.colours[Math.floor(Math.random() * this.colours.length)]}) || '#000000';
 
       this.addChild(circle);
       circle.stop = Movement.animate(
@@ -118,7 +118,7 @@ CLASS({
 //      c.lineWidth = 5;
 //      c.strokeText(this.text, 100, 100);
     }
-  }  
+  }
 });
 
 
@@ -131,8 +131,10 @@ CLASS({
     'foam.demos.graphics.LogoForeground',
     'foam.demos.graphics.LogoBackground'
   ],
- 
+
   exports: [ 'text$', 'font$', 'colours$' ],
+
+  constants: { DEFAULT_COLOURS: ['#33f','#f00','#fc0','#33f','#3c0'] },
 
   properties: [
     {
@@ -142,7 +144,8 @@ CLASS({
     {
       model_: 'StringArrayProperty',
       name: 'colours',
-      factory: function() { return ['#33f','#f00','#fc0','#33f','#3c0']; }
+      singular: 'colour',
+      factory: function() { return []; }
     },
     {
       name: 'text',
@@ -173,6 +176,9 @@ CLASS({
     initHTML: function() {
       this.SUPER();
 
+      if ( this.colours.length === 0 )
+        this.colours = this.DEFAULT_COLOURS.slice(0);
+
       if ( this.duration ) {
         this.X.setTimeout(
           this.background.stop.bind(this.background),
@@ -182,10 +188,21 @@ CLASS({
   },
 
   templates: [
-    function toInnerHTML() {/* <%= this.background, this.foreground %> */},
+    function toInnerHTML() {/* <%= this.background, this.foreground %>$$text{ tagName: 'logo-text', mode: 'read-only' } */},
     function CSS() {/*
       .logo-foreground { position: absolute; left: 0; }
       .logo-background { position: absolute; left: 0; z-index: -1; }
+      @media not print { logo-text { display: none; } }
+      @media print {
+        .logo {
+          height: initial !important;
+          margin: initial !important;
+          padding: initial !important;
+          position: initial !important;
+        }
+        .logo-foreground, .logo-background { display: none; }
+        logo-text { display: block; }
+      }
     */}
   ]
 });

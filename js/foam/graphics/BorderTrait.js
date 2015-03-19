@@ -46,6 +46,11 @@ CLASS({
     {
       name: 'background',
       defaultValue: 'rgba(0,0,0,0)'
+    },
+    {
+      name: 'dropShadow',
+      documentation: function() {/* Drop shadow thickness in pixels. */},      
+      defaultValue: 0
     }
   ],
 
@@ -59,6 +64,30 @@ CLASS({
 
       c.globalAlpha = this.alpha;
 
+      // create a clip region that cuts out the object's rect and draws
+      // the shadow around it. The fill color affects the shadow darkness,
+      // so we need to be able to fill with black without actually drawing
+      // the black part.
+      if ( ! this.clipped && this.dropShadow > 0 ) {
+        c.save();
+        c.moveTo(this.width,this.height);
+        c.lineTo(this.width,0);
+        c.lineTo(0,0);
+        c.lineTo(0, this.height);
+        c.lineTo(this.width,this.height);
+        c.closePath();
+        c.rect(-100,-100,this.width+200,this.height+200);      
+        c.clip();
+        c.shadowBlur = this.dropShadow/2;
+        c.shadowColor = "grey";
+        c.shadowOffsetX = this.dropShadow/2;
+        c.shadowOffsetY = this.dropShadow/2;
+        c.fillStyle = "black";
+        c.fillRect(0,0,this.width,this.height);
+        c.restore();
+      }
+
+      
       if ( this.background ) {
         c.fillStyle = this.background;
 

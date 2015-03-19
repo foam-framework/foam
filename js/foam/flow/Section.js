@@ -70,6 +70,7 @@ CLASS({
         display: block;
         font-size: 16px;
         margin-top: 18px;
+        line-height: 1em;
       }
 
       heading a {

@@ -57,7 +57,11 @@ CLASS({
     {
       name: 'stretchy',
       defaultValue: false
-    }
+    },
+    {
+      name: 'dropShadow',
+      defaultValue: 10
+    },
   ],
 
   methods: {

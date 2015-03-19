@@ -49,11 +49,7 @@ CLASS({
       this.selfFeaturesDAO.limit(5).select({ 
         put: function(item) {
           this.addChild(this.FeatureDiagram.create({ model: item.model_, data: item }));
-//          console.log("    Adding child from featureDAO ");
-        }.bind(this),
-        eof: function() {
-//          console.log("    Done featureDAO ");
-        }
+        }.bind(this)
       });
     },
 

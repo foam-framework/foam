@@ -21,7 +21,7 @@ book watermark {
 }
 
 book p {
-  margin-bottom: 10px;
+  margin: 5px 0px;
 }
 
 book p.first-cap::first-letter, book first-cap {
@@ -36,10 +36,15 @@ book p.center {
   justify-content: center;
 }
 
+book code {
+  font: 14px/normal 'Monaco', Menlo, 'Ubuntu Mono', Consolas, 'source-code-pro', monospace;
+}
+
 @media not print {
 
   body {
-    font-family: Roboto, "Helvetica Neue", Helvetica, Arial;
+    font-family: 14px/normal Roboto, 'Helvetica Neue', Helvetica, Arial;
+    line-height: 1.4em;
   }
 
   @media (max-width: 800px) {
@@ -48,7 +53,7 @@ book p.center {
       width: 100%;
     }
 
-    book p {
+    book p, book li {
       width: 100%;
     }
 
@@ -58,9 +63,10 @@ book p.center {
 
     book {
       width: 80%;
+      max-width: 1200px;
     }
 
-    book p {
+    book p, book li {
       width: 70%;
     }
 
@@ -71,7 +77,11 @@ book p.center {
 @media print {
 
   book {
-    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  }
+
+  book p, book li {
+    width: 100%;
   }
 
   @page :first {
@@ -84,11 +94,11 @@ book p.center {
   }
 
   @page :left {
-    margin: 1in 1.5in 1in 1in;
+    margin: 1in 1.25in 1in 1in;
   }
 
   @page :right {
-    margin: 1in 1in 1in 1.5in;
+    margin: 1in 1in 1in 1.25in;
   }
 
 }

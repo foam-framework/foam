@@ -15,6 +15,7 @@ CLASS({
   extendsModel: 'foam.flow.Element',
 
   requires: [
+    'Model',
     'EasyDAO',
     'foam.ui.ActionButton',
     'foam.flow.VirtualConsole',
@@ -42,7 +43,12 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'src',
-      defaultValue: 'console.log("Hello world!");'
+      defaultValue: 'console.log("Hello world!");',
+      view: {
+        factory_: 'foam.ui.TextFieldView',
+        mode: 'read-only',
+        className: 'src'
+      }
     },
     {
       name: 'virtualConsole',
@@ -51,6 +57,11 @@ CLASS({
         return this.VirtualConsole.create();
       },
       view: 'foam.flow.VirtualConsoleView'
+    },
+    {
+      model_: 'ModelProperty',
+      name: 'actionButtonModel',
+      factory: function() { return this.ActionButton; }
     },
     {
       name: 'editor',
@@ -92,9 +103,10 @@ CLASS({
         this.virtualConsoleView.reset();
         this.virtualConsole.watchConsole();
         try {
-          eval('(function(){'    + this.src + '})')();
+          var X = this.X.sub();
+          eval('(function(X){'    + this.src + '}).call(null, X)');
         } catch (e) {
-          this.virtualConsole.error(e.toString());
+          this.virtualConsole.onError(e.toString());
         } finally {
           this.virtualConsole.resetConsole();
         }
@@ -107,7 +119,7 @@ CLASS({
       name: 'onEditorLoaded',
       todo: 'We should probably have a spinner and/or placeholder until this fires.',
       code: function() {
-        // TODO(markdittmer): This should automatically updated our classname.
+        // TODO(markdittmer): This should automatically update our classname.
         // Why doesn't it?
         this.extraClassName = '';
         if ( ! this.$ ) return;
@@ -131,7 +143,7 @@ CLASS({
           var container = this.$.querySelector('editors') || this.$;
           container.innerHTML = '';
           container.textContent = this.src;
-          // TODO(markdittmer): This should automatically updated our classname.
+          // TODO(markdittmer): This should automatically update our classname.
           // Why doesn't it?
           this.extraClassName = '';
           this.$.className = this.cssClassAttr().slice(7, -1);
@@ -150,28 +162,38 @@ CLASS({
           %%editor
         </editors>
         <actions>
-          <% out(this.createActionView(
-                  this.model_.getAction('run'),
-                  {
-                    model_: this.actionButtonModel || 'foam.ui.ActionButton',
-                    data: this,
-                    className: 'actionButton playButton',
-                    color: 'white',
-                    font: '30px Roboto Arial',
-                    alpha: 1.0,
-                    width: 38,
-                    height: 38,
-                    radius: 18,
-                    background: '#e51c23'
-                  })); %>
+          $$run{
+            model_: this.actionButtonModel,
+            className: 'actionButton playButton',
+            color: 'white',
+            font: '30px Roboto Arial',
+            alpha: 1.0,
+            width: 38,
+            height: 38,
+            radius: 18,
+            background: '#e51c23'
+          }
         </actions>
+        $$src
       </top-split>
-      $$virtualConsole{
-        minLines: 8,
-        maxLines: 8
-      }
+      <bottom-split>
+        $$virtualConsole{
+          minLines: 8,
+          maxLines: 8
+        }
+      </bottom-split>
     */},
     function CSS() {/*
+      code-sample {
+        display: block;
+        border-radius: inherit;
+      }
+      code-sample heading {
+        border-top-left-radius: inherit;
+        border-top-right-radius: inherit;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+      }
       code-sample.loading {
         display: none;
       }
@@ -179,24 +201,79 @@ CLASS({
         display: flex;
         justify-content: space-between;
         align-items: stretch;
-        border-bottom: 1px solid #eee;
       }
-      code-sample top-split {
+      code-sample top-split, code-sample bottom-split {
         display: block;
         position: relative;
+      }
+      code-sample top-split {
         z-index: 10;
+      }
+      code-sample top-split::before {
+        bottom: -4px;
+        content: '';
+        height: 4px;
+        left: 0;
+        position: absolute;
+        right: 0;
+        background-image: -webkit-linear-gradient(top,rgba(0,0,0,.12) 0%,rgba(0,0,0,0) 100%);
+        background-image: linear-gradient(to bottom,rgba(0,0,0,.12) 0%,rgba(0,0,0,0) 100%);
+      }
+      code-sample bottom-split {
+        z-index: 5;
+        background: #E0E0E0;
       }
       code-sample actions {
         position: absolute;
         right: 30px;
         bottom: -18px;
+        z-index: 15;
       }
       code-sample canvas.playButton {
         background: rgba(0,0,0,0);
-        box-shadow: 3px 3px 3px #aaa;
-        border-radius: 30px;
+        box-shadow: 2px 2px 7px #aaa;
+        border-radius: 50%;
+      }
+
+      @media not print {
+
+        aside code-sample heading {
+          font-size: 25px;
+          margin: 0px;
+          padding: 10px 10px 10px 10px;
+          background: #F4B400;
+        }
+
+        code-sample .src {
+          display: none;
+        }
+
+      }
+
+      @media print {
+
+        code-sample heading {
+          font-size: 14pt;
+          margin: 6pt;
+        }
+
+        code-sample top-split {
+          margin: 3pt;
+        }
+
+        code-sample editors, code-sample actions, code-sample virtual-console {
+          display: none;
+        }
+
+        code-sample .src {
+          display: block;
+          font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+          white-space: pre-wrap;
+          margin: 3pt;
+          page-break-inside: avoid;
+        }
+
       }
     */}
-
   ]
 });

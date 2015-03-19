@@ -111,25 +111,25 @@ a {
 }
 
 .mdui-app-controller .header .name {
-  align-self: center;
   -webkit-align-self: center;
-  color: white;
-  flex: 1.0;
   -webkit-box-flex: 1.0;
+  -webkit-flex-grow: 1.0;
+  align-self: center;
+  color: white;
+  flex-grow: 1.0;
+  flex: 1.0;
   font-size: 20px;
   font-weight: 500;
   margin-left: 16px;
-  vertical-align: middle;
-  white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
-  flex-grow: 1.0;
-  -webkit-flex-grow: 1.0;
+  vertical-align: middle;
+  white-space: nowrap;
 }
 
 input[name=q] {
-  align-self: center;
   -webkit-align-self: center;
+  align-self: center;
   background: #3e50b4;
   border: none;
   color: white;
