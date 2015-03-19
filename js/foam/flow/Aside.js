@@ -16,40 +16,53 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      aside {
+      aside, .aside {
         background: #fff;
-        padding: 10px;
-        margin: 0px 10px 10px 10px;
-        right: 10px;
+        margin: 10px;
         float: right;
         position: relative;
       }
 
-      aside p {
+      aside p, .aside p {
         width: initial;
       }
 
       @media not print {
 
-        aside {
-          box-shadow: 5px 5px 20px #888;
-          margin: 8px;
+        aside, .aside {
+          box-shadow: 2px 2px 7px #aaa;
+          margin: 0px 10px 10px 15px;
+          border: 0px;
+          border-radius: 2px;
+        }
+
+        aside.wide {
+          min-width: initial;
+          max-width: initial;
+          width: initial;
         }
 
         @media (max-width: 800px) {
 
-          aside {
+          aside, .aside {
             width: 50%;
+          }
+
+          aside.wide {
+            float: none;
           }
 
         }
 
         @media (min-width: 800px) {
 
-          aside {
+          aside, .aside {
             min-width: 300px;
             max-width: 25%;
-            border: 0px;
+          }
+
+          aside.wide {
+            width: 60%;
           }
 
         }
@@ -58,14 +71,17 @@ CLASS({
 
       @media print {
 
-        aside {
+        aside, .aside {
           width: 50%;
           border: 6px double #000;
           margin: 6pt;
           page-break-inside: avoid;
         }
 
-      }
+        aside.wide {
+          width: 90%;
+        }
+    }
     */}
   ]
 });

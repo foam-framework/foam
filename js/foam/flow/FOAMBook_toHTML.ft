@@ -36,12 +36,170 @@
         teaching FOAM programming through interactive examples. So, let's get
         to it.
       </p>
-      <aside style="height: 400px;">
-        <code-sample>
-          <title>Example Code</title>
-          <src>console.log("Hello World!");</src>
-        </code-sample>
-      </aside>
+
+      <section enumerate="false">
+        <title>First Steps</title>
+        <p>
+          Take a look at <b>Your First FOAM Class</b>. Start by just
+          skimming over the whole class. You'll notice that the structure and
+          meaning of the class is quite intuitive. The class has
+          a <code>name</code>; it lives in a <code>package</code> (i.e., a
+          namespace); it has several <code>properties</code>, each with
+          a <code>name</code> and some other information.
+        </p>
+        <p>
+          From a technical perspective, here the key things to note:
+        </p>
+
+        <ul>
+          <li>Classes are declared by invoking the <code>CLASS()</code> function,
+            and passing it an object that describes the class model.</li>
+          <li>Every class must have a <code>name</code>, and optionally
+            (though strongly encouraged), a <code>package</code>.</li>
+          <li>After that, classes have a variety of collections, modelled
+            using Javascript arrays.</li>
+        </ul>
+
+        <aside extraClassName="wide">
+          <code-sample>
+            <title>Your First FOAM Class</title>
+            <src>CLASS({
+  name: 'Person',
+  package: 'foam.sandbox',
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'firstName',
+      label: 'Given Name(s)',
+      defaultValue: 'John'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'lastName',
+      label: 'Surname',
+      defaultValue: 'Smith'
+    },
+    {
+      model_: 'DateProperty',
+      name: 'dateOfBirth',
+      factory: function() {
+        return 'January 1, 2000';
+      }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'age',
+      getter: function() {
+        // Thanks to André Snede Hansen on Stackoverflow for
+        // this procedure. It's not perfect, but close enough.
+        var ageDifMs = Date.now() -
+            this.dateOfBirth.getTime();
+        var ageDate = new Date(ageDifMs);
+        return Math.abs(ageDate.getUTCFullYear() -
+            1970);
+      }
+    }
+  ]
+});</src>
+          </code-sample>
+        </aside>
+
+        <p>
+          For this simple example, the only collection on the model
+          is <code>properties</code>. It's worth noting that, by convention,
+          this class would live in the
+          file <code>js/foam/sandbox/Person.js</code>; classes modelled in
+          Javascript live in <code>js/</code>, and files are stored according
+          to their <code>package</code> and <code>name</code>.
+        </p>
+        <p>
+          Let's take a look at the properties. That <code>model_</code>
+          annotation might be the first thing that looks a bit strange. It's
+          kind of like a type annotation, but
+          different. The <code>model_</code> key denotes the model to use for
+          construcing the current object. In this case, that object is a
+          property, so <code>model_: 'StringProperty'</code> denotes the type
+          of property, not the type of data stored in the property (hence
+          the <code>Property</code> postfix). The rest of the property
+          annotations are as follows:
+        </p>
+
+          <ul>
+            <li><b>name</b>: The name of the property in code; e.g., in
+              a <code>Person</code> method, we may refer
+              to <code>this.firstName</code>.</li>
+            <li><b>label</b>: The text label to use when creating a
+              view of the property in the application's UI.</li>
+            <li><b>defaultValue</b>: The value to use when no value is
+              provided.</li>
+            <li><b>factory</b>: Like <code>defaultValue</code>, except
+              the provided function is run every time an instance is created
+              with no value provided.</li>
+            <li><b>getter</b>: A function to run when retrieving the
+              property value; similar to Java
+              convention <code>getSomeProperty()</code>, or
+              the <code>get</code> key used in
+              Javascript's <code>Object.defineProperty()</code>.</li>
+          </ul>
+
+        <p>
+          This example illustrates several powerful features of FOAM. FOAM
+          encourages a declarative style of modelling applications as
+          data. No need for manually coding up getters and setters that
+          procedurally inject defaults, UI labels, or other values <i>for
+          every member variable</i>. You provide a concise description via
+          the class model and the framework wires everything up for
+          you. Notice that the <code>dateOfBirth</code> factory returns
+          a <code>String</code>. However, it's a <code>DateProperty</code>,
+          so is automatically adapted into a Javascript <code>Date</code>
+          object for easy use in our <code>age</code> getter.
+        </p>
+        <section enumerate="false">
+          <title>Try It Out</title>
+          <p>
+            Let's try making some changes to the <code>Person</code>
+            class. First we'll add support for middle names. Add a property
+            named <code>middleNames</code> with <code>model_:
+            'StringArrayProperty'</code>; give it a factory that returns the
+            empty array, a label of <code>'Middle Name'</code> and annotate
+            it with <code>plural: 'Middle Names'</code>. Don't forget to drop
+            the <code>(s)</code> in the <code>firstName</code> label to keep
+            things consistent.
+          </p>
+          <p>
+            Now let's make the class behaviour a little more efficient. Right
+            now, the <code>age</code> getter recomputes the age every
+            time. That's silly. The age really only needs to be recomputed
+            when we set the date of birth. This can be achieved using FOAM's
+            support for reactive programming. Cut the <code>age</code> getter
+            to the clipboard. (You may want to paste it somewhere else in
+            case you do more cutting or copying along the way.). Now, on
+            the <code>dateOfBirth</code> property, add <code>postSet:
+            function(old, nu) { this.age = this.computeAge(); }</code>. This
+            callback will fire every time <code>dateOfBirth</code>
+            changes, <i>after</i> the change has taken place. The callback is
+            be passed the old and nu (or
+            "<code>nu</code>") <code>dateOfBirth</code> values.
+          </p>
+          <p>
+            Before we can declare our efficient age calculating code
+            complete, we need a <code>computeAge</code>
+            method. Beneath the <code>properties</code> array, add
+            a <code>methods</code> array with one element with <code>name:
+            'computeAge'</code>. Finally, add a <code>code</code>
+            annotation to your one-and-only method and paste the function for
+            the old <code>age</code> getter. That's it! Now, if we ever have
+            code that repeatedly accesses that <code>age</code> property, we
+            won't be slowed down by redundant computations.
+          </p>
+          <p>
+            So we have this <code>Person</code> class. What can we do with
+            it? To start, let's just try instantiating one and printing it to
+            the console.
+          </p>
+        </section>
+      </section>
     </section>
 
     <section>

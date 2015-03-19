@@ -93,7 +93,7 @@ CLASS({
       }
     },
 
-    resolveReference: function(reference) {
+    resolveReference: function(reference, abortOnFail) {
   /* <p>Resolving a reference has a few special cases at the start:</p>
     <ul>
       <li>Beginning with ".": relative to $$DOC{ref:'Model'} in X.documentViewRef</li>
@@ -106,6 +106,20 @@ CLASS({
      while the second name is an instance of a feature on that Model, and subsequent
      names are sub-objects on those instances.</p>
   */
+      var errorHandler = function() { 
+        if ( abortOnFail) {
+          return;
+        } else {
+          arequire(reference, this.X)(function(m) {
+            if ( m ) {
+              this.resolveReference(m.id, true);
+            }
+          }.bind(this));
+          return;
+        }
+      }.bind(this);
+  
+  
       this.valid = false;
 
       if (!reference) return;
@@ -149,7 +163,10 @@ CLASS({
 
       //TODO: do something with the package parts, resolve package refs with no model
 
-      if ( ! model ) return;
+      if ( ! model ) {
+        errorHandler();
+        return;
+      }
 
       newResolvedModelChain.push(model);
       newResolvedRef += model.name;
@@ -205,6 +222,7 @@ CLASS({
               return true;
             }
           })) {
+          errorHandler();
           return; // the loop failed to resolve something
         }
       }

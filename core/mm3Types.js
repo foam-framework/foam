@@ -73,7 +73,7 @@ CLASS({
   extendsModel: 'Property',
 
   name:  'BooleanProperty',
-  help:  "Describes a properties of type String.",
+  help:  "Describes a properties of type Boolean.",
 
   properties: [
     {
@@ -129,7 +129,7 @@ CLASS({
   extendsModel: 'Property',
 
   name:  'DateProperty',
-  help:  "Describes a properties of type String.",
+  help:  "Describes a properties of type Date.",
 
   properties: [
     {
@@ -190,7 +190,7 @@ CLASS({
   extendsModel: 'DateProperty',
 
   name:  'DateTimeProperty',
-  help:  "Describes a properties of type String.",
+  help:  "Describes a properties of type DateTime.",
 
   properties: [
     {

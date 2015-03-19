@@ -68,7 +68,7 @@ CLASS({
       // the shadow around it. The fill color affects the shadow darkness,
       // so we need to be able to fill with black without actually drawing
       // the black part.
-      if ( this.dropShadow > 0 ) {
+      if ( ! this.clipped && this.dropShadow > 0 ) {
         c.save();
         c.moveTo(this.width,this.height);
         c.lineTo(this.width,0);
@@ -78,8 +78,10 @@ CLASS({
         c.closePath();
         c.rect(-100,-100,this.width+200,this.height+200);      
         c.clip();
-        c.shadowBlur = this.dropShadow;
-        c.shadowColor = "black";
+        c.shadowBlur = this.dropShadow/2;
+        c.shadowColor = "grey";
+        c.shadowOffsetX = this.dropShadow/2;
+        c.shadowOffsetY = this.dropShadow/2;
         c.fillStyle = "black";
         c.fillRect(0,0,this.width,this.height);
         c.restore();
