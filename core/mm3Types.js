@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-var StringProperty = Model.create({
+CLASS({
   extendsModel: 'Property',
 
   name:  'StringProperty',
@@ -69,7 +69,7 @@ var StringProperty = Model.create({
 });
 
 
-var BooleanProperty = Model.create({
+CLASS({
   extendsModel: 'Property',
 
   name:  'BooleanProperty',
@@ -125,7 +125,7 @@ var BooleanProperty = Model.create({
 });
 
 
-var DateProperty = Model.create({
+CLASS({
   extendsModel: 'Property',
 
   name:  'DateProperty',
@@ -186,7 +186,7 @@ var DateProperty = Model.create({
 });
 
 
-var DateTimeProperty = Model.create({
+CLASS({
   extendsModel: 'DateProperty',
 
   name:  'DateTimeProperty',
@@ -216,7 +216,7 @@ var DateTimeProperty = Model.create({
 });
 
 
-var IntProperty = Model.create({
+CLASS({
   extendsModel: 'Property',
 
   name:  'IntProperty',
@@ -272,7 +272,7 @@ var IntProperty = Model.create({
 });
 
 
-var FloatProperty = Model.create({
+CLASS({
   extendsModel: 'Property',
 
   name:  'FloatProperty',
@@ -322,7 +322,7 @@ var FloatProperty = Model.create({
 });
 
 
-var FunctionProperty = Model.create({
+CLASS({
   extendsModel: 'Property',
 
   name:  'FunctionProperty',
@@ -380,7 +380,7 @@ var FunctionProperty = Model.create({
 });
 
 
-var ArrayProperty = Model.create({
+CLASS({
   extendsModel: 'Property',
 
   name:  'ArrayProperty',
@@ -508,7 +508,7 @@ var ArrayProperty = Model.create({
 });
 
 
-var ReferenceProperty = Model.create({
+CLASS({
   extendsModel: 'Property',
 
   name:  'ReferenceProperty',
@@ -561,7 +561,7 @@ var ReferenceProperty = Model.create({
 });
 
 
-var StringArrayProperty = Model.create({
+CLASS({
   extendsModel: 'Property',
 
   name:  'StringArrayProperty',
@@ -634,7 +634,7 @@ var StringArrayProperty = Model.create({
 });
 
 
-var DAOProperty = Model.create({
+CLASS({
   extendsModel: 'Property',
 
   name: 'DAOProperty',
@@ -688,7 +688,7 @@ var DAOProperty = Model.create({
 });
 
 
-var ModelProperty = Model.create({
+CLASS({
   name: 'ModelProperty',
   extendsModel: 'Property',
 
@@ -723,7 +723,7 @@ var ModelProperty = Model.create({
 });
 
 
-var ViewProperty = Model.create({
+CLASS({
   name: 'ViewProperty',
   extendsModel: 'Property',
 
@@ -759,7 +759,7 @@ var ViewProperty = Model.create({
 });
 
 
-var FactoryProperty = Model.create({
+CLASS({
   name: 'FactoryProperty',
   extendsModel: 'Property',
 
@@ -797,7 +797,7 @@ var FactoryProperty = Model.create({
 });
 
 
-var ViewFactoryProperty = Model.create({
+CLASS({
   name: 'ViewFactoryProperty',
   extendsModel: 'FactoryProperty',
 
@@ -887,7 +887,7 @@ var ViewFactoryProperty = Model.create({
 });
 
 
-var ReferenceArrayProperty = Model.create({
+CLASS({
   name: 'ReferenceArrayProperty',
   extendsModel: 'ReferenceProperty',
 
@@ -911,10 +911,17 @@ var ReferenceArrayProperty = Model.create({
   ]
 });
 
-var EMailProperty = StringProperty;
-var URLProperty = StringProperty;
+CLASS({
+  name: 'EMailProperty',
+  extendsModel: 'StringProperty'
+});
 
-var DocumentationProperty = Model.create({
+CLASS({
+  name: 'URLProperty',
+  extendsModel: 'StringProperty'
+});
+
+CLASS({
   extendsModel: 'Property',
   name: 'DocumentationProperty',
   help: 'Describes the documentation properties found on Models, Properties, Actions, Methods, etc.',
@@ -962,3 +969,4 @@ var DocumentationProperty = Model.create({
    }
   ]
 });
+

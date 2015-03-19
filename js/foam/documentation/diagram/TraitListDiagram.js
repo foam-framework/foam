@@ -43,6 +43,10 @@ CLASS({
           return this.X.lookup(nu);
         }
         return nu;
+      },
+      postSet: function() {
+        this.destroy();
+        this.construct();
       }
     },
     {

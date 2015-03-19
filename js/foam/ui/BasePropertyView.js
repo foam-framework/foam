@@ -17,12 +17,12 @@
 
 
 CLASS({
-  name: 'BasePropertyView',
   package: 'foam.ui',
+  name: 'BasePropertyView',
   extendsModel: 'foam.ui.BaseView',
-  
-  requires: ['foam.ui.TextFieldView'],
-  
+
+  requires: [ 'foam.ui.TextFieldView' ],
+
   documentation: function() {/*
     Apply this trait to a $$DOC{ref:'BaseView'} (such as $$DOC{ref:'HTMLView'}).</p>
     <p>Used by $$DOC{ref:'foam.ui.DetailView'} to generate a sub-$$DOC{ref:'foam.ui.View'} for one
@@ -108,7 +108,7 @@ CLASS({
       this.view.fromElement(e);
       return this;
     },
-       
+
     createViewFromProperty: function(prop, ret) {
       /* Helper to determine the $$DOC{ref:'foam.ui.View'} to use. */
       var viewName = this.innerView || prop.view
@@ -116,19 +116,19 @@ CLASS({
       else if ( typeof viewName === 'string' ) {
 //        var m = this.Y.lookup(viewName);
 //        if ( m ) ret(m.create(prop, this.Y));
-//        else 
+//        else
           arequire(viewName, this.X)(function(m) { ret(m.create(prop, this.Y)); }.bind(this) );
       }
       else if ( viewName.model_ && typeof viewName.model_ === 'string' ) {
         var m = FOAM(prop.view);
         arequireModel(m, this.X)(ret);
       }
-      else if ( viewName.model_ ) { 
+      else if ( viewName.model_ ) {
         var v = viewName.model_.create(viewName, this.X);
         var vId = v.id;
         v.copyFrom(prop);
         v.id = vId;
-        ret(v); 
+        ret(v);
       }
       else if ( viewName.factory_ ) {
         var v = this.X.lookup(viewName.factory_).create(viewName, this.X);
@@ -165,9 +165,9 @@ CLASS({
       this.unbindData(this.data);
       this.SUPER( isParentDestroyed );
     },
-    
+
     finishPropertyRender: function() { /* Implement to render your property. */ },
-    
+
     construct: function() {
       // if not bound yet and we do have data set, bind it
       this.bindData(this.data);
@@ -182,8 +182,8 @@ CLASS({
         // syncronous case
         this.finishConstruct(view, this.finishPropertyRender.bind(this));
       } else {
-        view = this.createViewFromProperty(this.prop, 
-                 function(v) { 
+        view = this.createViewFromProperty(this.prop,
+                 function(v) {
                    this.finishConstruct(v, this.finishPropertyRender.bind(this));
                  }.bind(this));
       }
@@ -199,18 +199,14 @@ CLASS({
 
       this.view = view;
       this.addDataChild(view);
-            
+
       ret && ret();
     },
-    
+
     addDataChild: function(child) {
       Events.link(this.childData$, child.data$);
       this.addChild(child);
     }
   },
-  
+
 });
-
-
-
-
