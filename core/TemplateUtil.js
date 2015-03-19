@@ -207,9 +207,7 @@ MODEL({
 
       var f = function() {
         if ( ! delegate ) {
-          if ( t.code )
-            delegate = t.code;
-          else if ( ! t.template )
+          if ( ! t.template )
             throw 'Must arequire() template model before use for ' + this.name_ + '.' + t.name;
           else
             delegate = TemplateUtil.compile(Template.isInstance(t) ? t : Template.create(t));
@@ -231,8 +229,6 @@ MODEL({
       return eval('(function(' + args.join(',') + '){' + code + '})');
     },
     compile: function(t) {
-      if ( t.code ) return t.code;
-
       // console.time('parse-template-' + t.name);
       var code = TemplateCompiler.parseString(t.template);
       // console.timeEnd('parse-template-' + t.name);

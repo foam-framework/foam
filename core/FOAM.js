@@ -136,9 +136,9 @@ function arequire(modelName, opt_X) {
     var future = afuture();
     X.ModelDAO.find(modelName, {
       put: function(m) {
-        var m = X.lookup(modelName);
         delete X.arequire$ModelLoadsInProgress[modelName];
-        arequireModel(m, X)(future.set);
+        X.registerModel(m);
+        future.set(m);
       },
       error: function() {
         var args = argsToArray(arguments);
@@ -152,12 +152,7 @@ function arequire(modelName, opt_X) {
     return future.get;
   }
 
-  /** This is so that if the model is arequire'd concurrently the
-   *  initialization isn't done more than once.
-   **/
-  if ( ! model ) { console.log(modelName, 'not found'); return; }
-
-  return arequireModel(model, X);
+  return model.arequire()
 }
 
 
@@ -334,10 +329,9 @@ function CLASS(m) {
         // console.time('buildModel: ' + id);
         var model = JSONUtil.mapToObj(X, m, Model, work);
         // console.timeEnd('buildModel: ' + id);
-        if ( work.length > 0 && model.required__ ) {
-          model.required__ = aseq(
-            aseq.apply(null, work),
-            model.required__);
+
+        if ( work.length > 0 ) {
+          model.extra__ = aseq.apply(null, work);
         }
 
         X.registerModel(model);
