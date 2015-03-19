@@ -119,12 +119,24 @@ CLASS({
       // don't respond if we are already at the location desired
       if (location.hash.substring(1) === this.DetailContext.documentViewRef.get().ref) return;
 
-      var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:location.hash.substring(1)}, this.DetailContext);
-      if (newRef.valid) {
+
+      var setRef = function(newRef) { 
         this.DetailContext.documentViewRef.set(newRef);
         if (newRef.resolvedModelChain[0] !== this.selection) this.selection = newRef.resolvedModelChain[0];
         this.SearchContext.selection$.set(newRef.resolvedRoot.resolvedModelChain[0]); // selection wants a Model object
-
+      }.bind(this);
+      var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:location.hash.substring(1)}, this.DetailContext);
+      if (newRef.valid) {
+        setRef(newRef);
+      } else {
+        // attempt to load the referenced model name
+        this.DetailContext.arequire(location.hash.substring(1), this.DetailContext)(function(m) {
+          var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
+          if (newRef.valid) {
+            setRef(newRef); // not fully recursive as we only want to try loading once
+            this.DetailContext.masterModelList.put(m);
+          }
+        }.bind(this));
       }
     },
 
