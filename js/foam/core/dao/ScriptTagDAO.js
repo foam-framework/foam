@@ -65,7 +65,7 @@ CLASS({
     {
       name: 'onData',
       code: function(data, src) {
-        var work = [anop];
+        var work = [];
         var obj = JSONUtil.mapToObj(this.X, data, undefined, work);
 
         if ( ! obj ) {
