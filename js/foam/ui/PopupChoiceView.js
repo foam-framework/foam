@@ -46,6 +46,11 @@ CLASS({
       name: 'showValue'
     },
     {
+      model_: 'BooleanProperty',
+      name: 'opened',
+      transient: true
+    },
+    {
       model_: 'FunctionProperty',
       name: 'updateListener'
     },
@@ -66,6 +71,8 @@ CLASS({
       name: 'open',
       labelFn: function() { return this.linkLabel; },
       action: function() {
+        if ( this.opened ) return;
+
         var self = this;
         var view = this.ChoiceListView.create({
           id: this.scrollerID,
@@ -75,6 +82,7 @@ CLASS({
           autoSetData: this.autoSetData
         });
 
+        self.opened = true;
         var pos = findViewportXY(this.$.querySelector('.action'));
         var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
         var s = this.X.window.getComputedStyle(view.$);
@@ -102,6 +110,7 @@ CLASS({
 
         var removeListener;
         function remove() {
+          self.opened = false;
           self.X.document.removeEventListener('touchstart', removeListener);
           self.X.document.removeEventListener('mousemove',  mouseMove);
           if ( view.$ ) view.$.outerHTML = '';
@@ -135,9 +144,8 @@ CLASS({
       if ( this.mode === 'read-only' ) {
         return '<span id="' + id + '" class="popupChoiceView-readonly">' +
             ((this.choice && this.choice[1]) || '') + '</span>';
-      } else {
-        return this.SUPER();
       }
+      return this.SUPER();
     },
     toInnerHTML: function() {
       var out = '';
