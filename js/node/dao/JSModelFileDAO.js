@@ -20,7 +20,7 @@ CLASS({
    "id": "node.dao.JSModelFileDAO",
    "package": "node.dao",
    "name": "JSModelFileDAO",
-   "extendsModel": "AbstractDAO",
+   "extendsModel": "foam.dao.AbstractDAO",
    "requires": [],
    "imports": [],
    "exports": [],
