@@ -79,7 +79,11 @@ CLASS({
           The CSS class names to use for HTML $$DOC{ref:'foam.ui.View',usePlural:true}.
           Separate class names with spaces. Each instance of a $$DOC{ref:'foam.ui.View'}
           may have different classes specified.
-      */}
+      */},
+      postSet: function() {
+        if ( ! this.$ ) return;
+        this.$.className = this.cssClassAttr().slice(7, -1);
+      }
     },
     {
       name: 'tooltip'
@@ -94,7 +98,11 @@ CLASS({
           For custom $$DOC{ref:'foam.ui.View',usePlural:true}, you may wish to add standard
           CSS classes in addition to user-specified ones. Set those here and
           they will be appended to those from $$DOC{ref:'.className'}.
-      */}
+      */},
+      postSet: function() {
+        if ( ! this.$ ) return;
+        this.$.className = this.cssClassAttr().slice(7, -1);
+      }
     },
     {
       name: 'propertyViewProperty',

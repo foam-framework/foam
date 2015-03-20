@@ -97,7 +97,11 @@ CLASS({
       help: 'CSS class name(s), space separated. Used if adapted with a CViewView.',
       defaultValue: '',
       documentation: function() {/* CSS class name(s), space separated.
-          Only used if this is the root node adapted with a $$DOC{ref:'CViewView'}. */}
+          Only used if this is the root node adapted with a $$DOC{ref:'CViewView'}. */},
+      postSet: function() {
+        if ( ! this.$ ) return;
+        this.$.className = this.className;
+      }
     },
     {
       model_: 'FloatProperty',
