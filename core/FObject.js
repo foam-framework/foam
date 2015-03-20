@@ -191,6 +191,9 @@ var FObject = {
   },
 
   fromElement: function(e) {
+    var RESERVED_ATTRS = {
+      id: true, model: true, view: true, showactions: true, oninit: true
+    };
     var elements = this.elementMap_;
 
     // Build a map of properties keyed off of 'name'
@@ -199,8 +202,12 @@ var FObject = {
       elements = {};
       for ( var i = 0 ; i < this.model_.properties_.length ; i++ ) {
         var p = this.model_.properties_[i];
-        elements[p.name] = p;
-        elements[p.name.toUpperCase()] = p;
+        if ( ! RESERVED_ATTRS[p.name] ) {
+          elements[p.name] = p;
+          elements[p.name.toUpperCase()] = p;
+        }
+        elements['p:' + p.name] = p;
+        elements['P:' + p.name.toUpperCase()] = p;
       }
       this.elementMap_ = elements;
     }
@@ -224,7 +231,7 @@ var FObject = {
           p.fromString.call(this, val, p);
         }
       } else {
-        if ( ! { id: true, model: true, view: true, showactions: true, oninit: true }[attr.name] )
+        if ( ! RESERVED_ATTRS[attr.name] )
           console.warn('Unknown attribute name: "' + attr.name + '"');
       }
     }

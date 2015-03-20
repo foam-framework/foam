@@ -650,7 +650,7 @@ CLASS({
   name: 'DAOProperty',
   help: "Describes a DAO property.",
 
-  requires: ['foam.dao.FutureDAO'],
+  requires: ['foam.dao.FutureDAO', 'foam.dao.ProxyDAO'],
 
   properties: [
     {
@@ -678,7 +678,7 @@ CLASS({
           } else
             delegate = this[prop.name];
 
-          var proxy = this.X.lookup('foam.dao.ProxyDAO').create({delegate: delegate});
+          var proxy = prop.ProxyDAO.create({delegate: delegate});
 
           this.addPropertyListener(prop.name, function(_, _, _, dao) {
             if ( future ) {

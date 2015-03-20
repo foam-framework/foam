@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
+// TODO(kgr): remove use of SimpleValue, just use data$ binding instead.
 CLASS({
-  name: 'DAOListView',
   package: 'foam.ui',
+  name: 'DAOListView',
 
   requires: ['SimpleValue'],
 
@@ -154,7 +155,7 @@ CLASS({
         }
         this.addChild(view);
 
-        if (!doneFirstItem) {
+        if ( ! doneFirstItem ) {
           doneFirstItem = true;
         } else {
           this.separatorToHTML(out); // optional separator
