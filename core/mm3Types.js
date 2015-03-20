@@ -633,7 +633,11 @@ CLASS({
     {
       name: 'fromElement',
       defaultValue: function(e, p) {
-        this[p.name] = this[p.name].pushF(e.innerHTML);
+        var val = [];
+        var name = p.singular || 'item';
+        for ( var i = 0 ; i < e.children.length ; i++ )
+          if ( e.children[i].nodeName === name ) val.push(e.children[i].innerHTML);
+        this[p.name] = val;
       }
     }
   ]
@@ -647,7 +651,7 @@ CLASS({
   help: "Describes a DAO property.",
 
   requires: ['foam.dao.FutureDAO'],
-  
+
   properties: [
     {
       name: 'type',
