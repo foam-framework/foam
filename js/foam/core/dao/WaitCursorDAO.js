@@ -18,7 +18,7 @@
 CLASS({
   name: 'WaitCursorDAO',
   package: 'foam.core.dao',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   imports: [
     'window'

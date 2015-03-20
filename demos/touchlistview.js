@@ -24,7 +24,7 @@ CLASS({
   ]
 });
 
-var dao = EasyDAO.create({
+var dao = X.lookup('foam.dao.EasyDAO').create({
   model: Contact,
   seqNo: true,
   seqProperty: Contact.ID,

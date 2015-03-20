@@ -18,7 +18,7 @@
 CLASS({
   package: 'com.google.mail',
   name: 'SyncDecorator',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
   requires: [
     'com.google.mail.FOAMGMailMessage'
   ],

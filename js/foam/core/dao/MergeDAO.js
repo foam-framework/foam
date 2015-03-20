@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.core.dao',
   name: 'MergeDAO',
-  extendsModel: 'ProxyDAO',
+  extendsModel: 'foam.dao.ProxyDAO',
 
   properties: [
     {

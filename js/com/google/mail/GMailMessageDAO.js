@@ -27,7 +27,7 @@ CLASS({
     "com.google.mail.GMailDraft",
     "com.google.mail.GMailMessage",
     "com.google.mail.GMailHistory",
-    "NullDAO",
+    "foam.dao.NullDAO",
     "com.google.mail.GMailHistory"
   ],
   "imports": [

@@ -128,7 +128,8 @@ CLASS({
     'foam.input.touch.TouchManager',
     'foam.ui.animated.Label',
     'foam.ui.md.Flare',
-    'foam.ui.DAOListView'
+    'foam.ui.DAOListView',
+    'AbstractDAO'
   ],
 
   exports: [

@@ -6,7 +6,7 @@
 	/* global CLASS, TRUE, SET, NOT, GROUP_BY, COUNT, EasyDAO, Todo, TodoDAO */
 	CLASS({
 		name: 'TodoDAO',
-		extendsModel: 'ProxyDAO',
+		extendsModel: 'foam.dao.ProxyDAO',
 		methods: {
 			put: function(issue, s) {
 				// If the user tried to put an empty text, remove the entry instead.
@@ -61,7 +61,7 @@
 
 	CLASS({
 		name: 'Controller',
-    requires: ['foam.ui.TextFieldView', 'foam.ui.DAOListView', 'TodoFilterView', 'EasyDAO' ],
+    requires: ['foam.ui.TextFieldView', 'foam.ui.DAOListView', 'TodoFilterView', 'foam.dao.EasyDAO' ],
 		properties: [
 			{
 				name: 'input',

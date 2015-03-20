@@ -16,7 +16,7 @@ CLASS({
 
   requires: [
     'Model',
-    'EasyDAO',
+    'foam.dao.EasyDAO',
     'foam.ui.ActionButton',
     'foam.flow.VirtualConsole',
     'foam.flow.VirtualConsoleView',

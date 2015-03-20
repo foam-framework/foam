@@ -17,7 +17,7 @@
 <br/>
 <br/>
   <script language="javascript">
-    var IssueDAO = EasyDAO.create({
+    var IssueDAO = X.lookup('foam.dao.EasyDAO').create({
       model: Issue,
       seqNo: true,
       cache: true

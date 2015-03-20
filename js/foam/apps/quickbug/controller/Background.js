@@ -25,9 +25,9 @@ CLASS({
     'foam.apps.quickbug.ui.ChromeAppBrowser',
     'foam.core.dao.ChromeSyncStorageDAO',
     'foam.input.touch.TouchManager',
-    'NullDAO',
-    'IDBDAO',
-    'DAOVersion'
+    'foam.dao.NullDAO',
+    'foam.dao.IDBDAO',
+    'foam.dao.DAOVersion'
   ],
 
   exports: [

@@ -20,9 +20,9 @@ CLASS({
   package: 'foam.navigator',
   extendsModel: 'foam.navigator.BrowserConfig',
   requires: [
-    'CachingDAO',
-    'FutureDAO',
-    'IDBDAO',
+    'foam.dao.CachingDAO',
+    'foam.dao.FutureDAO',
+    'foam.dao.IDBDAO',
     'MDAO',
     'foam.navigator.dao.MultiDAO',
     'foam.navigator.BrowserConfig',

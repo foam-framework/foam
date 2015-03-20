@@ -20,8 +20,8 @@ CLASS({
   package: 'foam.navigator',
   extendsModel: 'foam.ui.View',
   requires: [
-    'CachingDAO',
-    'IDBDAO',
+    'foam.dao.CachingDAO',
+    'foam.dao.IDBDAO',
     'MDAO',
     'Phone',
     'com.google.mail.EMailDAO',

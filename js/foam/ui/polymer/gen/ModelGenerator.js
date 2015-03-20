@@ -21,7 +21,7 @@ CLASS({
 
   requires: [
     'XHR',
-    'EasyDAO',
+    'foam.dao.EasyDAO',
     'foam.ui.DAOListView',
     'foam.ui.polymer.gen.PolymerPrototype',
     'foam.ui.polymer.gen.FunctionWrapper',

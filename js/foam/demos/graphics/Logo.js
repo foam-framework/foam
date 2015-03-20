@@ -134,8 +134,6 @@ CLASS({
 
   exports: [ 'text$', 'font$', 'colours$' ],
 
-  constants: { DEFAULT_COLOURS: ['#33f','#f00','#fc0','#33f','#3c0'] },
-
   properties: [
     {
       name: 'duration',
@@ -145,7 +143,7 @@ CLASS({
       model_: 'StringArrayProperty',
       name: 'colours',
       singular: 'colour',
-      factory: function() { return []; }
+      factory: function() { return ['#33f','#f00','#fc0','#33f','#3c0']; }
     },
     {
       name: 'text',
@@ -175,9 +173,6 @@ CLASS({
   methods: {
     initHTML: function() {
       this.SUPER();
-
-      if ( this.colours.length === 0 )
-        this.colours = this.DEFAULT_COLOURS.slice(0);
 
       if ( this.duration ) {
         this.X.setTimeout(

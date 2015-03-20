@@ -9,13 +9,15 @@
                      height:70px; position: absolute;"
               model="foam.demos.graphics.Logo" width="300" height="100"
               font="70px Georgia" duration="15000">
-          <colour>#FCE8B2</colour>
-          <colour>#F7CB4D</colour>
-          <colour>#F4B400</colour>
-          <colour>#F09300</colour>
-          <colour>#F4B400</colour>
-          <colour>#DB4437</colour>
-          <colour>#616161</colour>
+          <colours>
+            <colour>#FCE8B2</colour>
+            <colour>#F7CB4D</colour>
+            <colour>#F4B400</colour>
+            <colour>#F09300</colour>
+            <colour>#F4B400</colour>
+            <colour>#DB4437</colour>
+            <colour>#616161</colour>
+          </colours>
         </foam>
       </book-title>
       <sub-title>

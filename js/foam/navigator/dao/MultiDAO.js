@@ -21,7 +21,7 @@ CLASS({
   extendsModel: 'AbstractDAO',
 
   requires: [
-    'EasyDAO',
+    'foam.dao.EasyDAO',
     'foam.navigator.BrowserConfig',
     'foam.navigator.dao.ModelIDDecoratorDAO',
     'foam.navigator.dao.IDConfig'

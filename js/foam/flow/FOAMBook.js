@@ -17,7 +17,7 @@ CLASS({
 
 
   requires: [
-    'EasyDAO',
+    'foam.dao.EasyDAO',
     'foam.graphics.ActionButtonCView',
     'foam.input.touch.TouchManager',
     'foam.input.touch.GestureManager',
