@@ -68,12 +68,6 @@ CLASS({
   ],
 
   methods: {
-    init: function() { 
-      arequire('foam.dao.FutureDAO');
-      
-      this.SUPER(); 
-    },
-
     relay: function() { /* Sets up relay for listening to delegate changes. */
       if ( ! this.relay_ ) {
         var self = this;
