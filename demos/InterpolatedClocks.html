@@ -17,6 +17,12 @@
      arequire('Graph'),
      arequire('Canvas')
   )(function() {
+  var document = {
+    writeln: function(html) {
+      window.document.body.insertAdjacentHTML('beforeend', html);
+    }
+  };
+
     var space = Canvas.create({width: 3500, height: 2700, background:'#fff'});
     space.write(document);
 

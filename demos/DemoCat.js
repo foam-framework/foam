@@ -15,8 +15,15 @@ CLASS({
   ]
 });
 
-
-var demos = JSONUtil.arrayToObjArray(X, [
+CLASS({
+  name: 'Controller',
+  requires: ['foam.ui.TextFieldView',
+             'foam.ui.DAOListView',
+             'Demo'],
+  properties: [
+    { name: 'search', view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true } },
+    { name: 'dao', factory: function() {
+return JSONUtil.arrayToObjArray(X, [
   {
     name: 'Googley Eyes',
     path: '/index.html?model=foam.demos.graphics.EyesDemo',
@@ -333,16 +340,8 @@ var demos = JSONUtil.arrayToObjArray(X, [
     keywords: ['dev', 'ide', 'model'],
     src: '/js/foam/apps/Modeller.js'
   }
-], Demo).dao;
-
-
-CLASS({
-  name: 'Controller',
-  requires: ['foam.ui.TextFieldView',
-             'foam.ui.DAOListView'],
-  properties: [
-    { name: 'search', view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true } },
-    { name: 'dao', defaultValue: demos },
+], this.Demo).dao;
+    } },
     {
       name: 'filteredDAO',
       model_: 'foam.core.types.DAOProperty',

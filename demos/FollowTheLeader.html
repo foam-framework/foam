@@ -6,7 +6,16 @@
  </head>
  <body>
   <script language="javascript">
-    arequire('foam.graphics.Circle')(function() {
+    apar(
+    arequire('foam.graphics.CView'),
+    arequire('foam.input.Mouse'),
+    arequire('foam.graphics.Circle'))(function() {
+  var document = {
+    writeln: function(html) {
+      window.document.body.insertAdjacentHTML('beforeend', html);
+    }
+  };
+
     var timer = Timer.create({});
     var space = foam.graphics.CView.create({
       width: 2000,
@@ -16,7 +25,7 @@
     space.write(document);
     // space.erase = function() {}; // uncomment for nice effect
 
-    var mouse = Mouse.create();
+    var mouse = foam.input.Mouse.create();
     mouse.connect(space.$);
 
     var COUNT = 100;
