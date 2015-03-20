@@ -18,11 +18,7 @@ CLASS({
     {
       name: 'slides',
       singular: 'slide',
-      factory: function() { return []; },
-      fromElement: function(e) {
-        this.slides.push(ViewFactoryProperty.ADAPT.defaultValue(null, e.innerHTML));
-        return this;
-      }
+      factory: function() { return []; }
     },
     {
       name: 'currentSlide',
@@ -46,6 +42,16 @@ CLASS({
       }
     }
   ],
+
+  methods: {
+    fromElement: function(e) {
+      var slides = [];
+      for ( var i = 0 ; i < e.children.length ; i++ )
+        if ( e.children[i].nodeName === 'slide' )
+          slides.push(ViewFactoryProperty.ADAPT.defaultValue(null, e.children[i].innerHTML));
+      this.slides = slides;
+    }
+  },
 
   actions: [
     {
