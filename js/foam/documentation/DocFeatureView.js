@@ -28,7 +28,7 @@ CLASS({
   properties: [
     {
       name: 'overridesDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       defaultValue: []
     },
     {

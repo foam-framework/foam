@@ -132,7 +132,7 @@ CLASS({
       }
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'dao',
       documentation: 'The DAO used to look up the models. Defaults to ' +
           'mySubTypeDAO for subType == "MySubType".',
@@ -151,7 +151,7 @@ CLASS({
       }
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'filteredDAO',
       dynamicValue: function() {
         this.q; this.wrappedDAO; this.limit;

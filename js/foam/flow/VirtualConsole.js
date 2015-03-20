@@ -32,7 +32,7 @@ CLASS({
       defaultValue: 0
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'console_',
       factory: function() {
         return this.EasyDAO.create({
@@ -51,7 +51,7 @@ CLASS({
       }
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'delayedConsole_',
       factory: function() {
         return this.ManuallyDelayedPutDAO.create({ delegate: this.console_ });

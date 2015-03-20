@@ -30,7 +30,7 @@ CLASS({
   properties: [
     {
       name: 'linkBlockerDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       factory: function() {
         return this.MDAO.create({model:this.DiagramItemTrait, autoIndex:true});
       }

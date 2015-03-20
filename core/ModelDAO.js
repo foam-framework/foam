@@ -15,11 +15,16 @@
  * limitations under the License.
  */
 
+X.ModelDAO = X.foam.core.bootstrap.BrowserFileDAO.create();
 
-CLASS({
-  name: 'ChainedPrePostProperty',
-  package: 'foam.patterns',
 
-  extendsModel: 'Property',
-  traits: ['foam.patterns.ChainedPrePostPropertyTrait']
-});
+// Hookup ModelDAO callback as CLASS and __DATA methods.
+
+CLASS = function(json) {
+  json.model_ = 'Model';
+  if ( document && document.currentScript )
+    json.sourcePath = document.currentScript.src;
+  X.ModelDAO.onData(json);
+};
+
+var __DATA = X.ModelDAO.onData;

@@ -23,7 +23,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'dao'
     }
   ],

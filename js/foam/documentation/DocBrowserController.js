@@ -28,7 +28,8 @@ CLASS({
     'foam.documentation.ModelCompletenessRecord',
     'foam.input.touch.TouchManager',
     'foam.input.touch.GestureManager',
-    'foam.core.bootstrap.ModelFileDAO'
+    'foam.core.bootstrap.BrowserFileDAO'
+//    'foam.core.bootstrap.ModelFileDAO'
   ],
 
   documentation: function() {  /*
@@ -159,6 +160,42 @@ CLASS({
         }.bind(this));         
       }
     },
+    
+    scrapeDirectory: function(dir, pkg, sink, dao) {
+      var request = new XMLHttpRequest();
+      request.open("GET", dir);
+      request.addEventListener("readystatechange", function(e) {
+        if (request.readyState === 4) {
+          // find javascript files
+          var fre = /.*?(?:href=\")(.*?).js\".*?/gmi;
+          fre.sticky = true;
+          var files = [];
+          var fmatch;
+          do {
+            if ( fmatch = fre.exec(request.response) ) files.push(fmatch[1]);
+          } while ( fmatch );
+          files.forEach(function(d) {
+            //find(pkg ? pkg+"."+d : d, sink);
+            //console.log("areqX ", this.X.NAME);
+            dao.find(pkg ? pkg+"."+d : d, sink);
+          }.bind(this));         
+
+          // find subdirectories
+          var re = /.*?(?:href=\")(.*?)\/\".*?/gm;
+          re.sticky = true;
+          var dirs = [];
+          var match;
+          do {
+            if ( match = re.exec(request.response) ) dirs.push(match[1]);
+          } while ( match );
+          dirs.forEach(function(d) {
+            this.scrapeDirectory(dir + '/' + d, pkg ? pkg+"."+d : d, sink, dao);
+          }.bind(this));
+        }
+      }.bind(this));
+      request.send();           
+    },
+
 
     createModelList: function() {
       var newDAO = this.MDAO.create({model:Model});
@@ -169,20 +206,24 @@ CLASS({
 //       loaderX.set('ModelDAO', this.ModelFileDAO.create({}, loaderX));
 //       loaderX.set('onRegisterModel', function(m) { console.log("Good onRegisterModel: ", m.id); }); 
 //       loaderX.set('lookup', lookup); 
-      loaderX.ModelDAO = this.ModelFileDAO.create({}, loaderX);
-      loaderX.onRegisterModel = function(m) { console.log("Good onRegisterModel: ", m.id); }; 
-      loaderX.lookup = lookup; 
-//      loaderX.ModelDAO.select(newDAO);
+      loaderX.ModelDAO = this.BrowserFileDAO.create({}, loaderX);
+      //loaderX.onRegisterModel = function(m) { console.log("Good onRegisterModel: ", m.id); }; 
+      //loaderX.lookup = lookup; 
+      //loaderX.ModelDAO.select(newDAO);
+      // parse directory listing, if available
+      var sourcePath = window.FOAM_BOOT_DIR + '../js';
+      this.scrapeDirectory(sourcePath, "", newDAO, loaderX.ModelDAO);
+      
            
       // All models are now in USED_MODELS
-      [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
-        for ( var key in collection ) {
-          // go async: as the requires complete, newDAO will fill in
-          arequire(key)( function(m) {
-            newDAO.put(m);
-          });
-        };
-      }.bind(this));
+      // [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
+      //   for ( var key in collection ) {
+      //     // go async: as the requires complete, newDAO will fill in
+      //     arequire(key)( function(m) {
+      //       newDAO.put(m);
+      //     });
+      //   };
+      // }.bind(this));
       
 //       // Add in non-model things like Interfaces
 //       for ( var key in NONMODEL_INSTANCES ) {

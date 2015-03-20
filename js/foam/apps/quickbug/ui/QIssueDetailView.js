@@ -39,11 +39,11 @@ CLASS({
       defaultValue: false
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'issueDAO'
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'cursorIssueDAO'
     },
     {

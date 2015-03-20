@@ -40,7 +40,7 @@ CLASS({
       }
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'dao',
       label: 'DAO',
       help: 'An alias for the data property.',

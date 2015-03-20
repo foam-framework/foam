@@ -49,7 +49,7 @@ CLASS({
       defaultValue: 89
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'dao',
       onDAOUpdate: 'onDAOUpdate'
     },

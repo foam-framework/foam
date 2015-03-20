@@ -15,11 +15,42 @@
  * limitations under the License.
  */
 
-
 CLASS({
-  name: 'UnchainablePrePostProperty',
-  package: 'foam.patterns',
+  name: 'BrowserFileDAO',
+  package: 'foam.demos',
 
-  extendsModel: 'Property',
-  traits: ['foam.patterns.UnchainablePrePostPropertyTrait']
+  requires: [
+    'foam.ui.TableView'
+  ],
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'objId'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'errorMessage'
+    },
+    {
+      name: 'value',
+      view: 'foam.ui.DetailView'
+    }
+  ],
+
+  actions: [
+    {
+      name: 'test',
+      action: function() {
+        this.X.ModelDAO.find(this.objId, {
+          put: function(obj) {
+            this.value = obj;
+          }.bind(this),
+          error: function(o) {
+            this.errorMessage = "" + o;
+          }.bind(this)
+        });
+      }
+    }
+  ]
 });
