@@ -60,7 +60,7 @@ CLASS({
               ret();
             },
             error: function() {
-              version = this.DAOVersion.create({
+              version = self.DAOVersion.create({
                 name: self.name,
                 version: 0
               });
