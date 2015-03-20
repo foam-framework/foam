@@ -14,13 +14,21 @@
      arequire('System'),
      arequire('foam.ui.StringArrayView'),
      arequire('Label'),
-     arequire('Timer')
+     arequire('Timer'),
+     arequire('Developer')
   )(
    function() {
     timer  = Timer.create({interval:20});
     var graphs = Canvas.create({width: 400, height: 700, background:'#fff'});
     var space  = Canvas.create({width: 450, height: 700, background:'#fff'});
     var space2 = Canvas.create({width: 450, height: 700, background:'#fff'});
+
+
+  var document = {
+    writeln: function(html) {
+  window.document.body.insertAdjacentHTML('beforeend', html);
+  }
+  };
 
     document.writeln("<table><tr><td>");
     var spaceView = space.write(document);
