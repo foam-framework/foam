@@ -84,7 +84,7 @@ CLASS({
     },
     {
       name: 'filteredDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       help: 'Top-level filtered DAO. Further filtered by each canned query.'
     },
     {

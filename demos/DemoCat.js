@@ -345,7 +345,7 @@ CLASS({
     { name: 'dao', defaultValue: demos },
     {
       name: 'filteredDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       view: { factory_: 'foam.ui.DAOListView', mode: 'read-only' },
       dynamicValue: function() {
         return this.dao.where(CONTAINS_IC(SEQ(Demo.NAME, Demo.DESCRIPTION, Demo.KEYWORDS), this.search));

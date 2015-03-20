@@ -33,28 +33,28 @@ CLASS({
   properties: [
     {
       name: 'featureDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       factory: function() {
         return this.MDAO.create({model:this.DocFeatureInheritanceTracker, autoIndex:true});
       }
     },
     {
       name: 'modelDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       factory: function() {
         return this.MDAO.create({model:this.DocModelInheritanceTracker, autoIndex:true});
       }
     },
     {
       name: 'subModelDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       factory: function() {
         return this.MDAO.create({model:this.Model, autoIndex:true});
       }
     },
     {
       name: 'traitUserDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       factory: function() {
         return this.MDAO.create({model:this.Model, autoIndex:true});
       }

@@ -42,7 +42,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'glossaryTerms',
       factory: function() {
         return this.EasyDAO.create({

@@ -39,7 +39,7 @@ CLASS({
     },
     {
       name: 'filteredDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
 
       dynamicValue: function() {
         return this.dao.orderBy(this.order)

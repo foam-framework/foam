@@ -19,7 +19,7 @@ CLASS({
     { name: 'dao', defaultValue: phones },
     {
       name: 'filteredDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       view: { factory_: 'foam.ui.DAOListView', rowView: 'PhoneCitationView', mode: 'read-only' },
       dynamicValue: function() {
         return this.dao.orderBy(this.order).where(CONTAINS_IC(SEQ(Phone.NAME, Phone.SNIPPET), this.search));

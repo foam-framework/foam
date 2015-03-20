@@ -43,7 +43,7 @@ CLASS({
       }
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'srcDAO'
     },
     {

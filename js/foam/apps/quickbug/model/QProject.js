@@ -192,7 +192,7 @@ CLASS({
       }
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'IssueCommentDAO',
       factory: function() {
         return this.WhenIdleDAO.create({
