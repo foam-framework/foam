@@ -43,7 +43,7 @@
             factory: function() { return ContactDAO; }
           },
           {
-            model_: 'DAOProperty',
+            model_: 'foam.core.types.DAOProperty',
             name: 'autocompleteDao'
           }
         ],

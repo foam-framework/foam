@@ -40,14 +40,14 @@ CLASS({
     },
     {
       name: 'featureDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       onDAOUpdate: function() {
         this.rebuildSelfDAOs();
       }
     },
     {
       name:  'selfFeaturesDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       documentation: function() { /*
           Returns the list of features (matching this feature type) that are
           declared or overridden in this $$DOC{ref:'Model'}
@@ -61,7 +61,7 @@ CLASS({
     },
     {
       name:  'inheritedFeaturesDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       documentation: function() { /*
           Returns the list of features (matching this feature type) that are
           inherited but not declared or overridden in this $$DOC{ref:'Model'}

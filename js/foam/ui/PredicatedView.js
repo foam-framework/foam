@@ -31,7 +31,7 @@ CLASS({
       postSet: function(_, p) { this.predicatedDAO = this.dao.where(p); }
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'predicatedDAO'
     },
     {

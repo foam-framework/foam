@@ -645,62 +645,6 @@ CLASS({
 
 
 CLASS({
-  extendsModel: 'Property',
-
-  name: 'DAOProperty',
-  help: "Describes a DAO property.",
-
-  requires: ['foam.dao.FutureDAO', 'foam.dao.ProxyDAO'],
-
-  properties: [
-    {
-      name: 'type',
-      defaultValue: 'DAO',
-      help: 'The FOAM type of this property.'
-    },
-    {
-      name: 'view',
-      defaultValue: 'foam.ui.ArrayView'
-    },
-    {
-//      model_: 'FunctionProperty',
-      name: 'onDAOUpdate'
-    },
-    {
-      name: 'install',
-      defaultValue: function(prop) {
-        defineLazyProperty(this, prop.name + '$Proxy', function() {
-          if ( ! this[prop.name] ) {
-            var future = afuture();
-            var delegate = prop.FutureDAO.create({
-              future: future.get
-            });
-          } else
-            delegate = this[prop.name];
-
-          var proxy = prop.ProxyDAO.create({delegate: delegate});
-
-          this.addPropertyListener(prop.name, function(_, _, _, dao) {
-            if ( future ) {
-              future.set(dao);
-              future = null;
-              return;
-            }
-            proxy.delegate = dao;
-          });
-
-          return {
-            get: function() { return proxy; },
-            configurable: true
-          };
-        });
-      }
-    }
-  ]
-});
-
-
-CLASS({
   name: 'ModelProperty',
   extendsModel: 'Property',
 

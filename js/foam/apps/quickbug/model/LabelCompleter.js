@@ -19,7 +19,7 @@ CLASS({
   name: 'LabelCompleter',
   package: 'foam.apps.quickbug.model',
   properties: [
-    { model_: 'DAOProperty', name: 'autocompleteDao' }
+    { model_: 'foam.core.types.DAOProperty', name: 'autocompleteDao' }
   ],
   requires: [
     'foam.apps.quickbug.model.QIssueLabel'

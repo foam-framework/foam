@@ -171,7 +171,7 @@ CLASS({
       }
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'filteredIssueDAO',
       onDAOUpdate: 'onDAOUpdate'
     },
