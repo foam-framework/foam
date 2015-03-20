@@ -81,8 +81,10 @@ CLASS({
 
         aseq.apply(null, work)(
           function(ret) {
-            for ( var i = 0 ; i < this.pending[obj.id].length ; i++ ) {
-              var sink = this.pending[obj.id][i];
+            var sinks = this.pending[obj.id];
+            delete this.pending[obj.id];
+            for ( var i = 0; i < sinks.length ; i++ ) {
+              var sink = sinks[i];
               sink && sink.put && sink.put(obj);
             }
           }.bind(this));
