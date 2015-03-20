@@ -617,6 +617,13 @@ MODEL({
 
         pump();
       };
+    },
+
+    function adebugger(fn) {
+      return function(ret) {
+        debugger
+        fn.apply(null, arguments);
+      };
     }
   ]
 });
