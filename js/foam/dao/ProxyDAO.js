@@ -44,8 +44,7 @@ CLASS({
           if ( oldDAO ) oldDAO.unlisten(this.relay());
           newDAO.listen(this.relay());
           // FutureDAOs will put via the future. In that case, don't put here.
-          // TODO(jacksonic): these lookups would love to be requires when we support cycles, or just remove this logic and use polymorphism
-          if ( this.X.lookup('FutureDAO') && this.X.lookup('FutureDAO').isInstance(oldDAO) ) {
+          if ( this.X.lookup('foam.dao.FutureDAO') && this.X.lookup('foam.dao.FutureDAO').isInstance(oldDAO) ) {
             // do nothing
           } else {
             this.notify_('reset', []);
