@@ -41,10 +41,10 @@ CLASS({
     install: function() {
       var e = this.element;
       var models = [];
-      var style     = e.getAttribute('style' /*_*/);
-      var modelName = e.getAttribute('model' /*_*/);
-      var viewName  = e.getAttribute('view' /*_*/);
-      var onInit    = e.getAttribute('oninit' /*_*/);
+      var style     = e.getAttribute('style');
+      var modelName = e.getAttribute('model');
+      var viewName  = e.getAttribute('view');
+      var onInit    = e.getAttribute('oninit');
 
       if ( modelName ) models.push(arequire(modelName));
       if ( viewName  ) models.push(arequire(viewName));
@@ -74,10 +74,10 @@ CLASS({
         } else {
           var a = this.element.getAttribute('showActions');
           var showActions = ! a || (
-            a.equalsIC('y')      ||
-              a.equalsIC('yes')  ||
-              a.equalsIC('true') ||
-              a.equalsIC('t') );
+            a.equalsIC('y')     ||
+            a.equalsIC('yes')   ||
+            a.equalsIC('true')  ||
+            a.equalsIC('t') );
 
           view = this.X.lookup('foam.ui.DetailView').create({
             model: model,
