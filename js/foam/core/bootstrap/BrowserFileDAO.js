@@ -69,7 +69,7 @@ MODEL({
   listeners: [
     {
       name: 'onData',
-      code: function(data, src) {
+      code: function(data) {
         var work = [anop];
         var obj = JSONUtil.mapToObj(this.X, data, undefined, work);
 

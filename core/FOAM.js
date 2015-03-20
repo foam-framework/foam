@@ -134,6 +134,8 @@ function arequire(modelName, opt_X) {
     }
 
     var future = afuture();
+    X.arequire$ModelLoadsInProgress[modelName] = future.get;
+
     X.ModelDAO.find(modelName, {
       put: function(m) {
         // Contextualize the model for this context
@@ -153,7 +155,6 @@ function arequire(modelName, opt_X) {
       }
     });
 
-    X.arequire$ModelLoadsInProgress[modelName] = future.get;
     return future.get;
   }
 

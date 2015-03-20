@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-MODEL({
+CLASS({
   name: 'ModelFileDAO',
   package: 'node.dao',
 
@@ -26,35 +26,66 @@ MODEL({
         return global.NODE_CLASSPATH ||
             (global.FOAM_BOOT_DIR + '/../js');
       }
+    },
+    {
+      name: 'pending',
+      factory: function() { return {}; }
+    },
+    {
+      name: 'preload',
+      factory: function() { return {}; }
     }
   ],
 
   methods: {
     find: function (key, sink) {
-      var X = this.X;
+      if ( this.preload[key] ) {
+        sink && sink.put && sink.put(this.preload[key]);
+        delete this.preload[key];
+      }
+
+      var fileName = this.classpath + '/' + key.replace(/\./g, '/') + '.js';
+
+      if ( this.pending[key] ) {
+        this.pending[key].push(sink);
+        return;
+      }
+
+      this.pending[key] = [sink];
+
       try {
-        var model = X.lookup(key);
-        if ( model ) {
-          sink && sink.put && sink.put(model);
-          return;
-        }
-
-        var fileName = this.classpath + '/' + key.replace(/\./g, '/') + '.js';
         require(fileName);
-
-        model = X.lookup(key);
-        if ( ! model ) {
-          sink && sink.error && sink.error('Model load failed for: ', key);
-          return;
-        }
-        model.arequire()(function(m) {
-          sink && sink.put && sink.put(m);
-        });
       } catch(e) {
-        sink && sink.error && sink.error(e);
+        sink && sink.error && sink.error('Error loading model', key, e);
       }
     }
-  }
-});
+  },
 
-X.ModelDAO = X.node.dao.ModelFileDAO.create();
+  listeners: [
+    {
+      name: 'onData',
+      code: function(data) {
+        var work = [anop];
+        var obj = JSONUtil.mapToObj(this.X, data, undefined, work);
+
+        if ( ! obj ) {
+          throw new Error("Failed to decode data: " + data);
+        }
+        if ( ! this.pending[obj.id] ) {
+          // Workaround for legacy apps that include extra models via
+          // additional script tags.
+          this.preload[obj.id] = obj;
+          return;
+        }
+
+        aseq.apply(null, work)(
+          function(ret) {
+            for ( var i = 0 ; i < this.pending[obj.id].length ; i++ ) {
+              var sink = this.pending[obj.id][i];
+              sink && sink.put && sink.put(obj);
+            }
+          }.bind(this));
+      }
+    }
+  ]
+});

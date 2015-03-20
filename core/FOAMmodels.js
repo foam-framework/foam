@@ -74,5 +74,6 @@ var files = [
   'models',
   [ 'glang', IN_BROWSER ],
   'oauth',
-  [ 'ModelDAO', IN_BROWSER ]
+  [ 'ModelDAO', IN_BROWSER ],
+  [ 'NodeModelDAO', IN_NODEJS ]
 ];
