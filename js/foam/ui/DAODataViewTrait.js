@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
- 
+
+
 CLASS({
   name: 'DAODataViewTrait',
   package: 'foam.ui',
-  
+
   documentation: function() { /*
      <p>For $$DOC{ref:'foam.ui.View',usePlural:true} that take data items from a $$DOC{ref:'DAO'}
      and display them all, $$DOC{ref:'.'} provides the basic interface. Set or bind
@@ -36,9 +36,9 @@ CLASS({
       postSet: function(old, nu) {
         if ( this.dao !== nu ) {
           this.dao = nu;
-        }        
+        }
       }
-    }, 
+    },
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'dao',
@@ -46,8 +46,8 @@ CLASS({
       help: 'An alias for the data property.',
       onDAOUpdate: 'onDAOUpdate',
       postSet: function(oldDAO, dao) {
-        if (!dao) {
-          this.data = "";
+        if ( ! dao ) {
+          this.data = '';
         } else if ( ! equals(this.data, dao) ) {
           this.data = dao;
         }
@@ -60,10 +60,8 @@ CLASS({
   ],
 
   methods: {
-    
     onDAOUpdate: function() { /* Implement this $$DOC{ref:'Method'} in
-          sub-models to respond to changes in $$DOC{ref:'.dao'}. */ }
+      sub-models to respond to changes in $$DOC{ref:'.dao'}. */
+    }
   }
 });
-
-
