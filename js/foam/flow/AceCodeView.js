@@ -14,9 +14,52 @@ CLASS({
   package: 'foam.flow',
   extendsModel: 'foam.flow.Element',
 
-  imports: [ 'document' ],
+  requires: [ 'foam.flow.SourceCode' ],
+  imports: [
+    'document',
+    'codeViewLoadState$'
+  ],
 
   properties: [
+    {
+      name: 'data',
+      type: 'foam.flow.SourceCode',
+      factory: function() {
+        return this.SourceCode.create({
+          data: 'console.log("Hello world!");'
+        });
+      },
+      postSet: function(old, nu) {
+        if ( ! this.codeView ) return;
+
+        if ( old ) old.language$.removeListener(this.onLanguageChange);
+        if ( nu ) nu.language$.addListener(this.onLanguageChange);
+        if ( ! old || old.languae !== nu.language ) this.onLanguageChange();
+
+        var codeViewCode = this.codeView.getValue();
+        if ( codeViewCode !== nu.code ) {
+          this.codeView.setValue(nu.code);
+          this.codeView.clearSelection();
+        }
+      }
+    },
+    {
+      name: 'mode',
+      defaultValue: 'read-write',
+      postSet: function(old, nu) {
+        if ( ! this.codeView || old === nu ) return;
+        var nuReadOnly = nu === 'read-only';
+        if ( nuReadOnly !== this.codeView.getReadOnly() ) {
+          if ( nuReadOnly ) this.applyReadOnlySettings();
+          else              this.applyReadWriteSettings();
+        }
+      }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'codeViewLoadState',
+      defaultValue: 'pending'
+    },
     {
       model_: 'StringProperty',
       name: 'pathToAce',
@@ -49,16 +92,18 @@ CLASS({
     },
     {
       model_: 'StringProperty',
-      name: 'src',
-      defaultValue: 'console.log("Hello world!");',
-      postSet: function(_, nu) {
-        if ( ! this.codeView ) return;
-        var codeViewSrc = this.codeView.getValue();
-        if ( codeViewSrc !== nu ) {
-          this.codeView.setValue(nu);
-          this.codeView.clearSelection();
-        }
-      }
+      name: 'aceReadOnlyTheme',
+      defaultValue: 'ace/theme/textmate'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'aceReadOnlyMinLines',
+      defaultValue: 1
+    },
+    {
+      model_: 'IntProperty',
+      name: 'aceReadOnlyMaxLines',
+      defaultValue: 3
     },
     {
       name: 'codeView'
@@ -70,6 +115,7 @@ CLASS({
       name: 'initHTML',
       code: function() {
         this.SUPER.apply(this, arguments);
+        debugger;
         if ( ! GLOBAL.ace ) {
           var aceScript = this.document.createElement('script');
           aceScript.src = this.pathToAce;
@@ -80,6 +126,32 @@ CLASS({
           this.onAceLoaded();
         }
       }
+    },
+    {
+      name: 'applyReadOnlySettings',
+      code: function() {
+        this.codeView.setOptions({
+          theme: this.aceTheme,
+          mode: this.aceMode,
+          tabSize: this.aceTabSize,
+          minLines: this.aceMinLines,
+          maxLines: this.aceMaxLines,
+          readOnly: this.mode === 'read-only'
+        });
+      }
+    },
+    {
+      name: 'applyReadWriteSettings',
+      code: function() {
+        this.codeView.setOptions({
+          theme: this.aceTheme,
+          mode: this.aceMode,
+          tabSize: this.aceTabSize,
+          minLines: this.aceMinLines,
+          maxLines: this.aceMaxLines,
+          readOnly: this.mode === 'read-only'
+        });
+      }
     }
   ],
 
@@ -87,42 +159,48 @@ CLASS({
     {
       name: 'onAceLoaded',
       code: function() {
+        if ( ! this.$ ) return;
         var codeView = this.codeView = GLOBAL.ace.edit(this.$);
-        codeView.setOptions({
-          theme: this.aceTheme,
-          mode: this.aceMode,
-          tabSize: this.aceTabSize,
-          minLines: this.aceMinLines,
-          maxLines: this.aceMaxLines
-        });
-        codeView.setValue(this.src.trim());
+
+        if ( this.mode === 'read-only' ) this.applyReadOnlySettings();
+        else                             this.applyReadWriteSettings();
+
+        codeView.setValue(this.data.code.trim());
         codeView.clearSelection();
-        codeView.getSession().on('change', this.onSrcChange);
-        this.publish(['loaded', 'foam.flow.AceCodeView']);
+        codeView.getSession().on('change', this.onCodeChange);
+        this.codeViewLoadState = 'loaded';
       }
     },
     {
       name: 'onAceLoadFailed',
       code: function() {
-        this.publish(['load-failed', 'foam.flow.AceCodeView']);
+        this.codeViewLoadState = 'failed';
       }
     },
     {
-      name: 'onSrcChange',
+      name: 'onCodeChange',
       code: function(e) {
-        var codeViewSrc = this.codeView.getValue();
-        if ( codeViewSrc !== this.src ) this.src = codeViewSrc;
+        var codeViewCode = this.codeView.getValue();
+        if ( codeViewCode !== this.data ) this.data.code = codeViewCode;
+      }
+    },
+    {
+      name: 'onLanguageChange',
+      code: function() {
+        this.codeView.getSession().setMode('ace/mode/' + this.data.language);
       }
     }
   ],
 
   templates: [
     // Support both <ace-code-view>...</ace-code-view> and %%myAceCodeView.
-    function toInnerHTML() {/*<% if ( this.inner ) { %><%= this.inner() %><% } else { %><%= this.src %><% } %>*/},
+    function toInnerHTML() {/*
+      <% if ( this.inner ) { %><%= this.inner() %><% } else { %><%= this.data.code %><% } %>
+    */},
     function CSS() {/*
       ace-code-view {
         display: block;
-        font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+        font: 14px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
         flex-grow: 1;
       }
     */}

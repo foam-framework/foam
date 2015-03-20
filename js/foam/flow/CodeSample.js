@@ -15,21 +15,33 @@ CLASS({
   extendsModel: 'foam.flow.Element',
 
   requires: [
-    'Model',
     'foam.dao.EasyDAO',
+    'EasyDAO',
     'foam.ui.ActionButton',
     'foam.flow.VirtualConsole',
     'foam.flow.VirtualConsoleView',
-    'foam.flow.CodeView'
+    'foam.flow.CodeView',
+    'foam.flow.SourceCode'
   ],
 
   imports: [
     'document',
     'codeViewModel',
-    'actionButtonModel'
+    'actionButtonModel',
+    'codeViewLoadState$'
   ],
+  exports: [ 'codeViewLoadState$' ],
 
   properties: [
+    {
+      name: 'codeViewModel',
+      defaultValueFn: function() { return this.CodeView; }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'i',
+      defaultValue: 0
+    },
     {
       model_: 'StringProperty',
       name: 'extraClassName',
@@ -41,13 +53,15 @@ CLASS({
       defaultValue: 'Example'
     },
     {
-      model_: 'StringProperty',
-      name: 'src',
-      defaultValue: 'console.log("Hello world!");',
-      view: {
-        factory_: 'foam.ui.TextFieldView',
-        mode: 'read-only',
-        className: 'src'
+      model_: 'DAOProperty',
+      model: 'foam.flow.SourceCode',
+      name: 'js',
+      factory: function() {
+        return this.EasyDAO.create({
+          model: this.SourceCode,
+          daoType: 'MDAO',
+          seqNo: true
+        });
       }
     },
     {
@@ -61,36 +75,15 @@ CLASS({
     {
       model_: 'ModelProperty',
       name: 'actionButtonModel',
-      factory: function() { return this.ActionButton; }
+      defaultValueFn: function() { return this.ActionButton; }
     },
     {
-      name: 'codeView',
-      factory: function() {
-        return (this.codeViewModel ? this.codeViewModel : this.CodeView).create();
-      },
+      model_: 'StringProperty',
+      name: 'codeViewLoadState',
+      defaultValue: 'pending',
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( old ) {
-          old.unsubscribe(['loaded'], this.onCodeViewLoaded);
-          old.unsubscribe(['load-failed'], this.onCodeViewLoadFailed);
-        }
-        if ( nu ) {
-          nu.subscribe(['loaded'], this.onCodeViewLoaded);
-          nu.subscribe(['load-failed'], this.onCodeViewLoadFailed);
-        }
-      }
-    }
-  ],
-
-  methods: [
-    {
-      name: 'initHTML',
-      code: function() {
-        this.SUPER.apply(this, arguments);
-        if ( this.codeView ) {
-          this.codeView.src = this.src;
-          if ( this.codeView.src$ ) this.src$ = this.codeView.src$;
-        }
+        this.onCodeViewLoadStateChanged();
       }
     }
   ],
@@ -104,12 +97,14 @@ CLASS({
         this.virtualConsole.watchConsole();
         try {
           var X = this.X.sub();
-          eval('(function(X){'    + this.src + '}).call(null, X)');
+          for ( this.i = 0; this.i < this.js.length; ++this.i ) {
+            eval('(function(X){'    + this.js[this.i] + '}).call(null, X)');
+          }
         } catch (e) {
           this.virtualConsole.onError(e.toString());
-        } finally {
-          this.virtualConsole.resetConsole();
         }
+        this.virtualConsole.resetConsole();
+        // TODO(markdittmer): Render views.
       }
     }
   ],
@@ -130,24 +125,34 @@ CLASS({
       name: 'onCodeViewLoadFailed',
       isFramed: true,
       code: function(_, topics) {
-        var codeViewModelName = topics[1];
-        if ( codeViewModelName !== 'foam.flow.CodeView' ) {
-          this.codeView = this.CodeView.create();
-          this.updateHTML();
-          return;
-        }
+        // TODO(markdittmer): Rewrite this to work with a DAO of code views.
+        console.assert(false, 'Failed to load code views');
+        // var codeViewModelName = topics[1];
+        // if ( codeViewModelName !== 'foam.flow.CodeView' ) {
+        //   this.codeView = this.CodeView.create();
+        //   this.updateHTML();
+        //   return;
+        // }
 
-        // Failed to load codeView: this.CodeView. Just output src as textContent.
-        console.error('CodeSample: Failed to load code view');
-        if ( this.$ ) {
-          var container = this.$.querySelector('code-views') || this.$;
-          container.innerHTML = '';
-          container.textContent = this.src;
-          // TODO(markdittmer): This should automatically update our classname.
-          // Why doesn't it?
-          this.extraClassName = '';
-          this.$.className = this.cssClassAttr().slice(7, -1);
-        }
+        // // Failed to load codeView: this.CodeView. Just output src as textContent.
+        // console.error('CodeSample: Failed to load code view');
+        // if ( this.$ ) {
+        //   var container = this.$.querySelector('code-views') || this.$;
+        //   container.innerHTML = '';
+        //   container.textContent = this.src;
+        //   // TODO(markdittmer): This should automatically update our classname.
+        //   // Why doesn't it?
+        //   this.extraClassName = '';
+        //   this.$.className = this.cssClassAttr().slice(7, -1);
+        // }
+      }
+    },
+    {
+      name: 'onCodeViewLoadStateChanged',
+      code: function() {
+        if ( this.codeViewLoadState === 'pending' ) return;
+        if ( this.codeViewLoadState === 'loaded' ) this.onCodeViewLoaded();
+        if ( this.codeViewLoadState === 'failed' ) this.onCodeViewLoadFailed();
       }
     }
   ],
@@ -158,15 +163,13 @@ CLASS({
         %%title
       </heading>
       <top-split>
-        <code-views>
-          %%codeView
-        </code-views>
+        $$js{ model_: this.DAOListView, rowView: this.codeViewModel }
         <actions>
           $$run{
             model_: this.actionButtonModel,
             className: 'actionButton playButton',
             color: 'white',
-            font: '30px Roboto Arial',
+            font: '30px Roboto, Arial',
             alpha: 1.0,
             width: 38,
             height: 38,
@@ -174,7 +177,7 @@ CLASS({
             background: '#e51c23'
           }
         </actions>
-        $$src
+        <!-- TODO(markdittmer): Construct semi-hidden printable views of js's here; css class name "srcs" -->
       </top-split>
       <bottom-split>
         $$virtualConsole{
@@ -244,7 +247,7 @@ CLASS({
           background: #F4B400;
         }
 
-        code-sample .src {
+        code-sample .srcs {
           display: none;
         }
 
@@ -265,9 +268,9 @@ CLASS({
           display: none;
         }
 
-        code-sample .src {
+        code-sample .srcs {
           display: block;
-          font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+          font: 14px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
           white-space: pre-wrap;
           margin: 3pt;
           page-break-inside: avoid;

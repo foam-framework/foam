@@ -32,8 +32,13 @@ CLASS({
       help: 'The FOAM type of this property.'
     },
     {
+      model_: 'ModelProperty',
+      name: 'model',
+      help: 'The model for objects stored in the DAO.'
+    },
+    {
       name: 'view',
-      defaultValue: 'foam.ui.ArrayView'
+      defaultValue: 'foam.ui.DAOListView'
     },
     {
 //      model_: 'FunctionProperty',
@@ -67,6 +72,17 @@ CLASS({
             configurable: true
           };
         });
+      }
+    },
+    {
+      name: 'fromElement',
+      defaultValue: function(e, p) {
+        var model = this.X.lookup(e.getAttribute('model') || p.model);
+        var children = e.children;
+        for ( var i = 0 ; i < children.length ; i++ ) {
+          this[p.name].put(model.create(null, this.Y).fromElement(
+              children[i], p));
+        }
       }
     }
   ]
