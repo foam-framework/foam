@@ -28,7 +28,7 @@ CLASS({
       defaultValue: false
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'terms',
       todo: 'Sort alphabetically',
       view: 'foam.ui.DAOListView',

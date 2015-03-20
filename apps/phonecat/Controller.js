@@ -45,6 +45,7 @@ CLASS({
     { name: 'dao', defaultValue: phones },
     {
       name: 'filteredDAO',
+      model_: 'foam.core.types.DAOProperty',
       model_: 'DAOProperty',
       view: {
         factory_: 'foam.ui.DAOListView',

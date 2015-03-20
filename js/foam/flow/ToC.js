@@ -22,7 +22,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'sections',
       view: 'foam.ui.DAOListView',
       factory: function() { return []; }

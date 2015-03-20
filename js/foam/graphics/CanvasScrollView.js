@@ -22,7 +22,7 @@ CLASS({
   requires: [ 'foam.input.touch.GestureTarget' ],
   properties: [
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'dao',
       onDAOUpdate: 'onDAOUpdate'
     },

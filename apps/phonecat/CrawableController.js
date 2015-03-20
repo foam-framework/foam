@@ -59,7 +59,7 @@ CLASS({
       name: 'applicationIdURL'
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'dao',
       view: {
         factory_: 'foam.ui.DAOListView',

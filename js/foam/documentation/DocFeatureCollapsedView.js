@@ -34,7 +34,7 @@ CLASS({
     },
     {
       name:  'dao',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       defaultValue: [],
       onDAOUpdate: function() {
         var self = this;

@@ -19,7 +19,7 @@ CLASS({
   name: 'PersonCompleter',
   package: 'foam.apps.quickbug',
   properties: [
-    { model_: 'DAOProperty', name: 'autocompleteDao' }
+    { model_: 'foam.core.types.DAOProperty', name: 'autocompleteDao' }
   ],
   imports: [
     'issuePersonDAO'

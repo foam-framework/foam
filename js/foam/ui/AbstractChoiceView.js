@@ -138,7 +138,7 @@ CLASS({
       model_: 'BooleanProperty'
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'dao',
       onDAOUpdate: 'onDAOUpdate'
     },
