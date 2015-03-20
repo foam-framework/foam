@@ -29,17 +29,19 @@ CLASS({
   },
 
   properties: [
-    { name: 'width',  defaultValue: 2000 },
-    { name: 'height', defaultValue: 1700 },
+    { name: 'width',      defaultValue: 2000 },
+    { name: 'height',     defaultValue: 1700 },
     { name: 'background', defaultValue: 'black' },
-    { name: 'mouse',  lazyFactory: function() { return this.Mouse.create(); } }
+    { name: 'mouse',      lazyFactory: function() { return this.Mouse.create(); } }
   ],
 
   methods: {
     initCView: function() {
       this.SUPER();
 
-      var mouse = this.mouse;
+      var self    = this;
+      var COLOURS = this.COLOURS;
+      var mouse   = this.mouse;
       mouse.connect(this.$);
 
       Events.dynamic(function() { mouse.x; mouse.y; }, function() {
@@ -49,7 +51,7 @@ CLASS({
           r: 0,
           color: 'white',
           borderWidth: 3,
-          border: this.COLOURS[(mouse.x+mouse.y)%this.COLOURS.length]});
+          border: COLOURS[(mouse.x+mouse.y)%COLOURS.length]});
 
         this.addChild(circle);
 
@@ -57,8 +59,8 @@ CLASS({
           4000,
           function() { circle.r = 100; circle.alpha = 0; },
           Math.sqrt,
-          function() { space.removeChild(circle); })();
-      });
+          function() { self.removeChild(circle); })();
+      }.bind(this));
     }
   }
 });
