@@ -39,6 +39,7 @@ CLASS({
     initCView: function() {
       this.SUPER();
 
+      this.background = 'black';
       var self    = this;
       var COLOURS = this.COLOURS;
       var mouse   = this.mouse;

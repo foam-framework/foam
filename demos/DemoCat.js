@@ -68,7 +68,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Fading Circles',
-    path: 'FadingCircles.html',
+    path: '/index.html?model=foam.demos.graphics.FadingCircles',
     description: 'An reactive-programming animation which demonstrates the use of Events.dynamic() and Movement.animate().',
     keywords: ['animation'],
     image: 'FadingCircles.png'
