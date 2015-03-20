@@ -14,10 +14,13 @@ CLASS({
   package: 'foam.flow',
   extendsModel: 'foam.flow.Element',
 
-  requires: [ 'foam.flow.SourceCode' ],
+  requires: [
+    'foam.flow.SourceCode'
+  ],
   imports: [
     'document',
-    'codeViewLoadState$'
+    'codeViewLoadState$',
+    'aceScript$'
   ],
 
   properties: [
@@ -30,11 +33,11 @@ CLASS({
         });
       },
       postSet: function(old, nu) {
-        if ( ! this.codeView ) return;
-
         if ( old ) old.language$.removeListener(this.onLanguageChange);
         if ( nu ) nu.language$.addListener(this.onLanguageChange);
-        if ( ! old || old.languae !== nu.language ) this.onLanguageChange();
+        if ( ! old || old.language !== nu.language ) this.onLanguageChange();
+
+        if ( ! this.codeView ) return;
 
         var codeViewCode = this.codeView.getValue();
         if ( codeViewCode !== nu.code ) {
@@ -44,6 +47,9 @@ CLASS({
       }
     },
     {
+      // TODO(markdittmer): Should be able to use foam.ui.ModeProperty here
+      // but it doesn't seem to be working.
+      model_: 'StringProperty',
       name: 'mode',
       defaultValue: 'read-write',
       postSet: function(old, nu) {
@@ -58,7 +64,7 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'codeViewLoadState',
-      defaultValue: 'pending'
+      defaultValue: 'unloaded'
     },
     {
       model_: 'StringProperty',
@@ -73,7 +79,11 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'aceMode',
-      defaultValue: 'ace/mode/javascript'
+      defaultValue: 'ace/mode/javascript',
+      postSet: function(old, nu) {
+        if ( ! this.codeView ) return;
+        this.codeView.getSession().setMode('ace/mode/' + this.data.language);
+      }
     },
     {
       model_: 'IntProperty',
@@ -83,7 +93,7 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'aceMinLines',
-      defaultValue: 10
+      defaultValue: 5
     },
     {
       model_: 'IntProperty',
@@ -93,20 +103,28 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'aceReadOnlyTheme',
-      defaultValue: 'ace/theme/textmate'
+      defaultValue: 'ace/theme/kuroir'
     },
     {
       model_: 'IntProperty',
       name: 'aceReadOnlyMinLines',
-      defaultValue: 1
+      defaultValue: 2
     },
     {
       model_: 'IntProperty',
       name: 'aceReadOnlyMaxLines',
-      defaultValue: 3
+      defaultValue: 25
+    },
+    {
+      name: 'aceScript'
     },
     {
       name: 'codeView'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'allFolded',
+      defaultValue: false
     }
   ],
 
@@ -115,29 +133,47 @@ CLASS({
       name: 'initHTML',
       code: function() {
         this.SUPER.apply(this, arguments);
-        debugger;
-        if ( ! GLOBAL.ace ) {
-          var aceScript = this.document.createElement('script');
-          aceScript.src = this.pathToAce;
-          aceScript.addEventListener('load', this.onAceLoaded);
-          aceScript.addEventListener('error', this.onAceLoadFailed);
-          this.document.head.appendChild(aceScript);
-        } else {
-          this.onAceLoaded();
+        if ( this.codeViewLoadState === 'unloaded' ) {
+          this.aceScript = this.document.createElement('script');
+          this.aceScript.src = this.pathToAce;
+          this.document.head.appendChild(this.aceScript);
+          this.codeViewLoadState = 'pending';
         }
+        if ( this.codeViewLoadState === 'pending' ) {
+          this.aceScript.addEventListener('load', this.onAceLoaded);
+          this.aceScript.addEventListener('error', this.onAceLoadFailed);
+        }
+        if ( this.codeViewLoadState === 'loaded' ) this.onAceLoaded();
+        if ( this.codeViewLoadState === 'failed' ) this.onAceLoadFailed();
+      }
+    },
+    {
+      name: 'destroy',
+      code: function() {
+        if ( this.codeViewLoadState === 'pending' )
+          this.removeDOMListeners_();
+        this.SUPER.apply(this, arguments);
+      }
+    },
+    {
+      name: 'removeDOMListeners_',
+      code: function() {
+        this.aceScript.removeEventListener('load', this.onAceLoaded);
+        this.aceScript.removeEventListener('error', this.onAceLoadFailed);
       }
     },
     {
       name: 'applyReadOnlySettings',
       code: function() {
         this.codeView.setOptions({
-          theme: this.aceTheme,
+          theme: this.aceReadOnlyTheme,
           mode: this.aceMode,
           tabSize: this.aceTabSize,
-          minLines: this.aceMinLines,
-          maxLines: this.aceMaxLines,
+          minLines: this.aceReadOnlyMinLines,
+          maxLines: this.aceReadOnlyMaxLines,
           readOnly: this.mode === 'read-only'
         });
+        this.foldAll();
       }
     },
     {
@@ -151,6 +187,31 @@ CLASS({
           maxLines: this.aceMaxLines,
           readOnly: this.mode === 'read-only'
         });
+        this.unfoldAll();
+      }
+    },
+    {
+      name: 'foldAll',
+      code: function() {
+        if ( ! this.codeView || this.allFolded ) return;
+
+        this.codeView.selectAll();
+        this.codeView.getSession().toggleFold();
+        this.codeView.clearSelection();
+
+        this.allFolded = true;
+      }
+    },
+    {
+      name: 'unfoldAll',
+      code: function(tryToUnfold) {
+        if ( ! this.codeView || ! this.allFolded ) return;
+
+        this.codeView.selectAll();
+        this.codeView.getSession().toggleFold();
+        this.codeView.clearSelection();
+
+        this.allFolded = false;
       }
     }
   ],
@@ -159,21 +220,27 @@ CLASS({
     {
       name: 'onAceLoaded',
       code: function() {
+        this.removeDOMListeners_();
         if ( ! this.$ ) return;
         var codeView = this.codeView = GLOBAL.ace.edit(this.$);
+
+        codeView.setValue(this.data && this.data.code && this.data.code.trim() || '');
 
         if ( this.mode === 'read-only' ) this.applyReadOnlySettings();
         else                             this.applyReadWriteSettings();
 
-        codeView.setValue(this.data.code.trim());
         codeView.clearSelection();
-        codeView.getSession().on('change', this.onCodeChange);
+
+        var session = codeView.getSession();
+        session.on('changeFold', this.onChangeFold);
+        session.on('change', this.onCodeChange);
         this.codeViewLoadState = 'loaded';
       }
     },
     {
       name: 'onAceLoadFailed',
       code: function() {
+        this.removeDOMListeners_();
         this.codeViewLoadState = 'failed';
       }
     },
@@ -187,7 +254,14 @@ CLASS({
     {
       name: 'onLanguageChange',
       code: function() {
-        this.codeView.getSession().setMode('ace/mode/' + this.data.language);
+        this.aceMode = 'ace/mode/' + this.data.language;
+      }
+    },
+    {
+      name: 'onChangeFold',
+      code: function() {
+        if ( this.mode !== 'read-only' ) return;
+        this.allFolded = false;
       }
     }
   ],

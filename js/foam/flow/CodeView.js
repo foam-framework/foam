@@ -15,16 +15,28 @@ CLASS({
   extendsModel: 'foam.flow.Element',
   traits: [ 'foam.flow.MultilineViewTrait' ],
 
-  imports: [ 'document' ],
+  imports: [
+    'document',
+    'codeViewLoadState$'
+  ],
 
   properties: [
     {
-      model_: 'StringProperty',
-      name: 'src',
-      defaultValue: 'console.log("Hello world!");',
-      postSet: function(_, nu) {
-        if ( ! this.$ ) return;
-        if ( nu !== this.$.textContent ) this.$.textContent = nu;
+      name: 'data',
+      type: 'foam.flow.SourceCode',
+      factory: function() {
+        return this.SourceCode.create({
+          data: 'console.log("Hello world!");'
+        });
+      }
+    },
+    {
+      name: 'mode',
+      defaultValue: 'read-write',
+      postSet: function(old, nu) {
+        if ( ! this.$ || old === nu ) return;
+        if ( nu === 'read-only' ) this.$.removeAttribute('contenteditable');
+        else                      this.$.setAttribute('contenteditable', 'true');
       }
     },
     {
@@ -36,6 +48,16 @@ CLASS({
       model_: 'IntProperty',
       name: 'maxLines',
       defaultValue: 20
+    },
+    {
+      model_: 'IntProperty',
+      name: 'readOnlyMinLines',
+      defaultValue: 2
+    },
+    {
+      model_: 'IntProperty',
+      name: 'readOnlyMaxLines',
+      defaultValue: 10
     }
   ],
 
@@ -47,7 +69,7 @@ CLASS({
         if ( ! this.$ ) return;
         this.$.addEventListener('input', this.onSrcChange);
         this.$.setAttribute('contenteditable', 'true');
-        this.publish(['loaded', 'foam.flow.CodeView']);
+        this.codeViewLoadState = 'loaded';
       }
     }
   ],
@@ -64,7 +86,7 @@ CLASS({
 
   templates: [
     // Support both <code-view>...</code-view> and %%myCodeView.
-    function toInnerHTML() {/*<% if ( this.inner ) { %><%= this.inner() %><% } else { %><%= this.src %><% } %>*/},
+    function toInnerHTML() {/*<% if ( this.inner ) { %><%= this.inner() %><% } else { %><%= this.data.code %><% } %>*/},
     function CSS() {/*
       code-view {
         display: block;

@@ -1,0 +1,221 @@
+/**
+ * @license
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+CLASS({
+  name: 'CodeSnippetView',
+  package: 'foam.flow',
+  extendsModel: 'foam.flow.Element',
+
+  requires: [
+    'foam.ui.ActionButton',
+    'foam.flow.CodeView',
+    'foam.flow.CodeSnippet'
+  ],
+  imports: [
+    'actionButtonModel',
+    'codeViewModel',
+    'codeViewLoadState$'
+  ],
+  exports: [ 'codeViewLoadState$' ],
+
+  constants: { ELEMENT_NAME: 'code-snippet' },
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'extraClassName',
+      defaultValue: 'loading'
+    },
+    {
+      // TODO(markdittmer): Should be able to use foam.ui.ModeProperty here
+      // but it doesn't seem to be working. It should eliminate the need for
+      // a postSet.
+      model_: 'StringProperty',
+      name: 'mode',
+      defaultValue: 'read-write',
+      postSet: function(old, nu) {
+        if ( ! this.srcView || old === nu ) return;
+        if ( this.srcView ) this.srcView.mode = nu;
+      }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'codeViewLoadState',
+      defaultValue: 'unloaded',
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        this.onCodeViewLoadStateChanged();
+      }
+    },
+    {
+      name: 'codeViewModel',
+      defaultValueFn: function() { return this.CodeView; }
+    },
+    {
+      model_: 'ModelProperty',
+      name: 'actionButtonModel',
+      defaultValueFn: function() { return this.ActionButton; }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onCodeViewLoaded',
+      todo: 'We should probably have a spinner and/or placeholder until this fires.',
+      isFramed: true,
+      code: function() {
+        this.extraClassName = '';
+      }
+    },
+    {
+      name: 'onCodeViewLoadFailed',
+      isFramed: true,
+      code: function(_, topics) {
+        console.warn('Failed to load code view: ' +
+            (this.codeViewModel.package ? this.codeViewModel.package + '.' +
+            this.codeViewModel.name : this.codeViewModel.name));
+        this.codeViewModel = this.CodeView;
+        this.extraClassName = '';
+        this.updateHTML();
+      }
+    },
+    {
+      name: 'onCodeViewLoadStateChanged',
+      code: function() {
+        if ( this.codeViewLoadState === 'unloaded' ||
+            this.codeViewLoadState === 'pending' ) return;
+        if ( this.codeViewLoadState === 'loaded' ) this.onCodeViewLoaded();
+        if ( this.codeViewLoadState === 'failed' ) this.onCodeViewLoadFailed();
+      }
+    },
+    {
+      name: 'onEditActionFlareStateChanged',
+      code: function(_, __, ___, nu) {
+        if ( nu === 'default' ) {
+          // Button should hide before editor changes modes.
+          this.editView.className = (this.editView.className || '') + ' hide';
+          this.mode = 'read-write';
+          this.editView.halo.state_$.removeListener(this.onEditActionFlareStateChanged);
+        }
+      }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'edit',
+      iconUrl: 'https://www.gstatic.com/images/icons/material/system/1x/mode_edit_black_18dp.png',
+      isEnabled: function() { return this.mode === 'read-only'; },
+      isAvailable: function() { return this.mode === 'read-only'; },
+      action: function() {
+        this.editView.halo.state_$.addListener(this.onEditActionFlareStateChanged);
+      }
+    }
+  ],
+
+  templates: [
+    function toInnerHTML() {/*
+      <% if ( this.data.title ) { %>
+        <heading>{{{this.data.title}}}</heading>
+      <% } %>
+      $$src{ model_: this.codeViewModel }
+      <actions>
+        $$edit{
+          model_: this.actionButtonModel,
+          className: 'actionButton editButton',
+          color: 'black',
+          font: '20px Roboto, Arial',
+          alpha: 1.0,
+          radius: 15,
+          background: '#F7CB4D'
+        }
+      </actions>
+    */},
+    function CSS() {/*
+      code-snippet {
+        display: block;
+        position: relative;
+      }
+      code-snippet.loading * {
+        display: none;
+      }
+      code-snippet.loading heading {
+        display: initial;
+      }
+      code-sample code-snippet actions, code-snippet actions {
+        position: absolute;
+        right: 30px;
+        bottom: -15px;
+        z-index: 15;
+      }
+      code-snippet canvas.editButton {
+        background: rgba(0,0,0,0);
+        box-shadow: 2px 2px 7px #aaa;
+        border-radius: 50%;
+      }
+      code-snippet canvas.editButton.hide {
+        display: none;
+      }
+
+      @media not print {
+
+        aside code-sample code-snippet heading,
+        code-sample code-snippet heading,
+        code-snippet heading {
+          background: initial;
+          padding: 5px 20px;
+          font-size: 18px;
+        }
+
+        aside code-sample code-snippet heading,
+        code-sample code-snippet heading,
+        code-snippet heading {
+          z-index: 10;
+          position: relative;
+        }
+
+        code-snippet heading::before {
+          top: -4px;
+          content: '';
+          height: 4px;
+          left: 0;
+          position: absolute;
+          right: 0;
+          background-image: -webkit-linear-gradient(bottom,rgba(0,0,0,.12) 0%,rgba(0,0,0,0) 100%);
+          background-image: linear-gradient(to top,rgba(0,0,0,.12) 0%,rgba(0,0,0,0) 100%);
+        }
+
+        code-snippet heading::after {
+          bottom: -4px;
+          content: '';
+          height: 4px;
+          left: 0;
+          position: absolute;
+          right: 0;
+          background-image: -webkit-linear-gradient(top,rgba(0,0,0,.12) 0%,rgba(0,0,0,0) 100%);
+          background-image: linear-gradient(to bottom,rgba(0,0,0,.12) 0%,rgba(0,0,0,0) 100%);
+        }
+
+      }
+
+      @media print {
+
+        aside code-sample code-snippet heading,
+        code-sample code-snippet heading,
+        code-snippet heading {
+          margin: 3pt;
+          font-size: 13pt;
+        }
+
+      }
+    */}
+  ]
+});

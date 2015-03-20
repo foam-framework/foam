@@ -16,21 +16,20 @@ CLASS({
 
   requires: [
     'foam.dao.EasyDAO',
-    'EasyDAO',
     'foam.ui.ActionButton',
     'foam.flow.VirtualConsole',
     'foam.flow.VirtualConsoleView',
     'foam.flow.CodeView',
-    'foam.flow.SourceCode'
+    'foam.flow.CodeSnippet',
+    'foam.flow.CodeSnippetView',
+    'foam.flow.SourceCodeListView'
   ],
 
   imports: [
     'document',
     'codeViewModel',
-    'actionButtonModel',
-    'codeViewLoadState$'
+    'actionButtonModel'
   ],
-  exports: [ 'codeViewLoadState$' ],
 
   properties: [
     {
@@ -44,21 +43,16 @@ CLASS({
     },
     {
       model_: 'StringProperty',
-      name: 'extraClassName',
-      defaultValue: 'loading'
-    },
-    {
-      model_: 'StringProperty',
       name: 'title',
       defaultValue: 'Example'
     },
     {
       model_: 'DAOProperty',
-      model: 'foam.flow.SourceCode',
+      model: 'foam.flow.CodeSnippet',
       name: 'js',
       factory: function() {
         return this.EasyDAO.create({
-          model: this.SourceCode,
+          model: this.CodeSnippet,
           daoType: 'MDAO',
           seqNo: true
         });
@@ -76,15 +70,6 @@ CLASS({
       model_: 'ModelProperty',
       name: 'actionButtonModel',
       defaultValueFn: function() { return this.ActionButton; }
-    },
-    {
-      model_: 'StringProperty',
-      name: 'codeViewLoadState',
-      defaultValue: 'pending',
-      postSet: function(old, nu) {
-        if ( old === nu ) return;
-        this.onCodeViewLoadStateChanged();
-      }
     }
   ],
 
@@ -109,61 +94,13 @@ CLASS({
     }
   ],
 
-  listeners: [
-    {
-      name: 'onCodeViewLoaded',
-      todo: 'We should probably have a spinner and/or placeholder until this fires.',
-      code: function() {
-        // TODO(markdittmer): This should automatically update our classname.
-        // Why doesn't it?
-        this.extraClassName = '';
-        if ( ! this.$ ) return;
-        this.$.className = this.cssClassAttr().slice(7, -1);
-      }
-    },
-    {
-      name: 'onCodeViewLoadFailed',
-      isFramed: true,
-      code: function(_, topics) {
-        // TODO(markdittmer): Rewrite this to work with a DAO of code views.
-        console.assert(false, 'Failed to load code views');
-        // var codeViewModelName = topics[1];
-        // if ( codeViewModelName !== 'foam.flow.CodeView' ) {
-        //   this.codeView = this.CodeView.create();
-        //   this.updateHTML();
-        //   return;
-        // }
-
-        // // Failed to load codeView: this.CodeView. Just output src as textContent.
-        // console.error('CodeSample: Failed to load code view');
-        // if ( this.$ ) {
-        //   var container = this.$.querySelector('code-views') || this.$;
-        //   container.innerHTML = '';
-        //   container.textContent = this.src;
-        //   // TODO(markdittmer): This should automatically update our classname.
-        //   // Why doesn't it?
-        //   this.extraClassName = '';
-        //   this.$.className = this.cssClassAttr().slice(7, -1);
-        // }
-      }
-    },
-    {
-      name: 'onCodeViewLoadStateChanged',
-      code: function() {
-        if ( this.codeViewLoadState === 'pending' ) return;
-        if ( this.codeViewLoadState === 'loaded' ) this.onCodeViewLoaded();
-        if ( this.codeViewLoadState === 'failed' ) this.onCodeViewLoadFailed();
-      }
-    }
-  ],
-
   templates: [
     function toInnerHTML() {/*
       <heading>
         %%title
       </heading>
       <top-split>
-        $$js{ model_: this.DAOListView, rowView: this.codeViewModel }
+        $$js{ model_: this.SourceCodeListView, rowView: this.CodeSnippetView }
         <actions>
           $$run{
             model_: this.actionButtonModel,
@@ -171,8 +108,6 @@ CLASS({
             color: 'white',
             font: '30px Roboto, Arial',
             alpha: 1.0,
-            width: 38,
-            height: 38,
             radius: 18,
             background: '#e51c23'
           }
@@ -212,7 +147,7 @@ CLASS({
       code-sample top-split {
         z-index: 10;
       }
-      code-sample top-split::before {
+      code-sample top-split::after {
         bottom: -4px;
         content: '';
         height: 4px;
@@ -245,6 +180,7 @@ CLASS({
           margin: 0px;
           padding: 10px 10px 10px 10px;
           background: #F4B400;
+          z-index: 20;
         }
 
         code-sample .srcs {

@@ -37,7 +37,8 @@ CLASS({
   exports: [
     'glossaryTerms',
     'codeViewModel',
-    'actionButtonModel'
+    'actionButtonModel',
+    'aceScript$'
   ],
 
   properties: [
@@ -57,6 +58,9 @@ CLASS({
         this.X.registerElement('code-view', 'foam.flow.AceCodeView');
         return this.AceCodeView;
       }
+    },
+    {
+      name: 'aceScript'
     },
     {
       name: 'actionButtonModel',

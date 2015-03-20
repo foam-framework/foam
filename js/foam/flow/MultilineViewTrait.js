@@ -23,6 +23,16 @@ properties: [
       model_: 'IntProperty',
       name: 'maxLines',
       defaultValue: 8
+    },
+    {
+      model_: 'IntProperty',
+      name: 'readOnlyMinLines',
+      defaultValue: 4
+    },
+    {
+      model_: 'IntProperty',
+      name: 'readOnlyMaxLines',
+      defaultValue: 8
     }
   ],
 
@@ -32,12 +42,16 @@ properties: [
       code: function() {
         this.SUPER.apply(this, arguments);
         Events.dynamic(function() {
-          this.minLines; this.$; if ( ! this.$ ) return;
-          this.$.style['min-height'] = this.minLines + 'em';
+          this.mode; this.minLines; this.readOnlyMinLines; this.$;
+          if ( ! this.$ ) return;
+          this.$.style['min-height'] = this.mode === 'read-only' ?
+              this.readOnlyMinLines + 'em' : this.minLines + 'em';
         }.bind(this));
         Events.dynamic(function() {
-          this.maxLines; this.$; if ( ! this.$ ) return;
-          this.$.style['max-height'] = this.maxLines + 'em';
+          this.mode; this.maxLines; this.readOnlyMaxLines; this.$;
+          if ( ! this.$ ) return;
+          this.$.style['max-height'] = this.mode === 'read-only' ?
+              this.readOnlyMaxLines + 'em' : this.maxLines + 'em';
         }.bind(this));
       }
     }

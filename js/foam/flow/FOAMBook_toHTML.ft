@@ -75,7 +75,11 @@
         <aside extraClassName="wide">
           <code-sample>
             <title>Your First FOAM Class</title>
-            <js><source-code><code>CLASS({
+            <js>
+              <code-snippet>
+                <src>
+                  <language>javascript</language>
+                  <code>CLASS({
   name: 'Person',
   package: 'foam.sandbox',
 
@@ -113,8 +117,10 @@
       }
     }
   ]
-});</code></source-code></js>
-            <js><source-code><code>X</code></source-code></js>
+});</code>
+                </src>
+              </code-snippet>
+            </js>
           </code-sample>
         </aside>
 
@@ -180,6 +186,78 @@
             the <code>(s)</code> in the <code>firstName</code> label to keep
             things consistent.
           </p>
+
+        <aside extraClassName="wide">
+          <code-sample>
+            <title>Your First FOAM Class</title>
+            <js>
+              <code-snippet>
+                <title>Person Class</title>
+                <src>
+                  <language>javascript</language>
+                  <code>CLASS({
+  name: 'Person',
+  package: 'foam.sandbox',
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'firstName',
+      label: 'Given Name(s)',
+      defaultValue: 'John'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'lastName',
+      label: 'Surname',
+      defaultValue: 'Smith'
+    },
+    {
+      model_: 'DateProperty',
+      name: 'dateOfBirth',
+      factory: function() {
+        return 'January 1, 2000';
+      }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'age',
+      getter: function() {
+        // Thanks to André Snede Hansen on Stackoverflow for
+        // this procedure. It's not perfect, but close enough.
+        var ageDifMs = Date.now() -
+            this.dateOfBirth.getTime();
+        var ageDate = new Date(ageDifMs);
+        return Math.abs(ageDate.getUTCFullYear() -
+            1970);
+      }
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+            </js>
+            <js>
+              <code-snippet>
+                <title>Javascript</title>
+                <src>
+                  <language>javascript</language>
+                  <code>console.log.json.put(X.foam.sandbox.Person.create());</code>
+                </src>
+              </code-snippet>
+            </js>
+            <js>
+              <code-snippet>
+                <title>HTML</title>
+                <src>
+                  <language>html</language>
+                  <code><foam model="foam.sandbox.Person"></foam></code>
+                </src>
+              </code-snippet>
+            </js>
+          </code-sample>
+        </aside>
+
           <p>
             Now let's make the class behaviour a little more efficient. Right
             now, the <code>age</code> getter recomputes the age every

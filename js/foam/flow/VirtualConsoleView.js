@@ -30,8 +30,8 @@ CLASS({
       type: 'foam.ui.md.Flare',
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( old ) old.state$.removeListener(this.onFlareStateChange);
-        if ( nu ) nu.state$.addListener(this.onFlareStateChange);
+        if ( old ) old.flareState$.removeListener(this.onFlareStateChange);
+        if ( nu ) nu.flareState$.addListener(this.onFlareStateChange);
       }
     }
   ],
@@ -56,9 +56,9 @@ CLASS({
         // TODO(markdittmer): We should be using this.setClass() here, but
         // it's not working right now.
         Events.dynamic(function() {
-          this.flare && this.flare.state; this.$;
+          this.flare && this.flare.flareState; this.$;
           if ( ! this.$ || ! this.data ) return;
-          if ( this.flare.state === 'detached' ) {
+          if ( this.flare.flareState === 'detached' ) {
             if ( this.$.className !== '' ) this.$.className = '';
           } else {
             if ( this.$.className !== 'animating' ) this.$.className = 'animating';
@@ -90,7 +90,7 @@ CLASS({
         if ( newState === 'fading' ) {
           this.data.clear();
         }
-        this.data.delayPuts = this.flare ? (this.flare.state === 'growing') : false;
+        this.data.delayPuts = this.flare ? (this.flare.flareState === 'growing') : false;
       }
     }
   ],

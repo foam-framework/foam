@@ -41,7 +41,7 @@ CLASS({
       defaultValue: 'fixed'
     },
     {
-      name: 'state',
+      name: 'flareState',
       defaultValue: 'detached'
     },
     {
@@ -100,16 +100,16 @@ CLASS({
         div.id = id;
         div.innerHTML = view.toHTML();
 
-        this.state = 'growing';
+        this.flareState = 'growing';
 
         this.element.appendChild(div);
         view.initHTML();
 
         Movement.compile([
           [this.growTime, function() { c.r = 1.25 * Math.sqrt(w*w + h*h); }],
-          function() { this.state = 'fading'; }.bind(this),
+          function() { this.flareState = 'fading'; }.bind(this),
           [this.fadeTime, function() { c.alpha = 0; }],
-          function() { div.remove(); this.state = 'detached'; }.bind(this)
+          function() { div.remove(); this.flareState = 'detached'; }.bind(this)
         ])();
 
         c.r$.addListener(EventService.framed(view.paint.bind(view)));

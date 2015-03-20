@@ -10,20 +10,30 @@
  */
 
 CLASS({
-  name: 'SourceCode',
+  name: 'CodeSnippet',
   package: 'foam.flow',
   extendsModel: 'foam.flow.Element',
 
+  requires: [ 'foam.flow.SourceCode' ],
+
   properties: [
     {
-      model_: 'StringProperty',
-      name: 'code',
-      defaultValue: 'console.log("Hello world!");'
+      model_: 'IntProperty',
+      name: 'id',
+      defaultValue: 0
     },
     {
       model_: 'StringProperty',
-      name: 'language',
-      defaultValue: 'javascript'
+      name: 'title'
+    },
+    {
+      name: 'src',
+      type: 'foam.flow.SourceCode',
+      factory: function() {
+        this.SourceCode.create({
+          data: 'console.log("Hello world!");'
+        });
+      }
     }
   ]
 });
