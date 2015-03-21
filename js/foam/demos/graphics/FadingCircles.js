@@ -14,9 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.demos.graphics',
-  name:  'FadingCircles',
+  name: 'FadingCircles',
   extendsModel: 'foam.graphics.CView',
 
   requires: [
