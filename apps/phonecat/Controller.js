@@ -33,20 +33,17 @@ CLASS({
     },
     {
       name: 'order',
-      defaultValue: Phone.NAME,
-      view: {
-        factory_: 'foam.ui.ChoiceView',
+      view: function() { return foam.ui.ChoiceView.create({
         choices: [
           [ Phone.NAME, 'Alphabetical' ],
           [ Phone.AGE,  'Newest' ]
         ]
-      }
+      }); }
     },
     { name: 'dao', defaultValue: phones },
     {
       name: 'filteredDAO',
       model_: 'foam.core.types.DAOProperty',
-      model_: 'DAOProperty',
       view: {
         factory_: 'foam.ui.DAOListView',
         rowView: 'PhoneCitationView',
