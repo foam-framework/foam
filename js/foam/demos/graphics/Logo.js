@@ -166,7 +166,7 @@ CLASS({
       }
     },
     { name: 'width',     defaultValue: 400 },
-    { name: 'height',    defaultValue: 102 },
+    { name: 'height',    defaultValue: 103 },
     { name: 'className', defaultValue: 'logo' }
   ],
 
