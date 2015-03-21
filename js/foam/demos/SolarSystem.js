@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'SolarSystem',
   package: 'foam.demos',
+  name: 'SolarSystem',
   extendsModel: 'foam.ui.View',
 
   requires: [
