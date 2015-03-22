@@ -192,8 +192,8 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Complements',
-    path: 'Complements.html',
-    description: 'An animated colour wheel.  Ported from the Elm demo.  Shows use of Events.dynamic().',
+    path: '/index.html?model=foam.demos.graphics.Complements',
+    description: 'An animated colour wheel.  Ported from the <a href="http://elm-lang.org/edit/examples/Intermediate/Complements.elm">Elm demo</a>.  Shows use of Events.dynamic().',
     keywords: ['animation', '14'],
     image: 'Complements.png'
   },

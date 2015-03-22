@@ -17,7 +17,7 @@
 
 CLASS({
   package: 'foam.demos.graphics',
-  name:  'Complements',
+  name: 'Complements',
 
   extendsModel: 'foam.graphics.CView',
 
@@ -33,6 +33,7 @@ CLASS({
       name: 'timer',
       factory: function() { return this.Timer.create(); }
     },
+    { name: 'background', defaultValue: 'pink' },
     {
       name:  'r',
       defaultValue: 140,
@@ -42,23 +43,23 @@ CLASS({
 
   methods: {
     initCView: function() {
+      this.r = this.r;
+
       var self = this;
       var R = this.r;
-      var D = R * 2;
+      var D = this.width;
       var timer = this.timer;
 
       for ( var a = 0 ; a < 2*Math.PI ; a += 2*Math.PI/13 ) {
-        console.log('a: ', a);
         var circle = this.Circle.create({
           x:     D/2 + R * Math.sin(a),
           y:     D/2 + R * Math.cos(a),
           color: 'hsl(' + 180*a/Math.PI + ', 90%, 60%)'
         });
         
-        timer.time$.addListener(function() { if ( self.$ ) self.paint(); });
         Events.dynamic((function (circle, a) {
-          return function() {         if ( timer.time % 10 == 0 ) console.log('time: ', timer.time);
-circle.r = 10 + 30 * Math.abs(Math.sin(a + timer.time/3000)); };
+          return function() {
+            circle.r = 10 + 30 * Math.abs(Math.sin(a + timer.time/3000)); };
         })(circle, a));
         this.addChild(circle);
       }
