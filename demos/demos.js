@@ -15,13 +15,10 @@
  * limitations under the License.
  */
 
-var System = FOAM({
-
-  model_: 'Model',
-
+CLASS({
   name:  'System',
 
-  requires: ['foam.input.Mouse'],
+  requires: [ 'foam.input.Mouse' ],
   
   properties: [
     {
@@ -141,8 +138,7 @@ var System = FOAM({
       //        FObject.erase.call(this);
     },
 
-    init: function(values)
-    {
+    init: function(values) {
       this.SUPER(values);
 
       this.parent.addChild(this);
@@ -246,8 +242,7 @@ var System = FOAM({
         });
     },
 
-    foam: function(system, dev)
-    {
+    foam: function(system, dev) {
       var r = Math.random();
       var nx = Math.floor(Math.random() * 100000) % system.features.length + 1;
       var ny = Math.floor(Math.random() * 100000) % system.entities.length + 1;
@@ -274,8 +269,7 @@ var System = FOAM({
       system.addCode(dev.f, dev.e, 1);
     },
 
-    unix: function(system, dev)
-    {
+    unix: function(system, dev) {
       var r = Math.random();
       var nx = Math.floor(Math.random() * 100000) % system.features.length + 1;
       var ny = Math.floor(Math.random() * 100000) % system.entities.length + 1;

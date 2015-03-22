@@ -6,6 +6,7 @@
   <title>Google Simulator</title>
  </head>
  <body>
+  <table><tr><td>
   <script language="javascript">
    var timer;
    var turnFOAM;
@@ -19,17 +20,9 @@
     timer  = Timer.create({interval:20});
     var space  = Canvas.create({width: 1000, height: 750, background:'#fff'});
 
-  var document = {
-    writeln: function(html) {
-      window.document.body.insertAdjacentHTML('beforeend', html);
-    }
-  };
-
 //    timer.write(document);
 
-    document.writeln("<table><tr><td>");
     space.write(document);
-    document.writeln("</td><tr></table>");
 
     var oldAddCode = System.getPrototype().addCode;
     System.getPrototype().addCode = function() { };
@@ -187,5 +180,6 @@
     grow();
   });
   </script>
+  </td><tr></table>
  </body>
 </html>
