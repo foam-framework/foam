@@ -597,8 +597,7 @@ var FObject = {
       showActions: true
     });
 
-    document.writeln(view.toHTML());
-    view.initHTML();
+    view.write(document);
   },
 
   defaultView: function(opt_view) {
