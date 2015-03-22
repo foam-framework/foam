@@ -52,8 +52,6 @@ CLASS({
         this.timer.start();
       }
 
-      this.addChild(this.anchor);
-
       var N     = this.n;
       var mouse = this.mouse;
 
