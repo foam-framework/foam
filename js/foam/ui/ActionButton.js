@@ -112,7 +112,9 @@ CLASS({
       }
 
       return out;
-    }
+    },
+
+    initKeyboardShortcuts: function() { /* Not needed, will be done by parent View. */ }
   }
 });
 
