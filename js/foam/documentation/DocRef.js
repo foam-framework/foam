@@ -110,11 +110,14 @@ CLASS({
         if ( abortOnFail) {
           return;
         } else {
-          arequire(reference, this.X)(function(m) {
-            if ( m ) {
-              this.resolveReference(m.id, true);
-            }
-          }.bind(this));
+          this.X.ModelDAO.find(reference, { 
+            put: function(m) {
+              if ( m ) {
+                m.arequire && m.arequire();
+                this.resolveReference(m.id, true);
+              }
+            }.bind(this)
+          });
           return;
         }
       }.bind(this);
@@ -127,6 +130,7 @@ CLASS({
       args = reference.split('.');
       var foundObject;
       var model;
+      var modelId;
 
       // if model not specified, use parentModel
       if (args[0].length <= 0) {

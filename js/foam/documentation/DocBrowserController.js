@@ -131,13 +131,16 @@ CLASS({
         setRef(newRef);
       } else {
         // attempt to load the referenced model name
-        this.DetailContext.arequire(location.hash.substring(1), this.DetailContext)(function(m) {
-          var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
-          if (newRef.valid) {
-            setRef(newRef); // not fully recursive as we only want to try loading once
-            this.DetailContext.masterModelList.put(m);
-          }
-        }.bind(this));
+        this.DetailContext.ModelDAO.find(location.hash.substring(1), { 
+          put: function(m) {
+            m.arequire();
+            var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
+            if (newRef.valid) {
+              setRef(newRef); // not fully recursive as we only want to try loading once
+              this.DetailContext.masterModelList.put(m);
+            }
+          }.bind(this)
+        });
       }
     },
 
@@ -151,13 +154,16 @@ CLASS({
       if (newRef.valid) {
         setRef(newRef);
       } else {
-        this.DetailContext.arequire(newRef.ref, this.DetailContext)(function(m) {
-          var newNewRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
-          if (newNewRef.valid) {
-            setRef(newNewRef); // not fully recursive as we only want to try loading once
-            this.DetailContext.masterModelList.put(m);
-          }
-        }.bind(this));         
+        this.DetailContext.ModelDAO.find(newRef.ref, { 
+          put: function(m) {
+            m.arequire();
+            var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
+            if (newRef.valid) {
+              setRef(newRef); // not fully recursive as we only want to try loading once
+              this.DetailContext.masterModelList.put(m);
+            }f
+          }.bind(this)
+        });
       }
     },
     
@@ -206,7 +212,7 @@ CLASS({
 //       loaderX.set('ModelDAO', this.ModelFileDAO.create({}, loaderX));
 //       loaderX.set('onRegisterModel', function(m) { console.log("Good onRegisterModel: ", m.id); }); 
 //       loaderX.set('lookup', lookup); 
-      loaderX.ModelDAO = this.BrowserFileDAO.create({}, loaderX);
+      //loaderX.ModelDAO = this.BrowserFileDAO.create({}, loaderX);
       //loaderX.onRegisterModel = function(m) { console.log("Good onRegisterModel: ", m.id); }; 
       //loaderX.lookup = lookup; 
       //loaderX.ModelDAO.select(newDAO);
