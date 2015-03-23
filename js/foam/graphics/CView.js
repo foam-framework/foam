@@ -204,9 +204,7 @@ CLASS({
 
     write: function(document) { /* Inserts this $$DOC{ref:'foam.graphics.CView'} into the DOM
                                    with an $$DOC{ref:'foam.graphics.AbstractCViewView'} wrapper. */
-      var v = this.toView_();
-      document.writeln(v.toHTML());
-      v.initHTML();
+      this.toView_().write(document);
     },
 
     addChild: function(child) { /* Adds a child $$DOC{ref:'foam.graphics.CView'} to the scene
