@@ -1,3 +1,4 @@
+
 /**
  * @license
  * Copyright 2014 Google Inc. All Rights Reserved.
@@ -14,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-var http = require('http');
-var fs   = require('fs');
-var path = require('path');
 
 CLASS({
   name: 'NodeServer',
@@ -129,13 +126,15 @@ CLASS({
   name: 'StaticFileHandler',
   extendsModel: 'Handler',
   properties: [
+    { name: 'path', factory: function() { return require('path'); } },
     {
       name: 'dir',
       documentation: 'Directory under which to serve files.',
       required: true,
       preSet: function(old, nu) {
-        return path.resolve(process.cwd(), nu);
+        return this.path.resolve(process.cwd(), nu);
       },
+      lazyFactory: function() { return process.cwd(); }
     },
     {
       name: 'prefix',
@@ -147,7 +146,8 @@ CLASS({
       documentation: 'When set to true, the server will list directory ' +
           'contents. When false, returns 404s for directories.',
       defaultValue: true
-    }
+    },
+    { name: 'fs', factory: function() { return require('fs'); } }
   ],
 
   constants: {
@@ -184,9 +184,9 @@ CLASS({
 
       // String a leading slash, if any.
       if ( target[0] === '/' ) target = target.substring(1);
-      target = path.resolve(this.dir, target);
+      target = this.path.resolve(this.dir, target);
       this.verbose('Target resolved to: ' + target);
-      var rel = path.relative(this.dir, target);
+      var rel = this.path.relative(this.dir, target);
       this.verbose('Relative path: ' + target);
       // The relative path can't start with .. or it's outside the dir.
       if ( rel.startsWith('..') ) {
@@ -197,13 +197,13 @@ CLASS({
 
       // Now we have a legal filename within our subdirectory.
       // We try to stream the file to the other end.
-      if ( ! fs.existsSync(target) ) {
+      if ( ! this.fs.existsSync(target) ) {
         this.send404(res, target);
         this.warn('File not found: ' + target);
         return true;
       }
 
-      var stats = fs.statSync(target);
+      var stats = this.fs.statSync(target);
       if ( stats.isDirectory() ) {
         if ( ! this.listDirectories ) {
           this.send404(res, target);
@@ -214,9 +214,9 @@ CLASS({
         var body = '<html><head><title>' + title + '</title></head><body>';
         body += '<h2>' + title + '</h2><hr /><ul>';
 
-        var files = fs.readdirSync(target);
+        var files = this.fs.readdirSync(target);
         for ( var i = 0 ; i < files.length ; i++ ) {
-          var st = fs.statSync(path.join(target, files[i]));
+          var st = this.fs.statSync(this.path.join(target, files[i]));
           var name = files[i] + (st.isDirectory() ? '/' : '');
           body += '<li><a href="' + name + '">' + name + '</a></li>';
         }
@@ -227,7 +227,7 @@ CLASS({
         res.end();
         this.log('200 OK (dir) ' + target);
       } else {
-        var ext = path.extname(target);
+        var ext = this.path.extname(target);
         var mimetype = this.MIME_TYPES[ext] || this.MIME_TYPES.__default;
         if ( mimetype === this.MIME_TYPES.__default ) {
           this.log('Unknown MIME type: ' + ext);
@@ -237,7 +237,7 @@ CLASS({
 
         // Open the file as a stream.
         this.log('200 OK ' + target);
-        var stream = fs.createReadStream(target);
+        var stream = this.fs.createReadStream(target);
         stream.pipe(res);
       }
       return true;
