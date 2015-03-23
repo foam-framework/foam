@@ -75,7 +75,7 @@
         <aside extraClassName="wide">
           <code-sample>
             <title>Your First FOAM Class</title>
-            <js>
+            <source>
               <code-snippet>
                 <src>
                   <language>javascript</language>
@@ -120,7 +120,7 @@
 });</code>
                 </src>
               </code-snippet>
-            </js>
+            </source>
           </code-sample>
         </aside>
 
@@ -190,7 +190,7 @@
         <aside extraClassName="wide">
           <code-sample>
             <title>Your First FOAM Class</title>
-            <js>
+            <source>
               <code-snippet>
                 <title>Person Class</title>
                 <src>
@@ -236,8 +236,8 @@
 });</code>
                 </src>
               </code-snippet>
-            </js>
-            <js>
+            </source>
+            <source>
               <code-snippet>
                 <title>Javascript</title>
                 <src>
@@ -245,8 +245,8 @@
                   <code>console.log.json.put(X.foam.sandbox.Person.create());</code>
                 </src>
               </code-snippet>
-            </js>
-            <js>
+            </source>
+            <source>
               <code-snippet>
                 <title>HTML</title>
                 <src>
@@ -254,7 +254,7 @@
                   <code><foam model="foam.sandbox.Person"></foam></code>
                 </src>
               </code-snippet>
-            </js>
+            </source>
           </code-sample>
         </aside>
 

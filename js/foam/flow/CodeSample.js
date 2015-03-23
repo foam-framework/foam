@@ -47,9 +47,10 @@ CLASS({
       defaultValue: 'Example'
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       model: 'foam.flow.CodeSnippet',
-      name: 'js',
+      name: 'source',
+      singular: 'codeSnippet',
       factory: function() {
         return this.EasyDAO.create({
           model: this.CodeSnippet,
@@ -82,8 +83,8 @@ CLASS({
         this.virtualConsole.watchConsole();
         try {
           var X = this.X.sub();
-          for ( this.i = 0; this.i < this.js.length; ++this.i ) {
-            eval('(function(X){'    + this.js[this.i] + '}).call(null, X)');
+          for ( this.i = 0; this.i < this.source.length; ++this.i ) {
+            eval('(function(X){'    + this.source[this.i] + '}).call(null, X)');
           }
         } catch (e) {
           this.virtualConsole.onError(e.toString());
@@ -100,7 +101,7 @@ CLASS({
         %%title
       </heading>
       <top-split>
-        $$js{ model_: this.SourceCodeListView, rowView: this.CodeSnippetView }
+        $$source{ model_: this.SourceCodeListView, rowView: this.CodeSnippetView }
         <actions>
           $$run{
             model_: this.actionButtonModel,
@@ -112,7 +113,7 @@ CLASS({
             background: '#e51c23'
           }
         </actions>
-        <!-- TODO(markdittmer): Construct semi-hidden printable views of js's here; css class name "srcs" -->
+        <!-- TODO(markdittmer): Construct semi-hidden printable views of source's here; css class name "srcs" -->
       </top-split>
       <bottom-split>
         $$virtualConsole{
