@@ -123,21 +123,19 @@ CLASS({
 
       var setRef = function(newRef) { 
         this.DetailContext.documentViewRef.set(newRef);
-        if (newRef.resolvedModelChain[0] !== this.selection) this.selection = newRef.resolvedModelChain[0];
-        this.SearchContext.selection$.set(newRef.resolvedRoot.resolvedModelChain[0]); // selection wants a Model object
+        if (newRef.resolvedObject !== this.selection) this.selection = newRef.resolvedObject;
+        this.SearchContext.selection$.set(newRef.resolvedRoot.resolvedObject); // selection wants a Model object
       }.bind(this);
       var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:location.hash.substring(1)}, this.DetailContext);
       if (newRef.valid) {
         setRef(newRef);
       } else {
         // attempt to load the referenced model name
-        this.DetailContext.ModelDAO.find(location.hash.substring(1), { 
+        this.DetailContext.masterModelList.find(location.hash.substring(1), { 
           put: function(m) {
-            m.arequire();
             var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
             if (newRef.valid) {
               setRef(newRef); // not fully recursive as we only want to try loading once
-              this.DetailContext.masterModelList.put(m);
             }
           }.bind(this)
         });
@@ -147,21 +145,19 @@ CLASS({
     requestNavigation: function(newRef) {
       var setRef = function(ref) {
         this.DetailContext.documentViewRef.set(ref);
-        this.SearchContext.selection$.set(ref.resolvedRoot.resolvedModelChain[0]); // selection wants a Model object
-        if (ref.resolvedModelChain[0] !== this.selection) this.selection = ref.resolvedModelChain[0];
+        this.SearchContext.selection$.set(ref.resolvedRoot.resolvedObject); // selection wants a Model object
+        if (ref.resolvedObject !== this.selection) this.selection = ref.resolvedObject;
         location.hash = "#" + ref.resolvedRef;
       }.bind(this);
       if (newRef.valid) {
         setRef(newRef);
       } else {
-        this.DetailContext.ModelDAO.find(newRef.ref, { 
+        this.DetailContext.masterModelList.find(newRef.ref, { 
           put: function(m) {
-            m.arequire();
             var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
             if (newRef.valid) {
               setRef(newRef); // not fully recursive as we only want to try loading once
-              this.DetailContext.masterModelList.put(m);
-            }f
+            }
           }.bind(this)
         });
       }

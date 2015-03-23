@@ -33,12 +33,11 @@ CLASS({
 
   properties: [
     {
-      name: 'resolvedModelChain',
-      defaultValue: [],
+      name: 'resolvedObject',
       documentation: function() { /*
-        If this $$DOC{ref:'foam.documentation.DocRef'} is valid, actual instances corresponding each
-        part of the reference are in this list. The last item in the list
-        is the target of the reference.
+        If this $$DOC{ref:'foam.documentation.DocRef'} is valid, the actual
+        instance that the link points to. It may be a $$DOC{ref:'Model'},
+        $$DOC{ref:'Method'}, $$DOC{ref:'Property'}, or other feature type.
       */}
     },
     {
@@ -55,8 +54,7 @@ CLASS({
       defaultValue: "",
       documentation: function() { /*
           The a $$DOC{ref:'foam.documentation.DocRef'} based on the fully qualified package and
-          outer model names of this resolved reference. Does not contain features
-          and ends with this.resolvedModelChain[0].
+          outer model names of this resolved reference.
       */}
     },
     {
@@ -81,18 +79,6 @@ CLASS({
   ],
 
   methods: {
-    init: function() {
-      /* Warns if documentViewRef is missing from the context. */
-      if (!this.documentViewRef) {
-        //console.log("*** Warning: DocView ",this," can't find documentViewRef in its context "+this.X.NAME);
-      } else {
-      // TODO: view lifecycle management. The view that created this ref doesn't know
-      // when to kill it, so the addListener on the context keeps this alive forever.
-      // Revisit when we can cause a removeListener at the appropriate time.
-        //        this.documentViewRef.addListener(this.onParentModelChanged);
-      }
-    },
-
     resolveReference: function(reference, abortOnFail) {
   /* <p>Resolving a reference has a few special cases at the start:</p>
     <ul>
@@ -192,6 +178,15 @@ CLASS({
         resolvedRoot: undefined // otherwise it would be the same as 'this'
       });
       
+      // if no feature specified, fast return
+      if ( features.length == 0 ) {
+        this.resolvedRef = newResolvedRef;
+        this.resolvedObject = model;
+        this.valid = true;
+        return;
+      }    
+      
+      // if features specified, async grab ancestor list
       var ancestry = [model];
       this.getInheritanceList(model, {
         put: function(m) { ancestry.put(m); },
@@ -247,6 +242,7 @@ CLASS({
           }
           
           this.resolvedRef = newResolvedRef;
+          this.resolvedObject = foundObject;
           this.valid = true;
         }.bind(this)
       });

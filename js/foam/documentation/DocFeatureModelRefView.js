@@ -27,17 +27,34 @@ CLASS({
     for notes on usage. Set $$DOC{ref:'.data'} to a model name.
     */},
 
+  methods: {
+    init: function() {
+      this.SUPER();
+    }
+  },
+    
 
   properties: [
     {
       name: 'data',
       postSet: function(old,nu) {
-        this.ref = this.data;
+        old.removeListener(this.setNameLabel);
+        nu.addListener(this.setNameLabel);
+        this.ref = this.data;       
+        this.setNameLabel();
+      }
+    }
+  ],
+  
+  listeners: [
+    {
+      name: 'setNameLabel',
+      code: function() {
         if (this.docRef.valid) {
-          this.text = this.docRef.resolvedModelChain[0].name;
+          this.text = this.docRef.resolvedObject.name;
         } else {
           this.text = "[INVALID]"+this.data;
-        }        
+        }                
       }
     }
   ]
