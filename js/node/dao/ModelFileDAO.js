@@ -54,10 +54,14 @@ CLASS({
 
       this.pending[key] = [sink];
 
+      var old = global.__DATACALLBACK;
       try {
-        require(fileName);
+        global.__DATACALLBACK = this.onData;
+        var result = require(fileName);
       } catch(e) {
         sink && sink.error && sink.error('Error loading model', key, e);
+      } finally {
+        global.__DATACALLBACK = old;
       }
     }
   },

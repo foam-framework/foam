@@ -50,6 +50,7 @@ MODEL({
       else this.pending[key] = [sink];
 
       var tag = this.document.createElement('script');
+      tag.callback = this.onData;
       tag.src = this.toURL_(key);
       tag.onload = function() {
         tag.remove();

@@ -25,10 +25,11 @@ X.ModelDAO = X.node.dao.ModelFileDAO.create();
 
   CLASS = function(json) {
     json.model_ = 'Model';
-    if ( document && document.currentScript )
-      json.sourcePath = document.currentScript.src;
-    X.ModelDAO.onData(json, oldClass);
+    global.__DATACALLBACK(json, oldClass);
   };
 })();
 
-var __DATA = X.ModelDAO.onData;
+var __DATA = function(json) {
+  global.__DATACALLBACK(json);
+};
+

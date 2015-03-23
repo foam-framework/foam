@@ -27,8 +27,12 @@ X.ModelDAO = X.foam.core.bootstrap.BrowserFileDAO.create();
     json.model_ = 'Model';
     if ( document && document.currentScript )
       json.sourcePath = document.currentScript.src;
-    X.ModelDAO.onData(json, oldClass);
+    document.currentScript.callback(json, oldClass);
   };
 })();
 
-var __DATA = X.ModelDAO.onData;
+var __DATA = function(json) {
+  if ( document && document.currentScript )
+    json.sourcePath = document.currentScript.src;
+  document.currentScript.callback(json, oldClass);
+};
