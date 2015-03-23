@@ -27,6 +27,14 @@ CLASS({
       defaultValue: 'sources'
     },
     {
+      // TODO(markdittmer): Should be able to use foam.ui.ModeProperty here
+      // but it doesn't seem to be working. It should eliminate the need for
+      // a postSet.
+      model_: 'StringProperty',
+      name: 'mode',
+      defaultValue: 'read-write'
+    },
+    {
       model_: 'ViewFactoryProperty',
       name: 'rowView',
       defaultValue: 'foam.flow.CodeView'
@@ -52,11 +60,12 @@ CLASS({
         for ( i = 0; i < len; ++i ) {
           child = children[i];
           html.push(child.toHTML());
-          if ( this.openViews.indexOf(i) >= 0 ||
-              this.openViews.indexOf(i - len) >= 0 ) {
-            child.mode = 'read-write';
-          } else {
+          if ( this.mode === 'read-only' ||
+              (this.openViews.indexOf(i) < 0 &&
+              this.openViews.indexOf(i - len) < 0) ) {
             child.mode = 'read-only';
+          } else {
+            child.mode = 'read-write';
           }
         }
 

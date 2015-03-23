@@ -90,7 +90,7 @@ CLASS({
       defaultValue: function(e, p) {
         var model = e.getAttribute('model') ||
             (this[p.name] && this[p.name].model) || p.model || '';
-        if ( ! model) {
+        if ( ! model ) {
           this.console.warn('Attempt to load DAO from element without model');
           return;
         }

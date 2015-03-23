@@ -38,6 +38,9 @@ book p.center {
 
 book code {
   font: 14px/normal 'Monaco', Menlo, 'Ubuntu Mono', Consolas, 'source-code-pro', monospace;
+  background: #E0E0E0;
+  border-radius: 2px;
+  padding: 0px 2px;
 }
 
 @media not print {

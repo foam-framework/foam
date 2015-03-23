@@ -188,7 +188,7 @@
 
         <aside extraClassName="wide">
           <code-sample>
-            <title>Your First FOAM Class</title>
+            <title>Working with "Person"</title>
             <source>
               <code-snippet>
                 <title>Person Class</title>
@@ -201,8 +201,13 @@
     {
       model_: 'StringProperty',
       name: 'firstName',
-      label: 'Given Name(s)',
+      label: 'Given Name',
       defaultValue: 'John'
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'middleNames',
+      plural: 'Middle Names'
     },
     {
       model_: 'StringProperty',
@@ -215,12 +220,21 @@
       name: 'dateOfBirth',
       factory: function() {
         return 'January 1, 2000';
+      },
+      postSet: function(old, nu) {
+        this.age = this.computeAge();
       }
     },
     {
       model_: 'IntProperty',
-      name: 'age',
-      getter: function() {
+      name: 'age'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'computeAge',
+      code: function() {
         // Thanks to André Snede Hansen on Stackoverflow for
         // this procedure. It's not perfect, but close enough.
         var ageDifMs = Date.now() -
@@ -238,9 +252,10 @@
             <source>
               <code-snippet>
                 <title>Javascript</title>
-                <src>
-                  <language>javascript</language>
-                  <code>console.log.json.put(X.foam.sandbox.Person.create());</code>
+                <src language="javascript">
+                  <code>console.log.json.put(
+  X.foam.sandbox.Person.create()
+);</code>
                 </src>
               </code-snippet>
             </source>

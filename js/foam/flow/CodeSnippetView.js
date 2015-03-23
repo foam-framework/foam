@@ -20,8 +20,8 @@ CLASS({
     'foam.flow.CodeSnippet'
   ],
   imports: [
-    'actionButtonModel',
-    'codeViewModel',
+    'actionButtonName',
+    'codeViewName',
     'codeViewLoadState$'
   ],
   exports: [ 'codeViewLoadState$' ],
@@ -35,16 +35,14 @@ CLASS({
       defaultValue: 'loading'
     },
     {
-      // TODO(markdittmer): Should be able to use foam.ui.ModeProperty here
-      // but it doesn't seem to be working. It should eliminate the need for
-      // a postSet.
       model_: 'StringProperty',
       name: 'mode',
-      defaultValue: 'read-write',
-      postSet: function(old, nu) {
-        if ( ! this.srcView || old === nu ) return;
-        if ( this.srcView ) this.srcView.mode = nu;
-      }
+      defaultValue: 'read-write'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'scroll',
+      defaultValue: true
     },
     {
       model_: 'StringProperty',
@@ -56,13 +54,33 @@ CLASS({
       }
     },
     {
-      name: 'codeViewModel',
-      defaultValueFn: function() { return this.CodeView; }
+      model_: 'StringProperty',
+      name: 'codeViewName',
+      defaultValue: 'foam.flow.CodeView'
     },
     {
       model_: 'ModelProperty',
-      name: 'actionButtonModel',
-      defaultValueFn: function() { return this.ActionButton; }
+      name: 'actionButtonName',
+      defaultValue: 'foam.ui.ActionButton'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'init',
+      code: function() {
+        this.SUPER.apply(this, arguments);
+
+        // TODO(markdittmer): Should be able to use foam.ui.ModeProperty here
+        // but it doesn't seem to be working. It should eliminate the need for
+        // a postSet.
+        Events.dynamic(function() {
+          this.srcView; this.mode; this.scroll;
+          if ( ! this.srcView ) return;
+          this.srcView.mode = this.mode;
+          this.srcView.scroll = this.scroll;
+        }.bind(this));
+      }
     }
   ],
 
@@ -79,10 +97,8 @@ CLASS({
       name: 'onCodeViewLoadFailed',
       isFramed: true,
       code: function(_, topics) {
-        console.warn('Failed to load code view: ' +
-            (this.codeViewModel.package ? this.codeViewModel.package + '.' +
-            this.codeViewModel.name : this.codeViewModel.name));
-        this.codeViewModel = this.CodeView;
+        console.warn('Failed to load code view: ' + this.codeViewName);
+        this.codeViewName = 'foam.flow.CodeView';
         this.extraClassName = '';
         this.updateHTML();
       }
@@ -126,10 +142,11 @@ CLASS({
       <% if ( this.data.title ) { %>
         <heading>{{{this.data.title}}}</heading>
       <% } %>
-      $$src{ model_: this.codeViewModel }
+      <% console.log('CodeSnippetView', this.$UID, this.codeViewName); %>
+      $$src{ model_: this.codeViewName }
       <actions>
         $$edit{
-          model_: this.actionButtonModel,
+          model_: this.actionButtonName,
           className: 'actionButton editButton',
           color: 'black',
           font: '20px Roboto, Arial',
@@ -173,6 +190,7 @@ CLASS({
           background: initial;
           padding: 5px 20px;
           font-size: 18px;
+          border-top: 1px solid #E0E0E0;
         }
 
         aside code-sample code-snippet heading,

@@ -36,8 +36,8 @@ CLASS({
   ],
   exports: [
     'glossaryTerms',
-    'codeViewModel',
-    'actionButtonModel',
+    'codeViewName',
+    'actionButtonName',
     'aceScript$'
   ],
 
@@ -53,19 +53,23 @@ CLASS({
       }
     },
     {
-      name: 'codeViewModel',
+      model_: 'StringProperty',
+      name: 'codeViewName',
       factory: function() {
         this.X.registerElement('code-view', 'foam.flow.AceCodeView');
-        return this.AceCodeView;
+        return 'foam.flow.AceCodeView';
       }
     },
     {
       name: 'aceScript'
     },
     {
-      name: 'actionButtonModel',
+      name: 'actionButtonName',
       factory: function() {
-        return this.ActionButtonCView;
+        this.X.registerModel(this.ActionButtonCView.xbind({
+          haloColor: 'rgb(240,147,0)'
+        }), 'foam.ui.ActionButton');
+        return 'foam.ui.ActionButton';
       }
     }
   ],
@@ -81,9 +85,6 @@ CLASS({
         if ( ! this.X.gestureManager ) {
           this.X.gestureManager = this.GestureManager.create();
         }
-        this.X.registerModel(this.ActionButtonCView.xbind({
-          haloColor: 'rgb(240,147,0)'
-        }),'foam.graphics.ActionButtonCView');
       }
     }
   ],

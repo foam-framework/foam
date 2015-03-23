@@ -98,7 +98,7 @@ CLASS({
         flex-grow: 1;
         padding-left: 4px;
         font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-        white-space: pre;
+        white-space: pre-wrap;
         overflow: auto;
       }
     */}

@@ -27,14 +27,15 @@ CLASS({
 
   imports: [
     'document',
-    'codeViewModel',
-    'actionButtonModel'
+    'codeViewName',
+    'actionButtonName'
   ],
 
   properties: [
     {
-      name: 'codeViewModel',
-      defaultValueFn: function() { return this.CodeView; }
+      model_: 'StringProperty',
+      name: 'codeViewName',
+      defaultValue: 'foam.flow.CodeView'
     },
     {
       model_: 'IntProperty',
@@ -68,9 +69,9 @@ CLASS({
       view: 'foam.flow.VirtualConsoleView'
     },
     {
-      model_: 'ModelProperty',
-      name: 'actionButtonModel',
-      defaultValueFn: function() { return this.ActionButton; }
+      model_: 'StringProperty',
+      name: 'actionButtonName',
+      defaultValue: 'foam.ui.ActionButton'
     }
   ],
 
@@ -95,7 +96,7 @@ CLASS({
                   } catch (e) {
                     this.virtualConsole.onError(e.toString());
                   }
-                }
+                } // TODO(markdittmer): If language is HTML, accumulate it for view output.
           }.bind(this),
           error: function(e) {
             this.virtualConsole.onError(e.toString());
@@ -103,7 +104,6 @@ CLASS({
         })(function() {
           this.virtualConsole.resetConsole();
         }.bind(this));
-        // TODO(markdittmer): Render views.
       }
     }
   ],
@@ -117,7 +117,7 @@ CLASS({
         $$source{ model_: this.SourceCodeListView, rowView: this.CodeSnippetView }
         <actions>
           $$run{
-            model_: this.actionButtonModel,
+            model_: this.actionButtonName,
             className: 'actionButton playButton',
             color: 'white',
             font: '30px Roboto, Arial',
@@ -126,7 +126,17 @@ CLASS({
             background: '#e51c23'
           }
         </actions>
-        <!-- TODO(markdittmer): Construct semi-hidden printable views of source's here; css class name "srcs" -->
+        <print-only>
+          $$source{
+            model_: this.SourceCodeListView,
+            mode: 'read-only',
+            rowView: {
+              factory_: 'foam.flow.CodeSnippetView',
+              scroll: false,
+              codeViewName: 'foam.flow.CodeView'
+            }
+          }
+        </print-only>
       </top-split>
       <bottom-split>
         $$virtualConsole{
@@ -148,11 +158,6 @@ CLASS({
       }
       code-sample.loading {
         display: none;
-      }
-      code-sample code-views {
-        display: flex;
-        justify-content: space-between;
-        align-items: stretch;
       }
       code-sample top-split, code-sample bottom-split {
         display: block;
@@ -197,13 +202,17 @@ CLASS({
           z-index: 20;
         }
 
-        code-sample .srcs {
+        code-sample print-only {
           display: none;
         }
 
       }
 
       @media print {
+
+        code-sample print-only, code-sample print-only sources {
+          display: block;
+        }
 
         code-sample heading {
           font-size: 14pt;
@@ -214,11 +223,11 @@ CLASS({
           margin: 3pt;
         }
 
-        code-sample code-views, code-sample actions, code-sample virtual-console {
+        code-sample sources, code-sample actions, code-sample virtual-console {
           display: none;
         }
 
-        code-sample .srcs {
+        code-sample print-only sources {
           display: block;
           font: 14px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
           white-space: pre-wrap;
