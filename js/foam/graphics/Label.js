@@ -20,7 +20,10 @@ CLASS({
   name:  'Label',
   extendsModel: 'foam.graphics.CView',
 
-  traits: [ 'foam.patterns.layout.LayoutItemHorizontalTrait', 'foam.patterns.layout.LayoutItemVerticalTrait' ],
+  traits: [
+    'foam.patterns.layout.LayoutItemHorizontalTrait',
+    'foam.patterns.layout.LayoutItemVerticalTrait'
+  ],
 
   properties: [
     {
@@ -60,7 +63,7 @@ CLASS({
     },
     {
       name: 'clipped',
-      defaultValue: true     
+      defaultValue: true
     }
   ],
 
@@ -121,9 +124,9 @@ CLASS({
         }
 
       },
-      
-      documentation: function() {/* Calculates the preferred size of this 
-        $$DOC{ref:'foam.graphics.Label'} based on the actual text and font. 
+
+      documentation: function() {/* Calculates the preferred size of this
+        $$DOC{ref:'foam.graphics.Label'} based on the actual text and font.
       */},
     }
   ]
