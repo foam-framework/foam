@@ -20,9 +20,15 @@ X.ModelDAO = X.node.dao.ModelFileDAO.create();
 
 // Hookup ModelDAO callback as CLASS and __DATA methods.
 
-CLASS = function(json) {
-  json.model_ = 'Model';
-  X.ModelDAO.onData(json);
-};
+(function() {
+  var oldClass = CLASS;
+
+  CLASS = function(json) {
+    json.model_ = 'Model';
+    if ( document && document.currentScript )
+      json.sourcePath = document.currentScript.src;
+    X.ModelDAO.onData(json, oldClass);
+  };
+})();
 
 var __DATA = X.ModelDAO.onData;
