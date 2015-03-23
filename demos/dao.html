@@ -432,7 +432,7 @@ dao.select(document);
     var log_ = function(o) {
       if ( o.indexOf('<') != 0 ) o = o.replace(/\n/g, '<br>').replace(/ /g,'&nbsp;');
 //      out.innerHTML = out.innerHTML + o + '<br/>';
-      document.writeln(o + '<br/>');
+      document.body.insertAdjacentHTML('beforeend', o + '<br/>');
     }
     var oldLog = console.log;
     console.log = function() { log_([].join.call(arguments, '')); };

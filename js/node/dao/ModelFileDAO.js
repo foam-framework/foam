@@ -65,7 +65,7 @@ CLASS({
   listeners: [
     {
       name: 'onData',
-      code: function(data) {
+      code: function(data, latch) {
         var work = [anop];
         var obj = JSONUtil.mapToObj(this.X, data, undefined, work);
 
@@ -73,9 +73,12 @@ CLASS({
           throw new Error("Failed to decode data: " + data);
         }
         if ( ! this.pending[obj.id] ) {
-          // Workaround for legacy apps that include extra models via
-          // additional script tags.
-          this.preload[obj.id] = obj;
+          if ( latch ) latch(obj);
+          else {
+            // Workaround for legacy apps that include extra models via
+            // additional script tags.
+            this.preload[obj.id] = obj;
+          }
           return;
         }
 
