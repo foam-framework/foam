@@ -23,13 +23,6 @@
     var space  = Canvas.create({width: 450, height: 700, background:'#fff'});
     var space2 = Canvas.create({width: 450, height: 700, background:'#fff'});
 
-
-  var document = {
-    writeln: function(html) {
-      window.document.body.insertAdjacentHTML('beforeend', html);
-    }
-  };
-
     document.writeln("<table><tr><td>");
     var spaceView = space.write(document);
     document.writeln("</td><td>");

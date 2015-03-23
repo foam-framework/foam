@@ -335,7 +335,8 @@ CLASS({
 
     write: function(document) {
       /*  Write the View's HTML to the provided document and then initialize. */
-      document.writeln(this.toHTML());
+      var html = this.toHTML();
+      document.body.insertAdjacentHTML('beforeend', html);
       this.initHTML();
     },
 
