@@ -81,15 +81,28 @@ CLASS({
       action: function() {
         this.virtualConsoleView.reset();
         this.virtualConsole.watchConsole();
-        try {
-          var X = this.X.sub();
-          for ( this.i = 0; this.i < this.source.length; ++this.i ) {
-            eval('(function(X){'    + this.source[this.i] + '}).call(null, X)');
-          }
-        } catch (e) {
-          this.virtualConsole.onError(e.toString());
-        }
-        this.virtualConsole.resetConsole();
+        var X = this.X.sub();
+        this.source.select({
+          put: function() {
+            // Use arguments array to avoid leaking names into eval context.
+            if ( arguments[0].src &&
+                arguments[0].src.language &&
+                arguments[0].src.language.toLowerCase() === 'javascript' ) {
+                  try {
+                    eval('(function(X){' +
+                        arguments[0].src.code +
+                        '}).call(null, X)');
+                  } catch (e) {
+                    this.virtualConsole.onError(e.toString());
+                  }
+                }
+          }.bind(this),
+          error: function(e) {
+            this.virtualConsole.onError(e.toString());
+          }.bind(this)
+        })(function() {
+          this.virtualConsole.resetConsole();
+        }.bind(this));
         // TODO(markdittmer): Render views.
       }
     }

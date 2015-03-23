@@ -77,8 +77,7 @@
             <title>Your First FOAM Class</title>
             <source>
               <code-snippet>
-                <src>
-                  <language>javascript</language>
+                <src language="javascript">
                   <code>CLASS({
   name: 'Person',
   package: 'foam.sandbox',
@@ -193,8 +192,7 @@
             <source>
               <code-snippet>
                 <title>Person Class</title>
-                <src>
-                  <language>javascript</language>
+                <src language="javascript">
                   <code>CLASS({
   name: 'Person',
   package: 'foam.sandbox',
@@ -249,8 +247,7 @@
             <source>
               <code-snippet>
                 <title>HTML</title>
-                <src>
-                  <language>html</language>
+                <src language="html">
                   <code><foam model="foam.sandbox.Person"></foam></code>
                 </src>
               </code-snippet>

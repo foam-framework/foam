@@ -15,6 +15,8 @@ CLASS({
   extendsModel: 'foam.flow.Element',
   traits: [ 'foam.flow.MultilineViewTrait' ],
 
+  requires: ['foam.flow.SourceCode'],
+
   imports: [
     'document',
     'codeViewLoadState$'
