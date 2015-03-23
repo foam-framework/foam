@@ -878,6 +878,11 @@ CLASS({
 });
 
 CLASS({
+  name: 'ColorProperty',
+  extendsModel: 'StringProperty'
+});
+
+CLASS({
   extendsModel: 'Property',
   name: 'DocumentationProperty',
   help: 'Describes the documentation properties found on Models, Properties, Actions, Methods, etc.',
