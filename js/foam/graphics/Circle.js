@@ -45,8 +45,6 @@ CLASS({
     },
     {
       name: 'endAngle',
-      label: 'Radius',
-      type: 'int',
       defaultValue: Math.PI*2
     },
     {
