@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'DestructiveDataView',
   package: 'foam.ui',
+  name: 'DestructiveDataView',
   extendsModel: 'foam.ui.BaseView',
   
   requires: ['SimpleValue'],
@@ -88,6 +88,4 @@ CLASS({
       this.addChild(child);
     }
   }
-  
-  
 });
