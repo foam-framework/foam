@@ -99,4 +99,5 @@ CLASS({
   $$updates
 </div>
 */}
+  ]
 });
