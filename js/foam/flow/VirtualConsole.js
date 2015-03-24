@@ -43,6 +43,7 @@ CLASS({
       },
       view: {
         factory_: 'foam.ui.DAOListView',
+        tagName: 'console-log',
         rowView: 'foam.flow.LogEntryView'
       },
       postSet: function(old, nu) {

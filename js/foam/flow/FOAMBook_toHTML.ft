@@ -75,7 +75,10 @@
         <aside extraClassName="wide">
           <code-sample>
             <title>Your First FOAM Class</title>
-            <src>CLASS({
+            <source>
+              <code-snippet>
+                <src language="javascript">
+                  <code>CLASS({
   name: 'Person',
   package: 'foam.sandbox',
 
@@ -113,7 +116,10 @@
       }
     }
   ]
-});</src>
+});</code>
+                </src>
+              </code-snippet>
+            </source>
           </code-sample>
         </aside>
 
@@ -170,8 +176,8 @@
         <section enumerate="false">
           <title>Try It Out</title>
           <p>
-            Let's try making some changes to the <code>Person</code>
-            class. First we'll add support for middle names. Add a property
+            Let's try making some changes to Your First FOAM Class.. First
+            we'll add support for middle names. Add a property
             named <code>middleNames</code> with <code>model_:
             'StringArrayProperty'</code>; give it a factory that returns the
             empty array, a label of <code>'Middle Name'</code> and annotate
@@ -205,6 +211,91 @@
             code that repeatedly accesses that <code>age</code> property, we
             won't be slowed down by redundant computations.
           </p>
+
+        <aside extraClassName="wide">
+          <code-sample>
+            <title>Working with the Person Class</title>
+            <source>
+              <code-snippet>
+                <title>Person Class</title>
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'Person',
+  package: 'foam.sandbox',
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'firstName',
+      label: 'Given Name',
+      defaultValue: 'John'
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'middleNames',
+      plural: 'Middle Names'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'lastName',
+      label: 'Surname',
+      defaultValue: 'Smith'
+    },
+    {
+      model_: 'DateProperty',
+      name: 'dateOfBirth',
+      factory: function() {
+        return 'January 1, 2000';
+      },
+      postSet: function(old, nu) {
+        this.age = this.computeAge();
+      }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'age'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'computeAge',
+      code: function() {
+        // Thanks to André Snede Hansen on Stackoverflow for
+        // this procedure. It's not perfect, but close enough.
+        var ageDifMs = Date.now() -
+            this.dateOfBirth.getTime();
+        var ageDate = new Date(ageDifMs);
+        return Math.abs(ageDate.getUTCFullYear() -
+            1970);
+      }
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+            <source>
+              <code-snippet>
+                <title>Javascript</title>
+                <src language="javascript">
+                  <code>console.log.json.put(
+  X.foam.sandbox.Person.create()
+);</code>
+                </src>
+              </code-snippet>
+            </source>
+            <source>
+              <code-snippet>
+                <title>HTML</title>
+                <src language="html">
+                  <code><foam model="foam.sandbox.Person"></foam></code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+
           <p>
             So we have this <code>Person</code> class. What can we do with
             it? To start, let's just try instantiating one and printing it to

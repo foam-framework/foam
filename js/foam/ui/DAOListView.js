@@ -184,7 +184,6 @@ CLASS({
 
         e.innerHTML = out.join('');
         this.initInnerHTML();
-        this.children = [];
         this.painting = false;
       }.bind(this));
     },

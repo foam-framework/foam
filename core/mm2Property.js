@@ -473,7 +473,7 @@ var Property = {
       documentation: function() { /*
         Allows you to react after the value of the $$DOC{ref:'Property'} has been set,
         but before property change event is fired.
-        Parameters <code>(old, nu)</code> are supplied with the old and new value. 
+        Parameters <code>(old, nu)</code> are supplied with the old and new value.
       */}
     },
     {
@@ -580,7 +580,23 @@ var Property = {
     },
     {
       name: 'fromElement',
-      defaultValue: function(e, p) { p.fromString.call(this, e.innerHTML, p); },
+      defaultValue: function(e, p) {
+        if ( ! p.type || ! this.X.lookup || p.type === 'String' ) {
+          p.fromString.call(this, e.innerHTML, p);
+          return;
+        }
+        var model = this.X.lookup(p.type);
+        if ( ! model ) {
+          p.fromString.call(this, e.innerHTML, p);
+          return;
+        }
+        var o = model.create();
+        if ( ! o.fromElement ){
+          p.fromString.call(this, e.innerHTML, p);
+          return;
+        }
+        this[p.name] = o.fromElement(e);
+      },
       help: 'Function to extract from a DOM Element.',
       documentation: "Function to extract a value from a DOM Element."
     },
@@ -724,4 +740,3 @@ for ( var i = 0 ; i < Property.properties_.length ; i++ )
 
 USED_MODELS.Property = true;
 USED_MODELS.Model = true;
-

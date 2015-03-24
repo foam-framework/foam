@@ -15,25 +15,31 @@ CLASS({
   extendsModel: 'foam.flow.Element',
 
   requires: [
-    'Model',
     'foam.dao.EasyDAO',
     'foam.ui.ActionButton',
-    'foam.flow.VirtualConsole',
-    'foam.flow.VirtualConsoleView',
-    'foam.flow.Editor'
+    'foam.flow.CodeSampleOutput',
+    'foam.flow.CodeSampleOutputView',
+    'foam.flow.CodeSnippet',
+    'foam.flow.CodeSnippetView',
+    'foam.flow.SourceCodeListView'
   ],
 
   imports: [
     'document',
-    'editorModel',
-    'actionButtonModel'
+    'codeViewName',
+    'actionButtonName'
   ],
 
   properties: [
     {
       model_: 'StringProperty',
-      name: 'extraClassName',
-      defaultValue: 'loading'
+      name: 'codeViewName',
+      defaultValue: 'foam.flow.CodeView'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'i',
+      defaultValue: 0
     },
     {
       model_: 'StringProperty',
@@ -41,57 +47,30 @@ CLASS({
       defaultValue: 'Example'
     },
     {
+      model_: 'foam.core.types.DAOProperty',
+      model: 'foam.flow.CodeSnippet',
+      name: 'source',
+      singular: 'codeSnippet',
+      factory: function() {
+        return this.EasyDAO.create({
+          model: this.CodeSnippet,
+          daoType: 'MDAO',
+          seqNo: true
+        });
+      }
+    },
+    {
+      name: 'output',
+      type: 'foam.flow.CodeSampleOutput',
+      factory: function() {
+        return this.CodeSampleOutput.create();
+      },
+      view: 'foam.flow.CodeSampleOutputView'
+    },
+    {
       model_: 'StringProperty',
-      name: 'src',
-      defaultValue: 'console.log("Hello world!");',
-      view: {
-        factory_: 'foam.ui.TextFieldView',
-        mode: 'read-only',
-        className: 'src'
-      }
-    },
-    {
-      name: 'virtualConsole',
-      type: 'foam.flow.VirtualConsole',
-      factory: function() {
-        return this.VirtualConsole.create();
-      },
-      view: 'foam.flow.VirtualConsoleView'
-    },
-    {
-      model_: 'ModelProperty',
-      name: 'actionButtonModel',
-      factory: function() { return this.ActionButton; }
-    },
-    {
-      name: 'editor',
-      factory: function() {
-        return (this.editorModel ? this.editorModel : this.Editor).create();
-      },
-      postSet: function(old, nu) {
-        if ( old === nu ) return;
-        if ( old ) {
-          old.unsubscribe(['loaded'], this.onEditorLoaded);
-          old.unsubscribe(['load-failed'], this.onEditorLoadFailed);
-        }
-        if ( nu ) {
-          nu.subscribe(['loaded'], this.onEditorLoaded);
-          nu.subscribe(['load-failed'], this.onEditorLoadFailed);
-        }
-      }
-    }
-  ],
-
-  methods: [
-    {
-      name: 'initHTML',
-      code: function() {
-        this.SUPER.apply(this, arguments);
-        if ( this.editor ) {
-          this.editor.src = this.src;
-          if ( this.editor.src$ ) this.src$ = this.editor.src$;
-        }
-      }
+      name: 'actionButtonName',
+      defaultValue: 'foam.ui.ActionButton'
     }
   ],
 
@@ -100,54 +79,33 @@ CLASS({
       name: 'run',
       iconUrl: 'https://www.gstatic.com/images/icons/material/system/1x/play_arrow_white_24dp.png',
       action: function() {
-        this.virtualConsoleView.reset();
-        this.virtualConsole.watchConsole();
-        try {
-          var X = this.X.sub();
-          eval('(function(X){'    + this.src + '}).call(null, X)');
-        } catch (e) {
-          this.virtualConsole.onError(e.toString());
-        } finally {
-          this.virtualConsole.resetConsole();
-        }
-      }
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'onEditorLoaded',
-      todo: 'We should probably have a spinner and/or placeholder until this fires.',
-      code: function() {
-        // TODO(markdittmer): This should automatically update our classname.
-        // Why doesn't it?
-        this.extraClassName = '';
-        if ( ! this.$ ) return;
-        this.$.className = this.cssClassAttr().slice(7, -1);
-      }
-    },
-    {
-      name: 'onEditorLoadFailed',
-      isFramed: true,
-      code: function(_, topics) {
-        var editorModelName = topics[1];
-        if ( editorModelName !== 'foam.flow.Editor' ) {
-          this.editor = this.Editor.create();
-          this.updateHTML();
-          return;
-        }
-
-        // Failed to load editor: this.Editor. Just output src as textContent.
-        console.error('CodeSample: Failed to load code editor');
-        if ( this.$ ) {
-          var container = this.$.querySelector('editors') || this.$;
-          container.innerHTML = '';
-          container.textContent = this.src;
-          // TODO(markdittmer): This should automatically update our classname.
-          // Why doesn't it?
-          this.extraClassName = '';
-          this.$.className = this.cssClassAttr().slice(7, -1);
-        }
+        this.outputView.reset();
+        this.output.virtualConsole.watchConsole();
+        this.output.viewOutput.innerHTML = '';
+        var X = this.X.sub();
+        this.source.select({
+          put: function() {
+            // Use arguments array to avoid leaking names into eval context.
+            if ( arguments[0].src && arguments[0].src.language ) {
+              if ( arguments[0].src.language.toLowerCase() === 'javascript' ) {
+                try {
+                  eval('(function(X){' +
+                      arguments[0].src.code +
+                      '}).call(null, X)');
+                } catch (e) {
+                  this.output.virtualConsole.onError(e.toString());
+                }
+              } else if ( arguments[0].src.language.toLowerCase() === 'html' ) {
+                this.output.viewOutput.innerHTML += arguments[0].src.code;
+              }
+            }
+          }.bind(this),
+          error: function(e) {
+            this.output.virtualConsole.onError(e.toString());
+          }.bind(this)
+        })(function() {
+          this.output.virtualConsole.resetConsole();
+        }.bind(this));
       }
     }
   ],
@@ -158,29 +116,32 @@ CLASS({
         %%title
       </heading>
       <top-split>
-        <editors>
-          %%editor
-        </editors>
+        $$source{ model_: this.SourceCodeListView, rowView: this.CodeSnippetView }
         <actions>
           $$run{
-            model_: this.actionButtonModel,
+            model_: this.actionButtonName,
             className: 'actionButton playButton',
             color: 'white',
-            font: '30px Roboto Arial',
+            font: '30px Roboto, Arial',
             alpha: 1.0,
-            width: 38,
-            height: 38,
             radius: 18,
             background: '#e51c23'
           }
         </actions>
-        $$src
+        <print-only>
+          $$source{
+            model_: this.SourceCodeListView,
+            mode: 'read-only',
+            rowView: {
+              factory_: 'foam.flow.CodeSnippetView',
+              scroll: false,
+              codeViewName: 'foam.flow.CodeView'
+            }
+          }
+        </print-only>
       </top-split>
       <bottom-split>
-        $$virtualConsole{
-          minLines: 8,
-          maxLines: 8
-        }
+        $$output
       </bottom-split>
     */},
     function CSS() {/*
@@ -197,11 +158,6 @@ CLASS({
       code-sample.loading {
         display: none;
       }
-      code-sample editors {
-        display: flex;
-        justify-content: space-between;
-        align-items: stretch;
-      }
       code-sample top-split, code-sample bottom-split {
         display: block;
         position: relative;
@@ -209,7 +165,7 @@ CLASS({
       code-sample top-split {
         z-index: 10;
       }
-      code-sample top-split::before {
+      code-sample top-split::after {
         bottom: -4px;
         content: '';
         height: 4px;
@@ -221,7 +177,6 @@ CLASS({
       }
       code-sample bottom-split {
         z-index: 5;
-        background: #E0E0E0;
       }
       code-sample actions {
         position: absolute;
@@ -242,15 +197,20 @@ CLASS({
           margin: 0px;
           padding: 10px 10px 10px 10px;
           background: #F4B400;
+          z-index: 20;
         }
 
-        code-sample .src {
+        code-sample print-only {
           display: none;
         }
 
       }
 
       @media print {
+
+        code-sample print-only, code-sample print-only sources {
+          display: block;
+        }
 
         code-sample heading {
           font-size: 14pt;
@@ -261,13 +221,13 @@ CLASS({
           margin: 3pt;
         }
 
-        code-sample editors, code-sample actions, code-sample virtual-console {
+        code-sample sources, code-sample actions, code-sample virtual-console {
           display: none;
         }
 
-        code-sample .src {
+        code-sample print-only sources {
           display: block;
-          font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+          font: 14px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
           white-space: pre-wrap;
           margin: 3pt;
           page-break-inside: avoid;
