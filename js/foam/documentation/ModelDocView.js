@@ -57,10 +57,10 @@ CLASS({
       this.generateFeatureDAO(this.data);
     },
 
-    destroy: function( isParentDestroyed ) {
-      this.SUPER(isParentDestroyed);
-      this.documentViewRef.removeListener(this.doScrollToFeature);
-    },
+//     destroy: function( isParentDestroyed ) {
+//       this.SUPER(isParentDestroyed);
+//       this.documentViewRef.removeListener(this.doScrollToFeature);
+//     },
 
     processModelChange: function() {
       // abort if it's too early //TODO: (we import data and run its postSet before the rest is set up)

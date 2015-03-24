@@ -630,16 +630,19 @@ var FObject = {
 
   getMyFeature: function(featureName) {
     featureName = featureName.toUpperCase();
+    var arrayOrEmpty = function(arr) {
+      return ( arr && Array.isArray(arr) ) ? arr : [];
+    }
     return [
-      this.properties_ ? this.properties_ : [],
-      this.actions_ ? this.actions_ : [],
-      this.methods ? this.methods : [],
-      this.listeners ? this.listeners : [],
-      this.templates ? this.templates : [],
-      this.models ? this.models : [],
-      this.tests ? this.tests : [],
-      this.relationships ? this.relationships : [],
-      this.issues ? this.issues : []
+      arrayOrEmpty(this.properties_),
+      arrayOrEmpty(this.actions_),
+      arrayOrEmpty(this.methods),
+      arrayOrEmpty(this.listeners),
+      arrayOrEmpty(this.templates),
+      arrayOrEmpty(this.models),
+      arrayOrEmpty(this.tests),
+      arrayOrEmpty(this.relationships),
+      arrayOrEmpty(this.issues)
     ].mapFind(function(list) { return list.mapFind(function(f) {
       return f.name && f.name.toUpperCase() === featureName && f;
     })});
@@ -647,16 +650,19 @@ var FObject = {
 
   getAllMyFeatures: function() {
     var featureList = [];
+    var arrayOrEmpty = function(arr) {
+      return ( arr && Array.isArray(arr) ) ? arr : [];
+    }
     [
-      this.properties_ ? this.properties_ : [],
-      this.actions_ ? this.actions_ : [],
-      this.methods ? this.methods : [],
-      this.listeners ? this.listeners : [],
-      this.templates ? this.templates : [],
-      this.models ? this.models : [],
-      this.tests ? this.tests : [],
-      this.relationships ? this.relationships : [],
-      this.issues ? this.issues : []
+      arrayOrEmpty(this.properties_),
+      arrayOrEmpty(this.actions_),
+      arrayOrEmpty(this.methods),
+      arrayOrEmpty(this.listeners),
+      arrayOrEmpty(this.templates),
+      arrayOrEmpty(this.models),
+      arrayOrEmpty(this.tests),
+      arrayOrEmpty(this.relationships),
+      arrayOrEmpty(this.issues)
     ].map(function(list) {
       featureList = featureList.concat(list);
     });
