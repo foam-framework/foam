@@ -389,6 +389,8 @@ var JSONUtil = {
         } else {
           if ( obj.model_ )
             this.outputObject_(out, obj, opt_defaultModel, nestedIndent);
+          else if ( Array.isArray(obj) )
+            this.outputArray_(out, obj, undefined, nestedIndent);
           else
             this.outputMap_(out, obj, nestedIndent);
         }
