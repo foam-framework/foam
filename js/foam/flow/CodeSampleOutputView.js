@@ -35,6 +35,9 @@ CLASS({
         if ( old ) old.flareState$.removeListener(this.onFlareStateChange);
         if ( nu ) nu.flareState$.addListener(this.onFlareStateChange);
       }
+    },
+    {
+      name: 'viewOutputContainer'
     }
   ],
 
@@ -75,6 +78,14 @@ CLASS({
             if ( this.$.className !== 'animating' ) this.$.className = 'animating';
           }
         }.bind(this));
+
+        this.viewOutputContainer = this.X.$(this.id + '-voc');
+        Events.dynamic(function() {
+          this.viewOutputContainer;
+          this.viewOutputView && this.viewOutputView.height;
+          this.viewOutputContainer.className = this.viewOutputView.height > 0 ?
+              'visible' : '';
+        }.bind(this));
       }
     }
   ],
@@ -83,9 +94,12 @@ CLASS({
     {
       name: 'reset',
       action: function() {
-        this.flare && this.flare.fire();
-        // TODO(markdittmer): If there is no flare, we need to publish events
-        // that will simulate the flare (or similar) for our children's sake.
+        if ( this.flare ) {
+          this.flare.fire();
+        } else {
+          this.viewOutputView.state = this.virtualConsoleView.state =
+              this.parent.state = 'release';
+        }
       }
     }
   ],
@@ -95,9 +109,11 @@ CLASS({
       name: 'onFlareStateChange',
       code: function(_, __, ___, newState) {
         if ( newState === 'growing' ) {
-          this.viewOutputView.state = this.virtualConsoleView.state = 'hold';
+          this.viewOutputView.state = this.virtualConsoleView.state =
+              this.parent.state = 'hold';
         } else {
-          this.viewOutputView.state = this.virtualConsoleView.state = 'release';
+          this.viewOutputView.state = this.virtualConsoleView.state =
+              this.parent.state = 'release';
         }
 
         // TODO(markdittmer): We should be using this.setClass() here, but
@@ -114,7 +130,9 @@ CLASS({
 
   templates: [
     function toInnerHTML() {/*
-      $$viewOutput
+      <view-output-container id="{{this.id}}-voc">
+        $$viewOutput
+      </view-output-container>
       $$virtualConsole{
         minLines: 8,
         maxLines: 8
@@ -127,6 +145,20 @@ CLASS({
       }
       code-sample-output.animating {
         overflow: hidden;
+      }
+      view-output-container {
+        display: block;
+        position: relative;
+      }
+      view-output-container.visible::after {
+        bottom: -4px;
+        content: '';
+        height: 4px;
+        left: 0;
+        position: absolute;
+        right: 0;
+        background-image: -webkit-linear-gradient(top,rgba(0,0,0,.12) 0%,rgba(0,0,0,0) 100%);
+        background-image: linear-gradient(to bottom,rgba(0,0,0,.12) 0%,rgba(0,0,0,0) 100%);
       }
     */}
   ]

@@ -78,7 +78,7 @@
             <source>
               <code-snippet>
                 <src language="javascript">
-                  <code>CLASS({
+                  <code>X.CLASS({
   name: 'Person',
   package: 'foam.sandbox',
 
@@ -219,7 +219,7 @@
               <code-snippet>
                 <title>Person Class</title>
                 <src language="javascript">
-                  <code>CLASS({
+                  <code>X.CLASS({
   name: 'Person',
   package: 'foam.sandbox',
 
@@ -298,7 +298,7 @@
 
           <p>
             So we have this <code>Person</code> class. What can we do with
-            it? To start, let's just try instantiating one and printing it to
+            it? To start, let's just try instantiating one and printing one to
             the console.
           </p>
         </section>
