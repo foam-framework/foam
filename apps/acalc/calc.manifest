@@ -1,5 +1,10 @@
 CACHE MANIFEST
-# version 2
+# version 1.1
 foam.js
 index.html
+icons/32.png
+icons/48.png
 icons/64.png
+icons/96.png
+icons/128.png
+icons/256.png
