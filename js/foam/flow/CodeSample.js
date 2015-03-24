@@ -184,21 +184,25 @@ CLASS({
       code: function() {
         this.output.virtualConsole.watchConsole();
         this.output.viewOutput.innerHTML = '';
-        var X = this.sampleCodeContext = this.sampleCodeBaseContext.sub();
+        var X = this.sampleCodeContext = this.sampleCodeBaseContext.sub(),
+            CLASS = X.CLASS;
         this.source.select({
           put: function() {
             // Use arguments array to avoid leaking names into eval context.
             if ( arguments[0].src && arguments[0].src.language ) {
               if ( arguments[0].src.language.toLowerCase() === 'javascript' ) {
                 try {
-                  eval('(function(X){' +
+                  eval('(function(X, CLASS){' +
                       arguments[0].src.code +
-                      '}).call(null, X)');
+                      '}).call(null, X, CLASS)');
                 } catch (e) {
                   this.output.virtualConsole.onError(e.toString());
                 }
               } else if ( arguments[0].src.language.toLowerCase() === 'html' ) {
-                this.output.viewOutput.innerHTML += arguments[0].src.code;
+                // CodeSamples use <foam-tag> instead of <foam> to avoid
+                // creating broken FoamTagViews.
+                this.output.viewOutput.innerHTML +=
+                    arguments[0].src.code.replace(/<foam-tag/g, '<foam');
               }
             }
           }.bind(this),

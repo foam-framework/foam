@@ -45,9 +45,7 @@ CLASS({
         this.SUPER.apply(this, arguments);
         Events.dynamic(function() {
           this.data && this.data.innerHTML; this.$; this.state;
-          console.log('Try re-init');
           if ( ! this.$ || ! this.data || this.state !== 'release' ) return;
-          console.log('re-init');
           this.initHTML_();
         }.bind(this));
       }
