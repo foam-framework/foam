@@ -169,7 +169,8 @@ CLASS({
             if ( obj.extendsModel == extendersOf.id ) {
               this.subModelDAO.put(obj);
               // for performance, spread out the load
-              this.X.setTimeout(function() { this.findDerived(obj); }.bind(this), 200);
+              // TODO(jacksonic): disabled recursion for speed
+              //this.X.setTimeout(function() { this.findDerived(obj); }.bind(this), 200);
             }
           }.bind(this)
         ));

@@ -149,7 +149,7 @@ CLASS({
           } else {
             list.eof(); // no more extendsModels to follow, finished
           }          
-        }
+        }.bind(this)
       });
 
     },
@@ -204,10 +204,10 @@ CLASS({
             ancestry.every(function(ancestor) { 
               foundObject = ancestor.getFeature(features[0]);
               if ( ! foundObject ) {    
-                return false;
+                return true;
               } else {
                 newResolvedRef += "." + features.shift();
-                return true;
+                return false;
               }
             });
           }
