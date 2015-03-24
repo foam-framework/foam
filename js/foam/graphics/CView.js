@@ -126,6 +126,15 @@ CLASS({
       getter: function() { return this.y + ( this.parent ? this.parent.canvasY : 0 ); }
     },
     {
+      name: 'mouse',
+      transient: true,
+      lazyFactory: function() {
+        var m = this.Mouse.create();
+        m.connect(this.$);
+        return m;
+      }
+    },
+    {
       model_: 'IntProperty',
       name:  'width',
       defaultValue: 10,
@@ -253,8 +262,8 @@ CLASS({
                           does a $$DOC{ref:'.paintSelf'} then paints all the children. */
       if ( ! this.$ ) return; // no canvas element, so do nothing
       if ( this.state === 'initial' ) {
-        this.initCView();
         this.state = 'active';
+        this.initCView();
       }
       if ( this.suspended ) return; // we allowed initialization, but if suspended don't paint
 
