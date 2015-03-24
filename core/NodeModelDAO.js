@@ -23,7 +23,7 @@ X.ModelDAO = X.node.dao.ModelFileDAO.create();
 (function() {
   var oldClass = CLASS;
 
-  CLASS = function(json) {
+  MODEL = CLASS = function(json) {
     json.model_ = 'Model';
     global.__DATACALLBACK(json, oldClass);
   };

@@ -23,7 +23,7 @@ X.ModelDAO = X.foam.core.bootstrap.BrowserFileDAO.create();
 (function() {
   var oldClass = CLASS;
 
-  CLASS = function(json) {
+  MODEL = CLASS = function(json) {
     json.model_ = 'Model';
     if ( document && document.currentScript )
       json.sourcePath = document.currentScript.src;
