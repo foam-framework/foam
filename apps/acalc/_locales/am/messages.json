@@ -1,4 +1,12 @@
 {
+  "NumberFormatter_Message_NaN": {
+    "message": "ቁጥር አይደለም",
+    "description": "NumberFormatter description of a value that isn't a number"
+  },
+  "Calc_Message_CalcName": {
+    "message": "ሒሳብ ማስያ ማሽን",
+    "description": "Calculator name of application for performing simple calculations"
+  },
   "Calc_ActionLabel_div": {
     "message": "÷",
     "description": "Calculator short form for mathematical function: \"divide\" (text label)"
@@ -17,11 +25,11 @@
   },
   "Calc_ActionLabel_plus": {
     "message": "+",
-    "description": "Calculator binary operator: plus (text label)"
+    "description": "Calculator short form for mathematical function: \"plus\" (text label)"
   },
   "Calc_ActionSpeechLabel_plus": {
-    "message": "+",
-    "description": "Calculator binary operator: plus (speech label)"
+    "message": "ሲደመር",
+    "description": "Calculator short form for mathematical function: \"plus\" (speech label)"
   },
   "Calc_ActionLabel_minus": {
     "message": "–",
@@ -39,13 +47,61 @@
     "message": "ሁሉንም አጽዳ",
     "description": "Calculator all clear (calculator button label) (speech label)"
   },
+  "Calc_ActionLabel_sign": {
+    "message": "+/-",
+    "description": "Calculator switch positive/negative sign of number (text label)"
+  },
+  "Calc_ActionSpeechLabel_sign": {
+    "message": "አሉታ",
+    "description": "Calculator switch positive/negative sign of number (speech label)"
+  },
+  "Calc_ActionLabel_point": {
+    "message": "ነጥብ",
+    "description": "Calculator decimal point (text label)"
+  },
+  "Calc_ActionSpeechLabel_point": {
+    "message": "ነጥብ",
+    "description": "Calculator decimal point (speech label)"
+  },
+  "Calc_ActionLabel_equals": {
+    "message": "=",
+    "description": "Calculator compute operation and display result (text label)"
+  },
+  "Calc_ActionSpeechLabel_equals": {
+    "message": "እኩል",
+    "description": "Calculator compute operation and display result (speech label)"
+  },
   "Calc_ActionLabel_backspace": {
-    "message": "የኋሊት መደምሰሻ",
+    "message": "⌫",
     "description": "Calculator delete one input character (text label)"
   },
   "Calc_ActionSpeechLabel_backspace": {
-    "message": "የኋሊት መደምሰሻ",
+    "message": "የኋሊት ደምሳሻ",
     "description": "Calculator delete one input character (speech label)"
+  },
+  "Calc_ActionLabel_pi": {
+    "message": "π",
+    "description": "Calculator mathematical constant, pi (text label)"
+  },
+  "Calc_ActionSpeechLabel_pi": {
+    "message": "π",
+    "description": "Calculator mathematical constant, pi (speech label)"
+  },
+  "Calc_ActionLabel_e": {
+    "message": "e",
+    "description": "Calculator mathematical constant, e (text label)"
+  },
+  "Calc_ActionSpeechLabel_e": {
+    "message": "e",
+    "description": "Calculator mathematical constant, e (speech label)"
+  },
+  "Calc_ActionLabel_percent": {
+    "message": "%",
+    "description": "Calculator convert number to percentage (text label)"
+  },
+  "Calc_ActionSpeechLabel_percent": {
+    "message": "በመቶ",
+    "description": "Calculator convert number to percentage (speech label)"
   },
   "Calc_ActionLabel_inv": {
     "message": "1/x",
@@ -60,7 +116,7 @@
     "description": "Calculator short form for mathematical function: \"square root\" (text label)"
   },
   "Calc_ActionSpeechLabel_sqroot": {
-    "message": "√",
+    "message": "ዳግም ዘር",
     "description": "Calculator short form for mathematical function: \"square root\" (speech label)"
   },
   "Calc_ActionLabel_square": {
@@ -100,7 +156,7 @@
     "description": "Calculator binary operator: root (text label)"
   },
   "Calc_ActionSpeechLabel_root": {
-    "message": "የy ኛ ዘር",
+    "message": "የy nኛ ዘር",
     "description": "Calculator binary operator: root (speech label)"
   },
   "Calc_ActionLabel_pow": {
@@ -112,27 +168,27 @@
     "description": "Calculator binary operator: pow (speech label)"
   },
   "Calc_ActionLabel_sin": {
-    "message": "sin",
+    "message": "ሳይን",
     "description": "Calculator short form for mathematical function: \"sine\" (text label)"
   },
   "Calc_ActionSpeechLabel_sin": {
-    "message": "sine",
+    "message": "ሳይን",
     "description": "Calculator short form for mathematical function: \"sine\" (speech label)"
   },
   "Calc_ActionLabel_cos": {
-    "message": "cos",
+    "message": "ኮሳ",
     "description": "Calculator short form for mathematical function: \"cosine\" (text label)"
   },
   "Calc_ActionSpeechLabel_cos": {
-    "message": "cosine",
+    "message": "ኮሳይን",
     "description": "Calculator short form for mathematical function: \"cosine\" (speech label)"
   },
   "Calc_ActionLabel_tan": {
-    "message": "tan",
+    "message": "ታካኪ",
     "description": "Calculator short form for mathematical function: \"tangent\" (text label)"
   },
   "Calc_ActionSpeechLabel_tan": {
-    "message": "tangent",
+    "message": "ታካኪ",
     "description": "Calculator short form for mathematical function: \"tangent\" (speech label)"
   },
   "Calc_ActionLabel_deg": {
@@ -144,7 +200,7 @@
     "description": "Calculator short form for \"degrees\" calculator mode (speech label)"
   },
   "Calc_ActionLabel_rad": {
-    "message": "ራድ",
+    "message": "ራዲ",
     "description": "Calculator short form for \"radians\" calculator mode (text label)"
   },
   "Calc_ActionSpeechLabel_rad": {
@@ -152,27 +208,27 @@
     "description": "Calculator short form for \"radians\" calculator mode (speech label)"
   },
   "Calc_ActionLabel_asin": {
-    "message": "asin",
+    "message": "አሳይን",
     "description": "Calculator short form for mathematical function: \"inverse-sine\" (text label)"
   },
   "Calc_ActionSpeechLabel_asin": {
-    "message": "arcsine",
+    "message": "አርክሳይን",
     "description": "Calculator short form for mathematical function: \"inverse-sine\" (speech label)"
   },
   "Calc_ActionLabel_acos": {
-    "message": "acos",
+    "message": "አኮሳ",
     "description": "Calculator short form for mathematical function: \"inverse-cosine\" (text label)"
   },
   "Calc_ActionSpeechLabel_acos": {
-    "message": "arccosine",
+    "message": "አርክ ኮሳይን",
     "description": "Calculator short form for mathematical function: \"inverse-cosine\" (speech label)"
   },
   "Calc_ActionLabel_atan": {
-    "message": "atan",
+    "message": "አታካኪ",
     "description": "Calculator short form for mathematical function: \"inverse-tangent\" (text label)"
   },
   "Calc_ActionSpeechLabel_atan": {
-    "message": "arctangent",
+    "message": "አርክ ታካኪ",
     "description": "Calculator short form for mathematical function: \"inverse-tangent\" (speech label)"
   },
   "Calc_ActionLabel_fact": {
@@ -184,7 +240,7 @@
     "description": "Calculator short form for mathematical function: \"factorial\" (speech label)"
   },
   "Calc_ActionLabel_mod": {
-    "message": "mod",
+    "message": "ግድፍ",
     "description": "Calculator short form for mathematical function: \"modulo\" (text label)"
   },
   "Calc_ActionSpeechLabel_mod": {
@@ -215,16 +271,28 @@
     "message": "ሲጠጋጋ",
     "description": "Calculator short form for mathematical function: \"round\" (speech label)"
   },
+  "Calc_ActionLabel_rand": {
+    "message": "ነሲብ",
+    "description": "Calculator generate random number (text label)"
+  },
+  "Calc_ActionSpeechLabel_rand": {
+    "message": "ነሲብ",
+    "description": "Calculator generate random number (speech label)"
+  },
   "Calc_ActionLabel_store": {
     "message": "a=",
     "description": "Calculator short form for mathematical function: \"store in memory\" (text label)"
   },
   "Calc_ActionSpeechLabel_store": {
-    "message": "በማህደረ ትውስታ ውስጥ አስቀምጥ",
+    "message": "በማህደረ ትውስታ አስቀምጥ",
     "description": "Calculator short form for mathematical function: \"store in memory\" (speech label)"
   },
-  "NumberFormatter_Message_NaN": {
-    "message": "ቁጥር አይደለም",
-    "description": "NumberFormatter description of a value that isn't a number"
+  "Calc_ActionLabel_fetch": {
+    "message": "a",
+    "description": "Calculator load memorized number (text label)"
+  },
+  "Calc_ActionSpeechLabel_fetch": {
+    "message": "ከማህደረ ትውስታ አምጣ",
+    "description": "Calculator load memorized number (speech label)"
   }
 }
