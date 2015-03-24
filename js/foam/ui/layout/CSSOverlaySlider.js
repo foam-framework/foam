@@ -90,7 +90,7 @@ CLASS({
     {
       "name": "layout",
       "code": function () {
-        var width = Math.min(this.view.preferredWidth, this.width);
+        var width = Math.min(this.view.preferredWidth || this.width, this.width);
 
         if ( this.view ) {
           this.view.width = width;

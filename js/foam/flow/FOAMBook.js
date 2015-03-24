@@ -28,7 +28,7 @@ CLASS({
     'foam.flow.Author',
     'foam.flow.ToC',
     'foam.flow.Section',
-    'foam.flow.AceEditor',
+    'foam.flow.AceCodeView',
     'foam.flow.CodeSample',
     'foam.flow.Aside',
     'foam.flow.GlossaryTerm',
@@ -36,8 +36,9 @@ CLASS({
   ],
   exports: [
     'glossaryTerms',
-    'editorModel',
-    'actionButtonModel'
+    'codeViewName',
+    'actionButtonName',
+    'aceScript$'
   ],
 
   properties: [
@@ -52,16 +53,23 @@ CLASS({
       }
     },
     {
-      name: 'editorModel',
+      model_: 'StringProperty',
+      name: 'codeViewName',
       factory: function() {
-        this.X.registerElement('editor', 'foam.flow.AceEditor');
-        return this.AceEditor;
+        this.X.registerElement('code-view', 'foam.flow.AceCodeView');
+        return 'foam.flow.AceCodeView';
       }
     },
     {
-      name: 'actionButtonModel',
+      name: 'aceScript'
+    },
+    {
+      name: 'actionButtonName',
       factory: function() {
-        return this.ActionButtonCView;
+        this.X.registerModel(this.ActionButtonCView.xbind({
+          haloColor: 'rgb(240,147,0)'
+        }), 'foam.ui.ActionButton');
+        return 'foam.ui.ActionButton';
       }
     }
   ],
@@ -77,9 +85,6 @@ CLASS({
         if ( ! this.X.gestureManager ) {
           this.X.gestureManager = this.GestureManager.create();
         }
-        this.X.registerModel(this.ActionButtonCView.xbind({
-          haloColor: 'rgb(240,147,0)'
-        }),'foam.graphics.ActionButtonCView');
       }
     }
   ],
