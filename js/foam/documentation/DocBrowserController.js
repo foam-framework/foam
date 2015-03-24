@@ -123,7 +123,7 @@ CLASS({
 
       var setRef = function(newRef) { 
         this.DetailContext.documentViewRef.set(newRef);
-        if (newRef.resolvedObject !== this.selection) this.selection = newRef.resolvedObject;
+        if (newRef.resolvedObject !== this.selection) this.selection = newRef.resolvedRoot.resolvedObject;
         this.SearchContext.selection$.set(newRef.resolvedRoot.resolvedObject); // selection wants a Model object
       }.bind(this);
       var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:location.hash.substring(1)}, this.DetailContext);
@@ -146,7 +146,7 @@ CLASS({
       var setRef = function(ref) {
         this.DetailContext.documentViewRef.set(ref);
         this.SearchContext.selection$.set(ref.resolvedRoot.resolvedObject); // selection wants a Model object
-        if (ref.resolvedObject !== this.selection) this.selection = ref.resolvedObject;
+        if (ref.resolvedObject !== this.selection) this.selection = ref.resolvedRoot.resolvedObject;
         location.hash = "#" + ref.resolvedRef;
       }.bind(this);
       if (newRef.valid) {

@@ -43,6 +43,11 @@ book code {
   padding: 0px 2px;
 }
 
+book pre {
+  font: 14px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+  white-space: pre-wrap;
+}
+
 @media not print {
 
   body {

@@ -143,7 +143,10 @@ CLASS({
       if ( ! entry ||
            Date.now() - this.selects[key][1] > this.staleTimeout ) {
         this.selects[key] = entry = [afuture(), Date.now()];
-        this.delegate.select(this.cache, options)(entry[0].set);
+        this.delegate.select(this.cache, options)(function(sink) {
+          self.notify_('reset', []);
+          entry[0].set(sink);
+        });
       }
 
       function readFromCache() {

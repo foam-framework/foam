@@ -136,24 +136,29 @@ CLASS({
     
     getInheritanceList: function(model, list) {
       // find all base models of the given model, put into list
-      this.X.masterModelList.where(IN(Model.ID, model.traits)).select(list);
+      this.X.masterModelList.where(IN(Model.ID, model.traits)).select({
+        put: function(p) { list.put(p); },
+        eof: function() {
+          if ( model.extendsModel ) {
+            this.X.masterModelList.where(EQ(Model.ID, model.extendsModel)).select({
+                put: function(ext) {
+                  list.put(ext);
+                  this.getInheritanceList(ext, list);
+                }.bind(this)
+            }); 
+          } else {
+            list.eof(); // no more extendsModels to follow, finished
+          }          
+        }.bind(this)
+      });
 
-      if ( model.extendsModel ) {
-        this.X.masterModelList.where(EQ(Model.ID, model.extendsModel)).select({
-            put: function(ext) {
-              list.put(ext);
-              this.getInheritanceList(ext, list);
-            }.bind(this)
-        }); 
-      } else {
-        list.eof(); // no more extendsModels to follow, finished
-      }
     },
     
     resolveFeature: function(m, reference) {
       var model = m;
       var newResolvedRef = m.id;
       var featureName = reference.replace(model.id, "");
+      if ( featureName.charAt(0) == '.' ) featureName = featureName.slice(1);
    
       var features = featureName ? featureName.split('.') : [];
       
@@ -199,10 +204,10 @@ CLASS({
             ancestry.every(function(ancestor) { 
               foundObject = ancestor.getFeature(features[0]);
               if ( ! foundObject ) {    
-                return false;
+                return true;
               } else {
                 newResolvedRef += "." + features.shift();
-                return true;
+                return false;
               }
             });
           }

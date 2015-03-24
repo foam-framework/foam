@@ -29,17 +29,13 @@ CLASS({
     'codeViewName',
     'actionButtonName'
   ],
+  exports: [ 'sampleCodeContext$' ],
 
   properties: [
     {
       model_: 'StringProperty',
       name: 'codeViewName',
       defaultValue: 'foam.flow.CodeView'
-    },
-    {
-      model_: 'IntProperty',
-      name: 'i',
-      defaultValue: 0
     },
     {
       model_: 'StringProperty',
@@ -71,6 +67,103 @@ CLASS({
       model_: 'StringProperty',
       name: 'actionButtonName',
       defaultValue: 'foam.ui.ActionButton'
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'packagePath_',
+      defaultValue: function(Y, path, i) {
+        if ( i === path.length ) return Y;
+        if ( ! Y[path[i]] ) {
+          Y[path[i]] = {};
+        }
+        return this.packagePath_(Y[path[i]], path, i+1);
+      }
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'packagePath',
+      defaultValue: function(X, path) {
+        return path ? this.packagePath_(X, path.split('.'), 0) : this;
+      }
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'registerModel',
+      defaultValue: function(model, opt_name) {
+        var root    = this;
+        var name    = model.name;
+        var package = model.package;
+
+        if ( opt_name ) {
+          var a = opt_name.split('.');
+          name = a.pop();
+          package = a.join('.');
+        }
+
+        var path = this.packagePath(root, package);
+        Object.defineProperty(path, name, { value: model, configurable: true });
+        return model;
+      }
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'classFn',
+      defaultValue: function(modelHash, opt_X) {
+        var Y = opt_X || this;
+        modelHash.package = modelHash.package || 'foam.sandbox';
+        var model = Y.Model.create(modelHash, Y);
+        Y.registerModel(model);
+        model.arequire();
+        return model;
+      }
+    },
+    {
+      name: 'sampleCodeBaseContext',
+      factory: function() {
+        var X = this.X.sub({
+          packagePath_: this.packagePath_,
+          registerModel: this.registerModel,
+          CLASS: this.classFn
+        });
+        return X;
+      }
+    },
+    {
+      name: 'sampleCodeContext',
+      factory: function() { return this.sampleCodeBaseContext.sub(); }
+    },
+    {
+      name: 'state',
+      documentation: function() {/* Either "hold" or "release". Used to trigger
+        running sample code with respect to animations. */},
+      defaultValue: 'hold'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'init',
+      code: function() {
+        this.SUPER.apply(this, arguments);
+        Events.dynamic(function() {
+          this.state; this.running;
+          if ( this.running && this.state === 'release' ) this.onRun();
+        }.bind(this));
+      }
+    },
+    {
+      name: 'initHTML',
+      code: function() {
+        this.SUPER.apply(this, arguments);
+        var hasHTML = false;
+        this.source.select({
+          put: function(o) {
+            hasHTML |= arguments[0].src.language.toLowerCase() === 'html';
+          }
+        })(function() {
+          if ( ! hasHTML ) this.outputView.viewOutputView.height = 0;
+        }.bind(this));
+      }
     }
   ],
 
@@ -79,24 +172,37 @@ CLASS({
       name: 'run',
       iconUrl: 'https://www.gstatic.com/images/icons/material/system/1x/play_arrow_white_24dp.png',
       action: function() {
+        this.running = true;
         this.outputView.reset();
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onRun',
+      code: function() {
         this.output.virtualConsole.watchConsole();
         this.output.viewOutput.innerHTML = '';
-        var X = this.X.sub();
+        var X = this.sampleCodeContext = this.sampleCodeBaseContext.sub(),
+            CLASS = X.CLASS;
         this.source.select({
           put: function() {
             // Use arguments array to avoid leaking names into eval context.
             if ( arguments[0].src && arguments[0].src.language ) {
               if ( arguments[0].src.language.toLowerCase() === 'javascript' ) {
                 try {
-                  eval('(function(X){' +
+                  eval('(function(X, CLASS){' +
                       arguments[0].src.code +
-                      '}).call(null, X)');
+                      '}).call(null, X, CLASS)');
                 } catch (e) {
                   this.output.virtualConsole.onError(e.toString());
                 }
               } else if ( arguments[0].src.language.toLowerCase() === 'html' ) {
-                this.output.viewOutput.innerHTML += arguments[0].src.code;
+                // CodeSamples use <foam-tag> instead of <foam> to avoid
+                // creating broken FoamTagViews.
+                this.output.viewOutput.innerHTML +=
+                    arguments[0].src.code.replace(/<foam-tag/g, '<foam');
               }
             }
           }.bind(this),
@@ -105,6 +211,7 @@ CLASS({
           }.bind(this)
         })(function() {
           this.output.virtualConsole.resetConsole();
+          this.running = false;
         }.bind(this));
       }
     }

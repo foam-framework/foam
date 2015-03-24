@@ -594,6 +594,13 @@ function recopyModelFeatures(m) {
   m.models        = m.models;
   m.tests         = m.tests;
   m.issues        = m.issues;
+  
+  // check for old bootstrap Property instances
+  if ( m.properties && m.properties[0] && ! Property.isInstance(m.properties[0]) ) {
+    m.properties.forEach(function(p) {
+      if ( p.model_.name == 'Property' ) p.model_ = Property;  
+    });
+  }
 
   // keep copies of the updated lists
   if ( DEBUG ) BootstrapModel.saveDefinition(m);

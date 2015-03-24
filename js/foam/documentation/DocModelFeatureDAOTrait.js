@@ -141,20 +141,8 @@ CLASS({
     },
 
     findSubModels: function(data) {
-      if ( ! this.Model.isInstance(data) ) return;
-
-      var findDerived = function(extendersOf) { 
-        this.masterModelList.select(MAP(
-          function(obj) {
-            if ( obj.extendsModel == extendersOf.id ) {
-              this.subModelDAO.put(obj);
-              findDerived(obj);
-            }
-          }.bind(this)
-        ));
-      }.bind(this);
-      
-      findDerived(data);
+      if ( ! this.Model.isInstance(data) ) return;     
+      this.findDerived(data);
     },
 
     findTraitUsers: function(data) {
@@ -172,6 +160,23 @@ CLASS({
   },
   
   listeners: [
+    {
+      name: 'findDerived',
+      whenIdle: true,
+      code: function(extendersOf) { 
+        this.masterModelList.select(MAP(
+          function(obj) {
+            if ( obj.extendsModel == extendersOf.id ) {
+              this.subModelDAO.put(obj);
+              // for performance, spread out the load
+              // TODO(jacksonic): disabled recursion for speed
+              //this.X.setTimeout(function() { this.findDerived(obj); }.bind(this), 200);
+            }
+          }.bind(this)
+        ));
+      }
+
+    },
     {
       name: 'loadFeaturesOfModel',
       code: function(map, previousExtenderTrackers, traitInheritanceLevel) {

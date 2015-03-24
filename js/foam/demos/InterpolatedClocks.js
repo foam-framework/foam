@@ -21,24 +21,19 @@ CLASS({
   extendsModel: 'foam.graphics.CView',
 
   requires: [
-//    'Graph',
-//    'foam.demos.ClockView',
-    'foam.graphics.Circle',
-    'foam.graphics.Circle as ClockView',
+    'foam.demos.ClockView',
+    'foam.graphics.Graph',
     'foam.input.Mouse'
   ],
 
   properties: [
     { name: 'width',  defaultValue: 3500 },
-    { name: 'height', defaultValue: 2700 },
-    { name: 'mouse',  lazyFactory: function() { return this.Mouse.create(); } }
+    { name: 'height', defaultValue: 2700 }
   ],
 
   methods: {
     initCView: function() {
       this.SUPER();
-
-      this.mouse.connect(this.$);
 
       var M = Movement;
       var is = [
@@ -64,13 +59,12 @@ CLASS({
 
       var clocks = [], graphs = [], ms = [];
       for ( var i = 0 ; i < is.length ; i++ ) {
-        clocks[i] = this./*ClockView*/Circle.create({
+        clocks[i] = this.ClockView.create({
           x: 250,
           y: 50+i*100,
           r: 40,
           color: is[i][0]
         });
-        /*
         graphs[i] = this.Graph.create({
           x: 5,
           y: 50+i*100,
@@ -83,14 +77,12 @@ CLASS({
           capColor: is[i][0],
           data: []
         });
-        */
         this.addChild(clocks[i]);
-        // this.addChild(graphs[i]);
+        this.addChild(graphs[i]);
         (function (i) {
           var start = clocks[i].x;
           clocks[i].x$.addListener(function() {
-console.log('x: ', arguments);
-            //graphs[i].addData(clocks[i].x-start, 100);
+            graphs[i].addData(clocks[i].x-start, 100);
           });
 
           ms[i] = Movement.animate(
