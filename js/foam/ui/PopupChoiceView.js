@@ -142,12 +142,15 @@ CLASS({
   methods: {
     toHTML: function() {
       if ( this.mode === 'read-only' ) {
-        return '<span id="' + id + '" class="popupChoiceView-readonly">' +
+        return '<span id="' + this.id + '" class="popupChoiceView-readonly">' +
             ((this.choice && this.choice[1]) || '') + '</span>';
       }
       return this.SUPER();
     },
     toInnerHTML: function() {
+      if ( this.mode === 'read-only' ) {
+        return (this.choice && this.choice[1]) || '';
+      }
       var out = '';
 
       if ( this.showValue ) {
