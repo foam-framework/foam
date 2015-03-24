@@ -258,6 +258,8 @@ var JSONUtil = {
 
         if ( typeof obj === 'string' || typeof obj === 'number' ) {
           this.output(out, obj);
+        } else if ( Array.isArray(obj) ) {
+          this.outputArray_(out, obj);
         } else {
           if ( obj.model_ )
             this.outputObject_(out, obj, opt_defaultModel);
