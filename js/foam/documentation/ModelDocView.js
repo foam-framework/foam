@@ -82,9 +82,9 @@ CLASS({
       var ref = self.documentViewRef.get();
       if (ref && ref.valid) {
         if (! // if we don't find an element to scroll to:
-          ref.resolvedModelChain.slice(1).reverse().some(function(feature) {
-            if (feature && feature.name) {
-              element = this.X.$("scrollTarget_"+feature.name);
+          ref.resolvedRef.split('.').slice(1).reverse().some(function(feature) {
+            if (feature) {
+              element = this.X.$("scrollTarget_"+feature);
               if (element) {
                 element.scrollIntoView(true);
                 return true;

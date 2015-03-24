@@ -120,7 +120,7 @@ CLASS({
           }
         }
       } else {
-        var mostSpecificObject = this.docRef.resolvedModelChain[this.docRef.resolvedModelChain.length-1];
+        var mostSpecificObject = this.docRef.resolvedObject;
         if (this.text && this.text.length > 0) {
           %><%=this.text%><%
         } else if (this.usePlural && mostSpecificObject.plural) {
@@ -146,7 +146,7 @@ CLASS({
 
       this.setClass('docLinkNoDocumentation', function() {
         if (this.docRef && this.docRef.valid) {
-          mostSpecificObject = this.docRef.resolvedModelChain[this.docRef.resolvedModelChain.length-1];
+          mostSpecificObject = this.docRef.resolvedObject;
           return !( mostSpecificObject.documentation
                    || (mostSpecificObject.model_ && this.Documentation.isSubModel(mostSpecificObject.model_)));
         }

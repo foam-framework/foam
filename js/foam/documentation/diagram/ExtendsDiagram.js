@@ -79,25 +79,28 @@ CLASS({
     
     construct: function() {
       this.SUPER();
-      // don't just copy data, find extendsModel and send that to children
-      var childData = this.X.lookup(this.data.extendsModel);
             
       var childX = this.X.sub({ 
         documentViewRef: this.SimpleValue.create(
           this.DocRef.create({ ref: this.data.extendsModel })
       )});
 
-      if (childData) {
-        var thisDiag = this.ModelDocDiagram.create({ data: childData, model: childData }, childX);
-        if ( childData.extendsModel ) {
-          this.addChild(this.X.lookup('foam.documentation.diagram.ExtendsDiagram').create({ data: childData, extended: thisDiag }, childX));
-        }
+      // don't just copy data, find extendsModel and send that to children
+      
+      this.X.masterModelList.find(this.data.extendsModel, {
+          put: function(childData) {
+            var thisDiag = this.ModelDocDiagram.create({ data: childData, model: childData }, childX);
+            if ( childData.extendsModel ) {
+              this.addChild(this.model_.create({ data: childData, extended: thisDiag }, childX));
+            }
+    
+            this.addChild(thisDiag);
+    
+            // the arrow
+            this.addChild(this.DocLinkDiagram.create({ start: thisDiag, end$: this.extended$ }));             
+          }.bind(this)
+      });
 
-        this.addChild(thisDiag);
-
-        // the arrow
-        this.addChild(this.DocLinkDiagram.create({ start: thisDiag, end$: this.extended$ }));
-      }
     },
 
     addChild: function(child) {

@@ -201,6 +201,7 @@ CLASS({
 
     createModelList: function() {
       var newDAO = this.MDAO.create({model:Model});
+      this.X.set("masterModelList", newDAO);
 
       // create subcontext to safely load all models
       var loaderX = this.Y.sub({}, "LoaderX");
@@ -218,14 +219,12 @@ CLASS({
       
            
       // All models are now in USED_MODELS
-      // [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
-      //   for ( var key in collection ) {
-      //     // go async: as the requires complete, newDAO will fill in
-      //     arequire(key)( function(m) {
-      //       newDAO.put(m);
-      //     });
-      //   };
-      // }.bind(this));
+      [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
+        for ( var key in collection ) {
+          // go async: as the requires complete, newDAO will fill in
+          newDAO.put(this.X.lookup(key));
+        };
+      }.bind(this));
       
 //       // Add in non-model things like Interfaces
 //       for ( var key in NONMODEL_INSTANCES ) {
@@ -234,13 +233,12 @@ CLASS({
 //       };
 
       // load up books
-      for (var key in this.X.developerDocs) {
-        newDAO.put(this.X.developerDocs[key]);
-      }
+//       for (var key in this.X.developerDocs) {
+//         newDAO.put(this.X.developerDocs[key]);
+//       }
 
       //this.generateCompletnessReport(newDAO);
 
-      this.X.set("masterModelList", newDAO);
     },
   
     generateCompletnessReport: function(models) {
