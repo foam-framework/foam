@@ -40,7 +40,8 @@ CLASS({
       postSet: function(old,nu) {
         old.removeListener(this.setNameLabel);
         nu.addListener(this.setNameLabel);
-        this.ref = this.data;       
+        this.ref = this.data;
+        console.log('ref: ', this.ref);
         this.setNameLabel();
       }
     }

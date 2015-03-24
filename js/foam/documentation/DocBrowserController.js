@@ -201,6 +201,7 @@ CLASS({
 
     createModelList: function() {
       var newDAO = this.MDAO.create({model:Model});
+      this.X.set("masterModelList", newDAO);
 
       // create subcontext to safely load all models
       var loaderX = this.Y.sub({}, "LoaderX");
@@ -234,13 +235,12 @@ CLASS({
 //       };
 
       // load up books
-      for (var key in this.X.developerDocs) {
-        newDAO.put(this.X.developerDocs[key]);
-      }
+//       for (var key in this.X.developerDocs) {
+//         newDAO.put(this.X.developerDocs[key]);
+//       }
 
       //this.generateCompletnessReport(newDAO);
 
-      this.X.set("masterModelList", newDAO);
     },
   
     generateCompletnessReport: function(models) {
