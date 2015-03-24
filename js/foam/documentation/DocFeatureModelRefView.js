@@ -38,10 +38,9 @@ CLASS({
     {
       name: 'data',
       postSet: function(old,nu) {
-        old.removeListener(this.setNameLabel);
-        nu.addListener(this.setNameLabel);
+        old && old.removeListener && old.removeListener(this.setNameLabel);
+        nu && nu.addListener && nu.addListener(this.setNameLabel);
         this.ref = this.data;
-        console.log('ref: ', this.ref);
         this.setNameLabel();
       }
     }

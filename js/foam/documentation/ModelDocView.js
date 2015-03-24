@@ -82,7 +82,7 @@ CLASS({
       var ref = self.documentViewRef.get();
       if (ref && ref.valid) {
         if (! // if we don't find an element to scroll to:
-          ref.resolvedRef.splt('.').slice(1).reverse().some(function(feature) {
+          ref.resolvedRef.split('.').slice(1).reverse().some(function(feature) {
             if (feature) {
               element = this.X.$("scrollTarget_"+feature);
               if (element) {

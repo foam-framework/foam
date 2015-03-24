@@ -91,102 +91,40 @@ CLASS({
       // care about other models that extend this one. Finding such would
       // be a global search problem.
       this.Y.setTimeout(function() {
-          this.loadFeaturesOfModel(data, []);
+        this.agetInheritanceMap(this.loadFeaturesOfModel, data, { data: data });
+      }.bind(this), 20);
+      this.Y.setTimeout(function() {
           this.findSubModels(data);
           this.findTraitUsers(data);
-      }.bind(this), 20);
+      }.bind(this), 500);
 
       //console.log("  FeatureDAO complete.", Date.now() - startTime);
 
       //this.debugLogFeatureDAO();
     },
-    loadFeaturesOfModel: function(model, previousExtenderTrackers, traitInheritanceLevel) {
-      /* <p>Recursively load features of this $$DOC{ref:'Model'} and
-        $$DOC{ref:'Model',usePlural:true} it extends.</p>
-        <p>Returns the inheritance level of model (0 = $$DOC{ref:'Model'}).
-        </p>
-        */
-
-      var isTrait = true;
-      if (typeof traitInheritanceLevel == 'undefined') {
-        traitInheritanceLevel = 0;
-        isTrait = false;
-      }
-      var modelDef = model.definition_?  model.definition_: model;
-      var self = this;
-      var newModelTr = this.DocModelInheritanceTracker.create();
-      newModelTr.model = model.id;
-
-      this.Model.properties.forEach(function(modProp) {
-        var modPropVal = modelDef[modProp.name];
-        if ( Array.isArray(modPropVal) ) { // we only care to check inheritance on the array properties
-          modPropVal.forEach(function(feature) {
-            if ( feature.name ) { // only look at actual objects
-              // all features we hit are declared (or overridden) in this model
-              var featTr = self.DocFeatureInheritanceTracker.create({
-                    isDeclared:true,
-                    feature: feature,
-                    model: newModelTr.model,
-                    type: modProp.name,
-                    fromTrait: isTrait
-              });
-              self.featureDAO.put(featTr);
-
-              // for the models that extend this model, make sure they have
-              // the feature too, if they didn't already have it declared (overridden).
-              // isTrait is not set, as we don't distinguish between inherited trait features and
-              // extendsModel features.
-              previousExtenderTrackers.forEach(function(extModelTr) {
-                self.featureDAO
-                      .where(EQ(self.DocFeatureInheritanceTracker.PRIMARY_KEY,
-                                extModelTr.model+":::"+feature.name))
-                      .select(COUNT())(function(c) {
-                          if (c.count <= 0) {
-                            var featTrExt = self.DocFeatureInheritanceTracker.create({
-                                isDeclared: false,
-                                feature: feature,
-                                model: extModelTr.model,
-                                type: modProp.name });
-                            self.featureDAO.put(featTrExt);
-                          }
-                      });
-              });
+    
+    agetInheritanceMap: function(ret, model, map) {
+      // find all base models of the given model, put into list
+      this.X.masterModelList.where(IN(Model.ID, model.traits)).select({
+          put: function(m) {
+            map[m.id] = m;
+          },
+          eof: function() {
+            if ( model.extendsModel ) {
+              this.X.masterModelList.where(EQ(Model.ID, model.extendsModel)).select({
+                  put: function(ext) {
+                    map[ext.id] = ext;
+                    this.agetInheritanceMap(ret, ext, map);
+                  }.bind(this)
+              }); 
+            } else {
+              ret && ret(map); // no more extendsModels to follow, finished
             }
-          });
-        }
+          }.bind(this)
       });
 
-      if ( ! isTrait ) {
-        // Check if we extend something, and recurse.
-        if (!model.extendsModel) {
-          newModelTr.inheritanceLevel = 0;
-        } else {
-          // add the tracker we're building to the list, for updates from our base models
-          previousExtenderTrackers.push(newModelTr);
-          // inheritance level will bubble back up the stack once we know where the bottom is.
-          // pass a copy of previousExtenderTrackers so we know what to update in the traits section after.
-          newModelTr.inheritanceLevel = 1 + this.loadFeaturesOfModel(
-            this.Y.lookup(model.extendsModel), previousExtenderTrackers.slice(0));
-        }
-
-        // Process traits with the same inheritance level we were assigned, since they appear first in the
-        // apparent inheritance chain before our extendsModel.
-        if (model.traits && model.traits.length > 0) {
-          model.traits.forEach(function(trait) {
-            var traitExtenderTrackers = previousExtenderTrackers.slice(0);
-            traitExtenderTrackers.push(newModelTr);
-            this.loadFeaturesOfModel(
-              this.Y.lookup(trait),
-              traitExtenderTrackers,
-              newModelTr.inheritanceLevel);
-          }.bind(this));
-        }
-      }
-
-      // the tracker is now complete
-      this.modelDAO.put(newModelTr);
-      return newModelTr.inheritanceLevel;
     },
+
 
     debugLogFeatureDAO: function() {
       /* For debugging purposes, prints out the state of the FeatureDAO. */
@@ -205,13 +143,18 @@ CLASS({
     findSubModels: function(data) {
       if ( ! this.Model.isInstance(data) ) return;
 
-      this.masterModelList.select(MAP(
-        function(obj) {
-          if ( data.isSubModel(obj) && data.id != obj.id ) {
-            this.subModelDAO.put(obj);
-          }
-        }.bind(this)
-      ));
+      var findDerived = function(extendersOf) { 
+        this.masterModelList.select(MAP(
+          function(obj) {
+            if ( obj.extendsModel == extendersOf.id ) {
+              this.subModelDAO.put(obj);
+              findDerived(obj);
+            }
+          }.bind(this)
+        ));
+      }.bind(this);
+      
+      findDerived(data);
     },
 
     findTraitUsers: function(data) {
@@ -226,7 +169,112 @@ CLASS({
       ));
     }
 
-  }
+  },
+  
+  listeners: [
+    {
+      name: 'loadFeaturesOfModel',
+      code: function(map, previousExtenderTrackers, traitInheritanceLevel) {
+        /* <p>Recursively load features of this $$DOC{ref:'Model'} and
+          $$DOC{ref:'Model',usePlural:true} it extends.</p>
+          <p>Returns the inheritance level of model (0 = $$DOC{ref:'Model'}).
+          </p>
+          */
+        var model = map.data;
+          
+        if (typeof previousExtenderTrackers == 'undefined') {
+          previousExtenderTrackers = [];
+        }
+        var isTrait = true;
+        if (typeof traitInheritanceLevel == 'undefined') {
+          traitInheritanceLevel = 0;
+          isTrait = false;
+        }
+        var modelDef = model.definition_?  model.definition_: model;
+        var self = this;
+        var newModelTr = this.DocModelInheritanceTracker.create();
+        newModelTr.model = model.id;
+  
+        [ 'properties', 
+          'methods',
+          'actions',
+          'listeners',
+          'models',
+          'relationships',
+          'templates'].forEach(function(modProp) {
+          var modPropVal = modelDef[modProp];
+          if ( Array.isArray(modPropVal) ) { // we only care to check inheritance on the array properties
+            modPropVal.forEach(function(feature) {
+              if ( feature.name ) { // only look at actual objects
+                // all features we hit are declared (or overridden) in this model
+                var featTr = self.DocFeatureInheritanceTracker.create({
+                      isDeclared:true,
+                      feature: feature,
+                      model: newModelTr.model,
+                      type: modProp,
+                      fromTrait: isTrait
+                });
+                self.featureDAO.put(featTr);
+  
+                // for the models that extend this model, make sure they have
+                // the feature too, if they didn't already have it declared (overridden).
+                // isTrait is not set, as we don't distinguish between inherited trait features and
+                // extendsModel features.
+                previousExtenderTrackers.forEach(function(extModelTr) {
+                  self.featureDAO
+                        .where(EQ(self.DocFeatureInheritanceTracker.PRIMARY_KEY,
+                                  extModelTr.model+":::"+feature.name))
+                        .select(COUNT())(function(c) {
+                            if (c.count <= 0) {
+                              var featTrExt = self.DocFeatureInheritanceTracker.create({
+                                  isDeclared: false,
+                                  feature: feature,
+                                  model: extModelTr.model,
+                                  type: modProp });
+                              self.featureDAO.put(featTrExt);
+                            }
+                        });
+                });
+              }
+            });
+          }
+        });
+  
+        if ( ! isTrait ) {
+          // Check if we extend something, and recurse.
+          if (!model.extendsModel) {
+            newModelTr.inheritanceLevel = 0;
+          } else {
+            // add the tracker we're building to the list, for updates from our base models
+            previousExtenderTrackers.push(newModelTr);
+            // inheritance level will bubble back up the stack once we know where the bottom is.
+            // pass a copy of previousExtenderTrackers so we know what to update in the traits section after.
+            newModelTr.inheritanceLevel = 1 + this.loadFeaturesOfModel(
+              { __proto__: map, data: map[model.extendsModel] },
+              previousExtenderTrackers.slice(0));
+          }
+  
+          // Process traits with the same inheritance level we were assigned, since they appear first in the
+          // apparent inheritance chain before our extendsModel.
+          if (model.traits && model.traits.length > 0) {
+            model.traits.forEach(function(trait) {
+              var traitExtenderTrackers = previousExtenderTrackers.slice(0);
+              traitExtenderTrackers.push(newModelTr);
+              this.loadFeaturesOfModel(
+                { __proto__: map, data: map[trait] },
+                traitExtenderTrackers,
+                newModelTr.inheritanceLevel);
+            }.bind(this));
+          }
+        }
+  
+        // the tracker is now complete
+        this.modelDAO.put(newModelTr);
+        return newModelTr.inheritanceLevel;
+      }
+        
+    }
+  ]
 
 
 });

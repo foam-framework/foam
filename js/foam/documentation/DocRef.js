@@ -154,9 +154,8 @@ CLASS({
       var model = m;
       var newResolvedRef = m.id;
       var featureName = reference.replace(model.id, "");
-      console.log("Feature: ", featureName, " for ref ", reference, " and model ", model.id);
    
-      var features = featureName.split('.');
+      var features = featureName ? featureName.split('.') : [];
       
       // check for inner models
       while (features.length > 0 && model) {

@@ -40,11 +40,16 @@ CLASS({
       name: 'data',
       adapt: function(old, nu) {
         if ( typeof nu == 'string' ) {
-          return this.X.lookup(nu);
+          this.X.masterModelList.find(nu, {
+              put: function(n) {
+                this.data = n;
+              }.bind(this)
+          });
         }
         return nu;
       },
       postSet: function() {
+        if ( ! this.data || ! this.data.model_ ) return;
         this.destroy();
         this.construct();
       }
