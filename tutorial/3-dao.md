@@ -141,12 +141,12 @@ Add these two dummy views to `Controller.js`:
 {% highlight js %}
 CLASS({
   name: 'PhoneCitationView',
-  extendsModel: 'DetailView'
+  extendsModel: 'foam.ui.DetailView'
 });
 
 CLASS({
   name: 'ControllerView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   requires: [
     'PhoneCitationView',
     'foam.ui.TextFieldView',
