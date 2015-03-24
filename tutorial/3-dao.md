@@ -48,12 +48,12 @@ CLASS({
   properties: [
     {
       name: 'search',
-      view: { factory_: 'TextFieldView', onKeyMode: true }
+      view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true }
     },
     {
       name: 'order',
       defaultValue: Phone.NAME,
-      view: { factory_: 'ChoiceView', choices: [
+      view: { factory_: 'foam.ui.ChoiceView', choices: [
         [ Phone.NAME, 'Alphabetical' ],
         [ Phone.AGE,  'Newest' ]
       ] }
@@ -63,9 +63,9 @@ CLASS({
                                               // of the phone data
     {
       name: 'filteredDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       view: {
-        factory_: 'DAOListView',
+        factory_: 'foam.ui.DAOListView',
         rowView: 'PhoneCitationView',
         mode: 'read-only'
       },
@@ -147,7 +147,13 @@ CLASS({
 CLASS({
   name: 'ControllerView',
   extendsModel: 'DetailView',
-  requires: ['PhoneCitationView']
+  requires: [
+    'PhoneCitationView',
+    'foam.ui.TextFieldView',
+    'foam.ui.ChoiceView',
+    'foam.ui.DAOListView',
+    'foam.ui.ImageView'
+  ]
 });
 {% endhighlight %}
 

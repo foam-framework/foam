@@ -94,7 +94,7 @@ it as an empty subclass of `DetailView`:
 {% highlight js %}
 CLASS({
   name: 'PhoneDetailView',
-  extendsModel: 'DetailView'
+  extendsModel: 'foam.ui.DetailView'
 });
 {% endhighlight %}
 
