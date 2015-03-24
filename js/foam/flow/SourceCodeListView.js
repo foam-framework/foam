@@ -101,10 +101,6 @@ CLASS({
       sources {
         display:block;
       }
-
-      sources:first-child heading::before {
-        display: none;
-      }
     */}
   ]
 });

@@ -17,9 +17,8 @@ CLASS({
   requires: [
     'foam.dao.EasyDAO',
     'foam.ui.ActionButton',
-    'foam.flow.VirtualConsole',
-    'foam.flow.VirtualConsoleView',
-    'foam.flow.CodeView',
+    'foam.flow.CodeSampleOutput',
+    'foam.flow.CodeSampleOutputView',
     'foam.flow.CodeSnippet',
     'foam.flow.CodeSnippetView',
     'foam.flow.SourceCodeListView'
@@ -61,12 +60,12 @@ CLASS({
       }
     },
     {
-      name: 'virtualConsole',
-      type: 'foam.flow.VirtualConsole',
+      name: 'output',
+      type: 'foam.flow.CodeSampleOutput',
       factory: function() {
-        return this.VirtualConsole.create();
+        return this.CodeSampleOutput.create();
       },
-      view: 'foam.flow.VirtualConsoleView'
+      view: 'foam.flow.CodeSampleOutputView'
     },
     {
       model_: 'StringProperty',
@@ -80,29 +79,32 @@ CLASS({
       name: 'run',
       iconUrl: 'https://www.gstatic.com/images/icons/material/system/1x/play_arrow_white_24dp.png',
       action: function() {
-        this.virtualConsoleView.reset();
-        this.virtualConsole.watchConsole();
+        this.outputView.reset();
+        this.output.virtualConsole.watchConsole();
+        this.output.viewOutput.innerHTML = '';
         var X = this.X.sub();
         this.source.select({
           put: function() {
             // Use arguments array to avoid leaking names into eval context.
-            if ( arguments[0].src &&
-                arguments[0].src.language &&
-                arguments[0].src.language.toLowerCase() === 'javascript' ) {
-                  try {
-                    eval('(function(X){' +
-                        arguments[0].src.code +
-                        '}).call(null, X)');
-                  } catch (e) {
-                    this.virtualConsole.onError(e.toString());
-                  }
-                } // TODO(markdittmer): If language is HTML, accumulate it for view output.
+            if ( arguments[0].src && arguments[0].src.language ) {
+              if ( arguments[0].src.language.toLowerCase() === 'javascript' ) {
+                try {
+                  eval('(function(X){' +
+                      arguments[0].src.code +
+                      '}).call(null, X)');
+                } catch (e) {
+                  this.output.virtualConsole.onError(e.toString());
+                }
+              } else if ( arguments[0].src.language.toLowerCase() === 'html' ) {
+                this.output.viewOutput.innerHTML += arguments[0].src.code;
+              }
+            }
           }.bind(this),
           error: function(e) {
-            this.virtualConsole.onError(e.toString());
+            this.output.virtualConsole.onError(e.toString());
           }.bind(this)
         })(function() {
-          this.virtualConsole.resetConsole();
+          this.output.virtualConsole.resetConsole();
         }.bind(this));
       }
     }
@@ -139,10 +141,7 @@ CLASS({
         </print-only>
       </top-split>
       <bottom-split>
-        $$virtualConsole{
-          minLines: 8,
-          maxLines: 8
-        }
+        $$output
       </bottom-split>
     */},
     function CSS() {/*
@@ -178,7 +177,6 @@ CLASS({
       }
       code-sample bottom-split {
         z-index: 5;
-        background: #E0E0E0;
       }
       code-sample actions {
         position: absolute;

@@ -152,7 +152,7 @@ CLASS({
     {
       name: 'view',
       // TODO: create custom DateView
-      defaultValue: 'DateFieldView'
+      defaultValue: 'foam.ui.DateFieldView'
     },
     {
       name: 'prototag',

@@ -176,8 +176,8 @@
         <section enumerate="false">
           <title>Try It Out</title>
           <p>
-            Let's try making some changes to the <code>Person</code>
-            class. First we'll add support for middle names. Add a property
+            Let's try making some changes to Your First FOAM Class.. First
+            we'll add support for middle names. Add a property
             named <code>middleNames</code> with <code>model_:
             'StringArrayProperty'</code>; give it a factory that returns the
             empty array, a label of <code>'Middle Name'</code> and annotate
@@ -185,10 +185,36 @@
             the <code>(s)</code> in the <code>firstName</code> label to keep
             things consistent.
           </p>
+          <p>
+            Now let's make the class behaviour a little more efficient. Right
+            now, the <code>age</code> getter recomputes the age every
+            time. That's silly. The age really only needs to be recomputed
+            when we set the date of birth. This can be achieved using FOAM's
+            support for reactive programming. Cut the <code>age</code> getter
+            to the clipboard. (You may want to paste it somewhere else in
+            case you do more cutting or copying along the way.). Now, on
+            the <code>dateOfBirth</code> property, add <code>postSet:
+            function(old, nu) { this.age = this.computeAge(); }</code>. This
+            callback will fire every time <code>dateOfBirth</code>
+            changes, <i>after</i> the change has taken place. The callback is
+            be passed the old and nu (or
+            "<code>nu</code>") <code>dateOfBirth</code> values.
+          </p>
+          <p>
+            Before we can declare our efficient age calculating code
+            complete, we need a <code>computeAge</code>
+            method. Beneath the <code>properties</code> array, add
+            a <code>methods</code> array with one element with <code>name:
+            'computeAge'</code>. Finally, add a <code>code</code>
+            annotation to your one-and-only method and paste the function for
+            the old <code>age</code> getter. That's it! Now, if we ever have
+            code that repeatedly accesses that <code>age</code> property, we
+            won't be slowed down by redundant computations.
+          </p>
 
         <aside extraClassName="wide">
           <code-sample>
-            <title>Working with "Person"</title>
+            <title>Working with the Person Class</title>
             <source>
               <code-snippet>
                 <title>Person Class</title>
@@ -270,32 +296,6 @@
           </code-sample>
         </aside>
 
-          <p>
-            Now let's make the class behaviour a little more efficient. Right
-            now, the <code>age</code> getter recomputes the age every
-            time. That's silly. The age really only needs to be recomputed
-            when we set the date of birth. This can be achieved using FOAM's
-            support for reactive programming. Cut the <code>age</code> getter
-            to the clipboard. (You may want to paste it somewhere else in
-            case you do more cutting or copying along the way.). Now, on
-            the <code>dateOfBirth</code> property, add <code>postSet:
-            function(old, nu) { this.age = this.computeAge(); }</code>. This
-            callback will fire every time <code>dateOfBirth</code>
-            changes, <i>after</i> the change has taken place. The callback is
-            be passed the old and nu (or
-            "<code>nu</code>") <code>dateOfBirth</code> values.
-          </p>
-          <p>
-            Before we can declare our efficient age calculating code
-            complete, we need a <code>computeAge</code>
-            method. Beneath the <code>properties</code> array, add
-            a <code>methods</code> array with one element with <code>name:
-            'computeAge'</code>. Finally, add a <code>code</code>
-            annotation to your one-and-only method and paste the function for
-            the old <code>age</code> getter. That's it! Now, if we ever have
-            code that repeatedly accesses that <code>age</code> property, we
-            won't be slowed down by redundant computations.
-          </p>
           <p>
             So we have this <code>Person</code> class. What can we do with
             it? To start, let's just try instantiating one and printing it to

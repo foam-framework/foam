@@ -142,7 +142,6 @@ CLASS({
       <% if ( this.data.title ) { %>
         <heading>{{{this.data.title}}}</heading>
       <% } %>
-      <% console.log('CodeSnippetView', this.$UID, this.codeViewName); %>
       $$src{ model_: this.codeViewName }
       <actions>
         $$edit{
@@ -198,17 +197,6 @@ CLASS({
         code-snippet heading {
           z-index: 10;
           position: relative;
-        }
-
-        code-snippet heading::before {
-          top: -4px;
-          content: '';
-          height: 4px;
-          left: 0;
-          position: absolute;
-          right: 0;
-          background-image: -webkit-linear-gradient(bottom,rgba(0,0,0,.12) 0%,rgba(0,0,0,0) 100%);
-          background-image: linear-gradient(to top,rgba(0,0,0,.12) 0%,rgba(0,0,0,0) 100%);
         }
 
         code-snippet heading::after {
