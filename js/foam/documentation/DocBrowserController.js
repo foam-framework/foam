@@ -118,13 +118,14 @@ CLASS({
       if (location.hash.substring(1) === this.DetailContext.documentViewRef.get().ref) return;
 
       var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:location.hash.substring(1)}, this.DetailContext);
-      var setRef = function() { 
+      var setRef = function(ignoreListener) {
+        if ( ! ignoreListener) newRef.removeListener(setRef);
         this.DetailContext.documentViewRef.set(newRef);
         if (newRef.resolvedObject !== this.selection) this.selection = newRef.resolvedRoot.resolvedObject;
         this.SearchContext.selection$.set(newRef.resolvedRoot.resolvedObject); // selection wants a Model object
       }.bind(this);
       if (newRef.valid) {// need to listen for when this becomes valid
-        setRef();
+        setRef(true);
       } else {
         newRef.addListener(setRef);
 //         // attempt to immediately load the referenced model name
@@ -141,14 +142,15 @@ CLASS({
     },
 
     requestNavigation: function(newRef) {
-      var setRef = function() {
+      var setRef = function(ignoreListener) {
+        if ( ! ignoreListener) newRef.removeListener(setRef);
         this.DetailContext.documentViewRef.set(newRef);
         this.SearchContext.selection$.set(newRef.resolvedRoot.resolvedObject); // selection wants a Model object
         if (newRef.resolvedObject !== this.selection) this.selection = newRef.resolvedRoot.resolvedObject;
         location.hash = "#" + newRef.resolvedRef;
       }.bind(this);
       if (newRef.valid) {// need to listen for when this becomes valid
-        setRef();
+        setRef(true);
       } else {
         newRef.addListener(setRef);
         // // attempt to immediately load the referenced model name (but DocRef will do this anyway!)
@@ -201,7 +203,7 @@ CLASS({
 
 
     createModelList: function() {
-      var newDAO = this.MDAO.create({model:Model});
+      var newDAO = this.MDAO.create({model:Model, autoIndex:true});
       this.Y.set("masterModelList", newDAO);
       this.Y.set("_DEV_ModelDAO", 
 //         this.LazyCacheDAO.create({ 
