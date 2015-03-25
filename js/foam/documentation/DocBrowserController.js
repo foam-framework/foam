@@ -223,6 +223,11 @@ CLASS({
           this.scrapeDirectory(sourcePath, "", newDAO, this.Y._DEV_ModelDAO);
       }.bind(this), 5000);
 
+      newDAO.put(Model.create({ name: 'String', documentation: "Primitive type." }));
+      newDAO.put(Model.create({ name: 'Int', documentation: "Primitive type." }));
+      newDAO.put(Model.create({ name: 'Boolean', documentation: "Primitive type." }));
+      newDAO.put(Model.create({ name: 'Array', documentation: "Primitive type." }));
+      
       // All models are now in USED_MODELS
       [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
         for ( var key in collection ) {
