@@ -437,7 +437,7 @@ var Model = {
           }
 
           // create property constant
-          this[constantize(p.name)] = newValue[i];
+          if ( p.name ) this[constantize(p.name)] = newValue[i];
         }
 
         return newValue;

@@ -146,7 +146,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'FunctionPropety',
+      model_: 'FunctionProperty',
       name: 'shortenURL',
       factory: function() {
         return function(url) {

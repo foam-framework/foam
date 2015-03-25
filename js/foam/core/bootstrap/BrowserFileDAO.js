@@ -106,9 +106,11 @@ MODEL({
           function(ret) {
             var sinks = this.pending[obj.id];
             delete this.pending[obj.id];
-            for ( var i = 0; i < sinks.length ; i++ ) {
-              var sink = sinks[i];
-              sink && sink.put && sink.put(obj);
+            if ( sinks ) {
+              for ( var i = 0; i < sinks.length ; i++ ) {
+                var sink = sinks[i];
+                sink && sink.put && sink.put(obj);
+              }
             }
           }.bind(this));
       }
