@@ -27,7 +27,7 @@ CLASS({
     { name: 'width',      defaultValue: 2000 },
     { name: 'height',     defaultValue: 1700 },
     { name: 'background', defaultValue: 'white' },
-    { name: 'mouse',      factory: function() { return this.Mouse.create(); } }
+    { name: 'mouse',      lazyFactory: function() { return this.Mouse.create(); } }
   ],
 
   methods: {

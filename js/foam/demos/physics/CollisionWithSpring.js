@@ -31,7 +31,7 @@ CLASS({
     { name: 'width',      defaultValue: 1500 },
     { name: 'height',     defaultValue: 1000 },
     { name: 'background', defaultValue: 'white' },
-    { name: 'mouse',      factory: function() { return this.Mouse.create(); } },
+    { name: 'mouse',      lazyFactory: function() { return this.Mouse.create(); } },
     { name: 'collider',   factory: function() {
       return this.Collider.create();
     }},
