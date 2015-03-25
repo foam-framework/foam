@@ -591,11 +591,12 @@
                 <title>Person DAO Controller</title>
                 <src language="javascript">
                   <code>CLASS({
-  name: 'PersonDAOController',
   package: 'foam.sandbox',
+  name: 'PersonDAOController',
 
   requires: [
     'foam.dao.EasyDAO',
+    'foam.dao.IDBDAO',
     'foam.core.types.DAOProperty',
     'foam.dao.DAOListView',
     'foam.sandbox.Person'
@@ -619,7 +620,8 @@
       name: 'dao',
       factory: function() {
         return this.EasyDAO.create({
-          daoType: 'IDB',
+          model: this.Person,
+          daoType: 'MDAO',
           seqNo: true,
           caching: true
         });

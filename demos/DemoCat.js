@@ -89,6 +89,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'InterpolatedClocks',
+    path: '/index.html?model=foam.demos.InterpolatedClocks',
     path: 'InterpolatedClocks.html',
     description: 'A demonstration of animation interpolators.  Click to animate the clocks.  Notice how the different clocks use different acceleration curves to reach their targets.',
     keywords: ['animation'],
@@ -253,7 +254,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Issue Tracker (Material-Design)',
-    path: '../apps/mbug/main.html',
+    path: '../../js/foam/apps/mbug/main.html',
     description: 'A simple mobile code.google.com issue-tracker client with a Material-Design interface.  Triage your Crbugs on the go.  See: <a href="http://mbug.foamdev.com">http://mbug.foamdev.com</a>',
     keywords: ['app', 'material-design', 'mobile', '14', 'android'],
     src: '../apps/mbug/',

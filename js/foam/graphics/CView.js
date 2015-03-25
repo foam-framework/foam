@@ -21,6 +21,7 @@ CLASS({
   label: 'CView',
 
   requires: [
+    'foam.input.Mouse',
     'foam.graphics.PositionedCViewView',
     'foam.graphics.CViewView'
   ],
@@ -105,14 +106,14 @@ CLASS({
     },
     {
       model_: 'FloatProperty',
-      name:  'x',
+      name: 'x',
       defaultValue: 0,
       documentation: function() {/*
           The X offset of this view relative to its parent. */}
     },
     {
       model_: 'FloatProperty',
-      name:  'y',
+      name: 'y',
       defaultValue: 0,
       documentation: function() {/*
           The Y offset of this view relative to its parent. */}
@@ -128,6 +129,7 @@ CLASS({
     {
       name: 'mouse',
       transient: true,
+      hidden: true,
       lazyFactory: function() {
         var m = this.Mouse.create();
         m.connect(this.$);
