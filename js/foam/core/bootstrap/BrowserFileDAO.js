@@ -64,7 +64,22 @@ MODEL({
       }.bind(this);
 
       this.document.head.appendChild(tag);
-    }
+    },
+    
+    // NULL methods
+    put: function(obj, sink) { sink && sink.put && sink.put(obj); },
+    remove: function(obj, sink) { sink && sink.remove && sink.remove(obj); },
+    select: function(sink) {
+      sink && sink.eof && sink.eof();
+      return aconstant(sink || [].sink);
+    },
+    listen: function() {},
+    removeAll: function() {},
+    unlisten: function() {},
+    pipe: function() {},
+    where: function() { return this; },
+    limit: function() { return this; },
+    skip: function() { return this; }
   },
 
   listeners: [

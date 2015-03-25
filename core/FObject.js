@@ -636,6 +636,8 @@ var FObject = {
     return [
       arrayOrEmpty(this.properties_),
       arrayOrEmpty(this.actions_),
+      arrayOrEmpty(this.properties),
+      arrayOrEmpty(this.actions),
       arrayOrEmpty(this.methods),
       arrayOrEmpty(this.listeners),
       arrayOrEmpty(this.templates),
@@ -656,6 +658,8 @@ var FObject = {
     [
       arrayOrEmpty(this.properties_),
       arrayOrEmpty(this.actions_),
+      arrayOrEmpty(this.properties),
+      arrayOrEmpty(this.actions),
       arrayOrEmpty(this.methods),
       arrayOrEmpty(this.listeners),
       arrayOrEmpty(this.templates),

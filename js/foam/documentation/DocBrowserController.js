@@ -28,7 +28,7 @@ CLASS({
     'foam.documentation.ModelCompletenessRecord',
     'foam.input.touch.TouchManager',
     'foam.input.touch.GestureManager',
-    'foam.core.bootstrap.BrowserFileDAO'
+    'foam.dao.LazyCacheDAO'
 //    'foam.core.bootstrap.ModelFileDAO'
   ],
 
@@ -73,15 +73,15 @@ CLASS({
       // load developer guides
       this.X.RegisterDevDocs && this.X.RegisterDevDocs(this.X);
 
-      // load all models
+      // begin loading all models
       this.createModelList();
 
       // search context uses a selection value to indicate the chosen Model to display
-      this.SearchContext = this.X.sub({}, 'searchX');
+      this.SearchContext = this.Y.sub({}, 'searchX');
       this.SearchContext.selection$ = this.SearchContext.SimpleValue.create(); // holds a Model definition
 
       // detail context needs a documentViewRef.get().resolvedRoot to indicate what model it is rooted at
-      this.DetailContext = this.X.sub({}, 'detailX');
+      this.DetailContext = this.Y.sub({}, 'detailX');
       this.DetailContext.documentViewRef = this.DetailContext.SimpleValue.create({},this.DetailContext);// this.DetailContext.DocRef.create();
 
       this.X.documentViewRequestNavigation = this.requestNavigation.bind(this);
@@ -130,9 +130,10 @@ CLASS({
       if (newRef.valid) {
         setRef(newRef);
       } else {
-        // attempt to load the referenced model name
-        this.DetailContext.masterModelList.find(location.hash.substring(1), { 
+        // attempt to immediately load the referenced model name
+        this.DetailContext.ModelDAO.find(location.hash.substring(1), { 
           put: function(m) {
+            //this.DetailContext._DEV_ModelDAO.put(m);
             var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
             if (newRef.valid) {
               setRef(newRef); // not fully recursive as we only want to try loading once
@@ -152,8 +153,10 @@ CLASS({
       if (newRef.valid) {
         setRef(newRef);
       } else {
-        this.DetailContext.masterModelList.find(newRef.ref, { 
+        // attempt to immediately load the referenced model name
+        this.DetailContext.ModelDAO.find(newRef.ref, { 
           put: function(m) {
+            //this.DetailContext._DEV_ModelDAO.put(m);           
             var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
             if (newRef.valid) {
               setRef(newRef); // not fully recursive as we only want to try loading once
@@ -201,23 +204,17 @@ CLASS({
 
     createModelList: function() {
       var newDAO = this.MDAO.create({model:Model});
-      this.X.set("masterModelList", newDAO);
+      this.Y.set("masterModelList", newDAO);
+      this.Y.set("_DEV_ModelDAO", 
+        this.LazyCacheDAO.create({ cache: newDAO, delegate: this.X.ModelDAO }));
 
-      // create subcontext to safely load all models
-      var loaderX = this.Y.sub({}, "LoaderX");
-      console.log("loader X: ", loaderX.NAME, loaderX.$UID);
-//       loaderX.set('ModelDAO', this.ModelFileDAO.create({}, loaderX));
-//       loaderX.set('onRegisterModel', function(m) { console.log("Good onRegisterModel: ", m.id); }); 
-//       loaderX.set('lookup', lookup); 
-      //loaderX.ModelDAO = this.BrowserFileDAO.create({}, loaderX);
-      //loaderX.onRegisterModel = function(m) { console.log("Good onRegisterModel: ", m.id); }; 
-      //loaderX.lookup = lookup; 
-      //loaderX.ModelDAO.select(newDAO);
-      // parse directory listing, if available
-      var sourcePath = window.FOAM_BOOT_DIR + '../js';
-      this.scrapeDirectory(sourcePath, "", newDAO, loaderX.ModelDAO);
-      
-           
+      // loading all models eats CPU, so wait until we've had time to 
+      // render and load the references of the first model showing
+      this.Y.setTimeout(function() {
+          var sourcePath = window.FOAM_BOOT_DIR + '../js';
+          this.scrapeDirectory(sourcePath, "", newDAO, this.Y._DEV_ModelDAO);
+      }.bind(this), 5000);
+
       // All models are now in USED_MODELS
       [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
         for ( var key in collection ) {

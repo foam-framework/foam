@@ -115,11 +115,13 @@ CLASS({
             },
             error: function() {
               var finds = self.finds[id];
-              for (var i = 0; i < finds.length; i++ ) {
-                var s = finds[i];
-                s && s.error && s.error.apply(sink, arguments);
+              if ( finds) {
+                for (var i = 0; i < finds.length; i++ ) {
+                  var s = finds[i];
+                  s && s.error && s.error.apply(sink, arguments);
+                }
+                delete self.finds[id];
               }
-              delete self.finds[id];
             }
           });
         }

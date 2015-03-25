@@ -27,7 +27,7 @@ CLASS({
     'MDAO'
   ],
 
-  imports: [ 'masterModelList', 'featureDAO' ],
+  imports: [ '_DEV_ModelDAO', 'featureDAO' ],
   exports: ['featureDAO', 'modelDAO', 'subModelDAO', 'traitUserDAO'],
 
   properties: [
@@ -105,24 +105,35 @@ CLASS({
     
     agetInheritanceMap: function(ret, model, map) {
       // find all base models of the given model, put into list
-      this.X.masterModelList.where(IN(Model.ID, model.traits)).select({
-          put: function(m) {
-            map[m.id] = m;
-          },
-          eof: function() {
-            if ( model.extendsModel ) {
-              this.X.masterModelList.where(EQ(Model.ID, model.extendsModel)).select({
-                  put: function(ext) {
-                    map[ext.id] = ext;
-                    this.agetInheritanceMap(ret, ext, map);
-                  }.bind(this)
-              }); 
-            } else {
-              ret && ret(map); // no more extendsModels to follow, finished
-            }
-          }.bind(this)
-      });
-
+//       this.X._DEV_ModelDAO.where(IN(Model.ID, model.traits)).select({
+//           put: function(m) {
+//             map[m.id] = m;
+//           },
+//           eof: function() {
+      var findFuncs = [];
+      model.traits.forEach(function(t) {
+        findFuncs.push(function(ret) { 
+          this.X._DEV_ModelDAO.find(t, {
+            put: function(m) { map[m.id] = m; ret && ret(); },
+            error: function() { console.warn("DocModelFeatureDAOTrait could not load trait ", t); ret && ret(); }
+          });  
+        }.bind(this)); 
+      }.bind(this));
+      // runs the trait finds first, and when they are done recurse to the next ancestor
+      apar.apply(this, findFuncs)(function() {      
+        if ( model.extendsModel ) {
+          this.X._DEV_ModelDAO.find(model.extendsModel, {
+              put: function(ext) {
+                map[ext.id] = ext;
+                this.agetInheritanceMap(ret, ext, map);
+              }.bind(this),
+              error: function() { console.warn("DocModelFeatureDAOTrait could not load model ", ext); ret && ret(map); }
+          }); 
+        } else {
+          ret && ret(map); // no more extendsModels to follow, finished
+        }
+      }.bind(this));
+      
     },
 
 
@@ -148,7 +159,7 @@ CLASS({
     findTraitUsers: function(data) {
       if ( ! this.Model.isInstance(data) ) return;
 
-      this.masterModelList.select(MAP(
+      this.X._DEV_ModelDAO.select(MAP(
         function(obj) {
           if ( obj.traits &&  obj.traits.indexOf(data.id) > -1 ) {
             this.traitUserDAO.put(obj);
@@ -164,7 +175,7 @@ CLASS({
       name: 'findDerived',
       whenIdle: true,
       code: function(extendersOf) { 
-        this.masterModelList.select(MAP(
+        this.X._DEV_ModelDAO.select(MAP(
           function(obj) {
             if ( obj.extendsModel == extendersOf.id ) {
               this.subModelDAO.put(obj);
