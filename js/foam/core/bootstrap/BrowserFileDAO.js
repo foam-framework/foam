@@ -59,6 +59,7 @@ MODEL({
       tag.onerror = function() {
         for ( var i = 0 ; i < this.pending[key].length ; i++ ) {
           this.pending[key][i] && this.pending[key][i].error && this.pending[key][i].error.apply(null, arguments);
+          this.pending[key][i] = null; // prevents infinite recursion in rare cases
         }
         tag.remove();
       }.bind(this);

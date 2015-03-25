@@ -24,7 +24,7 @@ CLASS({
 
   imports: ['documentViewRef'],
 
-  requires: ['foam.documentation.DocRefView as DocRefView'],
+  requires: ['foam.documentation.DocRefView', 'SimpleValue', 'foam.documentation.DocRef'],
 
   documentation: function() {/*
     <p>Underlying the other documentation views, $$DOC{ref:'.'} provides the ability
@@ -48,6 +48,10 @@ CLASS({
     {
       name: 'className',
       defaultValue: '',
+    },
+    {
+      name: 'documentViewRef',
+      factory: function() { return this.SimpleValue.create(this.DocRef.create()); },
     }
   ],
 

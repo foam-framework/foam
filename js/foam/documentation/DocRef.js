@@ -126,6 +126,7 @@ CLASS({
           }.bind(this),
           error: function() {
             var slice = refChunk.lastIndexOf('.');
+            //console.log("DocRef chunk bad: ", refChunk, slice); 
             if (slice == -1) {
               if ( fallbackDao ) {
                 //console.log('DocRef fallback with: ', refChunk);
@@ -134,7 +135,7 @@ CLASS({
                 console.warn("DocRef could not load ", reference);
               }
             } else {
-              //console.log('DocRef recurse with: ', refChunk.substring(0, refChunk.lastIndexOf('.')));
+              //console.log('DocRef recurse with: ', refChunk.substring(0, refChunk.lastIndexOf('.')), refChunk.lastIndexOf('.'));
               finder(refChunk.substring(0, refChunk.lastIndexOf('.')), dao, fallbackDao);
             }            
           }.bind(this)

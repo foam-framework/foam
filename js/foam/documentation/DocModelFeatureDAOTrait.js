@@ -24,13 +24,31 @@ CLASS({
     'foam.documentation.DocFeatureInheritanceTracker',
     'foam.documentation.DocModelInheritanceTracker',
     'Model',
-    'MDAO'
+    'MDAO',
+    'foam.dao.FindFallbackDAO'
   ],
 
-  imports: [ '_DEV_ModelDAO', 'featureDAO' ],
-  exports: ['featureDAO', 'modelDAO', 'subModelDAO', 'traitUserDAO'],
+  imports: [ '_DEV_ModelDAO', 'masterModelList', 'featureDAO' ],
+  exports: ['featureDAO',
+            'modelDAO',
+            'subModelDAO',
+            'traitUserDAO', 
+            '_DEV_ModelDAO',
+            'masterModelList' ],
 
   properties: [
+    {
+      name: '_DEV_ModelDAO',
+      factory: function() { 
+        return this.FindFallbackDAO.create({delegate: this.masterModelList, fallback: this.X.ModelDAO}); 
+      }
+    },
+    {
+      name: "masterModelList",
+      factory: function() {
+        return this.MDAO.create({model:Model});
+      }
+    },
     {
       name: 'featureDAO',
       model_: 'foam.core.types.DAOProperty',
@@ -110,7 +128,7 @@ CLASS({
     
     agetInheritanceMap: function(ret, model, map) {
       // find all base models of the given model, put into list
-//       this.X._DEV_ModelDAO.where(IN(Model.ID, model.traits)).select({
+//       this._DEV_ModelDAO.where(IN(Model.ID, model.traits)).select({
 //           put: function(m) {
 //             map[m.id] = m;
 //           },
@@ -118,7 +136,7 @@ CLASS({
       var findFuncs = [];
       model.traits.forEach(function(t) {
         findFuncs.push(function(ret) { 
-          this.X._DEV_ModelDAO.find(t, {
+          this._DEV_ModelDAO.find(t, {
             put: function(m) { map[m.id] = m; ret && ret(); },
             error: function() { console.warn("DocModelFeatureDAOTrait could not load trait ", t); ret && ret(); }
           });  
@@ -127,7 +145,7 @@ CLASS({
       // runs the trait finds first, and when they are done recurse to the next ancestor
       apar.apply(this, findFuncs)(function() {      
         if ( model.extendsModel ) {
-          this.X._DEV_ModelDAO.find(model.extendsModel, {
+          this._DEV_ModelDAO.find(model.extendsModel, {
               put: function(ext) {
                 map[ext.id] = ext;
                 this.agetInheritanceMap(ret, ext, map);
@@ -164,7 +182,7 @@ CLASS({
     findTraitUsers: function(data) {
       if ( ! this.Model.isInstance(data) ) return;
 
-      this.X._DEV_ModelDAO.select(MAP(
+      this._DEV_ModelDAO.select(MAP(
         function(obj) {
           if ( obj.traits &&  obj.traits.indexOf(data.id) > -1 ) {
             this.traitUserDAO.put(obj);
@@ -180,7 +198,7 @@ CLASS({
       name: 'findDerived',
       whenIdle: true,
       code: function(extendersOf) { 
-        this.X._DEV_ModelDAO.select(MAP(
+        this._DEV_ModelDAO.select(MAP(
           function(obj) {
             if ( obj.extendsModel == extendersOf.id ) {
               this.subModelDAO.put(obj);
