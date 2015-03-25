@@ -127,7 +127,7 @@ CLASS({
         this.SearchContext.selection$.set(newRef.resolvedRoot.resolvedObject); // selection wants a Model object
       }.bind(this);
       var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:location.hash.substring(1)}, this.DetailContext);
-      if (newRef.valid) {
+      if (newRef.valid) {// need to listen for when this becomes valid
         setRef(newRef);
       } else {
         // attempt to immediately load the referenced model name
@@ -150,10 +150,10 @@ CLASS({
         if (ref.resolvedObject !== this.selection) this.selection = ref.resolvedRoot.resolvedObject;
         location.hash = "#" + ref.resolvedRef;
       }.bind(this);
-      if (newRef.valid) {
+      if (newRef.valid) {// need to listen for when this becomes valid
         setRef(newRef);
       } else {
-        // attempt to immediately load the referenced model name
+        // attempt to immediately load the referenced model name (but DocRef will do this anyway!)
         this.DetailContext.ModelDAO.find(newRef.ref, { 
           put: function(m) {
             //this.DetailContext._DEV_ModelDAO.put(m);           

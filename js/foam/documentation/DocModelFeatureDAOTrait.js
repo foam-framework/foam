@@ -93,10 +93,15 @@ CLASS({
       this.Y.setTimeout(function() {
         this.agetInheritanceMap(this.loadFeaturesOfModel, data, { data: data });
       }.bind(this), 20);
+      
       this.Y.setTimeout(function() {
           this.findSubModels(data);
           this.findTraitUsers(data);
       }.bind(this), 500);
+      this.Y.setTimeout(function() {
+          this.findSubModels(data);
+          this.findTraitUsers(data);
+      }.bind(this), 8000);
 
       //console.log("  FeatureDAO complete.", Date.now() - startTime);
 

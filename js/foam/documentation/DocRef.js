@@ -111,9 +111,14 @@ CLASS({
         }
       }
       
-      var refChunk = ""+reference;
+      // Find the Model id in the reference
+      // ----
+      // we check the in-memory list first since we are resolving an ambiguous name, and 
+      // spam the dao with reqests that we know may fail when trying to find the valid 
+      // model name within the reference.
       var finished = false;
-      var finder = function(dao, fallbackDao) {
+      var finder = function(refChunk, dao, fallbackDao) {
+        //console.log('DocRef chunk: ', refChunk);
         dao.find(refChunk, {
           put: function(m) {
             finished = true;
@@ -123,14 +128,14 @@ CLASS({
             var slice = refChunk.lastIndexOf('.');
             if (slice == -1) {
               if ( fallbackDao ) {
-                refChunk = ""+reference;
-                finder(fallbackDao, null);
+                //console.log('DocRef fallback with: ', refChunk);
+                finder(reference, fallbackDao, null);
               } else {
                 console.warn("DocRef could not load ", reference);
               }
             } else {
-              refChunk = refChunk.substring(0, refChunk.lastIndexOf('.'));
-              finder(dao, fallbackDao);
+              //console.log('DocRef recurse with: ', refChunk.substring(0, refChunk.lastIndexOf('.')));
+              finder(refChunk.substring(0, refChunk.lastIndexOf('.')), dao, fallbackDao);
             }            
           }.bind(this)
         });
@@ -139,7 +144,7 @@ CLASS({
       // try to load the name, starting with the full name
       // and removing the last .chunk after each failure
       // until we have found the model, or we can't find it at all
-      finder(this.masterModelList, this._DEV_ModelDAO);
+      finder(reference, this.masterModelList, this._DEV_ModelDAO);
       
     },
     
