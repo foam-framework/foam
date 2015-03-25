@@ -15,8 +15,6 @@ CLASS({
   extendsModel: 'foam.flow.Element',
   traits: [ 'foam.flow.MultilineViewTrait' ],
 
-  requires: [ 'foam.ui.md.Flare' ],
-
   constants: { ELEMENT_NAME: 'virtual-console' },
 
   properties: [
@@ -26,71 +24,17 @@ CLASS({
       required: true
     },
     {
-      name: 'flare',
-      type: 'foam.ui.md.Flare',
+      name: 'state',
+      documentation: function() {/* Either "hold" or "release". Used to control
+        accumulation of updates (hold state), and showing of updates (release
+        state). */},
+      defaultValue: 'release',
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( old ) old.state$.removeListener(this.onFlareStateChange);
-        if ( nu ) nu.state$.addListener(this.onFlareStateChange);
-      }
-    }
-  ],
-
-  methods: [
-    {
-      name: 'initHTML',
-      code: function() {
-        this.SUPER.apply(this, arguments);
-        // Setup flare that will be fired by this.reset() action.
-        this.flare = this.Flare.create({
-          element: this.$,
-          color: 'rgb(240,147,0)',
-          cssPosition: 'absolute',
-          startX: 0.9,
-          startY: 0.0,
-          fadeTime: 600
-        });
-
-        // Change this.$ CSS class when flare enters or leaves detached state.
-        //
-        // TODO(markdittmer): We should be using this.setClass() here, but
-        // it's not working right now.
-        Events.dynamic(function() {
-          this.flare && this.flare.state; this.$;
-          if ( ! this.$ || ! this.data ) return;
-          if ( this.flare.state === 'detached' ) {
-            if ( this.$.className !== '' ) this.$.className = '';
-          } else {
-            if ( this.$.className !== 'animating' ) this.$.className = 'animating';
-          }
-        }.bind(this));
-      }
-    }
-  ],
-
-  actions: [
-    {
-      name: 'reset',
-      action: function() { this.flare && this.flare.fire(); }
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'onFlareStateChange',
-      documentation: function() {/* When flare transitions from the "growing"
-        to the "fading" state, it is time to clear the console from the last
-        run, and fill in the console from the latest run. This is achieved by
-        delaying puts to the console DAO during the "growing" state, then
-        clearing the console and releasing delayed puts when entering the
-        "fading" state.
-      */},
-      code: function(_, __, ___, newState) {
-        if ( ! this.data ) return;
-        if ( newState === 'fading' ) {
-          this.data.clear();
-        }
-        this.data.delayPuts = this.flare ? (this.flare.state === 'growing') : false;
+        // Upon release, clear the console before showing updates.
+        if ( nu === 'release' ) this.data.clear();
+        // Delay data DAO puts in hold state.
+        this.data.delayPuts = nu === 'hold';
       }
     }
   ],
@@ -102,15 +46,15 @@ CLASS({
     function CSS() {/*
       virtual-console {
         display: block;
-        position: relative;
         padding-top: 5px;
         min-height: 4em;
         max-height: 8em;
         font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
         overflow: auto;
+        background: #E0E0E0;
       }
-      virtual-console.animating {
-        overflow: hidden;
+      virtual-console console-log {
+        display: block;
       }
     */}
   ]

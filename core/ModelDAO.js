@@ -20,15 +20,25 @@ X.ModelDAO = X.foam.core.bootstrap.BrowserFileDAO.create();
 
 // Hookup ModelDAO callback as CLASS and __DATA methods.
 
+var __DATA;
 (function() {
   var oldClass = CLASS;
 
-  CLASS = function(json) {
+  MODEL = CLASS = function(json) {
     json.model_ = 'Model';
     if ( document && document.currentScript )
       json.sourcePath = document.currentScript.src;
-    X.ModelDAO.onData(json, oldClass);
+
+    if ( document && document.currentScript && document.currentScript.callback )
+      document.currentScript.callback(json, oldClass);
+    else
+      oldClass(json);
+  };
+  __DATA = function(json) {
+    if ( document && document.currentScript ) {
+      json.sourcePath = document.currentScript.src;
+      document.currentScript.callback &&
+          document.currentScript.callback(json, oldClass);
+    }
   };
 })();
-
-var __DATA = X.ModelDAO.onData;

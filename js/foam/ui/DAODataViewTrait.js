@@ -31,12 +31,13 @@ CLASS({
   exports: ['dao$ as daoViewCurrentDAO$'],
 
   properties: [
-       {
+    {
       name: 'data',
-      postSet: function(old, nu) {
+      preSet: function(old, nu) {
         if ( this.dao !== nu ) {
           this.dao = nu;
         }
+        return nu;
       }
     },
     {

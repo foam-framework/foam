@@ -14,19 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 CLASS({
   name: 'EasyDAO',
   extendsModel: 'foam.dao.ProxyDAO',
   package: 'foam.dao',
 
   requires: [
-    'foam.core.dao.StorageDAO',
-    'foam.core.dao.MigrationDAO',
-    'foam.dao.CachingDAO',
-    'foam.dao.SeqNoDAO',
     'MDAO',
-    'foam.dao.GUIDDAO'
+    'foam.core.dao.MigrationDAO',
+    'foam.core.dao.StorageDAO',
+    'foam.dao.CachingDAO',
+    'foam.dao.GUIDDAO',
+    'foam.dao.SeqNoDAO'
   ],
 
   help: 'A facade for easy DAO setup.',
@@ -202,4 +202,3 @@ CLASS({
     }
   }
 });
-

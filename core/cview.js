@@ -611,11 +611,14 @@ CLASS({
     }
   ],
 
-  listeners: {
-    updateValue: function() {
-      this.paint();
+  listeners:  [
+    {
+      name: 'updateValue',
+      code: function() {
+        this.paint();
+      }
     }
-  },
+  ],
 
   methods: {
 

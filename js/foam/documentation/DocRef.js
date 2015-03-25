@@ -21,7 +21,7 @@ CLASS({
   label: 'Documentation Reference',
   documentation: 'A reference to a documented Model or feature of a Model',
 
-  imports: ['documentViewRef'],
+  imports: ['documentViewRef', 'masterModelList'],
 
   documentation: function() { /*
     <p>A link to another place in the documentation. See $$DOC{ref:'DocView'}
@@ -33,12 +33,11 @@ CLASS({
 
   properties: [
     {
-      name: 'resolvedModelChain',
-      defaultValue: [],
+      name: 'resolvedObject',
       documentation: function() { /*
-        If this $$DOC{ref:'foam.documentation.DocRef'} is valid, actual instances corresponding each
-        part of the reference are in this list. The last item in the list
-        is the target of the reference.
+        If this $$DOC{ref:'foam.documentation.DocRef'} is valid, the actual
+        instance that the link points to. It may be a $$DOC{ref:'Model'},
+        $$DOC{ref:'Method'}, $$DOC{ref:'Property'}, or other feature type.
       */}
     },
     {
@@ -55,8 +54,7 @@ CLASS({
       defaultValue: "",
       documentation: function() { /*
           The a $$DOC{ref:'foam.documentation.DocRef'} based on the fully qualified package and
-          outer model names of this resolved reference. Does not contain features
-          and ends with this.resolvedModelChain[0].
+          outer model names of this resolved reference.
       */}
     },
     {
@@ -75,24 +73,12 @@ CLASS({
       documentation: function() { /*
         Indicates if the reference is valid. $$DOC{ref:'.resolveReference'} will set
         $$DOC{ref:'.valid'} to true if resolution succeeds and
-        $$DOC{ref:'.resolvedModelChain'} is usable, false otherwise.
+        $$DOC{ref:'.resolvedObject'} is usable, false otherwise.
       */}
     }
   ],
 
   methods: {
-    init: function() {
-      /* Warns if documentViewRef is missing from the context. */
-      if (!this.documentViewRef) {
-        //console.log("*** Warning: DocView ",this," can't find documentViewRef in its context "+this.X.NAME);
-      } else {
-      // TODO: view lifecycle management. The view that created this ref doesn't know
-      // when to kill it, so the addListener on the context keeps this alive forever.
-      // Revisit when we can cause a removeListener at the appropriate time.
-        //        this.documentViewRef.addListener(this.onParentModelChanged);
-      }
-    },
-
     resolveReference: function(reference, abortOnFail) {
   /* <p>Resolving a reference has a few special cases at the start:</p>
     <ul>
@@ -106,23 +92,6 @@ CLASS({
      while the second name is an instance of a feature on that Model, and subsequent
      names are sub-objects on those instances.</p>
   */
-      var errorHandler = function() { 
-        if ( abortOnFail) {
-          return;
-        } else {
-          this.X.ModelDAO.find(reference, { 
-            put: function(m) {
-              if ( m ) {
-                m.arequire && m.arequire();
-                this.resolveReference(m.id, true);
-              }
-            }.bind(this)
-          });
-          return;
-        }
-      }.bind(this);
-  
-  
       this.valid = false;
 
       if (!reference) return;
@@ -136,116 +105,153 @@ CLASS({
       if (args[0].length <= 0) {
         if (!this.documentViewRef || !this.documentViewRef.get().resolvedRoot.valid) {
           return; // abort
-        }
-
-        // fill in root to make reference absolute, and try again
-        return this.resolveReference(this.documentViewRef.get().resolvedRoot.resolvedRef + reference);
-
-      } else {
-        // resolve path and model
-        model = this.X[args[0]];
-      }
-
-      this.resolvedModelChain = [];
-      this.resolvedRef = "";
-      var newResolvedModelChain = [];
-      var newResolvedRef = "";
-      var newResolvedRoot = "";
-
-      if ( ! model ) return;
-      // Strip off package or contining Model until we are left with the last
-      // resolving Model name in the chain (including inner models).
-      // Ex: package.subpackage.ParentModel.InnerModel.feature => InnerModel
-      var findingPackages = !model.model_;
-      while (args.length > 0 && model && model[args[1]] && (findingPackages || (model[args[1]].model_ && model[args[1]].model_.id == 'Model'))) {
-        newResolvedRef += args[0] + ".";
-        newResolvedRoot += args[0] + ".";
-        args = args.slice(1); // remove package/outerModel part
-        model = model[args[0]];
-        if (model.model_) findingPackages = false; // done with packages, now check for inner models
-      };
-
-      //TODO: do something with the package parts, resolve package refs with no model
-
-      if ( ! model ) {
-        errorHandler();
-        return;
-      }
-
-      newResolvedModelChain.push(model);
-      newResolvedRef += model.name;
-      newResolvedRoot += model.name;
-      // Check for a feature, and check inherited features too
-      // If we have a Model definition, we make the jump from definition to an
-      // instance of a feature definition here
-      if (Model.isInstance(model) && args.length > 1)
-      {
-        if (args[1].length > 0) {
-          // feature specified "Model.feature" or ".feature"
-          foundObject = model.getFeature(args[1]);
-          if (!foundObject) {
-            return;
-          } else {
-            newResolvedModelChain.push(foundObject);
-            newResolvedRef += "." + args[1];
-          }
-          remainingArgs = args.slice(2);
-        }
-      } else {
-        foundObject = model;
-        remainingArgs = args.slice(1);
-      }
-
-      // allow further specification of sub properties or lists
-      if ( foundObject && remainingArgs.length > 0 ) {
-        if ( ! remainingArgs.every(function (arg) {
-            var newObject;
-
-            // null arg is an error at this point
-            if ( arg.length <= 0 ) return false;
-
-            // check if arg is the name of a sub-object of foundObject
-            var argCaller = Function('return this.'+arg);
-            if (argCaller.call(foundObject)) {
-              newObject = argCaller.call(foundObject);
-
-            // otherwise if foundObject is a list, check names of each thing inside
-            } else if (foundObject.mapFind) {
-              foundObject.mapFind(function(f) {
-                if (f && f.name && f.name === arg) {
-                  newObject = f;
-                }
-              })
-            }
-            foundObject = newObject; // will reset to undefined if we failed to resolve the latest part
-            if (!foundObject) {
-              return false;
-            } else {
-              newResolvedModelChain.push(foundObject);
-              newResolvedRef += "." + arg;
-              return true;
-            }
-          })) {
-          errorHandler();
-          return; // the loop failed to resolve something
+        } else {
+          //  fill in root to make reference absolute, and try again
+          return this.resolveReference(this.documentViewRef.get().resolvedRoot.resolvedRef + reference);
         }
       }
+      
+      var refChunk = ""+reference;
+      while (refChunk.length > 0) {
+//         this.X.ModelDAO.find(refChunk, { // arequire instead
+//             put: function(m) {
+//               this.resolveFeature(m, reference);
+//             }.bind(this)
+//         });
+        this.masterModelList.where(EQ(Model.ID, refChunk)).select({ 
+            put: function(m) {
+              this.resolveFeature(m, reference);
+            }.bind(this)
+        });
 
-//      console.log("resolving "+ reference);
-//      newResolvedModelChain.forEach(function(m) {
-//        console.log("  ",m.name,m);
-//      });
-
-      this.resolvedModelChain = newResolvedModelChain;
-      this.resolvedRef = newResolvedRef;
-      this.resolvedRoot = this.X.lookup('foam.documentation.DocRef').create({
-          resolvedModelChain: [ this.resolvedModelChain[0] ],
-          resolvedRef: newResolvedRoot,
-          valid: true,
-          resolvedRoot: undefined // otherwise it would be the same as 'this'
-      });
-      this.valid = true;
+        var slice = refChunk.lastIndexOf('.');
+        if (slice == -1) {
+          break;
+        } else {
+          refChunk = refChunk.substring(0, refChunk.lastIndexOf('.'));
+        }
+      }
+      
     },
+    
+    getInheritanceList: function(model, list) {
+      // find all base models of the given model, put into list
+      this.X.masterModelList.where(IN(Model.ID, model.traits)).select({
+        put: function(p) { list.put(p); },
+        eof: function() {
+          if ( model.extendsModel ) {
+            this.X.masterModelList.where(EQ(Model.ID, model.extendsModel)).select({
+                put: function(ext) {
+                  list.put(ext);
+                  this.getInheritanceList(ext, list);
+                }.bind(this)
+            }); 
+          } else {
+            list.eof(); // no more extendsModels to follow, finished
+          }          
+        }.bind(this)
+      });
+
+    },
+    
+    resolveFeature: function(m, reference) {
+      var model = m;
+      var newResolvedRef = m.id;
+      var featureName = reference.replace(model.id, "");
+      if ( featureName.charAt(0) == '.' ) featureName = featureName.slice(1);
+   
+      var features = featureName ? featureName.split('.') : [];
+      
+      // check for inner models
+      while (features.length > 0 && model) {
+        if (model[features[0]] && 
+            model[features[0]].model_ && 
+            model[features[0]].model_.id == 'Model') {
+          model = model[features[0]];
+          newResolvedRef += '.' + features.shift();  
+        } else {
+          break;
+        }
+      }
+
+      // inner models (if present) have been accounted for, so we have our root model
+      this.resolvedRoot = this.model_.create({
+        resolvedObject: model,
+        resolvedRef: newResolvedRef,
+        valid: true,
+        resolvedRoot: undefined // otherwise it would be the same as 'this'
+      });
+      
+      // if no feature specified, fast return
+      if ( features.length == 0 ) {
+        this.resolvedRef = newResolvedRef;
+        this.resolvedObject = model;
+        this.valid = true;
+        return;
+      }    
+      
+      // if features specified, async grab ancestor list
+      var ancestry = [model];
+      this.getInheritanceList(model, {
+        put: function(m) { ancestry.put(m); },
+        eof: function() {
+          // Check for a feature, and check inherited features too
+          // If we have a Model definition, we make the jump from definition to an
+          // instance of a feature definition here
+          var foundObject = null;
+          if (features.length > 0) {
+            // feature specified "Model.feature" or ".feature"
+            ancestry.every(function(ancestor) { 
+              foundObject = ancestor.getFeature(features[0]);
+              if ( ! foundObject ) {    
+                return true;
+              } else {
+                newResolvedRef += "." + features.shift();
+                return false;
+              }
+            });
+          }
+    
+          // allow further specification of sub properties or lists
+          if ( foundObject && features.length > 0 ) {
+            if ( ! features.every(function (arg) {
+                var newObject;
+    
+                // null arg is an error at this point
+                if ( arg.length <= 0 ) return false;
+    
+                // check if arg is the name of a sub-object of foundObject
+                var argCaller = Function('return this.'+arg);
+                if (argCaller.call(foundObject)) {
+                  newObject = argCaller.call(foundObject);
+    
+                // otherwise if foundObject is a list, check names of each thing inside
+                } else if (foundObject.mapFind) {
+                  foundObject.mapFind(function(f) {
+                    if (f && f.name && f.name === arg) {
+                      newObject = f;
+                    }
+                  })
+                }
+                foundObject = newObject; // will reset to undefined if we failed to resolve the latest part
+                if ( ! foundObject ) {
+                  return false;
+                } else {
+                  newResolvedRef += "." + arg;
+                  return true;
+                }
+              })) {
+              return; // the loop failed to resolve something
+            }
+          }
+          
+          this.resolvedRef = newResolvedRef;
+          this.resolvedObject = foundObject;
+          this.valid = true;
+        }.bind(this)
+      });
+    },      
+      
   },
 
 });

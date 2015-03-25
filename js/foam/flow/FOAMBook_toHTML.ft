@@ -64,7 +64,14 @@
         </p>
 
         <ul>
-          <li>Classes are declared by invoking the <code>CLASS()</code> function,
+          <li>Classes are declared by invoking the <glossary-term>
+            <term>CLASS()</term>
+            <definition>
+              The global function used for registering a new FOAM class. The
+              function gets passed a class model, i.e., a Javascript object
+              that describes the class.
+            </definition>
+          </glossary-term> function,
             and passing it an object that describes the class model.</li>
           <li>Every class must have a <code>name</code>, and optionally
             (though strongly encouraged), a <code>package</code>.</li>
@@ -75,7 +82,10 @@
         <aside extraClassName="wide">
           <code-sample>
             <title>Your First FOAM Class</title>
-            <src>CLASS({
+            <source>
+              <code-snippet>
+                <src language="javascript">
+                  <code>CLASS({
   name: 'Person',
   package: 'foam.sandbox',
 
@@ -113,7 +123,10 @@
       }
     }
   ]
-});</src>
+});</code>
+                </src>
+              </code-snippet>
+            </source>
           </code-sample>
         </aside>
 
@@ -126,29 +139,77 @@
           to their <code>package</code> and <code>name</code>.
         </p>
         <p>
-          Let's take a look at the properties. That <code>model_</code>
-          annotation might be the first thing that looks a bit strange. It's
-          kind of like a type annotation, but
-          different. The <code>model_</code> key denotes the model to use for
+          Let's take a look at the properties. That <glossary-term>
+            <term>model_</term>
+            <definition>
+              This is the object key to attach to a model definition to
+              describe the class of FOAM object to build. This can be a
+              string containing a package + model name, or a
+              FOAM <code>Model</code> object.
+            </definition>
+          </glossary-term> annotation might be the first thing that looks a
+          bit strange. It's kind of like a type annotation, but
+          different. The <glossary-term><term>model_</term></glossary-term> key denotes the model to use for
           construcing the current object. In this case, that object is a
-          property, so <code>model_: 'StringProperty'</code> denotes the type
+          property, so <code><glossary-term><term>model_</term></glossary-term>: 'StringProperty'</code> denotes the type
           of property, not the type of data stored in the property (hence
           the <code>Property</code> postfix). The rest of the property
           annotations are as follows:
         </p>
 
           <ul>
-            <li><b>name</b>: The name of the property in code; e.g., in
+            <li><glossary-term>
+            <term>name</term>
+            <definition>
+              The object key for the in-code name of a modelled object.
+            </definition>
+          </glossary-term>: The name of the property in code; e.g., in
               a <code>Person</code> method, we may refer
               to <code>this.firstName</code>.</li>
-            <li><b>label</b>: The text label to use when creating a
+            <li><glossary-term>
+            <term>label</term>
+            <definition>
+              The object key for the user-facing name (i.e., text label) of a modelled object.
+            </definition>
+          </glossary-term>: The text label to use when creating a
               view of the property in the application's UI.</li>
-            <li><b>defaultValue</b>: The value to use when no value is
+            <li><glossary-term>
+            <term>defaultValue</term>
+            <definition>
+              The object key for the default value of a modelled object
+              (usually a property). Note that default values are shared by
+              all instances of an object. As such, most default values that
+              are not of a primitive type should be declared
+              using <code>factory</code>,
+              and <b>not</b> <code>defaultValue</code>. Both <code>defaultValue</code>
+              and <code>defaultValueFn</code> do not emit property change
+              events.
+            </definition>
+          </glossary-term>: The value to use when no value is
               provided.</li>
-            <li><b>factory</b>: Like <code>defaultValue</code>, except
+            <li><glossary-term>
+            <term>factory</term>
+            <definition>
+              The object key for the default factory a modelled object
+              (usually a property). Note that the factory is only invoked if
+              no value is injected at creation time. Factories should return
+              the intended value for the object/property. Also note that
+              factories trigger property change events,
+              whereas <code>defaultValue</code>
+              and <code>defaultValueFn</code> do not.
+            </definition>
+          </glossary-term>: Like <code>defaultValue</code>, except
               the provided function is run every time an instance is created
               with no value provided.</li>
-            <li><b>getter</b>: A function to run when retrieving the
+            <li><glossary-term>
+            <term>getter</term>
+            <definition>
+              The object key for the getter for a modelled object (usually a
+              property). When the object is looked up, the getter will be
+              invoked and its return value will be delivered to the code
+              looking for the object.
+            </definition>
+          </glossary-term>: A function to run when retrieving the
               property value; similar to Java
               convention <code>getSomeProperty()</code>, or
               the <code>get</code> key used in
@@ -170,12 +231,18 @@
         <section enumerate="false">
           <title>Try It Out</title>
           <p>
-            Let's try making some changes to the <code>Person</code>
-            class. First we'll add support for middle names. Add a property
-            named <code>middleNames</code> with <code>model_:
+            Let's try making some changes to Your First FOAM Class.. First
+            we'll add support for middle names. Add a property
+            named <code>middleNames</code> with <code><glossary-term><term>model_</term></glossary-term>:
             'StringArrayProperty'</code>; give it a factory that returns the
             empty array, a label of <code>'Middle Name'</code> and annotate
-            it with <code>plural: 'Middle Names'</code>. Don't forget to drop
+            it with <code><glossary-term>
+                <term>plural</term>
+                <definition>
+                  The object key for the plural form of a user-facing name
+                  (i.e., text label) of a modelled object.
+                </definition>
+              </glossary-term>: 'Middle Names'</code>. Don't forget to drop
             the <code>(s)</code> in the <code>firstName</code> label to keep
             things consistent.
           </p>
@@ -187,8 +254,14 @@
             support for reactive programming. Cut the <code>age</code> getter
             to the clipboard. (You may want to paste it somewhere else in
             case you do more cutting or copying along the way.). Now, on
-            the <code>dateOfBirth</code> property, add <code>postSet:
-            function(old, nu) { this.age = this.computeAge(); }</code>. This
+            the <code>dateOfBirth</code> property, add <code><glossary-term>
+                <term>postSet</term>
+                <definition>
+                  The object key for a function to run after the value of a
+                  modelled object (usually a property) is set. The function
+                  is passed two parameters: the old and new values.
+                </definition>
+              </glossary-term>: function(old, nu) { this.age = this.computeAge(); }</code>. This
             callback will fire every time <code>dateOfBirth</code>
             changes, <i>after</i> the change has taken place. The callback is
             be passed the old and nu (or
@@ -196,19 +269,400 @@
           </p>
           <p>
             Before we can declare our efficient age calculating code
-            complete, we need a <code>computeAge</code>
-            method. Beneath the <code>properties</code> array, add
-            a <code>methods</code> array with one element with <code>name:
-            'computeAge'</code>. Finally, add a <code>code</code>
+            complete, we need a <code>computeAge</code> method. Beneath
+            the <code>properties</code> array, add a <code>methods</code>
+            array with one element
+            with <code><glossary-term><term>name</term></glossary-term>: 'computeAge'</code>. Finally, add a <code>code</code>
             annotation to your one-and-only method and paste the function for
             the old <code>age</code> getter. That's it! Now, if we ever have
             code that repeatedly accesses that <code>age</code> property, we
             won't be slowed down by redundant computations.
           </p>
+
+        <aside extraClassName="wide">
+          <code-sample>
+            <title>Working with the Person Class</title>
+            <source>
+              <code-snippet>
+                <title>Person Class</title>
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'Person',
+  package: 'foam.sandbox',
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'firstName',
+      label: 'Given Name',
+      defaultValue: 'John'
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'middleNames',
+      singular: 'middleName',
+      plural: 'Middle Names'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'lastName',
+      label: 'Surname',
+      defaultValue: 'Smith'
+    },
+    {
+      model_: 'DateProperty',
+      name: 'dateOfBirth',
+      factory: function() {
+        return 'January 1, 2000';
+      },
+      postSet: function(old, nu) {
+        this.age = this.computeAge();
+      }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'age'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'computeAge',
+      code: function() {
+        // Thanks to André Snede Hansen on Stackoverflow for
+        // this procedure. It's not perfect, but close enough.
+        var ageDifMs = Date.now() -
+            this.dateOfBirth.getTime();
+        var ageDate = new Date(ageDifMs);
+        return Math.abs(ageDate.getUTCFullYear() -
+            1970);
+      }
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+            <source>
+              <code-snippet>
+                <title>Javascript</title>
+                <src language="javascript">
+                  <code>console.log.json.put(
+  X.foam.sandbox.Person.create()
+);</code>
+                </src>
+              </code-snippet>
+            </source>
+            <source>
+              <code-snippet>
+                <title>HTML</title>
+                <src language="html">
+                  <code><foam-tag model="foam.sandbox.Person"></foam-tag></code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+
           <p>
             So we have this <code>Person</code> class. What can we do with
-            it? To start, let's just try instantiating one and printing it to
-            the console.
+            it? To start, let's just try instantiating one and printing one
+            to the console. Take a look at <b>Working with the Person
+            Class</b>. Notice that FOAM has decorated <code>console</code>
+            with a JSON-logging object. <glossary-term>
+              <term>console.log.json</term>
+              <definition>
+                The pretty-printed JSON <code>Sink</code>
+              </definition>
+            </glossary-term> behaves as a <glossary-term>
+              <term>Sink</term>
+              <definition>
+                An interface for receiving events related to
+                a <code>DAO</code>. Sinks are notified of new objects coming
+                into the <code>DAO</code> via their <code>put(obj)</code>
+                method; similarly notification of object removal occurs via
+                the <code>remove(obj)</code> method. Sinks are also notified
+                that a sequence of puts is complete via
+                the <code>eof()</code> method, and notified of errors via
+                the <code>error(err)</code> method. Note that Sinks recieve a
+                copy of the object from the DAO; modifying the object passed
+                to the <code>put(obj)</code> or <code>remove(obj)</code> Sink
+                methods will not affect the collection stored in the DAO.
+              </definition>
+            </glossary-term>. A <glossary-term><term>Sink</term></glossary-term>
+            is anything that receives events from a data storage collection
+            in FOAM. In this case, the collection is messages written to the
+            console. Notice that JSON output to the console is missing
+            several properties (e.g., <code>firstName</code>
+            and <code>lastName</code>). This is because the class stores the
+            default values for these fields, and the current values match the
+            defaults. This optimization is useful to, for example, save
+            bandwidth when sending a large number of FOAM objects over the
+            network; chances are, many of the objects will contain at
+            least <i>some</i> values that match the defaults.
+          </p>
+          <p>
+            We pass in the return value
+            from <code>X.foam.sandbox.Person.create()</code>.
+            <glossary-term>
+              <term>X</term>
+              <definition>
+                A FOAM conteXt object. Contexts form a tree of prototypes or
+                sub-contexts. As a result, values from parent contexts appear
+                in the child context, and overwritten values in child
+                contexts do not affect parent contexts. Contexts are intended
+                to avoid polluting the Javascript global namespace and
+                facilitate passing values between related components that do
+                not have immediate references to each other. The
+                unqualified <code>X</code> is the global context,
+                whereas <code>this.X</code> within a FOAM method (or similar)
+                refers to the modelled object's context. FOAM views
+                automatically construct a sub-context for each of their child
+                views. Other sub-contexts must be constructed manually
+                using <code>X.sub()</code>.
+              </definition>
+            </glossary-term> is the global conteXt object. FOAM context
+            objects are used to encapsulate shared state without polluting
+            the global namespace. In this case, we look up the
+            package-qualified model (<code>foam.sandbox.Person</code>) and
+            invoke the <glossary-term>
+              <term>create()</term>
+              <definition>
+                The <code>create()</code> method attached to a FOAM class is
+                the class instance constructor function. This method is
+                optionally passed an object containing key/value pairs that
+                describe initial property values for the object.
+              </definition>
+            </glossary-term> method to instantiate a new <code>Person</code>
+            object. Note that FOAM classes are <b>not</b> constructor
+            functions for use with the <code>new</code> keyword. All FOAM
+            object instances are constructed by
+            invoking <glossary-term><term>create()</term></glossary-term>. The
+            create method can be passed an object containing values for
+            object properties. Try passing an object literal
+            to <glossary-term><term>create()</term></glossary-term> in the
+            <b>Javascript</b> example code; you can set any of the properties
+            listed in the <b>Person Class</b> code snippet.
+          </p>
+          <p>
+            The HTML portion of this example renders a view of a person. FOAM
+            has a whole suite of views. The default view of a FOAM object is
+            a <code>foam.ui.DetailView</code>, which renders labels and
+            values for each property. FOAM also supports specifying property
+            values as <code>foam-tag</code> attributes, or as tags inside
+            the <code>foam-tag</code>. Try replacing the <b>HTML</b> code
+            with this:
+          </p>
+
+            <blockquote>
+              <pre>&lt;foam-tag model="foam.sandbox.Person"&gt;
+  &lt;firstName&gt;James&lt;/firstName&gt;
+  &lt;lastName&gt;Dean&lt;/lastName&gt;
+&lt;/foam-tag&gt;</pre></blockquote>
+
+          <p>
+            Run the code again and you'll see that the view has changed to
+            show you James Dean. FOAM views support two-way data binding, so
+            if you render a view of a FOAM object, the view and the object
+            will stay in sync.
+          </p>
+        </section>
+        <section enumerate="false">
+          <title>DAOs, Events, and Reactive Programming</title>
+          <p>
+            Have you worked on a Javascript project where you needed to fetch
+            data over the wire from multiple sources, then wire up a bunch of
+            callbacks to deal with data arriving, network and data extraction
+            errors, and view updates? Then you want to try adding offline
+            support and you have to shim in a mess of <code>IndexedDB</code>
+            callbacks between your network code and your views. What a mess.
+          </p>
+          <p>
+            FOAM provides several tools for dealing with common application
+            development issues like these. One of the more powerful tools is
+            a unified interface for data collections. We call this interface
+            a <glossary-term>
+              <term>DAO</term>
+              <definition>
+                Short for Data Access Object. This is FOAM's unified data
+                collection interface. The <code>DAO</code> interface extends
+                the <code>Sink</code> interface. In addition
+                to <code>put(obj)</code>, <code>remove(obj)</code>, <code>eof()</code>,
+                and <code>error(err)</code>, DAOs
+                support <code>find(id)</code> for locating an object by ID,
+                and <code>select(sink, options)</code> for processing
+                queries, and <code>removeAll()</code> for emptying the
+                collection. Of course, in the case of a
+                DAO, <code>put(obj)</code> and <code>remove(obj)</code> are
+                treated as commands to modify the underlying collection,
+                whereas for a Sink, these methods serve as notifications of
+                events occurring on the underlying DAO. Most DAOs also
+                implement convenience functions for attaching query options
+                such
+                as <code>skip(num)</code>, <code>limit(num)</code>, <code>orderBy(expr)</code>,
+                and <code>groupBy(expr)</code>.
+              </definition>
+            </glossary-term>, or Data Access Object. DAOs provide a simple
+            interface for reading from collections
+            (<code>find(id)</code>, <code>select(sink, options)</code>) and
+            writing to collections
+            (<code>put(obj)</code>, <code>remove(obj)</code>, <code>removeAll()</code>). What's
+            more, FOAM provides DAO implementations for a wide variety of
+            data storage modes, including an indexed in-memory store for
+            caching (<code>MDAO</code>), IndexedDB for client-side
+            persistence (<code>foam.dao.IDBDAO</code>), REST for network
+            requests (<code>foam.core.dao.RestDAO</code>), and MongoDB for
+            server code (<code>MongoDAO</code>). Since DAOs are often chained
+            together in common patterns, FOAM also provides a high-level DAO
+            setup interface called <code>EasyDAO</code>.
+          </p>
+
+        <aside extraClassName="wide">
+          <code-sample>
+            <title>Your First DAO</title>
+            <source>
+              <code-snippet>
+                <title>Person Class</title>
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'Person',
+  package: 'foam.sandbox',
+
+
+  properties: [
+    {
+      model_: 'IntProperty',
+      name: 'id',
+      defaultValue: 0
+    },
+    {
+      model_: 'StringProperty',
+      name: 'firstName',
+      label: 'Given Name',
+      defaultValue: 'John'
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'middleNames',
+      plural: 'Middle Names'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'lastName',
+      label: 'Surname',
+      defaultValue: 'Smith'
+    },
+    {
+      model_: 'DateProperty',
+      name: 'dateOfBirth',
+      factory: function() {
+        return 'January 1, 2000';
+      },
+      postSet: function(old, nu) {
+        this.age = this.computeAge();
+      }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'age'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'computeAge',
+      code: function() {
+        // Thanks to André Snede Hansen on Stackoverflow for
+        // this procedure. It's not perfect, but close enough.
+        var ageDifMs = Date.now() -
+            this.dateOfBirth.getTime();
+        var ageDate = new Date(ageDifMs);
+        return Math.abs(ageDate.getUTCFullYear() -
+            1970);
+      }
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+            <source>
+              <code-snippet>
+                <title>Person DAO Controller</title>
+                <src language="javascript">
+                  <code>CLASS({
+  package: 'foam.sandbox',
+  name: 'PersonDAOController',
+
+  requires: [
+    'foam.dao.EasyDAO',
+    'foam.dao.IDBDAO',
+    'foam.core.types.DAOProperty',
+    'foam.dao.DAOListView',
+    'foam.sandbox.Person'
+  ],
+
+  properties: [
+    {
+      model_: 'ArrayProperty',
+      name: 'people',
+      factory: function() {
+        return [
+          this.Person.create({ firstName: 'Margaret', lastName: 'Atwood' }),
+          this.Person.create({ firstName: 'Robertson', lastName: 'Davies' }),
+          this.Person.create({ firstName: 'Joseph', lastName: 'Boyden' }),
+          this.Person.create({ firstName: 'Alice', lastName: 'Munro' })
+        ];
+      }
+    },
+    {
+      model_: 'foam.core.types.DAOProperty',
+      name: 'dao',
+      factory: function() {
+        return this.EasyDAO.create({
+          model: this.Person,
+          daoType: 'MDAO',
+          seqNo: true,
+          caching: true
+        });
+      },
+      view: 'foam.ui.DAOListView'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'init',
+      code: function() {
+        this.SUPER.apply(this, arguments);
+        var self = this;
+        this.dao.select(COUNT())(function(c) {
+          if ( c.count === 0 ) {
+            self.people.forEach(function(person) {
+              self.dao.put(person);
+            });
+          }
+        });
+      }
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+            <source>
+              <code-snippet>
+                <title>HTML</title>
+                <src language="html">
+                  <code><foam-tag model="foam.sandbox.PersonDAOController"></foam-tag></code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+
+          <p>
+            Take a look at <b>Your First DAO</b>.
           </p>
         </section>
       </section>

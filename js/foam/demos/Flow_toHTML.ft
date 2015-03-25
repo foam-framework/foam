@@ -37,17 +37,33 @@
   <section title="Chapter">
     This is chapter 3.
 
-    <code-sample title="Code Sample 1" src="console.log(1+2);" />
-
-    <code-sample title="Code Sample 2">
-      <src>console.warn("Danger, Will Robinson!");</src>
+    <code-sample>
+      <source>
+        <code-snippet title="Code Sample 1">
+          <src language="javascript" code="console.log(1+2);">
+        </code-snippet>
+      </source>
     </code-sample>
 
-    Sample 3:
     <code-sample>
-      <title>Code Sample 3</title>
-      <src>console.assert(true, "Error: Truth is falsity!");
-console.assert(false, "Expected error: Falsity is falsity.");</src>
+      <source>
+        <code-snippet title="Code Sample 2">
+          <src language="javascript" >
+            <code>console.warn("Danger, Will Robinson!");</code>
+          </src>
+        </code-snippet>
+      </source>
+    </code-sample>
+
+    <code-sample>
+      <source>
+        <code-snippet title="Code Sample 3">
+          <src language="javascript">
+            <code>console.assert(true, "Error: Truth is falsity!");
+console.assert(false, "Expected error: Falsity is falsity.");</code>
+          </src>
+        </code-snippet>
+      </source>
     </code-sample>
 
   </section>

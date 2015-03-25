@@ -68,7 +68,7 @@ CLASS({
       this[r.name + 'View'] = X.foam.ui.RelationshipView.create({
         relationship: r,
         args: opt_args
-      });;
+      }, X);
       return this[r.name + 'View'];
     },
 

@@ -20,10 +20,11 @@ CLASS({
 
   name: 'DAOProperty',
   help: "Describes a DAO property.",
-  
+
   package: 'foam.core.types',
 
   requires: ['foam.dao.FutureDAO', 'foam.dao.ProxyDAO'],
+  imports: ['console'],
 
   properties: [
     {
@@ -32,8 +33,13 @@ CLASS({
       help: 'The FOAM type of this property.'
     },
     {
+      model_: 'ModelProperty',
+      name: 'model',
+      help: 'The model for objects stored in the DAO.'
+    },
+    {
       name: 'view',
-      defaultValue: 'foam.ui.ArrayView'
+      defaultValue: 'foam.ui.DAOListView'
     },
     {
 //      model_: 'FunctionProperty',
@@ -67,6 +73,34 @@ CLASS({
             configurable: true
           };
         });
+      }
+    },
+    {
+      name: 'fromElement_',
+      defaultValue: function(e, p, model) {
+          var children = e.children;
+          for ( var i = 0 ; i < children.length ; i++ ) {
+            this[p.name].put(model.create(null, this.Y).fromElement(
+                children[i], p));
+          }
+      }
+    },
+    {
+      name: 'fromElement',
+      defaultValue: function(e, p) {
+        var model = e.getAttribute('model') ||
+            (this[p.name] && this[p.name].model) || p.model || '';
+        if ( ! model ) {
+          this.console.warn('Attempt to load DAO from element without model');
+          return;
+        }
+        if ( typeof model === 'string' ) {
+          arequire(model, this.X)(function(model) {
+            p.fromElement_.call(this, e, p, model);
+          }.bind(this));
+        } else {
+          p.fromElement_.call(this, e, p, model);
+        }
       }
     }
   ]

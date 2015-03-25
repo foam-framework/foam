@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 CLASS({
+  package: 'foam.dao',
   name: 'IDBDAO',
   label: 'IndexedDB DAO',
-  package: 'foam.dao',
 
   extendsModel: 'AbstractDAO',
 
-  documentation: function() {/* 
+  documentation: function() {/*
   Usage:<br/>
    <code>var dao = IDBDAO.create({model: Issue});<br/>
    var dao = IDBDAO.create({model: Issue, name: 'ImportantIssues'});<br/></code>
@@ -357,5 +357,3 @@ CLASS({
   ]
 
 });
-
-
