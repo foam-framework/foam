@@ -621,7 +621,7 @@
       factory: function() {
         return this.EasyDAO.create({
           model: this.Person,
-          daoType: 'IDB',
+          daoType: 'MDAO',
           seqNo: true,
           caching: true
         });
@@ -654,7 +654,7 @@
               <code-snippet>
                 <title>HTML</title>
                 <src language="html">
-                  <code><foam-tag view="DetailView" model="foam.sandbox.PersonDAOController"></foam-tag></code>
+                  <code><foam-tag model="foam.sandbox.PersonDAOController"></foam-tag></code>
                 </src>
               </code-snippet>
             </source>
