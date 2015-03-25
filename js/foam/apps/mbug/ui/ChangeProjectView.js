@@ -1,4 +1,4 @@
- /**
+/**
  * @license
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -16,16 +16,17 @@
  */
 
 CLASS({
-  name: 'ChangeProjectView',
   package: 'foam.apps.mbug.ui',
+  name: 'ChangeProjectView',
   extendsModel: 'foam.ui.DetailView',
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
+
   requires: [
     // TODO: Hack to ensure that the CSS for appcontroller comes before
     // ChangeProjectView.
     'foam.ui.md.AppController',
     'foam.ui.ImageView'
   ],
-  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   properties: [
     { name: 'preferredWidth', defaultValue: 304 },
