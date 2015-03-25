@@ -87,7 +87,7 @@ CLASS({
 
       // don't just copy data, find extendsModel and send that to children
       
-      this.X.masterModelList.find(this.data.extendsModel, {
+      this.X._DEV_ModelDAO.find(this.data.extendsModel, {
           put: function(childData) {
             var thisDiag = this.ModelDocDiagram.create({ data: childData, model: childData }, childX);
             if ( childData.extendsModel ) {

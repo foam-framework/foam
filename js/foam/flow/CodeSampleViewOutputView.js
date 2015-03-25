@@ -80,7 +80,7 @@ CLASS({
         justify-content: center;
       }
       view-output.visible {
-        padding-top: 5px;
+        padding: 5px;
       }
     */}
   ]

@@ -21,7 +21,7 @@ CLASS({
   label: 'Documentation Reference',
   documentation: 'A reference to a documented Model or feature of a Model',
 
-  imports: ['documentViewRef', 'masterModelList'],
+  imports: ['documentViewRef', '_DEV_ModelDAO', 'masterModelList'],
 
   documentation: function() { /*
     <p>A link to another place in the documentation. See $$DOC{ref:'DocView'}
@@ -84,7 +84,7 @@ CLASS({
     <ul>
       <li>Beginning with ".": relative to $$DOC{ref:'Model'} in X.documentViewRef</li>
       <li>Containing only ".": the $$DOC{ref:'Model'} in X.documentViewRef</li>
-      <li>The name after the first ".": a feature of the $$DOC{ref:'Model'} accessible by "getFeature('name')"</li>
+      <li>The name after the first ".": a feature of the $$DOC{ref:'Model'} accessible by "getMyFeature('name')"</li>
       <li>A double-dot after the $$DOC{ref:'Model'}: Skip the feature lookup and find instances directly on
             the $$DOC{ref:'Model'} definition (<code>MyModel.chapters.chapName</code>)</li>
     </ul>
@@ -111,47 +111,68 @@ CLASS({
         }
       }
       
-      var refChunk = ""+reference;
-      while (refChunk.length > 0) {
-//         this.X.ModelDAO.find(refChunk, { // arequire instead
-//             put: function(m) {
-//               this.resolveFeature(m, reference);
-//             }.bind(this)
-//         });
-        this.masterModelList.where(EQ(Model.ID, refChunk)).select({ 
-            put: function(m) {
-              this.resolveFeature(m, reference);
-            }.bind(this)
+      // Find the Model id in the reference
+      // ----
+      // we check the in-memory list first since we are resolving an ambiguous name, and 
+      // spam the dao with reqests that we know may fail when trying to find the valid 
+      // model name within the reference.
+      var finished = false;
+      var finder = function(refChunk, dao, fallbackDao) {
+        //console.log('DocRef chunk: ', refChunk);
+        dao.find(refChunk, {
+          put: function(m) {
+            finished = true;
+            this.resolveFeature(m, reference);
+          }.bind(this),
+          error: function() {
+            var slice = refChunk.lastIndexOf('.');
+            if (slice == -1) {
+              if ( fallbackDao ) {
+                //console.log('DocRef fallback with: ', refChunk);
+                finder(reference, fallbackDao, null);
+              } else {
+                console.warn("DocRef could not load ", reference);
+              }
+            } else {
+              //console.log('DocRef recurse with: ', refChunk.substring(0, refChunk.lastIndexOf('.')));
+              finder(refChunk.substring(0, refChunk.lastIndexOf('.')), dao, fallbackDao);
+            }            
+          }.bind(this)
         });
+      }.bind(this);
 
-        var slice = refChunk.lastIndexOf('.');
-        if (slice == -1) {
-          break;
-        } else {
-          refChunk = refChunk.substring(0, refChunk.lastIndexOf('.'));
-        }
-      }
+      // try to load the name, starting with the full name
+      // and removing the last .chunk after each failure
+      // until we have found the model, or we can't find it at all
+      finder(reference, this.masterModelList, this._DEV_ModelDAO);
       
     },
     
     getInheritanceList: function(model, list) {
       // find all base models of the given model, put into list
-      this.X.masterModelList.where(IN(Model.ID, model.traits)).select({
-        put: function(p) { list.put(p); },
-        eof: function() {
-          if ( model.extendsModel ) {
-            this.X.masterModelList.where(EQ(Model.ID, model.extendsModel)).select({
-                put: function(ext) {
-                  list.put(ext);
-                  this.getInheritanceList(ext, list);
-                }.bind(this)
-            }); 
-          } else {
-            list.eof(); // no more extendsModels to follow, finished
-          }          
-        }.bind(this)
-      });
-
+      var findFuncs = [];
+      model.traits.forEach(function(t) {
+        findFuncs.push(function(ret) { 
+          this.X._DEV_ModelDAO.find(t, {
+            put: function(m) { list.put(m); ret && ret(); },
+            error: function() { console.warn("DocRef could not load trait ", t); ret && ret(); }
+          });  
+        }.bind(this)); 
+      }.bind(this));
+      // runs the trait finds first, and when they are done recurse to the next ancestor
+      apar.apply(this, findFuncs)(function() {      
+        if ( model.extendsModel ) {
+          this.X._DEV_ModelDAO.find(model.extendsModel, {
+              put: function(ext) {
+                list.put(ext);
+                this.getInheritanceList(ext, list);
+              }.bind(this),
+              error: function() { console.warn("DocRef could not load model ", t); ret && ret(); }
+          }); 
+        } else {
+          list.eof(); // no more extendsModels to follow, finished
+        }          
+      }.bind(this));
     },
     
     resolveFeature: function(m, reference) {
@@ -202,7 +223,7 @@ CLASS({
           if (features.length > 0) {
             // feature specified "Model.feature" or ".feature"
             ancestry.every(function(ancestor) { 
-              foundObject = ancestor.getFeature(features[0]);
+              foundObject = ancestor.getMyFeature(features[0]);
               if ( ! foundObject ) {    
                 return true;
               } else {

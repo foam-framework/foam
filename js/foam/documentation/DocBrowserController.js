@@ -28,7 +28,7 @@ CLASS({
     'foam.documentation.ModelCompletenessRecord',
     'foam.input.touch.TouchManager',
     'foam.input.touch.GestureManager',
-    'foam.core.bootstrap.BrowserFileDAO'
+    'foam.dao.FindFallbackDAO'
 //    'foam.core.bootstrap.ModelFileDAO'
   ],
 
@@ -73,15 +73,15 @@ CLASS({
       // load developer guides
       this.X.RegisterDevDocs && this.X.RegisterDevDocs(this.X);
 
-      // load all models
+      // begin loading all models
       this.createModelList();
 
       // search context uses a selection value to indicate the chosen Model to display
-      this.SearchContext = this.X.sub({}, 'searchX');
+      this.SearchContext = this.Y.sub({}, 'searchX');
       this.SearchContext.selection$ = this.SearchContext.SimpleValue.create(); // holds a Model definition
 
       // detail context needs a documentViewRef.get().resolvedRoot to indicate what model it is rooted at
-      this.DetailContext = this.X.sub({}, 'detailX');
+      this.DetailContext = this.Y.sub({}, 'detailX');
       this.DetailContext.documentViewRef = this.DetailContext.SimpleValue.create({},this.DetailContext);// this.DetailContext.DocRef.create();
 
       this.X.documentViewRequestNavigation = this.requestNavigation.bind(this);
@@ -120,46 +120,50 @@ CLASS({
       // don't respond if we are already at the location desired
       if (location.hash.substring(1) === this.DetailContext.documentViewRef.get().ref) return;
 
-
-      var setRef = function(newRef) { 
+      var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:location.hash.substring(1)}, this.DetailContext);
+      var setRef = function() { 
         this.DetailContext.documentViewRef.set(newRef);
         if (newRef.resolvedObject !== this.selection) this.selection = newRef.resolvedRoot.resolvedObject;
         this.SearchContext.selection$.set(newRef.resolvedRoot.resolvedObject); // selection wants a Model object
       }.bind(this);
-      var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:location.hash.substring(1)}, this.DetailContext);
-      if (newRef.valid) {
-        setRef(newRef);
+      if (newRef.valid) {// need to listen for when this becomes valid
+        setRef();
       } else {
-        // attempt to load the referenced model name
-        this.DetailContext.masterModelList.find(location.hash.substring(1), { 
-          put: function(m) {
-            var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
-            if (newRef.valid) {
-              setRef(newRef); // not fully recursive as we only want to try loading once
-            }
-          }.bind(this)
-        });
+        newRef.addListener(setRef);
+//         // attempt to immediately load the referenced model name
+//         this.DetailContext.ModelDAO.find(location.hash.substring(1), {
+//           put: function(m) {
+//             //this.DetailContext._DEV_ModelDAO.put(m);
+//             var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
+//             if (newRef.valid) {
+//               setRef(newRef); // not fully recursive as we only want to try loading once
+//             }
+//           }.bind(this)
+//         });
       }
     },
 
     requestNavigation: function(newRef) {
-      var setRef = function(ref) {
-        this.DetailContext.documentViewRef.set(ref);
-        this.SearchContext.selection$.set(ref.resolvedRoot.resolvedObject); // selection wants a Model object
-        if (ref.resolvedObject !== this.selection) this.selection = ref.resolvedRoot.resolvedObject;
-        location.hash = "#" + ref.resolvedRef;
+      var setRef = function() {
+        this.DetailContext.documentViewRef.set(newRef);
+        this.SearchContext.selection$.set(newRef.resolvedRoot.resolvedObject); // selection wants a Model object
+        if (newRef.resolvedObject !== this.selection) this.selection = newRef.resolvedRoot.resolvedObject;
+        location.hash = "#" + newRef.resolvedRef;
       }.bind(this);
-      if (newRef.valid) {
-        setRef(newRef);
+      if (newRef.valid) {// need to listen for when this becomes valid
+        setRef();
       } else {
-        this.DetailContext.masterModelList.find(newRef.ref, { 
-          put: function(m) {
-            var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
-            if (newRef.valid) {
-              setRef(newRef); // not fully recursive as we only want to try loading once
-            }
-          }.bind(this)
-        });
+        newRef.addListener(setRef);
+        // // attempt to immediately load the referenced model name (but DocRef will do this anyway!)
+        // this.DetailContext.ModelDAO.find(newRef.ref, {
+        //   put: function(m) {
+        //     //this.DetailContext._DEV_ModelDAO.put(m);
+        //     var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
+        //     if (newRef.valid) {
+        //       setRef(newRef); // not fully recursive as we only want to try loading once
+        //     }
+        //   }.bind(this)
+        // });
       }
     },
     
@@ -201,23 +205,24 @@ CLASS({
 
     createModelList: function() {
       var newDAO = this.MDAO.create({model:Model});
-      this.X.set("masterModelList", newDAO);
+      this.Y.set("masterModelList", newDAO);
+      this.Y.set("_DEV_ModelDAO", 
+//         this.LazyCacheDAO.create({ 
+//           cache: newDAO, 
+//           delegate: this.X.ModelDAO,
+//           staleTimeout: 40000,
+//           selectKey: ""
+//         })
+          this.FindFallbackDAO.create({delegate: newDAO, fallback: this.X.ModelDAO})
+        );
 
-      // create subcontext to safely load all models
-      var loaderX = this.Y.sub({}, "LoaderX");
-      console.log("loader X: ", loaderX.NAME, loaderX.$UID);
-//       loaderX.set('ModelDAO', this.ModelFileDAO.create({}, loaderX));
-//       loaderX.set('onRegisterModel', function(m) { console.log("Good onRegisterModel: ", m.id); }); 
-//       loaderX.set('lookup', lookup); 
-      //loaderX.ModelDAO = this.BrowserFileDAO.create({}, loaderX);
-      //loaderX.onRegisterModel = function(m) { console.log("Good onRegisterModel: ", m.id); }; 
-      //loaderX.lookup = lookup; 
-      //loaderX.ModelDAO.select(newDAO);
-      // parse directory listing, if available
-      var sourcePath = window.FOAM_BOOT_DIR + '../js';
-      this.scrapeDirectory(sourcePath, "", newDAO, loaderX.ModelDAO);
-      
-           
+      // loading all models eats CPU, so wait until we've had time to 
+      // render and load the references of the first model showing
+      this.Y.setTimeout(function() {
+          var sourcePath = window.FOAM_BOOT_DIR + '../js';
+          this.scrapeDirectory(sourcePath, "", newDAO, this.Y._DEV_ModelDAO);
+      }.bind(this), 5000);
+
       // All models are now in USED_MODELS
       [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
         for ( var key in collection ) {

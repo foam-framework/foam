@@ -40,7 +40,7 @@ CLASS({
       name: 'data',
       adapt: function(old, nu) {
         if ( typeof nu == 'string' ) {
-          this.X.masterModelList.find(nu, {
+          this.X._DEV_ModelDAO.find(nu, {
               put: function(n) {
                 this.data = n;
               }.bind(this)

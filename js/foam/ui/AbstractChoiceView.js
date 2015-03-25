@@ -56,7 +56,7 @@ CLASS({
       },
       setter: function(choice) {
         var oldValue = this.choice;
-        if ( this.autoSetData ) this.data = choice[0];
+        this.data = choice[0];
         this.text = choice[1];
         this.propertyChange('choice', oldValue, this.choice);
       }
@@ -124,7 +124,7 @@ CLASS({
       postSet: function(_, i) {
         // If useSelection is enabled, don't update data or choice.
         if ( this.useSelection ) return;
-        if ( this.autoSetData && this.data !== this.choices[i][0] ) this.data = this.choices[i][0];
+        if ( this.data !== this.choices[i][0] ) this.data = this.choices[i][0];
       }
     },
     {
