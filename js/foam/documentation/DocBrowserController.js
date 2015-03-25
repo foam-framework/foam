@@ -120,49 +120,50 @@ CLASS({
       // don't respond if we are already at the location desired
       if (location.hash.substring(1) === this.DetailContext.documentViewRef.get().ref) return;
 
-
-      var setRef = function(newRef) { 
+      var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:location.hash.substring(1)}, this.DetailContext);
+      var setRef = function() { 
         this.DetailContext.documentViewRef.set(newRef);
         if (newRef.resolvedObject !== this.selection) this.selection = newRef.resolvedRoot.resolvedObject;
         this.SearchContext.selection$.set(newRef.resolvedRoot.resolvedObject); // selection wants a Model object
       }.bind(this);
-      var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:location.hash.substring(1)}, this.DetailContext);
       if (newRef.valid) {// need to listen for when this becomes valid
-        setRef(newRef);
+        setRef();
       } else {
-        // attempt to immediately load the referenced model name
-        this.DetailContext.ModelDAO.find(location.hash.substring(1), { 
-          put: function(m) {
-            //this.DetailContext._DEV_ModelDAO.put(m);
-            var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
-            if (newRef.valid) {
-              setRef(newRef); // not fully recursive as we only want to try loading once
-            }
-          }.bind(this)
-        });
+        newRef.addListener(setRef);
+//         // attempt to immediately load the referenced model name
+//         this.DetailContext.ModelDAO.find(location.hash.substring(1), {
+//           put: function(m) {
+//             //this.DetailContext._DEV_ModelDAO.put(m);
+//             var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
+//             if (newRef.valid) {
+//               setRef(newRef); // not fully recursive as we only want to try loading once
+//             }
+//           }.bind(this)
+//         });
       }
     },
 
     requestNavigation: function(newRef) {
-      var setRef = function(ref) {
-        this.DetailContext.documentViewRef.set(ref);
-        this.SearchContext.selection$.set(ref.resolvedRoot.resolvedObject); // selection wants a Model object
-        if (ref.resolvedObject !== this.selection) this.selection = ref.resolvedRoot.resolvedObject;
-        location.hash = "#" + ref.resolvedRef;
+      var setRef = function() {
+        this.DetailContext.documentViewRef.set(newRef);
+        this.SearchContext.selection$.set(newRef.resolvedRoot.resolvedObject); // selection wants a Model object
+        if (newRef.resolvedObject !== this.selection) this.selection = newRef.resolvedRoot.resolvedObject;
+        location.hash = "#" + newRef.resolvedRef;
       }.bind(this);
       if (newRef.valid) {// need to listen for when this becomes valid
-        setRef(newRef);
+        setRef();
       } else {
-        // attempt to immediately load the referenced model name (but DocRef will do this anyway!)
-        this.DetailContext.ModelDAO.find(newRef.ref, { 
-          put: function(m) {
-            //this.DetailContext._DEV_ModelDAO.put(m);           
-            var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
-            if (newRef.valid) {
-              setRef(newRef); // not fully recursive as we only want to try loading once
-            }
-          }.bind(this)
-        });
+        newRef.addListener(setRef);
+        // // attempt to immediately load the referenced model name (but DocRef will do this anyway!)
+        // this.DetailContext.ModelDAO.find(newRef.ref, {
+        //   put: function(m) {
+        //     //this.DetailContext._DEV_ModelDAO.put(m);
+        //     var newRef = this.DetailContext.foam.documentation.DocRef.create({ref:m.id}, this.DetailContext);
+        //     if (newRef.valid) {
+        //       setRef(newRef); // not fully recursive as we only want to try loading once
+        //     }
+        //   }.bind(this)
+        // });
       }
     },
     
