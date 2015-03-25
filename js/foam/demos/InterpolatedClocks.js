@@ -28,7 +28,17 @@ CLASS({
 
   properties: [
     { name: 'width',  defaultValue: 3500 },
-    { name: 'height', defaultValue: 2700 }
+    { name: 'height', defaultValue: 2700 },
+    {
+      name: 'mouse',
+      transient: true,
+      hidden: true,
+      lazyFactory: function() {
+        var m = this.Mouse.create();
+        //m.connect(this.$);
+        return m;
+      }
+    }
   ],
 
   methods: {
@@ -61,15 +71,15 @@ CLASS({
       for ( var i = 0 ; i < is.length ; i++ ) {
         clocks[i] = this.ClockView.create({
           x: 250,
-          y: 50+i*100,
-          r: 40,
+          y: 40+i*50,
+          r: 20,
           color: is[i][0]
         });
         graphs[i] = this.Graph.create({
           x: 5,
-          y: 50+i*100,
+          y: 20+i*50,
           width: 200,
-          height: 95,
+          height: 45,
           style: 'Line',
           graphColor: null,
           lineWidth: 2,
@@ -88,7 +98,7 @@ CLASS({
           ms[i] = Movement.animate(
             2000,
             function(x) {
-//              clocks[i].a = x/clocks[i].r;
+              clocks[i].a = x/clocks[i].r;
               clocks[i].x = x;
             },
             is[i][1]);
@@ -96,13 +106,8 @@ CLASS({
       }
 
       this.$.onmousedown = function(evt) {
-console.log('evt: ', evt);
-        for ( var i = 0 ; i < is.length ; i++ ) {
-          ms[i](evt.offsetX);
-        }
+        for ( var i = 0 ; i < is.length ; i++ ) ms[i](evt.offsetX);
       };
-
-      this.paint();
     }
   }
 });
