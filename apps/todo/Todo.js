@@ -151,7 +151,7 @@
 				this.setClass('hidden', f, 'main');
 				this.setClass('hidden', f, 'footer');
 				this.addInitializer(function() {
-					$('new-todo').focus();
+					X.$('new-todo').focus();
 				});
 			%>
 			*/}
