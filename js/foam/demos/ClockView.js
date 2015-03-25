@@ -16,87 +16,75 @@
  */
 
 CLASS({
-  name:  'ClockView',
   package: 'foam.demos',
+  name: 'ClockView',
   
   extendsModel: 'foam.graphics.CView',
   
-  requires: ['foam.graphics.Circle', 'foam.ui.IntFieldView'],
-  
-  label: 'Clock',
+  requires: [
+    'foam.graphics.Circle', 'foam.ui.IntFieldView'
+  ],
 
   properties: [
     {
-      name:  'color',
-      type:  'String',
+      name: 'color',
+      type: 'String',
       defaultValue: 'yellow'
     },
     {
-      name:  'lid',
-      type:  'foam.graphics.Circle',
+      name: 'lid',
+      type: 'foam.graphics.Circle',
       paint: true,
       factory: function() {
         return this.Circle.create({r:this.r,color:this.color});  
       }
     },
     {
-      name:  'white',
-      type:  'foam.graphics.Circle',
-      paint: true,
+      name: 'white',
+      type: 'foam.graphics.Circle',
       factory: function() {
         return this.Circle.create({r:this.r-3,color:'white'});  
       }
     },
     {
-      name:  'r',
+      model_: 'FloatProperty',
+      name: 'r',
       label: 'Radius',
-      type:  'int',
-      view:  'foam.ui.IntFieldView',
       defaultValue: 100
     },
     {
-      name:  'a',
+      model_: 'FloatProperty',
+      name: 'a',
       label: 'Rotation',
-      type:  'float',
-      view:  'foam.ui.IntFieldView',
       defaultValue: 0
     },
     {
-      name:  'hourHand',
-      type:  'Hand',
-      paint: true,
+      name: 'hourHand',
+      type: 'Hand',
       factory: function() {
         return this.Hand.create({r:this.r-15,width:7,color:'green'});
       }
     },
     {
-      name:  'minuteHand',
-      type:  'Hand',
-      paint: true,
+      name: 'minuteHand',
+      type: 'Hand',
       factory: function() {
         return this.Hand.create({r:this.r-6,width:5,color:'blue'});
       }
     },
     {
-      name:  'secondHand',
-      type:  'Hand',
-      paint: true,
+      name: 'secondHand',
+      type: 'Hand',
       factory: function() {
         return this.Hand.create({r:this.r-6,width:3,color:'red'});
       }
     }
-
   ],
 
   methods: {
     init: function() {
       this.SUPER();
-      this.construct();
-    },
-    
-    construct: function() {
-      this.SUPER();
-      
+
       this.addChild(this.lid);
       this.addChild(this.white);
       this.addChild(this.hourHand);
@@ -104,27 +92,17 @@ CLASS({
       this.addChild(this.secondHand);
     },
 
-    paintSelf: function() {
-      this.canvas.save();
-
+    transform: function() {
+      this.SUPER();
       this.canvas.rotate(this.a);
+    },
 
+    paintSelf: function() {
       var date = new Date();
-
-      //this.secondHand.x = this.hourHand.x = this.minuteHand.x = this.lid.x = this.white.x = this.x;
-      //this.secondHand.y = this.hourHand.y = this.minuteHand.y = this.lid.y = this.white.y = this.y;
 
       this.secondHand.a = Math.PI/2 - Math.PI*2 * date.getSeconds() / 60 ;
       this.minuteHand.a = Math.PI/2 - Math.PI*2 * date.getMinutes() / 60 ;
       this.hourHand.a   = Math.PI/2 - Math.PI*2 * (date.getHours() % 12) / 12;
-
-      this.lid.paint();
-      this.white.paint();
-      this.hourHand.paint();
-      this.minuteHand.paint();
-      this.secondHand.paint();
-
-      this.canvas.restore();
     }
   },
 
@@ -171,8 +149,7 @@ CLASS({
         {
           model_: 'Method',
           name: 'paint',
-          code: function ()
-          {
+          code: function () {
             var canvas = this.parent.canvas;
 
             canvas.beginPath();
