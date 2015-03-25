@@ -26,6 +26,7 @@ CLASS({
     'foam.demos.MemorableObject',
     'foam.demos.SubMemorableObject',
     'foam.memento.FragmentMementoMgr',
+    'foam.memento.FalseOnlyMemorableLatch',
     'foam.ui.JSView',
     'foam.ui.StringArrayView'
   ],
@@ -45,6 +46,14 @@ CLASS({
           })
         });
       }
+    },
+    {
+      name: 'falseOnlyLatch',
+      view: 'foam.ui.DetailView',
+      factory: function() {
+        return this.FalseOnlyMemorableLatch.create();
+      },
+      memorable: true
     },
     {
       name: 'memento',
