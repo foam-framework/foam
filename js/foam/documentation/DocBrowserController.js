@@ -28,7 +28,7 @@ CLASS({
     'foam.documentation.ModelCompletenessRecord',
     'foam.input.touch.TouchManager',
     'foam.input.touch.GestureManager',
-    'foam.dao.LazyCacheDAO'
+    'foam.dao.FindFallbackDAO'
 //    'foam.core.bootstrap.ModelFileDAO'
   ],
 
@@ -206,7 +206,14 @@ CLASS({
       var newDAO = this.MDAO.create({model:Model});
       this.Y.set("masterModelList", newDAO);
       this.Y.set("_DEV_ModelDAO", 
-        this.LazyCacheDAO.create({ cache: newDAO, delegate: this.X.ModelDAO }));
+//         this.LazyCacheDAO.create({ 
+//           cache: newDAO, 
+//           delegate: this.X.ModelDAO,
+//           staleTimeout: 40000,
+//           selectKey: ""
+//         })
+          this.FindFallbackDAO.create({delegate: newDAO, fallback: this.X.ModelDAO})
+        );
 
       // loading all models eats CPU, so wait until we've had time to 
       // render and load the references of the first model showing

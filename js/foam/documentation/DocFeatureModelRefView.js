@@ -30,6 +30,7 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
+      this.docRef.addListener(this.setNameLabel);
     }
   },
     
@@ -38,8 +39,6 @@ CLASS({
     {
       name: 'data',
       postSet: function(old,nu) {
-        old && old.removeListener && old.removeListener(this.setNameLabel);
-        nu && nu.addListener && nu.addListener(this.setNameLabel);
         this.ref = this.data;
         this.setNameLabel();
       }
@@ -54,7 +53,8 @@ CLASS({
           this.text = this.docRef.resolvedObject.name;
         } else {
           this.text = "[INVALID]"+this.data;
-        }                
+        }
+        this.updateHTML();
       }
     }
   ]
