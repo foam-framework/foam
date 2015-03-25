@@ -132,7 +132,7 @@ CLASS({
       hidden: true,
       lazyFactory: function() {
         var m = this.Mouse.create();
-        m.connect(this.$);
+        //m.connect(this.$);
         return m;
       }
     },
