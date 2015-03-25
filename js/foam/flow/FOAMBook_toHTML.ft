@@ -591,11 +591,12 @@
                 <title>Person DAO Controller</title>
                 <src language="javascript">
                   <code>CLASS({
-  name: 'PersonDAOController',
   package: 'foam.sandbox',
+  name: 'PersonDAOController',
 
   requires: [
     'foam.dao.EasyDAO',
+    'foam.dao.IDBDAO',
     'foam.core.types.DAOProperty',
     'foam.dao.DAOListView',
     'foam.sandbox.Person'
@@ -619,6 +620,7 @@
       name: 'dao',
       factory: function() {
         return this.EasyDAO.create({
+          model: this.Person,
           daoType: 'IDB',
           seqNo: true,
           caching: true
@@ -652,7 +654,7 @@
               <code-snippet>
                 <title>HTML</title>
                 <src language="html">
-                  <code><foam-tag model="foam.sandbox.PersonDAOController"></foam-tag></code>
+                  <code><foam-tag view="DetailView" model="foam.sandbox.PersonDAOController"></foam-tag></code>
                 </src>
               </code-snippet>
             </source>
