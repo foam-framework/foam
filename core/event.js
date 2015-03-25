@@ -451,14 +451,14 @@ var PropertyValue = {
 
   set: function(val) { this.obj[this.prop] = val; },
 
-  asDAO: function() {
-    console.warn('ProperytValue.asDAO() deprecated.  Use property$Proxy instead.');
-    if ( ! this.proxy ) {
-      this.proxy = ProxyDAO.create({delegate: this.get()});
-      this.addListener(function() { proxy.delegate = this.get(); }.bind(this));
-    }
-    return this.proxy;
-  },
+  // asDAO: function() {
+  //   console.warn('ProperytValue.asDAO() deprecated.  Use property$Proxy instead.');
+  //   if ( ! this.proxy ) {
+  //     this.proxy = this.X.lookup('foam.dao.ProxyDAO').create({delegate: this.get()});
+  //     this.addListener(function() { proxy.delegate = this.get(); }.bind(this));
+  //   }
+  //   return this.proxy;
+  // },
 
   get value() { return this.get(); },
 

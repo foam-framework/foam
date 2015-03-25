@@ -1,11 +1,17 @@
 <html>
  <head>
   <meta name="viewport" content="width=device-width, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
   <link rel="stylesheet" href="../../core/foam.css">
+  <link rel="icon" sizes="128x128" href="images/logo.png">
   <script src="../../core/bootFOAM.js"></script>
   <title>MBug</title>
  </head>
  <body>
+  <div style="position: absolute; overflow: hidden: left: -9999px; top: -999px; height: 1px; width: 1px;preloaded-images">
+    <img src="images/projectBackground.png" width="1" height="1">
+    <img src="images/defaultlogo.png" width="1" height="1">
+  </div>
   <foam model="foam.apps.mbug.MBug" view="foam.ui.layout.Window"/>
  </body>
 </html>

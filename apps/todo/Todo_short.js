@@ -1,5 +1,5 @@
 CLASS({
-  name: 'TodoDAO', extendsModel: 'ProxyDAO',
+  name: 'TodoDAO', extendsModel: 'foam.dao.ProxyDAO',
   methods: { put: function(issue, s) {
     if (!issue.text) this.remove(issue.id, { remove: s && s.put }); else this.SUPER(issue, s);
   }}});
@@ -27,7 +27,7 @@ CLASS({
 
 CLASS({
   name: 'Controller',
-  requires: ['EasyDAO'],
+  requires: ['foam.dao.EasyDAO'],
   properties: [
     {
       name: 'input',
@@ -39,7 +39,7 @@ CLASS({
       view: { factory_: 'foam.ui.TextFieldView', placeholder: 'What needs to be done?' }
     },
     { name: 'dao' },
-    { name: 'filteredDAO',    model_: 'DAOProperty', view: 'foam.ui.DAOListView' },
+    { name: 'filteredDAO',    model_: 'foam.core.types.DAOProperty', view: 'foam.ui.DAOListView' },
     { name: 'completedCount', model_: 'IntProperty' },
     { name: 'activeCount',    model_: 'IntProperty', postSet: function(_, c) { this.toggle = !c; }},
     { name: 'toggle',         model_: 'BooleanProperty', postSet: function(_, n) {

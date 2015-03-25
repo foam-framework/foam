@@ -21,6 +21,7 @@ CLASS({
   label: 'CView',
 
   requires: [
+    'foam.input.Mouse',
     'foam.graphics.PositionedCViewView',
     'foam.graphics.CViewView'
   ],
@@ -97,18 +98,22 @@ CLASS({
       help: 'CSS class name(s), space separated. Used if adapted with a CViewView.',
       defaultValue: '',
       documentation: function() {/* CSS class name(s), space separated.
-          Only used if this is the root node adapted with a $$DOC{ref:'CViewView'}. */}
+          Only used if this is the root node adapted with a $$DOC{ref:'CViewView'}. */},
+      postSet: function() {
+        if ( ! this.$ ) return;
+        this.$.className = this.className;
+      }
     },
     {
       model_: 'FloatProperty',
-      name:  'x',
+      name: 'x',
       defaultValue: 0,
       documentation: function() {/*
           The X offset of this view relative to its parent. */}
     },
     {
       model_: 'FloatProperty',
-      name:  'y',
+      name: 'y',
       defaultValue: 0,
       documentation: function() {/*
           The Y offset of this view relative to its parent. */}
@@ -120,6 +125,16 @@ CLASS({
     {
       name: 'canvasY',
       getter: function() { return this.y + ( this.parent ? this.parent.canvasY : 0 ); }
+    },
+    {
+      name: 'mouse',
+      transient: true,
+      hidden: true,
+      lazyFactory: function() {
+        var m = this.Mouse.create();
+        m.connect(this.$);
+        return m;
+      }
     },
     {
       model_: 'IntProperty',
@@ -204,9 +219,7 @@ CLASS({
 
     write: function(document) { /* Inserts this $$DOC{ref:'foam.graphics.CView'} into the DOM
                                    with an $$DOC{ref:'foam.graphics.AbstractCViewView'} wrapper. */
-      var v = this.toView_();
-      document.writeln(v.toHTML());
-      v.initHTML();
+      this.toView_().write(document);
     },
 
     addChild: function(child) { /* Adds a child $$DOC{ref:'foam.graphics.CView'} to the scene
@@ -251,8 +264,8 @@ CLASS({
                           does a $$DOC{ref:'.paintSelf'} then paints all the children. */
       if ( ! this.$ ) return; // no canvas element, so do nothing
       if ( this.state === 'initial' ) {
-        this.initCView();
         this.state = 'active';
+        this.initCView();
       }
       if ( this.suspended ) return; // we allowed initialization, but if suspended don't paint
 

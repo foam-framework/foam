@@ -26,10 +26,10 @@ CLASS({
 
   requires: [
     'Binding',
-    'CachingDAO',
-    'EasyDAO',
-    'IDBDAO',
-    'LazyCacheDAO',
+    'foam.dao.CachingDAO',
+    'foam.dao.EasyDAO',
+    'foam.dao.IDBDAO',
+    'foam.dao.LazyCacheDAO',
     'MDAO',
     'PersistentContext',
     'Timer',
@@ -192,7 +192,7 @@ CLASS({
       }
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'IssueCommentDAO',
       factory: function() {
         return this.WhenIdleDAO.create({

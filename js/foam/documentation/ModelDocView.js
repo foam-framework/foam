@@ -57,10 +57,10 @@ CLASS({
       this.generateFeatureDAO(this.data);
     },
 
-    destroy: function( isParentDestroyed ) {
-      this.SUPER(isParentDestroyed);
-      this.documentViewRef.removeListener(this.doScrollToFeature);
-    },
+//     destroy: function( isParentDestroyed ) {
+//       this.SUPER(isParentDestroyed);
+//       this.documentViewRef.removeListener(this.doScrollToFeature);
+//     },
 
     processModelChange: function() {
       // abort if it's too early //TODO: (we import data and run its postSet before the rest is set up)
@@ -82,9 +82,9 @@ CLASS({
       var ref = self.documentViewRef.get();
       if (ref && ref.valid) {
         if (! // if we don't find an element to scroll to:
-          ref.resolvedModelChain.slice(1).reverse().some(function(feature) {
-            if (feature && feature.name) {
-              element = this.X.$("scrollTarget_"+feature.name);
+          ref.resolvedRef.split('.').slice(1).reverse().some(function(feature) {
+            if (feature) {
+              element = this.X.$("scrollTarget_"+feature);
               if (element) {
                 element.scrollIntoView(true);
                 return true;

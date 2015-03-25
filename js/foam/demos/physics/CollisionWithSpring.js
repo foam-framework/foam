@@ -48,7 +48,6 @@ CLASS({
       this.SUPER();
 
       this.addChild(this.bumper);
-      this.addChild(this.anchor);
 
       var N = this.n;
 

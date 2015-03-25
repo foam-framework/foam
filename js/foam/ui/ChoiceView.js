@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-
 CLASS({
-  name:  'ChoiceView',
   package: 'foam.ui',
+  name:  'ChoiceView',
 
   extendsModel: 'foam.ui.AbstractChoiceView',
 
@@ -46,25 +45,21 @@ CLASS({
   ],
 
   templates: [
-    function toHTML() {/* <select id="<%= this.id %>" name="<%= this.name %>" size="<%= this.size %>><% this.toInnerHTML(out); %></select>*/},
+    function toHTML() {/*
+<select id="%%id" name="%%name" size="%%size"><% this.toInnerHTML(out); %></select>*/},
     function toInnerHTML() {/*
 <% if ( this.helpText ) { %>
 <option disabled="disabled"><%= escapeHTML(this.helpText) %></option>
 <% } %>
-<% for ( var i = 0, choice; choice = this.choices[i]; i++ ) { %>
+<% for ( var i = 0, choice ; choice = this.choices[i] ; i++ ) { %>
 <option id="<%= this.on('click', this.onClick,
 this.on('mouseover', this.onMouseOver,
 this.on('mouseout', this.onMouseOut))) %>" <% if ( choice[0] === this.data ) { %>selected<% } %> value="<%= i %>"><%= escapeHTML(choice[1].toString()) %></option>
 <% } %>
 */}
-
   ],
 
   methods: {
-    toHTML: function() {
-      return '<select id="' + this.id + '" name="' + this.name + '" size=' + this.size + '/></select>';
-    },
-
     initHTML: function() {
       this.SUPER();
       this.domValue = DomValue.create(this.$);
@@ -99,5 +94,3 @@ this.on('mouseout', this.onMouseOut))) %>" <% if ( choice[0] === this.data ) { %
     }
   ]
 });
-
-

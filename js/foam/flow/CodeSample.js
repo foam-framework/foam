@@ -15,25 +15,27 @@ CLASS({
   extendsModel: 'foam.flow.Element',
 
   requires: [
-    'Model',
-    'EasyDAO',
+    'foam.dao.EasyDAO',
     'foam.ui.ActionButton',
-    'foam.flow.VirtualConsole',
-    'foam.flow.VirtualConsoleView',
-    'foam.flow.Editor'
+    'foam.flow.CodeSampleOutput',
+    'foam.flow.CodeSampleOutputView',
+    'foam.flow.CodeSnippet',
+    'foam.flow.CodeSnippetView',
+    'foam.flow.SourceCodeListView'
   ],
 
   imports: [
     'document',
-    'editorModel',
-    'actionButtonModel'
+    'codeViewName',
+    'actionButtonName'
   ],
+  exports: [ 'sampleCodeContext$' ],
 
   properties: [
     {
       model_: 'StringProperty',
-      name: 'extraClassName',
-      defaultValue: 'loading'
+      name: 'codeViewName',
+      defaultValue: 'foam.flow.CodeView'
     },
     {
       model_: 'StringProperty',
@@ -41,56 +43,126 @@ CLASS({
       defaultValue: 'Example'
     },
     {
+      model_: 'foam.core.types.DAOProperty',
+      model: 'foam.flow.CodeSnippet',
+      name: 'source',
+      singular: 'codeSnippet',
+      factory: function() {
+        return this.EasyDAO.create({
+          model: this.CodeSnippet,
+          daoType: 'MDAO',
+          seqNo: true
+        });
+      }
+    },
+    {
+      name: 'output',
+      type: 'foam.flow.CodeSampleOutput',
+      factory: function() {
+        return this.CodeSampleOutput.create();
+      },
+      view: 'foam.flow.CodeSampleOutputView'
+    },
+    {
       model_: 'StringProperty',
-      name: 'src',
-      defaultValue: 'console.log("Hello world!");',
-      view: {
-        factory_: 'foam.ui.TextFieldView',
-        mode: 'read-only',
-        className: 'src'
+      name: 'actionButtonName',
+      defaultValue: 'foam.ui.ActionButton'
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'packagePath_',
+      defaultValue: function(Y, path, i) {
+        if ( i === path.length ) return Y;
+        if ( ! Y[path[i]] ) {
+          Y[path[i]] = {};
+        }
+        return this.packagePath_(Y[path[i]], path, i+1);
       }
     },
     {
-      name: 'virtualConsole',
-      type: 'foam.flow.VirtualConsole',
-      factory: function() {
-        return this.VirtualConsole.create();
-      },
-      view: 'foam.flow.VirtualConsoleView'
-    },
-    {
-      model_: 'ModelProperty',
-      name: 'actionButtonModel',
-      factory: function() { return this.ActionButton; }
-    },
-    {
-      name: 'editor',
-      factory: function() {
-        return (this.editorModel ? this.editorModel : this.Editor).create();
-      },
-      postSet: function(old, nu) {
-        if ( old === nu ) return;
-        if ( old ) {
-          old.unsubscribe(['loaded'], this.onEditorLoaded);
-          old.unsubscribe(['load-failed'], this.onEditorLoadFailed);
-        }
-        if ( nu ) {
-          nu.subscribe(['loaded'], this.onEditorLoaded);
-          nu.subscribe(['load-failed'], this.onEditorLoadFailed);
-        }
+      model_: 'FunctionProperty',
+      name: 'packagePath',
+      defaultValue: function(X, path) {
+        return path ? this.packagePath_(X, path.split('.'), 0) : this;
       }
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'registerModel',
+      defaultValue: function(model, opt_name) {
+        var root    = this;
+        var name    = model.name;
+        var package = model.package;
+
+        if ( opt_name ) {
+          var a = opt_name.split('.');
+          name = a.pop();
+          package = a.join('.');
+        }
+
+        var path = this.packagePath(root, package);
+        Object.defineProperty(path, name, { value: model, configurable: true });
+        return model;
+      }
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'classFn',
+      defaultValue: function(modelHash, opt_X) {
+        var Y = opt_X || this;
+        modelHash.package = modelHash.package || 'foam.sandbox';
+        var model = Y.Model.create(modelHash, Y);
+        Y.registerModel(model);
+        model.arequire();
+        return model;
+      }
+    },
+    {
+      name: 'sampleCodeBaseContext',
+      factory: function() {
+        var X = this.X.sub({
+          packagePath_: this.packagePath_,
+          registerModel: this.registerModel,
+          CLASS: this.classFn
+        });
+        return X;
+      }
+    },
+    {
+      name: 'sampleCodeContext',
+      factory: function() { return this.sampleCodeBaseContext.sub(); }
+    },
+    {
+      name: 'state',
+      documentation: function() {/* Either "hold" or "release". Used to trigger
+        running sample code with respect to animations. */},
+      defaultValue: 'hold'
     }
   ],
 
   methods: [
     {
+      name: 'init',
+      code: function() {
+        this.SUPER.apply(this, arguments);
+        Events.dynamic(function() {
+          this.state; this.running;
+          if ( this.running && this.state === 'release' ) this.onRun();
+        }.bind(this));
+      }
+    },
+    {
       name: 'initHTML',
       code: function() {
         this.SUPER.apply(this, arguments);
-        if ( this.editor ) {
-          this.editor.src = this.src;
-          if ( this.editor.src$ ) this.src$ = this.editor.src$;
-        }
+        var hasHTML = false;
+        this.source.select({
+          put: function(o) {
+            hasHTML |= arguments[0].src.language.toLowerCase() === 'html';
+          }
+        })(function() {
+          if ( ! hasHTML ) this.outputView.viewOutputView.height = 0;
+        }.bind(this));
       }
     }
   ],
@@ -100,54 +172,47 @@ CLASS({
       name: 'run',
       iconUrl: 'https://www.gstatic.com/images/icons/material/system/1x/play_arrow_white_24dp.png',
       action: function() {
-        this.virtualConsoleView.reset();
-        this.virtualConsole.watchConsole();
-        try {
-          var X = this.X.sub();
-          eval('(function(X){'    + this.src + '}).call(null, X)');
-        } catch (e) {
-          this.virtualConsole.onError(e.toString());
-        } finally {
-          this.virtualConsole.resetConsole();
-        }
+        this.running = true;
+        this.outputView.reset();
       }
     }
   ],
 
   listeners: [
     {
-      name: 'onEditorLoaded',
-      todo: 'We should probably have a spinner and/or placeholder until this fires.',
+      name: 'onRun',
       code: function() {
-        // TODO(markdittmer): This should automatically update our classname.
-        // Why doesn't it?
-        this.extraClassName = '';
-        if ( ! this.$ ) return;
-        this.$.className = this.cssClassAttr().slice(7, -1);
-      }
-    },
-    {
-      name: 'onEditorLoadFailed',
-      isFramed: true,
-      code: function(_, topics) {
-        var editorModelName = topics[1];
-        if ( editorModelName !== 'foam.flow.Editor' ) {
-          this.editor = this.Editor.create();
-          this.updateHTML();
-          return;
-        }
-
-        // Failed to load editor: this.Editor. Just output src as textContent.
-        console.error('CodeSample: Failed to load code editor');
-        if ( this.$ ) {
-          var container = this.$.querySelector('editors') || this.$;
-          container.innerHTML = '';
-          container.textContent = this.src;
-          // TODO(markdittmer): This should automatically update our classname.
-          // Why doesn't it?
-          this.extraClassName = '';
-          this.$.className = this.cssClassAttr().slice(7, -1);
-        }
+        this.output.virtualConsole.watchConsole();
+        this.output.viewOutput.innerHTML = '';
+        var X = this.sampleCodeContext = this.sampleCodeBaseContext.sub(),
+            CLASS = X.CLASS;
+        this.source.select({
+          put: function() {
+            // Use arguments array to avoid leaking names into eval context.
+            if ( arguments[0].src && arguments[0].src.language ) {
+              if ( arguments[0].src.language.toLowerCase() === 'javascript' ) {
+                try {
+                  eval('(function(X, CLASS){' +
+                      arguments[0].src.code +
+                      '}).call(null, X, CLASS)');
+                } catch (e) {
+                  this.output.virtualConsole.onError(e.toString());
+                }
+              } else if ( arguments[0].src.language.toLowerCase() === 'html' ) {
+                // CodeSamples use <foam-tag> instead of <foam> to avoid
+                // creating broken FoamTagViews.
+                this.output.viewOutput.innerHTML +=
+                    arguments[0].src.code.replace(/<foam-tag/g, '<foam');
+              }
+            }
+          }.bind(this),
+          error: function(e) {
+            this.output.virtualConsole.onError(e.toString());
+          }.bind(this)
+        })(function() {
+          this.output.virtualConsole.resetConsole();
+          this.running = false;
+        }.bind(this));
       }
     }
   ],
@@ -158,29 +223,32 @@ CLASS({
         %%title
       </heading>
       <top-split>
-        <editors>
-          %%editor
-        </editors>
+        $$source{ model_: this.SourceCodeListView, rowView: this.CodeSnippetView }
         <actions>
           $$run{
-            model_: this.actionButtonModel,
+            model_: this.actionButtonName,
             className: 'actionButton playButton',
             color: 'white',
-            font: '30px Roboto Arial',
+            font: '30px Roboto, Arial',
             alpha: 1.0,
-            width: 38,
-            height: 38,
             radius: 18,
             background: '#e51c23'
           }
         </actions>
-        $$src
+        <print-only>
+          $$source{
+            model_: this.SourceCodeListView,
+            mode: 'read-only',
+            rowView: {
+              factory_: 'foam.flow.CodeSnippetView',
+              scroll: false,
+              codeViewName: 'foam.flow.CodeView'
+            }
+          }
+        </print-only>
       </top-split>
       <bottom-split>
-        $$virtualConsole{
-          minLines: 8,
-          maxLines: 8
-        }
+        $$output
       </bottom-split>
     */},
     function CSS() {/*
@@ -197,11 +265,6 @@ CLASS({
       code-sample.loading {
         display: none;
       }
-      code-sample editors {
-        display: flex;
-        justify-content: space-between;
-        align-items: stretch;
-      }
       code-sample top-split, code-sample bottom-split {
         display: block;
         position: relative;
@@ -209,7 +272,7 @@ CLASS({
       code-sample top-split {
         z-index: 10;
       }
-      code-sample top-split::before {
+      code-sample top-split::after {
         bottom: -4px;
         content: '';
         height: 4px;
@@ -221,7 +284,6 @@ CLASS({
       }
       code-sample bottom-split {
         z-index: 5;
-        background: #E0E0E0;
       }
       code-sample actions {
         position: absolute;
@@ -242,15 +304,20 @@ CLASS({
           margin: 0px;
           padding: 10px 10px 10px 10px;
           background: #F4B400;
+          z-index: 20;
         }
 
-        code-sample .src {
+        code-sample print-only {
           display: none;
         }
 
       }
 
       @media print {
+
+        code-sample print-only, code-sample print-only sources {
+          display: block;
+        }
 
         code-sample heading {
           font-size: 14pt;
@@ -261,13 +328,13 @@ CLASS({
           margin: 3pt;
         }
 
-        code-sample editors, code-sample actions, code-sample virtual-console {
+        code-sample sources, code-sample actions, code-sample virtual-console {
           display: none;
         }
 
-        code-sample .src {
+        code-sample print-only sources {
           display: block;
-          font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+          font: 14px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
           white-space: pre-wrap;
           margin: 3pt;
           page-break-inside: avoid;

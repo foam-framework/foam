@@ -40,14 +40,14 @@ CLASS({
     },
     {
       name: 'featureDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       onDAOUpdate: function() {
         this.rebuildSelfDAOs();
       }
     },
     {
       name:  'selfFeaturesDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       documentation: function() { /*
           Returns the list of features (matching this feature type) that are
           declared or overridden in this $$DOC{ref:'Model'}
@@ -61,7 +61,7 @@ CLASS({
     },
     {
       name:  'inheritedFeaturesDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       documentation: function() { /*
           Returns the list of features (matching this feature type) that are
           inherited but not declared or overridden in this $$DOC{ref:'Model'}
@@ -118,7 +118,7 @@ CLASS({
           this.selfFeaturesDAO = [].sink;
           this.featureDAO
             .where(
-                  AND(AND(EQ(this.DocFeatureInheritanceTracker.MODEL, this.documentViewRef.get().resolvedRoot.resolvedModelChain[0].id),
+                  AND(AND(EQ(this.DocFeatureInheritanceTracker.MODEL, this.documentViewRef.get().resolvedRoot.resolvedObject.id),
                           EQ(this.DocFeatureInheritanceTracker.IS_DECLARED, true)),
                       CONTAINS(this.DocFeatureInheritanceTracker.TYPE, this.featureType))
                   )
@@ -127,7 +127,7 @@ CLASS({
           this.inheritedFeaturesDAO = [].sink;
           this.featureDAO
             .where(
-                  AND(AND(EQ(this.DocFeatureInheritanceTracker.MODEL, this.documentViewRef.get().resolvedRoot.resolvedModelChain[0].id),
+                  AND(AND(EQ(this.DocFeatureInheritanceTracker.MODEL, this.documentViewRef.get().resolvedRoot.resolvedObject.id),
                           EQ(this.DocFeatureInheritanceTracker.IS_DECLARED, false)),
                       CONTAINS(this.DocFeatureInheritanceTracker.TYPE, this.featureType))
                   )

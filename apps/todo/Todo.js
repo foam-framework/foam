@@ -6,7 +6,7 @@
 	/* global CLASS, TRUE, SET, NOT, GROUP_BY, COUNT, EasyDAO, Todo, TodoDAO */
 	CLASS({
 		name: 'TodoDAO',
-		extendsModel: 'ProxyDAO',
+		extendsModel: 'foam.dao.ProxyDAO',
 		methods: {
 			put: function(issue, s) {
 				// If the user tried to put an empty text, remove the entry instead.
@@ -61,7 +61,7 @@
 
 	CLASS({
 		name: 'Controller',
-    requires: ['foam.ui.TextFieldView', 'foam.ui.DAOListView', 'TodoFilterView', 'EasyDAO' ],
+    requires: ['foam.ui.TextFieldView', 'foam.ui.DAOListView', 'TodoFilterView', 'foam.dao.EasyDAO' ],
 		properties: [
 			{
 				name: 'input',
@@ -75,7 +75,7 @@
 				view: { factory_: 'foam.ui.TextFieldView', placeholder: 'What needs to be done?' }
 			},
 			{ name: 'dao' },
-			{ name: 'filteredDAO',    model_: 'DAOProperty', view: 'foam.ui.DAOListView' },
+			{ name: 'filteredDAO',    model_: 'foam.core.types.DAOProperty', view: 'foam.ui.DAOListView' },
 			{ name: 'completedCount', model_: 'IntProperty' },
 			{ name: 'activeCount',    model_: 'IntProperty', postSet: function (_, c) { this.toggle = !c; }},
 			{ name: 'toggle',         model_: 'BooleanProperty', postSet: function (_, n) {

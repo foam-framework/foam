@@ -37,6 +37,13 @@
   }
   delete params.showActions;
 
+  for ( var key in params ) {
+    if ( key.startsWith('p:') ) {
+      params[key.substring(2)] = params[key];
+      delete params[key];
+    }
+  }
+
   apar.apply(null, models).aseq(
     function() {
       var obj = X.lookup(model).create(params);

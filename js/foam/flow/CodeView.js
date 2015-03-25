@@ -10,21 +10,35 @@
  */
 
 CLASS({
-  name: 'Editor',
+  name: 'CodeView',
   package: 'foam.flow',
   extendsModel: 'foam.flow.Element',
   traits: [ 'foam.flow.MultilineViewTrait' ],
 
-  imports: [ 'document' ],
+  requires: ['foam.flow.SourceCode'],
+
+  imports: [
+    'document',
+    'codeViewLoadState$'
+  ],
 
   properties: [
     {
-      model_: 'StringProperty',
-      name: 'src',
-      defaultValue: 'console.log("Hello world!");',
-      postSet: function(_, nu) {
-        if ( ! this.$ ) return;
-        if ( nu !== this.$.textContent ) this.$.textContent = nu;
+      name: 'data',
+      type: 'foam.flow.SourceCode',
+      factory: function() {
+        return this.SourceCode.create({
+          data: 'console.log("Hello world!");'
+        });
+      }
+    },
+    {
+      name: 'mode',
+      defaultValue: 'read-write',
+      postSet: function(old, nu) {
+        if ( ! this.$ || old === nu ) return;
+        if ( nu === 'read-only' ) this.$.removeAttribute('contenteditable');
+        else                      this.$.setAttribute('contenteditable', 'true');
       }
     },
     {
@@ -36,6 +50,16 @@ CLASS({
       model_: 'IntProperty',
       name: 'maxLines',
       defaultValue: 20
+    },
+    {
+      model_: 'IntProperty',
+      name: 'readOnlyMinLines',
+      defaultValue: 2
+    },
+    {
+      model_: 'IntProperty',
+      name: 'readOnlyMaxLines',
+      defaultValue: 10
     }
   ],
 
@@ -47,7 +71,7 @@ CLASS({
         if ( ! this.$ ) return;
         this.$.addEventListener('input', this.onSrcChange);
         this.$.setAttribute('contenteditable', 'true');
-        this.publish(['loaded', 'foam.flow.Editor']);
+        this.codeViewLoadState = 'loaded';
       }
     }
   ],
@@ -63,10 +87,10 @@ CLASS({
   ],
 
   templates: [
-    // Support both <editor>...</editor> and %%myEditor.
-    function toInnerHTML() {/*<% if ( this.inner ) { %><%= this.inner() %><% } else { %><%= this.src %><% } %>*/},
+    // Support both <code-view>...</code-view> and %%myCodeView.
+    function toInnerHTML() {/*<% if ( this.inner ) { %><%= this.inner() %><% } else { %><%= this.data.code %><% } %>*/},
     function CSS() {/*
-      editor {
+      code-view {
         display: block;
         position: relative;
         min-height: 10em;
@@ -74,7 +98,7 @@ CLASS({
         flex-grow: 1;
         padding-left: 4px;
         font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-        white-space: pre;
+        white-space: pre-wrap;
         overflow: auto;
       }
     */}

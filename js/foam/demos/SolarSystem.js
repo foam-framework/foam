@@ -16,12 +16,12 @@
  */
 
 CLASS({
-  name: 'SolarSystem',
   package: 'foam.demos',
+  name: 'SolarSystem',
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'Graph',
+    'foam.graphics.Graph',
     'PieGraph',
     'Timer',
     'foam.demos.ClockView',
@@ -96,7 +96,7 @@ CLASS({
 
       var graph = this.Graph.create({x:10,y:450,width:200,height:100,axisColor:'white',data:[1,2,3,4,5,4,3,2,1,4,6,8,10]});
       this.space.addChild(graph);
-      graph.watch(this.apollo.y$);    
+      graph.watch(this.apollo.y$);
 
       var pie = this.PieGraph.create({lineColor: 'white', r:50, x:20, y:250});
       this.space.addChild(pie);
@@ -105,7 +105,7 @@ CLASS({
       var eyes = this.EyesCView.create({x:1,y:1});
       this.space.addChild(eyes);
       eyes.watch(this.mars);
-      
+
       this.turntableView = this.turntable.toView_();
       Events.link(this.timer.time$, this.turntable.time$);
     },

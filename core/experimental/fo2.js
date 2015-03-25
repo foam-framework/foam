@@ -126,7 +126,7 @@ var rootFeatureSet = [
   ['TodoController', 'Property', {
     name: 'todoDAO'
   }],
-  ['TodoController', 'DAOProperty', {
+  ['TodoController', 'foam.core.types.DAOProperty', {
     name: 'filteredDAO',
     view: { model_: 'DAOListController', rowView: 'TodoView' }
   }],
@@ -167,7 +167,7 @@ var rootFeatureSet = [
     name: 'init',
     code: function() {
       this.SUPER();
-      this.todoDAO = EasyDAO.create({
+      this.todoDAO = X.lookup('foam.dao.EasyDAO').create({
         model: Todo,
         seqNo: true,
         cache: true,

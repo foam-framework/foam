@@ -134,11 +134,18 @@ function arequire(modelName, opt_X) {
     }
 
     var future = afuture();
+    X.arequire$ModelLoadsInProgress[modelName] = future.get;
+
     X.ModelDAO.find(modelName, {
       put: function(m) {
-        delete X.arequire$ModelLoadsInProgress[modelName];
-        X.registerModel(m);
-        future.set(m);
+        // Contextualize the model for this context
+        m.X = X;
+
+        m.arequire()(function(m) {
+          delete X.arequire$ModelLoadsInProgress[modelName];
+          X.registerModel(m);
+          future.set(m);
+        });
       },
       error: function() {
         var args = argsToArray(arguments);
@@ -148,7 +155,6 @@ function arequire(modelName, opt_X) {
       }
     });
 
-    X.arequire$ModelLoadsInProgress[modelName] = future.get;
     return future.get;
   }
 
@@ -204,7 +210,7 @@ function registerModel(model, opt_name) {
 }
 
 
-function CLASS(m) {
+var CLASS = function(m) {
 
   /** Lazily create and register Model first time it's accessed. **/
   function registerModelLatch(path, m) {

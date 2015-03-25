@@ -191,19 +191,23 @@ var FObject = {
   },
 
   fromElement: function(e) {
+    var RESERVED_ATTRS = {
+      id: true, model: true, view: true, showactions: true, oninit: true
+    };
     var elements = this.elementMap_;
 
-    // Build a map of properties keyed off of either 'name' or 'singular'
+    // Build a map of properties keyed off of 'name'
+    // TODO: do we have a method to lookupIC?
     if ( ! elements ) {
       elements = {};
       for ( var i = 0 ; i < this.model_.properties_.length ; i++ ) {
         var p = this.model_.properties_[i];
-        elements[p.name] = p;
-        elements[p.name.toUpperCase()] = p;
-        if ( p.singular ) {
-          elements[p.singular] = p;
-          elements[p.singular.toUpperCase()] = p;
+        if ( ! RESERVED_ATTRS[p.name] ) {
+          elements[p.name] = p;
+          elements[p.name.toUpperCase()] = p;
         }
+        elements['p:' + p.name] = p;
+        elements['P:' + p.name.toUpperCase()] = p;
       }
       this.elementMap_ = elements;
     }
@@ -227,7 +231,7 @@ var FObject = {
           p.fromString.call(this, val, p);
         }
       } else {
-        if ( ! { id: true, model: true, view: true, showactions: true, oninit: true }[attr.name] )
+        if ( ! RESERVED_ATTRS[attr.name] )
           console.warn('Unknown attribute name: "' + attr.name + '"');
       }
     }
@@ -593,8 +597,7 @@ var FObject = {
       showActions: true
     });
 
-    document.writeln(view.toHTML());
-    view.initHTML();
+    view.write(document);
   },
 
   defaultView: function(opt_view) {
@@ -627,16 +630,19 @@ var FObject = {
 
   getMyFeature: function(featureName) {
     featureName = featureName.toUpperCase();
+    var arrayOrEmpty = function(arr) {
+      return ( arr && Array.isArray(arr) ) ? arr : [];
+    }
     return [
-      this.properties_ ? this.properties_ : [],
-      this.actions_ ? this.actions_ : [],
-      this.methods ? this.methods : [],
-      this.listeners ? this.listeners : [],
-      this.templates ? this.templates : [],
-      this.models ? this.models : [],
-      this.tests ? this.tests : [],
-      this.relationships ? this.relationships : [],
-      this.issues ? this.issues : []
+      arrayOrEmpty(this.properties_),
+      arrayOrEmpty(this.actions_),
+      arrayOrEmpty(this.methods),
+      arrayOrEmpty(this.listeners),
+      arrayOrEmpty(this.templates),
+      arrayOrEmpty(this.models),
+      arrayOrEmpty(this.tests),
+      arrayOrEmpty(this.relationships),
+      arrayOrEmpty(this.issues)
     ].mapFind(function(list) { return list.mapFind(function(f) {
       return f.name && f.name.toUpperCase() === featureName && f;
     })});
@@ -644,16 +650,19 @@ var FObject = {
 
   getAllMyFeatures: function() {
     var featureList = [];
+    var arrayOrEmpty = function(arr) {
+      return ( arr && Array.isArray(arr) ) ? arr : [];
+    }
     [
-      this.properties_ ? this.properties_ : [],
-      this.actions_ ? this.actions_ : [],
-      this.methods ? this.methods : [],
-      this.listeners ? this.listeners : [],
-      this.templates ? this.templates : [],
-      this.models ? this.models : [],
-      this.tests ? this.tests : [],
-      this.relationships ? this.relationships : [],
-      this.issues ? this.issues : []
+      arrayOrEmpty(this.properties_),
+      arrayOrEmpty(this.actions_),
+      arrayOrEmpty(this.methods),
+      arrayOrEmpty(this.listeners),
+      arrayOrEmpty(this.templates),
+      arrayOrEmpty(this.models),
+      arrayOrEmpty(this.tests),
+      arrayOrEmpty(this.relationships),
+      arrayOrEmpty(this.issues)
     ].map(function(list) {
       featureList = featureList.concat(list);
     });

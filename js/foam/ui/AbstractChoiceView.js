@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'AbstractChoiceView',
   package: 'foam.ui',
+  name: 'AbstractChoiceView',
 
   extendsModel: 'foam.ui.View',
 
@@ -56,7 +56,7 @@ CLASS({
       },
       setter: function(choice) {
         var oldValue = this.choice;
-        if ( this.autoSetData ) this.data = choice[0];
+        this.data = choice[0];
         this.text = choice[1];
         this.propertyChange('choice', oldValue, this.choice);
       }
@@ -92,15 +92,19 @@ CLASS({
           var choice = newValue[i];
 
           if ( value === choice[0] ) {
-            if ( this.useSelection ) this.index = i;
-            else this.choice = choice;
+            if ( this.useSelection )
+              this.index = i;
+            else
+              this.choice = choice;
             break;
           }
         }
 
         if ( this.autoSetData && i === newValue.length ) {
-          if ( this.useSelection ) this.index = 0;
-          else this.data = newValue.length ? newValue[0][0] : undefined;
+          if ( this.useSelection )
+            this.index = 0;
+          else
+            this.data = newValue.length ? newValue[0][0] : undefined;
         }
 
         this.updateHTML();
@@ -109,6 +113,7 @@ CLASS({
     // The authoritative selection internally. data and choice are outputs when
     // useSelection is enabled.
     {
+      model_: 'IntProperty',
       name: 'index',
       help: 'The index of the current choice.',
       preSet: function(_, i) {
@@ -119,7 +124,7 @@ CLASS({
       postSet: function(_, i) {
         // If useSelection is enabled, don't update data or choice.
         if ( this.useSelection ) return;
-        if ( this.autoSetData && this.data !== this.choices[i][0] ) this.data = this.choices[i][0];
+        if ( this.data !== this.choices[i][0] ) this.data = this.choices[i][0];
       }
     },
     {
@@ -133,13 +138,13 @@ CLASS({
       model_: 'BooleanProperty'
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'dao',
       onDAOUpdate: 'onDAOUpdate'
     },
     {
       name: 'data',
-      postSet: function(old,nu) {
+      postSet: function(old, nu) {
         for ( var i = 0 ; i < this.choices.length ; i++ ) {
           if ( this.choices[i][0] === nu ) {
             if ( this.index !== i ) {
@@ -184,8 +189,7 @@ CLASS({
     },
 
     commit: function() {
-      if ( ! this.useSelection ) return;
-      if ( this.choices[this.index] )
+      if ( this.useSelection && this.choices[this.index] )
         this.choice = this.choices[this.index];
     }
   }

@@ -50,9 +50,8 @@ var files = [
   'mm3Types',
   'mm4Method',
   'mm5Misc',
-  [ '../js/foam/core/bootstrap/ModelFileDAO', IN_BROWSER ],
+  [ '../js/foam/core/bootstrap/BrowserFileDAO', IN_BROWSER ],
   [ '../js/node/dao/ModelFileDAO', IN_NODEJS ],
-  [ '../js/node/dao/JSModelFileDAO', IN_NODEJS ],
   '../js/foam/ui/Window',
   'value',
   'view',
@@ -68,11 +67,13 @@ var files = [
   'oam',
   'visitor',
   'messaging',
+//  '../js/foam/dao/ProxyDAO',
   'dao',
-  'dao2',
   'arrayDAO',
   'index',
   'models',
   [ 'glang', IN_BROWSER ],
-  'oauth'
+  'oauth',
+  [ 'ModelDAO', IN_BROWSER ],
+  [ 'NodeModelDAO', IN_NODEJS ]
 ];

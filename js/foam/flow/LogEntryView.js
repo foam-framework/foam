@@ -47,7 +47,7 @@ CLASS({
       }
       log-entry > log, log-entry > warn, log-entry > error {
         padding-left: 4px;
-        white-space: pre;
+        white-space: pre-wrap;
       }
       log-entry > log {
         color: #333;

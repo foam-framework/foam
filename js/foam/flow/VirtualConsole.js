@@ -15,7 +15,7 @@ CLASS({
   todo: 'This isn\'t a FLOW view. It should probably live somewhere else.',
 
   requires: [
-    'EasyDAO',
+    'foam.dao.EasyDAO',
     'foam.core.dao.ManuallyDelayedPutDAO',
     'foam.ui.DAOListView',
     'foam.flow.LogEntry',
@@ -32,7 +32,7 @@ CLASS({
       defaultValue: 0
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'console_',
       factory: function() {
         return this.EasyDAO.create({
@@ -43,6 +43,7 @@ CLASS({
       },
       view: {
         factory_: 'foam.ui.DAOListView',
+        tagName: 'console-log',
         rowView: 'foam.flow.LogEntryView'
       },
       postSet: function(old, nu) {
@@ -51,7 +52,7 @@ CLASS({
       }
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'delayedConsole_',
       factory: function() {
         return this.ManuallyDelayedPutDAO.create({ delegate: this.console_ });

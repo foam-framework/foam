@@ -18,7 +18,7 @@ CLASS({
 });
 
 // Create an IndexedDB table with caching.
-var dao = EasyDAO.create({model: Tabla, daoType: 'IDBDAO', cache: true});
+var dao = X.lookup('foam.dao.EasyDAO').create({model: Tabla, daoType: 'foam.dao.IDBDAO', cache: true});
 
 // Add your test data.
 [
@@ -43,8 +43,8 @@ CLASS({
   properties: [ 'id', 'columnA', 'columnB' ]
 });
 
-//var MyTableDAO = EasyDAO.create({model: MyTable, seqNo: true, daoType: 'IDBDAO', cache: true});
-var MyTableDAO = EasyDAO.create({model: MyTable, seqNo: true, daoType: 'MDAO', cache: true});
+//var MyTableDAO = X.lookup('foam.dao.EasyDAO').create({model: MyTable, seqNo: true, daoType: 'IDBDAO', cache: true});
+var MyTableDAO = X.lookup('foam.dao.EasyDAO').create({model: MyTable, seqNo: true, daoType: 'MDAO', cache: true});
 
 [
   MyTable.create({columnA: 'ABC', columnB: '123thd'}),
@@ -409,7 +409,7 @@ ModelDAO.select(console.log.json);
 // WEB UI
 
 // Output in a TableView
-TableView.create({model: Person, dao: dao}).write(document);
+X.foam.ui.TableView.create({model: Person, dao: dao}).write(document);
 
 // Document is also a Sink
 dao.select(document);
@@ -420,15 +420,19 @@ dao.select(document);
 
   <script language="javascript">
   apar(arequire('foam.ui.TableView'),
-       arequire('foam.ui.View'),
-       arequire('foam.ui.DetailView')
+       arequire('foam.ui.DetailView'),
+       arequire('foam.dao.ProxyDAO'),
+       arequire('foam.dao.FutureDAO'),
+       arequire('foam.dao.EasyDAO'),
+       arequire('foam.dao.IDBDAO'),
+       arequire('foam.dao.NullDAO')
     )(function() {
     var demo = $('demo');
     var out  = $('output');
     var log_ = function(o) {
       if ( o.indexOf('<') != 0 ) o = o.replace(/\n/g, '<br>').replace(/ /g,'&nbsp;');
 //      out.innerHTML = out.innerHTML + o + '<br/>';
-      document.writeln(o + '<br/>');
+      document.body.insertAdjacentHTML('beforeend', o + '<br/>');
     }
     var oldLog = console.log;
     console.log = function() { log_([].join.call(arguments, '')); };

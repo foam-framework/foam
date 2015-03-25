@@ -27,7 +27,7 @@ CLASS({
   ]
 });
 
-var TodoDAO = EasyDAO.create({ daoType: 'MDAO', seqNo: true, model: Todo });
+var TodoDAO = X.lookup('foam.dao.EasyDAO').create({ daoType: 'MDAO', seqNo: true, model: Todo });
 TodoDAO.put(Todo.create({ id: 1, text: 'Task 1' }));
 TodoDAO.put(Todo.create({ id: 2, text: 'Child task', parent: 1 }));
 

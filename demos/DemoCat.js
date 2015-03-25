@@ -15,8 +15,15 @@ CLASS({
   ]
 });
 
-
-var demos = JSONUtil.arrayToObjArray(X, [
+CLASS({
+  name: 'Controller',
+  requires: ['foam.ui.TextFieldView',
+             'foam.ui.DAOListView',
+             'Demo'],
+  properties: [
+    { name: 'search', view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true } },
+    { name: 'dao', factory: function() {
+return JSONUtil.arrayToObjArray(X, [
   {
     name: 'Googley Eyes',
     path: '/index.html?model=foam.demos.graphics.EyesDemo',
@@ -68,7 +75,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Fading Circles',
-    path: 'FadingCircles.html',
+    path: '/index.html?model=foam.demos.graphics.FadingCircles',
     description: 'An reactive-programming animation which demonstrates the use of Events.dynamic() and Movement.animate().',
     keywords: ['animation'],
     image: 'FadingCircles.png'
@@ -82,6 +89,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'InterpolatedClocks',
+    path: '/index.html?model=foam.demos.InterpolatedClocks',
     path: 'InterpolatedClocks.html',
     description: 'A demonstration of animation interpolators.  Click to animate the clocks.  Notice how the different clocks use different acceleration curves to reach their targets.',
     keywords: ['animation'],
@@ -185,8 +193,8 @@ var demos = JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Complements',
-    path: 'Complements.html',
-    description: 'An animated colour wheel.  Ported from the Elm demo.  Shows use of Events.dynamic().',
+    path: '/index.html?model=foam.demos.graphics.Complements',
+    description: 'An animated colour wheel.  Ported from the <a href="http://elm-lang.org/edit/examples/Intermediate/Complements.elm">Elm demo</a>.  Shows use of Events.dynamic().',
     keywords: ['animation', '14'],
     image: 'Complements.png'
   },
@@ -246,7 +254,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Issue Tracker (Material-Design)',
-    path: '../apps/mbug/main.html',
+    path: '../../js/foam/apps/mbug/main.html',
     description: 'A simple mobile code.google.com issue-tracker client with a Material-Design interface.  Triage your Crbugs on the go.  See: <a href="http://mbug.foamdev.com">http://mbug.foamdev.com</a>',
     keywords: ['app', 'material-design', 'mobile', '14', 'android'],
     src: '../apps/mbug/',
@@ -333,19 +341,11 @@ var demos = JSONUtil.arrayToObjArray(X, [
     keywords: ['dev', 'ide', 'model'],
     src: '/js/foam/apps/Modeller.js'
   }
-], Demo).dao;
-
-
-CLASS({
-  name: 'Controller',
-  requires: ['foam.ui.TextFieldView',
-             'foam.ui.DAOListView'],
-  properties: [
-    { name: 'search', view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true } },
-    { name: 'dao', defaultValue: demos },
+], this.Demo).dao;
+    } },
     {
       name: 'filteredDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       view: { factory_: 'foam.ui.DAOListView', mode: 'read-only' },
       dynamicValue: function() {
         return this.dao.where(CONTAINS_IC(SEQ(Demo.NAME, Demo.DESCRIPTION, Demo.KEYWORDS), this.search));

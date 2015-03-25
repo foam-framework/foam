@@ -22,8 +22,8 @@ CLASS({
   documentation: function() {/*  */},
 
   requires: [
-    'EasyDAO',
-    'FutureDAO'
+    'foam.dao.EasyDAO',
+    'foam.dao.FutureDAO'
   ],
 
   constants: [

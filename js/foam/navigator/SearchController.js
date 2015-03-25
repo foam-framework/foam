@@ -20,8 +20,8 @@ CLASS({
   package: 'foam.navigator',
   extendsModel: 'foam.ui.View',
   requires: [
-    'CachingDAO',
-    'IDBDAO',
+    'foam.dao.CachingDAO',
+    'foam.dao.IDBDAO',
     'MDAO',
     'Phone',
     'com.google.mail.EMailDAO',
@@ -106,7 +106,7 @@ CLASS({
       }
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'dao',
       factory: function() {
         return this.MultiDAO.create({ configDAO: this.configDao });
@@ -123,7 +123,7 @@ CLASS({
       postSet: function(old, nu) { if (nu) this.expanded = true; }
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'filteredDao',
       view: {
         factory_: 'foam.ui.DAOListView',

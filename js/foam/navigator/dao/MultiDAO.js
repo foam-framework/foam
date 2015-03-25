@@ -21,7 +21,7 @@ CLASS({
   extendsModel: 'AbstractDAO',
 
   requires: [
-    'EasyDAO',
+    'foam.dao.EasyDAO',
     'foam.navigator.BrowserConfig',
     'foam.navigator.dao.ModelIDDecoratorDAO',
     'foam.navigator.dao.IDConfig'
@@ -39,7 +39,7 @@ CLASS({
     },
     {
       name: 'configDAO',
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       documentation: multiline(function() {/*
         A DAO of objects that must each have o.dao (a DAO) and o.model (a
         model).

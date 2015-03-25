@@ -152,7 +152,7 @@ CLASS({
     {
       name: 'view',
       // TODO: create custom DateView
-      defaultValue: 'DateFieldView'
+      defaultValue: 'foam.ui.DateFieldView'
     },
     {
       name: 'prototag',
@@ -464,7 +464,7 @@ CLASS({
       name: 'install',
       defaultValue: function(prop) {
         defineLazyProperty(this, prop.name + '$Proxy', function() {
-          var proxy = ProxyDAO.create({delegate: this[prop.name].dao});
+          var proxy = this.X.lookup('foam.dao.ProxyDAO').create({delegate: this[prop.name].dao});
 
           this.addPropertyListener(prop.name, function(_, _, _, a) {
             proxy.delegate = a.dao;
@@ -625,63 +625,19 @@ CLASS({
       defaultValue: false
     },
     {
+      name: 'fromString',
+      defaultValue: function(s, p) {
+        this[p.name] = s.split(',');
+      }
+    },
+    {
       name: 'fromElement',
       defaultValue: function(e, p) {
-        this[p.name] = this[p.name].pushF(e.innerHTML);
-      }
-    }
-  ]
-});
-
-
-CLASS({
-  extendsModel: 'Property',
-
-  name: 'DAOProperty',
-  help: "Describes a DAO property.",
-
-  properties: [
-    {
-      name: 'type',
-      defaultValue: 'DAO',
-      help: 'The FOAM type of this property.'
-    },
-    {
-      name: 'view',
-      defaultValue: 'foam.ui.ArrayView'
-    },
-    {
-//      model_: 'FunctionProperty',
-      name: 'onDAOUpdate'
-    },
-    {
-      name: 'install',
-      defaultValue: function(prop) {
-        defineLazyProperty(this, prop.name + '$Proxy', function() {
-          if ( ! this[prop.name] ) {
-            var future = afuture();
-            var delegate = FutureDAO.create({
-              future: future.get
-            });
-          } else
-            delegate = this[prop.name];
-
-          var proxy = ProxyDAO.create({delegate: delegate});
-
-          this.addPropertyListener(prop.name, function(_, _, _, dao) {
-            if ( future ) {
-              future.set(dao);
-              future = null;
-              return;
-            }
-            proxy.delegate = dao;
-          });
-
-          return {
-            get: function() { return proxy; },
-            configurable: true
-          };
-        });
+        var val = [];
+        var name = p.singular || 'item';
+        for ( var i = 0 ; i < e.children.length ; i++ )
+          if ( e.children[i].nodeName === name ) val.push(e.children[i].innerHTML);
+        this[p.name] = val;
       }
     }
   ]
@@ -922,6 +878,11 @@ CLASS({
 });
 
 CLASS({
+  name: 'ColorProperty',
+  extendsModel: 'StringProperty'
+});
+
+CLASS({
   extendsModel: 'Property',
   name: 'DocumentationProperty',
   help: 'Describes the documentation properties found on Models, Properties, Actions, Methods, etc.',
@@ -969,4 +930,3 @@ CLASS({
    }
   ]
 });
-

@@ -79,7 +79,11 @@ CLASS({
           The CSS class names to use for HTML $$DOC{ref:'foam.ui.View',usePlural:true}.
           Separate class names with spaces. Each instance of a $$DOC{ref:'foam.ui.View'}
           may have different classes specified.
-      */}
+      */},
+      postSet: function() {
+        if ( ! this.$ ) return;
+        this.$.className = this.cssClassAttr().slice(7, -1);
+      }
     },
     {
       name: 'tooltip'
@@ -94,7 +98,11 @@ CLASS({
           For custom $$DOC{ref:'foam.ui.View',usePlural:true}, you may wish to add standard
           CSS classes in addition to user-specified ones. Set those here and
           they will be appended to those from $$DOC{ref:'.className'}.
-      */}
+      */},
+      postSet: function() {
+        if ( ! this.$ ) return;
+        this.$.className = this.cssClassAttr().slice(7, -1);
+      }
     },
     {
       name: 'propertyViewProperty',
@@ -151,9 +159,9 @@ CLASS({
         var action = this.keyMap_[this.evtToCharCode(evt)];
         if ( action ) {
           action();
-        }
           evt.preventDefault();
           evt.stopPropagation();
+        }
       },
       documentation: function() {/*
           Automatic mapping of keyboard events to $$DOC{ref:'Action'} trigger.
@@ -335,7 +343,8 @@ CLASS({
 
     write: function(document) {
       /*  Write the View's HTML to the provided document and then initialize. */
-      document.writeln(this.toHTML());
+      var html = this.toHTML();
+      document.body.insertAdjacentHTML('beforeend', html);
       this.initHTML();
     },
 
@@ -460,8 +469,7 @@ CLASS({
           for ( var j = 0 ; j < action.keyboardShortcuts.length ; j++ ) {
             var key = action.keyboardShortcuts[j];
             // Treat single character strings as a character to be recognized
-            if ( typeof key === 'number' )
-              key = String.fromCharCode(key);
+            if ( typeof key === 'number' ) key = String.fromCharCode(key);
             keyMap[key] = opt_value ?
               function() { action.callIfEnabled(self.X, opt_value.get()); } :
               action.callIfEnabled.bind(action, self.X, self) ;
@@ -471,11 +479,12 @@ CLASS({
       }
 
       init(this.model_.actions);
-      if ( this.data && this.data.model_ &&
-           this.data.model_.actions )
+
+      if ( this.data && this.data.model_ && this.data.model_.actions )
         init(this.data.model_.actions, this.data$);
 
       if ( found ) {
+        // console.log('initKeyboardShortcuts ', this.name_, this.data && this.data.model_ && this.data.model_.name );
         console.assert(this.$, 'View must define outer id when using keyboard shortcuts: ' + this.name_);
         this.keyMap_ = keyMap;
         this.$.parentElement.addEventListener('keydown',  this.onKeyboardShortcut);

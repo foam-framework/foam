@@ -51,7 +51,7 @@ CLASS({
     },
     {
       name: 'myLinkPoints',
-      type: 'DAOProperty',
+      type: 'foam.core.types.DAOProperty',
       factory: function() { return []; }
     },
     {

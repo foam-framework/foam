@@ -94,9 +94,9 @@ CLASS({
           color: #080;
           font-family: Consolas, "Courier New", monospace;
           font-weight: bold;
-          background: #eee;
-          padding: 0px 4px 0px 4px;
-          border-radius: 3px;
+          background: #E0E0E0;
+          padding: 0px 2px;
+          border-radius: 2px;
         }
 
         term-definition definition {
