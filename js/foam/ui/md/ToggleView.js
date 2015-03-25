@@ -23,7 +23,7 @@ CLASS({
         border-radius: 7px;
         position: relative;
         height: 14px;
-        width: 35px;
+        width: 36px;
       }
       .checkbox-lever {
         background-color: #f5f5f5;
@@ -34,7 +34,8 @@ CLASS({
         width: 20px;
         position: absolute;
         top: -3px;
-        left: -4px;
+        left: 0;
+        transition: left .08s;
       }
 
       .checkbox-background.enabled {
@@ -45,7 +46,7 @@ CLASS({
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.26);
         background-color: #3367d6;
         left: inherit;
-        right: -4px;
+        left: 16px;
       }
     */},
     function toHTML() {/*
