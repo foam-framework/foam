@@ -10,11 +10,6 @@
     arequire('foam.graphics.CView'),
     arequire('foam.input.Mouse'),
     arequire('foam.graphics.Circle'))(function() {
-  var document = {
-    writeln: function(html) {
-      window.document.body.insertAdjacentHTML('beforeend', html);
-    }
-  };
 
     var timer = Timer.create({});
     var space = foam.graphics.CView.create({
