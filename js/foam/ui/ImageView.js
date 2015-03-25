@@ -17,9 +17,9 @@
  
  
 CLASS({
-  name: 'ImageView',
   package: 'foam.ui',
-
+  name: 'ImageView',
+ 
   extendsModel: 'foam.ui.View',
 
   properties: [
@@ -40,17 +40,13 @@ CLASS({
     {
       name: 'displayWidth',
       postSet: function(_, newValue) {
-        if ( this.$ ) {
-          this.$.style.width = newValue;
-        }
+        if ( this.$ ) this.$.style.width = newValue;
       }
     },
     {
       name: 'displayHeight',
       postSet: function(_, newValue) {
-        if ( this.$ ) {
-          this.$.style.height = newValue;
-        }
+        if ( this.$ ) this.$.style.height = newValue;
       }
     }
   ],
@@ -80,9 +76,7 @@ CLASS({
         xhr.open("GET", this.data);
         xhr.responseType = 'blob';
         xhr.asend(function(blob) {
-          if ( blob ) {
-            self.$.src = URL.createObjectURL(blob);
-          }
+          if ( blob ) self.$.src = URL.createObjectURL(blob);
         });
       } else {
         this.domValue = DomValue.create(this.$, undefined, 'src');
