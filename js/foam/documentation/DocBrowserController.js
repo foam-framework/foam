@@ -70,9 +70,6 @@ CLASS({
 
       if (this.SearchContext) return; // don't run twice
 
-      // load developer guides
-      this.X.RegisterDevDocs && this.X.RegisterDevDocs(this.X);
-
       // begin loading all models
       this.createModelList();
 
@@ -241,6 +238,10 @@ CLASS({
 //         var m = FOAM.lookup(key, this.X);
 //         newDAO.put(m);
 //       };
+
+      
+      // load developer guides
+      //this.X.RegisterDevDocs && this.X.RegisterDevDocs(this.X);
 
       // load up books
 //       for (var key in this.X.developerDocs) {
