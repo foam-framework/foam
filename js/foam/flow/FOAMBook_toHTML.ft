@@ -649,23 +649,6 @@
         });
       }
     }
-  ],
-
-  actions: [
-    {
-      name: 'clearIDB',
-      action: function() {
-        this.dao.removeAll();
-      },
-      view: {
-        model_: 'foam.ui.ActionButton',
-        color: 'white',
-        background: '#e51c23',
-        font: '20px Arial',
-        width: 100,
-        height: 30
-      }
-    }
   ]
 });</code>
                 </src>
