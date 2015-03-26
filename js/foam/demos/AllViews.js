@@ -16,6 +16,19 @@ CLASS({
       displayHeight: 10
     },
     {
+      model_: 'StringProperty',
+      name: 'readOnlyTextField',
+      defaultValue: 'Read only text field',
+      mode: 'read-only'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'readOnlyTextArea',
+      displayHeight: 10,
+      defaultValue: 'Read only text field\nwith\nmultiple\n\n\nlines\nof\ndata.',
+      mode: 'read-only'
+    },
+    {
       model_: 'StringArrayProperty',
       name: 'stringArrayProperty'
     },
@@ -63,4 +76,3 @@ CLASS({
     }
   ]
 });
-
