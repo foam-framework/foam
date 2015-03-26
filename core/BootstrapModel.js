@@ -178,15 +178,7 @@ var BootstrapModel = {
       });
     });
 
-    var props = this.properties_ = this.properties ? this.properties.clone() : [];
-
-    function findProp(name) {
-      for ( var i = 0 ; i < props.length ; i++ ) {
-        if ( props[i].name == name ) return i;
-      }
-
-      return -1;
-    }
+    var props = this.properties_ = this.properties ? this.properties/*.clone()*/ : [];
 
     this.imports_ = this.imports;
     if ( extendsModel ) this.imports_ = this.imports_.concat(extendsModel.imports_);
@@ -200,9 +192,7 @@ var BootstrapModel = {
       if ( alias.length && alias.charAt(alias.length-1) == '$' )
         alias = alias.slice(0, alias.length-1);
 
-      var i = findProp(alias);
-
-      if ( i == -1 ) {
+      if ( ! this.getProperty(alias) ) {
         props.push(Property.create({
           name:      alias,
           transient: true,
@@ -213,7 +203,7 @@ var BootstrapModel = {
          else {
         var p = props[i];
       }*/
-    });
+    }.bind(this));
 
     // build properties
     for ( var i = 0 ; i < props.length ; i++ ) {
@@ -426,12 +416,17 @@ var BootstrapModel = {
 
     // copy parent model's properties and actions into this model
     if ( extendsModel ) {
+      this.getProperty('');
       for ( var i = extendsModel.properties_.length-1 ; i >= 0 ; i-- ) {
         var p = extendsModel.properties_[i];
-        if ( ! ( this.getProperty && this.getPropertyWithoutCache_(p.name) ) )
+        if ( ! this.getProperty/*WithoutCache_*/(p.name) ) {
           this.properties_.unshift(p);
+          this.propertyMap_[p.name] = p;
+        }
       }
-      this.propertyMap_ = null;
+
+//      this.propertyMap_ = null;
+
       for ( var i = extendsModel.actions_.length - 1 ; i >= 0 ; i-- ) {
         var a = extendsModel.actions_[i];
         if ( ! ( this.getAction && this.getAction(a.name) ) )
@@ -520,16 +515,6 @@ var BootstrapModel = {
 //    }
   },
 
-  getPropertyWithoutCache_: function(name) { /* Internal use only. */
-    for ( var i = 0 ; i < this.properties_.length ; i++ ) {
-      var p = this.properties_[i];
-
-      if ( p.name === name ) return p;
-    }
-
-    return null;
-  },
-
   getProperty: function(name) { /* Returns the requested $$DOC{ref:'Property'} of this instance. */
     // NOTE: propertyMap_ is invalidated in a few places
     // when properties[] is updated.
@@ -557,7 +542,7 @@ var BootstrapModel = {
   },
 
   hashCode: function() {
-    var string = "";
+    var string = '';
     for ( var key in this.properties_ ) {
       string += this.properties_[key].toString();
     }
