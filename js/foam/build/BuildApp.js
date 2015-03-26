@@ -27,13 +27,16 @@ CLASS({
     'foam.dao.NodeFileDAO as FileDAO',
     'foam.dao.File',
     'foam.core.dao.OrDAO',
-    'node.dao.ModelFileDAO'
+    'node.dao.ModelFileDAO',
+    'foam.build.WebApplication'
   ],
   properties: [
     {
+      name: 'appDefinition'
+    },
+    {
       name: 'controller',
       help: 'Name of the main controller/model to create',
-      required: true
     },
     {
       model_: 'StringArrayProperty',
@@ -53,6 +56,28 @@ CLASS({
       model_: 'BooleanProperty',
       name: 'precompileTemplates',
       help: 'True to precompile templates of models loaded from the ModelDAO.',
+      defaultValue: false
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'includeFoamCSS',
+      defaultValue: false
+    },
+    {
+      model_: 'StringProperty',
+      name: 'icon'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'version'
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'resources'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'appcacheManifest',
       defaultValue: false
     },
     {
@@ -84,6 +109,10 @@ CLASS({
       name: 'htmlFileName',
       help: 'Name of the main html file to produce.',
       defaultValue: 'main.html'
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'htmlHeaders'
     },
     {
       name: 'formatter',
@@ -156,15 +185,6 @@ CLASS({
   ],
   methods: {
     execute: function() {
-      if ( ! this.targetPath ) {
-        this.error("targetPath is required");
-        process.exit(1);
-      }
-      if ( ! this.controller ) {
-        this.error("controller is required");
-        process.exit(1);
-      }
-
       for ( var i = this.extraClassPaths.length - 1; i >= 0; i-- ) {
         this.X.ModelDAO = this.OrDAO.create({
           primary: this.ModelFileDAO.create({
@@ -172,6 +192,31 @@ CLASS({
           }),
           delegate: this.X.ModelDAO
         });
+      }
+
+      if ( this.appDefinition ) {
+        this.X.ModelDAO.find(this.appDefinition, {
+          put: function(d) {
+            this.copyFrom(d);
+            this.execute_();
+          }.bind(this),
+          error: function() {
+            console.log("App definition failed");
+            this.execute_();
+          }.bind(this)
+        });
+      } else {
+        this.execute_();
+      }
+    },
+    execute_: function() {
+      if ( ! this.targetPath ) {
+        this.error("targetPath is required");
+        process.exit(1);
+      }
+      if ( ! this.controller ) {
+        this.error("controller is required");
+        process.exit(1);
       }
 
       for ( var i = 0 ; i < this.extraFiles.length ; i++ ) {
@@ -188,7 +233,7 @@ CLASS({
 
       aseq(
         aseq.apply(null, seq),
-        arequire(this.controller))(this.execute_.bind(this));
+        arequire(this.controller))(this.execute__.bind(this));
     },
     buildCoreJS_: function(ret) {
       var i = 0;
@@ -279,7 +324,7 @@ CLASS({
 
       ret(contents);
     },
-    execute_: function(model) {
+    execute__: function(model) {
       if ( ! model ) {
         this.error('Could not find model: ', this.controller);
       }
@@ -304,6 +349,21 @@ CLASS({
             }
           });
         }.bind(this),
+        aif(this.appcacheManifest,
+            function(ret) { 
+              var file = this.File.create({
+                path: this.targetPath + this.path.sep + "app.manifest",
+                contents: this.MANIFEST()
+              });
+              console.log('Writing: ', file.path);
+              this.fileDAO.put(file, { 
+                put: ret,
+                error: function() {
+                  this.error("ERROR writing file: ", file.path);
+                  process.exit(1);
+                }
+              });
+            }.bind(this)),
         apar(
           function(ret) { this.buildCoreJS_(ret); }.bind(this),
           function(ret) { this.buildAppJS_(ret); }.bind(this)),
@@ -328,6 +388,20 @@ CLASS({
     }
   },
   templates: [
-    function HTML() {/*<html><head><meta charset="utf-8"><script src="foam.js"></script></head><body><foam model="<%= this.controller %>"<% if ( this.defaultView ) { %> view="<%= this.defaultView %>"<% } %>></foam></body></html>*/}
+    function HTML() {/*<html<% if ( this.appcacheManifest ) { %> manifest="app.manifest"<% } %>><head><%= this.htmlHeaders.join('') %><% if ( this.includeFoamCSS ) { %><link rel="stylesheet" type="text/css" href="foam.css"/><% } %><% if ( this.icon ) { %><link rel="icon" sizes="128x128" href="<%= this.icon %>"/><% } %><script src="foam.js"></script></head><body><foam model="<%= this.controller %>"<% if ( this.defaultView ) { %> view="<%= this.defaultView %>"<% } %>></foam></body></html>*/},
+    function MANIFEST() {/*CACHE MANIFEST
+# version <%= this.version %>
+<% if ( this.appDefinition ) { %># hash: <%= this.appDefinition.hashCode() %><% } %>
+
+CACHE:
+foam.js
+<%= this.htmlFileName %>
+<% if ( this.includeFoamCSS ) { %>foam.css<% } %>
+<% for ( var i = 0 ; i < this.resources.length ; i++ ) { %><%= this.resources[i] %>
+<% } %>
+
+NETWORK:
+*
+*/}
   ]
 });
