@@ -33,8 +33,8 @@ CLASS({
       postSet: function(_, cview) {
         cview.view = this;
         this.X.dynamic(function() {
-          this.width  = cview.x + cview.width;
-          this.height = cview.y + cview.height;
+          this.width  = Math.max(this.width, cview.x + cview.width);
+          this.height = Math.max(this.height, cview.y + cview.height);
         }.bind(this));
       }
     }
