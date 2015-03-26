@@ -19,7 +19,10 @@ CLASS({
   name: 'RadioOptionView',
   package: 'foam.ui.md',
   extendsModel: 'foam.ui.SimpleView',
-  documentation: "A single radio button",  
+  documentation: "A single radio button",
+
+  requires: [ 'foam.ui.md.SharedStyles' ],
+  
   properties: [
     {
       name: 'data',
@@ -40,6 +43,7 @@ CLASS({
       defaultValue: true
     }
   ],
+  
   templates: [
     function CSS() {/*    
       
@@ -82,8 +86,8 @@ CLASS({
         position: absolute;
         top: 0px;
         left: 0px; 
-        width: 12px;
-        height: 12px;
+        width: 16px;
+        height: 16px;
         border-radius: 50%;
         border: solid 2px;
         border-color: #5a5a5a;
