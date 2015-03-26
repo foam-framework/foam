@@ -132,7 +132,7 @@ var JSONUtil = {
 
           arequire(obj.model_)(function(model) {
             if ( ! model ) {
-               if ( obj.model_ !== 'Template' && obj.model_ !== 'ArrayProperty' && obj.model_ !== 'ViewFactoryProperty' && obj.model_ !== 'Documentation' )
+               if ( obj.model_ !== 'Template' && obj.model_ !== 'ArrayProperty' && obj.model_ !== 'ViewFactoryProperty' && obj.model_ !== 'Documentation' && obj.model_ !== 'DocumentationProperty' )
                  console.warn('Failed to dynamically load: ', obj.model_);
               future.set(obj);
               return;
