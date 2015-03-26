@@ -46,8 +46,8 @@ CLASS({
       var viewName  = e.getAttribute('view');
       var onInit    = e.getAttribute('oninit');
 
-      if ( modelName ) models.push(arequire(modelName));
-      if ( viewName  ) models.push(arequire(viewName));
+      if ( modelName ) models.push(arequire(modelName, this.X));
+      if ( viewName  ) models.push(arequire(viewName, this.X));
 
       aseq(apar.apply(null, models), function(ret) {
         var model = this.X.lookup(modelName);
