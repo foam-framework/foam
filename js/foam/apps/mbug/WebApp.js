@@ -21,7 +21,7 @@ __DATA({
   controller: 'foam.apps.mbug.MBug',
   defaultView: 'foam.ui.layout.Window',
   version: "1.0",
-  includeFoamCSS: true,
+  includeFoamCSS: false,
   precompileTemplates: true,
   appcacheManifest: true,
   icon: 'images/logo.png',
