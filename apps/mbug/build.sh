@@ -3,12 +3,16 @@
 BASEDIR=$(dirname "$0")
 cd "$BASEDIR"
 
-BUILD_DIR="$BASEDIR"
+BUILD_DIR="$BASEDIR"/build
+
+mkdir -p "$BUILD_DIR"
 
 cd ../../
-node --harmony tools/foam.js foam.build.BuildApp controller=foam.apps.mbug.MBug defaultView=foam.ui.layout.MobileWindow coreFiles=stdlib,async,parse,event,JSONUtil,XMLUtil,context,JSONParser,TemplateUtil,FOAM,FObject,BootstrapModel,mm1Model,mm2Property,mm3Types,mm4Method,mm5Misc,../js/foam/ui/Window,value,view,../js/foam/ui/FoamTagView,HTMLParser,mlang,mlang2,QueryParser,visitor,messaging,dao,dao2,arrayDAO,index,models,oauth extraModels=foam.ui.RelationshipView "targetPath=$BUILD_DIR" precompileTemplates
+node --harmony tools/foam.js foam.build.BuildApp appDefinition=foam.apps.mbug.WebApp "targetPath=$BUILD_DIR"
 
 cp core/foam.css "$BUILD_DIR"/foam.css
+cp -r "$BASEDIR"/images "$BUILD_DIR"/images
+cp "$BASEDIR"/oauth2callback.html "$BUILD_DIR"/
 
 cd "$BUILD_DIR"
 # Code compression.
