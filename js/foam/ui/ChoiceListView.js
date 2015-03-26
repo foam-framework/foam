@@ -125,7 +125,32 @@ CLASS({
         e.scrollIntoView();
       }
     }
-  }
+  },
+  templates: [
+    function CSS() {/*
+.foamChoiceListView {
+  list-style-type: none;
+}
+
+.foamChoiceListView .selected {
+  font-weight: bold;
+}
+
+.foamChoiceListView.vertical {
+  padding: 0;
+}
+.foamChoiceListView.vertical .choice {
+  margin: 4px;
+}
+
+.foamChoiceListView.horizontal {
+  padding: 0;
+}
+.foamChoiceListView.horizontal .choice {
+  display: inline;
+  margin: 12px;
+}*/}
+  ]
 });
 
 
