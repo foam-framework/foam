@@ -28,8 +28,15 @@ CLASS({
       }
     },
     {
+      name: 'label'
+    },
+    {
       name: 'className',
       defaultValue: 'checkbox-container'
+    },
+    {
+      name: 'enabled',
+      defaultValue: true
     }
   ],
   templates: [
@@ -82,7 +89,7 @@ CLASS({
       }
       
       .checkbox-background.checked #offRadio {
-        border-color: #009688;
+        border-color: #4285f4;
       }
       
       #onRadio {
@@ -92,7 +99,7 @@ CLASS({
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background-color: #009688;
+        background-color: #4285f4;
         -webkit-transform: scale(0);
         transform: scale(0);
         transition: -webkit-transform ease 0.28s;
@@ -145,8 +152,10 @@ CLASS({
         </div>
       </div>
       <%
-        this.on('click', function() { self.data = !self.data; }, this.id);
+        this.on('click', function() { if ( self.enabled ) self.data = !self.data; }, this.id);
         this.setClass('checked', function() { return !!self.data; },
+            this.id + '-background');
+        this.setClass('disabled', function() { return !self.enabled; },
             this.id + '-background');
       %>
     */}
