@@ -46,7 +46,10 @@ MODEL({
         return;
       }
 
-      if ( this.pending[key] ) this.pending[key].push(sink);
+      if ( this.pending[key] ) {
+        this.pending[key].push(sink);
+        return;
+      }
       else this.pending[key] = [sink];
 
       var tag = this.document.createElement('script');
@@ -59,10 +62,8 @@ MODEL({
       tag.onerror = function() {
         var pending = this.pending[key];
         delete this.pending[key];
-        if ( pending ) {
-          for ( var i = 0 ; i < pending.length ; i++ ) {
-            pending[i] && pending[i].error && pending[i].error.apply(null, arguments);
-          }
+        for ( var i = 0 ; i < pending.length ; i++ ) {
+          pending[i] && pending[i].error && pending[i].error.apply(null, arguments);
         }
         tag.remove();
       }.bind(this);
