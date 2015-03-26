@@ -122,8 +122,10 @@ MODEL({
     },
 
     function equals(a, b) {
-      /* returns true if the values are equal or both undefined. */
-      return (a === b) || (a !== a && b !== b);
+      if ( a === b ) return true;
+      if ( ! a || ! b ) return false;
+      if ( a.equals ) return a.equals(b);
+      return a == b;
     },
 
     function toCompare(c) {
@@ -674,6 +676,12 @@ MODEL({
       }
 
       return this.toDateString().substring(4);
+    },
+
+    function equals(o) {
+      if ( ! o ) return false;
+      if ( ! o.getTime ) return false;
+      return this.getTime() === o.getTime();
     },
 
     function compareTo(o){

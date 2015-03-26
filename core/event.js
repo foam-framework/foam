@@ -501,7 +501,7 @@ var Events = {
       var sv = srcValue.get();
       var dv = dstValue.get();
 
-      if ( sv !== dv ) dstValue.set(sv);
+      if ( ! equals(sv, dv) ) dstValue.set(sv);
     });
   },
 
@@ -530,7 +530,7 @@ var Events = {
       var s = f(srcValue.get());
       var d = dstValue.get();
 
-      if ( s !== d ) dstValue.set(s);
+      if ( ! equals(s, d) ) dstValue.set(s);
     });
   },
 
@@ -561,7 +561,7 @@ var Events = {
       var s = f(sv.get());
       var d = dv.get();
 
-      if ( s !== d ) {
+      if ( ! equals(s, d) ) {
         feedback = true;
         dv.set(s);
         feedback = false;
