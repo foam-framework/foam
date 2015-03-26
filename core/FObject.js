@@ -629,10 +629,36 @@ var FObject = {
   },
 
   getMyFeature: function(featureName) {
+    if ( ! Object.prototype.hasOwnProperty.call(this, 'featureMap_') ) {
+if ( this.name === 'WebApplication' ) console.log('done');
+      var map = this.featureMap_ = {};
+      function add(a) {
+        if ( ! a ) return;
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          var f = a[i];
+          map[f.name.toUpperCase()] = f;
+        }
+      }
+      add(this.properties_);
+      add(this.actions_);
+      add(this.methods);
+      add(this.listeners);
+      add(this.templates);
+      add(this.models);
+      add(this.tests);
+      add(this.relationships);
+      add(this.issues);
+    }
+    return this.featureMap_[featureName.toUpperCase()];
+  },
+
+  xxxgetMyFeature: function(featureName) {
+if ( this.name === 'WebApplication' ) console.log('done');
+    console.log('getMyFeature: ', this.name, featureName);
     featureName = featureName.toUpperCase();
     var arrayOrEmpty = function(arr) {
       return ( arr && Array.isArray(arr) ) ? arr : [];
-    }
+    };
     return [
       arrayOrEmpty(this.properties_),
       arrayOrEmpty(this.actions_),
@@ -651,10 +677,11 @@ var FObject = {
   },
 
   getAllMyFeatures: function() {
+console.log('********************* getAllMyFeatures');
     var featureList = [];
     var arrayOrEmpty = function(arr) {
       return ( arr && Array.isArray(arr) ) ? arr : [];
-    }
+    };
     [
       arrayOrEmpty(this.properties_),
       arrayOrEmpty(this.actions_),
