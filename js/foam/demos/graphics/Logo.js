@@ -14,16 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.demos.graphics',
   name:  'LogoBackground',
   extendsModel: 'foam.graphics.CView',
 
-  requires: [
-    'foam.graphics.Circle'
-  ],
+  requires: [ 'foam.graphics.Circle' ],
 
-  imports: [ 'colours$' ],
+  imports: [ 'colours$', 'width', 'height' ],
 
   properties: [
     {
@@ -48,7 +47,7 @@ CLASS({
     addBubble: function() {
       var c = this.canvas;
       var Y = 120;
-      var X = 10+Math.random()*310;
+      var X = 10+Math.random()*(this.width-20);
 
       var circle = this.Circle.create({
         x: X,
@@ -83,7 +82,7 @@ CLASS({
   name:  'LogoForeground',
   extendsModel: 'foam.graphics.CView',
 
-  imports: [ 'text$', 'font$' ],
+  imports: [ 'text$', 'font$', 'width', 'height' ],
 
   properties: [
     { name: 'className', defaultValue: 'logo-foreground' }
@@ -95,18 +94,12 @@ CLASS({
       var c = this.canvas;
 
       c.fillStyle = 'white';
-      c.fillRect(0, 0, 700, 140);
+      c.fillRect(0, 0, this.width, this.height);
 
       c.font = this.font;
       c.fillStyle = 'rgba(0,0,0,1)';
       c.strokeStyle = 'white';
 
-/*
-      c.shadowOffsetX = 5;
-      c.shadowOffsetY = 5;
-      c.shadowBlur = 8;
-      c.shadowColor = '#999';
-*/
       c.lineWidth = 1;
       c.strokeStyle = 'gray';
       c.globalCompositeOperation = '';
@@ -114,9 +107,6 @@ CLASS({
       c.globalCompositeOperation = 'destination-out';
 
       c.fillText(this.text, 0, 100);
-
-//      c.lineWidth = 5;
-//      c.strokeText(this.text, 100, 100);
     }
   }
 });
@@ -132,7 +122,7 @@ CLASS({
     'foam.demos.graphics.LogoBackground'
   ],
 
-  exports: [ 'text$', 'font$', 'colours$' ],
+  exports: [ 'text$', 'font$', 'colours$', 'width', 'height' ],
 
   properties: [
     {
@@ -153,20 +143,20 @@ CLASS({
       name: 'font',
       defaultValue: '120px Georgia'
     },
+    { name: 'width',     defaultValue: 400 },
+    { name: 'height',    defaultValue: 103 },
     {
       name: 'foreground',
       factory: function() {
-        return this.LogoForeground.create({width: this.width, height: this.height});
+        return this.LogoForeground.create();
       }
     },
     {
       name: 'background',
       factory: function() {
-        return this.LogoBackground.create({width: this.width, height: this.height});
+        return this.LogoBackground.create();
       }
     },
-    { name: 'width',     defaultValue: 400 },
-    { name: 'height',    defaultValue: 103 },
     { name: 'className', defaultValue: 'logo' }
   ],
 
