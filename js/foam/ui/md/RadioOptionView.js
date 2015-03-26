@@ -118,7 +118,7 @@ CLASS({
         transform: scale(1);
       }
       
-      #radioLabel {
+      .radioLabel {
         position: relative;
         display: inline-block;
         vertical-align: middle;
@@ -127,7 +127,7 @@ CLASS({
         pointer-events: none;
       }
       
-      #radioLabel[hidden] {
+      .radioLabel.hidden {
         display: none;
       }
       
