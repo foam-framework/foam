@@ -28,7 +28,8 @@ CLASS({
       }
     },
     {
-      name: 'label'
+      name: 'label',
+      defaultValue: "label"
     },
     {
       name: 'className',
@@ -45,6 +46,7 @@ CLASS({
       #checkbox-container {
         display: inline-block;
         white-space: nowrap;
+        position: relative;
       }
       
       #checkbox-container(:focus) {
@@ -87,7 +89,12 @@ CLASS({
         border-color: #5a5a5a;
         transition: border-color 0.28s;
       }
-      
+
+      .checkbox-background {
+        display: inline-block;
+        white-space: nowrap;
+        position: relative;
+      }
       .checkbox-background.checked #offRadio {
         border-color: #4285f4;
       }
@@ -144,11 +151,12 @@ CLASS({
     */},
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div id="radioContainer">
-          <div id="<%=this.id%>-background" class="checkbox-background">
+        <div id="<%=this.id%>-background" class="checkbox-background">
+          <div id="radioContainer" class="labeled">
             <div id="onRadio"></div>
             <div id="offRadio"></div>
           </div>
+          <div class="radioLabel">$$label{ mode: 'read-only' }</div>
         </div>
       </div>
       <%
