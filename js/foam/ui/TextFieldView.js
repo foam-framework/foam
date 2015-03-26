@@ -15,14 +15,17 @@
  * limitations under the License.
  */
  
- 
-CLASS({
+ CLASS({
+  package: 'foam.ui',
   name:  'TextFieldView',
   label: 'Text Field',
-  package: 'foam.ui',
   
   extendsModel: 'foam.ui.BaseView',
-  traits: ['foam.ui.HTMLViewTrait', 'foam.ui.ViewActionsTrait'], // TemplateSupportTrait removed to prevent cycle 
+
+  traits: [
+    'foam.ui.HTMLViewTrait',
+    'foam.ui.ViewActionsTrait'
+  ], // TemplateSupportTrait removed to prevent cycle 
 
   documentation: function() { /*
       The default $$DOC{ref:'foam.ui.View'} for a string. Supports autocomplete
@@ -198,7 +201,6 @@ CLASS({
     },
 
     initHTML: function() {
-      /* Connects key events. */
       if ( ! this.$ ) return;
 
       this.SUPER();
@@ -274,9 +276,7 @@ CLASS({
     },
     {
       name: 'onClick',
-      code: function(e) {
-        this.$ && this.$.focus();
-      }
+      code: function(e) { this.$ && this.$.focus(); }
     },
   ]
 });
