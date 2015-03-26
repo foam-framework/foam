@@ -175,7 +175,7 @@ var FObject = {
       // agents.sort(function(o1, o2) { return o1[0] - o2[0]; });
 
       // TODO(kgr): make a stableSort() function in stdlib
-      for ( key in agents ) agents[key][2] = key;
+      for ( var i = 0 ; i < agents.length ; i++ ) agents[i][2] = i;
       agents.sort(CompoundComparator(
         function(o1, o2) { return o1[0] - o2[0]; },
         function(o1, o2) { return o1[2] - o2[2]; }));
@@ -652,39 +652,13 @@ if ( this.name === 'WebApplication' ) console.log('done');
     return this.featureMap_[featureName.toUpperCase()];
   },
 
-  xxxgetMyFeature: function(featureName) {
-if ( this.name === 'WebApplication' ) console.log('done');
-    console.log('getMyFeature: ', this.name, featureName);
-    featureName = featureName.toUpperCase();
-    var arrayOrEmpty = function(arr) {
-      return ( arr && Array.isArray(arr) ) ? arr : [];
-    };
-    return [
-      arrayOrEmpty(this.properties_),
-      arrayOrEmpty(this.actions_),
-      arrayOrEmpty(this.properties),
-      arrayOrEmpty(this.actions),
-      arrayOrEmpty(this.methods),
-      arrayOrEmpty(this.listeners),
-      arrayOrEmpty(this.templates),
-      arrayOrEmpty(this.models),
-      arrayOrEmpty(this.tests),
-      arrayOrEmpty(this.relationships),
-      arrayOrEmpty(this.issues)
-    ].mapFind(function(list) { return list.mapFind(function(f) {
-      return f.name && f.name.toUpperCase() === featureName && f;
-    })});
-  },
-
   getAllMyFeatures: function() {
-console.log('********************* getAllMyFeatures');
+    console.log('********************* getAllMyFeatures');
     var featureList = [];
     var arrayOrEmpty = function(arr) {
       return ( arr && Array.isArray(arr) ) ? arr : [];
     };
     [
-      arrayOrEmpty(this.properties_),
-      arrayOrEmpty(this.actions_),
       arrayOrEmpty(this.properties),
       arrayOrEmpty(this.actions),
       arrayOrEmpty(this.methods),
