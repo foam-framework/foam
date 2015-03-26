@@ -16,15 +16,17 @@
  */
 
 CLASS({
-  name: 'SimpleView',
   package: 'foam.ui',
+  name: 'SimpleView',
 
   extendsModel: 'foam.ui.BaseView',
-  traits: ['foam.ui.HTMLViewTrait',
-           'foam.ui.ViewActionsTrait',
-           'foam.ui.TemplateSupportTrait'],
+  traits: [
+    'foam.ui.HTMLViewTrait',
+    'foam.ui.TemplateSupportTrait',
+    'foam.ui.ViewActionsTrait'
+  ],
   
-  requires: ['Property'],
+  requires: [ 'Property' ],
            
   exports: [ 'propertyViewProperty' ],
 
@@ -55,9 +57,5 @@ CLASS({
       type: 'Property',
       defaultValueFn: function() { return this.Property.DETAIL_VIEW; }
     }
-
   ]
 });
-
-
-

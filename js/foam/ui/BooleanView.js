@@ -35,18 +35,16 @@ CLASS({
 
   methods: {
     toHTML: function() {
-      return '<input type="checkbox" id="' + this.id + '" name="' + this.name + '"' + this.cssClassAttr() + '/>';
+      return '<input type="checkbox" id="' + this.id + '" ' + ( this.data ? 'checked ' : '' ) + 'name="' + this.name + '"' + this.cssClassAttr() + '/>';
     },
 
     initHTML: function() {
-      var e = this.$;
-
-      this.domValue = DomValue.create(e, 'change', 'checked');
+      this.domValue = DomValue.create(this.$, 'change', 'checked');
 
       Events.link(this.data$, this.domValue);
     },
 
-    destroy: function( isParentDestroyed ) {
+    destroy: function(isParentDestroyed) {
       this.SUPER(isParentDestroyed);
       Events.unlink(this.domValue, this.data$);
     }

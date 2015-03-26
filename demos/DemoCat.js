@@ -90,7 +90,6 @@ return JSONUtil.arrayToObjArray(X, [
   {
     name: 'InterpolatedClocks',
     path: '/index.html?model=foam.demos.InterpolatedClocks',
-    path: 'InterpolatedClocks.html',
     description: 'A demonstration of animation interpolators.  Click to animate the clocks.  Notice how the different clocks use different acceleration curves to reach their targets.',
     keywords: ['animation'],
     image: 'InterpolatedClocks.png'

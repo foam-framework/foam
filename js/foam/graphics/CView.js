@@ -21,7 +21,6 @@ CLASS({
   label: 'CView',
 
   requires: [
-    'foam.input.Mouse',
     'foam.graphics.PositionedCViewView',
     'foam.graphics.CViewView'
   ],
@@ -125,16 +124,6 @@ CLASS({
     {
       name: 'canvasY',
       getter: function() { return this.y + ( this.parent ? this.parent.canvasY : 0 ); }
-    },
-    {
-      name: 'mouse',
-      transient: true,
-      hidden: true,
-      lazyFactory: function() {
-        var m = this.Mouse.create();
-        //m.connect(this.$);
-        return m;
-      }
     },
     {
       model_: 'IntProperty',
@@ -270,7 +259,7 @@ CLASS({
       if ( this.suspended ) return; // we allowed initialization, but if suspended don't paint
 
       this.canvas.save();
-      this.canvas.translate(this.x, this.y);
+      this.transform();
       if ( this.clipped ) {
         this.canvas.rect(0,0,this.width,this.height);
         this.canvas.clip();
@@ -278,6 +267,10 @@ CLASS({
       this.paintSelf();
       this.paintChildren();
       this.canvas.restore();
+    },
+
+    transform: function() {
+      this.canvas.translate(this.x, this.y);
     },
 
     mapToParent: function(point) { /* Maps a coordinate from this to our parents'. */

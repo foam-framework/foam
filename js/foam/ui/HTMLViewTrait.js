@@ -20,7 +20,7 @@ CLASS({
   name: 'HTMLViewTrait',
   label: 'HTMLView',
 
-  requires: ['foam.input.touch.GestureTarget'], // tooltip!
+  requires: [ 'foam.input.touch.GestureTarget' ], // tooltip!
 
   documentation: function() {/*
     The HTML implementation for $$DOC{ref:'foam.ui.View'}.
