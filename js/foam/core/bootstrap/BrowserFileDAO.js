@@ -59,8 +59,10 @@ MODEL({
       tag.onerror = function() {
         var pending = this.pending[key];
         delete this.pending[key];
-        for ( var i = 0 ; i < pending.length ; i++ ) {
-          pending[i] && pending[i].error && pending[i].error.apply(null, arguments);
+        if ( pending ) {
+          for ( var i = 0 ; i < pending.length ; i++ ) {
+            pending[i] && pending[i].error && pending[i].error.apply(null, arguments);
+          }
         }
         tag.remove();
       }.bind(this);
