@@ -110,12 +110,14 @@ var Model = {
   properties: [
     {
       name: 'id',
+      hidden: true,
       transient: true
     },
     {
       name:  'sourcePath',
       help: 'Source location of this Model.',
       defaultValue: '',
+      mode: 'read-only',
       transient: true
     },
     {
@@ -186,6 +188,7 @@ var Model = {
     },
     {
       name: 'extendsModel',
+      label: 'Extends',
       type: 'String',
       displayWidth: 70,
       displayHeight: 1,
@@ -200,6 +203,15 @@ var Model = {
         <p>Like most inheritance schemes, instances of your $$DOC{ref:'Model'} may be used in place of
         instances of the $$DOC{ref:'Model'} you extend.</p>
          */}
+    },
+    {
+      name: 'traits',
+      type: 'Array[String]',
+      view: 'foam.ui.StringArrayView',
+      defaultValueFn: function() { return []; },
+      help: 'Traits to mix-into this Model.',
+      documentation: function() { /* Traits allow you to mix extra features into your $$DOC{ref:'Model'}
+         through composition, avoiding inheritance where unecesssary. */}
     },
     {
       name: 'plural',
@@ -340,15 +352,6 @@ var Model = {
       defaultValueFn: function() { return []; },
       help: 'Interfaces implemented by this Model.',
       documentation: function() { /* $$DOC{ref:'Interface',usePlural:true} implemented by this $$DOC{ref:'Model'} .*/}
-    },
-    {
-      name: 'traits',
-      type: 'Array[String]',
-      view: 'foam.ui.StringArrayView',
-      defaultValueFn: function() { return []; },
-      help: 'Traits to mix-into this Model.',
-      documentation: function() { /* Traits allow you to mix extra features into your $$DOC{ref:'Model'}
-         through composition, avoiding inheritance where unecesssary. */}
     },
     {
       name: 'tableProperties',
