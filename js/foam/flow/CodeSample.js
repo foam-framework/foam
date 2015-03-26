@@ -17,6 +17,7 @@ CLASS({
   requires: [
     'foam.dao.EasyDAO',
     'foam.ui.ActionButton',
+    'foam.sandbox.IsolatedContext',
     'foam.flow.CodeSampleOutput',
     'foam.flow.CodeSampleOutputView',
     'foam.flow.CodeSnippet',
@@ -127,26 +128,16 @@ CLASS({
         modelHash.package = modelHash.package || 'foam.sandbox';
         var model = Y.Model.create(modelHash, Y);
         Y.registerModel(model);
-        // model.arequire();
         return model;
       }
     },
     {
       name: 'sampleCodeBaseContext',
-      factory: function() {
-        var X = this.X.sub({
-          packagePath: this.packagePath,
-          packagePath_: this.packagePath_,
-          registerModel: this.registerModel,
-          lookup: this.lookup,
-          CLASS: this.classFn
-        });
-        return X;
-      }
+      factory: function() { return this.IsolatedContext.create({}, GLOBAL.X).Y; }
     },
     {
       name: 'sampleCodeContext',
-      factory: function() { return this.newSampleCodeContext(); }
+      factory: function() { return this.sampleCodeBaseContext.sub(); }
     },
     {
       name: 'state',
@@ -180,14 +171,6 @@ CLASS({
           if ( ! hasHTML ) this.outputView.viewOutputView.height = 0;
         }.bind(this));
       }
-    },
-    {
-      name: 'newSampleCodeContext',
-      code: function() {
-        var X = this.sampleCodeBaseContext.sub();
-        X.CLASS = X.CLASS.bind(X);
-        return X;
-      }
     }
   ],
 
@@ -208,7 +191,7 @@ CLASS({
       code: function() {
         this.output.virtualConsole.watchConsole();
         this.output.viewOutput.innerHTML = '';
-        var X = this.sampleCodeContext = this.newSampleCodeContext();
+        var X = this.sampleCodeContext = this.sampleCodeBaseContext.sub();
         this.source.select({
           put: function() {
             // Use arguments array to avoid leaking names into eval context.

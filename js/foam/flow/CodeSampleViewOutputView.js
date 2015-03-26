@@ -14,6 +14,7 @@ CLASS({
   package: 'foam.flow',
   extendsModel: 'foam.flow.Element',
 
+  requires: [ 'foam.ui.ActionButton' ],
   imports: [ 'sampleCodeContext$' ],
 
   constants: { ELEMENT_NAME: 'view-output' },
@@ -83,6 +84,7 @@ CLASS({
         overflow: auto;
         display: flex;
         justify-content: center;
+        flex-direction: column;
       }
       view-output.visible {
         padding: 5px;

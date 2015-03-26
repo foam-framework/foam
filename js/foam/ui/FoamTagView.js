@@ -69,7 +69,7 @@ CLASS({
 
         if ( viewName ) {
           var viewModel = this.X.lookup(viewName);
-          view = viewModel.create({ model: model, data: obj });
+          view = viewModel.create({ model: model, data: obj }, this.X);
         } else if ( this.X.lookup('foam.ui.BaseView').isInstance(obj) ) {
           view = obj;
         } else if ( obj.toView_ ) {
@@ -86,7 +86,7 @@ CLASS({
             model: model,
             data: obj,
             showActions: showActions
-          });
+          }, this.X);
         }
 
         if ( e.id ) this.document.FOAM_OBJECTS[e.id] = obj;

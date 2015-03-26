@@ -595,6 +595,7 @@
 
   requires: [
     'foam.dao.EasyDAO',
+    'foam.dao.IDBDAO',
     'foam.core.types.DAOProperty',
     'foam.ui.DAOListView',
     'foam.sandbox.Person'
@@ -615,11 +616,15 @@
       }
     },
     {
+      name: 'loadedFromArray',
+      defaultValue: false
+    },
+    {
       model_: 'foam.core.types.DAOProperty',
       name: 'dao',
       factory: function() {
         return this.EasyDAO.create({
-          daoType: 'MDAO',
+          daoType: 'IDB',
           model: this.Person,
           seqNo: true
         });
@@ -639,8 +644,26 @@
             self.people.forEach(function(person) {
               self.dao.put(person);
             });
+            self.loadedFromArray = true;
           }
         });
+      }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'clearIDB',
+      action: function() {
+        this.dao.removeAll();
+      },
+      view: {
+        model_: 'foam.ui.ActionButton',
+        color: 'white',
+        background: '#e51c23',
+        font: '20px Arial',
+        width: 100,
+        height: 30
       }
     }
   ]
