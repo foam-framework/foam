@@ -111,10 +111,9 @@ CLASS({
     function toInnerHTML() {/*
 <%
       for ( var i = 0 ; i < this.choices.length ; i++ ) {
-        var choice = this.choices[i];
-        var choiceLbl = choice[1]; %>
+        var choice = this.choices[i];  %>
         <div class="choice">
-          $$data{model_:'foam.ui.md.RadioOptionView', value: choice, label: choiceLbl}
+          $$data{model_:'foam.ui.md.RadioOptionView', choice: choice }
         </div>
 <%        }%>
     */},
