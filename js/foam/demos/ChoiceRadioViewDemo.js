@@ -27,7 +27,8 @@ CLASS({
       name: 'choices',
       defaultValueFn: function() { return [
         ['choice1', 'Choice 1'], 
-        ['choice2', 'Choice 2']
+        ['choice2', 'Choice 2'],
+        ['name', 'Choice 3', 'user'],
       ]; }
     },
     {

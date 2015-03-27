@@ -59,6 +59,22 @@ CLASS({
       defaultValue: false
     },
     {
+      name: 'darkBackground',
+      defaultValue: false
+    },
+    {
+      name: 'clearIcon',
+      defaultValueFn: function() {
+        return this.darkBackground ? 'images/ic_cancel_24dp.png' :
+            'images/ic_cancel_black_24dp.png';
+      }
+    },
+    {
+      name: 'underline',
+      documentation: 'When true, draws the underline for the text field.',
+      defaultValue: true
+    },
+    {
       model_: 'StringProperty',
       name: 'mode',
       defaultValue: 'read-write',
@@ -67,7 +83,7 @@ CLASS({
         choices: ['read-only', 'read-write'],
       },
       documentation: function() { /* Can be 'read-only', or 'read-write'. */}
-    },
+    }
   ],
   methods: {
     initHTML: function() {
@@ -133,6 +149,10 @@ CLASS({
         padding: 8px 2px;
       }
 
+      .md-text-field-borderless {
+        border-bottom: none !important;
+      }
+
       .md-text-field-input:focus {
         border-bottom: 2px solid #4285f4;
         padding: 0 0 6px 0;
@@ -174,10 +194,11 @@ CLASS({
         <% } else if ( this.displayHeight > 1 ) { %>
           <textarea id="{{{input}}}" type="text" class="md-text-field-input" rows="{{{this.displayHeight}}}"<%= this.mode == 'read-only' ? ' disabled' : '' %>></textarea>
         <% } else { %>
-          <input id="{{{input}}}" type="text" class="md-text-field-input"
+          <input id="{{{input}}}" type="text"
+              class="md-text-field-input <%= this.underline ? '' : 'md-text-field-borderless' %>"
               <%= this.floatingLabel ? '' : 'placeholder="' + this.label + '"' %><%= this.mode == 'read-only' ? ' disabled' : '' %> />
           <% if ( this.clearAction ) { %>
-            $$clear
+            $$clear{ iconUrl: this.clearIcon }
           <% } %>
         <% } %>
       </div>
