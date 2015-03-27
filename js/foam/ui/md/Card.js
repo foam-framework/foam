@@ -14,7 +14,32 @@ CLASS({
   package: 'foam.ui.md',
   extendsModel: 'foam.flow.Element',
 
+  properties: [
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'delegate',
+      defaultValue: 'foam.ui.md.CardTitle'
+    },
+    {
+      name: 'delegateView'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'construct',
+      code: function() {
+        this.delegateView = this.delegate();
+        this.addDataChild(this.delegateView);
+        return this.SUPER.apply(this, arguments);
+      }
+    }
+  ],
+
   templates: [
+    function toInnerHTML() {/*
+      %%delegateView
+    */},
     function CSS() {/*
       card, .card {
         display: block;
@@ -31,8 +56,8 @@ CLASS({
 
         card, .card {
           box-shadow: 2px 1px 2px #aaaaaa;
-          margin: 0px 10px 10px 15px;
-          border: 0px;
+          margin: 10px;
+          border: 1px solid #aaaaaa;
           border-radius: 2px;
         }
 

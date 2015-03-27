@@ -23,6 +23,11 @@ CLASS({
       model_: 'StringProperty',
       name: 'backgroundColor',
       defaultValue: '#8cc356'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'fontColor',
+      defaultValue: '#ffffff'
     }
   ],
 
@@ -32,8 +37,10 @@ CLASS({
       code: function() {
         Events.dynamic(function() {
           this.backgroundColor;
+          this.fontColor;
           if ( ! this.$ ) return;
           this.$.style['background-color'] = this.backgroundColor;
+          this.$.style.color = this.fontColor;
         }.bind(this));
       }
     }
