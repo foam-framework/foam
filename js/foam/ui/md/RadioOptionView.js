@@ -19,7 +19,7 @@ CLASS({
   name: 'RadioOptionView',
   package: 'foam.ui.md',
   extendsModel: 'foam.ui.SimpleView',
-  documentation: "A single radio button",
+  documentation: "A single radio button. Used by $$DOC{ref:'foam.ui.md.ChoiceRadioView'}",
 
   requires: [ 'foam.ui.md.SharedStyles' ],
   
