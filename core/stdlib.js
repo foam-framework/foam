@@ -181,7 +181,7 @@ MODEL({
 
     // Workaround for crbug.com/258552
     function Object_forEach(obj, fn) {
-      for (var key in obj) if (obj.hasOwnProperty(key)) fn(obj[key], key);
+      for ( var key in obj ) if ( obj.hasOwnProperty(key) ) fn(obj[key], key);
     },
 
     function predicatedSink(predicate, sink) {
@@ -398,15 +398,15 @@ MODEL({
     function diff(other) {
       var added = other.slice(0);
       var removed = [];
-      for (var i = 0; i < this.length; i++) {
-        for (var j = 0; j < added.length; j++) {
-          if (this[i].compareTo(added[j]) == 0) {
+      for ( var i = 0 ; i < this.length ; i++ ) {
+        for ( var j = 0 ; j < added.length ; j++ ) {
+          if ( this[i].compareTo(added[j]) == 0 ) {
             added.splice(j, 1);
             j--;
             break;
           }
         }
-        if (j == added.length) removed.push(this[i]);
+        if ( j == added.length ) removed.push(this[i]);
       }
       return { added: added, removed: removed };
     },
@@ -461,7 +461,7 @@ MODEL({
       var i = 0;
       var j = 0;
       var k = 0;
-      while(i < this.length && j < arr.length) {
+      while ( i < this.length && j < arr.length ) {
         var a = compare(this[i], arr[j]);
         if ( a < 0 ) {
           result[k++] = this[i++];
@@ -497,7 +497,7 @@ MODEL({
        * Search for a single element in an array.
        * @param predicate used to determine element to find
        */
-      for (var i = 0;  i < this.length ; i++ ) {
+      for ( var i = 0 ;  i < this.length ; i++ ) {
         var result = map(this[i], i);
         if ( result ) return result;
       }
@@ -732,6 +732,7 @@ MODEL({
     }
   ]
 });
+
 
 function defineProperties(proto, fns) {
   for ( var key in fns ) {
