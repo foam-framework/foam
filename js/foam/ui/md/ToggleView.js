@@ -32,48 +32,58 @@ CLASS({
       defaultValue: true,
     },
     {
+      name: 'label',
+      type: 'String',
+    },
+    {
       name: 'className',
-      defaultValue: 'checkbox-container'
+      defaultValue: 'toggle-container'
     }
   ],
   templates: [
     function CSS() {/*
-      .checkbox-container {
-        display: inline-block;
+      .toggle-container {
+        display: flex;
         padding: 12px 10px;
       }
 
-      .checkbox-background {
+      .toggle-label {
+        flex-grow: 1;
+      }
+
+      .toggle-background {
         background-color: #9e9e9e;
         border-radius: 7px;
-        position: relative;
+        display: inline-block;
         height: 14px;
+        margin-left: 15px;
+        opacity: 0.3;
+        position: relative;
         width: 36px;
       }
-      .checkbox-lever {
-        background-color: #f5f5f5;
-        border: 1px solid #ccc;
-        border-radius: 50%;
-        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.15);
-        height: 20px;
-        width: 20px;
-        position: absolute;
-        top: -3px;
-        left: 0;
-        transition: left .08s;
-      }
 
-      .checkbox-background.enabled {
+      .toggle-background.enabled {
         opacity: 1.0;
       }
-      .checkbox-background {
-        opacity: 0.3;
+
+      .toggle-lever {
+        background-color: #f5f5f5;
+        border-radius: 50%;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.15);
+        height: 20px;
+        left: 0;
+        position: absolute;
+        top: -3px;
+        transition: left .08s;
+        width: 20px;
       }
 
-      .checkbox-background.toggledOn {
+      .toggle-background.toggledOn {
         background-color: #7baaf7; // Google Blue 300
       }
-      .checkbox-background.toggledOn .checkbox-lever {
+
+      .toggle-background.toggledOn .toggle-lever {
         border: none;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.26);
         background-color: #3367d6;
@@ -83,9 +93,11 @@ CLASS({
     */},
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div id="<%=this.id%>-background" class="checkbox-background">
-          <div class="checkbox-lever"></div>
-        </div>
+        <span class="toggle-label"><%# this.label %></span>
+        <%# this.data ? "ON" : "OFF" %>
+        <span id="<%=this.id%>-background" class="toggle-background">
+          <div class="toggle-lever"></div>
+        </span>
       </div>
       <%
         this.on('click', function() {
