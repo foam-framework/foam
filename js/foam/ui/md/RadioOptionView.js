@@ -26,13 +26,18 @@ CLASS({
   properties: [
     {
       name: 'data',
+      documentation: "The selected value from the radio button group. If it equals $$DOC{ref:'.value'}, this is selected.",
       postSet: function(old,nu) {
         console.log("set ", nu);
       }
     },
     {
+      name: 'value',
+      documentation: "The value that this option represents. If clicked this value is set on $$DOC{ref:'.data'}."
+    },
+    {
       name: 'label',
-      defaultValue: "label"
+      defaultValueFn: function() { return this.value; }
     },
     {
       name: 'className',
@@ -164,8 +169,8 @@ CLASS({
         </div>
       </div>
       <%
-        this.on('click', function() { if ( self.enabled ) self.data = !self.data; }, this.id);
-        this.setClass('checked', function() { return !!self.data; },
+        this.on('click', function() { if ( self.enabled ) self.data = self.value; }, this.id);
+        this.setClass('checked', function() { return equals(self.data, self.value); },
             this.id + '-background');
         this.setClass('disabled', function() { return !self.enabled; },
             this.id + '-background');
