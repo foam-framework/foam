@@ -568,7 +568,10 @@ var Property = {
       displayWidth: 70,
       displayHeight: 5,
       defaultValue: function(o1, o2) {
-        return (o1.localeCompare || o1.compareTo).call(o1, o2);
+        if ( o1 === o2 ) return 0;
+        if ( o1.localeCompare ) return o1.localeCompare(o2);
+        if ( o1.compareTo ) return o1.compareTo(o2);
+        return o1.$UID.compareTo(o2.$UID);
       },
       help: 'Comparator function.',
       documentation: "A comparator function two compare two instances of this $$DOC{ref:'Property'}."
