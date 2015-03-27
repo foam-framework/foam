@@ -79,6 +79,11 @@ CLASS({
       this.choices$.addListener(this.updateSelected);
     },
 
+    shouldDestroy: function(old,nu) {
+      // data change doesn't require re-rendering, only a choice list change
+      return false;
+    },
+
     initInnerHTML: function() {
       this.SUPER();
       this.updateSelected();
@@ -111,8 +116,8 @@ CLASS({
     function toInnerHTML() {/*
 <%
       for ( var i = 0 ; i < this.choices.length ; i++ ) {
-        var choice = this.choices[i];
-        var choiceLbl = choice[1]; %>
+        var choice = this.choices[i][0];
+        var choiceLbl = this.choices[i][1]; %>
         <div class="choice">
           $$data{model_:'foam.ui.md.RadioOptionView', value: choice, label: choiceLbl}
         </div>
