@@ -68,8 +68,8 @@ CLASS({
     {
       model_: 'foam.core.types.StringEnumProperty',
       name: 'radioChoices',
-//      view: 'foam.ui.ChoiceView',
-      choices: ['Choice one', 'Choice two', 'Choice three']
+      view: 'foam.ui.ChoiceListView',
+      choices: ['Choice one', 'Choice two', ['Choice three', "Other", 'user']]
     },
     {
       model_: 'foam.core.types.StringEnumProperty',

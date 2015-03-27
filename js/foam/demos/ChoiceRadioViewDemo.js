@@ -35,7 +35,6 @@ CLASS({
       name: 'data',
       defaultValue: 'none'
     }
-    
   ],
   templates: 
   [ 
