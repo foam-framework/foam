@@ -23,8 +23,21 @@
     models.push(arequire(viewName));
     delete params.view;
   }
+  var viewParams = {};
+  Object_forEach(params, function(value, key) {
+    var match = /^view([A-Z].*)$/.exec(key);
+    var viewPropName;
+    if ( match && (viewPropName = match[1]) ) {
+      viewParams[viewPropName.charAt(0).toLowerCase() +
+          viewPropName.slice(1)] = value;
+    }
+  });
 
   models.push(arequire('foam.ui.View'));
+  Object_forEach(params, function(value, key) {
+    var match = /^[a-z]+[.]([a-z]+[.])*[A-Z][a-zA-Z]*$/.exec(value);
+    models.push(arequire(value));
+  });
 
   var showActions = params.showActions;
   if ( showActions ) {
@@ -49,7 +62,8 @@
       var obj = X.lookup(model).create(params);
       var view;
       if ( viewName ) {
-        view = X.lookup(viewName).create({ data: obj });
+        viewParams.data = obj;
+        view = X.lookup(viewName).create(viewParams);
         // 'CView' refers to old CView
         // TODO(kgr): remove this check when CView's converted to foam.graphics.CView
       } else if (  ( X.lookup('foam.ui.View').isInstance(obj) )
@@ -59,7 +73,9 @@
         view = obj.toView_();
       } else {
         arequire('foam.ui.DetailView')(function(m) {
-          view = m.create({ data: obj, showActions: showActions });
+          viewParams.data = obj;
+          viewParams.showActions = showActions;
+          view = m.create(viewParams);
           document.body.insertAdjacentHTML('beforeend', view.toHTML());
           view.initHTML();
         });

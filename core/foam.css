@@ -78,6 +78,7 @@ p, h1, form, button {
 /* ----------- detailView ----------- */
 
 .detailView {
+  display: table;
   border: solid 2px #dddddd;
   background: #fafafa;
   width: 99%;

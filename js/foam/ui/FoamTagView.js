@@ -46,8 +46,8 @@ CLASS({
       var viewName  = e.getAttribute('view');
       var onInit    = e.getAttribute('oninit');
 
-      if ( modelName ) models.push(arequire(modelName));
-      if ( viewName  ) models.push(arequire(viewName));
+      if ( modelName ) models.push(arequire(modelName, this.X));
+      if ( viewName  ) models.push(arequire(viewName, this.X));
 
       aseq(apar.apply(null, models), function(ret) {
         var model = this.X.lookup(modelName);
@@ -69,7 +69,7 @@ CLASS({
 
         if ( viewName ) {
           var viewModel = this.X.lookup(viewName);
-          view = viewModel.create({ model: model, data: obj });
+          view = viewModel.create({ model: model, data: obj }, this.X);
         } else if ( this.X.lookup('foam.ui.BaseView').isInstance(obj) ) {
           view = obj;
         } else if ( obj.toView_ ) {
@@ -86,7 +86,7 @@ CLASS({
             model: model,
             data: obj,
             showActions: showActions
-          });
+          }, this.X);
         }
 
         if ( e.id ) this.document.FOAM_OBJECTS[e.id] = obj;
