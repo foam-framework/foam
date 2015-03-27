@@ -26,10 +26,7 @@ CLASS({
   properties: [
     {
       name: 'data',
-      documentation: "The selected value from the radio button group. If it equals $$DOC{ref:'.value'}, this is selected.",
-      postSet: function(old,nu) {
-        console.log("set ", nu);
-      }
+      documentation: "The selected value from the radio button group. If it equals $$DOC{ref:'.value'}, this is selected."
     },
     {
       name: 'value',
