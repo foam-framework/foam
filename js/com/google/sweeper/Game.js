@@ -52,7 +52,6 @@ CLASS({
       body {
         -webkit-user-select: none;
       }
-
     */},
     function toHTML() {/*
       $$time{mode: 'read-only'}
@@ -60,5 +59,4 @@ CLASS({
       %%board
     */}
   ]
-
 });
