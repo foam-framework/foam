@@ -370,6 +370,7 @@ var BootstrapModel = {
       Object.defineProperty(cls, name, {
         get: function () {
           var l = fn.bind(this);
+          var now = l;
           /*
           if ( ( isFramed || isMerged ) && this.X.isBackground ) {
             console.log('*********************** ', this.model_.name);
@@ -384,6 +385,8 @@ var BootstrapModel = {
               l,
               (isMerged === true) ? undefined : isMerged, this.X);
           }
+
+          l.now = now;
 
           Object.defineProperty(this, name, { value: l});
 
