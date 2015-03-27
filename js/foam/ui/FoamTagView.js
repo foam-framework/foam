@@ -62,6 +62,9 @@ CLASS({
         var obj = model.create(null, this.X);
         obj.fromElement(e);
 
+        if ( obj.model_.getProperty('data') && this.hasOwnProperty('data') )
+          obj.data = this.data;
+
         var view;
 
         if ( viewName ) {
