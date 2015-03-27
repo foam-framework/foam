@@ -531,7 +531,8 @@
     {
       model_: 'IntProperty',
       name: 'id',
-      defaultValue: 0
+      defaultValue: 0,
+      hidden: true
     },
     {
       model_: 'StringProperty',
@@ -589,14 +590,14 @@
                 <title>Person DAO Controller</title>
                 <src language="javascript">
                   <code>CLASS({
-  package: 'foam.sandbox',
   name: 'PersonDAOController',
+  package: 'foam.sandbox',
 
   requires: [
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
     'foam.core.types.DAOProperty',
-    'foam.dao.DAOListView',
+    'foam.ui.DAOListView',
     'foam.sandbox.Person'
   ],
 
@@ -604,6 +605,7 @@
     {
       model_: 'ArrayProperty',
       name: 'people',
+      hidden: true,
       factory: function() {
         return [
           this.Person.create({ firstName: 'Margaret', lastName: 'Atwood' }),
@@ -614,14 +616,17 @@
       }
     },
     {
+      name: 'loadedFromArray',
+      defaultValue: false
+    },
+    {
       model_: 'foam.core.types.DAOProperty',
       name: 'dao',
       factory: function() {
         return this.EasyDAO.create({
+          daoType: 'IDB',
           model: this.Person,
-          daoType: 'MDAO',
-          seqNo: true,
-          caching: true
+          seqNo: true
         });
       },
       view: 'foam.ui.DAOListView'
@@ -639,6 +644,7 @@
             self.people.forEach(function(person) {
               self.dao.put(person);
             });
+            self.loadedFromArray = true;
           }
         });
       }

@@ -17,6 +17,7 @@ CLASS({
   requires: [
     'foam.dao.EasyDAO',
     'foam.ui.ActionButton',
+    'foam.sandbox.IsolatedContext',
     'foam.flow.CodeSampleOutput',
     'foam.flow.CodeSampleOutputView',
     'foam.flow.CodeSnippet',
@@ -71,19 +72,24 @@ CLASS({
     {
       model_: 'FunctionProperty',
       name: 'packagePath_',
-      defaultValue: function(Y, path, i) {
+      defaultValue: function(Y, path, i, opt_noCreate) {
         if ( i === path.length ) return Y;
-        if ( ! Y[path[i]] ) {
-          Y[path[i]] = {};
+        if ( ! Y[path[i]] && opt_noCreate ) return undefined;
+
+        if ( ! Y.hasOwnProperty(path[i]) ) {
+          if ( Y[path[i]] ) Y[path[i]] = Object.create(Y[path[i]]);
+          else              Y[path[i]] = {};
         }
-        return this.packagePath_(Y[path[i]], path, i+1);
+
+        return this.packagePath_(Y[path[i]], path, i+1, opt_noCreate);
       }
     },
     {
       model_: 'FunctionProperty',
       name: 'packagePath',
-      defaultValue: function(X, path) {
-        return path ? this.packagePath_(X, path.split('.'), 0) : this;
+      defaultValue: function(X, path, opt_noCreate) {
+        return path ? this.packagePath_(X, path.split('.'), 0, opt_noCreate) :
+            this;
       }
     },
     {
@@ -107,26 +113,27 @@ CLASS({
     },
     {
       model_: 'FunctionProperty',
+      name: 'lookup',
+      defaultValue: function(path) {
+        if ( ! path ) return undefined;
+        if ( typeof path !== 'string' ) return path;
+        return this.packagePath(this, path, true);
+      }
+    },
+    {
+      model_: 'FunctionProperty',
       name: 'classFn',
       defaultValue: function(modelHash, opt_X) {
         var Y = opt_X || this;
         modelHash.package = modelHash.package || 'foam.sandbox';
         var model = Y.Model.create(modelHash, Y);
         Y.registerModel(model);
-        model.arequire();
         return model;
       }
     },
     {
       name: 'sampleCodeBaseContext',
-      factory: function() {
-        var X = this.X.sub({
-          packagePath_: this.packagePath_,
-          registerModel: this.registerModel,
-          CLASS: this.classFn
-        });
-        return X;
-      }
+      factory: function() { return this.IsolatedContext.create({}, GLOBAL.X).Y; }
     },
     {
       name: 'sampleCodeContext',
@@ -184,8 +191,7 @@ CLASS({
       code: function() {
         this.output.virtualConsole.watchConsole();
         this.output.viewOutput.innerHTML = '';
-        var X = this.sampleCodeContext = this.sampleCodeBaseContext.sub(),
-            CLASS = X.CLASS;
+        var X = this.sampleCodeContext = this.sampleCodeBaseContext.sub();
         this.source.select({
           put: function() {
             // Use arguments array to avoid leaking names into eval context.
@@ -194,7 +200,7 @@ CLASS({
                 try {
                   eval('(function(X, CLASS){' +
                       arguments[0].src.code +
-                      '}).call(null, X, CLASS)');
+                      '}).call(null, X, X.CLASS)');
                 } catch (e) {
                   this.output.virtualConsole.onError(e.toString());
                 }
