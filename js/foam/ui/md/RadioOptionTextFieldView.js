@@ -50,12 +50,12 @@ CLASS({
     */},
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div id="<%=this.id%>-background" class="checkbox-background">
+        <div id="<%=this.id%>-background" class="radiobutton-background">
           <div id="radioContainer" class="labeled">
             <div id="onRadio"></div>
             <div id="offRadio"></div>
           </div>
-          <div class="radioLabel">$$label{ mode: 'read-only' }</div>
+          <div class="radioLabel">$$label{ mode: 'read-only', floatingLabel: false }</div>
           <div class="radioLabel input">$$value{ model_: 'foam.ui.md.TextFieldView', floatingLabel: false, onKeyMode: true }</div>
         </div>
       </div>

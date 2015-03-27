@@ -52,7 +52,7 @@ CLASS({
     },
     {
       name: 'className',
-      defaultValue: 'checkbox-container'
+      defaultValue: 'radiobutton-container'
     },
     {
       name: 'enabled',
@@ -63,13 +63,13 @@ CLASS({
   templates: [
     function CSS() {/*    
       
-      .checkbox-container {
+      .radiobutton-container {
         display: inline-block;
         white-space: nowrap;
         position: relative;
       }
       
-      .checkbox-container :focus {
+      .radiobutton-container :focus {
         outline: none;
       }
       
@@ -111,13 +111,13 @@ CLASS({
         transition: border-color 0.28s;
       }
 
-      .checkbox-background {
+      .radiobutton-background {
         display: inline-block;
         white-space: nowrap;
         position: relative;
         height: 48px;
       }
-      .checkbox-background.checked #offRadio {
+      .radiobutton-background.checked #offRadio {
         border-color: #4285f4;
       }
       
@@ -135,7 +135,7 @@ CLASS({
         transition: transform ease 0.28s;
       }
       
-      .checkbox-background.checked #onRadio {
+      .radiobutton-background.checked #onRadio {
         -webkit-transform: scale(1);
         transform: scale(1);
       }
@@ -153,32 +153,32 @@ CLASS({
         display: none;
       }
       
-      .checkbox-background.disabled {
+      .radiobutton-background.disabled {
         pointer-events: none;
       }
       
-      .checkbox-background.disabled #offRadio,
-      .checkbox-background.disabled #onRadio {
+      .radiobutton-background.disabled #offRadio,
+      .radiobutton-background.disabled #onRadio {
         opacity: 0.33;
       }
       
-      .checkbox-background.disabled #offRadio {
+      .radiobutton-background.disabled #offRadio {
         border-color: #5a5a5a;
       }
       
-      .checkbox-background.disabled .checkbox-background.checked #onRadio {
+      .radiobutton-background.disabled .radiobutton-background.checked #onRadio {
         background-color: #5a5a5a;
       }
 
     */},
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div id="<%=this.id%>-background" class="checkbox-background">
+        <div id="<%=this.id%>-background" class="radiobutton-background">
           <div id="radioContainer" class="labeled">
             <div id="onRadio"></div>
             <div id="offRadio"></div>
           </div>
-          <div class="radioLabel">$$label{ mode: 'read-only' }</div>
+          <div class="radioLabel">$$label{ mode: 'read-only', floatingLabel: false }</div>
         </div>
       </div>
       <%

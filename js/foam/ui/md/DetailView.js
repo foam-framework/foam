@@ -24,7 +24,8 @@ CLASS({
     'foam.ui.md.TextFieldView',
     'foam.ui.md.IntFieldView',
     'foam.ui.md.FloatFieldView',
-    'foam.ui.md.ToggleView'
+    'foam.ui.md.ToggleView',
+    'foam.ui.md.ChoiceRadioView'
   ],
 
   properties: [
@@ -41,6 +42,7 @@ CLASS({
       this.Y.registerModel(this.IntFieldView,   'foam.ui.IntFieldView');
       this.Y.registerModel(this.FloatFieldView, 'foam.ui.FloatFieldView');
       this.Y.registerModel(this.ToggleView, 'foam.ui.BooleanView');
+      this.Y.registerModel(this.ChoiceRadioView, 'foam.ui.ChoiceListView');
       this.SUPER();
     },
     titleHTML:    function() { return ''; },
