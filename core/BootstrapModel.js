@@ -178,7 +178,7 @@ var BootstrapModel = {
       });
     });
 
-    var props = this.properties_ = this.properties ? this.properties/*.clone()*/ : [];
+    var props = this.properties_ = this.properties ? this.properties.clone() : [];
 
     this.imports_ = this.imports;
     if ( extendsModel ) this.imports_ = this.imports_.concat(extendsModel.imports_);

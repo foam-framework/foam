@@ -14,9 +14,15 @@ CLASS({
   package: 'foam.flow',
   extendsModel: 'foam.flow.Element',
 
+  requires: [ 'foam.ui.ActionButton' ],
+  imports: [ 'sampleCodeContext$' ],
+
   constants: { ELEMENT_NAME: 'view-output' },
 
   properties: [
+    {
+      name: 'sampleCodeContext'
+    },
     {
       model_: 'StringProperty',
       name: 'data',
@@ -62,7 +68,7 @@ CLASS({
       code: function() {
         if ( ! this.$ ) return;
         this.$.innerHTML = this.data.innerHTML;
-        DOM.initElementChildren(this.$, this.X);
+        DOM.initElementChildren(this.$, this.sampleCodeContext);
         this.$.style.height = this.height + 'px';
         this.$.className = this.height > 0 ? 'visible' : '';
       }
@@ -78,6 +84,7 @@ CLASS({
         overflow: auto;
         display: flex;
         justify-content: center;
+        flex-direction: column;
       }
       view-output.visible {
         padding: 5px;

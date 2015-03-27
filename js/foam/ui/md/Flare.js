@@ -22,8 +22,11 @@ CLASS({
   requires: [ 'foam.graphics.Circle' ],
 
   properties: [
-    'color',
     'element',
+    {
+      name: 'color',
+      defaultValue: '#aaaaaa'
+    },
     {
       name: 'startAlpha',
       defaultValue: 1
@@ -35,6 +38,10 @@ CLASS({
     {
       name: 'startY',
       defaultValue: 1
+    },
+    {
+      name: 'startLocation',
+      defaultValue: 'percent'
     },
     {
       name: 'cssPosition',
@@ -60,14 +67,18 @@ CLASS({
     {
       name: 'fire',
       code: function() {
-        var w = this.element.offsetWidth;
-        var h = this.element.offsetHeight;
+        var w = this.element.offsetWidth, h = this.element.offsetHeight,
+            x = this.startLocation !== 'percent' ? this.startX :
+                this.startX * w,
+            y = this.startLocation !== 'percent' ? this.startY :
+                this.startY * h;
+
         var c = this.Circle.create({
           r: 0,
           width: w,
           height: h,
-          x: this.startX * w,
-          y: this.startY * h,
+          x: x,
+          y: y,
           color: this.color,
           alpha: this.startAlpha
         });

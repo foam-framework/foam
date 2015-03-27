@@ -28,7 +28,7 @@ CLASS({
       defaultValueFn: function() { return [
         ['choice1', 'Choice 1'], 
         ['choice2', 'Choice 2'],
-        ['name', 'Choice 3', 'user'],
+        ['name', 'Other', 'user'],
       ]; }
     },
     {
@@ -42,8 +42,13 @@ CLASS({
     function toInnerHTML() 
     {/*
       <p>
-      $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices}
+      $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'vertical'}
       </p>
+      <hr/>
+      <p>
+      $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'horizontal'}
+      </p>
+      <hr/>
       <p>
       $$data
       </p>
