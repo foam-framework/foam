@@ -290,12 +290,20 @@ MODEL({
         path = path.substring(0, path.lastIndexOf('/')+1);
         path += self.name + '_' + t.name + '.ft';
 
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", path);
-        xhr.asend(function(data) {
-          t.template = data;
-          future.set(Template.create(t));
-        });
+        if ( window.XMLHttpRequest ) {
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", path);
+          xhr.asend(function(data) {
+            t.template = data;
+            future.set(Template.create(t));
+          });
+        } else {
+          var fs = require('fs');
+          fs.readFile(path, function(err, data) {
+            t.template = data.toString();
+            future.set(Template.create(t));
+          });
+        }
       } else if ( typeof t.template === 'function' ) {
         t.template = multiline(t.template);
       }

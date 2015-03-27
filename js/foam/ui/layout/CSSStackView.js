@@ -219,7 +219,7 @@ CLASS({
   templates: [
     function CSS() {/*
 .cssslider-animate {
-  -webkit-transition: -webkit-transform 300ms ease-in;
+  -webkit-transition: -webkit-transform 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 */},
     function toInnerHTML() {/*<%= this.overlaySlider %><div id="<%= this.containerViewport = this.nextID() %>" style="overflow:hidden;position:absolute"><div id="<%= this.innerContainer = this.setClass('cssslider-animate', function() { self.animating; }) %>"></div></div>*/}

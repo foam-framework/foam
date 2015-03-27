@@ -27,6 +27,7 @@ X.ModelDAO = X.node.dao.ModelFileDAO.create();
 
   MODEL = CLASS = function(json) {
     json.model_ = 'Model';
+    json.sourcePath = global.__DATACALLBACK.sourcePath;
     global.__DATACALLBACK(json);
   };
 })();
