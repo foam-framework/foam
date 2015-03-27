@@ -57,7 +57,8 @@ CLASS({
       var old = global.__DATACALLBACK;
       try {
         global.__DATACALLBACK = this.onData;
-        var result = require(fileName);
+        global.__DATACALLBACK.sourcePath = fileName;
+        require(fileName);
       } catch(e) {
         sink && sink.error && sink.error('Error loading model', key, e);
       } finally {

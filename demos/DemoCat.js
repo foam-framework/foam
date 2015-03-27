@@ -26,7 +26,7 @@ CLASS({
 return JSONUtil.arrayToObjArray(X, [
   {
     name: 'Googley Eyes',
-    path: '/index.html?model=foam.demos.graphics.EyesDemo',
+    path: '../index.html?model=foam.demos.graphics.EyesDemo',
     description: 'A Googley version of the old xeyes app.  Follows your mouse.',
     keywords: ['graphics', 'reactive'],
     src: '/js/foam/demos/graphics/EyesDemo.js',
@@ -34,7 +34,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Solar System',
-    path: '/index.html?model=foam.demos.SolarSystem',
+    path: '../index.html?model=foam.demos.SolarSystem',
     description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.  This was the first graphical FOAM demo to be written (in 2011).  I\'ve added the <b>old</b> keyword to this, and other older, non-modernized demos.',
     keywords: ['animation', 'reactive', 'old'],
     src: '/js/foam/demos/SolarSystem.js',
@@ -42,7 +42,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Minesweeper',
-    path: '/index.html?model=com.google.sweeper.Game',
+    path: '../index.html?model=com.google.sweeper.Game',
     description: 'A Minesweeper game.',
     keywords: ['game'],
     src: '/js/com/google/sweeper/Game.js',
@@ -50,7 +50,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Reactive Clocks',
-    path: '/index.html?model=foam.demos.ReactiveClocks',
+    path: '../index.html?model=foam.demos.ReactiveClocks',
     description: 'A simple demo of reactive programming.  The first clocks reacts to the position of the mouse while the second clock reacts to the position of the first clock and to time.  Reacting to time essentially gives you an animation system for free.',
     keywords: ['animation', 'reactive'],
     src: '/js/foam/demos/ReactiveClocks.js',
@@ -75,7 +75,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Fading Circles',
-    path: '/index.html?model=foam.demos.graphics.FadingCircles',
+    path: '../index.html?model=foam.demos.graphics.FadingCircles',
     description: 'An reactive-programming animation which demonstrates the use of Events.dynamic() and Movement.animate().',
     keywords: ['animation'],
     image: 'FadingCircles.png'
@@ -89,7 +89,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'InterpolatedClocks',
-    path: '/index.html?model=foam.demos.InterpolatedClocks',
+    path: '../index.html?model=foam.demos.InterpolatedClocks',
     description: 'A demonstration of animation interpolators.  Click to animate the clocks.  Notice how the different clocks use different acceleration curves to reach their targets.',
     keywords: ['animation'],
     image: 'InterpolatedClocks.png'
@@ -113,7 +113,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Pong',
-    path: '/index.html?model=foam.demos.pong.Pong',
+    path: '../index.html?model=foam.demos.pong.Pong',
     description: 'A simple pong game which demonstrates the both the use of graphical traits (motion blur and shadow) and of the physics engine.',
     keywords: ['animation', 'game', 'physics', 'traits', '14'],
     src: '/js/foam/demos/pong/Pong.js',
@@ -128,7 +128,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Collision',
-    path: '/index.html?model=foam.demos.physics.Collision',
+    path: '../index.html?model=foam.demos.physics.Collision',
     description: 'Demonstration of the physics engine and collision-detection.',
     keywords: ['physics', '14'],
     src: '/js/foam/demos/physics/Collision.js',
@@ -136,7 +136,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Collision With Spring',
-    path: '/index.html?model=foam.demos.physics.CollisionWithSpring',
+    path: '../index.html?model=foam.demos.physics.CollisionWithSpring',
     description: 'A simple physics simulation which shows the use of springs and collision detection.',
     keywords: ['physics', '14'],
     src: '/js/foam/demos/physics/CollisionWithSpring.js',
@@ -144,7 +144,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Spring',
-    path: '/index.html?model=foam.demos.physics.Spring',
+    path: '../index.html?model=foam.demos.physics.Spring',
     description: 'Addictive spring physics simulation.',
     keywords: ['physics', '14'],
     src: '/js/foam/demos/physics/Spring.js',
@@ -152,7 +152,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Baloons',
-    path: '/index.html?model=foam.demos.physics.Baloons',
+    path: '../index.html?model=foam.demos.physics.Baloons',
     description: 'Collision detection with inflatable baloons.',
     keywords: ['physics', '14'],
     src: '/js/foam/demos/physics/Baloons.js',
@@ -160,7 +160,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Bubbles',
-    path: '/index.html?model=foam.demos.physics.Bubbles',
+    path: '../index.html?model=foam.demos.physics.Bubbles',
     description: 'Demonstrates use of gravity.  Negative gravity makes bubbles rise.',
     keywords: ['physics', '14'],
     src: '/js/foam/demos/physics/Bubbles.js',
@@ -192,7 +192,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Complements',
-    path: '/index.html?model=foam.demos.graphics.Complements',
+    path: '../index.html?model=foam.demos.graphics.Complements',
     description: 'An animated colour wheel.  Ported from the <a href="http://elm-lang.org/edit/examples/Intermediate/Complements.elm">Elm demo</a>.  Shows use of Events.dynamic().',
     keywords: ['animation', '14'],
     image: 'Complements.png'
@@ -319,7 +319,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'FOAM Logo',
-    path: '/index.html?model=foam.demos.graphics.Logo',
+    path: '../index.html?model=foam.demos.graphics.Logo',
     description: 'Animated FOAM logo.',
     keywords: ['demo', 'animation'],
     src: '/js/foam/demos/graphics/Logo.js',
@@ -335,7 +335,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'FOAM Modeller',
-    path: '/index.html?model=foam.apps.Modeller',
+    path: '../index.html?model=foam.apps.Modeller',
     description: 'A demo of the IDE potential for FOAM due to its meta-modelling.',
     keywords: ['dev', 'ide', 'model'],
     src: '/js/foam/apps/Modeller.js'

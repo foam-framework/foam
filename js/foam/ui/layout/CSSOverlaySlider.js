@@ -103,7 +103,7 @@ CLASS({
         if ( this.$ ) {
           var overlay = this.overlaySlider;
           overlay.style.webkitTransition = ! this.animating ? '' :
-            ('opacity 300ms ' + (this.isOpen ? 'ease-out' : 'ease-in'));
+            ('opacity 300ms ' + (this.isOpen ? 'cubic-bezier(0.4, 0.0, 0.2, 1)' : 'cubic-bezier(0.4, 0.0, 1, 1)'));
 
           overlay.style.webkitTransform = 'translate3d(0px,0px,0px)';
           overlay.style.width = this.width + 'px';
@@ -113,7 +113,7 @@ CLASS({
 
           var container = this.viewContainer;
           container.style.webkitTransition = ! this.animating ? '' :
-            ('-webkit-transform 300ms ' + (this.isOpen ? 'ease-out' : 'ease-in'));
+            ('-webkit-transform 300ms ' + (this.isOpen ? 'cubic-bezier(0.4, 0.0, 0.2, 1)' : 'cubic-bezier(0.4, 0.0, 1, 1)'));
 
           container.style.webkitTransform = 'translate3d(' + (this.isOpen ? 0 : -width) + 'px,0px,0px)';
           container.style.width = width + 'px';

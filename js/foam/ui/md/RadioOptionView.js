@@ -40,6 +40,17 @@ CLASS({
       defaultValueFn: function() { return this.value; }
     },
     {
+      name: 'choice',
+      documentation: "Convenient way to set value and label from a choice array.",
+      getter: function() {
+        return [ this.value, this.label ];
+      },
+      setter: function(val) {
+        this.value = val[0];
+        this.label = val[1];
+      }
+    },
+    {
       name: 'className',
       defaultValue: 'checkbox-container'
     },
