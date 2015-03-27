@@ -98,7 +98,7 @@ html, body { overflow: initial; }
   box-shadow: 0 1px 1px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.15);
 }
 
-.issue-edit .body {
+.issue-edit .body, .issue-edit .md-autocomplete-list-body {
   flex-grow: 1;
   overflow: hidden;
   display: flex;

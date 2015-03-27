@@ -30,9 +30,7 @@ CLASS({
   imports: [ 'stack' ],
   exports: [
     'acRowView as rowView',
-    'queryFactory',
-    'removeRowFromList',
-    'srcDAO as dao'
+    'removeRowFromList'
   ],
 
   properties: [
@@ -43,8 +41,8 @@ CLASS({
       }
     },
     {
-      model_: 'foam.core.types.DAOProperty',
-      name: 'srcDAO'
+      name: 'srcDAO',
+      documentation: 'Optional DAO to use for adding new rows.'
     },
     {
       name: 'queryFactory'
@@ -97,11 +95,11 @@ CLASS({
         padding: 4px 0 4px 8px;
       }
 
-      .inline-header {
+      .md-autocomplete-list-inline-header {
         align-items: center;
         display: flex;
       }
-      .inline-header .text {
+      .md-autocomplete-list-inline-header .text {
         color: #999;
         flex-grow: 1;
         flex-shrink: 0;
@@ -109,25 +107,31 @@ CLASS({
         font-weight: 500;
         padding: 0 16px;
       }
-      .inline-header .actionButtonCView-addRow {
+      .md-autocomplete-list-inline-header .actionButtonCView-addRow {
         opacity: 0.76;
+      }
+      .md-autocomplete-list-body {
+        display: flex;
+        flex-wrap: wrap;
       }
     */},
     function toInnerHTML() {/*
       <% var isArray = Array.isArray(this.data); %>
       <% if ( this.inline ) { %>
-        <div class="inline-header">
+        <div class="md-autocomplete-list-inline-header">
           <span class="text">%%label</span>
           <% if ( isArray ) { %> $$addRow <% } %>
         </div>
       <% } else { %>
-        <div class="header">
+        <div class="md-autocomplete-list-header">
           $$back
           <span class="grow header-text">%%label</span>
           <% if ( isArray ) { %> $$addRow <% } %>
         </div>
       <% } %>
-      <div id="<%= this.scrollerID %>" class="body" style="overflow-y: auto">
+      <div id="<%= this.scrollerID %>" class="md-autocomplete-list-body"
+          <% if (!this.inline) { %> style="overflow-y: auto" <% } %>
+          >
         <% if ( isArray ) { %>
           <% for ( var i = 0 ; i < this.data.length ; i++ ) { %>
             <%= this.rowView({data: this.data[i]}, this.Y) %>
@@ -160,11 +164,10 @@ CLASS({
       label: '',
       iconUrl: 'images/ic_add_24dp.png',
       action: function() {
-        var view = this.AddRowView.create(this.prop);
+        var view = this.AddRowView.create(this.prop, this.Y.sub({ dao: this.srcDAO }));
         view.data$.addListener(function(obj, topic, old, nu) {
           this.addRowToList(nu);
         }.bind(this));
-        view.allowFocus = false;
 
         this.stack.pushView(view);
         view.focus();
