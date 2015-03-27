@@ -496,7 +496,7 @@ MODEL({
           return;
         }
         var opt_args = Array.prototype.splice.call(arguments, 1);
-        var join = function (i) {
+        var ajoin = function (i) {
           aargs[i] = Array.prototype.splice.call(arguments, 1);
           if ( ++count == fs.length ) {
             var a = [];
@@ -508,7 +508,7 @@ MODEL({
         };
 
         for ( var i = 0 ; i < fs.length ; i++ )
-          fs[i].apply(null, [join.bind(null, i)].concat(opt_args));
+          fs[i].apply(null, [ajoin.bind(null, i)].concat(opt_args));
       };
     },
 
@@ -545,7 +545,7 @@ MODEL({
         var count = 0;
 
         var opt_args = Array.prototype.splice.call(arguments, 1);
-        var join = function (i) {
+        var ajoin = function (i) {
           // aargs[i] = Array.prototype.splice.call(arguments, 1);
           if ( ++count == n ) {
             var a = [];
@@ -559,7 +559,7 @@ MODEL({
         };
 
         for ( var i = 0 ; i < n ; i++ ) {
-          afunc.apply(null, [join.bind(null, i)].concat([i, n]).concat(opt_args));
+          afunc.apply(null, [ajoin.bind(null, i)].concat([i, n]).concat(opt_args));
         }
       };
     },
