@@ -16,18 +16,13 @@
  */
 
 CLASS({
-  name: 'AddRowView',
+  name: 'PopupAutocompleteView',
   package: 'foam.ui.md',
   extendsModel: 'foam.ui.SimpleView',
-  traits: ['foam.ui.layout.PositionedDOMViewTrait', 'foam.input.touch.VerticalScrollNativeTrait'],
-
-  requires: [
-    'foam.ui.md.ToolbarCSS'
-  ],
+  traits: ['foam.input.touch.VerticalScrollNativeTrait'],
 
   imports: [
     'dao',
-    'hideListOnSingle',
     'queryFactory',
     'returnOnSelect',
     'rowView',
@@ -36,38 +31,6 @@ CLASS({
 
   exports: [
     'selection$'
-  ],
-
-  models: [
-    {
-      model_: 'Model',
-      name: 'SingleEntryHidingDAO',
-      extendsModel: 'foam.dao.ProxyDAO',
-      methods: {
-        select: function(sink, options) {
-          var firstEntry;
-          var seen = 0;
-          sink = sink || [];
-          var mySink = {
-            put: sink && sink.put && function(x) {
-              seen++;
-              if (seen === 1) {
-                firstEntry = x;
-              } else if (seen === 2) {
-                sink.put(firstEntry);
-                sink.put(x);
-              } else {
-                sink.put(x);
-              }
-            },
-            error: sink && sink.error && sink.error.bind(sink),
-            eof: sink && sink.eof && sink.eof.bind(sink)
-          };
-
-          return this.delegate.select(mySink, options);
-        }
-      }
-    }
   ],
 
   properties: [
@@ -112,6 +75,10 @@ CLASS({
       postSet: function(old, nu) {
         this.selected = false;
       }
+    },
+    {
+      name: 'returnOnSelect',
+      defaultValue: true
     },
     {
       name: 'selected',
@@ -178,35 +145,23 @@ CLASS({
       }
     },
     {
+      name: 'returnOnSelect',
+      defaultValue: true
+    },
+    {
+      name: 'scrollerID',
+      factory: function() {
+        return this.nextID();
+      }
+    },
+    {
       // TODO: DAO should be pre-limited instead
       name: 'limit',
       defaultValue: 40
     },
     {
       name: 'className',
-      defaultValue: 'AddRowView'
-    },
-    {
-      name: 'scrollerID',
-      factory: function() { return this.nextID(); }
-    },
-    {
-      name: 'hideListOnSingle',
-      documentation: 'When true, the suggestion list disappears when there is only one match. When false it is always visible. The default (false) is generally mobile-friendly, while true is better on desktop.',
-      defaultValue: false
-    },
-    {
-      name: 'returnOnSelect',
-      documentation: 'When true, updates $$DOC{ref:".data"} and returns when ' +
-          'the user chooses an entry. When false, the query is updated to ' +
-          'match the selected row.',
-      defaultValue: true
-    },
-    {
-      name: 'allowFocus',
-      documentation: 'Set true to allow the browser to focus the input box. ' +
-          'This can cause nasty scroll jank on mobile.',
-      defaultValue: false
+      defaultValue: 'PopupAutocompleteView'
     },
     {
       name: 'selection',
@@ -225,35 +180,87 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .AddRowView {
+      .PopupAutocompleteView {
+        height: 100%;
+        left: 0;
+        position: fixed;
+        top: 0;
+        width: 100%;
+      }
+
+      .PopupAutocompleteView-container {
+        position: relative;
+        height: 100%;
+        width: 100%;
+      }
+
+      .PopupAutocompleteView-overlay {
+        background: black;
+        opacity: 0.6;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+      }
+
+      .PopupAutocompleteView-dialog-container {
+        display: flex;
+        height: 100%;
+        justify-content: center;
+        width: 100%;
+      }
+
+      @media (min-width: 400px) {
+        .PopupAutocompleteView-dialog-container {
+          align-items: center;
+          padding: 20px;
+        }
+      }
+
+      .PopupAutocompleteView-dialog {
+        background: #fff;
         display: flex;
         flex-direction: column;
-        width: 100%;
-        height: 100%;
-        background: #fff;
+        flex-grow: 1;
+        max-width: 400px;
         overflow: hidden;
       }
-      .AddRowView .arvBody {
-        flex-grow: 1;
+
+      @media (min-width: 400px) {
+        .PopupAutocompleteView-dialog {
+          height: 25%;
+          min-height: 300px;
+        }
+      }
+
+      .PopupAutocompleteView-header {
+        align-items: center;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        flex-shrink: 0;
+        padding-left: 16px;
+      }
+      .PopupAutocompleteView-list {
         overflow-y: auto;
-      }
-      .AddRowView .rows {
-        width: 100%;
-        border: none;
-      }
-      .AddRowView .rows-row {
-        padding: 0 12px 0 16px;
       }
     */},
     function toInnerHTML() {/*
-      <div class="header">
-        $$cancel $$accept
-        $$q{ extraClassName: 'grow', clearAction: true }
+      <div class="PopupAutocompleteView-container">
+        <div class="PopupAutocompleteView-overlay"></div>
+        <div class="PopupAutocompleteView-dialog-container">
+          <div class="PopupAutocompleteView-dialog">
+            <div class="PopupAutocompleteView-header">
+              $$q{
+                extraClassName: 'grow',
+                clearAction: true,
+                underline: false
+              } $$cancel
+            </div>
+            <div id="<%= this.scrollerID %>" class="PopupAutocompleteView-list">
+              $$filteredDAO{ rowView: this.rowView }
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="arvBody" id="%%scrollerID">
-        $$filteredDAO{ rowView: this.rowView }
-      </div>
-      <% this.addInitializer(function() { if (self.allowFocus) self.qView.focus(); }); %>
     */}
   ],
 
@@ -267,7 +274,8 @@ CLASS({
       this.stack.back();
     },
     focus: function() {
-      if (this.allowFocus) this.qView.focus();
+      console.log('PAV focus');
+      this.qView.focus();
     }
   },
 
@@ -275,21 +283,9 @@ CLASS({
     {
       name: 'cancel',
       label: '',
-      iconUrl: 'images/ic_clear_24dp.png',
-      isAvailable: function() { return !this.selected; },
+      iconUrl: 'images/ic_clear_black_24dp.png',
+      isAvailable: function() { return !this.q; },
       action: function() {
-        this.doClose();
-      }
-    },
-    {
-      name: 'accept',
-      label: '',
-      iconUrl: 'images/ic_done_24dp.png',
-      //keyboardShortcuts: [ 13 /* enter */ ],
-      isAvailable: function() { return this.selected; },
-      action: function() {
-        var key = this.subKey ? this.subKey.f(this.softData) : this.softData;
-        this.data = key;
         this.doClose();
       }
     }

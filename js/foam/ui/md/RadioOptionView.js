@@ -19,7 +19,7 @@ CLASS({
   name: 'RadioOptionView',
   package: 'foam.ui.md',
   extendsModel: 'foam.ui.SimpleView',
-  documentation: "A single radio button",
+  documentation: "A single radio button. Used by $$DOC{ref:'foam.ui.md.ChoiceRadioView'}",
 
   requires: [ 'foam.ui.md.SharedStyles' ],
   
@@ -63,21 +63,22 @@ CLASS({
   templates: [
     function CSS() {/*    
       
-      #checkbox-container {
+      .checkbox-container {
         display: inline-block;
         white-space: nowrap;
         position: relative;
       }
       
-      #checkbox-container(:focus) {
+      .checkbox-container :focus {
         outline: none;
       }
       
       #radioContainer {
         position: relative;
-        width: 16px;
-        height: 16px;
+        width: 48px;
+        height: 48px;
         cursor: pointer;
+
       }
       
       #radioContainer.labeled {
@@ -100,8 +101,8 @@ CLASS({
       
       #offRadio {
         position: absolute;
-        top: 0px;
-        left: 0px; 
+        top: 16px;
+        left: 16px; 
         width: 16px;
         height: 16px;
         border-radius: 50%;
@@ -114,6 +115,7 @@ CLASS({
         display: inline-block;
         white-space: nowrap;
         position: relative;
+        height: 48px;
       }
       .checkbox-background.checked #offRadio {
         border-color: #4285f4;
@@ -121,8 +123,8 @@ CLASS({
       
       #onRadio {
         position: absolute;
-        top: 4px;
-        left: 4px;
+        top: 20px;
+        left: 20px;
         width: 8px;
         height: 8px;
         border-radius: 50%;
