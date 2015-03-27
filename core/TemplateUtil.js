@@ -179,9 +179,9 @@ var TemplateCompiler = {
     }
     // A Model
     else {
-      this.push("', X.foam.ui.FoamTagView.create({element: FOAM(");
+      this.push("', self.addDataChild( X.foam.ui.FoamTagView.create({element: FOAM(");
       this.push(JSONUtil.where(NOT_TRANSIENT).stringify(e));
-      this.push(')}, Y.sub({data: this.data}))'); // TODO(kgr): this seems a litt
+      this.push(')} ))');
     }
 
     this.push(",\n'");
