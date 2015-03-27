@@ -33,8 +33,12 @@ CLASS({
       postSet: function(_, cview) {
         cview.view = this;
         this.X.dynamic(function() {
-          this.width  = Math.max(this.width, cview.x + cview.width);
-          this.height = Math.max(this.height, cview.y + cview.height);
+          // ActionButtonCView's hide buttons by sizing to 0, so we honour that,
+          // but otherwise, we only increase the size of the canvas as needed, not shrink.
+          var w = cview.x + cview.width;
+          var h = cview.y + cview.height;
+          this.width  = w ? Math.max(this.width, w) : 0;
+          this.height = h ? Math.max(this.height, h): 0;
         }.bind(this));
       }
     }
