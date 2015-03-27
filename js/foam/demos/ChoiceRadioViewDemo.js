@@ -17,7 +17,7 @@
 
 CLASS({
   name: 'ChoiceRadioViewDemo',
-  extendsModel: 'foam.ui.View',
+  extendsModel: 'foam.ui.SimpleView',
   package: 'foam.demos',
   
   requires: ['foam.ui.md.ChoiceRadioView'],
@@ -41,7 +41,7 @@ CLASS({
     function toInnerHTML() 
     {/*
       <p>
-      $$choices{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices}
+      $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices}
       </p>
       <p>
       $$data

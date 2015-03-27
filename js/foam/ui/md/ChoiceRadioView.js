@@ -79,11 +79,6 @@ CLASS({
       this.choices$.addListener(this.updateSelected);
     },
 
-    shouldDestroy: function(old,nu) {
-      // data change doesn't require re-rendering, only a choice list change
-      return false;
-    },
-
     initInnerHTML: function() {
       this.SUPER();
       this.updateSelected();
