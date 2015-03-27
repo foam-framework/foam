@@ -253,7 +253,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Issue Tracker (Material-Design)',
-    path: '../../js/foam/apps/mbug/main.html',
+    path: '../apps/mbug/main.html',
     description: 'A simple mobile code.google.com issue-tracker client with a Material-Design interface.  Triage your Crbugs on the go.  See: <a href="http://mbug.foamdev.com">http://mbug.foamdev.com</a>',
     keywords: ['app', 'material-design', 'mobile', '14', 'android'],
     src: '../apps/mbug/',
