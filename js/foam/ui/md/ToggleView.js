@@ -21,7 +21,15 @@ CLASS({
   extendsModel: 'foam.ui.SimpleView',
   properties: [
     {
-      name: 'data'
+      name: 'data',
+      type: 'Boolean',
+      view: 'foam.ui.BooleanView',
+    },
+    {
+      name: 'enabled',
+      type: 'Boolean',
+      view: 'foam.ui.BooleanView',
+      defaultValue: true,
     },
     {
       name: 'className',
@@ -56,9 +64,16 @@ CLASS({
       }
 
       .checkbox-background.enabled {
+        opacity: 1.0;
+      }
+      .checkbox-background {
+        opacity: 0.3;
+      }
+
+      .checkbox-background.toggledOn {
         background-color: #7baaf7; // Google Blue 300
       }
-      .checkbox-background.enabled .checkbox-lever {
+      .checkbox-background.toggledOn .checkbox-lever {
         border: none;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.26);
         background-color: #3367d6;
@@ -73,8 +88,14 @@ CLASS({
         </div>
       </div>
       <%
-        this.on('click', function() { self.data = !self.data; }, this.id);
-        this.setClass('enabled', function() { return !!self.data; },
+        this.on('click', function() {
+          if (self.enabled) {
+            self.data = !self.data;
+          }
+        }, this.id);
+        this.setClass('toggledOn', function() { return !!self.data; },
+            this.id + '-background');
+        this.setClass('enabled', function() { return !!self.enabled; },
             this.id + '-background');
       %>
     */}
