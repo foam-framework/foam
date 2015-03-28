@@ -40,6 +40,11 @@ CLASS({
       defaultValue: 'black'
     },
     {
+      model_: 'ColorProperty',
+      name: 'border',
+      label: 'Border Color'
+    },
+    {
       model_: 'FloatProperty',
       name:  'maxWidth',
       label: 'Maximum Width',
@@ -57,7 +62,16 @@ CLASS({
       if ( this.font ) c.font = this.font;
       c.textAlign = this.align;
       c.fillStyle = this.color;
-      c.fillText(this.text, 0, this.height/2+10);
+      if ( this.align === 'center' ) {
+        c.fillText(this.text, this.width/2, this.height/2+10);
+      } else {
+        c.fillText(this.text, 0, this.height/2+10);
+      }
+
+      if ( this.border ) {
+        c.strokeStyle = this.border;
+        c.strokeRect(0, 0, this.width, this.height);
+      }
     }
   }
 });
