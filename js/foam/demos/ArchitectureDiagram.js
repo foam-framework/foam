@@ -18,17 +18,19 @@
 CLASS({
   package: 'foam.demos',
   name: 'ArchitectureDiagram',
-  extendsModel: 'foam.ui.View',
+  extendsModel: 'foam.graphics.CView',
 
   requires: [
     'Timer',
     'foam.ui.DetailView',
-    'foam.graphics.CView'
+    'foam.graphics.CView',
+    'foam.graphics.Rectangle as Box',
+    'foam.graphics.Circle'
   ],
 
   properties: [
-    { name: 'width',      defaultValue: 800     },
-    { name: 'height',     defaultValue: 600     },
+    { name: 'width',      defaultValue: 1800    },
+    { name: 'height',     defaultValue: 1600    },
     { name: 'background', defaultValue: 'black' },
     {
       name: 'timer',
@@ -53,7 +55,8 @@ CLASS({
       var cpp       = this.Box.create({color: 'white', text: "C++",        background: 'red',    width: 50,  height: 0,   x:1150, y:550, font: '16pt Arial'});
       var future    = this.Box.create({color: 'white', text: "...",        background: 'red',    width: 100, height: 0,   x:1200, y:550, font: '16pt Arial'});
       var dev       = this.Circle.create({color:'red', r:15, x:800-15, y:-15});
-      
+      var timer     = this.timer;
+ 
       this.addChildren(
         future, cpp, dart, java, js, ime, meta, animation, reactive, events, C, V, m, dev
       );
@@ -72,7 +75,7 @@ CLASS({
       Events.dynamic(function() { dev.x; }, function() {
         dev.y += ++dev.v;
         this.children.find(intersects, {put:function(child) {dev.y = child.y-dev.r-1; dev.v *= -.45; }});
-      });
+      }.bind(this));
       
       M.compile([
         [1000, function() { js.width = 300; }, B],
