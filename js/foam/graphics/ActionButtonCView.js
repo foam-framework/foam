@@ -167,6 +167,10 @@ CLASS({
       Events.dynamic(
         function() { self.action.isAvailable.call(self.data, self.action); },
         function() {
+          // TODO(KGR): When the Action isn't available we hide it by
+          // setting the size to zero, which isn't ideal.  Better would be
+          // to add a hidden or visibility property to CViews.  When this is done,
+          // also simplify CViewView.
           if ( self.action.isAvailable.call(self.data, self.action) ) {
             if ( self.oldWidth_ && self.oldHeight_ ) {
               self.x = self.oldX_;

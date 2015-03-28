@@ -61,11 +61,11 @@ CLASS({
 
   properties: [
     {
-      name: 'WIDTH',
+      name: 'width',
       defaultValue: 800
     },
     {
-      name: 'HEIGHT',
+      name: 'height',
       defaultValue: 300
     },
     {
@@ -86,8 +86,8 @@ CLASS({
     {
       name: 'table',
       factory: function() {
-        return this.CView.create({background: 'lightgray', width: this.WIDTH, height: this.HEIGHT}).addChildren(
-          this.Rectangle.create({x: this.WIDTH/2-5, width:10, height: this.HEIGHT, border:'rgba(0,0,0,0)' , background: 'white'}),
+        return this.CView.create({background: 'lightgray', width: this.width, height: this.height}).addChildren(
+          this.Rectangle.create({x: this.width/2-5, width:10, height: this.height, border:'rgba(0,0,0,0)' , background: 'white'}),
           this.ball,
           this.lPaddle,
           this.rPaddle);
@@ -119,7 +119,7 @@ CLASS({
           ball.vy = Math.abs(ball.vy);
         }
         // Bounce off of bottom wall
-        if ( ball.y + ball.r >= this.HEIGHT ) {
+        if ( ball.y + ball.r >= this.height ) {
           ball.vy = -Math.abs(ball.vy);
         }
         // Bounce off of left wall
@@ -129,9 +129,9 @@ CLASS({
           ball.vx *= -1;
         }
         // Bounce off of right wall
-        if ( ball.x >= this.WIDTH ) {
+        if ( ball.x >= this.width ) {
           this.lScore++;
-          ball.x = this.WIDTH - 150;
+          ball.x = this.width - 150;
           ball.vx *= -1;
         }
         // Reset scores
@@ -195,8 +195,8 @@ CLASS({
 
       // Position Paddles
       this.lPaddle.x = 25+this.lPaddle.r;
-      this.rPaddle.x = this.WIDTH-25-this.rPaddle.r;
-      this.lPaddle.y = this.rPaddle.y = (this.HEIGHT-this.rPaddle.height)/2;
+      this.rPaddle.x = this.width-25-this.rPaddle.r;
+      this.lPaddle.y = this.rPaddle.y = (this.height-this.rPaddle.height)/2;
 
       // Setup Ball
       this.ball.x  = this.ball.y = 100;

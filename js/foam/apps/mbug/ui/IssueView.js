@@ -16,14 +16,15 @@
  */
 
 CLASS({
+  package: 'foam.apps.mbug.ui',
   name: 'IssueView',
 
-  package: 'foam.apps.mbug.ui',
   extendsModel: 'foam.ui.UpdateDetailView',
   traits: ['foam.input.touch.VerticalScrollNativeTrait'],
+
   requires: [
-    'foam.apps.mbug.ui.CitationView',
     'foam.apps.mbug.ui.CitationRowView',
+    'foam.apps.mbug.ui.CitationView',
     'foam.apps.mbug.ui.CommentView',
     'foam.apps.mbug.ui.LabelCitationView',
     'foam.apps.mbug.ui.LabelView',
@@ -92,7 +93,6 @@ CLASS({
       .CitationView {
         padding-left: 16px;
       }
-
       .expand {
         flex: 1 1 auto;
       }
@@ -190,7 +190,11 @@ CLASS({
           })); %>
 
           <div class="separator separator1"></div>
-          $$content{model_: 'foam.ui.md.TextFieldView', label: 'Add Comment', onKeyMode: true, extraClassName: 'content-view' }
+          $$content{
+            model_: 'foam.ui.md.TextFieldView',
+            label: 'Add Comment',
+            onKeyMode: true,
+            extraClassName: 'content-view' }
           $$comments{
             model_: 'foam.ui.DAOListView',
             dao: this.data.comments.orderBy(DESC(this.QIssueComment.PUBLISHED)),

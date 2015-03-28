@@ -252,6 +252,7 @@ CLASS({
     paint: function() { /* Translates the canvas to our ($$DOC{ref:'.x'}, $$DOC{ref:'.y'}),
                           does a $$DOC{ref:'.paintSelf'} then paints all the children. */
       if ( ! this.$ ) return; // no canvas element, so do nothing
+      if ( ! this.width || ! this.height ) return;
       if ( this.state === 'initial' ) {
         this.state = 'active';
         this.initCView();

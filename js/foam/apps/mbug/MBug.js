@@ -18,13 +18,12 @@
 CLASS({
   package: 'foam.apps.mbug',
   name: 'MBug',
-  extendsModel: 'foam.ui.View',
   description: 'Mobile QuickBug',
 
+  extendsModel: 'foam.ui.View',
+  traits: [ 'foam.ui.layout.PositionedDOMViewTrait' ],
+
   requires: [
-    'foam.dao.ContextualizingDAO',
-    'foam.dao.DAOVersion',
-    'foam.dao.IDBDAO',
     'com.google.analytics.WebMetricsReportingDAO',
     'foam.apps.mbug.ui.ChangeProjectView',
     'foam.apps.mbug.ui.IssueCitationView',
@@ -34,6 +33,9 @@ CLASS({
     'foam.core.dao.CloningDAO',
     'foam.core.dao.KeywordDAO',
     'foam.core.dao.SplitDAO',
+    'foam.dao.ContextualizingDAO',
+    'foam.dao.DAOVersion',
+    'foam.dao.IDBDAO',
     'foam.graphics.ActionButtonCView',
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
@@ -43,10 +45,8 @@ CLASS({
     'foam.ui.DetailView',
     'foam.ui.layout.CSSStackView as StackView',
     'foam.ui.md.AppController',
-    'foam.ui.md.ResponsiveAppControllerView'
+    'foam.ui.md.ResponsiveAppControllerView',
   ],
-
-  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   exports: [
     'daoVersionDao',

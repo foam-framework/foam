@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
- 
+
 CLASS({
   name: 'UpdateDetailView',
   package: 'foam.ui',
@@ -50,8 +50,7 @@ CLASS({
         if ( ! data ) return;
         this.originalData = data.deepClone();
         if ( data && data.model_ ) this.model = data.model_;
-        // TODO(braden): Change this back to data.addListener when that's fixed.
-        data.subscribe(['property'], function() {
+        data.addListener(function() {
           // The user is making edits. Drop rawData, since we no longer want
           // to react to updates to it.
           this.version++;
@@ -94,11 +93,11 @@ CLASS({
 
         this.dao.put(obj, {
           put: function() {
-            console.log("Saving: ", obj.toJSON());
+            console.log('Saving: ', obj.toJSON());
             self.originalData.copyFrom(obj);
           },
           error: function() {
-            console.error("Error saving", arguments);
+            console.error('Error saving', arguments);
           }
         });
       }

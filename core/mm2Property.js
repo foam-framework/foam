@@ -712,7 +712,6 @@ var Property = {
 
 
 Model.methods = {
-  getPropertyWithoutCache_: BootstrapModel.getPropertyWithoutCache_,
   getProperty:              BootstrapModel.getProperty,
   getAction:                BootstrapModel.getAction,
   hashCode:                 BootstrapModel.hashCode,

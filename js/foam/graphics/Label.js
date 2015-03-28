@@ -96,33 +96,33 @@ CLASS({
   listeners: [
     {
       name: 'updatePreferred',
-      //isFramed: true,
+      //isFramed: true, // ???: Why is this commented out?
       code: function() {
         var c = this.canvas;
-        if (c) {
-          // width of text
-          c.save();
-          if (this.font) c.font = this.font;
-          this.horizontalConstraints.preferred = c.measureText(this.text).width + this.padding*2;
-          c.restore();
+        if ( ! c ) return;
 
-          // if no shrink, lock minimum to preferred
-          if ( ! this.isShrinkable )
-            this.horizontalConstraints.min = this.horizontalConstraints.preferred;
-
-          // height (this is not directly accessible... options include putting
-          // a span into the DOM and getting font metrics from that, or just going
-          // by raw font height setting (which is always pixels in a canvas)
-          if ( ! this.font ) this.font = c.font;
-
-          var height = parseInt(/[0-9]+(?=pt|px)/.exec(this.font) || 0);
-          this.verticalConstraints.preferred = height + this.padding*2;
-
-          // if no shrink, lock minimum to preferred
-          if ( ! this.isShrinkable )
-            this.verticalConstraints.min = this.verticalConstraints.preferred;
-        }
-
+        // width of text
+        c.save();
+        if (this.font) c.font = this.font;
+        this.horizontalConstraints.preferred =
+          c.measureText(this.text).width + this.padding*2;
+        c.restore();
+        
+        // if no shrink, lock minimum to preferred
+        if ( ! this.isShrinkable )
+          this.horizontalConstraints.min = this.horizontalConstraints.preferred;
+        
+        // height (this is not directly accessible... options include putting
+        // a span into the DOM and getting font metrics from that, or just going
+        // by raw font height setting (which is always pixels in a canvas)
+        if ( ! this.font ) this.font = c.font;
+        
+        var height = parseInt(/[0-9]+(?=pt|px)/.exec(this.font) || 0);
+        this.verticalConstraints.preferred = height + this.padding*2;
+        
+        // if no shrink, lock minimum to preferred
+        if ( ! this.isShrinkable )
+          this.verticalConstraints.min = this.verticalConstraints.preferred;
       },
 
       documentation: function() {/* Calculates the preferred size of this
