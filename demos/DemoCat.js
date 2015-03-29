@@ -96,9 +96,10 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'FOAM Architecture Diagram',
-    path: 'demoBlockDiagram.html',
+    path: '../index.html?model=foam.demos.ArchitectureDiagram',
     description: 'An animated diagram of FOAM\'s architecture.  Notice the reflections.',
     keywords: ['architecture', 'animation'],
+    src: '../js/foam/demos/ArchitectureDiagram.js',
     image: 'DemoBlockDiagram.png',
     video: 'part6.ogv'
   },
