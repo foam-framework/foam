@@ -64,6 +64,7 @@ CLASS({
     { name: 'y',      defaultValueFn: function() { return ( 2 * this.r ) * 1.3; } },
     { name: 'width',  defaultValue: 150 },
     { name: 'height', defaultValue: 150 },
+    { name: 'a',      defaultValue: -Math.PI/40 }
   ],
 
   methods: {
@@ -91,12 +92,7 @@ CLASS({
         }
       }
 
-      // TODO: rotation and scaling need to be part of CView so that we can
-      // adjust in input accordingly.
-      this.canvas.translate(this.x, this.y);
-      this.canvas.rotate(-Math.PI/40);
       this.canvas.scale(1.0, 1.3);
-      this.canvas.translate(-this.x,-this.y);
     }
   }
 });
