@@ -107,11 +107,13 @@ MODEL({
   }
 });
 
+
 MODEL({
   name: 'DatastoreIntProperty',
   extendsModel: 'IntProperty',
   traits: ['DatastorePropertyTrait']
 });
+
 
 MODEL({
   name: 'DatastoreStringProperty',
@@ -119,17 +121,20 @@ MODEL({
   traits: ['DatastorePropertyTrait']
 });
 
+
 MODEL({
   name: 'DatastoreFloatProperty',
   extendsModel: 'FloatProperty',
   traits: ['DatastorePropertyTrait']
 });
 
+
 MODEL({
   name: 'DatastoreDateTimeProperty',
   extendsModel: 'DateTimeProperty',
   traits: ['DatastorePropertyTrait']
 });
+
 
 MODEL({
   name: 'DatastoreBooleanProperty',
@@ -197,6 +202,7 @@ MODEL({
     }
   }
 });
+
 
 MODEL({
   name: 'DatastoreKey',
@@ -534,4 +540,3 @@ MODEL({
     }
   }
 });
-
