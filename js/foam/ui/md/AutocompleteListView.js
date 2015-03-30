@@ -164,7 +164,8 @@ CLASS({
       label: '',
       iconUrl: 'images/ic_add_24dp.png',
       action: function() {
-        var view = this.AddRowView.create(this.prop, this.Y.sub({ dao: this.srcDAO }));
+        var subY = this.srcDAO ? this.Y.sub({ dao: this.srcDAO }) : this.Y;
+        var view = this.AddRowView.create(this.prop, subY);
         view.data$.addListener(function(obj, topic, old, nu) {
           this.addRowToList(nu);
         }.bind(this));
