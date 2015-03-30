@@ -72,7 +72,6 @@ var files = [
   'arrayDAO',
   'index',
   'models',
-  [ 'glang', IN_BROWSER ],
   'oauth',
   [ 'ModelDAO', IN_BROWSER ],
   [ 'NodeModelDAO', IN_NODEJS ]
