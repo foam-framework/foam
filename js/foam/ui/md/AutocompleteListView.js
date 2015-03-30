@@ -120,7 +120,7 @@ CLASS({
       <% if ( this.inline ) { %>
         <div class="md-autocomplete-list-inline-header">
           <span class="text">%%label</span>
-          <% if ( isArray ) { %> $$addRow <% } %>
+          <% if ( isArray ) { %> $$addRow{ iconUrl: 'images/ic_add_black_24dp.png' } <% } %>
         </div>
       <% } else { %>
         <div class="md-autocomplete-list-header">
