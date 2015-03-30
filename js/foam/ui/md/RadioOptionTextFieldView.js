@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+ // TODO: just integrate the text field in regular RadioOptionView?
 CLASS({
   name: 'RadioOptionTextFieldView',
   package: 'foam.ui.md',
