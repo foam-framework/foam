@@ -59,14 +59,16 @@ CLASS({
     {
       name: 'halo',
       model_: 'ViewProperty',
-      defaultValueFn: function {
-        factory_: 'foam.ui.md.HaloView',
-        width: 48,
-        height: 48
+      defaultValueFn: function() {
+        return this.HaloView.create({
+            width: 48,
+            height: 48
+        });
       }
     },
   ],
-  
+        // onRadio/offRadio's 'pointer-events: none' is critical for touches
+
   templates: [
     function CSS() {/*    
       
@@ -181,15 +183,12 @@ CLASS({
 
     */},
     function toHTML() {/*
-      <%
-      var halo = this.halo(); // onRadio/offRadio's 'pointer-events: none' is critical for touches
-      %>
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div id="<%=this.id%>-background" class="radiobutton-background">
           <div id="radioContainer" class="labeled">
             <div id="onRadio"></div>
             <div id="offRadio"></div>
-            <%= halo %>
+            <%= this.halo %>
           </div>
           <div class="radioLabel">$$label{ mode: 'read-only', floatingLabel: false }</div>
         </div>
