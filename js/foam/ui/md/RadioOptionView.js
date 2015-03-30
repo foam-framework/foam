@@ -50,7 +50,7 @@ CLASS({
     },
     {
       name: 'className',
-      defaultValue: 'radiobutton-container'
+      defaultValue: 'radiobutton-container noselect'
     },
     {
       name: 'enabled',
@@ -102,6 +102,15 @@ CLASS({
         display: inline-block;
         white-space: nowrap;
         position: relative;
+      }
+      
+      .noselect {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;      
       }
       
       .radiobutton-container :focus {
