@@ -687,13 +687,14 @@ CLASS({
       }
       return cl;
     },
+    toView_: function() { return this; },
     toHTML: function() {
       var out = [];
 
       out.push('<table border=1>');
       for ( var key in this.groups ) {
         var value = this.groups[key];
-        var str = value.toHTML ? value.toHTML() : value;
+        var str = value.toView_ ? value.toView_().toHTML() : value;
         out.push('<tr><th>', key, '</th><td>', str, '</td></tr>');
       }
       out.push('</table>');
@@ -703,7 +704,7 @@ CLASS({
     initHTML: function() {
       for ( var key in this.groups ) {
         var value = this.groups[key];
-        value.initHTML && value.initHTML();
+        value.toView_ && value.toView_().initHTML();
       }
     }
   }
@@ -815,6 +816,9 @@ CLASS({
       return this.sortRows(
         this.rows.groupKeys,
         this.yFunc);
+    },
+    toHTML_: function() {
+      return this;
     },
     toHTML: function() {
       var out;
