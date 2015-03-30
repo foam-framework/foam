@@ -39,6 +39,20 @@ CLASS({
       defaultValue: 'default' // pressed, released
     },
     {
+      name: 'nextColor_'
+    },
+    {
+      name: 'color',
+      preSet: function(old, nu) {
+        if ( this.state_ !== 'default' ) {
+          // store it for next animation
+          this.nextColor_ = nu;
+          return old;          
+        }
+        return nu;
+      }
+    },
+    {
       name: 'easeInTime',
       defaultValue: 200
     },
@@ -156,7 +170,12 @@ CLASS({
           this.easeOutTime,
           function() { this.alpha = this.finishAlpha; }.bind(this),
           Movement.easeIn(.5),
-          function() { if ( this.state_ === 'released' ) this.state_ = 'default'; }.bind(this))();
+          function() { 
+            if ( this.state_ === 'released' ) {
+              this.state_ = 'default';
+              this.color = this.nextColor_;
+            }
+          }.bind(this))();
       }
     }
   ]

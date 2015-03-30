@@ -39,7 +39,8 @@ CLASS({
           easeOutTime$:  this.easeOutTime$,
           startAlpha$:   this.startAlpha$,
           pressedAlpha$: this.pressedAlpha$,
-          finishAlpha$:  this.finishAlpha$
+          finishAlpha$:  this.finishAlpha$,
+          color$:        this.color$
         });
       }
     },
@@ -70,6 +71,9 @@ CLASS({
     {
       name: 'finishAlpha',
       defaultValue: 0
+    },
+    {
+      name: 'color'
     }
   ],
 

@@ -58,8 +58,11 @@ CLASS({
     },
     {
       name: 'halo',
-      model_: 'ViewProperty',
-      defaultValueFn: function() {
+  
+      documentation: function() {/*
+        onRadio/offRadio's 'pointer-events: none' is critical for halo touches
+      */},
+      factory: function() {
         return this.HaloView.create({
             width: 48,
             height: 48
@@ -67,8 +70,31 @@ CLASS({
       }
     },
   ],
-        // onRadio/offRadio's 'pointer-events: none' is critical for touches
-
+  
+  methods: {
+    init: function() {
+      this.SUPER();
+      
+      Events.dynamic(
+        function() { this.data; this.value; }.bind(this),
+        function() { 
+          this.setHaloColor();
+        }.bind(this)
+      );
+    }
+  },
+  
+  listeners: [
+    {
+      name: 'setHaloColor',
+      code: function() {
+       this.halo.color = equals(this.data, this.value) ? "#5a5a5a" : "#4285f4"; 
+      }
+    }
+    
+    
+  ],
+  
   templates: [
     function CSS() {/*    
       
@@ -93,19 +119,6 @@ CLASS({
       #radioContainer.labeled {
         display: inline-block;
         vertical-align: middle;
-      }
-      
-      #ink {
-        position: absolute;
-        top: -16px;
-        left: -16px;
-        width: 48px;
-        height: 48px;
-        color: #5a5a5a;
-      }
-      
-      #ink[checked] {
-        color: #0f9d58;
       }
       
       #offRadio {
@@ -194,7 +207,7 @@ CLASS({
         </div>
       </div>
       <%
-        this.on('click', function() { if ( self.enabled ) self.data = self.value; }, this.id);
+        this.on('click', function() { if ( self.enabled ) self.data = self.value; self.setHaloColor(); }, this.id);
         this.setClass('checked', function() { return equals(self.data, self.value); },
             this.id + '-background');
         this.setClass('disabled', function() { return !self.enabled; },
