@@ -57,6 +57,10 @@ CLASS({
     {
       name: 'finishAlpha',
       defaultValue: 0
+    },
+    {
+      name: 'alpha',
+      defaultValue: 0
     }
   ],
 

@@ -21,7 +21,8 @@ CLASS({
   extendsModel: 'foam.ui.SimpleView',
   documentation: "A single radio button. Used by $$DOC{ref:'foam.ui.md.ChoiceRadioView'}",
 
-  requires: [ 'foam.ui.md.SharedStyles' ],
+  requires: [ 'foam.ui.md.SharedStyles',
+              'foam.ui.md.HaloView' ],
   
   properties: [
     {
@@ -54,7 +55,16 @@ CLASS({
     {
       name: 'enabled',
       defaultValue: true
-    }
+    },
+    {
+      name: 'halo',
+      model_: 'ViewProperty',
+      defaultValueFn: function {
+        factory_: 'foam.ui.md.HaloView',
+        width: 48,
+        height: 48
+      }
+    },
   ],
   
   templates: [
@@ -106,6 +116,7 @@ CLASS({
         border: solid 2px;
         border-color: #5a5a5a;
         transition: border-color 0.28s;
+        pointer-events: none;
       }
 
       .radiobutton-background {
@@ -130,6 +141,7 @@ CLASS({
         transform: scale(0);
         transition: -webkit-transform ease 0.28s;
         transition: transform ease 0.28s;
+        pointer-events: none;
       }
       
       .radiobutton-background.checked #onRadio {
@@ -169,11 +181,15 @@ CLASS({
 
     */},
     function toHTML() {/*
+      <%
+      var halo = this.halo(); // onRadio/offRadio's 'pointer-events: none' is critical for touches
+      %>
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div id="<%=this.id%>-background" class="radiobutton-background">
           <div id="radioContainer" class="labeled">
             <div id="onRadio"></div>
             <div id="offRadio"></div>
+            <%= halo %>
           </div>
           <div class="radioLabel">$$label{ mode: 'read-only', floatingLabel: false }</div>
         </div>
