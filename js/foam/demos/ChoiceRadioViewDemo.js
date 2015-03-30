@@ -20,7 +20,9 @@ CLASS({
   extendsModel: 'foam.ui.SimpleView',
   package: 'foam.demos',
   
-  requires: ['foam.ui.md.ChoiceRadioView'],
+  requires: ['foam.ui.md.ChoiceRadioView',
+             'foam.input.touch.TouchManager',
+             'foam.input.touch.GestureManager'],
   
   properties: [
     {
@@ -36,6 +38,15 @@ CLASS({
       defaultValue: 'none'
     }
   ],
+  
+  methods: {
+    init: function() {
+      this.SUPER();
+      this.X.touchManager   = this.TouchManager.create();
+      this.X.gestureManager = this.GestureManager.create();
+    }
+  },
+  
   templates: 
   [ 
     function toInnerHTML() 
