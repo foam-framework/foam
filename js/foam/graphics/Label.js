@@ -34,7 +34,7 @@ CLASS({
       help: 'Text alignment can be left, right, center, or the locale aware start and end.',
       preSet: function(old,nu) {
         // TODO(jacksonic): account for locale
-        if ( nu == 'start' ) { 
+        if ( nu == 'start' ) {
           console.warn("Right-to-left support in foam.graphics.Label not available.");
           return 'left';
         }
@@ -95,7 +95,7 @@ CLASS({
 
       var c = this.canvas;
       c.save();
-      
+
       c.textBaseline = 'top';
       c.textAlign = this.textAlign;
       c.fillStyle = this.color;
@@ -125,19 +125,19 @@ CLASS({
         this.horizontalConstraints.preferred =
           c.measureText(this.text).width + this.padding*2;
         c.restore();
-        
+
         // if no shrink, lock minimum to preferred
         if ( ! this.isShrinkable )
           this.horizontalConstraints.min = this.horizontalConstraints.preferred;
-        
+
         // height (this is not directly accessible... options include putting
         // a span into the DOM and getting font metrics from that, or just going
         // by raw font height setting (which is always pixels in a canvas)
         if ( ! this.font ) this.font = c.font;
-        
+
         var height = parseInt(/[0-9]+(?=pt|px)/.exec(this.font) || 0);
         this.verticalConstraints.preferred = height + this.padding*2;
-        
+
         // if no shrink, lock minimum to preferred
         if ( ! this.isShrinkable )
           this.verticalConstraints.min = this.verticalConstraints.preferred;
