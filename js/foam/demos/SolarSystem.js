@@ -21,17 +21,17 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'foam.graphics.Graph',
-    'PieGraph',
     'Timer',
     'foam.demos.ClockView',
     'foam.demos.graphics.EyeCView',
     'foam.demos.graphics.EyesCView',
     'foam.graphics.CView',
     'foam.graphics.Circle as Planet',
+    'foam.graphics.Graph',
+    'foam.graphics.PieGraph',
     'foam.graphics.Turntable',
-    'foam.ui.DetailView',
-    'foam.ui.BooleanView'
+    'foam.ui.BooleanView',
+    'foam.ui.DetailView'
   ],
 
   properties: [
@@ -98,7 +98,11 @@ CLASS({
       this.space.addChild(graph);
       graph.watch(this.apollo.y$);
 
-      var pie = this.PieGraph.create({lineColor: 'white', r:50, x:20, y:250});
+      var pie = this.PieGraph.create({
+        lineColor: 'white',
+        groups: { Bananas: 9, Apples: 6, Oranges: 4 },
+        r:50, x:20, y:250
+      });
       this.space.addChild(pie);
 
 //      var eyes = this.EyesCView.create({x:600,y:470});
