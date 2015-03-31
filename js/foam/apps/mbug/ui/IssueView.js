@@ -90,9 +90,6 @@ CLASS({
       .content-view {
         margin-top: -24px;
       }
-      .CitationView {
-        padding-left: 16px;
-      }
       .expand {
         flex: 1 1 auto;
       }
