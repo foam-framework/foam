@@ -23,28 +23,36 @@ CLASS({
   properties: [
     {
       model_: 'StringProperty',
-      name: 'propertyId'
+      name: 'propertyId',
+      transient: true
     },
     {
       model_: 'StringProperty',
-      name: 'clientId'
+      name: 'clientId',
+      factory: function() {
+        return createGUID();
+      }
     },
     {
       model_: 'StringProperty',
-      name: 'appName'
+      name: 'appName',
+      transient: true
     },
     {
       model_: 'StringProperty',
-      name: 'appId'
+      name: 'appId',
+      transient: true
     },
     {
       model_: 'StringProperty',
-      name: 'appVersion'
+      name: 'appVersion',
+      transient: true
     },
     {
       model_: 'StringProperty',
       name: 'endpoint',
-      defaultValue: 'http://www.google-analytics.com/collect'
+      defaultValue: 'http://www.google-analytics.com/collect',
+      transient: true
     }
   ],
 

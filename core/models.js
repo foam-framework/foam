@@ -224,18 +224,21 @@ CLASS({
   methods: {
 
     manage: function(name, obj, version) {
-      /*
-       <p>Manage persistence for an object. Resave it in
-       the DAO whenever it fires propertyChange events.</p>
-       */
-      obj.addListener(EventService.merged((function() {
+      var write = EventService.merged((function() {
         console.log('PersistentContext', 'updating', name);
         this.dao.put(this.Y.Binding.create({
           id:    name,
           value: JSONUtil.where(this.predicate).stringify(obj),
           version: version
         }));
-      }).bind(this), undefined, this.Y));
+      }).bind(this), undefined, this.Y);
+
+      /*
+       <p>Manage persistence for an object. Resave it in
+       the DAO whenever it fires propertyChange events.</p>
+       */
+      obj.addListener(write);
+      write();
     },
     bindObjects: function(a) {
       // TODO: implement
