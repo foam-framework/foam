@@ -33,6 +33,10 @@ CLASS({
         o && o.removeEventListener('resize', this.onResize);
         w.addEventListener('resize', this.onResize);
         this.onResize();
+
+        // Workaround for android web-apps which for some reason
+        // report the wrong size the first time we synchronously resize.
+        this.window.setTimeout(this.onResize, 0);
       },
       hidden: true
     },
