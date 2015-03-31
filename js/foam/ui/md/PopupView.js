@@ -152,20 +152,6 @@ CLASS({
         }.bind(this));
 
         this.animation && this.animation.initHTML && this.animation.initHTML();
-
-        // TODO(markdittmer): Testing only.
-        var self = this;
-        var toggle = (function() {
-          var isOpen = false;
-          return function() {
-            if ( isOpen ) self.close();
-            else          self.open();
-            isOpen = !isOpen;
-            GLOBAL.setTimeout(toggle, 1000);
-          };
-        })();
-        // this.open();
-        toggle();
       }
     },
     {
