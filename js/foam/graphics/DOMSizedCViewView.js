@@ -24,8 +24,8 @@ CLASS({
   help: 'DOM wrapper for a CView that takes its DOM sizing and applies it to the child CView.',
 
   documentation: function() {/*
-      DOM wrapper for a $$DOC{ref:'foam.graphics.CView'}, that auto adjusts it size to fit
-      he given view.
+    DOM wrapper for a $$DOC{ref:'foam.graphics.CView'} that takes its DOM sizing and
+    applies it to the child CView.
   */},
 
   properties: [
@@ -33,19 +33,26 @@ CLASS({
       name: 'cview',
       postSet: function(_, cview) {
         cview.view = this;
+        cview.x = 0;
+        cview.y = 0;
+        this.resize();
       }
     }
   ],
   methods: {
     init: function() {
       this.SUPER();
-      this.X.dynamic(function() { this.cview; this.width; this.height; }.bind(this),
+      this.X.dynamic(function() { this.width; this.height; }.bind(this),
                      this.resize);
-        
     },
     toHTML: function() {
       var className = this.className ? ' class="' + this.className + '"' : '';
-      return '<canvas id="' + this.id + '"' + className + '  ' + this.layoutStyle() + '></canvas>';
+      return '<canvas id="' + this.id + '"' + className + ' style="width: 100%; height: 100%"></canvas>';
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.$.addEventListener('resize', this.resize);
+      this.resize();
     }
   },
   listeners: [
@@ -54,8 +61,10 @@ CLASS({
       isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
-        this.width = this.$.width / this.deviceScalingRatio;
-        this.height = this.$.height / this.deviceScalingRatio;
+        this.width = this.$.clientWidth / this.scalingRatio;
+        this.height = this.$.clientHeight / this.scalingRatio;
+        this.$.width = this.width;   // tell the DOM to update its style settings
+        this.$.height = this.height; // otherwise scaling happens
         if ( ! this.cview ) return;
         this.cview.width   = this.width;
         this.cview.height  = this.height;

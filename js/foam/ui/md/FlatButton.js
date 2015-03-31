@@ -18,19 +18,18 @@ CLASS({
     'foam.input.touch.TouchManager',
     'foam.input.touch.GestureManager',
 
-    'foam.ui.md.Flare'
+    'foam.ui.md.HaloView'
   ],
 
   properties: [
     {
-      name: 'flare',
-      type: 'foam.ui.md.Flare',
+      name: 'halo',
+  
+      documentation: function() {/*
+        onRadio/offRadio's 'pointer-events: none' is critical for halo touches
+      */},
       factory: function() {
-        return this.Flare.create({
-          startAlpha: 0.4,
-          startLocation: 'absolute',
-          cssPosition: 'absolute'
-        });
+        return this.HaloView.create({ className: 'halo', recentering: false });
       }
     },
     {
@@ -56,7 +55,7 @@ CLASS({
     {
       name: 'construct',
       code: function() {
-        if ( this.flare ) this.addChild(this.flare);
+        if ( this.halo ) this.addChild(this.halo);
       }
     },
     {
@@ -67,31 +66,20 @@ CLASS({
           if ( ! this.$ ) return;
           this.$.style.color = this.fontColor;
         }.bind(this));
-        if ( ! this.$ ) return;
-        if ( this.flare ) this.flare.element = this.$;
-        this.on('click', function(e) {
-          var map = e.pointMap;
-          Object_forEach(map, function(value, key) {
-            if ( ! this.flare || ! this.$ ) return;
-            var x = value.x - this.$.offsetLeft, y = value.y - this.$.offsetTop;
-            this.flare.startX = value.x - this.$.offsetLeft;
-            this.flare.startY = value.y - this.$.offsetTop;
-            this.flare.fire();
-          }.bind(this));
-        }, this.$.id);
       }
     }
   ],
 
   templates: [
     function toInnerHTML() {/*
-      <span>
-      <% if ( this.data ) { %>
-        {{this.data}}
-      <% } else if ( this.inner ) { %>
-        <%= this.inner() %>
-      <% } else { %>label<% } %>
-      </span>
+        <%= this.halo %>
+        <span>
+        <% if ( this.data ) { %>
+          {{this.data}}
+        <% } else if ( this.inner ) { %>
+          <%= this.inner() %>
+        <% } else { %>label<% } %>
+        </span>
     */},
     function CSS() {/*
       flat-button {
@@ -105,6 +93,14 @@ CLASS({
         border-radius: 2px;
         cursor: pointer;
       }
+      
+      .halo  {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+      
+      
     */}
   ]
 });

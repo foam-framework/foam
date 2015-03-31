@@ -22,7 +22,8 @@ CLASS({
   
   requires: ['foam.ui.md.ChoiceRadioView',
              'foam.input.touch.TouchManager',
-             'foam.input.touch.GestureManager'],
+             'foam.input.touch.GestureManager',
+             'foam.ui.md.FlatButton'],
   
   properties: [
     {
@@ -39,11 +40,25 @@ CLASS({
     }
   ],
   
+  actions: [
+    {
+      name: 'oneAction',
+      label: 'one',
+      action: function() {
+        console.log("one action actionated");
+      }
+    }
+    
+  ],
+  
   methods: {
     init: function() {
+      this.Y.registerModel(this.FlatButton, 'foam.ui.ActionButton');
+
       this.SUPER();
       this.X.touchManager   = this.TouchManager.create();
       this.X.gestureManager = this.GestureManager.create();
+      
     }
   },
   
@@ -61,6 +76,9 @@ CLASS({
       <hr/>
       <p>
       $$data
+      </p>
+      <p>
+      $$oneAction
       </p>
     */}
   ]

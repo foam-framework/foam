@@ -39,7 +39,8 @@ CLASS({
       defaultValue: 'default' // pressed, released
     },
     {
-      name: 'nextColor_'
+      name: 'nextColor_',
+      defaultValueFn: function() { return this.color; }
     },
     {
       name: 'color',
@@ -47,7 +48,7 @@ CLASS({
         if ( this.state_ !== 'default' ) {
           // store it for next animation
           this.nextColor_ = nu;
-          return old;          
+          return old;
         }
         return nu;
       }
@@ -75,7 +76,12 @@ CLASS({
     {
       name: 'alpha',
       defaultValue: 0
+    },
+    {
+      name: 'recentering',
+      defaultValue: true
     }
+
   ],
 
   methods: [
@@ -140,10 +146,15 @@ CLASS({
         }
         this.r = 2;
         this.alpha = this.startAlpha;
+        var recentering = this.recentering;
         this.X.animate(this.easeInTime, function() {
-          this.x = this.parent.width/2;
-          this.y = this.parent.height/2;
-          this.r = Math.min(28, Math.min(this.$.width, this.parent.height)/2);
+          if ( recentering ) {
+            this.x = this.parent.width/2;
+            this.y = this.parent.height/2;
+            this.r = Math.min(28, Math.min(this.$.clientWidth, this.parent.height)/2);
+          } else {
+            this.r = Math.max(28, Math.max(this.$.clientWidth, this.parent.height));
+          }
           this.alpha = this.pressedAlpha;
         }.bind(this), undefined, function() {
           if ( this.state_ === 'cancelled' ) {
@@ -170,7 +181,7 @@ CLASS({
           this.easeOutTime,
           function() { this.alpha = this.finishAlpha; }.bind(this),
           Movement.easeIn(.5),
-          function() { 
+          function() {
             if ( this.state_ === 'released' ) {
               this.state_ = 'default';
               this.color = this.nextColor_;
