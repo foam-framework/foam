@@ -275,12 +275,17 @@ CLASS({
             console.log('PersistentContext', 'existingInit', name);
             //                  var obj = JSONUtil.parse(binding.value);
             //                  var obj = JSON.parse(binding.value);
-            var json = JSON.parse(binding.value);
-            var obj = JSONUtil.mapToObj(this.Y, json);
-            obj.copyFrom(transientValues);
-            this.context[name] = obj;
-            this.manage(name, obj, version);
-            future.set(obj);
+            try {
+              var json = JSON.parse(binding.value);
+              var obj = JSONUtil.mapToObj(this.Y, json);
+              obj.copyFrom(transientValues);
+              this.context[name] = obj;
+              this.manage(name, obj, version);
+              future.set(obj);
+            } catch(e) {
+              console.log('PersistentContext', 'existingInit serialization error', name);
+              newinit();
+            }
           }.bind(this),
           error: newinit
         });
