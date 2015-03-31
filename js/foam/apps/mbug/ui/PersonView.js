@@ -22,10 +22,20 @@ CLASS({
     'foam.ui.md.MonogramStringView'
   ],
   extendsModel: 'foam.ui.DetailView',
-  templates: [ function toHTML() {/*
-    <div id="%%id" class="CitationView">
-      $$name{model_: 'foam.ui.md.MonogramStringView'}
-      <div class="owner-name">{{ this.data.name }}</div>
-    </div>
+  templates: [
+    function CSS() {/*
+.PersonView {
+  padding: 12px 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: #575757;
+}
+*/},
+    function toHTML() {/*
+      <div id="%%id" class="PersonView">
+        $$name{model_: 'foam.ui.md.MonogramStringView'}
+        <div class="owner-name">{{ this.data.name }}</div>
+      </div>
   */} ]
 });
