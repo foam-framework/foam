@@ -738,6 +738,8 @@ CLASS({
 
               if ( Object.keys(diff).length == 0 ) return;
 
+              delete diff.stars;
+
               function convertArray(key) {
                 if ( ! diff[key] ) {
                   diff[key] = [];
@@ -757,6 +759,16 @@ CLASS({
               convertArray('m');
               convertArray('iteration');
               convertArray('week');
+
+              var empty = true;
+              for ( var key in diff ) {
+                if ( ! Array.isArray(diff[key]) || diff[key].length > 0 ){
+                  empty = false;
+                  break;
+                }
+              }
+
+              if ( empty ) return;
 
               var comment = this.X.lookup('foam.apps.quickbug.model.QIssueComment').create({
                 issueId: this.id,
