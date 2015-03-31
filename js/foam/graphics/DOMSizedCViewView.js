@@ -61,8 +61,8 @@ CLASS({
       isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
-        this.width = this.$.clientWidth / this.scalingRatio;
-        this.height = this.$.clientHeight / this.scalingRatio;
+        this.width = this.$.clientWidth;
+        this.height = this.$.clientHeight;
         this.$.width = this.canvasWidth();   // tell the DOM to update its style settings
         this.$.height = this.canvasHeight(); // otherwise scaling happens
         if ( ! this.cview ) return;

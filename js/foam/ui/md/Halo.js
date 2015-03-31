@@ -111,10 +111,11 @@ CLASS({
     {
       name: 'isTouchInRect',
       code: function(t, rect) {
-        return t.pageX >= rect.left && t.pageX <= rect.right &&
-            t.pageY >= rect.top && t.pageY <= rect.bottom;
+        return t.clientX >= rect.left && t.clientX <= rect.right &&
+          t.clientY >= rect.top && t.clientY <= rect.bottom;
       }
-    }
+    },
+
   ],
 
   listeners: [
@@ -132,8 +133,8 @@ CLASS({
             if ( this.isTouchInRect(t, rect) ) { touchFound = true; break; }
           }
           if ( touchFound ) {
-            this.x = t.pageX - rect.left;
-            this.y = t.pageY - rect.top;
+            this.x = (t.clientX - rect.left);
+            this.y = (t.clientY - rect.top);
           } else {
             // Default to center of element.
             console.warn('No touches', evt.touches, 'in element rect', rect);
