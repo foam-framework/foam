@@ -19,6 +19,8 @@ CLASS({
   name: 'CheckboxView',
   package: 'foam.ui.md',
   extendsModel: 'foam.ui.SimpleView',
+  requires: ['foam.ui.md.HaloView'],
+
   properties: [
     {
       name: 'data',
@@ -38,12 +40,23 @@ CLASS({
     {
       name: 'className',
       defaultValue: 'checkbox-container'
-    }
+    },
+    {
+      name: 'halo',
+
+      documentation: function() {/*
+        onRadio/offRadio's 'pointer-events: none' is critical for halo touches
+      */},
+      factory: function() {
+        return this.HaloView.create();
+      }
+    },
   ],
   templates: [
     function CSS() {/*
       .checkbox-container {
         display: flex;
+        align-items: center;
         padding: 12px 10px;
       }
 
@@ -51,17 +64,34 @@ CLASS({
         flex-grow: 1;
       }
 
+      .checkbox-data-outer {
+        position: relative;
+        width: 48px;
+        height: 48px;
+        cursor: pointer;
+      }
+
+      .noselect {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
       .checkbox-data-container {
         border-radius: 2px;
         border: solid 2px #5a5a5a;
         box-sizing: border-box;
         display: inline-block;
-        height: 100%;
         height: 18px;
         pointer-events: none;
-        position: relative;
+        position: absolute;
+        left: 15px;
+        top: 15px;
         transition: background-color 140ms, border-color 140ms;
-        width: 18px; 
+        width: 18px;
         opacity: 0.3;
       }
 
@@ -89,12 +119,16 @@ CLASS({
         -webkit-animation: checkmark-expand 140ms ease-out forwards;
       }
 
+
     */},
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <span class="checkbox-label"><%# this.label %></span>
-        <div class="checkbox-data-container">
-          <div class="checkbox-data"></div>
+        <span class="checkbox-label noselect"><%# this.label %></span>
+        <div class="checkbox-data-outer noselect">
+          <div class="checkbox-data-container">
+            <div class="checkbox-data"></div>
+          </div>
+          <%= this.halo %>
         </div>
       </div>
       <%
