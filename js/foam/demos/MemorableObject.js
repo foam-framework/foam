@@ -19,6 +19,9 @@ CLASS({
   name: 'MemorableObject',
   package: 'foam.demos',
   traits: ['foam.memento.MemorableTrait'],
+  requires: [
+    'foam.demos.MemorableQuery'
+  ],
   properties: [
     {
       model_: 'StringProperty',
@@ -29,6 +32,16 @@ CLASS({
       name: 'subProperty',
       view: 'foam.ui.DetailView',
       memorable: true
+    },
+    {
+      name: 'queryProperty',
+      memorable: true,
+      view: 'foam.ui.DetailView',
+      factory: function() {
+        return this.MemorableQuery.create({
+          queryParser: QueryParserFactory(this.model_)
+        });
+      }
     }
   ]
 });

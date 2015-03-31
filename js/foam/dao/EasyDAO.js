@@ -26,7 +26,9 @@ CLASS({
     'foam.core.dao.StorageDAO',
     'foam.dao.CachingDAO',
     'foam.dao.GUIDDAO',
-    'foam.dao.SeqNoDAO'
+    'foam.dao.SeqNoDAO',
+    'foam.dao.ContextualizingDAO',
+    'foam.core.dao.CloningDAO'
   ],
 
   help: 'A facade for easy DAO setup.',
@@ -84,6 +86,18 @@ CLASS({
       name: 'timing',
       defaultValue: false,
       documentation: "Enable time tracking for concurrent $$DOC{ref:'DAO'} operations."
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'contextualize',
+      defaultValue: false,
+      documentation: "Contextualize objects on .find"
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'cloning',
+      defaultValue: false,
+      documentation: "True to clone results on select"
     },
     {
       name: 'daoType',
@@ -178,6 +192,14 @@ CLASS({
         if ( this.seqProperty ) args.property = this.seqProperty;
         dao = this.GUIDDAO.create(args);
       }
+
+      if ( this.contextualize ) dao = this.ContextualizingDAO.create({
+        delegate: dao
+      });
+
+      if ( this.cloning ) dao = this.CloningDAO.create({
+        delegate: dao
+      });
 
       if ( this.timing  ) dao = TimingDAO.create(this.name + 'DAO', dao);
       if ( this.logging ) dao = LoggingDAO.create(dao);

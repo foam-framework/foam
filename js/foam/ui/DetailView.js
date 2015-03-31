@@ -205,7 +205,7 @@ CLASS({
       str += this.endForm();
 
       if ( this.showRelationships ) {
-        var view = this.RelationshipsView.create({
+        var view = this.X.lookup('foam.ui.RelationshipsView').create({
           data: this.data
         });
         //view.data$ = this.data$;

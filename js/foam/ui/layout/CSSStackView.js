@@ -100,8 +100,10 @@ CLASS({
       this.layout();
       this.resizeContainer();
 
-      this.innerContainer.innerHTML = view.toHTML();
-      view.initHTML();
+      if ( this.innerContainer ) {
+        this.innerContainer.innerHTML = view.toHTML();
+        view.initHTML();
+      }
     },
     setPreview: function() {},
     slideView: function(view, opt_label, opt_side, opt_delay) {
@@ -222,7 +224,7 @@ CLASS({
   -webkit-transition: -webkit-transform 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 */},
-    function toInnerHTML() {/*<%= this.overlaySlider %><div id="<%= this.containerViewport = this.nextID() %>" style="overflow:hidden;position:absolute"><div id="<%= this.innerContainer = this.setClass('cssslider-animate', function() { self.animating; }) %>"></div></div>*/}
+    function toInnerHTML() {/*<%= this.overlaySlider %><div id="<%= this.containerViewport = this.nextID() %>" style="overflow:hidden;position:absolute"><div id="<%= this.innerContainer = this.setClass('cssslider-animate', function() { self.animating; }) %>"><%= this.stack[0] || '' %></div></div>*/}
   ]
 });
 
