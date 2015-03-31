@@ -43,10 +43,6 @@ CLASS({
     },
     {
       name: 'halo',
-
-      documentation: function() {/*
-        onRadio/offRadio's 'pointer-events: none' is critical for halo touches
-      */},
       factory: function() {
         return this.HaloView.create();
       }
