@@ -489,7 +489,7 @@ CLASS({
 
       var self = this;
 
-      argsToArray($$('tr-' + this.id)).forEach(function(e, i) {
+      argsToArray(this.X.$$('tr-' + this.id)).forEach(function(e, i) {
         var obj = self.objs[i];
 
         self.selection$.addListener(function() {
@@ -518,5 +518,3 @@ CLASS({
     }
   }
 });
-
-

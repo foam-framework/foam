@@ -31,7 +31,19 @@ CLASS({
       label: 'Text Alignment',
       type:  'String',
       defaultValue: 'left',
-      help: 'Text alignment can be left, right, center, or the locale aware start and end.'
+      help: 'Text alignment can be left, right, center, or the locale aware start and end.',
+      preSet: function(old,nu) {
+        // TODO(jacksonic): account for locale
+        if ( nu == 'start' ) {
+          console.warn("Right-to-left support in foam.graphics.Label not available.");
+          return 'left';
+        }
+        if ( nu == 'end' ) {
+          console.warn("Right-to-left support in foam.graphics.Label not available.");
+          return 'right';
+        }
+        return nu;
+      }
     },
     {
       name: 'text',
@@ -85,10 +97,16 @@ CLASS({
       c.save();
 
       c.textBaseline = 'top';
+      c.textAlign = this.textAlign;
       c.fillStyle = this.color;
       if (this.font) c.font = this.font;
-      c.fillText(this.text, this.padding, this.padding, this.width-(this.padding*2));
-
+      if ( this.textAlign === 'center' ) {
+        c.fillText(this.text, this.width/2, this.padding, this.width-(this.padding*2));
+      } else if ( this.textAlign === 'right' ) {
+        c.fillText(this.text, this.padding + this.width-(this.padding*2), this.padding, this.width-(this.padding*2));
+      } else {
+        c.fillText(this.text, this.padding, this.padding, this.width-(this.padding*2));
+      }
       c.restore();
     }
   },
@@ -96,7 +114,7 @@ CLASS({
   listeners: [
     {
       name: 'updatePreferred',
-      //isFramed: true, // ???: Why is this commented out?
+      isFramed: false, // preferred size updates propagate up immediately
       code: function() {
         var c = this.canvas;
         if ( ! c ) return;
@@ -107,19 +125,19 @@ CLASS({
         this.horizontalConstraints.preferred =
           c.measureText(this.text).width + this.padding*2;
         c.restore();
-        
+
         // if no shrink, lock minimum to preferred
         if ( ! this.isShrinkable )
           this.horizontalConstraints.min = this.horizontalConstraints.preferred;
-        
+
         // height (this is not directly accessible... options include putting
         // a span into the DOM and getting font metrics from that, or just going
         // by raw font height setting (which is always pixels in a canvas)
         if ( ! this.font ) this.font = c.font;
-        
+
         var height = parseInt(/[0-9]+(?=pt|px)/.exec(this.font) || 0);
         this.verticalConstraints.preferred = height + this.padding*2;
-        
+
         // if no shrink, lock minimum to preferred
         if ( ! this.isShrinkable )
           this.verticalConstraints.min = this.verticalConstraints.preferred;

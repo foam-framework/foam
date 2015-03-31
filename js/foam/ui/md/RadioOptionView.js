@@ -21,7 +21,8 @@ CLASS({
   extendsModel: 'foam.ui.SimpleView',
   documentation: "A single radio button. Used by $$DOC{ref:'foam.ui.md.ChoiceRadioView'}",
 
-  requires: [ 'foam.ui.md.SharedStyles' ],
+  requires: [ 'foam.ui.md.SharedStyles',
+              'foam.ui.md.HaloView' ],
   
   properties: [
     {
@@ -49,12 +50,49 @@ CLASS({
     },
     {
       name: 'className',
-      defaultValue: 'radiobutton-container'
+      defaultValue: 'radiobutton-container noselect'
     },
     {
       name: 'enabled',
       defaultValue: true
+    },
+    {
+      name: 'halo',
+  
+      documentation: function() {/*
+        onRadio/offRadio's 'pointer-events: none' is critical for halo touches
+      */},
+      factory: function() {
+        return this.HaloView.create({
+            width: 48,
+            height: 48
+        });
+      }
+    },
+  ],
+  
+  methods: {
+    init: function() {
+      this.SUPER();
+      
+      Events.dynamic(
+        function() { this.data; this.value; }.bind(this),
+        function() { 
+          this.setHaloColor();
+        }.bind(this)
+      );
     }
+  },
+  
+  listeners: [
+    {
+      name: 'setHaloColor',
+      code: function() {
+       this.halo.color = equals(this.data, this.value) ? "#5a5a5a" : "#4285f4"; 
+      }
+    }
+    
+    
   ],
   
   templates: [
@@ -64,6 +102,15 @@ CLASS({
         display: inline-block;
         white-space: nowrap;
         position: relative;
+      }
+      
+      .noselect {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;      
       }
       
       .radiobutton-container :focus {
@@ -83,19 +130,6 @@ CLASS({
         vertical-align: middle;
       }
       
-      #ink {
-        position: absolute;
-        top: -16px;
-        left: -16px;
-        width: 48px;
-        height: 48px;
-        color: #5a5a5a;
-      }
-      
-      #ink[checked] {
-        color: #0f9d58;
-      }
-      
       #offRadio {
         position: absolute;
         top: 16px;
@@ -106,6 +140,7 @@ CLASS({
         border: solid 2px;
         border-color: #5a5a5a;
         transition: border-color 0.28s;
+        pointer-events: none;
       }
 
       .radiobutton-background {
@@ -130,6 +165,7 @@ CLASS({
         transform: scale(0);
         transition: -webkit-transform ease 0.28s;
         transition: transform ease 0.28s;
+        pointer-events: none;
       }
       
       .radiobutton-background.checked #onRadio {
@@ -174,12 +210,13 @@ CLASS({
           <div id="radioContainer" class="labeled">
             <div id="onRadio"></div>
             <div id="offRadio"></div>
+            <%= this.halo %>
           </div>
           <div class="radioLabel">$$label{ mode: 'read-only', floatingLabel: false }</div>
         </div>
       </div>
       <%
-        this.on('click', function() { if ( self.enabled ) self.data = self.value; }, this.id);
+        this.on('click', function() { if ( self.enabled ) self.data = self.value; self.setHaloColor(); }, this.id);
         this.setClass('checked', function() { return equals(self.data, self.value); },
             this.id + '-background');
         this.setClass('disabled', function() { return !self.enabled; },

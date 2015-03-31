@@ -104,7 +104,7 @@ dao = MDAO.create({model: Person})/*.addIndex(Person.AGE)*/.addIndex(Person.NAME
 
 // Add some People
 dao.put(Person.create({id:'1', name:'John',  age:21}));
-dao.put(Person.create({id:'2', name:'Dave',  age:20}));
+dao.put(Person.create({id:'2', name:'Dave',  age:21}));
 dao.put(Person.create({id:'3', name:'Steve', age:19}));
 dao.put(Person.create({id:'4', name:'Andy',  age:18}));
 
@@ -118,7 +118,7 @@ dao.select(console.log);
 dao.select(console.log.json);
 
 // Update expression allows for easy bulk updates.
-dao.select(UPDATE(SET(Person.AGE, ADD(Person.AGE, 12)), dao));
+dao.select(UPDATE(SET(Person.AGE, ADD(Person.AGE, 1)), dao));
 
 dao.select(console.log.json);
 
@@ -147,9 +147,9 @@ dao.find(GT(Person.AGE, 19), console.log.json);
 [
   Person.create({id:'5', name:'Jane',  age:18, sex:'F'}),
   Person.create({id:'6', name:'Daniel',age:19, sex:'F'}),
-  Person.create({id:'7', name:'Suzy',  age:20, sex:'F'}),
-  Person.create({id:'8', name:'Alice', age:16, sex:'F'}),
-  Person.create({id:'9', name:'Kim',   age:18, sex:'F'}),
+  Person.create({id:'7', name:'Suzy',  age:19, sex:'F'}),
+  Person.create({id:'8', name:'Alice', age:22, sex:'F'}),
+  Person.create({id:'9', name:'Kim',   age:22, sex:'F'}),
 ].select(dao);
 
 dao.select(COUNT())(console.log);
@@ -248,7 +248,7 @@ dao.remove('3');
 dao.select(COUNT())(console.log);
 
 // Remove by mLang query
-dao.where(LT(Person.AGE, 20)).removeAll();
+dao.where(LT(Person.AGE, 19)).removeAll();
 dao.select(MAP(Person.AGE, [].sink))(console.log);
 
 
@@ -311,7 +311,7 @@ CLASS({
 
 dao = MDAO.create({model: Person});
 dao.put(Person.create({id:'1', name:'John',  age:21}));
-dao.put(Person.create({id:'2', name:'Dave',  age:21}));
+dao.put(Person.create({id:'2', name:'Dave',  age:22}));
 
 var PayStubDAO = MDAO.create({model: PayStub});
 
@@ -372,7 +372,7 @@ var OrderItemDAO = [
   OrderItem.create({id: 4, orderId: 2, title: 'Item 2', amount: 999.99}),
   OrderItem.create({id: 5, orderId: 2, title: 'Item 3', amount: 62.45})
 ].dao;
-X.OrderItemDAO = OrderItemDAO; 
+X.OrderItemDAO = OrderItemDAO;
 
 OrderHeaderDAO.select(function(header) {
   console.log(header.id, ' ', header.title);
@@ -421,14 +421,15 @@ dao.select(document);
   <script language="javascript">
   apar(arequire('foam.ui.TableView'),
        arequire('foam.ui.DetailView'),
+       arequire('foam.glang.PieExpr'),
        arequire('foam.dao.ProxyDAO'),
        arequire('foam.dao.FutureDAO'),
        arequire('foam.dao.EasyDAO'),
        arequire('foam.dao.IDBDAO'),
        arequire('foam.dao.NullDAO')
     )(function() {
-    var demo = $('demo');
-    var out  = $('output');
+    var demo = X.$('demo');
+    var out  = X.$('output');
     var log_ = function(o) {
       if ( o.indexOf('<') != 0 ) o = o.replace(/\n/g, '<br>').replace(/ /g,'&nbsp;');
 //      out.innerHTML = out.innerHTML + o + '<br/>';
@@ -448,7 +449,7 @@ dao.select(document);
       eval(l);
     }
   });
-    
+
   </script>
 
  </body>

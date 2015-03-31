@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+// TODO(kgr): add rotation to CView to complete demo
 CLASS({
   package: 'foam.demos',
   name: 'ArchitectureDiagram',
@@ -24,13 +25,13 @@ CLASS({
     'Timer',
     'foam.ui.DetailView',
     'foam.graphics.CView',
-    'foam.graphics.Rectangle as Box',
+    'foam.graphics.LabelledBox as Box',
     'foam.graphics.Circle'
   ],
 
   properties: [
-    { name: 'width',      defaultValue: 1800    },
-    { name: 'height',     defaultValue: 1600    },
+    { name: 'width',      defaultValue: 1500    },
+    { name: 'height',     defaultValue: 1400    },
     { name: 'background', defaultValue: 'black' },
     {
       name: 'timer',
@@ -128,7 +129,7 @@ CLASS({
     },
     
     // TODO: Make a trait
-    XXXpaintChildren: function() {
+    paintChildren: function() {
       // paint children inverted and slated below reflection point
       this.canvas.save();
       this.canvas.translate(850*0.6,850);
@@ -137,20 +138,18 @@ CLASS({
       this.canvas.transform(1,0,-0.6,1,0,0);
 
       this.SUPER();
-      // Canvas.getPrototype().paintChildren.call(this);
 
       // cause fading with white gradient
       var fade = this.canvas.createLinearGradient(0,750,0,-1000);
-      fade.addColorStop(0, 'rgba(255,255,255,0.82)');
+      fade.addColorStop(0,   'rgba(255,255,255,0.82)');
       fade.addColorStop(0.2, 'rgba(255,255,255,1)');
-      fade.addColorStop(1, 'rgba(255,255,255,1)');
+      fade.addColorStop(1,   'rgba(255,255,255,1)');
       this.canvas.fillStyle = fade;
       this.canvas.fillRect(0, 850, 1500, -1000);
       this.canvas.restore();
 
-      this.SUPER();
       // paint children in normally
-      //Canvas.getPrototype().paintChildren.call(this);
+      this.SUPER();
     }
   }
 });

@@ -18,9 +18,9 @@
 CLASS({
   package: 'foam.demos',
   name: 'ClockView',
-  
+
   extendsModel: 'foam.graphics.CView',
-  
+
   requires: [
     'foam.graphics.Circle', 'foam.ui.IntFieldView'
   ],
@@ -36,14 +36,14 @@ CLASS({
       type: 'foam.graphics.Circle',
       paint: true,
       factory: function() {
-        return this.Circle.create({r:this.r,color:this.color});  
+        return this.Circle.create({r:this.r,color:this.color});
       }
     },
     {
       name: 'white',
       type: 'foam.graphics.Circle',
       factory: function() {
-        return this.Circle.create({r:this.r-3,color:'white'});  
+        return this.Circle.create({r:this.r-3,color:'white'});
       }
     },
     {
@@ -51,12 +51,6 @@ CLASS({
       name: 'r',
       label: 'Radius',
       defaultValue: 100
-    },
-    {
-      model_: 'FloatProperty',
-      name: 'a',
-      label: 'Rotation',
-      defaultValue: 0
     },
     {
       name: 'hourHand',
@@ -90,11 +84,6 @@ CLASS({
       this.addChild(this.hourHand);
       this.addChild(this.minuteHand);
       this.addChild(this.secondHand);
-    },
-
-    transform: function() {
-      this.SUPER();
-      this.canvas.rotate(this.a);
     },
 
     paintSelf: function() {
@@ -166,5 +155,3 @@ CLASS({
     })
   ]
 });
-
-

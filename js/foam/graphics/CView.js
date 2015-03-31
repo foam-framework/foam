@@ -118,6 +118,12 @@ CLASS({
           The Y offset of this view relative to its parent. */}
     },
     {
+      model_: 'FloatProperty',
+      name: 'a',
+      label: 'Rotation',
+      defaultValue: 0
+    },
+    {
       name: 'canvasX',
       getter: function() { return this.x + ( this.parent ? this.parent.canvasX : 0 ); }
     },
@@ -272,6 +278,7 @@ CLASS({
 
     transform: function() {
       this.canvas.translate(this.x, this.y);
+      this.canvas.rotate(this.a);
     },
 
     mapToParent: function(point) { /* Maps a coordinate from this to our parents'. */

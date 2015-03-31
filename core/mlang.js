@@ -110,7 +110,7 @@ CLASS({
 
 var TRUE = (FOAM({
   model_: 'Model',
-  name: 'TRUE',
+  name: 'TrueExpr',
   extendsModel: 'Expr',
 
   documentation: 'Model for the primitive true value.',
@@ -127,7 +127,7 @@ var TRUE = (FOAM({
 
 var FALSE = (FOAM({
   model_: 'Model',
-  name: 'FALSE',
+  name: 'FalseExpr',
   extendsModel: 'Expr',
 
   documentation: 'Model for the primitive false value.',
