@@ -23,6 +23,8 @@ CLASS({
   requires: [ 'foam.ui.md.MonogramStringView' ],
 
   properties: [
+    { name: 'prop' },
+    { name: 'tagName', defaultValue: 'div' },
     { name: 'className', defaultValue: 'CitationView' },
     { name: 'data', postSet: function() { this.updateHTML(); } }
   ],
@@ -41,24 +43,29 @@ CLASS({
   templates: [
     function CSS() {/*
       .CitationView {
-        padding: 12px 0;
+        padding: 0 0 0 16px;
+      }
+
+      .CitationView .contents {
         display: flex;
         flex-direction: row;
         align-items: center;
         color: #575757;
       }
 
-      .single .CitationView .owner-name {
-        border-bottom: 1px solid rgba(0,0,0,.1);
-      }
-
-      .single .CitationView .removeRow {
-        display: none;
+      .CitationView .label {
+        color: #999;
+        font-size: 14px;
+        padding-bottom: 12px;
+        font-weight: 500;
       }
     */},
     function toInnerHTML() {/*
-      <%= this.MonogramStringView.create({ data: this.data }) %>
-      <div class="owner-name">{{ this.data }}</div>
+      <div class="label"><%= escapeHTML(this.prop.label) %></div>
+      <div class="contents">
+        <%= this.MonogramStringView.create({ data: this.data }) %>
+        <div class="owner-name">{{ this.data }}</div>
+      </div>
     */}
 //      <span class="removeRow">$$clear</span>
   ]

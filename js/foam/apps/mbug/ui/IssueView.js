@@ -90,9 +90,6 @@ CLASS({
       .content-view {
         margin-top: -24px;
       }
-      .CitationView {
-        padding-left: 16px;
-      }
       .expand {
         flex: 1 1 auto;
       }
@@ -150,10 +147,9 @@ CLASS({
           </div>
 
           <div class="separator separator1"></div>
-          <div id="owner" class="owner">
+          <div id="<%= this.on('click', this.onOwnerClick) %>" class="owner">
             $$owner{model_: 'foam.apps.mbug.ui.CitationView'}
           </div>
-          <% this.on('click', this.onOwnerClick, 'owner'); %>
 
           <div class="separator separator1"></div>
           <% out(this.AutocompleteListView.create({

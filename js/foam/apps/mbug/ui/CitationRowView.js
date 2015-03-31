@@ -22,24 +22,16 @@ CLASS({
 
   requires: [ 'foam.ui.md.MonogramStringView' ],
 
-  properties: [ { name: 'className', defaultValue: 'CitationView' } ],
+  properties: [ { name: 'className', defaultValue: 'CitationRowView' } ],
 
   templates: [
     function CSS() {/*
-      .CitationView {
-        padding: 12px 0;
+      .CitationRowView {
+        padding: 0 0 12px 16px;
         display: flex;
         flex-direction: row;
         align-items: center;
         color: #575757;
-      }
-
-      .single .CitationView .owner-name {
-        border-bottom: 1px solid rgba(0,0,0,.1);
-      }
-
-      .single .CitationView .removeRow {
-        display: none;
       }
     */},
     function toInnerHTML() {/*
