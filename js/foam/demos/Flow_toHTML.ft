@@ -68,6 +68,11 @@ console.assert(false, "Expected error: Falsity is falsity.");</code>
 
   </section>
 
+  Image: <foam model="foam.graphics.ImageCView" src="/apps/mbug/images/logo.png" width="200" height="200"/> :Done
+
+<foam model="foam.graphics.ImageCView" src="https://mdn.mozillademos.org/files/5397/rhino.jpg" x="10" y="10" width="200" height="200"/>
+
+
 Slides:
 
   <slides style="width: 820px; height: 450px;">
