@@ -19,7 +19,7 @@ CLASS({
   name: 'ImageBooleanView',
   package: 'foam.ui',
 
-  extendsModel: 'foam.ui.View',
+  extendsModel: 'foam.ui.SimpleView',
 
   properties: [
     {
