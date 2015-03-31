@@ -20,10 +20,15 @@ CLASS({
   package: 'foam.ui.md',
 
   extendsModel: 'foam.graphics.CView',
-
-  requires: [ 'foam.ui.md.Halo' ],
+ 
+  requires: [ 'foam.ui.md.Halo',
+              'foam.graphics.DOMSizedCViewView as CViewView'],
   
   properties: [
+    {
+      name: 'background',
+      defaultValue: 'rgba(0,0,0,0)'
+    },
     {
       name: 'halo',
       model_: 'ViewFactoryProperty',
@@ -40,7 +45,8 @@ CLASS({
           startAlpha$:   this.startAlpha$,
           pressedAlpha$: this.pressedAlpha$,
           finishAlpha$:  this.finishAlpha$,
-          color$:        this.color$
+          color$:        this.color$,
+          recentering$:  this.recentering$
         });
       }
     },
@@ -74,7 +80,12 @@ CLASS({
     },
     {
       name: 'color'
+    },
+    {
+      name: 'recentering',
+      defaultValue: true
     }
+
   ],
 
   methods: {
