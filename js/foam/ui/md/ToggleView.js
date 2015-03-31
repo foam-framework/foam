@@ -19,6 +19,7 @@ CLASS({
   name: 'ToggleView',
   package: 'foam.ui.md',
   extendsModel: 'foam.ui.SimpleView',
+  requires: ['foam.ui.md.HaloView'],
   properties: [
     {
       name: 'data',
@@ -38,12 +39,20 @@ CLASS({
     {
       name: 'className',
       defaultValue: 'toggle-container'
-    }
+    },
+    {
+      name: 'halo',
+      factory: function() {
+        return this.HaloView.create();
+      }
+    },
+
   ],
   templates: [
     function CSS() {/*
       .toggle-container {
         display: flex;
+        align-items: center;
         padding: 12px 10px;
       }
 
@@ -51,15 +60,33 @@ CLASS({
         flex-grow: 1;
       }
 
+      .noselect {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      .toggle-outer {
+        position: relative;
+        width: 48px;
+        height: 48px;
+        cursor: pointer;
+      }
+
       .toggle-background {
         background-color: #9e9e9e;
         border-radius: 7px;
         display: inline-block;
         height: 14px;
-        margin-left: 15px;
+        left: 6px;
+        top: 17px;
         opacity: 0.3;
-        position: relative;
+        position: absolute;
         width: 36px;
+        pointer-events: none;
       }
 
       .toggle-background.enabled {
@@ -77,6 +104,7 @@ CLASS({
         top: -3px;
         transition: left .08s;
         width: 20px;
+        pointer-events: none;
       }
 
       .toggle-background.toggledOn {
@@ -93,11 +121,14 @@ CLASS({
     */},
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <span class="toggle-label"><%# this.label %></span>
+        <span class="toggle-label noselect"><%# this.label %></span>
         <%# this.data ? "ON" : "OFF" %>
-        <span id="<%=this.id%>-background" class="toggle-background">
-          <div class="toggle-lever"></div>
-        </span>
+        <div class="toggle-outer noselect">
+          <span id="<%=this.id%>-background" class="toggle-background">
+            <div class="toggle-lever"></div>
+          </span>
+          <%= this.halo %>
+        </div>
       </div>
       <%
         this.on('click', function() {

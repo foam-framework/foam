@@ -23,7 +23,8 @@ CLASS({
   requires: ['foam.ui.md.ChoiceRadioView',
              'foam.input.touch.TouchManager',
              'foam.input.touch.GestureManager',
-             'foam.ui.md.FlatButton'],
+             'foam.ui.md.FlatButton',
+             'foam.ui.md.CheckboxView'],  
   
   properties: [
     {
@@ -37,6 +38,9 @@ CLASS({
     {
       name: 'data',
       defaultValue: 'none'
+    },
+    {
+      name: 'booly'
     }
   ],
   
@@ -79,6 +83,9 @@ CLASS({
       </p>
       <p>
       $$oneAction
+      </p>
+      <p>
+      $$booly{model_:'foam.ui.md.CheckboxView', label: 'Checkbox label'}
       </p>
     */}
   ]

@@ -35,7 +35,7 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'fontColor',
-      defaultValue: '#85d3f7'
+      defaultValue: '#02A8F3'
     }
   ],
 
