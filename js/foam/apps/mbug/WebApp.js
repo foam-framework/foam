@@ -20,7 +20,7 @@ __DATA({
   id: 'foam.apps.mbug.WebApp',
   controller: 'foam.apps.mbug.MBug',
   defaultView: 'foam.ui.layout.Window',
-  version: "1.0",
+  version: "1.1.0",
   includeFoamCSS: false,
   precompileTemplates: true,
   appcacheManifest: true,
@@ -51,7 +51,7 @@ __DATA({
   ],
   htmlHeaders: [
     '<meta charset="utf-8"/>',
-    '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0"/>',
+    '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1"/>',
     '<meta name="mobile-web-app-capable" content="yes"/>'
   ],
   coreFiles: [
