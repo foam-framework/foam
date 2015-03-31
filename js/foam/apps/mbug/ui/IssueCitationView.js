@@ -34,11 +34,7 @@ CLASS({
           $$owner{model_: 'foam.ui.md.MonogramStringView'}
           <div class="middle">
             $$id{mode: 'read-only', className: 'id'}
-          <% if ( this.data.pri ) { %>
-            $$pri{ model_: 'foam.apps.mbug.ui.PriorityCitationView' }
-          <% } else { %>
-            $$priority{ model_: 'foam.apps.mbug.ui.PriorityCitationView' }
-          <% } %><br>
+            $$metaPriority{ model_: 'foam.apps.mbug.ui.PriorityCitationView' }
             $$summary{mode: 'read-only'}
           </div>
           $$starred{
