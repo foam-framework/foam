@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 
 CLASS({
   name: 'ChoiceRadioView',
   package: 'foam.ui.md',
 
   extendsModel: 'foam.ui.AbstractChoiceView',
-  
+
   requires: ['foam.ui.md.RadioOptionView',
              'foam.ui.md.RadioOptionTextFieldView'],
 
@@ -66,6 +66,9 @@ CLASS({
   ],
 
   methods: {
+    shouldDestroy: function(old,nu) {
+      return false;
+    },
 
     scrollToSelection: function() {
       // Three cases: in view, need to scroll up, need to scroll down.
@@ -104,7 +107,7 @@ CLASS({
         </div>
 <%        }%>
     */},
-    
+
     function CSS() {/*
 .foamChoiceRadioView {
   list-style-type: none;
