@@ -124,6 +124,16 @@ CLASS({
       defaultValue: 0
     },
     {
+      model_: 'FloatProperty',
+      name: 'scaleX',
+      defaultValue: 1
+    },
+    {
+      model_: 'FloatProperty',
+      name: 'scaleY',
+      defaultValue: 1
+    },
+    {
       name: 'canvasX',
       getter: function() { return this.x + ( this.parent ? this.parent.canvasX : 0 ); }
     },
@@ -278,7 +288,12 @@ CLASS({
 
     transform: function() {
       this.canvas.translate(this.x, this.y);
+      this.canvas.scale(this.scaleX, this.scaleY);
       this.canvas.rotate(this.a);
+    },
+
+    scale: function(s) {
+      this.scaleX = this.scaleY = s;
     },
 
     mapToParent: function(point) { /* Maps a coordinate from this to our parents'. */
