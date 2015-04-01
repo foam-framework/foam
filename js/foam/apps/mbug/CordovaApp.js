@@ -93,6 +93,6 @@ __DATA({
   ],
   extraModels: [
     'foam.ui.RelationshipView',
-    'foam.oauth2.OAuth2ChromeApp'
+    'foam.oauth2.OAuth2ChromeIdentity'
   ]
 });
