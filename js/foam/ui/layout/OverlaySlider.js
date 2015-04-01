@@ -16,8 +16,8 @@
  */
 
 CLASS({
-   "model_": "Model",
    "package": "foam.ui.layout",
+   "model_": "Model",
    "name": "OverlaySlider",
    "extendsModel": "foam.ui.View",
    "traits": [
@@ -38,9 +38,6 @@ CLASS({
          "defaultValue": 0
       }
    ],
-   "actions": [],
-   "constants": [],
-   "messages": [],
    "methods": [
       {
          "model_": "Method",
@@ -108,9 +105,5 @@ CLASS({
          "args": [],
          "template": "\u000a      .overlay-slider {\u000a        position: absolute;\u000a        background: black;\u000a      }\u000a\u000a      * {\u000a        transform-style: preserve-3d;\u000a        -webkit-transform-style: preserve-3d;\u000a      }\u000a    "
       }
-   ],
-   "models": [],
-   "tests": [],
-   "relationships": [],
-   "issues": []
+   ]
 });
