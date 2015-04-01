@@ -89,6 +89,7 @@ CLASS({
     {
       name: 'initHTML',
       code: function() {
+        this.SUPER();
         Events.dynamic(function() {
           this.currentColor_;
           if ( ! this.$ ) return;
@@ -126,8 +127,8 @@ CLASS({
     function toInnerHTML() {/*
         <%= this.halo %>
         <span>
-        <% if ( this.data ) { %>
-          {{this.data}}
+        <% if ( this.action ) { %>
+          {{this.action.label}}
         <% } else if ( this.inner ) { %>
           <%= this.inner() %>
         <% } else { %>label<% } %>
@@ -136,7 +137,7 @@ CLASS({
         this.on('click', function() {
             this.action.callIfEnabled(this.X, this.data);
         }.bind(this), this.id);
-        this.setClass('weee', function() { console.log(this.isHidden, this); return !!this.isHidden; }.bind(this), this.id);
+        this.setClass('hidden', function() { return !!self.isHidden; }, this.id);
 %>
     */},
     function CSS() {/*
