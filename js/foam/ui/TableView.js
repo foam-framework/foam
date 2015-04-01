@@ -33,8 +33,11 @@ CLASS({
 
   label: 'Table View',
 
-  requires: [ 'foam.ui.EditColumnsView',
-              'foam.input.touch.GestureTarget' ],
+  requires: [
+    'foam.graphics.ScrollCView',
+    'foam.ui.EditColumnsView',
+    'foam.input.touch.GestureTarget'
+  ],
 
   properties: [
     {
@@ -99,7 +102,7 @@ CLASS({
       name: 'scrollbar',
       type: 'ScrollCView',
       factory: function() {
-        var sb = this.X.ScrollCView.create({height:800, width: 24, x: 1, y: 0, size: 200, extent: 10}, this.Y);
+        var sb = this.ScrollCView.create({height:800, width: 24, x: 1, y: 0, size: 200, extent: 10});
 
 //        if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
 
@@ -267,7 +270,7 @@ CLASS({
         this.tableToHTML() +
         '</span>' +
         '<span style="width:19px;flex:none;overflow:hidden;">' +
-        this.scrollbar.toHTML() +
+        this.scrollbar.toView_().toHTML() +
         '</span>' +
         '</div>';
     },
@@ -275,7 +278,7 @@ CLASS({
     initHTML: function() {
       this.SUPER();
 
-      this.scrollbar.initHTML();
+      this.scrollbar.toView_().initHTML();
 
       this.dao && this.onDAOUpdate();
 
