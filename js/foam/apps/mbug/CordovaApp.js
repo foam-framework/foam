@@ -17,13 +17,13 @@
 
 __DATA({
   model_: 'foam.build.WebApplication',
-  id: 'foam.apps.mbug.WebApp',
+  id: 'foam.apps.mbug.CordovaApp',
   controller: 'foam.apps.mbug.MBug',
   defaultView: 'foam.ui.layout.Window',
   version: "1.1.0",
   includeFoamCSS: false,
   precompileTemplates: true,
-  appcacheManifest: true,
+  appcacheManifest: false,
   icon: 'images/logo.png',
   resources: [
     'images/defaultlogo.png',
@@ -51,8 +51,7 @@ __DATA({
   ],
   htmlHeaders: [
     '<meta charset="utf-8"/>',
-    '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1"/>',
-    '<meta name="mobile-web-app-capable" content="yes"/>'
+    '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0"/>'
   ],
   coreFiles: [
     'firefox',
@@ -92,5 +91,8 @@ __DATA({
     'models',
     'oauth'
   ],
-  extraModels: ['foam.ui.RelationshipView']
+  extraModels: [
+    'foam.ui.RelationshipView',
+    'foam.oauth2.OAuth2ChromeIdentity'
+  ]
 });

@@ -94,6 +94,10 @@ CLASS({
     setTopView: function(view) {
       if ( ! view.model_.Z ) view = this.FloatingView.create({ view: view });
 
+      for ( var i = 0 ; i < this.stack.length ; i++ ) {
+        this.stack[i].destroy();
+      }
+
       this.stack = [view];
       this.currentView = 0;
 

@@ -199,10 +199,10 @@ CLASS({
                   if ( sink ) {
                     if ( result ) {
                       sink.put && sink.put(result);
-                      self.notify_('put', [result]);
                     }
                     else sink.error && sink.error('put', issue);
                   }
+                  if ( result ) self.notify_('put', [result]);
                   ret();
                 })
              )(ret);

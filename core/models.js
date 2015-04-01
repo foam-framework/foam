@@ -224,18 +224,21 @@ CLASS({
   methods: {
 
     manage: function(name, obj, version) {
-      /*
-       <p>Manage persistence for an object. Resave it in
-       the DAO whenever it fires propertyChange events.</p>
-       */
-      obj.addListener(EventService.merged((function() {
+      var write = EventService.merged((function() {
         console.log('PersistentContext', 'updating', name);
         this.dao.put(this.Y.Binding.create({
           id:    name,
           value: JSONUtil.where(this.predicate).stringify(obj),
           version: version
         }));
-      }).bind(this), undefined, this.Y));
+      }).bind(this), undefined, this.Y);
+
+      /*
+       <p>Manage persistence for an object. Resave it in
+       the DAO whenever it fires propertyChange events.</p>
+       */
+      obj.addListener(write);
+      write();
     },
     bindObjects: function(a) {
       // TODO: implement
@@ -272,12 +275,17 @@ CLASS({
             console.log('PersistentContext', 'existingInit', name);
             //                  var obj = JSONUtil.parse(binding.value);
             //                  var obj = JSON.parse(binding.value);
-            var json = JSON.parse(binding.value);
-            var obj = JSONUtil.mapToObj(this.Y, json);
-            obj.copyFrom(transientValues);
-            this.context[name] = obj;
-            this.manage(name, obj, version);
-            future.set(obj);
+            try {
+              var json = JSON.parse(binding.value);
+              var obj = JSONUtil.mapToObj(this.Y, json);
+              obj.copyFrom(transientValues);
+              this.context[name] = obj;
+              this.manage(name, obj, version);
+              future.set(obj);
+            } catch(e) {
+              console.log('PersistentContext', 'existingInit serialization error', name);
+              newinit();
+            }
           }.bind(this),
           error: newinit
         });

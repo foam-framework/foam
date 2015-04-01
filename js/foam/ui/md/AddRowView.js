@@ -107,6 +107,7 @@ CLASS({
       view: {
         factory_: 'foam.ui.md.TextFieldView',
         onKeyMode: true,
+        darkBackground: true,
         floatingLabel: false
       },
       postSet: function(old, nu) {

@@ -46,6 +46,13 @@ CLASS({
 
       this.loadToken_();
       this.SUPER(args);
+
+      // Now that we've had a track at loading them from the address bar,
+      // remove these fields from the hash.
+      // Replacing the whole hash is heavy-handed, but any preexisting hash
+      // values aren't preserved by the redirect anyway, so there's nothing
+      // in the hash post-redirect but the OAuth details.
+      this.location.hash = '';
     },
     loadState_: function() {
       var state = this.location.hash.match(/state=([^&]*)/);

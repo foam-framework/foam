@@ -499,6 +499,37 @@ CLASS({
               ]
             },
             {
+              model_: 'StringProperty',
+              name: 'metaPriority',
+              compareProperty: (this.projectName == "chromium") ?
+                (function(p1, p2) {
+                  if ( p1.length === 0 && p2.length != 0 ) return 1;
+                  else if ( p2.length === 0 && p1.length != 0 ) return -1;
+                  return p1.compareTo(p2);
+                }) : (function(p1, p2) {
+                  var priorities = ['Low', 'Medium', 'High', 'Critical'];
+                  var i1 = priorities.indexOf(p1);
+                  var i2 = priorities.indexOf(p2);
+                  if ( i1 < 0 && i2 < 0 ) {
+                    // Neither is a proper priority - return normal string order.
+                    return p1 === p2 ? 0 : p1 < p2 ? -1 : 1;
+                  } else if ( i1 < 0 ) {
+                    return 1; // Nonstandard come after standard priorities
+                  } else if ( i2 < 0 ) {
+                    return -1;  // Likewise.
+                  } else {
+                    var r = i2 - i1;
+                    return r === 0 ? 0 : r < 0 ? -1 : 1;
+                  }
+                }),
+              getter: (this.projectName == "chromium") ?
+                (function() { return this.pri; }) :
+                (function() { return this.priority; }),
+              setter: (this.projectName == "chromium") ?
+                (function(value) { this.pri = value; }) :
+                (function(value) { this.priority = value; })
+            },
+            {
               model_: 'foam.apps.quickbug.model.LabelArrayProperty',
               name: 'app',
               tableWidth: '70px'
@@ -707,6 +738,8 @@ CLASS({
 
               if ( Object.keys(diff).length == 0 ) return;
 
+              delete diff.stars;
+
               function convertArray(key) {
                 if ( ! diff[key] ) {
                   diff[key] = [];
@@ -726,6 +759,16 @@ CLASS({
               convertArray('m');
               convertArray('iteration');
               convertArray('week');
+
+              var empty = true;
+              for ( var key in diff ) {
+                if ( ! Array.isArray(diff[key]) || diff[key].length > 0 ){
+                  empty = false;
+                  break;
+                }
+              }
+
+              if ( empty ) return;
 
               var comment = this.X.lookup('foam.apps.quickbug.model.QIssueComment').create({
                 issueId: this.id,

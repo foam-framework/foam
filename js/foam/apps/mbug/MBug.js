@@ -24,7 +24,7 @@ CLASS({
   traits: [ 'foam.ui.layout.PositionedDOMViewTrait' ],
 
   requires: [
-    'com.google.analytics.WebMetricsReportingDAO',
+    'com.google.analytics.AnalyticsDAO',
     'foam.apps.mbug.ui.ChangeProjectView',
     'foam.apps.mbug.ui.IssueCitationView',
     'foam.apps.mbug.ui.IssueView',
@@ -65,11 +65,10 @@ CLASS({
     {
       name: 'metricDAO',
       factory: function() {
-        return this.WebMetricsReportingDAO.create({
+        return this.AnalyticsDAO.create({
           propertyId: 'UA-47217230-4',
-          clientId: '1',
           appName: 'MBug',
-          appVersion: '1.0.7'
+          appVersion: '1.1.0'
         });
       }
     },
