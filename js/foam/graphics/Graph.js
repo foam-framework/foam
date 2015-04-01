@@ -94,7 +94,10 @@ CLASS({
     {
       name:  'data',
       type:  'Array[float]',
-      factory: function() { return []; }
+      factory: function() { return []; },
+      postSet: function() {
+        this.view && this.view.paint();
+      }
     },
     {
       model_: 'FunctionProperty',
