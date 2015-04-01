@@ -1,0 +1,34 @@
+CACHE MANIFEST
+# version 1.1.2
+# hash: 1179757521
+
+CACHE:
+foam.js
+main.html
+
+images/defaultlogo.png
+images/ic_add_24dp.png
+images/ic_add_black_24dp.png
+images/ic_arrow_back_24dp.png
+images/ic_arrow_back_24dp_black.png
+images/ic_arrow_drop_down_24dp.png
+images/ic_cancel_24dp.png
+images/ic_clear_24dp.png
+images/ic_clear_black_24dp.png
+images/ic_done_24dp.png
+images/ic_filter_24dp.png
+images/ic_keep_24dp.png
+images/ic_menu_24dp.png
+images/ic_search_24dp.png
+images/ic_sort_24dp.png
+images/ic_star_24dp.png
+images/ic_star_outline_24dp.png
+images/ic_star_outline_white_24dp.png
+images/ic_star_white_24dp.png
+images/logo.png
+images/projectBackground.png
+images/silhouette.png
+
+
+NETWORK:
+*
