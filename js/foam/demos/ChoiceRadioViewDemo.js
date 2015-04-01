@@ -19,18 +19,18 @@ CLASS({
   name: 'ChoiceRadioViewDemo',
   extendsModel: 'foam.ui.SimpleView',
   package: 'foam.demos',
-  
+
   requires: ['foam.ui.md.ChoiceRadioView',
              'foam.input.touch.TouchManager',
              'foam.input.touch.GestureManager',
              'foam.ui.md.FlatButton',
-             'foam.ui.md.CheckboxView'],  
-  
+             'foam.ui.md.CheckboxView'],
+
   properties: [
     {
       name: 'choices',
       defaultValueFn: function() { return [
-        ['choice1', 'Choice 1'], 
+        ['choice1', 'Choice 1'],
         ['choice2', 'Choice 2'],
         ['name', 'Other', 'user'],
       ]; }
@@ -40,21 +40,38 @@ CLASS({
       defaultValue: 'none'
     },
     {
+      model_: 'BooleanProperty',
       name: 'booly'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'enabledButton',
+      defaultValue: true
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'showButton',
+      defaultValue: true
     }
   ],
-  
+
   actions: [
     {
       name: 'oneAction',
       label: 'one',
       action: function() {
         console.log("one action actionated");
+      },
+      isEnabled: function(action) {
+        return this.enabledButton;
+      },
+      isAvailable: function(action) {
+        return this.showButton;
       }
     }
-    
+
   ],
-  
+
   methods: {
     init: function() {
       this.Y.registerModel(this.FlatButton, 'foam.ui.ActionButton');
@@ -62,13 +79,13 @@ CLASS({
       this.SUPER();
       this.X.touchManager   = this.TouchManager.create();
       this.X.gestureManager = this.GestureManager.create();
-      
+
     }
   },
-  
-  templates: 
-  [ 
-    function toInnerHTML() 
+
+  templates:
+  [
+    function toInnerHTML()
     {/*
       <p>
       $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'vertical'}
@@ -85,7 +102,8 @@ CLASS({
       $$oneAction
       </p>
       <p>
-      $$booly{model_:'foam.ui.md.CheckboxView', label: 'Checkbox label'}
+      $$enabledButton{model_:'foam.ui.md.CheckboxView', label: 'Button Enabled'}
+      $$showButton{model_:'foam.ui.md.CheckboxView', label: 'Button Show'}
       </p>
     */}
   ]
