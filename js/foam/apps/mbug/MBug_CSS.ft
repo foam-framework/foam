@@ -436,7 +436,7 @@ ul.swipeAltHeader {
   background: #3e50b4;
   box-shadow: 0 1px 1px rgba(0,0,0,.25);
   color: white;
-  height: 45px;
+  height: 47px;
   margin: 0;
   overflow: hidden;
   padding: 0 0 0 56px;
