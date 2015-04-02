@@ -26,45 +26,39 @@ CLASS({
       model_: 'ArrayProperty',
       name: 'views',
       subType: 'foam.ui.ViewChoice',
-      help: 'View choices.'
+      help: 'View choices.',
+      postSet: function() { this.choice = this.choice; }
     },
     {
+      model_: 'IntProperty',
       name: 'choice',
-      postSet: function(_, v) {
-        this.view = v.view;
+      memorable: true,
+      preSet: function(_, c) {
+        return Math.max(0, Math.min(c, this.views.length));
       },
-      hidden: true
+      postSet: function(_, c) {
+        if ( this.views.length ) {
+          this.view = this.views[c].view();
+          this.view.data = this.data;
+        }
+      }
     },
     {
-      model_: 'ViewFactoryProperty',
       name: 'view',
-      defaultValue: 'foam.ui.View',
-      postSet: function(old, v) {
+      memorable: true,
+      postSet: function(_, _) {
         if ( ! this.$ ) return;
-        this.removeAllChildren();
-        var view = this.view();
-        view.data = this.data;
-        this.addChild(view);
-        this.viewContainer.innerHTML = view.toHTML();
-        view.initHTML();
+        this.destroy();
+        this.$.outerHTML = this.toHTML();
+        this.initHTML();
       },
       hidden: true
-    },
-    {
-      model_: 'foam.core.types.DOMElementProperty',
-      name: 'viewContainer'
     },
     {
       name: 'className',
       defaultValue: 'twopane-container'
     },
   ],
-
-  methods: {
-    init: function() {
-      this.SUPER();
-    }
-  },
 
   templates: [
     function CSS() {/*
@@ -92,8 +86,8 @@ CLASS({
     */},
     function choiceButton(_, i, length, choice) {/*
       <%
-        var id = this.on('click', function() { self.choice = choice; });
-        this.setClass('twopane-left-item-selected', function() { return self.choice === choice; }, id);
+        var id = this.on('click', function() { self.choice = i; });
+        this.setClass('twopane-left-item-selected', function() { return self.choice == i; }, id);
       %>
       <div id="<%= id %>" class="twopane-left-item"><%= choice.label %></div>
     */},
@@ -104,7 +98,7 @@ CLASS({
                this.choiceButton(out, i, this.views.length, choice);
            } %>
         </div>
-        <div class="twopane-right" id="<%= this.viewContainer = this.nextID() %>"><%= this.view({ data$: this.data$ }) %></div>
+        <div class="twopane-right"><%= this.view %></div>
       </div>
     */}
   ]
