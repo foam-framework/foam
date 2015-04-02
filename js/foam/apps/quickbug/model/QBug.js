@@ -167,12 +167,11 @@ CLASS({
     initOAuth: function(opt_clientId, opt_clientSecret) {
       var self = this;
       var model = this.X.lookup('foam.oauth2.EasyOAuth2');
-      this.persistentContext.bindObject('authAgent2', model.xbind({
+      this.persistentContext.bindObject('authAgent2', model, {
         clientId: opt_clientId ||
           '18229540903-ajaqivrvb8vu3c1viaq4drg3847vt9nq.apps.googleusercontent.com',
         clientSecret: opt_clientSecret ||
-          'mbxy7-eZlosojSZgHTRT15o9'
-      }), {
+          'mbxy7-eZlosojSZgHTRT15o9',
         scopes: self.scopes
       }, 3)(function(oauth2) {
         oauth2.setJsonpFuture(self.X, self.jsonpFuture);
