@@ -747,10 +747,12 @@ MODEL({
         var stopped = false;
 
         function stop() {
+          var onEnd = opt_onEnd;
           if ( ! stopped ) {
             Movement.liveAnimations_--;
             stopped = true;
-            opt_onEnd && opt_onEnd();
+            onEnd && onEnd();
+            onEnd = null;
 
             if ( Movement.liveAnimations_ === 0 ) {
               var tasks = Movement.idleTasks_;
