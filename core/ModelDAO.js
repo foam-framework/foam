@@ -24,9 +24,13 @@ var __DATA;
   var path = document.location.pathname;
   path = path.substring(0, path.lastIndexOf('/'));
 
+  var foamdir = new URL(window.FOAM_BOOT_DIR).pathname;
+  foamdir = foamdir.substring(0, foamdir.lastIndexOf('/'))
+  foamdir = foamdir.substring(0, foamdir.lastIndexOf('/'))
+
   // If this isn't FOAM's index.html
   // add an additional classpath for ./js/
-  if ( window.FOAM_BOOT_DIR.indexOf(path) != -1 ) {
+  if ( path.indexOf(foamdir) == -1 ) {
     X.ModelDAO = X.foam.core.bootstrap.OrDAO.create({
       delegate: X.foam.core.bootstrap.BrowserFileDAO.create({
         rootPath: path + '/js/'
