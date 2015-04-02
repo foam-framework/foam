@@ -73,6 +73,7 @@ CLASS({
       factory: function() {
         return this.PersistentContext.create({
           dao: this.IDBDAO.create({ model: this.Binding }),
+          predicate: NOT_TRANSIENT,
           context: this
         });
       }
