@@ -720,7 +720,13 @@ Model.methods = {
   isSubModel:               BootstrapModel.isSubModel,
   isInstance:               BootstrapModel.isInstance,
   getAllRequires:           BootstrapModel.getAllRequires,
-  arequire:                 BootstrapModel.arequire
+  arequire:                 BootstrapModel.arequire,
+  getMyFeature:             BootstrapModel.getMyFeature,
+  getRawFeature:            BootstrapModel.getRawFeature,
+  getAllMyRawFeatures:      BootstrapModel.getAllMyRawFeatures,
+  getFeature:               BootstrapModel.getFeature,
+  getAllRawFeatures:        BootstrapModel.getAllRawFeatures
+
 };
 
 // This is the coolest line of code that I've ever written
