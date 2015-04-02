@@ -652,6 +652,30 @@ if ( this.name === 'WebApplication' ) console.log('done');
     return this.featureMap_[featureName.toUpperCase()];
   },
 
+  getRawFeature: function(featureName) {
+    /* Returns the raw (not runtime, not inherited, non-buildPrototype'd) feature */
+    if ( ! Object.prototype.hasOwnProperty.call(this, 'rawFeatureMap_') ) {
+      var map = this.featureMap_ = {};
+      function add(a) {
+        if ( ! a ) return;
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          var f = a[i];
+          map[f.name.toUpperCase()] = f;
+        }
+      }
+      add(this.properties);
+      add(this.actions);
+      add(this.methods);
+      add(this.listeners);
+      add(this.templates);
+      add(this.models);
+      add(this.tests);
+      add(this.relationships);
+      add(this.issues);
+    }
+    return this.featureMap_[featureName.toUpperCase()];
+  },
+
   getAllMyFeatures: function() {
     console.log('********************* getAllMyFeatures');
     var featureList = [];

@@ -226,7 +226,7 @@ CLASS({
           if (features.length > 0) {
             // feature specified "Model.feature" or ".feature"
             ancestry.every(function(ancestor) {
-              foundObject = ancestor.getMyFeature(features[0]);
+              foundObject = ancestor.getRawFeature(features[0]);
               if ( ! foundObject ) {
                 return true;
               } else {
