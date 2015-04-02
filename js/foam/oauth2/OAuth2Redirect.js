@@ -67,7 +67,12 @@ CLASS({
       return token;
     },
     refreshNow_: function(ret) {
-      if ( this.redirects < 2 ) {
+      if ( this.redirects == 0 && this.authToken ) {
+        this.redirect += 1;
+        ret(this.authToken);
+        return;
+      }
+      if ( this.redirects < 3 ) {
         this.redirects += 1;
         var redirect =
           this.location.protocol + '//' +
