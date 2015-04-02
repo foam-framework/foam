@@ -41,7 +41,7 @@ CLASS({
     'foam.input.touch.TouchManager',
     'foam.metrics.Metric',
     'foam.oauth2.AutoOAuth2',
-    'foam.oauth2.OAuth2WebClient',
+    'foam.oauth2.OAuth2Redirect',
     'foam.ui.DetailView',
     'foam.ui.layout.CSSStackView as StackView',
     'foam.ui.md.AppController',

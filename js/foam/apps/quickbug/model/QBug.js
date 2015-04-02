@@ -173,7 +173,7 @@ CLASS({
           'mbxy7-eZlosojSZgHTRT15o9'
       }), {
         scopes: self.scopes
-      }, 2)(function(oauth2) {
+      }, 3)(function(oauth2) {
         oauth2.setJsonpFuture(self.X, self.jsonpFuture);
       });
     },
