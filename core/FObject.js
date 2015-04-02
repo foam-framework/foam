@@ -26,10 +26,16 @@ var FObject = {
 
   replaceModel_: function(model, otherModel, X) {
     while ( otherModel ) {
-      var replacementName =
-        ( model.package   ? model.package + '.' : '' ) +
-        ( otherModel.name ? otherModel.name     : otherModel ) + // TODO(jackson): Shouldn't there be a separator here?
-        model.name ;
+      // this name mangling has to use the primary model's package, otherwise
+      // it's ambiguous which model a replacement is intended for:
+      //     ReplacementThing -> package.Thing or foo.Thing or bar.Thing...
+      //  vs foo.ReplacementThing -> foo.Thing
+      // This means you must put your model-for-models in the same package
+      // as the primary model-to-be-replaced.
+      var replacementName =                                 // want: package.otherPrimaryModel
+        ( model.package   ? model.package + '.' : '' ) +          // package.
+        ( otherModel.name ? otherModel.name     : otherModel ) +  // other
+        model.name ;                                              // PrimaryModel
 
       var replacementModel = X.lookup(replacementName);
 
