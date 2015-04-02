@@ -16,10 +16,10 @@
  */
 
 CLASS({
+  name: 'StringProperty',
   extendsModel: 'Property',
 
-  name:  'StringProperty',
-  help:  "Describes a properties of type String.",
+  help: 'Describes a properties of type String.',
 
   properties: [
     {
@@ -70,10 +70,10 @@ CLASS({
 
 
 CLASS({
+  name: 'BooleanProperty',
   extendsModel: 'Property',
 
-  name:  'BooleanProperty',
-  help:  "Describes a properties of type Boolean.",
+  help: 'Describes a properties of type Boolean.',
 
   properties: [
     {
@@ -126,10 +126,10 @@ CLASS({
 
 
 CLASS({
+  name:  'DateProperty',
   extendsModel: 'Property',
 
-  name:  'DateProperty',
-  help:  "Describes a properties of type Date.",
+  help:  'Describes a properties of type Date.',
 
   properties: [
     {
@@ -187,10 +187,10 @@ CLASS({
 
 
 CLASS({
+  name: 'DateTimeProperty',
   extendsModel: 'DateProperty',
 
-  name:  'DateTimeProperty',
-  help:  "Describes a properties of type DateTime.",
+  help: 'Describes a properties of type DateTime.',
 
   properties: [
     {
@@ -217,10 +217,9 @@ CLASS({
 
 
 CLASS({
-  extendsModel: 'Property',
-
   name:  'IntProperty',
-  help:  "Describes a properties of type Int.",
+  extendsModel: 'Property',
+  help:  'Describes a properties of type Int.',
 
   properties: [
     {
@@ -273,9 +272,8 @@ CLASS({
 
 
 CLASS({
-  extendsModel: 'Property',
-
   name:  'FloatProperty',
+  extendsModel: 'Property',
   help:  'Describes a properties of type Float.',
 
   properties: [
@@ -323,10 +321,9 @@ CLASS({
 
 
 CLASS({
-  extendsModel: 'Property',
-
   name:  'FunctionProperty',
-  help:  "Describes a properties of type Function.",
+  extendsModel: 'Property',
+  help:  'Describes a properties of type Function.',
 
   properties: [
     {
@@ -381,10 +378,9 @@ CLASS({
 
 
 CLASS({
+  name: 'ArrayProperty',
   extendsModel: 'Property',
-
-  name:  'ArrayProperty',
-  help:  "Describes a properties of type Array.",
+  help: 'Describes a properties of type Array.',
 
   properties: [
     {
@@ -509,10 +505,9 @@ CLASS({
 
 
 CLASS({
-  extendsModel: 'Property',
-
   name:  'ReferenceProperty',
-  help:  "A foreign key reference to another Entity.",
+  extendsModel: 'Property',
+  help:  'A foreign key reference to another Entity.',
 
   properties: [
     {
@@ -562,10 +557,9 @@ CLASS({
 
 
 CLASS({
+  name: 'StringArrayProperty',
   extendsModel: 'Property',
-
-  name:  'StringArrayProperty',
-  help:  "An array of String values.",
+  help: 'An array of String values.',
 
   properties: [
     {
@@ -647,8 +641,7 @@ CLASS({
 CLASS({
   name: 'ModelProperty',
   extendsModel: 'Property',
-
-  help: "Describes a Model property.",
+  help: 'Describes a Model property.',
 
   properties: [
     {
@@ -683,7 +676,7 @@ CLASS({
   name: 'ViewProperty',
   extendsModel: 'Property',
 
-  help: "Describes a View-Factory property.",
+  help: 'Describes a View-Factory property.',
 
   properties: [
     {
@@ -873,6 +866,11 @@ CLASS({
 });
 
 CLASS({
+  name: 'ImageProperty',
+  extendsModel: 'StringProperty'
+});
+
+CLASS({
   name: 'URLProperty',
   extendsModel: 'StringProperty'
 });
@@ -883,8 +881,8 @@ CLASS({
 });
 
 CLASS({
-  extendsModel: 'Property',
   name: 'DocumentationProperty',
+  extendsModel: 'Property',
   help: 'Describes the documentation properties found on Models, Properties, Actions, Methods, etc.',
   documentation: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation.",
 
