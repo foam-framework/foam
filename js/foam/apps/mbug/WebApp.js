@@ -20,7 +20,7 @@ __DATA({
   id: 'foam.apps.mbug.WebApp',
   controller: 'foam.apps.mbug.MBug',
   defaultView: 'foam.ui.layout.Window',
-  version: "1.1.3",
+  version: "1.1.4",
   includeFoamCSS: false,
   precompileTemplates: true,
   appcacheManifest: true,
