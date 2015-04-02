@@ -33,7 +33,7 @@ CLASS({
     'foam.input.touch.GestureManager',
     'foam.dao.IDBDAO',
     'MDAO',
-    'foam.oauth2.OAuth2Redirect as Auth',
+    'foam.oauth2.OAuth2RedirectJsonp as Auth',
     'foam.input.touch.TouchManager',
     'XHR',
     'foam.ui.layout.CSSStackView as StackView',
