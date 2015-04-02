@@ -29,22 +29,22 @@
     var viewPropName;
     if ( match && (viewPropName = match[1]) ) {
       viewParams[viewPropName.charAt(0).toLowerCase() +
-          viewPropName.slice(1)] = value;
+                 viewPropName.slice(1)] = value;
     }
   });
 
   models.push(arequire('foam.ui.View'));
   Object_forEach(params, function(value, key) {
     var match = /^[a-z]+[.]([a-z]+[.])*[A-Z][a-zA-Z]*$/.exec(value);
-    models.push(arequire(value));
+    if ( match  ) models.push(arequire(value));
   });
 
   var showActions = params.showActions;
   if ( showActions ) {
     showActions = showActions.equalsIC('y')    ||
-                  showActions.equalsIC('yes')  ||
-                  showActions.equalsIC('true') ||
-                  showActions.equalsIC('t');
+      showActions.equalsIC('yes')  ||
+      showActions.equalsIC('true') ||
+      showActions.equalsIC('t');
   } else {
     showActions = true;
   }
