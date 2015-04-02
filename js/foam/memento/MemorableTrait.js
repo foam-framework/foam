@@ -50,7 +50,9 @@ CLASS({
       for ( var i = 0, prop ; prop = this.model_.properties[i] ; i ++ ) {
         if ( ! prop.memorable ) continue;
         if ( this[prop.name] != null ) {
-          memento[prop.name] = this[prop.name].memento || this[prop.name].toString();
+          var value = this[prop.name];
+          memento[prop.name] = value.memento || (value.toMemento ?
+              value.toMemento() : value.toString());
         }
       }
       return memento;
