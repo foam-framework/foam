@@ -46,7 +46,7 @@ CLASS({
     renderDocSourceHTML: function() {
       // only update if we have all required data
       if (this.data.body && this.documentViewRef
-          && this.documentViewRef.get().resolvedRoot.valid) {
+          && this.documentViewRef.get().valid) {
         // The first time this method is hit, replace it with the one that will
         // compile the template, then call that. Future calls go direct to lazyCompile's
         // returned function. You could also implement this the same way lazyCompile does...

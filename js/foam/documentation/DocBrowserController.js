@@ -121,8 +121,8 @@ CLASS({
       var setRef = function(ignoreListener) {
         if ( ! ignoreListener) newRef.removeListener(setRef);
         this.DetailContext.documentViewRef.set(newRef);
-        if (newRef.resolvedObject !== this.selection) this.selection = newRef.resolvedRoot.resolvedObject;
-        this.SearchContext.selection$.set(newRef.resolvedRoot.resolvedObject); // selection wants a Model object
+        if (newRef.resolvedObject !== this.selection) this.selection = newRef.resolvedRoot;
+        this.SearchContext.selection$.set(newRef.resolvedRoot); // selection wants a Model object
       }.bind(this);
       if (newRef.valid) {// need to listen for when this becomes valid
         setRef(true);
@@ -145,8 +145,8 @@ CLASS({
       var setRef = function(ignoreListener) {
         if ( ! ignoreListener) newRef.removeListener(setRef);
         this.DetailContext.documentViewRef.set(newRef);
-        this.SearchContext.selection$.set(newRef.resolvedRoot.resolvedObject); // selection wants a Model object
-        if (newRef.resolvedObject !== this.selection) this.selection = newRef.resolvedRoot.resolvedObject;
+        this.SearchContext.selection$.set(newRef.resolvedRoot); // selection wants a Model object
+        if (newRef.resolvedObject !== this.selection) this.selection = newRef.resolvedRoot;
         location.hash = "#" + newRef.resolvedRef;
       }.bind(this);
       if (newRef.valid) {// need to listen for when this becomes valid
@@ -165,7 +165,7 @@ CLASS({
         // });
       }
     },
-    
+
     scrapeDirectory: function(dir, pkg, sink, dao) {
       var request = new XMLHttpRequest();
       request.open("GET", dir);
@@ -183,7 +183,7 @@ CLASS({
             //find(pkg ? pkg+"."+d : d, sink);
             //console.log("areqX ", this.X.NAME);
             dao.find(pkg ? pkg+"."+d : d, sink);
-          }.bind(this));         
+          }.bind(this));
 
           // find subdirectories
           var re = /.*?(?:href=\")(.*?)\/\".*?/gm;
@@ -198,16 +198,16 @@ CLASS({
           }.bind(this));
         }
       }.bind(this));
-      request.send();           
+      request.send();
     },
 
 
     createModelList: function() {
       var newDAO = this.MDAO.create({model:Model, autoIndex:true});
       this.Y.set("masterModelList", newDAO);
-      this.Y.set("_DEV_ModelDAO", 
-//         this.LazyCacheDAO.create({ 
-//           cache: newDAO, 
+      this.Y.set("_DEV_ModelDAO",
+//         this.LazyCacheDAO.create({
+//           cache: newDAO,
 //           delegate: this.X.ModelDAO,
 //           staleTimeout: 40000,
 //           selectKey: ""
@@ -215,7 +215,7 @@ CLASS({
           this.FindFallbackDAO.create({delegate: newDAO, fallback: this.X.ModelDAO})
         );
 
-      // loading all models eats CPU, so wait until we've had time to 
+      // loading all models eats CPU, so wait until we've had time to
       // render and load the references of the first model showing
       this.Y.setTimeout(function() {
           var sourcePath = window.FOAM_BOOT_DIR + '../js';
@@ -226,7 +226,7 @@ CLASS({
       newDAO.put(Model.create({ name: 'Int', documentation: "Primitive type." }));
       newDAO.put(Model.create({ name: 'Boolean', documentation: "Primitive type." }));
       newDAO.put(Model.create({ name: 'Array', documentation: "Primitive type." }));
-      
+
       // All models are now in USED_MODELS
       [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
         for ( var key in collection ) {
@@ -234,14 +234,14 @@ CLASS({
           newDAO.put(this.X.lookup(key));
         };
       }.bind(this));
-      
+
 //       // Add in non-model things like Interfaces
 //       for ( var key in NONMODEL_INSTANCES ) {
 //         var m = FOAM.lookup(key, this.X);
 //         newDAO.put(m);
 //       };
 
-      
+
       // load developer guides
       //this.X.RegisterDevDocs && this.X.RegisterDevDocs(this.X);
 
@@ -253,7 +253,7 @@ CLASS({
       //this.generateCompletnessReport(newDAO);
 
     },
-  
+
     generateCompletnessReport: function(models) {
       var modelList = [];
       models.select(modelList);

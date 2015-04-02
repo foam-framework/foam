@@ -53,8 +53,14 @@ CLASS({
       name: 'resolvedRoot',
       defaultValue: "",
       documentation: function() { /*
-          The a $$DOC{ref:'foam.documentation.DocRef'} based on the fully qualified package and
-          outer model names of this resolved reference.
+          The owner model of the reference, not including features.
+      */}
+    },
+    {
+      name: 'resolvedRootRef',
+      defaultValue: "",
+      documentation: function() { /*
+          The owner model id, which is a valid reference to $$DOC{ref:'.resolvedRoot'}.
       */}
     },
     {
@@ -103,18 +109,18 @@ CLASS({
 
       // if model not specified, use parentModel
       if (args[0].length <= 0) {
-        if (!this.documentViewRef || !this.documentViewRef.get().resolvedRoot.valid) {
+        if (!this.documentViewRef || !this.documentViewRef.get().valid) {
           return; // abort
         } else {
           //  fill in root to make reference absolute, and try again
-          return this.resolveReference(this.documentViewRef.get().resolvedRoot.resolvedRef + reference);
+          return this.resolveReference(this.documentViewRef.get().resolvedRootRef + reference);
         }
       }
-      
+
       // Find the Model id in the reference
       // ----
-      // we check the in-memory list first since we are resolving an ambiguous name, and 
-      // spam the dao with reqests that we know may fail when trying to find the valid 
+      // we check the in-memory list first since we are resolving an ambiguous name, and
+      // spam the dao with reqests that we know may fail when trying to find the valid
       // model name within the reference.
       var finished = false;
       var finder = function(refChunk, dao, fallbackDao) {
@@ -126,7 +132,7 @@ CLASS({
           }.bind(this),
           error: function() {
             var slice = refChunk.lastIndexOf('.');
-            //console.log("DocRef chunk bad: ", refChunk, slice); 
+            //console.log("DocRef chunk bad: ", refChunk, slice);
             if (slice == -1) {
               if ( fallbackDao ) {
                 //console.log('DocRef fallback with: ', refChunk);
@@ -137,7 +143,7 @@ CLASS({
             } else {
               //console.log('DocRef recurse with: ', refChunk.substring(0, refChunk.lastIndexOf('.')), refChunk.lastIndexOf('.'));
               finder(refChunk.substring(0, refChunk.lastIndexOf('.')), dao, fallbackDao);
-            }            
+            }
           }.bind(this)
         });
       }.bind(this);
@@ -146,22 +152,22 @@ CLASS({
       // and removing the last .chunk after each failure
       // until we have found the model, or we can't find it at all
       finder(reference, this.masterModelList, this._DEV_ModelDAO);
-      
+
     },
-    
+
     getInheritanceList: function(model, list) {
       // find all base models of the given model, put into list
       var findFuncs = [];
       model.traits.forEach(function(t) {
-        findFuncs.push(function(ret) { 
+        findFuncs.push(function(ret) {
           this.X._DEV_ModelDAO.find(t, {
             put: function(m) { list.put(m); ret && ret(); },
             error: function() { console.warn("DocRef could not load trait ", t); ret && ret(); }
-          });  
-        }.bind(this)); 
+          });
+        }.bind(this));
       }.bind(this));
       // runs the trait finds first, and when they are done recurse to the next ancestor
-      apar.apply(this, findFuncs)(function() {      
+      apar.apply(this, findFuncs)(function() {
         if ( model.extendsModel ) {
           this.X._DEV_ModelDAO.find(model.extendsModel, {
               put: function(ext) {
@@ -169,49 +175,45 @@ CLASS({
                 this.getInheritanceList(ext, list);
               }.bind(this),
               error: function() { console.warn("DocRef could not load model ", t); ret && ret(); }
-          }); 
+          });
         } else {
           list.eof(); // no more extendsModels to follow, finished
-        }          
+        }
       }.bind(this));
     },
-    
+
     resolveFeature: function(m, reference) {
       var model = m;
       var newResolvedRef = m.id;
       var featureName = reference.replace(model.id, "");
       if ( featureName.charAt(0) == '.' ) featureName = featureName.slice(1);
-   
+
       var features = featureName ? featureName.split('.') : [];
-      
+
       // check for inner models
       while (features.length > 0 && model) {
-        if (model[features[0]] && 
-            model[features[0]].model_ && 
+        if (model[features[0]] &&
+            model[features[0]].model_ &&
             model[features[0]].model_.id == 'Model') {
           model = model[features[0]];
-          newResolvedRef += '.' + features.shift();  
+          newResolvedRef += '.' + features.shift();
         } else {
           break;
         }
       }
 
       // inner models (if present) have been accounted for, so we have our root model
-      this.resolvedRoot = this.model_.create({
-        resolvedObject: model,
-        resolvedRef: newResolvedRef,
-        valid: true,
-        resolvedRoot: undefined // otherwise it would be the same as 'this'
-      });
-      
+      this.resolvedRoot =  model;
+      this.resolvedRootRef = newResolvedRef;
+
       // if no feature specified, fast return
       if ( features.length == 0 ) {
         this.resolvedRef = newResolvedRef;
         this.resolvedObject = model;
         this.valid = true;
         return;
-      }    
-      
+      }
+
       // if features specified, async grab ancestor list
       var ancestry = [model];
       this.getInheritanceList(model, {
@@ -223,9 +225,9 @@ CLASS({
           var foundObject = null;
           if (features.length > 0) {
             // feature specified "Model.feature" or ".feature"
-            ancestry.every(function(ancestor) { 
+            ancestry.every(function(ancestor) {
               foundObject = ancestor.getMyFeature(features[0]);
-              if ( ! foundObject ) {    
+              if ( ! foundObject ) {
                 return true;
               } else {
                 newResolvedRef += "." + features.shift();
@@ -233,20 +235,20 @@ CLASS({
               }
             });
           }
-    
+
           // allow further specification of sub properties or lists
           if ( foundObject && features.length > 0 ) {
             if ( ! features.every(function (arg) {
                 var newObject;
-    
+
                 // null arg is an error at this point
                 if ( arg.length <= 0 ) return false;
-    
+
                 // check if arg is the name of a sub-object of foundObject
                 var argCaller = Function('return this.'+arg);
                 if (argCaller.call(foundObject)) {
                   newObject = argCaller.call(foundObject);
-    
+
                 // otherwise if foundObject is a list, check names of each thing inside
                 } else if (foundObject.mapFind) {
                   foundObject.mapFind(function(f) {
@@ -266,14 +268,14 @@ CLASS({
               return; // the loop failed to resolve something
             }
           }
-          
+
           this.resolvedRef = newResolvedRef;
           this.resolvedObject = foundObject;
           this.valid = true;
         }.bind(this)
       });
-    },      
-      
+    },
+
   },
 
 });
