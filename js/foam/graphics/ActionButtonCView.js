@@ -199,10 +199,9 @@ CLASS({
         this.halo.view = this.view;
         this.halo.addListener(this.view.paint);
       }
-      if ( this.gestureManager ) {
-        // TODO: Glow animations on touch.
+
+      if ( this.gestureManager )
         this.gestureManager.install(this.tapGesture);
-      }
 
       // Pressing space when has focus causes a synthetic press
       this.$.addEventListener('keypress', function(e) {
