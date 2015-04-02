@@ -315,7 +315,7 @@ var FObject = {
     if ( this.model_ !== other.model_ ) {
       // TODO: This provides unstable ordering if two objects have a different model_
       // but they have the same name.
-      return this.model_.name.compareTo(other.model_.name) || 1;
+      return this.model_.name.compareTo(other.model_ && other.model_.name) || 1;
     }
 
     var ps = this.model_.properties_;
