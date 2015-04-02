@@ -11,6 +11,20 @@
     params[decode(match[1])] = decode(match[2]);
   }
 
+  var classpath = params.classpath;
+
+  if ( classpath ) {
+    classpath = classpath.split(',');
+    for ( var i = classpath.length - 1  ; i >= 0 ; i-- ) {
+      X.ModelDAO = X.foam.core.bootstrap.OrDAO.create({
+        primary: X.foam.core.bootstrap.BrowserFileDAO.create({
+          rootPath: classpath[i]
+        }),
+        delegate: X.ModelDAO
+      });
+    }
+  }
+
   var models = [];
 
   var model = params.model || 'foam.navigator.Controller';
