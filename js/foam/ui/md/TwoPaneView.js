@@ -18,6 +18,9 @@
 CLASS({
   name: 'TwoPaneView',
   package: 'foam.ui.md',
+  traits: [
+    'foam.memento.MemorableTrait'
+  ],
 
   extendsModel: 'foam.ui.View',
 
