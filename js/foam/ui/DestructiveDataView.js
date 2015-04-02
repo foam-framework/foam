@@ -19,9 +19,9 @@ CLASS({
   package: 'foam.ui',
   name: 'DestructiveDataView',
   extendsModel: 'foam.ui.BaseView',
-  
-  requires: ['SimpleValue'],
-  
+
+  requires: [ 'SimpleValue' ],
+
   documentation: function() {/* For Views that use $$DOC{ref:'.data'}.
     The childData reference may be cut loose when children are to be
     destroyed, preventing unneeded updates from propagating to them.</p>
@@ -30,7 +30,7 @@ CLASS({
   properties: [
     {
       name: 'data',
-      documentation: function() {/* The actual data used by the view. 
+      documentation: function() {/* The actual data used by the view.
         $$DOC{ref:'.childDataValue'} is updated when $$DOC{ref:'.data'}
         changes, and is cut loose when children are to be destroyed.
         If a child changes its data, that change will not be propagated back
@@ -53,18 +53,18 @@ CLASS({
     {
       name: 'dataLinkedChildren',
       type: 'Array[foam.patterns.ChildTreeTrait]',
-      factory: function() { return []; }      
+      factory: function() { return []; }
     }
   ],
-  
-  methods: {    
+
+  methods: {
     shouldDestroy: function(old,nu) {
       /* Override to provide the destruct condition. When data changes,
          this method is called. Return true to destroy(), cut loose children
          and construct(). Return false to retain children and just propagate
          the data change. */
       return true;
-    },    
+    },
     destroy: function( isParentDestroyed ) {
       if ( ! isParentDestroyed ) {
         // unlink children
@@ -76,7 +76,7 @@ CLASS({
 //        var parentName = this.parent.name_;
 //         this.data$.addListener(function() {
 //           console.warn("Data changed after fast-destroy! ", this.name_, parentName);
-//         }.bind(this));  
+//         }.bind(this));
 //      }
       this.SUPER( isParentDestroyed );
     },

@@ -181,7 +181,7 @@ var TemplateCompiler = {
     else {
       this.push("', (function() { var tagView = X.foam.ui.FoamTagView.create({element: FOAM(");
       this.push(JSONUtil.where(NOT_TRANSIENT).stringify(e));
-      this.push(')}); self.addDataChild(tagView); return tagView; })() ');
+      this.push(')}, Y); self.addDataChild(tagView); return tagView; })() ');
     }
 
     this.push(",\n'");

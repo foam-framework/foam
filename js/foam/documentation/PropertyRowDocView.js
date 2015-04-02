@@ -30,7 +30,7 @@ CLASS({
           <% var strippedRef = this.data.type.replace('[]','').replace('Array[','').replace(']',''); %>
           <span class="feature-type">($$DOC{ref:strippedRef, text:this.data.type, acceptInvalid:true})</span></p>
         <p>$$documentation{ model_: 'foam.documentation.DocBodyView' }</p>
-        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureOverridesRefView', model: this.DocFeatureInheritanceTracker }</p>
+        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureOverridesRefView', model: this.DocFeatureInheritanceTracker, mode: 'read-only' }</p>
       </div>
     */}
   ]

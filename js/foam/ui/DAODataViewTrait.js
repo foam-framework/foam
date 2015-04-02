@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-
 CLASS({
-  name: 'DAODataViewTrait',
   package: 'foam.ui',
+  name: 'DAODataViewTrait',
 
   documentation: function() { /*
      <p>For $$DOC{ref:'foam.ui.View',usePlural:true} that take data items from a $$DOC{ref:'DAO'}

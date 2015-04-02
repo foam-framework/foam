@@ -60,7 +60,7 @@ CLASS({
       name: 'parent',
       type: 'foam.ui.View',
       postSet: function(_, p) {
-        if (!p) return; // TODO(jacksonic): We shouldn't pretend we aren't part of the tree
+        if ( ! p ) return; // TODO(jacksonic): We shouldn't pretend we aren't part of the tree
         p[this.prop.name + 'View'] = this.view;
         if ( this.view ) this.view.parent = p;
       },
@@ -112,12 +112,15 @@ CLASS({
     createViewFromProperty: function(prop, ret) {
       /* Helper to determine the $$DOC{ref:'foam.ui.View'} to use. */
       var viewName = this.innerView || prop.view
-      if ( ! viewName ) ret(this.TextFieldView.create(prop, this.Y));
-      else if ( typeof viewName === 'string' ) {
+      if ( ! viewName ) {
+        ret(this.TextFieldView.create(prop, this.Y));
+      } else if ( typeof viewName === 'string' ) {
 //        var m = this.Y.lookup(viewName);
 //        if ( m ) ret(m.create(prop, this.Y));
 //        else
-          arequire(viewName, this.X)(function(m) { ret(m.create(prop, this.Y)); }.bind(this) );
+          arequire(viewName, this.X)(function(m) {
+            ret(m.create({__proto__: prop, view: undefined}, this.Y).toView_());
+          }.bind(this));
       }
       else if ( viewName.model_ && typeof viewName.model_ === 'string' ) {
         var m = FOAM(prop.view);
@@ -131,9 +134,9 @@ CLASS({
         ret(v);
       }
       else if ( viewName.factory_ ) {
-        var v = this.X.lookup(viewName.factory_).create(viewName, this.X);
+        var v = this.X.lookup(viewName.factory_).create(viewName, this.X).toView_();
         var vId = v.id;
-        v.copyFrom(prop);
+        v.copyFrom({__proto__: prop, view: undefined});
         v.id = vId;
         ret(v);
       }

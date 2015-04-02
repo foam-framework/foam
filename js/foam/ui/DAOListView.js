@@ -148,10 +148,11 @@ CLASS({
         // TODO: Something isn't working with the Context, fix
         view.DAO = this.dao;
         if ( this.mode === 'read-write' ) {
-          o.addListener(function() {
+          o.addPropertyListener(null, function(o, topic) {
+            var prop = o.model_.getProperty(topic[1]);
             // TODO(kgr): remove the deepClone when the DAO does this itself.
-            this.dao.put(o.deepClone());
-          }.bind(this, o));
+            if ( ! prop.transient ) view.DAO.put(o.deepClone());
+          });
         }
         this.addChild(view);
 

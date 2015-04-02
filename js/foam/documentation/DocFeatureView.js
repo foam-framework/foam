@@ -62,7 +62,7 @@ CLASS({
       <div id="scrollTarget_<%=this.data.name%>">
         <p class="feature-heading"><%=this.data.name%></p>
         <p>$$documentation{ model_: 'foam.documentation.DocBodyView' }</p>
-        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureOverridesRefView', model: this.DocFeatureInheritanceTracker }</p>
+        <p class="inheritance-info">Declared in: $$overridesDAO{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureOverridesRefView', model: this.DocFeatureInheritanceTracker, mode: 'read-only' }</p>
       </div>
     */}
   ]

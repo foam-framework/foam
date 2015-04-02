@@ -34,7 +34,7 @@ CLASS({
     function toInnerHTML()    {/*
     <%    this.destroy();
           if (this.data) { %>
-            <div class="memberList">$$data{ model_: 'foam.ui.DAOListView', rowView: 'foam.documentation.DocumentationBookSummaryDocView', model: this.X.Documentation }</div>
+            <div class="memberList">$$data{ model_: 'foam.ui.DAOListView', rowView: 'foam.documentation.DocumentationBookSummaryDocView', model: this.X.Documentation, mode: 'read-only' }</div>
     <%    } %>
     */}
   ]

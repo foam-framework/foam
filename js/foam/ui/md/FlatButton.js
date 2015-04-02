@@ -23,19 +23,53 @@ CLASS({
 
   properties: [
     {
+      name: 'className',
+      defaultValue: 'flatbutton'
+    },
+    {
+      name: 'action',
+      postSet: function() {
+        this.bindIsAvailable();
+      }
+    },
+    {
+      name: 'data',
+      postSet: function() {
+        this.bindIsAvailable();
+      }
+    },
+    {
       name: 'halo',
-  
+
       documentation: function() {/*
         onRadio/offRadio's 'pointer-events: none' is critical for halo touches
       */},
       factory: function() {
-        return this.HaloView.create({ className: 'halo', recentering: false });
+        return this.HaloView.create({
+          className: 'halo',
+          recentering: false,
+          color$: this.currentColor_$,
+          pressedAlpha: 0.2,
+          startAlpha: 0.2,
+          finishAlpha: 0
+        });
       }
     },
     {
       model_: 'StringProperty',
-      name: 'fontColor',
+      name: 'currentColor_',
+      hidden: true,
+      defaultValueFn: function() { return this.color; }
+    },
+    {
+      name: 'color',
+      help: 'The text and background color to use for the active state',
       defaultValue: '#02A8F3'
+    },
+    {
+      name: 'isHidden',
+     // model_: 'BooleanProperty',
+      defaultValue: false
     }
   ],
 
@@ -53,19 +87,38 @@ CLASS({
       }
     },
     {
-      name: 'construct',
+      name: 'initHTML',
       code: function() {
-        if ( this.halo ) this.addChild(this.halo);
+        this.SUPER();
+        Events.dynamic(function() {
+          this.currentColor_;
+          if ( ! this.$ ) return;
+          this.$.style.color = this.currentColor_;
+        }.bind(this));
       }
     },
     {
-      name: 'initHTML',
+      name: 'bindIsAvailable',
       code: function() {
-        Events.dynamic(function() {
-          this.fontColor;
-          if ( ! this.$ ) return;
-          this.$.style.color = this.fontColor;
-        }.bind(this));
+        if ( ! this.action || ! this.data ) return;
+// available enabled etc.
+        var self = this;
+        Events.dynamic(
+          function() { self.action.isEnabled.call(self.data, self.action); },
+          function() {
+            if ( self.action.isEnabled.call(self.data, self.action) ) {
+              self.currentColor_ = self.color;
+            } else {
+              self.currentColor_ = "#5a5a5a";
+            }
+          }
+        );
+        Events.dynamic(
+          function() { self.action.isAvailable.call(self.data, self.action); },
+          function() {
+            self.isHidden = ! self.action.isAvailable.call(self.data, self.action);
+          }
+        );
       }
     }
   ],
@@ -74,12 +127,18 @@ CLASS({
     function toInnerHTML() {/*
         <%= this.halo %>
         <span>
-        <% if ( this.data ) { %>
-          {{this.data}}
+        <% if ( this.action ) { %>
+          {{this.action.label}}
         <% } else if ( this.inner ) { %>
           <%= this.inner() %>
         <% } else { %>label<% } %>
         </span>
+<%
+        this.on('click', function() {
+            this.action.callIfEnabled(this.X, this.data);
+        }.bind(this), this.id);
+        this.setClass('hidden', function() { return !!self.isHidden; }, this.id);
+%>
     */},
     function CSS() {/*
       flat-button {
@@ -93,14 +152,18 @@ CLASS({
         border-radius: 2px;
         cursor: pointer;
       }
-      
+
+      .hidden {
+        display: none;
+      }
+
       .halo  {
         position: absolute;
         left: 0;
         top: 0;
       }
-      
-      
+
+
     */}
   ]
 });

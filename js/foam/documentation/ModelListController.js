@@ -20,7 +20,7 @@ CLASS({
   name: 'ModelListController',
   package: 'foam.documentation',
 
-  requires:['MDAO', 
+  requires:['MDAO',
             'foam.ui.DAOListView',
             'foam.ui.md.TextFieldView',
             'foam.documentation.ModelDescriptionRowView'],
@@ -49,7 +49,7 @@ CLASS({
     {
       name: 'filteredDAOView',
       factory: function() {
-        return this.DAOListView.create({ data$: this.filteredDAO$, rowView: 'foam.documentation.ModelDescriptionRowView' });
+        return this.DAOListView.create({ data$: this.filteredDAO$, rowView: 'foam.documentation.ModelDescriptionRowView', mode: 'read-only' });
       }
     }
   ],

@@ -33,7 +33,7 @@ CLASS({
         $$data{ model_: 'foam.documentation.SummaryDocView', model: this.data.model_ }
         <div class="members">
           <p class="feature-type-heading">Methods:</p>
-          <div class="memberList">$$methods{ model_: 'foam.ui.DAOListView', rowView: 'foam.documentation.SimpleRowDocView' }</div>
+          <div class="memberList">$$methods{ model_: 'foam.ui.DAOListView', rowView: 'foam.documentation.SimpleRowDocView', mode: 'read-only' }</div>
         </div>
 <%    } %>
     */}

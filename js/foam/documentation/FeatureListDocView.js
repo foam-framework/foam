@@ -25,7 +25,7 @@ CLASS({
            'foam.ui.ViewActionsTrait',
            'foam.ui.TemplateSupportTrait',
            'foam.documentation.FeatureListLoaderTrait'],
-           
+
   requires: [ 'foam.ui.DAOListView',
               'foam.ui.CollapsibleView',
               'foam.documentation.DocFeatureCollapsedView'],
@@ -39,18 +39,18 @@ CLASS({
 
   templates: [
     function toInnerHTML()    {/*
-    <%    this.destroy(); 
+    <%    this.destroy();
           if (!this.hasFeatures && !this.hasInheritedFeatures) { %>
           <% //  <p class="feature-type-heading">No <%=this.model.plural%>.</p> %>
     <%    } else {
             if (this.hasFeatures) {  %>
               <p class="feature-type-heading"><%=this.model.plural%>:</p>
-              <div class="memberList">$$selfFeaturesDAO{ model_: 'foam.ui.DAOListView', rowView: 'foam.documentation.RowDocView', model: this.model }</div>
+              <div class="memberList">$$selfFeaturesDAO{ model_: 'foam.ui.DAOListView', rowView: 'foam.documentation.RowDocView', model: this.model , mode: 'read-only'}</div>
       <%    }
             if (this.hasInheritedFeatures) { %>
               <p class="feature-type-heading">Inherited <%=this.model.plural%>:</p>
       <%
-              var fullView = this.DAOListView.create({ data$: this.inheritedFeaturesDAO$, rowView: 'foam.documentation.RowDocView', model: this.model });
+              var fullView = this.DAOListView.create({ data$: this.inheritedFeaturesDAO$, rowView: 'foam.documentation.RowDocView', model: this.model, mode: 'read-only' });
               var collapsedView = this.DocFeatureCollapsedView.create({data$: this.inheritedFeaturesDAO$});
               %>
               <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'foam.ui.CollapsibleView', collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
