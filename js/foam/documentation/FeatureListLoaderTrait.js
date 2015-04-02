@@ -138,6 +138,19 @@ CLASS({
         }
       }
     }
-  ]
+  ],
+  
+  methods: {
+    destroy: function(isParentDestroyed) {
+      if ( isParentDestroyed ) {
+        this.featureDAO = null;
+        this.documentViewRef = null;
+      }
+      
+      this.SUPER(isParentDestroyed);
+      
+    }
+    
+  }
 
 });

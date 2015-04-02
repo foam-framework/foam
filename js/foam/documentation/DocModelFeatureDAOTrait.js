@@ -189,7 +189,18 @@ CLASS({
           }
         }.bind(this)
       ));
+    },
+    
+    destroy: function( isParentDestroyed ) {
+      if ( isParentDestroyed ) {
+        this.featureDAO = null;
+        this.modelDAO = null;
+        this.subModelDAO = null;
+        this.traitUserDAO = null;
+      }
+      this.SUPER(isParentDestroyed);
     }
+    
 
   },
   
