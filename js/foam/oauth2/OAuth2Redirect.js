@@ -76,7 +76,7 @@ CLASS({
     },
     refreshNow_: function(ret) {
       if ( this.redirects == 0 && this.authToken ) {
-        this.redirect += 1;
+        this.redirects += 1;
         ret(this.authToken);
         return;
       }
