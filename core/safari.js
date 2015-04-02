@@ -54,5 +54,11 @@ if (navigator && navigator.userAgent.indexOf('Safari') != -1 && navigator.userAg
       return true;
     };
   }
+
+  if ( typeof Number.isNaN !== 'function' ) {
+    Number.isNaN = function(value) {
+      return typeof value === "number" && value !== value;
+    };
+  }
 }
 

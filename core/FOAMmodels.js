@@ -50,6 +50,7 @@ var files = [
   'mm3Types',
   'mm4Method',
   'mm5Misc',
+  '../js/foam/core/bootstrap/OrDAO',
   [ '../js/foam/core/bootstrap/BrowserFileDAO', IN_BROWSER ],
   [ '../js/node/dao/ModelFileDAO', IN_NODEJS ],
   '../js/foam/ui/Window',

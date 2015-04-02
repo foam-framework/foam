@@ -185,12 +185,12 @@ CLASS({
   ],
   methods: {
     execute: function() {
-      for ( var i = this.extraClassPaths.length - 1; i >= 0; i-- ) {
+      for ( var i = 0; i < this.extraClassPaths.length ; i++ ) {
         this.X.ModelDAO = this.OrDAO.create({
-          primary: this.ModelFileDAO.create({
+          delegate: this.ModelFileDAO.create({
             classpath: this.extraClassPaths[i]
           }),
-          delegate: this.X.ModelDAO
+          primary: this.X.ModelDAO
         });
       }
 

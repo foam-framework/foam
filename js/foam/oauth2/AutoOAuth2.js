@@ -34,7 +34,7 @@ CLASS({
       } else if ( window.chrome && window.chrome.runtime && window.chrome.runtime.id ) {
         model = this.X.lookup('foam.oauth2.OAuth2ChromeApp');
       } else {
-        model = this.X.lookup('foam.oauth2.OAuth2WebClient');
+        model = this.X.lookup('foam.oauth2.OAuth2Redirect');
       }
       this.X.registerModel(model, 'foam.oauth2.EasyOAuth2');
     }

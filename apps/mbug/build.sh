@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BASEDIR=$(dirname "$0")
+BASEDIR=$(readlink -f $(dirname "$0"))
 cd "$BASEDIR"
 
 BUILD_DIR="$BASEDIR"/build
