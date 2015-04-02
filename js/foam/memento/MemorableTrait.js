@@ -63,11 +63,12 @@ CLASS({
     {
       name: 'updateFromMemento',
       code: function(src, topic, old, memento) {
-        for ( var key in memento ) {
-          if ( this[key] && this[key].memento ) {
-            this[key].memento = memento[key];
-          } else {
-            this[key] = memento[key]
+        for ( var i = 0, prop ; prop = this.model_.properties[i] ; i++ ) {
+          if (prop.memorable) {
+            if (this[prop.name].memento)
+              this[prop.name].memento = memento[prop.name];
+            else
+              this[prop.name] = memento[prop.name];
           }
         }
       }
