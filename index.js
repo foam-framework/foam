@@ -15,12 +15,12 @@
 
   if ( classpath ) {
     classpath = classpath.split(',');
-    for ( var i = classpath.length - 1  ; i >= 0 ; i-- ) {
+    for ( var i = 0 ; i < classpath.length ; i++ ) {
       X.ModelDAO = X.foam.core.bootstrap.OrDAO.create({
-        primary: X.foam.core.bootstrap.BrowserFileDAO.create({
+        delegate: X.foam.core.bootstrap.BrowserFileDAO.create({
           rootPath: classpath[i]
         }),
-        delegate: X.ModelDAO
+        primary: X.ModelDAO
       });
     }
   }
