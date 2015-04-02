@@ -27,6 +27,14 @@ CLASS({
   ],
   properties: [
     {
+      name: 'redirectURL',
+      transient: true,
+      defaultValueFn: function() {
+        return this.location.protocol + '//' + this.location.host +
+          this.location.pathname + this.location.search;
+      }
+    },
+    {
       name: 'redirects',
       transient: true,
       defaultValue: 0
@@ -69,16 +77,11 @@ CLASS({
     refreshNow_: function(ret) {
       if ( this.redirects < 2 ) {
         this.redirects += 1;
-        var redirect =
-          this.location.protocol + '//' +
-          this.location.host +
-          this.location.pathname +
-          this.location.search;
 
         var params = [
           'response_type=token',
           'client_id=' + encodeURIComponent(this.clientId),
-          'redirect_uri=' + encodeURIComponent(redirect),
+          'redirect_uri=' + encodeURIComponent(this.redirectURL),
           'scope=' + encodeURIComponent(this.scopes.join(' ')),
           'state=' + this.redirects
         ];
