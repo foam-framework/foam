@@ -452,6 +452,7 @@ var BootstrapModel = {
     return cls;
   },
 
+  // ???(kgr): Who uses this?  If it's the build tool, then better putting it there.
   getAllRequires: function() {
     var requires = {};
     this.requires.forEach(function(r) { requires[r.split(' ')[0]] = true; });
@@ -519,11 +520,8 @@ var BootstrapModel = {
     // NOTE: propertyMap_ is invalidated in a few places
     // when properties[] is updated.
     if ( ! this.propertyMap_ ) {
-      if ( ! this.properties_ ) {
-        this.getPrototype();
-      }
-
-      var m = {};
+      var m = this.propertyMap_ = {};
+      if ( ! this.properties_ ) this.getPrototype();
 
       for ( var i = 0 ; i < this.properties_.length ; i++ ) {
         var prop = this.properties_[i];
@@ -610,8 +608,6 @@ var BootstrapModel = {
     return this.required__
   },
 
-
-
   getMyFeature: function(featureName) {
     /* Returns the feature with the given name from the runtime
       object (the features available to an instance of the model). */
@@ -692,9 +688,7 @@ var BootstrapModel = {
 
     if ( ! feature && this.extendsModel ) {
       var ext = this.X.lookup(this.extendsModel);
-      if ( ext ) {
-        return ext.getFeature(featureName);
-      }
+      if ( ext ) return ext.getFeature(featureName);
     } else {
       return feature;
     }
@@ -719,7 +713,6 @@ var BootstrapModel = {
     }
     return featureList;
   }
-
 };
 
 /*
