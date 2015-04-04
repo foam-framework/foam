@@ -146,7 +146,7 @@ var TemplateCompiler = {
 
   pushSimple: function() { this.out.push.apply(this.out, arguments); },
 
-  header: 'var self = this; var X = this.X; var Y = this.Y; var escapeHTML = XMLUtil.escape;' +
+  header: 'var self = this, X = this.X, Y = this.Y, escapeHTML = XMLUtil.escape;' +
     'var out = opt_out ? opt_out : TemplateOutput.create(this);' +
     "out('",
 
