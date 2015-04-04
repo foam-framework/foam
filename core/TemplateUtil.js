@@ -129,8 +129,8 @@ var ConstantTemplate = function(str) {
   };
 
   f.toString = function() {
-    return 'function(opt_out) { var out = opt_out ? opt_out : TemplateOutput.create(this);\n  out("' + str.replace(/\n/g, "\\n").replace(/"/g, '\\"') + '");\n  return out.toString(); }';
-  }
+    return 'ConstantTemplate("' + str.replace(/\n/g, "\\n").replace(/"/g, '\\"') + '")';
+  };
 
   return f;
 };
