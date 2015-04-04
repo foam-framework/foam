@@ -122,8 +122,9 @@ function elementFromString(str) {
 }
 
 var ConstantTemplate = function(str) {
+  var TemplateOutputCreate = TemplateOutput.create.bind(TemplateOutput);
   var f = function(opt_out) {
-    var out = opt_out ? opt_out : TemplateOutput.create(this);
+    var out = opt_out ? opt_out : TemplateOutputCreate(this);
     out(str);
     return out.toString();
   };
