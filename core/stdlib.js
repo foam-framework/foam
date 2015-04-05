@@ -743,15 +743,11 @@ MODEL({
 
 function defineProperties(proto, fns) {
   for ( var key in fns ) {
-    try {
-      Object.defineProperty(proto, key, {
-        value: fns[key],
-        configurable: true,
-        writable: true
-      });
-    } catch (x) {
-      console.log('Warning: ' + x);
-    }
+    Object.defineProperty(proto, key, {
+      value: fns[key],
+      configurable: true,
+      writable: true
+    });
   }
 }
 
