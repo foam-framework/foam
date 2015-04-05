@@ -16,13 +16,9 @@
  */
 
 CLASS({
-  name: 'Gesture',
   package: 'foam.input.touch',
+  name: 'Gesture',
   help: 'Installed in the GestureManager to watch for a particular kind of gesture',
-
-  properties: [
-    { name: 'name', required: true }
-  ],
 
   // YES   = "This gesture was definitely recognized."
   // NO    = "This gesture is definietly not recognized."
@@ -31,11 +27,15 @@ CLASS({
   // WAIT  = "We are not done attempting to recognize this gesture yet. Do not
   //          default to any MAYBEs until we are."
   constants: {
-    YES: 3,
+    YES:   3,
     MAYBE: 2,
-    WAIT: 1,
-    NO: 0
+    WAIT:  1,
+    NO:    0
   },
+
+  properties: [
+    { name: 'name', required: true }
+  ],
 
   methods: {
     recognize: function(map) {
@@ -62,5 +62,3 @@ CLASS({
     */
   }
 });
-
-
