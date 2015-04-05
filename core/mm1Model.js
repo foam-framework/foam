@@ -241,7 +241,7 @@ var Model = {
       defaultValueFn: function() {
         var id = this.getProperty('id');
         if ( id ) return ['id'];
-        return this.properties_.length ? [this.properties_[0].name] : [];
+        return (this.properties_ && this.properties_.length) ? [this.properties_[0].name] : [];
       },
       help: 'Properties which make up unique id.',
       documentation: function() { /* An optional list of names of $$DOC{ref:'Property',usePlural:true} from
@@ -329,7 +329,7 @@ var Model = {
                  &nbsp;&nbsp;&nbsp;&nbsp; // This property will create a DetailView for us<br/>
                  &nbsp;&nbsp;&nbsp;&nbsp; view: { factory_: 'foam.ui.DetailView',<br/>
                 <br/>
-                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the properties our creator exported.<br/>
+v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the properties our creator exported.<br/>
                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imports: [ 'myProperty', 'parentName' ],<br/>
                 <br/>
                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; methods: { toHTML: function() {<br/>
@@ -359,7 +359,7 @@ var Model = {
       view: 'foam.ui.StringArrayView',
       displayWidth: 70,
       lazyFactory: function() {
-        return this.properties_.map(function(o) { return o.name; });
+        return (this.properties || this.properties_).map(function(o) { return o.name; });
       },
       help: 'Properties to be displayed in table view. Defaults to all properties.',
       documentation: function() { /* Indicates the $$DOC{ref:'Property',usePlural:true} to display when viewing a list of instances
@@ -794,31 +794,7 @@ var Model = {
       view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'Factory to create the action object for deleting this object',
-        documentation: function() { /* Factory to create the action object for deleting this object  */}
-    },
-    {
-      name: 'properties_',
-      transient: true,
-      hidden: true,
-      help: 'Runtime properties of the model.'
-    },
-    {
-      name: 'imports_',
-      transient: true,
-      hidden: true,
-      help: 'Runtime imports of the model.'
-    },
-    {
-      name: 'exports_',
-      transient: true,
-      hidden: true,
-      help: 'Runtime exports of the model.'
-    },
-    {
-      name: 'actions_',
-      transient: true,
-      hidden: true,
-      help: 'Runtime actions of the model.'
+      documentation: function() { /* Factory to create the action object for deleting this object  */}
     }
   ],
 

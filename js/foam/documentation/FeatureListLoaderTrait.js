@@ -118,7 +118,7 @@ CLASS({
           this.selfFeaturesDAO = [].sink;
           this.featureDAO
             .where(
-                  AND(AND(EQ(this.DocFeatureInheritanceTracker.MODEL, this.documentViewRef.get().resolvedRoot.resolvedObject.id),
+                  AND(AND(EQ(this.DocFeatureInheritanceTracker.MODEL, this.documentViewRef.get().resolvedRoot.id),
                           EQ(this.DocFeatureInheritanceTracker.IS_DECLARED, true)),
                       CONTAINS(this.DocFeatureInheritanceTracker.TYPE, this.featureType))
                   )
@@ -127,7 +127,7 @@ CLASS({
           this.inheritedFeaturesDAO = [].sink;
           this.featureDAO
             .where(
-                  AND(AND(EQ(this.DocFeatureInheritanceTracker.MODEL, this.documentViewRef.get().resolvedRoot.resolvedObject.id),
+                  AND(AND(EQ(this.DocFeatureInheritanceTracker.MODEL, this.documentViewRef.get().resolvedRoot.id),
                           EQ(this.DocFeatureInheritanceTracker.IS_DECLARED, false)),
                       CONTAINS(this.DocFeatureInheritanceTracker.TYPE, this.featureType))
                   )
@@ -138,6 +138,19 @@ CLASS({
         }
       }
     }
-  ]
+  ],
+
+  methods: {
+    destroy: function(isParentDestroyed) {
+      if ( isParentDestroyed ) {
+        this.featureDAO = null;
+        this.documentViewRef = null;
+      }
+
+      this.SUPER(isParentDestroyed);
+
+    }
+
+  }
 
 });

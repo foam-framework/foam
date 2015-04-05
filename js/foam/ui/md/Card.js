@@ -55,9 +55,8 @@ CLASS({
       @media not print {
 
         card, .card {
-          box-shadow: 2px 1px 2px #aaaaaa;
+          box-shadow: 4px 4px 10px #000000;
           margin: 10px;
-          border: 1px solid #aaaaaa;
           border-radius: 2px;
         }
 

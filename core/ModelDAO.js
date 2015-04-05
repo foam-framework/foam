@@ -18,10 +18,28 @@
 X.ModelDAO = X.foam.core.bootstrap.BrowserFileDAO.create();
 
 
-// Hookup ModelDAO callback as CLASS and __DATA methods.
-
 var __DATA;
 (function() {
+
+  var path = document.location.pathname;
+  path = path.substring(0, path.lastIndexOf('/'));
+
+  var foamdir = new URL(window.FOAM_BOOT_DIR).pathname;
+  foamdir = foamdir.substring(0, foamdir.lastIndexOf('/'))
+  foamdir = foamdir.substring(0, foamdir.lastIndexOf('/'))
+
+  // If this isn't FOAM's index.html
+  // add an additional classpath for ./js/
+  if ( path.indexOf(foamdir) == -1 ) {
+    X.ModelDAO = X.foam.core.bootstrap.OrDAO.create({
+      delegate: X.foam.core.bootstrap.BrowserFileDAO.create({
+        rootPath: path + '/js/'
+      }),
+      primary: X.ModelDAO
+    });
+  }
+
+  // Hookup ModelDAO callback as CLASS and __DATA global functions.
   var oldClass = CLASS;
 
   MODEL = CLASS = function(json) {

@@ -82,7 +82,7 @@ CLASS({
       */},
       postSet: function() {
         if ( ! this.$ ) return;
-        this.$.className = this.cssClassAttr().slice(7, -1);
+        this.$.className = this.cssClassAttr().slice(8, -1);
       }
     },
     {
@@ -101,7 +101,7 @@ CLASS({
       */},
       postSet: function() {
         if ( ! this.$ ) return;
-        this.$.className = this.cssClassAttr().slice(7, -1);
+        this.$.className = this.cssClassAttr().slice(8, -1);
       }
     },
     {

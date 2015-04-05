@@ -24,7 +24,8 @@ CLASS({
              'foam.input.touch.TouchManager',
              'foam.input.touch.GestureManager',
              'foam.ui.md.FlatButton',
-             'foam.ui.md.CheckboxView'],
+             'foam.ui.md.CheckboxView',
+             'foam.ui.md.PopupChoiceView'],
 
   properties: [
     {
@@ -88,22 +89,25 @@ CLASS({
     function toInnerHTML()
     {/*
       <p>
-      $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'vertical'}
+        $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'vertical'}
       </p>
       <hr/>
       <p>
-      $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'horizontal'}
+        $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'horizontal'}
       </p>
       <hr/>
       <p>
-      $$data
+        $$data
       </p>
       <p>
-      $$oneAction
+        $$data{model_: 'foam.ui.md.PopupChoiceView', choices:this.choices}
       </p>
       <p>
-      $$enabledButton{model_:'foam.ui.md.CheckboxView', label: 'Button Enabled'}
-      $$showButton{model_:'foam.ui.md.CheckboxView', label: 'Button Show'}
+        $$oneAction
+      </p>
+      <p>
+        $$enabledButton{model_:'foam.ui.md.CheckboxView', label: 'Button Enabled'}
+        $$showButton{model_:'foam.ui.md.CheckboxView', label: 'Button Show'}
       </p>
     */}
   ]

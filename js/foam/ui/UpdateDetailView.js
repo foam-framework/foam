@@ -50,12 +50,13 @@ CLASS({
         if ( ! data ) return;
         this.originalData = data.deepClone();
         if ( data && data.model_ ) this.model = data.model_;
-        data.addListener(function() {
-          // The user is making edits. Drop rawData, since we no longer want
-          // to react to updates to it.
-          this.version++;
-          this.rawData = '';
-        }.bind(this));
+        var self = this;
+        data.addPropertyListener(null, function(o, topic) {
+          var prop = o.model_.getProperty(topic[1]);
+          if ( prop.transient ) return;
+          self.version++;
+          self.rawData = '';
+        });
       }
     },
     {

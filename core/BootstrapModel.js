@@ -452,6 +452,7 @@ var BootstrapModel = {
     return cls;
   },
 
+  // ???(kgr): Who uses this?  If it's the build tool, then better putting it there.
   getAllRequires: function() {
     var requires = {};
     this.requires.forEach(function(r) { requires[r.split(' ')[0]] = true; });
@@ -519,11 +520,8 @@ var BootstrapModel = {
     // NOTE: propertyMap_ is invalidated in a few places
     // when properties[] is updated.
     if ( ! this.propertyMap_ ) {
-      if ( ! this.properties_ ) {
-        this.getPrototype();
-      }
-
-      var m = {};
+      var m = this.propertyMap_ = {};
+      if ( ! this.properties_ ) this.getPrototype();
 
       for ( var i = 0 ; i < this.properties_.length ; i++ ) {
         var prop = this.properties_[i];
@@ -608,6 +606,112 @@ var BootstrapModel = {
     else go();
 
     return this.required__
+  },
+
+  getMyFeature: function(featureName) {
+    /* Returns the feature with the given name from the runtime
+      object (the features available to an instance of the model). */
+    if ( ! Object.prototype.hasOwnProperty.call(this, 'featureMap_') ) {
+      var map = this.featureMap_ = {};
+      function add(a) {
+        if ( ! a ) return;
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          var f = a[i];
+          map[f.name.toUpperCase()] = f;
+        }
+      }
+      add(this.properties_);
+      add(this.actions_);
+      add(this.methods);
+      add(this.listeners);
+      add(this.templates);
+      add(this.models);
+      add(this.tests);
+      add(this.relationships);
+      add(this.issues);
+    }
+    return this.featureMap_[featureName.toUpperCase()];
+  },
+
+  getRawFeature: function(featureName) {
+    /* Returns the raw (not runtime, not inherited, non-buildPrototype'd) feature
+      from the model definition. */
+    if ( ! Object.prototype.hasOwnProperty.call(this, 'rawFeatureMap_') ) {
+      var map = this.featureMap_ = {};
+      function add(a) {
+        if ( ! a ) return;
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          var f = a[i];
+          map[f.name.toUpperCase()] = f;
+        }
+      }
+      add(this.properties);
+      add(this.actions);
+      add(this.methods);
+      add(this.listeners);
+      add(this.templates);
+      add(this.models);
+      add(this.tests);
+      add(this.relationships);
+      add(this.issues);
+    }
+    return this.featureMap_[featureName.toUpperCase()];
+  },
+
+  getAllMyRawFeatures: function() {
+    /* Returns the raw (not runtime, not inherited, non-buildPrototype'd) list
+      of features from the model definition. */
+    var featureList = [];
+    var arrayOrEmpty = function(arr) {
+      return ( arr && Array.isArray(arr) ) ? arr : [];
+    };
+    [
+      arrayOrEmpty(this.properties),
+      arrayOrEmpty(this.actions),
+      arrayOrEmpty(this.methods),
+      arrayOrEmpty(this.listeners),
+      arrayOrEmpty(this.templates),
+      arrayOrEmpty(this.models),
+      arrayOrEmpty(this.tests),
+      arrayOrEmpty(this.relationships),
+      arrayOrEmpty(this.issues)
+    ].map(function(list) {
+      featureList = featureList.concat(list);
+    });
+    return featureList;
+  },
+
+  getFeature: function(featureName) {
+    /* Returns the feature with the given name, including
+       inherited features. */
+    var feature = this.getMyFeature(featureName);
+
+    if ( ! feature && this.extendsModel ) {
+      var ext = this.X.lookup(this.extendsModel);
+      if ( ext ) return ext.getFeature(featureName);
+    } else {
+      return feature;
+    }
+  },
+
+  // getAllFeatures accounts for inheritance through extendsModel
+  getAllRawFeatures: function() {
+    var featureList = this.getAllMyRawFeatures();
+
+    if ( this.extendsModel ) {
+      var ext = this.X.lookup(this.extendsModel);
+      if ( ext ) {
+        ext.getAllFeatures().map(function(subFeat) {
+          var subName = subFeat.name.toUpperCase();
+          if ( ! featureList.mapFind(function(myFeat) { // merge in features we don't already have
+            return myFeat && myFeat.name && myFeat.name.toUpperCase() === subName;
+          }) ) {
+            featureList.push(subFeat);
+          }
+        });
+      }
+    }
+    return featureList;
   }
 };
 

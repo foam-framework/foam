@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name:  'Halo',
   package: 'foam.ui.md',
+  name: 'Halo',
 
   extendsModel: 'foam.graphics.Circle',
 
@@ -81,7 +81,6 @@ CLASS({
       name: 'recentering',
       defaultValue: true
     }
-
   ],
 
   methods: [
@@ -114,8 +113,7 @@ CLASS({
         return t.clientX >= rect.left && t.clientX <= rect.right &&
           t.clientY >= rect.top && t.clientY <= rect.bottom;
       }
-    },
-
+    }
   ],
 
   listeners: [

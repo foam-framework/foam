@@ -26,10 +26,16 @@ var FObject = {
 
   replaceModel_: function(model, otherModel, X) {
     while ( otherModel ) {
-      var replacementName =
-        ( model.package   ? model.package + '.' : '' ) +
-        ( otherModel.name ? otherModel.name     : otherModel ) + // TODO(jackson): Shouldn't there be a separator here?
-        model.name ;
+      // this name mangling has to use the primary model's package, otherwise
+      // it's ambiguous which model a replacement is intended for:
+      //     ReplacementThing -> package.Thing or foo.Thing or bar.Thing...
+      //  vs foo.ReplacementThing -> foo.Thing
+      // This means you must put your model-for-models in the same package
+      // as the primary model-to-be-replaced.
+      var replacementName =                                 // want: package.otherPrimaryModel
+        ( model.package   ? model.package + '.' : '' ) +          // package.
+        ( otherModel.name ? otherModel.name     : otherModel ) +  // other
+        model.name ;                                              // PrimaryModel
 
       var replacementModel = X.lookup(replacementName);
 
@@ -309,7 +315,7 @@ var FObject = {
     if ( this.model_ !== other.model_ ) {
       // TODO: This provides unstable ordering if two objects have a different model_
       // but they have the same name.
-      return this.model_.name.compareTo(other.model_.name) || 1;
+      return this.model_.name.compareTo(other.model_ && other.model_.name) || 1;
     }
 
     var ps = this.model_.properties_;
@@ -627,85 +633,5 @@ var FObject = {
     }
     return this;
   },
-
-  getMyFeature: function(featureName) {
-    if ( ! Object.prototype.hasOwnProperty.call(this, 'featureMap_') ) {
-if ( this.name === 'WebApplication' ) console.log('done');
-      var map = this.featureMap_ = {};
-      function add(a) {
-        if ( ! a ) return;
-        for ( var i = 0 ; i < a.length ; i++ ) {
-          var f = a[i];
-          map[f.name.toUpperCase()] = f;
-        }
-      }
-      add(this.properties_);
-      add(this.actions_);
-      add(this.methods);
-      add(this.listeners);
-      add(this.templates);
-      add(this.models);
-      add(this.tests);
-      add(this.relationships);
-      add(this.issues);
-    }
-    return this.featureMap_[featureName.toUpperCase()];
-  },
-
-  getAllMyFeatures: function() {
-    console.log('********************* getAllMyFeatures');
-    var featureList = [];
-    var arrayOrEmpty = function(arr) {
-      return ( arr && Array.isArray(arr) ) ? arr : [];
-    };
-    [
-      arrayOrEmpty(this.properties),
-      arrayOrEmpty(this.actions),
-      arrayOrEmpty(this.methods),
-      arrayOrEmpty(this.listeners),
-      arrayOrEmpty(this.templates),
-      arrayOrEmpty(this.models),
-      arrayOrEmpty(this.tests),
-      arrayOrEmpty(this.relationships),
-      arrayOrEmpty(this.issues)
-    ].map(function(list) {
-      featureList = featureList.concat(list);
-    });
-    return featureList;
-  },
-
-  // getFeature accounts for inheritance through extendsModel
-  getFeature: function(featureName) {
-    var feature = this.getMyFeature(featureName);
-
-    if ( ! feature && this.extendsModel ) {
-      var ext = this.X.lookup(this.extendsModel);
-      if ( ext ) {
-        return ext.getFeature(featureName);
-      }
-    } else {
-      return feature;
-    }
-  },
-
-  // getAllFeatures accounts for inheritance through extendsModel
-  getAllFeatures: function() {
-    var featureList = this.getAllMyFeatures();
-
-    if ( this.extendsModel ) {
-      var ext = this.X.lookup(this.extendsModel);
-      if ( ext ) {
-        ext.getAllFeatures().map(function(subFeat) {
-          var subName = subFeat.name.toUpperCase();
-          if ( ! featureList.mapFind(function(myFeat) { // merge in features we don't already have
-            return myFeat && myFeat.name && myFeat.name.toUpperCase() === subName;
-          }) ) {
-            featureList.push(subFeat);
-          }
-        });
-      }
-    }
-    return featureList;
-  }
 
 };

@@ -122,15 +122,16 @@ function elementFromString(str) {
 }
 
 var ConstantTemplate = function(str) {
+  var TemplateOutputCreate = TemplateOutput.create.bind(TemplateOutput);
   var f = function(opt_out) {
-    var out = opt_out ? opt_out : TemplateOutput.create(this);
+    var out = opt_out ? opt_out : TemplateOutputCreate(this);
     out(str);
     return out.toString();
   };
 
   f.toString = function() {
-    return 'function(opt_out) { var out = opt_out ? opt_out : TemplateOutput.create(this);\n  out("' + str.replace(/\n/g, "\\n").replace(/"/g, '\\"') + '");\n  return out.toString(); }';
-  }
+    return 'ConstantTemplate("' + str.replace(/\n/g, "\\n").replace(/"/g, '\\"') + '")';
+  };
 
   return f;
 };
@@ -146,7 +147,7 @@ var TemplateCompiler = {
 
   pushSimple: function() { this.out.push.apply(this.out, arguments); },
 
-  header: 'var self = this; var X = this.X; var Y = this.Y; var escapeHTML = XMLUtil.escape;' +
+  header: 'var self = this, X = this.X, Y = this.Y, escapeHTML = XMLUtil.escape;' +
     'var out = opt_out ? opt_out : TemplateOutput.create(this);' +
     "out('",
 

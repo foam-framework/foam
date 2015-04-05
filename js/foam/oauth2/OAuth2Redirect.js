@@ -27,6 +27,14 @@ CLASS({
   ],
   properties: [
     {
+      name: 'redirectURL',
+      transient: true,
+      defaultValueFn: function() {
+        return this.location.protocol + '//' + this.location.host +
+          this.location.pathname + this.location.search;
+      }
+    },
+    {
       name: 'redirects',
       transient: true,
       defaultValue: 0
@@ -67,18 +75,18 @@ CLASS({
       return token;
     },
     refreshNow_: function(ret) {
-      if ( this.redirects < 2 ) {
+      if ( this.redirects == 0 && this.authToken ) {
         this.redirects += 1;
-        var redirect =
-          this.location.protocol + '//' +
-          this.location.host +
-          this.location.pathname +
-          this.location.search;
+        ret(this.authToken);
+        return;
+      }
+      if ( this.redirects < 3 ) {
+        this.redirects += 1;
 
         var params = [
           'response_type=token',
           'client_id=' + encodeURIComponent(this.clientId),
-          'redirect_uri=' + encodeURIComponent(redirect),
+          'redirect_uri=' + encodeURIComponent(this.redirectURL),
           'scope=' + encodeURIComponent(this.scopes.join(' ')),
           'state=' + this.redirects
         ];
@@ -89,32 +97,6 @@ CLASS({
         // attempts.
         console.error("Failed to authenticated after ", this.redirects, "attempts.");
       }
-    },
-    setJsonpFuture: function(X, future) {
-      var agent = this;
-      future.set(function(url, params) {
-        var tries = 0;
-        params = params.clone();
-        params.push('access_token=' + encodeURIComponent(agent.accessToken));
-        return function(ret) {
-          function callback(data)  {
-            if ( data === null ) {
-              tries++;
-              if ( tries == 3 ) ret(null);
-              else {
-                agent.refresh(function(token) {
-                  params[params.length - 1] = 'access_token=' +
-                    encodeURIComponent(token);
-                  ajsonp(url, params)(callback)
-                });
-              }
-            } else {
-              ret(data);
-            }
-          }
-          ajsonp(url, params)(callback);
-        }
-      });
     }
   }
 });
