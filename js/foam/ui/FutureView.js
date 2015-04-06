@@ -16,6 +16,7 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'FutureView',
   extendsModel: 'foam.ui.View',
   // Works as follows: when it starts up, it will create a 10ms timer.
@@ -29,8 +30,7 @@ CLASS({
   // are passed in?
   documentation: 'Expects a Future for a $$DOC{ref:"View"}. Shows a ' +
       '$$DOC{ref:"SpinnerView"} until the future resolves.',
-  package: 'foam.ui',
-  
+
   imports: [
     'clearTimeout',
     'setTimeout'
@@ -125,4 +125,3 @@ CLASS({
     }
   }
 });
-
