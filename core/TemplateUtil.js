@@ -147,8 +147,8 @@ var TemplateCompiler = {
 
   pushSimple: function() { this.out.push.apply(this.out, arguments); },
 
-  header: 'var self = this, X = this.X, Y = this.Y, escapeHTML = XMLUtil.escape;' +
-    'var out = opt_out ? opt_out : TemplateOutput.create(this);' +
+  header: 'var self = this, X = this.X, Y = this.Y;' +
+    'var out = opt_out ? opt_out : TOC(this);' +
     "out('",
 
   footer: "');" +
@@ -227,7 +227,7 @@ MODEL({
       for ( var i = 0 ; i < t.args.length ; i++ ) {
         args.push(t.args[i].name);
       }
-      return eval('(function(' + args.join(',') + '){' + code + '})');
+      return eval('(function() { var escapeHTML = XMLUtil.escape, TOC = TemplateOutput.create.bind(TemplateOutput); return function(' + args.join(',') + '){' + code + '};})()');
     },
     compile: function(t) {
       // console.time('parse-template-' + t.name);

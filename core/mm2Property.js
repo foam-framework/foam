@@ -667,7 +667,6 @@ var Property = {
       var name   = prop.name;
       var name$_ = prop.name$_;
 
-      /* Is handled by copyFrom(), but could be done here instead. */
       proto.addInitAgent(
         (this.postSet || this.setter) ? 9 : 0,
         name + ': ' + (this.postSet || this.setter ? 'copy arg (postSet)' : 'copy arg'),

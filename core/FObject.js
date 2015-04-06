@@ -169,9 +169,14 @@ var FObject = {
               if ( m && m.hasOwnProperty(prop.name) )
                 o[prop.name] = m[prop.name];
             });
-        }
+        };
       });
 
+      /*
+      this.addInitAgent(9, 'copyFrom', function(o, X, Y, m) {
+        if( m ) for ( var key in m ) o[key] = m[key];
+      });
+      */
       // Add shortcut create() method to Models
       self.addInitAgent(0, 'Add create() to Model', function(o, X, Y) {
         if ( Model.isInstance(o) && o.name != 'Model' ) o.create = BootstrapModel.create;
@@ -465,7 +470,7 @@ var FObject = {
 
       /* TODO: New version that doesn't trigger lazyFactory or getter. */
       setter = (function(setter) { return function(newValue) {
-        setter.call(this, typeof this.instance_[name] == 'undefined' ? prop.defaultValue : this.instance_[name], newValue);
+        setter.call(this, typeof this.instance_[name] === 'undefined' ? prop.defaultValue : this.instance_[name], newValue);
       }; })(setter);
 
       /*
