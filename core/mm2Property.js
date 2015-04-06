@@ -668,11 +668,15 @@ var Property = {
       var name$_ = prop.name$_;
 
       /* Is handled by copyFrom(), but could be done here instead. */
-      proto.addInitAgent((this.postSet || this.setter) ? 9 : 0, name + ': ' + (this.postSet || this.setter ? 'copy arg (postSet)' : 'copy arg'), function(o, X, Y, m) {
-        if ( ! m ) return;
-        if ( m.hasOwnProperty(name)   ) o[name]   = m[name];
-        if ( m.hasOwnProperty(name$_) ) o[name$_] = m[name$_];
-      });
+      proto.addInitAgent(
+        (this.postSet || this.setter) ? 9 : 0,
+        name + ': ' + (this.postSet || this.setter ? 'copy arg (postSet)' : 'copy arg'),
+        function(o, X, Y, m) {
+          if ( ! m ) return;
+          if ( m.hasOwnProperty(name)   ) o[name]   = m[name];
+          if ( m.hasOwnProperty(name$_) ) o[name$_] = m[name$_];
+        }
+      );
 
       if ( this.dynamicValue ) {
         proto.addInitAgent(10, name + ': dynamicValue', function(o, X, Y) {
