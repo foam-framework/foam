@@ -102,7 +102,7 @@ var BootstrapModel = {
       var name       = parentName + '_ExtendedWith_' + traitName;
 
       if ( ! lookup(name) ) {
-        var model = traitModel.deepClone();
+        var model = traitModel.clone();
         model.package = "";
         model.name = name;
         model.extendsModel = parentModel && parentModel.id;
