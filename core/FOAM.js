@@ -180,7 +180,6 @@ function packagePath(X, path) {
   return path ? packagePath_(X, path.split('.'), 0) : GLOBAL;
 }
 
-
 function registerModel(model, opt_name) {
   var root    = model.package ? this : GLOBAL;
   var name    = model.name;
