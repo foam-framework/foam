@@ -594,11 +594,11 @@ function recopyModelFeatures(m) {
   m.models        = m.models;
   m.tests         = m.tests;
   m.issues        = m.issues;
-  
+
   // check for old bootstrap Property instances
   if ( m.properties && m.properties[0] && ! Property.isInstance(m.properties[0]) ) {
     m.properties.forEach(function(p) {
-      if ( p.model_.name == 'Property' ) p.model_ = Property;  
+      if ( p.model_.name === 'Property' ) p.model_ = Property;
     });
   }
 
@@ -610,8 +610,11 @@ function recopyModelFeatures(m) {
 for ( var id in USED_MODELS ) {
   recopyModelFeatures(GLOBAL.lookup(id));
 }
+/*
+// Why is this needed?
 for ( var id in UNUSED_MODELS ) {
   recopyModelFeatures(GLOBAL.lookup(id));
 }
+*/
 
 USED_MODELS['Model'] = true;
