@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+GLOBAL.lookupCache_ = {};
+
 function lookup(key) {
   if ( ! key ) return undefined;
   if ( ! ( typeof key === 'string' ) ) return key;
@@ -23,19 +25,19 @@ function lookup(key) {
 
   var cache;
 
-  if ( this.hasOwnProperty('lookupCache_') ) {
+//  if ( this.hasOwnProperty('lookupCache_') ) {
     cache = this.lookupCache_;
-  } else {
-    cache = this.lookupCache_ = {};
-  }
+//  } else {
+//    cache = this.lookupCache_ = {};
+//  }
 
   var ret = cache[key];
 
-  if ( ! ret ) {
+  if ( ret === undefined ) {
     var path = key.split('.');
     for ( var i = 0 ; root && i < path.length ; i++ ) root = root[path[i]];
     ret = root;
-    if ( ret ) cache[key] = ret;
+    cache[key] = ret ? ret : null;
   }
 
   return ret;

@@ -103,7 +103,7 @@ var BootstrapModel = {
 
       if ( ! lookup(name) ) {
         var model = traitModel.clone();
-        model.package = "";
+        model.package = '';
         model.name = name;
         model.extendsModel = parentModel && parentModel.id;
         model.models = traitModel.models; // unclone sub-models, we don't want multiple copies of them floating around

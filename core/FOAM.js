@@ -180,6 +180,7 @@ function packagePath(X, path) {
   return path ? packagePath_(X, path.split('.'), 0) : GLOBAL;
 }
 
+
 function registerModel(model, opt_name) {
   var root    = model.package ? this : GLOBAL;
   var name    = model.name;
@@ -199,10 +200,10 @@ function registerModel(model, opt_name) {
   if ( root.lookupCache_ ) {
     var cache = root.lookupCache_;
     var modelRegName = (package ? package + '.' : '') + name;
-    if ( cache[modelRegName] ) {
+//    if ( cache[modelRegName] ) {
       // console.log("registerModel: in lookupCache_, replaced model ", modelRegName );
       cache[modelRegName] = model;
-    }
+//    }
   }
 
   this.onRegisterModel(model);
@@ -215,6 +216,7 @@ var CLASS = function(m) {
   function registerModelLatch(path, m) {
     var id = m.package ? m.package + '.' + m.name : m.name;
 
+    GLOBAL.lookupCache_[id] = undefined;
     UNUSED_MODELS[id] = true;
 
     // TODO(adamvy): Remove this once we no longer have code depending on models to being in the global scope.
