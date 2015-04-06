@@ -212,8 +212,8 @@ var BootstrapModel = {
         var superProp = extendsModel.getProperty(p.name);
         if ( superProp ) {
           var p0 = p;
-          var p = superProp.clone().copyFrom(p);
-          // A more element way to do this would be to have a ModelProperty
+          p = superProp.clone().copyFrom(p);
+          // A more elegant way to do this would be to have a ModelProperty
           // which has a ModelPropertyProperty called 'reduceWithSuper'.
           if ( p0.adapt && superProp.adapt ) {
 //            console.log('(DEBUG) sub adapt: ', this.name + '.' + p.name);
