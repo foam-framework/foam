@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2014 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 MODEL({
   package: 'foam.core.bootstrap',
   name: 'BrowserFileDAO',
-  
+
   imports: [
     'document',
     'window'
@@ -56,14 +56,13 @@ MODEL({
         this.pending[key].push(sink);
         return;
       }
-      else this.pending[key] = [sink];
+
+      this.pending[key] = [sink];
 
       var tag = this.document.createElement('script');
       tag.callback = this.onData;
       tag.src = this.toURL_(key);
-      tag.onload = function() {
-        tag.remove();
-      };
+      tag.onload = function() { tag.remove(); };
 
       tag.onerror = function() {
         var pending = this.pending[key];
@@ -85,12 +84,12 @@ MODEL({
         var work = [anop];
         var obj = JSONUtil.mapToObj(this.X, data, undefined, work);
 
-        if ( ! obj ) {
-          throw new Error("Failed to decode data: " + data);
-        }
+        if ( ! obj ) throw new Error('Failed to decode data: ' + data);
+
         if ( ! this.pending[obj.id] ) {
-          if ( latch ) latch(data);
-          else {
+          if ( latch ) {
+            latch(data);
+          } else {
             // Workaround for legacy apps that include extra models via
             // additional script tags.
             this.preload[obj.id] = obj;

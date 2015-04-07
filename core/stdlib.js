@@ -618,7 +618,7 @@ MODEL({
         */
       };
 
-      return function bind(arg) {
+      return function xxxbind(arg) {
         return arguments.length == 1 ?
           simpleBind(this, arg) :
           oldBind.apply(this, argsToArray(arguments));
