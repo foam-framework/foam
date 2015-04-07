@@ -540,7 +540,7 @@ CLASS({
     },
 
     viewportOnPage: function() {
-      var bodyRect = this.X.document.body.getBoundingClientRect();
+      var bodyRect = this.X.document.documentElement.getBoundingClientRect();
       var vpSize = this.viewportSize();
       return { left: -bodyRect.left, top: -bodyRect.top,
                width: vpSize.width, height: vpSize.height,

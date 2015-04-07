@@ -93,13 +93,12 @@ CLASS({
         var pos = this.rectOnPage(this.$.querySelector('.action'));
         var menuHeight = Math.min(200, this.choices.length * 48);
         var vp = this.viewportOnPage();
-        var finalClientTop = pos.top + bodyRect.top;
         // clamp menu to viewport
-        if ( finalClientTop + menuHeight > vp.bottom ) {
-          pos.top -= ((finalClientTop + menuHeight) - vp.bottom);
+        if ( pos.top + menuHeight > vp.bottom ) {
+          pos.top -= ((pos.top + menuHeight) - vp.bottom);
         }
-        if ( finalClientTop < 0 ) {
-          pos.top -= finalClientTop;
+        if ( pos.top < vp.top ) {
+          pos.top += (vp.top - pos.top);
         }
 
         this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
@@ -149,6 +148,7 @@ CLASS({
         var left = Math.max(0, pos.left - toNum(s.width) + 30);
         view.$.style.left = left + 'px';
         view.$.style.maxHeight = (Math.max(200, this.X.window.innerHeight-pos.top-10)) + 'px';
+        view.$.style.height = menuHeight;
         view.initHTML();
 
         this.X.document.addEventListener('touchstart',  removeListener);
