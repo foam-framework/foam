@@ -823,11 +823,10 @@ String.fromCharCode = (function() {
   var oldLookup = String.fromCharCode;
   var lookupTable = [];
   return function(a) {
-    if (arguments.length == 1) return lookupTable[a] || (lookupTable[a] = oldLookup(a));
-    var result = "";
-    for (var i = 0; i < arguments.length; i++) {
+    if ( arguments.length == 1 ) return lookupTable[a] || (lookupTable[a] = oldLookup(a));
+    var result = '';
+    for ( var i = 0 ; i < arguments.length ; i++ )
       result += lookupTable[arguments[i]] || (lookupTable[arguments[i]] = oldLookup(arguments[i]));
-    }
     return result;
   };
 })();
