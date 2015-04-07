@@ -15,11 +15,15 @@
  * limitations under the License.
  */
 
-X.ModelDAO = X.foam.core.bootstrap.BrowserFileDAO.create();
-
 
 var __DATA;
 (function() {
+
+  // If we're running a foam binary, i/e no ModelDAO, no need to hookup the
+  // model dao.
+  if ( ! window.FOAM_BOOT_DIR ) return;
+
+  X.ModelDAO = X.foam.core.bootstrap.BrowserFileDAO.create();
 
   var path = document.location.pathname;
   path = path.substring(0, path.lastIndexOf('/'));
