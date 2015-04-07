@@ -19,9 +19,11 @@
 CLASS({
   package: 'foam.physics',
   name: 'Collider',
+
   properties: [
     { name: 'children', factory: function() { return []; } }
   ],
+
   listeners: [
     {
       name: 'tick',
@@ -32,6 +34,7 @@ CLASS({
       }
     }
   ],
+
   methods: {
     start: function() {
       this.X.requestAnimationFrame(this.tick);

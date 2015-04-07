@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'FOAMlet',
   package: 'foam.navigator',
+  name: 'FOAMlet',
 
   tableProperties: [
     'iconURL',
