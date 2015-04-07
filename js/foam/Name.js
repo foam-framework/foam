@@ -9,10 +9,10 @@
  *     http://www.apache.org/licenses/LICENSE-2.0
  */
 
-
+// TODO(mark): document, also, isn't this inefficient?
 CLASS({
-  name: 'Name',
   package: 'foam',
+  name: 'Name',
 
   requires: [ 'foam.Memo' ],
 

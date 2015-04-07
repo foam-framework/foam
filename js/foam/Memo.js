@@ -9,9 +9,10 @@
  *     http://www.apache.org/licenses/LICENSE-2.0
  */
 
+// TODO(mark?): Document what this Model does.
 CLASS({
-  name: 'Memo',
   package: 'foam',
+  name: 'Memo',
 
   constants: {
     IDENTITY: function() {
