@@ -559,6 +559,36 @@ var FObject = {
 
   /** @return this **/
   copyFrom: function(src) {
+/*
+    // TODO: remove the 'this.model_' check when all classes modelled
+    if ( src && this.model_ ) {
+      for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
+        var prop = this.model_.properties[i];
+
+        // If the src is modelled, and it has an instance_
+        //   BUT the instance doesn't have a value for the property,
+        //   then don't copy this value over since it's a default value.
+        if ( src.model_ && src.instance_ &&
+            !src.instance_.hasOwnProperty(prop.name) ) continue;
+
+        if ( prop.name in src ) this[prop.name] = src[prop.name];
+      }
+    }
+*/
+
+    if ( src && this.model_ ) {
+      var ps = this.model_.properties_;
+      for ( var i = 0 ; i < ps.length ; i++ ) {
+        var prop = ps[i];
+        if ( src.hasOwnProperty(prop.name) ) this[prop.name] = src[prop.name];
+        if ( src.hasOwnProperty(prop.name$_) ) this[prop.name$_] = src[prop.name$_];
+      }
+    }
+
+    return this;
+  },
+
+  xxxcopyFrom: function(src) {
     if ( ! src ) return this;
 
     if ( src.instance_ ) {
