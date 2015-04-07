@@ -72,6 +72,15 @@ console.assert(false, "Expected error: Falsity is falsity.");</code>
 
 <foam model="foam.graphics.ImageCView" src="https://mdn.mozillademos.org/files/5397/rhino.jpg" x="10" y="10" width="200" height="200"/>
 
+<br><br>Cards:<br>
+  <foam model="foam.flow.Grid">
+    <card>Card1 blah</card>
+    <card>Card2 blah</card>
+    <card>Card3 blah</card>
+    <card>Card4 blah</card>
+    <card>Card5 blah</card>
+  </foam>
+<br>
 
 Slides:
 
