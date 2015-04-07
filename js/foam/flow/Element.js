@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'Element',
   package: 'foam.flow',
+  name: 'Element',
   extendsModel: 'foam.ui.View',
 
   requires: [
@@ -32,9 +32,9 @@ CLASS({
     },
 
     getTagName: function() {
-      if (this.ELEMENT_NAME) return this.ELEMENT_NAME;
+      if ( this.ELEMENT_NAME ) return this.ELEMENT_NAME;
       var Name = this.X.lookup('foam.Name');
-      if (Name) return Name.create({ initial: this.name_ }).toTagName();
+      if ( Name ) return Name.create({ initial: this.name_ }).toTagName();
       return 'foam-flow-element';
     },
 
@@ -61,9 +61,9 @@ CLASS({
       // Remove nodes that model properties.
       if ( e.children.length !== 1 || e.children[0].nodeName !== 'inner' ) {
         var childrenToRemove = [];
-        for ( var i = 0; i < e.children.length; ++i ) {
+        for ( var i = 0 ; i < e.children.length ; i++ ) {
           var child = e.children[i];
-          for ( var j = 0; j < this.model_.properties_.length; ++j ) {
+          for ( var j = 0 ; j < this.model_.properties_.length ; j++ ) {
             var prop = this.model_.properties_[j];
             if ( child.nodeName === prop.name ) {
               childrenToRemove.push(child);
@@ -71,7 +71,7 @@ CLASS({
             }
           }
         }
-        for ( i = 0; i < childrenToRemove.length; ++i ) {
+        for ( i = 0 ; i < childrenToRemove.length ; i++ ) {
           e.removeChild(childrenToRemove[i]);
         }
         this.inner = e.innerHTML;
