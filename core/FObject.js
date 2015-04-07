@@ -559,7 +559,7 @@ var FObject = {
 
   /** @return this **/
   copyFrom: function(src) {
-    if ( ! src ) return;
+    if ( ! src ) return this;
 
     if ( src.instance_ ) {
       for ( var key in src.instance_ ) {
