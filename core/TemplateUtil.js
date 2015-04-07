@@ -344,3 +344,5 @@ var aevalTemplate = function(t, model) {
       ret(TemplateUtil.lazyCompile(t));
     });
 };
+
+var escapeHTML = XMLUtil.escape, TOC = TemplateOutput.create.bind(TemplateOutput);
