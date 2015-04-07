@@ -142,7 +142,7 @@ function arequire(modelName, opt_X) {
         m.X = X;
 
         m.arequire()(function(m) {
-          delete X.arequire$ModelLoadsInProgress[modelName];
+          X.arequire$ModelLoadsInProgress[modelName] = false;
           X.registerModel(m);
           future.set(m);
         });
@@ -150,7 +150,7 @@ function arequire(modelName, opt_X) {
       error: function() {
         var args = argsToArray(arguments);
         console.warn.apply(console, ['Could not load model: ', modelName].concat(args));
-        delete X.arequire$ModelLoadsInProgress[modelName];
+        X.arequire$ModelLoadsInProgress[modelName] = false;
         future.set(undefined);
       }
     });
