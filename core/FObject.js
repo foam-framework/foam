@@ -468,16 +468,10 @@ var FObject = {
         }; })(setter, prop.adapt);
       }
 
-      /* TODO: New version that doesn't trigger lazyFactory or getter. */
       setter = (function(setter) { return function(newValue) {
         setter.call(this, typeof this.instance_[name] === 'undefined' ? prop.defaultValue : this.instance_[name], newValue);
       }; })(setter);
 
-      /*
-      setter = (function(setter) { return function(newValue) {
-        setter.call(this, this[name], newValue);
-      }; })(setter);
-      */
       this.defineFOAMSetter(name, setter);
     }
 
