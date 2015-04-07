@@ -72,8 +72,6 @@ CLASS({
         a sub-$$DOC{ref:'foam.ui.View'} is destroyed, remove it from the tree with this method.
         The isParentDestroyed argument is passed to the child's destroy().
       */
-      //if (arguments.callee.caller.super_) this.SUPER(child);
-
       child.destroy(true);
       this.children.deleteI(child);
       child.parent = undefined;
@@ -83,18 +81,18 @@ CLASS({
     },
 
     removeAllChildren: function(isParentDestroyed) {
-      var list = this.children.slice();
+      // unhook the children list, then destroy them all
+      var list = this.children;
+      this.children = [];
       Array.prototype.forEach.call(list, function(child) {
         this.removeChild(child);
       }.bind(this));
     },
 
     addChildren: function() {
-      /* Adds multiple children at once. */
-      if ( Array.isArray(arguments) ) {
-        Array.prototype.forEach.call(arguments, this.addChild.bind(this));
-      } else {
-        for ( var key in arguments ) this.addChild(arguments[key]);
+      /* Adds multiple children at once. Specify each child to add as an argument. */
+      for ( var i = 0; i < arguments.length; ++i ) {
+        this.addChild(arguments[i]);
       }
       return this;
     },
