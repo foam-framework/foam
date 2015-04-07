@@ -886,6 +886,11 @@ CLASS({
 });
 
 CLASS({
+  name: 'PasswordProperty',
+  extendsModel: 'StringProperty'
+});
+
+CLASS({
   name: 'DocumentationProperty',
   extendsModel: 'Property',
   help: 'Describes the documentation properties found on Models, Properties, Actions, Methods, etc.',
