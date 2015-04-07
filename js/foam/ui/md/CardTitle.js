@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'CardTitle',
   package: 'foam.ui.md',
+  name: 'CardTitle',
   extendsModel: 'foam.flow.Element',
 
   properties: [
@@ -47,25 +47,15 @@ CLASS({
   ],
 
   templates: [
-    function toInnerHTML() {/*
-      <% if ( this.iconUrl ) { %><span><img src="{{this.iconUrl}}"></span><% } %>
-      <span>
-      <% if ( this.data ) { %>
-        {{this.data}}
-      <% } else { %>
-        <%= this.inner() %>
-      <% } %>
-      </span>
-    */},
     function CSS() {/*
       card-title {
-        border-top-left-radius: inherit;
-        border-top-right-radius: inherit;
+        align-items: stretch;
         border-bottom-left-radius: 0px;
         border-bottom-right-radius: 0px;
+        border-top-left-radius: inherit;
+        border-top-right-radius: inherit;
         color: #ffffff;
         display: flex;
-        align-items: stretch;
       }
 
       card-title span {
@@ -75,24 +65,30 @@ CLASS({
       }
 
       @media not print {
-
         card-title {
           font-size: 25px;
           margin: 0px;
           padding: 20px 10px;
           z-index: 20;
         }
-
       }
 
       @media print {
-
         card-title {
           font-size: 14pt;
           margin: 6pt;
         }
-
       }
+    */},
+    function toInnerHTML() {/*
+      <% if ( this.iconUrl ) { %><span><img src="{{this.iconUrl}}"></span><% } %>
+      <span>
+      <% if ( this.data ) { %>
+        {{this.data}}
+      <% } else { %>
+        <%= this.inner() %>
+      <% } %>
+      </span>
     */}
   ]
 });
