@@ -527,7 +527,7 @@ MODEL({
     {
       name: 'memento',
       getter: function() {
-        throw 'Array's can not be memorized properly as a memento.';
+        throw "Array's can not be memorized properly as a memento.";
       }
     }
   ]
