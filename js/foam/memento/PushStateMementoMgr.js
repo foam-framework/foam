@@ -38,6 +38,7 @@ CLASS({
       name: 'urlToMemento',
       documentation: 'Function to convert an incoming URL into a memento.',
       defaultValue: function(url, state) {
+        return state;
       }
     },
     {
@@ -71,7 +72,6 @@ CLASS({
     {
       name: 'onPopState',
       code: function(event) {
-        if (this.firstRun) return;
         var mem = this.urlToMemento(this.location, event.state);
         this.justPopped = true;
         this.mementoValue.set(mem);
@@ -105,6 +105,10 @@ CLASS({
         this.document.head.insertAdjacentHTML('beforeend',
             '<base href="' + this.location.origin + '" />');
       }
+
+      // Pretend we just popped to the current URL. This will set the memento
+      // based on the URL we were launched with.
+      this.onPopState({ state: this.history.state });
     }
   }
 });
