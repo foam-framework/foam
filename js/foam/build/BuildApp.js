@@ -350,13 +350,13 @@ CLASS({
           });
         }.bind(this),
         aif(this.appcacheManifest,
-            function(ret) { 
+            function(ret) {
               var file = this.File.create({
                 path: this.targetPath + this.path.sep + "app.manifest",
                 contents: this.MANIFEST()
               });
               console.log('Writing: ', file.path);
-              this.fileDAO.put(file, { 
+              this.fileDAO.put(file, {
                 put: ret,
                 error: function() {
                   this.error("ERROR writing file: ", file.path);
@@ -388,7 +388,7 @@ CLASS({
     }
   },
   templates: [
-    function HTML() {/*<html<% if ( this.appcacheManifest ) { %> manifest="app.manifest"<% } %>><head><%= this.htmlHeaders.join('') %><% if ( this.includeFoamCSS ) { %><link rel="stylesheet" type="text/css" href="foam.css"/><% } %><% if ( this.icon ) { %><link rel="icon" sizes="128x128" href="<%= this.icon %>"/><% } %><script src="foam.js"></script></head><body><foam model="<%= this.controller %>"<% if ( this.defaultView ) { %> view="<%= this.defaultView %>"<% } %>></foam></body></html>*/},
+    function HTML() {/*<html<% if ( this.appcacheManifest ) { %> manifest="app.manifest"<% } %>><head><meta charset="utf-8"><%= this.htmlHeaders.join('') %><% if ( this.includeFoamCSS ) { %><link rel="stylesheet" type="text/css" href="foam.css"/><% } %><% if ( this.icon ) { %><link rel="icon" sizes="128x128" href="<%= this.icon %>"/><% } %><script src="foam.js"></script></head><body><foam model="<%= this.controller %>"<% if ( this.defaultView ) { %> view="<%= this.defaultView %>"<% } %>></foam></body></html>*/},
     function MANIFEST() {/*CACHE MANIFEST
 # version <%= this.version %>
 <% if ( this.appDefinition ) { %># hash: <%= this.appDefinition.hashCode() %><% } %>
