@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'ChildTreeTrait',
   package: 'foam.patterns',
+  name: 'ChildTreeTrait',
 
   properties: [
     {
@@ -36,7 +36,6 @@ CLASS({
   ],
 
   methods: {
-
     onAncestryChange_: function() {
       /* Called when our parent or an ancestor's parent changes. Override to
         react to ancestry changes. Remember to call <code>this.SUPER()</code>. */
@@ -55,11 +54,9 @@ CLASS({
       // which can happen when you use creatView() to create a sub-view (and it calls addChild)
       // and then you write the View using TemplateOutput (which also calls addChild).
       // That should all be cleaned up and all outputHTML() methods should use TemplateOutput.
-      if ( this.children.indexOf(child) != -1 ) return;
+      if ( child.parent === this ) return;
 
-      try {
-        child.parent = this;
-      } catch (x) { console.log(x); }
+      child.parent = this;
       child.onAncestryChange_ && child.onAncestryChange_();
 
       var children = this.children;
@@ -77,7 +74,7 @@ CLASS({
       */
       //if (arguments.callee.caller.super_) this.SUPER(child);
 
-      child.destroy( true );
+      child.destroy(true);
       this.children.deleteI(child);
       child.parent = undefined;
       //child.onAncestryChange_();
@@ -85,7 +82,7 @@ CLASS({
       return this;
     },
 
-    removeAllChildren: function( isParentDestroyed ) {
+    removeAllChildren: function(isParentDestroyed) {
       var list = this.children.slice();
       Array.prototype.forEach.call(list, function(child) {
         this.removeChild(child);
@@ -104,7 +101,7 @@ CLASS({
 
     destroy: function( isParentDestroyed ) {
       /* Destroys children and removes them from this. Override to include your own
-       cleanup code, but always call this.SUPER(isParentDestroyed) 
+       cleanup code, but always call this.SUPER(isParentDestroyed)
        after you are done. When isParentDestroyed is true, your parent has already
        been destroyed. You may choose to omit unecessary cleanup. */
 
@@ -113,7 +110,7 @@ CLASS({
         Array.prototype.forEach.call(this.children, function(child) {
           child.destroy(true);
         });
-      } else { 
+      } else {
 //        console.log(this.name_, " SLOW removing ", this.children.length," children--------------------------------------");
         this.removeAllChildren();
       }
