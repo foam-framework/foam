@@ -527,7 +527,7 @@ MODEL({
     {
       name: 'memento',
       getter: function() {
-        throw "Array's can not be memorized properly as a memento.";
+        throw 'Array's can not be memorized properly as a memento.';
       }
     }
   ]
@@ -678,7 +678,7 @@ MODEL({
 
       if ( days < 365 ) {
         var year = 1900+this.getYear();
-        var noyear = this.toDateString().replace(" " + year, "");
+        var noyear = this.toDateString().replace(' ' + year, '');
         return noyear.substring(4);
       }
 
