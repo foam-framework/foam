@@ -728,8 +728,8 @@ Model.methods = {
   getRawFeature:            BootstrapModel.getRawFeature,
   getAllMyRawFeatures:      BootstrapModel.getAllMyRawFeatures,
   getFeature:               BootstrapModel.getFeature,
-  getAllRawFeatures:        BootstrapModel.getAllRawFeatures
-
+  getAllRawFeatures:        BootstrapModel.getAllRawFeatures,
+  atest:                    BootstrapModel.atest
 };
 
 // This is the coolest line of code that I've ever written
