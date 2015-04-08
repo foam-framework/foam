@@ -34,7 +34,8 @@ CLASS({
     {
       name: 'preload',
       factory: function() { return {}; }
-    }
+    },
+    'looking_'
   ],
 
   methods: {
@@ -59,7 +60,9 @@ CLASS({
         global.__DATACALLBACK = this.onData;
         global.__DATACALLBACK.sourcePath = fileName;
         this.looking_ = key;
+
         require(fileName);
+
         if ( this.looking_ ) {
           throw "Model with id: " + key + " not found in " + fileName;
         }
@@ -82,9 +85,7 @@ CLASS({
           throw new Error("Failed to decode data: " + data);
         }
 
-        if ( this.looking_ === obj.id ) {
-          this.looking_ = null;
-        }
+        if ( this.looking_ === obj.id ) this.looking_ = null;
 
         if ( ! this.pending[obj.id] ) {
           if ( latch ) latch(obj);

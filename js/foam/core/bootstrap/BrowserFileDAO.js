@@ -38,7 +38,8 @@ MODEL({
       factory: function() {
         return this.window.FOAM_BOOT_DIR + '../js/';
       }
-    }
+    },
+    'looking_'
   ],
 
   methods: {
