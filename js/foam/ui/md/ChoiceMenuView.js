@@ -49,8 +49,12 @@ CLASS({
       defaultValue: 8
     },
     {
-      name: 'maxDisplayCount,
+      name: 'maxDisplayCount',
       defaultValue: 5
+    },
+    {
+      name: 'itemHeight',
+      defaultValue: 48
     }
   ],
 
@@ -76,18 +80,18 @@ CLASS({
       this.index$.addListener(this.updateSelected);
       this.choices$.addListener(this.updateSelected);
     },
-    launch: function(selectedIndex, startPageRect) {
+    open: function(selectedIndex, startPageRect) {
       /* Launches the menu, with the given selected item index, animating out
          from the given page-coordinate startPageRect. */
 
       var vp = this.viewportOnPage();
-      var itemHeight = startPageRect.height;
+      this.itemHeight = startPageRect.height;
       var pixAbove = startPageRect.top - vp.top - this.vMargin;
       var pixBelow = vp.bottom - startPageRect.bottom - this.vMargin;
 
       // slots represent potential screen real estate for drawing the menu
-      var slotsAbove = (pixAbove > 0) ? pixAbove / itemHeight : 0;
-      var slotsBelow = (pixBelow > 0) ? pixBelow / itemHeight : 0;
+      var slotsAbove = (pixAbove > 0) ? pixAbove / this.itemHeight : 0;
+      var slotsBelow = (pixBelow > 0) ? pixBelow / this.itemHeight : 0;
       // items are the menu items that will fill some/all of the slots
       var itemsAbove = selectedIndex;
       var itemsBelow = this.choices.length - selectedIndex - 1;
@@ -121,6 +125,10 @@ CLASS({
         } else if ( itemsBelow > slotsBelow ) { // move list up inside slots
           selectedOffset = -(itemsBelow - slotsBelow);
           slotsAbove = menuCount - slotsBelow - 1; // clamp the other slot count
+        } else { // there is room for all
+          selectedOffset = 0;
+          slotsAbove = itemsAbove;
+          slotsBelow = itemsBelow;
         }
         // ASSERT: slotsAbove + slotsBelow + 1(selectedItem) === menuCount
         itemForFirstSlot = 0; // the slots are clamped to exactly what we need
@@ -134,16 +142,22 @@ CLASS({
         //TODO: animate
       }
 
-
-
+      var finalRect = { top:    startPageRect.top - (slotsAbove * this.itemHeight),
+                        bottom: startPageRect.bottom + (slotsBelow * this.itemHeight),
+                        height: menuCount * this.itemHeight,
+                        left: startPageRect.left,
+                        right: startPageRect.right,
+                        width: startPageRect.width };
+console.log("Menu start: ", startPageRect, " final ", finalRect);
       // add to body html
       this.X.document.body.insertAdjacentHTML('beforeend', this.toHTML());
 
-      this.$.style.top = (pos.top-2) + 'px';
-      var left = Math.max(0, pos.left - toNum(s.width) + 30);
-      this.$.style.left = left + 'px';
-      this.$.style.maxHeight = (Math.max(200, this.X.window.innerHeight-pos.top-10)) + 'px';
-      this.$.style.height = menuHeight;
+      this.$.style.top = finalRect.top + 'px';
+      this.$.style.left = finalRect.left + 'px';
+      this.$.style.height = finalRect.height + 'px';
+      this.$.style.width = finalRect.width + 'px';
+
+      this.scrollToIndex(itemForFirstSlot);
 
       this.initHTML();
     },
@@ -178,10 +192,10 @@ CLASS({
       this.updateSelected();
     },
 
-    scrollToSelection: function() {
+    scrollToIndex: function(index) {
       // Three cases: in view, need to scroll up, need to scroll down.
       // First we determine the parent's scrolling bounds.
-      var e = this.$.children[this.index];
+      var e = this.$.children[index];
       if ( ! e ) return;
       var parent = e.parentElement;
       while ( parent ) {
@@ -193,18 +207,25 @@ CLASS({
       }
       parent = parent || this.X.window;
 
-      if ( e.offsetTop < parent.scrollTop ) { // Scroll up
-        e.scrollIntoView(true);
-      } else if ( e.offsetTop + e.offsetHeight >=
-          parent.scrollTop + parent.offsetHeight ) { // Down
-        e.scrollIntoView();
-      }
+      parent.scrollTop = e.offsetTop;
+//       if ( e.offsetTop < parent.scrollTop ) { // Scroll up
+//         e.scrollIntoView(true);
+//       } else if ( e.offsetTop + e.offsetHeight >=
+//           parent.scrollTop + parent.offsetHeight ) { // Down
+//         e.scrollIntoView();
+//       }
     }
   },
   templates: [
     function CSS() {/*
 .foamChoiceMenuView {
   list-style-type: none;
+  border: 2px solid grey;
+  background: white;
+  display: table-footer-group;
+  overflow-y: auto;
+  position: absolute;
+  margin: 0;
 }
 
 .foamChoiceMenuView .hidden{
@@ -220,6 +241,7 @@ CLASS({
   padding: 0px;
 }
 .foamChoiceMenuView .choice {
+  display: block;
   margin: 0px;
   padding: 0px;
 }

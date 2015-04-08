@@ -22,7 +22,7 @@ CLASS({
 
   extendsModel: 'foam.ui.AbstractChoiceView',
 
-  requires: ['foam.ui.ChoiceListView'],
+  requires: ['foam.ui.md.ChoiceMenuView'],
 
   traits: ['foam.input.touch.VerticalScrollNativeTrait'],
 
@@ -76,9 +76,8 @@ CLASS({
         if ( this.opened ) return;
 
         var self = this;
-        var view = this.ChoiceListView.create({
+        var view = this.ChoiceMenuView.create({
           id: this.scrollerID,
-          className: 'popupChoiceList',
           data: this.data,
           choices: this.choices,
           autoSetData: this.autoSetData
@@ -86,21 +85,8 @@ CLASS({
 
         self.opened = true;
 
-        // Positioning notes:
-        // we find our page position, which is equivalent to our desired
-        // position relative to the document body for our menu. We can then grab
-        // the body's client bounding rect to find our final relative position.
         var pos = this.rectOnPage(this.$.querySelector('.action'));
-        var menuHeight = Math.min(200, this.choices.length * pos.height);
-        var vp = this.viewportOnPage();
-        // clamp menu to viewport
-        if ( pos.top + menuHeight > vp.bottom ) {
-          pos.top -= ((pos.top + menuHeight) - vp.bottom);
-        }
-        if ( pos.top < vp.top ) {
-          pos.top += (vp.top - pos.top);
-        }
-
+        view.open(this.index, pos);
         var s = this.X.window.getComputedStyle(view.$);
 
         function mouseMove(evt) {
@@ -142,13 +128,6 @@ CLASS({
           self.data = view.data;
           remove();
         }, this.X));
-
-        view.$.style.top = (pos.top-2) + 'px';
-        var left = Math.max(0, pos.left - toNum(s.width) + 30);
-        view.$.style.left = left + 'px';
-        view.$.style.maxHeight = (Math.max(200, this.X.window.innerHeight-pos.top-10)) + 'px';
-        view.$.style.height = menuHeight;
-        view.initHTML();
 
         this.X.document.addEventListener('touchstart',  removeListener);
         this.X.document.addEventListener('mousemove',   mouseMove);
@@ -199,22 +178,22 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .popupChoiceList {
-        border: 2px solid grey;
-        background: white;
-        display: table-footer-group;
-        overflow-y: auto;
-        position: absolute;
-        top: 20;
-        left: 50;
-        margin: 0;
-      }
+//       .popupChoiceList {
+//         border: 2px solid grey;
+//         background: white;
+//         display: table-footer-group;
+//         overflow-y: auto;
+//         position: absolute;
+//         top: 20;
+//         left: 50;
+//         margin: 0;
+//       }
 
-      .popupChoiceList li {
-        display: block;
-        margin: 15px;
-        margin-left: -20px;
-      }
+//       .popupChoiceList li {
+//         display: block;
+//         margin: 15px;
+//         margin-left: -20px;
+//       }
     */}
   ]
 });
