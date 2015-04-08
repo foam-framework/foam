@@ -142,12 +142,12 @@ CLASS({
         //TODO: animate
       }
 
-      var finalRect = { top:    startPageRect.top - (slotsAbove * this.itemHeight),
-                        bottom: startPageRect.bottom + (slotsBelow * this.itemHeight),
-                        height: menuCount * this.itemHeight,
-                        left: startPageRect.left,
-                        right: startPageRect.right,
-                        width: startPageRect.width };
+      var finalRect = { top:    startPageRect.top - (slotsAbove * this.itemHeight) -2,
+                        bottom: startPageRect.bottom + (slotsBelow * this.itemHeight) +2,
+                        height: menuCount * this.itemHeight +4,
+                        left: startPageRect.left -2,
+                        right: startPageRect.right +2,
+                        width: startPageRect.width + this.hMargin*2 +4 };
 console.log("Menu start: ", startPageRect, " final ", finalRect);
       // add to body html
       this.X.document.body.insertAdjacentHTML('beforeend', this.toHTML());
@@ -162,11 +162,15 @@ console.log("Menu start: ", startPageRect, " final ", finalRect);
       this.initHTML();
     },
     close: function() {
-      if (this.$) this.$.outerHtml = '';
+      if (this.$) this.$.outerHTML = '';
       // fade out
     },
     choiceToHTML: function(id, choice) {
-      return '<' + this.innerTagName + ' id="' + id + '" class="choice">' +
+      return '<' + this.innerTagName + ' id="' + id + '" class="choice" '+
+      'style="height: ' + this.itemHeight +
+      '; margin-left: ' + this.hMargin +
+      '; margin-right: ' + this.hMargin +
+      '">' +
           choice[1] + '</' + this.innerTagName + '>';
     },
     toInnerHTML: function() {
@@ -244,6 +248,11 @@ console.log("Menu start: ", startPageRect, " final ", finalRect);
   display: block;
   margin: 0px;
   padding: 0px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
 }
 
 */}

@@ -71,7 +71,7 @@ CLASS({
   actions: [
     {
       name: 'open',
-      labelFn: function() { return this.linkLabel; },
+      labelFn: function(action) { console.log("called labelfn"); return this.text; },
       action: function() {
         if ( this.opened ) return;
 
@@ -85,7 +85,7 @@ CLASS({
 
         self.opened = true;
 
-        var pos = this.rectOnPage(this.$.querySelector('.action'));
+        var pos = this.rectOnPage(this.$);
         view.open(this.index, pos);
         var s = this.X.window.getComputedStyle(view.$);
 
@@ -167,6 +167,7 @@ CLASS({
       action.iconUrl = this.iconUrl;
       var button = this.createActionView(action).toView_();
 
+
       this.addSelfDataChild(button);
 
       out += button.toHTML();
@@ -178,6 +179,10 @@ CLASS({
 
   templates: [
     function CSS() {/*
+      .popupChoiceView {
+        display: inline-block;
+      }
+
 //       .popupChoiceList {
 //         border: 2px solid grey;
 //         background: white;
