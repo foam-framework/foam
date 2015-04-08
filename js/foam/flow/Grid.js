@@ -24,7 +24,7 @@ CLASS({
     },
     {
       name: 'className',
-      defaultValue: 'card-deck'
+      defaultValue: 'card-grid'
     }
   ],
 
@@ -40,13 +40,13 @@ CLASS({
 
   templates: [
     function CSS() {/*
-    .card-deck {
+    .card-grid {
       display: flex;
       flex-wrap: wrap;
       padding: 10px;
     }
 
-    .card {
+    .card-grid .card {
       animation: fly-in-from-left .5s 1s ease both;
       background: white;
       border-radius: 3px;
@@ -55,7 +55,6 @@ CLASS({
       min-width: 300px;
       padding: 1.5rem;
       transform-origin: top left;
-      user-select: none;
     }
     */},
     function toInnerHTML() {/*
