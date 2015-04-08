@@ -90,29 +90,41 @@ CLASS({
       var pixBelow = vp.bottom - startPageRect.bottom - this.vMargin;
 
       // slots represent potential screen real estate for drawing the menu
-      var slotsAbove = (pixAbove > 0) ? pixAbove / this.itemHeight : 0;
-      var slotsBelow = (pixBelow > 0) ? pixBelow / this.itemHeight : 0;
+      var slotsAbove = Math.floor((pixAbove > 0) ? pixAbove / this.itemHeight : 0);
+      var slotsBelow = Math.floor((pixBelow > 0) ? pixBelow / this.itemHeight : 0);
       // items are the menu items that will fill some/all of the slots
       var itemsAbove = selectedIndex;
       var itemsBelow = this.choices.length - selectedIndex - 1;
 
       var menuCount = Math.min(this.choices.length, this.maxDisplayCount);
+      var halfMenuCount = Math.floor(menuCount/2);
       var itemForFirstSlot = 0; // if scrolling, this will be the scroll offset
       var selectedOffset = 0; // if the selected item can't be in the best place, animate it from the start rect by this many slots. Negative offset means move up, positive move down.
 
       if ( menuCount < this.choices.length ) { // scrolling
-        if ( itemsAbove  <= slotsAbove ) { // scroll to start, truncate above-slots
+        // enough slots to center, item can be scrolled to center
+        if ( itemsBelow >= halfMenuCount && itemsAbove >= halfMenuCount
+             && slotsAbove >= halfMenuCount && slotsBelow >= halfMenuCount ) {
+          slotsAbove = halfMenuCount;
+          slotsBelow = menuCount - slotsAbove - 1;
+          selectedOffset = 0;
+          itemForFirstSlot = selectedIndex - slotsAbove;
+        } else if ( itemsAbove  <= slotsAbove ) { // scroll to start, truncate above-slots
           // truncate slotsAbove, but don't reduce total count below menuCount
           slotsAbove = Math.max(itemsAbove, menuCount - slotsBelow - 1);
           selectedOffset = itemsAbove - slotsAbove;
           itemForFirstSlot = 0; // scroll top
+          slotsBelow = menuCount - slotsAbove - 1;
         } else if ( itemsBelow <= slotsBelow ) { // scroll to end, truncate below-slots
           // truncate slotsAbove, but don't reduce total count below menuCount
           slotsBelow = Math.max(itemsBelow, menuCount - slotsAbove - 1);
           selectedOffset = -(itemsBelow - slotsBelow);
           itemForFirstSlot = this.choices.length - menuCount; // scroll to end
+          slotsAbove = menuCount - slotsBelow - 1;
         } else {
           // use all slots, scroll to put the selectedIndex exactly where it should be
+          slotsAbove = halfMenuCount;
+          slotsBelow = menuCount - slotsAbove - 1;
           selectedOffset = 0;
           itemForFirstSlot = selectedIndex - slotsAbove;
         }
@@ -148,7 +160,7 @@ CLASS({
                         left: startPageRect.left -2,
                         right: startPageRect.right +2,
                         width: startPageRect.width + this.hMargin*2 +4 };
-console.log("Menu start: ", startPageRect, " final ", finalRect);
+console.log("Menu start: ", startPageRect, " final ", finalRect, " selected offset: ", selectedOffset);
       // add to body html
       this.X.document.body.insertAdjacentHTML('beforeend', this.toHTML());
 
