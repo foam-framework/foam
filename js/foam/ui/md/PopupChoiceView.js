@@ -85,8 +85,22 @@ CLASS({
         });
 
         self.opened = true;
-        var pos = findPageXY(this.$.querySelector('.action'));
-        var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
+
+        // Positioning notes:
+        // we find our page position, which is equivalent to our desired
+        // position relative to the document body for our menu. We can then grab
+        // the body's client bounding rect to find our final relative position.
+        var pos = this.rectOnPage(this.$.querySelector('.action'));
+        var menuHeight = Math.min(200, this.choices.length * pos.height);
+        var vp = this.viewportOnPage();
+        // clamp menu to viewport
+        if ( pos.top + menuHeight > vp.bottom ) {
+          pos.top -= ((pos.top + menuHeight) - vp.bottom);
+        }
+        if ( pos.top < vp.top ) {
+          pos.top += (vp.top - pos.top);
+        }
+
         var s = this.X.window.getComputedStyle(view.$);
 
         function mouseMove(evt) {
@@ -115,7 +129,7 @@ CLASS({
           self.opened = false;
           self.X.document.removeEventListener('touchstart', removeListener);
           self.X.document.removeEventListener('mousemove',  mouseMove);
-          if ( view.$ ) view.$.outerHTML = '';
+          view.close();
         }
         removeListener = function(evt) {
           if (view && view.$ && view.$.contains(evt.target)) return;
@@ -129,10 +143,11 @@ CLASS({
           remove();
         }, this.X));
 
-        view.$.style.top = (pos[1]-2) + 'px';
-        var left = Math.max(0, pos[0] - toNum(s.width) + 30);
+        view.$.style.top = (pos.top-2) + 'px';
+        var left = Math.max(0, pos.left - toNum(s.width) + 30);
         view.$.style.left = left + 'px';
-        view.$.style.maxHeight = (Math.max(200, this.X.window.innerHeight-pos[1]-10)) + 'px';
+        view.$.style.maxHeight = (Math.max(200, this.X.window.innerHeight-pos.top-10)) + 'px';
+        view.$.style.height = menuHeight;
         view.initHTML();
 
         this.X.document.addEventListener('touchstart',  removeListener);

@@ -608,10 +608,10 @@ function recopyModelFeatures(m) {
   if ( DEBUG ) BootstrapModel.saveDefinition(m);
 }
 
-  // Update Model in everything we've created so far
-  for ( var id in USED_MODELS ) {
-    recopyModelFeatures(GLOBAL.lookup(id));
-  }
+// Update Model in everything we've created so far
+for ( var id in USED_MODELS ) {
+  recopyModelFeatures(GLOBAL.lookup(id));
+}
 
 if ( DEBUG ) {
   for ( var id in UNUSED_MODELS ) {

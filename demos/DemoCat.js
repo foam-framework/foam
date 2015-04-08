@@ -1,5 +1,6 @@
 var VIDEO_PATH = 'https://x20web.corp.google.com/~kgr/power/videos/DemoDen/';
 
+
 CLASS({
   name: 'Demo',
   properties: [
@@ -15,11 +16,14 @@ CLASS({
   ]
 });
 
+
 CLASS({
   name: 'Controller',
-  requires: ['foam.ui.TextFieldView',
-             'foam.ui.DAOListView',
-             'Demo'],
+  requires: [
+    'foam.ui.TextFieldView',
+    'foam.ui.DAOListView',
+    'Demo'
+  ],
   properties: [
     { name: 'search', view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true } },
     { name: 'dao', factory: function() {

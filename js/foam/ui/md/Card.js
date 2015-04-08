@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'Card',
   package: 'foam.ui.md',
+  name: 'Card',
   extendsModel: 'foam.flow.Element',
 
   properties: [
@@ -53,23 +53,19 @@ CLASS({
       }
 
       @media not print {
-
         card, .card {
           box-shadow: 4px 4px 10px #000000;
           margin: 10px;
           border-radius: 2px;
         }
-
       }
 
       @media print {
-
         card, .card {
           border: 6px double #000;
           margin: 6pt;
           page-break-inside: avoid;
         }
-
       }
     */}
   ]
