@@ -50,7 +50,7 @@ CLASS({
     },
     {
       name: 'maxDisplayCount',
-      defaultValue: 5
+      defaultValue: 10
     },
     {
       name: 'itemHeight',
@@ -96,7 +96,8 @@ CLASS({
       var itemsAbove = selectedIndex;
       var itemsBelow = this.choices.length - selectedIndex - 1;
 
-      var menuCount = Math.min(this.choices.length, this.maxDisplayCount);
+      var menuCount = Math.min( Math.min(this.choices.length, this.maxDisplayCount),
+                                slotsAbove + slotsBelow + 1);
       var halfMenuCount = Math.floor(menuCount/2);
       var itemForFirstSlot = 0; // if scrolling, this will be the scroll offset
       var selectedOffset = 0; // if the selected item can't be in the best place, animate it from the start rect by this many slots. Negative offset means move up, positive move down.
@@ -111,20 +112,28 @@ CLASS({
           itemForFirstSlot = selectedIndex - slotsAbove;
         } else if ( itemsAbove  <= slotsAbove ) { // scroll to start, truncate above-slots
           // truncate slotsAbove, but don't reduce total count below menuCount
-          slotsAbove = Math.max(itemsAbove, menuCount - slotsBelow - 1);
+          slotsAbove = Math.min(slotsAbove, Math.max(itemsAbove, menuCount - slotsBelow - 1));
           selectedOffset = itemsAbove - slotsAbove;
           itemForFirstSlot = 0; // scroll top
-          slotsBelow = menuCount - slotsAbove - 1;
+          slotsBelow = Math.min(slotsBelow, menuCount - slotsAbove - 1);
         } else if ( itemsBelow <= slotsBelow ) { // scroll to end, truncate below-slots
           // truncate slotsAbove, but don't reduce total count below menuCount
-          slotsBelow = Math.max(itemsBelow, menuCount - slotsAbove - 1);
+          slotsBelow = Math.min(slotsBelow, Math.max(itemsBelow, menuCount - slotsAbove - 1));
           selectedOffset = -(itemsBelow - slotsBelow);
           itemForFirstSlot = this.choices.length - menuCount; // scroll to end
-          slotsAbove = menuCount - slotsBelow - 1;
+          slotsAbove = Math.min(slotsAbove, menuCount - slotsBelow - 1);
         } else {
           // use all slots, scroll to put the selectedIndex exactly where it should be
-          slotsAbove = halfMenuCount;
-          slotsBelow = menuCount - slotsAbove - 1;
+          // Math.min used to make sure we never increase the number of slots past
+          //   what is available
+          if ( slotsAbove < halfMenuCount ) { // not enough on top, adjust bottom
+            slotsBelow = Math.min(slotsBelow, menuCount - slotsAbove - 1);
+          } else if ( slotsBelow < halfMenuCount ) { // not enough on bottom, adjust top
+            slotsAbove = Math.min(slotsAbove, menuCount - slotsBelow - 1);
+          } else { // enough both ways, equalize
+            slotsAbove = Math.min(slotsAbove, halfMenuCount);
+            slotsBelow = Math.min(slotsBelow, menuCount - slotsAbove - 1);
+          }
           selectedOffset = 0;
           itemForFirstSlot = selectedIndex - slotsAbove;
         }
@@ -147,6 +156,8 @@ CLASS({
       }
       // at this point slotsAbove/slotsBelow are the actual screen areas we
       // will definitely be using.
+      // Update count in case we couldn't fit everything
+      menuCount = Math.min(menuCount, slotsAbove + slotsBelow + 1);
 
       // if we couldn't fit so that our selected item is in the right place,
       // animate it up/down into the place it will appear in the list.
