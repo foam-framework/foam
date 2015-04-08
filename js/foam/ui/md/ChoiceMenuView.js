@@ -110,13 +110,13 @@ CLASS({
           slotsBelow = menuCount - slotsAbove - 1;
           selectedOffset = 0;
           itemForFirstSlot = selectedIndex - slotsAbove;
-        } else if ( itemsAbove  <= slotsAbove ) { // scroll to start, truncate above-slots
+        } else if ( itemsAbove  <= slotsAbove && slotsAbove < menuCount) { // scroll to start, truncate above-slots
           // truncate slotsAbove, but don't reduce total count below menuCount
           slotsAbove = Math.min(slotsAbove, Math.max(itemsAbove, menuCount - slotsBelow - 1));
           selectedOffset = itemsAbove - slotsAbove;
           itemForFirstSlot = 0; // scroll top
           slotsBelow = Math.min(slotsBelow, menuCount - slotsAbove - 1);
-        } else if ( itemsBelow <= slotsBelow ) { // scroll to end, truncate below-slots
+        } else if ( itemsBelow <= slotsBelow && slotsBelow < menuCount ) { // scroll to end, truncate below-slots
           // truncate slotsAbove, but don't reduce total count below menuCount
           slotsBelow = Math.min(slotsBelow, Math.max(itemsBelow, menuCount - slotsAbove - 1));
           selectedOffset = -(itemsBelow - slotsBelow);
@@ -175,14 +175,24 @@ console.log("Menu start: ", startPageRect, " final ", finalRect, " selected offs
       // add to body html
       this.X.document.body.insertAdjacentHTML('beforeend', this.toHTML());
 
+      this.initializePosition(startPageRect, finalRect);
+      this.scrollToIndex(itemForFirstSlot);
+      this.animateToExpanded();
+      this.initHTML();
+    },
+    initializePosition: function(startPageRect, finalRect) {
       this.$.style.top = finalRect.top + 'px';
       this.$.style.left = finalRect.left + 'px';
       this.$.style.height = finalRect.height + 'px';
       this.$.style.width = finalRect.width + 'px';
 
-      this.scrollToIndex(itemForFirstSlot);
-
-      this.initHTML();
+      var verticalDiff = (finalRect.top+finalRect.height/2)
+                        - (startPageRect.top+startPageRect.height/2);
+      this.$.style.transform = "translateY(-"+verticalDiff+"px) scaleY(0.1) translateY("+verticalDiff+"px)";
+    },
+    animateToExpanded: function() {
+      this.$.style.transition = "transform ease-out .1s";
+      this.$.style.transform = "scaleY(1)";
     },
     close: function() {
       if (this.$) this.$.outerHTML = '';
