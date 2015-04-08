@@ -38,7 +38,8 @@ MODEL({
       factory: function() {
         return this.window.FOAM_BOOT_DIR + '../js/';
       }
-    }
+    },
+    'looking_'
   ],
 
   methods: {
@@ -60,11 +61,8 @@ MODEL({
       this.pending[key] = [sink];
 
       var tag = this.document.createElement('script');
-      tag.callback = this.onData;
-      tag.src = this.toURL_(key);
-      tag.onload = function() { tag.remove(); };
 
-      tag.onerror = function() {
+      var onerror = function() {
         var pending = this.pending[key];
         delete this.pending[key];
         for ( var i = 0 ; i < pending.length ; i++ ) {
@@ -72,6 +70,17 @@ MODEL({
         }
         tag.remove();
       }.bind(this);
+
+      tag.callback = function() {
+        this.looking_ = key;
+        this.onData.apply(this, arguments);
+        if ( this.looking_ ) {
+          onerror();
+        }
+      }.bind(this);
+      tag.src = this.toURL_(key);
+      tag.onload = function() { tag.remove(); };
+      tag.onerror = onerror;
 
       this.document.head.appendChild(tag);
     }
@@ -85,6 +94,8 @@ MODEL({
         var obj = JSONUtil.mapToObj(this.X, data, undefined, work);
 
         if ( ! obj ) throw new Error('Failed to decode data: ' + data);
+
+        if ( this.looking_ === obj.id ) this.looking_ = null;
 
         if ( ! this.pending[obj.id] ) {
           if ( latch ) {
