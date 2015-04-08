@@ -38,19 +38,31 @@ CLASS({
     },
     initHTML: function() {
       this.SUPER();
-      var cols = {};
-      for ( var i = 0 ; i < this.children.length; i++ ) {
-        var outer = this.children[i].$;
-        var inner = outer.children[0];
-        var oBounds = outer.getBoundingClientRect();
-        var iBounds = inner.getBoundingClientRect();
-        var colInfo = cols[oBounds.left] || ( cols[oBounds.left] = 0 );
-
-        outer.style.marginTop = -colInfo+16;
-        cols[oBounds.left] = colInfo + oBounds.height - iBounds.height;
-      }
+      this.X.window.addEventListener('resize', this.onResize);
+      this.onResize();
     }
   },
+
+  listeners: [
+    {
+      name: 'onResize',
+      isFramed: true,
+      code: function(e) {
+        if ( ! this.$ ) return;
+        var cols = {};
+        for ( var i = 0 ; i < this.children.length; i++ ) {
+          var outer   = this.children[i].$;
+          var inner   = outer.children[0];
+          var oBounds = outer.getBoundingClientRect();
+          var iBounds = inner.getBoundingClientRect();
+          var colInfo = cols[oBounds.left] || ( cols[oBounds.left] = 0 );
+
+          outer.style.marginTop = -colInfo + 20;
+          cols[oBounds.left] = colInfo + oBounds.height - iBounds.height;
+        }
+      }
+    },
+  ],
 
   templates: [
     function CSS() {/*
