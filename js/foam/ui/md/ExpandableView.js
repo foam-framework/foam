@@ -18,10 +18,6 @@ CLASS({
     'foam.ui.md.CSSTransitionSet',
     'foam.ui.md.RotateFwdBwdAnimation'
   ],
-  imports: [
-    'document',
-    'window'
-  ],
 
   constants: { ELEMENT_NAME: 'expandable' },
 

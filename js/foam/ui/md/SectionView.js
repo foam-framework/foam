@@ -15,10 +15,8 @@ CLASS({
   extendsModel: 'foam.flow.Element',
 
   requires: [
-    'foam.ui.md.ExpandableView',
-    'foam.ui.md.RotateFwdBwdAnimation'
+    'foam.ui.md.ExpandableView'
   ],
-  imports: [ 'document' ],
 
   constants: { ELEMENT_NAME: 'section' },
 
@@ -53,9 +51,6 @@ CLASS({
     },
     {
       name: 'delegateView'
-    },
-    {
-      name: 'sectionHeading'
     }
   ],
 
@@ -64,7 +59,6 @@ CLASS({
       name: 'initHTML',
       code: function() {
         this.SUPER.apply(this, arguments);
-        this.sectionHeading = this.X.$(this.id + '-heading');
         if ( this.expandable ) {
           this.on('click', this.onToggleExpanded, this.id + '-heading');
           this.delegateView.expandedIcon = this.X.$(this.id + '-expanded-icon');
@@ -77,7 +71,8 @@ CLASS({
     {
       name: 'onToggleExpanded',
       code: function() {
-        this.delegateView.toggleExpanded();
+        this.delegateView && this.delegateView.toggleExpanded &&
+            this.delegateView.toggleExpanded();
       }
     }
   ],
