@@ -712,6 +712,14 @@ var BootstrapModel = {
       }
     }
     return featureList;
+  },
+
+  atest: function() {
+    var seq = [];
+    for ( var i = 0 ; i < this.tests.length ; i++ ) {
+      seq.push(this.tests[i].atest.bind(this.tests[i]));
+    }
+    return aseq.apply(null, seq);
   }
 };
 
