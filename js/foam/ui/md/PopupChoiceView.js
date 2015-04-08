@@ -91,7 +91,7 @@ CLASS({
         // position relative to the document body for our menu. We can then grab
         // the body's client bounding rect to find our final relative position.
         var pos = this.rectOnPage(this.$.querySelector('.action'));
-        var menuHeight = Math.min(200, this.choices.length * 48);
+        var menuHeight = Math.min(200, this.choices.length * pos.height);
         var vp = this.viewportOnPage();
         // clamp menu to viewport
         if ( pos.top + menuHeight > vp.bottom ) {
@@ -101,7 +101,6 @@ CLASS({
           pos.top += (vp.top - pos.top);
         }
 
-        this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
         var s = this.X.window.getComputedStyle(view.$);
 
         function mouseMove(evt) {
@@ -130,7 +129,7 @@ CLASS({
           self.opened = false;
           self.X.document.removeEventListener('touchstart', removeListener);
           self.X.document.removeEventListener('mousemove',  mouseMove);
-          if ( view.$ ) view.$.outerHTML = '';
+          view.close();
         }
         removeListener = function(evt) {
           if (view && view.$ && view.$.contains(evt.target)) return;
