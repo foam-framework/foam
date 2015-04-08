@@ -195,8 +195,9 @@ console.log("Menu start: ", startPageRect, " final ", finalRect, " selected offs
       this.$.style.transform = "scaleY(1)";
     },
     close: function() {
-      if (this.$) this.$.outerHTML = '';
-      // fade out
+      this.$.style.transition = "opacity ease-in .1s"
+      this.$.style.opacity = "0";
+      this.X.setTimeout(function() { if (this.$) this.$.outerHTML = ''; }.bind(this), 1000);
     },
     choiceToHTML: function(id, choice) {
       return '<' + this.innerTagName + ' id="' + id + '" class="choice" '+
