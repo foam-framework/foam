@@ -57,6 +57,10 @@ CLASS({
 
       var old = global.__DATACALLBACK;
       try {
+        // require() is a synchronous call to a FOAM file that contains
+        // calls to CLASS().  CLASS has been redirected to call __DATACALLBACK
+        // which will synchronoulsy check this.looking_.  This makes the
+        // this.looking_ safe even though it appears to not be re-entrant.
         global.__DATACALLBACK = this.onData;
         global.__DATACALLBACK.sourcePath = fileName;
         this.looking_ = key;
