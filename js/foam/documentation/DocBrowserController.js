@@ -171,6 +171,9 @@ CLASS({
       request.open("GET", dir);
       request.addEventListener("readystatechange", function(e) {
         if (request.readyState === 4) {
+          // abort on failure
+          if ( request.status !== 200 ) return;
+
           // find javascript files
           var fre = /.*?(?:href=\")(.*?).js\".*?/gmi;
           fre.sticky = true;

@@ -122,15 +122,16 @@ function elementFromString(str) {
 }
 
 var ConstantTemplate = function(str) {
+  var TemplateOutputCreate = TemplateOutput.create.bind(TemplateOutput);
   var f = function(opt_out) {
-    var out = opt_out ? opt_out : TemplateOutput.create(this);
+    var out = opt_out ? opt_out : TemplateOutputCreate(this);
     out(str);
     return out.toString();
   };
 
   f.toString = function() {
-    return 'function(opt_out) { var out = opt_out ? opt_out : TemplateOutput.create(this);\n  out("' + str.replace(/\n/g, "\\n").replace(/"/g, '\\"') + '");\n  return out.toString(); }';
-  }
+    return 'ConstantTemplate("' + str.replace(/\n/g, "\\n").replace(/"/g, '\\"') + '")';
+  };
 
   return f;
 };
@@ -146,8 +147,8 @@ var TemplateCompiler = {
 
   pushSimple: function() { this.out.push.apply(this.out, arguments); },
 
-  header: 'var self = this; var X = this.X; var Y = this.Y; var escapeHTML = XMLUtil.escape;' +
-    'var out = opt_out ? opt_out : TemplateOutput.create(this);' +
+  header: 'var self = this, X = this.X, Y = this.Y;' +
+    'var out = opt_out ? opt_out : TOC(this);' +
     "out('",
 
   footer: "');" +
@@ -226,7 +227,7 @@ MODEL({
       for ( var i = 0 ; i < t.args.length ; i++ ) {
         args.push(t.args[i].name);
       }
-      return eval('(function(' + args.join(',') + '){' + code + '})');
+      return eval('(function() { var escapeHTML = XMLUtil.escape, TOC = TemplateOutput.create.bind(TemplateOutput); return function(' + args.join(',') + '){' + code + '};})()');
     },
     compile: function(t) {
       // console.time('parse-template-' + t.name);
@@ -343,3 +344,5 @@ var aevalTemplate = function(t, model) {
       ret(TemplateUtil.lazyCompile(t));
     });
 };
+
+var escapeHTML = XMLUtil.escape, TOC = TemplateOutput.create.bind(TemplateOutput);

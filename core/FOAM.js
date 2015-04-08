@@ -142,7 +142,7 @@ function arequire(modelName, opt_X) {
         m.X = X;
 
         m.arequire()(function(m) {
-          delete X.arequire$ModelLoadsInProgress[modelName];
+          X.arequire$ModelLoadsInProgress[modelName] = false;
           X.registerModel(m);
           future.set(m);
         });
@@ -150,7 +150,7 @@ function arequire(modelName, opt_X) {
       error: function() {
         var args = argsToArray(arguments);
         console.warn.apply(console, ['Could not load model: ', modelName].concat(args));
-        delete X.arequire$ModelLoadsInProgress[modelName];
+        X.arequire$ModelLoadsInProgress[modelName] = false;
         future.set(undefined);
       }
     });
@@ -200,10 +200,10 @@ function registerModel(model, opt_name) {
   if ( root.lookupCache_ ) {
     var cache = root.lookupCache_;
     var modelRegName = (package ? package + '.' : '') + name;
-    if ( cache[modelRegName] ) {
+//    if ( cache[modelRegName] ) {
       // console.log("registerModel: in lookupCache_, replaced model ", modelRegName );
       cache[modelRegName] = model;
-    }
+//    }
   }
 
   this.onRegisterModel(model);
@@ -216,6 +216,7 @@ var CLASS = function(m) {
   function registerModelLatch(path, m) {
     var id = m.package ? m.package + '.' + m.name : m.name;
 
+    GLOBAL.lookupCache_[id] = undefined;
     UNUSED_MODELS[id] = true;
 
     // TODO(adamvy): Remove this once we no longer have code depending on models to being in the global scope.

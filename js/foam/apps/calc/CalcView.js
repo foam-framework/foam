@@ -53,7 +53,31 @@ CLASS({
   methods: {
     initHTML: function() {
       this.SUPER();
+
       this.$.addEventListener('paste', this.onPaste);
+
+      // This block causes the calc-display to scroll when updated.
+      // To remove this feature replace the .inner-calc-display 'transition:' and
+      // 'top:' styles with 'bottom: 0'.
+      var move = EventService.framed(EventService.framed(function() {
+        if ( ! this.$ ) return;
+        var inner$ = this.$.querySelector('.inner-calc-display');
+        var outer$ = this.$.querySelector('.calc-display');
+        var value = DOMValue.create({element: outer$, property: 'scrollTop' });
+        Movement.animate(200, function() { value.value = inner$.clientHeight; })();
+      }.bind(this)));
+
+      Events.dynamic(function() { this.data.op; this.data.history; this.data.a1; this.data.a2; }.bind(this), move);
+
+      this.X.window.addEventListener('resize', move);
+
+      // Prevent scrolling above history output
+      var outer$ = this.$.querySelector('.calc-display');
+      outer$.addEventListener('scroll', function(e) {
+        if ( outer$.scrollTop < outer$.clientHeight )
+          outer$.scrollTop = outer$.clientHeight;
+      });
+      this.$.querySelector('.keypad').addEventListener('mousedown', function(e) { e.preventDefault(); return false; });
     }
   },
 
@@ -294,29 +318,6 @@ CLASS({
            }) %>
           </div>
         </div>
-        <%
-          // This block causes the calc-display to scroll when updated.
-          // To remove this feature replace the .inner-calc-display 'transition:' and
-          // 'top:' styles with 'bottom: 0'.
-          var move = EventService.framed(EventService.framed(function() {
-            if ( ! this.$ ) return;
-            var inner$ = this.$.querySelector('.inner-calc-display');
-            var outer$ = this.$.querySelector('.calc-display');
-            var value = DOMValue.create({element: outer$, property: 'scrollTop' });
-            Movement.animate(200, function() { value.value = inner$.clientHeight; })();
-          }.bind(this)));
-          Events.dynamic(function() { this.data.op; this.data.history; this.data.a1; this.data.a2; }.bind(this), move);
-          this.X.window.addEventListener('resize', move);
-          // Prevent scrolling above history output
-          this.addInitializer(function() {
-            var outer$ = this.$.querySelector('.calc-display');
-            outer$.addEventListener('scroll', function(e) {
-              if ( outer$.scrollTop < outer$.clientHeight )
-                outer$.scrollTop = outer$.clientHeight;
-            });
-            this.$.querySelector('.keypad').addEventListener('mousedown', function(e) { e.preventDefault(); return false; });
-          }.bind(this));
-        %>
       */}
     }
   ]

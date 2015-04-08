@@ -34,7 +34,8 @@ CLASS({
     {
       name: 'preload',
       factory: function() { return {}; }
-    }
+    },
+    'looking_'
   ],
 
   methods: {
@@ -56,9 +57,19 @@ CLASS({
 
       var old = global.__DATACALLBACK;
       try {
+        // require() is a synchronous call to a FOAM file that contains
+        // calls to CLASS().  CLASS has been redirected to call __DATACALLBACK
+        // which will synchronoulsy check this.looking_.  This makes the
+        // this.looking_ safe even though it appears to not be re-entrant.
         global.__DATACALLBACK = this.onData;
         global.__DATACALLBACK.sourcePath = fileName;
+        this.looking_ = key;
+
         require(fileName);
+
+        if ( this.looking_ ) {
+          throw "Model with id: " + key + " not found in " + fileName;
+        }
       } catch(e) {
         sink && sink.error && sink.error('Error loading model', key, e);
       } finally {
@@ -77,6 +88,9 @@ CLASS({
         if ( ! obj ) {
           throw new Error("Failed to decode data: " + data);
         }
+
+        if ( this.looking_ === obj.id ) this.looking_ = null;
+
         if ( ! this.pending[obj.id] ) {
           if ( latch ) latch(obj);
           else {

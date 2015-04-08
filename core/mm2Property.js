@@ -667,12 +667,15 @@ var Property = {
       var name   = prop.name;
       var name$_ = prop.name$_;
 
-      /* Is handled by copyFrom(), but could be done here instead. */
-      proto.addInitAgent((this.postSet || this.setter) ? 9 : 0, name + ': ' + (this.postSet || this.setter ? 'copy arg (postSet)' : 'copy arg'), function(o, X, Y, m) {
-        if ( ! m ) return;
-        if ( m.hasOwnProperty(name)   ) o[name]   = m[name];
-        if ( m.hasOwnProperty(name$_) ) o[name$_] = m[name$_];
-      });
+      proto.addInitAgent(
+        (this.postSet || this.setter) ? 9 : 0,
+        name + ': ' + (this.postSet || this.setter ? 'copy arg (postSet)' : 'copy arg'),
+        function(o, X, Y, m) {
+          if ( ! m ) return;
+          if ( m.hasOwnProperty(name)   ) o[name]   = m[name];
+          if ( m.hasOwnProperty(name$_) ) o[name$_] = m[name$_];
+        }
+      );
 
       if ( this.dynamicValue ) {
         proto.addInitAgent(10, name + ': dynamicValue', function(o, X, Y) {
@@ -725,8 +728,8 @@ Model.methods = {
   getRawFeature:            BootstrapModel.getRawFeature,
   getAllMyRawFeatures:      BootstrapModel.getAllMyRawFeatures,
   getFeature:               BootstrapModel.getFeature,
-  getAllRawFeatures:        BootstrapModel.getAllRawFeatures
-
+  getAllRawFeatures:        BootstrapModel.getAllRawFeatures,
+  atest:                    BootstrapModel.atest
 };
 
 // This is the coolest line of code that I've ever written
