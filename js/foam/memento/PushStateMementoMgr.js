@@ -35,27 +35,6 @@ CLASS({
       }
     },
     {
-      name: 'urlToMemento',
-      documentation: 'Function to convert an incoming URL into a memento.',
-      defaultValue: function(url, state) {
-        return state;
-      }
-    },
-    {
-      name: 'mementoToURL',
-      documentation: 'Function to convert a new memento into a URL. Returns ' +
-          'an object { url: \'blah\', state: { some: object }, push: true }.',
-      factory: function() {
-        return function(memento) {
-          return {
-            url: this.location.pathname + this.location.search + this.location.hash,
-            state: memento,
-            push: false
-          };
-        }.bind(this);
-      }
-    },
-    {
       name: 'firstRun',
       documentation: 'Helps determine if this is a fresh memento manager. ' +
           'We use replaceState for the first call, and pushState for all ' +
@@ -109,6 +88,21 @@ CLASS({
       // Pretend we just popped to the current URL. This will set the memento
       // based on the URL we were launched with.
       this.onPopState({ state: this.history.state });
+    },
+    urlToMemento: function(url, state) {
+      /* Function to convert an incoming URL into a memento. */
+      /* Override this and $$DOC{ref:'.mementoToURL'} to customize the URLs. */
+      return state;
+    },
+    mementoToURL: function(memento) {
+      /* Function to convert a new memento into a URL. Returns an object
+       * { url: 'blah', state: { some: object }, push: true } */
+      /* Override this and $$DOC{ref:'.urlToMemento'} to customize the URLs. */
+      return {
+        url: this.location.pathname + this.location.search + this.location.hash,
+        state: memento,
+        push: false
+      };
     }
   }
 });
