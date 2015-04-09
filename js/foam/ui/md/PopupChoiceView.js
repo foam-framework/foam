@@ -59,25 +59,21 @@ CLASS({
     {
       name: 'mode',
       defaultValue: 'read-write'
-    },
-    {
-      name: 'scrollerID',
-      factory: function() {
-        return this.id + '-popup-list-scroller';
-      }
     }
   ],
 
   actions: [
     {
       name: 'open',
-      labelFn: function() { return this.linkLabel; },
+      labelFn: function(action) { console.log("called labelfn"); return this.text; },
       action: function() {
         if ( this.opened ) return;
 
         var self = this;
+        // Setting the popup's view id causes it to collide with the DOM element
+        // created by the previous iteration, which may still be amnimating out.
+        // So don't set the id here:
         var view = this.ChoiceMenuView.create({
-          id: this.scrollerID,
           data: this.data,
           choices: this.choices,
           autoSetData: this.autoSetData
@@ -85,7 +81,7 @@ CLASS({
 
         self.opened = true;
 
-        var pos = this.rectOnPage(this.$.querySelector('.action'));
+        var pos = this.rectOnPage(this.$);
         view.open(this.index, pos);
         var s = this.X.window.getComputedStyle(view.$);
 
@@ -95,6 +91,11 @@ CLASS({
           // slightly outside the box. We need to check the coordinates, and
           // only close it when it's not upwards and leftwards of the box edges,
           // ie. to pretend the popup reaches the top and right of the window.
+          if ( ! view.$ ) {
+            remove();
+            return;
+          }
+
           if ( view.$.contains(evt.target) ) return;
 
           var margin = 50;
@@ -167,6 +168,7 @@ CLASS({
       action.iconUrl = this.iconUrl;
       var button = this.createActionView(action).toView_();
 
+
       this.addSelfDataChild(button);
 
       out += button.toHTML();
@@ -178,6 +180,10 @@ CLASS({
 
   templates: [
     function CSS() {/*
+      .popupChoiceView {
+        display: inline-block;
+      }
+
 //       .popupChoiceList {
 //         border: 2px solid grey;
 //         background: white;

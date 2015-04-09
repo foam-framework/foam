@@ -312,8 +312,11 @@ CLASS({
         var model = models[ids[i]];
         if ( this.precompileTemplates ) {
           for ( var j = 0 ; j < model.templates.length ; j++ ) {
-            model.templates[j].code = TemplateUtil.compile(model.templates[j]);
-            model.templates[j].clearProperty('template');
+            var t = model.templates[j];
+            // It's safe to remove leading and trailing whitespace from CSS.
+            if ( t.name === 'CSS' ) t.template = t.template.split('\n').map(function(s) { return s.trim(); }).join('\n');
+            t.code = TemplateUtil.compile(t);
+            t.clearProperty('template');
           }
         }
         contents += 'CLASS(';

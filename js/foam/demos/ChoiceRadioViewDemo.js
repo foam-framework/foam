@@ -30,11 +30,13 @@ CLASS({
   properties: [
     {
       name: 'choices',
-      defaultValueFn: function() { return [
-        ['choice1', 'Choice 1'],
-        ['choice2', 'Choice 2'],
-        ['name', 'Other', 'user'],
-      ]; }
+      defaultValueFn: function() {
+        var arr = [];
+        for (var i=0;  i < 14; i++) {
+          arr.push(['value'+i, 'Choice '+i]);
+        }
+        arr.push(['name', 'Other', 'user']);
+        return arr; }
     },
     {
       name: 'data',
@@ -88,9 +90,6 @@ CLASS({
   [
     function toInnerHTML()
     {/*
-      <p>
-        $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'vertical'}
-      </p>
       <hr/>
       <p>
         $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'horizontal'}
