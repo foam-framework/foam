@@ -45,7 +45,7 @@ CLASS({
     {
       name: 'viewChoice',
       model: 'foam.ui.ViewChoice',
-      getter: function(_, c) {
+      getter: function() {
         return this.views[this.choice];
       },
     },
