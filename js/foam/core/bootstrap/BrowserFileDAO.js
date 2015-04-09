@@ -61,6 +61,7 @@ MODEL({
       this.pending[key] = [sink];
 
       var tag = this.document.createElement('script');
+      var looking = key;
 
       var onerror = function() {
         var pending = this.pending[key];
@@ -71,31 +72,13 @@ MODEL({
         tag.remove();
       }.bind(this);
 
-      tag.callback = function() {
-        this.looking_ = key;
-        this.onData.apply(this, arguments);
-        if ( this.looking_ ) {
-          onerror();
-        }
-      }.bind(this);
-      tag.src = this.toURL_(key);
-      tag.onload = function() { tag.remove(); };
-      tag.onerror = onerror;
-
-      this.document.head.appendChild(tag);
-    }
-  },
-
-  listeners: [
-    {
-      name: 'onData',
-      code: function(data, latch) {
+      tag.callback = function(data, latch) {
         var work = [anop];
         var obj = JSONUtil.mapToObj(this.X, data, undefined, work);
 
         if ( ! obj ) throw new Error('Failed to decode data: ' + data);
 
-        if ( this.looking_ === obj.id ) this.looking_ = null;
+        if ( looking === obj.id ) looking = null;
 
         if ( ! this.pending[obj.id] ) {
           if ( latch ) {
@@ -119,7 +102,19 @@ MODEL({
               }
             }
           }.bind(this));
-      }
+      }.bind(this);
+
+      tag.onload = function() {
+        if ( looking != null ) {
+          onerror();
+        }
+        tag.remove();
+      };
+      tag.onerror = onerror;
+
+      tag.src = this.toURL_(key);
+
+      this.document.head.appendChild(tag);
     }
-  ]
+  }
 });
