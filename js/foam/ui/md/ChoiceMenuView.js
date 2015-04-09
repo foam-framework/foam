@@ -110,13 +110,13 @@ CLASS({
           slotsBelow = menuCount - slotsAbove - 1;
           selectedOffset = 0;
           itemForFirstSlot = selectedIndex - slotsAbove;
-        } else if ( itemsAbove  <= slotsAbove && slotsAbove < menuCount) { // scroll to start, truncate above-slots
+        } else if ( itemsAbove  <= slotsAbove && itemsAbove < menuCount) { // scroll to start, truncate above-slots
           // truncate slotsAbove, but don't reduce total count below menuCount
           slotsAbove = Math.min(slotsAbove, Math.max(itemsAbove, menuCount - slotsBelow - 1));
           selectedOffset = itemsAbove - slotsAbove;
           itemForFirstSlot = 0; // scroll top
           slotsBelow = Math.min(slotsBelow, menuCount - slotsAbove - 1);
-        } else if ( itemsBelow <= slotsBelow && slotsBelow < menuCount ) { // scroll to end, truncate below-slots
+        } else if ( itemsBelow <= slotsBelow && itemsBelow < menuCount ) { // scroll to end, truncate below-slots
           // truncate slotsAbove, but don't reduce total count below menuCount
           slotsBelow = Math.min(slotsBelow, Math.max(itemsBelow, menuCount - slotsAbove - 1));
           selectedOffset = -(itemsBelow - slotsBelow);
