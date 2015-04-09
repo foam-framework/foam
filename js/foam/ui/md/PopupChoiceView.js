@@ -95,6 +95,11 @@ CLASS({
           // slightly outside the box. We need to check the coordinates, and
           // only close it when it's not upwards and leftwards of the box edges,
           // ie. to pretend the popup reaches the top and right of the window.
+          if ( ! view.$ ) {
+            remove();
+            return;
+          }
+
           if ( view.$.contains(evt.target) ) return;
 
           var margin = 50;
