@@ -18,9 +18,6 @@
 CLASS({
   name: 'TwoPaneView',
   package: 'foam.ui.md',
-  traits: [
-    'foam.memento.MemorableTrait'
-  ],
 
   extendsModel: 'foam.ui.View',
 
@@ -35,7 +32,6 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'choice',
-      memorable: true,
       preSet: function(_, c) {
         return Math.max(0, Math.min(c, this.views.length));
       },
@@ -47,8 +43,14 @@ CLASS({
       }
     },
     {
+      name: 'viewChoice',
+      model: 'foam.ui.ViewChoice',
+      getter: function(_, c) {
+        return this.views[this.choice];
+      },
+    },
+    {
       name: 'view',
-      memorable: true,
       postSet: function(_, _) {
         if ( ! this.$ ) return;
         this.destroy();
