@@ -55,6 +55,10 @@ CLASS({
     {
       name: 'itemHeight',
       defaultValue: 48
+    },
+    {
+      name: 'isHidden',
+      defaultValue: true
     }
   ],
 
@@ -110,13 +114,13 @@ CLASS({
           slotsBelow = menuCount - slotsAbove - 1;
           selectedOffset = 0;
           itemForFirstSlot = selectedIndex - slotsAbove;
-        } else if ( itemsAbove  <= slotsAbove && slotsAbove < menuCount) { // scroll to start, truncate above-slots
+        } else if ( itemsAbove  <= slotsAbove && itemsAbove < menuCount) { // scroll to start, truncate above-slots. If itemsAbove is too large, this case would push the menu up too far
           // truncate slotsAbove, but don't reduce total count below menuCount
           slotsAbove = Math.min(slotsAbove, Math.max(itemsAbove, menuCount - slotsBelow - 1));
           selectedOffset = itemsAbove - slotsAbove;
           itemForFirstSlot = 0; // scroll top
           slotsBelow = Math.min(slotsBelow, menuCount - slotsAbove - 1);
-        } else if ( itemsBelow <= slotsBelow && slotsBelow < menuCount ) { // scroll to end, truncate below-slots
+        } else if ( itemsBelow <= slotsBelow && itemsBelow < menuCount ) { // scroll to end, truncate below-slots. if itemsBelow is too large, this case would push the menu down too far
           // truncate slotsAbove, but don't reduce total count below menuCount
           slotsBelow = Math.min(slotsBelow, Math.max(itemsBelow, menuCount - slotsAbove - 1));
           selectedOffset = -(itemsBelow - slotsBelow);
@@ -173,6 +177,7 @@ CLASS({
                         width: startPageRect.width + this.hMargin*2 +4 };
 console.log("Menu start: ", startPageRect, " final ", finalRect, " selected offset: ", selectedOffset);
       // add to body html
+      if ( this.$ ) this.$.outerHTML = '';  // clean up old copy, in case of rapid re-activation
       this.X.document.body.insertAdjacentHTML('beforeend', this.toHTML());
 
       this.initializePosition(startPageRect, finalRect);
@@ -193,10 +198,15 @@ console.log("Menu start: ", startPageRect, " final ", finalRect, " selected offs
     animateToExpanded: function() {
       this.$.style.transition = "transform ease-out .1s";
       this.$.style.transform = "scaleY(1)";
+      this.isHidden = false;
     },
     close: function() {
+      this.isHidden = true;
+
+      if ( ! this.$ ) return;
       this.$.style.transition = "opacity ease-in .1s"
       this.$.style.opacity = "0";
+      this.$.style.pointerEvents = "none";
       this.X.setTimeout(function() { if (this.$) this.$.outerHTML = ''; }.bind(this), 1000);
     },
     choiceToHTML: function(id, choice) {
@@ -216,7 +226,9 @@ console.log("Menu start: ", startPageRect, " final ", finalRect, " selected offs
         this.on(
           'click',
           function(index) {
-            this.choice = this.choices[index];
+            if ( ! this.isHidden ) {
+              this.choice = this.choices[index];
+            }
           }.bind(this, i),
           id);
 
