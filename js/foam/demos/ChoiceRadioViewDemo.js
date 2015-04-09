@@ -32,7 +32,7 @@ CLASS({
       name: 'choices',
       defaultValueFn: function() {
         var arr = [];
-        for (var i=0;  i < 15; i++) {
+        for (var i=0;  i < 14; i++) {
           arr.push(['value'+i, 'Choice '+i]);
         }
         arr.push(['name', 'Other', 'user']);

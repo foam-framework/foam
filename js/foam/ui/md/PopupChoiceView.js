@@ -59,12 +59,6 @@ CLASS({
     {
       name: 'mode',
       defaultValue: 'read-write'
-    },
-    {
-      name: 'scrollerID',
-      factory: function() {
-        return this.id + '-popup-list-scroller';
-      }
     }
   ],
 
@@ -76,8 +70,10 @@ CLASS({
         if ( this.opened ) return;
 
         var self = this;
+        // Setting the popup's view id causes it to collide with the DOM element
+        // created by the previous iteration, which may still be amnimating out.
+        // So don't set the id here:
         var view = this.ChoiceMenuView.create({
-          id: this.scrollerID,
           data: this.data,
           choices: this.choices,
           autoSetData: this.autoSetData

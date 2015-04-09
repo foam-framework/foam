@@ -50,7 +50,7 @@ CLASS({
     },
     {
       name: 'maxDisplayCount',
-      defaultValue: 10
+      defaultValue: 5
     },
     {
       name: 'itemHeight',
@@ -169,9 +169,9 @@ CLASS({
         //TODO: animate
       }
 
-      var finalRect = { top:    startPageRect.top - (slotsAbove * this.itemHeight) -2,
-                        bottom: startPageRect.bottom + (slotsBelow * this.itemHeight) +2,
-                        height: menuCount * this.itemHeight +4,
+      var finalRect = { top:    startPageRect.top - (slotsAbove * this.itemHeight) -2 - this.vMargin,
+                        bottom: startPageRect.bottom + (slotsBelow * this.itemHeight) +2 + this.vMargin,
+                        height: menuCount * this.itemHeight +4 + this.vMargin*2,
                         left: startPageRect.left -2,
                         right: startPageRect.right +2,
                         width: startPageRect.width + this.hMargin*2 +4 };
@@ -186,6 +186,8 @@ console.log("Menu start: ", startPageRect, " final ", finalRect, " selected offs
       this.initHTML();
     },
     initializePosition: function(startPageRect, finalRect) {
+      this.$.style.padding = this.vMargin+"px 0px "+this.vMargin+"px 0px";
+
       this.$.style.top = finalRect.top + 'px';
       this.$.style.left = finalRect.left + 'px';
       this.$.style.height = finalRect.height + 'px';
@@ -196,7 +198,7 @@ console.log("Menu start: ", startPageRect, " final ", finalRect, " selected offs
       this.$.style.transform = "translateY(-"+verticalDiff+"px) scaleY(0.1) translateY("+verticalDiff+"px)";
     },
     animateToExpanded: function() {
-      this.$.style.transition = "transform ease-out .1s";
+      this.$.style.transition = "transform ease .1s";
       this.$.style.transform = "scaleY(1)";
       this.isHidden = false;
     },
@@ -234,6 +236,7 @@ console.log("Menu start: ", startPageRect, " final ", finalRect, " selected offs
 
         out.push(this.choiceToHTML(id, choice));
       }
+
       return out.join('');
     },
 
@@ -257,13 +260,8 @@ console.log("Menu start: ", startPageRect, " final ", finalRect, " selected offs
       }
       parent = parent || this.X.window;
 
-      parent.scrollTop = e.offsetTop;
-//       if ( e.offsetTop < parent.scrollTop ) { // Scroll up
-//         e.scrollIntoView(true);
-//       } else if ( e.offsetTop + e.offsetHeight >=
-//           parent.scrollTop + parent.offsetHeight ) { // Down
-//         e.scrollIntoView();
-//       }
+      // the padding at the top of the list is part of the scroll area too
+      parent.scrollTop = e.offsetTop - this.vMargin;
     }
   },
   templates: [
