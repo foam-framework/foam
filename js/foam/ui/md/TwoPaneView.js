@@ -43,6 +43,13 @@ CLASS({
       }
     },
     {
+      name: 'viewChoice',
+      model: 'foam.ui.ViewChoice',
+      getter: function(_, c) {
+        return this.views[this.choice];
+      },
+    },
+    {
       name: 'view',
       postSet: function(_, _) {
         if ( ! this.$ ) return;
