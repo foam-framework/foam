@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'Flow',
   package: 'foam.demos',
+  name: 'Flow',
   extendsModel: 'foam.flow.Section',
 
   constants: { ELEMENT_NAME: 'foam-demos-flow' },
