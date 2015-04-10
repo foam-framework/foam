@@ -197,14 +197,12 @@ CLASS({
       return s + '"';
     },
 
-
     bindSubView: function(view, prop) {
       /*
         Bind a sub-$$DOC{ref:'foam.ui.View'} to a $$DOC{ref:'Property'} of this.
        */
       view.setValue(this.propertyValue(prop.name));
     },
-
 
     focus: function() {
       /* Cause the view to take focus. */
@@ -247,6 +245,14 @@ CLASS({
     },
 
     tapClick: function() {
+    },
+
+    resize: function() {
+      /* Call when you've changed your size to allow for the possibility of relayout. */
+      var e = this.X.document.createEvent('Event');
+      e.initEvent('resize', true, true);
+      if ( this.$ ) this.X.window.getComputedStyle(this.$);
+      this.X.window.dispatchEvent(e);
     },
 
     on: function(event, listener, opt_id) {
