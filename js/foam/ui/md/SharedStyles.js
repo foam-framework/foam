@@ -196,19 +196,25 @@ canvas.createButton {
 }
 
 
-.md-card {
+.md-card-shell {
   display: block;
   background: #fff;
   margin: 10px;
-  position: relative;
 }
 
-.md-card p {
+.md-card {
+  background: #fff;
+  display: block;
+  margin: 10px;
+  padding: 10px;
+}
+
+.md-card p, .md-card-shell p {
   width: initial;
 }
 
 @media not print {
-  .md-card {
+  .md-card-shell, .md-card {
     box-shadow: 4px 4px 10px #000000;
     margin: 10px;
     border-radius: 2px;
@@ -216,7 +222,7 @@ canvas.createButton {
 }
 
 @media print {
-  .md-card {
+  .md-card-shell, .md-card {
     border: 6px double #000;
     margin: 6pt;
     page-break-inside: avoid;
