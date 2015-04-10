@@ -305,8 +305,8 @@ var BootstrapModel = {
     }
 
     // add messages
-    Object_forEach(this.messages, function(m, key) {
-      if ( Message ) {
+    if ( this.messages && this.messages.length > 0 && Message ) {
+      Object_forEach(this.messages, function(m, key) {
         if ( ! Message.isInstance(m) ) {
           m = this.messages[key] = Message.create(m);
         }
@@ -319,10 +319,8 @@ var BootstrapModel = {
             this,
             constantize(m.name),
             { get: function() { return m.value; } });
-      } else {
-        console.warn('Defining message before Message.');
-      }
-    }.bind(this));
+      }.bind(this));
+    }
 
     // add methods
     for ( key in this.methods ) {
