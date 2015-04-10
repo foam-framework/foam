@@ -194,6 +194,34 @@ canvas.createButton {
   box-shadow: 3px 3px 3px #aaa;
   border-radius: 30px;
 }
+
+
+.md-card {
+  display: block;
+  background: #fff;
+  margin: 10px;
+  position: relative;
+}
+
+.md-card p {
+  width: initial;
+}
+
+@media not print {
+  .md-card {
+    box-shadow: 4px 4px 10px #000000;
+    margin: 10px;
+    border-radius: 2px;
+  }
+}
+
+@media print {
+  .md-card {
+    border: 6px double #000;
+    margin: 6pt;
+    page-break-inside: avoid;
+  }
+}
 */},
   ],
 });
