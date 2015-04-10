@@ -646,7 +646,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
         return Array.isArray(newValue) ? JSONUtil.arrayToObjArray(this.X, newValue, Model) : newValue;
       },
       postSet: function(_, models) {
-        for ( var i = 0 ; i < models.length ; i++ ) this[models[i]] = models[i];
+        for ( var i = 0 ; i < models.length ; i++ ) this[models[i].name] = models[i];
       },
       defaultValue: [],
       help: 'Sub-models embedded within this model.',
@@ -830,4 +830,3 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
 
   toString: function() { return "Model"; }
 };
-
