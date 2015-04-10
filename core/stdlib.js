@@ -618,7 +618,7 @@ MODEL({
         */
       };
 
-      return function bind(arg) {
+      return function xxxbind(arg) {
         return arguments.length == 1 ?
           simpleBind(this, arg) :
           oldBind.apply(this, argsToArray(arguments));
@@ -678,7 +678,7 @@ MODEL({
 
       if ( days < 365 ) {
         var year = 1900+this.getYear();
-        var noyear = this.toDateString().replace(" " + year, "");
+        var noyear = this.toDateString().replace(' ' + year, '');
         return noyear.substring(4);
       }
 
@@ -743,15 +743,11 @@ MODEL({
 
 function defineProperties(proto, fns) {
   for ( var key in fns ) {
-    try {
-      Object.defineProperty(proto, key, {
-        value: fns[key],
-        configurable: true,
-        writable: true
-      });
-    } catch (x) {
-      console.log('Warning: ' + x);
-    }
+    Object.defineProperty(proto, key, {
+      value: fns[key],
+      configurable: true,
+      writable: true
+    });
   }
 }
 
@@ -827,11 +823,10 @@ String.fromCharCode = (function() {
   var oldLookup = String.fromCharCode;
   var lookupTable = [];
   return function(a) {
-    if (arguments.length == 1) return lookupTable[a] || (lookupTable[a] = oldLookup(a));
-    var result = "";
-    for (var i = 0; i < arguments.length; i++) {
+    if ( arguments.length == 1 ) return lookupTable[a] || (lookupTable[a] = oldLookup(a));
+    var result = '';
+    for ( var i = 0 ; i < arguments.length ; i++ )
       result += lookupTable[arguments[i]] || (lookupTable[arguments[i]] = oldLookup(arguments[i]));
-    }
     return result;
   };
 })();

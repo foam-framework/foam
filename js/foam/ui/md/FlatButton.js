@@ -40,7 +40,6 @@ CLASS({
     },
     {
       name: 'halo',
-
       documentation: function() {/*
         onRadio/offRadio's 'pointer-events: none' is critical for halo touches
       */},
@@ -162,8 +161,6 @@ CLASS({
         left: 0;
         top: 0;
       }
-
-
     */}
   ]
 });

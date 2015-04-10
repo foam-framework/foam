@@ -15,14 +15,16 @@
  * limitations under the License.
  */
 
-
 CLASS({
-  name: 'RelationshipView',
   package: 'foam.ui',
+  name: 'RelationshipView',
   extendsModel: 'foam.ui.BaseView',
-  traits: ['foam.ui.HTMLViewTrait',
-           'foam.ui.TemplateSupportTrait',
-           'foam.ui.ViewActionsTrait'],
+
+  traits: [
+    'foam.ui.HTMLViewTrait',
+    'foam.ui.TemplateSupportTrait',
+    'foam.ui.ViewActionsTrait'
+  ],
 
   properties: [
     {
@@ -67,5 +69,3 @@ CLASS({
     function toInnerHTML() {/* %%view */}
   ]
 });
-
-

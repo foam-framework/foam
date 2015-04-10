@@ -102,8 +102,8 @@ var BootstrapModel = {
       var name       = parentName + '_ExtendedWith_' + traitName;
 
       if ( ! lookup(name) ) {
-        var model = traitModel.deepClone();
-        model.package = "";
+        var model = traitModel.clone();
+        model.package = '';
         model.name = name;
         model.extendsModel = parentModel && parentModel.id;
         model.models = traitModel.models; // unclone sub-models, we don't want multiple copies of them floating around
@@ -212,8 +212,8 @@ var BootstrapModel = {
         var superProp = extendsModel.getProperty(p.name);
         if ( superProp ) {
           var p0 = p;
-          var p = superProp.clone().copyFrom(p);
-          // A more element way to do this would be to have a ModelProperty
+          p = superProp.clone().copyFrom(p);
+          // A more elegant way to do this would be to have a ModelProperty
           // which has a ModelPropertyProperty called 'reduceWithSuper'.
           if ( p0.adapt && superProp.adapt ) {
 //            console.log('(DEBUG) sub adapt: ', this.name + '.' + p.name);
@@ -305,24 +305,21 @@ var BootstrapModel = {
     }
 
     // add messages
-    for ( key in this.messages ) {
-      var c = this.messages[key];
-      if ( Message ) {
-        if ( ! Message.isInstance(c) ) {
-          c = this.messages[key] = Message.create(c);
+    if ( this.messages && this.messages.length > 0 && Message ) {
+      Object_forEach(this.messages, function(m, key) {
+        if ( ! Message.isInstance(m) ) {
+          m = this.messages[key] = Message.create(m);
         }
         // TODO(kgr): only add to Proto when Model cleanup done.
         Object.defineProperty(
             cls,
-            c.name,
-            { get: function() { return c.value; } });
+            constantize(m.name),
+            { get: function() { return m.value; } });
         Object.defineProperty(
             this,
-            c.name,
-            { get: function() { return c.value; } });
-      } else {
-        console.warn('Defining message before Message.');
-      }
+            constantize(m.name),
+            { get: function() { return m.value; } });
+      }.bind(this));
     }
 
     // add methods
@@ -712,6 +709,14 @@ var BootstrapModel = {
       }
     }
     return featureList;
+  },
+
+  atest: function() {
+    var seq = [];
+    for ( var i = 0 ; i < this.tests.length ; i++ ) {
+      seq.push(this.tests[i].atest.bind(this.tests[i]));
+    }
+    return aseq.apply(null, seq);
   }
 };
 

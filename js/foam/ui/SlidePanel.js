@@ -150,8 +150,7 @@ CLASS({
           var now = Date.now();
           var p = (now-start) / (end-start);
           if ( p < 1 ) {
-            var mainWidth =
-            this.currentLayout = [
+            var mainWidth = this.currentLayout = [
               startLayout[0] * ( 1 - p ) + layout[0] * p,
               startLayout[1] * ( 1 - p ) + layout[1] * p,
               startLayout[2] * ( 1 - p ) + layout[2] * p

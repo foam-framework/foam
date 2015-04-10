@@ -18,9 +18,14 @@
 CLASS({
   package: 'foam.physics',
   name: 'Physical',
+
+  constants: {
+    INFINITE_MASS: 10000
+  },
+
   properties: [
-    { model_: 'FloatProperty', name: 'vx',   defaultValue: 0 },
-    { model_: 'FloatProperty', name: 'vy',   defaultValue: 0 },
+    { model_: 'FloatProperty', name: 'vx', defaultValue: 0 },
+    { model_: 'FloatProperty', name: 'vy', defaultValue: 0 },
     {
       model_: 'FloatProperty',
       name: 'velocity',
@@ -35,10 +40,6 @@ CLASS({
     },
     { model_: 'FloatProperty', name: 'mass', defaultValue: 1 }
   ],
-
-  constants: {
-    INFINITE_MASS: 10000
-  },
 
   methods: {
     intersects: function(c) {

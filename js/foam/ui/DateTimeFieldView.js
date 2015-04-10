@@ -16,10 +16,10 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name:  'DateTimeFieldView',
   label: 'Date-Time Field',
-  package: 'foam.ui',
-  
+
   extendsModel: 'foam.ui.SimpleView',
 
   properties: [
@@ -72,4 +72,3 @@ CLASS({
     }
   }
 });
-

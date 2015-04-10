@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2014 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 MODEL({
   package: 'foam.core.bootstrap',
   name: 'BrowserFileDAO',
-  
+
   imports: [
     'document',
     'window'
@@ -38,7 +38,8 @@ MODEL({
       factory: function() {
         return this.window.FOAM_BOOT_DIR + '../js/';
       }
-    }
+    },
+    'looking_'
   ],
 
   methods: {
@@ -56,16 +57,13 @@ MODEL({
         this.pending[key].push(sink);
         return;
       }
-      else this.pending[key] = [sink];
+
+      this.pending[key] = [sink];
 
       var tag = this.document.createElement('script');
-      tag.callback = this.onData;
-      tag.src = this.toURL_(key);
-      tag.onload = function() {
-        tag.remove();
-      };
+      var looking = key;
 
-      tag.onerror = function() {
+      var onerror = function() {
         var pending = this.pending[key];
         delete this.pending[key];
         for ( var i = 0 ; i < pending.length ; i++ ) {
@@ -74,23 +72,18 @@ MODEL({
         tag.remove();
       }.bind(this);
 
-      this.document.head.appendChild(tag);
-    }
-  },
-
-  listeners: [
-    {
-      name: 'onData',
-      code: function(data, latch) {
+      tag.callback = function(data, latch) {
         var work = [anop];
         var obj = JSONUtil.mapToObj(this.X, data, undefined, work);
 
-        if ( ! obj ) {
-          throw new Error("Failed to decode data: " + data);
-        }
+        if ( ! obj ) throw new Error('Failed to decode data: ' + data);
+
+        if ( looking === obj.id ) looking = null;
+
         if ( ! this.pending[obj.id] ) {
-          if ( latch ) latch(data);
-          else {
+          if ( latch ) {
+            latch(data);
+          } else {
             // Workaround for legacy apps that include extra models via
             // additional script tags.
             this.preload[obj.id] = obj;
@@ -109,7 +102,19 @@ MODEL({
               }
             }
           }.bind(this));
-      }
+      }.bind(this);
+
+      tag.onload = function() {
+        if ( looking != null ) {
+          onerror();
+        }
+        tag.remove();
+      };
+      tag.onerror = onerror;
+
+      tag.src = this.toURL_(key);
+
+      this.document.head.appendChild(tag);
     }
-  ]
+  }
 });

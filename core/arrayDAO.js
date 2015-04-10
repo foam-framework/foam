@@ -78,7 +78,7 @@ defineProperties(Array.prototype, {
   // TODO: make faster by copying in one pass, without splicing
   deleteF: function(v) {
     var a = this.clone();
-    for (var i = 0; i < a.length; i++) {
+    for ( var i = 0 ; i < a.length ; i++ ) {
       if ( a[i] === v ) { a.splice(i, 1); break; }
     }
     return a;
@@ -86,7 +86,7 @@ defineProperties(Array.prototype, {
   // Remove 'v' from this array (only 1 instance removed)
   // return true iff the value was removed
   deleteI: function(v) {
-    for (var i = 0; i < this.length; i++) {
+    for ( var i = 0 ; i < this.length ; i++ ) {
       if ( this[i] === v ) { this.splice(i, 1); return true; }
     }
     return false;
@@ -95,15 +95,15 @@ defineProperties(Array.prototype, {
   // TODO: make faster by copying in one pass, without splicing
   removeF: function(p) {
     var a = this.clone();
-    for (var i = 0; i < a.length; i++) {
+    for ( var i = 0 ; i < a.length ; i++ ) {
       if ( p.f(a[i]) ) { a.splice(i, 1); break; }
     }
     return a;
   },
   // Remove first object in this array where predicate 'p' returns true
   removeI: function(p) {
-    for (var i = 0; i < this.length; i++) {
-      if (p.f(this[i])) { this.splice(i, 1); breeak; }
+    for ( var i = 0 ; i < this.length ; i++ ) {
+      if ( p.f(this[i]) ) { this.splice(i, 1); breeak; }
     }
     return this;
   },
@@ -177,12 +177,12 @@ defineProperties(Array.prototype, {
     sink && sink.error && sink.error('remove', obj);
   },
   removeAll: function(sink, options) {
-    if (!options) options = {};
-    if (!options.query) options.query = { f: function() { return true; } };
+    if ( ! options ) options = {};
+    if ( !options.query ) options.query = { f: function() { return true; } };
 
     for (var i = 0; i < this.length; i++) {
       var obj = this[i];
-      if (options.query.f(obj)) {
+      if ( options.query.f(obj) ) {
         var rem = this.splice(i,1)[0];
 //        this.notify_('remove', [rem]);
         sink && sink.remove && sink.remove(rem);

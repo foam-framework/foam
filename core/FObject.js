@@ -169,9 +169,14 @@ var FObject = {
               if ( m && m.hasOwnProperty(prop.name) )
                 o[prop.name] = m[prop.name];
             });
-        }
+        };
       });
 
+      /*
+      this.addInitAgent(9, 'copyFrom', function(o, X, Y, m) {
+        if( m ) for ( var key in m ) o[key] = m[key];
+      });
+      */
       // Add shortcut create() method to Models
       self.addInitAgent(0, 'Add create() to Model', function(o, X, Y) {
         if ( Model.isInstance(o) && o.name != 'Model' ) o.create = BootstrapModel.create;
@@ -463,16 +468,10 @@ var FObject = {
         }; })(setter, prop.adapt);
       }
 
-      /* TODO: New version that doesn't trigger lazyFactory or getter. */
       setter = (function(setter) { return function(newValue) {
-        setter.call(this, typeof this.instance_[name] == 'undefined' ? prop.defaultValue : this.instance_[name], newValue);
+        setter.call(this, typeof this.instance_[name] === 'undefined' ? prop.defaultValue : this.instance_[name], newValue);
       }; })(setter);
 
-      /*
-      setter = (function(setter) { return function(newValue) {
-        setter.call(this, this[name], newValue);
-      }; })(setter);
-      */
       this.defineFOAMSetter(name, setter);
     }
 
@@ -581,8 +580,33 @@ var FObject = {
       var ps = this.model_.properties_;
       for ( var i = 0 ; i < ps.length ; i++ ) {
         var prop = ps[i];
-        if ( src.hasOwnProperty(prop.name)   ) this[prop.name]   = src[prop.name];
+        if ( src.hasOwnProperty(prop.name) ) this[prop.name] = src[prop.name];
         if ( src.hasOwnProperty(prop.name$_) ) this[prop.name$_] = src[prop.name$_];
+      }
+    }
+
+    return this;
+  },
+
+  xxxcopyFrom: function(src) {
+    if ( ! src ) return this;
+
+    if ( src.instance_ ) {
+      for ( var key in src.instance_ ) {
+        if ( true || this.model_.getProperty(key) ) this[key] = src[key]; else console.log('.');
+      }
+      /*
+      var ps = this.model_.properties_;
+      for ( var i = 0 ; i < ps.length ; i++ ) {
+        var prop = ps[i];
+        if ( src.hasOwnProperty(prop.name) ) this[prop.name] = src[prop.name];
+      }
+      */
+    } else {
+      // Faster case where a map is supplied rather than an FObject
+      for ( var key in src ) {
+        // if ( DEBUG && ! this.model_.getProperty(key) ) console.warn('Unknown property: ' + key);
+        this[key] = src[key];
       }
     }
 

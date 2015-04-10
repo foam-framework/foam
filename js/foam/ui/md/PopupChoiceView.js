@@ -22,7 +22,7 @@ CLASS({
 
   extendsModel: 'foam.ui.AbstractChoiceView',
 
-  requires: ['foam.ui.ChoiceListView'],
+  requires: ['foam.ui.md.ChoiceMenuView'],
 
   traits: ['foam.input.touch.VerticalScrollNativeTrait'],
 
@@ -59,34 +59,30 @@ CLASS({
     {
       name: 'mode',
       defaultValue: 'read-write'
-    },
-    {
-      name: 'scrollerID',
-      factory: function() {
-        return this.id + '-popup-list-scroller';
-      }
     }
   ],
 
   actions: [
     {
       name: 'open',
-      labelFn: function() { return this.linkLabel; },
+      labelFn: function(action) { console.log("called labelfn"); return this.text; },
       action: function() {
         if ( this.opened ) return;
 
         var self = this;
-        var view = this.ChoiceListView.create({
-          id: this.scrollerID,
-          className: 'popupChoiceList',
+        // Setting the popup's view id causes it to collide with the DOM element
+        // created by the previous iteration, which may still be amnimating out.
+        // So don't set the id here:
+        var view = this.ChoiceMenuView.create({
           data: this.data,
           choices: this.choices,
           autoSetData: this.autoSetData
         });
 
         self.opened = true;
-        var pos = findPageXY(this.$.querySelector('.action'));
-        var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
+
+        var pos = this.rectOnPage(this.$);
+        view.open(this.index, pos);
         var s = this.X.window.getComputedStyle(view.$);
 
         function mouseMove(evt) {
@@ -95,6 +91,11 @@ CLASS({
           // slightly outside the box. We need to check the coordinates, and
           // only close it when it's not upwards and leftwards of the box edges,
           // ie. to pretend the popup reaches the top and right of the window.
+          if ( ! view.$ ) {
+            remove();
+            return;
+          }
+
           if ( view.$.contains(evt.target) ) return;
 
           var margin = 50;
@@ -115,7 +116,7 @@ CLASS({
           self.opened = false;
           self.X.document.removeEventListener('touchstart', removeListener);
           self.X.document.removeEventListener('mousemove',  mouseMove);
-          if ( view.$ ) view.$.outerHTML = '';
+          view.close();
         }
         removeListener = function(evt) {
           if (view && view.$ && view.$.contains(evt.target)) return;
@@ -128,12 +129,6 @@ CLASS({
           self.data = view.data;
           remove();
         }, this.X));
-
-        view.$.style.top = (pos[1]-2) + 'px';
-        var left = Math.max(0, pos[0] - toNum(s.width) + 30);
-        view.$.style.left = left + 'px';
-        view.$.style.maxHeight = (Math.max(200, this.X.window.innerHeight-pos[1]-10)) + 'px';
-        view.initHTML();
 
         this.X.document.addEventListener('touchstart',  removeListener);
         this.X.document.addEventListener('mousemove',   mouseMove);
@@ -173,6 +168,7 @@ CLASS({
       action.iconUrl = this.iconUrl;
       var button = this.createActionView(action).toView_();
 
+
       this.addSelfDataChild(button);
 
       out += button.toHTML();
@@ -184,22 +180,26 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .popupChoiceList {
-        border: 2px solid grey;
-        background: white;
-        display: table-footer-group;
-        overflow-y: auto;
-        position: absolute;
-        top: 20;
-        left: 50;
-        margin: 0;
+      .popupChoiceView {
+        display: inline-block;
       }
 
-      .popupChoiceList li {
-        display: block;
-        margin: 15px;
-        margin-left: -20px;
-      }
+//       .popupChoiceList {
+//         border: 2px solid grey;
+//         background: white;
+//         display: table-footer-group;
+//         overflow-y: auto;
+//         position: absolute;
+//         top: 20;
+//         left: 50;
+//         margin: 0;
+//       }
+
+//       .popupChoiceList li {
+//         display: block;
+//         margin: 15px;
+//         margin-left: -20px;
+//       }
     */}
   ]
 });

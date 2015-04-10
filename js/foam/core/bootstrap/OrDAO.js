@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'OrDAO',
   package: 'foam.core.bootstrap',
+  name: 'OrDAO',
 
   properties: [
     {

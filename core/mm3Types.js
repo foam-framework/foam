@@ -800,7 +800,7 @@ CLASS({
               // template is async.  Should create a FutureView to handle this.
               viewModel.arequire();
             }
-            var ret = function(args, X) { return viewModel.create(args, X || this.Y); };
+            ret = function(args, X) { return viewModel.create(args, X || this.Y); };
           } else {
             ret = function(map, opt_X) {
               return (opt_X || this.X).lookup(f).create(map, opt_X || this.Y);
@@ -882,6 +882,11 @@ CLASS({
 
 CLASS({
   name: 'IPAddressProperty',
+  extendsModel: 'StringProperty'
+});
+
+CLASS({
+  name: 'PasswordProperty',
   extendsModel: 'StringProperty'
 });
 

@@ -197,14 +197,12 @@ CLASS({
       return s + '"';
     },
 
-
     bindSubView: function(view, prop) {
       /*
         Bind a sub-$$DOC{ref:'foam.ui.View'} to a $$DOC{ref:'Property'} of this.
        */
       view.setValue(this.propertyValue(prop.name));
     },
-
 
     focus: function() {
       /* Cause the view to take focus. */
@@ -247,6 +245,14 @@ CLASS({
     },
 
     tapClick: function() {
+    },
+
+    resize: function() {
+      /* Call when you've changed your size to allow for the possibility of relayout. */
+      var e = this.X.document.createEvent('Event');
+      e.initEvent('resize', true, true);
+      if ( this.$ ) this.X.window.getComputedStyle(this.$);
+      this.X.window.dispatchEvent(e);
     },
 
     on: function(event, listener, opt_id) {
@@ -508,6 +514,51 @@ CLASS({
       this.$ && this.$.remove();
       this.destroy();
       this.publish('closed');
+    },
+
+    rectOnPage: function() {
+      /* Computes the XY coordinates of the given node
+         relative to the containing elements.</p>
+         <p>TODO: Check browser compatibility. */
+      var node = this.$;
+      var x = 0;
+      var y = 0;
+      var parent;
+      var rect = this.$.getBoundingClientRect();
+
+      while ( node ) {
+        parent = node;
+        x += node.offsetLeft;
+        y += node.offsetTop;
+        node = node.offsetParent;
+      }
+      return {  top: y,
+                left: x,
+                right: x+rect.width,
+                bottom: y+rect.height,
+                width: rect.width,
+                height: rect.height };
+    },
+
+    rectOnViewport: function() {
+      /* Computes the XY coordinates of this view relative to the browser viewport. */
+      return this.$.getBoundingClientRect();
+    },
+
+    viewportOnPage: function() {
+      var bodyRect = this.X.document.documentElement.getBoundingClientRect();
+      var vpSize = this.viewportSize();
+      return { left: -bodyRect.left, top: -bodyRect.top,
+               width: vpSize.width, height: vpSize.height,
+               right: -bodyRect.left + vpSize.width,
+               bottom: -bodyRect.top + vpSize.height };
+    },
+
+    viewportSize: function() {
+      /* returns the rect of the current viewport, relative to the page. */
+      return { height: (window.innerHeight || this.X.document.documentElement.clientHeight),
+               width:  (window.innerWidth  || this.X.document.documentElement.clientWidth) };
     }
+
   }
 });

@@ -14,7 +14,7 @@ CLASS({
   name: 'NumberFormatter',
   messages: [
     {
-      name: 'NaN',
+      name: 'nan',
       value: 'Not a number',
       translationHint: 'description of a value that isn\'t a number'
     }
@@ -30,7 +30,7 @@ CLASS({
       name: 'init',
       code: function() {
         if  ( chrome && chrome.i18n ) {
-          chrome.i18n.getAcceptLanguages(function(m){ this.useComma = (0.5).toLocaleString(m[0]).substring(1,2) == ','; }.bind(this)) 
+          chrome.i18n.getAcceptLanguages(function(m){ this.useComma = (0.5).toLocaleString(m[0]).substring(1,2) == ','; }.bind(this))
         } else {
           var lang = window.navigator.languages[0];
           this.useComma = (0.5).toLocaleString(lang).substring(1,2) == ',';
@@ -45,7 +45,7 @@ CLASS({
         // the regex below removes extra zeros from the end,
         // or middle of exponentials
         return typeof n === 'string' ? n :
-            Number.isNaN(n)       ? this.NaN :
+            Number.isNaN(n)       ? this.NAN :
             ! Number.isFinite(n)  ? '∞' :
             parseFloat(n).toPrecision(12)
             .replace( /(?:(\d+\.\d*[1-9])|(\d+)(?:\.))(?:(?:0+)$|(?:0*)(e.*)$|$)/ ,"$1$2$3");
@@ -58,5 +58,5 @@ CLASS({
       }
     }
   ]
-  
+
 });

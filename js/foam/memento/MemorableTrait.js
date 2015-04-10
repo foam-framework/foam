@@ -75,6 +75,7 @@ CLASS({
     },
     {
       name: 'updateMemento',
+      isMerged: 1,
       code: function(src, topic, old, nu) {
         // If the new property value is a memorable modelled object
         // then we need to subscribe for changes to that object.
