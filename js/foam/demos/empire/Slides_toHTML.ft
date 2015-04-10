@@ -1,0 +1,25 @@
+<slides style="width: 100%; height: 100%;">
+  <slide>
+    <foam model="foam.demos.graphics.Logo" text="Introducing FOAM" width="1200" height="140" font="70px Georgia"/>
+    Kevin Greer<br>
+    April 26, 2015<br>
+  </slide>
+  <slide><foam model="foam.demos.physics.Bubbles" width="800" height="400"/></slide>
+  <slide><foam model="foam.demos.physics.Spring" n="10" width="800" height="400"/></slide>
+  <slide>
+    <h1>Reactive</h1>
+    <foam model="foam.demos.ReactiveClocks"/>
+  </slide>
+  <slide>
+    <h1>Architecture</h1>
+    <div style="zoom:0.5;"><foam model="foam.demos.ArchitectureDiagram"/></div>
+  </slide>
+  <slide>
+    <h1>Live Coding</h1>
+  </slide>
+  <slide>
+    <h1>Physics</h1>
+  </slide>
+  <slide><foam model="foam.demos.pong.Pong"/></slide>
+  <slide><foam model="foam.demos.Flow"/></slide>
+</slides>
