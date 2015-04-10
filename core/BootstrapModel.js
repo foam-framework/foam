@@ -305,25 +305,24 @@ var BootstrapModel = {
     }
 
     // add messages
-    for ( key in this.messages ) {
-      var c = this.messages[key];
+    Object_forEach(this.messages, function(m, key) {
       if ( Message ) {
-        if ( ! Message.isInstance(c) ) {
-          c = this.messages[key] = Message.create(c);
+        if ( ! Message.isInstance(m) ) {
+          m = this.messages[key] = Message.create(m);
         }
         // TODO(kgr): only add to Proto when Model cleanup done.
         Object.defineProperty(
             cls,
-            c.name,
-            { get: function() { return c.value; } });
+            constantize(m.name),
+            { get: function() { return m.value; } });
         Object.defineProperty(
             this,
-            c.name,
-            { get: function() { return c.value; } });
+            constantize(m.name),
+            { get: function() { return m.value; } });
       } else {
         console.warn('Defining message before Message.');
       }
-    }
+    }.bind(this));
 
     // add methods
     for ( key in this.methods ) {
