@@ -25,11 +25,16 @@ CLASS({
     {
       name: 'className',
       defaultValue: 'card-deck'
+    },
+    {
+      name: 'minWidth',
+      defaultValue: 500
     }
   ],
 
   methods: {
     fromElement: function(e) {
+      this.SUPER(e);
       var cards = [];
       for ( var i = 0 ; i < e.children.length ; i++ )
         if ( e.children[i].nodeName === 'card' )
@@ -39,7 +44,9 @@ CLASS({
     initHTML: function() {
       this.SUPER();
       this.X.window.addEventListener('resize', this.onResize);
-      this.onResize();
+      // TODO: Give time for layout.  This is pretty hacking and should be fixed.
+      setTimeout(this.onResize, 200);
+      setTimeout(this.onResize, 600);
     }
   },
 
@@ -57,8 +64,10 @@ CLASS({
           var iBounds = inner.getBoundingClientRect();
           var colInfo = cols[oBounds.left] || ( cols[oBounds.left] = 0 );
 
-          outer.style.marginTop = -colInfo + 20;
-          cols[oBounds.left] = colInfo + oBounds.height - iBounds.height;
+          var oldTop = toNum(outer.style.marginTop);
+          oldTop = Number.isNaN(oldTop) ? 0 : oldTop;
+          outer.style.marginTop = -colInfo;
+          cols[oBounds.left] += oBounds.height - iBounds.height - 16 + oldTop;
         }
       }
     },
@@ -77,17 +86,16 @@ CLASS({
       background: white;
       border-radius: 3px;
       box-shadow: 0 1px 3px #aaa;
-      margin: 0 1rem 1rem;
-      min-width: 300px;
-      padding: 1.5rem;
+      margin: 8px;
       transform-origin: top left;
     }
     */},
+
     function toInnerHTML() {/*
       <% for ( var i = 0 ; i < this.cards.length ; i++ ) {
         var v = this.cards[i](); %>
         <div id="{{v.id}}" class="outer">
-          <div class="card">
+          <div class="card" style="min-width: <%= this.minWidth %>px;">
             <%= v %>
           </div>
         </div>
