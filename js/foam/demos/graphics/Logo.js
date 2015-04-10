@@ -17,12 +17,12 @@
 
 CLASS({
   package: 'foam.demos.graphics',
-  name:  'LogoBackground',
+  name: 'LogoBackground',
   extendsModel: 'foam.graphics.CView',
 
   requires: [ 'foam.graphics.Circle' ],
 
-  imports: [ 'colours$', 'width', 'height' ],
+  imports: [ 'colours$', 'width$', 'height$' ],
 
   properties: [
     {
@@ -82,7 +82,7 @@ CLASS({
   name:  'LogoForeground',
   extendsModel: 'foam.graphics.CView',
 
-  imports: [ 'text$', 'font$', 'width', 'height' ],
+  imports: [ 'text$', 'font$', 'width$', 'height$' ],
 
   properties: [
     { name: 'className', defaultValue: 'logo-foreground' }
@@ -122,7 +122,7 @@ CLASS({
     'foam.demos.graphics.LogoBackground'
   ],
 
-  exports: [ 'text$', 'font$', 'colours$', 'width', 'height' ],
+  exports: [ 'text$', 'font$', 'colours$', 'width$', 'height$' ],
 
   properties: [
     {
@@ -164,6 +164,8 @@ CLASS({
     initHTML: function() {
       this.SUPER();
 
+      this.$.style.height = this.height;
+
       if ( this.duration ) {
         this.X.setTimeout(
           this.background.stop.bind(this.background),
@@ -175,6 +177,7 @@ CLASS({
   templates: [
     function toInnerHTML() {/* <%= this.background, this.foreground %>$$text{ tagName: 'logo-text', mode: 'read-only' } */},
     function CSS() {/*
+      .logo { display: block; position: relative; }
       .logo-foreground { position: absolute; left: 0; }
       .logo-background { position: absolute; left: 0; z-index: -1; }
       @media not print { logo-text { display: none; } }
