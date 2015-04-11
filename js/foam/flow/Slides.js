@@ -103,7 +103,7 @@ CLASS({
     */},
     function toInnerHTML() {/*
       <deck>
-        <%= this.currentSlide() %>
+        <%= this.currentSlide_ = this.currentSlide() %>
       </deck>
       <controls>
         $$position of {{this.slides.length}} $$back $$forth
