@@ -29,22 +29,27 @@ CLASS({
       name: 'timer',
       factory: function() { return Timer.create(); },
       postSet: function(_, timer) {
-        var self = this;
-        timer.start();
-        Events.dynamic(
-          function() { timer.time; },
-          function() { self.addBubble(); self.paint(); });
+        timer.time$.addListener(function() { this.addBubble(); this.paint(); }.bind(this));
       }
     },
     { name: 'className', defaultValue: 'logo-background' }
   ],
 
   methods: {
+    initCView: function() {
+      this.SUPER();
+      this.timer.start();
+    },
+    destroy: function() {
+      this.SUPER();
+      this.timer.stop();
+    },
     stop: function() {
       this.timer.stop();
       for ( var i in this.children ) this.children[i].stop();
     },
     addBubble: function() {
+      if ( ! this.view.$ ) this.destroy();
       var c = this.canvas;
       var Y = 120;
       var X = 10+Math.random()*(this.width-20);
