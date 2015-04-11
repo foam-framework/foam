@@ -308,7 +308,7 @@ MODEL({
         if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
           console.error('Error delivering event (removing listener): ', topic.join('.'), err);
         } else {
-          console.warn('Unsubscribing listener: ', topic.join('.'));
+          // console.warn('Unsubscribing listener: ', topic.join('.'));
         }
 
         return false;
