@@ -38,22 +38,28 @@ CLASS({
         return Math.max(1, Math.min(n, this.slides.length));
       },
       postSet: function(_, p) {
-        if ( ! this.$ ) return;
-        this.currentSlide_ && this.currentSlide_.destroy && this.currentSlide_.destroy();
-        var v = this.currentSlide_ = this.currentSlide();
-        this.$.querySelector('deck').innerHTML = v.toHTML();
-        v.initHTML();
+        if ( this.$ ) this.setView(this.currentSlide());
       }
     }
   ],
 
   methods: {
+    initHTML: function() {
+      this.SUPER();
+      this.position = 1;
+    },
     fromElement: function(e) {
       var slides = [];
       for ( var i = 0 ; i < e.children.length ; i++ )
         if ( e.children[i].nodeName === 'slide' )
           slides.push(ViewFactoryProperty.ADAPT.defaultValue(null, e.children[i].innerHTML));
       this.slides = slides;
+    },
+    setView: function(v) {
+      this.currentView_ && this.currentView_.destroy && this.currentView_.destroy();
+      this.currentView_ = v;
+      this.$.querySelector('deck').innerHTML = v.toHTML();
+      v.initHTML();
     }
   },
 
@@ -78,8 +84,8 @@ CLASS({
       name: 'legend',
       label: '[+]',
       action: function() {
-        this.currentSlide_ && this.currentSlide_.destroy && this.currentSlide_.destroy();
-        var v = this.currentSlide_ = this.Grid.create({cards: this.slides});
+        this.currentView_ && this.currentView_.destroy && this.currentView_.destroy();
+        var v = this.currentView_ = this.Grid.create({cards: this.slides});
         this.$.querySelector('deck').innerHTML = v.toHTML();
         v.initHTML();
       }
@@ -127,9 +133,7 @@ CLASS({
       }
     */},
     function toInnerHTML() {/*
-      <deck>
-        <%= this.currentSlide_ = this.currentSlide() %>
-      </deck>
+      <deck></deck>
       <controls>
         $$position of {{this.slides.length}} $$back $$forth $$legend
       </controls>
