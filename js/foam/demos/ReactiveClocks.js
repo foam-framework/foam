@@ -42,7 +42,7 @@ CLASS({
   ],
 
   templates: [
-    function toHTML() {/*$$timer<%= this.space %>*/}
+    function toHTML() {/*<table><tr><td valign="top">$$timer</td><td><%= this.space %></td></tr></table>*/}
   ],
   methods: {
     init: function() {
