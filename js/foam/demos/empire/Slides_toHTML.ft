@@ -44,4 +44,5 @@
   <slide>
     <h1>Summary</h1>
   </slide>
+  <slide><foam model="foam.demos.empire.Slides"/></slide>
 </slides>
