@@ -97,6 +97,7 @@ CLASS({
         height: 18%;
         overflow: hidden;
         box-shadow: 0 5px 15px #aaa;
+        padding: 2px;
       }
       slides * {
         box-sizing: border-box;
