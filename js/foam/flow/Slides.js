@@ -14,6 +14,10 @@ CLASS({
   name: 'Slides',
   extendsModel: 'foam.flow.Element',
 
+  requires: [
+    'foam.flow.Grid'
+  ],
+
   properties: [
     {
       name: 'slides',
@@ -69,11 +73,31 @@ CLASS({
       action: function() {
         this.position++;
       }
+    },
+    {
+      name: 'legend',
+      label: '[+]',
+      action: function() {
+        this.currentSlide_ && this.currentSlide_.destroy && this.currentSlide_.destroy();
+        var v = this.currentSlide_ = this.Grid.create({cards: this.slides});
+        this.$.querySelector('deck').innerHTML = v.toHTML();
+        v.initHTML();
+      }
     }
   ],
 
   templates: [
     function CSS() {/*
+      .card-grid {
+        zoom: 0.2;
+        margin-top: 60px;
+      }
+      slides .card-grid .card {
+        width: 18%;
+        height: 18%;
+        overflow: hidden;
+        box-shadow: 0 5px 15px #aaa;
+      }
       slides * {
         box-sizing: border-box;
       }
@@ -106,7 +130,7 @@ CLASS({
         <%= this.currentSlide_ = this.currentSlide() %>
       </deck>
       <controls>
-        $$position of {{this.slides.length}} $$back $$forth
+        $$position of {{this.slides.length}} $$back $$forth $$legend
       </controls>
     */}
   ]
