@@ -83,12 +83,7 @@ CLASS({
     {
       name: 'legend',
       label: '[+]',
-      action: function() {
-        this.currentView_ && this.currentView_.destroy && this.currentView_.destroy();
-        var v = this.currentView_ = this.Grid.create({cards: this.slides});
-        this.$.querySelector('deck').innerHTML = v.toHTML();
-        v.initHTML();
-      }
+      action: function() { this.setView(this.Grid.create({cards: this.slides})); }
     }
   ],
 
