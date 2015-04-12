@@ -35,7 +35,10 @@ CLASS({
         padding-left: 16px;
       }
       h1 {
+        color: blue;
+        font-size: 54px;
         margin-top: 16px;
+        margin-bottom: 16px;
       }
     */},
     { name: 'toHTML' }

@@ -6,7 +6,6 @@
     Kevin Greer<br>
     April 26, 2015<br>
   </slide>
-<slide> rest </slide>
   <slide><foam model="foam.demos.physics.Spring" n="10" width="800" height="400"/></slide>
   <slide>
     <h1>Reactive Programming</h1>
@@ -18,6 +17,15 @@
   </slide>
   <slide>
     <h1>Live Coding</h1>
+  </slide>
+  <slide>
+    <h1>Chrome App Builder</h1>
+  </slide>
+  <slide>
+    <h1>GMail</h1>
+  </slide>
+  <slide>
+    <h1>Calculator</h1>
   </slide>
   <slide>
     <h1>Physics: Collisions</h1>
