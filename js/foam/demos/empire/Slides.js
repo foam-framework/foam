@@ -31,6 +31,10 @@ CLASS({
 
   templates: [
     function CSS() {/*
+     slides {
+        display: flex;
+        flex-direction: column;
+      }
       deck {
         font-size: 200%;
         padding-left: 16px;

@@ -108,14 +108,14 @@ CLASS({
       }
       slides > deck {
         width: 100%;
-        height: 90%;
+        flex-grow: 1;
         border: 1px solid black;
         overflow: auto;
         border: 1px solid gray;
       }
       slides > controls {
         width: 100%;
-        height: 10%;
+        height: 48px;
         border: 1px solid black;
         padding: 10px;
       }
