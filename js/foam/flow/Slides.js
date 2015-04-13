@@ -120,6 +120,7 @@ CLASS({
         padding: 10px;
       }
       slides > controls input {
+        margin-top: 1px;
         vertical-align: top;
         width: 40px;
       }
