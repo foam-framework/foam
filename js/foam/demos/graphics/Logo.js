@@ -169,6 +169,7 @@ CLASS({
     initHTML: function() {
       this.SUPER();
 
+      this.$.style.width  = this.width;
       this.$.style.height = this.height;
 
       if ( this.duration ) {
