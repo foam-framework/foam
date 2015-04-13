@@ -23,13 +23,12 @@ CLASS({
   // When the future is set, it begins listening to it.
   // In general, the 10ms timer expires before the future does, and then it
   // renders a spinner.
-  // When the future resolves, it destroys the spinner and renders the view
-  // passed by the future.
+  // When the future resolves, it destroys the spinner and renders the innerView
+  // with the data from the future.
   // If the future resolves within the 10ms, then the spinner is never rendered.
-  // TODO(jacksonic): check data handling here. Must be manually done to views before they
-  // are passed in?
-  documentation: 'Expects a Future for a $$DOC{ref:"View"}. Shows a ' +
-      '$$DOC{ref:"SpinnerView"} until the future resolves.',
+  documentation: 'Expects a Future for the data which will be passed to the ' +
+      '$$DOC{ref:".innerView"}. Shows a $$DOC{ref:"SpinnerView"} until the ' +
+      'future resolves.',
 
   imports: [
     'clearTimeout',
@@ -46,7 +45,8 @@ CLASS({
     {
       name: 'future',
       required: true,
-      documentation: 'The Future for this View. Returns a View.'
+      documentation: 'The Future for this View. Expects the data for ' +
+          '$$DOC{ref:".innerView"} and an optional context to create it in.'
     },
     {
       name: 'preSpinnerTime',
@@ -65,8 +65,13 @@ CLASS({
       documentation: 'The View instance for the spinner.'
     },
     {
-      name: 'childView',
-      documentation: 'The real child view passed in the Future.'
+      model_: 'ViewFactoryProperty',
+      name: 'innerView',
+      documentation: 'The view to be rendered after the future resolves, and ' +
+          'passed the data provided by the Future.'
+    },
+    {
+      name: 'childView_'
     }
   ],
 
@@ -86,7 +91,7 @@ CLASS({
     },
     {
       name: 'onFuture',
-      code: function(view) {
+      code: function(data) {
         if ( this.timer ) this.clearTimeout(this.timer);
 
         var el;
@@ -97,10 +102,10 @@ CLASS({
         } else {
           el = this.$;
         }
-        this.childView = view;
+        this.childView_ = this.innerView({ data: data }, this.Y);
         if (el) {
-          el.outerHTML = view.toHTML();
-          view.initHTML();
+          el.outerHTML = this.childView_.toHTML();
+          this.childView_.initHTML();
         }
       }
     }
@@ -108,12 +113,12 @@ CLASS({
 
   methods: {
     toHTML: function() {
-      if ( this.childView ) return this.childView.toHTML();
+      if ( this.childView_ ) return this.childView_.toHTML();
       if ( this.spinner ) return this.spinner.toHTML();
       return this.SUPER();
     },
     initHTML: function() {
-      if ( this.childView ) this.childView.initHTML();
+      if ( this.childView_ ) this.childView_.initHTML();
       if ( this.spinner ) this.spinner.initHTML();
       this.SUPER();
       (this.future.get || this.future)(this.onFuture);
@@ -121,7 +126,7 @@ CLASS({
     destroy: function( isParentDestroyed ) {
       this.SUPER(isParentDestroyed);
       if ( this.spinner ) this.spinner.destroy();
-      if ( this.childView ) this.childView.destroy();
+      if ( this.childView_ ) this.childView_.destroy();
     }
   }
 });
