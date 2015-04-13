@@ -23,10 +23,7 @@ CLASS({
   properties: [
     {
       name: 'className',
-      defaultValueFn: function() {
-        return 'md-text-field-container' + (this.floatingLabel ?
-            '' : ' md-text-field-no-label') + (this.mode == 'read-only' ? ' disabled' : '');
-      }
+      defaultValueFn: function() { return this.resetClassName(); },
     },
     { name: 'data' },
     { name: 'softData' },
@@ -45,7 +42,11 @@ CLASS({
       name: 'floatingLabel',
       documentation: 'Set true for the floating label (see MD spec) by ' +
           'default, but can be disabled where the label is redundant.',
-      defaultValue: true
+      defaultValue: true,
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        this.resetClassName();
+      },
     },
     {
       model_: 'BooleanProperty',
@@ -82,7 +83,17 @@ CLASS({
         factory_: 'foam.ui.ChoiceView',
         choices: ['read-only', 'read-write'],
       },
-      documentation: function() { /* Can be 'read-only', or 'read-write'. */}
+      documentation: function() { /* Can be 'read-only', or 'read-write'. */},
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        this.resetClassName();
+        if ( this.$input ) {
+          if ( nu === 'read-only' )
+            this.$input.setAttribute('disabled', 'true');
+          else
+            this.$input.removeAttribute('disabled');
+        }
+      },
     }
   ],
   methods: {
@@ -104,7 +115,14 @@ CLASS({
     },
     blur: function() {
       this.$input && this.$input.blur();
-    }
+    },
+    resetClassName: function() {
+      // TODO(markdittmer): This should work with events.dynamic() in init(),
+      // but that doesn't seem to be working right now.
+      this.className = 'md-text-field-container' + (this.floatingLabel ?
+          '' : ' md-text-field-no-label') +
+          (this.mode == 'read-only' ? ' disabled' : '');
+    },
   },
   templates: [
     function CSS() {/*
