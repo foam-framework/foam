@@ -83,6 +83,9 @@ CLASS({
         if ( ! this.X.gestureManager ) {
           this.X.gestureManager = this.GestureManager.create();
         }
+        if ( this.action && this.action.labelFn ) {
+          this.X.dynamic(function() { this.action.labelFn.call(this.data, this.action); this.updateHTML(); }.bind(this));
+        }
       }
     },
     {
@@ -142,7 +145,6 @@ CLASS({
     function CSS() {/*
       flat-button {
         padding: 10px 20px;
-        text-transform: uppercase;
         display: inline-flex;
         align-items: center;
         justify-content: center;
