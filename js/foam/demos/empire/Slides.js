@@ -32,6 +32,7 @@ CLASS({
   templates: [
     function CSS() {/*
       deck {
+        font-size: 200%;
         padding-left: 16px;
       }
       h1 {
