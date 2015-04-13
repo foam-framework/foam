@@ -39,8 +39,8 @@ CLASS({
       help: 'The index of the currently selected view',
       defaultValue: 0,
       preSet: function(old, nu) {
-        if (nu < 0) return 0;
-        if (nu >= this.views.length) return this.views.length - 1;
+        if ( nu < 0 ) return 0;
+        if ( nu >= this.views.length ) return this.views.length - 1;
         return nu;
       },
       postSet: function(oldValue, viewChoice) {
@@ -237,7 +237,7 @@ CLASS({
         var x = this.index * this.width - tx;
 
         // Limit x to be within the scope of the slider: no dragging too far.
-        if (x < 0) x = 0;
+        if ( x < 0 ) x = 0;
         var maxWidth = (this.views.length - 1) * this.width;
         if ( x > maxWidth ) x = maxWidth;
 
@@ -249,7 +249,7 @@ CLASS({
       code: function(dx, tx, x) {
         if ( Math.abs(tx) > this.width / 3 ) {
           // Consider that a move.
-          if (tx < 0) {
+          if ( tx < 0 ) {
             this.index++;
           } else {
             this.index--;
@@ -282,7 +282,6 @@ CLASS({
         top: 0px;
         -webkit-transform: translate3d(0,0,0);
       }
-
     */}
   ]
 });
