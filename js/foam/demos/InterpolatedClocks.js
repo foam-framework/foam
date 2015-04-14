@@ -23,7 +23,8 @@ CLASS({
   requires: [
     'foam.demos.ClockView',
     'foam.graphics.Graph',
-    'foam.input.Mouse'
+    'foam.input.Mouse',
+    'foam.graphics.Label2'
   ],
 
   properties: [
@@ -47,36 +48,37 @@ CLASS({
 
       var M = Movement;
       var is = [
-        ['red',        M.linear],
-        ['green',      M.accelerate],
-        ['brown',      M.avg(M.linear, M.accelerate)],
-        ['blue',       M.easeIn(0.33)],
-        ['blue',       M.easeIn(0.66)],
-        ['blue',       M.easeIn(1.0)],
-        ['darkBlue',   M.easeIn(1.0).o(M.easeIn(1.0))],
-        ['yellow',     M.easeOut(0.25)],
-        ['pink',       M.ease(0.25,0.25)],
-        ['black',      M.avg(M.easeIn(0.25), M.easeOut(0.25))],
-        ['red',        M.bounce(0.15, 0.02,1)],
-        ['red',        M.bounce(0.15, 0.02,2)],
-        ['red',        M.bounce(0.15, 0.02,3)],
-        ['orange',     M.stepBack(0.05)],
-        ['black',      M.bounce(0.5, 0.1, 3).o(M.stepBack(0.05))],
+        ['red',        M.linear, 'linear'],
+        ['green',      M.accelerate, 'accelerate'],
+        ['brown',      M.avg(M.linear, M.accelerate), 'avg(linear, accelerate)'],
+        ['blue',       M.easeIn(0.33), 'easeIn(0.33)'],
+        ['blue',       M.easeIn(0.66), 'easeIn(0.66)'],
+        ['blue',       M.easeIn(1.0), 'easeIn(1.0)'],
+        ['darkBlue',   M.easeIn(1.0).o(M.easeIn(1.0)), 'easeIn(1.0).o(easeIn(1.0))'],
+        ['yellow',     M.easeOut(0.25), 'easeOut(0.25)'],
+        ['pink',       M.ease(0.25,0.25), 'ease(0.25,0.25)'],
+        ['black',      M.avg(M.easeIn(0.25), M.easeOut(0.25)), 'avg(easeIn(0.25), easeOut(0.25))'],
+        ['red',        M.bounce(0.15, 0.02, 1), 'bounce(0.15, 0.02,1)'],
+        ['red',        M.bounce(0.15, 0.02, 2), 'bounce(0.15, 0.02, 2)'],
+        ['red',        M.bounce(0.15, 0.02, 3), 'bounce(0.15, 0.02, 3)'],
+        ['orange',     M.stepBack(0.05), 'stepBack(0.05)'],
+        ['black',      M.bounce(0.5, 0.1, 3).o(M.stepBack(0.05)), 'bounce(0.5, 0.1, 3).o(stepBack(0.05))']
+        /*
         ['orange',     M.back],
         ['purple',     M.back.o(M.back)],
-        ['lightGreen', M.back.o(M.accelerate)]
+        ['lightGreen', M.back.o(M.accelerate)]*/
       ];
 
       var clocks = [], graphs = [], ms = [];
       for ( var i = 0 ; i < is.length ; i++ ) {
         clocks[i] = this.ClockView.create({
-          x: 250,
+          x: 640,
           y: 40+i*50,
           r: 20,
           color: is[i][0]
         });
         graphs[i] = this.Graph.create({
-          x: 5,
+          x: 400,
           y: 20+i*50,
           width: 200,
           height: 45,
@@ -88,6 +90,12 @@ CLASS({
           data: []
         });
         this.addChild(clocks[i]);
+        this.addChild(this.Label2.create({
+          font: '22px Arial',
+          color: '#444',
+          x: 10,
+          y: 25+i*50,
+          text: is[i][2]}));
         this.addChild(graphs[i]);
         (function (i) {
           var start = clocks[i].x;
