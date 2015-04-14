@@ -93,7 +93,7 @@ CLASS({
         'covered',
         function () {
           var covered = this.covered;
-          var marked = this.marked;
+          var marked  = this.marked;
           return covered && ! marked; },
         this.id);
       this.setClass('marked', function () { return this.marked; }, this.id);
@@ -105,19 +105,18 @@ CLASS({
 
   listeners: [
     {
-      name: 'sweep',
+      name: 'mark',
       code: function(e) {
-        // console.log(e.which);
-        this.covered = false;
+        this.marked = ! this.marked;
         e.preventDefault();
         e.stopPropagation();
         return false;
       }
     },
     {
-      name: 'mark',
+      name: 'sweep',
       code: function(e) {
-        this.marked = ! this.marked;
+        this.covered = false;
         e.preventDefault();
         e.stopPropagation();
         return false;

@@ -63,7 +63,7 @@ CLASS({
     getMineCount: function(cell) {
       var c = 0;
       for ( var row = Math.max(0, cell.y-1) ; row < Math.min(this.height, cell.y+2) ; row++ ) {
-        for ( var col = Math.max(0, cell.x-1)  ; col < Math.min(this.width, cell.x+2) ; col++ ) {
+        for ( var col = Math.max(0, cell.x-1) ; col < Math.min(this.width, cell.x+2) ; col++ ) {
           if ( this.cells[row][col].mined ) c++;
         }
       }
