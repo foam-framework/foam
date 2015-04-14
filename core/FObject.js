@@ -381,11 +381,12 @@ var FObject = {
         };
       } else if ( prop.factory ) {
         getter = function() {
-          if ( typeof this.instance_[name] == 'undefined' ) {
+          if ( typeof this.instance_[name] === 'undefined' ) {
             this.instance_[name] = null; // prevents infinite recursion
             // console.log('Ahead of order factory: ', prop.name);
             //debugger;
             var val = prop.factory.call(this, prop);
+            if ( typeof val === 'undefined' ) val = null;
             this[name] = val;
           }
           return this.instance_[name];
