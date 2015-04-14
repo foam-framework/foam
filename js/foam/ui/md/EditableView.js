@@ -103,6 +103,10 @@ CLASS({
       toggle-editable img.hide {
         display: none;
       }
+
+      toggle-editable .md-text-field-input {
+        margin: 16px;
+      }
     */},
   ],
 });

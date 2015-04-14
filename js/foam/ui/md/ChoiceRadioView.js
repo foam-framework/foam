@@ -62,7 +62,7 @@ CLASS({
     {
       name: 'innerTagName',
       defaultValue: 'li'
-    }
+    },
   ],
 
   methods: {
@@ -111,6 +111,8 @@ CLASS({
     function CSS() {/*
 .foamChoiceRadioView {
   list-style-type: none;
+  -webkit-margin-before: 0px;
+  -webkit-margin-after: 0px;
 }
 
 .foamChoiceRadioView .selected {
@@ -129,7 +131,7 @@ CLASS({
 }
 .foamChoiceRadioView.horizontal .choice {
   display: inline;
-  margin: 12px;
+  margin-right: 16px;
 }*/}
   ]
 });

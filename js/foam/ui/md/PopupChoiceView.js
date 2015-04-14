@@ -252,6 +252,7 @@ CLASS({
         align-items: center;
         align-content: flex-start;
         padding: 16px;
+        cursor: pointer;
       }
     */}
   ]
