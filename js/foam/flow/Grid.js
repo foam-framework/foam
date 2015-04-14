@@ -59,9 +59,9 @@ CLASS({
     */},
     function toInnerHTML() {/*
       <% for ( var i = 0 ; i < this.cards.length ; i++ ) { %>
-        <div class="card">
+        <div class="card"><div class="card-inset">
           <%= this.cards[i]() %>
-        </div>
+        </div></div>
       <% } %>
     */}
   ]
