@@ -28,6 +28,12 @@ CLASS({
       view: 'foam.ui.BooleanView',
     },
     {
+      model_: 'StringEnumProperty',
+      name: 'mode',
+      defaultValue: 'read-write',
+      choices: ['read-write', 'read-only', 'final']
+    },
+    {
       name: 'enabled',
       type: 'Boolean',
       view: 'foam.ui.BooleanView',
@@ -116,27 +122,49 @@ CLASS({
       }
 
 
+
+      .checkbox-label-ro {
+        margin-left: 10px;
+      }
+
+      .checkbox-data-ro {
+        color: #9e9e9e;
+        font-size: 150%;
+        visibility: hidden;
+      }
+      .checked .checkbox-data-ro {
+        visibility: visible;
+      }
     */},
     function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %>>
-        <span class="checkbox-label noselect"><%# this.label %></span>
-        <div class="checkbox-data-outer noselect">
-          <div class="checkbox-data-container">
-            <div class="checkbox-data"></div>
-          </div>
-          <%= this.halo %>
+      <% if (this.mode === 'read-only') { %>
+        <div id="%%id" <%= this.cssClassAttr() %>>
+          <div class="checkbox-data-ro">&#x2713;</div>
+          <div class="checkbox-label-ro"><%= this.label %></div>
         </div>
-      </div>
-      <%
-        this.on('click', function() {
-          if (self.enabled) {
-            self.data = !self.data;
-          }
-        }, this.id);
-        this.setClass('checked', function() { return !!self.data; }, this.id);
-        this.setClass('enabled', function() { return !!self.enabled; },
-            this.id);
-      %>
+        <% this.setClass('checked', function() { return !!self.data; },
+            this.id); %>
+      <% } else { %>
+        <div id="%%id" <%= this.cssClassAttr() %>>
+          <span class="checkbox-label noselect"><%# this.label %></span>
+          <div class="checkbox-data-outer noselect">
+            <div class="checkbox-data-container">
+              <div class="checkbox-data"></div>
+            </div>
+            <%= this.halo %>
+          </div>
+        </div>
+        <%
+          this.on('click', function() {
+            if (self.enabled) {
+              self.data = !self.data;
+            }
+          }, this.id);
+          this.setClass('checked', function() { return !!self.data; }, this.id);
+          this.setClass('enabled', function() { return !!self.enabled; },
+              this.id);
+        %>
+      <% } %>
     */}
   ]
 });

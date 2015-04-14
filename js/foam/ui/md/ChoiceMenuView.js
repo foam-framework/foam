@@ -57,6 +57,10 @@ CLASS({
       defaultValue: 48
     },
     {
+      name: 'itemWidth',
+      defaultValue: 100
+    },
+    {
       name: 'isHidden',
       defaultValue: true
     }
@@ -90,6 +94,7 @@ CLASS({
 
       var vp = this.viewportOnPage();
       this.itemHeight = startPageRect.height;
+      this.itemWidth = startPageRect.width-16;
       var pixAbove = startPageRect.top - vp.top - this.vMargin;
       var pixBelow = vp.bottom - startPageRect.bottom - this.vMargin;
 
@@ -175,7 +180,9 @@ CLASS({
                         left: startPageRect.left -2,
                         right: startPageRect.right +2,
                         width: startPageRect.width + this.hMargin*2 +4 };
-console.log("Menu start: ", startPageRect, " final ", finalRect, " selected offset: ", selectedOffset);
+
+//console.log("Menu start: ", startPageRect, " final ", finalRect, " selected offset: ", selectedOffset);
+
       // add to body html
       if ( this.$ ) this.$.outerHTML = '';  // clean up old copy, in case of rapid re-activation
       this.X.document.body.insertAdjacentHTML('beforeend', this.toHTML());
@@ -214,6 +221,7 @@ console.log("Menu start: ", startPageRect, " final ", finalRect, " selected offs
     choiceToHTML: function(id, choice) {
       return '<' + this.innerTagName + ' id="' + id + '" class="choice" '+
       'style="height: ' + this.itemHeight +
+      '; width: ' + this.itemWidth +
       '; margin-left: ' + this.hMargin +
       '; margin-right: ' + this.hMargin +
       '">' +
@@ -274,6 +282,7 @@ console.log("Menu start: ", startPageRect, " final ", finalRect, " selected offs
   overflow-y: auto;
   position: absolute;
   margin: 0;
+  flex-direction: column;
 }
 
 .foamChoiceMenuView .hidden{
@@ -294,7 +303,7 @@ console.log("Menu start: ", startPageRect, " final ", finalRect, " selected offs
   padding: 0px;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  align-content: flex-start;
   overflow: hidden;
   cursor: pointer;
 }

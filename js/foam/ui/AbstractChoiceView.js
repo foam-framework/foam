@@ -33,6 +33,9 @@ CLASS({
     {
       name: 'text',
       help: 'The user-visible text of the current choice (ie. [value, text] -> text).',
+      factory: function() {
+        return this.choice && this.choice[1];
+      },
       postSet: function(_, d) {
         for ( var i = 0 ; i < this.choices.length ; i++ ) {
           if ( this.choices[i][1] === d ) {
@@ -84,7 +87,7 @@ CLASS({
             a[i] = [a[i], a[i]];
         return a;
       },
-      postSet: function(_, newValue) {
+      postSet: function(oldValue, newValue) {
         var value = this.data;
 
         // Update current choice when choices update.
@@ -107,7 +110,20 @@ CLASS({
             this.data = newValue.length ? newValue[0][0] : undefined;
         }
 
-        this.updateHTML();
+        // check if the display labels changed
+        var labelsChanged = true;
+        if ( oldValue.length == newValue.length ) {
+          labelsChanged = false;
+          for (var i = 0; i < oldValue.length; ++i) {
+            if ( ! equals(oldValue[i][1], newValue[i][1]) ) {
+              labelsChanged = true;
+              break;
+            }
+          }
+        }
+        if ( labelsChanged ) {
+          this.updateHTML();
+        }
       }
     },
     // The authoritative selection internally. data and choice are outputs when

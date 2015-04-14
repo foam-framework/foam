@@ -215,9 +215,9 @@ canvas.createButton {
 
 @media not print {
   .md-card-shell, .md-card {
-    box-shadow: 4px 4px 10px #000000;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
     margin: 10px;
-    border-radius: 2px;
+    border-radius: 3px;
   }
 }
 
