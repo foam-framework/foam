@@ -21,10 +21,29 @@
     <div style="zoom:0.6;"><foam model="foam.demos.ArchitectureDiagram"/></div>
   </slide>
   <slide>
+    <h1>Interpolation</h1>
+    <foam model="foam.demos.InterpolatedClocks"/>
+  </slide>
+  <slide>
     <h1>Live Coding</h1>
   </slide>
   <slide>
+    <h1>Toolability</h1>
+    <h2>(Meta-Programming)</h2>
+  </slide>
+  <slide>
     <h1>Chrome App Builder</h1>
+  </slide>
+  <slide>
+    <h1>Offline</h1>
+    <ul>
+      <li>Caching
+      <li>Sync
+      <li>MQL
+    </ul>
+  </slide>
+  <slide>
+    <h1>Material Design</h1>
   </slide>
   <slide>
     <h1>GMail</h1>
