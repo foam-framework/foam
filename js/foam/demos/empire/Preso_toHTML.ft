@@ -25,6 +25,10 @@
     <foam model="foam.demos.InterpolatedClocks"/>
   </slide>
   <slide>
+    <h1>Animation</h1>
+    <foam model="foam.demos.SolarSystem"/>
+  </slide>
+  <slide>
     <h1>Live Coding</h1>
   </slide>
   <slide>
@@ -61,7 +65,9 @@
   </slide>
   <slide>
     <h1>Physics: Gravity</h1>
-    <foam model="foam.demos.physics.Bubbles" width="800" height="400"/>
+    <center>
+      <foam model="foam.demos.physics.Bubbles" width="800" height="400"/>
+    </center>
   </slide>
   <slide><foam model="foam.demos.pong.Pong"/></slide>
   <slide><foam model="foam.demos.Flow"/></slide>
