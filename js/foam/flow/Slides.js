@@ -90,15 +90,22 @@ CLASS({
   templates: [
     function CSS() {/*
       .card-grid {
-        zoom: 0.2;
         margin-top: 60px;
       }
       slides .card-grid .card {
-        width: 18%;
+        box-shadow: 0 5px 15px #aaa;
         height: 18%;
         overflow: hidden;
-        box-shadow: 0 5px 15px #aaa;
         padding: 2px;
+        width: 18%;
+      }
+      slides .card-grid .card .card-inset {
+        height: 80%;
+        overflow: hidden;
+        position: absolute;
+        transform-origin: 0 0;
+        transform: scale(0.18);
+        width: 100%;
       }
       slides * {
         box-sizing: border-box;
@@ -107,17 +114,17 @@ CLASS({
         display: block;
       }
       slides > deck {
-        width: 100%;
-        flex-grow: 1;
         border: 1px solid black;
-        overflow: auto;
         border: 1px solid gray;
+        flex-grow: 1;
+        overflow: auto;
+        width: 100%;
       }
       slides > controls {
-        width: 100%;
-        height: 48px;
         border: 1px solid black;
+        height: 48px;
         padding: 10px;
+        width: 100%;
       }
       slides > controls input {
         margin-top: 1px;
