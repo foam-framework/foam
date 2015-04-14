@@ -36,7 +36,7 @@ CLASS({
       factory: function() { return this.Timer.create(); }
     },
     { name: 'mouse',  factory: function() { return this.Mouse.create(); } },
-    { name: 'space',  factory: function() { return this.CView.create({width: 1920, height: 1080, background:'white'}); } },
+    { name: 'space',  factory: function() { return this.CView.create({width: 1000, height: 800, background:'white'}); } },
     { name: 'clock1', factory: function() { return this.ClockView.create({x:300, y:300, r:60, color:'red'}); } },
     { name: 'clock2', factory: function() { return this.ClockView.create({x:0, y:0, r:60, color:'green'}); } }
   ],
