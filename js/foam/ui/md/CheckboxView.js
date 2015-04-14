@@ -28,7 +28,7 @@ CLASS({
       view: 'foam.ui.BooleanView',
     },
     {
-      model_: 'StringEnumProperty',
+      model_: 'foam.core.types.StringEnumProperty',
       name: 'mode',
       defaultValue: 'read-write',
       choices: ['read-write', 'read-only', 'final']
