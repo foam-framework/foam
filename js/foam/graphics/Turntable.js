@@ -78,7 +78,7 @@ CLASS({
       this.internalTime = this.time;
       this.touchX = evt.offsetX - this.r - this.x;
       this.touchY = evt.offsetY - this.r - this.y;
-      this.a = this.angle(this.touchX, this.touchY);
+      this.theta = this.angle(this.touchX, this.touchY);
     },
     mouseUp: function(evt) {
       this.active = false;
@@ -89,9 +89,9 @@ CLASS({
       this.touchX = evt.offsetX - this.r - this.x;
       this.touchY = evt.offsetY - this.r - this.y;
 
-      var prevA = this.a;
-      this.a = this.angle(this.touchX, this.touchY);
-      var d = this.a - prevA;
+      var prevA = this.theta;
+      this.theta = this.angle(this.touchX, this.touchY);
+      var d = this.theta - prevA;
       if ( d > Math.PI*1.5 ) d -= Math.PI*2;
       if ( d < -Math.PI*1.5 ) d += Math.PI*2;
       if ( d == 0 ) return;

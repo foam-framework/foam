@@ -89,9 +89,6 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .card-grid {
-        margin-top: 60px;
-      }
       slides .card-grid .card {
         box-shadow: 0 5px 15px #aaa;
         height: 18%;
@@ -100,7 +97,7 @@ CLASS({
         width: 18%;
       }
       slides .card-grid .card .card-inset {
-        height: 80%;
+        height: 90%;
         overflow: hidden;
         position: absolute;
         transform-origin: 0 0;

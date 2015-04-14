@@ -414,11 +414,12 @@ CLASS({
       defaultValue: function(_, a, prop) {
         var m = this.X.lookup(prop.subType) || GLOBAL.lookup(prop.subType);
 
-        // if ( ! Array.isArray(a) ) a = [a];  // ???: Is this a good idea?
-        if ( ! m ) return a;
-
-        for ( var i = 0 ; i < a.length ; i++ )
-          a[i] = a[i].model_ ? FOAM(a[i]) : m.create(a[i]);
+        if ( m ) {
+          for ( var i = 0 ; i < a.length ; i++ ) {
+            if ( ! m.isInstance(a[i]) )
+              a[i] = a[i].model_ ? FOAM(a[i]) : m.create(a[i]);
+          }
+        }
 
         return a;
       }
