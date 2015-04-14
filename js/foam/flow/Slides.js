@@ -123,23 +123,28 @@ CLASS({
       slides > controls {
         background: #f5f5f0;
         border: 1px solid black;
+        flex-shrink: 0;
+        font-size: 20px;
         height: 48px;
         padding: 10px;
         width: 100%;
       }
       slides > controls input {
-        margin-top: 1px;
-        vertical-align: top;
+        font-size: 20px;
+        margin-right: 10px;
         width: 40px;
       }
+      slides > controls .of {
+        margin-top: 2px;
+      }
       slides > controls .actionButton-back {
-        margin-left: 100px;
+        margin-left: 20px;
       }
     */},
     function toInnerHTML() {/*
       <deck></deck>
-      <controls>
-        $$position of {{this.slides.length}} $$back $$forth $$legend
+      <controls style="display:flex;">
+        $$position <span class="of">of {{this.slides.length}}</span> <span style="flex-grow:1;"></span> $$legend $$back $$forth
       </controls>
     */}
   ]
