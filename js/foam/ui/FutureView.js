@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'FutureView',
-  extendsModel: 'foam.ui.View',
+  extendsModel: 'foam.ui.SimpleView',
   // Works as follows: when it starts up, it will create a 10ms timer.
   // When the future is set, it begins listening to it.
   // In general, the 10ms timer expires before the future does, and then it
