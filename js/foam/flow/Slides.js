@@ -121,6 +121,7 @@ CLASS({
         width: 100%;
       }
       slides > controls {
+        background: #f5f5f0;
         border: 1px solid black;
         height: 48px;
         padding: 10px;
