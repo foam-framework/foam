@@ -42,32 +42,32 @@ CLASS({
 
   methods: {
     initCView: function() {
-      var events    = this.Box.create({color: 'white', text: "Events",     background: 'green',  width: 300, height: 50,  x:-300, font: '22pt Arial'});
-      var reactive  = this.Box.create({color: 'white', text: "Reactivity", background: 'blue',   width: 300, height: 50,  x:-300, font: '22pt Arial'});
-      var animation = this.Box.create({color: 'white', text: "Animation",  background: 'brown',  width: 300, height: 50,  x:-300, font: '22pt Arial'});
-      var m         = this.Box.create({color: 'white', text: "M",          background: 'gray',   width: 35,  height: 35,  x:-300, font: '22pt Arial'});
-      var V         = this.Box.create({color: 'white', text: "V",          background: 'gray',   width: 100, height: 100, x:-300, font: '22pt Arial'});
-      var C         = this.Box.create({color: 'white', text: "C",          background: 'gray',   width: 35,  height: 35,  x:-300, font: '22pt Arial'});
-      var meta      = this.Box.create({color: 'white', text: "Meta",       background: 'black',  width: 300, height: 100, x:-300, font: '22pt Arial', a: Math.PI/2, });
+      var events    = this.Box.create({color: 'white', text: "Events",     background: 'green',  width: 300, height: 50,  x:-310, font: '22pt Arial'});
+      var reactive  = this.Box.create({color: 'white', text: "Reactivity", background: 'blue',   width: 300, height: 50,  x:-310, font: '22pt Arial'});
+      var animation = this.Box.create({color: 'white', text: "Animation",  background: 'brown',  width: 300, height: 50,  x:-310, font: '22pt Arial'});
+      var m         = this.Box.create({color: 'white', text: "M",          background: 'gray',   width: 35,  height: 35,  x:-310, font: '22pt Arial'});
+      var V         = this.Box.create({color: 'white', text: "V",          background: 'gray',   width: 100, height: 100, x:-310, font: '22pt Arial'});
+      var C         = this.Box.create({color: 'white', text: "C",          background: 'gray',   width: 35,  height: 35,  x:-310, font: '22pt Arial'});
+      var meta      = this.Box.create({color: 'white', text: "Meta",       background: 'black',  width: 300, height: 100, x:-310, font: '22pt Arial', a: Math.PI/2, });
       var ime       = this.Box.create({color: 'white', text: "IME",        background: 'orange', width: 300, height: 0,   x:750,  y:450, font: '22pt Arial'});
       var js        = this.Box.create({color: 'white', text: "JavaScript", background: 'red',    width: 0,   height: 50,  x:750,  y:800, font: '16pt Arial'});
       var java      = this.Box.create({color: 'white', text: "Java",       background: 'red',    width: 50,  height: 0,   x:1050, y:550, font: '16pt Arial'});
       var dart      = this.Box.create({color: 'white', text: "Dart",       background: 'red',    width: 50,  height: 0,   x:1100, y:550, font: '16pt Arial'});
       var cpp       = this.Box.create({color: 'white', text: "C++",        background: 'red',    width: 50,  height: 0,   x:1150, y:550, font: '16pt Arial'});
       var future    = this.Box.create({color: 'white', text: "...",        background: 'red',    width: 100, height: 0,   x:1200, y:550, font: '16pt Arial'});
-      var dev       = this.Circle.create({color:'red', r:15, x:800-15, y:-15});
+      var dev       = this.Circle.create({color:'red', r:15, x:800-15, y:-25});
       var timer     = this.timer;
- 
+
       this.addChildren(
         future, cpp, dart, java, js, ime, meta, animation, reactive, events, C, V, m, dev
       );
-      
+
       var M = Movement;
       var B = M.bounce(0.2, 0.08, 3);
-      
+
       M.orbit(timer, V, m,  220, 800);
       M.orbit(timer, V, C, -220, 800);
-      
+
       // Add gravity to 'dev'
       dev.v = 0;
       var intersects = {f:function(shape) {
@@ -77,7 +77,7 @@ CLASS({
         dev.y += ++dev.v;
         this.children.find(intersects, {put:function(child) {dev.y = child.y-dev.r-1; dev.v *= -.45; }});
       }.bind(this));
-      
+
       M.compile([
         [1000, function() { js.width = 300; }, B],
         [1000],
@@ -127,7 +127,7 @@ CLASS({
         [9000, function() { dev.x = 475; }, M.ease(0.2, 0.2)],
       ])();
     },
-    
+
     // TODO: Make a trait
     paintChildren: function() {
       // paint children inverted and slated below reflection point

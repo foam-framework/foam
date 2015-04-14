@@ -194,6 +194,40 @@ canvas.createButton {
   box-shadow: 3px 3px 3px #aaa;
   border-radius: 30px;
 }
+
+
+.md-card-shell {
+  display: block;
+  background: #fff;
+  margin: 10px;
+}
+
+.md-card {
+  background: #fff;
+  display: block;
+  margin: 10px;
+  padding: 10px;
+}
+
+.md-card p, .md-card-shell p {
+  width: initial;
+}
+
+@media not print {
+  .md-card-shell, .md-card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
+    margin: 10px;
+    border-radius: 3px;
+  }
+}
+
+@media print {
+  .md-card-shell, .md-card {
+    border: 6px double #000;
+    margin: 6pt;
+    page-break-inside: avoid;
+  }
+}
 */},
   ],
 });

@@ -29,14 +29,14 @@ var DocumentationBootstrap = {
   getter: function() {
     if ( ! DEBUG ) return '';
     var doc = this.instance_.documentation;
-    if (doc && typeof Documentation != "undefined" && Documentation // a source has to exist (otherwise we'll return undefined below)
-        && (  !doc.model_ // but we don't know if the user set model_
-           || !doc.model_.getPrototype // model_ could be a string
-           || !Documentation.isInstance(doc) // check for correct type
+    if ( doc && typeof Documentation != "undefined" && Documentation // a source has to exist (otherwise we'll return undefined below)
+        && (  ! doc.model_ // but we don't know if the user set model_
+           || ! doc.model_.getPrototype // model_ could be a string
+           || ! Documentation.isInstance(doc) // check for correct type
         ) ) {
       // So in this case we have something in documentation, but it's not of the
       // "Documentation" model type, so FOAMalize it.
-      if (doc.body) {
+      if ( doc.body ) {
         this.instance_.documentation = Documentation.create( doc );
       } else {
         this.instance_.documentation = Documentation.create({ body: doc });
@@ -47,7 +47,6 @@ var DocumentationBootstrap = {
     return this.instance_.documentation;
   }
 }
-
 
 
 var Model = {
@@ -623,9 +622,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
         if ( o[this.name].length ) output[this.name] = o[this.name];
       },
       defaultValue: [],
-      postSet: function(_, templates) {
-        TemplateUtil.expandModelTemplates(this);
-      },
+      postSet: function(_, templates) { TemplateUtil.expandModelTemplates(this); },
       //         defaultValueFn: function() { return []; },
       help: 'Templates associated with this entity.',
       documentation: function() { /*
@@ -648,10 +645,8 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
         if ( ! Model ) return newValue;
         return Array.isArray(newValue) ? JSONUtil.arrayToObjArray(this.X, newValue, Model) : newValue;
       },
-      postSet: function() {
-        this.models.forEach(function(m) {
-          this[m.name] = m;
-        }.bind(this));
+      postSet: function(_, models) {
+        for ( var i = 0 ; i < models.length ; i++ ) this[models[i].name] = models[i];
       },
       defaultValue: [],
       help: 'Sub-models embedded within this model.',
@@ -770,7 +765,6 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       documentation: function() { /*
           Internal documentation or implementation-specific 'todo' notes.
         */}
-
     },
     {
       name: 'createActionFactory',
@@ -836,4 +830,3 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
 
   toString: function() { return "Model"; }
 };
-

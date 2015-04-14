@@ -90,7 +90,12 @@
 
   apar.apply(null, models).aseq(
     function() {
-      var obj = X.lookup(model).create(params);
+      var m = X.lookup(model);
+      if ( ! m ) {
+        document.body.innerHTML = 'Unable to load model: ' + model;
+        return;
+      }
+      var obj = m.create(params);
       var view;
       if ( viewName ) {
         viewParams.data = obj;

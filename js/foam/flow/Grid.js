@@ -50,7 +50,7 @@ CLASS({
       animation: fly-in-from-left .5s 1s ease both;
       background: white;
       border-radius: 3px;
-      box-shadow: 0 1px 3px #aaa;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
       margin: 0 1rem 1rem;
       min-width: 300px;
       padding: 1.5rem;
@@ -59,9 +59,9 @@ CLASS({
     */},
     function toInnerHTML() {/*
       <% for ( var i = 0 ; i < this.cards.length ; i++ ) { %>
-        <div class="card">
+        <div class="card"><div class="card-inset">
           <%= this.cards[i]() %>
-        </div>
+        </div></div>
       <% } %>
     */}
   ]

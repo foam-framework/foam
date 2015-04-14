@@ -197,14 +197,12 @@ CLASS({
       return s + '"';
     },
 
-
     bindSubView: function(view, prop) {
       /*
         Bind a sub-$$DOC{ref:'foam.ui.View'} to a $$DOC{ref:'Property'} of this.
        */
       view.setValue(this.propertyValue(prop.name));
     },
-
 
     focus: function() {
       /* Cause the view to take focus. */
@@ -216,7 +214,7 @@ CLASS({
         Maintains the tree structure of $$DOC{ref:'foam.ui.View',usePlural:true}. When
         a sub-$$DOC{ref:'foam.ui.View'} is created, add it to the tree with this method.
       */
-      if ( child.toView_ ) child = child.toView_(); // Maybe the check isn't needed.
+      child = child.toView_();
       // Check prevents duplicate addChild() calls,
       // which can happen when you use creatView() to create a sub-view (and it calls addChild)
       // and then you write the View using TemplateOutput (which also calls addChild).
@@ -247,6 +245,14 @@ CLASS({
     },
 
     tapClick: function() {
+    },
+
+    resize: function() {
+      /* Call when you've changed your size to allow for the possibility of relayout. */
+      var e = this.X.document.createEvent('Event');
+      e.initEvent('resize', true, true);
+      if ( this.$ ) this.X.window.getComputedStyle(this.$);
+      this.X.window.dispatchEvent(e);
     },
 
     on: function(event, listener, opt_id) {

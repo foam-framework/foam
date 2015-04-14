@@ -308,7 +308,7 @@ MODEL({
         if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
           console.error('Error delivering event (removing listener): ', topic.join('.'), err);
         } else {
-          console.warn('Unsubscribing listener: ', topic.join('.'));
+          // console.warn('Unsubscribing listener: ', topic.join('.'));
         }
 
         return false;
@@ -1030,8 +1030,10 @@ MODEL({
         c.x += c.vx;
         c.y += c.vy;
         // StaticFriction
-        if ( c.x < 0.1 ) c.x = 0;
-        if ( c.y < 0.1 ) c.y = 0;
+        /*
+        if ( c.vx < 0.001 ) c.vx = 0;
+        if ( c.vy < 0.001 ) c.vy = 0;
+        */
       });
     },
 

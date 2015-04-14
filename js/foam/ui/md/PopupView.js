@@ -82,14 +82,7 @@ CLASS({
     },
     {
       model_: 'ViewFactoryProperty',
-      name: 'delegate',
-      defaultValue: {
-        factory_: 'foam.ui.md.Card',
-        delegate: {
-          factory_: 'foam.ui.md.CardTitle',
-          data: 'Popup Title'
-        }
-      }
+      name: 'delegate'
     },
     {
       name: 'delegateView'

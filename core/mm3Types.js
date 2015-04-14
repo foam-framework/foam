@@ -764,6 +764,16 @@ CLASS({
       preSet: function(_, f) { return ViewFactoryProperty.ADAPT.defaultValue.call(this, null, f); }
     },
     {
+      name: 'defaultValueFn',
+      preSet: function(_, f) {
+        // return a function that will adapt the given f's return
+        return function(prop) {
+          // call the defaultValue function, adapt the result, return it
+          return ViewFactoryProperty.ADAPT.defaultValue.call(this, null, f.call(this, prop));
+        };
+      }
+    },
+    {
       name: 'fromElement',
       defaultValue: function(e, p) {
         this[p.name] = e.innerHTML_ || ( e.innerHTML_ = e.innerHTML );

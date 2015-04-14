@@ -16,11 +16,14 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'GalleryView',
   extendsModel: 'foam.ui.SwipeAltView',
-  package: 'foam.ui',
   
-  requires: ['foam.ui.ViewChoice', 'foam.ui.GalleryImageView'],
+  requires: [
+    'foam.ui.ViewChoice',
+    'foam.ui.GalleryImageView'
+  ],
 
   properties: [
     {

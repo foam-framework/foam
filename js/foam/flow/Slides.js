@@ -14,6 +14,10 @@ CLASS({
   name: 'Slides',
   extendsModel: 'foam.flow.Element',
 
+  requires: [
+    'foam.flow.Grid'
+  ],
+
   properties: [
     {
       name: 'slides',
@@ -34,22 +38,28 @@ CLASS({
         return Math.max(1, Math.min(n, this.slides.length));
       },
       postSet: function(_, p) {
-        if ( ! this.$ ) return;
-        this.currentSlide_ && this.currentSlide_.destroy && this.currentSlide_.destroy();
-        var v = this.currentSlide_ = this.currentSlide();
-        this.$.querySelector('deck').innerHTML = v.toHTML();
-        v.initHTML();
+        if ( this.$ ) this.setView(this.currentSlide());
       }
     }
   ],
 
   methods: {
+    initHTML: function() {
+      this.SUPER();
+      this.position = 1;
+    },
     fromElement: function(e) {
       var slides = [];
       for ( var i = 0 ; i < e.children.length ; i++ )
         if ( e.children[i].nodeName === 'slide' )
           slides.push(ViewFactoryProperty.ADAPT.defaultValue(null, e.children[i].innerHTML));
       this.slides = slides;
+    },
+    setView: function(v) {
+      this.currentView_ && this.currentView_.destroy && this.currentView_.destroy();
+      this.currentView_ = v;
+      this.$.querySelector('deck').innerHTML = v.toHTML();
+      v.initHTML();
     }
   },
 
@@ -69,11 +79,34 @@ CLASS({
       action: function() {
         this.position++;
       }
+    },
+    {
+      name: 'legend',
+      label: '[+]',
+      action: function() { this.setView(this.Grid.create({cards: this.slides})); }
     }
   ],
 
   templates: [
     function CSS() {/*
+      .card-grid {
+        margin-top: 60px;
+      }
+      slides .card-grid .card {
+        box-shadow: 0 5px 15px #aaa;
+        height: 18%;
+        overflow: hidden;
+        padding: 2px;
+        width: 18%;
+      }
+      slides .card-grid .card .card-inset {
+        height: 80%;
+        overflow: hidden;
+        position: absolute;
+        transform-origin: 0 0;
+        transform: scale(0.18);
+        width: 100%;
+      }
       slides * {
         box-sizing: border-box;
       }
@@ -81,32 +114,37 @@ CLASS({
         display: block;
       }
       slides > deck {
-        width: 100%;
-        height: 90%;
         border: 1px solid black;
-        overflow: auto;
         border: 1px solid gray;
+        flex-grow: 1;
+        overflow: auto;
+        width: 100%;
       }
       slides > controls {
-        width: 100%;
-        height: 10%;
+        background: #f5f5f0;
         border: 1px solid black;
+        flex-shrink: 0;
+        font-size: 20px;
+        height: 48px;
         padding: 10px;
+        width: 100%;
       }
       slides > controls input {
-        vertical-align: top;
+        font-size: 20px;
+        margin-right: 10px;
         width: 40px;
       }
+      slides > controls .of {
+        margin-top: 2px;
+      }
       slides > controls .actionButton-back {
-        margin-left: 100px;
+        margin-left: 20px;
       }
     */},
     function toInnerHTML() {/*
-      <deck>
-        <%= this.currentSlide() %>
-      </deck>
-      <controls>
-        $$position of {{this.slides.length}} $$back $$forth
+      <deck></deck>
+      <controls style="display:flex;">
+        $$position <span class="of">of {{this.slides.length}}</span> <span style="flex-grow:1;"></span> $$legend $$back $$forth
       </controls>
     */}
   ]

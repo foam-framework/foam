@@ -22,9 +22,69 @@ CLASS({
 
   extendsModel: 'foam.ui.AbstractChoiceView',
 
-  requires: ['foam.ui.md.ChoiceMenuView'],
+  requires: ['foam.ui.md.ChoiceMenuView', 'foam.ui.md.TextFieldView'],
 
   traits: ['foam.input.touch.VerticalScrollNativeTrait'],
+
+  models: [
+    {
+      name: 'FlatButton',
+      extendsModel: 'foam.ui.md.FlatButton',
+
+      properties: [
+        {
+          name: 'tagName',
+          defaultValue: 'popup-choice-view-flat-button'
+        }
+      ],
+
+      templates: [
+        function toInnerHTML() {/*
+            <%= this.halo %>
+            <span>
+            <% if ( this.action && this.action.label ) { %>
+              {{this.action.label}}
+            <% } else if ( this.action ) { %>
+              {{this.action.name}}
+            <% } else if ( this.inner ) { %>
+              <%= this.inner() %>
+            <% } else { %>this.data<% } %>
+            </span>
+            <%
+            this.on('click', function() {
+                this.action.callIfEnabled(this.X, this.data);
+            }.bind(this), this.id);
+            this.setClass('hidden', function() { return !!self.isHidden; }, this.id);
+            %>
+        */},
+        function CSS() {/*
+          popup-choice-view-flat-button {
+            padding: 10px 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            border-radius: 2px;
+            cursor: pointer;
+            height: 48px;
+          }
+
+          .hidden {
+            display: none;
+          }
+
+          .halo  {
+            position: absolute;
+            left: 0;
+            top: 0;
+          }
+
+
+        */}
+      ]
+    }
+  ],
 
   documentation: function() {/* This is very closely related to
      $$DOC{ref:'foam.ui.PopupChoiceView'}. Refactor them! */},
@@ -62,11 +122,10 @@ CLASS({
     }
   ],
 
-  actions: [
+  listeners: [
     {
-      name: 'open',
-      labelFn: function(action) { console.log("called labelfn"); return this.text; },
-      action: function() {
+      name: 'launch',
+      code: function() {
         if ( this.opened ) return;
 
         var self = this;
@@ -163,16 +222,23 @@ CLASS({
         this.data$.addListener(this.updateListener);
       }
 
-      out += '<span class="action">';
-      var action = this.model_.getAction('open');
-      action.iconUrl = this.iconUrl;
-      var button = this.createActionView(action).toView_();
+//       out += '<span class="action">';
+//       var action = this.model_.getAction('open').clone();
+//       action.iconUrl = this.iconUrl;
+//       action.labelFn = function(action) { action.label = this.text; }.bind(this);
+//       var button = this.FlatButton.create({
+//         tagName: 'popup-choice-view-flat-button',
+//         action: action
+//       }).toView_();
 
+//       this.addSelfDataChild(button);
 
-      this.addSelfDataChild(button);
+//       out += button.toHTML();
+//       out += '</span>';
 
-      out += button.toHTML();
-      out += '</span>';
+      out += "<div>"+this.createTemplateView('text', { mode:'read-only' }).toHTML()+"</div>";
+
+      this.on('click', this.launch, this.id);
 
       return out;
     }
@@ -181,25 +247,13 @@ CLASS({
   templates: [
     function CSS() {/*
       .popupChoiceView {
-        display: inline-block;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        align-content: flex-start;
+        padding: 16px;
+        cursor: pointer;
       }
-
-//       .popupChoiceList {
-//         border: 2px solid grey;
-//         background: white;
-//         display: table-footer-group;
-//         overflow-y: auto;
-//         position: absolute;
-//         top: 20;
-//         left: 50;
-//         margin: 0;
-//       }
-
-//       .popupChoiceList li {
-//         display: block;
-//         margin: 15px;
-//         margin-left: -20px;
-//       }
     */}
   ]
 });

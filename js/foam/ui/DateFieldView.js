@@ -16,12 +16,11 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name:  'DateFieldView',
   label: 'Date Field',
 
   extendsModel: 'foam.ui.TextFieldView',
-  package: 'foam.ui',
-  
 
   properties: [
     {
@@ -38,4 +37,3 @@ CLASS({
     }
   }
 });
-

@@ -10,14 +10,13 @@
  */
 
 CLASS({
-  package: 'foam.demos',
-  name: 'Flow',
+  package: 'foam.demos.empire',
+  name: 'Preso',
   extendsModel: 'foam.flow.Section',
 
   constants: { ELEMENT_NAME: 'foam-demos-flow' },
 
   requires: [
-    'foam.flow.ToC',
     'foam.graphics.Circle',
     'foam.flow.CodeSample',
     'foam.flow.Slides'
@@ -32,9 +31,19 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .flow-slides-slide {
-        width: 500px;
-        height: 300px;
+     slides {
+        display: flex;
+        flex-direction: column;
+      }
+      deck {
+        font-size: 200%;
+        padding-left: 16px;
+      }
+      h1 {
+        color: blue;
+        font-size: 54px;
+        margin-top: 16px;
+        margin-bottom: 16px;
       }
     */},
     { name: 'toHTML' }

@@ -30,7 +30,17 @@ CLASS({
       postSet: function(old, nu) {
         this.updateHTML();      
       }
-    },    
+    },
+    {
+      name: 'width',
+      documentation: 'The width of the circle in CSS pixels.',
+      defaultValue: 20
+    },
+    {
+      name: 'height',
+      documentation: 'The height of the circle in CSS pixels.',
+      defaultValue: 20
+    }
   ],
 
   methods: {
@@ -51,7 +61,7 @@ CLASS({
         -webkit-flex-grow: 0;
         -webkit-justify-content: center;
         align-items: center;
-        border-radius: 20px;
+        border-radius: 50%;
         border: 1px solid rgba(0,0,0,.1);
         box-sizing: border-box;
         color: #fff;
@@ -59,17 +69,15 @@ CLASS({
         display: inline-flex;
         flex-grow: 0;
         font-size: 20px;
-        height: 40px;
         justify-content: center;
         margin-right: 16px;
         overflow: hidden;
         padding-bottom: 2px;
-        width: 40px;
       }
     */},
     function toInnerHTML() {/* {{{this.data[0] && this.data[0].toUpperCase() || '&nbsp;' }}} */},
     function toHTML() {/*
-      <div id="<%= this.id %>" <%= this.cssClassAttr() %> style="background: <%= this.generateColor(this.data) %>">
+      <div id="<%= this.id %>" <%= this.cssClassAttr() %> style="background: <%= this.generateColor(this.data) %>; width: <%= this.width %>px; height: <%= this.height %>px">
         <%= this.toInnerHTML() %>
       </div>
     */}

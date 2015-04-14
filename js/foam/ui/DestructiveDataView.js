@@ -78,7 +78,7 @@ CLASS({
 //           console.warn("Data changed after fast-destroy! ", this.name_, parentName);
 //         }.bind(this));
 //      }
-      this.SUPER( isParentDestroyed );
+      this.SUPER(isParentDestroyed);
     },
     addDataChild: function(child) {
       /* For children that link to data$, this method tracks them
