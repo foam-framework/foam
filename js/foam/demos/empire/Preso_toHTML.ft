@@ -18,7 +18,7 @@
   </slide>
   <slide>
     <h1>Architecture</h1>
-    <div style="zoom:0.6;"><foam model="foam.demos.ArchitectureDiagram"/></div>
+    <div style="transform:scale(0.6);transform-origin: 0 0;"><foam model="foam.demos.ArchitectureDiagram"/></div>
   </slide>
   <slide>
     <h1>Interpolation</h1>
