@@ -18,8 +18,7 @@
 CLASS({
   name: 'DOMPanel',
   package: 'foam.ui.layout',
-  extendsModel: 'foam.ui.BaseView',
-  traits: ['foam.ui.HTMLViewTrait', 'foam.ui.TemplateSupportTrait',  'foam.ui.ViewActionsTrait'],
+  extendsModel: 'foam.ui.SimpleView',
   imports: [
     'window'
   ],
@@ -27,8 +26,8 @@ CLASS({
     { model_: 'IntProperty', name: 'width' },
     { model_: 'IntProperty', name: 'height' },
     { name: 'tagName', defaultValue: 'div' },
-    { name: 'data', postSet: function() { 
-      this.updateHTML(); 
+    { name: 'data', postSet: function() {
+      this.updateHTML();
     } }
   ],
   methods: {

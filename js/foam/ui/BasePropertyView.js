@@ -21,8 +21,6 @@ CLASS({
   name: 'BasePropertyView',
   extendsModel: 'foam.ui.BaseView',
 
-  requires: [ 'foam.ui.TextFieldView' ],
-
   documentation: function() {/*
     Apply this trait to a $$DOC{ref:'BaseView'} (such as $$DOC{ref:'HTMLView'}).</p>
     <p>Used by $$DOC{ref:'foam.ui.DetailView'} to generate a sub-$$DOC{ref:'foam.ui.View'} for one
@@ -111,10 +109,8 @@ CLASS({
 
     createViewFromProperty: function(prop, ret) {
       /* Helper to determine the $$DOC{ref:'foam.ui.View'} to use. */
-      var viewName = this.innerView || prop.view
-      if ( ! viewName ) {
-        ret(this.TextFieldView.create(prop, this.Y));
-      } else if ( typeof viewName === 'string' ) {
+      var viewName = this.innerView || prop.view || 'foam.ui.TextFieldView';
+      if ( typeof viewName === 'string' ) {
 //        var m = this.Y.lookup(viewName);
 //        if ( m ) ret(m.create(prop, this.Y));
 //        else
