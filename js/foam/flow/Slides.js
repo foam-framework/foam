@@ -91,17 +91,18 @@ CLASS({
     function CSS() {/*
       slides .card-grid .card {
         box-shadow: 0 5px 15px #aaa;
-        height: 18%;
+        height: 17%;
         overflow: hidden;
         padding: 2px;
-        width: 18%;
+        width: 17%;
+        min-width: initial;
       }
       slides .card-grid .card .card-inset {
         height: 90%;
         overflow: hidden;
         position: absolute;
         transform-origin: 0 0;
-        transform: scale(0.18);
+        transform: scale(0.15);
         width: 100%;
       }
       slides * {
@@ -130,7 +131,7 @@ CLASS({
       slides > controls input {
         font-size: 20px;
         margin-right: 10px;
-        width: 40px;
+        width: 50px;
       }
       slides > controls .of {
         margin-top: 2px;
