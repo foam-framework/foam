@@ -6,19 +6,19 @@ CLASS({
 
   properties: [
     {
-      name:  'label',
-      help:  'The label to appear on the meter.',
+      name: 'label',
+      help: 'The label to appear on the meter.',
     },
     {
       model_: 'FloatProperty',
-      name:  'data',
+      name: 'data',
       defaultValue: 1
     },
     {
       model_: 'FloatProperty',
       name:  'maxValue',
       label: 'Max. Value',
-      help:  'Maximum Value.',
+      help: 'Maximum Value.',
       defaultValue: 10
     },
     {
