@@ -9,7 +9,6 @@
  *     http://www.apache.org/licenses/LICENSE-2.0
  */
 
-// TODO: Use this font for timer: http://www.dafont.com/digital-7.font
 CLASS({
   package: 'com.google.sweeper',
   name: 'Game',
@@ -25,25 +24,19 @@ CLASS({
     },
     {
       name: 'board',
-      lazyFactory: function() { return this.Board.create(); }
+      factory: function() { return this.Board.create(); }
     }
   ],
 
   methods: {
-    init: function() {
-      this.SUPER();
-      this.tick();
-    }
+    init: function() { this.SUPER(); this.tick(); }
   },
 
   listeners: [
     {
       name: 'tick',
       isMerged: 1000,
-      code: function() {
-        this.time++;
-        this.tick();
-      }
+      code: function() { this.time++; this.tick(); }
     }
   ],
 

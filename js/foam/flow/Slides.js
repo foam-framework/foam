@@ -119,12 +119,13 @@ CLASS({
       }
       slides > controls {
         background: #f5f5f0;
-        border: 1px solid black;
+        border: 1px solid #aaa;
         flex-shrink: 0;
         font-size: 20px;
         height: 48px;
         padding: 10px;
         width: 100%;
+        z-index: 2;
       }
       slides > controls input {
         font-size: 20px;
