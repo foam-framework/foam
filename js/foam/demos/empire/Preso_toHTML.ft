@@ -18,6 +18,9 @@
     <h1>Holistic</h1>
   </slide>
   <slide>
+    <h1>Scalability</h1>
+  </slide>
+  <slide>
     <h1>Reactive Programming</h1>
     <foam model="foam.demos.ReactiveClocks"/>
   </slide>
@@ -79,6 +82,6 @@
   <slide>
     <h1>Summary</h1>
   </slide>
-  <slide><br><br><center><foam model="foam.graphics.Guage" label="Applause"/></center></slide>
+  <slide><br><br><center><foam model="foam.graphics.Gauge" label="Applause"/></center></slide>
 <!--  <slide><foam model="foam.demos.empire.Slides"/></slide> -->
 </slides>
