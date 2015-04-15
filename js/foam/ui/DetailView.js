@@ -20,9 +20,6 @@ CLASS({
   name: 'DetailView',
 
   extendsModel: 'foam.ui.View',
-//   traits: ['foam.ui.HTMLViewTrait',
-//            'foam.ui.ViewActionsTrait',
-//            'foam.ui.TemplateSupportTrait'],
 
   requires: [
     'Property',

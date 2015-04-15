@@ -22,12 +22,11 @@ CLASS({
   extendsModel: 'foam.ui.BaseView',
   traits: [
     'foam.ui.HTMLViewTrait',
-    'foam.ui.TemplateSupportTrait',
-    'foam.ui.ViewActionsTrait'
+    'foam.ui.TemplateSupportTrait'
   ],
-  
+
   requires: [ 'Property' ],
-           
+
   exports: [ 'propertyViewProperty' ],
 
   documentation: function() {/*

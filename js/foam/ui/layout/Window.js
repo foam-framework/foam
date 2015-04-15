@@ -18,8 +18,7 @@
 CLASS({
   name: 'Window',
   package: 'foam.ui.layout',
-  extendsModel: 'foam.ui.BaseView',
-  traits: ['foam.ui.HTMLViewTrait', 'foam.ui.TemplateSupportTrait',  'foam.ui.ViewActionsTrait'],
+  extendsModel: 'foam.ui.SimpleView',
   imports: [
     'dynamic',
     'window'

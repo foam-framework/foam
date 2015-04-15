@@ -18,9 +18,14 @@
 CLASS({
   package: 'foam.ui',
   name: 'TemplateSupportTrait',
-  
-  requires: ['foam.ui.PropertyView', 'foam.ui.ActionButton', 'SimpleReadOnlyValue'],
-  
+
+  requires: [
+    'foam.ui.PropertyView',
+    'foam.ui.ActionButton',
+    'foam.ui.RelationshipView',
+    'SimpleReadOnlyValue'
+  ],
+
   documentation: function() {/* For Views that need to support templates
     to create children through $$DOC{ref:'.',text:'$$'} notation.
   */},
@@ -28,11 +33,11 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      
+
       // HACK: when dependency cycles can resolve, move this to requires
       arequire('foam.ui.RelationshipView');
     },
-        
+
     createView: function(prop, opt_args) {
       /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.Y;
@@ -40,7 +45,7 @@ CLASS({
       this[prop.name + 'View'] = v.view;
       return v;
     },
-    
+
     removeChild: function(child) {
       if ( this.PropertyView.isInstance(child) && child.prop ) {
         delete this[child.prop.name + 'View'];
@@ -48,28 +53,26 @@ CLASS({
       this.SUPER(child);
     },
 
-//     createActionView: function(action, opt_args) {
-//       /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info
-//         specifically for $$DOC{ref:'Action',usePlural:true}. */
-//       var X = ( opt_args && opt_args.X ) || this.X;
-//       var modelName = opt_args && opt_args.model_ ?
-//         opt_args.model_ :
-//         'foam.ui.ActionButton'  ;
-//       var v = FOAM.lookup(modelName, X).create({action: action}).copyFrom(opt_args);
-
-//       this[action.name + 'View'] = v;
-
-//       return v;
-//     },
- 
-
     createRelationshipView: function(r, opt_args) {
       var X = ( opt_args && opt_args.X ) || this.Y;
-      this[r.name + 'View'] = X.foam.ui.RelationshipView.create({
+      this[r.name + 'View'] = this.RelationshipView.create({
         relationship: r,
         args: opt_args
       }, X);
       return this[r.name + 'View'];
+    },
+    createActionView: function(action, opt_args) {
+      /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info
+        specifically for $$DOC{ref:'Action',usePlural:true}. */
+      var X = ( opt_args && opt_args.X ) || this.Y;
+      var modelName = opt_args && opt_args.model_ ?
+        opt_args.model_ :
+        'foam.ui.ActionButton'  ;
+      var v = X.lookup(modelName, X).create({action: action}, X).copyFrom(opt_args);
+
+      this[action.name + 'View'] = v;
+
+      return v;
     },
 
     createTemplateView: function(name, opt_args) {
@@ -93,12 +96,12 @@ CLASS({
           else
             v = this.createView(o, args);
           // link data and add child view
-          this.addDataChild(v);          
+          this.addDataChild(v);
           return v;
         }
-      } 
+      }
       // fallback to check our own properties
-      var o = this.model_.getFeature(name);  
+      var o = this.model_.getFeature(name);
       if ( ! o ) throw 'Unknown View Name: ' + name;
       //args.data = this;
 
@@ -109,10 +112,10 @@ CLASS({
       else
         v = this.createView(o, args);
       // set this-as-data and add child view
-      this.addSelfDataChild(v);          
+      this.addSelfDataChild(v);
       return v;
     },
-    
+
     dynamicTag: function(tagName, f) {
       /*
         Creates a dynamic HTML tag whose content will be automatically updated.

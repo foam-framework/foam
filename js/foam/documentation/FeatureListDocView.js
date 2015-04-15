@@ -20,11 +20,8 @@ CLASS({
   package: 'foam.documentation',
   documentation: 'Displays the HTML documentation of the given feature list.',
 
-  extendsModel: 'foam.ui.DestructiveDataView',
-  traits: ['foam.ui.HTMLViewTrait',
-           'foam.ui.ViewActionsTrait',
-           'foam.ui.TemplateSupportTrait',
-           'foam.documentation.FeatureListLoaderTrait'],
+  extendsModel: 'foam.ui.View',
+  traits: ['foam.documentation.FeatureListLoaderTrait'],
 
   requires: [ 'foam.ui.DAOListView',
               'foam.ui.CollapsibleView',
