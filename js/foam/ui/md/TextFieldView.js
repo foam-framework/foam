@@ -122,6 +122,7 @@ CLASS({
       this.className = 'md-text-field-container' + (this.floatingLabel ?
           '' : ' md-text-field-no-label') +
           (this.mode == 'read-only' ? ' disabled' : '');
+      return this.className;
     },
   },
   templates: [
@@ -202,7 +203,7 @@ CLASS({
             }, label);
         }
       %>
-      <div %%cssClassAttr() id="%%id">
+      <div <%= this.cssClassAttr() %> id="%%id">
         <% if (this.floatingLabel) { %>
           <label id="{{{label}}}" class="md-text-field-label">%%label</label>
         <% } %>
