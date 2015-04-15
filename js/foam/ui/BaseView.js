@@ -50,6 +50,12 @@ CLASS({
          this method sets the child's data to 'this'. */
       child.data = this;
       this.addChild(child);
+    },
+    
+    toView_: function() {
+      /* if you are a BaseView that can be converted into an html View,
+         convert here */ 
+      return this;
     }
   }
   
