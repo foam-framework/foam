@@ -39,7 +39,7 @@ CLASS({
           this.modelName = this.data.name;
           this.packageName = this.data.package;
         }
-        //this.processModelChange();
+        this.processModelChange();
       }
     },
     {
@@ -106,6 +106,9 @@ CLASS({
     processModelChange: function() {
       // abort if it's too early //TODO: (we import data and run its postSet before the rest is set up)
       if (!this.featureDAO || !this.modelDAO) return;
+      this.generateFeatureDAO(this.data);
+      this.destroy();
+      this.construct();
     },
 
     addChild: function(child) {
