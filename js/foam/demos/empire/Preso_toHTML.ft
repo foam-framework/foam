@@ -6,12 +6,17 @@
     <foam model="foam.demos.graphics.Logo" text="FOAM" width="360" height="140"/>
     <font size="220%">(Feature-Oriented Active Modeller)</font><br>
     <br>
-    <br>
     Kevin Greer, <a href="mailto:kgr@chromium.org">kgr@chromium.org</a><br>
     April 26, 2015<br>
     </center>
   </slide>
-  <slide><foam model="foam.demos.physics.Spring" n="10" width="800" height="400"/></slide>
+  <slide>
+    <h1>Views</h1>
+    <foam model="foam.demos.physics.Spring" n="10" width="800" height="400"/>
+  </slide>
+  <slide>
+    <h1>Holistic</h1>
+  </slide>
   <slide>
     <h1>Reactive Programming</h1>
     <foam model="foam.demos.ReactiveClocks"/>
@@ -74,5 +79,6 @@
   <slide>
     <h1>Summary</h1>
   </slide>
+  <slide><br><br><center><foam model="foam.graphics.Guage" label="Applause"/></center></slide>
 <!--  <slide><foam model="foam.demos.empire.Slides"/></slide> -->
 </slides>
