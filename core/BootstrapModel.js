@@ -310,15 +310,13 @@ var BootstrapModel = {
         if ( ! Message.isInstance(m) ) {
           m = this.messages[key] = Message.create(m);
         }
+        var clsProps = {}, mdlProps = {}, constName = constantize(m.name);
+        clsProps[m.name] = { get: function() { return m.value; } };
+        clsProps[constName] = { value: m };
+        mdlProps[constName] = { value: m };
         // TODO(kgr): only add to Proto when Model cleanup done.
-        Object.defineProperty(
-            cls,
-            constantize(m.name),
-            { get: function() { return m.value; } });
-        Object.defineProperty(
-            this,
-            constantize(m.name),
-            { get: function() { return m.value; } });
+        Object.defineProperties(cls, clsProps);
+        Object.defineProperties(this, mdlProps);
       }.bind(this));
     }
 
