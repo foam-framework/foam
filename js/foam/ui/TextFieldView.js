@@ -14,18 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
  CLASS({
   package: 'foam.ui',
   name:  'TextFieldView',
   label: 'Text Field',
-  
-  extendsModel: 'foam.ui.BaseView',
 
-  traits: [
-    'foam.ui.HTMLViewTrait',
-    'foam.ui.ViewActionsTrait'
-  ], // TemplateSupportTrait removed to prevent cycle 
+  extendsModel: 'foam.ui.SimpleView',
 
   documentation: function() { /*
       The default $$DOC{ref:'foam.ui.View'} for a string. Supports autocomplete

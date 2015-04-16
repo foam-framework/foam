@@ -20,7 +20,10 @@ CLASS({
   name: 'HTMLViewTrait',
   label: 'HTMLView',
 
-  requires: [ 'foam.input.touch.GestureTarget' ], // tooltip!
+  requires: [
+    'foam.input.touch.GestureTarget',
+    'foam.ui.ActionBorder'
+  ],
 
   documentation: function() {/*
     The HTML implementation for $$DOC{ref:'foam.ui.View'}.
@@ -126,6 +129,23 @@ CLASS({
           to the lifecycle of the HTML (which may be replaced by toHTML() at any
           time), not the lifecycle of this $$DOC{ref:'foam.ui.View'}.
       */}
+    },
+   {
+      model_: 'BooleanProperty',
+      name: 'showActions',
+      defaultValue: false,
+      postSet: function(oldValue, showActions) {
+        // TODO: No way to remove the decorator.
+        if ( ! oldValue && showActions ) {
+          this.addDecorator(this.ActionBorder.create());
+        }
+      },
+      documentation: function() {/*
+          If $$DOC{ref:'Action',usePlural:true} are set on this $$DOC{ref:'foam.ui.View'},
+          this property enables their automatic display in an $$DOC{ref:'ActionBorder'}.
+          If you do not want to show $$DOC{ref:'Action',usePlural:true} or want
+          to show them in a different way, leave this false.
+      */}
     }
   ],
 
@@ -172,7 +192,6 @@ CLASS({
   ],
 
   methods: {
-    toView_: function() { return this; },
 
     strToHTML: function(str) {
       /*
@@ -214,7 +233,8 @@ CLASS({
         Maintains the tree structure of $$DOC{ref:'foam.ui.View',usePlural:true}. When
         a sub-$$DOC{ref:'foam.ui.View'} is created, add it to the tree with this method.
       */
-      child = child.toView_();
+      // Checked needed for legacy CViews, remove once they're gone.
+      if ( child.toView_ ) child = child.toView_();
       // Check prevents duplicate addChild() calls,
       // which can happen when you use creatView() to create a sub-view (and it calls addChild)
       // and then you write the View using TemplateOutput (which also calls addChild).
@@ -558,7 +578,9 @@ CLASS({
       /* returns the rect of the current viewport, relative to the page. */
       return { height: (window.innerHeight || this.X.document.documentElement.clientHeight),
                width:  (window.innerWidth  || this.X.document.documentElement.clientWidth) };
-    }
+    },
+
+
 
   }
 });

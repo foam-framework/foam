@@ -23,7 +23,6 @@ CLASS({
 
   traits: [
     'foam.ui.HTMLViewTrait',
-    'foam.ui.ViewActionsTrait',
     'foam.ui.TemplateSupportTrait'
   ],
 

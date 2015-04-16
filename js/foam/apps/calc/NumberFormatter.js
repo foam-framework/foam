@@ -45,7 +45,7 @@ CLASS({
         // the regex below removes extra zeros from the end,
         // or middle of exponentials
         return typeof n === 'string' ? n :
-            Number.isNaN(n)       ? this.NAN :
+            Number.isNaN(n)       ? this.nan :
             ! Number.isFinite(n)  ? '∞' :
             parseFloat(n).toPrecision(12)
             .replace( /(?:(\d+\.\d*[1-9])|(\d+)(?:\.))(?:(?:0+)$|(?:0*)(e.*)$|$)/ ,"$1$2$3");
