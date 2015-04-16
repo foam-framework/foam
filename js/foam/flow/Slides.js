@@ -91,7 +91,7 @@ CLASS({
     function CSS() {/*
       slides .card-grid .card {
         box-shadow: 0 5px 15px #aaa;
-        height: 16.5%;
+        height: 16.4%;
         overflow: hidden;
         padding: 2px;
         width: 17%;

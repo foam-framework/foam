@@ -65,6 +65,9 @@
   </slide>
   <slide>
     <h1>Calculator</h1>
+    <center>
+      <iframe style="width:80%;height:70%;" src="/apps/acalc/Calc.html"></iframe>
+    </center>
   </slide>
   <slide>
     <h1>Physics: Collisions</h1>
@@ -82,6 +85,12 @@
   </slide>
   <slide><foam model="foam.demos.pong.Pong"/></slide>
   <slide><foam model="foam.demos.Flow"/></slide>
+  <slide>
+    <iframe style="width:100%;height:100%;" src="./demos/UnixSimulator.html"></iframe>
+  </slide>
+  <slide>
+    <iframe style="width:100%;height:100%;" src="./demos/GoogleSimulator.html"></iframe>
+  </slide>
   <slide>
     <h1>Summary</h1>
   </slide>
