@@ -18,7 +18,8 @@
     <h1>Holistic</h1>
   </slide>
   <slide>
-    <h1>Scalability</h1>
+    <h1>Semantic Sugar</h1>
+    <foam model="com.google.sweeper.Game"/>
   </slide>
   <slide>
     <h1>Reactive Programming</h1>
@@ -37,7 +38,7 @@
     <foam model="foam.demos.SolarSystem"/>
   </slide>
   <slide>
-    <h1>Live Coding</h1>
+    <h1>Live-Coding</h1>
     <div style="transform: scale(0.75); transform-origin: 0 0;">
       <foam model="foam.demos.DragonLiveCoding"/>
     </div>
@@ -61,7 +62,11 @@
     <h1>Material Design</h1>
   </slide>
   <slide>
-    <h1>GMail</h1>
+    <h1>GMail + MBug</h1>
+    <center style="margin-top:25px;">
+    <img height="530" width="500" src="/demos/democat/MBug.png">
+    <img style="margin-left: 100px;" height="530" width="500" src="/demos/democat/GMail.png">
+    </center>
   </slide>
   <slide>
     <h1>Calculator</h1>
@@ -76,6 +81,9 @@
   <slide>
     <h1>Physics: Springs</h1>
     <foam model="foam.demos.physics.CollisionWithSpring"/>
+  </slide>
+  <slide>
+    <h1>Performance</h1>
   </slide>
   <slide>
     <h1>Physics: Gravity</h1>
