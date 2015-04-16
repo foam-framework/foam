@@ -192,7 +192,6 @@ CLASS({
   ],
 
   methods: {
-    toView_: function() { return this; },
 
     strToHTML: function(str) {
       /*
