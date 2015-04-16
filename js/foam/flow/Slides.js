@@ -15,7 +15,8 @@ CLASS({
   extendsModel: 'foam.flow.Element',
 
   requires: [
-    'foam.flow.Grid'
+    'foam.flow.Grid',
+    'foam.graphics.ActionButtonCView'
   ],
 
   properties: [
@@ -82,7 +83,7 @@ CLASS({
     },
     {
       name: 'legend',
-      label: '[+]',
+      label: '+',
       action: function() { this.setView(this.Grid.create({cards: this.slides})); }
     }
   ],
@@ -139,11 +140,17 @@ CLASS({
       slides > controls .actionButton-back {
         margin-left: 20px;
       }
+      slides > controls .actionButtonCView {
+        margin-top: -6px;
+      }
     */},
     function toInnerHTML() {/*
       <deck></deck>
       <controls style="display:flex;">
-        $$position <span class="of">of {{this.slides.length}}</span> <span style="flex-grow:1;"></span> $$legend $$back $$forth
+        $$position <span class="of">of {{this.slides.length}}</span> <span style="flex-grow:1;"></span>
+        $$legend{model_:'foam.graphics.ActionButtonCView', radius: 20, font: '28px Aria'}
+        $$back{model_:'foam.graphics.ActionButtonCView',   radius: 20, font: '28px Aria'}
+        $$forth{model_:'foam.graphics.ActionButtonCView',  radius: 20, font: '28px Aria'}
       </controls>
     */}
   ]
