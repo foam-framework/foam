@@ -2,7 +2,7 @@
   <slide>
   <center>
     <br>
-    Introducing Google<br>
+    Introducing <img width="100" height="33" style="vertical-align: text-top;" src="js/foam/demos/empire/google.png"><br>
     <foam model="foam.demos.graphics.Logo" text="FOAM" width="360" height="140"/>
     <font size="220%">(Feature-Oriented Active Modeller)</font><br>
     <br>
