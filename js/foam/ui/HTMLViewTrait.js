@@ -233,7 +233,8 @@ CLASS({
         Maintains the tree structure of $$DOC{ref:'foam.ui.View',usePlural:true}. When
         a sub-$$DOC{ref:'foam.ui.View'} is created, add it to the tree with this method.
       */
-      child = child.toView_();
+      // Checked needed for legacy CViews, remove once they're gone.
+      if ( child.toView_ ) child = child.toView_();
       // Check prevents duplicate addChild() calls,
       // which can happen when you use creatView() to create a sub-view (and it calls addChild)
       // and then you write the View using TemplateOutput (which also calls addChild).
