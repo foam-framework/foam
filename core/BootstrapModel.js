@@ -713,9 +713,37 @@ var BootstrapModel = {
 
   atest: function() {
     var seq = [];
-    for ( var i = 0 ; i < this.tests.length ; i++ ) {
-      seq.push(this.tests[i].atest.bind(this.tests[i]));
+    var allPassed = true;
+
+    if ( this.name.lastIndexOf('Test') !=
+         this.name.length - 4 ) {
+      seq.push(arequire(this.id + 'Test'));
+      seq.push(function(ret, testModel) {
+        if ( testModel ) testModel.atest()(ret);
+        else ret(true);
+      });
+      seq.push(function(ret, success) {
+        if ( ! success ) allPassed = false;
+        ret();
+      })
     }
+
+    for ( var i = 0 ; i < this.tests.length ; i++ ) {
+      seq.push(
+        (function(test) {
+          return function(ret) {
+            test.atest()(function(passed) {
+              if ( ! passed ) allPassed = false;
+              ret();
+            })
+          };
+        })(this.tests[i]));
+    }
+
+    seq.push(function(ret) {
+      ret(allPassed);
+    });
+
     return aseq.apply(null, seq);
   }
 };
