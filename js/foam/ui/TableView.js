@@ -39,6 +39,18 @@ CLASS({
     'foam.input.touch.GestureTarget'
   ],
 
+  constants: {
+    MIN_COLUMN_SIZE: 5, // If column is resized below this size, then remove the column instead of shrinking it
+
+    ROW_SELECTED: ['escape'],
+
+    // Not actually a method, but still works
+    // TODO: add 'Constants' to Model
+    CLICK: "click", // event topic
+
+    DOUBLE_CLICK: "double-click" // event topic
+  },
+
   properties: [
     {
       name:  'model',
@@ -249,29 +261,18 @@ CLASS({
     }
   ],
 
-  constants: {
-    MIN_COLUMN_SIZE: 5, // If column is resized below this size, then remove the column instead of shrinking it
-
-    ROW_SELECTED: ['escape'],
-
-    // Not actually a method, but still works
-    // TODO: add 'Constants' to Model
-    CLICK: "click", // event topic
-
-    DOUBLE_CLICK: "double-click" // event topic
-  },
-
   methods: {
     toHTML: function() {
       // TODO: I don't think this should be height:100%, but needs to be
       // fixed somehow.
-      return '<div tabindex="99" style="display:flex;width:100%;height:100%">' +
+      return '<div tabindex="99" class="tableView" style="display:flex;width:100%;">' +
         '<span id="' + this.id + '" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">' +
         this.tableToHTML() +
         '</span>' +
-        '<span style="width:19px;flex:none;overflow:hidden;">' +
-        this.scrollbar.toView_().toHTML() +
-        '</span>' +
+          ( this.scrollbarEnabled ?
+            '<span style="width:19px;flex:none;overflow:hidden;">' +
+            this.scrollbar.toView_().toHTML() +
+            '</span>' : '' ) +
         '</div>';
     },
 
