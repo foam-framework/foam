@@ -69,22 +69,18 @@ CLASS({
         font-size: smaller;
       }
       .detailView {
-        width: 50%;
+        xxxwidth: 50%;
       }
       .actionToolbar {
-        width: 25%;
-        position: absolute;
+        xxxwidth: 25%;
       }
     */},
     function toHTML() {/*
       <table border="1">
         <tr>
-          <td rowspan="2" width="700">$$dragonModel</td>
-          <td valign="top" width="300">$$timer{showActions: true}</td>
-          <td>%%turntable</td>
-        </tr>
-        <tr>
-          <td colspan="2">%%dragon</td>
+          <td width="700">$$dragonModel</td>
+          <td valign="top" width="300">$$timer{showActions: true}<br>%%turntable</td>
+          <td valign="top" >%%dragon</td>
         </tr>
       </table>
     */}
