@@ -71,7 +71,10 @@ CLASS({
           throw "Model with id: " + key + " not found in " + fileName;
         }
       } catch(e) {
-        sink && sink.error && sink.error('Error loading model', key, e);
+        if ( e.code === 'MODULE_NOT_FOUND' )
+          sink && sink.error && sink.error('Error loading model', key, e);
+        else
+          throw e;
       } finally {
         global.__DATACALLBACK = old;
       }
