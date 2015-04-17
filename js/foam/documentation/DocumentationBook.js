@@ -24,6 +24,8 @@ CLASS({
   label: 'Documentation Book',
   plural: 'DocumentationBooks',
   help: 'A documentation object that exists outside of a specific model.',
+  
+  ids: ['id'],
 
   documentation: function() {/*
     <p>To create a body of documentation for general reference (a topic not
@@ -33,6 +35,12 @@ CLASS({
   */},
 
   properties: [
+    {
+      name: 'id',
+      getter: function() {
+        return this.package ? this.package + '.' + this.name: this.name;
+      }
+    },
     {
       name: 'package',
       type: 'String'
@@ -53,7 +61,7 @@ var RegisterDevDocs = function(opt_X) {
 
   var bookList = [];
   bookList.push(
-    X.DocumentationBook.create({
+    X.foam.documentation.DocumentationBook.create({
 
       name: 'Welcome',
       package: 'developerDocs',
@@ -215,7 +223,7 @@ var RegisterDevDocs = function(opt_X) {
   );
 
   bookList.push(
-    X.DocumentationBook.create({
+    X.foam.documentation.DocumentationBook.create({
       name: 'DAO',
       package: 'developerDocs',
 
@@ -265,7 +273,7 @@ var RegisterDevDocs = function(opt_X) {
     })
   );
   bookList.push(
-    X.DocumentationBook.create({
+    X.foam.documentation.DocumentationBook.create({
       name: 'Context',
       package: 'developerDocs',
 
@@ -465,7 +473,7 @@ var RegisterDevDocs = function(opt_X) {
 
 
   bookList.push(
-    X.DocumentationBook.create({
+    X.foam.documentation.DocumentationBook.create({
       name: 'Events',
       package: 'developerDocs',
 
@@ -573,7 +581,7 @@ var RegisterDevDocs = function(opt_X) {
   );
 
   bookList.push(
-    X.DocumentationBook.create({
+    X.foam.documentation.DocumentationBook.create({
       name: 'Views',
       package: 'developerDocs',
 
@@ -675,7 +683,7 @@ var RegisterDevDocs = function(opt_X) {
   );
 
   bookList.push(
-    X.DocumentationBook.create({
+    X.foam.documentation.DocumentationBook.create({
       name: 'ArrayDAO',
       package: 'developerDocs',
       label: "Javascript Arrays as Data Access Objects",
