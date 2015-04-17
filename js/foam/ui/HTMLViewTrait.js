@@ -31,7 +31,7 @@ CLASS({
 
   constants: {
     // Keys which respond to keydown but not keypress
-    KEYPRESS_CODES: { 8: true, 37: true, 38: true, 39: true, 40: true },
+    KEYPRESS_CODES: { 8: true, 33: true, 34: true, 37: true, 38: true, 39: true, 40: true },
     // TODO?: Model as Topics
     ON_HIDE: ['onHide'], // Indicates that the View has been hidden
     ON_SHOW: ['onShow']  // Indicates that the View is now being reshown
@@ -174,8 +174,8 @@ CLASS({
     {
       name: 'onKeyboardShortcut',
       code: function(evt) {
+        // console.log(evt);
         if ( evt.type === 'keydown' && ! this.KEYPRESS_CODES[evt.which] ) return;
-
         var action = this.keyMap_[this.evtToCharCode(evt)];
         if ( action ) {
           action();
