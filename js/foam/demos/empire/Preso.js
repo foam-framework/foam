@@ -25,7 +25,36 @@ CLASS({
     'foam.flow.CodeSample',
     'foam.flow.Slides',
     'foam.ui.md.TwoPaneView',
-    'foam.ui.ViewChoice'
+    'foam.ui.ViewChoice',
+    'foam.input.touch.GestureManager',
+    'foam.input.touch.TouchManager'
+  ],
+
+  exports: [
+    'gestureManager',
+    'touchManager'
+  ],
+
+  properties: [
+    {
+      name: 'gestureManager',
+      factory: function() {
+        var gm = this.GestureManager.create();
+        window.X.gestureManager = gm;
+        return gm;
+      }
+    },
+    {
+      name: 'touchManager',
+      factory: function() {
+        // TODO(braden): HACK This should be just exporting the property, but
+        // the context is not properly passed into views created using <foam>
+        // tags right now. Clean up this and gestureManager below.
+        var tm = this.TouchManager.create();
+        window.X.touchManager = tm;
+        return tm;
+      }
+    }
   ],
 
   methods: {
@@ -44,6 +73,7 @@ CLASS({
       deck {
         font-size: 200%;
         padding-left: 16px;
+        overflow: hidden;
       }
       h1 {
         color: blue;
@@ -57,6 +87,10 @@ CLASS({
       slides .twopane-right {
         background: white;
         padding-left: 100px;
+      }
+      .SlidePanel > div {
+        margin-left: -16px;
+        height: 100%;
       }
     */},
     { name: 'toHTML' }
