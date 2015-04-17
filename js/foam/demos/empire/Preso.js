@@ -52,11 +52,11 @@ CLASS({
         margin-bottom: 16px;
       }
       slides .twopane-left {
-        width: 400px;
+        width: 450px;
       }
       slides .twopane-right {
         background: white;
-        margin-left: 100px;
+        padding-left: 100px;
       }
     */},
     { name: 'toHTML' }

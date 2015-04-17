@@ -19,6 +19,25 @@
     <foam model="foam.demos.physics.Spring" n="10" width="800" height="400"/>
   </slide>
   <slide>
+    <h1>Data Access Objects (DAO's)</h1>
+      <foam model="foam.ui.md.TwoPaneView">
+        <views>
+          <viewChoice>
+            <label>Local Storage</label>
+            <p:view>
+              Local Storage Demo
+            </p:view>
+          </viewChoice>
+          <viewChoice>
+            <label>IndexedDB</label>
+            <p:view>
+              IndexedDB Demo
+            </p:view>
+          </viewChoice>
+        </views>
+      </foam>
+  </slide>
+  <slide>
     <h1>Holistic</h1>
   </slide>
   <slide>
@@ -75,7 +94,7 @@
   <slide>
     <h1>Calculator</h1>
     <center>
-      <iframe style="width:80%;height:70%;" src="/apps/acalc/Calc.html"></iframe>
+      <iframe style="width:80%;height:70%;" src="./apps/acalc/Calc.html"></iframe>
     </center>
   </slide>
   <slide>
