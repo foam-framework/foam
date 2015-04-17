@@ -70,9 +70,6 @@ CLASS({
       }
 
       .change-project-view .monogram-string-view {
-        width: 64px;
-        height: 64px;
-        border-radius: 32px;
         margin: 16px;
       }
 
@@ -102,7 +99,7 @@ CLASS({
     */},
     function toInnerHTML() {/*
       <div class="header">
-        $$email{model_: 'foam.ui.md.MonogramStringView'}
+        $$email{model_: 'foam.ui.md.MonogramStringView', width: 64}
         $$email{mode: 'display-only'}
         <br><br>
       </div>
