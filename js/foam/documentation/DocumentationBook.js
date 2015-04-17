@@ -603,24 +603,24 @@ var RegisterDevDocs = function(opt_X) {
           body: function() {/*
             An HTML $$DOC{ref:'foam.ui.View'} must have a few pieces:</p>
             <ul>
-              <li>$$DOC{ref:'View.toHTML'}: the method that provides the DOM content as a string or as
+              <li>$$DOC{ref:'foam.ui.View.toHTML'}: the method that provides the DOM content as a string or as
                 FOAM $$DOC{ref:'Template'} output.</li>
-              <li>$$DOC{ref:'View.initHTML'}: called after the DOM content is inserted, listeners can 
+              <li>$$DOC{ref:'foam.ui.View.initHTML'}: called after the DOM content is inserted, listeners can 
                 be connected here.</li>
             </ul>
             By a minimum implementation of the above, you can provide static content. By extending 
             $$DOC{ref:'foam.ui.View'}, you can add some flexibility:
             <ul>
-              <li>$$DOC{ref:'View.toInnerHTML'}: $$DOC{ref:'foam.ui.View'} will create your outer element for you, 
+              <li>$$DOC{ref:'foam.ui.View.toInnerHTML'}: $$DOC{ref:'foam.ui.View'} will create your outer element for you, 
                 call toInnerHTML() to create the content. Each time updateHTML() is called, toInnerHTML()
                 will be invoked again to generate new content.
               </li>
-              <li>$$DOC{ref:'View.initInnerHTML'}: In the case where your toInnerHTML() creates a DOM listener,
+              <li>$$DOC{ref:'foam.ui.View.initInnerHTML'}: In the case where your toInnerHTML() creates a DOM listener,
                 you may have to initialize it here. In most cases you don't need to supply this method.
               </li>
             </ul>
             <p>You will frequently see toHTML/toInnerHTML begin with a call to 
-            <code>this.$$DOC{ref:'View.destroy'}</code>. Since
+            <code>this.$$DOC{ref:'foam.ui.View.destroy'}</code>. Since
             the method is generating new content, and therefore new children, teh extra destroy() call ensures that
             the previous children are cleaned up.</p>
             <p>If you have parts of your content that change frequently, consider breaking that part into a
@@ -636,13 +636,13 @@ var RegisterDevDocs = function(opt_X) {
             $$DOC{ref:'Template',usePlural:true} provide a convenient way of
             expressing blocks of HTML in your $$DOC{ref:'foam.ui.View',usePlural:true}.
             $$DOC{ref:'Template',usePlural:true} are compiled into $$DOC{ref:'Method',usePlural:true}.
-            A $$DOC{ref:'View.toInnerHTML'} or $$DOC{ref:'View.toHTML'} $$DOC{ref:'Template'} is a
+            A $$DOC{ref:'foam.ui.View.toInnerHTML'} or $$DOC{ref:'foam.ui.View.toHTML'} $$DOC{ref:'Template'} is a
             common use.
             </p>
             <p>Use the $$DOC{ref:'developerDocs.Views',text:'$$'}propertyName{...} tag syntax to insert sub-views
             based on a $$DOC{ref:'Property'},
             or just call <code>&lt;%= this.mySubViewProperty.toHTML() %&gt;</code> to
-            inject some HTML directly. Remember to call $$DOC{ref:'View.initHTML'}()
+            inject some HTML directly. Remember to call $$DOC{ref:'foam.ui.View.initHTML'}()
             afterwards.
           */}
         },
@@ -651,11 +651,11 @@ var RegisterDevDocs = function(opt_X) {
           label: 'Automatic View Creation',
           model_: 'Documentation',
           body: function() {/*
-            $$DOC{ref:'foam.ui.DetailView',usePlural:true} in FOAM feed from a $$DOC{ref:'DetailView.data'}
+            $$DOC{ref:'foam.ui.DetailView',usePlural:true} in FOAM feed from a $$DOC{ref:'foam.ui.DetailView.data'}
             $$DOC{ref:'Property'}, by default using introspection to examine all the
             $$DOC{ref:'Property',usePlural:true} of the $$DOC{ref:'Model'} provided
             and display them.</p>
-            <p>A $$DOC{ref:'PropertyView'} is created to process each $$DOC{ref:'Property'},
+            <p>A $$DOC{ref:'foam.ui.PropertyView'} is created to process each $$DOC{ref:'Property'},
             and it picks the appropriate $$DOC{ref:'foam.ui.View'} model.</p>
             <p>Often a $$DOC{ref:'Property.view'} will be specified as part of a
             $$DOC{ref:'Property'} definition. This instructs $$DOC{ref:'foam.ui.DetailView'}
@@ -672,8 +672,8 @@ var RegisterDevDocs = function(opt_X) {
             $$DOC{ref:'Model'} is accessed, the CSS is installed into the document, ready
             for rendering.
             $$DOC{ref:'foam.ui.View',usePlural:true} can control their individual style attributes
-            by setting $$DOC{ref:'View.extraClassName'} inside a submodel, or at run time by
-            setting $$DOC{ref:'View.className'}.
+            by setting $$DOC{ref:'foam.ui.View.extraClassName'} inside a submodel, or at run time by
+            setting $$DOC{ref:'foam.ui.View.className'}.
           */}
         }
 

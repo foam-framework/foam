@@ -44,7 +44,7 @@ CLASS({
     </p>
     <p>$$DOC{ref:'Model',usePlural:true} may specify a .toDetailHTML() $$DOC{ref:'Method'} or
     $$DOC{ref:'Template'} to render their contents instead of
-    $$DOC{ref:'DetailView.defaultToHTML'}.
+    $$DOC{ref:'foam.ui.DetailView.defaultToHTML'}.
     </p>
     <p>For each $$DOC{ref:'Property'} in the $$DOC{ref:'.data'} instance specified,
     a $$DOC{ref:'PropertyView'} is created that selects the appropriate $$DOC{ref:'foam.ui.View'}
@@ -165,7 +165,7 @@ CLASS({
       /* Overridden to create the complete HTML content for the $$DOC{ref:'foam.ui.View'}.</p>
          <p>$$DOC{ref:'Model',usePlural:true} may specify a .toDetailHTML() $$DOC{ref:'Method'} or
          $$DOC{ref:'Template'} to render their contents instead of the
-          $$DOC{ref:'DetailView.defaultToHTML'} we supply here.
+          $$DOC{ref:'foam.ui.DetailView.defaultToHTML'} we supply here.
       */
 
       if ( ! this.data ) return '<span id="' + this.id + '"></span>';
