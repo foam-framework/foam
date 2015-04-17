@@ -7,28 +7,62 @@
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 CLASS({
-  name: 'ChromeMessagesInjector',
+  name: 'MessagesInjector',
   package: 'foam.i18n',
   extendsModel: 'foam.i18n.Visitor',
 
   imports: [ 'warn' ],
 
+  properties: [
+    {
+      model_: 'BooleanProperty',
+      name: 'ready_',
+      defaultValue: false
+    },
+    {
+      model_: 'foam.core.types.DAOProperty',
+      name: 'dao',
+      required: true,
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        this.ready_ = false;
+        var map = this.map = {};
+        this.dao.select({
+          put: function(msg) { map[msg.id] = msg; },
+          eof: function() { this.ready_ = true; }.bind(this)
+        });
+      }
+    },
+    {
+      name: 'map',
+      lazyFactory: function() { return {}; }
+    }
+  ],
+
   methods: [
+    {
+      name: 'init',
+      code: function() {
+        var ret = this.SUPER.apply(this, arguments);
+        return ret;
+      }
+    },
+    {
+      name: 'initHTML',
+      code: function() {
+        var ret = this.SUPER.apply(this, arguments);
+        return ret;
+      }
+    },
     {
       name: 'visitMessage',
       code: function(model, msg, msgIdx) {
         this.maybeSetMessage(
-            model.messages[msgIdx],
-            'value',
+            model.messages,
+            msgIdx,
             this.getMessageKey(model, msg));
       }
     },
@@ -54,15 +88,17 @@ CLASS({
     {
       name: 'maybeSetMessage',
       code: function(obj, objKey, msgKey) {
-        var i18nMessage =
-            GLOBAL.chrome &&
-            GLOBAL.chrome.i18n &&
-            GLOBAL.chrome.i18n.getMessage &&
-            GLOBAL.chrome.i18n.getMessage(msgKey);
+        if ( ! this.ready_ ) {
+          this.warn('MessagesInjector: Attempt to inject "' + msgKey +
+              '" before injector is ready');
+          return;
+        }
+
+        var i18nMessage = this.map[msgKey];
         if ( i18nMessage ) {
           obj[objKey] = i18nMessage;
         } else {
-          this.warn('ChromeMessagesInjector: "' + msgKey +
+          this.warn('MessagesInjector: "' + msgKey +
               '": No such message');
         }
       }

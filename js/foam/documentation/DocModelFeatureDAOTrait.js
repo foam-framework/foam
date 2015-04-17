@@ -28,13 +28,21 @@ CLASS({
     'foam.dao.FindFallbackDAO'
   ],
 
-  imports: [ '_DEV_ModelDAO', 'masterModelList', 'featureDAO' ],
-  exports: ['featureDAO',
-            'modelDAO',
-            'subModelDAO',
-            'traitUserDAO', 
-            '_DEV_ModelDAO',
-            'masterModelList' ],
+  imports: [
+    '_DEV_ModelDAO', 
+    'masterModelList', 
+    'featureDAO',
+    'featureDAOModelsLoading' 
+  ],
+  exports: [
+    'featureDAO',
+    'modelDAO',
+    'featureDAOModelsLoading',
+    'subModelDAO',
+    'traitUserDAO', 
+    '_DEV_ModelDAO',
+    'masterModelList'
+  ],
 
   properties: [
     {
@@ -54,6 +62,12 @@ CLASS({
       model_: 'foam.core.types.DAOProperty',
       factory: function() {
         return this.MDAO.create({model:this.DocFeatureInheritanceTracker, autoIndex:true});
+      }
+    },
+    {
+      name: 'featureDAOModelsLoading',
+      factory: function() {
+        return {};
       }
     },
     {
@@ -89,11 +103,6 @@ CLASS({
       //var startTime = Date.now();
       //console.log("Generating FeatureDAO...", this.data );
 
-      this.featureDAO.removeAll();
-      this.modelDAO.removeAll();
-      this.subModelDAO.removeAll();
-      this.traitUserDAO.removeAll();
-
       if ( ! data.model_ || data.model_.id !== 'Model' ) {
         console.warn("ModelDocView created with non-model instance: ", data);
         return;
@@ -103,6 +112,19 @@ CLASS({
         // we aren't done init yet, so wait and our init(); will call us again
         return;
       }
+
+      if ( this.featureDAOModelsLoading[data.id] ) {
+        // someone is already loading this model for us!
+        return;
+      }
+      console.log("Generating FeatureDAO...", this.data.id );
+
+      this.featureDAO.removeAll();
+      this.modelDAO.removeAll();
+      this.subModelDAO.removeAll();
+      this.traitUserDAO.removeAll();
+      this.featureDAOModelsLoading = {};
+      this.featureDAOModelsLoading[data.id] = true;
 
       // Run through the features in the Model definition in this.data,
       // and load them into the feature DAO. Passing [] assumes we don't
@@ -244,6 +266,7 @@ CLASS({
         var self = this;
         var newModelTr = this.DocModelInheritanceTracker.create();
         newModelTr.model = model.id;
+        this.featureDAOModelsLoading[model.id] = true;
   
         [ 'properties', 
           'methods',
