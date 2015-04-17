@@ -118,7 +118,7 @@ CLASS({
       adapt: function(_, side) {
         return side === 'left' ? this.LEFT : side === 'right' ? this.RIGHT : side ;
       },
-      lazyFactory: function() { return this.RIGHT; }
+      lazyFactory: function() { return this.LEFT; }
     },
     {
       name: 'state',
@@ -271,7 +271,7 @@ CLASS({
   templates: [
     function CSS() {/*
       .SlidePanel .left-shadow {
-        background: linear-gradient(to left, rgba(0,0,0,0.15) 0%,
+        background: linear-gradient(to left, rgba(0,0,0,0.2) 0%,
                                              rgba(0,0,0,0) 100%);
         height: 100%;
         left: -8px;
@@ -279,7 +279,7 @@ CLASS({
         width: 8px;
       }
       .SlidePanel .right-shadow {
-        background: linear-gradient(to right, rgba(0,0,0,0.15) 0%,
+        background: linear-gradient(to right, rgba(0,0,0,0.2) 0%,
                                              rgba(0,0,0,0) 100%);
         height: 100%;
         right: -8px;
