@@ -1,11 +1,12 @@
 <slides style="width: 100%; height: 100%;">
   <slide>
-  <center>
+  <center style="font-size: 32px;">
     <br>
-    Introducing <img width="100" height="33" style="vertical-align: text-top;" src="js/foam/demos/empire/google.png"><br>
+    Introducing <img width="120" height="40" style="vertical-align: text-top;" src="js/foam/demos/empire/google.png"><br>
     <foam model="foam.demos.graphics.Logo" text="FOAM" width="360" height="140"/>
     <font size="220%">Feature Oriented Active Modeller</font><br>
     <br>
+    (or, 25 Demos in 25 Minutes)
     <br>
     <br>
     Kevin Greer, <a href="mailto:kgr@chromium.org">kgr@chromium.org</a><br>
@@ -78,21 +79,18 @@
     </center>
   </slide>
   <slide>
-    <h1>Physics: Collisions</h1>
-    <foam model="foam.demos.physics.Collision"/>
-  </slide>
-  <slide>
-    <h1>Physics: Springs</h1>
-    <foam model="foam.demos.physics.CollisionWithSpring"/>
+    <h1>Physics</h1>
+    <%=
+      foam.ui.md.TwoPaneView.create({views: [
+        {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10}},
+        {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
+        {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
+        {label: 'Gravity&nbsp;+&nbsp;Friction', view: 'foam.demos.physics.Bubbles'}
+      ]})
+    %>
   </slide>
   <slide>
     <h1>Performance</h1>
-  </slide>
-  <slide>
-    <h1>Physics: Gravity</h1>
-    <center>
-      <foam model="foam.demos.physics.Bubbles" width="800" height="400"/>
-    </center>
   </slide>
   <slide><foam model="foam.demos.pong.Pong"/></slide>
   <slide><foam model="foam.demos.Flow"/></slide>

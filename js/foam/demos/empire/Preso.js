@@ -17,9 +17,15 @@ CLASS({
   constants: { ELEMENT_NAME: 'foam-demos-flow' },
 
   requires: [
+    'foam.demos.physics.Collision',
+    'foam.demos.physics.CollisionWithSpring',
+    'foam.demos.physics.Spring',
+    'foam.demos.physics.Bubbles',
     'foam.graphics.Circle',
     'foam.flow.CodeSample',
-    'foam.flow.Slides'
+    'foam.flow.Slides',
+    'foam.ui.md.TwoPaneView',
+    'foam.ui.ViewChoice'
   ],
 
   methods: {
@@ -44,6 +50,13 @@ CLASS({
         font-size: 54px;
         margin-top: 16px;
         margin-bottom: 16px;
+      }
+      slides .twopane-left {
+        width: 400px;
+      }
+      slides .twopane-right {
+        background: white;
+        margin-left: 100px;
       }
     */},
     { name: 'toHTML' }
