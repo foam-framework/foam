@@ -93,6 +93,8 @@
   </slide>
   <slide>
     <h1>Calculator</h1>
+    <br>
+    <br>
     <center>
       <iframe style="width:80%;height:70%;" src="./apps/acalc/Calc.html"></iframe>
     </center>
@@ -122,7 +124,7 @@
   <slide>
     <foam model="foam.ui.SlidePanel" minWidth="1700" minPanelWidth="350" side="left" stripWidth="16">
       <panelView>
-        <center style="width:350px;padding-top:200px;height:100%; background:cadetblue;"><foam model="foam.graphics.Gauge" label="Applause"/></center>
+        <center style="padding-top:200px;height:100%; background:cadetblue;"><foam model="foam.graphics.Gauge" label="Applause"/></center>
       </panelView>
       <mainView>
         <div style="margin-left: 16px;">

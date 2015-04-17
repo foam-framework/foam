@@ -70,7 +70,7 @@ CLASS({
         display: flex;
         flex-direction: column;
       }
-      deck {
+      slides > deck {
         font-size: 200%;
         padding-left: 16px;
         overflow: hidden;
@@ -83,6 +83,7 @@ CLASS({
       }
       slides .twopane-left {
         width: 450px;
+        height: 100%;
       }
       slides .twopane-right {
         background: white;
