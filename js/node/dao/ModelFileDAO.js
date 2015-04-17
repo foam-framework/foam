@@ -71,10 +71,10 @@ CLASS({
           throw "Model with id: " + key + " not found in " + fileName;
         }
       } catch(e) {
-        if ( e.code === 'MODULE_NOT_FOUND' )
-          sink && sink.error && sink.error('Error loading model', key, e);
+        if ( e.__DAO_ERROR )
+          throw e.exception;
         else
-          throw e;
+          sink && sink.error && sink.error('Error loading model', key, e);
       } finally {
         global.__DATACALLBACK = old;
       }
@@ -108,9 +108,16 @@ CLASS({
           function(ret) {
             var sinks = this.pending[obj.id];
             delete this.pending[obj.id];
-            for ( var i = 0; i < sinks.length ; i++ ) {
-              var sink = sinks[i];
-              sink && sink.put && sink.put(obj);
+            try {
+              for ( var i = 0; i < sinks.length ; i++ ) {
+                var sink = sinks[i];
+                sink && sink.put && sink.put(obj);
+              }
+            } catch (e) {
+              throw {
+                __DAO_ERROR: true,
+                exception: e
+              };
             }
           }.bind(this));
       }
