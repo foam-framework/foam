@@ -24,7 +24,7 @@ CLASS({
   ],
 
   imports: [
-    'console'
+    'warn'
   ],
 
   methods: [
@@ -75,7 +75,7 @@ CLASS({
     {
       name: 'visitMessage',
       code: function(model) {
-        this.console.warn(
+        this.warn(
             'Visitor without visitMessage implementation: ' +
                 this.name_);
         return this;
@@ -84,7 +84,7 @@ CLASS({
     {
       name: 'visitAction',
       code: function(model) {
-        this.console.warn(
+        this.warn(
             'Visitor without visitAction implementation: ' +
                 this.name_);
         return this;
