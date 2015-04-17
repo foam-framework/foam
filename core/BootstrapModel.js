@@ -717,7 +717,7 @@ var BootstrapModel = {
          this.name.length - 4 ) {
       seq.push(arequire(this.id + 'Test'));
       seq.push(function(ret, testModel) {
-        if ( testModel ) testModel.atest()(ret);
+        if ( testModel ) testModel.atest(testModel)(ret);
         else ret(true);
       });
       seq.push(function(ret, success) {
@@ -728,14 +728,14 @@ var BootstrapModel = {
 
     for ( var i = 0 ; i < this.tests.length ; i++ ) {
       seq.push(
-        (function(test) {
+        (function(test, model) {
           return function(ret) {
-            test.atest()(function(passed) {
+            test.atest(model)(function(passed) {
               if ( ! passed ) allPassed = false;
               ret();
             })
           };
-        })(this.tests[i]));
+        })(this.tests[i], this));
     }
 
     seq.push(function(ret) {
