@@ -115,6 +115,9 @@ CLASS({
   properties: [
     {
       name: 'side',
+      adapt: function(_, side) {
+        return side === 'left' ? this.LEFT : side === 'right' ? this.RIGHT : side ;
+      },
       lazyFactory: function() { return this.RIGHT; }
     },
     {
