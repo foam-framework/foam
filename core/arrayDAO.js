@@ -144,14 +144,14 @@ defineProperties(Array.prototype, {
     if ( query.f ) {
       for ( var idx = 0 ; idx < this.length; idx++ ) {
         if ( query.f(this[idx]) ) {
-          sink && sink.put && sink.put(this[idx]);
+          sink && sink.put && sink.put(this[idx].clone());
           return;
         }
       }
     } else {
       for ( var idx = 0 ; idx < this.length; idx++ ) {
         if ( this[idx].id === query ) {
-          sink && sink.put && sink.put(this[idx]);
+          sink && sink.put && sink.put(this[idx].clone());
           return;
         }
       }
@@ -210,7 +210,7 @@ defineProperties(Array.prototype, {
       this.length :
       Math.min(this.length, start + ( ( options && options.limit ) || this.length));
     for ( var i = start ; i < end ; i++ ) {
-      sink.put(this[i], null, fc);
+      sink.put(this[i].clone(), null, fc);
       if ( fc.stopped ) break;
       if ( fc.errorEvt ) {
         sink.error && sink.error(fc.errorEvt);
