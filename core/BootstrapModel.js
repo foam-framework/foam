@@ -92,7 +92,7 @@ var BootstrapModel = {
     // extra memory in DEBUG mode.
     if ( DEBUG ) BootstrapModel.saveDefinition(this);
 
-    if ( ! this.finished__ && this.package) {
+    if ( ! this.finished__ && this.package && this.id != 'foam.ui.Window') {
       console.warn("Building prototype of ", this.id, " before being ready.");
     }
 
