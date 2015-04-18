@@ -62,7 +62,7 @@
   </slide>
   <slide>
     <h1>Live-Coding</h1>
-    <div style="transform: scale(0.75); transform-origin: 0 0;">
+    <div style="transform: scale(1); transform-origin: 0 0;">
       <foam model="foam.demos.DragonLiveCoding"/>
     </div>
   </slide>

@@ -83,7 +83,7 @@ CLASS({
       }
       slides .twopane-left {
         width: 450px;
-        height: 100%;
+        height: 85%;
       }
       slides .twopane-right {
         background: white;
