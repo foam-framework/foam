@@ -24,7 +24,8 @@ CLASS({
     'foam.ui.DetailView',
     'foam.graphics.Turntable',
     'foam.input.Mouse',
-    'foam.demos.graphics.Dragon'
+    'foam.demos.graphics.Dragon',
+    'foam.ui.SlidePanel'
   ],
 
   exports: [ 'timer' ],
@@ -37,7 +38,7 @@ CLASS({
     },
     {
       name: 'dragon',
-      factory: function() { return this.Dragon.create(); }
+      factory: function() { return this.Dragon.create({scaleX: 0.7, scaleY: 0.7, x: 700}); }
     },
     {
       name: 'timer',
@@ -55,12 +56,15 @@ CLASS({
   ],
 
   methods: {
+    init: function() {
+      this.SUPER();
+      this.data = this;
+    },
     initHTML: function() {
       this.SUPER();
 
       this.turntable.time$ = this.timer.time$;
       this.timer.start();
-      debugger;
       this.mouse.connect(this.dragon.$);
       this.dragon.eyes.watch(this.mouse);
     }
@@ -76,21 +80,29 @@ CLASS({
         color: #444;
         font-size: smaller;
       }
-      .detailView {
-        xxxwidth: 50%;
+      .panel .detailView {
+        width: 820px;
       }
-      .actionToolbar {
-        xxxwidth: 25%;
+      .main .dragon-cell canvas {
+        margin-top: -150px;
       }
     */},
     function toHTML() {/*
-      <table border="1">
-        <tr>
-          <td width="700">$$dragonModel</td>
-          <td valign="top" width="300">$$timer{showActions: true}<br>%%turntable</td>
-          <td valign="top" >%%dragon</td>
-        </tr>
-      </table>
+    <foam model="foam.ui.SlidePanel" minWidth="1700" minPanelWidth="850" side="left" XXXstripWidth="16">
+      <panelView>
+        <div style="background:cadetblue;overflow: auto;">
+          $$dragonModel
+        </div>
+      </panelView>
+      <mainView>
+        <table style="margin-left: 16px">
+          <tr>
+            <td valign="top" width="700">$$timer{showActions: true}<br><%= this.data.turntable %></td>
+            <td valign="top" class="dragon-cell"><%= this.data.dragon %></td>
+          </tr>
+        </table>
+      </mainView>
+     </foam>
     */}
   ]
 });
