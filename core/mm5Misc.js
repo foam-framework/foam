@@ -48,6 +48,10 @@ CLASS({
       documentation: 'The unit test\'s name.'
     },
     {
+      model_: 'StringProperty',
+      name: 'modelId'
+    },
+    {
       model_: 'Property',
       name: 'description',
       type: 'String',
@@ -149,37 +153,27 @@ CLASS({
     }
   ],
 
-  actions: [
-    {
-      name:  'test',
-      documentation:  'Synchronous helper to run the tests. Simply calls $$DOC{ref: ".atest"}.',
-      isEnabled: function() { return ! this.running; },
-      action: function(obj) {
-        this.running = true;
-        this.atest(function() {
-          this.running = false;
-        }.bind(this));
-      }
-    }
-  ],
-
   methods:{
     atest: function(model) {
       return function(ret) {
         try {
           var obj = model.create(undefined, this.Y);
           var self = this;
+          this.modelId = model.id;
           var finished = function() {
             ret(!self.hasFailed());
           };
 
-          this.code.call(obj, finished);
-          if ( ! this.async ) finished();
-
+          if ( this.async ) 
+            this.code.call(obj, finished);
+          else
+            this.code.call(obj);
         } catch(e) {
-          this.fail("Exception thrown: ", e);
+          this.fail("Exception thrown: " + e.stack);
           ret(false);
         }
+
+        if ( ! this.async ) finished();
       }.bind(this);
     },
 
@@ -250,9 +244,9 @@ CLASS({
   ],
 
   methods: {
-    atest: function() {
+    atest: function(model) {
       // Run SUPER's atest, which returns the unexecuted afunc.
-      var sup = this.SUPER();
+      var sup = this.SUPER(model);
       // Now we append a last piece that updates regression based on the results.
       return aseq(
         sup,
@@ -276,6 +270,7 @@ CLASS({
         this.regression = this.results;
       }
     }
+  ]
 });
 
 
@@ -341,7 +336,7 @@ CLASS({
       type: 'String',
       displayWidth: 70,
       displayHeight: 6,
-n      defaultValue: '',
+      defaultValue: '',
       documentation: function() { /*
           This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
           through field labels or tooltips.
@@ -503,13 +498,6 @@ CLASS({
       view: 'foam.ui.TextAreaView',
       documentation: function() { /* Notes describing $$DOC{ref:'Issue'}. */ },
       help: 'Notes describing issue.'
-    }
-  ],
-  tests: [
-    {
-      model_: 'UnitTest',
-      description: 'test1',
-      code: function() {this.addHeader("header");this.ok("pass");this.fail("fail");}
     }
   ]
 });
