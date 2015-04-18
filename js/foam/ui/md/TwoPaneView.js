@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'TwoPaneView',
   package: 'foam.ui.md',
+  name: 'TwoPaneView',
 
   extendsModel: 'foam.ui.View',
 
@@ -25,6 +25,7 @@ CLASS({
     {
       model_: 'ArrayProperty',
       name: 'views',
+      singular: 'view',
       subType: 'foam.ui.ViewChoice',
       help: 'View choices.',
       postSet: function() { this.choice = this.choice; }

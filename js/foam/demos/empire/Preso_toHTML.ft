@@ -1,18 +1,41 @@
 <slides style="width: 100%; height: 100%;">
   <slide>
-  <center>
+  <center style="font-size: 32px;">
     <br>
-    Introducing Google<br>
+    Introducing <img width="120" height="40" style="vertical-align: text-top;" src="js/foam/demos/empire/google.png"><br>
     <foam model="foam.demos.graphics.Logo" text="FOAM" width="360" height="140"/>
-    <font size="220%">(Feature-Oriented Active Modeller)</font><br>
+    <font size="220%">Feature Oriented Active Modeller</font><br>
+    <br>
+    (or, 25 Demos in 25 Minutes)
+    <br>
     <br>
     Kevin Greer, <a href="mailto:kgr@chromium.org">kgr@chromium.org</a><br>
+    <br>
     April 26, 2015<br>
     </center>
   </slide>
   <slide>
     <h1>Views</h1>
     <foam model="foam.demos.physics.Spring" n="10" width="800" height="400"/>
+  </slide>
+  <slide>
+    <h1>Data Access Objects (DAO's)</h1>
+      <foam model="foam.ui.md.TwoPaneView">
+        <views>
+          <viewChoice>
+            <label>Local Storage</label>
+            <p:view>
+              Local Storage Demo
+            </p:view>
+          </viewChoice>
+          <viewChoice>
+            <label>IndexedDB</label>
+            <p:view>
+              IndexedDB Demo
+            </p:view>
+          </viewChoice>
+        </views>
+      </foam>
   </slide>
   <slide>
     <h1>Holistic</h1>
@@ -53,9 +76,9 @@
   <slide>
     <h1>Offline</h1>
     <ul>
-      <li>Caching
-      <li>Sync
-      <li>MQL
+      <li>Caching</li>
+      <li>Sync</li>
+      <li>MQL</li>
     </ul>
   </slide>
   <slide>
@@ -70,26 +93,25 @@
   </slide>
   <slide>
     <h1>Calculator</h1>
+    <br>
+    <br>
     <center>
-      <iframe style="width:80%;height:70%;" src="/apps/acalc/Calc.html"></iframe>
+      <iframe style="width:80%;height:70%;" src="./apps/acalc/Calc.html"></iframe>
     </center>
   </slide>
   <slide>
-    <h1>Physics: Collisions</h1>
-    <foam model="foam.demos.physics.Collision"/>
-  </slide>
-  <slide>
-    <h1>Physics: Springs</h1>
-    <foam model="foam.demos.physics.CollisionWithSpring"/>
+    <h1>Physics</h1>
+    <%=
+      foam.ui.md.TwoPaneView.create({views: [
+        {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10}},
+        {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
+        {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
+        {label: 'Gravity&nbsp;+&nbsp;Friction', view: 'foam.demos.physics.Bubbles'}
+      ]})
+    %>
   </slide>
   <slide>
     <h1>Performance</h1>
-  </slide>
-  <slide>
-    <h1>Physics: Gravity</h1>
-    <center>
-      <foam model="foam.demos.physics.Bubbles" width="800" height="400"/>
-    </center>
   </slide>
   <slide><foam model="foam.demos.pong.Pong"/></slide>
   <slide><foam model="foam.demos.Flow"/></slide>
@@ -100,8 +122,20 @@
     <iframe style="width:100%;height:100%;" src="./demos/GoogleSimulator.html"></iframe>
   </slide>
   <slide>
-    <h1>Summary</h1>
+    <foam model="foam.ui.SlidePanel" minWidth="1700" minPanelWidth="350" side="left" stripWidth="16">
+      <panelView>
+        <center style="padding-top:200px;height:100%; background:cadetblue;"><foam model="foam.graphics.Gauge" label="Applause"/></center>
+      </panelView>
+      <mainView>
+        <div style="margin-left: 16px;">
+        <h1>Summary</h1>
+        <ul>
+          <li>Reactive MVC</li>
+          <li>Views</li>
+        </ul>
+        </div>
+      </mainView>
+    </foam>
   </slide>
-  <slide><br><br><center><foam model="foam.graphics.Gauge" label="Applause"/></center></slide>
 <!--  <slide><foam model="foam.demos.empire.Slides"/></slide> -->
 </slides>

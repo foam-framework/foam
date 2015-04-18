@@ -43,7 +43,6 @@ export SOURCES=(
   "../../js/foam/ui/md/Flare.js"
   "../../js/foam/i18n/Visitor.js"
   "../../js/foam/i18n/MessagesExtractor.js"
-  "../../js/foam/i18n/ChromeMessagesExtractor.js"
   "../../js/foam/i18n/ChromeMessagesInjector.js"
   "../../js/foam/i18n/GlobalController.js"
   "../../js/foam/ui/polymer/View.js"

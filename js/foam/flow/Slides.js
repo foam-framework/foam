@@ -15,7 +15,8 @@ CLASS({
   extendsModel: 'foam.flow.Element',
 
   requires: [
-    'foam.flow.Grid'
+    'foam.flow.Grid',
+    'foam.graphics.ActionButtonCView'
   ],
 
   properties: [
@@ -67,6 +68,7 @@ CLASS({
     {
       name: 'back',
       label: '<',
+      keyboardShortcuts: [ '<', 33 /* Page Down */, 38 /* Down Arrow */ ],
       isEnabled: function() { return this.position > 1; },
       action: function() {
         this.position--;
@@ -75,6 +77,7 @@ CLASS({
     {
       name: 'forth',
       label: '>',
+      keyboardShortcuts: [ '>', 34 /* Page Up */, 40 /* Up Arrow */ ],
       isEnabled: function() { return this.position < this.slides.length; },
       action: function() {
         this.position++;
@@ -82,7 +85,8 @@ CLASS({
     },
     {
       name: 'legend',
-      label: '[+]',
+      label: '+',
+      keyboardShortcuts: [ '+' ],
       action: function() { this.setView(this.Grid.create({cards: this.slides})); }
     }
   ],
@@ -139,11 +143,17 @@ CLASS({
       slides > controls .actionButton-back {
         margin-left: 20px;
       }
+      slides > controls .actionButtonCView {
+        margin-top: -6px;
+      }
     */},
     function toInnerHTML() {/*
       <deck></deck>
       <controls style="display:flex;">
-        $$position <span class="of">of {{this.slides.length}}</span> <span style="flex-grow:1;"></span> $$legend $$back $$forth
+        $$position <span class="of">of {{this.slides.length}}</span> <span style="flex-grow:1;"></span>
+        $$legend{model_:'foam.graphics.ActionButtonCView', radius: 20, font: '28px Aria'}
+        $$back{model_:'foam.graphics.ActionButtonCView',   radius: 20, font: '28px Aria'}
+        $$forth{model_:'foam.graphics.ActionButtonCView',  radius: 20, font: '28px Aria'}
       </controls>
     */}
   ]

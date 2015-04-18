@@ -28,7 +28,8 @@ CLASS({
     'foam.documentation.ModelCompletenessRecord',
     'foam.input.touch.TouchManager',
     'foam.input.touch.GestureManager',
-    'foam.dao.FindFallbackDAO'
+    'foam.dao.FindFallbackDAO',
+    'foam.documentation.DocumentationBook'
 //    'foam.core.bootstrap.ModelFileDAO'
   ],
 
@@ -244,14 +245,13 @@ CLASS({
 //         newDAO.put(m);
 //       };
 
-
       // load developer guides
-      //this.X.RegisterDevDocs && this.X.RegisterDevDocs(this.X);
+      this.X.RegisterDevDocs && this.X.RegisterDevDocs(this.X);
 
       // load up books
-//       for (var key in this.X.developerDocs) {
-//         newDAO.put(this.X.developerDocs[key]);
-//       }
+       for (var key in this.X.developerDocs) {
+         newDAO.put(this.X.developerDocs[key]);
+       }
 
       //this.generateCompletnessReport(newDAO);
 

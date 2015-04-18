@@ -301,6 +301,7 @@ CLASS({
           <div class="edge2"></div>
           <%= this.SlidePanel.create({
             data: this.data,
+            side: 'right',
             minWidth: 310,
             minPanelWidth: 320,
             panelRatio: 0.55,
@@ -308,6 +309,7 @@ CLASS({
             stripWidth: 30,
             panelView: {
               factory_: 'foam.ui.SlidePanel',
+              side: 'right',
               stripWidth: 30,
               minWidth: 320,
               minPanelWidth: 220,

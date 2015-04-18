@@ -20,62 +20,39 @@ CLASS({
   name: 'GlobalController',
 
   requires: [
-    'foam.i18n.ChromeMessagesExtractor',
-    'foam.i18n.ChromeMessagesInjector'
-  ],
-
-  imports: [
-    'console'
+    'foam.i18n.MessagesExtractor',
+    'foam.i18n.MessagesInjector',
+    'foam.i18n.ChromeMessagesInjector',
   ],
 
   properties: [
     {
-      name: 'extractors',
-      factory: function() {
-        return this.getExtractors();
+      name: 'extractor',
+      lazyFactory: function() {
+        return this.MessagesExtractor.create();
       }
     },
     {
-      name: 'injectors',
-      factory: function() {
-        return this.getInjectors();
+      name: 'injector',
+      lazyFactory: function() {
+        debugger;
+        if ( GLOBAL.chrome && GLOBAL.chrome.runtime &&
+            GLOBAL.chrome.runtime.id ) {
+          return this.ChromeMessagesInjector.create();
+        } else {
+          return this.MessagesInjector.create();
+        }
       }
-    },
-    {
-      name: 'extractorsList',
-      factory: function() { return []; }
-    },
-    {
-      name: 'injectorsList',
-      factory: function() { return []; }
     }
   ],
 
   methods: [
     {
-      name: 'init',
-      code: function() {
-        this.SUPER();
-        var self = this;
-        ['extractors', 'injectors'].forEach(function(baseName) {
-          Events.map(
-              self[baseName + '$'],
-              self[baseName + 'List$'],
-              function(hash) {
-                var arr = [];
-                Object.getOwnPropertyNames(hash).forEach(function(key) {
-                  arr.push(hash[key]);
-                });
-                return arr;
-              });
-        });
-      }
-    },
-    {
       name: 'visitAllCurrentModels',
       code: function(visitors) {
         var self = this;
         Object_forEach(USED_MODELS, function(_, modelName) {
+          console.log('Visiting', modelName);
           self.visitModel(visitors, lookup(modelName));
         });
       }
@@ -100,37 +77,26 @@ CLASS({
         });
         model.i18nComplete_ = true;
       }
-    },
-    {
-      name: 'getExtractors',
-      code: function() {
-        return {
-          chromeMessages: this.ChromeMessagesExtractor.create()
-        };
-      }
-    },
-    {
-      name: 'getInjectors',
-      code: function() {
-        return {
-          chromeMessages: this.ChromeMessagesInjector.create()
-        };
-      }
     }
   ]
 });
 
 arequire('foam.i18n.GlobalController')(function(GlobalController) {
+  console.log('Constructing GlobalController');
   var i18nGC = GlobalController.create();
   // TODO(markdittmer): We need a more reasonable way to trigger extraction.
-  // i18nGC.visitAllCurrentModels(
-  //   i18nGC.extractorsList.concat(i18nGC.injectorsList));
-  window.X.i18nModel = function(model, X, ret) {
-    i18nGC.visitModel(
-        // i18nGC.extractorsList.concat(
-            i18nGC.injectorsList
-            // )
-        , model);
+  window.setTimeout(function() {
+    i18nGC.visitAllKnownModels([
+      // i18nGC.extractor,
+      i18nGC.injector
+    ]);
+  }, 0);
+  GLOBAL.X.i18nModel = function(model, X, ret) {
+    console.log('Visting model', model.name);
+    i18nGC.visitModel([
+      // i18nGC.extractor,
+      i18nGC.injector
+    ], model);
     ret && ret(model);
   };
 });
