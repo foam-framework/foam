@@ -32,13 +32,19 @@ apar(arequire('Calc'), arequire('foam.ui.TableView'))(function() {
     return UnitTest.create({
       name: num++,
       description: input,
-      code: 'calc.ac();var ks = "' + input + '".split(" ");for ( var i = 0 ; i < ks.length ; i++ ) calc[ks[i]]();this.assert(calc.a2 == ' + result + ', "Expecting: " + ' + result + ' + " found: " + calc.a2);'
+      code: 'this.calc.ac();var ks = "' + input + '".split(" ");for ( var i = 0 ; i < ks.length ; i++ ) this.calc[ks[i]]();this.assert(this.calc.a2 == ' + result + ', "Expecting: " + ' + result + ' + " found: " + this.calc.a2);'
     });
   }
-  tests = UnitTest.create({
+  tests = Model.create({
     name: 'Tests',
     description: 'ACalc Unit Tests.',
-    code: function() { calc = Calc.create(); },
+    imports: ['assert'],
+    properties: [
+      {
+        name: 'calc',
+        factory: function() { return Calc.create(); }
+      }
+    ],
     tests: [
       t('0', 0),
       t('1', 1),
@@ -199,7 +205,7 @@ apar(arequire('Calc'), arequire('foam.ui.TableView'))(function() {
     ]
   });
 
-  tests.test();
+  tests.atest()(function(){});
 
   var tView = foam.ui.TableView.create({
     model: UnitTest,
@@ -212,12 +218,14 @@ apar(arequire('Calc'), arequire('foam.ui.TableView'))(function() {
   X.$('output').innerHTML = tView.toHTML();
   tView.initHTML();
 
+  var failed = 0;
+  var passed = 0;
   for ( var i = 0 ; i < tests.tests.length ; i++ ) {
     var t = tests.tests[i];
 
-    tests.passed += t.passed;
-    tests.failed += t.failed;
+    if ( t.hasFailed() ) failed++
+    else passed++;
   }
-  X.$('passed').innerHTML = tests.passed;
-  X.$('failed').innerHTML = tests.failed;
+  X.$('passed').innerHTML = passed;
+  X.$('failed').innerHTML = failed;
 });

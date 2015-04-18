@@ -92,7 +92,7 @@ var BootstrapModel = {
     // extra memory in DEBUG mode.
     if ( DEBUG ) BootstrapModel.saveDefinition(this);
 
-    if ( ! this.finished__ && this.package) {
+    if ( ! this.finished__ && this.package && this.id != 'foam.ui.Window') {
       console.warn("Building prototype of ", this.id, " before being ready.");
     }
 
@@ -713,29 +713,16 @@ var BootstrapModel = {
     var seq = [];
     var allPassed = true;
 
-    if ( this.name.lastIndexOf('Test') !=
-         this.name.length - 4 ) {
-      seq.push(arequire(this.id + 'Test'));
-      seq.push(function(ret, testModel) {
-        if ( testModel ) testModel.atest()(ret);
-        else ret(true);
-      });
-      seq.push(function(ret, success) {
-        if ( ! success ) allPassed = false;
-        ret();
-      })
-    }
-
     for ( var i = 0 ; i < this.tests.length ; i++ ) {
       seq.push(
-        (function(test) {
+        (function(test, model) {
           return function(ret) {
-            test.atest()(function(passed) {
+            test.atest(model)(function(passed) {
               if ( ! passed ) allPassed = false;
               ret();
             })
           };
-        })(this.tests[i]));
+        })(this.tests[i], this));
     }
 
     seq.push(function(ret) {
