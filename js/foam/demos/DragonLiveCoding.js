@@ -47,6 +47,10 @@ CLASS({
     {
       name: 'turntable',
       factory: function() { return this.Turntable.create(); }
+    },
+    {
+      name: 'mouse',
+      factory: function() { return this.Mouse.create(); }
     }
   ],
 
@@ -55,6 +59,10 @@ CLASS({
       this.SUPER();
 
       this.turntable.time$ = this.timer.time$;
+      this.timer.start();
+      debugger;
+      this.mouse.connect(this.dragon.$);
+      this.dragon.eyes.watch(this.mouse);
     }
   },
 
