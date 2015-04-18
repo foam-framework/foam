@@ -290,11 +290,11 @@ CLASS({
     */},
     function toHTML() {/*
       <div id="%%id" style="display: inline-block;position: relative;" class="SlidePanel">
-        <div id="%%id-main">
+        <div id="%%id-main" class="main">
           <div style="width:0;position:absolute;"></div>
           <%= this.mainView({ data$: this.data$ }) %>
         </div>
-        <div id="%%id-panel" style="position: absolute; top: 0; left: -1;">
+        <div id="%%id-panel" class="panel" style="position: absolute; top: 0; left: -1;">
           <% if ( this.side === this.RIGHT ) { %> <div id="%%id-shadow" class="left-shadow"></div> <% } %>
           <%= (this.panelView_ = this.panelView({ data$: this.data$ })) %>
           <% if ( this.side === this.LEFT ) { %> <div id="%%id-shadow" class="right-shadow"></div> <% } %>
