@@ -284,7 +284,7 @@ CLASS({
     function toHTML() {/*
       <div id="<%= this.id %>" class="field-guide">
         <div class="guide-header">
-          FOAM MD View Field Guide
+          FOAM Material Design Views
         </div>
         <div class="guide-body">
           <div class="section">
