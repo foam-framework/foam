@@ -22,7 +22,7 @@ CLASS({
   requires: [
     'foam.i18n.MessagesExtractor',
     'foam.i18n.MessagesInjector',
-    'foam.i18n.ChromeMessagesInjector',
+    'foam.i18n.ChromeMessagesInjector'
   ],
 
   properties: [
@@ -35,7 +35,6 @@ CLASS({
     {
       name: 'injector',
       lazyFactory: function() {
-        debugger;
         if ( GLOBAL.chrome && GLOBAL.chrome.runtime &&
             GLOBAL.chrome.runtime.id ) {
           return this.ChromeMessagesInjector.create();
@@ -52,7 +51,6 @@ CLASS({
       code: function(visitors) {
         var self = this;
         Object_forEach(USED_MODELS, function(_, modelName) {
-          console.log('Visiting', modelName);
           self.visitModel(visitors, lookup(modelName));
         });
       }
@@ -71,20 +69,19 @@ CLASS({
     {
       name: 'visitModel',
       code: function(visitors, model) {
-        if ( model.i18nComplete_ ) return;
         visitors.forEach(function(visitor) {
           visitor.visitModel(model);
         });
-        model.i18nComplete_ = true;
       }
     }
   ]
 });
 
 arequire('foam.i18n.GlobalController')(function(GlobalController) {
-  console.log('Constructing GlobalController');
   var i18nGC = GlobalController.create();
   // TODO(markdittmer): We need a more reasonable way to trigger extraction.
+  // TODO(adamvy): Remove timeout'd call below once X.i18nModel() is back in
+  // the model boostrap process.
   window.setTimeout(function() {
     i18nGC.visitAllKnownModels([
       // i18nGC.extractor,
@@ -92,7 +89,6 @@ arequire('foam.i18n.GlobalController')(function(GlobalController) {
     ]);
   }, 0);
   GLOBAL.X.i18nModel = function(model, X, ret) {
-    console.log('Visting model', model.name);
     i18nGC.visitModel([
       // i18nGC.extractor,
       i18nGC.injector
