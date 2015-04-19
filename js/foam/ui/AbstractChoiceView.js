@@ -139,7 +139,7 @@ CLASS({
       postSet: function(_, i) {
         // If useSelection is enabled, don't update data or choice.
         if ( this.useSelection ) return;
-        if ( this.data !== this.choices[i][0] ) this.data = this.choices[i][0];
+        if ( this.choices.length && this.data !== this.choices[i][0] ) this.data = this.choices[i][0];
       }
     },
     {
