@@ -25,7 +25,9 @@ CLASS({
     'foam.flow.CodeSample',
     'foam.flow.Slides',
     'foam.ui.md.TwoPaneView',
+    'foam.ui.SwipeAltView',
     'foam.ui.ViewChoice',
+    'foam.demos.InterpolatedClocks',
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager'
   ],
@@ -91,6 +93,9 @@ CLASS({
       }
       .SlidePanel > div {
         margin-left: -16px;
+        height: 100%;
+      }
+      .swipeAltOuter {
         height: 100%;
       }
     */},
