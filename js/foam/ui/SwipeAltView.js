@@ -27,11 +27,10 @@ CLASS({
 
   properties: [
     {
+      model_: 'ArrayProperty',
       name: 'views',
-      type: 'Array',
       subType: 'foam.ui.ViewChoice',
       view: 'foam.ui.ArrayView',
-      factory: function() { return []; },
       help: 'View Choices'
     },
     {
@@ -53,7 +52,7 @@ CLASS({
     {
       name: 'headerView',
       help: 'Optional View to be displayed in header.',
-      factory: function() {
+      lazyFactory: function() {
         return this.ChoiceListView.create({
           choices: this.views.map(function(x) {
             return x.label;
@@ -110,12 +109,6 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      var self = this;
-      this.views.forEach(function(choice, index) {
-        if ( index != self.index )
-          choice.view().deepPublish(self.ON_HIDE);
-      });
-      this.views[this.index].view().deepPublish(this.ON_SHOW);
     },
 
     // The general structure of the carousel is:
@@ -143,7 +136,6 @@ CLASS({
       str.push('<div id="' + this.id + '" class="swipeAltOuter">');
       str.push('<div class="swipeAltSlider" style="width: 100%">');
       str.push('<div class="swipeAltInner" style="left: 0px">');
-
       str.push(viewChoice.view().toHTML());
 
       str.push('</div>');
@@ -154,8 +146,14 @@ CLASS({
     },
 
     initHTML: function() {
-      if ( ! this.$ ) return;
       this.SUPER();
+
+      var self = this;
+      this.views.forEach(function(choice, index) {
+        if ( index != self.index )
+          choice.view().deepPublish(self.ON_HIDE);
+      });
+      this.views[this.index].view().deepPublish(this.ON_SHOW);
 
       // Now is the time to inflate our fake carousel into the real thing.
       // For now we won't worry about re-rendering the current one.
