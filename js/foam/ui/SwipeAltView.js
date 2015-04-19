@@ -107,10 +107,6 @@ CLASS({
   ],
 
   methods: {
-    init: function() {
-      this.SUPER();
-    },
-
     // The general structure of the carousel is:
     // - An outer div (this.$), with position: relative.
     // - A second div (this.slider) with position: relative.
