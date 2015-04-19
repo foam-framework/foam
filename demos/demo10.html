@@ -6,6 +6,7 @@
  </head>
  <body>
   <script language="javascript">
+    arequire('foam.ui.View')(function() {
     var timer = Timer.create({});
     var space = Canvas.create({width: 2000, height: 1200, background: 'white'});
 
@@ -58,6 +59,7 @@
        [1000, function() { css.y = 400;   }, B],
        [1000, function() { ui_tm.y = 500; ui_table.y = 600; ui_detail.y = 700; ui_ctrl.y = 800; ui_model.y = 900;  }, B],
     ])();
+    });
   </script>
  </body>
 </html>
