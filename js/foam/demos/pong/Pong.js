@@ -100,6 +100,10 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'rScore'
+    },
+    {
+      name: 'collider',
+      factory: function() { return this.Collider.create(); }
     }
   ],
 
@@ -108,7 +112,10 @@ CLASS({
       name: 'onBallMove',
       isFramed: true,
       code: function() {
-        if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+        if ( ! this.$ ) {
+          this.destroy();
+          throw EventService.UNSUBSCRIBE_EXCEPTION;
+        }
         var ball = this.ball;
 
         if ( ball.velocity >  20 ) ball.velocity =  20;
@@ -193,6 +200,8 @@ CLASS({
     init: function() {
       this.SUPER();
 
+      this.addChild(this.collider);
+
       // Position Paddles
       this.lPaddle.x = 25+this.lPaddle.r;
       this.rPaddle.x = this.width-25-this.rPaddle.r;
@@ -206,7 +215,7 @@ CLASS({
       this.ball.x$.addListener(this.onBallMove);
 
       // Setup Physics
-      this.Collider.create().add(this.ball, this.lPaddle, this.rPaddle).start();
+      this.collider.add(this.ball, this.lPaddle, this.rPaddle).start();
       Movement.inertia(this.ball);
     }
   }
