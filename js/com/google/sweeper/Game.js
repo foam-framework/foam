@@ -45,6 +45,9 @@ CLASS({
       body {
         -webkit-user-select: none;
       }
+      span[name="time"] {
+        margin-left: 24px;
+      }
     */},
     function toHTML() {/*
       $$time{mode: 'read-only'}
