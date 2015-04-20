@@ -22,6 +22,7 @@ CLASS({
     'foam.demos.physics.Spring',
     'foam.demos.physics.Bubbles',
     'foam.graphics.Circle',
+    'foam.graphics.Gauge',
     'foam.flow.CodeSample',
     'foam.flow.Slides',
     'foam.ui.md.TwoPaneView',

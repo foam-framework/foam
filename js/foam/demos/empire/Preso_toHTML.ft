@@ -86,6 +86,17 @@
       ]})
     %>
     -->
+            <%
+              CLASS({
+                name: 'DataBindingDemo',
+                properties: [
+                  { xxxmodel_: 'FloatProperty', name: 'value', postSet: function(o, n) { console.log('*********** ', o,n); } },
+                ]
+              });
+              var value = DataBindingDemo.create({value:5});
+              var gauge = foam.graphics.Gauge.create({data$: value.value$, label: 'FOAM'});
+              out(foam.ui.DetailView.create({data:value}), gauge);
+            %>
     <foam model="foam.ui.md.TwoPaneView">
 <!--    <foam model="foam.ui.SwipeAltView"> -->
       <views>
@@ -95,7 +106,20 @@
         </viewChoice>
         <viewChoice>
           <label>Data-Binding</label>
-          <p:view> testing asdfasdf</p:view>
+          <p:view>
+            <%
+              CLASS({
+                name: 'DataBindingDemo',
+                properties: [
+                  { xxxmodel_: 'FloatProperty', name: 'value', postSet: function(o, n) { console.log('*********** ', o,n); } },
+                ],
+                actions: [ { name: 'plus', action: function() { console.log('plus'); this.value++ } } ]
+              });
+              var value = DataBindingDemo.create({value:5});
+              var gauge = foam.graphics.Gauge.create({data$: value.value$, label: 'FOAM'});
+              out(foam.ui.DetailView.create({data:value, showActions: true}), gauge);
+            %>
+          </p:view>
         </viewChoice>
         <viewChoice>
           <label>Composition</label>
