@@ -109,6 +109,7 @@
         <viewChoice>
           <label>Data-Binding</label>
           <p:view>
+            <div id="%%id">
             <%
               CLASS({
                 name: 'DataBindingDemo',
@@ -121,6 +122,7 @@
               var gauge = foam.graphics.Gauge.create({data$: value.value$, label: 'FOAM'});
               out(foam.ui.DetailView.create({data:value, showActions: true}), gauge);
             %>
+            </div>
           </p:view>
         </viewChoice>
         <viewChoice>

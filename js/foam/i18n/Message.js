@@ -33,6 +33,10 @@ CLASS({
       required: true
     },
     {
+      model_: 'StringProperty',
+      name: 'meaning'
+    },
+    {
       model_: 'ArrayProperty',
       name: 'placeholders',
       type: 'Array[foam.i18n.Placeholder]'
