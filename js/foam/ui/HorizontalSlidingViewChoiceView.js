@@ -38,6 +38,9 @@ CLASS({
     {
       name: 'height',
       defaultValue: '100px',
+      postSet: function(_, newVal) {
+        if (this.$) this.$.style.height = newVal;
+      },
     },
   ],
   methods: {
