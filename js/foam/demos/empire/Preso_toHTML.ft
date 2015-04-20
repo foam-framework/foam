@@ -78,53 +78,9 @@
   </slide>
   <slide>
     <h1>Graphics</h1>
-    <!--
-    <%= foam.ui.SwipeAltView.create({
-      views: [
-        { label: 'Composition',    view: 'testing ' },
-        { label: 'Event Handling', view: 'testing ' }
-      ]})
-    %>
-    -->
-            <%
-              CLASS({
-                name: 'DataBindingDemo',
-                properties: [
-                  { xxxmodel_: 'FloatProperty', name: 'value', postSet: function(o, n) { console.log('*********** ', o,n); } },
-                ]
-              });
-              var value = DataBindingDemo.create({value:5});
-              var gauge = foam.graphics.Gauge.create({data$: value.value$, label: 'FOAM'});
-              out(foam.ui.DetailView.create({data:value}), gauge);
-            %>
     <foam model="foam.ui.md.TwoPaneView">
-<!--    <foam model="foam.ui.SwipeAltView"> -->
+<!--  <foam model="foam.ui.SwipeAltView">   -->
       <views>
-        <viewChoice>
-          <label>Configuration</label>
-          <p:view> testing asdfadsf</p:view>
-        </viewChoice>
-        <viewChoice>
-          <label>Data-Binding</label>
-          <p:view>
-            <%
-              CLASS({
-                name: 'DataBindingDemo',
-                properties: [
-                  { xxxmodel_: 'FloatProperty', name: 'value', postSet: function(o, n) { console.log('*********** ', o,n); } },
-                ],
-                actions: [ { name: 'plus', action: function() { console.log('plus'); this.value++ } } ]
-              });
-              var value = DataBindingDemo.create({value:5});
-              var gauge = foam.graphics.Gauge.create({data$: value.value$, label: 'FOAM'});
-              out(foam.ui.DetailView.create({data:value, showActions: true}), gauge);
-            %>
-          </p:view>
-        </viewChoice>
-        <viewChoice>
-          <label>Composition</label>
-          <p:view> testing asdfadsf</p:view>
-        </viewChoice>
         <viewChoice>
           <label>Event Handling</label>
           <p:view>
@@ -152,8 +108,64 @@
           </p:view>
         </viewChoice>
         <viewChoice>
+          <label>Data-Binding</label>
+          <p:view><div id="%%id" style="width:367px;margin-left:64px;">
+            <%
+              CLASS({
+                name: 'DataBindingDemo',
+                properties: [
+                  { name: 'value' },
+                ],
+                actions: [
+                  { name: 'minus', action: function() { this.value--; } },
+                  { name: 'plus',  action: function() { this.value++; } },
+                ]
+              });
+              var value = DataBindingDemo.create({value:5});
+              var gauge = foam.graphics.Gauge.create({data$: value.value$, label: 'FOAM'});
+              out(foam.ui.DetailView.create({data:value, showActions: true}), '<br>', gauge);
+            %>
+          </div></p:view>
+        </viewChoice>
+        <viewChoice>
+          <label>Configuration</label>
+          <p:view><div id="%%id" style="width:500px;margin-left:64px;display: flex;">
+            <%
+              var circle = foam.graphics.Circle.create({x:400, y:300});
+              circle.addListener(function() { circle.view.paint(); });
+              out(foam.ui.DetailView.create({data:circle}), circle);
+            %>
+          </div></p:view>
+        </viewChoice>
+        <viewChoice>
+          <label>Composition</label>
+          <p:view>
+            <foam model="foam.demos.graphics.EyeCView" color="white"/>
+            <foam model="foam.demos.graphics.EyeCView" pupilColor="white"/>
+            <span style="width:200px;display:inline-block;"></span>
+            <foam model="foam.demos.graphics.EyeCView" color="red"/>
+            <foam model="foam.demos.graphics.EyeCView" color="yellow"/>
+            <span style="width:200px;display:inline-block;"></span>
+            <foam model="foam.demos.graphics.EyesCView"/>
+            <%= foam.demos.graphics.Dragon.create({y: 200, x: 800, scaleX: 0.7, scaleY: 0.7, timer: Timer.create(), blowBubbles: false}) %>
+          </p:view>
+        </viewChoice>
+        <viewChoice>
+          <label>Reaction</label>
+          <p:view>
+            <%
+              var eyes = foam.demos.graphics.EyesCView.create({x:400, y:400, width: 800, height: 800, scaleX: 2, scaleY: 2});
+              var mouse = foam.input.Mouse.create();
+              eyes.watch(mouse);
+              this.addInitializer(function() { mouse.connect(eyes.view.$); });
+              Events.dynamic(function() { mouse.x; mouse.y; }, function() { if ( eyes.view ) eyes.view.paint(); });
+              out(eyes);
+            %>
+          </p:view>
+        </viewChoice>
+        <viewChoice>
           <label>Animation</label>
-          <p:view> Animation </p:view>
+          <p:view><foam model="foam.demos.graphics.Dragon"/></p:view>
         </viewChoice>
         <viewChoice>
           <label>Interpolation</label>
@@ -233,7 +245,7 @@
   <slide>
     <foam model="foam.ui.SlidePanel" minWidth="1700" minPanelWidth="350" side="left" stripWidth="16">
       <panelView>
-        <center style="padding-top:200px;height:100%; background:cadetblue;"><foam model="foam.graphics.Gauge" label="Applause"/></center>
+        <center style="padding-top:200px;height:100%; background:cadetblue;"><foam model="foam.graphics.Gauge" label="Applause" maxValue="11"/></center>
       </panelView>
       <mainView>
         <div style="margin-left: 16px;">

@@ -25,10 +25,13 @@ CLASS({
     'foam.graphics.Gauge',
     'foam.flow.CodeSample',
     'foam.flow.Slides',
+    'Timer',
+    'foam.demos.graphics.Dragon',
     'foam.ui.md.TwoPaneView',
     'foam.ui.SwipeAltView',
     'foam.ui.ViewChoice',
     'foam.demos.InterpolatedClocks',
+    'foam.demos.graphics.EyeCView',
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager'
   ],
