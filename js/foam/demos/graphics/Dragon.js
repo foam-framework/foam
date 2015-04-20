@@ -31,6 +31,7 @@ CLASS({
 
   properties: [
     { name: 'i', defaultValue: 1 },
+    { name: 'blowBubbles', defaultValue: true },
     {
       name:  'eyes',
       type:  'EyesCView',
@@ -154,6 +155,8 @@ CLASS({
         border: this.COLOURS[Math.floor(Math.random() * this.COLOURS.length)]});
 
       this.addChild(circle);
+
+      if ( ! this.blowBubbles ) return;
 
       var M = Movement;
 
