@@ -21,8 +21,9 @@ CLASS({
 
   requires: [
     'foam.ui.PropertyView',
-    'foam.ui.ActionButton',
-    'foam.ui.RelationshipView',
+//    'foam.ui.ActionButton',
+//    'foam.ui.RelationshipView',
+    'foam.ui.AsyncViewLoader',
     'SimpleReadOnlyValue'
   ],
 
@@ -52,11 +53,14 @@ CLASS({
 
     createRelationshipView: function(r, opt_args) {
       var X = ( opt_args && opt_args.X ) || this.Y;
-      this[r.name + 'View'] = this.RelationshipView.create({
-        relationship: r,
-        args: opt_args
-      }, X);
-      return this[r.name + 'View'];
+      arequire('foam.ui.RelationshipView', X)(function(m) {
+        var v = m.create({
+          relationship: r,
+          args: opt_args
+        }, X);
+        this[r.name + 'View'] = v;
+      }.bind(this));
+//      return this[r.name + 'View'];
     },
     createActionView: function(action, opt_args) {
       /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info
@@ -65,10 +69,20 @@ CLASS({
       var modelName = opt_args && opt_args.model_ ?
         opt_args.model_ :
         'foam.ui.ActionButton'  ;
-      var v = X.lookup(modelName, X).create({action: action}, X).copyFrom(opt_args);
+
+      var v = this.AsyncViewLoader.create({
+        id: this.nextID(),
+        name: action.name,
+        model: modelName,
+        args: { action: action },
+        copyFrom: opt_args
+      }, X);
+
+      if ( v.view ) {
+        v = v.view;
+      }
 
       this[action.name + 'View'] = v;
-
       return v;
     },
 

@@ -55,7 +55,7 @@ CLASS({
     toHTML: function() {
       /* If the view is ready, pass through to it. Otherwise create a place
       holder tag with our id, which we replace later. */
-      return this.view ? this.toInnerHTML() : "";
+      return this.view ? this.toInnerHTML() :  ('<div id="'+this.id+'"></div>');
     },
 
     initHTML: function() {
