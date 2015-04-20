@@ -44,7 +44,8 @@ CLASS({
     },
     {
       model_: 'StringArrayProperty',
-      name: 'extraClassPaths'
+      name: 'extraClassPaths',
+      adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
     {
       name: 'fs',
@@ -103,7 +104,8 @@ CLASS({
             for ( var i = 0 ; i < this.targets.length ; i++ ) {
               seq.push((function(model) {
                 if ( ! model ) {
-                  console.warn("Skipping target: ", this.targets[i]);
+                  console.warn("ERROR: Could not load target: ", this.targets[i]);
+                  this.allPassed = false;
                   return anop;
                 }
 
