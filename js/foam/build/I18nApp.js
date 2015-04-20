@@ -185,10 +185,7 @@ CLASS({
     outputFoamData_: function() {
       var self = this;
       this.i18nController.extractor.amessagesFile(self.dataId, function(str) {
-        console.log(self.dataId);
         var filePath = self.dataId.replace(/[.]/g, self.path.sep) + '.js';
-        console.log(filePath);
-        console.log(self.targetPath + self.path.sep + filePath);
         var file = self.File.create({
           path: self.targetPath + self.path.sep + filePath,
           contents: str
