@@ -45,20 +45,20 @@ CLASS({
     }
   },
   templates: [
-    function outXML(opt_out, passed, failed, errors, run) {/*
-<%
+    function outXML(opt_out, passed, failed, errors, run) {/*<%
   var attr = XMLUtil.escapeAttr;
+%><?xml version="1.0"?>
+<testsuite name="<%= attr(this.name) %>" tests="<%= '' + run %>" failures="<%= '' + failed %>" errors="<%= '' + errors %>"><%
+  for ( var i = 0 ; i < this.tests.length ; i++ ) {
+    var test = this.tests[i];
 %>
-<?xml version="1.0"?>
-<testsuite name="<%= attr(this.name) %>" tests="<%= '' + run %>" failures="<%= '' + failed %>" errors="<%= '' + errors %>">
-<% for ( var i = 0 ; i < this.tests.length ; i++ ) { var test = this.tests[i]; %>
-  <testcase name="<%= attr(test.name) %>" classname="<%= attr(test.modelId) %>" status="run">
-    <% if ( test.hasFailed() ) { %><failure><% } %>
-<%= escapeHTML(test.results) %>
-    <% if ( test.hasFailed() ) { %></failure><% } %>
-  </testcase>
-<% } %>
-</testsuite>
-    */}
+  <testcase name="<%= attr(test.name) %>" classname="<%= attr(test.modelId) %>" status="run"><%
+    if ( test.hasFailed() ) { %><failure><% } else { %><system-out><![CDATA[<% }
+    %><%= escapeHTML(test.results) %><%
+    if ( test.hasFailed() ) { %></failure><% } else { %>]]></system-out><% }
+    %>
+  </testcase><%
+  }
+%></testsuite>*/}
   ]
 });
