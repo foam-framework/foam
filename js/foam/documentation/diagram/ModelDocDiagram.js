@@ -16,16 +16,21 @@
  */
 
 CLASS({
-  name: 'ModelDocDiagram',
   package: 'foam.documentation.diagram',
+  name: 'ModelDocDiagram',
   extendsModel: 'foam.ui.DestructiveDataView',
-  traits: ['foam.ui.TemplateSupportTrait',
-           'foam.documentation.DocModelFeatureDAOTrait'],
 
-  requires: ['foam.graphics.diagram.Block',
-             'foam.graphics.diagram.Section',
-             'foam.graphics.diagram.Margin',
-             'foam.documentation.diagram.FeatureListDiagram'],
+  traits: [
+    'foam.ui.TemplateSupportTrait',
+    'foam.documentation.DocModelFeatureDAOTrait'
+  ],
+
+  requires: [
+    'foam.graphics.diagram.Block',
+    'foam.graphics.diagram.Section',
+    'foam.graphics.diagram.Margin',
+    'foam.documentation.diagram.FeatureListDiagram'
+  ],
 
   documentation: function() {/*
     A diagram block documenting one $$DOC{ref:'Model'}.
