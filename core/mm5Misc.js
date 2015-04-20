@@ -156,6 +156,7 @@ CLASS({
   methods:{
     atest: function(model) {
       return function(ret) {
+        var exception = false;
         try {
           var obj = model.create(undefined, this.Y);
           var self = this;
@@ -170,10 +171,11 @@ CLASS({
             this.code.call(obj);
         } catch(e) {
           this.fail("Exception thrown: " + e.stack);
+          exception = true;
           ret(false);
         }
 
-        if ( ! this.async ) finished();
+        if ( ! this.async && ! exception ) finished();
       }.bind(this);
     },
 
