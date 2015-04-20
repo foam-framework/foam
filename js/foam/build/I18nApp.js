@@ -24,7 +24,8 @@ CLASS({
     'foam.dao.File',
     'foam.core.dao.OrDAO',
     'node.dao.ModelFileDAO',
-    'foam.i18n.GlobalController'
+    'foam.i18n.GlobalController',
+    'foam.i18n.MessagesExtractor'
   ],
   imports: [ 'error' ],
 
@@ -91,8 +92,16 @@ CLASS({
       factory: function() { return this.FileDAO.create(); }
     },
     {
+      name: 'i18nExtractorFactory',
+      factory: function() { return this.MessagesExtractor.create; }
+    },
+    {
       name: 'i18nController',
-      lazyFactory: function() { return this.GlobalController.create(); }
+      lazyFactory: function() {
+        return this.GlobalController.create({
+          extractor: this.i18nExtractorFactory()
+        });
+      }
     },
     {
       name: 'visitedModels_',
@@ -137,8 +146,10 @@ CLASS({
       apar(arequire(this.messageModel), arequire(this.messageBundleModel))(
           function(Message, MessageBundle) {
             this.i18nController = this.GlobalController.create({
-              messageFactory: Message.create,
-              messageBundleFactory: MessageBundle.create
+              extractor: this.i18nExtractorFactory({
+                messageFactory: Message.create.bind(Message),
+                messageBundleFactory: MessageBundle.create.bind(MessageBundle)
+              })
             });
             this.execute_();
           }.bind(this));
