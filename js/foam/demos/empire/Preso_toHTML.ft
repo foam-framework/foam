@@ -19,6 +19,9 @@
     <br>
     <div style="margin-left: 100px;">
       <foam model="com.google.sweeper.Game"/>
+      <br>
+      <%= foam.documentation.diagram.DocDiagramView.create({data: com.google.sweeper.Game}) %>
+<!--      <foam model="foam.documentation.diagram.DocDiagramView" data="com.google.sweeper.Game"/> -->
     </div>
   </slide>
   <slide>

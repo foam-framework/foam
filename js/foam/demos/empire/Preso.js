@@ -17,6 +17,8 @@ CLASS({
   constants: { ELEMENT_NAME: 'foam-demos-flow' },
 
   requires: [
+    'com.google.sweeper.Game',
+    'foam.documentation.diagram.DocDiagramView',
     'foam.demos.physics.Collision',
     'foam.demos.physics.CollisionWithSpring',
     'foam.demos.physics.Spring',
