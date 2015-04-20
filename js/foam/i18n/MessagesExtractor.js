@@ -46,7 +46,6 @@ CLASS({
           value: msg.value,
           description: modelPrefix + msg.translationHint
         });
-        console.log('Placeholders', i18nMsg.placeholders);
         this.dao.put(i18nMsg);
         return i18nMsg;
       }
@@ -68,8 +67,6 @@ CLASS({
               description: modelPrefix + action.translationHint +
                   ' (text label)'
             });
-            if ( ! i18nMsg.id ) debugger;
-            console.log('Placeholders', i18nMsg.placeholders);
             this.dao.put(i18nMsg);
             msgs.push(i18nMsg);
           }
@@ -82,8 +79,6 @@ CLASS({
               description: modelPrefix + action.translationHint +
                   ' (speech label)'
             });
-
-            console.log('Placeholders', i18nMsg.placeholders);
             this.dao.put(i18nMsg);
             msgs.push(i18nMsg);
           }
