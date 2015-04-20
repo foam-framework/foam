@@ -15,7 +15,8 @@ CLASS({
   extendsModel: 'foam.flow.Element',
 
   requires: [
-    'foam.flow.Grid'
+    'foam.flow.Grid',
+    'foam.graphics.ActionButtonCView'
   ],
 
   properties: [
@@ -67,6 +68,7 @@ CLASS({
     {
       name: 'back',
       label: '<',
+      keyboardShortcuts: [ '<', 33 /* Page Down */, 38 /* Down Arrow */ ],
       isEnabled: function() { return this.position > 1; },
       action: function() {
         this.position--;
@@ -75,6 +77,7 @@ CLASS({
     {
       name: 'forth',
       label: '>',
+      keyboardShortcuts: [ '>', 34 /* Page Up */, 40 /* Up Arrow */ ],
       isEnabled: function() { return this.position < this.slides.length; },
       action: function() {
         this.position++;
@@ -82,7 +85,8 @@ CLASS({
     },
     {
       name: 'legend',
-      label: '[+]',
+      label: '+',
+      keyboardShortcuts: [ '+' ],
       action: function() { this.setView(this.Grid.create({cards: this.slides})); }
     }
   ],
@@ -91,17 +95,18 @@ CLASS({
     function CSS() {/*
       slides .card-grid .card {
         box-shadow: 0 5px 15px #aaa;
-        height: 18%;
+        height: 16.4%;
         overflow: hidden;
         padding: 2px;
-        width: 18%;
+        width: 17%;
+        min-width: initial;
       }
       slides .card-grid .card .card-inset {
         height: 90%;
         overflow: hidden;
         position: absolute;
         transform-origin: 0 0;
-        transform: scale(0.18);
+        transform: scale(0.15);
         width: 100%;
       }
       slides * {
@@ -130,7 +135,7 @@ CLASS({
       slides > controls input {
         font-size: 20px;
         margin-right: 10px;
-        width: 40px;
+        width: 50px;
       }
       slides > controls .of {
         margin-top: 2px;
@@ -138,11 +143,17 @@ CLASS({
       slides > controls .actionButton-back {
         margin-left: 20px;
       }
+      slides > controls .actionButtonCView {
+        margin-top: -6px;
+      }
     */},
     function toInnerHTML() {/*
       <deck></deck>
       <controls style="display:flex;">
-        $$position <span class="of">of {{this.slides.length}}</span> <span style="flex-grow:1;"></span> $$legend $$back $$forth
+        $$position <span class="of">of {{this.slides.length}}</span> <span style="flex-grow:1;"></span>
+        $$legend{model_:'foam.graphics.ActionButtonCView', radius: 20, font: '28px Aria'}
+        $$back{model_:'foam.graphics.ActionButtonCView',   radius: 20, font: '28px Aria'}
+        $$forth{model_:'foam.graphics.ActionButtonCView',  radius: 20, font: '28px Aria'}
       </controls>
     */}
   ]

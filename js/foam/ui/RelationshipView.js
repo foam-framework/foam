@@ -20,11 +20,9 @@ CLASS({
   name: 'RelationshipView',
   extendsModel: 'foam.ui.BaseView',
 
-  traits: [
-    'foam.ui.HTMLViewTrait',
-    'foam.ui.TemplateSupportTrait',
-    'foam.ui.ViewActionsTrait'
-  ],
+  // TODO: remove when requires cycles work. For now we must avoid
+  // a dependency cycle with TemplateSupportTrait
+  traits: ['foam.ui.HTMLViewTrait'],
 
   properties: [
     {
@@ -56,16 +54,16 @@ CLASS({
       this.SUPER(args);
       if ( this.args && this.args.model_ ) this.viewModel = this.args.model_
     },
-    construct: function() {
-      this.SUPER();
+  },
+  templates: [
+    function toInnerHTML() {/*
+    <%
       this.view = this.viewModel({
         dao: this.data[this.relationship.name],
         model: this.relationship.relatedModel
       }, this.X).copyFrom(this.args);
       this.addChild(this.view);
-    }
-  },
-  templates: [
-    function toInnerHTML() {/* %%view */}
+    %>
+    %%view */}
   ]
 });

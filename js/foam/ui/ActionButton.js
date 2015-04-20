@@ -15,14 +15,12 @@
  * limitations under the License.
  */
 
- 
- 
 // TODO: add ability to set CSS class and/or id
 CLASS({
-  name: 'ActionButton',
   package: 'foam.ui',
+  name: 'ActionButton',
 
-  extendsModel: 'foam.ui.BaseView', // not extending View prevents cycle with TemplateSupportTrait
+  extendsModel: 'foam.ui.BaseView', // not extending View prevents cycle
   traits: ['foam.ui.HTMLViewTrait'],
 
   properties: [
@@ -75,7 +73,7 @@ CLASS({
   ],
 
   methods: {
-   
+
     toHTML: function() {
       var superResult = this.SUPER(); // get the destructors done before doing our work
 
@@ -117,4 +115,3 @@ CLASS({
     initKeyboardShortcuts: function() { /* Not needed, will be done by parent View. */ }
   }
 });
-

@@ -20,9 +20,7 @@ CLASS({
   package: 'foam.i18n',
   extendsModel: 'foam.i18n.Visitor',
 
-  imports: [
-    'console'
-  ],
+  imports: [ 'warn' ],
 
   methods: [
     {
@@ -64,7 +62,7 @@ CLASS({
         if ( i18nMessage ) {
           obj[objKey] = i18nMessage;
         } else {
-          this.console.warn('ChromeMessagesInjector: "' + msgKey +
+          this.warn('ChromeMessagesInjector: "' + msgKey +
               '": No such message');
         }
       }

@@ -92,7 +92,7 @@ var BootstrapModel = {
     // extra memory in DEBUG mode.
     if ( DEBUG ) BootstrapModel.saveDefinition(this);
 
-    if ( ! this.finished__ && this.package) {
+    if ( ! this.finished__ && this.package && this.id != 'foam.ui.Window') {
       console.warn("Building prototype of ", this.id, " before being ready.");
     }
 
@@ -310,15 +310,13 @@ var BootstrapModel = {
         if ( ! Message.isInstance(m) ) {
           m = this.messages[key] = Message.create(m);
         }
+        var clsProps = {}, mdlProps = {}, constName = constantize(m.name);
+        clsProps[m.name] = { get: function() { return m.value; } };
+        clsProps[constName] = { value: m };
+        mdlProps[constName] = { value: m };
         // TODO(kgr): only add to Proto when Model cleanup done.
-        Object.defineProperty(
-            cls,
-            constantize(m.name),
-            { get: function() { return m.value; } });
-        Object.defineProperty(
-            this,
-            constantize(m.name),
-            { get: function() { return m.value; } });
+        Object.defineProperties(cls, clsProps);
+        Object.defineProperties(this, mdlProps);
       }.bind(this));
     }
 
@@ -713,9 +711,24 @@ var BootstrapModel = {
 
   atest: function() {
     var seq = [];
+    var allPassed = true;
+
     for ( var i = 0 ; i < this.tests.length ; i++ ) {
-      seq.push(this.tests[i].atest.bind(this.tests[i]));
+      seq.push(
+        (function(test, model) {
+          return function(ret) {
+            test.atest(model)(function(passed) {
+              if ( ! passed ) allPassed = false;
+              ret();
+            })
+          };
+        })(this.tests[i], this));
     }
+
+    seq.push(function(ret) {
+      ret(allPassed);
+    });
+
     return aseq.apply(null, seq);
   }
 };

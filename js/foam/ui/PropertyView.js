@@ -17,12 +17,12 @@
 
 
 CLASS({
-  name: 'PropertyView',
   package: 'foam.ui',
+  name: 'PropertyView',
   extendsModel: 'foam.ui.BasePropertyView',
+
   traits: [
     'foam.ui.HTMLViewTrait',
-    'foam.ui.HTMLPropertyViewTrait'
   ],
 
   documentation: function() {/*
@@ -31,5 +31,41 @@ CLASS({
     $$DOC{ref:'Property.view',text:'Property.view'} value, the $$DOC{ref:'.innerView'} value, or
     $$DOC{ref:'.args'}.model_.
   */},
-});
 
+  properties: [
+    {
+      name:  'id',
+      label: 'Element ID',
+      type:  'String',
+      factory: function() { return this.instance_.id || this.nextID()+"PROP"; },
+      documentation: function() {/*
+        The DOM element id for the outermost tag of
+        this $$DOC{ref:'foam.ui.View'}.
+      */}
+    }
+  ],
+
+  methods: {
+    finishPropertyRender: function() {
+      this.SUPER();
+      if ( ! this.$ ) return;
+      this.$.outerHTML = this.toInnerHTML();
+      this.initInnerHTML();
+    },
+
+    toInnerHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */
+      return this.view ? this.view.toHTML() : "";
+    },
+
+    toHTML: function() {
+      /* If the view is ready, pass through to it. Otherwise create a place
+      holder tag with our id, which we replace later. */
+      this.invokeDestructors();
+      return this.view? this.toInnerHTML() : this.SUPER();
+    },
+
+    initHTML: function() {
+      this.view && this.view.initHTML();
+    }
+  }
+});

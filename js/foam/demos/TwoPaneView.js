@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'TwoPaneView',
   package: 'foam.demos',
+  name: 'TwoPaneView',
 
   extendsModel: 'foam.ui.View',
 
@@ -69,4 +69,3 @@ CLASS({
     */}
   ]
 });
-

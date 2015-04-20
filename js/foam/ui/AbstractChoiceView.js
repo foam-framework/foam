@@ -33,9 +33,6 @@ CLASS({
     {
       name: 'text',
       help: 'The user-visible text of the current choice (ie. [value, text] -> text).',
-      factory: function() {
-        return this.choice && this.choice[1];
-      },
       postSet: function(_, d) {
         for ( var i = 0 ; i < this.choices.length ; i++ ) {
           if ( this.choices[i][1] === d ) {
@@ -132,6 +129,8 @@ CLASS({
       model_: 'IntProperty',
       name: 'index',
       help: 'The index of the current choice.',
+      transient: true,
+      defaultValue: -1,
       preSet: function(_, i) {
         if ( i < 0 || this.choices.length == 0 ) return 0;
         if ( i >= this.choices.length ) return this.choices.length - 1;
@@ -140,7 +139,7 @@ CLASS({
       postSet: function(_, i) {
         // If useSelection is enabled, don't update data or choice.
         if ( this.useSelection ) return;
-        if ( this.data !== this.choices[i][0] ) this.data = this.choices[i][0];
+        if ( this.choices.length && this.data !== this.choices[i][0] ) this.data = this.choices[i][0];
       }
     },
     {

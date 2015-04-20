@@ -137,9 +137,7 @@ CLASS({
   listeners: [
     {
       name: 'tapClick',
-      code: function() {
-        this.action.callIfEnabled(this.X, this.data);
-      }
+      code: function() { this.action.callIfEnabled(this.X, this.data); }
     }
   ],
 
@@ -218,7 +216,7 @@ CLASS({
         e.preventDefault();
         e.stopPropagation();
         // If no X & Y then it was simulated by ChromeVox
-        if ( ! e.x && ! e.y ) this.tapClick();
+        if ( ( ! e.x && ! e.y ) || ! this.gestureManager ) this.tapClick();
       }.bind(this));
     },
 

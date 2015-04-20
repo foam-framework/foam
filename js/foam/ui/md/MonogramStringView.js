@@ -34,12 +34,12 @@ CLASS({
     {
       name: 'width',
       documentation: 'The width of the circle in CSS pixels.',
-      defaultValue: 20
+      defaultValue: 40
     },
     {
       name: 'height',
       documentation: 'The height of the circle in CSS pixels.',
-      defaultValue: 20
+      defaultValueFn: function() { return this.width; }
     }
   ],
 

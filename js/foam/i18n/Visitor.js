@@ -24,13 +24,27 @@ CLASS({
   ],
 
   imports: [
-    'console'
+    'warn'
+  ],
+
+  properties: [
+    {
+      model_: 'BooleanProperty',
+      name: 'revisitModels',
+      defaultValue: false
+    },
+    {
+      name: 'visitedModels',
+      lazyFactory: function() { return {}; }
+    }
   ],
 
   methods: [
     {
       name: 'visitModel',
       code: function(model) {
+        if ( ! this.revisitModels && this.visitedModels[model.id] )
+          return this;
         var self = this;
         var modelPrefix = model.translationHint ?
             model.translationHint + ' ' : '';
@@ -50,6 +64,7 @@ CLASS({
             }
           }
         }
+        this.visitedModels[model.id] = true;
         return this;
       }
     },
@@ -75,7 +90,7 @@ CLASS({
     {
       name: 'visitMessage',
       code: function(model) {
-        this.console.warn(
+        this.warn(
             'Visitor without visitMessage implementation: ' +
                 this.name_);
         return this;
@@ -84,7 +99,7 @@ CLASS({
     {
       name: 'visitAction',
       code: function(model) {
-        this.console.warn(
+        this.warn(
             'Visitor without visitAction implementation: ' +
                 this.name_);
         return this;

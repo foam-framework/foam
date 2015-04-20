@@ -115,7 +115,10 @@ CLASS({
   properties: [
     {
       name: 'side',
-      lazyFactory: function() { return this.RIGHT; }
+      adapt: function(_, side) {
+        return side === 'left' ? this.LEFT : side === 'right' ? this.RIGHT : side ;
+      },
+      lazyFactory: function() { return this.LEFT; }
     },
     {
       name: 'state',
@@ -268,7 +271,7 @@ CLASS({
   templates: [
     function CSS() {/*
       .SlidePanel .left-shadow {
-        background: linear-gradient(to left, rgba(0,0,0,0.15) 0%,
+        background: linear-gradient(to left, rgba(0,0,0,0.2) 0%,
                                              rgba(0,0,0,0) 100%);
         height: 100%;
         left: -8px;
@@ -276,7 +279,7 @@ CLASS({
         width: 8px;
       }
       .SlidePanel .right-shadow {
-        background: linear-gradient(to right, rgba(0,0,0,0.15) 0%,
+        background: linear-gradient(to right, rgba(0,0,0,0.2) 0%,
                                              rgba(0,0,0,0) 100%);
         height: 100%;
         right: -8px;
@@ -287,11 +290,11 @@ CLASS({
     */},
     function toHTML() {/*
       <div id="%%id" style="display: inline-block;position: relative;" class="SlidePanel">
-        <div id="%%id-main">
+        <div id="%%id-main" class="main">
           <div style="width:0;position:absolute;"></div>
           <%= this.mainView({ data$: this.data$ }) %>
         </div>
-        <div id="%%id-panel" style="position: absolute; top: 0; left: -1;">
+        <div id="%%id-panel" class="panel" style="position: absolute; top: 0; left: -1;">
           <% if ( this.side === this.RIGHT ) { %> <div id="%%id-shadow" class="left-shadow"></div> <% } %>
           <%= (this.panelView_ = this.panelView({ data$: this.data$ })) %>
           <% if ( this.side === this.LEFT ) { %> <div id="%%id-shadow" class="right-shadow"></div> <% } %>

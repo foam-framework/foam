@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'BaseView',
   package: 'foam.ui',
+  name: 'BaseView',
   extendsModel: 'foam.patterns.ChildTreeTrait',
 
   documentation: function() {/* For Views that use $$DOC{ref:'.data'},
@@ -36,21 +36,26 @@ CLASS({
       */}
     },
   ],
-  
+
   methods: {
     addDataChild: function(child) {
-      /* For children that link to data$. Override to track the 
+      /* For children that link to data$. Override to track the
         connections, if required. */
       Events.link(this.data$, child.data$);
       this.addChild(child);
     },
-    
+
     addSelfDataChild: function(child) {
       /* For views created from properties of this view (not our data),
          this method sets the child's data to 'this'. */
       child.data = this;
       this.addChild(child);
+    },
+
+    toView_: function() {
+      /* if you are a BaseView that can be converted into an html View,
+         convert here */
+      return this;
     }
   }
-  
 });

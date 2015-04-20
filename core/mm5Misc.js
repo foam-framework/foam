@@ -19,14 +19,19 @@ CLASS({
   name: 'UnitTest',
   plural: 'Unit Tests',
 
+  exports: [
+    'log',
+    'jlog',
+    'assert',
+    'fail',
+    'ok',
+    'append'
+  ],
+
   documentation: function() {/*
     <p>A basic unit test. $$DOC{ref: ".atest"} is the main method, it executes this test.</p>
 
-    <p>A <tt>UnitTest</tt> may contain child tests, under the $$DOC{ref: ".tests"} $$DOC{ref: "Relationship"}. These tests are run when the parent is, if $$DOC{ref: ".runChildTests"} is truthy (the default).</p>
-
-    <p>After the test has finished running, its $$DOC{ref: ".passed"} and $$DOC{ref: ".failed"} properties count the number of assertions that passed and failed in this <em>subtree</em> (that is, including the children, if run).</p>
-
-    <p>Before the children are run, if $$DOC{ref: ".failed"} is nonzero, $$DOC{ref: ".atest"} will check for <tt>this.X.onTestFailure</tt>. If this function is defined, it will be called with the <tt>UnitTest</tt> object as the first argument. This makes it easy for test runners to hook in their error reporting.</p>
+    <p>After the test has finished running, its $$DOC{ref: ".passed"} and $$DOC{ref: ".failed"} properties count the number of assertions that passed and failed in this test <em>subtree</em> (that is, including the children, if run).</p>
 
     <p>Test failure is abstracted by the $$DOC{ref: ".hasFailed"} method; this method should always be used, since other subclasses have different definitions of failure.</p>
   */},
@@ -41,6 +46,10 @@ CLASS({
       required: true,
       displayWidth: 50,
       documentation: 'The unit test\'s name.'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'modelId'
     },
     {
       model_: 'Property',
@@ -120,14 +129,6 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
-      name: 'hasRun',
-      transient: true,
-      hidden: true,
-      defaultValue: false,
-      documentation: 'Set after the test has finished executing. Prevents the test from running twice.'
-    },
-    {
       model_: 'Property',
       name: 'results',
       type: 'String',
@@ -146,110 +147,38 @@ CLASS({
       documentation: 'A list of tags for this test. Gives the environment(s) in which a test can be run. Currently in use: node, web.'
     },
     {
-      model_: 'ArrayProperty',
-      name: 'tests',
-      subType: 'UnitTest',
-      label: 'Tests',
-      view: 'foam.ui.DAOListView',
-      documentation: 'An array of child tests. Will be run in order after the parent test.'
-    },
-    {
       model_: 'BooleanProperty',
-      name: 'runChildTests',
-      documentation: 'Whether the nested child tests should be run when this test is. Defaults to <tt>true</tt>, but some test runners set it to <tt>false</tt> so they can integrate with displaying the results.',
-      transient: true,
-      defaultValue: true
+      name: 'running',
+      defaultValue: false
     }
   ],
-
-  actions: [
-    {
-      name:  'test',
-      documentation:  'Synchronous helper to run the tests. Simply calls $$DOC{ref: ".atest"}.',
-      action: function(obj) { asynchronized(this.atest(), this.LOCK)(function() {}); }
-    }
-  ],
-
-  constants: {
-    // Lock to prevent more than one top-level Test from running at once.
-    LOCK: {}
-  },
 
   methods:{
-    // Run test asynchronously as an afunc.
-    atest: function() {
-      var self = this;
+    atest: function(model) {
+      return function(ret) {
+        var exception = false;
+        try {
+          var obj = model.create(undefined, this.Y);
+          var self = this;
+          this.modelId = model.id;
+          var finished = function() {
+            ret(!self.hasFailed());
+          };
 
-      if ( this.hasRun ) return anop;
-      this.hasRun = true;
+          if ( this.async ) 
+            this.code.call(obj, finished);
+          else
+            this.code.call(obj);
+        } catch(e) {
+          this.fail("Exception thrown: " + e.stack);
+          exception = true;
+          ret(false);
+        }
 
-      // Copy the test methods into the context.=
-      // The context becomes "this" inside the tests.
-      // The UnitTest object itself becomes this.test inside tests.
-      this.Y = this.Y.sub({}, this.name);
-      this.Y.log    = this.log.bind(this);
-      this.Y.jlog   = this.jlog.bind(this);
-      this.Y.assert = this.assert.bind(this);
-      this.Y.fail   = this.fail.bind(this);
-      this.Y.ok     = this.ok.bind(this);
-      this.Y.append = this.append.bind(this);
-      this.Y.test   = this;
-
-      this.results = '';
-
-      this.passed = 0;
-      this.failed = 0;
-
-      var code;
-      code = eval('(' + this.code.toString() + ')');
-
-      var afuncs = [];
-      var oldLog;
-
-      afuncs.push(function(ret) {
-        oldLog = console.log;
-        console.log = self.log.bind(self.Y);
-        ret();
-      });
-
-      afuncs.push(this.async ? code.bind(this.Y) : code.abind(this.Y));
-
-      afuncs.push(function(ret) {
-        console.log = oldLog;
-        ret();
-      });
-
-      if ( this.runChildTests ) {
-        // TODO: This is horrendous, but I can't see a better way.
-        // It would nest quite neatly if there were afunc DAO ops.
-        var query = this.X.childTestsFilter || TRUE;
-        var future = this.tests.dao.where(query).select([].sink);
-        afuncs.push(function(ret) {
-          future(function(innerTests) {
-            var afuncsInner = [];
-            innerTests.forEach(function(test) {
-              afuncsInner.push(function(ret) {
-                test.X = self.Y.sub();
-                test.atest()(ret);
-              });
-            });
-            if ( afuncsInner.length ) {
-              aseq.apply(this, afuncsInner)(ret);
-            } else {
-              ret();
-            }
-          });
-        });
-      }
-
-      afuncs.push(function(ret) {
-        self.hasRun = true;
-        self.X.onTestFailure && self.hasFailed() && self.X.onTestFailure(self);
-        ret();
-      });
-
-      return aseq.apply(this, afuncs);
+        if ( ! this.async && ! exception ) finished();
+      }.bind(this);
     },
+
     append: function(s) { this.results += s; },
     log: function(/*arguments*/) {
       for ( var i = 0 ; i < arguments.length ; i++ )
@@ -307,26 +236,43 @@ CLASS({
       transient: true,
       defaultValue: false,
       documentation: 'Set after $$DOC{ref: ".atest"}: <tt>true</tt> if $$DOC{ref: ".master"} and $$DOC{ref: ".results"} match, <tt>false</tt> if they don\'t.'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'hasRun',
+      defaultValue: false,
+      transient: true
     }
   ],
 
   methods: {
-    atest: function() {
+    atest: function(model) {
       // Run SUPER's atest, which returns the unexecuted afunc.
-      var sup = this.SUPER();
+      var sup = this.SUPER(model);
       // Now we append a last piece that updates regression based on the results.
       return aseq(
         sup,
         function(ret) {
-          this.regression = this.hasRun && ! this.results.equals(this.master);
-          ret();
+          this.regression = ! equals(this.results, this.master);
+          this.hasRun = true;
+          ret(!this.hasFailed());
         }.bind(this)
       );
     },
     hasFailed: function() {
-      return this.regression || this.hasRun && ! this.results.equals(this.master);
+      return this.regression;
     }
-  }
+  },
+
+  actions: [
+    {
+      name: 'approve',
+      isEnabled: function() { return this.hasRun },
+      action: function() {
+        this.regression = this.results;
+      }
+    }
+  ]
 });
 
 
@@ -340,11 +286,6 @@ CLASS({
     {
       name: 'results',
       view: 'foam.ui.UITestResultView'
-    },
-    {
-      name: 'runChildTests',
-      help: 'Don\'t run child tests by default for UITests; they need a view to be run properly.',
-      defaultValue: false
     }
   ]
 });
@@ -559,13 +500,6 @@ CLASS({
       view: 'foam.ui.TextAreaView',
       documentation: function() { /* Notes describing $$DOC{ref:'Issue'}. */ },
       help: 'Notes describing issue.'
-    }
-  ],
-  tests: [
-    {
-      model_: 'UnitTest',
-      description: 'test1',
-      code: function() {this.addHeader("header");this.ok("pass");this.fail("fail");}
     }
   ]
 });

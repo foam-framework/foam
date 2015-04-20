@@ -22,12 +22,11 @@ CLASS({
   extendsModel: 'foam.ui.BaseView',
   traits: [
     'foam.ui.HTMLViewTrait',
-    'foam.ui.TemplateSupportTrait',
-    'foam.ui.ViewActionsTrait'
+    'foam.ui.TemplateSupportTrait'
   ],
-  
+
   requires: [ 'Property' ],
-           
+
   exports: [ 'propertyViewProperty' ],
 
   documentation: function() {/*
@@ -44,7 +43,7 @@ CLASS({
     </p>
     <p>$$DOC{ref:'Model',usePlural:true} may specify a .toDetailHTML() $$DOC{ref:'Method'} or
     $$DOC{ref:'Template'} to render their contents instead of
-    $$DOC{ref:'DetailView.defaultToHTML'}.
+    $$DOC{ref:'foam.ui.DetailView.defaultToHTML'}.
     </p>
     <p>For each $$DOC{ref:'Property'} in the $$DOC{ref:'.data'} instance specified,
     a $$DOC{ref:'PropertyView'} is created that selects the appropriate $$DOC{ref:'foam.ui.View'}

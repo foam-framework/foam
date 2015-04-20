@@ -19,7 +19,7 @@
 CLASS({
   name: 'ViewChoice',
   package: 'foam.ui',
-  
+
 
   tableProperties: [
     'label',
@@ -37,10 +37,8 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'view',
-      type: 'view',
       defaultValue: 'foam.ui.DetailView',
       help: 'View factory.'
     }
   ]
 });
-

@@ -29,6 +29,7 @@ CLASS({
       name: 'tick',
       isAnimated: true,
       code: function () {
+        if ( this.stopped_ ) return;
         this.detectCollisions();
         this.start();
       }
@@ -78,12 +79,14 @@ CLASS({
       c1.applyMomentum(-m * c2.mass/tMass, a);
       c2.applyMomentum(m * c1.mass/tMass, a);
     },
-
     // add one or more components to be monitored for collisions
     add: function() {
       for ( var i = 0 ; i < arguments.length ; i++ )
         this.children.push(arguments[i]);
       return this;
+    },
+    destroy: function() {
+      this.stopped_ = true;
     }
   }
 });

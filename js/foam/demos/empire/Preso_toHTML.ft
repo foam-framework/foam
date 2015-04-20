@@ -1,17 +1,76 @@
 <slides style="width: 100%; height: 100%;">
   <slide>
-  <center>
+  <center style="font-size: 32px;">
     <br>
-    Introducing Google<br>
+    Introducing <img width="120" height="40" style="vertical-align: text-top;" src="js/foam/demos/empire/google.png"><br>
     <foam model="foam.demos.graphics.Logo" text="FOAM" width="360" height="140"/>
-    <font size="220%">(Feature-Oriented Active Modeller)</font><br>
+    <font size="220%"><font color="#33f">F</font>eature <font color="#f00">O</font>riented <font color="#fc0">A</font>ctive <font color="#3c0">M</font>odeller</font><font>
+    <br>
+    (or, 25 Demos in 25 Minutes)
     <br>
     <br>
     Kevin Greer, <a href="mailto:kgr@chromium.org">kgr@chromium.org</a><br>
+    <br>
     April 26, 2015<br>
     </center>
   </slide>
-  <slide><foam model="foam.demos.physics.Spring" n="10" width="800" height="400"/></slide>
+  <slide>
+    <h1>Models</h1>
+    <br>
+    <div style="margin-left: 100px;">
+      <foam model="com.google.sweeper.Game"/>
+      <br>
+      <%= foam.documentation.diagram.DocDiagramView.create({data: com.google.sweeper.Game}) %>
+<!--      <foam model="foam.documentation.diagram.DocDiagramView" data="com.google.sweeper.Game"/> -->
+    </div>
+  </slide>
+  <slide>
+    <h1>Chrome App Builder</h1>
+    <br>
+    <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw">
+    <br>
+<a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome Web Store Entry</a>
+  </slide>
+  <slide>
+    <h1>Features</h1>
+    TODO: Insert demo5.
+  </slide>
+  <slide>
+    <h1>Views</h1>
+    TODO:
+  </slide>
+  <slide>
+    <h1>Data Access Objects (DAO's)</h1>
+      <foam model="foam.ui.md.TwoPaneView">
+        <views>
+          <viewChoice>
+            <label>Local Storage</label>
+            <p:view>
+              Local Storage Demo
+            </p:view>
+          </viewChoice>
+          <viewChoice>
+            <label>IndexedDB</label>
+            <p:view>
+              IndexedDB Demo
+            </p:view>
+          </viewChoice>
+        </views>
+      </foam>
+  </slide>
+  <slide>
+    <h1>Holistic</h1>
+    <br>
+    <center>
+      <iframe style="width:95%;height:90%;border:none;" src="./demos/demo10b2.html"></iframe>
+    </center>
+  </slide>
+  <slide>
+    <h1>"Language" Features</h1>
+    <div style="display: flex;">
+      <foam model="foam.demos.pong.Pong"/>
+    </div>
+  </slide>
   <slide>
     <h1>Reactive Programming</h1>
     <foam model="foam.demos.ReactiveClocks"/>
@@ -21,58 +80,176 @@
     <div style="transform:scale(0.6);transform-origin: 0 0;"><foam model="foam.demos.ArchitectureDiagram"/></div>
   </slide>
   <slide>
-    <h1>Interpolation</h1>
-    <foam model="foam.demos.InterpolatedClocks"/>
+    <h1>Graphics</h1>
+    <!--
+    <%= foam.ui.SwipeAltView.create({
+      views: [
+        { label: 'Composition',    view: 'testing ' },
+        { label: 'Event Handling', view: 'testing ' }
+      ]})
+    %>
+    -->
+            <%
+              CLASS({
+                name: 'DataBindingDemo',
+                properties: [
+                  { xxxmodel_: 'FloatProperty', name: 'value', postSet: function(o, n) { console.log('*********** ', o,n); } },
+                ]
+              });
+              var value = DataBindingDemo.create({value:5});
+              var gauge = foam.graphics.Gauge.create({data$: value.value$, label: 'FOAM'});
+              out(foam.ui.DetailView.create({data:value}), gauge);
+            %>
+    <foam model="foam.ui.md.TwoPaneView">
+<!--    <foam model="foam.ui.SwipeAltView"> -->
+      <views>
+        <viewChoice>
+          <label>Configuration</label>
+          <p:view> testing asdfadsf</p:view>
+        </viewChoice>
+        <viewChoice>
+          <label>Data-Binding</label>
+          <p:view>
+            <div id="%%id">
+            <%
+              CLASS({
+                name: 'DataBindingDemo',
+                properties: [
+                  { xxxmodel_: 'FloatProperty', name: 'value', postSet: function(o, n) { console.log('*********** ', o,n); } },
+                ],
+                actions: [ { name: 'plus', action: function() { console.log('plus'); this.value++ } } ]
+              });
+              var value = DataBindingDemo.create({value:5});
+              var gauge = foam.graphics.Gauge.create({data$: value.value$, label: 'FOAM'});
+              out(foam.ui.DetailView.create({data:value, showActions: true}), gauge);
+            %>
+            </div>
+          </p:view>
+        </viewChoice>
+        <viewChoice>
+          <label>Composition</label>
+          <p:view> testing asdfadsf</p:view>
+        </viewChoice>
+        <viewChoice>
+          <label>Event Handling</label>
+          <p:view>
+            <%
+              CLASS({
+                name: 'test',
+                properties: [ 'set' ],
+                actions: [
+                  {
+                    name: 'tick',
+                    isAvailable: function() { return this.set; },
+                    action: function() { this.set = false; }
+                  },
+                  {
+                    name: 'tock',
+                    isAvailable: function() { return ! this.set; },
+                    action: function() { this.set = true; }
+                  }
+                ],
+                templates: [ function toDetailHTML() { /*
+                  $$tick{model_: 'foam.graphics.ActionButtonCView', color: 'white', width: 90, height: 90, radius: 40, background: '#aaa', font: '300 18px Arial'}$$tock{model_: 'foam.graphics.ActionButtonCView', color: 'white', width: 90, height: 90, radius: 40, background: '#aaa', font: '300 18px Arial'}*/ } ]
+              });
+              out(foam.ui.DetailView.create({data:test.create()}));
+            %>
+          </p:view>
+        </viewChoice>
+        <viewChoice>
+          <label>Animation</label>
+          <p:view> Animation </p:view>
+        </viewChoice>
+        <viewChoice>
+          <label>Interpolation</label>
+          <p:view><!-- <%= foam.demos.InterpolatedClocks.create() %>--><foam model="foam.demos.InterpolatedEyes"/></p:view>
+        </viewChoice>
+      </views>
+    </foam>
   </slide>
   <slide>
     <h1>Animation</h1>
     <foam model="foam.demos.SolarSystem"/>
   </slide>
   <slide>
-    <h1>Live Coding</h1>
+    <h1>Live-Coding</h1>
+    <div style="transform: scale(1); transform-origin: 0 0;">
+      <foam model="foam.demos.DragonLiveCoding"/>
+    </div>
   </slide>
   <slide>
     <h1>Toolability</h1>
     <h2>(Meta-Programming)</h2>
   </slide>
   <slide>
-    <h1>Chrome App Builder</h1>
+    <h1>Learning FOAM</h1>
+    <h2>Tutorial</h2>
+    <h2>TodoMVC</h2>
+    <h2>DemoCat</h2>
   </slide>
   <slide>
     <h1>Offline</h1>
     <ul>
-      <li>Caching
-      <li>Sync
-      <li>MQL
+      <li>Caching</li>
+      <li>Sync</li>
+      <li>MQL</li>
     </ul>
   </slide>
   <slide>
-    <h1>Material Design</h1>
+    <div style="height:10px;"></div>
+    <foam model="foam.demos.MDFieldGuide"/>
   </slide>
   <slide>
-    <h1>GMail</h1>
+    <h1>GMail + MBug</h1>
+    <center style="margin-top:25px;">
+    <img height="530" width="500" src="/demos/democat/MBug.png">
+    <img style="margin-left: 100px;" height="530" width="500" src="/demos/democat/GMail.png">
+    </center>
   </slide>
   <slide>
     <h1>Calculator</h1>
-  </slide>
-  <slide>
-    <h1>Physics: Collisions</h1>
-    <foam model="foam.demos.physics.Collision"/>
-  </slide>
-  <slide>
-    <h1>Physics: Springs</h1>
-    <foam model="foam.demos.physics.CollisionWithSpring"/>
-  </slide>
-  <slide>
-    <h1>Physics: Gravity</h1>
+    <br>
+    <br>
     <center>
-      <foam model="foam.demos.physics.Bubbles" width="800" height="400"/>
+      <iframe style="width:80%;height:70%;" src="./apps/acalc/Calc.html"></iframe>
     </center>
   </slide>
-  <slide><foam model="foam.demos.pong.Pong"/></slide>
+  <slide>
+    <h1>Physics</h1>
+    <%=
+      foam.ui.md.TwoPaneView.create({views: [
+        {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10}},
+        {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
+        {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
+        {label: 'Gravity&nbsp;+&nbsp;Friction', view: 'foam.demos.physics.Bubbles'}
+      ]})
+    %>
+  </slide>
+  <slide>
+    <h1>Performance</h1>
+  </slide>
   <slide><foam model="foam.demos.Flow"/></slide>
   <slide>
-    <h1>Summary</h1>
+    <iframe style="width:100%;height:100%;" src="./demos/UnixSimulator.html"></iframe>
+  </slide>
+  <slide>
+    <iframe style="width:100%;height:100%;" src="./demos/GoogleSimulator.html"></iframe>
+  </slide>
+  <slide>
+    <foam model="foam.ui.SlidePanel" minWidth="1700" minPanelWidth="350" side="left" stripWidth="16">
+      <panelView>
+        <center style="padding-top:200px;height:100%; background:cadetblue;"><foam model="foam.graphics.Gauge" label="Applause"/></center>
+      </panelView>
+      <mainView>
+        <div style="margin-left: 16px;">
+        <h1>Summary</h1>
+        <ul>
+          <li>Reactive MVC</li>
+          <li>Views</li>
+        </ul>
+        </div>
+      </mainView>
+    </foam>
   </slide>
 <!--  <slide><foam model="foam.demos.empire.Slides"/></slide> -->
 </slides>

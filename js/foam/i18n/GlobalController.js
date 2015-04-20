@@ -20,57 +20,32 @@ CLASS({
   name: 'GlobalController',
 
   requires: [
-    'foam.i18n.ChromeMessagesExtractor',
+    'foam.i18n.MessagesExtractor',
+    'foam.i18n.MessagesInjector',
     'foam.i18n.ChromeMessagesInjector'
-  ],
-
-  imports: [
-    'console'
   ],
 
   properties: [
     {
-      name: 'extractors',
-      factory: function() {
-        return this.getExtractors();
+      name: 'extractor',
+      lazyFactory: function() {
+        return this.MessagesExtractor.create();
       }
     },
     {
-      name: 'injectors',
-      factory: function() {
-        return this.getInjectors();
+      name: 'injector',
+      lazyFactory: function() {
+        if ( GLOBAL.chrome && GLOBAL.chrome.runtime &&
+            GLOBAL.chrome.runtime.id ) {
+          return this.ChromeMessagesInjector.create();
+        } else {
+          return this.MessagesInjector.create();
+        }
       }
-    },
-    {
-      name: 'extractorsList',
-      factory: function() { return []; }
-    },
-    {
-      name: 'injectorsList',
-      factory: function() { return []; }
     }
   ],
 
   methods: [
-    {
-      name: 'init',
-      code: function() {
-        this.SUPER();
-        var self = this;
-        ['extractors', 'injectors'].forEach(function(baseName) {
-          Events.map(
-              self[baseName + '$'],
-              self[baseName + 'List$'],
-              function(hash) {
-                var arr = [];
-                Object.getOwnPropertyNames(hash).forEach(function(key) {
-                  arr.push(hash[key]);
-                });
-                return arr;
-              });
-        });
-      }
-    },
     {
       name: 'visitAllCurrentModels',
       code: function(visitors) {
@@ -94,27 +69,9 @@ CLASS({
     {
       name: 'visitModel',
       code: function(visitors, model) {
-        if ( model.i18nComplete_ ) return;
         visitors.forEach(function(visitor) {
           visitor.visitModel(model);
         });
-        model.i18nComplete_ = true;
-      }
-    },
-    {
-      name: 'getExtractors',
-      code: function() {
-        return {
-          chromeMessages: this.ChromeMessagesExtractor.create()
-        };
-      }
-    },
-    {
-      name: 'getInjectors',
-      code: function() {
-        return {
-          chromeMessages: this.ChromeMessagesInjector.create()
-        };
       }
     }
   ]
@@ -123,14 +80,19 @@ CLASS({
 arequire('foam.i18n.GlobalController')(function(GlobalController) {
   var i18nGC = GlobalController.create();
   // TODO(markdittmer): We need a more reasonable way to trigger extraction.
-  // i18nGC.visitAllCurrentModels(
-  //   i18nGC.extractorsList.concat(i18nGC.injectorsList));
-  window.X.i18nModel = function(model, X, ret) {
-    i18nGC.visitModel(
-        // i18nGC.extractorsList.concat(
-            i18nGC.injectorsList
-            // )
-        , model);
+  // TODO(adamvy): Remove timeout'd call below once X.i18nModel() is back in
+  // the model boostrap process.
+  window.setTimeout(function() {
+    i18nGC.visitAllKnownModels([
+      // i18nGC.extractor,
+      i18nGC.injector
+    ]);
+  }, 0);
+  GLOBAL.X.i18nModel = function(model, X, ret) {
+    i18nGC.visitModel([
+      // i18nGC.extractor,
+      i18nGC.injector
+    ], model);
     ret && ret(model);
   };
 });

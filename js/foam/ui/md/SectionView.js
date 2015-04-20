@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'SectionView',
   package: 'foam.ui.md',
+  name: 'SectionView',
   extendsModel: 'foam.flow.Element',
 
   requires: [

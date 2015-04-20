@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-
 CLASS({
-  name: 'ChoiceMenuView',
   package: 'foam.ui.md',
+  name: 'ChoiceMenuView',
 
   extendsModel: 'foam.ui.AbstractChoiceView',
 
@@ -311,5 +310,3 @@ CLASS({
 */}
   ]
 });
-
-

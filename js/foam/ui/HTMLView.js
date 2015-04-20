@@ -16,12 +16,15 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name:  'HTMLView',
   label: 'HTML Field',
 
   extendsModel: 'foam.ui.SimpleView',
-  package: 'foam.ui',
-  
+
+  documentation: function() {/* A view of the static HTML provided in
+    $$DOC{ref:'.data'}. In most cases use a
+    $$DOC{ref:'foam.ui.View'} to display a template of your HTML instead. */},
 
   properties: [
     {
@@ -69,4 +72,3 @@ CLASS({
     }
   }
 });
-

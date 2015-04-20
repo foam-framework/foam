@@ -16,16 +16,21 @@
  */
 
 CLASS({
-  name: 'ModelDocDiagram',
   package: 'foam.documentation.diagram',
+  name: 'ModelDocDiagram',
   extendsModel: 'foam.ui.DestructiveDataView',
-  traits: ['foam.ui.TemplateSupportTrait',
-           'foam.documentation.DocModelFeatureDAOTrait'],
 
-  requires: ['foam.graphics.diagram.Block',
-             'foam.graphics.diagram.Section',
-             'foam.graphics.diagram.Margin',
-             'foam.documentation.diagram.FeatureListDiagram'],
+  traits: [
+    'foam.ui.TemplateSupportTrait',
+    'foam.documentation.DocModelFeatureDAOTrait'
+  ],
+
+  requires: [
+    'foam.graphics.diagram.Block',
+    'foam.graphics.diagram.Section',
+    'foam.graphics.diagram.Margin',
+    'foam.documentation.diagram.FeatureListDiagram'
+  ],
 
   documentation: function() {/*
     A diagram block documenting one $$DOC{ref:'Model'}.
@@ -39,7 +44,7 @@ CLASS({
           this.modelName = this.data.name;
           this.packageName = this.data.package;
         }
-        //this.processModelChange();
+        this.processModelChange();
       }
     },
     {
@@ -106,6 +111,9 @@ CLASS({
     processModelChange: function() {
       // abort if it's too early //TODO: (we import data and run its postSet before the rest is set up)
       if (!this.featureDAO || !this.modelDAO) return;
+      this.generateFeatureDAO(this.data);
+      this.destroy();
+      this.construct();
     },
 
     addChild: function(child) {

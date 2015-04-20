@@ -20,25 +20,107 @@ CLASS({
   package: 'foam.i18n',
   extendsModel: 'foam.i18n.Visitor',
 
-  imports: [
-    'console'
+  requires: [
+    'foam.i18n.Message',
+    'foam.i18n.MessageBundle'
   ],
+  imports: [ 'console' ],
 
   properties: [
     {
-      name: 'messageBundle',
-      factory: function() { return {}; }
+      model_: 'foam.core.types.DAOProperty',
+      name: 'dao',
+      lazyFactory: function() { return []; }
     }
   ],
 
   methods: [
     {
-      name: 'messagesToString',
-      code: function() {
-        this.console.warn(
-            'Message extractor without messagesToString implementation: ' +
-                this.name_);
-        return '';
+      name: 'visitMessage',
+      code: function(model, msg) {
+        var modelPrefix = model.translationHint ?
+            model.translationHint + ' ' : '';
+        var i18nMsg = this.Message.create({
+          id: this.getMessageKey(model, msg),
+          name: msg.name,
+          value: msg.value,
+          description: modelPrefix + msg.translationHint
+        });
+        this.dao.put(i18nMsg);
+        return i18nMsg;
+      }
+    },
+    {
+      name: 'visitAction',
+      code: function(model, action) {
+        var modelPrefix = model.translationHint ?
+            model.translationHint + ' ' : '';
+        var msgs = [];
+        var key, i18nMsg;
+        if ( action.translationHint ) {
+          if ( action.label ) {
+            key = this.getActionTextLabelKey(model, action);
+            i18nMsg = this.Message.create({
+              id: this.getActionTextLabelKey(model, action),
+              name: action.name + 'Label',
+              value: action.label,
+              description: modelPrefix + action.translationHint +
+                  ' (text label)'
+            });
+            this.dao.put(i18nMsg);
+            msgs.push(i18nMsg);
+          }
+          if ( action.speechLabel ) {
+            key = this.getActionSpeechLabelKey(model, action);
+            i18nMsg = this.Message.create({
+              id: this.getActionSpeechLabelKey(model, action),
+              name: action.name + 'SpeechLabel',
+              value: action.speechLabel,
+              description: modelPrefix + action.translationHint +
+                  ' (speech label)'
+            });
+            this.dao.put(i18nMsg);
+            msgs.push(i18nMsg);
+          }
+        }
+        return msgs;
+      }
+    },
+    {
+      name: 'achromeMessages',
+      code: function(ret) {
+        var msgs = {};
+        this.dao.select({
+          put: function(msg) { msgs[msg.id] = msg.toChromeMessage(); },
+          eof: function() { ret(msgs); }
+        });
+      }
+    },
+    {
+      name: 'amessages',
+      code: function(ret) {
+        this.abuildMessages_(ret);
+      }
+    },
+    {
+      name: 'amessagesFile',
+      code: function(dataId, ret) {
+        this.abuildMessages_(function(msgs) {
+          msgs.id = dataId;
+          ret('__DATA(' +
+              JSONUtil.compact.where(NOT_TRANSIENT).stringify(msgs) + ');');
+        });
+      }
+    },
+    {
+      name: 'abuildMessages_',
+      code: function(ret) {
+        var msgs = this.MessageBundle.create();
+        var arr = msgs.messages;
+        this.dao.select({
+          put: function(msg) { arr.push(msg); }.bind(this),
+          eof: function() { ret(msgs); }
+        });
       }
     }
   ]

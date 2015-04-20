@@ -58,7 +58,7 @@ CLASS({
     {
       name:  'time',
       preSet: function(_, newValue) {
-        this.view.paint();
+        if ( this.view ) this.view.paint();
 
         // When active, don't accept external changes to time.  Override by firing event back to
         // internalTime value.

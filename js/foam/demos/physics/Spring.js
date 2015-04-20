@@ -24,8 +24,8 @@ CLASS({
 
   properties: [
     { name: 'n',          defaultValue: 17 },
-    { name: 'width',      defaultValue: 2000 },
-    { name: 'height',     defaultValue: 1700 },
+    { name: 'width',      defaultValue: 1000 },
+    { name: 'height',     defaultValue: 1000 },
     { name: 'background', defaultValue: 'white' },
     { name: 'mouse',      lazyFactory: function() { return this.Mouse.create(); } }
   ],

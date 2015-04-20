@@ -666,6 +666,18 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
       },
+      adapt: function(_, a) {
+        if ( ! a ) return a;
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          if ( typeof a[i] === "function" ) {
+            a[i] = UnitTest.create({
+              name: a[i].name,
+              code: a[i]
+            });
+          }
+        }
+        return a;
+      },
       defaultValue: [],
       help: 'Unit tests associated with this model.',
       documentation: function() { /*
