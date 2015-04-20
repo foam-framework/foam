@@ -123,15 +123,21 @@ CLASS({
               }
 
               var models = app.extraModels.slice(0);
-              if ( app.defaultView ) models.push(app.defaultView);
-              if ( app.controller ) models.push(app.controller);
+
               // Manually manage pending_ count for two top-level async calls.
-              this.pending_ += 2;
+              if ( app.defaultView ) {
+                ++this.pending_;
+                models.push(app.defaultView);
+              }
+              if ( app.controller ) {
+                ++this.pending_;
+                models.push(app.controller);
+              }
+
               models.forEach(function(modelId) {
                 return arequire(modelId)(self.visitModel_.bind(
                     self, function() { --self.pending_; }));
               });
-              // apar.apply(null, models)(self.execute_.bind(self));
             }.bind(this),
             error: function() {
               self.error('ERROR: Failed to load app definition from: ' +
