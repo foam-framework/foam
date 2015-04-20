@@ -117,13 +117,17 @@ CLASS({
           self.appDefinition,
           {
             put: function(app) {
+              if ( ! (app.defaultView || app.controller) ) {
+                self.error('ERROR: App definition has neither a default view ' +
+                    'nor a controller');
+              }
+
+              var models = app.extraModels.slice(0);
+              if ( app.defaultView ) models.push(app.defaultView);
+              if ( app.controller ) models.push(app.controller);
               // Manually manage pending_ count for two top-level async calls.
               this.pending_ += 2;
-              // var models =
-                  app.extraModels.concat([
-                app.defaultView,
-                app.controller
-              ]).forEach(function(modelId) {
+              models.forEach(function(modelId) {
                 return arequire(modelId)(self.visitModel_.bind(
                     self, function() { --self.pending_; }));
               });
