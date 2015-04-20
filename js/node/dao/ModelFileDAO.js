@@ -48,6 +48,9 @@ CLASS({
 
       var fileName = this.classpath + '/' + key.replace(/\./g, '/') + '.js';
 
+      if ( fileName[0] != '/' ) fileName = process.cwd() + "/" + fileName;
+
+
       if ( this.pending[key] ) {
         this.pending[key].push(sink);
         return;
