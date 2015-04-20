@@ -103,7 +103,29 @@
         </viewChoice>
         <viewChoice>
           <label>Event Handling</label>
-          <p:view> <foam model="foam.demos.graphics.FadingCircles"/> </p:view>
+          <p:view>
+            <%
+              CLASS({
+                name: 'test',
+                properties: [ 'set' ],
+                actions: [
+                  {
+                    name: 'tick',
+                    isAvailable: function() { return this.set; },
+                    action: function() { this.set = false; }
+                  },
+                  {
+                    name: 'tock',
+                    isAvailable: function() { return ! this.set; },
+                    action: function() { this.set = true; }
+                  }
+                ],
+                templates: [ function toDetailHTML() { /*
+                  $$tick{model_: 'foam.graphics.ActionButtonCView', color: 'white', width: 90, height: 90, radius: 40, background: '#aaa', font: '300 18px Arial'}$$tock{model_: 'foam.graphics.ActionButtonCView', color: 'white', width: 90, height: 90, radius: 40, background: '#aaa', font: '300 18px Arial'}*/ } ]
+              });
+              out(foam.ui.DetailView.create({data:test.create()}));
+            %>
+          </p:view>
         </viewChoice>
         <viewChoice>
           <label>Animation</label>
