@@ -20,7 +20,9 @@ CLASS({
   package: 'foam.testing',
   requires: [
     'foam.dao.ProxyDAO',
-    'foam.testing.XMLResultWriter'
+    'foam.testing.XMLResultWriter',
+    'node.dao.ModelFileDAO',
+    'foam.core.bootstrap.OrDAO'
   ],
   imports: ["process"],
   properties: [
@@ -41,6 +43,10 @@ CLASS({
       name: 'allPassed'
     },
     {
+      model_: 'StringArrayProperty',
+      name: 'extraClassPaths'
+    },
+    {
       name: 'fs',
       lazyFactory: function() { return require('fs'); }
     }
@@ -49,6 +55,15 @@ CLASS({
     {
       name: 'execute',
       action: function() {
+        for ( var i = 0; i < this.extraClassPaths.length ; i++ ) {
+          this.X.ModelDAO = this.OrDAO.create({
+            delegate: this.ModelFileDAO.create({
+              classpath: this.extraClassPaths[i]
+            }),
+            primary: this.X.ModelDAO
+          });
+        }
+
         // Always declare a test failure unless we get to the end of the test
         // runs and they all passed.
         var finished = false;
@@ -65,20 +80,33 @@ CLASS({
 
         var seq = [];
 
+        if ( ! this.targets.length ) {
+          console.warn("No test targets requested.");
+          finished = true;
+          process.exit(1);
+        }
+
         for ( var i = 0 ; i < this.targets.length ; i++ ) {
           seq.push(arequire(this.targets[i]));
         }
+
 
         this.allPassed = true;
 
         var tests = [];
 
+        try {
         aseq(
           aseq.apply(null, seq),
           function(ret) {
             var seq = [];
             for ( var i = 0 ; i < this.targets.length ; i++ ) {
               seq.push((function(model) {
+                if ( ! model ) {
+                  console.warn("Skipping target: ", this.targets[i]);
+                  return anop;
+                }
+
                 return aseq(
                   function(ret) {
                     tests = tests.concat(model.tests);
@@ -95,7 +123,8 @@ CLASS({
                   }.bind(this));
               }.bind(this))(this.X.lookup(this.targets[i])));
             }
-            aseq.apply(null, seq)(ret);
+            if ( ! seq.length ) ret();
+            else aseq.apply(null, seq)(ret);
           }.bind(this),
           aif(this.xmlLogFile,
               function(ret) {
@@ -115,6 +144,7 @@ CLASS({
           finished = true;
           process.exit();
         }.bind(this));
+        } catch(e)  { console.log("ERROR: ", e.stack); }
       }
     }
   ]
