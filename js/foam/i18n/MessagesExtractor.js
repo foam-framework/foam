@@ -33,6 +33,12 @@ CLASS({
       lazyFactory: function() { return []; }
     },
     {
+      name: 'messageBundleFactory',
+      lazyFactory: function() {
+        return this.MessageBundle.create;
+      }
+    },
+    {
       name: 'messageFactory',
       lazyFactory: function() {
         return this.Message.create;
@@ -121,7 +127,7 @@ CLASS({
     {
       name: 'abuildMessages_',
       code: function(ret) {
-        var msgs = this.MessageBundle.create();
+        var msgs = this.messageBundleFactory();
         var arr = msgs.messages;
         this.dao.select({
           put: function(msg) { arr.push(msg); }.bind(this),
