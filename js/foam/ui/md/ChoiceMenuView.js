@@ -87,15 +87,16 @@ CLASS({
       this.index$.addListener(this.updateSelected);
       this.choices$.addListener(this.updateSelected);
     },
-    open: function(selectedIndex, startPageRect) {
+    open: function(selectedIndex, sourceElement) {
       /* Launches the menu, with the given selected item index, animating out
-         from the given page-coordinate startPageRect. */
+         from the given sourceElement's client rect. */
 
-      var vp = this.viewportOnPage();
-      this.itemHeight = startPageRect.height;
-      this.itemWidth = startPageRect.width-16;
-      var pixAbove = startPageRect.top - vp.top - this.vMargin;
-      var pixBelow = vp.bottom - startPageRect.bottom - this.vMargin;
+      var startFromClientRect = sourceElement.getBoundingClientRect();
+      var vp = this.viewportSize();
+      this.itemHeight = startFromClientRect.height;
+      this.itemWidth = startFromClientRect.width-16;
+      var pixAbove = startFromClientRect.top - this.vMargin;
+      var pixBelow = vp.height - startFromClientRect.bottom - this.vMargin;
 
       // slots represent potential screen real estate for drawing the menu
       var slotsAbove = Math.floor((pixAbove > 0) ? pixAbove / this.itemHeight : 0);
@@ -173,34 +174,35 @@ CLASS({
         //TODO: animate
       }
 
-      var finalRect = { top:    startPageRect.top - (slotsAbove * this.itemHeight) -2 - this.vMargin,
-                        bottom: startPageRect.bottom + (slotsBelow * this.itemHeight) +2 + this.vMargin,
+      var finalRect = { top:    0 - (slotsAbove * this.itemHeight) -2 - this.vMargin,
+                        bottom: startFromClientRect.height + (slotsBelow * this.itemHeight) +2 + this.vMargin,
                         height: menuCount * this.itemHeight +4 + this.vMargin*2,
-                        left: startPageRect.left -2,
-                        right: startPageRect.right +2,
-                        width: startPageRect.width + this.hMargin*2 +4 };
+                        left: 0 -2,
+                        right: startFromClientRect.width +2,
+                        width: startFromClientRect.width + this.hMargin*2 +4 };
 
-//console.log("Menu start: ", startPageRect, " final ", finalRect, " selected offset: ", selectedOffset);
+//console.log("Menu start: ", startFromClientRect, " final ", finalRect, " selected offset: ", selectedOffset);
 
       // add to body html
       if ( this.$ ) this.$.outerHTML = '';  // clean up old copy, in case of rapid re-activation
-      this.X.document.body.insertAdjacentHTML('beforeend', this.toHTML());
+      sourceElement.insertAdjacentHTML('beforeend', this.toHTML());
 
-      this.initializePosition(startPageRect, finalRect);
+      this.initializePosition(startFromClientRect, finalRect);
       this.scrollToIndex(itemForFirstSlot);
       this.animateToExpanded();
       this.initHTML();
     },
-    initializePosition: function(startPageRect, finalRect) {
+    initializePosition: function(startFromClientRect, finalRect) {
       this.$.style.padding = this.vMargin+"px 0px "+this.vMargin+"px 0px";
 
       this.$.style.top = finalRect.top + 'px';
       this.$.style.left = finalRect.left + 'px';
       this.$.style.height = finalRect.height + 'px';
       this.$.style.width = finalRect.width + 'px';
+      this.$.style.zIndex = "1010";
 
       var verticalDiff = (finalRect.top+finalRect.height/2)
-                        - (startPageRect.top+startPageRect.height/2);
+                        - (startFromClientRect.top+startFromClientRect.height/2);
       this.$.style.transform = "translateY(-"+verticalDiff+"px) scaleY(0.1) translateY("+verticalDiff+"px)";
     },
     animateToExpanded: function() {

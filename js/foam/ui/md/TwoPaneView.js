@@ -52,7 +52,7 @@ CLASS({
     },
     {
       name: 'view',
-      postSet: function(_, _) {
+      postSet: function() {
         if ( ! this.$ ) return;
         this.destroy();
         this.$.outerHTML = this.toHTML();

@@ -31,6 +31,11 @@ CLASS({
       defaultValue: 'red'
     },
     {
+      name:  'pupilColor',
+      type:  'String',
+      defaultValue: 'black'
+    },
+    {
       model_: 'FloatProperty',
       name:  'r',
       label: 'Radius',
@@ -41,7 +46,7 @@ CLASS({
       type:  'Circle',
       paint: true,
       factory: function() {
-        return this.Circle.create({r: this.r, color: this.color});
+        return this.Circle.create({r: this.r});
       }
     },
     {
@@ -56,14 +61,14 @@ CLASS({
       name:  'pupil',
       type:  'Circle',
       paint: true,
-      factory: function() {
-        return this.Circle.create({r: this.r / 5, color: 'black'});
+      lazyFactory: function() {
+        return this.Circle.create({r: this.r / 5});
       }
     },
     { name: 'x',      defaultValueFn: function() { return 2 * this.r; } },
     { name: 'y',      defaultValueFn: function() { return ( 2 * this.r ) * 1.3; } },
-    { name: 'width',  defaultValue: 150 },
-    { name: 'height', defaultValue: 150 },
+    { name: 'width',  defaultValue: 80 },
+    { name: 'height', defaultValue: 100 },
     { name: 'a',      defaultValue: -Math.PI/40 }
   ],
 
@@ -76,6 +81,9 @@ CLASS({
     },
     watch: function(target) { this.target_ = target; },
     paintSelf: function() {
+      this.pupil.color = this.pupilColor;
+      this.lid.color = this.color;
+
       // point pupil towards target
       if ( this.target_ ) {
         var dx = this.pupil.canvasX - this.target_.canvasX;
