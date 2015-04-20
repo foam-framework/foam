@@ -29,6 +29,7 @@ CLASS({
     {
       model_: 'FloatProperty',
       name: 'data',
+      postSet: function(o, n) { if ( this.view ) this.view.paint(); },
       defaultValue: 1
     },
     {
