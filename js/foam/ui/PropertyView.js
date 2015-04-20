@@ -20,9 +20,6 @@ CLASS({
   name: 'PropertyView',
   package: 'foam.ui',
   extendsModel: 'foam.ui.BasePropertyView',
-  traits: [
-    'foam.ui.HTMLViewTrait',
-  ],
 
   documentation: function() {/*
     Used by $$DOC{ref:'foam.ui.DetailView'} to generate a sub-$$DOC{ref:'foam.ui.View'} for one
@@ -36,10 +33,9 @@ CLASS({
       name:  'id',
       label: 'Element ID',
       type:  'String',
-      factory: function() { return this.instance_.id || this.nextID()+"PROP"; },
       documentation: function() {/*
         The DOM element id for the outermost tag of
-        this $$DOC{ref:'foam.ui.View'}.
+        this $$DOC{ref:'foam.ui.View'}. Set this when creating a PropertyView.
       */}
     }
   ],
@@ -59,8 +55,7 @@ CLASS({
     toHTML: function() {
       /* If the view is ready, pass through to it. Otherwise create a place
       holder tag with our id, which we replace later. */
-      this.invokeDestructors();
-      return this.view? this.toInnerHTML() : this.SUPER();
+      return this.view ? this.toInnerHTML() : "";
     },
 
     initHTML: function() {
