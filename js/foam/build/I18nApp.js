@@ -46,9 +46,25 @@ CLASS({
     },
     {
       model_: 'StringArrayProperty',
+      name: 'extraFiles',
+      help: 'Extra files to both load before loading models for i18n.',
+      adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
+    },
+    {
+      model_: 'StringArrayProperty',
       name: 'extraClassPaths',
       help: 'List of extra .js hierarchies to load models from.  Paths will be checked in the order given, finally falling back to the main FOAM js/ hierarchy.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'messageModel',
+      defaultValue: 'foam.i18n.Message'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'messageBundleModel',
+      defaultValue: 'foam.i18n.MessageBundle'
     },
     {
       model_: 'foam.core.types.StringEnumProperty',
@@ -103,7 +119,13 @@ CLASS({
 
   methods: {
     execute: function() {
-      for ( var i = 0; i < this.extraClassPaths.length ; i++ ) {
+      var i;
+
+      for ( i = 0; i < this.extraFiles.length; i++ ) {
+        require(this.extraFiles[i]);
+      }
+
+      for ( i = 0; i < this.extraClassPaths.length ; i++ ) {
         this.X.ModelDAO = this.OrDAO.create({
           delegate: this.ModelFileDAO.create({
             classpath: this.extraClassPaths[i]
@@ -112,6 +134,16 @@ CLASS({
         });
       }
 
+      apar(arequire(this.messageModel), arequire(this.messageBundleModel))(
+          function(Message, MessageBundle) {
+            this.i18nController = this.GlobalController.create({
+              messageFactory: Message.create,
+              messageBundleFactory: MessageBundle.create
+            });
+            this.execute_();
+          }.bind(this));
+    },
+    execute_: function() {
       var self = this;
       self.X.ModelDAO.find(
           self.appDefinition,
@@ -123,17 +155,11 @@ CLASS({
               }
 
               var models = app.extraModels.slice(0);
+              if ( app.defaultView ) models.push(app.defaultView);
+              if ( app.controller ) models.push(app.controller);
 
               // Manually manage pending_ count for two top-level async calls.
-              if ( app.defaultView ) {
-                ++this.pending_;
-                models.push(app.defaultView);
-              }
-              if ( app.controller ) {
-                ++this.pending_;
-                models.push(app.controller);
-              }
-
+              this.pending_ = models.length;
               models.forEach(function(modelId) {
                 return arequire(modelId)(self.visitModel_.bind(
                     self, function() { --self.pending_; }));
@@ -157,21 +183,6 @@ CLASS({
         }
       }
       ret(model);
-    },
-    // Nix most of what's below.
-    execute_: function() {
-      var i18nController = this.GlobalController.create();
-
-
-
-      // Old model latch-loaded models.
-      i18nController.visitAllKnownModels([i18nController.extractor]);
-
-      // New ModelFileDAO-loaded models.
-      this.X.ModelDAO.select({
-        put: function(model) { i18nController.extractor.visitModel(model); },
-        eof: this.execute__.bind(this, i18nController)
-      });
     },
     arequire_: function(modelId) {
       ++this.pending_;
