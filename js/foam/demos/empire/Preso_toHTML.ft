@@ -17,8 +17,12 @@
   <slide>
     <h1>Models</h1>
     <br>
-    <div style="margin-left: 100px;">
-      <foam model="com.google.sweeper.Game"/>
+    <div style="margin-left: 100px; display: flex; flex: row">
+      <div><foam model="com.google.sweeper.Game"/></div>
+      <%= foam.documentation.diagram.DocDiagramView.create({data: com.google.sweeper.Game}) %>
+      <%= foam.documentation.diagram.DocDiagramView.create({data: com.google.sweeper.Board}) %>
+      <%= foam.documentation.diagram.DocDiagramView.create({data: com.google.sweeper.Cell}) %>
+<!--      <foam model="foam.documentation.diagram.DocDiagramView" data="com.google.sweeper.Game"/> -->
     </div>
   </slide>
   <slide>

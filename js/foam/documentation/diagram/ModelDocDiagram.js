@@ -16,16 +16,25 @@
  */
 
 CLASS({
-  name: 'ModelDocDiagram',
   package: 'foam.documentation.diagram',
+  name: 'ModelDocDiagram',
   extendsModel: 'foam.ui.DestructiveDataView',
-  traits: ['foam.ui.TemplateSupportTrait',
-           'foam.documentation.DocModelFeatureDAOTrait'],
 
-  requires: ['foam.graphics.diagram.Block',
-             'foam.graphics.diagram.Section',
-             'foam.graphics.diagram.Margin',
-             'foam.documentation.diagram.FeatureListDiagram'],
+  traits: [
+    'foam.ui.TemplateSupportTrait',
+    'foam.documentation.DocModelFeatureDAOTrait'
+  ],
+
+  requires: [
+    'foam.graphics.diagram.Block',
+    'foam.graphics.diagram.Section',
+    'foam.graphics.diagram.Margin',
+    'foam.documentation.diagram.FeatureListDiagram',
+    'foam.documentation.DocRef'
+  ],
+
+  imports: ['documentViewRef'],
+  exports: ['documentViewRef'],
 
   documentation: function() {/*
     A diagram block documenting one $$DOC{ref:'Model'}.
@@ -33,11 +42,27 @@ CLASS({
 
   properties: [
     {
+      name: 'documentViewRef',
+      factory: function() {
+         return this.SimpleValue.create(
+           this.DocRef.create({ ref: this.data ? this.data.id : "" },
+             this.Y.sub({ documentViewRef: null })));
+
+//        return this.DocRef.create({ ref: this.data ? this.data.id : "" },
+//          this.Y.sub({ documentViewRef: null }));
+      }
+    },
+    {
       name: 'data',
       postSet: function(old,nu) {
         if (this.data) {
           this.modelName = this.data.name;
           this.packageName = this.data.package;
+
+          // default for shared documentViewRef
+          if ( ! this.documentViewRef.get().valid ) {
+            this.documentViewRef.get().ref = this.data.id;
+          }
         }
         this.processModelChange();
       }
@@ -96,7 +121,7 @@ CLASS({
       this.SUPER();
       this.diagramItem.addChild(this.linkableItem);
     },
-    
+
     construct: function() {
       this.SUPER();
       this.createTemplateView('properties', { model_: 'foam.documentation.diagram.FeatureListDiagram',

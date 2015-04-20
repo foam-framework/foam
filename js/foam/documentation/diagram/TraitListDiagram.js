@@ -30,7 +30,7 @@ CLASS({
     'SimpleValue',
     'foam.documentation.DocRef'
   ],
-            
+
   documentation: function() {/*
     A view that renders one model's traits.
   */},
@@ -40,7 +40,8 @@ CLASS({
       name: 'data',
       adapt: function(old, nu) {
         if ( typeof nu == 'string' ) {
-          this.X._DEV_ModelDAO.find(nu, {
+          var modelDAO = this.X._DEV_ModelDAO ? this.X._DEV_ModelDAO : this.X.ModelDAO;
+          modelDAO.find(nu, {
               put: function(n) {
                 this.data = n;
               }.bind(this)
@@ -92,18 +93,18 @@ CLASS({
     construct: function() {
       this.SUPER();
       var self = this;
-      
+
       self.data.traits.forEach( function(trait) {
-      
+
         var traitModel = self.X.lookup(trait);
-        
-        var X = self.X.sub({ 
+
+        var X = self.X.sub({
           documentViewRef: self.SimpleValue.create(self.DocRef.create({ ref: trait }, self.X))
         });
         var traitDiag = self.ModelDocDiagram.create({ model: Model, data: traitModel, titleColor: 'rgba(30,160,30,255)' }, X);
         self.addChild(traitDiag);
         self.addChild(self.DocLinkDiagram.create({ start: traitDiag, end$: self.sourceDiag$ }));
-    
+
       });
     },
 

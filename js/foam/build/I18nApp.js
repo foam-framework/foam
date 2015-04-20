@@ -24,7 +24,8 @@ CLASS({
     'foam.dao.File',
     'foam.core.dao.OrDAO',
     'node.dao.ModelFileDAO',
-    'foam.i18n.GlobalController'
+    'foam.i18n.GlobalController',
+    'foam.i18n.MessagesExtractor'
   ],
   imports: [ 'error' ],
 
@@ -46,9 +47,25 @@ CLASS({
     },
     {
       model_: 'StringArrayProperty',
+      name: 'extraFiles',
+      help: 'Extra files to both load before loading models for i18n.',
+      adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
+    },
+    {
+      model_: 'StringArrayProperty',
       name: 'extraClassPaths',
       help: 'List of extra .js hierarchies to load models from.  Paths will be checked in the order given, finally falling back to the main FOAM js/ hierarchy.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'messageModel',
+      defaultValue: 'foam.i18n.Message'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'messageBundleModel',
+      defaultValue: 'foam.i18n.MessageBundle'
     },
     {
       model_: 'foam.core.types.StringEnumProperty',
@@ -75,8 +92,16 @@ CLASS({
       factory: function() { return this.FileDAO.create(); }
     },
     {
+      name: 'i18nExtractorFactory',
+      factory: function() { return this.MessagesExtractor.create; }
+    },
+    {
       name: 'i18nController',
-      lazyFactory: function() { return this.GlobalController.create(); }
+      lazyFactory: function() {
+        return this.GlobalController.create({
+          extractor: this.i18nExtractorFactory()
+        });
+      }
     },
     {
       name: 'visitedModels_',
@@ -103,7 +128,13 @@ CLASS({
 
   methods: {
     execute: function() {
-      for ( var i = 0; i < this.extraClassPaths.length ; i++ ) {
+      var i;
+
+      for ( i = 0; i < this.extraFiles.length; i++ ) {
+        require(this.extraFiles[i]);
+      }
+
+      for ( i = 0; i < this.extraClassPaths.length ; i++ ) {
         this.X.ModelDAO = this.OrDAO.create({
           delegate: this.ModelFileDAO.create({
             classpath: this.extraClassPaths[i]
@@ -112,22 +143,38 @@ CLASS({
         });
       }
 
+      apar(arequire(this.messageModel), arequire(this.messageBundleModel))(
+          function(Message, MessageBundle) {
+            this.i18nController = this.GlobalController.create({
+              extractor: this.i18nExtractorFactory({
+                messageFactory: Message.create.bind(Message),
+                messageBundleFactory: MessageBundle.create.bind(MessageBundle)
+              })
+            });
+            this.execute_();
+          }.bind(this));
+    },
+    execute_: function() {
       var self = this;
       self.X.ModelDAO.find(
           self.appDefinition,
           {
             put: function(app) {
+              if ( ! (app.defaultView || app.controller) ) {
+                self.error('ERROR: App definition has neither a default view ' +
+                    'nor a controller');
+              }
+
+              var models = app.extraModels.slice(0);
+              if ( app.defaultView ) models.push(app.defaultView);
+              if ( app.controller ) models.push(app.controller);
+
               // Manually manage pending_ count for two top-level async calls.
-              this.pending_ += 2;
-              // var models =
-                  app.extraModels.concat([
-                app.defaultView,
-                app.controller
-              ]).forEach(function(modelId) {
+              this.pending_ = models.length;
+              models.forEach(function(modelId) {
                 return arequire(modelId)(self.visitModel_.bind(
                     self, function() { --self.pending_; }));
               });
-              // apar.apply(null, models)(self.execute_.bind(self));
             }.bind(this),
             error: function() {
               self.error('ERROR: Failed to load app definition from: ' +
@@ -148,21 +195,6 @@ CLASS({
       }
       ret(model);
     },
-    // Nix most of what's below.
-    execute_: function() {
-      var i18nController = this.GlobalController.create();
-
-
-
-      // Old model latch-loaded models.
-      i18nController.visitAllKnownModels([i18nController.extractor]);
-
-      // New ModelFileDAO-loaded models.
-      this.X.ModelDAO.select({
-        put: function(model) { i18nController.extractor.visitModel(model); },
-        eof: this.execute__.bind(this, i18nController)
-      });
-    },
     arequire_: function(modelId) {
       ++this.pending_;
       var future = afuture();
@@ -175,10 +207,7 @@ CLASS({
     outputFoamData_: function() {
       var self = this;
       this.i18nController.extractor.amessagesFile(self.dataId, function(str) {
-        console.log(self.dataId);
         var filePath = self.dataId.replace(/[.]/g, self.path.sep) + '.js';
-        console.log(filePath);
-        console.log(self.targetPath + self.path.sep + filePath);
         var file = self.File.create({
           path: self.targetPath + self.path.sep + filePath,
           contents: str
