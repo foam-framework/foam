@@ -76,28 +76,28 @@ CLASS({
     shouldDestroy: function(old,nu) {
       return true;
     },
-    
+
     construct: function() {
       this.SUPER();
-            
-      var childX = this.X.sub({ 
+
+      var childX = this.X.sub({
         documentViewRef: this.SimpleValue.create(
           this.DocRef.create({ ref: this.data.extendsModel })
       )});
 
       // don't just copy data, find extendsModel and send that to children
-      
-      this.X._DEV_ModelDAO.find(this.data.extendsModel, {
+      var modelDAO = this.X._DEV_ModelDAO ? this.X._DEV_ModelDAO : this.X.ModelDAO;
+      modelDAO.find(this.data.extendsModel, {
           put: function(childData) {
             var thisDiag = this.ModelDocDiagram.create({ data: childData, model: childData }, childX);
             if ( childData.extendsModel ) {
               this.addChild(this.model_.create({ data: childData, extended: thisDiag }, childX));
             }
-    
+
             this.addChild(thisDiag);
-    
+
             // the arrow
-            this.addChild(this.DocLinkDiagram.create({ start: thisDiag, end$: this.extended$ }));             
+            this.addChild(this.DocLinkDiagram.create({ start: thisDiag, end$: this.extended$ }));
           }.bind(this)
       });
 
