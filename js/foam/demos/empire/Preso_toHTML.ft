@@ -4,7 +4,7 @@
     <br>
     Introducing <img width="120" height="40" style="vertical-align: text-top;" src="js/foam/demos/empire/google.png"><br>
     <foam model="foam.demos.graphics.Logo" text="FOAM" width="360" height="140"/>
-    <font size="220%">Feature Oriented Active Modeller</font><br>
+    <font size="220%"><font color="#33f">F</font>eature <font color="#f00">O</font>riented <font color="#fc0">A</font>ctive <font color="#3c0">M</font>odeller</font><font>
     <br>
     (or, 25 Demos in 25 Minutes)
     <br>
@@ -22,12 +22,19 @@
     </div>
   </slide>
   <slide>
+    <h1>Chrome App Builder</h1>
+    <br>
+    <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw">
+    <br>
+<a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome Web Store Entry</a>
+  </slide>
+  <slide>
     <h1>Features</h1>
     TODO: Insert demo5.
   </slide>
   <slide>
     <h1>Views</h1>
-    <foam model="foam.demos.physics.Spring" n="10" width="800" height="400"/>
+    TODO:
   </slide>
   <slide>
     <h1>Data Access Objects (DAO's)</h1>
@@ -79,7 +86,8 @@
       ]})
     %>
     -->
-    <foam model="foam.ui.SwipeAltView">
+    <foam model="foam.ui.md.TwoPaneView">
+<!--    <foam model="foam.ui.SwipeAltView"> -->
       <views>
         <viewChoice>
           <label>Configuration</label>
@@ -95,7 +103,29 @@
         </viewChoice>
         <viewChoice>
           <label>Event Handling</label>
-          <p:view> <foam model="foam.demos.graphics.FadingCircles"/> </p:view>
+          <p:view>
+            <%
+              CLASS({
+                name: 'test',
+                properties: [ 'set' ],
+                actions: [
+                  {
+                    name: 'tick',
+                    isAvailable: function() { return this.set; },
+                    action: function() { this.set = false; }
+                  },
+                  {
+                    name: 'tock',
+                    isAvailable: function() { return ! this.set; },
+                    action: function() { this.set = true; }
+                  }
+                ],
+                templates: [ function toDetailHTML() { /*
+                  $$tick{model_: 'foam.graphics.ActionButtonCView', color: 'white', width: 90, height: 90, radius: 40, background: '#aaa', font: '300 18px Arial'}$$tock{model_: 'foam.graphics.ActionButtonCView', color: 'white', width: 90, height: 90, radius: 40, background: '#aaa', font: '300 18px Arial'}*/ } ]
+              });
+              out(foam.ui.DetailView.create({data:test.create()}));
+            %>
+          </p:view>
         </viewChoice>
         <viewChoice>
           <label>Animation</label>
@@ -103,7 +133,7 @@
         </viewChoice>
         <viewChoice>
           <label>Interpolation</label>
-          <p:view><%= foam.demos.InterpolatedClocks.create() %><!-- Why doesn't this work? <foam model="foam.demos.InterpolatedClocks"/>--></p:view>
+          <p:view><!-- <%= foam.demos.InterpolatedClocks.create() %>--><foam model="foam.demos.InterpolatedEyes"/></p:view>
         </viewChoice>
       </views>
     </foam>
@@ -121,13 +151,6 @@
   <slide>
     <h1>Toolability</h1>
     <h2>(Meta-Programming)</h2>
-  </slide>
-  <slide>
-    <h1>Chrome App Builder</h1>
-    <br>
-    <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw">
-    <br>
-<a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome Web Store Entry</a>
   </slide>
   <slide>
     <h1>Learning FOAM</h1>
