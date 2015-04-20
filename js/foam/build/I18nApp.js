@@ -118,8 +118,10 @@ CLASS({
             this.outputFoamData_();
           } else if ( this.outputFormat === 'foamJSON' ) {
             this.outputFoamJSON_();
-          } else {
+          } else if ( this.outputFormat === 'chrome' ) {
             this.outputChromeMessages_();
+          } else {
+            this.outputFormat_(this.outputFormat);
           }
         }
       }
@@ -245,6 +247,22 @@ CLASS({
         var file = self.File.create({
           path: self.targetPath + self.path.sep + 'messages.json',
           contents: str
+        });
+        self.fileDAO.put(file, {
+          put: function() { process.exit(0); },
+          error: function() {
+            self.error('ERROR writing file: ', file.path);
+            process.exit(1);
+          }
+        });
+      });
+    },
+    outputFormat_: function(format) {
+      var self = this;
+      this.i18nController.extractor.ai18n(format, function(data) {
+        var file = self.File.create({
+          path: self.targetPath + self.path.sep + data.fileName,
+          contents: data.str
         });
         self.fileDAO.put(file, {
           put: function() { process.exit(0); },
