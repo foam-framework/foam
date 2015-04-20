@@ -22,12 +22,19 @@
     </div>
   </slide>
   <slide>
+    <h1>Chrome App Builder</h1>
+    <br>
+    <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw">
+    <br>
+<a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome Web Store Entry</a>
+  </slide>
+  <slide>
     <h1>Features</h1>
     TODO: Insert demo5.
   </slide>
   <slide>
     <h1>Views</h1>
-    <foam model="foam.demos.physics.Spring" n="10" width="800" height="400"/>
+    TODO:
   </slide>
   <slide>
     <h1>Data Access Objects (DAO's)</h1>
@@ -79,7 +86,8 @@
       ]})
     %>
     -->
-    <foam model="foam.ui.SwipeAltView">
+    <foam model="foam.ui.md.TwoPaneView">
+<!--    <foam model="foam.ui.SwipeAltView"> -->
       <views>
         <viewChoice>
           <label>Configuration</label>
@@ -103,7 +111,7 @@
         </viewChoice>
         <viewChoice>
           <label>Interpolation</label>
-          <p:view><%= foam.demos.InterpolatedClocks.create() %><!-- Why doesn't this work? <foam model="foam.demos.InterpolatedClocks"/>--></p:view>
+          <p:view><!-- <%= foam.demos.InterpolatedClocks.create() %>--><foam model="foam.demos.InterpolatedEyes"/></p:view>
         </viewChoice>
       </views>
     </foam>
@@ -121,13 +129,6 @@
   <slide>
     <h1>Toolability</h1>
     <h2>(Meta-Programming)</h2>
-  </slide>
-  <slide>
-    <h1>Chrome App Builder</h1>
-    <br>
-    <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw">
-    <br>
-<a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome Web Store Entry</a>
   </slide>
   <slide>
     <h1>Learning FOAM</h1>
