@@ -78,6 +78,7 @@ CLASS({
     {
       name: 'view',
       type: 'foam.ui.View',
+      adapt: function(_, v) { return v && v.toView_ ? v.toView_() : v; },
       documentation: function() {/*
         The new sub-$$DOC{ref:'foam.ui.View'} generated for the given $$DOC{ref:'Property'}.
       */}
