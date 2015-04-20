@@ -892,6 +892,11 @@ CLASS({
 });
 
 CLASS({
+  name: 'IPAddressProperty',
+  extendsModel: 'StringProperty'
+});
+
+CLASS({
   name: 'PasswordProperty',
   extendsModel: 'StringProperty'
 });
