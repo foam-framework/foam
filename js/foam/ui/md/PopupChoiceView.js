@@ -140,8 +140,8 @@ CLASS({
 
         self.opened = true;
 
-        var pos = this.rectOnPage(this.$);
-        view.open(this.index, pos);
+        var pos = this.$.getBoundingClientRect();
+        view.open(this.index, this.$);
         var s = this.X.window.getComputedStyle(view.$);
 
         function mouseMove(evt) {
@@ -157,14 +157,15 @@ CLASS({
 
           if ( view.$.contains(evt.target) ) return;
 
+          var popPos = view.$.getBoundingClientRect();
           var margin = 50;
-          var left = view.$.offsetLeft - margin;
-          var right = view.$.offsetWidth + left + 2*margin;
-          var top = view.$.offsetTop - margin;
-          var bottom = view.$.offsetHeight + top + 2*margin;
+          var left = popPos.left - margin;
+          var right = popPos.right + 2*margin;
+          var top = popPos.top - margin;
+          var bottom = popPos.bottom + 2*margin;
 
-          if ( (left < evt.pageX && evt.pageX < right) &&
-              (top < evt.pageY && evt.pageY < bottom) )
+          if ( (left < evt.clientX && evt.clientX < right) &&
+              (top < evt.clientY && evt.clientY < bottom) )
             return;
 
           remove();
@@ -253,6 +254,7 @@ CLASS({
         align-content: flex-start;
         padding: 16px;
         cursor: pointer;
+        position: relative;
       }
     */}
   ]

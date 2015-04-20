@@ -24,8 +24,7 @@ CLASS({
     'foam.dao.File',
     'foam.core.dao.OrDAO',
     'node.dao.ModelFileDAO',
-    'foam.i18n.GlobalController',
-    'foam.i18n.MessagesExtractor'
+    'foam.i18n.GlobalController'
   ],
   imports: [ 'error' ],
 
@@ -56,6 +55,11 @@ CLASS({
       name: 'extraClassPaths',
       help: 'List of extra .js hierarchies to load models from.  Paths will be checked in the order given, finally falling back to the main FOAM js/ hierarchy.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'extractorModel',
+      defaultValue: 'foam.i18n.MessagesExtractor'
     },
     {
       model_: 'StringProperty',
@@ -92,15 +96,9 @@ CLASS({
       factory: function() { return this.FileDAO.create(); }
     },
     {
-      name: 'i18nExtractorFactory',
-      factory: function() { return this.MessagesExtractor.create; }
-    },
-    {
       name: 'i18nController',
       lazyFactory: function() {
-        return this.GlobalController.create({
-          extractor: this.i18nExtractorFactory()
-        });
+        return this.GlobalController.create();
       }
     },
     {
@@ -118,8 +116,10 @@ CLASS({
             this.outputFoamData_();
           } else if ( this.outputFormat === 'foamJSON' ) {
             this.outputFoamJSON_();
-          } else {
+          } else if ( this.outputFormat === 'chrome' ) {
             this.outputChromeMessages_();
+          } else {
+            this.outputFormat_(this.outputFormat);
           }
         }
       }
@@ -143,16 +143,17 @@ CLASS({
         });
       }
 
-      apar(arequire(this.messageModel), arequire(this.messageBundleModel))(
-          function(Message, MessageBundle) {
-            this.i18nController = this.GlobalController.create({
-              extractor: this.i18nExtractorFactory({
-                messageFactory: Message.create.bind(Message),
-                messageBundleFactory: MessageBundle.create.bind(MessageBundle)
-              })
-            });
-            this.execute_();
-          }.bind(this));
+      apar(arequire(this.extractorModel), arequire(this.messageModel),
+           arequire(this.messageBundleModel))(
+               function(Extractor, Message, MessageBundle) {
+                 this.i18nController = this.GlobalController.create({
+                   extractor: Extractor.create({
+                     messageFactory: Message.create.bind(Message),
+                     messageBundleFactory: MessageBundle.create.bind(MessageBundle)
+                   })
+                 });
+                 this.execute_();
+               }.bind(this));
     },
     execute_: function() {
       var self = this;
@@ -245,6 +246,22 @@ CLASS({
         var file = self.File.create({
           path: self.targetPath + self.path.sep + 'messages.json',
           contents: str
+        });
+        self.fileDAO.put(file, {
+          put: function() { process.exit(0); },
+          error: function() {
+            self.error('ERROR writing file: ', file.path);
+            process.exit(1);
+          }
+        });
+      });
+    },
+    outputFormat_: function(format) {
+      var self = this;
+      this.i18nController.extractor.ai18n(format, function(data) {
+        var file = self.File.create({
+          path: self.targetPath + self.path.sep + data.fileName,
+          contents: data.str
         });
         self.fileDAO.put(file, {
           put: function() { process.exit(0); },
