@@ -104,7 +104,7 @@
       <views>
         <viewChoice>
           <label>Data-Binding</label>
-          <p:view><div id="%%id" style="width:367px;margin-left:64px;">
+          <p:view><div id="%%id" style="transform:scale(2.0);transform-origin: 0 0;width:367px;margin-left:64px;">
             <%
               CLASS({
                 name: 'DataBindingDemo',
@@ -175,7 +175,7 @@
           <label>Reaction</label>
           <p:view>
             <%
-              var eyes = foam.demos.graphics.EyesCView.create({x:400, y:400, width: 800, height: 800, scaleX: 2, scaleY: 2});
+              var eyes = foam.demos.graphics.EyesCView.create({x:400, y:250, width: 800, height: 800, scaleX: 2, scaleY: 2});
               var mouse = foam.input.Mouse.create();
               eyes.watch(mouse);
               this.addInitializer(function() { mouse.connect(eyes.view.$); });
