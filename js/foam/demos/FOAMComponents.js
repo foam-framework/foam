@@ -37,6 +37,7 @@ CLASS({
     'MDAO',
     'foam.dao.FindFallbackDAO',
     'foam.documentation.DocViewPicker',
+    'foam.util.JavaSource'
   ],
 
   properties: [
@@ -70,10 +71,7 @@ CLASS({
 //             f: function(model, obj, arr, value) { this.setDisplay("<pre>" + this.protoToString(model.getPrototype()) + '</pre>'); }
 //           },
           { name: 'Java Src.',
-            f: function(model, obj, arr, value) { this.setDisplay('<pre>' + 'Coming soon!' + '</pre>'); }
-          },
-          { name: 'Dart Src.',
-            f: function(model, obj, arr, value) { this.setDisplay('<pre>' + 'Coming soon!' + '</pre>');  }
+            f: function(model, obj, arr, value) { this.setDisplay('<textarea rows=100 cols=80>' + this.javaSource.generate(model) + '</textarea>'); }
           },
           { name: 'Actions',
             f: function(model, obj, arr, value) { this.setDisplay('<textarea rows=100 cols=80>' + JSONUtil.stringify(model.actions) + '</textarea>'); }
@@ -202,6 +200,12 @@ CLASS({
       name: 'space',
       factory: function() {
         return Canvas.create({width: 1000, height: 800, background:'#fff'});
+      }
+    },
+    {
+      name: 'javaSource',
+      lazyFactory: function() {
+        return this.JavaSource.create();
       }
     },
     {
