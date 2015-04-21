@@ -227,6 +227,10 @@ CLASS({
   methods: {
     init: function() {
       timer.start();
+
+      this.Y.documentViewRequestNavigation = function(newRef) {
+        window.location = 'http://localhost:8000/apps/docs/docbrowser.html#'+newRef.resolvedRef;
+      }.bind(this);
     },
 
     foam: function(system, dev) {
