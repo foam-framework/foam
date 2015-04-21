@@ -249,7 +249,8 @@ CLASS({
           function() {
             file = myfiles[i++];
             if ( Array.isArray(file) ) {
-              if ( file[1] != IN_BROWSER ) return false;
+              if ( file[1] == IN_NODEJS )
+                return false;
               file = file[0];
             }
             return true;
