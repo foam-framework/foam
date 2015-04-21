@@ -1026,7 +1026,6 @@ MODEL({
 
     inertia: function(c) {
       Events.dynamic(function() { c.vx; c.vy; c.x; c.y; }, function() {
-console.log('intertial', c.vx, c.vy);
         // Dynamic Friction
         if ( Math.abs(c.vx) > 0.001 ) c.x += c.vx;
         if ( Math.abs(c.vy) > 0.001 ) c.y += c.vy;
