@@ -247,7 +247,7 @@
     <h1>Physics</h1>
     <%=
       foam.ui.md.TwoPaneView.create({views: [
-        {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10}},
+        {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10, scaleX: 2, scaleY: 2}},
         {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
         {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
         {label: 'Gravity&nbsp;+&nbsp;Friction', view: 'foam.demos.physics.Bubbles'}
