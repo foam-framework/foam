@@ -30,8 +30,10 @@ if ( ! (window.cordova && window.chrome) ) {
     var nextID = 0;
 
     var future = afuture();
-    if ( ! document.body ) window.addEventListener('load', future.set);
-    else future.set();
+    if ( ! document.body )
+      window.addEventListener('load', future.set);
+    else
+      future.set();
 
     return function(src) {
       return aseq(
@@ -43,9 +45,12 @@ if ( ! (window.cordova && window.chrome) ) {
             var blob  = new Blob(newjs, {type: 'text/javascript'});
             var url   = window.URL.createObjectURL(blob);
 
+            // TODO: best values?
+            // url.defer = ?;
+            // url.async = ?;
+
             __EVAL_CALLBACKS__[id] = function(data) {
               delete __EVAL_CALLBACKS__[id];
-              // console.log(data);
               ret && ret.call(this, data);
             };
 
