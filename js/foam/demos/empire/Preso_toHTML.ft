@@ -26,15 +26,20 @@
       ];
       var table = foam.ui.TableView.create({model: Model, dao: models});
       var detail = foam.ui.DetailView.create({model: Model, data$: table.hardSelection$});
+      var jsView = foam.ui.JSView.create({model: Model, data$: table.hardSelection$});
+      table.hardSelection = models[0];
     %>
-    <table><tr><td valign="top" width="40%">    <div><foam model="com.google.sweeper.Game"/></div><br>
-<%= table %></td><td width="40%"><%= detail %></td></tr></table>
-
-    <div style="margin-left: 16px; display: flex; flex: row">
-      <%= foam.documentation.diagram.DocDiagramView.create({data: foam.documentation.diagram.ModelDocDiagram}) %>
-      <%= foam.documentation.diagram.DocDiagramView.create({data: com.google.sweeper.Game}) %>
-      <%= foam.documentation.diagram.DocDiagramView.create({data: com.google.sweeper.Board}) %>
-      <%= foam.documentation.diagram.DocDiagramView.create({data: com.google.sweeper.Cell}) %>
+    <!--
+          <center><foam model="com.google.sweeper.Game"/></center>
+     -->
+    <%= table %>
+    <div style="display:flex">
+      <div style="width: 500px;">
+        <%= detail %>
+      </div>
+      <div style="min-width: 400px;">
+         <%= jsView %>
+      </div>
     </div>
   </slide>
   <slide>
@@ -98,6 +103,26 @@
 <!--  <foam model="foam.ui.SwipeAltView">   -->
       <views>
         <viewChoice>
+          <label>Data-Binding</label>
+          <p:view><div id="%%id" style="width:367px;margin-left:64px;">
+            <%
+              CLASS({
+                name: 'DataBindingDemo',
+                properties: [
+                  { name: 'value' },
+                ],
+                actions: [
+                  { name: 'minus', action: function() { this.value--; } },
+                  { name: 'plus',  action: function() { this.value++; } },
+                ]
+              });
+              var value = DataBindingDemo.create({value:5});
+              var gauge = foam.graphics.Gauge.create({data$: value.value$, label: 'FOAM'});
+              out(foam.ui.DetailView.create({data:value, showActions: true}), '<br>', gauge);
+            %>
+          </div></p:view>
+        </viewChoice>
+        <viewChoice>
           <label>Event Handling</label>
           <p:view>
             <%
@@ -122,26 +147,6 @@
               out(foam.ui.DetailView.create({data:test.create()}));
             %>
           </p:view>
-        </viewChoice>
-        <viewChoice>
-          <label>Data-Binding</label>
-          <p:view><div id="%%id" style="width:367px;margin-left:64px;">
-            <%
-              CLASS({
-                name: 'DataBindingDemo',
-                properties: [
-                  { name: 'value' },
-                ],
-                actions: [
-                  { name: 'minus', action: function() { this.value--; } },
-                  { name: 'plus',  action: function() { this.value++; } },
-                ]
-              });
-              var value = DataBindingDemo.create({value:5});
-              var gauge = foam.graphics.Gauge.create({data$: value.value$, label: 'FOAM'});
-              out(foam.ui.DetailView.create({data:value, showActions: true}), '<br>', gauge);
-            %>
-          </div></p:view>
         </viewChoice>
         <viewChoice>
           <label>Configuration</label>
@@ -201,8 +206,29 @@
     </div>
   </slide>
   <slide>
-    <h1>Toolability</h1>
-    <h2>(Meta-Programming)</h2>
+    <h1>Toolability (meta-programming)</h1>
+      <div style="display:flex;margin-left:64px;">
+        <div>
+        <ul>
+          <li>Code Generators</li>
+          <li>Type Checking</li>
+          <li>Linting</li>
+          <li>Refactoring</li>
+          <li>Templates</li>
+          <li><a href="./apps/docs/docbrowser.html">API Browsers</a></li>
+          <li>Syntax Highlighting</li>
+          <li>Beautifiers</li>
+          <li>Minifiers</li>
+          <li>Code Coverage</li>
+          <li>Unit Tests</li>
+          <li>Editing</li>
+          <li>Code Visualization</li>
+        </ul>
+        </div>
+      <div style="margin-left:250px;">
+      <%= foam.documentation.diagram.DocDiagramView.create({data: foam.documentation.diagram.ModelDocDiagram}) %>
+      </div>
+      </div>
   </slide>
   <slide>
     <h1>Learning FOAM</h1>
@@ -241,15 +267,24 @@
     <h1>Physics</h1>
     <%=
       foam.ui.md.TwoPaneView.create({views: [
+        {label: 'Gravity&nbsp;+&nbsp;Friction', view: 'foam.demos.physics.Bubbles'},
         {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10}},
         {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
-        {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
-        {label: 'Gravity&nbsp;+&nbsp;Friction', view: 'foam.demos.physics.Bubbles'}
+        {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'}
       ]})
     %>
   </slide>
   <slide>
     <h1>Performance</h1>
+    <blockquote>
+      Application Performance<br>
+      Developer Performance<br>
+      <i style="color:red;">Performance</i> is <font color="#33f">F</font><font color="#f00">O</font><font color="#fc0">A</font><font color="#3c0">M</font>'s Value Proposition<br>
+      <i style="color:#3c0;">"Fast Apps Fast"</i><br>
+    </blockquote>
+    <!--<center>
+       <foam model="foam.demos.graphics.Logo" text="Fast Apps Fast" width="800" height="200"/>
+    </center> -->
   </slide>
   <slide><foam model="foam.demos.Flow"/></slide>
   <slide>
