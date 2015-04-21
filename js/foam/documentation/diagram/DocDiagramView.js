@@ -39,7 +39,13 @@ CLASS({
     {
       name: 'masterModelList',
       lazyFactory: function() {
-        return [].slice();
+        var list = [];
+        [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
+          for ( var key in collection ) {
+            list.push(this.X.lookup(key));
+          };
+        }.bind(this));
+        return list;
       }
     },
     {

@@ -22,6 +22,8 @@ CLASS({
 
   extendsModel: 'foam.ui.View',
 
+  exports: ['masterModelList'],
+
   requires: [
     'System',
     'foam.ui.HelpView',
@@ -158,6 +160,18 @@ CLASS({
       name: 'space',
       factory: function() {
         return Canvas.create({width: 1000, height: 800, background:'#fff'});
+      }
+    },
+    {
+      name: 'masterModelList',
+      lazyFactory: function() {
+        var list = [];
+        [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
+          for ( var key in collection ) {
+            list.push(this.X.lookup(key));
+          };
+        }.bind(this));
+        return list;
       }
     },
   ],
