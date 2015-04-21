@@ -167,7 +167,6 @@ CLASS({
         ];
         ents.forEach(function(ent) {
           arequire(ent.model)(function(m) {
-            console.log(ent, m);
             if ( m ) ent.instance = m;
           });
         });
@@ -292,7 +291,7 @@ CLASS({
     {
       name: 'update',
       code: function() {
-        if ( this.sys.selectedY < 1 || this.sys.selectedX < 0 ) return;
+        if ( this.sys.selectedY < 1 || this.sys.selectedX < 1 ) return;
 
         var model = this.entities[this.sys.selectedY-1].instance;
         var obj = null;
@@ -305,7 +304,6 @@ CLASS({
         } catch(x) { }
         var arr = [obj];
         var value = SimpleValue.create(obj);
-        console.log("Model: ", model.name, " x:", this.sys.selectedX);
 
         this.features[this.sys.selectedX-1].f.call(this, model, obj, arr, value);
       }

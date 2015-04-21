@@ -52,9 +52,13 @@ CLASS({
         out.push('</div><div class="text">');
         if ( prop.subType /*&& value instanceof Array*/ && prop.type.indexOf('[') != -1 ) {
           var subModel = this.X[prop.subType];
-          var subView  = this.model_.create({model: subModel});
-          if ( subModel != model )
-            out.push(subView.toHTML());
+          if ( ! Model.isInstance(subModel) ) {
+            out.push(prop.subType);
+          } else {
+            var subView  = this.model_.create({model: subModel});
+            if ( subModel != model )
+              out.push(subView.toHTML());
+          }
         } else {
           out.push(prop.help);
         }
