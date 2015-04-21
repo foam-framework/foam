@@ -134,6 +134,12 @@ CLASS({
           eof: function() { ret(msgs); }
         });
       }
+    },
+    {
+      name: 'ai18n',
+      code: function(format, ret) {
+        throw 'ERROR: i18n output format "' + format + '" not recognized';
+      }
     }
   ]
 });
