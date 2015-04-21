@@ -102,12 +102,13 @@ CLASS({
     {
       name: 'mainView',
       factory: function() {
-        return this.PageView.create({
+        var view = this.PageView.create({
           header: this.topToolbar,
-          body: this.ViewFactoryView.create({
-            data$: this.data.viewFactory$,
-          }),
         });
+        view.body = this.ViewFactoryView.create({
+          data$: this.data.viewFactory$,
+        }, view.Y);
+        return view;
       },
     },
     {
