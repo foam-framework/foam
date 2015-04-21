@@ -22,17 +22,20 @@ CLASS({
 
   extendsModel: 'foam.ui.View',
 
-  exports: ['masterModelList'],
+  exports: ['masterModelList', '_DEV_ModelDAO'],
 
   requires: [
     'System',
     'foam.ui.HelpView',
     'foam.ui.DetailView',
+//    'foam.ui.md.DetailView as MDDetailView',
     'foam.ui.TableView',
     'SimpleValue',
     'foam.ui.SummaryView',
     'foam.ui.StackView',
-    'foam.documentation.diagram.DocDiagramView'
+    'foam.documentation.diagram.DocDiagramView',
+    'MDAO',
+    'foam.dao.FindFallbackDAO'
   ],
 
   properties: [
@@ -46,6 +49,10 @@ CLASS({
           { name: 'Detail',
             f: function(model, obj, arr, value) { var dv = this.DetailView.create({model: model, data: obj}); this.setDisplay(dv.toHTML()); dv.initHTML(); }
           },
+// Also uncomment requires
+//           { name: 'MD Detail',
+//             f: function(model, obj, arr, value) { var dv = this.MDDetailView.create({model: model, data: obj}); this.setDisplay(dv.toHTML()); dv.initHTML(); }
+//           },
           { name: 'Table',
             f: function(model, obj, arr, value) { this.setDisplay(this.TableView.create({model: model, value: SimpleValue.create(arr)}).toHTML());  }
           },
@@ -196,15 +203,21 @@ CLASS({
     {
       name: 'masterModelList',
       lazyFactory: function() {
-        var list = [];
+        var list = this.MDAO.create({model:Model, autoIndex:true});
         [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
           for ( var key in collection ) {
-            list.push(this.X.lookup(key));
+            list.put(this.X.lookup(key));
           };
         }.bind(this));
         return list;
       }
     },
+    {
+      name: '_DEV_ModelDAO',
+      lazyFactory: function() {
+        return this.FindFallbackDAO.create({delegate: this.masterModelList, fallback: this.X.ModelDAO});
+      }
+    }
   ],
 
   methods: {
