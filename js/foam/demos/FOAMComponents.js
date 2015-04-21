@@ -94,14 +94,14 @@ CLASS({
               dv.initHTML();
             }
           },
-          { name: 'Controller',
-            f: function(model, obj, arr, value) {
-              GLOBAL.stack = this.StackView.create();
-              this.setDisplay(stack.toHTML());
-              stack.initHTML();
-              FOAM.browse(model);
-            }
-          },
+//           { name: 'Controller',
+//             f: function(model, obj, arr, value) {
+//               GLOBAL.stack = this.StackView.create();
+//               this.setDisplay(stack.toHTML());
+//               stack.initHTML();
+//               FOAM.browse(model);
+//             }
+//           },
           { name: 'Documentation',
             f: function(model, obj, arr, value) {
               //var dv = this.DetailView.create({model: Model, value: SimpleValue.create(model)}); this.setDisplay(dv.toHTML() ); dv.initHTML();
