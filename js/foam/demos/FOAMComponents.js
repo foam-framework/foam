@@ -42,6 +42,10 @@ CLASS({
 
   properties: [
     {
+      name: 'enableAnimation',
+      defaultValue: false
+    },
+    {
       name: 'features',
       lazyFactory: function() {
         return [
@@ -73,9 +77,9 @@ CLASS({
           { name: 'Java Src.',
             f: function(model, obj, arr, value) { this.setDisplay('<textarea rows=100 cols=80>' + this.javaSource.generate(model) + '</textarea>'); }
           },
-          { name: 'Actions',
-            f: function(model, obj, arr, value) { this.setDisplay('<textarea rows=100 cols=80>' + JSONUtil.stringify(model.actions) + '</textarea>'); }
-          },
+//           { name: 'Actions',
+//             f: function(model, obj, arr, value) { this.setDisplay('<textarea rows=100 cols=80>' + JSONUtil.stringify(model.actions) + '</textarea>'); }
+//           },
 //           { name: 'Local DAO',
 //             f: function(model, obj, arr, value) {
 //               var dao = GLOBAL[model.plural] || GLOBAL[model.name + 'DAO'];
@@ -139,7 +143,7 @@ CLASS({
         return System.create({
           parent: this.space,
           title: 'FOAM',
-          numDev: 2,
+          numDev: this.enableAnimation ? 2 : 0,
           devColor: 'red',
           features: this.featureLabels,
           entities: this.entityNames,
@@ -230,7 +234,7 @@ CLASS({
 
   methods: {
     init: function() {
-      timer.start();
+      if ( this.enableAnimation ) timer.start();
 
       this.Y.documentViewRequestNavigation = function(newRef) {
         window.location = 'http://localhost:8000/apps/docs/docbrowser.html#'+newRef.resolvedRef;
