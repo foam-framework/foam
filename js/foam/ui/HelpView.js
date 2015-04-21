@@ -21,7 +21,7 @@ CLASS({
   extendsModel: 'foam.ui.View',
   package: 'foam.ui',
 
-  documentation: function() {/* A display-only on-line help view. */},  
+  documentation: function() {/* A display-only on-line help view. */},
 
   properties: [
     {
@@ -52,7 +52,7 @@ CLASS({
         out.push('</div><div class="text">');
         if ( prop.subType /*&& value instanceof Array*/ && prop.type.indexOf('[') != -1 ) {
           var subModel = this.X[prop.subType];
-          var subView  = HelpView.create({model: subModel});
+          var subView  = this.model_.create({model: subModel});
           if ( subModel != model )
             out.push(subView.toHTML());
         } else {
