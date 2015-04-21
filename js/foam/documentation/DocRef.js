@@ -151,7 +151,8 @@ CLASS({
       // try to load the name, starting with the full name
       // and removing the last .chunk after each failure
       // until we have found the model, or we can't find it at all
-      finder(reference, this.masterModelList, this._DEV_ModelDAO);
+      var modelDAO = this.X._DEV_ModelDAO ? this.X._DEV_ModelDAO : this.X.ModelDAO;
+      finder(reference, this.masterModelList, modelDAO);
 
     },
 
@@ -160,7 +161,8 @@ CLASS({
       var findFuncs = [];
       model.traits.forEach(function(t) {
         findFuncs.push(function(ret) {
-          this.X._DEV_ModelDAO.find(t, {
+          var modelDAO = this.X._DEV_ModelDAO ? this.X._DEV_ModelDAO : this.X.ModelDAO;
+          modelDAO.find(t, {
             put: function(m) { list.put(m); ret && ret(); },
             error: function() { console.warn("DocRef could not load trait ", t); ret && ret(); }
           });
@@ -169,7 +171,8 @@ CLASS({
       // runs the trait finds first, and when they are done recurse to the next ancestor
       apar.apply(this, findFuncs)(function() {
         if ( model.extendsModel ) {
-          this.X._DEV_ModelDAO.find(model.extendsModel, {
+          var modelDAO = this.X._DEV_ModelDAO ? this.X._DEV_ModelDAO : this.X.ModelDAO;
+          modelDAO.find(model.extendsModel, {
               put: function(ext) {
                 list.put(ext);
                 this.getInheritanceList(ext, list);

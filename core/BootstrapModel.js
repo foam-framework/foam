@@ -34,7 +34,7 @@ function defineLocalProperty(cls, name, factory) {
   Object.defineProperty(cls, name, { get: function() {
     console.assert(this !== cls, 'Called property getter from prototype: ' + name);
     var value = factory.call(this);
-    Object.defineProperty(this, name, { value: value });
+    Object.defineProperty(this, name, { configurable: true, value: value });
     return value;
   }, configurable: true });
 }
@@ -380,7 +380,7 @@ var BootstrapModel = {
               (isMerged === true) ? undefined : isMerged, this.X);
           }
 
-          Object.defineProperty(this, name, { value: l});
+          Object.defineProperty(this, name, { configurable: true, value: l });
 
           return l;
         },

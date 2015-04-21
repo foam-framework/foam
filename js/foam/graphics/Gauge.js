@@ -113,19 +113,19 @@ CLASS({
       c.shadowColor = "gray";
 
       c.beginPath();
-      c.moveTo(width/2+3, height-10);
-      c.lineTo(width/2+3, height+5-r);
+      c.moveTo(width/2+1, height-10);
+      c.lineTo(width/2+1, height+5-r);
       c.stroke();
 
       c.fillStyle='white';
-      c.fillRect(width/2+3, height-10, 1, -r+15);
+      c.fillRect(width/2+1, height-10, 1, -r+15);
       c.strokeStyle = 'red';
       c.beginPath();
-      c.moveTo(width/2+3, height+5-r);
-      c.lineTo(width/2+3, height-20-r);
+      c.moveTo(width/2+1, height+5-r);
+      c.lineTo(width/2+1, height-20-r);
       c.stroke();
       c.fillStyle='white';
-      c.fillRect(width/2+3, height+5-r, 1, -30);
+      c.fillRect(width/2+1, height+5-r, 1, -30);
       c.restore();
 
       for ( var i = 0 ; i <= this.maxValue ; i++ ) {
