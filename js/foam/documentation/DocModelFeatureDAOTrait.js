@@ -32,7 +32,8 @@ CLASS({
     '_DEV_ModelDAO',
     'masterModelList',
     'featureDAO',
-    'featureDAOModelsLoading'
+    'featureDAOModelsLoading',
+    'documentViewRef'
   ],
   exports: [
     'featureDAO',
@@ -41,7 +42,8 @@ CLASS({
     'subModelDAO',
     'traitUserDAO',
     '_DEV_ModelDAO',
-    'masterModelList'
+    'masterModelList',
+    'documentViewRef'
   ],
 
   properties: [
@@ -61,6 +63,14 @@ CLASS({
       name: 'processBaseModels',
       model_: 'BooleanProperty',
       defaultValue: true
+    },
+    {
+      name: 'documentViewRef',
+      factory: function() {
+         return this.SimpleValue.create(
+           this.DocRef.create({ ref: this.data ? this.data.id : "" },
+             this.Y.sub({ documentViewRef: null })));
+      }
     },
     {
       name: '_DEV_ModelDAO',

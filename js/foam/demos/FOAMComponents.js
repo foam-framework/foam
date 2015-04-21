@@ -35,7 +35,8 @@ CLASS({
     'foam.ui.StackView',
     'foam.documentation.diagram.DocDiagramView',
     'MDAO',
-    'foam.dao.FindFallbackDAO'
+    'foam.dao.FindFallbackDAO',
+    'foam.documentation.DocViewPicker',
   ],
 
   properties: [
@@ -77,14 +78,14 @@ CLASS({
           { name: 'Actions',
             f: function(model, obj, arr, value) { this.setDisplay('<textarea rows=100 cols=80>' + JSONUtil.stringify(model.actions) + '</textarea>'); }
           },
-          { name: 'Local DAO',
-            f: function(model, obj, arr, value) {
-              var dao = GLOBAL[model.plural] || GLOBAL[model.name + 'DAO'];
-              if ( dao ) dao.select()(function(a) {
-                this.setDisplay('<pre>' + JSONUtil.stringify(a) + '</pre>');
-              });
-            }
-          },
+//           { name: 'Local DAO',
+//             f: function(model, obj, arr, value) {
+//               var dao = GLOBAL[model.plural] || GLOBAL[model.name + 'DAO'];
+//               if ( dao ) dao.select()(function(a) {
+//                 this.setDisplay('<pre>' + JSONUtil.stringify(a) + '</pre>');
+//               });
+//             }
+//           },
 //           { name: 'Trans. DAO',
 //             f: function(model, obj, arr, value) {  }
 //           },
@@ -103,9 +104,12 @@ CLASS({
               FOAM.browse(model);
             }
           },
-          { name: 'JavaDoc',
+          { name: 'Documentation',
             f: function(model, obj, arr, value) {
-              var dv = this.DetailView.create({model: Model, value: SimpleValue.create(model)}); this.setDisplay(dv.toHTML() ); dv.initHTML();
+              //var dv = this.DetailView.create({model: Model, value: SimpleValue.create(model)}); this.setDisplay(dv.toHTML() ); dv.initHTML();
+              var dv = this.DocViewPicker.create({ data: model });
+              this.setDisplay(dv.toHTML());
+              dv.initHTML();
             }
           },
               /*
