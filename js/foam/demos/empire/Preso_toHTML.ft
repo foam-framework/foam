@@ -71,6 +71,7 @@
     <h1>Views</h1>
     TODO:
   </slide>
+
   <slide>
     <h1>Data Access Objects (DAO's)</h1>
       <foam model="foam.ui.md.TwoPaneView">
@@ -90,6 +91,15 @@
         </views>
       </foam>
   </slide>
+
+  <slide>
+    <h1>Reusable Controllers</h1>
+    <center style="margin-top:25px;">
+    <img height="530" width="500" src="/demos/democat/MBug.png">
+    <img style="margin-left: 100px;" height="530" width="500" src="/demos/democat/GMail.png">
+    </center>
+  </slide>
+
   <slide>
     <h1>"Language" Features</h1>
     <div style="display: flex;">
@@ -256,13 +266,6 @@
     <foam model="foam.demos.MDFieldGuide"/>
   </slide>
   <slide>
-    <h1>GMail + MBug</h1>
-    <center style="margin-top:25px;">
-    <img height="530" width="500" src="/demos/democat/MBug.png">
-    <img style="margin-left: 100px;" height="530" width="500" src="/demos/democat/GMail.png">
-    </center>
-  </slide>
-  <slide>
     <h1>Calculator</h1>
     <br>
     <br>
@@ -307,17 +310,17 @@
   </slide>
 
   <slide>
-    <h1>Performance</h1>
-    <blockquote>
-      Application Performance<br>
-      Developer Performance<br>
-      <i style="color:red;">Performance</i> is <font color="#33f">F</font><font color="#f00">O</font><font color="#fc0">A</font><font color="#3c0">M</font>'s Value Proposition<br>
-      <i style="color:#3c0;">"Fast Apps Fast"</i><br>
-    </blockquote>
-    <!--<center>
-       <foam model="foam.demos.graphics.Logo" text="Fast Apps Fast" width="800" height="200"/>
-    </center> -->
+    <h1>To Summarize the Summary of the Summary: <font color="red">Performance</font></h1>
+    <br>
+    <div style="display:flex;">
+      <div style="margin-left:48px;">
+        Application Performance<br>
+        Developer Performance<br>
+        <i style="color:red;">Performance</i> is <font color="#33f">F</font><font color="#f00">O</font><font color="#fc0">A</font><font color="#3c0">M</font>'s Value Proposition<br>
+        <i style="color:#3c0;">"Fast Apps Fast"</i><br>
+      </div>
+      <img style="margin-left:200px;margin-top:-40px;" src="js/foam/demos/empire/benchmarks.png">
+    </div>
   </slide>
 
-<!--  <slide><foam model="foam.demos.empire.Slides"/></slide> -->
 </slides>
