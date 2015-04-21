@@ -37,38 +37,91 @@ CLASS({
 
   properties: [
     {
-      name: 'models',
+      name: 'features',
       lazyFactory: function() {
-       return [
-          'models',
-          'Properties',
-          'Actions',
-          'Methods',
-          'Listeners',
-          'Templates',
-          'Unit Tests',
-          'Issues',
-          'Timer',
-          'Mouse',
-          'EyeCView',
-          'EyesCView',
-          'ClockView',
-          'Graph',
-          'System',
-          'Developer',
-          'Canvas',
-          'Circle',
-          'Rect',
-          'Box',
-          'Label',
-          'PowerInfo',
-          'Backlite',
-          'DAOController',
-          'StackView',
-//           'NeedleMeter',
-//           'BatteryMeter',
-//           'BatteryGraph'
+        return [
+          { name: 'Help',
+            f: function(model, obj, arr, value) { this.setDisplay(this.HelpView.create({model: model}).toHTML()); }
+          },
+          { name: 'Detail',
+            f: function(model, obj, arr, value) { var dv = this.DetailView.create({model: model, data: obj}); this.setDisplay(dv.toHTML()); dv.initHTML(); }
+          },
+          { name: 'Table',
+            f: function(model, obj, arr, value) { this.setDisplay(this.TableView.create({model: model, value: SimpleValue.create(arr)}).toHTML());  }
+          },
+          { name: 'Summary',
+            f: function(model, obj, arr, value) { this.setDisplay(this.SummaryView.create({model: model, value: value}).toHTML());  }
+          },
+          { name: 'XML',
+            f: function(model, obj, arr, value) { this.setDisplay("<textarea rows=100 cols=80>" + obj.toXML() + "</textarea>"); }
+          },
+          { name: 'JSON',
+            f: function(model, obj, arr, value) { this.setDisplay('<pre>' + model.toJSON() + '</pre>'); }
+          },
+//           { name: 'JS Proto',
+//             f: function(model, obj, arr, value) { this.setDisplay("<pre>" + this.protoToString(model.getPrototype()) + '</pre>'); }
+//           },
+          { name: 'Java Src.',
+            f: function(model, obj, arr, value) { this.setDisplay('<pre>' + 'Coming soon!' + '</pre>'); }
+          },
+          { name: 'Dart Src.',
+            f: function(model, obj, arr, value) { this.setDisplay('<pre>' + 'Coming soon!' + '</pre>');  }
+          },
+          { name: 'Actions',
+            f: function(model, obj, arr, value) { this.setDisplay('<textarea rows=100 cols=80>' + JSONUtil.stringify(model.actions) + '</textarea>'); }
+          },
+          { name: 'Local DAO',
+            f: function(model, obj, arr, value) {
+              var dao = GLOBAL[model.plural] || GLOBAL[model.name + 'DAO'];
+              if ( dao ) dao.select()(function(a) {
+                this.setDisplay('<pre>' + JSONUtil.stringify(a) + '</pre>');
+              });
+            }
+          },
+//           { name: 'Trans. DAO',
+//             f: function(model, obj, arr, value) {  }
+//           },
+          { name: 'UML',
+            f: function(model, obj, arr, value) {
+              var dv = this.DocDiagramView.create({ data: model });
+              this.setDisplay(dv.toHTML());
+              dv.initHTML();
+            }
+          },
+          { name: 'Controller',
+            f: function(model, obj, arr, value) {
+              GLOBAL.stack = this.StackView.create();
+              this.setDisplay(stack.toHTML());
+              stack.initHTML();
+              FOAM.browse(model);
+            }
+          },
+          { name: 'JavaDoc',
+            f: function(model, obj, arr, value) {
+              var dv = this.DetailView.create({model: Model, value: SimpleValue.create(model)}); this.setDisplay(dv.toHTML() ); dv.initHTML();
+            }
+          },
+              /*
+              'Sort',
+              'Search',
+              'Paging',
+              'Printing',
+              'SQL',
+              'PDF',
+              'ProtoBuf',
+              'C++'
+            */
         ];
+      }
+    },
+    {
+      name: 'featureLabels',
+      lazyFactory: function() {
+        var list = [];
+        this.features.forEach(function(f) {
+          list.push(f.name);
+        }.bind(this));
+        return list;
       }
     },
     {
@@ -79,77 +132,56 @@ CLASS({
           title: 'FOAM',
           numDev: 2,
           devColor: 'red',
-          features: [
-            'Help',
-            'Detail',
-            'Table',
-            'Summary',
-            'XML',
-            'JSON',
-            'JS Proto',
-            'Java Src.',
-            'Dart Src.',
-            'Actions',
-            'Local DAO',
-            'Trans. DAO',
-            'UML',
-            'Controller',
-            'JavaDoc'
-            /*
-              'Sort',
-              'Search',
-              'Paging',
-              'Printing',
-              'SQL',
-              'PDF',
-              'ProtoBuf',
-              'C++'
-            */
-          ],
-          entities: this.models,
+          features: this.featureLabels,
+          entities: this.entityNames,
         });
       }
     },
     {
-      name: 'modelInstances',
-      factory: function() {
-        var instances = [
-          Screen,
-//           Power,
-//           NeedleMeter,
-//           BatteryMeter,
-//           BatteryGraph,
+      name: 'entities',
+      lazyFactory: function() {
+       var ents = [
+          { name: 'models', model: 'Model', instance: null },
+          { name: 'Properties', model: 'Property', instance: null },
+          { name: 'Actions', model: 'Action', instance: null },
+          { name: 'Methods', model: 'Method', instance: null },
+          { name: 'Listeners', model: 'Method', instance: null },
+          { name: 'Templates', model: 'Template', instance: null },
+          { name: 'Unit Tests', model: 'UnitTest', instance: null },
+          { name: 'Issues', model: 'Issue', instance: null },
+          { name: 'Timer', model: 'Timer', instance: null },
+          { name: 'Mouse', model: 'foam.input.Mouse', instance: null },
+          { name: 'EyeCView', model: 'foam.demos.graphics.EyeCView', instance: null },
+          { name: 'EyesCView', model: 'foam.demos.graphics.EyesCView', instance: null },
+          { name: 'ClockView', model: 'foam.demos.ClockView', instance: null },
+          { name: 'Graph', model: 'Graph', instance: null },
+          { name: 'System', model: 'System', instance: null },
+          { name: 'Developer', model:  'Developer', instance: null },
+          { name: 'Canvas', model: 'foam.graphics.CView', instance: null },
+          { name: 'Circle', model: 'foam.graphics.Circle', instance: null },
+          { name: 'Rect', model:  'foam.graphics.Rectangle', instance: null },
+          { name: 'Box', model: 'foam.graphics.Box', instance: null },
+          { name: 'Label', model: 'foam.graphics.Label', instance: null },
+          { name: 'DAOController', model: 'foam.ui.DAOController', instance: null },
+          { name: 'StackView', model: 'foam.ui.StackView', instance: null },
         ];
-        [
-          'Model',
-          'Property',
-          'Action',
-          'Method',
-          'Method',
-          'Template',
-          'UnitTest',
-          'Issue',
-          'Timer',
-          'foam.input.Mouse',
-          'foam.demos.graphics.EyeCView',
-          'foam.demos.graphics.EyesCView',
-          'foam.demos.ClockView',
-          'Graph',
-          'System',
-          'Developer',
-          'Canvas',
-          'foam.graphics.Circle',
-          'foam.graphics.Rectangle',
-          'foam.graphics.Box',
-          'foam.graphics.Label',
-          'foam.ui.DAOController',
-          'foam.ui.StackView',
-        ].forEach(function(name) {
-          arequire(name)(function(m) {
-            if ( m ) instances.push(m)
+        ents.forEach(function(ent) {
+          arequire(ent.model)(function(m) {
+            console.log(ent, m);
+            if ( m ) ent.instance = m;
           });
         });
-        return instances;
+        return ents;
+      }
+    },
+    {
+      name: 'entityNames',
+      lazyFactory: function() {
+       var list = [];
+        this.entities.forEach(function(f) {
+          list.push(f.name);
+        }.bind(this));
+        return list;
       }
     },
 //     {
@@ -250,7 +282,6 @@ CLASS({
 
       %%space
 
-
       <td><td valign=top>
       <div id="display"></div>
       </td><tr></table>
@@ -263,7 +294,7 @@ CLASS({
       code: function() {
         if ( this.sys.selectedY < 1 || this.sys.selectedX < 0 ) return;
 
-        var model = this.modelInstances[this.sys.selectedY-1];
+        var model = this.entities[this.sys.selectedY-1].instance;
         var obj = null;
         try {
           obj = model.create();
@@ -274,46 +305,9 @@ CLASS({
         } catch(x) { }
         var arr = [obj];
         var value = SimpleValue.create(obj);
-        console.log("Model: ", model.name);
+        console.log("Model: ", model.name, " x:", this.sys.selectedX);
 
-        switch ( this.sys.selectedX ) {
-        case 0:
-          this.setDisplay('<pre>' + model.toJSON() + '</pre>');
-          break;
-        case 1: this.setDisplay(this.HelpView.create({model: model}).toHTML()); break;
-        case 2: var dv = this.DetailView.create({model: model, value: value}); this.setDisplay(dv.toHTML()); dv.initHTML(); break;
-        case 3: this.setDisplay(this.TableView.create({model: model, value: SimpleValue.create(arr)}).toHTML()); break;
-        case 4: this.setDisplay(this.SummaryView.create({model: model, value: value}).toHTML()); break;
-        case 5: this.setDisplay("<textarea rows=100 cols=80>" + obj.toXML() + "</textarea>"); break;
-        case 6: this.setDisplay("<pre>" + obj.toJSON() + "</pre>"); break;
-        case 7: this.setDisplay("<textarea rows=100 cols=80>" + this.protoToString(model.getPrototype()) + '</textarea>'); break;
-        case 8: this.setDisplay('<pre>' + 'Coming soon!' + '</pre>'); break;
-        case 9: this.setDisplay('<pre>' +'Coming soon!' + '</pre>'); break;
-        case 10: this.setDisplay(JSONUtil.stringify(model.actions)); break;
-        case 11:
-          var dao = GLOBAL[model.plural] || GLOBAL[model.name + 'DAO'];
-          if ( dao ) dao.select()(function(a) {
-            this.setDisplay('<pre>' + JSONUtil.stringify(a) + '</pre>');
-          });
-          break;
-        case 12: this.setDisplay(); break;
-        case 13:
-          var dv = this.DocDiagramView.create({ data: model });
-          this.setDisplay(dv.toHTML());
-          dv.initHTML();
-          break;
-        case 14:
-          GLOBAL.stack = this.StackView.create();
-          this.setDisplay(stack.toHTML());
-          stack.initHTML();
-
-          FOAM.browse(model);
-          //this.setDisplay();
-          break;
-        case 15:
-          var dv = this.DetailView.create({model: Model, value: SimpleValue.create(model)}); this.setDisplay(dv.toHTML() ); dv.initHTML();
-          break;
-        }
+        this.features[this.sys.selectedX-1].f.call(this, model, obj, arr, value);
       }
     }
 
