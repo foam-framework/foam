@@ -15,6 +15,24 @@
     </center>
   </slide>
   <slide>
+    <h1>History</h1>
+    <iframe style="width:100%;height:100%;border:none;" src="./demos/UnixSimulator.html"></iframe>
+  </slide>
+
+  <slide>
+    <h1>Features and Models</h1>
+    <foam model="foam.demos.FOAMComponents"/>
+  </slide>
+
+  <slide>
+    <h1>Holistic</h1>
+    <br>
+    <center>
+      <iframe style="width:95%;height:90%;border:none;" src="./demos/demo10b2.html"></iframe>
+    </center>
+  </slide>
+
+  <slide>
     <h1>Models</h1>
     <br>
     <%
@@ -50,10 +68,6 @@
 <a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome Web Store Entry</a>
   </slide>
   <slide>
-    <h1>Features</h1>
-    TODO: Insert demo5.
-  </slide>
-  <slide>
     <h1>Views</h1>
     TODO:
   </slide>
@@ -75,13 +89,6 @@
           </viewChoice>
         </views>
       </foam>
-  </slide>
-  <slide>
-    <h1>Holistic</h1>
-    <br>
-    <center>
-      <iframe style="width:95%;height:90%;border:none;" src="./demos/demo10b2.html"></iframe>
-    </center>
   </slide>
   <slide>
     <h1>"Language" Features</h1>
@@ -274,6 +281,31 @@
       ]})
     %>
   </slide>
+
+  <slide><foam model="foam.demos.Flow"/></slide>
+
+  <slide>
+    <foam model="foam.ui.SlidePanel" minWidth="1700" minPanelWidth="350" side="left" stripWidth="16">
+      <panelView>
+        <center style="padding-top:200px;height:100%; background:cadetblue;"><foam model="foam.graphics.Gauge" label="Applause" maxValue="11"/></center>
+      </panelView>
+      <mainView>
+        <div style="margin-left: 16px;">
+        <h1>Summary</h1>
+        <div style="display:flex;">
+          <div style="width:800px;">
+            <ul>
+              <li>Reactive MVC</li>
+              <li>Views</li>
+            </ul>
+          </div>
+            <iframe style="border:none;width:100%;height:100%;" src="./demos/GoogleSimulator.html"></iframe>
+        </div>
+        </div>
+      </mainView>
+    </foam>
+  </slide>
+
   <slide>
     <h1>Performance</h1>
     <blockquote>
@@ -286,28 +318,6 @@
        <foam model="foam.demos.graphics.Logo" text="Fast Apps Fast" width="800" height="200"/>
     </center> -->
   </slide>
-  <slide><foam model="foam.demos.Flow"/></slide>
-  <slide>
-    <iframe style="width:100%;height:100%;" src="./demos/UnixSimulator.html"></iframe>
-  </slide>
-  <slide>
-    <iframe style="width:100%;height:100%;" src="./demos/GoogleSimulator.html"></iframe>
-  </slide>
-  <slide>
-    <foam model="foam.ui.SlidePanel" minWidth="1700" minPanelWidth="350" side="left" stripWidth="16">
-      <panelView>
-        <center style="padding-top:200px;height:100%; background:cadetblue;"><foam model="foam.graphics.Gauge" label="Applause" maxValue="11"/></center>
-      </panelView>
-      <mainView>
-        <div style="margin-left: 16px;">
-        <h1>Summary</h1>
-        <ul>
-          <li>Reactive MVC</li>
-          <li>Views</li>
-        </ul>
-        </div>
-      </mainView>
-    </foam>
-  </slide>
+
 <!--  <slide><foam model="foam.demos.empire.Slides"/></slide> -->
 </slides>
