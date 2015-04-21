@@ -19,7 +19,7 @@ CLASS({
   name:  'System',
 
   requires: [ 'foam.input.Mouse' ],
-  
+
   properties: [
     {
       name:  'parent',
@@ -259,10 +259,10 @@ CLASS({
         4, function() {
           system.moveDev(dev, dev.f, dev.e);
         },
-        5, function() {
+        20, function() {
           system.moveDev(dev, 0, ny);
         },
-        90, function() {
+        75, function() {
           system.moveDev(dev, nx, 0);
         });
 
