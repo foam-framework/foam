@@ -87,6 +87,7 @@ CLASS({
     },
     destroy: function() {
       this.stopped_ = true;
+      this.children = [];
     }
   }
 });
