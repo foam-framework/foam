@@ -23,6 +23,9 @@ CLASS({
       'header and footer views are required to have a preferredHeight ' +
       'property and this view gives the body the rest of the height on the ' +
       'screen.',
+  exports: [
+    'bodyHeight$',
+  ],
   properties: [
     {
       name: 'className',
@@ -39,6 +42,9 @@ CLASS({
     },
     {
       name: 'body',
+    },
+    {
+      name: 'bodyHeight',
     },
     {
       name: 'footer',
@@ -64,6 +70,7 @@ CLASS({
           var bodyContainer = document.getElementById(this.id + '-body');
           bodyContainer.style.height = availableBodyHeight + 'px';
           bodyContainer.style.top = headerHeight;
+          this.bodyHeight = availableBodyHeight;
 
           var footerContainer = document.getElementById(this.id + '-footer');
           footerContainer.style.top = headerHeight + availableBodyHeight;
