@@ -15,17 +15,15 @@
  * limitations under the License.
  */
 
-
 CLASS({
+  package: 'foam.ui',
   name: 'JSView',
 
   extendsModel: 'foam.ui.TextFieldView',
-  package: 'foam.ui',
-  
 
   properties: [
     { name: 'displayWidth',  defaultValue: 100 },
-    { name: 'displayHeight', defaultValue: 100 }
+    { name: 'displayHeight', defaultValue: 40 }
   ],
 
   methods: {
@@ -39,8 +37,7 @@ CLASS({
     },
 
     valueToText: function(val) {
-      return JSONUtil.pretty.stringify(val);
+      return JSONUtil.prettyModel.stringify(val);
     }
   }
 });
-
