@@ -113,6 +113,12 @@ CLASS({
         if ( c.y < c.r ) c.vy = Math.abs(c.vy);
         if ( c.y > h - c.r ) c.vy = -Math.abs(c.vy);
       });
+    },
+    shouldDestroy: function() { return false; },
+    destroy: function() {
+      this.SUPER();
+      console.log('Collision destroy');
+      this.collider.destroy();
     }
   }
 });
