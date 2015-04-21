@@ -68,6 +68,7 @@ CLASS({
         display: -webkit-flex;
         display: flex;
         overflow-x: hidden;
+        overflow-y: hidden;
       }
       .HorizontalSlidingViewChoiceView .carousel-container {
         -webkit-flex: 1 1 1px;
@@ -77,7 +78,7 @@ CLASS({
         white-space: nowrap;
       }
       .HorizontalSlidingViewChoiceView .carousel-view {
-        height: 100%
+        height: 100%;
         overflow-x: hidden;
         overflow-y: auto;
         position: absolute;

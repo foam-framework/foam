@@ -22,10 +22,35 @@ CLASS({
   properties: [
     {
       name: 'data',
+      postSet: function() {
+        if (this.pending_) {
+          this.dirty_ = true;
+        }
+      },
+    },
+    // dirty_ and pending_ are used to tell the view to rerender if the data
+    // changes while the view is rendering. They should go away when the
+    // DetailView (or something else) finds a way to handle this.
+    {
+      name: 'dirty_',
+    },
+    {
+      name: 'pending_',
     },
   ],
+  methods: {
+    initHTML: function() {
+      this.SUPER();
+      this.pending_ = false;
+      if (this.dirty_) {
+        this.dirty_ = false;
+        this.updateHTML();
+      }
+    },
+  },
   templates: [
     function toHTML() {/*
+      <% this.pending_ = true; %>
       <div id="%%id">
         <%= this.data && this.data() %>
       </div>
