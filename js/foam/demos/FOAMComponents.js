@@ -56,10 +56,10 @@ CLASS({
 //             f: function(model, obj, arr, value) { var dv = this.MDDetailView.create({model: model, data: obj}); this.setDisplay(dv.toHTML()); dv.initHTML(); }
 //           },
           { name: 'Table',
-            f: function(model, obj, arr, value) { this.setDisplay(this.TableView.create({model: model, value: SimpleValue.create(arr)}).toHTML());  }
+            f: function(model, obj, arr, value) { this.setDisplay(this.TableView.create({model: model, data: arr }).toHTML());  }
           },
           { name: 'Summary',
-            f: function(model, obj, arr, value) { this.setDisplay(this.SummaryView.create({model: model, value: value}).toHTML());  }
+            f: function(model, obj, arr, value) { this.setDisplay(this.SummaryView.create({model: model, data: obj}).toHTML());  }
           },
           { name: 'XML',
             f: function(model, obj, arr, value) { this.setDisplay("<textarea rows=100 cols=80>" + obj.toXML() + "</textarea>"); }
