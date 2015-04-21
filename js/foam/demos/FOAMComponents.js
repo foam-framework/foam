@@ -42,6 +42,10 @@ CLASS({
 
   properties: [
     {
+      name: 'enableAnimation',
+      defaultValue: false
+    },
+    {
       name: 'features',
       lazyFactory: function() {
         return [
@@ -56,10 +60,10 @@ CLASS({
 //             f: function(model, obj, arr, value) { var dv = this.MDDetailView.create({model: model, data: obj}); this.setDisplay(dv.toHTML()); dv.initHTML(); }
 //           },
           { name: 'Table',
-            f: function(model, obj, arr, value) { this.setDisplay(this.TableView.create({model: model, value: SimpleValue.create(arr)}).toHTML());  }
+            f: function(model, obj, arr, value) { this.setDisplay(this.TableView.create({model: model, data: arr }).toHTML());  }
           },
           { name: 'Summary',
-            f: function(model, obj, arr, value) { this.setDisplay(this.SummaryView.create({model: model, value: value}).toHTML());  }
+            f: function(model, obj, arr, value) { this.setDisplay(this.SummaryView.create({model: model, data: obj}).toHTML());  }
           },
           { name: 'XML',
             f: function(model, obj, arr, value) { this.setDisplay("<textarea rows=100 cols=80>" + obj.toXML() + "</textarea>"); }
@@ -73,9 +77,9 @@ CLASS({
           { name: 'Java Src.',
             f: function(model, obj, arr, value) { this.setDisplay('<textarea rows=100 cols=80>' + this.javaSource.generate(model) + '</textarea>'); }
           },
-          { name: 'Actions',
-            f: function(model, obj, arr, value) { this.setDisplay('<textarea rows=100 cols=80>' + JSONUtil.stringify(model.actions) + '</textarea>'); }
-          },
+//           { name: 'Actions',
+//             f: function(model, obj, arr, value) { this.setDisplay('<textarea rows=100 cols=80>' + JSONUtil.stringify(model.actions) + '</textarea>'); }
+//           },
 //           { name: 'Local DAO',
 //             f: function(model, obj, arr, value) {
 //               var dao = GLOBAL[model.plural] || GLOBAL[model.name + 'DAO'];
@@ -94,14 +98,14 @@ CLASS({
               dv.initHTML();
             }
           },
-          { name: 'Controller',
-            f: function(model, obj, arr, value) {
-              GLOBAL.stack = this.StackView.create();
-              this.setDisplay(stack.toHTML());
-              stack.initHTML();
-              FOAM.browse(model);
-            }
-          },
+//           { name: 'Controller',
+//             f: function(model, obj, arr, value) {
+//               GLOBAL.stack = this.StackView.create();
+//               this.setDisplay(stack.toHTML());
+//               stack.initHTML();
+//               FOAM.browse(model);
+//             }
+//           },
           { name: 'Documentation',
             f: function(model, obj, arr, value) {
               //var dv = this.DetailView.create({model: Model, value: SimpleValue.create(model)}); this.setDisplay(dv.toHTML() ); dv.initHTML();
@@ -139,7 +143,7 @@ CLASS({
         return System.create({
           parent: this.space,
           title: 'FOAM',
-          numDev: 2,
+          numDev: this.enableAnimation ? 2 : 0,
           devColor: 'red',
           features: this.featureLabels,
           entities: this.entityNames,
@@ -230,7 +234,7 @@ CLASS({
 
   methods: {
     init: function() {
-      timer.start();
+      if ( this.enableAnimation ) timer.start();
 
       this.Y.documentViewRequestNavigation = function(newRef) {
         window.location = 'http://localhost:8000/apps/docs/docbrowser.html#'+newRef.resolvedRef;

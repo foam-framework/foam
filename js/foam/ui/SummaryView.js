@@ -20,7 +20,7 @@ CLASS({
 
   extendsModel: 'foam.ui.View',
   package: 'foam.ui',
-  
+
   documentation: function() {/* A display-only summary view. */},
   properties: [
     {
@@ -48,8 +48,8 @@ CLASS({
 
       // TODO: Either make behave like DetailView or else
       // make a mode of DetailView.
-      for ( var i = 0 ; i < model.properties_.length ; i++ ) {
-        var prop = model.properties_[i];
+      for ( var i = 0 ; i < model.properties.length ; i++ ) {
+        var prop = model.properties[i];
 
         if ( prop.hidden ) continue;
 
