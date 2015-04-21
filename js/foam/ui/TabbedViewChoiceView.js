@@ -31,7 +31,7 @@ CLASS({
     },
     {
       name: 'preferredHeight',
-      defaultValue: 58,
+      defaultValue: 54,
     },
   ],
   methods: {
