@@ -309,5 +309,7 @@ CLASS({
         this.parent.mapToCanvas(point);
       return point;
     },
+
+    destroy: function() {}
   }
 });
