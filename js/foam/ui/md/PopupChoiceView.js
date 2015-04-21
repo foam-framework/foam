@@ -26,66 +26,6 @@ CLASS({
 
   traits: ['foam.input.touch.VerticalScrollNativeTrait'],
 
-  models: [
-    {
-      name: 'FlatButton',
-      extendsModel: 'foam.ui.md.FlatButton',
-
-      properties: [
-        {
-          name: 'tagName',
-          defaultValue: 'popup-choice-view-flat-button'
-        }
-      ],
-
-      templates: [
-        function toInnerHTML() {/*
-            <%= this.halo %>
-            <span>
-            <% if ( this.action && this.action.label ) { %>
-              {{this.action.label}}
-            <% } else if ( this.action ) { %>
-              {{this.action.name}}
-            <% } else if ( this.inner ) { %>
-              <%= this.inner() %>
-            <% } else { %>this.data<% } %>
-            </span>
-            <%
-            this.on('click', function() {
-                this.action.callIfEnabled(this.X, this.data);
-            }.bind(this), this.id);
-            this.setClass('hidden', function() { return !!self.isHidden; }, this.id);
-            %>
-        */},
-        function CSS() {/*
-          popup-choice-view-flat-button {
-            padding: 10px 16px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-            border-radius: 2px;
-            cursor: pointer;
-            height: 48px;
-          }
-
-          .hidden {
-            display: none;
-          }
-
-          .halo  {
-            position: absolute;
-            left: 0;
-            top: 0;
-          }
-
-
-        */}
-      ]
-    }
-  ],
-
   documentation: function() {/* This is very closely related to
      $$DOC{ref:'foam.ui.PopupChoiceView'}. Refactor them! */},
   properties: [
@@ -223,19 +163,6 @@ CLASS({
         this.data$.addListener(this.updateListener);
       }
 
-//       out += '<span class="action">';
-//       var action = this.model_.getAction('open').clone();
-//       action.iconUrl = this.iconUrl;
-//       action.labelFn = function(action) { action.label = this.text; }.bind(this);
-//       var button = this.FlatButton.create({
-//         tagName: 'popup-choice-view-flat-button',
-//         action: action
-//       }).toView_();
-
-//       this.addSelfDataChild(button);
-
-//       out += button.toHTML();
-//       out += '</span>';
 
       out += "<div>"+this.createTemplateView('text', { mode:'read-only' }).toHTML()+"</div>";
 
