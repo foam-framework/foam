@@ -100,9 +100,9 @@ CLASS({
           var popPos = view.$.getBoundingClientRect();
           var margin = 50;
           var left = popPos.left - margin;
-          var right = popPos.right + 2*margin;
+          var right = popPos.right + margin;
           var top = popPos.top - margin;
-          var bottom = popPos.bottom + 2*margin;
+          var bottom = popPos.bottom + margin;
 
           if ( (left < evt.clientX && evt.clientX < right) &&
               (top < evt.clientY && evt.clientY < bottom) )

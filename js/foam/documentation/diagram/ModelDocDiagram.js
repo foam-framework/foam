@@ -42,14 +42,22 @@ CLASS({
 
   properties: [
     {
+      name: 'featuresToLoad',
+      factory: function() {
+        return ['properties'];
+      }
+    },
+    {
+      name: 'processBaseModels',
+      model_: 'BooleanProperty',
+      defaultValue: false
+    },
+    {
       name: 'documentViewRef',
       factory: function() {
          return this.SimpleValue.create(
            this.DocRef.create({ ref: this.data ? this.data.id : "" },
              this.Y.sub({ documentViewRef: null })));
-
-//        return this.DocRef.create({ ref: this.data ? this.data.id : "" },
-//          this.Y.sub({ documentViewRef: null }));
       }
     },
     {
