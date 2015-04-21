@@ -23,7 +23,7 @@ CLASS({
 
   properties: [
     { name: 'displayWidth',  defaultValue: 100 },
-    { name: 'displayHeight', defaultValue: 40 }
+    { name: 'displayHeight', defaultValue: 53 }
   ],
 
   methods: {
