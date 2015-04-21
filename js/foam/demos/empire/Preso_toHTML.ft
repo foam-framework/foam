@@ -9,7 +9,9 @@
     (or, 25 Demos in 25 Minutes)
     <br>
     <br>
+    <br>
     Kevin Greer, <a href="mailto:kgr@chromium.org">kgr@chromium.org</a><br>
+    <br>
     <br>
     April 26, 2015<br>
     </center>
@@ -60,13 +62,29 @@
       </div>
     </div>
   </slide>
+
   <slide>
-    <h1>Chrome App Builder</h1>
+    <h1>Model Types</h1>
     <br>
-    <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw">
-    <br>
-<a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome Web Store Entry</a>
+    <div style="display:flex;">
+      <div style="width: 800px;margin-left:32px;">
+        <ul>
+          <li>Entities (default)</li>
+          <li>Animations</li>
+          <li>Queries (mLang)</li>
+          <li>Parsers</li>
+          <li>...</li>
+          <li><a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome App Builder</a></li>
+        </ul>
+      </div>
+     <div>
+    <center>
+    <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw" style="border: 1px solid;">
+   </center>
+     </div>
+    </div>
   </slide>
+
   <slide>
     <h1>Views</h1>
     TODO:
@@ -90,6 +108,15 @@
           </viewChoice>
         </views>
       </foam>
+  </slide>
+
+  <slide>
+    <h1>Offline</h1>
+    <ul>
+      <li>Caching</li>
+      <li>Sync</li>
+      <li>MQL</li>
+    </ul>
   </slide>
 
   <slide>
@@ -212,16 +239,31 @@
       </views>
     </foam>
   </slide>
+
   <slide>
-    <h1>Animation</h1>
+    <h1>Reactive Animation</h1>
     <foam model="foam.demos.SolarSystem"/>
   </slide>
+
+  <slide>
+    <h1>Physics</h1>
+    <%=
+      foam.ui.md.TwoPaneView.create({views: [
+        {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10}},
+        {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
+        {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
+        {label: 'Gravity&nbsp;+&nbsp;Friction', view: 'foam.demos.physics.Bubbles'}
+      ]})
+    %>
+  </slide>
+
   <slide>
     <h1>Live-Coding</h1>
     <div style="transform: scale(1); transform-origin: 0 0;">
       <foam model="foam.demos.DragonLiveCoding"/>
     </div>
   </slide>
+
   <slide>
     <h1>Toolability (meta-programming)</h1>
       <div style="display:flex;margin-left:64px;">
@@ -247,20 +289,14 @@
       </div>
       </div>
   </slide>
+
   <slide>
     <h1>Learning FOAM</h1>
     <h2>Tutorial</h2>
     <h2>TodoMVC</h2>
     <h2>DemoCat</h2>
   </slide>
-  <slide>
-    <h1>Offline</h1>
-    <ul>
-      <li>Caching</li>
-      <li>Sync</li>
-      <li>MQL</li>
-    </ul>
-  </slide>
+
   <slide>
     <div style="height:10px;"></div>
     <foam model="foam.demos.MDFieldGuide"/>
@@ -272,17 +308,6 @@
     <center>
       <iframe style="width:80%;height:70%;" src="./apps/acalc/Calc.html"></iframe>
     </center>
-  </slide>
-  <slide>
-    <h1>Physics</h1>
-    <%=
-      foam.ui.md.TwoPaneView.create({views: [
-        {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10}},
-        {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
-        {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
-        {label: 'Gravity&nbsp;+&nbsp;Friction', view: 'foam.demos.physics.Bubbles'}
-      ]})
-    %>
   </slide>
 
   <slide><foam model="foam.demos.Flow"/></slide>
@@ -302,7 +327,7 @@
                 <li class="d1">Models are Modelled</li>
                 <li class="d1">Language-Like Features</li>
                 <li class="d1">Better Toolability</li>
-                <li class="d1">D.R.Y.</li>
+                <li class="d1">Cross-Language D.R.Y.-ness</li>
               <li>Feature-Oriented</li>
                 <li class="d1">Reactive MVC</li>
                   <li class="d2">Reactive</li>
@@ -322,7 +347,7 @@
                 <li class="d1">Technology Independent</li>
                   <li class="d2">Node.js</li>
                   <li class="d2">Java</li>
-              <li>Exponentially More Efficient</li>
+              <li><i style="color:#33f;">Exponentially More Efficient</i></li>
             </ul>
           </div>
             <iframe style="border:none;width:100%;height:100%;" src="./demos/GoogleSimulator.html"></iframe>
@@ -333,7 +358,7 @@
   </slide>
 
   <slide>
-    <h1>To Summarize the Summary of the Summary: <font color="red">Performance</font></h1>
+    <h1>To Summarize the Summary of the Summary: <font color="red">It's About Performance</font></h1>
     <br><br>
     <div style="display:flex;">
       <div style="margin-left:48px;">
