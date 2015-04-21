@@ -107,6 +107,10 @@ CLASS({
       .swipeAltOuter {
         height: 100%;
       }
+      li.d1 { margin-left: 16px; font-size: 30px;}
+      li.d2 { margin-left: 32px; font-size: 28px; }
+      li.d3 { margin-left: 48px; font-size: 26px; }
+      li.d4 { margin-left: 64px; font-size: 24px; }
     */},
     { name: 'toHTML' }
   ]

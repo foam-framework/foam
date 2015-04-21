@@ -298,8 +298,31 @@
         <div style="display:flex;">
           <div style="width:800px;">
             <ul>
-              <li>Reactive MVC</li>
-              <li>Views</li>
+              <li>Model-Oriented</li>
+                <li class="d1">Models are Modelled</li>
+                <li class="d1">Language-Like Features</li>
+                <li class="d1">Better Toolability</li>
+                <li class="d1">D.R.Y.</li>
+              <li>Feature-Oriented</li>
+                <li class="d1">Reactive MVC</li>
+                  <li class="d2">Reactive</li>
+                    <li class="d3">Observerless</li>
+                    <li class="d3">Animation</li>
+                    <li class="d3">Physics</li>
+                    <li class="d3">Live-Coding</li>
+                  <li class="d2">Models</li>
+                    <li class="d3">DAO's</li>
+                      <li class="d4">Technology Independent</li>
+                      <li class="d4">Offline</li>
+                  <li class="d2">Views</li>
+                    <li class="d3">Technology Independent</li>
+                    <li class="d3">Material Design</li>
+                    <li class="d3">Mobile</li>
+                  <li class="d2">Reusable Controllers</li>
+                <li class="d1">Technology Independent</li>
+                  <li class="d2">Node.js</li>
+                  <li class="d2">Java</li>
+              <li>Exponentially More Efficient</li>
             </ul>
           </div>
             <iframe style="border:none;width:100%;height:100%;" src="./demos/GoogleSimulator.html"></iframe>
@@ -311,13 +334,14 @@
 
   <slide>
     <h1>To Summarize the Summary of the Summary: <font color="red">Performance</font></h1>
-    <br>
+    <br><br>
     <div style="display:flex;">
       <div style="margin-left:48px;">
+        <i style="color:red;">Performance</i> is <font color="#33f">F</font><font color="#f00">O</font><font color="#fc0">A</font><font color="#3c0">M</font>'s Value Proposition<br>
         Application Performance<br>
         Developer Performance<br>
-        <i style="color:red;">Performance</i> is <font color="#33f">F</font><font color="#f00">O</font><font color="#fc0">A</font><font color="#3c0">M</font>'s Value Proposition<br>
-        <i style="color:#3c0;">"Fast Apps Fast"</i><br>
+        <br>
+        <i style="color:#3c0;font-size:40px;">"Fast Apps Fast"</i><br>
       </div>
       <img style="margin-left:200px;margin-top:-40px;" src="js/foam/demos/empire/benchmarks.png">
     </div>
