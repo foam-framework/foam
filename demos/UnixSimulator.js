@@ -6,26 +6,28 @@
      arequire('foam.ui.StringArrayView'),
      arequire('Label'),
      arequire('Timer'),
-     arequire('Developer')
+     arequire('Developer'),
+     arequire('foam.ui.Window')
   )(
    function() {
-    timer  = Timer.create({interval:20});
-    var graphs = Canvas.create({width: 400, height: 700, background:'#fff'});
-    var space  = Canvas.create({width: 450, height: 700, background:'#fff'});
-    var space2 = Canvas.create({width: 450, height: 700, background:'#fff'});
+    var w = foam.ui.Window.create({window: window, name: 'iframe'});
+    var X = w.Y;
+    timer  = Timer.create({interval:20}, X);
+    var graphs = Canvas.create({width: 400, height: 700, background:'#fff'}, X);
+    var space  = Canvas.create({width: 450, height: 700, background:'#fff'}, X);
+    var space2 = Canvas.create({width: 450, height: 700, background:'#fff'}, X);
 
-    document.writeln("<table><tr><td>");
+    // document.writeln("<table><tr><td>");
     var spaceView = space.write(document);
-    document.writeln("</td><td>");
+    // document.writeln("</td><td>");
     var graphsView = graphs.write(document);
-    document.writeln("</td><td>");
+    // document.writeln("</td><td>");
     var space2View = space2.write(document);
-    document.writeln("</td><tr></table>");
+    // document.writeln("</td><tr></table>");
 
-    document.writeln('<div style="display:inline-block">');
+    // document.writeln('<div style="display:inline-block">');
     var timerView = timer.write(document);
-    document.writeln('</div>');
-
+    // document.writeln('</div>');
 
     var sys = System.create({
       parent: space,
@@ -34,7 +36,7 @@
       numDev: 100,
       features: ['sorting', 'search', 'paging', 'printing', 'editing', 'storage', 'viewing', '...' ],
       entities: ['users', 'groups', 'processes', 'devices', 'files', 'directories', 'print queues', 'print jobs', 'cron jobs'],
-    });
+    }, X);
 
     var sys2 = System.create({
       parent: space2,
@@ -43,13 +45,15 @@
       devColor: 'red',
       features: sys.features,
       entities: sys.entities
-    });
+    }, X);
 
-    document.writeln('<table><tr><td>');
+    // document.writeln('<table><tr><td>');
     var sysView = sys.write(document);
-    document.writeln('</td><td>');
+    // document.writeln('</td><td>');
     var sys2View = sys2.write(document);
-    document.writeln('</td></tr></table>');
+    // document.writeln('</td></tr></table>');
+
+    space2.$.addEventListener('click', addPlatforms);
 
     graphs.addChildren(
       sys.codeGraph,
@@ -67,15 +71,15 @@
     sys2.architecture = System.getPrototype().mixed;
 //    sys2.architecture = foam;
 
-    Events.dynamic(function () {
+    X.dynamic(function () {
         //timer.second;
         timer.time;
       },
       function () {
         sys.tick(timer);
         sys2.tick(timer);
-        space.paint();
-        space2.paint();
+        space.children[0].paint();
+        space2.children[0].paint();
 
         if ( timer.i % 10 == 0 ) {
           sys.codeGraph.addData(sys.totalCode, 1000);
@@ -130,7 +134,7 @@
          s.y += 200;
          s.height -= 200;
          s.width -= 100;
-         Movement.animate(40000, function() {
+         X.animate(40000, function() {
             s.x = 400;
             s.y = 0;
             s.width = 20;
@@ -144,20 +148,20 @@
       dim(sys);
       dim(sys2);
       for ( var i = 0 ; i < 100 ; i++ ) {
-        setTimeout((function(i) { return function() {
+        X.setTimeout((function(i) { return function() {
           proto.parent = space2;
-          var sys = proto.clone();
+          var sys = proto.model_.create(proto);
+          sys.parent = space2;
           proto.parent = null;
           sys.architecture = sys2.architecture;
           sys.code = sys2.code;
           sys.title = i >= systems.length ? "???" : systems[i];
           space2.addChild(sys);
           dim(sys);
-          Events.dynamic(
+          X.dynamic(
             function() { timer.time; },
-            function() { sys.tick(timer); });
+            function() { sys.parent = space2; sys.tick(timer); });
         }})(i), (i+1)*2000);
       }
    }
-
   });

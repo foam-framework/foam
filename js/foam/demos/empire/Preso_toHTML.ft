@@ -9,49 +9,85 @@
     (or, 25 Demos in 25 Minutes)
     <br>
     <br>
+    <br>
     Kevin Greer, <a href="mailto:kgr@chromium.org">kgr@chromium.org</a><br>
+    <br>
     <br>
     April 26, 2015<br>
     </center>
   </slide>
   <slide>
-    <h1>Models</h1>
+    <h1>History</h1>
+    <iframe style="width:100%;height:100%;border:none;" src="./demos/UnixSimulator.html"></iframe>
+  </slide>
+
+  <slide>
+    <h1>Features and Models</h1>
+    <foam model="foam.demos.FOAMComponents"/>
+  </slide>
+
+  <slide>
+    <h1>Holistic</h1>
     <br>
+    <center>
+      <iframe style="width:95%;height:90%;border:none;" src="./demos/demo10b2.html"></iframe>
+    </center>
+  </slide>
+
+  <slide>
+    <h1>Models</h1>
     <%
       var models = [
-        foam.documentation.diagram.ModelDocDiagram,
         com.google.sweeper.Game,
         com.google.sweeper.Board,
         com.google.sweeper.Cell
       ];
-      var table = foam.ui.TableView.create({model: Model, dao: models});
+      var table  = foam.ui.TableView.create({model: Model, dao: models});
       var detail = foam.ui.DetailView.create({model: Model, data$: table.hardSelection$});
+      var jsView = foam.ui.JSView.create({model: Model, data$: table.hardSelection$});
+      table.hardSelection = models[0];
     %>
-    <table><tr><td valign="top" width="40%">    <div><foam model="com.google.sweeper.Game"/></div><br>
-<%= table %></td><td width="40%"><%= detail %></td></tr></table>
-
-    <div style="margin-left: 16px; display: flex; flex: row">
-      <%= foam.documentation.diagram.DocDiagramView.create({data: foam.documentation.diagram.ModelDocDiagram}) %>
-      <%= foam.documentation.diagram.DocDiagramView.create({data: com.google.sweeper.Game}) %>
-      <%= foam.documentation.diagram.DocDiagramView.create({data: com.google.sweeper.Board}) %>
-      <%= foam.documentation.diagram.DocDiagramView.create({data: com.google.sweeper.Cell}) %>
+    <!--
+          <center><foam model="com.google.sweeper.Game"/></center>
+     -->
+    <%= table %>
+    <div style="display:flex">
+      <div style="width: 50%;">
+        <%= detail %>
+      </div>
+      <div style="min-width: 45%;margin-left:64px;">
+         <%= jsView %>
+      </div>
     </div>
   </slide>
+
   <slide>
-    <h1>Chrome App Builder</h1>
+    <h1>Model Types</h1>
     <br>
-    <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw">
-    <br>
-<a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome Web Store Entry</a>
+    <div style="display:flex;">
+      <div style="width: 800px;margin-left:32px;">
+        <ul>
+          <li>Entities (default)</li>
+          <li>Animations</li>
+          <li>Queries (mLang)</li>
+          <li>Parsers</li>
+          <li>...</li>
+          <li><a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome App Builder</a></li>
+        </ul>
+      </div>
+     <div>
+    <center>
+    <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw" style="border: 1px solid;">
+   </center>
+     </div>
+    </div>
   </slide>
-  <slide>
-    <h1>Features</h1>
-    TODO: Insert demo5.
-  </slide>
+
   <slide>
     <h1>Views</h1>
     TODO:
   </slide>
+
   <slide>
     <h1>Data Access Objects (DAO's)</h1>
       <foam model="foam.ui.md.TwoPaneView">
@@ -71,13 +107,24 @@
         </views>
       </foam>
   </slide>
+
   <slide>
-    <h1>Holistic</h1>
-    <br>
-    <center>
-      <iframe style="width:95%;height:90%;border:none;" src="./demos/demo10b2.html"></iframe>
+    <h1>Offline</h1>
+    <ul>
+      <li>Caching</li>
+      <li>Sync</li>
+      <li>MQL</li>
+    </ul>
+  </slide>
+
+  <slide>
+    <h1>Reusable Controllers</h1>
+    <center style="margin-top:25px;">
+    <img height="530" width="500" src="/demos/democat/MBug.png">
+    <img style="margin-left: 100px;" height="530" width="500" src="/demos/democat/GMail.png">
     </center>
   </slide>
+
   <slide>
     <h1>"Language" Features</h1>
     <div style="display: flex;">
@@ -97,6 +144,26 @@
     <foam model="foam.ui.md.TwoPaneView">
 <!--  <foam model="foam.ui.SwipeAltView">   -->
       <views>
+        <viewChoice>
+          <label>Data-Binding</label>
+          <p:view><div id="%%id" style="transform:scale(2.0);transform-origin: 0 0;width:367px;margin-left:64px;">
+            <%
+              CLASS({
+                name: 'DataBindingDemo',
+                properties: [
+                  { name: 'value' },
+                ],
+                actions: [
+                  { name: 'minus', action: function() { this.value--; } },
+                  { name: 'plus',  action: function() { this.value++; } },
+                ]
+              });
+              var value = DataBindingDemo.create({value:5});
+              var gauge = foam.graphics.Gauge.create({data$: value.value$, label: 'FOAM'});
+              out(foam.ui.DetailView.create({data:value, showActions: true}), '<br>', gauge);
+            %>
+          </div></p:view>
+        </viewChoice>
         <viewChoice>
           <label>Event Handling</label>
           <p:view>
@@ -122,26 +189,6 @@
               out(foam.ui.DetailView.create({data:test.create()}));
             %>
           </p:view>
-        </viewChoice>
-        <viewChoice>
-          <label>Data-Binding</label>
-          <p:view><div id="%%id" style="width:367px;margin-left:64px;">
-            <%
-              CLASS({
-                name: 'DataBindingDemo',
-                properties: [
-                  { name: 'value' },
-                ],
-                actions: [
-                  { name: 'minus', action: function() { this.value--; } },
-                  { name: 'plus',  action: function() { this.value++; } },
-                ]
-              });
-              var value = DataBindingDemo.create({value:5});
-              var gauge = foam.graphics.Gauge.create({data$: value.value$, label: 'FOAM'});
-              out(foam.ui.DetailView.create({data:value, showActions: true}), '<br>', gauge);
-            %>
-          </div></p:view>
         </viewChoice>
         <viewChoice>
           <label>Configuration</label>
@@ -170,7 +217,7 @@
           <label>Reaction</label>
           <p:view>
             <%
-              var eyes = foam.demos.graphics.EyesCView.create({x:400, y:400, width: 800, height: 800, scaleX: 2, scaleY: 2});
+              var eyes = foam.demos.graphics.EyesCView.create({x:400, y:250, width: 800, height: 800, scaleX: 2, scaleY: 2});
               var mouse = foam.input.Mouse.create();
               eyes.watch(mouse);
               this.addInitializer(function() { mouse.connect(eyes.view.$); });
@@ -190,53 +237,12 @@
       </views>
     </foam>
   </slide>
+
   <slide>
-    <h1>Animation</h1>
+    <h1>Reactive Animation</h1>
     <foam model="foam.demos.SolarSystem"/>
   </slide>
-  <slide>
-    <h1>Live-Coding</h1>
-    <div style="transform: scale(1); transform-origin: 0 0;">
-      <foam model="foam.demos.DragonLiveCoding"/>
-    </div>
-  </slide>
-  <slide>
-    <h1>Toolability</h1>
-    <h2>(Meta-Programming)</h2>
-  </slide>
-  <slide>
-    <h1>Learning FOAM</h1>
-    <h2>Tutorial</h2>
-    <h2>TodoMVC</h2>
-    <h2>DemoCat</h2>
-  </slide>
-  <slide>
-    <h1>Offline</h1>
-    <ul>
-      <li>Caching</li>
-      <li>Sync</li>
-      <li>MQL</li>
-    </ul>
-  </slide>
-  <slide>
-    <div style="height:10px;"></div>
-    <foam model="foam.demos.MDFieldGuide"/>
-  </slide>
-  <slide>
-    <h1>GMail + MBug</h1>
-    <center style="margin-top:25px;">
-    <img height="530" width="500" src="/demos/democat/MBug.png">
-    <img style="margin-left: 100px;" height="530" width="500" src="/demos/democat/GMail.png">
-    </center>
-  </slide>
-  <slide>
-    <h1>Calculator</h1>
-    <br>
-    <br>
-    <center>
-      <iframe style="width:80%;height:70%;" src="./apps/acalc/Calc.html"></iframe>
-    </center>
-  </slide>
+
   <slide>
     <h1>Physics</h1>
     <%=
@@ -248,16 +254,62 @@
       ]})
     %>
   </slide>
+
   <slide>
-    <h1>Performance</h1>
+    <h1>Live-Coding</h1>
+    <div style="transform: scale(1); transform-origin: 0 0;">
+      <foam model="foam.demos.DragonLiveCoding"/>
+    </div>
   </slide>
+
+  <slide>
+    <h1>Toolability (meta-programming)</h1>
+      <div style="display:flex;margin-left:64px;">
+        <div>
+        <ul>
+          <li>Code Generators</li>
+          <li>Type Checking</li>
+          <li>Linting</li>
+          <li>Refactoring</li>
+          <li>Templates</li>
+          <li><a href="./apps/docs/docbrowser.html">API Browsers</a></li>
+          <li>Syntax Highlighting</li>
+          <li>Beautifiers</li>
+          <li>Minifiers</li>
+          <li>Code Coverage</li>
+          <li>Unit Tests</li>
+          <li>Editing</li>
+          <li>Code Visualization</li>
+        </ul>
+        </div>
+      <div style="margin-left:250px;">
+        <%= foam.documentation.diagram.DocDiagramView.create({data: foam.documentation.diagram.ModelDocDiagram}) %>
+      </div>
+      </div>
+  </slide>
+
+  <slide>
+    <h1>Learning FOAM</h1>
+    <h2>Tutorial</h2>
+    <h2>TodoMVC</h2>
+    <h2>DemoCat</h2>
+  </slide>
+
+  <slide>
+    <div style="height:10px;"></div>
+    <foam model="foam.demos.MDFieldGuide"/>
+  </slide>
+  <slide>
+    <h1>Calculator</h1>
+    <br>
+    <br>
+    <center>
+      <iframe style="width:80%;height:70%;" src="./apps/acalc/Calc.html"></iframe>
+    </center>
+  </slide>
+
   <slide><foam model="foam.demos.Flow"/></slide>
-  <slide>
-    <iframe style="width:100%;height:100%;" src="./demos/UnixSimulator.html"></iframe>
-  </slide>
-  <slide>
-    <iframe style="width:100%;height:100%;" src="./demos/GoogleSimulator.html"></iframe>
-  </slide>
+
   <slide>
     <foam model="foam.ui.SlidePanel" minWidth="1700" minPanelWidth="350" side="left" stripWidth="16">
       <panelView>
@@ -266,13 +318,56 @@
       <mainView>
         <div style="margin-left: 16px;">
         <h1>Summary</h1>
-        <ul>
-          <li>Reactive MVC</li>
-          <li>Views</li>
-        </ul>
+        <div style="display:flex;">
+          <div style="width:800px;">
+            <ul>
+              <li>Model-Oriented</li>
+                <li class="d1">Models are Modelled</li>
+                <li class="d1">Language-Like Features</li>
+                <li class="d1">Better Toolability</li>
+                <li class="d1">Cross-Language D.R.Y.-ness</li>
+              <li>Feature-Oriented</li>
+                <li class="d1">Reactive MVC</li>
+                  <li class="d2">Reactive</li>
+                    <li class="d3">Observerless</li>
+                    <li class="d3">Animation</li>
+                    <li class="d3">Physics</li>
+                    <li class="d3">Live-Coding</li>
+                  <li class="d2">Models</li>
+                    <li class="d3">DAO's</li>
+                      <li class="d4">Technology Independent</li>
+                      <li class="d4">Offline</li>
+                  <li class="d2">Views</li>
+                    <li class="d3">Technology Independent</li>
+                    <li class="d3">Material Design</li>
+                    <li class="d3">Mobile</li>
+                  <li class="d2">Reusable Controllers</li>
+                <li class="d1">Technology Independent</li>
+                  <li class="d2">Node.js</li>
+                  <li class="d2">Java</li>
+              <li><i style="color:#33f;">Exponentially More Efficient</i></li>
+            </ul>
+          </div>
+            <iframe style="border:none;width:100%;height:100%;" src="./demos/GoogleSimulator.html"></iframe>
+        </div>
         </div>
       </mainView>
     </foam>
   </slide>
-<!--  <slide><foam model="foam.demos.empire.Slides"/></slide> -->
+
+  <slide>
+    <h1>To Summarize the Summary of the Summary: <font color="red">It's About Performance</font></h1>
+    <br><br>
+    <div style="display:flex;">
+      <div style="margin-left:48px;">
+        <i style="color:red;">Performance</i> is <font color="#33f">F</font><font color="#f00">O</font><font color="#fc0">A</font><font color="#3c0">M</font>'s Value Proposition<br>
+        Application Performance<br>
+        Developer Performance<br>
+        <br>
+        <i style="color:#3c0;font-size:40px;">"Fast Apps Fast"</i><br>
+      </div>
+      <img style="margin-left:200px;margin-top:-40px;" src="js/foam/demos/empire/benchmarks.png">
+    </div>
+  </slide>
+
 </slides>

@@ -95,10 +95,10 @@ CLASS({
     function CSS() {/*
       slides .card-grid .card {
         box-shadow: 0 5px 15px #aaa;
-        height: 16.4%;
+        height: 17%;
         overflow: hidden;
         padding: 2px;
-        width: 17%;
+        width: 17.5%;
         min-width: initial;
       }
       slides .card-grid .card .card-inset {

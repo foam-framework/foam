@@ -39,6 +39,13 @@ CLASS({
         position: relative;
 
       }
+      div.clear {
+        clear: both;
+      }
+      div.introduction {
+        border-top: 0.1em solid black;
+        border-bottom: 0.1em solid black;
+      }
 
       .outermost {
         width: 100%;
@@ -182,93 +189,6 @@ CLASS({
         border-bottom: none;
       }
 
-      div.members {
-        margin-top: 1em;
-        padding-left: 2em;
-      }
-      div.memberList {
-        padding-left: 2em;
-      }
-
-      div.chapters div.memberList {
-        padding-left: 0;
-      }
-
-      div.inherited {
-        color: #333333;
-      }
-
-      p.browse-list-entry {
-        font-size:100%;
-        font-weight: bold;
-        line-height: 150%
-      }
-
-      span.docLink {
-        cursor: pointer;
-        color: #000077;
-        border-bottom: 0.1em dotted #999;
-      }
-
-      span.docLinkNoDocumentation {
-        color: #770000;
-
-      }
-
-      div.model-info-block {
-        padding: 1em;
-        margin: 1em 0 1em 0;
-      }
-      div.introduction {
-        border-top: 0.1em solid black;
-        border-bottom: 0.1em solid black;
-      }
-      div.model-info-block p.note {
-        font-size:105%;
-      }
-      div.model-info-block p.important {
-        font-size:105%;
-        font-weight:bold;
-      }
-      div.clear {
-        clear: both;
-      }
-
-      .feature-row {
-        //border-top: 0.1em solid grey;
-        margin-top: 1em;
-        margin-bottom: 1em;
-      }
-
-      p.inheritance-info {
-        font-size: 90%;
-        padding-left: 1em;
-      }
-
-      .feature-type-heading {
-        font-weight: bold;
-        font-size: 150%;
-      }
-      .feature-heading {
-        font-weight: bold;
-        font-size: 125%;
-      }
-      .feature-sub-heading {
-        font-weight: bold;
-        font-size: 100%;
-      }
-      .feature-type {
-        float:right;
-      }
-
-      .light {
-        color: #444;
-      }
-
-      div.diagram {
-        padding-top: 1em;
-        float: right;
-      }
 
     */},
     function toHTML() {/*
