@@ -20,36 +20,100 @@ CLASS({
   name: 'TabbedViewChoiceView',
   extendsModel: 'foam.ui.DetailView',
   requires: [
-    'foam.ui.SlidePanel',
-    'foam.ui.ViewChoicesView',
-    'foam.ui.ViewFactoryView'
+    'foam.ui.md.HaloView',
   ],
-
+  help: 'A view that typically takes a ViewChoiceController and renders the ' +
+      'labels of the ViewChoices as tabs and highlights the selected choice.',
   properties: [
     {
-      name: 'data',
-      postSet: function(_, newVal) {
-        if (newVal.choice === undefined) {
-          newVal.choice = 0;
-        }
-        this.data.addPropertyListener('viewFactory', this.dismissPanel);
-      }
+      name: 'className',
+      defaultValue: 'TabbedViewChoiceView',
+    },
+    {
+      name: 'preferredHeight',
+      defaultValue: 54,
     },
   ],
-
+  methods: {
+    setCurrentLinePosition: function() {
+      var line = document.getElementById(this.id + '-line');
+      if (line) {
+        var selectedElement = this.$.children[this.data.choice];
+        line.style.left = selectedElement.offsetLeft;
+        line.style.width = selectedElement.offsetWidth + 'px';
+      }
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.setCurrentLinePosition();
+      var self = this;
+      var destructor = Events.dynamic(
+          function() { self.data.choice; },
+          this.setCurrentLinePosition.bind(this));
+      this.addDestructor(destructor.destroy.bind(destructor));
+    },
+  },
   templates: [
     function CSS() {/*
-      .tabbedviewchoiceview-container .viewchoiceview-item {
-        display: inline-block;
+      .TabbedViewChoiceView {
+        white-space: nowrap;
+        background-color: #36474F;
       }
+      .TabbedViewChoiceView .item:hover,
+      .TabbedViewChoiceView .item.item-selected {
+        color: white;
+      }
+      .TabbedViewChoiceView .item {
+        -webkit-user-select: none;
+        color: #B2B8BB;
+        cursor: pointer;
+        display: inline-block;
+        padding: 20px;
+        position: relative;
+      }
+      .TabbedViewChoiceView .line-container {
+        height: 3px;
+      }
+      .TabbedViewChoiceView .line {
+        background-color: #00A7F2;
+        display: inline-block;
+        height: 100%;
+        position: relative;
+        transition: left 0.5s cubic-bezier(0.35, 0, 0.25, 1), width 0.225s cubic-bezier(0.35, 0, 0.25, 1);
+      }
+      .TabbedViewChoiceView .halo {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+    */},
+    function choiceButton(_, i, choice) {/*
+      <%
+        var id = this.on('click', function() { self.data.choice = i; });
+        this.setClass('item-selected', function() {
+          return self.data.choice == i;
+        }, id);
+      %>
+      <div id="<%= id %>" class="item">
+        <%= choice.label.toUpperCase() %>
+        <%= this.HaloView.create({
+          className: 'halo',
+          color: 'rgb(241, 250, 65)',
+          finishAlpha: 0,
+          pressedAlpha: 0.2,
+          recentering: false,
+          startAlpha: 0.2,
+        }) %>
+      </div>
     */},
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        $$data{
-          model_: 'foam.ui.ViewChoicesView',
-          className: 'tabbedviewchoiceview-container',
-        }
-        $$viewFactory
+        <% for ( var i = 0, choice; choice = this.data.views[i]; i++ ) {
+             this.choiceButton(out, i, choice);
+         } %>
+        <div class='line-container'>
+          <span class="line" id="%%id-line"></span>
+        </div>
       </div>
     */}
   ]

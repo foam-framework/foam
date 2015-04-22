@@ -78,6 +78,7 @@ CLASS({
     {
       name: 'view',
       type: 'foam.ui.View',
+      adapt: function(_, v) { return v && v.toView_ ? v.toView_() : v; },
       documentation: function() {/*
         The new sub-$$DOC{ref:'foam.ui.View'} generated for the given $$DOC{ref:'Property'}.
       */}
@@ -130,11 +131,13 @@ CLASS({
         ret(v);
       }
       else if ( viewName.factory_ ) {
-        var v = this.X.lookup(viewName.factory_).create(viewName, this.X).toView_();
-        var vId = v.id;
-        v.copyFrom({__proto__: prop, view: undefined});
-        v.id = vId;
-        ret(v);
+        arequire(viewName.factory_, this.X)(function(m) {
+          var v = m.create(viewName, this.X).toView_();
+          var vId = v.id;
+          v.copyFrom({__proto__: prop, view: undefined});
+          v.id = vId;
+          ret(v);
+        }.bind(this));
       }
       else if ( typeof viewName === 'function' ) ret(viewName(prop, this));
 

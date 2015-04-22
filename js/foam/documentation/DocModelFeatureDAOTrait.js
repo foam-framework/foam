@@ -29,65 +29,92 @@ CLASS({
   ],
 
   imports: [
-    '_DEV_ModelDAO', 
-    'masterModelList', 
+    '_DEV_ModelDAO',
+    'masterModelList',
     'featureDAO',
-    'featureDAOModelsLoading' 
+    'featureDAOModelsLoading',
+    'documentViewRef'
   ],
   exports: [
     'featureDAO',
     'modelDAO',
     'featureDAOModelsLoading',
     'subModelDAO',
-    'traitUserDAO', 
+    'traitUserDAO',
     '_DEV_ModelDAO',
-    'masterModelList'
+    'masterModelList',
+    'documentViewRef'
   ],
 
   properties: [
     {
+      name: 'featuresToLoad',
+      factory: function() {
+        return [ 'properties',
+          'methods',
+          'actions',
+          'listeners',
+          'models',
+          'relationships',
+          'templates'];
+      }
+    },
+    {
+      name: 'processBaseModels',
+      model_: 'BooleanProperty',
+      defaultValue: true
+    },
+    {
+      name: 'documentViewRef',
+      factory: function() {
+         return this.SimpleValue.create(
+           this.DocRef.create({ ref: this.data ? this.data.id : "" },
+             this.Y.sub({ documentViewRef: null })));
+      }
+    },
+    {
       name: '_DEV_ModelDAO',
-      factory: function() { 
-        return this.FindFallbackDAO.create({delegate: this.masterModelList, fallback: this.X.ModelDAO}); 
+      lazyFactory: function() {
+        return this.FindFallbackDAO.create({delegate: this.masterModelList, fallback: this.X.ModelDAO});
       }
     },
     {
       name: "masterModelList",
-      factory: function() {
+      lazyFactory: function() {
         return this.MDAO.create({model:Model});
       }
     },
     {
       name: 'featureDAO',
       model_: 'foam.core.types.DAOProperty',
-      factory: function() {
+      lazyFactory: function() {
         return this.MDAO.create({model:this.DocFeatureInheritanceTracker, autoIndex:true});
       }
     },
     {
       name: 'featureDAOModelsLoading',
-      factory: function() {
-        return {};
+      lazyFactory: function() {
+        return { };
       }
     },
     {
       name: 'modelDAO',
       model_: 'foam.core.types.DAOProperty',
-      factory: function() {
+      lazyFactory: function() {
         return this.MDAO.create({model:this.DocModelInheritanceTracker, autoIndex:true});
       }
     },
     {
       name: 'subModelDAO',
       model_: 'foam.core.types.DAOProperty',
-      factory: function() {
+      lazyFactory: function() {
         return this.MDAO.create({model:this.Model, autoIndex:true});
       }
     },
     {
       name: 'traitUserDAO',
       model_: 'foam.core.types.DAOProperty',
-      factory: function() {
+      lazyFactory: function() {
         return this.MDAO.create({model:this.Model, autoIndex:true});
       }
     }
@@ -113,59 +140,50 @@ CLASS({
         return;
       }
 
-      if ( this.featureDAOModelsLoading[data.id] ) {
-        // someone is already loading this model for us!
-        return;
-      }
       console.log("Generating FeatureDAO...", this.data.id );
 
-      this.featureDAO.removeAll();
-      this.modelDAO.removeAll();
+//       this.featureDAO.removeAll();
+//       this.modelDAO.removeAll();
       this.subModelDAO.removeAll();
       this.traitUserDAO.removeAll();
-      this.featureDAOModelsLoading = {};
-      this.featureDAOModelsLoading[data.id] = true;
+//      this.featureDAOModelsLoading = {};
 
       // Run through the features in the Model definition in this.data,
       // and load them into the feature DAO. Passing [] assumes we don't
       // care about other models that extend this one. Finding such would
       // be a global search problem.
-      this.Y.setTimeout(function() {
-        this.agetInheritanceMap(this.loadFeaturesOfModel, data, { data: data });
-      }.bind(this), 20);
-      
-      this.Y.setTimeout(function() {
-          this.findSubModels(data);
-          this.findTraitUsers(data);
-      }.bind(this), 500);
-      this.Y.setTimeout(function() {
-          this.findSubModels(data);
-          this.findTraitUsers(data);
-      }.bind(this), 8000);
+      if ( this.processBaseModels ) {
+        this.Y.setTimeout(function() {
+          this.agetInheritanceMap(this.loadFeaturesOfModel, data, { data: data });
+        }.bind(this), 20);
+      } else {
+        this.loadFeaturesOfModel( { data: data } );
+      }
+
+      // TODO(jacksonic): relocate submodels and trait users to a different model
+//       this.Y.setTimeout(function() {
+//           this.findSubModels(data);
+//           this.findTraitUsers(data);
+//       }.bind(this), 500);
 
       //console.log("  FeatureDAO complete.", Date.now() - startTime);
 
       //this.debugLogFeatureDAO();
     },
-    
+
     agetInheritanceMap: function(ret, model, map) {
       // find all base models of the given model, put into list
-//       this._DEV_ModelDAO.where(IN(Model.ID, model.traits)).select({
-//           put: function(m) {
-//             map[m.id] = m;
-//           },
-//           eof: function() {
       var findFuncs = [];
       model.traits.forEach(function(t) {
-        findFuncs.push(function(ret) { 
+        findFuncs.push(function(ret) {
           this._DEV_ModelDAO.find(t, {
             put: function(m) { map[m.id] = m; ret && ret(); },
             error: function() { console.warn("DocModelFeatureDAOTrait could not load trait ", t); ret && ret(); }
-          });  
-        }.bind(this)); 
+          });
+        }.bind(this));
       }.bind(this));
       // runs the trait finds first, and when they are done recurse to the next ancestor
-      apar.apply(this, findFuncs)(function() {      
+      apar.apply(this, findFuncs)(function() {
         if ( model.extendsModel ) {
           this._DEV_ModelDAO.find(model.extendsModel, {
               put: function(ext) {
@@ -173,12 +191,12 @@ CLASS({
                 this.agetInheritanceMap(ret, ext, map);
               }.bind(this),
               error: function() { console.warn("DocModelFeatureDAOTrait could not load model ", ext); ret && ret(map); }
-          }); 
+          });
         } else {
           ret && ret(map); // no more extendsModels to follow, finished
         }
       }.bind(this));
-      
+
     },
 
 
@@ -197,7 +215,7 @@ CLASS({
     },
 
     findSubModels: function(data) {
-      if ( ! this.Model.isInstance(data) ) return;     
+      if ( ! this.Model.isInstance(data) ) return;
       this.findDerived(data);
     },
 
@@ -212,7 +230,7 @@ CLASS({
         }.bind(this)
       ));
     },
-    
+
     destroy: function( isParentDestroyed ) {
       if ( isParentDestroyed ) {
         this.featureDAO = null;
@@ -222,15 +240,15 @@ CLASS({
       }
       this.SUPER(isParentDestroyed);
     }
-    
+
 
   },
-  
+
   listeners: [
     {
       name: 'findDerived',
       whenIdle: true,
-      code: function(extendersOf) { 
+      code: function(extendersOf) {
         this._DEV_ModelDAO.select(MAP(
           function(obj) {
             if ( obj.extendsModel == extendersOf.id ) {
@@ -253,7 +271,7 @@ CLASS({
           </p>
           */
         var model = map.data;
-          
+
         if (typeof previousExtenderTrackers == 'undefined') {
           previousExtenderTrackers = [];
         }
@@ -266,15 +284,21 @@ CLASS({
         var self = this;
         var newModelTr = this.DocModelInheritanceTracker.create();
         newModelTr.model = model.id;
-        this.featureDAOModelsLoading[model.id] = true;
-  
-        [ 'properties', 
-          'methods',
-          'actions',
-          'listeners',
-          'models',
-          'relationships',
-          'templates'].forEach(function(modProp) {
+        // track what is loading, so child daos don't load it again needlessly
+        if (   ! this.featureDAOModelsLoading[model.id]
+            || ! this.featureDAOModelsLoading[model.id].loading ) {
+          this.featureDAOModelsLoading[model.id] = {
+            loading: true,
+            inheritanceLevel: -1,
+            features: {}
+          };
+        }
+
+        this.featuresToLoad.forEach(function(modProp) {
+          // check if someone else has processed the feature, then indicate we have process this feature
+          if ( self.featureDAOModelsLoading[model.id].features[modProp] ) return;
+          self.featureDAOModelsLoading[model.id].features[modProp] = true;
+
           var modPropVal = modelDef[modProp];
           if ( Array.isArray(modPropVal) ) { // we only care to check inheritance on the array properties
             modPropVal.forEach(function(feature) {
@@ -288,7 +312,7 @@ CLASS({
                       fromTrait: isTrait
                 });
                 self.featureDAO.put(featTr);
-  
+
                 // for the models that extend this model, make sure they have
                 // the feature too, if they didn't already have it declared (overridden).
                 // isTrait is not set, as we don't distinguish between inherited trait features and
@@ -312,8 +336,8 @@ CLASS({
             });
           }
         });
-  
-        if ( ! isTrait ) {
+
+        if ( ! isTrait && this.processBaseModels ) {
           // Check if we extend something, and recurse.
           if (!model.extendsModel) {
             newModelTr.inheritanceLevel = 0;
@@ -326,7 +350,7 @@ CLASS({
               { __proto__: map, data: map[model.extendsModel] },
               previousExtenderTrackers.slice(0));
           }
-  
+
           // Process traits with the same inheritance level we were assigned, since they appear first in the
           // apparent inheritance chain before our extendsModel.
           if (model.traits && model.traits.length > 0) {
@@ -340,12 +364,13 @@ CLASS({
             }.bind(this));
           }
         }
-  
+
         // the tracker is now complete
         this.modelDAO.put(newModelTr);
+        this.featureDAOModelsLoading[model.id].inheritanceLevel = newModelTr.inheritanceLevel;
         return newModelTr.inheritanceLevel;
       }
-        
+
     }
   ]
 

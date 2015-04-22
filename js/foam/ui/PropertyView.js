@@ -17,8 +17,8 @@
 
 
 CLASS({
-  name: 'PropertyView',
   package: 'foam.ui',
+  name: 'PropertyView',
   extendsModel: 'foam.ui.BasePropertyView',
 
   documentation: function() {/*
@@ -61,7 +61,5 @@ CLASS({
     initHTML: function() {
       this.view && this.view.initHTML();
     }
-  },
-
+  }
 });
-

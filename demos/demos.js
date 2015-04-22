@@ -16,10 +16,10 @@
  */
 
 CLASS({
-  name:  'System',
+  name: 'System',
 
   requires: [ 'foam.input.Mouse' ],
-  
+
   properties: [
     {
       name:  'parent',
@@ -141,7 +141,12 @@ CLASS({
     init: function(values) {
       this.SUPER(values);
 
+      this.code = [];
+      this.devs = [];
+
       this.parent.addChild(this);
+
+      this.l = Label.create({parent: this.parent, align: 'left', font:'18pt Arial', x:20, y:18});
 
       this.mouse.connect(this.parent.$);
 
@@ -151,9 +156,6 @@ CLASS({
         this.selectedX = Math.floor((this.mouse.x-this.x)/this.width*(this.features.length+1));
         this.selectedY = Math.floor((this.mouse.y-this.y-25)/(this.height-25)*(this.entities.length+1));
       }.bind(this));
-
-      this.code = [];
-      this.devs = [];
 
       var tmp = this.numDev;
       this.numDev = 0;
@@ -170,8 +172,7 @@ CLASS({
       this.utilityGraph = Graph.create({x:20, y:260, width:360, height:200, style:'Line', graphColor:null, capColor: this.devColor});
       this.efficiencyGraph = Graph.create({x:20, y:500, width:360, height:200, style:'Line', graphColor:null, capColor: this.devColor});
 
-      this.l = Label.create({parent: this.parent, align: 'left', font:'18pt Arial', x:20, y:18});
-      Events.follow(this.propertyValue('title'), this.l.propertyValue('text'));
+//      Events.follow(this.propertyValue('title'), this.l.propertyValue('text'));
     },
 
     totalUtility: function() {
@@ -218,6 +219,7 @@ CLASS({
     },
 
     tick: function(timer) {
+        if ( ! this.devs ) return;
       //        for ( var i = 0 ; i < this.devs.length ; i++ ) this.architecture(this, this.devs[i]);
       for ( var i = 0 ; i < this.devs.length ; i++ ) if ( i % 20 == timer.i % 20 ) this.architecture(this, this.devs[i]); else this.addCode(this.devs[i].f, this.devs[i].e, 0.3);
     },
@@ -259,10 +261,10 @@ CLASS({
         4, function() {
           system.moveDev(dev, dev.f, dev.e);
         },
-        5, function() {
+        20, function() {
           system.moveDev(dev, 0, ny);
         },
-        90, function() {
+        75, function() {
           system.moveDev(dev, nx, 0);
         });
 
@@ -298,7 +300,7 @@ CLASS({
     },
 
     paint: function() {
-      if ( ! this.parent ) return;
+      if ( ! this.parent || ! this.devs ) return;
       var c = this.parent.canvas;
       var w = this.parent.width-15;
       var h = this.parent.height-28;
@@ -315,6 +317,7 @@ CLASS({
       c.translate(this.x, this.y);
       c.scale(this.width/this.parent.width, this.height/this.parent.height);
 
+      this.l.text = this.title;
       this.l.paint();
 
       c.translate(0, 25); // make space for the title

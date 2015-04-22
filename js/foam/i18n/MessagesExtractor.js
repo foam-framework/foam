@@ -31,6 +31,18 @@ CLASS({
       model_: 'foam.core.types.DAOProperty',
       name: 'dao',
       lazyFactory: function() { return []; }
+    },
+    {
+      name: 'messageBundleFactory',
+      lazyFactory: function() {
+        return this.MessageBundle.create;
+      }
+    },
+    {
+      name: 'messageFactory',
+      lazyFactory: function() {
+        return this.Message.create;
+      }
     }
   ],
 
@@ -40,7 +52,7 @@ CLASS({
       code: function(model, msg) {
         var modelPrefix = model.translationHint ?
             model.translationHint + ' ' : '';
-        var i18nMsg = this.Message.create({
+        var i18nMsg = this.messageFactory({
           id: this.getMessageKey(model, msg),
           name: msg.name,
           value: msg.value,
@@ -60,7 +72,7 @@ CLASS({
         if ( action.translationHint ) {
           if ( action.label ) {
             key = this.getActionTextLabelKey(model, action);
-            i18nMsg = this.Message.create({
+            i18nMsg = this.messageFactory({
               id: this.getActionTextLabelKey(model, action),
               name: action.name + 'Label',
               value: action.label,
@@ -72,7 +84,7 @@ CLASS({
           }
           if ( action.speechLabel ) {
             key = this.getActionSpeechLabelKey(model, action);
-            i18nMsg = this.Message.create({
+            i18nMsg = this.messageFactory({
               id: this.getActionSpeechLabelKey(model, action),
               name: action.name + 'SpeechLabel',
               value: action.speechLabel,
@@ -115,12 +127,18 @@ CLASS({
     {
       name: 'abuildMessages_',
       code: function(ret) {
-        var msgs = this.MessageBundle.create();
+        var msgs = this.messageBundleFactory();
         var arr = msgs.messages;
         this.dao.select({
           put: function(msg) { arr.push(msg); }.bind(this),
           eof: function() { ret(msgs); }
         });
+      }
+    },
+    {
+      name: 'ai18n',
+      code: function(format, ret) {
+        throw 'ERROR: i18n output format "' + format + '" not recognized';
       }
     }
   ]

@@ -42,5 +42,14 @@ CLASS({
         }.bind(this));
       }
     }
-  ]
+  ],
+
+  methods: {
+    shouldDestroy: function() { return false; },
+
+    destroy: function() {
+      this.SUPER();
+      this.cview && this.cview.destroy();
+    }
+  }
 });

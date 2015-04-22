@@ -26,66 +26,6 @@ CLASS({
 
   traits: ['foam.input.touch.VerticalScrollNativeTrait'],
 
-  models: [
-    {
-      name: 'FlatButton',
-      extendsModel: 'foam.ui.md.FlatButton',
-
-      properties: [
-        {
-          name: 'tagName',
-          defaultValue: 'popup-choice-view-flat-button'
-        }
-      ],
-
-      templates: [
-        function toInnerHTML() {/*
-            <%= this.halo %>
-            <span>
-            <% if ( this.action && this.action.label ) { %>
-              {{this.action.label}}
-            <% } else if ( this.action ) { %>
-              {{this.action.name}}
-            <% } else if ( this.inner ) { %>
-              <%= this.inner() %>
-            <% } else { %>this.data<% } %>
-            </span>
-            <%
-            this.on('click', function() {
-                this.action.callIfEnabled(this.X, this.data);
-            }.bind(this), this.id);
-            this.setClass('hidden', function() { return !!self.isHidden; }, this.id);
-            %>
-        */},
-        function CSS() {/*
-          popup-choice-view-flat-button {
-            padding: 10px 16px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-            border-radius: 2px;
-            cursor: pointer;
-            height: 48px;
-          }
-
-          .hidden {
-            display: none;
-          }
-
-          .halo  {
-            position: absolute;
-            left: 0;
-            top: 0;
-          }
-
-
-        */}
-      ]
-    }
-  ],
-
   documentation: function() {/* This is very closely related to
      $$DOC{ref:'foam.ui.PopupChoiceView'}. Refactor them! */},
   properties: [
@@ -140,8 +80,8 @@ CLASS({
 
         self.opened = true;
 
-        var pos = this.rectOnPage(this.$);
-        view.open(this.index, pos);
+        var pos = this.$.getBoundingClientRect();
+        view.open(this.index, this.$);
         var s = this.X.window.getComputedStyle(view.$);
 
         function mouseMove(evt) {
@@ -157,14 +97,15 @@ CLASS({
 
           if ( view.$.contains(evt.target) ) return;
 
+          var popPos = view.$.getBoundingClientRect();
           var margin = 50;
-          var left = view.$.offsetLeft - margin;
-          var right = view.$.offsetWidth + left + 2*margin;
-          var top = view.$.offsetTop - margin;
-          var bottom = view.$.offsetHeight + top + 2*margin;
+          var left = popPos.left - margin;
+          var right = popPos.right + margin;
+          var top = popPos.top - margin;
+          var bottom = popPos.bottom + margin;
 
-          if ( (left < evt.pageX && evt.pageX < right) &&
-              (top < evt.pageY && evt.pageY < bottom) )
+          if ( (left < evt.clientX && evt.clientX < right) &&
+              (top < evt.clientY && evt.clientY < bottom) )
             return;
 
           remove();
@@ -222,19 +163,6 @@ CLASS({
         this.data$.addListener(this.updateListener);
       }
 
-//       out += '<span class="action">';
-//       var action = this.model_.getAction('open').clone();
-//       action.iconUrl = this.iconUrl;
-//       action.labelFn = function(action) { action.label = this.text; }.bind(this);
-//       var button = this.FlatButton.create({
-//         tagName: 'popup-choice-view-flat-button',
-//         action: action
-//       }).toView_();
-
-//       this.addSelfDataChild(button);
-
-//       out += button.toHTML();
-//       out += '</span>';
 
       out += "<div>"+this.createTemplateView('text', { mode:'read-only' }).toHTML()+"</div>";
 
@@ -253,6 +181,7 @@ CLASS({
         align-content: flex-start;
         padding: 16px;
         cursor: pointer;
+        position: relative;
       }
     */}
   ]

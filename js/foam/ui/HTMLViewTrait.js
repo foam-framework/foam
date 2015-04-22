@@ -454,7 +454,7 @@ CLASS({
         for ( var i = 0 ; i < this.children.length ; i++ ) {
           // console.log(i, 'init child: ' + this.children[i]);
           try {
-            this.children[i].initHTML();
+            this.children[i].initHTML && this.children[i].initHTML();
           } catch (x) {
             console.log('Error on View.child.initHTML', x, x.stack);
           }

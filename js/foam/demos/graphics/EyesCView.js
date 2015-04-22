@@ -21,7 +21,7 @@ CLASS({
   label: 'Eyes',
 
   extendsModel: 'foam.graphics.CView',
-  
+
   requires: [ 'foam.demos.graphics.EyeCView' ],
 
   properties: [
@@ -42,7 +42,7 @@ CLASS({
       }
     },
     { name: 'width',  defaultValue: 300 },
-    { name: 'height', defaultValue: 200 },
+    { name: 'height', defaultValue: 200 }
   ],
 
   methods: {

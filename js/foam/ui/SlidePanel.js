@@ -307,8 +307,10 @@ CLASS({
     initHTML: function() {
       this.state = this.state = this.CLOSED;
 
-      this.gestureManager.install(this.dragGesture);
-      this.gestureManager.install(this.tapGesture);
+      if (this.gestureManager) {
+        this.gestureManager.install(this.dragGesture);
+        this.gestureManager.install(this.tapGesture);
+      }
 
       // Resize first, then init the outer view, and finally the panel view.
       this.X.window.addEventListener('resize', this.onResize);

@@ -19,7 +19,7 @@ CLASS({
   name: 'DocDiagramView',
   extendsModel: 'foam.graphics.CViewView',
   package: 'foam.documentation.diagram',
-  
+
   requires: ['foam.documentation.diagram.ModelDocDiagram',
              'foam.documentation.diagram.ExtendsDiagram',
              'foam.documentation.diagram.TraitListDiagram',
@@ -27,12 +27,27 @@ CLASS({
              'foam.graphics.diagram.Margin',
              'foam.graphics.diagram.AutoSizeDiagramRoot',
              'foam.graphics.Spacer'],
-  
+
+  imports: ['masterModelList'],
+  exports: ['masterModelList'],
+
   documentation: function() {/*
     A view that renders one model's diagram.
   */},
 
   properties: [
+    {
+      name: 'masterModelList',
+      lazyFactory: function() {
+        var list = [];
+        [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
+          for ( var key in collection ) {
+            list.push(this.X.lookup(key));
+          };
+        }.bind(this));
+        return list;
+      }
+    },
     {
       name: 'autoSizeLayout',
       type: 'foam.graphics.diagram.AutoSizeDiagramRoot',
@@ -80,7 +95,7 @@ CLASS({
       name: 'traitDiagram',
       factory: function() {
         return this.TraitListDiagram.create({ data$: this.data$, sourceDiag: this.modelDiagram });
-      }     
+      }
     },
     {
       name: 'modelDiagram',
@@ -106,7 +121,7 @@ CLASS({
       this.mainLayout.addChild(this.Spacer.create());
       this.mainLayout.addChild(this.modelDiagram.diagramItem);
       this.mainLayout.addChild(this.Spacer.create());
-      
+
       this.cview = this.autoSizeLayout;
       this.autoSizeLayout.addChild(this.outerMargin);
       this.outerMargin.addChild(this.outerLayout);
@@ -114,7 +129,7 @@ CLASS({
       this.outerLayout.addChild(this.extendsLayout);
       this.extendsLayout.addChild(this.extendsModelLayout);
       this.extendsLayout.addChild(this.mainLayout);
-            
+
       Events.follow(this.modelDiagram.diagramItem.verticalConstraints.preferred$, this.traitDiagram.spacing$);
     },
 
@@ -129,18 +144,18 @@ CLASS({
       this.SUPER();
       // Crude delay to let the featureDAO children populate before painting.
       // TODO(jacksonic): implement a better way for children to notify of async operations
-      X.setTimeout(function() { 
+      X.setTimeout(function() {
         this.autoSizeLayout.suspended = false;
         this.autoSizeLayout.paint();
-      }.bind(this), 1000);  
+      }.bind(this), 300);
     },
-    
+
     destroy: function( isParentDestroyed ) {
       this.SUPER(isParentDestroyed);
       this.autoSizeLayout.suspended = true;
-      
+
     }
-    
+
   }
 });
 
