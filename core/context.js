@@ -37,7 +37,7 @@ function lookup(key) {
     var path = key.split('.');
     for ( var i = 0 ; root && i < path.length ; i++ ) root = root[path[i]];
     ret = root;
-    cache[key] = ret ? ret : null;
+    cache[key] = ret ? ret : null; // implements negative-caching
   }
 
   return ret;
