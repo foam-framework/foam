@@ -132,10 +132,61 @@
       <foam model="foam.demos.pong.Pong"/>
     </div>
   </slide>
+
   <slide>
     <h1>Reactive Programming</h1>
-    <foam model="foam.demos.ReactiveClocks"/>
+    <!-- <foam model="foam.demos.ReactiveClocks"/> -->
+          <code-sample>
+            <title>Reactive Programming</title>
+            <source>
+              <code-snippet>
+                <title>Value Binding</title>
+                <src language="javascript">
+                  <code>
+                    var canvas = foam.graphics.CView.create();
+                    var mouse  = foam.input.Mouse.create();
+                    var clock  = foam.demos.ClockView.create();
+
+                    canvas.addChild(clock);
+
+                    clock.x$ = mouse.x$;
+                    clock.y$ = mouse.y$;
+
+                    canvas.write(X.document);
+//                    mouse.connect(canvas.view.$);
+                  </code>
+                </src>
+              </code-snippet>
+            </source>
+            <!--
+            <source>
+              <code-snippet>
+                <title>Javascript</title>
+                <src language="javascript">
+                  <code>
+                  </code>
+                </src>
+              </code-snippet>
+            </source>
+            -->
+            <source>
+              <code-snippet>
+                <title>HTML</title>
+                <src language="html">
+                  <code>
+                    <% var canvas = 'foobar'; %>
+                    <%= canvas %>
+                  </code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
   </slide>
+
+
+
+
+
   <slide>
     <h1>Architecture</h1>
     <div style="transform:scale(0.6);transform-origin: 0 0;"><foam model="foam.demos.ArchitectureDiagram"/></div>
@@ -147,7 +198,7 @@
       <views>
         <viewChoice>
           <label>Data-Binding</label>
-          <p:view><div id="%%id" style="transform:scale(2.0);transform-origin: 0 0;width:367px;margin-left:64px;">
+          <p:view><div id="%%id" style="transform:scale(1.2);transform-origin: 0 0;width:367px;margin-left:64px;">
             <%
               CLASS({
                 name: 'DataBindingDemo',

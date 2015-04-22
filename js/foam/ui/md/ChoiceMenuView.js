@@ -174,18 +174,20 @@ CLASS({
         //TODO: animate
       }
 
-      var finalRect = { top:    0 - (slotsAbove * this.itemHeight) -2 - this.vMargin,
-                        bottom: startFromClientRect.height + (slotsBelow * this.itemHeight) +2 + this.vMargin,
+      var bodyRect = this.X.document.body.getBoundingClientRect();
+
+      var finalRect = { top:    -bodyRect.top + startFromClientRect.top - (slotsAbove * this.itemHeight) -2 - this.vMargin,
+                        bottom: -bodyRect.top + startFromClientRect.top + startFromClientRect.height + (slotsBelow * this.itemHeight) +2 + this.vMargin,
                         height: menuCount * this.itemHeight +4 + this.vMargin*2,
-                        left: 0 -2,
-                        right: startFromClientRect.width +2,
+                        left: -bodyRect.left + startFromClientRect.left -2,
+                        right: -bodyRect.left + startFromClientRect.left + startFromClientRect.width +2,
                         width: startFromClientRect.width + this.hMargin*2 +4 };
 
 //console.log("Menu start: ", startFromClientRect, " final ", finalRect, " selected offset: ", selectedOffset);
 
       // add to body html
       if ( this.$ ) this.$.outerHTML = '';  // clean up old copy, in case of rapid re-activation
-      sourceElement.insertAdjacentHTML('beforeend', this.toHTML());
+      this.X.document.body.insertAdjacentHTML('beforeend', this.toHTML());
 
       this.initializePosition(startFromClientRect, finalRect);
       this.scrollToIndex(itemForFirstSlot);
