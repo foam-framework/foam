@@ -150,21 +150,10 @@ CLASS({
       }
       var out = '';
 
-      if ( this.showValue ) {
-        var id = this.nextID();
-        out += '<span id="' + id + '" class="value">' + ((this.choice && this.choice[1]) || '') + '</span>';
-
-        // Remove any previous data$ listener for this popup.
-        if ( this.updateListener ) this.data$.removeListener(this.updateListener);
-        this.updateListener = function() {
-          var e = this.X.$(id);
-          if ( e ) e.innerHTML = this.choice[1];
-        }.bind(this);
-        this.data$.addListener(this.updateListener);
-      }
-
-
-      out += "<div>"+this.createTemplateView('text', { mode:'read-only' }).toHTML()+"</div>";
+      var textView = this.createTemplateView('text', { mode:'read-only' });
+      this.addChild(textView);
+      out += '<div class="value">'+textView.toHTML()+'</div>';
+      out += '<svg class="downArrow" viewBox="0 0 48 48"><g><path d="M14 20 l10 10 10 -10 z"></path></g></svg>';
 
       this.on('click', this.launch, this.id);
 
@@ -179,10 +168,21 @@ CLASS({
         flex-direction: row;
         align-items: center;
         align-content: flex-start;
-        padding: 16px;
+        justify-content: space-between;
+        padding: 8px;
+        margin: 12px;
         cursor: pointer;
         position: relative;
+        border-bottom: 1px solid #999;
       }
+
+      .popupChoiceView .downArrow {
+        width: 24px;
+        height: 24px;
+        fill: #999
+      }
+
+
     */}
   ]
 });

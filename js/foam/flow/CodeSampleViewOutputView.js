@@ -25,21 +25,39 @@ CLASS({
     },
     {
       model_: 'StringProperty',
-      name: 'data',
-      postSet: function(old, nu) {
-        if ( ! this.$ || old === nu ) return;
-        this.$.innerHTML = nu;
-      }
+      name: 'data'
     },
     {
       name: 'height',
       defaultValue: 200
     },
     {
+      name: 'cssHeight',
+      documentation: 'Height as string: "#px" for CSS style="..." override',
+      dynamicValue: function() {
+        this.data && this.data.view; this.height;
+        return (this.data && this.data.view) ? this.height + 'px' : '';
+      }
+    },
+    {
+      name: 'cssClassName',
+      documentation: 'Dynamically computed CSS class name',
+      dynamicValue: function() {
+        this.data && this.data.view; this.height;
+        return this.data && this.data.view && this.height > 0 ? 'visible' : '';
+      }
+    },
+    {
       name: 'state',
       documentation: function() {/* Either "hold" or "release". Used to control
         accumulation of updates (hold state), and showing of updates (release
         state). */},
+      defaultValue: 'release',
+      postSet: function(old, nu) { this.prevState = old; }
+    },
+    {
+      name: 'prevState',
+      documentation: 'Previous $$DOC{.state}. Used to dedup state updates',
       defaultValue: 'release'
     }
   ],
@@ -49,34 +67,44 @@ CLASS({
       name: 'init',
       code: function() {
         this.SUPER.apply(this, arguments);
+
         Events.dynamic(function() {
-          this.data && this.data.innerHTML; this.$; this.state;
-          if ( ! this.$ || ! this.data || this.state !== 'release' ) return;
-          this.initHTML_();
+          this.data && this.data.view; this.$; this.state;
+          if ( ! this.$ || ! this.data || this.state !== 'release' ||
+              this.prevState === this.state ) return;
+          this.updateHTML();
+        }.bind(this));
+        Events.dynamic(function() {
+          this.height; this.cssClassName;
+          if ( ! this.$ ) return;
+          this.$.style.height = this.cssHeight;
+          this.className = this.cssClassName;
         }.bind(this));
       }
     },
     {
-      name: 'initHTML',
+      name: 'cssStyleAttr',
+      documentation: 'style="..." counterpart to $$DOC{.cssClassAttr}',
       code: function() {
-        this.SUPER.apply(this, arguments);
-        this.initHTML_();
-      }
-    },
-    {
-      name: 'initHTML_',
-      code: function() {
-        if ( ! this.$ ) return;
-        this.$.innerHTML = this.data.innerHTML;
-        DOM.initElementChildren(this.$, this.sampleCodeContext);
-        this.$.style.height = this.height + 'px';
-        this.$.className = this.height > 0 ? 'visible' : '';
+        return this.cssHeight ? 'style="height:' + this.cssHeight + ';"' : '';
       }
     }
   ],
 
   templates: [
-    function toInnerHTML() {/*<%= this.data.innerHTML %>*/},
+    function toHTML() {/*
+      <{{{this.tagName}}}
+        id="{{{this.id}}}"
+        <%= this.cssClassAttr() %>
+        <%= this.cssStyleAttr() %> >
+        <%= this.toInnerHTML() %>
+      </{{{this.tagName}}}>
+    */},
+    function toInnerHTML() {/*
+      <% if ( this.data && this.data.view ) { %>
+        <%= this.data.view({}, this.sampleCodeContext) %>
+      <% } %>
+    */},
     function CSS() {/*
       view-output {
         position: relative;
