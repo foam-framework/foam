@@ -283,11 +283,11 @@
         </viewChoice>
         <viewChoice>
           <label>Animation</label>
-          <p:view><foam model="foam.demos.graphics.Dragon"/></p:view>
+          <p:view><foam model="foam.demos.graphics.Dragon" timer=""/></p:view>
         </viewChoice>
         <viewChoice>
           <label>Interpolation</label>
-          <p:view><!-- <%= foam.demos.InterpolatedClocks.create() %>--><foam model="foam.demos.InterpolatedEyes"/></p:view>
+          <p:view><foam model="foam.demos.InterpolatedEyes"/></p:view>
         </viewChoice>
       </views>
     </foam>
@@ -300,6 +300,7 @@
 
   <slide>
     <h1>Physics</h1>
+    <% X.timer = undefined; %>
     <%=
       foam.ui.md.TwoPaneView.create({views: [
         {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10, scaleX: 2, scaleY: 2}},
