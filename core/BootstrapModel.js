@@ -591,7 +591,14 @@ var BootstrapModel = {
         }
       }
 
-      apar.apply(apar, args)(function() {
+      args.push(function(ret) {
+        if ( this.X.i18nModel )
+          this.X.i18nModel(this, this.X, ret);
+        else
+          ret();
+      }.bind(this));
+
+      apar.apply(null, args)(function() {
         this.finished__ = true;
         future.set(this);
       }.bind(this));
