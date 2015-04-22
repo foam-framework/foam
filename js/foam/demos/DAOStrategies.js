@@ -24,23 +24,35 @@ CLASS({
     'foam.graphics.LabelledBox',
     'foam.graphics.ImageCView',
     'foam.input.Mouse',
+    'foam.graphics.CView',
     'foam.graphics.Label2'
   ],
 
   constants: {
+    COLOURS: [
+
+    ],
+
     STRATEGIES: [
       [ 'Local Storage' ],
       [ 'IndexedDB' ],
       [ 'IndexedDB', 'Caching' ],
+      [ 'IndexedDB', 'Cachinng', 'Migration' ],
+      [ 'IndexedDB', 'Cachinng', 'Migration', 'SeqNo' ],
+      [ 'IndexedDB', 'Cachinng', 'Migration', 'GUID'  ],
       [ 'Chrome Storage' ],
       [ 'Chrome Sync Storage' ],
       [ 'Array' ],
-      [ 'Legacy' ],
-      [ 'REST', 'REST Server', 'MongoDB' ],
-      [ 'REST', 'REST Server', 'JSON File' ],
-      [ 'Google Cloud Store' ],
-      [ 'Caching' ],
-      [ 'Sync' ],
+      [ 'Server', '', 'Adapter' ],
+      [ 'MongoDB', 'REST Server', '', 'REST Client' ],
+      [ 'JSONFile', 'REST Server', '', 'REST Client' ],
+      [ 'Google Cloud', '-', 'Google Cloud Store' ],
+      [ 'Server', '', 'Client', 'Caching' ],
+      [ 'Server', '', 'Client', 'Sync' ],
+      [ '???', 'Logging' ],
+      [ '???', 'Timing' ],
+      [ '???', '???' ],
+      [ '???' ],
       /*
       [ '' ],
       [ '' ],
@@ -68,34 +80,43 @@ CLASS({
 
       var M = Movement;
       var S = this.STRATEGIES;
-      var H = 1000 / ( S.length + 1 );
+      var H = 80; // 1000 / ( S.length + 1 );
       var self = this;
-      var app = this.ImageCView.create({
-        x: 1000,
-        xxxscaleX: 0.2,
-        xxxscaleY: 0.2,
-        src: './js/foam/demos/empire/todo.png'
-      });
 
-      this.addChild(app);
       for ( var i = 0 ; i < S.length ; i++ ) {
         var v = this.makeStrategyView(S[i]);
-        v.x = 300;
-        v.y = H * i;
+        v.x = 700;
+        v.y = 50 + H * i;
         this.addChild(v);
       }
       this.mouse.connect(this.view.$);
       this.mouse.y$.addListener(function(_, y) {
-        app.y = Math.floor(self.mouse.y / H) * H;
+        self.view.paint();
+//        app.y = Math.floor(self.mouse.y / H) * H;
       });
     },
 
     makeStrategyView: function(s) {
-      return this.LabelledBox.create({
-        width:  100,
-        height: 50,
-        text:   s[0]
-      });
+      var v = this.CView.create({width: 500, height: 550});
+
+      v.addChild(this.ImageCView.create({
+        x: 110,
+        scaleX: 0.25,
+        scaleY: 0.25,
+        src: './js/foam/demos/empire/todo.png'
+      }));
+
+      for ( var i = 0 ; i < s.length ; i++ ) {
+        v.addChild(this.LabelledBox.create({
+          x: -100 * (s.length - i + -1),
+          y: ! s[i] ? 25 : 0,
+          width:  100,
+          height: ! s[i] ? 1 : 50,
+          text:   s[i]
+        }));
+      }
+
+      return v;
     }
   }
 });

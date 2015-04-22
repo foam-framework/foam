@@ -117,7 +117,7 @@
   </slide>
 
   <slide>
-    <h1>DAO Strategies</h1>
+    <h1>DAO Strategies & Decorators</h1>
     <br>
     <br>
     <foam model="foam.demos.DAOStrategies"/>
