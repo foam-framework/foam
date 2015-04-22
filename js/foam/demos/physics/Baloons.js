@@ -35,9 +35,7 @@ CLASS({
     { name: 'height',     defaultValue: 1000 },
     { name: 'background', defaultValue: 'white' },
     { name: 'mouse',      lazyFactory: function() { return this.Mouse.create(); } },
-    { name: 'collider',   factory: function() {
-      return this.Collider.create();
-    }},
+    { name: 'collider',   factory: function() { return this.Collider.create(); } },
     { name: 'anchor',     factory: function() {
       return this.PhysicalCircle.create({r: 9, x: 1400, y: 400});
     }}
@@ -86,11 +84,16 @@ CLASS({
 
     bounceOnWalls: function (c, w, h) {
       Events.dynamic(function() { c.x; c.y; }, function() {
-        if ( c.x < c.r ) c.vx = Math.abs(c.vx);
+        if ( c.x < c.r     ) c.vx =  Math.abs(c.vx);
         if ( c.x > w - c.r ) c.vx = -Math.abs(c.vx);
-        if ( c.y < c.r ) c.vy = Math.abs(c.vy);
+        if ( c.y < c.r     ) c.vy =  Math.abs(c.vy);
         if ( c.y > h - c.r ) c.vy = -Math.abs(c.vy);
       });
+    },
+
+    destroy: function() {
+      this.SUPER();
+      this.collider.destroy();
     }
   }
 });

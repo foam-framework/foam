@@ -129,6 +129,8 @@
      sys.forEach(function(sys) { sys.architecture = System.getPrototype().foam; });
    };
 
+   space.$.addEventListener('click', turnFOAM);
+
    function grow() {
      var M = Movement;
      var s = sys[0];
@@ -144,14 +146,14 @@
        [1000], function() { s.entities.push('Mail'); s.features.push('Storage'); },
        [1000], function() { s.entities.push('Contacts'); addPlatform('Mobile'); s.title = 'Desktop'; },
        [1000], function() { s.features.push('Print'); addPlatform('Mac'); },
-       [1000], function() { s.entities.push('Calendar'); addPlatform('RIM');},
+       [1000], function() { s.entities.push('Calendar'); addPlatform('iPhone');},
        [1000], function() { s.entities.push('Groups'); },
        [1000], function() { s.entities.push('News'); },
-       [1000], function() { s.entities.push('ToDo'); addPlatform('iPhone');},
+       [1000], function() { s.entities.push('ToDo'); addPlatform('Android');},
        [1000], function() { s.entities.push('Photos'); },
        [1000], function() { s.entities.push('Video'); },
        [1000], function() { s.features.push('Rating'); },
-       [1000], function() { s.features.push('Discussion'); addPlatform('Android');},
+       [1000], function() { s.features.push('Discussion'); addPlatform('Chrome');},
        [1000], function() { s.features.push('Translate'); },
        [1000], function() { s.entities.push('Books'); },
        [1000], function() { s.entities.push('Docs'); s.features.push('Sort'); },
@@ -163,12 +165,12 @@
        [1000], function() { s.entities.push('Bookmarks'); },
        [1000], function() { s.entities.push('Presentations'); },
        [1000], function() { s.entities.push('Spreadsheets'); },
-       [1000], function() { s.entities.push('Blogs'); addPlatform("Chrome"); },
+       [1000], function() { s.entities.push('Blogs'); addPlatform("Glass"); },
        [1000], function() { s.entities.push('Sites'); },
        [1000], function() { s.features.push('Drive'); },
        [1000], function() { s.features.push('+'); s.entities.push('Circles'); },
        [1000], function() { s.entities.push('Flights'); },
-       [1000], function() { s.entities.push('Apps'); addPlatform("Glass");},
+       [1000], function() { s.entities.push('Apps'); addPlatform("Android Wear");},
     ])();
    }
 

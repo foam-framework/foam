@@ -29,6 +29,10 @@ CLASS({
       name: 'className',
       defaultValue: 'TabbedViewChoiceView',
     },
+    {
+      name: 'preferredHeight',
+      defaultValue: 54,
+    },
   ],
   methods: {
     setCurrentLinePosition: function() {

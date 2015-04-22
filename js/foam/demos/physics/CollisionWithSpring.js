@@ -96,6 +96,11 @@ CLASS({
         if ( c.y < c.r ) c.vy = Math.abs(c.vy);
         if ( c.y > h - c.r ) c.vy = -Math.abs(c.vy);
       });
+    },
+
+    destroy: function() {
+      this.SUPER();
+      this.collider.destroy();
     }
   }
 });

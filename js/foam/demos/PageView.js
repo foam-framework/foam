@@ -16,28 +16,29 @@
  */
 
 CLASS({
-  package: 'foam.ui',
-  name: 'JSView',
-
-  extendsModel: 'foam.ui.TextFieldView',
-
-  properties: [
-    { name: 'displayWidth',  defaultValue: 100 },
-    { name: 'displayHeight', defaultValue: 53 }
+  package: 'foam.demos',
+  name: 'PageView',
+  extendsModel: 'foam.ui.SimpleView',
+  requires: [
+    'foam.ui.navigation.PageView',
+    'foam.ui.navigation.TopToolbar',
+    'foam.ui.StaticHTML',
   ],
-
-  methods: {
-    textToValue: function(text) {
-      try {
-        return JSONUtil.parse(this.X, text);
-      } catch (x) {
-        console.log("error");
-      }
-      return text;
-    },
-
-    valueToText: function(val) {
-      return JSONUtil.prettyModel.stringify(val);
-    }
-  }
+  templates: [
+    function toHTML() {/*
+      <%=
+        this.PageView.create({
+          header: this.TopToolbar.create({
+            label: 'This is a toolbar',
+          }),
+          body: this.StaticHTML.create({
+            content: 'Hello World',
+          }),
+          footer: this.TopToolbar.create({
+            label: 'This is a toolbar being used as a footer',
+          }),
+        })
+      %>
+    */}
+  ],
 });

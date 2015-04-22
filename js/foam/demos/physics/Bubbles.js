@@ -119,6 +119,11 @@ CLASS({
         if ( c.x < r ) c.vx = Math.abs(c.vx);
         if ( c.x > w - r ) c.vx = -Math.abs(c.vx);
       });
+    },
+
+    destroy: function() {
+      this.SUPER();
+      this.collider.destroy();
     }
   }
 });

@@ -16,28 +16,41 @@
  */
 
 CLASS({
-  package: 'foam.ui',
-  name: 'JSView',
-
-  extendsModel: 'foam.ui.TextFieldView',
-
-  properties: [
-    { name: 'displayWidth',  defaultValue: 100 },
-    { name: 'displayHeight', defaultValue: 53 }
+  package: 'foam.demos',
+  name: 'FutureView',
+  extendsModel: 'foam.ui.SimpleView',
+  requires: [
+    'foam.ui.StaticHTML',
+    'foam.ui.FutureView',
   ],
-
-  methods: {
-    textToValue: function(text) {
-      try {
-        return JSONUtil.parse(this.X, text);
-      } catch (x) {
-        console.log("error");
-      }
-      return text;
+  imports: [
+    'setTimeout'
+  ],
+  properties: [
+    {
+      name: 'future',
+      factory: function() {
+        return afuture();
+      },
     },
-
-    valueToText: function(val) {
-      return JSONUtil.prettyModel.stringify(val);
-    }
-  }
+  ],
+  methods: {
+    initHTML: function() {
+      this.SUPER();
+      var self = this;
+      this.setTimeout(function() {
+        self.future.set();
+      }, 2000);
+    },
+  },
+  templates: [
+    function toHTML() {/*
+      <%=
+        this.FutureView.create({
+          future: this.future,
+          innerView: { factory_: 'foam.ui.StaticHTML', content: 'Hello' },
+        })
+      %>
+    */}
+  ],
 });

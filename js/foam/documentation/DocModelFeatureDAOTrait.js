@@ -32,7 +32,8 @@ CLASS({
     '_DEV_ModelDAO',
     'masterModelList',
     'featureDAO',
-    'featureDAOModelsLoading'
+    'featureDAOModelsLoading',
+    'documentViewRef'
   ],
   exports: [
     'featureDAO',
@@ -41,10 +42,36 @@ CLASS({
     'subModelDAO',
     'traitUserDAO',
     '_DEV_ModelDAO',
-    'masterModelList'
+    'masterModelList',
+    'documentViewRef'
   ],
 
   properties: [
+    {
+      name: 'featuresToLoad',
+      factory: function() {
+        return [ 'properties',
+          'methods',
+          'actions',
+          'listeners',
+          'models',
+          'relationships',
+          'templates'];
+      }
+    },
+    {
+      name: 'processBaseModels',
+      model_: 'BooleanProperty',
+      defaultValue: true
+    },
+    {
+      name: 'documentViewRef',
+      factory: function() {
+         return this.SimpleValue.create(
+           this.DocRef.create({ ref: this.data ? this.data.id : "" },
+             this.Y.sub({ documentViewRef: null })));
+      }
+    },
     {
       name: '_DEV_ModelDAO',
       lazyFactory: function() {
@@ -113,11 +140,6 @@ CLASS({
         return;
       }
 
-      if ( this.featureDAOModelsLoading[data.id]
-          && this.featureDAOModelsLoading[data.id].loading ) {
-        // someone is already loading this model for us!
-        return;
-      }
       console.log("Generating FeatureDAO...", this.data.id );
 
 //       this.featureDAO.removeAll();
@@ -130,10 +152,15 @@ CLASS({
       // and load them into the feature DAO. Passing [] assumes we don't
       // care about other models that extend this one. Finding such would
       // be a global search problem.
-      this.Y.setTimeout(function() {
-        this.agetInheritanceMap(this.loadFeaturesOfModel, data, { data: data });
-      }.bind(this), 20);
+      if ( this.processBaseModels ) {
+        this.Y.setTimeout(function() {
+          this.agetInheritanceMap(this.loadFeaturesOfModel, data, { data: data });
+        }.bind(this), 20);
+      } else {
+        this.loadFeaturesOfModel( { data: data } );
+      }
 
+      // TODO(jacksonic): relocate submodels and trait users to a different model
 //       this.Y.setTimeout(function() {
 //           this.findSubModels(data);
 //           this.findTraitUsers(data);
@@ -146,11 +173,6 @@ CLASS({
 
     agetInheritanceMap: function(ret, model, map) {
       // find all base models of the given model, put into list
-//       this._DEV_ModelDAO.where(IN(Model.ID, model.traits)).select({
-//           put: function(m) {
-//             map[m.id] = m;
-//           },
-//           eof: function() {
       var findFuncs = [];
       model.traits.forEach(function(t) {
         findFuncs.push(function(ret) {
@@ -250,11 +272,6 @@ CLASS({
           */
         var model = map.data;
 
-        if ( this.featureDAOModelsLoading[model.id]
-            && this.featureDAOModelsLoading[model.id].loading ) {
-          return this.featureDAOModelsLoading[model.id].inheritanceLevel; //TODO: async?
-        }
-
         if (typeof previousExtenderTrackers == 'undefined') {
           previousExtenderTrackers = [];
         }
@@ -267,15 +284,21 @@ CLASS({
         var self = this;
         var newModelTr = this.DocModelInheritanceTracker.create();
         newModelTr.model = model.id;
-        this.featureDAOModelsLoading[model.id] = { loading: true, inheritanceLevel: -1 };
+        // track what is loading, so child daos don't load it again needlessly
+        if (   ! this.featureDAOModelsLoading[model.id]
+            || ! this.featureDAOModelsLoading[model.id].loading ) {
+          this.featureDAOModelsLoading[model.id] = {
+            loading: true,
+            inheritanceLevel: -1,
+            features: {}
+          };
+        }
 
-        [ 'properties',
-          'methods',
-          'actions',
-          'listeners',
-          'models',
-          'relationships',
-          'templates'].forEach(function(modProp) {
+        this.featuresToLoad.forEach(function(modProp) {
+          // check if someone else has processed the feature, then indicate we have process this feature
+          if ( self.featureDAOModelsLoading[model.id].features[modProp] ) return;
+          self.featureDAOModelsLoading[model.id].features[modProp] = true;
+
           var modPropVal = modelDef[modProp];
           if ( Array.isArray(modPropVal) ) { // we only care to check inheritance on the array properties
             modPropVal.forEach(function(feature) {
@@ -314,7 +337,7 @@ CLASS({
           }
         });
 
-        if ( ! isTrait ) {
+        if ( ! isTrait && this.processBaseModels ) {
           // Check if we extend something, and recurse.
           if (!model.extendsModel) {
             newModelTr.inheritanceLevel = 0;

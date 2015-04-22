@@ -217,66 +217,76 @@ CLASS({
         return;
       }
 
-      // if features specified, async grab ancestor list
-      var ancestry = [model];
-      this.getInheritanceList(model, {
-        put: function(m) { ancestry.put(m); },
-        eof: function() {
-          // Check for a feature, and check inherited features too
-          // If we have a Model definition, we make the jump from definition to an
-          // instance of a feature definition here
-          var foundObject = null;
-          if (features.length > 0) {
-            // feature specified "Model.feature" or ".feature"
-            ancestry.every(function(ancestor) {
-              foundObject = ancestor.getRawFeature(features[0]);
-              if ( ! foundObject ) {
-                return true;
-              } else {
-                newResolvedRef += "." + features.shift();
-                return false;
+      var foundObject = null;
+      var completeResolve = function() {
+        // allow further specification of sub properties or lists
+        if ( foundObject && features.length > 0 ) {
+          if ( ! features.every(function (arg) {
+              var newObject;
+
+              // null arg is an error at this point
+              if ( arg.length <= 0 ) return false;
+
+              // check if arg is the name of a sub-object of foundObject
+              var argCaller = Function('return this.'+arg);
+              if (argCaller.call(foundObject)) {
+                newObject = argCaller.call(foundObject);
+
+              // otherwise if foundObject is a list, check names of each thing inside
+              } else if (foundObject.mapFind) {
+                foundObject.mapFind(function(f) {
+                  if (f && f.name && f.name === arg) {
+                    newObject = f;
+                  }
+                })
               }
-            });
+              foundObject = newObject; // will reset to undefined if we failed to resolve the latest part
+              if ( ! foundObject ) {
+                return false;
+              } else {
+                newResolvedRef += "." + arg;
+                return true;
+              }
+            })) {
+            return; // the loop failed to resolve something
           }
+        }
 
-          // allow further specification of sub properties or lists
-          if ( foundObject && features.length > 0 ) {
-            if ( ! features.every(function (arg) {
-                var newObject;
+        this.resolvedRef = newResolvedRef;
+        this.resolvedObject = foundObject;
+        this.valid = true;
+      }.bind(this);
 
-                // null arg is an error at this point
-                if ( arg.length <= 0 ) return false;
-
-                // check if arg is the name of a sub-object of foundObject
-                var argCaller = Function('return this.'+arg);
-                if (argCaller.call(foundObject)) {
-                  newObject = argCaller.call(foundObject);
-
-                // otherwise if foundObject is a list, check names of each thing inside
-                } else if (foundObject.mapFind) {
-                  foundObject.mapFind(function(f) {
-                    if (f && f.name && f.name === arg) {
-                      newObject = f;
-                    }
-                  })
-                }
-                foundObject = newObject; // will reset to undefined if we failed to resolve the latest part
+      if ( Model.isInstance(model) ) {
+        // if features specified, async grab ancestor list
+        var ancestry = [model];
+        this.getInheritanceList(model, {
+          put: function(m) { ancestry.put(m); },
+          eof: function() {
+            // Check for a feature, and check inherited features too
+            // If we have a Model definition, we make the jump from definition to an
+            // instance of a feature definition here
+            foundObject = null;
+            if (features.length > 0) {
+              // feature specified "Model.feature" or ".feature"
+              ancestry.every(function(ancestor) {
+                foundObject = ancestor.getRawFeature(features[0]);
                 if ( ! foundObject ) {
-                  return false;
-                } else {
-                  newResolvedRef += "." + arg;
                   return true;
+                } else {
+                  newResolvedRef += "." + features.shift();
+                  return false;
                 }
-              })) {
-              return; // the loop failed to resolve something
+              });
             }
-          }
 
-          this.resolvedRef = newResolvedRef;
-          this.resolvedObject = foundObject;
-          this.valid = true;
-        }.bind(this)
-      });
+            completeResolve();
+          }.bind(this)
+        });
+      } else {
+        // for non-models, just look at sub-features
+        completeResolve();
+      }
     },
 
   },

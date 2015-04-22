@@ -39,7 +39,13 @@ CLASS({
     {
       name: 'masterModelList',
       lazyFactory: function() {
-        return [].slice();
+        var list = [];
+        [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
+          for ( var key in collection ) {
+            list.push(this.X.lookup(key));
+          };
+        }.bind(this));
+        return list;
       }
     },
     {
@@ -141,7 +147,7 @@ CLASS({
       X.setTimeout(function() {
         this.autoSizeLayout.suspended = false;
         this.autoSizeLayout.paint();
-      }.bind(this), 1000);
+      }.bind(this), 300);
     },
 
     destroy: function( isParentDestroyed ) {

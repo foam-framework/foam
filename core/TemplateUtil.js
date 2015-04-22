@@ -217,7 +217,7 @@ MODEL({
         return delegate.apply(this, arguments);
       };
 
-      f.toString = function() { return delegate ? delegate.toString() : t; };
+      f.toString = function() { return delegate ? delegate.toString() : t.toString(); };
 
       return f;
     },

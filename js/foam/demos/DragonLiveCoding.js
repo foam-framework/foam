@@ -38,7 +38,7 @@ CLASS({
     },
     {
       name: 'dragon',
-      factory: function() { return this.Dragon.create({scaleX: 0.7, scaleY: 0.7, x: 700}); }
+      factory: function() { return this.Dragon.create({scaleX: 0.7, scaleY: 0.7, x: 1000}); }
     },
     {
       name: 'timer',

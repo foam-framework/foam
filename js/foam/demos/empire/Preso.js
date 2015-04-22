@@ -17,26 +17,29 @@ CLASS({
   constants: { ELEMENT_NAME: 'foam-demos-flow' },
 
   requires: [
+    'Timer',
     'com.google.sweeper.Game',
-    'foam.documentation.diagram.DocDiagramView',
+    'foam.demos.InterpolatedClocks',
+    'foam.demos.graphics.Dragon',
+    'foam.demos.graphics.EyeCView',
+    'foam.demos.physics.Bubbles',
     'foam.demos.physics.Collision',
     'foam.demos.physics.CollisionWithSpring',
     'foam.demos.physics.Spring',
-    'foam.demos.physics.Bubbles',
-    'foam.graphics.Circle',
-    'foam.ui.TableView',
-    'foam.graphics.Gauge',
+    'foam.documentation.diagram.DocDiagramView',
+    'foam.flow.CodeSample',
     'foam.flow.CodeSample',
     'foam.flow.Slides',
-    'Timer',
-    'foam.demos.graphics.Dragon',
-    'foam.ui.md.TwoPaneView',
-    'foam.ui.SwipeAltView',
-    'foam.ui.ViewChoice',
-    'foam.demos.InterpolatedClocks',
-    'foam.demos.graphics.EyeCView',
+    'foam.graphics.Circle',
+    'foam.graphics.Gauge',
     'foam.input.touch.GestureManager',
-    'foam.input.touch.TouchManager'
+    'foam.input.touch.TouchManager',
+    'foam.ui.AlternateView',
+    'foam.ui.JSView',
+    'foam.ui.SwipeAltView',
+    'foam.ui.TableView',
+    'foam.ui.ViewChoice',
+    'foam.ui.md.TwoPaneView'
   ],
 
   exports: [
@@ -105,6 +108,10 @@ CLASS({
       .swipeAltOuter {
         height: 100%;
       }
+      li.d1 { margin-left: 16px; font-size: 30px;}
+      li.d2 { margin-left: 32px; font-size: 28px; }
+      li.d3 { margin-left: 48px; font-size: 26px; }
+      li.d4 { margin-left: 64px; font-size: 24px; }
     */},
     { name: 'toHTML' }
   ]

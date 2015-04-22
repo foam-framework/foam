@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2014 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,43 +17,48 @@
 
 CLASS({
   package: 'foam.ui',
-  name: 'ViewFactoryView',
-  extendsModel: 'foam.ui.DetailView',
+  name: 'DelayView',
+  extendsModel: 'foam.ui.SimpleView',
+  help: 'A view that shows a spinner until it renders the viewFactory ' +
+      'after a delay.',
+  requires: [
+    'foam.ui.FutureView',
+  ],
+  imports: [
+    'setTimeout'
+  ],
   properties: [
     {
-      name: 'data',
-      postSet: function() {
-        if (this.pending_) {
-          this.dirty_ = true;
-        }
+      name: 'delay',
+      defaultValue: 2000,
+    },
+    {
+      name: 'viewFactory',
+    },
+    {
+      name: 'future_',
+      factory: function() {
+        return afuture();
       },
-    },
-    // dirty_ and pending_ are used to tell the view to rerender if the data
-    // changes while the view is rendering. They should go away when the
-    // DetailView (or something else) finds a way to handle this.
-    {
-      name: 'dirty_',
-    },
-    {
-      name: 'pending_',
     },
   ],
   methods: {
     initHTML: function() {
       this.SUPER();
-      this.pending_ = false;
-      if (this.dirty_) {
-        this.dirty_ = false;
-        this.updateHTML();
-      }
+      var self = this;
+      this.setTimeout(function() {
+        self.future_.set();
+      }, this.delay);
     },
   },
   templates: [
     function toHTML() {/*
-      <% this.pending_ = true; %>
-      <div id="%%id">
-        <%= this.data && this.data() %>
-      </div>
+      <%=
+        this.FutureView.create({
+          future: this.future_,
+          innerView: this.viewFactory,
+        })
+      %>
     */}
   ],
 });

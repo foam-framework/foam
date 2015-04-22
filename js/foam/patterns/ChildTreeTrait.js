@@ -72,7 +72,7 @@ CLASS({
         a sub-$$DOC{ref:'foam.ui.View'} is destroyed, remove it from the tree with this method.
         The isParentDestroyed argument is passed to the child's destroy().
       */
-      child.destroy(true);
+      child.destroy && child.destroy(true);
       this.children.deleteI(child);
       child.parent = undefined;
       //child.onAncestryChange_();

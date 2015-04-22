@@ -16,28 +16,21 @@
  */
 
 CLASS({
-  package: 'foam.ui',
-  name: 'JSView',
-
-  extendsModel: 'foam.ui.TextFieldView',
-
-  properties: [
-    { name: 'displayWidth',  defaultValue: 100 },
-    { name: 'displayHeight', defaultValue: 53 }
+  package: 'foam.demos',
+  name: 'DelayView',
+  extendsModel: 'foam.ui.SimpleView',
+  requires: [
+    'foam.ui.StaticHTML',
+    'foam.ui.DelayView',
   ],
-
-  methods: {
-    textToValue: function(text) {
-      try {
-        return JSONUtil.parse(this.X, text);
-      } catch (x) {
-        console.log("error");
-      }
-      return text;
-    },
-
-    valueToText: function(val) {
-      return JSONUtil.prettyModel.stringify(val);
-    }
-  }
+  templates: [
+    function toHTML() {/*
+      <%=
+        this.DelayView.create({
+          viewFactory: { factory_: 'foam.ui.StaticHTML', content: 'Hello' },
+        })
+      %>
+    */}
+  ],
 });
+
