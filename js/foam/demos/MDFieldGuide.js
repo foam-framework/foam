@@ -246,8 +246,6 @@ CLASS({
         <div class="example">
           <p><tt>foam.ui.md.PopupChoiceView</tt></p>
           $$choiceField{ model_: 'foam.ui.md.PopupChoiceView' }
-          <p class="fixme">TODO Broken when <tt>overflow: scroll</tt> is used.</p>
-          <p class="fixme-low">TODO Add underline and drop-down arrow.</p>
           <p class="fixme-low">TODO Use inline styling, but without jumpy resizing when the text changes.</p>
         </div>
 
