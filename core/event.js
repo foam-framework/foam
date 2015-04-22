@@ -1007,14 +1007,6 @@ MODEL({
       });
     },
 
-    friction: function(c, opt_coef) {
-      var coef = opt_coef || 0.9;
-      Events.dynamic(function() { c.vx; c.vy; }, function() {
-        c.vx = Math.abs(c.vx) < 0.1 ? 0.0 : c.vx * coef;
-        c.vy = Math.abs(c.vy) < 0.1 ? 0.0 : c.vy * coef;
-      });
-    },
-
     gravity: function(c, opt_a, opt_theta) {
       // TODO(kgr): implement opt_theta, the ability to control the direction
       var a = opt_a || 1;
@@ -1024,31 +1016,39 @@ MODEL({
       });
     },
 
+    friction: function(c, opt_coef) {
+      var coef = opt_coef || 0.9;
+      Events.dynamic(function() { c.vx; c.vy; }, function() {
+        c.vx = Math.abs(c.vx) < 0.001 ? 0 : c.vx * coef;
+        c.vy = Math.abs(c.vy) < 0.001 ? 0 : c.vy * coef;
+      });
+    },
+
     inertia: function(c) {
       Events.dynamic(function() { c.vx; c.vy; c.x; c.y; }, function() {
         // Dynamic Friction
-        c.x += c.vx;
-        c.y += c.vy;
+        if ( Math.abs(c.vx) > 0.001 ) c.x += c.vx;
+        if ( Math.abs(c.vy) > 0.001 ) c.y += c.vy;
         // StaticFriction
-        if ( Math.abs(c.vx) < 0.02 ) c.vx = 0;
-        if ( Math.abs(c.vy) < 0.02 ) c.vy = 0;
+//        if ( Math.abs(c.vx) < 0.001 ) c.vx = 0;
+//        if ( Math.abs(c.vy) < 0.001 ) c.vy = 0;
       });
     },
 
     spring: function(mouse, c, dx, dy, opt_strength) {
       var strength = opt_strength || 6;
-      Events.dynamic(function() { mouse.x; mouse.y; c.x; c.y; }, function() {
+      var d        = Movement.distance(dx, dy);
+      Events.dynamic(function() { mouse.x; mouse.y; c.x; c.y; c.vx; c.vy; }, function() {
         if ( dx === 0 && dy === 0 ) {
           c.x = mouse.x;
           c.y = mouse.y;
         } else {
-          var d   = Movement.distance(dx, dy);
           var dx2 = mouse.x + dx - c.x;
           var dy2 = mouse.y + dy - c.y;
           var d2  = Movement.distance(dx2, dy2);
-          if ( Math.abs(d2) < 0.5 ) return;
           var dv  = strength * d2/d;
-          var a   = Math.atan2(dy2, dx2);
+          if ( Math.abs(dv) < 0.07 ) return;
+          var a = Math.atan2(dy2, dx2);
           c.vx += dv * Math.cos(a);
           c.vy += dv * Math.sin(a);
         }

@@ -119,9 +119,10 @@
 
   <slide>
     <h1>Reusable Controllers</h1>
+    <br>
     <center style="margin-top:25px;">
-    <img height="530" width="500" src="/demos/democat/MBug.png">
-    <img style="margin-left: 100px;" height="530" width="500" src="/demos/democat/GMail.png">
+    <a href="./apps/mbug/main.html"><img style="box-shadow: 0 5px 15px #aaa;" height="530" width="500" src="/demos/democat/MBug.png"></a>
+    <a href="./apps/gmail/main.html"><img style="margin-left: 100px;border:1px solid;box-shadow: 0 5px 15px #aaa;" height="530" width="420" src="/demos/democat/GMail.png"></a>
     </center>
   </slide>
 
@@ -247,7 +248,7 @@
     <h1>Physics</h1>
     <%=
       foam.ui.md.TwoPaneView.create({views: [
-        {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10}},
+        {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10, scaleX: 2, scaleY: 2}},
         {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
         {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
         {label: 'Gravity&nbsp;+&nbsp;Friction', view: 'foam.demos.physics.Bubbles'}
@@ -359,14 +360,14 @@
     <h1>To Summarize the Summary of the Summary: <font color="red">It's About Performance</font></h1>
     <br><br>
     <div style="display:flex;">
-      <div style="margin-left:48px;">
+      <div style="margin-left:48px;font-size:40px;width: 760px;">
         <i style="color:red;">Performance</i> is <font color="#33f">F</font><font color="#f00">O</font><font color="#fc0">A</font><font color="#3c0">M</font>'s Value Proposition<br>
         Application Performance<br>
         Developer Performance<br>
         <br>
         <i style="color:#3c0;font-size:40px;">"Fast Apps Fast"</i><br>
       </div>
-      <img style="margin-left:200px;margin-top:-40px;" src="js/foam/demos/empire/benchmarks.png">
+      <img style="margin-left:150px;margin-top:-40px;" src="js/foam/demos/empire/benchmarks.png">
     </div>
   </slide>
 
