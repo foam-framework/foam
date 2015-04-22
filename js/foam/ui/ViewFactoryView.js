@@ -52,7 +52,7 @@ CLASS({
     function toHTML() {/*
       <% this.pending_ = true; %>
       <div id="%%id">
-        <%= this.data && this.data() %>
+        <%= this.data && this.data(undefined, this.Y) %>
       </div>
     */}
   ],

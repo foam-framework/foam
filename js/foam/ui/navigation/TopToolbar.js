@@ -38,9 +38,13 @@ CLASS({
     {
       name: 'extraViewInstance_',
       postSet: function(o, v) {
+        if ( o ) o.removePropertyListener('preferredHeight', this.onResize);
+
         this.preferredHeight +=
             (v ? (v.preferredHeight || 0) : 0) -
             (o ? (o.preferredHeight || 0) : 0);
+
+        if ( v ) v.addPropertyListener('preferredHeight', this.onResize);
       }
     },
     {
@@ -55,13 +59,22 @@ CLASS({
     {
       name: 'preferredHeight',
       defaultValue: 67,
-      postSet: function() { this.resize(); }, 
+      postSet: function() { this.resize(); },
     },
     {
       name: 'className',
       defaultValue: 'TopToolbarView-container',
     },
   ],
+  listeners: [
+  {
+    name: 'onResize',
+    code: function(_, _, old, nu) {
+      this.preferredHeight += nu - old;
+    }
+  }
+  ],
+
   methods: {
     resize: function() {
       if (this.$) {
@@ -70,7 +83,7 @@ CLASS({
     },
     initHTML: function() {
       this.SUPER();
-      this.resize();
+      this.preferredHeight = this.$.clientHeight;
     },
   },
   templates: [

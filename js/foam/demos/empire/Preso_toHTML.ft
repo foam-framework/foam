@@ -17,7 +17,7 @@
     </center>
   </slide>
   <slide>
-    <h1>History</h1>
+    <h1>History Lesson</h1>
     <iframe style="width:100%;height:100%;border:none;" src="./demos/UnixSimulator.html"></iframe>
   </slide>
 
@@ -121,8 +121,8 @@
     <h1>Reusable Controllers</h1>
     <br>
     <center style="margin-top:25px;">
-    <a href="./apps/mbug/main.html"><img style="box-shadow: 0 5px 15px #aaa;" height="530" width="500" src="/demos/democat/MBug.png"></a>
-    <a href="./apps/gmail/main.html"><img style="margin-left: 100px;border:1px solid;box-shadow: 0 5px 15px #aaa;" height="530" width="420" src="/demos/democat/GMail.png"></a>
+    <a href="./apps/mbug/main.html"><img style="box-shadow: 0 5px 15px #aaa;" height="530" width="500" src="./demos/democat/MBug.png"></a>
+    <a href="./apps/gmail/main.html"><img style="margin-left: 100px;border:1px solid;box-shadow: 0 5px 15px #aaa;" height="530" width="420" src="./demos/democat/GMail.png"></a>
     </center>
   </slide>
 
