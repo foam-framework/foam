@@ -4,11 +4,11 @@
     <br>
     Introducing <img width="120" height="40" style="vertical-align: text-top;" src="js/foam/demos/empire/google.png"><br>
     <foam model="foam.demos.graphics.Logo" text="FOAM" width="360" height="140"/>
-    <foam model="foam.demos.graphics.Logo" text="Fast Apps Fast" width="400" height="120" font="60px Georgia"/>
-    <br>
     <font size="220%"><font color="#33f">F</font>eature <font color="#f00">O</font>riented <font color="#fc0">A</font>ctive <font color="#3c0">M</font>odeller</font><font>
     <br>
-    (or, 25 Demos in 25 Minutes)
+    <br>
+    <font size="60px">Fast Apps Fast</font><br>
+    (25 Demos in 25 Minutes)
     <br>
     <br>
     <br>
