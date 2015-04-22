@@ -15,13 +15,6 @@
  * limitations under the License.
  */
 
-// This accounts for binary-decimal conversion rounding (infinite 0.99999999)
-// 12 places is just short of what javascript gives you, so it forces
-// the number to round, which elimitates the spurious 9's.
-var DECIMAL_PLACES_PRECISION = 12;
-
-// console.profile();
-
 if ( ! 'log10' in Math ) Math.log10 = function(a) { return Math.log(a) / Math.LN10; };
 
 function gamma(z) {
@@ -46,6 +39,8 @@ function createTranslatedAction(action, opt_longName) {
   return Action.create(action);
 }
 
+// TODO(kgr): model binaryOp and unaryOp as new types of Actions
+// this will allow the model to be serialized and edited in a FOAM IDE
 /** Make a Binary Action. **/
 function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
   var longName = opt_longName || name;
@@ -101,13 +96,14 @@ function unaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
 function num(n) {
   return {
     name: n.toString(),
-    keyboardShortcuts: [48+n /* 0 */ , 96+n /* keypad-0 */],
+    keyboardShortcuts: [ n + '' ],
     action: function() {
       if ( ! this.editable ) {
         this.push(n);
         this.editable = true;
       } else {
         if ( this.a2 == '0' && ! n ) return;
+        if ( this.a2.length >= 18 ) return;
         this.a2 = this.a2 == '0' ? n : this.a2.toString() + n;
       }
     }
@@ -118,74 +114,23 @@ function num(n) {
 var DEFAULT_OP = function(a1, a2) { return a2; };
 DEFAULT_OP.toString = function() { return ''; };
 
-
-CLASS({
-  name: 'NumberFormatter',
-  messages: [
-    {
-      name: 'NaN',
-      value: 'Not a number',
-      translationHint: 'description of a value that isn\'t a number'
-    }
-  ],
-  constants: [
-    {
-      name: 'formatNumber',
-      todo: multiline(function() {/* Add "infinity" to NumberFormatter
-        messages; this requires messages speechLabel support */}),
-      value: function(n) {
-        // the regex below removes extra zeros from the end,
-        // or middle of exponentials
-        return typeof n === 'string' ? n :
-            Number.isNaN(n)       ? this.NaN :
-            ! Number.isFinite(n)  ? '∞' :
-            parseFloat(n).toPrecision(DECIMAL_PLACES_PRECISION)
-            .replace( /(?:(\d+\.\d*[1-9])|(\d+)(?:\.))(?:(?:0+)$|(?:0*)(e.*)$|$)/ ,"$1$2$3");
-      }
-    }
-  ]
-});
-
-
-CLASS({
-  name: 'History',
-
-  requires: [
-    'NumberFormatter'
-  ],
-
-  properties: [
-    'op',
-    {
-      name: 'a2',
-      preSet: function(_, n) { return this.formatNumber(n); }
-    }
-  ],
-  methods: {
-    formatNumber: function(n) {
-      var nu = NumberFormatter.formatNumber(n) || '0';
-      // strip off trailing "."
-      return nu.replace(/(.+?)(?:\.$|$)/, "$1");
-    }
-  }
-});
-
-
 CLASS({
   name: 'Calc',
   translationHint: 'Calculator',
 
   requires: [
-    'CalcView',
+    'foam.apps.calc.CalcView',
+    'foam.apps.calc.History',
+    'foam.apps.calc.NumberFormatter',
+    'foam.graphics.ActionButtonCView',
+    'foam.graphics.CViewView',
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
-    'foam.graphics.CViewView',
-    'foam.graphics.ActionButtonCView',
     'foam.ui.animated.Label',
     'foam.ui.md.Flare',
-    'History',
-    'PolymerActionButton',
-    'foam.ui.polymer.gen.View'
+    'foam.ui.DAOListView',
+    'AbstractDAO',
+    'PolymerActionButton'
   ],
 
   exports: [
@@ -193,7 +138,23 @@ CLASS({
     'touchManager'
   ],
 
+  constants: {
+    MAX_HISTORY: 30
+  },
+
+  messages: [
+    {
+      name: 'CalcName',
+      value: 'Calculator',
+      translationHint: 'name of application for performing simple calculations'
+    }
+  ],
+
   properties: [
+    {
+      name: 'numberFormatter',
+      factory: function() { return this.NumberFormatter.create(); }
+    },
     { name: 'degreesMode', defaultValue: false },
     { name: 'memory', defaultValue: 0 },
     { name: 'a1', defaultValue: 0 },
@@ -220,7 +181,7 @@ CLASS({
         // TODO(braden): HACK This should be just exporting the property, but
         // the context is not properly passed into views created using <foam>
         // tags right now. Clean up this and gestureManager below.
-        var tm = this.foam.input.touch.TouchManager.create();
+        var tm = this.TouchManager.create();
         window.X.touchManager = tm;
         return tm;
       }
@@ -250,29 +211,35 @@ CLASS({
     permutation: function(n, r) { return this.factorial(n) / this.factorial(n-r); },
     combination: function(n, r) { return this.permutation(n, r) / this.factorial(r); },
     error: function() {
-      if ( $$('calc-display')[0] ) setTimeout(this.Flare.create({
-        element: $$('calc-display')[0],
+      // TODO(kgr): Move to CalcView
+      if ( this.X.$$('calc-display')[0] ) setTimeout(this.Flare.create({
+        element: this.X.$$('calc-display')[0],
         color: '#f44336' /* red */
       }).fire, 100);
-      this.history.put(History.create(this));
-      this.a1 = 0;
-      this.a2 = '';
-      this.op = DEFAULT_OP;
+      this.history.put(this.History.create(this));
+      this.a1   = 0;
+      this.a2   = '';
+      this.op   = DEFAULT_OP;
       this.row1 = '';
       this.editable = true;
     },
     init: function() {
       this.SUPER();
 
+      X.registerModel(this.PolymerActionButton, 'foam.apps.calc.CalcButton');
+
       Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
         if ( Number.isNaN(this.a2) ) this.error();
-        var a2 = NumberFormatter.formatNumber(this.a2);
+        var a2 = this.numberFormatter.formatNumber(this.a2);
         this.row1 = this.op + ( a2 !== '' ? '&nbsp;' + a2 : '' );
       }.bind(this)));
     },
     push: function(a2, opt_op) {
-      this.row1 = '';
-      this.history.put(History.create(this));
+      if ( a2 != this.a2 ||
+           ( opt_op || DEFAULT_OP ) != this.op )
+        this.row1 = '';
+      this.history.put(this.History.create(this));
+      while ( this.history.length > this.MAX_HISTORY ) this.history.shift();
       this.a1 = this.a2;
       this.op = opt_op || DEFAULT_OP;
       this.a2 = a2;
@@ -284,10 +251,10 @@ CLASS({
 
   actions: [
     num(1), num(2), num(3), num(4), num(5), num(6), num(7), num(8), num(9), num(0),
-    binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7', 'divide', 'divide'),
-    binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7', 'multiply', 'multiply'),
-    binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
-    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–', 'minus', 'minus'),
+    binaryOp('div',   ['/'], function(a1, a2) { return a1 / a2; }, '\u00F7', 'divide', 'divide'),
+    binaryOp('mult',  ['*'], function(a1, a2) { return a1 * a2; }, '\u00D7', 'multiply', 'multiply'),
+    binaryOp('plus',  ['+'], function(a1, a2) { return a1 + a2; }, '+', 'plus', 'plus'),
+    binaryOp('minus', ['-'], function(a1, a2) { return a1 - a2; }, '–', 'minus', 'minus'),
     {
       name: 'ac',
       label: 'AC',
@@ -297,20 +264,22 @@ CLASS({
 
       keyboardShortcuts: [ 'a', 'c' ],
       action: function() {
-        this.row1 = '';
-        this.a1 = '0';
-        this.a2 = '';
+        this.row1     = '';
+        this.a1       = '0';
+        this.a2       = '';
         this.editable = true;
-        this.op = DEFAULT_OP;
+        this.op       = DEFAULT_OP;
         this.history = [].sink;
-        if ( $$('calc-display')[0] ) {
+        // TODO(kgr): Move to CalcView
+        if ( this.X.$$('calc-display')[0] ) {
           var now = Date.now();
           if ( this.lastFlare_ && now-this.lastFlare_ < 1000 ) return;
           this.lastFlare_ = now;
           this.Flare.create({
-            element: $$('calc-display')[0],
+            element: this.X.$$('calc-display')[0],
             color: '#2196F3' /* blue */
           }).fire();
+          this.X.window.getSelection().removeAllRanges();
         }
       }
     },
@@ -319,13 +288,15 @@ CLASS({
       label: '+/-',
       speechLabel: 'negate',
       keyboardShortcuts: [ 'n' ],
+      translationHint: 'switch positive/negative sign of number',
       action: function() { this.a2 = - this.a2; }
     },
     {
       name: 'point',
-      label: '.',
+      labelFn: function() { return this.numberFormatter.useComma ? ',' : '.'; },
       speechLabel: 'point',
-      keyboardShortcuts: [ 110, 190 ],
+      keyboardShortcuts: [ '.', ',' ],
+      translationHint: 'decimal point',
       action: function() {
         if ( ! this.editable ) {
           this.push('0.');
@@ -340,12 +311,13 @@ CLASS({
       name: 'equals',
       label: '=',
       speechLabel: 'equals',
-      keyboardShortcuts: [ 187 /* '=' */, 13 /* <enter> */ ],
+      keyboardShortcuts: [ '=', 13 /* <enter> */ ],
+      translationHint: 'compute operation and display result',
       action: function() {
         if ( typeof(this.a2) === 'string' && this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
         if ( this.op == DEFAULT_OP ) {
           var last = this.history[this.history.length-1];
-          if ( ! last ) return;
+          if ( ! last || last.op === DEFAULT_OP ) return;
           if ( last.op.binary ) {
             this.push(this.a2);
             this.a2 = last.a2;
@@ -360,38 +332,54 @@ CLASS({
     },
     {
       name: 'backspace',
-      label: 'backspace',
+      label: '⌫',
+      speechLabel: 'backspace',
       translationHint: 'delete one input character',
       keyboardShortcuts: [ 8 /* backspace */ ],
       action: function() {
-        this.a2 = this.a2.toString.length == 1 ?
-          '0' :
-          this.a2.toString().substring(0, this.a2.length-1) ;
+        // This block will make backspace act like all-clear if the user has done a ctrl-A
+        // to select all of the text.
+        var selection = this.X.window.getSelection().toString();
+        if ( selection && selection.split('\n').length == this.history.length + 1 ) {
+          this.ac();
+          return;
+        }
+
+        if ( ! this.editable ) return;
+
+        if ( this.a2.toString().length ) {
+          this.a2 = this.a2.toString().substring(0, this.a2.length-1);
+        } else {
+          this.op = DEFAULT_OP;
+        }
       }
     },
     {
       name: 'pi',
       label: 'π',
       keyboardShortcuts: ['p'],
+      translationHint: 'mathematical constant, pi',
       action: function() { this.a2 = Math.PI; }
     },
     {
       name: 'e',
       label: 'e',
       keyboardShortcuts: ['e'],
+      translationHint: 'mathematical constant, e',
       action: function() { this.a2 = Math.E; }
     },
     {
       name: 'percent',
       label: '%',
       speechLabel: 'percent',
-      keyboardShortcuts: [ 'shift-53' /* % */ ],
+      keyboardShortcuts: [ '%' ],
+      translationHint: 'convert number to percentage',
       action: function() { this.a2 /= 100.0; }
     },
 
-    unaryOp('inv',    ['i'], function(a) { return 1.0/a; }, '1/x', undefined, 'inverse'),
-    unaryOp('sqroot', [], Math.sqrt, '√', 'square root'),
-    unaryOp('square', ['shift-50' /* @ */], function(a) { return a*a; }, 'x²', 'x squared', 'x squared'),
+    unaryOp('inv',    ['i'], function(a) { return 1.0/a; }, '1/x', undefined, 'inverse', 'inverse'),
+    unaryOp('sqroot', [], Math.sqrt, '√', 'square root', 'square root'),
+    unaryOp('square', ['@'], function(a) { return a*a; }, 'x²', 'x squared', 'x squared'),
     unaryOp('ln',     [], Math.log, 'ln', 'natural logarithm', 'natural logarithm'),
     unaryOp('exp',    [], Math.exp, 'eⁿ', undefined, 'e to the power of n'),
     unaryOp('log',    [], function(a) { return Math.log(a) / Math.LN10; }, 'log', 'logarithm', 'log base 10'),
@@ -421,16 +409,17 @@ CLASS({
     unaryOp('acos',   [], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arccosine'),
     unaryOp('atan',   [], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arctangent'),
 
-    unaryOp('fact',   [ 'shift-49' /* ! */], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
-    binaryOp('mod',   [],         function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
-    binaryOp('p',     [],         function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations (n permute r)', 'permutation'),
-    binaryOp('c',     [],         function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations (n combine r))', 'combination'),
+    unaryOp('fact',   ['!'], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
+    binaryOp('mod',   [],    function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
+    binaryOp('p',     [],    function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations (n permute r)', 'permutation'),
+    binaryOp('c',     [],    function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations (n combine r))', 'combination'),
     unaryOp('round',  [], Math.round, 'rnd', 'round', 'round'),
     {
       name: 'rand',
       label: 'rand',
       speechLabel: 'random',
       keyboardShortcuts: [],
+      translationHint: 'generate random number',
       action: function() { this.a2 = Math.random(); }
     },
     unaryOp('store',   [], function(n) { this.memory = n; return n; }, 'a=', 'store in memory', 'store in memory'),
@@ -439,519 +428,8 @@ CLASS({
       label: 'a',
       speechLabel: 'fetch from memory',
       keyboardShortcuts: [],
+      translationHint: 'load memorized number',
       action: function() { this.a2 = this.memory; }
-    },
-  ]
-});
-
-
-CLASS({
-  name: 'CalcSpeechView',
-  extendsModel: 'foam.ui.View',
-  properties: [
-    'calc',
-    'lastSaid'
-  ],
-  listeners: [
-    {
-      name: 'onAction',
-      code: function(calc, topic, action) {
-        var last  = this.calc.history[this.calc.history.length-1];
-        var unary = last && last.op.unary;
-        this.say(
-          action.name === 'equals' ?
-            action.speechLabel + ' ' + this.calc.a2 :
-          unary ?
-            action.speechLabel + Calc.EQUALS.speechLabel + this.calc.a2 :
-            action.speechLabel);
-      }
-    }
-  ],
-  actions: [
-    {
-      name: 'repeat',
-      keyboardShortcuts: [ 'r' ],
-      action: function() { this.say(this.lastSaid); }
-    },
-    {
-      name: 'sayState',
-      keyboardShortcuts: [ 's' ],
-      action: function() {
-        var last  = this.calc.history[this.calc.history.length-1];
-        if ( ! last ) {
-          this.say(this.calc.a2);
-        } else {
-          var unary = last && last.op.unary;
-          if ( this.calc.op !== DEFAULT_OP ) {
-            this.say(
-              unary ?
-                this.calc.a2 + ' ' + last.op.speechLabel :
-                last.a2 + ' ' + this.calc.op.speechLabel + ' ' + this.calc.a2 );
-          } else {
-            this.say(
-              unary ?
-                last.a2 + ' ' + last.op.speechLabel + Calc.EQUALS.speechLabel + this.calc.a2 :
-                this.calc.history[this.calc.history.length-2].a2 + ' ' + last.op.speechLabel + ' ' + last.a2 + Calc.EQUALS.speechLabel + this.calc.a2 );
-          }
-        }
-      }
-    },
-    {
-      name: 'sayModeState',
-      keyboardShortcuts: [ 't' ],
-      action: function() { this.say(this.calc.degreesMode ? 'degrees' : 'radians'); }
-    }
-  ],
-  methods: {
-    say: function(msg) {
-      // console.log('say: ', msg);
-      this.lastSaid = msg;
-      var e = document.createTextNode(' ' + msg + ' ');
-      e.id = this.nextID();
-      this.$.appendChild(e);
-      setTimeout(function() { e.remove(); }, 30000);
-    },
-    toHTML: function() {
-      return '<output id="' + this.id + '" style="position:absolute;left:-1000000;" aria-live="polite"></output>'
-    },
-    initHTML: function() {
-      this.SUPER();
-      this.calc.subscribe(['action'], this.onAction);
-    }
-  }
-});
-
-
-var CalcButton = getCalcButton();
-
-CLASS({
-  name: 'CalcView',
-  requires: [
-    'HistoryCitationView',
-    'foam.ui.SlidePanel',
-    'MainButtonsView',
-    'SecondaryButtonsView',
-    'TertiaryButtonsView',
-    // 'foam.chromeapp.ui.ZoomView'
-  ],
-  exports: [
-    'data'
-  ],
-  properties: [
-    {
-      model_: 'ViewFactoryProperty',
-      name: 'mainButtons',
-      defaultValue: 'MainButtonsView'
-    },
-    {
-      model_: 'ViewFactoryProperty',
-      name: 'basicOperations',
-      defaultValue: 'BasicOperationsButtonView'
-    },
-  ],
-  extendsModel: 'foam.ui.DetailView',
-  templates: [
-    function CSS() {/*
-    * {
-      box-sizing: border-box;
-      outline: none;
-    }
-
-    html {
-      height: 100%;
-      margin: 0;
-      overflow: initial;
-      padding: 0;
-      width: 100%;
-    }
-
-    body {
-      -webkit-user-select: none;
-      -webkit-font-smoothing: antialiased;
-      font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
-      font-size: 34px;
-      font-weight: 300;
-      height: 100%;
-      position: fixed;
-      margin: 0;
-      overflow: hidden;
-      padding: 0;
-      width: 100%;
-    }
-
-    ::-webkit-scrollbar {
-      display: none;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      display: none;
-    }
-
-    .calc {
-      background-color: #eee;
-      border: 0;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      margin: 0;
-      padding: 0px;
-    }
-
-    .deg, .rad {
-      background-color: #eee;
-      color: #111;
-      font-size: 22px;
-      font-weight: 400;
-      opacity: 0;
-      padding-left: 8px;
-      padding-right: 10px;
-      transition: opacity 0.8s;
-    }
-
-    .active {
-      opacity: 1;
-      z-index: 2;
-    }
-
-    .calc-display, .calc-display:focus {
-      border: none;
-      letter-spacing: 1px;
-      line-height: 36px;
-      margin: 0;
-      min-width: 140px;
-      padding: 0 25pt 2pt 25pt;
-      text-align: right;
-      -webkit-user-select: text;
-      overflow-y: scroll;
-      overflow-x: hidden;
-    }
-
-    .edge {
-      background: linear-gradient(to bottom, rgba(240,240,240,1) 0%,
-                                             rgba(240,240,240,0) 100%);
-      height: 20px;
-      position: absolute;
-      top: 0;
-      width: 100%;
-      z-index: 1;
-    }
-
-    .edge2 {
-      margin-top: -12px;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%,
-                                             rgba(0,0,0,0) 100%);
-      top: 12px;
-      height: 12px;
-      position: relative;
-      width: 100%;
-      z-index: 99;
-    }
-
-    .calc .buttons {
-      flex: 1 1 100%;
-      width: 100%;
-      height: 252px;
-    }
-
-    .button-row {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      flex: 1 1 100%;
-      justify-content: space-between;
-    }
-
-    .button {
-      flex-grow: 1;
-      justify-content: center;
-      display: flex;
-      align-items: center;
-      background-color: #4b4b4b;
-    }
-
-    .rhs-ops {
-      border-left-width: 1px;
-      border-left-style: solid;
-      border-left-color: rgb(68, 68, 68);
-      background: #777;
-    }
-
-    .rhs-ops .button {
-      background-color: #777;
-    }
-
-    .button-column {
-      display: flex;
-      flex-direction: column;
-      flex-wrap: nowrap;
-    }
-
-    .inner-calc-display {
-      position: absolute;
-      right: 20pt;
-    top: 100%;
-    transition: top 0.3s ease;
-      xxxbottom: 5px;
-      width: 100%;
-      padding-left: 50px;
-      padding-bottom: 11px;
-    }
-
-    .calc-display {
-      flex-grow: 5;
-      position: relative;
-    }
-
-    .secondaryButtons {
-      padding-left: 30px;
-      background: rgb(52, 153, 128);
-    }
-
-    .secondaryButtons .button {
-      background: rgb(52, 153, 128);
-    }
-
-    .tertiaryButtons {
-      padding-left: 35px;
-      background: rgb(29, 233, 182);
-    }
-
-    .tertiaryButtons .button {
-      background: rgb(29, 233, 182);
-    }
-
-    .keypad {
-      flex-grow: 0;
-      flex-shrink: 0;
-      margin-bottom: -4px;
-      z-index: 5;
-    }
-
-    .alabel {
-      font-size: 34px;
-    }
-
-    hr {
-      border-style: outset;
-      opacity: 0.5;
-    }
-  */},
-    {
-      name: 'toHTML',
-      template: function() {/*
-        <%= CalcSpeechView.create({calc: this.data}) %>
-        <!-- <%= this.ZoomView.create() %> -->
-        <% X.registerModel(CalcButton, 'foam.ui.ActionButton'); %>
-        <div style="position: relative;z-index: 100;">
-          <div tabindex="1" style="position: absolute;">
-            <span aria-label="{{{Calc.RAD.label}}}" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="{{{Calc.RAD.label}}}"></span>
-            <span aria-label="{{{Calc.DEG.label}}}" style="top: 5;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="{{{Calc.DEG.label}}}">{{{Calc.DEG.label}}}</span>
-          </div>
-        </div>
-
-        <div class="edge"></div>
-        <div id="%%id" class="calc">
-          <div class="calc-display">
-            <div class="inner-calc-display">
-              $$history{ rowView: 'HistoryCitationView' }
-              <div>$$row1{mode: 'read-only', tabIndex: 3, escapeHTML: false}</div>
-            </div>
-          </div>
-          <div class='keypad'>
-          <div class="edge2"></div>
-          <%= this.SlidePanel.create({
-            minWidth: 310,
-            minPanelWidth: 320,
-            panelRatio: 0.55,
-            mainView: 'MainButtonsView',
-            stripWidth: 30,
-            panelView: {
-              factory_: 'foam.ui.SlidePanel',
-              stripWidth: 30,
-              minWidth: 320,
-              minPanelWidth: 220,
-              panelRatio: 3/7,
-              mainView: 'SecondaryButtonsView',
-              panelView: 'TertiaryButtonsView'
-            }
-           }) %>
-          </div>
-        </div>
-        <%
-          // This block causes the calc-display to scroll when updated.
-          // To remove this feature replace the .inner-calc-display 'transition:' and
-          // 'top:' styles with 'bottom: 0'.
-          var move = EventService.framed(EventService.framed(function() {
-            if ( ! this.$ ) return;
-            var inner$ = this.$.querySelector('.inner-calc-display');
-            var outer$ = this.$.querySelector('.calc-display');
-            var value = DOMValue.create({element: outer$, property: 'scrollTop' });
-            Movement.animate(200, function() { value.value = inner$.clientHeight; })();
-          }.bind(this)));
-          Events.dynamic(function() { this.data.op; this.data.history; this.data.a1; this.data.a2; }.bind(this), move);
-          this.X.window.addEventListener('resize', move);
-          // Add mousewhell scrolling.
-          this.X.document.addEventListener('mousewheel', EventService.framed(function(e) {
-            var inner$ = self.$.querySelector('.inner-calc-display');
-            var outer$ = self.$.querySelector('.calc-display');
-            var outer  = window.getComputedStyle(outer$);
-            var inner  = window.getComputedStyle(inner$);
-            var top    = toNum(inner$.style.top);
-            inner$.style.top = Math.min(0, Math.max(toNum(outer.height)-toNum(inner.height)-11, top-e.deltaY)) + 'px';
-          }));
-        %>
-      */}
     }
   ]
 });
-
-
-CLASS({
-  name: 'MainButtonsView',
-  extendsModel: 'foam.ui.DetailView',
-  templates: [
-    function toHTML() {/*
-      <div id="%%id" class="buttons button-row" style="background:#4b4b4b;">
-        <div class="button-column" style="flex-grow: 3">
-          <div class="button-row">
-            $$7{tabIndex: 101} $$8{tabIndex: 102} $$9{tabIndex: 103}
-          </div>
-          <div class="button-row">
-            $$4{tabIndex: 104}$$5{tabIndex: 105}$$6{tabIndex: 106}
-         </div>
-          <div class="button-row">
-            $$1{tabIndex: 107}$$2{tabIndex: 108}$$3{tabIndex: 109}
-          </div>
-          <div class="button-row">
-            $$point{tabIndex: 111}$$0{tabIndex: 111}$$equals{tabIndex: 112}
-          </div>
-        </div>
-      <%
-      this.X.registerModel(CalcButton.xbind({
-        background: '#777',
-        width:  70,
-        height: 45,
-        font:   '300 26px RobotoDraft'
-      }), 'foam.ui.ActionButton');
-      %>
-        <div class="button-column rhs-ops" style="flex-grow: 1;padding-top: 7px; padding-bottom: 10px;">
-          $$ac{tabIndex: 201, font: '300 24px RobotoDraft'
-}
-          $$plus{tabIndex: 202}
-          $$minus{tabIndex: 203}
-          $$div{tabIndex: 204}
-          $$mult{tabIndex: 205}
-        </div>
-      </div>
-    */}
-  ]
-});
-
-
-CLASS({
-  name: 'SecondaryButtonsView',
-  extendsModel: 'foam.ui.DetailView',
-  templates: [
-    function toHTML() {/*
-          <%
-          this.X.registerModel(CalcButton.xbind({
-            background: 'rgb(52, 153, 128)',
-            width:  61,
-            height: 61,
-            font:   '300 20px RobotoDraft'
-          }), 'foam.ui.ActionButton');
-          %>
-          <div id="%%id" class="buttons button-row secondaryButtons">
-            <div class="button-column" style="flex-grow: 1;">
-              <div class="button-row">
-                $$fetch{tabIndex: 311}
-                $$store{tabIndex: 312}
-                $$round{tabIndex: 313}
-                $$rand{tabIndex: 314}
-              </div>
-              <div class="button-row">
-                $$e{tabIndex: 321}
-                $$ln{tabIndex: 322}
-                $$log{tabIndex: 323}
-                $$exp{tabIndex: 324}
-              </div>
-              <div class="button-row">
-                $$inv{tabIndex: 331}
-                $$pow{tabIndex: 332}
-                $$sqroot{tabIndex: 333}
-                $$root{tabIndex: 334}
-              </div>
-              <div class="button-row">
-                $$sign{tabIndex: 341}
-                $$percent{tabIndex: 342}
-                $$square{tabIndex: 343}
-                $$pi{tabIndex: 344}
-              </div>
-            </div>
-          </div>
-    */}
-  ]
-});
-
-
-CLASS({
-  name: 'TertiaryButtonsView',
-  extendsModel: 'foam.ui.DetailView',
-  templates: [
-    function toHTML() {/*
-          <%
-          this.X.registerModel(this.X.ActionButton.xbind({
-            width:      61,
-            height:     61,
-            color:      'rgb(80, 80, 80)',
-            background: 'rgb(29, 233, 182)',
-            font:       '300 18px RobotoDraft'
-          }), 'foam.ui.ActionButton');
-          %>
-          <div id="%%id" class="buttons button-row tertiaryButtons">
-            <div class="button-column" style="flex-grow: 1;">
-              <div class="button-row">
-                $$deg{tabIndex: 411} $$rad{tabIndex: 412} $$fact{tabIndex: 413}
-              </div>
-              <div class="button-row">
-                $$sin{tabIndex: 421} $$asin{tabIndex: 422} $$mod{tabIndex: 423}
-              </div>
-              <div class="button-row">
-                $$cos{tabIndex: 431} $$acos{tabIndex: 432} $$p{tabIndex: 433}
-              </div>
-              <div class="button-row">
-                $$tan{tabIndex: 441} $$atan{tabIndex: 442} $$c{tabIndex: 443}
-              </div>
-            </div>
-          </div>
-          <%
-            var l = function(_, _, _, degrees) {
-              if ( this.degView.canvas ) {
-                this.degView.view.paint();
-                this.radView.view.paint();
-              }
-              this.degView.font = degrees ? '600 18px RobotoDraft' : '300 18px RobotoDraft';
-              this.radView.font = degrees ? '300 18px RobotoDraft' : '600 18px RobotoDraft';
-            }.bind(this);
-            this.data.degreesMode$.addListener(l);
-            l();
-          %>
-    */}
-  ]
-});
-
-
-CLASS({
-  name: 'HistoryCitationView',
-  extendsModel: 'foam.ui.DetailView',
-  templates: [
-    function toHTML() {/*
-      <div class="history" tabindex="2">{{{this.data.op}}} {{this.data.a2}}<% if ( this.data.op.toString() ) { %><hr aria-label="{{Calc.EQUALS.speechLabel}}" tabindex="2"><% } %></div>
-    */}
-  ]
-});
-
-// History.getPrototype();
-// Calc.getPrototype();
-
-// console.profileEnd();
