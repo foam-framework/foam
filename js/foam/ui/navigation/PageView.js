@@ -87,10 +87,15 @@ CLASS({
   },
   templates: [
     function CSS() {/*
+      .PageView {
+        height: 100%;
+        overflow: hidden;
+      }
       .PageView .positioned-view {
-        position: absolute;
         left: 0;
         overflow-y: auto;
+        position: absolute;
+        transition: top 0.3s linear;
         width: 100%;
       }
     */},

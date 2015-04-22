@@ -128,7 +128,7 @@ CLASS({
     },
     {
       name: 'className',
-      defaultValue: 'slideviewchoiceview-container'
+      defaultValue: 'TopLevelViewChoiceView',
     },
   ],
   actions: [
@@ -159,16 +159,12 @@ CLASS({
   ],
   templates: [
     function CSS() {/*
-      .slideviewchoiceview-container {
-        display: flex;
-        background-color: #EEEEEE;
-      }
-      .SlideViewChoiceView-panel {
-        height: 100%;
+      .TopLevelViewChoiceView {
+        overflow: hidden;
       }
     */},
     function toHTML() {/*
-      %%view
+      <div <%= this.cssClassAttr() %>>%%view</div>
     */}
   ]
 });
