@@ -67,7 +67,7 @@ CLASS({
           this.addChild(c);
 
           c.y$.addListener(function(c) {
-            if ( c.y > this.height+50 ) {
+            if ( c.y > 1/this.scaleY*this.height+50 ) {
               c.y = -50;
             }
           }.bind(this, c));
@@ -88,7 +88,7 @@ CLASS({
         var b = this.PhysicalCircle.create({
           r: 3,
           x: this.width * Math.random(),
-          y: this.height,
+          y: this.height/this.scaleY,
           color: 'white',
           borderWidth: 1,
           border: 'blue',
