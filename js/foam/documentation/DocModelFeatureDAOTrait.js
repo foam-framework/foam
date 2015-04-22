@@ -140,11 +140,6 @@ CLASS({
         return;
       }
 
-      if ( this.featureDAOModelsLoading[data.id]
-          && this.featureDAOModelsLoading[data.id].loading ) {
-        // someone is already loading this model for us!
-        return;
-      }
       console.log("Generating FeatureDAO...", this.data.id );
 
 //       this.featureDAO.removeAll();
@@ -165,6 +160,7 @@ CLASS({
         this.loadFeaturesOfModel( { data: data } );
       }
 
+      // TODO(jacksonic): relocate submodels and trait users to a different model
 //       this.Y.setTimeout(function() {
 //           this.findSubModels(data);
 //           this.findTraitUsers(data);
@@ -276,11 +272,6 @@ CLASS({
           */
         var model = map.data;
 
-        if ( this.featureDAOModelsLoading[model.id]
-            && this.featureDAOModelsLoading[model.id].loading ) {
-          return this.featureDAOModelsLoading[model.id].inheritanceLevel; //TODO: async?
-        }
-
         if (typeof previousExtenderTrackers == 'undefined') {
           previousExtenderTrackers = [];
         }
@@ -293,9 +284,21 @@ CLASS({
         var self = this;
         var newModelTr = this.DocModelInheritanceTracker.create();
         newModelTr.model = model.id;
-        this.featureDAOModelsLoading[model.id] = { loading: true, inheritanceLevel: -1 };
+        // track what is loading, so child daos don't load it again needlessly
+        if (   ! this.featureDAOModelsLoading[model.id]
+            || ! this.featureDAOModelsLoading[model.id].loading ) {
+          this.featureDAOModelsLoading[model.id] = {
+            loading: true,
+            inheritanceLevel: -1,
+            features: {}
+          };
+        }
 
         this.featuresToLoad.forEach(function(modProp) {
+          // check if someone else has processed the feature, then indicate we have process this feature
+          if ( self.featureDAOModelsLoading[model.id].features[modProp] ) return;
+          self.featureDAOModelsLoading[model.id].features[modProp] = true;
+
           var modPropVal = modelDef[modProp];
           if ( Array.isArray(modPropVal) ) { // we only care to check inheritance on the array properties
             modPropVal.forEach(function(feature) {
