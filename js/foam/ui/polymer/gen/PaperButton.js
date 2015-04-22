@@ -162,7 +162,6 @@ CLASS({
         var rtn = this.SUPER();
         this.bindDownAction();
         this.updateStyleCSS();
-        console.log('paper-button.initHTML', this.id);
         return rtn;
       }
     },

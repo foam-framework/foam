@@ -147,7 +147,7 @@ CLASS({
       X.setTimeout(function() {
         this.autoSizeLayout.suspended = false;
         this.autoSizeLayout.paint();
-      }.bind(this), 1000);
+      }.bind(this), 300);
     },
 
     destroy: function( isParentDestroyed ) {

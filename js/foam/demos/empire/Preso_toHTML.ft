@@ -363,7 +363,7 @@
   <slide><foam model="foam.demos.Flow"/></slide>
 
   <slide>
-    <foam model="foam.ui.SlidePanel" minWidth="1700" minPanelWidth="350" side="left" stripWidth="16">
+    <foam model="foam.ui.SlidePanel" minWidth="1900" minPanelWidth="650" side="left" stripWidth="16">
       <panelView>
         <center style="padding-top:200px;height:100%; background:cadetblue;"><foam model="foam.graphics.Gauge" label="Applause" maxValue="11"/></center>
       </panelView>
