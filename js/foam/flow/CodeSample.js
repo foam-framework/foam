@@ -10,25 +10,25 @@
  */
 
 CLASS({
-  name: 'CodeSample',
   package: 'foam.flow',
+  name: 'CodeSample',
   extendsModel: 'foam.flow.Element',
 
   requires: [
     'foam.dao.EasyDAO',
-    'foam.ui.ActionButton',
-    'foam.sandbox.IsolatedContext',
     'foam.flow.CodeSampleOutput',
     'foam.flow.CodeSampleOutputView',
     'foam.flow.CodeSnippet',
     'foam.flow.CodeSnippetView',
-    'foam.flow.SourceCodeListView'
+    'foam.flow.SourceCodeListView',
+    'foam.sandbox.IsolatedContext',
+    'foam.ui.ActionButton'
   ],
 
   imports: [
-    'document',
+    'actionButtonName',
     'codeViewName',
-    'actionButtonName'
+    'document'
   ],
   exports: [ 'sampleCodeContext$' ],
 
@@ -77,8 +77,10 @@ CLASS({
         if ( ! Y[path[i]] && opt_noCreate ) return undefined;
 
         if ( ! Y.hasOwnProperty(path[i]) ) {
-          if ( Y[path[i]] ) Y[path[i]] = Object.create(Y[path[i]]);
-          else              Y[path[i]] = {};
+          if ( Y[path[i]] )
+            Y[path[i]] = Object.create(Y[path[i]]);
+          else
+            Y[path[i]] = {};
         }
 
         return this.packagePath_(Y[path[i]], path, i+1, opt_noCreate);
@@ -88,8 +90,9 @@ CLASS({
       model_: 'FunctionProperty',
       name: 'packagePath',
       defaultValue: function(X, path, opt_noCreate) {
-        return path ? this.packagePath_(X, path.split('.'), 0, opt_noCreate) :
-            this;
+        return path ?
+          this.packagePath_(X, path.split('.'), 0, opt_noCreate) :
+          this;
       }
     },
     {
