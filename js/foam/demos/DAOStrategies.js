@@ -72,9 +72,9 @@ CLASS({
       var self = this;
       var app = this.ImageCView.create({
         x: 1000,
-        scaleX: 0.2,
-        scaleY: 0.2,
-        src: './demos/democat/GMail.png'
+        xxxscaleX: 0.2,
+        xxxscaleY: 0.2,
+        src: './js/foam/demos/empire/todo.png'
       });
 
       this.addChild(app);

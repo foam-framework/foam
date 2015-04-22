@@ -109,12 +109,18 @@
   </slide>
 
   <slide>
-    <h1>Offline</h1>
-    <ul>
-      <li>Caching</li>
-      <li>Sync</li>
-      <li>MQL</li>
-    </ul>
+    <h1>TodoMVC</h1>
+    <br>
+    <center>
+      <iframe style="width:80%;height:80%;" src="./apps/todo/Todo.html"></iframe>
+    </center>
+  </slide>
+
+  <slide>
+    <h1>DAO Strategies</h1>
+    <br>
+    <br>
+    <foam model="foam.demos.DAOStrategies"/>
   </slide>
 
   <slide>
@@ -182,9 +188,6 @@
             </source>
           </code-sample>
   </slide>
-
-
-
 
 
   <slide>
