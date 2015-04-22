@@ -91,23 +91,13 @@ CLASS({
     function toInnerHTML()
     {/*
       <hr/>
-      <p>
         $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'horizontal'}
-      </p>
       <hr/>
-      <p>
         $$data
-      </p>
-      <p>
         $$data{model_: 'foam.ui.md.PopupChoiceView', choices:this.choices}
-      </p>
-      <p>
         $$oneAction
-      </p>
-      <p>
         $$enabledButton{model_:'foam.ui.md.CheckboxView', label: 'Button Enabled'}
         $$showButton{model_:'foam.ui.md.CheckboxView', label: 'Button Show'}
-      </p>
     */}
   ]
 
