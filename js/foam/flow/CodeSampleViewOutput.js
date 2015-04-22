@@ -15,8 +15,8 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
-      name: 'innerHTML'
+      model_: 'ViewFactoryProperty',
+      name: 'view'
     }
   ]
 });
