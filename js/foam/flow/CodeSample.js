@@ -193,7 +193,7 @@ CLASS({
       name: 'onRun',
       code: function() {
         this.output.virtualConsole.watchConsole();
-        this.output.viewOutput.innerHTML = '';
+        this.output.viewOutput.view = '';
         var X = this.sampleCodeContext = this.sampleCodeBaseContext.sub();
         this.source.select({
           put: function() {
@@ -210,8 +210,8 @@ CLASS({
               } else if ( arguments[0].src.language.toLowerCase() === 'html' ) {
                 // CodeSamples use <foam-tag> instead of <foam> to avoid
                 // creating broken FoamTagViews.
-                this.output.viewOutput.innerHTML +=
-                    arguments[0].src.code.replace(/<foam-tag/g, '<foam');
+                this.output.viewOutput.view =
+                    arguments[0].src.code.replace(/<(\s*[/]\s*)?foam-tag/g, '<$1foam');
               }
             }
           }.bind(this),

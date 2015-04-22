@@ -40,14 +40,11 @@ CLASS({
   templates: [
     function CSS() {/*
       .PanelViewChoiceView {
+        background-color: white;
         -webkit-transform: translate3d(0px, 0px, 1px);
         -webkit-transform-style: preserve-3d;
       }
-      .PanelViewChoiceView .viewwithtoolbarbody {
-        background-color: white;
-      }
       .PanelViewChoiceView .viewChoicesView {
-        background-color: white;
         border: none;
         width: 100%;
       }

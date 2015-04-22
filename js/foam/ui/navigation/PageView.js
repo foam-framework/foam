@@ -62,9 +62,12 @@ CLASS({
       isFramed: true,
       code: function() {
         if (this.$) {
+          var windowHeight = this.X.window.innerHeight;
+          this.$.style.height = windowHeight + 'px';
+
           var headerHeight = this.header ? this.header.preferredHeight : 0;
           var footerHeight = this.footer ? this.footer.preferredHeight : 0;
-          var availableBodyHeight = this.X.window.innerHeight -
+          var availableBodyHeight = windowHeight -
               (headerHeight + footerHeight);
 
           var bodyContainer = document.getElementById(this.id + '-body');
@@ -88,7 +91,6 @@ CLASS({
   templates: [
     function CSS() {/*
       .PageView {
-        height: 100%;
         overflow: hidden;
       }
       .PageView .positioned-view {

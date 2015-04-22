@@ -176,14 +176,12 @@ CLASS({
 
       var bodyRect = this.X.document.body.getBoundingClientRect();
 
-      var finalRect = { top:    bodyRect.top + startFromClientRect.top - (slotsAbove * this.itemHeight) -2 - this.vMargin,
-                        bottom: bodyRect.top + startFromClientRect.top + startFromClientRect.height + (slotsBelow * this.itemHeight) +2 + this.vMargin,
+      var finalRect = { top:    -bodyRect.top + startFromClientRect.top - (slotsAbove * this.itemHeight) -2 - this.vMargin,
+                        bottom: -bodyRect.top + startFromClientRect.top + startFromClientRect.height + (slotsBelow * this.itemHeight) +2 + this.vMargin,
                         height: menuCount * this.itemHeight +4 + this.vMargin*2,
-                        left: bodyRect.left + startFromClientRect.left -2,
-                        right: bodyRect.left + startFromClientRect.left + startFromClientRect.width +2,
+                        left: -bodyRect.left + startFromClientRect.left -2,
+                        right: -bodyRect.left + startFromClientRect.left + startFromClientRect.width +2,
                         width: startFromClientRect.width + this.hMargin*2 +4 };
-
-//console.log("Menu start: ", startFromClientRect, " final ", finalRect, " selected offset: ", selectedOffset);
 
       // add to body html
       if ( this.$ ) this.$.outerHTML = '';  // clean up old copy, in case of rapid re-activation
@@ -203,12 +201,13 @@ CLASS({
       this.$.style.width = finalRect.width + 'px';
       this.$.style.zIndex = "1010";
 
-      var verticalDiff = (finalRect.top+finalRect.height/2)
-                        - (startFromClientRect.top+startFromClientRect.height/2);
-      this.$.style.transform = "translateY(-"+verticalDiff+"px) scaleY(0.1) translateY("+verticalDiff+"px)";
+      var verticalDiff = startFromClientRect.top - finalRect.top + startFromClientRect.height/2;
+      this.$.style.transformOrigin = "0 "+(verticalDiff)+"px";
+      this.$.style.transform = "scaleY(0.2)";
+
     },
     animateToExpanded: function() {
-      this.$.style.transition = "transform ease .1s";
+      this.$.style.transition = "transform cubic-bezier(0.0, 0.0, 0.2, 1) .1s";
       this.$.style.transform = "scaleY(1)";
       this.isHidden = false;
     },
@@ -216,10 +215,10 @@ CLASS({
       this.isHidden = true;
 
       if ( ! this.$ ) return;
-      this.$.style.transition = "opacity ease-in .1s"
+      this.$.style.transition = "opacity cubic-bezier(0.4, 0.0, 1, 1) .1s"
       this.$.style.opacity = "0";
       this.$.style.pointerEvents = "none";
-      this.X.setTimeout(function() { if (this.$) this.$.outerHTML = ''; }.bind(this), 1000);
+      this.X.setTimeout(function() { if (this.$) this.$.outerHTML = ''; }.bind(this), 500);
     },
     choiceToHTML: function(id, choice) {
       return '<' + this.innerTagName + ' id="' + id + '" class="choice" '+
@@ -241,6 +240,7 @@ CLASS({
           function(index) {
             if ( ! this.isHidden ) {
               this.choice = this.choices[index];
+              this.close();
             }
           }.bind(this, i),
           id);

@@ -36,7 +36,7 @@ CLASS({
     },
     {
       name: 'label',
-      defaultValueFn: function() {
+      dynamicValue: function() {
         return this.data ?
             this.action.labelFn.call(this.data, this.action) :
             this.action.label;
@@ -85,7 +85,12 @@ CLASS({
       name:  'color',
       label: 'Foreground Color',
       type:  'String',
-      postSet: function(_, nu) { this.button.color = nu; }
+      postSet: function(_, nu) { this.button.color = nu; },
+      factory: function() {
+        // Use factory to trigger postSet and override this.button.color
+        // defaultValue.
+        return 'white';
+      }
     },
     {
       name:  'font',
@@ -117,6 +122,12 @@ CLASS({
         if ( ! this.haloColor ) return innerHTML;
         var style = '<style>' + '#' + this.button.id +
             '::shadow #ripple { color: ' + this.haloColor + '; }</style>';
+
+        this.X.dynamic(function() {
+          this.action.labelFn.call(this.data, this.action);
+          this.updateHTML();
+        }.bind(this));
+
         return style + innerHTML;
       }
     }
