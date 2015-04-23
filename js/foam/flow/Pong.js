@@ -37,7 +37,7 @@ CLASS({
         readOnlyMaxLines: 100
       }), 'foam.flow.CodeView');
       this.X.registerModel(this.SectionView.xbind({
-        expandedIconUrl: 'https://www.google.com/images/icons/material/system/1x/stat_1_black_36dp.png'
+        expandedIconUrl: 'https://www.gstatic.com/images/icons/material/system/1x/expand_less_black_36dp.png'
       }), 'foam.ui.md.SectionView');
     }
   },
