@@ -95,11 +95,20 @@ var FObject = {
     return {
       __proto__: this,
       create: function(args, X) {
-        args = args || {};
-        for ( var key in map ) {
-          if ( ! args.hasOwnProperty(key) ) args[key] = map[key];
+        var createArgs = {};
+        var key;
+
+        // If args is a modelled object, just keep data from instance_.
+        // TODO(kgr): Remove instance_ part when FObject.hasOwnProperty removed.
+        args = args ? (args.instance_ || args) : {};
+
+        for ( key in args ) {
+          if ( args.hasOwnProperty(key) ) createArgs[key] = args[key];
         }
-        return this.__proto__.create(args, X);
+        for ( key in map ) {
+          if ( ! createArgs.hasOwnProperty(key) ) createArgs[key] = map[key];
+        }
+        return this.__proto__.create(createArgs, X);
       },
       xbind: function(m2) {
         for ( var key in map ) {
