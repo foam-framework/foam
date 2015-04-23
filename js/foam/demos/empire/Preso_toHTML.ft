@@ -18,14 +18,15 @@
     April 26, 2015<br>
     </center>
   </slide>
+
   <slide>
-    <h1>History Lesson</h1>
-    <iframe style="width:100%;height:100%;border:none;" src="./demos/UnixSimulator.html"></iframe>
+    <h1>Models and Features</h1>
+    <foam model="foam.demos.FOAMComponents"/>
   </slide>
 
   <slide>
-    <h1>Features and Models</h1>
-    <foam model="foam.demos.FOAMComponents"/>
+    <h1>History Lesson</h1>
+    <iframe style="width:100%;height:100%;border:none;" src="./demos/UnixSimulator.html"></iframe>
   </slide>
 
   <slide>
@@ -183,7 +184,6 @@
                 <title>HTML</title>
                 <src language="html">
                   <code>
-                    <% var canvas = 'foobar'; %>
                     <%= canvas %>
                   </code>
                 </src>
@@ -348,16 +348,22 @@
   </slide>
 
   <slide>
+    <h1>Tutorial</h1>
+      <iframe style="width:45%;height:80%;" src="./index.html?model=foam.tutorials.phonecat.Controller"></iframe>
+      <iframe style="width:45%;height:80%;" src="http://foam-framework.github.io/foam/tutorial/0-intro/"></iframe>
+    <!--
+    <foam model="foam.tutorials.phonecat.Controller"/>
     <h1>Learning FOAM</h1>
     <h2>Tutorial</h2>
-    <h2>TodoMVC</h2>
     <h2>DemoCat</h2>
+    -->
   </slide>
 
   <slide>
     <div style="height:10px;"></div>
     <foam model="foam.demos.MDFieldGuide"/>
   </slide>
+
   <slide>
     <h1>Calculator</h1>
     <br>
