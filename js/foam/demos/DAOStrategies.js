@@ -72,19 +72,12 @@ CLASS({
       [ '???', 'Migration' ],
       [ '???', 'Business Logic' ],
       [ '???', '???' ],
-      [ '???' ],
-      /*
-      [ '' ],
-      [ '' ],
-      [ '' ],
-      [ '' ],
-      [  ],
-      */
+      [ '???' ]
     ]
   },
 
   properties: [
-    { name: 'width',  defaultValue: 2000 },
+    { name: 'width',  defaultValue: 4000 },
     { name: 'height', defaultValue: 2000 },
     {
       name: 'mouse',
@@ -100,27 +93,58 @@ CLASS({
 
       var M = Movement;
       var S = this.STRATEGIES;
-      var H = 80; // 1000 / ( S.length + 1 );
+      var H = 60;
       var self = this;
 
       for ( var i = 0 ; i < S.length ; i++ ) {
         var v = this.makeStrategyView(S[i]);
-        v.x = 900;
-        v.y = 50 + H * i;
+        v.x_ = v.x = 1300;
+        v.y_ = v.y = 50 + H * i;
         this.addChild(v);
       }
       this.mouse.connect(this.view.$);
       this.mouse.y$.addListener(function(_, y) {
         self.view.paint();
-//        app.y = Math.floor(self.mouse.y / H) * H;
       });
+    },
+
+    warp: function(o, y) {
+      if ( o < 10 ) return y;
+      var d  = y-o;
+      var ad = Math.abs(d);
+      d *= 3 - 2 * Math.min(1, Math.pow(Math.max(0, (ad-50))/this.height,0.5));
+      return o+d;
+
+      var MAG = 2;
+      var R   = 400 * (1+MAG);
+      var r   = Math.abs(y-o);
+      r = r/R;
+      if ( r < 1 ) r += MAG*3*r*Math.pow(1-r, 4);
+      r = r*R;
+      return o + ( y > o ? r : -r);
+    },
+
+    paintChildren: function() { /* Paints each child. */
+      for ( var i = 0 ; i < this.children.length ; i++ ) {
+        var child = this.children[i];
+        this.canvas.save();
+        this.canvas.beginPath(); // reset any existing path (canvas.restore() does not affect path)
+        var d = Math.abs(this.mouse.y - child.y);
+        var s = -(this.warp(this.mouse.y, child.y) - this.warp(this.mouse.y, child.y+child.height))/ ( child.height );
+        this.canvas.translate(child.x,child.y+child.height/2);
+        this.canvas.scale(s, s);
+        this.canvas.translate(-child.x,-child.y-child.height/2);
+        this.canvas.translate(0,this.warp(this.mouse.y, child.y)-child.y);
+        child.paint();
+        this.canvas.restore();
+      }
     },
 
     makeStrategyView: function(s) {
       var v = this.CView.create({width: 500, height: 550});
 
       v.addChild(this.ImageCView.create({
-        x: 155,
+        x: 20,
         y: -7,
         scaleX: 0.35,
         scaleY: 0.35,
@@ -133,7 +157,7 @@ CLASS({
         v.addChild(this.LabelledBox.create({
           font: '18px Arial',
           background: c ? 'hsl(' + c + ',70%,90%)' : 'white',
-          x: -140 * (s.length - i + -1),
+          x: -140 * (s.length - i),
           y: ! t ? 25 : 0,
           width:  140,
           height: ! t ? 1 : 50,
