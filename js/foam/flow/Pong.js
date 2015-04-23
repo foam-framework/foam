@@ -31,7 +31,6 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER.apply(this, arguments);
-      debugger;
       this.X.registerModel(this.CodeSnippetView.xbind({
         mode: 'read-only'
       }), 'foam.flow.CodeSnippetView');
