@@ -20,10 +20,6 @@
 // todo: generateTopic()
 // todo: cleanup empty topics after subscriptions removed
 
-// http://www.republicofcode.com/tutorials/flash/as3tweenclass/
-// http://mootools.net/docs/core/Fx/Fx.Transitions
-// http://jquery.malsup.com/cycle/adv.html
-
 /** Publish and Subscribe Event Notification Service. **/
 // ??? Whould 'Observable' be a better name?
 // TODO(kgr): Model or just make part of FObject?
@@ -1047,7 +1043,7 @@ MODEL({
           var dy2 = mouse.y + dy - c.y;
           var d2  = Movement.distance(dx2, dy2);
           var dv  = strength * d2/d;
-          if ( Math.abs(dv) < 0.07 ) return;
+          if ( Math.abs(dv) < 0.01 ) return;
           var a = Math.atan2(dy2, dx2);
           c.vx += dv * Math.cos(a);
           c.vy += dv * Math.sin(a);
