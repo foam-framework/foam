@@ -65,7 +65,7 @@ CLASS({
           });
           this.addChild(c);
 
-          Movement.spring(this.anchor, c, (x-(N-1)/2)*90-800, (y-(N-1)/2)*90, 4);
+          Movement.spring(this.anchor, c, (x-(N-1)/2)*90-800, (y-(N-1)/2)*90, 6);
           Movement.inertia(c);
           Movement.friction(c, 0.98);
           this.timer.i$.addListener(function(c) {
