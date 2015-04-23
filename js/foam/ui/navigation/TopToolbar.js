@@ -67,14 +67,13 @@ CLASS({
     },
   ],
   listeners: [
-  {
-    name: 'onResize',
-    code: function(_, _, old, nu) {
-      this.preferredHeight += nu - old;
+    {
+      name: 'onResize',
+      code: function(_, _, old, nu) {
+        this.preferredHeight += nu - old;
+      }
     }
-  }
   ],
-
   methods: {
     resize: function() {
       if (this.$) {
@@ -83,7 +82,8 @@ CLASS({
     },
     initHTML: function() {
       this.SUPER();
-      this.preferredHeight = this.$.clientHeight;
+      this.preferredHeight =
+          document.getElementById(this.id + '-container').clientHeight;
     },
   },
   templates: [
@@ -118,11 +118,13 @@ CLASS({
   */},
   function toHTML() {/*
     <div id="%%id" <%= this.cssClassAttr() %>>
-      <div class='top'>
-        <span class='leftAction'>%%leftActionView</span>
-        <span class='label'><%# this.label %></span>
+      <div id="%%id-container">
+        <div class='top'>
+          <span class='leftAction'>%%leftActionView</span>
+          <span class='label'><%# this.label %></span>
+        </div>
+        %%extraViewFactory_
       </div>
-      %%extraViewFactory_
     </div>
   */},
   ]
