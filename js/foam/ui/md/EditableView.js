@@ -20,6 +20,8 @@ CLASS({
     'foam.ui.md.TextFieldView',
   ],
 
+  traits: ['foam.ui.md.MDStyleTrait'],
+
   properties: [
     {
       model_: 'StringProperty',
@@ -51,7 +53,7 @@ CLASS({
       model_: 'ViewFactoryProperty',
       name: 'contentView',
       factory: function() {
-        return this.TextFieldView.xbind({ mode: this.mode, floatingLabel: false });
+        return this.TextFieldView.xbind({ mode: this.mode, inlineStyle: false,  floatingLabel: false });
       },
     },
     {
@@ -91,6 +93,7 @@ CLASS({
            src="<%= this.mode === 'read-only' ? this.editIconUrl : this.doneIconUrl %>"
            class="<%= this.mode === 'read-only' ? '' : 'hide' %>">
       <% this.on('click', this.onIconClick, this.id + '-icon'); %>
+      <% this.setMDClasses(); %>
     */},
     function CSS() {/*
       toggle-editable {
@@ -103,7 +106,6 @@ CLASS({
       toggle-editable img.hide {
         display: none;
       }
-
       toggle-editable .md-text-field-input {
         margin-top: 8px;
       }

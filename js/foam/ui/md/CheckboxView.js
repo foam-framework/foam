@@ -20,6 +20,7 @@ CLASS({
   package: 'foam.ui.md',
   extendsModel: 'foam.ui.SimpleView',
   requires: ['foam.ui.md.HaloView'],
+  traits: ['foam.ui.md.MDStyleTrait'],
 
   properties: [
     {
@@ -59,12 +60,11 @@ CLASS({
       .checkbox-container {
         display: flex;
         align-items: center;
-        margin: 8px;
-        padding: 8px;
       }
 
       .checkbox-label {
         flex-grow: 1;
+        margin-right: 12px;
       }
 
       .checkbox-data-outer {
@@ -170,6 +170,7 @@ CLASS({
           this.setClass('checked', function() { return !!self.data; }, this.id);
           this.setClass('enabled', function() { return !!self.enabled; },
               this.id);
+          this.setMDClasses();
         %>
       <% } %>
     */}
