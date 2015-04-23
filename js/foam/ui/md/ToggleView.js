@@ -19,6 +19,7 @@ CLASS({
   name: 'ToggleView',
   package: 'foam.ui.md',
   extendsModel: 'foam.ui.SimpleView',
+  traits: ['foam.ui.md.MDStyleTrait'],
   requires: ['foam.ui.md.HaloView'],
   properties: [
     {
@@ -54,8 +55,6 @@ CLASS({
         display: -webkit-flex;
         display: flex;
         align-items: center;
-        margin: 8px;
-        padding: 8px;
       }
 
       .toggle-label {

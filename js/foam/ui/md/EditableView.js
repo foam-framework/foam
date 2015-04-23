@@ -51,7 +51,7 @@ CLASS({
       model_: 'ViewFactoryProperty',
       name: 'contentView',
       factory: function() {
-        return this.TextFieldView.xbind({ mode: this.mode });
+        return this.TextFieldView.xbind({ mode: this.mode, floatingLabel: false });
       },
     },
     {
@@ -95,7 +95,7 @@ CLASS({
     function CSS() {/*
       toggle-editable {
         display: flex;
-        align-items: center;
+        align-items: baseline;
       }
       toggle-editable img {
         cursor: pointer;
@@ -105,7 +105,7 @@ CLASS({
       }
 
       toggle-editable .md-text-field-input {
-        margin: 16px;
+        margin-top: 8px;
       }
     */},
   ],
