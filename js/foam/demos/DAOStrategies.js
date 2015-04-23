@@ -98,8 +98,8 @@ CLASS({
 
       for ( var i = 0 ; i < S.length ; i++ ) {
         var v = this.makeStrategyView(S[i]);
-        v.x_ = v.x = 1300;
-        v.y_ = v.y = 50 + H * i;
+        v.x = 1500;
+        v.y = 50 + H * i;
         this.addChild(v);
       }
       this.mouse.connect(this.view.$);
@@ -108,20 +108,26 @@ CLASS({
       });
     },
 
-    warp: function(o, y) {
+    warp: function(y) {
+      var o = this.mouse.y-25;
+
       if ( o < 10 ) return y;
+      /*
       var d  = y-o;
       var ad = Math.abs(d);
-      d *= 3 - 2 * Math.min(1, Math.pow(Math.max(0, (ad-50))/this.height,0.5));
+      d *= 3 - 2 * Math.min(1, Math.pow(Math.max(0, (ad-50))/this.height,4));
       return o+d;
+      */
 
-      var MAG = 2;
+      var MAG = 3;
       var R   = 400 * (1+MAG);
       var r   = Math.abs(y-o);
       r = r/R;
-      if ( r < 1 ) r += MAG*3*r*Math.pow(1-r, 4);
+      if ( r > 1 ) return y;
+      r += MAG*3*r*Math.pow(1-r, 4);
       r = r*R;
-      return o + ( y > o ? r : -r);
+      r = Math.max(0, r);
+      return o + ( y > o ? r : r);
     },
 
     paintChildren: function() { /* Paints each child. */
@@ -130,18 +136,18 @@ CLASS({
         this.canvas.save();
         this.canvas.beginPath(); // reset any existing path (canvas.restore() does not affect path)
         var d = Math.abs(this.mouse.y - child.y);
-        var s = -(this.warp(this.mouse.y, child.y) - this.warp(this.mouse.y, child.y+child.height))/ ( child.height );
+        var s = -(this.warp(child.y) - this.warp(child.y-child.height))/ ( child.height );
+//        this.canvas.translate(0,this.warp(child.y)-child.y);
         this.canvas.translate(child.x,child.y+child.height/2);
-        this.canvas.scale(s, s);
+        this.canvas.scale(Math.max(s, 0.5), 1);
         this.canvas.translate(-child.x,-child.y-child.height/2);
-        this.canvas.translate(0,this.warp(this.mouse.y, child.y)-child.y);
         child.paint();
         this.canvas.restore();
       }
     },
 
     makeStrategyView: function(s) {
-      var v = this.CView.create({width: 500, height: 550});
+      var v = this.CView.create({width: 500, height: 550, color: 'pink'});
 
       v.addChild(this.ImageCView.create({
         x: 20,
