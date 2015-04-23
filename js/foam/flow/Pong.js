@@ -51,8 +51,8 @@ CLASS({
         pong code, pong code-view {
           font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
         }
-        pong ol {
-          padding-left: 70px;
+        pong expandable-section {
+          padding: 0px 30px;
         }
         pong li, pong heading, pong heading * {
           font-size: 30px;
