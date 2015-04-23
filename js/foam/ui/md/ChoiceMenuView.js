@@ -207,7 +207,7 @@ CLASS({
 
     },
     animateToExpanded: function() {
-      this.$.style.transition = "transform ease .1s";
+      this.$.style.transition = "transform cubic-bezier(0.0, 0.0, 0.2, 1) .1s";
       this.$.style.transform = "scaleY(1)";
       this.isHidden = false;
     },
@@ -215,7 +215,7 @@ CLASS({
       this.isHidden = true;
 
       if ( ! this.$ ) return;
-      this.$.style.transition = "opacity ease-in .1s"
+      this.$.style.transition = "opacity cubic-bezier(0.4, 0.0, 1, 1) .1s"
       this.$.style.opacity = "0";
       this.$.style.pointerEvents = "none";
       this.X.setTimeout(function() { if (this.$) this.$.outerHTML = ''; }.bind(this), 500);

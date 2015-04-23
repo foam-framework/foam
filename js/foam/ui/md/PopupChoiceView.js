@@ -153,7 +153,7 @@ CLASS({
       var textView = this.createTemplateView('text', { mode:'read-only' });
       this.addChild(textView);
       out += '<div class="value">'+textView.toHTML()+'</div>';
-      out += '<svg class="downArrow" viewBox="0 0 48 48"><g><path d="M14 20 l10 10 10 -10 z"></path></g></svg>';
+      out += '<svg class="downArrow" viewBox="0 0 48 48"><g><path d="M15 20 l10 10 10 -10 z"></path></g></svg>';
 
       this.on('click', this.launch, this.id);
 

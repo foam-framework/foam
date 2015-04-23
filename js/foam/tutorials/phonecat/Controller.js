@@ -16,11 +16,14 @@
  */
 
 CLASS({
+  package: 'foam.tutorials.phonecat',
   name: 'Controller',
-
+  extendsModel: 'foam.ui.DetailView',
   requires: [
-    'PhoneCitationView', 
-    'PhoneDetailView',
+    'foam.tutorials.phonecat.dao.PhoneDAO',
+    'foam.tutorials.phonecat.model.Phone',
+    'foam.tutorials.phonecat.ui.PhoneCitationView',
+    'foam.tutorials.phonecat.ui.PhoneDetailView',
     'foam.ui.ChoiceView',
     'foam.ui.DAOListView',
     'foam.ui.TextFieldView'
@@ -33,59 +36,73 @@ CLASS({
     },
     {
       name: 'order',
-      view: function() { return foam.ui.ChoiceView.create({
+      view: function() { return X.foam.ui.ChoiceView.create({
         choices: [
-          [ Phone.NAME, 'Alphabetical' ],
-          [ Phone.AGE,  'Newest' ]
+          [ X.foam.tutorials.phonecat.model.Phone.NAME, 'Alphabetical' ],
+          [ X.foam.tutorials.phonecat.model.Phone.AGE,  'Newest' ]
         ]
       }); }
     },
-    { name: 'dao', defaultValue: phones },
+    {
+      name: 'dao',
+      factory: function() {
+        return this.PhoneDAO.create();
+      }
+    },
     {
       name: 'filteredDAO',
       model_: 'foam.core.types.DAOProperty',
       view: {
         factory_: 'foam.ui.DAOListView',
-        rowView: 'PhoneCitationView',
+        rowView: 'foam.tutorials.phonecat.ui.PhoneCitationView',
         mode: 'read-only'
       },
       dynamicValue: function() {
-        return this.dao.orderBy(this.order).where(CONTAINS_IC(SEQ(Phone.NAME, Phone.SNIPPET), this.search));
+        return this.dao.orderBy(this.order).where(CONTAINS_IC(SEQ(this.Phone.NAME, this.Phone.SNIPPET), this.search));
       }
     }
-  ]
-});
+  ],
 
-
-CLASS({ name: 'PhoneCitationView', extendsModel: 'foam.ui.DetailView', templates: [
-  function toHTML() {/*
-      <li class="thumbnail">
-        <a href="#{{this.data.id}}" class="thumb">$$imageUrl</a>
-        <a href="#{{this.data.id}}">$$name{mode: 'read-only'}</a>
-        <p>$$snippet{mode: 'read-only'}</p>
-      </li>
-  */}
-]});
-
-
-CLASS({
-  name: 'PhoneDetailView',
-  requires: [ 'foam.ui.animated.ImageView' ],
-  extendsModel: 'foam.ui.DetailView',
-  templates: [ { name: 'toHTML' } ]
-});
-
-
-CLASS({
-  name: 'ControllerView',
-  extendsModel: 'foam.ui.DetailView',
   templates: [
+    function CSS() {/*
+      body {
+        padding: 20px;
+      }
+
+      .phone-images {
+        background-color: white;
+        width: 450px;
+        height: 450px;
+        overflow: hidden;
+        position: relative;
+        float: left;
+      }
+
+      .phones {
+        list-style: none;
+      }
+
+      .thumb {
+        float: left;
+        margin: -1em 1em 1.5em 0em;
+        padding-bottom: 1em; height: 100px;
+        width: 100px;
+      }
+
+      .phones li {
+        clear: both;
+        height: 100px;
+        padding-top: 15px;
+      }
+    */},
     function toHTML() {/*
+      <% window.document.head.insertAdjacentHTML('beforeend', '<base href="js/foam/tutorials/phonecat/">'); %>
+      <% window.document.head.insertAdjacentHTML('beforeend', '<link rel="stylesheet" href="css/bootstrap.css">'); %>
       <% if ( window.location.hash ) {
-        var view = PhoneDetailView.create({model: Phone});
+        var view = this.PhoneDetailView.create({model: this.Phone});
         this.addChild(view);
 
-        this.data.dao.find(window.location.hash.substring(1), {put: function(phone) {
+        this.dao.find(window.location.hash.substring(1), {put: function(phone) {
           view.data = phone;
         }});
 

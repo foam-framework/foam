@@ -6,7 +6,9 @@
     <foam model="foam.demos.graphics.Logo" text="FOAM" width="360" height="140"/>
     <font size="220%"><font color="#33f">F</font>eature <font color="#f00">O</font>riented <font color="#fc0">A</font>ctive <font color="#3c0">M</font>odeller</font><font>
     <br>
-    (or, 25 Demos in 25 Minutes)
+    <br>
+    <font size="60px">Fast Apps Fast</font><br>
+    (25 Demos in 25 Minutes)
     <br>
     <br>
     <br>
@@ -117,7 +119,7 @@
   </slide>
 
   <slide>
-    <h1>DAO Strategies</h1>
+    <h1>DAO Strategies & Decorators</h1>
     <br>
     <br>
     <foam model="foam.demos.DAOStrategies"/>
@@ -283,11 +285,11 @@
         </viewChoice>
         <viewChoice>
           <label>Animation</label>
-          <p:view><foam model="foam.demos.graphics.Dragon"/></p:view>
+          <p:view><foam model="foam.demos.graphics.Dragon" timer=""/></p:view>
         </viewChoice>
         <viewChoice>
           <label>Interpolation</label>
-          <p:view><!-- <%= foam.demos.InterpolatedClocks.create() %>--><foam model="foam.demos.InterpolatedEyes"/></p:view>
+          <p:view><foam model="foam.demos.InterpolatedEyes"/></p:view>
         </viewChoice>
       </views>
     </foam>
@@ -300,12 +302,13 @@
 
   <slide>
     <h1>Physics</h1>
+    <% X.timer = undefined; %>
     <%=
       foam.ui.md.TwoPaneView.create({views: [
         {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10, scaleX: 2, scaleY: 2}},
         {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
         {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
-        {label: 'Gravity&nbsp;+&nbsp;Friction', view: 'foam.demos.physics.Bubbles'}
+        {label: 'Gravity&nbsp;+&nbsp;Friction', view: { factory_: 'foam.demos.physics.Bubbles', height: 1000, width: 1200, scaleX: 1.5, scaleY: 1.5}}
       ]})
     %>
   </slide>

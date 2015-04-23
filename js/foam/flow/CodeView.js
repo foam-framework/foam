@@ -70,7 +70,8 @@ CLASS({
         this.SUPER.apply(this, arguments);
         if ( ! this.$ ) return;
         this.$.addEventListener('input', this.onSrcChange);
-        this.$.setAttribute('contenteditable', 'true');
+        if ( this.mode === 'read-write' )
+          this.$.setAttribute('contenteditable', 'true');
         this.codeViewLoadState = 'loaded';
       }
     }
