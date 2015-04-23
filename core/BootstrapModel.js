@@ -170,10 +170,9 @@ var BootstrapModel = {
         var Y     = this.Y;
         var model = this.X.lookup(m);
         console.assert(model, 'Unknown Model: ' + m + ' in ' + this.name_);
-        var proto = model.getPrototype();
         return {
           __proto__: model,
-          create: function(args, X) { return proto.create(args, X || Y); }
+          create: function(args, X) { return model.create(args, X || Y); }
         };
       });
     });
