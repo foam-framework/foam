@@ -49,6 +49,9 @@ CLASS({
       name: 'features',
       lazyFactory: function() {
         return [
+          { name: 'Models',
+            f: function(model, obj, arr, value) { var dv = this.DetailView.create({model: Model, data: model}); this.setDisplay(dv.toHTML()); dv.initHTML(); }
+          },
           { name: 'Help',
             f: function(model, obj, arr, value) { this.setDisplay(this.HelpView.create({model: model}).toHTML()); }
           },
@@ -131,9 +134,9 @@ CLASS({
       name: 'featureLabels',
       lazyFactory: function() {
         var list = [];
-        this.features.forEach(function(f) {
-          list.push(f.name);
-        }.bind(this));
+        for (var i = 1; i < this.features.length; i++) {
+          list.push(this.features[i].name);
+        }
         return list;
       }
     },
@@ -320,7 +323,7 @@ CLASS({
     {
       name: 'update',
       code: function() {
-        if ( this.sys.selectedY < 1 || this.sys.selectedX < 1 ) return;
+        if ( this.sys.selectedY < 1 || this.sys.selectedX < 0 ) return;
 
         var model = this.entities[this.sys.selectedY-1].instance;
         var obj = null;
@@ -334,7 +337,7 @@ CLASS({
         var arr = [obj];
         var value = SimpleValue.create(obj);
 
-        this.features[this.sys.selectedX-1].f.call(this, model, obj, arr, value);
+        this.features[this.sys.selectedX].f.call(this, model, obj, arr, value);
       }
     }
 

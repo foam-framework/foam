@@ -78,6 +78,9 @@ CLASS({
 
   templates: [
     function CSS() {/*
+     body {
+        overflow: hidden;
+     }
      slides {
         display: flex;
         flex-direction: column;
@@ -85,7 +88,6 @@ CLASS({
       slides > deck {
         font-size: 200%;
         padding-left: 16px;
-        overflow: hidden;
       }
       h1 {
         color: blue;

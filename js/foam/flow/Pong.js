@@ -16,9 +16,10 @@ CLASS({
   extendsModel: 'foam.flow.Section',
 
   requires: [
-    'foam.flow.CodeSnippet',
-    'foam.flow.CodeSnippetView',
-    'foam.flow.CodeView'
+    'foam.flow.CodeView',
+    'foam.flow.QuoteCode',
+    'foam.flow.ExpandableSection',
+    'foam.ui.md.SectionView'
   ],
 
   properties: [
@@ -31,17 +32,37 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER.apply(this, arguments);
-      this.X.registerModel(this.CodeSnippetView.xbind({
-        mode: 'read-only'
-      }), 'foam.flow.CodeSnippetView');
       this.X.registerModel(this.CodeView.xbind({
-        mode: 'read-only',
-        minLines: 1
+        readOnlyMinLines: 1,
+        readOnlyMaxLines: 100
       }), 'foam.flow.CodeView');
+      this.X.registerModel(this.SectionView.xbind({
+        expandedIconUrl: 'https://www.google.com/images/icons/material/system/1x/stat_1_black_36dp.png'
+      }), 'foam.ui.md.SectionView');
     }
   },
 
   templates: [
-    { name: 'toHTML' }
+    { name: 'toInnerHTML' },
+    {
+      name: 'CSS',
+      template: multiline(function() {/*
+        pong p { padding: 10px; }
+        pong code, pong code-view {
+          font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+        }
+        pong ol {
+          padding-left: 70px;
+        }
+        pong li, pong heading, pong heading * {
+          font-size: 30px;
+          margin: 4px 0px 2px 0px;
+        }
+        pong p, li * {
+          font-size: 14px;
+          font-family: arial, sans-serif;
+        }
+      */})
+    }
   ]
 });

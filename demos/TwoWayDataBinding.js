@@ -2,10 +2,9 @@ apar(
    arequire('foam.ui.DetailView')
 )(function() {
   
-  // Version 1: Uses Events.relate() to relate to two fields.
-
   MODEL({
     name: 'Temperature',
+    documentation: 'Version 1: Uses Events.relate() to relate to two fields.',
     properties: [ 'f', 'c' ],
     methods: {
       init: function() { Events.relate(this.c$, this.f$, this.c2f, this.f2c); },
@@ -24,11 +23,9 @@ apar(
   });
   Temperature.create().write(document);
 
-
-  // Version 2: Save as version 1, but upgrades fields to FloatProperties and sets the 'precision' of the views.
-
   MODEL({
     name: 'Temperature2',
+    documentation: "Version 2: Save as version 1, but upgrades fields to FloatProperties and sets the 'precision' of the views.",
     properties: [
       { name: 'c', model_: 'FloatProperty' },
       { name: 'f', model_: 'FloatProperty' }
@@ -50,11 +47,9 @@ apar(
   });
   Temperature2.create().write(document);
  
-
-  // Version 3: Uses the postSet's on the properties instead of relate().
-
   MODEL({
     name: 'Temperature3',
+    documentation: "Version 3: Uses the postSet's on the properties instead of relate().",
     properties: [
       {
         name: 'c',
