@@ -188,6 +188,7 @@ CLASS({
         this.main$().style.width = x + 'px';
         var x = this.side.mainX.call(this);
         this.main$().style.webkitTransform = 'translate3d(' + x + 'px, 0,0)';
+        this.main$().style.MozTransform = 'translate3d(' + x + 'px, 0,0)';
 
       }
     },
@@ -240,6 +241,7 @@ CLASS({
         if ( oldX !== x ) this.dir_ = oldX.compareTo(x);
         x = this.side.panelX.call(this, x);
         this.panel$().style.webkitTransform = 'translate3d(' + x + 'px, 0,0)';
+        this.panel$().style.MozTransform = 'translate3d(' + x + 'px, 0,0)';
       }
     },
     {
