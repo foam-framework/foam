@@ -215,12 +215,11 @@ canvas.createButton {
 
 .md-style-trait-standard {
   padding: 8px;
-  margins: 8px;
+  margin: 8px;
 }
 
 .md-style-trait-inline {
   padding: 0px;
-  margins: 16px;
 }
 
 

@@ -25,6 +25,8 @@ CLASS({
   requires: ['foam.ui.md.RadioOptionView',
              'foam.ui.md.RadioOptionTextFieldView'],
 
+  traits: ['foam.ui.md.MDStyleTrait'],
+
   documentation: function(){/*
     For a choice list with only one selection at a time, this view provides radio buttons.
     The selected choice's value is set on $$DOC{ref:'.data'}. For a user-editable choice
@@ -57,11 +59,11 @@ CLASS({
     },
     {
       name: 'tagName',
-      defaultValue: 'ul'
+      defaultValue: 'div'
     },
     {
       name: 'innerTagName',
-      defaultValue: 'li'
+      defaultValue: 'div'
     },
   ],
 
@@ -100,9 +102,9 @@ CLASS({
         var choice = this.choices[i];  %>
         <div class="choice">
       <% if ( choice[2] == 'user' ) { %>
-          $$data{model_:'foam.ui.md.RadioOptionTextFieldView', choice: choice }
+          $$data{model_:'foam.ui.md.RadioOptionTextFieldView', inlineStyle$: this.inlineStyle$, choice: choice }
       <% } else { %>
-          $$data{model_:'foam.ui.md.RadioOptionView', choice: choice }
+          $$data{model_:'foam.ui.md.RadioOptionView', inlineStyle$: this.inlineStyle$, choice: choice }
       <% } %>
         </div>
 <%        }%>
@@ -110,9 +112,6 @@ CLASS({
 
     function CSS() {/*
 .foamChoiceRadioView {
-  list-style-type: none;
-  -webkit-margin-before: 0px;
-  -webkit-margin-after: 0px;
 }
 
 .foamChoiceRadioView .selected {

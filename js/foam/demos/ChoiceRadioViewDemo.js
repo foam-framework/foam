@@ -105,13 +105,22 @@ CLASS({
 
     function toInnerHTML()
     {/*
-        $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'vertical'}
-        $$data{model_:'foam.ui.md.TextFieldView'}
+        <h3>Normal style, with padding and margins</h3>
         <div class="demo-row">
           $$data{model_:'foam.ui.md.TextFieldView'}
-          $$data{model_: 'foam.ui.md.PopupChoiceView', choices:this.choices}
+          $$data{model_: 'foam.ui.md.PopupChoiceView',  choices:this.choices}
           $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'horizontal'}
         </div>
+        <hr/>
+        <h3>Inline style, with no padding and margins</h3>
+        <div class="demo-row">
+          $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: true }
+          $$data{model_: 'foam.ui.md.PopupChoiceView', inlineStyle: true,  choices:this.choices}
+          $$data{model_:'foam.ui.md.ChoiceRadioView', inlineStyle: true, choices:this.choices, orientation: 'horizontal'}
+        </div>
+        <hr/>
+        $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'vertical'}
+        $$data{model_:'foam.ui.md.TextFieldView'}
         $$data{model_: 'foam.ui.md.PopupChoiceView', choices:this.choices}
         $$oneAction
         $$enabledButton{model_:'foam.ui.md.CheckboxView', label: 'Button Enabled'}

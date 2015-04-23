@@ -24,7 +24,7 @@ CLASS({
 
   requires: ['foam.ui.md.ChoiceMenuView', 'foam.ui.md.TextFieldView'],
 
-  traits: ['foam.input.touch.VerticalScrollNativeTrait'],
+  traits: ['foam.ui.md.MDStyleTrait'],
 
   documentation: function() {/* This is very closely related to
      $$DOC{ref:'foam.ui.PopupChoiceView'}. Refactor them! */},
@@ -156,7 +156,7 @@ CLASS({
       out += '<svg class="downArrow" viewBox="0 0 48 48"><g><path d="M0 16 l24 24 24 -24 z"></path></g></svg>';
 
       this.on('click', this.launch, this.id);
-
+      this.setMDClasses();
       return out;
     }
   },
@@ -169,12 +169,20 @@ CLASS({
         align-items: flex-end;
         align-content: flex-start;
         justify-content: space-between;
-        padding: 8px 0px 7px 0px;
-        margin: 8px 16px;
         cursor: pointer;
         position: relative;
         border-bottom: 1px solid #e0e0e0;
       }
+
+      .popupChoiceView.md-style-trait-standard {
+        padding: 8px 0px 7px 0px;
+        margin: 8px 16px;
+      }
+      .popupChoiceView.md-style-trait-inline {
+        padding: 8px 0px 7px 0px;
+        margin: -8px 0px -7px 0px;
+      }
+
 
       .popupChoiceView .downArrow {
         width: 12px;

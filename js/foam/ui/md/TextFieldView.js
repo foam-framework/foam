@@ -19,6 +19,7 @@ CLASS({
   name: 'TextFieldView',
   package: 'foam.ui.md',
   extendsModel: 'foam.ui.SimpleView',
+  traits: ['foam.ui.md.MDStyleTrait'],
 
   properties: [
     {
@@ -131,9 +132,21 @@ CLASS({
         align-items: center;
         display: flex;
         position: relative;
+      }
+
+      .md-text-field-container.md-style-trait-standard {
         margin: 8px;
         padding: 32px 8px 8px 8px;
       }
+      .md-text-field-container.md-style-trait-inline {
+        padding: 32px 0px 0px 0px;
+        margin: -32px 0px 0px 0px;
+      }
+      .md-text-field-container.md-text-field-no-label.md-style-trait-inline {
+        padding-top: 0px;
+        margin: 0px;
+      }
+
       .md-text-field-label {
         position: absolute;
         top: 32px;
@@ -204,6 +217,8 @@ CLASS({
               return focused || ('' + data).length > 0;
             }, label);
         }
+
+        this.setMDClasses();
       %>
       <div <%= this.cssClassAttr() %> id="%%id">
         <% if (this.floatingLabel) { %>

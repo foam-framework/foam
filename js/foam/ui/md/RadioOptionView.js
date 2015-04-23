@@ -19,6 +19,8 @@ CLASS({
   name: 'RadioOptionView',
   package: 'foam.ui.md',
   extendsModel: 'foam.ui.SimpleView',
+  traits: ['foam.ui.md.MDStyleTrait'],
+
   documentation: "A single radio button. Used by $$DOC{ref:'foam.ui.md.ChoiceRadioView'}",
 
   requires: [ 'foam.ui.md.SharedStyles',
@@ -102,8 +104,6 @@ CLASS({
         display: block;
         white-space: nowrap;
         position: relative;
-        margin: 8px;
-        padding: 8px;
       }
 
       .noselect {
@@ -154,11 +154,12 @@ CLASS({
       }
 
       .radiobutton-background {
-        display: inline-flex;
+        display: flex;
         flex-direction: row;
         align-items: center;
         white-space: nowrap;
         position: relative;
+        margin: auto;
       }
       .radiobutton-background.checked #offRadio {
         border-color: #4285f4;
@@ -186,7 +187,7 @@ CLASS({
 
       .radioLabel {
         position: relative;
-        display: inline-block;
+        display: block;
         vertical-align: middle;
         margin-left: 12px;
         white-space: normal;
@@ -234,6 +235,7 @@ CLASS({
             this.id + '-background');
         this.setClass('disabled', function() { return !self.enabled; },
             this.id + '-background');
+        this.setMDClasses();
       %>
     */}
   ]

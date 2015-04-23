@@ -37,10 +37,9 @@ CLASS({
   ],
 
   methods: {
-    toHTML: function() {
-      this.setClass('md-style-trait-inline', function() { return this.inlineStyle; });
-      this.setClass('md-style-trait-standard', function() { return ! this.inlineStyle; });
-      return this.SUPER();
+    setMDClasses: function() {
+      this.setClass('md-style-trait-inline', function() { return this.inlineStyle; }, this.id);
+      this.setClass('md-style-trait-standard', function() { return ! this.inlineStyle; }, this.id);
     }
   }
 

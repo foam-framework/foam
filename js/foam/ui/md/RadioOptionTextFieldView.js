@@ -45,10 +45,7 @@ CLASS({
     function CSS() {/*
       .radioLabel.input {
         pointer-events: all;
-        margin-top: -16px;
-        margin-bottom: -16px;
       }
-
     */},
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
@@ -62,7 +59,7 @@ CLASS({
           </div>
           <div class="radioLabel">$$label{ mode: 'read-only', floatingLabel: false }</div>
           <div class="radioLabel input">
-            $$value{ model_: 'foam.ui.md.TextFieldView', floatingLabel: false, onKeyMode: true }
+            $$value{ model_: 'foam.ui.md.TextFieldView', inlineStyle:true, floatingLabel: false, onKeyMode: true }
           </div>
         </div>
       </div>
@@ -72,6 +69,7 @@ CLASS({
             this.id + '-background');
         this.setClass('disabled', function() { return !self.enabled; },
             this.id + '-background');
+        this.setMDClasses();
       %>
     */}
   ]

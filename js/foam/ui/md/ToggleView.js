@@ -46,8 +46,7 @@ CLASS({
       factory: function() {
         return this.HaloView.create();
       }
-    },
-
+    }
   ],
   templates: [
     function CSS() {/*
@@ -154,6 +153,7 @@ CLASS({
             this.id + '-background');
         this.setClass('enabled', function() { return !!self.enabled; },
             this.id + '-background');
+        this.setMDClasses();
       %>
     */}
   ],
