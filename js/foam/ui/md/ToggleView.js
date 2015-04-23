@@ -53,11 +53,17 @@ CLASS({
       .toggle-container {
         display: flex;
         align-items: center;
-        padding: 12px 10px;
+        margin: 8px;
+        padding: 8px;
       }
 
       .toggle-label {
         flex-grow: 1;
+      }
+
+      .toggle-text-indicator {
+        margin-right: 20px;
+        width: 1em;
       }
 
       .noselect {
@@ -71,9 +77,17 @@ CLASS({
 
       .toggle-outer {
         position: relative;
+        width: 36px;
+        height: 14px;
+      }
+
+      .toggle-halo {
+        position: absolute;
         width: 48px;
         height: 48px;
         cursor: pointer;
+        top: -17px;
+        left: -6px;
       }
 
       .toggle-background {
@@ -81,8 +95,6 @@ CLASS({
         border-radius: 7px;
         display: inline-block;
         height: 14px;
-        left: 6px;
-        top: 17px;
         opacity: 0.3;
         position: absolute;
         width: 36px;
@@ -122,12 +134,14 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <span class="toggle-label noselect"><%# this.label %></span>
-        <%# this.data ? "ON" : "OFF" %>
+        <span class="toggle-text-indicator noselect"><%# this.data ? "ON" : "OFF" %></span>
         <div class="toggle-outer noselect">
           <span id="<%=this.id%>-background" class="toggle-background">
             <div class="toggle-lever"></div>
           </span>
-          <%= this.halo %>
+          <div class="toggle-halo noselect">
+            <%= this.halo %>
+          </div>
         </div>
       </div>
       <%

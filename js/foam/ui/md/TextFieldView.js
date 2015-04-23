@@ -129,19 +129,19 @@ CLASS({
     function CSS() {/*
       .md-text-field-container {
         align-items: center;
-        width: 100%;
         display: flex;
         position: relative;
+        margin: 8px;
+        padding: 32px 8px 8px 8px;
       }
       .md-text-field-label {
         position: absolute;
-        top: 40px;
+        top: 32px;
         font-size: 14px;
         font-weight: 500;
         color: #999;
         transition: font-size 0.5s, top 0.5s;
         flex-grow: 1;
-        margin-left: 16px;
         z-index: 0;
       }
       .md-text-field-input {
@@ -154,7 +154,7 @@ CLASS({
         flex-grow: 1;
         font-family: Roboto, RobotoDraft;
         font-size: 14px;
-        margin: 40px 16px 8px;
+        margin-bottom: -7px;
         padding: 0 0 7px 0;
         resize: none;
         z-index: 1;
@@ -164,8 +164,10 @@ CLASS({
       }
       .md-text-field-container.md-text-field-no-label .md-text-field-input {
         font-size: 16px;
-        margin: 8px 0;
-        padding: 8px 2px;
+      }
+
+      .md-text-field-container.md-text-field-no-label {
+        padding-top: 8px;
       }
 
       .md-text-field-borderless {
@@ -179,7 +181,7 @@ CLASS({
       }
       .md-text-field-label-offset {
         font-size: 12px;
-        top: 16px;
+        top: 8px;
       }
     */},
     function toHTML() {/*

@@ -23,7 +23,7 @@ CLASS({
 
   requires: [ 'foam.ui.md.SharedStyles',
               'foam.ui.md.HaloView' ],
-  
+
   properties: [
     {
       name: 'data',
@@ -58,7 +58,7 @@ CLASS({
     },
     {
       name: 'halo',
-  
+
       documentation: function() {/*
         onRadio/offRadio's 'pointer-events: none' is critical for halo touches
       */},
@@ -70,70 +70,80 @@ CLASS({
       }
     },
   ],
-  
+
   methods: {
     init: function() {
       this.SUPER();
-      
+
       Events.dynamic(
         function() { this.data; this.value; }.bind(this),
-        function() { 
+        function() {
           this.setHaloColor();
         }.bind(this)
       );
     }
   },
-  
+
   listeners: [
     {
       name: 'setHaloColor',
       code: function() {
-       this.halo.color = equals(this.data, this.value) ? "#5a5a5a" : "#4285f4"; 
+       this.halo.color = equals(this.data, this.value) ? "#5a5a5a" : "#4285f4";
       }
     }
-    
-    
+
+
   ],
-  
+
   templates: [
-    function CSS() {/*    
-      
+    function CSS() {/*
+
       .radiobutton-container {
-        display: inline-block;
+        display: block;
         white-space: nowrap;
         position: relative;
+        margin: 8px;
+        padding: 8px;
       }
-      
+
       .noselect {
         -webkit-touch-callout: none;
         -webkit-user-select: none;
         -khtml-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
-        user-select: none;      
+        user-select: none;
       }
-      
+
       .radiobutton-container :focus {
         outline: none;
       }
-      
+
       #radioContainer {
-        position: relative;
+        position: absolute;
+        left: -16px;
+        top: -16px;
         width: 48px;
         height: 48px;
         cursor: pointer;
 
       }
-      
+
+      .radio-indicator {
+        position: relative;
+        width: 16px;
+        height: 16px;
+      }
+
       #radioContainer.labeled {
         display: inline-block;
         vertical-align: middle;
       }
-      
+
       #offRadio {
         position: absolute;
-        top: 16px;
-        left: 16px; 
+        top: 0px;
+        left: 0px;
         width: 16px;
         height: 16px;
         border-radius: 50%;
@@ -144,19 +154,20 @@ CLASS({
       }
 
       .radiobutton-background {
-        display: inline-block;
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
         white-space: nowrap;
         position: relative;
-        height: 48px;
       }
       .radiobutton-background.checked #offRadio {
         border-color: #4285f4;
       }
-      
+
       #onRadio {
         position: absolute;
-        top: 20px;
-        left: 20px;
+        top: 4px;
+        left: 4px;
         width: 8px;
         height: 8px;
         border-radius: 50%;
@@ -167,38 +178,38 @@ CLASS({
         transition: transform ease 0.28s;
         pointer-events: none;
       }
-      
+
       .radiobutton-background.checked #onRadio {
         -webkit-transform: scale(1);
         transform: scale(1);
       }
-      
+
       .radioLabel {
         position: relative;
         display: inline-block;
         vertical-align: middle;
-        margin-left: 10px;
+        margin-left: 12px;
         white-space: normal;
         pointer-events: none;
       }
-      
+
       .radioLabel.hidden {
         display: none;
       }
-      
+
       .radiobutton-background.disabled {
         pointer-events: none;
       }
-      
+
       .radiobutton-background.disabled #offRadio,
       .radiobutton-background.disabled #onRadio {
         opacity: 0.33;
       }
-      
+
       .radiobutton-background.disabled #offRadio {
         border-color: #5a5a5a;
       }
-      
+
       .radiobutton-background.disabled .radiobutton-background.checked #onRadio {
         background-color: #5a5a5a;
       }
@@ -207,10 +218,12 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div id="<%=this.id%>-background" class="radiobutton-background">
-          <div id="radioContainer" class="labeled">
+          <div class="radio-indicator">
             <div id="onRadio"></div>
             <div id="offRadio"></div>
-            <%= this.halo %>
+            <div id="radioContainer" class="labeled">
+              <%= this.halo %>
+            </div>
           </div>
           <div class="radioLabel">$$label{ mode: 'read-only', floatingLabel: false }</div>
         </div>

@@ -25,14 +25,15 @@ CLASS({
              'foam.input.touch.GestureManager',
              'foam.ui.md.FlatButton',
              'foam.ui.md.CheckboxView',
-             'foam.ui.md.PopupChoiceView'],
+             'foam.ui.md.PopupChoiceView',
+             'foam.ui.md.ToggleView'],
 
   properties: [
     {
       name: 'choices',
       defaultValueFn: function() {
         var arr = [];
-        for (var i=0;  i < 14; i++) {
+        for (var i=0;  i < 2; i++) {
           arr.push(['value'+i, 'Choice '+i]);
         }
         arr.push(['name', 'Other', 'user']);
@@ -88,16 +89,33 @@ CLASS({
 
   templates:
   [
+    function CSS() {/*
+      body {
+        font-family: Roboto, RobotoDraft;
+        font-size: 14px;
+        color: #444;
+      }
+
+      .demo-row {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+      }
+    */},
+
     function toInnerHTML()
     {/*
-      <hr/>
-        $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'horizontal'}
-      <hr/>
-        $$data
+        $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'vertical'}
+        $$data{model_:'foam.ui.md.TextFieldView'}
+        <div class="demo-row">
+          $$data{model_:'foam.ui.md.TextFieldView'}
+          $$data{model_: 'foam.ui.md.PopupChoiceView', choices:this.choices}
+          $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'horizontal'}
+        </div>
         $$data{model_: 'foam.ui.md.PopupChoiceView', choices:this.choices}
         $$oneAction
         $$enabledButton{model_:'foam.ui.md.CheckboxView', label: 'Button Enabled'}
-        $$showButton{model_:'foam.ui.md.CheckboxView', label: 'Button Show'}
+        $$showButton{model_:'foam.ui.md.ToggleView', label: 'Button Show'}
     */}
   ]
 

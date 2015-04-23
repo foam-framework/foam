@@ -123,14 +123,14 @@ CLASS({
   padding: 0;
 }
 .foamChoiceRadioView.vertical .choice {
-  margin: 4px;
+  display: block;
 }
 
 .foamChoiceRadioView.horizontal {
   padding: 0;
 }
 .foamChoiceRadioView.horizontal .choice {
-  display: inline;
+  display: inline-block;
   margin-right: 16px;
 }*/}
   ]

@@ -179,7 +179,7 @@ CLASS({
       var finalRect = { top:    -bodyRect.top + startFromClientRect.top - (slotsAbove * this.itemHeight) -2 - this.vMargin,
                         bottom: -bodyRect.top + startFromClientRect.top + startFromClientRect.height + (slotsBelow * this.itemHeight) +2 + this.vMargin,
                         height: menuCount * this.itemHeight +4 + this.vMargin*2,
-                        left: -bodyRect.left + startFromClientRect.left -2,
+                        left: -bodyRect.left + startFromClientRect.left -2 - this.hMargin,
                         right: -bodyRect.left + startFromClientRect.left + startFromClientRect.width +2,
                         width: startFromClientRect.width + this.hMargin*2 +4 };
 

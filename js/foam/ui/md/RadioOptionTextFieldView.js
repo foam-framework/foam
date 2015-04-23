@@ -24,7 +24,7 @@ CLASS({
 
   requires: [ 'foam.ui.md.SharedStyles' ,
               'foam.ui.md.TextFieldView as TextFieldView'],
-  
+
   properties: [
     {
       name: 'label',
@@ -40,25 +40,30 @@ CLASS({
       }
     }
   ],
-  
-  templates: [
-    function CSS() {/*    
 
+  templates: [
+    function CSS() {/*
       .radioLabel.input {
-        pointer-events: all
+        pointer-events: all;
+        margin-top: -16px;
+        margin-bottom: -16px;
       }
 
     */},
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div id="<%=this.id%>-background" class="radiobutton-background">
-          <div id="radioContainer" class="labeled">
+          <div class="radio-indicator">
             <div id="onRadio"></div>
             <div id="offRadio"></div>
-            <%= this.halo %>
+            <div id="radioContainer" class="labeled">
+              <%= this.halo %>
+            </div>
           </div>
           <div class="radioLabel">$$label{ mode: 'read-only', floatingLabel: false }</div>
-          <div class="radioLabel input">$$value{ model_: 'foam.ui.md.TextFieldView', floatingLabel: false, onKeyMode: true }</div>
+          <div class="radioLabel input">
+            $$value{ model_: 'foam.ui.md.TextFieldView', floatingLabel: false, onKeyMode: true }
+          </div>
         </div>
       </div>
       <%

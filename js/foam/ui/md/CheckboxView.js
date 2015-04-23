@@ -59,7 +59,8 @@ CLASS({
       .checkbox-container {
         display: flex;
         align-items: center;
-        padding: 12px 10px;
+        margin: 8px;
+        padding: 8px;
       }
 
       .checkbox-label {
@@ -68,8 +69,16 @@ CLASS({
 
       .checkbox-data-outer {
         position: relative;
+        width: 18px;
+        height: 18px;
+      }
+
+      .checkbox-halo {
+        position: absolute;
         width: 48px;
         height: 48px;
+        top: -15px;
+        left: -15px;
         cursor: pointer;
       }
 
@@ -90,8 +99,6 @@ CLASS({
         height: 18px;
         pointer-events: none;
         position: absolute;
-        left: 15px;
-        top: 15px;
         transition: background-color 140ms, border-color 140ms;
         width: 18px;
         opacity: 0.3;
@@ -151,7 +158,7 @@ CLASS({
             <div class="checkbox-data-container">
               <div class="checkbox-data"></div>
             </div>
-            <%= this.halo %>
+            <div class="checkbox-halo noselect"><%= this.halo %></div>
           </div>
         </div>
         <%
