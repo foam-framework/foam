@@ -41,6 +41,11 @@ CLASS({
     },
     {
       model_: 'BooleanProperty',
+      name: 'showActions',
+      defaultValue: true
+    },
+    {
+      model_: 'BooleanProperty',
       name: 'scroll',
       defaultValue: true
     },
@@ -156,17 +161,19 @@ CLASS({
         <heading>{{{this.data.title}}}</heading>
       <% } %>
       $$src{ model_: this.codeViewName }
-      <actions>
-        $$edit{
-          model_: this.actionButtonName,
-          className: 'actionButton editButton',
-          color: 'black',
-          font: '20px Roboto, Arial',
-          alpha: 1.0,
-          radius: 15,
-          background: '#F7CB4D'
-        }
-      </actions>
+      <% if ( this.showActions ) { %>
+        <actions>
+          $$edit{
+            model_: this.actionButtonName,
+            className: 'actionButton editButton',
+            color: 'black',
+            font: '20px Roboto, Arial',
+            alpha: 1.0,
+            radius: 15,
+            background: '#F7CB4D'
+          }
+        </actions>
+      <% } %>
     */},
     function CSS() {/*
       code-snippet {

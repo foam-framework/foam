@@ -89,7 +89,7 @@ CLASS({
 
   templates: [
     // Support both <code-view>...</code-view> and %%myCodeView.
-    function toInnerHTML() {/*<% if ( this.inner ) { %><%= this.inner() %><% } else { %><%= this.data.code %><% } %>*/},
+    function toInnerHTML() {/*<% if ( this.inner ) { %>{{this.inner()}}<% } else { %>{{this.data.code}}<% } %>*/},
     function CSS() {/*
       code-view {
         display: block;
