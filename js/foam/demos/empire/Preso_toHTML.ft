@@ -150,40 +150,37 @@
             <title>Reactive Programming</title>
             <source>
               <code-snippet>
-                <title>Value Binding</title>
-                <src language="javascript">
-                  <code>
-                    var canvas = foam.graphics.CView.create();
-                    var mouse  = foam.input.Mouse.create();
-                    var clock  = foam.demos.ClockView.create();
-
-                    canvas.addChild(clock);
-
-                    clock.x$ = mouse.x$;
-                    clock.y$ = mouse.y$;
-
-                    canvas.write(X.document);
-//                    mouse.connect(canvas.view.$);
-                  </code>
-                </src>
-              </code-snippet>
-            </source>
-            <!--
-            <source>
-              <code-snippet>
-                <title>Javascript</title>
-                <src language="javascript">
-                  <code>
-                  </code>
-                </src>
-              </code-snippet>
-            </source>
-            -->
-            <source>
-              <code-snippet>
                 <title>HTML</title>
                 <src language="html">
                   <code>
+                    <%
+                      var canvas  = foam.graphics.CView.create({width: 1900, height: 1000});
+                      var mouse   = foam.input.Mouse.create();
+                      var clock1  = foam.demos.ClockView.create({r: 60});
+                      var clock2  = foam.demos.ClockView.create({r: 60, color: 'green'});
+                      var timer   = Timer.create();
+
+                      timer.start();
+                      canvas.addChildren(clock1, clock2);
+
+                      // Part 1
+                      clock1.x$ = mouse.x$;
+                      clock1.y$ = mouse.y$;
+
+                      // Part 2
+                      // Events.dynamic(function() {
+                      //   clock2.x = clock1.x + 200;
+                      //   clock2.y = clock1.y + 200;
+                      // });
+
+                      // Part 3
+                      // Events.dynamic(function() {
+                      //   clock2.x = clock1.x + 200*Math.cos(timer.time*Math.PI/1000);
+                      //   clock2.y = clock1.y + 200*Math.sin(timer.time*Math.PI/1000);
+                      // });
+
+                      this.addInitializer(function() { mouse.connect(canvas.view.$); });
+                    %>
                     <%= canvas %>
                   </code>
                 </src>
