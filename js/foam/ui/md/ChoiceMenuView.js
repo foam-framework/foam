@@ -304,7 +304,7 @@ CLASS({
 .foamChoiceMenuView .choice {
   display: block;
   margin: 0px;
-  padding: 0px;
+  padding: 8px 0px 7px 0px;
   display: inline-flex;
   align-items: flex-end;
   align-content: flex-start;
