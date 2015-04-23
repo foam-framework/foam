@@ -51,6 +51,7 @@ CLASS({
   templates: [
     function CSS() {/*
       .toggle-container {
+        display: -webkit-flex;
         display: flex;
         align-items: center;
         padding: 12px 10px;
@@ -58,6 +59,14 @@ CLASS({
 
       .toggle-label {
         flex-grow: 1;
+        -webkit-flex-grow: 1;
+        margin-top: auto;
+        margin-bottom: auto;
+      }
+
+      .toggle-onoff {
+        margin-top: auto;
+        margin-bottom: auto;
       }
 
       .noselect {
@@ -122,8 +131,8 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <span class="toggle-label noselect"><%# this.label %></span>
-        <%# this.data ? "ON" : "OFF" %>
-        <div class="toggle-outer noselect">
+        <span class="toggle-onoff noselect"><%# this.data ? "ON" : "OFF" %></span>
+        <div id="<%=this.on('click', this.onClick)%>" class="toggle-outer noselect">
           <span id="<%=this.id%>-background" class="toggle-background">
             <div class="toggle-lever"></div>
           </span>
@@ -131,16 +140,17 @@ CLASS({
         </div>
       </div>
       <%
-        this.on('click', function() {
-          if (self.enabled) {
-            self.data = !self.data;
-          }
-        }, this.id);
         this.setClass('toggledOn', function() { return !!self.data; },
             this.id + '-background');
         this.setClass('enabled', function() { return !!self.enabled; },
             this.id + '-background');
       %>
     */}
+  ],
+  listeners: [
+    {
+      name: 'onClick',
+      code: function(e) { this.enabled && (this.data = !this.data); }
+    },
   ]
 });
