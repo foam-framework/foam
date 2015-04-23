@@ -1,4 +1,4 @@
-<slides style="width: 100%; height: 100%;">
+<slides style="width: 100%;height:100%;">
   <slide>
   <center style="font-size: 32px;">
     <br>
@@ -367,7 +367,9 @@
     </center>
   </slide>
 
-  <slide><foam model="foam.demos.Flow"/></slide>
+  <slide>
+    <foam model="foam.demos.Flow"/>
+  </slide>
 
   <slide>
     <foam model="foam.ui.SlidePanel" minWidth="1900" minPanelWidth="650" side="left" stripWidth="16">
