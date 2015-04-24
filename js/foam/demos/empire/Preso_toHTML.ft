@@ -452,7 +452,7 @@ dao
                 <li class="d1">Cross-Platform/Tier</li>
                   <li class="d2">Node.js</li>
                   <li class="d2">Java</li>
-              <li><i style="color:#33f;">Exponentially More Efficient</i></li>
+              <li><i style="color:#33f;">An OS for Information</i></li>
             </ul>
           </div>
           <iframe style="margin-left:100px;border:none;width:90%;height:100%;" src="./demos/GoogleSimulator.html"></iframe>
