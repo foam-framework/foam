@@ -10,10 +10,10 @@
     <font size="60px">Fast Apps Fast</font><br>
     (25 Demos in 25 Minutes)
     <br>
+    <a href="http://foamdev.com/">http://foamdev.com/</a>
     <br>
     <br>
     Kevin Greer, <a href="mailto:kgr@chromium.org">kgr@google.com</a><br>
-    <br>
     <br>
     April 26, 2015<br>
     </center>
@@ -26,7 +26,7 @@
 
   <slide>
     <h1>History Lesson</h1>
-    <iframe style="width:100%;height:100%;border:none;" src="./demos/UnixSimulator.html"></iframe>
+    <iframe style="transform: scale(1.32);transform-origin:0 0;width:100%;height:100%;border:none;" src="./demos/UnixSimulator.html"></iframe>
   </slide>
 
   <slide>
@@ -65,25 +65,39 @@
   </slide>
 
   <slide>
+    <h1>"Language" Features</h1>
+    <div style="display: block;">
+      <foam model="foam.demos.pong.Pong"/><br>
+      <foam model="foam.flow.Pong"/>
+    </div>
+  </slide>
+
+  <slide>
     <h1>Model Types</h1>
-    <br>
     <div style="display:flex;">
-      <div style="width: 800px;margin-left:32px;">
-        <ul>
+      <div style="width: 800px;margin-left:32px;font-size: 46px;">
+        <ul style="color:gray;">
           <li>Entities (default)</li>
           <li>Animations</li>
           <li>Queries (mLang)</li>
           <li>Parsers</li>
           <li>...</li>
-          <li><a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome App Builder</a></li>
         </ul>
       </div>
      <div>
     <center>
-    <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw" style="border: 1px solid;">
+      <br>
+      <a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome App Builder</a><br>
+      <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw" style="border: 1px solid;"><br>
+      <font size="-1">(13k 1-week active users)</font>
    </center>
      </div>
     </div>
+  </slide>
+
+  <slide>
+    <h1>Architecture</h1>
+    <div style="transform:scale(0.6);transform-origin: 0 0;"><foam model="foam.demos.ArchitectureDiagram"/></div>
   </slide>
 
   <slide>
@@ -136,14 +150,6 @@
   </slide>
 
   <slide>
-    <h1>"Language" Features</h1>
-    <div style="display: block;">
-      <foam model="foam.demos.pong.Pong"/><br>
-      <foam model="foam.flow.Pong"/>
-    </div>
-  </slide>
-
-  <slide>
     <h1>Reactive Programming</h1>
     <!-- <foam model="foam.demos.ReactiveClocks"/> -->
           <code-sample>
@@ -157,7 +163,7 @@
                       var canvas  = foam.graphics.CView.create({width: 1900, height: 1000});
                       var mouse   = foam.input.Mouse.create();
                       var clock1  = foam.demos.ClockView.create({r: 60});
-                      var clock2  = foam.demos.ClockView.create({r: 60, color: 'green'});
+                      var clock2  = foam.demos.ClockView.create({r: 60, color: '#3c0'});
                       var timer   = Timer.create();
 
                       timer.start();
@@ -189,11 +195,6 @@
           </code-sample>
   </slide>
 
-
-  <slide>
-    <h1>Architecture</h1>
-    <div style="transform:scale(0.6);transform-origin: 0 0;"><foam model="foam.demos.ArchitectureDiagram"/></div>
-  </slide>
   <slide>
     <h1>Graphics</h1>
     <foam model="foam.ui.md.TwoPaneView">
@@ -321,7 +322,7 @@
 
   <slide>
     <h1>Toolability (meta-programming)</h1>
-      <div style="display:flex;margin-left:64px;">
+      <div style="display:flex;margin-left:64px;color:gray;">
         <div>
         <ul>
           <li>Code Generators</li>
@@ -384,7 +385,7 @@
         <div style="margin-left: 16px;">
         <h1>Summary</h1>
         <div style="display:flex;">
-          <div style="width:800px;">
+          <div style="width:800px;color:gray;">
             <ul>
               <li>Model-Oriented</li>
                 <li class="d1">Models are Modelled</li>
