@@ -155,13 +155,12 @@
     <h1>Reactive Programming</h1>
     <!-- <foam model="foam.demos.ReactiveClocks"/> -->
           <code-sample>
-            <title>Reactive Programming</title>
+            <title><!--Reactive Programming--></title>
             <source>
               <code-snippet>
                 <title>HTML</title>
-                <src language="html">
-                  <code>
-                    <%
+                <src language="html" maxLines="10">
+                  <code><%
                       var canvas  = foam.graphics.CView.create({width: 1900, height: 1000});
                       var mouse   = foam.input.Mouse.create();
                       var clock1  = foam.demos.ClockView.create({r: 60});
