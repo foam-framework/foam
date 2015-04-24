@@ -38,30 +38,41 @@
   </slide>
 
   <slide>
-    <h1>Models</h1>
-    <%
-      var models = [
-        com.google.sweeper.Game,
-        com.google.sweeper.Board,
-        com.google.sweeper.Cell
-      ];
-      var table  = foam.ui.TableView.create({model: Model, dao: models});
-      var detail = foam.ui.DetailView.create({model: Model, data$: table.hardSelection$});
-      var jsView = foam.ui.JSView.create({model: Model, data$: table.hardSelection$});
-      table.hardSelection = models[0];
-    %>
-    <!--
-          <center><foam model="com.google.sweeper.Game"/></center>
-     -->
-    <%= table %>
-    <div style="display:flex">
-      <div style="width: 50%;">
-        <%= detail %>
-      </div>
-      <div style="min-width: 45%;margin-left:64px;">
-         <%= jsView %>
+    <h1>Dependency Injection</h1>
+    <div style="display:flex;">
+      <pre style="border:1px solid;margin-left:50px;padding:10px;width:45%;">
+<a href="https://github.com/foam-framework/foam/blob/master/js/com/google/sweeper/Game.js">com.google.sweeper.Game</a>
+
+<a href="https://github.com/foam-framework/foam/blob/master/js/com/google/sweeper/Board.js">com.google.sweeper.Board</a>
+CLASS({
+  package: 'com.google.sweeper',
+  name: 'Board',
+
+  extendsModel: 'foam.ui.View',
+
+  requires: [ 'com.google.sweeper.Cell' ],
+  <b>exports: [ 'as board' ],</b>
+  ...
+
+<a href="https://github.com/foam-framework/foam/blob/master/js/com/google/sweeper/Cell.js">com.google.sweeper.Cell</a>
+CLASS({
+  package: 'com.google.sweeper',
+  name: 'Cell',
+
+  extendsModel: 'foam.ui.View',
+
+  <b>imports: [ 'board' ],</b>
+  ...
+      </pre>
+      <div style="width:50%">
+        <center><foam model="com.google.sweeper.Game"/></center>
       </div>
     </div>
+      <!--
+    <%= foam.documentation.diagram.DocDiagramView.create({data: com.google.sweeper.Game}) %>
+    <%= foam.documentation.diagram.DocDiagramView.create({data: com.google.sweeper.Board}) %>
+    <%= foam.documentation.diagram.DocDiagramView.create({data: com.google.sweeper.Cell}) %>
+    -->
   </slide>
 
   <slide>
