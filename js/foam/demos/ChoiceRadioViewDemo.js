@@ -112,6 +112,7 @@ CLASS({
           $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: false }
           $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: false, floatingLabel: false }
           $$data{model_: 'foam.ui.md.PopupChoiceView', inlineStyle: false,  choices:this.choices}
+          $$data{model_:'foam.ui.md.EditableView', inlineStyle: false }
         </div>
         <hr/>
         <h3>Inline style, with no padding and margins</h3>
@@ -120,6 +121,7 @@ CLASS({
           $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: true }
           $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: true, floatingLabel: false }
           $$data{model_: 'foam.ui.md.PopupChoiceView', inlineStyle: true,  choices:this.choices}
+          $$data{model_:'foam.ui.md.EditableView', inlineStyle: true }
         </div>
         <hr/>
         $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'vertical'}
