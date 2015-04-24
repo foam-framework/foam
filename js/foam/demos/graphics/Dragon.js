@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.demos.graphics',
   name:  'Dragon',
@@ -77,6 +78,7 @@ CLASS({
         this.view.paint();
       }.bind(this));
     },
+
     dot: function(r) {
       var c = this.canvas;
       c.beginPath();
