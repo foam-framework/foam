@@ -118,6 +118,7 @@ CLASS({
       code-view {
         font-size: 28px;
       }
+      .sweeper-models canvas { vertical-align: top; }
       li.d1 { margin-left: 16px; font-size: 30px;}
       li.d2 { margin-left: 32px; font-size: 28px; }
       li.d3 { margin-left: 48px; font-size: 26px; }

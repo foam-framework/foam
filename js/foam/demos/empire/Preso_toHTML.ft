@@ -65,7 +65,7 @@ CLASS({
   ...
       </pre>
       <div style="width:50%">
-        <center>
+        <center class="sweeper-models">
         <foam model="com.google.sweeper.Game"/><br>
             <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Game}) %>
     <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Board}) %>
