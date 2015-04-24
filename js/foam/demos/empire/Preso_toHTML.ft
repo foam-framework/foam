@@ -65,14 +65,15 @@ CLASS({
   ...
       </pre>
       <div style="width:50%">
-        <center><foam model="com.google.sweeper.Game"/></center>
+        <center>
+        <foam model="com.google.sweeper.Game"/><br>
+            <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Game}) %>
+    <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Board}) %>
+    <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Cell}) %>
+
+       </center>
       </div>
     </div>
-      <!--
-    <%= foam.documentation.diagram.DocDiagramView.create({data: com.google.sweeper.Game}) %>
-    <%= foam.documentation.diagram.DocDiagramView.create({data: com.google.sweeper.Board}) %>
-    <%= foam.documentation.diagram.DocDiagramView.create({data: com.google.sweeper.Cell}) %>
-    -->
   </slide>
 
   <slide>

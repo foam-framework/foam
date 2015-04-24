@@ -28,6 +28,7 @@ CLASS({
     'foam.demos.physics.CollisionWithSpring',
     'foam.demos.physics.Spring',
     'foam.documentation.diagram.DocDiagramView',
+    'foam.documentation.diagram.DocModelDiagramView',
     'foam.flow.CodeSample',
     'foam.flow.CodeSample',
     'foam.flow.Slides',
