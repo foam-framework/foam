@@ -41,6 +41,11 @@ CLASS({
     },
     {
       model_: 'BooleanProperty',
+      name: 'showActions',
+      defaultValue: true
+    },
+    {
+      model_: 'BooleanProperty',
       name: 'scroll',
       defaultValue: true
     },
@@ -116,11 +121,17 @@ CLASS({
       name: 'onEditActionFlareStateChanged',
       code: function(_, __, ___, nu) {
         if ( nu === 'default' ) {
-          // Button should hide before editor changes modes.
-          this.editView.className = (this.editView.className || '') + ' hide';
-          this.mode = 'read-write';
+          this.enterReadWriteMode_();
           this.editView.halo.state_$.removeListener(this.onEditActionFlareStateChanged);
         }
+      }
+    },
+    {
+      name: 'enterReadWriteMode_',
+      code: function() {
+        // Button should hide before editor changes modes.
+        this.editView.className = (this.editView.className || '') + ' hide';
+        this.mode = 'read-write';
       }
     }
   ],
@@ -132,7 +143,14 @@ CLASS({
       isEnabled: function() { return this.mode === 'read-only'; },
       isAvailable: function() { return this.mode === 'read-only'; },
       action: function() {
-        this.editView.halo.state_$.addListener(this.onEditActionFlareStateChanged);
+        // TODO(markdittmer): Components involved in animated reactive updates
+        // should be better decoupled. For now, use halo as indicator that we
+        // need to synchronize with a flare state change.
+        if ( this.editView.halo ) {
+          this.editView.halo.state_$.addListener(this.onEditActionFlareStateChanged);
+          return;
+        }
+        this.enterReadWriteMode_();
       }
     }
   ],
@@ -143,17 +161,19 @@ CLASS({
         <heading>{{{this.data.title}}}</heading>
       <% } %>
       $$src{ model_: this.codeViewName }
-      <actions>
-        $$edit{
-          model_: this.actionButtonName,
-          className: 'actionButton editButton',
-          color: 'black',
-          font: '20px Roboto, Arial',
-          alpha: 1.0,
-          radius: 15,
-          background: '#F7CB4D'
-        }
-      </actions>
+      <% if ( this.showActions ) { %>
+        <actions>
+          $$edit{
+            model_: this.actionButtonName,
+            className: 'actionButton editButton',
+            color: 'black',
+            font: '20px Roboto, Arial',
+            alpha: 1.0,
+            radius: 15,
+            background: '#F7CB4D'
+          }
+        </actions>
+      <% } %>
     */},
     function CSS() {/*
       code-snippet {

@@ -70,7 +70,8 @@ CLASS({
         this.SUPER.apply(this, arguments);
         if ( ! this.$ ) return;
         this.$.addEventListener('input', this.onSrcChange);
-        this.$.setAttribute('contenteditable', 'true');
+        if ( this.mode === 'read-write' )
+          this.$.setAttribute('contenteditable', 'true');
         this.codeViewLoadState = 'loaded';
       }
     }
@@ -88,7 +89,7 @@ CLASS({
 
   templates: [
     // Support both <code-view>...</code-view> and %%myCodeView.
-    function toInnerHTML() {/*<% if ( this.inner ) { %><%= this.inner() %><% } else { %><%= this.data.code %><% } %>*/},
+    function toInnerHTML() {/*<% if ( this.inner ) { %>{{this.inner()}}<% } else { %>{{this.data.code}}<% } %>*/},
     function CSS() {/*
       code-view {
         display: block;

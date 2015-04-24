@@ -73,7 +73,6 @@ CLASS({
         return this.expandCollapseDuration + 'ms cubic-bezier(0,.3,.8,1)';
       },
       adapt: function(old, nu) {
-        debugger;
         if ( old === nu || typeof nu === 'string' ) return nu;
         if ( typeof nu === 'number' )
           return nu + 'ms' + (this.heightTransitionFn ?
