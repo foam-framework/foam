@@ -37,7 +37,8 @@ CLASS({
     'MDAO',
     'foam.dao.FindFallbackDAO',
     'foam.documentation.DocViewPicker',
-    'foam.util.JavaSource'
+    'foam.util.JavaSource',
+    'foam.ui.TextFieldView'
   ],
 
   properties: [
@@ -49,7 +50,7 @@ CLASS({
       name: 'features',
       lazyFactory: function() {
         return [
-          { name: 'Models',
+          { name: 'Model',
             f: function(model, obj, arr, value) { var dv = this.DetailView.create({model: Model, data: model}); this.setDisplay(dv.toHTML()); dv.initHTML(); }
           },
           { name: 'Help',
@@ -109,7 +110,7 @@ CLASS({
 //               FOAM.browse(model);
 //             }
 //           },
-          { name: 'Documentation',
+          { name: 'Docs',
             f: function(model, obj, arr, value) {
               //var dv = this.DetailView.create({model: Model, value: SimpleValue.create(model)}); this.setDisplay(dv.toHTML() ); dv.initHTML();
               var dv = this.DocViewPicker.create({ data: model });
@@ -134,7 +135,7 @@ CLASS({
       name: 'featureLabels',
       lazyFactory: function() {
         var list = [];
-        for (var i = 1; i < this.features.length; i++) {
+        for (var i = 0; i < this.features.length; i++) {
           list.push(this.features[i].name);
         }
         return list;
@@ -145,10 +146,10 @@ CLASS({
       lazyFactory: function() {
         return System.create({
           parent: this.space,
-          title: 'FOAM',
+          title: '',
           numDev: this.enableAnimation ? 2 : 0,
           devColor: 'red',
-          features: this.featureLabels,
+          features: this.featureLabels.slice(1),
           entities: this.entityNames,
         });
       }
@@ -178,7 +179,7 @@ CLASS({
           { name: 'Rect', model:  'foam.graphics.Rectangle', instance: null },
           { name: 'Box', model: 'foam.graphics.Box', instance: null },
           { name: 'Label', model: 'foam.graphics.Label', instance: null },
-          { name: 'DAOController', model: 'foam.ui.DAOController', instance: null },
+//          { name: 'DAOController', model: 'foam.ui.DAOController', instance: null },
           { name: 'StackView', model: 'foam.ui.StackView', instance: null },
         ];
         ents.forEach(function(ent) {
@@ -206,7 +207,7 @@ CLASS({
     {
       name: 'space',
       factory: function() {
-        return Canvas.create({width: 1000, height: 800, background:'#fff'});
+        return Canvas.create({width: 800, height: 800, background:'#fff'});
       }
     },
     {
@@ -232,6 +233,10 @@ CLASS({
       lazyFactory: function() {
         return this.FindFallbackDAO.create({delegate: this.masterModelList, fallback: this.X.ModelDAO});
       }
+    },
+    {
+      name: 'title',
+      defaultValue: 'FOAM Features and Models'
     }
   ],
 
@@ -285,7 +290,7 @@ CLASS({
     },
     initHTML: function() {
       this.SUPER();
-
+      this.space.canvas.font = "bold 14px Arial";
       this.sys.architecture = this.foam;
       Events.dynamic(
         function () {
@@ -310,7 +315,7 @@ CLASS({
   templates: [
     function toHTML() {/*
       <table><tr><td valign=top>
-
+      <h1><%# this.title %></h1>
       %%space
 
       <td><td valign=top>
@@ -338,6 +343,8 @@ CLASS({
         var value = SimpleValue.create(obj);
 
         this.features[this.sys.selectedX].f.call(this, model, obj, arr, value);
+        
+        this.title = this.featureLabels[this.sys.selectedX] + " for " + this.entityNames[this.sys.selectedY-1]
       }
     }
 
