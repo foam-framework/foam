@@ -98,8 +98,7 @@ CLASS({
         height: 17%;
         overflow: hidden;
         padding: 2px;
-        width: 17%;
-        xxxwidth: 17.5%;
+        width: 17.5%;
         min-width: initial;
       }
       slides .card-grid .card .card-inset {

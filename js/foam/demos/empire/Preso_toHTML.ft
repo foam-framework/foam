@@ -113,6 +113,15 @@ CLASS({
   </slide>
 
   <slide>
+    <h1>TodoMVC</h1>
+    <br>
+    <center>
+      <iframe style="width:60%;height:70%;" src="./apps/todo/Todo.html"></iframe><br>
+      <a href="http://TodoMVC.com">TodoMVC.com</a>, <a href="https://github.com/foam-framework/foam/tree/master/apps/todo">Source</a>
+    </center>
+  </slide>
+
+  <slide>
     <h1>Data Access Objects (DAO's)</h1>
     <div style="display:flex;">
       <pre style="border:1px solid;margin-left:50px;padding:10px;">
@@ -154,14 +163,6 @@ dao
       </pre>
     </div>
     <a style="margin-left:50px;" href="./demos/dao.html">DAO Examples</a>
-  </slide>
-
-  <slide>
-    <h1>TodoMVC</h1>
-    <br>
-    <center>
-      <iframe style="width:60%;height:75%;" src="./apps/todo/Todo.html"></iframe>
-    </center>
   </slide>
 
   <slide>
