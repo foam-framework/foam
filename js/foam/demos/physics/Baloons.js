@@ -65,14 +65,13 @@ CLASS({
           });
           this.addChild(c);
 
-          Movement.spring(this.anchor, c, (x-(N-1)/2)*90-800, (y-(N-1)/2)*90, 4);
+          Movement.spring(this.anchor, c, (x-(N-1)/2)*90-800, (y-(N-1)/2)*90, 6);
           Movement.inertia(c);
           Movement.friction(c, 0.98);
-          this.bounceOnWalls(c, this.width, this.height);
           this.timer.i$.addListener(function(c) {
             var d = Movement.distance(mouse.x - c.x, mouse.y - c.y);
             d = Math.max(0, (500-d) / 500);
-            var r = 20 + 110 * d*d*d*d;
+            var r = 20 + 500 * d*d*d*d;
             c.r = c.r * 0.95 + r * 0.05;
           }.bind(this,c));
           this.collider.add(c);
@@ -80,15 +79,6 @@ CLASS({
       }
 
       this.collider.start();
-    },
-
-    bounceOnWalls: function (c, w, h) {
-      Events.dynamic(function() { c.x; c.y; }, function() {
-        if ( c.x < c.r     ) c.vx =  Math.abs(c.vx);
-        if ( c.x > w - c.r ) c.vx = -Math.abs(c.vx);
-        if ( c.y < c.r     ) c.vy =  Math.abs(c.vy);
-        if ( c.y > h - c.r ) c.vy = -Math.abs(c.vy);
-      });
     },
 
     destroy: function() {

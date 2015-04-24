@@ -68,7 +68,7 @@ CLASS({
     {
       name: 'back',
       label: '<',
-      keyboardShortcuts: [ '<', 33 /* Page Down */, 38 /* Down Arrow */ ],
+      keyboardShortcuts: [ '<', 33 /* Page Down */ /*, 38*/ /* Down Arrow */ ],
       isEnabled: function() { return this.position > 1; },
       action: function() {
         this.position--;
@@ -77,7 +77,7 @@ CLASS({
     {
       name: 'forth',
       label: '>',
-      keyboardShortcuts: [ '>', 34 /* Page Up */, 40 /* Up Arrow */ ],
+      keyboardShortcuts: [ '>', 34 /* Page Up */ /*, 40*/ /* Up Arrow */ ],
       isEnabled: function() { return this.position < this.slides.length; },
       action: function() {
         this.position++;

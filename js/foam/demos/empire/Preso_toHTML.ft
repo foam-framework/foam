@@ -18,14 +18,15 @@
     April 26, 2015<br>
     </center>
   </slide>
+
   <slide>
-    <h1>History Lesson</h1>
-    <iframe style="width:100%;height:100%;border:none;" src="./demos/UnixSimulator.html"></iframe>
+    <h1>Models and Features</h1>
+    <foam model="foam.demos.FOAMComponents"/>
   </slide>
 
   <slide>
-    <h1>Features and Models</h1>
-    <foam model="foam.demos.FOAMComponents"/>
+    <h1>History Lesson</h1>
+    <iframe style="width:100%;height:100%;border:none;" src="./demos/UnixSimulator.html"></iframe>
   </slide>
 
   <slide>
@@ -149,41 +150,37 @@
             <title>Reactive Programming</title>
             <source>
               <code-snippet>
-                <title>Value Binding</title>
-                <src language="javascript">
-                  <code>
-                    var canvas = foam.graphics.CView.create();
-                    var mouse  = foam.input.Mouse.create();
-                    var clock  = foam.demos.ClockView.create();
-
-                    canvas.addChild(clock);
-
-                    clock.x$ = mouse.x$;
-                    clock.y$ = mouse.y$;
-
-                    canvas.write(X.document);
-//                    mouse.connect(canvas.view.$);
-                  </code>
-                </src>
-              </code-snippet>
-            </source>
-            <!--
-            <source>
-              <code-snippet>
-                <title>Javascript</title>
-                <src language="javascript">
-                  <code>
-                  </code>
-                </src>
-              </code-snippet>
-            </source>
-            -->
-            <source>
-              <code-snippet>
                 <title>HTML</title>
                 <src language="html">
                   <code>
-                    <% var canvas = 'foobar'; %>
+                    <%
+                      var canvas  = foam.graphics.CView.create({width: 1900, height: 1000});
+                      var mouse   = foam.input.Mouse.create();
+                      var clock1  = foam.demos.ClockView.create({r: 60});
+                      var clock2  = foam.demos.ClockView.create({r: 60, color: 'green'});
+                      var timer   = Timer.create();
+
+                      timer.start();
+                      canvas.addChildren(clock1, clock2);
+
+                      // Part 1
+                      clock1.x$ = mouse.x$;
+                      clock1.y$ = mouse.y$;
+
+                      // Part 2
+                      // Events.dynamic(function() {
+                      //   clock2.x = clock1.x + 200;
+                      //   clock2.y = clock1.y + 200;
+                      // });
+
+                      // Part 3
+                      // Events.dynamic(function() {
+                      //   clock2.x = clock1.x + 200*Math.cos(timer.time*Math.PI/1000);
+                      //   clock2.y = clock1.y + 200*Math.sin(timer.time*Math.PI/1000);
+                      // });
+
+                      this.addInitializer(function() { mouse.connect(canvas.view.$); });
+                    %>
                     <%= canvas %>
                   </code>
                 </src>
@@ -309,7 +306,8 @@
         {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10, scaleX: 2, scaleY: 2}},
         {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
         {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
-        {label: 'Gravity&nbsp;+&nbsp;Friction', view: { factory_: 'foam.demos.physics.Bubbles', height: 1000, width: 1200, scaleX: 1.5, scaleY: 1.5}}
+        {label: 'Gravity&nbsp;+&nbsp;Friction', view: { factory_: 'foam.demos.physics.Bubbles', height: 1000, width: 1200, scaleX: 1.5, scaleY: 1.5}},
+        {label: 'Baloons',                      view: 'foam.demos.physics.Collision'}
       ]})
     %>
   </slide>
@@ -348,16 +346,22 @@
   </slide>
 
   <slide>
+    <h1>Tutorial</h1>
+      <iframe style="width:45%;height:80%;" src="./index.html?model=foam.tutorials.phonecat.Controller"></iframe>
+      <iframe style="width:45%;height:80%;" src="http://foam-framework.github.io/foam/tutorial/0-intro/"></iframe>
+    <!--
+    <foam model="foam.tutorials.phonecat.Controller"/>
     <h1>Learning FOAM</h1>
     <h2>Tutorial</h2>
-    <h2>TodoMVC</h2>
     <h2>DemoCat</h2>
+    -->
   </slide>
 
   <slide>
     <div style="height:10px;"></div>
     <foam model="foam.demos.MDFieldGuide"/>
   </slide>
+
   <slide>
     <h1>Calculator</h1>
     <br>

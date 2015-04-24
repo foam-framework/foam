@@ -25,9 +25,7 @@
     var space2View = space2.write(document);
     // document.writeln("</td><tr></table>");
 
-    // document.writeln('<div style="display:inline-block">');
     var timerView = timer.write(document);
-    // document.writeln('</div>');
 
     var sys = System.create({
       parent: space,
@@ -48,9 +46,9 @@
     }, X);
 
     // document.writeln('<table><tr><td>');
-    var sysView = sys.write(document);
+    // var sysView = sys.write(document);
     // document.writeln('</td><td>');
-    var sys2View = sys2.write(document);
+    // var sys2View = sys2.write(document);
     // document.writeln('</td></tr></table>');
 
     space2.$.addEventListener('click', addPlatforms);

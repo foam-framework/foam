@@ -43,7 +43,7 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'expandedIconUrl',
-      defaultValue: 'https://www.google.com/images/icons/material/system/1x/stat_1_black_24dp.png'
+      defaultValue: 'https://www.gstatic.com/images/icons/material/system/1x/expand_less_black_24dp.png'
     },
     {
       model_: 'StringProperty',
