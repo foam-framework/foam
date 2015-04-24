@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'CodeView',
   package: 'foam.flow',
+  name: 'CodeView',
   extendsModel: 'foam.flow.Element',
   traits: [ 'foam.flow.MultilineViewTrait' ],
 
@@ -49,7 +49,7 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'maxLines',
-      defaultValue: 20
+      defaultValue: 10
     },
     {
       model_: 'IntProperty',

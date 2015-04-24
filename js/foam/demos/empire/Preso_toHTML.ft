@@ -111,22 +111,46 @@
 
   <slide>
     <h1>Data Access Objects (DAO's)</h1>
-      <foam model="foam.ui.md.TwoPaneView">
-        <views>
-          <viewChoice>
-            <label>Local Storage</label>
-            <p:view>
-              Local Storage Demo
-            </p:view>
-          </viewChoice>
-          <viewChoice>
-            <label>IndexedDB</label>
-            <p:view>
-              IndexedDB Demo
-            </p:view>
-          </viewChoice>
-        </views>
-      </foam>
+    <div style="display:flex;">
+      <pre style="border:1px solid;margin-left:50px;padding:10px;">
+interface Sink {
+  void put(obj);
+  void remove(obj);
+  void eof();
+  void error(msg);
+}
+
+interface DAO extends Sink {
+  void   put(obj, opt_sink);
+  void   remove(id, opt_sink);
+  void   find(query, sink);
+  Future select(sink);
+  Future removeAll(query, sink);
+  Future update(expression);
+  void   listen(sink);
+  void   pipe(sink):  // select() + listen()
+  void   unlisten(sink);
+  DAO    where(query);
+  DAO    limit(count);
+  DAO    skip(count);
+  DAO    orderBy(comparators...);
+}
+      </pre>
+      <pre style="border:1px solid;margin-left:50px;padding:10px;">
+dao
+  .skip(200)
+  .limit(50)
+  .orderBy(EMail.TIMESTAMP)
+  .where(
+    AND(
+      EQ(EMail.TO,        'kgr@google.com'),
+      EQ(EMail.FROM,      'mymom@gmail.com'),
+      GT(EMail.TIMESTAMP, startOfYear)))
+  .select(
+    GROUP_BY(EMail.SUBJECT, COUNT()));
+      </pre>
+    </div>
+    <a style="margin-left:50px;" href="./demos/dao.html">DAO Examples</a>
   </slide>
 
   <slide>
@@ -155,13 +179,12 @@
     <h1>Reactive Programming</h1>
     <!-- <foam model="foam.demos.ReactiveClocks"/> -->
           <code-sample>
-            <title>Reactive Programming</title>
+            <title><!--Reactive Programming--></title>
             <source>
               <code-snippet>
                 <title>HTML</title>
-                <src language="html">
-                  <code>
-                    <%
+                <src language="html" maxLines="10">
+                  <code><%
                       var canvas  = foam.graphics.CView.create({width: 1900, height: 1000});
                       var mouse   = foam.input.Mouse.create();
                       var clock1  = foam.demos.ClockView.create({r: 60});
@@ -176,16 +199,16 @@
                       clock1.y$ = mouse.y$;
 
                       // Part 2
-                      // Events.dynamic(function() {
+                      Events.dynamic(function() {
                       //   clock2.x = clock1.x + 200;
                       //   clock2.y = clock1.y + 200;
-                      // });
+                      });
 
                       // Part 3
-                      // Events.dynamic(function() {
+                      Events.dynamic(function() {
                       //   clock2.x = clock1.x + 200*Math.cos(timer.time*Math.PI/1000);
                       //   clock2.y = clock1.y + 200*Math.sin(timer.time*Math.PI/1000);
-                      // });
+                      });
 
                       this.addInitializer(function() { mouse.connect(canvas.view.$); });
                     %>
@@ -341,6 +364,16 @@
           <li>Editing</li>
           <li>Code Visualization</li>
         </ul>
+        <!--
+        <br>
+        Ex.:
+        <%
+        var models = []; for ( var key in USED_MODELS ) models.push(X.lookup(key));
+        var v = GROUP_BY(Model.PACKAGE, COUNT());
+        models.select(v);
+        out(v);
+        %>
+        -->
         </div>
       <div style="margin-left:250px;">
         <%= foam.documentation.diagram.DocDiagramView.create({data: foam.documentation.diagram.ModelDocDiagram}) %>
@@ -350,7 +383,7 @@
 
   <slide>
     <h1>Tutorial</h1>
-      <iframe style="width:45%;height:80%;" src="./index.html?model=foam.tutorials.phonecat.Controller"></iframe>
+      <iframe style="width:50%;height:80%;" src="./index.html?model=foam.tutorials.phonecat.Controller"></iframe>
       <iframe style="width:45%;height:80%;" src="http://foam-framework.github.io/foam/tutorial/0-intro/"></iframe>
     <!--
     <foam model="foam.tutorials.phonecat.Controller"/>
