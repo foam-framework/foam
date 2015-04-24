@@ -38,6 +38,14 @@
   </slide>
 
   <slide>
+    <h1>Language-Like Features</h1>
+    <div style="display: block;">
+      <foam model="foam.demos.pong.Pong"/><br>
+      <foam model="foam.flow.Pong"/>
+    </div>
+  </slide>
+
+  <slide>
     <h1>Dependency Injection</h1>
     <div style="display:flex;">
       <pre style="border:1px solid;margin-left:50px;padding:10px;width:45%;">
@@ -77,14 +85,6 @@ CLASS({
   </slide>
 
   <slide>
-    <h1>"Language" Features</h1>
-    <div style="display: block;">
-      <foam model="foam.demos.pong.Pong"/><br>
-      <foam model="foam.flow.Pong"/>
-    </div>
-  </slide>
-
-  <slide>
     <h1>Model Types</h1>
     <div style="display:flex;">
       <div style="width: 800px;margin-left:32px;font-size: 52px;">
@@ -110,15 +110,6 @@ CLASS({
   <slide>
     <h1>Architecture</h1>
     <div style="transform:scale(0.85);transform-origin: 0 0;"><foam model="foam.demos.ArchitectureDiagram"/></div>
-  </slide>
-
-  <slide>
-    <h1>Query-Optimizing Cache</h1>
-    <br>
-    <br>
-    <center>
-      <img style="margin-left:150px;margin-top:-40px;" src="js/foam/demos/empire/benchmarks.png">
-    </center>
   </slide>
 
   <slide>
@@ -176,6 +167,15 @@ dao
   <slide>
     <h1>DAO Strategies & Decorators</h1>
     <foam model="foam.demos.DAOStrategies"/>
+  </slide>
+
+  <slide>
+    <h1>Query-Optimizing Cache</h1>
+    <br>
+    <br>
+    <center>
+      <img style="margin-left:150px;margin-top:-40px;" src="js/foam/demos/empire/benchmarks.png">
+    </center>
   </slide>
 
   <slide>
@@ -415,7 +415,7 @@ dao
     <br>
     <center>
       <iframe style="width:80%;height:70%;" src="./apps/acalc/Calc.html"></iframe><br>
-    <a href="./apps/acalc/Calc.html">Hosted Version</a>, <a href="https://chrome.google.com/webstore/detail/calculator/joodangkbfjnajiiifokapkpmhfnpleo">Chrome Web Store</a>
+    <a href="./apps/acalc/Calc.html">Hosted Version</a>, <a href="https://chrome.google.com/webstore/detail/calculator/joodangkbfjnajiiifokapkpmhfnpleo">Chrome Web Store</a>, <a href="./apps/calc/RawCalc.html">Raw Version</a>, <a href="./demos/DemoCat.html?q=calc">Other Versions</a>
     </center>
   </slide>
 
