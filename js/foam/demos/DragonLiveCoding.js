@@ -21,24 +21,20 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'foam.ui.DetailView',
+    'foam.demos.graphics.Dragon',
     'foam.graphics.Turntable',
     'foam.input.Mouse',
-    'foam.demos.graphics.Dragon',
-    'foam.ui.SlidePanel'
+    'foam.ui.DetailView',
+    'foam.ui.SlidePanel',
+    'foam.ui.DAOListView'
   ],
 
   exports: [ 'timer' ],
 
   properties: [
     {
-      name: 'dragonModel',
-      view: 'foam.ui.DetailView',
-      factory: function() { return this.Dragon; }
-    },
-    {
       name: 'dragon',
-      factory: function() { return this.Dragon.create({scaleX: 0.7, scaleY: 0.7, x: 1000}); }
+      factory: function() { return this.Dragon.create({x: 550, blowBubbles: false}); }
     },
     {
       name: 'timer',
@@ -67,6 +63,18 @@ CLASS({
       this.timer.start();
       this.mouse.connect(this.dragon.$);
       this.dragon.eyes.watch(this.mouse);
+
+      var Dragon = foam.demos.graphics.Dragon;
+      Dragon.methods.forEach(function(meth) {
+        if ( meth.name === 'paintSelf' || meth.name === 'wing' || meth.name === 'feather' ) meth.code$.addListener(function() {
+          // console.log(meth.name, typeof meth.code);
+          try {
+            Dragon.getPrototype()[meth.name] = meth.code;
+          } catch (e) {
+            console.log(e);
+          }
+        });
+      });
     }
   },
 
@@ -88,21 +96,15 @@ CLASS({
       }
     */},
     function toHTML() {/*
-    <foam model="foam.ui.SlidePanel" minWidth="1700" minPanelWidth="850" side="left" XXXstripWidth="16">
-      <panelView>
-        <div style="background:cadetblue;overflow: auto;">
-          $$dragonModel
+      <div style="display:inline-flex;">
+        <div style="overflow: auto;height:90%;width:40%;">
+          $$timer{showActions: true}<br><%= this.data.turntable %>
+          <%= foam.ui.DAOListView.create({mode: 'read-only', dao: foam.demos.graphics.Dragon.methods.where({f:function(m) { return m.name === 'paintSelf' || m.name === 'wing' || m.name === 'feather'; }})}) %>
         </div>
-      </panelView>
-      <mainView>
-        <table style="margin-left: 16px">
-          <tr>
-            <td valign="top" width="700">$$timer{showActions: true}<br><%= this.data.turntable %></td>
-            <td valign="top" class="dragon-cell"><%= this.data.dragon %></td>
-          </tr>
-        </table>
-      </mainView>
-     </foam>
+        <div>
+          %%dragon
+        </div>
+      </div>
     */}
   ]
 });

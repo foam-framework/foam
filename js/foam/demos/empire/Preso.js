@@ -23,6 +23,7 @@ CLASS({
     'foam.demos.graphics.Dragon',
     'foam.demos.graphics.EyeCView',
     'foam.demos.physics.Bubbles',
+    'foam.demos.physics.Baloons',
     'foam.demos.physics.Collision',
     'foam.demos.physics.CollisionWithSpring',
     'foam.demos.physics.Spring',

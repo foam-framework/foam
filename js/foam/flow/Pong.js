@@ -58,7 +58,7 @@ CLASS({
           font-size: 30px;
           margin: 4px 0px 2px 0px;
         }
-        pong p, li * {
+        pong p, pong li * {
           font-size: 14px;
           font-family: arial, sans-serif;
         }

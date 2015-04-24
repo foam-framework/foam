@@ -10,10 +10,10 @@
     <font size="60px">Fast Apps Fast</font><br>
     (25 Demos in 25 Minutes)
     <br>
+    <a href="http://foamdev.com/">http://foamdev.com/</a>
     <br>
     <br>
     Kevin Greer, <a href="mailto:kgr@chromium.org">kgr@google.com</a><br>
-    <br>
     <br>
     April 26, 2015<br>
     </center>
@@ -26,7 +26,7 @@
 
   <slide>
     <h1>History Lesson</h1>
-    <iframe style="width:100%;height:100%;border:none;" src="./demos/UnixSimulator.html"></iframe>
+    <iframe style="transform: scale(1.32);transform-origin:0 0;width:100%;height:100%;border:none;" src="./demos/UnixSimulator.html"></iframe>
   </slide>
 
   <slide>
@@ -65,25 +65,39 @@
   </slide>
 
   <slide>
+    <h1>"Language" Features</h1>
+    <div style="display: block;">
+      <foam model="foam.demos.pong.Pong"/><br>
+      <foam model="foam.flow.Pong"/>
+    </div>
+  </slide>
+
+  <slide>
     <h1>Model Types</h1>
-    <br>
     <div style="display:flex;">
-      <div style="width: 800px;margin-left:32px;">
-        <ul>
+      <div style="width: 800px;margin-left:32px;font-size: 46px;">
+        <ul style="color:gray;">
           <li>Entities (default)</li>
           <li>Animations</li>
           <li>Queries (mLang)</li>
           <li>Parsers</li>
           <li>...</li>
-          <li><a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome App Builder</a></li>
         </ul>
       </div>
      <div>
     <center>
-    <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw" style="border: 1px solid;">
+      <br>
+      <a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome App Builder</a><br>
+      <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw" style="border: 1px solid;"><br>
+      <font size="-1">(13k 1-week active users)</font>
    </center>
      </div>
     </div>
+  </slide>
+
+  <slide>
+    <h1>Architecture</h1>
+    <div style="transform:scale(0.85);transform-origin: 0 0;"><foam model="foam.demos.ArchitectureDiagram"/></div>
   </slide>
 
   <slide>
@@ -115,14 +129,12 @@
     <h1>TodoMVC</h1>
     <br>
     <center>
-      <iframe style="width:80%;height:80%;" src="./apps/todo/Todo.html"></iframe>
+      <iframe style="width:60%;height:75%;" src="./apps/todo/Todo.html"></iframe>
     </center>
   </slide>
 
   <slide>
     <h1>DAO Strategies & Decorators</h1>
-    <br>
-    <br>
     <foam model="foam.demos.DAOStrategies"/>
   </slide>
 
@@ -133,14 +145,6 @@
     <a href="./apps/mbug/main.html"><img style="box-shadow: 0 5px 15px #aaa;" height="530" width="500" src="./demos/democat/MBug.png"></a>
     <a href="./apps/gmail/main.html"><img style="margin-left: 100px;border:1px solid;box-shadow: 0 5px 15px #aaa;" height="530" width="420" src="./demos/democat/GMail.png"></a>
     </center>
-  </slide>
-
-  <slide>
-    <h1>"Language" Features</h1>
-    <div style="display: block;">
-      <foam model="foam.demos.pong.Pong"/><br>
-      <foam model="foam.flow.Pong"/>
-    </div>
   </slide>
 
   <slide>
@@ -157,7 +161,7 @@
                       var canvas  = foam.graphics.CView.create({width: 1900, height: 1000});
                       var mouse   = foam.input.Mouse.create();
                       var clock1  = foam.demos.ClockView.create({r: 60});
-                      var clock2  = foam.demos.ClockView.create({r: 60, color: 'green'});
+                      var clock2  = foam.demos.ClockView.create({r: 60, color: '#3c0'});
                       var timer   = Timer.create();
 
                       timer.start();
@@ -189,11 +193,6 @@
           </code-sample>
   </slide>
 
-
-  <slide>
-    <h1>Architecture</h1>
-    <div style="transform:scale(0.6);transform-origin: 0 0;"><foam model="foam.demos.ArchitectureDiagram"/></div>
-  </slide>
   <slide>
     <h1>Graphics</h1>
     <foam model="foam.ui.md.TwoPaneView">
@@ -265,7 +264,7 @@
             <foam model="foam.demos.graphics.EyeCView" color="yellow"/>
             <span style="width:200px;display:inline-block;"></span>
             <foam model="foam.demos.graphics.EyesCView"/>
-            <%= foam.demos.graphics.Dragon.create({y: 200, x: 800, scaleX: 0.7, scaleY: 0.7, timer: Timer.create(), blowBubbles: false}) %>
+            <%= foam.demos.graphics.Dragon.create({y: 200, x: 800, scaleX: 0.6, scaleY: 0.6, timer: Timer.create(), blowBubbles: false}) %>
           </p:view>
         </viewChoice>
         <viewChoice>
@@ -307,7 +306,7 @@
         {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
         {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
         {label: 'Gravity&nbsp;+&nbsp;Friction', view: { factory_: 'foam.demos.physics.Bubbles', height: 1000, width: 1200, scaleX: 1.5, scaleY: 1.5}},
-        {label: 'Baloons',                      view: 'foam.demos.physics.Collision'}
+        {label: 'Baloons',                      view: 'foam.demos.physics.Baloons'}
       ]})
     %>
   </slide>
@@ -321,7 +320,7 @@
 
   <slide>
     <h1>Toolability (meta-programming)</h1>
-      <div style="display:flex;margin-left:64px;">
+      <div style="display:flex;margin-left:64px;color:gray;">
         <div>
         <ul>
           <li>Code Generators</li>
@@ -365,9 +364,9 @@
   <slide>
     <h1>Calculator</h1>
     <br>
-    <br>
     <center>
-      <iframe style="width:80%;height:70%;" src="./apps/acalc/Calc.html"></iframe>
+      <iframe style="width:80%;height:70%;" src="./apps/acalc/Calc.html"></iframe><br>
+    <a href="./apps/acalc/Calc.html">Hosted Version</a>, <a href="https://chrome.google.com/webstore/detail/calculator/joodangkbfjnajiiifokapkpmhfnpleo">Chrome Web Store</a>
     </center>
   </slide>
 
@@ -384,7 +383,7 @@
         <div style="margin-left: 16px;">
         <h1>Summary</h1>
         <div style="display:flex;">
-          <div style="width:800px;">
+          <div style="width:800px;color:gray;">
             <ul>
               <li>Model-Oriented</li>
                 <li class="d1">Models are Modelled</li>
@@ -407,13 +406,13 @@
                     <li class="d3">Material Design</li>
                     <li class="d3">Mobile</li>
                   <li class="d2">Reusable Controllers</li>
-                <li class="d1">Technology Independent</li>
+                <li class="d1">Cross-Platform/Tier</li>
                   <li class="d2">Node.js</li>
                   <li class="d2">Java</li>
               <li><i style="color:#33f;">Exponentially More Efficient</i></li>
             </ul>
           </div>
-            <iframe style="border:none;width:100%;height:100%;" src="./demos/GoogleSimulator.html"></iframe>
+            <iframe style="margin-left:100px;border:none;width:90%;height:100%;" src="./demos/GoogleSimulator.html"></iframe>
         </div>
         </div>
       </mainView>

@@ -105,9 +105,8 @@ CLASS({
         var view = this.PageView.create({
           header: this.topToolbar,
         });
-        view.body = this.ViewFactoryView.create({
-          data$: this.data.viewFactory$,
-        }, view.Y);
+        view.body = this.ViewFactoryView.create(undefined, view.Y);
+        Events.follow(this.data.viewFactory$, view.body.data$);
         return view;
       },
     },
