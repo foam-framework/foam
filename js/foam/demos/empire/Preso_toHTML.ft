@@ -428,12 +428,12 @@ dao
         <div style="display:flex;">
           <div style="width:800px;color:gray;">
             <ul>
-              <li>Model-Oriented</li>
+              <li style="color:#33f;">Model-Oriented</li>
                 <li class="d1">Models are Modelled</li>
                 <li class="d1">Language-Like Features</li>
                 <li class="d1">Better Toolability</li>
                 <li class="d1">Cross-Language D.R.Y.-ness</li>
-              <li>Feature-Oriented</li>
+              <li style="color:#33f;">Feature-Oriented</li>
                 <li class="d1">Reactive MVC</li>
                   <li class="d2">Reactive</li>
                     <li class="d3">Observerless</li>
@@ -452,7 +452,7 @@ dao
                 <li class="d1">Cross-Platform/Tier</li>
                   <li class="d2">Node.js</li>
                   <li class="d2">Java</li>
-              <li><i style="color:#33f;">An OS for Information</i></li>
+              <li><i style="color:#f00;">An OS for Information</i></li>
             </ul>
           </div>
           <iframe style="margin-left:100px;border:none;width:90%;height:100%;" src="./demos/GoogleSimulator.html"></iframe>
