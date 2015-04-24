@@ -12,7 +12,7 @@
 CLASS({
   name: 'EditableView',
   package: 'foam.ui.md',
-  extendsModel: 'foam.flow.Element',
+  extendsModel: 'foam.ui.View',
 
   constants: { ELEMENT_NAME: 'toggle-editable' },
 
@@ -22,11 +22,21 @@ CLASS({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(old, nu) {
+        this.childData = nu;
+      },
+    },
+    {
       model_: 'StringProperty',
       name: 'mode',
       defaultValue: 'read-only',
       postSet: function(old, nu) {
         if ( old === nu ) return;
+        if ( old === 'read-write' && nu === 'read-only' ) {
+          // Leaving edit mode, so write the data change upstream.
+          this.data = this.childData;
+        }
         if ( this.contentView_ ) this.contentView_.mode = nu;
         if ( this.icon ) {
           if ( nu === 'read-only' ) this.icon.src = this.editIconUrl;
@@ -48,24 +58,23 @@ CLASS({
       name: 'icon',
     },
     {
+      name: 'childData',
+      documentation: 'The data object passed down to the child view. ' +
+          'Upstream changes to my data are forwarded to childData, but ' +
+          'downstream edits to the childData are not passed up until the ' +
+          'mode is returned to read-only.',
+    },
+    {
       model_: 'ViewFactoryProperty',
       name: 'contentView',
-      factory: function() {
-        return this.TextFieldView.xbind({ mode: this.mode });
-      },
+      defaultValue: 'foam.ui.md.TextFieldView',
     },
     {
       name: 'contentView_',
     },
-  ],
-
-  methods: [
     {
-      name: 'initHTML',
-      code: function() {
-        this.SUPER.apply(this, arguments);
-        this.icon = this.X.$(this.id + '-icon');
-      },
+      name: 'className',
+      defaultValue: 'editable-view',
     },
   ],
 
@@ -78,33 +87,45 @@ CLASS({
     },
   ],
 
+  methods: {
+    shouldDestroy: function() {
+      return false;
+    },
+    addDataChild: function(view) {
+      Events.link(this.childData$, view.data$);
+      this.addChild(view);
+    }
+  },
   templates: [
-    function toInnerHTML() {/*
-      <%=
-        (function() {
-          this.contentView_ = this.contentView();
+    function toHTML() {/*
+      <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
+        <%
+          this.contentView_ = this.contentView({ mode: this.mode });
           this.addDataChild(this.contentView_);
-          return this.contentView_.toHTML();
-        }.bind(this))()
-      %>
-      <img id="{{this.id}}-icon"
-           src="<%= this.mode === 'read-only' ? this.editIconUrl : this.doneIconUrl %>"
-           class="<%= this.mode === 'read-only' ? '' : 'hide' %>">
-      <% this.on('click', this.onIconClick, this.id + '-icon'); %>
+          this.contentView_.toHTML(out);
+        %>
+        <img id="{{this.id}}-icon"
+             src="<%= this.mode === 'read-only' ? this.editIconUrl : this.doneIconUrl %>"
+             class="<%= this.mode === 'read-only' ? '' : 'hide' %>">
+        <% this.on('click', this.onIconClick, this.id + '-icon'); %>
+        <% this.addInitializer(function() {
+          self.icon = self.X.$(self.id + '-icon');
+        }); %>
+      </div>
     */},
     function CSS() {/*
-      toggle-editable {
+      .editable-view {
         display: flex;
         align-items: center;
       }
-      toggle-editable img {
+      .editable-view img {
         cursor: pointer;
       }
-      toggle-editable img.hide {
+      .editable-view img.hide {
         display: none;
       }
 
-      toggle-editable .md-text-field-input {
+      .editable-view .md-text-field-input {
         margin: 16px;
       }
     */},
