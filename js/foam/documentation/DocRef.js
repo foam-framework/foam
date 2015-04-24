@@ -285,6 +285,7 @@ CLASS({
         });
       } else {
         // for non-models, just look at sub-features
+        foundObject = model;
         completeResolve();
       }
     },
