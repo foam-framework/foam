@@ -16,17 +16,19 @@
  */
 
 CLASS({
+  package: 'foam.documentation.diagram',
   name: 'DocDiagramView',
   extendsModel: 'foam.graphics.CViewView',
-  package: 'foam.documentation.diagram',
 
-  requires: ['foam.documentation.diagram.ModelDocDiagram',
-             'foam.documentation.diagram.ExtendsDiagram',
-             'foam.documentation.diagram.TraitListDiagram',
-             'foam.graphics.diagram.LinearLayout',
-             'foam.graphics.diagram.Margin',
-             'foam.graphics.diagram.AutoSizeDiagramRoot',
-             'foam.graphics.Spacer'],
+  requires: [
+    'foam.documentation.diagram.ModelDocDiagram',
+    'foam.documentation.diagram.ExtendsDiagram',
+    'foam.documentation.diagram.TraitListDiagram',
+    'foam.graphics.diagram.LinearLayout',
+    'foam.graphics.diagram.Margin',
+    'foam.graphics.diagram.AutoSizeDiagramRoot',
+    'foam.graphics.Spacer'
+  ],
 
   imports: ['masterModelList'],
   exports: ['masterModelList'],
@@ -153,10 +155,6 @@ CLASS({
     destroy: function( isParentDestroyed ) {
       this.SUPER(isParentDestroyed);
       this.autoSizeLayout.suspended = true;
-
     }
-
   }
 });
-
-
