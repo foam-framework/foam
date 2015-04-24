@@ -179,60 +179,6 @@ dao
   </slide>
 
   <slide>
-    <h1>Reusable Controllers</h1>
-    <br>
-    <center style="margin-top:25px;">
-    <a href="./apps/mbug/main.html"><img style="box-shadow: 0 5px 15px #aaa;" height="530" width="500" src="./demos/democat/MBug.png"></a>
-    <a href="./apps/gmail/main.html"><img style="margin-left: 200px;border:1px solid;box-shadow: 0 5px 15px #aaa;" height="530" width="420" src="./demos/democat/GMail.png"></a>
-    </center>
-  </slide>
-
-  <slide>
-    <h1>Reactive Programming</h1>
-    <!-- <foam model="foam.demos.ReactiveClocks"/> -->
-          <code-sample>
-            <title><!--Reactive Programming--></title>
-            <source>
-              <code-snippet>
-                <title>HTML</title>
-                <src language="html" maxLines="10">
-                  <code><%
-                      var canvas  = foam.graphics.CView.create({width: 1900, height: 1000});
-                      var mouse   = foam.input.Mouse.create();
-                      var clock1  = foam.demos.ClockView.create({r: 60});
-                      var clock2  = foam.demos.ClockView.create({r: 60, color: '#3c0'});
-                      var timer   = Timer.create();
-
-                      timer.start();
-                      canvas.addChildren(clock1, clock2);
-
-                      // Part 1
-                      clock1.x$ = mouse.x$;
-                      clock1.y$ = mouse.y$;
-
-                      // Part 2
-                      Events.dynamic(function() {
-                      //   clock2.x = clock1.x + 200;
-                      //   clock2.y = clock1.y + 200;
-                      });
-
-                      // Part 3
-                      Events.dynamic(function() {
-                      //   clock2.x = clock1.x + 200*Math.cos(timer.time*Math.PI/1000);
-                      //   clock2.y = clock1.y + 200*Math.sin(timer.time*Math.PI/1000);
-                      });
-
-                      this.addInitializer(function() { mouse.connect(canvas.view.$); });
-                    %>
-                    <%= canvas %>
-                  </code>
-                </src>
-              </code-snippet>
-            </source>
-          </code-sample>
-  </slide>
-
-  <slide>
     <h1>Graphics</h1>
     <foam model="foam.ui.md.TwoPaneView">
 <!--  <foam model="foam.ui.SwipeAltView">   -->
@@ -332,6 +278,51 @@ dao
   </slide>
 
   <slide>
+    <h1>Reactive Programming</h1>
+    <!-- <foam model="foam.demos.ReactiveClocks"/> -->
+          <code-sample>
+            <title><!--Reactive Programming--></title>
+            <source>
+              <code-snippet>
+                <title>HTML</title>
+                <src language="html" maxLines="10">
+                  <code><%
+                      var canvas  = foam.graphics.CView.create({width: 1900, height: 1000});
+                      var mouse   = foam.input.Mouse.create();
+                      var clock1  = foam.demos.ClockView.create({r: 60});
+                      var clock2  = foam.demos.ClockView.create({r: 60, color: '#3c0'});
+                      var timer   = Timer.create();
+
+                      timer.start();
+                      canvas.addChildren(clock1, clock2);
+
+                      // Part 1
+                      clock1.x$ = mouse.x$;
+                      clock1.y$ = mouse.y$;
+
+                      // Part 2
+                      Events.dynamic(function() {
+                      //   clock2.x = clock1.x + 200;
+                      //   clock2.y = clock1.y + 200;
+                      });
+
+                      // Part 3
+                      Events.dynamic(function() {
+                      //   clock2.x = clock1.x + 200*Math.cos(timer.time*Math.PI/1000);
+                      //   clock2.y = clock1.y + 200*Math.sin(timer.time*Math.PI/1000);
+                      });
+
+                      this.addInitializer(function() { mouse.connect(canvas.view.$); });
+                    %>
+                    <%= canvas %>
+                  </code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+  </slide>
+
+  <slide>
     <h1>Reactive Animation</h1>
     <foam model="foam.demos.SolarSystem"/>
   </slide>
@@ -355,6 +346,15 @@ dao
     <div style="transform: scale(1); transform-origin: 0 0;">
       <foam model="foam.demos.DragonLiveCoding"/>
     </div>
+  </slide>
+
+  <slide>
+    <h1>Reusable Controllers</h1>
+    <br>
+    <center style="margin-top:25px;">
+    <a href="./apps/mbug/main.html"><img style="box-shadow: 0 5px 15px #aaa;" height="530" width="500" src="./demos/democat/MBug.png"></a>
+    <a href="./apps/gmail/main.html"><img style="margin-left: 200px;border:1px solid;box-shadow: 0 5px 15px #aaa;" height="530" width="420" src="./demos/democat/GMail.png"></a>
+    </center>
   </slide>
 
   <slide>
