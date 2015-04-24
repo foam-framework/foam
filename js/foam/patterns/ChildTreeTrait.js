@@ -106,7 +106,7 @@ CLASS({
       if ( isParentDestroyed ) {
 //        console.log(this.name_, " FAST destroying ", this.children.length," children");
         Array.prototype.forEach.call(this.children, function(child) {
-          child.destroy(true);
+          child.destroy && child.destroy(true);
         });
       } else {
 //        console.log(this.name_, " SLOW removing ", this.children.length," children--------------------------------------");
