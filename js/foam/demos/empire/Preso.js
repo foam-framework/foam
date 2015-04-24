@@ -90,6 +90,9 @@ CLASS({
         font-size: 200%;
         padding-left: 16px;
       }
+      slides .card-grid .card .card-inset {
+        padding-left: 16px;
+      }
       h1 {
         color: blue;
         font-size: 54px;
