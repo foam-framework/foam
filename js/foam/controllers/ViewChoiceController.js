@@ -24,7 +24,13 @@ CLASS({
       name: 'views',
       subType: 'foam.ui.ViewChoice',
       help: 'View choices.',
-      postSet: function() { this.choice = this.choice; }
+      postSet: function() {
+        if (this.choice === undefined) {
+          this.viewChoice = undefined;
+        } else {
+          this.viewChoice = this.views[this.choice];
+        }
+      }
     },
     {
       model_: 'IntProperty',
@@ -36,24 +42,24 @@ CLASS({
           return Math.max(0, Math.min(c, this.views.length));
         }
       },
+      postSet: function() {
+        if (this.choice === undefined) {
+          this.viewChoice = undefined;
+        } else {
+          this.viewChoice = this.views[this.choice];
+        }
+      }
     },
     {
       name: 'viewChoice',
-      dynamicValue: function() {
-        this.choice; this.views;
-        if (this.choice === undefined) {
-          return undefined;
-        } else {
-          return this.views[this.choice];
-        }
-      },
+      postSet: function() {
+        this.viewFactory = this.viewChoice ?
+          this.viewChoice.view : function() {};
+      }
     },
     {
       name: 'viewFactory',
       view: 'foam.ui.ViewFactoryView',
-      dynamicValue: function() {
-        return this.viewChoice ? this.viewChoice.view : function() {};
-      },
     }
-  ],
+  ]
 });

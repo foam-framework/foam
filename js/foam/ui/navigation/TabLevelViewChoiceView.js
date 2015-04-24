@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui.navigation',
   name: 'TabLevelViewChoiceView',
-  extendsModel: 'foam.ui.DetailView',
+  extendsModel: 'foam.ui.SimpleView',
   help: 'A view that takes a ViewChoiceController as data and renders the ' +
       'views in a HorizontalSlidingViewChoiceView and places a ' +
       'TabLevelViewChoiceView in the topToolbar that it imports.',
@@ -45,11 +45,16 @@ CLASS({
     {
       name: 'view',
       factory: function() {
-        return this.HorizontalSlidingViewChoiceView.create({
-          data$: this.data$,
-          height$: this.height$,
-        });
+        return this.HorizontalSlidingViewChoiceView.create(undefined);
       },
+      postSet: function(old, view) {
+        if ( old ) {
+          Events.unfollow(this.data$, old.data$);
+          Events.unfollow(this.height$, view.height$);
+        }
+        Events.follow(this.data$, view.data$);
+        Events.follow(this.height$, view.height$)
+      }
     },
   ],
   methods: {
