@@ -21,11 +21,11 @@ CLASS({
   extendsModel: 'foam.graphics.CView',
 
   requires: [
-    'foam.graphics.LabelledBox',
-    'foam.graphics.ImageCView',
-    'foam.input.Mouse',
     'foam.graphics.CView',
-    'foam.graphics.Label2'
+    'foam.graphics.ImageCView',
+    'foam.graphics.Label2',
+    'foam.graphics.LabelledBox',
+    'foam.input.Mouse'
   ],
 
   constants: {
@@ -40,6 +40,7 @@ CLASS({
       'IndexedDB': 320,
       'REST Server': 14,
       'REST Client': 14,
+      'Your Decorator': 225,
       Migration: 225,
       Logging: 225,
       Timing: 225,
@@ -55,23 +56,23 @@ CLASS({
       [ 'Local Storage' ],
       [ 'IndexedDB' ],
       [ 'IndexedDB', 'Caching' ],
-      [ 'IndexedDB', 'Caching', 'SeqNo' ],
-      [ 'IndexedDB', 'Caching', 'GUID'  ],
-      [ 'Chrome Storage' ],
-      [ 'Chrome Storage' ],
       [ 'Array' ],
+      [ 'Chrome Storage' ],
+      [ 'Chrome Storage' ],
       [ 'Server', '', 'Adapter' ],
       [ 'MongoDB', 'REST Server', '', 'REST Client' ],
       [ 'JSONFile', 'REST Server', '', 'REST Client' ],
       [ 'Google', '', 'Google Cloud' ],
       [ 'Server', '', 'Client', 'Caching' ],
       [ 'Server', '', 'Client', 'Sync' ],
+      [ '???', 'SeqNo' ],
+      [ '???', 'GUID' ],
       [ '???', 'Logging' ],
       [ '???', 'Timing' ],
       [ '???', 'Validating' ],
       [ '???', 'Migration' ],
+      [ '???', 'Your Decorator' ],
       [ '???', 'Business Logic' ],
-      [ '???', '???' ],
       [ '???' ]
     ]
   },
@@ -93,13 +94,19 @@ CLASS({
 
       var M = Movement;
       var S = this.STRATEGIES;
-      var H = 60;
+      var H = 40;
       var self = this;
+
+      this.addChild(this.ImageCView.create({
+        x: 1530,
+        y: 380,
+        src: './js/foam/demos/empire/todo.png'
+      }));
 
       for ( var i = 0 ; i < S.length ; i++ ) {
         var v = this.makeStrategyView(S[i]);
-        v.x = 1500;
-        v.y = 50 + H * i;
+        v.x = 1400;
+        v.y = 30 + H * i;
         this.addChild(v);
       }
       this.mouse.connect(this.view.$);
@@ -108,54 +115,8 @@ CLASS({
       });
     },
 
-    warp: function(y) {
-      var o = this.mouse.y-25;
-
-      if ( o < 10 ) return y;
-      /*
-      var d  = y-o;
-      var ad = Math.abs(d);
-      d *= 3 - 2 * Math.min(1, Math.pow(Math.max(0, (ad-50))/this.height,4));
-      return o+d;
-      */
-
-      var MAG = 3;
-      var R   = 400 * (1+MAG);
-      var r   = Math.abs(y-o);
-      r = r/R;
-      if ( r > 1 ) return y;
-      r += MAG*3*r*Math.pow(1-r, 4);
-      r = r*R;
-      r = Math.max(0, r);
-      return o + ( y > o ? r : r);
-    },
-
-    paintChildren: function() { /* Paints each child. */
-      for ( var i = 0 ; i < this.children.length ; i++ ) {
-        var child = this.children[i];
-        this.canvas.save();
-        this.canvas.beginPath(); // reset any existing path (canvas.restore() does not affect path)
-        var d = Math.abs(this.mouse.y - child.y);
-        var s = -(this.warp(child.y) - this.warp(child.y-child.height))/ ( child.height );
-//        this.canvas.translate(0,this.warp(child.y)-child.y);
-        this.canvas.translate(child.x,child.y+child.height/2);
-        this.canvas.scale(Math.max(s, 0.5), 1);
-        this.canvas.translate(-child.x,-child.y-child.height/2);
-        child.paint();
-        this.canvas.restore();
-      }
-    },
-
     makeStrategyView: function(s) {
-      var v = this.CView.create({width: 500, height: 550, color: 'pink'});
-
-      v.addChild(this.ImageCView.create({
-        x: 20,
-        y: -7,
-        scaleX: 0.35,
-        scaleY: 0.35,
-        src: './js/foam/demos/empire/todo.png'
-      }));
+      var v = this.CView.create({width: 500, height: 32, x:0, y:0});
 
       for ( var i = 0 ; i < s.length ; i++ ) {
         var t = s[i];
@@ -164,12 +125,17 @@ CLASS({
           font: '18px Arial',
           background: c ? 'hsl(' + c + ',70%,90%)' : 'white',
           x: -140 * (s.length - i),
-          y: ! t ? 25 : 0,
+          y: ! t ? 16 : 0,
           width:  140,
-          height: ! t ? 1 : 50,
+          height: ! t ? 1 : 32,
           text:   t
         }));
       }
+
+      this.mouse.y$.addListener(function() {
+        var d = Math.abs(this.mouse.y - (v.y+v.height/2));
+        v.scaleX = 2.5 - 1.5 * Math.min(1, d / 100);
+      }.bind(this));
 
       return v;
     }
