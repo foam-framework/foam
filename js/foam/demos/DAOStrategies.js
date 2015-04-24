@@ -77,8 +77,8 @@ CLASS({
   },
 
   properties: [
-    { name: 'width',  defaultValue: 4000 },
-    { name: 'height', defaultValue: 2000 },
+    { name: 'width',  defaultValue: 1800 },
+    { name: 'height', defaultValue: 900 },
     {
       name: 'mouse',
       transient: true,
