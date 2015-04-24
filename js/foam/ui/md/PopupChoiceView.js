@@ -153,7 +153,9 @@ CLASS({
       var textView = this.createTemplateView('text', { mode:'read-only' });
       this.addChild(textView);
       out += '<div class="value">'+textView.toHTML()+'</div>';
-      out += '<svg class="downArrow" viewBox="0 0 48 48"><g><path d="M0 16 l24 24 24 -24 z"></path></g></svg>';
+      // not setting the width and height here causes an initial 
+      // rendering artifact with a super-sized arrow (before CSS applies?)
+      out += '<svg class="downArrow" width="12px" height="12px" viewBox="0 0 48 48"><g><path d="M0 16 l24 24 24 -24 z"></path></g></svg>';
 
       this.on('click', this.launch, this.id);
       this.setMDClasses();
@@ -179,8 +181,8 @@ CLASS({
         margin: 8px 16px;
       }
       .popupChoiceView.md-style-trait-inline {
-        padding: 8px 0px 7px 0px;
-        margin: -8px 0px -7px 0px;
+        padding: 8px 0px 8px 0px;
+        margin: -8px 0px -8px 0px;
       }
 
 

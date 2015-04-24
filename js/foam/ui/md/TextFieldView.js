@@ -165,9 +165,9 @@ CLASS({
         border-top: none;
         color: #444;
         flex-grow: 1;
-        font-family: Roboto, RobotoDraft;
-        font-size: 14px;
-        margin-bottom: -7px;
+        font-family: inherit;
+        font-size: inherit;
+        margin-bottom: -8px;
         padding: 0 0 7px 0;
         resize: none;
         z-index: 1;
@@ -176,7 +176,7 @@ CLASS({
         border-bottom: none;
       }
       .md-text-field-container.md-text-field-no-label .md-text-field-input {
-        font-size: 16px;
+        //font-size: 16px;
       }
 
       .md-text-field-container.md-text-field-no-label {
@@ -193,7 +193,7 @@ CLASS({
         outline: none;
       }
       .md-text-field-label-offset {
-        font-size: 12px;
+        font-size: 85%;
         top: 8px;
       }
     */},

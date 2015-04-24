@@ -127,6 +127,7 @@ CLASS({
 
 .foamChoiceRadioView.horizontal {
   padding: 0;
+  margin-bottom: -3px;
 }
 .foamChoiceRadioView.horizontal .choice {
   display: inline-block;

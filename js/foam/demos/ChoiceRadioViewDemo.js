@@ -108,18 +108,18 @@ CLASS({
     {/*
         <h3>Normal style, with padding and margins</h3>
         <div class="demo-row">
-          $$data{model_:'foam.ui.md.TextFieldView'}
-          $$data{model_: 'foam.ui.md.PopupChoiceView',  choices:this.choices}
-          $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'horizontal'}
-          $$enabledButton{model_:'foam.ui.md.CheckboxView', label: 'Button Enabled'}
+          $$data{model_:'foam.ui.md.ChoiceRadioView', inlineStyle: false, choices:this.choices, orientation: 'horizontal'}
+          $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: false }
+          $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: false, floatingLabel: false }
+          $$data{model_: 'foam.ui.md.PopupChoiceView', inlineStyle: false,  choices:this.choices}
         </div>
         <hr/>
         <h3>Inline style, with no padding and margins</h3>
         <div class="demo-row">
-          $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: true }
-          $$data{model_: 'foam.ui.md.PopupChoiceView', inlineStyle: true,  choices:this.choices}
           $$data{model_:'foam.ui.md.ChoiceRadioView', inlineStyle: true, choices:this.choices, orientation: 'horizontal'}
-          $$enabledButton{model_:'foam.ui.md.CheckboxView', inlineStyle: true, label: 'Button Enabled'}
+          $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: true }
+          $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: true, floatingLabel: false }
+          $$data{model_: 'foam.ui.md.PopupChoiceView', inlineStyle: true,  choices:this.choices}
         </div>
         <hr/>
         $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'vertical'}
