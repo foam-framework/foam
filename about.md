@@ -4,30 +4,57 @@ title: About
 permalink: /about/
 ---
 
-We fundamentally believe in programming at a higher level - of abstraction, productivity, and performance.
+The basic principle of FOAM is **fast apps fast**.
 
-Therefore FOAM is a _meta_-programming framework.
-It is reactive and highly declarative - you specify the properties on objects, and how they react when their values change.
-Very little code is left to be written in an imperative style - mostly event handlers that update a few properties.
+FOAM is composed of tools to help you quickly write an app that loads and runs
+fast, on desktop and mobile.
 
-FOAM stands for **Feature-Oriented Active Modeler**. That isn't a very transparent name, so let's break it down.
+Our main goal is to do as much as possible with each chunk of code. The fastest,
+most secure and least buggy code in your app is the code that isn't there.
 
-- FOAM is **deeply** MVC. Everything is modelled:
-    - Your data objects, obviously, but also:
-    - The properties, methods, listeners, etc. on those objects
-    - The properties etc. on *those* properties
-    - Views
-    - Controllers
-    - `Model` itself!
-- This modelled data is "smart":
-    - It knows which properties should be displayed in a table, which are public keys, which should be hidden in the UI, and which not to store in the database.
-    - It knows what to update when values change, how to validate incoming updates to those values, what view the values should be rendered with.
-    - Therefore databases and views don't need to be customized for your data - they already know how to handle it.
-- FOAM has a simple, universal interface for data storage and querying called the DAO (Data Access Object). There are many implementations:
-    - LocalStorage and IndexedDB for the web.
-    - MongoDB, and XML and JSON flat files for Node.js
-    - A blazing-fast in-memory implementation that can build indexes automatically and on the fly.
-    - Decorator DAOs that make it easy to layer DAOs as caches on top of others.
-        - Layer memory atop IndexedDB atop the network in one line!
-- Likewise, views have a universal interface, and so views target the DOM, or a 2d Canvas. More targets can easily be added if there were a need - node-curses, 3d canvas, and more.
+FOAM is a _meta_-programming framework. It is very declarative and reactive,
+because that's a very high-level way of expressing how the app should work.
+
+
+- FOAM is **deeply MVC**. Everything flows from the Model. The Model is how your
+  app views the world. What entities does it contain, and what do we know about
+  those entities? What things can we do to those entities?
+    - FOAM contains a very advanced class system. An object contains properties
+      and methods, yes. But also user actions, view templates, i18n strings, and
+      more.
+        - Actions know reactively when to be disabled or hidden.
+        - Properties have types, but also factories, default values, `postSet`
+          handlers, a default view, and much more.
+- FOAM is **reusable** and **composable**. It has many reusable view components,
+  but also reusable data storage (see below) and reusable controllers.
+- FOAM is **reactive**. It's easy to wire together views so everything updates
+  when it should.
+    - FOAM is reactive, cross-browser and **fast**. But dirty checking scales
+      badly and `Object.observe` isn't cross-browser! [Performance](/performance)
+      explains how we do it.
+- **Data** is better than code. **Smart data** is even better. FOAM objects are
+  reflective: they know what properties they have and we can generate
+  serialization code for JSON, XML and more formats. They can intelligently
+  compare and diff, figure out how best to be stored on different databases,
+  and much more.
+    - FOAM objects and their properties are themselves described as FOAM objects. See [Model]({{ site.baseurl }}/foam/apps/docs/docbrowser.html#Model) and [Property]({{ site.baseurl }}/foam/apps/docs/docbrowser.html#Model).
+    - FOAM is "written in itself", using the same metaprogramming power offered
+      to users. That keeps is compact, and loading fast.
+- **Interfaces** are better than implementations. FOAM has a standard interface
+  for data storage (see below) and for views (DOM, 2d canvas, and more).
+    - Need something we don't provide? Write a new implementation that is just
+      as powerful as the ones that come standard.
+- FOAM has a universal interface, the DAO or Data Access Object, for storing
+  data without worrying about the details. It comes with many DAO
+  implementations:
+    - For the web: IndexedDB and LocalStorage
+    - For Node.js: MongoDB, XML files and JSON files.
+    - For Google Compute Engine: Cloud Datastore (from Node.js)
+    - And a blazing-fast in-memory implementation available everywhere.
+        - Automatically builds indexes on the fly, and makes search-as-you-type easy.
+    - Decorator DAOs that add extra functionality to others: logging, timing,
+      several caching strategies.
+        - Layer a memory cache atop IndexedDB atop the network in one line!
+        - Swap your real stack for an array of test data, without changing or
+          mocking anything.
 
