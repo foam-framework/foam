@@ -97,7 +97,7 @@
 
   <slide>
     <h1>Architecture</h1>
-    <div style="transform:scale(0.6);transform-origin: 0 0;"><foam model="foam.demos.ArchitectureDiagram"/></div>
+    <div style="transform:scale(0.85);transform-origin: 0 0;"><foam model="foam.demos.ArchitectureDiagram"/></div>
   </slide>
 
   <slide>
@@ -129,14 +129,12 @@
     <h1>TodoMVC</h1>
     <br>
     <center>
-      <iframe style="width:80%;height:80%;" src="./apps/todo/Todo.html"></iframe>
+      <iframe style="width:60%;height:75%;" src="./apps/todo/Todo.html"></iframe>
     </center>
   </slide>
 
   <slide>
     <h1>DAO Strategies & Decorators</h1>
-    <br>
-    <br>
     <foam model="foam.demos.DAOStrategies"/>
   </slide>
 
@@ -266,7 +264,7 @@
             <foam model="foam.demos.graphics.EyeCView" color="yellow"/>
             <span style="width:200px;display:inline-block;"></span>
             <foam model="foam.demos.graphics.EyesCView"/>
-            <%= foam.demos.graphics.Dragon.create({y: 200, x: 800, scaleX: 0.7, scaleY: 0.7, timer: Timer.create(), blowBubbles: false}) %>
+            <%= foam.demos.graphics.Dragon.create({y: 200, x: 800, scaleX: 0.6, scaleY: 0.6, timer: Timer.create(), blowBubbles: false}) %>
           </p:view>
         </viewChoice>
         <viewChoice>
@@ -308,7 +306,7 @@
         {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
         {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
         {label: 'Gravity&nbsp;+&nbsp;Friction', view: { factory_: 'foam.demos.physics.Bubbles', height: 1000, width: 1200, scaleX: 1.5, scaleY: 1.5}},
-        {label: 'Baloons',                      view: 'foam.demos.physics.Collision'}
+        {label: 'Baloons',                      view: 'foam.demos.physics.Baloons'}
       ]})
     %>
   </slide>
@@ -366,9 +364,9 @@
   <slide>
     <h1>Calculator</h1>
     <br>
-    <br>
     <center>
-      <iframe style="width:80%;height:70%;" src="./apps/acalc/Calc.html"></iframe>
+      <iframe style="width:80%;height:70%;" src="./apps/acalc/Calc.html"></iframe><br>
+    <a href="./apps/acalc/Calc.html">Hosted Version</a>, <a href="https://chrome.google.com/webstore/detail/calculator/joodangkbfjnajiiifokapkpmhfnpleo">Chrome Web Store</a>
     </center>
   </slide>
 
@@ -408,13 +406,13 @@
                     <li class="d3">Material Design</li>
                     <li class="d3">Mobile</li>
                   <li class="d2">Reusable Controllers</li>
-                <li class="d1">Technology Independent</li>
+                <li class="d1">Cross-Platform/Tier</li>
                   <li class="d2">Node.js</li>
                   <li class="d2">Java</li>
               <li><i style="color:#33f;">Exponentially More Efficient</i></li>
             </ul>
           </div>
-            <iframe style="border:none;width:100%;height:100%;" src="./demos/GoogleSimulator.html"></iframe>
+            <iframe style="margin-left:100px;border:none;width:90%;height:100%;" src="./demos/GoogleSimulator.html"></iframe>
         </div>
         </div>
       </mainView>

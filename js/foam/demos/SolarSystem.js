@@ -127,7 +127,7 @@ CLASS({
       <td valign="top">$$timer</td>
       <td valign="top">$$sun</td>
       <td valign="top">$$earth</td>
-      </tr></table><%= this.turntableView.toHTML() %>
+      </tr></table><div style="margin-top:-128px;margin-left:210px;"><%= this.turntableView.toHTML() %></div>
     */}
   ]
 });

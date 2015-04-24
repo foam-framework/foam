@@ -40,7 +40,6 @@ CLASS({
       'IndexedDB': 320,
       'REST Server': 14,
       'REST Client': 14,
-      'Your Decorator': 225,
       Migration: 225,
       Logging: 225,
       Timing: 225,
