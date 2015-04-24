@@ -16,40 +16,15 @@
  */
 
 CLASS({
+  name: 'DocModelDiagramView',
+  extendsModel: 'foam.documentation.diagram.DocDiagramView',
   package: 'foam.documentation.diagram',
-  name: 'DocDiagramView',
-  extendsModel: 'foam.graphics.CViewView',
-
-  requires: [
-    'foam.documentation.diagram.ModelDocDiagram',
-    'foam.documentation.diagram.ExtendsDiagram',
-    'foam.documentation.diagram.TraitListDiagram',
-    'foam.graphics.diagram.LinearLayout',
-    'foam.graphics.diagram.Margin',
-    'foam.graphics.diagram.AutoSizeDiagramRoot',
-    'foam.graphics.Spacer'
-  ],
-
-  imports: ['masterModelList'],
-  exports: ['masterModelList'],
 
   documentation: function() {/*
-    A view that renders one model's diagram.
+    A view that renders one model's diagram, without base models or traits.
   */},
 
   properties: [
-    {
-      name: 'masterModelList',
-      lazyFactory: function() {
-        var list = [];
-        [ USED_MODELS, UNUSED_MODELS, NONMODEL_INSTANCES ].forEach(function (collection) {
-          for ( var key in collection ) {
-            list.push(this.X.lookup(key));
-          };
-        }.bind(this));
-        return list;
-      }
-    },
     {
       name: 'autoSizeLayout',
       type: 'foam.graphics.diagram.AutoSizeDiagramRoot',
@@ -96,7 +71,7 @@ CLASS({
     {
       name: 'traitDiagram',
       factory: function() {
-        return this.TraitListDiagram.create({ data$: this.data$, sourceDiag: this.modelDiagram });
+        return null;
       }
     },
     {
@@ -109,33 +84,19 @@ CLASS({
     {
       name: 'extendsDiagram',
       factory: function() {
-        var extendsDiagram = this.ExtendsDiagram.create({ data$: this.data$, extended: this.modelDiagram });
-        this.extendsModelLayout.addChild(extendsDiagram.diagramItem);
-        return extendsDiagram;
+        return null;
       }
     },
   ],
 
   methods: {
-    init: function() {
-      this.SUPER();
-      this.setupLayouts();
-    },
-    
     setupLayouts: function() {
-      this.mainLayout.addChild(this.Spacer.create());
       this.mainLayout.addChild(this.modelDiagram.diagramItem);
-      this.mainLayout.addChild(this.Spacer.create());
 
       this.cview = this.autoSizeLayout;
       this.autoSizeLayout.addChild(this.outerMargin);
-      this.outerMargin.addChild(this.outerLayout);
-      this.outerLayout.addChild(this.traitDiagram.diagramItem);
-      this.outerLayout.addChild(this.extendsLayout);
-      this.extendsLayout.addChild(this.extendsModelLayout);
-      this.extendsLayout.addChild(this.mainLayout);
+      this.outerMargin.addChild(this.mainLayout);
 
-      Events.follow(this.modelDiagram.diagramItem.verticalConstraints.preferred$, this.traitDiagram.spacing$);      
     },
 
     toHTML: function() {
@@ -158,6 +119,10 @@ CLASS({
     destroy: function( isParentDestroyed ) {
       this.SUPER(isParentDestroyed);
       this.autoSizeLayout.suspended = true;
+
     }
+
   }
 });
+
+
