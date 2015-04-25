@@ -29,6 +29,8 @@ CLASS({
   ],
 
   constants: {
+    H: 40,
+
     COLOURS: {
       'Google Cloud': 320,
       'Local Storage': 320,
@@ -91,10 +93,7 @@ CLASS({
     initCView: function() {
       this.SUPER();
 
-      var M = Movement;
       var S = this.STRATEGIES;
-      var H = 40;
-      var self = this;
 
       this.addChild(this.ImageCView.create({
         x: 1530,
@@ -102,20 +101,22 @@ CLASS({
         src: './js/foam/demos/empire/todo.png'
       }));
 
-      for ( var i = 0 ; i < S.length ; i++ ) {
-        var v = this.makeStrategyView(S[i]);
-        v.x = 1400;
-        v.y = 30 + H * i;
-        this.addChild(v);
-      }
+      for ( var i = 0 ; i < S.length ; i++ )
+        this.addChild(this.makeStrategyView(S[i], i));
+
       this.mouse.connect(this.view.$);
       this.mouse.y$.addListener(function(_, y) {
-        self.view.paint();
-      });
+        this.view.paint();
+      }.bind(this));
     },
 
-    makeStrategyView: function(s) {
-      var v = this.CView.create({width: 500, height: 32, x:0, y:0});
+    makeStrategyView: function(s, i) {
+      var v = this.CView.create({
+        width: 500,
+        height: 32,
+        x: 1400,
+        y: 30 + this.H * i
+      });
 
       for ( var i = 0 ; i < s.length ; i++ ) {
         var t = s[i];
@@ -137,6 +138,16 @@ CLASS({
       }.bind(this));
 
       return v;
+    },
+
+    warp: function(y) {
+      var D  = 500;
+      var d  = this.mouse.y-y;
+      var ad = Math.abs(ad);
+      if ( ad > D ) return y;
+      var nd = ad / D;
+      nd = ad * Math.pow(1-ad, 4);
+      return this.mouse.y + d * ( 1 + nd );
     }
   }
 });
