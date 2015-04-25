@@ -242,7 +242,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'GMail (Material-Design)',
-    path: '../apps/gmail/main.html',
+    path: 'http://foam-framework.github.io/foam/apps/gmail/main.html',
     description: 'A simple mobile GMail client with a Material-Design interface, in less than 1k lines of code.',
     keywords: ['app', 'material-design', 'gmail', 'mobile', '14'],
     src: '../apps/gmail/',
@@ -258,7 +258,7 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Issue Tracker (Material-Design)',
-    path: '../apps/mbug/main.html',
+    path: 'http://foam-framework.github.io/foam/apps/mbug/main.html',
     description: 'A simple mobile code.google.com issue-tracker client with a Material-Design interface.  Triage your Crbugs on the go.  See: <a href="http://mbug.foamdev.com">http://mbug.foamdev.com</a>',
     keywords: ['app', 'material-design', 'mobile', '14', 'android'],
     src: '../apps/mbug/',
@@ -371,6 +371,7 @@ return JSONUtil.arrayToObjArray(X, [
         box-shadow: 5px 5px 15px gray;
         margin-left: 30px;
         margin-top: -38px;
+        max-height: 300px;
       }
       span[name="description"] {
         margin-top: 24px;
@@ -384,7 +385,7 @@ return JSONUtil.arrayToObjArray(X, [
           <li class="thumbnail">
             <a href="%%data.path" class="thumb">$$name{mode: 'read-only'}</a>
             <br>
-            <% if ( this.data.image ) { %> <br><a href="%%data.path"><img class="screenshot" width=250 height=250 src="democat/%%data.image"></a> <% } %>
+            <% if ( this.data.image ) { %> <br><a href="%%data.path"><img class="screenshot" src="democat/%%data.image"></a> <% } %>
             <p>$$description{mode: 'read-only', escapeHTML: false}</p>
             <b>Keywords:</b> <%= this.data.keywords.join(', ') %><br>
             <b>Source:</b> <a href="%%data.src">here</a><br>
