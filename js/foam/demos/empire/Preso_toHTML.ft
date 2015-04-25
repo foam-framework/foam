@@ -408,7 +408,9 @@ dao
 
   <slide>
     <div style="height:10px;"></div>
+    <!--
     <foam model="foam.demos.MDFieldGuide"/>
+    -->
   </slide>
 
   <slide>
@@ -416,7 +418,7 @@ dao
     <br>
     <center>
       <iframe style="width:80%;height:70%;" src="./apps/acalc/Calc.html"></iframe><br>
-    <a href="./apps/acalc/Calc.html">Hosted Version</a>, <a href="https://chrome.google.com/webstore/detail/calculator/joodangkbfjnajiiifokapkpmhfnpleo">Chrome Web Store</a>, <a href="./apps/calc/RawCalc.html">Raw Version</a>, <a href="./demos/DemoCat.html?q=calc">Other Versions</a>
+    <a href="./apps/acalc/Calc.html">Hosted Version</a>, <a href="https://chrome.google.com/webstore/detail/calculator/joodangkbfjnajiiifokapkpmhfnpleo">Chrome Web Store</a>, <a href="./apps/pcalc/Calc.html">Polymer Version</a>, <a href="./apps/calc/RawCalc.html">Raw Version</a>, <a href="./demos/DemoCat.html?q=calc">Other Versions</a>
     </center>
   </slide>
 
@@ -447,7 +449,7 @@ dao
                       <li class="d4">Offline</li>
                   <li class="d2">Views</li>
                     <li class="d3">Technology Independent</li>
-                    <li class="d3">Material Design</li>
+                    <!-- <li class="d3">Material Design</li> -->
                     <li class="d3">Mobile</li>
                   <li class="d2">Reusable Controllers</li>
                 <li class="d1">Cross-Platform/Tier</li>
@@ -461,7 +463,7 @@ dao
   </slide>
 
   <slide>
-    <h1>To Summarize the Summary of the Summary: <font color="red">It's All About Efficiency</font></h1>
+    <h1>To Summarize the Summary of the Summary: <font color="red">Efficiency</font></h1>
     <br><br>
     <center>
       <div style="font-size:48px">
