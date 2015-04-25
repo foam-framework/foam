@@ -64,11 +64,8 @@ CLASS({
       name: 'mementoMgr',
       hidden: true,
       factory: function() {
-        return this.FragmentMementoMgr.create({
-          mementoValue: this.memento$
-        });
+        return this.FragmentMementoMgr.create({ mementoValue: this.memento$ });
       }
     }
-
   ]
 });

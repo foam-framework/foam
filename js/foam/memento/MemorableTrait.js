@@ -15,6 +15,24 @@
  * limitations under the License.
  */
 
+var MementoProto = {};
+Object.defineProperty(MementoProto, 'equals', {
+  enumerable: false,
+  configurable: true,
+  value: function(o) {
+    var keys = Object.keys(this);
+    var otherKeys = Object.keys(o);
+    if ( keys.length != otherKeys.length ) {
+      return false;
+    }
+    for ( var i = 0 ; i < keys.length ; i++ ) {
+      if ( ! equals(this[keys[i]], o[keys[i]]) )
+        return false;
+    }
+    return true;
+  }
+});
+
 CLASS({
   name: 'MemorableTrait',
   package: 'foam.memento',
@@ -45,7 +63,9 @@ CLASS({
       }
     },
     toMemento_: function() {
-      var memento = {};
+      var memento = {
+        __proto__: MementoProto
+      };
 
       for ( var i = 0, prop ; prop = this.model_.properties[i] ; i ++ ) {
         if ( ! prop.memorable ) continue;
@@ -63,19 +83,23 @@ CLASS({
     {
       name: 'updateFromMemento',
       code: function(src, topic, old, memento) {
+        if ( this.mementoFeedback_ ) {
+          return;
+        }
+
         for ( var i = 0, prop ; prop = this.model_.properties[i] ; i++ ) {
           if (prop.memorable) {
-            if (this[prop.name].memento)
+            if (this[prop.name].memento) {
               this[prop.name].memento = memento[prop.name];
-            else
+            } else {
               this[prop.name] = memento[prop.name];
+            }
           }
         }
       }
     },
     {
       name: 'updateMemento',
-      isMerged: 1,
       code: function(src, topic, old, nu) {
         // If the new property value is a memorable modelled object
         // then we need to subscribe for changes to that object.
@@ -87,7 +111,9 @@ CLASS({
           nu.addPropertyListener('memento', this.updateMemento);
         }
 
+        this.mementoFeedback_ = true;
         this.memento = this.toMemento_();
+        this.mementoFeedback_ = false;
       }
     }
   ]

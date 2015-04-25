@@ -20,12 +20,13 @@ CLASS({
   package: 'foam.memento',
 
   requires: [
-    'foam.memento.WindowHashValue'
+    'foam.memento.WindowHashValue',
+    'foam.memento.MemorableTrait'
   ],
 
   properties: [
     {
-      name: 'mementoValue'
+      name: 'mementoValue',
     },
     {
       name: 'hash',
@@ -42,16 +43,17 @@ CLASS({
     },
 
     bind: function(a, b) {
-      Events.relate(a, b, this.hashToMemento_, this.mementoToHash_);
+      Events.relate(a, b, this.hashToMemento_, this.mementoToHash_, true);
     },
 
     hashToMemento_: function(h) {
       if ( h[0] === '#' ) h = h.substring(1);
       var split = h.split('&');
       if ( split.length == 1 &&
-           split.indexOf('=') == -1 )
+           split[0].indexOf('=') == -1 )
         return decodeURIComponent(split);
 
+      var memento = { __proto__: MementoProto };
       var memento = {};
 
       for ( var i = 0, section ; section = split[i] ; i++ ) {
@@ -61,7 +63,7 @@ CLASS({
         var m = memento;
 
         for ( var j = 0 ; j < parts[0].length - 1 ; j++ ) {
-          if ( ! m[parts[0][j]] ) m[parts[0][j]] = {};
+          if ( ! m[parts[0][j]] ) m[parts[0][j]] = {__proto__: MementoProto};
           m = m[parts[0][j]];
         }
 
