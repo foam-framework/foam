@@ -353,8 +353,8 @@ dao
     <h1>Reusable Controllers</h1>
     <br>
     <center style="margin-top:25px;">
-    <a href="http://foam-framework.github.io/foam/apps/mbug/main.html" target="_blank"><img style="box-shadow: 0 5px 15px #aaa;" height="530" width="500" src="./demos/democat/MBug.png"></a>
-    <a href="http://foam-framework.github.io/foam/apps/gmail/main.html" target="_blank"><img style="margin-left: 200px;border:1px solid;box-shadow: 0 5px 15px #aaa;" height="530" width="420" src="./demos/democat/GMail.png"></a>
+    <a href="http://foam-framework.github.io/foam/apps/mbug/main.html" target="_blank"><img style="box-shadow: 0 5px 15px #aaa;max-height:530px" src="./demos/democat/MBug.png"></a>
+    <a href="http://foam-framework.github.io/foam/apps/gmail/main.html" target="_blank"><img style="margin-left: 200px;border:1px solid;box-shadow: 0 5px 15px #aaa;max-height:530px;" src="./demos/democat/GMail.png"></a>
     </center>
   </slide>
 
