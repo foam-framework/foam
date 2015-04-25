@@ -50,6 +50,8 @@ CLASS({
       if ( viewName  ) models.push(arequire(viewName, this.X));
 
       aseq(apar.apply(null, models), function(ret) {
+        if ( ! this.holder() ) return;
+
         var model = this.X.lookup(modelName);
 
         if ( ! model ) {
