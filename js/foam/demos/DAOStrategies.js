@@ -80,7 +80,7 @@ CLASS({
 
   properties: [
     { name: 'width',  defaultValue: 1800 },
-    { name: 'height', defaultValue: 900 },
+    { name: 'height', defaultValue: 1100 },
     {
       name: 'mouse',
       transient: true,
@@ -115,16 +115,16 @@ CLASS({
         width: 500,
         height: 32,
         x: 1400,
-        y: 30 + this.H * i
+        y: 50 + this.H * i
       });
 
-      for ( var i = 0 ; i < s.length ; i++ ) {
-        var t = s[i];
+      for ( var j = 0 ; j < s.length ; j++ ) {
+        var t = s[j];
         var c = this.COLOURS[t];
         v.addChild(this.LabelledBox.create({
           font: '18px Arial',
           background: c ? 'hsl(' + c + ',70%,90%)' : 'white',
-          x: -140 * (s.length - i),
+          x: -140 * (s.length - j),
           y: ! t ? 16 : 0,
           width:  140,
           height: ! t ? 1 : 32,
@@ -133,21 +133,26 @@ CLASS({
       }
 
       this.mouse.y$.addListener(function() {
-        var d = Math.abs(this.mouse.y - (v.y+v.height/2));
-        v.scaleX = 2.5 - 1.5 * Math.min(1, d / 100);
+        var y = 50 + this.H * i;
+        var y2 = this.warp(y);
+        var h2 = this.warp(y+32) - y2;
+        if ( i == 20 ) console.log(i, y,y+32,this.warp(y),this.warp(y+32));
+        v.y = y2;
+        v.scaleX = v.scaleY = h2/32;
       }.bind(this));
 
       return v;
     },
 
     warp: function(y) {
-      var D  = 500;
-      var d  = this.mouse.y-y;
-      var ad = Math.abs(ad);
+      if ( this.mouse.y < 20 ) return y;
+      var D  = 1400;
+      var d  = y-this.mouse.y;
+      var ad = Math.abs(d);
       if ( ad > D ) return y;
       var nd = ad / D;
-      nd = ad * Math.pow(1-ad, 4);
-      return this.mouse.y + d * ( 1 + nd );
+      nd = Math.min(1, Math.pow(1-nd, 4));
+      return this.mouse.y + d * ( 1 + nd*1.5 );
     }
   }
 });
