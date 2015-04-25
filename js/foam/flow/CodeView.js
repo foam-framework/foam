@@ -15,7 +15,7 @@ CLASS({
   extendsModel: 'foam.flow.Element',
   traits: [ 'foam.flow.MultilineViewTrait' ],
 
-  requires: ['foam.flow.SourceCode'],
+  requires: [ 'foam.flow.SourceCode' ],
 
   imports: [
     'document',
@@ -27,9 +27,7 @@ CLASS({
       name: 'data',
       type: 'foam.flow.SourceCode',
       factory: function() {
-        return this.SourceCode.create({
-          data: 'console.log("Hello world!");'
-        });
+        return this.SourceCode.create();
       }
     },
     {
@@ -81,8 +79,10 @@ CLASS({
     {
       name: 'onSrcChange',
       code: function(e) {
-        if ( ! this.$ ) return;
-        if ( this.src !== this.$.textContent ) this.src = this.$.textContent;
+        console.log('a');
+        if ( ! this.$ || ! this.data ) return;
+        console.log('b');
+        if ( this.data.code !== this.$.textContent ) this.data.code = this.$.textContent;
       }
     }
   ],
