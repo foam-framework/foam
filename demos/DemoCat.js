@@ -371,6 +371,7 @@ return JSONUtil.arrayToObjArray(X, [
         box-shadow: 5px 5px 15px gray;
         margin-left: 30px;
         margin-top: -38px;
+        max-height: 300px;
       }
       span[name="description"] {
         margin-top: 24px;
@@ -384,7 +385,7 @@ return JSONUtil.arrayToObjArray(X, [
           <li class="thumbnail">
             <a href="%%data.path" class="thumb">$$name{mode: 'read-only'}</a>
             <br>
-            <% if ( this.data.image ) { %> <br><a href="%%data.path"><img class="screenshot" width=250 height=250 src="democat/%%data.image"></a> <% } %>
+            <% if ( this.data.image ) { %> <br><a href="%%data.path"><img class="screenshot" src="democat/%%data.image"></a> <% } %>
             <p>$$description{mode: 'read-only', escapeHTML: false}</p>
             <b>Keywords:</b> <%= this.data.keywords.join(', ') %><br>
             <b>Source:</b> <a href="%%data.src">here</a><br>
