@@ -57,7 +57,7 @@ CLASS({
       [ 'IndexedDB', 'Caching' ],
       [ 'Array' ],
       [ 'Chrome Storage' ],
-      [ 'Chrome Storage' ],
+      [ 'Sync Storage' ],
       [ 'Server', '', 'Adapter' ],
       [ 'MongoDB', 'REST Server', '', 'REST Client' ],
       [ 'JSONFile', 'REST Server', '', 'REST Client' ],
