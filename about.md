@@ -30,9 +30,9 @@ because that's a very high-level way of expressing how the app should work.
 - FOAM is **reactive**. It's easy to wire together views so everything updates
   when it should.
     - FOAM is reactive, cross-browser and **fast**. But dirty checking scales
-      badly and `Object.observe` isn't cross-browser! [Performance](/performance)
+      badly and `Object.observe` isn't cross-browser! [Performance]({{ site.baseurl }}/performance)
       explains how we do it.
-- [**Data** is better than code](/principles). **Smart data** is even better. FOAM objects are
+- [**Data** is better than code]({{ site.baseurl }}/principles). **Smart data** is even better. FOAM objects are
   reflective: they know what properties they have and we can generate
   serialization code for JSON, XML and more formats. They can intelligently
   compare and diff, figure out how best to be stored on different databases,
@@ -40,7 +40,7 @@ because that's a very high-level way of expressing how the app should work.
     - FOAM objects and their properties are themselves described as FOAM objects. See [Model]({{ site.baseurl }}/foam/apps/docs/docbrowser.html#Model) and [Property]({{ site.baseurl }}/foam/apps/docs/docbrowser.html#Model).
     - FOAM is "written in itself", using the same metaprogramming power offered
       to users. That keeps is compact, and loading fast.
-- [**Interfaces** are better than implementations](/principles). FOAM has a standard interface
+- [**Interfaces** are better than implementations]({{ site.baseurl }}/principles). FOAM has a standard interface
   for data storage (see below) and for views (DOM, 2D canvas, and more).
     - Need something we don't provide? Write a new implementation that is just
       as powerful as the ones that come standard.
