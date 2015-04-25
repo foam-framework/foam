@@ -13,6 +13,7 @@ CLASS({
   package: 'foam.flow',
   name: 'Slides',
   extendsModel: 'foam.flow.Element',
+  traits: ['foam.memento.MemorableTrait'],
 
   requires: [
     'foam.flow.Grid',
@@ -33,6 +34,7 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'position',
+      memorable: true,
       displayWidth: 5,
       defaultValue: 1,
       preSet: function(o, n) {

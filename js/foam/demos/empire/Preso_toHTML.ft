@@ -1,4 +1,4 @@
-<slides style="width: 100%;height:100%;">
+<slides style="width: 100%;height:100%;" oninit="this.X.foam.memento.FragmentMementoMgr.create({ mementoValue: this.memento$ }, this.Y)">
   <slide>
   <center style="font-size: 32px;">
     <br>
