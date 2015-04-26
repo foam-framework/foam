@@ -66,7 +66,7 @@ CLASS({
           { name: 'Table',
             f: function(model, obj, arr, value) { this.setDisplay(this.TableView.create({model: model, data: arr }).toHTML());  }
           },
-          { name: 'Summary',
+          { name: 'Summary View',
             f: function(model, obj, arr, value) { this.setDisplay(this.SummaryView.create({model: model, data: obj}).toHTML());  }
           },
           { name: 'XML',
@@ -78,7 +78,7 @@ CLASS({
 //           { name: 'JS Proto',
 //             f: function(model, obj, arr, value) { this.setDisplay("<pre>" + this.protoToString(model.getPrototype()) + '</pre>'); }
 //           },
-          { name: 'Java Src.',
+          { name: 'Java',
             f: function(model, obj, arr, value) { this.setDisplay('<textarea rows=100 cols=80>' + this.javaSource.generate(model) + '</textarea>'); }
           },
 //           { name: 'Actions',
@@ -343,7 +343,7 @@ CLASS({
         var value = SimpleValue.create(obj);
 
         this.features[this.sys.selectedX].f.call(this, model, obj, arr, value);
-        
+
         this.title = this.featureLabels[this.sys.selectedX] + " for " + this.entityNames[this.sys.selectedY-1]
       }
     }

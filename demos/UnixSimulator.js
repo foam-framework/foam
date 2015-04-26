@@ -31,6 +31,7 @@
       parent: space,
       title: 'Multics',
       devColor: 'blue',
+      font: '10pt arial',
       numDev: 100,
       features: ['sorting', 'search', 'paging', 'printing', 'editing', 'storage', 'viewing', '...' ],
       entities: ['users', 'groups', 'processes', 'devices', 'files', 'directories', 'print queues', 'print jobs', 'cron jobs'],
@@ -41,6 +42,7 @@
       title: 'Unix',
       numDev: 2,
       devColor: 'red',
+      font: '10pt arial',
       features: sys.features,
       entities: sys.entities
     }, X);
