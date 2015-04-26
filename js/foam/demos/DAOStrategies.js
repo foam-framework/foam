@@ -115,7 +115,7 @@ CLASS({
         width: 500,
         height: 32,
         x: 1400,
-        y: 50 + this.H * i
+        y: 30 + this.H * i
       });
 
       for ( var j = 0 ; j < s.length ; j++ ) {
@@ -133,7 +133,7 @@ CLASS({
       }
 
       this.mouse.y$.addListener(function() {
-        var y = 50 + this.H * i;
+        var y = 30 + this.H * i;
         var y2 = this.warp(y);
         var h2 = this.warp(y+32) - y2;
         if ( i == 20 ) console.log(i, y,y+32,this.warp(y),this.warp(y+32));
