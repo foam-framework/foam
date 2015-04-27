@@ -133,7 +133,7 @@ CLASS({
         position: relative;
         width: 16px;
         height: 16px;
-        
+        align-self: center;
       }
 
       #radioContainer.labeled {
@@ -160,8 +160,7 @@ CLASS({
         align-items: flex-end;
         white-space: nowrap;
         position: relative;
-//        margin: auto;
-      margin-bottom: 1px;
+
       }
       .radiobutton-background.checked #offRadio {
         border-color: #4285f4;

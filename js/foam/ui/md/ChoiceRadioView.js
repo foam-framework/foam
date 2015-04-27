@@ -108,10 +108,13 @@ CLASS({
       <% } %>
         </div>
 <%        }%>
+      <% this.setMDClasses(); %>
     */},
 
     function CSS() {/*
 .foamChoiceRadioView {
+  margin: 0px;
+  padding: 0px;
 }
 
 .foamChoiceRadioView .selected {
@@ -125,10 +128,11 @@ CLASS({
   display: block;
 }
 
-.foamChoiceRadioView.horizontal {
-  padding: 0;
+.foamChoiceRadioView.horizontal.md-style-trait-inline  {
   margin-bottom: -3px;
 }
+
+
 .foamChoiceRadioView.horizontal .choice {
   display: inline-block;
   margin-right: 16px;
