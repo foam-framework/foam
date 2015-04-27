@@ -115,9 +115,6 @@ CLASS({
       .editable-view img.hide {
         display: none;
       }
-      toggle-editable .md-text-field-input {
-//        margin-top: 8px;
-      }
     */},
   ],
 });

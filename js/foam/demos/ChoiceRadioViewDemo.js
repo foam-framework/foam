@@ -109,6 +109,7 @@ CLASS({
         <h3>Normal style, with padding and margins</h3>
         <div class="demo-row">
           $$data{model_:'foam.ui.md.ChoiceRadioView', inlineStyle: false, choices:this.choices, orientation: 'horizontal'}
+          <div class="md-style-trait-standard">Plaining Text</div>
           $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: false }
           $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: false, floatingLabel: false }
           $$data{model_: 'foam.ui.md.PopupChoiceView', inlineStyle: false,  choices:this.choices}
@@ -119,6 +120,7 @@ CLASS({
         <div class="demo-row">
           $$data{model_:'foam.ui.md.ChoiceRadioView', inlineStyle: true, choices:this.choices, orientation: 'horizontal'}
           $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: true }
+          <div>Plaining Text</div>
           $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: true, floatingLabel: false }
           $$data{model_: 'foam.ui.md.PopupChoiceView', inlineStyle: true,  choices:this.choices}
           $$data{model_:'foam.ui.md.EditableView', inlineStyle: true }
