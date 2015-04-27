@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'SummaryDocView',
   package: 'foam.documentation',
+  name: 'SummaryDocView',
   extendsModel: 'foam.documentation.DocView',
   label: 'Documentation View Summary',
   documentation: 'Base Model for medium length summary documentation views.',

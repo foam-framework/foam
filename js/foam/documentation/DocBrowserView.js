@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'DocBrowserView',
   package: 'foam.documentation',
+  name: 'DocBrowserView',
 
   extendsModel: 'foam.ui.DetailView',
 

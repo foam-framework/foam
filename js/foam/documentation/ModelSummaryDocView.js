@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'ModelSummaryDocView',
   package: 'foam.documentation',
+  name: 'ModelSummaryDocView',
   extendsModel: 'foam.documentation.DocView',
 
   imports: ['subModelDAO', 'traitUserDAO'],
@@ -35,9 +35,9 @@ CLASS({
     {
       name: 'data',
       postSet: function(old, nu) {
-        this.updateHTML();      
+        this.updateHTML();
       }
-    },    
+    },
   ],
 
   templates: [

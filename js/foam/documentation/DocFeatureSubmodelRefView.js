@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'DocFeatureSubmodelRefView',
   package: 'foam.documentation',
+  name: 'DocFeatureSubmodelRefView',
   extendsModel: 'foam.documentation.DocRefView',
   label: 'Documentation Feature sub-model Link Reference View',
   help: 'The view of a documentation reference link based on a Sub-Model.',
@@ -26,7 +26,7 @@ CLASS({
     An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
     for notes on usage. Set $$DOC{ref:'.data'} to an instance of a model.
     */},
-  
+
   properties: [
     {
       name: 'data',

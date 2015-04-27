@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'DocumentationBookFullPageDocView',
   package: 'foam.documentation',
+  name: 'DocumentationBookFullPageDocView',
   extendsModel: 'foam.documentation.FullPageDocView',
   documentation: 'Displays the documentation of the given book.',
 

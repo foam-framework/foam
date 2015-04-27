@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'DocFeatureView',
   package: 'foam.documentation',
+  name: 'DocFeatureView',
   extendsModel: 'foam.documentation.DocView',
   help: 'A generic view for each item in a list of documented features.',
 

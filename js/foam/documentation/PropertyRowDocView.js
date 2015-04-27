@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'PropertyRowDocView',
   package: 'foam.documentation',
+  name: 'PropertyRowDocView',
   extendsModel: 'foam.documentation.DocFeatureView',
   help: 'A view for documentation of each item in a list of properties.',
 

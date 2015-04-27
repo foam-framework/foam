@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'SimpleRowDocView',
   package: 'foam.documentation',
+  name: 'SimpleRowDocView',
   extendsModel: 'foam.documentation.RowDocView',
   help: 'A view for documentation of each item in a list, without using featureDAO.',
 

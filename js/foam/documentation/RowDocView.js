@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'RowDocView',
   package: 'foam.documentation',
+  name: 'RowDocView',
   extendsModel: 'foam.documentation.DocView',
   label: 'Documentation View Row',
 

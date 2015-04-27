@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'DocumentationBookSummaryDocView',
   package: 'foam.documentation',
+  name: 'DocumentationBookSummaryDocView',
   extendsModel: 'foam.documentation.SummaryDocView',
   documentation: 'Displays the documentation of the given book.',
 
@@ -27,9 +27,9 @@ CLASS({
     {
       name: 'data',
       postSet: function(old, nu) {
-        this.updateHTML();      
+        this.updateHTML();
       }
-    },    
+    },
   ],
 
   templates: [

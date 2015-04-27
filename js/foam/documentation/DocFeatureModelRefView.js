@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'DocFeatureModelRefView',
   package: 'foam.documentation',
+  name: 'DocFeatureModelRefView',
   extendsModel: 'foam.documentation.DocRefView',
   label: 'Documentation Feature Model Link Reference View',
   help: 'The view of a documentation reference link based on a Model.',
@@ -33,7 +33,7 @@ CLASS({
       this.docRef.addListener(this.setNameLabel);
     }
   },
-    
+
 
   properties: [
     {
@@ -44,7 +44,7 @@ CLASS({
       }
     }
   ],
-  
+
   listeners: [
     {
       name: 'setNameLabel',

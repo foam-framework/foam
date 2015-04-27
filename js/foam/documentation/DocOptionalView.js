@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'DocOptionalView',
   package: 'foam.documentation',
+  name: 'DocOptionalView',
   extendsModel: 'foam.documentation.DocView',
   documentation: 'A view wrapper for hiding content if a DAO is empty.',
 

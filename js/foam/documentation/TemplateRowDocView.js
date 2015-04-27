@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'TemplateRowDocView',
   package: 'foam.documentation',
+  name: 'TemplateRowDocView',
   extendsModel: 'foam.documentation.DocFeatureView',
   help: 'A view for documentation of each item in a list of methods.',
 });

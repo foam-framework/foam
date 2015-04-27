@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'DocModelInheritanceTracker',
   package: 'foam.documentation',
+  name: 'DocModelInheritanceTracker',
   documentation: 'Stores inheritance information for a Model',
   documentation: function() { /*
       <p>Stores inheritance information for a $$DOC{ref:'Model'}. One

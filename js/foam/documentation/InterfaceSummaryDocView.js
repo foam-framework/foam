@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'InterfaceSummaryDocView',
   package: 'foam.documentation',
+  name: 'InterfaceSummaryDocView',
   extendsModel: 'foam.documentation.SummaryDocView',
   documentation: 'Displays the documentation of the given interface.',
 
@@ -29,9 +29,9 @@ CLASS({
     {
       name: 'data',
       postSet: function(old, nu) {
-        this.updateHTML();      
+        this.updateHTML();
       }
-    },    
+    },
   ],
 
   templates: [

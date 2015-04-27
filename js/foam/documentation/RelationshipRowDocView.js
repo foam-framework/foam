@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'RelationshipRowDocView',
   package: 'foam.documentation',
+  name: 'RelationshipRowDocView',
   extendsModel: 'foam.documentation.DocFeatureView',
   help: 'A view for documentation of each item in a list of methods.',
 });
