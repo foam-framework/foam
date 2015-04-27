@@ -66,34 +66,23 @@
           v.copyFrom(this.copyFrom);
         }
         this.view = v.toView_();
+        this.addDataChild(this.view);
         this.finishRender();
       }.bind(this));
     },
 
     finishRender: function() {
-      if ( this.$ ) {
-        this.$.outerHTML = this.toInnerHTML();
-        this.initInnerHTML();
+      var el = this.X.$(this.id);
+      if ( el ) {
+        el.outerHTML = this.toHTML();
+        this.initHTML();
       }
-      // replace self in the view tree
-      if ( this.parent ) {
-        var p = this.parent;
-        p.addChild(this.view);
-        p.removeChild(this);
-        if ( this.name ) {
-          p[this.name + 'View'] = this.view;
-        }
-      }
-    },
-
-    toInnerHTML: function() { /* Passthrough to $$DOC{ref:'.view'} */
-      return this.view ? this.view.toHTML() : "";
     },
 
     toHTML: function() {
       /* If the view is ready, pass through to it. Otherwise create a place
       holder tag with our id, which we replace later. */
-      return this.view ? this.toInnerHTML() : ('<div id="'+this.id+'"></div>');
+      return this.view ? this.view.toHTML() : ('<div id="'+this.id+'"></div>');
     },
 
     initHTML: function() {
