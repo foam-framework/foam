@@ -33,7 +33,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: '../index.html?model=foam.demos.graphics.EyesDemo',
     description: 'A Googley version of the old xeyes app.  Follows your mouse.',
     keywords: ['graphics', 'reactive'],
-    src: '/js/foam/demos/graphics/EyesDemo.js',
+    src: '../js/foam/demos/graphics/EyesDemo.js',
     image: 'Eyes.png',
   },
   {
@@ -41,7 +41,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: '../index.html?model=foam.demos.SolarSystem',
     description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.  This was the first graphical FOAM demo to be written (in 2011).  I\'ve added the <b>old</b> keyword to this, and other older, non-modernized demos.',
     keywords: ['animation', 'reactive', 'old'],
-    src: '/js/foam/demos/SolarSystem.js',
+    src: '../js/foam/demos/SolarSystem.js',
     image: 'SolarSystem.png',
   },
   {
@@ -57,7 +57,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: '../index.html?model=foam.demos.ReactiveClocks',
     description: 'A simple demo of reactive programming.  The first clocks reacts to the position of the mouse while the second clock reacts to the position of the first clock and to time.  Reacting to time essentially gives you an animation system for free.',
     keywords: ['animation', 'reactive'],
-    src: '/js/foam/demos/ReactiveClocks.js',
+    src: '../js/foam/demos/ReactiveClocks.js',
     image: 'ReactiveClocks.png',
     video: 'part11.ogv'
   },
@@ -103,7 +103,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: '../index.html?model=foam.demos.ArchitectureDiagram',
     description: 'An animated diagram of FOAM\'s architecture.  Notice the reflections.',
     keywords: ['architecture', 'animation'],
-    src: '../js/foam/demos/ArchitectureDiagram.js',
+    src: '..../js/foam/demos/ArchitectureDiagram.js',
     image: 'DemoBlockDiagram.png',
     video: 'part6.ogv'
   },
@@ -121,7 +121,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: '../index.html?model=foam.demos.pong.Pong',
     description: 'A simple pong game which demonstrates the both the use of graphical traits (motion blur and shadow) and of the physics engine.',
     keywords: ['animation', 'game', 'physics', 'traits', '14'],
-    src: '/js/foam/demos/pong/Pong.js',
+    src: '../js/foam/demos/pong/Pong.js',
     image: 'Pong.png'
   },
   {
@@ -136,7 +136,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: '../index.html?model=foam.demos.physics.Collision',
     description: 'Demonstration of the physics engine and collision-detection.',
     keywords: ['physics', '14'],
-    src: '/js/foam/demos/physics/Collision.js',
+    src: '../js/foam/demos/physics/Collision.js',
     image: 'Collision.png'
   },
   {
@@ -144,7 +144,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: '../index.html?model=foam.demos.physics.CollisionWithSpring',
     description: 'A simple physics simulation which shows the use of springs and collision detection.',
     keywords: ['physics', '14'],
-    src: '/js/foam/demos/physics/CollisionWithSpring.js',
+    src: '../js/foam/demos/physics/CollisionWithSpring.js',
     image: 'CollisionWithSpring.png'
   },
   {
@@ -152,7 +152,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: '../index.html?model=foam.demos.physics.Spring',
     description: 'Addictive spring physics simulation.',
     keywords: ['physics', '14'],
-    src: '/js/foam/demos/physics/Spring.js',
+    src: '../js/foam/demos/physics/Spring.js',
     image: 'Spring.png'
   },
   {
@@ -160,7 +160,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: '../index.html?model=foam.demos.physics.Baloons',
     description: 'Collision detection with inflatable baloons.',
     keywords: ['physics', '14'],
-    src: '/js/foam/demos/physics/Baloons.js',
+    src: '../js/foam/demos/physics/Baloons.js',
     image: 'Baloons.png'
   },
   {
@@ -168,7 +168,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: '../index.html?model=foam.demos.physics.Bubbles',
     description: 'Demonstrates use of gravity.  Negative gravity makes bubbles rise.',
     keywords: ['physics', '14'],
-    src: '/js/foam/demos/physics/Bubbles.js',
+    src: '../js/foam/demos/physics/Bubbles.js',
     image: 'Bubbles.png'
   },
   {
@@ -327,7 +327,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: '../index.html?model=foam.demos.graphics.Logo',
     description: 'Animated FOAM logo.',
     keywords: ['demo', 'animation'],
-    src: '/js/foam/demos/graphics/Logo.js',
+    src: '../js/foam/demos/graphics/Logo.js',
     image: 'Logo.png'
   },
   {
