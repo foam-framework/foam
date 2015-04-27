@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'ModelRowDocView',
   package: 'foam.documentation',
+  name: 'ModelRowDocView',
   extendsModel: 'foam.documentation.DocView',
 
   requires: ['foam.documentation.DocFeatureSubmodelRefView'],

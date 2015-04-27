@@ -16,12 +16,12 @@
  */
 
 CLASS({
-  name:  'FunctionView',
   package: 'foam.ui',
-  
+  name:  'FunctionView',
+
   extendsModel: 'foam.ui.TextFieldView',
-  requires: ['foam.ui.TextFieldView'],
-    
+  requires: [ 'foam.ui.TextFieldView' ],
+
   properties: [
     {
       name: 'onKeyMode',
@@ -46,7 +46,7 @@ CLASS({
       this.SUPER();
 
       this.errorView.initHTML();
-      this.errorView.$.style.color = 'red';
+      this.errorView.$.style.color   = 'red';
       this.errorView.$.style.display = 'none';
     },
 
@@ -55,7 +55,7 @@ CLASS({
     },
 
     setError: function(err) {
-      this.errorView.data = err || "";
+      this.errorView.data = err || '';
       this.errorView.$.style.display = err ? 'block' : 'none';
     },
 
@@ -63,22 +63,23 @@ CLASS({
       if ( ! text ) return null;
 
       try {
-        var ret = eval("(" + text + ")");
+        var ret = eval('(' + text + ')');
 
         this.setError(undefined);
 
         return ret;
       } catch (x) {
-        console.log("JS Error: ", x, text);
+        console.log('JS Error: ', x, text);
         this.setError(x);
 
-        return nop;
+        var f = function() {};
+        f.toString = function() { return text; };
+        return f;
       }
     },
 
     valueToText: function(value) {
-      return value ? value.toString() : "";
+      return value ? value.toString() : '';
     }
   }
 });
-

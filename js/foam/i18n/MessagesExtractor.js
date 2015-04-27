@@ -53,7 +53,7 @@ CLASS({
         var modelPrefix = model.translationHint ?
             model.translationHint + ' ' : '';
         var i18nMsg = this.messageFactory({
-          id: this.getMessageKey(model, msg),
+          id: this.idGenerator.getMessageId(model, msg),
           name: msg.name,
           value: msg.value,
           description: modelPrefix + msg.translationHint
@@ -68,12 +68,11 @@ CLASS({
         var modelPrefix = model.translationHint ?
             model.translationHint + ' ' : '';
         var msgs = [];
-        var key, i18nMsg;
+        var i18nMsg;
         if ( action.translationHint ) {
           if ( action.label ) {
-            key = this.getActionTextLabelKey(model, action);
             i18nMsg = this.messageFactory({
-              id: this.getActionTextLabelKey(model, action),
+              id: this.idGenerator.getActionTextLabelId(model, action),
               name: action.name + 'Label',
               value: action.label,
               description: modelPrefix + action.translationHint +
@@ -83,9 +82,8 @@ CLASS({
             msgs.push(i18nMsg);
           }
           if ( action.speechLabel ) {
-            key = this.getActionSpeechLabelKey(model, action);
             i18nMsg = this.messageFactory({
-              id: this.getActionSpeechLabelKey(model, action),
+              id: this.idGenerator.getActionSpeechLabelId(model, action),
               name: action.name + 'SpeechLabel',
               value: action.speechLabel,
               description: modelPrefix + action.translationHint +

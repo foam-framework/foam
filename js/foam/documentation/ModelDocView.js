@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'ModelDocView',
   package: 'foam.documentation',
+  name: 'ModelDocView',
   extendsModel: 'foam.documentation.DocView',
   documentation: 'Displays the documentation of the given Model.',
   traits: ['foam.documentation.DocModelFeatureDAOTrait'],
@@ -47,7 +47,7 @@ CLASS({
       }
     }
   ],
-  
+
   methods: {
 
     init: function() {

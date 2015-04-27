@@ -16,7 +16,6 @@
  */
 
 CLASS({
-   "model_": "Model",
    "package": "foam.ui.layout",
    "name": "FloatingView",
    "extendsModel": "foam.ui.View",
@@ -60,7 +59,7 @@ CLASS({
        "args": [],
        "code": function() {
          this.SUPER();
-         this.view.destroy();
+         this.view.destroy && this.view.destroy();
        }
      }
    ],
@@ -72,9 +71,5 @@ CLASS({
          "args": [],
          "template": " %%view "
       }
-   ],
-   "models": [],
-   "tests": [],
-   "relationships": [],
-   "issues": []
+   ]
 });

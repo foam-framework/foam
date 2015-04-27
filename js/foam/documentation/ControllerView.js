@@ -18,9 +18,9 @@
 
 
 CLASS({
+  package: 'foam.documentation',
   name: 'ControllerView',
   extendsModel: 'foam.ui.DetailView',
-  package: 'foam.documentation',
 
   methods: {
     initHTML: function() {
@@ -38,5 +38,3 @@ CLASS({
     */}
   ]
 });
-
-

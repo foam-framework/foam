@@ -13,6 +13,7 @@ CLASS({
   package: 'foam.flow',
   name: 'Slides',
   extendsModel: 'foam.flow.Element',
+  traits: ['foam.memento.MemorableTrait'],
 
   requires: [
     'foam.flow.Grid',
@@ -33,6 +34,7 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'position',
+      memorable: true,
       displayWidth: 5,
       defaultValue: 1,
       preSet: function(o, n) {
@@ -68,7 +70,7 @@ CLASS({
     {
       name: 'back',
       label: '<',
-      keyboardShortcuts: [ '<', 33 /* Page Down */, 38 /* Down Arrow */ ],
+      keyboardShortcuts: [ '<', 33 /* Page Down */ /*, 38*/ /* Down Arrow */ ],
       isEnabled: function() { return this.position > 1; },
       action: function() {
         this.position--;
@@ -77,7 +79,7 @@ CLASS({
     {
       name: 'forth',
       label: '>',
-      keyboardShortcuts: [ '>', 34 /* Page Up */, 40 /* Up Arrow */ ],
+      keyboardShortcuts: [ '>', 34 /* Page Up */ /*, 40*/ /* Up Arrow */ ],
       isEnabled: function() { return this.position < this.slides.length; },
       action: function() {
         this.position++;
@@ -96,10 +98,10 @@ CLASS({
       slides .card-grid .card {
         box-shadow: 0 5px 15px #aaa;
         height: 17%;
+        margin: 0 12px 20px;
         overflow: hidden;
         padding: 2px;
-        width: 17%;
-        xxxwidth: 17.5%;
+        width: 18.25%;
         min-width: initial;
       }
       slides .card-grid .card .card-inset {

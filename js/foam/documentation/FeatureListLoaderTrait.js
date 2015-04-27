@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'FeatureListLoaderTrait',
   package: 'foam.documentation',
+  name: 'FeatureListLoaderTrait',
   documentation: 'Trait loads the documentation of the given feature list.',
 
   requires: [ 'foam.documentation.DocFeatureCollapsedView',

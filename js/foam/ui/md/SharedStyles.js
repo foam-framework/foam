@@ -213,6 +213,16 @@ canvas.createButton {
   width: initial;
 }
 
+.md-style-trait-standard {
+  padding: 8px;
+  margin: 8px;
+}
+
+.md-style-trait-inline {
+  padding: 0px;
+}
+
+
 @media not print {
   .md-card-shell, .md-card {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);

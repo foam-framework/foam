@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'FeatureListDocView',
   package: 'foam.documentation',
+  name: 'FeatureListDocView',
   documentation: 'Displays the HTML documentation of the given feature list.',
 
   extendsModel: 'foam.ui.View',

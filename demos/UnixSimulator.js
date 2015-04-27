@@ -25,14 +25,13 @@
     var space2View = space2.write(document);
     // document.writeln("</td><tr></table>");
 
-    // document.writeln('<div style="display:inline-block">');
     var timerView = timer.write(document);
-    // document.writeln('</div>');
 
     var sys = System.create({
       parent: space,
       title: 'Multics',
       devColor: 'blue',
+      font: '10pt arial',
       numDev: 100,
       features: ['sorting', 'search', 'paging', 'printing', 'editing', 'storage', 'viewing', '...' ],
       entities: ['users', 'groups', 'processes', 'devices', 'files', 'directories', 'print queues', 'print jobs', 'cron jobs'],
@@ -43,14 +42,15 @@
       title: 'Unix',
       numDev: 2,
       devColor: 'red',
+      font: '10pt arial',
       features: sys.features,
       entities: sys.entities
     }, X);
 
     // document.writeln('<table><tr><td>');
-    var sysView = sys.write(document);
+    // var sysView = sys.write(document);
     // document.writeln('</td><td>');
-    var sys2View = sys2.write(document);
+    // var sys2View = sys2.write(document);
     // document.writeln('</td></tr></table>');
 
     space2.$.addEventListener('click', addPlatforms);

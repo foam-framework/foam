@@ -10,12 +10,12 @@
  */
 
 CLASS({
-  name: 'CodeView',
   package: 'foam.flow',
+  name: 'CodeView',
   extendsModel: 'foam.flow.Element',
   traits: [ 'foam.flow.MultilineViewTrait' ],
 
-  requires: ['foam.flow.SourceCode'],
+  requires: [ 'foam.flow.SourceCode' ],
 
   imports: [
     'document',
@@ -27,9 +27,7 @@ CLASS({
       name: 'data',
       type: 'foam.flow.SourceCode',
       factory: function() {
-        return this.SourceCode.create({
-          data: 'console.log("Hello world!");'
-        });
+        return this.SourceCode.create();
       }
     },
     {
@@ -49,7 +47,7 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'maxLines',
-      defaultValue: 20
+      defaultValue: 10
     },
     {
       model_: 'IntProperty',
@@ -70,7 +68,8 @@ CLASS({
         this.SUPER.apply(this, arguments);
         if ( ! this.$ ) return;
         this.$.addEventListener('input', this.onSrcChange);
-        this.$.setAttribute('contenteditable', 'true');
+        if ( this.mode === 'read-write' )
+          this.$.setAttribute('contenteditable', 'true');
         this.codeViewLoadState = 'loaded';
       }
     }
@@ -80,15 +79,17 @@ CLASS({
     {
       name: 'onSrcChange',
       code: function(e) {
-        if ( ! this.$ ) return;
-        if ( this.src !== this.$.textContent ) this.src = this.$.textContent;
+        console.log('a');
+        if ( ! this.$ || ! this.data ) return;
+        console.log('b');
+        if ( this.data.code !== this.$.textContent ) this.data.code = this.$.textContent;
       }
     }
   ],
 
   templates: [
     // Support both <code-view>...</code-view> and %%myCodeView.
-    function toInnerHTML() {/*<% if ( this.inner ) { %><%= this.inner() %><% } else { %><%= this.data.code %><% } %>*/},
+    function toInnerHTML() {/*<% if ( this.inner ) { %>{{this.inner()}}<% } else { %>{{this.data.code}}<% } %>*/},
     function CSS() {/*
       code-view {
         display: block;

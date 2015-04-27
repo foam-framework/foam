@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'DocView',
   package: 'foam.documentation',
+  name: 'DocView',
   extendsModel: 'foam.ui.DetailView',
   label: 'Documentation View Base',
   documentation: 'Base Model for documentation views.',

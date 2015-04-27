@@ -17,13 +17,15 @@
 
 
 CLASS({
-  name: 'ModelListController',
   package: 'foam.documentation',
+  name: 'ModelListController',
 
-  requires:['MDAO',
-            'foam.ui.DAOListView',
-            'foam.ui.md.TextFieldView',
-            'foam.documentation.ModelDescriptionRowView'],
+  requires:[
+    'MDAO',
+    'foam.ui.DAOListView',
+    'foam.ui.md.TextFieldView',
+    'foam.documentation.ModelDescriptionRowView'
+  ],
 
   imports: ['masterModelList as dao'],
 
@@ -56,4 +58,3 @@ CLASS({
 
 
 });
-

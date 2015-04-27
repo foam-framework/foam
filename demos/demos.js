@@ -32,6 +32,10 @@ CLASS({
       defaultValue: ''
     },
     {
+      name: 'font',
+      defaultValue: '20pt Arial'
+    },
+    {
       name:  'color',
       type:  'String',
       defaultValue: 'black'
@@ -321,20 +325,20 @@ CLASS({
       this.l.paint();
 
       c.translate(0, 25); // make space for the title
-
+      c.font = this.font;
       // draw feature labels along the top row
       for ( var i = 0 ; i <= fs ; i++ ) {
         c.fillStyle = 'lightGray';
         c.fillRect(i*w/(fs+1),0,w/(fs+1),h/(es+1));
         c.fillStyle = 'black';
-        if ( i > 0 ) c.fillText(this.features[i-1], i*w/(fs+1)+5 , h/(es+1)/2+5);
+        if ( i > 0 ) c.fillText(this.features[i-1], i*w/(fs+1)+5 , h/(es+1)/2+11);
       }
       // draw entity labels along the left column
       for ( var i = 0 ; i <= es ; i++ ) {
         c.fillStyle = 'lightGray';
         c.fillRect(0, i*h/(es+1),w/(fs+1),h/(es+1));
         c.fillStyle = 'black';
-        if ( i > 0 ) c.fillText(this.entities[i-1], 8, (i+0.5)*h/(es+1)+3, w/(fs+1)-15);
+        if ( i > 0 ) c.fillText(this.entities[i-1], 8, (i+0.5)*h/(es+1)+11, w/(fs+1)-15);
       }
 
       // draw grid-lines

@@ -16,9 +16,9 @@
  */
 
 CLASS({
+  package: 'foam.documentation',
   name: 'ModelDescriptionRowView',
   extendsModel: 'foam.ui.View',
-  package: 'foam.documentation',
 
   requires: ['SimpleValue'],
 
@@ -54,7 +54,7 @@ CLASS({
 
       this.SUPER();
     }
-    
+
   },
   templates: [ // TODO: the data gets set on the modelNameView... screws it up
     function toInnerHTML() {/*
@@ -62,4 +62,3 @@ CLASS({
     */}
   ]
 });
-

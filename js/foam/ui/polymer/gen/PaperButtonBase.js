@@ -16,58 +16,58 @@
  */
 
 CLASS({
-    name: 'PaperButtonBase',
-    package: 'foam.ui.polymer.gen',
-    extendsModel: 'foam.ui.polymer.gen.View',
-    traits: [],
-    constants: {
-      POLYMER_PROPERTIES: []
+  name: 'PaperButtonBase',
+  package: 'foam.ui.polymer.gen',
+  extendsModel: 'foam.ui.polymer.gen.View',
+  traits: [],
+  constants: {
+    POLYMER_PROPERTIES: []
+  },
+  properties: [
+    {
+      name: 'id',
+      hidden: true
     },
-    properties: [
-      {
-        name: 'id',
-        hidden: true
-      },
-      {
-        name: 'children',
-        hidden: true
-      },
-      {
-        name: 'shortcuts',
-        hidden: true
-      },
-      {
-        name: 'className',
-        hidden: true
-      },
-      {
-        name: 'extraClassName',
-        hidden: true
-      },
-      {
-        name: 'showActions',
-        hidden: true
-      },
-      {
-        name: 'initializers_',
-        hidden: true
-      },
-      {
-        name: 'destructors_',
-        hidden: true
-      },
-      {
-        name: 'tooltip',
-        hidden: true
-      },
-      {
-        name: 'tooltipModel',
-        hidden: true
-      },
-      {
-        name: 'tagName',
-        model_: 'StringProperty',
-        defaultValue: 'paper-button-base'
-      }
-    ]
-  });
+    {
+      name: 'children',
+      hidden: true
+    },
+    {
+      name: 'shortcuts',
+      hidden: true
+    },
+    {
+      name: 'className',
+      hidden: true
+    },
+    {
+      name: 'extraClassName',
+      hidden: true
+    },
+    {
+      name: 'showActions',
+      hidden: true
+    },
+    {
+      name: 'initializers_',
+      hidden: true
+    },
+    {
+      name: 'destructors_',
+      hidden: true
+    },
+    {
+      name: 'tooltip',
+      hidden: true
+    },
+    {
+      name: 'tooltipModel',
+      hidden: true
+    },
+    {
+      name: 'tagName',
+      model_: 'StringProperty',
+      defaultValue: 'paper-button-base'
+    }
+  ]
+});

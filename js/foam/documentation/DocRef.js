@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'DocRef',
   package: 'foam.documentation',
+  name: 'DocRef',
   label: 'Documentation Reference',
   documentation: 'A reference to a documented Model or feature of a Model',
 
@@ -285,6 +285,7 @@ CLASS({
         });
       } else {
         // for non-models, just look at sub-features
+        foundObject = model;
         completeResolve();
       }
     },

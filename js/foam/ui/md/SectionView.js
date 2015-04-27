@@ -36,9 +36,14 @@ CLASS({
       }
     },
     {
+      model_: 'BooleanProperty',
+      name: 'expanded',
+      defaultValue: true
+    },
+    {
       model_: 'StringProperty',
       name: 'expandedIconUrl',
-      defaultValue: 'https://www.google.com/images/icons/material/system/1x/stat_1_black_24dp.png'
+      defaultValue: 'https://www.gstatic.com/images/icons/material/system/1x/expand_less_black_24dp.png'
     },
     {
       model_: 'StringProperty',
@@ -50,7 +55,13 @@ CLASS({
       name: 'delegate'
     },
     {
-      name: 'delegateView'
+      name: 'delegateView',
+      postSet: function(old, nu) {
+        if ( old && old.expanded$ )
+          Events.unfollow(this.expanded$, old.expanded$);
+        if ( nu && nu.expanded$ )
+          Events.follow(this.expanded$, nu.expanded$);
+      }
     }
   ],
 
@@ -60,7 +71,6 @@ CLASS({
       code: function() {
         this.SUPER.apply(this, arguments);
         if ( this.expandable ) {
-          this.on('click', this.onToggleExpanded, this.id + '-heading');
           this.delegateView.expandedIcon = this.X.$(this.id + '-expanded-icon');
         }
       }
@@ -85,7 +95,8 @@ CLASS({
       <heading id="{{this.id}}-heading">
         <% if ( this.iconUrl ) { %><span><img src="{{this.iconUrl}}"></span><% } %>
         <span>{{this.title}}</span>
-        <% if ( this.expandable ) { %>
+        <% if ( this.expandable ) {
+           this.on('click', this.onToggleExpanded, this.id + '-heading'); %>
           <div class="flex-flush-right">
             <img src="{{this.expandedIconUrl}}" id="{{this.id}}-expanded-icon">
           </div>

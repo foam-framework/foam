@@ -23,10 +23,12 @@ CLASS({
     'foam.demos.graphics.Dragon',
     'foam.demos.graphics.EyeCView',
     'foam.demos.physics.Bubbles',
+    'foam.demos.physics.Baloons',
     'foam.demos.physics.Collision',
     'foam.demos.physics.CollisionWithSpring',
     'foam.demos.physics.Spring',
     'foam.documentation.diagram.DocDiagramView',
+    'foam.documentation.diagram.DocModelDiagramView',
     'foam.flow.CodeSample',
     'foam.flow.CodeSample',
     'foam.flow.Slides',
@@ -39,7 +41,8 @@ CLASS({
     'foam.ui.SwipeAltView',
     'foam.ui.TableView',
     'foam.ui.ViewChoice',
-    'foam.ui.md.TwoPaneView'
+    'foam.ui.md.TwoPaneView',
+    'foam.memento.FragmentMementoMgr'
   ],
 
   exports: [
@@ -78,6 +81,9 @@ CLASS({
 
   templates: [
     function CSS() {/*
+     body {
+        overflow: hidden;
+     }
      slides {
         display: flex;
         flex-direction: column;
@@ -85,7 +91,9 @@ CLASS({
       slides > deck {
         font-size: 200%;
         padding-left: 16px;
-        overflow: hidden;
+      }
+      slides .card-grid .card .card-inset {
+        padding-left: 16px;
       }
       h1 {
         color: blue;
@@ -108,6 +116,10 @@ CLASS({
       .swipeAltOuter {
         height: 100%;
       }
+      code-view {
+        font-size: 28px;
+      }
+      .sweeper-models canvas { vertical-align: top; }
       li.d1 { margin-left: 16px; font-size: 30px;}
       li.d2 { margin-left: 32px; font-size: 28px; }
       li.d3 { margin-left: 48px; font-size: 26px; }

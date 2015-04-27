@@ -37,7 +37,8 @@ CLASS({
     'MDAO',
     'foam.dao.FindFallbackDAO',
     'foam.documentation.DocViewPicker',
-    'foam.util.JavaSource'
+    'foam.util.JavaSource',
+    'foam.ui.TextFieldView'
   ],
 
   properties: [
@@ -49,6 +50,9 @@ CLASS({
       name: 'features',
       lazyFactory: function() {
         return [
+          { name: 'Model',
+            f: function(model, obj, arr, value) { var dv = this.DetailView.create({model: Model, data: model}); this.setDisplay(dv.toHTML()); dv.initHTML(); }
+          },
           { name: 'Help',
             f: function(model, obj, arr, value) { this.setDisplay(this.HelpView.create({model: model}).toHTML()); }
           },
@@ -62,7 +66,7 @@ CLASS({
           { name: 'Table',
             f: function(model, obj, arr, value) { this.setDisplay(this.TableView.create({model: model, data: arr }).toHTML());  }
           },
-          { name: 'Summary',
+          { name: 'Summary View',
             f: function(model, obj, arr, value) { this.setDisplay(this.SummaryView.create({model: model, data: obj}).toHTML());  }
           },
           { name: 'XML',
@@ -74,7 +78,7 @@ CLASS({
 //           { name: 'JS Proto',
 //             f: function(model, obj, arr, value) { this.setDisplay("<pre>" + this.protoToString(model.getPrototype()) + '</pre>'); }
 //           },
-          { name: 'Java Src.',
+          { name: 'Java',
             f: function(model, obj, arr, value) { this.setDisplay('<textarea rows=100 cols=80>' + this.javaSource.generate(model) + '</textarea>'); }
           },
 //           { name: 'Actions',
@@ -106,7 +110,7 @@ CLASS({
 //               FOAM.browse(model);
 //             }
 //           },
-          { name: 'Documentation',
+          { name: 'Docs',
             f: function(model, obj, arr, value) {
               //var dv = this.DetailView.create({model: Model, value: SimpleValue.create(model)}); this.setDisplay(dv.toHTML() ); dv.initHTML();
               var dv = this.DocViewPicker.create({ data: model });
@@ -131,9 +135,9 @@ CLASS({
       name: 'featureLabels',
       lazyFactory: function() {
         var list = [];
-        this.features.forEach(function(f) {
-          list.push(f.name);
-        }.bind(this));
+        for (var i = 0; i < this.features.length; i++) {
+          list.push(this.features[i].name);
+        }
         return list;
       }
     },
@@ -142,10 +146,10 @@ CLASS({
       lazyFactory: function() {
         return System.create({
           parent: this.space,
-          title: 'FOAM',
+          title: '',
           numDev: this.enableAnimation ? 2 : 0,
           devColor: 'red',
-          features: this.featureLabels,
+          features: this.featureLabels.slice(1),
           entities: this.entityNames,
         });
       }
@@ -175,7 +179,7 @@ CLASS({
           { name: 'Rect', model:  'foam.graphics.Rectangle', instance: null },
           { name: 'Box', model: 'foam.graphics.Box', instance: null },
           { name: 'Label', model: 'foam.graphics.Label', instance: null },
-          { name: 'DAOController', model: 'foam.ui.DAOController', instance: null },
+//          { name: 'DAOController', model: 'foam.ui.DAOController', instance: null },
           { name: 'StackView', model: 'foam.ui.StackView', instance: null },
         ];
         ents.forEach(function(ent) {
@@ -203,7 +207,7 @@ CLASS({
     {
       name: 'space',
       factory: function() {
-        return Canvas.create({width: 1000, height: 800, background:'#fff'});
+        return Canvas.create({width: 800, height: 800, background:'#fff'});
       }
     },
     {
@@ -229,6 +233,10 @@ CLASS({
       lazyFactory: function() {
         return this.FindFallbackDAO.create({delegate: this.masterModelList, fallback: this.X.ModelDAO});
       }
+    },
+    {
+      name: 'title',
+      defaultValue: 'FOAM Features and Models'
     }
   ],
 
@@ -282,7 +290,7 @@ CLASS({
     },
     initHTML: function() {
       this.SUPER();
-
+      this.space.canvas.font = "bold 14px Arial";
       this.sys.architecture = this.foam;
       Events.dynamic(
         function () {
@@ -307,7 +315,7 @@ CLASS({
   templates: [
     function toHTML() {/*
       <table><tr><td valign=top>
-
+      <h1><%# this.title %></h1>
       %%space
 
       <td><td valign=top>
@@ -320,7 +328,7 @@ CLASS({
     {
       name: 'update',
       code: function() {
-        if ( this.sys.selectedY < 1 || this.sys.selectedX < 1 ) return;
+        if ( this.sys.selectedY < 1 || this.sys.selectedX < 0 ) return;
 
         var model = this.entities[this.sys.selectedY-1].instance;
         var obj = null;
@@ -334,7 +342,9 @@ CLASS({
         var arr = [obj];
         var value = SimpleValue.create(obj);
 
-        this.features[this.sys.selectedX-1].f.call(this, model, obj, arr, value);
+        this.features[this.sys.selectedX].f.call(this, model, obj, arr, value);
+
+        this.title = this.featureLabels[this.sys.selectedX] + " for " + this.entityNames[this.sys.selectedY-1]
       }
     }
 

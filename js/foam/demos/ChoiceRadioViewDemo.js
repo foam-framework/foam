@@ -25,14 +25,16 @@ CLASS({
              'foam.input.touch.GestureManager',
              'foam.ui.md.FlatButton',
              'foam.ui.md.CheckboxView',
-             'foam.ui.md.PopupChoiceView'],
+             'foam.ui.md.PopupChoiceView',
+             'foam.ui.md.ToggleView',
+             'foam.ui.md.EditableView'],
 
   properties: [
     {
       name: 'choices',
       defaultValueFn: function() {
         var arr = [];
-        for (var i=0;  i < 14; i++) {
+        for (var i=0;  i < 2; i++) {
           arr.push(['value'+i, 'Choice '+i]);
         }
         arr.push(['name', 'Other', 'user']);
@@ -88,26 +90,48 @@ CLASS({
 
   templates:
   [
+    function CSS() {/*
+      body {
+        font-family: Roboto, RobotoDraft;
+        font-size: 14px;
+        color: #444;
+      }
+
+      .demo-row {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+      }
+    */},
+
     function toInnerHTML()
     {/*
-      <hr/>
-      <p>
-        $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'horizontal'}
-      </p>
-      <hr/>
-      <p>
-        $$data
-      </p>
-      <p>
+        <h3>Normal style, with padding and margins</h3>
+        <div class="demo-row">
+          $$data{model_:'foam.ui.md.ChoiceRadioView', inlineStyle: false, choices:this.choices, orientation: 'horizontal'}
+          <div class="md-style-trait-standard">Plaining Text</div>
+          $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: false }
+          $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: false, floatingLabel: false }
+          $$data{model_: 'foam.ui.md.PopupChoiceView', inlineStyle: false,  choices:this.choices}
+          $$data{model_:'foam.ui.md.EditableView', inlineStyle: false }
+        </div>
+        <hr/>
+        <h3>Inline style, with no padding and margins</h3>
+        <div class="demo-row">
+          $$data{model_:'foam.ui.md.ChoiceRadioView', inlineStyle: true, choices:this.choices, orientation: 'horizontal'}
+          $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: true }
+          <div>Plaining Text</div>
+          $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: true, floatingLabel: false }
+          $$data{model_: 'foam.ui.md.PopupChoiceView', inlineStyle: true,  choices:this.choices}
+          $$data{model_:'foam.ui.md.EditableView', inlineStyle: true }
+        </div>
+        <hr/>
+        $$data{model_:'foam.ui.md.ChoiceRadioView', choices:this.choices, orientation: 'vertical'}
+        $$data{model_:'foam.ui.md.TextFieldView'}
         $$data{model_: 'foam.ui.md.PopupChoiceView', choices:this.choices}
-      </p>
-      <p>
         $$oneAction
-      </p>
-      <p>
         $$enabledButton{model_:'foam.ui.md.CheckboxView', label: 'Button Enabled'}
-        $$showButton{model_:'foam.ui.md.CheckboxView', label: 'Button Show'}
-      </p>
+        $$showButton{model_:'foam.ui.md.ToggleView', label: 'Button Show'}
     */}
   ]
 

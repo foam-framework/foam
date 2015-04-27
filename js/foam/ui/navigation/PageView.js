@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui.navigation',
   name: 'PageView',
-  extendsModel: 'foam.ui.DetailView',
+  extendsModel: 'foam.ui.SimpleView',
   help: 'A view that takes and renders a header, body, and footer. The ' +
       'header and footer views are required to have a preferredHeight ' +
       'property and this view gives the body the rest of the height on the ' +
@@ -62,9 +62,12 @@ CLASS({
       isFramed: true,
       code: function() {
         if (this.$) {
+          var windowHeight = this.X.window.innerHeight;
+          this.$.style.height = windowHeight + 'px';
+
           var headerHeight = this.header ? this.header.preferredHeight : 0;
           var footerHeight = this.footer ? this.footer.preferredHeight : 0;
-          var availableBodyHeight = this.X.window.innerHeight -
+          var availableBodyHeight = windowHeight -
               (headerHeight + footerHeight);
 
           var bodyContainer = document.getElementById(this.id + '-body');
@@ -88,7 +91,6 @@ CLASS({
   templates: [
     function CSS() {/*
       .PageView {
-        height: 100%;
         overflow: hidden;
       }
       .PageView .positioned-view {

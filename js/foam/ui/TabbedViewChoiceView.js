@@ -51,6 +51,7 @@ CLASS({
           function() { self.data.choice; },
           this.setCurrentLinePosition.bind(this));
       this.addDestructor(destructor.destroy.bind(destructor));
+      this.preferredHeight = this.$.clientHeight;
     },
   },
   templates: [

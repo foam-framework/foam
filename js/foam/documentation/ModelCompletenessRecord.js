@@ -17,8 +17,8 @@
 
 
 CLASS({
-  name: 'ModelCompletenessRecord',
   package: 'foam.documentation',
+  name: 'ModelCompletenessRecord',
 
   properties: [
     {
@@ -46,4 +46,3 @@ CLASS({
     }
   ]
 });
-

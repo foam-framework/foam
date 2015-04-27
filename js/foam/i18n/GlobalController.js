@@ -79,15 +79,6 @@ CLASS({
 
 arequire('foam.i18n.GlobalController')(function(GlobalController) {
   var i18nGC = GlobalController.create();
-  // TODO(markdittmer): We need a more reasonable way to trigger extraction.
-  // TODO(adamvy): Remove timeout'd call below once X.i18nModel() is back in
-  // the model boostrap process.
-  window.setTimeout(function() {
-    i18nGC.visitAllKnownModels([
-      // i18nGC.extractor,
-      i18nGC.injector
-    ]);
-  }, 0);
   GLOBAL.X.i18nModel = function(model, X, ret) {
     i18nGC.visitModel([
       // i18nGC.extractor,

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui.navigation',
   name: 'TopToolbar',
-  extendsModel: 'foam.ui.View',
+  extendsModel: 'foam.ui.SimpleView',
   requires: [
     'foam.ui.ViewFactoryView',
   ],
@@ -38,9 +38,13 @@ CLASS({
     {
       name: 'extraViewInstance_',
       postSet: function(o, v) {
+        if ( o ) o.removePropertyListener('preferredHeight', this.onResize);
+
         this.preferredHeight +=
             (v ? (v.preferredHeight || 0) : 0) -
             (o ? (o.preferredHeight || 0) : 0);
+
+        if ( v ) v.addPropertyListener('preferredHeight', this.onResize);
       }
     },
     {
@@ -55,12 +59,20 @@ CLASS({
     {
       name: 'preferredHeight',
       defaultValue: 67,
-      postSet: function() { this.resize(); }, 
+      postSet: function() { this.resize(); },
     },
     {
       name: 'className',
       defaultValue: 'TopToolbarView-container',
     },
+  ],
+  listeners: [
+    {
+      name: 'onResize',
+      code: function(_, _, old, nu) {
+        this.preferredHeight += nu - old;
+      }
+    }
   ],
   methods: {
     resize: function() {
@@ -70,7 +82,8 @@ CLASS({
     },
     initHTML: function() {
       this.SUPER();
-      this.resize();
+      this.preferredHeight =
+          document.getElementById(this.id + '-container').clientHeight;
     },
   },
   templates: [
@@ -105,11 +118,13 @@ CLASS({
   */},
   function toHTML() {/*
     <div id="%%id" <%= this.cssClassAttr() %>>
-      <div class='top'>
-        <span class='leftAction'>%%leftActionView</span>
-        <span class='label'><%# this.label %></span>
+      <div id="%%id-container">
+        <div class='top'>
+          <span class='leftAction'>%%leftActionView</span>
+          <span class='label'><%# this.label %></span>
+        </div>
+        %%extraViewFactory_
       </div>
-      %%extraViewFactory_
     </div>
   */},
   ]

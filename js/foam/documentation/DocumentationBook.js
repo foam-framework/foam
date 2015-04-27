@@ -18,13 +18,13 @@
 // TODO: refactor the documentation viewer so we just create instances of
 // DocumentationBook and not submodels.
 CLASS({
-  name: 'DocumentationBook',
   package: 'foam.documentation',
+  name: 'DocumentationBook',
   extendsModel: 'Documentation',
   label: 'Documentation Book',
   plural: 'DocumentationBooks',
   help: 'A documentation object that exists outside of a specific model.',
-  
+
   ids: ['id'],
 
   documentation: function() {/*
@@ -76,7 +76,7 @@ var RegisterDevDocs = function(opt_X) {
           <li>$$DOC{ref:'developerDocs.Context',text:'Context and Dependency Injection'}</li>
           <li>$$DOC{ref:'developerDocs.Events',text:'Reactive Events and Binding'}</li>
           <li>$$DOC{ref:'developerDocs.Views',text:'Views and HTML'}</li>
-          <li>$$DOC{ref:'developerDocs.DAO',text:'Data Access Objects'}</li>        
+          <li>$$DOC{ref:'developerDocs.DAO',text:'Data Access Objects'}</li>
         </ul>
       */},
 
@@ -233,7 +233,7 @@ var RegisterDevDocs = function(opt_X) {
         Most applications require a data layer, whether that be a REST service, database, or file system.
         FOAM abstracts all these behind the DAO and Sink interfaces. Since everything uses the same
         interface, layers of caching, offline access, filtering, or merging can be added to any data
-        source. 
+        source.
       */},
       chapters: [
         {
@@ -358,7 +358,7 @@ var RegisterDevDocs = function(opt_X) {
                 $$DOC{ref:'Model'} names can also be done for easy mocking.
                 </li>
               </ul>
-             
+
           */}
         }
       ]
@@ -605,13 +605,13 @@ var RegisterDevDocs = function(opt_X) {
             <ul>
               <li>$$DOC{ref:'foam.ui.View.toHTML'}: the method that provides the DOM content as a string or as
                 FOAM $$DOC{ref:'Template'} output.</li>
-              <li>$$DOC{ref:'foam.ui.View.initHTML'}: called after the DOM content is inserted, listeners can 
+              <li>$$DOC{ref:'foam.ui.View.initHTML'}: called after the DOM content is inserted, listeners can
                 be connected here.</li>
             </ul>
-            By a minimum implementation of the above, you can provide static content. By extending 
+            By a minimum implementation of the above, you can provide static content. By extending
             $$DOC{ref:'foam.ui.View'}, you can add some flexibility:
             <ul>
-              <li>$$DOC{ref:'foam.ui.View.toInnerHTML'}: $$DOC{ref:'foam.ui.View'} will create your outer element for you, 
+              <li>$$DOC{ref:'foam.ui.View.toInnerHTML'}: $$DOC{ref:'foam.ui.View'} will create your outer element for you,
                 call toInnerHTML() to create the content. Each time updateHTML() is called, toInnerHTML()
                 will be invoked again to generate new content.
               </li>
@@ -619,7 +619,7 @@ var RegisterDevDocs = function(opt_X) {
                 you may have to initialize it here. In most cases you don't need to supply this method.
               </li>
             </ul>
-            <p>You will frequently see toHTML/toInnerHTML begin with a call to 
+            <p>You will frequently see toHTML/toInnerHTML begin with a call to
             <code>this.$$DOC{ref:'foam.ui.View.destroy'}</code>. Since
             the method is generating new content, and therefore new children, teh extra destroy() call ensures that
             the previous children are cleaned up.</p>
@@ -719,5 +719,3 @@ var RegisterDevDocs = function(opt_X) {
   });
 
 };
-
-

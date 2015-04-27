@@ -170,10 +170,9 @@ var BootstrapModel = {
         var Y     = this.Y;
         var model = this.X.lookup(m);
         console.assert(model, 'Unknown Model: ' + m + ' in ' + this.name_);
-        var proto = model.getPrototype();
         return {
           __proto__: model,
-          create: function(args, X) { return proto.create(args, X || Y); }
+          create: function(args, X) { return model.create(args, X || Y); }
         };
       });
     });
@@ -591,7 +590,14 @@ var BootstrapModel = {
         }
       }
 
-      apar.apply(apar, args)(function() {
+      args.push(function(ret) {
+        if ( this.X.i18nModel )
+          this.X.i18nModel(this, this.X, ret);
+        else
+          ret();
+      }.bind(this));
+
+      apar.apply(null, args)(function() {
         this.finished__ = true;
         future.set(this);
       }.bind(this));
