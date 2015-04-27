@@ -1,6 +1,6 @@
 # FOAM
 
-Build fully featured high preformance apps in less time using FOAM.
+Build fully featured high performance apps in less time using FOAM.
 
   * Application Efficiency
 
