@@ -23,6 +23,7 @@ CLASS({
     'When i18n integration is stable: Include package in model.name prefix'
   ],
 
+  requires: [ 'foam.i18n.IdGenerator' ],
   imports: [
     'warn'
   ],
@@ -36,6 +37,12 @@ CLASS({
     {
       name: 'visitedModels',
       lazyFactory: function() { return {}; }
+    },
+    {
+      name: 'idGenerator',
+      lazyFactory: function() {
+        return this.IdGenerator.create();
+      }
     }
   ],
 
@@ -66,25 +73,6 @@ CLASS({
         }
         this.visitedModels[model.id] = true;
         return this;
-      }
-    },
-    {
-      name: 'getMessageKey',
-      code: function(model, msg) {
-        return model.name + '_Message_' + msg.name;
-      }
-    },
-    {
-      name: 'getActionTextLabelKey',
-      code: function(model, action) {
-        return model.name + '_ActionLabel_' + action.name;
-
-      }
-    },
-    {
-      name: 'getActionSpeechLabelKey',
-      code: function(model, action) {
-        return model.name + '_ActionSpeechLabel_' + action.name;
       }
     },
     {

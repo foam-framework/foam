@@ -29,7 +29,7 @@ CLASS({
         this.maybeSetMessage(
             model.messages[msgIdx],
             'value',
-            this.getMessageKey(model, msg));
+            this.idGenerator.getMessageId(model, msg));
       }
     },
     {
@@ -40,13 +40,13 @@ CLASS({
             this.maybeSetMessage(
                 model.actions[actionIdx],
                 'label',
-                this.getActionTextLabelKey(model, action));
+                this.idGenerator.getActionTextLabelId(model, action));
           }
           if ( action.speechLabel ) {
             this.maybeSetMessage(
                 model.actions[actionIdx],
                 'speechLabel',
-                this.getActionSpeechLabelKey(model, action));
+                this.idGenerator.getActionSpeechLabelId(model, action));
           }
         }
       }
