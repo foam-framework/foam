@@ -58,7 +58,7 @@ CLASS({
       help: 'Override for prop.view',
       documentation: function() {/*
         The optional name of the desired sub-$$DOC{ref:'foam.ui.View'}. If not specified,
-        prop.$$DOC{ref:'Property.view'} is used.
+        prop.$$DOC{ref:'Property.view'} is used. DEPRECATED. Use $$DOC{ref:'.model'} instead.
       */},
       postSet: function(old,nu) {
         this.model = nu;
@@ -70,12 +70,6 @@ CLASS({
       adapt: function(_, v) { return v && v.toView_ ? v.toView_() : v; },
       documentation: function() {/*
         The new sub-$$DOC{ref:'foam.ui.View'} generated for the given $$DOC{ref:'Property'}.
-      */}
-    },
-    {
-      name: 'args',
-      documentation: function() {/*
-        Optional arguments to be used for sub-$$DOC{ref:'foam.ui.View'} creation.
       */}
     },
     {
