@@ -24,7 +24,7 @@ CLASS({
 
   requires: ['foam.ui.md.ChoiceMenuView', 'foam.ui.md.TextFieldView'],
 
-  traits: ['foam.input.touch.VerticalScrollNativeTrait'],
+  traits: ['foam.ui.md.MDStyleTrait'],
 
   documentation: function() {/* This is very closely related to
      $$DOC{ref:'foam.ui.PopupChoiceView'}. Refactor them! */},
@@ -153,10 +153,12 @@ CLASS({
       var textView = this.createTemplateView('text', { mode:'read-only' });
       this.addChild(textView);
       out += '<div class="value">'+textView.toHTML()+'</div>';
-      out += '<svg class="downArrow" viewBox="0 0 48 48"><g><path d="M15 20 l10 10 10 -10 z"></path></g></svg>';
+      // not setting the width and height here causes an initial 
+      // rendering artifact with a super-sized arrow (before CSS applies?)
+      out += '<svg class="downArrow" width="12px" height="12px" viewBox="0 0 48 48"><g><path d="M0 16 l24 24 24 -24 z"></path></g></svg>';
 
       this.on('click', this.launch, this.id);
-
+      this.setMDClasses();
       return out;
     }
   },
@@ -166,20 +168,29 @@ CLASS({
       .popupChoiceView {
         display: flex;
         flex-direction: row;
-        align-items: center;
+        align-items: flex-end;
         align-content: flex-start;
         justify-content: space-between;
-        padding: 8px;
-        margin: 12px;
         cursor: pointer;
         position: relative;
-        border-bottom: 1px solid #999;
+        border-bottom: 1px solid #e0e0e0;
       }
 
+      .popupChoiceView.md-style-trait-standard {
+        padding: 8px 0px 7px 0px;
+        margin: 8px 16px;
+      }
+      .popupChoiceView.md-style-trait-inline {
+        padding: 8px 0px 8px 0px;
+        margin: -8px 0px -8px 0px;
+      }
+
+
       .popupChoiceView .downArrow {
-        width: 24px;
-        height: 24px;
-        fill: #999
+        width: 12px;
+        height: 12px;
+        fill: #999;
+        margin: 8px 8px 2px 16px;
       }
 
 

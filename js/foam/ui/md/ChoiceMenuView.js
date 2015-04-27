@@ -176,10 +176,10 @@ CLASS({
 
       var bodyRect = this.X.document.body.getBoundingClientRect();
 
-      var finalRect = { top:    -bodyRect.top + startFromClientRect.top - (slotsAbove * this.itemHeight) -2 - this.vMargin,
-                        bottom: -bodyRect.top + startFromClientRect.top + startFromClientRect.height + (slotsBelow * this.itemHeight) +2 + this.vMargin,
+      var finalRect = { top:    -bodyRect.top + startFromClientRect.top - (slotsAbove * this.itemHeight) -2 ,//- this.vMargin,
+                        bottom: -bodyRect.top + startFromClientRect.top + startFromClientRect.height + (slotsBelow * this.itemHeight) +2 + this.vMargin*2,
                         height: menuCount * this.itemHeight +4 + this.vMargin*2,
-                        left: -bodyRect.left + startFromClientRect.left -2,
+                        left: -bodyRect.left + startFromClientRect.left -2 - this.hMargin,
                         right: -bodyRect.left + startFromClientRect.left + startFromClientRect.width +2,
                         width: startFromClientRect.width + this.hMargin*2 +4 };
 
@@ -193,7 +193,8 @@ CLASS({
       this.initHTML();
     },
     initializePosition: function(startFromClientRect, finalRect) {
-      this.$.style.padding = this.vMargin+"px 0px "+this.vMargin+"px 0px";
+      // since we're aligning to the bottom of each item,
+      this.$.style.padding = "0px 0px "+this.vMargin*2+"px 0px";//this.vMargin+"px 0px "+this.vMargin+"px 0px";
 
       this.$.style.top = finalRect.top + 'px';
       this.$.style.left = finalRect.left + 'px';
@@ -303,9 +304,9 @@ CLASS({
 .foamChoiceMenuView .choice {
   display: block;
   margin: 0px;
-  padding: 0px;
+  padding: 8px 0px 7px 0px;
   display: inline-flex;
-  align-items: center;
+  align-items: flex-end;
   align-content: flex-start;
   overflow: hidden;
   cursor: pointer;

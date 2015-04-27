@@ -20,6 +20,8 @@ CLASS({
     'foam.ui.md.TextFieldView',
   ],
 
+  traits: ['foam.ui.md.MDStyleTrait'],
+
   properties: [
     {
       name: 'data',
@@ -65,14 +67,6 @@ CLASS({
           'mode is returned to read-only.',
     },
     {
-      model_: 'ViewFactoryProperty',
-      name: 'contentView',
-      defaultValue: 'foam.ui.md.TextFieldView',
-    },
-    {
-      name: 'contentView_',
-    },
-    {
       name: 'className',
       defaultValue: 'editable-view',
     },
@@ -99,11 +93,7 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
-        <%
-          this.contentView_ = this.contentView({ mode: this.mode });
-          this.addDataChild(this.contentView_);
-          this.contentView_.toHTML(out);
-        %>
+        $$data{ model_: 'foam.ui.md.TextFieldView', mode$: this.mode$, inlineStyle: true, floatingLabel: false }
         <img id="{{this.id}}-icon"
              src="<%= this.mode === 'read-only' ? this.editIconUrl : this.doneIconUrl %>"
              class="<%= this.mode === 'read-only' ? '' : 'hide' %>">
@@ -111,22 +101,19 @@ CLASS({
         <% this.addInitializer(function() {
           self.icon = self.X.$(self.id + '-icon');
         }); %>
+      <% this.setMDClasses(); %>
       </div>
     */},
     function CSS() {/*
       .editable-view {
         display: flex;
-        align-items: center;
+        align-items: flex-end;
       }
       .editable-view img {
         cursor: pointer;
       }
       .editable-view img.hide {
         display: none;
-      }
-
-      .editable-view .md-text-field-input {
-        margin: 16px;
       }
     */},
   ],

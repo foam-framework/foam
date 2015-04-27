@@ -19,6 +19,7 @@ CLASS({
   name: 'TextFieldView',
   package: 'foam.ui.md',
   extendsModel: 'foam.ui.SimpleView',
+  traits: ['foam.ui.md.MDStyleTrait'],
 
   properties: [
     {
@@ -129,19 +130,31 @@ CLASS({
     function CSS() {/*
       .md-text-field-container {
         align-items: center;
-        width: 100%;
         display: flex;
         position: relative;
       }
+
+      .md-text-field-container.md-style-trait-standard {
+        margin: 8px;
+        padding: 32px 8px 8px 8px;
+      }
+      .md-text-field-container.md-style-trait-inline {
+        padding: 32px 0px 0px 0px;
+        margin: -32px 0px 0px 0px;
+      }
+      .md-text-field-container.md-text-field-no-label.md-style-trait-inline {
+        padding-top: 0px;
+        margin: 0px;
+      }
+
       .md-text-field-label {
         position: absolute;
-        top: 40px;
+        top: 32px;
         font-size: 14px;
         font-weight: 500;
         color: #999;
         transition: font-size 0.5s, top 0.5s;
         flex-grow: 1;
-        margin-left: 16px;
         z-index: 0;
       }
       .md-text-field-input {
@@ -152,24 +165,28 @@ CLASS({
         border-top: none;
         color: #444;
         flex-grow: 1;
-        font-family: Roboto, RobotoDraft;
-        font-size: 14px;
-        margin: 40px 16px 8px;
+        font-family: inherit;
+        font-size: inherit;
+        margin-bottom: -8px;
         padding: 0 0 7px 0;
         resize: none;
         z-index: 1;
       }
       .disabled .md-text-field-input {
         border-bottom: none;
+        padding-bottom: 8px;
       }
       .md-text-field-container.md-text-field-no-label .md-text-field-input {
-        font-size: 16px;
-        margin: 8px 0;
-        padding: 8px 2px;
+        //font-size: 16px;
+      }
+
+      .md-text-field-container.md-text-field-no-label {
+        padding-top: 8px;
       }
 
       .md-text-field-borderless {
         border-bottom: none !important;
+        padding-bottom: 8px;
       }
 
       .md-text-field-input:focus {
@@ -178,8 +195,8 @@ CLASS({
         outline: none;
       }
       .md-text-field-label-offset {
-        font-size: 12px;
-        top: 16px;
+        font-size: 85%;
+        top: 8px;
       }
     */},
     function toHTML() {/*
@@ -202,6 +219,8 @@ CLASS({
               return focused || ('' + data).length > 0;
             }, label);
         }
+
+        this.setMDClasses();
       %>
       <div <%= this.cssClassAttr() %> id="%%id">
         <% if (this.floatingLabel) { %>
