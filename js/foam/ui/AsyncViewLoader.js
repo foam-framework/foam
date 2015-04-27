@@ -58,23 +58,17 @@
 
   methods: {
     init: function() {
-      var v = this.X.lookup(this.model, this.X).create(this.args, this.X);
-      if ( this.copyFrom ) {
-        v.copyFrom(this.copyFrom);
-      }
-//      this.finishRender();
-
       arequire(this.model, this.X)(function(m) {
-        this.view = m.create(this.args, this.X);
+        // lookup again to ensure we get registerModel replacements
+        var v = this.X.lookup(this.model, this.X).create(this.args, this.X);
+        console.assert(v, "AsyncViewLoader failed to load ", this.model);
         if ( this.copyFrom ) {
-          this.view.copyFrom(this.copyFrom);
+          v.copyFrom(this.copyFrom);
         }
-        //this.view = this.view.toView_();
-        //this.finishRender();
-        console.log(this.$UID,"finished render", m.X.NAME, this.view.name_);
+        this.view = v.toView_();
+        this.finishRender();
       }.bind(this));
-      console.log(this.$UID,"finished init", v, this.view);
-     },
+    },
 
     finishRender: function() {
       if ( this.$ ) {

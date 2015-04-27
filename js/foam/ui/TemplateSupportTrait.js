@@ -52,15 +52,27 @@ CLASS({
     },
 
     createRelationshipView: function(r, opt_args) {
+      if ( opt_args.model_ ) {
+        // if a model is specified, switch to normal PropertyView path
+        return this.createView(r, opt_args);
+      }
+
       var X = ( opt_args && opt_args.X ) || this.Y;
-      arequire('foam.ui.RelationshipView', X)(function(m) {
-        var v = m.create({
-          relationship: r,
-          args: opt_args
-        }, X);
-        this[r.name + 'View'] = v;
-      }.bind(this));
-//      return this[r.name + 'View'];
+
+      var v = this.AsyncViewLoader.create({
+        id: this.nextID(),
+        name: r.name,
+        model: 'foam.ui.RelationshipView',
+        args: { relationship: r },
+        copyFrom: opt_args
+      }, X);
+
+      if ( v.view ) {
+        v = v.view;
+      }
+
+      this[r.name + 'View'] = v;
+      return v;
     },
     createActionView: function(action, opt_args) {
       /* Creates a sub-$$DOC{ref:'foam.ui.View'} from $$DOC{ref:'Property'} info
