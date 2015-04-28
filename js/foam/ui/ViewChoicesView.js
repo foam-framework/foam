@@ -42,7 +42,7 @@ CLASS({
       <%
         var id = this.on('click', function() { self.data.choice = i; });
         this.setClass('viewchoiceview-item-selected', function() {
-          return self.data.choice == i;
+          return self.data.choice === i;
         }, id);
       %>
       <div id="<%= id %>" class="viewchoiceview-item"><%= choice.label %></div>

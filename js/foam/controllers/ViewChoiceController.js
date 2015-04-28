@@ -25,26 +25,21 @@ CLASS({
       subType: 'foam.ui.ViewChoice',
       help: 'View choices.',
       postSet: function() {
-        if (this.choice === undefined) {
-          this.viewChoice = undefined;
-        } else {
-          this.viewChoice = this.views[this.choice];
-        }
+        this.choice = this.choice;
       }
     },
     {
-      model_: 'IntProperty',
       name: 'choice',
       preSet: function(_, c) {
-        if (c === undefined) {
-          return c;
+        if (typeof c !== 'number') {
+          return '';
         } else {
           return Math.max(0, Math.min(c, this.views.length));
         }
       },
       postSet: function() {
-        if (this.choice === undefined) {
-          this.viewChoice = undefined;
+        if (typeof this.choice !== 'number') {
+          this.viewChoice = '';
         } else {
           this.viewChoice = this.views[this.choice];
         }
