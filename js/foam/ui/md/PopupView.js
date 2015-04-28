@@ -117,23 +117,9 @@ CLASS({
 
   methods: [
     {
-      name: 'construct',
-      code: function() {
-        this.overlayView = this.overlay({ cssPosition: 'inerhit' });
-        this.delegateView = this.delegate();
-        this.addChild(this.overlayView);
-        this.addDataChild(this.delegateView);
-        return this.SUPER.apply(this, arguments);
-      }
-    },
-    {
-      name: 'initHTML',
+      name: 'init',
       code: function() {
         this.SUPER.apply(this, arguments);
-        this.containerView = this.X.$(this.id + '-container');
-        this.innerView = this.X.$(this.id + '-view');
-
-        this.$.style.position = this.cssPosition;
 
         Events.dynamic(function() {
           this.alpha; this.zoom;
@@ -143,14 +129,16 @@ CLASS({
             cvStyle.zoom = this.zoom;
           }
         }.bind(this));
-
-        this.animation && this.animation.initHTML && this.animation.initHTML();
       }
     },
     {
       name: 'initInnerHTML',
       code: function() {
         this.SUPER.apply(this, arguments);
+
+        this.containerView = this.X.$(this.id + '-container');
+        this.innerView = this.X.$(this.id + '-view');
+        this.$.style.position = this.cssPosition;
         this.animation && this.animation.initInnerHTML &&
             this.animation.initInnerHTML();
       }
@@ -159,6 +147,7 @@ CLASS({
       name: 'open',
       code: function() {
         this.className = '';
+        this.updateHTML();
         if ( this.animation ) {
           this.animation.setInitialPosition &&
               this.animation.setInitialPosition(true);
@@ -208,12 +197,20 @@ CLASS({
 
   templates: [
     function toInnerHTML() {/*
-      %%overlayView
-      <popup-container id="{{this.id}}-container">
-        <popup-view id="{{this.id}}-view">
-          %%delegateView
-        </popup-view>
-      </popup-container>
+      <% if ( this.className != 'closed' ) { %>
+        <%
+          this.overlayView = this.overlay({ cssPosition: 'inerhit' });
+          this.delegateView = this.delegate();
+          this.addChild(this.overlayView);
+          this.addDataChild(this.delegateView);
+        %>
+        %%overlayView
+        <popup-container id="{{this.id}}-container">
+          <popup-view id="{{this.id}}-view">
+            %%delegateView
+          </popup-view>
+        </popup-container>
+      <% } %>
     */},
     function CSS() {/*
       popup.closed { display: none; }

@@ -121,7 +121,7 @@ CLASS({
       <div id="%%id-container">
         <div class='top'>
           <span class='leftAction'>%%leftActionView</span>
-          <span class='label'><%# this.label %></span>
+          <span class='label'><%# this.label %>&#8193;</span>
         </div>
         %%extraViewFactory_
       </div>

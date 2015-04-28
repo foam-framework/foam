@@ -15,7 +15,7 @@ CLASS({
   extendsModel: 'Message',
 
   requires: [ 'foam.i18n.Placeholder' ],
-  imports: [ 'assert' ],
+  imports: [ 'console' ],
 
   ids: ['id'],
 
@@ -40,6 +40,28 @@ CLASS({
       model_: 'ArrayProperty',
       name: 'placeholders',
       type: 'Array[foam.i18n.Placeholder]'
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'replaceValues',
+      defaultValue: function(args) {
+        var phs = this.placeholders;
+        var value = this.value;
+        if ( typeof value === 'string' ) {
+          for ( var i = 0; i < phs.length; ++i ) {
+            var name = phs[i].name;
+            var replacement = args.hasOwnProperty(name) ? args[name] :
+                phs[i].example;
+            value = value.replace((new RegExp('[$]' + name + '[$]', 'g')),
+                                  replacement);
+          }
+        } else {
+          this.console.warn('Attempt to replace values in structured message. ' +
+              'This feature has not yet been implemented.');
+        }
+
+        return value;
+      }
     }
   ],
 
@@ -181,15 +203,15 @@ CLASS({
       name: 'bindSelectors_',
       code: function(msg, selectors) {
         while ( typeof msg !== 'string' ) {
-          this.assert(Array.isArray(msg),
+          this.console.assert(Array.isArray(msg),
                       'Expected selector pair as array, but value is ' +
                           selectors.toString());
-          this.assert(msg.length === 2,
+          this.console.assert(msg.length === 2,
                       'Expected array as selector pair, but array length is ' +
                           selectors.length);
           var selector = msg[0];
           var selectedValue = selectors[selector];
-          this.assert(typeof selectedValue !== 'undefined',
+          this.console.assert(typeof selectedValue !== 'undefined',
                       'Missing selector "' + selector + '" in selector bindings');
           msg = msg[1][selectedValue] || msg[1].other;
         }

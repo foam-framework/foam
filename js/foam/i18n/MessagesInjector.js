@@ -63,7 +63,8 @@ CLASS({
         this.maybeSetMessage(
             model.messages,
             msgIdx,
-            this.idGenerator.getMessageId(model, msg));
+            this.idGenerator.getMessageId(model, msg),
+            true); // Bind Message object; supports replaceValues.
       }
     },
     {
@@ -74,28 +75,31 @@ CLASS({
             this.maybeSetMessage(
                 model.actions[actionIdx],
                 'label',
-                this.idGenerator.getActionTextLabelId(model, action));
+                this.idGenerator.getActionTextLabelId(model, action),
+                false); // Bind string directly; no support for replaceValues.
           }
           if ( action.speechLabel ) {
             this.maybeSetMessage(
                 model.actions[actionIdx],
                 'speechLabel',
-                this.idGenerator.getActionSpeechLabelId(model, action));
+                this.idGenerator.getActionSpeechLabelId(model, action),
+                false); // Bind string directly; no support for replaceValues.
           }
         }
       }
     },
     {
       name: 'maybeSetMessage',
-      code: function(obj, objKey, msgKey) {
+      code: function(obj, objKey, msgKey, replaceValues) {
         if ( ! this.ready_ ) {
           this.warn('MessagesInjector: Attempt to inject "' + msgKey +
               '" before injector is ready');
           return;
         }
 
-        var i18nMessage = this.map[msgKey];
-        if ( i18nMessage ) {
+        var message = this.map[msgKey];
+        if ( message ) {
+          var i18nMessage =  replaceValues ? message : message.value;
           obj[objKey] = i18nMessage;
         } else {
           this.warn('MessagesInjector: "' + msgKey +

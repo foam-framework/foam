@@ -34,6 +34,9 @@ CLASS({
     {
       name: 'data',
       postSet: function(_, newVal) {
+        if (typeof newVal.choice !== 'number') {
+          newVal.choice = 0;
+        }
         var self = this;
         this.topToolbar.extraView = function() {
           return self.TabbedViewChoiceView.create({
