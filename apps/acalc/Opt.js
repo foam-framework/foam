@@ -87,7 +87,6 @@
     "foam.ui.HTMLViewTrait":true,
     "foam.ui.HTMLPropertyViewTrait":true,
     "foam.ui.LeafDataView":true,
-    "foam.ui.TemplateSupportTrait":true,
     "foam.ui.DAODataViewTrait":true,
     "foam.ui.DestructiveDataView":true,
     "foam.ui.AbstractDAOView":true,
