@@ -197,18 +197,20 @@ CLASS({
 
   templates: [
     function toInnerHTML() {/*
-      <%
-        this.overlayView = this.overlay({ cssPosition: 'inerhit' });
-        this.delegateView = this.delegate();
-        this.addChild(this.overlayView);
-        this.addDataChild(this.delegateView);
-      %>
-      %%overlayView
-      <popup-container id="{{this.id}}-container">
-        <popup-view id="{{this.id}}-view">
-          %%delegateView
-        </popup-view>
-      </popup-container>
+      <% if ( this.className != 'closed' ) { %>
+        <%
+          this.overlayView = this.overlay({ cssPosition: 'inerhit' });
+          this.delegateView = this.delegate();
+          this.addChild(this.overlayView);
+          this.addDataChild(this.delegateView);
+        %>
+        %%overlayView
+        <popup-container id="{{this.id}}-container">
+          <popup-view id="{{this.id}}-view">
+            %%delegateView
+          </popup-view>
+        </popup-container>
+      <% } %>
     */},
     function CSS() {/*
       popup.closed { display: none; }
