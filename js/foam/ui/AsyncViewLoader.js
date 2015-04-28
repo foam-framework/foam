@@ -55,7 +55,6 @@
     {
       name: 'view',
       type: 'foam.ui.View',
-      adapt: function(_, v) { return v.toView_(); },
       documentation: function() {/*
         The new sub-$$DOC{ref:'foam.ui.View'} generated for the given $$DOC{ref:'Property'}.
       */}
@@ -138,6 +137,7 @@
         v.copySomeFrom(this.copyFrom, { view: true, model_: true } ); // skip 'view', 'model_'
         v.id = vId;
       }
+      this.view = this.view.toView_();
       this.addDataChild(this.view);
 
       var el = this.X.$(this.id);
