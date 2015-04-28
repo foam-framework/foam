@@ -51,8 +51,8 @@ CLASS({
     },
     initHTML: function() {
       this.SUPER();
-      this.$.addEventListener('resize', this.resize);
       this.resize();
+      //this.X.setTimeout(this.resize, 500);
     }
   },
   listeners: [

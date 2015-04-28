@@ -20,14 +20,17 @@ CLASS({
   extendsModel: 'foam.ui.SimpleView',
   package: 'foam.demos',
 
-  requires: ['foam.ui.md.ChoiceRadioView',
-             'foam.input.touch.TouchManager',
-             'foam.input.touch.GestureManager',
-             'foam.ui.md.FlatButton',
-             'foam.ui.md.CheckboxView',
-             'foam.ui.md.PopupChoiceView',
-             'foam.ui.md.ToggleView',
-             'foam.ui.md.EditableView'],
+  requires: [
+    'foam.ui.md.ChoiceRadioView',
+    'foam.input.touch.TouchManager',
+    'foam.input.touch.GestureManager',
+    'foam.ui.md.FlatButton',
+    'foam.ui.md.CheckboxView',
+    'foam.ui.md.PopupChoiceView',
+    'foam.ui.md.ToggleView',
+    'foam.ui.md.EditableView',
+    'foam.ui.md.PopupView'
+  ],
 
   properties: [
     {
@@ -66,6 +69,21 @@ CLASS({
       label: 'one',
       action: function() {
         console.log("one action actionated");
+        this.closeActionView.open();
+      },
+      isEnabled: function(action) {
+        return this.enabledButton;
+      },
+      isAvailable: function(action) {
+        return this.showButton;
+      }
+    },
+    {
+      name: 'closeAction',
+      label: 'Close',
+      action: function() {
+        console.log("one action actionated");
+        this.closeActionView.close();
       },
       isEnabled: function(action) {
         return this.enabledButton;
@@ -74,6 +92,7 @@ CLASS({
         return this.showButton;
       }
     }
+
 
   ],
 
@@ -132,6 +151,7 @@ CLASS({
         $$oneAction
         $$enabledButton{model_:'foam.ui.md.CheckboxView', label: 'Button Enabled'}
         $$showButton{model_:'foam.ui.md.ToggleView', label: 'Button Show'}
+        $$closeAction{model_: 'foam.ui.md.PopupView', delegate: { factory_:'foam.ui.md.FlatButton', action: this.CLOSE_ACTION } }
     */}
   ]
 
