@@ -117,16 +117,6 @@ CLASS({
 
   methods: [
     {
-      name: 'construct',
-      code: function() {
-        this.overlayView = this.overlay({ cssPosition: 'inerhit' });
-        this.delegateView = this.delegate();
-        this.addChild(this.overlayView);
-        this.addDataChild(this.delegateView);
-        return this.SUPER.apply(this, arguments);
-      }
-    },
-    {
       name: 'initHTML',
       code: function() {
         this.SUPER.apply(this, arguments);
@@ -208,6 +198,12 @@ CLASS({
 
   templates: [
     function toInnerHTML() {/*
+      <%
+        this.overlayView = this.overlay({ cssPosition: 'inerhit' });
+        this.delegateView = this.delegate();
+        this.addChild(this.overlayView);
+        this.addDataChild(this.delegateView);
+      %>
       %%overlayView
       <popup-container id="{{this.id}}-container">
         <popup-view id="{{this.id}}-view">
