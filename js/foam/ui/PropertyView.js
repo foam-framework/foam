@@ -38,6 +38,8 @@ CLASS({
       postSet: function(old, nu) {
         if ( old && this.bound_ ) this.unbindData(this.data);
         if ( nu && ! this.bound_ ) this.bindData(this.data);
+        this.args = nu;
+        this.model = nu.view;
       }
     },
     {
@@ -52,7 +54,7 @@ CLASS({
     },
     {
       name: 'childData'
-    }
+    },
     {
       name: 'innerView',
       help: 'Override for prop.view',

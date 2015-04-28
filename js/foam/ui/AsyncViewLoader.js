@@ -42,11 +42,11 @@
     {
       name: 'model',
       label: 'View model name, model definition, or JSON with a factory_ specified.',
-      defaultValue: 'foam.ui.TextFieldView'
     },
     {
       name: 'args',
-      label: 'View construction arguments'
+      label: 'View construction arguments',
+      defaultValueFn: function() { return {}; }
     },
     {
       name: 'copyFrom',
@@ -68,32 +68,43 @@
       this.construct();
     },
 
-    overwriteArgs: function(other) { /* Override/Append to args, typically
+    mergeWithCopyFrom: function(other) { /* Override/Append to args, typically
       used to merge in $$DOC{ref:'.model'} if it is a JSON object. */
       for (var key in other) {
-        if ( key !== 'model' ) { // HACK: special case to ensure model-for-model works
-          this.args[key] = other[key];
-        }
+        if ( key == 'factory_' ) continue;
+        this.copyFrom[key] = other[key];
       }
     },
 
-    construct: function() {
+    construct: function() { /* Picks the model to create, then passes off to $$DOC{ref:'.finishRender'}. */
+      // HACK to ensure model-for-model works. It requires that 'model', if specified,
+      // be present in the create({ args }). Since we set Actions and Properties as
+      // the create arg object sometimes, we must temporarily transfer the model
+      // value from copyFrom to args, then unset it after the create.
+      if ( this.copyFrom && this.copyFrom.model ) {
+        this.args.__ASV_OLD_MODEL = this.args.model;
+        this.args.model = this.copyFrom.model;
+      }
+
+      if ( this.copyFrom && this.copyFrom.model_ && typeof this.copyFrom.model_ === 'string' ) {
+        return this.requireModelName(this.copyFrom.model_);
+      }
       if ( typeof this.model === 'string' ) { // string model name
-        return this.requireModelName();
+        return this.requireModelName(this.model);
       }
       if ( this.model.model_ && typeof this.model.model_ === 'string' ) { // JSON instance def'n
         this.view = FOAM(this.model); // FOAMalize the definition
         return this.requireViewInstance();
       }
       if ( this.model.model_ ) { // JSON with Model instance specified in model_
-        this.overwriteArgs(this.model);
+        this.mergeWithCopyFrom(this.model);
         this.view = this.model.model_.create(this.args, this.X); // clone-ish
         return this.finishRender();
       }
       if ( this.model.factory_ ) { // JSON with string factory_ name
         // remove 'view' from copyFrom JSON
         this.copyFrom = {__proto__: this.copyFrom, view: undefined};
-        this.overwriteArgs(this.model);
+        this.mergeWithCopyFrom(this.model);
         return this.requireModelName(this.model.factory_);
       }
       if ( typeof this.model === 'function' ) {
@@ -108,7 +119,7 @@
     },
 
     requireViewInstance: function() {
-      this.view.arequire()(function(m) {
+      this.view.arequire(this.X)(function(m) {
         this.finishRender();
       }.bind(this));
     },
@@ -123,6 +134,7 @@
 
     finishRender: function() {
       if ( this.copyFrom ) {
+        var v = this.view;
         var vId = v.id;
         v.copyFrom(this.copyFrom);
         v.id = vId;
@@ -133,6 +145,12 @@
       if ( el ) {
         el.outerHTML = this.toHTML();
         this.initHTML();
+      }
+
+      // unhack args.model
+      if ( this.args.__ASV_OLD_MODEL ) {
+        this.args.model = this.args.__ASV_OLD_MODEL;
+        this.args.__ASV_OLD_MODEL = undefined;
       }
     },
 
