@@ -102,16 +102,15 @@
         return this.finishRender();
       }
       if ( this.model.factory_ ) { // JSON with string factory_ name
-        // remove 'view' from copyFrom JSON
-        this.copyFrom = {__proto__: this.copyFrom, view: undefined};
+        // TODO: previously 'view' was removed from copyFrom to support CViews not getting their view stomped. Put back...
         this.mergeWithCopyFrom(this.model);
         return this.requireModelName(this.model.factory_);
       }
-      if ( typeof this.model === 'function' ) {
+      if ( typeof this.model === 'function' ) { // factory function
         this.view = this.model(this.args, this);
         return this.finishRender();
       }
-      if ( this.model.create ) {
+      if ( this.model.create ) { // is a model instance
         this.view = this.model.create(this.args);
         return this.finishRender();
       }
@@ -136,7 +135,7 @@
       if ( this.copyFrom ) {
         var v = this.view;
         var vId = v.id;
-        v.copyFrom(this.copyFrom);
+        v.copySomeFrom(this.copyFrom, { view: true, model_: true } ); // skip 'view', 'model_'
         v.id = vId;
       }
       this.addDataChild(this.view);

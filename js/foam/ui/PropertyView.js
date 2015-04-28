@@ -107,6 +107,8 @@ CLASS({
 
     construct: function() {
       // if not bound yet and we do have data set, bind it
+      console.log("PV ctor args:", this.args, " model:", this.model, " copyFrom:", this.copyFrom);
+
       this.bindData(this.data);
       this.SUPER();
     },
