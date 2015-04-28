@@ -37,6 +37,10 @@ CLASS({
     {
       name: 'pending_',
     },
+    {
+      name: 'className',
+      defaultValue: 'ViewFactoryView',
+    },
   ],
   methods: {
     initHTML: function() {
@@ -51,7 +55,7 @@ CLASS({
   templates: [
     function toHTML() {/*
       <% this.pending_ = true; %>
-      <div id="%%id">
+      <div id="%%id" <%= this.cssClassAttr() %>>
         <%= this.data && this.data(undefined, this.Y) %>
       </div>
     */}
