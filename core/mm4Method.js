@@ -511,7 +511,7 @@ CLASS({
     },
     {
       model_: 'FunctionProperty',
-      name: 'bind',
+      name: 'replaceValues',
       documentation: function() {/* Function that binds values to message
         contents.
       */},
