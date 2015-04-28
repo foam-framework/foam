@@ -22,7 +22,8 @@ CLASS({
 
   requires: [
     'foam.i18n.Message',
-    'foam.i18n.MessageBundle'
+    'foam.i18n.MessageBundle',
+    'foam.i18n.Placeholder'
   ],
   imports: [ 'console' ],
 
@@ -52,10 +53,15 @@ CLASS({
       code: function(model, msg) {
         var modelPrefix = model.translationHint ?
             model.translationHint + ' ' : '';
+        var placeholders = msg.placeholders.map(function(p) {
+          return this.Placeholder.create(p);
+        }.bind(this));
         var i18nMsg = this.messageFactory({
           id: this.idGenerator.getMessageId(model, msg),
           name: msg.name,
           value: msg.value,
+          meaning: msg.meaning,
+          placeholders: placeholders,
           description: modelPrefix + msg.translationHint
         });
         this.dao.put(i18nMsg);

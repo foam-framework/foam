@@ -493,6 +493,23 @@ CLASS({
       help: 'The message itself.'
     },
     {
+      name: 'meaning',
+      type: 'String',
+      help: 'Linguistic clarification to resolve ambiguity.',
+      documentation: function() { /* A human readable discussion of the
+        $$DOC{ref:'.'} to resolve linguistic ambiguities.
+      */}
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'placeholders',
+      help: 'Placeholders to inject into the message.',
+      documentation: function() { /* Array of plain Javascript objects
+        describing in-message placeholders. The data can be expanded into
+        $$DOC{ref:'foam.i18n.Placeholder'}, for example.
+      */}
+    },
+    {
       name: 'translationHint',
       type: 'String',
       displayWidth: 70,
