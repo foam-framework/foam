@@ -85,6 +85,23 @@
         this.args.model = this.copyFrom.model;
       }
 
+      // Decorators to allow us to skip over keys without copying them
+      // as create() args
+      var skipKeysArgDecorator = {
+        __proto__: this.args,
+        __SKD_SKIP_KEYS: {
+          factory_: true,
+          model_: true,
+          view: true
+        },
+        hasOwnProperty: function(name) {
+          if ( ! this.__SKD_SKIP_KEYS[name] ) {
+            return this.__proto__.hasOwnProperty(name);
+          }
+          return false;
+        }
+      }
+
       if ( this.copyFrom && this.copyFrom.model_ && typeof this.copyFrom.model_ === 'string' ) {
         return this.requireModelName(this.copyFrom.model_);
       }
@@ -97,7 +114,7 @@
       }
       if ( this.model.model_ ) { // JSON with Model instance specified in model_
         this.mergeWithCopyFrom(this.model);
-        this.view = this.model.model_.create(this.args, this.X); // clone-ish
+        this.view = this.model.model_.create(skipKeysArgDecorator, this.X); // clone-ish
         return this.finishRender();
       }
       if ( this.model.factory_ ) { // JSON with string factory_ name
@@ -106,11 +123,11 @@
         return this.requireModelName(this.model.factory_);
       }
       if ( typeof this.model === 'function' ) { // factory function
-        this.view = this.model(this.args, this);
+        this.view = this.model(skipKeysArgDecorator, this);
         return this.finishRender();
       }
       if ( this.model.create ) { // is a model instance
-        this.view = this.model.create(this.args);
+        this.view = this.model.create(skipKeysArgDecorator);
         return this.finishRender();
       }
       console.warn("AsyncViewLoader: View load with invalid model. ", this.model, this.args, this.copyFrom);
@@ -132,10 +149,23 @@
 
     finishRender: function() {
       if ( this.copyFrom ) {
-        var v = this.view;
-        var vId = v.id;
-        v.copySomeFrom(this.copyFrom, { view: true, model_: true } ); // skip 'view', 'model_'
-        v.id = vId;
+        // don't copy a few special cases
+        var skipKeysCopyFromDecorator = {
+          __proto__: this.copyFrom,
+          __SKD_SKIP_KEYS: {
+            factory_: true,
+            model_: true,
+            view: true,
+            id: true
+          },
+          hasOwnProperty: function(name) {
+            if ( ! this.__SKD_SKIP_KEYS[name] ) {
+              return this.__proto__.hasOwnProperty(name);
+            }
+            return false;
+          }
+        }
+        this.view.copyFrom(skipKeysCopyFromDecorator);
       }
       this.view = this.view.toView_();
       this.addDataChild(this.view);

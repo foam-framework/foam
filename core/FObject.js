@@ -597,23 +597,6 @@ var FObject = {
 
     return this;
   },
-  copySomeFrom: function(src, opt_skipKeys) {
-    /* Copies values from src into properties that this object has. Other
-      values are ignored. Property names found in the opt_skipKeys map
-      are ignored. Ex: { view: true } ignores the 'view' property. */
-
-    if ( src && this.model_ ) {
-      var ps = this.model_.properties_;
-      for ( var i = 0 ; i < ps.length ; i++ ) {
-        var prop = ps[i];
-        if ( opt_skipKeys && opt_skipKeys[prop.name] ) continue;
-        if ( src.hasOwnProperty(prop.name) ) this[prop.name] = src[prop.name];
-        if ( src.hasOwnProperty(prop.name$_) ) this[prop.name$_] = src[prop.name$_];
-      }
-    }
-
-    return this;
-  },
   xxxcopyFrom: function(src) {
     if ( ! src ) return this;
 
