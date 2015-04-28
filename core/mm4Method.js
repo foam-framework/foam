@@ -496,7 +496,7 @@ CLASS({
       name: 'meaning',
       type: 'String',
       help: 'Linguistic clarification to resolve ambiguity.',
-      documentation: function() { /* A human readable discussion of the
+      documentation: function() {/* A human readable discussion of the
         $$DOC{ref:'.'} to resolve linguistic ambiguities.
       */}
     },
@@ -504,10 +504,18 @@ CLASS({
       model_: 'ArrayProperty',
       name: 'placeholders',
       help: 'Placeholders to inject into the message.',
-      documentation: function() { /* Array of plain Javascript objects
+      documentation: function() {/* Array of plain Javascript objects
         describing in-message placeholders. The data can be expanded into
         $$DOC{ref:'foam.i18n.Placeholder'}, for example.
       */}
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'bind',
+      documentation: function() {/* Function that binds values to message
+        contents.
+      */},
+      defaultValue: function() { return this.value; }
     },
     {
       name: 'translationHint',
@@ -516,7 +524,7 @@ CLASS({
       displayHeight: 1,
       defaultValue: '',
       help: 'A brief description of this message and the context in which it used.',
-      documentation: function() { /* A human readable description of the
+      documentation: function() {/* A human readable description of the
         $$DOC{ref:'.'} and its context for the purpose of translation.
       */}
     }

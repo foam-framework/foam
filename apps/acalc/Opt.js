@@ -99,6 +99,7 @@
     "foam.graphics.Circle":true,
     "foam.graphics.PositionedCViewView":true,
     "foam.html.Element":true,
+    "foam.i18n.IdGenerator":true,
     "foam.i18n.ChromeMessagesInjector":true,
     "foam.i18n.GlobalController":true,
     "foam.i18n.MessagesExtractor":true,
