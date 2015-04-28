@@ -272,6 +272,7 @@ return JSONUtil.arrayToObjArray(X, [
     src: '../apps/phonecat/',
     image: 'PhoneCat.png'
   },
+  /*
   {
     name: 'Quick-Compose',
     path: 'https://chrome.google.com/webstore/detail/quickcompose/elckoikggmpkacmbmpbgdepginigahja',
@@ -280,6 +281,7 @@ return JSONUtil.arrayToObjArray(X, [
     src: '../apps/quickcompose/',
     image: 'QuickCompose.png'
   },
+  */
   {
     name: 'Todo',
     path: '../apps/todo/Todo.html',
@@ -325,7 +327,7 @@ return JSONUtil.arrayToObjArray(X, [
   {
     name: 'FOAM Logo',
     path: '../index.html?model=foam.demos.graphics.Logo',
-    description: 'Animated FOAM logo.',
+    description: 'Animated FOAM logo. Uses trick that only works in Chrome.',
     keywords: ['demo', 'animation'],
     src: '../js/foam/demos/graphics/Logo.js',
     image: 'Logo.png'
@@ -338,6 +340,7 @@ return JSONUtil.arrayToObjArray(X, [
     src: '../apps/overflow/',
     image: 'Overflow.png'
   },
+  /*
   {
     name: 'FOAM Modeller',
     path: '../index.html?model=foam.apps.Modeller',
@@ -347,6 +350,7 @@ return JSONUtil.arrayToObjArray(X, [
   }
 ], this.Demo).dao;
     } },
+    */
     {
       name: 'filteredDAO',
       model_: 'foam.core.types.DAOProperty',
