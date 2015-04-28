@@ -347,10 +347,9 @@ return JSONUtil.arrayToObjArray(X, [
     description: 'A demo of the IDE potential for FOAM due to its meta-modelling.',
     keywords: ['dev', 'ide', 'model'],
     src: '/js/foam/apps/Modeller.js'
-  }
-], this.Demo).dao;
+  }    */
+  ], this.Demo).dao;
     } },
-    */
     {
       name: 'filteredDAO',
       model_: 'foam.core.types.DAOProperty',
