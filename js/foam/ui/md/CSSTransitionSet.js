@@ -76,7 +76,7 @@ CLASS({
       name: 'cssProperties_',
       factory: function() {
         var o = {};
-        this.model_.properties_.forEach(function(p) {
+        this.model_.getRuntimeProperties().forEach(function(p) {
           if ( this[p.name] && (p.model_ === 'CSSProperty' || this.CSSProperty.isInstance(p)) ) {
             console.log(this[p.name]);
             o[p.name] = this[p.name];

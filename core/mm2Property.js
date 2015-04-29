@@ -729,7 +729,8 @@ Model.methods = {
   getAllMyRawFeatures:      BootstrapModel.getAllMyRawFeatures,
   getFeature:               BootstrapModel.getFeature,
   getAllRawFeatures:        BootstrapModel.getAllRawFeatures,
-  atest:                    BootstrapModel.atest
+  atest:                    BootstrapModel.atest,
+  getRuntimeProperties:     BootstrapModel.getRuntimeProperties
 };
 
 // This is the coolest line of code that I've ever written
@@ -745,9 +746,9 @@ for ( var i = 0 ; i < Property.properties.length ; i++ )
   Property.properties[i] = Property.create(Property.properties[i]);
 
 // Property properties are still Bootstrap Models, so upgrade them.
-for ( var i = 0 ; i < Property.properties_.length ; i++ )
-  Property[constantize(Property.properties_[i].name)] =
-    Property.properties_[i] = Property.create(Property.properties_[i]);
+for ( var i = 0 ; i < Property.getRuntimeProperties().length ; i++ )
+  Property[constantize(Property.getRuntimeProperties()[i].name)] =
+    Property.getRuntimeProperties()[i] = Property.create(Property.getRuntimeProperties()[i]);
 
 USED_MODELS.Property = true;
 USED_MODELS.Model = true;

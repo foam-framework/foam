@@ -132,8 +132,9 @@ CLASS({
 
             if ( Template.isInstance(obj) ) var isTemplate = true;
 
-            for ( var key in obj.model_.properties_ ) {
-              var prop = obj.model_.properties_[key];
+            var properties = obj.model_.getRuntimeProperties();
+            for ( var key in properties ) {
+              var prop = properties[key];
 
               if ( ! this.p(prop) && ( ! isTemplate || prop.name !== 'code' ) ) continue;
 

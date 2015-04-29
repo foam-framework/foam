@@ -188,8 +188,9 @@ CLASS({
       str += this.startForm();
       str += this.titleHTML();
 
-      for ( var i = 0 ; i < model.properties_.length ; i++ ) {
-        var prop = model.properties_[i];
+      var properties = model.getRuntimeProperties();
+      for ( var i = 0 ; i < properties.length ; i++ ) {
+        var prop = properties[i];
 
         if ( prop.hidden ) continue;
 
