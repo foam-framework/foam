@@ -22,12 +22,19 @@ CLASS({
 
   requires: [
   ],
-  exports: [ 'as popup' ],
+  exports: [ 'as viewContainerController' ],
 
   properties: [
     {
       model_: 'ViewFactoryProperty',
-      name: 'delegate'
+      name: 'delegate',
+      documentation: function() {/* The inner view to pop up.
+        This should be created in the context of this popup,
+        so that X.viewContainerController is available to the inner
+        view to control the popup.</p>
+        <p>The ViewContainerController interface includes methods to control
+        your containing view, including .accept() and .reject()
+        for standard dialogs. */}
     },
     {
       name: '$content',
@@ -57,14 +64,17 @@ CLASS({
     },
     initializePosition: function() {
       this.$content.style.zIndex = "1010";
-      this.$content.style.transform = "translateY("+this.viewportSize().height+"px)";
+      //this.$content.style.transform = "translateY("+this.viewportSize().height+"px)";
+      this.$content.style.opacity = "0";
       this.$blocker.style.opacity = "0";
     },
     animateToExpanded: function() {
-      this.$content.style.transition = "transform cubic-bezier(0.0, 0.0, 0.2, 1) .1s";
-      this.$content.style.transform = "translateY(0)";
+      //this.$content.style.transition = "transform cubic-bezier(0.0, 0.0, 0.2, 1) .1s";
+      //this.$content.style.transform = "translateY(0)";
+      this.$content.style.transition = "opacity cubic-bezier(0.0, 0.0, 0.2, 1) .1s";
+      this.$content.style.opacity = "1";
 
-      this.$blocker.style.transition = "opacity cubic-bezier(0.0, 0.0, 0.2, 1) .1s"
+      this.$blocker.style.transition = "opacity cubic-bezier(0.0, 0.0, 0.2, 1) .1s";
       this.$blocker.style.opacity = "0.4";
 
       this.isHidden = false;
@@ -84,18 +94,25 @@ CLASS({
     },
     close: function() {
       this.animateToHidden();
-      this.X.setTimeout(function() { if ( this.$ ) this.$.outerHTML = ''; }.bind(this), 500);
+      this.X.setTimeout(function() { this.destroy(); }.bind(this), 300);
     },
     destroy: function(p) {
-      this.X.setTimeout(function() { if ( this.$ ) this.$.outerHTML = ''; }.bind(this), 500);
+      this.X.setTimeout(function() { if ( this.$ ) this.$.outerHTML = ''; }.bind(this), 300);
       this.SUPER(p);
+    },
+
+    accept: function() { /* View Container Controller interface */
+      this.close();
+    },
+    reject: function() { /* View Container Controller interface */
+      this.close();
     }
   },
 
   templates: [
     function toInnerHTML() {/*
       <div id="<%= this.id %>Blocker" class='popup-view-modal-blocker'></div>
-      <div id="<%= this.id %>Content"class='popup-view-content'>
+      <div id="<%= this.id %>Content"class='popup-view-content md-card'>
         %%delegate()
       </div>
     */},
