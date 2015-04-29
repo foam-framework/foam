@@ -26,7 +26,7 @@ CLASS({
     {
       name: 'data',
       postSet: function(_, newVal) {
-        if (newVal.choice === undefined) {
+        if (typeof newVal.choice !== 'number') {
           newVal.choice = 0;
         }
       }
