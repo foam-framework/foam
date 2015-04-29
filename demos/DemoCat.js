@@ -14,6 +14,11 @@ CLASS({
     },
     {
       name: 'src',
+      preSet: function(_, src) {
+        return src.endsWith('/') ?
+          'https://github.com/foam-framework/foam/tree/master/' + src :
+          src ;
+      },
       defaultValueFn: function() {
         var i = window.location.href.indexOf('DemoCat.html');
         var path = window.location.href.substring(0, i);
@@ -54,7 +59,7 @@ return JSONUtil.arrayToObjArray(X, [
     model: 'com.google.sweeper.Game',
     description: 'A Minesweeper game.',
     keywords: ['game'],
-    src: '/js/com/google/sweeper/',
+    src: 'js/com/google/sweeper/',
     image: 'Minesweeper.png',
   },
   {
@@ -218,7 +223,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: '../apps/calc/Calc.html',
     description: 'A simple calculator application.  Demonstrates the use of templates to completely change the appearance of a DetailView.',
     keywords: ['app'],
-    src: '../apps/calc/',
+    src: 'apps/calc/',
     image: 'Calc.png'
   },
   {
@@ -226,7 +231,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: '../apps/acalc/Calc.html',
     description: 'A calculator application with an animated Material-Design interface.',
     keywords: ['app', 'material-design'],
-    src: '../apps/acalc/',
+    src: 'apps/acalc/',
     image: 'ACalc.png'
   },
   {
@@ -234,7 +239,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: '../apps/pcalc/Calc.html',
     description: 'A calculator applications that uses Polymer component views.',
     keywords: ['app', 'material-design', 'polymer', '15'],
-    src: '../apps/pcalc/',
+    src: 'apps/pcalc/',
     image: 'ACalc.png'
   },
   {
@@ -242,7 +247,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: 'http://foam-framework.github.io/foam/apps/gmail/main.html',
     description: 'A simple mobile GMail client with a Material-Design interface, in less than 1k lines of code.',
     keywords: ['app', 'material-design', 'gmail', 'mobile'],
-    src: '../apps/gmail/',
+    src: 'apps/gmail/',
     image: 'GMail.png'
   },
   {
@@ -250,7 +255,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: 'https://chrome.google.com/webstore/detail/quickbug/hmdcjljmcglpjnmmbjhpialomleabcmg',
     description: 'A Chrome packaged-app clone of the crbug.com issue tracker.  Provides many extra features and improved performance.  Be sure to try out grid-view\'s drag-and-drop tiles and PIE charts with warped scrolling features. See: <a href="http://quickbug.foamdev.com">http://quickbug.foamdev.com</a>',
     keywords: ['app'],
-    src: '../apps/quickbug/',
+    src: 'apps/quickbug/',
     image: 'QuickBug.png'
   },
   {
@@ -258,7 +263,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: 'http://foam-framework.github.io/foam/apps/mbug/main.html',
     description: 'A simple mobile code.google.com issue-tracker client with a Material-Design interface.  Triage your Crbugs on the go.  See: <a href="http://mbug.foamdev.com">http://mbug.foamdev.com</a>',
     keywords: ['app', 'material-design', 'mobile', 'android'],
-    src: '../apps/mbug/',
+    src: 'apps/mbug/',
     image: 'MBug.png'
   },
   {
@@ -266,7 +271,7 @@ return JSONUtil.arrayToObjArray(X, [
     model: 'foam.tutorials.phonecat.Controller',
     description: 'A port of an Angular application for browsing a Cellphone catalog.  Create this app yourself by following the <a href="http://foam-framework.github.io/foam/tutorial/0-intro/">tutorial</a>.',
     keywords: ['tutorial'],
-    src: '../js/foam/tutorials/phonecat/',
+    src: 'js/foam/tutorials/phonecat/',
     image: 'PhoneCat.png'
   },
   /*
@@ -284,7 +289,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: '../apps/todo/Todo.html',
     description: 'A FOAM implementation of the <a href="http://todomvc.com">http://todomvc.com</a> comparison application.  Notice that the FOAM implementation is by far the shortest listed on the TodoMVC site.',
     keywords: ['tutorial'],
-    src: '../apps/todo/',
+    src: 'apps/todo/',
     image: 'Todo.png'
   },
   /*
@@ -302,7 +307,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: '../apps/docs/docbrowser.html',
     description: 'A FOAM Document browser.',
     keywords: ['tool', 'dev', 'docs'],
-    src: '../apps/docs/',
+    src: 'apps/docs/',
     image: '../../apps/docs/images/Model_runtime2.png'
   },
   /*
@@ -327,7 +332,7 @@ return JSONUtil.arrayToObjArray(X, [
     path: '../apps/overflow/Overflow.html',
     description: 'A simple searchable FOAM Question and Answer database.',
     keywords: ['docs', 'demo'],
-    src: '../apps/overflow/',
+    src: 'apps/overflow/',
     image: 'Overflow.png'
   },
   /*
