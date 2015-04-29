@@ -7,79 +7,24 @@
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 CLASS({
   name: 'PopupView',
   package: 'foam.ui.md',
-  extendsModel: 'foam.flow.Element',
+  extendsModel: 'foam.ui.View',
 
   requires: [
-    'foam.ui.md.ModalOverlayView',
-    'foam.ui.md.PositionedPopupAnimation as Animation'
   ],
   exports: [ 'as popup' ],
 
-  constants: { ELEMENT_NAME: 'popup' },
-
   properties: [
-    {
-      model_: 'StringProperty',
-      name: 'className',
-      defaultValue: 'closed'
-    },
-    {
-      model_: 'StringProperty',
-      name: 'cssPosition',
-      defaultValue: 'fixed',
-      postSet: function(old, nu) {
-        if ( ! this.$ ) return;
-        this.$.style.position = this.cssPosition;
-      }
-    },
-    {
-      model_: 'StringProperty',
-      name: 'cssInnerPosition',
-      defaultValue: 'fixed',
-      postSet: function(old, nu) {
-        if ( ! this.innerView ) return;
-        this.innerView.style.position = this.cssInnerPosition;
-      }
-    },
-    {
-      name: 'left',
-      defaultValue: '',
-      postSet: function(old, nu) {
-        if ( ! this.innerView || old === nu ) return;
-        this.innerView.style.left = this.left ? this.left + 'px' : '';
-      }
-    },
-    {
-      name: 'top',
-      defaultValue: '',
-      postSet: function(old, nu) {
-        if ( ! this.innerView || old === nu ) return;
-        this.innerView.style.top = this.top ? this.top + 'px' : '';
-      }
-    },
-    {
-      model_: 'FloatProperty',
-      name: 'alpha',
-      defaultValue: 1
-    },
-    {
-      model_: 'FloatProperty',
-      name: 'zoom',
-      defaultValue: 1
-    },
-    {
-      model_: 'ViewFactoryProperty',
-      name: 'overlay',
-      defaultValue: 'foam.ui.md.ModalOverlayView'
-    },
-    {
-      name: 'overlayView'
-    },
     {
       model_: 'ViewFactoryProperty',
       name: 'delegate'
@@ -87,65 +32,12 @@ CLASS({
     {
       name: 'delegateView'
     },
-    {
-      name: 'containerView'
-    },
-    {
-      name: 'innerView'
-    },
-    {
-      model_: 'FloatProperty',
-      name: 'openDuration',
-      defaultValue: 300
-    },
-    {
-      model_: 'FloatProperty',
-      name: 'closeDuration',
-      defaultValue: 300
-    },
-    {
-      name: 'animationEase',
-      defaultValue: Movement.easeOut(0.9)
-    },
-    {
-      name: 'animation',
-      lazyFactory: function() {
-        return this.Animation.create({ popup: this });
-      }
-    }
   ],
 
   methods: [
     {
-      name: 'init',
-      code: function() {
-        this.SUPER.apply(this, arguments);
-
-        Events.dynamic(function() {
-          this.alpha; this.zoom;
-          if ( this.containerView ) {
-            var cvStyle = this.containerView.style;
-            cvStyle.opacity = this.alpha;
-            cvStyle.zoom = this.zoom;
-          }
-        }.bind(this));
-      }
-    },
-    {
-      name: 'initInnerHTML',
-      code: function() {
-        this.SUPER.apply(this, arguments);
-
-        this.containerView = this.X.$(this.id + '-container');
-        this.innerView = this.X.$(this.id + '-view');
-        this.$.style.position = this.cssPosition;
-        this.animation && this.animation.initInnerHTML &&
-            this.animation.initInnerHTML();
-      }
-    },
-    {
       name: 'open',
-      code: function() {
+      code: function(sourceElement) {
         this.className = '';
         this.updateHTML();
         if ( this.animation ) {

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2012 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ CLASS({
 
   requires: ['foam.ui.md.FlatButton'],
 
-  documentation: function() {/* This is closely related to
-    $$DOC{ref:'foam.ui.ChoiceMenuView'}. Refactor them! */},
+  documentation: function() {/* A floating menu that positions itself
+    over the element that lauches it with $$DOC{ref:'.open'} */},
 
   properties: [
     {
@@ -170,6 +170,7 @@ CLASS({
 
       // if we couldn't fit so that our selected item is in the right place,
       // animate it up/down into the place it will appear in the list.
+      // TODO: Or add empty entries to the front/end of the list to leave open space
       if ( selectedOffset !== 0 ) {
         //TODO: animate
       }
@@ -205,21 +206,23 @@ CLASS({
       var verticalDiff = startFromClientRect.top - finalRect.top + startFromClientRect.height/2;
       this.$.style.transformOrigin = "0 "+(verticalDiff)+"px";
       this.$.style.transform = "scaleY(0.2)";
-
     },
     animateToExpanded: function() {
       this.$.style.transition = "transform cubic-bezier(0.0, 0.0, 0.2, 1) .1s";
       this.$.style.transform = "scaleY(1)";
       this.isHidden = false;
     },
-    close: function() {
+    animateToHidden: function() {
       this.isHidden = true;
-
       if ( ! this.$ ) return;
       this.$.style.transition = "opacity cubic-bezier(0.4, 0.0, 1, 1) .1s"
       this.$.style.opacity = "0";
       this.$.style.pointerEvents = "none";
+    },
+    close: function() {
+      this.animateToHidden();
       this.X.setTimeout(function() { if (this.$) this.$.outerHTML = ''; }.bind(this), 500);
+      this.SUPER();
     },
     choiceToHTML: function(id, choice) {
       return '<' + this.innerTagName + ' id="' + id + '" class="choice" '+
@@ -287,10 +290,6 @@ CLASS({
   position: absolute;
   margin: 0;
   flex-direction: column;
-}
-
-.foamChoiceMenuView .hidden{
-  display: none;
 }
 
 .foamChoiceMenuView .selected {
