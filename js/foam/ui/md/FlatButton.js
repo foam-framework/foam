@@ -34,6 +34,10 @@ CLASS({
       }
     },
     {
+      name: 'escapeHtml',
+      defaultValue: true,
+    },
+    {
       name: 'halo',
       factory: function() {
         return this.HaloView.create({
@@ -116,13 +120,19 @@ CLASS({
         <%= this.halo %>
         <span>
         <% if ( this.action ) { %>
-          {{this.action.label}}
+          <% if ( this.escapeHtml ) { %>
+            {{this.action.label}}
+          <% } else { %>
+            {{{this.action.label}}}
+          <% } %>
         <% } else if ( this.inner ) { %>
           <%= this.inner() %>
         <% } else { %>label<% } %>
         </span>
 <%
-        this.on('click', function() {
+        this.on('click', function(event) {
+            event.stopPropagation();
+            event.preventDefault();
             this.action.callIfEnabled(this.X, this.data);
         }.bind(this), this.id);
         this.setClass('hidden', function() { return !!self.isHidden; }, this.id);
