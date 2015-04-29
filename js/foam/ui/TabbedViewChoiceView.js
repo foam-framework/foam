@@ -37,8 +37,8 @@ CLASS({
   methods: {
     setCurrentLinePosition: function() {
       var line = document.getElementById(this.id + '-line');
-      if (line) {
-        var selectedElement = this.$.children[this.data.choice];
+      var selectedElement = this.$ && this.$.children[this.data.choice];
+      if (line && selectedElement) {
         line.style.left = selectedElement.offsetLeft;
         line.style.width = selectedElement.offsetWidth + 'px';
       }
