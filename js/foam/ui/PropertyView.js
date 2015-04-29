@@ -39,7 +39,7 @@ CLASS({
         if ( old && this.bound_ ) this.unbindData(this.data);
         if ( nu && ! this.bound_ ) this.bindData(this.data);
         this.args = nu;
-        this.model = nu.view;
+        this.model = this.innerView || nu.view;
       }
     },
     {
