@@ -32,13 +32,13 @@ CLASS({
     {
       name: '$content',
       getter: function() {
-        return this.X.$$('popup-view-content')[0];
+        return this.X.document.getElementById(this.id+'Content');
       }
     },
     {
       name: '$blocker',
       getter: function() {
-        return this.X.$$('popup-view-modal-blocker')[0];
+        return this.X.document.getElementById(this.id+'Blocker');
       }
     },
     {
@@ -94,8 +94,8 @@ CLASS({
 
   templates: [
     function toInnerHTML() {/*
-      <div class='popup-view-modal-blocker'></div>
-      <div class='popup-view-content'>
+      <div id="<%= this.id %>Blocker" class='popup-view-modal-blocker'></div>
+      <div id="<%= this.id %>Content"class='popup-view-content'>
         %%delegate()
       </div>
     */},
