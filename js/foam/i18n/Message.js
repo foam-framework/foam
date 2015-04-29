@@ -44,23 +44,10 @@ CLASS({
     {
       model_: 'FunctionProperty',
       name: 'replaceValues',
-      defaultValue: function(args) {
-        var phs = this.placeholders;
-        var value = this.value;
-        if ( typeof value === 'string' ) {
-          for ( var i = 0; i < phs.length; ++i ) {
-            var name = phs[i].name;
-            var replacement = args.hasOwnProperty(name) ? args[name] :
-                phs[i].example;
-            value = value.replace((new RegExp('[$]' + name + '[$]', 'g')),
-                                  replacement);
-          }
-        } else {
-          this.console.warn('Attempt to replace values in structured message. ' +
-              'This feature has not yet been implemented.');
-        }
-
-        return value;
+      defaultValue: function(opt_selectors, opt_placeholders) {
+        // TODO(markdittmer): Should we replace replaceValues() with toString()
+        // at the core Message level?
+        return this.toString(opt_selectors, opt_placeholders);
       }
     }
   ],
@@ -191,9 +178,10 @@ CLASS({
     {
       name: 'toString',
       code: function(opt_selectors, opt_placeholders) {
-        if ( typeof this.value === 'string' ) return this.value;
+        var placeholders = opt_placeholders || {};
+        if ( typeof this.value === 'string' )
+          return this.bindPlacholders_(this.value, placeholders);
         var selectors = opt_selectors || {};
-        var placeholders = opt_placeholders || [];
         var msg = this.value;
         return this.bindPlacholders_(this.bindSelectors_(msg, selectors),
                                      placeholders);
@@ -205,10 +193,10 @@ CLASS({
         while ( typeof msg !== 'string' ) {
           this.console.assert(Array.isArray(msg),
                       'Expected selector pair as array, but value is ' +
-                          selectors.toString());
+                          msg.toString());
           this.console.assert(msg.length === 2,
                       'Expected array as selector pair, but array length is ' +
-                          selectors.length);
+                          msg.length);
           var selector = msg[0];
           var selectedValue = selectors[selector];
           this.console.assert(typeof selectedValue !== 'undefined',
@@ -220,14 +208,16 @@ CLASS({
     },
     {
       name: 'bindPlaceholders_',
-      code: function(msg, placeholders) {
-        var names = Object.keys(placeholders);
-        for ( var i = 0; i < names.length; ++i ) {
-          var name = names[i];
-          msg = msg.replace((new RegExp('[$]' + name + '[$]', 'g')),
-                            placeholders[name]);
+      code: function(msg, args) {
+        var phs = this.placeholders;
+        var value = this.value;
+        for ( var i = 0; i < phs.length; ++i ) {
+          var name = phs[i].name;
+          var replacement = args.hasOwnProperty(name) ? args[name] :
+              phs[i].example;
+          value = value.replace((new RegExp('[$]' + name + '[$]', 'g')),
+                                replacement);
         }
-        return msg;
       }
     }
   ]
