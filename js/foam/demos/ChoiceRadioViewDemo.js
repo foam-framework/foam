@@ -29,7 +29,8 @@ CLASS({
     'foam.ui.md.PopupChoiceView',
     'foam.ui.md.ToggleView',
     'foam.ui.md.EditableView',
-    'foam.ui.md.PopupView'
+    'foam.ui.md.PopupView',
+    'foam.demos.physics.Bubbles'
   ],
 
   properties: [
@@ -66,9 +67,7 @@ CLASS({
       lazyFactory: function() {
         return this.PopupView.create({
           delegate: {
-            factory_:'foam.ui.md.FlatButton',
-            action: this.CLOSE_ACTION,
-            data: this
+            factory_:'foam.demos.physics.Bubbles',
           }
         });
       }
@@ -82,6 +81,7 @@ CLASS({
       action: function() {
         console.log("one action opened");
         this.popupView.open();
+        this.X.setTimeout(this.popupView.close.bind(this.popupView), 3000);
       },
       isEnabled: function(action) {
         return this.enabledButton;

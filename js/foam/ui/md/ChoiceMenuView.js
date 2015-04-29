@@ -222,7 +222,6 @@ CLASS({
     close: function() {
       this.animateToHidden();
       this.X.setTimeout(function() { if (this.$) this.$.outerHTML = ''; }.bind(this), 500);
-      this.SUPER();
     },
     choiceToHTML: function(id, choice) {
       return '<' + this.innerTagName + ' id="' + id + '" class="choice" '+

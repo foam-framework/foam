@@ -41,6 +41,10 @@ CLASS({
         return this.X.$$('popup-view-modal-blocker')[0];
       }
     },
+    {
+      name: 'className',
+      defaultValue: "popup-view-container"
+    }
   ],
 
   methods: {
@@ -48,18 +52,21 @@ CLASS({
       if ( this.$ ) this.$.outerHTML = '';  // clean up old copy, in case of rapid re-activation
       this.X.document.body.insertAdjacentHTML('beforeend', this.toHTML());
       this.initializePosition();
-      this.animateToExpanded();
+      this.X.setTimeout(function() {  this.animateToExpanded(); }.bind(this), 100);
       this.initHTML();
     },
     initializePosition: function() {
       this.$content.style.zIndex = "1010";
-      this.$content.style.transform = "translate3d(0, "+this.viewportSize().height+"px, 0)";
+      this.$content.style.transform = "translateY("+this.viewportSize().height+"px)";
+      this.$blocker.style.opacity = "0";
     },
     animateToExpanded: function() {
       this.$content.style.transition = "transform cubic-bezier(0.0, 0.0, 0.2, 1) .1s";
-      this.$content.style.transform = "translate3d(0,0,0)";
+      this.$content.style.transform = "translateY(0)";
+
       this.$blocker.style.transition = "opacity cubic-bezier(0.0, 0.0, 0.2, 1) .1s"
       this.$blocker.style.opacity = "0.4";
+
       this.isHidden = false;
     },
     animateToHidden: function() {
@@ -78,7 +85,6 @@ CLASS({
     close: function() {
       this.animateToHidden();
       this.X.setTimeout(function() { if ( this.$ ) this.$.outerHTML = ''; }.bind(this), 500);
-      this.SUPER();
     },
     destroy: function(p) {
       this.X.setTimeout(function() { if ( this.$ ) this.$.outerHTML = ''; }.bind(this), 500);
@@ -100,9 +106,19 @@ CLASS({
         left: 0px;
         bottom: 0px;
         right: 0px;
-        color: black;
-        opacity: 0.001;
-
+        background: black;
+        opacity: 0;
+      }
+      .popup-view-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        right: 0px;
+        z-index: 1000;
       }
     */}
   ]
