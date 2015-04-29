@@ -14,12 +14,7 @@ CLASS({
   package: 'foam.ui.md',
   extendsModel: 'foam.flow.Element',
 
-  requires: [
-    'foam.input.touch.TouchManager',
-    'foam.input.touch.GestureManager',
-
-    'foam.ui.md.HaloView'
-  ],
+  requires: [ 'foam.ui.md.HaloView' ],
 
   properties: [
     {
@@ -74,12 +69,6 @@ CLASS({
       name: 'init',
       code: function() {
         this.SUPER.apply(this, arguments);
-        if ( ! this.X.touchManager ) {
-          this.X.touchManager = this.TouchManager.create();
-        }
-        if ( ! this.X.gestureManager ) {
-          this.X.gestureManager = this.GestureManager.create();
-        }
         if ( this.action && this.action.labelFn ) {
           this.X.dynamic(function() { this.action.labelFn.call(this.data, this.action); this.updateHTML(); }.bind(this));
         }
