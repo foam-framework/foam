@@ -39,7 +39,7 @@ because that's a very high-level way of expressing how the app should work.
   and much more.
     - FOAM objects and their properties are themselves described as FOAM objects. See [Model]({{ site.baseurl }}/foam/apps/docs/docbrowser.html#Model) and [Property]({{ site.baseurl }}/foam/apps/docs/docbrowser.html#Model).
     - FOAM is "written in itself", using the same metaprogramming power offered
-      to users. That keeps is compact, and loading fast.
+      to users. That keeps it compact, and loading fast.
 - [**Interfaces** are better than implementations]({{ site.baseurl }}/principles). FOAM has a standard interface
   for data storage (see below) and for views (DOM, 2D canvas, and more).
     - Need something we don't provide? Write a new implementation that is just
