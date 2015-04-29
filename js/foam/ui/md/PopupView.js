@@ -30,100 +30,79 @@ CLASS({
       name: 'delegate'
     },
     {
-      name: 'delegateView'
+      name: '$content',
+      getter: function() {
+        return this.X.$$('popup-view-content')[0];
+      }
+    },
+    {
+      name: '$blocker',
+      getter: function() {
+        return this.X.$$('popup-view-modal-blocker')[0];
+      }
     },
   ],
 
-  methods: [
-    {
-      name: 'open',
-      code: function(sourceElement) {
-        this.className = '';
-        this.updateHTML();
-        if ( this.animation ) {
-          this.animation.setInitialPosition &&
-              this.animation.setInitialPosition(true);
-          this.animation.openAnimation &&
-              this.animation.openAnimation();
-        }
+  methods: {
+    open: function(sourceElement) {
+      if ( this.$ ) this.$.outerHTML = '';  // clean up old copy, in case of rapid re-activation
+      this.X.document.body.insertAdjacentHTML('beforeend', this.toHTML());
+      this.initializePosition();
+      this.animateToExpanded();
+      this.initHTML();
+    },
+    initializePosition: function() {
+      this.$content.style.zIndex = "1010";
+      this.$content.style.transform = "translate3d(0, "+this.viewportSize().height+"px, 0)";
+    },
+    animateToExpanded: function() {
+      this.$content.style.transition = "transform cubic-bezier(0.0, 0.0, 0.2, 1) .1s";
+      this.$content.style.transform = "translate3d(0,0,0)";
+      this.$blocker.style.transition = "opacity cubic-bezier(0.0, 0.0, 0.2, 1) .1s"
+      this.$blocker.style.opacity = "0.4";
+      this.isHidden = false;
+    },
+    animateToHidden: function() {
+      this.isHidden = true;
+      if ( this.$content ) {
+        this.$content.style.transition = "opacity cubic-bezier(0.4, 0.0, 1, 1) .1s"
+        this.$content.style.opacity = "0";
+        this.$content.style.pointerEvents = "none";
+      }
+      if ( this.$blocker ) {
+        this.$blocker.style.transition = "opacity cubic-bezier(0.4, 0.0, 1, 1) .1s"
+        this.$blocker.style.opacity = "0";
+        this.$blocker.style.pointerEvents = "none";
       }
     },
-    {
-      name: 'close',
-      code: function() {
-        this.className = '';
-        if ( this.animation ) {
-          this.animation.setInitialPosition &&
-              this.animation.setInitialPosition(false);
-          this.animation.closeAnimation &&
-              this.animation.closeAnimation();
-        }
-      }
+    close: function() {
+      this.animateToHidden();
+      this.X.setTimeout(function() { if ( this.$ ) this.$.outerHTML = ''; }.bind(this), 500);
+      this.SUPER();
     },
-    {
-      name: 'getPositionedAnimation',
-      code: function(positionPropName, isOpen) {
-        return Movement.animate(
-            isOpen ? this.openDuration : this.closeDuration,
-            function() {
-              if ( isOpen ) {
-                // this[positionPropName] = 0;
-              } else {
-                var parent = this.cssPosition === 'fixed' ?
-                    this.document.body : this.$.parentNode;
-                this[positionPropName] =
-                    (positionPropName.indexOf('left') >= 0 ||
-                    positionPropName.indexOf('right' >= 0)) ?
-                    parent.clientWidth : parent.clientHeight;
-              }
-              if ( this.overlayView )
-                this.overlayView.alpha = isOpen ? this.overlayView.openAlpha : 0;
-            }.bind(this),
-            this.animationEase,
-            function() {
-              this.className = isOpen ? 'open' : 'closed';
-            }.bind(this));
-      }
+    destroy: function(p) {
+      this.X.setTimeout(function() { if ( this.$ ) this.$.outerHTML = ''; }.bind(this), 500);
+      this.SUPER(p);
     }
-  ],
+  },
 
   templates: [
     function toInnerHTML() {/*
-      <% if ( this.className != 'closed' ) { %>
-        <%
-          this.overlayView = this.overlay({ cssPosition: 'inerhit' });
-          this.delegateView = this.delegate();
-          this.addChild(this.overlayView);
-          this.addDataChild(this.delegateView);
-        %>
-        %%overlayView
-        <popup-container id="{{this.id}}-container">
-          <popup-view id="{{this.id}}-view">
-            %%delegateView
-          </popup-view>
-        </popup-container>
-      <% } %>
+      <div class='popup-view-modal-blocker'></div>
+      <div class='popup-view-content'>
+        %%delegate()
+      </div>
     */},
     function CSS() {/*
-      popup.closed { display: none; }
-      popup.hidden { visibility: hidden; }
-      popup {
-        display: block;
-        z-index: 100;
-      }
-      popup-container {
-        position: inherit;
+      .popup-view-modal-blocker {
+        position: fixed;
         top: 0px;
         left: 0px;
-        right: 0px;
         bottom: 0px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-      }
-      popup-view {
-        display: block;
+        right: 0px;
+        color: black;
+        opacity: 0.001;
+
       }
     */}
   ]

@@ -60,6 +60,18 @@ CLASS({
       model_: 'BooleanProperty',
       name: 'showButton',
       defaultValue: true
+    },
+    {
+      name: 'popupView',
+      lazyFactory: function() {
+        return this.PopupView.create({
+          delegate: {
+            factory_:'foam.ui.md.FlatButton',
+            action: this.CLOSE_ACTION,
+            data: this
+          }
+        });
+      }
     }
   ],
 
@@ -68,8 +80,8 @@ CLASS({
       name: 'oneAction',
       label: 'one',
       action: function() {
-        console.log("one action actionated");
-        this.closeActionView.open();
+        console.log("one action opened");
+        this.popupView.open();
       },
       isEnabled: function(action) {
         return this.enabledButton;
@@ -82,8 +94,8 @@ CLASS({
       name: 'closeAction',
       label: 'Close',
       action: function() {
-        console.log("one action actionated");
-        this.closeActionView.close();
+        console.log("action close");
+        this.popupView.close();
       },
       isEnabled: function(action) {
         return this.enabledButton;
@@ -151,7 +163,6 @@ CLASS({
         $$oneAction
         $$enabledButton{model_:'foam.ui.md.CheckboxView', label: 'Button Enabled'}
         $$showButton{model_:'foam.ui.md.ToggleView', label: 'Button Show'}
-        $$closeAction{model_: 'foam.ui.md.PopupView', delegate: { factory_:'foam.ui.md.FlatButton', action: this.CLOSE_ACTION } }
     */}
   ]
 
