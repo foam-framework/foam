@@ -179,38 +179,69 @@ CLASS({
       name: 'toString',
       code: function(opt_selectors, opt_placeholders) {
         var placeholders = opt_placeholders || {};
-        if ( typeof this.value === 'string' )
-          return this.bindPlacholders_(this.value, placeholders);
         var selectors = opt_selectors || {};
         var msg = this.value;
-        return this.bindPlacholders_(this.bindSelectors_(msg, selectors),
-                                     placeholders);
+        return this.bindSelectorsAndPlaceholders_(
+            msg, selectors, placeholders, null).str;
       }
     },
     {
-      name: 'bindSelectors_',
-      code: function(msg, selectors) {
-        while ( typeof msg !== 'string' ) {
-          this.console.assert(Array.isArray(msg),
-                      'Expected selector pair as array, but value is ' +
-                          msg.toString());
-          this.console.assert(msg.length === 2,
-                      'Expected array as selector pair, but array length is ' +
-                          msg.length);
-          var selector = msg[0];
-          var selectedValue = selectors[selector];
-          this.console.assert(typeof selectedValue !== 'undefined',
-                      'Missing selector "' + selector + '" in selector bindings');
-          msg = msg[1][selectedValue] || msg[1].other;
+      name: 'bindSelectorsAndPlaceholders_',
+      code: function(msgPart, selectors, placeholders, plural) {
+        this.console.assert(typeof msgPart !== 'undefined', 'Message ' +
+            'fragment is undefined');
+
+        // Bind placeholders to strings (leaves in message tree).
+        if ( typeof msgPart === 'string' ) {
+          // Return bound string current state of plural value
+          // (latter required for placeholders).
+          return {
+            str: this.bindPlaceholders_(msgPart, placeholders, plural),
+            plural: plural
+          };
         }
-        return msg;
+
+        var str = '';
+        var strAndPlural;
+        if ( Array.isArray(msgPart) ) {
+          // Handle array-of-message-parts.
+          for ( var i = 0; i < msgPart.length; ++i ) {
+            strAndPlural = this.bindSelectorsAndPlaceholders_(
+                msgPart[i], selectors, placeholders, plural);
+            str += strAndPlural.str;
+            plural = strAndPlural.plural;
+          }
+        } else {
+          // Handle non-string message-part (selector/plural object).
+          var selectorName = msgPart.name;
+          this.console.assert(selectorName, 'Selector with no name');
+
+          var selectedValue = selectors[selectorName];
+          this.console.assert(typeof selectedValue !== 'undefined', 'Missing ' +
+              'selector "' + selectorName + '" in selector bindings');
+
+          // TODO(markdittmer): We may want a less brittle way of detecting
+          // that this is a "Plural" rather than "Selector" interface.
+          if ( msgPart.name_ === 'Plural' ) plural = selectedValue;
+
+          strAndPlural = this.bindSelectorsAndPlaceholders_(
+              msgPart.values[selectedValue] || msgPart.values.other, selectors,
+              placeholders, plural);
+          str += strAndPlural.str;
+          plural = strAndPlural.plural;
+        }
+
+        // Return bound string current state of plural value (latter required
+        // for placeholders).
+        return { str: msgPart, plural: plural };
       }
     },
     {
       name: 'bindPlaceholders_',
-      code: function(msg, args) {
+      code: function(msgPart, args, plural) {
         var phs = this.placeholders;
-        var value = this.value;
+        var value = msgPart;
+        // Bind known placeholders to message string.
         for ( var i = 0; i < phs.length; ++i ) {
           var name = phs[i].name;
           var replacement = args.hasOwnProperty(name) ? args[name] :
@@ -218,6 +249,11 @@ CLASS({
           value = value.replace((new RegExp('[$]' + name + '[$]', 'g')),
                                 replacement);
         }
+        // If message string is within a plural selector, bind "#" to plural
+        // value.
+        if ( plural ) value = value.replace(/#/g, plural);
+
+        return value;
       }
     }
   ]
