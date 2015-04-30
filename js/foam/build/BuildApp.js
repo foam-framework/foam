@@ -234,7 +234,11 @@ CLASS({
       }
 
       for ( var i = 0 ; i < this.extraFiles.length ; i++ ) {
-        require(FOAM_BOOT_DIR + this.path.sep + this.extraFiles[i] + '.js');
+        var path = this.extraFiles[i];
+        if ( path.slice(-3) !== '.js' ) path += '.js';
+        if ( path.charAt(0) !== this.path.sep )
+          path = FOAM_BOOT_DIR + this.path.sep + path;
+        require(path);
       }
 
       var view = this.defaultView ? arequire(this.defaultView) : anop;
