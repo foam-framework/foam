@@ -607,7 +607,7 @@ var Events = {
     Events.onGet.pop();
     opt_fn && opt_fn(ret);
     return {
-      destroy: function() {
+      destroy: function() { // TODO(jacksonic): just return the function?
         propertyValues.forEach(function(p) {
           p.removeListener(listener);
         });
