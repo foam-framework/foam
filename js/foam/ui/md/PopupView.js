@@ -18,10 +18,8 @@
 CLASS({
   name: 'PopupView',
   package: 'foam.ui.md',
-  extendsModel: 'foam.ui.View',
+  extendsModel: 'foam.ui.SimpleView',
 
-  requires: [
-  ],
   exports: [ 'as viewContainerController' ],
 
   properties: [
@@ -35,6 +33,10 @@ CLASS({
         <p>The ViewContainerController interface includes methods to control
         your containing view, including .accept() and .reject()
         for standard dialogs. */}
+    },
+    {
+      name: 'delegateView',
+      defaultValue: null
     },
     {
       name: '$content',
@@ -51,16 +53,26 @@ CLASS({
     {
       name: 'className',
       defaultValue: "popup-view-container"
-    }
+    },
+    {
+      name: 'state',
+      defaultValue: 'closed'
+    },
   ],
 
   methods: {
     open: function(sourceElement) {
-      if ( this.$ ) this.$.outerHTML = '';  // clean up old copy, in case of rapid re-activation
-      this.X.document.body.insertAdjacentHTML('beforeend', this.toHTML());
-      this.initializePosition();
-      this.X.setTimeout(function() {  this.animateToExpanded(); }.bind(this), 100);
-      this.initHTML();
+      if ( this.state == 'closed' ) {
+        this.delegateView = this.delegate();
+        if ( this.data ) this.delegateView.data = this.data;
+
+        if ( this.$ ) this.$.outerHTML = '';  // clean up old copy, in case of rapid re-activation
+        this.X.document.body.insertAdjacentHTML('beforeend', this.toHTML());
+        this.initializePosition();
+        this.X.setTimeout(function() {  this.animateToExpanded(); }.bind(this), 100);
+        this.initHTML();
+        this.state = 'open';
+      }
     },
     initializePosition: function() {
       this.$content.style.zIndex = "1010";
@@ -97,7 +109,9 @@ CLASS({
       this.X.setTimeout(function() { this.destroy(); }.bind(this), 300);
     },
     destroy: function(p) {
-      this.X.setTimeout(function() { if ( this.$ ) this.$.outerHTML = ''; }.bind(this), 300);
+      if ( this.$ ) this.$.outerHTML = '';
+      this.delegateView = null;
+      this.state = 'closed';
       this.SUPER(p);
     },
 
@@ -106,14 +120,14 @@ CLASS({
     },
     reject: function() { /* View Container Controller interface */
       this.close();
-    }
+    },
   },
 
   templates: [
     function toInnerHTML() {/*
       <div id="<%= this.id %>Blocker" class='popup-view-modal-blocker'></div>
       <div id="<%= this.id %>Content"class='popup-view-content md-card'>
-        %%delegate()
+        %%delegateView
       </div>
     */},
     function CSS() {/*
