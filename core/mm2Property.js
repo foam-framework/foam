@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 var Property = {
   __proto__: BootstrapModel,
   instance_: {},
@@ -54,7 +55,6 @@ var Property = {
         $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
         $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
          */}
-
     },
     {
       name: 'label',
@@ -89,7 +89,6 @@ var Property = {
       documentation: function() { /* A human readable label for the $$DOC{ref:'Model'} for use in tables. May
         contain spaces or other odd characters.
          */}
-
     },
     {
       name: 'type',
@@ -662,12 +661,12 @@ var Property = {
     toSQL: function() { return this.name; },
     toMQL: function() { return this.name; },
     toBQL: function() { return this.name; },
-    initPropertyAgents: function(proto) {
+    initPropertyAgents: function(proto, fastInit) {
       var prop   = this;
       var name   = prop.name;
       var name$_ = prop.name$_;
 
-      proto.addInitAgent(
+      if ( ! fastInit ) proto.addInitAgent(
         (this.postSet || this.setter) ? 9 : 0,
         name + ': ' + (this.postSet || this.setter ? 'copy arg (postSet)' : 'copy arg'),
         function(o, X, Y, m) {

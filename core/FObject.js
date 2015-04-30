@@ -167,9 +167,43 @@ var FObject = {
         }
       });
 
+      var fastInit = {
+        Property: true,
+        Method: true,
+        Listener: true,
+        Action: true,
+        Constant: true,
+        Message: true,
+        Template: true,
+        PropertyView: true,
+        TextFieldView: true,
+        SimpleValue: true,
+        DocumentationProperty: true,
+//        Model: true,
+        IntProperty: true,
+        Element: true,
+        StringProperty: true,
+        BooleanProperty: true
+      }[this.name_];
+
+      if ( fastInit ) {
+        var keys = {};
+        this.model_.getRuntimeProperties().forEach(function(prop) {
+          keys[prop.name] = keys[prop.name$_] = true;
+        });
+        this.addInitAgent(0, 'fast copy args', function(o, X, Y, m) {
+          for ( var key in m ) if ( keys[key] ) o[key] = m[key];
+        });
+      } /*else {
+        this.addInitAgent(0, 'fast copy args', function(o, X, Y, m) {
+          console.log('slowInit: ', self.name_);
+        });
+
+      }*/
+
       this.model_.getRuntimeProperties().forEach(function(prop) {
         if ( prop.initPropertyAgents ) {
-          prop.initPropertyAgents(self);
+          prop.initPropertyAgents(self, fastInit);
         } else {
           self.addInitAgent(
             0,
@@ -191,7 +225,7 @@ var FObject = {
         if ( Model.isInstance(o) && o.name != 'Model' ) o.create = BootstrapModel.create;
       });
 
-      self.addInitAgent(0, 'Install model into window.', function(o, X, Y) {
+      self.addInitAgent(9, 'Install model into window.', function(o, X, Y) {
         if ( X.FOAMWindow ) X.FOAMWindow.installModel(o.model_);
       });
 
