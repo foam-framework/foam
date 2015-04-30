@@ -63,7 +63,6 @@ CLASS({
     },
     {
       name: 'isHidden',
-     // model_: 'BooleanProperty',
       defaultValue: false
     }
   ],
@@ -73,9 +72,10 @@ CLASS({
       name: 'init',
       code: function() {
         this.SUPER.apply(this, arguments);
-        if ( this.action && this.action.labelFn ) {
-          this.X.dynamic(function() { this.action.labelFn.call(this.data, this.action); this.updateHTML(); }.bind(this));
-        }
+// TODO(jacksonic): this can cause updateHTML() during a toHTML(), which causes double onclicks
+//         if ( this.action && this.action.labelFn ) {
+//           this.X.dynamic(function() { this.action.labelFn.call(this.data, this.action); this.updateHTML(); }.bind(this));
+//         }
       }
     },
     {

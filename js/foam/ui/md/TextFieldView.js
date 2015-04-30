@@ -24,7 +24,7 @@ CLASS({
   properties: [
     {
       name: 'className',
-      defaultValueFn: function() { return this.resetClassName(); },
+      defaultValue: 'md-text-field-container'
     },
     { name: 'data' },
     { name: 'softData' },
@@ -46,7 +46,6 @@ CLASS({
       defaultValue: true,
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        this.resetClassName();
       },
     },
     {
@@ -87,7 +86,6 @@ CLASS({
       documentation: function() { /* Can be 'read-only', or 'read-write'. */},
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        this.resetClassName();
         if ( this.$input ) {
           if ( nu === 'read-only' )
             this.$input.setAttribute('disabled', 'true');
@@ -117,15 +115,7 @@ CLASS({
     blur: function() {
       this.$input && this.$input.blur();
     },
-    resetClassName: function() {
-      // TODO(markdittmer): This should work with events.dynamic() in init(),
-      // but that doesn't seem to be working right now.
-      this.className = 'md-text-field-container' + (this.floatingLabel ?
-          '' : ' md-text-field-no-label') +
-          (this.mode == 'read-only' ? ' disabled' : '');
-      return this.className;
-    },
-  },
+  }
   templates: [
     function CSS() {/*
       .md-text-field-container {
@@ -211,14 +201,24 @@ CLASS({
         this.on('click',   this.onClick,   input);
         this.on('keydown', this.onKeyDown, input);
 
-        if ( this.floatingLabel ) {
-          this.setClass('md-text-field-label-offset',
-            function() {
-              var focused = self.focused;
-              var data    = self.data;
-              return focused || ('' + data).length > 0;
-            }, label);
-        }
+        this.setClass('md-text-field-label-offset',
+          function() {
+            var floating = self.floatingLabel;
+            var focused = self.focused;
+            var data    = self.data;
+            return floating && focused || ('' + data).length > 0;
+          }, label
+        );
+        this.setClass('md-text-field-no-label',
+          function() {
+            return ! self.floatingLabel;
+          }, this.id
+        );
+        this.setClass('disabled',
+          function() {
+            return self.mode == 'read-only';
+          }, this.id
+        );
 
         this.setMDClasses();
       %>

@@ -125,7 +125,7 @@ CLASS({
       return this.document.getElementsByClassName(cls);
     },
     dynamic: function(fn, opt_fn) {
-      Events.dynamic(fn, opt_fn, this.Y);
+      return Events.dynamic(fn, opt_fn, this.Y);
     },
     animate: function(duration, fn, opt_interp, opt_onEnd) {
       return Movement.animate(duration, fn, opt_interp, opt_onEnd, this.Y);

@@ -185,6 +185,52 @@ CLASS({
     },
     {
       model_: 'StringProperty',
+      name: 'sourceLocale',
+      defaultValue: 'en'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'locale'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'i18nSourcePath',
+      defaultValue: 'en'
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'i18nSources',
+      adapt: function(_, s) {
+        if (typeof s === 'string') return s.split(',');
+        return s;
+      }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'jsFileName',
+      getter: function() {
+        return 'foam' + (this.locale ? '_' + this.locale : '') + '.js';
+      }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'manifestFileName',
+      getter: function() {
+        return 'app' + (this.locale ? '_' + this.locale : '') + '.manifest';
+      }
+    },
+    {
+      name: 'localizedHTMLFileName_',
+      getter: function() {
+        var match = this.htmlFileName.match(/[.][^.]*$/g);
+        var ext = match ? match[0] : '';
+        var baseName = this.htmlFileName.slice(0,
+            this.htmlFileName.length - ext.length);
+        return baseName + (this.locale ? '_' + this.locale : '') + ext;
+      }
+    },
+    {
+      model_: 'StringProperty',
       name: 'delegate'
     }
   ],
@@ -234,10 +280,7 @@ CLASS({
       }
 
       for ( var i = 0 ; i < this.extraFiles.length ; i++ ) {
-        var path = this.extraFiles[i];
-        if ( path.slice(-3) !== '.js' ) path += '.js';
-        if ( path.charAt(0) !== this.path.sep )
-          path = FOAM_BOOT_DIR + this.path.sep + path;
+        var path = this.getFilePath(this.extraFiles[i]);
         require(path);
       }
 
@@ -275,7 +318,7 @@ CLASS({
           },
           aseq(
             function(ret) {
-              var path = FOAM_BOOT_DIR + this.path.sep + file + '.js';
+              var path = this.getFilePath(file);
               this.fileDAO.find(path, {
                 put: ret,
                 error: function() {
@@ -358,7 +401,7 @@ CLASS({
       aseq(
         function(ret) {
           var file = this.File.create({
-            path: this.targetPath + this.path.sep + this.htmlFileName,
+            path: this.targetPath + this.path.sep + this.localizedHTMLFileName_,
             contents: this.HTML()
           });
 
@@ -374,7 +417,7 @@ CLASS({
         aif(this.appcacheManifest,
             function(ret) {
               var file = this.File.create({
-                path: this.targetPath + this.path.sep + "app.manifest",
+                path: this.targetPath + this.path.sep + this.manifestFileName,
                 contents: this.MANIFEST()
               });
               console.log('Writing: ', file.path);
@@ -389,35 +432,42 @@ CLASS({
         apar(
           function(ret) { this.buildCoreJS_(ret); }.bind(this),
           function(ret) { this.buildAppJS_(ret); }.bind(this)),
-        function(ret, corejs, appjs) {
-          var file = this.File.create({
-            path: this.targetPath + this.path.sep + 'foam.js',
-            contents: corejs + appjs
-          });
-          console.log('Writing: ', file.path);
-          this.fileDAO.put(file, {
-            put: ret,
-            error: function() {
-              self.error('ERROR writing file: ', file.path);
-              process.exit(1);
-            }
-          });
-        }.bind(this)
-      )(
+          function(ret, corejs, appjs) {
+            var file = this.File.create({
+              path: this.targetPath + this.path.sep + this.jsFileName,
+              contents: corejs + appjs
+            });
+            console.log('Writing: ', file.path);
+            this.fileDAO.put(file, {
+              put: ret,
+              error: function() {
+                self.error('ERROR writing file: ', file.path);
+                process.exit(1);
+              }
+            });
+          }.bind(this)
+          )(
         function(){
           process.exit(0);
         });
+    },
+    getFilePath: function(file) {
+      var path = file;
+      if ( path.slice(-3) !== '.js' ) path += '.js';
+      if ( path.charAt(0) !== this.path.sep )
+        path = FOAM_BOOT_DIR + this.path.sep + path;
+      return path;
     }
   },
   templates: [
-    function HTML() {/*<html<% if ( this.appcacheManifest ) { %> manifest="app.manifest"<% } %>><head><meta charset="utf-8"><%= this.htmlHeaders.join('') %><% if ( this.includeFoamCSS ) { %><link rel="stylesheet" type="text/css" href="foam.css"/><% } %><% if ( this.icon ) { %><link rel="icon" sizes="128x128" href="<%= this.icon %>"/><% } %><script src="foam.js"></script></head><body><foam model="<%= this.controller %>"<% if ( this.defaultView ) { %> view="<%= this.defaultView %>"<% } %>></foam></body></html>*/},
+    function HTML() {/*<html<% if ( this.appcacheManifest ) { %> manifest="%%getManifestFileName"<% } %>><head><meta charset="utf-8"><%= this.htmlHeaders.join('') %><% if ( this.includeFoamCSS ) { %><link rel="stylesheet" type="text/css" href="foam.css"/><% } %><% if ( this.icon ) { %><link rel="icon" sizes="128x128" href="<%= this.icon %>"/><% } %><script src="%%jsFileName"></script></head><body><foam model="<%= this.controller %>"<% if ( this.defaultView ) { %> view="<%= this.defaultView %>"<% } %>></foam></body></html>*/},
     function MANIFEST() {/*CACHE MANIFEST
 # version <%= this.version %>
 <% if ( this.appDefinition ) { %># hash: <%= this.appDefinition.hashCode() %><% } %>
 
 CACHE:
-foam.js
-<%= this.htmlFileName %>
+%%jsFileName
+%%localizedHTMLFileName_
 <% if ( this.includeFoamCSS ) { %>foam.css<% } %>
 <% for ( var i = 0 ; i < this.resources.length ; i++ ) { %><%= this.resources[i] %>
 <% } %>

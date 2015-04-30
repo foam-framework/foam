@@ -83,10 +83,6 @@ CLASS({
           Separate class names with spaces. Each instance of a $$DOC{ref:'foam.ui.View'}
           may have different classes specified.
       */},
-      postSet: function() {
-        if ( ! this.$ ) return;
-        this.$.className = this.cssClassAttr().slice(8, -1);
-      }
     },
     {
       name: 'tooltip'
@@ -102,10 +98,6 @@ CLASS({
           CSS classes in addition to user-specified ones. Set those here and
           they will be appended to those from $$DOC{ref:'.className'}.
       */},
-      postSet: function() {
-        if ( ! this.$ ) return;
-        this.$.className = this.cssClassAttr().slice(8, -1);
-      }
     },
     {
       name: 'propertyViewProperty',
@@ -338,11 +330,16 @@ CLASS({
       predicate = predicate.bind(this);
 
       this.addInitializer(function() {
-        this.X.dynamic(predicate, function() {
-          var e = this.X.$(opt_id);
-          if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-          DOM.setClass(e, className, predicate());
-        }.bind(this));
+        this.addDestructor(
+          this.X.dynamic(
+            predicate,
+            function() {
+              var e = this.X.$(opt_id);
+              if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+              DOM.setClass(e, className, predicate());
+            }.bind(this)
+          ).destroy
+        );
       }.bind(this));
 
       return opt_id;
