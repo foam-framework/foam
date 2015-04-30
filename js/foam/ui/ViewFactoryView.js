@@ -23,7 +23,7 @@ CLASS({
     {
       name: 'data',
       postSet: function() {
-        if (this.pending_) {
+        if ( this.pending_ ) {
           this.dirty_ = true;
         }
       },

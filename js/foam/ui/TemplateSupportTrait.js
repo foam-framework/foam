@@ -102,11 +102,13 @@ CLASS({
       }
       // fallback to check our own properties
       var o = this.model_.getFeature(name);
-      if ( ! o ) throw 'Unknown View Name: ' + name;
+      if ( ! o )
+        throw 'Unknown View Name: ' + name;
       //args.data = this;
 
+      var v;
       if ( Action.isInstance(o) )
-        var v = this.createActionView(o, args);
+        v = this.createActionView(o, args);
       else if ( Relationship.isInstance(o) )
         v = this.createRelationshipView(o, args);
       else
