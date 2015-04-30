@@ -181,6 +181,10 @@ CLASS({
       name: 'extraClassPaths',
       help: 'List of extra .js hierarchies to load models from.  Paths will be checked in the order given, finally falling back to the main FOAM js/ hierarchy.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'delegate'
     }
   ],
   methods: {
@@ -210,6 +214,13 @@ CLASS({
       }
     },
     execute_: function() {
+      if ( this.delegate ) {
+        arequire(this.delegate)(function(delegate) { delegate.buildApp(); });
+      } else {
+        this.buildApp();
+      }
+    },
+    buildApp: function() {
       if ( ! this.targetPath ) {
         this.error("targetPath is required");
         process.exit(1);
@@ -233,7 +244,7 @@ CLASS({
 
       aseq(
         aseq.apply(null, seq),
-        arequire(this.controller))(this.execute__.bind(this));
+        arequire(this.controller))(this.buildModel.bind(this));
     },
     buildCoreJS_: function(ret) {
       var i = 0;
@@ -328,7 +339,7 @@ CLASS({
 
       ret(contents);
     },
-    execute__: function(model) {
+    buildModel: function(model) {
       if ( ! model ) {
         this.error('Could not find model: ', this.controller);
       }
