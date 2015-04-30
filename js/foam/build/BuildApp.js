@@ -217,7 +217,7 @@ CLASS({
       if ( this.delegate ) {
         arequire(this.delegate)(function(DelegateModel) {
           DelegateModel.create({ builder: this }).buildApp();
-        });
+        }.bind(this));
       } else {
         this.buildApp();
       }
