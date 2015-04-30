@@ -14,6 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+aseq(
+  arequire('foam.dao.IDBDAO'),
+  arequire('foam.dao.CachingDAO')
+)(function() {
+
 var NUM_ALBUMS = 1000;
 var NUM_PHOTOS = 10000;
 
@@ -59,8 +65,9 @@ function atest(name, test) {
 
 function CachedIDB(dao) {
   var name = dao.model.name;
-  var idb = IDBDAO.create({model: dao.model});
-  dao = CachingDAO.create({cache: dao, src: idb});
+  var idb = foam.dao.IDBDAO.create({model: dao.model});
+return idb;
+  dao = foam.dao.CachingDAO.create({cache: dao, src: idb});
   // if ( DEBUG ) dao = TimingDAO.create(name, dao);
   return dao;
 }
@@ -237,3 +244,7 @@ aseq(
   asleep(10000)
 )))(alog('Done.'));
 }
+
+runPhotoBenchmarks();
+
+});

@@ -22,7 +22,8 @@ CLASS({
 
   requires: [
     'foam.i18n.Message',
-    'foam.i18n.MessageBundle'
+    'foam.i18n.MessageBundle',
+    'foam.i18n.Placeholder'
   ],
   imports: [ 'console' ],
 
@@ -35,13 +36,19 @@ CLASS({
     {
       name: 'messageBundleFactory',
       lazyFactory: function() {
-        return this.MessageBundle.create;
+        return this.MessageBundle.create.bind(this.MessageBundle);
       }
     },
     {
       name: 'messageFactory',
       lazyFactory: function() {
-        return this.Message.create;
+        return this.Message.create.bind(this.Message);
+      }
+    },
+    {
+      name: 'placeholderFactory',
+      lazyFactory: function() {
+        return this.Placeholder.create.bind(this.Placeholder);
       }
     }
   ],
@@ -52,10 +59,15 @@ CLASS({
       code: function(model, msg) {
         var modelPrefix = model.translationHint ?
             model.translationHint + ' ' : '';
+        var placeholders = msg.placeholders.map(function(p) {
+          return this.placeholderFactory(p);
+        }.bind(this));
         var i18nMsg = this.messageFactory({
           id: this.idGenerator.getMessageId(model, msg),
           name: msg.name,
           value: msg.value,
+          meaning: msg.meaning,
+          placeholders: placeholders,
           description: modelPrefix + msg.translationHint
         });
         this.dao.put(i18nMsg);

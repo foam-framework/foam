@@ -14,12 +14,7 @@ CLASS({
   package: 'foam.ui.md',
   extendsModel: 'foam.flow.Element',
 
-  requires: [
-    'foam.input.touch.TouchManager',
-    'foam.input.touch.GestureManager',
-
-    'foam.ui.md.HaloView'
-  ],
+  requires: [ 'foam.ui.md.HaloView' ],
 
   properties: [
     {
@@ -39,10 +34,11 @@ CLASS({
       }
     },
     {
+      name: 'escapeHtml',
+      defaultValue: true,
+    },
+    {
       name: 'halo',
-      documentation: function() {/*
-        onRadio/offRadio's 'pointer-events: none' is critical for halo touches
-      */},
       factory: function() {
         return this.HaloView.create({
           className: 'halo',
@@ -77,12 +73,6 @@ CLASS({
       name: 'init',
       code: function() {
         this.SUPER.apply(this, arguments);
-        if ( ! this.X.touchManager ) {
-          this.X.touchManager = this.TouchManager.create();
-        }
-        if ( ! this.X.gestureManager ) {
-          this.X.gestureManager = this.GestureManager.create();
-        }
         if ( this.action && this.action.labelFn ) {
           this.X.dynamic(function() { this.action.labelFn.call(this.data, this.action); this.updateHTML(); }.bind(this));
         }
@@ -130,13 +120,19 @@ CLASS({
         <%= this.halo %>
         <span>
         <% if ( this.action ) { %>
-          {{this.action.label}}
+          <% if ( this.escapeHtml ) { %>
+            {{this.action.label}}
+          <% } else { %>
+            {{{this.action.label}}}
+          <% } %>
         <% } else if ( this.inner ) { %>
           <%= this.inner() %>
         <% } else { %>label<% } %>
         </span>
 <%
-        this.on('click', function() {
+        this.on('click', function(event) {
+            event.stopPropagation();
+            event.preventDefault();
             this.action.callIfEnabled(this.X, this.data);
         }.bind(this), this.id);
         this.setClass('hidden', function() { return !!self.isHidden; }, this.id);

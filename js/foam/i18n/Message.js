@@ -15,7 +15,7 @@ CLASS({
   extendsModel: 'Message',
 
   requires: [ 'foam.i18n.Placeholder' ],
-  imports: [ 'assert' ],
+  imports: [ 'console' ],
 
   ids: ['id'],
 
@@ -40,6 +40,15 @@ CLASS({
       model_: 'ArrayProperty',
       name: 'placeholders',
       type: 'Array[foam.i18n.Placeholder]'
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'replaceValues',
+      defaultValue: function(opt_selectors, opt_placeholders) {
+        // TODO(markdittmer): Should we replace replaceValues() with toString()
+        // at the core Message level?
+        return this.toString(opt_selectors, opt_placeholders);
+      }
     }
   ],
 
@@ -169,43 +178,82 @@ CLASS({
     {
       name: 'toString',
       code: function(opt_selectors, opt_placeholders) {
-        if ( typeof this.value === 'string' ) return this.value;
+        var placeholders = opt_placeholders || {};
         var selectors = opt_selectors || {};
-        var placeholders = opt_placeholders || [];
         var msg = this.value;
-        return this.bindPlacholders_(this.bindSelectors_(msg, selectors),
-                                     placeholders);
+        return this.bindSelectorsAndPlaceholders_(
+            msg, selectors, placeholders, null).str;
       }
     },
     {
-      name: 'bindSelectors_',
-      code: function(msg, selectors) {
-        while ( typeof msg !== 'string' ) {
-          this.assert(Array.isArray(msg),
-                      'Expected selector pair as array, but value is ' +
-                          selectors.toString());
-          this.assert(msg.length === 2,
-                      'Expected array as selector pair, but array length is ' +
-                          selectors.length);
-          var selector = msg[0];
-          var selectedValue = selectors[selector];
-          this.assert(typeof selectedValue !== 'undefined',
-                      'Missing selector "' + selector + '" in selector bindings');
-          msg = msg[1][selectedValue] || msg[1].other;
+      name: 'bindSelectorsAndPlaceholders_',
+      code: function(msgPart, selectors, placeholders, plural) {
+        this.console.assert(typeof msgPart !== 'undefined', 'Message ' +
+            'fragment is undefined');
+
+        // Bind placeholders to strings (leaves in message tree).
+        if ( typeof msgPart === 'string' ) {
+          // Return bound string current state of plural value
+          // (latter required for placeholders).
+          return {
+            str: this.bindPlaceholders_(msgPart, placeholders, plural),
+            plural: plural
+          };
         }
-        return msg;
+
+        var str = '';
+        var strAndPlural;
+        if ( Array.isArray(msgPart) ) {
+          // Handle array-of-message-parts.
+          for ( var i = 0; i < msgPart.length; ++i ) {
+            strAndPlural = this.bindSelectorsAndPlaceholders_(
+                msgPart[i], selectors, placeholders, plural);
+            str += strAndPlural.str;
+            plural = strAndPlural.plural;
+          }
+        } else {
+          // Handle non-string message-part (selector/plural object).
+          var selectorName = msgPart.name;
+          this.console.assert(selectorName, 'Selector with no name');
+
+          var selectedValue = selectors[selectorName];
+          this.console.assert(typeof selectedValue !== 'undefined', 'Missing ' +
+              'selector "' + selectorName + '" in selector bindings');
+
+          // TODO(markdittmer): We may want a less brittle way of detecting
+          // that this is a "Plural" rather than "Selector" interface.
+          if ( msgPart.name_ === 'Plural' ) plural = selectedValue;
+
+          strAndPlural = this.bindSelectorsAndPlaceholders_(
+              msgPart.values[selectedValue] || msgPart.values.other, selectors,
+              placeholders, plural);
+          str += strAndPlural.str;
+          plural = strAndPlural.plural;
+        }
+
+        // Return bound string current state of plural value (latter required
+        // for placeholders).
+        return { str: msgPart, plural: plural };
       }
     },
     {
       name: 'bindPlaceholders_',
-      code: function(msg, placeholders) {
-        var names = Object.keys(placeholders);
-        for ( var i = 0; i < names.length; ++i ) {
-          var name = names[i];
-          msg = msg.replace((new RegExp('[$]' + name + '[$]', 'g')),
-                            placeholders[name]);
+      code: function(msgPart, args, plural) {
+        var phs = this.placeholders;
+        var value = msgPart;
+        // Bind known placeholders to message string.
+        for ( var i = 0; i < phs.length; ++i ) {
+          var name = phs[i].name;
+          var replacement = args.hasOwnProperty(name) ? args[name] :
+              phs[i].example;
+          value = value.replace((new RegExp('[$]' + name + '[$]', 'g')),
+                                replacement);
         }
-        return msg;
+        // If message string is within a plural selector, bind "#" to plural
+        // value.
+        if ( plural ) value = value.replace(/#/g, plural);
+
+        return value;
       }
     }
   ]

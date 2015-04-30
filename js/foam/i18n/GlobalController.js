@@ -47,31 +47,41 @@ CLASS({
 
   methods: [
     {
-      name: 'visitAllCurrentModels',
-      code: function(visitors) {
-        var self = this;
-        Object_forEach(USED_MODELS, function(_, modelName) {
-          self.visitModel(visitors, lookup(modelName));
-        });
+      name: 'avisitAllCurrentModels',
+      code: function(ret, visitors) {
+        var par = [], modelNames = Object.keys(USED_MODELS);
+        for ( var i = 0; i < modelNames.length; ++i ) {
+          par.push(this.avisitModel(visitors, lookup(modelNames[i])));
+        }
+        return apar.apply(null, par);
       }
     },
     {
-      name: 'visitAllKnownModels',
+      name: 'avisitAllKnownModels',
       code: function(visitors) {
-        var self = this;
-        ['USED_MODELS', 'UNUSED_MODELS'].forEach(function(collName) {
-          Object_forEach(GLOBAL[collName], function(_, modelName) {
-            self.visitModel(visitors, lookup(modelName));
-          });
-        });
+        var par = [];
+        var modelNames, i;
+
+        modelNames = Object.keys(USED_MODELS);
+        for ( i = 0; i < modelNames.length; ++i ) {
+          par.push(this.avisitModel(visitors, lookup(modelNames[i])));
+        }
+        modelNames = Object.keys(UNUSED_MODELS);
+        for ( i = 0; i < modelNames.length; ++i ) {
+          par.push(this.avisitModel(visitors, lookup(modelNames[i])));
+        }
+
+        return apar.apply(null, par);
       }
     },
     {
-      name: 'visitModel',
+      name: 'avisitModel',
       code: function(visitors, model) {
-        visitors.forEach(function(visitor) {
-          visitor.visitModel(model);
-        });
+        var par = [];
+        for ( var i = 0; i < visitors.length; ++i ) {
+          par.push(visitors[i].avisitModel(model));
+        }
+        return apar.apply(null, par);
       }
     }
   ]
@@ -79,11 +89,10 @@ CLASS({
 
 arequire('foam.i18n.GlobalController')(function(GlobalController) {
   var i18nGC = GlobalController.create();
-  GLOBAL.X.i18nModel = function(model, X, ret) {
-    i18nGC.visitModel([
+  GLOBAL.X.i18nModel = function(ret, model, X) {
+    i18nGC.avisitModel([
       // i18nGC.extractor,
       i18nGC.injector
-    ], model);
-    ret && ret(model);
+    ], model)(ret);
   };
 });

@@ -7,230 +7,135 @@
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 CLASS({
   name: 'PopupView',
   package: 'foam.ui.md',
-  extendsModel: 'foam.flow.Element',
+  extendsModel: 'foam.ui.View',
 
   requires: [
-    'foam.ui.md.ModalOverlayView',
-    'foam.ui.md.PositionedPopupAnimation as Animation'
   ],
-  exports: [ 'as popup' ],
-
-  constants: { ELEMENT_NAME: 'popup' },
+  exports: [ 'as viewContainerController' ],
 
   properties: [
     {
-      model_: 'StringProperty',
+      model_: 'ViewFactoryProperty',
+      name: 'delegate',
+      documentation: function() {/* The inner view to pop up.
+        This should be created in the context of this popup,
+        so that X.viewContainerController is available to the inner
+        view to control the popup.</p>
+        <p>The ViewContainerController interface includes methods to control
+        your containing view, including .accept() and .reject()
+        for standard dialogs. */}
+    },
+    {
+      name: '$content',
+      getter: function() {
+        return this.X.document.getElementById(this.id+'Content');
+      }
+    },
+    {
+      name: '$blocker',
+      getter: function() {
+        return this.X.document.getElementById(this.id+'Blocker');
+      }
+    },
+    {
       name: 'className',
-      defaultValue: 'closed'
-    },
-    {
-      model_: 'StringProperty',
-      name: 'cssPosition',
-      defaultValue: 'fixed',
-      postSet: function(old, nu) {
-        if ( ! this.$ ) return;
-        this.$.style.position = this.cssPosition;
-      }
-    },
-    {
-      model_: 'StringProperty',
-      name: 'cssInnerPosition',
-      defaultValue: 'fixed',
-      postSet: function(old, nu) {
-        if ( ! this.innerView ) return;
-        this.innerView.style.position = this.cssInnerPosition;
-      }
-    },
-    {
-      name: 'left',
-      defaultValue: '',
-      postSet: function(old, nu) {
-        if ( ! this.innerView || old === nu ) return;
-        this.innerView.style.left = this.left ? this.left + 'px' : '';
-      }
-    },
-    {
-      name: 'top',
-      defaultValue: '',
-      postSet: function(old, nu) {
-        if ( ! this.innerView || old === nu ) return;
-        this.innerView.style.top = this.top ? this.top + 'px' : '';
-      }
-    },
-    {
-      model_: 'FloatProperty',
-      name: 'alpha',
-      defaultValue: 1
-    },
-    {
-      model_: 'FloatProperty',
-      name: 'zoom',
-      defaultValue: 1
-    },
-    {
-      model_: 'ViewFactoryProperty',
-      name: 'overlay',
-      defaultValue: 'foam.ui.md.ModalOverlayView'
-    },
-    {
-      name: 'overlayView'
-    },
-    {
-      model_: 'ViewFactoryProperty',
-      name: 'delegate'
-    },
-    {
-      name: 'delegateView'
-    },
-    {
-      name: 'containerView'
-    },
-    {
-      name: 'innerView'
-    },
-    {
-      model_: 'FloatProperty',
-      name: 'openDuration',
-      defaultValue: 300
-    },
-    {
-      model_: 'FloatProperty',
-      name: 'closeDuration',
-      defaultValue: 300
-    },
-    {
-      name: 'animationEase',
-      defaultValue: Movement.easeOut(0.9)
-    },
-    {
-      name: 'animation',
-      lazyFactory: function() {
-        return this.Animation.create({ popup: this });
-      }
+      defaultValue: "popup-view-container"
     }
   ],
 
-  methods: [
-    {
-      name: 'initHTML',
-      code: function() {
-        this.SUPER.apply(this, arguments);
-        this.containerView = this.X.$(this.id + '-container');
-        this.innerView = this.X.$(this.id + '-view');
+  methods: {
+    open: function(sourceElement) {
+      if ( this.$ ) this.$.outerHTML = '';  // clean up old copy, in case of rapid re-activation
+      this.X.document.body.insertAdjacentHTML('beforeend', this.toHTML());
+      this.initializePosition();
+      this.X.setTimeout(function() {  this.animateToExpanded(); }.bind(this), 100);
+      this.initHTML();
+    },
+    initializePosition: function() {
+      this.$content.style.zIndex = "1010";
+      //this.$content.style.transform = "translateY("+this.viewportSize().height+"px)";
+      this.$content.style.opacity = "0";
+      this.$blocker.style.opacity = "0";
+    },
+    animateToExpanded: function() {
+      //this.$content.style.transition = "transform cubic-bezier(0.0, 0.0, 0.2, 1) .1s";
+      //this.$content.style.transform = "translateY(0)";
+      this.$content.style.transition = "opacity cubic-bezier(0.0, 0.0, 0.2, 1) .1s";
+      this.$content.style.opacity = "1";
 
-        this.$.style.position = this.cssPosition;
+      this.$blocker.style.transition = "opacity cubic-bezier(0.0, 0.0, 0.2, 1) .1s";
+      this.$blocker.style.opacity = "0.4";
 
-        Events.dynamic(function() {
-          this.alpha; this.zoom;
-          if ( this.containerView ) {
-            var cvStyle = this.containerView.style;
-            cvStyle.opacity = this.alpha;
-            cvStyle.zoom = this.zoom;
-          }
-        }.bind(this));
+      this.isHidden = false;
+    },
+    animateToHidden: function() {
+      this.isHidden = true;
+      if ( this.$content ) {
+        this.$content.style.transition = "opacity cubic-bezier(0.4, 0.0, 1, 1) .1s"
+        this.$content.style.opacity = "0";
+        this.$content.style.pointerEvents = "none";
+      }
+      if ( this.$blocker ) {
+        this.$blocker.style.transition = "opacity cubic-bezier(0.4, 0.0, 1, 1) .1s"
+        this.$blocker.style.opacity = "0";
+        this.$blocker.style.pointerEvents = "none";
+      }
+    },
+    close: function() {
+      this.animateToHidden();
+      this.X.setTimeout(function() { this.destroy(); }.bind(this), 300);
+    },
+    destroy: function(p) {
+      this.X.setTimeout(function() { if ( this.$ ) this.$.outerHTML = ''; }.bind(this), 300);
+      this.SUPER(p);
+    },
 
-        this.animation && this.animation.initHTML && this.animation.initHTML();
-      }
+    accept: function() { /* View Container Controller interface */
+      this.close();
     },
-    {
-      name: 'initInnerHTML',
-      code: function() {
-        this.SUPER.apply(this, arguments);
-        this.animation && this.animation.initInnerHTML &&
-            this.animation.initInnerHTML();
-      }
-    },
-    {
-      name: 'open',
-      code: function() {
-        this.className = '';
-        if ( this.animation ) {
-          this.animation.setInitialPosition &&
-              this.animation.setInitialPosition(true);
-          this.animation.openAnimation &&
-              this.animation.openAnimation();
-        }
-      }
-    },
-    {
-      name: 'close',
-      code: function() {
-        this.className = '';
-        if ( this.animation ) {
-          this.animation.setInitialPosition &&
-              this.animation.setInitialPosition(false);
-          this.animation.closeAnimation &&
-              this.animation.closeAnimation();
-        }
-      }
-    },
-    {
-      name: 'getPositionedAnimation',
-      code: function(positionPropName, isOpen) {
-        return Movement.animate(
-            isOpen ? this.openDuration : this.closeDuration,
-            function() {
-              if ( isOpen ) {
-                // this[positionPropName] = 0;
-              } else {
-                var parent = this.cssPosition === 'fixed' ?
-                    this.document.body : this.$.parentNode;
-                this[positionPropName] =
-                    (positionPropName.indexOf('left') >= 0 ||
-                    positionPropName.indexOf('right' >= 0)) ?
-                    parent.clientWidth : parent.clientHeight;
-              }
-              if ( this.overlayView )
-                this.overlayView.alpha = isOpen ? this.overlayView.openAlpha : 0;
-            }.bind(this),
-            this.animationEase,
-            function() {
-              this.className = isOpen ? 'open' : 'closed';
-            }.bind(this));
-      }
+    reject: function() { /* View Container Controller interface */
+      this.close();
     }
-  ],
+  },
 
   templates: [
     function toInnerHTML() {/*
-      <%
-        this.overlayView = this.overlay({ cssPosition: 'inerhit' });
-        this.delegateView = this.delegate();
-        this.addChild(this.overlayView);
-        this.addDataChild(this.delegateView);
-      %>
-      %%overlayView
-      <popup-container id="{{this.id}}-container">
-        <popup-view id="{{this.id}}-view">
-          %%delegateView
-        </popup-view>
-      </popup-container>
+      <div id="<%= this.id %>Blocker" class='popup-view-modal-blocker'></div>
+      <div id="<%= this.id %>Content"class='popup-view-content md-card'>
+        %%delegate()
+      </div>
     */},
     function CSS() {/*
-      popup.closed { display: none; }
-      popup.hidden { visibility: hidden; }
-      popup {
-        display: block;
-        z-index: 100;
-      }
-      popup-container {
-        position: inherit;
+      .popup-view-modal-blocker {
+        position: fixed;
         top: 0px;
         left: 0px;
-        right: 0px;
         bottom: 0px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
+        right: 0px;
+        background: black;
+        opacity: 0;
       }
-      popup-view {
-        display: block;
+      .popup-view-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        right: 0px;
+        z-index: 1000;
       }
     */}
   ]
