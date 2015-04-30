@@ -36,12 +36,12 @@ CLASS({
     'log',
     'lookup',
     'memento',
-    'onRegisterModel',
     'requestAnimationFrame',
     'setInterval',
     'setTimeout',
     'warn',
-    'window'
+    'window',
+    'as FOAMWindow'
   ],
 
   properties: [
@@ -96,29 +96,21 @@ CLASS({
       if ( ret && ! this.registeredModels[key] ) {
         // console.log('Registering Model: ', key);
         this.registeredModels[key] = true;
-        this.onRegisterModel(ret);
       }
       return ret;
     },
-    onRegisterModel: function(model) {
-      var Y        = this.Y;
-      var document = this.document;
-
-      // TODO(kgr): If Traits have CSS then it will get installed more than once.
-      // TODO(kgr): Add package support.
-      for ( var m = model ; m && m.getPrototype ; m = m.extendsModel && this[m.extendsModel] ) {
-        if ( this.installedModels[m.id] ) return;
-        this.installedModels[m.id] = true;
-        m.arequire()(function(m) {
-          m.getPrototype().installInDocument(Y, document);
-        });
-      }
+    installModel: function(model) {
+      if ( this.installedModels[model.id] ) return;
+      this.installedModels[model.id] = true;
+      model.getPrototype().installInDocument(this.Y, this.document);
     },
     addStyle: function(css) {
       if ( ! this.document || ! this.document.createElement ) return;
       var s = this.document.createElement('style');
       s.innerHTML = css;
-      this.document.head.appendChild(s);
+      this.document.head.insertBefore(
+        s,
+        this.document.head.firstElementChild);
     },
     log:   function() { this.console.log.apply(this.console, arguments); },
     warn:  function() { this.console.warn.apply(this.console, arguments); },

@@ -13,6 +13,17 @@ CLASS({
   name: 'Fonts',
   package: 'foam.apps.calc',
 
+  imports: [
+    'FOAMWindow'
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+      this.FOAMWindow.installModel(this.model_);
+    }
+  },
+
   templates: [
     function CSS() {/* {{{ this.CSS_ }}} */}
   ],
