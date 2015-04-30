@@ -191,6 +191,10 @@ var FObject = {
         if ( Model.isInstance(o) && o.name != 'Model' ) o.create = BootstrapModel.create;
       });
 
+      self.addInitAgent(0, 'Install model into window.', function(o, X, Y) {
+        if ( X.FOAMWindow ) X.FOAMWindow.installModel(o.model_);
+      });
+
       // Works if sort is 'stable', which it isn't in Chrome
       // agents.sort(function(o1, o2) { return o1[0] - o2[0]; });
 
@@ -270,7 +274,7 @@ var FObject = {
     return this;
   },
 
-  installInDocument: function(X, document) {
+  installInDocument__: function(X, document) {
     for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
       var t = this.model_.templates[i];
       if ( t.name === 'CSS' ) {

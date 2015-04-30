@@ -31,10 +31,6 @@ CLASS({
     'foam.ui.ViewChoice'
   ],
 
-  imports: [
-    'FOAMWindow'
-  ],
-
   properties: [
     {
       name: 'model'
@@ -210,8 +206,7 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      this.FOAMWindow.installModel(this.model_);
-
+      
       this.Y.registerModel(this.ActionButtonCView.xbind({
         alpha:      1,
         width:      48,

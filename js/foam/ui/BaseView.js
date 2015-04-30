@@ -25,10 +25,6 @@ CLASS({
     or allow setting of the $$DOC{ref:'.data'} property directly.
   */},
 
-  imports: [
-    'FOAMWindow'
-  ],
-
   properties: [
     {
       name: 'data',
@@ -42,11 +38,6 @@ CLASS({
   ],
 
   methods: {
-    init: function() {
-      this.SUPER();
-      this.FOAMWindow.installModel(this.model_);
-    },
-
     addDataChild: function(child) {
       /* For children that link to data$. Override to track the
         connections, if required. */

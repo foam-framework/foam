@@ -18,15 +18,6 @@
 CLASS({
   name: 'SharedStyles',
   package: 'foam.ui.md',
-  imports: [
-    'FOAMWindow',
-  ],
-  methods: {
-    init: function() {
-      this.SUPER();
-      this.FOAMWindow.installModel(this.model_);
-    }
-  },
   templates: [
     function CSS() {/*
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700);
