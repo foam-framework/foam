@@ -66,12 +66,5 @@ CLASS({
 //       }
 //     }
 
-  ],
-
-  methods: {
-    init: function() {
-      this.SUPER();
-      this.FOAMWindow.installModel(this.model_);
-    }
-  }
+  ]
 });
