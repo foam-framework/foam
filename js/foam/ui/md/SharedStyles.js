@@ -20,8 +20,6 @@ CLASS({
   package: 'foam.ui.md',
   templates: [
     function CSS() {/*
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700);
-
 body {
   font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
 }
