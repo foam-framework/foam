@@ -47,7 +47,7 @@ CLASS({
       return next;
     },
 
-    installInDocument: function(X, document) {
+    installInDocument__: function(X, document) {
       this.SUPER.apply(this, arguments);
       this.X.registerElement(
           this.getTagName(),

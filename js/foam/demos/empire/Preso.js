@@ -44,6 +44,10 @@ CLASS({
     'foam.memento.FragmentMementoMgr'
   ],
 
+  imports: [
+    'FOAMWindow'
+  ],
+
   exports: [
     'gestureManager',
     'touchManager'
