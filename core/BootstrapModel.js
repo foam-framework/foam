@@ -92,10 +92,6 @@ var BootstrapModel = {
     // extra memory in DEBUG mode.
     if ( DEBUG ) BootstrapModel.saveDefinition(this);
 
-    if ( ! this.finished__ && this.package && this.id != 'foam.ui.Window') {
-      console.warn("Building prototype of ", this.id, " before being ready.");
-    }
-
     function addTraitToModel(traitModel, parentModel) {
       var parentName = parentModel && parentModel.id ? parentModel.id.replace(/\./g, '__') : '';
       var traitName  = traitModel.id ? traitModel.id.replace(/\./g, '__') : '';

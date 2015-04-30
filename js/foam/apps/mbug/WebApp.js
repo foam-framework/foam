@@ -90,7 +90,8 @@ __DATA({
     'arrayDAO',
     'index',
     'models',
-    'oauth'
+    'oauth',
+    'NullModelDAO'
   ],
   extraModels: ['foam.ui.RelationshipView']
 });

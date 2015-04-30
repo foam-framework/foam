@@ -115,7 +115,7 @@ FOAM.browse = function(model, opt_dao, opt_X) {
 };
 
 
-function arequire(modelName, opt_X) {
+var arequire = function(modelName, opt_X) {
   var X = opt_X || GLOBAL.X;
   var model = X.lookup(modelName);
   if ( ! model ) {
