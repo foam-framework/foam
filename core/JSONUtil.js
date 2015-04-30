@@ -37,23 +37,23 @@ var AbstractFormatter = {
 
   stringify: function(obj) {
     var buf = '';
-    
+
     this.output(function() {
       for (var i = 0; i < arguments.length; i++)
         buf += arguments[i];
     }, obj);
-    
+
     return buf;
   },
 
   stringifyObject: function(obj, opt_defaultModel) {
     var buf = '';
-    
+
     this.outputObject_(function() {
       for (var i = 0; i < arguments.length; i++)
         buf += arguments[i];
     }, obj, opt_defaultModel);
-    
+
     return buf;
   },
 
@@ -132,7 +132,7 @@ var JSONUtil = {
 
           arequire(obj.model_)(function(model) {
             if ( ! model ) {
-               if ( obj.model_ !== 'Template' && obj.model_ !== 'ArrayProperty' && obj.model_ !== 'ViewFactoryProperty' && obj.model_ !== 'Documentation' && obj.model_ !== 'DocumentationProperty' )
+               if ( obj.model_ !== 'Template' && obj.model_ !== 'ArrayProperty' && obj.model_ !== 'ViewFactoryProperty' && obj.model_ !== 'Documentation' && obj.model_ !== 'DocumentationProperty' && obj.model_ !== 'CSSProperty' && obj.model_ !== 'FunctionProperty' )
                  console.warn('Failed to dynamically load: ', obj.model_);
               future.set(obj);
               return;
