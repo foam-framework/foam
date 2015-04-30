@@ -592,7 +592,7 @@ var BootstrapModel = {
 
       args.push(function(ret) {
         if ( this.X.i18nModel )
-          this.X.i18nModel(this, this.X, ret);
+          this.X.i18nModel(ret, this, this.X);
         else
           ret();
       }.bind(this));
