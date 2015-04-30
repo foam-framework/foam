@@ -46,7 +46,6 @@ CLASS({
       defaultValue: true,
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        this.resetClassName();
       },
     },
     {
