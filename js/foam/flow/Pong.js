@@ -43,6 +43,9 @@ CLASS({
       this.X.registerModel(this.SectionView.xbind({
         expandedIconUrl: 'https://www.gstatic.com/images/icons/material/system/1x/expand_less_black_36dp.png'
       }), 'foam.ui.md.SectionView');
+
+      // TODO: Remove this stuff once the template parser understand unknown tags
+      // better
       this.FOAMWindow.installModel(this.CodeView);
       this.FOAMWindow.installModel(this.QuoteCode);
       this.FOAMWindow.installModel(this.ExpandableSection);
