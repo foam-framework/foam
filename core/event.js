@@ -596,25 +596,23 @@ var Events = {
   dynamic: function(fn, opt_fn, opt_X) {
     var fn2 = opt_fn ? function() { opt_fn(fn()); } : fn;
     var listener = EventService.framed(fn2, opt_X);
-    var destroyHelper = {
-      listener: listener,
-      propertyValues: [].clone(),
-      destroy: function() {
-        this.propertyValues.forEach(function(p) {
-          p.removeListener(this.listener);
-        }.bind(this))
-      }
-    };
+    var propertyValues = [];
     Events.onGet.push(function(obj, name, value) {
       // Uncomment next line to debug.
       // obj.propertyValue(name).addListener(function() { console.log('name: ', name, ' listener: ', listener); });
       obj.propertyValue(name).addListener(listener);
-      destroyHelper.propertyValues.push(obj.propertyValue(name));
+      propertyValues.push(obj.propertyValue(name));
     });
     var ret = fn();
     Events.onGet.pop();
     opt_fn && opt_fn(ret);
-    return destroyHelper;
+    return {
+      destroy: function() {
+        propertyValues.forEach(function(p) {
+          p.removeListener(listener);
+        });
+      }
+    };
   },
 
   onSet: FunctionStack.create(),

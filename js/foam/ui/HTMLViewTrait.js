@@ -338,11 +338,18 @@ CLASS({
       predicate = predicate.bind(this);
 
       this.addInitializer(function() {
-        this.X.dynamic(predicate, function() {
-          var e = this.X.$(opt_id);
-          if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-          DOM.setClass(e, className, predicate());
-        }.bind(this));
+        this.addDestructor(
+          this.X.dynamic(
+            function() {
+              predicate(); this.className; this.extraClassName;
+            }.bind(this),
+            function() {
+              var e = this.X.$(opt_id);
+              if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+              DOM.setClass(e, className, predicate());
+            }.bind(this)
+          ).destroy
+        );
       }.bind(this));
 
       return opt_id;
