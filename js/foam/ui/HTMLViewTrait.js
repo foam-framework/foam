@@ -328,8 +328,12 @@ CLASS({
       /* Set a dynamic CSS class on the DOM element. */
       opt_id = opt_id || this.nextID();
       predicate = predicate.bind(this);
-
+      
       this.addInitializer(function() {
+        // Initialize
+        var ie = this.X.$(opt_id);
+        if ( ie ) DOM.setClass(ie, className, predicate());
+        // Listen for future changes
         this.addDestructor(
           this.X.dynamic(
             predicate,

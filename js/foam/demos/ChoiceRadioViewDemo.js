@@ -25,13 +25,16 @@ CLASS({
     'foam.input.touch.TouchManager',
     'foam.input.touch.GestureManager',
     'foam.ui.md.FlatButton',
-    'foam.ui.md.CheckboxView',
+    'foam.ui.md.CheckboxView',  
     'foam.ui.md.PopupChoiceView',
     'foam.ui.md.ToggleView',
     'foam.ui.md.EditableView',
     'foam.ui.md.PopupView',
-    'foam.demos.physics.Bubbles'
+    'foam.demos.physics.Bubbles',
+    'foam.ui.md.SharedStyles'
   ],
+
+  imports: ['FOAMWindow'],
 
   properties: [
     {
@@ -43,7 +46,7 @@ CLASS({
         }
         arr.push(['name', 'Other', 'user']);
         return arr; }
-    },
+    }, 
     {
       name: 'data',
       defaultValue: 'none'
@@ -110,6 +113,7 @@ CLASS({
 
   methods: {
     init: function() {
+      this.FOAMWindow.installModel(this.SharedStyles);
       this.Y.registerModel(this.FlatButton, 'foam.ui.ActionButton');
 
       this.SUPER();

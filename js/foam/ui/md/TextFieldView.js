@@ -46,6 +46,7 @@ CLASS({
       defaultValue: true,
       postSet: function(old, nu) {
         if ( old === nu ) return;
+        //TODO: re-render
       },
     },
     {
@@ -73,7 +74,10 @@ CLASS({
     {
       name: 'underline',
       documentation: 'When true, draws the underline for the text field.',
-      defaultValue: true
+      defaultValue: true,
+      postSet: function(old,nu) {
+        //TODO: re-render
+      }
     },
     {
       model_: 'StringProperty',
@@ -190,7 +194,7 @@ CLASS({
       }
     */},
     function toHTML() {/*
-      <%
+      <%      
         var input = this.inputId = this.nextID();
         var label = this.labelId = this.nextID();
 
@@ -201,19 +205,17 @@ CLASS({
         this.on('click',   this.onClick,   input);
         this.on('keydown', this.onKeyDown, input);
 
-        this.setClass('md-text-field-label-offset',
-          function() {
-            var floating = self.floatingLabel;
-            var focused = self.focused;
-            var data    = self.data;
-            return floating && focused || ('' + data).length > 0;
-          }, label
-        );
-        this.setClass('md-text-field-no-label',
-          function() {
-            return ! self.floatingLabel;
-          }, this.id
-        );
+        if ( this.floatingLabel ) {
+          this.setClass('md-text-field-label-offset',
+            function() {
+              var focused = self.focused;
+              var data    = self.data;
+              return focused || ('' + data).length > 0;
+            }, label
+          );
+        } else {
+          this.setClass('md-text-field-no-label', function() { return true; }, this.id);        
+        }
         this.setClass('disabled',
           function() {
             return self.mode == 'read-only';
