@@ -88,6 +88,12 @@ CLASS({
     },
     {
       model_: 'StringArrayProperty',
+      name: 'extraBuildFiles',
+      help: 'Extra files to load during the build process, but NOT include in the built image.',
+      adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
+    },
+    {
+      model_: 'StringArrayProperty',
       name: 'extraModels',
       help: 'Extra models to include in the image regardless of if they were arequired or not.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; },
@@ -308,8 +314,9 @@ CLASS({
         process.exit(1);
       }
 
-      for ( var i = 0 ; i < this.extraFiles.length ; i++ ) {
-        var path = this.getFilePath(this.extraFiles[i]);
+      var extraBuildFiles = this.extraBuildFiles.concat(this.extraFiles);
+      for ( var i = 0 ; i < extraBuildFiles.length ; i++ ) {
+        var path = this.getFilePath(extraBuildFiles[i]);
         require(path);
       }
 
