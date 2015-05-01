@@ -170,7 +170,7 @@ var FObject = {
       var fastInit = {
         Property: true,
         Method: true,
-        Listener: true,
+/*        Listener: true,
         Action: true,
         Constant: true,
         Message: true,
@@ -184,7 +184,7 @@ var FObject = {
         Element: true,
         StringProperty: true,
         BooleanProperty: true
-      }[this.name_];
+*/      }[this.name_];
 
       if ( fastInit ) {
         var keys = {};
@@ -192,7 +192,10 @@ var FObject = {
           keys[prop.name] = keys[prop.name$_] = true;
         });
         this.addInitAgent(0, 'fast copy args', function(o, X, Y, m) {
-          for ( var key in m ) if ( keys[key] ) o[key] = m[key];
+          if ( m.instance_ )
+            for ( var key in m ) o[key] = m[key];
+          else
+            for ( var key in m ) if ( keys[key] ) o[key] = m[key];
         });
       } /*else {
         this.addInitAgent(0, 'fast copy args', function(o, X, Y, m) {
