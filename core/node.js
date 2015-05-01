@@ -22,3 +22,6 @@ global.window = global;
 global.document = global;
 global.console.profile = function() {};
 global.console.profileEnd = function() {};
+global.window.performance = {};
+global.window.performance.now = function(){};
+global.console.markTimeline = function(){};
