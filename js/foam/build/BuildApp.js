@@ -199,6 +199,24 @@ CLASS({
     },
     {
       model_: 'StringArrayProperty',
+      name: 'i18nMessages',
+      adapt: function(_, s) {
+        if (typeof s === 'string') return s.split(',');
+        return s;
+      }
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'i18nTranslations',
+      adapt: function(_, s) {
+        if (typeof s === 'string') return s.split(',');
+        return s;
+      }
+    },
+    // TODO(markdittmer): Remove "i18nSources" when all build processes
+    // support distinction between i18nMessages and i18nTranslations.
+    {
+      model_: 'StringArrayProperty',
       name: 'i18nSources',
       adapt: function(_, s) {
         if (typeof s === 'string') return s.split(',');
