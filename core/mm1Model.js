@@ -169,7 +169,7 @@ var Model = {
       type: 'String',
       displayWidth: 70,
       displayHeight: 1,
-      defaultValueFn: function() { return this.name.labelize(); },
+      defaultValueFn: function() { return labelize(this.name); },
       help: 'The display label for the entity.',
       documentation: function() { /* A human readable label for the $$DOC{ref:'Model'}. May
         contain spaces or other odd characters.

@@ -62,7 +62,7 @@ var Property = {
       required: false,
       displayWidth: 70,
       displayHeight: 1,
-      defaultValueFn: function() { return this.name.labelize(); },
+      defaultValueFn: function() { return labelize(this.name); },
       help: 'The display label for the property.',
       documentation: function() { /* A human readable label for the $$DOC{ref:'.'}. May
         contain spaces or other odd characters.
@@ -84,7 +84,7 @@ var Property = {
       type: 'String',
       displayWidth: 70,
       displayHeight: 1,
-      defaultValueFn: function() { return this.name.labelize(); },
+      defaultValueFn: function() { return labelize(this.name); },
       help: 'The table display label for the entity.',
       documentation: function() { /* A human readable label for the $$DOC{ref:'Model'} for use in tables. May
         contain spaces or other odd characters.
