@@ -154,8 +154,9 @@ CLASS({
   methods: {
     getPropertyIC: function(propName) {
       propName = propName.toLowerCase();
-      for ( var i = 0 ; i < this.X.QIssue.properties_.length ; i++ ) {
-        var prop = this.X.QIssue.properties_[i];
+      var properties = this.X.QIssue.getRuntimeProperties();
+      for ( var i = 0 ; i < properties.length ; i++ ) {
+        var prop = properties[i];
 
         if ( prop.name.toLowerCase() === propName ) return prop;
 
@@ -181,8 +182,9 @@ CLASS({
       var methodName = opt_methodName || 'toMemento';
       var s = '';
       var d = '';
-      for ( var i = 0 ; i < this.model_.properties_.length ; i++ ) {
-        var prop  = this.model_.properties_[i];
+      var properties = this.model_.getRuntimeProperties();
+      for ( var i = 0 ; i < properties.length ; i++ ) {
+        var prop  = properties[i];
         var key   = prop.name;
         try {
           if ( this.hasOwnProperty(key) ) {
@@ -214,8 +216,9 @@ CLASS({
       }
 
       // Set or reset each property value
-      for ( var i = 0 ; i < this.model_.properties_.length ; i++ ) {
-        var prop = this.model_.properties_[i];
+      var properties = this.model_.getRuntimeProperties();
+      for ( var i = 0 ; i < properties.length ; i++ ) {
+        var prop = properties[i];
         var key  = prop.name;
         try {
           if ( m.hasOwnProperty(key) ) {

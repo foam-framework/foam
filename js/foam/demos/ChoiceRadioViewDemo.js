@@ -25,12 +25,16 @@ CLASS({
     'foam.input.touch.TouchManager',
     'foam.input.touch.GestureManager',
     'foam.ui.md.FlatButton',
-    'foam.ui.md.CheckboxView',
+    'foam.ui.md.CheckboxView',  
     'foam.ui.md.PopupChoiceView',
     'foam.ui.md.ToggleView',
     'foam.ui.md.EditableView',
-    'foam.ui.md.PopupView'
+    'foam.ui.md.PopupView',
+    'foam.demos.physics.Bubbles',
+    'foam.ui.md.SharedStyles'
   ],
+
+  imports: ['FOAMWindow'],
 
   properties: [
     {
@@ -42,7 +46,7 @@ CLASS({
         }
         arr.push(['name', 'Other', 'user']);
         return arr; }
-    },
+    }, 
     {
       name: 'data',
       defaultValue: 'none'
@@ -60,6 +64,16 @@ CLASS({
       model_: 'BooleanProperty',
       name: 'showButton',
       defaultValue: true
+    },
+    {
+      name: 'popupView',
+      lazyFactory: function() {
+        return this.PopupView.create({
+          delegate: {
+            factory_:'foam.demos.physics.Bubbles',
+          }
+        });
+      }
     }
   ],
 
@@ -68,8 +82,9 @@ CLASS({
       name: 'oneAction',
       label: 'one',
       action: function() {
-        console.log("one action actionated");
-        this.closeActionView.open();
+        console.log("one action opened");
+        this.popupView.open();
+        this.X.setTimeout(this.popupView.close.bind(this.popupView), 3000);
       },
       isEnabled: function(action) {
         return this.enabledButton;
@@ -82,8 +97,8 @@ CLASS({
       name: 'closeAction',
       label: 'Close',
       action: function() {
-        console.log("one action actionated");
-        this.closeActionView.close();
+        console.log("action close");
+        this.popupView.close();
       },
       isEnabled: function(action) {
         return this.enabledButton;
@@ -98,6 +113,7 @@ CLASS({
 
   methods: {
     init: function() {
+      this.FOAMWindow.installModel(this.SharedStyles);
       this.Y.registerModel(this.FlatButton, 'foam.ui.ActionButton');
 
       this.SUPER();
@@ -151,7 +167,6 @@ CLASS({
         $$oneAction
         $$enabledButton{model_:'foam.ui.md.CheckboxView', label: 'Button Enabled'}
         $$showButton{model_:'foam.ui.md.ToggleView', label: 'Button Show'}
-        $$closeAction{model_: 'foam.ui.md.PopupView', delegate: { factory_:'foam.ui.md.FlatButton', action: this.CLOSE_ACTION } }
     */}
   ]
 

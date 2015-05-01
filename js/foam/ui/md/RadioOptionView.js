@@ -23,8 +23,7 @@ CLASS({
 
   documentation: "A single radio button. Used by $$DOC{ref:'foam.ui.md.ChoiceRadioView'}",
 
-  requires: [ 'foam.ui.md.SharedStyles',
-              'foam.ui.md.HaloView' ],
+  requires: [ 'foam.ui.md.HaloView' ],
 
   properties: [
     {

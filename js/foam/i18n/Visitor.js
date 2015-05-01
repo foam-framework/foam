@@ -48,10 +48,11 @@ CLASS({
 
   methods: [
     {
-      name: 'visitModel',
+      name: 'avisitModel',
       code: function(model) {
-        if ( ! this.revisitModels && this.visitedModels[model.id] )
-          return this;
+        if ( ! this.revisitModels && this.visitedModels[model.id] ) {
+          return aconstant(model);
+        }
         var self = this;
         var modelPrefix = model.translationHint ?
             model.translationHint + ' ' : '';
@@ -72,7 +73,7 @@ CLASS({
           }
         }
         this.visitedModels[model.id] = true;
-        return this;
+        return aconstant(model);
       }
     },
     {

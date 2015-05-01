@@ -216,7 +216,7 @@ CLASS({
         var v = this.EditColumnsView.create({
           model:               this.model,
           properties:          this.properties || this.model.tableProperties,
-          availableProperties: this.model.properties_
+          availableProperties: this.model.getRuntimeProperties()
         });
 
         v.addPropertyListener('properties', function() {

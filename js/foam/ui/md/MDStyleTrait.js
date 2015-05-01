@@ -19,8 +19,6 @@ CLASS({
   name: 'MDStyleTrait',
   package: 'foam.ui.md',
 
-  requires: ['foam.ui.md.SharedStyles'],
-
   documentation: function() {/* Provides standard styling options and
     CSS for foam.ui.md views. */},
 

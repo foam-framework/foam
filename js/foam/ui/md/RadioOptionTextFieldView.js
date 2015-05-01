@@ -22,8 +22,7 @@ CLASS({
   extendsModel: 'foam.ui.md.RadioOptionView',
   documentation: "A single radio button with text field to enter value. Used by $$DOC{ref:'foam.ui.md.ChoiceRadioView'}",
 
-  requires: [ 'foam.ui.md.SharedStyles' ,
-              'foam.ui.md.TextFieldView as TextFieldView'],
+  requires: [ 'foam.ui.md.TextFieldView as TextFieldView'],
 
   properties: [
     {

@@ -47,7 +47,7 @@ CLASS({
       return next;
     },
 
-    installInDocument: function(X, document) {
+    installInDocument__: function(X, document) {
       this.SUPER.apply(this, arguments);
       this.X.registerElement(
           this.getTagName(),
@@ -63,8 +63,9 @@ CLASS({
         var childrenToRemove = [];
         for ( var i = 0 ; i < e.children.length ; i++ ) {
           var child = e.children[i];
-          for ( var j = 0 ; j < this.model_.properties_.length ; j++ ) {
-            var prop = this.model_.properties_[j];
+          var properties = this.model_.getRuntimeProperties();
+          for ( var j = 0 ; j < properties.length ; j++ ) {
+            var prop = properties[j];
             if ( child.nodeName === prop.name ) {
               childrenToRemove.push(child);
               break;

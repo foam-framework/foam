@@ -30,7 +30,6 @@ CLASS({
     'foam.documentation.diagram.DocDiagramView',
     'foam.documentation.diagram.DocModelDiagramView',
     'foam.flow.CodeSample',
-    'foam.flow.CodeSample',
     'foam.flow.Slides',
     'foam.graphics.Circle',
     'foam.graphics.Gauge',
@@ -43,6 +42,10 @@ CLASS({
     'foam.ui.ViewChoice',
     'foam.ui.md.TwoPaneView',
     'foam.memento.FragmentMementoMgr'
+  ],
+
+  imports: [
+    'FOAMWindow'
   ],
 
   exports: [
@@ -76,6 +79,7 @@ CLASS({
     init: function() {
       this.SUPER.apply(this, arguments);
       this.X.registerElement('circle', 'foam.graphics.Circle');
+      this.FOAMWindow.installModel(this.Slides);
     }
   },
 

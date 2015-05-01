@@ -62,9 +62,9 @@ var FObject = {
     o.X = (opt_X || X);
     o.Y = o.X.sub({}, (o.X.NAME ? o.X.NAME : '') + 'Y');
 
-    if ( this.model_.imports_ && this.model_.imports_.length ) {
+    if ( this.model_.instance_.imports_ && this.model_.instance_.imports_.length ) {
       if ( ! Object.prototype.hasOwnProperty.call(this, 'imports__') ) {
-        this.imports__ = this.model_.imports_.map(function(e) {
+        this.imports__ = this.model_.instance_.imports_.map(function(e) {
           var s = e.split(' as ');
           return [s[0], s[1] || s[0]];
         });
@@ -136,7 +136,7 @@ var FObject = {
       var self = this;
 
       // Four cases for export: 'this', a method, a property value$, a property
-      Object_forEach(this.model_.exports_, function(e) {
+      Object_forEach(this.model_.instance_.exports_, function(e) {
         var exp = e.split('as ');
 
         if ( exp.length == 0 ) return;
@@ -167,9 +167,43 @@ var FObject = {
         }
       });
 
-      this.model_.properties_.forEach(function(prop) {
+      var fastInit = {
+        Property: true,
+        Method: true,
+        Listener: true,
+        Action: true,
+        Constant: true,
+        Message: true,
+        Template: true,
+        PropertyView: true,
+        TextFieldView: true,
+        SimpleValue: true,
+        DocumentationProperty: true,
+//        Model: true,
+        IntProperty: true,
+        Element: true,
+        StringProperty: true,
+        BooleanProperty: true
+      }[this.name_];
+
+      if ( fastInit ) {
+        var keys = {};
+        this.model_.getRuntimeProperties().forEach(function(prop) {
+          keys[prop.name] = keys[prop.name$_] = true;
+        });
+        this.addInitAgent(0, 'fast copy args', function(o, X, Y, m) {
+          for ( var key in m ) if ( keys[key] ) o[key] = m[key];
+        });
+      } /*else {
+        this.addInitAgent(0, 'fast copy args', function(o, X, Y, m) {
+          console.log('slowInit: ', self.name_);
+        });
+
+      }*/
+
+      this.model_.getRuntimeProperties().forEach(function(prop) {
         if ( prop.initPropertyAgents ) {
-          prop.initPropertyAgents(self);
+          prop.initPropertyAgents(self, fastInit);
         } else {
           self.addInitAgent(
             0,
@@ -189,6 +223,10 @@ var FObject = {
       // Add shortcut create() method to Models
       self.addInitAgent(0, 'Add create() to Model', function(o, X, Y) {
         if ( Model.isInstance(o) && o.name != 'Model' ) o.create = BootstrapModel.create;
+      });
+
+      self.addInitAgent(9, 'Install model into window.', function(o, X, Y) {
+        if ( X.FOAMWindow ) X.FOAMWindow.installModel(o.model_);
       });
 
       // Works if sort is 'stable', which it isn't in Chrome
@@ -220,8 +258,9 @@ var FObject = {
     // TODO: do we have a method to lookupIC?
     if ( ! elements ) {
       elements = {};
-      for ( var i = 0 ; i < this.model_.properties_.length ; i++ ) {
-        var p = this.model_.properties_[i];
+      var properties = this.model_.getRuntimeProperties();
+      for ( var i = 0 ; i < properties.length ; i++ ) {
+        var p = properties[i];
         if ( ! RESERVED_ATTRS[p.name] ) {
           elements[p.name] = p;
           elements[p.name.toUpperCase()] = p;
@@ -269,7 +308,7 @@ var FObject = {
     return this;
   },
 
-  installInDocument: function(X, document) {
+  installInDocument__: function(X, document) {
     for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
       var t = this.model_.templates[i];
       if ( t.name === 'CSS' ) {
@@ -313,7 +352,9 @@ var FObject = {
   },
 
   writeActions: function(other, out) {
-    for ( var i = 0, property ; property = this.model_.properties_[i] ; i++ ) {
+    var properties = this.model_.getRuntimeProperties();
+
+    for ( var i = 0, property ; property = properties[i] ; i++ ) {
       if ( property.actionFactory ) {
         var actions = property.actionFactory(this, property.f(this), property.f(other));
         for (var j = 0; j < actions.length; j++)
@@ -328,11 +369,11 @@ var FObject = {
     if ( other === this ) return 0;
     if ( this.model_ !== other.model_ ) {
       // TODO: This provides unstable ordering if two objects have a different model_
-      // but they have the same name.
-      return this.model_.name.compareTo(other.model_ && other.model_.name) || 1;
+      // but they have the same id.
+      return this.model_.id.compareTo(other.model_ && other.model_.id) || 1;
     }
 
-    var ps = this.model_.properties_;
+    var ps = this.model_.getRuntimeProperties();
 
     for ( var i = 0 ; i < ps.length ; i++ ) {
       var r = ps[i].compare(this, other);
@@ -346,7 +387,8 @@ var FObject = {
   diff: function(other) {
     var diff = {};
 
-    for ( var i = 0, property; property = this.model_.properties_[i]; i++ ) {
+    var properties = this.model_.getRuntimeProperties();
+    for ( var i = 0, property; property = properties[i]; i++ ) {
       if ( Array.isArray(property.f(this)) ) {
         var subdiff = property.f(this).diff(property.f(other));
         if ( subdiff.added.length !== 0 || subdiff.removed.length !== 0 ) {
@@ -500,8 +542,9 @@ var FObject = {
   hashCode: function() {
     var hash = 17;
 
-    for ( var i = 0; i < this.model_.properties_.length ; i++ ) {
-      var prop = this[this.model_.properties_[i].name];
+    var properties = this.model_.getRuntimeProperties();
+    for ( var i = 0; i < properties.length ; i++ ) {
+      var prop = this[properties[i].name];
       var code = ! prop ? 0 :
         prop.hashCode   ? prop.hashCode()
                         : prop.toString().hashCode();
@@ -522,8 +565,9 @@ var FObject = {
 
   // TODO: this should be monkey-patched from a 'ProtoBuf' library
   outProtobuf: function(out) {
-    for ( var i = 0; i < this.model_.properties_.length; i++ ) {
-      var prop = this.model_.properties_[i];
+    var proprties = this.model_getRuntimeProperties();
+    for ( var i = 0; i < properties.length; i++ ) {
+      var prop = properties[i];
       if ( Number.isFinite(prop.prototag) )
         prop.outProtobuf(this, out);
     }
@@ -587,7 +631,7 @@ var FObject = {
 */
 
     if ( src && this.model_ ) {
-      var ps = this.model_.properties_;
+      var ps = this.model_.getRuntimeProperties();
       for ( var i = 0 ; i < ps.length ; i++ ) {
         var prop = ps[i];
         if ( src.hasOwnProperty(prop.name) ) this[prop.name] = src[prop.name];

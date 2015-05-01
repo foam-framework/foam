@@ -419,8 +419,9 @@ CLASS({
                 var newValues = {};
 
                 // Create initial values
-                for ( var i = 0 ; i < this.model_.properties_.length ; i++ ) {
-                  var p = this.model_.properties_[i];
+                var properties = this.model_.getRuntimeProperties();
+                for ( var i = 0 ; i < properties.length ; i++ ) {
+                  var p = properties[i];
                   
                   if ( p.name_ === 'LabelArrayProperty' ) {
                     newValues[p.name] = [];
@@ -806,7 +807,7 @@ CLASS({
 
         model.getPrototype();
 
-        model.properties_.forEach(function(p) {
+        model.getRuntimeProperties().forEach(function(p) {
           if ( ! p["tableFormatter"] ) {
             p["tableFormatter"] = function(v) {
               return v || '----';

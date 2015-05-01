@@ -108,7 +108,6 @@ CLASS({
       <% } %>
         </div>
 <%        }%>
-      <% this.setMDClasses(); %>
     */},
 
     function CSS() {/*

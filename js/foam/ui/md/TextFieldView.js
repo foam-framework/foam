@@ -24,7 +24,7 @@ CLASS({
   properties: [
     {
       name: 'className',
-      defaultValueFn: function() { return this.resetClassName(); },
+      defaultValue: 'md-text-field-container'
     },
     { name: 'data' },
     { name: 'softData' },
@@ -46,7 +46,7 @@ CLASS({
       defaultValue: true,
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        this.resetClassName();
+        //TODO: re-render
       },
     },
     {
@@ -74,7 +74,10 @@ CLASS({
     {
       name: 'underline',
       documentation: 'When true, draws the underline for the text field.',
-      defaultValue: true
+      defaultValue: true,
+      postSet: function(old,nu) {
+        //TODO: re-render
+      }
     },
     {
       model_: 'StringProperty',
@@ -87,7 +90,6 @@ CLASS({
       documentation: function() { /* Can be 'read-only', or 'read-write'. */},
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        this.resetClassName();
         if ( this.$input ) {
           if ( nu === 'read-only' )
             this.$input.setAttribute('disabled', 'true');
@@ -116,14 +118,6 @@ CLASS({
     },
     blur: function() {
       this.$input && this.$input.blur();
-    },
-    resetClassName: function() {
-      // TODO(markdittmer): This should work with events.dynamic() in init(),
-      // but that doesn't seem to be working right now.
-      this.className = 'md-text-field-container' + (this.floatingLabel ?
-          '' : ' md-text-field-no-label') +
-          (this.mode == 'read-only' ? ' disabled' : '');
-      return this.className;
     },
   },
   templates: [
@@ -200,7 +194,7 @@ CLASS({
       }
     */},
     function toHTML() {/*
-      <%
+      <%      
         var input = this.inputId = this.nextID();
         var label = this.labelId = this.nextID();
 
@@ -217,8 +211,16 @@ CLASS({
               var focused = self.focused;
               var data    = self.data;
               return focused || ('' + data).length > 0;
-            }, label);
+            }, label
+          );
+        } else {
+          this.setClass('md-text-field-no-label', function() { return true; }, this.id);        
         }
+        this.setClass('disabled',
+          function() {
+            return self.mode == 'read-only';
+          }, this.id
+        );
 
         this.setMDClasses();
       %>

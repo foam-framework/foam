@@ -240,7 +240,7 @@ var Model = {
       defaultValueFn: function() {
         var id = this.getProperty('id');
         if ( id ) return ['id'];
-        return (this.properties_ && this.properties_.length) ? [this.properties_[0].name] : [];
+        return [this.getRuntimeProperties()[0].name];
       },
       help: 'Properties which make up unique id.',
       documentation: function() { /* An optional list of names of $$DOC{ref:'Property',usePlural:true} from
