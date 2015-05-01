@@ -194,8 +194,17 @@ CLASS({
     },
     {
       model_: 'StringProperty',
-      name: 'i18nSourcePath',
-      defaultValue: 'en'
+      name: 'i18nMessagesPath'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'i18nTranslationsPath'
+    },
+    // TODO(markdittmer): Remove "i18nSourcePath" when all build processes
+    // support distinction between messages and translations.
+    {
+      model_: 'StringProperty',
+      name: 'i18nSourcePath'
     },
     {
       model_: 'StringArrayProperty',
@@ -214,7 +223,7 @@ CLASS({
       }
     },
     // TODO(markdittmer): Remove "i18nSources" when all build processes
-    // support distinction between i18nMessages and i18nTranslations.
+    // support distinction between messages and translations.
     {
       model_: 'StringArrayProperty',
       name: 'i18nSources',
