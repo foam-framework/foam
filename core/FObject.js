@@ -176,7 +176,7 @@ var FObject = {
         Message: true,
         Template: true,
         PropertyView: true,
-        TextFieldView: true,
+//        TextFieldView: true,
         SimpleValue: true,
         DocumentationProperty: true,
 //        Model: true,

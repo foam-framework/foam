@@ -96,12 +96,11 @@ CLASS({
         border: solid 2px #5a5a5a;
         box-sizing: border-box;
         display: inline-block;
-        height: 18px;
         pointer-events: none;
         position: absolute;
         transition: background-color 140ms, border-color 140ms;
-        width: 18px;
         opacity: 0.3;
+        fill: rgba(0,0,0,0);
       }
 
       .checkbox-container.enabled .checkbox-data-container {
@@ -111,42 +110,40 @@ CLASS({
       .checkbox-container.checked .checkbox-data-container {
         background-color: #04A9F4;
         border-color: #04A9F4;
+        fill: white;
       }
-
-      .checkbox-data {
-        transform: rotate(45deg);
-        width: 5px;
-        height: 10px;
-        border-style: solid;
-        border-top: none;
-        border-left: none;
-        border-right-width: 2px;
-        border-bottom-width: 2px;
-        border-color: white;
-        margin: auto;
-        margin-top: -1px;
-        -webkit-animation: checkmark-expand 140ms ease-out forwards;
-      }
-
-
 
       .checkbox-label-ro {
         margin-left: 10px;
       }
 
-      .checkbox-data-ro {
-        color: #9e9e9e;
-        font-size: 150%;
+      .checkbox-data {
+        width: 18px;
+        height: 18px;
+      }
+
+      .checkbox-data.ro {
+        fill: #9e9e9e;
         visibility: hidden;
       }
-      .checked .checkbox-data-ro {
+      .checked .checkbox-data.ro {
         visibility: visible;
       }
     */},
+
+    function checkIcon() {/*
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+        <path d="M0 0h48v48H0z" fill="none"/>
+        <path d="M18 32.34L9.66 24l-2.83 2.83L18 38l24-24-2.83-2.83z"/>
+      </svg>
+    */},
+
     function toHTML() {/*
       <% if (this.mode === 'read-only') { %>
-        <div id="%%id" <%= this.cssClassAttr() %>>
-          <div class="checkbox-data-ro">&#x2713;</div>
+        <div id="%%id" <%= this.cssClassAttr() %> >
+          <div class="checkbox-data ro">
+            <%= this.checkIcon() %>
+          </div>
           <div class="checkbox-label-ro"><%= this.label %></div>
         </div>
         <% this.setClass('checked', function() { return !!self.data; },
@@ -155,8 +152,8 @@ CLASS({
         <div id="%%id" <%= this.cssClassAttr() %>>
           <span class="checkbox-label noselect"><%# this.label %></span>
           <div class="checkbox-data-outer noselect">
-            <div class="checkbox-data-container">
-              <div class="checkbox-data"></div>
+            <div class="checkbox-data-container checkbox-data">
+              <%= this.checkIcon() %>
             </div>
             <div class="checkbox-halo noselect"><%= this.halo %></div>
           </div>
@@ -170,9 +167,9 @@ CLASS({
           this.setClass('checked', function() { return !!self.data; }, this.id);
           this.setClass('enabled', function() { return !!self.enabled; },
               this.id);
-          this.setMDClasses();
         %>
       <% } %>
+      <% this.setMDClasses(); %>
     */}
   ]
 });
