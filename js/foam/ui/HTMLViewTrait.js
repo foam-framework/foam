@@ -330,10 +330,6 @@ CLASS({
       predicate = predicate.bind(this);
       
       this.addInitializer(function() {
-        // Initialize
-        var ie = this.X.$(opt_id);
-        if ( ie ) DOM.setClass(ie, className, predicate());
-        // Listen for future changes
         this.addDestructor(
           this.X.dynamic(
             predicate,
