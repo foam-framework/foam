@@ -57,6 +57,20 @@ var FObject = {
       if ( ret ) return ret.create(args, opt_X);
     }
 
+//    window.CREATES = (window.CREATES || {});
+//    var id = this.model_.id ||
+//      ((this.model_.package ? this.model_.package + '.' : '' ) + this.model_.name);
+
+//    var log = window.CREATES[id] = window.CREATES[id] || {
+//      count:0,
+//      min: Infinity,
+//      max: 0,
+//      sum: 0,
+//      all: []
+//    };
+//    log.count++;
+//    var time = window.performance.now();
+
     var o = this.create_(this);
     o.instance_ = {};
     o.X = (opt_X || X);
@@ -84,6 +98,21 @@ var FObject = {
     }
 
     o.init(args);
+
+//    var end = window.performance.now();
+//    time = end - time;
+//    log.min = Math.min(time, log.min);
+//    if ( time > log.max ) {
+//      log.max = time;
+//      log.maxObj = o;
+//    }
+//    log.all.push({
+//      name: o.name,
+//      time: time,
+//      obj: o,
+//    });
+//    log.sum += time;
+//    log.avg = log.sum / log.count;
 
     return o;
   },
