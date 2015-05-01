@@ -57,6 +57,20 @@ var FObject = {
       if ( ret ) return ret.create(args, opt_X);
     }
 
+//    window.CREATES = (window.CREATES || {});
+//    var id = this.model_.id ||
+//      ((this.model_.package ? this.model_.package + '.' : '' ) + this.model_.name);
+
+//    var log = window.CREATES[id] = window.CREATES[id] || {
+//      count:0,
+//      min: Infinity,
+//      max: 0,
+//      sum: 0,
+//      all: []
+//    };
+//    log.count++;
+//    var time = window.performance.now();
+
     var o = this.create_(this);
     o.instance_ = {};
     o.X = (opt_X || X);
@@ -84,6 +98,21 @@ var FObject = {
     }
 
     o.init(args);
+
+//    var end = window.performance.now();
+//    time = end - time;
+//    log.min = Math.min(time, log.min);
+//    if ( time > log.max ) {
+//      log.max = time;
+//      log.maxObj = o;
+//    }
+//    log.all.push({
+//      name: o.name,
+//      time: time,
+//      obj: o,
+//    });
+//    log.sum += time;
+//    log.avg = log.sum / log.count;
 
     return o;
   },
@@ -170,7 +199,7 @@ var FObject = {
       var fastInit = {
         Property: true,
         Method: true,
-        Listener: true,
+/*        Listener: true,
         Action: true,
         Constant: true,
         Message: true,
@@ -184,7 +213,7 @@ var FObject = {
         Element: true,
         StringProperty: true,
         BooleanProperty: true
-      }[this.name_];
+*/      }[this.name_];
 
       if ( fastInit ) {
         var keys = {};
@@ -192,7 +221,10 @@ var FObject = {
           keys[prop.name] = keys[prop.name$_] = true;
         });
         this.addInitAgent(0, 'fast copy args', function(o, X, Y, m) {
-          for ( var key in m ) if ( keys[key] ) o[key] = m[key];
+          if ( m.instance_ )
+            for ( var key in m ) o[key] = m[key];
+          else
+            for ( var key in m ) if ( keys[key] ) o[key] = m[key];
         });
       } /*else {
         this.addInitAgent(0, 'fast copy args', function(o, X, Y, m) {
