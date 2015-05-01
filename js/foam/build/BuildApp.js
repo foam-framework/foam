@@ -183,6 +183,8 @@ CLASS({
       help: 'List of extra .js hierarchies to load models from.  Paths will be checked in the order given, finally falling back to the main FOAM js/ hierarchy.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
+    // TODO(markdittmer): Remove "sourceLocale" when all build processes
+    // no longer require it.
     {
       model_: 'StringProperty',
       name: 'sourceLocale',
