@@ -115,7 +115,7 @@ CLASS({
     blur: function() {
       this.$input && this.$input.blur();
     },
-  }
+  },
   templates: [
     function CSS() {/*
       .md-text-field-container {
