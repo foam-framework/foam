@@ -599,14 +599,16 @@ var BootstrapModel = {
           ret();
       }.bind(this));
 
-      apar.apply(null, args)(function() {
+      aseq.apply(null, args)(function() {
         this.finished__ = true;
         future.set(this);
       }.bind(this));
     }.bind(this);
 
-    if ( this.extra__ ) this.extra__(go);
-    else go();
+    if ( this.extra__ )
+      this.extra__(go);
+    else
+      go();
 
     return this.required__
   },
