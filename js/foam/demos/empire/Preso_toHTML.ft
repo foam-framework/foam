@@ -92,6 +92,7 @@ CLASS({
           <li>Animations</li>
           <li>Queries (mLang)</li>
           <li>Parsers</li>
+          <li>Interactive Documents (FLOW)<li>
           <li>...</li>
         </ul>
       </div>
