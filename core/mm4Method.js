@@ -603,6 +603,7 @@ CLASS({
       displayWidth: 70,
       displayHeight: 6,
       defaultValue: '',
+      debug: true,
       help: 'Help text associated with the entity.',
       documentation: function() { /*
           This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
