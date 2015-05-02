@@ -412,7 +412,8 @@ CLASS({
     {
       name: 'adapt',
       defaultValue: function(_, a, prop) {
-        var m = this.X.lookup(prop.subType) || GLOBAL.lookup(prop.subType);
+        var m = prop.subType_ || ( prop.subType_ =
+          this.X.lookup(prop.subType) || GLOBAL.lookup(prop.subType) );
 
         if ( m ) {
           for ( var i = 0 ; i < a.length ; i++ ) {
