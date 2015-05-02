@@ -392,6 +392,12 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
 
           if ( typeof p === 'string' ) newValue[i] = p = { name: p };
 
+          if ( ( ( ! DEBUG ) && p.debug ) && ( ! p.model_ || typeof p.model_ === 'string' ) ) {
+            newValue.splice(i,1);
+            i--;
+            continue;
+          }
+
           if ( ! p.model_ ) {
             p = newValue[i] = Property.create(p);
           } else if ( typeof p.model_ === 'string' ) {

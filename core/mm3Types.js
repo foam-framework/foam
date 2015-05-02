@@ -911,9 +911,10 @@ CLASS({
     { // Note: defaultValue: for the getter function didn't work. factory: does.
       name: 'getter',
       type: 'Function',
+      debug: true,
       defaultValue: function(name) {
         var doc = this.instance_[name]
-        if (doc && typeof Documentation != "undefined" && Documentation // a source has to exist (otherwise we'll return undefined below)
+        if (doc && typeof Documentation != 'undefined' && Documentation // a source has to exist (otherwise we'll return undefined below)
             && (  !doc.model_ // but we don't know if the user set model_
                   || !doc.model_.getPrototype // model_ could be a string
                   || !Documentation.isInstance(doc) // check for correct type
@@ -932,15 +933,18 @@ CLASS({
     },
     {
       name: 'view',
-      defaultValue: 'foam.ui.DetailView'
+      defaultValue: 'foam.ui.DetailView',
+      debug: true
     },
     {
       name: 'help',
-      defaultValue: 'Documentation for this entity.'
+      defaultValue: 'Documentation for this entity.',
+      debug: true
     },
     {
       name: 'documentation',
-      factory: function() { return "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation."; }
+      factory: function() { return "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation."; },
+      debug: true
    }
   ]
 });
