@@ -457,6 +457,7 @@ var FObject = {
 
     if ( prop.getter ) {
       this.defineFOAMGetter(name, prop.getter);
+//      this.defineFOAMGetter(name, function() { console.log('getter', this.name_, prop.name); return prop.getter.call(this); });
     } else {
       if ( prop.lazyFactory ) {
         var getter = function() {
