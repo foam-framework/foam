@@ -428,7 +428,7 @@ CLASS({
     {
       name: 'postSet',
       defaultValue: function(oldA, a, prop) {
-        var name = prop.name + 'ArrayRelay_';
+        var name = prop.nameArrayRelay_ || ( prop.nameArrayRelay_ = prop.name + 'ArrayRelay_' );
         var l = this[name] || ( this[name] = function() {
           this.propertyChange(prop.name, null, this[prop.name]);
         }.bind(this) );
