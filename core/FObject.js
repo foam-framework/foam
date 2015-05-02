@@ -221,10 +221,12 @@ var FObject = {
           keys[prop.name] = keys[prop.name$_] = true;
         });
         this.addInitAgent(0, 'fast copy args', function(o, X, Y, m) {
-          if ( m.instance_ )
+          if ( m.instance_ ) {
+            m = m.instance_;
             for ( var key in m ) o[key] = m[key];
-          else
+          } else {
             for ( var key in m ) if ( keys[key] ) o[key] = m[key];
+          }
         });
       } /*else {
         this.addInitAgent(0, 'fast copy args', function(o, X, Y, m) {
@@ -455,6 +457,7 @@ var FObject = {
 
     if ( prop.getter ) {
       this.defineFOAMGetter(name, prop.getter);
+//      this.defineFOAMGetter(name, function() { console.log('getter', this.name_, prop.name); return prop.getter.call(this); });
     } else {
       if ( prop.lazyFactory ) {
         var getter = function() {

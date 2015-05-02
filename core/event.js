@@ -97,7 +97,7 @@ MODEL({
           }
         };
 
-        f.toString = function() {
+        if ( DEBUG ) f.toString = function() {
           return 'MERGED(' + delay + ', ' + listener.$UID + ', ' + listener + ')';
         };
 
@@ -140,7 +140,7 @@ MODEL({
           }
         };
 
-        f.toString = function() {
+        if ( DEBUG ) f.toString = function() {
           return 'ANIMATE(' + listener.$UID + ', ' + listener + ')';
         };
 

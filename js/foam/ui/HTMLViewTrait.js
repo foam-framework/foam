@@ -62,9 +62,7 @@ CLASS({
       hidden: true,
       mode:   "read-only",
       setter: function() { debugger; },
-      getter: function() {
-        return this.X.document.getElementById(this.id);
-      },
+      getter: function() { return this.X.document.getElementById(this.id); },
       help: 'DOM Element.'
     },
     {
@@ -328,7 +326,7 @@ CLASS({
       /* Set a dynamic CSS class on the DOM element. */
       opt_id = opt_id || this.nextID();
       predicate = predicate.bind(this);
-      
+
       this.addInitializer(function() {
         this.addDestructor(
           this.X.dynamic(

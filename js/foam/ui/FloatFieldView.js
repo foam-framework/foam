@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 CLASS({
-  name: 'FloatFieldView',
   package: 'foam.ui',
+  name: 'FloatFieldView',
 
   extendsModel: 'foam.ui.AbstractNumberFieldView',
 
@@ -41,5 +41,3 @@ CLASS({
     textToValue: function(text) { return parseFloat(text) || 0; }
   }
 });
-
-

@@ -329,6 +329,10 @@ MODEL({
   ]
 });
 
+var labelize = memoize1(function(str) {
+  return capitalize(str.replace(/[a-z][A-Z]/g, function (a) { return a.charAt(0) + ' ' + a.charAt(1); }));
+});
+
 var constantize = memoize1(function(str) {
   // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
   // TODO: add property to specify constantization. For now catch special case to avoid conflict with context this.X and this.Y.
@@ -538,14 +542,18 @@ MODEL({
   extendsProto: 'String',
 
   methods: [
-    function indexOfIC(a) { return ( a.length > this.length ) ? -1 : this.toUpperCase().indexOf(a.toUpperCase()); },
+    function indexOfIC(a) {
+      return ( a.length > this.length ) ? -1 : this.toUpperCase().indexOf(a.toUpperCase());
+    },
 
     function equals(other) { return this.compareTo(other) === 0; },
 
     function equalsIC(other) { return other && this.toUpperCase() === other.toUpperCase(); },
 
+    // deprecated, use global instead
     function capitalize() { return this.charAt(0).toUpperCase() + this.slice(1); },
 
+    // deprecated, use global instead
     function labelize() {
       return this.replace(/[a-z][A-Z]/g, function (a) { return a.charAt(0) + ' ' + a.charAt(1); }).capitalize();
     },

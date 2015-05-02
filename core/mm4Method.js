@@ -55,7 +55,7 @@ CLASS({
       type: 'String',
       displayWidth: 70,
       displayHeight: 1,
-      defaultValueFn: function() { return this.name.labelize(); },
+      defaultValueFn: function() { return labelize(this.name); },
       help: 'The display label for the action.',
       documentation: function() { /* A human readable label for the $$DOC{ref:'.'}. May
         contain spaces or other odd characters.
@@ -86,9 +86,8 @@ CLASS({
     {
       model_: 'DocumentationProperty',
       name: 'documentation',
-      documentation: function() { /*
-          The developer documentation.
-        */}
+      documentation: 'The developer documentation.',
+      debug: true
     },
     {
       name: 'default',
@@ -345,9 +344,8 @@ CLASS({
     {
       model_: 'DocumentationProperty',
       name: 'documentation',
-      documentation: function() { /*
-          The developer documentation.
-      */}
+      documentation: 'The developer documentation.',
+      debug: true
     }
   ],
 
@@ -436,10 +434,8 @@ CLASS({
     {
       model_: 'DocumentationProperty',
       name: 'documentation',
-      documentation: function() { /*
-          The developer documentation.
-      */}
-
+      documentation: 'The developer documentation.',
+      debug: true
     },
     {
       name: 'value',
@@ -607,6 +603,7 @@ CLASS({
       displayWidth: 70,
       displayHeight: 6,
       defaultValue: '',
+      debug: true,
       help: 'Help text associated with the entity.',
       documentation: function() { /*
           This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
@@ -616,9 +613,8 @@ CLASS({
     {
       model_: 'DocumentationProperty',
       name: 'documentation',
-      documentation: function() { /*
-          The developer documentation.
-      */}
+      documentation: 'The developer documentation.',
+      debug: true
     },
     {
       name: 'code',
@@ -655,7 +651,8 @@ CLASS({
       help: 'Return type.',
       documentation: function() { /*
           The return type of the $$DOC{ref:'Method'}.
-        */}
+        */},
+      debug: true
     },
     {
       model_: 'BooleanProperty',
@@ -663,7 +660,8 @@ CLASS({
       defaultValue: true,
       documentation: function() { /*
           Indicates whether the return type is checked.
-        */}
+        */},
+      debug: true
     },
     {
       model_: 'ArrayProperty',
@@ -676,7 +674,8 @@ CLASS({
       help: 'Method arguments.',
       documentation: function() { /*
           The $$DOC{ref:'Arg',text:'Arguments'} for the method.
-        */}
+        */},
+      debug: true
     },
     {
       name: 'whenIdle',
@@ -853,7 +852,8 @@ CLASS({
     },
     {
       model_: 'DocumentationProperty',
-      name: 'documentation'
+      name: 'documentation',
+      debug: true
     },
     {
       model_: 'ArrayProperty',
@@ -1020,7 +1020,8 @@ CLASS({
        },*/
     {
       model_: 'DocumentationProperty',
-      name: 'documentation'
+      name: 'documentation',
+      debug: true
     }
   ]
 });
@@ -1091,6 +1092,7 @@ CLASS({
       defaultValue: [],
       help: 'Sub-documents comprising the full body of this document.',
       documentation: "Optional sub-documents to be included in this document. A viewer may choose to provide an index or a table of contents.",
+      debug: true,
       preSet: function(old, nu) {
         if ( ! DEBUG ) return []; // returning undefined causes problems
         var self = this;
