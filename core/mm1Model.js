@@ -668,6 +668,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       type: 'Array[Unit Test]',
       subType: 'UnitTest',
       view: 'foam.ui.ArrayView',
+      debug: true,
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -732,6 +733,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       name: 'issues',
       type: 'Array[Issue]',
       subType: 'Issue',
+      debug: true,
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
