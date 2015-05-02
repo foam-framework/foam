@@ -498,12 +498,15 @@ var BootstrapModel = {
 
   isSubModel: function(model) {
     /* Returns true if the given instance extends this $$DOC{ref:'Model'} or a descendant of this. */
-// ???: Why was the try/catch needed?  Put back (and document) if needed.
-//    try {
-      return model && model.getPrototype && ( model.getPrototype() === this.getPrototype() || this.isSubModel(model.getPrototype().__proto__.model_) );
-//    } catch (x) {
-//      return false;
-//    }
+    if ( ! model || ! model.getPrototype ) return false;
+
+    var subModels_ = this.subModels_ || ( this.subModels_ = {} );
+
+    if ( ! subModels_.hasOwnProperty(model.name) ) {
+      subModels_[model.name] = ( model.getPrototype() === this.getPrototype() || this.isSubModel(model.getPrototype().__proto__.model_) );
+    }
+
+    return subModels_[model.name];
   },
 
   getRuntimeProperties: function() {
