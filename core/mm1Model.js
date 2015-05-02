@@ -538,14 +538,14 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
         for ( var key in newValue ) {
           var oldValue = newValue[key];
 
-          var method   = Method.create({
+          var method = Method.create({
             name: key,
             code: oldValue
           });
 
           // Model Feature object.
-          if ( typeof oldValue == 'function' ) {
-            if ( Arg && DEBUG ) {
+          if ( typeof oldValue === 'function' ) {
+            if ( DEBUG && Arg ) {
               var str = oldValue.toString();
               method.args = str.
                 match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
