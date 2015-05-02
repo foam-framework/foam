@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 CLASS({
   package: 'foam.ui',
   name: 'PropertyView',
@@ -48,8 +47,9 @@ CLASS({
   methods: {
     finishPropertyRender: function() {
       this.SUPER();
-      if ( ! this.$ ) return;
-      this.$.outerHTML = this.toInnerHTML();
+      var $ = this.$;
+      if ( ! $ ) return;
+      $.outerHTML = this.toInnerHTML();
       this.initInnerHTML();
     },
 
@@ -61,7 +61,7 @@ CLASS({
       /* If the view is ready, pass through to it. Otherwise create a place
       holder tag with our id, which we replace later. */
       this.invokeDestructors();
-      return this.view? this.toInnerHTML() : this.SUPER();
+      return this.view ? this.toInnerHTML() : this.SUPER();
     },
 
     initHTML: function() {
