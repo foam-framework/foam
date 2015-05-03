@@ -385,7 +385,6 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       defaultValue: [],
       help: 'Properties associated with the entity.',
       preSet: function(oldValue, newValue) {
-        if ( ! Property ) return;
         // Convert Maps to Properties if required
         for ( var i = 0 ; i < newValue.length ; i++ ) {
           var p = newValue[i];
