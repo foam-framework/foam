@@ -217,9 +217,11 @@ var FObject = {
 
       if ( fastInit ) {
         var keys = {};
-        this.model_.getRuntimeProperties().forEach(function(prop) {
+        var ps = this.model_.getRuntimeProperties();
+        for ( var i = 0 ; i < ps.length ; i++ ) {
+          var prop = ps[i];
           keys[prop.name] = keys[prop.name$_] = true;
-        });
+        }
         this.addInitAgent(0, 'fast copy args', function(o, X, Y, m) {
           if ( m.instance_ ) {
             m = m.instance_;
@@ -422,7 +424,7 @@ var FObject = {
     var diff = {};
 
     var properties = this.model_.getRuntimeProperties();
-    for ( var i = 0, property; property = properties[i]; i++ ) {
+    for ( var i = 0, property ; property = properties[i] ; i++ ) {
       if ( Array.isArray(property.f(this)) ) {
         var subdiff = property.f(this).diff(property.f(other));
         if ( subdiff.added.length !== 0 || subdiff.removed.length !== 0 ) {
@@ -578,7 +580,7 @@ var FObject = {
     var hash = 17;
 
     var properties = this.model_.getRuntimeProperties();
-    for ( var i = 0; i < properties.length ; i++ ) {
+    for ( var i = 0 ; i < properties.length ; i++ ) {
       var prop = this[properties[i].name];
       var code = ! prop ? 0 :
         prop.hashCode   ? prop.hashCode()
@@ -601,7 +603,7 @@ var FObject = {
   // TODO: this should be monkey-patched from a 'ProtoBuf' library
   outProtobuf: function(out) {
     var proprties = this.model_getRuntimeProperties();
-    for ( var i = 0; i < properties.length; i++ ) {
+    for ( var i = 0 ; i < properties.length ; i++ ) {
       var prop = properties[i];
       if ( Number.isFinite(prop.prototag) )
         prop.outProtobuf(this, out);
