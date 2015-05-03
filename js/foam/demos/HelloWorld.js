@@ -1,7 +1,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'HelloWorld',
-  extendsModel: 'foam.ui.SimpleView',
+  extendsModel: 'foam.ui.View',
   methods: {
     initHTML: function() {
       var end = performance.now();
