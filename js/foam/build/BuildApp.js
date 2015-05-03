@@ -164,7 +164,11 @@ CLASS({
                   }
                   out('}');
                 } else {
-                  this.output(out, val);
+                  if ( Array.isArray(val) && prop.subType ) {
+                    this.outputArray_(out, val, prop.subType);
+                  } else {
+                    this.output(out, val);
+                  }
                 }
                 first = false;
               }
