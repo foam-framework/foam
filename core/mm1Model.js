@@ -377,7 +377,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
         of this $$DOC{ref:'Model'} in a search view. */}
     },
     {
-      model_: 'ArrayProperty',
+//      model_: 'ArrayProperty',
       name: 'properties',
       subType: 'Property',
       view: 'foam.ui.ArrayView',
