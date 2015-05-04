@@ -33,9 +33,8 @@ CLASS({
       model_: 'ViewFactoryProperty',
       name: 'unselectedViewFactory',
       documentation: 'The view factory when no view is selected.',
-      factory: function() {
-        return function() {};
-      },
+      factory: function() { return function() {}; },
+      postSet: function() { this.choice = this.choice; }
     },
     {
       model_: 'ArrayProperty',
