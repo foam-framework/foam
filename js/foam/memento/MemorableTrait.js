@@ -47,7 +47,8 @@ CLASS({
     init: function(args) {
       this.SUPER(args);
 
-      for ( var i = 0, prop ; prop = this.model_.properties_[i] ; i++ ) {
+      var properties = this.model_.getRuntimeProperties();
+      for ( var i = 0, prop ; prop = properties[i] ; i++ ) {
         if ( ! prop.memorable ) continue;
         this.addPropertyListener(prop.name, this.updateMemento);
         if ( this[prop.name] != null && this[prop.name].model_ && this[prop.name].memento ) {
@@ -67,7 +68,8 @@ CLASS({
         __proto__: MementoProto
       };
 
-      for ( var i = 0, prop ; prop = this.model_.properties[i] ; i ++ ) {
+      var properties = this.model_.getRuntimeProperties();
+      for ( var i = 0, prop ; prop = properties[i] ; i ++ ) {
         if ( ! prop.memorable ) continue;
         if ( this[prop.name] != null ) {
           var value = this[prop.name];

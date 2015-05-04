@@ -31,7 +31,7 @@ CLASS({
 
   methods: [
     {
-      name: 'installInDocument',
+      name: 'installInDocument__',
       code: function(X, document) {
         var superRtn = this.SUPER.apply(this, arguments);
         if ( ! this.HREF ) return superRtn;

@@ -31,10 +31,6 @@ CLASS({
     'foam.ui.ViewChoice'
   ],
 
-//   exports: [
-//     'ActionButton'
-//   ],
-
   properties: [
     {
       name: 'model'
@@ -210,7 +206,7 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-
+      
       this.Y.registerModel(this.ActionButtonCView.xbind({
         alpha:      1,
         width:      48,

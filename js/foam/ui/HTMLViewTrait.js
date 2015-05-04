@@ -64,9 +64,7 @@ CLASS({
       hidden: true,
       mode:   "read-only",
       setter: function() { debugger; },
-      getter: function() {
-        return this.X.document.getElementById(this.id);
-      },
+      getter: function() { return this.X.document.getElementById(this.id); },
       help: 'DOM Element.'
     },
     {
@@ -85,10 +83,6 @@ CLASS({
           Separate class names with spaces. Each instance of a $$DOC{ref:'foam.ui.View'}
           may have different classes specified.
       */},
-      postSet: function() {
-        if ( ! this.$ ) return;
-        this.$.className = this.cssClassAttr().slice(8, -1);
-      }
     },
     {
       name: 'tooltip'
@@ -104,10 +98,6 @@ CLASS({
           CSS classes in addition to user-specified ones. Set those here and
           they will be appended to those from $$DOC{ref:'.className'}.
       */},
-      postSet: function() {
-        if ( ! this.$ ) return;
-        this.$.className = this.cssClassAttr().slice(8, -1);
-      }
     },
     {
       name: 'propertyViewProperty',
@@ -340,11 +330,16 @@ CLASS({
       predicate = predicate.bind(this);
 
       this.addInitializer(function() {
-        this.X.dynamic(predicate, function() {
-          var e = this.X.$(opt_id);
-          if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-          DOM.setClass(e, className, predicate());
-        }.bind(this));
+        this.addDestructor(
+          this.X.dynamic(
+            predicate,
+            function() {
+              var e = this.X.$(opt_id);
+              if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+              DOM.setClass(e, className, predicate());
+            }.bind(this)
+          ).destroy
+        );
       }.bind(this));
 
       return opt_id;
@@ -603,7 +598,6 @@ CLASS({
         // if a model is specified, switch to normal PropertyView path
         return this.createView(r, opt_args);
       }
-
       var X = ( opt_args && opt_args.X ) || this.Y;
 
       var v = this.AsyncViewLoader.create({
@@ -617,7 +611,6 @@ CLASS({
       if ( v.view ) {
         v = v.view;
       }
-
       this[r.name + 'View'] = v;
       return v;
     },
@@ -640,7 +633,6 @@ CLASS({
       if ( v.view ) {
         v = v.view;
       }
-
       this[action.name + 'View'] = v;
       return v;
     },
@@ -656,7 +648,6 @@ CLASS({
       var myData = this.data$;
       if ( myData && myData.value && myData.value.model_ ) {
         var o = myData.value.model_.getFeature(name);
-        //args.data$ = myData;
         if ( o ) {
           var v;
           if ( Action.isInstance(o) )
@@ -672,11 +663,11 @@ CLASS({
       }
       // fallback to check our own properties
       var o = this.model_.getFeature(name);
-      if ( ! o ) throw 'Unknown View Name: ' + name;
-      //args.data = this;
-
+      if ( ! o )
+        throw 'Unknown View Name: ' + name;
+      var v;
       if ( Action.isInstance(o) )
-        var v = this.createActionView(o, args);
+        v = this.createActionView(o, args);
       else if ( Relationship.isInstance(o) )
         v = this.createRelationshipView(o, args);
       else

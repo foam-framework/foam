@@ -102,6 +102,11 @@ CLASS({
         return this.GestureManager.create();
       }
     },
+    {
+      name: 'styles_',
+      hidden: true,
+      factory: function() { this.SharedStyles.create(); }
+    }
   ],
 
   templates: [

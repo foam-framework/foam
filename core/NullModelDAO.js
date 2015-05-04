@@ -15,13 +15,10 @@
  * limitations under the License.
  */
 
-// TODO(markdittmer): We should model these in a FOAMy kind of way.
-var GLOBAL = global;
-global.GLOBAL = global;
-global.window = global;
-global.document = global;
-global.console.profile = function() {};
-global.console.profileEnd = function() {};
-global.window.performance = {};
-global.window.performance.now = function(){};
-global.console.markTimeline = function(){};
+arequire = function(modelName, opt_X) {
+  var X = opt_X || GLOBAL.X;
+  return function(ret) {
+    var m = X.lookup(modelName)
+    ret(m);
+  };
+};

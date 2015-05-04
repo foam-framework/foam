@@ -170,11 +170,10 @@ CLASS({
               if ( app.defaultView ) models.push(app.defaultView);
               if ( app.controller ) models.push(app.controller);
 
-              // Manually manage pending_ count for two top-level async calls.
+              // Manually manage pending_ count for top-level async calls.
               this.pending_ = models.length;
               models.forEach(function(modelId) {
-                return arequire(modelId)(self.visitModel_.bind(
-                    self, function() { --self.pending_; }));
+                return arequire(modelId)(self.visitModel_.bind(self));
               });
             }.bind(this),
             error: function() {
@@ -183,27 +182,23 @@ CLASS({
             }
           });
     },
-    visitModel_: function(ret, model) {
-      this.i18nController.extractor.visitModel(model);
+    visitModel_: function(model) {
+      return this.i18nController.extractor.avisitModel(model)(
+          this.visitModel__.bind(this));
+    },
+    visitModel__: function(model) {
       this.visitedModels_[model.id] = true;
       var deps = model.getAllRequires();
       for ( var i = 0; i < deps.length; ++i ) {
         if ( ! this.visitedModels_[deps[i]] ) {
-          this.arequire_(deps[i])(function(ret, model) {
-            this.visitModel_(ret, model);
-          }.bind(this));
+          this.arequire_(deps[i]);
         }
       }
-      ret(model);
+      --this.pending_;
     },
     arequire_: function(modelId) {
       ++this.pending_;
-      var future = afuture();
-      var self = this;
-      arequire(modelId)(function(model) {
-        future.set(function() { --self.pending_; }, model);
-      });
-      return future.get;
+      arequire(modelId)(this.visitModel_.bind(this));
     },
     outputFoamData_: function() {
       var self = this;

@@ -47,6 +47,11 @@ CLASS({
         this.numberFormatter = this.data.numberFormatter;
         Events.follow(this.data.row1$, this.row1Formatted$);
       }
+    },
+    {
+      name: 'installFonts_',
+      hidden: true,
+      factory: function() { return this.Fonts.create(); }
     }
   ],
 

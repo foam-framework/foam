@@ -85,7 +85,8 @@ function sub(opt_args, opt_name) {
 
   if ( opt_name ) {
     sub.NAME = opt_name;
-    sub.toString = function() { return 'CONTEXT(' + opt_name + ')'; };
+    // This was commented out because it appears to be very slow
+//    sub.toString = function() { return 'CONTEXT(' + opt_name + ')'; };
 //    sub.toString = function() { return 'CONTEXT(' + opt_name + ', ' + this.toString() + ')'; };
   }
 

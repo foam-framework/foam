@@ -88,6 +88,12 @@ CLASS({
     },
     {
       model_: 'StringArrayProperty',
+      name: 'extraBuildFiles',
+      help: 'Extra files to load during the build process, but NOT include in the built image.',
+      adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
+    },
+    {
+      model_: 'StringArrayProperty',
       name: 'extraModels',
       help: 'Extra models to include in the image regardless of if they were arequired or not.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; },
@@ -132,8 +138,9 @@ CLASS({
 
             if ( Template.isInstance(obj) ) var isTemplate = true;
 
-            for ( var key in obj.model_.properties_ ) {
-              var prop = obj.model_.properties_[key];
+            var properties = obj.model_.getRuntimeProperties();
+            for ( var key in properties ) {
+              var prop = properties[key];
 
               if ( ! this.p(prop) && ( ! isTemplate || prop.name !== 'code' ) ) continue;
 
@@ -157,7 +164,11 @@ CLASS({
                   }
                   out('}');
                 } else {
-                  this.output(out, val);
+                  if ( Array.isArray(val) && prop.subType ) {
+                    this.outputArray_(out, val, prop.subType);
+                  } else {
+                    this.output(out, val);
+                  }
                 }
                 first = false;
               }
@@ -181,6 +192,85 @@ CLASS({
       name: 'extraClassPaths',
       help: 'List of extra .js hierarchies to load models from.  Paths will be checked in the order given, finally falling back to the main FOAM js/ hierarchy.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
+    },
+    // TODO(markdittmer): Remove "sourceLocale" when all build processes
+    // no longer require it.
+    {
+      model_: 'StringProperty',
+      name: 'sourceLocale',
+      defaultValue: 'en'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'locale'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'i18nMessagesPath'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'i18nTranslationsPath'
+    },
+    // TODO(markdittmer): Remove "i18nSourcePath" when all build processes
+    // support distinction between messages and translations.
+    {
+      model_: 'StringProperty',
+      name: 'i18nSourcePath'
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'i18nMessages',
+      adapt: function(_, s) {
+        if (typeof s === 'string') return s.split(',');
+        return s;
+      }
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'i18nTranslations',
+      adapt: function(_, s) {
+        if (typeof s === 'string') return s.split(',');
+        return s;
+      }
+    },
+    // TODO(markdittmer): Remove "i18nSources" when all build processes
+    // support distinction between messages and translations.
+    {
+      model_: 'StringArrayProperty',
+      name: 'i18nSources',
+      adapt: function(_, s) {
+        if (typeof s === 'string') return s.split(',');
+        return s;
+      }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'jsFileName',
+      getter: function() {
+        return 'foam' + (this.locale ? '_' + this.locale : '') + '.js';
+      }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'manifestFileName',
+      getter: function() {
+        return 'app' + (this.locale ? '_' + this.locale : '') + '.manifest';
+      }
+    },
+    {
+      name: 'localizedHTMLFileName_',
+      getter: function() {
+        var match = this.htmlFileName.match(/[.][^.]*$/g);
+        var ext = match ? match[0] : '';
+        var baseName = this.htmlFileName.slice(0,
+            this.htmlFileName.length - ext.length);
+        return baseName + (this.locale ? '_' + this.locale : '') + ext;
+      }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'delegate'
     }
   ],
   methods: {
@@ -210,6 +300,15 @@ CLASS({
       }
     },
     execute_: function() {
+      if ( this.delegate ) {
+        arequire(this.delegate)(function(DelegateModel) {
+          DelegateModel.create({ builder: this }).buildApp();
+        }.bind(this));
+      } else {
+        this.buildApp();
+      }
+    },
+    buildApp: function() {
       if ( ! this.targetPath ) {
         this.error("targetPath is required");
         process.exit(1);
@@ -219,8 +318,10 @@ CLASS({
         process.exit(1);
       }
 
-      for ( var i = 0 ; i < this.extraFiles.length ; i++ ) {
-        require(FOAM_BOOT_DIR + this.path.sep + this.extraFiles[i] + '.js');
+      var extraBuildFiles = this.extraBuildFiles.concat(this.extraFiles);
+      for ( var i = 0 ; i < extraBuildFiles.length ; i++ ) {
+        var path = this.getFilePath(extraBuildFiles[i]);
+        require(path);
       }
 
       var view = this.defaultView ? arequire(this.defaultView) : anop;
@@ -233,7 +334,7 @@ CLASS({
 
       aseq(
         aseq.apply(null, seq),
-        arequire(this.controller))(this.execute__.bind(this));
+        arequire(this.controller))(this.buildModel.bind(this));
     },
     buildCoreJS_: function(ret) {
       var i = 0;
@@ -257,7 +358,7 @@ CLASS({
           },
           aseq(
             function(ret) {
-              var path = FOAM_BOOT_DIR + this.path.sep + file + '.js';
+              var path = this.getFilePath(file);
               this.fileDAO.find(path, {
                 put: ret,
                 error: function() {
@@ -328,7 +429,7 @@ CLASS({
 
       ret(contents);
     },
-    execute__: function(model) {
+    buildModel: function(model) {
       if ( ! model ) {
         this.error('Could not find model: ', this.controller);
       }
@@ -340,7 +441,7 @@ CLASS({
       aseq(
         function(ret) {
           var file = this.File.create({
-            path: this.targetPath + this.path.sep + this.htmlFileName,
+            path: this.targetPath + this.path.sep + this.localizedHTMLFileName_,
             contents: this.HTML()
           });
 
@@ -356,7 +457,7 @@ CLASS({
         aif(this.appcacheManifest,
             function(ret) {
               var file = this.File.create({
-                path: this.targetPath + this.path.sep + "app.manifest",
+                path: this.targetPath + this.path.sep + this.manifestFileName,
                 contents: this.MANIFEST()
               });
               console.log('Writing: ', file.path);
@@ -371,35 +472,42 @@ CLASS({
         apar(
           function(ret) { this.buildCoreJS_(ret); }.bind(this),
           function(ret) { this.buildAppJS_(ret); }.bind(this)),
-        function(ret, corejs, appjs) {
-          var file = this.File.create({
-            path: this.targetPath + this.path.sep + 'foam.js',
-            contents: corejs + appjs
-          });
-          console.log('Writing: ', file.path);
-          this.fileDAO.put(file, {
-            put: ret,
-            error: function() {
-              self.error('ERROR writing file: ', file.path);
-              process.exit(1);
-            }
-          });
-        }.bind(this)
-      )(
+          function(ret, corejs, appjs) {
+            var file = this.File.create({
+              path: this.targetPath + this.path.sep + this.jsFileName,
+              contents: corejs + appjs
+            });
+            console.log('Writing: ', file.path);
+            this.fileDAO.put(file, {
+              put: ret,
+              error: function() {
+                self.error('ERROR writing file: ', file.path);
+                process.exit(1);
+              }
+            });
+          }.bind(this)
+          )(
         function(){
           process.exit(0);
         });
+    },
+    getFilePath: function(file) {
+      var path = file;
+      if ( path.slice(-3) !== '.js' ) path += '.js';
+      if ( path.charAt(0) !== this.path.sep )
+        path = FOAM_BOOT_DIR + this.path.sep + path;
+      return path;
     }
   },
   templates: [
-    function HTML() {/*<html<% if ( this.appcacheManifest ) { %> manifest="app.manifest"<% } %>><head><meta charset="utf-8"><%= this.htmlHeaders.join('') %><% if ( this.includeFoamCSS ) { %><link rel="stylesheet" type="text/css" href="foam.css"/><% } %><% if ( this.icon ) { %><link rel="icon" sizes="128x128" href="<%= this.icon %>"/><% } %><script src="foam.js"></script></head><body><foam model="<%= this.controller %>"<% if ( this.defaultView ) { %> view="<%= this.defaultView %>"<% } %>></foam></body></html>*/},
+    function HTML() {/*<html<% if ( this.appcacheManifest ) { %> manifest="%%getManifestFileName"<% } %>><head><meta charset="utf-8"><%= this.htmlHeaders.join('') %><% if ( this.includeFoamCSS ) { %><link rel="stylesheet" type="text/css" href="foam.css"/><% } %><% if ( this.icon ) { %><link rel="icon" sizes="128x128" href="<%= this.icon %>"/><% } %><script src="%%jsFileName"></script></head><body><foam model="<%= this.controller %>"<% if ( this.defaultView ) { %> view="<%= this.defaultView %>"<% } %>></foam></body></html>*/},
     function MANIFEST() {/*CACHE MANIFEST
 # version <%= this.version %>
 <% if ( this.appDefinition ) { %># hash: <%= this.appDefinition.hashCode() %><% } %>
 
 CACHE:
-foam.js
-<%= this.htmlFileName %>
+%%jsFileName
+%%localizedHTMLFileName_
 <% if ( this.includeFoamCSS ) { %>foam.css<% } %>
 <% for ( var i = 0 ; i < this.resources.length ; i++ ) { %><%= this.resources[i] %>
 <% } %>

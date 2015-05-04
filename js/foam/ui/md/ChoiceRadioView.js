@@ -55,7 +55,7 @@ CLASS({
     },
     {
       name: 'className',
-      defaultValueFn: function() { return 'foamChoiceRadioView ' + this.orientation; }
+      defaultValueFn: function() { return 'md-choice-radio-view ' + this.orientation; }
     },
     {
       name: 'tagName',
@@ -107,33 +107,41 @@ CLASS({
           $$data{model_:'foam.ui.md.RadioOptionView', inlineStyle$: this.inlineStyle$, choice: choice }
       <% } %>
         </div>
-<%        }%>
-      <% this.setMDClasses(); %>
+<%        }
+      this.setMDClasses(); %>
     */},
 
     function CSS() {/*
-.foamChoiceRadioView {
+.md-choice-radio-view {
   margin: 0px;
   padding: 0px;
 }
 
-.foamChoiceRadioView .selected {
+.md-choice-radio-view .selected {
   font-weight: bold;
 }
 
-.foamChoiceRadioView.vertical {
+.md-choice-radio-view.vertical {
   padding: 0;
 }
-.foamChoiceRadioView.vertical .choice {
+.md-choice-radio-view.vertical .choice {
   display: block;
 }
 
-.foamChoiceRadioView.horizontal.md-style-trait-inline  {
+.md-choice-radio-view.horizontal.md-style-trait-inline  {
   margin-bottom: -3px;
+}
+.md-choice-radio-view.md-style-trait-inline  {
+  margin: 0px;
+  padding: 0px;
+}
+.md-choice-radio-view.md-style-trait-standard  {
+  margin: 0px;
+  padding: 0px;
 }
 
 
-.foamChoiceRadioView.horizontal .choice {
+.md-choice-radio-view.horizontal .choice {
   display: inline-block;
   margin-right: 16px;
 }*/}

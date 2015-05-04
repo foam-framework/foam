@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 var Property = {
   __proto__: BootstrapModel,
   instance_: {},
@@ -54,7 +55,6 @@ var Property = {
         $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
         $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
          */}
-
     },
     {
       name: 'label',
@@ -62,7 +62,7 @@ var Property = {
       required: false,
       displayWidth: 70,
       displayHeight: 1,
-      defaultValueFn: function() { return this.name.labelize(); },
+      defaultValueFn: function() { return labelize(this.name); },
       help: 'The display label for the property.',
       documentation: function() { /* A human readable label for the $$DOC{ref:'.'}. May
         contain spaces or other odd characters.
@@ -84,12 +84,11 @@ var Property = {
       type: 'String',
       displayWidth: 70,
       displayHeight: 1,
-      defaultValueFn: function() { return this.name.labelize(); },
+      defaultValueFn: function() { return labelize(this.name); },
       help: 'The table display label for the entity.',
       documentation: function() { /* A human readable label for the $$DOC{ref:'Model'} for use in tables. May
         contain spaces or other odd characters.
          */}
-
     },
     {
       name: 'type',
@@ -662,12 +661,12 @@ var Property = {
     toSQL: function() { return this.name; },
     toMQL: function() { return this.name; },
     toBQL: function() { return this.name; },
-    initPropertyAgents: function(proto) {
+    initPropertyAgents: function(proto, fastInit) {
       var prop   = this;
       var name   = prop.name;
       var name$_ = prop.name$_;
 
-      proto.addInitAgent(
+      if ( ! fastInit ) proto.addInitAgent(
         (this.postSet || this.setter) ? 9 : 0,
         name + ': ' + (this.postSet || this.setter ? 'copy arg (postSet)' : 'copy arg'),
         function(o, X, Y, m) {
@@ -729,7 +728,8 @@ Model.methods = {
   getAllMyRawFeatures:      BootstrapModel.getAllMyRawFeatures,
   getFeature:               BootstrapModel.getFeature,
   getAllRawFeatures:        BootstrapModel.getAllRawFeatures,
-  atest:                    BootstrapModel.atest
+  atest:                    BootstrapModel.atest,
+  getRuntimeProperties:     BootstrapModel.getRuntimeProperties
 };
 
 // This is the coolest line of code that I've ever written
@@ -745,9 +745,9 @@ for ( var i = 0 ; i < Property.properties.length ; i++ )
   Property.properties[i] = Property.create(Property.properties[i]);
 
 // Property properties are still Bootstrap Models, so upgrade them.
-for ( var i = 0 ; i < Property.properties_.length ; i++ )
-  Property[constantize(Property.properties_[i].name)] =
-    Property.properties_[i] = Property.create(Property.properties_[i]);
+for ( var i = 0 ; i < Property.getRuntimeProperties().length ; i++ )
+  Property[constantize(Property.getRuntimeProperties()[i].name)] =
+    Property.getRuntimeProperties()[i] = Property.create(Property.getRuntimeProperties()[i]);
 
 USED_MODELS.Property = true;
 USED_MODELS.Model = true;

@@ -16,28 +16,23 @@
  */
 
 CLASS({
-  package: 'foam.ui',
-  name: 'FloatFieldView',
-
-  extendsModel: 'foam.ui.AbstractNumberFieldView',
-
+  package: 'foam.ui.ctrl',
+  name: 'AlwaysSelectedViewChoiceComposite',
+  extendsModel: 'foam.ui.ctrl.ViewChoiceComposite',
+  documentation: function() {/*
+    A ViewChoiceComposite that always has a view selected (defaults to the first
+    view if nothing is actually selected.
+  */},
   properties: [
-    { name: 'precision', defaultValue: undefined }
-  ],
-
-  methods: {
-    formatNumber: function(val) {
-      if ( ! val ) return '0';
-      val = val.toFixed(this.precision);
-      var i = val.length-1;
-      for ( ; i > 0 && val.charAt(i) === '0' ; i-- );
-      return val.substring(0, val.charAt(i) === '.' ? i : i+1);
+    {
+      name: 'choice',
+      memorable: true,
+      preSet: function(_, v) {
+        v = parseInt(v);
+        if (Number.isNaN(v)) return 0;
+        return v;
+      },
+      factory: function() { return 0; },
     },
-    valueToText: function(val) {
-      return this.hasOwnProperty('precision') ?
-        this.formatNumber(val) :
-        '' + val ;
-    },
-    textToValue: function(text) { return parseFloat(text) || 0; }
-  }
+  ]
 });

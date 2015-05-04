@@ -9,23 +9,22 @@
  *     http://www.apache.org/licenses/LICENSE-2.0
  */
 
-
 CLASS({
-    name: 'CSSTransitionSet',
-    package: 'foam.ui.md',
+  package: 'foam.ui.md',
+  name: 'CSSTransitionSet',
 
-    models: [
-      {
-        model_: 'Model',
-        name: 'CSSProperty',
-        extendsModel: 'StringProperty',
-        postSet: function(old, nu, prop) {
-          this.cssString_ = null;
-          if ( nu ) this.cssProperties_[prop.name] = nu;
-          if ( ! nu && old ) delete this.cssProperties_[prop.name];
-        }
+  models: [
+    {
+      model_: 'Model',
+      name: 'CSSProperty',
+      extendsModel: 'StringProperty',
+      postSet: function(old, nu, prop) {
+        this.cssString_ = null;
+        if ( nu ) this.cssProperties_[prop.name] = nu;
+        if ( ! nu && old ) delete this.cssProperties_[prop.name];
       }
-    ],
+    }
+  ],
 
   properties: [
     { model_: 'CSSProperty', name: 'background-color' },
@@ -76,9 +75,8 @@ CLASS({
       name: 'cssProperties_',
       factory: function() {
         var o = {};
-        this.model_.properties_.forEach(function(p) {
+        this.model_.getRuntimeProperties().forEach(function(p) {
           if ( this[p.name] && (p.model_ === 'CSSProperty' || this.CSSProperty.isInstance(p)) ) {
-            console.log(this[p.name]);
             o[p.name] = this[p.name];
           }
         }.bind(this));
