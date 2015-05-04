@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.ui.md',
   extendsModel: 'foam.ui.SimpleView',
 
-  exports: [ 'as viewContainerController' ],
+  exports: [ 'as popup' ],
 
   properties: [
     {
@@ -115,12 +115,6 @@ CLASS({
       this.SUPER(p);
     },
 
-    accept: function() { /* View Container Controller interface */
-      this.close();
-    },
-    reject: function() { /* View Container Controller interface */
-      this.close();
-    },
   },
 
   templates: [
