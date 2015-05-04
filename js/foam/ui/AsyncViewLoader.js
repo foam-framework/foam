@@ -76,15 +76,6 @@
     },
 
     construct: function() { /* Picks the model to create, then passes off to $$DOC{ref:'.finishRender'}. */
-      // HACK to ensure model-for-model works. It requires that 'model', if specified,
-      // be present in the create({ args }). Since we set Actions and Properties as
-      // the create arg object sometimes, we must temporarily transfer the model
-      // value from copyFrom to args, then unset it after the create.
-      if ( this.copyFrom && this.copyFrom.model ) {
-        this.args.__ASV_OLD_MODEL = this.args.model;
-        this.args.model = this.copyFrom.model;
-      }
-
       // Decorators to allow us to skip over keys without copying them
       // as create() args
       var skipKeysArgDecorator = {
@@ -100,6 +91,15 @@
           }
           return false;
         }
+      };
+
+      // HACK to ensure model-for-model works. It requires that 'model', if specified,
+      // be present in the create({ args }). Since we set Actions and Properties as
+      // the create arg object sometimes, we must temporarily transfer the model
+      // value from copyFrom to args, but since we are wrapping it anyways we can
+      // piggyback our model value on the wrapper.
+      if ( this.copyFrom && this.copyFrom.model ) {
+        skipKeysArgDecorator.model = this.copyFrom.model;
       }
 
       if ( this.copyFrom && this.copyFrom.model_ && typeof this.copyFrom.model_ === 'string' ) {
@@ -174,12 +174,6 @@
       if ( el ) {
         el.outerHTML = this.toHTML();
         this.initHTML();
-      }
-
-      // unhack args.model
-      if ( this.args.__ASV_OLD_MODEL ) {
-        this.args.model = this.args.__ASV_OLD_MODEL;
-        this.args.__ASV_OLD_MODEL = undefined;
       }
     },
 
