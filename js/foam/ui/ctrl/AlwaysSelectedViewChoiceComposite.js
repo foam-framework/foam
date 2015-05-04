@@ -34,5 +34,8 @@ CLASS({
       },
       factory: function() { return 0; },
     },
+    {
+      name: 'selectedChild',
+    },
   ]
 });

@@ -48,13 +48,13 @@ CLASS({
 
     hashToMemento_: function(h) {
       if ( h[0] === '#' ) h = h.substring(1);
+      if ( h.length === 0 ) return { __proto__: MementoProto };
       var split = h.split('&');
       if ( split.length == 1 &&
            split[0].indexOf('=') == -1 )
         return decodeURIComponent(split);
 
       var memento = { __proto__: MementoProto };
-      var memento = {};
 
       for ( var i = 0, section ; section = split[i] ; i++ ) {
         var parts = section.split('=');
