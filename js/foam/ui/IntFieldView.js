@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 CLASS({
-  name: 'IntFieldView',
   package: 'foam.ui',
+  name: 'IntFieldView',
 
   extendsModel: 'foam.ui.AbstractNumberFieldView',
 
@@ -26,4 +26,3 @@ CLASS({
     valueToText: function(value) { return value ? value : '0'; }
   }
 });
-

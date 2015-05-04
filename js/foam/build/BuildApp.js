@@ -88,6 +88,12 @@ CLASS({
     },
     {
       model_: 'StringArrayProperty',
+      name: 'extraBuildFiles',
+      help: 'Extra files to load during the build process, but NOT include in the built image.',
+      adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
+    },
+    {
+      model_: 'StringArrayProperty',
       name: 'extraModels',
       help: 'Extra models to include in the image regardless of if they were arequired or not.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; },
@@ -158,7 +164,11 @@ CLASS({
                   }
                   out('}');
                 } else {
-                  this.output(out, val);
+                  if ( Array.isArray(val) && prop.subType ) {
+                    this.outputArray_(out, val, prop.subType);
+                  } else {
+                    this.output(out, val);
+                  }
                 }
                 first = false;
               }
@@ -183,6 +193,8 @@ CLASS({
       help: 'List of extra .js hierarchies to load models from.  Paths will be checked in the order given, finally falling back to the main FOAM js/ hierarchy.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
+    // TODO(markdittmer): Remove "sourceLocale" when all build processes
+    // no longer require it.
     {
       model_: 'StringProperty',
       name: 'sourceLocale',
@@ -194,8 +206,17 @@ CLASS({
     },
     {
       model_: 'StringProperty',
-      name: 'i18nSourcePath',
-      defaultValue: 'en'
+      name: 'i18nMessagesPath'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'i18nTranslationsPath'
+    },
+    // TODO(markdittmer): Remove "i18nSourcePath" when all build processes
+    // support distinction between messages and translations.
+    {
+      model_: 'StringProperty',
+      name: 'i18nSourcePath'
     },
     {
       model_: 'StringArrayProperty',
@@ -214,7 +235,7 @@ CLASS({
       }
     },
     // TODO(markdittmer): Remove "i18nSources" when all build processes
-    // support distinction between i18nMessages and i18nTranslations.
+    // support distinction between messages and translations.
     {
       model_: 'StringArrayProperty',
       name: 'i18nSources',
@@ -297,8 +318,9 @@ CLASS({
         process.exit(1);
       }
 
-      for ( var i = 0 ; i < this.extraFiles.length ; i++ ) {
-        var path = this.getFilePath(this.extraFiles[i]);
+      var extraBuildFiles = this.extraBuildFiles.concat(this.extraFiles);
+      for ( var i = 0 ; i < extraBuildFiles.length ; i++ ) {
+        var path = this.getFilePath(extraBuildFiles[i]);
         require(path);
       }
 

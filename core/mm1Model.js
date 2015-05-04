@@ -169,7 +169,7 @@ var Model = {
       type: 'String',
       displayWidth: 70,
       displayHeight: 1,
-      defaultValueFn: function() { return this.name.labelize(); },
+      defaultValueFn: function() { return labelize(this.name); },
       help: 'The display label for the entity.',
       documentation: function() { /* A human readable label for the $$DOC{ref:'Model'}. May
         contain spaces or other odd characters.
@@ -377,20 +377,25 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
         of this $$DOC{ref:'Model'} in a search view. */}
     },
     {
+//      model_: 'ArrayProperty',
       name: 'properties',
-      type: 'Array[Property]',
       subType: 'Property',
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       defaultValue: [],
       help: 'Properties associated with the entity.',
       preSet: function(oldValue, newValue) {
-        if ( ! Property ) return;
         // Convert Maps to Properties if required
         for ( var i = 0 ; i < newValue.length ; i++ ) {
           var p = newValue[i];
 
           if ( typeof p === 'string' ) newValue[i] = p = { name: p };
+
+          if ( ( ( ! DEBUG ) && p.debug ) && ( ! p.model_ || typeof p.model_ === 'string' ) ) {
+            newValue.splice(i,1);
+            i--;
+            continue;
+          }
 
           if ( ! p.model_ ) {
             p = newValue[i] = Property.create(p);
@@ -532,14 +537,14 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
         for ( var key in newValue ) {
           var oldValue = newValue[key];
 
-          var method   = Method.create({
+          var method = Method.create({
             name: key,
             code: oldValue
           });
 
           // Model Feature object.
-          if ( typeof oldValue == 'function' ) {
-            if ( Arg && DEBUG ) {
+          if ( typeof oldValue === 'function' ) {
+            if ( DEBUG && Arg ) {
               var str = oldValue.toString();
               method.args = str.
                 match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
@@ -662,6 +667,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       type: 'Array[Unit Test]',
       subType: 'UnitTest',
       view: 'foam.ui.ArrayView',
+      debug: true,
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
@@ -726,6 +732,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       name: 'issues',
       type: 'Array[Issue]',
       subType: 'Issue',
+      debug: true,
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {

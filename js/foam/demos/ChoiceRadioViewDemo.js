@@ -25,7 +25,7 @@ CLASS({
     'foam.input.touch.TouchManager',
     'foam.input.touch.GestureManager',
     'foam.ui.md.FlatButton',
-    'foam.ui.md.CheckboxView',  
+    'foam.ui.md.CheckboxView',
     'foam.ui.md.PopupChoiceView',
     'foam.ui.md.ToggleView',
     'foam.ui.md.EditableView',
@@ -46,7 +46,7 @@ CLASS({
         }
         arr.push(['name', 'Other', 'user']);
         return arr; }
-    }, 
+    },
     {
       name: 'data',
       defaultValue: 'none'
@@ -167,6 +167,7 @@ CLASS({
         $$oneAction
         $$enabledButton{model_:'foam.ui.md.CheckboxView', label: 'Button Enabled'}
         $$showButton{model_:'foam.ui.md.ToggleView', label: 'Button Show'}
+        $$enabledButton{model_:'foam.ui.md.CheckboxView', label: 'Button Enabled', mode:'read-only'}
     */}
   ]
 

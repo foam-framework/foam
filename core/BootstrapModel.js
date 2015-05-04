@@ -407,20 +407,28 @@ var BootstrapModel = {
     // copy parent model's properties and actions into this model
     if ( extendsModel ) {
       this.getProperty('');
-      for ( var i = extendsModel.instance_.properties_.length-1 ; i >= 0 ; i-- ) {
-        var p = extendsModel.instance_.properties_[i];
-        if ( ! this.getProperty/*WithoutCache_*/(p.name) ) {
-          this.instance_.properties_.unshift(p);
+      var ips = []; // inherited properties
+      var ps  = extendsModel.instance_.properties_;
+      for ( var i = 0 ; i < ps.length ; i++ ) {
+        var p = ps[i];
+        if ( ! this.getProperty(p.name) ) {
+          ips.push(p);
           this.propertyMap_[p.name] = p;
         }
       }
+      if ( ips.length ) {
+        this.instance_.properties_ = ips.concat(this.instance_.properties_);
+      }
 
-//      this.propertyMap_ = null;
-
-      for ( var i = extendsModel.instance_.actions_.length - 1 ; i >= 0 ; i-- ) {
-        var a = extendsModel.instance_.actions_[i];
+      var ias = [];
+      var as = extendsModel.instance_.actions_;
+      for ( var i = 0 ; i < as.length ; i++ ) {
+        var a = as[i];
         if ( ! ( this.getAction && this.getAction(a.name) ) )
-          this.instance_.actions_.unshift(a);
+          ias.push(a);
+      }
+      if ( ias.length ) {
+        this.instance_.actions_ = ias.concat(this.instance_.action_);
       }
     }
 
@@ -498,12 +506,15 @@ var BootstrapModel = {
 
   isSubModel: function(model) {
     /* Returns true if the given instance extends this $$DOC{ref:'Model'} or a descendant of this. */
-// ???: Why was the try/catch needed?  Put back (and document) if needed.
-//    try {
-      return model && model.getPrototype && ( model.getPrototype() === this.getPrototype() || this.isSubModel(model.getPrototype().__proto__.model_) );
-//    } catch (x) {
-//      return false;
-//    }
+    if ( ! model || ! model.getPrototype ) return false;
+
+    var subModels_ = this.subModels_ || ( this.subModels_ = {} );
+
+    if ( ! subModels_.hasOwnProperty(model.name) ) {
+      subModels_[model.name] = ( model.getPrototype() === this.getPrototype() || this.isSubModel(model.getPrototype().__proto__.model_) );
+    }
+
+    return subModels_[model.name];
   },
 
   getRuntimeProperties: function() {
@@ -599,14 +610,16 @@ var BootstrapModel = {
           ret();
       }.bind(this));
 
-      apar.apply(null, args)(function() {
+      aseq.apply(null, args)(function() {
         this.finished__ = true;
         future.set(this);
       }.bind(this));
     }.bind(this);
 
-    if ( this.extra__ ) this.extra__(go);
-    else go();
+    if ( this.extra__ )
+      this.extra__(go);
+    else
+      go();
 
     return this.required__
   },
