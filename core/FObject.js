@@ -346,18 +346,6 @@ var FObject = {
     return this;
   },
 
-  // installInDocument__: function(X, document) {
-  //   for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
-  //     var t = this.model_.templates[i];
-  //     if ( t.name === 'CSS' ) {
-  //       t.futureTemplate(function() {
-  //         X.addStyle(this.CSS());
-  //       }.bind(this));
-  //       return;
-  //     }
-  //   }
-  // },
-
   defineFOAMGetter: function(name, getter) {
     var stack = Events.onGet.stack;
     this.__defineGetter__(name, function() {
