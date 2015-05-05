@@ -116,11 +116,6 @@ var JSONUtil = {
         if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(X, obj[key], null, seq);
         j++;
       }
-/*      var keys = Object.keys(obj);
-      for ( var j = 0, key; key = keys[j]; j++ ) {
-        if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(obj[key]);
-      }
-      */
 
       if ( opt_defaultModel && ! obj.model_ ) return opt_defaultModel.create(obj);
 

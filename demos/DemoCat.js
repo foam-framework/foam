@@ -362,13 +362,17 @@ return JSONUtil.arrayToObjArray(X, [
       }
     },
   ],
-  methods: {
-    init: function() {
+  methods: { init: function init() {
+      this.SUPER();
+      var i = window.location.href.indexOf('?q=');
+      if ( i != -1 ) this.search = window.location.href.substring(i+3);
+    }}/* [
+    function init() {
       this.SUPER();
       var i = window.location.href.indexOf('?q=');
       if ( i != -1 ) this.search = window.location.href.substring(i+3);
     }
-  },
+  ]*/,
   templates: [
     function CSS() {/*
       .thumbnail { margin-bottom: 40px; }
