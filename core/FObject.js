@@ -263,7 +263,6 @@ var FObject = {
 
       if ( 'installInContext_' in self ) {
         self.addInitAgent(9, 'Install model into context/window.', function(o, X, Y) {
-          //if ( X.FOAMWindow ) X.FOAMWindow.installModel(o.model_);
           self.installInContext_(X);
         });
       }
