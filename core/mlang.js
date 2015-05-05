@@ -45,29 +45,29 @@ CLASS({
 
   documentation: 'Parent model for all mLang expressions. Contains default implementations for many methods.',
 
-  methods: {
-    toMQL: function() { /* Outputs MQL for this expression. */ return this.label_; },
-    toSQL: function() { /* Outputs SQL for this expression. */ return this.label_; },
-    toBQL: function() { /* Outputs yet another query language for this expression. */ return this.label_; },
-    toString: function() {
+  methods: [
+    function toMQL() { /* Outputs MQL for this expression. */ return this.label_; },
+    function toSQL() { /* Outputs SQL for this expression. */ return this.label_; },
+    function toBQL() { /* Outputs yet another query language for this expression. */ return this.label_; },
+    function toString() {
       /* Converts to a string form for debugging; defaults to $$DOC{ref: ".toMQL", text: "MQL"}. */
       return this.toMQL();
     },
-    collectInputs: function(terms) {
+    function collectInputs(terms) {
       /* Recursively adds all inputs of an expression to an array. */
       terms.push(this);
     },
-    partialEval: function() {
+    function partialEval() {
       /* <p>Simplifies the expression by eliminating unnecessary clauses and combining others.</p>
        <p>Can sometimes reduce whole (sub)expressions to TRUE or FALSE.</p>
       */
       return this;
     },
-    minterm: function(index, term) {
+    function minterm(index, term) {
       // True if this bit is set in the minterm number.
       return !!((term >>> index[0]--) & 1 );
     },
-    normalize: function() {
+    function normalize() {
       return this;
       // Each input term to the expression.
       var inputs = [];
@@ -95,7 +95,7 @@ CLASS({
       console.log(this.toMQL(),' normalize-> ', ret.toMQL());
       return ret;
     },
-    pipe: function(sink) {
+    function pipe(sink) {
       /* Returns a $$DOC{ref: "Sink"} which applies this expression to every value <tt>put</tt> or <tt>remove</tt>d, calling the provided <tt>sink</tt> only for those values which match the expression. */
       var expr = this;
       return {
@@ -104,7 +104,7 @@ CLASS({
         remove: function(obj) { if ( expr.f(obj) ) sink.remove(obj); }
       };
     }
-  }
+  ]
 });
 
 

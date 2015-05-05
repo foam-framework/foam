@@ -73,8 +73,8 @@ var FObject = {
 
     var o = this.create_(this);
     o.instance_ = {};
-    o.X = (opt_X || X);
-    o.Y = o.X.sub({}, (o.X.NAME ? o.X.NAME : '') + 'Y');
+    o.X = opt_X || X;
+    o.Y = DEBUG ? o.X.sub({}, (o.X.NAME ? o.X.NAME : '') + 'Y') : o.X.sub();
 
     if ( this.model_.instance_.imports_ && this.model_.instance_.imports_.length ) {
       if ( ! Object.prototype.hasOwnProperty.call(this, 'imports__') ) {

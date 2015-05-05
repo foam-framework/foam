@@ -125,6 +125,11 @@ CLASS({
       factory: function() {
         return {
           __proto__: JSONUtil.compact,
+          formatFunction: function(f) {
+            var s = f.code.toString();
+            if ( s.startsWith('function ' + f.name + '(') ) return s;
+            return s.replace(/function ([^\(]*)\(/, 'function ' + f.name + '(')
+          },
           keys_: {},
           keyify: JSONUtil.prettyModel.keyify,
           outputObject_: function(out, obj, opt_defaultModel) {
@@ -153,16 +158,15 @@ CLASS({
                 out(this.keyify(prop.name), ': ');
 
                 if ( prop.name === 'methods' ) {
-                  out('{');
+                  out('[');
                   var ff = true;
                   for ( var i = 0 ; i < val.length ; i++ ) {
                     if ( ! ff ) out(',');
 
-                    out(this.keyify(val[i].name), ': ');
-                    out(val[i].code);
+                    out(this.formatFunction(val[i]));
                     ff = false;
                   }
-                  out('}');
+                  out(']');
                 } else {
                   if ( Array.isArray(val) && prop.subType ) {
                     this.outputArray_(out, val, prop.subType);
