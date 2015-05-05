@@ -30,13 +30,12 @@ CLASS({
   ],
 
   installInContext: function(X) {
-      if ( ! this.HREF ) return;
+    if ( ! this.HREF ) return;
 
-      var l = X.document.createElement('link');
-      l.setAttribute('rel', 'import');
-      l.setAttribute('href', this.HREF);
-      X.document.head.appendChild(l);
-    }
+    var l = X.document.createElement('link');
+    l.setAttribute('rel', 'import');
+    l.setAttribute('href', this.HREF);
+    X.document.head.appendChild(l);
   },
 
   methods: [

@@ -152,12 +152,12 @@ var BootstrapModel = {
         // 'this' can now be any prototype that extends our original cls, since we recurse.
         if ( ! X.installedModels ) X.set('installedModels', {}); // TODO: move to context.js?
         if ( ! X.installedModels[this.model_.id] ) {
-          console.log(this.name_,"  installing!");
+//          console.log(this.name_,"  installing!");
           if ( newInstallInContextFn ) {
             newInstallInContextFn.apply(this, arguments); // this' code installing this
           }
           if ( proto.installInContext_ ) {
-            console.log(this.name_,"    proto installing!");
+//            console.log(this.name_,"    proto installing!");
             proto.installInContext_.apply(this, arguments); // inherited code installing this
             proto.installInContext_.apply(proto, arguments); // inherited code installing inherited
           }
