@@ -20,7 +20,6 @@ CLASS({
     'foam.flow.Aside',
     'foam.flow.CodeSample',
     'foam.flow.CodeSnippet',
-    'foam.flow.CodeSnippetRef',
     'foam.flow.CodeView',
     // 'foam.flow.ExpandableSection',
     'foam.flow.QuoteCode',
@@ -92,7 +91,6 @@ CLASS({
       this.FOAMWindow.installModel(this.Aside);
       this.FOAMWindow.installModel(this.CodeSample);
       this.FOAMWindow.installModel(this.CodeSnippet);
-      this.FOAMWindow.installModel(this.CodeSnippetRef);
       this.FOAMWindow.installModel(this.QuoteCode);
       this.FOAMWindow.installModel(this.Section);
 
