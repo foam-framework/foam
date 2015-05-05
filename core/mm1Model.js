@@ -526,39 +526,39 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       name: 'methods',
       subType: 'Method',
       help: 'Methods associated with the entity.',
-      adapt: function(_, newValue) {
-        if ( ! Method ) return newValue;
+      adapt: function(_, a) {
+        if ( ! Method ) return a;
 
-        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Method);
-
-        // convert a map of functions to an array of Method instances
-        var methods = [];
-
-        for ( var key in newValue ) {
-          var oldValue = newValue[key];
-
+        function createMethod(X, name, fn) {
           var method = Method.create({
-            name: key,
-            code: oldValue
+            name: name,
+            code: fn
           });
 
-          // Model Feature object.
-          if ( typeof oldValue === 'function' ) {
-            if ( DEBUG && Arg ) {
-              var str = oldValue.toString();
-              method.args = str.
-                match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
-                split(',').
-                filter(function(name) { return name; }).
-                map(function(name) { return Arg.create({name: name.trim()}); });
-            }
-          } else {
-            console.warn('Constant defined as Method: ', this.name + '.' + key);
+          if ( DEBUG && Arg ) {
+            var str = fn.toString();
+            method.args = str.
+              match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
+              split(',').
+              filter(function(name) { return name; }).
+              map(function(name) { return Arg.create({name: name.trim()}); });
           }
 
-          methods.push(method);
+          return method;
         }
 
+        if ( Array.isArray(a) ) {
+          for ( var i = 0 ; i < a.length ; i++ ) {
+            a[i] = ( typeof a[i] === 'function' ) ?
+              createMethod(this.X, a[i].name, a[i]) :
+              JSONUtil.mapToObj(this.X, a[i], Method, seq) ;
+          }
+          return a;
+        }
+
+        // convert a map of functions to an array of Method instances, DEPRECATED
+        var methods = [];
+        for ( var key in a ) methods.push(createMethod(this.X, key, a[key]));
         return methods;
       },
       documentation: function() { /*
@@ -667,7 +667,6 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       type: 'Array[Unit Test]',
       subType: 'UnitTest',
       view: 'foam.ui.ArrayView',
-      debug: true,
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];

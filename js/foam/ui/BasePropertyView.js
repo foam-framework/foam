@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 CLASS({
   package: 'foam.ui',
   name: 'BasePropertyView',
@@ -157,7 +156,6 @@ CLASS({
       Events.link(pValue, this.childData$);
       this.bound_ = true;
     },
-
 
     toString: function() { /* Name info. */ return 'PropertyView(' + this.prop.name + ', ' + this.view + ')'; },
 
