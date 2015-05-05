@@ -181,9 +181,11 @@ CLASS({
   templates: [
     function toInnerHTML() {/*
       <% this.delegateView = this.delegate();
-         this.addDataChild(this.delegateView); %>
+         this.addDataChild(this.delegateView);
+         debugger;
+      %>
       <expandable-content id="{{this.id}}-content">
-      %%delegateView
+        %%delegateView
       </expandable-content>
     */},
     function CSS() {/*
