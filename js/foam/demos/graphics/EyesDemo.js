@@ -40,8 +40,8 @@ CLASS({
     { name: 'height', defaultValue: 2000 }
   ],
 
-  methods: {
-    initCView: function() {
+  methods: [
+    function initCView() {
       this.addChild(this.eyes);
       this.mouse.connect(this.$);
       this.mouse.addPropertyListener(null, function() {
@@ -49,5 +49,5 @@ CLASS({
       }.bind(this));
       this.eyes.watch(this.mouse);
     }
-  }
+  ]
 });
