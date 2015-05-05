@@ -807,6 +807,21 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       defaultValue: '',
       help: 'Factory to create the action object for deleting this object',
       documentation: function() { /* Factory to create the action object for deleting this object  */}
+    },
+    {
+      name: 'installInContext',
+      type: 'Function',
+      required: false,
+      displayWidth: 70,
+      displayHeight: 3,
+      rows:3,
+      view: 'foam.ui.FunctionView',
+      defaultValue: '',
+      help: 'Function to install once-per-model-per-context items, such as CSS or DOM tag regsistrations.',
+      documentation: function() { /* Function to install once-per-model-per-context items, 
+        such as CSS or DOM tag regsistrations. BootstrapModel.BuildPrototype() accounts for inheritance,
+        and this function (and inherited functions) run on each .create(). The current context is
+        passed in as the first parameter. */}
     }
   ],
 

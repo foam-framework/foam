@@ -143,6 +143,20 @@ var BootstrapModel = {
       try { cls.create_ = eval(s).call(cls); } catch (e) { }
     }*/
 
+    // accumulate inherited installInContext function
+    if ( this.installInContext ) {
+      cls.installInContext = function(X) {
+        if ( ! X.installedModels ) X.set('installedModels', {}); // TODO: move to context.js?
+        if ( ! X.installedModels[( this.package? this.package+'.' : '')+this.name] ) {
+          X.installedModels[( this.package? this.package+'.' : '')+this.name] = true;
+          this.installInContext.apply(cls, arguments); // call on the prototype 
+          if ( proto.installInContext ) {
+            proto.installInContext.apply(proto, arguments);
+          }
+        }
+      }.bind(this);
+    }
+
     // add sub-models
     //        this.models && this.models.forEach(function(m) {
     //          cls[m.name] = JSONUtil.mapToObj(m);

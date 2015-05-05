@@ -261,9 +261,12 @@ var FObject = {
         if ( Model.isInstance(o) && o.name != 'Model' ) o.create = BootstrapModel.create;
       });
 
-      self.addInitAgent(9, 'Install model into window.', function(o, X, Y) {
-        if ( X.FOAMWindow ) X.FOAMWindow.installModel(o.model_);
-      });
+      if ( self.installInContext ) {
+        self.addInitAgent(9, 'Install model into context/window.', function(o, X, Y) {
+          //if ( X.FOAMWindow ) X.FOAMWindow.installModel(o.model_);
+          self.installInContext(X);
+        });
+      }
 
       // Works if sort is 'stable', which it isn't in Chrome
       // agents.sort(function(o1, o2) { return o1[0] - o2[0]; });
@@ -344,17 +347,17 @@ var FObject = {
     return this;
   },
 
-  installInDocument__: function(X, document) {
-    for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
-      var t = this.model_.templates[i];
-      if ( t.name === 'CSS' ) {
-        t.futureTemplate(function() {
-          X.addStyle(this.CSS());
-        }.bind(this));
-        return;
-      }
-    }
-  },
+  // installInDocument__: function(X, document) {
+  //   for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
+  //     var t = this.model_.templates[i];
+  //     if ( t.name === 'CSS' ) {
+  //       t.futureTemplate(function() {
+  //         X.addStyle(this.CSS());
+  //       }.bind(this));
+  //       return;
+  //     }
+  //   }
+  // },
 
   defineFOAMGetter: function(name, getter) {
     var stack = Events.onGet.stack;

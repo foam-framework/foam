@@ -99,11 +99,11 @@ CLASS({
       }
       return ret;
     },
-    installModel: function(model) {
-      if ( this.installedModels[model.id] ) return;
-      this.installedModels[model.id] = true;
-      model.getPrototype().installInDocument__(this.Y, this.document);
-    },
+    // installModel: function(model) {
+    //   if ( this.installedModels[model.id] ) return;
+    //   this.installedModels[model.id] = true;
+    //   model.getPrototype().installInDocument__(this.Y, this.document);
+    // },
     addStyle: function(css) {
       if ( ! this.document || ! this.document.createElement ) return;
       var s = this.document.createElement('style');
