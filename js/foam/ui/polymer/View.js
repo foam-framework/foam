@@ -30,7 +30,6 @@ CLASS({
   ],
 
   installInContext: function(X) {
-    function(X) {
       if ( ! this.HREF ) return;
 
       var l = X.document.createElement('link');

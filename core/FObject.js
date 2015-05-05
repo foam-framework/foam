@@ -261,10 +261,10 @@ var FObject = {
         if ( Model.isInstance(o) && o.name != 'Model' ) o.create = BootstrapModel.create;
       });
 
-      if ( self.installInContext ) {
+      if ( 'installInContext_' in self ) {
         self.addInitAgent(9, 'Install model into context/window.', function(o, X, Y) {
           //if ( X.FOAMWindow ) X.FOAMWindow.installModel(o.model_);
-          self.installInContext(X);
+          self.installInContext_(X);
         });
       }
 

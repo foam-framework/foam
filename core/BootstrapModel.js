@@ -143,19 +143,28 @@ var BootstrapModel = {
       try { cls.create_ = eval(s).call(cls); } catch (e) { }
     }*/
 
-    // accumulate inherited installInContext function
-    if ( this.installInContext ) {
-      cls.installInContext = function(X) {
+    // accumulate inherited installInContext function.
+    // For the current model: run this.installInContext, then inherited installInContext
+    // For the inherited model: run its installInContext (this.installInContext not applied)
+    if ( this.installInContext || proto.installInContext_ ) {
+      var newInstallInContextFn = this.installInContext;
+      cls.installInContext_ = function(X) {
+        // 'this' can now be any prototype that extends our original cls, since we recurse.
         if ( ! X.installedModels ) X.set('installedModels', {}); // TODO: move to context.js?
-        if ( ! X.installedModels[( this.package? this.package+'.' : '')+this.name] ) {
-          X.installedModels[( this.package? this.package+'.' : '')+this.name] = true;
-          this.installInContext.apply(cls, arguments); // call on the prototype 
-          if ( proto.installInContext ) {
-            proto.installInContext.apply(proto, arguments);
+        if ( ! X.installedModels[this.model_.id] ) {
+          console.log(this.name_,"  installing!");
+          if ( newInstallInContextFn ) {
+            newInstallInContextFn.apply(this, arguments); // this' code installing this
           }
+          if ( proto.installInContext_ ) {
+            console.log(this.name_,"    proto installing!");
+            proto.installInContext_.apply(this, arguments); // inherited code installing this
+            proto.installInContext_.apply(proto, arguments); // inherited code installing inherited
+          }
+          X.installedModels[this.model_.id] = true;
         }
-      }.bind(this);
-    }
+      }
+    } // else no installInContext_ to be defined
 
     // add sub-models
     //        this.models && this.models.forEach(function(m) {

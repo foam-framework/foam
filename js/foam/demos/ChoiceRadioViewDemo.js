@@ -113,7 +113,7 @@ CLASS({
 
   methods: {
     init: function() {
-      this.FOAMWindow.installModel(this.SharedStyles);
+      this.SharedStyles.getPrototype().installInContext_(this.X);
       this.Y.registerModel(this.FlatButton, 'foam.ui.ActionButton');
 
       this.SUPER();

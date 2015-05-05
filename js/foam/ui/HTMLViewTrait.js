@@ -577,10 +577,13 @@ CLASS({
   },
   
   installInContext: function(X) {
+    console.log(this.name_, " installInContext running");
     for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
       var t = this.model_.templates[i];
+      console.log(this.name_, "   found template CSS");
       if ( t.name === 'CSS' ) {
         t.futureTemplate(function() {
+          console.log(this.name_, " loading CSS");
           X.addStyle(this.CSS());
         }.bind(this));
         return;
