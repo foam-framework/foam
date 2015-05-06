@@ -38,7 +38,7 @@ CLASS({
       name: 'messageGenerator',
       lazyFactory: function() {
         return this.MessageGenerator.create({
-          idGenerator$: this.idGenerator$
+          idGenerator: this.idGenerator
         });
       }
     },
