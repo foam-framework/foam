@@ -69,11 +69,6 @@ CLASS({
     },
     {
       model_: 'StringProperty',
-      name: 'idGeneratorModel',
-      defaultValue: 'foam.i18n.IdGenerator'
-    },
-    {
-      model_: 'StringProperty',
       name: 'placeholderModel',
       defaultValue: 'foam.i18n.Placeholder'
     },
@@ -113,7 +108,7 @@ CLASS({
     },
     {
       name: 'idGenerator',
-      lazyFactory: function() {
+      factory: function() {
         return this.IdGenerator.create();
       }
     },
@@ -168,11 +163,10 @@ CLASS({
       }
 
       apar(arequire(this.extractorModel), arequire(this.messageGeneratorModel),
-           arequire(this.idGeneratorModel), arequire(this.placeholderModel),
-           arequire(this.messageModel), arequire(this.messageBundleModel))(
-               function(Extractor, MessageGenerator, IdGenerator, Placeholder,
-                        Message, MessageBundle) {
-                 this.idGenerator = IdGenerator.create();
+           arequire(this.placeholderModel), arequire(this.messageModel),
+           arequire(this.messageBundleModel))(
+               function(Extractor, MessageGenerator, Placeholder, Message,
+                        MessageBundle) {
                  this.i18nController = this.GlobalController.create({
                    idGenerator$: this.idGenerator$,
                    extractor: Extractor.create({
