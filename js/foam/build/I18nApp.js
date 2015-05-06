@@ -25,6 +25,7 @@ CLASS({
     'foam.core.dao.OrDAO',
     'node.dao.ModelFileDAO',
     'foam.i18n.GlobalController',
+    'foam.i18n.IdGenerator',
     'foam.i18n.MessageGenerator'
   ],
   imports: [ 'error' ],
