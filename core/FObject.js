@@ -261,10 +261,30 @@ var FObject = {
         if ( Model.isInstance(o) && o.name != 'Model' ) o.create = BootstrapModel.create;
       });
 
-      if ( 'installInContext_' in self ) {
-        self.addInitAgent(9, 'Install model into context/window.', function(o, X, Y) {
-          self.installInContext_(X);
-        });
+      // Install in document, if necessary
+      if ( self.model_.instance_.installInContext_ ) {
+        var initFunc = function(o, X, Y) {
+          // o can be a newly created instance, or a proto inherited by the original o.
+          // This happens to work because instances and prototypes both have .model_
+          var model = o.model_;
+          // if not a model instance, no document, or we are already installed in document,
+          //   or there's no installInContext declared in this base model, we're done.
+          if ( ! model || ! X.installedModels || X.installedModels[model.id]
+            || ! model.instance_.installInContext_ ) return;
+
+          var proto = model.getPrototype();
+          // call each inherited installer on the current proto
+          for (var ic = 0; ic < model.instance_.installInContext_.length; ++ic) {
+            model.instance_.installInContext_[ic].call(proto, X);
+          }
+          X.installedModels[model.id] = true;
+
+          // recurse into inherited protos, in case they haven't been .create()ed yet
+          if ( proto.__proto__ && proto.__proto__.model_ ) {
+            initFunc(proto.__proto__, X, Y);
+          }
+        };
+        self.addInitAgent(9, 'Install model into document.', initFunc);
       }
 
       // Works if sort is 'stable', which it isn't in Chrome

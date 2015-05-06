@@ -143,29 +143,6 @@ var BootstrapModel = {
       try { cls.create_ = eval(s).call(cls); } catch (e) { }
     }*/
 
-    // accumulate inherited installInContext function.
-    // For the current model: run this.installInContext, then inherited installInContext
-    // For the inherited model: run its installInContext (this.installInContext not applied)
-    if ( this.installInContext || proto.installInContext_ ) {
-      var newInstallInContextFn = this.installInContext;
-      cls.installInContext_ = function(X) {
-        // 'this' can now be any prototype that extends our original cls, since we recurse.
-        if ( ! X.installedModels ) X.set('installedModels', {}); // TODO: move to context.js?
-        if ( ! X.installedModels[this.model_.id] ) {
-//          console.log(this.name_,"  installing!");
-          if ( newInstallInContextFn ) {
-            newInstallInContextFn.apply(this, arguments); // this' code installing this
-          }
-          if ( proto.installInContext_ ) {
-//            console.log(this.name_,"    proto installing!");
-            proto.installInContext_.apply(this, arguments); // inherited code installing this
-            proto.installInContext_.apply(proto, arguments); // inherited code installing inherited
-          }
-          X.installedModels[this.model_.id] = true;
-        }
-      }
-    } // else no installInContext_ to be defined
-
     // add sub-models
     //        this.models && this.models.forEach(function(m) {
     //          cls[m.name] = JSONUtil.mapToObj(m);
@@ -371,6 +348,41 @@ var BootstrapModel = {
         };
       });
     });
+
+//     // accumulate inherited installInContext function.
+//     // For the current model: run this.installInContext, then inherited installInContext
+//     // For the inherited model: run its installInContext (this.installInContext not applied)
+//     if ( this.installInContext || proto.installInContext_ ) {
+//       var newInstallInContextFn = this.installInContext;
+//       cls.installInContext_ = function(X) {
+//         // 'this' can now be any prototype that extends our original cls, since we recurse.
+//         if ( ! X.installedModels ) return; // if we have no window/document, don't bother
+//         if ( ! X.installedModels[this.model_.id] ) {
+// //          console.log(this.name_,"  installing!");
+//           if ( newInstallInContextFn ) {
+//             newInstallInContextFn.apply(this, arguments); // this' code installing this
+//           }
+//           if ( proto.installInContext_ ) {
+// //            console.log(this.name_,"    proto installing!");
+//             proto.installInContext_.apply(this, arguments); // inherited code installing this
+//             proto.installInContext_.apply(proto, arguments); // inherited code installing inherited
+//           }
+//           X.installedModels[this.model_.id] = true;
+//         }
+//       }
+//     } // else no installInContext_ to be defined
+
+    // Accumulate the list of installInContext functions to run on first
+    // instance creation in each document
+    if ( this.installInContext ) {
+      this.instance_.installInContext_ = [ this.installInContext ];
+      if ( extendsModel && extendsModel.instance_.installInContext_ ) {
+        this.instance_.installInContext_.concat(
+          extendsModel.instance_.installInContext_);
+      }
+    } else if ( extendsModel && extendsModel.instance_.installInContext_ ) {
+      this.instance_.installInContext_ = extendsModel.instance_.installInContext_;
+    }
 
     // TODO: move this somewhere better
     var createListenerTrampoline = function(cls, name, fn, isMerged, isFramed, whenIdle) {

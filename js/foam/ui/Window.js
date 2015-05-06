@@ -33,6 +33,7 @@ CLASS({
     'dynamic',
     'error',
     'info',
+    'installedModels',
     'log',
     'lookup',
     'memento',
@@ -67,12 +68,12 @@ CLASS({
     },
     {
       name: 'document'
+      // postSet to reset installedModels?
     },
     {
       name: 'installedModels',
-      lazyFactory: function() {
-        return this.document.installedModels || ( this.document.installedModels = {} );
-      }
+      documentation: "Each new Window context introduces a new document and resets installedModels so models will install again in the new document.",
+      factory: function() { return {}; }
     },
     {
       model_: 'BooleanProperty',
