@@ -24,7 +24,8 @@ CLASS({
     'foam.dao.File',
     'foam.core.dao.OrDAO',
     'node.dao.ModelFileDAO',
-    'foam.i18n.GlobalController'
+    'foam.i18n.GlobalController',
+    'foam.i18n.MessageGenerator'
   ],
   imports: [ 'error' ],
 
@@ -60,6 +61,21 @@ CLASS({
       model_: 'StringProperty',
       name: 'extractorModel',
       defaultValue: 'foam.i18n.MessagesExtractor'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'messageGeneratorModel',
+      defaultValue: 'foam.i18n.MessageGenerator'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'idGeneratorModel',
+      defaultValue: 'foam.i18n.IdGenerator'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'placeholderModel',
+      defaultValue: 'foam.i18n.MessageGenerator'
     },
     {
       model_: 'StringProperty',
@@ -143,12 +159,21 @@ CLASS({
         });
       }
 
-      apar(arequire(this.extractorModel), arequire(this.messageModel),
-           arequire(this.messageBundleModel))(
-               function(Extractor, Message, MessageBundle) {
+      apar(arequire(this.extractorModel), arequire(this.messageGeneratorModel),
+           arequire(this.idGeneratorModel), arequire(this.placeholderModel),
+           arequire(this.messageModel), arequire(this.messageBundleModel))(
+               function(Extractor, MessageGenerator, IdGenerator, Placeholder,
+                        Message, MessageBundle) {
+                 var idGenerator = IdGenerator.create();
                  this.i18nController = this.GlobalController.create({
+                   idGenerator: idGenerator,
                    extractor: Extractor.create({
-                     messageFactory: Message.create.bind(Message),
+                     idGenerator: idGenerator,
+                     messageGenerator: MessageGenerator.create({
+                       idGenerator: idGenerator,
+                       placeholderFactory: Placeholder.create.bind(Placeholder),
+                       messageFactory: Message.create.bind(Message)
+                     }),
                      messageBundleFactory: MessageBundle.create.bind(MessageBundle)
                    })
                  });

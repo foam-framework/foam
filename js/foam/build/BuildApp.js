@@ -197,17 +197,12 @@ CLASS({
       help: 'List of extra .js hierarchies to load models from.  Paths will be checked in the order given, finally falling back to the main FOAM js/ hierarchy.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
-    // TODO(markdittmer): Remove "sourceLocale" when all build processes
-    // no longer require it.
-    {
-      model_: 'StringProperty',
-      name: 'sourceLocale',
-      defaultValue: 'en'
-    },
     {
       model_: 'StringProperty',
       name: 'locale'
     },
+    // TODO(markdittmer): Remove "i18nMessagesPath" when all build processes
+    // no longer require it.
     {
       model_: 'StringProperty',
       name: 'i18nMessagesPath'
@@ -215,12 +210,6 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'i18nTranslationsPath'
-    },
-    // TODO(markdittmer): Remove "i18nSourcePath" when all build processes
-    // support distinction between messages and translations.
-    {
-      model_: 'StringProperty',
-      name: 'i18nSourcePath'
     },
     {
       model_: 'StringArrayProperty',
@@ -233,16 +222,6 @@ CLASS({
     {
       model_: 'StringArrayProperty',
       name: 'i18nTranslations',
-      adapt: function(_, s) {
-        if (typeof s === 'string') return s.split(',');
-        return s;
-      }
-    },
-    // TODO(markdittmer): Remove "i18nSources" when all build processes
-    // support distinction between messages and translations.
-    {
-      model_: 'StringArrayProperty',
-      name: 'i18nSources',
       adapt: function(_, s) {
         if (typeof s === 'string') return s.split(',');
         return s;

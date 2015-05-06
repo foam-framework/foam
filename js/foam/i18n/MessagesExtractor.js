@@ -22,6 +22,7 @@ CLASS({
 
   requires: [
     'foam.i18n.Message',
+    'foam.i18n.MessageGenerator',
     'foam.i18n.MessageBundle',
     'foam.i18n.Placeholder'
   ],
@@ -34,21 +35,17 @@ CLASS({
       lazyFactory: function() { return []; }
     },
     {
+      name: 'messageGenerator',
+      lazyFactory: function() {
+        return this.MessageGenerator.create({
+          idGenerator$: this.idGenerator$
+        });
+      }
+    },
+    {
       name: 'messageBundleFactory',
       lazyFactory: function() {
         return this.MessageBundle.create.bind(this.MessageBundle);
-      }
-    },
-    {
-      name: 'messageFactory',
-      lazyFactory: function() {
-        return this.Message.create.bind(this.Message);
-      }
-    },
-    {
-      name: 'placeholderFactory',
-      lazyFactory: function() {
-        return this.Placeholder.create.bind(this.Placeholder);
       }
     }
   ],
@@ -57,19 +54,7 @@ CLASS({
     {
       name: 'visitMessage',
       code: function(model, msg) {
-        var modelPrefix = model.translationHint ?
-            model.translationHint + ' ' : '';
-        var placeholders = msg.placeholders.map(function(p) {
-          return this.placeholderFactory(p);
-        }.bind(this));
-        var i18nMsg = this.messageFactory({
-          id: this.idGenerator.getMessageId(model, msg),
-          name: msg.name,
-          value: msg.value,
-          meaning: msg.meaning,
-          placeholders: placeholders,
-          description: modelPrefix + msg.translationHint
-        });
+        var i18nMsg = this.messageGenerator.generateMessage(model, msg);
         this.dao.put(i18nMsg);
         return i18nMsg;
       }
@@ -77,33 +62,9 @@ CLASS({
     {
       name: 'visitAction',
       code: function(model, action) {
-        var modelPrefix = model.translationHint ?
-            model.translationHint + ' ' : '';
-        var msgs = [];
-        var i18nMsg;
-        if ( action.translationHint ) {
-          if ( action.label ) {
-            i18nMsg = this.messageFactory({
-              id: this.idGenerator.getActionTextLabelId(model, action),
-              name: action.name + 'Label',
-              value: action.label,
-              description: modelPrefix + action.translationHint +
-                  ' (text label)'
-            });
-            this.dao.put(i18nMsg);
-            msgs.push(i18nMsg);
-          }
-          if ( action.speechLabel ) {
-            i18nMsg = this.messageFactory({
-              id: this.idGenerator.getActionSpeechLabelId(model, action),
-              name: action.name + 'SpeechLabel',
-              value: action.speechLabel,
-              description: modelPrefix + action.translationHint +
-                  ' (speech label)'
-            });
-            this.dao.put(i18nMsg);
-            msgs.push(i18nMsg);
-          }
+        var msgs = this.messageGenerator.generateActionMessages(model, action);
+        for ( var i = 0; i < msgs.length; ++i ) {
+          this.dao.put(msgs[i]);
         }
         return msgs;
       }

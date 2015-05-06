@@ -20,6 +20,7 @@ CLASS({
   name: 'GlobalController',
 
   requires: [
+    'foam.i18n.IdGenerator',
     'foam.i18n.MessagesExtractor',
     'foam.i18n.MessagesInjector',
     'foam.i18n.ChromeMessagesInjector'
@@ -27,9 +28,17 @@ CLASS({
 
   properties: [
     {
+      name: 'idGenerator',
+      lazyFactory: function() {
+        return this.IdGenerator.create();
+      }
+    },
+    {
       name: 'extractor',
       lazyFactory: function() {
-        return this.MessagesExtractor.create();
+        return this.MessagesExtractor.create({
+          idGenerator: this.idGenerator
+        });
       }
     },
     {
@@ -37,9 +46,13 @@ CLASS({
       lazyFactory: function() {
         if ( GLOBAL.chrome && GLOBAL.chrome.runtime &&
             GLOBAL.chrome.runtime.id ) {
-          return this.ChromeMessagesInjector.create();
+          return this.ChromeMessagesInjector.create({
+            idGenerator: this.idGenerator
+          });
         } else {
-          return this.MessagesInjector.create();
+          return this.MessagesInjector.create({
+            idGenerator: this.idGenerator
+          });
         }
       }
     }

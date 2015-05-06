@@ -44,20 +44,6 @@ CLASS({
 
   methods: [
     {
-      name: 'init',
-      code: function() {
-        var ret = this.SUPER.apply(this, arguments);
-        return ret;
-      }
-    },
-    {
-      name: 'initHTML',
-      code: function() {
-        var ret = this.SUPER.apply(this, arguments);
-        return ret;
-      }
-    },
-    {
       name: 'visitMessage',
       code: function(model, msg, msgIdx) {
         this.maybeSetMessage(
