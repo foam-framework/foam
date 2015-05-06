@@ -22,6 +22,15 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'inner'
+    },
+    {
+      model_: 'foam.core.types.DocumentInstallProperty',
+      name: 'registerElement',
+      documentInstallFn: function(X) {
+        X.registerElement(
+        this.getTagName(),
+        this.model_.package + '.' + this.name_);
+      }
     }
   ],
 
@@ -77,11 +86,4 @@ CLASS({
   templates: [
     function toInnerHTML() {/*<%= this.inner() %>*/}
   ],
-
-  installInDocument: function(X) {
-    X.registerElement(
-        this.getTagName(),
-        this.model_.package + '.' + this.name_);
-  },
-
 });

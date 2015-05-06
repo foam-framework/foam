@@ -79,7 +79,10 @@ CLASS({
     init: function() {
       this.SUPER.apply(this, arguments);
       this.X.registerElement('circle', 'foam.graphics.Circle');
-      this.Slides.getPrototype().installInDocument_(this.X);
+      this.Slides.getProperty('installCSS').documentInstallFn.call(
+        this.Slides.getPrototype(), this.X);
+      this.Slides.getProperty('registerElement').documentInstallFn.call(
+        this.Slides.getPrototype(), this.X);
     }
   },
 

@@ -26,17 +26,20 @@ CLASS({
       model_: 'ModelProperty',
       name: 'tooltipModel',
       defaultValue: 'foam.ui.polymer.Tooltip'
+    },
+    {
+      model_: 'foam.core.types.DocumentInstallProperty',
+      name: 'registerElement',
+      documentInstallFn: function(X) {
+        if ( ! this.HREF ) return;
+        var l = X.document.createElement('link');
+        l.setAttribute('rel', 'import');
+        l.setAttribute('href', this.HREF);
+        X.document.head.appendChild(l);
+      }
     }
   ],
 
-  installInDocument: function(X) {
-    if ( ! this.HREF ) return;
-
-    var l = X.document.createElement('link');
-    l.setAttribute('rel', 'import');
-    l.setAttribute('href', this.HREF);
-    X.document.head.appendChild(l);
-  },
 
   methods: [
     {
