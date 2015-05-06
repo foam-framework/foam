@@ -112,9 +112,17 @@ CLASS({
       factory: function() { return this.FileDAO.create(); }
     },
     {
+      name: 'idGenerator',
+      lazyFactory: function() {
+        return this.IdGenerator.create();
+      }
+    },
+    {
       name: 'i18nController',
       lazyFactory: function() {
-        return this.GlobalController.create();
+        return this.GlobalController.create({
+          idGenerator$: this.idGenerator$
+        });
       }
     },
     {
@@ -164,13 +172,13 @@ CLASS({
            arequire(this.messageModel), arequire(this.messageBundleModel))(
                function(Extractor, MessageGenerator, IdGenerator, Placeholder,
                         Message, MessageBundle) {
-                 var idGenerator = IdGenerator.create();
+                 this.idGenerator = IdGenerator.create();
                  this.i18nController = this.GlobalController.create({
-                   idGenerator: idGenerator,
+                   idGenerator$: this.idGenerator$,
                    extractor: Extractor.create({
-                     idGenerator: idGenerator,
+                     idGenerator$: this.idGenerator$,
                      messageGenerator: MessageGenerator.create({
-                       idGenerator: idGenerator,
+                       idGenerator$: this.idGenerator$,
                        placeholderFactory: Placeholder.create.bind(Placeholder),
                        messageFactory: Message.create.bind(Message)
                      }),

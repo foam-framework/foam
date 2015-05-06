@@ -65,25 +65,25 @@ CLASS({
       code: function(model, action) {
         var modelPrefix = model.translationHint ?
             model.translationHint + ' ' : '';
-        var msgs = [];
+        var msgs = {};
         if ( action.translationHint ) {
           if ( action.label ) {
-            msgs.push(this.messageFactory({
+            msgs.label = this.messageFactory({
               id: this.idGenerator.getActionTextLabelId(model, action),
               name: action.name + 'Label',
               value: action.label,
               description: modelPrefix + action.translationHint +
                   ' (text label)'
-            }));
+            });
           }
           if ( action.speechLabel ) {
-            msgs.push(this.messageFactory({
+            msgs.speechLabel = this.messageFactory({
               id: this.idGenerator.getActionSpeechLabelId(model, action),
               name: action.name + 'SpeechLabel',
               value: action.speechLabel,
               description: modelPrefix + action.translationHint +
                   ' (speech label)'
-            }));
+            });
           }
         }
         return msgs;

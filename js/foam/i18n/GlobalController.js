@@ -37,7 +37,7 @@ CLASS({
       name: 'extractor',
       lazyFactory: function() {
         return this.MessagesExtractor.create({
-          idGenerator: this.idGenerator
+          idGenerator$: this.idGenerator$
         });
       }
     },
@@ -47,11 +47,11 @@ CLASS({
         if ( GLOBAL.chrome && GLOBAL.chrome.runtime &&
             GLOBAL.chrome.runtime.id ) {
           return this.ChromeMessagesInjector.create({
-            idGenerator: this.idGenerator
+            idGenerator$: this.idGenerator$
           });
         } else {
           return this.MessagesInjector.create({
-            idGenerator: this.idGenerator
+            idGenerator$: this.idGenerator$
           });
         }
       }

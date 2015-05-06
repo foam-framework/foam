@@ -63,8 +63,9 @@ CLASS({
       name: 'visitAction',
       code: function(model, action) {
         var msgs = this.messageGenerator.generateActionMessages(model, action);
-        for ( var i = 0; i < msgs.length; ++i ) {
-          this.dao.put(msgs[i]);
+        var keys = Object.keys(msgs);
+        for ( var i = 0; i < keys.length; ++i ) {
+          this.dao.put(msgs[keys[i]]);
         }
         return msgs;
       }
