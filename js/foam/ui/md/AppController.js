@@ -42,6 +42,22 @@ CLASS({
       factory: function() { return this.SharedStyles.create() }
     },
     {
+      model_: 'foam.core.types.DocumentInstallProperty',
+      name: 'installCSS',
+      documentation: "TODO: Move this to a shared trait or have AppController extend View",
+      documentInstallFn: function(X) {
+        for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
+          var t = this.model_.templates[i];
+          if ( t.name === 'CSS' ) {
+            t.futureTemplate(function() {
+              X.addStyle(this.CSS());
+            }.bind(this));
+            return;
+          }
+        }
+      }
+    },
+    {
       name: 'name',
       defaultValueFn: function() { return this.model.plural; },
     },
@@ -206,7 +222,7 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      
+
       this.Y.registerModel(this.ActionButtonCView.xbind({
         alpha:      1,
         width:      48,
