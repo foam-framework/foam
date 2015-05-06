@@ -86,18 +86,17 @@ CLASS({
           this.srcView.scroll = this.scroll;
         }.bind(this));
       }
+    },
+    {
+      name: 'isLoadedOrFailed',
+      code: function() {
+        var state = this.codeViewLoadState;
+        return state === 'loaded' || state === 'failed';
+      }
     }
   ],
 
   listeners: [
-    {
-      name: 'onCodeViewLoaded',
-      todo: 'We should probably have a spinner and/or placeholder until this fires.',
-      isFramed: true,
-      code: function() {
-        this.extraClassName = '';
-      }
-    },
     {
       name: 'onCodeViewLoadFailed',
       isFramed: true,
@@ -111,10 +110,8 @@ CLASS({
     {
       name: 'onCodeViewLoadStateChanged',
       code: function() {
-        if ( this.codeViewLoadState === 'unloaded' ||
-            this.codeViewLoadState === 'pending' ) return;
-        if ( this.codeViewLoadState === 'loaded' ) this.onCodeViewLoaded();
-        if ( this.codeViewLoadState === 'failed' ) this.onCodeViewLoadFailed();
+        if ( this.codeViewLoadState !== 'failed' ) return;
+        this.onCodeViewLoadFailed();
       }
     },
     {
@@ -157,6 +154,12 @@ CLASS({
 
   templates: [
     function toInnerHTML() {/*
+      <%
+        this.setClass('loading', function() {
+          this.codeViewLoadState;
+          return ! this.isLoadedOrFailed();
+        }.bind(this), this.id);
+      %>
       <% if ( this.data.title ) { %>
         <heading>{{{this.data.title}}}</heading>
       <% } %>

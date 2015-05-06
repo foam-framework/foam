@@ -125,6 +125,11 @@ CLASS({
       factory: function() {
         return {
           __proto__: JSONUtil.compact,
+          formatFunction: function(f) {
+            var s = f.code.toString();
+            if ( s.startsWith('function ' + f.name + '(') ) return s;
+            return s.replace(/function ([^\(]*)\(/, 'function ' + f.name + '(')
+          },
           keys_: {},
           keyify: JSONUtil.prettyModel.keyify,
           outputObject_: function(out, obj, opt_defaultModel) {
@@ -153,16 +158,15 @@ CLASS({
                 out(this.keyify(prop.name), ': ');
 
                 if ( prop.name === 'methods' ) {
-                  out('{');
+                  out('[');
                   var ff = true;
                   for ( var i = 0 ; i < val.length ; i++ ) {
                     if ( ! ff ) out(',');
 
-                    out(this.keyify(val[i].name), ': ');
-                    out(val[i].code);
+                    out(this.formatFunction(val[i]));
                     ff = false;
                   }
-                  out('}');
+                  out(']');
                 } else {
                   if ( Array.isArray(val) && prop.subType ) {
                     this.outputArray_(out, val, prop.subType);
@@ -193,17 +197,12 @@ CLASS({
       help: 'List of extra .js hierarchies to load models from.  Paths will be checked in the order given, finally falling back to the main FOAM js/ hierarchy.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
-    // TODO(markdittmer): Remove "sourceLocale" when all build processes
-    // no longer require it.
-    {
-      model_: 'StringProperty',
-      name: 'sourceLocale',
-      defaultValue: 'en'
-    },
     {
       model_: 'StringProperty',
       name: 'locale'
     },
+    // TODO(markdittmer): Remove "i18nMessagesPath" when all build processes
+    // no longer require it.
     {
       model_: 'StringProperty',
       name: 'i18nMessagesPath'
@@ -211,12 +210,6 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'i18nTranslationsPath'
-    },
-    // TODO(markdittmer): Remove "i18nSourcePath" when all build processes
-    // support distinction between messages and translations.
-    {
-      model_: 'StringProperty',
-      name: 'i18nSourcePath'
     },
     {
       model_: 'StringArrayProperty',
@@ -229,16 +222,6 @@ CLASS({
     {
       model_: 'StringArrayProperty',
       name: 'i18nTranslations',
-      adapt: function(_, s) {
-        if (typeof s === 'string') return s.split(',');
-        return s;
-      }
-    },
-    // TODO(markdittmer): Remove "i18nSources" when all build processes
-    // support distinction between messages and translations.
-    {
-      model_: 'StringArrayProperty',
-      name: 'i18nSources',
       adapt: function(_, s) {
         if (typeof s === 'string') return s.split(',');
         return s;

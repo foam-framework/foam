@@ -428,7 +428,7 @@ var BootstrapModel = {
           ias.push(a);
       }
       if ( ias.length ) {
-        this.instance_.actions_ = ias.concat(this.instance_.action_);
+        this.instance_.actions_ = ias.concat(this.instance_.actions_);
       }
     }
 

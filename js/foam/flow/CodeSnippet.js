@@ -15,12 +15,23 @@ CLASS({
   extendsModel: 'foam.flow.Element',
 
   requires: [ 'foam.flow.SourceCode' ],
+  imports: [
+    'codeSnippets'
+  ],
 
   properties: [
     {
       model_: 'IntProperty',
       name: 'id',
       defaultValue: 0
+    },
+    {
+      model_: 'StringProperty',
+      name: 'name',
+      lazyFactory: function() {
+        if ( this.title ) return this.title.replace(/[^a-zA-Z0-9]/g, '_');
+        return 'code_snippet_' + this.$UID;
+      }
     },
     {
       model_: 'StringProperty',
@@ -34,6 +45,36 @@ CLASS({
           data: 'console.log("Hello world!");'
         });
       }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'ref',
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.codeSnippets ) return;
+        this.codeSnippets.where(EQ(this.model_.NAME, nu)).select({
+          put: function(snippet) {
+            if ( this.following_ )
+              Events.unfollow(this.following_.src$, this.src$);
+            // TODO(markdittmer): This is not actually binding updates all the
+            // way down to the source text.
+            // TODO(markdittmer): This should get unhooked during destruction.
+            Events.follow(snippet.src$, this.src$);
+            this.following_ = snippet;
+          }.bind(this)
+        });
+      }
+    },
+    {
+      name: 'following_',
+      type: 'foam.flow.CodeSnippet',
+      defaultValue: null
     }
-  ]
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER.apply(this, arguments);
+      this.codeSnippets && this.codeSnippets.put && this.codeSnippets.put(this);
+    }
+  }
 });
