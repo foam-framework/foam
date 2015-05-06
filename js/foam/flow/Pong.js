@@ -46,9 +46,9 @@ CLASS({
 
       // TODO: Remove this stuff once the template parser understand unknown tags
       // better
-      this.CodeView.getPrototype().installInContext_(this.X);
-      this.QuoteCode.getPrototype().installInContext_(this.X);
-      this.ExpandableSection.getPrototype().installInContext_(this.X);
+      this.CodeView.getPrototype().installInDocument_(this.X);
+      this.QuoteCode.getPrototype().installInDocument_(this.X);
+      this.ExpandableSection.getPrototype().installInDocument_(this.X);
     }
   },
 

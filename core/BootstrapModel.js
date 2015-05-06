@@ -349,12 +349,12 @@ var BootstrapModel = {
       });
     });
 
-//     // accumulate inherited installInContext function.
-//     // For the current model: run this.installInContext, then inherited installInContext
-//     // For the inherited model: run its installInContext (this.installInContext not applied)
-//     if ( this.installInContext || proto.installInContext_ ) {
-//       var newInstallInContextFn = this.installInContext;
-//       cls.installInContext_ = function(X) {
+//     // accumulate inherited installInDocument function.
+//     // For the current model: run this.installInDocument, then inherited installInDocument
+//     // For the inherited model: run its installInDocument (this.installInDocument not applied)
+//     if ( this.installInDocument || proto.installInDocument_ ) {
+//       var newInstallInContextFn = this.installInDocument;
+//       cls.installInDocument_ = function(X) {
 //         // 'this' can now be any prototype that extends our original cls, since we recurse.
 //         if ( ! X.installedModels ) return; // if we have no window/document, don't bother
 //         if ( ! X.installedModels[this.model_.id] ) {
@@ -362,26 +362,26 @@ var BootstrapModel = {
 //           if ( newInstallInContextFn ) {
 //             newInstallInContextFn.apply(this, arguments); // this' code installing this
 //           }
-//           if ( proto.installInContext_ ) {
+//           if ( proto.installInDocument_ ) {
 // //            console.log(this.name_,"    proto installing!");
-//             proto.installInContext_.apply(this, arguments); // inherited code installing this
-//             proto.installInContext_.apply(proto, arguments); // inherited code installing inherited
+//             proto.installInDocument_.apply(this, arguments); // inherited code installing this
+//             proto.installInDocument_.apply(proto, arguments); // inherited code installing inherited
 //           }
 //           X.installedModels[this.model_.id] = true;
 //         }
 //       }
-//     } // else no installInContext_ to be defined
+//     } // else no installInDocument_ to be defined
 
-    // Accumulate the list of installInContext functions to run on first
+    // Accumulate the list of installInDocument functions to run on first
     // instance creation in each document
-    if ( this.installInContext ) {
-      this.instance_.installInContext_ = [ this.installInContext ];
-      if ( extendsModel && extendsModel.instance_.installInContext_ ) {
-        this.instance_.installInContext_.concat(
-          extendsModel.instance_.installInContext_);
+    if ( this.installInDocument ) {
+      this.instance_.installInDocument_ = [ this.installInDocument ];
+      if ( extendsModel && extendsModel.instance_.installInDocument_ ) {
+        this.instance_.installInDocument_.concat(
+          extendsModel.instance_.installInDocument_);
       }
-    } else if ( extendsModel && extendsModel.instance_.installInContext_ ) {
-      this.instance_.installInContext_ = extendsModel.instance_.installInContext_;
+    } else if ( extendsModel && extendsModel.instance_.installInDocument_ ) {
+      this.instance_.installInDocument_ = extendsModel.instance_.installInDocument_;
     }
 
     // TODO: move this somewhere better

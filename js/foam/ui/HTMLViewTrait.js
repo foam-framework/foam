@@ -575,9 +575,9 @@ CLASS({
                width:  (window.innerWidth  || this.X.document.documentElement.clientWidth) };
     },
   },
-  
-  installInContext: function(X) {
-//    console.log(this.name_, " installInContext running");
+
+  installInDocument: function(X) {
+//    console.log(this.name_, " installInDocument running");
     for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
       var t = this.model_.templates[i];
       if ( t.name === 'CSS' ) {

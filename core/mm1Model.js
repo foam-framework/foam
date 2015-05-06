@@ -809,7 +809,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       documentation: function() { /* Factory to create the action object for deleting this object  */}
     },
     {
-      name: 'installInContext',
+      name: 'installInDocument',
       type: 'Function',
       required: false,
       displayWidth: 70,
@@ -820,11 +820,11 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       help: 'Function to install once-per-model-per-context items, such as CSS or DOM tag regsistrations.',
       documentation: function() { /* A function to install once-per-model-per-context items,
         such as CSS or DOM tag regsistrations. BootstrapModel.BuildPrototype() accounts for inheritance,
-        running this function, and all inherited installInContext functions, on your prototype.
-        Your installInContext code will not run on any of the base prototypes, only on models that extend
+        running this function, and all inherited installInDocument functions, on your prototype.
+        Your installInDocument code will not run on any of the base prototypes, only on models that extend
         yours.</p><p>The current context is passed in as the first parameter. To manually run
-        an installInContext for a model, without creating an instance (note the underscore):</p><p>
-        <code>YourModel.getPrototype().installInContext_(X);</code> */
+        an installInDocument for a model, without creating an instance (note the underscore):</p><p>
+        <code>YourModel.getPrototype().installInDocument_(X);</code> */
       }
     }
   ],

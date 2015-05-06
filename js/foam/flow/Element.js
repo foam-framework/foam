@@ -77,11 +77,11 @@ CLASS({
   templates: [
     function toInnerHTML() {/*<%= this.inner() %>*/}
   ],
-  
-  installInContext: function(X) {
+
+  installInDocument: function(X) {
     X.registerElement(
         this.getTagName(),
         this.model_.package + '.' + this.name_);
   },
-  
+
 });
