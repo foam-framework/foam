@@ -349,41 +349,6 @@ var BootstrapModel = {
       });
     });
 
-//     // accumulate inherited installInDocument function.
-//     // For the current model: run this.installInDocument, then inherited installInDocument
-//     // For the inherited model: run its installInDocument (this.installInDocument not applied)
-//     if ( this.installInDocument || proto.installInDocument_ ) {
-//       var newInstallInContextFn = this.installInDocument;
-//       cls.installInDocument_ = function(X) {
-//         // 'this' can now be any prototype that extends our original cls, since we recurse.
-//         if ( ! X.installedModels ) return; // if we have no window/document, don't bother
-//         if ( ! X.installedModels[this.model_.id] ) {
-// //          console.log(this.name_,"  installing!");
-//           if ( newInstallInContextFn ) {
-//             newInstallInContextFn.apply(this, arguments); // this' code installing this
-//           }
-//           if ( proto.installInDocument_ ) {
-// //            console.log(this.name_,"    proto installing!");
-//             proto.installInDocument_.apply(this, arguments); // inherited code installing this
-//             proto.installInDocument_.apply(proto, arguments); // inherited code installing inherited
-//           }
-//           X.installedModels[this.model_.id] = true;
-//         }
-//       }
-//     } // else no installInDocument_ to be defined
-
-//     // Accumulate the list of installInDocument functions to run on first
-//     // instance creation in each document
-//     if ( this.installInDocument ) {
-//       this.instance_.installInDocument_ = [ this.installInDocument ];
-//       if ( extendsModel && extendsModel.instance_.installInDocument_ ) {
-//         this.instance_.installInDocument_.concat(
-//           extendsModel.instance_.installInDocument_);
-//       }
-//     } else if ( extendsModel && extendsModel.instance_.installInDocument_ ) {
-//       this.instance_.installInDocument_ = extendsModel.instance_.installInDocument_;
-//     }
-
     // TODO: move this somewhere better
     var createListenerTrampoline = function(cls, name, fn, isMerged, isFramed, whenIdle) {
       // bind a trampoline to the function which
