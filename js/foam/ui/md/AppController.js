@@ -18,6 +18,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'AppController',
+  traits: ['foam.ui.CSSLoaderTrait'],
 
   requires: [
     'foam.graphics.ActionButtonCView',
@@ -40,22 +41,6 @@ CLASS({
       hidden: true,
       help: 'Forces the Material Design global CSS styles to be installed.',
       factory: function() { return this.SharedStyles.create() }
-    },
-    {
-      model_: 'foam.core.types.DocumentInstallProperty',
-      name: 'installCSS',
-      documentation: "TODO: Move this to a shared trait or have AppController extend View",
-      documentInstallFn: function(X) {
-        for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
-          var t = this.model_.templates[i];
-          if ( t.name === 'CSS' ) {
-            t.futureTemplate(function() {
-              X.addStyle(this.CSS());
-            }.bind(this));
-            return;
-          }
-        }
-      }
     },
     {
       name: 'name',

@@ -31,6 +31,7 @@ CLASS({
 
 CLASS({
   name: 'Controller',
+  traits: ['foam.ui.CSSLoaderTrait'],
   requires: [
     'Demo',
     'foam.ui.DAOListView',
