@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2014 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,6 @@ CLASS({
               proto.addInitAgent(12, ': inherited install in document ', function(o, X, Y) {
                 var model = baseProto.model_;
                 if ( ! model || ! X.installedModels || X.installedModels[model.id] ) return;
-                // we we inherit the same property, we can grab the function value from
-                // our specific instance (TODO: jacksonic a little ambiguous what happens
-                // if we change the function value in our create args, changing the value our
-                // base would have seen had it been created on its own?)
                 baseProp.documentInstallFn.call(baseProto, X);
               });
               // many of these may be added, but won't hurt
