@@ -75,7 +75,7 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'placeholderModel',
-      defaultValue: 'foam.i18n.MessageGenerator'
+      defaultValue: 'foam.i18n.Placeholder'
     },
     {
       model_: 'StringProperty',
