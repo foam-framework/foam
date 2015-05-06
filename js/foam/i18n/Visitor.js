@@ -40,7 +40,7 @@ CLASS({
     },
     {
       name: 'idGenerator',
-      lazyFactory: function() {
+      factory: function() {
         return this.IdGenerator.create();
       }
     }

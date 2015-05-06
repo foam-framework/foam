@@ -136,7 +136,6 @@ CLASS({
         var y = 30 + this.H * i;
         var y2 = this.warp(y);
         var h2 = this.warp(y+32) - y2;
-        if ( i == 20 ) console.log(i, y,y+32,this.warp(y),this.warp(y+32));
         v.y = y2;
         v.scaleX = v.scaleY = h2/32;
       }.bind(this));

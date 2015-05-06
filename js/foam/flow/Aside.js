@@ -36,7 +36,7 @@ CLASS({
           border-radius: 2px;
         }
 
-        aside.wide {
+        aside.wide, aside.full {
           min-width: initial;
           max-width: initial;
           width: initial;
@@ -48,7 +48,7 @@ CLASS({
             width: 50%;
           }
 
-          aside.wide {
+          aside.wide, aside.full {
             float: none;
           }
 
@@ -63,6 +63,10 @@ CLASS({
 
           aside.wide {
             width: 60%;
+          }
+
+          aside.full {
+            float: none;
           }
 
         }
@@ -81,7 +85,12 @@ CLASS({
         aside.wide {
           width: 90%;
         }
-    }
+
+        aside.full {
+          float: none;
+        }
+
+      }
     */}
   ]
 });

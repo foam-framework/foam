@@ -43,12 +43,13 @@ CLASS({
     },
 
     bind: function(a, b) {
-      Events.relate(a, b, this.hashToMemento_, this.mementoToHash_, true);
+      if ( ! a.get() ) this.initial_ = b.get();
+      Events.relate(a, b, this.hashToMemento_.bind(this), this.mementoToHash_, true);
     },
 
     hashToMemento_: function(h) {
       if ( h[0] === '#' ) h = h.substring(1);
-      if ( h.length === 0 ) return { __proto__: MementoProto };
+      if ( h.length === 0 ) return this.initial_;
       var split = h.split('&');
       if ( split.length == 1 &&
            split[0].indexOf('=') == -1 )

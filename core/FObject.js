@@ -471,19 +471,14 @@ var FObject = {
       this.defineFOAMGetter(name, prop.getter);
 //      this.defineFOAMGetter(name, function() { console.log('getter', this.name_, prop.name); return prop.getter.call(this); });
     } else {
-      if ( prop.lazyFactory ) {
-        var getter = function() {
-          if ( typeof this.instance_[name] !== 'undefined' ) return this.instance_[name];
-          this.instance_[name] = prop.lazyFactory.call(this, prop);
-          return this.instance_[name];
-        };
-      } else if ( prop.factory ) {
+      if ( prop.lazyFactory || prop.factory ) {
+        var f = prop.lazyFactory || prop.factory;
         getter = function() {
           if ( typeof this.instance_[name] === 'undefined' ) {
             this.instance_[name] = null; // prevents infinite recursion
             // console.log('Ahead of order factory: ', prop.name);
             //debugger;
-            var val = prop.factory.call(this, prop);
+            var val = f.call(this, prop);
             if ( typeof val === 'undefined' ) val = null;
             this[name] = val;
           }

@@ -60,10 +60,11 @@ CLASS({
         }
       },
       postSet: function() {
-        if (typeof this.choice !== 'number') {
-          this.selectedChild = '';
-        } else {
+        if ( typeof this.choice === 'number' )
           this.selectedChild = this.views[this.choice];
+        else {
+          this.selectedChild = '';
+          this.viewFactory = this.unselectedViewFactory;
         }
       }
     },
@@ -73,7 +74,6 @@ CLASS({
       postSet: function(oldVal, newVal) {
         if (oldVal) Events.unfollow(oldVal.viewFactory$, this.viewFactory$);
         if (newVal) Events.follow(newVal.viewFactory$, this.viewFactory$);
-        else this.viewFactory = this.unselectedViewFactory;
       }
     },
     {

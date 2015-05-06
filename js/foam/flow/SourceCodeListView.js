@@ -43,7 +43,7 @@ CLASS({
       model_: 'ArrayProperty',
       name: 'openViews',
       type: 'Array[Int]',
-      factory: function() { return [-2, -1]; }
+      lazyFactory: function() { return [-2, -1]; }
     }
   ],
 
