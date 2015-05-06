@@ -43,7 +43,8 @@ CLASS({
     },
     {
       model_: 'BooleanProperty',
-      name: 'precompileTemplates'
+      name: 'precompileTemplates',
+      defaultValue: true
     },
     {
       model_: 'StringArrayProperty',
