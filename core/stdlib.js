@@ -838,3 +838,21 @@ String.fromCharCode = (function() {
     return result;
   };
 })();
+
+var MementoProto = {};
+Object.defineProperty(MementoProto, 'equals', {
+  enumerable: false,
+  configurable: true,
+  value: function(o) {
+    var keys = Object.keys(this);
+    var otherKeys = Object.keys(o);
+    if ( keys.length != otherKeys.length ) {
+      return false;
+    }
+    for ( var i = 0 ; i < keys.length ; i++ ) {
+      if ( ! equals(this[keys[i]], o[keys[i]]) )
+        return false;
+    }
+    return true;
+  }
+});
