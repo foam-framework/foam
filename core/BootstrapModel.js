@@ -372,17 +372,17 @@ var BootstrapModel = {
 //       }
 //     } // else no installInDocument_ to be defined
 
-    // Accumulate the list of installInDocument functions to run on first
-    // instance creation in each document
-    if ( this.installInDocument ) {
-      this.instance_.installInDocument_ = [ this.installInDocument ];
-      if ( extendsModel && extendsModel.instance_.installInDocument_ ) {
-        this.instance_.installInDocument_.concat(
-          extendsModel.instance_.installInDocument_);
-      }
-    } else if ( extendsModel && extendsModel.instance_.installInDocument_ ) {
-      this.instance_.installInDocument_ = extendsModel.instance_.installInDocument_;
-    }
+//     // Accumulate the list of installInDocument functions to run on first
+//     // instance creation in each document
+//     if ( this.installInDocument ) {
+//       this.instance_.installInDocument_ = [ this.installInDocument ];
+//       if ( extendsModel && extendsModel.instance_.installInDocument_ ) {
+//         this.instance_.installInDocument_.concat(
+//           extendsModel.instance_.installInDocument_);
+//       }
+//     } else if ( extendsModel && extendsModel.instance_.installInDocument_ ) {
+//       this.instance_.installInDocument_ = extendsModel.instance_.installInDocument_;
+//     }
 
     // TODO: move this somewhere better
     var createListenerTrampoline = function(cls, name, fn, isMerged, isFramed, whenIdle) {

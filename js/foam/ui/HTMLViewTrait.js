@@ -49,6 +49,24 @@ CLASS({
       */}
     },
     {
+      name: 'installCSS',
+      model_: 'foam.core.types.DocumentInstallProperty',
+      defaultValue: function(X) {
+        console.log(this.name_, " installInDocument running");
+        for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
+          var t = this.model_.templates[i];
+          if ( t.name === 'CSS' ) {
+            console.log(this.name_, "   found template CSS");
+            t.futureTemplate(function() {
+              console.log(this.name_, " loading CSS");
+              X.addStyle(this.CSS());
+            }.bind(this));
+            return;
+          }
+        }
+      }
+    },
+    {
       name:   'shortcuts',
       type:   'Array[Shortcut]',
       factory: function() { return []; },
@@ -576,18 +594,4 @@ CLASS({
     },
   },
 
-  installInDocument: function(X) {
-//    console.log(this.name_, " installInDocument running");
-    for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
-      var t = this.model_.templates[i];
-      if ( t.name === 'CSS' ) {
-//        console.log(this.name_, "   found template CSS");
-        t.futureTemplate(function() {
-//          console.log(this.name_, " loading CSS");
-          X.addStyle(this.CSS());
-        }.bind(this));
-        return;
-      }
-    }
-  }
 });
