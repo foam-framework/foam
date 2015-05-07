@@ -284,18 +284,12 @@ var BootstrapModel = {
     var key;
 
     // add constants
-    for ( key in this.constants ) {
-      var c = this.constants[key];
-      if ( Constant ) {
-        if ( ! Constant.isInstance(c) ) {
-          c = this.constants[key] = Constant.create(c);
-        }
+    if ( this.constants ) {
+      for ( var i = 0 ; i < this.constants.length ; i++ ) {
+        var c = this.constants[i];
         // TODO(kgr): only add to Proto when Model cleanup done.
-        Object.defineProperty(cls, c.name, {value: c.value});
+        Object.defineProperty(cls,  c.name, {value: c.value});
         Object.defineProperty(this, c.name, {value: c.value});
-        // cls[c.name] = this[c.name] = c.value;
-      } else {
-        console.warn('Defining constant before Constant.');
       }
     }
 

@@ -741,13 +741,10 @@ Model.create = BootstrapModel.create;
 Property = Model.create(Property);
 
 // Property properties are still Bootstrap Models, so upgrade them.
-for ( var i = 0 ; i < Property.properties.length ; i++ )
-  Property.properties[i] = Property.create(Property.properties[i]);
-
-// Property properties are still Bootstrap Models, so upgrade them.
-for ( var i = 0 ; i < Property.getRuntimeProperties().length ; i++ )
-  Property[constantize(Property.getRuntimeProperties()[i].name)] =
-    Property.getRuntimeProperties()[i] = Property.create(Property.getRuntimeProperties()[i]);
+var ps = Property.getRuntimeProperties();
+for ( var i = 0 ; i < ps.length ; i++ ) {
+  Property[constantize(ps[i].name)] = ps[i] = Property.create(ps[i]);
+}
 
 USED_MODELS.Property = true;
 USED_MODELS.Model = true;

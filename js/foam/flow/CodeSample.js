@@ -147,6 +147,21 @@ CLASS({
       documentation: function() {/* Either "hold" or "release". Used to trigger
         running sample code with respect to animations. */},
       defaultValue: 'hold'
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'openSnippets',
+      type: 'Array[Int]',
+      lazyFactory: function() { return [-2, -1]; },
+      adapt: function(old, nu) {
+        if ( old === nu || ! typeof nu !== 'string' ) return nu;
+        var arr = nu.split(',');
+        return arr.map(function(v) {
+          return parseInt(v);
+        }).filter(function(i)  {
+          return ! Number.isNaN(i);
+        });
+      }
     }
   ],
 
@@ -168,11 +183,12 @@ CLASS({
         var hasHTML = false;
         this.source.select({
           put: function(o) {
-            hasHTML |= arguments[0].src.language.toLowerCase() === 'html';
-          }
+            if ( o.src ) hasHTML |= o.src.language.toLowerCase() === 'html';
+          }.bind(this)
         })(function() {
           if ( ! hasHTML ) this.outputView.viewOutputView.height = 0;
         }.bind(this));
+        this.run();
       }
     }
   ],
@@ -232,7 +248,11 @@ CLASS({
         %%title
       </heading>
       <top-split>
-        $$source{ model_: this.SourceCodeListView, rowView: this.CodeSnippetView }
+        $$source{
+          model_: this.SourceCodeListView,
+          rowView: this.CodeSnippetView,
+          openViews: this.openSnippets
+        }
         <actions>
           $$run{
             model_: this.actionButtonName,
@@ -308,7 +328,7 @@ CLASS({
 
       @media not print {
 
-        aside code-sample heading {
+        code-sample heading {
           font-size: 25px;
           margin: 0px;
           padding: 10px 10px 10px 10px;

@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'ExpandableView',
   package: 'foam.ui.md',
+  name: 'ExpandableView',
   extendsModel: 'foam.flow.Element',
 
   requires: [
@@ -181,9 +181,10 @@ CLASS({
   templates: [
     function toInnerHTML() {/*
       <% this.delegateView = this.delegate();
-         this.addDataChild(this.delegateView); %>
+         this.addDataChild(this.delegateView);
+      %>
       <expandable-content id="{{this.id}}-content">
-      %%delegateView
+        %%delegateView
       </expandable-content>
     */},
     function CSS() {/*

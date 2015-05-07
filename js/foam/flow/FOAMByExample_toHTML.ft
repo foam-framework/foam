@@ -1,0 +1,127 @@
+<book-container id="%%id">
+  <book>
+
+    <title-page>
+      <book-title>FOAM By Example</book-title>
+    </title-page>
+
+    <toc />
+
+    <section title="Models (FOAM Classes)">
+
+      <section title="Create a Model">
+        <aside>
+          <code-sample openSnippets="-2,-1">
+            <title>Define the "Person" Model</title>
+            <source>
+              <code-snippet name="Person" title="Person Model">
+                <src language="javascript">
+                  <code>CLASS({
+  // Model looked up in conteXt object as 'foam.sandbox.Person'.
+  name: 'Person',
+  package: 'foam.sandbox',
+
+  // Store data on the object as properties.
+  properties: [ 'firstName', 'lastName' ],
+
+  // Store member functions as "methods".
+  methods: {
+    fullName: function() { return this.firstName + ' ' + this.lastName; },
+    invertedName: function() { return this.lastName + ', ' + this.firstName; }
+  }
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>console.log.json(JSONUtil.prettyModel.stringify(X.foam.sandbox.Person));</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
+      <section title="Create a Modelled Object (Class Instance)">
+        <aside>
+          <code-sample>
+            <title>Create Two "Person" Instances</title>
+            <source>
+              <code-snippet ref="Person" title="Person Model"></code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>var Person = X.foam.sandbox.Person;
+var suzy = Person.create({ firstName: 'Suzy', lastName: 'Smith' });
+var ali = Person.create({ firstName: 'Ali', lastName: 'Sharif' });
+
+
+console.log.json(suzy);
+console.log.json(ali);</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
+      <section title="Working with Modelled Object">
+
+        <section title="Generate JSON">
+          <aside>
+            <code-sample>
+              <title>Generate JSON Description of a "Person" Instance</title>
+              <source>
+                <code-snippet ref="Person" title="Person Model"></code-snippet>
+                <code-snippet title="Example">
+                  <src language="javascript">
+                    <code>var Person = X.foam.sandbox.Person;
+var xi = Person.create({ firstName: 'Xi', lastName: 'Han' });
+console.log('Let console decide how to JSONify object:');
+console.log.json(xi);
+console.log('Let object model decide how to JSONify object:');
+console.log(xi.toJSON());
+console.log('Directly invoke FOAM JSONUtil to get pretty JSON:');
+console.log(JSONUtil.pretty.stringify(xi));
+console.log('Directly invoke FOAM JSONUtil to get compact JSON:');
+console.log(JSONUtil.compact.stringify(xi));</code>
+                  </src>
+                </code-snippet>
+              </source>
+            </code-sample>
+          </aside>
+        </section>
+
+        <section title="Create Modelled Object from JSON">
+          <aside>
+            <code-sample title="Generate a clone using JSON">
+              <title>Generate a "Person" Clone with JSON</title>
+              <source>
+                <code-snippet ref="Person" title="Person Model"></code-snippet>
+                <code-snippet title="Example">
+                  <src language="javascript">
+                    <code>var Person = X.foam.sandbox.Person;
+var _007 = Person.create({ firstName: 'Bond,', lastName: 'James Bond' });
+
+var bondString = _007.toJSON();
+var bondObject = JSON.parse(bondString);
+console.log('007 as JSON:');
+console.log(bondString);
+
+var bondClone = Person.create(bondObject);
+console.log('007 from JSON:');
+console.log.json(bondClone);
+
+console.log('Comparison of Bond and Bond clone (0 => identical)');
+console.log(_007.compareTo(bondClone));</code>
+                  </src>
+                </code-snippet>
+              </source>
+            </code-sample>
+          </aside>
+        </section>
+      </section>
+
+    </section>
+
+  </book>
+</book-container>
