@@ -88,6 +88,10 @@ CLASS({
       code: function() {
         return this.cssHeight ? 'style="height:' + this.cssHeight + ';"' : '';
       }
+    },
+    {
+      name: 'getOutputDOMContainer',
+      code: function() { return this.$; }
     }
   ],
 

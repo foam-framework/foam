@@ -65,6 +65,11 @@ CLASS({
       view: 'foam.flow.CodeSampleOutputView'
     },
     {
+      model_: 'BooleanProperty',
+      name: 'hasHTML',
+      defaultValue: false
+    },
+    {
       model_: 'StringProperty',
       name: 'actionButtonName',
       defaultValue: 'foam.ui.ActionButton'
@@ -140,7 +145,9 @@ CLASS({
     },
     {
       name: 'sampleCodeContext',
-      factory: function() { return this.sampleCodeBaseContext.sub(); }
+      factory: function() {
+        return this.generateSampleCodeContext_();
+      }
     },
     {
       name: 'state',
@@ -180,7 +187,7 @@ CLASS({
       name: 'initHTML',
       code: function() {
         this.SUPER.apply(this, arguments);
-        var hasHTML = false;
+        var hasHTML = this.hasHTML;
         this.source.select({
           put: function(o) {
             if ( o.src ) hasHTML |= o.src.language.toLowerCase() === 'html';
@@ -189,6 +196,34 @@ CLASS({
           if ( ! hasHTML ) this.outputView.viewOutputView.height = 0;
         }.bind(this));
         this.run();
+      }
+    },
+    {
+      name: 'generateSampleCodeContext_',
+      code: function() {
+        var X = this.sampleCodeBaseContext.sub();
+        // Make the view output view's DOM element the "body" of the context's
+        // document.
+        X.document = Object.create(X.document, {
+          getElementById: {
+            value: function() {
+              var proto = Object.getPrototypeOf(this);
+              return proto.getElementById.apply(proto, arguments);
+            }
+          },
+          body: {
+            get: function() {
+              if ( this.outputView && this.outputView.viewOutputView ) {
+                return this.outputView.viewOutputView.getOutputDOMContainer();
+              } else {
+                throw new Error('Attempt to access code sample document.body' +
+                    'when code sample view output view is not available');
+              }
+            }.bind(this)
+          }
+        });
+
+        return X;
       }
     }
   ],
@@ -210,7 +245,7 @@ CLASS({
       code: function() {
         this.output.virtualConsole.watchConsole();
         this.output.viewOutput.view = '';
-        var X = this.sampleCodeContext = this.sampleCodeBaseContext.sub();
+        var X = this.sampleCodeContext = this.generateSampleCodeContext_();
         this.source.select({
           put: function() {
             // Use arguments array to avoid leaking names into eval context.
