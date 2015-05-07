@@ -711,13 +711,15 @@ var Property = {
 };
 
 
-
-
 Model.methods = {
   getProperty:              BootstrapModel.getProperty,
   getAction:                BootstrapModel.getAction,
   hashCode:                 BootstrapModel.hashCode,
   buildPrototype:           BootstrapModel.buildPrototype,
+  addTraitToModel_:         BootstrapModel.addTraitToModel_,
+  buildProtoImports_:       BootstrapModel.buildProtoImports_,
+  buildProtoProperties_:    BootstrapModel.buildProtoProperties_,
+  buildProtoMethods_:       BootstrapModel.buildProtoMethods_,
   getPrototype:             BootstrapModel.getPrototype,
   isSubModel:               BootstrapModel.isSubModel,
   isInstance:               BootstrapModel.isInstance,
