@@ -28,6 +28,12 @@ CLASS({
         }
       },
     },
+    {
+      name: 'preferredHeight',
+    },
+    {
+      name: 'height',
+    },
     // dirty_ and pending_ are used to tell the view to rerender if the data
     // changes while the view is rendering. They should go away when the
     // DetailView (or something else) finds a way to handle this.
@@ -56,7 +62,13 @@ CLASS({
     function toHTML() {/*
       <% this.pending_ = true; %>
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <%= this.data && this.data(undefined, this.Y) %>
+        <%
+          var view = this.data && this.data({ height$: this.height$ }, this.Y);
+          if (view) {
+            this.preferredHeight$ = view.preferredHeight$;
+          }
+        %>
+        <%= view %>
       </div>
     */}
   ],
