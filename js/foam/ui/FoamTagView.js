@@ -115,13 +115,5 @@ CLASS({
     initHTML: function() {
       this.install();
     }
-  },
-
-  templates: [
-    function CSS() {/*
-       .foam-tag {
-         background: pink;
-       }
-    */}
-  ]
+  }
 });
