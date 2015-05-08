@@ -24,7 +24,9 @@ CLASS({
     'foam.dao.File',
     'foam.core.dao.OrDAO',
     'node.dao.ModelFileDAO',
-    'foam.i18n.GlobalController'
+    'foam.i18n.GlobalController',
+    'foam.i18n.IdGenerator',
+    'foam.i18n.MessageGenerator'
   ],
   imports: [ 'error' ],
 
@@ -63,6 +65,16 @@ CLASS({
     },
     {
       model_: 'StringProperty',
+      name: 'messageGeneratorModel',
+      defaultValue: 'foam.i18n.MessageGenerator'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'placeholderModel',
+      defaultValue: 'foam.i18n.Placeholder'
+    },
+    {
+      model_: 'StringProperty',
       name: 'messageModel',
       defaultValue: 'foam.i18n.Message'
     },
@@ -96,10 +108,7 @@ CLASS({
       factory: function() { return this.FileDAO.create(); }
     },
     {
-      name: 'i18nController',
-      lazyFactory: function() {
-        return this.GlobalController.create();
-      }
+      name: 'i18nController'
     },
     {
       name: 'visitedModels_',
@@ -143,12 +152,21 @@ CLASS({
         });
       }
 
-      apar(arequire(this.extractorModel), arequire(this.messageModel),
+      apar(arequire(this.extractorModel), arequire(this.messageGeneratorModel),
+           arequire(this.placeholderModel), arequire(this.messageModel),
            arequire(this.messageBundleModel))(
-               function(Extractor, Message, MessageBundle) {
+               function(Extractor, MessageGenerator, Placeholder, Message,
+                        MessageBundle) {
+                 var idGenerator = this.IdGenerator.create();
                  this.i18nController = this.GlobalController.create({
+                   idGenerator: idGenerator,
                    extractor: Extractor.create({
-                     messageFactory: Message.create.bind(Message),
+                     idGenerator: idGenerator,
+                     messageGenerator: MessageGenerator.create({
+                       idGenerator: idGenerator,
+                       placeholderFactory: Placeholder.create.bind(Placeholder),
+                       messageFactory: Message.create.bind(Message)
+                     }),
                      messageBundleFactory: MessageBundle.create.bind(MessageBundle)
                    })
                  });

@@ -157,7 +157,6 @@ CLASS({
       <%
         this.setClass('loading', function() {
           this.codeViewLoadState;
-          console.log('Check for className', this.codeViewLoadState);
           return ! this.isLoadedOrFailed();
         }.bind(this), this.id);
       %>

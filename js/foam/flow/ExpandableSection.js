@@ -36,7 +36,6 @@ CLASS({
     {
       name: 'view',
       lazyFactory: function() {
-        // Next to debug: this.SectionView should have xbound expandedIconUrl override.
         return this.SectionView.create({
           title$: this.heading$,
           expanded$: this.expanded$,

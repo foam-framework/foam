@@ -65,6 +65,11 @@ CLASS({
       view: 'foam.flow.CodeSampleOutputView'
     },
     {
+      model_: 'BooleanProperty',
+      name: 'hasHTML',
+      defaultValue: false
+    },
+    {
       model_: 'StringProperty',
       name: 'actionButtonName',
       defaultValue: 'foam.ui.ActionButton'
@@ -140,13 +145,30 @@ CLASS({
     },
     {
       name: 'sampleCodeContext',
-      factory: function() { return this.sampleCodeBaseContext.sub(); }
+      factory: function() {
+        return this.generateSampleCodeContext_();
+      }
     },
     {
       name: 'state',
       documentation: function() {/* Either "hold" or "release". Used to trigger
         running sample code with respect to animations. */},
       defaultValue: 'hold'
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'openSnippets',
+      type: 'Array[Int]',
+      lazyFactory: function() { return [-2, -1]; },
+      adapt: function(old, nu) {
+        if ( old === nu || ! typeof nu !== 'string' ) return nu;
+        var arr = nu.split(',');
+        return arr.map(function(v) {
+          return parseInt(v);
+        }).filter(function(i)  {
+          return ! Number.isNaN(i);
+        });
+      }
     }
   ],
 
@@ -165,14 +187,43 @@ CLASS({
       name: 'initHTML',
       code: function() {
         this.SUPER.apply(this, arguments);
-        var hasHTML = false;
+        var hasHTML = this.hasHTML;
         this.source.select({
           put: function(o) {
-            hasHTML |= arguments[0].src.language.toLowerCase() === 'html';
-          }
+            if ( o.src ) hasHTML |= o.src.language.toLowerCase() === 'html';
+          }.bind(this)
         })(function() {
           if ( ! hasHTML ) this.outputView.viewOutputView.height = 0;
         }.bind(this));
+        this.run();
+      }
+    },
+    {
+      name: 'generateSampleCodeContext_',
+      code: function() {
+        var X = this.sampleCodeBaseContext.sub();
+        // Make the view output view's DOM element the "body" of the context's
+        // document.
+        X.document = Object.create(X.document, {
+          getElementById: {
+            value: function() {
+              var proto = Object.getPrototypeOf(this);
+              return proto.getElementById.apply(proto, arguments);
+            }
+          },
+          body: {
+            get: function() {
+              if ( this.outputView && this.outputView.viewOutputView ) {
+                return this.outputView.viewOutputView.getOutputDOMContainer();
+              } else {
+                throw new Error('Attempt to access code sample document.body' +
+                    'when code sample view output view is not available');
+              }
+            }.bind(this)
+          }
+        });
+
+        return X;
       }
     }
   ],
@@ -194,7 +245,7 @@ CLASS({
       code: function() {
         this.output.virtualConsole.watchConsole();
         this.output.viewOutput.view = '';
-        var X = this.sampleCodeContext = this.sampleCodeBaseContext.sub();
+        var X = this.sampleCodeContext = this.generateSampleCodeContext_();
         this.source.select({
           put: function() {
             // Use arguments array to avoid leaking names into eval context.
@@ -232,7 +283,11 @@ CLASS({
         %%title
       </heading>
       <top-split>
-        $$source{ model_: this.SourceCodeListView, rowView: this.CodeSnippetView }
+        $$source{
+          model_: this.SourceCodeListView,
+          rowView: this.CodeSnippetView,
+          openViews: this.openSnippets
+        }
         <actions>
           $$run{
             model_: this.actionButtonName,
@@ -308,7 +363,7 @@ CLASS({
 
       @media not print {
 
-        aside code-sample heading {
+        code-sample heading {
           font-size: 25px;
           margin: 0px;
           padding: 10px 10px 10px 10px;
