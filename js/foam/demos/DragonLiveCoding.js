@@ -26,7 +26,8 @@ CLASS({
     'foam.input.Mouse',
     'foam.ui.DetailView',
     'foam.ui.SlidePanel',
-    'foam.ui.DAOListView'
+    'foam.ui.DAOListView',
+    'foam.util.Timer'
   ],
 
   exports: [ 'timer' ],
@@ -39,7 +40,7 @@ CLASS({
     {
       name: 'timer',
       view: 'foam.ui.DetailView',
-      factory: function() { return Timer.create(); }
+      factory: function() { return this.Timer.create(); }
     },
     {
       name: 'turntable',

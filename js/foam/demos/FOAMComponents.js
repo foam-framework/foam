@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-var timer =  Timer.create({interval:16});
 CLASS({
   name: 'FOAMComponents',
   package: 'foam.demos',
@@ -25,20 +24,20 @@ CLASS({
   exports: ['masterModelList', '_DEV_ModelDAO'],
 
   requires: [
-    'System',
-    'foam.ui.HelpView',
-    'foam.ui.DetailView',
-//    'foam.ui.md.DetailView as MDDetailView',
-    'foam.ui.TableView',
-    'SimpleValue',
-    'foam.ui.SummaryView',
-    'foam.ui.StackView',
-    'foam.documentation.diagram.DocDiagramView',
     'MDAO',
+    'SimpleValue',
+    'System',
     'foam.dao.FindFallbackDAO',
     'foam.documentation.DocViewPicker',
+    'foam.documentation.diagram.DocDiagramView',
+    'foam.ui.DetailView',
+    'foam.ui.HelpView',
+    'foam.ui.StackView',
+    'foam.ui.SummaryView',
+    'foam.ui.TableView',
+    'foam.ui.TextFieldView',
     'foam.util.JavaSource',
-    'foam.ui.TextFieldView'
+    'foam.util.Timer'
   ],
 
   properties: [
@@ -200,10 +199,10 @@ CLASS({
         return list;
       }
     },
-//     {
-//       name: 'timer',
-//       factory: function() { return Timer.create({interval:16}); }
-//     },
+    {
+      name: 'timer',
+      factory: function() { return this.Timer.create({interval:16}); }
+    },
     {
       name: 'space',
       factory: function() {
@@ -242,7 +241,7 @@ CLASS({
 
   methods: {
     init: function() {
-      if ( this.enableAnimation ) timer.start();
+      if ( this.enableAnimation ) this.timer.start();
 
       this.Y.documentViewRequestNavigation = function(newRef) {
         window.location = 'http://localhost:8000/apps/docs/docbrowser.html#'+newRef.resolvedRef;
@@ -295,10 +294,10 @@ CLASS({
       Events.dynamic(
         function () {
           //timer.second;
-          timer.time;
+          this.timer.time;
         }.bind(this),
         function () {
-          this.sys.tick(timer);
+          this.sys.tick(this.timer);
           this.space.paint();
         }.bind(this)
       );

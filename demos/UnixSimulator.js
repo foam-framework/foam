@@ -5,14 +5,14 @@
      arequire('System'),
      arequire('foam.ui.StringArrayView'),
      arequire('Label'),
-     arequire('Timer'),
+     arequire('foam.util.Timer'),
      arequire('Developer'),
      arequire('foam.ui.Window')
   )(
    function() {
     var w = foam.ui.Window.create({window: window, name: 'iframe'});
     var X = w.Y;
-    timer  = Timer.create({interval:20}, X);
+    timer  = foam.util.Timer.create({interval:20}, X);
     var graphs = Canvas.create({width: 400, height: 700, background:'#fff'}, X);
     var space  = Canvas.create({width: 450, height: 700, background:'#fff'}, X);
     var space2 = Canvas.create({width: 450, height: 700, background:'#fff'}, X);
