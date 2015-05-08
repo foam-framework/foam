@@ -50,12 +50,13 @@ function MODEL(model) {
       { value: model.constants[key], writable: true, enumerable: false });
 
   if ( Array.isArray(model.methods) ) {
-    model.methods.forEach(function(m) {
+    for ( var i = 0 ; i < model.methods.length ; i++ ) {
+      var m = model.methods[i];
       Object.defineProperty(
         proto,
         m.name,
         { value: m, writable: true, enumerable: false });
-    });
+    }
   } else {
     for ( var key in model.methods )
       Object.defineProperty(
