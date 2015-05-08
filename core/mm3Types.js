@@ -897,7 +897,7 @@ CLASS({
   extendsModel: 'StringProperty'
 });
 
-CLASS({
+if ( DEBUG ) CLASS({
   name: 'DocumentationProperty',
   extendsModel: 'Property',
   help: 'Describes the documentation properties found on Models, Properties, Actions, Methods, etc.',
