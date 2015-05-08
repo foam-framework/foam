@@ -18,15 +18,16 @@ CLASS({
   requires: [
     'foam.flow.AceCodeView',
     'foam.flow.Aside',
+    'foam.flow.BookTitle',
     'foam.flow.CodeSample',
     'foam.flow.CodeSnippet',
     'foam.flow.CodeView',
     // 'foam.flow.ExpandableSection',
     'foam.flow.QuoteCode',
     'foam.flow.Section',
+    'foam.flow.TitlePage',
+    'foam.flow.ToC',
     'foam.graphics.ActionButtonCView',
-    'foam.input.touch.GestureManager',
-    'foam.input.touch.TouchManager',
     // 'foam.ui.md.SectionView'
   ],
   exports: [
@@ -89,10 +90,13 @@ CLASS({
       // better
       this.FOAMWindow.installModel(this.AceCodeView);
       this.FOAMWindow.installModel(this.Aside);
+      this.FOAMWindow.installModel(this.BookTitle);
       this.FOAMWindow.installModel(this.CodeSample);
       this.FOAMWindow.installModel(this.CodeSnippet);
       this.FOAMWindow.installModel(this.QuoteCode);
       this.FOAMWindow.installModel(this.Section);
+      this.FOAMWindow.installModel(this.TitlePage);
+      this.FOAMWindow.installModel(this.ToC);
 
       // TODO(markdittmer): Switch from Section to SectionView/ExpandableSection
       // once expandable contents renders properly with FLOW contents.

@@ -356,6 +356,18 @@ var FObject = {
     }
   },
 
+/*
+  defineFOAMGetter: function(name, getter) {
+    var stack = Events.onGet.stack;
+    this.__defineGetter__(name, function() {
+      var value = getter.call(this, name);
+      var f = stack[0];
+      f && f(this, name, value);
+      return value;
+    });
+  },
+*/
+
   defineFOAMGetter: function(name, getter) {
     var stack = Events.onGet.stack;
     this.__defineGetter__(name, function() {

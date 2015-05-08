@@ -14,3 +14,4 @@ cd "$BUILD_DIR"
 # Code compression.
 # uglifyjs -b semicolons=false,beautify=false asdf/foam.js -c unused=false > asdf/foam-min.js
 # mv foam-min.js foam.js
+cd ..
