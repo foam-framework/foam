@@ -512,40 +512,36 @@ var grammar = {
 
 // TODO(kgr): move this somewhere better
 function defineTTLProperty(obj, name, ttl, f) {
-  Object.defineProperty(obj, name, {
-    get: function() {
-      var accessed;
-      var value = undefined;
-      Object.defineProperty(this, name, {
-        get: function() {
-          function scheduleTimer() {
-            setTimeout(function() {
-              if ( accessed ) {
-                scheduleTimer();
-              } else {
-                value = undefined;
-              }
-              accessed = false;
-            }, ttl);
-          }
-          if ( ! value ) {
-            accessed = false;
-            value = f();
+  obj.__defineGetter__(name, function() {
+    var accessed;
+    var value = undefined;
+    this.__defineGetter__(name, function() {
+      function scheduleTimer() {
+        setTimeout(function() {
+          if ( accessed ) {
             scheduleTimer();
           } else {
-            accessed = true;
+            value = undefined;
           }
+          accessed = false;
+        }, ttl);
+      }
+      if ( ! value ) {
+        accessed = false;
+        value = f();
+        scheduleTimer();
+      } else {
+        accessed = true;
+      }
 
-          return value;
-        }
-      });
+      return value;
+    });
 
-      return this[name];
-    }
+    return this[name];
   });
 }
 
-defineTTLProperty(grammar, 'stringPS', 30000, function() { return StringPS.create(""); });
+defineTTLProperty(grammar, 'stringPS', 30000, function() { return StringPS.create(''); });
 
 
 var SkipGrammar = {
@@ -565,6 +561,7 @@ var SkipGrammar = {
   }
 };
 
+// TODO: move this out of Core
 var VersionParser = {
   __proto__: grammar,
 
