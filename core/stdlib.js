@@ -35,12 +35,13 @@ function MODEL(model) {
                                  GLOBAL[model.extendsObject] ;
   }
 
-  model.properties && model.properties.forEach(function(p) {
+  if ( model.properties ) for ( var i = 0 ; i < model.properties.length ; i++ ) {
+    var p = model.properties[i];
     Object.defineProperty(
       proto,
       p.name,
       { get: p.getter, enumerable: false });
-  });
+  }
 
   for ( key in model.constants )
     Object.defineProperty(
