@@ -17,7 +17,7 @@
 
 CLASS({
   package: 'foam.persistence',
-  name: 'PersistentContext',
+  name: 'DataUpdateSinker',
 
   properties: [
     {
@@ -34,6 +34,9 @@ CLASS({
     },
     {
       name: 'sink'
+    },
+    {
+      name: 'error'
     }
   ],
 
@@ -50,12 +53,14 @@ CLASS({
       code: function() {
         this.sink.put(this.data, {
           put: function(obj) {
+            this.error = '';
             this.feedback_ = true;
             this.data.copyFrom(obj);
             this.feedback_ = false;
           }.bind(this),
-          error: function() {
-          }
+          error: function(e) {
+            this.error = e;
+          }.bind(this)
         });
       }
     }

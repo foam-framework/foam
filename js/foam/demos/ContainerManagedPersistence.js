@@ -19,16 +19,16 @@ CLASS({
   package: 'foam.demos',
   name: 'ContainerManagedPersistence',
   requires: [
-    'foam.persistence.PersistentContext',
+    'foam.persistence.DataUpdateSinker',
     'foam.ui.DetailView'
   ],
   imports: ['setTimeout'],
   properties: [
     {
       name: 'context',
-      hidden: true,
+      view: 'foam.ui.DetailView',
       factory: function() {
-        return this.PersistentContext.create();
+        return this.DataUpdateSinker.create();
       }
     },
     {
@@ -44,7 +44,7 @@ CLASS({
         this.context.sink = this.put;
         this.context.data = data;
       }
-    },
+    }
   ],
   listeners: [
     {
@@ -54,7 +54,7 @@ CLASS({
         this.setTimeout(function() {
           obj.version += 1;
           sink.put(obj);
-        }, 1000);
+        }, 200);
       }
     }
   ],
