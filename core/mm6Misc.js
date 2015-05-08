@@ -163,7 +163,7 @@ for ( var id in USED_MODELS ) {
 
 if ( DEBUG ) {
   for ( var id in UNUSED_MODELS ) {
-    recopyModelFeatures(GLOBAL.lookup(id));
+    if ( USED_MODELS[id] ) recopyModelFeatures(GLOBAL.lookup(id));
   }
 }
 
