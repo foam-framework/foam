@@ -85,31 +85,102 @@ var BootstrapModel = {
 
   name_: 'BootstrapModel <startup only, error if you see this>',
 
+  addTraitToModel_: function(traitModel, parentModel) {
+    var parentName = parentModel && parentModel.id ? parentModel.id.replace(/\./g, '__') : '';
+    var traitName  = traitModel.id ? traitModel.id.replace(/\./g, '__') : '';
+    var name       = parentName + '_ExtendedWith_' + traitName;
+
+    if ( ! lookup(name) ) {
+      var model = traitModel.clone();
+      model.package = '';
+      model.name = name;
+      model.extendsModel = parentModel && parentModel.id;
+      model.models = traitModel.models; // unclone sub-models, we don't want multiple copies of them floating around
+      GLOBAL.X.registerModel(model);
+    }
+
+    var ret = GLOBAL.X.lookup(name);
+    console.assert(ret, 'Error adding Trait to Model, unknown name: ', name);
+    return ret;
+  },
+
+  buildProtoImports_: function(props) {
+    // build imports as psedo-properties
+    Object_forEach(this.instance_.imports_, function(i) {
+      var imp   = i.split(' as ');
+      var key   = imp[0];
+      var alias = imp[1] || imp[0];
+
+      if ( alias.length && alias.charAt(alias.length-1) == '$' )
+        alias = alias.slice(0, alias.length-1);
+
+      if ( ! this.getProperty(alias) ) {
+        props.push(Property.create({
+          name:      alias,
+          transient: true,
+          hidden:    true
+        }));
+      }
+    }.bind(this));
+  },
+
+  buildProtoProperties_: function(cls, extendsModel, props) {
+    // build properties
+    for ( var i = 0 ; i < props.length ; i++ ) {
+      var p = props[i];
+      if ( extendsModel ) {
+        var superProp = extendsModel.getProperty(p.name);
+        if ( superProp ) {
+          var p0 = p;
+          p = superProp.clone().copyFrom(p);
+          // A more elegant way to do this would be to have a ModelProperty
+          // which has a ModelPropertyProperty called 'reduceWithSuper'.
+          if ( p0.adapt && superProp.adapt ) {
+//            console.log('(DEBUG) sub adapt: ', this.name + '.' + p.name);
+            p.adapt = (function(a1, a2) { return function (oldValue, newValue, prop) {
+              return a2.call(this, oldValue, a1.call(this, oldValue, newValue, prop), prop);
+            };})(p0.adapt, superProp.adapt);
+          }
+          if ( p0.preSet && superProp.preSet ) {
+//            console.log('(DEBUG) sub preSet: ', this.name + '.' + p.name);
+            p.preSet = (function(a1, a2) { return function (oldValue, newValue, prop) {
+              return a2.call(this, oldValue, a1.call(this, oldValue, newValue, prop), prop);
+            };})(p0.preSet, superProp.preSet);
+          }
+          if ( p0.postSet && superProp.postSet ) {
+//            console.log('(DEBUG) sub postSet: ', this.name + '.' + p.name);
+            p.postSet = (function(a1, a2) { return function (oldValue, newValue, prop) {
+              a2.call(this, oldValue, newValue, prop);
+              a1.call(this, oldValue, newValue, prop);
+            };})(p0.postSet, superProp.postSet);
+          }
+          props[i] = p;
+          this[constantize(p.name)] = p;
+        }
+      }
+      cls.defineProperty(p);
+    }
+    this.propertyMap_ = null;
+  },
+
+  buildProtoMethods_: function(cls) {
+    // add methods
+    for ( key in this.methods ) {
+      var m = this.methods[key];
+      if ( Method && Method.isInstance(m) ) {
+        cls.addMethod(m.name, m.generateFunction());
+      } else {
+        cls.addMethod(key, m);
+      }
+    }
+  },
+
   buildPrototype: function() { /* Internal use only. */
     // save our pure state
     // Note: Only documentation browser uses this, and it will be replaced
     // by the new Feature Oriented bootstrapping process, so only use the
     // extra memory in DEBUG mode.
     if ( DEBUG ) BootstrapModel.saveDefinition(this);
-
-    function addTraitToModel(traitModel, parentModel) {
-      var parentName = parentModel && parentModel.id ? parentModel.id.replace(/\./g, '__') : '';
-      var traitName  = traitModel.id ? traitModel.id.replace(/\./g, '__') : '';
-      var name       = parentName + '_ExtendedWith_' + traitName;
-
-      if ( ! lookup(name) ) {
-        var model = traitModel.clone();
-        model.package = '';
-        model.name = name;
-        model.extendsModel = parentModel && parentModel.id;
-        model.models = traitModel.models; // unclone sub-models, we don't want multiple copies of them floating around
-        GLOBAL.X.registerModel(model);
-      }
-
-      var ret = GLOBAL.X.lookup(name);
-      console.assert(ret, 'Error adding Trait to Model, unknown name: ', name);
-      return ret;
-    }
 
     if ( this.extendsModel && ! this.X.lookup(this.extendsModel) ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
 
@@ -122,7 +193,7 @@ var BootstrapModel = {
       console.assert(traitModel, 'Unknown trait: ' + trait);
 
       if ( traitModel ) {
-        extendsModel = addTraitToModel(traitModel, extendsModel);
+        extendsModel = this.addTraitToModel_(traitModel, extendsModel);
       } else {
         console.warn('Missing trait: ', trait, ', in Model: ', this.name);
       }
@@ -178,64 +249,8 @@ var BootstrapModel = {
     this.instance_.imports_ = this.imports;
     if ( extendsModel ) this.instance_.imports_ = this.instance_.imports_.concat(extendsModel.instance_.imports_);
 
-    // build imports as psedo-properties
-    Object_forEach(this.instance_.imports_, function(i) {
-      var imp   = i.split(' as ');
-      var key   = imp[0];
-      var alias = imp[1] || imp[0];
-
-      if ( alias.length && alias.charAt(alias.length-1) == '$' )
-        alias = alias.slice(0, alias.length-1);
-
-      if ( ! this.getProperty(alias) ) {
-        props.push(Property.create({
-          name:      alias,
-          transient: true,
-          hidden:    true
-        }));
-      }/*
-         TODO(kgr): Do I need to do anything in this case?
-         else {
-        var p = props[i];
-      }*/
-    }.bind(this));
-
-    // build properties
-    for ( var i = 0 ; i < props.length ; i++ ) {
-      var p = props[i];
-      if ( extendsModel ) {
-        var superProp = extendsModel.getProperty(p.name);
-        if ( superProp ) {
-          var p0 = p;
-          p = superProp.clone().copyFrom(p);
-          // A more elegant way to do this would be to have a ModelProperty
-          // which has a ModelPropertyProperty called 'reduceWithSuper'.
-          if ( p0.adapt && superProp.adapt ) {
-//            console.log('(DEBUG) sub adapt: ', this.name + '.' + p.name);
-            p.adapt = (function(a1, a2) { return function (oldValue, newValue, prop) {
-              return a2.call(this, oldValue, a1.call(this, oldValue, newValue, prop), prop);
-            };})(p0.adapt, superProp.adapt);
-          }
-          if ( p0.preSet && superProp.preSet ) {
-//            console.log('(DEBUG) sub preSet: ', this.name + '.' + p.name);
-            p.preSet = (function(a1, a2) { return function (oldValue, newValue, prop) {
-              return a2.call(this, oldValue, a1.call(this, oldValue, newValue, prop), prop);
-            };})(p0.preSet, superProp.preSet);
-          }
-          if ( p0.postSet && superProp.postSet ) {
-//            console.log('(DEBUG) sub postSet: ', this.name + '.' + p.name);
-            p.postSet = (function(a1, a2) { return function (oldValue, newValue, prop) {
-              a2.call(this, oldValue, newValue, prop);
-              a1.call(this, oldValue, newValue, prop);
-            };})(p0.postSet, superProp.postSet);
-          }
-          props[i] = p;
-          this[constantize(p.name)] = p;
-        }
-      }
-      cls.defineProperty(p);
-    }
-    this.propertyMap_ = null;
+    this.buildProtoImports_(props);
+    this.buildProtoProperties_(cls, extendsModel, props);
 
     // Copy parent Model's Property and Relationship Contants to this Model.
     if ( extendsModel ) {
@@ -284,18 +299,12 @@ var BootstrapModel = {
     var key;
 
     // add constants
-    for ( key in this.constants ) {
-      var c = this.constants[key];
-      if ( Constant ) {
-        if ( ! Constant.isInstance(c) ) {
-          c = this.constants[key] = Constant.create(c);
-        }
+    if ( this.constants ) {
+      for ( var i = 0 ; i < this.constants.length ; i++ ) {
+        var c = this.constants[i];
         // TODO(kgr): only add to Proto when Model cleanup done.
-        Object.defineProperty(cls, c.name, {value: c.value});
+        Object.defineProperty(cls,  c.name, {value: c.value});
         Object.defineProperty(this, c.name, {value: c.value});
-        // cls[c.name] = this[c.name] = c.value;
-      } else {
-        console.warn('Defining constant before Constant.');
       }
     }
 
@@ -315,15 +324,7 @@ var BootstrapModel = {
       }.bind(this));
     }
 
-    // add methods
-    for ( key in this.methods ) {
-      var m = this.methods[key];
-      if ( Method && Method.isInstance(m) ) {
-        cls.addMethod(m.name, m.generateFunction());
-      } else {
-        cls.addMethod(key, m);
-      }
-    }
+    this.buildProtoMethods_(cls);
 
     var self = this;
     // add relationships
@@ -468,7 +469,14 @@ var BootstrapModel = {
   },
 
   getPrototype: function() { /* Returns the definition $$DOC{ref:'Model'} of this instance. */
-    return this.instance_.prototype_ || ( this.instance_.prototype_ = this.buildPrototype() );
+    if ( ! this.instance_.prototype_ ) {
+      //console.profile('getPrototype' + this.name);
+      //for ( var i = 0 ; i < 0 ; i++ ) this.buildPrototype();
+      //console.profileEnd();
+    return this.instance_.prototype_ = this.buildPrototype();
+    }
+    return this.instance_.prototype_;
+//    return this.instance_.prototype_ || ( this.instance_.prototype_ = this.buildPrototype() );
   },
 
   saveDefinition: function(self) {

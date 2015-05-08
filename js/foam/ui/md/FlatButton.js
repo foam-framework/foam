@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'FlatButton',
   package: 'foam.ui.md',
+  name: 'FlatButton',
   extendsModel: 'foam.flow.Element',
 
   requires: [ 'foam.ui.md.HaloView' ],
@@ -23,15 +23,11 @@ CLASS({
     },
     {
       name: 'action',
-      postSet: function() {
-        this.bindIsAvailable();
-      }
+      postSet: function() { this.bindData(); }
     },
     {
       name: 'data',
-      postSet: function() {
-        this.bindIsAvailable();
-      }
+      postSet: function() { this.bindData(); }
     },
     {
       name: 'escapeHtml',
@@ -39,7 +35,7 @@ CLASS({
     },
     {
       name: 'halo',
-      factory: function() {
+      lazyFactory: function() {
         return this.HaloView.create({
           className: 'halo',
           recentering: false,
@@ -62,82 +58,63 @@ CLASS({
       defaultValue: '#02A8F3'
     },
     {
+      model_: 'BooleanProperty',
       name: 'isHidden',
       defaultValue: false
     }
   ],
 
   methods: [
-    {
-      name: 'init',
-      code: function() {
-        this.SUPER.apply(this, arguments);
-// TODO(jacksonic): this can cause updateHTML() during a toHTML(), which causes double onclicks
-//         if ( this.action && this.action.labelFn ) {
-//           this.X.dynamic(function() { this.action.labelFn.call(this.data, this.action); this.updateHTML(); }.bind(this));
-//         }
-      }
+    function initHTML() {
+      var self = this;
+
+      this.currentColor_$.addListener(function() {
+        if ( self.$ ) self.$.style.color = this.currentColor_;
+      });
+
+      this.$.addEventListener('click', function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        self.action.callIfEnabled(self.X, self.data);
+      }, this.id);
+
+      this.setClass('hidden', function() { return self.isHidden; }, this.id);
     },
-    {
-      name: 'initHTML',
-      code: function() {
-        this.SUPER();
-        Events.dynamic(function() {
-          this.currentColor_;
-          if ( ! this.$ ) return;
-          this.$.style.color = this.currentColor_;
-        }.bind(this));
-      }
-    },
-    {
-      name: 'bindIsAvailable',
-      code: function() {
-        if ( ! this.action || ! this.data ) return;
-// available enabled etc.
-        var self = this;
-        Events.dynamic(
-          function() { self.action.isEnabled.call(self.data, self.action); },
-          function() {
-            if ( self.action.isEnabled.call(self.data, self.action) ) {
-              self.currentColor_ = self.color;
-            } else {
-              self.currentColor_ = "#5a5a5a";
-            }
+    function bindData() {
+      if ( ! this.action || ! this.data ) return;
+
+      var self = this;
+
+      if ( this.action.labelFn ) this.X.dynamic(
+        function() {
+          self.action.label = self.action.labelFn.call(self.data, self.action);
+        },
+        function() {
+          if ( self.$ ) self.$.querySelector('span').innerHTML = self.labelHTML();
+        });
+
+      // available enabled etc.
+      this.X.dynamic(
+        function() { self.action.isEnabled.call(self.data, self.action); },
+        function() {
+          if ( self.action.isEnabled.call(self.data, self.action) ) {
+            self.currentColor_ = self.color;
+          } else {
+            self.currentColor_ = "#5a5a5a";
           }
-        );
-        Events.dynamic(
-          function() { self.action.isAvailable.call(self.data, self.action); },
-          function() {
-            self.isHidden = ! self.action.isAvailable.call(self.data, self.action);
-          }
-        );
-      }
+        }
+      );
+
+      this.X.dynamic(
+        function() { self.action.isAvailable.call(self.data, self.action); },
+        function() {
+          self.isHidden = ! self.action.isAvailable.call(self.data, self.action);
+        }
+      );
     }
   ],
 
   templates: [
-    function toInnerHTML() {/*
-        <%= this.halo %>
-        <span>
-        <% if ( this.action ) { %>
-          <% if ( this.escapeHtml ) { %>
-            {{this.action.label}}
-          <% } else { %>
-            {{{this.action.label}}}
-          <% } %>
-        <% } else if ( this.inner ) { %>
-          <%= this.inner() %>
-        <% } else { %>label<% } %>
-        </span>
-<%
-        this.on('click', function(event) {
-            event.stopPropagation();
-            event.preventDefault();
-            this.action.callIfEnabled(this.X, this.data);
-        }.bind(this), this.id);
-        this.setClass('hidden', function() { return !!self.isHidden; }, this.id);
-%>
-    */},
     function CSS() {/*
       flat-button {
         padding: 10px 20px;
@@ -159,6 +136,23 @@ CLASS({
         left: 0;
         top: 0;
       }
+    */},
+    function toHTML() {/*
+      <<%= self.tagName %> id="%%id" <%= this.cssClassAttr() %> >
+        %%halo
+        <span><% this.labelHTML(out) %></span>
+      </%%tagName>
+    */},
+    function labelHTML() {/*
+      <% if ( this.action ) { %>
+        <% if ( this.escapeHtml ) { %>
+          {{this.action.label}}
+        <% } else { %>
+          {{{this.action.label}}}
+        <% } %>
+      <% } else if ( this.inner ) { %>
+         <%= this.inner() %>
+      <% } else { %>label<% } %>
     */}
   ]
 });

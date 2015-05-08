@@ -33,17 +33,16 @@ CLASS({
         });
       },
       postSet: function(old, nu) {
-        if ( old ) old.language$.removeListener(this.onLanguageChange);
-        if ( nu ) nu.language$.addListener(this.onLanguageChange);
-        if ( ! old || old.language !== nu.language ) this.onLanguageChange();
-
-        if ( ! this.codeView ) return;
-
-        var codeViewCode = this.codeView.getValue();
-        if ( codeViewCode !== nu.code ) {
-          this.codeView.setValue(nu.code);
-          this.codeView.clearSelection();
+        if ( old ) {
+          old.language$.removeListener(this.onLanguageChange);
+          old.code$.removeListener(this.onDataCodeChange);
         }
+        if ( nu ) {
+          nu.language$.addListener(this.onLanguageChange);
+          nu.code$.addListener(this.onDataCodeChange);
+        }
+        this.onLanguageChange();
+        this.onDataCodeChange();
       }
     },
     {
@@ -233,7 +232,7 @@ CLASS({
 
         var session = codeView.getSession();
         session.on('changeFold', this.onChangeFold);
-        session.on('change', this.onCodeChange);
+        session.on('change', this.onAceCodeChange);
         this.codeViewLoadState = 'loaded';
       }
     },
@@ -245,16 +244,39 @@ CLASS({
       }
     },
     {
-      name: 'onCodeChange',
+      name: 'onAceCodeChange',
+      isFramed: true,
       code: function(e) {
+        if ( ! this.codeView || ! this.data ) return;
         var codeViewCode = this.codeView.getValue();
-        if ( codeViewCode !== this.data ) this.data.code = codeViewCode;
+        if ( codeViewCode !== this.data.code ) this.data.code = codeViewCode;
+      }
+    },
+    {
+      name: 'onDataCodeChange',
+      isFramed: true,
+      code: function(e) {
+        if ( ! this.codeView || ! this.data ) return;
+        var codeViewCode = this.codeView.getValue();
+        if ( codeViewCode !== this.data.code ) {
+          this.codeView.setValue(this.data.code);
+          this.codeView.clearSelection();
+
+          // Value changes will unfold code; re-fold read-only view. Note that
+          // this may be a change if user manually unfolded some code, but kept
+          // it read-only. Also, any folds in read-write views will get unfolded
+          // without correct. Unfortuantely, using mode as a guess at what we
+          // should do is all we've got.
+          if ( this.mode === 'read-only'  ) this.foldAll();
+        }
       }
     },
     {
       name: 'onLanguageChange',
       code: function() {
-        this.aceMode = 'ace/mode/' + this.data.language;
+        if ( ! this.data ) return;
+        var aceMode = 'ace/mode/' + this.data.language;
+        if ( this.aceMode !== aceMode ) this.aceMode = aceMode;
       }
     },
     {

@@ -24,8 +24,12 @@
 // ??? Whould 'Observable' be a better name?
 // TODO(kgr): Model or just make part of FObject?
 
+var __ROOT__ = {};
+
 MODEL({
   name: 'EventService',
+
+  extendsModel: '__ROOT__',
 
   constants: {
     /** If listener thows this exception, it will be removed. **/
