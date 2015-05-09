@@ -21,9 +21,10 @@ CLASS({
   extendsModel: 'foam.graphics.CView',
 
   requires: [
-    'foam.physics.Collider',
     'foam.demos.physics.PhysicalCircle',
-    'foam.input.Mouse'
+    'foam.input.Mouse',
+    'foam.physics.Collider',
+    'foam.util.Timer'
   ],
 
   imports: [ 'timer' ],
@@ -46,7 +47,7 @@ CLASS({
       this.SUPER();
 
       if ( ! this.timer ) {
-        this.timer = Timer.create();
+        this.timer = this.Timer.create();
         this.timer.start();
       }
 
