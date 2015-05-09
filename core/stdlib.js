@@ -85,7 +85,7 @@ MODEL({
     function memoize1(f) {
       var cache = {};
       var g = function(arg) {
-        var key = arg.toString();
+        var key = arg ? arg.toString() : '';
         if ( ! cache.hasOwnProperty(key) ) cache[key] = f.call(this, arg);
         return cache[key];
       };
