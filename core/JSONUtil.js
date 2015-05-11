@@ -92,7 +92,12 @@ var JSONUtil = {
 
   arrayToObjArray: function(X, a, opt_defaultModel, seq) {
     for ( var i = 0 ; i < a.length ; i++ ) {
-      a[i] = this.mapToObj(X, a[i], opt_defaultModel, seq);
+      if ( a[i].debug ) {
+        a.splice(i,1);
+        i--;
+      } else {
+        a[i] = this.mapToObj(X, a[i], opt_defaultModel, seq);
+      }
     }
     return a;
   },

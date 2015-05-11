@@ -9,9 +9,10 @@
     apar(
     arequire('foam.graphics.CView'),
     arequire('foam.input.Mouse'),
+    arequire('foam.util.Timer'),
     arequire('foam.graphics.Circle'))(function() {
 
-    var timer = Timer.create({});
+    var timer = foam.util.Timer.create({});
     var space = foam.graphics.CView.create({
       width: 2000,
       height: 1000,

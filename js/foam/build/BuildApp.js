@@ -324,8 +324,7 @@ CLASS({
       var self = this;
       var corejs = '';
       var file;
-      if ( this.coreFiles.length ) var myfiles = this.coreFiles;
-      else myfiles = files;
+      var myfiles = this.coreFiles.length ? this.coreFiles : files ;
       myfiles = myfiles.concat(this.extraFiles);
       awhile(
         function() { return i < myfiles.length; },

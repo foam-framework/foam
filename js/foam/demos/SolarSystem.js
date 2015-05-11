@@ -21,7 +21,6 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'Timer',
     'foam.demos.ClockView',
     'foam.demos.graphics.EyeCView',
     'foam.demos.graphics.EyesCView',
@@ -31,7 +30,8 @@ CLASS({
     'foam.graphics.PieGraph',
     'foam.graphics.Turntable',
     'foam.ui.BooleanView',
-    'foam.ui.DetailView'
+    'foam.ui.DetailView',
+    'foam.util.Timer'
   ],
 
   properties: [

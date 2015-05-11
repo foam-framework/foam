@@ -250,7 +250,7 @@ dao
             <foam model="foam.demos.graphics.EyeCView" color="yellow"/>
             <span style="width:200px;display:inline-block;"></span>
             <foam model="foam.demos.graphics.EyesCView"/>
-            <%= foam.demos.graphics.Dragon.create({y: 200, x: 800, scaleX: 0.6, scaleY: 0.6, timer: Timer.create(), blowBubbles: false}) %>
+            <%= foam.demos.graphics.Dragon.create({y: 200, x: 800, scaleX: 0.6, scaleY: 0.6, timer: foam.util.Timer.create(), blowBubbles: false}) %>
           </p:view>
         </viewChoice>
         <viewChoice>
@@ -292,7 +292,7 @@ dao
                       var mouse   = foam.input.Mouse.create();
                       var clock1  = foam.demos.ClockView.create({r: 60});
                       var clock2  = foam.demos.ClockView.create({r: 60, color: '#3c0'});
-                      var timer   = Timer.create();
+                      var timer   = foam.util.Timer.create();
 
                       timer.start();
                       canvas.addChildren(clock1, clock2);

@@ -22,8 +22,8 @@ CLASS({
   extendsModel: 'foam.graphics.CView',
 
   requires: [
-    'Timer',
     'foam.ui.DetailView',
+    'foam.util.Timer',
     'foam.graphics.CView',
     'foam.graphics.LabelledBox as Box',
     'foam.graphics.Circle'
