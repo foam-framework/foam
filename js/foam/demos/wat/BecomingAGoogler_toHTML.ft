@@ -64,7 +64,7 @@
           </div>
         </div>
         <div class="flex-col flex-top-right">
-          <img src="/js/foam/demos/wat/ipad_text_layout.png" />
+          <img src="./js/foam/demos/wat/ipad_text_layout.png" />
         </div>
       </div>
     </div>
@@ -102,7 +102,7 @@
           </div>
         </div>
         <div class="flex-col flex-top-right">
-          <img src="/js/foam/demos/wat/chrome_prop.png" />
+          <img src="./js/foam/demos/wat/chrome_prop.png" />
         </div>
       </div>
     </div>
@@ -123,10 +123,10 @@
               <p><b>Flexible hours</b></p>
               <p>E.g., Taking Bahá'í Holy Days off</p>
             </div>
-            <div class="flex-background-img" style="background-image: url('/js/foam/demos/wat/temple.jpg');">&nbsp;</div>
+            <div class="flex-background-img" style="background-image: url('./js/foam/demos/wat/temple.jpg');">&nbsp;</div>
           </div>
           <div class="card flex-row flex-stretch flex-grow">
-            <div class="flex-background-img" style="background-image: url('/js/foam/demos/wat/google_serve.png');">&nbsp;</div>
+            <div class="flex-background-img" style="background-image: url('./js/foam/demos/wat/google_serve.png');">&nbsp;</div>
             <div class="flex-col flex-items-start">
               <p><b>Google Serve</b></p>
               <p>E.g., Building homes with Habitat for Humanity</p>
@@ -137,7 +137,7 @@
               <p><b>Share your passions</b></p>
               <p>E.g., Lightning talk on philosophy of morality</p>
             </div>
-            <div class="flex-background-img" style="background-image: url('/js/foam/demos/wat/hume.jpg');">&nbsp;</div>
+            <div class="flex-background-img" style="background-image: url('./js/foam/demos/wat/hume.jpg');">&nbsp;</div>
           </div>
         </div>
       </div>
