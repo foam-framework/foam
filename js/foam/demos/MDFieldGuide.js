@@ -30,6 +30,7 @@ CLASS({
     'foam.ui.md.SharedStyles',
     'foam.ui.md.TextFieldView',
     'foam.ui.md.ToggleView',
+    'foam.ui.md.PopupView'
   ],
 
   exports: [
@@ -76,7 +77,7 @@ CLASS({
           label: 'Basic Actions',
           action: function() {
           }
-        },
+        }
       ]
     }
   ],
@@ -106,6 +107,37 @@ CLASS({
       name: 'styles_',
       hidden: true,
       factory: function() { this.SharedStyles.create(); }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'popupAction',
+      action: function() {
+        var popup = this.PopupView.create({
+          delegate: Model.create({
+            extendsModel: 'foam.ui.SimpleView',
+            imports: [
+              'popup'
+            ],
+            actions: [
+              {
+                name: 'done',
+                action: function() { this.popup.close(); }
+              }
+            ],
+            templates: [
+              {
+                name: 'toHTML',
+                template: '<div id="%%id"><div>hello world</div>$$done{model_: "foam.ui.md.FlatButton"}</div>'
+              }
+            ]
+          })
+        });
+        popup.open();
+        popup.close();
+        popup.open();
+      }
     }
   ],
 
@@ -284,6 +316,9 @@ CLASS({
         </div>
       </div>
     */},
+    function popupHTML() {/*
+       $$popupAction{ model_: 'foam.ui.md.FlatButton' }
+    */},
     function toHTML() {/*
       <div id="<%= this.id %>" class="field-guide">
         <div class="guide-header">
@@ -301,6 +336,7 @@ CLASS({
           <% this.buttonHTML(out); %>
           <% this.choicesHTML(out); %>
           <% this.booleanHTML(out); %>
+          <% this.popupHTML(out); %>
         </div>
       </div>
     */},
