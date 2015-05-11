@@ -36,6 +36,35 @@ CLASS({
         // Delay data DAO puts in hold state.
         this.data.delayPuts = nu === 'hold';
       }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'scrollable',
+      defaultValue: true
+    }
+  ],
+
+  methods: [
+    function initHTML() {
+      console.log('VCV.initHTML', this.scrollable, this.$);
+      this.setScrollableCSS_();
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'setScrollableCSS_',
+      code: function() {
+        if ( ! this.$ ) return;
+
+        var style = this.$.style;
+        if ( this.scrollable ) {
+          style.overflow = 'auto';
+        } else {
+          style['max-height'] = 'initial';
+          style.overflow = 'initial';
+        }
+      }
     }
   ],
 
