@@ -29,6 +29,7 @@ CLASS({
     'foam.documentation.diagram.DocDiagramView',
     'foam.documentation.diagram.DocModelDiagramView',
     'foam.flow.CodeSample',
+    'foam.flow.Section',
     'foam.flow.Slides',
     'foam.graphics.Circle',
     'foam.graphics.Gauge',
@@ -79,6 +80,8 @@ CLASS({
     init: function() {
       this.SUPER.apply(this, arguments);
       this.X.registerElement('circle', 'foam.graphics.Circle');
+      this.FOAMWindow.installModel(this.CodeSample);
+      this.FOAMWindow.installModel(this.Section);
       this.FOAMWindow.installModel(this.Slides);
     }
   },
