@@ -6,7 +6,7 @@ tutorial: 0
 
 ## Overview
 
-FOAM is a a Javascript library. It is split into several parts conceptually,
+FOAM is a Javascript library. It is split into several parts conceptually,
 though all are currently imported together:
 
 - An advanced class system, similar in principle to Java's but much more
