@@ -11,7 +11,7 @@ two views: one for the list of phones and the other for the details of one
 phone.
 
 You can see the finished app running live
-[here]({{ site.baseurl }}/foam/apps/phonecat/Cat.html).
+[here]({{ site.baseurl }}/foam/index.html?model=foam.tutorials.phonecat.Controller).
 
 
 ## Defining the Model
