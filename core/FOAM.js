@@ -228,7 +228,7 @@ var CLASS = function(m) {
       get: function () {
         // console.time('registerModel: ' + id);
         USED_MODELS[id] = true;
-        delete UNUSED_MODELS[id];
+        UNUSED_MODELS[id] = undefined;
         Object.defineProperty(path, m.name, {value: null, configurable: true});
 
         var work = [];
