@@ -37,7 +37,7 @@ because that's a very high-level way of expressing how the app should work.
   serialization code for JSON, XML and more formats. They can intelligently
   compare and diff, figure out how best to be stored on different databases,
   and much more.
-    - FOAM objects and their properties are themselves described as FOAM objects. See [Model]({{ site.baseurl }}/foam/apps/docs/docbrowser.html#Model) and [Property]({{ site.baseurl }}/foam/apps/docs/docbrowser.html#Model).
+    - FOAM objects and their properties are themselves described as FOAM objects. See [Model]({{ site.baseurl }}/foam/apps/docs/docbrowser.html#Model) and [Property]({{ site.baseurl }}/foam/apps/docs/docbrowser.html#Property).
     - FOAM is "written in itself", using the same metaprogramming power offered
       to users. That keeps it compact, and loading fast.
 - [**Interfaces** are better than implementations]({{ site.baseurl }}/principles). FOAM has a standard interface
