@@ -47,9 +47,9 @@ because that's a very high-level way of expressing how the app should work.
 - FOAM has a universal interface, the DAO or Data Access Object, for storing
   data without worrying about the details. It comes with many DAO
   implementations:
-    - For the web: IndexedDB and LocalStorage
+    - For the web: IndexedDB and LocalStorage.
     - For Node.js: MongoDB, XML files and JSON files.
-    - For Google Compute Engine: Cloud Datastore (from Node.js)
+    - For Google Compute Engine: Cloud Datastore (from Node.js).
     - For everywhere: A blazing-fast in-memory implementation.
         - Automatically builds indexes on the fly, and makes search-as-you-type easy.
     - Decorator DAOs that add extra functionality to others: logging, timing,
