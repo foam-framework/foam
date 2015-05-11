@@ -121,7 +121,7 @@ var FObject = {
 
   // TODO: document
   xbind: function(map) {
-    return {
+    var newModel = {
       __proto__: this,
       create: function(args, X) {
         var createArgs = {};
@@ -145,7 +145,9 @@ var FObject = {
         }
         return this.__proto__.xbind(m2);
       }
-    }
+    };
+    if ( this.required__ ) newModel.required__ = aconstant(newModel);
+    return newModel;
   },
 
   /** Context defaults to the global namespace by default. **/
