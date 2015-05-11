@@ -10,13 +10,14 @@
  */
 
 CLASS({
-  package: 'foam.demos.empire',
-  name: 'Preso',
+  package: 'foam.demos.wat',
+  name: 'BecomingAGoogler',
   extendsModel: 'foam.flow.Section',
 
   constants: { ELEMENT_NAME: 'foam-demos-flow' },
 
   requires: [
+    'Timer',
     'com.google.sweeper.Game',
     'foam.demos.InterpolatedClocks',
     'foam.demos.graphics.Dragon',
@@ -26,11 +27,11 @@ CLASS({
     'foam.demos.physics.Collision',
     'foam.demos.physics.CollisionWithSpring',
     'foam.demos.physics.Spring',
+    'foam.demos.wat.Grid',
+    'foam.demos.wat.Slides',
     'foam.documentation.diagram.DocDiagramView',
     'foam.documentation.diagram.DocModelDiagramView',
     'foam.flow.CodeSample',
-    'foam.flow.Section',
-    'foam.flow.Slides',
     'foam.graphics.Circle',
     'foam.graphics.Gauge',
     'foam.input.touch.GestureManager',
@@ -41,7 +42,6 @@ CLASS({
     'foam.ui.TableView',
     'foam.ui.ViewChoice',
     'foam.ui.md.TwoPaneView',
-    'foam.util.Timer',
     'foam.memento.FragmentMementoMgr'
   ],
 
@@ -79,59 +79,18 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER.apply(this, arguments);
+
+      this.X.registerModel(this.Slides, 'foam.flow.Slides');
+      this.X.registerModel(this.Grid, 'foam.flow.Grid');
+
       this.X.registerElement('circle', 'foam.graphics.Circle');
-      this.FOAMWindow.installModel(this.CodeSample);
-      this.FOAMWindow.installModel(this.Section);
+
       this.FOAMWindow.installModel(this.Slides);
     }
   },
 
   templates: [
-    function CSS() {/*
-     body {
-        overflow: hidden;
-     }
-     slides {
-        display: flex;
-        flex-direction: column;
-      }
-      slides > deck {
-        font-size: 200%;
-        padding-left: 16px;
-      }
-      slides .card-grid .card .card-inset {
-        padding-left: 16px;
-      }
-      h1 {
-        color: blue;
-        font-size: 54px;
-        margin-top: 16px;
-        margin-bottom: 16px;
-      }
-      slides .twopane-left {
-        width: 450px;
-        height: 85%;
-      }
-      slides .twopane-right {
-        background: white;
-        padding-left: 100px;
-      }
-      .SlidePanel > div {
-        margin-left: -16px;
-        height: 100%;
-      }
-      .swipeAltOuter {
-        height: 100%;
-      }
-      code-view {
-        font-size: 28px;
-      }
-      .sweeper-models canvas { vertical-align: top; }
-      li.d1 { margin-left: 16px; font-size: 30px;}
-      li.d2 { margin-left: 32px; font-size: 28px; }
-      li.d3 { margin-left: 48px; font-size: 26px; }
-      li.d4 { margin-left: 64px; font-size: 24px; }
-    */},
+    { name: 'CSS' },
     { name: 'toHTML' }
   ]
 });
