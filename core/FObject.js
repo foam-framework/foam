@@ -146,7 +146,10 @@ var FObject = {
         return this.__proto__.xbind(m2);
       }
     };
-    if ( this.required__ ) newModel.required__ = aconstant(newModel);
+
+    if ( this.required__ )
+      newModel.required__ = aseq(this.required__, aconstant(newModel));
+
     return newModel;
   },
 
