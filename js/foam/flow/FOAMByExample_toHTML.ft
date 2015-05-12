@@ -597,7 +597,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
           </aside>
         </section>
 
-        <section title="Bind to Values with Multiple dependencies">
+        <section title="Bind to Multiple Values with Multiple dependencies">
           <aside>
             <code-sample hasHTML="true" openSnippets="-2,-1">
               <title>Combining Strings</title>
