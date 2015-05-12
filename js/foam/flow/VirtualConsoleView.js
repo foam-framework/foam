@@ -45,10 +45,7 @@ CLASS({
   ],
 
   methods: [
-    function initHTML() {
-      console.log('VCV.initHTML', this.scrollable, this.$);
-      this.setScrollableCSS_();
-    }
+    function initHTML() { this.setScrollableCSS_(); }
   ],
 
   listeners: [
