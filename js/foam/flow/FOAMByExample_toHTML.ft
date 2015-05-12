@@ -508,8 +508,8 @@ arequire('foam.sandbox.Person', X)(function(Person) {
   // getting/setting via "value", addListener/removeListener synonymous with
   // object's addPropertyListener/removePropertyListener.
   var firstNameReference = witch.firstName$;
-  console.log.json('Witch first name: ' + firstNameReference.get());
-  console.log.json('Witch first name: ' + firstNameReference.value);
+  console.log('Witch first name: ' + firstNameReference.get());
+  console.log('Witch first name: ' + firstNameReference.value);
 
   var listener = function(obj) {
     console.log(obj.fullName() + ', she\'s a witch!');
@@ -517,14 +517,127 @@ arequire('foam.sandbox.Person', X)(function(Person) {
   firstNameReference.addListener(listener);
 
   firstNameReference.set('Wicked');
-  console.log.json('Witch first name: ' + witch.firstName);
+  console.log('Witch first name: ' + witch.firstName);
   firstNameReference.value = 'Elphaba';
-  console.log.json('Witch first name: ' + witch.firstName);
+  console.log('Witch first name: ' + witch.firstName);
 
   firstNameReference.removeListener(listener);
 
   // Changes no longer logged.
   firstNameReference.value = 'Melted';
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
+      <section title="Bind Property Values">
+        <aside>
+          <code-sample>
+            <title>Binding Prime Ministers</title>
+            <source>
+              <code-snippet ref="Person" title="Person Model"></code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>arequire('foam.sandbox.Person', X)(function(Person) {
+  var pm1 = Person.create({ firstName: 'Lester', lastName: 'Pearson' }, X);
+  var pm2 = Person.create({ firstName: 'Pierre', lastName: 'Trudeau' }, X);
+
+  /* 1 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+
+  // One-way binding: pm2 follows pm1's first name.
+  Events.follow(pm1.firstName$, pm2.firstName$);
+  /* 2 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+  pm1.firstName = 'Les';
+  /* 3 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+  // pm1 isn't following pm2.
+  pm2.firstName = 'Pierre';
+  /* 4 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+  // Remove one-way binding.
+  Events.unfollow(pm1.firstName$, pm2.firstName$);
+
+  // Two-way binding. Equivalent to Events.follow(a, b); Events.follow(b, a).
+  Events.link(pm1.lastName$, pm2.lastName$);
+  /* 5 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+  pm1.lastName = 'MacDonald';
+  /* 6 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+  pm2.lastName = 'Trudeau';
+  /* 7 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+  // Remove two-way binding.
+  Events.unlink(pm1.lastName$, pm2.lastName$);
+
+  // One-way binding that maps to a different value.
+  Events.map(pm1.lastName$, pm2.lastName$, function(lastName) {
+    return '"The Boss" ' + lastName;
+  });
+  /* 8 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+  pm1.lastName = 'Harper';
+  /* 9 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+
+  // Two-way binding that maps to different values.
+  Events.relate(pm2.firstName$, pm1.firstName$,
+      function(firstName) {
+        return '"D.J." ' + firstName;
+      },
+      function(firstName) {
+        return firstName.replace('"D.J." ', '');
+      });
+  /* 10 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+  pm1.firstName = 'Stephen';
+  /* 11 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
+      <section title="Bind to Multiple dependencies">
+        <aside>
+          <code-sample openSnippets="-2,-1">
+            <title>Automatically Computing Products</title>
+            <source>
+              <code-snippet title="Products Model">
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'Products',
+  package: 'foam.sandbox',
+
+  properties: [ 'lefts', 'rights', 'products' ],
+
+  methods: [
+    function init() {
+      // Dynamically update products based on lefts and rights.
+      Events.dynamic(function() {
+        // Ensure that dependencies are referenced.
+        this.lefts;
+        this.rights;
+
+        this.products = [];
+        var self = this;
+        self.lefts.forEach(function(leftOperand) {
+          self.rights.forEach(function(rightOperand) {
+            self.products.push(leftOperand * rightOperand);
+          });
+        });
+      }.bind(this));
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>arequire('foam.sandbox.Products', X)(function(Products) {
+  var p = Products.create({ lefts: [3], rights: [5] });
+  console.log(JSONUtil.compact.stringify(p.products));
+  p.lefts = [7, 11];
+  console.log(JSONUtil.compact.stringify(p.products));
+  p.rights = [512, 1024, 1048];
+  console.log(JSONUtil.compact.stringify(p.products));
 });</code>
                 </src>
               </code-snippet>
