@@ -597,34 +597,52 @@ arequire('foam.sandbox.Person', X)(function(Person) {
           </aside>
         </section>
 
-        <section title="Bind to Multiple dependencies">
+        <section title="Bind to Values with Multiple dependencies">
           <aside>
-            <code-sample openSnippets="-2,-1">
-              <title>Automatically Computing Products</title>
+            <code-sample hasHTML="true" openSnippets="-2,-1">
+              <title>Combining Strings</title>
               <source>
-                <code-snippet title="Products Model">
+                <code-snippet title="StringCombos model">
                   <src language="javascript">
                     <code>CLASS({
-  name: 'Products',
+  name: 'StringCombos',
   package: 'foam.sandbox',
 
-  properties: [ 'lefts', 'rights', 'products' ],
+  properties: [ 's1', 's2', 's3',
+                { name: 'combinations', view: 'foam.ui.TextAreaView' },
+                { name: 'symmetricPermutations', view: 'foam.ui.TextAreaView' }
+              ],
 
   methods: [
     function init() {
-      // Dynamically update products based on lefts and rights.
+      // Dynamically update string combos based on strings: s1, s2, s3.
       Events.dynamic(function() {
         // Ensure that dependencies are referenced.
-        this.lefts;
-        this.rights;
+        this.s1;
+        this.s2;
+        this.s3;
 
-        this.products = [];
-        var self = this;
-        self.lefts.forEach(function(leftOperand) {
-          self.rights.forEach(function(rightOperand) {
-            self.products.push(leftOperand * rightOperand);
-          });
-        });
+        var strs = [this.s1, this.s2, this.s3];
+
+        var combinations = [];
+        var symmetricPermutations = [];
+        for ( var i = 0; i !== 3; ++i ) {
+          combinations.push(strs[i]);
+          symmetricPermutations.push(strs[i]);
+          for ( var j = 0; j !== 3; ++j ) {
+            if ( j === i ) continue;
+            combinations.push(strs[i] + strs[j]);
+            symmetricPermutations.push(strs[i] + strs[j] + strs[i]);
+            for ( var k = 0; k !== 3; ++k ) {
+              if ( k == j || k == i ) continue;
+              combinations.push(strs[i] + strs[j] + strs[k]);
+              symmetricPermutations.push(strs[i] + strs[j] + strs[k] +
+                  strs[j] + strs[i]);
+            }
+          }
+        }
+        this.combinations = combinations;
+        this.symmetricPermutations = symmetricPermutations;
       }.bind(this));
     }
   ]
@@ -633,13 +651,12 @@ arequire('foam.sandbox.Person', X)(function(Person) {
                 </code-snippet>
                 <code-snippet title="Example">
                   <src language="javascript">
-                    <code>arequire('foam.sandbox.Products', X)(function(Products) {
-  var p = Products.create({ lefts: [3], rights: [5] }, X);
-  console.log(JSONUtil.compact.stringify(p.products));
-  p.lefts = [7, 11];
-  console.log(JSONUtil.compact.stringify(p.products));
-  p.rights = [512, 1024, 1048];
-  console.log(JSONUtil.compact.stringify(p.products));
+                    <code>arequire('foam.sandbox.StringCombos', X)(function(StringCombos) {
+  // Try changing the values of S1, S2, S3 in the detail view. Notice automatic
+  // changes in Combinations and Symmetric Permutations.
+  // NOTE: The text box where you make a change needs to lose focus before the
+  // change takes effect.
+  StringCombos.create({ s1: 'a', s2: 'B', s3: 'c' }, X).write(X.document);
 });</code>
                   </src>
                 </code-snippet>
