@@ -824,7 +824,9 @@ CLASS({
         }
 
         // An actual Model
-        if ( Model.isInstance(f) ) return f.create.bind(f);
+        if ( Model.isInstance(f) ) return function(args, opt_X) {
+          return f.create(args, opt_X || this.Y)
+        }.bind(this);
 
         // A JSON Model Factory: { factory_ : 'ModelName', arg1: value1, ... }
         if ( f.factory_ ) {

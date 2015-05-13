@@ -27,6 +27,7 @@ CLASS({
     'foam.flow.Section',
     'foam.flow.TitlePage',
     'foam.flow.ToC',
+    'foam.flow.VirtualConsoleView',
     'foam.graphics.ActionButtonCView',
     // 'foam.ui.md.SectionView'
   ],
@@ -85,6 +86,9 @@ CLASS({
       this.X.registerModel(this.CodeSample.xbind({
         openSnippets: [-1]
       }), 'foam.flow.CodeSample');
+      this.X.registerModel(this.VirtualConsoleView.xbind({
+        scrollable: false
+      }), 'foam.flow.VirtualConsoleView');
 
       // TODO: Remove this stuff once the template parser understand unknown tags
       // better
@@ -97,6 +101,7 @@ CLASS({
       this.FOAMWindow.installModel(this.Section);
       this.FOAMWindow.installModel(this.TitlePage);
       this.FOAMWindow.installModel(this.ToC);
+      this.FOAMWindow.installModel(this.VirtualConsoleView);
 
       // TODO(markdittmer): Switch from Section to SectionView/ExpandableSection
       // once expandable contents renders properly with FLOW contents.

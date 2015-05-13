@@ -83,6 +83,7 @@ MODEL({
     },
 
     function memoize1(f) {
+      /** Faster version of memoize() when only dealing with one argument. **/
       var cache = {};
       var g = function(arg) {
         var key = arg ? arg.toString() : '';
@@ -628,7 +629,7 @@ MODEL({
         */
       };
 
-      return function xxxbind(arg) {
+      return function bind(arg) {
         return arguments.length == 1 ?
           simpleBind(this, arg) :
           oldBind.apply(this, argsToArray(arguments));

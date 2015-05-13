@@ -279,9 +279,11 @@ CLASS({
 
   templates: [
     function toInnerHTML() {/*
-      <heading>
-        %%title
-      </heading>
+      <% if ( this.title ) { %>
+        <heading>
+          %%title
+        </heading>
+      <% } %>
       <top-split>
         $$source{
           model_: this.SourceCodeListView,

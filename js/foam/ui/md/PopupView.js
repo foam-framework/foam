@@ -21,6 +21,11 @@ CLASS({
   extendsModel: 'foam.ui.SimpleView',
 
   exports: [ 'as popup' ],
+  imports: [
+    'clearTimeout',
+    'setTimeout',
+    'document'
+  ],
 
   properties: [
     {
@@ -41,13 +46,13 @@ CLASS({
     {
       name: '$content',
       getter: function() {
-        return this.X.document.getElementById(this.id+'Content');
+        return this.document.getElementById(this.id+'Content');
       }
     },
     {
       name: '$blocker',
       getter: function() {
-        return this.X.document.getElementById(this.id+'Blocker');
+        return this.document.getElementById(this.id+'Blocker');
       }
     },
     {
@@ -58,18 +63,23 @@ CLASS({
       name: 'state',
       defaultValue: 'closed'
     },
+    {
+      name: 'closeLatch_'
+    }
   ],
 
   methods: {
     open: function(sourceElement) {
+      if ( this.closeLatch_ ) this.closeLatch_();
+
       if ( this.state == 'closed' ) {
         this.delegateView = this.delegate();
         if ( this.data ) this.delegateView.data = this.data;
 
         if ( this.$ ) this.$.outerHTML = '';  // clean up old copy, in case of rapid re-activation
-        this.X.document.body.insertAdjacentHTML('beforeend', this.toHTML());
+        this.document.body.insertAdjacentHTML('beforeend', this.toHTML());
         this.initializePosition();
-        this.X.setTimeout(function() {  this.animateToExpanded(); }.bind(this), 100);
+        this.setTimeout(function() {  this.animateToExpanded(); }.bind(this), 100);
         this.initHTML();
         this.state = 'open';
       }
@@ -105,8 +115,15 @@ CLASS({
       }
     },
     close: function() {
+      this.state = 'closing';
+
       this.animateToHidden();
-      this.X.setTimeout(function() { this.destroy(); }.bind(this), 300);
+      var id = this.setTimeout(function() { this.destroy(); }.bind(this), 300);
+      this.closeLatch_ = function() {
+        this.clearTimeout(id);
+        this.closeLatch_ = '';
+        this.destroy();
+      }.bind(this);
     },
     destroy: function(p) {
       if ( this.$ ) this.$.outerHTML = '';
