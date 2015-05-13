@@ -381,21 +381,24 @@ CLASS({
 
       name: 'javaSource',
       description: 'Java Source',
-      template: '<%= this.type %> <%= this.name %>'
+      template: '<%= this.type %> <%= this.name %>',
+      debug: true
     },
     {
       model_: 'Template',
 
       name: 'closureSource',
       description: 'Closure JavaScript Source',
-      template: '@param {<%= this.javascriptType %>} <%= this.name %> .'
+      template: '@param {<%= this.javascriptType %>} <%= this.name %> .',
+      debug: true
     },
     {
       model_: 'Template',
 
       name: 'webIdl',
       description: 'Web IDL Source',
-      template: '<%= this.type %> <%= this.name %>'
+      template: '<%= this.type %> <%= this.name %>',
+      debug: true
     }
   ]
 });
