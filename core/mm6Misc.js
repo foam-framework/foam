@@ -142,8 +142,10 @@ function recopyModelFeatures(m) {
   m.actions       = m.actions;
   m.listeners     = m.listeners;
   m.models        = m.models;
-  m.tests         = m.tests;
-  m.issues        = m.issues;
+  if ( DEBUG ) {
+    m.tests       = m.tests;
+    m.issues      = m.issues;
+  }
 
   // check for old bootstrap Property instances
   if ( m.properties && m.properties[0] && ! Property.isInstance(m.properties[0]) ) {
