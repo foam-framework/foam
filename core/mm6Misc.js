@@ -136,11 +136,11 @@ function recopyModelFeatures(m) {
 
   // the preSet for each of these does the work
 //  m.methods       = m.methods;
-  m.templates     = m.templates;
+//  m.templates     = m.templates;
   m.relationships = m.relationships;
   m.properties    = m.properties;
-  m.actions       = m.actions;
-  m.listeners     = m.listeners;
+//  m.actions       = m.actions;
+//  m.listeners     = m.listeners;
   m.models        = m.models;
   if ( DEBUG ) {
     m.tests       = m.tests;
