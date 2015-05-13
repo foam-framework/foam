@@ -135,7 +135,7 @@ function recopyModelFeatures(m) {
   m.model_ = Model;
 
   // the preSet for each of these does the work
-  m.methods       = m.methods;
+//  m.methods       = m.methods;
   m.templates     = m.templates;
   m.relationships = m.relationships;
   m.properties    = m.properties;
@@ -156,10 +156,17 @@ function recopyModelFeatures(m) {
   if ( DEBUG ) BootstrapModel.saveDefinition(m);
 }
 
+/*
 // Update Model in everything we've created so far
 for ( var id in USED_MODELS ) {
   recopyModelFeatures(GLOBAL.lookup(id));
 }
+*/
+recopyModelFeatures(Property);
+recopyModelFeatures(Model);
+recopyModelFeatures(Method);
+recopyModelFeatures(Action);
+recopyModelFeatures(Template);
 
 if ( DEBUG ) {
   for ( var id in UNUSED_MODELS ) {
