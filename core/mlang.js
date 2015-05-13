@@ -332,41 +332,6 @@ function MAX(expr) {
 }
 
 
-CLASS({
-  name: 'ExplainExpr',
-
-  extendsModel: 'UNARY',
-
-  documentation: 'Pseudo-expression which outputs a human-readable description of its subexpression, and the plan for evaluating it.',
-
-  properties: [
-    {
-      name:  'plan',
-      help:  'Execution Plan',
-      defaultValue: ""
-    }
-  ],
-
-  methods: {
-    toString: function() { return this.plan; },
-    toSQL: function() { return this.arg1.toSQL(); },
-    toMQL: function() { return this.arg1.toMQL(); },
-    toBQL: function() { return this.arg1.toBQL(); },
-    partialEval: function() {
-      var newArg = this.arg1.partialEval();
-
-      return this.arg1 === newArg ? this : EXPLAIN(newArg);
-    },
-    f: function(obj) { return this.arg1.f(obj); }
-  }
-});
-
-
-function EXPLAIN(arg) {
-  return ExplainExpr.create({arg1: arg});
-}
-
-
 function COUNT() {
   return CountExpr.create();
 }
