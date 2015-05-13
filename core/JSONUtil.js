@@ -92,7 +92,7 @@ var JSONUtil = {
 
   arrayToObjArray: function(X, a, opt_defaultModel, seq) {
     for ( var i = 0 ; i < a.length ; i++ ) {
-      if ( a[i].debug ) {
+      if ( ( ! DEBUG ) && a[i].debug ) {
         a.splice(i,1);
         i--;
       } else {
