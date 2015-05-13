@@ -48,7 +48,6 @@ __DATA({
     '../js/foam/ui/FoamTagView',
     'HTMLParser',
     'mlang',
-    'mlang2',
     'visitor',
     'messaging',
     'dao',

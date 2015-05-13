@@ -59,6 +59,7 @@ var files = [
   'cview',
   'HTMLParser',
   'mlang',
+  'mlang1',
   'mlang2',
   'QueryParser',
   'search',
