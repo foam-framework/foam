@@ -267,6 +267,7 @@ CLASS({
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: 'Object',
+      debug: true,
       help: 'The type of this argument.',
       documentation: function() { /* <p>The type of the $$DOC{ref:'.'}, either a primitive type or a $$DOC{ref:'Model'}.</p>
       */}
@@ -277,6 +278,7 @@ CLASS({
       required: false,
       defaultValueFn: function() { return this.type; },
       help: 'The java type that represents the type of this property.',
+      debug: true,
       documentation: function() { /* When running FOAM in a Java environment, specifies the Java type
         or class to use. */}
     },
@@ -286,6 +288,7 @@ CLASS({
       required: false,
       defaultValueFn: function() { return this.type; },
       help: 'The javascript type that represents the type of this property.',
+      debug: true,
       documentation: function() { /* When running FOAM in a javascript environment, specifies the javascript
          type to use. */}
     },
@@ -306,6 +309,7 @@ CLASS({
       model_: 'BooleanProperty',
       name: 'required',
       defaultValue: true,
+      debug: true,
       documentation: function() { /*
         Indicates that this arugment is required for calls to the containing $$DOC{ref:'Method'}.
       */}
@@ -313,6 +317,7 @@ CLASS({
     {
       name: 'defaultValue',
       help: 'Default Value if not required and not provided.',
+      debug: true,
       documentation: function() { /*
         The default value to use if this argument is not required and not provided to the $$DOC{ref:'Method'} call.
       */}
@@ -324,6 +329,7 @@ CLASS({
       displayHeight: 1,
       defaultValue: '',
       help: 'A brief description of this argument.',
+      debug: true,
       documentation: function() { /*
         A human-readable description of the argument.
       */}
@@ -336,6 +342,7 @@ CLASS({
       displayHeight: 6,
       defaultValue: '',
       help: 'Help text associated with the entity.',
+      debug: true,
       documentation: function() { /*
           This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
           through field labels or tooltips.
