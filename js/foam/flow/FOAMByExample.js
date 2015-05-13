@@ -29,7 +29,8 @@ CLASS({
     'foam.flow.ToC',
     'foam.flow.VirtualConsoleView',
     'foam.graphics.ActionButtonCView',
-    // 'foam.ui.md.SectionView'
+    // 'foam.ui.md.SectionView',
+    'foam.util.Timer'
   ],
   exports: [
     'codeSnippets',
