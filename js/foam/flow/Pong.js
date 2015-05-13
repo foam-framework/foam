@@ -46,9 +46,12 @@ CLASS({
 
       // TODO: Remove this stuff once the template parser understand unknown tags
       // better
-      this.FOAMWindow.installModel(this.CodeView);
-      this.FOAMWindow.installModel(this.QuoteCode);
-      this.FOAMWindow.installModel(this.ExpandableSection);
+      this.CodeView.getProperty('registerElement').documentInstallFn.call(
+        this.CodeView.getPrototype(), this.X);
+      this.QuoteCode.getProperty('registerElement').documentInstallFn.call(
+        this.QuoteCode.getPrototype(), this.X);
+      this.ExpandableSection.getProperty('registerElement').documentInstallFn.call(
+        this.ExpandableSection.getPrototype(), this.X);
     }
   },
 

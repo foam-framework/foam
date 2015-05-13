@@ -364,9 +364,9 @@ MODEL({
 
   methods: {
     /** Create a topic for the specified property name. **/
-    propertyTopic: function (property) {
+    propertyTopic: memoize1(function (property) {
       return [ this.PROPERTY_TOPIC, property ];
-    },
+    }),
 
     /** Indicate that a specific property has changed. **/
     propertyChange: function (property, oldValue, newValue) {

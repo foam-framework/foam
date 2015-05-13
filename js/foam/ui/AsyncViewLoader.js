@@ -103,10 +103,10 @@
       }
 
       if ( this.copyFrom && this.copyFrom.model_ && typeof this.copyFrom.model_ === 'string' ) {
-        return this.requireModelName(this.copyFrom.model_);
+        return this.requireModelName(this.copyFrom.model_, skipKeysArgDecorator);
       }
       if ( typeof this.model === 'string' ) { // string model name
-        return this.requireModelName(this.model);
+        return this.requireModelName(this.model, skipKeysArgDecorator);
       }
       if ( this.model.model_ && typeof this.model.model_ === 'string' ) { // JSON instance def'n
         this.view = FOAM(this.model); // FOAMalize the definition
@@ -120,7 +120,7 @@
       if ( this.model.factory_ ) { // JSON with string factory_ name
         // TODO: previously 'view' was removed from copyFrom to support CViews not getting their view stomped. Put back...
         this.mergeWithCopyFrom(this.model);
-        return this.requireModelName(this.model.factory_);
+        return this.requireModelName(this.model.factory_, skipKeysArgDecorator);
       }
       if ( typeof this.model === 'function' ) { // factory function
         this.view = this.model(skipKeysArgDecorator, this);
@@ -139,10 +139,9 @@
       }.bind(this));
     },
 
-    requireModelName: function(name) {
+    requireModelName: function(name, args) {
       arequire(name, this.X)(function(m) {
-        // lookup again to ensure we get registerModel replacements
-        this.view = this.X.lookup(name, this.X).create(this.args, this.X);
+        this.view = m.create(args, this.X);
         this.finishRender();
       }.bind(this));
     },

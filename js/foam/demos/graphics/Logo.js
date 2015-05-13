@@ -20,14 +20,14 @@ CLASS({
   name: 'LogoBackground',
   extendsModel: 'foam.graphics.CView',
 
-  requires: [ 'foam.graphics.Circle' ],
+  requires: [ 'foam.graphics.Circle', 'foam.util.Timer' ],
 
   imports: [ 'colours$', 'width$', 'height$' ],
 
   properties: [
     {
       name: 'timer',
-      factory: function() { return Timer.create(); },
+      factory: function() { return this.Timer.create(); },
       postSet: function(_, timer) {
         timer.time$.addListener(function() { this.addBubble(); this.paint(); }.bind(this));
       }

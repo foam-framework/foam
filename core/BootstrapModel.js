@@ -761,11 +761,3 @@ var BootstrapModel = {
     return aseq.apply(null, seq);
   }
 };
-
-/*
- * Ex.
- * OR(EQ(Issue.ASSIGNED_TO, 'kgr'), EQ(Issue.SEVERITY, 'Minor')).toSQL();
- *   -> "(assignedTo = 'kgr' OR severity = 'Minor')"
- * OR(EQ(Issue.ASSIGNED_TO, 'kgr'), EQ(Issue.SEVERITY, 'Minor')).f(Issue.create({assignedTo: 'kgr'}));
- *   -> true
- */

@@ -35,12 +35,13 @@ function MODEL(model) {
                                  GLOBAL[model.extendsObject] ;
   }
 
-  model.properties && model.properties.forEach(function(p) {
+  if ( model.properties ) for ( var i = 0 ; i < model.properties.length ; i++ ) {
+    var p = model.properties[i];
     Object.defineProperty(
       proto,
       p.name,
       { get: p.getter, enumerable: false });
-  });
+  }
 
   for ( key in model.constants )
     Object.defineProperty(
@@ -49,12 +50,13 @@ function MODEL(model) {
       { value: model.constants[key], writable: true, enumerable: false });
 
   if ( Array.isArray(model.methods) ) {
-    model.methods.forEach(function(m) {
+    for ( var i = 0 ; i < model.methods.length ; i++ ) {
+      var m = model.methods[i];
       Object.defineProperty(
         proto,
         m.name,
         { value: m, writable: true, enumerable: false });
-    });
+    }
   } else {
     for ( var key in model.methods )
       Object.defineProperty(
@@ -81,9 +83,10 @@ MODEL({
     },
 
     function memoize1(f) {
+      /** Faster version of memoize() when only dealing with one argument. **/
       var cache = {};
       var g = function(arg) {
-        var key = arg.toString();
+        var key = arg ? arg.toString() : '';
         if ( ! cache.hasOwnProperty(key) ) cache[key] = f.call(this, arg);
         return cache[key];
       };
@@ -626,7 +629,7 @@ MODEL({
         */
       };
 
-      return function xxxbind(arg) {
+      return function bind(arg) {
         return arguments.length == 1 ?
           simpleBind(this, arg) :
           oldBind.apply(this, argsToArray(arguments));

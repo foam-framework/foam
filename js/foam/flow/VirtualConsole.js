@@ -112,7 +112,12 @@ CLASS({
         $$DOC{ref:'.delayPuts'}.
       */},
       code: function(mode, args) {
-        var str = args && args[0] && args[0].toString();
+        var arr = [];
+        for ( var i = 0; i < args.length; ++i ) {
+          arr.push(args[i].toString());
+        }
+        var str = arr.join(' ');
+
         var dao = this.delayPuts ? this.delayedConsole_ : this.console_;
         dao.put(this.LogEntry.create({
           id: ++this.counter,

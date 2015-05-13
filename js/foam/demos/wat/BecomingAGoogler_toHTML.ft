@@ -1,0 +1,258 @@
+<slides style="width: 100%;height:100%;" oninit="this.X.foam.memento.FragmentMementoMgr.create({ mementoValue: this.memento$ }, this.Y)">
+  <slide>
+    <div class="flex-row">
+      <div class="card center" style="padding: 5%">
+        <span class="flex-col" style="font-size: 32px;">
+          <span class="big-heading">Becoming  a <font color="#33f">G</font><font color="#f00">o</font><font color="#fc0">o</font><font color="#33f">g</font><font color="#3c0">l</font><font color="#f00">e</font>r:</span>
+          <span class="small-heading">From Intern to Full-Time SWE</span>
+          <br>
+          Mark Dittmer, <a href="mailto:markdittmer@google.com">markdittmer@google.com</a>
+          <br>
+          May 11, 2015
+        </span>
+      </div>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="card">
+      <div class="flex-row">
+        <div class="big-color-block blue">&nbsp;</div>
+        <div class="flex-grow content big-heading">Working as an Intern</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="flex-row">
+        <div class="big-color-block red">&nbsp;</div>
+        <div class="flex-grow content big-heading">Bringing Your Whole Self to Work</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="flex-row">
+        <div class="big-color-block yellow">&nbsp;</div>
+        <div class="flex-grow content big-heading">What I Do Now</div>
+      </div>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Internship #1: Docs for iOS</div>
+      </div>
+    </div>
+    <div class="card flex-grow">
+      <div class="flex-row flex-stretch flex-grow">
+        <div class="flex-col flex-stretch">
+          <div class="flex-row flex-start">
+            <ul>
+              <li>Intern project: Text layout on iOS</li>
+              <ul>
+                <li>Assess three technologies/approaches</li>
+                <li>Research, design, assess, and implement</li>
+              </ul>
+            </ul>
+          </div>
+          <div class="flex-row flex-start">
+            <ul>
+              <li>Collaboration across four sites</li>
+              <ul>
+                <li>One-week trip to Google NYC</li>
+              </ul>
+            </ul>
+          </div>
+        </div>
+        <div class="flex-col flex-top-right">
+          <img src="./js/foam/demos/wat/ipad_text_layout.png" />
+        </div>
+      </div>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Internship #2: Chrome Dev Tools</div>
+      </div>
+    </div>
+    <div class="card flex-grow">
+      <div class="flex-row flex-stretch flex-grow">
+        <div class="flex-col flex-stretch">
+          <div class="flex-row flex-start">
+            <ul>
+              <li>Intern project: Declarative API for script injection in Chrome Apps/Extensions</li>
+              <ul>
+                <li>Integrating various components</li>
+                <li>Common pattern: extensions and apps</li>
+                <li>Collaboration with Google SF</li>
+              </ul>
+            </ul>
+          </div>
+          <div class="flex-row flex-start">
+            <ul>
+              <li>20% project: Chrome App Builder</li>
+              <ul>
+                <li>Enable non-programmers to build kiosk apps</li>
+                <li>Collaboration with sales teams in MTV</li>
+                <li><a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Launched</a>: over 15k weekly active users</li>
+              </ul>
+            </ul>
+          </div>
+        </div>
+        <div class="flex-col flex-top-right">
+          <img src="./js/foam/demos/wat/chrome_prop.png" />
+        </div>
+      </div>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block red">&nbsp;</div>
+        <div class="flex-grow content small-heading">Bringing Your Whole Self to Work</div>
+      </div>
+    </div>
+    <div class="flex-grow">
+      <div class="flex-row flex-stretch flex-grow">
+        <div class="flex-col flex-stretch flex-grow">
+          <div class="card flex-row flex-stretch flex-grow">
+            <div class="flex-col flex-items-start">
+              <p><b>Flexible hours</b></p>
+              <p>E.g., Taking Bahá'í Holy Days off</p>
+            </div>
+            <div class="flex-background-img" style="background-image: url('./js/foam/demos/wat/temple.jpg');">&nbsp;</div>
+          </div>
+          <div class="card flex-row flex-stretch flex-grow">
+            <div class="flex-background-img" style="background-image: url('./js/foam/demos/wat/google_serve.png');">&nbsp;</div>
+            <div class="flex-col flex-items-start">
+              <p><b>Google Serve</b></p>
+              <p>E.g., Building homes with Habitat for Humanity</p>
+            </div>
+          </div>
+          <div class="card flex-row flex-stretch flex-grow">
+            <div class="flex-col flex-items-start">
+              <p><b>Share your passions</b></p>
+              <p>E.g., Lightning talk on philosophy of morality</p>
+            </div>
+            <div class="flex-background-img" style="background-image: url('./js/foam/demos/wat/hume.jpg');">&nbsp;</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block yellow">&nbsp;</div>
+        <div class="flex-grow content small-heading">What I Do Now</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow">
+      <foam model="foam.demos.graphics.Logo" text="FOAM" width="360" height="140"/>
+      <span class="small-heading">
+        <font color="#33f">F</font>eature <font color="#f00">O</font>riented <font color="#fc0">A</font>ctive <font color="#3c0">M</font>odeller
+      </span>
+      <span>
+        <br />
+        FOAM is a <b>full-stack reactive MVC meta-programming framework</b>
+      </span>
+      <span>
+        <br />
+        ... that happens to be implemented in Javascript
+      </span>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block yellow">&nbsp;</div>
+        <div class="flex-grow content small-heading">FOAM Framework: History Lesson</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow">
+      <iframe src="./demos/UnixSimulator.html"></iframe>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block yellow">&nbsp;</div>
+        <div class="flex-grow content small-heading">FOAM: Full-Stack + Meta</div>
+      </div>
+    </div>
+    <div style="transform:scale(0.8); transform-origin: 0 0"><foam model="foam.demos.ArchitectureDiagram"/></div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block yellow">&nbsp;</div>
+        <div class="flex-grow content small-heading">FOAM MVC: Reactive M-V</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow" style="overflow: auto">
+      <foam model="foam.demos.SolarSystem"/>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block yellow">&nbsp;</div>
+        <div class="flex-grow content small-heading">FOAM MVC: Reusable Controllers</div>
+      </div>
+    </div>
+    <div class="card flex-row center flex-grow" style="overflow: auto">
+      <a href="http://foam-framework.github.io/foam/apps/mbug/main.html" target="_blank"><img style="box-shadow: 0 5px 15px #aaa;max-height:530px" src="./demos/democat/MBug.png"></a>
+      <a href="http://foam-framework.github.io/foam/apps/gmail/main.html" target="_blank"><img style="margin-left: 200px;border:1px solid;box-shadow: 0 5px 15px #aaa;max-height:530px;" src="./demos/democat/GMail.png"></a>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block yellow">&nbsp;</div>
+        <div class="flex-grow content small-heading">FOAM: History Repeats Itself</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow" style="overflow: auto">
+      <iframe src="./demos/GoogleSimulator.html"></iframe>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block green">&nbsp;</div>
+        <div class="flex-grow content small-heading">Fin.</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow">
+      <span>Thanks for your attention!</span>
+      <span><br /></span>
+      <span>Learn more</span>
+      <span><a href="http://www.foamdev.com">foamdev.com</a></span>
+      <span><a href="http://github.com/foam-framework">github.com/foam-framework</a></span>
+      <span><br /></span>
+      <span>Contact</span>
+      <span><a href="mailto:markdittmer@google.com">markdittmer@google.com</a></span>
+      <span><a href="https://www.twitter.com/MrMarkDittmer">@MrMarkDittmer</a></span>
+      <span><a href="https://www.twitter.com/MrMarkDittmer">github.com/mdittmer</a></span>
+      <span><br /></span>
+      <span>FOAM demos by Kevin Greer</span>
+    </div>
+      <div class="flex-row" style="justify-content: flex-end">
+        <div class="flex-row" style="transform:scale(0.55)">
+          <foam model="foam.demos.graphics.Logo" text="FOAM" width="360" height="140"/>
+          <span class="small-heading">Powered</span>
+        </div>
+      </div>
+  </slide>
+
+</slides>

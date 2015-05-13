@@ -71,8 +71,16 @@ CLASS({
     ]
 });
 
-for ( var id in   USED_MODELS ) { var m = lookup(id); if ( m.getPrototype ) m.getPrototype(); }
-for ( var id in UNUSED_MODELS ) { var m = lookup(id); if ( m.getPrototype ) m.getPrototype(); }
+for ( var id in USED_MODELS ) {
+  var m = lookup(id);
+  if ( m.getPrototype ) m.getPrototype();
+}
+for ( var id in UNUSED_MODELS ) {
+  if ( UNUSED_MODELS[id] ) {
+    var m = lookup(id);
+    if ( m.getPrototype ) m.getPrototype();
+  }
+}
 
 var header = $('header');
 var footer = $('footer');
@@ -263,4 +271,3 @@ layout();
 dao.dao;
 //    var stack = StackView.create();
 //    stack.write(document);
-

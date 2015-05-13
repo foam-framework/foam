@@ -32,7 +32,7 @@ CLASS({
     'foam.dao.LazyCacheDAO',
     'MDAO',
     'PersistentContext',
-    'Timer',
+    'foam.util.Timer',
     'foam.apps.quickbug.dao.IssueRestDAO',
     'foam.apps.quickbug.dao.QIssueCommentNetworkDAO',
     'foam.apps.quickbug.dao.QIssueCommentUpdateDAO',

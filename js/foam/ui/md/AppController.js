@@ -18,6 +18,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'AppController',
+  traits: ['foam.ui.CSSLoaderTrait'],
 
   requires: [
     'foam.graphics.ActionButtonCView',
@@ -206,7 +207,7 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      
+
       this.Y.registerModel(this.ActionButtonCView.xbind({
         alpha:      1,
         width:      48,

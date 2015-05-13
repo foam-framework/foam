@@ -1,3 +1,4 @@
+arequire('foam.util.Timer')(function() { 
 CLASS({
   name: 'Test',
   properties: [
@@ -122,7 +123,7 @@ var models = [
   Canvas,
   Rectangle,
   DAOController,
-  Timer,
+  foam.util.Timer,
   Mouse,
   EyeCView,
   EyesCView,
@@ -396,7 +397,7 @@ document.writeln("<td valign=top>");
 space.write(document);
 document.writeln("</td>");
 
-var timer = Timer.create({});
+var timer = foam.util.Timer.create({});
 // timer.start();
 
 var sun    = Planet.create({r:30,x:400,y:300,color:'yellow'});
@@ -559,3 +560,4 @@ var stack = StackView.create();
 stack.write(document);
 ctrl.__proto__.stackView = stack;
 stack.pushView(ctrl, "Browse Models");
+});

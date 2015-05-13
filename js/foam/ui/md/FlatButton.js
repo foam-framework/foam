@@ -71,6 +71,7 @@ CLASS({
       this.currentColor_$.addListener(function() {
         if ( self.$ ) self.$.style.color = this.currentColor_;
       });
+      if ( self.$ ) self.$.style.color = this.currentColor_;
 
       this.$.addEventListener('click', function(event) {
         event.stopPropagation();

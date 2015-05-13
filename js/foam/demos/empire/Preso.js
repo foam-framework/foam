@@ -17,7 +17,6 @@ CLASS({
   constants: { ELEMENT_NAME: 'foam-demos-flow' },
 
   requires: [
-    'Timer',
     'com.google.sweeper.Game',
     'foam.demos.InterpolatedClocks',
     'foam.demos.graphics.Dragon',
@@ -30,6 +29,7 @@ CLASS({
     'foam.documentation.diagram.DocDiagramView',
     'foam.documentation.diagram.DocModelDiagramView',
     'foam.flow.CodeSample',
+    'foam.flow.Section',
     'foam.flow.Slides',
     'foam.graphics.Circle',
     'foam.graphics.Gauge',
@@ -41,6 +41,7 @@ CLASS({
     'foam.ui.TableView',
     'foam.ui.ViewChoice',
     'foam.ui.md.TwoPaneView',
+    'foam.util.Timer',
     'foam.memento.FragmentMementoMgr'
   ],
 
@@ -79,7 +80,20 @@ CLASS({
     init: function() {
       this.SUPER.apply(this, arguments);
       this.X.registerElement('circle', 'foam.graphics.Circle');
-      this.FOAMWindow.installModel(this.Slides);
+      this.Slides.getProperty('installCSS').documentInstallFn.call(
+        this.Slides.getPrototype(), this.X);
+      this.Slides.getProperty('registerElement').documentInstallFn.call(
+        this.Slides.getPrototype(), this.X);
+
+      this.CodeSample.getProperty('installCSS').documentInstallFn.call(
+        this.CodeSample.getPrototype(), this.X);
+      this.CodeSample.getProperty('registerElement').documentInstallFn.call(
+        this.CodeSample.getPrototype(), this.X);
+
+      this.Section.getProperty('installCSS').documentInstallFn.call(
+        this.Section.getPrototype(), this.X);
+      this.Section.getProperty('registerElement').documentInstallFn.call(
+        this.Section.getPrototype(), this.X);
     }
   },
 

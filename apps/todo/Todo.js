@@ -61,7 +61,8 @@
 
 	CLASS({
 		name: 'Controller',
-    requires: ['foam.ui.TextFieldView', 'foam.ui.DAOListView', 'TodoFilterView', 'foam.dao.EasyDAO' ],
+		traits: ['foam.ui.CSSLoaderTrait'], 
+   requires: ['foam.ui.TextFieldView', 'foam.ui.DAOListView', 'TodoFilterView', 'foam.dao.EasyDAO' ],
 		properties: [
 			{
 				name: 'input',

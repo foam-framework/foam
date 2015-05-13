@@ -16,6 +16,146 @@
  */
 
 CLASS({
+  name: 'Interface',
+  plural: 'Interfaces',
+
+  tableProperties: [
+    'package', 'name', 'description'
+  ],
+
+  documentation: function() { /*
+      <p>$$DOC{ref:'Interface',usePlural:true} specify a set of methods with no
+      implementation. $$DOC{ref:'Model',usePlural:true} implementing $$DOC{ref:'Interface'}
+      fill in the implementation as needed. This is analogous to
+      $$DOC{ref:'Interface',usePlural:true} in object-oriented languages.</p>
+    */},
+
+  properties: [
+    {
+      name: 'id',
+      transient: true,
+      factory: function() { return this.package ? this.package + '.' + this.name : this.name; }
+    },
+    {
+      name:  'name',
+      required: true,
+      help: 'Interface name.',
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'.'} definition names should use CamelCase starting with a capital letter.
+         */}
+    },
+    {
+      name:  'package',
+      help: 'Interface package.',
+      documentation: Model.PACKAGE.documentation.clone()
+    },
+    {
+      name: 'extends',
+      type: 'Array[String]',
+      view: 'foam.ui.StringArrayView',
+      help: 'Interfaces extended by this interface.',
+      documentation: function() { /*
+        The other $$DOC{ref:'Interface',usePlural:true} this $$DOC{ref:'Interface'} inherits
+        from. Like a $$DOC{ref:'Model'} instance can $$DOC{ref:'Model.extendsModel'} other
+        $$DOC{ref:'Model',usePlural:true},
+        $$DOC{ref:'Interface',usePlural:true} should only extend other
+        instances of $$DOC{ref:'Interface'}.</p>
+        <p>Do not specify <code>extendsModel: 'Interface'</code> unless you are
+        creating a new interfacing system.
+      */}
+    },
+    {
+      name:  'description',
+      type:  'String',
+      required: true,
+      displayWidth: 70,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'The interface\'s description.',
+      documentation: function() { /* A human readable description of the $$DOC{ref:'.'}. */ }
+    },
+    {
+      name: 'help',
+      label: 'Help Text',
+      displayWidth: 70,
+      displayHeight: 6,
+      view: 'foam.ui.TextAreaView',
+      help: 'Help text associated with the argument.',
+      documentation: function() { /*
+          This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
+          through field labels or tooltips.
+        */}
+    },
+    {
+      model_: 'DocumentationProperty',
+      name: 'documentation',
+      debug: true
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'methods',
+      type: 'Array[Method]',
+      subType: 'Method',
+      view: 'foam.ui.ArrayView',
+      factory: function() { return []; },
+      defaultValue: [],
+      help: 'Methods associated with the interface.',
+      documentation: function() { /*
+        <p>The $$DOC{ref:'Method',usePlural:true} that the interface requires
+        extenders to implement.</p>
+        */}
+    }
+  ],
+  templates:[
+    {
+      model_: 'Template',
+
+      name: 'javaSource',
+      description: 'Java Source',
+      template: 'public interface <% out(this.name); %>\n' +
+        '<% if ( this.extends.length ) { %>   extends <%= this.extends.join(", ") %>\n<% } %>' +
+        '{\n<% for ( var i = 0 ; i < this.methods.length ; i++ ) { var meth = this.methods[i]; %>' +
+        '   <%= meth.javaSource() %>;\n' +
+        '<% } %>' +
+        '}'
+    },
+    {
+      model_: 'Template',
+
+      name: 'closureSource',
+      description: 'Closure JavaScript Source',
+      template:
+      'goog.provide(\'<%= this.name %>\');\n' +
+        '\n' +
+        '/**\n' +
+        ' * @interface\n' +
+        '<% for ( var i = 0 ; i < this.extends.length ; i++ ) { var ext = this.extends[i]; %>' +
+        ' * @extends {<%= ext %>}\n' +
+        '<% } %>' +
+        ' */\n' +
+        '<%= this.name %> = function() {};\n' +
+        '<% for ( var i = 0 ; i <  this.methods.length ; i++ ) { var meth = this.methods[i]; %>' +
+        '\n<%= meth.closureSource(undefined, this.name) %>\n' +
+        '<% } %>'
+    },
+    {
+      model_: 'Template',
+
+      name: 'webIdl',
+      description: 'Web IDL Source',
+      template:
+      'interface <%= this.name %> <% if (this.extends.length) { %>: <%= this.extends[0] %> <% } %>{\n' +
+        '<% for ( var i = 0 ; i < this.methods.length ; i++ ) { var meth = this.methods[i]; %>' +
+        '  <%= meth.webIdl() %>;\n' +
+        '<% } %>' +
+        '}'
+    }
+  ]
+});
+
+
+CLASS({
   name: 'UnitTest',
   plural: 'Unit Tests',
 
@@ -165,7 +305,7 @@ CLASS({
             ret(!self.hasFailed());
           };
 
-          if ( this.async ) 
+          if ( this.async )
             this.code.call(obj, finished);
           else
             this.code.call(obj);
@@ -292,109 +432,6 @@ CLASS({
 
 
 CLASS({
-  name: 'Relationship',
-  tableProperties: [
-    'name', 'label', 'relatedModel', 'relatedProperty'
-  ],
-
-  documentation: function() { /*
-      $$DOC{ref:'Relationship',usePlural:true} indicate a parent-child relation
-      between instances of
-      a $$DOC{ref:'Model'} and some child $$DOC{ref:'Model',usePlural:true},
-      through the indicated
-      $$DOC{ref:'Property',usePlural:true}. If your $$DOC{ref:'Model',usePlural:true}
-      build a tree
-      structure of instances, they could likely benefit from a declared
-      $$DOC{ref:'Relationship'}.
-    */},
-
-  properties: [
-    {
-      name:  'name',
-      type:  'String',
-      displayWidth: 30,
-      displayHeight: 1,
-      defaultValueFn: function() { return GLOBAL[this.relatedModel] ? GLOBAL[this.relatedModel].plural : ''; },
-      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
-        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
-        $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
-         */},
-      help: 'The coding identifier for the relationship.'
-    },
-    {
-      name: 'label',
-      type: 'String',
-      displayWidth: 70,
-      displayHeight: 1,
-      defaultValueFn: function() { return this.name.labelize(); },
-      documentation: function() { /* A human readable label for the $$DOC{ref:'.'}. May
-        contain spaces or other odd characters.
-         */},
-      help: 'The display label for the relationship.'
-    },
-    {
-      name: 'help',
-      label: 'Help Text',
-      type: 'String',
-      displayWidth: 70,
-      displayHeight: 6,
-      defaultValue: '',
-      documentation: function() { /*
-          This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
-          through field labels or tooltips.
-      */},
-      help: 'Help text associated with the relationship.'
-    },
-    {
-      model_: 'DocumentationProperty',
-      name: 'documentation',
-      documentation: function() { /*
-          The developer documentation.
-      */}
-    },
-    {
-      name:  'relatedModel',
-      type:  'String',
-      required: true,
-      displayWidth: 30,
-      displayHeight: 1,
-      defaultValue: '',
-      documentation: function() { /* The $$DOC{ref:'Model.name'} of the related $$DOC{ref:'Model'}.*/},
-      help: 'The name of the related Model.'
-    },
-    {
-      name:  'relatedProperty',
-      type:  'String',
-      required: true,
-      displayWidth: 30,
-      displayHeight: 1,
-      defaultValue: '',
-      documentation: function() { /*
-        The join $$DOC{ref:'Property'} of the related $$DOC{ref:'Model'}.
-        This is the property that links back to this $$DOC{ref:'Model'} from the other
-        $$DOC{ref:'Model',usePlural:true}.
-      */},
-      help: 'The join property of the related Model.'
-    }
-  ]/*,
-  methods: {
-    dao: function() {
-      var m = this.X[this.relatedModel];
-      return this.X[m.name + 'DAO'];
-    },
-    JOIN: function(sink, opt_where) {
-      var m = this.X[this.relatedModel];
-      var dao = this.X[m.name + 'DAO'] || this.X[m.plural];
-      return MAP(JOIN(
-        dao.where(opt_where || TRUE),
-        m.getProperty(this.relatedProperty),
-        []), sink);
-    }
-  }*/
-});
-
-
-CLASS({
   name: 'Issue',
   plural: 'Issues',
   help: 'An issue describes a question, feature request, or defect.',
@@ -503,54 +540,3 @@ CLASS({
     }
   ]
 });
-
-(function() {
-  for ( var i = 0 ; i < Model.templates.length ; i++ )
-    Model.templates[i] = JSONUtil.mapToObj(X, Model.templates[i]);
-
-  Model.properties = Model.properties;
-  delete Model.instance_.prototype_;
-  Model = Model.create(Model);
-})();
-
-// Go back over each model so far, assigning the new Model to remove any reference
-// to the bootstrap Model, then FOAMalize any features that were missed due to
-// the model for that feature type ("Method", "Documentation", etc.) being
-// missing previously. This time the preSet for each should be fully operational.
-function recopyModelFeatures(m) {
-  m.model_ = Model;
-
-  // the preSet for each of these does the work
-  m.methods       = m.methods;
-  m.templates     = m.templates;
-  m.relationships = m.relationships;
-  m.properties    = m.properties;
-  m.actions       = m.actions;
-  m.listeners     = m.listeners;
-  m.models        = m.models;
-  m.tests         = m.tests;
-  m.issues        = m.issues;
-
-  // check for old bootstrap Property instances
-  if ( m.properties && m.properties[0] && ! Property.isInstance(m.properties[0]) ) {
-    m.properties.forEach(function(p) {
-      if ( p.model_.name === 'Property' ) p.model_ = Property;
-    });
-  }
-
-  // keep copies of the updated lists
-  if ( DEBUG ) BootstrapModel.saveDefinition(m);
-}
-
-// Update Model in everything we've created so far
-for ( var id in USED_MODELS ) {
-  recopyModelFeatures(GLOBAL.lookup(id));
-}
-
-if ( DEBUG ) {
-  for ( var id in UNUSED_MODELS ) {
-    recopyModelFeatures(GLOBAL.lookup(id));
-  }
-}
-
-USED_MODELS['Model'] = true;

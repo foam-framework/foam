@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+// TODO: model and move out of core
 var LoggingDAO = {
 
   create: function(/*[logger], delegate*/) {
@@ -51,6 +52,7 @@ var LoggingDAO = {
 };
 
 
+// TODO: model and move out of core
 var TimingDAO = {
 
   create: function(name, delegate) {
@@ -348,7 +350,7 @@ function atxn(afunc) {
 
 CLASS({
   name: 'AbstractDAO',
-  
+
   documentation: function() {/*
     The base for most DAO implementations, $$DOC{ref:'.'} provides basic facilities for
     $$DOC{ref:'.where'}, $$DOC{ref:'.limit'}, $$DOC{ref:'.skip'}, and $$DOC{ref:'.orderBy'}
@@ -361,7 +363,7 @@ CLASS({
 //     'SkipDAO_',
 //     'OrderedDAO_'
   ],
-  
+
   properties: [
     {
       name: 'daoListeners_',
@@ -377,10 +379,10 @@ CLASS({
       arequire('LimitedDAO_');
       arequire('SkipDAO_');
       arequire('OrderedDAO_');
-      
+
       this.SUPER();
     },
-    
+
     update: function(expr) { /* Applies a change to the DAO contents. */
       return this.select(UPDATE(expr, this));
     },
