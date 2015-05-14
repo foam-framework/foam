@@ -85,7 +85,8 @@ CLASS({
 
       this.X.registerElement('circle', 'foam.graphics.Circle');
 
-      this.FOAMWindow.installModel(this.Slides);
+      this.Slides.getProperty('registerElement').documentInstallFn.call(
+        this.Slides.getPrototype(), this.X);
     }
   },
 

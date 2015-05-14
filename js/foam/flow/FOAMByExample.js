@@ -93,16 +93,21 @@ CLASS({
 
       // TODO: Remove this stuff once the template parser understand unknown tags
       // better
-      this.FOAMWindow.installModel(this.AceCodeView);
-      this.FOAMWindow.installModel(this.Aside);
-      this.FOAMWindow.installModel(this.BookTitle);
-      this.FOAMWindow.installModel(this.CodeSample);
-      this.FOAMWindow.installModel(this.CodeSnippet);
-      this.FOAMWindow.installModel(this.QuoteCode);
-      this.FOAMWindow.installModel(this.Section);
-      this.FOAMWindow.installModel(this.TitlePage);
-      this.FOAMWindow.installModel(this.ToC);
-      this.FOAMWindow.installModel(this.VirtualConsoleView);
+      [
+        this.AceCodeView,
+        this.Aside,
+        this.BookTitle,
+        this.CodeSample,
+        this.CodeSnippet,
+        this.QuoteCode,
+        this.Section,
+        this.TitlePage,
+        this.ToC,
+        this.VirtualConsoleView
+      ].forEach(function(m) {
+          m.getProperty('registerElement').documentInstallFn.call(
+            m.getPrototype(), this.X);
+      }.bind(this));
 
       // TODO(markdittmer): Switch from Section to SectionView/ExpandableSection
       // once expandable contents renders properly with FLOW contents.
