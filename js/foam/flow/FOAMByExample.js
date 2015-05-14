@@ -23,6 +23,7 @@ CLASS({
     'foam.flow.CodeSnippet',
     'foam.flow.CodeView',
     // 'foam.flow.ExpandableSection',
+    // 'foam.flow.FBEModels',
     'foam.flow.QuoteCode',
     'foam.flow.Section',
     'foam.flow.TitlePage',
@@ -41,7 +42,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'codeSnippets',
       factory: function() { return []; }
     },
