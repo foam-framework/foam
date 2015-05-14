@@ -597,7 +597,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
           </aside>
         </section>
 
-        <section title="Bind to Values with Multiple dependencies">
+        <section title="Bind to Multiple Values with Multiple dependencies">
           <aside>
             <code-sample hasHTML="true" openSnippets="-2,-1">
               <title>Combining Strings</title>
@@ -657,6 +657,239 @@ arequire('foam.sandbox.Person', X)(function(Person) {
   // NOTE: The text box where you make a change needs to lose focus before the
   // change takes effect.
   StringCombos.create({ s1: 'a', s2: 'B', s3: 'c' }, X).write(X.document);
+});</code>
+                  </src>
+                </code-snippet>
+              </source>
+            </code-sample>
+          </aside>
+        </section>
+
+      </section>
+
+      <section title="Properties as Modelled Objects">
+
+        <section title="Type -- i.e., Property Model -- Annotations">
+          <aside>
+            <code-sample openSnippets="-2,-1">
+              <title>Coercing Types on 007</title>
+              <source>
+                <code-snippet title="Person Model">
+                  <src language="javascript">
+                    <code>CLASS({
+  name: 'Person',
+  package: 'foam.sandbox',
+
+  properties: [
+    // Just like classes are modelled, properties are too.
+    // Rather than defining the "type" of the data in the model, you can declare
+    // the model of the property. FOAM provides several common property models
+    // such as StringProperty, IntProperty, FloatProperty, ArrayProperty.
+    {
+      model_: 'StringProperty',
+      name: 'name'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'age'
+    },
+    // Use "subType" to identify the model of array elements.
+    {
+      model_: 'ArrayProperty',
+      subType: 'foam.sandbox.Person',
+      name: 'children'
+    },
+    // Only use "type" when no property model is available for the type you
+    // need.
+    {
+      type: 'foam.sandbox.Person',
+      name: 'spouse'
+    }
+  ]
+});</code>
+                  </src>
+                </code-snippet>
+                <code-snippet title="Example">
+                  <src language="javascript">
+                    <code>arequire('foam.sandbox.Person', X)(function(Person) {
+  var bond = Person.create({ name: 007, age: '42, but he never dies' }, X);
+  console.log('typeof (Bond name: ' + bond.name + ') is ' + (typeof bond.name));
+  console.log('typeof (Bond age: ' + bond.age + ') is ' + (typeof bond.age));
+  console.log('We did not specify children. Is it still an array? ' + Array.isArray(bond.children));
+});</code>
+                  </src>
+                </code-snippet>
+              </source>
+            </code-sample>
+          </aside>
+        </section>
+
+        <section title="Defaults on Properties">
+          <aside>
+            <code-sample openSnippets="-2,-1">
+              <title>Defaults for Doctor Who</title>
+              <source>
+                <code-snippet title="TimeLord Model">
+                  <src language="javascript">
+                    <code>CLASS({
+  name: 'TimeLord',
+  package: 'foam.sandbox',
+
+  requires: [ 'foam.util.Timer' ],
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'name',
+      // Use "defaultValue" for primitive value defaults.
+      defaultValue: 'The Doctor'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'age',
+      // Use "defaultValueFn" to specify a value-generating function that runs
+      // every time we read the value and it has never been set.
+      defaultValueFn: function() {
+        return Math.floor(Math.random() * 1000);
+      }
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'companions',
+      // Use "lazyFactory" to specify a value-generating function that will run
+      // once the first time the property is accessed. This is usually what you
+      // want for properties with non-primitive values (including arrays).
+      lazyFactory: function() {
+        return [ 'Amy Pond', 'Rory Williams', 'Clara Oswald' ];
+      }
+    },
+    {
+      type: 'foam.util.Timer',
+      name: 'lifetime',
+      // Use "factory" to specify a value-generating function that will run once
+      // when the object is constructed. This is useful when the factory has
+      // side-effects that should take effect as soon as the object is created.
+      factory: function() {
+        return this.Timer.create({}, this.X);
+      }
+    }
+  ]
+});</code>
+                  </src>
+                </code-snippet>
+                <code-snippet title="Example">
+                  <src language="javascript">
+                    <code>arequire('foam.sandbox.TimeLord', X)(function(TimeLord) {
+  // Rely entirely on defaults.
+  var doc = TimeLord.create({}, X);
+  // Since "defaultValueFn" will run every time, age is not constant!
+  console.log('Age of ' + doc.name + ' the first time we check: ' + doc.age);
+  console.log('Age of ' + doc.name + ' the second time we check: ' + doc.age);
+  console.log('Time travel is complicated!');
+  console.log('Companions of ' + doc.name + ': ' + doc.companions.join(', '));
+  var doc2Companions = [ 'Clara Oswald' ];
+  var doc2 = TimeLord.create({
+    name: 'The 12th Doctor',
+    age: 934,
+    companions: doc2Companions
+  }, X);
+  // Age is now constant because we have set it to 934.
+  console.log('Age of ' + doc2.name + ' the first time we check: ' + doc2.age);
+  console.log('Age of ' + doc2.name + ' the second time we check: ' + doc2.age);
+  // Companions were also specified, so our array (rather than the "lazyFactory"
+  // array) is used.
+  console.log('Companions of ' + doc2.name + ': ' + doc2.companions.join(', '));
+  console.log('Companions array is a copy of original array? ' +
+      (doc2.companions !== doc2Companions));
+  console.log('Time since creating ' + doc.name + ': ' + doc.lifetime.interval);
+});</code>
+                  </src>
+                </code-snippet>
+              </source>
+            </code-sample>
+          </aside>
+        </section>
+
+        <section title="Influence Property Changes with preSet(), adapt(), and postSet()">
+          <aside>
+            <code-sample openSnippets="-2,-1">
+              <title>Adapting an Array of "Person" Modelled Objects</title>
+              <source>
+                <code-snippet ref="Person" title="Person Model"></code-snippet>
+                <code-snippet title="PeopleContainer Model">
+                  <src language="javascript">
+                    <code>CLASS({
+  name: 'PeopleContainer',
+  package: 'foam.sandbox',
+
+  requires: [ 'foam.sandbox.Person' ],
+
+  // Note: See below "properties: [...]" for complete property change logic.
+  properties: [
+    {
+      name: 'people',
+      // Use "adapt" to reinterpret the new value, and, if necessary, change its
+      // type. The property will actually be changed to the value returned by
+      // adapt (and/or returned by preSet -- see below for details). In this
+      // example, setting "people" to a string interprets the string as a
+      // comma-separted list of firstNames for new Person instances.
+      adapt: function(old, nu) {
+        if ( old === nu ) return nu;
+        if ( typeof nu !== 'string' ) return nu;
+        var names = nu.split(',');
+        return names.map(function(n) {
+          return this.Person.create({ firstName: n }, this.X);
+        }.bind(this));
+      },
+      // Use "preSet" in a similar way to "adapt". The preSet function is
+      // called after adapt, with the new value set to adapt's return value
+      // (see below "properties: [...]" for clarifying code). This function is
+      // intended to do work with side-effects that should take place before the
+      // property actually changes. By convention, any changes made to the new
+      // value should not change the value type (such changes belong in adapt).
+      preSet: function(old, nu) {
+        if ( old === nu ) return nu;
+        nu = nu.map(function(p) {
+          p.lastName = p.lastName || 'Person';
+          return p;
+        });
+        console.log('About to change people from ' +
+            JSONUtil.compact.stringify(old) +
+            ' to ' +
+            JSONUtil.compact.stringify(nu));
+        return nu;
+      },
+      // Use "postSet" to respond to data changes after the data has changed.
+      // The return value of this function is ignored.
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        console.log('Just changed people from ' +
+            JSONUtil.compact.stringify(old) +
+            ' to ' +
+            JSONUtil.compact.stringify(nu));
+      }
+    }
+  ]
+  // Property change logic (run with "this" as the modelled object that has the
+  // property):
+  //
+  // function doPropertyChange(newValue, propertyObject) {
+  //   var name = propertyObject.name;
+  //   var oldValue = this[name];
+  //   var realNewValue = property.preSet(oldValue,
+  //       property.adapt(oldValue, newValue));
+  //   this[name] = realNewValue;
+  //   property.postSet(oldValue, realNewValue);
+  // }
+});</code>
+                  </src>
+                </code-snippet>
+                <code-snippet title="Example">
+                  <src language="javascript">
+                    <code>arequire('foam.sandbox.PeopleContainer', X)(function(PeopleContainer) {
+  var pc = PeopleContainer.create({}, X);
+  pc.people = 'Nima,Sina,Tina';
+  console.log.json(pc);
 });</code>
                   </src>
                 </code-snippet>
