@@ -16,7 +16,7 @@
  */
 
  CLASS({
-   name: 'AsyncViewLoader',
+   name: 'AsyncLoadingView',
    package: 'foam.ui',
    extendsModel: 'foam.ui.BaseView',
 
@@ -32,7 +32,7 @@
       type:  'String',
       documentation: function() {/*
         The DOM element id for the outermost tag of
-        this $$DOC{ref:'foam.ui.View'}. Set this when creating an AsyncViewLoader.
+        this $$DOC{ref:'foam.ui.View'}. Set this when creating an AsyncLoadingView.
       */}
     },
     {
@@ -127,7 +127,7 @@
       if ( this.model.create ) { // is a model instance
         return this.finishRender(this.model.create(skipKeysArgDecorator));
       }
-      console.warn("AsyncViewLoader: View load with invalid model. ", this.model, this.args, this.copyFrom);
+      console.warn("AsyncLoadingView: View load with invalid model. ", this.model, this.args, this.copyFrom);
     },
 
     requireViewInstance: function(view) {
@@ -182,7 +182,7 @@
       this.view && this.view.initHTML();
     },
 
-    toString: function() { /* Name info. */ return 'AsyncViewLoader(' + this.model + ', ' + this.view + ')'; },
+    toString: function() { /* Name info. */ return 'AsyncLoadingView(' + this.model + ', ' + this.view + ')'; },
 
     fromElement: function(e) { /* passthru */
       this.view.fromElement(e);
