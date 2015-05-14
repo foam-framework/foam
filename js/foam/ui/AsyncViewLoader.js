@@ -109,13 +109,12 @@
         return this.requireModelName(this.model, skipKeysArgDecorator);
       }
       if ( this.model.model_ && typeof this.model.model_ === 'string' ) { // JSON instance def'n
-        this.view = FOAM(this.model); // FOAMalize the definition
-        return this.requireViewInstance();
+        // FOAMalize the definition
+        return this.requireViewInstance(FOAM(this.model));
       }
       if ( this.model.model_ ) { // JSON with Model instance specified in model_
         this.mergeWithCopyFrom(this.model);
-        this.view = this.model.model_.create(skipKeysArgDecorator, this.X); // clone-ish
-        return this.finishRender();
+        return this.finishRender(this.model.model_.create(skipKeysArgDecorator, this.X));
       }
       if ( this.model.factory_ ) { // JSON with string factory_ name
         // TODO: previously 'view' was removed from copyFrom to support CViews not getting their view stomped. Put back...
@@ -123,30 +122,27 @@
         return this.requireModelName(this.model.factory_, skipKeysArgDecorator);
       }
       if ( typeof this.model === 'function' ) { // factory function
-        this.view = this.model(skipKeysArgDecorator, this);
-        return this.finishRender();
+        return this.finishRender(this.model(skipKeysArgDecorator, this));
       }
       if ( this.model.create ) { // is a model instance
-        this.view = this.model.create(skipKeysArgDecorator);
-        return this.finishRender();
+        return this.finishRender(this.model.create(skipKeysArgDecorator));
       }
       console.warn("AsyncViewLoader: View load with invalid model. ", this.model, this.args, this.copyFrom);
     },
 
-    requireViewInstance: function() {
-      this.view.arequire(this.X)(function(m) {
-        this.finishRender();
+    requireViewInstance: function(view) {
+      view.arequire(this.X)(function(m) {
+        this.finishRender(view);
       }.bind(this));
     },
 
     requireModelName: function(name, args) {
       arequire(name, this.X)(function(m) {
-        this.view = m.create(args, this.X);
-        this.finishRender();
+        this.finishRender(m.create(args, this.X));
       }.bind(this));
     },
 
-    finishRender: function() {
+    finishRender: function(view) {
       if ( this.copyFrom ) {
         // don't copy a few special cases
         var skipKeysCopyFromDecorator = {
@@ -164,9 +160,9 @@
             return false;
           }
         }
-        this.view.copyFrom(skipKeysCopyFromDecorator);
+        view.copyFrom(skipKeysCopyFromDecorator);
       }
-      this.view = this.view.toView_();
+      this.view = view.toView_();
       this.addDataChild(this.view);
 
       var el = this.X.$(this.id);

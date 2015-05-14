@@ -112,8 +112,8 @@ CLASS({
     },
 
 
-    finishRender: function() {
-      this.SUPER();
+    finishRender: function(view) {
+      this.SUPER(view);
       this.view.prop = this.prop;
     },
 
