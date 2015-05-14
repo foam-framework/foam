@@ -227,7 +227,7 @@ var FObject = {
           var prop = ps[i];
           keys[prop.name] = keys[prop.name$_] = true;
         }
-        this.addInitAgent(0, 'fast copy args', function(o, X, Y, m) {
+        this.addInitAgent(0, 'fast copy args', function fastCopyArgs(o, X, Y, m) {
           if ( m.instance_ ) {
             m = m.instance_;
             for ( var key in m ) o[key] = m[key];
@@ -242,19 +242,23 @@ var FObject = {
 
       }*/
 
-      this.model_.getRuntimeProperties().forEach(function(prop) {
+      var ps = this.model_.getRuntimeProperties();
+      for ( var i = 0 ; i < ps.length ; i++ ) {
+        var prop = ps[i];
         if ( prop.initPropertyAgents ) {
           prop.initPropertyAgents(self, fastInit);
         } else {
-          self.addInitAgent(
-            0,
-            'set proto-property ' + prop.name,
-            function(o, X, Y, m) {
-              if ( m && m.hasOwnProperty(prop.name) )
-                o[prop.name] = m[prop.name];
-            });
-        };
-      });
+          (function (name) {
+            self.addInitAgent(
+              0,
+              'set proto-property ' + name,
+              function setProtoProperty(o, X, Y, m) {
+                if ( m && m.hasOwnProperty(name) )
+                  o[name] = m[name];
+              });
+          })(prop.name);
+        }
+      }
 
       /*
       this.addInitAgent(9, 'copyFrom', function(o, X, Y, m) {
@@ -359,7 +363,7 @@ var FObject = {
 
   defineFOAMGetter: function(name, getter) {
     var stack = Events.onGet.stack;
-    this.__defineGetter__(name, function() {
+    this.__defineGetter__(name, function FOAMGetter() {
       var value = getter.call(this, name);
       var f = stack[0];
       f && f(this, name, value);
@@ -369,7 +373,7 @@ var FObject = {
 
   defineFOAMSetter: function(name, setter) {
     var stack = Events.onSet.stack;
-    this.__defineSetter__(name, function(newValue) {
+    this.__defineSetter__(name, function FOAMSetter(newValue) {
       var f = stack[0];
       if ( f && ! f(this, name, newValue) ) return;
       setter.call(this, newValue, name);
@@ -452,8 +456,8 @@ var FObject = {
     // Add a 'name$' psedo-property if not already defined
     if ( ! this.__lookupGetter__(prop.name$_) ) {
       Object.defineProperty(this, prop.name$_, {
-        get: function() { return this.propertyValue(name); },
-        set: function(value) { Events.link(value, this.propertyValue(name)); },
+        get: function getValue() { return this.propertyValue(name); },
+        set: function setValue(value) { Events.link(value, this.propertyValue(name)); },
         configurable: true
       });
     }
@@ -464,7 +468,7 @@ var FObject = {
     } else {
       if ( prop.lazyFactory || prop.factory ) {
         var f = prop.lazyFactory || prop.factory;
-        getter = function() {
+        getter = function factory() {
           if ( typeof this.instance_[name] === 'undefined' ) {
             this.instance_[name] = null; // prevents infinite recursion
             // console.log('Ahead of order factory: ', prop.name);
@@ -476,11 +480,11 @@ var FObject = {
           return this.instance_[name];
         };
       } else if ( prop.defaultValueFn ) {
-        getter = function() {
+        getter = function defaultValueFn() {
           return typeof this.instance_[name] !== 'undefined' ? this.instance_[name] : prop.defaultValueFn.call(this, prop);
         };
       } else {
-        getter = function() {
+        getter = function getInstanceVar() {
           return typeof this.instance_[name] !== 'undefined' ? this.instance_[name] : prop.defaultValue;
         };
       }
@@ -490,19 +494,19 @@ var FObject = {
     if ( prop.setter ) {
       this.defineFOAMSetter(name, prop.setter);
     } else {
-      var setter = function(oldValue, newValue) {
+      var setter = function setInstanceValue(oldValue, newValue) {
         this.instance_[name] = newValue;
       };
 
       if ( prop.type === 'int' || prop.type === 'float' ) {
-        setter = (function(setter) { return function(oldValue, newValue) {
+        setter = (function(setter) { return function numberSetter(oldValue, newValue) {
           setter.call(this, oldValue, typeof newValue !== 'number' ? Number(newValue) : newValue);
         }; })(setter);
       }
 
       if ( prop.onDAOUpdate ) {
         if ( typeof prop.onDAOUpdate === 'string' ) {
-          setter = (function(setter, onDAOUpdate, listenerName) { return function(oldValue, newValue) {
+          setter = (function(setter, onDAOUpdate, listenerName) { return function onDAOUpdateSetter(oldValue, newValue) {
             setter.call(this, oldValue, newValue);
 
             var listener = this[listenerName] || ( this[listenerName] = this[onDAOUpdate].bind(this) );
@@ -514,7 +518,7 @@ var FObject = {
             }
           }; })(setter, prop.onDAOUpdate, prop.name + '_onDAOUpdate');
         } else {
-          setter = (function(setter, onDAOUpdate, listenerName) { return function(oldValue, newValue) {
+          setter = (function(setter, onDAOUpdate, listenerName) { return function onDAOUpdateSetter2(oldValue, newValue) {
             setter.call(this, oldValue, newValue);
 
             var listener = this[listenerName] || ( this[listenerName] = onDAOUpdate.bind(this) );
@@ -529,31 +533,31 @@ var FObject = {
       }
 
       if ( prop.postSet ) {
-        setter = (function(setter, postSet) { return function(oldValue, newValue) {
+        setter = (function(setter, postSet) { return function postSetSetter(oldValue, newValue) {
           setter.call(this, oldValue, newValue);
           postSet.call(this, oldValue, newValue, prop)
         }; })(setter, prop.postSet);
       }
 
       var propertyTopic = PropertyChangeSupport.propertyTopic(name);
-      setter = (function(setter) { return function(oldValue, newValue) {
+      setter = (function(setter) { return function propertyChangeSetter(oldValue, newValue) {
         setter.call(this, oldValue, newValue);
         this.propertyChange_(propertyTopic, oldValue, newValue);
       }; })(setter);
 
       if ( prop.preSet ) {
-        setter = (function(setter, preSet) { return function(oldValue, newValue) {
+        setter = (function(setter, preSet) { return function preSetSetter(oldValue, newValue) {
           setter.call(this, oldValue, preSet.call(this, oldValue, newValue, prop));
         }; })(setter, prop.preSet);
       }
 
       if ( prop.adapt ) {
-        setter = (function(setter, adapt) { return function(oldValue, newValue) {
+        setter = (function(setter, adapt) { return function adaptSetter(oldValue, newValue) {
           setter.call(this, oldValue, adapt.call(this, oldValue, newValue, prop));
         }; })(setter, prop.adapt);
       }
 
-      setter = (function(setter) { return function(newValue) {
+      setter = (function(setter) { return function setInstanceVar(newValue) {
         setter.call(this, typeof this.instance_[name] === 'undefined' ? prop.defaultValue : this.instance_[name], newValue);
       }; })(setter);
 
