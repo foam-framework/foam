@@ -72,7 +72,7 @@
     "foam.ui.layout.PositionedViewTrait":true,
     "Property":true,
     "foam.ui.PropertyView":true,
-    "foam.ui.AsyncViewLoader":true,
+    "foam.ui.AsyncLoadingView":true,
     "Relationship":true,
     "foam.input.touch.ScrollGesture":true,
     "foam.apps.calc.SecondaryButtonsView":true,

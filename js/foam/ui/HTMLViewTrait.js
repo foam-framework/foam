@@ -24,7 +24,7 @@ CLASS({
     'foam.input.touch.GestureTarget',
     'foam.ui.ActionBorder',
     'foam.ui.PropertyView',
-    'foam.ui.AsyncViewLoader'
+    'foam.ui.AsyncLoadingView'
   ],
 
   documentation: function() {/*
@@ -614,7 +614,7 @@ CLASS({
       }
       var X = ( opt_args && opt_args.X ) || this.Y;
 
-      var v = this.AsyncViewLoader.create({
+      var v = this.AsyncLoadingView.create({
         id: this.nextID(),
         name: r.name,
         model: 'foam.ui.RelationshipView',
@@ -636,7 +636,7 @@ CLASS({
         opt_args.model_ :
         'foam.ui.ActionButton'  ;
 
-      var v = this.AsyncViewLoader.create({
+      var v = this.AsyncLoadingView.create({
         id: this.nextID(),
         name: action.name,
         model: modelName,

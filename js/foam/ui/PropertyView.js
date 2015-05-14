@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'PropertyView',
-  extendsModel: 'foam.ui.AsyncViewLoader',
+  extendsModel: 'foam.ui.AsyncLoadingView',
 
   documentation: function() {/*
     Apply this trait to a $$DOC{ref:'BaseView'} (such as $$DOC{ref:'HTMLView'}).</p>
