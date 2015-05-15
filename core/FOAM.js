@@ -245,7 +245,7 @@ var CLASS = function(m) {
     });
   }
 
-//  if ( document && document.currentScript ) m.sourcePath = document.currentScript.src;
+  if ( document && document.currentScript ) m.sourcePath = document.currentScript.src;
 
   registerModelLatch(packagePath(X, m.package), m);
 }
