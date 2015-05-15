@@ -8,7 +8,7 @@ BUILD_DIR="$BASEDIR"/build
 mkdir -p "$BUILD_DIR"
 
 cd ../../
-node --harmony tools/foam.js foam.build.BuildApp appDefinition=foam.demos.HelloWorldApp "targetPath=$BUILD_DIR"
+node --harmony tools/foam.js foam.build.BuildApp appDefinition=foam.demos.ChoiceRadioViewDemoApp "targetPath=$BUILD_DIR"
 
 cd "$BUILD_DIR"
 # Code compression.

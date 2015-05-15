@@ -137,7 +137,7 @@ CLASS({
   templates: [
     function toInnerHTML() {/*
       <div id="<%= this.id %>Blocker" class='popup-view-modal-blocker'></div>
-      <div id="<%= this.id %>Content"class='popup-view-content md-card'>
+      <div id="<%= this.id %>Content" class='popup-view-content md-card'>
         %%delegateView
       </div>
     */},
