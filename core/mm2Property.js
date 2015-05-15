@@ -582,7 +582,7 @@ var Property = {
     },
     {
       name: 'fromElement',
-      defaultValue: function(e, p) {
+      defaultValue: function propertyFromElement(e, p) {
         if ( ! p.type || ! this.X.lookup || p.type === 'String' ) {
           p.fromString.call(this, e.innerHTML, p);
           return;
