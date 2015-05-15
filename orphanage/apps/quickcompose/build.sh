@@ -32,7 +32,7 @@ cat \
   ../../core/mm2Property.js \
   ../../core/mm3Types.js \
   ../../core/mm4Method.js \
-  ../../core/mm5Misc.js \
+  ../../core/mm6Misc.js \
   ../../js/foam/ui/Window.js \
   ../../core/value.js \
   ../../core/view.js \

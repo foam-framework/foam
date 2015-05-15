@@ -666,7 +666,6 @@ var FObject = {
 
     return this;
   },
-
   xxxcopyFrom: function(src) {
     if ( ! src ) return this;
 

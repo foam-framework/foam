@@ -22,6 +22,8 @@
 
   extendsModel: 'foam.ui.SimpleView',
 
+  requires: ['foam.ui.AutocompleteView'],
+
   documentation: function() { /*
       The default $$DOC{ref:'foam.ui.View'} for a string. Supports autocomplete
       when an autocompleter is installed in $$DOC{ref:'.autocompleter'}.
@@ -170,7 +172,7 @@
         $$DOC{ref:'.autocompleter'} are set. */
       if ( ! this.autocomplete || ! this.autocompleter ) return;
 
-      var view = this.autocompleteView = this.X.AutocompleteView.create({
+      var view = this.autocompleteView = this.AutocompleteView.create({
         autocompleter: this.autocompleter,
         target: this
       });

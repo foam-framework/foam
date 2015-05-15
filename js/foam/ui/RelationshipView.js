@@ -18,11 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'RelationshipView',
-  extendsModel: 'foam.ui.BaseView',
-
-  // TODO: remove when requires cycles work. For now we must avoid
-  // a dependency cycle with TemplateSupportTrait
-  traits: ['foam.ui.HTMLViewTrait'],
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
