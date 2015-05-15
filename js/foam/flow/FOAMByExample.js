@@ -23,13 +23,17 @@ CLASS({
     'foam.flow.CodeSnippet',
     'foam.flow.CodeView',
     // 'foam.flow.ExpandableSection',
+    'foam.flow.FBEModels',
+    'foam.flow.FBEDaos',
+    'foam.flow.FBEViews',
     'foam.flow.QuoteCode',
     'foam.flow.Section',
     'foam.flow.TitlePage',
     'foam.flow.ToC',
     'foam.flow.VirtualConsoleView',
     'foam.graphics.ActionButtonCView',
-    // 'foam.ui.md.SectionView'
+    // 'foam.ui.md.SectionView',
+    'foam.util.Timer'
   ],
   exports: [
     'codeSnippets',
@@ -40,7 +44,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'codeSnippets',
       factory: function() { return []; }
     },
@@ -92,16 +96,24 @@ CLASS({
 
       // TODO: Remove this stuff once the template parser understand unknown tags
       // better
-      this.FOAMWindow.installModel(this.AceCodeView);
-      this.FOAMWindow.installModel(this.Aside);
-      this.FOAMWindow.installModel(this.BookTitle);
-      this.FOAMWindow.installModel(this.CodeSample);
-      this.FOAMWindow.installModel(this.CodeSnippet);
-      this.FOAMWindow.installModel(this.QuoteCode);
-      this.FOAMWindow.installModel(this.Section);
-      this.FOAMWindow.installModel(this.TitlePage);
-      this.FOAMWindow.installModel(this.ToC);
-      this.FOAMWindow.installModel(this.VirtualConsoleView);
+      [
+        this.AceCodeView,
+        this.Aside,
+        this.BookTitle,
+        this.CodeSample,
+        this.CodeSnippet,
+        this.FBEModels,
+        this.FBEDaos,
+        this.FBEViews,
+        this.QuoteCode,
+        this.Section,
+        this.TitlePage,
+        this.ToC,
+        this.VirtualConsoleView
+      ].forEach(function(m) {
+          m.getProperty('registerElement').documentInstallFn.call(
+            m.getPrototype(), this.X);
+      }.bind(this));
 
       // TODO(markdittmer): Switch from Section to SectionView/ExpandableSection
       // once expandable contents renders properly with FLOW contents.

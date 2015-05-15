@@ -2,6 +2,8 @@ CLASS({
   name: 'Controller',
   requires: ['foam.ui.DAOListView'],
 
+  traits: ['foam.ui.CSSLoaderTrait'],
+
   properties: [
     { name: 'search', view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true } },
     { name: 'dao', defaultValue: questions },

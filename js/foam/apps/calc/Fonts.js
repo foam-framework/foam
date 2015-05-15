@@ -12,6 +12,7 @@
 CLASS({
   name: 'Fonts',
   package: 'foam.apps.calc',
+  traits: ['foam.ui.CSSLoaderTrait'],
 
   templates: [
     function CSS() {/* {{{ this.CSS_ }}} */}

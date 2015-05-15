@@ -80,9 +80,20 @@ CLASS({
     init: function() {
       this.SUPER.apply(this, arguments);
       this.X.registerElement('circle', 'foam.graphics.Circle');
-      this.FOAMWindow.installModel(this.CodeSample);
-      this.FOAMWindow.installModel(this.Section);
-      this.FOAMWindow.installModel(this.Slides);
+      this.Slides.getProperty('installCSS').documentInstallFn.call(
+        this.Slides.getPrototype(), this.X);
+      this.Slides.getProperty('registerElement').documentInstallFn.call(
+        this.Slides.getPrototype(), this.X);
+
+      this.CodeSample.getProperty('installCSS').documentInstallFn.call(
+        this.CodeSample.getPrototype(), this.X);
+      this.CodeSample.getProperty('registerElement').documentInstallFn.call(
+        this.CodeSample.getPrototype(), this.X);
+
+      this.Section.getProperty('installCSS').documentInstallFn.call(
+        this.Section.getPrototype(), this.X);
+      this.Section.getProperty('registerElement').documentInstallFn.call(
+        this.Section.getPrototype(), this.X);
     }
   },
 

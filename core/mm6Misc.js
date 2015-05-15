@@ -135,15 +135,17 @@ function recopyModelFeatures(m) {
   m.model_ = Model;
 
   // the preSet for each of these does the work
-  m.methods       = m.methods;
-  m.templates     = m.templates;
+//  m.methods       = m.methods;
+//  m.templates     = m.templates;
   m.relationships = m.relationships;
   m.properties    = m.properties;
-  m.actions       = m.actions;
-  m.listeners     = m.listeners;
+//  m.actions       = m.actions;
+//  m.listeners     = m.listeners;
   m.models        = m.models;
-  m.tests         = m.tests;
-  m.issues        = m.issues;
+  if ( DEBUG ) {
+    m.tests       = m.tests;
+    m.issues      = m.issues;
+  }
 
   // check for old bootstrap Property instances
   if ( m.properties && m.properties[0] && ! Property.isInstance(m.properties[0]) ) {
@@ -156,10 +158,17 @@ function recopyModelFeatures(m) {
   if ( DEBUG ) BootstrapModel.saveDefinition(m);
 }
 
+/*
 // Update Model in everything we've created so far
 for ( var id in USED_MODELS ) {
   recopyModelFeatures(GLOBAL.lookup(id));
 }
+*/
+recopyModelFeatures(Property);
+recopyModelFeatures(Model);
+recopyModelFeatures(Method);
+recopyModelFeatures(Action);
+recopyModelFeatures(Template);
 
 if ( DEBUG ) {
   for ( var id in UNUSED_MODELS ) {

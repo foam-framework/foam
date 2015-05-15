@@ -49,6 +49,21 @@ CLASS({
       */}
     },
     {
+      model_: 'foam.core.types.DocumentInstallProperty',
+      name: 'installCSS',
+      documentInstallFn: function(X) {
+        for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
+          var t = this.model_.templates[i];
+          if ( t.name === 'CSS' ) {
+            t.futureTemplate(function() {
+              X.addStyle(this.CSS());
+            }.bind(this));
+            return;
+          }
+        }
+      }
+    },
+    {
       name:   'shortcuts',
       type:   'Array[Shortcut]',
       factory: function() { return []; },
@@ -574,8 +589,6 @@ CLASS({
       return { height: (window.innerHeight || this.X.document.documentElement.clientHeight),
                width:  (window.innerWidth  || this.X.document.documentElement.clientWidth) };
     },
+  },
 
-
-
-  }
 });
