@@ -111,7 +111,7 @@ var TemplateOutput = {
 
     f.toString = function() {
       if ( buf.length === 0 ) return '';
-      if ( buf.length ) buf = [buf.join('')];
+      if ( buf.length > 1 ) buf = [buf.join('')];
       return buf[0];
     }
 
