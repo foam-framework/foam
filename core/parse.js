@@ -341,6 +341,7 @@ function alt(/* vargs */) {
     };
     var goodChar = false;
 
+    // TODO: this is very slow, make tail be a function
     trapPS.__defineGetter__('tail', function() {
       goodChar = true;
       return {
