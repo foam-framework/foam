@@ -20,6 +20,8 @@
    package: 'foam.ui',
    extendsModel: 'foam.ui.BaseView',
 
+   requires: ['Model'],
+
    documentation: function() {/* Loads a view with arequire, giving the
      host view a placeholder immediately and filling in the actual view
      when it is available.
@@ -112,9 +114,14 @@
         // FOAMalize the definition
         return this.requireViewInstance(FOAM(this.model));
       }
-      if ( this.model.model_ ) { // JSON with Model instance specified in model_
-        this.mergeWithCopyFrom(this.model);
-        return this.finishRender(this.model.model_.create(skipKeysArgDecorator, this.X));
+      if ( this.model.model_ ) { 
+        if ( this.Model.isInstance(this.model) ) { // is a model instance
+          return this.finishRender(this.model.create(skipKeysArgDecorator));
+        } else {
+          // JSON with Model instance specified in model_
+          this.mergeWithCopyFrom(this.model);
+          return this.finishRender(this.model.model_.create(skipKeysArgDecorator, this.X));
+        }
       }
       if ( this.model.factory_ ) { // JSON with string factory_ name
         // TODO: previously 'view' was removed from copyFrom to support CViews not getting their view stomped. Put back...
@@ -123,9 +130,6 @@
       }
       if ( typeof this.model === 'function' ) { // factory function
         return this.finishRender(this.model(skipKeysArgDecorator, this));
-      }
-      if ( this.model.create ) { // is a model instance
-        return this.finishRender(this.model.create(skipKeysArgDecorator));
       }
       console.warn("AsyncLoadingView: View load with invalid model. ", this.model, this.args, this.copyFrom);
     },
