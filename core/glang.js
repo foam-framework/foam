@@ -18,6 +18,7 @@
 
 // See: https://developers.google.com/chart/interactive/docs/index
 
+// TODO: Finish moving to foam.glang
 CLASS({
   name: 'PieGraph',
 
