@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'RichTextView',
   package: 'foam.ui',
+  name: 'RichTextView',
 
   extendsModel: 'foam.ui.SimpleView',
 

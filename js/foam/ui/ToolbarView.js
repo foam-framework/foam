@@ -17,10 +17,9 @@
 
 // TODO: ActionBorder should use this.
 CLASS({
+  package: 'foam.ui',
   name:  'ToolbarView',
   label: 'Toolbar',
-  package: 'foam.ui',
-  
 
   requires: [
     'foam.ui.ActionButton',

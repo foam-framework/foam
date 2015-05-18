@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'Link',
   package: 'foam.ui',
+  name: 'Link',
   requires: [
     'foam.ui.LinkView'
   ],

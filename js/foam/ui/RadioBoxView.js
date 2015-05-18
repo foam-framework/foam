@@ -14,11 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
 
 CLASS({
-  name: 'RadioBoxView',
   package: 'foam.ui',
+  name: 'RadioBoxView',
 
   extendsModel: 'foam.ui.ChoiceView',
 
@@ -60,5 +59,3 @@ CLASS({
     }
   }
 });
-
-

@@ -16,9 +16,9 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'MultiLineStringArrayView',
   extendsModel: 'foam.ui.View',
-  package: 'foam.ui',
 
   properties: [
     {
@@ -202,4 +202,3 @@ CLASS({
     }
   ]
 });
-

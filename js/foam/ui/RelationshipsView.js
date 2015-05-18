@@ -17,8 +17,8 @@
 
 
 CLASS({
-  name: 'RelationshipsView',
   package: 'foam.ui',
+  name: 'RelationshipsView',
   extendsModel: 'foam.ui.DetailView',
 
   documentation: function() {/* TODO: foam.ui.DetailView has some trouble requiring this,

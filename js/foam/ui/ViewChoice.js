@@ -17,9 +17,8 @@
 
 // TODO: This should be replaced with a generic Choice.
 CLASS({
-  name: 'ViewChoice',
   package: 'foam.ui',
-
+  name: 'ViewChoice',
 
   tableProperties: [
     'label',

@@ -17,10 +17,10 @@
 
 
 CLASS({
+  package: 'foam.ui',
   name: 'MenuSeparator',
   extendsModel: 'foam.ui.StaticHTML',
-  package: 'foam.ui',
-  
+
   properties: [
     {
       name: 'content',
@@ -28,4 +28,3 @@ CLASS({
     }
   ]
 });
-

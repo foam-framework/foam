@@ -16,11 +16,10 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'TextAreaView',
 
   extendsModel: 'foam.ui.TextFieldView',
-  package: 'foam.ui',
-  
 
   label: 'Text-Area View',
 
@@ -37,4 +36,3 @@ CLASS({
     }
   ]
 });
-

@@ -16,10 +16,10 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'GalleryImageView',
   extendsModel: 'foam.ui.View',
-  package: 'foam.ui',
-  
+
   properties: [ 'source' ],
 
   methods: {
@@ -28,4 +28,3 @@ CLASS({
     }
   }
 });
-

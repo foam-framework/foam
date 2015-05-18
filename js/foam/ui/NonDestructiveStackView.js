@@ -21,9 +21,9 @@
    Browser history support.
 */
 CLASS({
+  package: 'foam.ui',
   name: 'NonDestructiveStackView',
   extendsModel: 'foam.ui.View',
-  package: 'foam.ui',
 
   requires: [
     'foam.ui.layout.OverlaySlider',

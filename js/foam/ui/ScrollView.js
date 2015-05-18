@@ -26,8 +26,8 @@
  * content is being fetched.
  */
 CLASS({
-  name: 'ScrollView',
   package: 'foam.ui',
+  name: 'ScrollView',
   extendsModel: 'foam.ui.AbstractDAOView',
   requires: [
     'foam.util.busy.BusyStatus',
@@ -526,4 +526,3 @@ CLASS({
     */},
   ]
 });
-

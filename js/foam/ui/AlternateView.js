@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'AlternateView',
   package: 'foam.ui',
+  name: 'AlternateView',
 
   extendsModel: 'foam.ui.View',
 

@@ -14,12 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
- 
+
 CLASS({
   package: 'foam.ui',
   name: 'ImageView',
- 
+
   extendsModel: 'foam.ui.View',
 
   properties: [
@@ -86,4 +85,3 @@ CLASS({
     }
   }
 });
-

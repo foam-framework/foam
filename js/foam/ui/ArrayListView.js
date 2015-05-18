@@ -16,9 +16,9 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'ArrayListView',
   extendsModel: 'foam.ui.View',
-  package: 'foam.ui',
 
   traits: ['foam.ui.SimpleDynamicViewTrait'],
   properties: [
@@ -45,4 +45,3 @@ CLASS({
     */}
   ]
 });
-

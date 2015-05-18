@@ -16,11 +16,11 @@
  */
 
 CLASS({
-  name: 'SimpleDynamicViewTrait',
   package: 'foam.ui',
+  name: 'SimpleDynamicViewTrait',
 
   documentation: function() {/* Legacy. */},
-  
+
   properties: [
     { name: 'data', postSet: function() { this.updateHTML(); } }
   ],
@@ -32,4 +32,3 @@ CLASS({
     }
   }
 });
-

@@ -17,8 +17,8 @@
 
 
 CLASS({
-  name: 'ActionBorder',
   package: 'foam.ui',
+  name: 'ActionBorder',
 
   documentation: function() {/*
     Add Action Buttons to a decorated View.</p><p>
@@ -64,4 +64,3 @@ CLASS({
     }
   }
 });
-

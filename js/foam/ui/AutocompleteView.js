@@ -16,11 +16,11 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'AutocompleteView',
   extendsModel: 'foam.ui.PopupView',
   help: 'Default autocomplete popup.',
-  package: 'foam.ui',
-  
+
   properties: [
     'closeTimeout',
     'autocompleter',
@@ -215,5 +215,3 @@ CLASS({
     */}
   ]
 });
-
-

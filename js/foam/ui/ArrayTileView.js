@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'ArrayTileView',
   package: 'foam.ui',
+  name: 'ArrayTileView',
 
   extendsModel: 'foam.ui.AbstractDAOView',
 

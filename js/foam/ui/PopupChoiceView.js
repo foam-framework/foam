@@ -14,18 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 
 CLASS({
-  name: 'PopupChoiceView',
   package: 'foam.ui',
+  name: 'PopupChoiceView',
 
   extendsModel: 'foam.ui.AbstractChoiceView',
 
   requires: ['foam.ui.ChoiceListView'],
 
   traits: ['foam.input.touch.VerticalScrollNativeTrait'],
-  
+
   properties: [
     {
       name: 'linkLabel'

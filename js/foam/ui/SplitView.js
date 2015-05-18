@@ -16,10 +16,9 @@
  */
 
 CLASS({
-  extendsModel: 'foam.ui.View',
-
-  name: 'SplitView',
   package: 'foam.ui',
+  name: 'SplitView',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -59,4 +58,3 @@ CLASS({
     }
   }
 });
-

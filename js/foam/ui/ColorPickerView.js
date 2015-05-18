@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'ColorPickerView',
   package: 'foam.ui',
+  name: 'ColorPickerView',
 
   extendsModel: 'foam.ui.SimpleView',
 

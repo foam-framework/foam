@@ -16,10 +16,10 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'ActionSheetView',
   extendsModel: 'foam.ui.View',
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
-  package: 'foam.ui',
 
   properties: [
     'actions',
@@ -45,4 +45,3 @@ CLASS({
     */}
   ]
 });
-
