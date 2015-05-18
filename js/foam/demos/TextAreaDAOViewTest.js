@@ -21,6 +21,7 @@
 //          with 100k rows it uses 96M of memory vs 250M
 
 CLASS({
+  package: 'foam.demos',
   name: 'TextAreaDAOView',
   extendsModel: 'foam.ui.AbstractDAOView',
 
