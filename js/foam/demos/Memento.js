@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'Memento',
   package: 'foam.demos',
+  name: 'Memento',
   traits: [
     'foam.memento.MemorableTrait'
   ],

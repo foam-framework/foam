@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'BrowserFileDAO',
   package: 'foam.demos',
+  name: 'BrowserFileDAO',
 
   requires: [
     'foam.ui.TableView'

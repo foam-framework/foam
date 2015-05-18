@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'ScriptTagDAO',
   package: 'foam.demos',
+  name: 'ScriptTagDAO',
 
   requires: [
     'foam.core.dao.ScriptTagDAO',

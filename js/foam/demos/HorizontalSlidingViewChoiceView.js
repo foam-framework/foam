@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'HorizontalSlidingViewChoiceView',
   package: 'foam.demos',
+  name: 'HorizontalSlidingViewChoiceView',
   extendsModel: 'foam.ui.View',
   requires: [
     'foam.ui.md.CheckboxView',
@@ -41,7 +41,7 @@ CLASS({
             view: function() {
                 return foam.ui.md.ToggleView.create({
                   label: 'Toggle',
-                }); 
+                });
             },
           }),
         ];

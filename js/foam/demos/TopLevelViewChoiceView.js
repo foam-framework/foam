@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'TopLevelViewChoiceView',
   package: 'foam.demos',
+  name: 'TopLevelViewChoiceView',
   extendsModel: 'foam.ui.View',
   requires: [
     'foam.ui.md.CheckboxView',
@@ -43,7 +43,7 @@ CLASS({
             view: function() {
                 return foam.ui.md.ToggleView.create({
                   label: 'Toggle',
-                }); 
+                });
             },
           }),
         ];
@@ -63,4 +63,3 @@ CLASS({
     */},
   ]
 });
-

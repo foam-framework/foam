@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'ViewChoiceComposite',
   package: 'foam.demos',
+  name: 'ViewChoiceComposite',
   extendsModel: 'foam.ui.SimpleView',
   requires: [
     'foam.memento.FragmentMementoMgr',
@@ -93,4 +93,3 @@ CLASS({
     */},
   ]
 });
-

@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'MemorableObject',
   package: 'foam.demos',
+  name: 'MemorableObject',
   traits: ['foam.memento.MemorableTrait'],
   requires: [
     'foam.demos.MemorableQuery'
@@ -45,4 +45,3 @@ CLASS({
     }
   ]
 });
-

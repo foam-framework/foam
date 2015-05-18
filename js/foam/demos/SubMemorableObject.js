@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'SubMemorableObject',
   package: 'foam.demos',
+  name: 'SubMemorableObject',
   traits: ['foam.memento.MemorableTrait'],
   properties: [
     {

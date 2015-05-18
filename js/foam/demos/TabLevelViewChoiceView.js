@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'TabLevelViewChoiceView',
   package: 'foam.demos',
+  name: 'TabLevelViewChoiceView',
   extendsModel: 'foam.ui.View',
   requires: [
     'foam.controllers.ViewChoiceController',
@@ -54,7 +54,7 @@ CLASS({
                       view: function() {
                         return this.X.foam.ui.md.ToggleView.create({
                           label: 'Toggle',
-                        }, this.Y); 
+                        }, this.Y);
                       },
                     }, this.Y),
                   ],
@@ -71,7 +71,7 @@ CLASS({
             view: function() {
                 return foam.ui.md.ToggleView.create({
                   label: 'Toggle',
-                }); 
+                });
             },
           }),
         ];
