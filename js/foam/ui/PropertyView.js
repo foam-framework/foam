@@ -78,7 +78,20 @@ CLASS({
       name: 'bound_',
       model_: 'BooleanProperty',
       defaultValue: false
-    }
+    },
+    {
+      name: 'parent',
+      type: 'foam.ui.View',
+      postSet: function(_, p) {
+        if ( ! p ) return; // TODO(jacksonic): We shouldn't pretend we aren't part of the tree
+        p[this.prop.name + 'View'] = this.view;
+        if ( this.view ) this.view.parent = p;
+      },
+      documentation: function() {/*
+        The $$DOC{ref:'foam.ui.View'} to use as the parent container for the new
+        sub-$$DOC{ref:'foam.ui.View'}.
+      */}
+    },
   ],
 
   methods: {

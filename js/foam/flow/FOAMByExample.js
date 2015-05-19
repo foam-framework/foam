@@ -102,6 +102,7 @@ CLASS({
         this.BookTitle,
         this.CodeSample,
         this.CodeSnippet,
+        this.CodeView,
         this.FBEModels,
         this.FBEDaos,
         this.FBEViews,
@@ -112,6 +113,8 @@ CLASS({
         this.VirtualConsoleView
       ].forEach(function(m) {
           m.getProperty('registerElement').documentInstallFn.call(
+            m.getPrototype(), this.X);
+          m.getProperty('installCSS').documentInstallFn.call(
             m.getPrototype(), this.X);
       }.bind(this));
 
