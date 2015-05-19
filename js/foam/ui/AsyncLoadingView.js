@@ -129,7 +129,7 @@
         return this.requireModelName(this.model.factory_, skipKeysArgDecorator);
       }
       if ( typeof this.model === 'function' ) { // factory function
-        return this.finishRender(this.model(skipKeysArgDecorator, this));
+        return this.finishRender(this.model(skipKeysArgDecorator, this.X));
       }
       console.warn("AsyncLoadingView: View load with invalid model. ", this.model, this.args, this.copyFrom);
     },
