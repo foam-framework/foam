@@ -53,4 +53,59 @@
       </section>
 
 
+      <section title="Custom Views">
+        <aside>
+          <code-sample>
+            <title>A Custom View</title>
+            <source>
+              <code-snippet ref="Person" title="Person Model"></code-snippet>
+              <code-snippet title="Person View">
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'BasicPersonView',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.ui.View',
+
+  templates: [
+    {
+      name: 'toInnerHTML',
+      template: function() {/*
+        <p>
+        <h3>Person Custom View</h3>
+        <p>$$firstName{mode:'read-only'} $$lastName $$lastName{mode:'read-only'}</p>
+        <p>
+      */}
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>apar(
+    arequire('foam.sandbox.Person', X),
+    arequire('foam.sandbox.BasicPersonView', X)
+)(function(Person, BasicPersonView) {
+
+  // Create a person
+  var person = Person.create({
+    firstName: 'Harvey',
+    lastName: 'Birdman',
+  }, X);
+
+  // Create an instance of our custom view and set the person as 'data'
+  var view = BasicPersonView.create({
+    data: lawyer
+  }, X);
+
+  // The view will render the data we have set on it
+  view.write(X.document);
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
 </section>
