@@ -115,11 +115,14 @@ var BootstrapModel = {
         alias = alias.slice(0, alias.length-1);
 
       if ( ! this.getProperty(alias) ) {
-        props.push(Property.create({
+        var prop = Property.create({
           name:      alias,
           transient: true,
           hidden:    true
-        }));
+        });
+        // Prevent imports from being cloned.
+        prop.cloneProperty = prop.deepCloneProperty = null;
+        props.push(prop);
       }
     }.bind(this));
   },
