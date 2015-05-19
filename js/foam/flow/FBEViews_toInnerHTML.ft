@@ -1,3 +1,56 @@
 <section title="Views">
-  <!-- TODO: Add examples for views -->
+
+      <section title="Custom DetailView with toDetailHTML()">
+        <aside>
+          <code-sample>
+            <title>Implement a toDetailHTML() template</title>
+            <source>
+              <code-snippet ref="Person" title="Person Model"></code-snippet>
+              <code-snippet title="Detailed Person Model">
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'DetailedPerson',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.sandbox.Person',
+
+  // Implement the toDetailHTML() template to supply a custom view of your
+  // data model. Your model isn't actually a view, but DetailView can grab
+  // the template you supply and use it to render.
+  templates: [
+    {
+      name: 'toDetailHTML',
+      template: function() {/*
+        <p>
+        Person Description
+        <p>$$firstName{mode:'read-only'} <b>$$lastName{mode:'read-only'}</b></p>
+        <p>
+      */}
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>apar(
+    arequire('foam.sandbox.DetailedPerson', X),
+    arequire('foam.ui.DetailView', X)
+)(function(DetailPerson, DetailView) {
+  var lawyer = DetailPerson.create({
+    firstName: 'Harvey',
+    lastName: 'Birdman',
+  }, X);
+  // Though we are creating a DetailView as before, it will check for a toDetailHTML()
+  // template on its data, and render that instead of the default view.
+  DetailView.create({ data: lawyer }, X).write(X.document);
+});
+                  </code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
+
 </section>
