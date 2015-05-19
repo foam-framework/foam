@@ -48,7 +48,7 @@ CLASS({
     {
       name:  'package',
       help: 'Interface package.',
-      documentation: Model.PACKAGE.documentation.clone()
+      documentation: Model.PACKAGE.documentation
     },
     {
       name: 'extends',

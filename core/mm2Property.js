@@ -661,6 +661,12 @@ var Property = {
     toSQL: function() { return this.name; },
     toMQL: function() { return this.name; },
     toBQL: function() { return this.name; },
+    cloneProperty: function(/* this=prop, */ value) {
+      return ( value && value.clone ) ? value.clone() : value;
+    },
+    deepCloneProperty: function(/* this=prop, */ value) {
+      return ( value && value.deepClone ) ? value.deepClone() : value;
+    },
     initPropertyAgents: function(proto, fastInit) {
       var prop   = this;
       var name   = prop.name;

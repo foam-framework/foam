@@ -370,10 +370,6 @@ MODEL({
   ],
 
   methods: [
-    function clone() { return this; },
-
-    function deepClone() { return this.clone(); },
-
     function become(other) {
       var local = Object.getOwnPropertyNames(this);
       for ( var i = 0; i < local.length; i++ ) {
@@ -401,6 +397,17 @@ MODEL({
   },
 
   methods: [
+    function clone() { return this.slice(); },
+
+    function deepClone() {
+      var a = this.clone();
+      for ( var i = 0 ; i < a.length ; i++ ) {
+        var o = a[i];
+        if ( o && o.deepClone ) a[i] = o.deepClone();
+      }
+      return a;
+    },
+
     function forEach(f, opt_this) {
       /* Replace Array.forEach with a faster version. */
       if ( ! this || ! f || opt_this ) return this.oldForEach_.call(this, f, opt_this);
@@ -560,8 +567,6 @@ MODEL({
     function labelize() {
       return this.replace(/[a-z][A-Z]/g, function (a) { return a.charAt(0) + ' ' + a.charAt(1); }).capitalize();
     },
-
-    function clone() { return this.toString(); },
 
     function compareTo(o) { return ( o == this ) ? 0 : this < o ? -1 : 1; },
 
@@ -726,8 +731,6 @@ MODEL({
 
   methods: [
     function compareTo(o) { return ( o == this ) ? 0 : this < o ? -1 : 1; },
-
-    function clone() { return +this; }
   ]
 });
 

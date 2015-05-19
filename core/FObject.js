@@ -618,34 +618,30 @@ var FObject = {
     c.Y = this.Y;
     for ( var key in this.instance_ ) {
       var value = this[key];
-      // The commented out (original) implementation was causing
-      // issues with QuickBug because of the 'lables' postSet.
-      // I'm not sure it was done that way originally.
-//      c[key] = Array.isArray(value) ? value.clone() : value;
-      c.instance_[key] = Array.isArray(value) ? value.clone() : value;
+      if ( value ) {
+        var prop = this.model_.getProperty(key);
+        if ( prop && prop.cloneProperty )
+          c.instance_[key] = prop.cloneProperty.call(prop, value);
+      }
     }
     return c;
-//    return ( this.model_ && this.model_.create ) ? this.model_.create(this) : this;
   },
 
   /** Create a deep copy of this object. **/
   deepClone: function() {
-    var cln = this.clone();
-
-    // now clone inner collections
-    for ( var key in cln.instance_ ) {
-      var val = cln.instance_[key];
-
-      if ( Array.isArray(val) ) {
-        for ( var i = 0 ; i < val.length ; i++ ) {
-          var obj = val[i];
-
-          val[i] = obj.deepClone();
-        }
+    var c = Object.create(this.__proto__);
+    c.instance_ = {};
+    c.X = this.X;
+    c.Y = this.Y;
+    for ( var key in this.instance_ ) {
+      var value = this[key];
+      if ( value ) {
+        var prop = this.model_.getProperty(key);
+        if ( prop && prop.deepCloneProperty )
+          c.instance_[key] = prop.deepCloneProperty.call(prop, value);
       }
     }
-
-    return cln;
+    return c;
   },
 
   /** @return this **/
