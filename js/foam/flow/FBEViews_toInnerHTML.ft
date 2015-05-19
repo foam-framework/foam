@@ -95,7 +95,7 @@
 
   // Create an instance of our custom view and set the person as 'data'
   var view = BasicPersonView.create({
-    data: lawyer
+    data: person
   }, X);
 
   // The view will render the data we have set on it
