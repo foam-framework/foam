@@ -16,10 +16,10 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name:  'DAOCreateController',
   label: 'DAO Create',
-  package: 'foam.ui',
-  
+
   extendsModel: 'foam.ui.View',
 
   properties: [
@@ -79,4 +79,3 @@ CLASS({
     function toInnerHTML() {/* $$data */}
   ]
 });
-

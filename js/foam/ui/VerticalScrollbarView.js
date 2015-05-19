@@ -16,14 +16,14 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'VerticalScrollbarView',
   extendsModel: 'foam.ui.View',
-  package: 'foam.ui',
 
   documentation: function() {/*
    The default vertical scrollbar view for a ScrollView. It appears during
    scrolling and fades out after scrolling stops.</p><p>
- 
+
    TODO: create a version that can respond to mouse input.
    TODO: a horizontal scrollbar. Either a separate view, or a generalization of
    this one.
@@ -242,4 +242,3 @@ CLASS({
     */}
   ]
 });
-

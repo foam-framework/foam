@@ -16,11 +16,11 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'ListValueView',
   help: 'Combines an input view with a value view for the edited value.',
 
   extendsModel: 'foam.ui.SimpleView',
-  package: 'foam.ui',
 
   documentation: function() {/* TODO: check data handling. */},
   properties: [
@@ -52,4 +52,3 @@ CLASS({
     }
   }
 });
-

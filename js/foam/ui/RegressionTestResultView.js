@@ -15,15 +15,13 @@
  * limitations under the License.
  */
 
-
 CLASS({
+  package: 'foam.ui',
   name: 'RegressionTestResultView',
   label: 'Regression Test Result View',
   documentation: 'Displays the output of a $$DOC{.ref:"RegressionTest"}, either master or live.',
 
   extendsModel: 'foam.ui.UnitTestResultView',
-  package: 'foam.ui',
-  
 
   properties: [
     {
@@ -82,5 +80,3 @@ CLASS({
     */}
   ]
 });
-
-

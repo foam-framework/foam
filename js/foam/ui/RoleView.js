@@ -16,11 +16,10 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'RoleView',
 
   extendsModel: 'foam.ui.SimpleView',
-  package: 'foam.ui',
-  
 
   properties: [
     {
@@ -70,4 +69,3 @@ CLASS({
     }
   }
 });
-

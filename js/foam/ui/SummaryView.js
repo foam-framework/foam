@@ -16,10 +16,10 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'SummaryView',
 
   extendsModel: 'foam.ui.View',
-  package: 'foam.ui',
 
   documentation: function() {/* A display-only summary view. */},
   properties: [
@@ -75,4 +75,3 @@ CLASS({
     }
   }
 });
-

@@ -18,6 +18,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'ContainerManagedPersistence',
+
   requires: [
     'foam.persistence.DataUpdateSinker',
     'foam.ui.DetailView'

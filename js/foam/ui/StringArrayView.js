@@ -16,10 +16,10 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'StringArrayView',
 
   extendsModel: 'foam.ui.TextFieldView',
-  package: 'foam.ui',
 
   methods: {
     findCurrentValues: function() {
@@ -74,4 +74,3 @@ CLASS({
     valueToText: function(value) { return value ? value.toString() : ""; }
   }
 });
-

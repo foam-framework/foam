@@ -23,7 +23,6 @@ CLASS({
 
   traits: [
     'foam.ui.HTMLViewTrait',
-    'foam.ui.TemplateSupportTrait'
   ],
 
   requires: [ 'Property' ],
@@ -56,15 +55,6 @@ CLASS({
       type: 'Property',
       defaultValueFn: function() { return this.Property.DETAIL_VIEW; }
     }
-//     {
-//       name: 'data',
-//       documentation: function() {/* The actual data used by the view.
-//       */},
-//       postSet: function(old, nu) {
-//         this.destroy();
-//         this.construct();
-//       }
-//     }
 
   ]
 });

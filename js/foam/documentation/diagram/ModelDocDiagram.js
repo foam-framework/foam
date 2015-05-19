@@ -21,11 +21,11 @@ CLASS({
   extendsModel: 'foam.ui.DestructiveDataView',
 
   traits: [
-    'foam.ui.TemplateSupportTrait',
     'foam.documentation.DocModelFeatureDAOTrait'
   ],
 
   requires: [
+    'foam.ui.PropertyView',
     'foam.graphics.diagram.Block',
     'foam.graphics.diagram.Section',
     'foam.graphics.diagram.Margin',
@@ -132,8 +132,18 @@ CLASS({
 
     construct: function() {
       this.SUPER();
-      this.createTemplateView('properties', { model_: 'foam.documentation.diagram.FeatureListDiagram',
-            model: this.X.Property, featureType:'properties' });
+      //this.createTemplateView('properties', );
+      var v = this.PropertyView.create({
+        id: this.id +'PROP',
+        prop: this.data.model_.PROPERTIES,
+        copyFrom: {
+          model_: 'foam.documentation.diagram.FeatureListDiagram',
+          model: this.X.Property,
+          featureType:'properties'
+        }
+      }, this.X);
+      this.addDataChild(v);
+
     },
 
     processModelChange: function() {

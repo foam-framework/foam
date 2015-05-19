@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'FOAMComponents',
   package: 'foam.demos',
+  name: 'FOAMComponents',
 
   extendsModel: 'foam.ui.View',
 

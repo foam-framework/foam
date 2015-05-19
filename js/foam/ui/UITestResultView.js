@@ -16,13 +16,12 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'UITestResultView',
+  extendsModel: 'foam.ui.UnitTestResultView',
+
   label: 'UI Test Result View',
   help: 'Overrides the inner masterView and liveView for UITests.',
-
-  extendsModel: 'foam.ui.UnitTestResultView',
-  package: 'foam.ui',
-  
 
   properties: [
     {

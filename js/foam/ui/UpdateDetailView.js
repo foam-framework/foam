@@ -17,8 +17,8 @@
 
 
 CLASS({
-  name: 'UpdateDetailView',
   package: 'foam.ui',
+  name: 'UpdateDetailView',
   extendsModel: 'foam.ui.DetailView',
 
   imports: [

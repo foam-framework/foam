@@ -16,10 +16,10 @@
  */
 
 CLASS({
-  name: 'CollapsibleView',
   package: 'foam.ui',
+  name: 'CollapsibleView',
   extendsModel: 'foam.ui.View',
-  
+
   properties: [
     {
       name:  'fullView',
@@ -37,7 +37,7 @@ CLASS({
     {
       name: 'collapsed',
       documentation: function() {/*
-        Indicates if the collapsed or full view is shown. 
+        Indicates if the collapsed or full view is shown.
       */},
       defaultValue: true,
       postSet: function() {
@@ -64,7 +64,7 @@ CLASS({
         this.addDataChild(this.collapsedView);
         this.addDataChild(this.fullView);
       } else {
-        console.warn(model_.id + " missing " 
+        console.warn(model_.id + " missing "
             + ( this.collapsedView ? "" : "collapsedView" )
             + ( this.fullView ? "" : "fulleView" ));
       }
@@ -75,7 +75,7 @@ CLASS({
       this.SUPER();
       /* Just render both sub-views, and control their height to show or hide. */
 
-      if (this.collapsedView.$ && this.fullView.$) {        
+      if (this.collapsedView.$ && this.fullView.$) {
         // to ensure we can hide by setting the height
         this.collapsedView.$.style.display = "block";
         this.fullView.$.style.display = "block";
@@ -83,7 +83,7 @@ CLASS({
         this.fullView.$.style.overflow = "hidden";
         this.collapsed = true;
       }
-    }    
+    }
   },
 
   actions: [
@@ -106,7 +106,3 @@ CLASS({
     },
   ]
 });
-
-
-
-

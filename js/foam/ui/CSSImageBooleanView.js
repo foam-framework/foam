@@ -16,6 +16,7 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'CSSImageBooleanView',
 
   extendsModel: 'foam.ui.SimpleView',
@@ -53,4 +54,3 @@ CLASS({
     }
   ]
 });
-

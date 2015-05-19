@@ -219,13 +219,9 @@ var CLASS = function(m) {
     GLOBAL.lookupCache_[id] = undefined;
     UNUSED_MODELS[id] = true;
 
-    // TODO(adamvy): Remove this once we no longer have code depending on models to being in the global scope.
-    if ( ! m.package )
-      Object.defineProperty(GLOBAL, m.name, { get: function() { return path[m.name]; }, configurable: true });
-
     //console.log("Model Getting defined: ", m.name, X.NAME);
-    Object.defineProperty(path, m.name, {
-      get: function () {
+    Object.defineProperty(m.package ? path : GLOBAL, m.name, {
+      get: function triggerModelLatch() {
         // console.time('registerModel: ' + id);
         USED_MODELS[id] = true;
         UNUSED_MODELS[id] = undefined;

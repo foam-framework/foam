@@ -16,10 +16,9 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'UnitTestResultView',
   extendsModel: 'foam.ui.View',
-  package: 'foam.ui',
-  
 
   properties: [
     {
@@ -64,4 +63,3 @@ CLASS({
     }
   }
 });
-

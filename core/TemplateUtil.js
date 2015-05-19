@@ -87,21 +87,21 @@ var TemplateOutput = {
   // TODO(kgr): redesign, I think this is actually broken.  If we call appendHTML() of
   // a sub-view then it will be added to the wrong parent.
   create: function(obj) {
-    var buf = '';
-    var f = function(/* arguments */) {
+    var buf = [];
+    var f = function templateOut(/* arguments */) {
       for ( var i = 0 ; i < arguments.length ; i++ ) {
         var o = arguments[i];
         if ( typeof o === 'string' ) {
-          buf += o;
+          buf.push(o);
         } else {
           if ( o && o.toView_ ) o = o.toView_();
           if ( ! ( o === null || o === undefined ) ) {
             if ( o.appendHTML ) {
               o.appendHTML(this);
             } else if ( o.toHTML ) {
-              buf += o.toHTML();
+              buf.push(o.toHTML());
             } else {
-              buf += o;
+              buf.push(o);
             }
             if ( o.initHTML && obj.addChild ) obj.addChild(o);
           }
@@ -109,7 +109,11 @@ var TemplateOutput = {
       }
     };
 
-    f.toString = function() { return buf; };
+    f.toString = function() {
+      if ( buf.length === 0 ) return '';
+      if ( buf.length > 1 ) buf = [buf.join('')];
+      return buf[0];
+    }
 
     return f;
   }

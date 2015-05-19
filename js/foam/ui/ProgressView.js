@@ -16,11 +16,11 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'ProgressView',
 
   extendsModel: 'foam.ui.View',
-  package: 'foam.ui',
-  
+
   properties: [
     {
       //model_: 'FloatProperty',
@@ -46,4 +46,3 @@ CLASS({
     }
   }
 });
-

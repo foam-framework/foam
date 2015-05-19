@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'PredicatedView',
   package: 'foam.ui',
+  name: 'PredicatedView',
   extendsModel: 'foam.ui.View',
 
   properties: [

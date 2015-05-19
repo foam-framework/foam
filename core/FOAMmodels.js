@@ -37,7 +37,7 @@ var files = [
   'TemplateUtil',
   'FOAM',
   // To use FO, uncomment the next line
-  // and comment out all lines from FObject to mm5Misc
+  // and comment out all lines from FObject to mm6Misc
   // inclusively
 //  'experimental/fo',
 //  'experimental/protobuffeatures',

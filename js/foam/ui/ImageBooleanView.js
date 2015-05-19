@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'ImageBooleanView',
   package: 'foam.ui',
+  name: 'ImageBooleanView',
 
   extendsModel: 'foam.ui.SimpleView',
 
@@ -25,7 +25,7 @@ CLASS({
     {
       name: 'data',
       postSet: function(old, nu) {
-        this.updateHTML();      
+        this.updateHTML();
       }
     },
     {

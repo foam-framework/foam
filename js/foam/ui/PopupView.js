@@ -17,11 +17,11 @@
 
 
 CLASS({
+  package: 'foam.ui',
   name: 'PopupView',
 
   extendsModel: 'foam.ui.SimpleView',
-  package: 'foam.ui',
-  
+
 
   properties: [
     {
@@ -81,4 +81,3 @@ CLASS({
     }
   }
 });
-

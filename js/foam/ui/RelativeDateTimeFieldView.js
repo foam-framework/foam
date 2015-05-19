@@ -16,12 +16,10 @@
  */
 
 CLASS({
-  name:  'RelativeDateTimeFieldView',
-  label: 'Relative Date-Time Field',
-
-  extendsModel: 'foam.ui.DateTimeFieldView',
   package: 'foam.ui',
-  
+  name:  'RelativeDateTimeFieldView',
+  extendsModel: 'foam.ui.DateTimeFieldView',
+  label: 'Relative Date-Time Field',
 
   properties: [
     { name: 'mode', defaultValue: 'read-only' }
@@ -33,4 +31,3 @@ CLASS({
     }
   }
 });
-

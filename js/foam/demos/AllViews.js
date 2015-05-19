@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'AllViews',
   package: 'foam.demos',
+  name: 'AllViews',
 
   properties: [
     {

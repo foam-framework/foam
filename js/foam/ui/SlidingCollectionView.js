@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'SlidingCollectionView',
   package: 'foam.ui',
+  name: 'SlidingCollectionView',
   extendsModel: 'foam.ui.View',
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 

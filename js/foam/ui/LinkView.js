@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'LinkView',
   package: 'foam.ui',
+  name: 'LinkView',
 
   extendsModel: 'foam.ui.DetailView',
 

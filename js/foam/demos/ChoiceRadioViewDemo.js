@@ -16,9 +16,9 @@
  */
 
 CLASS({
+  package: 'foam.demos',
   name: 'ChoiceRadioViewDemo',
   extendsModel: 'foam.ui.SimpleView',
-  package: 'foam.demos',
 
   requires: [
     'foam.ui.md.ChoiceRadioView',

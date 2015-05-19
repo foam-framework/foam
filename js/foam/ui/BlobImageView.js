@@ -17,11 +17,11 @@
 
 
 CLASS({
+  package: 'foam.ui',
   name: 'BlobImageView',
 
   extendsModel: 'foam.ui.View',
-  package: 'foam.ui',
-  
+
 
   help: 'Image view for rendering a blob as an image.',
 
@@ -64,4 +64,3 @@ CLASS({
     }
   ]
 });
-

@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'MemorableQuery',
   package: 'foam.demos',
+  name: 'MemorableQuery',
   properties: [
     {
       name: 'queryParser',

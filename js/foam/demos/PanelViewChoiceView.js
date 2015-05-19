@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'PanelViewChoiceView',
   package: 'foam.demos',
+  name: 'PanelViewChoiceView',
   extendsModel: 'foam.ui.View',
   requires: [
     'foam.ui.md.CheckboxView',
@@ -40,7 +40,7 @@ CLASS({
             view: function() {
                 return foam.ui.md.ToggleView.create({
                   label: 'Toggle',
-                }); 
+                });
             },
           }),
         ];

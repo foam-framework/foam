@@ -16,10 +16,10 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'RegressionTestValueView',
   extendsModel: 'foam.ui.TextFieldView',
-  package: 'foam.ui',
-  
+
   properties: [
     {
       name: 'mode',
@@ -31,4 +31,3 @@ CLASS({
     }
   ]
 });
-

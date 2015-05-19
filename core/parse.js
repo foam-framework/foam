@@ -323,6 +323,27 @@ function simpleAlt(/* vargs */) {
   return f;
 }
 
+var TrapPStream = {
+  create: function(ps) {
+    return {
+      __proto__: this,
+      head: ps.head,
+      value: ps.value,
+      goodChar: false
+    };
+  },
+  getValue: function() { return this.value; },
+  setValue: function(v) { this.value = v; return this; },
+  get tail() {
+    this.goodChar = true;
+    return {
+      value: this.value,
+      getValue: function() { return this.value; },
+      setValue: function(v) { this.value = v; }
+    };
+  }
+};
+
 function alt(/* vargs */) {
   var SIMPLE_ALT = simpleAlt.apply(null, arguments);
   var args = prepArgs(arguments);
@@ -332,28 +353,11 @@ function alt(/* vargs */) {
   function nullParser() { return undefined; }
 
   function testParser(p, ps) {
-    var c = ps.head;
-    var trapPS = {
-      getValue: function() { return this.value; },
-      setValue: function(v) { this.value = v; return this; },
-      value: ps.value,
-      head: c
-    };
-    var goodChar = false;
-
-    trapPS.__defineGetter__('tail', function() {
-      goodChar = true;
-      return {
-        value: this.value,
-        getValue: function() { return this.value; },
-        setValue: function(v) { this.value = v; }
-      };
-    });
-
+    var trapPS = TrapPStream.create(ps);
     this.parse(p, trapPS);
 
     // console.log('*** TestParser:',p,c,goodChar);
-    return goodChar;
+    return trapPS.goodChar;
   }
 
   function getParserForChar(ps) {

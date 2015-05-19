@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'QueueView',
   package: 'foam.ui',
+  name: 'QueueView',
   extendsModel: 'foam.ui.SlidingCollectionView',
 
   methods: {

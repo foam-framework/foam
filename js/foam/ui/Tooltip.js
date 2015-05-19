@@ -17,18 +17,18 @@
 
 
 CLASS({
-  name: 'Tooltip',
   package: 'foam.ui',
+  name: 'Tooltip',
 
   extendsModel: 'foam.ui.View',
 
-  documentation: function() {/* 
+  documentation: function() {/*
     Tooltips are designed to float above the document and clean themselves up.</p>
-    <p>See 
+    <p>See
     <a href="http://www.google.com/design/spec/components/tooltips.html#tooltips-usage">http://www.google.com/design/spec/components/tooltips.html#tooltips-usage</a>
-    for tooltip guidelines. 
+    for tooltip guidelines.
   */},
-  
+
   properties: [
     {
       name: 'text',
@@ -144,5 +144,3 @@ CLASS({
     }
   }
 });
-
-

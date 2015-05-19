@@ -16,9 +16,9 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'KeyView',
   extendsModel: 'foam.ui.View',
-  package: 'foam.ui',
 
   properties: [
     {
@@ -71,4 +71,3 @@ CLASS({
     }
   }
 });
-

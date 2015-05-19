@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 
-
 CLASS({
+  package: 'foam.ui',
   name:  'DAOUpdateController',
   label: 'DAO Update',
-  package: 'foam.ui',
-  
+
   extendsModel: 'foam.ui.View',
 
   requires: ['foam.ui.AlternateView'],

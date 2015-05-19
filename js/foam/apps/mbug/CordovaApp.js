@@ -74,7 +74,7 @@ __DATA({
     'mm2Property',
     'mm3Types',
     'mm4Method',
-    'mm5Misc',
+    'mm6Misc',
     '../js/foam/ui/Window',
     'value',
     'view',

@@ -16,10 +16,10 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'StaticHTML',
   extendsModel: 'foam.ui.View',
-  package: 'foam.ui',
-  
+
   properties: [
     {
       model_: 'StringProperty',

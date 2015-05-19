@@ -16,10 +16,10 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'HelpView',
 
   extendsModel: 'foam.ui.View',
-  package: 'foam.ui',
 
   documentation: function() {/* A display-only on-line help view. */},
 
@@ -72,4 +72,3 @@ CLASS({
     }
   }
 });
-

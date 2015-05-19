@@ -16,14 +16,14 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name:  'DAOController',
   label: 'DAO Controller',
-  package: 'foam.ui',
-  
+
   extendsModel: 'foam.ui.View',
 
   requires: ['SearchBorder'],
-  
+
   properties: [
     {
       model_: 'ModelProperty',
@@ -177,4 +177,3 @@ CLASS({
     }
   ]
 });
-

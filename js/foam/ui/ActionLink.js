@@ -16,11 +16,11 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'ActionLink',
 
   extendsModel: 'foam.ui.ActionButton',
-  package: 'foam.ui',
-  
+
 
   properties: [
     {
@@ -52,4 +52,3 @@ CLASS({
     }
   }
 });
-

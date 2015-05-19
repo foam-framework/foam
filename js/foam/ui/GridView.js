@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'GridView',
   package: 'foam.ui',
+  name: 'GridView',
 
   extendsModel: 'foam.ui.AbstractDAOView',
 
@@ -157,5 +157,3 @@ CLASS({
     }
   ]
 });
-
-

@@ -16,12 +16,10 @@
  */
 
 CLASS({
-  name:  'XMLView',
-  label: 'XML View',
-
-  extendsModel: 'foam.ui.TextAreaView',
   package: 'foam.ui',
-  
+  name: 'XMLView',
+  extendsModel: 'foam.ui.TextAreaView',
+  label: 'XML View',
 
   properties: [
     { name: 'displayWidth',  defaultValue: 100 },
@@ -41,5 +39,3 @@ CLASS({
     }
   }
 });
-
-

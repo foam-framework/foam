@@ -169,7 +169,13 @@ CLASS({
           return ! Number.isNaN(i);
         });
       }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'running',
+      defaultValue: false
     }
+
   ],
 
   methods: [

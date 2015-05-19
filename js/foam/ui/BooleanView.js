@@ -16,9 +16,9 @@
  */
 
 CLASS({
-  name: 'BooleanView',
   package: 'foam.ui',
-  
+  name: 'BooleanView',
+
   extendsModel: 'foam.ui.SimpleView',
 
   properties: [
@@ -50,4 +50,3 @@ CLASS({
     }
   }
 });
-

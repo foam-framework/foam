@@ -16,10 +16,10 @@
  */
 
 CLASS({
+  package: 'foam.ui',
   name: 'AutocompleteListView',
 
   extendsModel: 'foam.ui.SimpleView',
-  package: 'foam.ui',
 
   properties: [
     {
@@ -170,4 +170,3 @@ CLASS({
     }
   ]
 });
-
