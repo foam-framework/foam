@@ -892,7 +892,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
   <section>
     <title>Dependency injection with "requires"</title>
     <aside>
-      <code-sample>
+      <code-sample openSnippets="-2,-1">
         <title>The Addams Family Requires Persons</title>
         <source>
           <code-snippet ref="Person" title="Person Model" />
@@ -939,5 +939,415 @@ arequire('foam.sandbox.Person', X)(function(Person) {
       </code-sample>
     </aside>
   </section>
+
+  <section title="Add Methods">
+    <aside>
+      <code-sample openSnippets="-2,-1">
+        <title>Rectangular Methods</title>
+        <source>
+          <code-snippet title="Rectangle Model">
+            <src language="javascript">
+              <code>CLASS({
+  name: 'Rectangle',
+  package: 'foam.sandbox',
+
+  methods: [
+    // Named function defines method with no metadata.
+    function scale(factor) {
+      this.width *= factor;
+      this.height *= factor;
+    },
+    // Use "name", "code", et al., to provide metadata about the method.
+    {
+      name: 'randomize',
+      documentation: 'Randomize width and height over range: [0, max]',
+      args: [ { name: 'max', type: 'number', required: true } ],
+      code: function(max) {
+        this.width = Math.random() * max;
+        this.height = Math.random() * max;
+      }
+    }
+  ],
+
+  properties: [
+    { model_: 'StringProperty', name: 'name', required: true },
+    { model_: 'FloatProperty', name: 'width', defaultValue: Math.PI },
+    { model_: 'FloatProperty', name: 'height', defaultValue: Math.E }
+  ]
+});</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Example">
+            <src language="javascript">
+              <code>arequire('foam.sandbox.Rectangle', X)(function(Rectangle) {
+  var defaultRect = Rectangle.create({ name: 'Default' }, X);
+  var randomRect = Rectangle.create({ name: 'Random' }, X);
+  var square = Rectangle.create({ name: 'Square', width: 1, height: 1 }, X);
+  randomRect.randomize(1000);
+  square.scale(2 * Math.PI);
+
+  defaultRect.write(X.document);
+  randomRect.write(X.document);
+  square.write(X.document);
+});</code>
+            </src>
+          </code-snippet>
+        </source>
+      </code-sample>
+    </aside>
+  </section>
+
+  <section>
+    <title>Inherit from Model with "extendsModel"</title>
+    <aside>
+      <code-sample openSnippets="-2,-1">
+        <title>Employees are People Too</title>
+        <source>
+          <code-snippet ref="Person" title="Person Model" />
+          <code-snippet name="Employee" title="Employee Model">
+            <src language="javascript">
+              <code>CLASS({
+  name: 'Employee',
+  package: 'foam.sandbox',
+  // Classical inheritance: All properties, methods, etc. from Person apply to
+  // Employee.
+  extendsModel: 'foam.sandbox.Person',
+
+  properties: [
+    {
+      model_: 'IntProperty',
+      name: 'id',
+      factory: function() {
+        return this.hashCode() * Math.floor(Math.random() * 99 + 1);
+      }
+    }
+  ]
+});</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Example">
+            <src language="javascript">
+              <code>arequire('foam.sandbox.Employee', X)(function(Employee) {
+  // The Boss is employee #1.
+  var theBoss = Employee.create({
+    firstName: 'Bruce',
+    lastName: 'Springsteen',
+    id: 1
+  });
+  // Auto-generate Doug's ID.
+  var doug = Employee.create({ firstName: 'Douglas', lastName: 'Alderman' });
+  theBoss.write(X.document);
+  doug.write(X.document);
+});</code>
+            </src>
+          </code-snippet>
+        </source>
+      </code-sample>
+    </aside>
+  </section>
+
+  <section title="Invoke Super-Class Implementation with this.SUPER()">
+    <aside>
+      <code-sample openSnippets="-2,-1">
+        <title>Nicknames in Full Names</title>
+        <source>
+          <code-snippet ref="Person" title="Person Model" />
+          <code-snippet title="Nicknamed Model">
+            <src language="javascript">
+              <code>CLASS({
+  name: 'Nicknamed',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.sandbox.Person',
+
+  methods: [
+    function fullName() {
+      // Use this.SUPER([args]) to invoke super-class's implementation of
+      // fullName().
+      var realName = this.SUPER();
+      if ( this.nickname) {
+        return realName + ', A.K.A., "' +  this.nickname + '"';
+      } else {
+        return realName;
+      }
+    }
+  ],
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'nickname'
+    }
+  ]
+});</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Example">
+            <src language="javascript">
+              <code>arequire('foam.sandbox.Nicknamed', X)(function(Nicknamed) {
+  var theBoss = Nicknamed.create({
+    firstName: 'Bruce',
+    lastName: 'Springsteen',
+    nickname: 'The Boss'
+  });
+  var sam = Nicknamed.create({ firstName: 'Sam', lastName: 'Roberts' });
+  console.log(theBoss.fullName());
+  console.log(sam.fullName());
+});</code>
+            </src>
+          </code-snippet>
+        </source>
+      </code-sample>
+    </aside>
+  </section>
+
+  <section title="Type Introspection with isInstance()">
+    <aside>
+      <code-sample>
+        <title>Joe is an Employee and a Person, but Not a Mongoose</title>
+        <source>
+          <code-snippet ref="Person" title="Person Model" />
+          <code-snippet ref="Employee" title="Employee Model" />
+          <code-snippet name="Mongoose" title="Mongoose Model">
+            <src language="javascript">
+              <code>CLASS({ name: 'Mongoose', package: 'foam.sandbox' });</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Example">
+            <src language="javascript">
+              <code>apar(
+    arequire('foam.sandbox.Person', X),
+    arequire('foam.sandbox.Employee', X),
+    arequire('foam.sandbox.Mongoose', X))(function(Person, Employee, Mongoose) {
+  var joe = Employee.create({ firstName: 'Joseph', lastName: 'Fernando' });
+  console.log('Joe is an employee?', Employee.isInstance(joe));
+  console.log('Joe is a person?', Person.isInstance(joe));
+  console.log('Joe is a mongoose?', Mongoose.isInstance(joe));
+});</code>
+            </src>
+          </code-snippet>
+        </source>
+      </code-sample>
+    </aside>
+  </section>
+
+  <section title="Meta-Type Introspection with isSubModel()">
+    <aside>
+      <code-sample>
+        <title>People, Employees, and Supervisors</title>
+        <source>
+          <code-snippet ref="Person" title="Person Model" />
+          <code-snippet ref="Employee" title="Employee Model" />
+          <code-snippet name="Supervisor" title="Supervisor Model">
+            <src language="javascript">
+              <code>CLASS({
+  name: 'Supervisor',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.sandbox.Employee',
+
+  properties: [
+    {
+      model_: 'ArrayProperty',
+      subType: 'foam.sandbox.Employee',
+      name: 'directReports'
+    }
+  ]
+});</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Example">
+            <src language="javascript">
+              <code>apar(
+    arequire('foam.sandbox.Person', X),
+    arequire('foam.sandbox.Employee', X),
+    arequire('foam.sandbox.Supervisor', X))
+(function(Person, Employee, Supervisor) {
+  console.log('All employees are people?', Person.isSubModel(Employee));
+  console.log('All people are employees?', Employee.isSubModel(Person));
+  console.log('All supervisors are employees?', Employee.isSubModel(Supervisor));
+  console.log('All supervisors are people?', Person.isSubModel(Supervisor));
+});</code>
+            </src>
+          </code-snippet>
+        </source>
+      </code-sample>
+    </aside>
+  </section>
+
+        <section>
+          <title>Mixins with "traits"</title>
+          <aside>
+            <code-sample openSnippets="3,4,5">
+              <title>Compounds and Friends</title>
+              <source>
+                <code-snippet ref="Person" title="Person Model" />
+                <code-snippet title="Nickname Trait">
+                  <src language="javascript">
+                    <code>CLASS({
+  name: 'Nicknamed',
+  package: 'foam.sandbox',
+
+  methods: [
+    function fullName() {
+      var realName = this.SUPER();
+      if ( this.nickname) {
+        return realName + ', A.K.A., "' +  this.nickname + '"';
+      } else {
+        return realName;
+      }
+    }
+  ],
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'nickname'
+    }
+  ]
+});</code>
+                  </src>
+                </code-snippet>
+                <code-snippet title="Formal Compound Model">
+                  <src language="javascript">
+                    <code>CLASS({
+  name: 'FormalCompound',
+  package: 'foam.sandbox',
+
+  methods: [ function fullName() { return this.iupacName; } ],
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'iupacName',
+      required: true
+    }
+  ]
+});</code>
+                  </src>
+                </code-snippet>
+                <code-snippet title="Compound Model (Formal Compound with Nicknamed trait)">
+                  <src language="javascript">
+                    <code><!--CLASS({
+  name: 'Compound',
+  package: 'foam.sandbox',
+  // Inheritance: FormalCompound <- Nicknamed <- Compound.
+  extendsModel: 'foam.sandbox.FormalCompound',
+  traits: [ 'foam.sandbox.Nicknamed' ]
+});--></code>
+                  </src>
+                </code-snippet>
+                <code-snippet title="Friend Model (Person with Nicknamed trait)">
+                  <src language="javascript">
+                    <code><!--CLASS({
+  name: 'Friend',
+  package: 'foam.sandbox',
+  // Inheritance: Person <- Nicknamed <- Friend.
+  extendsModel: 'foam.sandbox.Person',
+  traits: [ 'foam.sandbox.Nicknamed' ]
+});--></code>
+                  </src>
+                </code-snippet>
+                <code-snippet title="Example">
+                  <src language="javascript">
+                    <code><!--apar(
+    arequire('foam.sandbox.Compound', X),
+    arequire('foam.sandbox.Friend', X))(function(Compound, Friend) {
+  var water = Compound.create({ iupacName: 'oxidane', nickname: 'water' });
+  var theBoss = Friend.create({
+    firstName: 'Bruce',
+    lastName: 'Springsteen',
+    nickname: 'The Boss'
+  });
+  console.log('Compound: ' + water.fullName());
+  console.log('Friend: ' + theBoss.fullName());
+});--></code>
+                  </src>
+                </code-snippet>
+              </source>
+            </code-sample>
+          </aside>
+        </section>
+
+        <section title="Add Listeners: Methods Intended as Callbacks">
+          <aside>
+            <code-sample hasHTML="true" openSnippets="-2,-1">
+              <title>Friendly People with Framed Listeners</title>
+              <source>
+                <code-snippet ref="Person" title="Person Model" />
+                <code-snippet title="Friendly Model">
+                  <src language="javascript">
+                    <code>CLASS({
+  name: 'Friendly',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.sandbox.Person',
+
+  listeners: [
+    // Listeners bind "this" to the current instance. This is especially helpful
+    // when listening to DOM events.
+    {
+      name: 'onHello',
+      code: function() {
+        console.log("Hi, I'm " + this.firstName);
+      }
+    },
+    // Framed listeners (isFramed: true) only fire once per animation frame.
+    {
+      name: 'onLastNameUpdate',
+      isFramed: true,
+      code: function() { ++this.framedLastNameUpdates; }
+    },
+    // Unframed listener gets "spammed" with back-to-back updates.
+    {
+      name: 'onSpammyLastNameUpdate',
+      code: function() { ++this.unframedLastNameUpdates; }
+    }
+  ],
+
+  methods: [
+    function brokenOnHello() { console.log("Hi, I'm " + this.firstName); },
+    function init() {
+      this.SUPER.apply(this, arguments);
+      this.lastName$.addListener(this.onLastNameUpdate);
+      this.lastName$.addListener(this.onSpammyLastNameUpdate);
+    }
+  ],
+
+  properties: [
+    {
+      model_: 'IntProperty',
+      name: 'framedLastNameUpdates',
+      defaultValue: 0
+    },
+    {
+      model_: 'IntProperty',
+      name: 'unframedLastNameUpdates',
+      defaultValue: 0
+    }
+  ]
+});</code>
+                  </src>
+                </code-snippet>
+                <code-snippet title="Example">
+                  <src language="javascript">
+                    <code>arequire('foam.sandbox.Friendly', X)(function(Friendly) {
+  var lua = Friendly.create({ firstName: 'Lua' }, X);
+  // Listener works correctly, even when we attempt to apply it to a different
+  // object.
+  console.log('Invoking listener');
+  lua.onHello.apply(window);
+  // Method will not work correctly when applied to a different object.
+  console.log('Invoking method that should be a listener');
+  lua.brokenOnHello.apply(window);
+  // Multiple unframed updates; single framed update.
+  ['Johnson', 'Jamison', 'Johanson'].forEach(function(lastName) {
+    lua.lastName = lastName;
+  });
+  lua.write(X.document);
+});</code>
+                  </src>
+                </code-snippet>
+              </source>
+            </code-sample>
+          </aside>
+        </section>
 
 </section>
