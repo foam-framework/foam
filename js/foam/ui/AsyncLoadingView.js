@@ -104,8 +104,12 @@
         skipKeysArgDecorator.model = this.copyFrom.model;
       }
 
-      if ( this.copyFrom && this.copyFrom.model_ && typeof this.copyFrom.model_ === 'string' ) {
-        return this.requireModelName(this.copyFrom.model_, skipKeysArgDecorator);
+      if ( this.copyFrom && this.copyFrom.model_ ) {
+        if ( typeof this.copyFrom.model_ === 'string' ) { // string model_ in copyFrom
+          return this.requireModelName(this.copyFrom.model_, skipKeysArgDecorator);
+        } else if ( this.Model.isInstance(this.copyFrom.model_) ) { // or model instance
+          return this.finishRender(this.copyFrom.model_.create(skipKeysArgDecorator, this.X));
+        }
       }
       if ( typeof this.model === 'string' ) { // string model name
         return this.requireModelName(this.model, skipKeysArgDecorator);
@@ -116,7 +120,7 @@
       }
       if ( this.model.model_ ) {
         if ( this.Model.isInstance(this.model) ) { // is a model instance
-          return this.finishRender(this.model.create(skipKeysArgDecorator));
+          return this.finishRender(this.model.create(skipKeysArgDecorator, this.X));
         } else {
           // JSON with Model instance specified in model_
           this.mergeWithCopyFrom(this.model);
