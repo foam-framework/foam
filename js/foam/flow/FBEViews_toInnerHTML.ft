@@ -2,7 +2,7 @@
 
       <section title="Custom DetailView with toDetailHTML()">
         <aside>
-          <code-sample>
+          <code-sample openSnippets="-2,-1">
             <title>Implement a toDetailHTML() template</title>
             <source>
               <code-snippet ref="Person" title="Person Model"></code-snippet>
@@ -55,11 +55,11 @@
 
       <section title="Custom Views">
         <aside>
-          <code-sample>
+          <code-sample openSnippets="-2,-1">
             <title>A Custom View</title>
             <source>
               <code-snippet ref="Person" title="Person Model"></code-snippet>
-              <code-snippet title="Person View">
+              <code-snippet name="BasicPersonView" title="Basic Person View">
                 <src language="javascript">
                   <code>CLASS({
   name: 'BasicPersonView',
@@ -71,10 +71,8 @@
       // View renders your toInnerHTML() content inside a div.
       name: 'toInnerHTML',
       template: function() {/*
-        <p>
         <h3>Person Custom View</h3>
         <p>$$firstName{mode:'read-only'} $$lastName $$lastName{mode:'read-only'}</p>
-        <p>
       */}
     }
   ]
@@ -111,11 +109,11 @@
 
       <section title="Custom View using toHTML()">
         <aside>
-          <code-sample>
+          <code-sample openSnippets="-2,-1">
             <title>A Custom View</title>
             <source>
               <code-snippet ref="Person" title="Person Model"></code-snippet>
-              <code-snippet title="Person View">
+              <code-snippet title="Manual Person View">
                 <src language="javascript">
                   <code>CLASS({
   name: 'ManualPersonView',
@@ -177,5 +175,83 @@
         </aside>
       </section>
 
+      <section title="View Template Syntax">
+        <aside>
+          <code-sample openSnippets="-2,-1">
+            <title>Template Playground</title>
+            <source>
+              <code-snippet ref="Person" title="Person Model"></code-snippet>
+              <code-snippet ref="BasicPersonView" title="Basic Person View"></code-snippet>
+              <code-snippet title="Template Playground View">
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'TemplatePlaygroundView',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.ui.View',
+
+  properties: [
+    {
+      name: 'primaryContact',
+      view: 'foam.sandbox.BasicPersonView'
+    }
+  ],
+
+  methods: [
+    function printSomething() {
+      return "Hello world.";
+    }
+  ],
+
+  templates: [
+    {
+      name: 'toInnerHTML',
+      template: function() {/*
+        <h2>Basic Output</h2>
+        <h3>Output a method result from this view</h3>
+        <%= this.printSomething() %>
+        <h3>Output a method result from our data</h3>
+        <%= this.data.invertedName() %>
+        <h3>Output a dynamically updated property value</h3>
+        <%# this.primaryContact.lastName %>
+
+        <h3>Create a subview</h3>
+        $$primaryContact{}
+
+      */}
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>apar(
+    arequire('foam.sandbox.Person', X),
+    arequire('foam.sandbox.TemplatePlaygroundView', X)
+)(function(Person, TemplatePlaygroundView) {
+
+  // Create a person
+  var person = Person.create({
+    firstName: 'Harvey',
+    lastName: 'Birdman',
+  }, X);
+
+  // Create an instance of our custom view and set the person as 'data'
+  var view = TemplatePlaygroundView.create({
+    data: person
+  }, X);
+
+  // The view will render the data we have set on it
+  view.write(X.document);
+
+  // bind this property, the dynamic output will update
+  view.primaryContact = person;
+  });</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
 
 </section>
