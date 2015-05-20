@@ -84,6 +84,7 @@ var BootstrapModel = {
   __proto__: PropertyChangeSupport,
 
   name_: 'BootstrapModel <startup only, error if you see this>',
+  isBootstrap: true,
 
   addTraitToModel_: function(traitModel, parentModel) {
     var parentName = parentModel && parentModel.id ? parentModel.id.replace(/\./g, '__') : '';
@@ -517,7 +518,8 @@ var BootstrapModel = {
 
   isSubModel: function(model) {
     /* Returns true if the given instance extends this $$DOC{ref:'Model'} or a descendant of this. */
-    if ( ! model || ! model.getPrototype ) return false;
+
+    if ( ! model || ! model.getPrototype || model.isBootstrap ) return false;
 
     var subModels_ = this.subModels_ || ( this.subModels_ = {} );
 
