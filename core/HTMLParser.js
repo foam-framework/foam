@@ -210,7 +210,7 @@ var HTMLParser = {
 
   endTag_: seq1(1, '</', sym('tagName'), '>'),
 
-  cdata: seq1(1, '<![CDATA[', repeat(not(']]>', anyChar)), ']]>'),
+  cdata: seq1(1, '<![CDATA[', str(repeat(not(']]>', anyChar))), ']]>'),
 
   comment: seq('<!--', repeat0(not('-->', anyChar)), '-->'),
 
@@ -244,6 +244,7 @@ var HTMLParser = {
     return ret.childNodes[0];
   },
   attribute: function(xs) { return { name: xs[0], value: xs[1] }; },
+  cdata: function(xs) { this.peek() && this.peek().appendChild(xs); },
   text: function(xs) { this.peek() && this.peek().appendChild(xs); },
   startTag: function(xs) {
     var tag = xs[1];
