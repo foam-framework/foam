@@ -1,4 +1,5 @@
 (function () {
+	/* global CLASS, TRUE, NOT */
 	'use strict';
 	// Needed to massage the HTML to fit TodoMVC spec; it works without this.
 	CLASS({
@@ -8,10 +9,10 @@
 		requires: ['com.todomvc.Todo'],
 		properties: [
 			{
-			  name: 'choices',
-			  factory: function() {
+				name: 'choices',
+				factory: function() {
 					return [ [ TRUE, 'All' ], [ NOT(this.Todo.COMPLETED), 'Active' ], [ this.Todo.COMPLETED, 'Completed' ] ];
-			  }
+				}
 			}
 		],
 		methods: [

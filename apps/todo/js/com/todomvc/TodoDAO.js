@@ -1,5 +1,6 @@
 (function () {
-  'use strict';
+	/* global CLASS */
+	'use strict';
 	CLASS({
 		package: 'com.todomvc',
 		name: 'TodoDAO',

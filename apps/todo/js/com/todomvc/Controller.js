@@ -3,13 +3,13 @@
 	// Necessary JSHint options. CLASS is not a constructor, just a global function.
 	/* jshint newcap: false */
 	// These are provided by FOAM (up through EasyDAO) or defined in this file.
-	/* global CLASS, TRUE, SET, NOT, GROUP_BY, COUNT, EasyDAO */
+	/* global CLASS, TRUE, SET, GROUP_BY, COUNT */
 
 	CLASS({
 		package: 'com.todomvc',
 		name: 'Controller',
 		traits: ['foam.ui.CSSLoaderTrait'],
-		requires: ['foam.ui.TextFieldView', 'foam.ui.DAOListView', 'foam.dao.EasyDAO',
+		requires: ['foam.ui.TextFieldView', 'foam.ui.DAOListView', 'foam.dao.EasyDAO', 'foam.memento.WindowHashValue',
 				'com.todomvc.Todo', 'com.todomvc.TodoDAO', 'com.todomvc.TodoFilterView'],
 		properties: [
 			{
@@ -28,7 +28,7 @@
 			{ name: 'completedCount', model_: 'IntProperty' },
 			{ name: 'activeCount',    model_: 'IntProperty', postSet: function (_, c) { this.toggle = !c; }},
 			{ name: 'toggle',         model_: 'BooleanProperty', postSet: function (_, n) {
-					if ( n == this.activeCount > 0 ) {
+					if ( n === this.activeCount > 0 ) {
 						this.dao.update(SET(this.Todo.COMPLETED, n));
 					}
 			}},
@@ -37,6 +37,10 @@
 				postSet: function (_, q) { this.filteredDAO = this.dao.where(q); },
 				defaultValue: TRUE,
 				view: 'com.todomvc.TodoFilterView'
+			},
+			{
+				name: 'memento',
+				factory: function() { return this.WindowHashValue.create(); }
 			}
 		],
 		actions: [
@@ -99,6 +103,13 @@
 				var f = function () { return this.completedCount + this.activeCount == 0; }.bind(this.data);
 				this.setClass('hidden', f, 'main');
 				this.setClass('hidden', f, 'footer');
+				Events.relate(this.data.memento, this.queryView.text$,
+						function (memento) {
+							var s = memento && memento.substring(1);
+							var t = s ? s.capitalize() : 'All';
+							return t;
+						},
+						function (label) { return '/' + label.toLowerCase(); });
 				this.addInitializer(function() {
 					X.$('new-todo').focus();
 				});
