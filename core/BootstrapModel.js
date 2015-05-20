@@ -521,11 +521,11 @@ var BootstrapModel = {
 
     var subModels_ = this.subModels_ || ( this.subModels_ = {} );
 
-    if ( ! subModels_.hasOwnProperty(model.name) ) {
-      subModels_[model.name] = ( model.getPrototype() === this.getPrototype() || this.isSubModel(model.getPrototype().__proto__.model_) );
+    if ( ! subModels_.hasOwnProperty(model.id) ) {
+      subModels_[model.id] = ( model.getPrototype() === this.getPrototype() || this.isSubModel(model.getPrototype().__proto__.model_) );
     }
 
-    return subModels_[model.name];
+    return subModels_[model.id];
   },
 
   getRuntimeProperties: function() {
