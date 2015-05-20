@@ -59,7 +59,7 @@ MODEL({
       repeat(notChars(' $\n<{')),
       optional(JSONParser.export('objAsString'))),
 
-    'simple value': seq('%%', repeat(notChars(' -"\n><:;'))),
+    'simple value': seq('%%', repeat(notChars(' -"\n><:;,'))),
 
     'live value tag': seq('<%#', repeat(not('%>', anyChar)), '%>'),
 
