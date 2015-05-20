@@ -1226,29 +1226,29 @@ arequire('foam.sandbox.Person', X)(function(Person) {
                 </code-snippet>
                 <code-snippet title="Compound Model (Formal Compound with Nicknamed trait)">
                   <src language="javascript">
-                    <code><!--CLASS({
+                    <code><![CDATA[/**/CLASS({
   name: 'Compound',
   package: 'foam.sandbox',
   // Inheritance: FormalCompound <- Nicknamed <- Compound.
   extendsModel: 'foam.sandbox.FormalCompound',
   traits: [ 'foam.sandbox.Nicknamed' ]
-});--></code>
+});]]></code>
                   </src>
                 </code-snippet>
                 <code-snippet title="Friend Model (Person with Nicknamed trait)">
                   <src language="javascript">
-                    <code><!--CLASS({
+                    <code><![CDATA[/**/CLASS({
   name: 'Friend',
   package: 'foam.sandbox',
   // Inheritance: Person <- Nicknamed <- Friend.
   extendsModel: 'foam.sandbox.Person',
   traits: [ 'foam.sandbox.Nicknamed' ]
-});--></code>
+});]]></code>
                   </src>
                 </code-snippet>
                 <code-snippet title="Example">
                   <src language="javascript">
-                    <code><!--apar(
+                    <code><![CDATA[/**/apar(
     arequire('foam.sandbox.Compound', X),
     arequire('foam.sandbox.Friend', X))(function(Compound, Friend) {
   var water = Compound.create({ iupacName: 'oxidane', nickname: 'water' });
@@ -1259,7 +1259,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
   });
   console.log('Compound: ' + water.fullName());
   console.log('Friend: ' + theBoss.fullName());
-});--></code>
+});]]></code>
                   </src>
                 </code-snippet>
               </source>
