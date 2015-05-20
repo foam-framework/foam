@@ -170,7 +170,8 @@ CLASS({
           tabSize: this.aceTabSize,
           minLines: this.aceReadOnlyMinLines,
           maxLines: this.aceReadOnlyMaxLines,
-          readOnly: this.mode === 'read-only'
+          readOnly: this.mode === 'read-only',
+          useWorker: false
         });
         this.foldAll();
       }
@@ -184,7 +185,8 @@ CLASS({
           tabSize: this.aceTabSize,
           minLines: this.aceMinLines,
           maxLines: this.aceMaxLines,
-          readOnly: this.mode === 'read-only'
+          readOnly: this.mode === 'read-only',
+          useWorker: false
         });
         this.unfoldAll();
       }
