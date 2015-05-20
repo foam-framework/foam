@@ -22,7 +22,9 @@
       template: function() {/*
         <p>
         Person Description
+        <% if ( this.data ) { %>
         <p>$$firstName{mode:'read-only'} <b>$$lastName{mode:'read-only'}</b></p>
+        <% } %>
         <p>
       */}
     }
@@ -72,7 +74,9 @@
       name: 'toInnerHTML',
       template: function() {/*
         <h3>Person Custom View</h3>
+        <% if ( this.data ) { %>
         <p>$$firstName{mode:'read-only'} $$lastName $$lastName{mode:'read-only'}</p>
+        <% } %>
       */}
     }
   ]
@@ -215,7 +219,9 @@
         <%# this.primaryContact.lastName %>
 
         <h3>Create a subview</h3>
-        $$primaryContact{}
+        <div style="margin-left: 10px">
+          $$primaryContact
+        </div>
 
       */}
     }
