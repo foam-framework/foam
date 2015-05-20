@@ -9,10 +9,9 @@
  *     http://www.apache.org/licenses/LICENSE-2.0
  */
 
-
 CLASS({
-  name: 'FOAMByExample',
   package: 'foam.flow',
+  name: 'FOAMByExample',
   extendsModel: 'foam.flow.Section',
 
   requires: [
