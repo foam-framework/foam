@@ -22,7 +22,7 @@ CLASS({
 
           book-title {
             font-weight: bold;
-            font-size: 70px;
+            font-size: 40px;
             margin-top: 15px;
           }
 
@@ -32,7 +32,7 @@ CLASS({
 
           book-title {
             font-weight: bold;
-            font-size: 80px;
+            font-size: 50px;
             margin-top: 20px;
           }
 
