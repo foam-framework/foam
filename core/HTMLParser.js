@@ -178,6 +178,7 @@ var HTMLParser = {
   html: repeat0(sym('htmlPart')),
 
   htmlPart: simpleAlt(
+    sym('cdata'),
     sym('comment'),
     sym('text'),
     sym('endTag'),
@@ -208,6 +209,8 @@ var HTMLParser = {
   })(),
 
   endTag_: seq1(1, '</', sym('tagName'), '>'),
+
+  cdata: seq1(1, '<![CDATA[', repeat(not(']]>', anyChar)), ']]>'),
 
   comment: seq('<!--', repeat0(not('-->', anyChar)), '-->'),
 
