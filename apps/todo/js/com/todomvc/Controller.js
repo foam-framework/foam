@@ -3,73 +3,21 @@
 	// Necessary JSHint options. CLASS is not a constructor, just a global function.
 	/* jshint newcap: false */
 	// These are provided by FOAM (up through EasyDAO) or defined in this file.
-	/* global CLASS, TRUE, SET, NOT, GROUP_BY, COUNT, EasyDAO, Todo, TodoDAO */
-	CLASS({
-		name: 'TodoDAO',
-		extendsModel: 'foam.dao.ProxyDAO',
-		methods: {
-			put: function(issue, s) {
-				// If the user tried to put an empty text, remove the entry instead.
-				if (!issue.text) {
-					this.remove(issue.id, { remove: s && s.put });
-				} else {
-					this.SUPER(issue, s);
-				}
-			}
-		}
-	});
+	/* global CLASS, TRUE, SET, NOT, GROUP_BY, COUNT, EasyDAO */
 
 	CLASS({
-		name: 'Todo',
-		properties: [
-			'id',
-			{ name: 'completed', model_: 'BooleanProperty' },
-			{ name: 'text', preSet: function (_, text) { return text.trim(); } }
-		],
-		templates: [ function toDetailHTML() {/*
-			<li id="%%id">
-				<div class="view">
-					$$completed{className: 'toggle'}
-					$$text{mode: 'read-only', tagName: 'label'}
-					<button class="destroy" id="<%= this.on('click', function () { this.parent.dao.remove(this.data); }) %>"></button>
-				</div>
-				$$text{className: 'edit'}
-			</li>
-			<%
-				var toEdit    = function () { DOM.setClass(this.$, 'editing'); this.textView.focus(); }.bind(this);
-				var toDisplay = function () { DOM.setClass(this.$, 'editing', false); }.bind(this);
-				this.on('dblclick', toEdit, this.id);
-				this.on('blur', toDisplay, this.textView.id);
-				this.textView.subscribe(this.textView.ESCAPE, toDisplay);
-				this.setClass('completed', function () { return this.data.completed; }.bind(this), this.id);
-			%> */}
-		]
-	});
-
-	// Needed to massage the HTML to fit TodoMVC spec; it works without this.
-	CLASS({
-		name: 'TodoFilterView',
-		extendsModel: 'foam.ui.ChoiceListView',
-		methods: {
-			choiceToHTML: function(id, choice) {
-				var self = this;
-                                this.setClass('selected', function() { return self.text === choice[1]; }, id);
-                                return '<li><a id="' + id + '" class="choice">' + choice[1] + '</a></li>';
-			}
-		}
-	});
-
-	CLASS({
+		package: 'com.todomvc',
 		name: 'Controller',
-		traits: ['foam.ui.CSSLoaderTrait'], 
-   requires: ['foam.ui.TextFieldView', 'foam.ui.DAOListView', 'TodoFilterView', 'foam.dao.EasyDAO' ],
+		traits: ['foam.ui.CSSLoaderTrait'],
+		requires: ['foam.ui.TextFieldView', 'foam.ui.DAOListView', 'foam.dao.EasyDAO',
+				'com.todomvc.Todo', 'com.todomvc.TodoDAO', 'com.todomvc.TodoFilterView'],
 		properties: [
 			{
 				name: 'input',
 				setter: function (text) {
 					// This is a fake property that adds the todo when its value gets saved.
 					if (text) {
-						this.dao.put(Todo.create({text: text}));
+						this.dao.put(this.Todo.create({text: text}));
 						this.propertyChange('input', text, '');
 					}
 				},
@@ -81,22 +29,22 @@
 			{ name: 'activeCount',    model_: 'IntProperty', postSet: function (_, c) { this.toggle = !c; }},
 			{ name: 'toggle',         model_: 'BooleanProperty', postSet: function (_, n) {
 					if ( n == this.activeCount > 0 ) {
-						this.dao.update(SET(Todo.COMPLETED, n));
+						this.dao.update(SET(this.Todo.COMPLETED, n));
 					}
 			}},
 			{
 				name: 'query',
 				postSet: function (_, q) { this.filteredDAO = this.dao.where(q); },
 				defaultValue: TRUE,
-				view: { factory_: 'TodoFilterView', choices: [ [ TRUE, 'All' ], [ NOT(Todo.COMPLETED), 'Active' ], [ Todo.COMPLETED, 'Completed' ] ] }
+				view: 'com.todomvc.TodoFilterView'
 			}
 		],
 		actions: [
 			{
 				name: 'clear',
-				labelFn: function () { return 'Clear completed (' + this.completedCount + ')'; },
+				label: 'Clear completed',
 				isEnabled: function () { return this.completedCount; },
-				action: function () { this.dao.where(Todo.COMPLETED).removeAll(); }
+				action: function () { this.dao.where(this.Todo.COMPLETED).removeAll(); }
 			}
 		],
 		listeners: [
@@ -104,7 +52,7 @@
 				name: 'onDAOUpdate',
 				isFramed: true,
 				code: function () {
-					this.dao.select(GROUP_BY(Todo.COMPLETED, COUNT()))(function (q) {
+					this.dao.select(GROUP_BY(this.Todo.COMPLETED, COUNT()))(function (q) {
 						this.completedCount = q.groups[true];
 						this.activeCount = q.groups[false];
 					}.bind(this));
@@ -114,8 +62,8 @@
 		methods: {
 			init: function () {
 				this.SUPER();
-				this.filteredDAO = this.dao = TodoDAO.create({
-					delegate: this.EasyDAO.create({model: Todo, seqNo: true, daoType: 'LOCAL', name: 'todos-foam'}) });
+				this.filteredDAO = this.dao = this.TodoDAO.create({
+					delegate: this.EasyDAO.create({model: this.Todo, seqNo: true, daoType: 'LOCAL', name: 'todos-foam'}) });
 				this.dao.listen(this.onDAOUpdate);
 				this.onDAOUpdate();
 			}
