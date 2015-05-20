@@ -225,6 +225,9 @@ CLASS({
         if ( ! this.$ ) return;
         var codeView = this.codeView = GLOBAL.ace.edit(this.$);
 
+        // Suppress warning from ace.js:3460.
+        codeView.$blockScrolling = Infinity;
+
         codeView.setValue(this.data && this.data.code && this.data.code.trim() || '');
 
         if ( this.mode === 'read-only' ) this.applyReadOnlySettings();
