@@ -68,6 +68,7 @@
 
   templates: [
     {
+      // View renders your toInnerHTML() content inside a div.
       name: 'toInnerHTML',
       template: function() {/*
         <p>
@@ -107,5 +108,74 @@
           </code-sample>
         </aside>
       </section>
+
+      <section title="Custom View using toHTML()">
+        <aside>
+          <code-sample>
+            <title>A Custom View</title>
+            <source>
+              <code-snippet ref="Person" title="Person Model"></code-snippet>
+              <code-snippet title="Person View">
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'ManualPersonView',
+  package: 'foam.sandbox',
+  // DetailView lets us override toHTML() and still re-render when necessary
+  extendsModel: 'foam.ui.DetailView',
+
+  templates: [
+    {
+      name: 'toHTML',
+      // All views are identified in the DOM by their id. You must output an
+      // id when you override toHTML().
+      template: function() {/*
+        <div style="color: red; border: 1px solid black">
+          <p>This appears in the DOM, but will not be in the element referenced by the '$'
+          property of your view.</p>
+          <p>Always keep your content inside a properly id'd element, or use toInnerHTML().</p>
+        </div>
+        <div id="%%id">
+          Official contents:
+          <h3>Person Manual View</h3>
+          <p><%# this.data.lastName %>, <%# this.data.firstName %>. View id: <%# this.id %></p>
+        </div>
+      */}
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>apar(
+    arequire('foam.sandbox.Person', X),
+    arequire('foam.sandbox.ManualPersonView', X)
+)(function(Person, ManualPersonView) {
+
+  // Create a person
+  var person = Person.create({
+    firstName: 'Harvey',
+    lastName: 'Birdman',
+  }, X);
+
+  // Create an instance of our custom view and set the person as 'data'
+  var view = ManualPersonView.create({
+    data: person
+  }, X);
+
+  // The view will render the data we have set on it
+  view.write(X.document);
+
+  // The view does not have a way to reference the extra content
+  // that appears outside its id'd element.
+  console.log("View contents: ", view.$.outerHTML);
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
 
 </section>
