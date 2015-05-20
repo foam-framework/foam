@@ -9,12 +9,10 @@
  *     http://www.apache.org/licenses/LICENSE-2.0
  */
 
-
 CLASS({
-  name: 'FOAMBook',
   package: 'foam.flow',
+  name: 'FOAMBook',
   extendsModel: 'foam.flow.Section',
-
 
   requires: [
     'foam.dao.EasyDAO',
