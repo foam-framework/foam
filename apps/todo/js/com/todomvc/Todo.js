@@ -1,4 +1,5 @@
 (function () {
+	/* global CLASS */
 	'use strict';
 	CLASS({
 		package: 'com.todomvc',
