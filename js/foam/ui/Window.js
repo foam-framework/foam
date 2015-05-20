@@ -36,7 +36,6 @@ CLASS({
     'installedModels',
     'log',
     'lookup',
-    'memento',
     'requestAnimationFrame',
     'setInterval',
     'setTimeout',
@@ -84,10 +83,6 @@ CLASS({
       name: 'console',
       lazyFactory: function() { return this.window.console; }
     },
-    {
-      name: 'memento',
-      lazyFactory: function() { this.window.WindowHashValue.create({window: this.window}); }
-    }
   ],
 
   methods: {
