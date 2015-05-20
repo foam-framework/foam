@@ -186,6 +186,27 @@
             <source>
               <code-snippet ref="Person" title="Person Model"></code-snippet>
               <code-snippet ref="BasicPersonView" title="Basic Person View"></code-snippet>
+              <code-snippet name="OtherPersonView" title="Other Person View">
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'OtherPersonView',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.ui.View',
+
+  templates: [
+    {
+      name: 'toInnerHTML',
+      template: function() {/*
+        <h3>Another way to view a person:</h3>
+        <% if ( this.data ) { %>
+        <p>$$lastName{mode:'read-only'}</p>
+        <% } %>
+      */}
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
               <code-snippet title="Template Playground View">
                 <src language="javascript">
                   <code>CLASS({
@@ -211,17 +232,27 @@
       name: 'toInnerHTML',
       template: function() {/*
         <h2>Basic Output</h2>
+
         <h3>Output a method result from this view</h3>
         <%= this.printSomething() %>
+
         <h3>Output a method result from our data</h3>
         <%= this.data.invertedName() %>
+
         <h3>Output a dynamically updated property value</h3>
         <%# this.primaryContact.lastName %>
 
-        <h3>Create a subview</h3>
-        <div style="margin-left: 10px">
+        <h3>Create a subview with the property's default view</h3>
+        <div style="margin-left: 10px; padding: 10px; border: 1px solid gray">
           $$primaryContact
         </div>
+
+        <h3>Create a subview with an explicit view</h3>
+        <div style="margin-left: 10px; padding: 10px; border: 1px solid gray">
+          $$primaryContact{ model_: 'foam.sandbox.OtherPersonView' }
+        </div>
+
+
 
       */}
     }
@@ -241,6 +272,10 @@
     firstName: 'Harvey',
     lastName: 'Birdman',
   }, X);
+  var person2 = Person.create({
+    firstName: 'H',
+    lastName: 'Potamus',
+  }, X);
 
   // Create an instance of our custom view and set the person as 'data'
   var view = TemplatePlaygroundView.create({
@@ -250,8 +285,8 @@
   // The view will render the data we have set on it
   view.write(X.document);
 
-  // bind this property, the dynamic output will update
-  view.primaryContact = person;
+  // set this property and the sub-views based on it will update
+  view.primaryContact = person2;
   });</code>
                 </src>
               </code-snippet>
