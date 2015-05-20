@@ -114,7 +114,7 @@
         // FOAMalize the definition
         return this.requireViewInstance(FOAM(this.model));
       }
-      if ( this.model.model_ ) { 
+      if ( this.model.model_ ) {
         if ( this.Model.isInstance(this.model) ) { // is a model instance
           return this.finishRender(this.model.create(skipKeysArgDecorator));
         } else {
@@ -155,7 +155,6 @@
             factory_: true,
             model_: true,
             view: true,
-            id: true
           },
           hasOwnProperty: function(name) {
             if ( ! this.__SKD_SKIP_KEYS[name] ) {

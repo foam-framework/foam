@@ -73,6 +73,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             <code-sample>
               <title>Generate JSON Description of a "Person" Instance</title>
               <source>
+                <code-snippet ref="Person" title="Person Model"></code-snippet>
                 <code-snippet title="Example">
                   <src language="javascript">
                     <code>arequire('foam.sandbox.Person', X)(function(Person) {
