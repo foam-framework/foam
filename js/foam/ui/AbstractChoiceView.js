@@ -109,7 +109,7 @@ CLASS({
 
         // check if the display labels changed
         var labelsChanged = true;
-        if ( oldValue.length == newValue.length ) {
+        if ( (oldValue && oldValue.length) == (newValue && newValue.length) ) {
           labelsChanged = false;
           for (var i = 0; i < oldValue.length; ++i) {
             if ( ! equals(oldValue[i][1], newValue[i][1]) ) {
