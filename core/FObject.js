@@ -662,30 +662,6 @@ var FObject = {
 
     return this;
   },
-  xxxcopyFrom: function(src) {
-    if ( ! src ) return this;
-
-    if ( src.instance_ ) {
-      for ( var key in src.instance_ ) {
-        if ( true || this.model_.getProperty(key) ) this[key] = src[key]; else console.log('.');
-      }
-      /*
-      var ps = this.model_.properties_;
-      for ( var i = 0 ; i < ps.length ; i++ ) {
-        var prop = ps[i];
-        if ( src.hasOwnProperty(prop.name) ) this[prop.name] = src[prop.name];
-      }
-      */
-    } else {
-      // Faster case where a map is supplied rather than an FObject
-      for ( var key in src ) {
-        // if ( DEBUG && ! this.model_.getProperty(key) ) console.warn('Unknown property: ' + key);
-        this[key] = src[key];
-      }
-    }
-
-    return this;
-  },
 
   output: function(out) { return JSONUtil.output(out, this); },
 
