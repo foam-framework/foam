@@ -519,6 +519,9 @@
         <div id="%%id">
           <h2>Toggle Card View</h2>
           $$data{ model_: 'foam.sandbox.RedPersonView' }
+          <div style="display: flex; align-items: flex-start">
+            $$isCardStyle{ model_: 'foam.ui.md.CheckboxView',  label: 'Toggle Card Styling' }
+          </div>
         </div>
         <% this.setClass('md-card', function() { return self.isCardStyle }, self.id); %>
       */}
@@ -532,8 +535,8 @@
                   <code>apar(
     arequire('foam.sandbox.Person', X),
     arequire('foam.sandbox.RedPersonView', X),
-    arequire('foam.sandbox.CardPersonView', X)
-)(function(Person, RedPersonView, CardPersonView) {
+    arequire('foam.sandbox.ToggleCardPersonView', X)
+)(function(Person, RedPersonView, ToggleCardPersonView) {
 
   // Create a person
   var person = Person.create({
@@ -542,7 +545,7 @@
   }, X);
 
   // Create a card view, set the person as its data
-  var view = CardPersonView.create({ data: person }, X);
+  var view = ToggleCardPersonView.create({ data: person }, X);
 
   // The view will render the data we have set on it
   view.write(X.document);
