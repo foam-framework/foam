@@ -63,8 +63,8 @@ CLASS({
       factory: function() {
         this.X.registerModel(this.ActionButtonCView.xbind({
           haloColor: 'rgb(240,147,0)'
-        }), 'foam.ui.ActionButton');
-        return 'foam.ui.ActionButton';
+        }), 'foam.ui.FBEActionButton');
+        return 'foam.ui.FBEActionButton';
       }
     }
   ],
