@@ -285,7 +285,7 @@ CLASS({
       return buf.join('');
     },
     setDisplay: function(txt) {
-      $('display').innerHTML = txt;
+      this.X.$('display').innerHTML = txt;
     },
     initHTML: function() {
       this.SUPER();
@@ -293,7 +293,6 @@ CLASS({
       this.sys.architecture = this.foam;
       Events.dynamic(
         function () {
-          //timer.second;
           this.timer.time;
         }.bind(this),
         function () {
@@ -304,7 +303,8 @@ CLASS({
 
       Events.dynamic(
         function() {
-          console.log(this.sys.selectedX, this.sys.selectedY);
+          this.sys.selectedX;
+          this.sys.selectedY;
         }.bind(this),
         this.update
       );
