@@ -106,8 +106,8 @@ CLASS({
       name: 'onClick',
       code: function() {
         if ( ! this.action ) debugger;
-        if ( typeof this.action.callIfEnabled !== 'function' ) debugger;
-        this.action.callIfEnabled(this.X, this.data);
+        if ( typeof this.action.maybeCall !== 'function' ) debugger;
+        this.action.maybeCall(this.X, this.data);
       }
     }
   ],

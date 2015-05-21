@@ -354,6 +354,11 @@ button.actionButton {
   font-weight: bold;
   padding: 4px 16px;
   text-decoration: none;
+  visibility: hidden;
+}
+
+button.actionButton.available {
+  visibility: visible;
 }
 
 button.actionButton:hover {

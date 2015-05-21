@@ -509,8 +509,8 @@ CLASS({
             // Treat single character strings as a character to be recognized
             if ( typeof key === 'number' ) key = String.fromCharCode(key);
             keyMap[key] = opt_value ?
-              function() { action.callIfEnabled(self.X, opt_value.get()); } :
-              action.callIfEnabled.bind(action, self.X, self) ;
+              function() { action.maybeCall(self.X, opt_value.get()); } :
+              action.maybeCall.bind(action, self.X, self) ;
             found = true;
           }
         });

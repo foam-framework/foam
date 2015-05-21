@@ -1320,13 +1320,13 @@ var featureDAO = [
     displayHeight: 20,
     help: 'Function to implement action.',
   }],
-  ['Action', 'Method', function callIfEnabled(that) {
+  ['Action', 'Method', function maybeCall(that) {
     if ( this.isEnabled.call(that) ) this.action.call(that, this);
   }],
   ['Action', 'Method', function install(model, proto) {
     var a = this;
     proto.define(this.name, {
-      value: function() { a.callIfEnabled(this); },
+      value: function() { a.maybeCall(this); },
       writable: true
     });
     model.define(this.name.constantize(), {

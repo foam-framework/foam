@@ -52,7 +52,8 @@
     },
     {
       name: 'copyFrom',
-      label: "Additional arguments to this.copyFrom(...) when ready."
+      label: "Additional arguments to this.copyFrom(...) when ready.",
+      lazyFactory: function() { return {}; }
     },
     {
       name: 'view',
