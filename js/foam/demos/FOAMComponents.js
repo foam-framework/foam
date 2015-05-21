@@ -52,6 +52,9 @@ CLASS({
           { name: 'Model',
             f: function(model, obj, arr, value) { var dv = this.DetailView.create({model: Model, data: model}); this.setDisplay(dv.toHTML()); dv.initHTML(); }
           },
+          { name: 'JS',
+            f: function(model, obj, arr, value) { this.setDisplay('<pre>' + JSONUtil.prettyModel.where(NOT_TRANSIENT).stringify(model) + '</pre>'); }
+          },
           { name: 'Help',
             f: function(model, obj, arr, value) { this.setDisplay(this.HelpView.create({model: model}).toHTML()); }
           },
@@ -72,7 +75,7 @@ CLASS({
             f: function(model, obj, arr, value) { this.setDisplay("<textarea rows=100 cols=80>" + obj.toXML() + "</textarea>"); }
           },
           { name: 'JSON',
-            f: function(model, obj, arr, value) { this.setDisplay('<pre>' + model.toJSON() + '</pre>'); }
+            f: function(model, obj, arr, value) { this.setDisplay('<pre>' + obj.toJSON() + '</pre>'); }
           },
 //           { name: 'JS Proto',
 //             f: function(model, obj, arr, value) { this.setDisplay("<pre>" + this.protoToString(model.getPrototype()) + '</pre>'); }
