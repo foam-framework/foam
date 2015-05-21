@@ -21,9 +21,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
       name: 'id',
-      defaultValue: 0
+      defaultValue: 0,
+    },
+    {
+      model_: 'IntProperty',
+      name: 'ordering'
     },
     {
       model_: 'StringProperty',

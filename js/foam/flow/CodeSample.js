@@ -52,8 +52,10 @@ CLASS({
         return this.EasyDAO.create({
           model: this.CodeSnippet,
           daoType: 'MDAO',
-          seqNo: true
-        });
+          autoIndex: true,
+          seqNo: true,
+          seqProperty: this.CodeSnippet.ORDERING
+        }).orderBy(this.CodeSnippet.ORDERING);
       }
     },
     {
