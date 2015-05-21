@@ -509,17 +509,22 @@
 
   templates: [
     {
-      // Call setClass() from your toHTML.
+      // Call setClass() from your toHTML() template.
+
       // Specify the CSS class name, a predicate function that returns true
       // to apply the class and false to remove the class, and the element id
       // to apply it to. For convenience, 'self' is defined automatically in
-      // templates so you can use it in your functions.
+      // templates so you can use it in your functions instead of .bind(this).
+
+      // Your predicate function will be dynamically evaluated using
+      // Events.dynamic(), so changes in properties referenced by the function
+      // will cause the function to be re-evaluated and the CSS class updated.
       name: 'toHTML',
       template: function() {/*
         <div id="%%id">
           <h2>Toggle Card View</h2>
           $$data{ model_: 'foam.sandbox.RedPersonView' }
-          <div style="display: flex; align-items: flex-start">
+          <div style="display: flex; align-items: flex-start; margin: 1em;">
             $$isCardStyle{ model_: 'foam.ui.md.CheckboxView',  label: 'Toggle Card Styling' }
           </div>
         </div>
