@@ -76,7 +76,7 @@ CLASS({
       this.$.addEventListener('click', function(event) {
         event.stopPropagation();
         event.preventDefault();
-        self.action.callIfEnabled(self.X, self.data);
+        self.action.maybeCall(self.X, self.data);
       }, this.id);
 
       this.setClass('hidden', function() { return self.isHidden; }, this.id);
