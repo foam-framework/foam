@@ -142,6 +142,24 @@ CLASS({
       li.d2 { margin-left: 32px; font-size: 28px; }
       li.d3 { margin-left: 48px; font-size: 26px; }
       li.d4 { margin-left: 64px; font-size: 24px; }
+
+ pre { xxxfont-family: Inconsolata; xxxfont-size: 40px; }
+.pln { color: #000 }
+.str,
+.atv { color: #0f9d58 }
+.kwd,
+.tag { color: #4285f4;  }
+.com { color: #999 }
+.typ,
+.var { color: #673ab7 }
+.lit { color: #db4437 }
+.pun,
+.opn,
+.clo { color: #a3a3a3 }
+.atn { color: #e91e63 }
+.dec,
+.var { color: #e67c73 }
+.fun { color: #fff }
     */},
     { name: 'toHTML' }
   ]
