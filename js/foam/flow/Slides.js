@@ -95,6 +95,10 @@ CLASS({
 
   templates: [
     function CSS() {/*
+      slides {
+        display: flex;
+        flex-direction: column;
+      }
       slides .card-grid .card {
         box-shadow: 0 5px 15px #aaa;
         height: 17%;
@@ -115,7 +119,7 @@ CLASS({
       slides * {
         box-sizing: border-box;
       }
-      slides, slides > deck, slides > controls {
+      slides > deck, slides > controls {
         display: block;
       }
       slides > deck {
