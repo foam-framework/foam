@@ -27,9 +27,6 @@ CLASS({
     'foam.demos.physics.Collision',
     'foam.demos.physics.CollisionWithSpring',
     'foam.demos.physics.Spring',
-    'foam.demos.empire.Content',
-    'foam.demos.empire.Heading',
-    'foam.demos.empire.ScrollableContent',
     'foam.demos.wat.Grid',
     'foam.demos.wat.Slides',
     'foam.documentation.diagram.DocDiagramView',
@@ -91,12 +88,8 @@ CLASS({
 
       this.X.registerElement('circle', 'foam.graphics.Circle');
 
-      ['Slides', 'Heading', 'ScrollableContent'].forEach(function(modelName) {
-        var model = this[modelName];
-        model.getProperty('registerElement').documentInstallFn.call(
-            model.getPrototype(), this.X);
-      }.bind(this));
-
+      this.Slides.getProperty('registerElement').documentInstallFn.call(
+          this.Slides.getPrototype(), this.X);
     }
   },
 
