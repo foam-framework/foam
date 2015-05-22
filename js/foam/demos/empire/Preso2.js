@@ -95,7 +95,12 @@ CLASS({
 
   templates: [
     { name: 'toHTML' },
-    // Undo font scaling from foam-components styles.
-    function CSS() {/* foam-components { font-size: 100%; } */}
+    // (1) Undo font scaling from foam-components styles.
+    // (2) Reposition pong component scores within flex container.
+    function CSS() {/*
+      foam-components { font-size: 100%; }
+      #pong-container div { display: flex; }
+      #pong-container span[name="rScore"] { left: 660; }
+    */}
   ]
 });

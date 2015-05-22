@@ -31,4 +31,122 @@
     <foam model="foam.demos.FOAMComponents" />
   </slide>
 
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block red">&nbsp;</div>
+        <div class="flex-grow content small-heading">History Lesson</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow" style="overflow: auto">
+      <iframe src="./demos/UnixSimulator.html"></iframe>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block red">&nbsp;</div>
+        <div class="flex-grow content small-heading">Holistic</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow" style="overflow: auto">
+      <iframe src="./demos/demo10b2.html"></iframe>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block red">&nbsp;</div>
+        <div class="flex-grow content small-heading">Language-Like Features</div>
+      </div>
+    </div>
+    <div class="card flex-col center" id="pong-container" style="flex-shrink: 0;">
+      <foam model="foam.demos.pong.Pong" />
+    </div>
+    <div class="card flex-col flex-grow" style="overflow: auto">
+      <foam model="foam.flow.Pong" />
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block red">&nbsp;</div>
+        <div class="flex-grow content small-heading">Dependency Injection</div>
+      </div>
+    </div>
+    <div class="flex-row flex-grow" style="align-items: stretch">
+      <div class="card flex-grow" style="align-items: center">
+        <code><a href="https://github.com/foam-framework/foam/blob/master/js/com/google/sweeper/Game.js">com.google.sweeper.Game</a>
+
+<a href="https://github.com/foam-framework/foam/blob/master/js/com/google/sweeper/Board.js">com.google.sweeper.Board</a>
+CLASS({
+  package: 'com.google.sweeper',
+  name: 'Board',
+
+  extendsModel: 'foam.ui.View',
+
+  requires: [ 'com.google.sweeper.Cell' ],
+  <b>exports: [ 'as board' ],</b>
+  ...
+
+<a href="https://github.com/foam-framework/foam/blob/master/js/com/google/sweeper/Cell.js">com.google.sweeper.Cell</a>
+CLASS({
+  package: 'com.google.sweeper',
+  name: 'Cell',
+
+  extendsModel: 'foam.ui.View',
+
+  <b>imports: [ 'board' ],</b>
+  ...</code>
+      </div>
+      <div class="card flex-col flex-grow">
+        <foam model="com.google.sweeper.Game"/><br>
+        <div class="flex-row">
+          <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Game}) %>
+          <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Board}) %>
+          <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Cell}) %>
+        </div>
+      </div>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block red">&nbsp;</div>
+        <div class="flex-grow content small-heading">Model Types</div>
+      </div>
+    </div>
+    <div class="flex-row flex-grow" style="align-items: stretch">
+      <div class="card flex-grow">
+        <ul>
+          <li>Entities (default)</li>
+          <li>Animations</li>
+          <li>Queries (mLang)</li>
+          <li>Parsers</li>
+          <li>Interactive Documents (FLOW)</li>
+          <li>...</li>
+        </ul>
+      </div>
+      <div class="card flex-col flex-grow">
+        <span class="small-heading">
+          <a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome
+            App Builder</a>
+        </span>
+
+        <br>
+
+        <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw"
+             style="border: 1px solid;">
+
+        <br>
+
+        <span style="font-size: 60%">(13k 1-week active users)</span>
+      </div>
+    </div>
+  </slide>
+
 </slides>
