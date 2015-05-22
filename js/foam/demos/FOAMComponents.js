@@ -30,6 +30,7 @@ CLASS({
     'foam.dao.FindFallbackDAO',
     'foam.documentation.DocViewPicker',
     'foam.documentation.diagram.DocDiagramView',
+    'foam.ui.md.SlideStyles',
     'foam.ui.DetailView',
     'foam.ui.HelpView',
     'foam.ui.StackView',
@@ -238,12 +239,15 @@ CLASS({
     },
     {
       name: 'title',
-      defaultValue: 'FOAM Features and Models'
+      defaultValue: '[feature] for [model]'
     }
   ],
 
   methods: {
     init: function() {
+      // Ensure that SlideStyles CSS gets installed.
+      this.SlideStyles.create();
+
       if ( this.enableAnimation ) this.timer.start();
 
       this.Y.documentViewRequestNavigation = function(newRef) {
@@ -316,13 +320,36 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <table><tr><td valign=top>
-      <h1><%# this.title %></h1>
-      %%space
-
-      <td><td valign=top>
-      <div id="display"></div>
-      </td><tr></table>
+      <foam-components>
+        <div class="heading-card">
+          <div class="flex-row">
+            <div class="small-color-block red">&nbsp;</div>
+            <div class="flex-grow content small-heading">FOAM Features and Models</div>
+          </div>
+        </div>
+        <div class="flex-row" style="align-items: stretch; height: 100%;">
+          <div class="card flex-grow" style="width: 60%; overflow: auto">
+            <div>%%space</div>
+          </div>
+          <div class="card flex-grow" style="width: 40%; overflow: auto">
+            <div>
+              <span><%# this.title %></span>
+              <div id="display"></div>
+            </div>
+          </div>
+        </div>
+      </foam-components>
+    */},
+    function CSS() {/*
+      foam-components {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        align-content: stretch;
+        overflow: hidden;
+        height: 100%;
+        font-size: 250%;
+      }
     */}
   ],
 

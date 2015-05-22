@@ -1,0 +1,34 @@
+<slides style="width: 100%;height:100%;"
+        oninit="this.X.foam.memento.FragmentMementoMgr.create({ mementoValue:
+                this.memento$ }, this.Y)">
+
+  <slide>
+    <div class="flex-row">
+      <div class="card center" style="padding: 5%">
+        <span class="flex-col" style="font-size: 32px;">
+          <span class="big-heading center">Introducing</span>
+          <p class="center">
+            <foam model="foam.demos.graphics.Logo" text="FOAM" width="360"
+                  height="140" />
+          </p>
+          <span class="small-heading center">
+            <font color="#33f">F</font>eature <font color="#f00">O</font>riented <font color="#fc0">A</font>ctive <font color="#3c0">M</font>odeller
+          </span>
+          <br />
+          <p class="center">
+            <a href="http://foamdev.com">foamdev.com</a>
+          </p>
+          <br />
+          <p class="center">
+            Kevin Greer, <a href="mailto:kgr@google.com">kgr@google.com</a>
+          </p>
+        </span>
+      </div>
+    </div>
+  </slide>
+
+  <slide>
+    <foam model="foam.demos.FOAMComponents" />
+  </slide>
+
+</slides>

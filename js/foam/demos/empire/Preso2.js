@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  package: 'foam.demos.wat',
-  name: 'BecomingAGoogler',
+  package: 'foam.demos.empire',
+  name: 'Preso2',
   extendsModel: 'foam.flow.Section',
 
   constants: { ELEMENT_NAME: 'foam-demos-flow' },
@@ -27,6 +27,9 @@ CLASS({
     'foam.demos.physics.Collision',
     'foam.demos.physics.CollisionWithSpring',
     'foam.demos.physics.Spring',
+    'foam.demos.empire.Content',
+    'foam.demos.empire.Heading',
+    'foam.demos.empire.ScrollableContent',
     'foam.demos.wat.Grid',
     'foam.demos.wat.Slides',
     'foam.documentation.diagram.DocDiagramView',
@@ -41,8 +44,8 @@ CLASS({
     'foam.ui.SwipeAltView',
     'foam.ui.TableView',
     'foam.ui.ViewChoice',
-    'foam.ui.md.SlideStyles',
     'foam.ui.md.TwoPaneView',
+    'foam.ui.md.SlideStyles',
     'foam.memento.FragmentMementoMgr'
   ],
 
@@ -81,7 +84,6 @@ CLASS({
     init: function() {
       this.SUPER.apply(this, arguments);
 
-      // Ensure that SlideStyles CSS gets installed.
       this.SlideStyles.create();
 
       this.X.registerModel(this.Slides, 'foam.flow.Slides');
@@ -89,12 +91,18 @@ CLASS({
 
       this.X.registerElement('circle', 'foam.graphics.Circle');
 
-      this.Slides.getProperty('registerElement').documentInstallFn.call(
-        this.Slides.getPrototype(), this.X);
+      ['Slides', 'Heading', 'ScrollableContent'].forEach(function(modelName) {
+        var model = this[modelName];
+        model.getProperty('registerElement').documentInstallFn.call(
+            model.getPrototype(), this.X);
+      }.bind(this));
+
     }
   },
 
   templates: [
-    { name: 'toHTML' }
+    { name: 'toHTML' },
+    // Undo font scaling from foam-components styles.
+    function CSS() {/* foam-components { font-size: 100%; } */}
   ]
 });
