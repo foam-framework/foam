@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'TextFieldView',
   package: 'foam.ui.md',
+  name: 'TextFieldView',
   extendsModel: 'foam.ui.SimpleView',
   traits: ['foam.ui.md.MDStyleTrait'],
 
@@ -194,7 +194,7 @@ CLASS({
       }
     */},
     function toHTML() {/*
-      <%      
+      <%
         var input = this.inputId = this.nextID();
         var label = this.labelId = this.nextID();
 
@@ -214,7 +214,7 @@ CLASS({
             }, label
           );
         } else {
-          this.setClass('md-text-field-no-label', function() { return true; }, this.id);        
+          this.setClass('md-text-field-no-label', function() { return true; }, this.id);
         }
         this.setClass('disabled',
           function() {
