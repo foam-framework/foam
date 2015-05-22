@@ -29,6 +29,54 @@
       when an autocompleter is installed in $$DOC{ref:'.autocompleter'}.
   */},
 
+  models: [
+    {
+      name: 'OnEnterValue',
+      properties: [
+        {
+          name: 'element',
+        },
+        {
+          name: 'listeners',
+          factory: function() {
+            return [];
+          }
+        }
+      ],
+      methods: [
+        function get() { return this.element.value; },
+        function set(value) {
+          if ( this.get() !== value ) this.element.value = value;
+        },
+        function addListener(listener) {
+          if ( ! listener ) return;
+          if ( this.listeners.length === 0 )
+            this.element.addEventListener('keydown', this.onKeyDown);
+          this.listeners.push(listener);
+        },
+        function removeListener(listener) {
+          var index = this.listeners.indexOf(listener);
+          if ( index >= 0 ) this.listeners.splice(i, 1);
+        },
+        function fireListeners(e) {
+          for (var i = 0; i < this.listeners.length; i++) {
+            this.listeners[i](e);
+          }
+        }
+      ],
+      listeners: [
+        {
+          name: 'onKeyDown',
+          code: function(e) {
+            if ( e.keyCode === 13 ) {
+              this.fireListeners(e);
+            }
+          }
+        }
+      ]
+    }
+  ],
+
   properties: [
     {
       model_: 'StringProperty',
@@ -64,7 +112,25 @@
       model_: 'BooleanProperty',
       name: 'onKeyMode',
       help: 'If true, value is updated on each keystroke.',
-      documentation: function() { /* If true, value is updated on each keystroke. */}
+      documentation: function() { /* If true, value is updated on each keystroke. */},
+      getter: function() {
+        return this.updateMode === this.EACH_KEYSTROKE;
+      },
+      setter: function(nu) {
+        this.updateMode = nu ? this.EACH_KEYSTROKE : this.DONE_EDITING;
+      }
+    },
+    {
+      model_: 'foam.core.types.StringEnumProperty',
+      name: 'updateMode',
+      help: 'Controls when the real .data is updated: on every keystroke, ' +
+          'when the user presses enter or blurs the box, or on enter only.',
+      defaultValue: 'DONE_EDITING',
+      choices: [
+        ['DONE_EDITING', 'Done editing'],
+        ['EACH_KEYSTROKE', 'Every keystroke'],
+        ['ENTER_ONLY', 'Enter only']
+      ]
     },
     {
       model_: 'BooleanProperty',
@@ -126,7 +192,15 @@
   constants: {
     /** Escape topic published when user presses 'escape' key to abort edits. **/
     // TODO: Model as a 'Topic'
-    ESCAPE: ['escape']
+    ESCAPE: ['escape'],
+
+    // These are the constants used by the updateMode. The text of these is
+    // duplicated in the choices array of the updateMode property.
+    // TODO(braden): That duplication sucks, we need a better way to handle
+    // enums.
+    DONE_EDITING: 'DONE_EDITING',
+    EACH_KEYSTROKE: 'EACH_KEYSTROKE',
+    ENTER_ONLY: 'ENTER_ONLY'
   },
 
   methods: {
@@ -205,9 +279,13 @@
       if ( this.mode === 'read-write' ) {
         if ( this.placeholder ) this.$.placeholder = this.placeholder;
 
-        this.domValue = DomValue.create(
-          this.$,
-          this.onKeyMode ? 'input' : 'change');
+        if ( this.updateMode === this.EACH_KEYSTROKE ) {
+          this.domValue = DomValue.create(this.$, 'input');
+        } else if ( this.updateMode === this.DONE_EDITING ) {
+          this.domValue = DomValue.create(this.$, 'change');
+        } else {
+          this.domValue = this.OnEnterValue.create({ element: this.$ });
+        }
 
         // In KeyMode we disable feedback to avoid updating the field
         // while the user is still typing.  Then we update the view
@@ -217,9 +295,9 @@
           this.domValue,
           this.valueToText.bind(this),
           this.textToValue.bind(this),
-          this.onKeyMode);
+          this.updateMode === this.EACH_KEYSTROKE);
 
-        if ( this.onKeyMode )
+        if ( this.updateMode === this.EACH_KEYSTROKE )
           this.$.addEventListener('blur', this.onBlur);
 
         this.$.addEventListener('keydown', this.onKeyDown);

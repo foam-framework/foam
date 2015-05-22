@@ -35,7 +35,30 @@ CLASS({
     { model_: 'BooleanProperty', name: 'focused', defaultValue: false },
     'prop',
     { name: 'label', defaultValueFn: function() { return this.prop.label; } },
-    { model_: 'BooleanProperty', name: 'onKeyMode', defautlValue: false },
+    {
+      model_: 'BooleanProperty',
+      name: 'onKeyMode',
+      help: 'If true, value is updated on each keystroke.',
+      documentation: function() { /* If true, value is updated on each keystroke. */},
+      getter: function() {
+        return this.updateMode === this.EACH_KEYSTROKE;
+      },
+      setter: function(nu) {
+        this.updateMode = nu ? this.EACH_KEYSTROKE : this.DONE_EDITING;
+      }
+    },
+    {
+      model_: 'foam.core.types.StringEnumProperty',
+      name: 'updateMode',
+      help: 'Controls when the real .data is updated: on every keystroke, ' +
+          'when the user presses enter or blurs the box, or on enter only.',
+      defaultValue: 'DONE_EDITING',
+      choices: [
+        ['DONE_EDITING', 'Done editing'],
+        ['EACH_KEYSTROKE', 'Every keystroke'],
+        ['ENTER_ONLY', 'Enter only']
+      ]
+    },
     { model_: 'IntProperty', name: 'displayHeight' },
     { model_: 'IntProperty', name: 'displayWidth' },
     {
@@ -99,6 +122,17 @@ CLASS({
       },
     }
   ],
+
+  constants: {
+    // These are the constants used by the updateMode. The text of these is
+    // duplicated in the choices array of the updateMode property.
+    // TODO(braden): That duplication sucks, we need a better way to handle
+    // enums.
+    DONE_EDITING: 'DONE_EDITING',
+    EACH_KEYSTROKE: 'EACH_KEYSTROKE',
+    ENTER_ONLY: 'ENTER_ONLY'
+  },
+
   methods: {
     initHTML: function() {
       this.SUPER();
@@ -107,7 +141,7 @@ CLASS({
       this.softValue.set(this.data);
       Events.link(this.softValue, this.softData$);
 
-      if ( this.onKeyMode ) {
+      if ( this.updateMode === this.EACH_KEYSTROKE ) {
         Events.link(this.data$, this.softData$);
       } else {
         Events.follow(this.data$, this.softData$);
@@ -268,7 +302,7 @@ CLASS({
       name: 'onBlur',
       code: function() {
         this.focused = false;
-        if (this.growable) {
+        if (this.growable && this.updateMode !== this.ENTER_ONLY ) {
           // contenteditable doesn't fire onChange.
           this.data = this.softData;
         }
@@ -282,12 +316,15 @@ CLASS({
     {
       name: 'onChange',
       code: function() {
-        this.data = this.softData;
+        if ( this.updateMode !== this.ENTER_ONLY )
+          this.data = this.softData;
       }
     },
     {
       name: 'onKeyDown',
-      code: function() {
+      code: function(e) {
+        if ( e.keyCode === 13 )
+          this.data = this.softData;
       }
     },
     {
