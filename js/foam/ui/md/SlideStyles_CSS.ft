@@ -18,6 +18,10 @@ deck {
   height: 100%;
 }
 
+code {
+  white-space: pre;
+}
+
 code-view {
   font-size: 28px;
 }
@@ -58,13 +62,13 @@ div.flex-items-start {
 }
 
 .big-color-block {
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
 }
 
 .small-color-block {
-  width: 100px;
-  height: 100px;
+  width: 75px;
+  height: 75px;
 }
 
 .blue { background: #33f; }
@@ -111,11 +115,11 @@ div.flex-items-start {
 }
 
 h1, .big-heading {
-  font-size: 300%;
+  font-size: 250%;
 }
 
 .small-heading {
-  font-size: 250%;
+  font-size: 200%;
 }
 
 ul li {
