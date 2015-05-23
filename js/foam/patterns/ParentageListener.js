@@ -17,10 +17,10 @@
 
 
 CLASS({
+  package: 'foam.patterns',
   name: 'ParentageListener',
   documentation: "Tracks changes in a parent chain and runs bind/unbind functions as parents enter or leave.",
-  package: 'foam.patterns',
-  
+
   properties: [
     {
       name: 'data',
@@ -29,7 +29,7 @@ CLASS({
         if (this.boundParents_) this.removeParents(this.boundParents_);
         return nu;
       },
-      postSet: function() { 
+      postSet: function() {
         // bind parents, add listeners for parent changes
         this.updateChain();
       },
@@ -37,12 +37,12 @@ CLASS({
     {
       name: 'bindFn',
       type: 'Function',
-      preSet: function(old,nu) {  
+      preSet: function(old,nu) {
         if (nu && this.boundParents_) {
           this.boundParents_.map(nu); // we have items we're attached to, but didn't run bindFn on!
         }
         return nu;
-      },      
+      },
     },
     {
       name: 'unbindFn',
@@ -70,7 +70,7 @@ CLASS({
         if (this.bindFn) this.bindFn(p);
         p.parent$.addListener(this.updateChain);
         this.boundParents_.push(p);
-        
+
         // recurse on parents of p
         if (p.parent) this.addParent(p.parent);
       }
@@ -88,6 +88,5 @@ CLASS({
       }
     }
   ]
-  
-});
 
+});

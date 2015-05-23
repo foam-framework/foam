@@ -16,18 +16,18 @@
  */
 
 CLASS({
-  name: 'ContextMutablePropertyTrait',
   package: 'foam.patterns',
-  
+  name: 'ContextMutablePropertyTrait',
+
   requires: ['SimpleValue'],
-  
+
   documentation: function() {/* For Properties that would otherwise be imported
     by reference (imports: ['prop$'], exports: ['prop$']), this trait allows
     the property to be imported but unlinked
     when the value is changed locally. Children will see the new value, but ancestors
     will not. Ancestor changes are no longer propagated once a local change is made.
   */},
-  
+
   properties: [
     {
       name: 'install',
@@ -38,18 +38,18 @@ CLASS({
         var propListenerName = prop.name + "$XListener";
         var propImport = prop.name + "$ImportedValue";
         var propHiddenExport = prop.name + "$ExportedValue";
-        
+
         var setUpListener = function() {
           this.instance_[propListenerName] = function(_,_,old,nu) {
             // don't trigger our modified setter that captures non-inherited change events
             actualSetter.apply(this, [nu]);
           }.bind(this);
-          
+
           this.instance_[propHiddenExport] = this.SimpleValue.create(this.Y[propXBindName].value);
-          this.instance_[propImport] = this.Y[propXBindName]; // save for future unlistening 
+          this.instance_[propImport] = this.Y[propXBindName]; // save for future unlistening
           this.instance_[propImport].addListener(this.instance_[propListenerName] );
           Events.follow(this[propXBindName], this.instance_[propImport]);
-          
+
           // 'export' our hidden Value, replacing the imported one
           this.Y.set(propXBindName, this.instance_[propHiddenExport]);
           this.instance_[propHiddenExport].addListener(this.instance_[propListenerName] );
@@ -68,7 +68,7 @@ CLASS({
           // this is now the instance
           // Bind to the PropertyValue in the context, as if we had imported "propName$"
           setUpListener.apply(this);
-                    
+
           actualInit.apply(this, arguments);
         }
 
@@ -78,11 +78,11 @@ CLASS({
           if ( this.instance_[propListenerName] ) {
             tearDownListener.apply(this);
           }
-          
+
           return actualSetter.apply(this, [nu]);
         });
       }
     }
   ]
-  
+
 });
