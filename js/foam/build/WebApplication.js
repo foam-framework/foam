@@ -16,8 +16,9 @@
  */
 
 CLASS({
-  name: 'WebApplication',
   package: 'foam.build',
+  name: 'WebApplication',
+
   properties: [
     {
       model_: 'StringProperty',

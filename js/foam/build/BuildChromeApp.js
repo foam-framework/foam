@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'BuildChromeApp',
   package: 'foam.build',
+  name: 'BuildChromeApp',
 
   extendsModel: 'foam.build.BuildApp',
 
