@@ -16,7 +16,9 @@
  */
 
 MODEL({
+  package: 'foam.dao',
   name: 'DatastorePropertyTrait',
+
   documentation: 'Enhances a property model with (de)serialization to Google Cloud Datastore\'s JSON format.',
   properties: [
     {
