@@ -17,8 +17,8 @@
 
 
 CLASS({
-  name: 'FindFallbackDAO',
   package: 'foam.dao',
+  name: 'FindFallbackDAO',
 
   extendsModel: 'foam.dao.ProxyDAO',
 
@@ -33,10 +33,10 @@ CLASS({
       var sid = ""+id;
       //console.log("FFD find: ", sid);
       this.delegate.find(sid, {
-         put: function(o) { 
+         put: function(o) {
            //console.log("FFD found primary: ", sid);
            this.delegate.put(o);
-           sink && sink.put && sink.put(o); 
+           sink && sink.put && sink.put(o);
          }.bind(this),
          error: function() {
            if ( ! this.fallback ) {
@@ -46,10 +46,10 @@ CLASS({
              var fid = ""+sid;
              //console.log("FFD fallback find: ", fid);
              this.fallback.find(fid, {
-               put: function(o) { 
+               put: function(o) {
                 //console.log("FFD fallback found: ", fid);
-                this.delegate.put(o); 
-                sink && sink.put && sink.put(o); 
+                this.delegate.put(o);
+                sink && sink.put && sink.put(o);
                }.bind(this),
                error: function() {
                  //console.log("FFD fallback not found: ", fid);
@@ -62,4 +62,3 @@ CLASS({
     }
   }
 });
-

@@ -16,13 +16,13 @@
  */
 
 CLASS({
-  name: 'CachingDAO',
   package: 'foam.dao',
+  name: 'CachingDAO',
 
   extendsModel: 'foam.dao.ProxyDAO',
 
   requires: ['foam.dao.FutureDAO'],
-  
+
   properties: [
     {
       name: 'src'
@@ -61,5 +61,3 @@ CLASS({
     removeAll: function(sink, options) { return this.src.removeAll(sink, options); }
   }
 });
-
-

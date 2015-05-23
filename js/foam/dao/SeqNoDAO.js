@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
- 
+
 CLASS({
+  package: 'foam.dao',
   name: 'SeqNoDAO',
   label: 'foam.dao.SeqNoDAO',
-  package: 'foam.dao',
 
   extendsModel: 'foam.dao.ProxyDAO',
 
-  documentation: function() {/* 
+  documentation: function() {/*
    Set a specified properties value with an auto-increment
    sequence number on DAO.put() if the properties value
    is set to the properties default value.

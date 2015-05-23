@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'File',
   package: 'foam.dao',
+  name: 'File',
   properties: [
     {
       model_: 'StringProperty',

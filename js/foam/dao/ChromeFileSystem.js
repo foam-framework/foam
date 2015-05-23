@@ -16,8 +16,8 @@
  */
 
 MODEL({
-  name: 'ChromeFileSystem',
   package: 'foam.dao',
+  name: 'ChromeFileSystem',
 
   requires: [
     'foam.dao.ChromeFile'

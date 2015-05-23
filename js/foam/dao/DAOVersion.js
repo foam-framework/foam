@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'DAOVersion',
   package: 'foam.dao',
+  name: 'DAOVersion',
   ids: ['name'],
   properties: [
     'name',

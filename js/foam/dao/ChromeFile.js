@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'ChromeFile',
   package: 'foam.dao',
+  name: 'ChromeFile',
 
   ids: ['path'],
 

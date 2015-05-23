@@ -16,8 +16,8 @@
  */
 
 MODEL({
-  name: 'ChromeFileSystemDAO',
   package: 'foam.dao',
+  name: 'ChromeFileSystemDAO',
   extendsModel: 'AbstractDAO',
 
   requires: [

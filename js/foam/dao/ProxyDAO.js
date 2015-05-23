@@ -16,13 +16,13 @@
  */
 
 CLASS({
-  name: 'ProxyDAO',
   package: 'foam.dao',
-  
+  name: 'ProxyDAO',
+
   extendsModel: 'AbstractDAO',
 
   requires: ["foam.dao.NullDAO"],
-  
+
   documentation: function() {/*
     Provides a proxy to the $$DOC{ref:'.delegate'} DAO, and allows swapping out the
     $$DOC{ref:'.delegate'} transparently
@@ -125,4 +125,3 @@ CLASS({
     }
   }
 });
-

@@ -16,9 +16,9 @@
  */
 
 CLASS({
+  package: 'foam.dao',
   name: 'NullDAO',
   help: 'A DAO that stores nothing and does nothing.',
-  package: 'foam.dao',
   methods: {
     put: function(obj, sink) { sink && sink.put && sink.put(obj); },
     remove: function(obj, sink) { sink && sink.remove && sink.remove(obj); },
@@ -36,4 +36,3 @@ CLASS({
     skip: function() { return this; }
   }
 });
-
