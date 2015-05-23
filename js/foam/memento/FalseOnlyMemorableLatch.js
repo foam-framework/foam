@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'FalseOnlyMemorableLatch',
   package: 'foam.memento',
+  name: 'FalseOnlyMemorableLatch',
   properties: [
     {
       model_: 'BooleanProperty',

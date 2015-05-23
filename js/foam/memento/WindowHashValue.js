@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'WindowHashValue',
   package: 'foam.memento',
+  name: 'WindowHashValue',
 
   imports: [
     'window'

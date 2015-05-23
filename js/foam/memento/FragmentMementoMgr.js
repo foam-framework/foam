@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'FragmentMementoMgr',
   package: 'foam.memento',
+  name: 'FragmentMementoMgr',
 
   requires: [
     'foam.memento.WindowHashValue',

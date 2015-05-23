@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'MementoMgr',
   package: 'foam.memento',
+  name: 'MementoMgr',
 
   properties: [
     {

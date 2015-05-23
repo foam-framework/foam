@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'PushStateMementoMgr',
   package: 'foam.memento',
+  name: 'PushStateMementoMgr',
 
   imports: [
     'document',
