@@ -16,8 +16,8 @@
  */
 
 CLASS({
-   "model_": "Model",
    "package": "foam.util.busy",
+   "model_": "Model",
    "name": "BusyStatus",
    "imports": [
       "clearTimeout",
@@ -134,9 +134,4 @@ CLASS({
          "args": []
       }
    ],
-   "templates": [],
-   "models": [],
-   "tests": [],
-   "relationships": [],
-   "issues": []
 });

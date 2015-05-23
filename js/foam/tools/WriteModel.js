@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'WriteModel',
   package: 'foam.tools',
+  name: 'WriteModel',
   requires: [
     'node.dao.JSModelFileDAO'
   ],

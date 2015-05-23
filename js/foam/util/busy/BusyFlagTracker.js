@@ -16,8 +16,8 @@
  */
 
 CLASS({
-   "model_": "Model",
    "package": "foam.util.busy",
+   "model_": "Model",
    "name": "BusyFlagTracker",
    "properties": [
       {
@@ -42,10 +42,6 @@ CLASS({
          "name": "callback"
       }
    ],
-   "actions": [],
-   "constants": [],
-   "messages": [],
-   "methods": [],
    "listeners": [
       {
          "model_": "Method",
@@ -61,10 +57,5 @@ CLASS({
       },
          "args": []
       }
-   ],
-   "templates": [],
-   "models": [],
-   "tests": [],
-   "relationships": [],
-   "issues": []
+   ]
 });

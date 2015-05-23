@@ -16,8 +16,9 @@
  */
 
 CLASS({
-  name: 'TestRunner',
   package: 'foam.testing',
+  name: 'TestRunner',
+
   requires: [
     'foam.dao.ProxyDAO',
     'foam.testing.XMLResultWriter',
