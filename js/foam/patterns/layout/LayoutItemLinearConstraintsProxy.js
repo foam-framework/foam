@@ -15,11 +15,9 @@
  * limitations under the License.
  */
 
-
- 
 CLASS({
-  name: 'LayoutItemLinearConstraintsProxy',
   package: 'foam.patterns.layout',
+  name: 'LayoutItemLinearConstraintsProxy',
 
   extendsModel: 'foam.patterns.layout.LayoutItemLinearConstraints',
 

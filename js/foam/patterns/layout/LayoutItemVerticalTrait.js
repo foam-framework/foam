@@ -16,11 +16,13 @@
  */
 
 CLASS({
-  name: 'LayoutItemVerticalTrait',
   package: 'foam.patterns.layout',
+  name: 'LayoutItemVerticalTrait',
 
-  requires: ['foam.patterns.layout.LayoutItemLinearConstraints',
-             'foam.patterns.layout.ConstraintProperty'],
+  requires: [
+    'foam.patterns.layout.LayoutItemLinearConstraints',
+    'foam.patterns.layout.ConstraintProperty'
+  ],
 
   documentation: function() {/* This trait enables an item to be placed in
                                 a vertical layout. */},
@@ -50,4 +52,3 @@ CLASS({
     }
   ]
 });
-

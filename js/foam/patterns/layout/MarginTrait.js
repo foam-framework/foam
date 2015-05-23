@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 CLASS({
-  name:  'MarginTrait',
   package: 'foam.patterns.layout',
+  name:  'MarginTrait',
 
   requires: ['foam.patterns.layout.LayoutItemLinearConstraintsProxy'],
-  
+
   documentation: function() {/*
       Adds a margin around one child item. Requires $$DOC{ref:'.addChild'} and
       $$DOC{ref:'.removeChild'} methods on trait users. Use
@@ -43,13 +43,13 @@ CLASS({
           documentation: function() {/* The amount to add to the proxied pixel values. */},
           defaultValue: 0,
           postSet: function(old,nu) {
-            this.preferred = this.data.preferred$Pix + nu; 
+            this.preferred = this.data.preferred$Pix + nu;
             this.max = this.data.max$Pix + nu;
             this.min = this.data.min$Pix + nu;
           }
         }
       ],
-      
+
       methods: {
         bind: function(nu) {
           // no SUPER, we don't want it
@@ -65,7 +65,7 @@ CLASS({
 
           Events.follow(nu.stretchFactor$, this.stretchFactor$);
           Events.follow(nu.shrinkFactor$, this.shrinkFactor$);
-        }        
+        }
       }
     }
   ],

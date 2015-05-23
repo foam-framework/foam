@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-
 CLASS({
-  name: 'LinearLayoutTrait',
   package: 'foam.patterns.layout',
+  name: 'LinearLayoutTrait',
 
   documentation: function() {/*
       A linear layout for row or column alignment. Only the main axis is laid out.
@@ -35,7 +34,7 @@ CLASS({
       defaultValue: 'horizontal',
       documentation: function() {/* Set to 'horizontal' or 'vertical'. */},
       postSet: function()  {
-        this.layoutDirty = true; //this.calculateLayout();  
+        this.layoutDirty = true; //this.calculateLayout();
       }
     },
     {
@@ -50,7 +49,7 @@ CLASS({
       model_: 'BooleanProperty',
       name: 'stretchy',
       defaultValue: true,
-      
+
       documentation: function() {/* If true, the layout will set its stretch
         and shrink factors to the largest value of its children. If you don't
         want a stretchy child to cause your layout to become stretchy, set to
@@ -61,7 +60,7 @@ CLASS({
       model_: 'BooleanProperty',
       name: 'layoutDirty',
       defaultValue: true,
-      hidden: true     
+      hidden: true
     }
   ],
   listeners: [
@@ -118,7 +117,7 @@ CLASS({
         if ( constraintsF(child) ) {
           constraintsF(child).setTotalSize(sz); // for percentages
           itemSizes[i] = boundedF(constraintsF(child).preferred$Pix, constraintsF(child));
-          availableSpace -= itemSizes[i];          
+          availableSpace -= itemSizes[i];
         } else {
           itemSizes[i] = 0;
         }
@@ -264,10 +263,10 @@ CLASS({
     },
     calculatePreferredSize: function() { /* Find the size of layout that accomodates all items
                                             at their preferred sizes. */
-                                           
+
       var self = this;
       var syncConstraints = this.fitContents ? ['min','max','preferred'] : ['preferred'];
-      var stretchConstraints = this.stretchy ? ['stretchFactor', 'shrinkFactor'] : []; 
+      var stretchConstraints = this.stretchy ? ['stretchFactor', 'shrinkFactor'] : [];
 
       // no children, zero
       if (self.children.length <= 0) {
@@ -297,11 +296,11 @@ CLASS({
         if ( constraintsF(child) && opposedConstraintsF(child) ) {
           var childCnstr = constraintsF(child);
           var opposedChildCnstr = opposedConstraintsF(child);
-        
+
           childCnstr.setTotalSize(sz); // for percentages
           opposedChildCnstr.setTotalSize(opposedSz);
 
-          syncConstraints.forEach(function(cnst) {           
+          syncConstraints.forEach(function(cnst) {
             totalSizes[cnst] += boundedF(childCnstr[cnst+'$Pix'], childCnstr);
             // find smallest for min
             if ((cnst==='max' && (opposedChildCnstr[cnst+'$Pix'] < opposedTotalSizes[cnst]))
@@ -309,12 +308,12 @@ CLASS({
               opposedTotalSizes[cnst] = opposedChildCnstr[cnst+'$Pix'];
             }
           });
-          
+
           // add up stretchFactor and shrinkFactor
           stretchConstraints.forEach( function (factor) {
-            if ( childCnstr[factor] > totalSizes[factor] ) 
+            if ( childCnstr[factor] > totalSizes[factor] )
               totalSizes[factor] = childCnstr[factor];
-            if ( opposedChildCnstr[factor] > opposedTotalSizes[factor] ) 
+            if ( opposedChildCnstr[factor] > opposedTotalSizes[factor] )
               opposedTotalSizes[factor] = opposedChildCnstr[factor];
           });
         }
@@ -327,4 +326,3 @@ CLASS({
     }
   }
 });
-

@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 
-
 CLASS({
-  name: 'LayoutItemLinearConstraints',
   package: 'foam.patterns.layout',
+  name: 'LayoutItemLinearConstraints',
 
   requires: ['foam.patterns.layout.ConstraintProperty'],
-  
+
   documentation: function() {/* The information layout items provide for a
                             single axis of linear layout. */},
 
@@ -75,7 +74,7 @@ CLASS({
     },
     init: function() {
       this.SUPER();
-      
+
       this.min$.addListener(this.doConstraintChange);
       this.max$.addListener(this.doConstraintChange);
       this.preferred$.addListener(this.doConstraintChange);

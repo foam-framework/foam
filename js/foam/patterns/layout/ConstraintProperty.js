@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'ConstraintProperty',
   package: 'foam.patterns.layout',
+  name: 'ConstraintProperty',
   extendsModel: 'Property',
 
   documentation: function() {/* Stores an integer pixel value or percentage.
@@ -53,7 +53,7 @@ CLASS({
             documentation: function() { /* The calculated pixel size. */ },
           }
         );
-        
+
         var actualInit = this.init;
         this.init = function() {
           // this is now the instance
@@ -66,7 +66,7 @@ CLASS({
               return parseInt(propVal || 0);
             }
           };
-    
+
           // bind each prop.nameerty that needs updates on pixel total size
           self.constraintValue_TotalSize_$.addListener(function(self, msg) {
             self[prop.name+"$Pix"] = pixFn(self, prop.name);
@@ -74,11 +74,10 @@ CLASS({
           self[prop.name+"$"].addListener(function(self, msg) {
             self[prop.name+"$Pix"] = pixFn(self, prop.name);
           }.bind(self));
-          
+
           actualInit.apply(this, arguments);
         }
       }
     }
   ]
 });
-

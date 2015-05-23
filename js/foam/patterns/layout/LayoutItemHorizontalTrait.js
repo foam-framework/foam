@@ -14,14 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-CLASS({
-  name: 'LayoutItemHorizontalTrait',
-  package: 'foam.patterns.layout',
 
-  requires: ['foam.patterns.layout.LayoutItemLinearConstraints',
-             'foam.patterns.layout.ConstraintProperty'],
-  
+CLASS({
+  package: 'foam.patterns.layout',
+  name: 'LayoutItemHorizontalTrait',
+
+  requires: [
+    'foam.patterns.layout.LayoutItemLinearConstraints',
+    'foam.patterns.layout.ConstraintProperty'
+  ],
+
   documentation: function() {/* This trait enables an item to be placed in
                                 a horizontal layout. If you do not  */},
 
@@ -39,7 +41,7 @@ CLASS({
         this.horizontalConstraints.subscribe(['constraintChange'], this.doConstraintChange);
       }
     }
-  ],                                  
+  ],
 
   listeners: [
     {
@@ -50,4 +52,3 @@ CLASS({
     }
   ]
 });
-
