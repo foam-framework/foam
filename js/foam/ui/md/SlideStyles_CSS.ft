@@ -46,7 +46,7 @@ div.flex-stretch {
 
 div.flex-start {
   justify-content: flex-start;
-}
+}b
 
 div.flex-items-start {
   align-items: flex-start;
@@ -75,6 +75,7 @@ div.flex-items-start {
 .red { background: #f00; }
 .yellow { background: #fc0; }
 .green { background: #3c0; }
+.cyan { background: rgb(0,150,136); }
 
 .card, .heading-card {
   display: flex;
