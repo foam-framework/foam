@@ -32,6 +32,8 @@ CLASS({
     'foam.documentation.diagram.DocDiagramView',
     'foam.documentation.diagram.DocModelDiagramView',
     'foam.flow.CodeSample',
+    'foam.flow.Section',
+    'foam.flow.Slides',
     'foam.graphics.Circle',
     'foam.graphics.Gauge',
     'foam.input.touch.GestureManager',
@@ -81,6 +83,7 @@ CLASS({
     init: function() {
       this.SUPER.apply(this, arguments);
 
+      // Ensure that SlideStyles CSS gets installed.
       this.SlideStyles.create();
 
       this.X.registerModel(this.Slides, 'foam.flow.Slides');
@@ -88,6 +91,20 @@ CLASS({
 
       this.X.registerElement('circle', 'foam.graphics.Circle');
 
+      this.Slides.getProperty('installCSS').documentInstallFn.call(
+        this.Slides.getPrototype(), this.X);
+      this.Slides.getProperty('registerElement').documentInstallFn.call(
+        this.Slides.getPrototype(), this.X);
+
+      this.CodeSample.getProperty('installCSS').documentInstallFn.call(
+        this.CodeSample.getPrototype(), this.X);
+      this.CodeSample.getProperty('registerElement').documentInstallFn.call(
+        this.CodeSample.getPrototype(), this.X);
+
+      this.Section.getProperty('installCSS').documentInstallFn.call(
+        this.Section.getPrototype(), this.X);
+      this.Section.getProperty('registerElement').documentInstallFn.call(
+        this.Section.getPrototype(), this.X);
       this.Slides.getProperty('registerElement').documentInstallFn.call(
           this.Slides.getPrototype(), this.X);
     }
@@ -97,10 +114,43 @@ CLASS({
     { name: 'toHTML' },
     // (1) Undo font scaling from foam-components styles.
     // (2) Reposition pong component scores within flex container.
+    // (3) Code formatting.
+    // (4) Two-pane controller styling.
+    // (4) Summary list element element styling.
     function CSS() {/*
       foam-components { font-size: 100%; }
       #pong-container div { display: flex; }
       #pong-container span[name="rScore"] { left: 660; }
+      .pln { color: #000 }
+      .str,
+      .atv { color: #0f9d58 }
+      .kwd,
+      .tag { color: #4285f4;  }
+      .com { color: #999 }
+      .typ,
+      .var { color: #673ab7 }
+      .lit { color: #db4437 }
+      .pun,
+      .opn,
+      .clo { color: #a3a3a3 }
+      .atn { color: #e91e63 }
+      .dec,
+      .var { color: #e67c73 }
+      .fun { color: #fff }
+      .twopane-container { height: 100%; width: 100%; }
+      slides .twopane-left {
+        min-width: 450px;
+        max-width: 40%;
+        height: 85%;
+      }
+      slides .twopane-right {
+        background: white;
+      }
+      li { padding-bottom: 2px; }
+      li.d1 { margin-left: 16px; font-size: 30px; }
+      li.d2 { margin-left: 32px; font-size: 28px; }
+      li.d3 { margin-left: 48px; font-size: 26px; }
+      li.d4 { margin-left: 64px; font-size: 24px; }
     */}
   ]
 });
