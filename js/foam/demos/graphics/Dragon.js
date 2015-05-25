@@ -22,7 +22,8 @@ CLASS({
 
   requires: [
     'foam.demos.graphics.EyesCView',
-    'foam.graphics.Circle'
+    'foam.graphics.Circle',
+    'foam.util.Timer'
   ],
   imports: [ 'timer' ],
 
@@ -68,7 +69,7 @@ CLASS({
       this.addChild(this.eyes);
 
       if ( ! this.timer ) {
-        this.timer = Timer.create();
+        this.timer = this.Timer.create();
         this.timer.start();
       }
 
