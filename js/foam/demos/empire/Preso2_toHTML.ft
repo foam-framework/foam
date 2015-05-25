@@ -51,6 +51,7 @@
         </p>
       </div>
     </div>
+    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
