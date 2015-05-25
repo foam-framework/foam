@@ -99,23 +99,6 @@ CLASS({
         display: flex;
         flex-direction: column;
       }
-      slides .card-grid .card {
-        box-shadow: 0 5px 15px #aaa;
-        height: 17%;
-        margin: 0 12px 20px;
-        overflow: hidden;
-        padding: 2px;
-        width: 18.25%;
-        min-width: initial;
-      }
-      slides .card-grid .card .card-inset {
-        height: 90%;
-        overflow: hidden;
-        position: absolute;
-        transform-origin: 0 0;
-        transform: scale(0.15);
-        width: 100%;
-      }
       slides * {
         box-sizing: border-box;
       }
