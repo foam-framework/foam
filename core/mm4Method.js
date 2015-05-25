@@ -197,7 +197,13 @@ CLASS({
     }
   ],
   methods: {
-    maybeCall: function(X, that) { /* Executes this action if $$DOC{ref:'.isEnabled'} is allows it. */
+    callMeMaybe: function(X, that) {
+      /*
+       Hey, $$DOC{ref:'.'} just met you.
+       And this is crazy.
+       But here's my number: $$DOC{ref:'.$UID'}.
+       So $$DOC{ref:'.callMeMaybe'}.
+       */
       if ( this.isAvailable.call(that, this) && this.isEnabled.call(that, this) ) {
         this.action.call(that, X, this);
         that.publish(['action', this.name], this);
@@ -206,7 +212,7 @@ CLASS({
   }
 });
 
-//Action.getPrototype().maybeCall = function(X, that) {
+//Action.getPrototype().callMeMaybe = function(X, that) {
 //  if ( this.isEnabled.call(that, this) ) this.action.call(that, X, this);
 //};
 
