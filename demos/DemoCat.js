@@ -287,7 +287,7 @@ return JSONUtil.arrayToObjArray(X, [
   */
   {
     name: 'Todo',
-    path: '../apps/todo/Todo.html',
+    path: '../apps/todo/index.html',
     description: 'A FOAM implementation of the <a href="http://todomvc.com">http://todomvc.com</a> comparison application.  Notice that the FOAM implementation is by far the shortest listed on the TodoMVC site.',
     keywords: ['tutorial'],
     src: 'apps/todo/',
