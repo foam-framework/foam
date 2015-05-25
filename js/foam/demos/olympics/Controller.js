@@ -3,8 +3,8 @@ CLASS({
   name: 'Controller',
 
   requires: [
-    'foam.demos.olympics.Medal',
-    'foam.demos.olympics.MedalData'
+    'foam.dao.EasyDAO',
+    'foam.demos.olympics.Medal'
   ],
 
   properties: [
@@ -15,12 +15,16 @@ CLASS({
     {
       name: 'dao',
       factory: function() {
-        return MDAO.create({model: this.Medal});
+        return foam.dao.EasyDAO.create({
+          model: foam.demos.olympics.Medal,
+          daoType: 'MDAO',
+          seqNo: true
+        });
       }
     },
     {
       name: 'filteredDAO',
-      view: 'foam.ui.TableView'
+      view: { factory_: 'foam.ui.TableView', xxxscrollEnabled: true, rows: 30}
     }
   ],
 
@@ -28,11 +32,16 @@ CLASS({
     function init() {
       this.SUPER();
 
-      this.MedalData.select(dao);
+GLOBAL.ctrl = this;
+      var self = this;
+
+      axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
+        data.select(self.dao);
+      });
 
       Events.dynamic(
-        function() { this.query; },
-        function() { this.filteredDAO = this.dao.where(this.query); });
+        function() { self.query; },
+        function() { self.filteredDAO = self.dao; /*self.dao.where(self.query);*/ });
     }
   ],
 
