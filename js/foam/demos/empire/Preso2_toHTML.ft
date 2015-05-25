@@ -458,7 +458,7 @@ CLASS({
         <div class="flex-grow content small-heading">Reactive Animation</div>
       </div>
     </div>
-    <div class="card flex-col flex-grow">
+    <div class="card flex-col flex-grow" style="overflow: hidden">
       <foam model="foam.demos.SolarSystem" />
     </div>
     <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
@@ -471,7 +471,7 @@ CLASS({
         <div class="flex-grow content small-heading">Physics</div>
       </div>
     </div>
-    <div class="card flex-col flex-grow">
+    <div class="card flex-col flex-grow" style="overflow: hidden">
       <% X.timer = undefined; %>
       <%=
         foam.ui.md.TwoPaneView.create({views: [
@@ -554,7 +554,7 @@ CLASS({
     </div>
     <div class="flex-row flex-grow" style="align-items: stretch">
       <div class="card flex-grow">
-        <iframe src="./index.html?model=foam.tutorials.phonecat.Controller"></iframe>
+        <iframe src="./index.html?model=foam.tutorials.phonecat.Controller" style="height: initial"></iframe>
       </div>
       <div class="card flex-col flex-grow">
         <iframe src="http://foam-framework.github.io/foam/tutorial/0-intro/"></iframe>
@@ -589,7 +589,7 @@ CLASS({
       </div>
     </div>
     <div class="flex-row" style="align-items: stretch; flex-shrink: 1">
-      <div class="card flex-grow">
+      <div class="card flex-grow" style="overflow: auto">
         <div>
               <li><b>Model-Oriented</b></li>
                 <li class="d1">Models are Modelled</li>
