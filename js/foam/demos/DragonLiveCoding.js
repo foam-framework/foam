@@ -97,8 +97,8 @@ CLASS({
       }
     */},
     function toHTML() {/*
-      <div style="display:inline-flex;">
-        <div style="overflow: auto;height:90%;width:40%;">
+      <div style="display:flex;width:100%;height:100%;">
+        <div style="overflow: auto;width:60%;">
           $$timer{showActions: true}<br><%= this.data.turntable %>
           <%= foam.ui.DAOListView.create({mode: 'read-only', dao: foam.demos.graphics.Dragon.methods.where({f:function(m) { return m.name === 'paintSelf' || m.name === 'wing' || m.name === 'feather'; }})}) %>
         </div>
