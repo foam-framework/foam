@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 CLASS({
   package: 'foam.dao',
   name: 'SeqNoDAO',
@@ -63,7 +62,7 @@ CLASS({
       this.WHEN_READY(function() {
         var val = this.property.f(obj);
 
-        if ( val == this.property.defaultValue ) {
+        if ( ! val || val == this.property.defaultValue ) {
           obj[this.property.name] = this.sequenceValue++;
         }
 
