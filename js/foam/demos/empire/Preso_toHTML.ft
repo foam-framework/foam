@@ -116,7 +116,7 @@ CLASS({
     <h1>TodoMVC</h1>
     <br>
     <center>
-      <iframe style="width:60%;height:70%;" src="./apps/todo/Todo.html"></iframe><br>
+      <iframe style="width:60%;height:70%;" src="./apps/todo/index.html"></iframe><br>
       <a href="http://TodoMVC.com">TodoMVC.com</a>, <a href="https://github.com/foam-framework/foam/tree/master/apps/todo">Source</a>
     </center>
   </slide>
