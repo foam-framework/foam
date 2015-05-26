@@ -38,10 +38,10 @@ CLASS({
       displayWidth: 5,
       defaultValue: 1,
       preSet: function(o, n) {
-        return Math.max(1, Math.min(n, this.slides.length));
+        return Math.max(0, Math.min(n, this.slides.length));
       },
       postSet: function(_, p) {
-        if ( this.$ ) this.setView(this.currentSlide());
+        if ( this.$ ) this.setView(p ? this.currentSlide() : this.Grid.create({cards: this.slides}));
       }
     }
   ],
@@ -89,7 +89,7 @@ CLASS({
       name: 'legend',
       label: '+',
       keyboardShortcuts: [ '+' ],
-      action: function() { this.setView(this.Grid.create({cards: this.slides})); }
+      action: function() { this.position = 0; }
     }
   ],
 
