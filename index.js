@@ -110,8 +110,9 @@
       } else {
         arequire('foam.ui.DetailView')(function(m) {
           viewParams.data = obj;
+          viewParams.model = obj.model_;
           viewParams.showActions = showActions;
-          view = m.create(viewParams);
+          view = m.create(viewParams, obj.Y);
           document.body.insertAdjacentHTML('beforeend', view.toHTML());
           view.initHTML();
         });
