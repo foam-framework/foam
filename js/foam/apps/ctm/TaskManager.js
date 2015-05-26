@@ -96,11 +96,11 @@ CLASS({
     }
   ],
 
-  templates: [
-    function toDetailHTML() {/*
-      <label>Search:</label>$$search
-      $$tasks
-      <a href="chrome://memory-redirect">Stats for nerds</a>
-    */}
+  methods: [
+    function init() {
+      this.SUPER.apply(this, arguments);
+      var viewModel = this.TaskManagerDetailView;
+      this.X.registerModel(viewModel, 'foam.ui.TaskManagerDetailView');
+    }
   ]
 });
