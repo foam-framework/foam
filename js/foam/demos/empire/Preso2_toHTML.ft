@@ -25,14 +25,13 @@
         <div class="flex-grow content small-heading">Disclaimer</div>
       </div>
     </div>
-    <div class="card flex-grow" style="padding: 5%">
+    <div class="card flex-grow" style="padding: 5%; padding-top: 2%">
       <div>
         <div style="font-size: 150%">Exploratory Project Ahead</div>
         <br>
-        <br>
         <p>
           FOAM started out as my 20% project and we are exploring it further
-          here in Waterloo, but it is not an officially Google endorsed
+          here in Waterloo, but it is not an officially endorsed Google
           framework.
         </p>
         <br>
@@ -41,7 +40,6 @@
           relate to things you already know, so we’re not sure about its
           adoption without more development, feedback, and experimentation.
         </p>
-        <br>
         <br>
         <p style="font-size: 70%">
           WARNING: FOAM may create unexpected symptoms of productivity,
@@ -458,7 +456,7 @@ CLASS({
         <div class="flex-grow content small-heading">Reactive Animation</div>
       </div>
     </div>
-    <div class="card flex-col flex-grow">
+    <div class="card flex-col flex-grow" style="overflow: hidden">
       <foam model="foam.demos.SolarSystem" />
     </div>
     <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
@@ -471,14 +469,14 @@ CLASS({
         <div class="flex-grow content small-heading">Physics</div>
       </div>
     </div>
-    <div class="card flex-col flex-grow">
+    <div class="card flex-col flex-grow" style="overflow: hidden">
       <% X.timer = undefined; %>
       <%=
         foam.ui.md.TwoPaneView.create({views: [
-          {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10, scaleX: 2, scaleY: 2}},
-          {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
-          {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
           {label: 'Gravity&nbsp;+&nbsp;Friction', view: { factory_: 'foam.demos.physics.Bubbles', height: 1000, width: 1200, scaleX: 1.5, scaleY: 1.5}},
+          {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
+          {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10, scaleX: 2, scaleY: 2}},
+          {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
           {label: 'Baloons',                      view: 'foam.demos.physics.Baloons'}
         ]})
       %>
@@ -554,7 +552,7 @@ CLASS({
     </div>
     <div class="flex-row flex-grow" style="align-items: stretch">
       <div class="card flex-grow">
-        <iframe src="./index.html?model=foam.tutorials.phonecat.Controller"></iframe>
+        <iframe src="./index.html?model=foam.tutorials.phonecat.Controller" style="height: initial"></iframe>
       </div>
       <div class="card flex-col flex-grow">
         <iframe src="http://foam-framework.github.io/foam/tutorial/0-intro/"></iframe>
@@ -589,7 +587,7 @@ CLASS({
       </div>
     </div>
     <div class="flex-row" style="align-items: stretch; flex-shrink: 1">
-      <div class="card flex-grow">
+      <div class="card flex-grow" style="overflow: auto">
         <div>
               <li><b>Model-Oriented</b></li>
                 <li class="d1">Models are Modelled</li>

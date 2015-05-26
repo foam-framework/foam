@@ -37,7 +37,7 @@
     <toc />
 
     <section enumerate="false">
-      <title>Forward</title>
+      <title>Foreword</title>
       <p>
         This book is a gentle introduction to FOAM programming. The book
         assumes that you have some experience programming in

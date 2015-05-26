@@ -14,17 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
-  name:  'GroupBySearchView',
+  name: 'GroupBySearchView',
   extendsModel: 'foam.ui.View',
 
   label: 'GroupBy Search View',
+
+  requires: [ 'foam.ui.ChoiceView' ],
 
   properties: [
     {
       name: 'view',
       type: 'view',
-      factory: function() { return ChoiceView.create({size:this.size, cssClass: 'foamSearchChoiceView'}); }
+      factory: function() { return foam.ui.ChoiceView.create({size:this.size, cssClass: 'foamSearchChoiceView'}); }
     },
     {
       name:  'width',
@@ -135,6 +138,8 @@ CLASS({
 
   extendsModel: 'foam.ui.View',
 
+  requires: [ 'foam.ui.TextFieldView' ],
+
   properties: [
     {
       name:  'width',
@@ -153,7 +158,7 @@ CLASS({
     {
       name: 'view',
       type: 'view',
-      factory: function() { return TextFieldView.create({displayWidth:this.width, cssClass: 'foamSearchTextField'}); }
+      factory: function() { return foam.ui.TextFieldView.create({displayWidth:this.width, cssClass: 'foamSearchTextField'}); }
     },
     {
       name: 'label',

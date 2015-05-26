@@ -40,7 +40,9 @@ CLASS({
     {
       name: 'onAddColumn',
       code: function(prop) {
-        this.properties = this.properties.concat([prop]);
+        this.properties = this.availableProperties.filter(function(prop) {
+          return this.properties.indexOf(prop) >= 0;
+        }.bind(this));
       }
     },
     {

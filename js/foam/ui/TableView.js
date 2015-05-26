@@ -38,6 +38,7 @@ CLASS({
     'foam.ui.EditColumnsView',
     'foam.input.touch.GestureTarget'
   ],
+  imports: [ 'selection$ as hardSelection$' ],
 
   constants: {
     MIN_COLUMN_SIZE: 5, // If column is resized below this size, then remove the column instead of shrinking it
@@ -216,7 +217,8 @@ CLASS({
         var v = this.EditColumnsView.create({
           model:               this.model,
           properties:          this.properties || this.model.tableProperties,
-          availableProperties: this.model.getRuntimeProperties()
+          availableProperties: this.model.getRuntimeProperties().filter(
+              function(prop) { return !prop.hidden; })
         });
 
         v.addPropertyListener('properties', function() {

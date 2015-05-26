@@ -84,7 +84,7 @@ var Property = {
       type: 'String',
       displayWidth: 70,
       displayHeight: 1,
-      defaultValueFn: function() { return labelize(this.name); },
+      defaultValueFn: function() { return this.label; },
       help: 'The table display label for the entity.',
       documentation: function() { /* A human readable label for the $$DOC{ref:'Model'} for use in tables. May
         contain spaces or other odd characters.

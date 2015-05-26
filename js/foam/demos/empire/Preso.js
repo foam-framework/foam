@@ -26,11 +26,12 @@ CLASS({
     'foam.demos.physics.Collision',
     'foam.demos.physics.CollisionWithSpring',
     'foam.demos.physics.Spring',
+    'foam.demos.wat.Grid',
+    'foam.demos.wat.Slides',
     'foam.documentation.diagram.DocDiagramView',
     'foam.documentation.diagram.DocModelDiagramView',
     'foam.flow.CodeSample',
     'foam.flow.Section',
-    'foam.flow.Slides',
     'foam.graphics.Circle',
     'foam.graphics.Gauge',
     'foam.input.touch.GestureManager',
@@ -40,6 +41,7 @@ CLASS({
     'foam.ui.SwipeAltView',
     'foam.ui.TableView',
     'foam.ui.ViewChoice',
+    'foam.ui.md.SlideStyles',
     'foam.ui.md.TwoPaneView',
     'foam.util.Timer',
     'foam.memento.FragmentMementoMgr'
@@ -79,6 +81,13 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER.apply(this, arguments);
+
+      // Ensure that SlideStyles CSS gets installed.
+      this.SlideStyles.create();
+
+      this.X.registerModel(this.Slides, 'foam.flow.Slides');
+      this.X.registerModel(this.Grid, 'foam.flow.Grid');
+
       this.X.registerElement('circle', 'foam.graphics.Circle');
       this.Slides.getProperty('installCSS').documentInstallFn.call(
         this.Slides.getPrototype(), this.X);
@@ -106,14 +115,45 @@ CLASS({
         font-size: 200%;
         padding-left: 16px;
       }
+      body slides deck,
+      body slides deck grid .grid-card .card-inset {
+        display: block;
+      }
       slides .card-grid .card .card-inset {
         padding-left: 16px;
       }
-      h1 {
+      h1, foam-components .heading-card .small-heading {
         color: blue;
         font-size: 54px;
-        margin-top: 16px;
-        margin-bottom: 16px;
+      }
+      foam-components .heading-card {
+        min-height: initial;
+      }
+      foam-components .small-heading {
+        display: block;
+        -webkit-margin-before: 0.67em;
+        -webkit-margin-after: 0.67em;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+        font-weight: bold;
+        border: 0;
+        margin: 0;
+        padding: 0;
+      }
+      foam-components .card, foam-components .heading-card {
+        -webkit-animation: none;
+        transform: none;
+        box-shadow: initial;
+        border-radius: initial;
+      }
+      foam-components .small-color-block {
+        display: none;
+      }
+      foam-components .card,
+      foam-components .heading-card,
+      foam-components .flex-row {
+        margin: 0;
+        padding: 0;
       }
       slides .twopane-left {
         width: 450px;
