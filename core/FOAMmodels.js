@@ -62,7 +62,6 @@ var files = [
   'mlang1',
   'mlang2',
   'QueryParser',
-  'search',
   'oam',
   'visitor',
   'messaging',
