@@ -1,0 +1,63 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <link rel="stylesheet" href="core/foam.css" />
+    <script language="javascript">
+      DEBUG = true;
+      (function() {
+        function argsArray(args) {
+          ret = [];
+          for (var i = 0; i < args.length; i++) {
+            if ( args[i].instance_ ) {
+              ret[i] = '{'+args[i];
+              for (var key in args[i].instance_) {
+                ret[i] += " " + key + "=" + args[i].instance_[key];
+              }
+              ret[i] += '}'
+            } else {
+              ret[i] = args[i];
+            }
+          }
+          return ret;
+        }
+
+        var oldLog = console.log;
+        console.log = function() {
+          var out = document.getElementById('_DEBUG_OUTPUT_');
+          if ( out ) {
+            out.value = out.value + "\nL:" + argsArray(arguments).join();
+          }
+          oldLog.apply(console, arguments);
+        };
+
+        var oldWarn = console.warn;
+        console.warn = function() {
+          var out = document.getElementById('_DEBUG_OUTPUT_');
+          if ( out ) {
+            out.value = out.value + "\nW:" + argsArray(arguments).join();
+          }
+          oldWarn.apply(console, arguments);
+        };
+
+        var oldError = console.error;
+        console.error = function() {
+          var out = document.getElementById('_DEBUG_OUTPUT_');
+          if ( out ) {
+            out.value = out.value + "\nE:" + argsArray(arguments).join();
+          }
+          oldError.apply(console, arguments);
+        };
+
+      })();
+    </script>
+    <script src="core/bootFOAM.js"></script>
+    <script src="demos/demos.js"></script>
+    <script src="apps/navigator/data/TodoData.js"></script>
+    <script src="apps/navigator/data/AudioData.js"></script>
+  </head>
+  <body>
+    <script src="index.js"></script>
+    <textarea id="_DEBUG_OUTPUT_" readOnly=true width="100%" rows="4"cols="80"></textarea>
+  </body>
+</html>
