@@ -80,6 +80,18 @@
           oldAssert.apply(console, arguments);
         };
 
+        window._DEBUG_OUTPUT_toggleSize = function() {
+          var e = document.getElementById('_DEBUG_OUTPUT_');
+          if (e.style.width == '100px' )
+          {
+            e.style.width = window.innerWidth;
+            e.style.height = window.innerHeight;
+          } else {
+            e.style.width = '100px';
+            e.style.height = '20px';
+          }
+        };
+
       })();
     </script>
     <script src="core/bootFOAM.js"></script>
@@ -89,6 +101,7 @@
   </head>
   <body>
     <script src="index.js"></script>
-    <textarea id="_DEBUG_OUTPUT_" style="position:fixed; z-index:1000" readOnly=true width="100%" rows="4"cols="80"></textarea>
+    <textarea id="_DEBUG_OUTPUT_" style="position:fixed; z-index:1000; width: 100px; height: 20px;" readOnly=true
+     ondblclick="window._DEBUG_OUTPUT_toggleSize()" ></textarea>
   </body>
 </html>
