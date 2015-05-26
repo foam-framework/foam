@@ -79,7 +79,6 @@ module.exports = function(grunt) {
           'core/HTMLParser.js',
           'core/mlang.js',
           'core/QueryParser.js',
-          'core/search.js',
           'core/oam.js',
           'core/visitor.js',
           'core/messaging.js',
