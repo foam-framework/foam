@@ -22,23 +22,19 @@ CLASS({
     'processId'
   ],
 
-  constants: {
-    ROUND_TO_TWO_DECIMAL_PLACES: function(v) {
-      return (Math.round(v * 100) / 100) + ' ' + this.units;
-    }
-  },
-
   properties: [
     {
       model_: 'IntProperty',
-      name: 'id'
+      name: 'id',
+      hidden: true
     },
     {
       model_: 'StringProperty',
       name: 'iconUrl',
       label: '',
       view: 'foam.ui.ImageView',
-      defaultValue: 'https://www.gstatic.com/images/icons/material/product/1x/chrome_16dp.png'
+      defaultValue: 'https://www.gstatic.com/images/icons/material/product/1x/chrome_16dp.png',
+      hidden: true
     },
     {
       model_: 'StringProperty',
@@ -67,7 +63,7 @@ CLASS({
     },
     {
       model_: 'FloatProperty',
-      name: 'newtork',
+      name: 'network',
       units: 'B/s',
       tableFormatter: function(v) {
         return (Math.round(v * 100) / 100) + ' ' + this.units;

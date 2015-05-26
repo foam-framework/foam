@@ -29,7 +29,9 @@ CLASS({
           <label>Search:</label>$$search
         </tm-header>
         <tm-body>
-          $$tasks
+          $$tasks{
+            editColumnsEnabled: true
+          }
         </tm-body>
         <tm-footer>
           <a target="_blank" href="chrome://memory-redirect">Stats for nerds</a>
