@@ -473,10 +473,10 @@ CLASS({
       <% X.timer = undefined; %>
       <%=
         foam.ui.md.TwoPaneView.create({views: [
-          {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10, scaleX: 2, scaleY: 2}},
-          {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
-          {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
           {label: 'Gravity&nbsp;+&nbsp;Friction', view: { factory_: 'foam.demos.physics.Bubbles', height: 1000, width: 1200, scaleX: 1.5, scaleY: 1.5}},
+          {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
+          {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10, scaleX: 2, scaleY: 2}},
+          {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
           {label: 'Baloons',                      view: 'foam.demos.physics.Baloons'}
         ]})
       %>
