@@ -15,11 +15,12 @@ CLASS({
     {
       name: 'dao',
       factory: function() {
+        var Medal = foam.demos.olympics.Medal;
         return foam.dao.EasyDAO.create({
-          model: foam.demos.olympics.Medal,
+          model: Medal,
           daoType: 'MDAO',
           seqNo: true
-        });
+        })/*.addIndex(Medal.CITY).addIndex(Medal.COLOR).addIndex(Medal.SPORT)*/;
       }
     },
     {
