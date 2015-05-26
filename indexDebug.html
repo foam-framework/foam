@@ -26,16 +26,34 @@
         console.log = function() {
           var out = document.getElementById('_DEBUG_OUTPUT_');
           if ( out ) {
-            out.value = out.value + "\nL:" + argsArray(arguments).join();
+            out.value = out.value + "\nL: " + argsArray(arguments).join();
           }
           oldLog.apply(console, arguments);
+        };
+
+        var oldDebug = console.debug;
+        console.debug = function() {
+          var out = document.getElementById('_DEBUG_OUTPUT_');
+          if ( out ) {
+            out.value = out.value + "\nD: " + argsArray(arguments).join();
+          }
+          oldDebug.apply(console, arguments);
+        };
+
+        var oldInfo = console.info;
+        console.info = function() {
+          var out = document.getElementById('_DEBUG_OUTPUT_');
+          if ( out ) {
+            out.value = out.value + "\nI: " + argsArray(arguments).join();
+          }
+          oldInfo.apply(console, arguments);
         };
 
         var oldWarn = console.warn;
         console.warn = function() {
           var out = document.getElementById('_DEBUG_OUTPUT_');
           if ( out ) {
-            out.value = out.value + "\nW:" + argsArray(arguments).join();
+            out.value = out.value + "\nW: " + argsArray(arguments).join();
           }
           oldWarn.apply(console, arguments);
         };
@@ -44,7 +62,7 @@
         console.error = function() {
           var out = document.getElementById('_DEBUG_OUTPUT_');
           if ( out ) {
-            out.value = out.value + "\nE:" + argsArray(arguments).join();
+            out.value = out.value + "\nE: " + argsArray(arguments).join();
           }
           oldError.apply(console, arguments);
         };
@@ -55,7 +73,7 @@
             var out = document.getElementById('_DEBUG_OUTPUT_');
             if ( out ) {
               var args = argsArray(arguments);
-              out.value = out.value + "\nAssert:" + args.slice(1).join();
+              out.value = out.value + "\nAssert: " + args.slice(1).join();
             }
           }
           oldAssert.apply(console, arguments);
