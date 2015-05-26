@@ -50,8 +50,8 @@ CLASS({
     }
   ],
 
-  methods: {
-    toHTML: function() {
+  methods: [
+    function toHTML() {
       return '<div class="foamSearchView">' +
         '<div class="foamSearchViewLabel">' +
         this.label +
@@ -59,16 +59,15 @@ CLASS({
         this.view.toHTML() + '</div>' +
         '<div id=' + this.on('click', this.clear) + ' style="text-align:right;width:100%;float:right;margin-bottom:20px;" class="searchTitle"><font size=-1><u>Clear</u></font></div>';
     },
-    initHTML: function() {
+    function initHTML() {
       this.SUPER();
       this.view.initHTML();
 
       this.view.data$.addListener(this.updateValue);
     }
-  },
+  ],
 
-  listeners:
-  [
+  listeners: [
     {
       name: 'updateValue',
       code: function() {

@@ -20,6 +20,8 @@ CLASS({
   name: 'SearchView',
   extendsModel: 'foam.ui.View',
 
+  requires: [ 'GroupBySearchView' ],
+
   properties: [
     {
       name: 'dao'
@@ -34,11 +36,11 @@ CLASS({
     }
   ],
 
-  methods: {
-    buildSubViews: function() {
+  methods: [
+    function buildSubViews() {
       var props = this.model.searchProperties;
       for ( var i = 0; i < props.length; i++ ) {
-        var view = GroupBySearchView.create({
+        var view = this.GroupBySearchView.create({
           dao: this.dao,
           property: this.model[constantize(props[i])]
         });
@@ -50,7 +52,7 @@ CLASS({
       }
     },
 
-    toInnerHTML: function() {
+    function toInnerHTML() {
       if ( ! this.children.length )
         this.buildSubViews();
 
@@ -60,7 +62,7 @@ CLASS({
       }
       return str;
     }
-  },
+  ],
 
   listeners: [
     {

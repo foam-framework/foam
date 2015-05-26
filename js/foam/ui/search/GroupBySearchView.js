@@ -70,8 +70,8 @@ CLASS({
     }
   ],
 
-  methods: {
-    toHTML: function() {
+  methods: [
+    function toHTML() {
       return '<div class="foamSearchView">' +
         '<div class="foamSearchViewLabel">' +
         this.label +
@@ -79,7 +79,7 @@ CLASS({
         this.view.toHTML() +
         '</div>';
     },
-    initHTML: function() {
+    function initHTML() {
       this.view.initHTML();
 
       //       Events.dynamic(function() { this.view.value; }, console.log.bind(console));
@@ -96,10 +96,9 @@ CLASS({
       //       this.view.addListener(console.log.bind(console));
       //       this.view.value.addListener(console.log.bind(console));
     }
-  },
+  ],
 
-  listeners:
-  [
+  listeners: [
     {
       name: 'updateDAO',
 

@@ -19,6 +19,8 @@ CLASS({
   package: 'foam.ui.search',
   name: 'SearchBorder',
 
+  requires: [ 'foam.ui.SearchView' ],
+
   properties: [
     {
       name: 'dao',
@@ -29,7 +31,7 @@ CLASS({
     {
       name: 'view',
       factory: function() {
-        return SearchView.create({
+        return this.SearchView.create({
           dao: this.dao,
           model: this.model
         });
@@ -37,18 +39,18 @@ CLASS({
     }
   ],
 
-  methods: {
-    decorateObject: function(object) {
+  methods: [
+    function decorateObject(object) {
       this.view.addPropertyListener(
         'predicate',
         function(border, _, _, pred) {
           object.dao = border.dao.where(pred);
         });
     },
-
-    toHTML: function(border, delegate, args) {
+    
+    function toHTML(border, delegate, args) {
       this.addChild(border.view);
       return border.view.toHTML() + delegate();
     }
-  }
+  ]
 });
