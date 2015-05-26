@@ -822,7 +822,9 @@ CLASS({
             ret = function(args, X) { return viewModel.create(args, X || this.Y); };
           } else {
             ret = function(map, opt_X) {
-              return (opt_X || this.X).lookup(f).create(map, opt_X || this.Y);
+              var model = (opt_X || this.X).lookup(f);
+              console.assert(!!model, 'Unknown model: ' + f + ' in ' + this.name + ' property');
+              return model.create(map, opt_X || this.Y);
             }.bind(this);
           }
 
