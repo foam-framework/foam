@@ -38,6 +38,7 @@ CLASS({
     'foam.ui.EditColumnsView',
     'foam.input.touch.GestureTarget'
   ],
+  imports: [ 'selection$ as hardSelection$' ],
 
   constants: {
     MIN_COLUMN_SIZE: 5, // If column is resized below this size, then remove the column instead of shrinking it
