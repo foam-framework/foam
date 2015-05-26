@@ -9,7 +9,7 @@
         function argsArray(args) {
           ret = [];
           for (var i = 0; i < args.length; i++) {
-            if ( args[i].instance_ ) {
+            if ( args[i] && args[i].instance_ ) {
               ret[i] = '{'+args[i];
               for (var key in args[i].instance_) {
                 ret[i] += " " + key + "=" + args[i].instance_[key];
@@ -21,6 +21,7 @@
           }
           return ret;
         }
+        var console = window.console;
 
         var oldLog = console.log;
         console.log = function() {
@@ -88,6 +89,6 @@
   </head>
   <body>
     <script src="index.js"></script>
-    <textarea id="_DEBUG_OUTPUT_" readOnly=true width="100%" rows="4"cols="80"></textarea>
+    <textarea id="_DEBUG_OUTPUT_" style="position:fixed; z-index:1000" readOnly=true width="100%" rows="4"cols="80"></textarea>
   </body>
 </html>
