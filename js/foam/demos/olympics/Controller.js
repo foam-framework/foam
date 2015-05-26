@@ -1,10 +1,13 @@
 CLASS({
   package: 'foam.demos.olympics',
   name: 'Controller',
+  extendsModel: 'foam.ui.View',
 
   requires: [
+    'foam.ui.TextFieldView',
     'foam.dao.EasyDAO',
-    'foam.demos.olympics.Medal'
+    'foam.demos.olympics.Medal',
+    'GropuBySearchView'
   ],
 
   properties: [
@@ -25,6 +28,9 @@ CLASS({
     {
       name: 'filteredDAO',
       view: { factory_: 'foam.ui.TableView', xxxscrollEnabled: true, rows: 30}
+    },
+    {
+      name: 'colorQuery'
     }
   ],
 
@@ -39,6 +45,10 @@ GLOBAL.ctrl = this;
         data.select(self.dao);
       });
 
+      this.colorQuery = GroupBySearchView.create({
+        dao: this.dao
+      });
+
       Events.dynamic(
         function() { self.query; },
         function() { self.filteredDAO = self.dao; /*self.dao.where(self.query);*/ });
@@ -46,7 +56,8 @@ GLOBAL.ctrl = this;
   ],
 
   templates: [
-    function toDetailHTML() {/*
+    function toHTML() {/*
+      %%colorQuery
       $$query
       $$filteredDAO
     */}
