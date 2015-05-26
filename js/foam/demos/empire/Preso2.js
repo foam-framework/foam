@@ -43,8 +43,8 @@ CLASS({
     'foam.ui.SwipeAltView',
     'foam.ui.TableView',
     'foam.ui.ViewChoice',
-    'foam.ui.md.TwoPaneView',
     'foam.ui.md.SlideStyles',
+    'foam.ui.md.TwoPaneView',
     'foam.memento.FragmentMementoMgr'
   ],
 
