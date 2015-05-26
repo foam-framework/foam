@@ -49,6 +49,18 @@
           oldError.apply(console, arguments);
         };
 
+        var oldAssert = console.assert;
+        console.assert = function() {
+          if ( !arguments[0] ) {
+            var out = document.getElementById('_DEBUG_OUTPUT_');
+            if ( out ) {
+              var args = argsArray(arguments);
+              out.value = out.value + "\nAssert:" + args.slice(1).join();
+            }
+          }
+          oldAssert.apply(console, arguments);
+        };
+
       })();
     </script>
     <script src="core/bootFOAM.js"></script>
