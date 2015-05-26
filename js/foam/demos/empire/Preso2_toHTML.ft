@@ -25,14 +25,13 @@
         <div class="flex-grow content small-heading">Disclaimer</div>
       </div>
     </div>
-    <div class="card flex-grow" style="padding: 5%">
+    <div class="card flex-grow" style="padding: 5%; padding-top: 2%">
       <div>
         <div style="font-size: 150%">Exploratory Project Ahead</div>
         <br>
-        <br>
         <p>
           FOAM started out as my 20% project and we are exploring it further
-          here in Waterloo, but it is not an officially Google endorsed
+          here in Waterloo, but it is not an officially endorsed Google
           framework.
         </p>
         <br>
@@ -41,7 +40,6 @@
           relate to things you already know, so we’re not sure about its
           adoption without more development, feedback, and experimentation.
         </p>
-        <br>
         <br>
         <p style="font-size: 70%">
           WARNING: FOAM may create unexpected symptoms of productivity,
