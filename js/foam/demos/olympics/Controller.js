@@ -38,23 +38,32 @@ CLASS({
       name: 'toYear'
     },
     {
-      name: 'colorQuery'
+      name: 'color'
     },
     {
-      name: 'countryQuery'
+      name: 'country'
     },
     {
-      name: 'cityQuery'
+      name: 'city'
     },
     {
-      name: 'genderQuery'
+      name: 'gender'
     },
     {
-      name: 'disciplineQuery'
+      name: 'discipline'
     },
     {
-      name: 'sportQuery'
+      name: 'sport'
     },
+    {
+      name: 'predicate'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'sql',
+      displayWidth: 30,
+      displayHeight: 10
+    }
   ],
 
   methods: [
@@ -63,54 +72,81 @@ CLASS({
 
 GLOBAL.ctrl = this;
       var self = this;
+      var Medal = this.Medal;
 
       axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
         data.limit(5000).select(self.dao);
-        self.fromYear.dao = self.toYear.dao = self.disciplineQuery.dao = self.sportQuery.dao = self.colorQuery.dao = self.countryQuery.dao = self.cityQuery.dao = self.genderQuery.dao = self.dao;
+        self.fromYear.dao = self.toYear.dao = self.discipline.dao = self.sport.dao = self.color.dao = self.country.dao = self.city.dao = self.gender.dao = self.dao;
       });
       
       this.fromYear = this.GroupBySearchView.create({
         label: 'From',
-        property: this.Medal.YEAR,
+        property: Medal.YEAR,
+        op: GTE,
         size: 1
       });
 
       this.toYear = this.GroupBySearchView.create({
         label: 'To',
-        property: this.Medal.YEAR,
+        property: Medal.YEAR,
+        op: LTE,
         size: 1
       });
 
-      this.colorQuery = this.GroupBySearchView.create({
-        property: this.Medal.COLOR,
+      this.color = this.GroupBySearchView.create({
+        property: Medal.COLOR,
         size: 4
       });
 
-      this.countryQuery = this.GroupBySearchView.create({
-        property: this.Medal.COUNTRY,
+      this.country = this.GroupBySearchView.create({
+        property: Medal.COUNTRY,
         size: 1
       });
 
-      this.cityQuery = this.GroupBySearchView.create({
-        property: this.Medal.CITY,
+      this.city = this.GroupBySearchView.create({
+        property: Medal.CITY,
         size: 1
       });
 
-      this.genderQuery = this.GroupBySearchView.create({
-        property: this.Medal.GENDER,
+      this.gender = this.GroupBySearchView.create({
+        property: Medal.GENDER,
         size: 3
       });
 
-      this.disciplineQuery = this.GroupBySearchView.create({
-        property: this.Medal.DISCIPLINE,
+      this.discipline = this.GroupBySearchView.create({
+        property: Medal.DISCIPLINE,
         size: 1
       });
 
-      this.sportQuery = this.GroupBySearchView.create({
-        property: this.Medal.SPORT,
+      this.sport = this.GroupBySearchView.create({
+        property: Medal.SPORT,
         size: 1
       });
 
+      Events.dynamic(
+        function() {
+          self.fromYear.predicate;
+          self.toYear.predicate;
+          self.color.predicate;
+          self.country.predicate;
+          self.city.predicate;
+          self.gender.predicate;
+          self.discipline.predicate;
+          self.sport.predicate; },
+        function() {
+          self.predicate = AND(
+            self.fromYear.predicate,
+            self.toYear.predicate,
+            self.color.predicate,
+            self.country.predicate,
+            self.city.predicate,
+            self.gender.predicate,
+            self.discipline.predicate,
+            self.sport.predicate
+          ).partialEval();
+
+          self.sql = self.predicate.toSQL();
+        });
       Events.dynamic(
         function() { self.query; },
         function() { self.filteredDAO = self.dao; /*self.dao.where(self.query);*/ });
@@ -148,12 +184,14 @@ GLOBAL.ctrl = this;
           $$query
           %%fromYear
           %%toYear
-          %%colorQuery
-          %%countryQuery
-          %%cityQuery
-          %%genderQuery
-          %%disciplineQuery
-          %%sportQuery
+          %%color
+          %%country
+          %%city
+          %%gender
+          %%discipline
+          %%sport
+          SQL:<br>
+          $$sql{mode: 'read-only'}
         </div>
         <div class="searchResults">
           $$filteredDAO

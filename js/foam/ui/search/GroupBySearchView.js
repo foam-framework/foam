@@ -60,6 +60,10 @@ CLASS({
       defaultValue: TRUE
     },
     {
+      name: 'op',
+      defaultValue: EQ
+    },
+    {
       name: 'predicate',
       type: 'Object',
       defaultValue: TRUE
@@ -126,7 +130,7 @@ CLASS({
       name: 'updateChoice',
 
       code: function(_, _, _, choice) {
-        this.predicate = choice ? EQ(this.property, choice) : TRUE ;
+        this.predicate = choice ? this.op(this.property, choice) : TRUE ;
       }
     }
   ]
