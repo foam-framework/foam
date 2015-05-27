@@ -32,6 +32,12 @@ CLASS({
       view: { factory_: 'foam.ui.TableView', xxxscrollEnabled: true, rows: 30}
     },
     {
+      name: 'fromYear'
+    },
+    {
+      name: 'toYear'
+    },
+    {
       name: 'colorQuery'
     },
     {
@@ -48,7 +54,7 @@ CLASS({
     },
     {
       name: 'sportQuery'
-    }
+    },
   ],
 
   methods: [
@@ -59,10 +65,22 @@ GLOBAL.ctrl = this;
       var self = this;
 
       axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
-        data.limit(500).select(self.dao);
-        self.disciplineQuery.dao = self.sportQuery.dao = self.colorQuery.dao = self.countryQuery.dao = self.cityQuery.dao = self.genderQuery.dao = self.dao;
+        data.limit(5000).select(self.dao);
+        self.fromYear.dao = self.toYear.dao = self.disciplineQuery.dao = self.sportQuery.dao = self.colorQuery.dao = self.countryQuery.dao = self.cityQuery.dao = self.genderQuery.dao = self.dao;
       });
       
+      this.fromYear = this.GroupBySearchView.create({
+        label: 'From',
+        property: this.Medal.YEAR,
+        size: 1
+      });
+
+      this.toYear = this.GroupBySearchView.create({
+        label: 'To',
+        property: this.Medal.YEAR,
+        size: 1
+      });
+
       this.colorQuery = this.GroupBySearchView.create({
         property: this.Medal.COLOR,
         size: 4
@@ -114,10 +132,10 @@ GLOBAL.ctrl = this;
         width: auto !important;
       }
       .searchPanel {
-        margin-left: 5px;
+        margin: 15px;
       }
       .searchResults {
-        margin-left: 50px;
+        margin-left: 40px;
       }
       input[name='query'] {
         width: 300px;
@@ -128,6 +146,8 @@ GLOBAL.ctrl = this;
         <div class="searchPanel">
           Search:<br>
           $$query
+          %%fromYear
+          %%toYear
           %%colorQuery
           %%countryQuery
           %%cityQuery
