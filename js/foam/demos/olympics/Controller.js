@@ -145,7 +145,10 @@ GLOBAL.ctrl = this;
             self.sport.predicate
           ).partialEval();
 
-          self.sql = self.predicate.toSQL();
+          self.sql = 'SELECT * FROM Medal' +
+            (self.predicate !== TRUE ?
+              ' WHERE (' + self.predicate.toSQL() + ')' :
+              '');
         });
       Events.dynamic(
         function() { self.query; },

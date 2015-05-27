@@ -15,6 +15,6 @@ CLASS({
     { name: 'gender',      preSet: ps, defaultValue: 'Men' },
     { name: 'lastName',    preSet: ps },
     { name: 'sport',       preSet: ps },
-    { name: 'year',        preSet: ps }
+    { model_: 'IntProperty', name: 'year',        preSet: ps }
   ]
 });
