@@ -156,6 +156,12 @@ GLOBAL.ctrl = this;
     }
   ],
 
+  actions: [
+    function clear() {
+
+    }
+  ],
+
   templates: [
     function CSS() {/*
       .medalController {
@@ -185,16 +191,9 @@ GLOBAL.ctrl = this;
         <div class="searchPanel">
           Search:<br>
           $$query
-          %%fromYear
-          %%toYear
-          %%color
-          %%country
-          %%city
-          %%gender
-          %%discipline
-          %%sport
-          SQL:<br>
-          $$sql{mode: 'read-only'}
+          %%fromYear %%toYear %%city %%discipline %%sport %%country %%color %%gender
+          $$clear<br>
+          <br>SQL:<br>$$sql{mode: 'read-only'}
         </div>
         <div class="searchResults">
           $$filteredDAO
