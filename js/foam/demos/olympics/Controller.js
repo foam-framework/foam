@@ -43,6 +43,12 @@ CLASS({
     },
     {
       name: 'genderQuery'
+    },
+    {
+      name: 'disciplineQuery'
+    },
+    {
+      name: 'sportQuery'
     }
   ],
 
@@ -54,24 +60,38 @@ GLOBAL.ctrl = this;
       var self = this;
 
       axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
-        data.select(self.dao);
+        data.limit(2000).select(self.dao);
+        self.disciplineQuery.dao = self.sportQuery.dao = self.colorQuery.dao = self.countryQuery.dao = self.cityQuery.dao = self.genderQuery.dao = self.dao;
       });
       
       this.colorQuery = this.GroupBySearchView.create({
-        dao: this.dao,
         property: this.Medal.COLOR,
         size: 4
       });
 
       this.countryQuery = this.GroupBySearchView.create({
-        dao: this.dao,
-        property: this.Medal.COUNTRY
+        property: this.Medal.COUNTRY,
+        size: 1
       });
 
       this.cityQuery = this.GroupBySearchView.create({
-        dao: this.dao,
         property: this.Medal.CITY,
-        size: 6
+        size: 1
+      });
+
+      this.genderQuery = this.GroupBySearchView.create({
+        property: this.Medal.GENDER,
+        size: 3
+      });
+
+      this.disciplineQuery = this.GroupBySearchView.create({
+        property: this.Medal.DISCIPLINE,
+        size: 1
+      });
+
+      this.sportQuery = this.GroupBySearchView.create({
+        property: this.Medal.SPORT,
+        size: 1
       });
 
       Events.dynamic(
@@ -85,6 +105,9 @@ GLOBAL.ctrl = this;
       %%colorQuery
       %%countryQuery
       %%cityQuery
+      %%genderQuery
+      %%disciplineQuery
+      %%sportQuery
       $$query
       $$filteredDAO
     */}

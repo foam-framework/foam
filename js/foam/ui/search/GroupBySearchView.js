@@ -102,7 +102,7 @@ CLASS({
     {
       name: 'updateDAO',
 
-      isMerged: 250,
+      isMerged: 100,
       code: function() {
         var self = this;
 
