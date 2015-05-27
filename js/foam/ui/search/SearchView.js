@@ -56,7 +56,7 @@ CLASS({
       if ( ! this.children.length )
         this.buildSubViews();
 
-      var str = ""
+      var str = '';
       for ( var i = 0; i < this.children.length; i++ ) {
         str += this.children[i].toHTML();
       }

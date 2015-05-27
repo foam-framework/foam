@@ -67,6 +67,13 @@ CLASS({
   ],
 
   methods: [
+    function addGroup(prop, opt_name, opt_map) {
+      var map = opt_map || {};
+      map.property = prop;
+      map.size = map.size || 1;
+      this[opt_name || prop.name] = this.GroupBySearchView.create(map);
+    },
+
     function init() {
       this.SUPER();
 
@@ -78,52 +85,18 @@ GLOBAL.ctrl = this;
         data.limit(5000).select(self.dao);
         self.fromYear.dao = self.toYear.dao = self.discipline.dao = self.sport.dao = self.color.dao = self.country.dao = self.city.dao = self.gender.dao = self.dao;
       });
-      
-      this.fromYear = this.GroupBySearchView.create({
-        label: 'From',
-        property: Medal.YEAR,
-        op: GTE,
-        size: 1
-      });
 
-      this.toYear = this.GroupBySearchView.create({
-        label: 'To',
-        property: Medal.YEAR,
-        op: LTE,
-        size: 1
-      });
-
-      this.color = this.GroupBySearchView.create({
-        property: Medal.COLOR,
-        size: 4
-      });
-
-      this.country = this.GroupBySearchView.create({
-        property: Medal.COUNTRY,
-        size: 1
-      });
-
-      this.city = this.GroupBySearchView.create({
-        property: Medal.CITY,
-        size: 1
-      });
-
-      this.gender = this.GroupBySearchView.create({
-        property: Medal.GENDER,
-        size: 3
-      });
-
-      this.discipline = this.GroupBySearchView.create({
-        property: Medal.DISCIPLINE,
-        size: 1
-      });
-
-      this.sport = this.GroupBySearchView.create({
-        property: Medal.SPORT,
-        size: 1
-      });
+      this.addGroup(Medal.YEAR, 'fromYear', {label: 'From', op: GTE});
+      this.addGroup(Medal.YEAR, 'toYear',   {label: 'To',   op: LTE});
+      this.addGroup(Medal.COLOR, null,      {size: 4});
+      this.addGroup(Medal.COUNTRY);
+      this.addGroup(Medal.CITY);
+      this.addGroup(Medal.GENDER, null,     {size: 3});
+      this.addGroup(Medal.DISCIPLINE);
+      this.addGroup(Medal.SPORT);
 
       Events.dynamic(
+        /*
         function() {
           self.fromYear.predicate;
           self.toYear.predicate;
@@ -132,7 +105,7 @@ GLOBAL.ctrl = this;
           self.city.predicate;
           self.gender.predicate;
           self.discipline.predicate;
-          self.sport.predicate; },
+          self.sport.predicate; },*/
         function() {
           self.predicate = AND(
             self.fromYear.predicate,
@@ -149,16 +122,25 @@ GLOBAL.ctrl = this;
             (self.predicate !== TRUE ?
               ' WHERE (' + self.predicate.toSQL() + ')' :
               '');
+
+          self.filteredDAO = self.dao.where(self.predicate);
         });
-      Events.dynamic(
-        function() { self.query; },
-        function() { self.filteredDAO = self.dao; /*self.dao.where(self.query);*/ });
     }
   ],
 
   actions: [
-    function clear() {
-
+    {
+      name: 'clear',
+      action: function() {
+        this.fromYear.predicate =
+        this.toYear.predicate =
+        this.color.predicate =
+        this.country.predicate =
+        this.city.predicate =
+        this.gender.predicate =
+        this.discipline.predicate =
+        this.sport.predicate = TRUE;
+      }
     }
   ],
 

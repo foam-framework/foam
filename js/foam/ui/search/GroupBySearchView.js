@@ -28,7 +28,9 @@ CLASS({
     {
       name: 'view',
       type: 'view',
-      factory: function() { return foam.ui.ChoiceView.create({size:this.size, cssClass: 'foamSearchChoiceView'}); }
+      factory: function() {
+        return foam.ui.ChoiceView.create({size:this.size, cssClass: 'foamSearchChoiceView'});
+      }
     },
     {
       name:  'width',
@@ -55,13 +57,13 @@ CLASS({
       type: 'Property'
     },
     {
+      name: 'op',
+      defaultValue: EQ
+    },
+    {
       name: 'filter',
       type: 'Object',
       defaultValue: TRUE
-    },
-    {
-      name: 'op',
-      defaultValue: EQ
     },
     {
       name: 'predicate',
