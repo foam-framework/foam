@@ -83,7 +83,7 @@ CLASS({
       this.view.initHTML();
 
       //       Events.dynamic(function() { this.view.value; }, console.log.bind(console));
-      Events.dynamic(function() { this.dao; }, this.updateDAO);
+      this.dao.listen(this.updateDAO);
       this.propertyValue('filter').addListener(this.updateDAO);
       /*
         this.propertyValue('filter').addListener((function(a,b,oldValue,newValue) {
@@ -102,6 +102,7 @@ CLASS({
     {
       name: 'updateDAO',
 
+      isMerged: 250,
       code: function() {
         var self = this;
 
@@ -111,7 +112,7 @@ CLASS({
             var count = ('(' + groups.groups[key] + ')').intern();
             var subKey = key.substring(0, self.width-count.length-3);
             var cleanKey = subKey.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-            options.push([key, cleanKey + (Array(self.width-subKey.length-count.length).join('&nbsp;')).intern() + count]);
+            options.push([key, cleanKey + (Array(self.width-subKey.length-count.length).join(/*'&nbsp;'*/' ')).intern() + count]);
           }
           options.sort();
           options.splice(0,0,['','-- CLEAR SELECTION --']);
