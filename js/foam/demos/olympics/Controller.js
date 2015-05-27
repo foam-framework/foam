@@ -7,7 +7,7 @@ CLASS({
     'foam.ui.TextFieldView',
     'foam.dao.EasyDAO',
     'foam.demos.olympics.Medal',
-    'GropuBySearchView'
+    'foam.ui.search.GroupBySearchView'
   ],
 
   properties: [
@@ -16,6 +16,7 @@ CLASS({
       defaultValue: TRUE
     },
     {
+      model_: 'foam.core.types.DAOProperty',
       name: 'dao',
       factory: function() {
         var Medal = foam.demos.olympics.Medal;
@@ -27,11 +28,21 @@ CLASS({
       }
     },
     {
+      model_: 'foam.core.types.DAOProperty',
       name: 'filteredDAO',
       view: { factory_: 'foam.ui.TableView', xxxscrollEnabled: true, rows: 30}
     },
     {
       name: 'colorQuery'
+    },
+    {
+      name: 'countryQuery'
+    },
+    {
+      name: 'cityQuery'
+    },
+    {
+      name: 'genderQuery'
     }
   ],
 
@@ -45,9 +56,22 @@ GLOBAL.ctrl = this;
       axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
         data.select(self.dao);
       });
+      
+      this.colorQuery = this.GroupBySearchView.create({
+        dao: this.dao,
+        property: this.Medal.COLOR,
+        size: 4
+      });
 
-      this.colorQuery = GroupBySearchView.create({
-        dao: this.dao
+      this.countryQuery = this.GroupBySearchView.create({
+        dao: this.dao,
+        property: this.Medal.COUNTRY
+      });
+
+      this.cityQuery = this.GroupBySearchView.create({
+        dao: this.dao,
+        property: this.Medal.CITY,
+        size: 6
       });
 
       Events.dynamic(
@@ -59,6 +83,8 @@ GLOBAL.ctrl = this;
   templates: [
     function toHTML() {/*
       %%colorQuery
+      %%countryQuery
+      %%cityQuery
       $$query
       $$filteredDAO
     */}
