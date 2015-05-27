@@ -12,8 +12,7 @@ CLASS({
 
   properties: [
     {
-      name: 'query',
-      defaultValue: TRUE
+      name: 'query'
     },
     {
       model_: 'foam.core.types.DAOProperty',
@@ -60,7 +59,7 @@ GLOBAL.ctrl = this;
       var self = this;
 
       axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
-        data.limit(2000).select(self.dao);
+        data.limit(500).select(self.dao);
         self.disciplineQuery.dao = self.sportQuery.dao = self.colorQuery.dao = self.countryQuery.dao = self.cityQuery.dao = self.genderQuery.dao = self.dao;
       });
       
@@ -101,15 +100,45 @@ GLOBAL.ctrl = this;
   ],
 
   templates: [
+    function CSS() {/*
+      .medalController {
+        display: flex;
+      }
+      .foamSearchView select {
+        width: 300px;
+      }
+      .tableView {
+        width: auto !important;
+      }
+      .MedalTable {
+        width: auto !important;
+      }
+      .searchPanel {
+        margin-left: 5px;
+      }
+      .searchResults {
+        margin-left: 50px;
+      }
+      input[name='query'] {
+        width: 300px;
+      }
+    */},
     function toHTML() {/*
-      %%colorQuery
-      %%countryQuery
-      %%cityQuery
-      %%genderQuery
-      %%disciplineQuery
-      %%sportQuery
-      $$query
-      $$filteredDAO
+      <div class="medalController">
+        <div class="searchPanel">
+          Search:<br>
+          $$query
+          %%colorQuery
+          %%countryQuery
+          %%cityQuery
+          %%genderQuery
+          %%disciplineQuery
+          %%sportQuery
+        </div>
+        <div class="searchResults">
+          $$filteredDAO
+        </div>
+      </div>
     */}
   ]
 });

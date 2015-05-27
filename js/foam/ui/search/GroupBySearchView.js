@@ -45,6 +45,7 @@ CLASS({
       label: 'DAO',
       type: 'DAO',
       required: true,
+      defaultValue: [],
       postSet: function() {
         if ( this.view.id ) this.updateDAO();
       }
