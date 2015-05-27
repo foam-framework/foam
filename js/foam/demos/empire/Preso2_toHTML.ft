@@ -174,7 +174,7 @@ CLASS({
 
         <br>
 
-        <span style="font-size: 60%">(13k 1-week active users)</span>
+        <span style="font-size: 60%">(18k 1-week active users)</span>
       </div>
     </div>
     <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
@@ -225,9 +225,9 @@ CLASS({
           </span><span class="kwd">void</span><span class="pln"> remove</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">);</span><span class="pln">
           </span><span class="kwd">void</span><span class="pln"> eof</span><span class="pun">();</span><span class="pln">
           </span><span class="kwd">void</span><span class="pln"> error</span><span class="pun">(</span><span class="pln">msg</span><span class="pun">);</span><span class="pln">
-          </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
 
-          </span><span class="kwd">interface</span><span class="pln"> DAO </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">Sink</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+</span><span class="kwd">interface</span><span class="pln"> DAO </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">Sink</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
           </span><span class="kwd">void</span><span class="pln">   put</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">,</span><span class="pln"> opt_sink</span><span class="pun">);</span><span class="pln">
           </span><span class="kwd">void</span><span class="pln">   remove</span><span class="pun">(</span><span class="pln">id</span><span class="pun">,</span><span class="pln"> opt_sink</span><span class="pun">);</span><span class="pln">
           </span><span class="kwd">void</span><span class="pln">   find</span><span class="pun">(</span><span class="pln">query</span><span class="pun">,</span><span class="pln"> sink</span><span class="pun">);</span><span class="pln">
@@ -237,11 +237,11 @@ CLASS({
           </span><span class="kwd">void</span><span class="pln">   listen</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
           </span><span class="kwd">void</span><span class="pln">   pipe</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">):</span><span class="pln">  </span><span class="com">// select() + listen()</span><span class="pln">
           </span><span class="kwd">void</span><span class="pln">   unlisten</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
-            DAO    </span><span class="kwd">where</span><span class="pun">(</span><span class="pln">query</span><span class="pun">);</span><span class="pln">
-            DAO    limit</span><span class="pun">(</span><span class="pln">count</span><span class="pun">);</span><span class="pln">
-            DAO    skip</span><span class="pun">(</span><span class="pln">count</span><span class="pun">);</span><span class="pln">
-            DAO    orderBy</span><span class="pun">(</span><span class="pln">comparators</span><span class="pun">...);</span><span class="pln">
-          </span><span class="pun">}</span></pre>
+          DAO    </span><span class="kwd">where</span><span class="pun">(</span><span class="pln">query</span><span class="pun">);</span><span class="pln">
+          DAO    limit</span><span class="pun">(</span><span class="pln">count</span><span class="pun">);</span><span class="pln">
+          DAO    skip</span><span class="pun">(</span><span class="pln">count</span><span class="pun">);</span><span class="pln">
+          DAO    orderBy</span><span class="pun">(</span><span class="pln">comparators</span><span class="pun">...);</span><span class="pln">
+</span><span class="pun">}</span></pre>
       </div>
       <div class="card flex-grow" style="overflow: auto">
         <pre class="theme-dark prettyprint prettyprinted"><span class="pln">dao
@@ -625,7 +625,7 @@ CLASS({
 
   <slide>
     <div class="flex-row">
-      <div class="card center" style="padding: 5%; min-width: 80%">
+      <div class="center" style="padding: 5%; min-width: 80%">
         <span class="flex-col" style="font-size: 32px;">
           <p class="center">
             <foam model="foam.demos.graphics.Logo" text="FOAM" width="360"
