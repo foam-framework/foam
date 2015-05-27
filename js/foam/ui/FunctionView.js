@@ -24,8 +24,8 @@ CLASS({
 
   properties: [
     {
-      name: 'onKeyMode',
-      defaultValue: true
+      name: 'updateMode',
+      factory: function() { return this.EACH_KEYSTROKE; }
     },
     {
       name: 'displayWidth',
