@@ -129,7 +129,8 @@ CLASS({
       }
       foam-components { font-size: 100%; }
       #pong-container div { display: flex; }
-      #pong-container span[name="rScore"] { left: 660; }
+      #pong-container span[name="lScore"] { left: 390px; top:20px; }
+      #pong-container span[name="rScore"] { left: 490px; top:20px; }
       .pln { color: #000 }
       .str,
       .atv { color: #0f9d58 }
