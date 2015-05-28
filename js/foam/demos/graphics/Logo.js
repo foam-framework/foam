@@ -124,7 +124,8 @@ CLASS({
 
   requires: [
     'foam.demos.graphics.LogoForeground',
-    'foam.demos.graphics.LogoBackground'
+    'foam.demos.graphics.LogoBackground',
+    'foam.ui.TextFieldView'
   ],
 
   exports: [ 'text$', 'font$', 'colours$', 'width$', 'height$' ],

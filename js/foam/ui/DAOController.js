@@ -22,7 +22,7 @@ CLASS({
 
   extendsModel: 'foam.ui.View',
 
-  requires: ['SearchBorder'],
+  requires: ['foam.ui.search.SearchBorder'],
 
   properties: [
     {
