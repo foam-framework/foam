@@ -51,7 +51,7 @@ CLASS({
     addBubble: function() {
       if ( ! this.view.$ ) this.destroy();
       var c = this.canvas;
-      var Y = 120;
+      var Y = this.height+20;
       var X = 10+Math.random()*(this.width-20);
 
       var circle = this.Circle.create({
@@ -108,10 +108,10 @@ CLASS({
       c.lineWidth = 1;
       c.strokeStyle = 'gray';
       c.globalCompositeOperation = '';
-      c.strokeText(this.text, 0, 100);
+      c.strokeText(this.text, 0, this.height-5);
       c.globalCompositeOperation = 'destination-out';
 
-      c.fillText(this.text, 0, 100);
+      c.fillText(this.text, 0, this.height-5);
     }
   }
 });
