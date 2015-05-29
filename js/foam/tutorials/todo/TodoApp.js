@@ -27,6 +27,12 @@ CLASS({
     'foam.ui.TextFieldView',
   ],
 
+  exports: [
+    'dao',
+    'dao as todoDAO',
+    'selection',
+    'stack',
+  ],
   properties: [
     {
       name: 'cannedQueryDAO',
@@ -34,15 +40,19 @@ CLASS({
         return [
           this.CannedQuery.create({
             label: 'Todo',
-            expression: EQ(this.Todo.COMPLETED, false)
+            expression: AND(
+                EQ(this.Todo.COMPLETED, false),
+                NOT(this.Todo.PARENT))
           }),
           this.CannedQuery.create({
             label: 'Completed',
-            expression: EQ(this.Todo.COMPLETED, true)
+            expression: AND(
+                EQ(this.Todo.COMPLETED, true),
+                NOT(this.Todo.PARENT))
           }),
           this.CannedQuery.create({
             label: 'Everything',
-            expression: TRUE
+            expression: NOT(this.Todo.PARENT)
           })
         ].dao;
       }

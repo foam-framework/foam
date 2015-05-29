@@ -30,6 +30,22 @@ CLASS({
       name: 'completed',
       defaultValue: false,
     },
+    {
+      model_: 'ReferenceProperty',
+      name: 'parent',
+      subType: 'foam.tutorials.todo.model.Todo',
+      subKey: 'ID',
+      documentation: 'Reference to the parent of this todo item. If the ' +
+          'parent is defined, this todo is treated as a subtask.',
+    },
     // TODO(braden): Maybe add dueDate and priority as part of the tutorial?
+  ],
+
+  relationships: [
+    {
+      name: 'subtasks',
+      relatedModel: 'foam.tutorials.todo.model.Todo',
+      relatedProperty: 'parent'
+    }
   ],
 });
