@@ -24,14 +24,15 @@ CLASS({
     'foam.tutorials.todo.Controller',
     'foam.tutorials.todo.model.Todo',
     'foam.tutorials.todo.ui.TodoCitationView',
+    'foam.tutorials.todo.ui.TodoDetailView',
     'foam.ui.TextFieldView',
+    'foam.ui.md.PopupView',
   ],
 
   exports: [
     'dao',
     'dao as todoDAO',
-    'selection',
-    'stack',
+    'selection$',
   ],
   properties: [
     {
@@ -92,6 +93,31 @@ CLASS({
     {
       name: 'className',
       defaultValue: 'todo-app'
+    },
+    {
+      name: 'overlay',
+      factory: function() {
+        var view = this.PopupView.create({
+          delegate: 'foam.tutorials.todo.ui.TodoDetailView',
+        });
+        view.state$.addListener(function(_, prop, old, nu) {
+          if (nu !== 'open') {
+            this.selection = '';
+          }
+        }.bind(this));
+        return view;
+      }
+    },
+    {
+      name: 'selection',
+      documentation: 'Holds the currently selected todo item.',
+      postSet: function(old, nu) {
+        if (nu) {
+          // Open the overlay with this item.
+          this.overlay.data = nu;
+          this.overlay.open();
+        }
+      }
     },
   ],
 
