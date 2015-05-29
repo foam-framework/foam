@@ -37,8 +37,9 @@ CLASS({
 
     updateValue: function() {
       var e = this.$;
+      if (!e) return;
 
-      e.value = parseInt(this.data);
+      e.value = typeof this.data === 'number' ? this.data : parseInt(this.data);
     },
 
     initHTML: function() {
