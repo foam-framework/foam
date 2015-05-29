@@ -85,13 +85,16 @@ CLASS({
       .todo-hidden {
         display: none;
       }
+      .todo-subtasks {
+        margin-left: 12px;
+      }
     */},
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
         $$completed{ label: '' }
         $$description{ mode: 'read-only' }
         <span id="<%= this.id %>-subtasks" class="todo-hidden todo-subtasks">
-          <%# this.subtaskFraction %>%
+          $$subtaskFraction
           <%# this.completedSubtaskCount %> / <%# this.subtaskCount %>
         </span>
         <% this.setClass('todo-hidden', function() {
