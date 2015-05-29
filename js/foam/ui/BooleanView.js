@@ -40,6 +40,7 @@ CLASS({
 
     initHTML: function() {
       this.domValue = DomValue.create(this.$, 'change', 'checked');
+      this.$.addEventListener('click', this.onClick);
 
       Events.link(this.data$, this.domValue);
     },
@@ -48,5 +49,14 @@ CLASS({
       this.SUPER(isParentDestroyed);
       Events.unlink(this.domValue, this.data$);
     }
-  }
+  },
+
+  listeners: [
+    {
+      name: 'onClick',
+      code: function(e) {
+        e.stopPropagation();
+      }
+    }
+  ]
 });
