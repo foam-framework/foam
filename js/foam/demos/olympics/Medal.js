@@ -12,10 +12,10 @@ CLASS({
       preSet: ps,
       defaultValue: 'Gold',
       compareProperty: function(o1, o2) {
-        if ( o1 === o2       ) return  0;
-        if ( o1 === 'Gold'   ) return -1;
-        if ( o1 === 'Bronze' ) return  1;
-        return -1;
+        return o1 === o2       ?  0 :
+               o1 === 'Gold'   ? -1 :
+               o1 === 'Bronze' ?  1 :
+               o2 === 'Gold'   ?  1 : -1;
       }
     },
     { name: 'country',     preSet: ps },
