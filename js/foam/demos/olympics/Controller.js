@@ -146,6 +146,9 @@ GLOBAL.ctrl = this;
 
   templates: [
     function CSS() {/*
+      .tableView {
+        outline: none;
+      }
       .medalController {
         display: flex;
       }
