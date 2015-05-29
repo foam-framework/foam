@@ -349,23 +349,23 @@ var FObject = {
     return this;
   },
 
-  defineFOAMGetter: function(name, getter) {
+  createFOAMGetter: function(name, getter) {
     var stack = Events.onGet.stack;
-    this.__defineGetter__(name, function FOAMGetter() {
+    return function FOAMGetter() {
       var value = getter.call(this, name);
       var f = stack[0];
       f && f(this, name, value);
       return value;
-    });
+    };
   },
 
-  defineFOAMSetter: function(name, setter) {
+  createFOAMSetter: function(name, setter) {
     var stack = Events.onSet.stack;
-    this.__defineSetter__(name, function FOAMSetter(newValue) {
+    return function FOAMSetter(newValue) {
       var f = stack[0];
       if ( f && ! f(this, name, newValue) ) return;
       setter.call(this, newValue, name);
-    });
+    };
   },
 
   toString: function() {
@@ -437,7 +437,7 @@ var FObject = {
   /** Reset a property to its default value. **/
   clearProperty: function(name) { delete this.instance_[name]; },
 
-  defineProperty: function(prop) {
+  defineFOAMProperty: function(prop) {
     var name = prop.name;
     prop.name$_ = name + '$';
 
@@ -450,9 +450,10 @@ var FObject = {
       });
     }
 
+    var pgetter, psetter;
+
     if ( prop.getter ) {
-      this.defineFOAMGetter(name, prop.getter);
-//      this.defineFOAMGetter(name, function() { console.log('getter', this.name_, prop.name); return prop.getter.call(this); });
+      pgetter = this.createFOAMGetter(name, prop.getter);
     } else {
       if ( prop.lazyFactory || prop.factory ) {
         var f = prop.lazyFactory || prop.factory;
@@ -476,11 +477,11 @@ var FObject = {
           return typeof this.instance_[name] !== 'undefined' ? this.instance_[name] : prop.defaultValue;
         };
       }
-      this.defineFOAMGetter(name, getter);
+      pgetter = this.createFOAMGetter(name, getter);
     }
 
     if ( prop.setter ) {
-      this.defineFOAMSetter(name, prop.setter);
+      psetter = this.createFOAMSetter(name, prop.setter);
     } else {
       var setter = function setInstanceValue(oldValue, newValue) {
         this.instance_[name] = newValue;
@@ -549,8 +550,10 @@ var FObject = {
         setter.call(this, typeof this.instance_[name] === 'undefined' ? prop.defaultValue : this.instance_[name], newValue);
       }; })(setter);
 
-      this.defineFOAMSetter(name, setter);
+      psetter = this.createFOAMSetter(name, setter);
     }
+
+    Object.defineProperty(this, name, { get: pgetter, set: psetter, configurable: true });
 
     // Let the property install other features into the Prototype
     prop.install && prop.install.call(this, prop);

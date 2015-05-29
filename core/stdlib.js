@@ -18,6 +18,11 @@
 var DEBUG  = DEBUG || false;
 var GLOBAL = GLOBAL || this;
 
+Object.defineProperty_ = Object.defineProperty;
+Object.defineProperty = function() {
+  return this.defineProperty_.apply(this, arguments);
+};
+
 function MODEL(model) {
   var proto;
 
