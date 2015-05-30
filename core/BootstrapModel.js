@@ -161,7 +161,7 @@ var BootstrapModel = {
           this[constantize(p.name)] = p;
         }
       }
-      cls.defineFOAMProperty(p);
+      cls.defineProperty(p);
     }
     this.propertyMap_ = null;
   },
