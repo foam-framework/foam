@@ -437,13 +437,15 @@ var FObject = {
   /** Reset a property to its default value. **/
   clearProperty: function(name) { delete this.instance_[name]; },
 
-  defineFOAMProperty: function(prop) {
+  defineProperty: function(prop) {
     var name = prop.name;
     prop.name$_ = name + '$';
 
     // Add a 'name$' psedo-property if not already defined
-    if ( ! this.__lookupGetter__(prop.name$_) ) {
-      Object.defineProperty(this, prop.name$_, {
+    // Faster to define on __ROOT__, but not as good for auto-completion
+    var obj = DEBUG ? this : __ROOT__;
+    if ( ! obj.__lookupGetter__(prop.name$_) ) {
+      Object.defineProperty(obj, prop.name$_, {
         get: function getValue() { return this.propertyValue(name); },
         set: function setValue(value) { Events.link(value, this.propertyValue(name)); },
         configurable: true
