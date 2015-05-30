@@ -218,14 +218,16 @@ var CLASS = function(m) {
 
     GLOBAL.lookupCache_[id] = undefined;
     UNUSED_MODELS[id] = true;
+    var triggered = false;
 
     //console.log("Model Getting defined: ", m.name, X.NAME);
     Object.defineProperty(m.package ? path : GLOBAL, m.name, {
       get: function triggerModelLatch() {
+        if ( triggered ) return null;
+        triggered = true;
         // console.time('registerModel: ' + id);
         USED_MODELS[id] = true;
         UNUSED_MODELS[id] = undefined;
-        Object.defineProperty(path, m.name, {value: null, configurable: true});
 
         var work = [];
         // console.time('buildModel: ' + id);
