@@ -15,16 +15,23 @@
  * limitations under the License.
  */
 
-var DEBUG  = DEBUG || false;
+var DEBUG  = DEBUG  || false;
 var GLOBAL = GLOBAL || this;
 
 Object.defineProperty_ = Object.defineProperty;
 Object.defineProperty = function() {
-  return this.defineProperty_.apply(this, arguments);
+  this.defineProperty_.apply(this, arguments);
 };
 
 function MODEL(model) {
   var proto;
+
+  function defineProperty(proto, key, map) {
+    if ( (!map.value) || proto === Object.prototype || proto === Array.prototype )
+      Object.defineProperty_.apply(this, arguments);
+    else
+      proto[key] = map.value;
+  }
 
   if ( model.name ) {
     if ( ! GLOBAL[model.name] ) {
@@ -42,14 +49,14 @@ function MODEL(model) {
 
   if ( model.properties ) for ( var i = 0 ; i < model.properties.length ; i++ ) {
     var p = model.properties[i];
-    Object.defineProperty(
+    defineProperty(
       proto,
       p.name,
       { get: p.getter, enumerable: false });
   }
 
   for ( key in model.constants )
-    Object.defineProperty(
+    defineProperty(
       proto,
       key,
       { value: model.constants[key], writable: true, enumerable: false });
@@ -57,14 +64,14 @@ function MODEL(model) {
   if ( Array.isArray(model.methods) ) {
     for ( var i = 0 ; i < model.methods.length ; i++ ) {
       var m = model.methods[i];
-      Object.defineProperty(
+      defineProperty(
         proto,
         m.name,
         { value: m, writable: true, enumerable: false });
     }
   } else {
     for ( var key in model.methods )
-      Object.defineProperty(
+      defineProperty(
         proto,
         key,
         { value: model.methods[key], writable: true, enumerable: false });
@@ -355,6 +362,7 @@ var capitalize = memoize1(function(str) {
   // switchFromProperyName to //SwitchFromPropertyName
   return str[0].toUpperCase() + str.substring(1);
 });
+
 
 MODEL({
   extendsProto: 'Object',
@@ -660,7 +668,6 @@ MODEL({
     }
   ]
 });
-
 
 
 MODEL({
