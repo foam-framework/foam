@@ -471,12 +471,14 @@ var FObject = {
           return this.instance_[name];
         };
       } else if ( prop.defaultValueFn ) {
+        var f = prop.defaultValueFn;
         getter = function defaultValueFn() {
-          return typeof this.instance_[name] !== 'undefined' ? this.instance_[name] : prop.defaultValueFn.call(this, prop);
+          return typeof this.instance_[name] !== 'undefined' ? this.instance_[name] : f.call(this, prop);
         };
       } else {
+        var defaultValue = prop.defaultValue;
         getter = function getInstanceVar() {
-          return typeof this.instance_[name] !== 'undefined' ? this.instance_[name] : prop.defaultValue;
+          return typeof this.instance_[name] !== 'undefined' ? this.instance_[name] : defaultValue;
         };
       }
       pgetter = this.createFOAMGetter(name, getter);
