@@ -180,8 +180,7 @@ function packagePath(X, path) {
   return path ? packagePath_(X, path.split('.'), 0) : GLOBAL;
 }
 
-
-function registerModel(model, opt_name) {
+function registerModel(model, opt_name, fastMode) {
   var root    = model.package ? this : GLOBAL;
   var name    = model.name;
   var package = model.package;
@@ -193,7 +192,10 @@ function registerModel(model, opt_name) {
   }
 
   var path = packagePath(root, package);
-  Object.defineProperty(path, name, { value: model, configurable: true });
+  if ( fastMode )
+    path[name] = model;
+  else
+    Object.defineProperty(path, name, { value: model, configurable: true });
 
   // TODO: this is broken
   // update the cache if this model was already FOAM.lookup'd
@@ -212,9 +214,51 @@ function registerModel(model, opt_name) {
 
 var CLASS = function(m) {
 
+  // Don't Latch these Models, as we know that we'll need them on startup
+  var EAGER = {
+    'Method': true,
+    'BooleanProperty': true,
+    'Action': true,
+    'FunctionProperty': true,
+    'Constant': true,
+    'Message': true,
+    'ArrayProperty': true,
+    'StringArrayProperty': true,
+    'Template': true,
+    'Arg': true,
+    'Relationship': true,
+    'ViewFactoryProperty': true,
+    'FactoryProperty': true,
+    'foam.ui.Window': true,
+    'StringProperty': true,
+    'foam.html.Element': true,
+    'Expr': true,
+    'AbstractDAO': true,
+    'foam.ui.FoamTagView': true,
+    'foam.ui.View': true,
+    'foam.ui.DestructiveDataView': true,
+    'foam.ui.HTMLViewTrait': true,
+    'foam.core.types.DocumentInstallProperty': true,
+    'foam.ui.BaseView': true,
+    'foam.patterns.ChildTreeTrait': true
+  };
+
   /** Lazily create and register Model first time it's accessed. **/
   function registerModelLatch(path, m) {
     var id = m.package ? m.package + '.' + m.name : m.name;
+
+    if ( EAGER[id] ) {
+      USED_MODELS[id] = true;
+      var work = [];
+      var model = JSONUtil.mapToObj(X, m, Model, work);
+      if ( work.length > 0 ) {
+        model.extra__ = aseq.apply(null, work);
+      }
+
+      X.registerModel(model, undefined, true);
+
+      return model;
+    }
 
     GLOBAL.lookupCache_[id] = undefined;
     UNUSED_MODELS[id] = true;
