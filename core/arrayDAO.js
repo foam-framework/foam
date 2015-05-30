@@ -16,18 +16,6 @@
  */
 
 (function() {
-
-  function defineProperties(proto, fns) {
-    for ( var key in fns ) {
-      console.log('key: ', key);
-      Object.defineProperty(proto, key, {
-        value: fns[key],
-        configurable: true,
-        writable: true
-      });
-    }
-  }
-
   // Copy X.AbstractDAO methods in Array prototype
 
   var pmap = {};
@@ -35,7 +23,13 @@
     pmap[AbstractDAO.methods[key].name] = AbstractDAO.methods[key].code;
   }
 
-  defineProperties(Array.prototype, pmap);
+  for ( var key in pmap ) {
+    Object.defineProperty(Array.prototype, key, {
+      value: pmap[key],
+      configurable: true,
+      writable: true
+    });
+  }
 })();
 
 defineLazyProperty(Array.prototype, 'daoListeners_', function() {
