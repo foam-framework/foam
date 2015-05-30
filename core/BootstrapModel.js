@@ -305,9 +305,7 @@ var BootstrapModel = {
     if ( this.constants ) {
       for ( var i = 0 ; i < this.constants.length ; i++ ) {
         var c = this.constants[i];
-        // TODO(kgr): only add to Proto when Model cleanup done.
-        Object.defineProperty(cls,  c.name, {value: c.value});
-        Object.defineProperty(this, c.name, {value: c.value});
+        cls[c.name] = this[c.name] = c.value;
       }
     }
 
