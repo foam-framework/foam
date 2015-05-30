@@ -78,6 +78,7 @@ function MODEL(model) {
   }
 }
 
+var MODEL0 = MODEL;
 
 MODEL({
   extendsObject: 'GLOBAL',
@@ -765,17 +766,6 @@ MODEL({
     }
   ]
 });
-
-
-function defineProperties(proto, fns) {
-  for ( var key in fns ) {
-    Object.defineProperty(proto, key, {
-      value: fns[key],
-      configurable: true,
-      writable: true
-    });
-  }
-}
 
 
 console.log.json = function() {

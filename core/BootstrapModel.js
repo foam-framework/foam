@@ -319,7 +319,6 @@ var BootstrapModel = {
         clsProps[m.name] = { get: function() { return m.value; } };
         clsProps[constName] = { value: m };
         mdlProps[constName] = { value: m };
-        // TODO(kgr): only add to Proto when Model cleanup done.
         Object.defineProperties(cls, clsProps);
         Object.defineProperties(this, mdlProps);
       }.bind(this));
