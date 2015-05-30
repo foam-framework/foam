@@ -27,7 +27,7 @@ function MODEL(model) {
   var proto;
 
   function defineProperty(proto, key, map) {
-    if ( (!map.value) || proto === Object.prototype || proto === Array.prototype )
+    if ( ! map.value || proto === Object.prototype || proto === Array.prototype )
       Object.defineProperty_.apply(this, arguments);
     else
       proto[key] = map.value;
