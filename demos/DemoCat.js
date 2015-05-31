@@ -358,9 +358,9 @@ return JSONUtil.arrayToObjArray(X, [
       name: 'filteredDAO',
       model_: 'foam.core.types.DAOProperty',
       view: { factory_: 'foam.ui.DAOListView', mode: 'read-only' },
-      dynamicValue: function() {
+      dynamicValue: [ function() { this.dao; this.search; }, function() {
         return this.dao.where(CONTAINS_IC(SEQ(Demo.NAME, Demo.DESCRIPTION, Demo.KEYWORDS), this.search));
-      }
+      } ]
     },
   ],
   methods: { init: function init() {
