@@ -683,13 +683,20 @@ var Property = {
       );
 
       if ( this.dynamicValue ) {
-        proto.addInitAgent(10, name + ': dynamicValue', function(o, X, Y) {
-          var dynamicValue = prop.dynamicValue;
-
-          Events.dynamic(
-            dynamicValue.bind(o),
-            function(value) { o[name] = value; });
-        });
+        var dynamicValue = prop.dynamicValue;
+        if ( Array.isArray(dynamicValue) ) {
+          proto.addInitAgent(10, name + ': dynamicValue', function(o, X, Y) {
+            Events.dynamic(
+              dynamicValue[0].bind(o),
+              function() { o[name] = dynamicValue[1].call(o); });
+          });
+        } else {
+          proto.addInitAgent(10, name + ': dynamicValue', function(o, X, Y) {
+            Events.dynamic(
+              dynamicValue.bind(o),
+              function(value) { o[name] = value; });
+          });
+        }
       }
 
       if ( this.factory ) {
