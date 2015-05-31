@@ -550,9 +550,9 @@ var FObject = {
         }; })(setter, prop.adapt);
       }
 
-      setter = (function(setter) { return function setInstanceVar(newValue) {
-        setter.call(this, typeof this.instance_[name] === 'undefined' ? prop.defaultValue : this.instance_[name], newValue);
-      }; })(setter);
+      setter = (function(setter, defaultValue) { return function setInstanceVar(newValue) {
+        setter.call(this, typeof this.instance_[name] === 'undefined' ? defaultValue : this.instance_[name], newValue);
+      }; })(setter, prop.defaultValue);
 
       psetter = this.createFOAMSetter(name, setter);
     }
@@ -713,6 +713,6 @@ var FObject = {
         this.decorate(method.name, method.code, decorator);
     }
     return this;
-  },
+  }
 
 };
