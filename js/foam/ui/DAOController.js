@@ -22,7 +22,7 @@ CLASS({
 
   extendsModel: 'foam.ui.View',
 
-  requires: ['foam.ui.search.SearchBorder'],
+//  requires: ['foam.ui.search.SearchBorder'],
 
   properties: [
     {
@@ -54,7 +54,7 @@ CLASS({
     {
       model_: 'BooleanProperty',
       name: 'useSearchView',
-      defaultValue: false,
+      defaultValue: false/*,
       postSet: function(_, value) {
         if ( value ) {
           this.addDecorator(this.SearchBorder.create({
@@ -62,7 +62,7 @@ CLASS({
             data: this.data
           }));
         }
-      },
+      }*/
     }
   ],
 
