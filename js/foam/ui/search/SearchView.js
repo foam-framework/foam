@@ -20,7 +20,7 @@ CLASS({
   name: 'SearchView',
   extendsModel: 'foam.ui.View',
 
-  requires: [ 'GroupBySearchView' ],
+  requires: [ 'foam.ui.search.GroupBySearchView' ],
 
   properties: [
     {

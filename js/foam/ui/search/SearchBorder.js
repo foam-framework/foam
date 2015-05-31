@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui.search',
   name: 'SearchBorder',
 
-  requires: [ 'foam.ui.SearchView' ],
+  requires: [ 'foam.ui.search.SearchView' ],
 
   properties: [
     {
@@ -47,7 +47,7 @@ CLASS({
           object.dao = border.dao.where(pred);
         });
     },
-    
+
     function toHTML(border, delegate, args) {
       this.addChild(border.view);
       return border.view.toHTML() + delegate();
