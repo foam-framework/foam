@@ -518,7 +518,7 @@ CLASS({
 
       init(this.model_.actions);
 
-      if ( this.data && this.data.model_ && this.data.model_.actions )
+      if ( this.data && this.data.model_ && this.data.model_.actions.length )
         init(this.data.model_.actions, this.data$);
 
       if ( found ) {
