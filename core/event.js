@@ -419,12 +419,13 @@ MODEL({
     /** Create a Value for the specified property. **/
     propertyValue: function(prop) {
       if ( ! prop ) throw 'Property Name required for propertyValue().';
-      var name = prop + 'Value___';
-      return Object.hasOwnProperty.call(this, name) ? this[name] : ( this[name] = PropertyValue.create(this, prop) );
+      var props = this.props_ || ( this.props_ = {} );
+      return Object.hasOwnProperty.call(props, prop) ?
+        props[prop] :
+        ( props[prop] = PropertyValue.create(this, prop) );
     }
   }
 });
-
 
 var FunctionStack = {
   create: function() {
@@ -601,6 +602,7 @@ var Events = {
     var fn2 = opt_fn ? function() { opt_fn(fn()); } : fn;
     var listener = EventService.framed(fn2, opt_X);
     var propertyValues = [];
+    fn(); // Call once before capture to pre-latch lazy values
     Events.onGet.push(function(obj, name, value) {
       // Uncomment next line to debug.
       // obj.propertyValue(name).addListener(function() { console.log('name: ', name, ' listener: ', listener); });
