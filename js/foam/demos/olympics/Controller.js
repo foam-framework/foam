@@ -61,7 +61,7 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'sql',
-      displayWidth: 30,
+      displayWidth: 35,
       displayHeight: 10
     }
   ],
