@@ -969,7 +969,7 @@ var AltIndex = {
 
   addIndex: function(s, index) {
     // Populate the index
-    var a = [];
+    var a = [].sink;
     this.plan(s, a).execute(s, a);
 
     s.push(index.bulkLoad(a));
@@ -1184,7 +1184,7 @@ var MDAO = Model.create({
       // Add on the primary key(s) to make the index unique.
       for ( var i = 0 ; i < this.model.ids.length ; i++ ) {
         props.push(this.model.getProperty(this.model.ids[i]));
-        if (!props[props.length - 1]) throw "Undefined index property";
+        if ( ! props[props.length - 1] ) throw "Undefined index property";
       }
 
       return this.addUniqueIndex.apply(this, props);
