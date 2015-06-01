@@ -341,7 +341,7 @@ CLASS({
     tableToHTML: function() {
       var model = this.model;
 
-      if ( ! model ) return;
+      if ( ! model ) return '<b>ERROR: Table view without model</b>';
 
       if ( this.initializers_ ) {
         // console.log('Warning: TableView.tableToHTML called twice without initHTML');
@@ -399,6 +399,8 @@ CLASS({
       }
       str.push('</tr><tr style="height:2px"></tr></thead><tbody>');
       var objs = this.objs;
+      var hselectFound = false;
+      var sselectFound = false;
       if ( objs ) {
         var hselect = this.hardSelection;
         var sselect = this.selection;
@@ -408,10 +410,12 @@ CLASS({
 
           if ( hselect && obj.id == hselect.id ) {
             className += " rowSelected";
+            hselectFound = true;
           }
 
           if ( sselect && obj.id == sselect.id ) {
             className += " rowSoftSelected";
+            sselectFound = true;
           }
 
           str.push('<tr class="' + className + '">');
@@ -438,6 +442,9 @@ CLASS({
       }
 
       str.push('</tbody></table>');
+
+      if ( ! hselectFound ) this.hardSelection = '';
+      if ( ! sselectFound ) this.selection = '';
 
       return str.join('');
     },
