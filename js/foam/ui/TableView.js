@@ -341,7 +341,7 @@ CLASS({
     tableToHTML: function() {
       var model = this.model;
 
-      if ( ! model ) return '';
+      if ( ! model ) return '<b>ERROR: Table view without model</b>';
 
       if ( this.initializers_ ) {
         // console.log('Warning: TableView.tableToHTML called twice without initHTML');
