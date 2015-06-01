@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
- CLASS({
+CLASS({
   package: 'foam.ui',
   name:  'TextFieldView',
   label: 'Text Field',
 
   extendsModel: 'foam.ui.SimpleView',
 
-  requires: ['foam.ui.AutocompleteView'],
+  requires: [ 'foam.ui.AutocompleteView' ],
 
   documentation: function() { /*
       The default $$DOC{ref:'foam.ui.View'} for a string. Supports autocomplete
@@ -238,7 +238,10 @@
       /* Supplies the correct element for read-only mode */
       var self = this;
       this.setClass('placeholder', function() { return self.data === ''; }, this.id);
-      return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>';
+
+      return this.displayHeight === 1 ?
+        '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>' :
+        '<textarea readonly id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '" rows="' + this.displayHeight + '" cols="' + this.displayWidth + '"></textarea>' ;
     },
 
     setupAutocomplete: function() {
