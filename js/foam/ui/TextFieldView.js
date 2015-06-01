@@ -241,7 +241,7 @@ CLASS({
 
       return this.displayHeight === 1 ?
         '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>' :
-        '<textarea displayonly id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '"></textarea>' ;
+        '<textarea readonly id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '" rows="' + this.displayHeight + '" cols="' + this.displayWidth + '"></textarea>' ;
     },
 
     setupAutocomplete: function() {
