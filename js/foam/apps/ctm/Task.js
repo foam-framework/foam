@@ -13,6 +13,11 @@ CLASS({
   name: 'Task',
   package: 'foam.apps.ctm',
 
+  requires: [
+    // TODO(markdittmer): This has no business being in a data model.
+    'foam.graphics.HTMLGraph'
+  ],
+
   tableProperties: [
     // 'iconUrl',
     'name',
@@ -41,38 +46,75 @@ CLASS({
       name: 'name',
       label: 'Task',
       tableFormatter: function(name, obj) {
-        return '<img src="' + obj.iconUrl + '">' + name;
+        return '<img src="' + obj.iconUrl + '"><span>' + name + '</span>';
       }
     },
     {
       model_: 'FloatProperty',
       name: 'memory',
       units: 'MB',
-      tableFormatter: function(v) {
-        return (Math.round(v * 100) / 100) + this.units;
-      }
+      tableFormatter: function(v, obj) {
+        return obj.graphHTML(
+            obj.memoryHistory,
+            0, 2000,
+            'red',
+            (Math.round(v * 100) / 100) + this.units);
+      },
+      postSet: function() { this.storeHistory_.apply(this, arguments); }
     },
     {
       model_: 'FloatProperty',
       name: 'cpu',
       label: 'CPU',
       units: '%',
-      tableFormatter: function(v) {
-        return (Math.round(v * 100) / 100) + this.units;
-      }
+      tableFormatter: function(v, obj) {
+        return obj.graphHTML(
+            obj.cpuHistory,
+            0, 100,
+            'blue',
+            (Math.round(v * 100) / 100) + this.units);
+      },
+      postSet: function() { this.storeHistory_.apply(this, arguments); }
     },
     {
       model_: 'FloatProperty',
       name: 'network',
       units: 'B/s',
-      tableFormatter: function(v) {
-        return (Math.round(v * 100) / 100) + ' ' + this.units;
-      }
+      tableFormatter: function(v, obj) {
+        return obj.graphHTML(
+            obj.networkHistory,
+            0, 1000,
+            'green',
+            (Math.round(v * 100) / 100) + this.units);
+      },
+      postSet: function() { this.storeHistory_.apply(this, arguments); }
     },
     {
       model_: 'IntProperty',
       name: 'processId',
       label: 'Process ID'
+    },
+    // TODO(markdittmer): This should be abstracted to a decorator.
+    {
+      model_: 'ArrayProperty',
+      name: 'memoryHistory',
+      hidden: true
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'cpuHistory',
+      hidden: true
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'networkHistory',
+      hidden: true
+    },
+    {
+      model_: 'IntProperty',
+      name: 'numHistoryItems',
+      hidden: true,
+      defaultValue: 64
     }
   ],
 
@@ -91,6 +133,26 @@ CLASS({
         // TODO(markdittmer): Implement this.
         console.log('Open process', this.id);
       }
+    }
+  ],
+
+  methods: [
+    function graphHTML(graphData, graphMin, graphMax, graphColor, dataText) {
+      return '<div style="display: flex; align-items: stretch; align-content: stretch"><div style="width: 40%">' +
+          dataText + '</div>' +
+          this.HTMLGraph.create({
+            data: graphData,
+            min: graphMin,
+            max: graphMax,
+            width: this.numHistoryItems,
+            graphColor: graphColor
+          }).toHTML() +
+              '</div>';
+    },
+    function storeHistory_(old, nu, prop) {
+      var data = this[prop.name + 'History'];
+      if ( data.length === this.numHistoryItems ) data.shift();
+      data.push(nu);
     }
   ]
 });
