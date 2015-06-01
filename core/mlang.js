@@ -621,3 +621,36 @@ CLASS({
 function AND() {
   return AndExpr.create({args: compileArray_.call(null, arguments)});
 }
+
+CLASS({
+  name: 'NeqExpr',
+
+  extendsModel: 'BINARY',
+  abstract: true,
+
+  methods: {
+    toSQL: function() { return this.arg1.toSQL() + '<>' + this.arg2.toSQL(); },
+    toMQL: function() { return '-' + this.arg1.toMQL() + '=' + this.arg2.toMQL(); },
+    toBQL: function() { return '-' + this.arg1.toBQL() + ':' + this.arg2.toBQL(); },
+
+    partialEval: function() {
+      var newArg1 = this.arg1.partialEval();
+      var newArg2 = this.arg2.partialEval();
+
+      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
+        return compile_(newArg1.f() != newArg2.f());
+      }
+
+      return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
+        NeqExpr.create({arg1: newArg1, arg2: newArg2}) :
+      this;
+    },
+
+    f: function(obj) { return this.arg1.f(obj) != this.arg2.f(obj); }
+  }
+});
+
+function NEQ(arg1, arg2) {
+  return NeqExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
+}
+
