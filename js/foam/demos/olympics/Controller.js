@@ -39,7 +39,8 @@ CLASS({
         return foam.dao.EasyDAO.create({
           model: Medal,
           daoType: 'MDAO',
-          seqNo: true
+          seqNo: true,
+          autoIndex: true
         })/*.addIndex(Medal.CITY).addIndex(Medal.COLOR).addIndex(Medal.SPORT)*/;
       }
     },
@@ -99,7 +100,7 @@ GLOBAL.ctrl = this;
       var Medal = this.Medal;
 
       axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
-        data.limit(5000).select(self.dao);
+        data.limit(50000).select(self.dao);
         self.fromYear.dao = self.toYear.dao = self.discipline.dao = self.sport.dao = self.color.dao = self.country.dao = self.city.dao = self.gender.dao = self.dao;
       });
 
