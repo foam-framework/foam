@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 CLASS({
-  package: 'foam.tutorials.todo',
-  name: 'Controller',
-  documentation: 'GENERIC controller for this kind of app. Not the basis of ' +
-      'the Todo list tutorial app. Will probably be moved elsewhere later on.',
+  package: 'foam.browser',
+  name: 'BrowserConfig',
+  documentation: 'Configuration object for FOAM\'s browser. ' +
+      'Create an instance of this model and load it in a BrowserView.',
 
   requires: [
     'foam.dao.NullDAO',
@@ -30,7 +30,7 @@ CLASS({
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'dao',
-      documentation: 'The master DAO for this controller to view. Required.',
+      documentation: 'The master DAO to browse. Required.',
       required: true,
     },
     {
@@ -93,7 +93,7 @@ CLASS({
     },
     {
       name: 'showAllWithNoQuery',
-      documentation: 'When there is no query set, should the controller ' +
+      documentation: 'When there is no query set, should the browser ' +
           'render all the data, or none of it? Defaults to all, set false if ' +
           'you have a lot of data and don\'t want to render it all.',
       defaultValue: true,
