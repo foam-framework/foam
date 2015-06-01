@@ -15,10 +15,15 @@ CLASS({
 
   requires: [
     'foam.apps.ctm.Task',
+    'foam.apps.ctm.TaskManagerDetailView',
+    'foam.apps.ctm.TaskSimulator',
     'foam.dao.EasyDAO',
-    'foam.apps.ctm.TaskManagerDetailView'
+    'foam.util.Timer'
   ],
-  exports: [ 'selection$' ],
+  exports: [
+    'selection$',
+    'timer'
+  ],
 
   constants: {
     WORDS: [
@@ -38,7 +43,7 @@ CLASS({
     RANDOM_TASK: (function() {
       var nextId = 1;
       return function() {
-        return this.Task.create({
+        var task = this.Task.create({
           id: nextId++,
           name: this.WORDS[Math.floor(Math.random() * this.WORDS.length)] + ' ' +
               this.WORDS[Math.floor(Math.random() * this.WORDS.length)] + ' ' +
@@ -48,6 +53,11 @@ CLASS({
           network: Math.random() * 10 > 7 ? Math.floor(Math.random() * 500) : 0,
           processId: Math.floor(Math.random() * 10000)
         });
+        this.taskSimulators_.push(this.TaskSimulator.create({
+          task: task,
+          onTaskUpdate: this.onTaskUpdate
+        }, this.Y));
+        return task;
       };
     })()
   },
@@ -68,7 +78,6 @@ CLASS({
     },
     {
       name: 'selection',
-      postSet: function() { console.log('Setting selection'); },
       defaultValue: null
     },
     {
@@ -85,6 +94,19 @@ CLASS({
         return dao;
       }
     },
+    {
+      model_: 'ArrayProperty',
+      name: 'taskSimulators_'
+    },
+    {
+      type: 'foam.util.Timer',
+      name: 'timer',
+      factory: function() {
+        var timer = this.Timer.create();
+        timer.start();
+        return timer;
+      }
+    }
   ],
 
   actions: [
@@ -96,11 +118,19 @@ CLASS({
     }
   ],
 
+  listeners: [
+    {
+      name: 'onTaskUpdate',
+      code: function(task) { this.tasks_.put(task); }
+    }
+  ],
+
   methods: [
     function init() {
       this.SUPER.apply(this, arguments);
       var viewModel = this.TaskManagerDetailView;
       this.X.registerModel(viewModel, 'foam.ui.TaskManagerDetailView');
+      X.timer = this.timer;
     }
   ]
 });

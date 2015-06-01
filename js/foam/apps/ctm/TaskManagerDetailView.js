@@ -48,9 +48,7 @@ CLASS({
         display: flex;
         flex-direction: column;
       }
-      task-manager .tableView {
-        outline: none;
-      }
+      task-manager .tableView:focus { outline: none; }
       task-manager tm-header,
       task-manager tm-body,
       task-manager tm-footer {
