@@ -199,6 +199,7 @@ CLASS({
       help: 'Set internally by the resize handler',
       postSet: function(_, x) {
         this.panel$().style.width = (x+2) + 'px';
+        // if the panel has an onResize() method (maybe it's another SlidePanel), then call it.
         this.panelView_ && this.panelView_.onResize && this.panelView_.onResize();
       }
     },
