@@ -233,14 +233,7 @@ var CLASS = function(m) {
     'StringProperty': true,
     'foam.html.Element': true,
     'Expr': true,
-    'AbstractDAO': true,
-    'foam.ui.FoamTagView': true,
-    'foam.ui.View': true,
-    'foam.ui.DestructiveDataView': true,
-    'foam.ui.HTMLViewTrait': true,
-    'foam.core.types.DocumentInstallProperty': true,
-    'foam.ui.BaseView': true,
-    'foam.patterns.ChildTreeTrait': true
+    'AbstractDAO': true
   };
 
   /** Lazily create and register Model first time it's accessed. **/
