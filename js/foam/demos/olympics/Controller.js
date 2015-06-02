@@ -100,7 +100,7 @@ GLOBAL.ctrl = this;
       var Medal = this.Medal;
 
       axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
-        data.limit(50000).select(self.dao);
+        data.limit(50000).select(function(m) { self.dao.put(self.Medal.create(m)); });
         self.fromYear.dao = self.toYear.dao = self.discipline.dao = self.sport.dao = self.color.dao = self.country.dao = self.city.dao = self.gender.dao = self.dao;
       });
 
@@ -126,6 +126,7 @@ GLOBAL.ctrl = this;
           self.sport.predicate; },*/
         function() {
           self.predicate = AND(
+            self.query ? MQL(self.query) : TRUE,
             self.fromYear.predicate,
             self.toYear.predicate,
             self.color.predicate,
