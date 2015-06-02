@@ -218,7 +218,9 @@ CLASS({
       model_: 'IntProperty',
       name: 'parentWidth',
       help: 'A pseudoproperty that returns the current width (CSS pixels) of the containing element',
-      getter: function() { return toNum(this.X.window.getComputedStyle(this.$.parentNode).width); }
+      lazyFactory: function() { 
+        return toNum(this.X.window.getComputedStyle(this.$.parentNode).width);
+      }
     },
     {
       model_: 'IntProperty',
@@ -355,11 +357,11 @@ CLASS({
       name: 'onResize',
       isFramed: true,
       code: function(e) {
+        this.clearProperty('parentWidth');
         if ( ! this.$ ) return;
         this.state.onResize.call(this);
         this.shadow$().style.display = this.state.over ? 'inline' : 'none';
         this.state = this.state;
-        var parentWidth = this.parentWidth;
       }
     },
     {
