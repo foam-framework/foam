@@ -15,13 +15,11 @@
  * limitations under the License.
  */
 
-
 CLASS({
   package: 'foam.ui',
   name: 'PopupView',
 
   extendsModel: 'foam.ui.SimpleView',
-
 
   properties: [
     {
