@@ -189,7 +189,6 @@ CLASS({
         var x = this.side.mainX.call(this);
         this.main$().style.webkitTransform = 'translate3d(' + x + 'px, 0,0)';
         this.main$().style.MozTransform = 'translate3d(' + x + 'px, 0,0)';
-
       }
     },
     {
@@ -218,7 +217,7 @@ CLASS({
       model_: 'IntProperty',
       name: 'parentWidth',
       help: 'A pseudoproperty that returns the current width (CSS pixels) of the containing element',
-      lazyFactory: function() { 
+      lazyFactory: function() {
         return toNum(this.X.window.getComputedStyle(this.$.parentNode).width);
       }
     },
@@ -309,7 +308,9 @@ CLASS({
 
   methods: {
     initHTML: function() {
-      this.state = this.state = this.CLOSED;
+      // Check if panel should be initially expanded
+      this.CLOSED.onResize.call(this);
+      if ( ! this.state ) this.state = this.CLOSED;
 
       if (this.gestureManager) {
         this.gestureManager.install(this.dragGesture);
@@ -323,7 +324,6 @@ CLASS({
       this.main$().addEventListener('DOMFocusIn',  this.onMainFocus);
       this.panel$().addEventListener('DOMFocusIn', this.onPanelFocus);
       this.initChildren(); // We didn't call SUPER(), so we have to do this here.
-      this.onResize();
     },
     interpolate: function(state1, state2) {
       var layout1 = state1.layout.call(this);
