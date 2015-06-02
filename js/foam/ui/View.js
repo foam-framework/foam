@@ -55,6 +55,5 @@ CLASS({
       type: 'Property',
       defaultValueFn: function() { return this.Property.DETAIL_VIEW; }
     }
-
   ]
 });
