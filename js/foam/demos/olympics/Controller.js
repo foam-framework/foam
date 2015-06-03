@@ -32,6 +32,12 @@ CLASS({
       name: 'query'
     },
     {
+      name: 'queryParser',
+      factory: function() {
+        return QueryParserFactory(this.Medal);
+      }
+    },
+    {
       model_: 'foam.core.types.DAOProperty',
       name: 'dao',
       factory: function() {
@@ -126,7 +132,7 @@ GLOBAL.ctrl = this;
           self.sport.predicate; },*/
         function() {
           self.predicate = AND(
-            self.query ? MQL(self.query) : TRUE,
+            self.queryParser.parseString(self.query),
             self.fromYear.predicate,
             self.toYear.predicate,
             self.color.predicate,
@@ -209,6 +215,8 @@ GLOBAL.ctrl = this;
           %%fromYear %%toYear %%city %%discipline %%sport %%country %%color %%gender
           $$clear<br>
           <br>SQL:<br>$$sql{mode: 'read-only'}
+          <br>
+          <br><%= FOAM_POWERED %>
         </div>
         <div class="searchResults">
           $$filteredDAO

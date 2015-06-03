@@ -28,6 +28,8 @@ CLASS({
       name: 'color',
       preSet: ps,
       defaultValue: 'Gold',
+      shortName: 'c',
+      aliases: ['colour', 'medal'],
       tableFormatter: function(c) {
         return '<span class="' + c + '">' + c + '</span>';
       },
@@ -43,8 +45,8 @@ CLASS({
     { name: 'sport',       preSet: ps },
     { name: 'event',       preSet: ps },
     { name: 'eventGender', preSet: ps, defaultValue: 'M' },
-    { name: 'firstName',   preSet: ps },
-    { name: 'gender',      preSet: ps, defaultValue: 'Men' },
+    { name: 'firstName',   preSet: ps, shortName: 'fn', aliases: ['fname'] },
+    { name: 'gender',      preSet: ps, shortName: 'fn', aliases: ['fname'], defaultValue: 'Men' },
     { name: 'lastName',    preSet: ps },
     { model_: 'IntProperty', name: 'year' }
   ]
