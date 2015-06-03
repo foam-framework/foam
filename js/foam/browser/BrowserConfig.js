@@ -24,6 +24,7 @@ CLASS({
     'foam.dao.NullDAO',
     'foam.mlang.CannedQuery',
     'foam.ui.CannedQueryCitationView',
+    'foam.ui.DAOListView',
   ],
 
   properties: [
@@ -90,6 +91,17 @@ CLASS({
         factory_: 'foam.ui.TextFieldView',
         onKeyMode: true,
       },
+    },
+    {
+      name: 'menuFactory',
+      documentation: 'The menuFactory returns a View for the left-side menu. ' +
+          'By default, it returns the view for $$DOC{ref:".cannedQueryDAO"}.',
+      defaultValue: function() {
+        return this.DAOListView.create({
+          data$: this.cannedQueryDAO$,
+          rowView: 'foam.ui.CannedQueryCitationView'
+        });
+      }
     },
     {
       name: 'showAllWithNoQuery',

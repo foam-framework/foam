@@ -22,6 +22,7 @@ CLASS({
     'foam.browser.BrowserConfig',
     'foam.browser.ui.StackView',
     'foam.ui.DAOListView',
+    'foam.ui.TextFieldView',
   ],
 
   exports: [
@@ -84,7 +85,7 @@ CLASS({
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
         <div class="menu">
-          $$cannedQueryDAO{ X: this.Y.sub({ selection$: this.data.cannedQuery$ }) }
+          <%= this.data.menuFactory() %>
         </div>
         <div class="main">
           <div class="search">

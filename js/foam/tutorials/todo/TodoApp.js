@@ -25,6 +25,8 @@ CLASS({
     'foam.tutorials.todo.model.Todo',
     'foam.tutorials.todo.ui.TodoCitationView',
     'foam.tutorials.todo.ui.TodoDetailView',
+    'foam.ui.CannedQueryCitationView',
+    'foam.ui.DAOListView',
     'foam.ui.TextFieldView',
     'foam.ui.md.PopupView',
   ],
@@ -56,6 +58,17 @@ CLASS({
             expression: NOT(this.Todo.PARENT)
           })
         ].dao;
+      }
+    },
+    {
+      name: 'menuFactory',
+      defaultValue: function() {
+        return this.DAOListView.create({
+          data$: this.cannedQueryDAO$,
+          rowView: this.CannedQueryCitationView
+        }, this.Y.sub({
+          selection$: this.cannedQuery$
+        }));
       }
     },
     {
