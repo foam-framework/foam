@@ -46,7 +46,10 @@ CLASS({
       name: 'size',
       defaultValue: 0,
       help: 'Total number of elements being scrolled through.',
-      postSet: function() { this.paint(); }
+      postSet: function(_, size) {
+        this.value = this.value; // force range checking on value
+        this.paint();
+      }
     },
     {
       name: 'minHandleSize',

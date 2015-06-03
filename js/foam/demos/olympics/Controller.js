@@ -61,7 +61,7 @@ CLASS({
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'filteredDAO',
-      view: { factory_: 'foam.ui.TableView', xxxscrollEnabled: true, rows: 30}
+      view: { factory_: 'foam.ui.TableView', scrollEnabled: true, xxxeditColumnsEnabled: true, xxxrows: 30}
     },
     {
       name: 'fromYear'
@@ -186,6 +186,7 @@ GLOBAL.ctrl = this;
     function CSS() {/*
       .tableView {
         outline: none;
+        height: 95%;
       }
       .medalController {
         display: flex;
@@ -204,8 +205,12 @@ GLOBAL.ctrl = this;
       }
       .searchResults {
         margin-left: 40px;
-        font-size: 26px;
+      }
+      .counts {
         color: #555;
+        font-size: 22px;
+        margin-left: 20px;
+        margin-top: 16px;
       }
       input[name='query'] {
         margin-bottom: 15px;
@@ -234,8 +239,7 @@ GLOBAL.ctrl = this;
         </div>
         <div class="searchResults">
           $$filteredDAO
-          <br>
-          $$count{mode: 'read-only'} of $$totalCount{mode: 'read-only'} selected
+          <div class="counts">$$count{mode: 'read-only'} of $$totalCount{mode: 'read-only'} selected</div>
         </div>
       </div>
     */}
