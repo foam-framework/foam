@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+// TODO: move to package
+
 /**
  * Generic Google-like query-language parser generator.
  *

@@ -209,22 +209,15 @@ GLOBAL.ctrl = this;
       .counts {
         color: #555;
         font-size: 22px;
-        margin-left: 20px;
-        margin-top: 16px;
+        margin: 20px;
       }
       input[name='query'] {
         margin-bottom: 15px;
         width: 300px;
       }
-      .Gold {
-        color: #C98910;
-      }
-      .Silver {
-        color: #A8A8A8;
-      }
-      .Bronze {
-        color: #965A38;
-      }
+      .Gold   { color: #C98910; }
+      .Silver { color: #A8A8A8; }
+      .Bronze { color: #965A38; }
     */},
     function toHTML() {/*
       <div class="medalController">
