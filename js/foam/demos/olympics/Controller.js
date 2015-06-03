@@ -129,8 +129,8 @@ GLOBAL.ctrl = this;
       this.addGroup(Medal.EVENT);
 
       Events.dynamic(
-        /*
         function() {
+          self.query;
           self.fromYear.predicate;
           self.toYear.predicate;
           self.color.predicate;
@@ -138,8 +138,9 @@ GLOBAL.ctrl = this;
           self.city.predicate;
           self.gender.predicate;
           self.discipline.predicate;
-          self.event.predicate; },*/
+          self.event.predicate; },
         function() {
+          console.log('query');
           self.predicate = AND(
             self.queryParser.parseString(self.query),
             self.fromYear.predicate,
