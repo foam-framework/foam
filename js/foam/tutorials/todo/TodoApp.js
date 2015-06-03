@@ -17,11 +17,11 @@
 CLASS({
   package: 'foam.tutorials.todo',
   name: 'TodoApp',
-  extendsModel: 'foam.ui.DetailView',
+  extendsModel: 'foam.browser.ui.BrowserView',
   requires: [
+    'foam.browser.BrowserConfig',
     'foam.dao.EasyDAO',
     'foam.mlang.CannedQuery',
-    'foam.tutorials.todo.Controller',
     'foam.tutorials.todo.model.Todo',
     'foam.tutorials.todo.ui.TodoCitationView',
     'foam.tutorials.todo.ui.TodoDetailView',
@@ -71,11 +71,22 @@ CLASS({
     {
       name: 'data',
       factory: function() {
-        return this.Controller.create({
+        return this.BrowserConfig.create({
           dao: this.dao,
           cannedQueryDAO: this.cannedQueryDAO,
         });
       }
+    },
+    {
+      name: 'listView',
+      defaultValue: {
+        factory_: 'foam.ui.DAOListView',
+        rowView: 'foam.tutorials.todo.ui.TodoCitationView'
+      }
+    },
+    {
+      name: 'detailView',
+      defaultValue: 'foam.tutorials.todo.ui.TodoDetailView'
     },
     {
       name: 'newTodo',
@@ -94,77 +105,5 @@ CLASS({
       name: 'className',
       defaultValue: 'todo-app'
     },
-    {
-      name: 'overlay',
-      factory: function() {
-        var view = this.PopupView.create({
-          delegate: 'foam.tutorials.todo.ui.TodoDetailView',
-        });
-        view.state$.addListener(function(_, prop, old, nu) {
-          if (nu !== 'open') {
-            this.selection = '';
-          }
-        }.bind(this));
-        return view;
-      }
-    },
-    {
-      name: 'selection',
-      documentation: 'Holds the currently selected todo item.',
-      postSet: function(old, nu) {
-        if (nu) {
-          // Open the overlay with this item.
-          this.overlay.data = nu;
-          this.overlay.open();
-        }
-      }
-    },
-  ],
-
-  templates: [
-    function CSS() {/*
-      .todo-app {
-      }
-      .menu {
-        background: #e9e9e9;
-      }
-      .menu div {
-        padding: 8px 12px;
-      }
-      .search {
-        margin: 8px;
-      }
-      .search input {
-        padding: 6px;
-      }
-      .new-todo {
-        margin: 8px;
-      }
-      .new-todo input {
-        padding: 6px;
-      }
-
-      .todo-list {
-        margin-top: 8px;
-      }
-    */},
-    function toHTML() {/*
-      <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
-        <div class="menu">
-          $$cannedQueryDAO{ X: this.Y.sub({ selection$: this.data.cannedQuery$ }) }
-        </div>
-        <div class="main">
-          <div class="search">
-            $$search{ placeholder: 'Search' }
-          </div>
-          <div class="new-todo">
-            $$newTodo{ updateMode: this.TextFieldView.ENTER_ONLY }
-          </div>
-          <div class="todo-list">
-            $$filteredDAO{ rowView: 'foam.tutorials.todo.ui.TodoCitationView' }
-          </div>
-        </div>
-      </div>
-    */},
   ],
 });

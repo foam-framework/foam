@@ -153,6 +153,20 @@ CLASS({
           If you do not want to show $$DOC{ref:'Action',usePlural:true} or want
           to show them in a different way, leave this false.
       */}
+    },
+    {
+      name: 'preferredWidth',
+      documentation: 'Allows specifying the preferred width of a view. ' +
+          'This is optional, and only used by views attempting responsive ' +
+          'layouts, such as $$DOC{ref:"foam.browser.ui.StackView"}.',
+      defaultValue: 400
+    },
+    {
+      name: 'preferredHeight',
+      documentation: 'Allows specifying the preferred height of a view. ' +
+          'This is optional, and only used by views attempting advanced ' +
+          'layouts, such as $$DOC{ref:"foam.ui.ScrollView"}.',
+      defaultValue: 40
     }
   ],
 

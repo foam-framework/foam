@@ -22,6 +22,14 @@ CLASS({
     'foam.tutorials.todo.model.Todo',
   ],
 
+  imports: [
+    'stack',
+  ],
+
+  exports: [
+    'selection$',
+  ],
+
   properties: [
     {
       name: 'model',
@@ -30,6 +38,16 @@ CLASS({
     {
       name: 'className',
       defaultValue: 'todo-detail'
+    },
+    {
+      name: 'selection',
+      postSet: function(old, nu) {
+        if (nu) {
+          this.stack.pushView(this.model_.create({ data: nu }));
+        } else {
+          this.stack.popView();
+        }
+      }
     },
   ],
 
