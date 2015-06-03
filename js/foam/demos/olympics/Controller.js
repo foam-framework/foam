@@ -61,7 +61,7 @@ CLASS({
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'filteredDAO',
-      view: { factory_: 'foam.ui.TableView', xxxscrollEnabled: true, rows: 30}
+      view: { factory_: 'foam.ui.TableView', scrollEnabled: true, xxxeditColumnsEnabled: true, xxxrows: 30}
     },
     {
       name: 'fromYear'
@@ -186,6 +186,7 @@ GLOBAL.ctrl = this;
     function CSS() {/*
       .tableView {
         outline: none;
+        height: 95%;
       }
       .medalController {
         display: flex;
