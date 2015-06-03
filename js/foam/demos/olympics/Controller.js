@@ -29,6 +29,14 @@ CLASS({
 
   properties: [
     {
+      model_: 'IntProperty',
+      name: 'count'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'totalCount'
+    },
+    {
       name: 'query'
     },
     {
@@ -107,6 +115,7 @@ GLOBAL.ctrl = this;
 
       axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
         data.limit(50000).select(function(m) { self.dao.put(self.Medal.create(m)); });
+        self.count = self.totalCount = data.length;
         self.fromYear.dao = self.toYear.dao = self.discipline.dao = self.sport.dao = self.color.dao = self.country.dao = self.city.dao = self.gender.dao = self.dao;
       });
 
@@ -149,6 +158,9 @@ GLOBAL.ctrl = this;
               '');
 
           self.filteredDAO = self.dao.where(self.predicate);
+          self.filteredDAO.select(COUNT())(function(c) {
+            self.count = c.count;
+          });
         });
     }
   ],
@@ -192,6 +204,8 @@ GLOBAL.ctrl = this;
       }
       .searchResults {
         margin-left: 40px;
+        font-size: 26px;
+        color: #555;
       }
       input[name='query'] {
         margin-bottom: 15px;
@@ -220,6 +234,8 @@ GLOBAL.ctrl = this;
         </div>
         <div class="searchResults">
           $$filteredDAO
+          <br>
+          $$count{mode: 'read-only'} of $$totalCount{mode: 'read-only'} selected
         </div>
       </div>
     */}
