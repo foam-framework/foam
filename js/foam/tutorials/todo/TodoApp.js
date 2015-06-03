@@ -25,17 +25,12 @@ CLASS({
     'foam.tutorials.todo.model.Todo',
     'foam.tutorials.todo.ui.TodoCitationView',
     'foam.tutorials.todo.ui.TodoDetailView',
-    'foam.ui.CannedQueryCitationView',
     'foam.ui.DAOListView',
     'foam.ui.TextFieldView',
+    'foam.ui.md.CannedQueryCitationView',
     'foam.ui.md.PopupView',
   ],
 
-  exports: [
-    'dao',
-    'dao as todoDAO',
-    'selection$',
-  ],
   properties: [
     {
       name: 'cannedQueryDAO',
@@ -60,6 +55,7 @@ CLASS({
         ].dao;
       }
     },
+    /*
     {
       name: 'menuFactory',
       defaultValue: function() {
@@ -71,6 +67,7 @@ CLASS({
         }));
       }
     },
+    */
     {
       name: 'dao',
       factory: function() {

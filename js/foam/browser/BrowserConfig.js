@@ -23,11 +23,17 @@ CLASS({
   requires: [
     'foam.dao.NullDAO',
     'foam.mlang.CannedQuery',
-    'foam.ui.CannedQueryCitationView',
     'foam.ui.DAOListView',
+    'foam.ui.md.CannedQueryCitationView',
   ],
 
   properties: [
+    {
+      name: 'title',
+      defaultValueFn: function() {
+        return this.dao.model.name + ' Browser';
+      }
+    },
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'dao',
@@ -76,7 +82,7 @@ CLASS({
       },
       view: {
         factory_: 'foam.ui.DAOListView',
-        rowView: 'foam.ui.CannedQueryCitationView',
+        rowView: 'foam.ui.md.CannedQueryCitationView',
       },
     },
     {
@@ -88,7 +94,10 @@ CLASS({
       model_: 'StringProperty',
       name: 'search',
       view: {
-        factory_: 'foam.ui.TextFieldView',
+        factory_: 'foam.ui.md.TextFieldView',
+        label: 'Search',
+        floatingLabel: false,
+        placeholder: 'Search',
         onKeyMode: true,
       },
     },
@@ -97,10 +106,22 @@ CLASS({
       documentation: 'The menuFactory returns a View for the left-side menu. ' +
           'By default, it returns the view for $$DOC{ref:".cannedQueryDAO"}.',
       defaultValue: function() {
-        return this.DAOListView.create({
+        var view = this.DAOListView.create({
           data$: this.cannedQueryDAO$,
-          rowView: 'foam.ui.CannedQueryCitationView'
-        });
+          rowView: 'foam.ui.md.CannedQueryCitationView',
+        }, this.Y.sub({
+          selection$: this.cannedQuery$
+        }));
+
+        // Listen for the DAOListView's ROW_CLICK event, and emit our own
+        // MENU_CLOSE event when it fires. This was originally a postSet on
+        // cannedQuery, which is bound to the selection, but that only updates
+        // when the value actually changes.
+        view.subscribe(view.ROW_CLICK, function() {
+          this.publish(this.MENU_CLOSE);
+        }.bind(this));
+
+        return view;
       }
     },
     {
@@ -118,4 +139,8 @@ CLASS({
       defaultValue: true,
     },
   ],
+
+  constants: {
+    MENU_CLOSE: ['menu-close']
+  },
 });

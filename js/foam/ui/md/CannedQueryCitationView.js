@@ -15,10 +15,25 @@
  * limitations under the License.
  */
 CLASS({
-  package: 'foam.ui',
+  package: 'foam.ui.md',
   name: 'CannedQueryCitationView',
   extendsModel: 'foam.ui.View',
+  properties: [
+    {
+      name: 'className',
+      defaultValue: 'canned-query-citation'
+    },
+  ],
   templates: [
+    function CSS() {/*
+      .canned-query-citation {
+        align-items: center;
+        display: flex;
+        font-size: 16px;
+        height: 48px;
+        padding: 8px 16px;
+      }
+    */},
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
         $$label{ mode: 'read-only' }

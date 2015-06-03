@@ -77,7 +77,8 @@ CLASS({
         align-items: center;
         border-bottom: 1px solid #eee;
         display: flex;
-        padding: 8px 12px;
+        font-size: 14px;
+        height: 56px;
       }
       .todo-citation input {
         margin-right: 12px;
@@ -92,7 +93,7 @@ CLASS({
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
         $$completed{ label: '' }
-        $$description{ mode: 'read-only' }
+        $$description{ mode: 'read-only', floatingLabel: false }
         <span id="<%= this.id %>-subtasks" class="todo-hidden todo-subtasks">
           $$subtaskFraction
           <%# this.completedSubtaskCount %> / <%# this.subtaskCount %>
