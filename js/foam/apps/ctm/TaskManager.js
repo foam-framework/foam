@@ -15,52 +15,16 @@ CLASS({
 
   requires: [
     'foam.apps.ctm.Task',
+    'foam.apps.ctm.TaskController',
     'foam.apps.ctm.TaskManagerDetailView',
-    'foam.apps.ctm.TaskSimulator',
     'foam.dao.EasyDAO',
     'foam.util.Timer'
   ],
   exports: [
     'selection$',
-    'timer'
+    'timer',
+    'tasks_ as tasks'
   ],
-
-  constants: {
-    WORDS: [
-      'Browser',
-      'Extension',
-      'Tab',
-      'App',
-      'Plugin',
-      'Google',
-      'GMail',
-      'Calendar',
-      'Docs',
-      'Ads',
-      'Todo',
-      'Meta'
-    ],
-    RANDOM_TASK: (function() {
-      var nextId = 1;
-      return function() {
-        var task = this.Task.create({
-          id: nextId++,
-          name: this.WORDS[Math.floor(Math.random() * this.WORDS.length)] + ' ' +
-              this.WORDS[Math.floor(Math.random() * this.WORDS.length)] + ' ' +
-              this.WORDS[Math.floor(Math.random() * this.WORDS.length)],
-          memory: Math.random() * 500,
-          cpu: Math.random() * 10,
-          network: Math.random() * 10 > 7 ? Math.floor(Math.random() * 500) : 0,
-          processId: Math.floor(Math.random() * 10000)
-        });
-        this.taskSimulators_.push(this.TaskSimulator.create({
-          task: task,
-          onTaskUpdate: this.onTaskUpdate
-        }, this.Y));
-        return task;
-      };
-    })()
-  },
 
   properties: [
     {
@@ -78,25 +42,31 @@ CLASS({
     },
     {
       name: 'selection',
-      defaultValue: null
-    },
-    {
-      model_: 'foam.core.types.DAOProperty',
-      name: 'tasks_',
-      lazyFactory: function() {
-        var dao = this.EasyDAO.create({
-          daoType: 'MDAO',
-          model: 'foam.apps.ctm.Task'
-        });
-        for ( var i = 0; i < 50; ++i ) {
-          dao.put(this.RANDOM_TASK());
+      defaultValue: null,
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( nu ) {
+          var controller = this.getController(nu.id);
+          this.memory = controller.memory.history;
+          this.cpu = controller.cpu.history;
+          this.network = controller.network.history;
         }
-        return dao;
       }
     },
     {
       model_: 'ArrayProperty',
-      name: 'taskSimulators_'
+      name: 'memory',
+      view: 'foam.apps.ctm.TaskHistoryGraph'
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'cpu',
+      view: 'foam.apps.ctm.TaskHistoryGraph'
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'network',
+      view: 'foam.apps.ctm.TaskHistoryGraph'
     },
     {
       type: 'foam.util.Timer',
@@ -106,6 +76,20 @@ CLASS({
         timer.start();
         return timer;
       }
+    },
+    {
+      model_: 'foam.core.types.DAOProperty',
+      name: 'tasks_',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          daoType: 'MDAO',
+          model: 'foam.apps.ctm.Task'
+        });
+      }
+    },
+    {
+      name: 'taskControllers_',
+      factory: function() { return {}; }
     }
   ],
 
@@ -118,19 +102,24 @@ CLASS({
     }
   ],
 
-  listeners: [
-    {
-      name: 'onTaskUpdate',
-      code: function(task) { this.tasks_.put(task); }
-    }
-  ],
-
   methods: [
     function init() {
       this.SUPER.apply(this, arguments);
+
       var viewModel = this.TaskManagerDetailView;
       this.X.registerModel(viewModel, 'foam.ui.TaskManagerDetailView');
+
+      var dao = this.tasks_;
+      for ( var i = 0; i < 50; ++i ) {
+        var controller = this.TaskController.create({}, this.Y);
+        this.taskControllers_[controller.task.id] = controller;
+        dao.put(controller.task);
+      }
+
       X.timer = this.timer;
+    },
+    function getController(id) {
+      return this.taskControllers_[id] || null;
     }
   ]
 });
