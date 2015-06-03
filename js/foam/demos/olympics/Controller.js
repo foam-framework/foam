@@ -204,8 +204,12 @@ GLOBAL.ctrl = this;
       }
       .searchResults {
         margin-left: 40px;
-        font-size: 26px;
+      }
+      .counts {
         color: #555;
+        font-size: 22px;
+        margin-left: 20px;
+        margin-top: 16px;
       }
       input[name='query'] {
         margin-bottom: 15px;
@@ -234,8 +238,7 @@ GLOBAL.ctrl = this;
         </div>
         <div class="searchResults">
           $$filteredDAO
-          <br>
-          $$count{mode: 'read-only'} of $$totalCount{mode: 'read-only'} selected
+          <div class="counts">$$count{mode: 'read-only'} of $$totalCount{mode: 'read-only'} selected</div>
         </div>
       </div>
     */}
