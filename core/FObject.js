@@ -24,6 +24,13 @@ var FObject = {
 
   name_: 'FObject',
 
+  get Y() {
+    if ( ! this.Y_ ) {
+      this.Y_ = DEBUG ? this.X.sub({}, (this.X.NAME ? this.X.NAME : '') + 'Y') : this.X.sub();
+    }
+    return this.Y_;
+  },
+
   replaceModel_: function(model, otherModel, X) {
     while ( otherModel ) {
       // this name mangling has to use the primary model's package, otherwise
@@ -74,7 +81,6 @@ var FObject = {
     var o = this.create_(this);
     o.instance_ = {};
     o.X = opt_X || X;
-    o.Y = DEBUG ? o.X.sub({}, (o.X.NAME ? o.X.NAME : '') + 'Y') : o.X.sub();
 
     if ( this.model_.instance_.imports_ && this.model_.instance_.imports_.length ) {
       if ( ! Object.prototype.hasOwnProperty.call(this, 'imports__') ) {
@@ -94,7 +100,7 @@ var FObject = {
 
     if ( o.model_ ) {
       var agents = this.initAgents();
-      for ( var i = 0 ; i < agents.length ; i++ ) agents[i][1](o, o.X, o.Y, args);
+      for ( var i = 0 ; i < agents.length ; i++ ) agents[i][1](o, o.X, args);
     }
 
     o.init(args);
@@ -185,19 +191,19 @@ var FObject = {
           var prop = self.model_.getProperty(key);
           if ( prop ) {
             if ( asValue ) {
-              self.addInitAgent(1, 'export property value ' + key, function(o, X, Y) { Y.set(alias, o[prop.name$_]); });
+              self.addInitAgent(1, 'export property value ' + key, function(o, X) { o.Y.set(alias, o[prop.name$_]); });
             } else {
-              self.addInitAgent(1, 'export property ' + key, function(o, X, Y) { Y.setValue(alias, o[prop.name$_]); });
+              self.addInitAgent(1, 'export property ' + key, function(o, X) { o.Y.setValue(alias, o[prop.name$_]); });
             }
           } else {
-            self.addInitAgent(0, 'export other ' + key, function(o, X, Y) {
+            self.addInitAgent(0, 'export other ' + key, function(o, X) {
               var out = typeof o[key] === "function" ? o[key].bind(o) : o[key];
-              Y.set(alias, out);
+              o.Y.set(alias, out);
             });
           }
         } else {
           // Exporting 'this'
-          self.addInitAgent(0, 'export this', function(o, X, Y) { Y.set(alias, o); });
+          self.addInitAgent(0, 'export this', function(o, X) { o.Y.set(alias, o); });
         }
       });
 
@@ -227,7 +233,7 @@ var FObject = {
           var prop = ps[i];
           keys[prop.name] = keys[prop.name$_] = true;
         }
-        this.addInitAgent(0, 'fast copy args', function fastCopyArgs(o, X, Y, m) {
+        this.addInitAgent(0, 'fast copy args', function fastCopyArgs(o, X, m) {
           if ( m.instance_ ) {
             m = m.instance_;
             for ( var key in m ) o[key] = m[key];
@@ -236,7 +242,7 @@ var FObject = {
           }
         });
       } /*else {
-        this.addInitAgent(0, 'fast copy args', function(o, X, Y, m) {
+        this.addInitAgent(0, 'fast copy args', function(o, X, m) {
           console.log('slowInit: ', self.name_);
         });
 
@@ -252,7 +258,7 @@ var FObject = {
             self.addInitAgent(
               0,
               'set proto-property ' + name,
-              function setProtoProperty(o, X, Y, m) {
+              function setProtoProperty(o, X, m) {
                 if ( m && m.hasOwnProperty(name) )
                   o[name] = m[name];
               });
@@ -261,12 +267,12 @@ var FObject = {
       }
 
       /*
-      this.addInitAgent(9, 'copyFrom', function(o, X, Y, m) {
+      this.addInitAgent(9, 'copyFrom', function(o, X, m) {
         if( m ) for ( var key in m ) o[key] = m[key];
       });
       */
       // Add shortcut create() method to Models
-      self.addInitAgent(0, 'Add create() to Model', function(o, X, Y) {
+      self.addInitAgent(0, 'Add create() to Model', function(o, X) {
         if ( Model.isInstance(o) && o.name != 'Model' ) o.create = BootstrapModel.create;
       });
 

@@ -678,7 +678,7 @@ var Property = {
       if ( ! fastInit ) proto.addInitAgent(
         (this.postSet || this.setter) ? 9 : 0,
         name + ': ' + (this.postSet || this.setter ? 'copy arg (postSet)' : 'copy arg'),
-        function(o, X, Y, m) {
+        function(o, X, m) {
           if ( ! m ) return;
           if ( m.hasOwnProperty(name)   ) o[name]   = m[name];
           if ( m.hasOwnProperty(name$_) ) o[name$_] = m[name$_];
@@ -688,13 +688,13 @@ var Property = {
       if ( this.dynamicValue ) {
         var dynamicValue = prop.dynamicValue;
         if ( Array.isArray(dynamicValue) ) {
-          proto.addInitAgent(10, name + ': dynamicValue', function(o, X, Y) {
+          proto.addInitAgent(10, name + ': dynamicValue', function(o, X) {
             Events.dynamic(
               dynamicValue[0].bind(o),
               function() { o[name] = dynamicValue[1].call(o); });
           });
         } else {
-          proto.addInitAgent(10, name + ': dynamicValue', function(o, X, Y) {
+          proto.addInitAgent(10, name + ': dynamicValue', function(o, X) {
             Events.dynamic(
               dynamicValue.bind(o),
               function(value) { o[name] = value; });
@@ -703,7 +703,7 @@ var Property = {
       }
 
       if ( this.factory ) {
-        proto.addInitAgent(11, name + ': factory', function(o, X, Y) {
+        proto.addInitAgent(11, name + ': factory', function(o, X) {
           if ( ! o.hasOwnProperty(name) ) o[name];
         });
       }
