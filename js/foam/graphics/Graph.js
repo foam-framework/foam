@@ -95,8 +95,11 @@ CLASS({
       name:  'data',
       type:  'Array[float]',
       factory: function() { return []; },
-      postSet: function() {
-        this.view && this.view.paint();
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( old ) old.unlisten(this.onDataChange);
+        if ( nu ) nu.listen(this.onDataChange);
+        this.onDataChange();
       }
     },
     {
@@ -314,5 +317,12 @@ CLASS({
         graph.addData(value.get(), opt_maxNumValues);
       });
     }
-  }
+  },
+
+  listeners: [
+    {
+      name: 'onDataChange',
+      code: function() { this.view && this.view.paint(); }
+    }
+  ]
 });

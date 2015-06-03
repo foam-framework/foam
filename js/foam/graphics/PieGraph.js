@@ -52,6 +52,13 @@ CLASS({
       name: 'groups',
       label: 'Group Data',
       defaultValue: { }
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'toColor',
+      defaultValue: function(key, i, n) {
+        return this.colorMap && this.colorMap[key] || this.toHSLColor(i, n);
+      }
     }
   ],
 
@@ -61,9 +68,6 @@ CLASS({
     },
     toHSLColor: function(i, n) {
       return 'hsl(' + Math.floor(360*i/n) + ', 95%, 75%)';
-    },
-    toColor: function(key, i, n) {
-      return this.colorMap && this.colorMap[key] || this.toHSLColor(i, n);
     },
     paintSelf: function() {
       var c = this.canvas;
