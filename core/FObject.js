@@ -25,10 +25,7 @@ var FObject = {
   name_: 'FObject',
 
   get Y() {
-    if ( ! this.Y_ ) {
-      this.Y_ = DEBUG ? this.X.sub({}, (this.X.NAME ? this.X.NAME : '') + 'Y') : this.X.sub();
-    }
-    return this.Y_;
+    return this.Y_ || ( this.Y_ = DEBUG ? this.X.sub({}, (this.X.NAME ? this.X.NAME : '') + 'Y') : this.X.sub() );
   },
 
   replaceModel_: function(model, otherModel, X) {
