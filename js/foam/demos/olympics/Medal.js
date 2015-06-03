@@ -28,6 +28,9 @@ CLASS({
       name: 'color',
       preSet: ps,
       defaultValue: 'Gold',
+      tableFormatter: function(c) {
+        return '<span class="' + c + '">' + c + '</span>';
+      },
       compareProperty: function(o1, o2) {
         return o1 === o2       ?  0 :
                o1 === 'Gold'   ? -1 :

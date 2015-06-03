@@ -151,6 +151,7 @@ GLOBAL.ctrl = this;
     {
       name: 'clear',
       action: function() {
+        this.query = '';
         this.fromYear.predicate =
         this.toYear.predicate =
         this.color.predicate =
@@ -187,7 +188,17 @@ GLOBAL.ctrl = this;
         margin-left: 40px;
       }
       input[name='query'] {
+        margin-bottom: 15px;
         width: 300px;
+      }
+      .Gold {
+        color: #C98910;
+      }
+      .Silver {
+        color: #A8A8A8;
+      }
+      .Bronze {
+        color: #965A38;
       }
     */},
     function toHTML() {/*
