@@ -23,6 +23,7 @@ CLASS({
 
   properties: [
     { name: 'id',          hidden: true },
+    { model_: 'IntProperty', name: 'year', shortName: 'y'  },
     { name: 'city',        preSet: ps },
     {
       name: 'color',
@@ -40,14 +41,13 @@ CLASS({
                o2 === 'Gold'   ?  1 : -1;
       }
     },
-    { name: 'country',     preSet: ps },
-    { name: 'discipline',  preSet: ps },
-    { name: 'sport',       preSet: ps },
-    { name: 'event',       preSet: ps },
-    { name: 'eventGender', preSet: ps, defaultValue: 'M' },
+    { name: 'country',     preSet: ps, shortName: 'cn'  },
+    { name: 'discipline',  preSet: ps, shortName: 'd'  },
+    { name: 'sport',       preSet: ps, shortName: 's' },
+    { name: 'event',       preSet: ps, shortName: 'e'  },
+    { name: 'eventGender', preSet: ps, defaultValue: 'M', shortName: 'eg' },
+    { name: 'gender',      preSet: ps, defaultValue: 'Men', shortName: 'g' },
     { name: 'firstName',   preSet: ps, shortName: 'fn', aliases: ['fname'] },
-    { name: 'gender',      preSet: ps, shortName: 'fn', aliases: ['fname'], defaultValue: 'Men' },
-    { name: 'lastName',    preSet: ps },
-    { model_: 'IntProperty', name: 'year' }
+    { name: 'lastName',    preSet: ps, shortName: 'ln', aliases: ['lname'],  }
   ]
 });
