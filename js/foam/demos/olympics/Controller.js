@@ -85,7 +85,7 @@ CLASS({
       name: 'discipline'
     },
     {
-      name: 'sport'
+      name: 'event'
     },
     {
       name: 'predicate'
@@ -116,7 +116,7 @@ GLOBAL.ctrl = this;
       axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
         data.limit(50000).select(function(m) { self.dao.put(self.Medal.create(m)); });
         self.count = self.totalCount = data.length;
-        self.fromYear.dao = self.toYear.dao = self.discipline.dao = self.sport.dao = self.color.dao = self.country.dao = self.city.dao = self.gender.dao = self.dao;
+        self.fromYear.dao = self.toYear.dao = self.discipline.dao = self.event.dao = self.color.dao = self.country.dao = self.city.dao = self.gender.dao = self.dao;
       });
 
       this.addGroup(Medal.YEAR, 'fromYear', {label: 'From', op: GTE});
@@ -126,7 +126,7 @@ GLOBAL.ctrl = this;
       this.addGroup(Medal.CITY);
       this.addGroup(Medal.GENDER, null,     {size: 3});
       this.addGroup(Medal.DISCIPLINE);
-      this.addGroup(Medal.SPORT);
+      this.addGroup(Medal.EVENT);
 
       Events.dynamic(
         /*
@@ -138,7 +138,7 @@ GLOBAL.ctrl = this;
           self.city.predicate;
           self.gender.predicate;
           self.discipline.predicate;
-          self.sport.predicate; },*/
+          self.event.predicate; },*/
         function() {
           self.predicate = AND(
             self.queryParser.parseString(self.query),
@@ -149,7 +149,7 @@ GLOBAL.ctrl = this;
             self.city.predicate,
             self.gender.predicate,
             self.discipline.predicate,
-            self.sport.predicate
+            self.event.predicate
           ).partialEval();
 
           self.sql = 'SELECT * FROM Medal' +
@@ -177,7 +177,7 @@ GLOBAL.ctrl = this;
         this.city.predicate =
         this.gender.predicate =
         this.discipline.predicate =
-        this.sport.predicate = TRUE;
+        this.event.predicate = TRUE;
       }
     }
   ],
@@ -231,7 +231,7 @@ GLOBAL.ctrl = this;
         <div class="searchPanel">
           Search:<br>
           $$query
-          %%fromYear %%toYear %%city %%discipline %%sport %%country %%color %%gender
+          %%fromYear %%toYear %%city %%discipline %%event %%country %%color %%gender
           $$clear<br>
           <br>SQL:<br>$$sql{mode: 'read-only'}
           <br>
