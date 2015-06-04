@@ -62,9 +62,7 @@ CLASS({
     {
       model_: 'StringArrayProperty',
       name:  'properties',
-      preSet: function(_, a) { return ! a || a.length == 0 ? null : a; },
-      postSet: function() { this.repaint(); },
-      defaultValue: null
+      postSet: function() { this.repaint(); }
     },
     {
       name:  'hardSelection',
@@ -225,7 +223,7 @@ CLASS({
       code: function(evt) {
         var v = this.EditColumnsView.create({
           model:               this.model,
-          properties:          this.properties || this.model.tableProperties,
+          properties:          this.getProperties(),
           availableProperties: this.model.getRuntimeProperties().filter(
               function(prop) { return !prop.hidden; })
         });
@@ -365,7 +363,7 @@ CLASS({
 
       //str += '<!--<caption>' + model.plural + '</caption>';
       str.push('<thead><tr>');
-      var properties = this.properties || this.model.tableProperties;
+      var properties = this.getProperties();
       for ( var i = 0 ; i < properties.length ; i++ ) {
         var key  = properties[i];
         var prop = model.getProperty(key);
@@ -484,13 +482,13 @@ CLASS({
           e.preventDefault();
 
           if ( toNum(col1.width) < this.MIN_COLUMN_SIZE ) {
-            this.properties = ( this.properties || this.model.tableProperties ).deleteF(prop1.name);
+            this.properties = this.getProperties().deleteF(prop1.name);
           } else {
             prop1.tableWidth = col1.width;
           }
           if ( prop2 ) {
             if ( toNum(col2.width) < this.MIN_COLUMN_SIZE ) {
-              this.properties = ( this.properties || this.model.tableProperties ).deleteF(prop2.name);
+              this.properties = this.getProperties().deleteF(prop2.name);
             } else {
               prop2.tableWidth = col2.width;
             }
@@ -561,6 +559,11 @@ CLASS({
         self.hardSelection$.addListener(hsListener);
         self.hardSelectionListeners_.push(hsListener);
       });
+    },
+
+    getProperties: function() {
+      return this.properties.length > 0 ? this.properties :
+          this.model.tableProperties;
     }
   }
 });
