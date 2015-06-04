@@ -72,7 +72,11 @@ CLASS({
         // TODO(braden): This is a hack, exposing the index-specific methods on
         // the StackView.
         if (nu) {
-          this.stack.pushView_(0, this.detailView({ data: nu }, this.Y));
+          this.dao.find(nu.id, {
+            put: function(obj) {
+              this.stack.pushView_(0, this.detailView({ data: obj }, this.Y));
+            }.bind(this)
+          });
         } else {
           this.stack.popView_(1);
         }
