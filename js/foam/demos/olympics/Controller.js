@@ -70,33 +70,7 @@ CLASS({
         return this.searchMgr.add(this.TextSearchView.create({model: this.Medal, richSearch: true}));
       }
     },
-    {
-      name: 'fromYear'
-    },
-    {
-      name: 'toYear'
-    },
-    {
-      name: 'color'
-    },
-    {
-      name: 'country'
-    },
-    {
-      name: 'city'
-    },
-    {
-      name: 'gender'
-    },
-    {
-      name: 'discipline'
-    },
-    {
-      name: 'event'
-    },
-    {
-      name: 'predicate'
-    },
+    'fromYear', 'toYear', 'color', 'city', 'gender', 'discipline', 'event',
     {
       model_: 'StringProperty',
       name: 'sql',
@@ -117,13 +91,12 @@ CLASS({
       this.SUPER();
 
       GLOBAL.ctrl = this; // for debugging
-      var self = this;
       var Medal = this.Medal;
+      var self  = this;
 
       axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
         data.limit(50000).select(function(m) { self.dao.put(self.Medal.create(m)); });
         self.count = self.totalCount = data.length;
-        self.fromYear.dao = self.toYear.dao = self.discipline.dao = self.event.dao = self.color.dao = self.country.dao = self.city.dao = self.gender.dao = self.dao;
       });
 
       this.addGroup(Medal.YEAR, 'fromYear', {label: 'From', op: GTE});
@@ -167,24 +140,12 @@ CLASS({
         outline: none;
         height: 93%;
       }
-      .medalController {
-        display: flex;
-      }
-      .foamSearchView select {
-        width: 300px;
-      }
-      .tableView {
-        width: auto !important;
-      }
-      .MedalTable {
-        width: auto !important;
-      }
-      .searchPanel {
-        margin: 15px;
-      }
-      .searchResults {
-        margin-left: 40px;
-      }
+      .medalController { display: flex; }
+      .foamSearchView select { width: 300px; }
+      .tableView { width: auto !important; }
+      .MedalTable { width: auto !important; }
+      .searchPanel { margin: 15px; }
+      .searchResults { margin-left: 40px; }
       .counts {
         color: #555;
         font-size: 22px;

@@ -31,7 +31,7 @@ CLASS({
     },
     {
       name: 'dao',
-      postSet: function(_, dao) { this.filteredDAO = dao.where(this.predicate); }
+      postSet: function(_, dao) { this.filteredDAO = dao.where(this.predicate); this.updateViews(); }
     },
     {
       name: 'filteredDAO'
