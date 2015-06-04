@@ -75,7 +75,7 @@ CLASS({
       model_: 'StringProperty',
       name: 'sql',
       displayWidth: 35,
-      displayHeight: 10
+      displayHeight: 8
     }
   ],
 
@@ -100,12 +100,12 @@ CLASS({
         self.searchMgr.dao = self.dao;
       });
 
+      this.addGroup(Medal.COLOR, null,      {size: 4});
+      this.addGroup(Medal.GENDER, null,     {size: 3});
       this.addGroup(Medal.YEAR, 'fromYear', {label: 'From', op: GTE});
       this.addGroup(Medal.YEAR, 'toYear',   {label: 'To',   op: LTE});
-      this.addGroup(Medal.COLOR, null,      {size: 4});
       this.addGroup(Medal.COUNTRY);
       this.addGroup(Medal.CITY);
-      this.addGroup(Medal.GENDER, null,     {size: 3});
       this.addGroup(Medal.DISCIPLINE);
       this.addGroup(Medal.EVENT);
 
@@ -137,6 +137,7 @@ CLASS({
 
   templates: [
     function CSS() {/*
+      html { overflow: hidden; }
       .tableView {
         outline: none;
         height: 93%;
