@@ -101,7 +101,6 @@ CLASS({
       action: function() {
         var self = this;
         var obj  = this.data;
-        this.stack.back();
 
         this.dao.put(obj, {
           put: function() {

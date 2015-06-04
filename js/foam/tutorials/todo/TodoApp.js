@@ -32,6 +32,7 @@ CLASS({
     'foam.ui.md.PopupView',
   ],
   exports: [
+    'dao',
     'dao as todoDAO',
   ],
 
