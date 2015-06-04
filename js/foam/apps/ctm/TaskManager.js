@@ -16,8 +16,10 @@ CLASS({
   requires: [
     'foam.apps.ctm.Task',
     'foam.apps.ctm.TaskController',
+    'foam.apps.ctm.TaskHistoryGraph',
     'foam.apps.ctm.TaskManagerDetailView',
     'foam.dao.EasyDAO',
+    'foam.ui.TableView',
     'foam.util.Timer'
   ],
   exports: [

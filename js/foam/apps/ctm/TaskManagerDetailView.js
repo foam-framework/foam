@@ -16,11 +16,13 @@ CLASS({
 
   requires: [
     'foam.apps.ctm.Task',
-    'foam.apps.ctm.TaskPieGraph'
+    'foam.apps.ctm.TaskPieGraph',
+    'foam.ui.ActionButton'
   ],
   imports: [ 'selection$' ],
 
   properties: [
+    'selection',
     {
       model_: 'IntProperty',
       name: 'numHistoryItems',
@@ -29,7 +31,8 @@ CLASS({
     {
       model_: 'BooleanProperty',
       name: 'showActions',
-      defaultValue: false
+      defaultValue: false,
+      preSet: function() { return false; }
     }
   ],
 
