@@ -25,6 +25,20 @@ CLASS({
 
   properties: [
     {
+      name: 'model'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'richSearch',
+      defaultValue: false
+    },
+    {
+      name: 'queryParser',
+      lazyFactory: function() {
+        return QueryParserFactory(this.model);
+      }
+    },
+    {
       name:  'width',
       type:  'int',
       defaultValue: 47
@@ -72,11 +86,10 @@ CLASS({
       name: 'updateValue',
       code: function() {
         var value = this.view.data;
-        if ( ! value ) {
-          this.predicate = TRUE;
-          return;
-        }
-        this.predicate = CONTAINS_IC(this.property, value);
+        if ( ! value ) return TRUE;
+        this.predicate = this.richSearch ?
+          this.queryParser.parseString(value) :
+          CONTAINS_IC(this.property, value) ;
       }
     },
     {
