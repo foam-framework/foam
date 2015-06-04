@@ -97,6 +97,7 @@ CLASS({
       axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
         data.limit(50000).select(function(m) { self.dao.put(self.Medal.create(m)); });
         self.count = self.totalCount = data.length;
+        self.searchMgr.dao = self.dao;
       });
 
       this.addGroup(Medal.YEAR, 'fromYear', {label: 'From', op: GTE});
