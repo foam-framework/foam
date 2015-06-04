@@ -25,7 +25,9 @@ CLASS({
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
     'foam.ui.DAOListView',
+    'foam.ui.md.DetailView',
     'foam.ui.md.SharedStyles',
+    'foam.ui.md.UpdateDetailView',
   ],
 
   exports: [
@@ -63,7 +65,15 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'detailView',
-      defaultValue: 'foam.ui.DetailView',
+      documentation: 'A ViewFactory for the main detail view. You usually ' +
+          'will want to override $$DOC{ref:".innerDetailView"} rather than ' +
+          'this property.',
+      defaultValue: 'foam.ui.md.UpdateDetailView',
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'innerDetailView',
+      defaultValue: 'foam.ui.md.DetailView'
     },
     {
       name: 'selection',
@@ -74,7 +84,10 @@ CLASS({
         if (nu) {
           this.dao.find(nu.id, {
             put: function(obj) {
-              this.stack.pushView_(0, this.detailView({ data: obj }, this.Y));
+              this.stack.pushView_(0, this.detailView({
+                data: obj,
+                innerView: this.innerDetailView
+              }, this.Y));
             }.bind(this)
           });
         } else {

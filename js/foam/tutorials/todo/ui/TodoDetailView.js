@@ -59,10 +59,6 @@ CLASS({
   templates: [
     function CSS() {/*
       .todo-detail {
-        background: #fff;
-        border: 1px solid #ccc;
-        border-radius: 2px;
-        padding: 16px;
       }
     */},
     function toHTML() {/*

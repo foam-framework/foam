@@ -101,7 +101,7 @@ CLASS({
       }
     },
     {
-      name: 'detailView',
+      name: 'innerDetailView',
       defaultValue: 'foam.tutorials.todo.ui.TodoDetailView'
     },
     {
