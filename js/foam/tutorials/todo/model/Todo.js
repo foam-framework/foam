@@ -24,11 +24,13 @@ CLASS({
     },
     {
       name: 'description',
+      view: 'foam.ui.md.TextFieldView'
     },
     {
       model_: 'BooleanProperty',
       name: 'completed',
       defaultValue: false,
+      view: 'foam.ui.md.CheckboxView'
     },
     {
       model_: 'ReferenceProperty',

@@ -24,6 +24,7 @@ CLASS({
 
   imports: [
     'stack',
+    'todoDAO',
   ],
 
   exports: [
@@ -43,7 +44,11 @@ CLASS({
       name: 'selection',
       postSet: function(old, nu) {
         if (nu) {
-          this.stack.pushView(this.model_.create({ data: nu }));
+          this.todoDAO.find(nu.id, {
+            put: function(obj) {
+              this.stack.pushView(this.model_.create({ data: obj }, this.Y));
+            }.bind(this)
+          });
         } else {
           this.stack.popView();
         }

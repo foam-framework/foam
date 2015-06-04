@@ -20,20 +20,21 @@ CLASS({
   extendsModel: 'foam.browser.ui.BrowserView',
   requires: [
     'foam.browser.BrowserConfig',
+    'foam.dao.ContextualizingDAO',
     'foam.dao.EasyDAO',
     'foam.mlang.CannedQuery',
     'foam.tutorials.todo.model.Todo',
     'foam.tutorials.todo.ui.TodoCitationView',
     'foam.tutorials.todo.ui.TodoDetailView',
+    'foam.ui.DAOListView',
     'foam.ui.TextFieldView',
+    'foam.ui.md.CannedQueryCitationView',
     'foam.ui.md.PopupView',
   ],
-
   exports: [
-    'dao',
     'dao as todoDAO',
-    'selection$',
   ],
+
   properties: [
     {
       name: 'cannedQueryDAO',
@@ -58,13 +59,28 @@ CLASS({
         ].dao;
       }
     },
+    /*
+    {
+      name: 'menuFactory',
+      defaultValue: function() {
+        return this.DAOListView.create({
+          data$: this.cannedQueryDAO$,
+          rowView: this.CannedQueryCitationView
+        }, this.Y.sub({
+          selection$: this.cannedQuery$
+        }));
+      }
+    },
+    */
     {
       name: 'dao',
       factory: function() {
-        return this.EasyDAO.create({
-          model: this.Todo,
-          daoType: 'LOCAL',
-          seqNo: true
+        return this.ContextualizingDAO.create({
+          delegate: this.EasyDAO.create({
+            model: this.Todo,
+            daoType: 'LOCAL',
+            seqNo: true
+          })
         });
       }
     },

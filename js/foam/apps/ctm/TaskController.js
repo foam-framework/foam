@@ -38,6 +38,8 @@ CLASS({
     RANDOM_TASK: (function() {
       var nextId = 1;
       return function() {
+        var selfFn = arguments.callee;
+        var nextId = selfFn.nextId = (selfFn.nextId || 0) + 1;
         var task = this.Task.create({
           id: nextId++,
           name: this.WORDS[Math.floor(Math.random() * this.WORDS.length)] + ' ' +
