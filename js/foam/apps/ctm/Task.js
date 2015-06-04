@@ -44,6 +44,7 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'name',
+      aliases: ['t', 'task'],
       label: 'Task',
       tableFormatter: function(name, obj) {
         return '<img src="' + obj.iconUrl + '"><span>' + name + '</span>';
@@ -52,6 +53,7 @@ CLASS({
     {
       model_: 'FloatProperty',
       name: 'memory',
+      aliases: ['m', 'mem', 'mb'],
       units: 'MB',
       tableFormatter: function(v, obj) {
         return (Math.round(v * 100) / 100) + this.units;
@@ -60,6 +62,7 @@ CLASS({
     {
       model_: 'FloatProperty',
       name: 'cpu',
+      aliases: ['c'],
       label: 'CPU',
       units: '%',
       tableFormatter: function(v, obj) {
@@ -69,6 +72,7 @@ CLASS({
     {
       model_: 'FloatProperty',
       name: 'network',
+      aliases: ['n', 'net', 'b', 'bandwidth'],
       units: 'B/s',
       tableFormatter: function(v, obj) {
         return (Math.round(v * 100) / 100) + this.units;
@@ -77,6 +81,7 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'processId',
+      aliases: ['p', 'pid', 'procid'],
       label: 'Process ID'
     }
   ],

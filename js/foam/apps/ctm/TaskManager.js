@@ -61,10 +61,18 @@ CLASS({
       lazyFactory: function() { return this.Task.tableProperties; }
     },
     {
+      name: 'queryParser',
+      factory: function() { return QueryParserFactory(this.Task, true); }
+    },
+    {
       model_: 'foam.core.types.DAOProperty',
       name: 'tasks',
       dynamicValue: function() {
-        return this.tasks_.where(CONTAINS_IC(this.Task.NAME, this.search));
+        console.log('Querying');
+        return this.tasks_.where(
+            this.search ?
+                (this.queryParser.parseString(this.search) || TRUE) :
+                TRUE);
       },
       view: 'foam.ui.TableView'
     },
