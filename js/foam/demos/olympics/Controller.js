@@ -166,8 +166,7 @@ CLASS({
           %%fromYear %%toYear %%city %%discipline %%event %%country %%color %%gender
           $$clear<br>
           <br>SQL:<br>$$sql{mode: 'read-only'}
-          <br>
-          <br><%= FOAM_POWERED %>
+          <br><br><%= FOAM_POWERED %>
         </div>
         <div class="searchResults">
           $$filteredDAO
