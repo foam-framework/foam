@@ -78,6 +78,9 @@ CLASS({
   ],
 
   methods: [
+    function clear() {
+      this.predicate = TRUE;
+    },
     function toHTML() {
       return '<div class="foamSearchView">' +
         '<div class="foamSearchViewLabel">' +
