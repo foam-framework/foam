@@ -102,6 +102,24 @@ CLASS({
       },
     },
     {
+      model_: 'ViewFactoryProperty',
+      name: 'listView',
+      defaultValue: 'foam.ui.DAOListView',
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'detailView',
+      documentation: 'A ViewFactory for the main detail view. You usually ' +
+          'will want to override $$DOC{ref:".innerDetailView"} rather than ' +
+          'this property.',
+      defaultValue: 'foam.ui.md.UpdateDetailView',
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'innerDetailView',
+      defaultValue: 'foam.ui.md.DetailView'
+    },
+    {
       name: 'menuFactory',
       documentation: 'The menuFactory returns a View for the left-side menu. ' +
           'By default, it returns the view for $$DOC{ref:".cannedQueryDAO"}.',
