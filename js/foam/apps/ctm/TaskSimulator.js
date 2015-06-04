@@ -46,7 +46,11 @@ CLASS({
   listeners: [
     {
       name: 'tick',
-      code: function() {
+      isFramed: true,
+      code: function(_, __, ___, nu) {
+        // Tick every two seconds.
+        if ( nu % 2 === 0 ) return;
+
         // Memory.
         if ( Math.random() > 0.8 ) {
           if ( Math.random() > 0.5 ) {
