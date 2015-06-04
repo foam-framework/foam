@@ -89,7 +89,7 @@ CLASS({
       name: 'updateValue',
       code: function() {
         var value = this.view.data;
-        if ( ! value ) return TRUE;
+        if ( ! value ) { this.predicate = TRUE; return; }
         this.predicate = this.richSearch ?
           this.queryParser.parseString(value) :
           CONTAINS_IC(this.property, value) ;
