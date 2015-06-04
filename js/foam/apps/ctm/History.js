@@ -42,7 +42,11 @@ CLASS({
   listeners: [
     {
       name: 'onUpdate',
-      code: function() {
+      isFramed: true,
+      code: function(_, __, ___, nu) {
+        // Tick every two seconds.
+        if ( nu % 2 === 0 ) return;
+
         var value = this.data[this.property.name];
         if ( this.history.length === this.numItems ) this.history.shift();
         this.history.put(value);
