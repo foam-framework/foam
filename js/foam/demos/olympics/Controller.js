@@ -121,7 +121,7 @@ CLASS({
       var Medal = this.Medal;
 
       axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
-        data.limit(5000).select(function(m) { self.dao.put(self.Medal.create(m)); });
+        data.limit(50000).select(function(m) { self.dao.put(self.Medal.create(m)); });
         self.count = self.totalCount = data.length;
         self.fromYear.dao = self.toYear.dao = self.discipline.dao = self.event.dao = self.color.dao = self.country.dao = self.city.dao = self.gender.dao = self.dao;
       });

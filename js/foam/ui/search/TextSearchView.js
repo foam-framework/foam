@@ -33,10 +33,13 @@ CLASS({
       defaultValue: false
     },
     {
+      model_: 'BooleanProperty',
+      name: 'keywordSearch',
+      defaultValue: false
+    },
+    {
       name: 'queryParser',
-      lazyFactory: function() {
-        return QueryParserFactory(this.model);
-      }
+      lazyFactory: function() { return QueryParserFactory(this.model, this.keywordSearch); }
     },
     {
       name:  'width',
@@ -60,7 +63,7 @@ CLASS({
     {
       name: 'label',
       type: 'String',
-      defaultValueFn: function() { return this.property.label || 'Search:'; }
+      defaultValueFn: function() { return this.property.label || 'Search'; }
     }
   ],
 
