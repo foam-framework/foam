@@ -88,7 +88,7 @@ CLASS({
             model: model,
             data: obj,
             showActions: showActions
-          }, this.X);
+          }, obj.Y);
         }
 
         if ( e.id ) this.document.FOAM_OBJECTS[e.id] = obj;
