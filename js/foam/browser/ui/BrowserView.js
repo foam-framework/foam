@@ -138,7 +138,7 @@ CLASS({
           }
           .browser-header {
             align-items: center;
-            background-color: #3367d6;
+            background-color: #3e50b4;
             color: #fff;
             display: flex;
             height: 56px;

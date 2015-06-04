@@ -140,10 +140,11 @@ CLASS({
       }
       .md-update-detail-view-header {
         align-items: center;
-        background-color: #3367d6;
+        background-color: #3e50b4;
         color: #fff;
         display: flex;
         font-size: 16px;
+        height: 56px;
         padding: 0 12px;
         width: 100%;
       }
