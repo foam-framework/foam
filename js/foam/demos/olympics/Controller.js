@@ -61,7 +61,7 @@ CLASS({
     {
       name: 'searchMgr',
       lazyFactory: function() {
-        return this.SearchMgr.create({dao$: this.dao$, filteredDAO$: this.filteredDAO$});
+        return this.SearchMgr.create({dao: this.dao, filteredDAO$: this.filteredDAO$});
       }
     },
     {
@@ -135,41 +135,22 @@ CLASS({
       this.addGroup(Medal.DISCIPLINE);
       this.addGroup(Medal.EVENT);
 
-      Events.dynamic(
-        function() {
-          self.query.predicate;
-          self.fromYear.predicate;
-          self.toYear.predicate;
-          self.color.predicate;
-          self.country.predicate;
-          self.city.predicate;
-          self.gender.predicate;
-          self.discipline.predicate;
-          self.event.predicate; },
-        function() {
-          console.log('query');
-          self.predicate = AND(
-            self.query.predicate,
-            self.fromYear.predicate,
-            self.toYear.predicate,
-            self.color.predicate,
-            self.country.predicate,
-            self.city.predicate,
-            self.gender.predicate,
-            self.discipline.predicate,
-            self.event.predicate
-          ).partialEval();
+      this.searchMgr.predicate$.addListener(this.onPredicateChange);
+    }
+  ],
 
-          self.sql = 'SELECT * FROM Medal' +
-            (self.predicate !== TRUE ?
-              ' WHERE (' + self.predicate.toSQL() + ')' :
-              '');
-
-          self.filteredDAO = self.dao.where(self.predicate);
-          self.filteredDAO.select(COUNT())(function(c) {
-            self.count = c.count;
-          });
-        });
+  listeners: [
+    {
+      name: 'onPredicateChange',
+      isFramed: true,
+      code: function(_, _, _, predicate) {
+        this.sql = 'SELECT * FROM Medal' +
+          (predicate !== TRUE ? ' WHERE (' + predicate.toSQL() + ')' : '');
+        
+        this.filteredDAO.select(COUNT())(function(c) {
+          this.count = c.count;
+        }.bind(this));
+      }
     }
   ],
 

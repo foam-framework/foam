@@ -25,21 +25,22 @@ CLASS({
       factory() { return []; }
     },
     {
-      name: 'dao'
-    },
-    {
-      name: 'filteredDAO'
-    },
-    {
       name: 'predicate',
       type: 'Object',
       defaultValue: TRUE
+    },
+    {
+      name: 'dao',
+      postSet: function(_, dao) { this.filteredDAO = dao.where(this.predicate); }
+    },
+    {
+      name: 'filteredDAO'
     }
   ],
 
   methods: [
     function and(views) {
-      return AND(map(function(v) { return v.predicate; })).partialEval();
+      return AND.apply(null, views.map(function(v) { return v.predicate; })).partialEval();
     },
     function add(view) {
       this.views.push(view);
@@ -56,8 +57,6 @@ CLASS({
       name: 'onViewUpdate',
       isMerged: 50,
       code: function() {
-        console.log('viewUpdate: ', this.predicate.toString());
-
         this.predicate = this.and(this.views);
         this.filteredDAO = this.dao.where(this.predicate);
 

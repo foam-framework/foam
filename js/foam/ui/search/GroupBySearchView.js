@@ -79,7 +79,7 @@ CLASS({
 
   methods: [
     function clear() {
-      this.predicate = TRUE;
+      this.view.data = '';
     },
     function toHTML() {
       return '<div class="foamSearchView">' +
