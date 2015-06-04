@@ -25,7 +25,8 @@ CLASS({
     'foam.demos.olympics.Medal',
     'foam.ui.TextFieldView',
     'foam.ui.search.GroupBySearchView',
-    'foam.ui.search.SearchMgr'
+    'foam.ui.search.SearchMgr',
+    'foam.ui.search.TextSearchView'
   ],
 
   exports: [ 'searchMgr' ],
@@ -38,15 +39,6 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'totalCount'
-    },
-    {
-      name: 'query'
-    },
-    {
-      name: 'queryParser',
-      factory: function() {
-        return QueryParserFactory(this.Medal);
-      }
     },
     {
       model_: 'foam.core.types.DAOProperty',
@@ -70,6 +62,12 @@ CLASS({
       name: 'searchMgr',
       lazyFactory: function() {
         return this.SearchMgr.create({dao$: this.dao$, filteredDAO$: this.filteredDAO$});
+      }
+    },
+    {
+      name: 'query',
+      factory: function() {
+        return this.searchMgr.add(this.TextSearchView.create({model: this.Medal, richSearch: true}));
       }
     },
     {
@@ -139,7 +137,7 @@ CLASS({
 
       Events.dynamic(
         function() {
-          self.query;
+          self.query.predicate;
           self.fromYear.predicate;
           self.toYear.predicate;
           self.color.predicate;
@@ -151,7 +149,7 @@ CLASS({
         function() {
           console.log('query');
           self.predicate = AND(
-            self.queryParser.parseString(self.query),
+            self.query.predicate,
             self.fromYear.predicate,
             self.toYear.predicate,
             self.color.predicate,
@@ -211,7 +209,7 @@ CLASS({
         font-size: 22px;
         margin: 20px;
       }
-      input[name='query'] {
+      input[type='search'] {
         margin-bottom: 15px;
         width: 300px;
       }
@@ -222,8 +220,7 @@ CLASS({
     function toHTML() {/*
       <div class="medalController">
         <div class="searchPanel">
-          Search:<br>
-          $$query
+          %%query
           %%fromYear %%toYear %%city %%discipline %%event %%country %%color %%gender
           $$clear<br>
           <br>SQL:<br>$$sql{mode: 'read-only'}
