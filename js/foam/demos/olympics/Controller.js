@@ -21,11 +21,14 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'foam.ui.TextFieldView',
     'foam.dao.EasyDAO',
     'foam.demos.olympics.Medal',
-    'foam.ui.search.GroupBySearchView'
+    'foam.ui.TextFieldView',
+    'foam.ui.search.GroupBySearchView',
+    'foam.ui.search.SearchMgr'
   ],
+
+  exports: [ 'searchMgr' ],
 
   properties: [
     {
@@ -62,6 +65,12 @@ CLASS({
       model_: 'foam.core.types.DAOProperty',
       name: 'filteredDAO',
       view: { factory_: 'foam.ui.TableView', scrollEnabled: true, xxxeditColumnsEnabled: true, xxxrows: 30}
+    },
+    {
+      name: 'searchMgr',
+      lazyFactory: function() {
+        return this.SearchMgr.create({dao$: this.dao$, filteredDAO$: this.filteredDAO$});
+      }
     },
     {
       name: 'fromYear'
@@ -103,18 +112,18 @@ CLASS({
       var map = opt_map || {};
       map.property = prop;
       map.size = map.size || 1;
-      this[opt_name || prop.name] = this.GroupBySearchView.create(map);
+      this[opt_name || prop.name] = this.searchMgr.add(this.GroupBySearchView.create(map));
     },
 
     function init() {
       this.SUPER();
 
-GLOBAL.ctrl = this;
+      GLOBAL.ctrl = this; // for debugging
       var self = this;
       var Medal = this.Medal;
 
       axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
-        data.limit(50000).select(function(m) { self.dao.put(self.Medal.create(m)); });
+        data.limit(5000).select(function(m) { self.dao.put(self.Medal.create(m)); });
         self.count = self.totalCount = data.length;
         self.fromYear.dao = self.toYear.dao = self.discipline.dao = self.event.dao = self.color.dao = self.country.dao = self.city.dao = self.gender.dao = self.dao;
       });
@@ -169,17 +178,7 @@ GLOBAL.ctrl = this;
   actions: [
     {
       name: 'clear',
-      action: function() {
-        this.query = '';
-        this.fromYear.predicate =
-        this.toYear.predicate =
-        this.color.predicate =
-        this.country.predicate =
-        this.city.predicate =
-        this.gender.predicate =
-        this.discipline.predicate =
-        this.event.predicate = TRUE;
-      }
+      action: function() { this.searchMgr.clear(); }
     }
   ],
 
@@ -187,7 +186,7 @@ GLOBAL.ctrl = this;
     function CSS() {/*
       .tableView {
         outline: none;
-        height: 95%;
+        height: 93%;
       }
       .medalController {
         display: flex;

@@ -44,7 +44,7 @@ CLASS({
     { name: 'country',     preSet: ps, shortName: 'cn'  },
     { name: 'discipline',  preSet: ps, shortName: 'd'  },
     { name: 'sport',       preSet: ps, shortName: 's' },
-    { name: 'event',       preSet: ps, shortName: 'e'  },
+    { name: 'event',       preSet: ps, shortName: 'e' },
     { name: 'eventGender', preSet: ps, defaultValue: 'M', shortName: 'eg' },
     { name: 'gender',      preSet: ps, defaultValue: 'Men', shortName: 'g', aliases: ['sex'] },
     { name: 'firstName',   preSet: ps, shortName: 'fn', aliases: ['fname'] },
