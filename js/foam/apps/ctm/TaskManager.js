@@ -14,11 +14,15 @@ CLASS({
   package: 'foam.apps.ctm',
 
   requires: [
+    'Binding',
+    'PersistentContext',
     'foam.apps.ctm.Task',
     'foam.apps.ctm.TaskController',
     'foam.apps.ctm.TaskHistoryGraph',
+    'foam.apps.ctm.TaskManagerContext',
     'foam.apps.ctm.TaskManagerDetailView',
     'foam.dao.EasyDAO',
+    'foam.dao.IDBDAO',
     'foam.ui.TableView',
     'foam.util.Timer'
   ],
@@ -30,6 +34,33 @@ CLASS({
 
   properties: [
     {
+      name: 'persistentContext',
+      transient: true,
+      lazyFactory: function() {
+        return this.PersistentContext.create({
+          dao: this.IDBDAO.create({ model: this.Binding }),
+          predicate: NOT_TRANSIENT,
+          context: this
+        });
+      }
+    },
+    {
+      type: 'foam.apps.ctm.TaskManagerContext',
+      name: 'ctx',
+      transient: true,
+      defaultValue: null,
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( old ) Events.unlink(old.tableColumns$, this.tableColumns$);
+        if ( nu ) Events.link(nu.tableColumns$, this.tableColumns$);
+      }
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'tableColumns',
+      lazyFactory: function() { return this.Task.tableProperties; }
+    },
+    {
       model_: 'foam.core.types.DAOProperty',
       name: 'tasks',
       dynamicValue: function() {
@@ -40,11 +71,13 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'search',
+      transient: true,
       view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true }
     },
     {
       name: 'selection',
       defaultValue: null,
+      transient: true,
       postSet: function(old, nu) {
         if ( old === nu ) return;
         if ( nu ) {
@@ -58,21 +91,25 @@ CLASS({
     {
       model_: 'ArrayProperty',
       name: 'memory',
+      transient: true,
       view: 'foam.apps.ctm.TaskHistoryGraph'
     },
     {
       model_: 'ArrayProperty',
       name: 'cpu',
+      transient: true,
       view: 'foam.apps.ctm.TaskHistoryGraph'
     },
     {
       model_: 'ArrayProperty',
       name: 'network',
+      transient: true,
       view: 'foam.apps.ctm.TaskHistoryGraph'
     },
     {
       type: 'foam.util.Timer',
       name: 'timer',
+      transient: true,
       factory: function() {
         var timer = this.Timer.create();
         timer.start();
@@ -82,6 +119,7 @@ CLASS({
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'tasks_',
+      transient: true,
       lazyFactory: function() {
         return this.EasyDAO.create({
           daoType: 'MDAO',
@@ -91,6 +129,7 @@ CLASS({
     },
     {
       name: 'taskControllers_',
+      transient: true,
       factory: function() { return {}; }
     }
   ],
@@ -110,6 +149,9 @@ CLASS({
 
       var viewModel = this.TaskManagerDetailView;
       this.X.registerModel(viewModel, 'foam.ui.TaskManagerDetailView');
+
+      this.persistentContext.bindObject(
+          'ctx', this.TaskManagerContext, undefined, 1);
 
       var dao = this.tasks_;
       for ( var i = 0; i < 50; ++i ) {

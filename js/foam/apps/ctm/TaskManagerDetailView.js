@@ -19,10 +19,8 @@ CLASS({
     'foam.apps.ctm.TaskPieGraph',
     'foam.ui.ActionButton'
   ],
-  imports: [ 'selection$' ],
 
   properties: [
-    'selection',
     {
       model_: 'IntProperty',
       name: 'numHistoryItems',
@@ -44,7 +42,8 @@ CLASS({
         </tm-header>
         <tm-body>
           $$tasks{
-            editColumnsEnabled: true
+            editColumnsEnabled: true,
+            properties$: this.data.tableColumns$
           }
         </tm-body>
         <tm-footer>
@@ -54,7 +53,7 @@ CLASS({
               $$tasks{ model_: this.TaskPieGraph, property: this.Task.CPU }
               $$tasks{ model_: this.TaskPieGraph, property: this.Task.NETWORK }
             </global-stats>
-            <local-stats id="<%= this.setClass('hidden', function() { return !this.selection; }.bind(this)) %>">
+            <local-stats id="<%= this.setClass('hidden', function() { return !this.data || !this.data.selection; }.bind(this)) %>">
               $$memory{ width: 100, height: 50 }
               $$cpu{ width: 100, height: 50 }
               $$network{ width: 100, height: 50 }
