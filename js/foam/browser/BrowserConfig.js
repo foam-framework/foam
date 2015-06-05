@@ -108,7 +108,10 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'listView',
-      defaultValue: 'foam.ui.DAOListView',
+      defaultValue: {
+        factory_: 'foam.ui.DAOListView',
+        rowView: 'foam.ui.md.DetailView'
+      }
     },
     {
       model_: 'ViewFactoryProperty',
