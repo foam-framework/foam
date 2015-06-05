@@ -314,14 +314,7 @@ CLASS({
   ],
   methods: {
     select: function(sink, options) {
-      if ( options ) {
-        options = {
-          __proto__: options,
-          skip: this.skip
-        };
-      } else {
-        options = { __proto__: options, skip: this.skip };
-      }
+      options = options ? { __proto__: options, skip: this.skip } : { skip: this.skip };
 
       return this.delegate.select(sink, options);
     },

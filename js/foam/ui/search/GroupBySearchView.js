@@ -78,6 +78,9 @@ CLASS({
   ],
 
   methods: [
+    function clear() {
+      this.view.data = '';
+    },
     function toHTML() {
       return '<div class="foamSearchView">' +
         '<div class="foamSearchViewLabel">' +

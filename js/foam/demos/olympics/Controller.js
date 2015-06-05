@@ -21,21 +21,24 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'foam.ui.TextFieldView',
     'foam.dao.EasyDAO',
     'foam.demos.olympics.Medal',
-    'foam.ui.search.GroupBySearchView'
+    'foam.ui.TextFieldView',
+    'foam.ui.search.GroupBySearchView',
+    'foam.ui.search.SearchMgr',
+    'foam.ui.search.TextSearchView'
   ],
+
+  exports: [ 'searchMgr' ],
 
   properties: [
     {
-      name: 'query'
+      model_: 'IntProperty',
+      name: 'count'
     },
     {
-      name: 'queryParser',
-      factory: function() {
-        return QueryParserFactory(this.Medal);
-      }
+      model_: 'IntProperty',
+      name: 'totalCount'
     },
     {
       model_: 'foam.core.types.DAOProperty',
@@ -53,40 +56,26 @@ CLASS({
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'filteredDAO',
-      view: { factory_: 'foam.ui.TableView', xxxscrollEnabled: true, rows: 30}
+      view: { factory_: 'foam.ui.TableView', scrollEnabled: true, xxxeditColumnsEnabled: true, xxxrows: 30}
     },
     {
-      name: 'fromYear'
+      name: 'searchMgr',
+      lazyFactory: function() {
+        return this.SearchMgr.create({dao: this.dao, filteredDAO$: this.filteredDAO$});
+      }
     },
     {
-      name: 'toYear'
+      name: 'query',
+      factory: function() {
+        return this.searchMgr.add(this.TextSearchView.create({model: this.Medal, richSearch: true}));
+      }
     },
-    {
-      name: 'color'
-    },
-    {
-      name: 'country'
-    },
-    {
-      name: 'city'
-    },
-    {
-      name: 'gender'
-    },
-    {
-      name: 'discipline'
-    },
-    {
-      name: 'sport'
-    },
-    {
-      name: 'predicate'
-    },
+    'fromYear', 'toYear', 'color', 'city', 'gender', 'discipline', 'event',
     {
       model_: 'StringProperty',
       name: 'sql',
       displayWidth: 35,
-      displayHeight: 10
+      displayHeight: 8
     }
   ],
 
@@ -95,131 +84,95 @@ CLASS({
       var map = opt_map || {};
       map.property = prop;
       map.size = map.size || 1;
-      this[opt_name || prop.name] = this.GroupBySearchView.create(map);
+      this[opt_name || prop.name] = this.searchMgr.add(this.GroupBySearchView.create(map));
     },
 
     function init() {
       this.SUPER();
 
-GLOBAL.ctrl = this;
-      var self = this;
+      GLOBAL.ctrl = this; // for debugging
       var Medal = this.Medal;
+      var self  = this;
 
       axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
         data.limit(50000).select(function(m) { self.dao.put(self.Medal.create(m)); });
-        self.fromYear.dao = self.toYear.dao = self.discipline.dao = self.sport.dao = self.color.dao = self.country.dao = self.city.dao = self.gender.dao = self.dao;
+        self.count = self.totalCount = data.length;
+        self.searchMgr.dao = self.dao;
       });
 
+      this.addGroup(Medal.COLOR, null,      {size: 4});
+      this.addGroup(Medal.GENDER, null,     {size: 3});
       this.addGroup(Medal.YEAR, 'fromYear', {label: 'From', op: GTE});
       this.addGroup(Medal.YEAR, 'toYear',   {label: 'To',   op: LTE});
-      this.addGroup(Medal.COLOR, null,      {size: 4});
       this.addGroup(Medal.COUNTRY);
       this.addGroup(Medal.CITY);
-      this.addGroup(Medal.GENDER, null,     {size: 3});
       this.addGroup(Medal.DISCIPLINE);
-      this.addGroup(Medal.SPORT);
+      this.addGroup(Medal.EVENT);
 
-      Events.dynamic(
-        /*
-        function() {
-          self.fromYear.predicate;
-          self.toYear.predicate;
-          self.color.predicate;
-          self.country.predicate;
-          self.city.predicate;
-          self.gender.predicate;
-          self.discipline.predicate;
-          self.sport.predicate; },*/
-        function() {
-          self.predicate = AND(
-            self.queryParser.parseString(self.query),
-            self.fromYear.predicate,
-            self.toYear.predicate,
-            self.color.predicate,
-            self.country.predicate,
-            self.city.predicate,
-            self.gender.predicate,
-            self.discipline.predicate,
-            self.sport.predicate
-          ).partialEval();
+      this.searchMgr.predicate$.addListener(this.onPredicateChange);
+    }
+  ],
 
-          self.sql = 'SELECT * FROM Medal' +
-            (self.predicate !== TRUE ?
-              ' WHERE (' + self.predicate.toSQL() + ')' :
-              '');
-
-          self.filteredDAO = self.dao.where(self.predicate);
-        });
+  listeners: [
+    {
+      name: 'onPredicateChange',
+      isFramed: true,
+      code: function(_, _, _, predicate) {
+        this.sql = 'SELECT * FROM Medal' +
+          (predicate !== TRUE ? ' WHERE (' + predicate.toSQL() + ')' : '');
+        
+        this.filteredDAO.select(COUNT())(function(c) {
+          this.count = c.count;
+        }.bind(this));
+      }
     }
   ],
 
   actions: [
     {
       name: 'clear',
-      action: function() {
-        this.query = '';
-        this.fromYear.predicate =
-        this.toYear.predicate =
-        this.color.predicate =
-        this.country.predicate =
-        this.city.predicate =
-        this.gender.predicate =
-        this.discipline.predicate =
-        this.sport.predicate = TRUE;
-      }
+      action: function() { this.searchMgr.clear(); }
     }
   ],
 
   templates: [
     function CSS() {/*
+      html { overflow: hidden; }
       .tableView {
         outline: none;
+        height: 93%;
       }
-      .medalController {
-        display: flex;
+      .medalController { display: flex; }
+      .foamSearchView select { width: 300px; }
+      .tableView { width: auto !important; }
+      .MedalTable { width: auto !important; }
+      .searchPanel { margin: 15px; }
+      .searchResults { margin-left: 40px; }
+      .counts {
+        color: #555;
+        font-size: 22px;
+        margin: 20px;
       }
-      .foamSearchView select {
-        width: 300px;
-      }
-      .tableView {
-        width: auto !important;
-      }
-      .MedalTable {
-        width: auto !important;
-      }
-      .searchPanel {
-        margin: 15px;
-      }
-      .searchResults {
-        margin-left: 40px;
-      }
-      input[name='query'] {
+      input[type='search'] {
         margin-bottom: 15px;
         width: 300px;
       }
-      .Gold {
-        color: #C98910;
-      }
-      .Silver {
-        color: #A8A8A8;
-      }
-      .Bronze {
-        color: #965A38;
-      }
+      .Gold   { color: #C98910; }
+      .Silver { color: #A8A8A8; }
+      .Bronze { color: #965A38; }
     */},
     function toHTML() {/*
       <div class="medalController">
         <div class="searchPanel">
-          Search:<br>
-          $$query
-          %%fromYear %%toYear %%city %%discipline %%sport %%country %%color %%gender
+          %%query
+          %%fromYear %%toYear %%city %%discipline %%event %%country %%color %%gender
           $$clear<br>
           <br>SQL:<br>$$sql{mode: 'read-only'}
-          <br>
-          <br><%= FOAM_POWERED %>
+          <br><br><%= FOAM_POWERED %>
         </div>
         <div class="searchResults">
           $$filteredDAO
+          <div class="counts">$$count{mode: 'read-only'} of $$totalCount{mode: 'read-only'} selected</div>
         </div>
       </div>
     */}

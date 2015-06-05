@@ -14,11 +14,23 @@ CLASS({
   package: 'foam.apps.ctm',
   extendsModel: 'foam.ui.DetailView',
 
+  requires: [
+    'foam.apps.ctm.Task',
+    'foam.apps.ctm.TaskPieGraph',
+    'foam.ui.ActionButton'
+  ],
+
   properties: [
+    {
+      model_: 'IntProperty',
+      name: 'numHistoryItems',
+      defaultValue: 64
+    },
     {
       model_: 'BooleanProperty',
       name: 'showActions',
-      defaultValue: false
+      defaultValue: false,
+      preSet: function() { return false; }
     }
   ],
 
@@ -30,12 +42,27 @@ CLASS({
         </tm-header>
         <tm-body>
           $$tasks{
-            editColumnsEnabled: true
+            editColumnsEnabled: true,
+            properties$: this.data.tableColumns$
           }
         </tm-body>
         <tm-footer>
-          <a target="_blank" href="chrome://memory-redirect">Stats for nerds</a>
-          $$kill
+          <stats>
+            <global-stats>
+              $$tasks{ model_: this.TaskPieGraph, property: this.Task.MEMORY }
+              $$tasks{ model_: this.TaskPieGraph, property: this.Task.CPU }
+              $$tasks{ model_: this.TaskPieGraph, property: this.Task.NETWORK }
+            </global-stats>
+            <local-stats id="<%= this.setClass('hidden', function() { return !this.data || !this.data.selection; }.bind(this)) %>">
+              $$memory{ width: 100, height: 50 }
+              $$cpu{ width: 100, height: 50 }
+              $$network{ width: 100, height: 50 }
+            </local-stats>
+          </stats>
+          <actions>
+            <a target="_blank" href="chrome://memory-redirect">Stats for nerds</a>
+            $$kill
+          </actions>
         </tm-footer>
       </task-manager>
     */},
@@ -53,7 +80,16 @@ CLASS({
       task-manager tm-body,
       task-manager tm-footer {
         display: block;
+      }
+      task-manager tm-header,
+      task-manager tm-body,
+      task-manager tm-footer {
         padding: 20px;
+      }
+      task-manager tm-footer global-stats,
+      task-manager tm-footer local-stats,
+      task-manager tm-footer actions {
+        padding: 5px;
       }
       task-manager tm-header, task-manager tm-footer {
         flex-grow: 0;
@@ -66,9 +102,27 @@ CLASS({
         flex-grow: 1;
         overflow: auto;
       }
-      task-manager tm-footer {
+      task-manager tm-footer stats,
+      task-manager tm-footer stats global-stats,
+      task-manager tm-footer stats local-stats {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+      }
+      task-manager tm-footer stats {
+        flex-wrap: wrap;
+      }
+      task-manager tm-footer stats global-stats,
+      task-manager tm-footer stats local-stats {
+        flex-grow: 1;
+      }
+      task-manager tm-footer stats local-stats.hidden {
+        visibility: hidden;
+      }
+      task-manager tm-footer actions {
         display: flex;
         justify-content: space-between;
+        align-items: center;
       }
     */}
   ]

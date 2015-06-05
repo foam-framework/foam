@@ -25,6 +25,23 @@ CLASS({
 
   properties: [
     {
+      name: 'model'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'richSearch',
+      defaultValue: false
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'keywordSearch',
+      defaultValue: false
+    },
+    {
+      name: 'queryParser',
+      lazyFactory: function() { return QueryParserFactory(this.model, this.keywordSearch); }
+    },
+    {
       name:  'width',
       type:  'int',
       defaultValue: 47
@@ -41,12 +58,12 @@ CLASS({
     {
       name: 'view',
       type: 'view',
-      factory: function() { return foam.ui.TextFieldView.create({displayWidth:this.width, cssClass: 'foamSearchTextField'}); }
+      factory: function() { return foam.ui.TextFieldView.create({displayWidth:this.width, type: 'search', cssClass: 'foamSearchTextField'}); }
     },
     {
       name: 'label',
       type: 'String',
-      defaultValueFn: function() { return this.property.label; }
+      defaultValueFn: function() { return this.property.label || 'Search'; }
     }
   ],
 
@@ -56,8 +73,8 @@ CLASS({
         '<div class="foamSearchViewLabel">' +
         this.label +
         '</div>' +
-        this.view.toHTML() + '</div>' +
-        '<div id=' + this.on('click', this.clear) + ' style="text-align:right;width:100%;float:right;margin-bottom:20px;" class="searchTitle"><font size=-1><u>Clear</u></font></div>';
+        this.view.toHTML() + '</div>'
+        '</div>';
     },
     function initHTML() {
       this.SUPER();
@@ -72,11 +89,10 @@ CLASS({
       name: 'updateValue',
       code: function() {
         var value = this.view.data;
-        if ( ! value ) {
-          this.predicate = TRUE;
-          return;
-        }
-        this.predicate = CONTAINS_IC(this.property, value);
+        this.predicate =
+          ! value         ? TRUE :
+          this.richSearch ? this.queryParser.parseString(value)
+                          : CONTAINS_IC(this.property, value) ;
       }
     },
     {

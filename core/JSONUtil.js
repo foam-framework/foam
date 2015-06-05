@@ -385,7 +385,7 @@ var JSONUtil = {
 
         if ( ! first ) out(',\n');
 
-        if ( typeof obj === 'string' || typeof obj === 'number' ) {
+        if ( typeof obj === 'string' || typeof obj === 'number' || obj === null || obj === undefined ) {
           out(nestedIndent);
           this.output(out, obj, nestedIndent);
         } else {

@@ -31,7 +31,7 @@ CLASS({
       name: 'properties'
     },
     {
-      model_: 'StringArrayProperty',
+      model_: 'ArrayProperty',
       name: 'availableProperties'
     }
   ],
@@ -39,10 +39,11 @@ CLASS({
   listeners: [
     {
       name: 'onAddColumn',
-      code: function(prop) {
+      code: function(propName) {
         this.properties = this.availableProperties.filter(function(prop) {
-          return this.properties.indexOf(prop) >= 0;
-        }.bind(this));
+          return this.properties.indexOf(prop.name) >= 0 ||
+              prop.name === propName;
+        }.bind(this)).map(function(prop) { return prop.name; });
       }
     },
     {

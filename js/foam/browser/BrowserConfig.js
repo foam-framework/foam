@@ -15,22 +15,29 @@
  * limitations under the License.
  */
 CLASS({
-  package: 'foam.tutorials.todo',
-  name: 'Controller',
-  documentation: 'GENERIC controller for this kind of app. Not the basis of ' +
-      'the Todo list tutorial app. Will probably be moved elsewhere later on.',
+  package: 'foam.browser',
+  name: 'BrowserConfig',
+  documentation: 'Configuration object for FOAM\'s browser. ' +
+      'Create an instance of this model and load it in a BrowserView.',
 
   requires: [
     'foam.dao.NullDAO',
     'foam.mlang.CannedQuery',
-    'foam.ui.CannedQueryCitationView',
+    'foam.ui.DAOListView',
+    'foam.ui.md.CannedQueryCitationView',
   ],
 
   properties: [
     {
+      name: 'title',
+      defaultValueFn: function() {
+        return this.dao.model.name + ' Browser';
+      }
+    },
+    {
       model_: 'foam.core.types.DAOProperty',
       name: 'dao',
-      documentation: 'The master DAO for this controller to view. Required.',
+      documentation: 'The master DAO to browse. Required.',
       required: true,
     },
     {
@@ -75,7 +82,7 @@ CLASS({
       },
       view: {
         factory_: 'foam.ui.DAOListView',
-        rowView: 'foam.ui.CannedQueryCitationView',
+        rowView: 'foam.ui.md.CannedQueryCitationView',
       },
     },
     {
@@ -87,13 +94,57 @@ CLASS({
       model_: 'StringProperty',
       name: 'search',
       view: {
-        factory_: 'foam.ui.TextFieldView',
+        factory_: 'foam.ui.md.TextFieldView',
+        label: 'Search',
+        floatingLabel: false,
+        placeholder: 'Search',
         onKeyMode: true,
       },
     },
     {
+      model_: 'ViewFactoryProperty',
+      name: 'listView',
+      defaultValue: 'foam.ui.DAOListView',
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'detailView',
+      documentation: 'A ViewFactory for the main detail view. You usually ' +
+          'will want to override $$DOC{ref:".innerDetailView"} rather than ' +
+          'this property.',
+      defaultValue: 'foam.ui.md.UpdateDetailView',
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'innerDetailView',
+      defaultValue: 'foam.ui.md.DetailView'
+    },
+    {
+      name: 'menuFactory',
+      documentation: 'The menuFactory returns a View for the left-side menu. ' +
+          'By default, it returns the view for $$DOC{ref:".cannedQueryDAO"}.',
+      defaultValue: function() {
+        var view = this.DAOListView.create({
+          data$: this.cannedQueryDAO$,
+          rowView: 'foam.ui.md.CannedQueryCitationView',
+        }, this.Y.sub({
+          selection$: this.cannedQuery$
+        }));
+
+        // Listen for the DAOListView's ROW_CLICK event, and emit our own
+        // MENU_CLOSE event when it fires. This was originally a postSet on
+        // cannedQuery, which is bound to the selection, but that only updates
+        // when the value actually changes.
+        view.subscribe(view.ROW_CLICK, function() {
+          this.publish(this.MENU_CLOSE);
+        }.bind(this));
+
+        return view;
+      }
+    },
+    {
       name: 'showAllWithNoQuery',
-      documentation: 'When there is no query set, should the controller ' +
+      documentation: 'When there is no query set, should the browser ' +
           'render all the data, or none of it? Defaults to all, set false if ' +
           'you have a lot of data and don\'t want to render it all.',
       defaultValue: true,
@@ -106,4 +157,8 @@ CLASS({
       defaultValue: true,
     },
   ],
+
+  constants: {
+    MENU_CLOSE: ['menu-close']
+  },
 });

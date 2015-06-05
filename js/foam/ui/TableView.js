@@ -62,9 +62,7 @@ CLASS({
     {
       model_: 'StringArrayProperty',
       name:  'properties',
-      preSet: function(_, a) { return ! a || a.length == 0 ? null : a; },
-      postSet: function() { this.repaint(); },
-      defaultValue: null
+      postSet: function() { this.repaint(); }
     },
     {
       name:  'hardSelection',
@@ -115,13 +113,12 @@ CLASS({
       name: 'scrollbar',
       type: 'ScrollCView',
       factory: function() {
-        var sb = this.ScrollCView.create({height:800, width: 24, x: 1, y: 0, size: 200, extent: 10});
-
-//        if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
-
-        sb.value$.addListener(this.repaint);
-
-        return sb;
+        return this.ScrollCView.create({height:800, width: 24, x: 1, y: 0, size: 200, extent: 10});
+      },
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( old ) old.value$.removeListener(this.repaint);
+        if ( nu ) nu.value$.addListener(this.repaint);
       }
     },
     {
@@ -134,6 +131,16 @@ CLASS({
       hidden: true,
       transient: true,
       defaultValue: 0
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'selectionListeners_',
+      lazyFactory: function() { return []; }
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'hardSelectionListeners_',
+      lazyFactory: function() { return []; }
     }
   ],
 
@@ -216,7 +223,7 @@ CLASS({
       code: function(evt) {
         var v = this.EditColumnsView.create({
           model:               this.model,
-          properties:          this.properties || this.model.tableProperties,
+          properties:          this.getProperties(),
           availableProperties: this.model.getRuntimeProperties().filter(
               function(prop) { return !prop.hidden; })
         });
@@ -356,7 +363,7 @@ CLASS({
 
       //str += '<!--<caption>' + model.plural + '</caption>';
       str.push('<thead><tr>');
-      var properties = this.properties || this.model.tableProperties;
+      var properties = this.getProperties();
       for ( var i = 0 ; i < properties.length ; i++ ) {
         var key  = properties[i];
         var prop = model.getProperty(key);
@@ -475,13 +482,13 @@ CLASS({
           e.preventDefault();
 
           if ( toNum(col1.width) < this.MIN_COLUMN_SIZE ) {
-            this.properties = ( this.properties || this.model.tableProperties ).deleteF(prop1.name);
+            this.properties = this.getProperties().deleteF(prop1.name);
           } else {
             prop1.tableWidth = col1.width;
           }
           if ( prop2 ) {
             if ( toNum(col2.width) < this.MIN_COLUMN_SIZE ) {
-              this.properties = ( this.properties || this.model.tableProperties ).deleteF(prop2.name);
+              this.properties = this.getProperties().deleteF(prop2.name);
             } else {
               prop2.tableWidth = col2.width;
             }
@@ -501,16 +508,11 @@ CLASS({
       this.initHTML.super_.call(this);
 
       var self = this;
-
-      argsToArray(this.X.$$('tr-' + this.id)).forEach(function(e, i) {
+      var trs = argsToArray(this.X.$$('tr-' + this.id));
+      this.resetRowListeners_(trs);
+      trs.forEach(function(e, i) {
         var obj = self.objs[i];
 
-        self.selection$.addListener(function() {
-          DOM.setClass(e, 'rowSoftSelected', self.selection === obj);
-        });
-        self.hardSelection$.addListener(function() {
-          DOM.setClass(e, 'rowSelected', self.hardSelection === obj);
-        });
         e.onmouseover = function() {
           self.selection = obj;
         };
@@ -528,6 +530,40 @@ CLASS({
 
       delete this['initializers_'];
       this.children = [];
+    },
+
+    resetRowListeners_: function(trs) {
+      var self = this;
+      self.selectionListeners_.forEach(function(listener) {
+        self.selection$.removeListener(listener);
+      });
+      self.hardSelectionListeners_.forEach(function(listener) {
+        self.hardSelection$.removeListener(listener);
+      });
+
+      self.selectionListeners_ = [];
+      self.hardSelectionListeners_ = [];
+
+      trs.forEach(function(e, i) {
+        var obj = self.objs[i];
+        var sListener = function() {
+          DOM.setClass(e, 'rowSoftSelected', self.selection === obj);
+        };
+        var hsListener = function() {
+          DOM.setClass(e, 'rowSelected', self.hardSelection === obj);
+        };
+
+        self.selection$.addListener(sListener);
+        self.selectionListeners_.push(sListener);
+
+        self.hardSelection$.addListener(hsListener);
+        self.hardSelectionListeners_.push(hsListener);
+      });
+    },
+
+    getProperties: function() {
+      return this.properties.length > 0 ? this.properties :
+          this.model.tableProperties;
     }
   }
 });

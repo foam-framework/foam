@@ -22,6 +22,15 @@ CLASS({
     'foam.tutorials.todo.model.Todo',
   ],
 
+  imports: [
+    'stack',
+    'todoDAO',
+  ],
+
+  exports: [
+    'selection$',
+  ],
+
   properties: [
     {
       name: 'model',
@@ -31,15 +40,25 @@ CLASS({
       name: 'className',
       defaultValue: 'todo-detail'
     },
+    {
+      name: 'selection',
+      postSet: function(old, nu) {
+        if (nu) {
+          this.todoDAO.find(nu.id, {
+            put: function(obj) {
+              this.stack.pushView(this.model_.create({ data: obj }, this.Y));
+            }.bind(this)
+          });
+        } else {
+          this.stack.popView();
+        }
+      }
+    },
   ],
 
   templates: [
     function CSS() {/*
       .todo-detail {
-        background: #fff;
-        border: 1px solid #ccc;
-        border-radius: 2px;
-        padding: 16px;
       }
     */},
     function toHTML() {/*

@@ -25,6 +25,10 @@ CLASS({
   extendsModel: 'foam.ui.View',
   traits: ['foam.ui.DAODataViewTrait'],
 
+  constants: {
+    ROW_CLICK: ['row-click']
+  },
+
   properties: [
     {
       model_: 'BooleanProperty',
@@ -165,6 +169,7 @@ CLASS({
         if ( this.X.selection$ ) {
           out.push('<div class="' + this.className + '-row' + '" id="' + this.on('click', (function() {
             this.selection = o;
+            this.publish(this.ROW_CLICK);
           }).bind(this)) + '">');
         }
         out.push(view.toHTML());

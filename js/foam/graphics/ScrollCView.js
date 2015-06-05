@@ -46,7 +46,10 @@ CLASS({
       name: 'size',
       defaultValue: 0,
       help: 'Total number of elements being scrolled through.',
-      postSet: function() { this.paint(); }
+      postSet: function(_, size) {
+        this.value = this.value; // force range checking on value
+        this.paint();
+      }
     },
     {
       name: 'minHandleSize',
@@ -77,45 +80,63 @@ CLASS({
     }
   ],
 
-  listeners: {
-    mouseDown: function(e) {
+  listeners: [
+    {
+      name: 'mouseDown',
+      code: function(e) {
       //       this.parent.$.addEventListener('mousemove', this.mouseMove, false);
       this.startY = e.y - e.offsetY;
       e.target.ownerDocument.defaultView.addEventListener('mouseup', this.mouseUp, true);
       e.target.ownerDocument.defaultView.addEventListener('mousemove', this.mouseMove, true);
       e.target.ownerDocument.defaultView.addEventListener('touchstart', this.touchstart, true);
       this.mouseMove(e);
+      }
     },
-    mouseUp: function(e) {
+    {
+      name: 'mouseUp',
+      code: function(e) {
       e.preventDefault();
       e.target.ownerDocument.defaultView.removeEventListener('mousemove', this.mouseMove, true);
       e.target.ownerDocument.defaultView.removeEventListener('mouseup', this.mouseUp, true);
       //       this.parent.$.removeEventListener('mousemove', this.mouseMove, false);
+      }
     },
-    mouseMove: function(e) {
+    {
+      name: 'mouseMove',
+      code: function(e) {
       var y = e.y - this.startY;
       e.preventDefault();
 
       this.value = Math.max(0, Math.min(this.size - this.extent, Math.round((y - this.y ) / (this.height-4) * this.size)));
+      }
     },
-    touchStart: function(e) {
+    {
+      name: 'touchStart',
+      code: function(e) {
       this.startY = e.targetTouches[0].pageY;
       this.startValue = this.value;
       e.target.ownerDocument.defaultView.addEventListener('touchmove', this.touchMove, false);
       //       this.parent.$.addEventListener('touchmove', this.touchMove, false);
       this.touchMove(e);
+      }
     },
-    touchEnd: function(e) {
+    {
+      name: 'touchEnd',
+      code: function(e) {
       e.target.ownerDocument.defaultView.removeEventListener('touchmove', this.touchMove, false);
       e.target.ownerDocument.defaultView.removeEventListener('touchend', this.touchEnd, false);
       //       this.parent.$.removeEventListener('touchmove', this.touchMove, false);
+      }
     },
-    touchMove: function(e) {
+    {
+      name: 'touchMove',
+      code: function(e) {
       var y = e.targetTouches[0].pageY;
       e.preventDefault();
       this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(this.startValue + (y - this.startY) / (this.height-4) * this.size )));
+      }
     }
-  },
+  ],
 
   methods: {
     initCView: function() {
