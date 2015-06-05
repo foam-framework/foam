@@ -26,6 +26,7 @@
  * key:(value1|value2)        "
  * key1:value key2:value      key1 contains value AND key2 contains "value"
  * key1:value AND key2:value  "
+ * key1:value and key2:value  "
  * key1:value OR key2:value   key1 contains value OR key2 contains "value"
  * key1:value or key2:value   "
  * key:(-value)               key does not contain "value"
