@@ -67,15 +67,11 @@ CLASS({
         return this.dao.select({
           put: function(task) {
             this.groups[task.id] = task[this.property.name];
-          }.bind(this),
-          error: function() {
-            // TODO(markdittmer): Handle errors.
-          },
-          eof: function() {
-            this.pie.groups = this.groups;
-            this.pie.paintSelf();
           }.bind(this)
-        });
+        })(function() {
+          this.pie.groups = this.groups;
+          this.pie.paintSelf();
+        }.bind(this));
       }
     }
   ],

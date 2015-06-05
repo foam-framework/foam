@@ -321,7 +321,6 @@ CLASS({
     /** Call repaint() instead to repaint on next animation frame. **/
     repaintNow: function() {
       var dao = this.dao;
-
       /*
       this.show__ = ! this.show__;
       if ( this.show__ ) return;
