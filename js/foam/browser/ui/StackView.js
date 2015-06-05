@@ -140,9 +140,11 @@ CLASS({
       .stackview-container {
         align-items: flex-start;
         display: flex;
+        height: 100%;
       }
       .stackview-panel {
         flex: 1;
+        height: 100%;
       }
       .stackview-hidden {
         display: none;

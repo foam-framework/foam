@@ -113,6 +113,19 @@ CLASS({
             this.data.search = '';
           }
         },
+        {
+          name: 'createButton',
+          iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAH0lEQVQ4y2NgGAUw8B8IRjXgUoQLUEfDaDyQqmF4AwADqmeZrHJtnQAAAABJRU5ErkJggg==',
+          isAvailable: function() { return this.data.showAdd; },
+          action: function() {
+            var newObj = this.data.model.create();
+            this.stack.pushView(this.data.detailView({
+              data: newObj,
+              innerView: this.data.innerDetailView,
+              title: 'New ' + this.data.model.name
+            }, this.Y));
+          }
+        },
       ],
 
       listeners: [
@@ -135,6 +148,8 @@ CLASS({
           .browser {
             display: flex;
             flex-direction: column;
+            height: 100%;
+            position: relative;
           }
           .browser-header {
             align-items: center;
@@ -231,6 +246,20 @@ CLASS({
             <div class="browser-body">
               <%= this.data.listView({ data$: this.data.filteredDAO$ }, this.Y) %>
             </div>
+            <% if (this.data.showAdd) { %>
+              <div class="floating-action">
+                $$createButton{
+                  className: 'createButton',
+                  color: 'white',
+                  font: '30px Roboto Arial',
+                  alpha: 1,
+                  width: 44,
+                  height: 44,
+                  radius: 22,
+                  background: '#e51c23'
+                }
+              </div>
+            <% } %>
           </div>
         */},
       ],
