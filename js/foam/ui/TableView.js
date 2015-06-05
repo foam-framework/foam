@@ -302,7 +302,8 @@ CLASS({
             sb.size - sb.extent,
             Math.max(
               0,
-              sb.value - Math.round(e.wheelDelta / 20)));
+                sb.value - Math.round(e.wheelDelta / 20)));
+          e.preventDefault();
         };
 
         if ( this.X.gestureManager ) {
