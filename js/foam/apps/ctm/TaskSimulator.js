@@ -10,12 +10,10 @@
  */
 
 CLASS({
-  name: 'TaskSimulator',
   package: 'foam.apps.ctm',
+  name: 'TaskSimulator',
 
-  requires: [
-    'foam.util.Timer'
-  ],
+  requires: [ 'foam.util.Timer' ],
   imports: [ 'timer' ],
 
   properties: [
