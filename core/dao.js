@@ -326,9 +326,9 @@ CLASS({
 
 
 CLASS({
-  name: 'RelationshipDAO_',
+  name: 'RelationshipDAO',
   extendsModel: 'FilteredDAO_',
-  documentation: 'Internal use only.',
+  documentation: 'Adapts a DAO based on a Relationship.',
 
   properties: [
     {
@@ -341,7 +341,7 @@ CLASS({
     },
     {
       name: 'query',
-      defaultValueFn: function() {
+      lazyFactory: function() {
         return AND(NEQ(this.relatedProperty, ''),
             EQ(this.relatedProperty, this.relativeID));
       }

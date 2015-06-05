@@ -343,14 +343,14 @@ var BootstrapModel = {
               m.plural + ' in the context, and neither was found.');
         }
 
+        dao = RelationshipDAO.create({
+          delegate: dao,
+          relatedProperty: m.getProperty(r.relatedProperty),
+          relativeID: this.id
+        });
+
         return {
-          get: function() {
-            return RelationshipDAO_.create({
-              delegate: dao,
-              relatedProperty: m.getProperty(r.relatedProperty),
-              relativeID: this.id
-            });
-          },
+          get: function() { return dao; },
           configurable: true
         };
       });
