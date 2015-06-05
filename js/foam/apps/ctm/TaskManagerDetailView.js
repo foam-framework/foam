@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'TaskManagerDetailView',
   package: 'foam.apps.ctm',
+  name: 'TaskManagerDetailView',
   extendsModel: 'foam.ui.DetailView',
 
   requires: [
@@ -123,6 +123,10 @@ CLASS({
         display: flex;
         justify-content: space-between;
         align-items: center;
+      }
+      task-manager img {
+        margin-right: 4px;
+        vertical-align: text-bottom;
       }
     */}
   ]

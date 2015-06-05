@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'TaskController',
   package: 'foam.apps.ctm',
+  name: 'TaskController',
 
   requires: [
     'foam.apps.ctm.History',

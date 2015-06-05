@@ -60,7 +60,7 @@ CLASS({
   listeners: [
     {
       name: 'gatherData',
-      isFramed: true,
+      isMerged: 200,
       code: function() {
         this.groups = {};
         return this.dao.select({

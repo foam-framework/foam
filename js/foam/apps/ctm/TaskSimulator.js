@@ -13,11 +13,9 @@ CLASS({
   package: 'foam.apps.ctm',
   name: 'TaskSimulator',
 
-  requires: [ 'foam.util.Timer' ],
-  imports: [ 'timer' ],
+  imports: [ 'clock$' ],
 
   properties: [
-    'timer',
     {
       type: 'foam.apps.ctm.Task',
       name: 'task',
@@ -32,23 +30,15 @@ CLASS({
 
   methods: [
     function init() {
-      this.SUPER.apply(this, arguments);
-      if ( ! this.timer ) {
-        this.timer = this.Timer.create();
-        this.timer.start();
-      }
-      this.timer.second$.addListener(this.tick);
+      this.SUPER();
+      this.clock$.addListener(this.tick);
     }
   ],
 
   listeners: [
     {
       name: 'tick',
-      isFramed: true,
-      code: function(_, __, ___, nu) {
-        // Tick every two seconds.
-        if ( nu % 2 === 0 ) return;
-
+      code: function() {
         // Memory.
         if ( Math.random() > 0.8 ) {
           if ( Math.random() > 0.5 ) {
