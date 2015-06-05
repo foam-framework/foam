@@ -56,6 +56,10 @@ CLASS({
       this.SUPER();
       this.clock$.addListener(this.tick);
     },
+    function initHTML() {
+      this.SUPER();
+      this.tick();
+    },
     function paint() {
       this.pie.view && this.pie.view.paint && this.pie.view.paint();
     }
@@ -66,7 +70,6 @@ CLASS({
       name: 'tick',
       isFramed: true,
       code: function() {
-        console.log('TPG tick');
         this.groups = {};
         return this.data.select({
           put: function(task) {
