@@ -324,6 +324,38 @@ CLASS({
   }
 });
 
+
+CLASS({
+  name: 'RelationshipDAO_',
+  extendsModel: 'FilteredDAO_',
+  documentation: 'Internal use only.',
+
+  properties: [
+    {
+      name: 'relatedProperty',
+      required: true
+    },
+    {
+      name: 'relativeID',
+      required: true
+    },
+    {
+      name: 'query',
+      defaultValueFn: function() {
+        return AND(NEQ(this.relatedProperty, ''),
+            EQ(this.relatedProperty, this.relativeID));
+      }
+    },
+  ],
+
+  methods: [
+    function put(obj, sink) {
+      obj[this.relatedProperty.name] = this.relativeID;
+      this.SUPER(obj, sink);
+    }
+  ]
+});
+
 function atxn(afunc) {
   return function(ret) {
     if ( GLOBAL.__TXN__ ) {

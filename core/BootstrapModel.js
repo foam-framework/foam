@@ -344,9 +344,13 @@ var BootstrapModel = {
         }
 
         return {
-          get: function() { return dao.where(AND(
-              NEQ(m.getProperty(r.relatedProperty), ''),
-              EQ(m.getProperty(r.relatedProperty), this.id))); },
+          get: function() {
+            return RelationshipDAO_.create({
+              delegate: dao,
+              relatedProperty: m.getProperty(r.relatedProperty),
+              relativeID: this.id
+            });
+          },
           configurable: true
         };
       });
