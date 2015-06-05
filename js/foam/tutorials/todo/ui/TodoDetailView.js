@@ -20,6 +20,7 @@ CLASS({
   extendsModel: 'foam.ui.DetailView',
   requires: [
     'foam.tutorials.todo.model.Todo',
+    'foam.ui.md.UpdateDetailView',
   ],
 
   imports: [
@@ -42,16 +43,21 @@ CLASS({
     },
     {
       name: 'selection',
-      postSet: function(old, nu) {
-        if (nu) {
-          this.todoDAO.find(nu.id, {
-            put: function(obj) {
-              this.stack.pushView(this.model_.create({ data: obj }, this.Y));
-            }.bind(this)
-          });
-        } else {
-          this.stack.popView();
-        }
+    },
+  ],
+
+  listeners: [
+    {
+      name: 'onChildClick',
+      code: function() {
+        this.todoDAO.find(this.selection.id, {
+          put: function(obj) {
+            this.stack.pushView(this.UpdateDetailView.create({
+              innerView: this.model_,
+              data: obj
+            }, this.Y));
+          }.bind(this)
+        });
       }
     },
   ],
@@ -70,6 +76,9 @@ CLASS({
           model_: 'foam.ui.DAOListView',
           rowView: 'foam.tutorials.todo.ui.TodoCitationView'
         }
+        <% this.addInitializer(function() {
+          self.subtasksView.subscribe(self.subtasksView.ROW_CLICK, self.onChildClick);
+        }); %>
       </div>
     */},
   ]
