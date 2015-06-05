@@ -60,7 +60,7 @@ CLASS({
   methods: [
     function init(args) {
       this.SUPER(args);
-      this.window.addEventListener('resize', this.resize);
+      this.window.addEventListener('resize', this.onResize);
     },
     {
       name: 'pushView',
