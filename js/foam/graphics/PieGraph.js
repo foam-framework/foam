@@ -26,7 +26,7 @@ CLASS({
       name:  'r',
       type:  'int',
       view:  'foam.ui.IntFieldView',
-      postSet: function(_, r) { this.width = this.height = 2*r+2; },
+      postSet: function(_, r) { this.width = this.height = 2*r; },
       defaultValue: 50
     },
     {
@@ -76,7 +76,7 @@ CLASS({
 
       var x = this.x;
       var y = this.y;
-      var r = this.r;
+      var r = this.r-1;
 
       var sum = 0;
       var n = 0;
