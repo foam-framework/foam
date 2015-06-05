@@ -17,7 +17,7 @@ CLASS({
   requires: [
     'foam.graphics.PieGraph'
   ],
-  imports: [ 'selection$' ],
+  imports: [ 'selection$', 'clock$' ],
 
   properties: [
     {
@@ -52,14 +52,15 @@ CLASS({
   ],
 
   methods: [
-    function onDAOUpdate() {
-      this.gatherData();
+    function init() {
+      this.SUPER();
+      this.clock$.addListener(this.tick);
     }
   ],
 
   listeners: [
     {
-      name: 'gatherData',
+      name: 'tick',
       isMerged: 200,
       code: function() {
         this.groups = {};
@@ -71,7 +72,6 @@ CLASS({
             // TODO(markdittmer): Handle errors.
           },
           eof: function() {
-            this.pie.paintSelf();
             this.pie.groups = this.groups;
             this.pie.paintSelf();
           }.bind(this)
