@@ -178,7 +178,7 @@ CLASS({
           $$save
         </div>
         <div class="md-update-detail-view-body">
-          <%= this.innerView({ data$: this.data$ }) %>
+          <%= this.innerView({ data$: this.data$ }, this.Y) %>
         </div>
       </div>
     */},
