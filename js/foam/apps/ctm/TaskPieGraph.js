@@ -64,8 +64,9 @@ CLASS({
   listeners: [
     {
       name: 'tick',
-      isMerged: 200,
+      isFramed: true,
       code: function() {
+        console.log('TPG tick');
         this.groups = {};
         return this.data.select({
           put: function(task) {
