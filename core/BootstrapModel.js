@@ -344,7 +344,9 @@ var BootstrapModel = {
         }
 
         return {
-          get: function() { return dao.where(EQ(m.getProperty(r.relatedProperty), this.id)); },
+          get: function() { return dao.where(AND(
+              NEQ(m.getProperty(r.relatedProperty), ''),
+              EQ(m.getProperty(r.relatedProperty), this.id))); },
           configurable: true
         };
       });
