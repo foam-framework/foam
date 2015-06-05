@@ -2,7 +2,7 @@
 
 BASEDIR=$(readlink -f $(dirname "$0"))
 BUILD_DIR=~/Downloads/ctm
-FOAM_DIR=../../../..
+FOAM_DIR=../..
 
 pushd "$BASEDIR"
 

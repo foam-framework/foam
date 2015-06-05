@@ -45,6 +45,7 @@ __DATA({
     'mlang',
     'mlang1',
     'mlang2',
+    'QueryParser',
     'visitor',
     'messaging',
     'dao',
