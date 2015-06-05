@@ -41,8 +41,12 @@ CLASS({
       defaultValue: true,
     },
     {
+      name: 'prop',
+    },
+    {
       name: 'label',
       type: 'String',
+      defaultValueFn: function() { return this.prop && this.prop.label; }
     },
     {
       name: 'className',
