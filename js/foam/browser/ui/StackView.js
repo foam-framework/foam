@@ -224,6 +224,7 @@ CLASS({
         if (view.stack)
           view.stack = substack;
         view.X.stack = substack;
+        view.Y.stack = substack;
 
         this.views_.push({
           id: this.nextID(),
