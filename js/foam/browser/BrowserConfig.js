@@ -41,6 +41,10 @@ CLASS({
       required: true,
     },
     {
+      name: 'model',
+      defaultValueFn: function() { return this.dao.model; }
+    },
+    {
       name: 'filteredDAO',
       documentation: 'The filtered version of $$DOC{ref:".dao"} that\'s ' +
           'being viewed right now.',

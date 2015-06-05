@@ -60,7 +60,7 @@ CLASS({
   methods: [
     function init(args) {
       this.SUPER(args);
-      this.window.addEventListener('resize', this.resize);
+      this.window.addEventListener('resize', this.onResize);
     },
     {
       name: 'pushView',
@@ -140,9 +140,11 @@ CLASS({
       .stackview-container {
         align-items: flex-start;
         display: flex;
+        height: 100%;
       }
       .stackview-panel {
-        flex-grow: 1;
+        flex: 1;
+        height: 100%;
       }
       .stackview-hidden {
         display: none;
@@ -224,6 +226,7 @@ CLASS({
         if (view.stack)
           view.stack = substack;
         view.X.stack = substack;
+        view.Y.stack = substack;
 
         this.views_.push({
           id: this.nextID(),
