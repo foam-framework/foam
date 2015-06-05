@@ -232,12 +232,14 @@ CLASS({
         var input = this.inputId = this.nextID();
         var label = this.labelId = this.nextID();
 
-        this.on('focus',   this.onFocus,   input);
-        this.on('blur',    this.onBlur,    input);
-        this.on('input',   this.onInput,   input);
-        this.on('change',  this.onChange,  input);
-        this.on('click',   this.onClick,   input);
-        this.on('keydown', this.onKeyDown, input);
+        if ( this.mode !== 'read-only' ) {
+          this.on('focus',   this.onFocus,   input);
+          this.on('blur',    this.onBlur,    input);
+          this.on('input',   this.onInput,   input);
+          this.on('change',  this.onChange,  input);
+          this.on('click',   this.onClick,   input);
+          this.on('keydown', this.onKeyDown, input);
+        }
 
         if ( this.floatingLabel ) {
           this.setClass('md-text-field-label-offset',
@@ -267,6 +269,8 @@ CLASS({
           </div>
         <% } else if ( this.displayHeight > 1 ) { %>
           <textarea id="{{{input}}}" type="text" class="md-text-field-input" rows="{{{this.displayHeight}}}"<%= this.mode == 'read-only' ? ' disabled' : '' %>></textarea>
+        <% } else if ( this.mode === 'read-only' ) { %>
+          <span id="{{{input}}}" class="md-text-field-read-only"><%# this.data %></span>
         <% } else { %>
           <input id="{{{input}}}" type="text"
               class="md-text-field-input <%= this.underline ? '' : 'md-text-field-borderless' %>"

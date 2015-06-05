@@ -32,6 +32,7 @@ CLASS({
     'foam.ui.md.PopupView',
   ],
   exports: [
+    'dao',
     'dao as todoDAO',
   ],
 
@@ -59,19 +60,6 @@ CLASS({
         ].dao;
       }
     },
-    /*
-    {
-      name: 'menuFactory',
-      defaultValue: function() {
-        return this.DAOListView.create({
-          data$: this.cannedQueryDAO$,
-          rowView: this.CannedQueryCitationView
-        }, this.Y.sub({
-          selection$: this.cannedQuery$
-        }));
-      }
-    },
-    */
     {
       name: 'dao',
       factory: function() {
@@ -90,32 +78,13 @@ CLASS({
         return this.BrowserConfig.create({
           dao: this.dao,
           cannedQueryDAO: this.cannedQueryDAO,
+          listView: {
+            factory_: 'foam.ui.DAOListView',
+            rowView: 'foam.tutorials.todo.ui.TodoCitationView'
+          },
+          innerDetailView: 'foam.tutorials.todo.ui.TodoDetailView',
         });
       }
-    },
-    {
-      name: 'listView',
-      defaultValue: {
-        factory_: 'foam.ui.DAOListView',
-        rowView: 'foam.tutorials.todo.ui.TodoCitationView'
-      }
-    },
-    {
-      name: 'detailView',
-      defaultValue: 'foam.tutorials.todo.ui.TodoDetailView'
-    },
-    {
-      name: 'newTodo',
-      view: {
-        factory_: 'foam.ui.TextFieldView',
-        placeholder: 'Create new todo',
-      },
-      postSet: function(old, nu) {
-        nu = nu ? nu.trim() : '';
-        if ( ! nu ) return;
-        this.dao.put(this.Todo.create({ description: nu }));
-        this.newTodo = '';
-      },
     },
     {
       name: 'className',
