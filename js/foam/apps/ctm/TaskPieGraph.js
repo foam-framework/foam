@@ -12,7 +12,7 @@
 CLASS({
   name: 'TaskPieGraph',
   package: 'foam.apps.ctm',
-  extendsModel: 'foam.ui.AbstractDAOView',
+  extendsModel: 'foam.ui.SimpleView',
 
   requires: [
     'foam.graphics.PieGraph'
@@ -22,7 +22,7 @@ CLASS({
   properties: [
     {
       name: 'selection',
-      postSet: function() { this.pie.paintSelf(); }
+      postSet: function() { this.paint(); }
     },
     {
       name: 'property',
@@ -55,6 +55,9 @@ CLASS({
     function init() {
       this.SUPER();
       this.clock$.addListener(this.tick);
+    },
+    function paint() {
+      this.pie.view && this.pie.view.paint && this.pie.view.paint();
     }
   ],
 
@@ -64,13 +67,13 @@ CLASS({
       isMerged: 200,
       code: function() {
         this.groups = {};
-        return this.dao.select({
+        return this.data.select({
           put: function(task) {
             this.groups[task.id] = task[this.property.name];
           }.bind(this)
         })(function() {
           this.pie.groups = this.groups;
-          this.pie.paintSelf();
+          this.paint();
         }.bind(this));
       }
     }
