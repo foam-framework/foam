@@ -73,12 +73,10 @@ CLASS({
         $$completed
         $$description
         $$subtasks{
-          model_: 'foam.ui.DAOListView',
-          rowView: 'foam.tutorials.todo.ui.TodoCitationView'
+          model_: 'foam.browser.ui.DAOController',
+          rowView: 'foam.tutorials.todo.ui.TodoCitationView',
+          innerEditView: 'foam.tutorials.todo.ui.TodoDetailView'
         }
-        <% this.addInitializer(function() {
-          self.subtasksView.subscribe(self.subtasksView.ROW_CLICK, self.onChildClick);
-        }); %>
       </div>
     */},
   ]
