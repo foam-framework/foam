@@ -68,7 +68,6 @@ CLASS({
       model_: 'foam.core.types.DAOProperty',
       name: 'tasks',
       dynamicValue: function() {
-        console.log('Querying');
         return this.tasks_.where(
             this.search ?
                 (this.queryParser.parseString(this.search) || TRUE) :
