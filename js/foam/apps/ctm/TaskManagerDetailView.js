@@ -100,7 +100,7 @@ CLASS({
       }
       task-manager tm-body {
         flex-grow: 1;
-        overflow: auto;
+        overflow: hidden;
       }
       task-manager tm-footer stats,
       task-manager tm-footer stats global-stats,
