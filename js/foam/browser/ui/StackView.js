@@ -142,7 +142,7 @@ CLASS({
         display: flex;
       }
       .stackview-panel {
-        flex-grow: 1;
+        flex: 1;
       }
       .stackview-hidden {
         display: none;
