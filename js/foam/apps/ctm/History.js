@@ -23,8 +23,8 @@ CLASS({
       name: 'property',
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( old ) old.removeListener(this.onUpdate);
-        if ( nu ) nu.addListener(this.onUpdate);
+        if ( old ) old.removeListener(this.tick);
+        if ( nu ) nu.addListener(this.tick);
       }
     },
     {
