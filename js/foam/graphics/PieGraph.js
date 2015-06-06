@@ -26,8 +26,11 @@ CLASS({
       name:  'r',
       type:  'int',
       view:  'foam.ui.IntFieldView',
-      postSet: function(_, r) { this.width = this.height = 2*r+2; },
-      defaultValue: 50
+      defaultValue: 50,
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        this.setDimensions();
+      }
     },
     {
       name:  'lineColor',
@@ -37,7 +40,11 @@ CLASS({
     {
       name:  'lineWidth',
       type:  'int',
-      defaultValue: 1
+      defaultValue: 1,
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        this.setDimensions();
+      }
     },
     {
       name: 'colorMap',
@@ -63,6 +70,17 @@ CLASS({
   ],
 
   methods: {
+    init: function() {
+      this.SUPER.apply(this, arguments);
+      this.setDimensions();
+    },
+    setDimensions: function() {
+      console.log('Setting dimensions');
+      this.width = this.height = this.getDimensions();
+    },
+    getDimensions: function() {
+      return 2 * (this.r + this.lineWidth);
+    },
     toCount: function(o) {
       return CountExpr.isInstance(o) ? o.count : o;
     },

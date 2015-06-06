@@ -41,6 +41,10 @@ CLASS({
       required: true,
     },
     {
+      name: 'model',
+      defaultValueFn: function() { return this.dao.model; }
+    },
+    {
       name: 'filteredDAO',
       documentation: 'The filtered version of $$DOC{ref:".dao"} that\'s ' +
           'being viewed right now.',
@@ -104,7 +108,10 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'listView',
-      defaultValue: 'foam.ui.DAOListView',
+      defaultValue: {
+        factory_: 'foam.ui.DAOListView',
+        rowView: 'foam.ui.md.DetailView'
+      }
     },
     {
       model_: 'ViewFactoryProperty',

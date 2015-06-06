@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'TaskManagerDetailView',
   package: 'foam.apps.ctm',
+  name: 'TaskManagerDetailView',
   extendsModel: 'foam.ui.DetailView',
 
   requires: [
@@ -100,7 +100,7 @@ CLASS({
       }
       task-manager tm-body {
         flex-grow: 1;
-        overflow: auto;
+        overflow: hidden;
       }
       task-manager tm-footer stats,
       task-manager tm-footer stats global-stats,
@@ -123,6 +123,10 @@ CLASS({
         display: flex;
         justify-content: space-between;
         align-items: center;
+      }
+      task-manager img {
+        margin-right: 4px;
+        vertical-align: text-bottom;
       }
     */}
   ]

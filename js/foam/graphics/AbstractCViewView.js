@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.graphics',
   name: 'AbstractCViewView',
- 
+
   extendsModel: 'foam.ui.View',
 
   documentation: function() {  /*
