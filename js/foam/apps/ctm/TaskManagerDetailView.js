@@ -91,6 +91,9 @@ CLASS({
       task-manager tm-footer actions {
         padding: 5px;
       }
+      task-manager tm-header {
+        padding-bottom: 0;
+      }
       task-manager tm-header, task-manager tm-footer {
         flex-grow: 0;
         flex-shrink: 0;
