@@ -43,13 +43,13 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.clock$.addListener(this.onUpdate);
+      this.clock$.addListener(this.tick);
     }
   ],
 
   listeners: [
     {
-      name: 'onUpdate',
+      name: 'tick',
       code: function() {
         var value = this.data[this.property.name];
         if ( this.history.length === this.numItems ) this.history.shift();
