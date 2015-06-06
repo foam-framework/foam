@@ -16,9 +16,7 @@ __DATA({
   includeFoamCSS: true,
   precompileTemplates: true,
   coreFiles: [
-    'firefox',
     'funcName',
-    'safari',
     'stdlib',
     'WeakMap',
     'async',
