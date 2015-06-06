@@ -345,6 +345,12 @@ return JSONUtil.arrayToObjArray(X, [
     src: '/js/foam/apps/Modeller.js'
   }    */
   {
+    name: 'Olympic Medals',
+    model: 'foam.demos.olympics.Controller',
+    description: 'Browse an olympic medal database.  With reciprocal search.',
+    keywords: [ 'DAO', 'database', 'search' ]
+  },
+  {
     name: 'FOAM Demo Catalog',
     path: 'DemoCat.html',
     description: 'A FOAM Demo browser.  The demo you\'re currently running.',
