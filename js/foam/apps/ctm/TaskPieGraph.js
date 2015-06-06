@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'TaskPieGraph',
   package: 'foam.apps.ctm',
+  name: 'TaskPieGraph',
   extendsModel: 'foam.ui.SimpleView',
 
   requires: [

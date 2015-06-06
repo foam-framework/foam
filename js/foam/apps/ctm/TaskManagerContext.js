@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'TaskManagerContext',
   package: 'foam.apps.ctm',
+  name: 'TaskManagerContext',
 
   requires: [ 'foam.apps.ctm.Task' ],
 
