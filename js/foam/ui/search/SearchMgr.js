@@ -55,7 +55,7 @@ CLASS({
   listeners: [
     {
       name: 'onViewUpdate',
-      isMerged: 50,
+      isMerged: 10,
       code: function() {
         this.predicate = this.and(this.views);
         this.filteredDAO = this.dao.where(this.predicate);
@@ -65,7 +65,7 @@ CLASS({
     },
     {
       name: 'updateViews',
-      isMerged: 100,
+      isMerged: 20,
       code: function() {
         // Less important than updating main view, so delay
         // TODO: don't update source
