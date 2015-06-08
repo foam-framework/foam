@@ -175,13 +175,12 @@ var JSONToObject = {
   visitArrayElement: function (arr, i) { arr[i] = this.visit(arr[i]); }
 };
 
+
 CLASS({
   name: 'FilteredDAO_',
   extendsModel: 'foam.dao.ProxyDAO',
 
-  documentation: function() {/*
-        <p>Internal use only.</p>
-      */},
+  documentation: '<p>Internal use only.</p>',
 
   properties: [
     {
@@ -207,7 +206,7 @@ CLASS({
       } : {query: this.query});
     },
     listen: function(sink, options) {
-      return this.delegate.listen(sink, options ? {
+      return this.SUPER(sink, options ? {
         __proto__: options,
         query: options.query ?
           AND(this.query, options.query) :
@@ -218,7 +217,6 @@ CLASS({
       return this.delegate + '.where(' + this.query + ')';
     }
   }
-
 });
 
 
@@ -412,11 +410,6 @@ CLASS({
       return this.select(UPDATE(expr, this));
     },
 
-    listen: function(sink, options) { /* Send future changes to sink. */
-      sink = this.decorateSink_(sink, options, true);
-      this.daoListeners_.push(sink);
-    },
-
     select: function(sink, options) {
       /* Template method. Override to copy the contents of this DAO (filtered or ordered as
       necessary) to sink. */
@@ -499,6 +492,10 @@ CLASS({
       return (this.Y || X).lookup('OrderedDAO_').create({ comparator: arguments.length == 1 ? arguments[0] : argsToArray(arguments), delegate: this });
     },
 
+    listen: function(sink, options) { /* Send future changes to sink. */
+      this.daoListeners_.push(this.decorateSink_(sink, options, true));
+    },
+
     unlisten: function(sink) { /* Stop sending updates to the given sink. */
       var ls = this.daoListeners_;
 //      if ( ! ls.length ) console.warn('Phantom DAO unlisten: ', this, sink);
@@ -508,6 +505,7 @@ CLASS({
           return true;
         }
       }
+      console.assert(! DEBUG, 'Phantom DAO unlisten: ', this, sink);
     },
 
     // Default removeAll: calls select() with the same options and
