@@ -41,7 +41,7 @@ CLASS({
           <label>Search:</label>$$search
         </tm-header>
         <tm-body>
-          $$tasks{
+          $$filteredTasks{
             editColumnsEnabled: true,
             properties$: this.data.tableColumns$
           }

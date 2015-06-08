@@ -28,7 +28,7 @@ CLASS({
   exports: [
     'clock$',
     'selection$',
-    'tasks_ as tasks'
+    'tasks'
   ],
 
   properties: [
@@ -66,17 +66,6 @@ CLASS({
     {
       name: 'queryParser',
       factory: function() { return QueryParserFactory(this.Task, true); }
-    },
-    {
-      model_: 'foam.core.types.DAOProperty',
-      name: 'tasks',
-      dynamicValue: function() {
-        return this.tasks_.where(
-            this.search ?
-                (this.queryParser.parseString(this.search) || TRUE) :
-                TRUE);
-      },
-      view: { factory_: 'foam.ui.TableView', scrollEnabled: true }
     },
     {
       model_: 'StringProperty',
@@ -118,7 +107,7 @@ CLASS({
     },
     {
       model_: 'foam.core.types.DAOProperty',
-      name: 'tasks_',
+      name: 'tasks',
       transient: true,
       lazyFactory: function() {
         return this.EasyDAO.create({
@@ -126,6 +115,11 @@ CLASS({
           model: 'foam.apps.ctm.Task'
         });
       }
+    },
+    {
+      model_: 'foam.core.types.DAOProperty',
+      name: 'filteredTasks',
+      view: { factory_: 'foam.ui.TableView', scrollEnabled: true }
     },
     {
       name: 'taskControllers_',
@@ -153,7 +147,16 @@ CLASS({
       this.persistentContext.bindObject(
           'ctx', this.TaskManagerContext, undefined, 1);
 
-      var dao = this.tasks_;
+      Events.dynamic(
+        function() { this.search; this.tasks; }.bind(this),
+        function() {
+          this.filteredTasks = this.tasks.where(
+            this.search ?
+              (this.queryParser.parseString(this.search) || TRUE) :
+              TRUE);
+        }.bind(this));
+
+      var dao = this.filteredTasks;
       for ( var i = 0; i < 50; ++i ) {
         var controller = this.TaskController.create();
         this.taskControllers_[controller.task.id] = controller;
