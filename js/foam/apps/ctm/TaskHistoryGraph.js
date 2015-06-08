@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'TaskHistoryGraph',
   package: 'foam.apps.ctm',
+  name: 'TaskHistoryGraph',
   extendsModel: 'foam.ui.SimpleView',
 
   requires: [ 'foam.graphics.Graph' ],

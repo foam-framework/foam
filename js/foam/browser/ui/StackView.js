@@ -19,6 +19,7 @@ CLASS({
   name: 'StackView',
   extendsModel: 'foam.ui.SimpleView',
   imports: [
+    'setTimeout',
     'window'
   ],
   exports: [
@@ -31,8 +32,13 @@ CLASS({
       factory: function() { return []; }
     },
     {
-      name: 'visibleIndex_',
+      name: 'visibleStart_',
       documentation: 'The index of the leftmost visible element.',
+      defaultValue: 0
+    },
+    {
+      name: 'visibleEnd_',
+      documentation: 'The index of the rightmost visible element.',
       defaultValue: 0
     },
     {
@@ -54,7 +60,7 @@ CLASS({
   methods: [
     function init(args) {
       this.SUPER(args);
-      this.window.addEventListener('resize', this.resize);
+      this.window.addEventListener('resize', this.onResize);
     },
     {
       name: 'pushView',
@@ -72,8 +78,105 @@ CLASS({
         this.popView_(0);
       }
     },
+    function destroyChildViews_(index) {
+      while(this.views_.length > index) {
+        var obj = this.views_.pop();
+        obj.view.destroy();
+        obj.hideBinding(); // Destroys the Events.dynamic for the hidden class.
+        this.X.$(obj.id).outerHTML = '';
+      }
+    },
+
+    function renderChild(index) {
+      var obj = this.views_[index];
+      this.$.insertAdjacentHTML('beforeend', this.childHTML(index, this.views_[index]));
+      obj.view.initHTML();
+    },
+    function childHTML(index) {
+      var obj = this.views_[index];
+      var html = '<div id="' + obj.id + '" class="stackview-panel stackview-hidden">';
+      html += obj.view.toHTML();
+      html += '</div>';
+
+      // This is added as an initializer, and when the inner view is inited,
+      // the dynamic binding is created. We can't create it directly, or it
+      // will throw unsubscribe immediately, since the DOM node is not yet
+      // rendered.
+      var self = this;
+      obj.view.addInitializer(function() {
+        obj.hideBinding = self.X.dynamic(
+            function() { self.visibleStart_; self.visibleEnd_; },
+            function() {
+              var e = self.X.$(obj.id);
+              if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+              DOM.setClass(e, 'stackview-hidden',
+                  index < self.visibleStart_ || index > self.visibleEnd_);
+            }
+        ).destroy;
+      });
+
+      return html;
+    },
+    function resize() {
+      if ( ! this.$ ) return;
+      var width = this.$.offsetWidth;
+      var index = this.views_.length - 1;
+      while (index >= 0 && width >= this.views_[index].view.preferredWidth) {
+        width -= this.views_[index].view.preferredWidth;
+        index--;
+      }
+
+      index = Math.min(index + 1, this.views_.length - 1);
+      this.visibleStart_ = index;
+      // Currently visibleEnd_ is always the last view; it exists only to make
+      // sure views that are replacing each other come and go lockstep in a
+      // single frame.
+      this.visibleEnd_ = this.views_.length - 1;
+    },
+  ],
+
+  templates: [
+    function CSS() {/*
+      .stackview-container {
+        align-items: flex-start;
+        display: flex;
+        height: 100%;
+      }
+      .stackview-panel {
+        flex: 1;
+        height: 100%;
+      }
+      .stackview-hidden {
+        display: none;
+      }
+    */},
+    function toHTML() {/*
+      <div id="<%= this.id %>" <%= this.cssClassAttr() %>></div>
+      <% this.addInitializer(this.onLoad); %>
+    */},
+  ],
+
+  listeners: [
+    {
+      name: 'onLoad',
+      code: function() {
+        // Render and configure each child view that has already been loaded.
+        for (var i = 0; i < this.views_.length; i++) {
+          this.renderChild(i);
+        }
+        this.resize();
+      }
+    },
+    {
+      name: 'onResize',
+      isFramed: true,
+      code: function() {
+        this.resize();
+      }
+    },
     {
       name: 'pushView_',
+      isFramed: true,
       documentation: function() {/*
         <p>The real implementation used to push new views onto the stack.
         The index specifies the level of the stack we're operating at.
@@ -123,6 +226,7 @@ CLASS({
         if (view.stack)
           view.stack = substack;
         view.X.stack = substack;
+        view.Y.stack = substack;
 
         this.views_.push({
           id: this.nextID(),
@@ -130,101 +234,21 @@ CLASS({
         });
 
         if (this.$) this.renderChild(index + 1);
-        this.resize();
-      }
-    },
-    function popView_(index) {
-      // popView_(i) pops everything greater than and including i. Therefore,
-      // a view that calls this.stack.popView() (on the substack object created
-      // above) will be removed from the stack.
-      this.destroyChildViews_(index);
-      this.resize();
-    },
-
-    function destroyChildViews_(index) {
-      while(this.views_.length > index) {
-        var obj = this.views_.pop();
-        obj.view.destroy();
-        obj.hideBinding(); // Destroys the Events.dynamic for the hidden class.
-        this.X.$(obj.id).outerHTML = '';
-      }
-    },
-
-    function renderChild(index) {
-      var obj = this.views_[index];
-      this.$.insertAdjacentHTML('beforeend', this.childHTML(index, this.views_[index]));
-      obj.view.initHTML();
-    },
-    function childHTML(index) {
-      var obj = this.views_[index];
-      var html = '<div id="' + obj.id + '" class="stackview-panel">';
-      html += obj.view.toHTML();
-      html += '</div>';
-
-      // This is added as an initializer, and when the inner view is inited,
-      // the dynamic binding is created. We can't create it directly, or it
-      // will throw unsubscribe immediately, since the DOM node is not yet
-      // rendered.
-      var self = this;
-      obj.view.addInitializer(function() {
-        obj.hideBinding = self.X.dynamic(
-            function() { self.visibleIndex_; },
-            function() {
-              var e = self.X.$(obj.id);
-              if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-              DOM.setClass(e, 'stackview-hidden', index < self.visibleIndex_);
-            }
-        ).destroy;
-      });
-
-      return html;
-    },
-  ],
-
-  templates: [
-    function CSS() {/*
-      .stackview-container {
-        align-items: flex-start;
-        display: flex;
-      }
-      .stackview-panel {
-        flex-grow: 1;
-      }
-      .stackview-hidden {
-        display: none;
-      }
-    */},
-    function toHTML() {/*
-      <div id="<%= this.id %>" <%= this.cssClassAttr() %>></div>
-      <% this.addInitializer(this.onLoad); %>
-    */},
-  ],
-
-  listeners: [
-    {
-      name: 'onLoad',
-      code: function() {
-        // Render and configure each child view that has already been loaded.
-        for (var i = 0; i < this.views_.length; i++) {
-          this.renderChild(i);
-        }
+        this.setTimeout(this.onResize, 100);
       }
     },
     {
-      name: 'resize',
+      name: 'popView_',
       isFramed: true,
-      code: function() {
-        if ( ! this.$ ) return;
-        var width = this.$.offsetWidth;
-        var index = this.views_.length - 1;
-        while (index >= 0 && width >= this.views_[index].view.preferredWidth) {
-          width -= this.views_[index].view.preferredWidth;
-          index--;
-        }
-
-        index = Math.min(index + 1, this.views_.length - 1);
-        this.visibleIndex_ = index;
+      code: function popView_(index) {
+        // popView_(i) pops everything greater than and including i. Therefore,
+        // a view that calls this.stack.popView() (on the substack object created
+        // above) will be removed from the stack.
+        this.visibleStart_ -= this.visibleEnd_ - index + 1;
+        this.visibleEnd_ = index - 1;
+        this.destroyChildViews_(index);
+        this.setTimeout(this.onResize, 100);
       }
-    },
+    }
   ]
 });

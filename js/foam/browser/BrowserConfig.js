@@ -41,6 +41,10 @@ CLASS({
       required: true,
     },
     {
+      name: 'model',
+      defaultValueFn: function() { return this.dao.model; }
+    },
+    {
       name: 'filteredDAO',
       documentation: 'The filtered version of $$DOC{ref:".dao"} that\'s ' +
           'being viewed right now.',
@@ -100,6 +104,27 @@ CLASS({
         placeholder: 'Search',
         onKeyMode: true,
       },
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'listView',
+      defaultValue: {
+        factory_: 'foam.ui.DAOListView',
+        rowView: 'foam.ui.md.DetailView'
+      }
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'detailView',
+      documentation: 'A ViewFactory for the main detail view. You usually ' +
+          'will want to override $$DOC{ref:".innerDetailView"} rather than ' +
+          'this property.',
+      defaultValue: 'foam.ui.md.UpdateDetailView',
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'innerDetailView',
+      defaultValue: 'foam.ui.md.DetailView'
     },
     {
       name: 'menuFactory',

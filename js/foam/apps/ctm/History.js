@@ -10,20 +10,21 @@
  */
 
 CLASS({
-  name: 'History',
   package: 'foam.apps.ctm',
+  name: 'History',
 
-  imports: [ 'timer' ],
+  imports: [ 'clock$' ],
 
   properties: [
-    'timer',
-    'data',
+    {
+      name: 'data',
+    },
     {
       name: 'property',
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( old ) old.removeListener(this.onUpdate);
-        if ( nu ) nu.addListener(this.onUpdate);
+        if ( old ) old.removeListener(this.tick);
+        if ( nu ) nu.addListener(this.tick);
       }
     },
     {
@@ -39,25 +40,21 @@ CLASS({
     }
   ],
 
+  methods: [
+    function init() {
+      this.SUPER();
+      this.clock$.addListener(this.tick);
+    }
+  ],
+
   listeners: [
     {
-      name: 'onUpdate',
-      isFramed: true,
-      code: function(_, __, ___, nu) {
-        // Tick every two seconds.
-        if ( nu % 2 === 0 ) return;
-
+      name: 'tick',
+      code: function() {
         var value = this.data[this.property.name];
         if ( this.history.length === this.numItems ) this.history.shift();
         this.history.put(value);
       }
-    }
-  ],
-
-  methods: [
-    function init() {
-      this.SUPER.apply(this, arguments);
-      this.timer.second$.addListener(this.onUpdate);
     }
   ]
 });

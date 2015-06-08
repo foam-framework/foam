@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'TaskManager',
   package: 'foam.apps.ctm',
+  name: 'TaskManager',
 
   requires: [
     'Binding',
@@ -23,16 +23,19 @@ CLASS({
     'foam.apps.ctm.TaskManagerDetailView',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
-    'foam.ui.TableView',
-    'foam.util.Timer'
+    'foam.ui.TableView'
   ],
   exports: [
+    'clock$',
     'selection$',
-    'timer',
-    'tasks_ as tasks'
+    'tasks'
   ],
 
   properties: [
+    {
+      model_: 'BooleanProperty',
+      name: 'clock'
+    },
     {
       name: 'persistentContext',
       transient: true,
@@ -63,18 +66,6 @@ CLASS({
     {
       name: 'queryParser',
       factory: function() { return QueryParserFactory(this.Task, true); }
-    },
-    {
-      model_: 'foam.core.types.DAOProperty',
-      name: 'tasks',
-      dynamicValue: function() {
-        console.log('Querying');
-        return this.tasks_.where(
-            this.search ?
-                (this.queryParser.parseString(this.search) || TRUE) :
-                TRUE);
-      },
-      view: 'foam.ui.TableView'
     },
     {
       model_: 'StringProperty',
@@ -115,18 +106,8 @@ CLASS({
       view: 'foam.apps.ctm.TaskHistoryGraph'
     },
     {
-      type: 'foam.util.Timer',
-      name: 'timer',
-      transient: true,
-      factory: function() {
-        var timer = this.Timer.create();
-        timer.start();
-        return timer;
-      }
-    },
-    {
       model_: 'foam.core.types.DAOProperty',
-      name: 'tasks_',
+      name: 'tasks',
       transient: true,
       lazyFactory: function() {
         return this.EasyDAO.create({
@@ -134,6 +115,11 @@ CLASS({
           model: 'foam.apps.ctm.Task'
         });
       }
+    },
+    {
+      model_: 'foam.core.types.DAOProperty',
+      name: 'filteredTasks',
+      view: { factory_: 'foam.ui.TableView', scrollEnabled: true }
     },
     {
       name: 'taskControllers_',
@@ -161,17 +147,34 @@ CLASS({
       this.persistentContext.bindObject(
           'ctx', this.TaskManagerContext, undefined, 1);
 
-      var dao = this.tasks_;
+      Events.dynamic(
+        function() { this.search; this.tasks; }.bind(this),
+        function() {
+          this.filteredTasks = this.tasks.where(
+            this.search ?
+              (this.queryParser.parseString(this.search) || TRUE) :
+              TRUE);
+        }.bind(this));
+
+      var dao = this.filteredTasks;
       for ( var i = 0; i < 50; ++i ) {
-        var controller = this.TaskController.create({}, this.Y);
+        var controller = this.TaskController.create();
         this.taskControllers_[controller.task.id] = controller;
         dao.put(controller.task);
       }
 
-      X.timer = this.timer;
+      this.tick();
     },
     function getController(id) {
       return this.taskControllers_[id] || null;
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'tick',
+      isMerged: 2000,
+      code: function() { this.clock = ! this.clock; this.tick(); }
     }
   ]
 });

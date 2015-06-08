@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'Task',
   package: 'foam.apps.ctm',
+  name: 'Task',
 
   requires: [
     // TODO(markdittmer): This has no business being in a data model.

@@ -10,19 +10,19 @@
  */
 
 CLASS({
-  name: 'TaskPieGraph',
   package: 'foam.apps.ctm',
-  extendsModel: 'foam.ui.AbstractDAOView',
+  name: 'TaskPieGraph',
+  extendsModel: 'foam.ui.SimpleView',
 
   requires: [
     'foam.graphics.PieGraph'
   ],
-  imports: [ 'selection$' ],
+  imports: [ 'selection$', 'clock$' ],
 
   properties: [
     {
       name: 'selection',
-      postSet: function() { this.pie.paintSelf(); }
+      postSet: function() { this.paint(); }
     },
     {
       name: 'property',
@@ -52,30 +52,33 @@ CLASS({
   ],
 
   methods: [
-    function onDAOUpdate() {
-      this.gatherData();
+    function init() {
+      this.SUPER();
+      this.clock$.addListener(this.tick);
+    },
+    function initHTML() {
+      this.SUPER();
+      this.tick();
+    },
+    function paint() {
+      this.pie.view && this.pie.view.paint && this.pie.view.paint();
     }
   ],
 
   listeners: [
     {
-      name: 'gatherData',
+      name: 'tick',
       isFramed: true,
       code: function() {
         this.groups = {};
-        return this.dao.select({
+        return this.data.select({
           put: function(task) {
             this.groups[task.id] = task[this.property.name];
-          }.bind(this),
-          error: function() {
-            // TODO(markdittmer): Handle errors.
-          },
-          eof: function() {
-            this.pie.paintSelf();
-            this.pie.groups = this.groups;
-            this.pie.paintSelf();
           }.bind(this)
-        });
+        })(function() {
+          this.pie.groups = this.groups;
+          this.paint();
+        }.bind(this));
       }
     }
   ],

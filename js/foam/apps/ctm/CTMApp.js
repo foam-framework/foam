@@ -16,9 +16,7 @@ __DATA({
   includeFoamCSS: true,
   precompileTemplates: true,
   coreFiles: [
-    'firefox',
     'funcName',
-    'safari',
     'stdlib',
     'WeakMap',
     'async',
@@ -45,6 +43,7 @@ __DATA({
     'mlang',
     'mlang1',
     'mlang2',
+    'QueryParser',
     'visitor',
     'messaging',
     'dao',

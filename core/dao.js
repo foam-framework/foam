@@ -324,6 +324,38 @@ CLASS({
   }
 });
 
+
+CLASS({
+  name: 'RelationshipDAO',
+  extendsModel: 'FilteredDAO_',
+  documentation: 'Adapts a DAO based on a Relationship.',
+
+  properties: [
+    {
+      name: 'relatedProperty',
+      required: true
+    },
+    {
+      name: 'relativeID',
+      required: true
+    },
+    {
+      name: 'query',
+      lazyFactory: function() {
+        return AND(NEQ(this.relatedProperty, ''),
+            EQ(this.relatedProperty, this.relativeID));
+      }
+    },
+  ],
+
+  methods: [
+    function put(obj, sink) {
+      obj[this.relatedProperty.name] = this.relativeID;
+      this.SUPER(obj, sink);
+    }
+  ]
+});
+
 function atxn(afunc) {
   return function(ret) {
     if ( GLOBAL.__TXN__ ) {

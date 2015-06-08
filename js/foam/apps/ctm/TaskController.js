@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'TaskController',
   package: 'foam.apps.ctm',
+  name: 'TaskController',
 
   requires: [
     'foam.apps.ctm.History',
@@ -35,24 +35,21 @@ CLASS({
       'Todo',
       'Meta'
     ],
-    RANDOM_TASK: (function() {
-      var nextId = 1;
-      return function() {
-        var selfFn = arguments.callee;
-        var nextId = selfFn.nextId = (selfFn.nextId || 0) + 1;
-        var task = this.Task.create({
-          id: nextId++,
-          name: this.WORDS[Math.floor(Math.random() * this.WORDS.length)] + ' ' +
-              this.WORDS[Math.floor(Math.random() * this.WORDS.length)] + ' ' +
-              this.WORDS[Math.floor(Math.random() * this.WORDS.length)],
-          memory: Math.random() * 500,
-          cpu: Math.random() * 10,
-          network: Math.random() * 10 > 7 ? Math.floor(Math.random() * 500) : 0,
-          processId: Math.floor(Math.random() * 10000)
-        });
-        return task;
-      };
-    })()
+    RANDOM_TASK: function() {
+      var selfFn = arguments.callee;
+      var nextId = selfFn.nextId = (selfFn.nextId || 0) + 1;
+      var task = this.Task.create({
+        id: nextId,
+        name: this.WORDS[Math.floor(Math.random() * this.WORDS.length)] + ' ' +
+            this.WORDS[Math.floor(Math.random() * this.WORDS.length)] + ' ' +
+            this.WORDS[Math.floor(Math.random() * this.WORDS.length)],
+        memory: Math.random() * 500,
+        cpu: Math.random() * 10,
+        network: Math.random() * 10 > 7 ? Math.floor(Math.random() * 500) : 0,
+        processId: Math.floor(Math.random() * 10000)
+      });
+      return task;
+    }
   },
 
   properties: [

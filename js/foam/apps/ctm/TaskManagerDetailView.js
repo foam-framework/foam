@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'TaskManagerDetailView',
   package: 'foam.apps.ctm',
+  name: 'TaskManagerDetailView',
   extendsModel: 'foam.ui.DetailView',
 
   requires: [
@@ -41,7 +41,7 @@ CLASS({
           <label>Search:</label>$$search
         </tm-header>
         <tm-body>
-          $$tasks{
+          $$filteredTasks{
             editColumnsEnabled: true,
             properties$: this.data.tableColumns$
           }
@@ -91,6 +91,9 @@ CLASS({
       task-manager tm-footer actions {
         padding: 5px;
       }
+      task-manager tm-header {
+        padding-bottom: 0;
+      }
       task-manager tm-header, task-manager tm-footer {
         flex-grow: 0;
         flex-shrink: 0;
@@ -100,7 +103,7 @@ CLASS({
       }
       task-manager tm-body {
         flex-grow: 1;
-        overflow: auto;
+        overflow: hidden;
       }
       task-manager tm-footer stats,
       task-manager tm-footer stats global-stats,
@@ -123,6 +126,10 @@ CLASS({
         display: flex;
         justify-content: space-between;
         align-items: center;
+      }
+      task-manager img {
+        margin-right: 4px;
+        vertical-align: text-bottom;
       }
     */}
   ]
