@@ -51,7 +51,7 @@ CLASS({
       onDAOUpdate: 'onDAOUpdate',
       postSet: function(oldDAO, dao) {
         if (!dao) {
-          this.data = "";
+          this.data = '';
         } else if ( this.data !== dao ) {
           this.data = dao;
         }
