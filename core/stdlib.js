@@ -226,6 +226,7 @@ MODEL({
       var i = 0;
       return {
         __proto__: sink,
+        $UID: sink.$UID,
         put: function(obj, s, fc) {
           if ( i++ >= count && fc ) {
             fc.stop();
@@ -243,6 +244,7 @@ MODEL({
       var i = 0;
       return {
         __proto__: sink,
+        $UID: sink.$UID,
         put: function(obj, s, fc) {
           if ( i++ >= skip ) sink.put(obj, s, fc);
         }
@@ -253,6 +255,7 @@ MODEL({
       comparator = toCompare(comparator);
       return {
         __proto__: sink,
+        $UID: sink.$UID,
         i: 0,
         arr: [],
         put: function(obj, s, fc) {
