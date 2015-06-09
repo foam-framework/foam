@@ -42,7 +42,7 @@ CLASS({
         var Medal = foam.demos.olympics.Medal;
         return foam.dao.EasyDAO.create({
           model: Medal,
-          daoType: 'IDB',
+          daoType: /*'IDB'*/ 'MDAO',
           cache: true,
           seqNo: true,
           autoIndex: true
