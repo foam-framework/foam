@@ -22,7 +22,7 @@ CLASS({
   name: 'Medal',
 
   properties: [
-    { name: 'id', hidden: true },
+    { name: 'id', hidden: true, transient: true },
     { model_: 'IntProperty', name: 'year', shortName: 'y'  },
     { name: 'city', preSet: ps },
     {

@@ -22,6 +22,7 @@ CLASS({
 
   requires: [
     'foam.dao.EasyDAO',
+    'foam.dao.IDBDAO',
     'foam.demos.olympics.Medal',
     'foam.ui.TextFieldView',
     'foam.ui.search.GroupBySearchView',
@@ -47,7 +48,8 @@ CLASS({
         var Medal = foam.demos.olympics.Medal;
         return foam.dao.EasyDAO.create({
           model: Medal,
-          daoType: 'MDAO',
+          daoType: 'IDB',
+          cache: true,
           seqNo: true,
           autoIndex: true
         })/*.addIndex(Medal.CITY).addIndex(Medal.COLOR).addIndex(Medal.SPORT)*/;
@@ -87,10 +89,17 @@ CLASS({
       var Medal = this.Medal;
       var self  = this;
 
-      axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
-        data.limit(50000).select(function(m) { self.dao.put(self.Medal.create(m)); });
-        self.count = self.totalCount = data.length;
-        self.searchMgr.dao = self.dao;
+      this.dao.select(COUNT())(function (c) {
+        if ( ! c.count ) {
+          console.log('loading medal data');
+          axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
+            data.limit(50000).select(function(m) { self.dao.put(self.Medal.create(m)); });
+            self.count = self.totalCount = data.length;
+            self.searchMgr.dao = self.dao;
+          });
+        } else {
+          console.log('medal data already loaded');
+        }
       });
 
       this.addGroup(Medal.COLOR, null,      {size: 4});
