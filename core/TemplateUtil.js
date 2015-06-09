@@ -59,7 +59,7 @@ MODEL({
       repeat(notChars(' $\n<{')),
       optional(JSONParser.export('objAsString'))),
 
-    'simple value': seq('%%', repeat(notChars(' ()-"\n><:;,'))),
+    'simple value': seq('%%', repeat(notChars(' ()-"\n><:;,'), optional('()'))),
 
     'live value tag': seq('<%#', repeat(not('%>', anyChar)), '%>'),
 
@@ -191,7 +191,7 @@ var TemplateCompiler = {
 
     this.push(",\n'");
   },
-  'simple value': function(v) { this.push("',\n self.", v[1].join(''), ",\n'"); },
+  'simple value': function(v) { this.push("',\n self.", v[1].join(''), v[2], ",\n'"); },
   'raw values tag': function (v) { this.push("',\n", v[1].join(''), ",\n'"); },
   'values tag':     function (v) { this.push("',\nescapeHTML(", v[1].join(''), "),\n'"); },
   'live value tag': function (v) { this.push("',\nself.dynamicTag('span', function() { return ", v[1].join(''), "; }.bind(this)),\n'"); },
