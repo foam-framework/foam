@@ -223,7 +223,7 @@ CLASS({
       code: function(evt) {
         var v = this.EditColumnsView.create({
           model:               this.model,
-          properties:          this.getProperties(),
+          properties:          this.getPropertyNames(),
           availableProperties: this.model.getRuntimeProperties().filter(
               function(prop) { return !prop.hidden; })
         });
@@ -271,19 +271,19 @@ CLASS({
   ],
 
   methods: {
-    toHTML: function() {
-      // TODO: I don't think this should be height:100%, but needs to be
-      // fixed somehow.
-      return '<div tabindex="99" class="tableView" style="display:flex;width:100%;">' +
-        '<span id="' + this.id + '" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">' +
-        this.tableToHTML() +
-        '</span>' +
-          ( this.scrollbarEnabled ?
-            '<span style="width:19px;flex:none;overflow:hidden;">' +
-            this.scrollbar.toView_().toHTML() +
-            '</span>' : '' ) +
-        '</div>';
-    },
+    // toHTML: function() {
+    //   // TODO: I don't think this should be height:100%, but needs to be
+    //   // fixed somehow.
+    //   return '<div tabindex="99" class="tableView" style="display:flex;width:100%;">' +
+    //     '<span id="' + this.id + '" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">' +
+    //     this.tableToHTML() +
+    //     '</span>' +
+    //       ( this.scrollbarEnabled ?
+    //         '<span style="width:19px;flex:none;overflow:hidden;">' +
+    //         this.scrollbar.toView_().toHTML() +
+    //         '</span>' : '' ) +
+    //     '</div>';
+    // },
 
     initHTML: function() {
       this.SUPER();
@@ -339,16 +339,21 @@ CLASS({
       dao.limit(this.rows).select()(function(objs) {
         self.objs = objs;
         if ( self.$ ) {
-          self.$.innerHTML = self.tableToHTML();
+          var out = TemplateOutput.create();
+          self.tableToHTML(out);
+          self.$.innerHTML = out.toString();
           self.initHTML_();
         }
       });
     },
 
-    tableToHTML: function() {
+    tableToHTML: function(out) {
       var model = this.model;
 
-      if ( ! model ) return '<b>ERROR: Table view without model</b>';
+      if ( ! model ) {
+        out('<b>ERROR: Table view without model</b>');
+        return;
+      }
 
       if ( this.initializers_ ) {
         // console.log('Warning: TableView.tableToHTML called twice without initHTML');
@@ -356,31 +361,40 @@ CLASS({
         this.children = [];
       }
 
-      var str = [];
-      var props = [];
+      out('<table class="foamTable ' + model.name + 'Table">');
 
-      str.push('<table class="foamTable ' + model.name + 'Table">');
+      this.tableHeadToHTML(out);
+      var dataState = this.tableDataToHTML(out);
 
-      //str += '<!--<caption>' + model.plural + '</caption>';
-      str.push('<thead><tr>');
+      out('</table>');
+
+      if ( ! dataState.hselectFound ) this.hardSelection = '';
+      if ( ! dataState.sselectFound ) this.selection = '';
+
+      return out;
+    },
+
+    tableHeadToHTML: function(out) {
+      var model = this.model;
+
+      out('<thead><tr>');
       var properties = this.getProperties();
       for ( var i = 0 ; i < properties.length ; i++ ) {
-        var key  = properties[i];
-        var prop = model.getProperty(key);
+        var prop = properties[i];
 
         if ( ! prop ) continue;
 
         if ( prop.hidden ) continue;
 
-        str.push('<th style="position:relative;" scope=col ');
-        str.push('id=' +
+        out('<th style="position:relative;" scope=col ');
+        out('id=' +
                  this.on(
                    'click',
                    (function(table, prop) { return function() {
                      table.sortOrder = ( table.sortOrder === prop ) ? DESC(prop) : prop;
                      table.repaintNow();
                    };})(this, prop)));
-        if ( prop.tableWidth ) str.push(' width="' + prop.tableWidth + '"');
+        if ( prop.tableWidth ) out(' width="' + prop.tableWidth + '"');
 
         var arrow = '';
 
@@ -390,24 +404,32 @@ CLASS({
           arrow = ' <span class="indicator">&#9660;</span>';
         }
 
-        str.push('>', prop.tableLabel, arrow);
+        out('>', prop.tableLabel, arrow);
 
         if ( this.columnResizeEnabled )
-          str.push(this.columnResizerToHTML(
-            prop,
-            model.getProperty(properties[i+1])));
+          out(this.columnResizerToHTML(prop, properties[i + 1]));
 
-        str.push('</th>');
-
-        props.push(prop);
+        out('</th>');
       }
       if ( this.editColumnsEnabled ) {
-        str.push('<th width=15 id="' + this.on('click', this.onEditColumns) + '">...</th>');
+        out('<th width=15 id="' + this.on('click', this.onEditColumns) + '">...</th>');
       }
-      str.push('</tr><tr style="height:2px"></tr></thead><tbody>');
+      out('</tr><tr style="height:2px"></tr></thead>');
+
+      return out;
+    },
+
+    tableDataToHTML: function(out) {
+      out('<tbody>');
+
+      var props = this.getProperties();
       var objs = this.objs;
-      var hselectFound = false;
-      var sselectFound = false;
+      var rtn = {
+        out: out,
+        hselectFound: false,
+        sselectFound: false
+      };
+
       if ( objs ) {
         var hselect = this.hardSelection;
         var sselect = this.selection;
@@ -417,43 +439,40 @@ CLASS({
 
           if ( hselect && obj.id == hselect.id ) {
             className += " rowSelected";
-            hselectFound = true;
+            rtn.hselectFound = true;
           }
 
           if ( sselect && obj.id == sselect.id ) {
             className += " rowSoftSelected";
-            sselectFound = true;
+            rtn.sselectFound = true;
           }
 
-          str.push('<tr class="' + className + '">');
+          out('<tr class="' + className + '">');
 
           for ( var j = 0 ; j < props.length ; j++ ) {
             var prop = props[j];
 
             if ( j == props.length - 1 && this.editColumnsEnabled ) {
-              str.push('<td colspan=2 class="' + prop.name + '">');
+              out('<td colspan=2 class="' + prop.name + '">');
             } else {
-              str.push('<td class="' + prop.name + '">');
+              out('<td class="' + prop.name + '">');
             }
             var val = obj[prop.name];
             if ( prop.tableFormatter ) {
-              str.push(prop.tableFormatter(val, obj, this));
+              out(prop.tableFormatter(val, obj, this));
             } else {
-              str.push(( val == null ) ? '&nbsp;' : this.strToHTML(val));
+              out(( val == null ) ? '&nbsp;' : this.strToHTML(val));
             }
-            str.push('</td>');
+            out('</td>');
           }
 
-          str.push('</tr>');
+          out('</tr>');
         }
       }
 
-      str.push('</tbody></table>');
+      out('</tbody>');
 
-      if ( ! hselectFound ) this.hardSelection = '';
-      if ( ! sselectFound ) this.selection = '';
-
-      return str.join('');
+      return rtn;
     },
 
     columnResizerToHTML: function(prop1, prop2) {
@@ -482,13 +501,13 @@ CLASS({
           e.preventDefault();
 
           if ( toNum(col1.width) < this.MIN_COLUMN_SIZE ) {
-            this.properties = this.getProperties().deleteF(prop1.name);
+            this.properties = this.getPropertyNames().deleteF(prop1.name);
           } else {
             prop1.tableWidth = col1.width;
           }
           if ( prop2 ) {
             if ( toNum(col2.width) < this.MIN_COLUMN_SIZE ) {
-              this.properties = this.getProperties().deleteF(prop2.name);
+              this.properties = this.getPropertyNames().deleteF(prop2.name);
             } else {
               prop2.tableWidth = col2.width;
             }
@@ -562,8 +581,28 @@ CLASS({
     },
 
     getProperties: function() {
+      var model = this.model;
+      var propNames = this.getPropertyNames();
+      return propNames.map(function(name) { return model.getProperty(name); });
+    },
+
+    getPropertyNames: function() {
       return this.properties.length > 0 ? this.properties :
           this.model.tableProperties;
-    }
-  }
+    },
+
+  },
+
+  templates: [
+    function toHTML() {/*
+      <div tabindex="99" class="tableView" style="display:flex;width:100%;">
+        <span id="%%id" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">
+          <% this.tableToHTML(out); %>
+        </span>
+        <%= this.scrollbarEnabled ?
+            ('<span style="width:19px;flex:none;overflow:hidden;">' +
+            this.scrollbar.toView_().toHTML() + '</span>') : '' %>
+      </div>
+    */}
+  ]
 });
