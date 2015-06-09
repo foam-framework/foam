@@ -58,6 +58,13 @@ CLASS({
                                    ( this.data && this.data.model ); }
     },
     {
+      model_: 'StringProperty',
+      name: 'className',
+      lazyFactory: function() {
+        return 'foamTable ' + this.model.name + 'Table';
+      }
+    },
+    {
       model_: 'StringArrayProperty',
       name:  'properties',
       postSet: function() { this.paintTable(); }
@@ -79,6 +86,18 @@ CLASS({
       type:  'Comparator',
       postSet: function() { this.paintTable(); },
       defaultValue: undefined
+    },
+    {
+      name:  'sortProp',
+      defaultValue: undefined
+    },
+    {
+      name: 'ascIcon',
+      defaultValue: '&#9650;'
+    },
+    {
+      name: 'descIcon',
+      defaultValue: '&#9660;'
     },
     {
       name: 'rows',
@@ -292,20 +311,6 @@ CLASS({
   ],
 
   methods: {
-    // toHTML: function() {
-    //   // TODO: I don't think this should be height:100%, but needs to be
-    //   // fixed somehow.
-    //   return '<div tabindex="99" class="tableView" style="display:flex;width:100%;">' +
-    //     '<span id="' + this.id + '" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">' +
-    //     this.tableToHTML() +
-    //     '</span>' +
-    //       ( this.scrollbarEnabled ?
-    //         '<span style="width:19px;flex:none;overflow:hidden;">' +
-    //         this.scrollbar.toView_().toHTML() +
-    //         '</span>' : '' ) +
-    //     '</div>';
-    // },
-
     initHTML: function() {
       this.SUPER();
 
@@ -395,7 +400,7 @@ CLASS({
         this.children = [];
       }
 
-      out('<table class="foamTable ' + model.name + 'Table">');
+      out('<table' + this.cssClassAttr() + '>');
 
       this.tableHeadToHTML(out);
       var dataState = this.tableDataToHTML(out);
@@ -422,20 +427,31 @@ CLASS({
                  this.on(
                    'click',
                    (function(table, prop) { return function() {
+                     table.sortProp = prop;
                      table.sortOrder = ( table.sortOrder === prop ) ? DESC(prop) : prop;
-                     table.paintTable();
                    };})(this, prop)));
         if ( prop.tableWidth ) out(' width="' + prop.tableWidth + '"');
 
-        var arrow = '';
+        var cssClasses = [];
+        var isNumeric = IntProperty.isInstance(prop) || FloatProperty.isInstance(prop);
+        var isSorted = this.sortProp === prop;
+        if ( isNumeric )
+          cssClasses.push('numeric');
+        if ( isSorted )
+          cssClasses.push('sort');
+        if ( cssClasses.length > 0 ) out(' class="' + cssClasses.join(' ') + '"');
 
-        if ( this.sortOrder === prop ) {
-          arrow = ' <span class="indicator">&#9650;</span>';
-        } else if ( this.sortOrder && DescExpr.isInstance(this.sortOrder) && this.sortOrder.arg1 === prop ) {
-          arrow = ' <span class="indicator">&#9660;</span>';
+        out('>');
+
+        if ( isSorted ) {
+          var arrow = '<span class="indicator">' +
+              (this.sortOrder === prop ? this.ascIcon : this.descIcon) +
+              '</span>';
+          if ( isNumeric ) out(arrow + ' ' + prop.tableLabel);
+          else             out(prop.tableLabel + ' ' + arrow);
+        } else {
+          out(prop.tableLabel);
         }
-
-        out('>', prop.tableLabel, arrow);
 
         if ( this.columnResizeEnabled )
           out(this.columnResizerToHTML(prop, properties[i + 1]));
@@ -463,27 +479,30 @@ CLASS({
         var sselect = this.selection;
         for ( var i = 0 ; i < objs.length; i++ ) {
           var obj = objs[i];
-          var className = "tr-" + this.id;
+          var trClassName = "tr-" + this.id;
 
           if ( hselect && obj.id == hselect.id ) {
-            className += " rowSelected";
+            trClassName += " rowSelected";
             hselectFound = true;
           }
 
           if ( sselect && obj.id == sselect.id ) {
-            className += " rowSoftSelected";
+            trClassName += " rowSoftSelected";
             sselectFound = true;
           }
 
-          out('<tr class="' + className + '">');
+          out('<tr class="' + trClassName + '">');
 
           for ( var j = 0 ; j < props.length ; j++ ) {
             var prop = props[j];
+            var tdClassName = prop.name +
+                ((IntProperty.isInstance(prop) || FloatProperty.isInstance(prop)) ?
+                ' numeric' : '');
 
             if ( j == props.length - 1 && this.editColumnsEnabled ) {
-              out('<td colspan=2 class="' + prop.name + '">');
+              out('<td colspan=2 class="'+ tdClassName + '">');
             } else {
-              out('<td class="' + prop.name + '">');
+              out('<td class="' + tdClassName + '">');
             }
             var val = obj[prop.name];
             if ( prop.tableFormatter ) {

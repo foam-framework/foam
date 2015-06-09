@@ -335,6 +335,9 @@ option[selected]{
   background: #eee;
   border: 2px solid #f00;
 }
+.foamTable .numeric {
+  text-align: right;
+}
 
 button.actionButton {
   -webkit-box-shadow: inset 0 1px 0 0 #ffffff;
