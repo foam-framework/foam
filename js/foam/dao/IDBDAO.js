@@ -64,6 +64,14 @@ CLASS({
     init: function() {
       this.SUPER();
 
+      var propKeys = this.propKeys_ = {};
+      var properties = this.model.getRuntimeProperties()
+      for ( var i = 0 ; i < properties.length ; i++ ) {
+        var prop = properties[i];
+        propKeys[prop.name] = prop.name;
+        if ( prop.shortName ) propKeys[prop.shortName] = prop.name;
+      }
+
       if ( this.useSimpleSerialization ) {
         this.serialize = this.SimpleSerialize;
         this.deserialize = this.SimpleDeserialize;
@@ -84,7 +92,12 @@ CLASS({
     },
 
     SimpleDeserialize: function(json) {
-      return this.model.create(json);
+      var obj = this.model.create();
+      for ( var key in json ) {
+        var key2 = this.propKeys_[key];
+        if ( key2 ) obj[key2] = json[key];
+      }
+      return obj;
     },
 
     SimpleSerialize: function(obj) {
