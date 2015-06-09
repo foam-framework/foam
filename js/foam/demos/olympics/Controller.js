@@ -70,23 +70,16 @@ CLASS({
         return this.searchMgr.add(this.TextSearchView.create({model: this.Medal, richSearch: true}));
       }
     },
-    'fromYear', 'toYear', 'color', 'city', 'gender', 'discipline', 'event',
     {
       model_: 'StringProperty',
       name: 'sql',
       displayWidth: 35,
       displayHeight: 8
-    }
+    },
+    'fromYear', 'toYear', 'color', 'city', 'gender', 'discipline', 'event',
   ],
 
   methods: [
-    function addGroup(prop, opt_name, opt_map) {
-      var map = opt_map || {};
-      map.property = prop;
-      map.size = map.size || 1;
-      this[opt_name || prop.name] = this.searchMgr.add(this.GroupBySearchView.create(map));
-    },
-
     function init() {
       this.SUPER();
 
@@ -110,6 +103,13 @@ CLASS({
       this.addGroup(Medal.EVENT);
 
       this.searchMgr.predicate$.addListener(this.onPredicateChange);
+    },
+
+    function addGroup(prop, opt_name, opt_map) {
+      var map = opt_map || {};
+      map.property = prop;
+      map.size = map.size || 1;
+      this[opt_name || prop.name] = this.searchMgr.add(this.GroupBySearchView.create(map));
     }
   ],
 
@@ -120,7 +120,7 @@ CLASS({
       code: function(_, _, _, predicate) {
         this.sql = 'SELECT * FROM Medal' +
           (predicate !== TRUE ? ' WHERE (' + predicate.toSQL() + ')' : '');
-        
+
         this.filteredDAO.select(COUNT())(function(c) {
           this.count = c.count;
         }.bind(this));
