@@ -145,6 +145,10 @@ CLASS({
       defaultValueFn: function() { return this.$ && this.$.querySelector('table'); }
     },
     {
+      name: '$thead',
+      defaultValueFn: function() { return this.$ && this.$.querySelector('thead'); }
+    },
+    {
       name: '$tbody',
       defaultValueFn: function() { return this.$ && this.$.querySelector('tbody'); }
     }
@@ -200,13 +204,19 @@ CLASS({
       code: function() {
         if ( ! this.$ ) return;
 
-        var h = this.$.parentElement.offsetHeight;
-        var rows = Math.ceil((h - 47)/20)+1;
-        // TODO: update the extent somehow
-//        this.scrollbar.extent = rows;
-        this.rows = rows;
-        this.scrollbar.height = h-1;
-        this.scrollbar.paint();
+        var thead = this.$thead;
+        var tbody = this.$tbody;
+        var row = tbody && tbody.firstChild;
+        if ( row ) {
+          var containerHeight = this.$.parentElement.parentElement.offsetHeight;
+          var headHeight = thead.offsetHeight;
+          var rowHeight = row.offsetHeight;
+          var rows = Math.floor((containerHeight - headHeight) / rowHeight);
+          this.rows = rows;
+          this.scrollbar.extent = rows - 1;
+          this.scrollbar.height = containerHeight - headHeight - 1;
+          this.scrollbar.paint();
+        }
       }
     },
     {
