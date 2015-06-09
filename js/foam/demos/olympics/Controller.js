@@ -33,14 +33,8 @@ CLASS({
   exports: [ 'searchMgr' ],
 
   properties: [
-    {
-      model_: 'IntProperty',
-      name: 'count'
-    },
-    {
-      model_: 'IntProperty',
-      name: 'totalCount'
-    },
+    { model_: 'IntProperty', name: 'count' },
+    { model_: 'IntProperty', name: 'totalCount' },
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'dao',
