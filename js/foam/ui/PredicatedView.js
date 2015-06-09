@@ -49,7 +49,7 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      this.Y = this.Y.sub({DAO: this.predicatedDAO$Proxy});
+      this.Y_ = this.Y.sub({DAO: this.predicatedDAO$Proxy});
     },
     toHTML: function() { return this.view.toHTML(); },
     initHTML: function() { this.view.initHTML(); }
