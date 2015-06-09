@@ -45,8 +45,6 @@ CLASS({
 
     ROW_SELECTED: ['escape'],
 
-    // Not actually a method, but still works
-    // TODO: add 'Constants' to Model
     CLICK: "click", // event topic
 
     DOUBLE_CLICK: "double-click" // event topic
@@ -62,7 +60,7 @@ CLASS({
     {
       model_: 'StringArrayProperty',
       name:  'properties',
-      postSet: function() { this.repaint(); }
+      postSet: function() { this.paintTable(); }
     },
     {
       name:  'hardSelection',
@@ -79,7 +77,7 @@ CLASS({
     {
       name:  'sortOrder',
       type:  'Comparator',
-      postSet: function() { this.repaint(); },
+      postSet: function() { this.paintTable(); },
       defaultValue: undefined
     },
     {
@@ -87,7 +85,7 @@ CLASS({
       type:  'Int',
       defaultValue: 50,
       postSet: function(oldValue, newValue) {
-        if ( oldValue !== newValue ) this.repaint();
+        if ( oldValue !== newValue ) this.paintData();
       }
     },
     {
@@ -117,8 +115,8 @@ CLASS({
       },
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( old ) old.value$.removeListener(this.repaint);
-        if ( nu ) nu.value$.addListener(this.repaint);
+        if ( old ) old.value$.removeListener(this.paintData);
+        if ( nu ) nu.value$.addListener(this.paintData);
       }
     },
     {
@@ -141,6 +139,14 @@ CLASS({
       model_: 'ArrayProperty',
       name: 'hardSelectionListeners_',
       lazyFactory: function() { return []; }
+    },
+    {
+      name: '$table',
+      defaultValueFn: function() { return this.$ && this.$.querySelector('table'); }
+    },
+    {
+      name: '$tbody',
+      defaultValueFn: function() { return this.$ && this.$.querySelector('tbody'); }
     }
   ],
 
@@ -166,7 +172,7 @@ CLASS({
         } else {
           this.selection = this.objs[0];
         }
-        this.repaint();
+        this.paintData();
       }
     },
     {
@@ -182,7 +188,7 @@ CLASS({
         } else {
           this.selection = this.objs[0];
         }
-        this.repaint();
+        this.paintData();
       }
     }
   ],
@@ -209,14 +215,19 @@ CLASS({
       code: function() {
         this.dao.select(COUNT())(function(c) {
           this.scrollbar.size = c.count;
-          this.repaint();
+          this.paintData();
         }.bind(this));
       }
     },
     {
-      name: 'repaint',
+      name: 'paintTable',
       isFramed: true,
-      code: function() { this.repaintNow(); }
+      code: function() { this.gatherObjects(this.repaintTable); }
+    },
+    {
+      name: 'paintData',
+      isFramed: true,
+      code: function() { this.gatherObjects(this.repaintTableData); }
     },
     {
       name: 'onEditColumns',
@@ -232,7 +243,7 @@ CLASS({
           v.close();
           this.properties = v.properties;
           v.removePropertyListener('properties', arguments.callee);
-          this.repaint();
+          this.paintTable();
         }.bind(this));
 
         this.$.insertAdjacentHTML('beforebegin', v.toHTML());
@@ -319,32 +330,45 @@ CLASS({
       }
     },
 
-    /** Call repaint() instead to repaint on next animation frame. **/
-    repaintNow: function() {
-      var dao = this.dao;
-      /*
-      this.show__ = ! this.show__;
-      if ( this.show__ ) return;
-      */
-      // this.count__ = ( this.count__ || 0)+1;
-      // if ( this.count__ % 3 !== 0 ) return;
+    repaintTable: function() {
+      if ( ! this.$ ) return;
+      var table = this.$table;
+      var out = TemplateOutput.create();
 
-      if ( ! dao || ! this.$ ) return;
+      if ( ! table ) {
+        this.tableToHTML(out);
+        this.$.innerHTML = out.toString();
+      } else {
+        this.tableHeadToHTML(out);
+        this.tableDataToHTML(out);
+        table.innerHTML = out.toString();
+      }
+
+      this.initHTML_();
+    },
+
+    repaintTableData: function() {
+      var tbody = this.$tbody;
+      if ( ! tbody ) { this.repaintTable(); return; }
+      var out = TemplateOutput.create();
+
+      this.tableDataToHTML(out);
+      tbody.outerHTML = out.toString();
+
+      this.initHTML_();
+    },
+
+    gatherObjects: function(ret) {
+      var dao = this.dao;
+      if ( ! dao ) return;
 
       dao = dao.skip(this.scrollbar.value);
-
-      var self = this;
       if ( this.sortOrder ) dao = dao.orderBy(this.sortOrder);
 
       dao.limit(this.rows).select()(function(objs) {
-        self.objs = objs;
-        if ( self.$ ) {
-          var out = TemplateOutput.create();
-          self.tableToHTML(out);
-          self.$.innerHTML = out.toString();
-          self.initHTML_();
-        }
-      });
+        this.objs = objs;
+        ret.call(this, objs);
+      }.bind(this));
     },
 
     tableToHTML: function(out) {
@@ -352,7 +376,7 @@ CLASS({
 
       if ( ! model ) {
         out('<b>ERROR: Table view without model</b>');
-        return;
+        return out;
       }
 
       if ( this.initializers_ ) {
@@ -367,9 +391,6 @@ CLASS({
       var dataState = this.tableDataToHTML(out);
 
       out('</table>');
-
-      if ( ! dataState.hselectFound ) this.hardSelection = '';
-      if ( ! dataState.sselectFound ) this.selection = '';
 
       return out;
     },
@@ -392,7 +413,7 @@ CLASS({
                    'click',
                    (function(table, prop) { return function() {
                      table.sortOrder = ( table.sortOrder === prop ) ? DESC(prop) : prop;
-                     table.repaintNow();
+                     table.paintTable();
                    };})(this, prop)));
         if ( prop.tableWidth ) out(' width="' + prop.tableWidth + '"');
 
@@ -424,11 +445,8 @@ CLASS({
 
       var props = this.getProperties();
       var objs = this.objs;
-      var rtn = {
-        out: out,
-        hselectFound: false,
-        sselectFound: false
-      };
+      var hselectFound = false;
+      var sselectFound = false;
 
       if ( objs ) {
         var hselect = this.hardSelection;
@@ -439,12 +457,12 @@ CLASS({
 
           if ( hselect && obj.id == hselect.id ) {
             className += " rowSelected";
-            rtn.hselectFound = true;
+            hselectFound = true;
           }
 
           if ( sselect && obj.id == sselect.id ) {
             className += " rowSoftSelected";
-            rtn.sselectFound = true;
+            sselectFound = true;
           }
 
           out('<tr class="' + className + '">');
@@ -470,9 +488,12 @@ CLASS({
         }
       }
 
+      if ( ! hselectFound ) this.hardSelection = '';
+      if ( ! sselectFound ) this.selection = '';
+
       out('</tbody>');
 
-      return rtn;
+      return out;
     },
 
     columnResizerToHTML: function(prop1, prop2) {
