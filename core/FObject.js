@@ -25,7 +25,10 @@ var FObject = {
   name_: 'FObject',
 
   get Y() {
-    return this.Y_ || ( this.Y_ = DEBUG ? this.X.sub({}, (this.X.NAME ? this.X.NAME : '') + 'Y') : this.X.sub() );
+    return Object.prototype.hasOwnProperty.call(this, 'Y_') ?
+        this.Y_ :
+        ( this.Y_ = DEBUG ?
+        this.X.sub({}, (this.X.NAME ? this.X.NAME : '') + 'Y') : this.X.sub() );
   },
 
   replaceModel_: function(model, otherModel, X) {
@@ -613,7 +616,6 @@ var FObject = {
     var c = Object.create(this.__proto__);
     c.instance_ = {};
     c.X = this.X;
-    c.Y = this.Y;
     for ( var key in this.instance_ ) {
       var value = this[key];
       if ( value ) {
@@ -630,7 +632,6 @@ var FObject = {
     var c = Object.create(this.__proto__);
     c.instance_ = {};
     c.X = this.X;
-    c.Y = this.Y;
     for ( var key in this.instance_ ) {
       var value = this[key];
       if ( value ) {

@@ -21,7 +21,7 @@ CLASS({
 
   extendsModel: 'AbstractDAO',
 
-  requires: ["foam.dao.NullDAO"],
+  requires: [ 'foam.dao.NullDAO' ],
 
   documentation: function() {/*
     Provides a proxy to the $$DOC{ref:'.delegate'} DAO, and allows swapping out the
@@ -115,7 +115,7 @@ CLASS({
       this.SUPER(sink);
 
       // Remove last listener, so unlisten to delegate
-      if ( ! this.daoListeners_.length && this.delegate ) {
+      if ( this.daoListeners_.length === 0 && this.delegate ) {
         this.delegate.unlisten(this.relay());
       }
     },

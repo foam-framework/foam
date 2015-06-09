@@ -201,7 +201,7 @@ return JSONUtil.arrayToObjArray(X, [
   {
     name: 'Complements',
     model: 'foam.demos.graphics.Complements',
-    description: 'An animated colour wheel.  Ported from the <a href="http://elm-lang.org/edit/examples/Intermediate/Complements.elm">Elm demo</a>.  Shows use of Events.dynamic().',
+    description: 'An animated colour wheel.  Shows use of Events.dynamic().<br>Ported from the <a href="http://elm-lang.org/edit/examples/Intermediate/Complements.elm">Elm demo</a>.',
     keywords: ['animation'],
     image: 'Complements.png'
   },
@@ -347,8 +347,9 @@ return JSONUtil.arrayToObjArray(X, [
   {
     name: 'Olympic Medals',
     model: 'foam.demos.olympics.Controller',
-    description: 'Browse an olympic medal database.  With reciprocal search.',
-    keywords: [ 'DAO', 'database', 'search' ]
+    description: 'Browse an olympic medal database.  With reciprocal search.<br>Ported from the <a href="https://google.github.io/lovefield/demos/olympia_db/demo_angular.html">Lovefield demo</a>.',
+    keywords: [ 'DAO', 'database', 'search' ],
+    image: 'Olympics.png'
   },
   {
     name: 'FOAM Demo Catalog',
