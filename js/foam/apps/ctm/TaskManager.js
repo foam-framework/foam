@@ -23,7 +23,7 @@ CLASS({
     'foam.apps.ctm.TaskManagerDetailView',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
-    'foam.ui.TableView'
+    'foam.ui.md.TableView'
   ],
   exports: [
     'clock$',
@@ -119,7 +119,7 @@ CLASS({
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'filteredTasks',
-      view: { factory_: 'foam.ui.TableView', scrollEnabled: true }
+      view: { factory_: 'foam.ui.md.TableView', scrollEnabled: true }
     },
     {
       name: 'taskControllers_',
