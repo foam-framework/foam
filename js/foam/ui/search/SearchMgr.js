@@ -22,7 +22,7 @@ CLASS({
   properties: [
     {
       name: 'views',
-      factory: { return []; }
+      factory: function() { return []; }
     },
     {
       name: 'predicate',
