@@ -358,7 +358,11 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       view: 'foam.ui.StringArrayView',
       displayWidth: 70,
       lazyFactory: function() {
-        return (this.properties || this.properties_).map(function(o) { return o.name; });
+        return (this.properties || this.properties_).filter(function(o) {
+          return !o.hidden;
+        }).map(function(o) {
+          return o.name;
+        });
       },
       help: 'Properties to be displayed in table view. Defaults to all properties.',
       documentation: function() { /* Indicates the $$DOC{ref:'Property',usePlural:true} to display when viewing a list of instances
