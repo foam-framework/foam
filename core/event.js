@@ -167,7 +167,9 @@ MODEL({
       };
     },
 
-    hasListeners: function (topic) {
+    hasListeners: function (opt_topic) {
+      if ( ! opt_topic ) return !! this.subs_;
+
       console.log('TODO: haslisteners');
       // TODO:
       return true;
