@@ -22,13 +22,14 @@ CLASS({
 
   requires: [
     'MDAO',
+    'foam.core.dao.CloningDAO',
     'foam.core.dao.MigrationDAO',
     'foam.core.dao.StorageDAO',
     'foam.dao.CachingDAO',
-    'foam.dao.GUIDDAO',
-    'foam.dao.SeqNoDAO',
     'foam.dao.ContextualizingDAO',
-    'foam.core.dao.CloningDAO'
+    'foam.dao.DeDupDAO',
+    'foam.dao.GUIDDAO',
+    'foam.dao.SeqNoDAO'
   ],
 
   help: 'A facade for easy DAO setup.',
@@ -74,6 +75,12 @@ CLASS({
       name: 'cache',
       defaultValue: false,
       documentation: "Enable local caching of the $$DOC{ref:'DAO'}."
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'dedup',
+      defaultValue: false,
+      documentation: "Enable value de-duplication to save memory when caching."
     },
     {
       model_: 'BooleanProperty',
@@ -137,8 +144,8 @@ CLASS({
     }
   },
 
-  methods: {
-    init: function(args) {
+  methods: [
+    function init(args) {
       /*
         <p>On initialization, the $$DOC{ref:'.'} creates an appropriate chain of
         internal $$DOC{ref:'DAO'} instances based on the $$DOC{ref:'.'}
@@ -146,7 +153,6 @@ CLASS({
         <p>This process is transparent to the developer, and you can use your
         $$DOC{ref:'.'} like any other $$DOC{ref:'DAO'}.</p>
       */
-
       this.SUPER(args);
 
       if ( window.chrome && chrome.storage ) {
@@ -165,6 +171,7 @@ CLASS({
 
       if ( MDAO.isInstance(dao) ) {
         this.mdao = dao;
+        if ( this.dedup ) dao = this.DeDupDAO.create({delegate: dao});
       } else {
         if ( this.migrationRules && this.migrationRules.length ) {
           dao = this.MigrationDAO.create({
@@ -175,7 +182,12 @@ CLASS({
         }
         if ( this.cache ) {
           this.mdao = this.MDAO.create(params);
-          dao = this.CachingDAO.create({cache: this.mdao, src: dao, model: this.model});
+          dao = this.CachingDAO.create({
+            cache: this.dedup ?
+              this.mdao :
+              this.DeDupDAO.create({delegate: this.mdao}),
+            src: dao,
+            model: this.model});
         }
       }
 
@@ -207,7 +219,7 @@ CLASS({
       this.delegate = dao;
     },
 
-    addIndex: function() {
+    function addIndex() {
       /* <p>Only relevant if $$DOC{ref:'.cache'} is true or if $$DOC{ref:'.daoType'}
          was set to $$DOC{ref:'MDAO'}, but harmless otherwise.</p>
          <p>See $$DOC{ref:'MDAO.addIndex', text:'MDAO.addIndex()'}.</p> */
@@ -215,12 +227,12 @@ CLASS({
       return this;
     },
 
-    addRawIndex: function() {
+    function addRawIndex() {
       /* <p>Only relevant if $$DOC{ref:'.cache'} is true or if $$DOC{ref:'.daoType'}
          was set to $$DOC{ref:'MDAO'}, but harmless otherwise.</p>
          <p>See $$DOC{ref:'MDAO.addRawIndex', text:'MDAO.addRawIndex()'}. */
       this.mdao && this.mdao.addRawIndex.apply(this.mdao, arguments);
       return this;
     }
-  }
+  ]
 });
