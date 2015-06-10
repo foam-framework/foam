@@ -6,7 +6,6 @@
   table-layout:fixed;
   text-align: left;
   width: 98%;
-  cursor: pointer;
 }
 
 .mdTable thead {
@@ -19,6 +18,10 @@
   color: rgba(0, 0, 0, 0.87);
   font-size: 13px;
   font-weight: 400;
+}
+
+.mdTable tr {
+  cursor: pointer;
 }
 
 .mdTable tbody tr:hover {
@@ -41,8 +44,10 @@
   height: 48px;
 }
 
-.mdTable th {
+.mdTable thead th,
+.mdTable tbody td {
   white-space: nowrap;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 

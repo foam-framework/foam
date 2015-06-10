@@ -639,8 +639,7 @@ CLASS({
     getPropertyNames: function() {
       return this.properties.length > 0 ? this.properties :
           this.model.tableProperties;
-    },
-
+    }
   },
 
   templates: [
