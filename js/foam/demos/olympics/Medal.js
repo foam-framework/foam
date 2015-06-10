@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-function ps(_, v) { return v ? v.intern() : v ; }
-
 CLASS({
   package: 'foam.demos.olympics',
   name: 'Medal',
@@ -24,10 +22,8 @@ CLASS({
   properties: [
     { name: 'id', hidden: true },
     { model_: 'IntProperty', name: 'year', shortName: 'y'  },
-    { name: 'city', preSet: ps, shortName: 'cy' },
     {
       name: 'color',
-      preSet: ps,
       defaultValue: 'Gold',
       shortName: 'c',
       aliases: ['colour', 'medal'],
@@ -41,13 +37,14 @@ CLASS({
                o2 === 'Gold'   ?  1 : -1;
       }
     },
-    { name: 'country',     preSet: ps, shortName: 'cn' },
-    { name: 'discipline',  preSet: ps, shortName: 'd' },
-    { name: 'sport',       preSet: ps, shortName: 's' },
-    { name: 'event',       preSet: ps, shortName: 'e' },
-    { name: 'eventGender', preSet: ps, defaultValue: 'M', shortName: 'eg' },
-    { name: 'gender',      preSet: ps, defaultValue: 'Men', shortName: 'g', aliases: ['sex'] },
-    { name: 'firstName',   preSet: ps, shortName: 'fn', aliases: ['fname'] },
-    { name: 'lastName',    preSet: ps, shortName: 'ln', aliases: ['lname'] }
+    { name: 'city',        shortName: 'cy' },
+    { name: 'country',     shortName: 'cn' },
+    { name: 'discipline',  shortName: 'd' },
+    { name: 'sport',       shortName: 's' },
+    { name: 'event',       shortName: 'e' },
+    { name: 'eventGender', shortName: 'eg', defaultValue: 'M' },
+    { name: 'gender',      shortName: 'g', aliases: ['sex'], defaultValue: 'Men' },
+    { name: 'firstName',   shortName: 'f', aliases: ['fname', 'fn', 'first'] },
+    { name: 'lastName',    shortName: 'l', aliases: ['lname', 'ln', 'last'] }
   ]
 });

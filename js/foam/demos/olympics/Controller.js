@@ -43,6 +43,7 @@ CLASS({
         return foam.dao.EasyDAO.create({
           model: Medal,
           daoType: /*'IDB'*/ 'MDAO',
+          dedup: true,
           cache: true,
           seqNo: true,
           autoIndex: true
