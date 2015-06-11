@@ -12,36 +12,97 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'TableView',
-  extendsModel: 'foam.ui.TableView',
+  extendsModel: 'foam.ui.SimpleView',
+
+  requires: [
+    'foam.ui.TableView',
+    'foam.ui.md.EditColumnsView'
+  ],
 
   properties: [
     {
       model_: 'StringProperty',
-      name: 'className',
-      lazyFactory: function() {
-        return 'mdTable ' + this.model.name + 'Table';
+      name: 'title',
+      defaultValue: 'Table'
+    },
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( this.X.model || old === nu ) return;
+        if ( nu && nu.model ) this.model = nu.model;
       }
     },
     {
-      name: 'ascIcon',
-      defaultValue: '<i class="material-icons">keyboard_arrow_up</i>'
+      model_: 'StringArrayProperty',
+      name:  'properties'
     },
     {
-      name: 'descIcon',
-      defaultValue: '<i class="material-icons">keyboard_arrow_down</i>'
+      name:  'model',
+      lazyFactory: function() {
+        return this.X.model ||
+            (this.data && this.data.model);
+      }
     },
+    {
+      name: 'table',
+      lazyFactory: function() {
+        return this.TableView.create({
+          scrollEnabled: true,
+          className: 'mdTable',
+          ascIcon: '<i class="material-icons">keyboard_arrow_up</i>',
+          descIcon: '<i class="material-icons">keyboard_arrow_down</i>',
+          model$: this.model$,
+          data$: this.data$,
+          properties$: this.properties$
+        });
+      }
+    },
+    {
+      name: 'editColumns',
+      lazyFactory: function() {
+        return this.EditColumnsView.create({
+          model$: this.model$,
+          properties$: this.properties$
+        });
+      }
+    }
+  ],
+
+  methods: [
+    function getModel() {
+      return this.X.model ||
+          (this.data && this.data.model);
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onEditColumns',
+      code: function(e) {
+        if ( this.editColumns.isOpen ) return;
+        console.log('onEditColumns');
+        this.editColumns.x = e.clientX;
+        this.editColumns.y = e.clientY;
+        this.editColumns.open();
+        // if ( this.editColumns.isOpen ) return;
+        // this.editColumns.open();
+      }
+    }
   ],
 
   templates: [
     function toHTML() {/*
-      <div tabindex="99" class="mdTableView" style="display:flex;width:100%;">
-        <span id="%%id" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">
-          <% this.tableToHTML(out); %>
-        </span>
-        <%= this.scrollbarEnabled ?
-            ('<span style="width:19px;flex:none;overflow:hidden;">' +
-            this.scrollbar.toView_().toHTML() + '</span>') : '' %>
-      </div>
+      <md-table id="%%id">
+        <table-header>
+          <table-caption>%%title</table-caption>
+          <table-actions>
+            <span><i class="material-icons"
+                     id="<%= this.on('click', this.onEditColumns) %>">filter_list</i></span>
+          </table-actions>
+          %%editColumns
+        </table-header>
+        %%table
+      </md-table>
     */},
     { name: 'CSS' }
   ]

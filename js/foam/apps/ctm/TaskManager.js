@@ -18,11 +18,13 @@ CLASS({
     'PersistentContext',
     'foam.apps.ctm.Task',
     'foam.apps.ctm.TaskController',
+    'foam.apps.ctm.TaskHistoriesView',
     'foam.apps.ctm.TaskHistoryGraph',
     'foam.apps.ctm.TaskManagerContext',
     'foam.apps.ctm.TaskManagerDetailView',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
+    'foam.ui.md.SharedStyles',
     'foam.ui.md.TableView'
   ],
   exports: [
@@ -76,34 +78,7 @@ CLASS({
     {
       name: 'selection',
       defaultValue: null,
-      transient: true,
-      postSet: function(old, nu) {
-        if ( old === nu ) return;
-        if ( nu ) {
-          var controller = this.getController(nu.id);
-          this.memory = controller.memory.history;
-          this.cpu = controller.cpu.history;
-          this.network = controller.network.history;
-        }
-      }
-    },
-    {
-      model_: 'ArrayProperty',
-      name: 'memory',
-      transient: true,
-      view: 'foam.apps.ctm.TaskHistoryGraph'
-    },
-    {
-      model_: 'ArrayProperty',
-      name: 'cpu',
-      transient: true,
-      view: 'foam.apps.ctm.TaskHistoryGraph'
-    },
-    {
-      model_: 'ArrayProperty',
-      name: 'network',
-      transient: true,
-      view: 'foam.apps.ctm.TaskHistoryGraph'
+      transient: true
     },
     {
       model_: 'foam.core.types.DAOProperty',
@@ -141,8 +116,7 @@ CLASS({
     function init() {
       this.SUPER.apply(this, arguments);
 
-      var viewModel = this.TaskManagerDetailView;
-      this.X.registerModel(viewModel, 'foam.ui.TaskManagerDetailView');
+      this.X.registerModel(this.TaskManagerDetailView, 'foam.ui.TaskManagerDetailView');
 
       this.persistentContext.bindObject(
           'ctx', this.TaskManagerContext, undefined, 1);
@@ -162,6 +136,8 @@ CLASS({
         this.taskControllers_[controller.task.id] = controller;
         dao.put(controller.task);
       }
+
+      this.SharedStyles.create();
 
       this.tick();
     },

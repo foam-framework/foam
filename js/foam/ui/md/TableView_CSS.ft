@@ -1,11 +1,44 @@
 @import url(http://fonts.googleapis.com/css?family=Roboto:500,400);
 @import url(https://fonts.googleapis.com/icon?family=Material+Icons);
 
+md-table {
+  display: flex;
+  flex-direction: column;
+}
+
+md-table table-caption {
+  display: block;
+  font-size: 20px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+md-table table-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+md-table table-header table-actions {
+  display: block;
+  padding-right: 14px;
+}
+
+md-table table-header table-actions i {
+  cursor: pointer;
+  display: block;
+  margin-left: 24px;
+  font-size: 24px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
 .mdTable {
+  border-collapse: collapse;
   font-family: 'Roboto', sans-serif;
   table-layout:fixed;
   text-align: left;
-  width: 98%;
+  width: 100%;
 }
 
 .mdTable thead {
@@ -20,7 +53,16 @@
   font-weight: 400;
 }
 
-.mdTable tr {
+.mdTable tbody {
+  border-top: solid 1px #DDDDDD;
+}
+
+.mdTable tbody tr {
+  border-bottom: solid 1px #DDDDDD;
+  cursor: pointer;
+}
+
+.mdTable thead tr th {
   cursor: pointer;
 }
 

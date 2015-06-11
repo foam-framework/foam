@@ -40,9 +40,9 @@ CLASS({
         <tm-header>
           <label>Search:</label>$$search
         </tm-header>
-        <tm-body>
+        <tm-body class="md-card" style="display: flex">
           $$filteredTasks{
-            editColumnsEnabled: true,
+            title: 'Tasks',
             properties$: this.data.tableColumns$
           }
         </tm-body>
@@ -53,11 +53,6 @@ CLASS({
               $$tasks{ model_: this.TaskPieGraph, property: this.Task.CPU }
               $$tasks{ model_: this.TaskPieGraph, property: this.Task.NETWORK }
             </global-stats>
-            <local-stats id="<%= this.setClass('hidden', function() { return !this.data || !this.data.selection; }.bind(this)) %>">
-              $$memory{ width: 100, height: 50 }
-              $$cpu{ width: 100, height: 50 }
-              $$network{ width: 100, height: 50 }
-            </local-stats>
           </stats>
           <actions>
             <a target="_blank" href="chrome://memory-redirect">Stats for nerds</a>
@@ -85,9 +80,11 @@ CLASS({
         display: block;
       }
       task-manager tm-header,
-      task-manager tm-body,
       task-manager tm-footer {
         padding: 20px;
+      }
+      task-manager tm-body {
+        display: flex;
       }
       task-manager tm-footer global-stats,
       task-manager tm-footer local-stats,

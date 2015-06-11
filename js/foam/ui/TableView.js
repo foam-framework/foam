@@ -160,6 +160,14 @@ CLASS({
       lazyFactory: function() { return []; }
     },
     {
+      name: '$container',
+      defaultValueFn: function() { return this.$ && this.$.parentElement.parentElement; },
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        this.onResize();
+      }
+    },
+    {
       name: '$table',
       defaultValueFn: function() { return this.$ && this.$.querySelector('table'); }
     },
@@ -227,7 +235,7 @@ CLASS({
         var tbody = this.$tbody;
         var row = tbody && tbody.firstChild;
         if ( row ) {
-          var containerHeight = this.$.parentElement.parentElement.offsetHeight;
+          var containerHeight = this.$container.offsetHeight;
           var headHeight = thead.offsetHeight;
           var rowHeight = row.offsetHeight;
           var rows = Math.floor((containerHeight - headHeight) / rowHeight);
