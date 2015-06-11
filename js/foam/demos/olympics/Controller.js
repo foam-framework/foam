@@ -53,7 +53,7 @@ CLASS({
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'filteredDAO',
-      view: { factory_: 'foam.ui.TableView', scrollEnabled: true, xxxeditColumnsEnabled: true, xxxrows: 30}
+      view: { factory_: 'foam.ui.md.TableView', scrollEnabled: true, xxxeditColumnsEnabled: true, xxxrows: 30}
     },
     {
       name: 'searchMgr',
@@ -142,7 +142,7 @@ CLASS({
   templates: [
     function CSS() {/*
       html { overflow: hidden; }
-      .tableView {
+      .tableView, .mdTableView {
         outline: none;
         height: 93%;
       }
