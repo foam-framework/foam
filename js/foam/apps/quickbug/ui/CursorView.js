@@ -30,7 +30,7 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <span id="%%id" tabindex=1>$$prev{model_: 'foam.apps.quickbug.ui.ActionLink'} $$pos{mode: 'read-only'} of $$total{mode: 'read-only'} $$next{model_: 'foam.apps.quickbug.ui.ActionLink'} $$backToList{model_: 'foam.apps.quickbug.ui.ActionLink'}</span>
+      <span id="%%id" tabindex=1>$$prev{model_: 'foam.ui.ActionLink'} $$pos{mode: 'read-only'} of $$total{mode: 'read-only'} $$next{model_: 'foam.ui.ActionLink'} $$backToList{model_: 'foam.ui.ActionLink'}</span>
     */}
   ]
 });
