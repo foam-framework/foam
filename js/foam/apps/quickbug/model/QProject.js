@@ -365,6 +365,9 @@ CLASS({
           extendsModel: 'foam.apps.quickbug.model.imported.Issue',
 
           name: 'QIssue',
+          requires: [
+            'foam.ui.CSSImageBooleanView',
+          ],
 
           tableProperties: [
             'starred',
@@ -670,7 +673,7 @@ CLASS({
               tableLabel: '',
               tableWidth: '18px',
               tableFormatter: function(val, obj, tableView) {
-                var view = CSSImageBooleanView.create({
+                var view = obj.CSSImageBooleanView.create({
                   className: 'star-image',
                   data: obj.starred
                 });
@@ -684,7 +687,7 @@ CLASS({
                 tableView.addChild(view);
                 return view.toHTML();
               },
-              view: { factory_: 'CSSImageBooleanView', className: 'star-image' },
+              view: { factory_: 'foam.ui.CSSImageBooleanView', className: 'star-image' },
               help: 'Whether the authenticated user has starred this issue.'
             },
             {
