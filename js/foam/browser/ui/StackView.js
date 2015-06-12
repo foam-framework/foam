@@ -42,16 +42,6 @@ CLASS({
       defaultValue: 0
     },
     {
-      name: 'preferredWidth',
-      getter: function() {
-        var total = 0;
-        for (var i = 0; i < this.views_.length; i++) {
-          total += this.views_[i].preferredWidth;
-        }
-        return total;
-      }
-    },
-    {
       name: 'className',
       defaultValue: 'stackview-container'
     },
@@ -97,6 +87,7 @@ CLASS({
       var html = '<div id="' + obj.id + '" class="stackview-panel stackview-hidden">';
       html += obj.view.toHTML();
       html += '</div>';
+      html += '<div id="' + obj.id + '-edge" class="stackview-edge"></div>';
 
       // This is added as an initializer, and when the inner view is inited,
       // the dynamic binding is created. We can't create it directly, or it
@@ -111,6 +102,12 @@ CLASS({
               if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
               DOM.setClass(e, 'stackview-hidden',
                   index < self.visibleStart_ || index > self.visibleEnd_);
+
+              e = self.X.$(obj.id + '-edge');
+              if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+              // >= visibleEnd here, because the last edge should be hidden.
+              DOM.setClass(e, 'stackview-hidden',
+                  index < self.visibleStart_ || index >= self.visibleEnd_);
             }
         ).destroy;
       });
@@ -162,7 +159,7 @@ CLASS({
       }
 
       for (i = this.visibleEnd_; i >= this.visibleStart_; i--) {
-        this.$.children[i].style.width = sizes[i];
+        this.X.$(this.views_[i].id).style.width = sizes[i];
       }
     },
   ],
@@ -179,6 +176,15 @@ CLASS({
         background-color: #fff;
         height: 100%;
       }
+
+      .stackview-edge {
+        background-color: #000;
+        height: 100%;
+        margin-left: -1px;
+        opacity: 0.1;
+        width: 1px;
+      }
+
       .stackview-hidden {
         display: none;
       }

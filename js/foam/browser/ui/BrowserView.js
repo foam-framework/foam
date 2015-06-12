@@ -224,11 +224,14 @@ CLASS({
             height: 100%;
             top: 0;
             left: 0;
+            overflow-y: auto;
             width: 300px;
           }
 
           .browser-body {
             flex-grow: 1;
+            overflow-x: hidden;
+            overflow-y: auto;
           }
         */},
         function toHTML() {/*
