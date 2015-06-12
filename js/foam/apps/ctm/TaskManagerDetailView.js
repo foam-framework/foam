@@ -22,6 +22,15 @@ CLASS({
 
   properties: [
     {
+      name: 'hardSelection',
+      defaultValue: null,
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        var taskLabel = this.$taskLabel;
+        if ( taskLabel ) taskLabel.innerHTML = nu ? nu.name : 'Task';
+      }
+    },
+    {
       model_: 'IntProperty',
       name: 'numHistoryItems',
       defaultValue: 64
@@ -31,86 +40,195 @@ CLASS({
       name: 'showActions',
       defaultValue: false,
       preSet: function() { return false; }
+    },
+    {
+      name: '$taskLabel',
+      defaultValueFn: function() {
+        return this.$ && this.$.querySelector('#' + this.id + '-task-label');
+      }
     }
   ],
 
   templates: [
     function toHTML() {/*
-      <task-manager>
-        <tm-header>
-          <label>Search:</label>$$search
+      <task-manager id="%%id">
+        <tm-header class="md-card" style="display: flex">
+          <header-text>Task Manager</header-text>
+          <search-box>
+            <chrome>
+              <i class="material-icons search">search</i>
+            </chrome>
+            $$search{ height: 30 }
+          </search-box>
         </tm-header>
-        <tm-body class="md-card" style="display: flex">
+        <tm-body class="md-card-shell" style="display: flex">
           $$filteredTasks{
             title: 'Tasks',
+            editColumnsEnabled: true,
             properties$: this.data.tableColumns$
           }
         </tm-body>
-        <tm-footer>
+        <tm-footer class="md-card">
           <stats>
             <global-stats>
-              $$tasks{ model_: this.TaskPieGraph, property: this.Task.MEMORY }
-              $$tasks{ model_: this.TaskPieGraph, property: this.Task.CPU }
-              $$tasks{ model_: this.TaskPieGraph, property: this.Task.NETWORK }
+              <label>System</label>
+              <stats>
+                <stat>
+                  <label>Memory</label>
+                  <stat-data>$$tasks{ model_: this.TaskPieGraph, property: this.Task.MEMORY }</stat-data>
+                </stat>
+                <stat>
+                  <label>CPU</label>
+                  <stat-data>$$tasks{ model_: this.TaskPieGraph, property: this.Task.CPU }</stat-data>
+                </stat>
+                <stat>
+                  <label>Network</label>
+                  <stat-data>$$tasks{ model_: this.TaskPieGraph, property: this.Task.NETWORK }</stat-data>
+                </stat>
+              </stats>
             </global-stats>
+            <stats-separator id="<%= this.setClass('hidden', function() { return !this.data || !this.data.hardSelection; }.bind(this)) %>"></stats-separator>
+            <local-stats id="<%= this.setClass('hidden', function() { return !this.data || !this.data.hardSelection; }.bind(this)) %>">
+              <label id="%%id-task-label">Task</label>
+              <stats>
+                <stat>
+                  <label>Memory</label>
+                  <stat-data>$$memory{ width: 80, height: 40 }</stat-data>
+                </stat>
+                <stat>
+                  <label>CPU</label>
+                  <stat-data>$$cpu{ width: 80, height: 40 }</stat-data>
+                </stat>
+                <stat>
+                  <label>Network</label>
+                  <stat-data>$$network{ width: 100, height: 50 }</stat-data>
+                </stat>
+              </stats>
+            </local-stats>
           </stats>
           <actions>
             <a target="_blank" href="chrome://memory-redirect">Stats for nerds</a>
-            $$kill
           </actions>
         </tm-footer>
       </task-manager>
     */},
     function CSS() {/*
+
       body, task-manager {
         width: 100%;
         height: 100%;
+        color: rgba(0, 0, 0, 0.87);
+        font-family: 'Roboto', sans-serif;
+        font-size: 13px;
+        font-weight: 400;
       }
       task-manager {
-        display: flex;
         flex-direction: column;
       }
       task-manager .tableView:focus,
       task-manager .mdTableView:focus {
         outline: none;
       }
-      task-manager tm-header,
-      task-manager tm-body,
       task-manager tm-footer {
         display: block;
       }
       task-manager tm-header,
       task-manager tm-footer {
-        padding: 20px;
-      }
-      task-manager tm-body {
-        display: flex;
-      }
-      task-manager tm-footer global-stats,
-      task-manager tm-footer local-stats,
-      task-manager tm-footer actions {
-        padding: 5px;
-      }
-      task-manager tm-header {
-        padding-bottom: 0;
-      }
-      task-manager tm-header, task-manager tm-footer {
         flex-grow: 0;
         flex-shrink: 0;
       }
-      task-manager tm-header label {
-        padding: 0px 5px 0px 0px;
+      task-manager tm-header {
+        height: 64px;
+        justify-content: space-between;
+        align-items: center;
+      }
+      task-manager tm-header header-text {
+        font-size: 30px;
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.87);
+      }
+      task-manager tm-header search-box {
+        position: relative;
+      }
+      task-manager tm-header search-box input {
+        color: rgba(0, 0, 0, 0.54);
+        font-size: 13px;
+        font-weight: 400;
+        padding-left: 26px;
+        height: 26px;
+        border: 1px solid rgba(0, 0, 0, 0.27);
+        border-radius: 2px;
+      }
+      task-manager tm-header search-box input:focus {
+        border: 1px solid rgba(0, 0, 0, 0.54);
+        outline: none;
+      }
+      task-manager tm-header search-box chrome {
+        position: absolute;
+        top: 2px;
+        left: 4px;
+      }
+      task-manager tm-header search-box i,
+      task-manager tm-header search-box i.material-icons {
+        color: rgba(0, 0, 0, 0.27);
+      }
+      task-manager tm-header search-box i.material-icons {
+        font-size: 20px;
       }
       task-manager tm-body {
         flex-grow: 1;
         overflow: hidden;
       }
+      task-manager,
+      task-manager tm-body,
+      task-manager tm-header,
+      task-manager tm-footer actions,
       task-manager tm-footer stats,
       task-manager tm-footer stats global-stats,
-      task-manager tm-footer stats local-stats {
+      task-manager tm-footer stats local-stats,
+      task-manager tm-footer stats stats,
+      task-manager tm-footer stats stats stat,
+      task-manager tm-footer stats stats stat stat-data {
         display: flex;
+      }
+      task-manager tm-footer stats {
+        align-items: stretch;
         justify-content: space-around;
+      }
+      task-manager tm-footer stats global-stats,
+      task-manager tm-footer stats local-stats {
+        align-items: stretch;
+        justify-content: stretch;
+      }
+      task-manager tm-footer stats label {
+        flex-grow: 0;
+        padding: 5px;
+        font-weight: bold;
+        text-align: center;
+      }
+      task-manager tm-footer stats stats {
+        flex-grow: 1;
+      }
+      task-manager tm-footer stats stats stat {
+        flex-grow: 1;
         align-items: center;
+        justify-content: stretch;
+        flex-direction: column;
+      }
+      task-manager tm-footer stats stat label {
+        flex-grow: 0;
+        font-weight: normal;
+      }
+      task-manager tm-footer stats global-stats,
+      task-manager tm-footer stats local-stats {
+        flex-grow: 1;
+        flex-direction: column;
+        justify-content: stretch;
+      }
+      task-manager tm-footer stats stat stat-data {
+        flex-grow: 1;
+        flex-direction: column;
+        justify-content: center;
       }
       task-manager tm-footer stats {
         flex-wrap: wrap;
@@ -119,11 +237,17 @@ CLASS({
       task-manager tm-footer stats local-stats {
         flex-grow: 1;
       }
-      task-manager tm-footer stats local-stats.hidden {
-        visibility: hidden;
+      task-manager tm-footer stats .hidden {
+        display: none;
+      }
+      task-manager tm-footer stats stats-separator {
+        display: block;
+        flex-grow: 0;
+        flex-shrink: 0;
+        border-left: 1px solid rgba(0, 0, 0, 0.27);
+        width: 0px;
       }
       task-manager tm-footer actions {
-        display: flex;
         justify-content: space-between;
         align-items: center;
       }

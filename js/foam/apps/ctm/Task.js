@@ -88,19 +88,20 @@ CLASS({
 
   actions: [
     {
+      name: 'open',
+      label: 'open_in_browser',
+      action: function() {
+        // TODO(markdittmer): Implement this.
+        console.log('Open process', this.id);
+      }
+    },
+    {
       name: 'kill',
-      label: 'End Process',
+      label: 'delete',
       action: function() {
         // TODO(markdittmer): Implement this.
         console.log('Kill process', this.id);
       }
     },
-    {
-      name: 'open',
-      action: function() {
-        // TODO(markdittmer): Implement this.
-        console.log('Open process', this.id);
-      }
-    }
   ]
 });

@@ -17,11 +17,19 @@ CLASS({
   requires: [
     'foam.graphics.PieGraph'
   ],
-  imports: [ 'selection$', 'clock$' ],
+  imports: [
+    'hardSelection$',
+    'softSelection$',
+    'clock$'
+  ],
 
   properties: [
     {
-      name: 'selection',
+      name: 'hardSelection',
+      postSet: function() { this.paint(); }
+    },
+    {
+      name: 'softSelection',
       postSet: function() { this.paint(); }
     },
     {
@@ -39,11 +47,12 @@ CLASS({
           width: 100,
           height: 100,
           toColor: function(id, i, n) {
-            if ( this.selection ) {
-              if ( this.selection.id == id ) return 'red';
-              else                            return 'lightgray';
+            if ( this.hardSelection && this.hardSelection.id == id ) {
+              return 'rgb(72,131,239)';
+            } else if ( this.softSelection && this.softSelection.id == id ) {
+              return 'rgb(232,240,253)';
             } else {
-              return this.pie.toHSLColor(i, n);
+              return 'lightgray';
             }
           }.bind(this)
         }, this.Y);

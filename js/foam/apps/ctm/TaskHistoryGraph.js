@@ -47,7 +47,10 @@ CLASS({
         return this.Graph.create({
           width: this.width,
           height: this.height,
-          maxValue: this.maxValue
+          maxValue: this.maxValue,
+          graphColor: 'lightgray',
+          axisColor: 'rgb(137,137,137)',
+          axisSize: 1
         });
       }
     }

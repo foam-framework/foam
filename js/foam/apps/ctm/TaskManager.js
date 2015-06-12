@@ -24,12 +24,14 @@ CLASS({
     'foam.apps.ctm.TaskManagerDetailView',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
+    'foam.ui.md.ActionLabel',
     'foam.ui.md.SharedStyles',
     'foam.ui.md.TableView'
   ],
   exports: [
     'clock$',
-    'selection$',
+    'hardSelection$',
+    'softSelection$',
     'tasks'
   ],
 
@@ -73,12 +75,48 @@ CLASS({
       model_: 'StringProperty',
       name: 'search',
       transient: true,
-      view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true }
+      view: {
+        factory_: 'foam.ui.TextFieldView',
+        placeholder: 'Search',
+        onKeyMode: true
+      }
     },
     {
-      name: 'selection',
+      name: 'hardSelection',
+      defaultValue: null,
+      transient: true,
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( nu ) {
+          var controller = this.getController(nu.id);
+          this.memory = controller.memory.history;
+          this.cpu = controller.cpu.history;
+          this.network = controller.network.history;
+        }
+      }
+    },
+    {
+      name: 'softSelection',
       defaultValue: null,
       transient: true
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'memory',
+      transient: true,
+      view: 'foam.apps.ctm.TaskHistoryGraph'
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'cpu',
+      transient: true,
+      view: 'foam.apps.ctm.TaskHistoryGraph'
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'network',
+      transient: true,
+      view: 'foam.apps.ctm.TaskHistoryGraph'
     },
     {
       model_: 'foam.core.types.DAOProperty',
@@ -103,20 +141,12 @@ CLASS({
     }
   ],
 
-  actions: [
-    {
-      name: 'kill',
-      label: 'End Process',
-      isEnabled: function() { return !!this.selection; },
-      action: function() { this.selection.kill(); }
-    }
-  ],
-
   methods: [
     function init() {
       this.SUPER.apply(this, arguments);
 
       this.X.registerModel(this.TaskManagerDetailView, 'foam.ui.TaskManagerDetailView');
+      this.X.registerModel(this.ActionLabel.xbind({ extraClassName: 'material-icons' }), 'foam.ui.ActionButton');
 
       this.persistentContext.bindObject(
           'ctx', this.TaskManagerContext, undefined, 1);

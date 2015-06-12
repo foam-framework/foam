@@ -18,8 +18,14 @@ CLASS({
     'foam.ui.TableView',
     'foam.ui.md.EditColumnsView'
   ],
+  imports: [ 'hardSelection$' ],
 
   properties: [
+    {
+      model_: 'BooleanProperty',
+      name: 'editColumnsEnabled',
+      defaultValue: false
+    },
     {
       model_: 'StringProperty',
       name: 'title',
@@ -44,6 +50,29 @@ CLASS({
       }
     },
     {
+      name: 'hardSelection',
+      defaultValue: null,
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( nu ) this.actions = this.hardSelection.model_.actions.concat(this.model_.actions);
+        else      this.actions = this.model_.actions;
+
+        if ( ! this.$ ) return;
+        this.updateTableCaption();
+        this.updateTableActions();
+        this.initInnerHTML();
+      }
+    },
+    {
+      model_: 'ArrayProperty',
+      subType: 'Action',
+      name: 'actions',
+      lazyFactory: function() {
+        return this.hardSelection ? this.hardSelection.model_.actions :
+            this.model_.actions;
+      }
+    },
+    {
       name: 'table',
       lazyFactory: function() {
         return this.TableView.create({
@@ -58,7 +87,7 @@ CLASS({
       }
     },
     {
-      name: 'editColumns',
+      name: 'columnSelectionView',
       lazyFactory: function() {
         return this.EditColumnsView.create({
           model$: this.model$,
@@ -72,20 +101,56 @@ CLASS({
     function getModel() {
       return this.X.model ||
           (this.data && this.data.model);
+    },
+    function updateTableCaption() {
+      // TODO(markdittmer): Remove task visualization view(s).
+
+      var out = TemplateOutput.create(this);
+      this.tableCaptionHTML(out);
+      this.$.querySelector('table-caption').innerHTML = out.toString();
+    },
+    function updateTableActions() {
+      var children = this.children;
+      for ( var i = 0; i < children.length; ++i ) {
+        var child = children[i];
+        if ( Action.isInstance(child.action) ) {
+          this.removeChild(child);
+        }
+      }
+
+      var out = TemplateOutput.create(this);
+      this.tableActionsHTML(out);
+      this.$.querySelector('table-actions').innerHTML = out.toString();
+    },
+    function createActionView(action, args) {
+      var view = this.SUPER(action, args);
+      view.data = (this.hardSelection && ! this.isViewAction(action)) ? this.hardSelection : this;
+      return view;
+    },
+    function isViewAction(action) {
+      return this.model_.actions.some(function(a) { return a === action; });
     }
   ],
 
-  listeners: [
+  actions: [
     {
-      name: 'onEditColumns',
-      code: function(e) {
-        if ( this.editColumns.isOpen ) return;
-        console.log('onEditColumns');
-        this.editColumns.x = e.clientX;
-        this.editColumns.y = e.clientY;
-        this.editColumns.open();
-        // if ( this.editColumns.isOpen ) return;
-        // this.editColumns.open();
+      name: 'clearSelection',
+      label: 'clear_all',
+      isAvailable: function() {
+        return !!this.hardSelection;
+      },
+      action: function(X, action, e) {
+        this.hardSelection = null;
+      }
+    },
+    {
+      name: 'editColumns',
+      label: 'more_vert',
+      action: function(X, action, e) {
+        if ( this.columnSelectionView.isOpen ) return;
+        this.columnSelectionView.x = e.clientX;
+        this.columnSelectionView.y = e.clientY;
+        this.columnSelectionView.open();
       }
     }
   ],
@@ -93,17 +158,31 @@ CLASS({
   templates: [
     function toHTML() {/*
       <md-table id="%%id">
-        <table-header>
-          <table-caption>%%title</table-caption>
-          <table-actions>
-            <span><i class="material-icons"
-                     id="<%= this.on('click', this.onEditColumns) %>">filter_list</i></span>
-          </table-actions>
-          %%editColumns
+        <table-header id="<%= this.setClass('selection', function() { return !!this.hardSelection; }) %>">
+          <table-caption>
+            <% this.tableCaptionHTML(out) %>
+          </table-caption>
+          <table-actions><% this.tableActionsHTML(out) %></table-actions>
+          %%columnSelectionView
         </table-header>
         %%table
       </md-table>
     */},
+    function tableCaptionHTML() {/*
+      <% if ( this.title && ! this.hardSelection ) { %>
+        %%title
+      <% } else if ( this.hardSelection ) { %>
+        1 item selected
+      <% } %>
+    */},
+    function tableActionsHTML() {/*<%
+        for ( var i = 0; i < this.actions.length; ++i ) {
+          var action = this.actions[i];
+          var view = this.createActionView(action);
+          this.addChild(view);
+          out(view);
+        }
+      %>*/},
     { name: 'CSS' }
   ]
 });

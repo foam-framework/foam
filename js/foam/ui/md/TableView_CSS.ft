@@ -18,6 +18,19 @@ md-table table-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 64px;
+}
+
+md-table table-header.selection {
+  background: rgb(232,240,253);
+}
+
+md-table table-header table-caption {
+  padding-left: 24px;
+}
+
+md-table table-header.selection table-caption {
+  color: rgb(72,131,239);
 }
 
 md-table table-header table-actions {
@@ -62,11 +75,16 @@ md-table table-header table-actions i {
   cursor: pointer;
 }
 
+tr:first-child {
+  padding-left: 24px;
+}
+
 .mdTable thead tr th {
   cursor: pointer;
 }
 
-.mdTable tbody tr:hover {
+.mdTable tbody tr:hover,
+.mdTable tbody tr.rowSoftSelected {
   background: #EEEEEE;
 }
 
@@ -104,11 +122,16 @@ md-table table-header table-actions i {
   color: rgba(0, 0, 0, 0.26);
 }
 
-.mdTable tbody tr td img {
-  padding: 0px 24px;
+i.material-icons.actionLabel.available {
+  display: inline-block;
+}
+
+i.material-icons.actionLabel {
+  display: none;
 }
 
 .mdTable thead tr th,
 .mdTable tbody tr td {
+  padding-left: 24px;
   padding-right: 24px;
 }
