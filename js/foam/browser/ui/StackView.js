@@ -42,16 +42,6 @@ CLASS({
       defaultValue: 0
     },
     {
-      name: 'preferredWidth',
-      getter: function() {
-        var total = 0;
-        for (var i = 0; i < this.views_.length; i++) {
-          total += this.views_[i].preferredWidth;
-        }
-        return total;
-      }
-    },
-    {
       name: 'className',
       defaultValue: 'stackview-container'
     },
