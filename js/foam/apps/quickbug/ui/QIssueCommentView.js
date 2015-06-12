@@ -21,7 +21,7 @@ CLASS({
   extendsModel: 'foam.ui.DetailView',
 
   requires: [
-    'foam.apps.quickbug.ui.QIssueComment',
+    'foam.apps.quickbug.model.QIssueComment',
     'foam.apps.quickbug.ui.IssueLink'
   ],
 
@@ -30,27 +30,20 @@ CLASS({
   ],
 
   properties: [
-    { name: 'model', factory: function() { return this.QIssueComment; } }
-  ],
-
-  methods: {
-    init: function() {
-      this.data$.addListener(this.newData);
-      this.newData();
-      this.SUPER();
-    },
-    destroy: function() {
-      this.data = '';
-      this.data$.removeListener(this.newData);
+    { name: 'model', factory: function() { return this.QIssueComment; } },
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( old ) old.removeListener(this.update);
+        if ( nu ) nu.addListener(this.update);
+      }
     }
-  },
+  ],
 
   listeners: [
     {
       name: 'newData',
       code: function(src, topic, old, nu) {
-        if ( old ) old.removeListener(this.update);
-        if ( nu ) nu.addListener(this.update);
       }
     },
     {
