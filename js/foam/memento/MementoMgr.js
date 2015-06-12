@@ -42,7 +42,7 @@ CLASS({
       isEnabled:   function() { return this.stack.length; },
       action:      function() {
       this.dumpState('preBack');
-        this.redo.push(this.memento.get());
+        this.redo.push(this.mementoValue.get());
         this.restore(this.stack.pop());
         this.propertyChange('stack', '', this.stack);
         this.propertyChange('redo', '', this.redo);
@@ -57,7 +57,7 @@ CLASS({
       isEnabled:   function() { return this.redo.length; },
       action:      function() {
       this.dumpState('preForth');
-        this.remember(this.memento.get());
+        this.remember(this.mementoValue.get());
         this.restore(this.redo.pop());
         this.propertyChange('stack', '', this.stack);
         this.propertyChange('redo', '', this.redo);
@@ -84,7 +84,7 @@ CLASS({
     init: function() {
       this.SUPER();
 
-      this.memento.addListener(this.onMementoChange);
+      this.mementoValue.addListener(this.onMementoChange);
     },
 
     remember: function(value) {
@@ -97,7 +97,7 @@ CLASS({
     restore: function(value) {
       this.dumpState('restore');
       this.ignore_ = true;
-      this.memento.set(value);
+      this.mementoValue.set(value);
       this.ignore_ = false;
     },
 

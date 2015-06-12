@@ -41,16 +41,6 @@ CLASS({
     { name: 'dao' }
   ],
 
-  methods: {
-    makeUpdatesView: function() {
-      return this.PropertyView.create({
-        innerView: 'QIssueCommentUpdateDetailView',
-        prop: this.QIssueComment.UPDATES
-      });
-      return view;
-    }
-  },
-
   actions: [
     {
       name: 'save',
@@ -118,7 +108,7 @@ CLASS({
       </tr>
       <tr>
         <td>
-          %%makeUpdatesView()
+          $$updates{ model_: 'foam.apps.quickbug.ui.QIssueCommentUpdateDetailView' }
           <%= saveButton %>
           <%= discardButton %>
           %%errorView

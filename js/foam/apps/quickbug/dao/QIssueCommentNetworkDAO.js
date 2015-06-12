@@ -36,7 +36,15 @@ CLASS({
 
       var id;
 
-      if ( EqExpr.isInstance(query) && query.arg1 === this.QIssueComment.ISSUE_ID ) {
+      if ( AndExpr.isInstance(query) &&
+           NeqExpr.isInstance(query.args[0]) &&
+           query.args[0].arg1 == this.QIssueComment.ISSUE_ID &&
+           ConstantExpr.isInstance(query.args[0].arg2) && query.args[0].arg2.arg1 == '' &&
+           EqExpr.isInstance(query.args[1]) &&
+           query.args[1].arg1 === this.QIssueComment.ISSUE_ID ) {
+        id = query.args[1].arg2.arg1
+        query = TRUE;
+      } else if ( EqExpr.isInstance(query) && query.arg1 === this.QIssueComment.ISSUE_ID ) {
         id = query.arg2.arg1;
         query = TRUE
       }

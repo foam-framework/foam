@@ -73,7 +73,7 @@ CLASS({
               property: self.property,
               maxDepth: self.maxDepth-1,
               ids:      ids
-            });
+            }, self.Y);
 
             self.$.insertAdjacentHTML(
               'afterend',

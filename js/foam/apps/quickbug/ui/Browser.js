@@ -32,7 +32,7 @@ CLASS({
     'foam.ui.RelationshipView',
     'foam.apps.quickbug.model.Location',
     'foam.apps.quickbug.dao.QIssuesSplitDAO',
-    'Timer',
+    'foam.util.Timer',
     'foam.ui.TextFieldView',
     'foam.ui.ChoiceView',
     'foam.ui.ChoiceListView',
@@ -59,7 +59,8 @@ CLASS({
   exports: [
     'as stack',
     'as browser',
-    'IssueDAO'
+    'IssueDAO',
+    'IssueDAO as issueDAO'
   ],
 
   imports: [
@@ -725,7 +726,7 @@ Please use labels and text to provide additional information.
 
       this.IssueDAO.find(id, {
         put: function(obj) {
-          self.QIssueDetailView.create({
+          var v = self.QIssueDetailView.create({
             data:             obj,
             mode:             'read-write',
             url:              self.url,
@@ -848,15 +849,9 @@ Please use labels and text to provide additional information.
   var browserLink  = this.ActionLink.create(  {action: this.LAUNCH_BROWSER, data: this});
   var linkButton   = this.ActionButton.create({action: this.LINK,           data: this});
   var syncLink     = this.ActionLink.create(  {action: this.LAUNCH_SYNC,    data: this});
-  var backButton   = this.ActionButton.create({action: MementoMgr.BACK,            data: this.mementoMgr});
-  var forthButton  = this.ActionButton.create({action: MementoMgr.FORTH,           data: this.mementoMgr});
+  var backButton   = this.ActionButton.create({action: this.MementoMgr.BACK,            data: this.mementoMgr});
+  var forthButton  = this.ActionButton.create({action: this.MementoMgr.FORTH,           data: this.mementoMgr});
 %>
-<head>
-  <link rel="stylesheet" type="text/css" href="foam.css" />
-  <link rel="stylesheet" type="text/css" href="../../core/foam.css" />
-  <link rel="stylesheet" type="text/css" href="qbug.css" />
-  <title>QuickBug</title>
-</head>
 <body id="{{this.id}}" class="column"><div class="column expand" style="height:100%;">
  <div class="topHeader row" style="align-items:center;">
   <%= backButton, forthButton %> %%refreshImg <span class="expand"></span> <span>$$newIssue{model_: 'foam.ui.ActionLink'} | $$changeUser{model_: 'foam.ui.ActionLink'} | $$favourites{model_: 'foam.ui.ActionLink'} | %%bookmarksMenu | <%= syncLink %> | <%= browserLink %> |<%= linkButton %></span>

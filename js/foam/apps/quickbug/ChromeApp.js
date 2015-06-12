@@ -15,22 +15,17 @@
  * limitations under the License.
  */
 
-CLASS({
-  name: 'CursorView',
-  package: 'foam.apps.quickbug.ui',
-
-  extendsModel: 'foam.ui.DetailView',
-
-  methods: {
-    initHTML: function() {
-      this.SUPER();
-      this.$.focus();
-    }
-  },
-
-  templates: [
-    function toHTML() {/*
-      <span id="%%id" tabindex=1>$$prev{model_: 'foam.ui.ActionLink'} $$pos{mode: 'read-only'} of $$total{mode: 'read-only'} $$next{model_: 'foam.ui.ActionLink'} $$backToList{model_: 'foam.ui.ActionLink'}</span>
-    */}
+__DATA({
+  model_: 'foam.build.WebApplication',
+  id: 'foam.apps.quickbug.ChromeApp',
+  controller: 'foam.apps.quickbug.controller.Background',
+  precompileTemplates: true,
+  extraModels: [
+    'foam.oauth2.OAuth2ChromeApp',
+    'foam.ui.Tooltip',
+    'foam.apps.quickbug.ui.QIssueLabelsView',
+    'foam.ui.StringArrayView',
+    'foam.ui.MultiLineStringArrayView',
+    'foam.ui.RelativeDateTimeFieldView'
   ]
 });

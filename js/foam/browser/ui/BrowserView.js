@@ -156,11 +156,14 @@ CLASS({
             background-color: #3e50b4;
             color: #fff;
             display: flex;
+            flex-grow: 0;
+            flex-shrink: 0;
             height: 56px;
             padding: 0 12px;
           }
           .browser-header .title {
-            font-size: 2rem;
+            font-size: 20px;
+            font-weight: 500;
             margin-left: 12px;
           }
 
