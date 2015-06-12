@@ -287,7 +287,7 @@ var JSONUtil = {
       }
       else if ( obj instanceof Object ) {
         if ( obj.model_ )
-          this.outputObject_(out, obj, null, indent);
+          this.outputObject_(out, obj, opt_defaultModel, indent);
         else
           this.outputMap_(out, obj, indent);
       } else if ( typeof obj === 'number' ) {
