@@ -961,7 +961,7 @@ CLASS({
               var Y = self.Y.subWindow(window, 'Browser Window');
               var b = model.create({project: self}, Y);
               Y.touchManager = Y.foam.input.touch.TouchManager.create({}, Y);
-              window.document.firstChild.innerHTML = b.toHTML();
+              window.document.body.outerHTML = b.toHTML()
               b.initHTML();
               if ( opt_url ) b.maybeSetLegacyUrl(opt_url);
               w.focus();

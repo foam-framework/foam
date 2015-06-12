@@ -852,12 +852,6 @@ Please use labels and text to provide additional information.
   var backButton   = this.ActionButton.create({action: this.MementoMgr.BACK,            data: this.mementoMgr});
   var forthButton  = this.ActionButton.create({action: this.MementoMgr.FORTH,           data: this.mementoMgr});
 %>
-<head>
-  <link rel="stylesheet" type="text/css" href="foam.css" />
-  <link rel="stylesheet" type="text/css" href="../../core/foam.css" />
-  <link rel="stylesheet" type="text/css" href="qbug.css" />
-  <title>QuickBug</title>
-</head>
 <body id="{{this.id}}" class="column"><div class="column expand" style="height:100%;">
  <div class="topHeader row" style="align-items:center;">
   <%= backButton, forthButton %> %%refreshImg <span class="expand"></span> <span>$$newIssue{model_: 'foam.ui.ActionLink'} | $$changeUser{model_: 'foam.ui.ActionLink'} | $$favourites{model_: 'foam.ui.ActionLink'} | %%bookmarksMenu | <%= syncLink %> | <%= browserLink %> |<%= linkButton %></span>
