@@ -848,8 +848,8 @@ Please use labels and text to provide additional information.
   var browserLink  = this.ActionLink.create(  {action: this.LAUNCH_BROWSER, data: this});
   var linkButton   = this.ActionButton.create({action: this.LINK,           data: this});
   var syncLink     = this.ActionLink.create(  {action: this.LAUNCH_SYNC,    data: this});
-  var backButton   = this.ActionButton.create({action: MementoMgr.BACK,            data: this.mementoMgr});
-  var forthButton  = this.ActionButton.create({action: MementoMgr.FORTH,           data: this.mementoMgr});
+  var backButton   = this.ActionButton.create({action: this.MementoMgr.BACK,            data: this.mementoMgr});
+  var forthButton  = this.ActionButton.create({action: this.MementoMgr.FORTH,           data: this.mementoMgr});
 %>
 <head>
   <link rel="stylesheet" type="text/css" href="foam.css" />
