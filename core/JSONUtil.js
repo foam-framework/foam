@@ -157,7 +157,7 @@ var JSONUtil = {
 
     output: function(out, obj, opt_defaultModel) {
       if ( Array.isArray(obj) ) {
-        this.outputArray_(out, obj, opt_defaultModel);
+        this.outputArray_(out, obj);
       }
       else if ( typeof obj === 'string' ) {
         out('"');
@@ -275,7 +275,7 @@ var JSONUtil = {
       var indent = opt_indent || '';
 
       if ( Array.isArray(obj) ) {
-        this.outputArray_(out, obj, opt_defaultModel, indent);
+        this.outputArray_(out, obj, null, indent);
       }
       else if ( typeof obj == 'string' ) {
         out('"');
