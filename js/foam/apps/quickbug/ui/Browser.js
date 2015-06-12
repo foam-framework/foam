@@ -59,7 +59,8 @@ CLASS({
   exports: [
     'as stack',
     'as browser',
-    'IssueDAO'
+    'IssueDAO',
+    'IssueDAO as issueDAO'
   ],
 
   imports: [
