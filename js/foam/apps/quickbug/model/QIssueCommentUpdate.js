@@ -24,7 +24,7 @@ CLASS({
     { name: 'summary', displayWidth: 120 },
     { name: 'status', autocompleter: 'foam.apps.quickbug.model.StatusCompleter' },
     { name: 'owner', autocompleter: 'foam.apps.quickbug.model.PersonCompleter' },
-    { name: 'labels', view: 'GriddedStringArrayView', autocompleter: 'foam.apps.quickbug.LabelCompleter' },
+    { name: 'labels', view: 'foam.apps.quickbug.ui.GriddedStringArrayView', autocompleter: 'foam.apps.quickbug.model.LabelCompleter' },
     { name: 'cc', view: 'foam.ui.StringArrayView', autocompleter: 'foam.apps.quickbug.model.PersonCompleter', displayWidth: 120 },
     { name: 'blockedOn', view: 'foam.ui.MultiLineStringArrayView' }
   ],
