@@ -197,9 +197,9 @@ CLASS({
     }
   ],
   methods: {
-    maybeCall: function(X, that, e) { /* Executes this action if $$DOC{ref:'.isEnabled'} is allows it. */
+    maybeCall: function(X, that) { /* Executes this action if $$DOC{ref:'.isEnabled'} is allows it. */
       if ( this.isAvailable.call(that, this) && this.isEnabled.call(that, this) ) {
-        this.action.call(that, X, this, e);
+        this.action.call(that, X, this);
         that.publish(['action', this.name], this);
       }
     }
