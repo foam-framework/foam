@@ -162,7 +162,8 @@ CLASS({
             padding: 0 12px;
           }
           .browser-header .title {
-            font-size: 2rem;
+            font-size: 20px;
+            font-weight: 500;
             margin-left: 12px;
           }
 
