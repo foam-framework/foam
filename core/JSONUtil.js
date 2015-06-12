@@ -155,7 +155,7 @@ var JSONUtil = {
   compact: {
     __proto__: AbstractFormatter,
 
-    output: function(out, obj) {
+    output: function(out, obj, opt_defaultModel) {
       if ( Array.isArray(obj) ) {
         this.outputArray_(out, obj);
       }
@@ -181,8 +181,7 @@ var JSONUtil = {
         out(obj);
       }
       else {
-        if ( obj === undefined ) obj = null;
-        out(obj);
+        out(obj === undefined ? null : obj);
       }
     },
 
@@ -257,16 +256,7 @@ var JSONUtil = {
 
         if ( ! first ) out(',');
 
-        if ( typeof obj === 'string' || typeof obj === 'number' ) {
-          this.output(out, obj);
-        } else if ( Array.isArray(obj) ) {
-          this.outputArray_(out, obj);
-        } else {
-          if ( obj.model_ )
-            this.outputObject_(out, obj, opt_defaultModel);
-          else
-            this.outputMap_(out, obj);
-        }
+        this.output(out, obj, opt_defaultModel);
       }
 
       out(']');
@@ -278,7 +268,7 @@ var JSONUtil = {
   pretty: {
     __proto__: AbstractFormatter,
 
-    output: function(out, obj, opt_indent) {
+    output: function(out, obj, opt_defaultModel, opt_indent) {
       var indent = opt_indent || '';
 
       if ( Array.isArray(obj) ) {
@@ -336,7 +326,7 @@ var JSONUtil = {
           if ( Array.isArray(val) && prop.subType ) {
             this.outputArray_(out, val, prop.subType, nestedIndent);
           } else {
-            this.output(out, val, nestedIndent);
+            this.output(out, val, null, nestedIndent);
           }
           first = false;
         }
@@ -362,7 +352,7 @@ var JSONUtil = {
 
         if ( ! first ) out(',\n');
         out(nestedIndent, this.keyify(key), ': ');
-        this.output(out, val, nestedIndent);
+        this.output(out, val, null, nestedIndent);
 
         first = false;
       }
@@ -385,17 +375,7 @@ var JSONUtil = {
 
         if ( ! first ) out(',\n');
 
-        if ( typeof obj === 'string' || typeof obj === 'number' || obj === null || obj === undefined ) {
-          out(nestedIndent);
-          this.output(out, obj, nestedIndent);
-        } else {
-          if ( obj.model_ )
-            this.outputObject_(out, obj, opt_defaultModel, nestedIndent);
-          else if ( Array.isArray(obj) )
-            this.outputArray_(out, obj, undefined, nestedIndent);
-          else
-            this.outputMap_(out, obj, nestedIndent);
-        }
+        this.output(out, obj, opt_defaultModel, nestedIndent);
       }
 
       out('\n', indent, ']');
