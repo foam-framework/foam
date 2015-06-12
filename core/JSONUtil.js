@@ -293,7 +293,7 @@ var JSONUtil = {
         this.outputFunction_(out, obj, indent);
       }
       else if ( obj instanceof Date ) {
-        out("new Date('", obj, "')");
+        out(obj.getTime());
       }
       else if ( obj instanceof Object ) {
         if ( obj.model_ )
