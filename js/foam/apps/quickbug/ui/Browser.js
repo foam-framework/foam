@@ -725,7 +725,7 @@ Please use labels and text to provide additional information.
 
       this.IssueDAO.find(id, {
         put: function(obj) {
-          self.QIssueDetailView.create({
+          var v = self.QIssueDetailView.create({
             data:             obj,
             mode:             'read-write',
             url:              self.url,
