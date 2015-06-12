@@ -75,6 +75,7 @@ CLASS({
     {
       model_: 'foam.apps.quickbug.types.LocationProperty',
       name: 'colspec',
+      defaultMemento: 'id summary modified',
       preSet: function(_, a) {
         if ( a ) {
           for ( var i = 0 ; i < a.length ; i++ ) {
