@@ -156,6 +156,8 @@ CLASS({
             background-color: #3e50b4;
             color: #fff;
             display: flex;
+            flex-grow: 0;
+            flex-shrink: 0;
             height: 56px;
             padding: 0 12px;
           }
