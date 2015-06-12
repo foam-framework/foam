@@ -142,8 +142,6 @@ CLASS({
       if (this.visibleStart_ < 0) return;
 
       width = this.$.offsetWidth;
-      console.log('starting layout. available: ' + width + ', visible (' +
-          this.visibleStart_ + ', ' + this.visibleEnd_ + ')');
       var sizes = [];
       for (var i = this.visibleStart_; i <= this.visibleEnd_; i++) {
         var min = this.views_[i].view.minWidth;
@@ -162,7 +160,6 @@ CLASS({
         width -= newSize - sizes[i];
         sizes[i] = newSize;
       }
-      console.log('layout finished. sizes ' + sizes.join(', ') + ' and remainder ' + width);
 
       for (i = this.visibleEnd_; i >= this.visibleStart_; i--) {
         this.$.children[i].style.width = sizes[i];
