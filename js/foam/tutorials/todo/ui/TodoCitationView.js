@@ -87,13 +87,17 @@ CLASS({
         display: none;
       }
       .todo-subtasks {
-        margin-left: 12px;
+        margin: 0 12px;
+        white-space: nowrap;
+      }
+      .todo-subtasks progress {
+        width: 6em;
       }
     */},
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
         $$completed{ label: '' }
-        $$description{ mode: 'read-only', floatingLabel: false }
+        <div class="expand">$$description{ mode: 'read-only', floatingLabel: false }</div>
         <span id="<%= this.id %>-subtasks" class="todo-hidden todo-subtasks">
           $$subtaskFraction
           <%# this.completedSubtaskCount %> / <%# this.subtaskCount %>
