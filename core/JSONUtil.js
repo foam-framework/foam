@@ -170,6 +170,9 @@ var JSONUtil = {
       else if ( obj instanceof Date ) {
         out(obj.getTime());
       }
+      else if ( obj instanceof RegExp ) {
+        out(obj.toString());
+      }
       else if ( obj instanceof Object ) {
         if ( obj.model_ )
           this.outputObject_(out, obj, opt_defaultModel);
@@ -284,6 +287,9 @@ var JSONUtil = {
       }
       else if ( obj instanceof Date ) {
         out(obj.getTime());
+      }
+      else if ( obj instanceof RegExp ) {
+        out(obj.toString());
       }
       else if ( obj instanceof Object ) {
         if ( obj.model_ )
