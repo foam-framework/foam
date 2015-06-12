@@ -79,8 +79,8 @@ CLASS({
 
       var self = this;
 
-      this.on('click', function() {
-        self.action.maybeCall(self.X, self.data);
+      this.on('click', function(e) {
+        self.action.maybeCall(self.X, self.data, e);
       }, this.id);
 
       this.setAttribute('disabled', function() {
