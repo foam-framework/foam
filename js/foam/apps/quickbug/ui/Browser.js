@@ -32,7 +32,7 @@ CLASS({
     'foam.ui.RelationshipView',
     'foam.apps.quickbug.model.Location',
     'foam.apps.quickbug.dao.QIssuesSplitDAO',
-    'Timer',
+    'foam.util.Timer',
     'foam.ui.TextFieldView',
     'foam.ui.ChoiceView',
     'foam.ui.ChoiceListView',
