@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BASEDIR=$(dirname "$0")
+BASEDIR=$(readlink -f $(dirname "$0"))
 cd "$BASEDIR"
 
 BUILD_DIR=~/Downloads/quickbug
@@ -29,7 +29,7 @@ directory images
 file empty.html
 
 cd ../../
-node --harmony tools/foam.js foam.build.BuildChromeApp controller=foam.apps.quickbug.controller.Background targetPath="$BUILD_DIR" precompileTemplates
+node --harmony tools/foam.js foam.build.BuildChromeApp appDefinition=foam.apps.quickbug.ChromeApp targetPath="$BUILD_DIR"
 
 # For code compression, uncomment the following line:
 # ~/node_modules/uglify-js/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"
