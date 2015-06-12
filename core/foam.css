@@ -20,7 +20,7 @@ html, body {
 }
 
 body {
-  font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
+  font-family: Roboto, "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
   font-size: 12px;
 }
 p, h1, form, button {
@@ -294,7 +294,7 @@ option[selected]{
 .foamTable {
   background: #fff;
   border-collapse: collapse;
-  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  font-family: Roboto, "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
   font-size: 12px;
   margin: 10px;
   table-layout:fixed;
@@ -423,7 +423,7 @@ select {
 }
 
 body {
-  font: 82% arial,sans-serif;
+  font: 82%;
 }
 
 div.gridtile td div a {
