@@ -87,6 +87,23 @@ CLASS({
           name: 'searchMode',
           defaultValue: false
         },
+        {
+          name: 'listView_',
+          hidden: true,
+          documentation: 'Internal. The View object created by the listView.'
+        },
+        {
+          name: 'minWidth',
+          getter: function() { return this.listView_.minWidth; }
+        },
+        {
+          name: 'preferredWidth',
+          getter: function() { return this.listView_.preferredWidth; }
+        },
+        {
+          name: 'maxWidth',
+          getter: function() { return this.listView_.maxWidth; }
+        },
       ],
 
       actions: [
@@ -247,7 +264,7 @@ CLASS({
                   this.id + '-header-search');
             %>
             <div class="browser-body">
-              <%= this.data.listView({ data$: this.data.filteredDAO$ }, this.Y) %>
+              <%= this.listView_ = this.data.listView({ data$: this.data.filteredDAO$ }, this.Y) %>
             </div>
             <% if (this.data.showAdd) { %>
               <div class="floating-action">
