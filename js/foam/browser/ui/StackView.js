@@ -121,8 +121,8 @@ CLASS({
       if ( ! this.$ ) return;
       var width = this.$.offsetWidth;
       var index = this.views_.length - 1;
-      while (index >= 0 && width >= this.views_[index].view.preferredWidth) {
-        width -= this.views_[index].view.preferredWidth;
+      while (index >= 0 && width >= this.views_[index].view.minWidth) {
+        width -= this.views_[index].view.minWidth;
         index--;
       }
 
@@ -132,6 +132,41 @@ CLASS({
       // sure views that are replacing each other come and go lockstep in a
       // single frame.
       this.visibleEnd_ = this.views_.length - 1;
+
+      // Now, we actually compute the sizes for the containing views.
+      // The algorithm here is straightforward. They all have minWidth allocated
+      // already. We try to assign each view some extra, up to its preferred
+      // width. If there's still some left, we make a second pass, allowing each
+      // view more space, up to its maxWidth. If there's still some left, tough.
+
+      if (this.visibleStart_ < 0) return;
+
+      width = this.$.offsetWidth;
+      console.log('starting layout. available: ' + width + ', visible (' +
+          this.visibleStart_ + ', ' + this.visibleEnd_ + ')');
+      var sizes = [];
+      for (var i = this.visibleStart_; i <= this.visibleEnd_; i++) {
+        var min = this.views_[i].view.minWidth;
+        sizes[i] = min; // This leaves blanks for hidden views. Oh well.
+        width -= min;
+      }
+
+      for (i = this.visibleEnd_; width > 0 && i >= this.visibleStart_; i--) {
+        var newSize = Math.min(sizes[i] + width, this.views_[i].view.preferredWidth);
+        width -= newSize - sizes[i];
+        sizes[i] = newSize;
+      }
+
+      for (i = this.visibleEnd_; width > 0 && i >= this.visibleStart_; i--) {
+        var newSize = Math.min(sizes[i] + width, this.views_[i].view.maxWidth);
+        width -= newSize - sizes[i];
+        sizes[i] = newSize;
+      }
+      console.log('layout finished. sizes ' + sizes.join(', ') + ' and remainder ' + width);
+
+      for (i = this.visibleEnd_; i >= this.visibleStart_; i--) {
+        this.$.children[i].style.width = sizes[i];
+      }
     },
   ],
 
@@ -139,11 +174,12 @@ CLASS({
     function CSS() {/*
       .stackview-container {
         align-items: flex-start;
+        background-color: #9e9e9e;
         display: flex;
         height: 100%;
       }
       .stackview-panel {
-        flex: 1;
+        background-color: #fff;
         height: 100%;
       }
       .stackview-hidden {
