@@ -30,6 +30,7 @@ CLASS({
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
     'foam.dao.LazyCacheDAO',
+    'foam.dao.ContextualizingDAO',
     'MDAO',
     'PersistentContext',
     'foam.util.Timer',
@@ -47,14 +48,19 @@ CLASS({
     'foam.apps.quickbug.model.QIssueStatus',
     'foam.apps.quickbug.model.imported.Issue',
     'foam.apps.quickbug.model.imported.IssuePerson',
+    'foam.apps.quickbug.model.LabelCompleter',
+    'foam.apps.quickbug.model.PersonCompleter',
     'foam.core.dao.MigrationRule',
     'foam.lib.bookmarks.Bookmark',
     'foam.core.dao.WhenIdleDAO',
-    'foam.metrics.Metric'
+    'foam.metrics.Metric',
+    'foam.ui.CSSImageBooleanView'
   ],
 
   exports: [
     'IssueCommentDAO as qIssueCommentDAO',
+    'IssueCommentDAO as QIssueCommentDAO',
+    'IssueDAO as issueDAO',
     'StatusDAO as issueStatusDAO',
     'StatusDAO as StatusDAO',
     'LabelDAO as issueLabelDAO',
@@ -220,7 +226,9 @@ CLASS({
     {
       name: 'IssueDAO',
       lazyFactory: function() {
-        return this.IssueCachingDAO;
+        return this.ContextualizingDAO.create({
+          delegate: this.IssueCachingDAO
+        });
       },
       transient: true
     },
