@@ -150,7 +150,10 @@ CLASS({
       }
       var out = '';
 
-      var textView = this.createTemplateView('text', { mode:'read-only' });
+      var textView = this.createTemplateView('text', {
+        mode:'read-only',
+        label: this.label
+      });
       this.addChild(textView);
       out += '<div class="value">'+textView.toHTML()+'</div>';
       // not setting the width and height here causes an initial 
@@ -174,6 +177,10 @@ CLASS({
         cursor: pointer;
         position: relative;
         border-bottom: 1px solid #e0e0e0;
+      }
+
+      .popupChoiceView .value {
+        flex-grow: 1;
       }
 
       .popupChoiceView.md-style-trait-standard {
