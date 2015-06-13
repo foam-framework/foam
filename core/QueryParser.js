@@ -256,14 +256,19 @@ var QueryParserFactory = function(model, opt_enableKeyword) {
         return q;
       }
 
+      var expr;
+
       if ( isNum ) {
         for ( var i = 0 ; i < values.length ; i++ )
           values[i] = isInt ? parseInt(values[i]) : parseFloat(values[i]);
+
+        expr = IN(v[0], values);
+      } else {
+        expr = ( v[1] === '=' ) ?
+          IN_IC(v[0], values) :
+          ContainedInICExpr.create({arg1: compile_(prop), arg2: values}) ;
       }
 
-      var expr = ( v[1] === '=' || isNum ) ?
-        IN(v[0], values) :
-        ContainedInICExpr.create({arg1: compile_(prop), arg2: values}) ;
       if ( values.negated ) {
         return NOT(expr);
       } else if ( values.and ) {
