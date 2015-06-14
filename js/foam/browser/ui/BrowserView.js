@@ -87,6 +87,23 @@ CLASS({
           name: 'searchMode',
           defaultValue: false
         },
+        {
+          name: 'listView_',
+          hidden: true,
+          documentation: 'Internal. The View object created by the listView.'
+        },
+        {
+          name: 'minWidth',
+          getter: function() { return this.listView_.minWidth; }
+        },
+        {
+          name: 'preferredWidth',
+          getter: function() { return this.listView_.preferredWidth; }
+        },
+        {
+          name: 'maxWidth',
+          getter: function() { return this.listView_.maxWidth; }
+        },
       ],
 
       actions: [
@@ -156,11 +173,14 @@ CLASS({
             background-color: #3e50b4;
             color: #fff;
             display: flex;
+            flex-grow: 0;
+            flex-shrink: 0;
             height: 56px;
             padding: 0 12px;
           }
           .browser-header .title {
-            font-size: 2rem;
+            font-size: 20px;
+            font-weight: 500;
             margin-left: 12px;
           }
 
@@ -204,11 +224,14 @@ CLASS({
             height: 100%;
             top: 0;
             left: 0;
+            overflow-y: auto;
             width: 300px;
           }
 
           .browser-body {
             flex-grow: 1;
+            overflow-x: hidden;
+            overflow-y: auto;
           }
         */},
         function toHTML() {/*
@@ -244,7 +267,7 @@ CLASS({
                   this.id + '-header-search');
             %>
             <div class="browser-body">
-              <%= this.data.listView({ data$: this.data.filteredDAO$ }, this.Y) %>
+              <%= this.listView_ = this.data.listView({ data$: this.data.filteredDAO$ }, this.Y) %>
             </div>
             <% if (this.data.showAdd) { %>
               <div class="floating-action">

@@ -30,6 +30,7 @@ CLASS({
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
     'foam.dao.LazyCacheDAO',
+    'foam.dao.ContextualizingDAO',
     'MDAO',
     'PersistentContext',
     'foam.util.Timer',
@@ -47,14 +48,19 @@ CLASS({
     'foam.apps.quickbug.model.QIssueStatus',
     'foam.apps.quickbug.model.imported.Issue',
     'foam.apps.quickbug.model.imported.IssuePerson',
+    'foam.apps.quickbug.model.LabelCompleter',
+    'foam.apps.quickbug.model.PersonCompleter',
     'foam.core.dao.MigrationRule',
     'foam.lib.bookmarks.Bookmark',
     'foam.core.dao.WhenIdleDAO',
-    'foam.metrics.Metric'
+    'foam.metrics.Metric',
+    'foam.ui.CSSImageBooleanView'
   ],
 
   exports: [
     'IssueCommentDAO as qIssueCommentDAO',
+    'IssueCommentDAO as QIssueCommentDAO',
+    'IssueDAO as issueDAO',
     'StatusDAO as issueStatusDAO',
     'StatusDAO as StatusDAO',
     'LabelDAO as issueLabelDAO',
@@ -220,7 +226,9 @@ CLASS({
     {
       name: 'IssueDAO',
       lazyFactory: function() {
-        return this.IssueCachingDAO;
+        return this.ContextualizingDAO.create({
+          delegate: this.IssueCachingDAO
+        });
       },
       transient: true
     },
@@ -357,6 +365,9 @@ CLASS({
           extendsModel: 'foam.apps.quickbug.model.imported.Issue',
 
           name: 'QIssue',
+          requires: [
+            'foam.ui.CSSImageBooleanView',
+          ],
 
           tableProperties: [
             'starred',
@@ -662,7 +673,7 @@ CLASS({
               tableLabel: '',
               tableWidth: '18px',
               tableFormatter: function(val, obj, tableView) {
-                var view = CSSImageBooleanView.create({
+                var view = obj.CSSImageBooleanView.create({
                   className: 'star-image',
                   data: obj.starred
                 });
@@ -676,7 +687,7 @@ CLASS({
                 tableView.addChild(view);
                 return view.toHTML();
               },
-              view: { factory_: 'CSSImageBooleanView', className: 'star-image' },
+              view: { factory_: 'foam.ui.CSSImageBooleanView', className: 'star-image' },
               help: 'Whether the authenticated user has starred this issue.'
             },
             {
@@ -950,7 +961,7 @@ CLASS({
               var Y = self.Y.subWindow(window, 'Browser Window');
               var b = model.create({project: self}, Y);
               Y.touchManager = Y.foam.input.touch.TouchManager.create({}, Y);
-              window.document.firstChild.innerHTML = b.toHTML();
+              window.document.body.outerHTML = b.toHTML()
               b.initHTML();
               if ( opt_url ) b.maybeSetLegacyUrl(opt_url);
               w.focus();

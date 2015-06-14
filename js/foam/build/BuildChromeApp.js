@@ -22,7 +22,7 @@ CLASS({
   extendsModel: 'foam.build.BuildApp',
 
   methods: {
-    execute_: function() {
+    buildModel: function() {
       aseq(
         apar(
           function(ret) { this.buildCoreJS_(ret); }.bind(this),
@@ -47,7 +47,6 @@ CLASS({
 arequire('<%= this.controller %>')(function(m) {
   m.create();
 });
-
 */}
   ]
 });

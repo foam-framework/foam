@@ -41,8 +41,6 @@ function compileArray_(args) {
 CLASS({
   name: 'Expr',
 
-  // package: 'foam.mlang',
-
   documentation: 'Parent model for all mLang expressions. Contains default implementations for many methods.',
 
   methods: [
@@ -653,3 +651,36 @@ CLASS({
 function NEQ(arg1, arg2) {
   return NeqExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
 }
+
+
+CLASS({
+  name: 'UpperExpr',
+
+  extendsModel: 'UNARY',
+
+  properties: [
+    { name: 'label_', defaultValue: 'UPPER' }
+  ],
+  methods: [
+    function partialEval() {
+      var newArg1 = this.arg1.partialEval();
+
+      if ( ConstantExpr.isInstance(newArg1) ) {
+        var val = newArg1.f();
+        if ( typeof val === 'string' ) return compile_(val);
+      } else if ( Array.isArray(newArg1) ) {
+        debugger;
+      }
+
+      return this;
+    },
+    function f(obj) {
+      var a = this.arg1.f(obj);
+      return a && a.toUpperCase ? a.toUpperCase() : a ;
+    }
+  ]
+});
+
+function UPPER(arg1) { return UpperExpr.create({arg1: compile_(arg1)}); }
+function EQ_IC(arg1, arg2) { return EQ(UPPER(arg1), UPPER(arg2)); }
+function IN_IC(arg1, arg2) { return IN(UPPER(arg1), UPPER(arg2)); }

@@ -31,6 +31,15 @@ CLASS({
       defaultValue: true
     },
     {
+      name: 'prop',
+      hidden: true
+    },
+    {
+      name: 'label',
+      help: 'The user-visible label for the ChoiceView. Not to be confused with ' +
+          '$$DOC{ref:".text"}, the name of the currently selected choice.',
+    },
+    {
       name: 'text',
       help: 'The user-visible text of the current choice (ie. [value, text] -> text).',
       postSet: function(_, d) {

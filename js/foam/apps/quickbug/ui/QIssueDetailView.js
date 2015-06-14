@@ -25,7 +25,9 @@ CLASS({
     'foam.apps.quickbug.ui.QIssueCommentCreateView',
     'foam.apps.quickbug.ui.QIssueCLView',
     'foam.apps.quickbug.ui.BlockView',
-    'foam.apps.quickbug.model.Cursor'
+    'foam.apps.quickbug.model.Cursor',
+    'foam.ui.DAOListView',
+    'foam.apps.quickbug.ui.QIssueCommentView'
   ],
 
   properties: [

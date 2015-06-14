@@ -18,16 +18,20 @@ CLASS({
     'PersistentContext',
     'foam.apps.ctm.Task',
     'foam.apps.ctm.TaskController',
+    'foam.apps.ctm.TaskHistoriesView',
     'foam.apps.ctm.TaskHistoryGraph',
     'foam.apps.ctm.TaskManagerContext',
     'foam.apps.ctm.TaskManagerDetailView',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
+    'foam.ui.md.ActionLabel',
+    'foam.ui.md.SharedStyles',
     'foam.ui.md.TableView'
   ],
   exports: [
     'clock$',
-    'selection$',
+    'hardSelection$',
+    'softSelection$',
     'tasks'
   ],
 
@@ -71,10 +75,14 @@ CLASS({
       model_: 'StringProperty',
       name: 'search',
       transient: true,
-      view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true }
+      view: {
+        factory_: 'foam.ui.TextFieldView',
+        placeholder: 'Search',
+        onKeyMode: true
+      }
     },
     {
-      name: 'selection',
+      name: 'hardSelection',
       defaultValue: null,
       transient: true,
       postSet: function(old, nu) {
@@ -86,6 +94,11 @@ CLASS({
           this.network = controller.network.history;
         }
       }
+    },
+    {
+      name: 'softSelection',
+      defaultValue: null,
+      transient: true
     },
     {
       model_: 'ArrayProperty',
@@ -128,21 +141,12 @@ CLASS({
     }
   ],
 
-  actions: [
-    {
-      name: 'kill',
-      label: 'End Process',
-      isEnabled: function() { return !!this.selection; },
-      action: function() { this.selection.kill(); }
-    }
-  ],
-
   methods: [
     function init() {
       this.SUPER.apply(this, arguments);
 
-      var viewModel = this.TaskManagerDetailView;
-      this.X.registerModel(viewModel, 'foam.ui.TaskManagerDetailView');
+      this.X.registerModel(this.TaskManagerDetailView, 'foam.ui.TaskManagerDetailView');
+      this.X.registerModel(this.ActionLabel.xbind({ extraClassName: 'material-icons' }), 'foam.ui.ActionButton');
 
       this.persistentContext.bindObject(
           'ctx', this.TaskManagerContext, undefined, 1);
@@ -162,6 +166,8 @@ CLASS({
         this.taskControllers_[controller.task.id] = controller;
         dao.put(controller.task);
       }
+
+      this.SharedStyles.create();
 
       this.tick();
     },

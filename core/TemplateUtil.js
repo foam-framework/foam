@@ -103,7 +103,7 @@ var TemplateOutput = {
             } else {
               buf.push(o);
             }
-            if ( o.initHTML && obj.addChild ) obj.addChild(o);
+            if ( o.initHTML && obj && obj.addChild ) obj.addChild(o);
           }
         }
       }

@@ -38,7 +38,10 @@ CLASS({
     'foam.ui.EditColumnsView',
     'foam.input.touch.GestureTarget'
   ],
-  imports: [ 'selection$ as hardSelection$' ],
+  imports: [
+    'hardSelection$',
+    'softSelection$ as selection$'
+  ],
 
   constants: {
     MIN_COLUMN_SIZE: 5, // If column is resized below this size, then remove the column instead of shrinking it
@@ -160,6 +163,29 @@ CLASS({
       lazyFactory: function() { return []; }
     },
     {
+      model_: 'IntProperty',
+      name: 'mouseX',
+      defaultValue: 0
+    },
+    {
+      model_: 'IntProperty',
+      name: 'mouseY',
+      defaultValue: 0
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'mouseOverRow',
+      defaultValue: false
+    },
+    {
+      name: '$container',
+      defaultValueFn: function() { return this.$ && this.$.parentElement.parentElement; },
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        this.onResize();
+      }
+    },
+    {
       name: '$table',
       defaultValueFn: function() { return this.$ && this.$.querySelector('table'); }
     },
@@ -227,7 +253,7 @@ CLASS({
         var tbody = this.$tbody;
         var row = tbody && tbody.firstChild;
         if ( row ) {
-          var containerHeight = this.$.parentElement.parentElement.offsetHeight;
+          var containerHeight = this.$container.offsetHeight;
           var headHeight = thead.offsetHeight;
           var rowHeight = row.offsetHeight;
           var rows = Math.floor((containerHeight - headHeight) / rowHeight);
@@ -246,6 +272,23 @@ CLASS({
           this.scrollbar.size = c.count;
           this.paintData();
         }.bind(this));
+      }
+    },
+    {
+      name: 'onMouseMove',
+      isFramed: true,
+      code: function(e) {
+        var table = this.$table, target = e.target, x = e.offsetX, y = e.offsetY;
+        while ( target !== table ) {
+          // Sometimes this event is delivered after the target has been
+          // discarded by re-render. In this case, just exit early.
+          if ( ! target ) return;
+          x += target.offsetLeft;
+          y += target.offsetTop;
+          target = target.offsetParent;
+        }
+        this.mouseX = x;
+        this.mouseY = y;
       }
     },
     {
@@ -317,6 +360,8 @@ CLASS({
       this.scrollbar.toView_().initHTML();
 
       this.dao && this.onDAOUpdate();
+
+      this.$table.onmousemove = this.onMouseMove;
 
       if ( this.scrollEnabled ) {
         (this.window || window).addEventListener('resize', this.onResize, false);
@@ -400,7 +445,7 @@ CLASS({
         this.children = [];
       }
 
-      out('<table' + this.cssClassAttr() + '>');
+      out('<table' + this.cssClassAttr() + ' style="position:relative">');
 
       this.tableHeadToHTML(out);
       var dataState = this.tableDataToHTML(out);
@@ -471,8 +516,6 @@ CLASS({
 
       var props = this.getProperties();
       var objs = this.objs;
-      var hselectFound = false;
-      var sselectFound = false;
 
       if ( objs ) {
         var hselect = this.hardSelection;
@@ -483,12 +526,10 @@ CLASS({
 
           if ( hselect && obj.id == hselect.id ) {
             trClassName += " rowSelected";
-            hselectFound = true;
           }
 
           if ( sselect && obj.id == sselect.id ) {
             trClassName += " rowSoftSelected";
-            sselectFound = true;
           }
 
           out('<tr class="' + trClassName + '">');
@@ -516,9 +557,6 @@ CLASS({
           out('</tr>');
         }
       }
-
-      if ( ! hselectFound ) this.hardSelection = '';
-      if ( ! sselectFound ) this.selection = '';
 
       out('</tbody>');
 
@@ -583,9 +621,11 @@ CLASS({
         var obj = self.objs[i];
 
         e.onmouseover = function() {
+          self.mouseOverRow = true;
           self.selection = obj;
         };
         e.onmouseout = function() {
+          self.mouseOverRow = false;
           self.selection = self.hardSelection;
         };
         e.onclick = function(evt) {
@@ -595,6 +635,19 @@ CLASS({
         e.ondblclick = function() {
           self.publish(self.DOUBLE_CLICK, obj);
         };
+
+        // Adjust soft selection according to last known mouse location.
+        if ( self.mouseOverRow ) {
+          var left = e.offsetLeft;
+          var right = left + e.offsetWidth;
+          var top = e.offsetTop;
+          var bottom = top + e.offsetHeight;
+          var x = self.mouseX;
+          var y = self.mouseY;
+          if ( left <= x && right >= x && top <= y && bottom >= y ) {
+            self.selection = obj;
+          }
+        }
       });
 
       delete this['initializers_'];
@@ -639,8 +692,7 @@ CLASS({
     getPropertyNames: function() {
       return this.properties.length > 0 ? this.properties :
           this.model.tableProperties;
-    },
-
+    }
   },
 
   templates: [

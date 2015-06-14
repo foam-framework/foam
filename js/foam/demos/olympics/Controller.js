@@ -147,6 +147,7 @@ CLASS({
         height: 93%;
       }
       .medalController { display: flex; }
+      .searchPanel { color: #666; }
       .foamSearchView select { width: 300px; }
       .tableView { width: auto !important; }
       .MedalTable { width: auto !important; }
@@ -154,8 +155,8 @@ CLASS({
       .searchResults { margin-left: 40px; }
       .counts {
         color: #555;
-        font-size: 22px;
-        margin: 20px;
+        font-size: 16px;
+        margin-top: 16px;
       }
       input[type='search'] {
         margin-bottom: 15px;
@@ -164,13 +165,14 @@ CLASS({
       .Gold   { color: #C98910; }
       .Silver { color: #A8A8A8; }
       .Bronze { color: #965A38; }
+      flat-button { margin-left: 230px; }
     */},
     function toHTML() {/*
       <div class="medalController">
         <div class="searchPanel">
           %%query
           %%fromYear %%toYear %%city %%discipline %%event %%country %%color %%gender
-          $$clear<br>
+          $$clear{model_: 'foam.ui.md.FlatButton'}<br>
           <br>SQL:<br>$$sql{mode: 'read-only'}
           <br><br><%= FOAM_POWERED %>
         </div>

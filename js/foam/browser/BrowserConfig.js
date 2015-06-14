@@ -63,9 +63,14 @@ CLASS({
       dynamicValue: function() {
         // TODO(braden): Is AND the right semantics here? Maybe searches should
         // span the whole DAO without limiting by canned query.
-        this.search; this.cannedQuery;
+        this.search; this.cannedQuery; this.searchWithinCannedQuery;
         var canned = this.cannedQuery.expression;
-        return this.search === '' ? canned  : AND(this.queryParser(this.search), canned);
+        if (this.search !== '') {
+          var query = this.queryParser(this.search);
+          return this.searchWithinCannedQuery ? AND(query, canned) : query;
+        } else {
+          return canned;
+        }
       },
     },
     {
@@ -162,6 +167,14 @@ CLASS({
       documentation: 'An action to create a new value in $$DOC{ref:".dao"} ' +
           'will be rendered when this is set to true (the default).',
       defaultValue: true,
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'searchWithinCannedQuery',
+      documentation: 'By default, searches are against all of the DAO. To ' +
+          'restrict searches to the currently selected canned query, set ' +
+          'this to true.',
+      defaultValue: false,
     },
   ],
 

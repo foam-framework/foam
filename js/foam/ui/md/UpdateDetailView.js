@@ -79,6 +79,10 @@ CLASS({
       name: 'innerView',
       defaultValue: 'foam.ui.md.DetailView'
     },
+    {
+      name: 'className',
+      defaultValue: 'md-update-detail-view'
+    },
   ],
 
   listeners: [
@@ -136,19 +140,28 @@ CLASS({
   templates: [
     function CSS() {/*
       .md-update-detail-view {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
       }
       .md-update-detail-view-header {
         align-items: center;
         background-color: #3e50b4;
         color: #fff;
         display: flex;
-        font-size: 16px;
+        flex-shrink: 0;
+        flex-grow: 0;
+        font-size: 20px;
+        font-weight: 500;
         height: 56px;
         padding: 0 12px;
         width: 100%;
       }
 
       .md-update-detail-view-body {
+        overflow-x: hidden;
+        overflow-y: auto;
         width: 100%;
       }
     */},
