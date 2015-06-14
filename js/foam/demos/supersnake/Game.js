@@ -26,15 +26,21 @@ CLASS({
   package: 'foam.demos.supersnake',
   name: 'Snake',
   extendsModel: 'foam.graphics.CView',
-  requires: [ 'foam.demos.supersnake.Scale' ],
+  requires: [
+    'foam.demos.supersnake.Scale',
+    'foam.demos.supersnake.Laser'
+  ],
+  imports: [
+    'game'
+  ],
 
   imports: [ 'timer' ],
   constants: { R: 20 },
 
   properties: [
 //    { name: 'scales', factory: function() { return []; } },
-    { name: 'sx', defaultValue: 250 },
-    { name: 'sy', defaultValue: 250 },
+    { name: 'sx', defaultValue: 240 },
+    { name: 'sy', defaultValue: 240 },
     { name: 'vx', defaultValue: 1 },
     { name: 'vy', defaultValue: 0 },
     { name: 'length', defaultValue: 5 }
@@ -48,7 +54,10 @@ CLASS({
     function up()    { this.vy = -1; this.vx =  0; },
     function down()  { this.vy =  1; this.vx =  0; },
     function left()  { this.vy =  0; this.vx = -1; },
-    function right() { this.vy =  0; this.vx =  1; }
+    function right() { this.vy =  0; this.vx =  1; },
+    function fire () {
+      this.Laser.create({x: this.sx, y: this.sy, vx: this.vx, vy: this.vy});
+    }
   ],
   listeners: [
     {
@@ -71,19 +80,91 @@ CLASS({
 
 CLASS({
   package: 'foam.demos.supersnake',
+  name: 'Food',
+  extendsModel: 'foam.graphics.Circle',
+  properties: [
+    { name: 'color', defaultValue: 'darkblue' }
+  ],
+  methods: [
+    function init() {
+      this.SUPER();
+      
+      Movement.animate(15000, function() {
+        this.r = 0;
+      }.bind(this))(); 
+    }
+  ]
+});
+
+
+CLASS({
+  package: 'foam.demos.supersnake',
+  name: 'Mushroom',
+  extendsModel: 'foam.graphics.Circle',
+  requires: [ 'foam.graphics.Rectangle' ],
+  properties: [
+    { name: 'color', defaultValue: 'gray' },
+//    { name: 'startAngle', defaultValue: },
+    { name: 'endAngle', defaultValue: Math.PI }
+  ],
+  methods: [
+    function init() {
+      this.SUPER();
+
+      this.addChild(this.Rectangle.create({
+        x: -7.5,
+        y: -2,
+        width: 15,
+        height: 20,
+        background: this.color
+      }));
+    }
+  ]
+});
+
+
+CLASS({
+  package: 'foam.demos.supersnake',
+  name: 'Laser',
+  extendsModel: 'foam.graphics.Circle',
+  imports: [ 'game' ],
+  properties: [
+    { name: 'color',  defaultValue: 'yellow' },
+    { name: 'r',      defaultValue: 12 },
+    'vx', 'vy'
+  ],
+  methods: [
+    function init() {
+      this.SUPER();
+      
+      this.game.addChild(this);
+      Movement.animate(1500, function() {
+        this.x += 2000 * this.vx;
+        this.y += 2000 * this.vy;
+      }.bind(this))(); 
+    }
+  ]
+});
+
+
+CLASS({
+  package: 'foam.demos.supersnake',
   name: 'Game',
   extendsModel: 'foam.ui.View',
 
   requires: [
     'foam.util.Timer',
     'foam.demos.supersnake.Snake',
+    'foam.demos.supersnake.Mushroom',
+    'foam.demos.supersnake.Food',
     'foam.graphics.CView',
     'foam.graphics.Rectangle',
     'foam.physics.Collider'
   ],
 
   exports: [
-    'timer'
+    'timer',
+    'as game'
   ],
 
   properties: [
@@ -119,7 +200,9 @@ CLASS({
   listeners: [
     {
       name: 'tick',
-      code: function() {
+      code: function(_, _, _, t) {
+        if ( t % 200 == 0 ) this.addFood();
+        if ( Math.random() < 0.02 ) this.addMushroom();
       }
     }
   ],
@@ -144,6 +227,11 @@ CLASS({
       name: 'right',
       keyboardShortcuts: [ 'd' ],
       action: function() { this.snake.right(); }
+    },
+    {
+      name: 'fire',
+      keyboardShortcuts: [ ' ', 'x' ],
+      action: function() { this.snake.fire(); }
     }
   ],
 
@@ -153,8 +241,8 @@ CLASS({
     */}
   ],
 
-  methods: {
-    init: function() {
+  methods: [
+    function init() {
       this.SUPER();
 
 //      this.addChild(this.collider);
@@ -165,6 +253,22 @@ CLASS({
       // Setup Physics
       // this.collider.add(this.ball, this.lPaddle, this.rPaddle).start();
       // Movement.inertia(this.ball);
+    },
+
+    function addChild(c) {
+      this.table.addChild(c);
+    },
+
+    function addFood() {
+      var R = this.Snake.R;
+      var f = this.Food.create({x: Math.round(Math.random()*500/R)*2*R, y: Math.round(Math.random()*500/R)*2*R});
+      this.addChild(f);
+    },
+
+    function addMushroom() {
+      var R = this.Snake.R;
+      var m = this.Mushroom.create({x: Math.round(Math.random()*500/R)*2*R, y: Math.round(Math.random()*500/R)*2*R});
+      this.addChild(m);
     }
-  }
+  ]
 });
