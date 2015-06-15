@@ -682,7 +682,7 @@ CLASS({
               }
               setAcc(location.cells);
 
-              g.acc.data$.addListener(function(choice) { browser.location.cells = g.acc.label.toLowerCase(); });
+              g.acc.data$.addListener(function(choice) { browser.location.cells = g.acc.choice[1].toLowerCase(); });
               browser.location.cells$.addListener(setAcc);
 
               return g;
@@ -1227,6 +1227,7 @@ input[name="labels"] {
 
 div.gridViewControl {
   margin-top: 10px;
+  flex-shrink: 0;
 }
 
 .star-image {
