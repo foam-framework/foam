@@ -230,9 +230,9 @@ CLASS({
 
 
 // Allow Singleton mLang's to be desearialized to properly.
-var TrueExpr     = { finished__: true, arequire: function(ret) { return afuture.set(this); }, create: function() { return TRUE;  } };
-var FalseExpr    = { finished__: true, arequire: function(ret) { return afuture.set(this); }, create: function() { return FALSE; } };
-var IdentityExpr = { finished__: true, arequire: function(ret) { return afuture.set(this); }, create: function() { return IDENTITY; } };
+var TrueExpr     = { finished__: true, arequire: function(ret) { return afuture().set(this).get; }, create: function() { return TRUE;  } };
+var FalseExpr    = { finished__: true, arequire: function(ret) { return afuture().set(this).get; }, create: function() { return FALSE; } };
+var IdentityExpr = { finished__: true, arequire: function(ret) { return afuture().set(this).get; }, create: function() { return IDENTITY; } };
 
 /** An unary function. **/
 CLASS({

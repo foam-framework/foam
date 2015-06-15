@@ -28,9 +28,9 @@
 			{ name: 'completedCount', model_: 'IntProperty' },
 			{ name: 'activeCount',    model_: 'IntProperty', postSet: function (_, c) { this.toggle = !c; }},
 			{ name: 'toggle',         model_: 'BooleanProperty', postSet: function (_, n) {
-					if ( n === this.activeCount > 0 ) {
-						this.dao.update(SET(this.Todo.COMPLETED, n));
-					}
+				if (n === this.activeCount > 0) {
+					this.dao.update(SET(this.Todo.COMPLETED, n));
+				}
 			}},
 			{
 				name: 'query',
@@ -40,7 +40,7 @@
 			},
 			{
 				name: 'memento',
-				factory: function() { return this.WindowHashValue.create(); }
+				factory: function () { return this.WindowHashValue.create(); }
 			}
 		],
 		actions: [
@@ -98,7 +98,6 @@
 			<footer id="info">
 				<p>Double-click to edit a todo</p>
 				<p>Created by <a href="mailto:kgr@chromium.org">Kevin Greer</a></p>
-				{{{FOAM_POWERED}}}
 				<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
 			</footer>
 			<%
@@ -112,7 +111,7 @@
 							return t;
 						},
 						function (label) { return '/' + label.toLowerCase(); });
-				this.addInitializer(function() {
+				this.addInitializer(function () {
 					X.$('new-todo').focus();
 				});
 			%>

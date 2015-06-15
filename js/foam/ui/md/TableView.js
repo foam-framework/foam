@@ -29,7 +29,12 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'title',
-      defaultValue: 'Table'
+      defaultValue: 'Table',
+      postSet: function(old, nu) {
+        // Default title not shown when data is selected.
+        if ( this.hardSelection || ! this.$ ||  old === nu ) return;
+        this.updateTableCaption();
+      }
     },
     {
       name: 'data',
@@ -103,8 +108,6 @@ CLASS({
           (this.data && this.data.model);
     },
     function updateTableCaption() {
-      // TODO(markdittmer): Remove task visualization view(s).
-
       var out = TemplateOutput.create(this);
       this.tableCaptionHTML(out);
       this.$.querySelector('table-caption').innerHTML = out.toString();
@@ -146,10 +149,8 @@ CLASS({
     {
       name: 'editColumns',
       label: 'more_vert',
-      action: function(X, action, e) {
+      action: function(X, action) {
         if ( this.columnSelectionView.isOpen ) return;
-        this.columnSelectionView.x = e.clientX;
-        this.columnSelectionView.y = e.clientY;
         this.columnSelectionView.open();
       }
     }
