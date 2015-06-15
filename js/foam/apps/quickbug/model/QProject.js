@@ -61,7 +61,6 @@ CLASS({
   exports: [
     'IssueCommentDAO as qIssueCommentDAO',
     'IssueCommentDAO as QIssueCommentDAO',
-    'IssueDAO as issueDAO',
     'StatusDAO as issueStatusDAO',
     'StatusDAO as StatusDAO',
     'LabelDAO as issueLabelDAO',
