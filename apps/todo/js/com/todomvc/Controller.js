@@ -66,6 +66,8 @@
 		methods: {
 			init: function () {
 				this.SUPER();
+				// Support user who have old data persisted with the old style model_: 'Todo'
+				this.X.registerModel(this.Todo, 'Todo');
 				this.filteredDAO = this.dao = this.TodoDAO.create({
 					delegate: this.EasyDAO.create({model: this.Todo, seqNo: true, daoType: 'LOCAL', name: 'todos-foam'}) });
 				this.dao.listen(this.onDAOUpdate);
