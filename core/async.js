@@ -210,6 +210,7 @@ MODEL({
             waiters[i].apply(null, values);
           }
           waiters = undefined;
+          return this;
         },
 
         get: function(ret) {
