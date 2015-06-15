@@ -679,7 +679,7 @@ CLASS({
 
       if ( ConstantExpr.isInstance(newArg1) ) {
         var val = newArg1.f();
-        if ( typeof val === 'string' ) return compile_(val);
+        if ( typeof val === 'string' ) return compile_(val.toUpperCase());
       } else if ( Array.isArray(newArg1) ) {
         debugger;
       }
