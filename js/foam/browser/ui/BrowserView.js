@@ -194,13 +194,21 @@ CLASS({
               }
           <% } %>
 
+          <% var ANIMATION_TIME = '0.4s'; %>
+
           .browser-menu-container {
+            visibility: hidden;
             position: fixed;
             top: 0;
             bottom: 0;
             left: 0;
             right: 0;
             z-index: 10;
+            transition: visibility 0.01s linear <%= ANIMATION_TIME %>;
+          }
+          .browser-menu-container.menu-open {
+            visibility: visible;
+            transition: visibility <%= ANIMATION_TIME %> linear;
           }
           .browser-menu-inner {
             position: relative;
@@ -210,12 +218,17 @@ CLASS({
 
           .browser-menu-overlay {
             background-color: #000;
-            opacity: 0.4;
+            opacity: 0;
             position: absolute;
             height: 100%;
             top: 0;
             left: 0;
             width: 100%;
+            transition: opacity <%= ANIMATION_TIME %> ease;
+          }
+          .menu-open .browser-menu-overlay {
+            opacity: 0.4;
+            transition: opacity <%= ANIMATION_TIME %> ease;
           }
 
           .browser-menu {
@@ -224,8 +237,14 @@ CLASS({
             height: 100%;
             top: 0;
             left: 0;
+            transform: translate3d(-300px, 0, 0);
             overflow-y: auto;
             width: 300px;
+            transition: transform <%= ANIMATION_TIME %> ease;
+          }
+          .menu-open .browser-menu {
+            transform: translate3d(0, 0, 0);
+            transition: transform <%= ANIMATION_TIME %> ease;
           }
 
           .browser-body {
@@ -245,7 +264,7 @@ CLASS({
               </div>
             </div>
             <%
-              this.setClass('hidden', function() { return ! self.menuOpen; },
+              this.setClass('menu-open', function() { return self.menuOpen; },
                   this.id + '-menu-container');
                   this.on('click', this.onMenuTouch, this.id + '-menu-overlay');
             %>

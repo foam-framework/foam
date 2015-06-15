@@ -176,11 +176,11 @@ CLASS({
           }
           <span id="<%= this.id %>-header-actions" class="md-update-detail-view-header-actions">
             <%
-              var actions = this.data.model_.actions_;
+              var actions = this.data.model_.actions;
               if (actions && actions.length) {
                 for (var i = 0; i < actions.length; i++) {
                   if (actions[i].iconUrl) {
-                    out(this.createActionView(actions[i]));
+                    out(this.createTemplateView(actions[i].name, { X: this.Y }));
                   }
                 }
               }
