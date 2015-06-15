@@ -53,22 +53,6 @@ CLASS({
       defaultValue: false
     },
     {
-      model_: 'IntProperty',
-      name: 'x',
-      postSet: function(old, nu) {
-        if ( ! this.$ || old === nu ) return;
-        this.$.style.right = this.document.documentElement.clientWidth - nu;
-      }
-    },
-    {
-      model_: 'IntProperty',
-      name: 'y',
-      postSet: function(old, nu) {
-        if ( ! this.$ || old === nu ) return;
-        this.$.style.top = nu;
-      }
-    },
-    {
       name: 'height',
       defaultValue: 0,
       postSet: function(old, nu) {
@@ -91,13 +75,19 @@ CLASS({
       defaultValue: false,
       postSet: function(old, nu) {
         if ( ! this.$ || old === nu ) return;
-        var container = this.$.parentElement;
+        var container = this.$container;
         var style = container.style;
         if ( nu ) {
           style.top = style.bottom = style.left = style.right = '0px';
         } else {
           style.top = style.bottom = style.left = style.right = 'initial';
         }
+      }
+    },
+    {
+      name: '$container',
+      defaultValueFn: function() {
+        return this.document.querySelector('#' + this.id + '-container');
       }
     },
     {
@@ -131,8 +121,7 @@ CLASS({
       return this.isPropEnabled(prop) ? 'enabled' : '';
     },
     function getPositionStyle() {
-      return 'top:' + this.y + ';right:' +
-          (this.document.documentElement.clientWidth - this.x) + ';height:' +
+      return 'height:' +
           (this.height < 0 ? this.getFullHeight() + 'px' : this.height + 'px');
     },
     function getFullHeight() {
@@ -220,11 +209,10 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <popup-container>
+      <popup-container id="%%id-container"></popup-container>
         <popup id="%%id" style="<%= this.getPositionStyle() %>">
           <% this.toInnerHTML(out); %>
         </popup>
-      </popup-container>
     */},
     function toInnerHTML() {/*
       <% if ( this.model ) {
@@ -246,13 +234,14 @@ CLASS({
         font-size: 13px;
         font-weight: 400;
         display: block;
-        position: fixed;
-        border: 2px solid grey;
+        position: absolute;
         background: white;
         z-index: 1010;
         overflow: hidden;
         transition: height 0.25s cubic-bezier(0,.3,.8,1);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
+        top: 0px;
+        right: 0px;
       }
       popup item {
         display: block;
