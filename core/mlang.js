@@ -224,9 +224,9 @@ CLASS({
 
 
 // Allow Singleton mLang's to be desearialized to properly.
-var TrueExpr     = { create: function() { return TRUE;  } };
-var FalseExpr    = { create: function() { return FALSE; } };
-var IdentityExpr = { create: function() { return IDENTITY; } };
+var TrueExpr     = { arequire: function(ret) { ret(); }, create: function() { return TRUE;  } };
+var FalseExpr    = { arequire: function(ret) { ret(); }, create: function() { return FALSE; } };
+var IdentityExpr = { arequire: function(ret) { ret(); }, create: function() { return IDENTITY; } };
 
 /** An unary function. **/
 CLASS({
