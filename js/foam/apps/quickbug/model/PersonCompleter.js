@@ -29,7 +29,7 @@ CLASS({
   ],
   methods: {
     autocomplete: function(data) {
-      var src = this.PersonDAO;
+      var src = this.issuePersonDAO;
       var dao = src.where(
         data ?
           STARTS_WITH_IC(this.IssuePerson.NAME, data) :
