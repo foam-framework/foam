@@ -25,41 +25,12 @@ CLASS({
   ],
 
   properties: [
-    { name: 'model', factory: function() { return this.QIssueCommentUpdate; } }
-  ],
-
-  methods: {
-    init: function() {
-      this.data$.addListener(this.newData);
-      this.newData();
-      this.SUPER();
-    },
-    destroy: function() {
-      this.data = '';
-      this.data$.removeListener(this.newData);
-    }
-  },
-
-  listeners: [
-    {
-      name: 'newData',
-      code: function(src, topic, old, nu) {
-        if ( old ) old.removeListener(this.update);
-        if ( nu ) nu.addListener(this.update);
-      }
-    },
-    {
-      name: 'update',
-      code: function() {
-        if ( ! this.$ ) return;
-        this.$.innerHTML = this.render();
-      }
-    }
+    { name: 'model', factory: function() { return this.QIssueCommentUpdate; } },
   ],
 
   templates: [
-    { name: 'toHTML', template: '<div id="<%= this.id %>"></div>' },
-    function render() {/*
+    function toHTML() {/*
+<div id="<%= this.id %>">
 <% var data = this.data; %>
 <% if ( data && ( data.summary ||
    data.status ||
@@ -86,6 +57,7 @@ CLASS({
 <div class="qupdatesround4"></div>
 </div>
 <% } %>
+</div>
 */}
   ]
 });
