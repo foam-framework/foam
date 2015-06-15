@@ -688,11 +688,19 @@ CLASS({
     },
     function f(obj) {
       var a = this.arg1.f(obj);
+      if ( Array.isArray(a) )
+        return a.map(function(s) { return s.toUpperCase ? s.toUpperCase() : s; });
+
       return a && a.toUpperCase ? a.toUpperCase() : a ;
+    },
+    function toMQL() {
+      if ( ConstantExpr.isInstance(this.arg1) && typeof this.arg1.arg1 == 'string' )
+        return this.arg1.arg1.toUpperCase();
+      return this.arg1.toMQL();
     }
   ]
 });
 
 function UPPER(arg1) { return UpperExpr.create({arg1: compile_(arg1)}); }
 function EQ_IC(arg1, arg2) { return EQ(UPPER(arg1), UPPER(arg2)); }
-function IN_IC(arg1, arg2) { return IN(UPPER(arg1), UPPER(arg2)); }
+function IN_IC(arg1, arg2) { return IN(UPPER(arg1), arg2.map(UPPER)); }
