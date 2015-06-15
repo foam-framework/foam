@@ -26,6 +26,8 @@ __DATA({
     'foam.apps.quickbug.ui.QIssueLabelsView',
     'foam.ui.StringArrayView',
     'foam.ui.MultiLineStringArrayView',
-    'foam.ui.RelativeDateTimeFieldView'
+    'foam.ui.RelativeDateTimeFieldView',
+    'foam.apps.quickbug.ui.QIssueCommentAuthorView',
+    'foam.apps.quickbug.ui.QIssueCommentUpdateView'
   ]
 });
