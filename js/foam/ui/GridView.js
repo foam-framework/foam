@@ -21,23 +21,27 @@ CLASS({
 
   extendsModel: 'foam.ui.AbstractDAOView',
 
+  requires: [
+    'foam.ui.ChoiceView'
+  ],
+
   properties: [
     {
       name: 'row',
       type: 'foam.ui.ChoiceView',
-      factory: function() { return this.Y.ChoiceView.create(); }
+      factory: function() { return this.ChoiceView.create(); }
     },
     {
       name: 'col',
       label: 'column',
       type: 'foam.ui.ChoiceView',
-      factory: function() { return this.Y.ChoiceView.create(); }
+      factory: function() { return this.ChoiceView.create(); }
     },
     {
       name: 'acc',
       label: 'accumulator',
       type: 'foam.ui.ChoiceView',
-      factory: function() { return this.Y.ChoiceView.create(); }
+      factory: function() { return this.ChoiceView.create(); }
     },
     {
       name: 'accChoices',
@@ -58,7 +62,7 @@ CLASS({
     {
       name: 'grid',
       type: 'GridByExpr',
-      factory: function() { return this.Y.GridByExpr.create(); }
+      factory: function() { return GridByExpr.create(undefined, this.Y); }
     }
   ],
 
