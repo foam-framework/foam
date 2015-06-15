@@ -21,6 +21,10 @@ CLASS({
   extendsModel: 'foam.ui.PopupView',
   help: 'Default autocomplete popup.',
 
+  requires: [
+    'foam.ui.ChoiceListView'
+  ],
+
   properties: [
     'closeTimeout',
     'autocompleter',
@@ -78,7 +82,7 @@ CLASS({
     },
 
     makeView: function() {
-      return this.X.ChoiceListView.create({
+      return this.ChoiceListView.create({
         dao: this.completer.autocompleteDao$Proxy,
         extraClassName: 'autocomplete',
         orientation: 'vertical',
