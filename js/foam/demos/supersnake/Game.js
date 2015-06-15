@@ -120,7 +120,7 @@ CLASS({
 
       this.addChild(this.stem = this.Rectangle.create({
         x: -7.5,
-        y: -2,
+        y: -0.5,
         width: 15,
         height: 20,
         background: 'gray'
