@@ -18,7 +18,8 @@
 CLASS({
   package: 'foam.demos.supersnake',
   name: 'Scale',
-  extendsModel: 'foam.graphics.Circle'
+  extendsModel: 'foam.graphics.Circle',
+  traits: [ 'foam.physics.Physical' ]
 });
 
 
@@ -57,6 +58,9 @@ CLASS({
     function right() { this.vy =  0; this.vx =  1; },
     function fire () {
       this.Laser.create({x: this.sx, y: this.sy, vx: this.vx, vy: this.vy});
+    },
+    function intersects(o) {
+      return this.children[this.children.length-1].intersects(o);
     }
   ],
   listeners: [
@@ -256,9 +260,14 @@ CLASS({
       this.timer.start();
 
       // Setup Physics
-//      this.collider.add(this.snake);
+      this.collider.add(this.snake);
       this.collider.collide = function(o1, o2) {
         if ( this.Laser.isInstance(o2) ) {
+          var tmp = o1;
+          o1 = o2;
+          o2 = tmp;
+        }
+        if ( this.Snake.isInstance(o2) ) {
           var tmp = o1;
           o1 = o2;
           o2 = tmp;
@@ -270,15 +279,28 @@ CLASS({
               o2.scaleX = o2.scaleY = 30;
               o2.alpha = 0;
               o2.stem.alpha = 0;
-            })();
+            }/*, function() { this.table.removeChild(o2); }.bind(this)*/)();
           } else if ( this.Food.isInstance(o2) ) {
-            o2.r = 0;
-            this.snake.length++;
           }
         }
-        console.log('BANG', o1, o2);
+        if ( this.Snake.isInstance(o1) && this.Mushroom.isInstance(o2) ) {
+          this.gameOver();
+        }
+        if ( this.Snake.isInstance(o1) && this.Food.isInstance(o2) ) {
+          this.table.removeChild(o2);
+          this.snake.length++;
+        }
+//        console.log('BANG', o1, o2);
       }.bind(this);
       this.collider.start();
+      
+      window.game = this;
+    },
+
+    function gameOver() {
+      this.timer.stop();
+//      this.collider.stop(); // TODO: add stop() method to collider
+      this.table.background='orange';
     },
 
     function addChild(c) {
