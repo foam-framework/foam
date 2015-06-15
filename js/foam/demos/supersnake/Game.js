@@ -82,6 +82,7 @@ CLASS({
   package: 'foam.demos.supersnake',
   name: 'Food',
   extendsModel: 'foam.graphics.Circle',
+  traits: [ 'foam.physics.Physical' ],
   properties: [
     { name: 'color', defaultValue: 'darkblue' }
   ],
@@ -101,22 +102,24 @@ CLASS({
   package: 'foam.demos.supersnake',
   name: 'Mushroom',
   extendsModel: 'foam.graphics.Circle',
+  traits: [ 'foam.physics.Physical' ],
   requires: [ 'foam.graphics.Rectangle' ],
   properties: [
-    { name: 'color', defaultValue: 'gray' },
+    { name: 'color', defaultValue: 'red' },
 //    { name: 'startAngle', defaultValue: },
-    { name: 'endAngle', defaultValue: Math.PI }
+    { name: 'endAngle', defaultValue: Math.PI },
+    'stem'
   ],
   methods: [
     function init() {
       this.SUPER();
 
-      this.addChild(this.Rectangle.create({
+      this.addChild(this.stem = this.Rectangle.create({
         x: -7.5,
         y: -2,
         width: 15,
         height: 20,
-        background: this.color
+        background: 'gray'
       }));
     }
   ]
@@ -127,6 +130,7 @@ CLASS({
   package: 'foam.demos.supersnake',
   name: 'Laser',
   extendsModel: 'foam.graphics.Circle',
+  traits: [ 'foam.physics.Physical' ],
   imports: [ 'game' ],
   properties: [
     { name: 'color',  defaultValue: 'yellow' },
@@ -138,7 +142,7 @@ CLASS({
       this.SUPER();
       
       this.game.addChild(this);
-      Movement.animate(1500, function() {
+      Movement.animate(5000, function() {
         this.x += 2000 * this.vx;
         this.y += 2000 * this.vy;
       }.bind(this))(); 
@@ -154,6 +158,7 @@ CLASS({
 
   requires: [
     'foam.util.Timer',
+    'foam.demos.supersnake.Laser',
     'foam.demos.supersnake.Snake',
     'foam.demos.supersnake.Mushroom',
     'foam.demos.supersnake.Food',
@@ -251,12 +256,34 @@ CLASS({
       this.timer.start();
 
       // Setup Physics
-      // this.collider.add(this.ball, this.lPaddle, this.rPaddle).start();
-      // Movement.inertia(this.ball);
+//      this.collider.add(this.snake);
+      this.collider.collide = function(o1, o2) {
+        if ( this.Laser.isInstance(o2) ) {
+          var tmp = o1;
+          o1 = o2;
+          o2 = tmp;
+        }
+        if ( this.Laser.isInstance(o1) ) {
+          if ( this.Mushroom.isInstance(o2) ) {
+            o2.stem.background = 'red';
+            Movement.animate(200, function() {
+              o2.scaleX = o2.scaleY = 30;
+              o2.alpha = 0;
+              o2.stem.alpha = 0;
+            })();
+          } else if ( this.Food.isInstance(o2) ) {
+            o2.r = 0;
+            this.snake.length++;
+          }
+        }
+        console.log('BANG', o1, o2);
+      }.bind(this);
+      this.collider.start();
     },
 
     function addChild(c) {
       this.table.addChild(c);
+      if ( c.intersects ) this.collider.add(c);
     },
 
     function addFood() {
