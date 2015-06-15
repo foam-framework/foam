@@ -138,9 +138,10 @@ var FALSE = (FOAM({
   }
 })).create();
 
+
 var IDENTITY = (FOAM({
   model_: 'Model',
-  name: 'IDENTITY',
+  name: 'IdentityExpr',
   extendsModel: 'Expr',
 
   documentation: 'The identity expression, which passes through its input unchanged.',
@@ -221,6 +222,11 @@ CLASS({
   }
 });
 
+
+// Allow Singleton mLang's to be desearialized to properly.
+var TrueExpr     = { create: function() { return TRUE;  } };
+var FalseExpr    = { create: function() { return FALSE; } };
+var IdentityExpr = { create: function() { return IDENTITY; } };
 
 /** An unary function. **/
 CLASS({
