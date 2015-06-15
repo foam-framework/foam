@@ -114,11 +114,13 @@ var TRUE = (FOAM({
   documentation: 'Model for the primitive true value.',
 
   methods: {
-    toString: function() { return '<true>'; },
-    toSQL:    function() { return '( 1 = 1 )'; },
-    toMQL:    function() { return ''; },
-    toBQL:    function() { return ''; },
-    f:        function() { return true; }
+    clone:     function() { return this; },
+    deepClone: function() { return this; },
+    toString:  function() { return '<true>'; },
+    toSQL:     function() { return '( 1 = 1 )'; },
+    toMQL:     function() { return ''; },
+    toBQL:     function() { return ''; },
+    f:         function() { return true; }
   }
 })).create();
 
@@ -131,6 +133,8 @@ var FALSE = (FOAM({
   documentation: 'Model for the primitive false value.',
 
   methods: {
+    clone:     function() { return this; },
+    deepClone: function() { return this; },
     toSQL: function(out) { return '( 1 <> 1 )'; },
     toMQL: function(out) { return '<false>'; },
     toBQL: function(out) { return '<false>'; },
@@ -147,6 +151,8 @@ var IDENTITY = (FOAM({
   documentation: 'The identity expression, which passes through its input unchanged.',
 
   methods: {
+    clone:     function() { return this; },
+    deepClone: function() { return this; },
     f: function(obj) { return obj; },
     toString: function() { return 'IDENTITY'; }
   }
@@ -225,8 +231,8 @@ CLASS({
 
 // Allow Singleton mLang's to be desearialized to properly.
 var TrueExpr     = { arequire: function(ret) { return afuture.set(this); }, create: function() { return TRUE;  } };
-var FalseExpr    = { arequire: function(ret) { ret && ret(); }, create: function() { return FALSE; } };
-var IdentityExpr = { arequire: function(ret) { ret && ret(); }, create: function() { return IDENTITY; } };
+var FalseExpr    = { arequire: function(ret) { return afuture.set(this); }, create: function() { return FALSE; } };
+var IdentityExpr = { arequire: function(ret) { return afuture.set(this); }, create: function() { return IDENTITY; } };
 
 /** An unary function. **/
 CLASS({
