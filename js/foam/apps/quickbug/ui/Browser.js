@@ -274,6 +274,16 @@ CLASS({
     {
       name: 'mementoMgr',
       factory: function() { return this.MementoMgr.create({mementoValue: this.memento$}); }
+    },
+    {
+      model_: 'foam.core.types.DocumentInstallProperty',
+      name: 'installFOAMCSS',
+      documentInstallFn: function(X) {
+        var e = X.document.createElement('link');
+        e.setAttribute('rel', 'stylesheet');
+        e.setAttribute('href', 'foam.css');
+        X.document.head.insertBefore(e, X.document.head.firstElementChild);
+      }
     }
   ],
 
