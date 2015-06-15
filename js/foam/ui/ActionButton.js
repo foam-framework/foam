@@ -80,7 +80,7 @@ CLASS({
       var self = this;
 
       this.on('click', function() {
-        self.action.maybeCall(self.X, self.data);
+        self.action.callMeMaybe(self.X, self.data);
       }, this.id);
 
       this.setAttribute('disabled', function() {

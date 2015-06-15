@@ -137,7 +137,7 @@ CLASS({
   listeners: [
     {
       name: 'tapClick',
-      code: function() { this.action.maybeCall(this.X, this.data); }
+      code: function() { this.action.callMeMaybe(this.X, this.data); }
     }
   ],
 
