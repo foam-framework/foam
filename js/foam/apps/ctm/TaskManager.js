@@ -132,7 +132,14 @@ CLASS({
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'filteredTasks',
-      view: { factory_: 'foam.ui.md.TableView', scrollEnabled: true }
+      view: { factory_: 'foam.ui.md.TableView', scrollEnabled: true },
+      onDAOUpdate: function() {
+        this.updateFilteredCount();
+      }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'filteredCount'
     },
     {
       name: 'taskControllers_',
@@ -181,6 +188,18 @@ CLASS({
       name: 'tick',
       isMerged: 2000,
       code: function() { this.clock = ! this.clock; this.tick(); }
+    },
+    {
+      name: 'updateFilteredCount',
+      isFramed: true,
+      code: function() {
+        this.filteredTasks.select(COUNT())(this.updateFilteredCount_);
+      }
+    },
+    {
+      name: 'updateFilteredCount_',
+      isFramed: true,
+      code: function(c) { this.filteredCount = c.count; }
     }
   ]
 });
