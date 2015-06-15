@@ -25,6 +25,7 @@ CLASS({
     'foam.ui.AlternateView',
     'foam.ui.ActionButton',
     'foam.ui.ActionLink',
+    'foam.ui.GridView',
     'foam.ui.ToolbarView',
     'foam.ui.StaticHTML',
     'Action',
