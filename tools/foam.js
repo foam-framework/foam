@@ -17,41 +17,64 @@
 
 require('../core/bootFOAMnode.js');
 
-arequire(process.argv[2])(function(model) {
-  if ( ! model ) {
-    console.log('ERRROR: Could not find model', process.argv[2]);
-    process.exit(1);
-  }
+(function() {
+  var FOAMargs = process.argv.slice(2);
 
-  function usage(m) {
-    console.log(m.id, ' options:');
-    for ( var i = 0 ; i < m.properties.length ; i++ ) {
-      console.log("  ", m.properties[i].name, ': ', m.properties[i].help);
-    }
-    console.log('');
-    console.log('');
-    if ( m.extendsModel ) usage(X.lookup(m.extendsModel));
-  }
+  if ( FOAMargs[0].indexOf('--classpath') == 0 ) {
+    var cp = FOAMargs.shift();
 
-  if ( process.argv[3] == '--help' ) {
-    usage(model);
-    return;
-  }
-
-  var args = {};
-  for ( var i = 3; i < process.argv.length; i++ ) {
-    var regex = /[^\\]=/g;
-    var matched = regex.exec(process.argv[i]);
-    if ( matched ) {
-      var key = process.argv[i].substring(0, regex.lastIndex - 1)
-      var value = process.argv[i].substring(regex.lastIndex);
+    if ( cp[11] === '=') {
+      cp = cp.substring(12).split(',');
     } else {
-      key = process.argv[i];
-      value = true;
+      cp = (FOAMargs.shift()).split(',');
     }
 
-    args[key] = value;
+    for ( var i = 0 ; i < cp.length ; i++ ) {
+      X.ModelDAO = X.foam.core.bootstrap.OrDAO.create({
+        delegate: X.node.dao.ModelFileDAO.create({
+          classpath: cp
+        }),
+        primary: X.ModelDAO
+      });
+    }
   }
 
-  model.create(args).execute();
-});
+  arequire(FOAMargs[0])(function(model) {
+    if ( ! model ) {
+      console.log('ERRROR: Could not find model', FOAMargs[0]);
+      process.exit(1);
+    }
+
+    function usage(m) {
+      console.log(m.id, ' options:');
+      for ( var i = 0 ; i < m.properties.length ; i++ ) {
+        console.log("  ", m.properties[i].name, ': ', m.properties[i].help);
+      }
+      console.log('');
+      console.log('');
+      if ( m.extendsModel ) usage(X.lookup(m.extendsModel));
+    }
+
+    if ( FOAMargs[1] == '--help' ) {
+      usage(model);
+      return;
+    }
+
+    var args = {};
+    for ( var i = 1; i < FOAMargs.length; i++ ) {
+      var regex = /[^\\]=/g;
+      var matched = regex.exec(FOAMargs[i]);
+      if ( matched ) {
+        var key = FOAMargs[i].substring(0, regex.lastIndex - 1)
+        var value = FOAMargs[i].substring(regex.lastIndex);
+      } else {
+        key = FOAMargs[i];
+        value = true;
+      }
+
+      args[key] = value;
+    }
+
+    model.create(args).execute();
+  });
+})();
