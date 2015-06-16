@@ -85,6 +85,7 @@ console.assert(false, "Expected error: Falsity is falsity.");</code>
 <br><br>Card Deck:<br>
   <foam model="foam.flow.CardDeck">
     <card>Card1 blah</card>
+    <card><foam model="foam.demos.ExpandingCard"/></card>
     <card>Card2 blah<br>Line2<br>Line3</card>
     <card>Card3 blah</card>
     <card>Card4 blah</card>
