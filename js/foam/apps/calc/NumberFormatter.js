@@ -29,10 +29,10 @@ CLASS({
     {
       name: 'init',
       code: function() {
-        if  ( chrome && chrome.i18n ) {
+        if  ( window.chrome && chrome.i18n ) {
           chrome.i18n.getAcceptLanguages(function(m){ this.useComma = (0.5).toLocaleString(m[0]).substring(1,2) == ','; }.bind(this))
         } else {
-          var lang = window.navigator.languages[0];
+          var lang = window.navigator.languages ? window.navigator.languages[0] : window.navigator.language;
           this.useComma = (0.5).toLocaleString(lang).substring(1,2) == ',';
         }
       }
