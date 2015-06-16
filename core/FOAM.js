@@ -158,7 +158,7 @@ var arequire = function(modelName, opt_X) {
     return future.get;
   }
 
-  return model.arequire()
+  return model.arequire();
 }
 
 var FOAM_POWERED = '<a style="text-decoration:none;" href="https://github.com/foam-framework/foam/" target="_blank">\
