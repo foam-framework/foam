@@ -43,7 +43,7 @@ CLASS({
           </div>
           <%
             var l = function(_, _, _, degrees) {
-              if ( this.degView.canvas ) {
+              if ( this.degView.view ) {
                 this.degView.view.paint();
                 this.radView.view.paint();
               }

@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+// TODO: add intersects method to Circle
+
 CLASS({
   package: 'foam.demos.supersnake',
   name: 'Scale',
@@ -49,7 +51,7 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      
+
       this.timer.i$.addListener(this.tick);
     },
     function up()    { this.vy = -1; this.vx =  0; },
@@ -93,15 +95,15 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      
+
       Movement.animate(15000, function() {
         this.r = 0;
-      }.bind(this))(); 
+      }.bind(this))();
     }
   ]
 });
 
-
+// TODO: add explode method
 CLASS({
   package: 'foam.demos.supersnake',
   name: 'Mushroom',
@@ -110,7 +112,6 @@ CLASS({
   requires: [ 'foam.graphics.Rectangle' ],
   properties: [
     { name: 'color', defaultValue: 'red' },
-//    { name: 'startAngle', defaultValue: },
     { name: 'endAngle', defaultValue: Math.PI },
     'stem'
   ],
@@ -144,12 +145,12 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      
+
       this.game.addChild(this);
       Movement.animate(5000, function() {
         this.x += 2000 * this.vx;
         this.y += 2000 * this.vy;
-      }.bind(this))(); 
+      }.bind(this))();
     }
   ]
 });
@@ -278,6 +279,7 @@ CLASS({
             Movement.animate(200, function() {
               o2.scaleX = o2.scaleY = 30;
               o2.alpha = 0;
+              o2.a = Math.PI * 1.5;
               o2.stem.alpha = 0;
             }/*, function() { this.table.removeChild(o2); }.bind(this)*/)();
           } else if ( this.Food.isInstance(o2) ) {
@@ -293,7 +295,7 @@ CLASS({
 //        console.log('BANG', o1, o2);
       }.bind(this);
       this.collider.start();
-      
+
       window.game = this;
     },
 
