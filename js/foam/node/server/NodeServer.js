@@ -39,6 +39,11 @@ CLASS({
       this.server.listen(this.port);
       console.log('Server running on port ' + this.port);
     },
+    // This method allows NodeServer (and subclasses) to be launched directly
+    // by tools/foam.js.
+    execute: function() {
+      this.launch();
+    },
     attachHandler: function(h) {
       this.handlers.push(h);
     }
