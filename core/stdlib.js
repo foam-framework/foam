@@ -593,6 +593,11 @@ MODEL({
       return 0 == this.lastIndexOf(a, 0);
     },
 
+    // Polyfil
+    String.prototype.endsWith || function endsWith(a) {
+      return (this.length - a.length) == this.lastIndexOf(a);
+    },
+
     function startsWithIC(a) {
       if ( a.length > this.length ) return false;
       var l = a.length;
