@@ -114,6 +114,17 @@ CLASS({
           Larger expanded View<br>
           With more stuff<br>
           And more stuff<br>
+          And more stuff<br>
+          And more stuff<br>
+          And more stuff<br>
+          And more stuff<br>
+          And more stuff<br>
+          And more stuff<br>
+          And more stuff<br>
+          And more stuff<br>
+          And more stuff<br>
+          And more stuff<br>
+          And more stuff<br>
           $$toggle{model_: 'foam.ui.md.FlatButton'}
         </div>
       </div>
