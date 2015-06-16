@@ -21,6 +21,11 @@ CLASS({
   extendsModel: 'foam.ui.SimpleView',
   traits: ['foam.ui.md.MDStyleTrait'],
 
+  requires: [
+    'foam.ui.QueryParserAutocompleter',
+    'foam.ui.md.AutocompleteView',
+  ],
+
   properties: [
     {
       name: 'className',
@@ -58,6 +63,26 @@ CLASS({
         ['EACH_KEYSTROKE', 'Every keystroke'],
         ['ENTER_ONLY', 'Enter only']
       ]
+    },
+    {
+      name: 'autocomplete',
+      documentation: 'Set this to true to enable autocomplete. Off by ' +
+          'default, unless the $$DOC{ref:".prop", label: "property"} has an ' +
+          '$$DOC{ref:"Property.autocompleter"} set.',
+      defaultValueFn: function() { return !! this.prop.autocompleter; }
+    },
+    {
+      model_: 'FactoryProperty',
+      name: 'autocompleter',
+      defaultValue: 'foam.ui.QueryParserAutocompleter',
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'acRowView',
+      defaultValue: 'foam.ui.md.DetailView'
+    },
+    {
+      name: 'autocompleteView',
     },
     { model_: 'IntProperty', name: 'displayHeight' },
     { model_: 'IntProperty', name: 'displayWidth' },
@@ -144,7 +169,39 @@ CLASS({
       } else {
         Events.follow(this.data$, this.softData$);
       }
+
+      this.setupAutocomplete();
     },
+
+    setupAutocomplete: function() {
+      if ( ! this.autocomplete ) return;
+      var view = this.autocompleteView = this.AutocompleteView.create({
+        autocompleter: this.autocompleter({
+          prop: this.prop
+        }, this.Y),
+        target: this
+      });
+
+      this.bindAutocompleteEvents(view);
+    },
+
+    bindAutocompleteEvents: function(view) {
+      this.$input.addEventListener('blur', function() {
+        view.publish('blur');
+      });
+      this.$input.addEventListener('input', function() {
+        view.autocomplete(this.softData);
+      }.bind(this));
+      this.$input.addEventListener('focus', function() {
+        view.autocomplete(this.softData);
+      }.bind(this));
+    },
+
+    onAutocomplete: function(data) {
+      this.softData = data;
+      this.onChange();
+    },
+
     focus: function() {
       this.$input.focus();
     },
@@ -325,6 +382,11 @@ CLASS({
     {
       name: 'onKeyDown',
       code: function(e) {
+        if ( this.autocompleter ) {
+          this.publish(['keydown'], e);
+          return;
+        }
+
         // Do not update-on-enter when growable and/or displayHeight > 1.
         if ( e.keyCode === 13 && ! this.growable && this.displayHeight <= 1 )
           this.data = this.softData;
