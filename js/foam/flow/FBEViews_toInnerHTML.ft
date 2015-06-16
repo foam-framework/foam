@@ -437,7 +437,7 @@
           margin: 10px;
           border-radius: 3px;
         }
-        h2 {
+        .md-card h2 {
            text-transform: uppercase;
         }
       */}
@@ -499,6 +499,7 @@
   name: 'ToggleCardPersonView',
   package: 'foam.sandbox',
   extendsModel: 'foam.sandbox.CardPersonView',
+  requires: ['foam.ui.md.CheckboxView'],
 
   properties: [
     {
