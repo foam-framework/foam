@@ -134,7 +134,7 @@ CLASS({
     <div class="qissueheader">
       <table cellpadding="0" cellspacing="0" width="100%" class="qpreviewtable"><tbody>
           <tr>
-            <td colspan=2 class="qvt qh3" nowrap="nowrap" style="padding:0 5px">
+          <td colspan=2 class="qvt qh3" style="padding:0 5px">
               $$starred
               Issue $$id{ mode: 'read-only' }
               $$summary{ mode: 'read-only', escapeHTML: true }

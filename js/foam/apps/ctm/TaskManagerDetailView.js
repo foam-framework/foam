@@ -22,6 +22,16 @@ CLASS({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( old && old.filteredCount$ )
+          old.filteredCount$.removeListener(this.onFilteredCountChange);
+        if ( nu && nu.filteredCount$ )
+          nu.filteredCount$.addListener(this.onFilteredCountChange);
+      }
+    },
+    {
       name: 'hardSelection',
       defaultValue: null,
       postSet: function(old, nu) {
@@ -49,10 +59,21 @@ CLASS({
     }
   ],
 
+  listeners: [
+    {
+      name: 'onFilteredCountChange',
+      isFramed: true,
+      code: function(_, __, old, nu) {
+        if ( ! this.filteredTasksView || old === nu ) return;
+        this.filteredTasksView.title = nu + ' Tasks';
+      }
+    }
+  ],
+
   templates: [
     function toHTML() {/*
       <task-manager id="%%id">
-        <tm-header class="md-card" style="display: flex">
+        <tm-header class="md-card-shell" style="display: flex">
           <header-text>Task Manager</header-text>
           <search-box>
             <chrome>
@@ -107,13 +128,14 @@ CLASS({
             </local-stats>
           </stats>
           <actions>
-            <a target="_blank" href="chrome://memory-redirect">Stats for nerds</a>
           </actions>
         </tm-footer>
+        <a id="stats-for-nerds" target="_blank" href="chrome://memory-redirect">Stats for nerds</a>
       </task-manager>
     */},
     function CSS() {/*
-
+      @import url(http://fonts.googleapis.com/css?family=Roboto:400,500);
+      @import url(https://fonts.googleapis.com/icon?family=Material+Icons);
       body, task-manager {
         width: 100%;
         height: 100%;
@@ -123,6 +145,7 @@ CLASS({
         font-weight: 400;
       }
       task-manager {
+        background: rgb(238,238,238);
         flex-direction: column;
       }
       task-manager .tableView:focus,
@@ -139,6 +162,7 @@ CLASS({
       }
       task-manager tm-header {
         height: 64px;
+        padding: 0px 14px 0px 24px;
         justify-content: space-between;
         align-items: center;
       }
@@ -151,7 +175,7 @@ CLASS({
         position: relative;
       }
       task-manager tm-header search-box input {
-        color: rgba(0, 0, 0, 0.54);
+        color: rgba(0, 0, 0, 0.87);
         font-size: 13px;
         font-weight: 400;
         padding-left: 26px;
@@ -254,6 +278,11 @@ CLASS({
       task-manager img {
         margin-right: 4px;
         vertical-align: text-bottom;
+      }
+      #stats-for-nerds {
+        flex-grow: 0;
+        flex-shrink: 0;
+        margin: 0px 10px 10px 10px;
       }
     */}
   ]

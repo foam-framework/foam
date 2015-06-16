@@ -448,7 +448,9 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
           }
 
           // create property constant
-          if ( p.name ) this[constantize(p.name)] = newValue[i];
+          if ( p.name && ! this[constantize(p.name)] ) {
+            this[constantize(p.name)] = newValue[i];
+          }
         }
 
         return newValue;

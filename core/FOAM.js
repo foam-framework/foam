@@ -191,22 +191,20 @@ function registerModel(model, opt_name, fastMode) {
     package = a.join('.');
   }
 
-  var path = packagePath(root, package);
-  if ( fastMode )
-    path[name] = model;
-  else
-    Object.defineProperty(path, name, { value: model, configurable: true });
+  var modelRegName = (package ? package + '.' : '') + name;
 
-  // TODO: this is broken
-  // update the cache if this model was already FOAM.lookup'd
-  if ( root.lookupCache_ ) {
-    var cache = root.lookupCache_;
-    var modelRegName = (package ? package + '.' : '') + name;
-//    if ( cache[modelRegName] ) {
-      // console.log("registerModel: in lookupCache_, replaced model ", modelRegName );
-      cache[modelRegName] = model;
-//    }
+  if ( root === GLOBAL || root === X ) {
+    var path = packagePath(root, package);
+    if ( fastMode )
+      path[name] = model;
+    else
+      Object.defineProperty(path, name, { value: model, configurable: true });
   }
+
+  if ( ! Object.hasOwnProperty.call(this, 'lookupCache_') ) {
+    this.lookupCache_ = Object.create(this.lookupCache_ || Object.prototype);
+  }
+  this.lookupCache_[modelRegName] = model;
 
   this.onRegisterModel(model);
 }

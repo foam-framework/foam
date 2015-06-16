@@ -28,9 +28,9 @@
 			{ name: 'completedCount', model_: 'IntProperty' },
 			{ name: 'activeCount',    model_: 'IntProperty', postSet: function (_, c) { this.toggle = !c; }},
 			{ name: 'toggle',         model_: 'BooleanProperty', postSet: function (_, n) {
-					if ( n === this.activeCount > 0 ) {
-						this.dao.update(SET(this.Todo.COMPLETED, n));
-					}
+				if (n === this.activeCount > 0) {
+					this.dao.update(SET(this.Todo.COMPLETED, n));
+				}
 			}},
 			{
 				name: 'query',
@@ -40,7 +40,7 @@
 			},
 			{
 				name: 'memento',
-				factory: function() { return this.WindowHashValue.create(); }
+				factory: function () { return this.WindowHashValue.create(); }
 			}
 		],
 		actions: [
@@ -66,6 +66,8 @@
 		methods: {
 			init: function () {
 				this.SUPER();
+				// Support user who have old data persisted with the old style model_: 'Todo'
+				this.X.registerModel(this.Todo, 'Todo');
 				this.filteredDAO = this.dao = this.TodoDAO.create({
 					delegate: this.EasyDAO.create({model: this.Todo, seqNo: true, daoType: 'LOCAL', name: 'todos-foam'}) });
 				this.dao.listen(this.onDAOUpdate);
@@ -96,7 +98,6 @@
 			<footer id="info">
 				<p>Double-click to edit a todo</p>
 				<p>Created by <a href="mailto:kgr@chromium.org">Kevin Greer</a></p>
-				{{{FOAM_POWERED}}}
 				<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
 			</footer>
 			<%
@@ -110,7 +111,7 @@
 							return t;
 						},
 						function (label) { return '/' + label.toLowerCase(); });
-				this.addInitializer(function() {
+				this.addInitializer(function () {
 					X.$('new-todo').focus();
 				});
 			%>

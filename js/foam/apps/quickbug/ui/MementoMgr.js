@@ -22,10 +22,12 @@ CLASS({
   actions: [
     {
       name: 'back',
+      label: '',
       iconUrl: 'images/back.png'
     },
     {
       name: 'forth',
+      label: '',
       iconUrl: 'images/forth.png'
     }
   ]

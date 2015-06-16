@@ -10,15 +10,15 @@
 		properties: [
 			{
 				name: 'choices',
-				factory: function() {
-					return [ [ TRUE, 'All' ], [ NOT(this.Todo.COMPLETED), 'Active' ], [ this.Todo.COMPLETED, 'Completed' ] ];
+				factory: function () {
+					return [[TRUE, 'All'], [NOT(this.Todo.COMPLETED), 'Active'], [this.Todo.COMPLETED, 'Completed']];
 				}
 			}
 		],
 		methods: [
 			function choiceToHTML(id, choice) {
 				var self = this;
-				this.setClass('selected', function() { return self.text === choice[1]; }, id);
+				this.setClass('selected', function () { return self.text === choice[1]; }, id);
 				return '<li><a id="' + id + '" class="choice">' + choice[1] + '</a></li>';
 			}
 		]

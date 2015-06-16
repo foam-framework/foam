@@ -25,6 +25,7 @@ CLASS({
     'foam.ui.AlternateView',
     'foam.ui.ActionButton',
     'foam.ui.ActionLink',
+    'foam.ui.GridView',
     'foam.ui.ToolbarView',
     'foam.ui.StaticHTML',
     'Action',
@@ -274,6 +275,16 @@ CLASS({
     {
       name: 'mementoMgr',
       factory: function() { return this.MementoMgr.create({mementoValue: this.memento$}); }
+    },
+    {
+      model_: 'foam.core.types.DocumentInstallProperty',
+      name: 'installFOAMCSS',
+      documentInstallFn: function(X) {
+        var e = X.document.createElement('link');
+        e.setAttribute('rel', 'stylesheet');
+        e.setAttribute('href', 'foam.css');
+        X.document.head.insertBefore(e, X.document.head.firstElementChild);
+      }
     }
   ],
 
@@ -671,7 +682,7 @@ CLASS({
               }
               setAcc(location.cells);
 
-              g.acc.data$.addListener(function(choice) { browser.location.cells = g.acc.label.toLowerCase(); });
+              g.acc.data$.addListener(function(choice) { browser.location.cells = g.acc.choice[1].toLowerCase(); });
               browser.location.cells$.addListener(setAcc);
 
               return g;
@@ -1216,6 +1227,7 @@ input[name="labels"] {
 
 div.gridViewControl {
   margin-top: 10px;
+  flex-shrink: 0;
 }
 
 .star-image {

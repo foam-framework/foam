@@ -16,6 +16,7 @@ md-table table-header {
   align-items: center;
   justify-content: space-between;
   height: 64px;
+  position: relative;
 }
 
 md-table table-header.selection {

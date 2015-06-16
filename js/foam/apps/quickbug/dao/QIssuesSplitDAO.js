@@ -146,18 +146,15 @@ CLASS({
 
      newQuery: function(sink, options, query, order, bufOptions, future) {
        var daoFuture = afuture();
-       var buf = this.MDAO.create({ model: this.model });
-       // TODO: switch to MDAO's 'autoIndex: true' feature when improved.
-       /*
-       var auto = AutoIndex.create(buf);
+       var buf = this.MDAO.create({ model: this.model, autoIndex: true });
+       // Set an initial index for the current sort order.
+       if ( options && options.order ) {
+         var prop = options.order
+         if ( DescExpr.isInstance(prop) ) prop = prop.arg1;
 
-       // Auto index the buffer, but set an initial index for the current
-       // sort order.
-       if ( options && options.order && Property.isInstance(options.order) ) {
-         auto.addIndex(options.order);
-         buf.addRawIndex(auto);
+         if ( Property.isInstance(prop) )
+           buf.addIndex(prop);
        }
-       */
 
        var cacheEntry = [query, order, this.FutureDAO.create({future: daoFuture.get})];
        if ( this.queryCache.length >= this.queryCount ) this.queryCache.shift();

@@ -29,7 +29,7 @@ CLASS({
   ],
   methods: {
     autocomplete: function(data) {
-      var src = this.LabelDAO;
+      var src = this.issueLabelDAO;
       var dao = src.where(
         data ?
           STARTS_WITH_IC(this.QIssueLabel.LABEL, data) :

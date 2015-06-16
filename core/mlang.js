@@ -230,9 +230,9 @@ CLASS({
 
 
 // Allow Singleton mLang's to be desearialized to properly.
-var TrueExpr     = { arequire: function(ret) { return afuture.set(this); }, create: function() { return TRUE;  } };
-var FalseExpr    = { arequire: function(ret) { return afuture.set(this); }, create: function() { return FALSE; } };
-var IdentityExpr = { arequire: function(ret) { return afuture.set(this); }, create: function() { return IDENTITY; } };
+var TrueExpr     = { finished__: true, arequire: function(ret) { return afuture().set(this).get; }, create: function() { return TRUE;  } };
+var FalseExpr    = { finished__: true, arequire: function(ret) { return afuture().set(this).get; }, create: function() { return FALSE; } };
+var IdentityExpr = { finished__: true, arequire: function(ret) { return afuture().set(this).get; }, create: function() { return IDENTITY; } };
 
 /** An unary function. **/
 CLASS({
@@ -679,7 +679,7 @@ CLASS({
 
       if ( ConstantExpr.isInstance(newArg1) ) {
         var val = newArg1.f();
-        if ( typeof val === 'string' ) return compile_(val);
+        if ( typeof val === 'string' ) return compile_(val.toUpperCase());
       } else if ( Array.isArray(newArg1) ) {
         debugger;
       }
@@ -688,11 +688,19 @@ CLASS({
     },
     function f(obj) {
       var a = this.arg1.f(obj);
+      if ( Array.isArray(a) )
+        return a.map(function(s) { return s.toUpperCase ? s.toUpperCase() : s; });
+
       return a && a.toUpperCase ? a.toUpperCase() : a ;
+    },
+    function toMQL() {
+      if ( ConstantExpr.isInstance(this.arg1) && typeof this.arg1.arg1 == 'string' )
+        return this.arg1.arg1.toUpperCase();
+      return this.arg1.toMQL();
     }
   ]
 });
 
 function UPPER(arg1) { return UpperExpr.create({arg1: compile_(arg1)}); }
 function EQ_IC(arg1, arg2) { return EQ(UPPER(arg1), UPPER(arg2)); }
-function IN_IC(arg1, arg2) { return IN(UPPER(arg1), UPPER(arg2)); }
+function IN_IC(arg1, arg2) { return IN(UPPER(arg1), arg2.map(UPPER)); }

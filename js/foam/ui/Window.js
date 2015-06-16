@@ -35,7 +35,6 @@ CLASS({
     'info',
     'installedModels',
     'log',
-    'lookup',
     'requestAnimationFrame',
     'setInterval',
     'setTimeout',
@@ -86,15 +85,6 @@ CLASS({
   ],
 
   methods: {
-    lookup: function(key) {
-      var ret = GLOBAL.lookup.call(this.Y, key);
-      // var ret = this.X.lookup(key);
-      if ( ret && ! this.registeredModels[key] ) {
-        // console.log('Registering Model: ', key);
-        this.registeredModels[key] = true;
-      }
-      return ret;
-    },
     addStyle: function(css) {
       if ( ! this.document || ! this.document.createElement ) return;
       var s = this.document.createElement('style');

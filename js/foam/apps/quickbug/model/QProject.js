@@ -50,6 +50,7 @@ CLASS({
     'foam.apps.quickbug.model.imported.IssuePerson',
     'foam.apps.quickbug.model.LabelCompleter',
     'foam.apps.quickbug.model.PersonCompleter',
+    'foam.apps.quickbug.model.StatusCompleter',
     'foam.core.dao.MigrationRule',
     'foam.lib.bookmarks.Bookmark',
     'foam.core.dao.WhenIdleDAO',
@@ -60,7 +61,6 @@ CLASS({
   exports: [
     'IssueCommentDAO as qIssueCommentDAO',
     'IssueCommentDAO as QIssueCommentDAO',
-    'IssueDAO as issueDAO',
     'StatusDAO as issueStatusDAO',
     'StatusDAO as StatusDAO',
     'LabelDAO as issueLabelDAO',
