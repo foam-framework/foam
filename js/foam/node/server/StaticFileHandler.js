@@ -26,7 +26,7 @@ CLASS({
     {
       name: 'fs',
       factory: function() { return require('fs'); }
-    }
+    },
     {
       name: 'dir',
       documentation: 'Directory under which to serve files.',

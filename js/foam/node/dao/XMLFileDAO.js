@@ -42,7 +42,12 @@ CLASS({
 
       if ( this.fs.existsSync(this.name) ) {
         var content = this.fs.readFileSync(this.name, { encoding: 'utf-8' });
-        XMLUtil.parse(content).select(this);
+        var parsed = XMLUtil.parse(content);
+        if (!parsed) {
+          console.error('Failed to parse contents: ' + content);
+        } else {
+          parsed.select(this);
+        }
       } else {
         console.warn('XMLFileDAO could not find file "' + this.name + '"');
       }
