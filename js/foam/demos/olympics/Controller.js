@@ -162,6 +162,12 @@ CLASS({
         margin-bottom: 15px;
         width: 300px;
       }
+      span[name='sql'] {
+        border: 1px solid #999;
+        display: inline-block;
+        height: 120px;
+        width: 300px;
+      }
       .Gold   { color: #C98910; }
       .Silver { color: #A8A8A8; }
       .Bronze { color: #965A38; }
