@@ -138,8 +138,7 @@ CLASS({
             var newObj = this.data.model.create();
             this.stack.pushView(this.data.detailView({
               data: newObj,
-              innerView: this.data.innerDetailView,
-              title: 'New ' + this.data.model.name
+              innerView: this.data.innerDetailView
             }, this.Y));
           }
         },
