@@ -198,9 +198,9 @@ CLASS({
     // duplicated in the choices array of the updateMode property.
     // TODO(braden): That duplication sucks, we need a better way to handle
     // enums.
-    DONE_EDITING: 'DONE_EDITING',
+    DONE_EDITING:   'DONE_EDITING',
     EACH_KEYSTROKE: 'EACH_KEYSTROKE',
-    ENTER_ONLY: 'ENTER_ONLY'
+    ENTER_ONLY:     'ENTER_ONLY'
   },
 
   methods: {
@@ -239,9 +239,11 @@ CLASS({
       var self = this;
       this.setClass('placeholder', function() { return self.data === ''; }, this.id);
 
-      return this.displayHeight === 1 ?
-        '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>' :
-        '<textarea readonly id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '" rows="' + this.displayHeight + '" cols="' + this.displayWidth + '"></textarea>' ;
+      // Changing to a textarea doesn't work well because you can't override displayHeight
+      // in templates
+      return /* this.displayHeight === 1 ? */
+        '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>' /*:
+        '<textarea readonly id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '" rows="' + this.displayHeight + '" cols="' + this.displayWidth + '"></textarea>'*/ ;
     },
 
     setupAutocomplete: function() {
@@ -358,4 +360,3 @@ CLASS({
     },
   ]
 });
-
