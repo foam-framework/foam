@@ -27,6 +27,12 @@ CLASS({
   imports: [
     'mbug'
   ],
+  properties: [
+    {
+      name: 'preferredHeight',
+      defaultValue: 86
+    }
+  ],
   templates: [
     function toHTML() {/* 
       <div id=<%= this.id %> >
