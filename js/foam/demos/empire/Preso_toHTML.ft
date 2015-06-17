@@ -424,7 +424,9 @@ CLASS({
   </slide>
 
   <slide>
-    <foam model="foam.demos.Flow"/>
+    <div style="overflow:scroll;height:97%;">
+      <foam model="foam.demos.Flow"/>
+    </div>
   </slide>
 
   <slide>

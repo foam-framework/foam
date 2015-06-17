@@ -241,8 +241,7 @@ CLASS({
 
       // Changing to a textarea doesn't work well because you can't override displayHeight
       // in templates
-      return /* this.displayHeight === 1 ? */
-        '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>' /*:
+      return /* this.displayHeight === 1 ? */ '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>' /*:
         '<textarea readonly id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '" rows="' + this.displayHeight + '" cols="' + this.displayWidth + '"></textarea>'*/ ;
     },
 
