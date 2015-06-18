@@ -77,8 +77,7 @@ CLASS({
       if ( this.closeLatch_ ) this.closeLatch_();
 
       if ( this.state == 'closed' ) {
-        this.delegateView = this.delegate();
-        if ( this.data ) this.delegateView.data = this.data;
+        this.delegateView = this.delegate({ data$: this.data$ });
 
         if ( this.$ ) this.$.outerHTML = '';  // clean up old copy, in case of rapid re-activation
         this.document.body.insertAdjacentHTML('beforeend', this.toHTML());
