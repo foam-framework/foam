@@ -103,19 +103,20 @@ tr:first-child {
 }
 
 .mdTable thead th,
+.mdTable thead th *,
 .mdTable tbody td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.mdTable th.sort {
+.mdTable .sort {
   font-size: 12px;
   font-weight: 500;
   color: rgba(0, 0, 0, 0.87);
 }
 
-.mdTable th.sort .material-icons {
+.mdTable .sort .material-icons {
   font-size: 16px;
   color: rgba(0, 0, 0, 0.26);
 }
@@ -132,4 +133,8 @@ i.material-icons.actionLabel {
 .mdTable tbody tr td {
   padding-left: 24px;
   padding-right: 24px;
+}
+/* TODO(markdittmer): Currently hiding broken scrollbar view */
+md-table canvas {
+  display: none;
 }

@@ -468,35 +468,37 @@ CLASS({
         if ( prop.hidden ) continue;
 
         out('<th style="position:relative;" scope=col ');
-        out('id=' +
+        out('id="' +
                  this.on(
                    'click',
                    (function(table, prop) { return function() {
                      table.sortProp = prop;
                      table.sortOrder = ( table.sortOrder === prop ) ? DESC(prop) : prop;
-                   };})(this, prop)));
-        if ( prop.tableWidth ) out(' width="' + prop.tableWidth + '"');
+                   };})(this, prop)) + '"');
+        if ( prop.tableWidth ) out(' width="' + prop.tableWidth + '">');
+        out('>');
 
-        var cssClasses = [];
+        var cssClasses = ['th-label'];
         var isNumeric = IntProperty.isInstance(prop) || FloatProperty.isInstance(prop);
         var isSorted = this.sortProp === prop;
         if ( isNumeric )
           cssClasses.push('numeric');
         if ( isSorted )
           cssClasses.push('sort');
-        if ( cssClasses.length > 0 ) out(' class="' + cssClasses.join(' ') + '"');
 
-        out('>');
+        out('<div class="' + cssClasses.join(' ') + '">');
 
+        var textLabel = '<span>' + prop.tableLabel + '</span>';
         if ( isSorted ) {
           var arrow = '<span class="indicator">' +
               (this.sortOrder === prop ? this.ascIcon : this.descIcon) +
               '</span>';
-          if ( isNumeric ) out(arrow + ' ' + prop.tableLabel);
-          else             out(prop.tableLabel + ' ' + arrow);
+          out(textLabel + arrow);
         } else {
-          out(prop.tableLabel);
+          out(textLabel);
         }
+
+        out('</div>');
 
         if ( this.columnResizeEnabled )
           out(this.columnResizerToHTML(prop, properties[i + 1]));
@@ -701,10 +703,20 @@ CLASS({
         <span id="%%id" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">
           <% this.tableToHTML(out); %>
         </span>
-        <%= this.scrollbarEnabled ?
+        <%= this.scrollEnabled ?
             ('<span style="width:19px;flex:none;overflow:hidden;">' +
             this.scrollbar.toView_().toHTML() + '</span>') : '' %>
       </div>
+    */},
+    function CSS() {/*
+      .th-label {
+        display: flex;
+        height: 100%;
+        align-items: center;
+      }
+      .th-label.numeric {
+        flex-direction: row-reverse;
+      }
     */}
   ]
 });
