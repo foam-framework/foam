@@ -91,7 +91,7 @@ CLASS({
           self.$.innerHTML = html;
           g.initHTML();
         } else {
-          var cview = this.Y.GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
+          var cview = self.Y.GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800}, self.Y);
           self.$.innerHTML = cview.toHTML();
           cview.initHTML();
           cview.paint();
