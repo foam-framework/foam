@@ -23,6 +23,7 @@ __DATA({
   extraModels: [
     'foam.oauth2.OAuth2ChromeApp',
     'foam.ui.Tooltip',
+    'foam.input.Mouse',
     'foam.apps.quickbug.ui.QIssueLabelsView',
     'foam.ui.StringArrayView',
     'foam.ui.MultiLineStringArrayView',
