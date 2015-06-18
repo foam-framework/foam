@@ -82,7 +82,7 @@ CLASS({
     }
 
     .card-deck .card {
-      animation: fly-in-from-left .5s 1s ease both;
+      xxxanimation: fly-in-from-left .5s 1s ease both;
       background: white;
       border-radius: 3px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
