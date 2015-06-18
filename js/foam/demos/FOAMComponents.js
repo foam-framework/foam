@@ -328,12 +328,12 @@ CLASS({
           </div>
         </div>
         <div class="flex-row" style="align-items: stretch; height: 100%;">
-          <div class="card flex-grow" style="width: 60%; overflow: auto">
+          <div class="card flex-grow" style="width: 50%;">
             <div>%%space</div>
           </div>
-          <div class="card flex-grow" style="width: 40%; overflow: auto">
+          <div class="card flex-grow" style="width: 50%; overflow: auto">
             <div>
-              <span><%# this.title %></span>
+              <span class="title"><%# this.title %></span>
               <div id="display"></div>
             </div>
           </div>
@@ -348,7 +348,10 @@ CLASS({
         align-content: stretch;
         overflow: hidden;
         height: 100%;
-        font-size: 250%;
+      }
+      foam-components .title {
+        font-size: 180%;
+        margin-bottom: 20px;
       }
     */}
   ],
