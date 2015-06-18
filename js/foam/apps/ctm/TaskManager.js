@@ -157,7 +157,6 @@ CLASS({
       this.SUPER.apply(this, arguments);
 
       this.X.registerModel(this.TaskManagerDetailView, 'foam.ui.TaskManagerDetailView');
-      this.X.registerModel(this.ActionLabel.xbind({ extraClassName: 'material-icons' }), 'foam.ui.ActionButton');
 
       this.persistentContext.bindObject(
           'ctx', this.TaskManagerContext, undefined, 1);

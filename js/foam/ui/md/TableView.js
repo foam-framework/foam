@@ -16,6 +16,7 @@ CLASS({
 
   requires: [
     'foam.ui.TableView',
+    'foam.ui.md.ActionLabel',
     'foam.ui.md.EditColumnsView'
   ],
   imports: [ 'hardSelection$' ],
@@ -103,6 +104,10 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      this.X.registerModel(this.ActionLabel.xbind({ extraClassName: 'material-icons' }), 'foam.ui.ActionButton');
+    },
     function getModel() {
       return this.X.model ||
           (this.data && this.data.model);
