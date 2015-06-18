@@ -420,10 +420,6 @@ select {
   width: 30%;
 }
 
-body {
-  font: 82%;
-}
-
 div.gridtile td div a {
   color: #000;
   text-decoration: none;
