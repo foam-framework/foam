@@ -109,7 +109,10 @@ CLASS({
               </stats>
             </global-stats>
             <stats-separator id="<%= this.setClass('hidden', function() { return !this.data || !this.data.hardSelection; }.bind(this)) %>"></stats-separator>
-            <local-stats id="<%= this.setClass('hidden', function() { return !this.data || !this.data.hardSelection; }.bind(this)) %>">
+            <local-stats id="<%= this.setClass('hidden', function() {
+              // return !this.data || !this.data.hardSelection;
+              return false;
+            }.bind(this)) %>">
               <label id="%%id-task-label">Task</label>
               <stats>
                 <stat>
