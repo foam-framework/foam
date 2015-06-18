@@ -92,6 +92,10 @@ CLASS({
           this.memory = controller.memory.history;
           this.cpu = controller.cpu.history;
           this.network = controller.network.history;
+        } else {
+          this.memory = [];
+          this.cpu =  [];
+          this.network =  [];
         }
       }
     },
