@@ -58,9 +58,10 @@ CLASS({
   methods: {
     createVersionComparator_: function() {
       var m = {};
+      var parser = this.versionParser;
 
       function toKey(o) {
-        return m[o] || ( m[o] = this.versionParser.parseString(o) );
+        return m[o] || ( m[o] = parser.parseString(o) );
       }
 
       return function(o1, o2) {
