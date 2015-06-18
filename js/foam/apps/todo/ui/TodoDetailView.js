@@ -49,8 +49,9 @@ CLASS({
           $$isCompleted
         <% } %>
         $$name
-        $$description
+        $$priority
         $$owner
+        $$description
         $$dueDate
       </div>
     */},
