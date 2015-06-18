@@ -86,13 +86,13 @@ CLASS({
   <slide>
     <h1>Model Types</h1>
     <div style="display:flex;">
-      <div style="width: 800px;margin-left:32px;font-size: 52px;">
+      <div style="width: 1000px;margin-left:32px;font-size: 40px;">
         <ul style="color:gray;">
           <li>Entities (default)</li>
           <li>Animations</li>
           <li>Queries (mLang)</li>
           <li>Parsers</li>
-          <li>Interactive Documents (FLOW)<li>
+          <li>Interactive Documents (FLOW)</li>
           <li>...</li>
         </ul>
       </div>
@@ -101,7 +101,7 @@ CLASS({
       <br>
       <a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome App Builder</a><br>
       <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw" style="border: 1px solid;"><br>
-      <font size="-1">(13k 1-week active users)</font>
+      <font size="-1">(20k 1-week active users)</font>
    </center>
      </div>
     </div>

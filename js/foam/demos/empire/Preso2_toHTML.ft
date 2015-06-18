@@ -171,10 +171,8 @@ CLASS({
 
         <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw"
              style="border: 1px solid;">
-
         <br>
-
-        <span style="font-size: 60%">(18k 1-week active users)</span>
+        <span style="font-size: 60%">(20k 1-week active users)</span>
       </div>
     </div>
     <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
