@@ -158,7 +158,10 @@ CLASS({
     },
     function initHTML() {
       this.SUPER();
-      if ( this.$ ) this.$.addEventListener('transitionend', this.onTransitionEnd);
+      if ( this.$ ) {
+        this.$.addEventListener('transitionend', this.onTransitionEnd);
+        this.$.addEventListener('mouseleave', this.onMouseOut);
+      }
     }
   ],
 
@@ -203,6 +206,13 @@ CLASS({
       code: function(e) {
         console.log('transition end');
         this.showBorder = this.isOpen;
+      }
+    },
+    {
+      name: 'onMouseOut',
+      code: function(e) {
+        if ( e.target !== this.$ ) return;
+        this.close();
       }
     }
   ],
