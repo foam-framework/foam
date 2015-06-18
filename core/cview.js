@@ -176,7 +176,7 @@ CLASS({
       // If being added to HTML directly, then needs to create own Canvas as parent.
       // Calling addChild() will set this.parent = canvas.
       if ( ! this.parent ) {
-        this.parent = this.X.Canvas.create();
+        this.parent = this.X.Canvas.create(undefined, this.Y);
 
         this.x$.addListener(this.resizeParent);
         this.y$.addListener(this.resizeParent);
