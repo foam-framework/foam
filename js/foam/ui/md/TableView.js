@@ -16,6 +16,7 @@ CLASS({
 
   requires: [
     'foam.ui.TableView',
+    'foam.ui.md.ActionLabel',
     'foam.ui.md.EditColumnsView'
   ],
   imports: [ 'hardSelection$' ],
@@ -40,12 +41,17 @@ CLASS({
       name: 'data',
       postSet: function(old, nu) {
         if ( this.X.model || old === nu ) return;
-        if ( nu && nu.model ) this.model = nu.model;
+        if ( nu && nu.model ) {
+          this.model = nu.model;
+          if ( this.properties.length === 0 )
+            this.properties = this.getDefaultProperties();
+        }
       }
     },
     {
       model_: 'StringArrayProperty',
-      name:  'properties'
+      name:  'properties',
+      lazyFactory: function() { return this.getDefaultProperties(); }
     },
     {
       name:  'model',
@@ -103,9 +109,18 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      this.X.registerModel(this.ActionLabel.xbind({ extraClassName: 'material-icons' }), 'foam.ui.ActionButton');
+    },
     function getModel() {
       return this.X.model ||
           (this.data && this.data.model);
+    },
+    function getDefaultProperties() {
+      return this.model ? this.model.getRuntimeProperties().filter(
+          function(prop) { return !prop.hidden; }).map(
+          function(prop) { return prop.name; }) : [];
     },
     function updateTableCaption() {
       var out = TemplateOutput.create(this);

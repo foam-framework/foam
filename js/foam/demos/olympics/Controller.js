@@ -141,6 +141,7 @@ CLASS({
 
   templates: [
     function CSS() {/*
+      @import url(https://fonts.googleapis.com/icon?family=Material+Icons);
       html { overflow: hidden; }
       .tableView, .mdTableView {
         outline: none;
@@ -151,12 +152,23 @@ CLASS({
       .foamSearchView select { width: 300px; }
       .tableView { width: auto !important; }
       .MedalTable { width: auto !important; }
-      .searchPanel { margin: 15px; }
-      .searchResults { margin-left: 40px; }
+      .searchPanel {
+        margin: 15px;
+        flex-shrink: 0;
+      }
+      .searchResults {
+        margin-left: 40px;
+        position: relative;
+        height: 100%;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
       .counts {
-        color: #555;
+        color: rgba(0, 0, 0, 0.33);
         font-size: 16px;
-        margin-top: 16px;
+        padding: 10px;
+        flex-shrink: 0;
       }
       input[type='search'] {
         margin-bottom: 15px;
@@ -183,7 +195,7 @@ CLASS({
           <br><br><%= FOAM_POWERED %>
         </div>
         <div class="searchResults">
-          $$filteredDAO
+          $$filteredDAO{ title: 'Olympic Medals' }
           <div class="counts">$$count{mode: 'read-only'} of $$totalCount{mode: 'read-only'} selected</div>
         </div>
       </div>
