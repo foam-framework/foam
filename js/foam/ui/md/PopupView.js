@@ -56,6 +56,10 @@ CLASS({
       }
     },
     {
+      name: 'cardClass',
+      defaultValue: 'md-card'
+    },
+    {
       name: 'className',
       defaultValue: "popup-view-container"
     },
@@ -138,7 +142,7 @@ CLASS({
     function toInnerHTML() {/*
       <div id="<%= this.id %>Blocker" class='popup-view-modal-blocker'></div>
       <% this.on('click', function() { self.close(); }, this.id + 'Blocker'); %>
-      <div id="<%= this.id %>Content" class='popup-view-content md-card'>
+      <div id="<%= this.id %>Content" class='popup-view-content <%= this.cardClass %>'>
         %%delegateView
       </div>
     */},
