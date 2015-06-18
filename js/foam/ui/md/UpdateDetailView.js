@@ -83,6 +83,12 @@ CLASS({
       name: 'className',
       defaultValue: 'md-update-detail-view'
     },
+    {
+      name: '$title',
+      getter: function() {
+        return this.X.$(this.id + '-title');
+      }
+    },
   ],
 
   listeners: [
@@ -109,6 +115,7 @@ CLASS({
         this.dao.put(obj, {
           put: function() {
             self.originalData.copyFrom(obj);
+            self.$title.innerHTML = self.title;
           },
           error: function() {
             console.error('Error saving', arguments);
@@ -159,6 +166,10 @@ CLASS({
         width: 100%;
       }
 
+      .md-update-detail-view-header .title {
+        margin-left: 12px;
+      }
+
       .md-update-detail-view-body {
         overflow-x: hidden;
         overflow-y: auto;
@@ -169,11 +180,9 @@ CLASS({
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
         <div class="md-update-detail-view-header">
           $$back $$reset
-          $$title{
-            mode: 'read-only',
-            extraClassName: 'expand',
-            floatingLabel: false
-          }
+          <span id="<%= this.id %>-title" class="expand title">
+            <%= this.title %>
+          </span>
           <span id="<%= this.id %>-header-actions" class="md-update-detail-view-header-actions">
             <%
               var actions = this.data.model_.actions;

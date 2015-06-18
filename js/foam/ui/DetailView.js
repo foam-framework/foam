@@ -76,7 +76,9 @@ CLASS({
     },
     {
       name: 'title',
-      defaultValueFn: function() { return "Edit " + this.model.label; },
+      defaultValueFn: function() {
+        return (this.data && this.data.id ? 'Edit ' : 'New ') + this.model.label;
+      },
       documentation: function() {/*
         <p>The display title for the $$DOC{ref:'foam.ui.View'}.
         </p>
