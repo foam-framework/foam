@@ -626,7 +626,7 @@ CLASS({
         };
         e.onmouseout = function() {
           self.mouseOverRow = false;
-          self.selection = self.hardSelection;
+          self.selection = '';
         };
         e.onclick = function(evt) {
           self.hardSelection = self.selection = obj;
