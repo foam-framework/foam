@@ -69,6 +69,10 @@ CLASS({
         padding: 20px;
       }
 
+      body {
+        margin-top: 8px !important;
+      }
+
       .phone-images {
         background-color: white;
         width: 450px;
