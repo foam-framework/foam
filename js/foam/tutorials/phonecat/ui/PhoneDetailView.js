@@ -37,7 +37,6 @@ CLASS({
         display: block;
       }
 
-
       ul.phone-thumbs {
         margin: 0;
         list-style: none;
@@ -59,7 +58,6 @@ CLASS({
       ul.phone-thumbs img:hover {
         cursor: pointer;
       }
-
 
       ul.specs {
         clear: both;
