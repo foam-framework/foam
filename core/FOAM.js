@@ -139,22 +139,21 @@ var arequire = function(modelName) {
     var future = afuture();
     THIS.arequire$ModelLoadsInProgress[modelName] = future.get;
 
-    var self = THIS;
     THIS.ModelDAO.find(modelName, {
       put: function(m) {
         // Contextualize the model for THIS context
-        m.X = self;
+        m.X = THIS;
 
         m.arequire()(function(m) {
-          self.arequire$ModelLoadsInProgress[modelName] = false;
-          self.GLOBAL.X.registerModel(m);
+          THIS.arequire$ModelLoadsInProgress[modelName] = false;
+          THIS.GLOBAL.X.registerModel(m);
           future.set(m);
         });
       },
       error: function() {
         var args = argsToArray(arguments);
         console.warn.apply(console, ['Could not load model: ', modelName].concat(args));
-        self.arequire$ModelLoadsInProgress[modelName] = false;
+        THIS.arequire$ModelLoadsInProgress[modelName] = false;
         future.set(undefined);
       }
     });
