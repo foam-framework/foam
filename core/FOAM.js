@@ -147,6 +147,8 @@ var arequire = function(modelName) {
         m.arequire()(function(m) {
           THIS.arequire$ModelLoadsInProgress[modelName] = false;
           THIS.GLOBAL.X.registerModel(m);
+          if ( ! THIS.lookupCache_[m.id] )
+            THIS.lookupCache_[m.id] = m;
           future.set(m);
         });
       },
