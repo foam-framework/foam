@@ -284,7 +284,7 @@ CLASS({
     },
     execute_: function() {
       if ( this.delegate ) {
-        arequire(this.delegate)(function(DelegateModel) {
+        this.X.arequire(this.delegate)(function(DelegateModel) {
           DelegateModel.create({ builder: this }).buildApp();
         }.bind(this));
       } else {
@@ -307,17 +307,17 @@ CLASS({
         require(path);
       }
 
-      var view = this.defaultView ? arequire(this.defaultView) : anop;
+      var view = this.defaultView ? this.X.arequire(this.defaultView) : anop;
 
 
       var seq = [view];
       for ( var i = 0; i < this.extraModels.length ; i++ ) {
-        seq.push(arequire(this.extraModels[i]));
+        seq.push(this.X.arequire(this.extraModels[i]));
       }
 
       aseq(
         aseq.apply(null, seq),
-        arequire(this.controller))(this.buildModel.bind(this));
+        this.X.arequire(this.controller))(this.buildModel.bind(this));
     },
     buildCoreJS_: function(ret) {
       var i = 0;

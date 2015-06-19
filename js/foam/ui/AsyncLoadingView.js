@@ -109,7 +109,7 @@
         if ( typeof this.copyFrom.model_ === 'string' ) { // string model_ in copyFrom
           return this.requireModelName(this.copyFrom.model_, skipKeysArgDecorator);
         } else if ( this.Model.isInstance(this.copyFrom.model_) ) { // or model instance
-          return this.finishRender(this.copyFrom.model_.create(skipKeysArgDecorator, this.X));
+          return this.finishRender(this.copyFrom.model_.create(skipKeysArgDecorator, this.Y));
         }
       }
       if ( typeof this.model === 'string' ) { // string model name
@@ -121,11 +121,11 @@
       }
       if ( this.model.model_ ) {
         if ( this.Model.isInstance(this.model) ) { // is a model instance
-          return this.finishRender(this.model.create(skipKeysArgDecorator, this.X));
+          return this.finishRender(this.model.create(skipKeysArgDecorator, this.Y));
         } else {
           // JSON with Model instance specified in model_
           this.mergeWithCopyFrom(this.model);
-          return this.finishRender(this.model.model_.create(skipKeysArgDecorator, this.X));
+          return this.finishRender(this.model.model_.create(skipKeysArgDecorator, this.Y));
         }
       }
       if ( this.model.factory_ ) { // JSON with string factory_ name
@@ -134,20 +134,20 @@
         return this.requireModelName(this.model.factory_, skipKeysArgDecorator);
       }
       if ( typeof this.model === 'function' ) { // factory function
-        return this.finishRender(this.model(skipKeysArgDecorator, this.X));
+        return this.finishRender(this.model(skipKeysArgDecorator, this.Y));
       }
       console.warn("AsyncLoadingView: View load with invalid model. ", this.model, this.args, this.copyFrom);
     },
 
     requireViewInstance: function(view) {
-      view.arequire(this.X)(function(m) {
+      view.arequire()(function(m) {
         this.finishRender(view);
       }.bind(this));
     },
 
     requireModelName: function(name, args) {
-      arequire(name, this.X)(function(m) {
-        this.finishRender(m.create(args, this.X));
+      this.X.arequire(name)(function(m) {
+        this.finishRender(m.create(args, this.Y));
       }.bind(this));
     },
 

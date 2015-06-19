@@ -115,9 +115,9 @@ FOAM.browse = function(model, opt_dao, opt_X) {
 };
 
 
-var arequire = function(modelName, opt_X) {
-  var X = opt_X || GLOBAL.X;
-  var model = X.lookup(modelName);
+var arequire = function(modelName) {
+  var X = GLOBAL.X;
+  var model = this.lookup(modelName);
   if ( ! model ) {
     if ( ! X.ModelDAO ) {
       // if ( modelName !== 'Template' ) console.warn('Unknown Model in arequire: ', modelName);

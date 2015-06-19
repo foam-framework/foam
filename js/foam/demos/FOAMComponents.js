@@ -185,8 +185,9 @@ CLASS({
 //          { name: 'DAOController', model: 'foam.ui.DAOController', instance: null },
           { name: 'StackView', model: 'foam.ui.StackView', instance: null },
         ];
+        var self = this;
         ents.forEach(function(ent) {
-          arequire(ent.model)(function(m) {
+          self.X.arequire(ent.model)(function(m) {
             if ( m ) ent.instance = m;
           });
         });

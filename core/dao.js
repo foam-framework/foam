@@ -380,13 +380,6 @@ CLASS({
     operations, and provides for notifications of updates through $$DOC{ref:'.listen'}.
   */},
 
-  requires: [
-//     'FilteredDAO_', // can't require these due to cycle back to AbstractDAO.
-//     'LimitedDAO_',
-//     'SkipDAO_',
-//     'OrderedDAO_'
-  ],
-
   properties: [
     {
       name: 'daoListeners_',
@@ -397,15 +390,6 @@ CLASS({
   ],
 
   methods: {
-    init: function() {
-      arequire('FilteredDAO_');
-      arequire('LimitedDAO_');
-      arequire('SkipDAO_');
-      arequire('OrderedDAO_');
-
-      this.SUPER();
-    },
-
     update: function(expr) { /* Applies a change to the DAO contents. */
       return this.select(UPDATE(expr, this));
     },

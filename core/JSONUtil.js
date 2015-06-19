@@ -130,7 +130,7 @@ var JSONUtil = {
           var future = afuture();
           seq && seq.push(future.get);
 
-          arequire(obj.model_, X)(function(model) {
+          X.arequire(obj.model_)(function(model) {
             if ( ! model ) {
                if ( DEBUG && obj.model_ !== 'Template' && obj.model_ !== 'ArrayProperty' && obj.model_ !== 'ViewFactoryProperty' && obj.model_ !== 'Documentation' && obj.model_ !== 'DocumentationProperty' && obj.model_ !== 'CSSProperty' && obj.model_ !== 'FunctionProperty' )
                  console.warn('Failed to dynamically load: ', obj.model_);

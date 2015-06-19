@@ -44,7 +44,7 @@ CLASS({
 
   templates: [
     function backgroundCode() {/*
-arequire('<%= this.controller %>')(function(m) {
+X.arequire('<%= this.controller %>')(function(m) {
   m.create();
 });
 */}
