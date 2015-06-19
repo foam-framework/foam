@@ -67,17 +67,12 @@ CLASS({
   methods: [
     function initHTML() {
       var self = this;
+      this.SUPER();
 
       this.currentColor_$.addListener(function() {
         if ( self.$ ) self.$.style.color = this.currentColor_;
       });
       if ( self.$ ) self.$.style.color = this.currentColor_;
-
-      this.$.addEventListener('click', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        self.action.maybeCall(self.X, self.data);
-      }, this.id);
 
       this.setClass('hidden', function() { return self.isHidden; }, this.id);
     },
@@ -143,6 +138,7 @@ CLASS({
         %%halo
         <span><% this.labelHTML(out) %></span>
       </%%tagName>
+      <% this.on('click', function() { self.action.maybeCall(self.X, self.data); }, this.id); %>
     */},
     function labelHTML() {/*
       <% if ( this.action ) { %>
