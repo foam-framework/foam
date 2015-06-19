@@ -46,8 +46,8 @@ CLASS({
       var viewName  = e.getAttribute('view');
       var onInit    = e.getAttribute('oninit');
 
-      if ( modelName ) models.push(arequire(modelName, this.X));
-      if ( viewName  ) models.push(arequire(viewName, this.X));
+      if ( modelName ) models.push(this.X.arequire(modelName));
+      if ( viewName  ) models.push(this.X.arequire(viewName));
 
       aseq(apar.apply(null, models), function(ret) {
         if ( ! this.holder() ) return;

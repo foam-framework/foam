@@ -152,9 +152,11 @@ CLASS({
         });
       }
 
-      apar(arequire(this.extractorModel), arequire(this.messageGeneratorModel),
-           arequire(this.placeholderModel), arequire(this.messageModel),
-           arequire(this.messageBundleModel))(
+      apar(this.x.arequire(this.extractorModel),
+           this.X.arequire(this.messageGeneratorModel),
+           this.X.arequire(this.placeholderModel),
+           this.X.arequire(this.messageModel),
+           this.X.arequire(this.messageBundleModel))(
                function(Extractor, MessageGenerator, Placeholder, Message,
                         MessageBundle) {
                  var idGenerator = this.IdGenerator.create();
@@ -191,7 +193,7 @@ CLASS({
               // Manually manage pending_ count for top-level async calls.
               this.pending_ = models.length;
               models.forEach(function(modelId) {
-                return arequire(modelId)(self.visitModel_.bind(self));
+                return this.X.arequire(modelId)(self.visitModel_.bind(self));
               });
             }.bind(this),
             error: function() {
@@ -216,7 +218,7 @@ CLASS({
     },
     arequire_: function(modelId) {
       ++this.pending_;
-      arequire(modelId)(this.visitModel_.bind(this));
+      this.X.arequire(modelId)(this.visitModel_.bind(this));
     },
     outputFoamData_: function() {
       var self = this;

@@ -30,7 +30,7 @@ CLASS({
   ],
   methods: {
     execute: function() {
-      arequire(this.name)(function(m) {
+      this.X.arequire(this.name)(function(m) {
         var dao = this.JSModelFileDAO.create();
         dao.put(m, {
           put: function(o) {

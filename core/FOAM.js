@@ -115,42 +115,47 @@ FOAM.browse = function(model, opt_dao, opt_X) {
 };
 
 
-var arequire = function(modelName, opt_X) {
-  var X = opt_X || GLOBAL.X;
-  var model = X.lookup(modelName);
+var arequire = function(modelName) {
+  // If arequire is called as a global function, default to the
+  // top level context X.
+  var THIS = this === GLOBAL ? X : this;
+
+  var model = THIS.lookup(modelName);
   if ( ! model ) {
-    if ( ! X.ModelDAO ) {
+    if ( ! THIS.ModelDAO ) {
       // if ( modelName !== 'Template' ) console.warn('Unknown Model in arequire: ', modelName);
       return aconstant();
     }
 
     // check whether we have already hit the ModelDAO to load the model
-    if ( ! X.arequire$ModelLoadsInProgress ) {
-      X.set('arequire$ModelLoadsInProgress', {} );
+    if ( ! THIS.arequire$ModelLoadsInProgress ) {
+      THIS.set('arequire$ModelLoadsInProgress', {} );
     } else {
-      if ( X.arequire$ModelLoadsInProgress[modelName] ) {
-        return X.arequire$ModelLoadsInProgress[modelName];
+      if ( THIS.arequire$ModelLoadsInProgress[modelName] ) {
+        return THIS.arequire$ModelLoadsInProgress[modelName];
       }
     }
 
     var future = afuture();
-    X.arequire$ModelLoadsInProgress[modelName] = future.get;
+    THIS.arequire$ModelLoadsInProgress[modelName] = future.get;
 
-    X.ModelDAO.find(modelName, {
+    THIS.ModelDAO.find(modelName, {
       put: function(m) {
-        // Contextualize the model for this context
-        m.X = X;
+        // Contextualize the model for THIS context
+        m.X = THIS;
 
         m.arequire()(function(m) {
-          X.arequire$ModelLoadsInProgress[modelName] = false;
-          X.registerModel(m);
+          THIS.arequire$ModelLoadsInProgress[modelName] = false;
+          THIS.GLOBAL.X.registerModel(m);
+          if ( ! THIS.lookupCache_[m.id] )
+            THIS.lookupCache_[m.id] = m;
           future.set(m);
         });
       },
       error: function() {
         var args = argsToArray(arguments);
         console.warn.apply(console, ['Could not load model: ', modelName].concat(args));
-        X.arequire$ModelLoadsInProgress[modelName] = false;
+        THIS.arequire$ModelLoadsInProgress[modelName] = false;
         future.set(undefined);
       }
     });

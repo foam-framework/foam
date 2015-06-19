@@ -590,7 +590,7 @@ CLASS({
         }.bind(this));
         this.components.forEach(function(comp) {
           try {
-            arequire(comp.package + '.' + comp.name)(
+            this.X.arequire(comp.package + '.' + comp.name)(
                 function(model) {
                   if ( this.componentFilter(model) ) {
                     this.models.put(model);

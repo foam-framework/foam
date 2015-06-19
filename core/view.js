@@ -26,11 +26,11 @@ var DOM = {
       var e = fs[i];
       X.lookup(e.getAttribute('view'));
       X.lookup(e.getAttribute('model'));
-      if ( e.getAttribute('view') ) models.push(arequire(e.getAttribute('view')));
-      if ( e.getAttribute('model') ) models.push(arequire(e.getAttribute('model')));
+      if ( e.getAttribute('view') ) models.push(X.arequire(e.getAttribute('view')));
+      if ( e.getAttribute('model') ) models.push(X.arequire(e.getAttribute('model')));
     }
     for ( var key in USED_MODELS ) {
-      models.push(arequire(key));
+      models.push(X.arequire(key));
     }
 
     atime('DOMInit', aseq(apar.apply(null, models), function(ret) {
@@ -68,7 +68,7 @@ var DOM = {
    * opt_document -- if supplied the object's view will be added to the document.
    **/
   initElement: function(e, X, opt_document) {
-    arequire('foam.ui.FoamTagView')(function(t) {
+    X.arequire('foam.ui.FoamTagView')(function(t) {
       foam.ui.FoamTagView.create({ element: e }, X);
     });
   },

@@ -26,7 +26,6 @@ CLASS({
       required: true,
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        console.log('setting model', nu);
         if ( nu )
           this.availableProperties = nu.tableProperties.map(function(propName) {
             return nu.getProperty(propName);
@@ -66,8 +65,7 @@ CLASS({
       defaultValue: false,
       postSet: function(old, nu) {
         if ( ! this.$ || old === nu ) return;
-        if ( nu ) this.$.style.border = '2px solid grey';
-        else      this.$.style.border = 'none';
+        this.$.style.border = nu ? '1px solid #eee' : 'none';
       }
     },
     {
@@ -78,7 +76,7 @@ CLASS({
         var container = this.$container;
         var style = container.style;
         if ( nu ) {
-          style.top = style.bottom = style.left = style.right = '0px';
+          style.top = style.bottom = style.left = style.right = '0';
         } else {
           style.top = style.bottom = style.left = style.right = 'initial';
         }
@@ -99,7 +97,6 @@ CLASS({
   methods: [
     function open() {
       if ( ! this.$ || this.isOpen ) return;
-      console.log('open');
       this.showBorder = true;
       this.height = -1;
       this.coverPage = true;
@@ -108,7 +105,6 @@ CLASS({
     },
     function close() {
       if ( ! this.$ || ! this.isOpen ) return;
-      console.log('close');
       this.height = 0;
       this.coverPage = false;
       this.isOpen = false;
@@ -134,7 +130,6 @@ CLASS({
       return height;
     },
     function onClick(prop, e) {
-      console.log('onClick');
       e.stopPropagation();
       if ( this.isPropEnabled(prop) ) {
         // Property being removed.
@@ -171,12 +166,9 @@ CLASS({
       isFramed: true,
       code: function() {
         if ( this.listeningForCancel_ ) return;
-        console.log('listenForCancel');
         if ( this.isOpen ) {
           this.document.body.addEventListener('click', this.onCancel);
           this.listeningForCancel_ = true;
-        } else {
-          console.log('** NOT LISTENING');
         }
       }
     },
@@ -185,28 +177,19 @@ CLASS({
       isFramed: true,
       code: function() {
         if ( ! this.listeningForCancel_ ) return;
-        console.log('unlistenForCancel');
         if ( ! this.isOpen ) {
           this.document.body.removeEventListener('click', this.onCancel);
           this.listeningForCancel_ = false;
-        } else {
-          console.log('** NOT UNLISTENING');
         }
       }
     },
     {
       name: 'onCancel',
-      code: function(e) {
-        console.log('onCancel');
-        this.close();
-      }
+      code: function(e) { this.close(); }
     },
     {
       name: 'onTransitionEnd',
-      code: function(e) {
-        console.log('transition end');
-        this.showBorder = this.isOpen;
-      }
+      code: function(e) { this.showBorder = this.isOpen; }
     },
     {
       name: 'onMouseOut',
@@ -241,22 +224,22 @@ CLASS({
         z-index: 1009;
       }
       popup {
+        background: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
+        display: block;
         font-size: 13px;
         font-weight: 400;
-        display: block;
-        position: absolute;
-        background: white;
-        z-index: 1010;
         overflow: hidden;
+        position: absolute;
+        right: 3px;
+        top: 4px;
         transition: height 0.25s cubic-bezier(0,.3,.8,1);
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
-        top: 0px;
-        right: 0px;
+        z-index: 1010;
       }
       popup item {
         display: block;
         cursor: pointer;
-        padding: 12px;
+        padding: 14px 30px;
       }
       popup item.enabled {
         font-weight: bold;

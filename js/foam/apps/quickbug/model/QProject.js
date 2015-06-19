@@ -955,7 +955,7 @@ CLASS({
         w.contentWindow.onload = function() {
           var window = self.window = w.contentWindow;
 
-          arequire('foam.apps.quickbug.ui.ChromeAppBrowser')(
+          self.X.arequire('foam.apps.quickbug.ui.ChromeAppBrowser')(
             function (model) {
               $addWindow(window);
               var Y = self.Y.subWindow(window, 'Browser Window');

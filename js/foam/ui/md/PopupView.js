@@ -56,6 +56,10 @@ CLASS({
       }
     },
     {
+      name: 'cardClass',
+      defaultValue: 'md-card'
+    },
+    {
       name: 'className',
       defaultValue: "popup-view-container"
     },
@@ -73,8 +77,7 @@ CLASS({
       if ( this.closeLatch_ ) this.closeLatch_();
 
       if ( this.state == 'closed' ) {
-        this.delegateView = this.delegate();
-        if ( this.data ) this.delegateView.data = this.data;
+        this.delegateView = this.delegate({ data$: this.data$ });
 
         if ( this.$ ) this.$.outerHTML = '';  // clean up old copy, in case of rapid re-activation
         this.document.body.insertAdjacentHTML('beforeend', this.toHTML());
@@ -138,7 +141,7 @@ CLASS({
     function toInnerHTML() {/*
       <div id="<%= this.id %>Blocker" class='popup-view-modal-blocker'></div>
       <% this.on('click', function() { self.close(); }, this.id + 'Blocker'); %>
-      <div id="<%= this.id %>Content" class='popup-view-content md-card'>
+      <div id="<%= this.id %>Content" class='popup-view-content <%= this.cardClass %>'>
         %%delegateView
       </div>
     */},

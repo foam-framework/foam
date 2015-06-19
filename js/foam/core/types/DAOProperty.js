@@ -95,7 +95,7 @@ CLASS({
           return;
         }
         if ( typeof model === 'string' ) {
-          arequire(model, this.X)(function(model) {
+          this.X.arequire(model)(function(model) {
             p.fromElement_.call(this, e, p, model);
           }.bind(this));
         } else {

@@ -49,6 +49,7 @@ CLASS({
     {
       model_: 'DateProperty',
       name: 'dueDate',
+      view: 'foam.ui.md.DateFieldView'
     },
   ],
   actions: [

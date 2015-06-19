@@ -23,7 +23,7 @@ CLASS({
     {
       name: 'modelName',
       postSet: function() {
-        arequire(this.modelName)(function(m) {
+        this.X.arequire(this.modelName)(function(m) {
           this.model = m
         }.bind(this));
       }
