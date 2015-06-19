@@ -872,6 +872,9 @@ CLASS({
       documentation: "The string content of the uncompiled $$DOC{ref:'Template'} body."
     },
     {
+      name: 'path'
+    },
+    {
       name: 'futureTemplate',
       transient: true
     },
