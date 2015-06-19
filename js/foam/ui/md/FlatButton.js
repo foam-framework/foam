@@ -138,7 +138,11 @@ CLASS({
         %%halo
         <span><% this.labelHTML(out) %></span>
       </%%tagName>
-      <% this.on('click', function() { self.action.maybeCall(self.X, self.data); }, this.id); %>
+      <% this.on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        self.action.maybeCall(self.X, self.data);
+      }, this.id); %>
     */},
     function labelHTML() {/*
       <% if ( this.action ) { %>
