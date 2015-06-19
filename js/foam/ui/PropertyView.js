@@ -126,8 +126,8 @@ CLASS({
 
 
     finishRender: function(view) {
+      view.prop = this.prop;
       this.SUPER(view);
-      this.view.prop = this.prop;
     },
 
     addDataChild: function(child) {
