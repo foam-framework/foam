@@ -22,6 +22,9 @@ CLASS({
     'foam.ui.md.DatePickerView',
     'foam.ui.md.PopupView',
   ],
+  imports: [
+    'document',
+  ],
   properties: [
     {
       name: 'prop',
@@ -39,6 +42,8 @@ CLASS({
     {
       name: 'onClick',
       code: function() {
+        var active = this.document.activeElement;
+        if (active) active.blur();
         this.PopupView.create({
           delegate: this.DatePickerView,
           cardClass: 'md-card-shell',
