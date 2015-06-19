@@ -46,12 +46,12 @@
 
   var model = params.model || 'foam.navigator.Controller';
 
-  models.push(arequire(model));
+  models.push(X.arequire(model));
   delete params.model;
 
   var viewName = params.view;
   if ( viewName ) {
-    models.push(arequire(viewName));
+    models.push(X.arequire(viewName));
     delete params.view;
   }
   var viewParams = {};
@@ -64,10 +64,10 @@
     }
   });
 
-  models.push(arequire('foam.ui.View'));
+  models.push(X.arequire('foam.ui.View'));
   Object_forEach(params, function(value, key) {
     var match = /^[a-z]+[.]([a-z]+[.])*[A-Z][a-zA-Z]*$/.exec(value);
-    if ( match  ) models.push(arequire(value));
+    if ( match  ) models.push(X.arequire(value));
   });
 
   var showActions = params.showActions;
@@ -108,7 +108,7 @@
       } else if ( obj.toView_ ) {
         view = obj.toView_();
       } else {
-        arequire('foam.ui.DetailView')(function(m) {
+        X.arequire('foam.ui.DetailView')(function(m) {
           viewParams.data = obj;
           viewParams.model = obj.model_;
           viewParams.showActions = showActions;
