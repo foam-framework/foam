@@ -282,7 +282,7 @@ CLASS({
       var time = 300 * (Math.abs(targetX - this.x) / this.width);
       var self = this;
       this.animate(time, function(evt) { self.x = targetX; },
-          Movement.ease(150/time, 150/time),
+          Movement.ease(0.8, 0.4),
           function() {
             self.viewYear = year;
             self.viewMonth = month;
