@@ -88,7 +88,10 @@ CLASS({
     },
     
     function intersects(c) {
-      return Movement.distance(this.x-c.x, this.y-c.y) <= this.r + this.borderWidth + c.r + c.borderWidth;
+      var r = this.r + c.r;
+      if ( this.border ) r += this.borderWidth;
+      if ( c.border    ) r += c.borderWidth;
+      return Movement.distance(this.x-c.x, this.y-c.y) < r;
     }
   ]
 });
