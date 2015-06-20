@@ -72,7 +72,7 @@ CLASS({
       name: 'extraModels',
       help: 'Extra models to include in the image regardless of if they were arequired or not.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; },
-      factory: function() { return ['foam.ui.FoamTagView']; }
+      factory: function() { return []; }
     },
     {
       model_: 'StringArrayProperty',
@@ -165,7 +165,7 @@ CLASS({
         aseq.apply(null, seq),
         arequire(this.controller))(this.buildModel.bind(this));
     },
-    buildAppJS_: function(ret) {
+    buildJavaFiles_: function(ret) {
       var models = {};
       var visited = {};
       var error = this.error;
@@ -184,7 +184,8 @@ CLASS({
           models[model.id] = model;
         }
 
-        model.getAllRequires().forEach(add);
+        // TODO(braden): Figure out how this should work recursively.
+        //model.getAllRequires().forEach(add);
       };
       add(this.controller);
 
@@ -196,7 +197,7 @@ CLASS({
       for ( var i = 0; i < ids.length; i++ ) {
         var model = models[ids[i]];
         var outputFile = this.outputFilename_(model.id);
-        //model.create();
+        model.create();
         this.fs.writeFileSync(outputFile, model.javaSource());
       }
     },
@@ -208,7 +209,7 @@ CLASS({
       this.targetPath = this.path.normalize(this.targetPath);
       this.log('Target is: ', this.targetPath);
 
-      this.fs.mkdirSync(this.targetPath);
+      this.mkdir(this.targetPath);
 
       this.buildJavaFiles_();
       process.exit(0);
@@ -218,13 +219,17 @@ CLASS({
     outputFilename_: function(pkg) {
       var parts = pkg.split('.');
       var p = this.targetPath;
-      while(paths.length > 1) {
+      while(parts.length > 1) {
         p = this.path.join(p, parts.shift());
-        this.fs.mkdirSync(p);
+        this.mkdir(p);
       }
 
       // The final part is the classname.
       return this.path.join(p, parts[0] + '.java');
+    },
+    mkdir: function(dir) {
+      if (this.fs.existsSync(dir)) return;
+      this.fs.mkdirSync(dir);
     },
     getFilePath: function(file) {
       var path = file;
