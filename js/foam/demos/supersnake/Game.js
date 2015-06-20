@@ -21,7 +21,6 @@ CLASS({
   package: 'foam.demos.supersnake',
   name: 'Scale',
   extendsModel: 'foam.graphics.Circle',
-  traits: [ 'foam.physics.Physical' ]
 });
 
 
@@ -88,7 +87,6 @@ CLASS({
   package: 'foam.demos.supersnake',
   name: 'Food',
   extendsModel: 'foam.graphics.Circle',
-  traits: [ 'foam.physics.Physical' ],
   properties: [
     { name: 'color', defaultValue: 'darkblue' }
   ],
@@ -108,7 +106,6 @@ CLASS({
   package: 'foam.demos.supersnake',
   name: 'Mushroom',
   extendsModel: 'foam.graphics.Circle',
-  traits: [ 'foam.physics.Physical' ],
   requires: [ 'foam.graphics.Rectangle' ],
   properties: [
     { name: 'color', defaultValue: 'red' },
@@ -135,7 +132,6 @@ CLASS({
   package: 'foam.demos.supersnake',
   name: 'Laser',
   extendsModel: 'foam.graphics.Circle',
-  traits: [ 'foam.physics.Physical' ],
   imports: [ 'game' ],
   properties: [
     { name: 'color',  defaultValue: 'yellow' },
