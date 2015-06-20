@@ -288,12 +288,13 @@ MODEL({
           template: t
         });
       } else if ( ! t.template && ! t.code ) {
+        t = X.Template.create(t);
         var future = afuture();
         var path   = self.sourcePath;
 
         t.futureTemplate = future.get;
         path = path.substring(0, path.lastIndexOf('/')+1);
-        path += self.name + '_' + t.name + '.ft';
+        path += t.path ? t.path : self.name + '_' + t.name + '.ft';
 
         if ( window.XMLHttpRequest ) {
           var xhr = new XMLHttpRequest();

@@ -203,7 +203,7 @@ CLASS({
       name: 'openTooltip',
       code: function(e) {
         console.assert(! this.tooltip_, 'Tooltip already defined');
-        arequire('foam.ui.Tooltip')(function(Tooltip) {
+        this.X.arequire('foam.ui.Tooltip')(function(Tooltip) {
           this.tooltip_ = Tooltip.create({
             text:   this.tooltip,
             target: this.$

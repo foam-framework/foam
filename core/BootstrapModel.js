@@ -585,12 +585,12 @@ var BootstrapModel = {
     var go = function() {
       var args = [];
 
-      if ( this.extendsModel ) args.push(arequire(this.extendsModel, this.X));
+      if ( this.extendsModel ) args.push(this.X.arequire(this.extendsModel));
 
       var i;
       if ( this.traits ) {
         for ( i = 0; i < this.traits.length; i++ ) {
-          args.push(arequire(this.traits[i], this.X));
+          args.push(this.X.arequire(this.traits[i]));
         }
       }
       var model = this;
@@ -614,7 +614,7 @@ var BootstrapModel = {
           if ( m[0] == this.id ) {
             console.warn("Model requires itself: " + this.id);
           } else {
-            args.push(arequire(m[0], this.X));
+            args.push(this.X.arequire(m[0]));
           }
         }
       }

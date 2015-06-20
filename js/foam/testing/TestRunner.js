@@ -89,7 +89,7 @@ CLASS({
         }
 
         for ( var i = 0 ; i < this.targets.length ; i++ ) {
-          seq.push(arequire(this.targets[i]));
+          seq.push(this.X.arequire(this.targets[i]));
         }
 
 

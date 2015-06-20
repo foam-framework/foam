@@ -164,7 +164,7 @@ CLASS({
     {
       name: 'adapt',
       defaultValue: function (_, d) {
-        return typeof d === 'string' ? new Date(d) : d;
+        return (typeof d === 'string' || typeof d === 'number') ? new Date(d) : d;
       }
     },
     {

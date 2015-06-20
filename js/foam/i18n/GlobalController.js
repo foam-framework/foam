@@ -100,7 +100,7 @@ CLASS({
   ]
 });
 
-arequire('foam.i18n.GlobalController')(function(GlobalController) {
+X.arequire('foam.i18n.GlobalController')(function(GlobalController) {
   var i18nGC = GlobalController.create();
   GLOBAL.X.i18nModel = function(ret, model, X) {
     i18nGC.avisitModel([
