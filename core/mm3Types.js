@@ -87,7 +87,7 @@ CLASS({
       name: 'javaType',
       type: 'String',
       displayWidth: 70,
-      defaultValue: 'bool',
+      defaultValue: 'boolean',
       help: 'The Java type of this property.'
     },
     {
