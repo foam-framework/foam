@@ -36,6 +36,31 @@ public abstract class AbstractFObject
   public int compare(long   o1, long   o2) { return Long.compare(o1, o2);    }
   public int compare(float  o1, float  o2) { return Float.compare(o1, o2);   }
   public int compare(double o1, double o2) { return Double.compare(o1, o2);  }
+
+  public int compare(Object o1, Object o2) {
+    if (o1 instanceof FObject && o2 instanceof FObject) {
+      FObject f1 = (FObject) o1;
+      FObject f2 = (FObject) o2;
+      if (! f1.model().equals(f2.model())) {
+        // Hack that gives unstable order  for non-identical models with the same
+        // name. Since that shouldn't happen, this shouldn't cause a problem.
+        int c = f1.model().getName().compareTo(f2.model().getName());
+        return c == 0 ? 1 : c;
+      } else {
+        // Compare each of the properties, in order.
+        Property[] props = f1.model().getProperties();
+        for ( Property p : props ) {
+          int c = p.compare(f1, f2);
+          if (c != 0) return c;
+        }
+        return 0;
+      }
+    } else if (o1 instanceof FObject) {
+      return -1;
+    } else {
+      return 1;
+    }
+  }
   
   
   public int hash(boolean b) { return b ? 1 : 0; }
@@ -47,6 +72,10 @@ public abstract class AbstractFObject
   public int hash(double d)  { return hash(Double.doubleToLongBits(d)); }
   public int hash(Object o)  { return o == null ? 0 : o.hashCode(); }
 
+
+  public int compareTo(Object other) {
+    return compare(this, other);
+  }
 
   public boolean equals(Object o) {
     return compareTo(o) == 0;

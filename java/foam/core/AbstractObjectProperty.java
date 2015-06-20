@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2013 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,22 @@
 
 package foam.core;
 
-public interface Model
+public abstract class AbstractObjectProperty
+    extends AbstractProperty
 {
-  public String     getName();
-  public String     getLabel();
-  public Property   getID();
-  public Property[] getProperties();
-  public Property   getProperty(String propertyName);
+
+  public int compareValues(Object o1, Object o2)
+  {
+    if (o1 == o2) return 0;
+
+    if (o1 instanceof Comparable) return ((Comparable) o1).compareTo(o2);
+    if (o2 instanceof Comparable) return ((Comparable) o2).compareTo(o1);
+    return 1;
+  }
+
+  public FObject toNative(Object o)
+  {
+    return (FObject) o;
+  }
+
 }
