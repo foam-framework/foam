@@ -33,11 +33,10 @@ CLASS({
     'foam.demos.supersnake.Laser'
   ],
   imports: [
-    'game'
+    'game',
+    'timer',
+    'R'
   ],
-
-  imports: [ 'timer' ],
-  constants: { R: 20 },
 
   properties: [
 //    { name: 'scales', factory: function() { return []; } },
@@ -61,6 +60,7 @@ CLASS({
       this.Laser.create({x: this.sx, y: this.sy, vx: this.vx, vy: this.vy});
     },
     function intersects(o) {
+      if ( ! this.children.length ) return false;
       return this.children[this.children.length-1].intersects(o);
     }
   ],
@@ -69,8 +69,8 @@ CLASS({
       name: 'tick',
       isMerged: 150,
       code: function() {
-        this.sx += this.vx * 2*this.R;
-        this.sy += this.vy * 2*this.R;
+        this.sx += this.vx * 2 * this.R;
+        this.sy += this.vy * 2 * this.R;
         if ( this.children.length )
           this.children[this.children.length-1].color = 'green';
         this.addChild(this.Scale.create({x: this.sx, y: this.sy, radius: this.R, color: 'red'}));
@@ -107,8 +107,9 @@ CLASS({
   name: 'Mushroom',
   extendsModel: 'foam.graphics.Circle',
   requires: [ 'foam.graphics.Rectangle' ],
+  imports: [ 'R as r' ],
   properties: [
-    { name: 'color', defaultValue: 'red' },
+    { name: 'color',    defaultValue: 'red' },
     { name: 'endAngle', defaultValue: Math.PI },
     'stem'
   ],
@@ -169,9 +170,12 @@ CLASS({
   ],
 
   exports: [
+    'R',
     'timer',
     'as game'
   ],
+
+  constants: { R: 20 },
 
   properties: [
     {
@@ -307,13 +311,13 @@ CLASS({
     },
 
     function addFood() {
-      var R = this.Snake.R;
+      var R = this.R;
       var f = this.Food.create({x: Math.round(Math.random()*500/R)*2*R, y: Math.round(Math.random()*500/R)*2*R});
       this.addChild(f);
     },
 
     function addMushroom() {
-      var R = this.Snake.R;
+      var R = this.R;
       var m = this.Mushroom.create({x: Math.round(Math.random()*500/R)*2*R, y: Math.round(Math.random()*500/R)*2*R});
       this.addChild(m);
     }
