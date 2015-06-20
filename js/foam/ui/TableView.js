@@ -704,7 +704,7 @@ CLASS({
           <% this.tableToHTML(out); %>
         </span>
         <%= this.scrollEnabled ?
-            ('<span style="width:19px;flex:none;overflow:hidden;">' +
+            ('<span style="width:19px;flex:none;overflow:hidden;" class="scrollbar">' +
             this.scrollbar.toView_().toHTML() + '</span>') : '' %>
       </div>
     */},

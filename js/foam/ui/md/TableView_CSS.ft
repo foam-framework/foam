@@ -98,6 +98,10 @@ tr:first-child {
   height: 64px;
 }
 
+.mdTable thead th .indicator {
+  flex-shrink: 0;
+}
+
 .mdTable tbody tr td {
   height: 48px;
 }
@@ -135,6 +139,7 @@ i.material-icons.actionLabel {
   padding-right: 24px;
 }
 /* TODO(markdittmer): Currently hiding broken scrollbar view */
+md-table .scrollbar,
 md-table canvas {
   display: none;
 }
