@@ -57,8 +57,8 @@ CLASS({
     }
   ],
 
-  methods: {
-    paintSelf: function() {
+  methods: [
+    function paintSelf() {
       var c = this.canvas;
       if ( ! c ) return;
 
@@ -85,6 +85,10 @@ CLASS({
         c.strokeStyle = this.border;
         c.stroke();
       }
+    },
+    
+    function intersects(c) {
+      return Movement.distance(this.x-c.x, this.y-c.y) <= this.r + this.borderWidth + c.r + c.borderWidth;
     }
-  }
+  ]
 });

@@ -42,9 +42,6 @@ CLASS({
   ],
 
   methods: {
-    intersects: function(c) {
-      return Movement.distance(this.x-c.x, this.y-c.y) <= this.r + this.borderWidth + c.r + c.borderWidth;
-    },
     applyMomentum: function(m, a) {
       this.vx += (m * Math.cos(a) / this.mass);
       this.vy += (m * Math.sin(a) / this.mass);
