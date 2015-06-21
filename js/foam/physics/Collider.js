@@ -85,6 +85,11 @@ CLASS({
         this.children.push(arguments[i]);
       return this;
     },
+    remove: function() {
+      for ( var i = 0 ; i < arguments.length ; i++ )
+        this.children.deleteI(arguments[i]);
+      return this;
+    },
     destroy: function() {
       this.stopped_ = true;
       this.children = [];
