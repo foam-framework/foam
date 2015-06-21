@@ -197,7 +197,7 @@ CLASS({
     {
       name: 'table',
       factory: function() {
-        return this.CView.create({background: 'lightblue', width: this.width, height: this.height}).addChildren(
+        return this.CView.create({background: 'lightblue', width: window.innerWidth, height: window.innerHeight}).addChildren(
           this.snake);
       }
     },
