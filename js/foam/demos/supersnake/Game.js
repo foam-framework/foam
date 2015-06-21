@@ -286,10 +286,13 @@ CLASS({
           }
         }
         if ( this.Snake.isInstance(o1) && this.Mushroom.isInstance(o2) ) {
-          this.gameOver();
+          if ( o2.scaleX == 1 )
+            this.gameOver();
+          else
+            this.removeChild(o2);
         }
         if ( this.Snake.isInstance(o1) && this.Food.isInstance(o2) ) {
-          this.table.removeChild(o2);
+          this.removeChild(o2);
           this.snake.length++;
         }
 //        console.log('BANG', o1, o2);
@@ -310,6 +313,11 @@ CLASS({
       if ( c.intersects ) this.collider.add(c);
     },
 
+    function removeChild(c) {
+      this.table.removeChild(c);
+      if ( c.intersects ) this.collider.remove(c);
+    },
+
     function addFood() {
       var R = this.R;
       var f = this.Food.create({x: Math.round(Math.random()*500/R)*2*R, y: Math.round(Math.random()*500/R)*2*R});
@@ -318,7 +326,16 @@ CLASS({
 
     function addMushroom() {
       var R = this.R;
-      var m = this.Mushroom.create({x: Math.round(Math.random()*500/R)*2*R, y: Math.round(Math.random()*500/R)*2*R});
+      var m = this.Mushroom.create({
+        x: Math.round(Math.random()*500/R)*2*R,
+        y: Math.round(Math.random()*500/R)*2*R,
+        scaleX: 0.1,
+        scaleY: 0.1});
+      
+      Movement.animate(7000, function() {
+        m.scaleX = m.scaleY = 1;
+      })();
+
       this.addChild(m);
     }
   ]
