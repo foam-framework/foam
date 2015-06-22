@@ -136,7 +136,7 @@ CLASS({
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'filteredTasks',
-      view: { factory_: 'foam.ui.md.TableView', scrollEnabled: true },
+      view: { factory_: 'foam.ui.md.FlexTableView' },
       onDAOUpdate: function() {
         this.updateFilteredCount();
       }
