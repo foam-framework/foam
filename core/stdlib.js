@@ -349,6 +349,7 @@ MODEL({
 });
 
 var labelize = memoize1(function(str) {
+  if ( str === '' ) return str;
   return capitalize(str.replace(/[a-z][A-Z]/g, function (a) { return a.charAt(0) + ' ' + a.charAt(1); }));
 });
 
