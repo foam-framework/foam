@@ -55,8 +55,8 @@ CLASS({
 
   properties: [
     {
+      model_: 'ModelProperty',
       name:  'model',
-      type:  'Model',
       defaultValueFn: function() { return this.X.model ||
                                    ( this.data && this.data.model ); }
     },
