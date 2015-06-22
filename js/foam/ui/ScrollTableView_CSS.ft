@@ -1,0 +1,24 @@
+scroll-table,
+scroll-table-body,
+scroll-table-head,
+scroll-table-row {
+  display: flex;
+  flex-shrink: 0;
+  flex-grow: 1;
+}
+scroll-table-cell {
+  display: block;
+  position: relative;
+  flex-shrink: 0;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+scroll-table,
+scroll-table-head,
+scroll-table-body {
+  flex-direction: column;
+}
+scroll-table {
+  width: 100%;
+}
