@@ -34,8 +34,17 @@ CLASS({
       defaultValueFn: function() { return this.prop.label; }
     },
     {
+      name: 'mode',
+    },
+    {
+      name: 'floatingLabel',
+      defaultValue: true
+    },
+    {
       name: 'className',
-      defaultValue: 'md-date-field'
+      defaultValueFn: function() {
+        return 'md-date-field md-date-field-' + (this.mode === 'read-only' ? 'read-only' : 'writable');
+      }
     },
   ],
   listeners: [
@@ -54,18 +63,30 @@ CLASS({
   ],
   templates: [
     function CSS() {/*
-      .md-date-field {
+      .md-date-field.md-date-field-writable {
         height: 64px;
         margin: 8px;
         padding: 32px 8px 8px 8px;
         position: relative;
       }
+
+      .md-date-field.md-date-field-read-only {
+        display: inline-block;
+      }
+
       .md-date-field-body {
         align-items: center;
         border-bottom: 1px solid #e0e0e0;
         display: flex;
         padding: 8px 0;
       }
+
+      .md-date-field-read-only .md-date-field-body {
+        border: none;
+        display: inline-block;
+        padding: 0;
+      }
+
       .md-date-field .md-floating-label {
         font-size: 85%;
         top: 12px;
@@ -73,9 +94,11 @@ CLASS({
     */},
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
-        <label id="<%= this.id %>-label" class="md-floating-label">
-          <%= this.label %>
-        </label>
+        <% if (this.floatingLabel) { %>
+          <label id="<%= this.id %>-label" class="md-floating-label">
+            <%= this.label %>
+          </label>
+        <% } %>
         <div class="md-date-field-body">
           <%# this.data ? this.data.toDateString() : 'Choose date' %>
         </div>
