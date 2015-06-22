@@ -26,6 +26,7 @@ CLASS({
     'foam.mlang.CannedQuery',
     'foam.ui.DAOListView',
     'foam.ui.md.CannedQueryCitationView',
+    'foam.ui.md.CitationView',
   ],
 
   exports: [
@@ -127,7 +128,7 @@ CLASS({
       name: 'listView',
       defaultValue: {
         factory_: 'foam.ui.DAOListView',
-        rowView: 'foam.ui.md.DetailView'
+        rowView: 'foam.ui.md.CitationView'
       }
     },
     {
