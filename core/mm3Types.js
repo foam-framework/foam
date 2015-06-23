@@ -808,15 +808,9 @@ CLASS({
                   extendsModel: 'foam.ui.DetailView',
                   templates:[{name: 'toHTML', template: f}]
                 });
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 
-              // TODO(kgr): this isn't right because compiling the View
-              // template is async.  Should create a FutureView to handle this.
+              // TODO(kgr): this isn't right because compiling the View template
+              // is async.  Should add a READY state to View to handle this.
               viewModel.arequire();
             }
             ret = function(args, X) { return viewModel.create(args, X || this.Y); };
