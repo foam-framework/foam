@@ -36,6 +36,7 @@ CLASS({
     {
       model_: 'BooleanProperty',
       name: 'isCompleted',
+      label: 'Completed',
       defaultValue: false,
       view: 'foam.ui.md.CheckboxView'
     },
@@ -50,6 +51,11 @@ CLASS({
       model_: 'DateProperty',
       name: 'dueDate',
       view: 'foam.ui.md.DateFieldView'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'priority',
+      defaultValue: 1
     },
   ],
   actions: [

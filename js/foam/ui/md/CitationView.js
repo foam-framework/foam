@@ -15,44 +15,50 @@
  * limitations under the License.
  */
 CLASS({
-  package: 'foam.apps.todo.ui',
-  name: 'TodoDetailView',
+  package: 'foam.ui.md',
+  name: 'CitationView',
   extendsModel: 'foam.ui.md.DetailView',
   requires: [
-    'foam.apps.todo.model.Todo',
-  ],
-
-  imports: [
-    'stack',
-    'todoDAO',
   ],
 
   properties: [
     {
       name: 'model',
-      factory: function() { return this.Todo; }
+      defaultValueFn: function() {
+        return this.data.model_;
+      }
     },
     {
       name: 'className',
-      defaultValue: 'todo-detail'
+      defaultValue: 'md-citation-view'
     },
   ],
 
   templates: [
     function CSS() {/*
-      .todo-detail {
+      .md-citation-view {
+        align-items: center;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        min-height: 48px;
       }
     */},
     function toHTML() {/*
+      <%
+        var props = this.model.getRuntimeProperties();
+        var prop;
+        for (var i = 0; i < props.length; i++) {
+          var p = props[i];
+          if (! p.hidden && p.name !== 'id' && p.model_.id === 'Property' || p.model_.id === 'StringProperty') {
+            prop = p;
+            break;
+          }
+        }
+
+        if (!prop) prop = this.model.ID;
+      %>
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
-        <% if ( this.data.id ) { %>
-          $$isCompleted
-        <% } %>
-        $$name
-        $$priority
-        $$owner
-        $$description
-        $$dueDate
+        <%= this.createTemplateView(prop.name, { mode: 'read-only', floatingLabel: false }) %>
       </div>
     */},
   ]

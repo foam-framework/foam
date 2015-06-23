@@ -36,16 +36,67 @@ CLASS({
         border-bottom: 1px solid #eee;
         display: flex;
         font-size: 14px;
-        height: 56px;
+        height: 80px;
       }
       .todo-citation input {
         margin-right: 12px;
+      }
+
+      .todo-citation-center {
+        display: flex;
+        flex-direction: column;
+        font-size: 12px;
+        color: #666;
+        overflow: hidden;
+      }
+
+      .todo-citation-name {
+        color: #000;
+        font-size: 16px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .todo-citation-description {
+        overflow: hidden;
+      }
+      .todo-citation-description span {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .todo-citation-details {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .todo-citation-priority {
+        padding: 8px;
+        margin: 0 8px;
       }
     */},
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
         $$isCompleted{ label: '' }
-        <div class="expand">$$name{ mode: 'read-only', floatingLabel: false }</div>
+        <div class="expand todo-citation-center">
+          $$name{
+            model_: 'foam.ui.TextFieldView',
+            mode: 'read-only',
+            extraClassName: 'todo-citation-name'
+          }
+          <div class="todo-citation-description">
+            $$description{ model_: 'foam.ui.TextFieldView', mode: 'read-only' }
+          </div>
+          <div class="todo-citation-details">
+            $$owner{ model_: 'foam.ui.TextFieldView', mode: 'read-only' }
+            $$dueDate{ mode: 'read-only', floatingLabel: false }
+          </div>
+        </div>
+        <div class="todo-citation-priority">
+          $$priority{ mode: 'read-only', floatingLabel: false }
+        </div>
       </div>
     */},
   ]

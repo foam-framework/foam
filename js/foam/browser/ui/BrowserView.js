@@ -68,7 +68,7 @@ CLASS({
                   this.stack.pushView(this.data.detailView({
                     data: obj,
                     innerView: this.data.innerDetailView
-                  }, this.Y));
+                  }, this.Y.sub({ dao: this.data.dao })));
                 }.bind(this)
               });
               this.selection = '';
@@ -139,7 +139,7 @@ CLASS({
             this.stack.pushView(this.data.detailView({
               data: newObj,
               innerView: this.data.innerDetailView
-            }, this.Y));
+            }, this.Y.sub({ dao: this.data.dao })));
           }
         },
       ],
