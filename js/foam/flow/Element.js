@@ -28,8 +28,8 @@ CLASS({
       name: 'registerElement',
       documentInstallFn: function(X) {
         X.registerElement(
-        this.getTagName(),
-        this.model_.package + '.' + this.name_);
+            this.getTagName(X),
+            this.model_.package + '.' + this.name_);
       }
     }
   ],
@@ -40,10 +40,11 @@ CLASS({
       this.tagName = this.getTagName();
     },
 
-    getTagName: function() {
+    getTagName: function(X) {
       if ( this.ELEMENT_NAME ) return this.ELEMENT_NAME;
       var Name = this.X.lookup('foam.Name');
-      if ( Name ) return Name.create({ initial: this.name_ }).toTagName();
+      if ( Name ) return Name.create({ initial: this.name_ },
+                                     X || this.X).toTagName();
       return 'foam-flow-element';
     },
 

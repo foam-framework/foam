@@ -211,7 +211,7 @@ CLASS({
     {
       name: 'tick',
       code: function(_, _, _, t) {
-        if ( t % 200 == 0 ) this.addFood();
+        if ( t % 150 == 0 ) this.addFood();
         if ( Math.random() < 0.02 ) this.addMushroom();
       }
     }
@@ -320,18 +320,21 @@ CLASS({
 
     function addFood() {
       var R = this.R;
-      var f = this.Food.create({x: Math.round(Math.random()*500/R)*2*R, y: Math.round(Math.random()*500/R)*2*R});
+      var f = this.Food.create({
+        x: Math.round(1+Math.random()*(this.table.width -4*R)/R)*2*R,
+        y: Math.round(1+Math.random()*(this.table.height-4*R)/R)*2*R,
+      });
       this.addChild(f);
     },
 
     function addMushroom() {
       var R = this.R;
       var m = this.Mushroom.create({
-        x: Math.round(Math.random()*500/R)*2*R,
-        y: Math.round(Math.random()*500/R)*2*R,
+        x: Math.round(1+Math.random()*(this.table.width -4*R)/R)*2*R,
+        y: Math.round(1+Math.random()*(this.table.height-4*R)/R)*2*R,
         scaleX: 0.1,
         scaleY: 0.1});
-      
+
       Movement.animate(7000, function() {
         m.scaleX = m.scaleY = 1;
       })();

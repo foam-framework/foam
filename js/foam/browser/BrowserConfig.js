@@ -21,10 +21,16 @@ CLASS({
       'Create an instance of this model and load it in a BrowserView.',
 
   requires: [
+    'foam.dao.EasyDAO',
     'foam.dao.NullDAO',
     'foam.mlang.CannedQuery',
     'foam.ui.DAOListView',
     'foam.ui.md.CannedQueryCitationView',
+    'foam.ui.md.CitationView',
+  ],
+
+  exports: [
+    'dao'
   ],
 
   properties: [
@@ -37,10 +43,17 @@ CLASS({
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'dao',
-      documentation: 'The master DAO to browse. Required.',
-      required: true,
+      documentation: 'The master DAO to browse. Will default to an MDAO if not provided.',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.model,
+          daoType: 'MDAO',
+          seqNo: true,
+        });
+      }
     },
     {
+      model_: 'ModelProperty',
       name: 'model',
       defaultValueFn: function() { return this.dao.model; }
     },
@@ -115,7 +128,7 @@ CLASS({
       name: 'listView',
       defaultValue: {
         factory_: 'foam.ui.DAOListView',
-        rowView: 'foam.ui.md.DetailView'
+        rowView: 'foam.ui.md.CitationView'
       }
     },
     {

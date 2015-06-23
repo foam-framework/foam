@@ -65,8 +65,12 @@ CLASS({
       defaultValue: null,
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( nu ) this.actions = this.hardSelection.model_.actions.concat(this.model_.actions);
-        else      this.actions = this.model_.actions;
+        if ( nu ) {
+          this.actions = this.gatherActions(this.hardSelection.model_).concat(
+              this.gatherActions(this.model_));
+        } else {
+          this.actions = this.gatherActions(this.model_);
+        }
 
         if ( ! this.$ ) return;
         this.updateTableCaption();
@@ -79,8 +83,8 @@ CLASS({
       subType: 'Action',
       name: 'actions',
       lazyFactory: function() {
-        return this.hardSelection ? this.hardSelection.model_.actions :
-            this.model_.actions;
+        return this.hardSelection ? this.gatherActions(this.hardSelection.model_) :
+            this.gatherActions(this.model_);
       }
     },
     {
@@ -146,7 +150,14 @@ CLASS({
       return view;
     },
     function isViewAction(action) {
-      return this.model_.actions.some(function(a) { return a === action; });
+      return this.gatherActions(this.model_).some(function(a) { return a === action; });
+    },
+    function gatherActions(model) {
+      if ( ! model ) return [];
+      // TODO(markdittmer): Should we be defining a getter for "actions_" so
+      // that we don't need to check "instance_"?
+      return model.actions_ || (model.instance_ && model.instance_.actions_) ||
+          model.actions;
     }
   ],
 

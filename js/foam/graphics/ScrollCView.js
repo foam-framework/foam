@@ -31,7 +31,13 @@ CLASS({
       model_: 'IntProperty',
       name: 'value',
       help: 'The first element being shown, starting at zero.',
-      preSet: function(_, value) { return Math.max(0, Math.min(this.size-this.extent, value)); },
+      preSet: function(_, value) {
+        return Math.max(0, Math.min(this.size-this.extent, value));
+      },
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        this.view && this.view.paint();
+      },
       defaultValue: 0
     },
     {
@@ -39,16 +45,21 @@ CLASS({
       name: 'extent',
       help: 'Number of elements shown.',
       minValue: 1,
-      defaultValue: 10
+      defaultValue: 10,
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        this.view && this.view.paint();
+      }
     },
     {
       model_: 'IntProperty',
       name: 'size',
       defaultValue: 0,
       help: 'Total number of elements being scrolled through.',
-      postSet: function(_, size) {
+      postSet: function(old, size) {
+        if ( old === size ) return;
         this.value = this.value; // force range checking on value
-        this.paint();
+        this.view && this.view.paint();
       }
     },
     {

@@ -44,10 +44,11 @@
 
   var models = [];
 
-  var model = params.model || 'foam.navigator.Controller';
+  var model = params.model_ || params.model || 'foam.navigator.Controller';
 
   models.push(X.arequire(model));
-  delete params.model;
+  if (params.model_) delete params.model_;
+  else delete params.model;
 
   var viewName = params.view;
   if ( viewName ) {

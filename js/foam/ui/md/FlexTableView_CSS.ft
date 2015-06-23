@@ -46,73 +46,55 @@ md-table table-header table-actions i {
 }
 
 .mdTable {
-  border-collapse: collapse;
   font-family: 'Roboto', sans-serif;
-  table-layout:fixed;
-  text-align: left;
-  width: 100%;
 }
 
-.mdTable thead {
+.mdTable flex-table-head {
   color: rgba(0, 0, 0, 0.54);
   font-size: 12px;
   font-weight: 500;
 }
 
-.mdTable tbody {
+.mdTable flex-table-body {
   color: rgba(0, 0, 0, 0.87);
   font-size: 13px;
   font-weight: 400;
-}
-
-.mdTable tbody {
   border-top: solid 1px #DDDDDD;
 }
-
-.mdTable tbody tr {
+.mdTable flex-table-body flex-table-row {
   border-bottom: solid 1px #DDDDDD;
   cursor: pointer;
 }
 
-tr:first-child {
-  padding-left: 24px;
-}
-
-.mdTable thead tr th {
-  cursor: pointer;
-}
-
-.mdTable tbody tr:hover,
-.mdTable tbody tr.rowSoftSelected {
-  background: #EEEEEE;
-}
-
-.mdTable tr.rowSelected {
-  background: #F5F5F5;
-}
-
-.mdTable .numeric {
-  text-align: right;
-}
-
-.mdTable thead th {
+.mdTable flex-table-head flex-table-cell {
   height: 64px;
 }
 
-.mdTable thead th .indicator {
-  flex-shrink: 0;
+.mdTable flex-table-head flex-table-cell,
+.mdTable flex-table-head flex-table-cell :not(flex-col-resize-handle) {
+  cursor: pointer;
 }
 
-.mdTable tbody tr td {
+.mdTable flex-table-head flex-table-cell:hover flex-col-resize-handle {
+  background: #F5F5F5;
+}
+
+.mdTable flex-table-head flex-table-cell flex-col-resize-handle:hover,
+body.flex-table-view-col-resize .mdTable flex-col-resize-handle {
+  background: #EEEEEE;
+}
+
+.mdTable flex-table-body flex-table-row:hover,
+.mdTable flex-table-body flex-table-row.rowSoftSelected {
+  background: #EEEEEE;
+}
+
+.mdTable flex-table-row.rowSelected {
+  background: #F5F5F5;
+}
+
+.mdTable flex-table-body flex-table-cell {
   height: 48px;
-}
-
-.mdTable thead th,
-.mdTable thead th *,
-.mdTable tbody td {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .mdTable .sort {
@@ -134,13 +116,28 @@ i.material-icons.actionLabel {
   display: none;
 }
 
-.mdTable thead tr th,
-.mdTable tbody tr td {
-  padding-left: 24px;
-  padding-right: 24px;
+.mdTable flex-table-row {
+  padding-left: 12px;
+  padding-right: 12px;
 }
-/* TODO(markdittmer): Currently hiding broken scrollbar view */
-md-table .scrollbar,
-md-table canvas {
-  display: none;
+
+.mdTable flex-table-cell:first-child {
+  padding-left: 12px;
+}
+
+.mdTable flex-table-cell:last-child,
+.mdTable flex-table-cell.numeric:last-child,
+.mdTable flex-table-cell.sort:last-child,
+.mdTable flex-table-cell.numeric.sort:last-child {
+  margin-right: 0px;
+}
+
+.mdTable flex-table-cell {
+  padding-right: 12px;
+  margin-right: 12px;
+}
+
+.mdTable flex-table-cell.numeric {
+  padding-right: 28px;
+  margin-right: 28px;
 }
