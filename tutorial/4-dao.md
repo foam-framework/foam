@@ -37,29 +37,30 @@ Our app has so far been defaulting to an MDAO for storing our `Todo`s. Since
 it's in-memory, the data has disappeared on each refresh. Let's make it
 persistent.
 
-Edit `js/com/todo/TodoApp.js` and make the following edits:
+Edit `js/com/todo/TodoApp.js`.
 
-- Add `foam.dao.EasyDAO` to the `requires`.
-- Edit `data`'s `factory` to be:
-    {% highlight js %}
-    {
-      name: 'data',
-      factory: function() {
-        return this.BrowserConfig.create({
-          dao: this.EasyDAO.create({
-            model: this.Todo,
-            daoType: 'LOCAL',
-            cache: true,
-            seqNo: true
-          })
-        });
-      }
-    }
-    {% endhighlight %}
+First, add `foam.dao.EasyDAO` to the `requires`.
+
+Then edit `data`'s `factory` to be:
+{% highlight js %}
+{
+  name: 'data',
+  factory: function() {
+    return this.BrowserConfig.create({
+      dao: this.EasyDAO.create({
+        model: this.Todo,
+        daoType: 'LOCAL',
+        cache: true,
+        seqNo: true
+      })
+    });
+  }
+}
+{% endhighlight %}
 
 Try it out, and see that we're now saving the data between reloads.
 
-### `EasyDAO`
+### EasyDAO
 
 What's going on here? Well, `EasyDAO` is a helper for building a decorated DAO.
 
