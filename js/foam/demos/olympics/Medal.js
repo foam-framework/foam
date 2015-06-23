@@ -21,7 +21,7 @@ CLASS({
 
   properties: [
     { name: 'id', hidden: true },
-    { model_: 'IntProperty', name: 'year', shortName: 'y'  },
+    { name: 'year', shortName: 'y'  },
     {
       name: 'color',
       defaultValue: 'Gold',
