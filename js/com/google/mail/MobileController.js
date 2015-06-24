@@ -141,11 +141,22 @@ CLASS({
       }
     },
     {
+      name: 'title',
+      defaultValue: 'Gmail'
+    },
+    {
+      name: 'selectedLabel',
+      postSet: function(old, nu) {
+        if (nu) this.title = nu.label;
+      },
+    },
+    {
       name: 'data',
       factory: function() {
         return this.BrowserConfig.create({
           model: this.EMail,
           dao: this.emailDao,
+          title$: this.title$,
           listView: {
             // TODO(braden): Get ScrollView working nicely in the browser.
             factory_: 'foam.ui.DAOListView',
