@@ -380,7 +380,7 @@ CLASS({
 CLASS({
   name: 'ArrayProperty',
   extendsModel: 'Property',
-  help: 'Describes a properties of type Array.',
+  help: 'Describes a property of type Array.',
 
   properties: [
     {
