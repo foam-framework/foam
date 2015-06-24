@@ -37,7 +37,8 @@ CLASS({
     {
       name: 'title',
       defaultValueFn: function() {
-        return this.dao.model.name + ' Browser';
+        return this.model && this.model.name ? this.model.name + ' Browser' :
+            'Browser';
       }
     },
     {
@@ -55,7 +56,8 @@ CLASS({
     {
       model_: 'ModelProperty',
       name: 'model',
-      defaultValueFn: function() { return this.dao.model; }
+      required: true,
+      factory: function() { return this.dao.model; }
     },
     {
       name: 'filteredDAO',
