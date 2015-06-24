@@ -18,24 +18,17 @@
 CLASS({
   name: 'EMailView',
   package: 'com.google.mail',
-  extendsModel: 'foam.ui.UpdateDetailView',
-  properties: [
-  ],
+  extendsModel: 'foam.ui.md.DetailView',
   requires: [
-    "foam.ui.WebView",
+    'foam.ui.WebView',
     'foam.ui.md.MonogramStringView',
     'foam.ui.RelativeDateTimeFieldView',
     'foam.ui.ImageBooleanView',
     'foam.ui.ActionSheetView',
     'foam.ui.StringArrayView'
   ],
+  /*
   actions: [
-    {
-      name: 'back',
-      isAvailable: function() { return true; },
-      label: '',
-      iconUrl: 'images/ic_arrow_back_24dp.png'
-    },
     {
       name: 'moreActions',
       label: '',
@@ -50,32 +43,77 @@ CLASS({
       },
     },
   ],
+  */
   templates: [
     function CSS() {/*
       .actionButtonCView-moreActions {
         margin-right: 10px;
       }
       .email-view {
-        overflow-y: scroll;
-        height: 100%;
       }
+      .email-view .content {
+        align-items: stretch;
+        display: flex;
+        flex-direction: column;
+        margin: 0 18px 18px;
+        word-break: word;
+      }
+      .email-view .content iframe {
+        border: none;
+        overflow: hidden;
+        padding: 0;
+      }
+
+      .email-view .monogram-string-view {
+        margin: auto 6px auto 0;
+      }
+
+      .email-view .from {
+        font-size: 14px;
+        font-weight: bold;
+        display: block;
+        overflow-x: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .email-view .details {
+        font-size: 12px;
+        color: rgb(119, 119, 119);
+        overflow-x: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .email-view .subject {
+        color: #fff;
+        display: block;
+        font-size: 20px;
+        line-height: 28px;
+        margin: auto;
+        overflow-x: hidden;
+        padding: 0px 16px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
+        -webkit-box-flex: 1.0;
+      }
+
+      .email-view .body {
+        white-space: pre-wrap;
+        margin-top: 20px;
+        display: block;
+      }
+
     */},
     function toHTML() {/*
       <% this.destroy(); %>
       <div id="<%= this.id %>" class="email-view">
-        <div class="header">
-          $$back{radius: 22, className: 'backButton'}
-          $$subject{mode: 'read-only', className: 'subject'}
-          $$archive{iconUrl: 'icons/ic_archive_white_24dp.png'}
-          $$moveToInbox{iconUrl: 'icons/ic_inbox_white_24dp.png'}
-          $$trash{iconUrl: 'icons/ic_delete_white_24dp.png'}
-          $$moreActions
-        </div>
         <div class="content">
           <div style="display: flex; display: -webkit-flex">
             $$from{model_: 'foam.ui.md.MonogramStringView'}
             <div style='flex: 1; -webkit-flex: 1'>
-              $$from{mode: 'read-only', className: 'from', escapeHTML: true}
+              $$from{mode: 'read-only', floatingLabel: false, className: 'from', escapeHTML: true}
               <div class='details'>
                 $$to{mode: 'read-only'}
                 $$cc{mode: 'read-only'}

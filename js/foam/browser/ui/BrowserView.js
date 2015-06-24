@@ -135,11 +135,8 @@ CLASS({
           iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAH0lEQVQ4y2NgGAUw8B8IRjXgUoQLUEfDaDyQqmF4AwADqmeZrHJtnQAAAABJRU5ErkJggg==',
           isAvailable: function() { return this.data.showAdd; },
           action: function() {
-            var newObj = this.data.model.create();
-            this.stack.pushView(this.data.detailView({
-              data: newObj,
-              innerView: this.data.innerDetailView
-            }, this.Y.sub({ dao: this.data.dao })));
+            this.stack.pushView(this.data.createView(null,
+                this.Y.sub({ dao: this.data.dao })));
           }
         },
       ],

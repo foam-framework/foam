@@ -93,7 +93,6 @@ CLASS({
     function toHTML() {/*
       <%
         var id = this.setClass('unread', function() { return self.data && self.data.unread; }, this.id);
-        this.on('click', function() { this.controller.open(this.data.id); }, this.id);
       %>
 
       <div id="<%= id %>" %%cssClassAttr() >

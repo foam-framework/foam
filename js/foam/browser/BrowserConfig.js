@@ -145,6 +145,20 @@ CLASS({
       defaultValue: 'foam.ui.md.DetailView'
     },
     {
+      model_: 'ViewFactoryProperty',
+      name: 'createView',
+      documentation: 'The view for creating a new item. Defaults to creating ' +
+          'a new empty instance of $$DOC{ref:".model"} and passing it to ' +
+          '$$DOC{ref:".detailView"}.',
+      defaultValue: function(args, X) {
+        var newObj = this.model.create();
+        return this.detailView({
+          data: newObj,
+          innerView: this.innerDetailView
+        }, X);
+      }
+    },
+    {
       name: 'menuFactory',
       documentation: 'The menuFactory returns a View for the left-side menu. ' +
           'By default, it returns the view for $$DOC{ref:".cannedQueryDAO"}.',
