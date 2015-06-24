@@ -40,6 +40,9 @@ CLASS({
     {
       name: 'InnerBrowserView',
       extendsModel: 'foam.ui.DetailView',
+      requires: [
+        'foam.ui.SpinnerView',
+      ],
       imports: [
         'stack',
       ],
@@ -86,6 +89,16 @@ CLASS({
         {
           name: 'searchMode',
           defaultValue: false
+        },
+        {
+          name: 'spinner',
+          factory: function() {
+            if ( ! this.data.busyStatus ) return;
+            return this.SpinnerView.create({
+              data$: this.data.busyStatus.busy$,
+              color: '#fff'
+            });
+          }
         },
         {
           name: 'listView_',
@@ -180,6 +193,13 @@ CLASS({
             margin-left: 12px;
           }
 
+          .browser-header .browser-spinner {
+            display: inline-block;
+            height: 42px;
+            overflow: hidden;
+            width: 42px;
+          }
+
           .browser-header.search-header .md-text-field-input {
             color: #fff;
           }
@@ -269,6 +289,9 @@ CLASS({
             <div id="<%= this.id %>-header" class="browser-header">
               $$menuButton
               $$title{ mode: 'read-only', extraClassName: 'expand title' }
+              <% if ( this.spinner ) { %>
+                <span class="browser-spinner">%%spinner</span>
+              <% } %>
               $$searchButton
             </div>
             <div id="<%= this.id %>-header-search" class="browser-header search-header">

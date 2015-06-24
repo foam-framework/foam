@@ -182,6 +182,11 @@ CLASS({
       }
     },
     {
+      name: 'busyStatus',
+      documentation: 'Optional busyStatus. If defined, a spinner will be ' +
+          'shown when the BusyStatus is set to true.'
+    },
+    {
       name: 'showAllWithNoQuery',
       documentation: 'When there is no query set, should the browser ' +
           'render all the data, or none of it? Defaults to all, set false if ' +
