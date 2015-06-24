@@ -1,6 +1,6 @@
 ---
-layout: tutorial
-permalink: /tutorial/4-dao/
+layout: tutorial-todo
+permalink: /tutorial/todo/4-dao/
 tutorial: 4
 ---
 
@@ -76,4 +76,4 @@ unused value.
 ## Next
 
 We're getting there! Next, we'll customize our list rows to make them more
-useful in [Part 5: Custom views]({{ site.baseurl }}/tutorial/5-view).
+useful in [Part 5: Custom views]({{ site.baseurl }}/tutorial/todo/5-view).

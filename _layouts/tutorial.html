@@ -5,7 +5,7 @@ layout: default
 <div class="post">
 
   <header class="post-header">
-    <h2>Tutorial Part {{ page.tutorial }}</h2>
+    <h2>{{ page.title }} part {{ page.tutorial }}</h2>
     <h1>{{ page.tutorials[page.tutorial].title }}</h1>
     <ul class="toc">
       {% for tut in page.tutorials %}

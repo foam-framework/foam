@@ -1,6 +1,6 @@
 ---
-layout: tutorial
-permalink: /tutorial/4-templates/
+layout: tutorial-phonecat
+permalink: /tutorial/phonecat/4-templates/
 tutorial: 4
 ---
 
@@ -16,7 +16,7 @@ and at load time your templates are compiled into Javascript functions that
 return strings.
 
 Templates can also live in external files, which are introduced in
-[part 6]({{ site.baseurl }}/tutorial/6-detailview).
+[part 6]({{ site.baseurl }}/tutorial/phonecat/6-detailview).
 
 ## Template Syntax
 
@@ -49,7 +49,7 @@ control structures like so:
 
 However, code like this is rarely necessary, since FOAM contains many views that
 handle creating rows from a collection of data. `DAOListView` from
-[part 3]({{ site.baseurl }}/tutorial/3-dao) is one example; `TableView` and
+[part 3]({{ site.baseurl }}/tutorial/phonecat/3-dao) is one example; `TableView` and
 `GridView` are two more.
 
 ## Inline Templates
@@ -131,6 +131,6 @@ The custom CSS still isn't loaded, so add the following to `index.html`'s
 and reload your app. Now it should look much better, and the search and sort
 functions work!
 
-[Part 5]({{ site.baseurl }}/tutorial/5-navigation) will add navigation to our
+[Part 5]({{ site.baseurl }}/tutorial/phonecat/5-navigation) will add navigation to our
 app.
 

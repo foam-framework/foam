@@ -1,6 +1,6 @@
 ---
-layout: tutorial
-permalink: /tutorial/5-navigation/
+layout: tutorial-phonecat
+permalink: /tutorial/phonecat/5-navigation/
 tutorial: 5
 ---
 
@@ -104,6 +104,6 @@ be ugly as before.
 Try it! Click on a phone in the catalog, and you will switch to its detail view.
 Use your browser's Back button, and you're back at the catalog.
 
-[Part 6]({{ site.baseurl }}/tutorial/6-detailview) shows external templates and
+[Part 6]({{ site.baseurl }}/tutorial/phonecat/6-detailview) shows external templates and
 explores `DetailView`s further.
 

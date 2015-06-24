@@ -1,6 +1,6 @@
 ---
-layout: tutorial
-permalink: /tutorial/0-intro/
+layout: tutorial-todo
+permalink: /tutorial/todo/0-intro/
 tutorial: 0
 ---
 
@@ -77,5 +77,5 @@ with the red + button, edit existing Todos, search-as-you-type, and more. On
 desktop, it can split into multiple columns. On mobile, it will be a single
 column.
 
-We'll get started building our app in [Part 1: Todo Model]({{ site.baseurl }}/tutorial/1-model/).
+We'll get started building our app in [Part 1: Todo Model]({{ site.baseurl }}/tutorial/todo/1-model/).
 

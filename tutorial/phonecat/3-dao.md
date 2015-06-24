@@ -1,6 +1,6 @@
 ---
-layout: tutorial
-permalink: /tutorial/3-dao/
+layout: tutorial-phonecat
+permalink: /tutorial/phonecat/3-dao/
 tutorial: 3
 ---
 
@@ -159,7 +159,7 @@ CLASS({
 
 Models should name every other model on which they depend - those they will
 create, or use in their templates - in `requires`. See the
-[Appendix]({{ site.baseurl }}/tutorial/8-appendix) for more details on
+[Appendix]({{ site.baseurl }}/tutorial/phonecat/8-appendix) for more details on
 `requires`, `imports`, `exports` and `arequire`.
 
 With this, the catalog page will be usable, though ugly. Update `index.html` to be the following:
@@ -186,8 +186,8 @@ The `<foam>` tag is a convenience for loading a given model and view, and
 inserting it into the DOM.
 
 Next we'll add custom templates in
-[part 4]({{ site.baseurl }}/tutorial/4-templates).
+[part 4]({{ site.baseurl }}/tutorial/phonecat/4-templates).
 
 There's also quite a bit more about the DAO interface in the
-[appendix]({{ site.baseurl }}/tutorial/8-appendix).
+[appendix]({{ site.baseurl }}/tutorial/phonecat/8-appendix).
 

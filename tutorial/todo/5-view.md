@@ -1,6 +1,6 @@
 ---
-layout: tutorial
-permalink: /tutorial/5-view/
+layout: tutorial-todo
+permalink: /tutorial/todo/5-view/
 tutorial: 5
 ---
 
@@ -228,5 +228,5 @@ interface.
 
 We recommend reading the [DAO user guide]({{ site.baseurl }}/guides/dao), and
 then continuing the tutorial with
-[Part 6: Canned Queries]({{ site.baseurl }}/tutorial/6-canned-query).
+[Part 6: Canned Queries]({{ site.baseurl }}/tutorial/todo/6-canned-query).
 

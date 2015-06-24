@@ -1,6 +1,6 @@
 ---
-layout: tutorial
-permalink: /tutorial/1-model/
+layout: tutorial-todo
+permalink: /tutorial/todo/1-model/
 tutorial: 1
 ---
 
@@ -61,6 +61,6 @@ Object, a universal interface for data access, see [TODO: FILL IN THIS REFERENCE
 
 ## Next
 
-Move on to [Part 2: Your first model]({{ site.baseurl }}/tutorial/2-todo/) to get
+Move on to [Part 2: Your first model]({{ site.baseurl }}/tutorial/todo/2-todo/) to get
 started building our first model.
 

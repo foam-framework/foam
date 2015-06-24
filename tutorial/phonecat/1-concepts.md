@@ -1,6 +1,6 @@
 ---
-layout: tutorial
-permalink: /tutorial/1-concepts/
+layout: tutorial-phonecat
+permalink: /tutorial/phonecat/1-concepts/
 tutorial: 1
 ---
 
@@ -60,7 +60,7 @@ FOAM properties are like public member variables, and are accessed in the same
 way: `point.x += 10`. But they have many more features: `postSet` functions
 to call when the property's value changes, the `view` to use when displaying
 this property to the user, `dynamicValue` for spreadsheet-style reactive
-programming, `defaultValue` and [much more]({{ site.baseurl }}/tutorial/8-appendix).
+programming, `defaultValue` and [much more]({{ site.baseurl }}/tutorial/phonecat/8-appendix).
 
 FOAM models support `constants`, mixins (known as `traits`), special kinds of
 methods (`actions`, `listeners`, and `templates`) and more.
@@ -140,7 +140,7 @@ Javascript, FOAM uses these alternative spellings.
 In the example above, we created a property with a simple string, `'z'`. This
 defines a property with that name on the class. There are *many* more
 interesting things to set on a property. These are detailed in the
-[appendix]({{ site.baseurl }}/tutorial/8-appendix).
+[appendix]({{ site.baseurl }}/tutorial/phonecat/8-appendix).
 
 ### Listeners, Actions and Templates
 
@@ -161,9 +161,9 @@ class load time. The syntax is JSP-style, with several powerful features added.
 Templates make it easy to write reactive UIs with two-way data binding.
 
 Templates will be discussed in more detail in
-[part 4]({{ site.baseurl }}/tutorial/4-templates), more information about all
+[part 4]({{ site.baseurl }}/tutorial/phonecat/4-templates), more information about all
 three special kinds of methods is in the
-[appendix]({{ site.baseurl }}/tutorial/8-appendix).
+[appendix]({{ site.baseurl }}/tutorial/phonecat/8-appendix).
 
 
 ## MVC
@@ -231,7 +231,7 @@ programming support scales so well; it's still very fast with thousands of
 bindings.
 
 The various ways of hooking up reactive listeners are detailed in the
-[appendix]({{site.baseurl}}/tutorial/8-appendix).
+[appendix]({{site.baseurl}}/tutorial/phonecat/8-appendix).
 
 ### Animation
 
@@ -260,6 +260,6 @@ moves towards a 1.0 release we will cut it into smaller pieces.
 
 ## Next
 
-You should proceed either to [part 2]({{ site.baseurl }}/tutorial/2-model) or
-the [appendix]({{ site.baseurl }}/tutorial/8-appendix) if you're still curious.
+You should proceed either to [part 2]({{ site.baseurl }}/tutorial/phonecat/2-model) or
+the [appendix]({{ site.baseurl }}/tutorial/phonecat/8-appendix) if you're still curious.
 

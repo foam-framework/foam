@@ -1,6 +1,6 @@
 ---
-layout: tutorial
-permalink: /tutorial/3-wiring/
+layout: tutorial-todo
+permalink: /tutorial/todo/3-wiring/
 tutorial: 3
 ---
 
@@ -123,5 +123,5 @@ We can override it here, like so:
 
 You will have noticed by now that every time you reload the app to see the
 changes, the data has disappeared. That's annoying, so let's fix it in [Part 4:
-DAOs]({{ site.baseurl }}/tutorial/4-dao/).
+DAOs]({{ site.baseurl }}/tutorial/todo/4-dao/).
 

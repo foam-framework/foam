@@ -1,6 +1,6 @@
 ---
-layout: tutorial
-permalink: /tutorial/6-canned-query/
+layout: tutorial-todo
+permalink: /tutorial/todo/6-canned-query/
 tutorial: 6
 ---
 
@@ -109,5 +109,5 @@ The last part of this basic tutorial is to add user actions to our `Todo` model,
 so that they will appear in the header of the detail view.
 
 We'll add a "delete" button in
-[Part 7: User Actions]({{ site.baseurl }}/tutorial/7-actions).
+[Part 7: User Actions]({{ site.baseurl }}/tutorial/todo/7-actions).
 

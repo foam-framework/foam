@@ -1,6 +1,6 @@
 ---
-layout: tutorial
-permalink: /tutorial/2-model/
+layout: tutorial-phonecat
+permalink: /tutorial/phonecat/2-model/
 tutorial: 2
 ---
 
@@ -65,12 +65,12 @@ about some of them.
 There is a companion file with this tutorial that includes the data about the
 phones in JSON format, as well as the collection of images of the devices.
 
-Click [here]({{ site.baseurl }}/tutorial/bundle.zip) to download them. Unpack it
+Click [here]({{ site.baseurl }}/tutorial/phonecat/bundle.zip) to download them. Unpack it
 into your `$PROJECT` directory. You should get an `img/` directory, `css/`
 directory, and `phones.js`.
 
 ## Next
 
-The [next part]({{ site.baseurl }}/tutorial/3-dao) of the tutorial introduces
+The [next part]({{ site.baseurl }}/tutorial/phonecat/3-dao) of the tutorial introduces
 DAOs and sets up the basic controller.
 

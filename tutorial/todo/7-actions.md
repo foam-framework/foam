@@ -1,6 +1,6 @@
 ---
-layout: tutorial
-permalink: /tutorial/7-actions/
+layout: tutorial-todo
+permalink: /tutorial/todo/7-actions/
 tutorial: 7
 ---
 
@@ -175,5 +175,5 @@ whenever its dependencies change.
 You made it! That's the end of this basic introduction to programming in FOAM.
 
 There are enough places to go next that they have a page to themselves:
-[Part 8: Where Next?]({{ site.baseurl }}/tutorial/8-next).
+[FOAM tutorial hub]({{ site.baseurl }}/tutorial/0-intro).
 

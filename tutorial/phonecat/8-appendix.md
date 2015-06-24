@@ -1,6 +1,6 @@
 ---
-layout: tutorial
-permalink: /tutorial/8-appendix/
+layout: tutorial-phonecat
+permalink: /tutorial/phonecat/8-appendix/
 tutorial: 7
 ---
 

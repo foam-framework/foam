@@ -1,6 +1,6 @@
 ---
-layout: tutorial
-permalink: /tutorial/2-todo/
+layout: tutorial-todo
+permalink: /tutorial/todo/2-todo/
 tutorial: 2
 ---
 
@@ -91,5 +91,5 @@ components.
 The next step is to override some of the defaults in the FOAM browser, and
 start making this app more usable.
 
-The tutorial continues with [Part 3: Wiring]({{ site.baseurl }}/tutorial/3-wiring/).
+The tutorial continues with [Part 3: Wiring]({{ site.baseurl }}/tutorial/todo/3-wiring/).
 
