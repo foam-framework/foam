@@ -271,12 +271,7 @@ CLASS({
       // Setup Physics
       this.collider.add(this.snake);
       this.collider.collide = function(o1, o2) {
-        if ( this.Laser.isInstance(o2) ) {
-          var tmp = o1;
-          o1 = o2;
-          o2 = tmp;
-        }
-        if ( this.Snake.isInstance(o2) ) {
+        if ( this.Laser.isInstance(o2) || this.Snake.isInstance(o2) ) {
           var tmp = o1;
           o1 = o2;
           o2 = tmp;
