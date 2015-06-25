@@ -26,6 +26,7 @@ CLASS({
     'foam.tutorials.phonecat.ui.PhoneDetailView',
     'foam.ui.ChoiceView',
     'foam.ui.DAOListView',
+    'foam.ui.TableView',
     'foam.ui.TextFieldView'
   ],
 
@@ -53,7 +54,8 @@ CLASS({
       name: 'filteredDAO',
       model_: 'foam.core.types.DAOProperty',
       view: {
-        factory_: 'foam.ui.DAOListView',
+        xxxfactory_: 'foam.ui.TableView',
+        factory_: 'foam.ui.md.TableView',
         rowView: 'foam.tutorials.phonecat.ui.PhoneCitationView',
         mode: 'read-only'
       },

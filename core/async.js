@@ -199,6 +199,7 @@ MODEL({
       var waiters = [];
 
       return {
+        isSet: function() { return set; },
         set: function() {
           if ( set ) {
             console.log('ERROR: redundant set on future');
