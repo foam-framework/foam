@@ -74,9 +74,8 @@ CLASS({
         if ( this.children.length )
           this.children[this.children.length-1].color = 'green';
         this.addChild(this.Scale.create({x: this.sx, y: this.sy, radius: this.R, color: 'red'}));
-        if ( this.children.length > this.length ) {
+        if ( this.children.length > this.length )
           this.children.shift();
-        }
       }
     }
   ]
@@ -101,7 +100,7 @@ CLASS({
   ]
 });
 
-// TODO: add explode method
+
 CLASS({
   package: 'foam.demos.supersnake',
   name: 'Mushroom',
@@ -124,6 +123,15 @@ CLASS({
         height: 20,
         background: 'gray'
       }));
+    },
+    function explode() {
+      this.stem.background = 'red';
+      Movement.animate(200, function() {
+        this.scaleX = this.scaleY = 30;
+        this.alpha = 0;
+        this.a = Math.PI * 1.5;
+        this.stem.alpha = 0;
+      }.bind(this)/*, function() { this.table.removeChild(o2); }.bind(this)*/)();
     }
   ]
 });
@@ -211,7 +219,7 @@ CLASS({
     {
       name: 'tick',
       code: function(_, _, _, t) {
-        if ( t % 150 == 0 ) this.addFood();
+        if ( t % 100 == 0 ) this.addFood();
         if ( Math.random() < 0.02 ) this.addMushroom();
       }
     }
@@ -275,13 +283,7 @@ CLASS({
         }
         if ( this.Laser.isInstance(o1) ) {
           if ( this.Mushroom.isInstance(o2) ) {
-            o2.stem.background = 'red';
-            Movement.animate(200, function() {
-              o2.scaleX = o2.scaleY = 30;
-              o2.alpha = 0;
-              o2.a = Math.PI * 1.5;
-              o2.stem.alpha = 0;
-            }/*, function() { this.table.removeChild(o2); }.bind(this)*/)();
+            o2.explode();
           } else if ( this.Food.isInstance(o2) ) {
           }
         }
