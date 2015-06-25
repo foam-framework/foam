@@ -4,10 +4,16 @@ CLASS({
   extendsModel: 'Property',
   help: 'Describes a property used to store a DOM element id.',
 
+  constants: {
+    NEXT_ID: function() {
+      return "view" + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
+    }
+  },
+
   properties: [
     {
       name: 'lazyFactory',
-      defaultValue: function() { return this.nextID(); }
+      defaultValue: function() { return foam.u2.EIDProperty.NEXT_ID(); }
     },
     {
       name: 'transient',
