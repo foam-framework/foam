@@ -230,12 +230,12 @@ CLASS({
     },
     {
       name: 'left',
-      keyboardShortcuts: [ 'a' ],
+      keyboardShortcuts: [ 37 /* left arrow */, 'a' ],
       action: function() { this.snake.left(); }
     },
     {
       name: 'right',
-      keyboardShortcuts: [ 'd' ],
+      keyboardShortcuts: [ 39 /* right arrow */, 'd' ],
       action: function() { this.snake.right(); }
     },
     {
