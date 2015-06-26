@@ -34,6 +34,9 @@ CLASS({
     'foam.ui.SpinnerView',
     'foam.ui.ScrollViewRow'
   ],
+  imports: [
+    'selection$',
+  ],
 
   traits: ['foam.input.touch.VerticalScrollNativeTrait'],
 
@@ -290,6 +293,7 @@ CLASS({
                 self.rowHeight + 'px; overflow: visible" id="' + svr.id + '">');
             html.push(v.toHTML());
             html.push('</div>');
+            v.on('click', function() { self.selection = this.data; }, v.id);
             newViews.push([h, svr]);
             svr.view = v;
           }
