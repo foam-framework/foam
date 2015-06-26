@@ -173,17 +173,11 @@ CLASS({
   methods: [
 
     // Lifecycle
-    function load() {
-      this.state.load.call(this);
-    },
+    function load() { this.state.load.call(this); },
 
-    function unload() {
-      this.state.unload.call(this);
-    },
+    function unload() { this.state.unload.call(this); },
 
-    function destroy() {
-      this.state.destroy.call(this);
-    },
+    function destroy() { this.state.destroy.call(this); },
 
     // DOM Compatibility
     function setAttribute(name, value) {
