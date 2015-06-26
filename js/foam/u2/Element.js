@@ -297,3 +297,7 @@ function E(opt_tagName) {
   if ( opt_tagName ) e.tagName = opt_tagName;
   return e;
 }
+
+/*
+  TODO: compile, deepClone, pass data, don't clone if literal
+*/
