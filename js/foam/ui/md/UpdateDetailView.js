@@ -178,7 +178,7 @@ CLASS({
     */},
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
-        <div class="md-update-detail-view-header">
+        <div class="md-update-detail-view-header browser-header-color">
           $$back $$reset
           <span id="<%= this.id %>-title" class="expand title">
             <%= this.title %>

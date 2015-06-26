@@ -192,7 +192,6 @@ CLASS({
           }
           .browser-header {
             align-items: center;
-            background-color: #3e50b4;
             color: #fff;
             display: flex;
             flex-grow: 0;
@@ -286,6 +285,9 @@ CLASS({
         */},
         function toHTML() {/*
           <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
+            <style>
+              .browser-header-color { background-color: <%= this.data.headerColor %>; }
+            </style>
             <div id="<%= this.id %>-menu-container" class="browser-menu-container">
               <div class="browser-menu-inner">
                 <div id="<%= this.id %>-menu-overlay" class="browser-menu-overlay"></div>
@@ -299,7 +301,7 @@ CLASS({
             %>
 
 
-            <div id="<%= this.id %>-header" class="browser-header">
+            <div id="<%= this.id %>-header" class="browser-header browser-header-color">
               $$menuButton
               $$title{ mode: 'read-only', extraClassName: 'expand title' }
               <% if ( this.spinner ) { %>
@@ -307,7 +309,7 @@ CLASS({
               <% } %>
               $$searchButton
             </div>
-            <div id="<%= this.id %>-header-search" class="browser-header search-header">
+            <div id="<%= this.id %>-header-search" class="browser-header search-header browser-header-color">
               $$backButton
               $$search{ extraClassName: 'expand search-field' }
             </div>

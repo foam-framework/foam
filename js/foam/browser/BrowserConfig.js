@@ -198,6 +198,11 @@ CLASS({
           'shown when the BusyStatus is set to true.'
     },
     {
+      name: 'headerColor',
+      documentation: 'Globally sets a browser-header-color CSS class',
+      defaultValue: '#3e50b4'
+    },
+    {
       name: 'showAllWithNoQuery',
       documentation: 'When there is no query set, should the browser ' +
           'render all the data, or none of it? Defaults to all, set false if ' +
