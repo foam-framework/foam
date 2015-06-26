@@ -23,14 +23,7 @@ CLASS({
   extendsModel: 'foam.browser.ui.BrowserView',
 
   requires: [
-    'foam.util.busy.BusyFlagTracker',
-    'foam.util.busy.BusyStatus',
-    'foam.dao.CachingDAO',
-    'foam.ui.DetailView',
-    'foam.ui.ScrollView',
-    'foam.dao.IDBDAO',
     'MDAO',
-    'foam.oauth2.OAuth2RedirectJsonp as Auth',
     'XHR',
     'com.google.mail.ComposeView',
     'com.google.mail.EMailCitationView',
@@ -43,9 +36,18 @@ CLASS({
     'com.google.mail.MenuView',
     'com.google.mail.ProfileView',
     'com.google.mail.QueryParser',
+    'foam.dao.CachingDAO',
+    'foam.dao.IDBDAO',
+    'foam.dao.ProxyDAO',
+    'foam.mlang.CannedQuery',
     'foam.lib.contacts.Contact as Contact',
     'foam.lib.contacts.ContactNetworkDAO as ContactNetworkDAO',
     'foam.lib.email.EMail',
+    'foam.oauth2.OAuth2RedirectJsonp as Auth',
+    'foam.ui.DetailView',
+    'foam.ui.ScrollView',
+    'foam.util.busy.BusyFlagTracker',
+    'foam.util.busy.BusyStatus',
   ],
 
   exports: [
@@ -123,6 +125,20 @@ CLASS({
       }
     },
     {
+      name: 'cannedQueryDAO',
+      documentation: 'Derived from the labelDao above, this DAO wraps the ' +
+          'labels into CannedQuery objects for the menu.',
+      factory: function() {
+        var proxy = this.ProxyDAO.create();
+        this.labelDao.listen({
+          put: this.buildCannedQueries_,
+          remove: this.buildCannedQueries_
+        });
+        this.buildCannedQueries_();
+        return proxy;
+      }
+    },
+    {
       name: 'contactDAO',
       factory: function() {
         /*
@@ -159,7 +175,7 @@ CLASS({
           title$: this.title$,
           listView: {
             // TODO(braden): Get ScrollView working nicely in the browser.
-            factory_: 'foam.ui.DAOListView',
+            factory_: 'foam.ui.ScrollView',
             rowView: 'com.google.mail.EMailCitationView'
           },
           innerDetailView: 'com.google.mail.EMailView',
@@ -170,7 +186,12 @@ CLASS({
             [ this.EMail.TIMESTAMP,       'Oldest First' ],
             [ this.EMail.SUBJECT,         'Subject' ],
           ],
-          menuFactory: this.menuFactory.bind(this)
+          cannedQuery: this.CannedQuery.create({
+            id: 'INBOX',
+            label: 'Inbox',
+            expression: CONTAINS(this.EMail.LABELS, 'INBOX')
+          }),
+          cannedQueryDAO$: this.cannedQueryDAO$
         });
       }
     },
@@ -224,39 +245,6 @@ CLASS({
       });
     },
 
-    menuFactory: function() {
-      var toTop = function(id) {
-        return {
-          compare: function(o1, o2) {
-            return o1.id == id ? -1 : o2.id == id ? 1 : 0;
-          }
-        };
-      };
-
-      return this.MenuView.create({
-        topSystemLabelDAO: this.labelDao
-            .where(EQ(this.X.com.google.mail.FOAMGMailLabel.getProperty('type'), 'system'))
-            .orderBy(
-              toTop('INBOX'),
-              toTop('STARRED'),
-              toTop('DRAFT')
-            )
-            .limit(3),
-        bottomSystemLabelDAO: this.labelDao
-            .where(AND(EQ(this.X.com.google.mail.FOAMGMailLabel.getProperty('type'), 'system'),
-                NEQ(this.X.com.google.mail.FOAMGMailLabel.ID, 'INBOX'),
-                NEQ(this.X.com.google.mail.FOAMGMailLabel.ID, 'STARRED'),
-                NEQ(this.X.com.google.mail.FOAMGMailLabel.ID, 'UNREAD'),
-                NEQ(this.X.com.google.mail.FOAMGMailLabel.ID, 'DRAFT')))
-            .orderBy(toTop('SENT'),
-                     toTop('SPAM'),
-                     toTop('TRASH')),
-        userLabelDAO: this.labelDao
-            .where(NEQ(this.X.com.google.mail.FOAMGMailLabel.getProperty('type'), 'system'))
-            .orderBy(this.X.com.google.mail.FOAMGMailLabel.NAME)
-      });
-    },
-
     /*
     open: function(id) {
       var self = this;
@@ -285,6 +273,73 @@ CLASS({
     },
     */
   },
+
+  listeners: [
+    {
+      name: 'buildCannedQueries_',
+      isMerged: 100,
+      code: function() {
+        console.log('Building canned queries');
+        var dao = this.MDAO.create({ model: this.CannedQuery });
+        var self = this;
+        var toQuery = function(label, section, order) {
+          var cq = self.CannedQuery.create({
+            id: label.name,
+            label: label.label,
+            expression: CONTAINS(self.EMail.LABELS, label.id)
+          });
+          if (section) cq.section = section;
+          if (order) cq.order = order;
+          return cq;
+        };
+
+        var fetchLabel = function(id, section, order) {
+          self.labelDao.find(id, {
+            put: function(label) {
+              dao.put(toQuery(label, section, order));
+            }
+          });
+        };
+
+        fetchLabel('INBOX', 1, 1);
+        fetchLabel('STARRED', 1, 2);
+        fetchLabel('DRAFT', 1, 3);
+
+        fetchLabel('SENT', 2, 1);
+        fetchLabel('SPAM', 2, 2);
+        fetchLabel('TRASH', 2, 3);
+        this.labelDao.where(AND(
+            EQ(this.X.com.google.mail.FOAMGMailLabel.getProperty('type'), 'system'),
+            NOT(IN(this.X.com.google.mail.FOAMGMailLabel.ID, [
+              'INBOX', 'STARRED', 'UNREAD', 'DRAFT', 'SENT', 'SPAM', 'TRASH'
+            ])))
+        ).select([])(function(arr) {
+          arr.forEach(function(label) {
+            dao.put(toQuery(label, 2));
+          });
+        });
+
+        dao.put(this.CannedQuery.create({
+          id: 'ALL MAIL',
+          label: 'All Mail',
+          expression: TRUE,
+          section: 3,
+          order: 1
+        }));
+
+        this.labelDao
+            .where(NEQ(this.X.com.google.mail.FOAMGMailLabel.getProperty('type'), 'system'))
+            .orderBy(this.X.com.google.mail.FOAMGMailLabel.NAME)
+            .select([])(function(arr) {
+              arr.forEach(function(label) {
+                dao.put(toQuery(label, 3));
+              });
+            });
+
+        this.cannedQueryDAO.delegate = dao;
+      }
+    },
+  ],
 
   templates: [
     function CSS() {/*

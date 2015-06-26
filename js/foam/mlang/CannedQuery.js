@@ -31,5 +31,25 @@ CLASS({
       name: 'expression',
       type: 'EXPR',
     },
+    {
+      name: 'iconUrl',
+      documentation: 'Optional icon for the canned query.',
+      view: 'foam.ui.ImageView'
+    },
+    {
+      name: 'section',
+      documentation: 'If the queries are given section numbers, they appear ' +
+          'grouped by section, then ordered by order, then by label. Unset ' +
+          'section numbers make that query appear at the end of their list.',
+      defaultValue: 100000,
+      hidden: true
+    },
+    {
+      name: 'order',
+      documentation: 'The order of this entry within its section, if ' +
+          'applicable.',
+      defaultValue: 100000,
+      hidden: true
+    },
   ]
 });

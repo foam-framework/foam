@@ -100,7 +100,7 @@ CLASS({
       documentation: 'A DAO of $$DOC{ref:"foam.mlang.CannedQuery"} objects.',
       required: true,
       postSet: function(old, nu) {
-        if (nu && !this.query) {
+        if (nu && !this.query && !this.cannedQuery) {
           nu.limit(1).select([])(function(arr) { this.cannedQuery = arr[0]; }.bind(this));
         }
       },
@@ -166,7 +166,11 @@ CLASS({
           'By default, it returns the view for $$DOC{ref:".cannedQueryDAO"}.',
       defaultValue: function() {
         var view = this.DAOListView.create({
-          data$: this.cannedQueryDAO$,
+          data: this.cannedQueryDAO.orderBy(
+              this.CannedQuery.SECTION,
+              this.CannedQuery.ORDER,
+              this.CannedQuery.LABEL
+          ),
           rowView: 'foam.ui.md.CannedQueryCitationView',
         }, this.Y.sub({
           selection$: this.cannedQuery$
