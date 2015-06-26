@@ -173,6 +173,7 @@ CLASS({
           model: this.EMail,
           dao: this.emailDao,
           title$: this.title$,
+          headerColor: '#db4437',
           listView: {
             // TODO(braden): Get ScrollView working nicely in the browser.
             factory_: 'foam.ui.ScrollView',
