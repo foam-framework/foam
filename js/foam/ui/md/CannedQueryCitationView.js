@@ -21,7 +21,10 @@ CLASS({
   properties: [
     {
       name: 'className',
-      defaultValue: 'canned-query-citation'
+      defaultValueFn: function() {
+        return 'canned-query-citation' +
+            (this.data.iconUrl ? ' canned-query-icon' : '');
+      }
     },
   ],
   templates: [
@@ -30,13 +33,31 @@ CLASS({
         align-items: center;
         display: flex;
         font-size: 16px;
-        height: 48px;
+        height: 42px;
+        line-height: 42px;
         padding: 8px 16px;
+      }
+      .canned-query-citation img {
+        flex-grow: 0;
+        flex-shrink: 0;
+        height: 24px;
+        margin-right: 25px;
+        opacity: 0.6;
+        width: 24px;
+      }
+      .canned-query-label {
+        flex-grow: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     */},
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
-        $$label{ mode: 'read-only' }
+        <% if (this.data.iconUrl) { %>
+          $$iconUrl
+        <% } %>
+        $$label{ mode: 'read-only', extraClassName: 'canned-query-label' }
       </div>
     */},
   ]

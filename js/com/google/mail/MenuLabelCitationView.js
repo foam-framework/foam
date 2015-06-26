@@ -34,7 +34,7 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      if ( this.counts.groups[this.data.name] ) this.bindGroup();
+      if ( this.counts.groups[this.data.id] ) this.bindGroup();
       else this.bindCounts();
     },
     bindCounts: function() {
@@ -45,9 +45,9 @@ CLASS({
     {
       name: 'bindGroup',
       code: function() {
-        if ( this.counts.groups[this.data.name] ) {
+        if ( this.counts.groups[this.data.id] ) {
           this.counts.removeListener(this.bindGroup);
-          this.counts.groups[this.data.name].addListener(this.updateCount);
+          this.counts.groups[this.data.id].addListener(this.updateCount);
           this.updateCount();
         }
       }
@@ -55,8 +55,8 @@ CLASS({
     {
       name: 'updateCount',
       code: function() {
-        if ( this.counts.groups[this.data.name] )
-          this.count = this.counts.groups[this.data.name].count;
+        if ( this.counts.groups[this.data.id] )
+          this.count = this.counts.groups[this.data.id].count;
       }
     }
   ],

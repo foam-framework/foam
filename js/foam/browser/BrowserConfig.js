@@ -161,6 +161,11 @@ CLASS({
       }
     },
     {
+      model_: 'ViewFactoryProperty',
+      name: 'menuRowView',
+      defaultValue: 'foam.ui.md.CannedQueryCitationView'
+    },
+    {
       name: 'menuFactory',
       documentation: 'The menuFactory returns a View for the left-side menu. ' +
           'By default, it returns the view for $$DOC{ref:".cannedQueryDAO"}.',
@@ -171,7 +176,7 @@ CLASS({
               this.CannedQuery.ORDER,
               this.CannedQuery.LABEL
           ),
-          rowView: 'foam.ui.md.CannedQueryCitationView',
+          rowView: this.menuRowView
         }, this.Y.sub({
           selection$: this.cannedQuery$
         }));

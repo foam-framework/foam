@@ -83,8 +83,21 @@ CLASS({
           defaultValue: false
         },
         {
+          name: 'menuView_',
+        },
+        {
           name: 'menuOpen',
-          defaultValue: false
+          defaultValue: false,
+          postSet: function(old, nu) {
+            if (nu) {
+              this.menuView_ = this.data.menuFactory();
+              this.X.$(this.id + '-menu-body').innerHTML = this.menuView_.toHTML();
+              this.menuView_.initHTML();
+            } else if (this.menuView_) {
+              this.menuView_.destroy();
+              this.menuView_ = '';
+            }
+          },
         },
         {
           name: 'searchMode',
@@ -276,9 +289,7 @@ CLASS({
             <div id="<%= this.id %>-menu-container" class="browser-menu-container">
               <div class="browser-menu-inner">
                 <div id="<%= this.id %>-menu-overlay" class="browser-menu-overlay"></div>
-                <div class="browser-menu">
-                  <%= this.data.menuFactory() %>
-                </div>
+                <div id="<%= this.id %>-menu-body" class="browser-menu"></div>
               </div>
             </div>
             <%

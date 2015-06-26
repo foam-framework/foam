@@ -186,6 +186,14 @@ CLASS({
             [ this.EMail.TIMESTAMP,       'Oldest First' ],
             [ this.EMail.SUBJECT,         'Subject' ],
           ],
+          menuRowView: 'com.google.mail.MenuLabelCitationView',
+          menuFactory: function() {
+            var dao = this.X.EMailDAO;
+            var sink = GROUP_BY(dao.model.LABELS, COUNT());
+            dao.select(sink);
+            this.Y.counts = sink;
+            return this.model_.MENU_FACTORY.defaultValue.call(this);
+          },
           cannedQuery: this.CannedQuery.create({
             id: 'INBOX',
             label: 'Inbox',
@@ -286,6 +294,7 @@ CLASS({
           var cq = self.CannedQuery.create({
             id: label.name,
             label: label.label,
+            iconUrl: label.iconUrl,
             expression: CONTAINS(self.EMail.LABELS, label.id)
           });
           if (section) cq.section = section;
