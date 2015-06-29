@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-arequire = function(modelName, opt_X) {
-  var X = opt_X || GLOBAL.X;
+arequire = function(modelName) {
+  var THIS = this === GLOBAL ? X : this;
   return function(ret) {
-    var m = X.lookup(modelName)
+    var m = THIS.lookup(modelName)
     ret(m);
   };
 };
