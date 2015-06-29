@@ -16,7 +16,6 @@ CLASS({
 
   requires: [
     'foam.apps.ctml.Task',
-    'foam.apps.ctml.TaskPieGraph',
     'foam.ui.ActionButton'
   ],
 

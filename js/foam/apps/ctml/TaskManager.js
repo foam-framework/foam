@@ -18,14 +18,13 @@ CLASS({
     'PersistentContext',
     'foam.apps.ctml.Task',
     'foam.apps.ctml.TaskController',
-    'foam.apps.ctml.TaskHistoriesView',
     'foam.apps.ctml.TaskManagerContext',
     'foam.apps.ctml.TaskManagerDetailView',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
     'foam.ui.md.ActionLabel',
     'foam.ui.md.SharedStyles',
-    'foam.ui.md.TableView'
+    'foam.ui.md.FlexTableView'
   ],
   exports: [
     'clock$',
