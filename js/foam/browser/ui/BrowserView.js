@@ -25,6 +25,7 @@ CLASS({
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
     'foam.ui.DAOListView',
+    'foam.ui.PopupChoiceView',
     'foam.ui.md.DetailView',
     'foam.ui.md.SharedStyles',
     'foam.ui.md.UpdateDetailView',
@@ -41,6 +42,7 @@ CLASS({
       name: 'InnerBrowserView',
       extendsModel: 'foam.ui.DetailView',
       requires: [
+        'foam.ui.PopupChoiceView',
         'foam.ui.SpinnerView',
       ],
       imports: [
@@ -117,6 +119,17 @@ CLASS({
           name: 'listView_',
           hidden: true,
           documentation: 'Internal. The View object created by the listView.'
+        },
+        {
+          name: 'sortOrderView_',
+          factory: function() {
+            if (!this.data.sortChoices || this.data.sortChoices.length <= 1) return;
+            return this.PopupChoiceView.create({
+              iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAIUlEQVQ4y2NgGAVEg/9EAMo0DCFPU0/DIPc0bTSMArwAAI+/j3GjMHVsAAAAAElFTkSuQmCC',
+              data$: this.data.sortOrder$,
+              choices: this.data.sortChoices
+            });
+          }
         },
         {
           name: 'minWidth',
@@ -315,6 +328,9 @@ CLASS({
                 <span class="browser-spinner">%%spinner</span>
               <% } %>
               $$searchButton
+              <% if ( this.sortOrderView_ ) { %>
+                <%= this.sortOrderView_ %>
+              <% } %>
             </div>
             <div id="<%= this.id %>-header-search" class="browser-header search-header browser-header-color">
               $$backButton

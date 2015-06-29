@@ -64,9 +64,11 @@ CLASS({
       documentation: 'The filtered version of $$DOC{ref:".dao"} that\'s ' +
           'being viewed right now.',
       dynamicValue: function() {
-        this.dao; this.query;
+        this.dao; this.query; this.sortOrder;
         var query = this.query || (this.showAllWithNoQuery ? TRUE : FALSE);
-        return this.dao.where(this.query);
+        var dao = this.dao.where(this.query);
+        if (this.sortOrder) dao = dao.orderBy(this.sortOrder);
+        return dao;
       },
       view: 'foam.ui.DAOListView',
     },
@@ -113,6 +115,18 @@ CLASS({
       name: 'cannedQuery',
       documentation: 'Currently selected canned query. Combined into $$DOC{ref:".query"} ' +
           'by ANDing its expression with $$DOC{ref:".search"}.',
+    },
+    {
+      name: 'sortChoices',
+      factory: function() {
+        return [];
+      }
+    },
+    {
+      name: 'sortOrder',
+      factory: function() {
+        return this.sortChoices && this.sortChoices.length && this.sortChoices[0][0];
+      }
     },
     {
       model_: 'StringProperty',
