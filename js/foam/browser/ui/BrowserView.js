@@ -327,6 +327,11 @@ CLASS({
               <% if ( this.spinner ) { %>
                 <span class="browser-spinner">%%spinner</span>
               <% } %>
+              <% for ( var i = 0; i < this.parent.model_.actions.length; i++) {
+                var v = this.createActionView(this.parent.model_.actions[i]);
+                v.data = this.parent;
+                out(v);
+              } %>
               $$searchButton
               <% if ( this.sortOrderView_ ) { %>
                 <%= this.sortOrderView_ %>
@@ -403,6 +408,7 @@ CLASS({
       this.SUPER();
       this.stack.initHTML();
       this.stack.pushView_(-1, this.InnerBrowserView.create({
+        parent: this,
         data: this.data
       }, this.Y));
     }
