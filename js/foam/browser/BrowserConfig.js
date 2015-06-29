@@ -180,6 +180,11 @@ CLASS({
       defaultValue: 'foam.ui.md.CannedQueryCitationView'
     },
     {
+      model_: 'ViewFactoryProperty',
+      name: 'menuHeaderView',
+      documentation: 'Rendered at the top of the menu. Empty by default.',
+    },
+    {
       name: 'menuFactory',
       documentation: 'The menuFactory returns a View for the left-side menu. ' +
           'By default, it returns the view for $$DOC{ref:".cannedQueryDAO"}.',

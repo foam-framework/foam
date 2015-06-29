@@ -88,16 +88,30 @@ CLASS({
           name: 'menuView_',
         },
         {
+          name: 'menuHeaderView_',
+        },
+        {
           name: 'menuOpen',
           defaultValue: false,
           postSet: function(old, nu) {
             if (nu) {
+              var html = '';
+              if (this.data.menuHeaderView) {
+                this.menuHeaderView_ = this.data.menuHeaderView();
+                html += this.menuHeaderView_.toHTML();
+              }
               this.menuView_ = this.data.menuFactory();
-              this.X.$(this.id + '-menu-body').innerHTML = this.menuView_.toHTML();
+              html += this.menuView_.toHTML();
+              this.X.$(this.id + '-menu-body').innerHTML = html;
+              if (this.menuHeaderView_) this.menuHeaderView_.initHTML();
               this.menuView_.initHTML();
             } else if (this.menuView_) {
               this.menuView_.destroy();
               this.menuView_ = '';
+              if (this.menuHeaderView_) {
+                this.menuHeaderView_.destroy();
+                this.menuHeaderView_ = '';
+              }
             }
           },
         },
