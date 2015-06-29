@@ -302,13 +302,17 @@ CLASS({
           var self = this;
           this.modelId = model.id;
           var finished = function() {
+            obj.testTearDown && obj.testTearDown();
             ret(!self.hasFailed());
           };
 
+          obj.testSetUp && obj.testSetUp();
           if ( this.async )
             this.code.call(obj, finished);
-          else
+          else {
             this.code.call(obj);
+            obj.testTearDown && obj.testTearDown();
+          }
         } catch(e) {
           this.fail("Exception thrown: " + e.stack);
           exception = true;

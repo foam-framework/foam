@@ -13,6 +13,8 @@ CLASS({
   package: 'foam.grammars',
   name: 'CSS3',
 
+  imports: [ 'assert' ],
+
   properties: [
     {
       name: 'parser',
@@ -24,26 +26,25 @@ CLASS({
 
           // CSS 3 "tokens" (see http://www.w3.org/TR/css-syntax-3/#tokenization).
           cmt: seq1(1, '/*', not('*/', anyChar), '*/'),
-          nl: alt('\n', '\r\n', '\r', '\f'),
+          nl: alt('\n', literal('\r\n'), '\r', '\f'),
           ws: alt(' ', '\t', sym('nl')),
           digit: range('0', '9'),
-          hd: alt(range('0', '9'), range('a', 'f'), range('A-F')),
+          hd: alt(range('0', '9'), range('a', 'f'), range('A', 'F')),
           hdQM: alt(sym('hd'), '?'),
-          hd16: str(seq(sym('hd'),
+          hd16: seq(sym('hd'),
                     optional(sym('hd')),
                     optional(sym('hd')),
                     optional(sym('hd')),
                     optional(sym('hd')),
-                    optional(sym('hd')))),
-          hd16QM: str(seq(sym('hd'),
+                    optional(sym('hd'))),
+          hd16QM: seq(sym('hd'),
                       optional(sym('hdQM')),
                       optional(sym('hdQM')),
                       optional(sym('hdQM')),
                       optional(sym('hdQM')),
-                      optional(sym('hdQM')))),
-          esc: str(seq('\\', alt(
-              not(alt(sym('nl'), sym('hd'))),
-              seq(sym('hd16'), sym('ws'))))),
+                      optional(sym('hdQM'))),
+          esc: seq('\\', alt(not(alt(sym('nl'), sym('hd')), anyChar),
+                             seq(sym('hd16'), optional(sym('ws'))))),
           wsTok: str(plus(sym('ws'))),
           wsStar: str(repeat(sym('ws'))),
           azAZ_nonASCII: alt(range('a', 'z'),
@@ -63,25 +64,26 @@ CLASS({
                         repeat(alt(sym('azAZ09__nonASCII'), sym('esc')))),
           funcTok: seq1(0, sym('identTok'), '('),
           atkwTok: seq1(1, '@', sym('identTok')),
-          hashTok: seq1(1, '#', str(repeat(alt('azAZ09__nonASCII'), alt('esc')))),
-          innerDblStr: str(repeat(alt(not('"', '\\', sym('nl')),
+          hashTok: seq1(1, '#', plus(alt(sym('azAZ09__nonASCII'), sym('esc')))),
+          innerDblStr: repeat(alt(not(alt('"', '\\', sym('nl')), anyChar),
                                   sym('esc'),
-                                  seq('\\', sym('nl'))))),
-          innerSglStr: str(repeat(alt(not('\'', '\\', sym('nl')),
+                                  seq('\\', sym('nl')))),
+          innerSglStr: repeat(alt(not(alt('\'', '\\', sym('nl')), anyChar),
                                   sym('esc'),
-                                  seq('\\', sym('nl'))))),
+                                  seq('\\', sym('nl')))),
           dblStr: seq1(1, '"', sym('innerDblStr'), '"'),
           sglStr: seq1(1, '\'', sym('innerSglStr'), '\''),
           strTok: alt(sym('dblStr'), sym('sglStr')),
           urlTok: seq1(2, 'url(',
-                      sym('wsStar'),
-                      optional(seq1(0, alt(sym('urlUnquoted'), sym('esc')),
-                                   sym('wsStar'))),
-                      ')'),
-          urlUnquoted: str(plus(alt(not(alt('"', '\'', '(', ')', '\\',
+                       sym('wsStar'),
+                       optional(seq1(0, alt(sym('urlUnquoted'),
+                                            sym('strTok')),
+                                     sym('wsStar'))),
+                       ')'),
+          urlUnquoted: plus(alt(not(alt('"', '\'', '(', ')', '\\',
                                         sym('ws'), sym('nonPrintable')),
                                     anyChar),
-                                sym('esc')))),
+                                sym('esc'))),
           nonPrintable: alt(range(String.fromCharCode(0x0000), String.fromCharCode(0x0008)),
                             String.fromCharCode(0x000B),
                             range(String.fromCharCode(0x000E), String.fromCharCode(0x001F)),
@@ -184,19 +186,9 @@ CLASS({
           braceBlock: seq('{', repeat(sym('componentValue')), '}'),
           parenBlock: seq('(', repeat(sym('componentValue')), ')'),
           brackBlock: seq('[', repeat(sym('componentValue')), ']'),
-
-          // TODO(markdittmer): Should functions this support rule and decl lists?
           funcBlock: seq(sym('funcTok'), repeat(sym('componentValue')), ')')
         };
       }
-    }
-  ],
-
-  methods: [
-    function init() {
-      this.SUPER();
-      // TODO(markdittmer): Debugging only.
-      GLOBAL.CSS3 = this;
     }
   ]
 });
