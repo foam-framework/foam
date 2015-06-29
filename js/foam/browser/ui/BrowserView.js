@@ -242,6 +242,10 @@ CLASS({
               }
           <% } %>
 
+          .browser-header .actionButtonCView {
+            margin: 8px;
+          }
+
           <% var ANIMATION_TIME = '0.4s'; %>
 
           .browser-menu-container {
