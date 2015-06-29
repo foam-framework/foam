@@ -85,25 +85,6 @@ CLASS({
         background: white;
       }
 
-      .menuHeader {
-        background: #db4437;
-        box-shadow: 0 3px 6px #888;
-        color: white;
-        padding: 10px 0 8px 15px;
-      }
-      .menuHeader:hover {
-        background: #db4437 !important;
-      }
-
-      .menuHeader img {
-        border-radius: 50%;
-        margin-bottom: 15px;
-      }
-
-      .menuHeader .name {
-        font-weight: bold;
-      }
-
       .menuView div:hover {
         background: #e0e0e0;
       }

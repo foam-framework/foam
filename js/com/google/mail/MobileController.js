@@ -176,6 +176,7 @@ CLASS({
     {
       name: 'data',
       factory: function() {
+        var self = this;
         return this.BrowserConfig.create({
           model: this.EMail,
           dao: this.emailDao,
@@ -195,6 +196,9 @@ CLASS({
             [ this.EMail.SUBJECT,         'Subject' ],
           ],
           menuRowView: 'com.google.mail.MenuLabelCitationView',
+          menuHeaderView: function(args) {
+            return self.ProfileView.create({ data$: self.profile$ }, self.Y);
+          },
           menuFactory: function() {
             var dao = this.X.EMailDAO;
             var sink = GROUP_BY(dao.model.LABELS, COUNT());
@@ -281,7 +285,6 @@ CLASS({
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAxUlEQVQ4Ed3BPU7CABgA0G8RykkcCP9cEJxRCCF24CROxksQOxmjJ3CgNbFPQ4wppTHMvBdxgYykMoVPmdQwDsyiiY6tY6VUYk6c0vGEvYWxtpaJlQIvfsQpW7zqRoWhDwdRZ4S9bhxx41fUSbGII+b+RJ0M46gwUxF1CrTjfAq043yeMYnzucddNLDGbdQZKOV6UWOg8OU6Tknxph8V+t6xjCYSj8gtTXUkplZyPLiKZhKpUlVprRX/MbCxkyvsbPTiAn0DBHjsbF9BcVMAAAAASUVORK5CYII=',
       isAvailable: function() { return true; },
       isEnabled: function() {
-        debugger;
         this.emailDao;
         if (this.emailDao.withSync) {
           return ! this.emailDao.sync.syncing;
