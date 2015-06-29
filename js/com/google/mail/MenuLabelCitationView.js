@@ -98,7 +98,6 @@ CLASS({
         $$label{mode: 'read-only', extraClassName: 'label' }
         $$count
       </div>
-      <% this.on('click', function() { this.controller.changeLabel(this.data); }, this.id); %>
     */}
   ]
 });

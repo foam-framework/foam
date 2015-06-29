@@ -161,7 +161,14 @@ CLASS({
       defaultValue: 'Gmail'
     },
     {
-      name: 'selectedLabel',
+      name: 'cannedQuery',
+      factory: function() {
+        return this.CannedQuery.create({
+          id: 'INBOX',
+          label: 'Inbox',
+          expression: CONTAINS(this.EMail.LABELS, 'INBOX')
+        });
+      },
       postSet: function(old, nu) {
         if (nu) this.title = nu.label;
       },
@@ -195,11 +202,7 @@ CLASS({
             this.Y.counts = sink;
             return this.model_.MENU_FACTORY.defaultValue.call(this);
           },
-          cannedQuery: this.CannedQuery.create({
-            id: 'INBOX',
-            label: 'Inbox',
-            expression: CONTAINS(this.EMail.LABELS, 'INBOX')
-          }),
+          cannedQuery$: this.cannedQuery$,
           cannedQueryDAO$: this.cannedQueryDAO$
         });
       }
@@ -241,17 +244,6 @@ CLASS({
         user.fromJSON(resp);
         this.profile = user;
       }.bind(this));
-    },
-
-    initHTML: function() {
-      this.SUPER();
-
-      // TODO(braden): Why not find() here?
-      this.labelDao.where(EQ(this.FOAMGMailLabel.ID, 'INBOX')).select({
-        put: function(inbox) {
-          this.selectedLabel = inbox;
-        }.bind(this)
-      });
     },
 
     /*
