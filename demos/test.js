@@ -3,6 +3,7 @@ apar(
   arequire('foam.ui.DetailView'),
   arequire('foam.ui.TableView')
 )(function() {
+
 CLASS({
   name: 'Test',
   properties: [
@@ -35,6 +36,10 @@ CLASS({
       model_: 'FloatProperty',
       name: 'floatStepView',
       view: { factory_: 'foam.ui.FloatFieldView', step: .1 }
+    },
+    {
+      name: 'setProperty',
+      view: { factory_: 'foam.ui.MultiChoiceView', choices: ['foo','bar','baz','moo'], size: 4 }
     }
   ]
 });
