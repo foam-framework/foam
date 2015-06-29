@@ -256,7 +256,8 @@ CLASS({
         var substack = {
           __proto__: this,
           pushView: this.pushView_.bind(this, this.views_.length),
-          popView: this.popView_.bind(this, this.views_.length)
+          popView: this.popView_.bind(this, this.views_.length),
+          replaceView: this.replaceView_.bind(this, this.views_.length)
         };
 
         // HACK: Replacing the values of properties on a child view is a hack
@@ -287,6 +288,14 @@ CLASS({
         this.visibleEnd_ = index - 1;
         this.destroyChildViews_(index);
         this.setTimeout(this.onResize, 100);
+      }
+    },
+    {
+      name: 'replaceView_',
+      isFramed: true,
+      code: function(index, view, hints) {
+        this.popView_(index);
+        this.pushView_(index - 1, view, hints);
       }
     }
   ]

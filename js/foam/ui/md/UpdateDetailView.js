@@ -21,6 +21,10 @@ CLASS({
   name: 'UpdateDetailView',
   extendsModel: 'foam.ui.md.DetailView',
 
+  requires: [
+    'foam.ui.PopupChoiceView',
+  ],
+
   imports: [
     'dao',
     'stack'
@@ -60,6 +64,12 @@ CLASS({
       }
     },
     {
+      name: 'immutable',
+      documentation: 'Set to true if the view should never switch to ' +
+          'X-and-check mode, even when there are changes.',
+      defaultValue: false
+    },
+    {
       // Version of the data which changes whenever any property of the data is updated.
       // Used to help trigger isEnabled / isAvailable in Actions.
       model_: 'IntProperty',
@@ -70,8 +80,8 @@ CLASS({
       name: 'outstandingChanges',
       hidden: true,
       dynamicValue: function() {
-        this.version;
-        return ! this.originalData.equals(this.data);
+        this.version; this.immuatable;
+        return ! this.immutable && ! this.originalData.equals(this.data);
       }
     },
     {
@@ -187,10 +197,35 @@ CLASS({
             <%
               var actions = this.data.model_.actions;
               if (actions && actions.length) {
+                var namedActions = [];
                 for (var i = 0; i < actions.length; i++) {
                   if (actions[i].iconUrl) {
                     out(this.createTemplateView(actions[i].name, { X: this.Y }));
+                  } else {
+                    namedActions.push(actions[i]);
                   }
+                }
+                if (namedActions.length) {
+                  // TODO(braden): HACK We need a generic button-and-popup view.
+                  var choices = [];
+                  var byName = {};
+                  for (var i = 0; i < namedActions.length; i++) {
+                    if (namedActions[i].isAvailable.call(this.data)) {
+                      choices.push([namedActions[i].name, namedActions[i].label]);
+                      byName[namedActions[i].name] = namedActions[i];
+                    }
+                  }
+                  var v = this.PopupChoiceView.create({
+                    autoSetData: false,
+                    choices: choices,
+                    iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAN0lEQVQ4y2NgGKbgf9D/1/9f/fcnXsPr/yDwEpscE3YdSCRRNvj/f/n/xX/f0VAaDaVhGEpUBQDnbkP8bmeeCwAAAABJRU5ErkJggg=='
+                  }, this.X);
+                  v.data$.addListener(function(_, __, old, nu) {
+                    if (nu) {
+                      byName[nu].maybeCall(self.X, self.data);
+                    }
+                  });
+                  out(v);
                 }
               }
             %>

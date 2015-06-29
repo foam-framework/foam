@@ -28,7 +28,6 @@ CLASS({
     'com.google.mail.ComposeView',
     'com.google.mail.EMailCitationView',
     'com.google.mail.EMailDAO',
-    'com.google.mail.EMailExtensionsAgent',
     'com.google.mail.EMailView',
     'com.google.mail.FOAMGMailLabel',
     'com.google.mail.GMailRestDAO',
@@ -56,6 +55,7 @@ CLASS({
     'labelDao as LabelDAO',
     'emailDao as EMailDAO',
     'profile$ as profile$',
+    'openComposeView',
     'as controller'
   ],
 
@@ -187,6 +187,10 @@ CLASS({
             factory_: 'foam.ui.ScrollView',
             rowView: 'com.google.mail.EMailCitationView'
           },
+          detailView: {
+            factory_: 'foam.ui.md.UpdateDetailView',
+            immutable: true
+          },
           innerDetailView: 'com.google.mail.EMailView',
           queryParser: this.QueryParser.create().parser,
           busyStatus: this.busyStatus,
@@ -235,9 +239,6 @@ CLASS({
   methods: {
     init: function(args) {
       this.SUPER(args);
-
-      // Install extensions to the EMail model.
-      this.EMailExtensionsAgent.create().execute();
 
       var xhr = this.Y.XHR.create({ responseType: 'json' });
 
@@ -362,6 +363,14 @@ CLASS({
             });
 
         this.cannedQueryDAO.delegate = dao;
+      }
+    },
+    {
+      name: 'openComposeView',
+      code: function(X, email) {
+        X.stack.replaceView(this.ComposeView.create({
+          data: email
+        }, this.Y));
       }
     },
   ],
