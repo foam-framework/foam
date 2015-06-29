@@ -211,6 +211,13 @@ CLASS({
             overflow: hidden;
             width: 42px;
           }
+          .browser-header .browser-spinner .spinner-fixed-box {
+            height: 26px;
+            width: 26px;
+          }
+          .browser-header .browser-spinner .spinner-circle {
+            border-width: 3px;
+          }
 
           .browser-header.search-header .md-text-field-input {
             color: #fff;
