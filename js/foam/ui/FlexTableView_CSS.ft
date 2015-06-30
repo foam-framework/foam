@@ -48,7 +48,8 @@ flex-table-head {
 }
 flex-table-body {
   position: relative;
-  overflow-x: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 flex-col-label {
   align-items: center;

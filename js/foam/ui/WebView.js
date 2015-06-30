@@ -41,7 +41,7 @@ CLASS({
     },
     toHTML: function() {
       var id = this.id;
-      return '<iframe id="' + id + '"></iframe>';
+      return '<iframe scrolling="no" id="' + id + '"></iframe>';
     },
     initHTML: function() {
       this.SUPER();
@@ -50,11 +50,15 @@ CLASS({
       // This is a lazy way of handling the change in size when things like
       // images load asynchronously.
       this.intervalId = this.window.setInterval(this.onResize, 500);
-      this.onResize();
+      this.rawResize();
     },
     destroy: function() {
       this.window.clearInterval(this.intervalId);
     },
+    rawResize: function() {
+      if ( this.$.contentDocument.documentElement )
+        this.$.style.height = this.$.contentDocument.body.children[0].clientHeight + 16;
+    }
   },
   listeners: [
     {
@@ -65,8 +69,7 @@ CLASS({
           this.window.clearInterval(this.intervalId);
           return;
         }
-        if ( this.$.contentDocument.documentElement )
-          this.$.style.height = this.$.contentDocument.body.children[0].clientHeight + 16;
+        this.rawResize();
       }
     }
   ]

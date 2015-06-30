@@ -34,6 +34,9 @@ CLASS({
     'foam.ui.SpinnerView',
     'foam.ui.ScrollViewRow'
   ],
+  imports: [
+    'selection$',
+  ],
 
   traits: ['foam.input.touch.VerticalScrollNativeTrait'],
 
@@ -290,6 +293,7 @@ CLASS({
                 self.rowHeight + 'px; overflow: visible" id="' + svr.id + '">');
             html.push(v.toHTML());
             html.push('</div>');
+            v.on('click', function() { self.selection = this.data; }, v.id);
             newViews.push([h, svr]);
             svr.view = v;
           }
@@ -497,9 +501,29 @@ CLASS({
   ],
 
   templates: [
+    function CSS() {/*
+      .scrollview {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        overflow: hidden;
+        position: relative;
+      }
+      .scrollview-scroller {
+        -webkit-overflow-scrolling: touch;
+        overflow-y: auto;
+        width: 100%;
+        flex-grow: 1;
+      }
+      .scrollView-inner {
+        position: relative;
+        transform: translate3d(0,0,0);
+        width: 100%;
+      }
+    */},
     function toHTML() {/*
       <% this.destroy(); %>
-      <div id="%%id" style="overflow:hidden;position:relative">
+      <div id="%%id" class="scrollview">
         <% if ( this.rowHeight < 0 ) { %>
           <div id="<%= this.id + '-rowsize' %>" style="visibility: hidden">
             <%
@@ -518,8 +542,8 @@ CLASS({
             if ( e ) e.style.display = self.spinnerBusyStatus.busy ? 'block' : 'none';
           });
         }); %>
-        <div id="%%scrollerID" style="-webkit-overflow-scrolling: touch; overflow-y: scroll; width:100%; height: 100%;">
-          <div id="%%containerID" style="position:relative;width:100%;height:100%; -webkit-transform: translate3d(0px, 0px, 0px);">
+        <div id="%%scrollerID" class="scrollview-scroller">
+          <div id="%%containerID" class="scrollview-inner" style="height:100%;">
           </div>
         </div>
       </div>

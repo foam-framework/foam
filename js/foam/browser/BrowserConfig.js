@@ -37,7 +37,8 @@ CLASS({
     {
       name: 'title',
       defaultValueFn: function() {
-        return this.dao.model.name + ' Browser';
+        return this.model && this.model.name ? this.model.name + ' Browser' :
+            'Browser';
       }
     },
     {
@@ -55,16 +56,19 @@ CLASS({
     {
       model_: 'ModelProperty',
       name: 'model',
-      defaultValueFn: function() { return this.dao.model; }
+      required: true,
+      factory: function() { return this.dao.model; }
     },
     {
       name: 'filteredDAO',
       documentation: 'The filtered version of $$DOC{ref:".dao"} that\'s ' +
           'being viewed right now.',
       dynamicValue: function() {
-        this.dao; this.query;
+        this.dao; this.query; this.sortOrder;
         var query = this.query || (this.showAllWithNoQuery ? TRUE : FALSE);
-        return this.dao.where(this.query);
+        var dao = this.dao.where(this.query);
+        if (this.sortOrder) dao = dao.orderBy(this.sortOrder);
+        return dao;
       },
       view: 'foam.ui.DAOListView',
     },
@@ -98,7 +102,7 @@ CLASS({
       documentation: 'A DAO of $$DOC{ref:"foam.mlang.CannedQuery"} objects.',
       required: true,
       postSet: function(old, nu) {
-        if (nu && !this.query) {
+        if (nu && !this.query && !this.cannedQuery) {
           nu.limit(1).select([])(function(arr) { this.cannedQuery = arr[0]; }.bind(this));
         }
       },
@@ -111,6 +115,18 @@ CLASS({
       name: 'cannedQuery',
       documentation: 'Currently selected canned query. Combined into $$DOC{ref:".query"} ' +
           'by ANDing its expression with $$DOC{ref:".search"}.',
+    },
+    {
+      name: 'sortChoices',
+      factory: function() {
+        return [];
+      }
+    },
+    {
+      name: 'sortOrder',
+      factory: function() {
+        return this.sortChoices && this.sortChoices.length && this.sortChoices[0][0];
+      }
     },
     {
       model_: 'StringProperty',
@@ -145,13 +161,41 @@ CLASS({
       defaultValue: 'foam.ui.md.DetailView'
     },
     {
+      model_: 'ViewFactoryProperty',
+      name: 'createView',
+      documentation: 'The view for creating a new item. Defaults to creating ' +
+          'a new empty instance of $$DOC{ref:".model"} and passing it to ' +
+          '$$DOC{ref:".detailView"}.',
+      defaultValue: function(args, X) {
+        var newObj = this.model.create();
+        return this.detailView({
+          data: newObj,
+          innerView: this.innerDetailView
+        }, X);
+      }
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'menuRowView',
+      defaultValue: 'foam.ui.md.CannedQueryCitationView'
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'menuHeaderView',
+      documentation: 'Rendered at the top of the menu. Empty by default.',
+    },
+    {
       name: 'menuFactory',
       documentation: 'The menuFactory returns a View for the left-side menu. ' +
           'By default, it returns the view for $$DOC{ref:".cannedQueryDAO"}.',
       defaultValue: function() {
         var view = this.DAOListView.create({
-          data$: this.cannedQueryDAO$,
-          rowView: 'foam.ui.md.CannedQueryCitationView',
+          data: this.cannedQueryDAO.orderBy(
+              this.CannedQuery.SECTION,
+              this.CannedQuery.ORDER,
+              this.CannedQuery.LABEL
+          ),
+          rowView: this.menuRowView
         }, this.Y.sub({
           selection$: this.cannedQuery$
         }));
@@ -166,6 +210,16 @@ CLASS({
 
         return view;
       }
+    },
+    {
+      name: 'busyStatus',
+      documentation: 'Optional busyStatus. If defined, a spinner will be ' +
+          'shown when the BusyStatus is set to true.'
+    },
+    {
+      name: 'headerColor',
+      documentation: 'Globally sets a browser-header-color CSS class',
+      defaultValue: '#3e50b4'
     },
     {
       name: 'showAllWithNoQuery',

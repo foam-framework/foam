@@ -176,8 +176,8 @@ CLASS({
              a.apply(obj, arguments);
              var self = this;
              var sink = action.backOnComplete ?
-               { put: function() { X.stack.back(); },
-                 error: function() { X.stack.back(); } } : undefined;
+               { put: function() { X.stack.popView(); },
+                 error: function() { X.stack.popView(); } } : undefined;
              X.EMailDAO && X.EMailDAO.put(obj, sink);
            };
            f.toString = function() { return a.toString(); };

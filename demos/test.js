@@ -1,4 +1,9 @@
-arequire('foam.util.Timer')(function() { 
+apar(
+  arequire('foam.util.Timer'),
+  arequire('foam.ui.DetailView'),
+  arequire('foam.ui.TableView')
+)(function() {
+
 CLASS({
   name: 'Test',
   properties: [
@@ -31,6 +36,10 @@ CLASS({
       model_: 'FloatProperty',
       name: 'floatStepView',
       view: { factory_: 'foam.ui.FloatFieldView', step: .1 }
+    },
+    {
+      name: 'setProperty',
+      view: { factory_: 'foam.ui.MultiChoiceView', choices: ['foo','bar','baz','moo'], size: 4 }
     }
   ]
 });
@@ -101,10 +110,10 @@ console.log(p2.toJSON());
 
 p2.write(document);
 
-var dv = DetailView.create({data: p2});
+var dv = foam.ui.DetailView.create({data: p2});
 dv.write(document);
 
-var dv2 = DetailView.create({model: Point3D});
+var dv2 = foam.ui.DetailView.create({model: Point3D});
 dv2.write(document);
 
 
@@ -122,13 +131,12 @@ var models = [
   Circle,
   Canvas,
   Rectangle,
-  DAOController,
   foam.util.Timer,
-  Mouse,
-  EyeCView,
-  EyesCView,
-  ClockView,
-  TextFieldView,
+//  foam.input.Mouse,
+//  EyeCView,
+//  EyesCView,
+//  ClockView,
+//  TextFieldView,
   Bookmark
 ];
 
@@ -143,12 +151,12 @@ document.write("<br/>");
 document.writeln("=======================================");
 
 document.writeln("<table><tr><td valign=top>");
-var tv1 = TableView.create({model: Model, dao: models});
+var tv1 = foam.ui.TableView.create({model: Model, dao: models});
 document.writeln(tv1.toHTML());
 tv1.initHTML();
 
 document.writeln("</td><td><font size=-1>");
-var dv = DetailView.create({model: Model});
+var dv = foam.ui.DetailView.create({model: Model});
 document.writeln(dv.toHTML());
 dv.initHTML();
 document.writeln("</font></td></tr></table>");

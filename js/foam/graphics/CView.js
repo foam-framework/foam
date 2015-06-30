@@ -70,6 +70,13 @@ CLASS({
       documentation: function() {/* Safe getter for the canvas view this scene draws into */ }
     },
     {
+      name:  'gl',
+      getter: function() { return this.view && this.view.gl; },
+      transient: true,
+      hidden: true,
+      documentation: function() {/* Safe getter for the webGL view this scene draws into */ }
+    },
+    {
       name:  '$',
       getter: function() { return this.view && this.view.$; },
       transient: true,

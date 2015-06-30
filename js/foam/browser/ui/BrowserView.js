@@ -25,6 +25,7 @@ CLASS({
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
     'foam.ui.DAOListView',
+    'foam.ui.PopupChoiceView',
     'foam.ui.md.DetailView',
     'foam.ui.md.SharedStyles',
     'foam.ui.md.UpdateDetailView',
@@ -40,6 +41,10 @@ CLASS({
     {
       name: 'InnerBrowserView',
       extendsModel: 'foam.ui.DetailView',
+      requires: [
+        'foam.ui.PopupChoiceView',
+        'foam.ui.SpinnerView',
+      ],
       imports: [
         'stack',
       ],
@@ -80,17 +85,65 @@ CLASS({
           defaultValue: false
         },
         {
+          name: 'menuView_',
+        },
+        {
+          name: 'menuHeaderView_',
+        },
+        {
           name: 'menuOpen',
-          defaultValue: false
+          defaultValue: false,
+          postSet: function(old, nu) {
+            if (nu) {
+              var html = '';
+              if (this.data.menuHeaderView) {
+                this.menuHeaderView_ = this.data.menuHeaderView();
+                html += this.menuHeaderView_.toHTML();
+              }
+              this.menuView_ = this.data.menuFactory();
+              html += this.menuView_.toHTML();
+              this.X.$(this.id + '-menu-body').innerHTML = html;
+              if (this.menuHeaderView_) this.menuHeaderView_.initHTML();
+              this.menuView_.initHTML();
+            } else if (this.menuView_) {
+              this.menuView_.destroy();
+              this.menuView_ = '';
+              if (this.menuHeaderView_) {
+                this.menuHeaderView_.destroy();
+                this.menuHeaderView_ = '';
+              }
+            }
+          },
         },
         {
           name: 'searchMode',
           defaultValue: false
         },
         {
+          name: 'spinner',
+          factory: function() {
+            if ( ! this.data.busyStatus ) return;
+            return this.SpinnerView.create({
+              data$: this.data.busyStatus.busy$,
+              color: '#fff'
+            });
+          }
+        },
+        {
           name: 'listView_',
           hidden: true,
           documentation: 'Internal. The View object created by the listView.'
+        },
+        {
+          name: 'sortOrderView_',
+          factory: function() {
+            if (!this.data.sortChoices || this.data.sortChoices.length <= 1) return;
+            return this.PopupChoiceView.create({
+              iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAIUlEQVQ4y2NgGAVEg/9EAMo0DCFPU0/DIPc0bTSMArwAAI+/j3GjMHVsAAAAAElFTkSuQmCC',
+              data$: this.data.sortOrder$,
+              choices: this.data.sortChoices
+            });
+          }
         },
         {
           name: 'minWidth',
@@ -135,11 +188,8 @@ CLASS({
           iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAH0lEQVQ4y2NgGAUw8B8IRjXgUoQLUEfDaDyQqmF4AwADqmeZrHJtnQAAAABJRU5ErkJggg==',
           isAvailable: function() { return this.data.showAdd; },
           action: function() {
-            var newObj = this.data.model.create();
-            this.stack.pushView(this.data.detailView({
-              data: newObj,
-              innerView: this.data.innerDetailView
-            }, this.Y.sub({ dao: this.data.dao })));
+            this.stack.pushView(this.data.createView(null,
+                this.Y.sub({ dao: this.data.dao })));
           }
         },
       ],
@@ -169,7 +219,6 @@ CLASS({
           }
           .browser-header {
             align-items: center;
-            background-color: #3e50b4;
             color: #fff;
             display: flex;
             flex-grow: 0;
@@ -183,6 +232,20 @@ CLASS({
             margin-left: 12px;
           }
 
+          .browser-header .browser-spinner {
+            display: inline-block;
+            height: 42px;
+            overflow: hidden;
+            width: 42px;
+          }
+          .browser-header .browser-spinner .spinner-fixed-box {
+            height: 26px;
+            width: 26px;
+          }
+          .browser-header .browser-spinner .spinner-circle {
+            border-width: 3px;
+          }
+
           .browser-header.search-header .md-text-field-input {
             color: #fff;
           }
@@ -192,6 +255,10 @@ CLASS({
                 color: #ccc;
               }
           <% } %>
+
+          .browser-header .actionButtonCView {
+            margin: 8px;
+          }
 
           <% var ANIMATION_TIME = '0.4s'; %>
 
@@ -247,6 +314,8 @@ CLASS({
           }
 
           .browser-body {
+            display: flex;
+            flex-direction: column;
             flex-grow: 1;
             overflow-x: hidden;
             overflow-y: auto;
@@ -254,12 +323,13 @@ CLASS({
         */},
         function toHTML() {/*
           <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
+            <style>
+              .browser-header-color { background-color: <%= this.data.headerColor %>; }
+            </style>
             <div id="<%= this.id %>-menu-container" class="browser-menu-container">
               <div class="browser-menu-inner">
                 <div id="<%= this.id %>-menu-overlay" class="browser-menu-overlay"></div>
-                <div class="browser-menu">
-                  <%= this.data.menuFactory() %>
-                </div>
+                <div id="<%= this.id %>-menu-body" class="browser-menu"></div>
               </div>
             </div>
             <%
@@ -269,12 +339,23 @@ CLASS({
             %>
 
 
-            <div id="<%= this.id %>-header" class="browser-header">
+            <div id="<%= this.id %>-header" class="browser-header browser-header-color">
               $$menuButton
               $$title{ mode: 'read-only', extraClassName: 'expand title' }
+              <% if ( this.spinner ) { %>
+                <span class="browser-spinner">%%spinner</span>
+              <% } %>
+              <% for ( var i = 0; i < this.parent.model_.actions.length; i++) {
+                var v = this.createActionView(this.parent.model_.actions[i]);
+                v.data = this.parent;
+                out(v);
+              } %>
               $$searchButton
+              <% if ( this.sortOrderView_ ) { %>
+                <%= this.sortOrderView_ %>
+              <% } %>
             </div>
-            <div id="<%= this.id %>-header-search" class="browser-header search-header">
+            <div id="<%= this.id %>-header-search" class="browser-header search-header browser-header-color">
               $$backButton
               $$search{ extraClassName: 'expand search-field' }
             </div>
@@ -345,6 +426,7 @@ CLASS({
       this.SUPER();
       this.stack.initHTML();
       this.stack.pushView_(-1, this.InnerBrowserView.create({
+        parent: this,
         data: this.data
       }, this.Y));
     }

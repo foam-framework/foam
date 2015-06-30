@@ -15,6 +15,10 @@ __DATA({
   controller: 'foam.apps.ctm.TaskManager',
   includeFoamCSS: true,
   precompileTemplates: true,
+  htmlHeaders: [
+    '<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,500" />',
+    '<link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons" />'
+  ],
   coreFiles: [
     'funcName',
     'stdlib',

@@ -21,6 +21,8 @@ CLASS({
 
   extendsModel: 'foam.ui.View',
 
+  documentation: 'A View for selecting a set of keys from an array of choices or from a DAO.',
+
   properties: [
     {
       name: 'prop',
@@ -112,17 +114,23 @@ CLASS({
   ],
 
   templates: [
+    function CSS() {/*
+      .multi-choice-view {
+        overflow: auto;
+        margin-right: 6px;
+      }
+    */},
     function toHTML() {/*
-<select id="%%id" name="%%name" size="%%size"><% this.toInnerHTML(out); %></select>*/},
+<select class="multi-choice-view" id="%%id" name="%%name" size="%%size" multiple><% this.toInnerHTML(out); %></select>*/},
     function toInnerHTML() {/*
 <% var set = this.data %>
 <% if ( this.helpText ) { %>
 <option disabled="disabled"><%= escapeHTML(this.helpText) %></option>
 <% } %>
-<% this.choices.forEach(function(choice) { 
-  var id = this.nextID(); %>
+<% this.choices.forEach(function(choice) {
+  var id = self.nextID(); %>
  <option id="<%= id %>" <% if ( set[choice[0]] ) { %>selected<% } %> value="<%= i %>"><%= escapeHTML(choice[1].toString()) %></option>
-<% } %>
+<% }); %>
 */}
   ],
 
