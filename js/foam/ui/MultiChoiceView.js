@@ -58,7 +58,7 @@ CLASS({
 
         for ( var i = 0 ; i < choices.length ; i++ ) {
           var key = choices[i][0];
-          
+
           if ( set[key] ) newSet[key] = set[key];
         }
 
@@ -123,21 +123,23 @@ CLASS({
     function toHTML() {/*
 <select class="multi-choice-view" id="%%id" name="%%name" size="%%size" multiple><% this.toInnerHTML(out); %></select>*/},
     function toInnerHTML() {/*
-<% var set = this.data %>
 <% if ( this.helpText ) { %>
 <option disabled="disabled"><%= escapeHTML(this.helpText) %></option>
 <% } %>
 <% this.choices.forEach(function(choice) {
-  var id = self.nextID(); %>
- <option id="<%= id %>" <% if ( set[choice[0]] ) { %>selected<% } %> value="<%= i %>"><%= escapeHTML(choice[1].toString()) %></option>
+  var id = self.nextID();
+  self.data$.addListener(function() { if ( ! self.X.$(id) ) return; self.X.$(id).selected = self.data[choice[0]]; });
+ %>
+ <option id="<%= id %>" <% if ( self.data[choice[0]] ) { %> selected="selected"<% } %>><%= escapeHTML(choice[1].toString()) %></option>
 <% }); %>
 */}
   ],
 
-  methods: {
-    initHTML: function() {
+  methods: [
+    function initHTML() {
       this.SUPER();
       this.onDAOUpdate();
-    }
-  }
+    },
+    function shouldDestroy(old) { return false; }
+  ]
 });
