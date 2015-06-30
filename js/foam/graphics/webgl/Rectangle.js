@@ -18,30 +18,32 @@
 CLASS({
   package: 'foam.graphics.webgl',
   name: 'Rectangle',
+  requires: [ 'foam.graphics.webgl.Shader' ],
+
+  exports: [ 'gl' ],
 
   extendsModel: 'foam.graphics.CView',
-  
-  methods: [
-    function createShader(source) {
-      var shader = gl.createShader(gl.FRAGMENT_SHADER);
-      this.gl.shaderSource(shader, source);
-      this.gl.compileShader(shader);  
-      if ( ! gl.getShaderParameter(shader, gl.COMPILE_STATUS) ) {  
-          console.warn("Shader compile error " + gl.getShaderInfoLog(shader));  
-          return null;  
+
+  properties: [
+    {
+      name: 'solidFillShader',
+      lazyFactory: function() {
+        return this.Shader.create({
+            type:'fragment',
+            source: "void main() {\n gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n }\n";
       }
-      return shader;
-    },
-    
+    }
+  ],
+
+  methods: [
+
     function paintSelf() {
       var gl = this.gl;
       if ( ! gl ) return;
 
-        shader = gl.createShader(gl.FRAGMENT_SHADER);
-       
-        shader = gl.createShader(gl.VERTEX_SHADER);
-      
+
+
     }
   ]
-  
+
 });

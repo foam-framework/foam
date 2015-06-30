@@ -17,14 +17,13 @@
 
 CLASS({
   package: 'foam.graphics.webgl',
-  name: 'ShaderProperty',
+  name: 'Shader',
+  imports: [ 'gl' ],
 
-  extendsModel: 'Property',
-  
   properties: [
     {
       model_: 'foam.core.types.StringEnumProperty',
-      name: 'shaderType',
+      name: 'type',
       choices: [
         'fragment',
         'vertex'
@@ -35,23 +34,45 @@ CLASS({
       adapt: function(nu) {
         if ( typeof nu === 'function' ) return multiline(nu);
         return nu;
+      },
+      postSet: function(old,nu) {
+        if ( ! equals(old, nu) ) {
+          if ( this.instance_.shader ) {
+            this.gl.deleteShader(this.instance_.shader);
+            delete this.instance_.shader;
+          }
+        }
+      }
+    },
+    {
+      name: 'shader',
+      getter: function() {
+        if ( ! this.instance_.shader ) {
+          this.compile();
+        }
+        return this.instance_.shader;
       }
     }
-    
-    
   ],
-  
-  methods: [    
+
+  methods: [
     function compile() {
-      var shader = gl.createShader(gl.FRAGMENT_SHADER);
+      var shader = this.shaderType == 'fragment' ? gl.createShader(gl.FRAGMENT_SHADER) : gl.createShader(gl.VERTEX_SHADER);
       this.gl.shaderSource(shader, this.source);
-      this.gl.compileShader(shader);  
-      if ( ! gl.getShaderParameter(shader, gl.COMPILE_STATUS) ) {  
-          console.warn("Shader compile error " + gl.getShaderInfoLog(shader));  
-          return null;  
+      this.gl.compileShader(shader);
+      if ( ! gl.getShaderParameter(shader, gl.COMPILE_STATUS) ) {
+        console.warn("Shader compile error " + gl.getShaderInfoLog(shader));
+        return null;
       }
-      return shader;
+      this.shader = shader;
+      return this.shader;
+    },
+    function destroy() {
+      if ( this.instance_.shader ) {
+        this.gl.deleteShader(this.instance_.shader);
+        delete this.instance_.shader;
+      }
     }
   ]
-  
+
 });
