@@ -52,8 +52,8 @@
               <code-snippet title="Example">
                 <src language="javascript">
                   <code>apar(
-    arequire('foam.sandbox.DetailedPerson', X),
-    arequire('foam.ui.DetailView', X)
+    X.arequire('foam.sandbox.DetailedPerson'),
+    X.arequire('foam.ui.DetailView')
 )(function(DetailPerson, DetailView) {
   var lawyer = DetailPerson.create({
     firstName: 'Harvey',
@@ -105,8 +105,8 @@
               <code-snippet title="Example">
                 <src language="javascript">
                   <code>apar(
-    arequire('foam.sandbox.Person', X),
-    arequire('foam.sandbox.RedPersonView', X)
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.sandbox.RedPersonView')
 )(function(Person, RedPersonView) {
 
   // Create a person
@@ -171,8 +171,8 @@
               <code-snippet title="Example">
                 <src language="javascript">
                   <code>apar(
-    arequire('foam.sandbox.Person', X),
-    arequire('foam.sandbox.ManualPersonView', X)
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.sandbox.ManualPersonView')
 )(function(Person, ManualPersonView) {
 
   // Create a person
@@ -299,8 +299,8 @@
               <code-snippet title="Example">
                 <src language="javascript">
                   <code>apar(
-    arequire('foam.sandbox.Person', X),
-    arequire('foam.sandbox.TemplatePlaygroundView', X)
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.sandbox.TemplatePlaygroundView')
 )(function(Person, TemplatePlaygroundView) {
 
   // Create a person
@@ -374,8 +374,8 @@
               <code-snippet title="Example">
                 <src language="javascript">
                   <code>apar(
-    arequire('foam.sandbox.Person', X),
-    arequire('foam.sandbox.GreenPersonView', X)
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.sandbox.GreenPersonView')
 )(function(Person, GreenPersonView) {
 
   // Create a person
@@ -458,9 +458,9 @@
               <code-snippet title="Example">
                 <src language="javascript">
                   <code>apar(
-    arequire('foam.sandbox.Person', X),
-    arequire('foam.sandbox.RedPersonView', X),
-    arequire('foam.sandbox.CardPersonView', X)
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.sandbox.RedPersonView'),
+    X.arequire('foam.sandbox.CardPersonView')
 )(function(Person, RedPersonView, CardPersonView) {
 
   // Create a person
@@ -539,9 +539,9 @@
               <code-snippet title="Example">
                 <src language="javascript">
                   <code>apar(
-    arequire('foam.sandbox.Person', X),
-    arequire('foam.sandbox.RedPersonView', X),
-    arequire('foam.sandbox.ToggleCardPersonView', X)
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.sandbox.RedPersonView'),
+    X.arequire('foam.sandbox.ToggleCardPersonView')
 )(function(Person, RedPersonView, ToggleCardPersonView) {
 
   // Create a person

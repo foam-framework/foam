@@ -30,7 +30,7 @@
 
 // Let's asynchronously require -- "arequire" -- our model into our conteXt
 // object -- "X" -- to ensure it's ready before we do anything with it.
-arequire('foam.sandbox.Person', X)(function(Person) {
+X.arequire('foam.sandbox.Person')(function(Person) {
   // Use FOAM JSONUtil's prettyModel formatter to output the model.
   console.log(JSONUtil.prettyModel.stringify(Person));
 });</code>
@@ -49,7 +49,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
           <code-snippet ref="Person" title="Person Model" />
           <code-snippet title="Example">
             <src language="javascript">
-              <code>arequire('foam.sandbox.Person', X)(function(Person) {
+              <code>X.arequire('foam.sandbox.Person')(function(Person) {
   // The first argument to [SomeModel].create specifies property values.
   // The second argument is the conteXt object where the instance is created.
   // Both arguments are optional, and the second is usually omitted; we include
@@ -76,7 +76,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             <code-snippet ref="Person" title="Person Model" />
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.Person', X)(function(Person) {
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
   var xi = Person.create({ firstName: 'Xi', lastName: 'Han' }, X);
   console.log('Let console decide how to JSONify object:');
   console.log.json(xi);
@@ -103,7 +103,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             <code-snippet ref="Person" title="Person Model" />
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.Person', X)(function(Person) {
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
   var bondString = '{"model_":"foam.sandbox.Person",' +
       '"firstName":"James",' +
       '"lastName":"Bond"}';
@@ -126,7 +126,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             <code-snippet ref="Person" title="Person Model" />
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.Person', X)(function(Person) {
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
   var john = Person.create({ firstName: 'John', lastName: 'Smith' }, X);
   var jon = Person.create({ firstName: 'Jon', lastName: 'Smith' }, X);
   console.log('Is John the same as Jon? ' + john.equals(jon));
@@ -146,7 +146,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             <code-snippet ref="Person" title="Person Model" />
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.Person', X)(function(Person) {
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
   var jen = Person.create({ firstName: 'Jen' }, X);
   var jem = Person.create({ firstName: 'Jem' }, X);
   var jemAgain = Person.create({ firstName: 'Jem' }, X);
@@ -178,7 +178,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             <code-snippet ref="Person" title="Person Model" />
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.Person', X)(function(Person) {
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
   var krishnam = Person.create({ firstName: 'Krishnam', lastName: 'Patel' }, X);
   console.log('Mr. Patel hashCode: ' + krishnam.hashCode());
   // Changing the data changes the hash.
@@ -206,7 +206,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             <code-snippet ref="Person" title="Person Model" />
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.Person', X)(function(Person) {
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
   var sota = Person.create({ firstName: 'Sota', lastName: 'Itou' }, X);
   var yuki = Person.create({
     firstName: 'Yuki',
@@ -239,7 +239,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             <code-snippet ref="Person" title="Person Model" />
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.Person', X)(function(Person) {
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
   var marta = Person.create({ firstName: 'Marta', lastName: 'Makarov' }, X);
   var lidiya = Person.create({
     firstName: 'Lidiya',
@@ -273,7 +273,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             <code-snippet ref="Person" title="Person Model" />
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.Person', X)(function(Person) {
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
                   var greekName = Person.create({ firstName: 'Zeus', lastName: 'The Deity' }, X);
   var greekChildren = Person.create({
     children: [Person.create({
@@ -325,7 +325,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             </code-snippet>
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.Person', X)(function(Person) {
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
   var morticia = Person.create({
     firstName: 'Morticia',
     lastName: 'Addams',
@@ -354,8 +354,8 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             <code-snippet title="Example">
               <src language="javascript">
                 <code>apar(
-    arequire('foam.sandbox.Person', X),
-    arequire('foam.ui.DetailView', X)
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.ui.DetailView')
 )(function(Person, DetailView) {
   var will = Person.create({
     firstName: 'Will',
@@ -385,8 +385,8 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             <code-snippet title="Example">
               <src language="javascript">
                 <code>apar(
-    arequire('foam.sandbox.Person', X),
-    arequire('foam.ui.TableView', X)
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.ui.TableView')
 )(function(Person, TableView) {
   var smithChildren = [
     Person.create({ firstName: 'Jaden', lastName: 'Smith' }, X),
@@ -426,7 +426,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             <code-snippet ref="Person" title="Person Model" />
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.Person', X)(function(Person) {
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
                   var luke = Person.create({ firstName: 'Luke', lastName: 'Skywalker' }, X);
   var leia = Person.create({ firstName: 'Leia', lastName: 'Skywalker' }, X);
   var darth = Person.create({ firstName: 'Anakin', lastName: 'Skywalker' }, X);
@@ -456,7 +456,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             <code-snippet ref="Person" title="Person Model" />
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.Person', X)(function(Person) {
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
   var theDarkLord = Person.create({
     firstName: 'Tom',
     lastName: 'Riddle'
@@ -491,7 +491,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             <code-snippet ref="Person" title="Person Model" />
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.Person', X)(function(Person) {
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
                   var witch = Person.create({ firstName: 'Elphaba', lastName: 'Thropp' }, X);
 
   // obj.propertyName$ is a "Value" reference to the property named
@@ -532,7 +532,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             <code-snippet ref="Person" title="Person Model" />
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.Person', X)(function(Person) {
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
   var pm1 = Person.create({ firstName: 'Lester', lastName: 'Pearson' }, X);
   var pm2 = Person.create({ firstName: 'Pierre', lastName: 'Trudeau' }, X);
 
@@ -640,7 +640,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             </code-snippet>
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.StringCombos', X)(function(StringCombos) {
+                <code>X.arequire('foam.sandbox.StringCombos')(function(StringCombos) {
   // Try changing the values of S1, S2, S3 in the detail view. Notice automatic
   // changes in Combinations and Symmetric Permutations.
   // NOTE: The text box where you make a change needs to lose focus before the
@@ -700,7 +700,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             </code-snippet>
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.Person', X)(function(Person) {
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
   var bond = Person.create({ name: 007, age: '42, but he never dies' }, X);
   console.log('typeof (Bond name: ' + bond.name + ') is ' + (typeof bond.name));
   console.log('typeof (Bond age: ' + bond.age + ') is ' + (typeof bond.age));
@@ -768,7 +768,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             </code-snippet>
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.TimeLord', X)(function(TimeLord) {
+                <code>X.arequire('foam.sandbox.TimeLord')(function(TimeLord) {
   // Rely entirely on defaults.
   var doc = TimeLord.create({}, X);
   // Since "defaultValueFn" will run every time, age is not constant!
@@ -875,7 +875,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             </code-snippet>
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.PeopleContainer', X)(function(PeopleContainer) {
+                <code>X.arequire('foam.sandbox.PeopleContainer')(function(PeopleContainer) {
   var pc = PeopleContainer.create({}, X);
   pc.people = 'Nima,Sina,Tina';
   console.log.json(pc);
@@ -930,7 +930,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
             </code-snippet>
             <code-snippet title="Example">
               <src language="javascript">
-                <code>arequire('foam.sandbox.Family', X)(function(Family) {
+                <code>X.arequire('foam.sandbox.Family')(function(Family) {
   Family.create({}, X).write(X.document);
 });</code>
               </src>
@@ -979,7 +979,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
           </code-snippet>
           <code-snippet title="Example">
             <src language="javascript">
-              <code>arequire('foam.sandbox.Rectangle', X)(function(Rectangle) {
+              <code>X.arequire('foam.sandbox.Rectangle')(function(Rectangle) {
   var defaultRect = Rectangle.create({ name: 'Default' }, X);
   var randomRect = Rectangle.create({ name: 'Random' }, X);
   var square = Rectangle.create({ name: 'Square', width: 1, height: 1 }, X);
@@ -1027,7 +1027,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
           </code-snippet>
           <code-snippet title="Example">
             <src language="javascript">
-              <code>arequire('foam.sandbox.Employee', X)(function(Employee) {
+              <code>X.arequire('foam.sandbox.Employee')(function(Employee) {
   // The Boss is employee #1.
   var theBoss = Employee.create({
     firstName: 'Bruce',
@@ -1083,7 +1083,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
           </code-snippet>
           <code-snippet title="Example">
             <src language="javascript">
-              <code>arequire('foam.sandbox.Nicknamed', X)(function(Nicknamed) {
+              <code>X.arequire('foam.sandbox.Nicknamed')(function(Nicknamed) {
   var theBoss = Nicknamed.create({
     firstName: 'Bruce',
     lastName: 'Springsteen',
@@ -1115,9 +1115,9 @@ arequire('foam.sandbox.Person', X)(function(Person) {
           <code-snippet title="Example">
             <src language="javascript">
               <code>apar(
-    arequire('foam.sandbox.Person', X),
-    arequire('foam.sandbox.Employee', X),
-    arequire('foam.sandbox.Mongoose', X))(function(Person, Employee, Mongoose) {
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.sandbox.Employee'),
+    X.arequire('foam.sandbox.Mongoose'))(function(Person, Employee, Mongoose) {
   var joe = Employee.create({ firstName: 'Joseph', lastName: 'Fernando' });
   console.log('Joe is an employee?', Employee.isInstance(joe));
   console.log('Joe is a person?', Person.isInstance(joe));
@@ -1157,9 +1157,9 @@ arequire('foam.sandbox.Person', X)(function(Person) {
           <code-snippet title="Example">
             <src language="javascript">
               <code>apar(
-    arequire('foam.sandbox.Person', X),
-    arequire('foam.sandbox.Employee', X),
-    arequire('foam.sandbox.Supervisor', X))
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.sandbox.Employee'),
+    X.arequire('foam.sandbox.Supervisor'))
 (function(Person, Employee, Supervisor) {
   console.log('All employees are people?', Person.isSubModel(Employee));
   console.log('All people are employees?', Employee.isSubModel(Person));
@@ -1249,8 +1249,8 @@ arequire('foam.sandbox.Person', X)(function(Person) {
           <code-snippet title="Example">
             <src language="javascript">
               <code><![CDATA[apar(
-    arequire('foam.sandbox.Compound', X),
-    arequire('foam.sandbox.Friend', X))(function(Compound, Friend) {
+    X.arequire('foam.sandbox.Compound'),
+    X.arequire('foam.sandbox.Friend'))(function(Compound, Friend) {
   var water = Compound.create({ iupacName: 'oxidane', nickname: 'water' });
   var theBoss = Friend.create({
     firstName: 'Bruce',
@@ -1328,7 +1328,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
           </code-snippet>
           <code-snippet title="Example">
             <src language="javascript">
-              <code>arequire('foam.sandbox.Friendly', X)(function(Friendly) {
+              <code>X.arequire('foam.sandbox.Friendly')(function(Friendly) {
   var lua = Friendly.create({ firstName: 'Lua' }, X);
   // Listener works correctly, even when we attempt to apply it to a different
   // object.
@@ -1488,7 +1488,7 @@ arequire('foam.sandbox.Person', X)(function(Person) {
           </code-snippet>
           <code-snippet title="Example">
             <src language="javascript">
-              <code>arequire('foam.sandbox.Runner', X)(function(Runner) {
+              <code>X.arequire('foam.sandbox.Runner')(function(Runner) {
   Runner.create({}, X).write(X.document);
 });
 </code>
@@ -1623,9 +1623,9 @@ arequire('foam.sandbox.Person', X)(function(Person) {
           <code-snippet title="Example">
             <src language="javascript">
               <code>apar(
-    arequire('foam.sandbox.Company', X),
-    arequire('foam.sandbox.Division', X),
-    arequire('foam.sandbox.CompanyEmployee', X))
+    X.arequire('foam.sandbox.Company'),
+    X.arequire('foam.sandbox.Division'),
+    X.arequire('foam.sandbox.CompanyEmployee'))
 (function(Company, Division, CompanyEmployee) {
   // Joe is created outside the context of a company. He's unemployed.
   CompanyEmployee.create({ firstName: 'Joe' }, X).write(X.document);
