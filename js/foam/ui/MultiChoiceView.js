@@ -97,8 +97,12 @@ CLASS({
   listeners: [
     {
       name: 'onValueChange',
-      code: function() {
-        console.log('********* args: ', arguments);
+      code: function(select) {
+        var set = {};
+        for ( var i = 0 ; i < this.choices.length ; i++ ) {
+          if ( select.srcElement[i].selected ) set[this.choices[i][0]] = true;
+        }
+        this.data = set;
       }
     },
     {
@@ -139,6 +143,7 @@ CLASS({
     function initHTML() {
       this.SUPER();
       this.onDAOUpdate();
+      this.$.addEventListener('change', this.onValueChange);
     },
     function shouldDestroy(old) { return false; }
   ]
