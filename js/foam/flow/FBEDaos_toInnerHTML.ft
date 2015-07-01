@@ -21,10 +21,10 @@
               <code-snippet title="Example">
                 <src language="javascript">
                   <code>apar(
-  arequire('foam.sandbox.Person', X),
-  arequire('foam.dao.EasyDAO', X),
-  arequire('MDAO', X),
-  arequire('foam.ui.DAOListView', X)
+  X.arequire('foam.sandbox.Person'),
+  X.arequire('foam.dao.EasyDAO'),
+  X.arequire('MDAO'),
+  X.arequire('foam.ui.DAOListView')
 )(function(Person, EasyDAO, MDAO, DAOListView) {
   // Create an IndexedDB table with caching.
   var dao = X.lookup('foam.dao.EasyDAO').create({model: Person, seqNo: true, daoType: 'MDAO'}, X);
@@ -67,10 +67,10 @@
               <code-snippet title="Example">
                 <src language="javascript">
                   <code>apar(
-  arequire('foam.sandbox.Person', X),
-  arequire('foam.dao.EasyDAO', X),
-  arequire('MDAO', X),
-  arequire('foam.ui.DAOListView', X)
+  X.arequire('foam.sandbox.Person'),
+  X.arequire('foam.dao.EasyDAO'),
+  X.arequire('MDAO'),
+  X.arequire('foam.ui.DAOListView')
 )(function(Person, EasyDAO, MDAO, DAOListView) {
   // Create an IndexedDB table with caching.
   var dao = X.lookup('foam.dao.EasyDAO').create({model: Person, daoType: 'MDAO'}, X);
@@ -113,10 +113,10 @@
               <code-snippet title="Example">
                 <src language="javascript">
                   <code>apar(
-  arequire('foam.sandbox.Person', X),
-  arequire('foam.dao.EasyDAO', X),
-  arequire('MDAO', X),
-  arequire('foam.ui.DAOListView', X)
+  X.arequire('foam.sandbox.Person'),
+  X.arequire('foam.dao.EasyDAO'),
+  X.arequire('MDAO'),
+  X.arequire('foam.ui.DAOListView')
 )(function(Person, EasyDAO, MDAO, DAOListView) {
   // Create an IndexedDB table with caching.
   var dao = X.lookup('foam.dao.EasyDAO').create({model: Person, daoType: 'MDAO'}, X);
@@ -159,10 +159,10 @@
               <code-snippet title="Example">
                 <src language="javascript">
                   <code>apar(
-  arequire('foam.sandbox.Person', X),
-  arequire('foam.dao.EasyDAO', X),
-  arequire('MDAO', X),
-  arequire('foam.ui.DAOListView', X)
+  X.arequire('foam.sandbox.Person'),
+  X.arequire('foam.dao.EasyDAO'),
+  X.arequire('MDAO'),
+  X.arequire('foam.ui.DAOListView')
 )(function(Person, EasyDAO, MDAO, DAOListView) {
   // Create an IndexedDB table with caching.
   var dao = X.lookup('foam.dao.EasyDAO').create({model: Person, daoType: 'MDAO'}, X);

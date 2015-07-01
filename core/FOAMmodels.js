@@ -17,6 +17,8 @@
 
 function IN_BROWSER() { return typeof vm == "undefined" || ! vm.runInThisContext; }
 function IN_NODEJS() { return ! IN_BROWSER(); }
+function IN_CHROME_APP() { return window.chrome && window.chrome.runtime && (!! window.chrome.runtime.id) };
+function IN_BROWSER_NOT_APP() { return IN_BROWSER() && ! IN_CHROME_APP(); }
 
 var files = [
 //  ['ServiceWorker', function() { return window.navigator && navigator.serviceWorker; }],
@@ -50,7 +52,7 @@ var files = [
   'mm5Debug',
   'mm6Misc',
   '../js/foam/core/bootstrap/OrDAO',
-  [ '../js/foam/core/bootstrap/BrowserFileDAO', IN_BROWSER ],
+  [ '../js/foam/core/bootstrap/BrowserFileDAO', IN_BROWSER_NOT_APP ],
   [ '../js/node/dao/ModelFileDAO', IN_NODEJS ],
   '../js/foam/ui/Window',
   'value',
@@ -72,6 +74,8 @@ var files = [
   'index',
   'models',
   'oauth',
-  [ 'ModelDAO', IN_BROWSER ],
+  [ 'ModelDAO', IN_BROWSER_NOT_APP ],
+  [ '../js/foam/core/bootstrap/ChromeAppFileDAO', IN_CHROME_APP ],
+  [ 'ChromeAppModelDAO', IN_CHROME_APP ],
   [ 'NodeModelDAO', IN_NODEJS ]
 ];
