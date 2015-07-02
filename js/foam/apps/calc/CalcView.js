@@ -28,6 +28,9 @@ CLASS({
     // 'foam.chromeapp.ui.ZoomView'
   ],
 
+  imports: [
+    'document'
+  ],
   exports: [
     'data'
   ],
@@ -51,7 +54,15 @@ CLASS({
     {
       name: 'installFonts_',
       hidden: true,
-      factory: function() { return this.Fonts.create(); }
+      factory: function() {
+        return this.document.head.querySelector('link[rel=stylesheet][href*=Roboto]') ?
+            '' : this.Fonts.create();
+      }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'animating_',
+      defaultValue: false
     }
   ],
 
@@ -69,7 +80,11 @@ CLASS({
         var inner$ = this.$.querySelector('.inner-calc-display');
         var outer$ = this.$.querySelector('.calc-display');
         var value = DOMValue.create({element: outer$, property: 'scrollTop' });
-        Movement.animate(200, function() { value.value = inner$.clientHeight; })();
+        Movement.compile([
+            function() { ++this.animating_; }.bind(this),
+            [200, function() { value.value = inner$.clientHeight; }],
+          function() { --this.animating_; }.bind(this)
+        ])();
       }.bind(this)));
 
       Events.dynamic(function() { this.data.op; this.data.history; this.data.a1; this.data.a2; }.bind(this), move);
@@ -78,10 +93,14 @@ CLASS({
 
       // Prevent scrolling above history output
       var outer$ = this.$.querySelector('.calc-display');
+      var inner$ = this.$.querySelector('.inner-calc-display');
       outer$.addEventListener('scroll', function(e) {
-        if ( outer$.scrollTop < outer$.clientHeight )
+        if ( ! this.animating_ && inner$.clientHeight > outer$.clientHeight &&
+            outer$.scrollTop < outer$.clientHeight ) {
+          e.preventDefault();
           outer$.scrollTop = outer$.clientHeight;
-      });
+        }
+      }.bind(this));
       this.$.querySelector('.keypad').addEventListener('mousedown', function(e) { e.preventDefault(); return false; });
     }
   },

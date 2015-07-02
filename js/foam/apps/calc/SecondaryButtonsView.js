@@ -27,7 +27,7 @@ CLASS({
           }), 'foam.ui.ActionButton');
           %>
           <div id="%%id" class="buttons button-row secondaryButtons">
-            <div class="button-column" style="flex-grow: 1;">
+            <div class="button-column" style="flex-grow: 1;-webkit-flex-grow: 1;">
               <div class="button-row">
                 $$backspace{tabIndex: 311, label: '⌫'}
                 $$round{tabIndex: 312}
