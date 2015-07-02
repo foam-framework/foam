@@ -24,6 +24,8 @@ CLASS({
   package: 'com.jcoglan.sylvester',
   name: 'Sylvester',
 
+  exports: [ 'as Sylvester' ],
+
   function documentation() {  /*
     A FOAM version of the Sylvester library's shared constants and methods.
   */},
@@ -33,12 +35,13 @@ CLASS({
     precision: 1e-6
   },
 
+
   methods: [
 
     function MatrixDiagonal(elements) {
       /* Diagonal matrix - all off-diagonal elements are zero */
       var n = elements.length, k = n, i;
-      var M = Matrix.I(n);
+      var M = this.Matrix.I(n);
       do { i = k - n;
         M.elements[i][i] = elements[i];
       } while (--n);
@@ -47,7 +50,7 @@ CLASS({
 
     function MatrixRotation(theta, a) {
       if (!a) {
-        return Matrix.create([
+        return this.Matrix.create([
           [Math.cos(theta),  -Math.sin(theta)],
           [Math.sin(theta),   Math.cos(theta)]
         ]);
@@ -60,7 +63,7 @@ CLASS({
       // Formula derived here: http://www.gamedev.net/reference/articles/article1199.asp
       // That proof rotates the co-ordinate system so theta
       // becomes -theta and sin becomes -sin here.
-      return Matrix.create([
+      return this.Matrix.create([
         [ t*x*x + c, t*x*y - s*z, t*x*z + s*y ],
         [ t*x*y + s*z, t*y*y + c, t*y*z - s*x ],
         [ t*x*z - s*y, t*y*z + s*x, t*z*z + c ]

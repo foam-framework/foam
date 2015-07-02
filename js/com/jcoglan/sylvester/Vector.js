@@ -23,13 +23,13 @@
 CLASS({
   package: 'com.jcoglan.sylvester',
   name: 'Vector',
+  extendsModel: 'com.jcoglan.sylvester.SylBase',
 
   requires: [ 'com.jcoglan.sylvester.Sylvester' ],
 
   function documentation() {  /*
     A FOAM version of the Sylvester library's Vector.
   */},
-
 
   properties: [
     {
@@ -107,7 +107,7 @@ CLASS({
 
     // Returns a copy of the vector
     function dup() {
-      return this.model_.create({elements:this.elements});
+      return this.model_.create({elements:this.elements.slice()});
     },
 
     // Maps the vector to another vector according to the given function
@@ -238,7 +238,7 @@ CLASS({
 
     // Returns a diagonal matrix with the vector's elements as its diagonal elements
     function toDiagonalMatrix() {
-      return Matrix.Diagonal(this.elements);
+      return this.Matrix.Diagonal(this.elements);
     },
 
     // Returns the result of rounding the elements of the vector
@@ -285,7 +285,7 @@ CLASS({
         case 2:
           V = obj.elements || obj;
           if (V.length != 2) { return null; }
-          R = Matrix.Rotation(t).elements;
+          R = this.Matrix.Rotation(t).elements;
           x = this.elements[0] - V[0];
           y = this.elements[1] - V[1];
           return Vector.create([
@@ -296,7 +296,7 @@ CLASS({
         case 3:
           if (!obj.direction) { return null; }
           var C = obj.pointClosestTo(this).elements;
-          R = Matrix.Rotation(t, obj.direction).elements;
+          R = this.Matrix.Rotation(t, obj.direction).elements;
           x = this.elements[0] - C[0];
           y = this.elements[1] - C[1];
           z = this.elements[2] - C[2];
