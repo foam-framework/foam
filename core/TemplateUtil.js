@@ -155,8 +155,9 @@ var TemplateCompiler = {
     'var out = opt_out ? opt_out : TOC(this);' +
     "out('",
 
-  footer: "');" +
-    "return out.toString();"
+  footer: "');return t.language === 'css' ?" +
+      "X.foam.grammars.CSS3.create().parser.parseString(out.toString()).toString() :" +
+      "out.toString();"
 
 }.addActions({
   markup: function (v) {
@@ -239,7 +240,10 @@ MODEL({
       // console.timeEnd('parse-template-' + t.name);
 
       // Simple case, just a string literal
-      if ( code[0] ) return ConstantTemplate(t.template);
+      if ( code[0] )
+        return ConstantTemplate(t.language === 'css' ?
+            X.foam.grammars.CSS3.create().parser.parseString(t.template).toString() :
+            t.template);
 
       // Need to compile an actual method
       try {
