@@ -37,10 +37,7 @@ CLASS({
       },
       postSet: function(old,nu) {
         if ( ! equals(old, nu) ) {
-          if ( this.instance_.shader ) {
-            this.gl.deleteShader(this.instance_.shader);
-            delete this.instance_.shader;
-          }
+          this.destroy();
         }
       }
     },
