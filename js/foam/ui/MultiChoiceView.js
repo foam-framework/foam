@@ -109,6 +109,7 @@ CLASS({
       name: 'onDAOUpdate',
       isMerged: 100,
       code: function() {
+        if ( ! this.dao ) return;
         this.dao.select(MAP(this.objToChoice))(function(map) {
           // console.log('***** Update Choices ', map.arg2, this.choices);
           this.choices = map.arg2;
