@@ -19,10 +19,9 @@ CLASS({
   package: 'foam.demos.olympics',
   name: 'ControllerWithDateSearchView',
   extendsModel: 'foam.ui.View',
+  traits: ['foam.ui.md.MDAppTrait'],
 
   requires: [
-    'foam.input.touch.GestureManager',
-    'foam.input.touch.TouchManager',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
     'foam.demos.olympics.Medal',
@@ -35,23 +34,9 @@ CLASS({
 
   exports: [
     'searchMgr',
-    'gestureManager',
-    'touchManager',
   ],
 
   properties: [
-    {
-      name: 'touchManager',
-      factory: function() {
-        return this.X.touchManager || this.TouchManager.create();
-      }
-    },
-    {
-      name: 'gestureManager',
-      factory: function() {
-        return this.X.gestureManager || this.GestureManager.create();
-      }
-    },
     { model_: 'IntProperty', name: 'count' },
     { model_: 'IntProperty', name: 'totalCount' },
     {
@@ -205,7 +190,7 @@ CLASS({
       .Gold   { color: #C98910; }
       .Silver { color: #A8A8A8; }
       .Bronze { color: #965A38; }
-      flat-button { margin-left: 230px; }
+      .searchPanel flat-button { margin-left: 230px; }
     */},
     function toHTML() {/*
       <div class="medalController">
