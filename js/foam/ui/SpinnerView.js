@@ -187,7 +187,7 @@ CLASS({
         }
 
         @<%= prefixes[i] %>keyframes container-rotate {
-          to { <%= prefixes[i] %>transform: rotate(360deg);
+          to { <%= prefixes[i] %>transform: rotate(360deg); }
         }
       <% } %>
     */},
