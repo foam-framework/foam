@@ -38,7 +38,7 @@ CLASS({
 
   methods: [
     function clear() {
-      this.view.data = [];
+      this.view.data = {};
     },
   ],
 
@@ -59,9 +59,18 @@ CLASS({
             options.push([key, cleanKey + (Array(self.width-subKey.length-count.length).join(/*'&nbsp;'*/' ')).intern() + count]);
           };
 
-          options.splice(0,0,['','-- CLEAR SELECTION --']);
+          options.splice(0,0,['','-- CLEAR SELECTIONS --']);
           self.view.choices = options;
         });
+      }
+    },
+    {
+      name: 'updatePredicate',
+      isFramed: true,
+      code: function(_, _, _, choices) {
+        if ( choices[''] ) { this.view.data = {}; return; }
+        var keys = Object.keys(choices);
+        this.predicate = keys.length ? this.op(this.property, keys) : TRUE ;
       }
     }
   ]

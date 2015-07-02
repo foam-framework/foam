@@ -100,7 +100,7 @@ CLASS({
         this.updateDAO();
         }).bind(this));
       */
-      this.view.data$.addListener(this.updateChoice);
+      this.view.data$.addListener(this.updatePredicate);
 
       //       this.updateDAO();
       //       this.view.addListener(console.log.bind(console));
@@ -131,7 +131,7 @@ CLASS({
       }
     },
     {
-      name: 'updateChoice',
+      name: 'updatePredicate',
 
       code: function(_, _, _, choice) {
         this.predicate = choice ? this.op(this.property, choice) : TRUE ;
