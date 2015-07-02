@@ -75,10 +75,7 @@ CLASS({
     },
     {
       name: 'clear',
-      code: function() {
-        this.view.data = '';
-        this.predicate = TRUE;
-      }
+      code: function() { this.view.data = ''; }
     }
   ]
 });
