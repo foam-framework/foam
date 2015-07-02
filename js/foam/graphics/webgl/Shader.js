@@ -18,7 +18,10 @@
 CLASS({
   package: 'foam.graphics.webgl',
   name: 'Shader',
-  imports: [ 'gl' ],
+
+  imports: [
+    'gl',
+  ],
 
   properties: [
     {
