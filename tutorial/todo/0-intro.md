@@ -70,7 +70,7 @@ From the $PROJECT directory, let's start our web server:
 
 Now the $PROJECT directory is served from [http://localhost:8000/](http://localhost:8000/).
 
-To view the Todo app, go to [http://localhost:8000/foam/index.html?model=foam.tutorials.todo.TodoApp](http://localhost:8000/foam/index.html?model=foam.tutorials.todo.TodoApp).
+To view the Todo app, go to [http://localhost:8000/index.html?model=foam.tutorials.todo.TodoApp](http://localhost:8000/foam/index.html?model=foam.tutorials.todo.TodoApp).
 
 Try it out! The app is a fairly basic Todo list. You can create new Todo items
 with the red + button, edit existing Todos, search-as-you-type, and more. On
