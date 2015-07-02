@@ -149,20 +149,12 @@ var TemplateCompiler = {
 
   push: function() { this.simple = false; this.pushSimple.apply(this, arguments); },
 
-  pushSimple: function() { this.out.push.apply(this.out, arguments); },
-
-  header: 'var self = this, X = this.X, Y = this.Y;' +
-    'var out = opt_out ? opt_out : TOC(this);' +
-    "out('",
-
-  footer: "');return t.language === 'css' ?" +
-      "X.foam.grammars.CSS3.create().parser.parseString(out.toString()).toString() :" +
-      "out.toString();"
+  pushSimple: function() { this.out.push.apply(this.out, arguments); }
 
 }.addActions({
   markup: function (v) {
     var wasSimple = this.simple;
-    var ret = wasSimple ? null : this.header + this.out.join('') + this.footer ;
+    var ret = wasSimple ? null : this.out.join('');
     this.out = [];
     this.simple = true;
     return [wasSimple, ret];
@@ -206,6 +198,17 @@ var TemplateCompiler = {
 MODEL({
   name: 'TemplateUtil',
 
+  constants: {
+    HEADER: 'var self = this, X = this.X, Y = this.Y;' +
+        'var out = opt_out ? opt_out : TOC(this);' +
+        "out('",
+    FOOTERS: {
+      html: "');return out.toString();",
+      css: "');return " +
+          'X.foam.grammars.CSS3.create().parser.parseString(out.toString()).toString();'
+    },
+  },
+
   methods: {
     /** Create a method which only compiles the template when first used. **/
     lazyCompile: function(t) {
@@ -236,21 +239,23 @@ MODEL({
     },
     compile: function(t) {
       // console.time('parse-template-' + t.name);
-      var code = TemplateCompiler.parseString(t.template);
+      var isSimpleAndMaybeCode = TemplateCompiler.parseString(t.template);
       // console.timeEnd('parse-template-' + t.name);
 
       // Simple case, just a string literal
-      if ( code[0] )
+      if ( isSimpleAndMaybeCode[0] )
         return ConstantTemplate(t.language === 'css' ?
             X.foam.grammars.CSS3.create().parser.parseString(t.template).toString() :
             t.template);
 
+      var code = this.HEADER + isSimpleAndMaybeCode[1] + this.FOOTERS[t.language];
+
       // Need to compile an actual method
       try {
-        return this.compile_(t, code[1]);
+        return this.compile_(t, code);
       } catch (err) {
         console.log('Template Error: ', err);
-        console.log(code);
+        console.log(isSimpleAndMaybeCode);
         return function() {};
       }
     },
