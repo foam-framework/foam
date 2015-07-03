@@ -62,7 +62,7 @@ CLASS({
           if ( set[key] ) newSet[key] = set[key];
         }
 
-        if ( Object.keys(set) !== Object.keys(newSet) ) this.data = newSet;
+        if ( Object.keys(set).toString() !== Object.keys(newSet).toString() ) this.data = newSet;
 
         this.updateHTML();
       }
