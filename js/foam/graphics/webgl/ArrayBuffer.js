@@ -30,6 +30,19 @@ CLASS({
       }
     },
     {
+      name: 'drawMode',
+      defaultValueFn: function() { return this.gl.TRIANGLES; }
+      adapt: function(old,nu) {
+        if ( nu == 'triangle strip' ) { return this.gl.TRIANGLE_STRIP; }
+        if ( nu == 'triangles' )      { return this.gl.TRIANGLES; }
+        if ( nu == 'triangle fan' )   { return this.gl.TRIANGLE_FAN; }
+        if ( nu == 'lines' )          { return this.gl.LINES; }
+        if ( nu == 'line strip' )     { return this.gl.LINE_STRIP; }
+        if ( nu == 'line loop' )      { return this.gl.LINE_LOOP; }
+        return nu;
+      }
+    },
+    {
       name: 'buffer',
       getter: function() {
         if ( ! this.instance_.buffer ) {
@@ -41,11 +54,15 @@ CLASS({
   ],
 
   methods: [
+    function draw() {
+      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
+      this.gl.drawArrays(this.drawMode, 0, this.vertices.length);
+    },
     function compile() {
-      this.instance_.buffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, this.instance_.buffer);
+      this.instance_.buffer = this.gl.createBuffer();
+      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.instance_.buffer);
       // dump this.vertices into gl object this.instance_.buffer, static mode (write once, read many)
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
+      this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(this.vertices), this.gl.STATIC_DRAW);
     },
     function destroy() {
       if ( this.instance_.buffer ) {
