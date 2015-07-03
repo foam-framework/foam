@@ -1,0 +1,21 @@
+{
+  "name": "FOAM in Chrome",
+  "version": "1.0",
+  "manifest_version": 2,
+
+  "permissions": [
+    "http://*/",
+    "https://*/",
+    "webview",
+    "identity",
+    "storage"
+  ],
+
+  "app": {
+    "background": {
+      "scripts": [
+        "bg.js"
+      ]
+    }
+  }
+}

@@ -60,5 +60,11 @@ if (navigator && navigator.userAgent.indexOf('Safari') != -1 && navigator.userAg
       return typeof value === "number" && value !== value;
     };
   }
-}
 
+  if ( typeof Number.isInteger !== 'function' ) {
+    Number.isInteger = function(value) {
+      return (typeof value === 'number' &&
+          Math.round(value) === value);
+    };
+  }
+}

@@ -332,7 +332,7 @@ CLASS({
           function() {
             file = myfiles[i++];
             if ( Array.isArray(file) ) {
-              if ( file[1] == IN_NODEJS )
+              if ( file[1] == IN_NODEJS || file[1] == IN_CHROME_APP )
                 return false;
               file = file[0];
             }

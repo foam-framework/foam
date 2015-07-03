@@ -26,7 +26,7 @@ CLASS({
     'foam.dao.IDBDAO',
     'foam.ui.md.ActionLabel',
     'foam.ui.md.SharedStyles',
-    'foam.ui.md.TableView'
+    'foam.ui.md.FlexTableView'
   ],
   exports: [
     'clock$',

@@ -44,7 +44,8 @@ CLASS({
   ]
 });
 
-var t = Test.create();
+var t = GLOBAL.t = Test.create();
+t.write(document);
 t.write(document);
 
 var Bookmark = X.foam.lib.bookmarks.Bookmark;

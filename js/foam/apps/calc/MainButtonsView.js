@@ -19,7 +19,7 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" class="buttons button-row" style="background:#4b4b4b;">
-        <div class="button-column" style="flex-grow: 3">
+        <div class="button-column" style="flex-grow: 3;-webkit-flex-grow: 3;">
           <div class="button-row">
             $$7{tabIndex: 101} $$8{tabIndex: 102} $$9{tabIndex: 103}
           </div>
@@ -41,7 +41,7 @@ CLASS({
         font:   '300 26px RobotoDraft'
       }), 'foam.ui.ActionButton');
       %>
-        <div class="button-column rhs-ops" style="flex-grow: 1;padding-top: 7px; padding-bottom: 10px;">
+        <div class="button-column rhs-ops" style="flex-grow: 1;-webkit-flex-grow: 1;padding-top: 7px; padding-bottom: 10px;">
           $$ac{tabIndex: 201, font: '300 24px RobotoDraft'
 }
           $$plus{tabIndex: 202}

@@ -28,6 +28,9 @@ CLASS({
     // 'foam.chromeapp.ui.ZoomView'
   ],
 
+  imports: [
+    'document'
+  ],
   exports: [
     'data'
   ],
@@ -51,7 +54,33 @@ CLASS({
     {
       name: 'installFonts_',
       hidden: true,
-      factory: function() { return this.Fonts.create(); }
+      factory: function() {
+        return this.document.head.querySelector('link[rel=stylesheet][href*=Roboto]') ?
+            '' : this.Fonts.create();
+      }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'animating_',
+      defaultValue: false,
+      postSet: function(old, nu) {
+        if ( nu || old === nu || ! this.$ ) return;
+        // After animations: Set "top" property of inner calc display to prevent
+        // over-scrolling.
+        var outerHeight = this.$outer.clientHeight;
+        var innerHeight = this.$inner.clientHeight;
+        this.$inner.style.top = innerHeight < outerHeight ?
+            'calc(100% - ' + innerHeight + 'px)' :
+            '0px';
+      }
+    },
+    {
+      name: '$inner',
+      getter: function() { return this.$.querySelector('.inner-calc-display'); }
+    },
+    {
+      name: '$outer',
+      getter: function() { return this.$.querySelector('.calc-display'); }
     }
   ],
 
@@ -66,22 +95,18 @@ CLASS({
       // 'top:' styles with 'bottom: 0'.
       var move = EventService.framed(EventService.framed(function() {
         if ( ! this.$ ) return;
-        var inner$ = this.$.querySelector('.inner-calc-display');
-        var outer$ = this.$.querySelector('.calc-display');
-        var value = DOMValue.create({element: outer$, property: 'scrollTop' });
-        Movement.animate(200, function() { value.value = inner$.clientHeight; })();
+        var value = DOMValue.create({element: this.$outer, property: 'scrollTop' });
+        Movement.compile([
+            function() { ++this.animating_; }.bind(this),
+            [200, function() { value.value = this.$inner.clientHeight; }.bind(this)],
+          function() { --this.animating_; }.bind(this)
+        ])();
       }.bind(this)));
 
       Events.dynamic(function() { this.data.op; this.data.history; this.data.a1; this.data.a2; }.bind(this), move);
 
       this.X.window.addEventListener('resize', move);
 
-      // Prevent scrolling above history output
-      var outer$ = this.$.querySelector('.calc-display');
-      outer$.addEventListener('scroll', function(e) {
-        if ( outer$.scrollTop < outer$.clientHeight )
-          outer$.scrollTop = outer$.clientHeight;
-      });
       this.$.querySelector('.keypad').addEventListener('mousedown', function(e) { e.preventDefault(); return false; });
     }
   },
@@ -236,7 +261,6 @@ CLASS({
       position: absolute;
       right: 20pt;
       top: 100%;
-      xxxbottom: 5px;
       width: 100%;
       padding-left: 50px;
       padding-bottom: 11px;

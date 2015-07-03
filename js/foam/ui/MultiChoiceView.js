@@ -58,11 +58,11 @@ CLASS({
 
         for ( var i = 0 ; i < choices.length ; i++ ) {
           var key = choices[i][0];
-          
+
           if ( set[key] ) newSet[key] = set[key];
         }
 
-        if ( Object.keys(set) !== Object.keys(newSet) ) this.data = newSet;
+        if ( Object.keys(set).toString() !== Object.keys(newSet).toString() ) this.data = newSet;
 
         this.updateHTML();
       }
@@ -97,14 +97,19 @@ CLASS({
   listeners: [
     {
       name: 'onValueChange',
-      code: function() {
-        console.log('********* args: ', arguments);
+      code: function(select) {
+        var set = {};
+        for ( var i = 0 ; i < this.choices.length ; i++ ) {
+          if ( select.srcElement[i].selected ) set[this.choices[i][0]] = true;
+        }
+        this.data = set;
       }
     },
     {
       name: 'onDAOUpdate',
       isMerged: 100,
       code: function() {
+        if ( ! this.dao ) return;
         this.dao.select(MAP(this.objToChoice))(function(map) {
           // console.log('***** Update Choices ', map.arg2, this.choices);
           this.choices = map.arg2;
@@ -123,21 +128,24 @@ CLASS({
     function toHTML() {/*
 <select class="multi-choice-view" id="%%id" name="%%name" size="%%size" multiple><% this.toInnerHTML(out); %></select>*/},
     function toInnerHTML() {/*
-<% var set = this.data %>
 <% if ( this.helpText ) { %>
 <option disabled="disabled"><%= escapeHTML(this.helpText) %></option>
 <% } %>
 <% this.choices.forEach(function(choice) {
-  var id = self.nextID(); %>
- <option id="<%= id %>" <% if ( set[choice[0]] ) { %>selected<% } %> value="<%= i %>"><%= escapeHTML(choice[1].toString()) %></option>
+  var id = self.nextID();
+  self.data$.addListener(function() { if ( ! self.X.$(id) ) return; self.X.$(id).selected = self.data[choice[0]]; });
+ %>
+ <option id="<%= id %>" <% if ( self.data[choice[0]] ) { %> selected="selected"<% } %>><%= escapeHTML(choice[1].toString()) %></option>
 <% }); %>
 */}
   ],
 
-  methods: {
-    initHTML: function() {
+  methods: [
+    function initHTML() {
       this.SUPER();
       this.onDAOUpdate();
-    }
-  }
+      this.$.addEventListener('change', this.onValueChange);
+    },
+    function shouldDestroy(old) { return false; }
+  ]
 });

@@ -26,7 +26,7 @@ CLASS({
           }), 'foam.ui.ActionButton');
           %>
           <div id="%%id" class="buttons button-row tertiaryButtons">
-            <div class="button-column" style="flex-grow: 1;">
+            <div class="button-column" style="flex-grow: 1;-webkit-flex-grow: 1;">
               <div class="button-row">
                 $$deg{tabIndex: 411} $$rad{tabIndex: 412} $$fact{tabIndex: 413}
               </div>
