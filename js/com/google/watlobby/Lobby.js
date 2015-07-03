@@ -17,10 +17,56 @@
 
 CLASS({
   package: 'com.google.watlobby',
+  name: 'Topic',
+
+  properties: [
+    {
+      name: 'topic'
+    },
+    {
+      name: 'image'
+    },
+    {
+      name: 'colour'
+    },
+    {
+      name: 'r'
+    }
+  ]
+});
+
+
+CLASS({
+  package: 'com.google.watlobby',
+  name: 'Bubble',
+
+  extendsModel: 'foam.demos.physics.PhysicalCircle',
+
+  properties: [
+    {
+      name: 'topic'
+    },
+    {
+      name: 'image'
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+    }
+  }
+});
+
+
+CLASS({
+  package: 'com.google.watlobby',
   name: 'Lobby',
   extendsModel: 'foam.graphics.CView',
 
   requires: [
+    'com.google.watlobby.Bubble',
     'foam.demos.physics.PhysicalCircle',
     'foam.physics.Collider',
     'foam.demos.ClockView',
@@ -35,12 +81,22 @@ CLASS({
 
   properties: [
     { name: 'timer' },
-    { name: 'n',          defaultValue: 6 },
+    { name: 'n',          defaultValue: 30 },
     { name: 'width',      defaultValue: window.innerWidth },
     { name: 'height',     defaultValue: window.innerHeight },
     { name: 'background', defaultValue: '#ccf' },
     { name: 'collider',   factory: function() {
       return this.Collider.create();
+    }},
+    {
+      name: 'topics',   factory: function() {
+      return JSONUtil.arrayToObjArray(this.X, [
+        { topic: 'chrome',       image: 'chrome.png',       r: 100 },
+        { topic: 'googlecanada', image: 'googlecanada.png', r: 100 },
+        { topic: 'inbox',        image: 'inbox.png',        r: 100 },
+        { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 100 },
+        { topic: 'fiber',        image: 'fiber.jpg',        r: 100 },
+      ], this.Topic);
     }}
   ],
 
@@ -54,32 +110,36 @@ CLASS({
       }
 
       var N = this.n;
-
-      for ( var x = 0 ; x < N ; x++ ) {
-        for ( var y = 0 ; y < N ; y++ ) {
-          var colour = this.COLOURS[(x*N + y) % this.COLOURS.length];
-          var c = this.PhysicalCircle.create({
-            r: 20 + Math.random() * 60,
-            x: Math.random() * this.width,
-            y: Math.random() * this.height,
-            borderWidth: 6,
-            color: '#eee',
-            border: colour
-          });
-          this.addChild(c);
-
-          c.y$.addListener(function(c) {
-            if ( c.y > 1/this.scaleY*this.height+50 ) {
-              c.y = -50;
-            }
-          }.bind(this, c));
-
-          Movement.gravity(c, 0.03);
-          Movement.inertia(c);
-          Movement.friction(c, 0.96);
-          this.bounceOnWalls(c, this.width, this.height);
-          this.collider.add(c);
+      for ( var i = 0 ; i < N ; i++ ) {
+        var colour = this.COLOURS[i % this.COLOURS.length];
+        var c = this.Bubble.create({
+          r: 20 + Math.random() * 50,
+          x: Math.random() * this.width,
+          y: Math.random() * this.height,
+          borderWidth: 6,
+          color: '#eee',
+          border: colour
+        });
+        if ( i < this.topics.length ) {
+          var t = this.topics[i];
+//          c.copyFrom(t);
+          c.topic = t;
+          c.r = t.r;
+          if ( t.colour ) c.border = t.colour;
         }
+        this.addChild(c);
+
+        c.y$.addListener(function(c) {
+          if ( c.y > 1/this.scaleY*this.height+50 ) {
+            c.y = -50;
+          }
+        }.bind(this, c));
+
+        Movement.gravity(c, 0.03);
+        Movement.inertia(c);
+        Movement.friction(c, 0.96);
+        this.bounceOnWalls(c, this.width, this.height);
+        this.collider.add(c);
       }
 
       for ( var i = 0 ; i < 200 ; i++ ) {
@@ -87,7 +147,7 @@ CLASS({
           r: 4,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          color: 'rgba(0,0,255,0.05)',
+          color: 'rgba(50,50,255,0.1)',
           borderWidth: 0.5,
           border: 'blue',
           mass: 0.5
