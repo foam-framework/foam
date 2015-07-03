@@ -23,13 +23,14 @@ CLASS({
   requires: [
     'foam.demos.physics.PhysicalCircle',
     'foam.physics.Collider',
+    'foam.demos.ClockView',
     'foam.util.Timer'
   ],
 
   imports: [ 'timer' ],
 
   constants: {
-    COLOURS: ['#33f','#f00','#fc0','#33f','#3c0']
+    COLOURS: ['#33f','#f00','#fc0', '#3c0']
   },
 
   properties: [
@@ -62,7 +63,7 @@ CLASS({
             x: Math.random() * this.width,
             y: Math.random() * this.height,
             borderWidth: 6,
-            color: 'white',
+            color: '#eee',
             border: colour
           });
           this.addChild(c);
@@ -81,27 +82,24 @@ CLASS({
         }
       }
 
-      var count = 0;
-      this.timer.i$.addListener(function() {
-        if ( this.timer.i % 10 ) return;
-        if ( count++ == 200 ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-
+      for ( var i = 0 ; i < 200 ; i++ ) {
         var b = this.PhysicalCircle.create({
           r: 4,
-          x: this.width * Math.random(),
-          y: this.height/this.scaleY,
+          x: Math.random() * this.width,
+          y: Math.random() * this.height,
           color: 'rgba(0,0,255,0.05)',
           borderWidth: 0.5,
           border: 'blue',
           mass: 0.3
         });
 
-        b.y$.addListener(function() {
+        b.y$.addListener(function(b) {
           if ( b.y < 1 ) {
             b.y = this.height;
             b.x = this.width * Math.random();
           }
         }.bind(this, b));
+
         b.vy = -4;
         Movement.inertia(b);
         Movement.gravity(b, -0.2);
@@ -109,7 +107,10 @@ CLASS({
         this.collider.add(b);
 
         this.addChild(b);
-      }.bind(this));
+      }
+
+      var clock = this.ClockView.create({x:this.width-80,y:80, r:60});
+      this.addChild(clock);
 
       this.collider.start();
     },
