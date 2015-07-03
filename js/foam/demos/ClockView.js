@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.demos',
   name: 'ClockView',
 
-  extendsModel: 'foam.graphics.CView',
+  extendsModel: 'foam.graphics.Circle',
 
   requires: [
     'foam.graphics.Circle', 'foam.ui.IntFieldView'
@@ -27,17 +27,15 @@ CLASS({
 
   properties: [
     {
-      name: 'color',
-      type: 'String',
-      defaultValue: 'yellow'
+      model_: 'FloatProperty',
+      name: 'r',
+      label: 'Radius',
+      defaultValue: 100
     },
     {
-      name: 'lid',
-      type: 'foam.graphics.Circle',
-      paint: true,
-      factory: function() {
-        return this.Circle.create({r:this.r,color:this.color});
-      }
+      name: 'color',
+      type: 'String',
+      defaultValue: '#33f'
     },
     {
       name: 'white',
@@ -47,30 +45,24 @@ CLASS({
       }
     },
     {
-      model_: 'FloatProperty',
-      name: 'r',
-      label: 'Radius',
-      defaultValue: 100
+      name: 'minuteHand',
+      type: 'Hand',
+      factory: function() {
+        return this.Hand.create({r:this.r-6,width:5,color:'#fc0'});
+      }
     },
     {
       name: 'hourHand',
       type: 'Hand',
       factory: function() {
-        return this.Hand.create({r:this.r-15,width:7,color:'green'});
-      }
-    },
-    {
-      name: 'minuteHand',
-      type: 'Hand',
-      factory: function() {
-        return this.Hand.create({r:this.r-6,width:5,color:'blue'});
+        return this.Hand.create({r:this.r-15,width:7,color:'#3c0'});
       }
     },
     {
       name: 'secondHand',
       type: 'Hand',
       factory: function() {
-        return this.Hand.create({r:this.r-6,width:3,color:'red'});
+        return this.Hand.create({r:this.r-6,width:3,color:'#f00'});
       }
     }
   ],
@@ -79,7 +71,6 @@ CLASS({
     init: function() {
       this.SUPER();
 
-      this.addChild(this.lid);
       this.addChild(this.white);
       this.addChild(this.hourHand);
       this.addChild(this.minuteHand);
@@ -87,6 +78,8 @@ CLASS({
     },
 
     paintSelf: function() {
+      this.SUPER();
+
       var date = new Date();
 
       this.secondHand.a = Math.PI/2 - Math.PI*2 * date.getSeconds() / 60 ;
