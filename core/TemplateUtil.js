@@ -238,24 +238,23 @@ MODEL({
       return eval('(function() { var escapeHTML = XMLUtil.escape, TOC = TemplateOutput.create.bind(TemplateOutput); return function(' + args.join(',') + '){' + code + '};})()');
     },
     compile: function(t) {
-      // console.time('parse-template-' + t.name);
-      var isSimpleAndMaybeCode = TemplateCompiler.parseString(t.template);
-      // console.timeEnd('parse-template-' + t.name);
+      // Parse result: [isSimple, maybeCode]: [true, null] or [false, codeString].
+      var parseResult = TemplateCompiler.parseString(t.template);
 
       // Simple case, just a string literal
-      if ( isSimpleAndMaybeCode[0] )
+      if ( parseResult[0] )
         return ConstantTemplate(t.language === 'css' ?
             X.foam.grammars.CSS3.create().parser.parseString(t.template).toString() :
             t.template);
 
-      var code = this.HEADER + isSimpleAndMaybeCode[1] + this.FOOTERS[t.language];
+      var code = this.HEADER + parseResult[1] + this.FOOTERS[t.language];
 
       // Need to compile an actual method
       try {
         return this.compile_(t, code);
       } catch (err) {
         console.log('Template Error: ', err);
-        console.log(isSimpleAndMaybeCode);
+        console.log(parseResult);
         return function() {};
       }
     },
