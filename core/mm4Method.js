@@ -895,6 +895,13 @@ CLASS({
       model_: 'DocumentationProperty',
       name: 'documentation',
       debug: true
+    },
+    {
+      name: 'language',
+      type: 'String',
+      lazyFactory: function() {
+        return this.name === 'CSS' ? 'css' : 'html';
+      }
     }
   ]
 });
