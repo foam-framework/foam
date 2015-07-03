@@ -56,13 +56,14 @@ CLASS({
 
       for ( var x = 0 ; x < N ; x++ ) {
         for ( var y = 0 ; y < N ; y++ ) {
+          var colour = this.COLOURS[(x*N + y) % this.COLOURS.length];
           var c = this.PhysicalCircle.create({
             r: 20 + Math.random() * 60,
             x: Math.random() * this.width,
             y: Math.random() * this.height,
             borderWidth: 6,
             color: 'white',
-            border: this.COLOURS[(x*N + y) % this.COLOURS.length]
+            border: colour
           });
           this.addChild(c);
 
