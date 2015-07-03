@@ -90,7 +90,7 @@ CLASS({
           color: 'rgba(0,0,255,0.05)',
           borderWidth: 0.5,
           border: 'blue',
-          mass: 0.3
+          mass: 0.5
         });
 
         b.y$.addListener(function(b) {
@@ -109,7 +109,7 @@ CLASS({
         this.addChild(b);
       }
 
-      var clock = this.ClockView.create({x:this.width-80,y:80, r:60});
+      var clock = this.ClockView.create({x:this.width-70,y:70, r:60});
       this.addChild(clock);
 
       this.collider.start();
