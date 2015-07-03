@@ -28,6 +28,10 @@ CLASS({
 
   imports: [ 'timer' ],
 
+  constants: {
+    COLOURS: ['#33f','#f00','#fc0','#33f','#3c0']
+  },
+
   properties: [
     { name: 'timer' },
     { name: 'n',          defaultValue: 6 },
@@ -53,12 +57,12 @@ CLASS({
       for ( var x = 0 ; x < N ; x++ ) {
         for ( var y = 0 ; y < N ; y++ ) {
           var c = this.PhysicalCircle.create({
-            r: 20 + Math.random() * 45,
+            r: 20 + Math.random() * 60,
             x: Math.random() * this.width,
             y: Math.random() * this.height,
             borderWidth: 6,
             color: 'white',
-            border: 'hsl(' + x/N*100 + ',' + (70+y/N*30) + '%, 60%)'
+            border: this.COLOURS[(x*N + y) % this.COLOURS.length]
           });
           this.addChild(c);
 
@@ -82,11 +86,11 @@ CLASS({
         if ( count++ == 200 ) throw EventService.UNSUBSCRIBE_EXCEPTION;
 
         var b = this.PhysicalCircle.create({
-          r: 3,
+          r: 4,
           x: this.width * Math.random(),
           y: this.height/this.scaleY,
-          color: 'white',
-          borderWidth: 1,
+          color: 'rgba(0,0,255,0.05)',
+          borderWidth: 0.5,
           border: 'blue',
           mass: 0.3
         });
