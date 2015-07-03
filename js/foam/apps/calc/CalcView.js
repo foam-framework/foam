@@ -62,7 +62,25 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'animating_',
-      defaultValue: false
+      defaultValue: false,
+      postSet: function(old, nu) {
+        if ( nu || old === nu || ! this.$ ) return;
+        // After animations: Set "top" property of inner calc display to prevent
+        // over-scrolling.
+        var outerHeight = this.$outer.clientHeight;
+        var innerHeight = this.$inner.clientHeight;
+        this.$inner.style.top = innerHeight < outerHeight ?
+            'calc(100% - ' + innerHeight + 'px)' :
+            '0px';
+      }
+    },
+    {
+      name: '$inner',
+      getter: function() { return this.$.querySelector('.inner-calc-display'); }
+    },
+    {
+      name: '$outer',
+      getter: function() { return this.$.querySelector('.calc-display'); }
     }
   ],
 
@@ -77,12 +95,10 @@ CLASS({
       // 'top:' styles with 'bottom: 0'.
       var move = EventService.framed(EventService.framed(function() {
         if ( ! this.$ ) return;
-        var inner$ = this.$.querySelector('.inner-calc-display');
-        var outer$ = this.$.querySelector('.calc-display');
-        var value = DOMValue.create({element: outer$, property: 'scrollTop' });
+        var value = DOMValue.create({element: this.$outer, property: 'scrollTop' });
         Movement.compile([
             function() { ++this.animating_; }.bind(this),
-            [200, function() { value.value = inner$.clientHeight; }],
+            [200, function() { value.value = this.$inner.clientHeight; }.bind(this)],
           function() { --this.animating_; }.bind(this)
         ])();
       }.bind(this)));
@@ -91,16 +107,6 @@ CLASS({
 
       this.X.window.addEventListener('resize', move);
 
-      // Prevent scrolling above history output
-      var outer$ = this.$.querySelector('.calc-display');
-      var inner$ = this.$.querySelector('.inner-calc-display');
-      outer$.addEventListener('scroll', function(e) {
-        if ( ! this.animating_ && inner$.clientHeight > outer$.clientHeight &&
-            outer$.scrollTop < outer$.clientHeight ) {
-          e.preventDefault();
-          outer$.scrollTop = outer$.clientHeight;
-        }
-      }.bind(this));
       this.$.querySelector('.keypad').addEventListener('mousedown', function(e) { e.preventDefault(); return false; });
     }
   },
@@ -255,7 +261,6 @@ CLASS({
       position: absolute;
       right: 20pt;
       top: 100%;
-      xxxbottom: 5px;
       width: 100%;
       padding-left: 50px;
       padding-bottom: 11px;
