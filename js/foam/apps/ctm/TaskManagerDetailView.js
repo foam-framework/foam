@@ -137,8 +137,6 @@ CLASS({
       </task-manager>
     */},
     function CSS() {/*
-      @import url(http://fonts.googleapis.com/css?family=Roboto:400,500);
-      @import url(https://fonts.googleapis.com/icon?family=Material+Icons);
       body, task-manager {
         width: 100%;
         height: 100%;
