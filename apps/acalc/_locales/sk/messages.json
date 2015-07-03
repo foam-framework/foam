@@ -1,4 +1,12 @@
 {
+  "NumberFormatter_Message_NaN": {
+    "message": "Hodnota nie je číslo",
+    "description": "NumberFormatter description of a value that isn't a number"
+  },
+  "Calc_Message_CalcName": {
+    "message": "Kalkulačka",
+    "description": "Calculator name of application for performing simple calculations"
+  },
   "Calc_ActionLabel_div": {
     "message": "÷",
     "description": "Calculator short form for mathematical function: \"divide\" (text label)"
@@ -17,14 +25,14 @@
   },
   "Calc_ActionLabel_plus": {
     "message": "+",
-    "description": "Calculator binary operator: plus (text label)"
+    "description": "Calculator short form for mathematical function: \"plus\" (text label)"
   },
   "Calc_ActionSpeechLabel_plus": {
     "message": "sčítanie",
-    "description": "Calculator binary operator: plus (speech label)"
+    "description": "Calculator short form for mathematical function: \"plus\" (speech label)"
   },
   "Calc_ActionLabel_minus": {
-    "message": "–",
+    "message": "-",
     "description": "Calculator short form for mathematical function: \"minus\" (text label)"
   },
   "Calc_ActionSpeechLabel_minus": {
@@ -39,13 +47,61 @@
     "message": "vymazať všetko",
     "description": "Calculator all clear (calculator button label) (speech label)"
   },
+  "Calc_ActionLabel_sign": {
+    "message": "+/-",
+    "description": "Calculator switch positive/negative sign of number (text label)"
+  },
+  "Calc_ActionSpeechLabel_sign": {
+    "message": "opačné číslo",
+    "description": "Calculator switch positive/negative sign of number (speech label)"
+  },
+  "Calc_ActionLabel_point": {
+    "message": ",",
+    "description": "Calculator decimal point (text label)"
+  },
+  "Calc_ActionSpeechLabel_point": {
+    "message": "desatinná čiarka",
+    "description": "Calculator decimal point (speech label)"
+  },
+  "Calc_ActionLabel_equals": {
+    "message": "=",
+    "description": "Calculator compute operation and display result (text label)"
+  },
+  "Calc_ActionSpeechLabel_equals": {
+    "message": "rovná sa",
+    "description": "Calculator compute operation and display result (speech label)"
+  },
   "Calc_ActionLabel_backspace": {
-    "message": "backspace",
+    "message": "⌫",
     "description": "Calculator delete one input character (text label)"
   },
   "Calc_ActionSpeechLabel_backspace": {
-    "message": "backspace",
+    "message": "vymazať predchádzajúce",
     "description": "Calculator delete one input character (speech label)"
+  },
+  "Calc_ActionLabel_pi": {
+    "message": "π",
+    "description": "Calculator mathematical constant, pi (text label)"
+  },
+  "Calc_ActionSpeechLabel_pi": {
+    "message": "pí",
+    "description": "Calculator mathematical constant, pi (speech label)"
+  },
+  "Calc_ActionLabel_e": {
+    "message": "e",
+    "description": "Calculator mathematical constant, e (text label)"
+  },
+  "Calc_ActionSpeechLabel_e": {
+    "message": "e",
+    "description": "Calculator mathematical constant, e (speech label)"
+  },
+  "Calc_ActionLabel_percent": {
+    "message": "%",
+    "description": "Calculator convert number to percentage (text label)"
+  },
+  "Calc_ActionSpeechLabel_percent": {
+    "message": "percento",
+    "description": "Calculator convert number to percentage (speech label)"
   },
   "Calc_ActionLabel_inv": {
     "message": "1/x",
@@ -215,6 +271,14 @@
     "message": "zaokrúhlenie",
     "description": "Calculator short form for mathematical function: \"round\" (speech label)"
   },
+  "Calc_ActionLabel_rand": {
+    "message": "rand",
+    "description": "Calculator generate random number (text label)"
+  },
+  "Calc_ActionSpeechLabel_rand": {
+    "message": "náhodné číslo",
+    "description": "Calculator generate random number (speech label)"
+  },
   "Calc_ActionLabel_store": {
     "message": "a=",
     "description": "Calculator short form for mathematical function: \"store in memory\" (text label)"
@@ -223,8 +287,12 @@
     "message": "uložiť do pamäte",
     "description": "Calculator short form for mathematical function: \"store in memory\" (speech label)"
   },
-  "NumberFormatter_Message_NaN": {
-    "message": "Nie je číslo\n",
-    "description": "NumberFormatter description of a value that isn't a number"
+  "Calc_ActionLabel_fetch": {
+    "message": "a",
+    "description": "Calculator load memorized number (text label)"
+  },
+  "Calc_ActionSpeechLabel_fetch": {
+    "message": "načítať z pamäte",
+    "description": "Calculator load memorized number (speech label)"
   }
 }
