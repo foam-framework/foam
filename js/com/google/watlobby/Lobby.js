@@ -42,6 +42,8 @@ CLASS({
 
   extendsModel: 'foam.demos.physics.PhysicalCircle',
 
+  requires: [ 'foam.graphics.ImageCView' ],
+
   properties: [
     {
       name: 'topic'
@@ -52,9 +54,13 @@ CLASS({
   ],
 
   methods: {
-    init: function() {
+    initCView: function() {
       this.SUPER();
 
+      if ( this.image ) {
+        var img = this.ImageCView.create({src: this.image, width: this.r, height: this.r, x: -this.r, y: -this.r})
+        this.addChild(img);
+      }
     }
   }
 });
@@ -91,11 +97,12 @@ CLASS({
     {
       name: 'topics',   factory: function() {
       return JSONUtil.arrayToObjArray(this.X, [
-        { topic: 'chrome',       image: 'chrome.png',       r: 100 },
-        { topic: 'googlecanada', image: 'googlecanada.png', r: 100 },
-        { topic: 'inbox',        image: 'inbox.png',        r: 100 },
-        { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 100 },
-        { topic: 'fiber',        image: 'fiber.jpg',        r: 100 },
+        { topic: 'chrome',       image: 'chrome.png',       r: 200 },
+        { topic: 'googlecanada', image: 'googlecanada.png', r: 200 },
+        { topic: 'inbox',        image: 'inbox.png',        r: 200 },
+        { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 200 },
+        { topic: 'fiber',        image: 'fiber.jpg',        r: 200 },
+        // chromebook, foam, mine sweeper, calculator
       ], this.Topic);
     }}
   ],
@@ -124,6 +131,7 @@ CLASS({
           var t = this.topics[i];
 //          c.copyFrom(t);
           c.topic = t;
+          c.image = t.image;
           c.r = t.r;
           if ( t.colour ) c.border = t.colour;
         }
@@ -135,6 +143,7 @@ CLASS({
           }
         }.bind(this, c));
 
+        c.mass = c.r/50;
         Movement.gravity(c, 0.03);
         Movement.inertia(c);
         Movement.friction(c, 0.96);
@@ -144,12 +153,14 @@ CLASS({
 
       for ( var i = 0 ; i < 200 ; i++ ) {
         var b = this.PhysicalCircle.create({
-          r: 4,
+          r: 5,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          color: 'rgba(50,50,255,0.1)',
           borderWidth: 0.5,
-          border: 'blue',
+          color: 'rgba(0,0,255,0.2)',
+          border: '#blue',
+//          color: 'rgba(100,100,200,0.2)',
+//          border: '#55a',
           mass: 0.5
         });
 
