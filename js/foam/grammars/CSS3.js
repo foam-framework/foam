@@ -171,13 +171,16 @@ CLASS({
           // productions.
           // delimTok comes last: <delim-token> is emitted by standard lexer
           // when parsing tokens such as "~=", "<!--", etc. fails and we wish
-          // to simply emit one delimiter.
+          // to simply emit one delimiter. It is probably emitted even more
+          // often (i.e., as a catch-all when every other token match has
+          // failed). That is why some additions that are common in CSS (such as
+          // '>') have been added.
           preservedTokNoSemicolon: alt(sym('preserved1'),
                                        sym('delimTok')),
           preservedTok: alt(sym('preserved1'),
                             sym('semicolonTok'),
                             sym('delimTok')),
-          delimTok: alt('#', '$', '*', '+', '-', '.', '/', '<', '@', '^', '|', '~', '='),
+          delimTok: alt('#', '$', '*', '+', '-', '.', '/', '<', '>', '@', '^', '|', '~', '='),
 
           // CSS 3 "parsing" productions (see http://www.w3.org/TR/css-syntax-3/#parsing).
           stylesheet: repeat(alt(sym('cdoTok'),
@@ -197,8 +200,12 @@ CLASS({
           qualifiedRuleBlock: sym('braceBlock'),
           qualifiedRuleContinued: seq(sym('componentValue'), sym('qualifiedRule')),
 
-          declList: seq1(1,
-                         sym('wsStar'),
+          rule: alt(sym('atRule'), sym('qualifiedRule')),
+          ruleList: seq1(1, sym('wsStar'),
+                        alt(seq(sym('rule'), sym('ruleList')),
+                            sym('rule'))),
+
+          declList: seq1(1, sym('wsStar'),
                          alt(sym('declListOptDeclList'),
                              sym('declListAtList'))),
           declListOptDeclList: seq(sym('declListOptDecl'),
@@ -228,8 +235,7 @@ CLASS({
           // inside brace blocks.
           braceBlock: seq1(1, '{', sym('braceBlockContents'), '}'),
           braceBlockContents: seq(sym('wsStar'),
-                                  optional(alt(sym('atRule'),
-                                               sym('qualifiedRule'),
+                                  optional(alt(sym('ruleList'),
                                                sym('declList'))),
                                   str(repeat(sym('componentValue')))),
 
@@ -395,6 +401,20 @@ CLASS({
               }
             };
             return decl;
+          },
+          ruleList: function(parts) {
+            if ( parts.length === 2 ) {
+              // TODO(markdittmer): Performance issue: Array.prototype.unshift
+              // considered harmful.
+              parts[1].list.unshift(parts[0]);
+              return parts[1];
+            } else {
+              return {
+                model_: 'RuleList',
+                list: [parts],
+                toString: function() { return this.list.join(''); }
+              };
+            }
           },
           declListOptDecl: function(decl) {
             return {

@@ -725,16 +725,19 @@ CLASS({
           check = atRule.contents && atRule.contents.body &&
               atRule.contents.body.model_ === 'BraceBlock' &&
               atRule.contents.body.contents &&
-              atRule.contents.body.contents.model_ === 'QualifiedRule' &&
-              atRule.contents.body.contents.body &&
-              atRule.contents.body.contents.body.model_ === 'BraceBlock' &&
-              atRule.contents.body.contents.body.contents &&
-              atRule.contents.body.contents.body.contents.model_ === 'DeclList' &&
-              atRule.contents.body.contents.body.contents.list;
+              atRule.contents.body.contents.model_ === 'RuleList' &&
+              atRule.contents.body.contents.list &&
+              atRule.contents.body.contents.list[0] &&
+              atRule.contents.body.contents.list[0].model_ === 'QualifiedRule' &&
+              atRule.contents.body.contents.list[0].body &&
+              atRule.contents.body.contents.list[0].body.model_ === 'BraceBlock' &&
+              atRule.contents.body.contents.list[0].body.contents &&
+              atRule.contents.body.contents.list[0].body.contents.model_ === 'DeclList' &&
+              atRule.contents.body.contents.list[0].body.contents.list;
           this.assert(check, 'Expected "' + atText + '" to contain the ' +
-              'structure: AtRule.BraceBlock.QualifiedRule.BraceBlock.DeclList');
+              'structure: AtRule.BraceBlock.RuleList.QualifiedRule.BraceBlock.DeclList');
           if ( check ) {
-            var decls = atRule.contents.body.contents.body.contents.list;
+            var decls = atRule.contents.body.contents.list[0].body.contents.list;
             for ( var i = 0; i < names.length; ++i ) {
               this.assert(names[i] === decls[i].key, 'Expected declaration key ' +
                   'to be "' + names[i] + '" and is "' + decls[i].key + '"');
