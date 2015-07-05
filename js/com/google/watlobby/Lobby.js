@@ -58,7 +58,7 @@ CLASS({
       this.SUPER();
 
       if ( this.image ) {
-        var img = this.ImageCView.create({src: this.image, width: this.r, height: this.r, x: -this.r, y: -this.r})
+        var img = this.ImageCView.create({src: this.image, width: 2*this.r, height: 2*this.r, x: -this.r, y: -this.r})
         this.addChild(img);
       }
     }
@@ -102,7 +102,7 @@ CLASS({
         { topic: 'inbox',        image: 'inbox.png',        r: 200 },
         { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 200 },
         { topic: 'fiber',        image: 'fiber.jpg',        r: 200 },
-        // chromebook, foam, mine sweeper, calculator
+        // chromebook, foam, mine sweeper, calculator, I'm feeling lucky
       ], this.Topic);
     }}
   ],
