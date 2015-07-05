@@ -547,7 +547,6 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
             method.args = str.
               match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
               split(',').
-              filter(function(name) { return name; }).
               map(function(name) { return Arg.create({name: name.trim()}); });
           }
 
