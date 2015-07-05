@@ -58,7 +58,13 @@ CLASS({
       this.SUPER();
 
       if ( this.image ) {
-        var img = this.ImageCView.create({src: this.image, width: 2*this.r, height: 2*this.r, x: -this.r, y: -this.r})
+        var d = 2 * this.r * Math.SQRT1_2;
+        var img = this.ImageCView.create({
+          src: this.image,
+          width: d,
+          height: d,
+          x: -this.r * Math.SQRT1_2,
+          y: -this.r * Math.SQRT1_2})
         this.addChild(img);
       }
     }
@@ -97,11 +103,11 @@ CLASS({
     {
       name: 'topics',   factory: function() {
       return JSONUtil.arrayToObjArray(this.X, [
-        { topic: 'chrome',       image: 'chrome.png',       r: 200 },
+        { topic: 'chrome',       image: 'chrome.png',       r: 180 },
         { topic: 'googlecanada', image: 'googlecanada.png', r: 200 },
-        { topic: 'inbox',        image: 'inbox.png',        r: 200 },
-        { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 200 },
-        { topic: 'fiber',        image: 'fiber.jpg',        r: 200 },
+        { topic: 'inbox',        image: 'inbox.png',        r: 160 },
+        { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
+        { topic: 'fiber',        image: 'fiber.jpg',        r: 180 },
         // chromebook, foam, mine sweeper, calculator, I'm feeling lucky
       ], this.Topic);
     }}
@@ -124,7 +130,7 @@ CLASS({
           x: Math.random() * this.width,
           y: Math.random() * this.height,
           borderWidth: 6,
-          color: '#eee',
+          color: 'white',
           border: colour
         });
         if ( i < this.topics.length ) {
