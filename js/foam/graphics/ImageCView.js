@@ -34,16 +34,20 @@ CLASS({
       this.SUPER();
       this.image_ = new Image();
       this.image_.onload = function() {
-        if ( this.width && this.image_.width )
-          this.scaleX = this.width / this.image_.width;
-        if ( this.height && this.image_.height )
-          this.scaleY = this.height / this.image_.height;
         this.view.paint();
       }.bind(this);
       this.image_.src = this.src;
       this.view.paint();
     },
 
+    transform: function() {
+      if ( this.width && this.image_.width )
+        this.scaleX = this.width / this.image_.width;
+      if ( this.height && this.image_.height )
+        this.scaleY = this.height / this.image_.height;
+
+      this.SUPER();
+    },
     paintSelf: function() {
       this.canvas.drawImage(this.image_, 0, 0);
     }
