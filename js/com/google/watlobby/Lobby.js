@@ -31,6 +31,9 @@ CLASS({
     },
     {
       name: 'r'
+    },
+    {
+      name: 'roundImage'
     }
   ]
 });
@@ -50,6 +53,9 @@ CLASS({
     },
     {
       name: 'image'
+    },
+    {
+      name: 'roundImage'
     }
   ],
 
@@ -58,13 +64,21 @@ CLASS({
       this.SUPER();
 
       if ( this.image ) {
-        var d = 2 * this.r * Math.SQRT1_2;
+        var d, s;
+        if ( this.roundImage ) {
+          this.borderWidth = 0;
+          d = 2 * this.r;
+          s = -this.r;
+        } else {
+          d = 2 * this.r * Math.SQRT1_2;
+          s = -this.r * Math.SQRT1_2;
+        }
         var img = this.ImageCView.create({
           src: this.image,
           width: d,
           height: d,
-          x: -this.r * Math.SQRT1_2,
-          y: -this.r * Math.SQRT1_2})
+          x: s,
+          y: s})
         this.addChild(img);
       }
     }
@@ -103,13 +117,13 @@ CLASS({
     {
       name: 'topics',   factory: function() {
       return JSONUtil.arrayToObjArray(this.X, [
-        { topic: 'chrome',       image: 'chrome.png',       r: 180 },
+        { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, colour: 'red' },
         { topic: 'googlecanada', image: 'googlecanada.gif', r: 200 },
         { topic: 'inbox',        image: 'inbox.png',        r: 160 },
         { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
         { topic: 'fiber',        image: 'fiber.jpg',        r: 180 },
         { topic: 'foam',         image: 'foampowered.png',  r: 120 },
-        // chromebook, foam, mine sweeper, calculator, I'm feeling lucky
+        // chromebook, mine sweeper, calculator, I'm feeling lucky
       ], this.Topic);
     }}
   ],
@@ -136,10 +150,10 @@ CLASS({
         });
         if ( i < this.topics.length ) {
           var t = this.topics[i];
-//          c.copyFrom(t);
           c.topic = t;
           c.image = t.image;
           c.r = t.r;
+          c.roundImage = t.roundImage;
           if ( t.colour ) c.border = t.colour;
         }
         this.addChild(c);
