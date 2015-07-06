@@ -47,6 +47,8 @@ CLASS({
 
   requires: [ 'foam.graphics.ImageCView' ],
 
+  imports: [ 'lobby' ],
+
   properties: [
     {
       name: 'topic'
@@ -59,10 +61,38 @@ CLASS({
     }
   ],
 
-  methods: {
-    initCView: function() {
+  methods: [
+    function initCView() {
       this.SUPER();
 
+      if ( this.image ) {
+        var img = this.ImageCView.create({src: this.image});
+        this.addChild(img);
+        this.img = img;
+      }
+    },
+    function setSelected(selected) {
+      if ( selected ) {
+        this.oldMass_ = this.mass;
+        this.oldR_ = this.r;
+
+        this.mass = this.INFINITE_MASS;
+        this.vx = this.vy = 0;
+        Movement.animate(2000, function() {
+          var width = this.lobby.width;
+          var height = this.lobby.height;
+          this.r = Math.min(width, height)/2.4;
+          this.x = width/2;
+          this.y = height/2;
+        }.bind(this), null, function() { /*self.collider.stop(); self.timer.stop();*/ })();
+      } else {
+        this.mass = this.oldMass_;
+        Movement.animate(1000, function() {
+          this.r = this.oldR_;
+        }.bind(this), null, function() { /*self.collider.stop(); self.timer.stop();*/ })();
+      }
+    },
+    function paintSelf() {
       if ( this.image ) {
         var d, s;
         if ( this.roundImage ) {
@@ -73,16 +103,12 @@ CLASS({
           d = 2 * this.r * Math.SQRT1_2;
           s = -this.r * Math.SQRT1_2;
         }
-        var img = this.ImageCView.create({
-          src: this.image,
-          width: d,
-          height: d,
-          x: s,
-          y: s})
-        this.addChild(img);
+        this.img.x = this.img.y = s;
+        this.img.width = this.img.height = d;
       }
+      this.SUPER();
     }
-  }
+  ]
 });
 
 
@@ -100,6 +126,7 @@ CLASS({
   ],
 
   imports: [ 'timer' ],
+  exports: [ 'as lobby' ],
 
   constants: {
     COLOURS: ['#33f','#f00','#fc0', '#3c0']
@@ -132,8 +159,30 @@ CLASS({
     }}
   ],
 
-  methods: {
-    initCView: function() {
+  listeners: [
+    {
+      name: 'onClick',
+      code: function(evt) {
+        var self = this;
+        // console.log('********************* onClick', evt);
+        var child = this.collider.findChildAt(evt.clientX, evt.clientY);
+        if ( child === this.selected ) return;
+
+        if ( this.selected ) {
+          this.selected.setSelected(false);
+          this.selected = null;
+        }
+
+        if ( child && child.setSelected ) {
+          this.selected = child
+          child.setSelected(true);
+        }
+      }
+    }
+  ],
+
+  methods: [
+    function initCView() {
       this.SUPER();
 
       if ( ! this.timer ) {
@@ -197,6 +246,10 @@ CLASS({
         this.collider.add(b);
 
         this.addChild(b);
+
+//        this.view.$.addEventListener('click', this.onClick);
+       document.body.addEventListener('click', this.onClick);
+
       }
 
       var clock = this.ClockView.create({x:this.width-70,y:70, r:60});
@@ -205,7 +258,7 @@ CLASS({
       this.collider.start();
     },
 
-    bounceOnWalls: function (c, w, h) {
+    function bounceOnWalls(c, w, h) {
       Events.dynamic(function() { c.x; c.y; }, function() {
         var r = c.r + c.borderWidth;
         if ( c.x < r     ) { c.vx += 0.2; c.vy -= 0.19; }
@@ -215,9 +268,9 @@ CLASS({
       });
     },
 
-    destroy: function() {
+    function destroy() {
       this.SUPER();
       this.collider.destroy();
     }
-  }
+  ]
 });
