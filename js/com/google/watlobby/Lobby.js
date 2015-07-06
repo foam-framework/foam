@@ -118,11 +118,12 @@ CLASS({
       name: 'topics',   factory: function() {
       return JSONUtil.arrayToObjArray(this.X, [
         { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, colour: 'red' },
+        { topic: 'flip',         image: 'flip.jpg',         r: 100, colour: 'red' },
         { topic: 'googlecanada', image: 'googlecanada.gif', r: 200 },
         { topic: 'inbox',        image: 'inbox.png',        r: 160 },
         { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
         { topic: 'fiber',        image: 'fiber.jpg',        r: 180 },
-        { topic: 'foam',         image: 'foampowered.png',  r: 120 },
+        { topic: 'foam',         image: 'foampowered.png',  r: 100 },
         // chromebook, mine sweeper, calculator, I'm feeling lucky
       ], this.Topic);
     }}
@@ -204,10 +205,10 @@ CLASS({
     bounceOnWalls: function (c, w, h) {
       Events.dynamic(function() { c.x; c.y; }, function() {
         var r = c.r + c.borderWidth;
-        if ( c.x < r     ) { c.vx += 2; c.vy -= 1.5; }
-        if ( c.x > w - r ) { c.vx -= 2; c.vy += 1.5; }
-        if ( c.y < r     ) { c.vy += 2; c.vx += 1.5; }
-        if ( c.y > h - r ) { c.vy -= 2; c.vx -= 1.5; }
+        if ( c.x < r     ) { c.vx += 1; c.vy -= 0.5; }
+        if ( c.x > w - r ) { c.vx -= 1; c.vy += 0.5; }
+        if ( c.y < r     ) { c.vy += 1; c.vx += 0.5; }
+        if ( c.y > h - r ) { c.vy -= 1; c.vx -= 0.5; }
       });
     },
 
