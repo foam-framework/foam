@@ -33,13 +33,17 @@ CLASS({
       type: 'foam.graphics.CView',
       postSet: function() {
         this.$canvas = this.X.document.createElement('canvas');
-        this.$canvas.width = this.sourceView.width;
-        this.$canvas.height = this.sourceView.height;
+        this.X.document.body.appendChild(this.$canvas);
+
+        this.sourceView.width$.addListener(this.resize);
+        this.sourceView.height$.addListener(this.resize);
+
         this.canvas = this.$canvas.getContext('2d');
 
         this.sourceView.canvas = this.canvas;
         this.sourceView.view = this;
-        this.render();
+
+        this.resize();
       }
     },
     {
@@ -109,6 +113,10 @@ CLASS({
     function render() {
       if ( ! this.gl ) return;
 
+      this.canvas.clearRect(0, 0, this.width, this.height);
+      this.canvas.fillStyle = 'transparent';
+      this.canvas.fillRect(0, 0, this.width, this.height);
+
       // paint into our off-canvas buffer
       this.sourceView.paint();
 
@@ -148,7 +156,22 @@ CLASS({
     },
 
     // destroy texture?
+  ],
 
+  listeners: [
+    {
+      name: 'resize',
+      framed: true,
+      code: function() {
+        this.$canvas.width = this.sourceView.width;
+        this.$canvas.height = this.sourceView.height;
+
+        this.$canvas.style.width = this.sourceView.width;
+        this.$canvas.style.height = this.sourceView.height;
+
+        this.render();
+      }
+    }
   ]
 
 });

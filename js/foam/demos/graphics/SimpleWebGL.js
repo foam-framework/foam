@@ -83,54 +83,56 @@ CLASS({
 
       ////////////////////////////////////////////////
       // another object
-      var obj = this.Object.create();
+//       var obj = this.Object.create();
 
-      var prog = this.Program.create({}, obj.Y);
-      var frag = this.Shader.create({
-        type: "fragment",
-        source: function() {/*
-          void main(void) {
-            gl_FragColor = vec4(0.5, 1.0, 1.0, 1.0);
-          }
-        */}
-        }, prog.Y);
-      var vert = this.Shader.create({
-        type: "vertex",
-        source: function() {/*
-          attribute vec3 aVertexPosition;
+//       var prog = this.Program.create({}, obj.Y);
+//       var frag = this.Shader.create({
+//         type: "fragment",
+//         source: function() {/*
+//           void main(void) {
+//             gl_FragColor = vec4(0.5, 1.0, 1.0, 1.0);
+//           }
+//         */}
+//         }, prog.Y);
+//       var vert = this.Shader.create({
+//         type: "vertex",
+//         source: function() {/*
+//           attribute vec3 aVertexPosition;
 
-          uniform mat4 positionMatrix;
-          uniform mat4 projectionMatrix;
+//           uniform mat4 positionMatrix;
+//           uniform mat4 projectionMatrix;
 
-          void main(void) {
-            gl_Position = projectionMatrix * positionMatrix * vec4(aVertexPosition, 1.0);
-          }
-        */}
-        }, prog.Y);
-      prog.vertexShader = vert;
-      prog.fragmentShader = frag;
+//           void main(void) {
+//             gl_Position = projectionMatrix * positionMatrix * vec4(aVertexPosition, 1.0);
+//           }
+//         */}
+//         }, prog.Y);
+//       prog.vertexShader = vert;
+//       prog.fragmentShader = frag;
 
-      var mesh = this.ArrayBuffer.create({
-        drawMode: 'triangle strip',
-        vertices: [
-          0.6,  0.6,  0.0,
-          -0.6, 0.6,  0.0,
-          0.6,  -0.6, 0.0,
-          -0.6, -0.6, 0.0
-        ]
-      });
+//       var mesh = this.ArrayBuffer.create({
+//         drawMode: 'triangle strip',
+//         vertices: [
+//           0.6,  0.6,  0.0,
+//           -0.6, 0.6,  0.0,
+//           0.6,  -0.6, 0.0,
+//           -0.6, -0.6, 0.0
+//         ]
+//       });
 
-      obj.program = prog;
-      obj.mesh = mesh;
+//       obj.program = prog;
+//       obj.mesh = mesh;
 
-      this.addChild(obj);
+//       this.addChild(obj);
 
 
       ////////////////////////////////////////////
 
 
       var obj = this.GLCView.create();
-      var circle = this.Circle.create({ color: 'red', radius: 100 });
+      var circle = this.Circle.create({
+        color: 'red', radius: 100, x: 50, y: 50, width: 100, height: 100
+      });
 
       obj.sourceView = circle;
 
@@ -154,7 +156,7 @@ CLASS({
             this.object.relativePosition.x(Matrix.RotationY(0.02).ensure4x4());
         }
 
-        this.X.setTimeout(this.update, 16);
+        this.X.setTimeout(this.update, 50);
       }
     }
   ]
