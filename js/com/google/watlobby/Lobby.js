@@ -126,7 +126,7 @@ CLASS({
         { topic: 'foam',         image: 'foampowered.png',  r: 100 },
         { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 100 },
         // chromebook, mine sweeper, calculator, I'm feeling lucky
-        // https://www.youtube.com/watch?v=1Bb29KxXzDs, http://i.ytimg.com/vi/1Bb29KxXzDs/maxresdefault.jpg
+        // thtps://www.youtube.com/watch?v=1Bb29KxXzDs, https://youtu.be/1Bb29KxXzDs
 
       ], this.Topic);
     }}
