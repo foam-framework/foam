@@ -112,7 +112,7 @@ CLASS({
           glc.enable(glc.DEPTH_TEST); // Enable depth testing
           glc.depthFunc(glc.LEQUAL); // Near things obscure far things
           glc.clear(glc.COLOR_BUFFER_BIT|glc.DEPTH_BUFFER_BIT); // Clear the color/depth buffer.
-          glc.viewport(0,0,this.canvasHeight(), this.canvasWidth()); //
+          glc.viewport(0,0,this.width, this.height); //
           this.instance_.gl = glc;
         } else {
           console.warn("WebGL requested but not supported.")
@@ -136,7 +136,7 @@ CLASS({
         this.$.height          = this.canvasHeight();
         this.$.style.height    = this.styleHeight();
         this.$.style.minHeight = this.styleHeight();
-        this.instance_.gl && this.instance_.gl.viewport(0,0,this.canvasHeight(), this.canvasWidth());
+        this.instance_.gl && this.instance_.gl.viewport(0,0,this.width, this.height);
 
         this.paint();
       },

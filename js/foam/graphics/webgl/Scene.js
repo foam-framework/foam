@@ -49,7 +49,8 @@ CLASS({
 
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-      this.projectionMatrix = this.makePerspective(45, 640.0/480.0, 0.1, 100.0);
+      this.projectionMatrix = this.makePerspective(
+        45, this.view.width/this.view.height, 0.1, 100.0);
       this.loadIdentity();
       this.mvTranslate([-0.0, 0.0, -6.0]);
 
