@@ -37,6 +37,7 @@ var files = [
   'context',
   'JSONParser',
   'TemplateUtil',
+  [ 'ChromeEval', IN_CHROME_APP ],
   'FOAM',
   // To use FO, uncomment the next line
   // and comment out all lines from FObject to mm6Misc
