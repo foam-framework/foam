@@ -75,7 +75,6 @@ CLASS({
       this.setDimensions();
     },
     setDimensions: function() {
-      console.log('Setting dimensions');
       this.width = this.height = this.getDimensions();
     },
     getDimensions: function() {
