@@ -25,6 +25,8 @@ CLASS({
     'foam.graphics.webgl.Shader',
     'foam.graphics.webgl.Program',
     'foam.graphics.webgl.ArrayBuffer',
+    'foam.graphics.webgl.GLCView',
+    'foam.graphics.Circle',
   ],
 
   properties: [
@@ -35,7 +37,7 @@ CLASS({
 
   methods: [
     function init() {
-
+      //////////////////////////////////////////////
       var obj = this.Object.create();
 
       var prog = this.Program.create({}, obj.Y);
@@ -43,7 +45,7 @@ CLASS({
         type: "fragment",
         source: function() {/*
           void main(void) {
-            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+            gl_FragColor = vec4(1.0, 0.5, 0.5, 0.9);
           }
         */}
         }, prog.Y);
@@ -79,6 +81,7 @@ CLASS({
       this.addChild(obj);
       this.object = obj;
 
+      ////////////////////////////////////////////////
       // another object
       var obj = this.Object.create();
 
@@ -122,6 +125,18 @@ CLASS({
 
       this.addChild(obj);
 
+
+      ////////////////////////////////////////////
+
+
+      var obj = this.GLCView.create();
+      var circle = this.Circle.create({ color: 'red', radius: 100 });
+
+      obj.sourceView = circle;
+
+      this.addChild(obj);
+
+      ///////////////////////////////////////////////
 
       this.update();
     }

@@ -53,6 +53,8 @@ CLASS({
         45, this.view.width/this.view.height, 0.1, 100.0);
       this.loadIdentity();
       this.mvTranslate([-0.0, 0.0, -6.0]);
+      this.multMatrix(Matrix.RotationX(0.3).ensure4x4());
+      this.multMatrix(Matrix.RotationZ(0.2).ensure4x4());
 
       // children can now draw
     },
