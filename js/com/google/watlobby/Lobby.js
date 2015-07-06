@@ -104,10 +104,11 @@ CLASS({
       name: 'topics',   factory: function() {
       return JSONUtil.arrayToObjArray(this.X, [
         { topic: 'chrome',       image: 'chrome.png',       r: 180 },
-        { topic: 'googlecanada', image: 'googlecanada.png', r: 200 },
+        { topic: 'googlecanada', image: 'googlecanada.gif', r: 200 },
         { topic: 'inbox',        image: 'inbox.png',        r: 160 },
         { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
         { topic: 'fiber',        image: 'fiber.jpg',        r: 180 },
+        { topic: 'foam',         image: 'foampowered.png',  r: 120 },
         // chromebook, foam, mine sweeper, calculator, I'm feeling lucky
       ], this.Topic);
     }}
