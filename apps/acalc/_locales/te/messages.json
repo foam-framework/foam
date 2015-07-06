@@ -1,4 +1,12 @@
 {
+  "NumberFormatter_Message_NaN": {
+    "message": "సంఖ్య కాదు",
+    "description": "NumberFormatter description of a value that isn't a number"
+  },
+  "Calc_Message_CalcName": {
+    "message": "కాలిక్యులేటర్",
+    "description": "Calculator name of application for performing simple calculations"
+  },
   "Calc_ActionLabel_div": {
     "message": "÷",
     "description": "Calculator short form for mathematical function: \"divide\" (text label)"
@@ -17,11 +25,11 @@
   },
   "Calc_ActionLabel_plus": {
     "message": "+",
-    "description": "Calculator binary operator: plus (text label)"
+    "description": "Calculator short form for mathematical function: \"plus\" (text label)"
   },
   "Calc_ActionSpeechLabel_plus": {
     "message": "కూడిక",
-    "description": "Calculator binary operator: plus (speech label)"
+    "description": "Calculator short form for mathematical function: \"plus\" (speech label)"
   },
   "Calc_ActionLabel_minus": {
     "message": "–",
@@ -36,16 +44,64 @@
     "description": "Calculator all clear (calculator button label) (text label)"
   },
   "Calc_ActionSpeechLabel_ac": {
-    "message": "అన్ని తీసివేయి",
+    "message": "మొత్తం తీసివేయి",
     "description": "Calculator all clear (calculator button label) (speech label)"
   },
+  "Calc_ActionLabel_sign": {
+    "message": "+/-",
+    "description": "Calculator switch positive/negative sign of number (text label)"
+  },
+  "Calc_ActionSpeechLabel_sign": {
+    "message": "నెగేట్",
+    "description": "Calculator switch positive/negative sign of number (speech label)"
+  },
+  "Calc_ActionLabel_point": {
+    "message": "దశాంశ బిందువు",
+    "description": "Calculator decimal point (text label)"
+  },
+  "Calc_ActionSpeechLabel_point": {
+    "message": "దశాంశ బిందువు",
+    "description": "Calculator decimal point (speech label)"
+  },
+  "Calc_ActionLabel_equals": {
+    "message": "=",
+    "description": "Calculator compute operation and display result (text label)"
+  },
+  "Calc_ActionSpeechLabel_equals": {
+    "message": "సమాన గుర్తు",
+    "description": "Calculator compute operation and display result (speech label)"
+  },
   "Calc_ActionLabel_backspace": {
-    "message": "backspace",
+    "message": "⌫",
     "description": "Calculator delete one input character (text label)"
   },
   "Calc_ActionSpeechLabel_backspace": {
     "message": "బ్యాక్‌స్పేస్",
     "description": "Calculator delete one input character (speech label)"
+  },
+  "Calc_ActionLabel_pi": {
+    "message": "π",
+    "description": "Calculator mathematical constant, pi (text label)"
+  },
+  "Calc_ActionSpeechLabel_pi": {
+    "message": "π",
+    "description": "Calculator mathematical constant, pi (speech label)"
+  },
+  "Calc_ActionLabel_e": {
+    "message": "e",
+    "description": "Calculator mathematical constant, e (text label)"
+  },
+  "Calc_ActionSpeechLabel_e": {
+    "message": "e",
+    "description": "Calculator mathematical constant, e (speech label)"
+  },
+  "Calc_ActionLabel_percent": {
+    "message": "%",
+    "description": "Calculator convert number to percentage (text label)"
+  },
+  "Calc_ActionSpeechLabel_percent": {
+    "message": "శాతం",
+    "description": "Calculator convert number to percentage (speech label)"
   },
   "Calc_ActionLabel_inv": {
     "message": "1/x",
@@ -156,7 +212,7 @@
     "description": "Calculator short form for mathematical function: \"inverse-sine\" (text label)"
   },
   "Calc_ActionSpeechLabel_asin": {
-    "message": "విలోమ సైన్",
+    "message": "ఆర్క్ సైన్",
     "description": "Calculator short form for mathematical function: \"inverse-sine\" (speech label)"
   },
   "Calc_ActionLabel_acos": {
@@ -164,7 +220,7 @@
     "description": "Calculator short form for mathematical function: \"inverse-cosine\" (text label)"
   },
   "Calc_ActionSpeechLabel_acos": {
-    "message": "విలోమ కొసైన్",
+    "message": "ఆర్క్ కొసైన్",
     "description": "Calculator short form for mathematical function: \"inverse-cosine\" (speech label)"
   },
   "Calc_ActionLabel_atan": {
@@ -172,7 +228,7 @@
     "description": "Calculator short form for mathematical function: \"inverse-tangent\" (text label)"
   },
   "Calc_ActionSpeechLabel_atan": {
-    "message": "విలోమ టాంజెంట్",
+    "message": "ఆర్క్ టాంజెంట్",
     "description": "Calculator short form for mathematical function: \"inverse-tangent\" (speech label)"
   },
   "Calc_ActionLabel_fact": {
@@ -212,8 +268,16 @@
     "description": "Calculator short form for mathematical function: \"round\" (text label)"
   },
   "Calc_ActionSpeechLabel_round": {
-    "message": "పూర్ణాంకం",
+    "message": "సమీప దశకానికి మార్చు",
     "description": "Calculator short form for mathematical function: \"round\" (speech label)"
+  },
+  "Calc_ActionLabel_rand": {
+    "message": "rand",
+    "description": "Calculator generate random number (text label)"
+  },
+  "Calc_ActionSpeechLabel_rand": {
+    "message": "యాదృచ్ఛికం",
+    "description": "Calculator generate random number (speech label)"
   },
   "Calc_ActionLabel_store": {
     "message": "a=",
@@ -223,8 +287,12 @@
     "message": "మెమరీలో నిల్వ చేయి",
     "description": "Calculator short form for mathematical function: \"store in memory\" (speech label)"
   },
-  "NumberFormatter_Message_NaN": {
-    "message": "సంఖ్య కాదు",
-    "description": "NumberFormatter description of a value that isn't a number"
+  "Calc_ActionLabel_fetch": {
+    "message": "a",
+    "description": "Calculator load memorized number (text label)"
+  },
+  "Calc_ActionSpeechLabel_fetch": {
+    "message": "మెమరీ నుండి లోడ్ చేయి",
+    "description": "Calculator load memorized number (speech label)"
   }
 }

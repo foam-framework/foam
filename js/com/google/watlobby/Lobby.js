@@ -17,10 +17,82 @@
 
 CLASS({
   package: 'com.google.watlobby',
+  name: 'Topic',
+
+  properties: [
+    {
+      name: 'topic'
+    },
+    {
+      name: 'image'
+    },
+    {
+      name: 'colour'
+    },
+    {
+      name: 'r'
+    },
+    {
+      name: 'roundImage'
+    }
+  ]
+});
+
+
+CLASS({
+  package: 'com.google.watlobby',
+  name: 'Bubble',
+
+  extendsModel: 'foam.demos.physics.PhysicalCircle',
+
+  requires: [ 'foam.graphics.ImageCView' ],
+
+  properties: [
+    {
+      name: 'topic'
+    },
+    {
+      name: 'image'
+    },
+    {
+      name: 'roundImage'
+    }
+  ],
+
+  methods: {
+    initCView: function() {
+      this.SUPER();
+
+      if ( this.image ) {
+        var d, s;
+        if ( this.roundImage ) {
+          this.borderWidth = 0;
+          d = 2 * this.r;
+          s = -this.r;
+        } else {
+          d = 2 * this.r * Math.SQRT1_2;
+          s = -this.r * Math.SQRT1_2;
+        }
+        var img = this.ImageCView.create({
+          src: this.image,
+          width: d,
+          height: d,
+          x: s,
+          y: s})
+        this.addChild(img);
+      }
+    }
+  }
+});
+
+
+CLASS({
+  package: 'com.google.watlobby',
   name: 'Lobby',
   extendsModel: 'foam.graphics.CView',
 
   requires: [
+    'com.google.watlobby.Bubble',
     'foam.demos.physics.PhysicalCircle',
     'foam.physics.Collider',
     'foam.demos.ClockView',
@@ -35,12 +107,25 @@ CLASS({
 
   properties: [
     { name: 'timer' },
-    { name: 'n',          defaultValue: 6 },
+    { name: 'n',          defaultValue: 30 },
     { name: 'width',      defaultValue: window.innerWidth },
     { name: 'height',     defaultValue: window.innerHeight },
     { name: 'background', defaultValue: '#ccf' },
     { name: 'collider',   factory: function() {
       return this.Collider.create();
+    }},
+    {
+      name: 'topics',   factory: function() {
+      return JSONUtil.arrayToObjArray(this.X, [
+        { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, colour: 'red' },
+        { topic: 'flip',         image: 'flip.jpg',         r: 100, colour: 'red' },
+        { topic: 'googlecanada', image: 'googlecanada.gif', r: 200 },
+        { topic: 'inbox',        image: 'inbox.png',        r: 160 },
+        { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
+        { topic: 'fiber',        image: 'fiber.jpg',        r: 180 },
+        { topic: 'foam',         image: 'foampowered.png',  r: 100 },
+        // chromebook, mine sweeper, calculator, I'm feeling lucky
+      ], this.Topic);
     }}
   ],
 
@@ -54,43 +139,45 @@ CLASS({
       }
 
       var N = this.n;
-
-      for ( var x = 0 ; x < N ; x++ ) {
-        for ( var y = 0 ; y < N ; y++ ) {
-          var colour = this.COLOURS[(x*N + y) % this.COLOURS.length];
-          var c = this.PhysicalCircle.create({
-            r: 20 + Math.random() * 60,
-            x: Math.random() * this.width,
-            y: Math.random() * this.height,
-            borderWidth: 6,
-            color: '#eee',
-            border: colour
-          });
-          this.addChild(c);
-
-          c.y$.addListener(function(c) {
-            if ( c.y > 1/this.scaleY*this.height+50 ) {
-              c.y = -50;
-            }
-          }.bind(this, c));
-
-          Movement.gravity(c, 0.03);
-          Movement.inertia(c);
-          Movement.friction(c, 0.96);
-          this.bounceOnWalls(c, this.width, this.height);
-          this.collider.add(c);
+      for ( var i = 0 ; i < N ; i++ ) {
+        var colour = this.COLOURS[i % this.COLOURS.length];
+        var c = this.Bubble.create({
+          r: 20 + Math.random() * 50,
+          x: Math.random() * this.width,
+          y: Math.random() * this.height,
+          borderWidth: 6,
+          color: 'white',
+          border: colour
+        });
+        if ( i < this.topics.length ) {
+          var t = this.topics[i];
+          c.topic = t;
+          c.image = t.image;
+          c.r = t.r;
+          c.roundImage = t.roundImage;
+          if ( t.colour ) c.border = t.colour;
         }
+        this.addChild(c);
+
+        c.mass = c.r/50;
+        Movement.gravity(c, 0.03);
+        Movement.inertia(c);
+        Movement.friction(c, 0.96);
+        this.bounceOnWalls(c, this.width, this.height);
+        this.collider.add(c);
       }
 
       for ( var i = 0 ; i < 200 ; i++ ) {
         var b = this.PhysicalCircle.create({
-          r: 4,
+          r: 5,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          color: 'rgba(0,0,255,0.05)',
           borderWidth: 0.5,
-          border: 'blue',
-          mass: 0.3
+          color: 'rgba(0,0,255,0.2)',
+          border: '#blue',
+//          color: 'rgba(100,100,200,0.2)',
+//          border: '#55a',
+          mass: 0.7
         });
 
         b.y$.addListener(function(b) {
@@ -109,7 +196,7 @@ CLASS({
         this.addChild(b);
       }
 
-      var clock = this.ClockView.create({x:this.width-80,y:80, r:60});
+      var clock = this.ClockView.create({x:this.width-70,y:70, r:60});
       this.addChild(clock);
 
       this.collider.start();
@@ -118,8 +205,10 @@ CLASS({
     bounceOnWalls: function (c, w, h) {
       Events.dynamic(function() { c.x; c.y; }, function() {
         var r = c.r + c.borderWidth;
-        if ( c.x < r ) c.vx = Math.abs(c.vx);
-        if ( c.x > w - r ) c.vx = -Math.abs(c.vx);
+        if ( c.x < r     ) { c.vx += 1; c.vy -= 0.5; }
+        if ( c.x > w - r ) { c.vx -= 1; c.vy += 0.5; }
+        if ( c.y < r     ) { c.vy += 1; c.vx += 0.5; }
+        if ( c.y > h - r ) { c.vy -= 1; c.vx -= 0.5; }
       });
     },
 
