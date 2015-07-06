@@ -158,12 +158,6 @@ CLASS({
         }
         this.addChild(c);
 
-        c.y$.addListener(function(c) {
-          if ( c.y > 1/this.scaleY*this.height+50 ) {
-            c.y = -50;
-          }
-        }.bind(this, c));
-
         c.mass = c.r/50;
         Movement.gravity(c, 0.03);
         Movement.inertia(c);
@@ -182,7 +176,7 @@ CLASS({
           border: '#blue',
 //          color: 'rgba(100,100,200,0.2)',
 //          border: '#55a',
-          mass: 0.5
+          mass: 0.7
         });
 
         b.y$.addListener(function(b) {
@@ -210,8 +204,10 @@ CLASS({
     bounceOnWalls: function (c, w, h) {
       Events.dynamic(function() { c.x; c.y; }, function() {
         var r = c.r + c.borderWidth;
-        if ( c.x < r ) c.vx = Math.abs(c.vx);
-        if ( c.x > w - r ) c.vx = -Math.abs(c.vx);
+        if ( c.x < r     ) { c.vx += 2; c.vy -= 1.5; }
+        if ( c.x > w - r ) { c.vx -= 2; c.vy += 1.5; }
+        if ( c.y < r     ) { c.vy += 2; c.vx += 1.5; }
+        if ( c.y > h - r ) { c.vy -= 2; c.vx -= 1.5; }
       });
     },
 
