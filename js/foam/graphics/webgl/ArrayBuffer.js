@@ -54,8 +54,10 @@ CLASS({
   ],
 
   methods: [
-    function draw() {
+    funciton bind() {
       this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
+    },
+    function draw() {
       this.gl.drawArrays(this.drawMode, 0, this.vertices.length);
     },
     function compile() {

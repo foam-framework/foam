@@ -56,16 +56,11 @@ CLASS({
 
       this.program.use();
 
-            gl.uniform2fv(gl.getUniformLocation(this.lineprogram, "p1"), p1);
-            gl.uniform2fv(gl.getUniformLocation(this.lineprogram, "p2"), p2);
+// set up shader attributes, using mesh bound above
+//            gl.vertexAttribPointer(this.texCoordLocation2, 2, gl.FLOAT, false, 0, 0);
+//            gl.enableVertexAttribArray(this.texCoordLocation2);
 
-            gl.vertexAttribPointer(this.texCoordLocation2, 2, gl.FLOAT, false, 0, 0);
-
-            gl.enableVertexAttribArray(this.texCoordLocation2);
-
-            gl.drawArrays(gl.LINES, 0, resolution * resolution * 10);
-      
-      
+      this.mesh.draw();
     },
     
   

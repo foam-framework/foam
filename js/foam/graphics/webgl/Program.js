@@ -19,7 +19,10 @@ CLASS({
   package: 'foam.graphics.webgl',
   name: 'Program',
   requires: [ 'foam.graphics.webgl.Shader' ],
-  imports: ['gl'],
+  imports: [
+    'gl',
+    'projectionMatrix'
+  ],
 
   properties: [
     {
@@ -41,12 +44,28 @@ CLASS({
       getter: function() {
         if ( ! this.instance_.program ) {
           this.compile();
-          return this.instance_.program;
+        }
+        return this.instance_.program;
       }
     }
   ],
 
   methods: [
+    function use() {
+      /* Call this to use the program and set up shader attributes and uniform variables. Call after
+        $$DOC{ref:'foam.graphics.webgl.ArrayBuffer'}.bind() and before
+        $$DOC{ref:'foam.graphics.webgl.ArrayBuffer'}.draw(). */
+      this.gl.useProgram(this.program);
+
+      // extract vars from shaders, hook them up
+      
+        
+      // uniform vars
+      var projUniform = this.gl.getUniformLocation(this.program, "projectionMatrix");
+      this.gl.uniformMatrix4fv(projUniform, false, new Float32Array(projectionMatrix.flatten()));
+
+      
+    },
     function compile() {
       var prog = this.gl.createProgram();
       this.gl.attachShader(prog, this.vertexShader.shader);

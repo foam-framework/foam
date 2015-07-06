@@ -20,7 +20,7 @@ CLASS({
   name: 'Shader',
 
   imports: [
-    'gl',
+    'gl'
   ],
 
   properties: [
@@ -56,6 +56,10 @@ CLASS({
   ],
 
   methods: [
+    function enable() {
+      /* bind the attributes or uniform variables */
+      
+    },
     function compile() {
       var shader = this.shaderType == 'fragment' ? gl.createShader(gl.FRAGMENT_SHADER) : gl.createShader(gl.VERTEX_SHADER);
       this.gl.shaderSource(shader, this.source);
