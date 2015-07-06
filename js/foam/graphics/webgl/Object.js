@@ -33,7 +33,13 @@ CLASS({
   properties: [
     {
       name: 'relativePosition',
-      type: 'Matrix'
+      type: 'Matrix',
+      getter: function() {
+        if ( this.instance_.relativePosition ) return this.instance_.relativePosition;
+        if ( GLOBAL.Matrix ) return Matrix.I(4);
+        return null;
+      }
+
     },
     {
       name: 'positionMatrix',
