@@ -54,7 +54,7 @@ CLASS({
           if ( self.responseType === "json" && typeof xhr.response == "string" )
             var response = JSON.parse(xhr.response);
           else response = xhr.response;
-          ret(response, xhr);
+          ret(response, xhr, (xhr.status >= 200 && xhr.status < 300));
         }
       }
     },
