@@ -124,7 +124,10 @@ CLASS({
         { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
         { topic: 'fiber',        image: 'fiber.jpg',        r: 180 },
         { topic: 'foam',         image: 'foampowered.png',  r: 100 },
+        { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 100 },
         // chromebook, mine sweeper, calculator, I'm feeling lucky
+        // thtps://www.youtube.com/watch?v=1Bb29KxXzDs, https://youtu.be/1Bb29KxXzDs
+
       ], this.Topic);
     }}
   ],
@@ -177,7 +180,7 @@ CLASS({
           border: '#blue',
 //          color: 'rgba(100,100,200,0.2)',
 //          border: '#55a',
-          mass: 0.7
+          mass: 0.6
         });
 
         b.y$.addListener(function(b) {
@@ -205,10 +208,10 @@ CLASS({
     bounceOnWalls: function (c, w, h) {
       Events.dynamic(function() { c.x; c.y; }, function() {
         var r = c.r + c.borderWidth;
-        if ( c.x < r     ) { c.vx += 1; c.vy -= 0.5; }
-        if ( c.x > w - r ) { c.vx -= 1; c.vy += 0.5; }
-        if ( c.y < r     ) { c.vy += 1; c.vx += 0.5; }
-        if ( c.y > h - r ) { c.vy -= 1; c.vx -= 0.5; }
+        if ( c.x < r     ) { c.vx += 0.2; c.vy -= 0.19; }
+        if ( c.x > w - r ) { c.vx -= 0.2; c.vy += 0.19; }
+        if ( c.y < r     ) { c.vy += 0.2; c.vx += 0.19; }
+        if ( c.y > h - r ) { c.vy -= 0.2; c.vx -= 0.19; }
       });
     },
 
