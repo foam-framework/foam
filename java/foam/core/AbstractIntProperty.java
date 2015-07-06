@@ -21,9 +21,8 @@ public abstract class AbstractIntProperty
     extends AbstractProperty
 {
 
-  public int compareValues(int i1, int i2)
-  {
-    return Integer.compare(i1, i2);
+  public int compareValues(int i1, int i2) {
+    return i1 - i2;
   }
 
   public int toNative(Object o)

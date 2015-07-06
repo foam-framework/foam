@@ -17,8 +17,6 @@
 
 package foam.core;
 
-public class MapIndex
-    implements Map
-{
+public class MapIndex {
 
 }

@@ -27,6 +27,9 @@ public interface Property
   public String  getLabel();
   public void    set(Object obj, Object value);
   public Object  get(Object obj);
+  public void    addListener(PropertyChangeSupport obj, PropertyChangeListener listener);
+  public void    removeListener(PropertyChangeSupport obj, PropertyChangeListener listener);
+  public Value   createValue(Object obj);
   // public boolean hasDefaultValue();
   //  public Object  createDefaultValue();
 }

@@ -21,9 +21,8 @@ public abstract class AbstractBooleanProperty
     extends AbstractProperty
 {
 
-  public int compareValues(boolean b1, boolean b2)
-  {
-    return Boolean.compare(b1, b2);
+  public int compareValues(boolean b1, boolean b2) {
+    return b1 == b2 ? 0 : b1 ? 1 : -1; // false < true, according to this.
   }
 
   public boolean toNative(Object o)

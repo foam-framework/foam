@@ -21,9 +21,8 @@ public abstract class AbstractFloatProperty
     extends AbstractProperty
 {
 
-  public int compareValues(float f1, float f2)
-  {
-    return Float.compare(f1, f2);
+  public int compareValues(float f1, float f2) {
+    return f1 == f2 ? 0 : f1 < f2 ? -1 : 1;
   }
 
   public float toNative(Object o)

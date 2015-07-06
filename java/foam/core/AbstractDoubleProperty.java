@@ -21,9 +21,8 @@ public abstract class AbstractDoubleProperty
     extends AbstractProperty
 {
 
-  public int compareValues(double d1, double d2)
-  {
-    return Double.compare(d1, d2);
+  public int compareValues(double d1, double d2) {
+    return d1 == d2 ? 0 : d1 < d2 ? -1 : 1;
   }
 
   public double toNative(Object o)

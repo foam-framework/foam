@@ -17,11 +17,8 @@
 
 package foam.core;
 
-import java.util.Comparator;
-
-
 public interface FObject
-  extends FCloneable, Comparable
+  extends FCloneable, Comparable, PropertyChangeSupport
 {
 
   public Model model();
@@ -33,5 +30,4 @@ public interface FObject
   public String toJSON();
 
   public AbstractFObject set(Property p, Object value);
-
 }

@@ -17,12 +17,16 @@
 
 package foam.core;
 
-import java.util.Comparator;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractFObject
     implements FObject
 {
-
   public int compare(boolean o1, boolean o2) {
     return o1 == o2 ? 0 : o1 ? 1 : 0;
   }
@@ -31,11 +35,11 @@ public abstract class AbstractFObject
     return o1 == o2 ? 0 : o1 == null ? -1 : o2 == null ? 1 : o1.compareTo(o2);
   }
   
-  public int compare(short  o1, short  o2) { return Short.compare(o1, o2);   }
-  public int compare(int    o1, int    o2) { return Integer.compare(o1, o2); }
-  public int compare(long   o1, long   o2) { return Long.compare(o1, o2);    }
-  public int compare(float  o1, float  o2) { return Float.compare(o1, o2);   }
-  public int compare(double o1, double o2) { return Double.compare(o1, o2);  }
+  public int compare(short  o1, short  o2) { return o1 == o2 ? 0 : o1 < o2 ? -1 : 1; }
+  public int compare(int    o1, int    o2) { return o1 == o2 ? 0 : o1 < o2 ? -1 : 1; }
+  public int compare(long   o1, long   o2) { return o1 == o2 ? 0 : o1 < o2 ? -1 : 1; }
+  public int compare(float  o1, float  o2) { return o1 == o2 ? 0 : o1 < o2 ? -1 : 1; }
+  public int compare(double o1, double o2) { return o1 == o2 ? 0 : o1 < o2 ? -1 : 1; }
 
   public int compare(Object o1, Object o2) {
     if (o1 instanceof FObject && o2 instanceof FObject) {
@@ -114,5 +118,52 @@ public abstract class AbstractFObject
   public AbstractFObject set(Property p, Object value) {
     p.set(this, value);
     return this;
+  }
+
+
+  private Map<String, List<WeakReference<PropertyChangeListener>>> listeners;
+
+  public void addPropertyChangeListener(Property prop, PropertyChangeListener listener) {
+    if (listener == null) return;
+    if (listeners == null) {
+      listeners = new HashMap<>();
+    }
+    if (listeners.containsKey(prop.getName())) {
+      listeners.get(prop.getName()).add(new WeakReference<PropertyChangeListener>(listener));
+    } else {
+      List<WeakReference<PropertyChangeListener>> list = new LinkedList<>();
+      list.add(new WeakReference<PropertyChangeListener>(listener));
+      listeners.put(prop.getName(), list);
+    }
+  }
+
+  public void removePropertyChangeListener(Property prop, PropertyChangeListener listener) {
+    if (listener == null || listeners == null || !listeners.containsKey(prop.getName())) return;
+    Iterator<WeakReference<PropertyChangeListener>> iterator = listeners.get(prop.getName()).iterator();
+    while (iterator.hasNext()) {
+      WeakReference<PropertyChangeListener> ref = iterator.next();
+      PropertyChangeListener l = ref.get();
+      if (l == null || l.equals(listener)) {
+        iterator.remove();
+      }
+    }
+  }
+
+  public void firePropertyChange(Property prop, Object oldValue, Object newValue) {
+    if (listeners == null || !listeners.containsKey(prop.getName())) return;
+    PropertyChangeEvent event = null;
+    Iterator<WeakReference<PropertyChangeListener>> iterator = listeners.get(prop.getName()).iterator();
+    while (iterator.hasNext()) {
+      WeakReference<PropertyChangeListener> ref = iterator.next();
+      PropertyChangeListener l = ref.get();
+      if (l == null) {
+        iterator.remove();
+      } else {
+        if (event == null) {
+          event = new PropertyChangeEvent(this, prop, oldValue, newValue);
+        }
+        l.propertyChange(event);
+      }
+    }
   }
 }

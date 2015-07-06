@@ -875,10 +875,14 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
     "<% for ( var key in this.properties ) { var prop = this.properties[key]; %>\u000a" +
     "  public <%= prop.javaType %> get<%= prop.name.capitalize() %>() {\u000a" +
     "    return <%= prop.name %>_;\u000a" +
-    "  };\u000a" +
+    "  }\u000a" +
     "  public void set<%= prop.name.capitalize() %>(<%= prop.javaType, ' ', prop.name %>) {\u000a" +
+    "    <%= prop.javaType %> oldValue = <%= prop.name %>_;\u000a" +
     "    <%= prop.name %>_ = <%= prop.name %>;\u000a" +
-    "  };\u000a" +
+    "    if (((<%= 'Abstract' + prop.javaType.capitalize() + 'Property' %>) <%= constantize(prop.name) %>).compareValues(oldValue, <%= prop.name %>) != 0) {\u000a" +
+    "      firePropertyChange(<%= constantize(prop.name) %>, oldValue, <%= prop.name %>);\u000a" +
+    "    }\u000a" +
+    "  }\u000a" +
     "<% } %>\u000a" +
     "\u000a" +
     "  public int hashCode() {\u000a" +

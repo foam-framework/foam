@@ -21,18 +21,17 @@ public abstract class AbstractObjectProperty
     extends AbstractProperty
 {
 
-  public int compareValues(Object o1, Object o2)
-  {
+  public int compareValues(Object o1, Object o2) {
     if (o1 == o2) return 0;
 
     if (o1 instanceof Comparable) return ((Comparable) o1).compareTo(o2);
-    if (o2 instanceof Comparable) return ((Comparable) o2).compareTo(o1);
+    if (o2 instanceof Comparable) return -((Comparable) o2).compareTo(o1);
     return 1;
   }
 
-  public FObject toNative(Object o)
+  public Object toNative(Object o)
   {
-    return (FObject) o;
+    return o;
   }
 
 }
