@@ -20,7 +20,7 @@ CLASS({
   name: 'Shader',
 
   imports: [
-    'gl'
+    'gl$'
   ],
 
   properties: [
@@ -34,7 +34,7 @@ CLASS({
     },
     {
       name: 'source',
-      adapt: function(nu) {
+      adapt: function(old,nu) {
         if ( typeof nu === 'function' ) return multiline(nu);
         return nu;
       },
@@ -52,20 +52,28 @@ CLASS({
         }
         return this.instance_.shader;
       }
+    },
+    {
+      name: 'uniformVariables',
+      type: 'StringArray'
+    },
+    {
+      name: 'attributeVariables',
+      type: 'StringArray'
     }
   ],
 
   methods: [
     function enable() {
       /* bind the attributes or uniform variables */
-      
+
     },
     function compile() {
-      var shader = this.shaderType == 'fragment' ? gl.createShader(gl.FRAGMENT_SHADER) : gl.createShader(gl.VERTEX_SHADER);
+      var shader = this.type == 'fragment' ? this.gl.createShader(this.gl.FRAGMENT_SHADER) : this.gl.createShader(this.gl.VERTEX_SHADER);
       this.gl.shaderSource(shader, this.source);
       this.gl.compileShader(shader);
-      if ( ! gl.getShaderParameter(shader, gl.COMPILE_STATUS) ) {
-        console.warn("Shader compile error " + gl.getShaderInfoLog(shader));
+      if ( ! this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS) ) {
+        console.warn("Shader compile error " + this.gl.getShaderInfoLog(shader));
         return null;
       }
       this.shader = shader;

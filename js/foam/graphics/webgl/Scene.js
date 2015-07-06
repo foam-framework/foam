@@ -21,13 +21,19 @@ CLASS({
   requires: ['foam.graphics.webgl.SylvesterLib'],
   extendsModel: 'foam.graphics.CView',
 
-  exports: [ 
-    'gl',
-    'positionMatrix',
-    'projectionMatrix'
+  exports: [
+    'gl$',
+    'positionMatrix$',
+    'projectionMatrix$'
   ],
 
   properties: [
+    {
+      name: 'sylvesterLib',
+      factory: function() {
+        return this.SylvesterLib.create();
+      }
+    },
     {
       name: 'positionMatrix'
     },
@@ -37,23 +43,19 @@ CLASS({
   ],
 
   methods: [
-    function: init() {
-      this.SylvesterLib.create();
-    }
-    
     function paintSelf() {
       var gl = this.gl;
-      if ( ! gl ) return;
-      
+      if ( ! gl || ! this.sylvesterLib.loaded ) return;
+
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  
-      perspectiveMatrix = this.makePerspective(45, 640.0/480.0, 0.1, 100.0);
+
+      this.projectionMatrix = this.makePerspective(45, 640.0/480.0, 0.1, 100.0);
       this.loadIdentity();
       this.mvTranslate([-0.0, 0.0, -6.0]);
-  
+
       // children can now draw
     },
-    
+
 ///////////////////// from MDN demo
 
     function loadIdentity() {
@@ -65,18 +67,11 @@ CLASS({
     },
 
     function mvTranslate(v) {
-      multMatrix(Matrix.Translation($V([v[0], v[1], v[2]])).ensure4x4());
+      this.multMatrix(Matrix.Translation($V([v[0], v[1], v[2]])).ensure4x4());
     },
 
-    function setMatrixUniforms() {
-      var pUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
-      gl.uniformMatrix4fv(pUniform, false, new Float32Array(this.projectionMatrix.flatten()));
-
-      var mvUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
-      gl.uniformMatrix4fv(mvUniform, false, new Float32Array(this.positionMatrix.flatten()));
-    },
 /////////////////////
-    
+
     //
     // gluLookAt
     //
@@ -133,7 +128,7 @@ CLASS({
         var xmin = ymin * aspect;
         var xmax = ymax * aspect;
 
-        return makeFrustum(xmin, xmax, ymin, ymax, znear, zfar);
+        return this.makeFrustum(xmin, xmax, ymin, ymax, znear, zfar);
     },
 
     //

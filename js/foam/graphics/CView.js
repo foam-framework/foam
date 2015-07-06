@@ -71,7 +71,14 @@ CLASS({
     },
     {
       name:  'gl',
-      getter: function() { return this.view && this.view.gl; },
+      getter: function() {
+        var glc = this.view && this.view.gl;
+        if ( glc && ! this.instance_.gl ) {
+          // trigger setter to propagate change
+          this.gl = glc;
+        }
+        return glc;
+      },
       transient: true,
       hidden: true,
       documentation: function() {/* Safe getter for the webGL view this scene draws into */ }

@@ -20,8 +20,8 @@ CLASS({
   name: 'Program',
   requires: [ 'foam.graphics.webgl.Shader' ],
   imports: [
-    'gl',
-    'projectionMatrix'
+    'gl$',
+    'projectionMatrix$'
   ],
 
   properties: [
@@ -47,31 +47,40 @@ CLASS({
         }
         return this.instance_.program;
       }
+    },
+    {
+      name: 'uniformVariables',
+      type: 'StringArray',
+      getter: function() {
+        if ( ! this.program ) return null;
+        return this.vertexShader.uniformVariables.concat(this.fragmentShader.uniformVariables);
+      }
+    },
+    {
+      name: 'attributeVariables',
+      type: 'StringArray',
+      getter: function() {
+        if ( ! this.program ) return null;
+        return this.vertexShader.attributeVariables; // no attributes in fragment shaders
+      }
     }
   ],
 
   methods: [
     function use() {
+      if ( ! this.gl ) return;
       /* Call this to use the program and set up shader attributes and uniform variables. Call after
         $$DOC{ref:'foam.graphics.webgl.ArrayBuffer'}.bind() and before
         $$DOC{ref:'foam.graphics.webgl.ArrayBuffer'}.draw(). */
       this.gl.useProgram(this.program);
-
-      // extract vars from shaders, hook them up
-      
-        
-      // uniform vars
-      var projUniform = this.gl.getUniformLocation(this.program, "projectionMatrix");
-      this.gl.uniformMatrix4fv(projUniform, false, new Float32Array(projectionMatrix.flatten()));
-
-      
     },
     function compile() {
+      if ( ! this.gl ) return;
       var prog = this.gl.createProgram();
       this.gl.attachShader(prog, this.vertexShader.shader);
       this.gl.attachShader(prog, this.fragmentShader.shader);
       this.gl.linkProgram(prog);
-      if ( ! this.gl.getProgramParameter(prog, gl.LINK_STATUS) ) {
+      if ( ! this.gl.getProgramParameter(prog, this.gl.LINK_STATUS) ) {
         console.warn("Could not create shader program.");
         this.instance_.program = null;
       } else {
@@ -88,3 +97,4 @@ CLASS({
   ]
 
 });
+

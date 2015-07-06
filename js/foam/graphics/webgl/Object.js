@@ -21,18 +21,28 @@ CLASS({
   requires: ['foam.graphics.webgl.SylvesterLib'],
   extendsModel: 'foam.graphics.CView',
 
-  imports: [ 
-    'gl',
-    'positionMatrix as basePosMatrix',
-    'projectionMatrix'
+  imports: [
+    'positionMatrix$ as basePosMatrix$',
+    'projectionMatrix$'
   ],
   exports: [
-    'positionMatrix'
+    'gl$',
+    'positionMatrix$'
   ],
 
   properties: [
     {
-      name: 'positionMatrix'
+      name: 'relativePosition',
+      type: 'Matrix'
+    },
+    {
+      name: 'positionMatrix',
+      type: 'Matrix',
+      dynamicValue: function() {
+        var b = this.basePosMatrix || (GLOBAL.Matrix && GLOBAL.Matrix.I(4));
+        var r = this.relativePosition || (GLOBAL.Matrix && GLOBAL.Matrix.I(4));
+        return b && r && b.x(r);
+      }
     },
     {
       name: 'mesh',
@@ -47,23 +57,35 @@ CLASS({
     function init() {
       this.SylvesterLib.create();
     },
-    
+
     function paintSelf() {
       var gl = this.gl;
       if ( ! gl ) return;
-      
+
       this.mesh.bind();
 
       this.program.use();
 
-// set up shader attributes, using mesh bound above
-//            gl.vertexAttribPointer(this.texCoordLocation2, 2, gl.FLOAT, false, 0, 0);
-//            gl.enableVertexAttribArray(this.texCoordLocation2);
+      // uniform vars
+      if ( this.projectionMatrix ) {
+        var projUniform = this.gl.getUniformLocation(this.program.program, "projectionMatrix");
+        this.gl.uniformMatrix4fv(projUniform, false, new Float32Array(this.projectionMatrix.flatten()));
+      }
+
+      if ( this.positionMatrix ) {
+        var posUniform = this.gl.getUniformLocation(this.program.program, "positionMatrix");
+        this.gl.uniformMatrix4fv(posUniform, false, new Float32Array(this.positionMatrix.flatten()));
+      }
+
+      // attribute vars
+      vertexPositionAttribute = this.gl.getAttribLocation(this.program.program, "aVertexPosition");
+      this.gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+      this.gl.enableVertexAttribArray(vertexPositionAttribute);
 
       this.mesh.draw();
     },
-    
-  
+
+
 
   ]
 

@@ -92,26 +92,33 @@ CLASS({
       documentation: 'The HTML canvas context. Use this to render.'
     },
     {
+      name: '$gl',
+      getter: function() {
+        return this.X.document.getElementById(this.id+"-gl");
+      }
+    },
+    {
       name: 'gl',
       getter: function() {
         if ( this.instance_.gl ) return this.instance_.gl;
-        
+
         var glc = null;
         try {
-          glc = this.$ && (this.$.getContext("webgl") || this.$.getContext("experimental-webgl"));
+          glc = this.$gl && (this.$gl.getContext("webgl") || this.$gl.getContext("experimental-webgl"));
         } catch(e) {}
-        
+
         if (glc) {
-          glc.clearColor(0.0, 0.0, 0.0, 0.0); // Set clear color to black, fully transparent
-          glc.enable(gl.DEPTH_TEST); // Enable depth testing
-          glc.depthFunc(gl.LEQUAL); // Near things obscure far things
-          glc.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT); // Clear the color/depth buffer.
-          glc.viewport(0,0,this.canvasHeight(), this.canvasWidth()); // 
+          glc.clearColor(0.0, 0.0, 0.0, 1.0); // Set clear color to black, fully transparent
+          glc.enable(glc.DEPTH_TEST); // Enable depth testing
+          glc.depthFunc(glc.LEQUAL); // Near things obscure far things
+          glc.clear(glc.COLOR_BUFFER_BIT|glc.DEPTH_BUFFER_BIT); // Clear the color/depth buffer.
+          glc.viewport(0,0,this.canvasHeight(), this.canvasWidth()); //
           this.instance_.gl = glc;
         } else {
           console.warn("WebGL requested but not supported.")
         }
-        
+
+
         return glc;
       }
     }
@@ -130,7 +137,7 @@ CLASS({
         this.$.style.height    = this.styleHeight();
         this.$.style.minHeight = this.styleHeight();
         this.instance_.gl && this.instance_.gl.viewport(0,0,this.canvasHeight(), this.canvasWidth());
-        
+
         this.paint();
       },
       documentation: 'Reacts to resize events to fix the size of the canvas.'
@@ -179,7 +186,10 @@ CLASS({
       var tabIndex  = this.tabIndex ? ' tabindex="' + this.tabIndex + '"' : '';
       var role      = this.role ? ' role="' + this.role + '"' : '';
 
-      return '<canvas id="' + this.id + '"' + className + title + tabIndex + role + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + ';min-width:' + this.styleWidth() + ';min-height:' + this.styleHeight() + '"></canvas>';
+      return '<div id="' + this.id + '-container"' + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + ';min-width:' + this.styleWidth() + ';min-height:' + this.styleHeight() + ';position:relative">'+
+        '<canvas id="' + this.id + '"' + className + title + tabIndex + role + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + ';min-width:' + this.styleWidth() + ';min-height:' + this.styleHeight() + ';position:absolute"></canvas>'+
+        '<canvas id="' + this.id + '-gl"' + className + title + tabIndex + role + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + ';min-width:' + this.styleWidth() + ';min-height:' + this.styleHeight() + ';position:absolute"></canvas>'+
+        '</div>';
     },
 
     initHTML: function() { /* Computes the scaling ratio from the window.devicePixelRatio

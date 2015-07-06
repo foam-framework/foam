@@ -18,7 +18,8 @@
 CLASS({
   package: 'foam.graphics.webgl',
   name: 'ArrayBuffer',
-  imports: ['gl'],
+
+  imports: ['gl$'],
 
   properties: [
     {
@@ -31,8 +32,9 @@ CLASS({
     },
     {
       name: 'drawMode',
-      defaultValueFn: function() { return this.gl.TRIANGLES; }
-      adapt: function(old,nu) {
+      defaultValueFn: function() { return this.gl.TRIANGLES; },
+      getter: function() {
+        var nu = this.instance_.drawMode;
         if ( nu == 'triangle strip' ) { return this.gl.TRIANGLE_STRIP; }
         if ( nu == 'triangles' )      { return this.gl.TRIANGLES; }
         if ( nu == 'triangle fan' )   { return this.gl.TRIANGLE_FAN; }
@@ -54,13 +56,16 @@ CLASS({
   ],
 
   methods: [
-    funciton bind() {
+    function bind() {
+      if ( ! this.gl ) return;
       this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
     },
     function draw() {
-      this.gl.drawArrays(this.drawMode, 0, this.vertices.length);
+      if ( ! this.gl ) return;
+      this.gl.drawArrays(this.drawMode, 0, this.vertices.length/3);
     },
     function compile() {
+      if ( ! this.gl ) return;
       this.instance_.buffer = this.gl.createBuffer();
       this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.instance_.buffer);
       // dump this.vertices into gl object this.instance_.buffer, static mode (write once, read many)

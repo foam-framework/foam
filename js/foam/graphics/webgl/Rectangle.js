@@ -20,8 +20,6 @@ CLASS({
   name: 'Rectangle',
   requires: [ 'foam.graphics.webgl.Shader' ],
 
-  exports: [ 'gl' ],
-
   extendsModel: 'foam.graphics.CView',
 
   properties: [
