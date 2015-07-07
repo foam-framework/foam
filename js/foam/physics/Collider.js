@@ -36,12 +36,16 @@ CLASS({
     }
   ],
 
-  methods: {
-    start: function() {
+  methods: [
+    function start() {
+      this.stopped_ = false;
       this.X.requestAnimationFrame(this.tick);
     },
+    function stop() {
+      this.stopped_ = true;
+    },
     // TODO: this should be done much more efficiently (quad-tree, k-d tree, or similar).
-    detectCollisions: function() {
+    function detectCollisions() {
       var cs = this.children;
       for ( var i = 0 ; i < cs.length ; i++ ) {
         var c1 = cs[i];
@@ -51,7 +55,7 @@ CLASS({
         }
       }
     },
-    backup: function(c1, c2) {
+    function backup(c1, c2) {
       for ( var i = 0.01 ; ; i += 0.1 ) {
         var x1 = c1.x - c1.vx * i;
         var y1 = c1.y - c1.vy * i;
@@ -65,7 +69,7 @@ CLASS({
         }
       }
     },
-    collide: function(c1, c2) {
+    function collide(c1, c2) {
       // this.backup(c1, c2);  // backup to the point of collision
 
       var a  = Math.atan2(c2.y-c1.y, c2.x-c1.x);
@@ -80,19 +84,39 @@ CLASS({
       c2.applyMomentum(m * c1.mass/tMass, a);
     },
     // add one or more components to be monitored for collisions
-    add: function() {
+    function add() {
       for ( var i = 0 ; i < arguments.length ; i++ )
         this.children.push(arguments[i]);
       return this;
     },
-    remove: function() {
+    function findChildAt(x, y) {
+      var c2 = { x: x, y: y, r: 1 };
+
+      var cs = this.children;
+      for ( var i = 0 ; i < cs.length ; i++ ) {
+        var c1 = cs[i];
+        if ( c1.intersects(c2) ) return c1;
+      }
+    },
+    function selectChildrenAt(x, y) {
+      var c2 = { x: x, y: y, r: 1 };
+
+      var children = [];
+      var cs = this.children;
+      for ( var i = 0 ; i < cs.length ; i++ ) {
+        var c1 = cs[i];
+        if ( c1.intersects(c2) ) children.push(c1);
+      }
+      return children;
+    },
+    function remove() {
       for ( var i = 0 ; i < arguments.length ; i++ )
         this.children.deleteI(arguments[i]);
       return this;
     },
-    destroy: function() {
+    function destroy() {
       this.stopped_ = true;
       this.children = [];
     }
-  }
+  ]
 });

@@ -16,7 +16,6 @@
  */
 
 CLASS({
-   "model_": "Model",
    "package": "foam.core.dao",
    "name": "ClientDAO",
    "extendsModel": "AbstractDAO",
@@ -38,9 +37,6 @@ CLASS({
          "factory": function () { return this.model.name + 'DAO'; }
       }
    ],
-   "actions": [],
-   "constants": [],
-   "messages": [],
    "methods": [
       {
          "model_": "Method",
@@ -165,11 +161,5 @@ CLASS({
     },
          "args": []
       }
-   ],
-   "listeners": [],
-   "templates": [],
-   "models": [],
-   "tests": [],
-   "relationships": [],
-   "issues": []
+   ]
 });
