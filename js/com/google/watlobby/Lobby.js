@@ -20,21 +20,12 @@ CLASS({
   name: 'Topic',
 
   properties: [
-    {
-      name: 'topic'
-    },
-    {
-      name: 'image'
-    },
-    {
-      name: 'colour'
-    },
-    {
-      name: 'r'
-    },
-    {
-      name: 'roundImage'
-    }
+    { name: 'topic' },
+    { name: 'image' },
+    { name: 'colour' },
+    { name: 'r' },
+    { name: 'model', defaultValue: 'com.google.watlobby.Bubble' },
+    {name: 'roundImage' }
   ]
 });
 
@@ -50,15 +41,11 @@ CLASS({
   imports: [ 'lobby' ],
 
   properties: [
-    {
-      name: 'topic'
-    },
-    {
-      name: 'image'
-    },
-    {
-      name: 'roundImage'
-    }
+    { name: 'topic' },
+    { name: 'image' },
+    { name: 'roundImage' },
+    { name: 'borderWidth', defaultValue: 6 },
+    { name: 'color',       defaultValue: 'white' }
   ],
 
   methods: [
@@ -118,11 +105,92 @@ CLASS({
 
 CLASS({
   package: 'com.google.watlobby',
+  name: 'PhotoAlbumBubble',
+
+  extendsModel: 'com.google.watlobby.Bubble',
+
+  requires: [
+    'foam.graphics.SimpleRectangle',
+    'com.google.watlobby.Bubble'
+  ],
+
+  properties: [
+    {
+      name: 'rows',
+      defaultValue: 4
+    },
+    {
+      name: 'columns',
+      defaultValue: 6
+    }
+  ],
+
+  methods: [
+    function setSelected(selected) {
+      if ( selected ) {
+        this.children_ = [];
+        var w = this.lobby.width / this.columns;
+        var h = this.lobby.height / this.rows;
+
+        var r = this.SimpleRectangle.create({background: 'black', alpha: 0, x: 0, y: 0, width: this.lobby.width, height: this.lobby.height});
+        this.lobby.addChild(r);
+        Movement.animate(1000, function() { r.alpha = 0.7; })();
+
+        this.children_.push(r);
+
+        for ( var i = 0 ; i < this.columns ; i++ ) {
+          for ( var j = 0 ; j < this.rows ; j++ ) {
+            var b = this.Bubble.create({
+              r: 0, x: this.x, y: this.y, border: '#f00'
+            });
+            Movement.animate(2000, function(i, j) {
+              this.r = Math.min(w, h) / 2 - 6;
+              this.x = ( i + 0.5 ) * w;
+              this.y = ( j + 0.5 ) * h;
+            }.bind(b, i, j), Movement.oscillate(0.6, 0.03, 2))();
+            this.lobby.addChild(b);
+            this.children_.push(b);
+          }
+        }
+      } else {
+        // TODO: remove children from lobby when done
+        var r = this.children_[0];
+        Movement.animate(1000, function() { r.alpha = 0; })();
+        for ( var i = 1 ; i < this.children_.length ; i++ ) {
+          Movement.animate(1000, function() { this.r = 0; }.bind(this.children_[i]))();
+        }
+        this.children_ = [];
+      }
+    },
+    function paintSelf() {
+      if ( this.image ) {
+        var d, s;
+        if ( this.roundImage ) {
+          this.borderWidth = 0;
+          d = 2 * this.r;
+          s = -this.r;
+        } else {
+          d = 2 * this.r * Math.SQRT1_2;
+          s = -this.r * Math.SQRT1_2;
+        }
+        this.img.x = this.img.y = s;
+        this.img.width = this.img.height = d;
+      }
+      this.SUPER();
+    }
+  ]
+});
+
+
+CLASS({
+  package: 'com.google.watlobby',
   name: 'Lobby',
   extendsModel: 'foam.graphics.CView',
 
   requires: [
     'com.google.watlobby.Bubble',
+    'com.google.watlobby.PhotoAlbumBubble',
+    'com.google.watlobby.Topic',
     'foam.demos.physics.PhysicalCircle',
     'foam.physics.Collider',
     'foam.demos.ClockView',
@@ -156,8 +224,9 @@ CLASS({
         { topic: 'fiber',        image: 'fiber.jpg',        r: 180 },
         { topic: 'foam',         image: 'foampowered.png',  r: 100 },
         { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 100 },
+        { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 90, model: 'com.google.watlobby.PhotoAlbumBubble' },
         // chromebook, mine sweeper, calculator, I'm feeling lucky
-        // thtps://www.youtube.com/watch?v=1Bb29KxXzDs, https://youtu.be/1Bb29KxXzDs
+        // thtps://www.youtube.com/watch?v=1Bb29KxXzDs, <iframe width="560" height="315" src="https://www.youtube.com/embed/1Bb29KxXzDs" frameborder="0" allowfullscreen></iframe>
 
       ], this.Topic);
     }}
@@ -194,6 +263,30 @@ CLASS({
         this.timer.start();
       }
 
+      for ( var i = 0 ; i < this.topics.length ; i++ ) {
+        var colour = this.COLOURS[i % this.COLOURS.length];
+        var t = this.topics[i];
+        var c = this.X.lookup(t.model).create({
+          r: 20 + Math.random() * 50,
+          x: Math.random() * this.width,
+          y: Math.random() * this.height,
+          border: colour
+        }, this.Y);
+        c.topic = t;
+        c.image = t.image;
+        c.r = t.r;
+        c.roundImage = t.roundImage;
+        if ( t.colour ) c.border = t.colour;
+        this.addChild(c);
+
+        c.mass = c.r/50;
+        Movement.gravity(c, 0.03);
+        Movement.inertia(c);
+        Movement.friction(c, 0.96);
+        this.bounceOnWalls(c, this.width, this.height);
+        this.collider.add(c);
+      }
+
       var N = this.n;
       for ( var i = 0 ; i < N ; i++ ) {
         var colour = this.COLOURS[i % this.COLOURS.length];
@@ -205,14 +298,6 @@ CLASS({
           color: 'white',
           border: colour
         });
-        if ( i < this.topics.length ) {
-          var t = this.topics[i];
-          c.topic = t;
-          c.image = t.image;
-          c.r = t.r;
-          c.roundImage = t.roundImage;
-          if ( t.colour ) c.border = t.colour;
-        }
         this.addChild(c);
 
         c.mass = c.r/50;
