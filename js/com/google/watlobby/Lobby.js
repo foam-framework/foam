@@ -143,11 +143,11 @@ CLASS({
             var b = this.Bubble.create({
               r: 0, x: this.x, y: this.y, border: '#f00'
             });
-            Movement.animate(1000, function(i, j) {
+            Movement.animate(2000, function(i, j) {
               this.r = Math.min(w, h) / 2 - 6;
               this.x = ( i + 0.5 ) * w;
               this.y = ( j + 0.5 ) * h;
-            }.bind(b, i, j))();
+            }.bind(b, i, j), Movement.oscillate(0.6, 0.03, 2))();
             this.lobby.addChild(b);
             this.children_.push(b);
           }
@@ -224,7 +224,7 @@ CLASS({
         { topic: 'fiber',        image: 'fiber.jpg',        r: 180 },
         { topic: 'foam',         image: 'foampowered.png',  r: 100 },
         { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 100 },
-        { topic: 'photos',       image: 'http://www.reactorr.com/blog/wp-content/uploads/2012/01/google-office-waterloo-canada.jpg', r: 120, model: 'com.google.watlobby.PhotoAlbumBubble' },
+        { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 90, model: 'com.google.watlobby.PhotoAlbumBubble' },
         // chromebook, mine sweeper, calculator, I'm feeling lucky
         // thtps://www.youtube.com/watch?v=1Bb29KxXzDs, <iframe width="560" height="315" src="https://www.youtube.com/embed/1Bb29KxXzDs" frameborder="0" allowfullscreen></iframe>
 
