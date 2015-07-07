@@ -385,7 +385,7 @@ CLASS({
           });
         }
         if ( arg1.length !== arg2.length ) return false;
-        for ( var i = 0; i < arg1.length; ++i ) {
+        for ( var i = 0; i < arg1.length; i++ ) {
           if ( arg1[i] != arg2[i] ) return false;
         }
         return true;
@@ -674,7 +674,7 @@ CLASS({
           });
         }
         if ( arg1.length !== arg2.length ) return true;
-        for ( var i = 0; i < arg1.length; ++i ) {
+        for ( var i = 0; i < arg1.length; i++ ) {
           if ( arg1[i] != arg2[i] ) return true;
         }
         return false;
