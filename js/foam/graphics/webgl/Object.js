@@ -122,6 +122,7 @@ CLASS({
       if (translucent) {
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.enable(gl.BLEND);
+        //gl.depthMask(false);
         //gl.disable(gl.DEPTH_TEST);
       }
 
@@ -129,9 +130,9 @@ CLASS({
 
       if (translucent) {
         gl.disable(gl.BLEND);
+        //gl.depthMask(true);
         //gl.enable(gl.DEPTH_TEST);
-      }
-    },
+      }    },
   ],
 
   listeners: [

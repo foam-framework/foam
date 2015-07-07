@@ -39,7 +39,22 @@ CLASS({
     },
     {
       name: 'projectionMatrix'
-    }
+    },
+    {
+      name: 'fov',
+      help: 'Field-of-view in degrees.',
+      defaultValue: 45
+    },
+    {
+      name: 'fov',
+      help: 'Field-of-view in degrees.',
+      defaultValue: 45
+    },
+    {
+      name: 'cameraDistance',
+      help: 'Units to back the camera away from the XY plane.',
+      defaultValue: -2.5
+    },
   ],
 
   methods: [
@@ -52,11 +67,11 @@ CLASS({
       }
 
       this.projectionMatrix = this.makePerspective(
-        45, this.view.width/this.view.height, 0.1, 100.0);
+        this.fov, this.view.width/this.view.height, 0.1, 100.0);
       this.loadIdentity();
-      this.mvTranslate([-0.0, 0.0, -6.0]);
-      this.multMatrix(Matrix.RotationX(0.3).ensure4x4());
-      this.multMatrix(Matrix.RotationZ(0.2).ensure4x4());
+      this.mvTranslate([-0.0, 0.0, this.cameraDistance]);
+//      this.multMatrix(Matrix.RotationX(0.3).ensure4x4());
+//      this.multMatrix(Matrix.RotationZ(0.2).ensure4x4());
 
       // children can now draw
     },
