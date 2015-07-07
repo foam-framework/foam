@@ -65,14 +65,19 @@ CLASS({
       }
       if ( selected ) {
         this.oldMass_ = this.oldMass_ || this.mass;
-        this.oldR_ = this.oldR_ || this.r;
+        //this.oldR_ = this.oldR_ || this.r;
 
         this.mass = this.INFINITE_MASS;
         this.vx = this.vy = 0;
         this.cancel_ = Movement.animate(2000, function() {
           var width = this.lobby.width;
           var height = this.lobby.height;
+
           this.r = Math.min(width, height)/2.4;
+          var scale = (Math.min(width, height)/2.4) / this.r;
+          this.scaleX = scale;
+          this.scaleY = scale;
+
           this.x = width/2;
           this.y = height/2;
         }.bind(this), null, function() { /*self.collider.stop(); self.timer.stop();*/ })();
@@ -80,6 +85,8 @@ CLASS({
         this.mass = this.oldMass_;
         this.cancel_ = Movement.animate(1000, function() {
           this.r = this.oldR_;
+          this.scaleX = 1.0;
+          this.scaleY = 1.0;
         }.bind(this), null, function() { /*self.collider.stop(); self.timer.stop();*/ })();
       }
     },

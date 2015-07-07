@@ -132,6 +132,8 @@ CLASS({
     function render() {
       if ( ! this.gl ) return;
 
+      // TODO: better re-render detection.
+
       this.canvas.clearRect(0, 0, this.sourceView.width, this.sourceView.height);
       this.canvas.fillStyle = 'transparent';
       this.canvas.fillRect(0, 0, this.sourceView.width, this.sourceView.height);
