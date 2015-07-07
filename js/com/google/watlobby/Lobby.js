@@ -185,7 +185,7 @@ CLASS({
 CLASS({
   package: 'com.google.watlobby',
   name: 'Lobby',
-  extendsModel: 'foam.graphics.CView',
+  extendsModel: 'foam.graphics.webgl.Scene',
 
   requires: [
     'com.google.watlobby.Bubble',
@@ -255,8 +255,10 @@ CLASS({
   ],
 
   methods: [
-    function initCView() {
+    function init() {
       this.SUPER();
+
+      this.cameraDistance = -6.0;
 
       if ( ! this.timer ) {
         this.timer = this.Timer.create();

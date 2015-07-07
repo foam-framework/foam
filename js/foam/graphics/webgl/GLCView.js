@@ -32,6 +32,7 @@ CLASS({
       type: 'foam.graphics.CView',
       postSet: function() {
         this.$canvas = this.X.document.createElement('canvas');
+        this.X.document.body.appendChild(this.$canvas);
 
         this.sourceView.width$.addListener(this.resize);
         this.sourceView.height$.addListener(this.resize);
@@ -40,6 +41,8 @@ CLASS({
 
         this.sourceView.canvas = this.canvas;
         this.sourceView.view = this;
+
+        this.sourceView.initCView();
 
         this.resize();
       }
@@ -59,6 +62,9 @@ CLASS({
     },
     {
       name: 'texture'
+    },
+    {
+      name: 'textureCoords'
     }
   ],
 
@@ -82,6 +88,7 @@ CLASS({
           0.0, 0.0, 0.0
         ]
       });
+      this.textureCoords = this.mesh;
 
       this.program = this.Program.create();
       this.program.fragmentShader = this.Shader.create({
@@ -96,7 +103,7 @@ CLASS({
           void main(void) {
 
             vec4 texel = texture2D(uSampler, vec2(vTextureCoord.x, vTextureCoord.y));
-            if(texel.a < 0.5)
+            if(texel.a < 0.1)
               discard;
             gl_FragColor = texel;
           }
@@ -106,6 +113,7 @@ CLASS({
         type: "vertex",
         source: function() {/*
           attribute vec3 aVertexPosition;
+          attribute vec3 aTexPosition;
 
           uniform mat4 positionMatrix;
           uniform mat4 projectionMatrix;
@@ -114,7 +122,7 @@ CLASS({
 
           void main(void) {
             gl_Position = projectionMatrix * positionMatrix * vec4(aVertexPosition, 1.0);
-            vTextureCoord = vec2(aVertexPosition.x, aVertexPosition.y);
+            vTextureCoord = vec2(aTexPosition.x, aTexPosition.y);
           }
         */}
         });
@@ -124,11 +132,14 @@ CLASS({
     function render() {
       if ( ! this.gl ) return;
 
-      this.canvas.clearRect(0, 0, this.width, this.height);
+      this.canvas.clearRect(0, 0, this.sourceView.width, this.sourceView.height);
       this.canvas.fillStyle = 'transparent';
-      this.canvas.fillRect(0, 0, this.width, this.height);
+      this.canvas.fillRect(0, 0, this.sourceView.width, this.sourceView.height);
 
       // paint into our off-canvas buffer
+      this.canvas.translate(
+          -this.sourceView.x + this.sourceView.width,
+          -this.sourceView.y + this.sourceView.height);
       this.sourceView.paint();
 
       // Create a texture object that will contain the image.
@@ -158,13 +169,28 @@ CLASS({
       var gl = this.gl;
       if ( ! gl ) return;
 
-      if ( ! this.texture ) this.render();
+      if ( ! this.texture ) this.resize();
+
+      // update x,y from CView
+      if ( this.relativePosition ) {
+        this.relativePosition.elements[0][3] = this.sourceView.x/500;
+        this.relativePosition.elements[1][3] = this.sourceView.y/500;
+
+        this.relativePosition.elements[0][0] = this.sourceView.scaleX;
+        this.relativePosition.elements[1][1] = this.sourceView.scaleY;
+      }
 
       this.program.use();
       var sampler = gl.getUniformLocation(this.program.program, "uSampler");
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, this.texture);
       gl.uniform1i(sampler, 0);
+
+      // attribute vars
+      this.textureCoords.bind();
+      var texPositionAttribute = this.gl.getAttribLocation(this.program.program, "aTexPosition");
+      this.gl.vertexAttribPointer(texPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+      this.gl.enableVertexAttribArray(texPositionAttribute);
 
       this.SUPER(translucent);
 
@@ -178,11 +204,25 @@ CLASS({
       name: 'resize',
       framed: true,
       code: function() {
-        this.$canvas.width = this.sourceView.width;
-        this.$canvas.height = this.sourceView.height;
+        this.$canvas.width = this.sourceView.width*2 + 10;
+        this.$canvas.height = this.sourceView.height*2 + 10;
 
-        this.$canvas.style.width = this.sourceView.width;
-        this.$canvas.style.height = this.sourceView.height;
+        this.$canvas.style.width = this.sourceView.width*2 + 10;
+        this.$canvas.style.height = this.sourceView.height*2 + 10;
+
+        var w = (this.sourceView.width)/500;
+        var h = (this.sourceView.height)/500;
+
+        this.mesh = this.ArrayBuffer.create({
+          drawMode: 'triangle strip',
+          vertices: [
+            w,   h, 0.0,
+            -w,  h, 0.0,
+            w,  -h, 0.0,
+            -w, -h, 0.0
+          ]
+        });
+
 
         this.render();
       }
