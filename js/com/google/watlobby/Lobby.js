@@ -77,8 +77,8 @@ CLASS({
         this.cancel_ = null;
       }
       if ( selected ) {
-        this.oldMass_ = this.mass;
-        this.oldR_ = this.r;
+        this.oldMass_ = this.oldMass_ || this.mass;
+        this.oldR_ = this.oldR_ || this.r;
 
         this.mass = this.INFINITE_MASS;
         this.vx = this.vy = 0;
