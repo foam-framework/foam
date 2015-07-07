@@ -669,7 +669,7 @@ CLASS({
 
       if ( Array.isArray(arg1) ) {
         if ( ! Array.isArray(arg2) ) {
-          return !arg1.some(function(arg) {
+          return ! arg1.some(function(arg) {
             return arg == arg2;
           });
         }
