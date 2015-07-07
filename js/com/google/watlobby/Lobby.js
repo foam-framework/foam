@@ -127,55 +127,40 @@ CLASS({
 
   methods: [
     function setSelected(selected) {
-      var w = this.lobby.width / this.columns;
-      var h = this.lobby.height / this.rows;
-
-      try {
-        this.SimpleRectangle.create();
-      } catch (x) { console.log(x); }
-
-      var r = this.SimpleRectangle.create({background: 'pink', alpha: 0.5, x: 0, y: 0, width: this.lobby.width, height: this.lobby.height});
-      this.lobby.addChild(r);
-//      Movement.animate(2000, function() { r.alpha = 0.5; })();
-
-      for ( var i = 0 ; i < this.columns ; i++ ) {
-        for ( var j = 0 ; j < this.rows ; j++ ) {
-          var b = this.Bubble.create({
-            r: 0, x: this.x, y: this.y, border: '#f00'
-          });
-          Movement.animate(2000, function(i, j) {
-            this.r = Math.min(w, h) / 2 - 4;
-            this.x = ( i + 0.5 ) * w;
-            this.y = ( j + 0.5 ) * h;
-          }.bind(b, i, j))();
-          this.lobby.addChild(b);
-        }
-      }
-      /*
-      if ( this.cancel_ ) {
-        this.cancel_();
-        this.cancel_ = null;
-      }
       if ( selected ) {
-        this.oldMass_ = this.oldMass_ || this.mass;
-        this.oldR_ = this.oldR_ || this.r;
+        this.children_ = [];
+        var w = this.lobby.width / this.columns;
+        var h = this.lobby.height / this.rows;
 
-        this.mass = this.INFINITE_MASS;
-        this.vx = this.vy = 0;
-        this.cancel_ = Movement.animate(2000, function() {
-          var width = this.lobby.width;
-          var height = this.lobby.height;
-          this.r = Math.min(width, height)/2.4;
-          this.x = width/2;
-          this.y = height/2;
-        }.bind(this))();
+        var r = this.SimpleRectangle.create({background: 'black', alpha: 0, x: 0, y: 0, width: this.lobby.width, height: this.lobby.height});
+        this.lobby.addChild(r);
+        Movement.animate(1000, function() { r.alpha = 0.7; })();
+
+        this.children_.push(r);
+
+        for ( var i = 0 ; i < this.columns ; i++ ) {
+          for ( var j = 0 ; j < this.rows ; j++ ) {
+            var b = this.Bubble.create({
+              r: 0, x: this.x, y: this.y, border: '#f00'
+            });
+            Movement.animate(1000, function(i, j) {
+              this.r = Math.min(w, h) / 2 - 6;
+              this.x = ( i + 0.5 ) * w;
+              this.y = ( j + 0.5 ) * h;
+            }.bind(b, i, j))();
+            this.lobby.addChild(b);
+            this.children_.push(b);
+          }
+        }
       } else {
-        this.mass = this.oldMass_;
-        this.cancel_ = Movement.animate(1000, function() {
-          this.r = this.oldR_;
-        }.bind(this))();
+        // TODO: remove children from lobby when done
+        var r = this.children_[0];
+        Movement.animate(1000, function() { r.alpha = 0; })();
+        for ( var i = 1 ; i < this.children_.length ; i++ ) {
+          Movement.animate(1000, function() { this.r = 0; }.bind(this.children_[i]))();
+        }
+        this.children_ = [];
       }
-      */
     },
     function paintSelf() {
       if ( this.image ) {
@@ -204,6 +189,7 @@ CLASS({
 
   requires: [
     'com.google.watlobby.Bubble',
+    'com.google.watlobby.PhotoAlbumBubble',
     'com.google.watlobby.Topic',
     'foam.demos.physics.PhysicalCircle',
     'foam.physics.Collider',
@@ -240,7 +226,7 @@ CLASS({
         { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 100 },
         { topic: 'photos',       image: 'http://www.reactorr.com/blog/wp-content/uploads/2012/01/google-office-waterloo-canada.jpg', r: 120, model: 'com.google.watlobby.PhotoAlbumBubble' },
         // chromebook, mine sweeper, calculator, I'm feeling lucky
-        // thtps://www.youtube.com/watch?v=1Bb29KxXzDs, https://youtu.be/1Bb29KxXzDs
+        // thtps://www.youtube.com/watch?v=1Bb29KxXzDs, <iframe width="560" height="315" src="https://www.youtube.com/embed/1Bb29KxXzDs" frameborder="0" allowfullscreen></iframe>
 
       ], this.Topic);
     }}
