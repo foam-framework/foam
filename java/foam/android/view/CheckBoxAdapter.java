@@ -4,6 +4,9 @@ import android.content.Context;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
+import foam.core.PropertyValue;
+import foam.core.Value;
+
 /**
  * FOAM wrapper for Android CheckBox views.
  */
@@ -11,6 +14,13 @@ public class CheckBoxAdapter extends TwoWayViewAdapter<CheckBox> implements Comp
   public CheckBoxAdapter(Context context) {
     view = new CheckBox(context);
     view.setOnCheckedChangeListener(this);
+  }
+
+  public void setValue(Value v) {
+    super.setValue(v);
+    if (v instanceof PropertyValue) {
+      view.setText(((PropertyValue) v).getProperty().getLabel());
+    }
   }
 
   protected void updateViewFromValue() {

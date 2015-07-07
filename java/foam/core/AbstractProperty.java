@@ -22,7 +22,7 @@ public abstract class AbstractProperty
   public Object f(Object o) { return get(o); }
 
   public Value createValue(Object obj) {
-    return new Value((FObject) obj, this);
+    return new PropertyValue((FObject) obj, this);
   }
 
   public void addListener(PropertyChangeSupport obj, PropertyChangeListener listener) {
