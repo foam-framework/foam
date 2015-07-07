@@ -15,7 +15,8 @@ import foam.core.X;
  * Expects either a {@link X} with "data" to be a {@link Value}, or {@link #setValue(Value)} to be
  * called with a {@link Value} for an {@link AbstractStringProperty}.
  */
-public class FTextView extends TextView implements PropertyChangeListener {
+public class FTextView extends TextView implements PropertyView, PropertyChangeListener {
+  private Value value;
   public FTextView(Context context) {
     super(context);
   }
@@ -24,6 +25,8 @@ public class FTextView extends TextView implements PropertyChangeListener {
     setValue((Value) x.get("data"));
   }
   public void setValue(Value v) {
+    if (value != null) value.removeListener(this);
+    value = v;
     v.addListener(this);
     setText((String) v.get());
   }

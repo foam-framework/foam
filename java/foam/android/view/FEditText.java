@@ -17,7 +17,7 @@ import foam.core.X;
  * Expects either a {@link X} with "data" to be a {@link Value}, or {@link #setValue(Value)} to be
  * called with a {@link Value} for an {@link AbstractStringProperty}.
  */
-public class FEditText extends EditText implements PropertyChangeListener {
+public class FEditText extends EditText implements PropertyView, PropertyChangeListener {
   private Value value;
   private boolean feedback = false;
 
@@ -28,6 +28,7 @@ public class FEditText extends EditText implements PropertyChangeListener {
       public void afterTextChanged(Editable e) {
         feedback = true;
         value.set(e.toString());
+        feedback = false;
       }
       @Override
       public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -41,14 +42,14 @@ public class FEditText extends EditText implements PropertyChangeListener {
     setValue((Value) x.get("data"));
   }
   public void setValue(Value v) {
+    if (value != null) value.removeListener(this);
     value = v;
     v.addListener(this);
     setText((String) v.get());
   }
 
   public void propertyChange(PropertyChangeEvent event) {
-    if (feedback) feedback = false;
-    else setText((String) event.getNewValue());
+    if (!feedback) setText((String) event.getNewValue());
   }
 }
 

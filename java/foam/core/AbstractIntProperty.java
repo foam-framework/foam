@@ -17,6 +17,10 @@
 
 package foam.core;
 
+import android.content.Context;
+
+import foam.android.view.PropertyView;
+
 public abstract class AbstractIntProperty
     extends AbstractProperty
 {
@@ -30,4 +34,8 @@ public abstract class AbstractIntProperty
     return ((Integer) o).intValue();
   }
 
+  public PropertyView createView(Context context) {
+    // TODO(braden): Implement createView for numeric types.
+    return null;
+  }
 }

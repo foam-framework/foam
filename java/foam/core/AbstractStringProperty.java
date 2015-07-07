@@ -17,6 +17,11 @@
 
 package foam.core;
 
+import android.content.Context;
+
+import foam.android.view.FEditText;
+import foam.android.view.PropertyView;
+
 public abstract class AbstractStringProperty
     extends AbstractProperty
 {
@@ -34,4 +39,7 @@ public abstract class AbstractStringProperty
     return (String) o;
   }
 
+  public PropertyView createView(Context context) {
+    return new FEditText(context);
+  }
 }

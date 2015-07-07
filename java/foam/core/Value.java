@@ -22,6 +22,13 @@ public class Value {
     prop.set(obj, value);
   }
 
+  public PropertyChangeSupport getTarget() {
+    return obj;
+  }
+  public Property getProperty() {
+    return prop;
+  }
+
   public void addListener(PropertyChangeListener listener) {
     obj.addPropertyChangeListener(prop, listener);
   }

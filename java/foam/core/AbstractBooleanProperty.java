@@ -17,6 +17,11 @@
 
 package foam.core;
 
+import android.content.Context;
+
+import foam.android.view.FCheckBox;
+import foam.android.view.PropertyView;
+
 public abstract class AbstractBooleanProperty
     extends AbstractProperty
 {
@@ -28,6 +33,10 @@ public abstract class AbstractBooleanProperty
   public boolean toNative(Object o)
   {
     return ((Boolean) o).booleanValue();
+  }
+
+  public PropertyView createView(Context context) {
+    return new FCheckBox(context);
   }
 
 }

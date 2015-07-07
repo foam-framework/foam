@@ -17,6 +17,10 @@
 
 package foam.core;
 
+import android.content.Context;
+
+import foam.android.view.PropertyView;
+
 public abstract class AbstractDoubleProperty
     extends AbstractProperty
 {
@@ -30,4 +34,8 @@ public abstract class AbstractDoubleProperty
     return ((Double) o).doubleValue();
   }
 
+  public PropertyView createView(Context context) {
+    // TODO(braden): Implement createView for numeric types.
+    return null;
+  }
 }
