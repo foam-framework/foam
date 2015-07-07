@@ -72,13 +72,17 @@ CLASS({
       }
     },
     function setSelected(selected) {
+      if ( this.cancel_ ) {
+        this.cancel_();
+        this.cancel_ = null;
+      }
       if ( selected ) {
         this.oldMass_ = this.mass;
         this.oldR_ = this.r;
 
         this.mass = this.INFINITE_MASS;
         this.vx = this.vy = 0;
-        Movement.animate(2000, function() {
+        this.cancel_ = Movement.animate(2000, function() {
           var width = this.lobby.width;
           var height = this.lobby.height;
           this.r = Math.min(width, height)/2.4;
@@ -87,7 +91,7 @@ CLASS({
         }.bind(this), null, function() { /*self.collider.stop(); self.timer.stop();*/ })();
       } else {
         this.mass = this.oldMass_;
-        Movement.animate(1000, function() {
+        this.cancel_ = Movement.animate(1000, function() {
           this.r = this.oldR_;
         }.bind(this), null, function() { /*self.collider.stop(); self.timer.stop();*/ })();
       }
