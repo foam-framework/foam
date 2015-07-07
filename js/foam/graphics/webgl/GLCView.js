@@ -32,7 +32,7 @@ CLASS({
       type: 'foam.graphics.CView',
       postSet: function() {
         this.$canvas = this.X.document.createElement('canvas');
-        this.X.document.body.appendChild(this.$canvas);
+        //this.X.document.body.appendChild(this.$canvas); // Debug
 
         this.sourceView.width$.addListener(this.resize);
         this.sourceView.height$.addListener(this.resize);
