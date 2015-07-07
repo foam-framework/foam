@@ -22,15 +22,19 @@ CLASS({
   extendsModel: 'foam.graphics.webgl.GLView',
 
   imports: [
-    'positionMatrix$ as basePosMatrix$',
     'projectionMatrix$'
   ],
   exports: [
     'gl$',
-    'positionMatrix$'
   ],
 
   properties: [
+    {
+      name: 'sylvesterLib',
+      factory: function() {
+        return this.SylvesterLib.create();
+      }
+    },
     {
       name: 'relativePosition',
       type: 'Matrix',
@@ -54,12 +58,6 @@ CLASS({
     {
       name: 'positionMatrix',
       type: 'Matrix',
-      dynamicValue: function() {
-        this.SylvesterLib.loaded;
-        var b = this.basePosMatrix || (GLOBAL.Matrix && GLOBAL.Matrix.I(4));
-        var r = this.relativePosition || (GLOBAL.Matrix && GLOBAL.Matrix.I(4));
-        return b && r && b.x(r);
-      }
     },
     {
       name: 'mesh',
@@ -67,12 +65,26 @@ CLASS({
     },
     {
       name: 'program',
+    },
+    {
+      name: 'parent',
+      postSet: function(old, nu) {
+        if ( old ) {
+          old.positionMatrix$.removeListener(this.updatePosition);
+        }
+        if ( nu ) {
+          nu.positionMatrix$.addListener(this.updatePosition);
+        }
+      }
     }
   ],
 
   methods: [
     function init() {
-      this.SylvesterLib.create();
+
+      this.sylvesterLib.loaded$.addListener(this.updatePosition);
+      this.relativePosition$.addListener(this.updatePosition);
+
     },
 
     function paintSelf() {
@@ -101,8 +113,18 @@ CLASS({
 
       this.mesh.draw();
     },
+  ],
 
-
+  listeners: [
+    {
+      name: 'updatePosition',
+      framed: true,
+      code: function() {
+        var b = this.parent.positionMatrix || (GLOBAL.Matrix && GLOBAL.Matrix.I(4));
+        var r = this.relativePosition || (GLOBAL.Matrix && GLOBAL.Matrix.I(4));
+        if ( b && r ) this.positionMatrix = b.x(r);
+      },
+    }
 
   ]
 

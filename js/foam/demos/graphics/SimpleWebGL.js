@@ -39,6 +39,7 @@ CLASS({
     function init() {
       //////////////////////////////////////////////
       var obj = this.Object.create();
+      var bigSquare = obj;
 
       var prog = this.Program.create({}, obj.Y);
       var frag = this.Shader.create({
@@ -136,7 +137,7 @@ CLASS({
 
       //obj.sourceView = circle;
 
-      this.addChild(circle);
+      bigSquare.addChild(circle);
 
       ///////////////////////////////////////////////
 

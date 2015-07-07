@@ -23,7 +23,6 @@ CLASS({
 
   exports: [
     'gl$',
-    'positionMatrix$',
     'projectionMatrix$',
     'as scene'
   ],

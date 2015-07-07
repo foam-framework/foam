@@ -118,6 +118,18 @@ CLASS({
           The height of this view. Painting is not automatically clipped, so a view
           may render outside of its apparent rectangle. */}
     },
+    {
+      name: 'positionMatrix',
+      type: 'Matrix',
+      getter: function() {
+        if ( this.instance_.positionMatrix ) return this.instance_.positionMatrix;
+        if (this.parent && this.parent.positionMatrix ) {
+          return this.parent.positionMatrix;
+        }
+        return null;
+      }
+    },
+
 
   ],
 

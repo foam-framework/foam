@@ -64,6 +64,8 @@ CLASS({
 
   methods: [
     function init() {
+      this.SUPER();
+
       this.relativePosition = [
         [1.0, 0.0, 0.0, 0.0],
         [0.0, 1.0, 0.0, 0.0],
