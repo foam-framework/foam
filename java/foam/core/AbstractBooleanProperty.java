@@ -19,7 +19,7 @@ package foam.core;
 
 import android.content.Context;
 
-import foam.android.view.FCheckBox;
+import foam.android.view.CheckBoxAdapter;
 import foam.android.view.PropertyView;
 
 public abstract class AbstractBooleanProperty
@@ -36,7 +36,7 @@ public abstract class AbstractBooleanProperty
   }
 
   public PropertyView createView(Context context) {
-    return new FCheckBox(context);
+    return new CheckBoxAdapter(context);
   }
 
 }

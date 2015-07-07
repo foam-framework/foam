@@ -1,7 +1,6 @@
 package foam.android.view;
 
 import android.content.Context;
-import android.view.View;
 import android.widget.LinearLayout;
 
 import java.util.HashMap;
@@ -50,7 +49,7 @@ public class DetailView extends LinearLayout {
     for (Property p : model.getProperties()) {
       PropertyView pView = p.createView(getContext());
       propertyViews.put(p.getName(), pView);
-      addView((View) pView);
+      addView(pView.getView());
     }
   }
 
