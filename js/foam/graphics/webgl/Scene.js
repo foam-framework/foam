@@ -19,12 +19,13 @@ CLASS({
   package: 'foam.graphics.webgl',
   name: 'Scene',
   requires: ['foam.graphics.webgl.SylvesterLib'],
-  extendsModel: 'foam.graphics.CView',
+  extendsModel: 'foam.graphics.webgl.GLView',
 
   exports: [
     'gl$',
     'positionMatrix$',
-    'projectionMatrix$'
+    'projectionMatrix$',
+    'as scene'
   ],
 
   properties: [

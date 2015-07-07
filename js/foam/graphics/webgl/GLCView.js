@@ -26,14 +26,12 @@ CLASS({
 
   extendsModel: 'foam.graphics.webgl.Object',
 
-
   properties: [
     {
       name: 'sourceView',
       type: 'foam.graphics.CView',
       postSet: function() {
         this.$canvas = this.X.document.createElement('canvas');
-        this.X.document.body.appendChild(this.$canvas);
 
         this.sourceView.width$.addListener(this.resize);
         this.sourceView.height$.addListener(this.resize);
@@ -66,6 +64,13 @@ CLASS({
 
   methods: [
     function init() {
+      this.relativePosition = [
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.01],
+        [0.0, 0.0, 0.0, 1.0]
+      ]
+
       this.mesh = this.ArrayBuffer.create({
         drawMode: 'triangle strip',
         vertices: [
@@ -87,7 +92,11 @@ CLASS({
           uniform sampler2D uSampler;
 
           void main(void) {
-            gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.x, vTextureCoord.y));
+
+            vec4 texel = texture2D(uSampler, vec2(vTextureCoord.x, vTextureCoord.y));
+            if(texel.a < 0.5)
+              discard;
+            gl_FragColor = texel;
           }
         */}
         });
@@ -128,6 +137,7 @@ CLASS({
 
       // Flip the image's Y axis to match the WebGL texture coordinate space.
       this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
+      //this.gl.pixelStorei(this.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
 
       // Set the parameters so we can render any size image.
       this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
@@ -152,7 +162,14 @@ CLASS({
       gl.bindTexture(gl.TEXTURE_2D, this.texture);
       gl.uniform1i(sampler, 0);
 
+      //gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+      //gl.enable(gl.BLEND);
+      //gl.disable(gl.DEPTH_TEST);
+
       this.SUPER();
+
+      //gl.disable(gl.BLEND);
+      //gl.enable(gl.DEPTH_TEST);
     },
 
     // destroy texture?

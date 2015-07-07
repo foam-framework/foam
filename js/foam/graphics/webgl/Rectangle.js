@@ -20,7 +20,7 @@ CLASS({
   name: 'Rectangle',
   requires: [ 'foam.graphics.webgl.Shader' ],
 
-  extendsModel: 'foam.graphics.CView',
+  extendsModel: 'foam.graphics.webgl.GLView',
 
   properties: [
     {

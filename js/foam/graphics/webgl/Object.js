@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.graphics.webgl',
   name: 'Object',
   requires: ['foam.graphics.webgl.SylvesterLib'],
-  extendsModel: 'foam.graphics.CView',
+  extendsModel: 'foam.graphics.webgl.GLView',
 
   imports: [
     'positionMatrix$ as basePosMatrix$',
@@ -35,8 +35,18 @@ CLASS({
       name: 'relativePosition',
       type: 'Matrix',
       getter: function() {
-        if ( this.instance_.relativePosition ) return this.instance_.relativePosition;
-        if ( GLOBAL.Matrix ) return Matrix.I(4);
+        if ( GLOBAL.Matrix ) {
+          if ( this.instance_.relativePosition ) {
+            if ( Array.isArray(this.instance_.relativePosition) ) {
+              // convert to Matrix
+              this.instance_.relativePosition = $M(this.instance_.relativePosition);
+            }
+            return this.instance_.relativePosition;
+          } else {
+            return Matrix.I(4);
+          }
+        }
+
         return null;
       }
 
