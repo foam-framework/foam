@@ -76,6 +76,11 @@ CLASS({
           nu.positionMatrix$.addListener(this.updatePosition);
         }
       }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'translucent',
+      defaultValue: false
     }
   ],
 
@@ -87,7 +92,10 @@ CLASS({
 
     },
 
-    function paintSelf() {
+    function paintSelf(translucent) {
+      // only render on the correct pass
+      if ( this.translucent !== translucent ) return;
+
       var gl = this.gl;
       if ( ! gl ) return;
 
@@ -111,7 +119,18 @@ CLASS({
         this.gl.uniformMatrix4fv(posUniform, false, new Float32Array(this.positionMatrix.flatten()));
       }
 
+      if (translucent) {
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.enable(gl.BLEND);
+        //gl.disable(gl.DEPTH_TEST);
+      }
+
       this.mesh.draw();
+
+      if (translucent) {
+        gl.disable(gl.BLEND);
+        //gl.enable(gl.DEPTH_TEST);
+      }
     },
   ],
 

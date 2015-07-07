@@ -129,8 +129,6 @@ CLASS({
         return null;
       }
     },
-
-
   ],
 
   methods: {
@@ -161,15 +159,16 @@ CLASS({
 
     erase: function() { return; },
 
-    paintChildren: function() { /* Paints each child. */
+    paintChildren: function(translucent) { /* Paints each child. */
       for ( var i = 0 ; i < this.children.length ; i++ ) {
         var child = this.children[i];
-        child.paint();
+        child.paint(translucent);
       }
     },
 
-    paint: function() { /* Translates the canvas to our ($$DOC{ref:'.x'}, $$DOC{ref:'.y'}),
-                          does a $$DOC{ref:'.paintSelf'} then paints all the children. */
+    paint: function(translucent) { /* Draws this object. If translucent is false,
+      this is the first pass for opaque objects. If true, this is the second
+      pass for translucent or transparent objects. */
       if ( ! this.$ ) return; // no canvas element, so do nothing
       if ( ! this.width || ! this.height ) return;
       if ( this.state === 'initial' ) {
@@ -177,8 +176,8 @@ CLASS({
       }
       if ( this.suspended ) return; // we allowed initialization, but if suspended don't paint
 
-      this.paintSelf();
-      this.paintChildren();
+      this.paintSelf(translucent);
+      this.paintChildren(translucent);
     },
 
     transform: function() {

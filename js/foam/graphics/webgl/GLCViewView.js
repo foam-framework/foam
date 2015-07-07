@@ -81,7 +81,8 @@ CLASS({
       isFramed: true,
       code: function() {
         if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-        this.cview.paint();
+        this.cview.paint(false); // opaque items draw
+        this.cview.paint(true); // translucent items draw
       },
       documentation: function() {/*
           Clears the canvas and triggers a repaint of the root $$DOC{ref:'foam.graphics.CView'}

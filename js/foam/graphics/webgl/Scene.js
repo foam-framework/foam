@@ -43,11 +43,13 @@ CLASS({
   ],
 
   methods: [
-    function paintSelf() {
+    function paintSelf(translucent) {
       var gl = this.gl;
       if ( ! gl || ! this.sylvesterLib.loaded ) return;
 
-      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      if ( ! translucent ) {
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      }
 
       this.projectionMatrix = this.makePerspective(
         45, this.view.width/this.view.height, 0.1, 100.0);

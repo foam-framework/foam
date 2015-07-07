@@ -78,6 +78,7 @@ CLASS({
 
       obj.program = prog;
       obj.mesh = mesh;
+      obj.translucent = true;
 
       this.addChild(obj);
       this.object = obj;
@@ -124,6 +125,13 @@ CLASS({
       obj.program = prog;
       obj.mesh = mesh;
 
+      obj.relativePosition = [
+        [1.0, 0.0, 0.0, 0.3],
+        [0.0, 1.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.3],
+        [0.0, 0.0, 0.0, 1.0]
+      ]
+
       this.addChild(obj);
 
 
@@ -138,6 +146,7 @@ CLASS({
       //obj.sourceView = circle;
 
       bigSquare.addChild(circle);
+      //obj.addChild(circle);
 
       ///////////////////////////////////////////////
 
@@ -150,7 +159,7 @@ CLASS({
       name: 'update',
       framed: true,
       code: function() {
-        this.paint();
+        this.view && this.view.paint();
 
         if ( this.object.relativePosition ) {
           this.object.relativePosition =

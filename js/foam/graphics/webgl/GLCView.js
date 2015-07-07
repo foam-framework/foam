@@ -152,7 +152,9 @@ CLASS({
       this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.$canvas);
     },
 
-    function paintSelf() {
+    function paintSelf(translucent) {
+      if ( this.translucent !== translucent ) return;
+
       var gl = this.gl;
       if ( ! gl ) return;
 
@@ -164,14 +166,8 @@ CLASS({
       gl.bindTexture(gl.TEXTURE_2D, this.texture);
       gl.uniform1i(sampler, 0);
 
-      //gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-      //gl.enable(gl.BLEND);
-      //gl.disable(gl.DEPTH_TEST);
+      this.SUPER(translucent);
 
-      this.SUPER();
-
-      //gl.disable(gl.BLEND);
-      //gl.enable(gl.DEPTH_TEST);
     },
 
     // destroy texture?
