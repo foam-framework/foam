@@ -34,17 +34,28 @@ CLASS({
         this.$canvas = this.X.document.createElement('canvas');
         //this.X.document.body.appendChild(this.$canvas); // Debug
 
-        this.sourceView.width$.addListener(this.resize);
-        this.sourceView.height$.addListener(this.resize);
+        this.sourceView.addListener(this.resize);
+        //this.sourceView.height$.addListener(this.resize);
 
         this.canvas = this.$canvas.getContext('2d');
 
         this.sourceView.canvas = this.canvas;
-        this.sourceView.view = this;
+        this.sourceView.view = this.glueView;
 
         this.sourceView.initCView();
 
         this.resize();
+      }
+    },
+    {
+      name: 'glueView',
+      help: 'Provides a CViewView stand-in for the CViews inside sourceView.',
+      getter: function() {
+        return {
+          canvas: this.canvas,
+          $: this.$,
+          paint: this.resize,
+        };
       }
     },
     {
@@ -65,6 +76,11 @@ CLASS({
     },
     {
       name: 'textureCoords'
+    },
+    {
+      name: 'painting',
+      model_: 'BooleanProperty',
+      defaultValue: false
     }
   ],
 
@@ -130,19 +146,25 @@ CLASS({
     },
 
     function render() {
-      if ( ! this.gl ) return;
 
       // TODO: better re-render detection.
 
-      this.canvas.clearRect(0, 0, this.sourceView.width, this.sourceView.height);
+      this.canvas.clearRect(0, 0, this.$canvas.width, this.$canvas.height);
       this.canvas.fillStyle = 'transparent';
-      this.canvas.fillRect(0, 0, this.sourceView.width, this.sourceView.height);
+      this.canvas.fillRect(0, 0, this.$canvas.width, this.$canvas.height);
 
       // paint into our off-canvas buffer
+      this.canvas.save();
       this.canvas.translate(
           -this.sourceView.x + this.sourceView.width,
           -this.sourceView.y + this.sourceView.height);
+      this.painting = true;
       this.sourceView.paint();
+      this.painting = false;
+      this.canvas.restore();
+
+      // sourceView had a chance to initialize, but if gl isn't ready we can't copy to texture yet
+      if ( ! this.gl ) return;
 
       // Create a texture object that will contain the image.
       this.texture = this.gl.createTexture();
@@ -205,7 +227,15 @@ CLASS({
     {
       name: 'resize',
       framed: true,
-      code: function() {
+      code: function(obj, topic, old, nu) {
+        // avoid listener events caused by us: during painting, or specifically x, y, scaleX, scaleY, etc.
+        if ( this.painting ||
+            topic && topic[0] && topic[1] && topic[0] == 'property' &&
+           ( topic[1] == 'x' || topic[1] == 'y' || topic[1] == 'scaleX' || topic[1] == 'scaleY' ||
+           topic[1] == 'vx' || topic[1] == 'vy' || topic[1] == 'state' || topic[1] == 'canvas')) {
+            return;
+        }
+        //console.log("rendering due to ", obj && obj.name_, topic && topic[1], old, nu);
         this.$canvas.width = this.sourceView.width*2 + 10;
         this.$canvas.height = this.sourceView.height*2 + 10;
 
