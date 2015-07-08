@@ -25,9 +25,6 @@ var __DATA;
 
   MODEL = CLASS = function(json) {
     json.model_ = 'Model';
-    if ( document && document.currentScript )
-      json.sourcePath = document.currentScript.src;
-
     if ( document && document.currentScript && document.currentScript.callback )
       document.currentScript.callback(json, oldClass);
     else

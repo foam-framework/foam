@@ -16,7 +16,6 @@
  */
 
 CLASS({
-   "model_": "Model",
    "package": "foam.ui.layout",
    "name": "PositionedViewTrait",
    "properties": [
@@ -62,15 +61,5 @@ CLASS({
          "units": "px",
          "defaultValue": 100
       }
-   ],
-   "actions": [],
-   "constants": [],
-   "messages": [],
-   "methods": [],
-   "listeners": [],
-   "templates": [],
-   "models": [],
-   "tests": [],
-   "relationships": [],
-   "issues": []
+   ]
 });
