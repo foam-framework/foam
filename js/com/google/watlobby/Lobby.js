@@ -136,16 +136,19 @@ CLASS({
         this.children_.push(r);
 
         var video = this.video;
+        var vw = 560*2.5;
+        var vh = 315*2.5;
+
         var v = this.ViewCView.create({innerView: {
-          toHTML: function() { return '<iframe width="560" height="315" src="https://www.youtube.com/embed/' + video + '?autoplay=1" frameborder="0" allowfullscreen></iframe>'; },
+          toHTML: function() { return '<iframe width="' + vw + '" height="' + vh + '" src="https://www.youtube.com/embed/' + video + '?autoplay=1" frameborder="0" allowfullscreen></iframe>'; },
           initHTML: function() {}
         }, x: this.x, y: this.y, width: 0, height: 0});
 
         Movement.animate(2000, function(i, j) {
-          v.width = 560;
-          v.height = 315;
-          v.x = (w-560)/2;
-          v.y = (h-315)/2;
+          v.width = vw;
+          v.height = vh;
+          v.x = (w-vw)/2;
+          v.y = (h-vh)/2;
         }, Movement.oscillate(0.6, 0.03, 2))();
         this.lobby.addChild(v);
         this.children_.push(v);
