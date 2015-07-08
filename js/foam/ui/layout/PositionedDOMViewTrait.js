@@ -16,111 +16,65 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "package": "foam.ui.layout",
-   "name": "PositionedDOMViewTrait",
-   "traits": [
-      "foam.ui.layout.PositionedViewTrait"
-   ],
-   "properties": [
+   package: "foam.ui.layout",
+   name: "PositionedDOMViewTrait",
+   traits: [ "foam.ui.layout.PositionedViewTrait" ],
+   properties: [
       {
-         "model_": "Property",
-         "name": "tagName",
-         "defaultValue": "div"
+        name: "tagName",
+        defaultValue: "div"
       }
    ],
-   "actions": [],
-   "constants": [],
-   "messages": [],
-   "methods": [
-      {
-         "model_": "Method",
-         "name": "toHTML",
-         "code": function () {
-      return '<' + this.tagName + ' id="' + this.id + '"' + this.layoutStyle() + this.cssClassAttr() + '>' +
-        this.toInnerHTML() +
-        '</div>';
-    },
-         "args": []
-      },
-      {
-         "model_": "Method",
-         "name": "layoutStyle",
-         "code": function () {
-      return ' style="' +
-        '-webkit-transform:' + this.transform() +
-        ';width:' + this.styleWidth() +
-        ';height:' + this.styleHeight() +
-        ';position:absolute;"';
-    },
-         "args": []
-      },
-      {
-         "model_": "Method",
-         "name": "initHTML",
-         "code": function () {
-      this.SUPER();
-      var self = this;
-      this.X.dynamic(
-        function() { self.x; self.y; self.z; },
-        this.position);
-      this.X.dynamic(
-        function() { self.width; self.height; },
-        this.resize);
-      this.$.style.position = 'absolute';
-      this.position();
-      this.resize();
-    },
-         "args": []
-      },
-      {
-         "model_": "Method",
-         "name": "transform",
-         "code": function () {
-      return 'translate3d(' +
-        this.x + 'px,' +
-        this.y + 'px,' +
-        this.z + 'px)';
-    },
-         "args": []
-      },
-      {
-         "model_": "Method",
-         "name": "styleWidth",
-         "code": function () { return this.width + 'px'; },
-         "args": []
-      },
-      {
-         "model_": "Method",
-         "name": "styleHeight",
-         "code": function () { return this.height + 'px'; },
-         "args": []
-      }
+   methods: [
+     function toHTML() {
+       return '<' + this.tagName + ' id="' + this.id + '"' + this.layoutStyle() + this.cssClassAttr() + '>' +
+         this.toInnerHTML() +
+         '</div>';
+     },
+     function layoutStyle() {
+       return ' style="' +
+         '-webkit-transform:' + this.transform() +
+         ';width:' + this.styleWidth() +
+         ';height:' + this.styleHeight() +
+         ';position:absolute;"';
+     },
+     function initHTML() {
+       this.SUPER();
+       var self = this;
+       this.X.dynamic(
+         function() { self.x; self.y; self.z; },
+         this.position);
+       this.X.dynamic(
+         function() { self.width; self.height; },
+         this.resize);
+       this.$.style.position = 'absolute';
+       this.position();
+       this.resize();
+     },
+     function transform() {
+       return 'translate3d(' +
+         this.x + 'px,' +
+         this.y + 'px,' +
+         this.z + 'px)';
+     },
+     function styleWidth() { return this.width + 'px'; },
+     function styleHeight() { return this.height + 'px'; }
    ],
-   "listeners": [
-      {
-         "model_": "Method",
-         "name": "position",
-         "code": function () {
-        if ( ! this.$ ) return;
-        this.$.style.webkitTransform = this.transform();
-      },
-         "args": []
-      },
-      {
-         "model_": "Method",
-         "name": "resize",
-         "code": function () {
-        if ( ! this.$ ) return;
-        this.$.style.width  = this.styleWidth();
-        this.$.style.height = this.styleHeight();
-      },
-         "args": []
-      }
-   ],
-   "templates": [],
-   "models": [],
-   "tests": [],
-   "relationships": [],
-   "issues": []
+   listeners: [
+     {
+       name: "position",
+       code: function () {
+         if ( ! this.$ ) return;
+         this.$.style.webkitTransform = this.transform();
+       }
+     },
+     {
+       name: "resize",
+       code: function () {
+         if ( ! this.$ ) return;
+         this.$.style.width  = this.styleWidth();
+         this.$.style.height = this.styleHeight();
+       }
+     }
+   ]
 });
