@@ -44,7 +44,7 @@ CLASS({
         } catch(e) {}
 
         if (glc) {
-          glc.clearColor(0.0, 0.0, 0.0, 1.0); // Set clear color to black, fully transparent
+          glc.clearColor(0.0, 0.0, 0.0, 0.0); // Set clear color to black, fully transparent
           glc.enable(glc.DEPTH_TEST); // Enable depth testing
           glc.depthFunc(glc.LEQUAL); // Near things obscure far things
           glc.clear(glc.COLOR_BUFFER_BIT|glc.DEPTH_BUFFER_BIT); // Clear the color/depth buffer.
