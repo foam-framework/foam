@@ -22,29 +22,25 @@ CLASS({
    traits: [ "foam.ui.layout.PositionedDOMViewTrait" ],
    properties: [
       {
-         "model_": "Property",
-         "name": "view"
+         name: "view"
       },
       {
-         "model_": "Property",
-         "name": "width",
-         "defaultValue": 300
+         name: "width",
+         defaultValue: 300
       },
       {
-        "name": "preferredWidth",
-        "defaultValueFn": function() {
+        name: "preferredWidth",
+        defaultValueFn: function() {
           return this.view.preferredWidth;
         }
       },
       {
-         "model_": "Property",
-         "name": "height",
-         "defaultValue": 300
+         name: "height",
+         defaultValue: 300
       },
       {
-         "model_": "Property",
-         "name": "className",
-         "defaultValue": "floatingView"
+         name: "className",
+         defaultValue: "floatingView"
       }
    ],
    methods: [
