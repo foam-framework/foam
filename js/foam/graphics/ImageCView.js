@@ -49,6 +49,7 @@ CLASS({
       this.SUPER();
     },
     paintSelf: function() {
+      this.canvas.globalAlpha = this.alpha;
       this.canvas.drawImage(this.image_, 0, 0);
     }
   }
