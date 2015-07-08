@@ -110,6 +110,7 @@ CLASS({
   extendsModel: 'com.google.watlobby.Bubble',
 
   requires: [
+    'foam.graphics.ImageCView',
     'foam.graphics.SimpleRectangle',
     'foam.graphics.ViewCView',
     'com.google.watlobby.Bubble'
@@ -119,10 +120,18 @@ CLASS({
     {
       name: 'video',
       defaultValue: '1Bb29KxXzDs'
+    },
+    {
+      name: 'playIcon',
+      factory: function() { return this.ImageCView.create({src: 'play.png', x:-40, y:-40, width: 80, height: 80, alpha: 0.25}); }
     }
   ],
 
   methods: [
+    function initCView() {
+      this.SUPER();
+      this.addChild(this.playIcon);
+    },
     function setSelected(selected) {
       if ( selected ) {
         this.children_ = [];
@@ -357,7 +366,7 @@ CLASS({
       }
 
       var N = this.n;
-      for ( var i = 0 ; i < N ; i++ ) {
+      for ( var i = 0 ; i < N && false ; i++ ) {
         var colour = this.COLOURS[i % this.COLOURS.length];
         var c = this.Bubble.create({
           r: 20 + Math.random() * 50,
@@ -377,7 +386,7 @@ CLASS({
         this.collider.add(c);
       }
 
-      for ( var i = 0 ; i < 200 ; i++ ) {
+      for ( var i = 0 ; i < 200 && i < 20 ; i++ ) {
         var b = this.PhysicalCircle.create({
           r: 5,
           x: Math.random() * this.width,
