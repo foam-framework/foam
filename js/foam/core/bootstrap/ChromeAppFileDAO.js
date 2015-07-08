@@ -97,6 +97,8 @@ MODEL({
 
           tag.callback = function(data, latch) {
             var work = [anop];
+	    data.sourcePath = this.toURL_(key);
+	    
             var obj = JSONUtil.mapToObj(this.X, data, undefined, work);
 
             if ( ! obj ) throw new Error('Failed to decode data: ' + data);
