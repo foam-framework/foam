@@ -16,13 +16,11 @@
  */
 
 CLASS({
-   "package": "foam.ui.layout",
-   "name": "FloatingView",
-   "extendsModel": "foam.ui.View",
-   "traits": [
-      "foam.ui.layout.PositionedDOMViewTrait"
-   ],
-   "properties": [
+   package: "foam.ui.layout",
+   name: "FloatingView",
+   extendsModel: "foam.ui.View",
+   traits: [ "foam.ui.layout.PositionedDOMViewTrait" ],
+   properties: [
       {
          "model_": "Property",
          "name": "view"
@@ -49,27 +47,16 @@ CLASS({
          "defaultValue": "floatingView"
       }
    ],
-   "actions": [],
-   "constants": [],
-   "messages": [],
-   "methods": [
-     {
-       "model_": "Method",
-       "name": "destroy",
-       "args": [],
-       "code": function() {
-         this.SUPER();
-         this.view.destroy && this.view.destroy();
-       }
+   methods: [
+     function destroy() {
+       this.SUPER();
+       this.view.destroy && this.view.destroy();
      }
    ],
-   "listeners": [],
-   "templates": [
+   templates: [
       {
-         "model_": "Template",
-         "name": "toInnerHTML",
-         "args": [],
-         "template": " %%view "
+         name: "toInnerHTML",
+         template: " %%view "
       }
    ]
 });
