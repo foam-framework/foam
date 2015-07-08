@@ -16,60 +16,43 @@
  */
 
 CLASS({
-   "package": "foam.ui.layout",
-   "name": "FloatingView",
-   "extendsModel": "foam.ui.View",
-   "traits": [
-      "foam.ui.layout.PositionedDOMViewTrait"
-   ],
-   "properties": [
+   package: "foam.ui.layout",
+   name: "FloatingView",
+   extendsModel: "foam.ui.View",
+   traits: [ "foam.ui.layout.PositionedDOMViewTrait" ],
+   properties: [
       {
-         "model_": "Property",
-         "name": "view"
+         name: "view"
       },
       {
-         "model_": "Property",
-         "name": "width",
-         "defaultValue": 300
+         name: "width",
+         defaultValue: 300
       },
       {
-        "name": "preferredWidth",
-        "defaultValueFn": function() {
+        name: "preferredWidth",
+        defaultValueFn: function() {
           return this.view.preferredWidth;
         }
       },
       {
-         "model_": "Property",
-         "name": "height",
-         "defaultValue": 300
+         name: "height",
+         defaultValue: 300
       },
       {
-         "model_": "Property",
-         "name": "className",
-         "defaultValue": "floatingView"
+         name: "className",
+         defaultValue: "floatingView"
       }
    ],
-   "actions": [],
-   "constants": [],
-   "messages": [],
-   "methods": [
-     {
-       "model_": "Method",
-       "name": "destroy",
-       "args": [],
-       "code": function() {
-         this.SUPER();
-         this.view.destroy && this.view.destroy();
-       }
+   methods: [
+     function destroy() {
+       this.SUPER();
+       this.view.destroy && this.view.destroy();
      }
    ],
-   "listeners": [],
-   "templates": [
+   templates: [
       {
-         "model_": "Template",
-         "name": "toInnerHTML",
-         "args": [],
-         "template": " %%view "
+         name: "toInnerHTML",
+         template: " %%view "
       }
    ]
 });

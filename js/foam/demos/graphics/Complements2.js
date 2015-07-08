@@ -17,7 +17,7 @@
 
 CLASS({
   package: 'foam.demos.graphics',
-  name: 'Complements',
+  name: 'Complements2',
 
   extendsModel: 'foam.graphics.CView',
 
@@ -29,6 +29,8 @@ CLASS({
   imports: [ 'timer' ],
 
   properties: [
+    { name: 'width', defaultValue: 1000 },
+    { name: 'height', defaultValue: 1000 },
     {
       name: 'timer',
       factory: function() { return this.Timer.create(); }
@@ -36,7 +38,7 @@ CLASS({
     { name: 'background', defaultValue: 'pink' },
     {
       name:  'r',
-      defaultValue: 140,
+      defaultValue: 300,
       postSet: function(_, r) { this.width = this.height = 2*r + 100; }
     }
   ],
@@ -50,16 +52,21 @@ CLASS({
       var D = this.width;
       var timer = this.timer;
 
-      for ( var a = 0 ; a < 2*Math.PI ; a += 2*Math.PI/13 ) {
+      for ( var a = 0 ; a < 2*Math.PI ; a += 2*Math.PI/40 ) {
         var circle = this.Circle.create({
-          x:     D/2 + R * Math.sin(a),
-          y:     D/2 + R * Math.cos(a),
-          color: 'hsl(' + 180*a/Math.PI + ', 90%, 60%)'
+          color: 'white',
+          borderWidth: 4,
+          border: 'hsl(' + 180*a/Math.PI + ', 90%, 60%)'
         });
 
         Events.dynamic((function (circle, a) {
           return function() {
-            circle.r = 10 + 30 * Math.abs(Math.sin(a + timer.time/3000)); };
+            var a2 = timer.time / 60000 * 2 * Math.PI;
+            var r2 = R * Math.cos(2*(a + a2 + Math.PI/2));
+            circle.r = 20 + 40 * Math.abs(Math.pow(Math.sin(2*(a + a2 + Math.PI/4)),4));
+            circle.x = 20 + D/2 + (r2) * Math.sin(a + a2);
+            circle.y = 20 + D/2 + (r2) * Math.cos(a + a2);
+          };
         })(circle, a));
         this.addChild(circle);
       }
