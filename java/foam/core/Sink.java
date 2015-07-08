@@ -17,9 +17,7 @@
 
 package foam.core;
 
-public interface Sink
-{
-
+public interface Sink {
   public Object put(X x, Object obj)
     throws DAOException, DAOInternalException;
 

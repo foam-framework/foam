@@ -26,7 +26,7 @@ public interface Index
 
   public Object remove(Object state, Object value);
   
-  public Plan plan(Object state, Sink sink, Predicate p, Comparator c, long skip, long limit);
+  public Plan plan(Object state, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit);
 
   public long size(Object state);
 

@@ -56,13 +56,13 @@ public class ProxyDAO
     getDelegate().remove(x, obj);
   }
 
-  public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
+  public Sink select_(X x, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit)
     throws DAOException, DAOInternalException
   {
     return getDelegate().select_(x, sink, p, c, skip, limit);
   }
 
-  public void removeAll_(X x, Predicate p)
+  public void removeAll_(X x, Expression<Boolean> p)
     throws DAOException, DAOInternalException
   {
     getDelegate().removeAll_(x, p);

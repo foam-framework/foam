@@ -32,7 +32,7 @@ public interface Plan
       X          x,
       Object      state,
       Sink       sink,
-      Predicate  p,
+      Expression<Boolean>  p,
       Comparator c,
       long       skip,
       long       limit)

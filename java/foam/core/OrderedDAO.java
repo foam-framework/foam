@@ -29,7 +29,7 @@ public class OrderedDAO
         compare_ = compare;
     }
 
-    public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
+    public Sink select_(X x, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit)
         throws DAOException, DAOInternalException
     {
         Comparator compare = (c == null) ? compare_ :

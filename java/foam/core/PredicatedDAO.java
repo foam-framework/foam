@@ -1,14 +1,12 @@
 /**
- *
- * @license
- * Copyright 2013 Google Inc. All Rights Reserved.
- *
+ * @license Copyright 2013 Google Inc. All Rights Reserved.
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,44 +16,35 @@
 
 package foam.core;
 
-import static foam.core.MLang.AND;
-import static foam.core.MLang.TRUE;
-import static foam.core.PredicateUtils.toExpr;
-import static foam.core.PredicateUtils.toPredicate;
+import com.android.internal.util.Predicate;
 
 import java.util.Comparator;
 
-public class PredicatedDAO
-    extends ProxyDAO
-{
-    protected Predicate predicate_;
+import static foam.core.MLang.AND;
 
-    public PredicatedDAO(Predicate p, DAO delegate)
-    {
-        super(delegate);
+public class PredicatedDAO extends ProxyDAO {
+  protected Expression<Boolean> predicate_;
 
-        setPredicate(p);
-    }
+  public PredicatedDAO(Expression<Boolean> p, DAO delegate) {
+    super(delegate);
 
-    public Predicate getPredicate()
-    {
-        return predicate_;
-    }
+    setPredicate(p);
+  }
 
-    public void setPredicate(Predicate predicate)
-    {
-        predicate_ = predicate;
-    }
+  public Expression<Boolean> getPredicate() {
+    return predicate_;
+  }
 
-    public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
-        throws DAOException, DAOInternalException
-    {
-        if (p == null) {
-          p = toPredicate(TRUE);
-        }
-        Predicate p2 = toPredicate(AND(toExpr(getPredicate()), toExpr(p)).partialEval());
+  public void setPredicate(Expression<Boolean> predicate) {
+    predicate_ = predicate;
+  }
 
-        return getDelegate().select_(x, sink, p2, c, skip, limit);
-    }
+  public Sink select_(X x, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit)
+      throws DAOException, DAOInternalException {
+    Expression<Boolean> p2 = p == null ?
+        getPredicate() :
+        AND(getPredicate(), p).partialEval();
 
+    return getDelegate().select_(x, sink, p2, c, skip, limit);
+  }
 }

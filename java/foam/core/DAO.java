@@ -32,18 +32,18 @@ public interface DAO
   public Sink select(X x, Sink sink)
     throws DAOException, DAOInternalException;
   
-  public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
+  public Sink select_(X x, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit)
     throws DAOException, DAOInternalException;
   
   public void removeAll(X x)
     throws DAOException, DAOInternalException;
   
-  public void removeAll_(X x, Predicate p)
+  public void removeAll_(X x, Expression<Boolean> p)
     throws DAOException, DAOInternalException;
   
   /*****************************/
   
-  public DAO where(Predicate p);
+  public DAO where(Expression<Boolean> p);
   
   public DAO limit(long i);
   

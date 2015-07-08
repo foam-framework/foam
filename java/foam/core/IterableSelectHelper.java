@@ -17,7 +17,6 @@
 
 package foam.core;
 
-import java.lang.Iterable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -27,7 +26,7 @@ import java.util.PriorityQueue;
 public class IterableSelectHelper
 {
 
-  public static <T> Iterable<T> decorate(Iterable<T> ts, Predicate p, Comparator<T> c, final long skip, final long limit) {
+  public static <T> Iterable<T> decorate(Iterable<T> ts, Expression<Boolean> p, Comparator<T> c, final long skip, final long limit) {
     if (limit == 0) {
       return Collections.<T>emptyList();
     }
@@ -81,10 +80,10 @@ public class IterableSelectHelper
   private static class PredicatedIterable<T>
     extends DelegatingIterableIterator<T>
   {
-    final Predicate predicate_;
+    final Expression<Boolean> predicate_;
     T next_ = null;
     
-    public PredicatedIterable(Iterable<T> delegate, Predicate predicate)
+    public PredicatedIterable(Iterable<T> delegate, Expression<Boolean> predicate)
       {
         super(delegate);
         predicate_ = predicate;
@@ -113,7 +112,7 @@ public class IterableSelectHelper
     {
       while (next_ == null && super.hasNext()) {
         T maybeNext = super.next();
-        if (predicate_.p(maybeNext)) {
+        if (predicate_.f(maybeNext)) {
           next_ = maybeNext;
         }
       }

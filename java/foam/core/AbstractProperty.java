@@ -19,8 +19,8 @@ package foam.core;
 public abstract class AbstractProperty<T> implements Property<T> {
   public T f(Object o) { return get(o); }
 
-  public Value createValue(Object obj) {
-    return new PropertyValue((FObject) obj, this);
+  public Expression<T> partialEval() {
+    return this;
   }
 
   public Value<T> createValue(FObject obj) {

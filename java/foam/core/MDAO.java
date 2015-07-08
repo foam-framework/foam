@@ -63,7 +63,7 @@ public class MDAO
   }
 
 
-  public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
+  public Sink select_(X x, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit)
     throws DAOException, DAOInternalException
   {
     Plan plan = index_.plan(root_, sink, p, c, skip, limit);

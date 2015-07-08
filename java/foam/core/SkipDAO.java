@@ -42,7 +42,7 @@ public class SkipDAO
         skip_ = skip;
     }
 
-    public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
+    public Sink select_(X x, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit)
         throws DAOException, DAOInternalException
     {
         long s2 = skip + getSkip();

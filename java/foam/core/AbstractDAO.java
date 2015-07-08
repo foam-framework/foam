@@ -17,13 +17,6 @@
 
 package foam.core;
 
-import java.lang.Iterable;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-
 public abstract class AbstractDAO
   implements DAO
 {
@@ -44,7 +37,7 @@ public abstract class AbstractDAO
   {
     FindSink s = new FindSink();
 
-    this.limit(1).select(x, s);
+    this.where(MLang.EQ(model_.getID(), where)).limit(1).select(x, s);
 
     return s.getValue();
   }
@@ -56,8 +49,7 @@ public abstract class AbstractDAO
     // implemented using remove(), so DAO implementers need to implement
     // at least one of the methods to avoid infinite recursion.
 
-    // TODO: uncomment when EQ available
-    // this.limit(1).removeAll(EQ(model_.getID(), model_.getID().get(obj)));
+    this.where(MLang.EQ(model_.getID(), model_.getID().get(obj))).limit(1).removeAll(x);
   }
 
   public Sink select(X x, Sink sink)
@@ -74,16 +66,14 @@ public abstract class AbstractDAO
   }
   
 
-  public void removeAll_(X x, Predicate p)
-    throws DAOException, DAOInternalException
-  {
+  public void removeAll_(X x, Expression<Boolean> p) throws DAOException, DAOInternalException {
     select_(x, new RemoveSink(this), p, null, 0, -1); 
   }
   
   
   /*****************************/
   
-  public DAO where(Predicate p)
+  public DAO where(Expression<Boolean> p)
   {
     return new PredicatedDAO(p, this);
   }

@@ -21,28 +21,23 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class TreeIndex
-  implements Index
-{
+public class TreeIndex implements Index {
   final Property prop_;
   
-  public TreeIndex(Property p) 
-  {
+  public TreeIndex(Property p) {
     prop_ = p;
   }
 
 
-  public Object put(Object state, Object value)
-  {
-    if ( state == null ) state = new TreeMap(prop_);
+  public Object put(Object state, Object value) {
+    if ( state == null ) state = new TreeMap(new PropertyComparator(prop_));
 
     ((Map) state).put(prop_.get(value), value);
 
     return state;
   }
 
-  public Object remove(Object state, Object value)
-  {
+  public Object remove(Object state, Object value) {
     if ( state != null ) {
       ((Map) state).remove(prop_.get(value));
 
@@ -52,29 +47,27 @@ public class TreeIndex
     return state;
   }
   
-  public Plan plan(Object state, Sink sink, Predicate p, Comparator c, long skip, long limit)
-  {
-    return new Plan() {
-      public long cost() { return 1; }
-      public String toString() { return "Tree Plan"; }
-      public void execute(X x, Object state, Sink sink, Predicate p, Comparator c, long skip, long limit)
-        throws DAOException, DAOInternalException
-      {
-        if ( state == null ) return;
-
-        Map map = (Map) state;
-
-        Iterable i = IterableSelectHelper.decorate((Iterable<Object>) map, p, (Comparator<Object>)c, skip, limit);
-        for ( Object o : i ) {
-          sink.put(null, o);
-        }
-      }
-    };
+  public Plan plan(Object state, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit) {
+    return new TreePlan();
   }
 
-  public long size(Object state)
-  {
+  public long size(Object state) {
     return state != null ? ((Map) state).size() : 0l;
   }
 
+  class TreePlan implements Plan {
+    public long cost() { return 1; }
+    public String toString() { return "Tree Plan"; }
+    public void execute(X x, Object state, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit)
+        throws DAOException, DAOInternalException {
+      if (state == null) return;
+
+      TreeMap map = (TreeMap) state;
+
+      Iterable i = IterableSelectHelper.decorate(map.values(), p, (Comparator<Object>) c, skip, limit);
+      for (Object o : i) {
+        sink.put(x, o);
+      }
+    }
+  }
 }
