@@ -22,7 +22,7 @@ CLASS({
   extendsModel: 'foam.graphics.CView',
 
   requires: [
-    'Timer',
+    'foam.util.Timer',
     'foam.graphics.Circle'
   ],
 
@@ -56,7 +56,7 @@ CLASS({
           y:     D/2 + R * Math.cos(a),
           color: 'hsl(' + 180*a/Math.PI + ', 90%, 60%)'
         });
-        
+
         Events.dynamic((function (circle, a) {
           return function() {
             circle.r = 10 + 30 * Math.abs(Math.sin(a + timer.time/3000)); };
