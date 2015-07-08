@@ -25,22 +25,36 @@ CLASS({
 
   properties: [
     {
-      name: 'view'
+      name: 'innerView'
     }
   ],
 
   methods: [
     function element() {
-      if ( ! this.element_ ) {
+      if ( ! this.e_ ) {
         var div = document.createElement('div');
-        this.view.$.appendChild(div);
-        div.innerHTML = this.view.toHTML();
-        this.view.initHTML();
+        document.body.appendChild(div);
+        div.innerHTML = this.innerView.toHTML();
+        this.innerView.initHTML();
+        this.e_ = div;
       }
-      return this.element_;
+      return this.e_;
     },
     function paintSelf() {
       var e = this.element();
+      e.style.top = 0;
+      e.style.position = 'absolute';
+      e.style.overflow = 'hidden';
+      e.style.width = this.width + 'px';
+      e.style.height = this.height + 'px';
+      e.style.webkitTransform = 'translate3d(' + this.x + 'px,' + this.y + 'px,0)'
+    },
+    function destroy() {
+      this.SUPER();
+
+      if ( this.e_ ) {
+        this.e_.remove();
+      }
     }
   ]
 });
