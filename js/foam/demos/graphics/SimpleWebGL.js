@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos.graphics',
   name: 'SimpleWebGL',
-  extendsModel: 'foam.graphics.webgl.Scene',
+  extendsModel: 'foam.graphics.webgl.FlatScene',
 
   requires: [
     'foam.graphics.webgl.Object',

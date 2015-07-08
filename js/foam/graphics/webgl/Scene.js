@@ -46,11 +46,6 @@ CLASS({
       defaultValue: 45
     },
     {
-      name: 'fov',
-      help: 'Field-of-view in degrees.',
-      defaultValue: 45
-    },
-    {
       name: 'cameraDistance',
       help: 'Units to back the camera away from the XY plane.',
       defaultValue: -2.5

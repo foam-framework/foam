@@ -175,8 +175,8 @@ CLASS({
 
       // update x,y from CView
       if ( this.relativePosition ) {
-        this.relativePosition.elements[0][3] = this.sourceView.x/500;
-        this.relativePosition.elements[1][3] = this.sourceView.y/500;
+        this.relativePosition.elements[0][3] = this.sourceView.x;
+        this.relativePosition.elements[1][3] = -(this.sourceView.y);
 
         this.relativePosition.elements[0][0] = this.sourceView.scaleX;
         this.relativePosition.elements[1][1] = this.sourceView.scaleY;
@@ -212,8 +212,8 @@ CLASS({
         this.$canvas.style.width = this.sourceView.width*2 + 10;
         this.$canvas.style.height = this.sourceView.height*2 + 10;
 
-        var w = (this.sourceView.width)/500;
-        var h = (this.sourceView.height)/500;
+        var w = (this.sourceView.width);
+        var h = (this.sourceView.height);
 
         this.mesh = this.ArrayBuffer.create({
           drawMode: 'triangle strip',
