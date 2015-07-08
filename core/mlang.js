@@ -379,9 +379,16 @@ CLASS({
       var arg2 = this.arg2.f(obj);
 
       if ( Array.isArray(arg1) ) {
-        return arg1.some(function(arg) {
-          return arg == arg2;
-        });
+        if ( ! Array.isArray(arg2) ) {
+          return arg1.some(function(arg) {
+            return arg == arg2;
+          });
+        }
+        if ( arg1.length !== arg2.length ) return false;
+        for ( var i = 0; i < arg1.length; i++ ) {
+          if ( arg1[i] != arg2[i] ) return false;
+        }
+        return true;
       }
 
       if ( arg2 === TRUE ) return !! arg1;
@@ -656,7 +663,28 @@ CLASS({
       this;
     },
 
-    f: function(obj) { return this.arg1.f(obj) != this.arg2.f(obj); }
+    f: function(obj) {
+      var arg1 = this.arg1.f(obj);
+      var arg2 = this.arg2.f(obj);
+
+      if ( Array.isArray(arg1) ) {
+        if ( ! Array.isArray(arg2) ) {
+          return ! arg1.some(function(arg) {
+            return arg == arg2;
+          });
+        }
+        if ( arg1.length !== arg2.length ) return true;
+        for ( var i = 0; i < arg1.length; i++ ) {
+          if ( arg1[i] != arg2[i] ) return true;
+        }
+        return false;
+      }
+
+      if ( arg2 === TRUE ) return ! arg1;
+      if ( arg2 === FALSE ) return !! arg1;
+
+      return arg1 != arg2;
+    }
   }
 });
 
