@@ -8,8 +8,8 @@ import foam.core.Value;
 /**
  * Interface for Views that display a FOAM Property.
  */
-public interface PropertyView extends HasX {
+public interface PropertyView<T> extends HasX {
   View getView();
-  void setValue(Value v);
+  void setValue(Value<T> v);
   void destroy();
 }

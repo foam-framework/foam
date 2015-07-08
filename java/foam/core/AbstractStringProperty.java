@@ -23,27 +23,19 @@ import android.util.AttributeSet;
 import foam.android.view.EditTextAdapter;
 import foam.android.view.PropertyView;
 
-public abstract class AbstractStringProperty
-    extends AbstractProperty
-{
+public abstract class AbstractStringProperty extends AbstractProperty<String> {
 
-  public int compareValues(String s1, String s2)
-  {
+  public int compareValues(String s1, String s2) {
     if ( s1 == s2 ) return 0;
     if ( s1 == null ) return -1;
     if ( s2 == null ) return 11;
     return s1.compareTo(s2);
   }
 
-  public String toNative(Object o)
-  {
-    return (String) o;
-  }
-
-  public PropertyView createView(Context context) {
+  public PropertyView<String> createView(Context context) {
     return new EditTextAdapter(context);
   }
-  public PropertyView createView(Context context, AttributeSet attrs) {
+  public PropertyView<String> createView(Context context, AttributeSet attrs) {
     return new EditTextAdapter(context, attrs);
   }
 }

@@ -14,7 +14,7 @@ import foam.core.X;
  * Expects either a {@link X} with "data" to be a {@link Value}, or {@link #setValue(Value)} to be
  * called with a {@link Value} for an {@link AbstractStringProperty}.
  */
-public class TextViewAdapter extends OneWayViewAdapter<TextView> {
+public class TextViewAdapter extends OneWayViewAdapter<TextView, String> {
   public TextViewAdapter(Context context) {
     view = new TextView(context);
   }
@@ -23,6 +23,6 @@ public class TextViewAdapter extends OneWayViewAdapter<TextView> {
   }
 
   protected void updateViewFromValue() {
-    view.setText((String) value.get());
+    view.setText(value.get());
   }
 }

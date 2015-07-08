@@ -21,20 +21,12 @@ import android.content.Context;
 
 import foam.android.view.PropertyView;
 
-public abstract class AbstractIntProperty
-    extends AbstractProperty
-{
-
-  public int compareValues(int i1, int i2) {
+public abstract class AbstractIntProperty extends AbstractProperty<Integer> {
+  public int compareValues(Integer i1, Integer i2) {
     return i1 - i2;
   }
 
-  public int toNative(Object o)
-  {
-    return ((Integer) o).intValue();
-  }
-
-  public PropertyView createView(Context context) {
+  public PropertyView<Integer> createView(Context context) {
     // TODO(braden): Implement createView for numeric types.
     return null;
   }

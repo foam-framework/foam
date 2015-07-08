@@ -826,6 +826,12 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
         "// Version <%= this.version %>\u000a" +
         "<%" +
         "var className       = this.javaClassName;" +
+        "var toWrapperClass = function(name) {" +
+        "  return name === 'int'  ? 'Integer' :" +
+        "      name === 'double'  ? 'Double'  :" +
+        "      name === 'float'   ? 'Float'   :" +
+        "      name === 'boolean' ? 'Boolean' : name;" +
+        "};" +
         "var parentClassName = this.extendsModel ? this.extendsModel : 'AbstractFObject';" +
         "if ( GLOBAL[parentClassName] && GLOBAL[parentClassName].abstract ) parentClassName = 'Abstract' + parentClassName;" +
         "%>\u000a" +
@@ -838,12 +844,12 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
         "public<%= this.abstract ? ' abstract' : '' %> class <%= className %>\u000a" +
         "    extends <%= parentClassName %>\u000a" +
         "{\u000a" +
-          "<% for ( var key in this.properties ) { var prop = this.properties[key]; %>\u000a" +
-            "  public final static Property <%= constantize(prop.name) %> = new Abstract<%= prop.javaType.capitalize() %>Property() {\u000a" +
+        "<% for ( var key in this.properties ) { var prop = this.properties[key]; var klass = toWrapperClass(prop.javaType); %>\u000a" +
+            "  public final static Property<<%= klass %>> <%= constantize(prop.name) %> = new Abstract<%= prop.javaType.capitalize() %>Property() {\u000a" +
             "    public String getName() { return \"<%= prop.name %>\"; }\u000a" +
             "    public String getLabel() { return \"<%= prop.label %>\"; }\u000a" +
-            "    public Object get(Object o) { return (Object) ((<%= this.name %>) o).get<%= prop.name.capitalize() %>(); }\u000a" +
-            "    public void set(Object o, Object v) { ((<%= this.name %>) o).set<%= prop.name.capitalize() %>(toNative(v)); }\u000a" +
+            "    public <%= klass %> get(Object o) { return ((<%= this.name %>) o).get<%= prop.name.capitalize() %>(); }\u000a" +
+            "    public void set(Object o, <%= klass %> v) { ((<%= this.name %>) o).set<%= prop.name.capitalize() %>(v); }\u000a" +
             "    public int compare(Object o1, Object o2) { return compareValues(((<%= this.name%>)o1).<%= prop.name %>_, ((<%= this.name%>)o2).<%= prop.name %>_); }\u000a" +
         "  };\u000a" +
     "<% } %>" +
@@ -872,11 +878,11 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
     "  }\u000a" +
     "<% } %>\u000a" +
     "\u000a" +
-    "<% for ( var key in this.properties ) { var prop = this.properties[key]; %>\u000a" +
-    "  public <%= prop.javaType %> get<%= prop.name.capitalize() %>() {\u000a" +
+    "<% for ( var key in this.properties ) { var prop = this.properties[key]; var klass = toWrapperClass(prop.javaType); %>\u000a" +
+    "  public <%= klass %> get<%= prop.name.capitalize() %>() {\u000a" +
     "    return <%= prop.name %>_;\u000a" +
     "  }\u000a" +
-    "  public void set<%= prop.name.capitalize() %>(<%= prop.javaType, ' ', prop.name %>) {\u000a" +
+    "  public void set<%= prop.name.capitalize() %>(<%= klass, ' ', prop.name %>) {\u000a" +
     "    <%= prop.javaType %> oldValue = <%= prop.name %>_;\u000a" +
     "    <%= prop.name %>_ = <%= prop.name %>;\u000a" +
     "    if (((<%= 'Abstract' + prop.javaType.capitalize() + 'Property' %>) <%= constantize(prop.name) %>).compareValues(oldValue, <%= prop.name %>) != 0) {\u000a" +

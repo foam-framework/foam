@@ -5,34 +5,33 @@ package foam.core;
  *
  * Generally created in the generated code.
  */
-public class PropertyValue implements Value {
+public class PropertyValue<T> implements Value<T> {
   private FObject obj;
-  private Property prop;
+  private Property<T> prop;
 
-  public PropertyValue(FObject obj, Property prop) {
+  public PropertyValue(FObject obj, Property<T> prop) {
     this.obj = obj;
     this.prop = prop;
   }
 
-  public Object get() {
+  public T get() {
     return prop.get(obj);
   }
-  public void set(Object value) {
-    Object old = get();
+  public void set(T value) {
     prop.set(obj, value);
   }
 
   public PropertyChangeSupport getTarget() {
     return obj;
   }
-  public Property getProperty() {
+  public Property<T> getProperty() {
     return prop;
   }
 
-  public void addListener(PropertyChangeListener listener) {
+  public void addListener(PropertyChangeListener<T> listener) {
     obj.addPropertyChangeListener(prop, listener);
   }
-  public void removeListener(PropertyChangeListener listener) {
+  public void removeListener(PropertyChangeListener<T> listener) {
     obj.removePropertyChangeListener(prop, listener);
   }
 }

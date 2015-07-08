@@ -9,5 +9,5 @@ import foam.core.Value;
  *
  * Subclasses must implement {@link #updateViewFromValue()}, and construct {@link #view}.
  */
-public abstract class OneWayViewAdapter<V extends View> extends BaseViewAdapter<V> {
+public abstract class OneWayViewAdapter<V extends View, T> extends BaseViewAdapter<V, T> {
 }

@@ -13,7 +13,7 @@ import foam.core.Value;
 /**
  * FOAM wrapper for Android's EditView.
  */
-public class EditTextAdapter extends TwoWayViewAdapter<TextInputLayout> {
+public class EditTextAdapter extends TwoWayViewAdapter<TextInputLayout, String> {
   public EditTextAdapter(Context context) {
     this(context, null);
   }
@@ -40,7 +40,7 @@ public class EditTextAdapter extends TwoWayViewAdapter<TextInputLayout> {
     });
   }
 
-  public void setValue(Value v) {
+  public void setValue(Value<String> v) {
     super.setValue(v);
     if (v instanceof PropertyValue) {
       view.setHint(((PropertyValue) v).getProperty().getLabel());
@@ -48,6 +48,6 @@ public class EditTextAdapter extends TwoWayViewAdapter<TextInputLayout> {
   }
 
   protected void updateViewFromValue() {
-    view.getEditText().setText((String) value.get());
+    view.getEditText().setText(value.get());
   }
 }

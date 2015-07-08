@@ -17,7 +17,6 @@
 
 package foam.core;
 
-public interface Function
-{
-    public Object f(Object o);
+public interface Function<A, B> {
+    public B f(A o);
 }

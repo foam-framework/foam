@@ -21,9 +21,7 @@ import android.content.Context;
 
 import foam.android.view.PropertyView;
 
-public abstract class AbstractObjectProperty
-    extends AbstractProperty
-{
+public abstract class AbstractObjectProperty extends AbstractProperty<Object> {
 
   public int compareValues(Object o1, Object o2) {
     if (o1 == o2) return 0;
@@ -33,12 +31,7 @@ public abstract class AbstractObjectProperty
     return 1;
   }
 
-  public Object toNative(Object o)
-  {
-    return o;
-  }
-
-  public PropertyView createView(Context context) {
+  public PropertyView<Object> createView(Context context) {
     // TODO(braden): Implement createView for Object properties.
     return null;
   }

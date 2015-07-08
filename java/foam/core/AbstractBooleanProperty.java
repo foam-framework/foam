@@ -23,25 +23,21 @@ import android.util.AttributeSet;
 import foam.android.view.CheckBoxAdapter;
 import foam.android.view.PropertyView;
 
-public abstract class AbstractBooleanProperty
-    extends AbstractProperty
-{
+public abstract class AbstractBooleanProperty extends AbstractProperty<Boolean> {
 
-  public int compareValues(boolean b1, boolean b2) {
-    return b1 == b2 ? 0 : b1 ? 1 : -1; // false < true, according to this.
+  public int compareValues(Boolean b1, Boolean b2) {
+    return b1.equals(b2) ? 0 : b1 ? 1 : -1; // false < true, according to this.
   }
 
-  public boolean toNative(Object o)
-  {
-    return ((Boolean) o).booleanValue();
+  public boolean toNative(Boolean o) {
+    return o;
   }
 
-  public PropertyView createView(Context context, AttributeSet attrs) {
+  public PropertyView<Boolean> createView(Context context, AttributeSet attrs) {
     return new CheckBoxAdapter(context, attrs);
   }
 
-  public PropertyView createView(Context context) {
+  public PropertyView<Boolean> createView(Context context) {
     return new CheckBoxAdapter(context);
   }
-
 }

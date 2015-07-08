@@ -4,13 +4,13 @@ package foam.core;
  * Property change event object, with the target {@link FObject}, relevant {@link Property} and the
  * old and new values.
  */
-public class PropertyChangeEvent {
+public class PropertyChangeEvent<T> {
   private FObject obj;
   private Property prop;
-  private Object oldValue;
-  private Object newValue;
+  private T oldValue;
+  private T newValue;
 
-  public PropertyChangeEvent(FObject obj, Property prop, Object oldValue, Object newValue) {
+  public PropertyChangeEvent(FObject obj, Property prop, T oldValue, T newValue) {
     this.obj = obj;
     this.prop = prop;
     this.oldValue = oldValue;
@@ -25,11 +25,11 @@ public class PropertyChangeEvent {
     return prop;
   }
 
-  public Object getOldValue() {
+  public T getOldValue() {
     return oldValue;
   }
 
-  public Object getNewValue() {
+  public T getNewValue() {
     return newValue;
   }
 }

@@ -16,20 +16,22 @@
  */
 package foam.core;
 
-public abstract class AbstractProperty
-  implements Property
-{
-  public Object f(Object o) { return get(o); }
+public abstract class AbstractProperty<T> implements Property<T> {
+  public T f(Object o) { return get(o); }
 
   public Value createValue(Object obj) {
     return new PropertyValue((FObject) obj, this);
   }
 
-  public void addListener(PropertyChangeSupport obj, PropertyChangeListener listener) {
+  public Value<T> createValue(FObject obj) {
+    return new PropertyValue<T>(obj, this);
+  }
+
+  public void addListener(PropertyChangeSupport obj, PropertyChangeListener<T> listener) {
     obj.addPropertyChangeListener(this, listener);
   }
 
-  public void removeListener(PropertyChangeSupport obj, PropertyChangeListener listener) {
+  public void removeListener(PropertyChangeSupport obj, PropertyChangeListener<T> listener) {
     obj.removePropertyChangeListener(this, listener);
   }
 }

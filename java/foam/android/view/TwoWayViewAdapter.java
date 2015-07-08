@@ -13,16 +13,16 @@ import foam.core.Value;
  * Subclasses  must also arrange, via some listener or other, to call
  * {@link #updateValueFromView(Object)} when the {@link View}'s data changes.
  */
-public abstract class TwoWayViewAdapter<V extends View> extends BaseViewAdapter<V> {
+public abstract class TwoWayViewAdapter<V extends View, T> extends BaseViewAdapter<V, T> {
   private boolean feedback = false;
 
-  public void updateValueFromView(Object newValue) {
+  public void updateValueFromView(T newValue) {
     feedback = true;
     value.set(newValue);
     feedback = false;
   }
 
-  public void propertyChange(PropertyChangeEvent event) {
+  public void propertyChange(PropertyChangeEvent<T> event) {
     if (!feedback) updateViewFromValue();
   }
 }

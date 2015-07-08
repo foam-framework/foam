@@ -11,7 +11,7 @@ import foam.core.Value;
 /**
  * FOAM wrapper for Android CheckBox views.
  */
-public class CheckBoxAdapter extends TwoWayViewAdapter<CheckBox> implements CompoundButton.OnCheckedChangeListener {
+public class CheckBoxAdapter extends TwoWayViewAdapter<CheckBox, Boolean> implements CompoundButton.OnCheckedChangeListener {
   public CheckBoxAdapter(Context context) {
     this(context, null);
   }
@@ -20,7 +20,7 @@ public class CheckBoxAdapter extends TwoWayViewAdapter<CheckBox> implements Comp
     view.setOnCheckedChangeListener(this);
   }
 
-  public void setValue(Value v) {
+  public void setValue(Value<Boolean> v) {
     super.setValue(v);
     if (v instanceof PropertyValue) {
       view.setText(((PropertyValue) v).getProperty().getLabel());
@@ -28,7 +28,7 @@ public class CheckBoxAdapter extends TwoWayViewAdapter<CheckBox> implements Comp
   }
 
   protected void updateViewFromValue() {
-    view.setChecked(((Boolean) value.get()).booleanValue());
+    view.setChecked(value.get());
   }
 
   public void onCheckedChanged(CompoundButton v, boolean nu) {
