@@ -72,15 +72,15 @@ CLASS({
         this.cancel_ = Movement.animate(2000, function() {
           var width = this.lobby.width;
           var height = this.lobby.height;
-          this.r = Math.min(width, height)/2.4;
+          this.r = Math.min(width, height)/2.3;
           this.x = width/2;
           this.y = height/2;
-        }.bind(this), null, function() { /*self.collider.stop(); self.timer.stop();*/ })();
+        }.bind(this), Movement.ease(0.4,0.2))();
       } else {
         this.mass = this.oldMass_;
         this.cancel_ = Movement.animate(1000, function() {
           this.r = this.oldR_;
-        }.bind(this), null, function() { /*self.collider.stop(); self.timer.stop();*/ })();
+        }.bind(this), Movement.ease(0.4,0.2))();
       }
     },
     function paintSelf() {
@@ -220,9 +220,10 @@ CLASS({
         { topic: 'flip',         image: 'flip.jpg',         r: 100, colour: 'red' },
         { topic: 'googlecanada', image: 'googlecanada.gif', r: 200 },
         { topic: 'inbox',        image: 'inbox.png',        r: 160 },
+        { topic: 'android',      image: 'android.png',      r: 90, colour: '#3c0' },
         { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
         { topic: 'fiber',        image: 'fiber.jpg',        r: 180 },
-        { topic: 'foam',         image: 'foampowered.png',  r: 100 },
+        { topic: 'foam',         image: 'foampowered.png',  r: 100, colour: 'darkblue' },
         { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 100 },
         { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 90, model: 'com.google.watlobby.PhotoAlbumBubble' },
         // chromebook, mine sweeper, calculator, I'm feeling lucky

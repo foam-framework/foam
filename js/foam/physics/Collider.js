@@ -93,7 +93,8 @@ CLASS({
       var c2 = { x: x, y: y, r: 1 };
 
       var cs = this.children;
-      for ( var i = 0 ; i < cs.length ; i++ ) {
+      // Start from the end to find the child in the foreground
+      for ( var i = cs.length-1 ; i >= 0 ; i-- ) {
         var c1 = cs[i];
         if ( c1.intersects(c2) ) return c1;
       }
