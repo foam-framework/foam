@@ -18,6 +18,7 @@
 package foam.core;
 
 import android.content.Context;
+import android.util.AttributeSet;
 
 import java.util.Comparator;
 
@@ -35,6 +36,7 @@ public interface Property
   public void    removeListener(PropertyChangeSupport obj, PropertyChangeListener listener);
   public Value   createValue(Object obj);
   public PropertyView createView(Context context);
+  public PropertyView createView(Context context, AttributeSet attrs);
   // public boolean hasDefaultValue();
   //  public Object  createDefaultValue();
 }

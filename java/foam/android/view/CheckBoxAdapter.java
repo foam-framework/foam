@@ -1,6 +1,7 @@
 package foam.android.view;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
@@ -12,7 +13,10 @@ import foam.core.Value;
  */
 public class CheckBoxAdapter extends TwoWayViewAdapter<CheckBox> implements CompoundButton.OnCheckedChangeListener {
   public CheckBoxAdapter(Context context) {
-    view = new CheckBox(context);
+    this(context, null);
+  }
+  public CheckBoxAdapter(Context context, AttributeSet attrs) {
+    view = attrs == null ? new CheckBox(context) : new CheckBox(context, attrs);
     view.setOnCheckedChangeListener(this);
   }
 

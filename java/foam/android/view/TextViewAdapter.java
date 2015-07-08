@@ -1,6 +1,7 @@
 package foam.android.view;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.widget.TextView;
 
 import foam.core.AbstractStringProperty;
@@ -16,6 +17,9 @@ import foam.core.X;
 public class TextViewAdapter extends OneWayViewAdapter<TextView> {
   public TextViewAdapter(Context context) {
     view = new TextView(context);
+  }
+  public TextViewAdapter(Context context, AttributeSet attrs) {
+    view = new TextView(context, attrs);
   }
 
   protected void updateViewFromValue() {
