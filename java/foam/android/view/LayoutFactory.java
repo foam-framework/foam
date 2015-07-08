@@ -95,8 +95,7 @@ public class LayoutFactory {
         return null;
       }
 
-      // TODO(braden): Hack! There shouldn't need to be the + "_" here.
-      Property prop = data.model().getProperty(foamProp + "_");
+      Property prop = data.model().getProperty(foamProp);
       if (prop == null) {
         Log.w(LOG_TAG, "Failed to find property " + foamProp + " on data object.");
         return null;

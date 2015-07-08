@@ -840,7 +840,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
         "{\u000a" +
           "<% for ( var key in this.properties ) { var prop = this.properties[key]; %>\u000a" +
             "  public final static Property <%= constantize(prop.name) %> = new Abstract<%= prop.javaType.capitalize() %>Property() {\u000a" +
-            "    public String getName() { return \"<%= prop.name %>_\"; }\u000a" +
+            "    public String getName() { return \"<%= prop.name %>\"; }\u000a" +
             "    public String getLabel() { return \"<%= prop.label %>\"; }\u000a" +
             "    public Object get(Object o) { return (Object) ((<%= this.name %>) o).get<%= prop.name.capitalize() %>(); }\u000a" +
             "    public void set(Object o, Object v) { ((<%= this.name %>) o).set<%= prop.name.capitalize() %>(toNative(v)); }\u000a" +
