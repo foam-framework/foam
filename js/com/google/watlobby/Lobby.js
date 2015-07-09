@@ -105,6 +105,82 @@ CLASS({
 
 CLASS({
   package: 'com.google.watlobby',
+  name: 'VideoBubble',
+
+  extendsModel: 'com.google.watlobby.Bubble',
+
+  requires: [
+    'foam.graphics.ImageCView',
+    'foam.graphics.SimpleRectangle',
+    'foam.graphics.ViewCView',
+    'com.google.watlobby.Bubble'
+  ],
+
+  properties: [
+    {
+      name: 'video',
+      defaultValue: '1Bb29KxXzDs'
+    },
+    {
+      name: 'playIcon',
+      factory: function() { return this.ImageCView.create({src: 'play.png', x:-40, y:-40, width: 80, height: 80, alpha: 0.25}); }
+    }
+  ],
+
+  methods: [
+    function initCView() {
+      this.SUPER();
+      this.addChild(this.playIcon);
+    },
+    function setSelected(selected) {
+      if ( selected ) {
+        this.children_ = [];
+        var w = this.lobby.width;
+        var h = this.lobby.height;
+
+        var r = this.SimpleRectangle.create({background: 'black', alpha: 0, x: 0, y: 0, width: this.lobby.width, height: this.lobby.height});
+        this.lobby.addChild(r);
+        Movement.animate(1000, function() { r.alpha = 0.7; })();
+
+        this.children_.push(r);
+
+        var video = this.video;
+        var vw = 560*2.5;
+        var vh = 315*2.5;
+
+        var v = this.ViewCView.create({innerView: {
+          toHTML: function() { return '<iframe width="' + vw + '" height="' + vh + '" src="https://www.youtube.com/embed/' + video + '?autoplay=1" frameborder="0" allowfullscreen></iframe>'; },
+          initHTML: function() {}
+        }, x: this.x, y: this.y, width: 0, height: 0});
+
+        Movement.animate(2000, function(i, j) {
+          v.width = vw;
+          v.height = vh;
+          v.x = (w-vw)/2;
+          v.y = (h-vh)/2;
+        }, Movement.oscillate(0.6, 0.03, 2))();
+        this.lobby.addChild(v);
+        this.children_.push(v);
+      } else {
+        // TODO: remove children from lobby when done
+        var r = this.children_[0];
+        var v = this.children_[1];
+        Movement.animate(1000, function() { r.alpha = 0; })();
+        /*
+        for ( var i = 1 ; i < this.children_.length ; i++ ) {
+          Movement.animate(1000, function() { this.width = this.height = 0; }.bind(this.children_[i]))();
+        }
+        */
+        v.destroy();
+        this.children_ = [];
+      }
+    }
+  ]
+});
+
+
+CLASS({
+  package: 'com.google.watlobby',
   name: 'PhotoAlbumBubble',
 
   extendsModel: 'com.google.watlobby.Bubble',
@@ -191,9 +267,10 @@ CLASS({
     'com.google.watlobby.Bubble',
     'com.google.watlobby.PhotoAlbumBubble',
     'com.google.watlobby.Topic',
+    'com.google.watlobby.VideoBubble',
+    'foam.demos.ClockView',
     'foam.demos.physics.PhysicalCircle',
     'foam.physics.Collider',
-    'foam.demos.ClockView',
     'foam.util.Timer'
   ],
 
@@ -224,7 +301,7 @@ CLASS({
         { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
         { topic: 'fiber',        image: 'fiber.jpg',        r: 180 },
         { topic: 'foam',         image: 'foampowered.png',  r: 100, colour: 'darkblue' },
-        { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 100 },
+        { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 100, model: 'com.google.watlobby.VideoBubble' },
         { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 90, model: 'com.google.watlobby.PhotoAlbumBubble' },
         // chromebook, mine sweeper, calculator, I'm feeling lucky
         // thtps://www.youtube.com/watch?v=1Bb29KxXzDs, <iframe width="560" height="315" src="https://www.youtube.com/embed/1Bb29KxXzDs" frameborder="0" allowfullscreen></iframe>
@@ -289,7 +366,7 @@ CLASS({
       }
 
       var N = this.n;
-      for ( var i = 0 ; i < N ; i++ ) {
+      for ( var i = 0 ; i < N && false ; i++ ) {
         var colour = this.COLOURS[i % this.COLOURS.length];
         var c = this.Bubble.create({
           r: 20 + Math.random() * 50,
@@ -309,7 +386,7 @@ CLASS({
         this.collider.add(c);
       }
 
-      for ( var i = 0 ; i < 200 ; i++ ) {
+      for ( var i = 0 ; i < 200 && i < 20 ; i++ ) {
         var b = this.PhysicalCircle.create({
           r: 5,
           x: Math.random() * this.width,
