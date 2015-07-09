@@ -136,12 +136,14 @@ CLASS({
           attribute vec3 aTexPosition;
 
           uniform mat4 positionMatrix;
+          uniform mat4 relativeMatrix;
           uniform mat4 projectionMatrix;
+          uniform mat4 meshMatrix;
 
           varying vec2 vTextureCoord;
 
           void main(void) {
-            gl_Position = projectionMatrix * positionMatrix * vec4(aVertexPosition, 1.0);
+            gl_Position = projectionMatrix * positionMatrix * relativeMatrix * meshMatrix * vec4(aVertexPosition, 1.0);
             vTextureCoord = vec2(aTexPosition.x, aTexPosition.y);
           }
         */}

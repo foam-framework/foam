@@ -145,9 +145,9 @@ CLASS({
         var w = this.lobby.width;
         var h = this.lobby.height;
 
-        var r = this.Rectangle.create({color: [0,0,0,0.1], alpha: 0.1, x: 0, y: 0, width: this.lobby.width, height: this.lobby.height});
+        var r = this.Rectangle.create({color: [0,0,0,0.1], alpha: 0.1, x: 0, y: 0, z: 1, width: this.lobby.width, height: this.lobby.height});
         this.lobby.addChild(r);
-        Movement.animate(1000, function() { r.alpha = 0.7; })();
+        Movement.animate(1000, function() { r.alpha = 0.7; r.z = -1; })();
 
         this.children_.push(r);
 
@@ -166,13 +166,15 @@ CLASS({
           v.x = (w-vw)/2;
           v.y = (h-vh)/2;
         }, Movement.oscillate(0.6, 0.03, 2))();
+        var vgl = v.toGLView_();
+        vgl.z = 2;
         this.lobby.addChild(v);
         this.children_.push(v);
       } else {
         // TODO: remove children from lobby when done
         var r = this.children_[0];
         var v = this.children_[1];
-        Movement.animate(1000, function() { r.alpha = 0; })();
+        Movement.animate(1000, function() { r.alpha = 0; r.z = 1 })();
         /*
         for ( var i = 1 ; i < this.children_.length ; i++ ) {
           Movement.animate(1000, function() { this.width = this.height = 0; }.bind(this.children_[i]))();
@@ -215,16 +217,16 @@ CLASS({
         var w = this.lobby.width / this.columns;
         var h = this.lobby.height / this.rows;
 
-        var r = this.Rectangle.create({color: [0,0,0,0], alpha: 0, x: 0, y: 0, width: this.lobby.width, height: this.lobby.height});
+        var r = this.Rectangle.create({color: [0,0,0,0], alpha: 0, x: 0, y: 0, z: 1, width: this.lobby.width, height: this.lobby.height});
         this.lobby.addChild(r);
-        Movement.animate(1000, function() { r.alpha = 0.7; })();
+        Movement.animate(1000, function() { r.alpha = 0.7; r.z = -1; })();
 
         this.children_.push(r);
 
         for ( var i = 0 ; i < this.columns ; i++ ) {
           for ( var j = 0 ; j < this.rows ; j++ ) {
             var b = this.Bubble.create({
-              r: 0, x: this.x, y: this.y, border: '#f00'
+              r: 0, x: this.x, y: this.y, z: -2, border: '#f00'
             });
             Movement.animate(2000, function(i, j) {
               this.r = Math.min(w, h) / 2 - 6;
@@ -238,7 +240,7 @@ CLASS({
       } else {
         // TODO: remove children from lobby when done
         var r = this.children_[0];
-        Movement.animate(1000, function() { r.alpha = 0; })();
+        Movement.animate(1000, function() { r.alpha = 0; r.z = 1; })();
         for ( var i = 1 ; i < this.children_.length ; i++ ) {
           Movement.animate(1000, function() { this.r = 0; }.bind(this.children_[i]))();
         }
@@ -407,7 +409,7 @@ CLASS({
           mass: 0.6
         });
         b.addChild(this.GLCircle.create({
-          r: 1,
+          r: b.r,
           segments: 16,
           borderRatio: 0.1,
           color: [ 0,0,1,1.0]

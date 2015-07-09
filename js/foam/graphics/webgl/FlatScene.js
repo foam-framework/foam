@@ -15,6 +15,25 @@
  * limitations under the License.
  */
 
+ var fps = {
+  startTime : 0,
+  frameNumber : 0,
+  getFPS : function(){
+    this.frameNumber++;
+    var d = new Date().getTime(),
+      currentTime = ( d - this.startTime ) / 1000,
+      result = Math.floor( ( this.frameNumber / currentTime ) );
+
+    if( currentTime > 1 ){
+      this.startTime = new Date().getTime();
+      this.frameNumber = 0;
+      GLOBAL.document.title = result;
+    }
+    return result;
+
+  }
+};
+
 CLASS({
   package: 'foam.graphics.webgl',
   name: 'FlatScene',
@@ -40,6 +59,7 @@ CLASS({
 
       if ( ! translucent ) {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        fps.getFPS();
       }
 
       this.projectionMatrix = this.makeOrtho(0,this.view.width,-this.view.height,0,-100.0,100.0)

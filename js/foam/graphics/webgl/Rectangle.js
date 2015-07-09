@@ -59,8 +59,8 @@ CLASS({
       name: 'width',
       defaultValue: 10,
       postSet: function() {
-        if ( this.relativePosition && this.relativePosition.elements ) {
-          this.relativePosition.elements[0][0] = this.width;
+        if ( this.meshMatrix && this.meshMatrix.elements ) {
+          this.meshMatrix.elements[0][0] = this.width;
         }
       }
     },
@@ -68,8 +68,8 @@ CLASS({
       name: 'height',
       defaultValue: 10,
       postSet: function() {
-        if ( this.relativePosition && this.relativePosition.elements ) {
-          this.relativePosition.elements[1][1] = -this.height;
+        if ( this.meshMatrix && this.meshMatrix.elements ) {
+          this.meshMatrix.elements[1][1] = -this.height;
         }
       }
     },
@@ -81,10 +81,10 @@ CLASS({
     function init() {
       this.SUPER();
 
-      this.relativePosition = [
+      this.meshMatrix = [
         [1.0, 0.0, 0.0, 0.0],
         [0.0, 1.0, 0.0, 0.0],
-        [0.0, 0.0, 1.0, 0.01],
+        [0.0, 0.0, 1.0, 0.0],
         [0.0, 0.0, 0.0, 1.0]
       ]
 
@@ -115,15 +115,17 @@ CLASS({
           attribute vec3 aVertexPosition;
 
           uniform mat4 positionMatrix;
+          uniform mat4 relativeMatrix;
           uniform mat4 projectionMatrix;
+          uniform mat4 meshMatrix;
 
           void main(void) {
-            gl_Position = projectionMatrix * positionMatrix * vec4(aVertexPosition, 1.0);
+            gl_Position = projectionMatrix * positionMatrix * relativeMatrix * meshMatrix * vec4(aVertexPosition, 1.0);
           }
         */}
         });
 
-    },
+    }
 
   ]
 

@@ -55,9 +55,9 @@ CLASS({
       name: 'r',
       defaultValue: 1,
       postSet: function() {
-        if ( this.relativePosition && this.relativePosition.elements ) {
-          this.relativePosition.elements[0][0] = this.r;
-          this.relativePosition.elements[1][1] = this.r;
+        if ( this.meshMatrix && this.meshMatrix.elements ) {
+          this.meshMatrix.elements[0][0] = this.r;
+          this.meshMatrix.elements[1][1] = this.r;
         }
       }
     },
@@ -86,7 +86,7 @@ CLASS({
       this.SUPER();
 
       // create the mesh in a -1 to 1 unit box, then scale by the current radius
-      this.relativePosition = [
+      this.meshMatrix = [
         [this.r, 0.0, 0.0, 0.0],
         [0.0, this.r, 0.0, 0.0],
         [0.0, 0.0,    1.0, 0.0],
@@ -108,10 +108,12 @@ CLASS({
           attribute vec3 aVertexPosition;
 
           uniform mat4 positionMatrix;
+          uniform mat4 relativeMatrix;
           uniform mat4 projectionMatrix;
+          uniform mat4 meshMatrix;
 
           void main(void) {
-            gl_Position = projectionMatrix * positionMatrix * vec4(aVertexPosition, 1.0);
+            gl_Position = projectionMatrix * positionMatrix * relativeMatrix * meshMatrix * vec4(aVertexPosition, 1.0);
           }
         */}
         });

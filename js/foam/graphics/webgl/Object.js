@@ -45,15 +45,14 @@ CLASS({
               // convert to Matrix
               this.instance_.relativePosition = $M(this.instance_.relativePosition);
             }
-            return this.instance_.relativePosition;
           } else {
-            return Matrix.I(4);
+            this.instance_.relativePosition = Matrix.I(4);
           }
+          return this.instance_.relativePosition;
         }
 
         return null;
       }
-
     },
     {
       name: 'x',
@@ -62,6 +61,7 @@ CLASS({
       },
       postSet: function(old, nu) {
         this.relativePosition && this.relativePosition.elements && (this.relativePosition.elements[0][3] = nu);
+        this.updatePosition();
       }
     },
     {
@@ -71,16 +71,70 @@ CLASS({
       },
       postSet: function(old, nu) {
         this.relativePosition && this.relativePosition.elements && (this.relativePosition.elements[1][3] = -nu);
+        this.updatePosition();
+      }
+    },
+    {
+      name: 'z',
+      getter: function() {
+        return this.relativePosition && this.relativePosition.elements && -(this.relativePosition.elements[2][3]);
+      },
+      postSet: function(old, nu) {
+        this.relativePosition && this.relativePosition.elements && (this.relativePosition.elements[2][3] = -nu);
+        this.updatePosition();
       }
     },
     {
       name: 'positionMatrix',
       type: 'Matrix',
+      getter: function() {
+        if ( GLOBAL.Matrix ) {
+          if ( ! this.instance_.positionMatrix ) {
+            var b = (this.parent && this.parent.positionMatrix) || Matrix.I(4);
+            var r = this.relativePosition || Matrix.I(4);
+            this.instance_.positionMatrix = b.x(r);
+          }
+          return this.instance_.positionMatrix;
+        }
+        return null;
+      }
     },
     {
       name: 'mesh',
       type: 'foam.graphics.webgl.ArrayBuffer'
     },
+    {
+      name: 'meshMatrix',
+      help: 'Transformations to apply to the mesh, but not pass on to children.',
+      getter: function() {
+        if ( GLOBAL.Matrix ) {
+          if ( this.instance_.meshMatrix ) {
+            if ( Array.isArray(this.instance_.meshMatrix) ) {
+              // convert to Matrix
+              this.instance_.meshMatrix = $M(this.instance_.meshMatrix);
+            }
+          } else {
+            this.instance_.meshMatrix = Matrix.I(4);
+          }
+          return this.instance_.meshMatrix;
+        }
+
+        return null;
+      }
+    },
+//     {
+//       name: 'finalMatrix_',
+//       getter: function() {
+//         if ( GLOBAL.Matrix ) {
+//           if ( ! this.instance_.finalMatrix_ ) {
+//             var m = this.meshMatrix || Matrix.I(4);
+//             this.instance_.finalMatrix_ = this.positionMatrix.x(m);
+//           }
+//           return this.instance_.finalMatrix_;
+//         }
+//         return null;
+//       }
+//     },
     {
       name: 'program',
     },
@@ -108,7 +162,7 @@ CLASS({
 
       this.sylvesterLib.loaded$.addListener(this.updatePosition);
       this.relativePosition$.addListener(this.updatePosition);
-
+      //this.meshMatrix$.addListener(this.updateMesh);
     },
 
     function paintSelf(translucent) {
@@ -133,10 +187,28 @@ CLASS({
         this.gl.uniformMatrix4fv(projUniform, false, new Float32Array(this.projectionMatrix.flatten()));
       }
 
-      if ( this.positionMatrix ) {
+      if ( this.parent && this.parent.positionMatrix ) {
         var posUniform = this.gl.getUniformLocation(this.program.program, "positionMatrix");
-        this.gl.uniformMatrix4fv(posUniform, false, new Float32Array(this.positionMatrix.flatten()));
+        this.gl.uniformMatrix4fv(posUniform, false, new Float32Array(this.parent.positionMatrix.flatten()));
+      } else {
+        var posUniform = this.gl.getUniformLocation(this.program.program, "positionMatrix");
+        this.gl.uniformMatrix4fv(posUniform, false, new Float32Array(Matrix.I(4)));
       }
+
+      if ( this.relativePosition ) {
+        var relUniform = this.gl.getUniformLocation(this.program.program, "relativeMatrix");
+        this.gl.uniformMatrix4fv(relUniform, false, new Float32Array(this.relativePosition.flatten()));
+      }
+
+      if ( this.meshMatrix ) {
+        var meshUniform = this.gl.getUniformLocation(this.program.program, "meshMatrix");
+        this.gl.uniformMatrix4fv(meshUniform, false, new Float32Array(this.meshMatrix.flatten()));
+      }
+
+//       if ( this.finalMatrix_ ) {
+//         var posUniform = this.gl.getUniformLocation(this.program.program, "positionMatrix");
+//         this.gl.uniformMatrix4fv(posUniform, false, new Float32Array(this.finalMatrix_.flatten()));
+//       }
 
       if (translucent) {
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -159,11 +231,17 @@ CLASS({
       name: 'updatePosition',
       framed: true,
       code: function() {
-        var b = this.parent.positionMatrix || (GLOBAL.Matrix && GLOBAL.Matrix.I(4));
-        var r = this.relativePosition || (GLOBAL.Matrix && GLOBAL.Matrix.I(4));
-        if ( b && r ) this.positionMatrix = b.x(r);
+        this.positionMatrix = null;
+        //this.finalMatrix_ = null;
       },
-    }
+    },
+//     {
+//       name: 'updateMesh',
+//       code: function() {
+//         this.finalMatrix_ = null;
+//       },
+//     }
+
 
   ]
 
