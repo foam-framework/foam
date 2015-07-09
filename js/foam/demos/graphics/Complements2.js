@@ -43,8 +43,8 @@ CLASS({
     }
   ],
 
-  methods: {
-    initCView: function() {
+  methods: [
+    function initCView() {
       this.r = this.r;
 
       var self = this;
@@ -61,16 +61,17 @@ CLASS({
 
         Events.dynamic((function (circle, a) {
           return function() {
-            var a2 = timer.time / 60000 * 2 * Math.PI;
+            var a2 = timer.time / 30000 * 2 * Math.PI;
             var r2 = R * Math.cos(2*(a + a2 + Math.PI/2));
             circle.r = 20 + 40 * Math.abs(Math.pow(Math.sin(2*(a + a2 + Math.PI/4)),4));
-            circle.x = 20 + D/2 + (r2) * Math.sin(a + a2);
-            circle.y = 20 + D/2 + (r2) * Math.cos(a + a2);
+            var t = a + a2;
+            circle.x = 20 + D/2 + (r2) * Math.sin(t);
+            circle.y = 20 + D/2 + (r2) * Math.cos(t);
           };
         })(circle, a));
         this.addChild(circle);
       }
       timer.start();
     }
-  }
+  ]
 });
