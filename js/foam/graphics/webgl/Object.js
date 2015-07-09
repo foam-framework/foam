@@ -93,6 +93,7 @@ CLASS({
         if ( nu ) {
           nu.positionMatrix$.addListener(this.updatePosition);
         }
+        this.updatePosition();
       }
     },
     {

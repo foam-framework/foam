@@ -28,6 +28,7 @@ CLASS({
     'foam.graphics.webgl.GLCView',
     'foam.graphics.Circle as CViewCircle',
     'foam.graphics.webgl.Circle',
+    'foam.graphics.webgl.Rectangle',
   ],
 
   properties: [
@@ -87,55 +88,57 @@ CLASS({
 
       ////////////////////////////////////////////////
       // another object
-      var obj = this.Object.create();
+//       var obj = this.Object.create();
 
-      var prog = this.Program.create({}, obj.Y);
-      var frag = this.Shader.create({
-        type: "fragment",
-        source: function() {/*
-          void main(void) {
-            gl_FragColor = vec4(0.5, 0.9, 0.9, 1.0);
-          }
-        */}
-        }, prog.Y);
-      var vert = this.Shader.create({
-        type: "vertex",
-        source: function() {/*
-          attribute vec3 aVertexPosition;
+//       var prog = this.Program.create({}, obj.Y);
+//       var frag = this.Shader.create({
+//         type: "fragment",
+//         source: function() {/*
+//           void main(void) {
+//             gl_FragColor = vec4(0.5, 0.9, 0.9, 1.0);
+//           }
+//         */}
+//         }, prog.Y);
+//       var vert = this.Shader.create({
+//         type: "vertex",
+//         source: function() {/*
+//           attribute vec3 aVertexPosition;
 
-          uniform mat4 positionMatrix;
-          uniform mat4 projectionMatrix;
+//           uniform mat4 positionMatrix;
+//           uniform mat4 projectionMatrix;
 
-          void main(void) {
-            gl_Position = projectionMatrix * positionMatrix * vec4(aVertexPosition, 1.0);
-          }
-        */}
-        }, prog.Y);
-      prog.vertexShader = vert;
-      prog.fragmentShader = frag;
+//           void main(void) {
+//             gl_Position = projectionMatrix * positionMatrix * vec4(aVertexPosition, 1.0);
+//           }
+//         */}
+//         }, prog.Y);
+//       prog.vertexShader = vert;
+//       prog.fragmentShader = frag;
 
-      var mesh = this.ArrayBuffer.create({
-        drawMode: 'triangle strip',
-        vertices: [
-          0.6,  0.6,  0.0,
-          -0.6, 0.6,  0.0,
-          0.6,  -0.6, 0.0,
-          -0.6, -0.6, 0.0
-        ]
-      });
+//       var mesh = this.ArrayBuffer.create({
+//         drawMode: 'triangle strip',
+//         vertices: [
+//           0.6,  0.6,  0.0,
+//           -0.6, 0.6,  0.0,
+//           0.6,  -0.6, 0.0,
+//           -0.6, -0.6, 0.0
+//         ]
+//       });
 
-      obj.program = prog;
-      obj.mesh = mesh;
+//       obj.program = prog;
+//       obj.mesh = mesh;
 
-      obj.relativePosition = [
-        [1.0, 0.0, 0.0, 0.3],
-        [0.0, 1.0, 0.0, 0.0],
-        [0.0, 0.0, 1.0, -0.3],
-        [0.0, 0.0, 0.0, 1.0]
-      ]
+//       obj.relativePosition = [
+//         [1.0, 0.0, 0.0, 0.3],
+//         [0.0, 1.0, 0.0, 0.0],
+//         [0.0, 0.0, 1.0, -0.3],
+//         [0.0, 0.0, 0.0, 1.0]
+//       ]
 
-      this.addChild(obj);
+//       this.addChild(obj);
 
+      var rect = this.Rectangle.create({ width: 4, height: 3, color: [0.4,0.4,0.6,0.8]});
+      this.addChild(rect);
 
       ////////////////////////////////////////////
 

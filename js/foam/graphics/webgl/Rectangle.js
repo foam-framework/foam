@@ -18,7 +18,11 @@
 CLASS({
   package: 'foam.graphics.webgl',
   name: 'Rectangle',
-  requires: [ 'foam.graphics.webgl.Shader' ],
+  requires: [
+    'foam.graphics.webgl.Shader',
+    'foam.graphics.webgl.ArrayBuffer',
+    'foam.graphics.webgl.Program',
+  ],
 
   extendsModel: 'foam.graphics.webgl.Object',
 
@@ -39,8 +43,38 @@ CLASS({
                ");\n"+
             "}\n"
         });
+        // auto-set translucent rendering mode
+        this.translucent = this.color[3] < 1.0;
+        this.instance_.alpha = this.color[3];
       }
     },
+    {
+      name: 'alpha',
+      postSet: function() {
+        if ( this.instance_.color ) this.color = [this.color[0], this.color[1], this.color[2], this.instance_.alpha];
+        this.translucent = this.alpha < 1.0;
+      }
+    },
+    {
+      name: 'width',
+      defaultValue: 10,
+      postSet: function() {
+        if ( this.relativePosition && this.relativePosition.elements ) {
+          this.relativePosition.elements[0][0] = this.width;
+        }
+      }
+    },
+    {
+      name: 'height',
+      defaultValue: 10,
+      postSet: function() {
+        if ( this.relativePosition && this.relativePosition.elements ) {
+          this.relativePosition.elements[1][1] = -this.height;
+        }
+      }
+    },
+
+
   ],
 
   methods: [
@@ -53,6 +87,14 @@ CLASS({
         [0.0, 0.0, 1.0, 0.01],
         [0.0, 0.0, 0.0, 1.0]
       ]
+
+      Events.dynamic(function() { this.sylvesterLib.loaded; }.bind(this),
+        function() {
+          this.width = this.width;
+          this.height = this.height;
+        }.bind(this)
+      );
+
 
       this.mesh = this.ArrayBuffer.create({
         drawMode: 'triangle strip',
@@ -83,13 +125,6 @@ CLASS({
 
     },
 
-    function paintSelf() {
-      var gl = this.gl;
-      if ( ! gl ) return;
-
-
-
-    }
   ]
 
 });

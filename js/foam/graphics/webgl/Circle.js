@@ -43,6 +43,8 @@ CLASS({
                ");\n"+
             "}\n"
         });
+        // auto-set translucent rendering mode
+        this.translucent = this.color[3] < 1.0;
       }
     },
     {
@@ -87,8 +89,8 @@ CLASS({
       this.relativePosition = [
         [this.r, 0.0, 0.0, 0.0],
         [0.0, this.r, 0.0, 0.0],
-        [0.0, 0.0, 1.0, 0.01],
-        [0.0, 0.0, 0.0, 1.0]
+        [0.0, 0.0,    1.0, 0.0],
+        [0.0, 0.0,    0.0, 1.0]
       ]
 
       Events.dynamic(function() { this.sylvesterLib.loaded; }.bind(this),

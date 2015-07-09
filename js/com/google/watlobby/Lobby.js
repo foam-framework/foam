@@ -118,7 +118,7 @@ CLASS({
 
   requires: [
     'foam.graphics.ImageCView',
-    'foam.graphics.SimpleRectangle',
+    'foam.graphics.webgl.Rectangle',
     'foam.graphics.ViewCView',
     'com.google.watlobby.Bubble'
   ],
@@ -145,7 +145,7 @@ CLASS({
         var w = this.lobby.width;
         var h = this.lobby.height;
 
-        var r = this.SimpleRectangle.create({background: 'black', alpha: 0, x: 0, y: 0, width: this.lobby.width, height: this.lobby.height});
+        var r = this.Rectangle.create({color: [0,0,0,0.1], alpha: 0.1, x: 0, y: 0, width: this.lobby.width, height: this.lobby.height});
         this.lobby.addChild(r);
         Movement.animate(1000, function() { r.alpha = 0.7; })();
 
@@ -193,7 +193,7 @@ CLASS({
   extendsModel: 'com.google.watlobby.Bubble',
 
   requires: [
-    'foam.graphics.SimpleRectangle',
+    'foam.graphics.webgl.Rectangle',
     'com.google.watlobby.Bubble'
   ],
 
@@ -215,7 +215,7 @@ CLASS({
         var w = this.lobby.width / this.columns;
         var h = this.lobby.height / this.rows;
 
-        var r = this.SimpleRectangle.create({background: 'black', alpha: 0, x: 0, y: 0, width: this.lobby.width, height: this.lobby.height});
+        var r = this.Rectangle.create({color: [0,0,0,0], alpha: 0, x: 0, y: 0, width: this.lobby.width, height: this.lobby.height});
         this.lobby.addChild(r);
         Movement.animate(1000, function() { r.alpha = 0.7; })();
 
@@ -245,22 +245,22 @@ CLASS({
         this.children_ = [];
       }
     },
-    function paintSelf() {
-      if ( this.image ) {
-        var d, s;
-        if ( this.roundImage ) {
-          this.borderWidth = 0;
-          d = 2 * this.r;
-          s = -this.r;
-        } else {
-          d = 2 * this.r * Math.SQRT1_2;
-          s = -this.r * Math.SQRT1_2;
-        }
-        this.img.x = this.img.y = s;
-        this.img.width = this.img.height = d;
-      }
-      this.SUPER();
-    }
+//     function paintSelf() {
+//       if ( this.image ) {
+//         var d, s;
+//         if ( this.roundImage ) {
+//           this.borderWidth = 0;
+//           d = 2 * this.r;
+//           s = -this.r;
+//         } else {
+//           d = 2 * this.r * Math.SQRT1_2;
+//           s = -this.r * Math.SQRT1_2;
+//         }
+//         this.img.x = this.img.y = s;
+//         this.img.width = this.img.height = d;
+//       }
+//       this.SUPER();
+//     }
   ]
 });
 
@@ -440,7 +440,7 @@ CLASS({
 
     function bounceOnWalls(c, w, h) {
       Events.dynamic(function() { c.x; c.y; }, function() {
-        var r = c.r + c.borderWidth;
+        var r = c.r;
         if ( c.x < r     ) { c.vx += 0.2; c.vy -= 0.19; }
         if ( c.x > w - r ) { c.vx -= 0.2; c.vy += 0.19; }
         if ( c.y < r     ) { c.vy += 0.2; c.vx += 0.19; }
