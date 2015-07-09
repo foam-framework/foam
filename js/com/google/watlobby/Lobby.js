@@ -211,30 +211,49 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+
+      this.children_ = [];
+      var w = this.lobby.width / this.columns;
+      var h = this.lobby.height / this.rows;
+
+      var r = this.Rectangle.create({color: [0,0,0,0], alpha: 0, x: 0, y: 0, z: 1, width: this.lobby.width, height: this.lobby.height});
+      this.lobby.addChild(r);
+
+      this.children_.push(r);
+
+      for ( var i = 0 ; i < this.columns ; i++ ) {
+        for ( var j = 0 ; j < this.rows ; j++ ) {
+          var b = this.Bubble.create({
+            r: 0, x: this.x, y: this.y, z: -2, border: '#f00'
+          });
+          this.lobby.addChild(b);
+          this.children_.push(b);
+        }
+      }
+
+
+    },
     function setSelected(selected) {
       if ( selected ) {
-        this.children_ = [];
         var w = this.lobby.width / this.columns;
         var h = this.lobby.height / this.rows;
 
-        var r = this.Rectangle.create({color: [0,0,0,0], alpha: 0, x: 0, y: 0, z: 1, width: this.lobby.width, height: this.lobby.height});
-        this.lobby.addChild(r);
+        var r = this.children_[0];
         Movement.animate(1000, function() { r.alpha = 0.7; r.z = -1; })();
-
-        this.children_.push(r);
 
         for ( var i = 0 ; i < this.columns ; i++ ) {
           for ( var j = 0 ; j < this.rows ; j++ ) {
-            var b = this.Bubble.create({
-              r: 0, x: this.x, y: this.y, z: -2, border: '#f00'
-            });
+            var b = this.children_[ i * this.rows + j + 1];
+            b.x = this.x;
+            b.y = this.y;
+            b.z = -2;
             Movement.animate(2000, function(i, j) {
               this.r = Math.min(w, h) / 2 - 6;
               this.x = ( i + 0.5 ) * w;
               this.y = ( j + 0.5 ) * h;
             }.bind(b, i, j), Movement.oscillate(0.6, 0.03, 2))();
-            this.lobby.addChild(b);
-            this.children_.push(b);
           }
         }
       } else {
@@ -244,7 +263,6 @@ CLASS({
         for ( var i = 1 ; i < this.children_.length ; i++ ) {
           Movement.animate(1000, function() { this.r = 0; }.bind(this.children_[i]))();
         }
-        this.children_ = [];
       }
     },
 //     function paintSelf() {
