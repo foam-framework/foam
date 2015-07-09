@@ -103,14 +103,7 @@ if ( ! (window.cordova && window.chrome) ) {
     TEMPLATE_FUNCTIONS[i] = '';
     return aseq(
         t.futureTemplate,
-        function(ret, t) {
-          // Sometimes futureTemplate is called before the global Template model
-          // is available. In such cases, "t" will be a map describing a
-          // Template object that still needs to be instantiated.
-          if ( typeof t.model_ === 'string' ) t = Template.create(t);
-
-          doEval(t)(ret);
-        },
+        function(ret, t) { doEval(t)(ret); },
         function(ret, f) {
           TEMPLATE_FUNCTIONS[i] = f;
           ret(f);
