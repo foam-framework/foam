@@ -68,13 +68,22 @@ if ( ! (window.cordova && window.chrome) ) {
 
   var TEMPLATE_FUNCTIONS = [];
 
-  var aevalTemplate = function(t, model) {
+  // TODO(markdittmer): "t_" differentiated from "t" in callbacks becase, for
+  // some reason, doEval_'s "t" is not a bonified Template object with a
+  // "language" property. Should investigate why to eliminate need for
+  // "t_.language".
+  var aevalTemplate = function(t_, model) {
     var doEval_ = function(t) {
-      //    console.time('parse');
-      var code = TemplateCompiler.parseString(t.template);
-      //    console.timeEnd('parse');
+      // Parse result: [isSimple, maybeCode]: [true, null] or [false, codeString].
+      var parseResult = TemplateCompiler.parseString(t.template);
 
-      if ( code[0] ) return aconstant(ConstantTemplate(t.template));
+      // Simple case, just a string literal
+      if ( parseResult[0] )
+        return aconstant(ConstantTemplate(t_.language === 'css' ?
+            X.foam.grammars.CSS3.create().parser.parseString(t.template).toString() :
+            t.template));
+
+      var code = TemplateUtil.HEADER + parseResult[1] + TemplateUtil.FOOTERS[t_.language];
 
       var args = ['opt_out'];
       if ( t.args ) {
@@ -82,7 +91,7 @@ if ( ! (window.cordova && window.chrome) ) {
           args.push(t.args[i].name);
         }
       }
-      return /*atime('eval ' + model.id + '.' + t.name,*/ aeval('function(' + args.join(',') + '){' + code[1] + '}');
+      return aeval('function(' + args.join(',') + '){' + code + '}');
     };
     var doEval = function(t) {
       try {
@@ -97,7 +106,7 @@ if ( ! (window.cordova && window.chrome) ) {
     var i = TEMPLATE_FUNCTIONS.length;
     TEMPLATE_FUNCTIONS[i] = '';
     return aseq(
-        t.futureTemplate,
+        t_.futureTemplate,
         function(ret, t) { doEval(t)(ret); },
         function(ret, f) {
           TEMPLATE_FUNCTIONS[i] = f;
