@@ -283,12 +283,26 @@ CLASS({
 
   properties: [
     { name: 'timer' },
-    { name: 'n',          defaultValue: 30 },
+    { name: 'n',          defaultValue: 20 },
     { name: 'width',      defaultValue: window.innerWidth },
     { name: 'height',     defaultValue: window.innerHeight },
     { name: 'background', defaultValue: '#ccf' },
     { name: 'collider',   factory: function() {
-      return this.Collider.create();
+      var c = this.Collider.create();
+      // Make collision detection much faster by not checking
+      // if air bubbles collide with other air bubbles
+      c.detectCollisions = function() {
+        var cs = this.children;
+        for ( var i = 0 ; i < cs.length ; i++ ) {
+          var c1 = cs[i];
+          if ( c1.r === 5 ) return;
+          for ( var j = i+1 ; j < cs.length ; j++ ) {
+            var c2 = cs[j];
+            if ( c1.intersects(c2) ) this.collide(c1, c2);
+          }
+        }
+      };
+      return c;
     }},
     {
       name: 'topics',   factory: function() {
@@ -366,7 +380,7 @@ CLASS({
       }
 
       var N = this.n;
-      for ( var i = 0 ; i < N && false ; i++ ) {
+      for ( var i = 0 ; i < N ; i++ ) {
         var colour = this.COLOURS[i % this.COLOURS.length];
         var c = this.Bubble.create({
           r: 20 + Math.random() * 50,
@@ -386,7 +400,7 @@ CLASS({
         this.collider.add(c);
       }
 
-      for ( var i = 0 ; i < 200 && i < 20 ; i++ ) {
+      for ( var i = 0 ; i < 250 ; i++ ) {
         var b = this.PhysicalCircle.create({
           r: 5,
           x: Math.random() * this.width,
