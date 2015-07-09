@@ -24,7 +24,7 @@ CLASS({
     {
       name: 'fov',
       help: 'Field-of-view in degrees.',
-      defaultValue: 45
+      defaultValue: 0
     },
     {
       name: 'cameraDistance',
@@ -42,13 +42,9 @@ CLASS({
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       }
 
-
       this.projectionMatrix = this.makeOrtho(0,this.view.width,-this.view.height,0,-100.0,100.0)
-      //this.makePerspective(this.fov, this.view.width/this.view.height, 0.1, 100.0);
+
       this.loadIdentity();
-      this.mvTranslate([0.0,0.0, this.cameraDistance]);
-//      this.multMatrix(Matrix.RotationX(0.3).ensure4x4());
-//      this.multMatrix(Matrix.RotationZ(0.2).ensure4x4());
 
       // children can now draw
     }

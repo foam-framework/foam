@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos.graphics',
   name: 'SimpleWebGL',
-  extendsModel: 'foam.graphics.webgl.FlatScene',
+  extendsModel: 'foam.graphics.webgl.Scene',
 
   requires: [
     'foam.graphics.webgl.Object',
@@ -26,7 +26,8 @@ CLASS({
     'foam.graphics.webgl.Program',
     'foam.graphics.webgl.ArrayBuffer',
     'foam.graphics.webgl.GLCView',
-    'foam.graphics.Circle',
+    'foam.graphics.Circle as CViewCircle',
+    'foam.graphics.webgl.Circle',
   ],
 
   properties: [
@@ -46,7 +47,7 @@ CLASS({
         type: "fragment",
         source: function() {/*
           void main(void) {
-            gl_FragColor = vec4(1.0, 0.5, 0.5, 0.9);
+            gl_FragColor = vec4(0.8, 0.5, 0.5, 0.9);
           }
         */}
         }, prog.Y);
@@ -92,7 +93,7 @@ CLASS({
         type: "fragment",
         source: function() {/*
           void main(void) {
-            gl_FragColor = vec4(0.5, 1.0, 1.0, 1.0);
+            gl_FragColor = vec4(0.5, 0.9, 0.9, 1.0);
           }
         */}
         }, prog.Y);
@@ -128,7 +129,7 @@ CLASS({
       obj.relativePosition = [
         [1.0, 0.0, 0.0, 0.3],
         [0.0, 1.0, 0.0, 0.0],
-        [0.0, 0.0, 1.0, 0.3],
+        [0.0, 0.0, 1.0, -0.3],
         [0.0, 0.0, 0.0, 1.0]
       ]
 
@@ -139,7 +140,7 @@ CLASS({
 
 
       //var obj = this.GLCView.create();
-      var circle = this.Circle.create({
+      var circle = this.CViewCircle.create({
         color: 'red', radius: 100, x: 50, y: 50, width: 100, height: 100
       });
 
@@ -147,6 +148,12 @@ CLASS({
 
       bigSquare.addChild(circle);
       //obj.addChild(circle);
+
+      ///////////////////////////////////////////////
+
+      var circ3d = this.Circle.create({ r: 1, color: [0.5,1.0,1.0,1.0,1.0] });
+
+      this.addChild(circ3d);
 
       ///////////////////////////////////////////////
 

@@ -86,7 +86,7 @@ CLASS({
         c.stroke();
       }
     },
-    
+
     function intersects(c) {
       var r = this.r + c.r;
       if ( this.border ) r += this.borderWidth;

@@ -48,7 +48,7 @@ CLASS({
     {
       name: 'cameraDistance',
       help: 'Units to back the camera away from the XY plane.',
-      defaultValue: -2.5
+      defaultValue: -6.0
     },
   ],
 

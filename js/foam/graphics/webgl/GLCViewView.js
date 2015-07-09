@@ -48,7 +48,7 @@ CLASS({
           glc.enable(glc.DEPTH_TEST); // Enable depth testing
           glc.depthFunc(glc.LEQUAL); // Near things obscure far things
           glc.clear(glc.COLOR_BUFFER_BIT|glc.DEPTH_BUFFER_BIT); // Clear the color/depth buffer.
-          glc.viewport(0,0,this.width, this.height); //
+          glc.viewport(0,0,this.width, this.height);
           this.instance_.gl = glc;
         } else {
           console.warn("WebGL requested but not supported.")

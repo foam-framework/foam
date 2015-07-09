@@ -20,20 +20,61 @@ CLASS({
   name: 'Rectangle',
   requires: [ 'foam.graphics.webgl.Shader' ],
 
-  extendsModel: 'foam.graphics.webgl.GLView',
+  extendsModel: 'foam.graphics.webgl.Object',
 
   properties: [
     {
-      name: 'solidFillShader',
-      lazyFactory: function() {
-        return this.Shader.create({
-            type:'fragment',
-            source: "void main() {\n gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n }\n";
-      }
+      name: 'color',
+      defaultValueFn: function() { return [1.0, 1.0, 1.0, 1.0]; } // white
     }
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+
+      this.relativePosition = [
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.01],
+        [0.0, 0.0, 0.0, 1.0]
+      ]
+
+      this.mesh = this.ArrayBuffer.create({
+        drawMode: 'triangle strip',
+        vertices: [
+          1.0, 1.0, 0.0,
+          0.0, 1.0, 0.0,
+          1.0, 0.0, 0.0,
+          0.0, 0.0, 0.0
+        ]
+      });
+      this.textureCoords = this.mesh;
+
+      this.program = this.Program.create();
+      this.program.fragmentShader = this.Shader.create({
+        type: "fragment",
+        source: function() {/*
+          void main(void) {
+            gl_FragColor = vec4(0.5, 1.0, 1.0, 1.0);
+          }
+        */}
+        });
+      this.program.vertexShader = this.Shader.create({
+        type: "vertex",
+        source: function() {/*
+          attribute vec3 aVertexPosition;
+
+          uniform mat4 positionMatrix;
+          uniform mat4 projectionMatrix;
+
+          void main(void) {
+            gl_Position = projectionMatrix * positionMatrix * vec4(aVertexPosition, 1.0);
+          }
+        */}
+        });
+
+    },
 
     function paintSelf() {
       var gl = this.gl;
