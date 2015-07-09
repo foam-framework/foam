@@ -3,9 +3,8 @@ CLASS({
   name: 'Server',
   requires: [
     'foam.node.server.NodeServer',
-    'foam.node.server.DAOHandler',
     'foam.node.server.StaticFileHandler',
-    'MDAO'
+    'foam.node.server.FileHandler'
   ],
   properties: [
     {
@@ -22,42 +21,47 @@ CLASS({
       name: 'filepath'
     },
     {
-      name: 'dao',
-      factory: function() {
-        return this.MDAO.create({
-          model: Model
-        });
-      }
-    },
-    {
       name: 'server',
       factory: function() {
         console.log("boot dir is: ", global.FOAM_BOOT_DIR);
 
-        return this.NodeServer.create({
-          port: this.port,
-          handlers: [
-            this.DAOHandler.create({
-              daoMap: {
-                'ModelDAO': this.dao
-              }
-            }),
-            this.StaticFileHandler.create({
-              dir: global.FOAM_BOOT_DIR,
-              prefix: '/core/'
-            }),
-            this.StaticFileHandler.create({
-              dir: global.FOAM_BOOT_DIR + '/../js/',
-              prefix: '/js/'
-            })
-          ]
-        });
+        return this.NodeServer.create();
       }
     }
   ],
   methods: [
     function execute() {
+      this.configure();
       this.server.launch();
+    },
+    function configure() {
+      this.server.port = this.port;
+      this.server.handlers = [
+        this.StaticFileHandler.create({
+          dir: global.FOAM_BOOT_DIR,
+          prefix: '/core/'
+        }),
+        this.StaticFileHandler.create({
+          dir: global.FOAM_BOOT_DIR + '/../demos/',
+          prefix: '/demos/'
+        }),
+        this.StaticFileHandler.create({
+          dir: global.FOAM_BOOT_DIR + '/../apps/',
+          prefix: '/apps/'
+        }),
+        this.StaticFileHandler.create({
+          dir: global.FOAM_BOOT_DIR + '/../js/',
+          prefix: '/js/'
+        }),
+	this.FileHandler.create({
+	  pathname: '/index.html',
+	  file: global.FOAM_BOOT_DIR + '/../index.html'
+	}),
+	this.FileHandler.create({
+	  pathname: '/index.js',
+	  file: global.FOAM_BOOT_DIR + '/../index.js'
+	})
+      ];
     }
   ]
 });

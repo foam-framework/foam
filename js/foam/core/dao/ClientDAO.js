@@ -115,21 +115,20 @@ CLASS({
          "model_": "Method",
          "name": "select",
          "code": function (sink, options) {
-      sink = sink || [];
       var future = afuture();
 
       var self = this;
 
       // XXX: This used to be sink.model_ || Array.isArray, but that would eg.
       // send an instance of MDAO, rather than its data.
-      if ( Expr.isInstance(sink) || Array.isArray(sink) ) {
+      if ( Expr.isInstance(sink) || Array.isArray(sink) || ! sink ) {
         this.asend(function(response) {
           if ( ! response ) sink && sink.error && sink.error();
           future.set(response || sink);
         }, {
           subject: self.subject,
           method: 'select',
-          params: [sink, options]
+          params: [sink || null, options]
         });
       } else {
         var fc = this.createFlowControl_();
@@ -153,7 +152,7 @@ CLASS({
         }, {
           subject: self.subject,
           method: 'select',
-          params: [[], options]
+          params: [null, options]
         });
       }
 
