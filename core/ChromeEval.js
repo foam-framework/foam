@@ -68,22 +68,18 @@ if ( ! (window.cordova && window.chrome) ) {
 
   var TEMPLATE_FUNCTIONS = [];
 
-  // TODO(markdittmer): "t_" differentiated from "t" in callbacks becase, for
-  // some reason, doEval_'s "t" is not a bonified Template object with a
-  // "language" property. Should investigate why to eliminate need for
-  // "t_.language".
-  var aevalTemplate = function(t_, model) {
+  var aevalTemplate = function(t, model) {
     var doEval_ = function(t) {
       // Parse result: [isSimple, maybeCode]: [true, null] or [false, codeString].
       var parseResult = TemplateCompiler.parseString(t.template);
 
       // Simple case, just a string literal
       if ( parseResult[0] )
-        return aconstant(ConstantTemplate(t_.language === 'css' ?
+        return aconstant(ConstantTemplate(t.language === 'css' ?
             X.foam.grammars.CSS3.create().parser.parseString(t.template).toString() :
             t.template));
 
-      var code = TemplateUtil.HEADER + parseResult[1] + TemplateUtil.FOOTERS[t_.language];
+      var code = TemplateUtil.HEADER + parseResult[1] + TemplateUtil.FOOTERS[t.language];
 
       var args = ['opt_out'];
       if ( t.args ) {
@@ -106,8 +102,15 @@ if ( ! (window.cordova && window.chrome) ) {
     var i = TEMPLATE_FUNCTIONS.length;
     TEMPLATE_FUNCTIONS[i] = '';
     return aseq(
-        t_.futureTemplate,
-        function(ret, t) { doEval(t)(ret); },
+        t.futureTemplate,
+        function(ret, t) {
+          // Sometimes futureTemplate is called before the global Template model
+          // is available. In such cases, "t" will be a map describing a
+          // Template object that still needs to be instantiated.
+          if ( typeof t.model_ === 'string' ) t = Template.create(t);
+
+          doEval(t)(ret);
+        },
         function(ret, f) {
           TEMPLATE_FUNCTIONS[i] = f;
           ret(f);
