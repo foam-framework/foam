@@ -359,6 +359,13 @@ return JSONUtil.arrayToObjArray(X, [
     image: 'Snake.png'
   },
   {
+    name: 'Task Manager',
+    model: 'foam.apps.ctm.TaskManager',
+    description: 'Prototype Chrome Task Manager that adds Material Design, search, and graphing.',
+    keywords: [ 'graphics' ],
+    image: 'TaskManager.png'
+  },
+  {
     name: 'FOAM Demo Catalog',
     path: 'DemoCat.html',
     description: 'A FOAM Demo browser.  The demo you\'re currently running.',
