@@ -62,7 +62,11 @@ public class TreeIndex implements Index {
         throws DAOException, DAOInternalException {
       if (state == null) return;
 
+
       TreeMap map = (TreeMap) state;
+      if (sink instanceof MLang.CountSink && p == null) {
+        ((MLang.CountSink) sink).setCount(Math.max((long) map.size() - skip, limit));
+      }
 
       Iterable i = IterableSelectHelper.decorate(map.values(), p, (Comparator<Object>) c, skip, limit);
       for (Object o : i) {

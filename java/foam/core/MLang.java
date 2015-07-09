@@ -194,16 +194,16 @@ public class MLang {
     return new CountSink();
   }
   public static class CountSink implements Sink {
-    private int count = 0;
+    private long count = 0;
     public Object put(X x, Object obj) {
       count++;
       return obj;
     }
 
-    public int getCount(){
+    public long getCount(){
       return count;
     }
-    public void setCount(int c) {
+    public void setCount(long c) {
       count = c;
     }
   }

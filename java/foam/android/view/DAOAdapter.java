@@ -37,7 +37,7 @@ public class DAOAdapter extends RecyclerView.Adapter<DAOAdapter.DAOViewHolder> i
     try {
       MLang.CountSink sink = MLang.COUNT();
       dao.select(X(), sink);
-      return sink.getCount();
+      return (int) sink.getCount();
     } catch(DAOInternalException e) {
       Log.e("DAOAdapter", "DAOInternalException while trying to fetch COUNT");
     } catch(DAOException e) {
