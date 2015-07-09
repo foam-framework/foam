@@ -47,11 +47,11 @@ CLASS({
     },
     {
       name: 'segments',
-      defaultValue: 32
+      defaultValue: 64
     },
     {
       name: 'r',
-      defaultValue: 20,
+      defaultValue: 1,
       postSet: function() {
         if ( this.relativePosition && this.relativePosition.elements ) {
           this.relativePosition.elements[0][0] = this.r;
@@ -59,6 +59,17 @@ CLASS({
         }
       }
     },
+    {
+      name: 'borderRatio',
+      defaultValue: 1.0,
+      help: 'The proportion of radius to draw as solid. 1.0 is a filled circle, 0.01 a thin ring. Negative values extend outward.',
+      postSet: function() {
+        this.mesh = this.ArrayBuffer.create({
+          drawMode: 'triangle strip',
+          vertices: this.ringVertices()
+        });
+      }
+    }
   ],
 
   methods: [
@@ -80,10 +91,7 @@ CLASS({
         [0.0, 0.0, 0.0, 1.0]
       ]
 
-       this.mesh = this.ArrayBuffer.create({
-         drawMode: 'triangle fan',
-         vertices: this.circleVertices()
-       });
+      this.borderRatio = this.borderRatio;
 
       this.program = this.Program.create();
       this.program.vertexShader = this.Shader.create({
@@ -99,12 +107,48 @@ CLASS({
           }
         */}
         });
-      this.color = [ 1.0, 0.5, 0.5, 1.0 ];
+      this.color = this.color; // reset the fragment shader
 
     },
 
+    function ringVertices() {
+      /* Create a mesh for a 'triangle strip' hollow circle */
+      var v = [].slice();
+      var segs = this.segments;
+      var r = 1.0;
+      var b = 1.0 - this.borderRatio;
+      function circPt(i) {
+        return [
+           (Math.sin(2 * Math.PI * i / segs) * r),
+          -(Math.cos(2 * Math.PI * i / segs) * r),
+          0.0
+        ];
+      };
+      function innerPt(i) {
+        return [
+           (Math.sin(2 * Math.PI * i / segs) * b),
+          -(Math.cos(2 * Math.PI * i / segs) * b),
+          0.0
+        ];
+      };
+      // start with the center
+      v = v.concat(innerPt(0));
+      v = v.concat(circPt(0));
+      v = v.concat(innerPt(1));
+
+      // add the rest of the edge vertices to complete the fan
+      for (var i = 1; i < segs; i++) {
+        v = v.concat(circPt(i));
+        v = v.concat(innerPt(i));
+      }
+      v = v.concat(circPt(0));
+      v = v.concat(innerPt(0));
+
+      return v;
+    },
+
     function circleVertices() {
-      /* Create a mesh for a 'triangle fan' circle */
+      /* Create a mesh for a 'triangle fan' circle. This would be the case where borderRatio == 1.0 */
       var v = [].slice();
       var segs = this.segments;
       var r = 1;//this.r;

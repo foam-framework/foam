@@ -33,6 +33,7 @@ CLASS({
   properties: [
     { name: 'width', defaultValue: 1024  },
     { name: 'height', defaultValue: 800  },
+    { name: 'ring' },
     { name: 'object' },
   ],
 
@@ -139,20 +140,16 @@ CLASS({
       ////////////////////////////////////////////
 
 
-      //var obj = this.GLCView.create();
-      var circle = this.CViewCircle.create({
-        color: 'red', radius: 100, x: 50, y: 50, width: 100, height: 100
-      });
+//       var circle = this.CViewCircle.create({
+//         color: 'red', radius: 0.001, x: 0.5, y: 0.5, width: 1, height: 1
+//       });
 
-      //obj.sourceView = circle;
-
-      bigSquare.addChild(circle);
-      //obj.addChild(circle);
+//       bigSquare.addChild(circle);
 
       ///////////////////////////////////////////////
 
-      var circ3d = this.Circle.create({ r: 1, color: [0.5,1.0,1.0,1.0,1.0] });
-
+      var circ3d = this.Circle.create({ r: 1, color: [0.5,0.87,0.5,1.0], borderRatio: 0.05 });
+      this.ring = circ3d;
       this.addChild(circ3d);
 
       ///////////////////////////////////////////////
@@ -168,9 +165,17 @@ CLASS({
       code: function() {
         this.view && this.view.paint();
 
+        if ( this.ring.relativePosition ) {
+          this.ring.relativePosition =
+            this.ring.relativePosition.x(Matrix.RotationX(0.1).ensure4x4())
+          this.ring.relativePosition =
+            this.ring.relativePosition.x(Matrix.RotationZ(0.02).ensure4x4());
+          this.ring.relativePosition =
+            this.ring.relativePosition.x(Matrix.RotationZ(0.04).ensure4x4());
+        }
         if ( this.object.relativePosition ) {
           this.object.relativePosition =
-            this.object.relativePosition.x(Matrix.RotationY(0.02).ensure4x4());
+            this.object.relativePosition.x(Matrix.RotationX(0.01).ensure4x4())
         }
 
         this.X.setTimeout(this.update, 16);
