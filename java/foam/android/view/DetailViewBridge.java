@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import java.util.HashMap;
 import java.util.Map;
 
+import foam.android.core.AttributeUtils;
 import foam.core.FObject;
 import foam.core.Model;
 import foam.core.Property;
@@ -43,11 +44,35 @@ public class DetailViewBridge extends OneWayViewBridge<ViewGroup, FObject> {
 
   public DetailViewBridge(Context context) {
     setup();
-    view = new LinearLayout(context);
+    view = buildView(context, null);
   }
   public DetailViewBridge(Context context, AttributeSet attrs) {
     setup();
-    view = new LinearLayout(context, attrs);
+    view = buildView(context, attrs);
+  }
+
+  private ViewGroup buildView(Context context, AttributeSet attrs) {
+    LinearLayout v = attrs == null ? new LinearLayout(context) : new LinearLayout(context, attrs);
+    if (AttributeUtils.find(attrs, "orientation") == null) {
+      v.setOrientation(LinearLayout.VERTICAL);
+    }
+    ViewGroup.LayoutParams lp = v.getLayoutParams();
+    if (lp == null) {
+      v.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    } else {
+      lp = new ViewGroup.LayoutParams(lp.width, lp.height);
+      boolean changed = false;
+      if (AttributeUtils.find(attrs, "layout_height") == null) {
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        changed = true;
+      }
+      if (AttributeUtils.find(attrs, "layout_width") == null) {
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        changed = true;
+      }
+      if (changed) v.setLayoutParams(lp);
+    }
+    return v;
   }
 
   public DetailViewBridge(Context context, int layout) {
