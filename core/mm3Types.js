@@ -592,7 +592,9 @@ CLASS({
     },
     {
       name: 'adapt',
-      defaultValue: function(_, v) { return Array.isArray(v) ? v : (v ? [v] : []); }
+      defaultValue: function(_, v) {
+        return Array.isArray(v) ? v : ((v || v === 0) ? [v] : []);
+      }
     },
     {
       name: 'factory',
