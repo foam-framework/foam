@@ -56,6 +56,24 @@ CLASS({
 
     },
     {
+      name: 'x',
+      getter: function() {
+        return this.relativePosition && this.relativePosition.elements && this.relativePosition.elements[0][3];
+      },
+      postSet: function(old, nu) {
+        this.relativePosition && this.relativePosition.elements && (this.relativePosition.elements[0][3] = nu);
+      }
+    },
+    {
+      name: 'y',
+      getter: function() {
+        return this.relativePosition && this.relativePosition.elements && -(this.relativePosition.elements[1][3]);
+      },
+      postSet: function(old, nu) {
+        this.relativePosition && this.relativePosition.elements && (this.relativePosition.elements[1][3] = -nu);
+      }
+    },
+    {
       name: 'positionMatrix',
       type: 'Matrix',
     },

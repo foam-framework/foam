@@ -91,7 +91,13 @@ CLASS({
         [0.0, 0.0, 0.0, 1.0]
       ]
 
-      this.borderRatio = this.borderRatio;
+      Events.dynamic(function() { this.sylvesterLib.loaded; }.bind(this),
+        function() {
+          this.borderRatio = this.borderRatio;
+          this.r = this.r;
+        }.bind(this)
+      );
+
 
       this.program = this.Program.create();
       this.program.vertexShader = this.Shader.create({
@@ -109,6 +115,11 @@ CLASS({
         });
       this.color = this.color; // reset the fragment shader
 
+    },
+
+    function intersects(c) {
+      var r = this.r + c.r;
+      return Movement.distance(this.x-c.x, this.y-c.y) < r;
     },
 
     function ringVertices() {

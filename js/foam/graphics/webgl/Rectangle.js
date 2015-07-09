@@ -25,8 +25,22 @@ CLASS({
   properties: [
     {
       name: 'color',
-      defaultValueFn: function() { return [1.0, 1.0, 1.0, 1.0]; } // white
-    }
+      defaultValueFn: function() { return [1.0, 1.0, 1.0, 1.0]; }, // white
+      postSet: function() {
+        this.program.fragmentShader = this.Shader.create({
+          type: "fragment",
+          source:
+            "void main(void) {\n" +
+            "  gl_FragColor = vec4("+
+                this.color[0]+","+
+                this.color[1]+","+
+                this.color[2]+","+
+                this.color[3]+
+               ");\n"+
+            "}\n"
+        });
+      }
+    },
   ],
 
   methods: [
@@ -52,14 +66,7 @@ CLASS({
       this.textureCoords = this.mesh;
 
       this.program = this.Program.create();
-      this.program.fragmentShader = this.Shader.create({
-        type: "fragment",
-        source: function() {/*
-          void main(void) {
-            gl_FragColor = vec4(0.5, 1.0, 1.0, 1.0);
-          }
-        */}
-        });
+      this.color = this.color;
       this.program.vertexShader = this.Shader.create({
         type: "vertex",
         source: function() {/*

@@ -34,7 +34,7 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'Bubble',
 
-  extendsModel: 'foam.demos.physics.PhysicalCircle',
+  extendsModel: 'foam.demos.physics.PhysicalGLCircle',
 
   requires: [ 'foam.graphics.ImageCView' ],
 
@@ -42,22 +42,22 @@ CLASS({
 
   properties: [
     { name: 'topic' },
-    { name: 'image' },
+    {
+       name: 'image',
+       postSet: function() {
+         if ( this.image ) {
+           var img = this.ImageCView.create({src: this.image});
+           //this.addChild(img);
+           this.img = img;
+         }
+       }
+    },
     { name: 'roundImage' },
-    { name: 'borderWidth', defaultValue: 6 },
-    { name: 'color',       defaultValue: 'white' }
+    { name: 'borderRatio', defaultValue: -0.05 },
+    { name: 'color' }
   ],
 
   methods: [
-    function initCView() {
-      this.SUPER();
-
-      if ( this.image ) {
-        var img = this.ImageCView.create({src: this.image});
-        this.addChild(img);
-        this.img = img;
-      }
-    },
     function setSelected(selected) {
       if ( this.cancel_ ) {
         this.cancel_();
@@ -90,22 +90,22 @@ CLASS({
         }.bind(this), Movement.ease(0.4,0.2))();
       }
     },
-    function paintSelf() {
-      if ( this.image ) {
-        var d, s;
-        if ( this.roundImage ) {
-          this.borderWidth = 0;
-          d = 2 * this.r;
-          s = -this.r;
-        } else {
-          d = 2 * this.r * Math.SQRT1_2;
-          s = -this.r * Math.SQRT1_2;
-        }
-        this.img.x = this.img.y = s;
-        this.img.width = this.img.height = d;
-      }
-      this.SUPER();
-    }
+//     function paintSelf() {
+//       if ( this.image ) {
+//         var d, s;
+//         if ( this.roundImage ) {
+//           this.borderWidth = 0;
+//           d = 2 * this.r;
+//           s = -this.r;
+//         } else {
+//           d = 2 * this.r * Math.SQRT1_2;
+//           s = -this.r * Math.SQRT1_2;
+//         }
+//         this.img.x = this.img.y = s;
+//         this.img.width = this.img.height = d;
+//       }
+//       this.SUPER();
+//     }
   ]
 });
 
@@ -276,9 +276,10 @@ CLASS({
     'com.google.watlobby.Topic',
     'com.google.watlobby.VideoBubble',
     'foam.demos.ClockView',
-    'foam.demos.physics.PhysicalCircle',
+    'foam.demos.physics.PhysicalGLCircle',
     'foam.physics.Collider',
-    'foam.util.Timer'
+    'foam.util.Timer',
+    'foam.graphics.webgl.Circle as GLCircle'
   ],
 
   imports: [ 'timer' ],
@@ -381,7 +382,7 @@ CLASS({
           r: 20 + Math.random() * 50,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          borderWidth: 6,
+          borderRatio: -0.01,
           color: 'white',
           border: colour
         });
@@ -396,18 +397,21 @@ CLASS({
       }
 
       for ( var i = 0 ; i < 200 && i < 20 ; i++ ) {
-        var b = this.PhysicalCircle.create({
+        var b = this.PhysicalGLCircle.create({
           r: 5,
+          segments: 16,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          borderWidth: 0.5,
-          color: 'rgba(0,0,255,0.2)',
-          border: '#blue',
-//          color: 'rgba(100,100,200,0.2)',
-//          border: '#55a',
+          borderRatio: 1.0,
+          color: [ 0,0,1,0.2],
           mass: 0.6
         });
-
+        b.addChild(this.GLCircle.create({
+          r: 1,
+          segments: 16,
+          borderRatio: 0.1,
+          color: [ 0,0,1,1.0]
+        }));
         b.y$.addListener(function(b) {
           if ( b.y < 1 ) {
             b.y = this.height;
