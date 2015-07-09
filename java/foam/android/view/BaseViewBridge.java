@@ -10,15 +10,15 @@ import foam.core.X;
 /**
  * Abstract base class for FOAM's Value-View adapters.
  */
-public abstract class BaseViewAdapter<V extends View, T> implements PropertyChangeListener<T>, PropertyView<T> {
+public abstract class BaseViewBridge<V extends View, T> implements PropertyChangeListener<T>, ViewBridge<T> {
   protected V view;
   protected Value<T> value;
   protected X x_;
 
-  public X getX() {
+  public X X() {
     return x_;
   }
-  public void setX(X x) {
+  public void X(X x) {
     x_ = x;
   }
 
@@ -26,6 +26,9 @@ public abstract class BaseViewAdapter<V extends View, T> implements PropertyChan
     return view;
   }
 
+  public Value<T> getValue() {
+    return value;
+  }
   public void setValue(Value<T> v) {
     if (value != null) value.removeListener(this);
     value = v;

@@ -12,6 +12,7 @@ import java.util.List;
 import foam.core.FObject;
 import foam.core.HasX;
 import foam.core.Property;
+import foam.core.SimpleValue;
 import foam.core.Value;
 import foam.core.X;
 
@@ -33,13 +34,13 @@ public class LayoutFactory {
     X x;
     if (parent == null) {
       if (context instanceof HasX) {
-        x = ((HasX) context).getX();
+        x = ((HasX) context).X();
       } else {
         Log.w(LOG_TAG, "Failed to find a contextualized parent while inflating a <foam> tag - did you forget to extend FOAMActivity?");
         return null;
       }
     } else {
-      x = ((HasX) parent).getX();
+      x = ((HasX) parent).X();
     }
 
     // If we get down here, then we've got a context to work with.
@@ -48,31 +49,31 @@ public class LayoutFactory {
     // If foam:view is set, we use that class exactly. Otherwise, use the Property's default view.
     // If foam:prop is set, we wire up X.data.prop$ and use that.
     // NB: One of foam:view or foam:prop should be set, or we don't know which property to use.
-    // foam:xKey can be set to specify the key in X that should be used. Defaults to "data".
+    // foam:data can be set to specify the key in X that should be used. Defaults to "data".
 
     // This is an ugly way of finding the properties, but the namespace support in AttributeSet is
     // strange. It expects the schema URL, which we can't really provide.
     int foamViewIndex = -1;
     int foamPropIndex = -1;
-    int foamXKeyIndex = -1;
+    int foamDataIndex = -1;
     for (int i = 0; i < attrs.getAttributeCount(); i++) {
       String attrName = attrs.getAttributeName(i);
       if (attrName.equalsIgnoreCase("prop")) foamPropIndex = i;
       if (attrName.equalsIgnoreCase("view")) foamViewIndex = i;
-      if (attrName.equalsIgnoreCase("xkey")) foamXKeyIndex = i;
+      if (attrName.equalsIgnoreCase("data")) foamDataIndex = i;
     }
 
-    PropertyView child = null;
+    ViewBridge child = null;
     if (foamViewIndex >= 0) {
       String foamView = attrs.getAttributeValue(foamViewIndex);
       try {
-        child = (PropertyView) Class.forName(foamView)
+        child = (ViewBridge) Class.forName(foamView)
             .getConstructor(Context.class, AttributeSet.class).newInstance(context, attrs);
       } catch (NoSuchMethodException e) {
         Log.w(LOG_TAG, "Views used in foam:view values must have a (Context, AttributeSet) constructor");
         return null;
       } catch (InvocationTargetException e) {
-        Log.w(LOG_TAG, "Could not call the constructor on the foam:view target class");
+        Log.w(LOG_TAG, "Exception in the constructor of the foam:view target class: " + e.getCause());
         return null;
       } catch (ClassNotFoundException e) {
         Log.w(LOG_TAG, "Could not find FOAM View class: " + foamView);
@@ -88,7 +89,7 @@ public class LayoutFactory {
 
     if (foamPropIndex >= 0) {
       String foamProp = attrs.getAttributeValue(foamPropIndex);
-      String foamKey = foamXKeyIndex >= 0 ? attrs.getAttributeValue(foamXKeyIndex) : "data";
+      String foamKey = foamDataIndex >= 0 ? attrs.getAttributeValue(foamDataIndex) : "data";
       FObject data = (FObject) x.get(foamKey);
       if (data == null) {
         Log.w(LOG_TAG, "Could not find key \"" + foamKey + "\" in X.");
@@ -106,14 +107,27 @@ public class LayoutFactory {
 
       Value v = prop.createValue(data);
       child.setValue(v);
-      child.setX(x.put("data", v).put("prop", prop));
+      child.X(x.put("data", v).put("prop", prop));
 
 
-      List<PropertyView> list = (List<PropertyView>) x.get("propertyViews");
+      List<ViewBridge> list = (List<ViewBridge>) x.get("propertyViews");
       if (list != null) {
         list.add(child);
       }
 
+      return child.getView();
+    }
+
+    if (child != null) {
+      String foamKey = foamDataIndex >= 0 ? attrs.getAttributeValue(foamDataIndex) : "data";
+      Object data = x.get(foamKey);
+      if (data == null) {
+        return null;
+      }
+
+      Value v = new SimpleValue(data);
+      child.setValue(v);
+      child.X(x.put("data", v));
       return child.getView();
     }
 

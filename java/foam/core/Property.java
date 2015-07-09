@@ -22,7 +22,7 @@ import android.util.AttributeSet;
 
 import java.util.Comparator;
 
-import foam.android.view.PropertyView;
+import foam.android.view.ViewBridge;
 
 /**
  * Fundamental interface for a FOAM Property.
@@ -43,8 +43,8 @@ public interface Property<T> extends Function<Object, T>, Comparator<Object>, Ex
   public void    addListener(PropertyChangeSupport obj, PropertyChangeListener<T> listener);
   public void    removeListener(PropertyChangeSupport obj, PropertyChangeListener<T> listener);
   public Value<T> createValue(FObject obj);
-  public PropertyView<T> createView(Context context);
-  public PropertyView<T> createView(Context context, AttributeSet attrs);
+  public ViewBridge<T> createView(Context context);
+  public ViewBridge<T> createView(Context context, AttributeSet attrs);
   // public boolean hasDefaultValue();
   //  public Object  createDefaultValue();
 }

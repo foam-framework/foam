@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import foam.android.view.LayoutFactory;
-import foam.android.view.PropertyView;
+import foam.android.view.ViewBridge;
 import foam.core.EmptyX;
 import foam.core.HasX;
 import foam.core.X;
@@ -20,23 +20,23 @@ import foam.core.X;
  */
 public class FOAMActionBarActivity extends ActionBarActivity implements HasX {
   protected X x_ = EmptyX.instance();
-  public X getX() {
+  public X X() {
     return x_;
   }
-  public void setX(X x) {
+  public void X(X x) {
     x_ = x;
   }
 
   @Override
   public void onCreate(Bundle bundle) {
-    x_ = x_.put("propertyViews", new LinkedList<PropertyView>());
+    x_ = x_.put("propertyViews", new LinkedList<ViewBridge>());
     super.onCreate(bundle);
   }
 
   @Override
   public void onDestroy() {
-    List<PropertyView> list = (List<PropertyView>) x_.get("propertyViews");
-    for (PropertyView v : list) {
+    List<ViewBridge> list = (List<ViewBridge>) x_.get("propertyViews");
+    for (ViewBridge v : list) {
       v.destroy();
     }
     super.onDestroy();

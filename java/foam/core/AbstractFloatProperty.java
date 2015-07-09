@@ -19,14 +19,14 @@ package foam.core;
 
 import android.content.Context;
 
-import foam.android.view.PropertyView;
+import foam.android.view.ViewBridge;
 
 public abstract class AbstractFloatProperty extends AbstractProperty<Float> {
   public int compareValues(Float f1, Float f2) {
     return f1.equals(f2) ? 0 : f1 < f2 ? -1 : 1;
   }
 
-  public PropertyView<Float> createView(Context context) {
+  public ViewBridge<Float> createView(Context context) {
     // TODO(braden): Implement createView for numeric types.
     return null;
   }

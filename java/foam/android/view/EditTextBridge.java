@@ -13,11 +13,11 @@ import foam.core.Value;
 /**
  * FOAM wrapper for Android's EditView.
  */
-public class EditTextAdapter extends TwoWayViewAdapter<TextInputLayout, String> {
-  public EditTextAdapter(Context context) {
+public class EditTextBridge extends TwoWayViewBridge<TextInputLayout, String> {
+  public EditTextBridge(Context context) {
     this(context, null);
   }
-  public EditTextAdapter(Context context, AttributeSet attrs) {
+  public EditTextBridge(Context context, AttributeSet attrs) {
     view = new TextInputLayout(context);
     EditText text = attrs == null ? new EditText(context) : new EditText(context, attrs);
     view.addView(text);

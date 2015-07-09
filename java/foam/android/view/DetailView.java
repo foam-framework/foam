@@ -1,66 +1,36 @@
 package foam.android.view;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import foam.core.FObject;
-import foam.core.Model;
-import foam.core.Property;
+import foam.android.core.AttributeUtils;
+import foam.core.HasX;
+import foam.core.X;
 
 /**
- * Default FOAM DetailView: given any Model, generates a basic view of its properties.
+ * A fairly thin wrapper around {@link LinearLayout}, used for FOAM's DetailView.
+ *
+ * Implements {@link HasX} so that it can provide a context for its children.
  */
-public class DetailView extends LinearLayout {
-  private Model model;
-  private boolean childViewsBuilt = false;
-  private Map<String, PropertyView> propertyViews;
+public class DetailView extends LinearLayout implements HasX {
+  protected X x_;
+  public X X() {
+    return x_;
+  }
+  public void X(X x) {
+    x_ = x;
+  }
+
 
   public DetailView(Context context) {
     super(context);
     setOrientation(VERTICAL);
-    propertyViews = new HashMap<>();
   }
-  public DetailView(Context context, Model model) {
-    this(context);
-    this.model = model;
-  }
-  public DetailView(Context context, FObject obj) {
-    this(context, obj.model(), obj);
-  }
-
-  public DetailView(Context context, Model model, FObject obj) {
-    this(context);
-    this.model = model;
-    setData(obj);
-  }
-
-  public void setModel(Model model) {
-    this.model = model;
-  }
-
-  public void maybeBuildChildViews() {
-    if (childViewsBuilt) return;
-    childViewsBuilt = true;
-
-    // TODO(braden): Handle hidden properties.
-    for (Property p : model.getProperties()) {
-      PropertyView pView = p.createView(getContext());
-      propertyViews.put(p.getName(), pView);
-      addView(pView.getView());
-    }
-  }
-
-  public void setData(FObject obj) {
-    maybeBuildChildViews();
-    bindData(obj);
-  }
-  private void bindData(FObject obj) {
-    for (Property p : model.getProperties()) {
-      PropertyView pView = propertyViews.get(p.getName());
-      pView.setValue(p.createValue(obj));
+  public DetailView(Context context, AttributeSet attrs) {
+    super(context, attrs);
+    if (AttributeUtils.find(attrs, "orientation") == null) {
+      setOrientation(VERTICAL);
     }
   }
 }

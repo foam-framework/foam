@@ -187,4 +187,24 @@ public class MLang {
       return arg1_;
     }
   }
+
+
+
+  public static CountSink COUNT() {
+    return new CountSink();
+  }
+  public static class CountSink implements Sink {
+    private int count = 0;
+    public Object put(X x, Object obj) {
+      count++;
+      return obj;
+    }
+
+    public int getCount(){
+      return count;
+    }
+    public void setCount(int c) {
+      count = c;
+    }
+  }
 }

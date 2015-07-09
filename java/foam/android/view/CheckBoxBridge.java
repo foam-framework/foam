@@ -11,11 +11,11 @@ import foam.core.Value;
 /**
  * FOAM wrapper for Android CheckBox views.
  */
-public class CheckBoxAdapter extends TwoWayViewAdapter<CheckBox, Boolean> implements CompoundButton.OnCheckedChangeListener {
-  public CheckBoxAdapter(Context context) {
+public class CheckBoxBridge extends TwoWayViewBridge<CheckBox, Boolean> implements CompoundButton.OnCheckedChangeListener {
+  public CheckBoxBridge(Context context) {
     this(context, null);
   }
-  public CheckBoxAdapter(Context context, AttributeSet attrs) {
+  public CheckBoxBridge(Context context, AttributeSet attrs) {
     view = attrs == null ? new CheckBox(context) : new CheckBox(context, attrs);
     view.setOnCheckedChangeListener(this);
   }

@@ -20,8 +20,8 @@ package foam.core;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import foam.android.view.CheckBoxAdapter;
-import foam.android.view.PropertyView;
+import foam.android.view.CheckBoxBridge;
+import foam.android.view.ViewBridge;
 
 public abstract class AbstractBooleanProperty extends AbstractProperty<Boolean> {
 
@@ -33,11 +33,11 @@ public abstract class AbstractBooleanProperty extends AbstractProperty<Boolean> 
     return o;
   }
 
-  public PropertyView<Boolean> createView(Context context, AttributeSet attrs) {
-    return new CheckBoxAdapter(context, attrs);
+  public ViewBridge<Boolean> createView(Context context, AttributeSet attrs) {
+    return new CheckBoxBridge(context, attrs);
   }
 
-  public PropertyView<Boolean> createView(Context context) {
-    return new CheckBoxAdapter(context);
+  public ViewBridge<Boolean> createView(Context context) {
+    return new CheckBoxBridge(context);
   }
 }

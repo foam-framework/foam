@@ -20,8 +20,8 @@ package foam.core;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import foam.android.view.EditTextAdapter;
-import foam.android.view.PropertyView;
+import foam.android.view.EditTextBridge;
+import foam.android.view.ViewBridge;
 
 public abstract class AbstractStringProperty extends AbstractProperty<String> {
 
@@ -32,10 +32,10 @@ public abstract class AbstractStringProperty extends AbstractProperty<String> {
     return s1.compareTo(s2);
   }
 
-  public PropertyView<String> createView(Context context) {
-    return new EditTextAdapter(context);
+  public ViewBridge<String> createView(Context context) {
+    return new EditTextBridge(context);
   }
-  public PropertyView<String> createView(Context context, AttributeSet attrs) {
-    return new EditTextAdapter(context, attrs);
+  public ViewBridge<String> createView(Context context, AttributeSet attrs) {
+    return new EditTextBridge(context, attrs);
   }
 }

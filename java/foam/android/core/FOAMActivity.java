@@ -12,10 +12,10 @@ import foam.core.X;
 
 public class FOAMActivity extends Activity implements HasX {
   protected X x_ = EmptyX.instance();
-  public X getX() {
+  public X X() {
     return x_;
   }
-  public void setX(X x) {
+  public void X(X x) {
     x_ = x;
   }
 

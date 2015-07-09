@@ -19,7 +19,7 @@ package foam.core;
 
 import android.content.Context;
 
-import foam.android.view.PropertyView;
+import foam.android.view.ViewBridge;
 
 public abstract class AbstractObjectProperty extends AbstractProperty<Object> {
 
@@ -31,7 +31,7 @@ public abstract class AbstractObjectProperty extends AbstractProperty<Object> {
     return 1;
   }
 
-  public PropertyView<Object> createView(Context context) {
+  public ViewBridge<Object> createView(Context context) {
     // TODO(braden): Implement createView for Object properties.
     return null;
   }
