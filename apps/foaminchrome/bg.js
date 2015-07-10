@@ -29,18 +29,38 @@
     document.head.appendChild(node);
   }
 
+  var error = false;
+
+  function loadWindow() {
+    if ( error ) return;
+    var oldWindow = chrome.app.window.get('FOAMInChrome');
+    if ( oldWindow ) oldWindow.close();
+    setTimeout(function() {
+      chrome.app.window.create('main.html', {
+        id: 'FOAMInChrome'
+      }, function(w) {
+        w.contentWindow.addEventListener(
+            'load', function() {
+              DOM.init(X.subWindow(w.contentWindow));
+            });
+      });
+    }, 0);
+  }
+
   this.loadScript_ = function(ret, name) {
     console.log("Loading", name);
     loadFile(function(blob, xhr) {
       if ( ! blob ) {
+        error = true;
         console.error("Error loading", name);
         return;
       }
       addScript(ret, blob);
     }, name);
-  }
+  };
 
-  loadScript_(function() {
+  this.loadScript_(function() {
+    // files: Global from FOAMmodels.js.
     var f = files.slice(0);
     var i = 0;
 
@@ -58,6 +78,7 @@
 
     next(function callback() {
       if ( ++i < f.length ) next(callback);
+      else loadWindow();
     });
 
   }, "FOAMmodels.js");

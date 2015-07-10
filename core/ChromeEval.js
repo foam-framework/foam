@@ -70,11 +70,16 @@ if ( ! (window.cordova && window.chrome) ) {
 
   var aevalTemplate = function(t, model) {
     var doEval_ = function(t) {
-      //    console.time('parse');
-      var code = TemplateCompiler.parseString(t.template);
-      //    console.timeEnd('parse');
+      // Parse result: [isSimple, maybeCode]: [true, null] or [false, codeString].
+      var parseResult = TemplateCompiler.parseString(t.template);
 
-      if ( code[0] ) return aconstant(ConstantTemplate(t.template));
+      // Simple case, just a string literal
+      if ( parseResult[0] )
+        return aconstant(ConstantTemplate(t.language === 'css' ?
+            X.foam.grammars.CSS3.create().parser.parseString(t.template).toString() :
+            t.template));
+
+      var code = TemplateUtil.HEADER + parseResult[1] + TemplateUtil.FOOTERS[t.language];
 
       var args = ['opt_out'];
       if ( t.args ) {
@@ -82,7 +87,7 @@ if ( ! (window.cordova && window.chrome) ) {
           args.push(t.args[i].name);
         }
       }
-      return /*atime('eval ' + model.id + '.' + t.name,*/ aeval('function(' + args.join(',') + '){' + code[1] + '}');
+      return aeval('function(' + args.join(',') + '){' + code + '}');
     };
     var doEval = function(t) {
       try {
