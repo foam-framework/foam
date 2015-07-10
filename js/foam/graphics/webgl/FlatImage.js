@@ -105,8 +105,8 @@ CLASS({
           void main(void) {
 
             vec4 texel = texture2D(uSampler, vec2(vTextureCoord.x, vTextureCoord.y));
-            //if(texel.a < 0.1)
-            //   discard;
+            if(texel.a < 0.01)
+               discard;
             gl_FragColor = texel;
           }
         */}

@@ -467,6 +467,10 @@ CLASS({
 
       var clock = this.ClockView.create({x:this.width-70,y:70, r:60});
       this.addChild(clock);
+      // since ClockView doesn't actually react to time, force it to paint
+      this.timer.second$.addListener(function() { clock.paint(); });
+      
+      
 
       this.collider.start();
     },
