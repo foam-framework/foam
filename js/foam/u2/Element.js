@@ -8,14 +8,14 @@ CLASS({
         out('<', this.nodeName);
         if ( this.id ) out(' id="', this.id, '"');
 
-        for ( key in this.attributeMap_ ) {
-          var value = this.attributeMap_[key].value;
+        for ( key in this.attributeMap ) {
+          var value = this.attributeMap[key].value;
 
           out(' ', key);
           if ( value !== undefined )
             out(this.attributeMap_[key].value, '"');
         }
-        if ( ! this.sILLEGAL_CLOSE_TAGS[this.nodeName] &&
+        if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] &&
              ( ! this.OPTIONAL_CLOSE_TAGS[this.nodeName] || this.childNodes.length ) ) {
           out('>');
           this.outputInnerHTML(out);
@@ -96,7 +96,7 @@ CLASS({
       TR: true,
       TD: true,
       TFOOT: true,
-      COLGROUP: true,
+      COLGROUP: true
     },
     ILLEGAL_CLOSE_TAGS: {
       IMG: true,
@@ -118,7 +118,7 @@ CLASS({
   properties: [
     {
       name: 'state',
-      defaultValue: foam.u2.Element.INITIAL
+      factory: function () { return this.INITIAL; }
     },
     {
       model_: 'foam.u2.EIDProperty',
@@ -131,7 +131,7 @@ CLASS({
       }*/
     },
     {
-      name: 'attributeMap_',
+      name: 'attributeMap',
       transient: true,
       factory: function() { return {}; }
     },
@@ -140,7 +140,7 @@ CLASS({
       factory: function() { return []; },
       postSet: function(_, attrs) {
         for ( var i = 0 ; i < attrs.length ; i++ )
-          this.attributeMap_[attrs[i].name] = attrs[i];
+          this.attributeMap[attrs[i].name] = attrs[i];
       }
     },
     {
@@ -161,7 +161,7 @@ CLASS({
     {
       name: 'outerHTML',
       transient: true,
-      getter: function() { return this.outputHTML(this.createOutputStream()); }
+      getter: function() { return this.output(this.createOutputStream()); }
     },
     {
       name: 'innerHTML',
@@ -172,14 +172,18 @@ CLASS({
 
   methods: [
 
+    //
     // Lifecycle
+    //
     function load() { this.state.load.call(this); },
 
     function unload() { this.state.unload.call(this); },
 
     function destroy() { this.state.destroy.call(this); },
 
+    //
     // DOM Compatibility
+    //
     function setAttribute(name, value) {
       var attr = this.getAttributeNode(name);
 
@@ -188,20 +192,20 @@ CLASS({
       } else {
         attr = {name: name, value: value};
         this.attributes.push(attr);
-        this.attributeMap_[name] = attr;
+        this.attributeMap[name] = attr;
       }
     },
 
-    function getAttributeNode(name) { return this.attributeMap_[name]; },
+    function getAttributeNode(name) { return this.attributeMap[name]; },
 
     function getAttribute(name) {
       var attr = this.getAttributeNode(name);
       return attr && attr.value;
     },
 
-    appendChild: function(c) { this.childNodes.push(c); },
+    function appendChild(c) { this.childNodes.push(c); },
 
-    removeChild: function(c) {
+    function removeChild(c) {
       for ( var i = 0; i < this.childNodes.length; ++i ) {
         if ( this.childNodes[i] === c ) {
           this.childNodes.splice(i, 1);
@@ -210,7 +214,9 @@ CLASS({
       }
     },
 
+    //
     // Fluent Methods
+    //
     function on(event, listener) {
       this.elListeners.push([event, listener]);
       return this;
@@ -241,8 +247,15 @@ CLASS({
       return this;
     },
 
+    function c() {
+      this.childNodes.push.apply(this.childNodes, arguments);
+      return this;
+    },
+
+    //
     // Output Methods
-    function output(out) { return this.state.output.call(this, out); }
+    //
+    function output(out) { return this.state.output.call(this, out); },
 
     function outputInnerHTML(out) {
       for ( var i = 0 ; i < this.childNodes.length ; i++ )
@@ -285,6 +298,7 @@ CLASS({
 
     function write(document) {
       /* For debugging, not production. */
+      document.writeln(this.outerHTML);
     },
 
     function toString() { return this.outerHTML; }
@@ -292,9 +306,9 @@ CLASS({
 });
 
 
-function E(opt_tagName) {
+function E(opt_nodeName) {
   var e = foam.u2.Element.create();
-  if ( opt_tagName ) e.tagName = opt_tagName;
+  if ( opt_nodeName ) e.nodeName = opt_nodeName;
   return e;
 }
 
