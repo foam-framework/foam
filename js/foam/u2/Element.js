@@ -9,11 +9,11 @@ CLASS({
         if ( this.id ) out(' id="', this.id, '"');
 
         for ( key in this.attributeMap ) {
-          var value = this.attributeMap[key].value;
+          var value = this.attributeMap[key];
 
           out(' ', key);
           if ( value !== undefined )
-            out(this.attributeMap_[key].value, '"');
+            out('="', value, '"');
         }
         if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] &&
              ( ! this.OPTIONAL_CLOSE_TAGS[this.nodeName] || this.childNodes.length ) ) {
@@ -228,7 +228,7 @@ CLASS({
     },
 
     function attr(key, value) {
-      this.attributes.push([event, listener]);
+      this.attributeMap[key] = value;
       return this;
     },
 
@@ -274,8 +274,8 @@ CLASS({
           } else {
             if ( o && o.toView_ ) o = o.toView_();
             if ( ! ( o === null || o === undefined ) ) {
-              if ( o.appendHTML ) {
-                o.appendHTML(this);
+              if ( o.output ) {
+                o.output(f);
               } else if ( o.toHTML ) {
                 buf.push(o.toHTML());
               } else {
@@ -289,7 +289,7 @@ CLASS({
 
       f.toString = function() {
         if ( buf.length === 0 ) return '';
-        if ( buf.length > 1 ) buf = [buf.join('')];
+        if ( buf.length > 1 ) { debugger; buf = [buf.join('')]; }
         return buf[0];
       }
 

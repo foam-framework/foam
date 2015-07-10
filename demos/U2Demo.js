@@ -1,1 +1,1 @@
-E('b').c('foo').write(document);
+E('b').c('color: ', E('font').attr('color', 'red').c('red')).write(document);
