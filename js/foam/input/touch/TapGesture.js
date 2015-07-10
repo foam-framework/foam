@@ -31,6 +31,11 @@ CLASS({
     'handlers'
   ],
 
+  constants: {
+    // The maximum movement in either dimension to turn a touch into a drag.
+    DRAG_TOLERANCE: 40
+  },
+
   methods: {
     recognize: function(map) {
       // I recognize:
@@ -44,7 +49,8 @@ CLASS({
       for ( var i = 0 ; i < keys.length ; i++ ) {
         var key = keys[i];
         var p = map[key];
-        if ( Math.abs(p.totalX) >= 10 || Math.abs(p.totalY) >= 10 ) {
+        if ( Math.abs(p.totalX) >= this.DRAG_TOLERANCE ||
+            Math.abs(p.totalY) >= this.DRAG_TOLERANCE ) {
           return this.NO;
         }
         if ( p.done ) doneCount++;
