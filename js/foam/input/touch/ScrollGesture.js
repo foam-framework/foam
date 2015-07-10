@@ -76,6 +76,11 @@ CLASS({
     'handlers'
   ],
 
+  constants: {
+    // After moving this far in the scrolling direction, considered a scroll.
+    DRAG_TOLERANCE: 10
+  },
+
   methods: {
     recognize: function(map) {
       // I recognize:
@@ -95,7 +100,7 @@ CLASS({
       if ( point.type === 'mouse' || point.done ) return this.NO;
       if ( Math.abs(this.momentum) > 0 ) return this.YES;
       var delta = Math.abs(this.isVertical ? point.totalY : point.totalX);
-      return delta > 10 ? this.YES : this.MAYBE;
+      return delta > this.DRAG_TOLERANCE ? this.YES : this.MAYBE;
     },
 
     attach: function(map, handlers) {
