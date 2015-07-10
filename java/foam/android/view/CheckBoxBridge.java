@@ -28,7 +28,8 @@ public class CheckBoxBridge extends TwoWayViewBridge<CheckBox, Boolean> implemen
   }
 
   protected void updateViewFromValue() {
-    view.setChecked(value.get());
+    Object o = value.get();
+    view.setChecked(o == null ? false : (Boolean) o);
   }
 
   public void onCheckedChanged(CompoundButton v, boolean nu) {

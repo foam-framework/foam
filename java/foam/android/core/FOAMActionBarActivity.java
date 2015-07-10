@@ -1,10 +1,8 @@
 package foam.android.core;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.util.AttributeSet;
-import android.view.View;
+import android.support.v4.view.LayoutInflaterCompat;
+import android.support.v7.app.AppCompatActivity;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +16,7 @@ import foam.core.X;
 /**
  *
  */
-public class FOAMActionBarActivity extends ActionBarActivity implements HasX {
+public class FOAMActionBarActivity extends AppCompatActivity implements HasX {
   protected X x_ = EmptyX.instance();
   public X X() {
     return x_;
@@ -29,7 +27,8 @@ public class FOAMActionBarActivity extends ActionBarActivity implements HasX {
 
   @Override
   public void onCreate(Bundle bundle) {
-    x_ = x_.put("propertyViews", new LinkedList<ViewBridge>());
+    X(X().put("propertyViews", new LinkedList<ViewBridge>()));
+    LayoutInflaterCompat.setFactory(getLayoutInflater(), new LayoutFactory(getDelegate()));
     super.onCreate(bundle);
   }
 
@@ -40,12 +39,5 @@ public class FOAMActionBarActivity extends ActionBarActivity implements HasX {
       v.destroy();
     }
     super.onDestroy();
-  }
-
-  @Override
-  public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
-    View ret = LayoutFactory.tryToCreateFoamView(parent, name, context, attrs);
-    if (ret != null) return ret;
-    else return super.onCreateView(parent, name, context, attrs);
   }
 }

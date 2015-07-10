@@ -14,7 +14,7 @@ import foam.core.X;
 /**
  * FOAM wrapper for presenting a DAO's data in a RecyclerView in list mode.
  *
- * The view to use for the row is specified in XML as foam:rowView and its value can either be a
+ * The view to use for the row is specified in XML as foam:row_view and its value can either be a
  * <code>@layout/foobar</code> layout reference or a class name.
  */
 public class DAOListViewBridge extends OneWayViewBridge<RecyclerView, DAO> {
@@ -29,8 +29,8 @@ public class DAOListViewBridge extends OneWayViewBridge<RecyclerView, DAO> {
     this.context = context;
     view = attrs == null ? new RecyclerView(context) : new RecyclerView(context, attrs);
 
-    // Look in the attrs for a rowView setting.
-    rowView = AttributeUtils.find(attrs, "rowView");
+    // Look in the attrs for a row_view setting.
+    rowView = AttributeUtils.find(attrs, "row_view");
     tryToBuildView();
   }
 
@@ -57,7 +57,7 @@ public class DAOListViewBridge extends OneWayViewBridge<RecyclerView, DAO> {
     DAO dao = (DAO) X().get("dao");
     if (dao == null) dao = (DAO) X().get("data");
     if (dao == null) return;
-    adapter = new DAOAdapter(X(), dao, new DetailViewFactory(rowView));
+    adapter = new DAOAdapter(X(), dao, new DetailViewFactory(rowView, dao.getModel()));
     view.setAdapter(adapter);
     final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
     layoutManager.setOrientation(LinearLayoutManager.VERTICAL);

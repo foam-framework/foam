@@ -20,7 +20,9 @@ package foam.core;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import foam.android.core.AttributeUtils;
 import foam.android.view.EditTextBridge;
+import foam.android.view.TextViewBridge;
 import foam.android.view.ViewBridge;
 
 public abstract class AbstractStringProperty extends AbstractProperty<String> {
@@ -36,6 +38,8 @@ public abstract class AbstractStringProperty extends AbstractProperty<String> {
     return new EditTextBridge(context);
   }
   public ViewBridge<String> createView(Context context, AttributeSet attrs) {
-    return new EditTextBridge(context, attrs);
+    // Check for the read_only attribute.
+    return AttributeUtils.findBoolean(attrs, "read_only", false) ?
+        new TextViewBridge(context, attrs) : new EditTextBridge(context, attrs);
   }
 }

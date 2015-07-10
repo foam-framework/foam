@@ -42,8 +42,10 @@ public class EditTextBridge extends TwoWayViewBridge<TextInputLayout, String> {
 
   public void setValue(Value<String> v) {
     super.setValue(v);
-    if (v instanceof PropertyValue) {
-      view.setHint(((PropertyValue) v).getProperty().getLabel());
+    if (v instanceof PropertyValue || X().get("label") != null) {
+      String label = (String) X().get("label");
+      if (label == null) label = ((PropertyValue) v).getProperty().getLabel();
+      view.setHint(label);
     }
   }
 

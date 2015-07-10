@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import foam.core.Factory;
+import foam.core.Model;
 
 /**
  * {@link Factory <ViewBridge<T>>} that inflates from a {@link String}.
@@ -23,13 +24,15 @@ import foam.core.Factory;
 public class DetailViewFactory {
   private static final String LOG_TAG = "DetailViewFactory";
 
+  private Model model;
   private String viewSpec;
   private Class bridgeClass = DetailViewBridge.class;
   private int layout = -1;
   private boolean layoutMode = false;
 
-  public DetailViewFactory(String viewSpec) {
+  public DetailViewFactory(String viewSpec, Model model) {
     this.viewSpec = viewSpec;
+    this.model = model;
     if (viewSpec != null && viewSpec.startsWith("@layout/")) {
       layoutMode = true;
     } else if (viewSpec != null) {
@@ -50,7 +53,9 @@ public class DetailViewFactory {
             context.getPackageName());
       }
 
-      return new DetailViewBridge(context, layout);
+      DetailViewBridge v = new DetailViewBridge(context, layout, parent);
+      v.setModel(model);
+      return v;
     } else {
       try {
         return (ViewBridge) bridgeClass.getConstructor(Context.class).newInstance(context);

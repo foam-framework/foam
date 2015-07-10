@@ -16,4 +16,10 @@ public class AttributeUtils {
     }
     return null;
   }
+
+  public static boolean findBoolean(AttributeSet attrs, String key, boolean defaultValue) {
+    String s = find(attrs, key);
+    if (s == null) return defaultValue;
+    return Boolean.parseBoolean(s);
+  }
 }

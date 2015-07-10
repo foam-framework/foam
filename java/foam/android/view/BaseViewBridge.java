@@ -1,6 +1,10 @@
 package foam.android.view;
 
+import android.annotation.SuppressLint;
+import android.os.Build;
 import android.view.View;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import foam.core.PropertyChangeEvent;
 import foam.core.PropertyChangeListener;
@@ -11,6 +15,7 @@ import foam.core.X;
  * Abstract base class for FOAM's Value-View adapters.
  */
 public abstract class BaseViewBridge<V extends View, T> implements PropertyChangeListener<T>, ViewBridge<T> {
+  protected static final AtomicInteger nextGeneratedId = new AtomicInteger(1);
   protected V view;
   protected Value<T> value;
   protected X x_;
@@ -23,6 +28,12 @@ public abstract class BaseViewBridge<V extends View, T> implements PropertyChang
   }
 
   public View getView() {
+    if (view == null) return null;
+
+    if (view.getId() == View.NO_ID) {
+      view.setId(generateViewId());
+    }
+
     return view;
   }
 
@@ -34,6 +45,23 @@ public abstract class BaseViewBridge<V extends View, T> implements PropertyChang
     value = v;
     value.addListener(this);
     updateViewFromValue();
+  }
+
+  @SuppressLint("NewApi")
+  protected int generateViewId() {
+    if (Build.VERSION.SDK_INT < 17) {
+      while (true) {
+        final int result = nextGeneratedId.get();
+        int newValue = result + 1;
+        if (newValue > 0x00FFFFFF)
+          newValue = 1;
+        if (nextGeneratedId.compareAndSet(result, newValue)) {
+          return result;
+        }
+      }
+    } else {
+      return View.generateViewId();
+    }
   }
 
   public void destroy() {

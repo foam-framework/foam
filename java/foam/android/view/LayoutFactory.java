@@ -1,16 +1,23 @@
 package foam.android.view;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.v4.view.LayoutInflaterFactory;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewParent;
+import android.widget.LinearLayout;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import foam.android.core.AttributeUtils;
+import foam.android.core.XContext;
+import foam.android.core.XTree;
 import foam.core.FObject;
 import foam.core.HasX;
+import foam.core.Model;
 import foam.core.Property;
 import foam.core.SimpleValue;
 import foam.core.Value;
@@ -21,116 +28,229 @@ import foam.core.X;
  *
  * Knows how to turn FOAM tags into the appropriate View.
  */
-public class LayoutFactory {
+public class LayoutFactory implements LayoutInflaterFactory {
   private static final String LOG_TAG = "FOAMLayoutFactory";
+  private AppCompatDelegate appCompatDelegate;
 
+  public LayoutFactory(AppCompatDelegate appCompatDelegate) {
+    this.appCompatDelegate = appCompatDelegate;
+  }
+
+  public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+    View result = tryToCreateFoamView(parent, name, context, attrs);
+    if (result == null) {
+      result = appCompatDelegate.createView(parent, name, context, attrs);
+    }
+    return result;
+  }
+
+  /**
+   * Turns a <code><foam.android.view.FOAMTagView ... /></code> into a {@link View}  and a FOAM
+   * {@link ViewBridge}.
+   *
+   * There are several possible sets of paramters to give a FOAM XML tag. The correct forms are:
+   * <ul>
+   *   <li><code>prop</code> and <code>data</code> or <code>model</code></li>
+   *   <li><code>view</code> and optionally <code>data</code> (without <code>data</code>, it
+   *     constructs the View without any bindings, which is fine for some standalone views.</li>
+   *   <li><code>data</code> alone - constructs a default {@link DetailViewBridge}, a vertical
+   *   {@link LinearLayout} of all {@link Property} objects on the model of the data.
+   * </ul>
+   * @param parent_ The {@link View} containing this tag.
+   * @param name The tag name. Only <code>"foam.android.view.FoamTagView"</code> is accepted.
+   * @param context The containing {@link Context}, generally an {@link Activity}.
+   * @param attrs XML attributes object.
+   * @return A {@link View} if the tag is recognized, and <code>null</code> otherwise.
+   */
   public static View tryToCreateFoamView(View parent_, String name, Context context, AttributeSet attrs) {
     if (!name.equals("foam.android.view.FoamTagView")) return null;
 
-    ViewParent parent = (ViewParent) parent_;
-    while (parent != null && !(parent instanceof HasX)) {
+    // ViewParent parent = (ViewParent) parent_;
+    X x = null;
+    /*
+    while (parent != null && parent instanceof View) {
+      int id = ((View) parent).getId();
+      if (id != View.NO_ID) {
+        x = XTree.get(id);
+        if (x != null) break;
+      }
       parent = parent.getParent();
     }
-    X x;
-    if (parent == null) {
-      if (context instanceof HasX) {
-        x = ((HasX) context).X();
-      } else {
-        Log.w(LOG_TAG, "Failed to find a contextualized parent while inflating a <foam> tag - did you forget to extend FOAMActivity?");
-        return null;
-      }
+    */
+    if (context instanceof HasX) {
+      x = ((HasX) context).X();
     } else {
-      x = ((HasX) parent).X();
+      Log.w(LOG_TAG, "Failed to find a contextualized parent while inflating a <foam> tag - did you forget to extend FOAMActivity or implement HasX on your custom Activity?");
+      return null;
     }
 
     // If we get down here, then we've got a context to work with.
 
     // There are a few cases for what to do, depending on what sort of <foam> tag we got.
-    // If foam:view is set, we use that class exactly. Otherwise, use the Property's default view.
-    // If foam:prop is set, we wire up X.data.prop$ and use that.
-    // NB: One of foam:view or foam:prop should be set, or we don't know which property to use.
-    // foam:data can be set to specify the key in X that should be used. Defaults to "data".
+    // See the documentation above for the possible values to supply. First step is to try to
+    // retrieve all the relevant properties from the XML.
+    String propName = AttributeUtils.find(attrs, "prop");
+    String modelName = AttributeUtils.find(attrs, "model");
+    String dataName = AttributeUtils.find(attrs, "data");
+    String viewName = AttributeUtils.find(attrs, "view");
 
-    // This is an ugly way of finding the properties, but the namespace support in AttributeSet is
-    // strange. It expects the schema URL, which we can't really provide.
-    int foamViewIndex = -1;
-    int foamPropIndex = -1;
-    int foamDataIndex = -1;
-    for (int i = 0; i < attrs.getAttributeCount(); i++) {
-      String attrName = attrs.getAttributeName(i);
-      if (attrName.equalsIgnoreCase("prop")) foamPropIndex = i;
-      if (attrName.equalsIgnoreCase("view")) foamViewIndex = i;
-      if (attrName.equalsIgnoreCase("data")) foamDataIndex = i;
+    Object data = x.get(dataName == null ? "data" : dataName);
+    if (propName != null && (data != null || modelName != null)) {
+      ViewBridge b = buildViewForProperty(x, context, attrs, propName, dataName, modelName, viewName);
+      View v = b.getView();
+      XTree.put(v.getId(), b.X());
+      return v;
+    }
+
+    Value value = null;
+    if (data instanceof Value) value = (Value) data;
+    else value = new SimpleValue(data);
+
+    Model model = null;
+    if (modelName != null) {
+      model = modelFromName(modelName);
+    } else if (value.get() instanceof FObject) {
+      model = ((FObject) value.get()).model();
+    }
+
+    X subX = x.put("data", value);
+    XContext subcontext = new XContext(context, subX);
+    ViewBridge replacement = null;
+    if (viewName != null) {
+      replacement = viewNameToViewBridge(viewName, subcontext, attrs);
+    } else if (model != null) {
+      DetailViewBridge dv = new DetailViewBridge(subcontext, attrs);
+      dv.setModel(model);
+      replacement = dv;
+    }
+
+    if (replacement == null) {
+      Log.e(LOG_TAG, "Failed to create a view for a <foam> tag.");
+      return null;
+    }
+
+    replacement.X(subX);
+    replacement.setValue(value);
+    View v = replacement.getView();
+    XTree.put(v.getId(), replacement.X());
+    return v;
+  }
+
+  private static ViewBridge buildViewForProperty(X x, Context context, AttributeSet attrs,
+      String propName, String dataName, String modelName, String viewName) {
+    Model model = null;
+    Value value = null;
+    X sub = x;
+    if (modelName != null) {
+      model = modelFromName(modelName);
+      if (model == null) return null;
+    } else {
+      Object rawObj = x.get(dataName == null ? "data" : dataName);
+      if (rawObj instanceof Value) {
+        value = (Value) rawObj;
+        rawObj = value.get();
+      } else if (rawObj instanceof FObject) {
+        value = new SimpleValue<FObject>((FObject) rawObj);
+        model = ((FObject) value.get()).model();
+      }
+    }
+
+    if (model == null) {
+      Object m = x.get("model");
+      if (m != null && m instanceof Model)
+        model = (Model) m;
+    }
+
+    if (model == null) {
+      Log.e(LOG_TAG, "No data or model for <foam> tag with prop set. Provide foam:model or foam:data, or put model in the X context.");
+      return null;
+    }
+
+    // Now we have both a property name and a Model, so we can createView for the Property.
+    Property p = model.getProperty(propName);
+    if (p == null) {
+      Log.e(LOG_TAG, "Could not find property \"" + propName + "\" on model \"" + model.getName() + "\"");
+      return null;
+    }
+
+    if (value != null) {
+      Object rawObj = value.get();
+      if (rawObj instanceof FObject) {
+        FObject data = (FObject) rawObj;
+        value = p.createValue(data);
+      } else {
+        value = new SimpleValue(rawObj);
+      }
+
+      sub = sub.put("data", value);
+    } else {
+      value = new SimpleValue();
     }
 
     ViewBridge child = null;
-    if (foamViewIndex >= 0) {
-      String foamView = attrs.getAttributeValue(foamViewIndex);
-      try {
-        child = (ViewBridge) Class.forName(foamView)
-            .getConstructor(Context.class, AttributeSet.class).newInstance(context, attrs);
-      } catch (NoSuchMethodException e) {
-        Log.w(LOG_TAG, "Views used in foam:view values must have a (Context, AttributeSet) constructor");
-        return null;
-      } catch (InvocationTargetException e) {
-        Log.w(LOG_TAG, "Exception in the constructor of the foam:view target class: " + e.getCause());
-        return null;
-      } catch (ClassNotFoundException e) {
-        Log.w(LOG_TAG, "Could not find FOAM View class: " + foamView);
-        return null;
-      } catch (InstantiationException e) {
-        Log.w(LOG_TAG, "Failed to instantiate FOAM View class: " + foamView);
-        return null;
-      } catch (IllegalAccessException e) {
-        Log.w(LOG_TAG, "Could not access FOAM View class: " + foamView);
-        return null;
-      }
+    sub = sub.put("prop", p);
+    XContext subcontext = new XContext(context, sub);
+    if (viewName != null) {
+      child = viewNameToViewBridge(viewName, subcontext, attrs);
+      if (child == null) return null;
+    } else {
+      child = p.createView(subcontext, attrs);
     }
 
-    if (foamPropIndex >= 0) {
-      String foamProp = attrs.getAttributeValue(foamPropIndex);
-      String foamKey = foamDataIndex >= 0 ? attrs.getAttributeValue(foamDataIndex) : "data";
-      FObject data = (FObject) x.get(foamKey);
-      if (data == null) {
-        Log.w(LOG_TAG, "Could not find key \"" + foamKey + "\" in X.");
-        return null;
-      }
-
-      Property prop = data.model().getProperty(foamProp);
-      if (prop == null) {
-        Log.w(LOG_TAG, "Failed to find property " + foamProp + " on data object.");
-        return null;
-      }
-      if (child == null) {
-        child = prop.createView(context, attrs);
-      }
-
-      Value v = prop.createValue(data);
-      child.setValue(v);
-      child.X(x.put("data", v).put("prop", prop));
-
-
-      List<ViewBridge> list = (List<ViewBridge>) x.get("propertyViews");
-      if (list != null) {
-        list.add(child);
-      }
-
-      return child.getView();
+    // Either way, we now have a child view. Set up the descendant context.
+    List<ViewBridge> list = (List<ViewBridge>) x.get("propertyViews");
+    if (list != null) {
+      list.add(child);
     }
 
-    if (child != null) {
-      String foamKey = foamDataIndex >= 0 ? attrs.getAttributeValue(foamDataIndex) : "data";
-      Object data = x.get(foamKey);
-      if (data == null) {
-        return null;
-      }
+    child.X(sub);
+    if (value != null) child.setValue(value);
 
-      Value v = new SimpleValue(data);
-      child.setValue(v);
-      child.X(x.put("data", v));
-      return child.getView();
+    return child;
+  }
+
+
+  private static Model modelFromName(String modelName) {
+    try {
+      Class c = Class.forName(modelName);
+      return (Model) c.getMethod("MODEL").invoke(null);
+    } catch (ClassNotFoundException e) {
+      Log.e(LOG_TAG, "Could not find model \"" + modelName + "\"");
+      return null;
+    } catch (NoSuchMethodException e) {
+      Log.e(LOG_TAG, "Class provided as \"foam:model\", \"" + modelName +
+          "\", is not a real Model, has no .MODEL()");
+      return null;
+    } catch (IllegalAccessException e) {
+      Log.e(LOG_TAG, "Could not execute \"" + modelName + ".MODEL()\". Provide a FOAM-generated Model.");
+      return null;
+    } catch (InvocationTargetException e) {
+      Log.e(LOG_TAG, "Exception inside \"" + modelName + ".MODEL()\": " + e.getCause());
+      return null;
     }
+  }
 
-    return null;
+  private static ViewBridge viewNameToViewBridge(String viewName, Context context, AttributeSet attrs) {
+    try {
+      return (ViewBridge) Class.forName(viewName).getConstructor(Context.class, AttributeSet.class).newInstance(context, attrs);
+    } catch (ClassNotFoundException e) {
+      Log.e(LOG_TAG, "Could not find FOAM ViewBridge \"" + viewName + "\"");
+      return null;
+    } catch (NoSuchMethodException e) {
+      Log.e(LOG_TAG, "Could not find constructor(Context, AttributeSet) on \"" + viewName + "\"");
+      return null;
+    } catch (IllegalAccessException e) {
+      Log.e(LOG_TAG, "Could not access constructor(Context, AttributeSet) on \"" + viewName + "\"; is it public?");
+      return null;
+    } catch (InstantiationException e) {
+      Log.e(LOG_TAG, "Failed to instantiate \"" + viewName + "\"; is it abstract?");
+      return null;
+    } catch (InvocationTargetException e) {
+      Log.e(LOG_TAG, "Exception in constructor for \"" + viewName + "\": " + e.getCause());
+      return null;
+    } catch (ClassCastException e) {
+      Log.e(LOG_TAG, "Created a \"" + viewName + "\", but it's not a ViewBridge. Targets of <foam> tags must descend from ViewBridge.");
+      return null;
+    }
   }
 }

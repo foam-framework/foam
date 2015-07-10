@@ -27,7 +27,7 @@ public class DAOAdapter extends RecyclerView.Adapter<DAOAdapter.DAOViewHolder> i
   }
 
   public DAOAdapter(X x, DAO dao, DetailViewFactory viewFactory) {
-    X(x);
+    X(x.put("model", dao.getModel()));
     this.dao = dao;
     this.viewFactory = viewFactory;
   }
@@ -48,7 +48,9 @@ public class DAOAdapter extends RecyclerView.Adapter<DAOAdapter.DAOViewHolder> i
 
   @Override
   public DAOViewHolder onCreateViewHolder(ViewGroup parent, int position) {
-    return new DAOViewHolder(viewFactory.create(parent));
+    ViewBridge b = viewFactory.create(parent);
+    b.X(X());
+    return new DAOViewHolder(b);
   }
 
   @Override

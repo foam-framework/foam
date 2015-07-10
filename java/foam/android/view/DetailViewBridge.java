@@ -9,9 +9,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import foam.android.core.AttributeUtils;
+import foam.android.core.XContext;
 import foam.core.FObject;
 import foam.core.Model;
 import foam.core.Property;
@@ -30,10 +33,14 @@ import foam.core.X;
 public class DetailViewBridge extends OneWayViewBridge<ViewGroup, FObject> {
   protected Model model;
   protected boolean childViewsBuilt = false;
-  protected Map<String, ViewBridge> propertyViews;
+  protected Map<String, ViewBridge> propertyViewMap;
+  protected List<ViewBridge> propertyViews;
 
   protected Context context;
-  protected int layout;
+  protected int layout = -1;
+  protected ViewGroup parentView;
+
+  protected boolean needChildBinding = false;
 
   public X X() {
     return x_;
@@ -75,20 +82,26 @@ public class DetailViewBridge extends OneWayViewBridge<ViewGroup, FObject> {
     return v;
   }
 
-  public DetailViewBridge(Context context, int layout) {
+  public DetailViewBridge(Context context, int layout, ViewGroup parent) {
     setup();
     this.context = context;
+    this.layout = layout;
+    parentView = parent;
     tryToInflateView();
   }
 
   private void tryToInflateView() {
     if (X() == null) return;
-    X y = X().put("data", value).put("propertyViews", propertyViews);
+    if (layout == -1) return;
+    if (parentView == null) return;
+
+    X y = X().put("model", model).put("data", value).put("propertyViews", propertyViews);
     childViewsBuilt = true; // Already built the child views.
-    XView xv = new XView(context);
-    xv.X(y);
-    xv.addView(LayoutInflater.from(context).inflate(layout, view));
-    view = xv;
+    needChildBinding = true;
+    Context wrapped = new XContext(context, y);
+    LayoutInflater lf = LayoutInflater.from(context);
+    lf = lf.cloneInContext(wrapped);
+    view = (ViewGroup) lf.inflate(layout, parentView, false /* attachToRoot */);
   }
 
   public View getView() {
@@ -99,11 +112,12 @@ public class DetailViewBridge extends OneWayViewBridge<ViewGroup, FObject> {
         return null;
       }
     }
-    return view;
+    return super.getView();
   }
 
   private void setup() {
-    propertyViews = new HashMap<>();
+    propertyViews = new LinkedList<>();
+    propertyViewMap = new HashMap<>();
     setValue(new SimpleValue<FObject>(null));
   }
 
@@ -118,9 +132,27 @@ public class DetailViewBridge extends OneWayViewBridge<ViewGroup, FObject> {
     // TODO(braden): Handle hidden properties.
     for (Property p : model.getProperties()) {
       ViewBridge pView = p.createView(view.getContext());
-      propertyViews.put(p.getName(), pView);
+      propertyViewMap.put(p.getName(), pView);
       view.addView(pView.getView());
     }
+  }
+
+  /**
+   * Called when a custom layout has been used to inflate this DetailView's contents.
+   *
+   * When that is the case, arbitrary views can be bound to properties inside. They will have been
+   * added to propertyViews, so we iterate them, check their {@link X}'s for <code>"prop"</code> and
+   * add them to {@link #propertyViewMap} so that their values will be updated on {@link #setData}.
+   */
+  protected void bindChildViews() {
+    for (ViewBridge b : propertyViews) {
+      Property prop = (Property) b.X().get("prop");
+      if (prop != null) {
+        propertyViewMap.put(prop.getName(), b);
+      }
+    }
+
+    needChildBinding = false;
   }
 
   @Override
@@ -130,7 +162,7 @@ public class DetailViewBridge extends OneWayViewBridge<ViewGroup, FObject> {
 
   @Override
   public void destroy() {
-    for (ViewBridge vb : propertyViews.values()) {
+    for (ViewBridge vb : propertyViews) {
       vb.destroy();
     }
   }
@@ -144,12 +176,22 @@ public class DetailViewBridge extends OneWayViewBridge<ViewGroup, FObject> {
     if (obj == null) return;
     setModel(obj.model());
     maybeBuildChildViews();
+    if (needChildBinding) bindChildViews();
     bindData(obj);
   }
   private void bindData(FObject obj) {
-    for (Property p : model.getProperties()) {
-      ViewBridge pView = propertyViews.get(p.getName());
-      pView.setValue(p.createValue(obj));
+    if (obj == null) {
+      for (ViewBridge b : propertyViews) {
+        b.getView().setVisibility(View.GONE);
+      }
+    } else {
+      for (Property p : model.getProperties()) {
+        ViewBridge pView = propertyViewMap.get(p.getName());
+        if (pView != null) {
+          pView.setValue(p.createValue(obj));
+          pView.getView().setVisibility(View.VISIBLE);
+        }
+      }
     }
   }
 }
