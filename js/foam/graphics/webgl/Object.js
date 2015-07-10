@@ -57,7 +57,10 @@ CLASS({
     {
       name: 'x',
       getter: function() {
-        return this.relativePosition && this.relativePosition.elements && this.relativePosition.elements[0][3];
+        if ( this.relativePosition && this.relativePosition.elements )
+          return this.relativePosition.elements[0][3];
+        else
+          return this.instance_.x;
       },
       postSet: function(old, nu) {
         this.relativePosition && this.relativePosition.elements && (this.relativePosition.elements[0][3] = nu);
@@ -67,7 +70,10 @@ CLASS({
     {
       name: 'y',
       getter: function() {
-        return this.relativePosition && this.relativePosition.elements && -(this.relativePosition.elements[1][3]);
+        if ( this.relativePosition && this.relativePosition.elements )
+          return -this.relativePosition.elements[1][3];
+        else
+          return this.instance_.y;
       },
       postSet: function(old, nu) {
         this.relativePosition && this.relativePosition.elements && (this.relativePosition.elements[1][3] = -nu);
@@ -77,7 +83,10 @@ CLASS({
     {
       name: 'z',
       getter: function() {
-        return this.relativePosition && this.relativePosition.elements && -(this.relativePosition.elements[2][3]);
+        if ( this.relativePosition && this.relativePosition.elements )
+          return -this.relativePosition.elements[2][3];
+        else
+          return this.instance_.z;
       },
       postSet: function(old, nu) {
         this.relativePosition && this.relativePosition.elements && (this.relativePosition.elements[2][3] = -nu);
@@ -203,6 +212,11 @@ CLASS({
       if ( this.meshMatrix ) {
         var meshUniform = this.gl.getUniformLocation(this.program.program, "meshMatrix");
         this.gl.uniformMatrix4fv(meshUniform, false, new Float32Array(this.meshMatrix.flatten()));
+      }
+
+      if ( this.color ) {
+        var colorUniform = this.gl.getUniformLocation(this.program.program, "color");
+        this.gl.uniform4fv(colorUniform, new Float32Array(this.color));
       }
 
 //       if ( this.finalMatrix_ ) {

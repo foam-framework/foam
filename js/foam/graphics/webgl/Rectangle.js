@@ -31,18 +31,6 @@ CLASS({
       name: 'color',
       defaultValueFn: function() { return [1.0, 1.0, 1.0, 1.0]; }, // white
       postSet: function() {
-        this.program.fragmentShader = this.Shader.create({
-          type: "fragment",
-          source:
-            "void main(void) {\n" +
-            "  gl_FragColor = vec4("+
-                this.color[0]+","+
-                this.color[1]+","+
-                this.color[2]+","+
-                this.color[3]+
-               ");\n"+
-            "}\n"
-        });
         // auto-set translucent rendering mode
         this.translucent = this.color[3] < 1.0;
         this.instance_.alpha = this.color[3];
@@ -110,6 +98,15 @@ CLASS({
 
       this.program = this.Program.create();
       this.color = this.color;
+      this.program.fragmentShader = this.Shader.create({
+        type: "fragment",
+        source:
+          "precision lowp float;\n"+
+          "uniform vec4 color;\n"+
+          "void main(void) {\n" +
+          "  gl_FragColor = color;\n"+
+          "}\n"
+      });
       this.program.vertexShader = this.Shader.create({
         type: "vertex",
         source: function() {/*

@@ -52,13 +52,32 @@ CLASS({
            var img = this.FlatImage.create({src: this.image, z: 0.01});
            this.addChild(img);
            this.img = img;
+           
          }
        }
     },
     { name: 'roundImage' },
-    { name: 'borderRatio', defaultValue: -0.05 },
+    { name: 'borderRatio', defaultValue: 0.05 },
     { name: 'color' },
-    { name: 'background' }
+    { name: 'background' },
+    {
+      name: 'r',
+      postSet: function() {
+        if ( this.img ) {
+          var d, s;
+          if ( this.roundImage ) {
+            this.borderRatio = 0.0001;
+            d = 2 * this.r;
+            s = -this.r;
+          } else {
+            d = 2 * this.r * Math.SQRT1_2;
+            s = -this.r * Math.SQRT1_2;
+          }
+          this.img.x = this.img.y = s;
+          this.img.width = this.img.height = d;
+        }
+      }
+    }
   ],
 
   methods: [
@@ -67,6 +86,8 @@ CLASS({
       
       this.background = this.Circle.create({ r$: this.r$, color: [1,1,1,1], z: 0.02});
       this.addChild(this.background);
+      
+
     },
     
     function setSelected(selected) {
@@ -101,22 +122,7 @@ CLASS({
         }.bind(this), Movement.ease(0.4,0.2))();
       }
     },
-    function paintSelf(tr) {
-      if ( this.image ) {
-        var d, s;
-        if ( this.roundImage ) {
-          this.borderWidth = 0;
-          d = 2 * this.r;
-          s = -this.r;
-        } else {
-          d = 2 * this.r * Math.SQRT1_2;
-          s = -this.r * Math.SQRT1_2;
-        }
-        this.img.x = this.img.y = s;
-        this.img.width = this.img.height = d;
-      }
-      this.SUPER(tr);
-    }
+    
   ]
 });
 
@@ -298,7 +304,7 @@ CLASS({
 
 CLASS({
   package: 'com.google.watlobby',
-  name: 'Lobby',
+  name: 'LobbyGL',
   extendsModel: 'foam.graphics.webgl.FlatScene',
 
   requires: [

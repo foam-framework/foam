@@ -14,6 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ var fps = {
+  startTime : 0,
+  frameNumber : 0,
+  getFPS : function(){
+    this.frameNumber++;
+    var d = new Date().getTime(),
+      currentTime = ( d - this.startTime ) / 1000,
+      result = Math.floor( ( this.frameNumber / currentTime ) );
+
+    if( currentTime > 1 ){
+      this.startTime = new Date().getTime();
+      this.frameNumber = 0;
+      GLOBAL.document.title = result;
+    }
+    return result;
+
+  }
+};
+
 
 CLASS({
   package: 'com.google.watlobby',
@@ -34,41 +53,30 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'Bubble',
 
-  extendsModel: 'foam.demos.physics.PhysicalGLCircle',
+  extendsModel: 'foam.demos.physics.PhysicalCircle',
 
-  requires: [ 
-    'foam.graphics.webgl.FlatImage',
-    'foam.graphics.webgl.Circle'
-  ],
+  requires: [ 'foam.graphics.ImageCView' ],
 
   imports: [ 'lobby' ],
 
   properties: [
     { name: 'topic' },
-    {
-       name: 'image',
-       postSet: function() {
-         if ( this.image ) {
-           var img = this.FlatImage.create({src: this.image, z: 0.01});
-           this.addChild(img);
-           this.img = img;
-         }
-       }
-    },
+    { name: 'image' },
     { name: 'roundImage' },
-    { name: 'borderRatio', defaultValue: -0.05 },
-    { name: 'color' },
-    { name: 'background' }
+    { name: 'borderWidth', defaultValue: 6 },
+    { name: 'color',       defaultValue: 'white' }
   ],
 
   methods: [
-    function init() {
+    function initCView() {
       this.SUPER();
-      
-      this.background = this.Circle.create({ r$: this.r$, color: [1,1,1,1], z: 0.02});
-      this.addChild(this.background);
+
+      if ( this.image ) {
+        var img = this.ImageCView.create({src: this.image});
+        this.addChild(img);
+        this.img = img;
+      }
     },
-    
     function setSelected(selected) {
       if ( this.cancel_ ) {
         this.cancel_();
@@ -83,12 +91,7 @@ CLASS({
         this.cancel_ = Movement.animate(2000, function() {
           var width = this.lobby.width;
           var height = this.lobby.height;
-
           this.r = Math.min(width, height)/2.3;
-//          var scale = (Math.min(width, height)/2.3) / this.r;
-//          this.scaleX = scale;
-//          this.scaleY = scale;
-
           this.x = width/2;
           this.y = height/2;
         }.bind(this), Movement.ease(0.4,0.2))();
@@ -96,12 +99,10 @@ CLASS({
         this.mass = this.oldMass_;
         this.cancel_ = Movement.animate(1000, function() {
           this.r = this.oldR_;
-//          this.scaleX = 1.0;
-//          this.scaleY = 1.0;
         }.bind(this), Movement.ease(0.4,0.2))();
       }
     },
-    function paintSelf(tr) {
+    function paintSelf() {
       if ( this.image ) {
         var d, s;
         if ( this.roundImage ) {
@@ -115,7 +116,7 @@ CLASS({
         this.img.x = this.img.y = s;
         this.img.width = this.img.height = d;
       }
-      this.SUPER(tr);
+      this.SUPER();
     }
   ]
 });
@@ -128,8 +129,8 @@ CLASS({
   extendsModel: 'com.google.watlobby.Bubble',
 
   requires: [
-    'foam.graphics.webgl.FlatImage',
-    'foam.graphics.webgl.Rectangle',
+    'foam.graphics.ImageCView',
+    'foam.graphics.SimpleRectangle',
     'foam.graphics.ViewCView',
     'com.google.watlobby.Bubble'
   ],
@@ -141,7 +142,7 @@ CLASS({
     },
     {
       name: 'playIcon',
-      factory: function() { return this.FlatImage.create({src: 'play.png', x:-40, y:-40, width: 80, height: 80, alpha: 0.25}); }
+      factory: function() { return this.ImageCView.create({src: 'play.png', x:-40, y:-40, width: 80, height: 80, alpha: 0.25}); }
     }
   ],
 
@@ -156,9 +157,9 @@ CLASS({
         var w = this.lobby.width;
         var h = this.lobby.height;
 
-        var r = this.Rectangle.create({color: [0,0,0,0.1], alpha: 0.1, x: 0, y: 0, z: 1, width: this.lobby.width, height: this.lobby.height});
+        var r = this.SimpleRectangle.create({background: 'black', alpha: 0, x: 0, y: 0, width: this.lobby.width, height: this.lobby.height});
         this.lobby.addChild(r);
-        Movement.animate(1000, function() { r.alpha = 0.7; r.z = -1; })();
+        Movement.animate(1000, function() { r.alpha = 0.7; })();
 
         this.children_.push(r);
 
@@ -177,15 +178,13 @@ CLASS({
           v.x = (w-vw)/2;
           v.y = (h-vh)/2;
         }, Movement.oscillate(0.6, 0.03, 2))();
-        var vgl = v.toGLView_();
-        vgl.z = 2;
         this.lobby.addChild(v);
         this.children_.push(v);
       } else {
         // TODO: remove children from lobby when done
         var r = this.children_[0];
         var v = this.children_[1];
-        Movement.animate(1000, function() { r.alpha = 0; r.z = 1 })();
+        Movement.animate(1000, function() { r.alpha = 0; })();
         /*
         for ( var i = 1 ; i < this.children_.length ; i++ ) {
           Movement.animate(1000, function() { this.width = this.height = 0; }.bind(this.children_[i]))();
@@ -206,7 +205,7 @@ CLASS({
   extendsModel: 'com.google.watlobby.Bubble',
 
   requires: [
-    'foam.graphics.webgl.Rectangle',
+    'foam.graphics.SimpleRectangle',
     'com.google.watlobby.Bubble'
   ],
 
@@ -222,76 +221,58 @@ CLASS({
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-
-      this.children_ = [];
-      var w = this.lobby.width / this.columns;
-      var h = this.lobby.height / this.rows;
-
-      var r = this.Rectangle.create({color: [0,0,0,0], alpha: 0, x: 0, y: 0, z: 1, width: this.lobby.width, height: this.lobby.height});
-      this.lobby.addChild(r);
-
-      this.children_.push(r);
-
-      for ( var i = 0 ; i < this.columns ; i++ ) {
-        for ( var j = 0 ; j < this.rows ; j++ ) {
-          var b = this.Bubble.create({
-            r: 0, x: this.x, y: this.y, z: -2, border: '#f00'
-          });
-          this.lobby.addChild(b);
-          this.children_.push(b);
-        }
-      }
-
-
-    },
     function setSelected(selected) {
       if ( selected ) {
+        this.children_ = [];
         var w = this.lobby.width / this.columns;
         var h = this.lobby.height / this.rows;
 
-        var r = this.children_[0];
-        Movement.animate(1000, function() { r.alpha = 0.7; r.z = -1; })();
+        var r = this.SimpleRectangle.create({background: 'black', alpha: 0, x: 0, y: 0, width: this.lobby.width, height: this.lobby.height});
+        this.lobby.addChild(r);
+        Movement.animate(1000, function() { r.alpha = 0.7; })();
+
+        this.children_.push(r);
 
         for ( var i = 0 ; i < this.columns ; i++ ) {
           for ( var j = 0 ; j < this.rows ; j++ ) {
-            var b = this.children_[ i * this.rows + j + 1];
-            b.x = this.x;
-            b.y = this.y;
-            b.z = -2;
+            var b = this.Bubble.create({
+              r: 0, x: this.x, y: this.y, border: '#f00'
+            });
             Movement.animate(2000, function(i, j) {
               this.r = Math.min(w, h) / 2 - 6;
               this.x = ( i + 0.5 ) * w;
               this.y = ( j + 0.5 ) * h;
             }.bind(b, i, j), Movement.oscillate(0.6, 0.03, 2))();
+            this.lobby.addChild(b);
+            this.children_.push(b);
           }
         }
       } else {
         // TODO: remove children from lobby when done
         var r = this.children_[0];
-        Movement.animate(1000, function() { r.alpha = 0; r.z = 1; })();
+        Movement.animate(1000, function() { r.alpha = 0; })();
         for ( var i = 1 ; i < this.children_.length ; i++ ) {
           Movement.animate(1000, function() { this.r = 0; }.bind(this.children_[i]))();
         }
+        this.children_ = [];
       }
     },
-//     function paintSelf() {
-//       if ( this.image ) {
-//         var d, s;
-//         if ( this.roundImage ) {
-//           this.borderWidth = 0;
-//           d = 2 * this.r;
-//           s = -this.r;
-//         } else {
-//           d = 2 * this.r * Math.SQRT1_2;
-//           s = -this.r * Math.SQRT1_2;
-//         }
-//         this.img.x = this.img.y = s;
-//         this.img.width = this.img.height = d;
-//       }
-//       this.SUPER();
-//     }
+    function paintSelf() {
+      if ( this.image ) {
+        var d, s;
+        if ( this.roundImage ) {
+          this.borderWidth = 0;
+          d = 2 * this.r;
+          s = -this.r;
+        } else {
+          d = 2 * this.r * Math.SQRT1_2;
+          s = -this.r * Math.SQRT1_2;
+        }
+        this.img.x = this.img.y = s;
+        this.img.width = this.img.height = d;
+      }
+      this.SUPER();
+    }
   ]
 });
 
@@ -299,7 +280,7 @@ CLASS({
 CLASS({
   package: 'com.google.watlobby',
   name: 'Lobby',
-  extendsModel: 'foam.graphics.webgl.FlatScene',
+  extendsModel: 'foam.graphics.CView',
 
   requires: [
     'com.google.watlobby.Bubble',
@@ -307,17 +288,16 @@ CLASS({
     'com.google.watlobby.Topic',
     'com.google.watlobby.VideoBubble',
     'foam.demos.ClockView',
-    'foam.demos.physics.PhysicalGLCircle',
+    'foam.demos.physics.PhysicalCircle',
     'foam.physics.Collider',
-    'foam.util.Timer',
-    'foam.graphics.webgl.Circle as GLCircle'
+    'foam.util.Timer'
   ],
 
   imports: [ 'timer' ],
   exports: [ 'as lobby' ],
 
   constants: {
-    COLOURS: [[0.19, 0.19, 1.0, 0.99],[1.0, 0.0, 0.0, 0.99],[1.0, 0.75, 0.0, 0.99], [0.19, 0.75, 0.0, 0.99]]
+    COLOURS: ['#33f','#f00','#fc0', '#3c0']
   },
 
   properties: [
@@ -332,14 +312,14 @@ CLASS({
     {
       name: 'topics',   factory: function() {
       return JSONUtil.arrayToObjArray(this.X, [
-        { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, colour: [1.0, 0.0, 0.0, 0.99] },
-        { topic: 'flip',         image: 'flip.jpg',         r: 100, colour: [1.0, 0.0, 0.0, 0.99] },
+        { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, colour: 'red' },
+        { topic: 'flip',         image: 'flip.jpg',         r: 100, colour: 'red' },
         { topic: 'googlecanada', image: 'googlecanada.gif', r: 200 },
         { topic: 'inbox',        image: 'inbox.png',        r: 160 },
-        { topic: 'android',      image: 'android.png',      r: 90, colour: [0.19, 0.75, 0.0, 0.99] },
+        { topic: 'android',      image: 'android.png',      r: 90, colour: '#3c0' },
         { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
         { topic: 'fiber',        image: 'fiber.jpg',        r: 180 },
-        { topic: 'foam',         image: 'foampowered.png',  r: 100, colour: [0.0, 0.0, 0.54, 0.99] },
+        { topic: 'foam',         image: 'foampowered.png',  r: 100, colour: 'darkblue' },
         { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 100, model: 'com.google.watlobby.VideoBubble' },
         { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 90, model: 'com.google.watlobby.PhotoAlbumBubble' },
         // chromebook, mine sweeper, calculator, I'm feeling lucky
@@ -372,10 +352,12 @@ CLASS({
   ],
 
   methods: [
-    function init() {
+    function paintSelf() {
+      fps.getFPS();
+    },
+    
+    function initCView() {
       this.SUPER();
-
-//      this.cameraDistance = -6.0;
 
       if ( ! this.timer ) {
         this.timer = this.Timer.create();
@@ -389,14 +371,13 @@ CLASS({
           r: 20 + Math.random() * 50,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          z: i * 0.05,
-          color: colour
+          border: colour
         }, this.Y);
         c.topic = t;
         c.image = t.image;
         c.r = t.r;
         c.roundImage = t.roundImage;
-        if ( t.colour ) c.color = t.colour;
+        if ( t.colour ) c.border = t.colour;
         this.addChild(c);
 
         c.mass = c.r/50;
@@ -414,8 +395,7 @@ CLASS({
           r: 20 + Math.random() * 50,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          z: (this.topics.length + i) * 0.05,
-          borderRatio: -0.01,
+          borderWidth: 6,
           color: 'white',
           border: colour
         });
@@ -430,21 +410,18 @@ CLASS({
       }
 
       for ( var i = 0 ; i < 200 && i < 20 ; i++ ) {
-        var b = this.PhysicalGLCircle.create({
+        var b = this.PhysicalCircle.create({
           r: 5,
-          segments: 16,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          borderRatio: 1.0,
-          color: [ 0,0,1,0.2],
+          borderWidth: 0.5,
+          color: 'rgba(0,0,255,0.2)',
+          border: '#blue',
+//          color: 'rgba(100,100,200,0.2)',
+//          border: '#55a',
           mass: 0.6
         });
-        b.addChild(this.GLCircle.create({
-          r: b.r,
-          segments: 16,
-          borderRatio: 0.1,
-          color: [ 0,0,1,1.0]
-        }));
+
         b.y$.addListener(function(b) {
           if ( b.y < 1 ) {
             b.y = this.height;
@@ -467,17 +444,13 @@ CLASS({
 
       var clock = this.ClockView.create({x:this.width-70,y:70, r:60});
       this.addChild(clock);
-      // since ClockView doesn't actually react to time, force it to paint
-      this.timer.second$.addListener(function() { clock.paint(); });
-      
-      
 
       this.collider.start();
     },
 
     function bounceOnWalls(c, w, h) {
       Events.dynamic(function() { c.x; c.y; }, function() {
-        var r = c.r;
+        var r = c.r + c.borderWidth;
         if ( c.x < r     ) { c.vx += 0.2; c.vy -= 0.19; }
         if ( c.x > w - r ) { c.vx -= 0.2; c.vy += 0.19; }
         if ( c.y < r     ) { c.vy += 0.2; c.vx += 0.19; }
