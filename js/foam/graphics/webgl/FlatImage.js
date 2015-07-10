@@ -170,9 +170,9 @@ CLASS({
       if ( this.translucent !== translucent ) return;
 
       var gl = this.gl;
-      if ( ! gl ) return;
+      if ( ! gl || ! this.texture ) return;
 
-      if ( ! this.texture ) this.resize();
+      //if ( ! this.texture ) this.render();
 
       this.program.use();
       var sampler = gl.getUniformLocation(this.program.program, "uSampler");

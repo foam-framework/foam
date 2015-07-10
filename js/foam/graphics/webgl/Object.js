@@ -201,7 +201,7 @@ CLASS({
         this.gl.uniformMatrix4fv(posUniform, false, new Float32Array(this.parent.positionMatrix.flatten()));
       } else {
         var posUniform = this.gl.getUniformLocation(this.program.program, "positionMatrix");
-        this.gl.uniformMatrix4fv(posUniform, false, new Float32Array(Matrix.I(4)));
+        this.gl.uniformMatrix4fv(posUniform, false, new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]));
       }
 
       if ( this.relativePosition ) {

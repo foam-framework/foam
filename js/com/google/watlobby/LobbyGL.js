@@ -52,7 +52,6 @@ CLASS({
            var img = this.FlatImage.create({src: this.image, z: 0.01});
            this.addChild(img);
            this.img = img;
-           
          }
        }
     },
@@ -137,7 +136,8 @@ CLASS({
     'foam.graphics.webgl.FlatImage',
     'foam.graphics.webgl.Rectangle',
     'foam.graphics.ViewCView',
-    'com.google.watlobby.Bubble'
+    'com.google.watlobby.Bubble',
+    'foam.graphics.webgl.FlatVideo'
   ],
 
   properties: [
@@ -162,7 +162,7 @@ CLASS({
         var w = this.lobby.width;
         var h = this.lobby.height;
 
-        var r = this.Rectangle.create({color: [0,0,0,0.1], alpha: 0.1, x: 0, y: 0, z: 1, width: this.lobby.width, height: this.lobby.height});
+        var r = this.Rectangle.create({color: [0,0,0,0.1], x: 0, y: 0, z: 1, width: this.lobby.width, height: this.lobby.height});
         this.lobby.addChild(r);
         Movement.animate(1000, function() { r.alpha = 0.7; r.z = -1; })();
 
@@ -172,10 +172,17 @@ CLASS({
         var vw = 560*2.5;
         var vh = 315*2.5;
 
-        var v = this.ViewCView.create({innerView: {
-          toHTML: function() { return '<iframe width="' + vw + '" height="' + vh + '" src="https://www.youtube.com/embed/' + video + '?autoplay=1" frameborder="0" allowfullscreen></iframe>'; },
-          initHTML: function() {}
-        }, x: this.x, y: this.y, width: 0, height: 0});
+        var v = this.FlatVideo.create({ 
+          x: this.x, y: this.y, z: -3, width: 0, height: 0,
+          src:"Google in Waterloo Region - Ontario  Canada.mp4",
+          translucent: true 
+        });
+        
+        // this.ViewCView.create({innerView: {
+//           //toHTML: function() { return '<iframe width="' + vw + '" height="' + vh + '" src="https://www.youtube.com/embed/' + video + '?autoplay=1" frameborder="0" allowfullscreen></iframe>'; },
+//           toHTML: function() { return '<video autoplay src="Google in Waterloo Region - Ontario  Canada.mp4"></video>'; },
+//           initHTML: function() {}
+//         }, x: this.x, y: this.y, width: 0, height: 0});
 
         Movement.animate(2000, function(i, j) {
           v.width = vw;
@@ -183,8 +190,6 @@ CLASS({
           v.x = (w-vw)/2;
           v.y = (h-vh)/2;
         }, Movement.oscillate(0.6, 0.03, 2))();
-        var vgl = v.toGLView_();
-        vgl.z = 2;
         this.lobby.addChild(v);
         this.children_.push(v);
       } else {
@@ -198,6 +203,7 @@ CLASS({
         }
         */
         v.destroy();
+        this.lobby.removeChild(v);
         this.children_ = [];
       }
     }
