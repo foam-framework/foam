@@ -69,7 +69,8 @@ CLASS({
       defaultValue: 10,
       postSet: function() {
         if ( this.meshMatrix && this.meshMatrix.elements ) {
-          this.meshMatrix.elements[1][1] = -this.height;
+          this.meshMatrix.elements[1][1] = this.height;
+          this.meshMatrix.elements[1][3] = -this.height;
         }
       }
     },

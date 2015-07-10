@@ -57,9 +57,13 @@ CLASS({
       var gl = this.gl;
       if ( ! gl || ! this.sylvesterLib.loaded ) return;
 
+      
       if ( ! translucent ) {
+        //gl.enable(gl.DEPTH_TEST);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         fps.getFPS();
+      } else {
+        //gl.disable(gl.DEPTH_TEST);
       }
 
       this.projectionMatrix = this.makeOrtho(0,this.view.width,-this.view.height,0,-100.0,100.0)

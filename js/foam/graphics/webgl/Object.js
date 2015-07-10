@@ -160,7 +160,7 @@ CLASS({
   methods: [
     function init() {
 
-      this.sylvesterLib.loaded$.addListener(this.updatePosition);
+      this.sylvesterLib.loaded$.addListener(this.setMatrices);
       this.relativePosition$.addListener(this.updatePosition);
       //this.meshMatrix$.addListener(this.updateMesh);
     },
@@ -230,17 +230,21 @@ CLASS({
     {
       name: 'updatePosition',
       framed: true,
-      code: function() {
+      code: function() {        
         this.positionMatrix = null;
         //this.finalMatrix_ = null;
       },
     },
-//     {
-//       name: 'updateMesh',
-//       code: function() {
-//         this.finalMatrix_ = null;
-//       },
-//     }
+    {
+      name: 'setMatrices',
+      code: function() {      
+        this.x = this.instance_.x ? this.instance_.x : 0;
+        this.y = this.instance_.y ? this.instance_.y : 0;
+        this.z = this.instance_.z ? this.instance_.z : 0;
+          
+        this.updatePosition();
+      },
+    },
 
 
   ]

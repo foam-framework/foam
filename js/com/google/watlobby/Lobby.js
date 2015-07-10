@@ -36,7 +36,10 @@ CLASS({
 
   extendsModel: 'foam.demos.physics.PhysicalGLCircle',
 
-  requires: [ 'foam.graphics.ImageCView' ],
+  requires: [ 
+    'foam.graphics.webgl.FlatImage',
+    'foam.graphics.webgl.Circle'
+  ],
 
   imports: [ 'lobby' ],
 
@@ -46,18 +49,26 @@ CLASS({
        name: 'image',
        postSet: function() {
          if ( this.image ) {
-           var img = this.ImageCView.create({src: this.image});
-           //this.addChild(img);
+           var img = this.FlatImage.create({src: this.image, z: 0.01});
+           this.addChild(img);
            this.img = img;
          }
        }
     },
     { name: 'roundImage' },
     { name: 'borderRatio', defaultValue: -0.05 },
-    { name: 'color' }
+    { name: 'color' },
+    { name: 'background' }
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      
+      this.background = this.Circle.create({ r$: this.r$, color: [1,1,1,1], z: 0.02});
+      this.addChild(this.background);
+    },
+    
     function setSelected(selected) {
       if ( this.cancel_ ) {
         this.cancel_();
@@ -90,22 +101,22 @@ CLASS({
         }.bind(this), Movement.ease(0.4,0.2))();
       }
     },
-//     function paintSelf() {
-//       if ( this.image ) {
-//         var d, s;
-//         if ( this.roundImage ) {
-//           this.borderWidth = 0;
-//           d = 2 * this.r;
-//           s = -this.r;
-//         } else {
-//           d = 2 * this.r * Math.SQRT1_2;
-//           s = -this.r * Math.SQRT1_2;
-//         }
-//         this.img.x = this.img.y = s;
-//         this.img.width = this.img.height = d;
-//       }
-//       this.SUPER();
-//     }
+    function paintSelf(tr) {
+      if ( this.image ) {
+        var d, s;
+        if ( this.roundImage ) {
+          this.borderWidth = 0;
+          d = 2 * this.r;
+          s = -this.r;
+        } else {
+          d = 2 * this.r * Math.SQRT1_2;
+          s = -this.r * Math.SQRT1_2;
+        }
+        this.img.x = this.img.y = s;
+        this.img.width = this.img.height = d;
+      }
+      this.SUPER(tr);
+    }
   ]
 });
 
@@ -117,7 +128,7 @@ CLASS({
   extendsModel: 'com.google.watlobby.Bubble',
 
   requires: [
-    'foam.graphics.ImageCView',
+    'foam.graphics.webgl.FlatImage',
     'foam.graphics.webgl.Rectangle',
     'foam.graphics.ViewCView',
     'com.google.watlobby.Bubble'
@@ -130,7 +141,7 @@ CLASS({
     },
     {
       name: 'playIcon',
-      factory: function() { return this.ImageCView.create({src: 'play.png', x:-40, y:-40, width: 80, height: 80, alpha: 0.25}); }
+      factory: function() { return this.FlatImage.create({src: 'play.png', x:-40, y:-40, width: 80, height: 80, alpha: 0.25}); }
     }
   ],
 
@@ -306,7 +317,7 @@ CLASS({
   exports: [ 'as lobby' ],
 
   constants: {
-    COLOURS: ['#33f','#f00','#fc0', '#3c0']
+    COLOURS: [[0.19, 0.19, 1.0, 0.99],[1.0, 0.0, 0.0, 0.99],[1.0, 0.75, 0.0, 0.99], [0.19, 0.75, 0.0, 0.99]]
   },
 
   properties: [
@@ -321,14 +332,14 @@ CLASS({
     {
       name: 'topics',   factory: function() {
       return JSONUtil.arrayToObjArray(this.X, [
-        { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, colour: 'red' },
-        { topic: 'flip',         image: 'flip.jpg',         r: 100, colour: 'red' },
+        { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, colour: [1.0, 0.0, 0.0, 0.99] },
+        { topic: 'flip',         image: 'flip.jpg',         r: 100, colour: [1.0, 0.0, 0.0, 0.99] },
         { topic: 'googlecanada', image: 'googlecanada.gif', r: 200 },
         { topic: 'inbox',        image: 'inbox.png',        r: 160 },
-        { topic: 'android',      image: 'android.png',      r: 90, colour: '#3c0' },
+        { topic: 'android',      image: 'android.png',      r: 90, colour: [0.19, 0.75, 0.0, 0.99] },
         { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
         { topic: 'fiber',        image: 'fiber.jpg',        r: 180 },
-        { topic: 'foam',         image: 'foampowered.png',  r: 100, colour: 'darkblue' },
+        { topic: 'foam',         image: 'foampowered.png',  r: 100, colour: [0.0, 0.0, 0.54, 0.99] },
         { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 100, model: 'com.google.watlobby.VideoBubble' },
         { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 90, model: 'com.google.watlobby.PhotoAlbumBubble' },
         // chromebook, mine sweeper, calculator, I'm feeling lucky
@@ -378,13 +389,14 @@ CLASS({
           r: 20 + Math.random() * 50,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          border: colour
+          z: i * 0.05,
+          color: colour
         }, this.Y);
         c.topic = t;
         c.image = t.image;
         c.r = t.r;
         c.roundImage = t.roundImage;
-        if ( t.colour ) c.border = t.colour;
+        if ( t.colour ) c.color = t.colour;
         this.addChild(c);
 
         c.mass = c.r/50;
@@ -402,6 +414,7 @@ CLASS({
           r: 20 + Math.random() * 50,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
+          z: (this.topics.length + i) * 0.05,
           borderRatio: -0.01,
           color: 'white',
           border: colour
