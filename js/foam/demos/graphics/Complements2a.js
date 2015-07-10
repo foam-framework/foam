@@ -17,7 +17,7 @@
 
 CLASS({
   package: 'foam.demos.graphics',
-  name: 'Complements2',
+  name: 'Complements2a',
 
   extendsModel: 'foam.graphics.CView',
 
@@ -61,12 +61,11 @@ CLASS({
 
         Events.dynamic((function (circle, a) {
           return function() {
-            var a2 = timer.time / 30000 * 2 * Math.PI;
+            var a2 = timer.time / 15000 * 2 * Math.PI;
             var r2 = R * Math.cos(2*(a + a2 + Math.PI/2));
-            circle.r = 20 + 40 * Math.abs(Math.pow(Math.sin(2*(a + a2 + Math.PI/4)),4));
-            var t = a + a2;
-            circle.x = 20 + D/2 + (r2) * Math.sin(t);
-            circle.y = 20 + D/2 + (r2) * Math.cos(t);
+            circle.r = 20 + 40 * Math.abs(Math.pow(Math.sin(2*(a + a2*1.5 + Math.PI/4)),4));
+            circle.x = 20 + D/2 + r2 * Math.sin(a);
+            circle.y = 20 + D/2 + r2 * Math.cos(a);
           };
         })(circle, a));
         this.addChild(circle);

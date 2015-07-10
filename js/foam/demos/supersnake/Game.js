@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-// TODO: add intersects method to Circle
-
 CLASS({
   package: 'foam.demos.supersnake',
   name: 'Scale',

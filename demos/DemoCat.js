@@ -352,6 +352,20 @@ return JSONUtil.arrayToObjArray(X, [
     image: 'Olympics.png'
   },
   {
+    name: 'Snake Game',
+    model: 'foam.demos.supersnake.Game',
+    description: 'Simple snake game.  Not finished, but the source makes a good example.  Move with either the a,w,s,d or arrow keys and fire with either x or the spacebar.',
+    keywords: [ 'animation', 'graphics', 'game' ],
+    image: 'Snake.png'
+  },
+  {
+    name: 'Task Manager',
+    model: 'foam.apps.ctm.TaskManager',
+    description: 'Prototype Chrome Task Manager that adds Material Design, search, and graphing.',
+    keywords: [ 'graphics' ],
+    image: 'TaskManager.png'
+  },
+  {
     name: 'FOAM Demo Catalog',
     path: 'DemoCat.html',
     description: 'A FOAM Demo browser.  The demo you\'re currently running.',
