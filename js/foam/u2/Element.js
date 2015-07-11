@@ -32,7 +32,8 @@ CLASS({
       destroy:    function() { },
       onAddCls:   function() { },
       onAddStyle: function() { },
-      onSetAttr:  function() { }
+      onSetAttr:  function() { },
+      toString: function() { return 'INITIAL'; }
     },
     OUTPUT: {
       output:     function(out) {
@@ -47,7 +48,10 @@ CLASS({
       destroy:    function() { },
       onAddCls:   function() { },
       onAddStyle: function() { },
-      onSetAttr:  function() { }
+      onSetAttr:  function(key, value) {
+        this.id$el[key] = value;
+      },
+      toString: function() { return 'OUTPUT'; }
     },
     LOADED: {
       output:     function(out) { console.warn('Duplicate output.'); },
@@ -58,7 +62,10 @@ CLASS({
       destroy:    function() { },
       onAddCls:   function() { },
       onAddStyle: function() { },
-      onSetAttr:  function() { }
+      onSetAttr:  function(key, value) {
+        this.id$el[key] = value;
+      },
+      toString: function() { return 'LOADED'; }
     },
     UNLOADED: {
       output:     function() { },
@@ -69,7 +76,8 @@ CLASS({
       destroy:    function() { },
       onAddCls:   function() { },
       onAddStyle: function() { },
-      onSetAttr:  function() { }
+      onSetAttr:  function() { },
+      toString: function() { return 'UNLOADED'; }
     },
     DESTROYED: { // Needed?
       output:     function() { },
@@ -78,7 +86,8 @@ CLASS({
       destroy:    function() { },
       onAddCls:   function() { },
       onAddStyle: function() { },
-      onSetAttr:  function() { }
+      onSetAttr:  function() { },
+      toString: function() { return 'DESTROYED'; }
     },
 
     OPTIONAL_CLOSE_TAGS: {
@@ -171,6 +180,13 @@ CLASS({
   ],
 
   methods: [
+    
+    // State
+
+    function onSetAttr(key, value) {
+      this.state.onSetAttr.call(this, key, value);
+    },
+
 
     //
     // Lifecycle
@@ -229,6 +245,7 @@ CLASS({
 
     function attr(key, value) {
       this.attributeMap[key] = value;
+      this.onSetAttr(key, value);
       return this;
     },
 
@@ -289,7 +306,7 @@ CLASS({
 
       f.toString = function() {
         if ( buf.length === 0 ) return '';
-        if ( buf.length > 1 ) { debugger; buf = [buf.join('')]; }
+        if ( buf.length > 1 ) buf = [buf.join('')];
         return buf[0];
       }
 
