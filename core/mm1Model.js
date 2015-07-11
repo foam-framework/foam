@@ -529,7 +529,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       }
     },
     {
-      model_: 'ArrayProperty',
+//      model_: 'ArrayProperty',
       name: 'methods',
       subType: 'Method',
       help: 'Methods associated with the entity.',
