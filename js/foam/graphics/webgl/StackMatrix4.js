@@ -33,11 +33,11 @@ CLASS({
 
     function recalculate_() {
       /* Recalculate the matrix, starting from the indicated index */
-      if ( this.stack.length < 1 ) { return this.SUPER(); } // identity
+      if ( this.stack.length < 1 ) { return this.SUPER(); } // the identity matrix
 
       var result = this.stack[0];
       var i = 1;
-      // find the furthest-along cache hit
+      // find the last cache hit before we miss
       for (; i < this.stack.length; ++i) {
         var m = this.stack[i];
         if ( this.matrixCache_[m] ) {
@@ -46,13 +46,13 @@ CLASS({
           break;
         }
       }
-      // calculate the rest
+      // continue calculating the rest
       for (; i < this.stack.length; ++i) {
         var m = this.stack[i];
         result = this.multiply(result, m);
         this.matrixCache_[m] = result.slice(); // clone
+        m.addListener(this.matrixChange);
       }
-
       return result;
     },
   ],
@@ -60,10 +60,13 @@ CLASS({
   listeners: [
     {
       name: 'matrixChange',
-      code: function(obj) {
-        delete this.matrixCache_[obj];
-        this.reset_();
+      code: function(obj, topic) {
+        if ( topic[1] == 'flat' ) {
+          delete this.matrixCache_[obj];
+          this.reset_();
+        }
       }
+    }
   ]
 
 });

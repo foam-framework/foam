@@ -36,7 +36,7 @@ CLASS({
 
   extendsModel: 'foam.demos.physics.PhysicalGLCircle',
 
-  requires: [ 
+  requires: [
     'foam.graphics.webgl.FlatImage',
     'foam.graphics.webgl.Circle'
   ],
@@ -82,13 +82,13 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      
+
       this.background = this.Circle.create({ r$: this.r$, color: [1,1,1,1], z: 0.02});
       this.addChild(this.background);
-      
+
 
     },
-    
+
     function setSelected(selected) {
       if ( this.cancel_ ) {
         this.cancel_();
@@ -121,7 +121,7 @@ CLASS({
         }.bind(this), Movement.ease(0.4,0.2))();
       }
     },
-    
+
   ]
 });
 
@@ -172,17 +172,11 @@ CLASS({
         var vw = 560*2.5;
         var vh = 315*2.5;
 
-        var v = this.FlatVideo.create({ 
+        var v = this.FlatVideo.create({
           x: this.x, y: this.y, z: -3, width: 0, height: 0,
           src:"Google in Waterloo Region - Ontario  Canada.mp4",
-          translucent: true 
+          translucent: true
         });
-        
-        // this.ViewCView.create({innerView: {
-//           //toHTML: function() { return '<iframe width="' + vw + '" height="' + vh + '" src="https://www.youtube.com/embed/' + video + '?autoplay=1" frameborder="0" allowfullscreen></iframe>'; },
-//           toHTML: function() { return '<video autoplay src="Google in Waterloo Region - Ontario  Canada.mp4"></video>'; },
-//           initHTML: function() {}
-//         }, x: this.x, y: this.y, width: 0, height: 0});
 
         Movement.animate(2000, function(i, j) {
           v.width = vw;
@@ -288,22 +282,6 @@ CLASS({
         }
       }
     },
-//     function paintSelf() {
-//       if ( this.image ) {
-//         var d, s;
-//         if ( this.roundImage ) {
-//           this.borderWidth = 0;
-//           d = 2 * this.r;
-//           s = -this.r;
-//         } else {
-//           d = 2 * this.r * Math.SQRT1_2;
-//           s = -this.r * Math.SQRT1_2;
-//         }
-//         this.img.x = this.img.y = s;
-//         this.img.width = this.img.height = d;
-//       }
-//       this.SUPER();
-//     }
   ]
 });
 
@@ -339,7 +317,21 @@ CLASS({
     { name: 'height',     defaultValue: window.innerHeight },
     { name: 'background', defaultValue: '#ccf' },
     { name: 'collider',   factory: function() {
-      return this.Collider.create();
+      var c = this.Collider.create();
+      // Make collision detection much faster by not checking
+      // if air bubbles collide with other air bubbles
+      c.detectCollisions = function() {
+        var cs = this.children;
+        for ( var i = 0 ; i < cs.length ; i++ ) {
+          var c1 = cs[i];
+          if ( c1.r === 5 ) return;
+          for ( var j = i+1 ; j < cs.length ; j++ ) {
+            var c2 = cs[j];
+            if ( c1.intersects(c2) ) this.collide(c1, c2);
+          }
+        }
+      };
+      return c;
     }},
     {
       name: 'topics',   factory: function() {
@@ -481,8 +473,8 @@ CLASS({
       this.addChild(clock);
       // since ClockView doesn't actually react to time, force it to paint
       this.timer.second$.addListener(function() { clock.paint(); });
-      
-      
+
+
 
       this.collider.start();
     },

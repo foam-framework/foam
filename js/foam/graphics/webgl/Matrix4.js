@@ -40,6 +40,11 @@ CLASS({
   ],
 
   methods: [
+    function flatten() {
+      /* convenience for backward compatibility */
+      return this.flat;
+    },
+
     function reset_() {
       /* trigger a recalculate on next access */
       this.instance_.flat = null;
