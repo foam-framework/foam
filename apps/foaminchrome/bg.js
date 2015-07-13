@@ -1,6 +1,18 @@
-(function() {
+var FOAM_READY = (function() {
   if ( ! this.FOAM_BOOT_DIR )
     this.FOAM_BOOT_DIR = "http://localhost:8080/core/";
+
+  var waiters_ = [];
+  var ready_ = false;
+  var get_ = function(f) {
+    if ( ready_ ) f();
+    else waiters_.push(f);
+  };
+  var set_ = function() {
+    ready_ = true;
+    for ( var i = 0 ; i < waiters_.length ; i++ )
+      waiters_[i]();
+  };
 
   var loadFile = function(ret, name) {
     var xhr = new XMLHttpRequest();
@@ -31,22 +43,6 @@
 
   var error = false;
 
-  function loadWindow() {
-    if ( error ) return;
-    var oldWindow = chrome.app.window.get('FOAMInChrome');
-    if ( oldWindow ) oldWindow.close();
-    setTimeout(function() {
-      chrome.app.window.create('main.html', {
-        id: 'FOAMInChrome'
-      }, function(w) {
-        w.contentWindow.addEventListener(
-            'load', function() {
-              DOM.init(X.subWindow(w.contentWindow));
-            });
-      });
-    }, 0);
-  }
-
   this.loadScript_ = function(ret, name) {
     console.log("Loading", name);
     loadFile(function(blob, xhr) {
@@ -64,7 +60,6 @@
     var f = files.slice(0);
     var i = 0;
 
-
     function next(ret) {
       var p = Array.isArray(f[i]) ? f[i][1] : null;
       var file = Array.isArray(f[i]) ? f[i][0] : f[i];
@@ -78,8 +73,16 @@
 
     next(function callback() {
       if ( ++i < f.length ) next(callback);
-      else loadWindow();
+      else set_();
     });
 
   }, "FOAMmodels.js");
+
+  return get_;
 })();
+
+FOAM_READY(function() {
+  X.arequire('foam.tools.FOAMInChrome')(function(m) {
+    m.create(undefined, X).execute();
+  });
+});
