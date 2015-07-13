@@ -131,19 +131,6 @@ CLASS({
         return null;
       }
     },
-//     {
-//       name: 'finalMatrix_',
-//       getter: function() {
-//         if ( GLOBAL.Matrix ) {
-//           if ( ! this.instance_.finalMatrix_ ) {
-//             var m = this.meshMatrix || Matrix.I(4);
-//             this.instance_.finalMatrix_ = this.positionMatrix.x(m);
-//           }
-//           return this.instance_.finalMatrix_;
-//         }
-//         return null;
-//       }
-//     },
     {
       name: 'program',
     },
@@ -219,10 +206,6 @@ CLASS({
         this.gl.uniform4fv(colorUniform, new Float32Array(this.color));
       }
 
-//       if ( this.finalMatrix_ ) {
-//         var posUniform = this.gl.getUniformLocation(this.program.program, "positionMatrix");
-//         this.gl.uniformMatrix4fv(posUniform, false, new Float32Array(this.finalMatrix_.flatten()));
-//       }
 
       if (translucent) {
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -244,18 +227,18 @@ CLASS({
     {
       name: 'updatePosition',
       framed: true,
-      code: function() {        
+      code: function() {
         this.positionMatrix = null;
         //this.finalMatrix_ = null;
       },
     },
     {
       name: 'setMatrices',
-      code: function() {      
+      code: function() {
         this.x = this.instance_.x ? this.instance_.x : 0;
         this.y = this.instance_.y ? this.instance_.y : 0;
         this.z = this.instance_.z ? this.instance_.z : 0;
-          
+
         this.updatePosition();
       },
     },
