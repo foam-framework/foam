@@ -31,7 +31,7 @@ CLASS({
       unload:     function() { console.error('Must output and load before unloading.');},
       destroy:    function() { },
       onAddCls:   function() { },
-      onAddStyle: function() { },
+      onSetStyle: function() { },
       onSetAttr:  function() { },
       toString: function() { return 'INITIAL'; }
     },
@@ -47,7 +47,9 @@ CLASS({
       unload:     function() { console.error('Must load before unloading.'); },
       destroy:    function() { },
       onAddCls:   function() { },
-      onAddStyle: function() { },
+      onSetStyle: function(key, value) {
+        this.id$el.style[key] = value;
+      },
       onSetAttr:  function(key, value) {
         this.id$el[key] = value;
       },
@@ -61,7 +63,7 @@ CLASS({
       },
       destroy:    function() { },
       onAddCls:   function() { },
-      onAddStyle: function() { },
+      onSetStyle: function() { },
       onSetAttr:  function(key, value) {
         this.id$el[key] = value;
       },
@@ -75,7 +77,7 @@ CLASS({
       unload:     function() { },
       destroy:    function() { },
       onAddCls:   function() { },
-      onAddStyle: function() { },
+      onSetStyle: function() { },
       onSetAttr:  function() { },
       toString: function() { return 'UNLOADED'; }
     },
@@ -85,7 +87,7 @@ CLASS({
       unload:     function() { },
       destroy:    function() { },
       onAddCls:   function() { },
-      onAddStyle: function() { },
+      onSetStyle: function() { },
       onSetAttr:  function() { },
       toString: function() { return 'DESTROYED'; }
     },
@@ -153,6 +155,10 @@ CLASS({
       }
     },
     {
+      name: 'css',
+      factory: function() { return []; }
+    },
+    {
       name: 'childNodes',
       factory: function() { return []; }
     },
@@ -180,11 +186,15 @@ CLASS({
   ],
 
   methods: [
-    
+
     // State
 
     function onSetAttr(key, value) {
       this.state.onSetAttr.call(this, key, value);
+    },
+
+    function onSetStyle(key, value) {
+      this.state.onSetStyle.call(this, key, value);
     },
 
 
@@ -255,7 +265,8 @@ CLASS({
     },
 
     function style(key, value) {
-      this.css.push([event, listener]);
+      this.css.push([key, value]);
+      this.onSetStyle(key, value);
       return this;
     },
 

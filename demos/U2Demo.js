@@ -10,3 +10,5 @@ console.log('id: ', e.id);
 e.write(document);
 
 e.attr('color', 'orange');
+
+e.style('fontWeight', 'bold');
