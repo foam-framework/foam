@@ -27,69 +27,78 @@ CLASS({
 
         return out;
       },
-      load:       function() { console.error('Must output before loading.'); },
-      unload:     function() { console.error('Must output and load before unloading.');},
-      destroy:    function() { },
-      onAddCls:   function() { },
-      onSetStyle: function() { },
-      onSetAttr:  function() { },
-      toString: function() { return 'INITIAL'; }
+      load:          function() { console.error('Must output before loading.'); },
+      unload:        function() { console.error('Must output and load before unloading.');},
+      destroy:       function() { },
+      onAddCls:      function() { },
+      onAddListener: function() { },
+      onSetStyle:    function() { },
+      onSetAttr:     function() { },
+      toString:      function() { return 'INITIAL'; }
     },
     OUTPUT: {
-      output:     function(out) {
+      output:        function(out) {
         // Only warn because it could be useful for debugging.
         console.error('Duplicate output.');
         return this.INITIAL.output.call(this, out);
       },
-      load:       function() {
+      load:          function() {
         this.state = this.LOADED;
       },
-      unload:     function() { console.error('Must load before unloading.'); },
-      destroy:    function() { },
-      onAddCls:   function() { },
-      onSetStyle: function(key, value) {
+      unload:        function() { console.error('Must load before unloading.'); },
+      destroy:       function() { },
+      onAddCls:      function() { },
+      onAddListener: function(topic, listener) {
+        this.id$el.addEventListener(topic, listener);
+      },
+      onSetStyle:    function(key, value) {
         this.id$el.style[key] = value;
       },
-      onSetAttr:  function(key, value) {
+      onSetAttr:     function(key, value) {
         this.id$el[key] = value;
       },
-      toString: function() { return 'OUTPUT'; }
+      toString:      function() { return 'OUTPUT'; }
     },
     LOADED: {
-      output:     function(out) { console.warn('Duplicate output.'); },
-      load:       function() { console.error('Duplicate load.'); },
-      unload:     function() {
+      output:        function(out) { console.warn('Duplicate output.'); },
+      load:          function() { console.error('Duplicate load.'); },
+      unload:        function() {
         this.state = this.UNLOADED;
       },
-      destroy:    function() { },
-      onAddCls:   function() { },
-      onSetStyle: function() { },
-      onSetAttr:  function(key, value) {
+      destroy:       function() { },
+      onAddCls:      function() { },
+      onAddListener: function(topic, listener) {
+        this.id$el.addEventListener(topic, listener);
+      },
+      onSetStyle:    function() { },
+      onSetAttr:     function(key, value) {
         this.id$el[key] = value;
       },
-      toString: function() { return 'LOADED'; }
+      toString:      function() { return 'LOADED'; }
     },
     UNLOADED: {
-      output:     function() { },
-      load:       function() {
+      output:        function() { },
+      load:          function() {
         this.state = this.LOADED;
       },
-      unload:     function() { },
-      destroy:    function() { },
-      onAddCls:   function() { },
-      onSetStyle: function() { },
-      onSetAttr:  function() { },
-      toString: function() { return 'UNLOADED'; }
+      unload:        function() { },
+      destroy:       function() { },
+      onAddCls:      function() { },
+      onAddListener: function() { },
+      onSetStyle:    function() { },
+      onSetAttr:     function() { },
+      toString:      function() { return 'UNLOADED'; }
     },
     DESTROYED: { // Needed?
-      output:     function() { },
-      load:       function() { },
-      unload:     function() { },
-      destroy:    function() { },
-      onAddCls:   function() { },
-      onSetStyle: function() { },
-      onSetAttr:  function() { },
-      toString: function() { return 'DESTROYED'; }
+      output:        function() { },
+      load:          function() { },
+      unload:        function() { },
+      destroy:       function() { },
+      onAddCls:      function() { },
+      onAddListener: function() { },
+      onSetStyle:    function() { },
+      onSetAttr:     function() { },
+      toString:      function() { return 'DESTROYED'; }
     },
 
     OPTIONAL_CLOSE_TAGS: {
@@ -193,10 +202,13 @@ CLASS({
       this.state.onSetAttr.call(this, key, value);
     },
 
+    function onAddListener(topic, listener) {
+      this.state.onAddListener.call(this, topic, listener);
+    },
+
     function onSetStyle(key, value) {
       this.state.onSetStyle.call(this, key, value);
     },
-
 
     //
     // Lifecycle
@@ -243,8 +255,9 @@ CLASS({
     //
     // Fluent Methods
     //
-    function on(event, listener) {
-      this.elListeners.push([event, listener]);
+    function on(topic, listener) {
+      this.elListeners.push([topic, listener]);
+      this.onAddListener(topic, listener);
       return this;
     },
 
