@@ -96,28 +96,26 @@ MODEL({
           var looking = key;
 
           tag.callback = function(data, latch) {
-            var work = [anop];
 	    data.sourcePath = this.toURL_(key);
-	    
-            var obj = JSONUtil.mapToObj(this.X, data, undefined, work);
 
-            if ( ! obj ) throw new Error('Failed to decode data: ' + data);
+	    if ( looking === data.package + '.' + data.name ) looking = null;
 
-            if ( looking === obj.id ) looking = null;
+	    aseq(
+	      JSONUtil.aMapToObj(this.X, data),
+	      function(ret, obj) {
+		if ( ! obj ) throw new Error('Failed to decode data: ' + data);
 
-            if ( ! this.pending[obj.id] ) {
-              if ( latch ) {
-                latch(data);
-              } else {
-                // Workaround for legacy apps that include extra models via
-                // additional script tags.
-                this.preload[obj.id] = obj;
-              }
-              return;
-            }
+		if ( ! this.pending[obj.id] ) {
+		  if ( latch ) {
+                    latch(data);
+		  } else {
+                    // Workaround for legacy apps that include extra models via
+                    // additional script tags.
+                    this.preload[obj.id] = obj;
+		  }
+		  return;
+		}
 
-            aseq.apply(null, work)(
-              function(ret) {
                 var sinks = this.pending[obj.id];
                 delete this.pending[obj.id];
                 if ( sinks ) {
@@ -126,7 +124,7 @@ MODEL({
                     sink && sink.put && sink.put(obj);
                   }
                 }
-              }.bind(this));
+              }.bind(this))();
           }.bind(this);
 
           tag.onload = function() {
