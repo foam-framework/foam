@@ -19,13 +19,14 @@ CLASS({
   package: 'foam.graphics.webgl',
   name: 'FlatVideo',
   extendsModel: 'foam.graphics.webgl.Object',
-  
+
   requires: [
     'foam.graphics.webgl.ArrayBuffer',
     'foam.graphics.webgl.Shader',
     'foam.graphics.webgl.Program',
+    'foam.graphics.webgl.ScaleMatrix4',
   ],
-  
+
   properties: [
     {
       name: 'src',
@@ -53,35 +54,23 @@ CLASS({
     {
       name: 'width',
       defaultValue: 10,
-      postSet: function() {
-        if ( this.meshMatrix && this.meshMatrix.elements ) {
-          this.meshMatrix.elements[0][0] = this.width;
-        }
-      }
     },
     {
       name: 'height',
       defaultValue: 10,
-      postSet: function() {
-        if ( this.meshMatrix && this.meshMatrix.elements ) {
-          this.meshMatrix.elements[1][1] = this.height;
-          this.meshMatrix.elements[1][3] = -this.height;
-        }
+    },
+    {
+      name: 'meshMatrix',
+      lazyFactory: function() {
+        return this.ScaleMatrix4.create({ sx$: this.width$, sy$: this.height$ });
       }
     },
-    
+
   ],
 
   methods: [
     function init() {
       this.SUPER();
-
-      // this.relativePosition = [
-      //   [1.0, 0.0, 0.0, 0.0],
-      //   [0.0, 1.0, 0.0, 0.0],
-      //   [0.0, 0.0, 1.0, 0.01],
-      //   [0.0, 0.0, 0.0, 1.0]
-      // ]
 
       this.mesh = this.ArrayBuffer.create({
         drawMode: 'triangle strip',
@@ -93,13 +82,6 @@ CLASS({
         ]
       });
       this.textureCoords = this.mesh;
-
-      Events.dynamic(function() { this.sylvesterLib.loaded; }.bind(this),
-        function() {
-          this.width = this.width;
-          this.height = this.height;
-        }.bind(this)
-      );
 
       this.program = this.Program.create();
       this.program.fragmentShader = this.Shader.create({
@@ -140,19 +122,19 @@ CLASS({
         */}
       });
 
-      
+
     },
-    
+
     function render() {
       if ( ! this.gl || ! this.$video || ! (this.$video.readyState == 4) ) return;
       var gl = this.gl;
-      
-      
+
+
       if ( ! this.texture ) {
         // Create a texture object that will contain the image.
         this.texture = this.gl.createTexture();
       }
-      
+
       gl.bindTexture(gl.TEXTURE_2D, this.texture);
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
       this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
@@ -161,7 +143,7 @@ CLASS({
       this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
 
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.$video);
-      
+
       //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
       //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
       //gl.generateMipmap(gl.TEXTURE_2D);

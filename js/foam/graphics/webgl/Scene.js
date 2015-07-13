@@ -38,7 +38,12 @@ var fps = {
 CLASS({
   package: 'foam.graphics.webgl',
   name: 'Scene',
-  requires: ['foam.graphics.webgl.SylvesterLib'],
+  requires: [
+    'foam.graphics.webgl.SylvesterLib',
+    'foam.graphics.webgl.Matrix4',
+    'foam.graphics.webgl.TransMatrix4'
+
+  ],
   extendsModel: 'foam.graphics.webgl.GLView',
 
   exports: [
@@ -55,10 +60,16 @@ CLASS({
       }
     },
     {
-      name: 'positionMatrix'
+      name: 'positionMatrix',
+      lazyFactory: function() {
+        return this.TransMatrix4.create({ z$: this.cameraDistance$ });
+      }
     },
     {
-      name: 'projectionMatrix'
+      name: 'projectionMatrix',
+      lazyFactory: function() {
+        return this.Matrix4.create();
+      }
     },
     {
       name: 'fov',
@@ -72,7 +83,27 @@ CLASS({
     },
   ],
 
+  listeners: [
+    {
+      name: 'updateProjection',
+      code: function() {
+        this.projectionMatrix.flat = this.makePerspective(
+          this.fov, this.view.width/this.view.height, 0.1, 100.0
+        );
+      }
+    }
+
+  ],
+
   methods: [
+    function init() {
+      //this.view.width$.addListener(this.updateProjection);
+      //this.view.height$.addListener(this.updateProjection);
+      //this.fov$.addListener(this.updateProjection);
+      Events.dynamic(this.updateProjection);
+      this.updateProjection();
+    },
+
     function paintSelf(translucent) {
       var gl = this.gl;
       if ( ! gl || ! this.sylvesterLib.loaded ) return;
@@ -82,31 +113,8 @@ CLASS({
         fps.getFPS();
       }
 
-      this.projectionMatrix = this.makePerspective(
-        this.fov, this.view.width/this.view.height, 0.1, 100.0);
-      this.loadIdentity();
-      this.mvTranslate([-0.0, 0.0, this.cameraDistance]);
-//      this.multMatrix(Matrix.RotationX(0.3).ensure4x4());
-//      this.multMatrix(Matrix.RotationZ(0.2).ensure4x4());
-
       // children can now draw
     },
-
-///////////////////// from MDN demo
-
-    function loadIdentity() {
-      this.positionMatrix = Matrix.I(4);
-    },
-
-    function multMatrix(m) {
-      this.positionMatrix = this.positionMatrix.x(m);
-    },
-
-    function mvTranslate(v) {
-      this.multMatrix(Matrix.Translation($V([v[0], v[1], v[2]])).ensure4x4());
-    },
-
-/////////////////////
 
     //
     // gluLookAt
@@ -115,6 +123,8 @@ CLASS({
                         cx, cy, cz,
                         ux, uy, uz)
     {
+        if ( ! this.sylvesterLib.loaded ) return [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1].slice();
+
         var eye = $V([ex, ey, ez]);
         var center = $V([cx, cy, cz]);
         var up = $V([ux, uy, uz]);
@@ -148,10 +158,10 @@ CLASS({
         var ty = -(top+bottom)/(top-bottom);
         var tz = -(zfar+znear)/(zfar-znear);
 
-        return $M([[2/(right-left), 0, 0, tx],
-                   [0, 2/(top-bottom), 0, ty],
-                   [0, 0, -2/(zfar-znear), tz],
-                   [0, 0, 0, 1]]);
+        return  [ 2/(right-left), 0,              0,               0,
+                  0,              2/(top-bottom), 0,               0,
+                  0,              0,              -2/(zfar-znear), 0,
+                  tx,             ty,             tz,              1].slice();
     },
 
     //
@@ -181,10 +191,10 @@ CLASS({
         var C = -(zfar+znear)/(zfar-znear);
         var D = -2*zfar*znear/(zfar-znear);
 
-        return $M([[X, 0, A, 0],
-                   [0, Y, B, 0],
-                   [0, 0, C, D],
-                   [0, 0, -1, 0]]);
+        return   [X, 0,  0, 0,
+                  0, Y,  0, 0,
+                  A, B,  C, -1,
+                  0, 0,  D, 0].slice();
     },
 
 

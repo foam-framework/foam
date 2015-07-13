@@ -22,6 +22,7 @@ CLASS({
     'foam.graphics.webgl.Shader',
     'foam.graphics.webgl.ArrayBuffer',
     'foam.graphics.webgl.Program',
+    'foam.graphics.webgl.ScaleMatrix4'
   ],
 
   extendsModel: 'foam.graphics.webgl.Object',
@@ -46,44 +47,23 @@ CLASS({
     {
       name: 'width',
       defaultValue: 10,
-      postSet: function() {
-        if ( this.meshMatrix && this.meshMatrix.elements ) {
-          this.meshMatrix.elements[0][0] = this.width;
-        }
-      }
     },
     {
       name: 'height',
       defaultValue: 10,
-      postSet: function() {
-        if ( this.meshMatrix && this.meshMatrix.elements ) {
-          this.meshMatrix.elements[1][1] = this.height;
-          this.meshMatrix.elements[1][3] = -this.height;
-        }
-      }
     },
-
+    {
+      name: 'meshMatrix',
+      lazyFactory: function() {
+        return this.ScaleMatrix4.create({ sx$: this.width$, sy$: this.height$ });
+      }
+    }
 
   ],
 
   methods: [
     function init() {
       this.SUPER();
-
-      this.meshMatrix = [
-        [1.0, 0.0, 0.0, 0.0],
-        [0.0, 1.0, 0.0, 0.0],
-        [0.0, 0.0, 1.0, 0.0],
-        [0.0, 0.0, 0.0, 1.0]
-      ]
-
-      Events.dynamic(function() { this.sylvesterLib.loaded; }.bind(this),
-        function() {
-          this.width = this.width;
-          this.height = this.height;
-        }.bind(this)
-      );
-
 
       this.mesh = this.ArrayBuffer.create({
         drawMode: 'triangle strip',

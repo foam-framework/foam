@@ -18,7 +18,12 @@
 CLASS({
   package: 'foam.graphics.webgl',
   name: 'Object',
-  requires: ['foam.graphics.webgl.SylvesterLib'],
+  requires: [
+    'foam.graphics.webgl.StackMatrix4',
+    'foam.graphics.webgl.TransMatrix4',
+    'foam.graphics.webgl.RotMatrix4',
+    'foam.graphics.webgl.Matrix4',
+  ],
   extendsModel: 'foam.graphics.webgl.GLView',
 
   imports: [
@@ -30,82 +35,38 @@ CLASS({
 
   properties: [
     {
-      name: 'sylvesterLib',
-      factory: function() {
-        return this.SylvesterLib.create();
-      }
-    },
-    {
       name: 'relativePosition',
-      type: 'Matrix',
-      getter: function() {
-        if ( GLOBAL.Matrix ) {
-          if ( this.instance_.relativePosition ) {
-            if ( Array.isArray(this.instance_.relativePosition) ) {
-              // convert to Matrix
-              this.instance_.relativePosition = $M(this.instance_.relativePosition);
-            }
-          } else {
-            this.instance_.relativePosition = Matrix.I(4);
-          }
-          return this.instance_.relativePosition;
-        }
-
-        return null;
+      type: 'foam.graphics.webgl.Matrix4',
+      lazyFactory: function() {
+        return this.StackMatrix4.create({
+            stack: [
+              this.RotMatrix4.create({ angle$: this.angle$ }),
+              this.TransMatrix4.create({ x$: this.x$, y$: this.y$, z$: this.z$ })
+            ]
+        });
       }
     },
     {
       name: 'x',
-      getter: function() {
-        if ( this.relativePosition && this.relativePosition.elements )
-          return this.relativePosition.elements[0][3];
-        else
-          return this.instance_.x;
-      },
-      postSet: function(old, nu) {
-        this.relativePosition && this.relativePosition.elements && (this.relativePosition.elements[0][3] = nu);
-        this.updatePosition();
-      }
+      defaultValue: 0.0,
     },
     {
       name: 'y',
-      getter: function() {
-        if ( this.relativePosition && this.relativePosition.elements )
-          return -this.relativePosition.elements[1][3];
-        else
-          return this.instance_.y;
-      },
-      postSet: function(old, nu) {
-        this.relativePosition && this.relativePosition.elements && (this.relativePosition.elements[1][3] = -nu);
-        this.updatePosition();
-      }
+      defaultValue: 0.0,
     },
     {
       name: 'z',
-      getter: function() {
-        if ( this.relativePosition && this.relativePosition.elements )
-          return -this.relativePosition.elements[2][3];
-        else
-          return this.instance_.z;
-      },
-      postSet: function(old, nu) {
-        this.relativePosition && this.relativePosition.elements && (this.relativePosition.elements[2][3] = -nu);
-        this.updatePosition();
-      }
+      defaultValue: 0.01,
+    },
+    {
+      name: 'angle',
+      defaultValue: 0.0,
     },
     {
       name: 'positionMatrix',
-      type: 'Matrix',
-      getter: function() {
-        if ( GLOBAL.Matrix ) {
-          if ( ! this.instance_.positionMatrix ) {
-            var b = (this.parent && this.parent.positionMatrix) || Matrix.I(4);
-            var r = this.relativePosition || Matrix.I(4);
-            this.instance_.positionMatrix = b.x(r);
-          }
-          return this.instance_.positionMatrix;
-        }
-        return null;
+      type: 'foam.graphics.webgl.Matrix4',
+      lazyFactory: function() {
+        return this.updatePosition();
       }
     },
     {
@@ -115,20 +76,9 @@ CLASS({
     {
       name: 'meshMatrix',
       help: 'Transformations to apply to the mesh, but not pass on to children.',
-      getter: function() {
-        if ( GLOBAL.Matrix ) {
-          if ( this.instance_.meshMatrix ) {
-            if ( Array.isArray(this.instance_.meshMatrix) ) {
-              // convert to Matrix
-              this.instance_.meshMatrix = $M(this.instance_.meshMatrix);
-            }
-          } else {
-            this.instance_.meshMatrix = Matrix.I(4);
-          }
-          return this.instance_.meshMatrix;
-        }
-
-        return null;
+      type: 'foam.graphics.webgl.Matrix4',
+      lazyFactory: function() {
+        return this.Matrix4.create();
       }
     },
     {
@@ -137,13 +87,7 @@ CLASS({
     {
       name: 'parent',
       postSet: function(old, nu) {
-        if ( old ) {
-          old.positionMatrix$.removeListener(this.updatePosition);
-        }
-        if ( nu ) {
-          nu.positionMatrix$.addListener(this.updatePosition);
-        }
-        this.updatePosition();
+        this.positionMatrix = this.updatePosition();
       }
     },
     {
@@ -156,9 +100,20 @@ CLASS({
   methods: [
     function init() {
 
-      this.sylvesterLib.loaded$.addListener(this.setMatrices);
-      this.relativePosition$.addListener(this.updatePosition);
+      //this.sylvesterLib.loaded$.addListener(this.setMatrices);
+      //this.relativePosition$.addListener(this.updatePosition);
       //this.meshMatrix$.addListener(this.updateMesh);
+    },
+
+    function updatePosition() {
+      return this.StackMatrix4.create({
+          stack: [
+            ( this.parent && this.parent.positionMatrix ) ?
+              this.Matrix4.create({ flat$: this.parent.positionMatrix.flat$ }) :
+              this.Matrix4.create(),
+            this.relativePosition
+          ]
+      });
     },
 
     function paintSelf(translucent) {
@@ -166,7 +121,7 @@ CLASS({
       if ( this.translucent !== translucent ) return;
 
       var gl = this.gl;
-      if ( ! gl ) return;
+      if ( ! gl || ! this.mesh ) return;
 
       this.mesh.bind();
 
@@ -205,6 +160,7 @@ CLASS({
         var colorUniform = this.gl.getUniformLocation(this.program.program, "color");
         this.gl.uniform4fv(colorUniform, new Float32Array(this.color));
       }
+//console.log("Object ", this.$UID, this.name_, " ", this.projectionMatrix.flat, this.parent.positionMatrix.flat, this.relativePosition.flat, this.meshMatrix.flat)
 
 
       if (translucent) {
@@ -220,30 +176,9 @@ CLASS({
         gl.disable(gl.BLEND);
         //gl.depthMask(true);
         //gl.enable(gl.DEPTH_TEST);
-      }    },
+      }
+    },
   ],
 
-  listeners: [
-    {
-      name: 'updatePosition',
-      framed: true,
-      code: function() {
-        this.positionMatrix = null;
-        //this.finalMatrix_ = null;
-      },
-    },
-    {
-      name: 'setMatrices',
-      code: function() {
-        this.x = this.instance_.x ? this.instance_.x : 0;
-        this.y = this.instance_.y ? this.instance_.y : 0;
-        this.z = this.instance_.z ? this.instance_.z : 0;
-
-        this.updatePosition();
-      },
-    },
-
-
-  ]
 
 });

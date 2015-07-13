@@ -20,7 +20,10 @@ CLASS({
   name: 'GLView',
   traits: [ 'foam.patterns.ChildTreeTrait' ],
 
-  requires: ['foam.graphics.webgl.GLCViewView'],
+  requires: [
+    'foam.graphics.webgl.GLCViewView',
+    'foam.graphics.webgl.Matrix4',
+  ],
 
   properties: [
     {
@@ -126,7 +129,7 @@ CLASS({
         if (this.parent && this.parent.positionMatrix ) {
           return this.parent.positionMatrix;
         }
-        return null;
+        return this.Matrix4.create();
       }
     },
   ],

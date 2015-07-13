@@ -91,7 +91,9 @@ CLASS({
       var r = this.r + c.r;
       if ( this.border ) r += this.borderWidth;
       if ( c.border    ) r += c.borderWidth;
-      return Movement.distance(this.x-c.x, this.y-c.y) < r;
-    }
+      var dx = this.x-c.x;
+      var dy = this.y-c.y;
+      return ( ! ((dx+dy) >= r) ) || ( Movement.distance(dx, dy) < r );
+    },
   ]
 });

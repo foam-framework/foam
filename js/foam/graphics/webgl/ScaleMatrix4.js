@@ -45,9 +45,9 @@ CLASS({
     function recalculate_() {
       /* Implement in your submodels to calculate and return the contents
           of this matrix.  */
-      return [this.x, 0,      0,      0,
-              0,      this.y, 0,      0,
-              0,      0,      this.z, 0,
+      return [this.sx, 0,      0,      0,
+              0,      this.sy, 0,      0,
+              0,      0,      this.sz, 0,
               0,      0,      0,      1];
     },
   ]

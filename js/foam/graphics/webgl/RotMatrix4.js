@@ -47,6 +47,8 @@ CLASS({
     function recalculate_() {
       /* Implement in your submodels to calculate and return the contents
           of this matrix.  */
+      if (this.angle < 0.00001) return this.SUPER();
+
       var axis = this.axis;
       return this.rotation_(axis[0], axis[1], axis[2], this.angle);
     },

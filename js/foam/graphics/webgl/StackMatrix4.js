@@ -25,7 +25,10 @@ CLASS({
       name: 'stack',
       type: 'Array[Matrix4]',
       help: 'The stack of matrices to multiply.',
-      postSet: function() { this.matrixCache_ = {};  this.reset_(); }
+      postSet: function() {
+        this.matrixCache_ = {};
+        this.reset_();
+      }
     },
   ],
 
@@ -35,7 +38,7 @@ CLASS({
       /* Recalculate the matrix, starting from the indicated index */
       if ( this.stack.length < 1 ) { return this.SUPER(); } // the identity matrix
 
-      var result = this.stack[0];
+      var result = this.stack[0].flat;
       var i = 1;
       // find the last cache hit before we miss
       for (; i < this.stack.length; ++i) {
@@ -49,7 +52,7 @@ CLASS({
       // continue calculating the rest
       for (; i < this.stack.length; ++i) {
         var m = this.stack[i];
-        result = this.multiply(result, m);
+        result = this.multiply(result, m.flat);
         this.matrixCache_[m] = result.slice(); // clone
         m.addListener(this.matrixChange);
       }

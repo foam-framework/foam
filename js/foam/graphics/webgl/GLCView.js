@@ -22,6 +22,7 @@ CLASS({
     'foam.graphics.webgl.ArrayBuffer',
     'foam.graphics.webgl.Shader',
     'foam.graphics.webgl.Program',
+    'foam.graphics.webgl.ScaleMatrix4'
   ],
 
   extendsModel: 'foam.graphics.webgl.Object',
@@ -43,6 +44,19 @@ CLASS({
         this.sourceView.view = this.glueView;
 
         this.sourceView.initCView();
+
+          // update x,y from CView
+        this.relativePosition = this.StackMatrix4.create({
+            stack: [
+              this.TransMatrix4.create({
+                x$: this.sourceView.x$, y$: this.sourceView.y$
+              }),
+              this.ScaleMatrix4.create({
+                sx$: this.sourceView.scaleX$, sy$: this.sourceView.scaleY$
+              })
+            ]
+        });
+
 
         this.resize();
       }
@@ -91,13 +105,6 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-
-      this.relativePosition = [
-        [1.0, 0.0, 0.0, 0.0],
-        [0.0, 1.0, 0.0, 0.0],
-        [0.0, 0.0, 1.0, 0.01],
-        [0.0, 0.0, 0.0, 1.0]
-      ]
 
       this.mesh = this.ArrayBuffer.create({
         drawMode: 'triangle strip',
@@ -200,15 +207,6 @@ CLASS({
       if ( ! gl ) return;
 
       if ( ! this.texture ) this.resize();
-
-      // update x,y from CView
-      if ( this.relativePosition ) {
-        this.relativePosition.elements[0][3] = this.sourceView.x;
-        this.relativePosition.elements[1][3] = -(this.sourceView.y);
-
-        this.relativePosition.elements[0][0] = this.sourceView.scaleX;
-        this.relativePosition.elements[1][1] = this.sourceView.scaleY;
-      }
 
       this.program.use();
       var sampler = gl.getUniformLocation(this.program.program, "uSampler");

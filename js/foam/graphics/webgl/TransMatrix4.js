@@ -24,16 +24,19 @@ CLASS({
     {
       name: 'x',
       help: 'The x offset',
+      defaultValue: 0,
       postSet: function() { this.reset_(); }
     },
     {
       name: 'y',
       help: 'The y offset',
+      defaultValue: 0,
       postSet: function() { this.reset_(); }
     },
     {
       name: 'z',
       help: 'The z offset',
+      defaultValue: 0,
       postSet: function() { this.reset_(); }
     },
   ],
@@ -43,7 +46,7 @@ CLASS({
       /* Implement in your submodels to calculate and return the contents
           of this matrix.  */
       return [1,0,0, this.x,
-              0,1,0, this.y,
+              0,1,0, -this.y,
               0,0,1, this.z,
               0,0,0, 1      ];
     },

@@ -21,7 +21,8 @@ CLASS({
   requires: [
     'foam.graphics.webgl.Shader',
     'foam.graphics.webgl.ArrayBuffer',
-    'foam.graphics.webgl.Program'
+    'foam.graphics.webgl.Program',
+    'foam.graphics.webgl.ScaleMatrix4'
   ],
 
   extendsModel: 'foam.graphics.webgl.Object',
@@ -42,12 +43,6 @@ CLASS({
     {
       name: 'r',
       defaultValue: 1,
-      postSet: function() {
-        if ( this.meshMatrix && this.meshMatrix.elements ) {
-          this.meshMatrix.elements[0][0] = this.r;
-          this.meshMatrix.elements[1][1] = this.r;
-        }
-      }
     },
     {
       name: 'borderRatio',
@@ -59,29 +54,20 @@ CLASS({
           vertices: this.ringVertices()
         });
       }
-    }
+    },
+    {
+      name: 'meshMatrix',
+      lazyFactory: function() {
+        return this.ScaleMatrix4.create({ sx$: this.r$, sy$: this.r$ });
+      }
+    },
+
   ],
 
   methods: [
 
     function init() {
       this.SUPER();
-
-      // create the mesh in a -1 to 1 unit box, then scale by the current radius
-      this.meshMatrix = [
-        [this.r, 0.0, 0.0, 0.0],
-        [0.0, this.r, 0.0, 0.0],
-        [0.0, 0.0,    1.0, 0.0],
-        [0.0, 0.0,    0.0, 1.0]
-      ]
-
-      Events.dynamic(function() { this.sylvesterLib.loaded; }.bind(this),
-        function() {
-          this.borderRatio = this.borderRatio;
-          this.r = this.r;
-        }.bind(this)
-      );
-
 
       this.program = this.Program.create();
       this.program.fragmentShader = this.Shader.create({
@@ -114,7 +100,9 @@ CLASS({
 
     function intersects(c) {
       var r = this.r + c.r;
-      return Movement.distance(this.x-c.x, this.y-c.y) < r;
+      var dx = this.x-c.x;
+      var dy = this.y-c.y;
+      return ( ! ((dx+dy) >= r) ) || ( Movement.distance(dx, dy) < r );
     },
 
     function ringVertices() {

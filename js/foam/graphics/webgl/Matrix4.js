@@ -55,16 +55,16 @@ CLASS({
       /* Implement in your submodels to calculate and return the contents
           of this matrix.  */
       // Identity
-      return [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]];
+      return [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1].slice();
     },
 
     function elementsFromFlat_(flat) {
       if ( ! this.instance_.elements ) this.instance_.elements = [[],[],[],[]];
       var e = this.instance_.elements;
 
-      for (var i=0; i < 4; ++i) {
-        for (var j=0; i < 4; ++j) {
-          e[i][j] = flat[i*4 + j];
+      for (var j=0; i < 4; ++i) {
+        for (var i=0; i < 4; ++j) {
+          e[i][j] = flat[i + j*4];
         }
       }
 
@@ -74,9 +74,9 @@ CLASS({
     function elementsFromFlat_(els) {
       var flat = [];
 
-      for (var i=0; i < 4; ++i) {
-        for (var j=0; i < 4; ++i) {
-          flat[i*4 + j] = els[i][j];
+      for (var j=0; i < 4; ++i) {
+        for (var i=0; i < 4; ++i) {
+          flat[i + j*4] = els[i][j];
         }
       }
 
@@ -86,11 +86,12 @@ CLASS({
     function multiply(src, by, into) {
       /* multiply 'src' * 'by', results written to 'into' */
       if ( ! into ) into = [];
-      for (var i=0; i < 4; ++i) {
-        for (var j=0; i < 4; ++j) {
-          into[i*4 + j] = 0;
+      for (var j=0; j < 4; ++j) {
+        for (var i=0; i < 4; ++i) {
+          into[i + j*4] = 0;
           for (var k = 0; k < 4; ++k) {
-            into[i*4 + j] += src[i*4 + k] * by[j + k*4];
+//            console.log("M: ", i,",",j,"  ",j*4 + k,i + k*4);
+            into[i + j*4] += src[j*4 + k] * by[i + k*4];
           }
         }
       }
