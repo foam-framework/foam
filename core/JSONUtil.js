@@ -86,17 +86,49 @@ var JSONUtil = {
     return eval('(' + str + ')');
   },
 
-  parse: function(X, str, seq) {
-    return this.mapToObj(X, this.parseToMap(str), undefined, seq);
+  parse: function(X, str) {
+    return this.mapToObj(X, this.parseToMap(str), undefined);
   },
 
-  arrayToObjArray: function(X, a, opt_defaultModel, seq) {
+  aparse: function(X, str) {
+    var self = this;
+    var map = this.parseToMap(str);
+    return this.aMapToObj(X, map);
+  },
+
+  aMapToObj: function(X, map) {
+    return aseq(
+      aseq.apply(null, this.collectDeps(map).map(arequire.bind(X))),
+      function(ret) {
+	ret(this.mapToObj(X, map));
+      }.bind(this));
+  },
+
+  collectDeps: function(json, deps) {
+    deps = deps || [];
+    (function walk(o) {
+      if ( Array.isArray(o) ) {
+	for ( var i = 0 ; i < o.length ; i++ )
+	  walk(o[i]);
+      } else if ( o !== null && typeof o === 'object' ){
+	if ( o.model_ && typeof o.model_ !== 'string' ) return;
+
+	for ( var key in o ) {
+	  if ( key === 'model_' ) deps.push(o[key]);
+	  walk(o[key])
+	}
+      }
+    })(json);
+    return deps;
+  },
+
+  arrayToObjArray: function(X, a, opt_defaultModel) {
     for ( var i = 0 ; i < a.length ; i++ ) {
       if ( ( ! DEBUG ) && a[i] && a[i].debug ) {
         a.splice(i,1);
         i--;
       } else {
-        a[i] = this.mapToObj(X, a[i], opt_defaultModel, seq);
+        a[i] = this.mapToObj(X, a[i], opt_defaultModel);
       }
     }
     return a;
@@ -106,10 +138,10 @@ var JSONUtil = {
    * Convert JS-Maps which contain the 'model_' property, into
    * instances of that model.
    **/
-  mapToObj: function(X, obj, opt_defaultModel, seq) {
+  mapToObj: function(X, obj, opt_defaultModel) {
     if ( ! obj || typeof obj.model_ === 'object' ) return obj;
 
-    if ( Array.isArray(obj) ) return this.arrayToObjArray(X, obj, undefined, seq);
+    if ( Array.isArray(obj) ) return this.arrayToObjArray(X, obj, undefined);
 
     if ( obj instanceof Function ) return obj;
 
@@ -118,7 +150,7 @@ var JSONUtil = {
     if ( obj instanceof Object ) {
       var j = 0;
       for ( var key in obj ) {
-        if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(X, obj[key], null, seq);
+        if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(X, obj[key], null);
         j++;
       }
 
@@ -126,24 +158,10 @@ var JSONUtil = {
 
       if ( obj.model_ ) {
         var newObj = X.lookup(obj.model_);
-        if ( ( ! newObj || ! newObj.finished__ ) ) {
-          var future = afuture();
-          seq && seq.push(future.get);
-
-          X.arequire(obj.model_)(function(model) {
-            if ( ! model ) {
-               if ( DEBUG && obj.model_ !== 'Template' && obj.model_ !== 'ArrayProperty' && obj.model_ !== 'ViewFactoryProperty' && obj.model_ !== 'Documentation' && obj.model_ !== 'DocumentationProperty' && obj.model_ !== 'CSSProperty' && obj.model_ !== 'FunctionProperty' )
-                 console.warn('Failed to dynamically load: ', obj.model_);
-              future.set(obj);
-              return;
-            }
-            var tmp = model.create(obj);
-            obj.become(tmp);
-            future.set(obj);
-          });
-
-          return obj;
-        }
+	if ( ! newObj && obj.model_ !== 'DocumentationProperty' ) {
+	  debugger;
+	  console.error("Could not find", obj.model_);
+	}
         return newObj ? newObj.create(obj, X) : obj;
       }
       return obj

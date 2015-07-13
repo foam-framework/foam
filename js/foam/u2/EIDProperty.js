@@ -6,7 +6,7 @@ CLASS({
 
   constants: {
     NEXT_ID: function() {
-      return "view" + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
+      return 'view' + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
     }
   },
 
@@ -27,8 +27,9 @@ CLASS({
       name: 'install',
       defaultValue: function(prop) {
         defineLazyProperty(this, prop.name + '$el', function() {
-          return this.X.$(this[prop.name]);
-        });
+          return { get: function() {
+            return this.X.$(this[prop.name]);
+          }}});
       }
     }
   ]

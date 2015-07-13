@@ -283,7 +283,7 @@ var Property = {
       */}
     },
     {
-      model_: 'ViewFactoryProperty',
+//      model_: 'ViewFactoryProperty',
       name: 'view',
       type: 'view',
       defaultValue: 'foam.ui.TextFieldView',
@@ -294,7 +294,7 @@ var Property = {
       */}
     },
     {
-      model_: 'ViewFactoryProperty',
+//      model_: 'ViewFactoryProperty',
       name: 'detailView',
       type: 'view',
       defaultValueFn: function() { return this.view; },
@@ -306,7 +306,7 @@ var Property = {
       */}
     },
     {
-      model_: 'ViewFactoryProperty',
+//      model_: 'ViewFactoryProperty',
       name: 'citationView',
       type: 'view',
       defaultValueFn: function() { return this.view; },
