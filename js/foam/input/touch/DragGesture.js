@@ -28,6 +28,12 @@ CLASS({
     }
   ],
 
+  constants: {
+    // After dragging this far in any one dimension, consider the gesture
+    // definitely a drag.
+    DRAG_TOLERANCE: 20
+  },
+
   methods: {
     recognize: function(map) {
       // I recognize:
@@ -40,7 +46,7 @@ CLASS({
       var point = map[keys[0]];
       if ( point.done ) return this.NO;
       var delta = Math.max(Math.abs(point.totalX), Math.abs(point.totalY));
-      var r = delta >= 20 ? this.YES : this.MAYBE;
+      var r = delta >= this.DRAG_TOLERANCE ? this.YES : this.MAYBE;
       // Need to preventDefault on touchmoves or Chrome can swipe for
       // back/forward.
       if ( r != this.NO ) point.shouldPreventDefault = true;
