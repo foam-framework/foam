@@ -360,6 +360,20 @@ CLASS({
   </slide>
 
   <slide>
+    <!--
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Task Manager</div>
+      </div>
+    </div>
+    -->
+    <div class="card flex-col flex-grow" style="overflow: hidden">
+      <foam model="foam.apps.ctm.TaskManager" />
+    </div>
+  </slide>
+
+  <slide>
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block green">&nbsp;</div>
