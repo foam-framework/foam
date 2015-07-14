@@ -16,15 +16,16 @@
  */
 
 CLASS({
-  extendsModel: 'Property',
+  package: 'foam.core.types',
 
   name: 'DAOProperty',
-  help: "Describes a DAO property.",
 
-  package: 'foam.core.types',
+  extendsModel: 'Property',
 
   requires: ['foam.dao.FutureDAO', 'foam.dao.ProxyDAO'],
   imports: ['console'],
+
+  help: "Describes a DAO property.",
 
   properties: [
     {
