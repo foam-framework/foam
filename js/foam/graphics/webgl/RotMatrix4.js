@@ -64,9 +64,9 @@ CLASS({
       var icos = 1 - cos;
       var sin = Math.sin(a);
 
-      return [ x*x*icos+cos,   x*y*icos-z*sin, x*z*icos+y*sin, 0,
-               x*y*icos+z*sin, y*y*icos+cos,   y*z*icos-x*sin, 0,
-               x*z*icos-y*sin, y*z*icos+x*sin, z*z*icos+cos,   0,
+      return [ x*x*icos+cos,   x*y*icos+z*sin, x*z*icos-y*sin, 0,
+               x*y*icos-z*sin, y*y*icos+cos,   y*z*icos+x*sin, 0,
+               x*z*icos+y*sin, y*z*icos-x*sin, z*z*icos+cos,   0,
                0,              0,              0,              1 ];
    },
 

@@ -61,9 +61,6 @@ CLASS({
     },
     {
       name: 'positionMatrix',
-      lazyFactory: function() {
-        return this.TransMatrix4.create({ z$: this.cameraDistance$ });
-      }
     },
     {
       name: 'projectionMatrix',
@@ -100,6 +97,8 @@ CLASS({
       //this.view.width$.addListener(this.updateProjection);
       //this.view.height$.addListener(this.updateProjection);
       //this.fov$.addListener(this.updateProjection);
+      this.positionMatrix = this.TransMatrix4.create({ z$: this.cameraDistance$ });
+
       Events.dynamic(this.updateProjection);
       this.updateProjection();
     },
@@ -159,10 +158,10 @@ CLASS({
         var ty = -(top+bottom)/(top-bottom);
         var tz = -(zfar+znear)/(zfar-znear);
 
-        return  [ 2/(right-left), 0,              0,               tx,
-                  0,              2/(top-bottom), 0,               ty,
-                  0,              0,              -2/(zfar-znear), tz,
-                  0,              0,              0,              1].slice();
+        return  [ 2/(right-left), 0,              0,               0,
+                  0,              2/(top-bottom), 0,               0,
+                  0,              0,              -2/(zfar-znear), 0,
+                  tx,             ty,             tz,              1];
     },
 
     //
@@ -195,7 +194,7 @@ CLASS({
         return   [X, 0,  0, 0,
                   0, Y,  0, 0,
                   A, B,  C, -1,
-                  0, 0,  D, 0].slice();
+                  0, 0,  D, 0];
     },
 
 

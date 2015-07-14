@@ -42,7 +42,7 @@ CLASS({
   methods: [
     function flatten() {
       /* convenience for backward compatibility */
-      return this.flat;
+      return this.flat.slice();
     },
 
     function reset_() {
@@ -96,6 +96,16 @@ CLASS({
         }
       }
       return into;
+    },
+    function x(matrix) {
+      return this.model_.create({ flat: this.multiply(this.flat, matrix.flat) });
+    },
+    function toString() {
+      var f = this.flat;
+      return "[\t"+f[0]+",\t\t\t"+f[1]+",\t\t\t"+f[2]+",\t\t\t"+f[3]+"\n"+
+             "\t"+f[4]+",\t\t\t"+f[5]+",\t\t\t"+f[6]+",\t\t\t"+f[7]+"\n"+
+             "\t"+f[8]+",\t\t\t"+f[9]+",\t\t\t"+f[10]+",\t\t\t"+f[11]+"\n"+
+             "\t"+f[12]+",\t\t\t"+f[13]+",\t\t\t"+f[14]+",\t\t\t"+f[15]+"]";
     }
 
 
