@@ -101,6 +101,8 @@ public class LayoutFactory implements LayoutInflaterFactory {
     }
 
     X subX = x.put("data", value);
+    subX = augmentContext(subX, attrs);
+
     XContext subcontext = new XContext(context, subX);
     ViewBridge replacement = null;
     if (viewName != null) {
@@ -126,7 +128,7 @@ public class LayoutFactory implements LayoutInflaterFactory {
       String propName, String dataName, String modelName, String viewName) {
     Model model = null;
     Value value = null;
-    X sub = x;
+    X sub = augmentContext(x, attrs);
     if (modelName != null) {
       model = modelFromName(modelName);
       if (model == null) return null;
@@ -193,6 +195,21 @@ public class LayoutFactory implements LayoutInflaterFactory {
     if (value != null) child.setValue(value);
 
     return child;
+  }
+
+
+  /**
+   * Adds parameters to a FOAM {@link X} context from an AttributeSet.
+   *
+   * Add more parameters here as needed. <code>label</code> and others.
+   * @param x The {@link X} to be augmented.
+   * @param attrs An {@link AttributeSet} that may contain interesting parameters.
+   * @return A child {@link X} with any new parameters added.
+   */
+  private static X augmentContext(X x, AttributeSet attrs) {
+    String label = AttributeUtils.find(attrs, "label");
+    if (label != null) x = x.put("label", label);
+    return x;
   }
 
 

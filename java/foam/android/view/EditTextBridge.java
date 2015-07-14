@@ -7,7 +7,6 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
-import foam.core.PropertyValue;
 import foam.core.Value;
 
 /**
@@ -42,11 +41,8 @@ public class EditTextBridge extends TwoWayViewBridge<TextInputLayout, String> {
 
   public void setValue(Value<String> v) {
     super.setValue(v);
-    if (v instanceof PropertyValue || X().get("label") != null) {
-      String label = (String) X().get("label");
-      if (label == null) label = ((PropertyValue) v).getProperty().getLabel();
-      view.setHint(label);
-    }
+    String label = getLabel(v);
+    if (label != null) view.setHint(label);
   }
 
   protected void updateViewFromValue() {

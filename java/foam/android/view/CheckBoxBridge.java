@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
-import foam.core.PropertyValue;
 import foam.core.Value;
 
 /**
@@ -22,9 +21,8 @@ public class CheckBoxBridge extends TwoWayViewBridge<CheckBox, Boolean> implemen
 
   public void setValue(Value<Boolean> v) {
     super.setValue(v);
-    if (v instanceof PropertyValue) {
-      view.setText(((PropertyValue) v).getProperty().getLabel());
-    }
+    String label = getLabel(v);
+    if (label != null) view.setText(label);
   }
 
   protected void updateViewFromValue() {

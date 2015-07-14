@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import foam.core.PropertyChangeEvent;
 import foam.core.PropertyChangeListener;
+import foam.core.PropertyValue;
 import foam.core.Value;
 import foam.core.X;
 
@@ -45,6 +46,15 @@ public abstract class BaseViewBridge<V extends View, T> implements PropertyChang
     value = v;
     value.addListener(this);
     updateViewFromValue();
+  }
+
+  protected String getLabel(Value v) {
+    if (v instanceof PropertyValue || X().get("label") != null) {
+      String label = (String) X().get("label");
+      if (label == null) label = ((PropertyValue) v).getProperty().getLabel();
+      return label;
+    }
+    return null;
   }
 
   @SuppressLint("NewApi")
