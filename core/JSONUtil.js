@@ -159,7 +159,6 @@ var JSONUtil = {
       if ( obj.model_ ) {
         var newObj = X.lookup(obj.model_);
 	if ( ! newObj && obj.model_ !== 'DocumentationProperty' ) {
-	  debugger;
 	  console.error("Could not find", obj.model_);
 	}
         return newObj ? newObj.create(obj, X) : obj;
