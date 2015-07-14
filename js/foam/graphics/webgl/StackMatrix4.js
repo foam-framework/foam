@@ -63,7 +63,10 @@ CLASS({
           break;
         }
       }
-      if ( ! result ) result = this.stack[0].flat;
+      if ( ! result ) {
+        result = this.stack[0].flat;
+        ++i;
+      }
       // continue calculating the rest
       for (; i < this.stack.length; ++i) {
         var m = this.stack[i];

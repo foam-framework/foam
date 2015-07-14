@@ -25,7 +25,7 @@ CLASS({
     'foam.graphics.webgl.ScaleMatrix4'
   ],
 
-  extendsModel: 'foam.graphics.webgl.Object',
+  extendsModel: 'foam.graphics.webgl.FlatObject',
 
   properties: [
     {
@@ -50,15 +50,28 @@ CLASS({
             stack: [
               this.TransMatrix4.create({
                 x$: this.sourceView.x$, y$: this.sourceView.y$
-              }),
-              this.ScaleMatrix4.create({
-                sx$: this.sourceView.scaleX$, sy$: this.sourceView.scaleY$
-              })
+               }),
+               this.ScaleMatrix4.create({
+                 sx$: this.sourceView.scaleX$, sy$: this.sourceView.scaleY$
+               })
             ]
         });
 
 
         this.resize();
+      }
+    },
+    {
+      name: 'meshMatrix',
+      lazyFactory: function() {
+        var sc = this.ScaleMatrix4.create();
+        Events.map(this.width$, sc.sx$, function(v) { return v; });
+        Events.map(this.height$, sc.sy$, function(v) { return -v; });
+
+        return this.StackMatrix4.create({ stack: [
+          this.TransMatrix4.create({ x: -0.5, y: -0.5  }),
+          sc
+        ]});
       }
     },
     {
@@ -110,9 +123,9 @@ CLASS({
         drawMode: 'triangle strip',
         vertices: [
           1.0, 1.0, 0.0,
-          0.0, 1.0, 0.0,
-          1.0, 0.0, 0.0,
-          0.0, 0.0, 0.0
+          -1.0, 1.0, 0.0,
+          1.0, -1.0, 0.0,
+          -1.0, -1.0, 0.0
         ]
       });
       this.textureCoords = this.mesh;
@@ -246,18 +259,18 @@ CLASS({
         this.$canvas.style.width = this.sourceView.width*2 + 10;
         this.$canvas.style.height = this.sourceView.height*2 + 10;
 
-        var w = (this.sourceView.width);
-        var h = (this.sourceView.height);
+        this.width = (this.sourceView.width)*2;
+        this.height = (this.sourceView.height)*2;
 
-        this.mesh = this.ArrayBuffer.create({
-          drawMode: 'triangle strip',
-          vertices: [
-            w,   h, 0.0,
-            -w,  h, 0.0,
-            w,  -h, 0.0,
-            -w, -h, 0.0
-          ]
-        });
+//          this.mesh = this.ArrayBuffer.create({
+//            drawMode: 'triangle strip',
+//            vertices: [
+//              w,   h, 0.0,
+//              -w,  h, 0.0,
+//              w,  -h, 0.0,
+//              -w, -h, 0.0
+//            ]
+//          });
 
 
         this.render();

@@ -111,9 +111,6 @@ CLASS({
     function render() {
       if ( ! this.gl ) return;
 
-      //this.width = this.image_.width;
-      //this.height = this.image_.height;
-
       // Create a texture object that will contain the image.
       this.texture = this.gl.createTexture();
 
@@ -140,8 +137,6 @@ CLASS({
 
       var gl = this.gl;
       if ( ! gl || ! this.texture ) return;
-
-      //if ( ! this.texture ) this.render();
 
       this.program.use();
       var sampler = gl.getUniformLocation(this.program.program, "uSampler");
