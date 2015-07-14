@@ -1,6 +1,10 @@
 package foam.android.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -54,18 +58,51 @@ public class DAOListViewBridge extends OneWayViewBridge<RecyclerView, DAO> {
     X x = X();
     if (x == null) return;
 
-    DAO dao = (DAO) X().get("dao");
-    if (dao == null) dao = (DAO) X().get("data");
+    DAO dao = (DAO) x.get("dao");
+    if (dao == null) dao = (DAO) x.get("data");
     if (dao == null) return;
-    adapter = new DAOAdapter(X(), dao, new DetailViewFactory(rowView, dao.getModel()));
+
+    adapter = new DAOAdapter(x, dao, new DetailViewFactory(rowView, dao.getModel()));
     view.setAdapter(adapter);
     final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
     layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
     view.setLayoutManager(layoutManager);
+    view.addItemDecoration(new RowDecoration(context));
   }
 
   @Override
   protected void updateViewFromValue() {
     // TODO(braden): Implement me. Need to figure out the context and DAO first, though.
+  }
+
+
+  class RowDecoration extends RecyclerView.ItemDecoration {
+    private Drawable mDivider;
+    public RowDecoration(Context context) {
+      final TypedArray a = context.obtainStyledAttributes(new int[] { android.R.attr.listDivider });
+      mDivider = a.getDrawable(0);
+      a.recycle();
+    }
+
+    @Override
+    public void onDraw(Canvas c, RecyclerView parent) {
+      final int left = parent.getPaddingLeft();
+      final int right = parent.getWidth() - parent.getPaddingRight();
+
+      final int childCount = parent.getChildCount();
+      for (int i = 0; i < childCount; i++) {
+        final View child = parent.getChildAt(i);
+        final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+        final int top = child.getBottom() + params.bottomMargin;
+        final int bottom = top + mDivider.getIntrinsicHeight();
+        mDivider.setBounds(left, top, right, bottom);
+        mDivider.draw(c);
+      }
+    }
+
+    @Override
+    public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
+      outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
+    }
   }
 }
