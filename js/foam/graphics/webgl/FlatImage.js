@@ -35,12 +35,6 @@ CLASS({
       label: 'Source'
     },
     {
-      name: 'texture'
-    },
-    {
-      name: 'textureCoords'
-    },
-    {
       name: 'translucent',
       defaultValue: true
     },
@@ -61,45 +55,6 @@ CLASS({
       });
       this.textureCoords = this.mesh;
 
-      this.program = this.Program.create();
-      this.program.fragmentShader = this.Shader.create({
-        type: "fragment",
-        source: function() {/*
-          precision mediump float;
-
-          varying vec2 vTextureCoord;
-
-          uniform sampler2D uSampler;
-
-          void main(void) {
-
-            vec4 texel = texture2D(uSampler, vec2(vTextureCoord.x, vTextureCoord.y));
-            if(texel.a < 0.01)
-               discard;
-            gl_FragColor = texel;
-          }
-        */}
-      });
-      this.program.vertexShader = this.Shader.create({
-        type: "vertex",
-        source: function() {/*
-          attribute vec3 aVertexPosition;
-          attribute vec3 aTexPosition;
-
-          uniform mat4 positionMatrix;
-          uniform mat4 relativeMatrix;
-          uniform mat4 projectionMatrix;
-          uniform mat4 meshMatrix;
-
-          varying vec2 vTextureCoord;
-
-          void main(void) {
-            gl_Position = projectionMatrix * positionMatrix * relativeMatrix * meshMatrix * vec4(aVertexPosition, 1.0);
-            vTextureCoord = vec2(aTexPosition.x, aTexPosition.y);
-          }
-        */}
-      });
-
       this.image_ = new Image();
       this.image_.onload = function() {
         this.render();
@@ -108,52 +63,10 @@ CLASS({
       this.render();
     },
 
-    function render() {
-      if ( ! this.gl ) return;
-
-      // Create a texture object that will contain the image.
-      this.texture = this.gl.createTexture();
-
-      // Bind the texture the target (TEXTURE_2D) of the active texture unit.
-      this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
-
-      // Flip the image's Y axis to match the WebGL texture coordinate space.
-      this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
-      //this.gl.pixelStorei(this.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
-
-      // Set the parameters so we can render any size image.
-      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
-      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
-      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
-
-        // Upload the resized canvas image into the texture.
-      //    Note: a canvas is used here but can be replaced by an image object.
-      this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.image_);
+    function textureSource() {
+      /* return the image or video element to extract the texture from */
+      return this.image_;
     },
-
-    function paintSelf(translucent) {
-      if ( this.translucent !== translucent ) return;
-
-      var gl = this.gl;
-      if ( ! gl || ! this.texture ) return;
-
-      this.program.use();
-      var sampler = gl.getUniformLocation(this.program.program, "uSampler");
-      gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D, this.texture);
-      gl.uniform1i(sampler, 0);
-
-      // attribute vars
-      this.textureCoords.bind();
-      var texPositionAttribute = this.gl.getAttribLocation(this.program.program, "aTexPosition");
-      this.gl.vertexAttribPointer(texPositionAttribute, 3, gl.FLOAT, false, 0, 0);
-      this.gl.enableVertexAttribArray(texPositionAttribute);
-
-      this.SUPER(translucent);
-
-    },
-
 
   ]
 });

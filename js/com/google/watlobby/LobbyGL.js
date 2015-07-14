@@ -98,27 +98,26 @@ CLASS({
       if ( selected ) {
         this.oldMass_ = this.oldMass_ || this.mass;
         this.oldR_ = this.oldR_ || this.r;
+        this.oldZ_ = this.oldZ_ || this.z;
 
         this.mass = this.INFINITE_MASS;
         this.vx = this.vy = 0;
+        this.z = 500;
         this.cancel_ = Movement.animate(2000, function() {
           var width = this.lobby.width;
           var height = this.lobby.height;
 
           this.r = Math.min(width, height)/2.3;
-//          var scale = (Math.min(width, height)/2.3) / this.r;
-//          this.scaleX = scale;
-//          this.scaleY = scale;
-
+          this.angle = Math.PI*2;
           this.x = width/2;
           this.y = height/2;
         }.bind(this), Movement.ease(0.4,0.2))();
       } else {
         this.mass = this.oldMass_;
+        this.z = this.oldZ_;
         this.cancel_ = Movement.animate(1000, function() {
           this.r = this.oldR_;
-//          this.scaleX = 1.0;
-//          this.scaleY = 1.0;
+          this.angle = 0;
         }.bind(this), Movement.ease(0.4,0.2))();
       }
     },
@@ -174,7 +173,7 @@ CLASS({
         var vh = 315*2.5;
 
         var v = this.FlatVideo.create({
-          x: this.x, y: this.y, z: 3, width: 0, height: 0,
+          x: this.x, y: this.y, z: 500, width: 0, height: 0, axis: [1,1,1],
           src:"Google in Waterloo Region - Ontario  Canada.mp4",
           translucent: true
         });
@@ -184,6 +183,7 @@ CLASS({
           v.height = vh;
           v.x = (w-vw)/2;
           v.y = (h-vh)/2;
+          v.angle = Math.PI*2;
         }, Movement.oscillate(0.6, 0.03, 2))();
         this.lobby.addChild(v);
         this.children_.push(v);
@@ -395,7 +395,8 @@ CLASS({
           x: Math.random() * this.width,
           y: Math.random() * this.height,
           z: i * -0.05,
-          color: colour
+          color: colour,
+          axis: [1,1,1]
         }, this.Y);
         c.topic = t;
         c.image = t.image;
