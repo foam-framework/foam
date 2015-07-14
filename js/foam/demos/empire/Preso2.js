@@ -118,6 +118,7 @@ CLASS({
     // (4) Two-pane controller styling.
     // (4) Summary list element element styling.
     function CSS() {/*
+      slides deck { position: relative; }
       foam-components { font-size: 100%; }
       #pong-container div { display: flex; }
       #pong-container span[name="lScore"] { left: 390px; top:20px; }
