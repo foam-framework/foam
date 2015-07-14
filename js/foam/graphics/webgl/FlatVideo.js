@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.graphics.webgl',
   name: 'FlatVideo',
-  extendsModel: 'foam.graphics.webgl.Object',
+  extendsModel: 'foam.graphics.webgl.FlatObject',
 
   requires: [
     'foam.graphics.webgl.ArrayBuffer',
@@ -50,20 +50,6 @@ CLASS({
     {
       name: 'translucent',
       defaultValue: false
-    },
-    {
-      name: 'width',
-      defaultValue: 10,
-    },
-    {
-      name: 'height',
-      defaultValue: 10,
-    },
-    {
-      name: 'meshMatrix',
-      lazyFactory: function() {
-        return this.ScaleMatrix4.create({ sx$: this.width$, sy$: this.height$ });
-      }
     },
 
   ],

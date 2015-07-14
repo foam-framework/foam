@@ -56,7 +56,7 @@ CLASS({
     },
     {
       name: 'z',
-      defaultValue: 0.01,
+      defaultValue: -0.01,
     },
     {
       name: 'angle',

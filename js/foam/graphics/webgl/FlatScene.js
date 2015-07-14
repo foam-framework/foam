@@ -57,7 +57,7 @@ CLASS({
       name: 'updateProjection',
       code: function() {
         this.projectionMatrix.flat = this.makeOrtho(
-          0,this.view.width,-this.view.height,0,-100.0,100.0);
+          0,this.view.width,this.view.height,0,-100.0,100.0);
       }
     }
   ],

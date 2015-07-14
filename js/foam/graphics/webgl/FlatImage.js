@@ -18,13 +18,15 @@
 CLASS({
   package: 'foam.graphics.webgl',
   name: 'FlatImage',
-  extendsModel: 'foam.graphics.webgl.Object',
+  extendsModel: 'foam.graphics.webgl.FlatObject',
 
   requires: [
     'foam.graphics.webgl.ArrayBuffer',
     'foam.graphics.webgl.Shader',
     'foam.graphics.webgl.Program',
-    'foam.graphics.webgl.ScaleMatrix4'
+    'foam.graphics.webgl.ScaleMatrix4',
+    'foam.graphics.webgl.StackMatrix4',
+    'foam.graphics.webgl.TransMatrix4',
   ],
 
   properties: [
@@ -42,27 +44,11 @@ CLASS({
       name: 'translucent',
       defaultValue: true
     },
-    {
-      name: 'width',
-      defaultValue: 10,
-    },
-    {
-      name: 'height',
-      defaultValue: 10,
-    },
-    {
-      name: 'meshMatrix',
-      lazyFactory: function() {
-        return this.ScaleMatrix4.create({ sx$: this.width$, sy$: this.height$ });
-      }
-    },
   ],
 
   methods: [
     function init() {
       this.SUPER();
-
-      this.z = 0.01;
 
       this.mesh = this.ArrayBuffer.create({
         drawMode: 'triangle strip',

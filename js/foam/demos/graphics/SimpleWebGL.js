@@ -64,13 +64,16 @@ CLASS({
           attribute vec3 aVertexPosition;
 
           uniform mat4 positionMatrix;
+          uniform mat4 relativeMatrix;
           uniform mat4 projectionMatrix;
+          uniform mat4 meshMatrix;
 
           void main(void) {
-            gl_Position = projectionMatrix * positionMatrix * vec4(aVertexPosition, 1.0);
+            gl_Position = projectionMatrix * positionMatrix * relativeMatrix * meshMatrix * vec4(aVertexPosition, 1.0);
           }
         */}
-        }, prog.Y);
+      }, prog.Y);
+
       prog.vertexShader = vert;
       prog.fragmentShader = frag;
 

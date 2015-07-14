@@ -49,9 +49,10 @@ CLASS({
        name: 'image',
        postSet: function() {
          if ( this.image ) {
-           var img = this.FlatImage.create({src: this.image, z: 0.01});
+           var img = this.FlatImage.create({src: this.image, z: -0.02});
            this.addChild(img);
            this.img = img;
+           this.r = this.r;
          }
        }
     },
@@ -83,7 +84,7 @@ CLASS({
     function init() {
       this.SUPER();
 
-      this.background = this.Circle.create({ r$: this.r$, color: [1,1,1,1], z: 0.02});
+      this.background = this.Circle.create({ r$: this.r$, color: [1,1,1,1], z: -0.04});
       this.addChild(this.background);
 
 
@@ -162,9 +163,9 @@ CLASS({
         var w = this.lobby.width;
         var h = this.lobby.height;
 
-        var r = this.Rectangle.create({color: [0,0,0,0.1], x: 0, y: 0, z: 1, width: this.lobby.width, height: this.lobby.height});
+        var r = this.Rectangle.create({color: [0,0,0,0.1], x: 0, y: 0, z: -1, width: this.lobby.width, height: this.lobby.height});
         this.lobby.addChild(r);
-        Movement.animate(1000, function() { r.alpha = 0.7; r.z = -1; })();
+        Movement.animate(1000, function() { r.alpha = 0.7; r.z = 1; })();
 
         this.children_.push(r);
 
@@ -173,7 +174,7 @@ CLASS({
         var vh = 315*2.5;
 
         var v = this.FlatVideo.create({
-          x: this.x, y: this.y, z: -3, width: 0, height: 0,
+          x: this.x, y: this.y, z: 3, width: 0, height: 0,
           src:"Google in Waterloo Region - Ontario  Canada.mp4",
           translucent: true
         });
@@ -235,7 +236,7 @@ CLASS({
       var w = this.lobby.width / this.columns;
       var h = this.lobby.height / this.rows;
 
-      var r = this.Rectangle.create({color: [0,0,0,0], alpha: 0, x: 0, y: 0, z: 1, width: this.lobby.width, height: this.lobby.height});
+      var r = this.Rectangle.create({color: [0,0,0,0], alpha: 0, x: 0, y: 0, z: -1, width: this.lobby.width, height: this.lobby.height});
       this.lobby.addChild(r);
 
       this.children_.push(r);
@@ -243,7 +244,7 @@ CLASS({
       for ( var i = 0 ; i < this.columns ; i++ ) {
         for ( var j = 0 ; j < this.rows ; j++ ) {
           var b = this.Bubble.create({
-            r: 0, x: this.x, y: this.y, z: -2, border: '#f00'
+            r: 0, x: this.x, y: this.y, z: 2, border: '#f00'
           });
           this.lobby.addChild(b);
           this.children_.push(b);
@@ -258,14 +259,14 @@ CLASS({
         var h = this.lobby.height / this.rows;
 
         var r = this.children_[0];
-        Movement.animate(1000, function() { r.alpha = 0.7; r.z = -1; })();
+        Movement.animate(1000, function() { r.alpha = 0.7; r.z = 1; })();
 
         for ( var i = 0 ; i < this.columns ; i++ ) {
           for ( var j = 0 ; j < this.rows ; j++ ) {
             var b = this.children_[ i * this.rows + j + 1];
             b.x = this.x;
             b.y = this.y;
-            b.z = -2;
+            b.z = 2;
             Movement.animate(2000, function(i, j) {
               this.r = Math.min(w, h) / 2 - 6;
               this.x = ( i + 0.5 ) * w;
@@ -393,13 +394,13 @@ CLASS({
           r: 20 + Math.random() * 50,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          z: i * 0.05,
+          z: i * -0.05,
           color: colour
         }, this.Y);
         c.topic = t;
         c.image = t.image;
-        c.r = t.r;
         c.roundImage = t.roundImage;
+        c.r = t.r;
         if ( t.colour ) c.color = t.colour;
         this.addChild(c);
 
@@ -418,7 +419,7 @@ CLASS({
           r: 20 + Math.random() * 50,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          z: (this.topics.length + i) * 0.05,
+          z: (this.topics.length + i) * -0.05,
           borderRatio: -0.01,
           color: 'white',
           border: colour

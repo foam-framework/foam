@@ -48,7 +48,7 @@ CLASS({
       return [1,0,0, 0,
               0,1,0, 0,
               0,0,1, 0,
-              this.x,-this.y,-this.z, 1      ];
+              this.x,this.y,this.z, 1      ];
     },
   ]
 
