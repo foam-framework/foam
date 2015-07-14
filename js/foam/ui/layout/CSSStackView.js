@@ -81,11 +81,11 @@ CLASS({
         self.width;
         self.height;
         self.sliderOpen;
-      }, this.layout);
+      }, this.onLayout);
       this.dynamic(function() {
         self.currentView;
         self.width;
-      }, this.transform)
+      }, this.onTransform)
       this.dynamic(function() {
         self.width;
         self.height;
@@ -101,7 +101,7 @@ CLASS({
       this.stack = [view];
       this.currentView = 0;
 
-      this.layout();
+      this.onLayout();
       this.resizeContainer();
 
       if ( this.innerContainer ) {
@@ -133,7 +133,7 @@ CLASS({
       this.stack[nextView] = view;
       this.propertyChange('stack', this.stack, this.stack);
 
-      this.layout();
+      this.onLayout();
       this.resizeContainer();
 
       this.innerContainer.insertAdjacentHTML('beforeend', view.toHTML());
@@ -193,7 +193,7 @@ CLASS({
       }
     },
     {
-      name: 'layout',
+      name: 'onLayout',
       code: function() {
         this.fixLayout();
 
@@ -212,7 +212,7 @@ CLASS({
       }
     },
     {
-      name: 'transform',
+      name: 'onTransform',
       isFramed: true,
       code: function() {
         if ( ! this.innerContainer ) return;
@@ -231,4 +231,3 @@ CLASS({
     function toInnerHTML() {/*<%= this.overlaySlider %><div id="<%= this.containerViewport = this.nextID() %>" style="overflow:hidden;position:absolute"><div id="<%= this.innerContainer = this.setClass('cssslider-animate', function() { self.animating; }) %>"><%= this.stack[0] || '' %></div></div>*/}
   ]
 });
-
