@@ -2,6 +2,7 @@ package foam.android.view;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 
 import foam.core.DAO;
@@ -10,6 +11,7 @@ import foam.core.DAOInternalException;
 import foam.core.FindSink;
 import foam.core.HasX;
 import foam.core.MLang;
+import foam.core.Value;
 import foam.core.X;
 
 /**
@@ -68,11 +70,20 @@ public class DAOAdapter extends RecyclerView.Adapter<DAOAdapter.DAOViewHolder> i
     holder.viewBridge.getValue().set(sink.getValue());
   }
 
-  class DAOViewHolder extends RecyclerView.ViewHolder {
+  class DAOViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     public final ViewBridge viewBridge;
     public DAOViewHolder(ViewBridge itemView) {
       super(itemView.getView());
       viewBridge = itemView;
+      // If selection is defined, then we should bind to click events.
+      if (viewBridge.X().get("selection") != null)
+        itemView.getView().setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+      Value selection = (Value) viewBridge.X().get("selection");
+      if (selection != null) selection.set(viewBridge.getValue().get());
     }
   }
 }
