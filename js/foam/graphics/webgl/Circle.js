@@ -95,14 +95,14 @@ CLASS({
         */}
         });
       //this.color = this.color; // reset the fragment shader
-
+      this.borderRatio = this.borderRatio;
     },
 
     function intersects(c) {
       var r = this.r + c.r;
       var dx = this.x-c.x;
       var dy = this.y-c.y;
-      return ( ! ((dx+dy) >= r) ) || ( Movement.distance(dx, dy) < r );
+      return ( ((dx+dy) < r) ) && ( Movement.distance(dx, dy) < r );
     },
 
     function ringVertices() {

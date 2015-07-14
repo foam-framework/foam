@@ -94,6 +94,7 @@ CLASS({
 
   methods: [
     function init() {
+      this.SUPER();
       //this.view.width$.addListener(this.updateProjection);
       //this.view.height$.addListener(this.updateProjection);
       //this.fov$.addListener(this.updateProjection);

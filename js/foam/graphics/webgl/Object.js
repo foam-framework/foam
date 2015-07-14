@@ -171,7 +171,7 @@ CLASS({
         this.gl.uniform4fv(colorUniform, new Float32Array(this.color));
       }
 //console.log("Object ", this.$UID, this.name_, " ", this.projectionMatrix.flat, this.parent.positionMatrix.flat, this.relativePosition.flat, this.meshMatrix.flat)
-console.log("Object ", this.$UID, this.name_, " ", this.x, this.y);
+//console.log("Object ", this.$UID, this.name_, " ", this.x, this.y);
 
       if (translucent) {
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);

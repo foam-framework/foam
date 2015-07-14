@@ -93,7 +93,7 @@ CLASS({
       if ( c.border    ) r += c.borderWidth;
       var dx = this.x-c.x;
       var dy = this.y-c.y;
-      return ( ! ((dx+dy) >= r) ) || ( Movement.distance(dx, dy) < r );
+      return ( ((dx+dy) < r) ) && ( Movement.distance(dx, dy) < r );
     },
   ]
 });
