@@ -76,6 +76,7 @@ var files = [
   'index',
   'models',
   'oauth',
+  '../js/foam/core/types/DAOProperty', // TODO: remove when Adam fixes what he broke
   [ 'ModelDAO', IN_BROWSER_NOT_APP ],
   [ '../js/foam/core/bootstrap/ChromeAppFileDAO', IN_CHROME_APP ],
   [ 'ChromeAppModelDAO', IN_CHROME_APP ],
