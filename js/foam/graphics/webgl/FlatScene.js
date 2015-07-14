@@ -57,7 +57,7 @@ CLASS({
       name: 'updateProjection',
       code: function() {
         this.projectionMatrix.flat = this.makeOrtho(
-          0,this.view.width,this.view.height,0,-1000.0,1000.0);
+          0,this.view.width,this.view.height,0,-5000.0,5000.0);
       }
     }
   ],
@@ -65,7 +65,7 @@ CLASS({
   methods: [
     function paintSelf(translucent) {
       var gl = this.gl;
-      if ( ! gl || ! this.sylvesterLib.loaded ) return;
+      if ( ! gl ) return;
 
 
       if ( ! translucent ) {

@@ -49,21 +49,6 @@ CLASS({
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-
-      this.mesh = this.ArrayBuffer.create({
-        drawMode: 'triangle strip',
-        vertices: [
-          1.0, 1.0, 0.0,
-          0.0, 1.0, 0.0,
-          1.0, 0.0, 0.0,
-          0.0, 0.0, 0.0
-        ]
-      });
-      this.textureCoords = this.mesh;
-
-    },
 
     function textureSource() {
       /* return the image or video element to extract the texture from */

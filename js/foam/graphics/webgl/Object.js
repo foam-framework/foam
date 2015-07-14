@@ -27,7 +27,8 @@ CLASS({
   extendsModel: 'foam.graphics.webgl.GLView',
 
   imports: [
-    'projectionMatrix$'
+    'projectionMatrix$',
+    'glMeshLibrary'
   ],
   exports: [
     'gl$',

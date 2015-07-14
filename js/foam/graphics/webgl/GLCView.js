@@ -25,6 +25,10 @@ CLASS({
     'foam.graphics.webgl.ScaleMatrix4'
   ],
 
+  imports: [
+    'glMeshLibrary'
+  ],
+
   extendsModel: 'foam.graphics.webgl.FlatObject',
 
   properties: [
@@ -112,23 +116,16 @@ CLASS({
     {
       name: 'translucent',
       defaultValue: true
+    },
+    {
+      name: 'shapeName',
+      defaultValue: 'flatCenteredRectangle'
     }
   ],
 
   methods: [
     function init() {
       this.SUPER();
-
-      this.mesh = this.ArrayBuffer.create({
-        drawMode: 'triangle strip',
-        vertices: [
-          1.0, 1.0, 0.0,
-          -1.0, 1.0, 0.0,
-          1.0, -1.0, 0.0,
-          -1.0, -1.0, 0.0
-        ]
-      });
-      this.textureCoords = this.mesh;
 
       this.program = this.Program.create();
       this.program.fragmentShader = this.Shader.create({

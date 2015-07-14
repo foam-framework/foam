@@ -50,6 +50,9 @@ CLASS({
        postSet: function() {
          if ( this.image ) {
            var img = this.FlatImage.create({src: this.image, z: -0.02});
+           if ( this.roundImage ) {
+             img.shapeName = 'flatUnitCircle';
+           }
            this.addChild(img);
            this.img = img;
            this.r = this.r;
@@ -102,10 +105,10 @@ CLASS({
 
         this.mass = this.INFINITE_MASS;
         this.vx = this.vy = 0;
-        this.z = 500;
         this.cancel_ = Movement.animate(2000, function() {
           var width = this.lobby.width;
           var height = this.lobby.height;
+          this.z = 500;
 
           this.r = Math.min(width, height)/2.3;
           this.angle = Math.PI*2;
@@ -114,9 +117,9 @@ CLASS({
         }.bind(this), Movement.ease(0.4,0.2))();
       } else {
         this.mass = this.oldMass_;
-        this.z = this.oldZ_;
         this.cancel_ = Movement.animate(1000, function() {
           this.r = this.oldR_;
+          this.z = this.oldZ_;
           this.angle = 0;
         }.bind(this), Movement.ease(0.4,0.2))();
       }
@@ -162,9 +165,9 @@ CLASS({
         var w = this.lobby.width;
         var h = this.lobby.height;
 
-        var r = this.Rectangle.create({color: [0,0,0,0.1], x: 0, y: 0, z: -1, width: this.lobby.width, height: this.lobby.height});
+        var r = this.Rectangle.create({color: [0,0,0,0.1], x: 0, y: 0, z: 2, width: this.lobby.width, height: this.lobby.height});
         this.lobby.addChild(r);
-        Movement.animate(1000, function() { r.alpha = 0.7; r.z = 1; })();
+        Movement.animate(1000, function() { r.alpha = 0.7; })();
 
         this.children_.push(r);
 
@@ -173,9 +176,10 @@ CLASS({
         var vh = 315*2.5;
 
         var v = this.FlatVideo.create({
-          x: this.x, y: this.y, z: 500, width: 0, height: 0, axis: [1,1,1],
+          x: this.x, y: this.y, z: 1000, width: 0, height: 0, axis: [1,1,1],
           src:"Google in Waterloo Region - Ontario  Canada.mp4",
-          translucent: true
+          translucent: true,
+          shapeName: 'flatUnitCircle'
         });
 
         Movement.animate(2000, function(i, j) {
@@ -183,6 +187,7 @@ CLASS({
           v.height = vh;
           v.x = (w-vw)/2;
           v.y = (h-vh)/2;
+          v.z = 2000;
           v.angle = Math.PI*2;
         }, Movement.oscillate(0.6, 0.03, 2))();
         this.lobby.addChild(v);
@@ -191,7 +196,7 @@ CLASS({
         // TODO: remove children from lobby when done
         var r = this.children_[0];
         var v = this.children_[1];
-        Movement.animate(1000, function() { r.alpha = 0; r.z = 1 })();
+        Movement.animate(1000, function() { r.alpha = 0; r.z = -100 })();
         /*
         for ( var i = 1 ; i < this.children_.length ; i++ ) {
           Movement.animate(1000, function() { this.width = this.height = 0; }.bind(this.children_[i]))();

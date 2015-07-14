@@ -44,17 +44,6 @@ CLASS({
     function init() {
       this.SUPER();
 
-      this.mesh = this.ArrayBuffer.create({
-        drawMode: 'triangle strip',
-        vertices: [
-          1.0, 1.0, 0.0,
-          0.0, 1.0, 0.0,
-          1.0, 0.0, 0.0,
-          0.0, 0.0, 0.0
-        ]
-      });
-      this.textureCoords = this.mesh;
-
       this.image_ = new Image();
       this.image_.onload = function() {
         this.render();

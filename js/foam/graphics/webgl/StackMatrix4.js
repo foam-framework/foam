@@ -40,7 +40,7 @@ CLASS({
           }
         }
 
-        this.matrixCache_ = {};
+        //this.matrixCache_ = {};
         this.reset_();
       }
     },
@@ -55,14 +55,14 @@ CLASS({
       var result;
       var i = 0;
       // find the last cache hit before we miss
-      for (; i < this.stack.length; ++i) {
-        var m = this.stack[i];
-        if ( this.matrixCache_[m] ) {
-          result = this.matrixCache_[m];
-        } else {
-          break;
-        }
-      }
+//       for (; i < this.stack.length; ++i) {
+//         var m = this.stack[i];
+//         if ( this.matrixCache_[m] ) {
+//           result = this.matrixCache_[m];
+//         } else {
+//           break;
+//         }
+//       }
       if ( ! result ) {
         result = this.stack[0].flat;
         ++i;
@@ -71,7 +71,7 @@ CLASS({
       for (; i < this.stack.length; ++i) {
         var m = this.stack[i];
         result = this.multiply(result, m.flat);
-        this.matrixCache_[m] = result;
+        //this.matrixCache_[m] = result;
       }
       return result;
     },
@@ -82,7 +82,7 @@ CLASS({
       name: 'matrixChange',
       code: function(obj, topic) {
         if ( topic[1] == 'flat' ) {
-          delete this.matrixCache_[obj];
+          //delete this.matrixCache_[obj];
           this.reset_();
         }
       }

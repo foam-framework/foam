@@ -39,26 +39,20 @@ CLASS({
   package: 'foam.graphics.webgl',
   name: 'Scene',
   requires: [
-    'foam.graphics.webgl.SylvesterLib',
     'foam.graphics.webgl.Matrix4',
-    'foam.graphics.webgl.TransMatrix4'
-
+    'foam.graphics.webgl.TransMatrix4',
+    'foam.graphics.webgl.StandardMeshLibrary'
   ],
   extendsModel: 'foam.graphics.webgl.GLView',
 
   exports: [
     'gl$',
     'projectionMatrix$',
-    'as scene'
+    'as scene',
+    'glMeshLibrary',
   ],
 
   properties: [
-    {
-      name: 'sylvesterLib',
-      factory: function() {
-        return this.SylvesterLib.create();
-      }
-    },
     {
       name: 'positionMatrix',
     },
@@ -78,6 +72,12 @@ CLASS({
       help: 'Units to back the camera away from the XY plane.',
       defaultValue: -6.0
     },
+    {
+      name: 'glMeshLibrary',
+      factory: function() {
+        return this.StandardMeshLibrary.create();
+      }
+    }
   ],
 
   listeners: [
@@ -120,33 +120,33 @@ CLASS({
     //
     // gluLookAt
     //
-    function makeLookAt(ex, ey, ez,
-                        cx, cy, cz,
-                        ux, uy, uz)
-    {
-        if ( ! this.sylvesterLib.loaded ) return [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1].slice();
+//     function makeLookAt(ex, ey, ez,
+//                         cx, cy, cz,
+//                         ux, uy, uz)
+//     {
+//         if ( ! this.sylvesterLib.loaded ) return [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1].slice();
 
-        var eye = $V([ex, ey, ez]);
-        var center = $V([cx, cy, cz]);
-        var up = $V([ux, uy, uz]);
+//         var eye = $V([ex, ey, ez]);
+//         var center = $V([cx, cy, cz]);
+//         var up = $V([ux, uy, uz]);
 
-        var mag;
+//         var mag;
 
-        var z = eye.subtract(center).toUnitVector();
-        var x = up.cross(z).toUnitVector();
-        var y = z.cross(x).toUnitVector();
+//         var z = eye.subtract(center).toUnitVector();
+//         var x = up.cross(z).toUnitVector();
+//         var y = z.cross(x).toUnitVector();
 
-        var m = $M([[x.e(1), x.e(2), x.e(3), 0],
-                    [y.e(1), y.e(2), y.e(3), 0],
-                    [z.e(1), z.e(2), z.e(3), 0],
-                    [0, 0, 0, 1]]);
+//         var m = $M([[x.e(1), x.e(2), x.e(3), 0],
+//                     [y.e(1), y.e(2), y.e(3), 0],
+//                     [z.e(1), z.e(2), z.e(3), 0],
+//                     [0, 0, 0, 1]]);
 
-        var t = $M([[1, 0, 0, -ex],
-                    [0, 1, 0, -ey],
-                    [0, 0, 1, -ez],
-                    [0, 0, 0, 1]]);
-        return m.x(t);
-    },
+//         var t = $M([[1, 0, 0, -ex],
+//                     [0, 1, 0, -ey],
+//                     [0, 0, 1, -ez],
+//                     [0, 0, 0, 1]]);
+//         return m.x(t);
+//     },
 
     //
     // glOrtho
