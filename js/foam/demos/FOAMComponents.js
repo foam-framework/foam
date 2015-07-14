@@ -324,7 +324,7 @@ CLASS({
       <foam-components>
         <div class="heading-card">
           <div class="flex-row">
-            <div class="small-color-block cyan">&nbsp;</div>
+            <div class="small-color-block red">&nbsp;</div>
             <div class="flex-grow content small-heading">FOAM Features and Models</div>
           </div>
         </div>

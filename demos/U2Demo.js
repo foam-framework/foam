@@ -10,3 +10,8 @@ console.log('id: ', e.id);
 e.write(document);
 
 e.attr('color', 'orange');
+
+e.style('fontWeight', 'bold');
+e.style('fontSize', '32pt');
+
+e.on('click', function() { console.log('clicked'); });

@@ -470,6 +470,8 @@ MODEL({
 
     /** Compose a variable number of async functions. **/
     function aseq(/* ... afuncs */) {
+      if ( arguments.lenth == 0 ) return anop;
+
       var f = arguments[arguments.length-1];
 
       for ( var i = arguments.length-2 ; i >= 0 ; i-- ) {
