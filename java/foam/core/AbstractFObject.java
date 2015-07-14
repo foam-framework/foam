@@ -128,18 +128,20 @@ public abstract class AbstractFObject
     if (listeners == null) {
       listeners = new HashMap<>();
     }
-    if (listeners.containsKey(prop.getName())) {
-      listeners.get(prop.getName()).add(new WeakReference<PropertyChangeListener>(listener));
+    String key = prop == null ? "" : prop.getName();
+    if (listeners.containsKey(key)) {
+      listeners.get(key).add(new WeakReference<PropertyChangeListener>(listener));
     } else {
       List<WeakReference<PropertyChangeListener>> list = new LinkedList<>();
       list.add(new WeakReference<PropertyChangeListener>(listener));
-      listeners.put(prop.getName(), list);
+      listeners.put(key, list);
     }
   }
 
   public void removePropertyChangeListener(Property prop, PropertyChangeListener listener) {
-    if (listener == null || listeners == null || !listeners.containsKey(prop.getName())) return;
-    Iterator<WeakReference<PropertyChangeListener>> iterator = listeners.get(prop.getName()).iterator();
+    String key = prop == null ? "" : prop.getName();
+    if (listener == null || listeners == null || !listeners.containsKey(key)) return;
+    Iterator<WeakReference<PropertyChangeListener>> iterator = listeners.get(key).iterator();
     while (iterator.hasNext()) {
       WeakReference<PropertyChangeListener> ref = iterator.next();
       PropertyChangeListener l = ref.get();
@@ -150,18 +152,23 @@ public abstract class AbstractFObject
   }
 
   public void firePropertyChange(Property prop, Object oldValue, Object newValue) {
-    if (listeners == null || !listeners.containsKey(prop.getName())) return;
-    PropertyChangeEvent event = null;
-    Iterator<WeakReference<PropertyChangeListener>> iterator = listeners.get(prop.getName()).iterator();
+    if (listeners == null ||
+        !(listeners.containsKey("") || listeners.containsKey(prop.getName())))
+      return;
+    PropertyChangeEvent event = new PropertyChangeEvent(this, prop, oldValue, newValue);
+    if (listeners.containsKey(prop.getName()))
+      callListeners(event, listeners.get(prop.getName()).iterator());
+    if (listeners.containsKey(""))
+      callListeners(event, listeners.get("").iterator());
+  }
+
+  private void callListeners(PropertyChangeEvent event, Iterator<WeakReference<PropertyChangeListener>> iterator) {
     while (iterator.hasNext()) {
       WeakReference<PropertyChangeListener> ref = iterator.next();
       PropertyChangeListener l = ref.get();
       if (l == null) {
         iterator.remove();
       } else {
-        if (event == null) {
-          event = new PropertyChangeEvent(this, prop, oldValue, newValue);
-        }
         l.propertyChange(event);
       }
     }
