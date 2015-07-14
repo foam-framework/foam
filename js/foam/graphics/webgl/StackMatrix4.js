@@ -25,7 +25,21 @@ CLASS({
       name: 'stack',
       type: 'Array[Matrix4]',
       help: 'The stack of matrices to multiply.',
-      postSet: function() {
+      preSet: function(old, nu) {
+        if ( old && old.length ) {
+          for (var i = 0; i < old.length; ++i) {
+            old[i].removeListener(this.matrixChange);
+          }
+        }
+        return nu;
+      },
+      postSet: function(old,nu) {
+        if ( nu && nu.length ) {
+          for (var i = 0; i < nu.length; ++i) {
+            nu[i].addListener(this.matrixChange);
+          }
+        }
+
         this.matrixCache_ = {};
         this.reset_();
       }
@@ -38,8 +52,8 @@ CLASS({
       /* Recalculate the matrix, starting from the indicated index */
       if ( this.stack.length < 1 ) { return this.SUPER(); } // the identity matrix
 
-      var result = this.stack[0].flat;
-      var i = 1;
+      var result;
+      var i = 0;
       // find the last cache hit before we miss
       for (; i < this.stack.length; ++i) {
         var m = this.stack[i];
@@ -49,12 +63,12 @@ CLASS({
           break;
         }
       }
+      if ( ! result ) result = this.stack[0].flat;
       // continue calculating the rest
       for (; i < this.stack.length; ++i) {
         var m = this.stack[i];
         result = this.multiply(result, m.flat);
-        this.matrixCache_[m] = result.slice(); // clone
-        m.addListener(this.matrixChange);
+        this.matrixCache_[m] = result;
       }
       return result;
     },

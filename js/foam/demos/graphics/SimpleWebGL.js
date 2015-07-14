@@ -29,6 +29,8 @@ CLASS({
     'foam.graphics.Circle as CViewCircle',
     'foam.graphics.webgl.Circle',
     'foam.graphics.webgl.Rectangle',
+    'foam.graphics.webgl.RotMatrix4',
+    'foam.graphics.webgl.TransMatrix4',
   ],
 
   properties: [
@@ -36,10 +38,13 @@ CLASS({
     { name: 'height', defaultValue: 800  },
     { name: 'ring' },
     { name: 'object' },
+    { name: 'time', defaultValue: 0 },
   ],
 
   methods: [
     function init() {
+      this.SUPER();
+
       //////////////////////////////////////////////
       var obj = this.Object.create();
       var bigSquare = obj;
@@ -137,8 +142,8 @@ CLASS({
 
 //       this.addChild(obj);
 
-      var rect = this.Rectangle.create({ width: 4, height: 3, color: [0.4,0.4,0.6,0.8]});
-      this.addChild(rect);
+      //var rect = this.Rectangle.create({ width: 4, height: 3, color: [0.4,0.4,0.6,0.8]});
+      //this.addChild(rect);
 
       ////////////////////////////////////////////
 
@@ -151,7 +156,12 @@ CLASS({
 
       ///////////////////////////////////////////////
 
-      var circ3d = this.Circle.create({ r: 1, color: [0.5,0.87,0.5,1.0], borderRatio: 0.05 });
+      var circ3d = this.Circle.create({
+        r: 1,
+        color: [0.5,0.87,0.5,1.0],
+        borderRatio: 0.05,
+        axis: [1,1,1]
+      });
       this.ring = circ3d;
       this.addChild(circ3d);
 
@@ -168,18 +178,22 @@ CLASS({
       code: function() {
         this.view && this.view.paint();
 
-        if ( this.ring.relativePosition ) {
-          this.ring.relativePosition =
-            this.ring.relativePosition.x(Matrix.RotationX(0.1).ensure4x4())
-          this.ring.relativePosition =
-            this.ring.relativePosition.x(Matrix.RotationZ(0.02).ensure4x4());
-          this.ring.relativePosition =
-            this.ring.relativePosition.x(Matrix.RotationZ(0.04).ensure4x4());
-        }
-        if ( this.object.relativePosition ) {
-          this.object.relativePosition =
-            this.object.relativePosition.x(Matrix.RotationX(0.01).ensure4x4())
-        }
+        this.time += 1;
+
+        this.ring.angle = this.time * 0.1;
+
+//         if ( this.ring.relativePosition ) {
+//           this.ring.relativePosition =
+//             this.ring.relativePosition.x(Matrix.RotationX(0.1).ensure4x4())
+//           this.ring.relativePosition =
+//             this.ring.relativePosition.x(Matrix.RotationZ(0.02).ensure4x4());
+//           this.ring.relativePosition =
+//             this.ring.relativePosition.x(Matrix.RotationZ(0.04).ensure4x4());
+//         }
+//         if ( this.object.relativePosition ) {
+//           this.object.relativePosition =
+//             this.object.relativePosition.x(Matrix.RotationX(0.01).ensure4x4())
+//         }
 
         this.X.setTimeout(this.update, 16);
       }

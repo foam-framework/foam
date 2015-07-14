@@ -40,7 +40,7 @@ CLASS({
       lazyFactory: function() {
         return this.StackMatrix4.create({
             stack: [
-              this.RotMatrix4.create({ angle$: this.angle$ }),
+              this.RotMatrix4.create({ angle$: this.angle$, axis$: this.axis$ }),
               this.TransMatrix4.create({ x$: this.x$, y$: this.y$, z$: this.z$ })
             ]
         });
@@ -61,6 +61,10 @@ CLASS({
     {
       name: 'angle',
       defaultValue: 0.0,
+    },
+    {
+      name: 'axis',
+      defaultValueFn: function() { return [0,0,1]; }
     },
     {
       name: 'positionMatrix',
@@ -87,7 +91,9 @@ CLASS({
     {
       name: 'parent',
       postSet: function(old, nu) {
-        this.positionMatrix = this.updatePosition();
+        if (old) old.positionMatrix$.removeListener(this.doUpdatePosition);
+        if (nu) nu.positionMatrix$.addListener(this.doUpdatePosition);
+        this.doUpdatePosition();
       }
     },
     {
@@ -97,19 +103,23 @@ CLASS({
     }
   ],
 
-  methods: [
-    function init() {
+  listeners: [
+    {
+      name: 'doUpdatePosition',
+      code: function(obj, topic) {
+        this.positionMatrix = this.updatePosition();
+      }
+    }
 
-      //this.sylvesterLib.loaded$.addListener(this.setMatrices);
-      //this.relativePosition$.addListener(this.updatePosition);
-      //this.meshMatrix$.addListener(this.updateMesh);
-    },
+  ],
+
+  methods: [
 
     function updatePosition() {
       return this.StackMatrix4.create({
           stack: [
             ( this.parent && this.parent.positionMatrix ) ?
-              this.Matrix4.create({ flat$: this.parent.positionMatrix.flat$ }) :
+              this.parent.positionMatrix :
               this.Matrix4.create(),
             this.relativePosition
           ]

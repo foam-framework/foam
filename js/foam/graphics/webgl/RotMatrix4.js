@@ -24,7 +24,9 @@ CLASS({
     {
       name: 'angle',
       help: 'The angle to rotate.',
-      postSet: function() { this.reset_(); }
+      postSet: function() {
+        this.reset_();
+      }
     },
     {
       name: 'axis',
@@ -39,7 +41,9 @@ CLASS({
           return nu;
         }
       },
-      postSet: function() { this.reset_(); }
+      postSet: function() {
+        this.reset_();
+      }
     },
   ],
 
@@ -51,6 +55,7 @@ CLASS({
 
       var axis = this.axis;
       return this.rotation_(axis[0], axis[1], axis[2], this.angle);
+      //return this.SUPER();
     },
 
     function rotation_(x,y,z,a) {
