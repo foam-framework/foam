@@ -14,7 +14,6 @@ import java.util.List;
 
 import foam.android.core.AttributeUtils;
 import foam.android.core.XContext;
-import foam.android.core.XTree;
 import foam.core.FObject;
 import foam.core.HasX;
 import foam.core.Model;
@@ -65,18 +64,7 @@ public class LayoutFactory implements LayoutInflaterFactory {
   public static View tryToCreateFoamView(View parent_, String name, Context context, AttributeSet attrs) {
     if (!name.equals("foam.android.view.FoamTagView")) return null;
 
-    // ViewParent parent = (ViewParent) parent_;
     X x = null;
-    /*
-    while (parent != null && parent instanceof View) {
-      int id = ((View) parent).getId();
-      if (id != View.NO_ID) {
-        x = XTree.get(id);
-        if (x != null) break;
-      }
-      parent = parent.getParent();
-    }
-    */
     if (context instanceof HasX) {
       x = ((HasX) context).X();
     } else {
@@ -98,7 +86,6 @@ public class LayoutFactory implements LayoutInflaterFactory {
     if (propName != null && (data != null || modelName != null)) {
       ViewBridge b = buildViewForProperty(x, context, attrs, propName, dataName, modelName, viewName);
       View v = b.getView();
-      XTree.put(v.getId(), b.X());
       return v;
     }
 
@@ -132,7 +119,6 @@ public class LayoutFactory implements LayoutInflaterFactory {
     replacement.X(subX);
     replacement.setValue(value);
     View v = replacement.getView();
-    XTree.put(v.getId(), replacement.X());
     return v;
   }
 
