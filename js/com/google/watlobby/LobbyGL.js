@@ -419,7 +419,7 @@ CLASS({
       }
 
       var N = this.n;
-      for ( var i = 0 ; i < N && false ; i++ ) {
+      for ( var i = 0 ; i < N /*&& false*/ ; i++ ) {
         var colour = this.COLOURS[i % this.COLOURS.length];
         var c = this.Bubble.create({
           r: 20 + Math.random() * 50,
@@ -440,7 +440,7 @@ CLASS({
         this.collider.add(c);
       }
 
-      for ( var i = 0 ; i < 200 && i < 20 ; i++ ) {
+      for ( var i = 0 ; i < 200 /*&& i < 20 */; i++ ) {
         var b = this.PhysicalGLCircle.create({
           r: 5,
           segments: 16,
@@ -467,7 +467,7 @@ CLASS({
         Movement.inertia(b);
         Movement.gravity(b, -0.2);
         Movement.friction(b);
-        this.collider.add(b);
+        //this.collider.add(b);
 
         this.addChild(b);
 

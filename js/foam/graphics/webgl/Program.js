@@ -49,21 +49,25 @@ CLASS({
       }
     },
     {
-      name: 'uniformVariables',
-      type: 'StringArray',
-      getter: function() {
-        if ( ! this.program ) return null;
-        return this.vertexShader.uniformVariables.concat(this.fragmentShader.uniformVariables);
-      }
+      name: 'uniformValues_',
+      factory: function() { return {}; }
     },
-    {
-      name: 'attributeVariables',
-      type: 'StringArray',
-      getter: function() {
-        if ( ! this.program ) return null;
-        return this.vertexShader.attributeVariables; // no attributes in fragment shaders
-      }
-    }
+//     {
+//       name: 'uniformVariables',
+//       type: 'StringArray',
+//       getter: function() {
+//         if ( ! this.program ) return null;
+//         return this.vertexShader.uniformVariables.concat(this.fragmentShader.uniformVariables);
+//       }
+//     },
+//     {
+//       name: 'attributeVariables',
+//       type: 'StringArray',
+//       getter: function() {
+//         if ( ! this.program ) return null;
+//         return this.vertexShader.attributeVariables; // no attributes in fragment shaders
+//       }
+//     }
   ],
 
   methods: [
@@ -92,8 +96,30 @@ CLASS({
       if ( this.instance_.program ) {
         this.gl.deleteProgram(this.instance_.program);
         delete this.instance_.program;
+        this.uniformValues_ = {};
       }
+    },
+
+    function prepUniform_(name) {
+      var uni = this.uniformValues_[name];
+      if ( ! uni ) this.uniformValues_[name] = uni = {};
+      if ( ! uni.location ) {
+        uni.location = this.gl.getUniformLocation(this.program, name);
+      }
+      return uni;
+    },
+
+    function setUniformMatrix4fv(name, matrix4) {
+      var u = this.prepUniform_(name);
+      // cache value too?
+      this.gl.uniformMatrix4fv(u.location, false, new Float32Array(matrix4.flat));
+    },
+    function setUniform4fv(name, array) {
+      var u = this.prepUniform_(name);
+      // cache value too?
+      this.gl.uniform4fv(u.location, new Float32Array(array));
     }
+
   ]
 
 });

@@ -70,7 +70,9 @@ CLASS({
       // continue calculating the rest
       for (; i < this.stack.length; ++i) {
         var m = this.stack[i];
-        result = this.multiply(result, m.flat);
+        if ( ! m.identity ) {
+          result = this.multiply(result, m.flat);
+        }
         //this.matrixCache_[m] = result;
       }
       return result;

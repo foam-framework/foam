@@ -28,6 +28,9 @@ CLASS({
           this.instance_.flat = this.recalculate_();
         }
         return this.instance_.flat;
+      },
+      postSet: function() {
+        if ( this.identity ) delete this.identity;
       }
     },
     {
@@ -55,6 +58,7 @@ CLASS({
       /* Implement in your submodels to calculate and return the contents
           of this matrix.  */
       // Identity
+      this.identity = true;
       return [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1].slice();
     },
 
