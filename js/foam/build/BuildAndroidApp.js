@@ -28,7 +28,8 @@ CLASS({
     'foam.dao.File',
     'foam.core.dao.OrDAO',
     'node.dao.ModelFileDAO',
-    'foam.build.JavaApplication'
+    'foam.build.JavaApplication',
+    'foam.util.JavaSource',
   ],
   properties: [
     {
@@ -193,12 +194,13 @@ CLASS({
         add(this.extraModels[i]);
       }
 
+      var javaSource = this.JavaSource.create();
       var ids = Object.keys(models);
       for ( var i = 0; i < ids.length; i++ ) {
         var model = models[ids[i]];
         var outputFile = this.outputFilename_(model.id);
         model.create();
-        this.fs.writeFileSync(outputFile, model.javaSource());
+        this.fs.writeFileSync(outputFile, javaSource.generate(model));
       }
     },
     buildModel: function(model) {
