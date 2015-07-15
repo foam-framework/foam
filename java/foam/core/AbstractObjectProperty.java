@@ -17,10 +17,6 @@
 
 package foam.core;
 
-import android.content.Context;
-
-import foam.android.view.ViewBridge;
-
 public abstract class AbstractObjectProperty extends AbstractProperty<Object> {
 
   public int compareValues(Object o1, Object o2) {
@@ -29,10 +25,5 @@ public abstract class AbstractObjectProperty extends AbstractProperty<Object> {
     if (o1 instanceof Comparable) return ((Comparable) o1).compareTo(o2);
     if (o2 instanceof Comparable) return -((Comparable) o2).compareTo(o1);
     return 1;
-  }
-
-  public ViewBridge<Object> createView(Context context) {
-    // TODO(braden): Implement createView for Object properties.
-    return null;
   }
 }
