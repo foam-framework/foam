@@ -15,25 +15,6 @@
  * limitations under the License.
  */
 
-var fps = {
-  startTime : 0,
-  frameNumber : 0,
-  getFPS : function(){
-    this.frameNumber++;
-    var d = new Date().getTime(),
-      currentTime = ( d - this.startTime ) / 1000,
-      result = Math.floor( ( this.frameNumber / currentTime ) );
-
-    if( currentTime > 1 ){
-      this.startTime = new Date().getTime();
-      this.frameNumber = 0;
-      GLOBAL.document.title = result;
-    }
-    return result;
-
-  }
-};
-
 
 CLASS({
   package: 'foam.graphics.webgl',
@@ -50,6 +31,8 @@ CLASS({
     'projectionMatrix$',
     'as scene',
     'glMeshLibrary',
+    'fps$',
+    'performance$',
   ],
 
   properties: [
@@ -77,7 +60,25 @@ CLASS({
       factory: function() {
         return this.StandardMeshLibrary.create();
       }
-    }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'fps',
+      postSet: function(old,nu) {
+        this.performance = (this.targetFps / nu) * 100;
+        this.X.document.title = "Performance: "+this.performance+"%";
+      }
+    },
+    {
+      name: 'targetFps',
+      defaultValue: 60
+    },
+    {
+      model_: 'IntProperty',
+      name: 'performance',
+      help: 'Performance indicator as a percentage, based on targetFps. Updated once per second.',
+    },
+
   ],
 
   listeners: [
@@ -102,19 +103,35 @@ CLASS({
 
       Events.dynamic(this.updateProjection);
       this.updateProjection();
+
+      this.startTime = new Date().getTime();
     },
 
     function paintSelf(translucent) {
       var gl = this.gl;
-      if ( ! gl || ! this.sylvesterLib.loaded ) return;
+      if ( ! gl ) return;
 
       if ( ! translucent ) {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        fps.getFPS();
+        this.calcFps();
       }
 
-      this.updateProjection();
+      //this.updateProjection();
       // children can now draw
+    },
+
+    function calcFps() {
+      this.frameNumber++;
+
+      var d = new Date().getTime();
+      var currentTime = ( d - this.startTime ) / 1000;
+      var result = Math.floor( ( this.frameNumber / currentTime ) );
+
+      if( currentTime > 1 ) {
+        this.startTime = new Date().getTime();
+        this.frameNumber = 0;
+        this.fps = result;
+      }
     },
 
     //

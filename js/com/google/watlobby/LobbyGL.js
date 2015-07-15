@@ -49,7 +49,7 @@ CLASS({
        name: 'image',
        postSet: function() {
          if ( this.image ) {
-           var img = this.FlatImage.create({src: this.image, z: -0.02});
+           var img = this.FlatImage.create({src: this.image, z: -0.5});
            if ( this.roundImage ) {
              img.shapeName = 'flatUnitCircle';
            }
@@ -87,7 +87,7 @@ CLASS({
     function init() {
       this.SUPER();
 
-      this.background = this.Circle.create({ r$: this.r$, color: [1,1,1,1], z: -0.04});
+      this.background = this.Circle.create({ r$: this.r$, color: [1,1,1,1], z: -0.9});
       this.addChild(this.background);
 
 
@@ -176,7 +176,7 @@ CLASS({
         var vh = 315*2.5;
 
         var v = this.FlatVideo.create({
-          x: this.x, y: this.y, z: 1000, width: 0, height: 0, axis: [1,1,1],
+          x: this.x, y: this.y, z: 800, width: 0, height: 0, axis: [1,1,1],
           src:"Google in Waterloo Region - Ontario  Canada.mp4",
           translucent: true,
           shapeName: 'flatUnitCircle'
@@ -187,7 +187,7 @@ CLASS({
           v.height = vh;
           v.x = (w-vw)/2;
           v.y = (h-vh)/2;
-          v.z = 2000;
+          v.z = 1000;
           v.angle = Math.PI*2;
         }, Movement.oscillate(0.6, 0.03, 2))();
         this.lobby.addChild(v);
@@ -292,6 +292,7 @@ CLASS({
 });
 
 
+
 CLASS({
   package: 'com.google.watlobby',
   name: 'LobbyGL',
@@ -306,17 +307,19 @@ CLASS({
     'foam.demos.physics.PhysicalGLCircle',
     'foam.physics.Collider',
     'foam.util.Timer',
-    'foam.graphics.webgl.Circle as GLCircle'
+    'foam.graphics.webgl.Circle as GLCircle',
+    'foam.graphics.webgl.PerformanceScaler',
   ],
 
   imports: [ 'timer' ],
   exports: [ 'as lobby' ],
 
   constants: {
-    COLOURS: [[0.19, 0.19, 1.0, 0.99],[1.0, 0.0, 0.0, 0.99],[1.0, 0.75, 0.0, 0.99], [0.19, 0.75, 0.0, 0.99]]
+    COLOURS: [[0.19, 0.19, 1.0, 1.00],[1.0, 0.0, 0.0, 1.00],[1.0, 0.75, 0.0, 1.00], [0.19, 0.75, 0.0, 1.00]]
   },
 
   properties: [
+    { name: 'targetFps',  defaultValue: 50 },
     { name: 'timer' },
     { name: 'n',          defaultValue: 30 },
     { name: 'width',      defaultValue: window.innerWidth },
@@ -342,14 +345,14 @@ CLASS({
     {
       name: 'topics',   factory: function() {
       return JSONUtil.arrayToObjArray(this.X, [
-        { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, colour: [1.0, 0.0, 0.0, 0.99] },
-        { topic: 'flip',         image: 'flip.jpg',         r: 100, colour: [1.0, 0.0, 0.0, 0.99] },
+        { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, colour: [1.0, 0.0, 0.0, 1.00] },
+        { topic: 'flip',         image: 'flip.jpg',         r: 100, colour: [1.0, 0.0, 0.0, 1.00] },
         { topic: 'googlecanada', image: 'googlecanada.gif', r: 200 },
         { topic: 'inbox',        image: 'inbox.png',        r: 160 },
-        { topic: 'android',      image: 'android.png',      r: 90, colour: [0.19, 0.75, 0.0, 0.99] },
+        { topic: 'android',      image: 'android.png',      r: 90, colour: [0.19, 0.75, 0.0, 1.00] },
         { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
         { topic: 'fiber',        image: 'fiber.jpg',        r: 180 },
-        { topic: 'foam',         image: 'foampowered.png',  r: 100, colour: [0.0, 0.0, 0.54, 0.99] },
+        { topic: 'foam',         image: 'foampowered.png',  r: 100, colour: [0.0, 0.0, 0.54, 1.00] },
         { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 100, model: 'com.google.watlobby.VideoBubble' },
         { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 90, model: 'com.google.watlobby.PhotoAlbumBubble' },
         // chromebook, mine sweeper, calculator, I'm feeling lucky
@@ -399,7 +402,7 @@ CLASS({
           r: 20 + Math.random() * 50,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          z: i * -0.05,
+          z: -i,
           color: colour,
           axis: [1,1,1]
         }, this.Y);
@@ -425,10 +428,9 @@ CLASS({
           r: 20 + Math.random() * 50,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          z: (this.topics.length + i) * -0.05,
-          borderRatio: -0.01,
-          color: 'white',
-          border: colour
+          z: (this.topics.length + i) * -1,
+          borderRatio: 0.1,
+          color: colour,
         });
         this.addChild(c);
 
@@ -440,7 +442,8 @@ CLASS({
         this.collider.add(c);
       }
 
-      for ( var i = 0 ; i < 200 /*&& i < 20 */; i++ ) {
+      var tinyBubbles = [];
+      for ( var i = 0 ; i < 200 && i < 20 ; i++ ) {
         var b = this.PhysicalGLCircle.create({
           r: 5,
           segments: 16,
@@ -467,14 +470,31 @@ CLASS({
         Movement.inertia(b);
         Movement.gravity(b, -0.2);
         Movement.friction(b);
-        //this.collider.add(b);
 
-        this.addChild(b);
+        tinyBubbles.push(b);
+
 
 //        this.view.$.addEventListener('click', this.onClick);
        document.body.addEventListener('click', this.onClick);
 
       }
+      // scale the number of bubbles depending on fps
+      var self = this;
+      var scaler = this.PerformanceScaler.create({
+        items: tinyBubbles,
+        addFunction: function(b) {
+          self.collider.add(b);
+          self.addChild(b);
+          console.log("added ", b.$UID);
+        },
+        removeFunction: function(b) {
+          self.collider.remove(b);
+          self.removeChild(b);
+          console.log("removed ", b.$UID);
+        }
+      });
+
+
 
       var clock = this.ClockView.create({x:this.width-70,y:70, r:60});
       this.addChild(clock);
