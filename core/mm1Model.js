@@ -532,6 +532,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
 //      model_: 'ArrayProperty',
       name: 'methods',
       subType: 'Method',
+      factory: function() { return []; },
       help: 'Methods associated with the entity.',
       adapt: function(_, a) {
         if ( ! Method ) return a;
