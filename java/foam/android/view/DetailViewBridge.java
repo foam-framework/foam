@@ -129,8 +129,8 @@ public class DetailViewBridge extends OneWayViewBridge<ViewGroup, FObject> {
     if (childViewsBuilt) return;
     childViewsBuilt = true;
 
-    // TODO(braden): Handle hidden properties.
     for (Property p : model.getProperties()) {
+      if (p.isHidden()) continue;
       ViewBridge pView = PropertyViewFactory.create(p, view.getContext());
       pView.X(X());
       propertyViewMap.put(p.getName(), pView);

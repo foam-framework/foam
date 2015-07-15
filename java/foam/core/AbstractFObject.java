@@ -100,6 +100,7 @@ public abstract class AbstractFObject
     b.append("\"");
     for ( Property p : model().getProperties() ) {
       // TODO: do not output default values
+      if (p.isTransient()) continue;
       b.append(",");
       b.append(p.getName());
       b.append(":");

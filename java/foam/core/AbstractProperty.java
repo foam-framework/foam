@@ -34,4 +34,14 @@ public abstract class AbstractProperty<T> implements Property<T> {
   public void removeListener(PropertyChangeSupport obj, PropertyChangeListener<T> listener) {
     obj.removePropertyChangeListener(this, listener);
   }
+
+  public boolean isHidden() {
+    return false;
+  }
+  public boolean isTransient() {
+    return false;
+  }
+  public String getHelp() {
+    return null;
+  }
 }
