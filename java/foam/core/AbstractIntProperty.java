@@ -18,7 +18,11 @@
 package foam.core;
 
 import android.content.Context;
+import android.util.AttributeSet;
 
+import foam.android.core.AttributeUtils;
+import foam.android.view.EditIntBridge;
+import foam.android.view.IntViewBridge;
 import foam.android.view.ViewBridge;
 
 public abstract class AbstractIntProperty extends AbstractProperty<Integer> {
@@ -27,7 +31,10 @@ public abstract class AbstractIntProperty extends AbstractProperty<Integer> {
   }
 
   public ViewBridge<Integer> createView(Context context) {
-    // TODO(braden): Implement createView for numeric types.
-    return null;
+    return new EditIntBridge(context);
+  }
+  public ViewBridge<Integer> createView(Context context, AttributeSet attrs) {
+    return AttributeUtils.findBoolean(attrs, "read_only", false) ?
+        new IntViewBridge(context, attrs) : new EditIntBridge(context, attrs);
   }
 }

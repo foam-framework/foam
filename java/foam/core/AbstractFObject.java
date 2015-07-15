@@ -115,11 +115,6 @@ public abstract class AbstractFObject
     return sb.toString();
   }
 
-  public AbstractFObject set(Property p, Object value) {
-    p.set(this, value);
-    return this;
-  }
-
 
   private Map<String, List<WeakReference<PropertyChangeListener>>> listeners;
 
