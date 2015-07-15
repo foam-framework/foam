@@ -164,8 +164,7 @@ CLASS({
             v.height = vh;
             v.x = (w-vw)/2;
             v.y = (h-vh)/2;
-          }],
-          [500, function() { this.r = this.r_; }.bind(this)]
+          }]
         ])();
         lobby.addChild(v);
         this.children_.push(v);
