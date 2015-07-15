@@ -858,6 +858,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
     "    public String getName() { return \"<%= this.id %>\"; }\u000a" +
     "    public String getLabel() { return \"<%= this.label %>\"; }\u000a" +
     "    public Property getID() { return <%= this.ids.length ? constantize(this.ids[0]) : 'null' %>; }\u000a" +
+    "    public FObject newInstance() { return new <%= className %>(); }\u000a" +
     "  };\u000a" +
     "\u000a" +
     "  public Model model() {\u000a" +

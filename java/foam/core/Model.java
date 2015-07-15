@@ -24,4 +24,5 @@ public interface Model
   public Property   getID();
   public Property[] getProperties();
   public Property   getProperty(String propertyName);
+  public FObject    newInstance();
 }
