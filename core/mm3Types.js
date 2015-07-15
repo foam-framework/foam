@@ -87,7 +87,7 @@ CLASS({
       name: 'javaType',
       type: 'String',
       displayWidth: 70,
-      defaultValue: 'bool',
+      defaultValue: 'boolean',
       help: 'The Java type of this property.'
     },
     {
@@ -537,8 +537,9 @@ CLASS({
       name: 'javaType',
       type: 'String',
       displayWidth: 10,
-      // TODO: should obtain primary-key type from subType
-      defaultValueFn: function(p) { return 'Object'; },
+      defaultValueFn: function() {
+        return this.X.lookup(this.subType)[this.subKey].javaType;
+      },
       help: 'The Java type of this property.'
     },
     {

@@ -20,8 +20,27 @@
  */
 require('../core/bootFOAMnode.js');
 var fs = require('fs');
+var path = require('path');
 
+var models = [];
 for ( var i = 2 ; i < process.argv.length ; i++ ) {
+  models.push(process.argv[i]);
+}
+
+apar(
+  models.map(arequire)
+)(function() {
+  for (var i = 0; i < arguments.length; i++) {
+    var model = arguments[i];
+    outfile = model.javaClassName + ".java";
+    model.create();
+
+    pathComponents
+    fs.mkdir
+  }
+});
+
+arequire
   var model = GLOBAL[process.argv[i]];
   var outfile = model.javaClassName + ".java";
 
