@@ -268,7 +268,7 @@ CLASS({
     'com.google.watlobby.VideoBubble',
     'foam.demos.ClockView',
     'foam.demos.physics.PhysicalCircle',
-    'foam.physics.Collider',
+    'foam.physics.PhysicsEngine as Collider',
     'foam.util.Timer'
   ],
 
@@ -293,10 +293,12 @@ CLASS({
         var cs = this.children;
         for ( var i = 0 ; i < cs.length ; i++ ) {
           var c1 = cs[i];
-          if ( c1.r === 5 ) return;
-          for ( var j = i+1 ; j < cs.length ; j++ ) {
-            var c2 = cs[j];
-            if ( c1.intersects(c2) ) this.collide(c1, c2);
+          this.updateChild(c1);
+          if ( c1.r !== 5 ) {
+            for ( var j = i+1 ; j < cs.length ; j++ ) {
+              var c2 = cs[j];
+              if ( c1.intersects(c2) ) this.collide(c1, c2);
+            }
           }
         }
       };
@@ -370,9 +372,8 @@ CLASS({
         this.addChild(c);
 
         c.mass = c.r/50;
-        Movement.gravity(c, 0.03);
-        Movement.inertia(c);
-        Movement.friction(c, 0.96);
+        c.gravity = 0.03;
+        c.friction = 0.96;
         this.bounceOnWalls(c, this.width, this.height);
         this.collider.add(c);
       }
@@ -391,9 +392,8 @@ CLASS({
         this.addChild(c);
 
         c.mass = c.r/50;
-        Movement.gravity(c, 0.03);
-        Movement.inertia(c);
-        Movement.friction(c, 0.96);
+        c.gravity = 0.03;
+        c.friction = 0.96;
         this.bounceOnWalls(c, this.width, this.height);
         this.collider.add(c);
       }
@@ -419,9 +419,8 @@ CLASS({
         }.bind(this, b));
 
         b.vy = -4;
-        Movement.inertia(b);
-        Movement.gravity(b, -0.2);
-        Movement.friction(b);
+        b.gravity = -0.2;
+        b.friction = 0.95;
         this.collider.add(b);
 
         this.addChild(b);

@@ -44,17 +44,21 @@ CLASS({
     function stop() {
       this.stopped_ = true;
     },
+    function updateChild(child) {
+    },
     // TODO: this should be done much more efficiently (quad-tree, k-d tree, or similar).
     function detectCollisions() {
       var cs = this.children;
       for ( var i = 0 ; i < cs.length ; i++ ) {
         var c1 = cs[i];
+        this.updateChild(c1);
         for ( var j = i+1 ; j < cs.length ; j++ ) {
           var c2 = cs[j];
           if ( c1.intersects(c2) ) this.collide(c1, c2);
         }
       }
     },
+    /*
     function backup(c1, c2) {
       for ( var i = 0.01 ; ; i += 0.1 ) {
         var x1 = c1.x - c1.vx * i;
@@ -69,6 +73,7 @@ CLASS({
         }
       }
     },
+    */
     function collide(c1, c2) {
       // this.backup(c1, c2);  // backup to the point of collision
 
