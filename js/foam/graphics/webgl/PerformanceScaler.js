@@ -27,15 +27,18 @@ CLASS({
       model_: 'IntProperty',
       name: 'performance',
       postSet: function(old,nu) {
-        if ( nu < 95 && this.activeItems_.length > 0 ) {
-          var item = this.activeItems_.pop();
-          this.disabledItems_.push();
-          this.removeFunction.call(null, item);
-        }
-        if ( nu > 105 && this.disabledItems_.length > 0 ) {
-          var item = this.disabledItems_.pop();
-          this.activeItems_.push();
-          this.addFunction.call(null, item);
+        if ( nu < 50 ) {
+          for (var i=0; i<5; ++i) {
+            this.decrease();
+          }
+        } else if ( nu > 110 ) {
+          for (var i=0; i<5; ++i) {
+            this.increase();
+          }
+        } else if ( nu < 95 ) {
+          this.decrease();
+        } else if ( nu > 100 ) {
+          this.increase();
         }
       }
     },
@@ -44,11 +47,11 @@ CLASS({
       postSet: function() {
         //TODO: remove old
         this.disabledItems_ = this.items.slice();
+        this.activeItems_ = [].slice();
       }
     },
     {
       name: 'activeItems_',
-      factory: function() { return []; }
     },
     {
       name: 'disabledItems_',
@@ -59,6 +62,22 @@ CLASS({
     {
       name: 'removeFunction'
     }
+  ],
+  methods: [
+    function decrease() {
+      if (this.activeItems_.length <= 0) return;
+      var item = this.activeItems_.pop();
+      this.disabledItems_.push(item);
+      this.removeFunction.call(null, item);
+    },
+    function increase() {
+      if (this.disabledItems_.length <= 0) return;
+      var item = this.disabledItems_.pop();
+      this.activeItems_.push(item);
+      this.addFunction.call(null, item);
+      console.log("adding, active: ", this.activeItems_.length);
+    },
+
   ]
 
 });

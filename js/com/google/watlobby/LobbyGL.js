@@ -421,42 +421,47 @@ CLASS({
         this.collider.add(c);
       }
 
-      var spareBubbles = [];
-      var N = this.n;
-      for ( var i = 0 ; i < N /*&& false*/ ; i++ ) {
-        var colour = this.COLOURS[i % this.COLOURS.length];
-        var c = this.Bubble.create({
-          r: 20 + Math.random() * 50,
-          x: Math.random() * this.width,
-          y: Math.random() * this.height,
-          z: (this.topics.length + i) * -1,
-          borderRatio: 0.1,
-          color: colour,
-        });
+//       var spareBubbles = [];
+//       var N = this.n;
+//       for ( var i = 0 ; i < N /*&& false*/ ; i++ ) {
+//         var colour = this.COLOURS[i % this.COLOURS.length];
+//         var c = this.Bubble.create({
+//           r: 20 + Math.random() * 50,
+//           x: Math.random() * this.width,
+//           y: Math.random() * this.height,
+//           z: (this.topics.length + i) * -1,
+//           borderRatio: 0.1,
+//           color: colour,
+//         });
 
-        c.mass = c.r/50;
-        Movement.gravity(c, 0.03);
-        Movement.inertia(c);
-        Movement.friction(c, 0.96);
+//         c.mass = c.r/20;
+//         Movement.gravity(c, 0.03);
+//         Movement.inertia(c);
+//         Movement.friction(c, 0.96);
 
-        spareBubbles.push(c);
-      }
+//         spareBubbles.push(c);
+//         this.addChild(c);
+//         this.bounceOnWalls(c, this.width, this.height);
+//         this.collider.add(c);
+//       }
 
       // scale the number of bubbles depending on fps
-      var self = this;
-      var scaler = this.PerformanceScaler.create({
-        items: spareBubbles,
-        addFunction: function(c) {
-          self.addChild(c);
-          self.bounceOnWalls(c, self.width, self.height);
-          self.collider.add(c);
-        },
-        removeFunction: function(c) {
-          self.removeChild(c);
-          c.cancelBounce_.destroy();
-          self.collider.remove(c);
-        }
-      });
+//       var scene = this;
+//       var scaler = this.PerformanceScaler.create({
+//         items: spareBubbles,
+//         addFunction: function(c) {
+//           scene.addChild(c);
+//           scene.bounceOnWalls(c, scene.width, scene.height);
+//           scene.collider.add(c);
+//           c.x = Math.random() * scene.width;
+//           c.y = Math.random() * scene.height;
+//         },
+//         removeFunction: function(c) {
+//           scene.removeChild(c);
+//           c.cancelBounce_.destroy();
+//           scene.collider.remove(c);
+//         }
+//       });
 
 
       var tinyBubbles = [];
@@ -497,7 +502,7 @@ CLASS({
       }
       // scale the number of bubbles depending on fps
       var self = this;
-      var scaler = this.PerformanceScaler.create({
+      var scaler2 = this.PerformanceScaler.create({
         items: tinyBubbles,
         addFunction: function(b) {
           self.collider.add(b);
