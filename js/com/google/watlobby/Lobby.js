@@ -372,7 +372,7 @@ CLASS({
         this.addChild(c);
 
         c.mass = c.r/50;
-        c.gravity = 0.03;
+        c.gravity = 0.02;
         c.friction = 0.96;
         this.bounceOnWalls(c, this.width, this.height);
         this.collider.add(c);
@@ -392,7 +392,7 @@ CLASS({
         this.addChild(c);
 
         c.mass = c.r/50;
-        c.gravity = 0.03;
+        c.gravity = 0.02;
         c.friction = 0.96;
         this.bounceOnWalls(c, this.width, this.height);
         this.collider.add(c);
@@ -408,7 +408,7 @@ CLASS({
           border: '#blue',
 //          color: 'rgba(100,100,200,0.2)',
 //          border: '#55a',
-          mass: 0.6
+          mass: 0.7
         });
 
         b.y$.addListener(function(b) {
@@ -419,8 +419,8 @@ CLASS({
         }.bind(this, b));
 
         b.vy = -4;
-        b.gravity = -0.2;
-        b.friction = 0.95;
+        b.gravity = -0.1;
+        b.friction = 0.9;
         this.collider.add(b);
 
         this.addChild(b);
