@@ -298,11 +298,12 @@ CLASS({
           this.updateChild(c1);
 
           if ( c1.r !== 5 ) {
-            var r = c.r + c.borderWidth;
-            if ( c.x < r     ) { c.vx += 0.2; c.vy -= 0.19; }
-            if ( c.x > w - r ) { c.vx -= 0.2; c.vy += 0.19; }
-            if ( c.y < r     ) { c.vy += 0.2; c.vx += 0.19; }
-            if ( c.y > h - r ) { c.vy -= 0.2; c.vx -= 0.19; }
+            // Bounce on Walls
+            var r = c1.r * 1.2;
+            if ( c1.x < r     ) { c1.vx += 0.2; c1.vy -= 0.19; }
+            if ( c1.x > w - r ) { c1.vx -= 0.2; c1.vy += 0.19; }
+            if ( c1.y < r     ) { c1.vy += 0.2; c1.vx += 0.19; }
+            if ( c1.y > h - r ) { c1.vy -= 0.2; c1.vx -= 0.19; }
 
             for ( var j = i+1 ; j < cs.length ; j++ ) {
               var c2 = cs[j];
@@ -381,7 +382,7 @@ CLASS({
         this.addChild(c);
 
         c.mass = c.r/50;
-        c.gravity = 0.02;
+        c.gravity = 0.025;
         c.friction = 0.96;
         this.collider.add(c);
       }
@@ -400,7 +401,7 @@ CLASS({
         this.addChild(c);
 
         c.mass = c.r/50;
-        c.gravity = 0.02;
+        c.gravity = 0.025;
         c.friction = 0.96;
         this.collider.add(c);
       }
