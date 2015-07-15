@@ -40,6 +40,9 @@ public interface Property<T> extends Function<Object, T>, Comparator<Object>, Ex
   public void    addListener(PropertyChangeSupport obj, PropertyChangeListener<T> listener);
   public void    removeListener(PropertyChangeSupport obj, PropertyChangeListener<T> listener);
   public Value<T> createValue(FObject obj);
+  public boolean isTransient();
+  public boolean isHidden();
+  public String getHelp();
   // public boolean hasDefaultValue();
   //  public Object  createDefaultValue();
 }

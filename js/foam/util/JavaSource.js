@@ -49,14 +49,19 @@ public<%= this.abstract ? ' abstract' : '' %> class <%= className %>
     extends <%= parentClassName %> {
 <% for ( var key in this.properties ) {
     var prop = this.properties[key];
-    var klass = toWrapperClass(prop.javaType); %>
+    var klass = toWrapperClass(prop.javaType);
+    var extraText = '  ';
+    if (prop.hidden) extraText += '  public boolean isHidden() { return true; }\u000a  ';
+    if (prop.transient) extraText += '  public boolean isTransient() { return true; }\u000a  ';
+    if (prop.help) extraText += '  public String getHelp() { return "' + prop.help + '"; }\u000a  ';
+%>
   public final static Property<<%= klass %>> <%= constantize(prop.name) %> = new Abstract<%= prop.javaType.capitalize() %>Property() {
     public String getName() { return "<%= prop.name %>"; }
     public String getLabel() { return "<%= prop.label %>"; }
     public <%= klass %> get(Object o) { return ((<%= this.name %>) o).get<%= prop.name.capitalize() %>(); }
     public void set(Object o, <%= klass %> v) { ((<%= this.name %>) o).set<%= prop.name.capitalize() %>(v); }
     public int compare(Object o1, Object o2) { return compareValues(((<%= this.name%>)o1).<%= prop.name %>_, ((<%= this.name%>)o2).<%= prop.name %>_); }
-  };
+<%= extraText %>};
 <% } %>
 
   final static Model model__ = new AbstractModel(new Property[] {<% for ( var key in this.properties ) { var prop = this.properties[key]; %> <%= constantize(prop.name) %>,<% } %> }) {
