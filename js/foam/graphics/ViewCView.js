@@ -45,8 +45,8 @@ CLASS({
       e.style.top = 0;
       e.style.position = 'absolute';
       e.style.overflow = 'hidden';
-      e.style.width = this.width + 'px';
-      e.style.height = this.height + 'px';
+      e.style.width = this.width;
+      e.style.height = this.height;
       e.style.webkitTransform = 'translate3d(' + this.x + 'px,' + this.y + 'px,0)'
     },
     function destroy() {
