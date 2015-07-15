@@ -76,7 +76,7 @@ public<%= this.abstract ? ' abstract' : '' %> class <%= className %>
    public <%= className %>()
    {
    }
-<% if ( this.properties.length ) { %> 
+<% if ( this.properties.length ) { %>
    public <%= className %>(<% for ( var key in this.properties ) { var prop = this.properties[key]; %><%= prop.javaType, ' ', prop.name, key < this.properties.length-1 ? ', ': '' %><% } %>)
    {   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>
       <%= prop.name %>_ = <%= prop.name %>;   <% } %>
@@ -92,7 +92,7 @@ public<%= this.abstract ? ' abstract' : '' %> class <%= className %>
    };
    <% } %>
 
-   public int hashCode() { 
+   public int hashCode() {
       int hash = 1;
    <% for ( var key in this.properties ) { var prop = this.properties[key]; %>
       hash = hash * 31 + hash(<%= prop.name %>_);   <% } %>
@@ -105,7 +105,7 @@ public<%= this.abstract ? ' abstract' : '' %> class <%= className %>
       if ( obj == null ) return 1;
 
       %%name other = (%%name) obj;
- 
+
       int cmp;
    <% for ( var key in this.properties ) { var prop = this.properties[key]; %>
       if ( ( cmp = compare(get<%= prop.name.capitalize() %>(), other.get<%= prop.name.capitalize() %>()) ) != 0 ) return cmp;   <% } %>
@@ -116,12 +116,12 @@ public<%= this.abstract ? ' abstract' : '' %> class <%= className %>
    public StringBuilder append(StringBuilder b) {
       return b
    <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\
-      .append("<%= prop.name %>=").append(get<%= prop.name.capitalize() %>())<%= key < this.properties.length-1 ? '.append(", ")' : '' %> 
+      .append("<%= prop.name %>=").append(get<%= prop.name.capitalize() %>())<%= key < this.properties.length-1 ? '.append(", ")' : '' %>
    <% } %>      ;
    }
 
    public Object fclone() {
-      %%name c = new %%name();
+      %%name c = new %%name ();
       <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\
 c.set<%= prop.name.capitalize() %>(get<%= prop.name.capitalize() %>());
       <% } %>\
