@@ -305,7 +305,7 @@ CLASS({
     'com.google.watlobby.VideoBubble',
     'foam.demos.ClockView',
     'foam.demos.physics.PhysicalGLCircle',
-    'foam.physics.Collider',
+    'foam.physics.PhysicsEngine as Collider',
     'foam.util.Timer',
     'foam.graphics.webgl.Circle as GLCircle',
     'foam.graphics.webgl.PerformanceScaler',
@@ -321,7 +321,7 @@ CLASS({
   properties: [
     { name: 'targetFps',  defaultValue: 50 },
     { name: 'timer' },
-    { name: 'n',          defaultValue: 30 },
+    { name: 'n',          defaultValue: 0 },
     { name: 'width',      defaultValue: window.innerWidth },
     { name: 'height',     defaultValue: window.innerHeight },
     { name: 'background', defaultValue: '#ccf' },
@@ -333,10 +333,12 @@ CLASS({
         var cs = this.children;
         for ( var i = 0 ; i < cs.length ; i++ ) {
           var c1 = cs[i];
-          if ( c1.r === 5 ) return;
-          for ( var j = i+1 ; j < cs.length ; j++ ) {
-            var c2 = cs[j];
-            if ( c1.intersects(c2) ) this.collide(c1, c2);
+          this.updateChild(c1);
+          if ( c1.r !== 5 ) {
+            for ( var j = i+1 ; j < cs.length ; j++ ) {
+              var c2 = cs[j];
+              if ( c1.intersects(c2) ) this.collide(c1, c2);
+            }
           }
         }
       };
@@ -414,70 +416,69 @@ CLASS({
         this.addChild(c);
 
         c.mass = c.r/50;
-        Movement.gravity(c, 0.03);
-        Movement.inertia(c);
-        Movement.friction(c, 0.96);
+        c.gravity = 0.03;
+        c.friction = 0.96;
         this.bounceOnWalls(c, this.width, this.height);
         this.collider.add(c);
       }
 
-//       var spareBubbles = [];
-//       var N = this.n;
-//       for ( var i = 0 ; i < N /*&& false*/ ; i++ ) {
-//         var colour = this.COLOURS[i % this.COLOURS.length];
-//         var c = this.Bubble.create({
-//           r: 20 + Math.random() * 50,
-//           x: Math.random() * this.width,
-//           y: Math.random() * this.height,
-//           z: (this.topics.length + i) * -1,
-//           borderRatio: 0.1,
-//           color: colour,
-//         });
+      var spareBubbles = [];
+      var N = this.n;
+      for ( var i = 0 ; i < N /*&& false*/ ; i++ ) {
+        var colour = this.COLOURS[i % this.COLOURS.length];
+        var c = this.Bubble.create({
+          r: 20 + Math.random() * 50,
+          x: Math.random() * this.width,
+          y: Math.random() * this.height,
+          z: (this.topics.length + i) * -1,
+          borderRatio: 0.1,
+          color: colour,
+        });
 
-//         c.mass = c.r/20;
-//         Movement.gravity(c, 0.03);
-//         Movement.inertia(c);
-//         Movement.friction(c, 0.96);
+        c.mass = c.r/20;
+        c.gravity = 0.03;
+        c.friction = 0.96;
 
-//         spareBubbles.push(c);
+        spareBubbles.push(c);
 //         this.addChild(c);
 //         this.bounceOnWalls(c, this.width, this.height);
 //         this.collider.add(c);
-//       }
+      }
 
-      // scale the number of bubbles depending on fps
-//       var scene = this;
-//       var scaler = this.PerformanceScaler.create({
-//         items: spareBubbles,
-//         addFunction: function(c) {
-//           scene.addChild(c);
-//           scene.bounceOnWalls(c, scene.width, scene.height);
-//           scene.collider.add(c);
-//           c.x = Math.random() * scene.width;
-//           c.y = Math.random() * scene.height;
-//         },
-//         removeFunction: function(c) {
-//           scene.removeChild(c);
-//           c.cancelBounce_.destroy();
-//           scene.collider.remove(c);
-//         }
-//       });
+      //scale the number of bubbles depending on fps
+      var scene = this;
+      var scaler = this.PerformanceScaler.create({
+        items: spareBubbles,
+        addFunction: function(c) {
+          scene.addChild(c);
+          scene.bounceOnWalls(c, scene.width, scene.height);
+          scene.collider.add(c);
+          c.x = Math.random() * scene.width;
+          c.y = -200;
+        },
+        removeFunction: function(c) {
+          scene.removeChild(c);
+          c.cancelBounce_.destroy();
+          scene.collider.remove(c);
+        }
+      });
 
 
       var tinyBubbles = [];
-      for ( var i = 0 ; i < 200 && i < 20 ; i++ ) {
+      for ( var i = 0 ; i < 200; i++ ) {
         var b = this.PhysicalGLCircle.create({
           r: 5,
-          segments: 16,
+          segments: 12,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
+          z: 20,
           borderRatio: 1.0,
           color: [ 0,0,1,0.2],
           mass: 0.6
         });
         b.addChild(this.GLCircle.create({
           r: b.r,
-          segments: 16,
+          segments: b.segments,
           borderRatio: 0.1,
           color: [ 0,0,1,1.0]
         }));
@@ -489,9 +490,8 @@ CLASS({
         }.bind(this, b));
 
         b.vy = -4;
-        Movement.inertia(b);
-        Movement.gravity(b, -0.2);
-        Movement.friction(b);
+        b.gravity = -0.2;
+        b.friction = 0.95;
 
         tinyBubbles.push(b);
 
@@ -505,6 +505,8 @@ CLASS({
       var scaler2 = this.PerformanceScaler.create({
         items: tinyBubbles,
         addFunction: function(b) {
+          b.x = Math.random() * self.width;
+          b.y = self.height + 200;
           self.collider.add(b);
           self.addChild(b);
         },
