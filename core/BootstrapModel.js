@@ -325,7 +325,7 @@ var BootstrapModel = {
       }.bind(this));
     }
 
-    this.buildProtoMethods_(cls);
+    if ( this.methods ) this.buildProtoMethods_(cls);
 
     var self = this;
     // add relationships
