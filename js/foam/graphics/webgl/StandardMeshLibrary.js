@@ -93,21 +93,21 @@ CLASS({
       // start with the center
       v = v.concat(innerPt(0));
       v = v.concat(circPt(0));
-      v = v.concat(innerPt(1));
 
       // add the rest of the edge vertices to complete the fan
-      for (var i = 1; i < segs; i++) {
-        v = v.concat(circPt(i));
+      for (var i = segs-1; i > 0; i--) {
         v = v.concat(innerPt(i));
+        v = v.concat(circPt(i));
       }
-      v = v.concat(circPt(0));
       v = v.concat(innerPt(0));
+      v = v.concat(circPt(0));
 
       return this.ArrayBuffer.create({
           drawMode: 'triangle strip',
           vertices: v
       });
     },
+
 
     function flatCircle(segments) {
       /* Create a mesh for a 'triangle fan' circle. This would be the case where borderRatio == 1.0 */
@@ -131,8 +131,6 @@ CLASS({
       });
     },
 
-
-
     function _circle_(s, r, x, y, z) {
       var v = [].slice();
       function circPt(i) {
@@ -146,13 +144,50 @@ CLASS({
       v = v.concat([x, y, z]);
 
       // add the rest of the edge vertices to complete the fan
-      for (var i = 0; i < s; i++) {
+      for (var i = s; i > 0; i--) {
         v = v.concat(circPt(i));
       }
-      v = v.concat(circPt(0));
+      v = v.concat(circPt(s));
 
       return v;
-    }
+    },
+
+
+    function sphere(segments) {
+      var segs = segments || 64;
+
+      return this.ArrayBuffer.create({
+          drawMode: 'triangle strip',
+          vertices: this._sphere_(segs)
+      });
+    },
+
+    function _sphere_(s) {
+      var v = [].slice();
+      var circPt = function(i, j) {
+        var r = + Math.sin(Math.PI * j / s);
+        return [
+           + (Math.sin(2 * Math.PI * i / s) * r),
+           - (Math.cos(2 * Math.PI * i / s) * r),
+           - Math.cos(Math.PI * j / s)
+        ];
+      };
+
+      for (var j = 1; j < s+1; ++j) { // slices, from north pole to south pole
+        v = v.concat( circPt(0,j-1) );
+        v = v.concat( circPt(0,j) );
+        for (var i = 1; i < s; ++i) {
+          v = v.concat( circPt(i,j-1) );
+          v = v.concat( circPt(i,j) );
+        }
+        v = v.concat( circPt(0,j-1) );
+        v = v.concat( circPt(0,j) );
+      }
+
+      return v;
+    },
+
+
 
   ]
 

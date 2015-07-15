@@ -305,6 +305,7 @@ CLASS({
     'com.google.watlobby.VideoBubble',
     'foam.demos.ClockView',
     'foam.demos.physics.PhysicalGLCircle',
+    'foam.demos.physics.PhysicalGLSphere',
     'foam.physics.PhysicsEngine as Collider',
     'foam.util.Timer',
     'foam.graphics.webgl.Circle as GLCircle',
@@ -321,7 +322,7 @@ CLASS({
   properties: [
     { name: 'targetFps',  defaultValue: 50 },
     { name: 'timer' },
-    { name: 'n',          defaultValue: 0 },
+    { name: 'n',          defaultValue: 20 },
     { name: 'width',      defaultValue: window.innerWidth },
     { name: 'height',     defaultValue: window.innerHeight },
     { name: 'background', defaultValue: '#ccf' },
@@ -490,7 +491,7 @@ CLASS({
         }.bind(this, b));
 
         b.vy = -4;
-        b.gravity = -0.2;
+        b.gravity = -0.4;
         b.friction = 0.95;
 
         tinyBubbles.push(b);

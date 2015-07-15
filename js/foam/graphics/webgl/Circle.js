@@ -109,64 +109,6 @@ CLASS({
       return ( ((dx+dy) < r) ) && ( Movement.distance(dx, dy) < r );
     },
 
-//     function ringVertices() {
-//       /* Create a mesh for a 'triangle strip' hollow circle */
-//       var v = [].slice();
-//       var segs = this.segments;
-//       var r = 1.0;
-//       var b = 1.0 - this.borderRatio;
-//       function circPt(i) {
-//         return [
-//            (Math.sin(2 * Math.PI * i / segs) * r),
-//           -(Math.cos(2 * Math.PI * i / segs) * r),
-//           0.0
-//         ];
-//       };
-//       function innerPt(i) {
-//         return [
-//            (Math.sin(2 * Math.PI * i / segs) * b),
-//           -(Math.cos(2 * Math.PI * i / segs) * b),
-//           0.0
-//         ];
-//       };
-//       // start with the center
-//       v = v.concat(innerPt(0));
-//       v = v.concat(circPt(0));
-//       v = v.concat(innerPt(1));
-
-//       // add the rest of the edge vertices to complete the fan
-//       for (var i = 1; i < segs; i++) {
-//         v = v.concat(circPt(i));
-//         v = v.concat(innerPt(i));
-//       }
-//       v = v.concat(circPt(0));
-//       v = v.concat(innerPt(0));
-
-//       return v;
-//     },
-
-//     function circleVertices() {
-//       /* Create a mesh for a 'triangle fan' circle. This would be the case where borderRatio == 1.0 */
-//       var v = [].slice();
-//       var segs = this.segments;
-//       var r = 1;//this.r;
-//       function circPt(i) {
-//         return [
-//            (Math.sin(2 * Math.PI * i / segs) * r),
-//           -(Math.cos(2 * Math.PI * i / segs) * r),
-//           0.0
-//         ];
-//       };
-//       // start with the center
-//       v = v.concat([0.0, 0.0, 0.0]);
-
-//       // add the rest of the edge vertices to complete the fan
-//       for (var i = 0; i < segs; i++) {
-//         v = v.concat(circPt(i));
-//       }
-//       v = v.concat(circPt(0));
-//       return v;
-//     },
 
   ]
 
