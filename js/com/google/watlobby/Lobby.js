@@ -287,6 +287,8 @@ CLASS({
     { name: 'background', defaultValue: '#ccf' },
     { name: 'collider',   factory: function() {
       var c = this.Collider.create();
+      var w = this.width;
+      var h = this.height;
       // Make collision detection much faster by not checking
       // if air bubbles collide with other air bubbles
       c.detectCollisions = function() {
@@ -294,7 +296,14 @@ CLASS({
         for ( var i = 0 ; i < cs.length ; i++ ) {
           var c1 = cs[i];
           this.updateChild(c1);
+
           if ( c1.r !== 5 ) {
+            var r = c.r + c.borderWidth;
+            if ( c.x < r     ) { c.vx += 0.2; c.vy -= 0.19; }
+            if ( c.x > w - r ) { c.vx -= 0.2; c.vy += 0.19; }
+            if ( c.y < r     ) { c.vy += 0.2; c.vx += 0.19; }
+            if ( c.y > h - r ) { c.vy -= 0.2; c.vx -= 0.19; }
+
             for ( var j = i+1 ; j < cs.length ; j++ ) {
               var c2 = cs[j];
               if ( c1.intersects(c2) ) this.collide(c1, c2);
@@ -374,7 +383,6 @@ CLASS({
         c.mass = c.r/50;
         c.gravity = 0.02;
         c.friction = 0.96;
-        this.bounceOnWalls(c, this.width, this.height);
         this.collider.add(c);
       }
 
@@ -394,7 +402,6 @@ CLASS({
         c.mass = c.r/50;
         c.gravity = 0.02;
         c.friction = 0.96;
-        this.bounceOnWalls(c, this.width, this.height);
         this.collider.add(c);
       }
 
@@ -434,16 +441,6 @@ CLASS({
       this.addChild(clock);
 
       this.collider.start();
-    },
-
-    function bounceOnWalls(c, w, h) {
-      Events.dynamic(function() { c.x; c.y; }, function() {
-        var r = c.r + c.borderWidth;
-        if ( c.x < r     ) { c.vx += 0.2; c.vy -= 0.19; }
-        if ( c.x > w - r ) { c.vx -= 0.2; c.vy += 0.19; }
-        if ( c.y < r     ) { c.vy += 0.2; c.vx += 0.19; }
-        if ( c.y > h - r ) { c.vy -= 0.2; c.vx -= 0.19; }
-      });
     },
 
     function destroy() {
