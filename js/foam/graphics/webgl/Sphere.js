@@ -17,7 +17,7 @@
 
 CLASS({
   package: 'foam.graphics.webgl',
-  name: 'Circle',
+  name: 'Sphere',
   requires: [
     'foam.graphics.webgl.Shader',
     'foam.graphics.webgl.ArrayBuffer',
@@ -43,21 +43,10 @@ CLASS({
     {
       name: 'segments',
       defaultValue: 64,
-      postSet: function() {
-        this.borderRatio = this.borderRatio;
-      }
     },
     {
       name: 'r',
       defaultValue: 1,
-    },
-    {
-      name: 'borderRatio',
-      defaultValue: 1.0,
-      help: 'The proportion of radius to draw as solid. 1.0 is a filled circle, 0.01 a thin ring. Negative values extend outward.',
-      postSet: function() {
-        this.mesh = this.glMeshLibrary.getMesh('flatRing', this.segments, this.borderRatio, (this.borderRatio < 1)? this.borderRatio : 0 );
-      }
     },
     {
       name: 'meshMatrix',
@@ -72,6 +61,8 @@ CLASS({
 
     function init() {
       this.SUPER();
+
+      this.mesh = this.glMeshLibrary.getMesh('sphere', this.segments);
 
       this.program = this.Program.create();
       this.program.fragmentShader = this.Shader.create({
@@ -98,8 +89,7 @@ CLASS({
           }
         */}
         });
-      //this.color = this.color; // reset the fragment shader
-      this.borderRatio = this.borderRatio;
+
     },
 
     function intersects(c) {

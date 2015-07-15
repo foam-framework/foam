@@ -70,12 +70,13 @@ CLASS({
 
     },
 
-    function flatRing(segments, borderRatio) {
+    function flatRing(segments, borderRatio, raiseInner) {
       /* Create a mesh for a 'triangle strip' hollow circle */
       var v = [].slice();
       var segs = segments || 64;
       var r = 1.0;
       var b = 1.0 - (borderRatio || 1.0);
+      var z = raiseInner || 0;
       function circPt(i) {
         return [
            (Math.sin(2 * Math.PI * i / segs) * r),
@@ -87,7 +88,7 @@ CLASS({
         return [
            (Math.sin(2 * Math.PI * i / segs) * b),
           -(Math.cos(2 * Math.PI * i / segs) * b),
-          0.0
+          z
         ];
       };
       // start with the center
