@@ -28,6 +28,4 @@ public interface FObject
   public StringBuilder appendToJSON(StringBuilder b);
 
   public String toJSON();
-
-  public AbstractFObject set(Property p, Object value);
 }

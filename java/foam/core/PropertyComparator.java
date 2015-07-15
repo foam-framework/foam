@@ -2,6 +2,8 @@ package foam.core;
 
 import java.util.Comparator;
 
+import foam.dao.Index;
+
 /**
  * Compares two values of a particular {@link Property}.
  *

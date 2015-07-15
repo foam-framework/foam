@@ -5,12 +5,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import foam.core.DAO;
-import foam.core.DAOException;
-import foam.core.DAOInternalException;
-import foam.core.FindSink;
+import foam.dao.DAO;
+import foam.dao.DAOException;
+import foam.dao.DAOInternalException;
+import foam.dao.FindSink;
 import foam.core.HasX;
-import foam.core.MLang;
+import foam.dao.MLang;
 import foam.core.Value;
 import foam.core.X;
 

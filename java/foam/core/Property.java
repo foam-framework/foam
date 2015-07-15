@@ -23,6 +23,7 @@ import android.util.AttributeSet;
 import java.util.Comparator;
 
 import foam.android.view.ViewBridge;
+import foam.dao.Index;
 
 /**
  * Fundamental interface for a FOAM Property.

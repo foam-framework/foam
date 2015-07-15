@@ -12,7 +12,7 @@ import android.util.Log;
 import android.view.View;
 
 import foam.android.core.AttributeUtils;
-import foam.core.DAO;
+import foam.dao.DAO;
 import foam.core.X;
 
 /**

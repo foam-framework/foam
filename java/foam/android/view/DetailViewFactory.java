@@ -5,15 +5,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import foam.core.Factory;
 import foam.core.Model;
 
 /**
- * {@link Factory <ViewBridge<T>>} that inflates from a {@link String}.
+ * Factory for {@link DetailViewBridge}s that inflates from a {@link String}.
  *
  * That input string can take the form either of <code>"@layout/foobar"</code>
  * or <code>"foo.bar.SomeView"</code> giving a class name. If the string is
- * null or not understood, the {@link Factory} builds {@link DetailViewBridge}s.
+ * null or not understood, the factory builds {@link DetailViewBridge}s.
  *
  * The <code>"@layout/foobar"</code> form creates a DetailView whose inner
  * {@link View} is constructed using the provided layout instead of the default.

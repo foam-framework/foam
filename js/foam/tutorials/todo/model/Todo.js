@@ -20,9 +20,12 @@ CLASS({
   name: 'Todo',
   properties: [
     {
+      model_: 'IntProperty',
       name: 'id',
+      hidden: true,
     },
     {
+      model_: 'StringProperty',
       name: 'description',
       view: 'foam.ui.md.TextFieldView'
     },
