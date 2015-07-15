@@ -17,18 +17,10 @@
 
 package foam.core;
 
-import android.content.Context;
-
-import foam.android.view.ViewBridge;
-
 public abstract class AbstractDoubleProperty extends AbstractProperty<Double> {
 
   public int compareValues(Double d1, Double d2) {
     return d1.equals(d2) ? 0 : d1 < d2 ? -1 : 1;
   }
 
-  public ViewBridge<Double> createView(Context context) {
-    // TODO(braden): Implement createView for numeric types.
-    return null;
-  }
 }

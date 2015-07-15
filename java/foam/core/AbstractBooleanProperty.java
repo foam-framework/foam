@@ -17,12 +17,6 @@
 
 package foam.core;
 
-import android.content.Context;
-import android.util.AttributeSet;
-
-import foam.android.view.CheckBoxBridge;
-import foam.android.view.ViewBridge;
-
 public abstract class AbstractBooleanProperty extends AbstractProperty<Boolean> {
 
   public int compareValues(Boolean b1, Boolean b2) {
@@ -31,13 +25,5 @@ public abstract class AbstractBooleanProperty extends AbstractProperty<Boolean> 
 
   public boolean toNative(Boolean o) {
     return o;
-  }
-
-  public ViewBridge<Boolean> createView(Context context, AttributeSet attrs) {
-    return new CheckBoxBridge(context, attrs);
-  }
-
-  public ViewBridge<Boolean> createView(Context context) {
-    return new CheckBoxBridge(context);
   }
 }

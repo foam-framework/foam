@@ -17,14 +17,6 @@
 
 package foam.core;
 
-import android.content.Context;
-import android.util.AttributeSet;
-
-import foam.android.core.AttributeUtils;
-import foam.android.view.EditTextBridge;
-import foam.android.view.TextViewBridge;
-import foam.android.view.ViewBridge;
-
 public abstract class AbstractStringProperty extends AbstractProperty<String> {
 
   public int compareValues(String s1, String s2) {
@@ -32,14 +24,5 @@ public abstract class AbstractStringProperty extends AbstractProperty<String> {
     if ( s1 == null ) return -1;
     if ( s2 == null ) return 11;
     return s1.compareTo(s2);
-  }
-
-  public ViewBridge<String> createView(Context context) {
-    return new EditTextBridge(context);
-  }
-  public ViewBridge<String> createView(Context context, AttributeSet attrs) {
-    // Check for the read_only attribute.
-    return AttributeUtils.findBoolean(attrs, "read_only", false) ?
-        new TextViewBridge(context, attrs) : new EditTextBridge(context, attrs);
   }
 }

@@ -154,7 +154,7 @@ public class LayoutFactory implements LayoutInflaterFactory {
       return null;
     }
 
-    // Now we have both a property name and a Model, so we can createView for the Property.
+    // Now we have both a property name and a Model, so we can create a view for the Property.
     Property p = model.getProperty(propName);
     if (p == null) {
       Log.e(LOG_TAG, "Could not find property \"" + propName + "\" on model \"" + model.getName() + "\"");
@@ -182,7 +182,7 @@ public class LayoutFactory implements LayoutInflaterFactory {
       child = viewNameToViewBridge(viewName, subcontext, attrs);
       if (child == null) return null;
     } else {
-      child = p.createView(subcontext, attrs);
+      child = PropertyViewFactory.create(p, subcontext, attrs);
     }
 
     // Either way, we now have a child view. Set up the descendant context.

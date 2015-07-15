@@ -17,12 +17,8 @@
 
 package foam.core;
 
-import android.content.Context;
-import android.util.AttributeSet;
-
 import java.util.Comparator;
 
-import foam.android.view.ViewBridge;
 import foam.dao.Index;
 
 /**
@@ -44,8 +40,6 @@ public interface Property<T> extends Function<Object, T>, Comparator<Object>, Ex
   public void    addListener(PropertyChangeSupport obj, PropertyChangeListener<T> listener);
   public void    removeListener(PropertyChangeSupport obj, PropertyChangeListener<T> listener);
   public Value<T> createValue(FObject obj);
-  public ViewBridge<T> createView(Context context);
-  public ViewBridge<T> createView(Context context, AttributeSet attrs);
   // public boolean hasDefaultValue();
   //  public Object  createDefaultValue();
 }
