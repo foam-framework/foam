@@ -23,6 +23,7 @@ CLASS({
     'foam.graphics.webgl.TransMatrix4',
     'foam.graphics.webgl.RotMatrix4',
     'foam.graphics.webgl.Matrix4',
+    'foam.graphics.webgl.Matrix4Uniform'
   ],
   extendsModel: 'foam.graphics.webgl.GLView',
 
@@ -45,7 +46,7 @@ CLASS({
               this.TransMatrix4.create({ x$: this.x$, y$: this.y$, z$: this.z$ })
             ]
         });
-      }
+      },
     },
     {
       name: 'x',
@@ -98,6 +99,9 @@ CLASS({
       }
     },
     {
+      name: 'parentPosition_'
+    },
+    {
       model_: 'BooleanProperty',
       name: 'translucent',
       defaultValue: false
@@ -109,12 +113,36 @@ CLASS({
       name: 'doUpdatePosition',
       code: function(obj, topic) {
         this.positionMatrix = this.updatePosition();
+        this.parentPosition_ = this.parent.positionMatrix;
       }
     }
 
   ],
 
   methods: [
+    function init() {
+      this.Matrix4Uniform.create({
+        name: 'relativeMatrix',
+        matrix$: this.relativePosition$,
+        program$: this.program$
+      });
+      this.Matrix4Uniform.create({
+        name: 'positionMatrix',
+        matrix$: this.parentPosition_$,
+        program$: this.program$
+      });
+      this.Matrix4Uniform.create({
+        name: 'meshMatrix',
+        matrix$: this.meshMatrix$,
+        program$: this.program$
+      });
+      this.Matrix4Uniform.create({
+        name: 'projectionMatrix',
+        matrix$: this.projectionMatrix$,
+        program$: this.program$
+      });
+
+    },
 
     function updatePosition() {
       return this.StackMatrix4.create({
@@ -143,39 +171,39 @@ CLASS({
       this.gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
       this.gl.enableVertexAttribArray(vertexPositionAttribute);
 
-      // uniform vars
-      if ( this.projectionMatrix ) {
-//         var projUniform = this.gl.getUniformLocation(this.program.program, "projectionMatrix");
-//         this.gl.uniformMatrix4fv(projUniform, false, new Float32Array(this.projectionMatrix.flatten()));
-        this.program.setUniformMatrix4fv('projectionMatrix', this.projectionMatrix);
-      }
+//       // uniform vars
+//       if ( this.projectionMatrix ) {
+// //         var projUniform = this.gl.getUniformLocation(this.program.program, "projectionMatrix");
+// //         this.gl.uniformMatrix4fv(projUniform, false, new Float32Array(this.projectionMatrix.flatten()));
+//         this.program.setUniformMatrix4fv('projectionMatrix', this.projectionMatrix);
+//       }
 
-      if ( this.parent && this.parent.positionMatrix ) {
-//        var posUniform = this.gl.getUniformLocation(this.program.program, "positionMatrix");
-//        this.gl.uniformMatrix4fv(posUniform, false, new Float32Array(this.parent.positionMatrix.flatten()));
-        this.program.setUniformMatrix4fv('positionMatrix', this.parent.positionMatrix);
-      } else {
-//        var posUniform = this.gl.getUniformLocation(this.program.program, "positionMatrix");
-//        this.gl.uniformMatrix4fv(posUniform, false, new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]));
-//        this.program.setUniformMatrix4fv('positionMatrix', this.parent.positionMatrix);
-      }
+//       if ( this.parent && this.parent.positionMatrix ) {
+// //        var posUniform = this.gl.getUniformLocation(this.program.program, "positionMatrix");
+// //        this.gl.uniformMatrix4fv(posUniform, false, new Float32Array(this.parent.positionMatrix.flatten()));
+//         this.program.setUniformMatrix4fv('positionMatrix', this.parent.positionMatrix);
+//       } else {
+// //        var posUniform = this.gl.getUniformLocation(this.program.program, "positionMatrix");
+// //        this.gl.uniformMatrix4fv(posUniform, false, new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]));
+// //        this.program.setUniformMatrix4fv('positionMatrix', this.parent.positionMatrix);
+//       }
 
-      if ( this.relativePosition ) {
-//        var relUniform = this.gl.getUniformLocation(this.program.program, "relativeMatrix");
-//        this.gl.uniformMatrix4fv(relUniform, false, new Float32Array(this.relativePosition.flatten()));
-        this.program.setUniformMatrix4fv('relativeMatrix', this.relativePosition);
-      }
+//       if ( this.relativePosition ) {
+// //        var relUniform = this.gl.getUniformLocation(this.program.program, "relativeMatrix");
+// //        this.gl.uniformMatrix4fv(relUniform, false, new Float32Array(this.relativePosition.flatten()));
+//         this.program.setUniformMatrix4fv('relativeMatrix', this.relativePosition);
+//       }
 
-      if ( this.meshMatrix ) {
-//        var meshUniform = this.gl.getUniformLocation(this.program.program, "meshMatrix");
-//        this.gl.uniformMatrix4fv(meshUniform, false, new Float32Array(this.meshMatrix.flatten()));
-        this.program.setUniformMatrix4fv('meshMatrix', this.meshMatrix);
-      }
+//       if ( this.meshMatrix ) {
+// //        var meshUniform = this.gl.getUniformLocation(this.program.program, "meshMatrix");
+// //        this.gl.uniformMatrix4fv(meshUniform, false, new Float32Array(this.meshMatrix.flatten()));
+//         this.program.setUniformMatrix4fv('meshMatrix', this.meshMatrix);
+//       }
 
       if ( this.color && Array.isArray(this.color) ) {
-//        var colorUniform = this.gl.getUniformLocation(this.program.program, "color");
-//        this.gl.uniform4fv(colorUniform, new Float32Array(this.color));
-        this.program.setUniform4fv('color', this.color);
+        var colorUniform = this.gl.getUniformLocation(this.program.program, "color");
+        this.gl.uniform4fv(colorUniform, new Float32Array(this.color));
+//        this.program.setUniform4fv('color', this.color);
       }
 //console.log("Object ", this.$UID, this.name_, " ", this.projectionMatrix.flat, this.parent.positionMatrix.flat, this.relativePosition.flat, this.meshMatrix.flat)
 //console.log("Object ", this.$UID, this.name_, " ", this.x, this.y);
