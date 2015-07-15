@@ -110,10 +110,10 @@ CLASS({
   extendsModel: 'com.google.watlobby.Bubble',
 
   requires: [
+    'com.google.watlobby.Bubble',
     'foam.graphics.ImageCView',
     'foam.graphics.SimpleRectangle',
-    'foam.graphics.ViewCView',
-    'com.google.watlobby.Bubble'
+    'foam.graphics.ViewCView'
   ],
 
   properties: [
@@ -145,15 +145,15 @@ CLASS({
         this.children_.push(r);
 
         var video = this.video;
-        var vw = 560*2.5;
-        var vh = 315*2.5;
+        var vw = Math.floor(Math.min(w, h * 1.77) * 0.7);
+        var vh = Math.floor(vw / 1.77);
 
         var v = this.ViewCView.create({innerView: {
           toHTML: function() { return '<iframe width="' + vw + '" height="' + vh + '" src="https://www.youtube.com/embed/' + video + '?autoplay=1" frameborder="0" allowfullscreen></iframe>'; },
           initHTML: function() {}
         }, x: this.x, y: this.y, width: 0, height: 0});
 
-        Movement.animate(2000, function(i, j) {
+        Movement.animate(1000, function(i, j) {
           v.width = vw;
           v.height = vh;
           v.x = (w-vw)/2;
@@ -165,13 +165,11 @@ CLASS({
         // TODO: remove children from lobby when done
         var r = this.children_[0];
         var v = this.children_[1];
-        Movement.animate(1000, function() { r.alpha = 0; })();
-        /*
-        for ( var i = 1 ; i < this.children_.length ; i++ ) {
-          Movement.animate(1000, function() { this.width = this.height = 0; }.bind(this.children_[i]))();
-        }
-        */
-        v.destroy();
+        Movement.animate(
+          2000,
+          function() { v.width = v.height = r.alpha = 0; },
+          function() { v.destroy(); }
+        )();
         this.children_ = [];
       }
     }
