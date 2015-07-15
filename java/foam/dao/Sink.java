@@ -15,23 +15,14 @@
  * limitations under the License.
  */
 
-package foam.core;
+package foam.dao;
 
-import java.util.Comparator;
+import foam.core.X;
+import foam.dao.DAOException;
+import foam.dao.DAOInternalException;
 
-public class ReverseComparator
-    implements Comparator
-{
-    
-    public final Comparator delegate_;
+public interface Sink {
+  public Object put(X x, Object obj)
+    throws DAOException, DAOInternalException;
 
-    public ReverseComparator(Comparator delegate)
-    {
-        delegate_ = delegate;
-    }
-
-    public int compare(Object o1, Object o2)
-    {
-        return delegate_.compare(o2, o1);
-    }
 }

@@ -15,9 +15,12 @@
  * limitations under the License.
  */
 
-package foam.core;
+package foam.dao;
 
 import java.util.Comparator;
+
+import foam.core.Expression;
+import foam.core.X;
 
 public class ProxyDAO
   extends AbstractDAO

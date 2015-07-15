@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package foam.core;
-
-import com.android.internal.util.Predicate;
+package foam.dao;
 
 import java.util.Comparator;
 
-import static foam.core.MLang.AND;
+import foam.core.Expression;
+import foam.core.X;
+
+import static foam.dao.MLang.AND;
 
 public class PredicatedDAO extends ProxyDAO {
   protected Expression<Boolean> predicate_;

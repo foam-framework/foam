@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package foam.core;
+package foam.dao;
+
+import foam.core.X;
 
 public class RemoveSink
   implements Sink

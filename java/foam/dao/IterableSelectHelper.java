@@ -15,13 +15,15 @@
  * limitations under the License.
  */
 
-package foam.core;
+package foam.dao;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.PriorityQueue;
+
+import foam.core.Expression;
 
 public class IterableSelectHelper
 {

@@ -15,8 +15,28 @@
  * limitations under the License.
  */
 
-package foam.core;
+package foam.dao;
 
-public class MapIndex {
+import java.util.Comparator;
 
+import static java.util.Arrays.copyOf;
+
+public class CompoundComparator<T>
+    implements Comparator<T>
+{
+    private final Comparator<T>[] delegates;
+
+    public CompoundComparator(Comparator<T> ... cs) {
+      delegates = copyOf(cs, cs.length);
+    }
+
+    public int compare(T o1, T o2) {
+      for (Comparator<T> c : delegates) {
+        int v = c.compare(o1, o2);
+        if (v != 0) {
+          return v;
+        }
+      }
+      return 0;
+    }
 }

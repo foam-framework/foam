@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package foam.core;
+package foam.dao;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import foam.core.Expression;
+import foam.core.Property;
+import foam.core.X;
 
 import static java.util.Arrays.copyOf;
 
@@ -205,6 +209,27 @@ public class MLang {
     }
     public void setCount(long c) {
       count = c;
+    }
+  }
+
+  public static MaxSink MAX(Property prop) { return new MaxSink(prop); }
+  public static class MaxSink implements Sink {
+    private Object maxHolder;
+    private Property prop;
+
+    public MaxSink(Property prop) {
+      this.prop = prop;
+    }
+
+    public Object put(X x, Object obj) {
+      if (prop.compare(obj, maxHolder) > 0) { // obj is bigger, replace.
+        maxHolder = obj;
+      }
+      return obj;
+    }
+
+    public Object getMax() {
+      return maxHolder == null ? null : prop.get(maxHolder);
     }
   }
 }

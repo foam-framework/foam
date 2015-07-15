@@ -1,7 +1,9 @@
-package foam.core;
+package foam.dao;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import foam.core.X;
 
 /**
  * A {@link Sink} that records the results into a {@link LinkedList}.

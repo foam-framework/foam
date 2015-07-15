@@ -15,12 +15,28 @@
  * limitations under the License.
  */
 
-package foam.core;
+package foam.dao;
 
-public interface DAOListener
-    extends Sink
+import java.util.Comparator;
+
+import foam.core.Expression;
+import foam.core.X;
+
+public class OrderedDAO
+    extends ProxyDAO
 {
-    public void remove(X x, Object obj)
-        throws DAOException, DAOInternalException;
+    protected Comparator compare_;
 
+    public OrderedDAO(Comparator compare, DAO delegate) {
+        super(delegate);
+        compare_ = compare;
+    }
+
+    public Sink select_(X x, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit)
+        throws DAOException, DAOInternalException
+    {
+        Comparator compare = (c == null) ? compare_ :
+            new CompoundComparator(c, compare_);
+        return super.select_(x, sink, p, compare, skip, limit);
+    }
 }

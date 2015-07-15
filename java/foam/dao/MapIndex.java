@@ -15,19 +15,8 @@
  * limitations under the License.
  */
 
-package foam.core;
+package foam.dao;
 
-import java.util.Comparator;
-
-public interface Index
-{
-
-  public Object put(Object state, Object value);
-
-  public Object remove(Object state, Object value);
-  
-  public Plan plan(Object state, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit);
-
-  public long size(Object state);
+public class MapIndex {
 
 }

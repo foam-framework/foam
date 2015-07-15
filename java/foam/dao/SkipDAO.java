@@ -15,24 +15,43 @@
  * limitations under the License.
  */
 
-package foam.core;
+package foam.dao;
 
-public class DAOException extends Exception
+import java.util.Comparator;
+
+import foam.core.Expression;
+import foam.core.X;
+
+public class SkipDAO
+    extends ProxyDAO
 {
-    public DAOException() {}
 
-    public DAOException(Throwable t)
+    protected long skip_;
+
+    public SkipDAO(long skip, DAO delegate)
     {
-        super(t);
+        super(delegate);
+
+        setSkip(skip);
     }
 
-    public DAOException(String message)
+    public long getSkip()
     {
-        super(message);
+        return skip_;
     }
 
-    public DAOException(String message, Throwable t)
+    public void setSkip(long skip)
     {
-        super(message, t);
+        skip_ = skip;
     }
+
+    public Sink select_(X x, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit)
+        throws DAOException, DAOInternalException
+    {
+        long s2 = skip + getSkip();
+
+        return getDelegate().select_(x, sink, p, c, s2, limit);
+    }
+
+
 }

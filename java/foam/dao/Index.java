@@ -15,27 +15,21 @@
  * limitations under the License.
  */
 
-package foam.core;
+package foam.dao;
 
 import java.util.Comparator;
 
-// TODO: NotFoundPlan, NoPlan
+import foam.core.Expression;
 
-public interface Plan
+public interface Index
 {
 
-  public long cost();
+  public Object put(Object state, Object value);
 
-  public String toString();
+  public Object remove(Object state, Object value);
+  
+  public Plan plan(Object state, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit);
 
-  public void execute(
-      X          x,
-      Object      state,
-      Sink       sink,
-      Expression<Boolean>  p,
-      Comparator c,
-      long       skip,
-      long       limit)
-    throws DAOException, DAOInternalException;
+  public long size(Object state);
 
 }

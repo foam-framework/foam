@@ -15,9 +15,24 @@
  * limitations under the License.
  */
 
-package foam.core;
+package foam.dao;
 
-public class DAOInternalException extends Exception
+public class DAOException extends Exception
 {
+    public DAOException() {}
 
+    public DAOException(Throwable t)
+    {
+        super(t);
+    }
+
+    public DAOException(String message)
+    {
+        super(message);
+    }
+
+    public DAOException(String message, Throwable t)
+    {
+        super(message, t);
+    }
 }

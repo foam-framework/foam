@@ -15,25 +15,30 @@
  * limitations under the License.
  */
 
-package foam.core;
+package foam.dao;
 
 import java.util.Comparator;
 
-public class OrderedDAO
-    extends ProxyDAO
+import foam.core.Expression;
+import foam.core.X;
+
+// TODO: NotFoundPlan, NoPlan
+
+public interface Plan
 {
-    protected Comparator compare_;
 
-    public OrderedDAO(Comparator compare, DAO delegate) {
-        super(delegate);
-        compare_ = compare;
-    }
+  public long cost();
 
-    public Sink select_(X x, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit)
-        throws DAOException, DAOInternalException
-    {
-        Comparator compare = (c == null) ? compare_ :
-            new CompoundComparator(c, compare_);
-        return super.select_(x, sink, p, compare, skip, limit);
-    }
+  public String toString();
+
+  public void execute(
+      X x,
+      Object      state,
+      Sink       sink,
+      Expression<Boolean> p,
+      Comparator c,
+      long       skip,
+      long       limit)
+    throws DAOException, DAOInternalException;
+
 }

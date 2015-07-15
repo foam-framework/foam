@@ -15,27 +15,14 @@
  * limitations under the License.
  */
 
-package foam.core;
+package foam.dao;
 
-public class FindSink
-  implements Sink
+import foam.core.X;
+
+public interface DAOListener
+    extends Sink
 {
-  Object value = null;
-
-  public FindSink()
-  {
-  }
-
-  public Object put(X x, Object obj)
-    throws DAOException, DAOInternalException
-  {
-    value = obj;
-    return obj;
-  }
-
-  public Object getValue()
-  {
-    return value;
-  }
+    public void remove(X x, Object obj)
+        throws DAOException, DAOInternalException;
 
 }

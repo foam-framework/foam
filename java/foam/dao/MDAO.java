@@ -15,9 +15,14 @@
  * limitations under the License.
  */
 
-package foam.core;
+package foam.dao;
 
 import java.util.Comparator;
+
+import foam.core.Expression;
+import foam.core.FObject;
+import foam.core.Model;
+import foam.core.X;
 
 
 // TODO:  Abstract for now, so the code will compile.
@@ -54,7 +59,7 @@ public class MDAO
   public void remove(X x, Object obj)
     throws DAOException, DAOInternalException
   {
-    if ( obj instanceof FObject ) {
+    if ( obj instanceof FObject) {
       root_ = index_.remove(root_, obj);
     } else {
       // TODO: uncomment when we have EQ

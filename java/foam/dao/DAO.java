@@ -15,9 +15,13 @@
  * limitations under the License.
  */
 
-package foam.core;
+package foam.dao;
 
 import java.util.Comparator;
+
+import foam.core.Expression;
+import foam.core.Model;
+import foam.core.X;
 
 
 public interface DAO

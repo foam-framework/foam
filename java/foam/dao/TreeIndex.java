@@ -15,11 +15,16 @@
  * limitations under the License.
  */
 
-package foam.core;
+package foam.dao;
 
 import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
+
+import foam.core.Expression;
+import foam.core.Property;
+import foam.core.PropertyComparator;
+import foam.core.X;
 
 public class TreeIndex implements Index {
   final Property prop_;

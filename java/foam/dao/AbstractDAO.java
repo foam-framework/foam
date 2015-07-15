@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
-package foam.core;
+package foam.dao;
+
+import foam.core.Expression;
+import foam.core.Model;
+import foam.core.X;
 
 public abstract class AbstractDAO
   implements DAO
@@ -67,7 +71,7 @@ public abstract class AbstractDAO
   
 
   public void removeAll_(X x, Expression<Boolean> p) throws DAOException, DAOInternalException {
-    select_(x, new RemoveSink(this), p, null, 0, -1); 
+    select_(x, new RemoveSink(this), p, null, 0, -1);
   }
   
   

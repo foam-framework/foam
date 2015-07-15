@@ -15,28 +15,23 @@
  * limitations under the License.
  */
 
-package foam.core;
-
-import static java.util.Arrays.copyOf;
+package foam.dao;
 
 import java.util.Comparator;
 
-public class CompoundComparator<T>
-    implements Comparator<T>
+public class ReverseComparator
+    implements Comparator
 {
-    private final Comparator<T>[] delegates;
+    
+    public final Comparator delegate_;
 
-    public CompoundComparator(Comparator<T> ... cs) {
-      delegates = copyOf(cs, cs.length);
+    public ReverseComparator(Comparator delegate)
+    {
+        delegate_ = delegate;
     }
 
-    public int compare(T o1, T o2) {
-      for (Comparator<T> c : delegates) {
-        int v = c.compare(o1, o2);
-        if (v != 0) {
-          return v;
-        }
-      }
-      return 0;
+    public int compare(Object o1, Object o2)
+    {
+        return delegate_.compare(o2, o1);
     }
 }
