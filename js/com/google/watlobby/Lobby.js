@@ -133,14 +133,15 @@ CLASS({
       this.addChild(this.playIcon);
     },
     function setSelected(selected) {
+      var lobby = this.lobby;
       if ( selected ) {
         this.children_ = [];
-        var w = this.lobby.width;
-        var h = this.lobby.height;
+        var w = lobby.width;
+        var h = lobby.height;
 
-        var r = this.SimpleRectangle.create({background: 'black', alpha: 0, x: 0, y: 0, width: this.lobby.width, height: this.lobby.height});
-        this.lobby.addChild(r);
-        Movement.animate(1000, function() { r.alpha = 0.7; })();
+        var r = this.SimpleRectangle.create({background: 'black', alpha: 0, x: 0, y: 0, width: lobby.width, height: lobby.height});
+        lobby.addChild(r);
+//        Movement.animate(1500, function() { r.alpha = 0.7; })();
 
         this.children_.push(r);
 
@@ -153,23 +154,36 @@ CLASS({
           initHTML: function() {}
         }, x: this.x, y: this.y, width: 0, height: 0});
 
-        Movement.animate(1000, function(i, j) {
-          v.width = vw;
-          v.height = vh;
-          v.x = (w-vw)/2;
-          v.y = (h-vh)/2;
-        }, Movement.oscillate(0.6, 0.03, 2))();
-        this.lobby.addChild(v);
+        this.r_ = this.r;
+        lobby.collider.stop();
+        Movement.compile([
+          [500, function() { this.r = 0; }.bind(this) ],
+          [1000, function(i, j) {
+            r.alpha = 0.7;
+            v.width = vw;
+            v.height = vh;
+            v.x = (w-vw)/2;
+            v.y = (h-vh)/2;
+          }],
+          [500, function() { this.r = this.r_; }.bind(this)]
+        ])();
+        lobby.addChild(v);
         this.children_.push(v);
       } else {
         // TODO: remove children from lobby when done
         var r = this.children_[0];
         var v = this.children_[1];
-        Movement.animate(
-          2000,
-          function() { v.width = v.height = r.alpha = 0; },
-          function() { v.destroy(); }
-        )();
+//        lobby.collider.stop();
+        Movement.compile([
+          [ 500, function() { v.x = this.x; v.y = this.y; v.width = v.height = r.alpha = 0; }.bind(this) ],
+          [ 500, function() { this.r = this.r_ }.bind(this) ],
+          function() {
+            v.destroy();
+            lobby.collider.start();
+            lobby.removeChild(v);
+            lobby.removeChild(r);
+          }
+        ])();
         this.children_ = [];
       }
     }
@@ -406,7 +420,7 @@ CLASS({
         this.collider.add(c);
       }
 
-      for ( var i = 0 ; i < 250 ; i++ ) {
+      for ( var i = 0 ; i < 200 ; i++ ) {
         var b = this.PhysicalCircle.create({
           r: 5,
           x: Math.random() * this.width,
