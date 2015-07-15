@@ -421,6 +421,7 @@ CLASS({
         this.collider.add(c);
       }
 
+      var spareBubbles = [];
       var N = this.n;
       for ( var i = 0 ; i < N /*&& false*/ ; i++ ) {
         var colour = this.COLOURS[i % this.COLOURS.length];
@@ -432,15 +433,31 @@ CLASS({
           borderRatio: 0.1,
           color: colour,
         });
-        this.addChild(c);
 
         c.mass = c.r/50;
         Movement.gravity(c, 0.03);
         Movement.inertia(c);
         Movement.friction(c, 0.96);
-        this.bounceOnWalls(c, this.width, this.height);
-        this.collider.add(c);
+
+        spareBubbles.push(c);
       }
+
+      // scale the number of bubbles depending on fps
+      var self = this;
+      var scaler = this.PerformanceScaler.create({
+        items: spareBubbles,
+        addFunction: function(c) {
+          self.addChild(c);
+          self.bounceOnWalls(c, self.width, self.height);
+          self.collider.add(c);
+        },
+        removeFunction: function(c) {
+          self.removeChild(c);
+          c.cancelBounce_.destroy();
+          self.collider.remove(c);
+        }
+      });
+
 
       var tinyBubbles = [];
       for ( var i = 0 ; i < 200 && i < 20 ; i++ ) {
@@ -485,12 +502,10 @@ CLASS({
         addFunction: function(b) {
           self.collider.add(b);
           self.addChild(b);
-          console.log("added ", b.$UID);
         },
         removeFunction: function(b) {
           self.collider.remove(b);
           self.removeChild(b);
-          console.log("removed ", b.$UID);
         }
       });
 
@@ -507,7 +522,7 @@ CLASS({
     },
 
     function bounceOnWalls(c, w, h) {
-      Events.dynamic(function() { c.x; c.y; }, function() {
+      c.cancelBounce_ = Events.dynamic(function() { c.x; c.y; }, function() {
         var r = c.r;
         if ( c.x < r     ) { c.vx += 0.2; c.vy -= 0.19; }
         if ( c.x > w - r ) { c.vx -= 0.2; c.vy += 0.19; }

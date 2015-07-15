@@ -65,7 +65,7 @@ CLASS({
       model_: 'IntProperty',
       name: 'fps',
       postSet: function(old,nu) {
-        this.performance = (this.targetFps / nu) * 100;
+        this.performance = (nu / this.targetFps) * 100;
         this.X.document.title = "Performance: "+this.performance+"%";
       }
     },
