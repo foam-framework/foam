@@ -166,6 +166,7 @@ CLASS({
 
   requires: [
     'foam.util.Timer',
+    'foam.demos.supersnake.Robot',
     'foam.demos.supersnake.Laser',
     'foam.demos.supersnake.Snake',
     'foam.demos.supersnake.Mushroom',
@@ -265,6 +266,8 @@ CLASS({
 
       this.timer.i$.addListener(this.tick);
       this.timer.start();
+
+      this.table.addChild(this.Robot.create({x:200, y:200}));
 
       // Setup Physics
       this.collider.add(this.snake);
