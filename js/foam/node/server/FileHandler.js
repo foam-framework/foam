@@ -44,8 +44,9 @@ CLASS({
       this.fs.readFile(this.file, function(err, data) {
 	if ( err ) {
 	  this.send(res, 404, 'File not found.');
-	}
-	this.send(res, 200, data.toString());
+	} else {
+	  this.send(res, 200, data.toString());
+        }
       }.bind(this));
       
       return true;

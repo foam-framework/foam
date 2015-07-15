@@ -4,89 +4,61 @@
 
   <slide>
     <div class="flex-row">
-      <div class="card center" style="min-width: 90%; min-height: 80%; background: rgb(0,150,136)">
-        <div class="flex-background-img" style="background-image: url('./js/foam/demos/empire/io_extended_2015.png');">&nbsp;</div>
+      <div class="card center" style="padding: 5%;">
+        <span class="flex-col" style="font-size: 32px;">
+          <span class="big-heading center">Introducing</span>
+          <p class="center">
+            <foam model="foam.demos.graphics.Logo" text="FOAM" width="360"
+                  height="140" />
+          </p>
+          <span class="small-heading center">
+            <font color="#33f">F</font>eature <font color="#f00">O</font>riented <font color="#fc0">A</font>ctive <font color="#3c0">M</font>odeller
+          </span>
+          <br />
+          <p class="center">
+            <a href="http://foamdev.com">foamdev.com</a>
+          </p>
+          <br />
+          <p class="center">
+            Kevin Greer, <a href="mailto:kgr@google.com">kgr@google.com</a>
+          </p>
+        </span>
       </div>
     </div>
-  </slide>
-
-  <slide>
-    <div class="flex-row">
-      <div class="card center" style="min-width: 90%; min-height: 80%; background: rgb(0,150,136)">
-        <div class="flex-background-img" style="background-image: url('./js/foam/demos/empire/io_extended_title.png');">&nbsp;</div>
-      </div>
-    </div>
-  </slide>
-
-  <slide>
-    <div class="heading-card">
-      <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
-        <div class="flex-grow content small-heading">Disclaimer</div>
-      </div>
-    </div>
-    <div class="card flex-grow" style="padding: 5%; padding-top: 2%">
-      <div>
-        <div style="font-size: 150%">Exploratory Project Ahead</div>
-        <br>
-        <p>
-          FOAM started out as my 20% project and we are exploring it further
-          here in Waterloo, but it is not an officially endorsed Google
-          framework.
-        </p>
-        <br>
-        <p>
-          Like many revolutionary ideas, FOAM can be hard to understand and
-          relate to things you already know, so we’re not sure about its
-          adoption without more development, feedback, and experimentation.
-        </p>
-        <br>
-        <p>
-          WARNING: FOAM may create unexpected symptoms of productivity,
-          overzealous commitment to metaprogramming, extensive use of new
-          language, and other hazards. Take only as directed. Efficiency is
-          no guarantee of happiness.  See your doctor for symptom relief.
-        </p>
-      </div>
-    </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <foam model="foam.demos.FOAMComponents" />
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block blue">&nbsp;</div>
         <div class="flex-grow content small-heading">History Lesson</div>
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
       <iframe src="./demos/UnixSimulator.html"></iframe>
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block red">&nbsp;</div>
         <div class="flex-grow content small-heading">Holistic</div>
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
       <iframe src="./demos/demo10b2.html"></iframe>
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block yellow">&nbsp;</div>
         <div class="flex-grow content small-heading">Language-Like Features</div>
       </div>
     </div>
@@ -96,13 +68,12 @@
     <div class="card flex-col flex-grow" style="overflow: auto">
       <foam model="foam.flow.Pong" />
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block green">&nbsp;</div>
         <div class="flex-grow content small-heading">Dependency Injection</div>
       </div>
     </div>
@@ -140,13 +111,12 @@ CLASS({
         </div>
       </div>
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block blue">&nbsp;</div>
         <div class="flex-grow content small-heading">Model Types</div>
       </div>
     </div>
@@ -175,26 +145,24 @@ CLASS({
         <span style="font-size: 60%">(20k 1-week active users)</span>
       </div>
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block red">&nbsp;</div>
         <div class="flex-grow content small-heading">Architecture</div>
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
       <div style="transform:scale(0.85);transform-origin: 0 0;"><foam model="foam.demos.ArchitectureDiagram" /></div>
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block yellow">&nbsp;</div>
         <div class="flex-grow content small-heading">TodoMVC</div>
       </div>
     </div>
@@ -204,14 +172,13 @@ CLASS({
         <a href="http://TodoMVC.com">TodoMVC.com</a>, <a href="https://github.com/foam-framework/foam/tree/master/apps/todo">Source</a>
       </div>
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
 
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block green">&nbsp;</div>
         <div class="flex-grow content small-heading">Data Accesss Objects (DAOs)</div>
       </div>
     </div>
@@ -258,39 +225,36 @@ CLASS({
 
     <div class="card flex-col"><a href="./demos/dao.html">DAO Examples</a></div>
 
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block blue">&nbsp;</div>
         <div class="flex-grow content small-heading">DAO Strategies &amp; Decorators</div>
       </div>
     </div>
     <div class="card flex-col flex-grow" style="justify-content: flex-start; overflow: auto">
       <foam model="foam.demos.DAOStrategies" />
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block red">&nbsp;</div>
         <div class="flex-grow content small-heading">Query-Optimizing Cache</div>
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
       <img src="./js/foam/demos/empire/benchmarks.png">
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block yellow">&nbsp;</div>
         <div class="flex-grow content small-heading">Canvas Views</div>
       </div>
     </div>
@@ -392,13 +356,26 @@ CLASS({
       </foam>
       </div>
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
+  </slide>
+
+  <slide>
+    <!--
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Task Manager</div>
+      </div>
+    </div>
+    -->
+    <div class="card flex-col flex-grow" style="overflow: hidden">
+      <foam model="foam.apps.ctm.TaskManager" />
+    </div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block green">&nbsp;</div>
         <div class="flex-grow content small-heading">Reactive Programming</div>
       </div>
     </div>
@@ -444,26 +421,24 @@ CLASS({
         </source>
       </code-sample>
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block blue">&nbsp;</div>
         <div class="flex-grow content small-heading">Reactive Animation</div>
       </div>
     </div>
     <div class="card flex-col flex-grow" style="overflow: hidden">
       <foam model="foam.demos.SolarSystem" />
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block red">&nbsp;</div>
         <div class="flex-grow content small-heading">Physics</div>
       </div>
     </div>
@@ -479,26 +454,24 @@ CLASS({
         ]})
       %>
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block yellow">&nbsp;</div>
         <div class="flex-grow content small-heading">Live-Coding</div>
       </div>
     </div>
     <div class="card flex-col flex-grow" style="overflow: hidden">
       <foam model="foam.demos.DragonLiveCoding" />
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block green">&nbsp;</div>
         <div class="flex-grow content small-heading">Reusable Controllers</div>
       </div>
     </div>
@@ -506,13 +479,12 @@ CLASS({
       <a href="http://foam-framework.github.io/foam/apps/mbug/main.html" target="_blank"><img style="box-shadow: 0 5px 15px #aaa;max-height:530px" src="./demos/democat/MBug.png"></a>
       <a href="http://foam-framework.github.io/foam/apps/gmail/main.html" target="_blank"><img style="margin-left: 200px;border:1px solid;box-shadow: 0 5px 15px #aaa;max-height:530px;" src="./demos/democat/GMail.png"></a>
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block blue">&nbsp;</div>
         <div class="flex-grow content small-heading">Toolability (meta-programming)</div>
       </div>
     </div>
@@ -538,13 +510,12 @@ CLASS({
         <%= foam.documentation.diagram.DocDiagramView.create({data: foam.documentation.diagram.ModelDocDiagram}) %>
       </div>
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block red">&nbsp;</div>
         <div class="flex-grow content small-heading">Tutorial</div>
       </div>
     </div>
@@ -556,13 +527,12 @@ CLASS({
         <iframe src="http://foam-framework.github.io/foam/tutorial/0-intro/"></iframe>
       </div>
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block yellow">&nbsp;</div>
         <div class="flex-grow content small-heading">Calculator App</div>
       </div>
     </div>
@@ -574,13 +544,12 @@ CLASS({
         <a href="./apps/acalc/Calc.html">Hosted Version</a>, <a href="https://chrome.google.com/webstore/detail/calculator/joodangkbfjnajiiifokapkpmhfnpleo">Chrome Web Store</a>, <a href="./apps/pcalc/Calc.html">Polymer Version</a>, <a href="./apps/calc/RawCalc.html">Raw Version</a>, <a href="./demos/DemoCat.html?q=calc">Other Versions</a>
       </div>
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block cyan">&nbsp;</div>
+        <div class="small-color-block green">&nbsp;</div>
         <div class="flex-grow content small-heading">Summary</div>
       </div>
     </div>
@@ -618,36 +587,29 @@ CLASS({
         <iframe src="./demos/GoogleSimulator.html"></iframe>
       </div>
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
   <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block red">&nbsp;</div>
+        <div class="flex-grow content small-heading">Summary<sup>2</sup>: Efficiency</div>
+      </div>
+    </div>
     <div class="flex-row">
       <div class="center" style="padding: 5%; min-width: 80%">
         <span class="flex-col" style="font-size: 32px;">
-          <p class="center">
-            <foam model="foam.demos.graphics.Logo" text="FOAM" width="360"
-                  height="140" />
-          </p>
-
-          <span class="small-heading center"><b><i>Build Fast Apps
-                Fast</i></b></span>
-
-          <br>
-
-          <span class="center"><b><i>Efficiency</i></b> is our value
-            proposition</span>
-
-          <br>
-
-          <span class="center">Application <b>performance</b></span>
-          <span class="center">&amp;</span>
-          <span class="center">Developer <b>efficiency</b></span>
-
+          <div style="font-size:48px;color:gray;">
+            <i style="color:red;">Efficiency</i> is <font color="#33f">F</font><font color="#f00">O</font><font color="#fc0">A</font><font color="#3c0">M</font>'s Value Proposition<br>
+            Application <font color="red">Performance</font><br>
+            Developer <font color="red">Efficiency</font><br>
+            <i style="color:#3c0;font-size:50px;">"Fast Apps Fast"</i><br>
+            <br>
+            <span style="color:#33f;font-size:50px;"><strike>View Library</strike><br>Modeling Framework</span><br>
+          </div>
         </span>
       </div>
     </div>
-    <div class="flex-background-img watermark-bottom-right" style="background-image: url('./js/foam/demos/empire/io_extended_watermark.png');">&nbsp;</div>
   </slide>
 
 </slides>

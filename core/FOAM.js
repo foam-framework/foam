@@ -59,8 +59,8 @@ var $$ = function (cls) {
 };
 
 
-var FOAM = function(map, opt_X) {
-   var obj = JSONUtil.mapToObj(opt_X || X, map, undefined);
+var FOAM = function(map, opt_X, seq) {
+   var obj = JSONUtil.mapToObj(opt_X || X, map, undefined, seq);
    return obj;
 };
 
@@ -245,7 +245,12 @@ var CLASS = function(m) {
 
     if ( EAGER[id] ) {
       USED_MODELS[id] = true;
-      var model = JSONUtil.mapToObj(X, m, Model);
+      var work = [];
+      var model = JSONUtil.mapToObj(X, m, Model, work);
+      if ( work.length > 0 ) {
+        model.extra__ = aseq.apply(null, work);
+      }
+
       X.registerModel(model, undefined, true);
 
       return model;
@@ -264,9 +269,14 @@ var CLASS = function(m) {
         USED_MODELS[id] = true;
         UNUSED_MODELS[id] = undefined;
 
+        var work = [];
         // console.time('buildModel: ' + id);
-        var model = JSONUtil.mapToObj(X, m, Model);
+        var model = JSONUtil.mapToObj(X, m, Model, work);
         // console.timeEnd('buildModel: ' + id);
+
+        if ( work.length > 0 ) {
+          model.extra__ = aseq.apply(null, work);
+        }
 
         X.registerModel(model);
 

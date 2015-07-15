@@ -112,7 +112,6 @@ CLASS({
 
   templates: [
     { name: 'toHTML' },
-    // (0) Facilitate absolutely positioned watermarks within slides.
     // (1) Undo font scaling from foam-components styles.
     // (2) Reposition pong component scores within flex container.
     // (3) Code formatting.
@@ -120,13 +119,6 @@ CLASS({
     // (4) Summary list element element styling.
     function CSS() {/*
       slides deck { position: relative; }
-      .watermark-bottom-right {
-        position: absolute;
-        bottom: 1%;
-        right: 1%;
-        width: 20%;
-        height: 10%;
-      }
       foam-components { font-size: 100%; }
       #pong-container div { display: flex; }
       #pong-container span[name="lScore"] { left: 390px; top:20px; }
