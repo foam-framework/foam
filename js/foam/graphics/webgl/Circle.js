@@ -57,6 +57,7 @@ CLASS({
       help: 'The proportion of radius to draw as solid. 1.0 is a filled circle, 0.01 a thin ring. Negative values extend outward.',
       postSet: function() {
         this.mesh = this.glMeshLibrary.getMesh('flatRing', this.segments, this.borderRatio, (this.borderRatio < 1)? this.borderRatio : 0 );
+        this.meshNormals = this.glMeshLibrary.getNormals('flatRing', this.segments, this.borderRatio, (this.borderRatio < 1)? this.borderRatio : 0 );
       }
     },
     {
@@ -76,27 +77,53 @@ CLASS({
       this.program = this.Program.create();
       this.program.fragmentShader = this.Shader.create({
         type: "fragment",
-        source:
-          "precision lowp float;\n"+
-          "uniform vec4 color;\n"+
-          "void main(void) {\n" +
-          "  gl_FragColor = color;\n"+
-          "}\n"
+        source: function() {/*
+          precision lowp float;
+          uniform vec4 color;
+
+          varying vec3 vNormal;
+          varying vec3 vPosition;
+
+          void main(void) {
+            vec4 dark = vec4(0.5, 0.5, 0.5, 1.0);
+            vec3 uLight = vec3(-1, -1, -1);
+
+            // Mix in diffuse light
+            float diffuse = dot(normalize(uLight - vPosition), vNormal);
+            diffuse = max(0.0, diffuse);
+
+            gl_FragColor = mix(dark, color, 0.1 + 0.9 * diffuse);
+          }
+        */},
       });
       this.program.vertexShader = this.Shader.create({
         type: "vertex",
         source: function() {/*
+          #version 150
+
           attribute vec3 aVertexPosition;
+          attribute vec3 aNormal;
 
           uniform mat4 positionMatrix;
           uniform mat4 relativeMatrix;
           uniform mat4 projectionMatrix;
           uniform mat4 meshMatrix;
 
+          uniform mat4 relativeMatrixTI;
+          uniform mat4 projectionMatrixTI;
+          uniform mat4 meshMatrixTI;
+
+          varying vec3 vNormal;
+          varying vec3 vPosition;
+
           void main(void) {
-            gl_Position = projectionMatrix * positionMatrix * relativeMatrix * meshMatrix * vec4(aVertexPosition, 1.0);
+            mat4 matrix = projectionMatrix * positionMatrix * relativeMatrix * meshMatrix;
+            mat3 normalMatrix = meshMatrixTI * relativeMatrixTI * positionMatrixTI;
+            vNormal = vec3(normalMatrix * vec4(aNormal, 1.0));
+            vPosition = vec3(matrix * vec4(aVertexPosition, 1.0));
+            gl_Position = matrix * vec4(aVertexPosition, 1.0);
           }
-        */}
+        */},
         });
       //this.color = this.color; // reset the fragment shader
       this.borderRatio = this.borderRatio;

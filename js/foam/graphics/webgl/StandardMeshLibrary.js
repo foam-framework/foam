@@ -19,7 +19,10 @@ CLASS({
   package: 'foam.graphics.webgl',
   name: 'StandardMeshLibrary',
 
-  requires: ['foam.graphics.webgl.ArrayBuffer'],
+  requires: [
+    'foam.graphics.webgl.ArrayBuffer',
+    'foam.graphics.webgl.Vector3',
+  ],
 
   documentation: function() {/* Generates and caches ArrayBuffer objects
     for various meshes. Typically meshes are unit sized and scaled as needed
@@ -28,6 +31,10 @@ CLASS({
   properties: [
     {
       name: 'cache_',
+      factory: function() { return {}; }
+    },
+    {
+      name: 'normalCache_',
       factory: function() { return {}; }
     }
   ],
@@ -44,6 +51,32 @@ CLASS({
       }
       return this.cache_[cacheName];
     },
+    function getNormals(name) {
+      /* Call with the same arguments as getMesh() to retrieve matching normals */
+      var args = Array.prototype.slice.call(arguments, 1);
+      var cacheName = name +"_"+ args.join('-');
+      if ( ! this.normalCache_[cacheName] ) {
+        this.normalCache_[cacheName] =
+              this.ArrayBuffer.create({
+                  vertices: this.calcNormals(this.getMesh.apply(this, arguments).vertices),
+                  drawMode: ''
+              });
+      }
+      return this.normalCache_[cacheName];
+    },
+
+    function calcNormals(vertices) {
+      var cross_ = this.Vector3.getPrototype().cross_;
+      var nv = [];
+      var prev = vertices.slice(vertices.length-3, vertices.length-1);
+      // take the cross product of each pair of adjacent vectors
+      for (var i = 0; i < vertices.length; i+=3) {
+        var cur = vertices.slice(i, i+2);
+        nv = nv.concat(cross_(prev, cur));
+      }
+      return nv;
+    },
+
 
     function flatUnitRectangle() {
       return this.ArrayBuffer.create({

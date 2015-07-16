@@ -29,7 +29,7 @@ CLASS({
 
   imports: [
     'projectionMatrix$',
-    'glMeshLibrary'
+    'glMeshLibrary',
   ],
   exports: [
     'gl$',
@@ -77,6 +77,10 @@ CLASS({
     },
     {
       name: 'mesh',
+      type: 'foam.graphics.webgl.ArrayBuffer'
+    },
+    {
+      name: 'meshNormals',
       type: 'foam.graphics.webgl.ArrayBuffer'
     },
     {
@@ -162,15 +166,24 @@ CLASS({
       var gl = this.gl;
       if ( ! gl || ! this.mesh ) return;
 
-      this.mesh.bind();
-
       this.program.use();
 
-      // attribute vars
+      // normals
+      if (this.meshNormals) {
+        this.mesh.bind();
+
+        var norms = this.gl.getAttribLocation(this.program.program, "aNormal");
+        this.gl.vertexAttribPointer(norms, 3, gl.FLOAT, false, 0, 0);
+        this.gl.enableVertexAttribArray(norms);
+      }
+
+      // vertices
+      this.mesh.bind();
       vertexPositionAttribute = this.gl.getAttribLocation(this.program.program, "aVertexPosition");
       this.gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
       this.gl.enableVertexAttribArray(vertexPositionAttribute);
 
+      // color
       if ( this.color && Array.isArray(this.color) ) {
         var colorUniform = this.gl.getUniformLocation(this.program.program, "color");
         this.gl.uniform4fv(colorUniform, new Float32Array(this.color));

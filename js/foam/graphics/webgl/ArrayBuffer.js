@@ -52,7 +52,7 @@ CLASS({
         }
         return this.instance_.buffer;
       }
-    }
+    },
   ],
 
   methods: [
@@ -71,6 +71,7 @@ CLASS({
       // dump this.vertices into gl object this.instance_.buffer, static mode (write once, read many)
       this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(this.vertices), this.gl.STATIC_DRAW);
     },
+
     function destroy() {
       if ( this.instance_.buffer ) {
         this.gl.deleteBuffer(this.instance_.buffer);
