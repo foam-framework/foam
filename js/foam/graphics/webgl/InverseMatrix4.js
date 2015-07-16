@@ -19,6 +19,8 @@ CLASS({
   package: 'foam.graphics.webgl',
   name: 'InverseMatrix4',
 
+  extendsModel: 'foam.graphics.webgl.Matrix4',
+
   properties: [
     {
       name: 'source',
