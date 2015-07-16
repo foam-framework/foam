@@ -39,7 +39,7 @@ CLASS({
           }),
           listView: {
             factory_: 'foam.ui.DAOListView',
-            rowView: 'foam.tutorial.todo.ui.TodoCitationView'
+            rowView: 'foam.tutorials.todo.ui.TodoCitationView'
           },
           cannedQueryDAO: [
             this.CannedQuery.create({

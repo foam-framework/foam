@@ -16,7 +16,7 @@
  */
 
 CLASS({
-  package: 'foam.tutorial.todo.ui',
+  package: 'foam.tutorials.todo.ui',
   name: 'TodoCitationView',
   extendsModel: 'foam.ui.md.DetailView',
 

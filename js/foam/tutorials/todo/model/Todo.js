@@ -16,7 +16,7 @@
  */
 
 CLASS({
-  package: 'foam.tutorial.todo.model',
+  package: 'foam.tutorials.todo.model',
   name: 'Todo',
   properties: [
     {
