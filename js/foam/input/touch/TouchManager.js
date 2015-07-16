@@ -105,9 +105,14 @@ CLASS({
     {
       name: 'onTouchStart',
       code: function(e) {
+        if (!e._touchcount)
+          e._touchcount = 0;
+        e._touchcount++;
         // Attach an element-specific touch handlers, in case it gets removed
-        // from the DOM.
-        this.attach(e.target);
+        // from the DOM. We only need to do this once, so do it when the first
+        // touch starts on the object.
+        if (e._touchcount == 1)
+          this.attach(e.target);
 
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
@@ -132,7 +137,10 @@ CLASS({
     {
       name: 'onTouchEnd',
       code: function(e) {
-        this.detach(e.target);
+        e._touchcount--;
+        // Don't detach handlers until all touches on the object have ended.
+        if (e._touchcount == 0)
+          this.detach(e.target);
 
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
