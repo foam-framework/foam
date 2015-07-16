@@ -74,7 +74,7 @@ CLASS({
 
       var curPt = vertices.slice(0, 3);
       var nextPt = vertices.slice(3, 6);
-      var vec1 = norm_(sub_(curPt, vertices.slice(vertices.length-3, vertices.length)));
+      var vec1 = norm_(sub_(vertices.slice(6, 9), curPt));
       var vec2;
       var flip = 1;
       // take the cross product of each pair of adjacent vectors
@@ -88,7 +88,8 @@ CLASS({
         vec1 = vec2;
         curPt = nextPt;
       }
-      nextPt = vertices.slice(0, 3);
+      nextPt = vertices.slice(vertices.length-9, vertices.length-6);
+      flip = -flip;
       vec2 = norm_(sub_(nextPt, curPt));
       nv = nv.concat(cross_(vec1, vec2));
 

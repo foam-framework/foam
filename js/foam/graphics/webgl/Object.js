@@ -199,11 +199,12 @@ CLASS({
 
       // normals
       if (this.meshNormals) {
-        this.meshNormals.bind();
-
         var norms = this.gl.getAttribLocation(this.program.program, "aNormal");
-        this.gl.vertexAttribPointer(norms, 3, gl.FLOAT, false, 0, 0);
-        this.gl.enableVertexAttribArray(norms);
+        if (norms) {
+          this.meshNormals.bind();
+          this.gl.vertexAttribPointer(norms, 3, gl.FLOAT, false, 0, 0);
+          this.gl.enableVertexAttribArray(norms);
+        }
       }
 
       // vertices
