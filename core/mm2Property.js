@@ -264,7 +264,7 @@ var Property = {
       name: 'modelId',
       type: 'String',
       view: 'foam.ui.TextFieldView',
-      help: 'Id of the model that this is a property on',
+      help: 'Id of the model that this is a property of',
       transient: true
     },
     {
