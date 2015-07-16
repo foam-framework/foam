@@ -618,7 +618,7 @@ var FObject = {
     c.X = this.X;
     for ( var key in this.instance_ ) {
       var value = this[key];
-      if ( value ) {
+      if ( value !== undefined ) {
         var prop = this.model_.getProperty(key);
         if ( prop && prop.cloneProperty )
           c.instance_[key] = prop.cloneProperty.call(prop, value);
@@ -634,7 +634,7 @@ var FObject = {
     c.X = this.X;
     for ( var key in this.instance_ ) {
       var value = this[key];
-      if ( value ) {
+      if ( value !== undefined ) {
         var prop = this.model_.getProperty(key);
         if ( prop && prop.deepCloneProperty )
           c.instance_[key] = prop.deepCloneProperty.call(prop, value);
