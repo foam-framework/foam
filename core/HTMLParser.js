@@ -216,7 +216,7 @@ var HTMLParser = {
 
   attributes: repeat(sym('attribute'), sym('whitespace')),
 
-  label: str(plus(notChars(' =/\t\r\n<>\'"'))),
+  label: str(plus(notChars(' %=/\t\r\n<>\'"'))),
 
   tagName: sym('label'),
 
