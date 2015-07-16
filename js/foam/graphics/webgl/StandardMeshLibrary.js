@@ -69,18 +69,22 @@ CLASS({
       var cross_ = this.Vector3.getPrototype().cross_;
       var sub_ = this.Vector3.getPrototype().subtract_;
       var norm_ = this.Vector3.getPrototype().normalize_;
+      var scale_ = this.Vector3.getPrototype().scale_;
       var nv = [];
 
       var curPt = vertices.slice(0, 3);
       var nextPt = vertices.slice(3, 6);
       var vec1 = norm_(sub_(curPt, vertices.slice(vertices.length-3, vertices.length)));
       var vec2;
+      var flip = 1;
       // take the cross product of each pair of adjacent vectors
+      // Since the triangle strip alternates directions, every other normal must be flipped
       for (var i = 0; i < vertices.length-3; i+=3) {
         nextPt = vertices.slice(i+3, i+6);
         vec2 = norm_(sub_(nextPt, curPt));
 
-        nv = nv.concat(cross_(vec1, vec2));
+        nv = nv.concat(scale_(cross_(vec1, vec2), flip));
+        flip = -flip;
         vec1 = vec2;
         curPt = nextPt;
       }
@@ -97,10 +101,10 @@ CLASS({
       return this.ArrayBuffer.create({
         drawMode: 'triangle strip',
         vertices: [
-          1.0, 1.0, 0.0,
           0.0, 1.0, 0.0,
+          1.0, 1.0, 0.0,
+          0.0, 0.0, 0.0,
           1.0, 0.0, 0.0,
-          0.0, 0.0, 0.0
         ]
       });
     },
@@ -112,7 +116,7 @@ CLASS({
           1.0, 1.0, 0.0,
           -1.0, 1.0, 0.0,
           1.0, -1.0, 0.0,
-          -1.0, -1.0, 0.0
+          -1.0, -1.0, 0.0,
         ]
       });
 

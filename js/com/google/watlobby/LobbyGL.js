@@ -34,7 +34,7 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'Bubble',
 
-  extendsModel: 'foam.demos.physics.PhysicalGLSphere',
+  extendsModel: 'foam.demos.physics.PhysicalGLCircle',
 
   requires: [
     'foam.graphics.webgl.FlatImage',
@@ -105,7 +105,7 @@ CLASS({
 
         this.mass = this.INFINITE_MASS;
         this.vx = this.vy = 0;
-        this.cancel_ = Movement.animate(4000, function() {
+        this.cancel_ = Movement.animate(2000, function() {
           var width = this.lobby.width;
           var height = this.lobby.height;
           this.z = 500;

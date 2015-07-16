@@ -62,6 +62,7 @@ CLASS({
       defaultValue: 'flatUnitRectangle',
       postSet: function() {
         this.mesh = this.glMeshLibrary.getMesh(this.shapeName);
+        this.meshNormals = this.glMeshLibrary.getNormals(this.shapeName);
         this.textureCoords = this.mesh;
       }
     },
@@ -77,7 +78,10 @@ CLASS({
       this.program.fragmentShader = this.Shader.create({
         type: "fragment",
         source: function() {/*
-          precision mediump float;
+          precision lowp float;
+
+          varying vec3 vNormal;
+          varying vec3 vPosition;
 
           varying vec2 vTextureCoord;
 
@@ -88,7 +92,15 @@ CLASS({
             vec4 texel = texture2D(uSampler, vec2(vTextureCoord.x, vTextureCoord.y));
             if(texel.a < 0.01)
                discard;
-            gl_FragColor = texel;
+
+            vec4 dark = vec4(0.0, 0.0, 0.0, 1.0);
+            vec3 uLight = vec3(-10, -10, 15);
+
+            // Mix in diffuse light
+            float diffuse = dot(normalize(uLight), normalize(vNormal));
+            diffuse = max(0.0, diffuse);
+
+            gl_FragColor = mix(dark, texel, 0.5 + 0.9 * diffuse);
           }
         */}
       });
@@ -97,16 +109,23 @@ CLASS({
         source: function() {/*
           attribute vec3 aVertexPosition;
           attribute vec3 aTexPosition;
+          attribute vec3 aNormal;
 
           uniform mat4 positionMatrix;
           uniform mat4 relativeMatrix;
           uniform mat4 projectionMatrix;
           uniform mat4 meshMatrix;
+          uniform mat4 normalMatrix;
 
           varying vec2 vTextureCoord;
+          varying vec3 vNormal;
+          varying vec3 vPosition;
 
           void main(void) {
-            gl_Position = projectionMatrix * positionMatrix * relativeMatrix * meshMatrix * vec4(aVertexPosition, 1.0);
+            mat4 matrix = projectionMatrix * positionMatrix * relativeMatrix * meshMatrix;
+            vNormal = vec3(normalMatrix * vec4(aNormal, 1.0));
+            vPosition = vec3(matrix * vec4(aVertexPosition, 1.0));
+            gl_Position = matrix * vec4(aVertexPosition, 1.0);
             vTextureCoord = vec2(aTexPosition.x, aTexPosition.y);
           }
         */}

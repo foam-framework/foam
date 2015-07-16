@@ -140,6 +140,10 @@ CLASS({
       return [ a[0]/l, a[1]/l, a[2]/l ];
     },
 
+    function scale_(a, s) {
+      return [ a[0]*s, a[1]*s, a[2]*s ];
+    },
+
     function toString() {
       var f = this.flat;
       return "["+f[0]+", "+f[1]+", "+f[2]+"]";
