@@ -76,6 +76,7 @@ CLASS({
       name: 'data',
       factory: function() {
         return this.BrowserConfig.create({
+          model: this.Todo,
           dao: this.dao,
           cannedQueryDAO: this.cannedQueryDAO,
           listView: {
