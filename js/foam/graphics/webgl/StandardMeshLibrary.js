@@ -56,11 +56,15 @@ CLASS({
       var args = Array.prototype.slice.call(arguments, 1);
       var cacheName = name +"_"+ args.join('-');
       if ( ! this.normalCache_[cacheName] ) {
-        this.normalCache_[cacheName] =
+        if (this[name+"_normals"]) {
+          this.normalCache_[cacheName] = this[name+"_normals"].apply(this, args);
+        } else {
+          this.normalCache_[cacheName] =
               this.ArrayBuffer.create({
                   vertices: this.calcNormals(this.getMesh.apply(this, arguments).vertices),
                   drawMode: 'points'
               });
+        }
       }
       return this.normalCache_[cacheName];
     },
@@ -102,10 +106,21 @@ CLASS({
       return this.ArrayBuffer.create({
         drawMode: 'triangle strip',
         vertices: [
-          0.0, 1.0, 0.0,
           1.0, 1.0, 0.0,
-          0.0, 0.0, 0.0,
+          0.0, 1.0, 0.0,
           1.0, 0.0, 0.0,
+          0.0, 0.0, 0.0,
+        ]
+      });
+    },
+    function flatUnitRectangle_normals() {
+      return this.ArrayBuffer.create({
+        drawMode: 'points',
+        vertices: [
+          0.0, 0.0, 1,
+          0.0, 0.0, 1,
+          0.0, 0.0, 1,
+          0.0, 0.0, 1,
         ]
       });
     },
