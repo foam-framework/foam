@@ -261,6 +261,13 @@ var Property = {
       */}
     },
     {
+      name: 'modelId',
+      type: 'String',
+      view: 'foam.ui.TextFieldView',
+      help: 'Id of the model that this is a property on',
+      transient: true
+    },
+    {
       name: 'displayWidth',
       type: 'int',
       displayWidth: 8,
@@ -660,6 +667,11 @@ var Property = {
     f: function(obj) { return obj[this.name] },
     compare: function(o1, o2) {
       return this.compareProperty(this.f(o1), this.f(o2));
+    },
+    readResolve: function() {
+      if ( this.modelId )
+	return this.X.lookup(this.modelId)[constantize(this.name)];
+      return this;
     },
     toSQL: function() { return this.name; },
     toMQL: function() { return this.name; },
