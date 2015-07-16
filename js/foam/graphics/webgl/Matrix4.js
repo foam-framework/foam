@@ -75,7 +75,7 @@ CLASS({
       return e;
     },
 
-    function elementsFromFlat_(els) {
+    function flatFromElements_(els) {
       var flat = [];
 
       for (var j=0; i < 4; ++i) {
@@ -112,73 +112,6 @@ CLASS({
              "\t"+f[12]+",\t\t\t"+f[13]+",\t\t\t"+f[14]+",\t\t\t"+f[15]+"]";
     },
 
-    function inverse() {
-      var a = this.elements;
-      var det = this.determinant(a);
-      return this.model_.create({ elements: this.scaleAdjoint(1.0 / det, a); });
-    },
-    function inverseTranspose() {
-      var a = this.elements;
-      var det = this.determinant(a);
-      var els = this.scaleAdjoint(1.0 / det, a);
-      // transpose
-      for (var j=0; j < 4; ++j) {
-        for (var i=0; i < 4; ++i) {
-          var swap = els[i][j];
-          els[i][j] = els[j][i];
-          els[j][i] = swap;
-        }
-      }
-
-      return this.model_.create({ elements: els });
-    },
-
-    function scaleAdjoint(s,m)
-    {
-      var a = [[],[],[],[]];
-      var i,j;
-
-      for (i=0; i<4; i++) {
-        for (j=0; j<4; j++) {
-          a[j][i] = this.cofactor(m, i, j) * s;
-        }
-      }
-      return a;
-    },
-
-    function determinant(m)
-    {
-       var d;
-       d =  m[0][0] * this.cofactor(m, 0, 0);
-       d += m[0][1] * this.cofactor(m, 0, 1);
-       d += m[0][2] * this.cofactor(m, 0, 2);
-       d += m[0][3] * this.cofactor(m, 0, 3);
-       return d;
-    },
-
-    function cofactor(m,i,j)
-    {
-      var f;
-      int ii[4], jj[4], k;
-
-      for (k=0; k<i; k++) ii[k] = k;
-      for (k=i; k<3; k++) ii[k] = k+1;
-      for (k=0; k<j; k++) jj[k] = k;
-      for (k=j; k<3; k++) jj[k] = k+1;
-
-      f = m[ii[0]][jj[0]] * (m[ii[1]][jj[1]]*m[ii[2]][jj[2]]
-        - m[ii[1]][jj[2]]*m[ii[2]][jj[1]]);
-      f -= m[ii[0]][jj[1]] * (m[ii[1]][jj[0]]*m[ii[2]][jj[2]]
-        - m[ii[1]][jj[2]]*m[ii[2]][jj[0]]);
-      f += m[ii[0]][jj[2]] * (m[ii[1]][jj[0]]*m[ii[2]][jj[1]]
-        - m[ii[1]][jj[1]]*m[ii[2]][jj[0]]);
-
-      k = i+j;
-      if ( k != (k/2)*2) {
-        f = -f;
-      }
-      return f;
-    }
 
 
 
