@@ -322,6 +322,10 @@ a:visited { color: #205caa; }
 
 /* custom */
 
+img {
+  border: 1px solid #eee;
+}
+
 .toc {
   background-color: #eef;
   display: inline-block;

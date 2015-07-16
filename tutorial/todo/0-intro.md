@@ -53,12 +53,14 @@ FOAM web apps can be loaded in two ways:
   file.
 
 For most of this tutorial, we'll use the development mode. A guide to using the
-build tool is found in [TODO: UPDATE THIS LINK]().
+build tool is coming soon. In the meantime, there are [several](https://github.com/foam-framework/foam/blob/master/apps/mbug/build.sh) [scripts](https://github.com/foam-framework/foam/blob/master/apps/todo/build.sh) that give an idea of how to use it.
 
 ### Loading FOAM for the first time
 
 The final version of the tutorial app we're about to build lives in the FOAM
 repository as a demo. Let's load it up now, and see where we'll be going.
+
+You can see it live on Github [here]({{ site.url }}/foam/index.html?model=foam.tutorials.todo.TodoApp).
 
 FOAM includes a generic `index.html` page that will load FOAM and then load any
 model specified in the query parameters. We'll use that to load the demo app.
@@ -70,7 +72,12 @@ From the $PROJECT directory, let's start our web server:
 
 Now the $PROJECT directory is served from [http://localhost:8000/](http://localhost:8000/).
 
-To view the Todo app, go to [http://localhost:8000/index.html?model=foam.tutorials.todo.TodoApp](http://localhost:8000/index.html?model=foam.tutorials.todo.TodoApp).
+To view the Todo app, go to [http://localhost:8000/foam/index.html?model=foam.tutorials.todo.TodoApp](http://localhost:8000/foam/index.html?model=foam.tutorials.todo.TodoApp).
+
+You should be seeing something like this:
+
+![List view screenshot]({{ site.url }}/tutorial/todo/assets/final-list.png)
+![Detail view screenshot]({{ site.url }}/tutorial/todo/assets/final-details.png)
 
 Try it out! The app is a fairly basic Todo list. You can create new Todo items
 with the red + button, edit existing Todos, search-as-you-type, and more. On

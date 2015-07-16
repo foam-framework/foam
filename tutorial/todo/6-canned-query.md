@@ -9,6 +9,8 @@ tutorial: 6
 You may have noticed that our Todo Browser has a "sausage menu" button in the
 corner. If you touch it, it animates a slide-out menu... with nothing in it.
 
+![Empty menu overlay]({{ site.url }}/tutorial/todo/assets/empty-menu.png)
+
 Let's fill in the menu.
 
 ### Canned Queries
@@ -56,11 +58,14 @@ For our `Todo` model, then, we can use `Todo.TITLE` and `Todo.IS_COMPLETED`.
 these entries in the menu.
 
 We want three canned queries:
+
 - "Todo": `EQ(this.Todo.IS_COMPLETED, false)`
 - "Done": `EQ(this.Todo.IS_COMPLETED, true)`
 - "Everything": `TRUE`
 
-Let's continue expanding the `factory` for `data` in `TodoApp.js`:
+Open up `TodoApp.js`. First, add `foam.mlang.CannedQuery` to `requires`.
+
+Then expand the `factory` for `data`:
 
 {% highlight js %}
 {
@@ -102,6 +107,42 @@ Now if you run the app and open the menu, you'll see that there are now three
 entries, and that choosing one will close the menu and switch to viewing that
 subset of the data.
 
+![Alphabetical list]({{ site.url }}/tutorial/todo/assets/menu-alphabetical.png)
+
+Note that the entries are in alphabetical order, not the order we wrote them in
+the file. Let's fix the orders.
+
+
+### Controlling canned query order
+
+Canned queries can provide a `section` property, which groups them into
+clusters. They can also provide an `order` property to specify the order within
+each section, independently.
+
+For our purposes here, we just want to set `order` on each query:
+{% highlight js %}
+cannedQueryDAO: [
+  this.CannedQuery.create({
+    label: 'Todo',
+    order: 1,
+    expression: EQ(this.Todo.IS_COMPLETED, false)
+  }),
+  this.CannedQuery.create({
+    label: 'Done',
+    order: 2,
+    expression: EQ(this.Todo.IS_COMPLETED, true)
+  }),
+  this.CannedQuery.create({
+    label: 'Everything',
+    order: 3,
+    expression: TRUE
+  }),
+]
+{% endhighlight %}
+
+And the result:
+
+![Ordered list]({{ site.url }}/tutorial/todo/assets/menu-ordered.png)
 
 ## Next
 

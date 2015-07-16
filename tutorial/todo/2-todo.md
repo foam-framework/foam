@@ -59,7 +59,10 @@ This doesn't really contain any code, it's basically a schema for a Todo item.
 
 But there's still enough information here to go a long way towards a working app
 with FOAM. Try [this link](http://localhost:8000/foam/index.html?model_=foam.browser.BrowserConfig&model=com.todo.model.Todo&view=foam.browser.ui.BrowserView&classpath=../js/)
-to see your budding app in action.
+to see your budding app in action. It should look like this:
+
+![List view screenshot]({{ site.url }}/tutorial/todo/assets/model-only-list.png)
+![Detail view screenshot]({{ site.url }}/tutorial/todo/assets/model-only-details.png)
 
 There are definitely things we'll want to clean up, but we just got a lot of
 logic for free! This uses FOAM's `foam.browser` suite to generate an app for our

@@ -32,7 +32,7 @@ CLASS({
 });
 {% endhighlight %}
 
-You can check that this new rendition of our app is working by going to [http://localhost:8000/foam/index.html?model\_=com.todo.TodoApp&classpath=../js/](http://localhost:8000/foam/index.html?model_=com.todo.TodoApp&classpath=../js/).
+You can check that this new rendition of our app is working by going to [http://localhost:8000/foam/index.html?model\_=com.todo.TodoApp&classpath=../js/](http://localhost:8000/foam/index.html?model_=com.todo.TodoApp&classpath=../js/). It should be identical to before.
 
 So what's going on with this new model?
 
@@ -79,13 +79,15 @@ the `id` property to look like this:
 }
 {% endhighlight %}
 
-Reload the app, and the `id` field is gone.
+Reload the app, and the `id` field is gone:
+
+![Details without ID field]({{ site.url }}/tutorial/todo/assets/id-hidden.png)
 
 ### Specifying a view
 
 Our `isCompleted` property is a `BooleanProperty`. The default view for such a
 property is a switch-like toggle. That makes sense for turning an option on or
-off, but not really for completion a checklist item. Let's switch to the
+off, but not for completing a checklist item. Let's switch to the
 `CheckboxView` instead.
 
 Still with the `Todo.js` file open, edit the `isCompleted` property to look like
@@ -99,8 +101,9 @@ this:
 }
 {% endhighlight %}
 
-You can set the `view` for any property, and a generated UI will use it.
+You can set the `view` for any property, and a generated UI will use it:
 
+![Details with Checkbox for completed]({{ site.url }}/tutorial/todo/assets/checkbox.png)
 
 ### UI labels
 
@@ -118,6 +121,7 @@ We can override it here, like so:
 }
 {% endhighlight %}
 
+![Details with new label]({{ site.url }}/tutorial/todo/assets/relabeled.png)
 
 ## Next
 

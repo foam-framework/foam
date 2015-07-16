@@ -67,7 +67,9 @@ The icon URL is the base-64 encoded icon of the trash can icon from Google's
 with the `name` or `label` of the action instead.
 
 Reload the app, and notice that when you're looking at the details of a `Todo`,
-there's a trash can icon in the header.
+there's a trash can icon in the header:
+
+![Action icon]({{ site.url }}/tutorial/todo/assets/action-icon.png)
 
 ### What is this `X`?
 
@@ -132,6 +134,9 @@ We'll add `isAvailable` to our action, as follows:
 This works because the `id` property is set by the `EasyDAO` when we save a new
 `Todo`.
 
+
+![Action on edit]({{ site.url }}/tutorial/todo/assets/action-on-edit.png)
+![No action on new]({{ site.url }}/tutorial/todo/assets/action-not-new.png)
 
 ## Reactive programming in FOAM
 
