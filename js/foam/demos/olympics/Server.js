@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  package: 'foam.node.demos',
-  name: 'ClientDAO',
+  package: 'foam.demos.olympics',
+  name: 'Server',
   extendsModel: 'foam.node.tools.Server',
   requires: [
     'foam.dao.EasyDAO',
@@ -45,10 +45,10 @@ CLASS({
 	  result = JSONUtil.arrayToObjArray(this.X, result, this.Medal);
 	}
 
-	var dao = this.EasyDAO.create({
+	var dao = foam.dao.EasyDAO.create({
 	  daoType: 'MDAO',
-	  model: this.Medal,
-	  dedpup: true,
+	  model: foam.demos.olympics.Medal,
+	  dedup: true,
 	  seqNo: true,
 	  autoIndex: true
 	});

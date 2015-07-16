@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  package: 'foam.demos',
-  name: 'ClientDAO',
+  package: 'foam.demos.olympics',
+  name: 'ClientController',
   extendsModel: 'foam.demos.olympics.Controller',
   requires: [
     'foam.demos.olympics.Medal',
