@@ -614,13 +614,12 @@ CLASS({
       <div class="center" style="padding: 5%; min-width: 80%">
         <span class="flex-col" style="font-size: 32px;">
           <div style="font-size:48px;color:gray;">
-            <br>
             <i style="color:red;">Efficiency</i> is <font color="#33f">F</font><font color="#f00">O</font><font color="#fc0">A</font><font color="#3c0">M</font>'s Value Proposition<br>
+            <br>
             Application <font color="red">Performance</font><br>
             Developer <font color="red">Efficiency</font><br>
-            <i style="color:#3c0;font-size:50px;">"Fast Apps Fast"</i><br>
             <br>
-            <span style="color:#33f;font-size:32px;">(Models not Views)</span><br>
+            <i style="color:#3c0;font-size:50px;">"Fast Apps Fast"</i><br>
           </div>
         </span>
       </div>
