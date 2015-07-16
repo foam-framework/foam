@@ -669,9 +669,8 @@ var Property = {
       return this.compareProperty(this.f(o1), this.f(o2));
     },
     readResolve: function() {
-      if ( this.modelId )
-	return this.X.lookup(this.modelId)[constantize(this.name)];
-      return this;
+      return this.modelId ?
+	this.X.lookup(this.modelId)[constantize(this.name)] : this;
     },
     toSQL: function() { return this.name; },
     toMQL: function() { return this.name; },
