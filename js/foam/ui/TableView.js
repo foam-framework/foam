@@ -475,7 +475,7 @@ CLASS({
                      table.sortProp = prop;
                      table.sortOrder = ( table.sortOrder === prop ) ? DESC(prop) : prop;
                    };})(this, prop)) + '"');
-        if ( prop.tableWidth ) out(' width="' + prop.tableWidth + '">');
+        if ( prop.tableWidth ) out(' width="' + prop.tableWidth + '"');
         out('>');
 
         var cssClasses = ['th-label'];
