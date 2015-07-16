@@ -83,7 +83,10 @@ CLASS({
     },
     {
       name: 'meshNormals',
-      type: 'foam.graphics.webgl.ArrayBuffer'
+      type: 'foam.graphics.webgl.ArrayBuffer',
+      postSet: function(old, nu) {
+        this.doUpdatePosition();
+      }
     },
     {
       name: 'meshMatrix',
@@ -100,7 +103,7 @@ CLASS({
       lazyFactory: function() {
         // only fill this in if normals are set
         return this.Matrix4.create();
-      }
+      },
     },
     {
       name: 'program',

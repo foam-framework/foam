@@ -34,7 +34,7 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'Bubble',
 
-  extendsModel: 'foam.demos.physics.PhysicalGLCircle',
+  extendsModel: 'foam.demos.physics.PhysicalGLSphere',
 
   requires: [
     'foam.graphics.webgl.FlatImage',
@@ -105,7 +105,7 @@ CLASS({
 
         this.mass = this.INFINITE_MASS;
         this.vx = this.vy = 0;
-        this.cancel_ = Movement.animate(2000, function() {
+        this.cancel_ = Movement.animate(4000, function() {
           var width = this.lobby.width;
           var height = this.lobby.height;
           this.z = 500;
@@ -348,8 +348,8 @@ CLASS({
     {
       name: 'topics',   factory: function() {
       return JSONUtil.arrayToObjArray(this.X, [
-        { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, colour: [1.0, 0.0, 0.0, 1.00] },
         { topic: 'flip',         image: 'flip.jpg',         r: 100, colour: [1.0, 0.0, 0.0, 1.00] },
+        { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, colour: [1.0, 0.0, 0.0, 1.00] },
         { topic: 'googlecanada', image: 'googlecanada.gif', r: 200 },
         { topic: 'inbox',        image: 'inbox.png',        r: 160 },
         { topic: 'android',      image: 'android.png',      r: 90, colour: [0.19, 0.75, 0.0, 1.00] },
@@ -425,7 +425,7 @@ CLASS({
 
       var spareBubbles = [];
       var N = this.n;
-      for ( var i = 0 ; i < N /*&& false*/ ; i++ ) {
+      for ( var i = 0 ; i < N && false ; i++ ) {
         var colour = this.COLOURS[i % this.COLOURS.length];
         var c = this.Bubble.create({
           r: 20 + Math.random() * 50,
@@ -466,7 +466,7 @@ CLASS({
 
 
       var tinyBubbles = [];
-      for ( var i = 0 ; i < 200; i++ ) {
+      for ( var i = 0 ; i < 200 && false; i++ ) {
         var b = this.PhysicalGLCircle.create({
           r: 5,
           segments: 12,
@@ -498,8 +498,6 @@ CLASS({
 
 
 //        this.view.$.addEventListener('click', this.onClick);
-       document.body.addEventListener('click', this.onClick);
-
       }
       // scale the number of bubbles depending on fps
       var self = this;
@@ -517,6 +515,7 @@ CLASS({
         }
       });
 
+     document.body.addEventListener('click', this.onClick);
 
 
       var clock = this.ClockView.create({x:this.width-70,y:70, r:60});

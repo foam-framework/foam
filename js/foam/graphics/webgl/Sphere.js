@@ -63,33 +63,83 @@ CLASS({
       this.SUPER();
 
       this.mesh = this.glMeshLibrary.getMesh('sphere', this.segments);
+      this.meshNormals = this.glMeshLibrary.getNormals('sphere', this.segments );
 
+//       this.program = this.Program.create();
+//       this.program.fragmentShader = this.Shader.create({
+//         type: "fragment",
+//         source:
+//           "precision lowp float;\n"+
+//           "uniform vec4 color;\n"+
+//           "void main(void) {\n" +
+//           "  gl_FragColor = color;\n"+
+//           "}\n"
+//       });
+//       this.program.vertexShader = this.Shader.create({
+//         type: "vertex",
+//         source: function() {/*
+//           attribute vec3 aVertexPosition;
+
+//           uniform mat4 positionMatrix;
+//           uniform mat4 relativeMatrix;
+//           uniform mat4 projectionMatrix;
+//           uniform mat4 meshMatrix;
+
+//           void main(void) {
+//             gl_Position = projectionMatrix * positionMatrix * relativeMatrix * meshMatrix * vec4(aVertexPosition, 1.0);
+//           }
+//         */}
+//         });
       this.program = this.Program.create();
       this.program.fragmentShader = this.Shader.create({
         type: "fragment",
-        source:
-          "precision lowp float;\n"+
-          "uniform vec4 color;\n"+
-          "void main(void) {\n" +
-          "  gl_FragColor = color;\n"+
-          "}\n"
+        source: function() {/*
+          precision lowp float;
+          uniform vec4 color;
+
+          varying vec3 vNormal;
+          varying vec3 vPosition;
+
+          void main(void) {
+            vec4 dark = vec4(0.0, 0.0, 0.0, 1.0);
+            vec3 uLight = vec3(-10, -10, 15);
+
+            // Mix in diffuse light
+            float diffuse = dot(normalize(uLight), normalize(vNormal));
+            diffuse = max(0.0, diffuse);
+
+            gl_FragColor = mix(dark, color, 0.5 + 0.9 * diffuse);
+          }
+        */},
       });
       this.program.vertexShader = this.Shader.create({
         type: "vertex",
         source: function() {/*
+
           attribute vec3 aVertexPosition;
+          attribute vec3 aNormal;
 
           uniform mat4 positionMatrix;
           uniform mat4 relativeMatrix;
           uniform mat4 projectionMatrix;
           uniform mat4 meshMatrix;
 
-          void main(void) {
-            gl_Position = projectionMatrix * positionMatrix * relativeMatrix * meshMatrix * vec4(aVertexPosition, 1.0);
-          }
-        */}
-        });
+          uniform mat4 normalMatrix;
 
+          varying vec3 vNormal;
+          varying vec3 vPosition;
+
+          //vec3 aNormal = vec3(0.5, 0.5, 1);
+
+
+          void main(void) {
+            mat4 matrix = projectionMatrix * positionMatrix * relativeMatrix * meshMatrix;
+            vNormal = vec3(normalMatrix * vec4(aNormal, 1.0));
+            vPosition = vec3(matrix * vec4(aVertexPosition, 1.0));
+            gl_Position = matrix * vec4(aVertexPosition, 1.0);
+          }
+        */},
+        });
     },
 
     function intersects(c) {

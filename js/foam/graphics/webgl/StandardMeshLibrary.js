@@ -59,7 +59,7 @@ CLASS({
         this.normalCache_[cacheName] =
               this.ArrayBuffer.create({
                   vertices: this.calcNormals(this.getMesh.apply(this, arguments).vertices),
-                  drawMode: ''
+                  drawMode: 'points'
               });
       }
       return this.normalCache_[cacheName];
@@ -67,13 +67,28 @@ CLASS({
 
     function calcNormals(vertices) {
       var cross_ = this.Vector3.getPrototype().cross_;
+      var sub_ = this.Vector3.getPrototype().subtract_;
+      var norm_ = this.Vector3.getPrototype().normalize_;
       var nv = [];
-      var prev = vertices.slice(vertices.length-3, vertices.length);
+
+      var curPt = vertices.slice(0, 3);
+      var nextPt = vertices.slice(3, 6);
+      var vec1 = norm_(sub_(curPt, vertices.slice(vertices.length-3, vertices.length)));
+      var vec2;
       // take the cross product of each pair of adjacent vectors
-      for (var i = 0; i < vertices.length; i+=3) {
-        var cur = vertices.slice(i, i+3);
-        nv = nv.concat(cross_(prev, cur));
+      for (var i = 0; i < vertices.length-3; i+=3) {
+        nextPt = vertices.slice(i+3, i+6);
+        vec2 = norm_(sub_(nextPt, curPt));
+
+        nv = nv.concat(cross_(vec1, vec2));
+        vec1 = vec2;
+        curPt = nextPt;
       }
+      nextPt = vertices.slice(0, 3);
+      vec2 = norm_(sub_(nextPt, curPt));
+      nv = nv.concat(cross_(vec1, vec2));
+
+
       return nv;
     },
 

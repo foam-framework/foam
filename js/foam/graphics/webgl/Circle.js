@@ -85,14 +85,14 @@ CLASS({
           varying vec3 vPosition;
 
           void main(void) {
-            vec4 dark = vec4(0.5, 0.5, 0.5, 1.0);
-            vec3 uLight = vec3(0, -1, 1);
+            vec4 dark = vec4(0.0, 0.0, 0.0, 1.0);
+            vec3 uLight = vec3(-10, -10, 15);
 
             // Mix in diffuse light
-            float diffuse = dot(normalize(uLight - vPosition), vNormal);
+            float diffuse = dot(normalize(uLight), normalize(vNormal));
             diffuse = max(0.0, diffuse);
 
-            gl_FragColor = mix(dark, color, 0.1 + 0.9 * diffuse);
+            gl_FragColor = mix(dark, color, 0.5 + 0.9 * diffuse);
           }
         */},
       });
@@ -112,6 +112,9 @@ CLASS({
 
           varying vec3 vNormal;
           varying vec3 vPosition;
+
+          //vec3 aNormal = vec3(0.5, 0.5, 1);
+
 
           void main(void) {
             mat4 matrix = projectionMatrix * positionMatrix * relativeMatrix * meshMatrix;

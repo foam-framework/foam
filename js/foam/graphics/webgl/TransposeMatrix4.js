@@ -49,7 +49,8 @@ CLASS({
           of this matrix.  */
       if (this.source.identity) return this.source.flat.slice();
 
-      return this.transpose(this.source);
+      var ret = this.transpose(this.source);
+      return ret;
     },
 
     function transpose(matrix) {

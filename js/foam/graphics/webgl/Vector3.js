@@ -135,9 +135,14 @@ CLASS({
       return this.model_.create({ flat: this.multiply_(this.flat, vec.flat) });
     },
 
+    function normalize_(a) {
+      var l = Math.sqrt(a[0]*a[0]+a[1]*a[1]+a[2]*a[2]);
+      return [ a[0]/l, a[1]/l, a[2]/l ];
+    },
+
     function toString() {
       var f = this.flat;
-      return "["+f[0]+", "+f[1]+", "+f[2]+", "+f[3]+"]";
+      return "["+f[0]+", "+f[1]+", "+f[2]+"]";
     }
 
 
