@@ -70,13 +70,8 @@ CLASS({
 
     },
 
-    function flatRing(segments, borderRatio, raiseInner) {
-      /* Create a mesh for a 'triangle strip' hollow circle */
+    function _chamferRing_(segs, r, b, z) {
       var v = [].slice();
-      var segs = segments || 64;
-      var r = 1.0;
-      var b = 1.0 - (borderRatio || 1.0);
-      var z = raiseInner || 0;
       function circPt(i) {
         return [
            (Math.sin(2 * Math.PI * i / segs) * r),
@@ -103,9 +98,20 @@ CLASS({
       v = v.concat(innerPt(0));
       v = v.concat(circPt(0));
 
+      return v;
+    },
+
+    function flatRing(segments, borderRatio, raiseInner) {
+      /* Create a mesh for a 'triangle strip' hollow circle */
+      var segs = segments || 64;
+      var r = 1.0;
+      var b = 1.0 - (borderRatio || 1.0);
+      var z = raiseInner || 0;
+
+
       return this.ArrayBuffer.create({
           drawMode: 'triangle strip',
-          vertices: v
+          vertices: this._chamferRing_(segs, r, b, z)
       });
     },
 
@@ -132,8 +138,9 @@ CLASS({
       });
     },
 
-    function _circle_(s, r, x, y, z) {
+    function _circle_(s, r, x, y, z, w) {
       var v = [].slice();
+      var wind = w || -1; // winding direction, -1 or 1
       function circPt(i) {
         return [
           x + (Math.sin(2 * Math.PI * i / s) * r),
@@ -144,11 +151,19 @@ CLASS({
       // start with the center
       v = v.concat([x, y, z]);
 
+      var start;
+      var end;
+      if (wind > 0) {
+        start = 0; end = s;
+      } else{
+        start = s; end = 0;
+      }
+
       // add the rest of the edge vertices to complete the fan
-      for (var i = s; i > 0; i--) {
+      for (var i = start; i !== end; i+=wind) {
         v = v.concat(circPt(i));
       }
-      v = v.concat(circPt(s));
+      v = v.concat(circPt(start));
 
       return v;
     },
@@ -175,9 +190,7 @@ CLASS({
       };
 
       for (var j = 1; j < s+1; ++j) { // slices, from north pole to south pole
-        v = v.concat( circPt(0,j-1) );
-        v = v.concat( circPt(0,j) );
-        for (var i = 1; i < s; ++i) {
+        for (var i = 0; i < s; ++i) {
           v = v.concat( circPt(i,j-1) );
           v = v.concat( circPt(i,j) );
         }
