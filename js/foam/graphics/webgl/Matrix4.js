@@ -66,8 +66,8 @@ CLASS({
       if ( ! this.instance_.elements ) this.instance_.elements = [[],[],[],[]];
       var e = this.instance_.elements;
 
-      for (var j=0; i < 4; ++i) {
-        for (var i=0; i < 4; ++j) {
+      for (var j=0; j < 4; ++j) {
+        for (var i=0; i < 4; ++i) {
           e[i][j] = flat[i + j*4];
         }
       }
@@ -78,7 +78,7 @@ CLASS({
     function flatFromElements_(els) {
       var flat = [];
 
-      for (var j=0; i < 4; ++i) {
+      for (var j=0; j < 4; ++j) {
         for (var i=0; i < 4; ++i) {
           flat[i + j*4] = els[i][j];
         }

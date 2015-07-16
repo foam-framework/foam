@@ -22,6 +22,8 @@ CLASS({
     'foam.graphics.webgl.StackMatrix4',
     'foam.graphics.webgl.TransMatrix4',
     'foam.graphics.webgl.RotMatrix4',
+    'foam.graphics.webgl.InverseMatrix4',
+    'foam.graphics.webgl.TransposeMatrix4',
     'foam.graphics.webgl.Matrix4',
     'foam.graphics.webgl.Matrix4Uniform'
   ],
@@ -92,6 +94,15 @@ CLASS({
       }
     },
     {
+      name: 'normalMatrix',
+      help: 'The inverse transpose of the positioning matrix (pos*rel*mesh)',
+      type: 'foam.graphics.webgl.Matrix4',
+      lazyFactory: function() {
+        // only fill this in if normals are set
+        return this.Matrix4.create();
+      }
+    },
+    {
       name: 'program',
     },
     {
@@ -118,6 +129,16 @@ CLASS({
       code: function(obj, topic) {
         this.positionMatrix = this.updatePosition();
         this.parentPosition_ = this.parent.positionMatrix;
+
+        if (this.meshNormals) {
+          this.normalMatrix = this.TransposeMatrix4.create({ source:
+            this.InverseMatrix4.create({ source:
+              this.StackMatrix4.create({ stack: [
+                this.positionMatrix, this.meshMatrix
+              ]})
+            })
+          });
+        }
       }
     }
 
@@ -145,6 +166,11 @@ CLASS({
         matrix$: this.projectionMatrix$,
         program$: this.program$
       });
+      this.Matrix4Uniform.create({
+        name: 'normalMatrix',
+        matrix$: this.normalMatrix$,
+        program$: this.program$
+      });
 
     },
 
@@ -170,7 +196,7 @@ CLASS({
 
       // normals
       if (this.meshNormals) {
-        this.mesh.bind();
+        this.meshNormals.bind();
 
         var norms = this.gl.getAttribLocation(this.program.program, "aNormal");
         this.gl.vertexAttribPointer(norms, 3, gl.FLOAT, false, 0, 0);

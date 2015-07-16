@@ -25,11 +25,11 @@ CLASS({
     {
       name: 'source',
       preSet: function(old, nu) {
-        if ( old ) { old[i].removeListener(this.reset); }
+        if ( old ) { old.removeListener(this.reset); }
         return nu;
       },
       postSet: function(old,nu) {
-        if ( nu ) { nu[i].addListener(this.reset); }
+        if ( nu ) { nu.addListener(this.reset); }
         this.reset_();
       }
 
@@ -47,63 +47,94 @@ CLASS({
     function recalculate_() {
       /* Implement in your submodels to calculate and return the contents
           of this matrix.  */
-      // Identity
-      return this.inverse(this.source);
+
+      return this.inverse(this.source.flat);
     },
 
-    function inverse(matrix) {
-      var a = this.elementsFromFlat_(matrix.flat);
-      var det = this.determinant(a);
-      return this.flatFromElements_(this.scaleAdjoint(1.0 / det, a));
+    function determinant(m) {
+      var ret =
+        m[12]*m[9]*m[6]*m[3]-
+        m[8]*m[13]*m[6]*m[3]-
+        m[12]*m[5]*m[10]*m[3]+
+        m[4]*m[13]*m[10]*m[3]+
+        m[8]*m[5]*m[14]*m[3]-
+        m[4]*m[9]*m[14]*m[3]-
+        m[12]*m[9]*m[2]*m[7]+
+        m[8]*m[13]*m[2]*m[7]+
+        m[12]*m[1]*m[10]*m[7]-
+        m[0]*m[13]*m[10]*m[7]-
+        m[8]*m[1]*m[14]*m[7]+
+        m[0]*m[9]*m[14]*m[7]+
+        m[12]*m[5]*m[2]*m[11]-
+        m[4]*m[13]*m[2]*m[11]-
+        m[12]*m[1]*m[6]*m[11]+
+        m[0]*m[13]*m[6]*m[11]+
+        m[4]*m[1]*m[14]*m[11]-
+        m[0]*m[5]*m[14]*m[11]-
+        m[8]*m[5]*m[2]*m[15]+
+        m[4]*m[9]*m[2]*m[15]+
+        m[8]*m[1]*m[6]*m[15]-
+        m[0]*m[9]*m[6]*m[15]-
+        m[4]*m[1]*m[10]*m[15]+
+        m[0]*m[5]*m[10]*m[15];
+      return ret;
     },
 
-    function scaleAdjoint(s,m)
-    {
-      var a = [[],[],[],[]];
-      var i,j;
+    function inverse(m) {
+      var i = [];
+      var det = this.determinant(m);
+      if (det==0) return m.slice();
 
-      for (i=0; i<4; i++) {
-        for (j=0; j<4; j++) {
-          a[j][i] = this.cofactor(m, i, j) * s;
-        }
-      }
-      return a;
+      i[0]= (-m[13]*m[10]*m[7] +m[9]*m[14]*m[7] +m[13]*m[6]*m[11]
+      -m[5]*m[14]*m[11] -m[9]*m[6]*m[15] +m[5]*m[10]*m[15])/det;
+
+      i[4]= ( m[12]*m[10]*m[7] -m[8]*m[14]*m[7] -m[12]*m[6]*m[11]
+      +m[4]*m[14]*m[11] +m[8]*m[6]*m[15] -m[4]*m[10]*m[15])/det;
+
+      i[8]= (-m[12]*m[9]* m[7] +m[8]*m[13]*m[7] +m[12]*m[5]*m[11]
+      -m[4]*m[13]*m[11] -m[8]*m[5]*m[15] +m[4]*m[9]* m[15])/det;
+
+      i[12]=( m[12]*m[9]* m[6] -m[8]*m[13]*m[6] -m[12]*m[5]*m[10]
+      +m[4]*m[13]*m[10] +m[8]*m[5]*m[14] -m[4]*m[9]* m[14])/det;
+
+      i[1]= ( m[13]*m[10]*m[3] -m[9]*m[14]*m[3] -m[13]*m[2]*m[11]
+      +m[1]*m[14]*m[11] +m[9]*m[2]*m[15] -m[1]*m[10]*m[15])/det;
+
+      i[5]= (-m[12]*m[10]*m[3] +m[8]*m[14]*m[3] +m[12]*m[2]*m[11]
+      -m[0]*m[14]*m[11] -m[8]*m[2]*m[15] +m[0]*m[10]*m[15])/det;
+
+      i[9]= ( m[12]*m[9]* m[3] -m[8]*m[13]*m[3] -m[12]*m[1]*m[11]
+      +m[0]*m[13]*m[11] +m[8]*m[1]*m[15] -m[0]*m[9]* m[15])/det;
+
+      i[13]=(-m[12]*m[9]* m[2] +m[8]*m[13]*m[2] +m[12]*m[1]*m[10]
+      -m[0]*m[13]*m[10] -m[8]*m[1]*m[14] +m[0]*m[9]* m[14])/det;
+
+      i[2]= (-m[13]*m[6]* m[3] +m[5]*m[14]*m[3] +m[13]*m[2]*m[7]
+      -m[1]*m[14]*m[7] -m[5]*m[2]*m[15] +m[1]*m[6]* m[15])/det;
+
+      i[6]= ( m[12]*m[6]* m[3] -m[4]*m[14]*m[3] -m[12]*m[2]*m[7]
+      +m[0]*m[14]*m[7] +m[4]*m[2]*m[15] -m[0]*m[6]* m[15])/det;
+
+      i[10]=(-m[12]*m[5]* m[3] +m[4]*m[13]*m[3] +m[12]*m[1]*m[7]
+      -m[0]*m[13]*m[7] -m[4]*m[1]*m[15] +m[0]*m[5]* m[15])/det;
+
+      i[14]=( m[12]*m[5]* m[2] -m[4]*m[13]*m[2] -m[12]*m[1]*m[6]
+      +m[0]*m[13]*m[6] +m[4]*m[1]*m[14] -m[0]*m[5]* m[14])/det;
+
+      i[3]= ( m[9]* m[6]* m[3] -m[5]*m[10]*m[3] -m[9]* m[2]*m[7]
+      +m[1]*m[10]*m[7] +m[5]*m[2]*m[11] -m[1]*m[6]* m[11])/det;
+
+      i[7]= (-m[8]* m[6]* m[3] +m[4]*m[10]*m[3] +m[8]* m[2]*m[7]
+      -m[0]*m[10]*m[7] -m[4]*m[2]*m[11] +m[0]*m[6]* m[11])/det;
+
+      i[11]=( m[8]* m[5]* m[3] -m[4]*m[9]* m[3] -m[8]* m[1]*m[7]
+      +m[0]*m[9]* m[7] +m[4]*m[1]*m[11] -m[0]*m[5]* m[11])/det;
+
+      i[15]=(-m[8]* m[5]* m[2] +m[4]*m[9]* m[2] +m[8]* m[1]*m[6]
+      -m[0]*m[9]* m[6] -m[4]*m[1]*m[10] +m[0]*m[5]* m[10])/det;
+
+      return i;
     },
-
-    function determinant(m)
-    {
-       var d;
-       d =  m[0][0] * this.cofactor(m, 0, 0);
-       d += m[0][1] * this.cofactor(m, 0, 1);
-       d += m[0][2] * this.cofactor(m, 0, 2);
-       d += m[0][3] * this.cofactor(m, 0, 3);
-       return d;
-    },
-
-    function cofactor(m,i,j)
-    {
-      var f;
-      int ii[4], jj[4], k;
-
-      for (k=0; k<i; k++) ii[k] = k;
-      for (k=i; k<3; k++) ii[k] = k+1;
-      for (k=0; k<j; k++) jj[k] = k;
-      for (k=j; k<3; k++) jj[k] = k+1;
-
-      f = m[ii[0]][jj[0]] * (m[ii[1]][jj[1]]*m[ii[2]][jj[2]]
-        - m[ii[1]][jj[2]]*m[ii[2]][jj[1]]);
-      f -= m[ii[0]][jj[1]] * (m[ii[1]][jj[0]]*m[ii[2]][jj[2]]
-        - m[ii[1]][jj[2]]*m[ii[2]][jj[0]]);
-      f += m[ii[0]][jj[2]] * (m[ii[1]][jj[0]]*m[ii[2]][jj[1]]
-        - m[ii[1]][jj[1]]*m[ii[2]][jj[0]]);
-
-      k = i+j;
-      if ( k != (k/2)*2) {
-        f = -f;
-      }
-      return f;
-    }
-
 
 
   ]

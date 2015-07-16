@@ -68,10 +68,10 @@ CLASS({
     function calcNormals(vertices) {
       var cross_ = this.Vector3.getPrototype().cross_;
       var nv = [];
-      var prev = vertices.slice(vertices.length-3, vertices.length-1);
+      var prev = vertices.slice(vertices.length-3, vertices.length);
       // take the cross product of each pair of adjacent vectors
       for (var i = 0; i < vertices.length; i+=3) {
-        var cur = vertices.slice(i, i+2);
+        var cur = vertices.slice(i, i+3);
         nv = nv.concat(cross_(prev, cur));
       }
       return nv;

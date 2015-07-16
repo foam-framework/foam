@@ -86,7 +86,7 @@ CLASS({
 
           void main(void) {
             vec4 dark = vec4(0.5, 0.5, 0.5, 1.0);
-            vec3 uLight = vec3(-1, -1, -1);
+            vec3 uLight = vec3(0, -1, 1);
 
             // Mix in diffuse light
             float diffuse = dot(normalize(uLight - vPosition), vNormal);
@@ -99,7 +99,6 @@ CLASS({
       this.program.vertexShader = this.Shader.create({
         type: "vertex",
         source: function() {/*
-          #version 150
 
           attribute vec3 aVertexPosition;
           attribute vec3 aNormal;
@@ -109,16 +108,13 @@ CLASS({
           uniform mat4 projectionMatrix;
           uniform mat4 meshMatrix;
 
-          uniform mat4 relativeMatrixTI;
-          uniform mat4 projectionMatrixTI;
-          uniform mat4 meshMatrixTI;
+          uniform mat4 normalMatrix;
 
           varying vec3 vNormal;
           varying vec3 vPosition;
 
           void main(void) {
             mat4 matrix = projectionMatrix * positionMatrix * relativeMatrix * meshMatrix;
-            mat3 normalMatrix = meshMatrixTI * relativeMatrixTI * positionMatrixTI;
             vNormal = vec3(normalMatrix * vec4(aNormal, 1.0));
             vPosition = vec3(matrix * vec4(aVertexPosition, 1.0));
             gl_Position = matrix * vec4(aVertexPosition, 1.0);

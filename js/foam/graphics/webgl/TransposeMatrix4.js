@@ -25,11 +25,11 @@ CLASS({
     {
       name: 'source',
       preSet: function(old, nu) {
-        if ( old ) { old[i].removeListener(this.reset); }
+        if ( old ) { old.removeListener(this.reset); }
         return nu;
       },
       postSet: function(old,nu) {
-        if ( nu ) { nu[i].addListener(this.reset); }
+        if ( nu ) { nu.addListener(this.reset); }
         this.reset_();
       }
 
