@@ -416,6 +416,11 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
 
         return newValue;
       },
+      postSet: function(_, newValue) {
+	for ( var i = 0 ; i < newValue.length ; i++ ) {
+	  newValue[i].modelId = this.id;
+	}
+      },
       documentation: function() { /*
         <p>The $$DOC{ref:'Property',usePlural:true} of a $$DOC{ref:'Model'} act as data members
           and connection points. A $$DOC{ref:'Property'} can store a modelled value, and bind
