@@ -105,7 +105,10 @@ The browser uses a `DAOListView` with a `rowView` of `foam.ui.md.CitationView`
 by default. We're going to override that to use our new `TodoCitationView`
 instead.
 
-Edit `TodoApp.js` and update the `data` `factory`:
+Edit `TodoApp.js`. First, add `'com.todo.ui.TodoCitationView'` to the
+`requires`.
+
+Then update the `data` `factory`:
 
 {% highlight js %}
 {
@@ -136,6 +139,8 @@ one: a `DAOListView` of `TodoCitationView`s.
 If you reload the app, you'll see that our change is working - but the app isn't
 really improved!
 
+![Editable and labeled]({{ site.url }}/tutorial/todo/assets/edit-and-label.png)
+
 It's now got an editable title, and it will actually save properly if you make
 an edit and blur the view, but that's not really what we were going for.
 
@@ -152,12 +157,16 @@ changing the `TodoCitationView`'s template to read
 This syntax allows setting properties on the view being created for `title` (in
 this case, a `foam.ui.md.TextFieldView`.
 
+![Read-only and labeled]({{ site.url }}/tutorial/todo/assets/just-label.png)
+
 That makes it non-editable, but the label is still distracting. Update it again,
 to:
 
     $$title{ mode: 'read-only', floatingLabel: false }
 
-and now we're back where we started.
+and now we're back where we started:
+
+![Just the title]({{ site.url }}/tutorial/todo/assets/just-title.png)
 
 Let's add the main reason why we've set out to build a custom citation view: the
 checkbox.
@@ -167,12 +176,16 @@ Update the template again, this time to read:
     $$isCompleted
     $$title{ mode: 'read-only', floatingLabel: false }
 
+![With checkbox, part 1]({{ site.url }}/tutorial/todo/assets/with-checkbox-1.png)
+
 and now we've got the checkbox -- but the layout is screwed up and the label for
 the checkbox is unnecessary. Let's remove that too, by overriding the view's
 `label` property.
 
     $$isCompleted{ label: '' }
     $$title{ mode: 'read-only', floatingLabel: false }
+
+![With checkbox, part 2]({{ site.url }}/tutorial/todo/assets/with-checkbox-2.png)
 
 Better, but the layout is still busted.
 
@@ -214,9 +227,16 @@ CLASS({
 });
 {% endhighlight %}
 
-Now we've got a nicely laid out row for each `Todo`, and the checkboxes work
-properly.
+Note that we're adding the `className` property and giving it a `defaultValue`.
+When you set a `defaultValue` on a property, any instance that doesn't have its
+own value for that property doesn't bother to store the default. That saves
+memory and network bandwidth, and makes it cheap to add properties that are only
+rarely set.
 
+Now we've got a nicely laid out row for each `Todo`, and the checkboxes work
+properly:
+
+![With checkbox, part 3]({{ site.url }}/tutorial/todo/assets/with-checkbox-3.png)
 
 ## Next
 
