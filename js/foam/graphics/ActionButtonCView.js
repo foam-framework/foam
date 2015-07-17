@@ -162,31 +162,31 @@ CLASS({
       if ( ! this.action || ! this.data ) return;
 
       var self = this;
-      Events.dynamic(
-        function() { self.action.isAvailable.call(self.data, self.action); },
-        function() {
-          // TODO(KGR): When the Action isn't available we hide it by
-          // setting the size to zero, which isn't ideal.  Better would be
-          // to add a hidden or visibility property to CViews.  When this is done,
-          // also simplify CViewView.
-          if ( self.action.isAvailable.call(self.data, self.action) ) {
-            if ( self.oldWidth_ && self.oldHeight_ ) {
-              self.x = self.oldX_;
-              self.y = self.oldY_;
-              self.width = self.oldWidth_;
-              self.height = self.oldHeight_;
+      this.X.dynamic(
+          function() { self.action.isAvailable.call(self.data, self.action); },
+          function() {
+            // TODO(KGR): When the Action isn't available we hide it by
+            // setting the size to zero, which isn't ideal.  Better would be
+            // to add a hidden or visibility property to CViews.  When this is done,
+            // also simplify CViewView.
+            if ( self.action.isAvailable.call(self.data, self.action) ) {
+              if ( self.oldWidth_ && self.oldHeight_ ) {
+                self.x = self.oldX_;
+                self.y = self.oldY_;
+                self.width = self.oldWidth_;
+                self.height = self.oldHeight_;
+              }
+            } else if ( self.width || self.height ) {
+              self.oldX_ = self.x;
+              self.oldY_ = self.y;
+              self.oldWidth_ = self.width;
+              self.oldHeight_ = self.height;
+              self.width = 0;
+              self.height = 0;
+              self.x = 0;
+              self.y = 0;
             }
-          } else if ( self.width || self.height ) {
-            self.oldX_ = self.x;
-            self.oldY_ = self.y;
-            self.oldWidth_ = self.width;
-            self.oldHeight_ = self.height;
-            self.width = 0;
-            self.height = 0;
-            self.x = 0;
-            self.y = 0;
-          }
-        });
+          });
     },
 
     initCView: function() {
