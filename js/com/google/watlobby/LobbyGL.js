@@ -172,8 +172,8 @@ CLASS({
         this.children_.push(r);
 
         var video = this.video;
-        var vw = 560*2.5;
-        var vh = 315*2.5;
+        var vw = 560*2.5 * 5;
+        var vh = 315*2.5 * 5;
 
         var v = this.FlatVideo.create({
           x: this.x, y: this.y, z: 800, width: 0, height: 0, axis: [1,1,1],
@@ -182,7 +182,7 @@ CLASS({
           shapeName: 'flatUnitCircle'
         });
 
-        Movement.animate(2000, function(i, j) {
+        Movement.animate(4000, function(i, j) {
           v.width = vw;
           v.height = vh;
           v.x = (w-vw)/2;
