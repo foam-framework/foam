@@ -304,12 +304,15 @@ CLASS({
     'com.google.watlobby.Topic',
     'com.google.watlobby.VideoBubble',
     'foam.demos.ClockView',
+    'foam.demos.physics.PhysicalCircle',
     'foam.demos.physics.PhysicalGLCircle',
     'foam.demos.physics.PhysicalGLSphere',
     'foam.physics.PhysicsEngine as Collider',
     'foam.util.Timer',
     'foam.graphics.webgl.Circle as GLCircle',
+    'foam.graphics.Circle',
     'foam.graphics.webgl.PerformanceScaler',
+    'foam.graphics.CView',
   ],
 
   imports: [ 'timer' ],
@@ -320,7 +323,8 @@ CLASS({
   },
 
   properties: [
-    { name: 'targetFps',  defaultValue: 50 },
+    { name: 'classname',  defaultValue: 'lobbyCanvas' },
+    { name: 'targetFps',  defaultValue: 45 },
     { name: 'timer' },
     { name: 'n',          defaultValue: 20 },
     { name: 'width',      defaultValue: window.innerWidth },
@@ -362,7 +366,13 @@ CLASS({
         // thtps://www.youtube.com/watch?v=1Bb29KxXzDs, <iframe width="560" height="315" src="https://www.youtube.com/embed/1Bb29KxXzDs" frameborder="0" allowfullscreen></iframe>
 
       ], this.Topic);
-    }}
+    }},
+    {
+      name: 'backgroundLayer',
+      factory: function() {
+        return this.CView.create({ width$: this.width$, height$: this.height$ });
+      }
+    }
   ],
 
   listeners: [
@@ -405,7 +415,7 @@ CLASS({
           r: 20 + Math.random() * 50,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          z: -i*10,
+          z: -i*16,
           color: colour,
           axis: [1,1,1]
         }, this.Y);
@@ -425,13 +435,13 @@ CLASS({
 
       var spareBubbles = [];
       var N = this.n;
-      for ( var i = 0 ; i < N && false ; i++ ) {
+      for ( var i = 0 ; i < N ; i++ ) {
         var colour = this.COLOURS[i % this.COLOURS.length];
         var c = this.Bubble.create({
           r: 20 + Math.random() * 50,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          z: (this.topics.length + i) * -1,
+          z: (this.topics.length + i) * -16,
           borderRatio: 0.1,
           color: colour,
         });
@@ -444,6 +454,8 @@ CLASS({
 //         this.addChild(c);
 //         this.bounceOnWalls(c, this.width, this.height);
 //         this.collider.add(c);
+
+
       }
 
       //scale the number of bubbles depending on fps
@@ -466,23 +478,16 @@ CLASS({
 
 
       var tinyBubbles = [];
-      for ( var i = 0 ; i < 200 && false; i++ ) {
-        var b = this.PhysicalGLCircle.create({
+      for ( var i = 0 ; i < 200; i++ ) {
+        var b = this.PhysicalCircle.create({
           r: 5,
-          segments: 12,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          z: 20,
-          borderRatio: 1.0,
-          color: [ 0,0,1,0.2],
+          borderWidth: 0.5,
+          color: 'rgba(0,0,255,0.2)',
+          border: '#blue',
           mass: 0.6
         });
-        b.addChild(this.GLCircle.create({
-          r: b.r,
-          segments: b.segments,
-          borderRatio: 0.1,
-          color: [ 0,0,1,1.0]
-        }));
         b.y$.addListener(function(b) {
           if ( b.y < 1 ) {
             b.y = this.height;
@@ -507,16 +512,16 @@ CLASS({
           b.x = Math.random() * self.width;
           b.y = self.height + 200;
           self.collider.add(b);
-          self.addChild(b);
+          self.backgroundLayer.addChild(b);
         },
         removeFunction: function(b) {
           self.collider.remove(b);
-          self.removeChild(b);
+          self.backgroundLayer.removeChild(b);
         }
       });
 
      document.body.addEventListener('click', this.onClick);
-
+     this.backgroundLayer.write(document);
 
       var clock = this.ClockView.create({x:this.width-70,y:70, r:60});
       this.addChild(clock);
@@ -526,6 +531,28 @@ CLASS({
 
 
       this.collider.start();
+    },
+
+    function toView_() { /* Internal. Creates a CViewView wrapper. */
+      if ( ! this.view ) {
+        var params = { cview: this };
+        if ( this.className )   params.className   = this.className;
+        if ( this.tooltip )     params.tooltip     = this.tooltip;
+        if ( this.speechLabel ) params.speechLabel = this.speechLabel;
+        if ( this.tabIndex )    params.tabIndex    = this.tabIndex;
+        if ( this.role )        params.role        = this.role;
+        if ( this.data$ )       params.data$       = this.data$;
+
+        var outer = this;
+        this.view = {
+          __proto__: outer.GLCViewView.create(params),
+          initHTML: function() {
+            this.$.style.position = 'fixed';
+            return outer.GLCViewView.getPrototype().initHTML.call(this);
+          }
+        };
+      }
+      return this.view;
     },
 
     function bounceOnWalls(c, w, h) {

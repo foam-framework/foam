@@ -40,8 +40,10 @@ CLASS({
     {
       name: 'matrix',
       postSet: function(old, nu) {
-        if (old && old.flat$) old.flat$.removeListener(this.updateValue);
-        if (nu && nu.flat$) nu.flat$.addListener(this.updateValue);
+//         if (old && old.flat$) old.flat$.removeListener(this.updateValue);
+//         if (nu && nu.flat$) nu.flat$.addListener(this.updateValue);
+        if (old ) old.removeDirectListener(this);
+        if (nu ) nu.addDirectListener(this);
         this.updateValue();
       }
     },
@@ -56,6 +58,12 @@ CLASS({
           this.updateValue();
         }.bind(this), 16);
       }
+    },
+  ],
+
+  methods: [
+    function notify(sender) {
+      this.updateValue();
     }
   ],
 

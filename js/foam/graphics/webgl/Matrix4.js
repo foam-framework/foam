@@ -40,6 +40,11 @@ CLASS({
       setter: function(nu) { console.warn("Matrix4: .elements property is read only."); },
       mode: 'read-only'
     },
+
+    {
+      name: 'directListeners_',
+      factory: function() { return {}; }
+    }
   ],
 
   methods: [
@@ -51,7 +56,11 @@ CLASS({
     function reset_() {
       /* trigger a recalculate on next access */
       this.instance_.flat = null;
-      this.propertyChange('flat', true, null);
+      //this.propertyChange('flat', true, null);
+      this.notifyDirectListeners();
+    },
+    function notify(sender) {
+      this.reset_();
     },
 
     function recalculate_() {
@@ -112,7 +121,19 @@ CLASS({
              "\t"+f[12]+",\t\t\t"+f[13]+",\t\t\t"+f[14]+",\t\t\t"+f[15]+"]";
     },
 
-
+    function addDirectListener(obj) {
+      this.directListeners_[obj.$UID] = obj;
+    },
+    function removeDirectListener(obj) {
+      delete this.directListeners_[obj.$UID];
+    },
+    function notifyDirectListeners() {
+      for (var key in this.instance_.directListeners_)
+      {
+        var listener = this.instance_.directListeners_[key];
+        listener.notify && listener.notify(this);
+      }
+    },
 
 
   ]

@@ -28,7 +28,8 @@ CLASS({
       preSet: function(old, nu) {
         if ( old && old.length ) {
           for (var i = 0; i < old.length; ++i) {
-            old[i].removeListener(this.matrixChange);
+            //old[i].removeListener(this.matrixChange);
+            old[i].removeDirectListener(this);
           }
         }
         return nu;
@@ -36,7 +37,8 @@ CLASS({
       postSet: function(old,nu) {
         if ( nu && nu.length ) {
           for (var i = 0; i < nu.length; ++i) {
-            nu[i].addListener(this.matrixChange);
+            //nu[i].addListener(this.matrixChange);
+            nu[i].addDirectListener(this);
           }
         }
 
@@ -77,6 +79,7 @@ CLASS({
       }
       return result;
     },
+
   ],
 
   listeners: [
