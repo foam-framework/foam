@@ -17,26 +17,22 @@
 
 package foam.dao;
 
+import foam.core.FObject;
 import foam.core.X;
 
 public class FindSink
   implements Sink
 {
-  Object value = null;
+  FObject value = null;
 
-  public FindSink()
-  {
-  }
+  public FindSink() {}
 
-  public Object put(X x, Object obj)
-    throws DAOException, DAOInternalException
-  {
+  public FObject put(X x, FObject obj) throws DAOException, DAOInternalException {
     value = obj;
     return obj;
   }
 
-  public Object getValue()
-  {
+  public FObject getValue() {
     return value;
   }
 

@@ -25,8 +25,7 @@ import java.util.PriorityQueue;
 
 import foam.core.Expression;
 
-public class IterableSelectHelper
-{
+public class IterableSelectHelper {
 
   public static <T> Iterable<T> decorate(Iterable<T> ts, Expression<Boolean> p, Comparator<T> c, final long skip, final long limit) {
     if (limit == 0) {
@@ -41,9 +40,7 @@ public class IterableSelectHelper
     return ts;
   }
   
-  private static abstract class DelegatingIterableIterator<T>
-    implements Iterable<T>, Iterator<T>
-  {
+  private static abstract class DelegatingIterableIterator<T> implements Iterable<T>, Iterator<T> {
     protected final Iterator<T> delegate_;
     
     public DelegatingIterableIterator(Iterable<T> delegate)

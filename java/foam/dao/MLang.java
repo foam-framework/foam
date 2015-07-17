@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import foam.core.Expression;
+import foam.core.FObject;
 import foam.core.Property;
 import foam.core.X;
 
@@ -199,7 +200,7 @@ public class MLang {
   }
   public static class CountSink implements Sink {
     private long count = 0;
-    public Object put(X x, Object obj) {
+    public FObject put(X x, FObject obj) {
       count++;
       return obj;
     }
@@ -214,14 +215,14 @@ public class MLang {
 
   public static MaxSink MAX(Property prop) { return new MaxSink(prop); }
   public static class MaxSink implements Sink {
-    private Object maxHolder;
+    private FObject maxHolder;
     private Property prop;
 
     public MaxSink(Property prop) {
       this.prop = prop;
     }
 
-    public Object put(X x, Object obj) {
+    public FObject put(X x, FObject obj) {
       if (prop.compare(obj, maxHolder) > 0) { // obj is bigger, replace.
         maxHolder = obj;
       }

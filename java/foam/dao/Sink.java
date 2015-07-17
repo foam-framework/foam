@@ -17,12 +17,11 @@
 
 package foam.dao;
 
+import foam.core.FObject;
 import foam.core.X;
-import foam.dao.DAOException;
-import foam.dao.DAOInternalException;
 
 public interface Sink {
-  public Object put(X x, Object obj)
+  public FObject put(X x, FObject obj)
     throws DAOException, DAOInternalException;
 
 }

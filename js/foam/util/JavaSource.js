@@ -93,6 +93,7 @@ public<%= this.abstract ? ' abstract' : '' %> class <%= className %>
     return <%= prop.name %>_;
   }
   public void set<%= prop.name.capitalize() %>(<%= klass, ' ', prop.name %>) {
+    if (isFrozen()) throw new FrozenObjectModificationException();
     <%= prop.javaType %> oldValue = <%= prop.name %>_;
     <%= prop.name %>_ = <%= prop.name %>;
     if (((<%= 'Abstract' + prop.javaType.capitalize() + 'Property' %>) <%= constantize(prop.name) %>).compareValues(oldValue, <%= prop.name %>) != 0) {
@@ -127,7 +128,7 @@ public<%= this.abstract ? ' abstract' : '' %> class <%= className %>
         .append("<%= prop.name %>=").append(get<%= prop.name.capitalize() %>())<%= key < this.properties.length-1 ? '.append(", ")' : '' %><% } %>;
   }
 
-  public Object fclone() {
+  public <%= className %> fclone() {
     <%= this.name %> c = new <%= this.name %>();
 <% for ( var key in this.properties ) { var prop = this.properties[key]; %>
     c.set<%= prop.name.capitalize() %>(get<%= prop.name.capitalize() %>());<% } %>

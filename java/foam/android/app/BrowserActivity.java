@@ -4,7 +4,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -65,21 +64,19 @@ public class BrowserActivity extends FOAMActionBarActivity implements PubSubList
    * @param nu The new selection value.
    */
   private void renderFragmentForSelection(FObject old, FObject nu) {
-    Log.i("FragJug", "Top of render: " + old + " to " + nu);
     FragmentManager manager = getFragmentManager();
     FragmentTransaction trans = manager.beginTransaction();
 
     if (nu == null) { // Render the list.
-      Log.i("FragJug", "list (both null)");
       ListFragment list = new ListFragment();
       list.X(X().put("data", dao));
       trans.replace(frameId, list);
       trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
       trans.commit();
     } else { // Render the details
-      Log.i("FragJug", "->details");
       DetailFragment details = new DetailFragment();
-      details.X(X().put("data", selection));
+      FObject cloned = selection.get().fclone();
+      details.X(X().put("data", new SimpleValue<FObject>(cloned)));
       trans.replace(frameId, details);
       trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
       trans.commit();
@@ -119,12 +116,10 @@ public class BrowserActivity extends FOAMActionBarActivity implements PubSubList
 
   @Override
   public boolean onSupportNavigateUp() {
-    Log.i("FragJug", "SupportNavigate up");
     return onNavigateUp();
   }
   @Override
   public boolean onNavigateUp() {
-    Log.i("FragJug", "Navigate up");
     selection.set(null);
     return true;
   }

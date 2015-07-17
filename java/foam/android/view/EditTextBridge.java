@@ -21,6 +21,9 @@ public class EditTextBridge extends AbstractEditTextBridge<String> {
   }
 
   protected void updateViewFromValue() {
-    view.getEditText().setText(value.get());
+    EditText v = view.getEditText();
+    String oldValue = v.getText().toString();
+    String newValue = value.get();
+    if (!oldValue.equals(newValue)) v.setText(newValue);
   }
 }

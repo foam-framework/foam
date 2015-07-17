@@ -25,14 +25,18 @@ public class SeqNoDAO extends ProxyDAO {
     }
   }
 
-  public Object put(X x, Object o) throws DAOInternalException, DAOException {
+  @Override
+  public FObject put(X x, FObject o) throws DAOInternalException, DAOException {
     // Check if the object has an ID value.
     Property<Integer> ID = getModel().getID();
     int id = ID.get(o);
     if (id == 0) {
       if (nextID < 0) findMax(x);
-      o = ((FObject) o).fclone();
-      ID.set(o, nextID);
+      FObject obj = (FObject) o;
+      obj = (FObject) obj.fclone();
+      ID.set(obj, nextID);
+      obj.freeze();
+      o = obj;
       nextID++;
     }
 

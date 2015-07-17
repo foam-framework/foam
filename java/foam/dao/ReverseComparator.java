@@ -19,9 +19,7 @@ package foam.dao;
 
 import java.util.Comparator;
 
-public class ReverseComparator
-    implements Comparator
-{
+public class ReverseComparator implements Comparator {
     
     public final Comparator delegate_;
 

@@ -17,12 +17,13 @@
 
 package foam.dao;
 
+import foam.core.FObject;
 import foam.core.X;
 
 public interface DAOListener
     extends Sink
 {
-    public void remove(X x, Object obj)
+    void remove(X x, FObject obj)
         throws DAOException, DAOInternalException;
 
 }

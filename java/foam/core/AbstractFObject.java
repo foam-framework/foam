@@ -20,6 +20,8 @@ package foam.core;
 public abstract class AbstractFObject extends PubSubSource implements FObject {
   private static final String[] EMPTY_PROPERTY_TOPIC = new String[] { "property", PubSubSource.ANY };
 
+  private boolean frozen = false;
+
   public int compare(boolean o1, boolean o2) {
     return o1 == o2 ? 0 : o1 ? 1 : 0;
   }
@@ -148,6 +150,7 @@ public abstract class AbstractFObject extends PubSubSource implements FObject {
 
 
   public <T> void addPropertyChangeListener(Property<T> prop, PubSubListener<ValueChangeEvent<T>> listener) {
+    if (isFrozen()) return;
     if (prop == null) subscribe(EMPTY_PROPERTY_TOPIC, listener);
     else subscribe(prop.getPropertyTopic(), listener);
   }
@@ -159,5 +162,15 @@ public abstract class AbstractFObject extends PubSubSource implements FObject {
 
   public <T> void firePropertyChange(Property<T> prop, T oldValue, T newValue) {
     publish(prop.getPropertyTopic(), new PropertyChangeEvent<T>(this, prop, oldValue, newValue));
+  }
+
+
+  public void freeze() {
+    frozen = true;
+    unsubscribeAll();
+  }
+
+  public boolean isFrozen() {
+    return frozen;
   }
 }

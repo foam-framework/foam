@@ -105,8 +105,8 @@ public class DetailFragment extends FOAMFragment {
       DAO dao = (DAO) X().get("dao");
       if (dao != null) {
         try {
-          Object nu = dao.put(X(), event.getTarget());
-          value.set((FObject) nu);
+          FObject nu = dao.put(X(), event.getTarget());
+          value.set(nu.fclone());
         } catch (DAOInternalException e) {
           Log.w(LOG_TAG, "Internal DAO error while trying to save updates: " + e.getMessage());
         } catch (DAOException e) {
