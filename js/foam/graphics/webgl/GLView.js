@@ -146,16 +146,6 @@ CLASS({
         if ( this.data$ )       params.data$       = this.data$;
 
         this.view = this.GLViewView.create(params);
-
-        // add a scene without creating a dependency cycle
-//         this.X.arequire('foam.graphics.webgl.core.Scene')(function(m){
-//           if ( m.isInstance(this) ) {
-//             this.view.cview = this;
-//           } else {
-//             this.view.cview = m.create();
-//           }
-//           this.view.cview.addChild(this);
-//         }.bind(this));
       }
       return this.view;
     },

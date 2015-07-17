@@ -86,12 +86,11 @@ CLASS({
         c.stroke();
       }
     },
-
     function intersects(c) {
       var r = this.r + c.r;
       if ( this.border ) r += this.borderWidth;
       if ( c.border    ) r += c.borderWidth;
-      return  Movement.distance(this.x-c.x, this.y-c.y) < r;
-    },
+      return Movement.distance(this.x-c.x, this.y-c.y) < r;
+    }
   ]
 });

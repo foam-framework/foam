@@ -96,9 +96,6 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      //this.view.width$.addListener(this.updateProjection);
-      //this.view.height$.addListener(this.updateProjection);
-      //this.fov$.addListener(this.updateProjection);
       this.positionMatrix = this.TransMatrix4.create({ z$: this.cameraDistance$ });
 
       Events.dynamic(this.updateProjection);
@@ -116,9 +113,6 @@ CLASS({
         //gl.enable(gl.CULL_FACE); //TODO
         this.calcFps();
       }
-
-      //this.updateProjection();
-      // children can now draw
     },
 
     function calcFps() {
