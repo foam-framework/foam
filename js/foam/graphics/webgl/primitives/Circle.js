@@ -67,7 +67,24 @@ CLASS({
         return this.ScaleMatrix4.create({ sx$: this.r$, sy$: this.r$, sz$: this.r$ });
       }
     },
-
+    {
+      model_: 'IntProperty',
+      name: 'dynamicLOD',
+      help: 'If above zero, scales the segments with the radius. This value acts as a divisor: Log(r/dynamicLOD). Large values mean fewer segments for a given radius.',
+      postSet: function(old,nu) {
+        Events.unfollow(this.r$, this.segments$);
+        if (nu > 0) {
+          Events.map(this.r$, this.segments$, function(r) { 
+            var n = Math.max(Math.ceil(Math.log( r / nu )), 1);
+            n = Math.pow(2,n) * 8;         
+            return n;
+          });
+          
+        }
+        
+      }
+      
+    }
   ],
 
   methods: [

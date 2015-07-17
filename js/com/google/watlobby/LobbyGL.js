@@ -86,13 +86,8 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-
-      Events.map(this.r$, this.segments$, function(r) { 
-        var n = Math.max(Math.ceil(Math.log(r/8)), 1);
-        n = Math.pow(2,n) * 8;         
-        console.log(n);
-        return n;
-      });
+      
+      this.dynamicLOD = 8;
 
       this.background = this.Circle.create({ r$: this.r$, segments$: this.segments$, color: [1,1,1,1], z: -0.9});
       this.addChild(this.background);
