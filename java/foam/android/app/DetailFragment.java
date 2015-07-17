@@ -1,6 +1,5 @@
 package foam.android.app;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +17,7 @@ import foam.core.PubSubListener;
 import foam.core.SimpleValue;
 import foam.core.Value;
 import foam.core.ValueChangeEvent;
+import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.DAOException;
 import foam.dao.DAOInternalException;
@@ -35,28 +35,36 @@ public class DetailFragment extends FOAMFragment {
   @Override
   public void onCreate(Bundle bundle) {
     super.onCreate(bundle);
-    ActionBar bar = getActivity().getActionBar();
 
-    if (X().get("dao") != null) {
-      Object raw = X().get("data");
-      if (! (raw instanceof Value)) {
-        Log.e(LOG_TAG, "Expected \"X.data\" to be a Value.");
+  }
+
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    Context context = container.getContext();
+    X x = findX(context);
+    if (x == null) return null;
+
+    Object selection = x.get("selection");
+    if (selection != null) {
+      if (! (selection instanceof Value)) {
+        Log.e(LOG_TAG, "Expected \"X.selection\" to be a Value.");
+        return null;
       }
-      value = (Value<FObject>) raw;
-      FObject data = value.get();
+
+      Value<FObject> v = (Value<FObject>) selection;
+      FObject data = v.get().fclone();
+      value = new SimpleValue<>(data);
+      X(x.put("data", value));
+
       valueListener = new ValueListener();
       value.addListener(valueListener);
       objectListener = new ObjectListener();
       data.addPropertyChangeListener(null, objectListener);
     }
-  }
 
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     container.removeAllViews();
-    // Inflating in code, the file is needlessly simple.
-    Context context = container.getContext();
 
+    // Inflating in code, the file is needlessly simple.
     LinearLayout layout = new LinearLayout(context);
     layout.setOrientation(LinearLayout.VERTICAL);
     layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,

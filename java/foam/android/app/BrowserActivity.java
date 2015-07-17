@@ -9,12 +9,16 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import java.io.Serializable;
+
 import foam.android.core.FOAMActionBarActivity;
 import foam.core.FObject;
 import foam.core.PubSubListener;
 import foam.core.SimpleValue;
 import foam.core.ValueChangeEvent;
 import foam.dao.DAO;
+import foam.dao.DAOException;
+import foam.dao.DAOInternalException;
 import foam.tutorials.todo.R;
 
 
@@ -33,22 +37,41 @@ public class BrowserActivity extends FOAMActionBarActivity implements PubSubList
     super.onCreate(savedInstanceState);
 
     selection = new SimpleValue<>();
-    selection.addListener(this);
-
     X(X().put("selection", selection).put("dao", dao));
+
+    if (savedInstanceState != null) {
+      Object id = savedInstanceState.getSerializable("selection");
+      if (id != null) {
+        try {
+          FObject obj = dao.find(X(), id);
+          selection.set(obj);
+        } catch (DAOException e) {
+        } catch (DAOInternalException e) {
+        }
+      }
+    }
+    selection.addListener(this);
 
     frame = new FrameLayout(this);
     frame.setId(frameId);
     setContentView(frame, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
         ViewGroup.LayoutParams.MATCH_PARENT));
-    renderFragmentForSelection(null, null);
+
+    renderFragmentForSelection(null, selection.get());
+  }
+
+  @Override
+  public void onSaveInstanceState(Bundle bundle) {
+    FObject o = selection.get();
+    if (o != null) {
+      bundle.putSerializable("selection", (Serializable) o.model().getID().get(o));
+    }
   }
 
   @Override
   public void eventOccurred(String[] topic, ValueChangeEvent<FObject> event) {
     FObject nu = event.getNewValue();
     renderFragmentForSelection(event.getOldValue(), nu);
-    getSupportActionBar().setDisplayHomeAsUpEnabled(nu != null);
   }
 
   /**
@@ -66,21 +89,18 @@ public class BrowserActivity extends FOAMActionBarActivity implements PubSubList
   private void renderFragmentForSelection(FObject old, FObject nu) {
     FragmentManager manager = getFragmentManager();
     FragmentTransaction trans = manager.beginTransaction();
-
     if (nu == null) { // Render the list.
       ListFragment list = new ListFragment();
-      list.X(X().put("data", dao));
       trans.replace(frameId, list);
       trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
       trans.commit();
     } else { // Render the details
       DetailFragment details = new DetailFragment();
-      FObject cloned = selection.get().fclone();
-      details.X(X().put("data", new SimpleValue<FObject>(cloned)));
       trans.replace(frameId, details);
       trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
       trans.commit();
     }
+    getSupportActionBar().setDisplayHomeAsUpEnabled(nu != null);
   }
 
   @Override
