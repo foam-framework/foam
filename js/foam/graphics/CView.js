@@ -23,7 +23,7 @@ CLASS({
   requires: [
     'foam.graphics.PositionedCViewView',
     'foam.graphics.CViewView',
-    'foam.graphics.webgl.GLCView'
+    'foam.graphics.webgl.CViewGLView'
 
   ],
 
@@ -210,8 +210,8 @@ CLASS({
       }
       return this.view;
     },
-    toGLView_: function() { /* internal, creates a GLCView wrapper for 3d canvases */
-      return this.GLCView.create({ sourceView: this });
+    toGLView_: function() { /* internal, creates a CViewGLView wrapper for 3d canvases */
+      return this.CViewGLView.create({ sourceView: this });
     },
 
     toPositionedView_: function() { /* Internal. Creates a PositionedCViewView wrapper. */

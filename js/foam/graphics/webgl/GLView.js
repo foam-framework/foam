@@ -21,7 +21,7 @@ CLASS({
   traits: [ 'foam.patterns.ChildTreeTrait' ],
 
   requires: [
-    'foam.graphics.webgl.GLCViewView',
+    'foam.graphics.webgl.GLViewView',
     'foam.graphics.webgl.Matrix4',
   ],
 
@@ -145,7 +145,7 @@ CLASS({
         if ( this.role )        params.role        = this.role;
         if ( this.data$ )       params.data$       = this.data$;
 
-        this.view = this.GLCViewView.create(params);
+        this.view = this.GLViewView.create(params);
 
         // add a scene without creating a dependency cycle
 //         this.X.arequire('foam.graphics.webgl.Scene')(function(m){
@@ -194,7 +194,7 @@ CLASS({
 
     addChild: function(child) { /* Adds a child $$DOC{ref:'foam.graphics.CView'} to the scene
                                    under this. */
-      /* provide automatic wrapping a CView to GLCView */
+      /* provide automatic wrapping a CView to CViewGLView */
       var c = child.toGLView_ ? child.toGLView_() : child;
 
       this.SUPER(c);

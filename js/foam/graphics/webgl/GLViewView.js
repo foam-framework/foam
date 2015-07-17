@@ -17,7 +17,7 @@
 
 CLASS({
   package: 'foam.graphics.webgl',
-  name: 'GLCViewView',
+  name: 'GLViewView',
 
   extendsModel: 'foam.graphics.AbstractCViewView',
 
@@ -93,7 +93,7 @@ CLASS({
 
   methods: {
 
-    toString: function() { /* The description of this. */ return 'GLCViewView(' + this.cview + ')'; },
+    toString: function() { /* The description of this. */ return 'GLViewView(' + this.cview + ')'; },
 
 
     initHTML: function() { /* Computes the scaling ratio from the window.devicePixelRatio

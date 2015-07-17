@@ -417,7 +417,7 @@ CLASS({
           r: (20 + Math.random() * 50) * bubbleScale,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          z: -i*16,
+          z: -i*16 * bubbleScale,
           color: colour,
           axis: [1,1,1]
         }, this.Y);
@@ -443,7 +443,7 @@ CLASS({
           r: (20 + Math.random() * 50) * bubbleScale,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          z: (this.topics.length + i) * -16,
+          z: (this.topics.length + i) * -16 * bubbleScale,
           borderRatio: 0.1,
           color: colour,
         });

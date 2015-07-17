@@ -17,7 +17,7 @@
 
 CLASS({
   package: 'foam.graphics.webgl',
-  name: 'GLCView',
+  name: 'CViewGLView',
   requires: [
     'foam.graphics.webgl.ArrayBuffer',
     'foam.graphics.webgl.Shader',
