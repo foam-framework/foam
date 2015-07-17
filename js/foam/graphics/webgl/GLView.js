@@ -22,7 +22,7 @@ CLASS({
 
   requires: [
     'foam.graphics.webgl.GLViewView',
-    'foam.graphics.webgl.Matrix4',
+    'foam.graphics.webgl.matrix.Matrix4',
   ],
 
   properties: [
@@ -148,7 +148,7 @@ CLASS({
         this.view = this.GLViewView.create(params);
 
         // add a scene without creating a dependency cycle
-//         this.X.arequire('foam.graphics.webgl.Scene')(function(m){
+//         this.X.arequire('foam.graphics.webgl.core.Scene')(function(m){
 //           if ( m.isInstance(this) ) {
 //             this.view.cview = this;
 //           } else {

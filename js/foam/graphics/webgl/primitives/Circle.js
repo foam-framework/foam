@@ -16,20 +16,20 @@
  */
 
 CLASS({
-  package: 'foam.graphics.webgl',
+  package: 'foam.graphics.webgl.primitives',
   name: 'Circle',
   requires: [
-    'foam.graphics.webgl.Shader',
-    'foam.graphics.webgl.ArrayBuffer',
-    'foam.graphics.webgl.Program',
-    'foam.graphics.webgl.ScaleMatrix4'
+    'foam.graphics.webgl.core.Shader',
+    'foam.graphics.webgl.core.ArrayBuffer',
+    'foam.graphics.webgl.core.Program',
+    'foam.graphics.webgl.matrix.ScaleMatrix4'
   ],
 
   imports: [
     'glMeshLibrary'
   ],
 
-  extendsModel: 'foam.graphics.webgl.Object',
+  extendsModel: 'foam.graphics.webgl.core.Object',
 
   properties: [
     {

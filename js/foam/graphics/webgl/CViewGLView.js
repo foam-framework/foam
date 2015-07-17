@@ -19,17 +19,17 @@ CLASS({
   package: 'foam.graphics.webgl',
   name: 'CViewGLView',
   requires: [
-    'foam.graphics.webgl.ArrayBuffer',
-    'foam.graphics.webgl.Shader',
-    'foam.graphics.webgl.Program',
-    'foam.graphics.webgl.ScaleMatrix4'
+    'foam.graphics.webgl.core.ArrayBuffer',
+    'foam.graphics.webgl.core.Shader',
+    'foam.graphics.webgl.core.Program',
+    'foam.graphics.webgl.matrix.ScaleMatrix4'
   ],
 
   imports: [
     'glMeshLibrary'
   ],
 
-  extendsModel: 'foam.graphics.webgl.FlatObject',
+  extendsModel: 'foam.graphics.webgl.flat.FlatObject',
 
   properties: [
     {

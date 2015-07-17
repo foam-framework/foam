@@ -16,17 +16,17 @@
  */
 
 CLASS({
-  package: 'foam.graphics.webgl',
+  package: 'foam.graphics.webgl.flat',
   name: 'FlatObject',
-  extendsModel: 'foam.graphics.webgl.Object',
+  extendsModel: 'foam.graphics.webgl.core.Object',
 
   requires: [
-    'foam.graphics.webgl.ArrayBuffer',
-    'foam.graphics.webgl.Shader',
-    'foam.graphics.webgl.Program',
-    'foam.graphics.webgl.ScaleMatrix4',
-    'foam.graphics.webgl.StackMatrix4',
-    'foam.graphics.webgl.TransMatrix4',
+    'foam.graphics.webgl.core.ArrayBuffer',
+    'foam.graphics.webgl.core.Shader',
+    'foam.graphics.webgl.core.Program',
+    'foam.graphics.webgl.matrix.ScaleMatrix4',
+    'foam.graphics.webgl.matrix.StackMatrix4',
+    'foam.graphics.webgl.matrix.TransMatrix4',
   ],
 
   properties: [

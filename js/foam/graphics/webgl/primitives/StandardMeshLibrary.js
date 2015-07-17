@@ -16,12 +16,12 @@
  */
 
 CLASS({
-  package: 'foam.graphics.webgl',
+  package: 'foam.graphics.webgl.primitives',
   name: 'StandardMeshLibrary',
 
   requires: [
-    'foam.graphics.webgl.ArrayBuffer',
-    'foam.graphics.webgl.Vector3',
+    'foam.graphics.webgl.core.ArrayBuffer',
+    'foam.graphics.webgl.matrix.Vector3',
   ],
 
   documentation: function() {/* Generates and caches ArrayBuffer objects

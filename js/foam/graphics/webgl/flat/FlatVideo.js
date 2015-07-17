@@ -16,15 +16,15 @@
  */
 
 CLASS({
-  package: 'foam.graphics.webgl',
+  package: 'foam.graphics.webgl.flat',
   name: 'FlatVideo',
-  extendsModel: 'foam.graphics.webgl.FlatObject',
+  extendsModel: 'foam.graphics.webgl.flat.FlatObject',
 
   requires: [
-    'foam.graphics.webgl.ArrayBuffer',
-    'foam.graphics.webgl.Shader',
-    'foam.graphics.webgl.Program',
-    'foam.graphics.webgl.ScaleMatrix4',
+    'foam.graphics.webgl.core.ArrayBuffer',
+    'foam.graphics.webgl.core.Shader',
+    'foam.graphics.webgl.core.Program',
+    'foam.graphics.webgl.matrix.ScaleMatrix4',
   ],
 
   properties: [

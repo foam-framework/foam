@@ -16,10 +16,10 @@
  */
 
 CLASS({
-  package: 'foam.graphics.webgl',
+  package: 'foam.graphics.webgl.core',
   name: 'Program',
   requires: [
-    'foam.graphics.webgl.Shader',
+    'foam.graphics.webgl.core.Shader',
     'foam.graphics.webgl.Matrix4Uniform'
   ],
   imports: [
@@ -30,14 +30,14 @@ CLASS({
   properties: [
     {
       name: 'vertexShader',
-      type: 'foam.graphics.webgl.Shader',
+      type: 'foam.graphics.webgl.core.Shader',
       postSet: function(old, nu) {
         this.destroy();
       }
     },
     {
       name: 'fragmentShader',
-      type: 'foam.graphics.webgl.Shader',
+      type: 'foam.graphics.webgl.core.Shader',
       postSet: function(old, nu) {
         this.destroy();
       }
@@ -77,8 +77,8 @@ CLASS({
     function use() {
       if ( ! this.gl ) return;
       /* Call this to use the program and set up shader attributes and uniform variables. Call after
-        $$DOC{ref:'foam.graphics.webgl.ArrayBuffer'}.bind() and before
-        $$DOC{ref:'foam.graphics.webgl.ArrayBuffer'}.draw(). */
+        $$DOC{ref:'foam.graphics.webgl.core.ArrayBuffer'}.bind() and before
+        $$DOC{ref:'foam.graphics.webgl.core.ArrayBuffer'}.draw(). */
       this.gl.useProgram(this.program);
     },
     function compile() {

@@ -17,9 +17,9 @@
 
 
 CLASS({
-  package: 'foam.graphics.webgl',
+  package: 'foam.graphics.webgl.flat',
   name: 'FlatScene',
-  extendsModel: 'foam.graphics.webgl.Scene',
+  extendsModel: 'foam.graphics.webgl.core.Scene',
 
   properties: [
     {

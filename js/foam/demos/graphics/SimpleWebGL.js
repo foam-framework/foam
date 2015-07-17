@@ -18,19 +18,19 @@
 CLASS({
   package: 'foam.demos.graphics',
   name: 'SimpleWebGL',
-  extendsModel: 'foam.graphics.webgl.Scene',
+  extendsModel: 'foam.graphics.webgl.core.Scene',
 
   requires: [
-    'foam.graphics.webgl.Object',
-    'foam.graphics.webgl.Shader',
-    'foam.graphics.webgl.Program',
-    'foam.graphics.webgl.ArrayBuffer',
+    'foam.graphics.webgl.core.Object',
+    'foam.graphics.webgl.core.Shader',
+    'foam.graphics.webgl.core.Program',
+    'foam.graphics.webgl.core.ArrayBuffer',
     'foam.graphics.webgl.GLCView',
     'foam.graphics.Circle as CViewCircle',
-    'foam.graphics.webgl.Circle',
-    'foam.graphics.webgl.Rectangle',
-    'foam.graphics.webgl.RotMatrix4',
-    'foam.graphics.webgl.TransMatrix4',
+    'foam.graphics.webgl.primitives.Circle',
+    'foam.graphics.webgl.primitives.Rectangle',
+    'foam.graphics.webgl.matrix.RotMatrix4',
+    'foam.graphics.webgl.matrix.TransMatrix4',
   ],
 
   properties: [

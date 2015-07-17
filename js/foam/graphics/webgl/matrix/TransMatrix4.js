@@ -16,27 +16,27 @@
  */
 
 CLASS({
-  package: 'foam.graphics.webgl',
-  name: 'ScaleMatrix4',
-  extendsModel: 'foam.graphics.webgl.Matrix4',
+  package: 'foam.graphics.webgl.matrix',
+  name: 'TransMatrix4',
+  extendsModel: 'foam.graphics.webgl.matrix.Matrix4',
 
   properties: [
     {
-      name: 'sx',
-      help: 'The x scale factor',
-      defaultValue: 1.0,
+      name: 'x',
+      help: 'The x offset',
+      defaultValue: 0,
       postSet: function() { this.reset_(); }
     },
     {
-      name: 'sy',
-      help: 'The y scale factor',
-      defaultValue: 1.0,
+      name: 'y',
+      help: 'The y offset',
+      defaultValue: 0,
       postSet: function() { this.reset_(); }
     },
     {
-      name: 'sz',
-      help: 'The z scale factor',
-      defaultValue: 1.0,
+      name: 'z',
+      help: 'The z offset',
+      defaultValue: 0,
       postSet: function() { this.reset_(); }
     },
   ],
@@ -45,10 +45,10 @@ CLASS({
     function recalculate_() {
       /* Implement in your submodels to calculate and return the contents
           of this matrix.  */
-      return [this.sx, 0,       0,       0,
-              0,       this.sy, 0,       0,
-              0,       0,       this.sz, 0,
-              0,       0,       0,       1];
+      return [1,0,0, 0,
+              0,1,0, 0,
+              0,0,1, 0,
+              this.x,this.y,this.z, 1      ];
     },
   ]
 

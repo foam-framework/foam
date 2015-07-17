@@ -16,9 +16,9 @@
  */
 
 CLASS({
-  package: 'foam.graphics.webgl',
+  package: 'foam.graphics.webgl.matrix',
   name: 'StackMatrix4',
-  extendsModel: 'foam.graphics.webgl.Matrix4',
+  extendsModel: 'foam.graphics.webgl.matrix.Matrix4',
 
   properties: [
     {

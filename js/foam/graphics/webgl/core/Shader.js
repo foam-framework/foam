@@ -16,7 +16,7 @@
  */
 
 CLASS({
-  package: 'foam.graphics.webgl',
+  package: 'foam.graphics.webgl.core',
   name: 'Shader',
 
   imports: [

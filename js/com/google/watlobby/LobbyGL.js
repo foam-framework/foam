@@ -37,8 +37,8 @@ CLASS({
   extendsModel: 'foam.demos.physics.PhysicalGLCircle',
 
   requires: [
-    'foam.graphics.webgl.FlatImage',
-    'foam.graphics.webgl.Circle'
+    'foam.graphics.webgl.flat.FlatImage',
+    'foam.graphics.webgl.primitives.Circle'
   ],
 
   imports: [ 'lobby' ],
@@ -136,11 +136,11 @@ CLASS({
   extendsModel: 'com.google.watlobby.Bubble',
 
   requires: [
-    'foam.graphics.webgl.FlatImage',
-    'foam.graphics.webgl.Rectangle',
+    'foam.graphics.webgl.flat.FlatImage',
+    'foam.graphics.webgl.primitives.Rectangle',
     'foam.graphics.ViewCView',
     'com.google.watlobby.Bubble',
-    'foam.graphics.webgl.FlatVideo'
+    'foam.graphics.webgl.flat.FlatVideo'
   ],
 
   properties: [
@@ -218,7 +218,7 @@ CLASS({
   extendsModel: 'com.google.watlobby.Bubble',
 
   requires: [
-    'foam.graphics.webgl.Rectangle',
+    'foam.graphics.webgl.primitives.Rectangle',
     'com.google.watlobby.Bubble'
   ],
 
@@ -296,7 +296,7 @@ CLASS({
 CLASS({
   package: 'com.google.watlobby',
   name: 'LobbyGL',
-  extendsModel: 'foam.graphics.webgl.FlatScene',
+  extendsModel: 'foam.graphics.webgl.flat.FlatScene',
 
   requires: [
     'com.google.watlobby.Bubble',
@@ -309,7 +309,7 @@ CLASS({
     'foam.demos.physics.PhysicalGLSphere',
     'foam.physics.PhysicsEngine as Collider',
     'foam.util.Timer',
-    'foam.graphics.webgl.Circle as GLCircle',
+    'foam.graphics.webgl.primitives.Circle as GLCircle',
     'foam.graphics.Circle',
     'foam.graphics.webgl.PerformanceScaler',
     'foam.graphics.CView',

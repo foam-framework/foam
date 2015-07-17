@@ -17,12 +17,12 @@
 
 
 CLASS({
-  package: 'foam.graphics.webgl',
+  package: 'foam.graphics.webgl.core',
   name: 'Scene',
   requires: [
-    'foam.graphics.webgl.Matrix4',
-    'foam.graphics.webgl.TransMatrix4',
-    'foam.graphics.webgl.StandardMeshLibrary'
+    'foam.graphics.webgl.matrix.Matrix4',
+    'foam.graphics.webgl.matrix.TransMatrix4',
+    'foam.graphics.webgl.primitives.StandardMeshLibrary'
   ],
   extendsModel: 'foam.graphics.webgl.GLView',
 

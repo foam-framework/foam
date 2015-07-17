@@ -16,15 +16,15 @@
  */
 
 CLASS({
-  package: 'foam.graphics.webgl',
+  package: 'foam.graphics.webgl.core',
   name: 'Object',
   requires: [
-    'foam.graphics.webgl.StackMatrix4',
-    'foam.graphics.webgl.TransMatrix4',
-    'foam.graphics.webgl.RotMatrix4',
-    'foam.graphics.webgl.InverseMatrix4',
-    'foam.graphics.webgl.TransposeMatrix4',
-    'foam.graphics.webgl.Matrix4',
+    'foam.graphics.webgl.matrix.StackMatrix4',
+    'foam.graphics.webgl.matrix.TransMatrix4',
+    'foam.graphics.webgl.matrix.RotMatrix4',
+    'foam.graphics.webgl.matrix.InverseMatrix4',
+    'foam.graphics.webgl.matrix.TransposeMatrix4',
+    'foam.graphics.webgl.matrix.Matrix4',
     'foam.graphics.webgl.Matrix4Uniform'
   ],
   extendsModel: 'foam.graphics.webgl.GLView',
@@ -40,7 +40,7 @@ CLASS({
   properties: [
     {
       name: 'relativePosition',
-      type: 'foam.graphics.webgl.Matrix4',
+      type: 'foam.graphics.webgl.matrix.Matrix4',
       lazyFactory: function() {
         return this.StackMatrix4.create({
             stack: [
@@ -72,18 +72,18 @@ CLASS({
     },
     {
       name: 'positionMatrix',
-      type: 'foam.graphics.webgl.Matrix4',
+      type: 'foam.graphics.webgl.matrix.Matrix4',
       lazyFactory: function() {
         return this.updatePosition();
       }
     },
     {
       name: 'mesh',
-      type: 'foam.graphics.webgl.ArrayBuffer'
+      type: 'foam.graphics.webgl.core.ArrayBuffer'
     },
     {
       name: 'meshNormals',
-      type: 'foam.graphics.webgl.ArrayBuffer',
+      type: 'foam.graphics.webgl.core.ArrayBuffer',
       postSet: function(old, nu) {
         this.doUpdatePosition();
       }
@@ -91,7 +91,7 @@ CLASS({
     {
       name: 'meshMatrix',
       help: 'Transformations to apply to the mesh, but not pass on to children.',
-      type: 'foam.graphics.webgl.Matrix4',
+      type: 'foam.graphics.webgl.matrix.Matrix4',
       lazyFactory: function() {
         return this.Matrix4.create();
       }
@@ -99,7 +99,7 @@ CLASS({
     {
       name: 'normalMatrix',
       help: 'The inverse transpose of the positioning matrix (pos*rel*mesh)',
-      type: 'foam.graphics.webgl.Matrix4',
+      type: 'foam.graphics.webgl.matrix.Matrix4',
       lazyFactory: function() {
         // only fill this in if normals are set
         return this.Matrix4.create();
