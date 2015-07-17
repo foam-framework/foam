@@ -200,7 +200,7 @@ CLASS({
       // normals
       if (this.meshNormals) {
         var norms = this.gl.getAttribLocation(this.program.program, "aNormal");
-        if (norms) {
+        if (norms >= 0) {
           this.meshNormals.bind();
           this.gl.vertexAttribPointer(norms, 3, gl.FLOAT, false, 0, 0);
           this.gl.enableVertexAttribArray(norms);
