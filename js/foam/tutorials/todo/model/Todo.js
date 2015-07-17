@@ -21,6 +21,7 @@ CLASS({
   properties: [
     {
       name: 'id',
+      javaType: 'int',
       hidden: true
     },
     {

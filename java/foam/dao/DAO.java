@@ -20,46 +20,45 @@ package foam.dao;
 import java.util.Comparator;
 
 import foam.core.Expression;
+import foam.core.FObject;
 import foam.core.Model;
 import foam.core.X;
 
 
-public interface DAO
-  extends DAOListener
-{
+public interface DAO extends DAOListener {
 
-  public Model getModel();
+  Model getModel();
 
-  public Object find(X x, Object where)
+  FObject find(X x, Object where)
     throws DAOException, DAOInternalException;
-  
-  public Sink select(X x, Sink sink)
+
+  Sink select(X x, Sink sink)
     throws DAOException, DAOInternalException;
-  
-  public Sink select_(X x, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit)
+
+  Sink select_(X x, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit)
     throws DAOException, DAOInternalException;
-  
-  public void removeAll(X x)
+
+  void removeAll(X x)
     throws DAOException, DAOInternalException;
-  
-  public void removeAll_(X x, Expression<Boolean> p)
+
+  void removeAll_(X x, Expression<Boolean> p)
     throws DAOException, DAOInternalException;
   
   /*****************************/
   
-  public DAO where(Expression<Boolean> p);
-  
-  public DAO limit(long i);
-  
-  public DAO skip(long i);
+  DAO where(Expression<Boolean> p);
+
+  DAO limit(long i);
+
+  DAO skip(long i);
   
   /*****************************/
   
-  public void listen(DAOListener listener);
-  
-  public void unlisten(DAOListener listener);
-  
-  public void pipe(DAOListener listener)
+  void listen(DAOListener listener);
+
+  void unlisten(DAOListener listener);
+
+  void pipe(DAOListener listener)
     throws DAOException, DAOInternalException;
 
 }

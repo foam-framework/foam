@@ -27,9 +27,7 @@ import foam.core.X;
 
 // TODO:  Abstract for now, so the code will compile.
 // Need to finish the implementation of MDAO.
-public class MDAO
-  extends AbstractDAO
-{
+public class MDAO extends AbstractDAO {
   protected Index  index_;
   protected Object root_ = null;
 
@@ -41,41 +39,38 @@ public class MDAO
 
   // TODO: addIndex()
 
-  public Object put(X x, Object obj)
-    throws DAOException, DAOInternalException
-  {
-    Object oldValue = find(x, obj);
+  public FObject put(X x, FObject obj) throws DAOException, DAOInternalException {
+    FObject oldValue = find_(x, obj.model().getID().get(obj));
+
+    FObject cloned = obj.fclone();
+    cloned.freeze();
 
     if ( oldValue != null ) {
-      root_ = index_.put(index_.remove(root_, oldValue), obj);
+      root_ = index_.put(index_.remove(root_, oldValue), cloned);
     } else {
-      root_ = index_.put(root_, obj);
+      root_ = index_.put(root_, cloned);
     }
 
-    return obj;
+    return cloned;
   }
 
-
-  public void remove(X x, Object obj)
-    throws DAOException, DAOInternalException
-  {
-    if ( obj instanceof FObject) {
-      root_ = index_.remove(root_, obj);
-    } else {
-      // TODO: uncomment when we have EQ
-      // limit(1).removeAll(x, EQ(model_.getID(), model_.getID().get(obj)));
-    }
+  public void remove(X x, FObject obj) throws DAOException, DAOInternalException {
+    root_ = index_.remove(root_, obj);
   }
 
+  public FObject find(X x, Object where) throws DAOException, DAOInternalException {
+    FObject ret = find_(x, where);
+    return ret.fclone();
+  }
+
+  public FObject find_(X x, Object where) throws DAOException, DAOInternalException {
+    return super.find(x, where);
+  }
 
   public Sink select_(X x, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit)
-    throws DAOException, DAOInternalException
-  {
+      throws DAOException, DAOInternalException {
     Plan plan = index_.plan(root_, sink, p, c, skip, limit);
-
     plan.execute(x, root_, sink, p, c, skip, limit);
-
     return sink;
   }
-
 }

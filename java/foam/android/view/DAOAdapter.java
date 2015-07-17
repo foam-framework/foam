@@ -67,7 +67,7 @@ public class DAOAdapter extends RecyclerView.Adapter<DAOAdapter.DAOViewHolder> i
       Log.e("DAOAdapter", "DAOInternalException while trying to bind a view.");
       return;
     }
-    holder.viewBridge.getValue().set(sink.getValue());
+    holder.viewBridge.getValue().set(sink.getValue().fclone());
   }
 
   class DAOViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

@@ -29,6 +29,11 @@ public class PubSubSource implements PubSub {
     topics.fireListeners(topic, 0, event);
   }
 
+  @Override
+  public void unsubscribeAll() {
+    topics = new PubSubTopics();
+  }
+
   private static class PubSubTopics {
     private Map<String, PubSubTopics> subtopics;
     private List<PubSubListener> listeners;

@@ -20,13 +20,13 @@ package foam.dao;
 import java.util.Comparator;
 
 import foam.core.Expression;
+import foam.core.FObject;
 
-public interface Index
-{
+public interface Index {
 
-  public Object put(Object state, Object value);
+  public Object put(Object state, FObject value);
 
-  public Object remove(Object state, Object value);
+  public Object remove(Object state, FObject value);
   
   public Plan plan(Object state, Sink sink, Expression<Boolean> p, Comparator c, long skip, long limit);
 

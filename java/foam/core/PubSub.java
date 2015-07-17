@@ -6,5 +6,6 @@ package foam.core;
 public interface PubSub {
   void subscribe(String[] topic, PubSubListener listener);
   void unsubscribe(String[] topic, PubSubListener listener);
+  void unsubscribeAll();
   void publish(String[] topic, Object event);
 }

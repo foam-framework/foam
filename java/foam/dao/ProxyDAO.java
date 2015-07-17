@@ -20,6 +20,7 @@ package foam.dao;
 import java.util.Comparator;
 
 import foam.core.Expression;
+import foam.core.FObject;
 import foam.core.X;
 
 public class ProxyDAO
@@ -41,19 +42,19 @@ public class ProxyDAO
     delegate_ = delegate;
   }
 
-  public Object find(X x, Object where)
+  public FObject find(X x, Object where)
     throws DAOException, DAOInternalException
   {
     return getDelegate().find(x, where);
   }
 
-  public Object put(X x, Object obj)
+  public FObject put(X x, FObject obj)
     throws DAOException, DAOInternalException
   {
     return getDelegate().put(x, obj);
   }
 
-  public void remove(X x, Object obj)
+  public void remove(X x, FObject obj)
     throws DAOException, DAOInternalException
   {
     getDelegate().remove(x, obj);

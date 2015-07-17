@@ -18,6 +18,7 @@
 package foam.dao;
 
 import foam.core.Expression;
+import foam.core.FObject;
 import foam.core.Model;
 import foam.core.X;
 
@@ -36,7 +37,8 @@ public abstract class AbstractDAO
     return model_;
   }
 
-  public Object find(X x, Object where)
+  @Override
+  public FObject find(X x, Object where)
     throws DAOException, DAOInternalException
   {
     FindSink s = new FindSink();

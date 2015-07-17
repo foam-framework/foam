@@ -24,7 +24,10 @@ public class EditIntBridge extends AbstractEditTextBridge<Integer> {
 
   @Override
   protected void updateViewFromValue() {
-    view.getEditText().setText(value.get().toString());
+    EditText v = view.getEditText();
+    String oldValue = v.getText().toString();
+    String newValue = value.get().toString();
+    if (!oldValue.equals(newValue)) v.setText(newValue);
   }
 
   // TODO(braden): Override other TextWatcher calls to disallow entering non-numeric values.

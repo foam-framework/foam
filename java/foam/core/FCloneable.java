@@ -17,7 +17,6 @@
 
 package foam.core;
 
-public interface FCloneable
-{
-    public Object fclone();
+public interface FCloneable<T> {
+  public T fclone();
 }
