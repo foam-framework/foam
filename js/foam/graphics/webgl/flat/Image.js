@@ -17,8 +17,8 @@
 
 CLASS({
   package: 'foam.graphics.webgl.flat',
-  name: 'FlatImage',
-  extendsModel: 'foam.graphics.webgl.flat.FlatObject',
+  name: 'Image',
+  extendsModel: 'foam.graphics.webgl.flat.Object',
 
   requires: [
     'foam.graphics.webgl.core.ArrayBuffer',

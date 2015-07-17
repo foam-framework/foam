@@ -37,7 +37,7 @@ CLASS({
   extendsModel: 'foam.demos.physics.PhysicalGLCircle',
 
   requires: [
-    'foam.graphics.webgl.flat.FlatImage',
+    'foam.graphics.webgl.flat.Image',
     'foam.graphics.webgl.primitives.Circle'
   ],
 
@@ -49,7 +49,7 @@ CLASS({
        name: 'image',
        postSet: function() {
          if ( this.image ) {
-           var img = this.FlatImage.create({src: this.image, z: -0.5});
+           var img = this.Image.create({src: this.image, z: -0.5});
            if ( this.roundImage ) {
              img.shapeName = 'flatUnitCircle';
            }
@@ -136,11 +136,11 @@ CLASS({
   extendsModel: 'com.google.watlobby.Bubble',
 
   requires: [
-    'foam.graphics.webgl.flat.FlatImage',
+    'foam.graphics.webgl.flat.Image',
     'foam.graphics.webgl.primitives.Rectangle',
     'foam.graphics.ViewCView',
     'com.google.watlobby.Bubble',
-    'foam.graphics.webgl.flat.FlatVideo'
+    'foam.graphics.webgl.flat.Video'
   ],
 
   properties: [
@@ -150,7 +150,7 @@ CLASS({
     },
     {
       name: 'playIcon',
-      factory: function() { return this.FlatImage.create({src: 'play.png', x:-40, y:-40, width: 80, height: 80, alpha: 0.25}); }
+      factory: function() { return this.Image.create({src: 'play.png', x:-40, y:-40, width: 80, height: 80, alpha: 0.25}); }
     }
   ],
 
@@ -175,7 +175,7 @@ CLASS({
         var vw = 560*2.5 * 5;
         var vh = 315*2.5 * 5;
 
-        var v = this.FlatVideo.create({
+        var v = this.Video.create({
           x: this.x, y: this.y, z: 800, width: 0, height: 0, axis: [1,1,1],
           src:"Google in Waterloo Region - Ontario  Canada.mp4",
           translucent: true,
@@ -296,7 +296,7 @@ CLASS({
 CLASS({
   package: 'com.google.watlobby',
   name: 'LobbyGL',
-  extendsModel: 'foam.graphics.webgl.flat.FlatScene',
+  extendsModel: 'foam.graphics.webgl.flat.Scene',
 
   requires: [
     'com.google.watlobby.Bubble',

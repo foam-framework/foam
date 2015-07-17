@@ -75,7 +75,6 @@ CLASS({
       var item = this.disabledItems_.pop();
       this.activeItems_.push(item);
       this.addFunction.call(null, item);
-      console.log("adding, active: ", this.activeItems_.length);
     },
 
   ]

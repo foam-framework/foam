@@ -14,25 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- var fps = {
-  startTime : 0,
-  frameNumber : 0,
-  getFPS : function(){
-    this.frameNumber++;
-    var d = new Date().getTime(),
-      currentTime = ( d - this.startTime ) / 1000,
-      result = Math.floor( ( this.frameNumber / currentTime ) );
-
-    if( currentTime > 1 ){
-      this.startTime = new Date().getTime();
-      this.frameNumber = 0;
-      GLOBAL.document.title = result;
-    }
-    return result;
-
-  }
-};
-
 
 CLASS({
   package: 'com.google.watlobby',
@@ -152,14 +133,15 @@ CLASS({
       this.addChild(this.playIcon);
     },
     function setSelected(selected) {
+      var lobby = this.lobby;
       if ( selected ) {
         this.children_ = [];
-        var w = this.lobby.width;
-        var h = this.lobby.height;
+        var w = lobby.width;
+        var h = lobby.height;
 
-        var r = this.SimpleRectangle.create({background: 'black', alpha: 0, x: 0, y: 0, width: this.lobby.width, height: this.lobby.height});
-        this.lobby.addChild(r);
-        Movement.animate(1000, function() { r.alpha = 0.7; })();
+        var r = this.SimpleRectangle.create({background: 'black', alpha: 0, x: 0, y: 0, width: lobby.width, height: lobby.height});
+        lobby.addChild(r);
+//        Movement.animate(1500, function() { r.alpha = 0.7; })();
 
         this.children_.push(r);
 
@@ -172,23 +154,35 @@ CLASS({
           initHTML: function() {}
         }, x: this.x, y: this.y, width: 0, height: 0});
 
-        Movement.animate(1000, function(i, j) {
-          v.width = vw;
-          v.height = vh;
-          v.x = (w-vw)/2;
-          v.y = (h-vh)/2;
-        }, Movement.oscillate(0.6, 0.03, 2))();
-        this.lobby.addChild(v);
+        this.r_ = this.r;
+        lobby.collider.stop();
+        Movement.compile([
+          [500, function() { this.r = 0; }.bind(this) ],
+          [1000, function(i, j) {
+            r.alpha = 0.7;
+            v.width = vw;
+            v.height = vh;
+            v.x = (w-vw)/2;
+            v.y = (h-vh)/2;
+          }]
+        ])();
+        lobby.addChild(v);
         this.children_.push(v);
       } else {
         // TODO: remove children from lobby when done
         var r = this.children_[0];
         var v = this.children_[1];
-        Movement.animate(
-          2000,
-          function() { v.width = v.height = r.alpha = 0; },
-          function() { v.destroy(); }
-        )();
+//        lobby.collider.stop();
+        Movement.compile([
+          [ 500, function() { v.x = this.x; v.y = this.y; v.width = v.height = r.alpha = 0; }.bind(this) ],
+          [ 500, function() { this.r = this.r_ }.bind(this) ],
+          function() {
+            v.destroy();
+            lobby.collider.start();
+            lobby.removeChild(v);
+            lobby.removeChild(r);
+          }
+        ])();
         this.children_ = [];
       }
     }
@@ -306,6 +300,8 @@ CLASS({
     { name: 'background', defaultValue: '#ccf' },
     { name: 'collider',   factory: function() {
       var c = this.Collider.create();
+      var w = this.width;
+      var h = this.height;
       // Make collision detection much faster by not checking
       // if air bubbles collide with other air bubbles
       c.detectCollisions = function() {
@@ -313,7 +309,15 @@ CLASS({
         for ( var i = 0 ; i < cs.length ; i++ ) {
           var c1 = cs[i];
           this.updateChild(c1);
+
           if ( c1.r !== 5 ) {
+            // Bounce on Walls
+            var r = c1.r * 1.2;
+            if ( c1.x < r     ) { c1.vx += 0.2; c1.vy -= 0.19; }
+            if ( c1.x > w - r ) { c1.vx -= 0.2; c1.vy += 0.19; }
+            if ( c1.y < r     ) { c1.vy += 0.2; c1.vx += 0.19; }
+            if ( c1.y > h - r ) { c1.vy -= 0.2; c1.vx -= 0.19; }
+
             for ( var j = i+1 ; j < cs.length ; j++ ) {
               var c2 = cs[j];
               if ( c1.intersects(c2) ) this.collide(c1, c2);
@@ -366,10 +370,6 @@ CLASS({
   ],
 
   methods: [
-    function paintSelf() {
-      fps.getFPS();
-    },
-    
     function initCView() {
       this.SUPER();
 
@@ -395,9 +395,8 @@ CLASS({
         this.addChild(c);
 
         c.mass = c.r/50;
-        c.gravity = 0.03;
+        c.gravity = 0.025;
         c.friction = 0.96;
-        this.bounceOnWalls(c, this.width, this.height);
         this.collider.add(c);
       }
 
@@ -415,13 +414,12 @@ CLASS({
         this.addChild(c);
 
         c.mass = c.r/50;
-        c.gravity = 0.03;
+        c.gravity = 0.025;
         c.friction = 0.96;
-        this.bounceOnWalls(c, this.width, this.height);
         this.collider.add(c);
       }
 
-      for ( var i = 0 ; i < 250 ; i++ ) {
+      for ( var i = 0 ; i < 200 ; i++ ) {
         var b = this.PhysicalCircle.create({
           r: 5,
           x: Math.random() * this.width,
@@ -431,7 +429,7 @@ CLASS({
           border: '#blue',
 //          color: 'rgba(100,100,200,0.2)',
 //          border: '#55a',
-          mass: 0.6
+          mass: 0.7
         });
 
         b.y$.addListener(function(b) {
@@ -442,8 +440,8 @@ CLASS({
         }.bind(this, b));
 
         b.vy = -4;
-        b.gravity = -0.2;
-        b.friction = 0.95;
+        b.gravity = -0.1;
+        b.friction = 0.9;
         this.collider.add(b);
 
         this.addChild(b);
@@ -457,16 +455,6 @@ CLASS({
       this.addChild(clock);
 
       this.collider.start();
-    },
-
-    function bounceOnWalls(c, w, h) {
-      Events.dynamic(function() { c.x; c.y; }, function() {
-        var r = c.r + c.borderWidth;
-        if ( c.x < r     ) { c.vx += 0.2; c.vy -= 0.19; }
-        if ( c.x > w - r ) { c.vx -= 0.2; c.vy += 0.19; }
-        if ( c.y < r     ) { c.vy += 0.2; c.vx += 0.19; }
-        if ( c.y > h - r ) { c.vy -= 0.2; c.vx -= 0.19; }
-      });
     },
 
     function destroy() {

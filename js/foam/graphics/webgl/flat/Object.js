@@ -17,7 +17,7 @@
 
 CLASS({
   package: 'foam.graphics.webgl.flat',
-  name: 'FlatObject',
+  name: 'Object',
   extendsModel: 'foam.graphics.webgl.core.Object',
 
   requires: [
