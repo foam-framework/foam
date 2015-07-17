@@ -12,14 +12,14 @@ import android.widget.FrameLayout;
 
 import foam.android.core.FOAMActionBarActivity;
 import foam.core.FObject;
-import foam.core.PropertyChangeEvent;
-import foam.core.PropertyChangeListener;
+import foam.core.PubSubListener;
 import foam.core.SimpleValue;
+import foam.core.ValueChangeEvent;
 import foam.dao.DAO;
 import foam.tutorials.todo.R;
 
 
-public class BrowserActivity extends FOAMActionBarActivity implements PropertyChangeListener<FObject> {
+public class BrowserActivity extends FOAMActionBarActivity implements PubSubListener<ValueChangeEvent<FObject>> {
   /**
    * Subclasses are expected to set {@link #dao} properly.
    */
@@ -46,7 +46,7 @@ public class BrowserActivity extends FOAMActionBarActivity implements PropertyCh
   }
 
   @Override
-  public void propertyChange(PropertyChangeEvent<FObject> event) {
+  public void eventOccurred(String[] topic, ValueChangeEvent<FObject> event) {
     FObject nu = event.getNewValue();
     renderFragmentForSelection(event.getOldValue(), nu);
     getSupportActionBar().setDisplayHomeAsUpEnabled(nu != null);

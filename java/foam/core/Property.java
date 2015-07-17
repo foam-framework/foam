@@ -37,12 +37,13 @@ public interface Property<T> extends Function<Object, T>, Comparator<Object>, Ex
   public void    set(Object obj, T value);
   public T       get(Object obj);
   public int     compareValues(T o1, T o2);
-  public void    addListener(PropertyChangeSupport obj, PropertyChangeListener<T> listener);
-  public void    removeListener(PropertyChangeSupport obj, PropertyChangeListener<T> listener);
+  public void    addListener(PropertyChangeSupport obj, PubSubListener<ValueChangeEvent<T>> listener);
+  public void    removeListener(PropertyChangeSupport obj, PubSubListener<ValueChangeEvent<T>> listener);
   public Value<T> createValue(FObject obj);
   public boolean isTransient();
   public boolean isHidden();
   public String getHelp();
+  public String[] getPropertyTopic();
   // public boolean hasDefaultValue();
-  //  public Object  createDefaultValue();
+  //  public Object  createDefaultValue);
 }

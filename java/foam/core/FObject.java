@@ -18,7 +18,7 @@
 package foam.core;
 
 public interface FObject
-  extends FCloneable, Comparable, PropertyChangeSupport
+  extends FCloneable, Comparable, PropertyChangeSupport, PubSub
 {
 
   public Model model();
