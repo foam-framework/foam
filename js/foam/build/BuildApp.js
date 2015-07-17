@@ -374,6 +374,9 @@ CLASS({
         }
 
         model.getAllRequires().forEach(add);
+        model.models.forEach(function(innerModel) {
+          add.call(this, innerModel.id);
+        });
       };
       add(this.controller);
       if ( this.defaultView ) add(this.defaultView);
