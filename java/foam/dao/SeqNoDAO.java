@@ -32,11 +32,8 @@ public class SeqNoDAO extends ProxyDAO {
     int id = ID.get(o);
     if (id == 0) {
       if (nextID < 0) findMax(x);
-      FObject obj = (FObject) o;
-      obj = (FObject) obj.fclone();
-      ID.set(obj, nextID);
-      obj.freeze();
-      o = obj;
+      o = o.fclone();
+      ID.set(o, nextID);
       nextID++;
     }
 
