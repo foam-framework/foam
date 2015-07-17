@@ -197,6 +197,13 @@ CLASS({
           vertices: this._circle_(segs, r, 0, 0, 0)
       });
     },
+    function flatCircle_normals(segments) {
+      var segs = segments || 64;
+      return this.ArrayBuffer.create({
+          drawMode: 'points',
+          vertices: this._circle_normals(segs)
+      });
+    },
 
     function flatUnitCircle(segments) {
       /* Create a mesh for a 'triangle fan' circle. This would be the case where borderRatio == 1.0 */
@@ -208,6 +215,23 @@ CLASS({
           vertices: this._circle_(segs, r, 0.5, 0.5, 0.0)
       });
     },
+    function flatUnitCircle_normals(segments) {
+      var segs = segments || 64;
+      return this.ArrayBuffer.create({
+          drawMode: 'points',
+          vertices: this._circle_normals(segs)
+      });
+    },
+
+
+    function _circle_normals(s) {
+      var v = [0,0,1];
+      for (var i = 0; i < s; ++i) {
+        v.concat([0,0,1]);
+      }
+      return v;
+    },
+
 
     function _circle_(s, r, x, y, z, w) {
       var v = [].slice();

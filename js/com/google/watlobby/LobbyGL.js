@@ -324,7 +324,7 @@ CLASS({
 
   properties: [
     { name: 'classname',  defaultValue: 'lobbyCanvas' },
-    { name: 'targetFps',  defaultValue: 45 },
+    { name: 'targetFps',  defaultValue: 30 },
     { name: 'timer' },
     { name: 'n',          defaultValue: 20 },
     { name: 'width',      defaultValue: window.innerWidth },
@@ -367,12 +367,12 @@ CLASS({
 
       ], this.Topic);
     }},
-    {
-      name: 'backgroundLayer',
-      factory: function() {
-        return this.CView.create({ width$: this.width$, height$: this.height$ });
-      }
-    }
+//     {
+//       name: 'backgroundLayer',
+//       factory: function() {
+//         return this.CView.create({ width$: this.width$, height$: this.height$ });
+//       }
+//     }
   ],
 
   listeners: [
@@ -401,6 +401,8 @@ CLASS({
     function init() {
       this.SUPER();
 
+      var bubbleScale = this.width / 1920;
+
 //      this.cameraDistance = -6.0;
 
       if ( ! this.timer ) {
@@ -412,7 +414,7 @@ CLASS({
         var colour = this.COLOURS[i % this.COLOURS.length];
         var t = this.topics[i];
         var c = this.X.lookup(t.model).create({
-          r: 20 + Math.random() * 50,
+          r: (20 + Math.random() * 50) * bubbleScale,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
           z: -i*16,
@@ -422,12 +424,12 @@ CLASS({
         c.topic = t;
         c.image = t.image;
         c.roundImage = t.roundImage;
-        c.r = t.r;
+        c.r = t.r * bubbleScale;
         if ( t.colour ) c.color = t.colour;
         this.addChild(c);
 
         c.mass = c.r/50;
-        c.gravity = 0.03;
+        c.gravity = 0.03 * bubbleScale;
         c.friction = 0.96;
         this.bounceOnWalls(c, this.width, this.height);
         this.collider.add(c);
@@ -438,7 +440,7 @@ CLASS({
       for ( var i = 0 ; i < N ; i++ ) {
         var colour = this.COLOURS[i % this.COLOURS.length];
         var c = this.Bubble.create({
-          r: 20 + Math.random() * 50,
+          r: (20 + Math.random() * 50) * bubbleScale,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
           z: (this.topics.length + i) * -16,
@@ -446,8 +448,8 @@ CLASS({
           color: colour,
         });
 
-        c.mass = c.r/20;
-        c.gravity = 0.03;
+        c.mass = c.r/20 ;
+        c.gravity = 0.03 * bubbleScale;
         c.friction = 0.96;
 
         spareBubbles.push(c);
@@ -480,13 +482,13 @@ CLASS({
       var tinyBubbles = [];
       for ( var i = 0 ; i < 200; i++ ) {
         var b = this.PhysicalCircle.create({
-          r: 5,
+          r: 5 * bubbleScale,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
           borderWidth: 0.5,
-          color: 'rgba(0,0,255,0.2)',
+          color: 'rgba(0,0,255,0.5)',
           border: '#blue',
-          mass: 0.6
+          mass: 0.6 * bubbleScale
         });
         b.y$.addListener(function(b) {
           if ( b.y < 1 ) {
@@ -496,7 +498,7 @@ CLASS({
         }.bind(this, b));
 
         b.vy = -4;
-        b.gravity = -0.4;
+        b.gravity = -0.4 * bubbleScale;
         b.friction = 0.95;
 
         tinyBubbles.push(b);
@@ -512,16 +514,16 @@ CLASS({
           b.x = Math.random() * self.width;
           b.y = self.height + 200;
           self.collider.add(b);
-          self.backgroundLayer.addChild(b);
+          self.addChild(b);
         },
         removeFunction: function(b) {
           self.collider.remove(b);
-          self.backgroundLayer.removeChild(b);
+          self.removeChild(b);
         }
       });
 
      document.body.addEventListener('click', this.onClick);
-     this.backgroundLayer.write(document);
+     //this.backgroundLayer.write(document);
 
       var clock = this.ClockView.create({x:this.width-70,y:70, r:60});
       this.addChild(clock);
@@ -533,27 +535,27 @@ CLASS({
       this.collider.start();
     },
 
-    function toView_() { /* Internal. Creates a CViewView wrapper. */
-      if ( ! this.view ) {
-        var params = { cview: this };
-        if ( this.className )   params.className   = this.className;
-        if ( this.tooltip )     params.tooltip     = this.tooltip;
-        if ( this.speechLabel ) params.speechLabel = this.speechLabel;
-        if ( this.tabIndex )    params.tabIndex    = this.tabIndex;
-        if ( this.role )        params.role        = this.role;
-        if ( this.data$ )       params.data$       = this.data$;
+//     function toView_() { /* Internal. Creates a CViewView wrapper. */
+//       if ( ! this.view ) {
+//         var params = { cview: this };
+//         if ( this.className )   params.className   = this.className;
+//         if ( this.tooltip )     params.tooltip     = this.tooltip;
+//         if ( this.speechLabel ) params.speechLabel = this.speechLabel;
+//         if ( this.tabIndex )    params.tabIndex    = this.tabIndex;
+//         if ( this.role )        params.role        = this.role;
+//         if ( this.data$ )       params.data$       = this.data$;
 
-        var outer = this;
-        this.view = {
-          __proto__: outer.GLCViewView.create(params),
-          initHTML: function() {
-            this.$.style.position = 'fixed';
-            return outer.GLCViewView.getPrototype().initHTML.call(this);
-          }
-        };
-      }
-      return this.view;
-    },
+//         var outer = this;
+//         this.view = {
+//           __proto__: outer.GLCViewView.create(params),
+//           initHTML: function() {
+//             this.$.style.position = 'fixed';
+//             return outer.GLCViewView.getPrototype().initHTML.call(this);
+//           }
+//         };
+//       }
+//       return this.view;
+//     },
 
     function bounceOnWalls(c, w, h) {
       c.cancelBounce_ = Events.dynamic(function() { c.x; c.y; }, function() {
