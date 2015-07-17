@@ -135,8 +135,11 @@ CLASS({
           -1.0, -1.0, 0.0,
         ]
       });
-
     },
+    function flatCenteredRectangle_normals() {
+      return this.flatUnitRectangle_normals()
+    },
+
 
     function _chamferRing_(segs, r, b, z) {
       var v = [].slice();

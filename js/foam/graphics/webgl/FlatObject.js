@@ -50,6 +50,7 @@ CLASS({
         var sc = this.ScaleMatrix4.create();
         Events.map(this.width$, sc.sx$, function(v) { return v; });
         Events.map(this.height$, sc.sy$, function(v) { return -v; });
+        Events.map(this.width$, sc.sz$, function(v) { return v; });
 
         return this.StackMatrix4.create({ stack: [
           this.TransMatrix4.create({ y: -1  }),
@@ -78,20 +79,18 @@ CLASS({
       this.program.fragmentShader = this.Shader.create({
         type: "fragment",
         source: function() {/*
-          precision lowp float;
+          precision mediump float;
 
           varying vec3 vNormal;
           varying vec3 vPosition;
 
           varying vec2 vTextureCoord;
-
           uniform sampler2D uSampler;
 
           void main(void) {
-
             vec4 texel = texture2D(uSampler, vec2(vTextureCoord.x, vTextureCoord.y));
             if(texel.a < 0.01)
-               discard;
+              discard;
 
             vec4 dark = vec4(0.0, 0.0, 0.0, 1.0);
             vec3 uLight = vec3(-10, -10, 15);
@@ -102,7 +101,8 @@ CLASS({
 
             gl_FragColor = mix(dark, texel, 0.5 + 0.9 * diffuse);
           }
-        */}
+        */},
+
       });
       this.program.vertexShader = this.Shader.create({
         type: "vertex",

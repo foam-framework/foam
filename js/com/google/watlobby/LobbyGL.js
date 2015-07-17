@@ -405,7 +405,7 @@ CLASS({
           r: 20 + Math.random() * 50,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          z: -i,
+          z: -i*10,
           color: colour,
           axis: [1,1,1]
         }, this.Y);

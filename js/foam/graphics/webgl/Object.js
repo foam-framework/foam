@@ -136,9 +136,11 @@ CLASS({
         if (this.meshNormals) {
           this.normalMatrix = this.TransposeMatrix4.create({ source:
             this.InverseMatrix4.create({ source:
-              this.StackMatrix4.create({ stack: [
-                this.positionMatrix, this.meshMatrix
-              ]})
+                this.positionMatrix
+// TODO: adding the mesh matrix can mess up the normals when scaling+rotating
+//               this.StackMatrix4.create({ stack: [
+//                 this.positionMatrix, this.meshMatrix
+//               ]})
             })
           });
         }
