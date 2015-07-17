@@ -172,14 +172,14 @@ CLASS({
         this.children_.push(r);
 
         var video = this.video;
-        var vw = 560*2.5 * 5;
-        var vh = 315*2.5 * 5;
+        var vw = w * 0.9;
+        var vh = vw * 9/16
 
         var v = this.Video.create({
           x: this.x, y: this.y, z: 800, width: 0, height: 0, axis: [1,1,1],
           src:"Google in Waterloo Region - Ontario  Canada.mp4",
           translucent: true,
-          shapeName: 'flatUnitCircle'
+          shapeName: 'flatUnitRectangle'
         });
 
         Movement.animate(4000, function(i, j) {

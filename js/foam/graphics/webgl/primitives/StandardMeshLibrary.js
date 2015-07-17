@@ -225,9 +225,9 @@ CLASS({
 
 
     function _circle_normals(s) {
-      var v = [0,0,1];
-      for (var i = 0; i < s; ++i) {
-        v.concat([0,0,1]);
+      var v = [];
+      for (var i = 0; i < s+3; ++i) {
+        v = v.concat([0,0,1]);
       }
       return v;
     },
@@ -296,6 +296,20 @@ CLASS({
       return v;
     },
 
+    function _grid_(w, h) {
+      var v = [].slice();
+      var cw = 1/w;
+      var ch = 1/h;
+
+      for (var j = 1; j < h-1; ++j) {
+        for (var i = 0; i < w; ++i) {
+          v = v.concat( [ i*cw, j*ch, 0 ] );
+          v = v.concat( [ i*cw, (j+1)*ch, 0 ] );
+        }
+      }
+
+      return v;
+    },
 
 
   ]
