@@ -1027,13 +1027,24 @@ MODEL({
     },
 
     inertia: function(c) {
+      var last = Date.now();
+
       Events.dynamic(function() { c.vx; c.vy; c.x; c.y; }, function() {
+        // Take into account duration since last run
+        // Don't skip more than 4 frames because it can cause
+        // collisions to be missed.
+        var now = Date.now();
+        var time = Math.min(Math.max(16, now-last), 64)/16;
+
         // Dynamic Friction
-        if ( Math.abs(c.vx) > 0.001 ) c.x += c.vx;
-        if ( Math.abs(c.vy) > 0.001 ) c.y += c.vy;
+        if ( Math.abs(c.vx) > 0.001 ) c.x += c.vx * time;
+        if ( Math.abs(c.vy) > 0.001 ) c.y += c.vy * time;
+
         // StaticFriction
 //        if ( Math.abs(c.vx) < 0.001 ) c.vx = 0;
 //        if ( Math.abs(c.vy) < 0.001 ) c.vy = 0;
+
+        last = now;
       });
     },
 

@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.tutorials.todo',
   name: 'TodoApp',
@@ -24,71 +25,38 @@ CLASS({
     'foam.mlang.CannedQuery',
     'foam.tutorials.todo.model.Todo',
     'foam.tutorials.todo.ui.TodoCitationView',
-    'foam.tutorials.todo.ui.TodoDetailView',
-    'foam.ui.DAOListView',
-    'foam.ui.TextFieldView',
-    'foam.ui.md.CannedQueryCitationView',
-    'foam.ui.md.PopupView',
   ],
-  exports: [
-    'dao',
-    'dao as todoDAO',
-  ],
-
   properties: [
-    {
-      name: 'cannedQueryDAO',
-      factory: function() {
-        return [
-          this.CannedQuery.create({
-            label: 'Todo',
-            expression: AND(
-                EQ(this.Todo.COMPLETED, false),
-                NOT(this.Todo.PARENT))
-          }),
-          this.CannedQuery.create({
-            label: 'Completed',
-            expression: AND(
-                EQ(this.Todo.COMPLETED, true),
-                NOT(this.Todo.PARENT))
-          }),
-          this.CannedQuery.create({
-            label: 'Everything',
-            expression: NOT(this.Todo.PARENT)
-          })
-        ].dao;
-      }
-    },
-    {
-      name: 'dao',
-      factory: function() {
-        return this.EasyDAO.create({
-          model: this.Todo,
-          daoType: 'LOCAL',
-          cache: true,
-          cloning: true,
-          contextualize: true,
-          seqNo: true
-        });
-      }
-    },
     {
       name: 'data',
       factory: function() {
         return this.BrowserConfig.create({
-          dao: this.dao,
-          cannedQueryDAO: this.cannedQueryDAO,
+          dao: this.EasyDAO.create({
+            model: this.Todo,
+            daoType: 'LOCAL',
+            cache: true,
+            seqNo: true
+          }),
           listView: {
             factory_: 'foam.ui.DAOListView',
             rowView: 'foam.tutorials.todo.ui.TodoCitationView'
           },
-          innerDetailView: 'foam.tutorials.todo.ui.TodoDetailView',
+          cannedQueryDAO: [
+            this.CannedQuery.create({
+              label: 'Todo',
+              expression: EQ(this.Todo.IS_COMPLETED, false)
+            }),
+            this.CannedQuery.create({
+              label: 'Done',
+              expression: EQ(this.Todo.IS_COMPLETED, true)
+            }),
+            this.CannedQuery.create({
+              label: 'Everything',
+              expression: TRUE
+            }),
+          ]
         });
       }
-    },
-    {
-      name: 'className',
-      defaultValue: 'todo-app'
-    },
-  ],
+    }
+  ]
 });

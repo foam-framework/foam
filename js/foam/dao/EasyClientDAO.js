@@ -42,10 +42,19 @@ CLASS({
   ],
   methods: [
     function asend(ret, data) {
+      var json = JSONUtil.where(function(prop, obj) {
+	if ( Property.isInstance(obj) &&
+	     prop.name !== 'name' &&
+	     prop.name !== 'modelId' ) {
+	  return false;
+	}
+	return true;
+      });
+
       aseq(
 	function(ret) {
 	  var xhr = this.XHR.create();
-	  xhr.asend(ret, this.serverUri, JSONUtil.stringify(data), 'POST');
+	  xhr.asend(ret, this.serverUri, json.stringify(data), 'POST');
 	}.bind(this),
 	function(ret, resp, _, success) {
 	  if ( ! success ) {

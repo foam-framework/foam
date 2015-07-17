@@ -144,7 +144,8 @@ var JSONUtil = {
 
           return obj;
         }
-        return newObj ? newObj.create(obj, X) : obj;
+	var ret = newObj ? newObj.create(obj, X) : obj;
+	return ret.readResolve ? ret.readResolve() : ret;
       }
       return obj
     }
@@ -202,7 +203,7 @@ var JSONUtil = {
       for ( var key in properties ) {
         var prop = properties[key];
 
-        if ( ! this.p(prop) ) continue;
+        if ( ! this.p(prop, obj) ) continue;
 
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
@@ -321,7 +322,7 @@ var JSONUtil = {
       for ( var key in properties ) {
         var prop = properties[key];
 
-        if ( ! this.p(prop) ) continue;
+        if ( ! this.p(prop, obj) ) continue;
 
         if ( prop.name === 'parent' ) continue;
         if ( prop.name in obj.instance_ ) {

@@ -121,8 +121,8 @@ CLASS({
       slides deck { position: relative; }
       foam-components { font-size: 100%; }
       #pong-container div { display: flex; }
-      #pong-container span[name="lScore"] { left: 390px; top:20px; }
-      #pong-container span[name="rScore"] { left: 490px; top:20px; }
+      #pong-container span[name="lScore"] { left: 390px; top:20px; z-index: 2; }
+      #pong-container span[name="rScore"] { left: 490px; top:20px; z-index: 2; }
       .pln { color: #000 }
       .str,
       .atv { color: #0f9d58 }

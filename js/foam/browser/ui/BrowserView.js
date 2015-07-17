@@ -269,7 +269,7 @@ CLASS({
             bottom: 0;
             left: 0;
             right: 0;
-            z-index: 10;
+            z-index: 20;
             transition: visibility 0.01s linear <%= ANIMATION_TIME %>;
           }
           .browser-menu-container.menu-open {

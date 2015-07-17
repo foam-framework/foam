@@ -33,6 +33,7 @@ CLASS({
     pipe: function() {},
     where: function() { return this; },
     limit: function() { return this; },
-    skip: function() { return this; }
+    skip: function() { return this; },
+    orderBy: function() { return this; }
   }
 });

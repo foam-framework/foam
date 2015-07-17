@@ -54,7 +54,6 @@ CLASS({
       }
     },
     {
-      model_: 'ModelProperty',
       name: 'model',
       required: true,
       factory: function() { return this.dao.model; }
@@ -100,7 +99,9 @@ CLASS({
       model_: 'foam.core.types.DAOProperty',
       name: 'cannedQueryDAO',
       documentation: 'A DAO of $$DOC{ref:"foam.mlang.CannedQuery"} objects.',
-      required: true,
+      factory: function() {
+        return this.NullDAO.create();
+      },
       postSet: function(old, nu) {
         if (nu && !this.query && !this.cannedQuery) {
           nu.limit(1).select([])(function(arr) { this.cannedQuery = arr[0]; }.bind(this));

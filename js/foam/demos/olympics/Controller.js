@@ -48,6 +48,23 @@ CLASS({
           seqNo: true,
           autoIndex: true
         })/*.addIndex(Medal.CITY).addIndex(Medal.COLOR).addIndex(Medal.SPORT)*/;
+      },
+      postSet: function() {
+	var self = this;
+	this.dao.select(COUNT())(function (c) {
+          if ( ! c.count ) {
+            console.log('loading medal data');
+            axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
+              data.limit(50000).select(function(m) { self.dao.put(self.Medal.create(m)); });
+              self.count = self.totalCount = data.length;
+              self.searchMgr.dao = self.dao;
+            });
+          } else {
+            console.log('medal data already loaded');
+	    self.count = self.totalCount = c.count;
+            self.searchMgr.dao = self.dao;
+          }
+	});
       }
     },
     {
@@ -83,19 +100,6 @@ CLASS({
       GLOBAL.ctrl = this; // for debugging
       var Medal = this.Medal;
       var self  = this;
-
-      this.dao.select(COUNT())(function (c) {
-        if ( ! c.count ) {
-          console.log('loading medal data');
-          axhr('js/foam/demos/olympics/MedalData.json')(function (data) {
-            data.limit(50000).select(function(m) { self.dao.put(self.Medal.create(m)); });
-            self.count = self.totalCount = data.length;
-            self.searchMgr.dao = self.dao;
-          });
-        } else {
-          console.log('medal data already loaded');
-        }
-      });
 
       this.addGroup(Medal.COLOR, null,      {size: 4});
       this.addGroup(Medal.GENDER, null,     {size: 3});

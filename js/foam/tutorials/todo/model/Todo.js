@@ -21,33 +21,32 @@ CLASS({
   properties: [
     {
       name: 'id',
+      javaType: 'int',
+      hidden: true
     },
     {
-      name: 'description',
-      view: 'foam.ui.md.TextFieldView'
+      name: 'title',
     },
     {
       model_: 'BooleanProperty',
-      name: 'completed',
-      defaultValue: false,
+      name: 'isCompleted',
+      label: 'Completed',
       view: 'foam.ui.md.CheckboxView'
-    },
-    {
-      model_: 'ReferenceProperty',
-      name: 'parent',
-      subType: 'foam.tutorials.todo.model.Todo',
-      subKey: 'ID',
-      documentation: 'Reference to the parent of this todo item. If the ' +
-          'parent is defined, this todo is treated as a subtask.',
-    },
-    // TODO(braden): Maybe add dueDate and priority as part of the tutorial?
-  ],
-
-  relationships: [
-    {
-      name: 'subtasks',
-      relatedModel: 'foam.tutorials.todo.model.Todo',
-      relatedProperty: 'parent'
     }
   ],
+
+  actions: [
+    {
+      name: 'delete',
+      isAvailable: function() { return this.id; },
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUg' +
+          'AAABgAAAAYCAQAAABKfvVzAAAAOklEQVQ4y2NgGPzgv8L/B/' +
+          '9h4MF/BXxK8QDqaCDH/aSaP6phVAMuDa+wqn+BW4P//5eYy' +
+          'v/7DvI8DwBDJ5LB6mdU8gAAAABJRU5ErkJggg==',
+      action: function(X) {
+        X.dao.remove(this.id);
+        X.stack.popView();
+      }
+    }
+  ]
 });

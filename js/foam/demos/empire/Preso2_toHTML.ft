@@ -252,6 +252,20 @@ CLASS({
   </slide>
 
   <slide>
+    <!--
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Task Manager</div>
+      </div>
+    </div>
+    -->
+    <div class="card flex-col flex-grow" style="overflow: hidden">
+      <foam model="foam.demos.olympics.Controller" />
+    </div>
+  </slide>
+
+  <slide>
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block yellow">&nbsp;</div>
@@ -601,11 +615,11 @@ CLASS({
         <span class="flex-col" style="font-size: 32px;">
           <div style="font-size:48px;color:gray;">
             <i style="color:red;">Efficiency</i> is <font color="#33f">F</font><font color="#f00">O</font><font color="#fc0">A</font><font color="#3c0">M</font>'s Value Proposition<br>
+            <br>
             Application <font color="red">Performance</font><br>
             Developer <font color="red">Efficiency</font><br>
-            <i style="color:#3c0;font-size:50px;">"Fast Apps Fast"</i><br>
             <br>
-            <span style="color:#33f;font-size:50px;"><strike>View Library</strike><br>Modeling Framework</span><br>
+            <i style="color:#3c0;font-size:50px;">"Fast Apps Fast"</i><br>
           </div>
         </span>
       </div>
