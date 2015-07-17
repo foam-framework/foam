@@ -41,6 +41,7 @@ CLASS({
       }
     },
     {
+      model_: 'IntProperty',
       name: 'segments',
       defaultValue: 64,
       postSet: function() {
