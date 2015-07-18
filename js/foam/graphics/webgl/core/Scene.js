@@ -22,6 +22,7 @@ CLASS({
   requires: [
     'foam.graphics.webgl.matrix.Matrix4',
     'foam.graphics.webgl.matrix.TransMatrix4',
+    'foam.graphics.webgl.matrix.PerspectiveMatrix4',
     'foam.graphics.webgl.primitives.StandardMeshLibrary'
   ],
   extendsModel: 'foam.graphics.webgl.GLView',
@@ -41,14 +42,22 @@ CLASS({
     },
     {
       name: 'projectionMatrix',
-      lazyFactory: function() {
-        return this.Matrix4.create();
+      factory: function() {
+        return this.PerspectiveMatrix4.create();
       }
     },
     {
-      name: 'fov',
-      help: 'Field-of-view in degrees.',
-      defaultValue: 45
+      name: 'view',
+      postSet: function(old,nu) {
+        if (old) {
+          Events.unlink(old.width$, this.projectionMatrix.width$);
+          Events.unlink(old.height$, this.projectionMatrix.height$);
+        }
+        if (nu) {
+          Events.link(nu.width$, this.projectionMatrix.width$);
+          Events.link(nu.height$, this.projectionMatrix.height$);
+        }
+      }
     },
     {
       name: 'cameraDistance',
@@ -81,25 +90,22 @@ CLASS({
 
   ],
 
-  listeners: [
-    {
-      name: 'updateProjection',
-      code: function() {
-        this.projectionMatrix.flat = this.makePerspective(
-          this.fov, this.view.width/this.view.height, 0.1, 100.0
-        );
-      }
-    }
-
-  ],
+  // listeners: [
+  //   {
+  //     name: 'updateProjection',
+  //     code: function() {
+  //       this.projectionMatrix.flat = this.makePerspective(
+  //         this.fov, this.view.width/this.view.height, 0.1, 100.0
+  //       );
+  //     }
+  //   }
+  //
+  // ],
 
   methods: [
     function init() {
       this.SUPER();
       this.positionMatrix = this.TransMatrix4.create({ z$: this.cameraDistance$ });
-
-      Events.dynamic(this.updateProjection);
-      this.updateProjection();
 
       this.startTime = new Date().getTime();
     },
@@ -160,55 +166,8 @@ CLASS({
 //         return m.x(t);
 //     },
 
-    //
-    // glOrtho
-    //
-    function makeOrtho(left, right,
-                       bottom, top,
-                       znear, zfar)
-    {
-        var tx = -(right+left)/(right-left);
-        var ty = -(top+bottom)/(top-bottom);
-        var tz = -(zfar+znear)/(zfar-znear);
 
-        return  [ 2/(right-left), 0,              0,               0,
-                  0,              2/(top-bottom), 0,               0,
-                  0,              0,              -2/(zfar-znear), 0,
-                  tx,             ty,             tz,              1];
-    },
 
-    //
-    // gluPerspective
-    //
-    function makePerspective(fovy, aspect, znear, zfar)
-    {
-        var ymax = znear * Math.tan(fovy * Math.PI / 360.0);
-        var ymin = -ymax;
-        var xmin = ymin * aspect;
-        var xmax = ymax * aspect;
-
-        return this.makeFrustum(xmin, xmax, ymin, ymax, znear, zfar);
-    },
-
-    //
-    // glFrustum
-    //
-    function makeFrustum(left, right,
-                         bottom, top,
-                         znear, zfar)
-    {
-        var X = 2*znear/(right-left);
-        var Y = 2*znear/(top-bottom);
-        var A = (right+left)/(right-left);
-        var B = (top+bottom)/(top-bottom);
-        var C = -(zfar+znear)/(zfar-znear);
-        var D = -2*zfar*znear/(zfar-znear);
-
-        return   [X, 0,  0, 0,
-                  0, Y,  0, 0,
-                  A, B,  C, -1,
-                  0, 0,  D, 0];
-    },
 
 
   ]

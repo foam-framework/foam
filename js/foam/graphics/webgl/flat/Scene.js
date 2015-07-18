@@ -21,28 +21,28 @@ CLASS({
   name: 'Scene',
   extendsModel: 'foam.graphics.webgl.core.Scene',
 
+  requires: [
+    'foam.graphics.webgl.matrix.OrthoMatrix4',
+  ],
+  
   properties: [
     {
-      name: 'fov',
-      help: 'Field-of-view in degrees.',
-      defaultValue: 0
-    },
-    {
-      name: 'cameraDistance',
-      help: 'Units to back the camera away from the XY plane.',
-      defaultValue: 0
+      name: 'projectionMatrix',
+      factory: function() {
+        return this.OrthoMatrix4.create({ znear: -2000, zfar: 2000 });
+      }
     },
   ],
 
-  listeners: [
-    {
-      name: 'updateProjection',
-      code: function() {
-        this.projectionMatrix.flat = this.makeOrtho(
-          0,this.view.width,this.view.height,0,-2000.0,2000.0);
-      }
-    }
-  ],
+  // listeners: [
+  //   {
+  //     name: 'updateProjection',
+  //     code: function() {
+  //       this.projectionMatrix.flat = this.makeOrtho(
+  //         0,this.view.width,this.view.height,0,-2000.0,2000.0);
+  //     }
+  //   }
+  // ],
 
 
 });
