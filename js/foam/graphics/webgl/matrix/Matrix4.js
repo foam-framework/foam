@@ -54,10 +54,12 @@ CLASS({
     },
 
     function reset_() {
-      /* trigger a recalculate on next access */
-      this.instance_.flat = null;
-      //this.propertyChange('flat', true, null);
-      this.notifyDirectListeners();
+      if ( this.instance_.flat ) {
+        /* trigger a recalculate on next access */
+        this.instance_.flat = null;
+        //this.propertyChange('flat', true, null);
+        this.notifyDirectListeners();
+      }
     },
     function notify(sender) {
       this.reset_();
