@@ -80,7 +80,7 @@ CLASS({
     },
     {
       name: 'targetFps',
-      defaultValue: 60
+      defaultValue: 50
     },
     {
       model_: 'IntProperty',

@@ -25,12 +25,13 @@ CLASS({
     'foam.graphics.webgl.core.Shader',
     'foam.graphics.webgl.core.Program',
     'foam.graphics.webgl.core.ArrayBuffer',
-    'foam.graphics.webgl.GLCView',
+    'foam.graphics.webgl.CViewGLView',
     'foam.graphics.Circle as CViewCircle',
     'foam.graphics.webgl.primitives.Circle',
     'foam.graphics.webgl.primitives.Rectangle',
     'foam.graphics.webgl.matrix.RotMatrix4',
     'foam.graphics.webgl.matrix.TransMatrix4',
+    'foam.graphics.webgl.matrix.StackMatrix4',
   ],
 
   properties: [
@@ -39,11 +40,17 @@ CLASS({
     { name: 'ring' },
     { name: 'object' },
     { name: 'time', defaultValue: 0 },
+    { name: 'cameraAngle', defaultValue: 0 },
   ],
 
   methods: [
     function init() {
       this.SUPER();
+
+      this.positionMatrix = this.StackMatrix4.create({ stack: [
+        this.RotMatrix4.create({ axis:[0,1,0], angle$: this.cameraAngle$ }) , this.positionMatrix
+      ]});
+
 
       //////////////////////////////////////////////
       var obj = this.Object.create();
@@ -158,16 +165,19 @@ CLASS({
 //       bigSquare.addChild(circle);
 
       ///////////////////////////////////////////////
-
-      var circ3d = this.Circle.create({
-        r: 1,
-        color: [0.5,0.87,0.5,1.0],
-        borderRatio: 0.05,
-        axis: [1,1,1]
-      });
-      this.ring = circ3d;
-      this.addChild(circ3d);
-
+      var create = function(rad) {
+        var circ3d = this.Circle.create({
+          r: rad,
+          color: [0.5,rad,0.5,1.0],
+          borderRatio: 0.05,
+          axis: [1,1,1]
+        });
+        Events.map(this.time$, circ3d.angle$, function(a) { return a * rad * 0.1; });
+        this.addChild(circ3d);
+      }.bind(this);
+      for (var rad = 0.5; rad <= 1; rad+= 0.05) {
+        create(rad);
+      }
       ///////////////////////////////////////////////
 
       this.update();
@@ -183,20 +193,7 @@ CLASS({
 
         this.time += 1;
 
-        this.ring.angle = this.time * 0.1;
-
-//         if ( this.ring.relativePosition ) {
-//           this.ring.relativePosition =
-//             this.ring.relativePosition.x(Matrix.RotationX(0.1).ensure4x4())
-//           this.ring.relativePosition =
-//             this.ring.relativePosition.x(Matrix.RotationZ(0.02).ensure4x4());
-//           this.ring.relativePosition =
-//             this.ring.relativePosition.x(Matrix.RotationZ(0.04).ensure4x4());
-//         }
-//         if ( this.object.relativePosition ) {
-//           this.object.relativePosition =
-//             this.object.relativePosition.x(Matrix.RotationX(0.01).ensure4x4())
-//         }
+        this.cameraAngle = this.time * 0.01;
 
         this.X.setTimeout(this.update, 16);
       }
