@@ -22,16 +22,11 @@ import java.util.Comparator;
 import foam.core.Expression;
 import foam.core.X;
 
-public class SkipDAO
-    extends ProxyDAO
-{
-
+public class SkipDAO extends ProxyDAO {
     protected long skip_;
 
-    public SkipDAO(long skip, DAO delegate)
-    {
+    public SkipDAO(long skip, DAO delegate) {
         super(delegate);
-
         setSkip(skip);
     }
 
@@ -52,6 +47,5 @@ public class SkipDAO
 
         return getDelegate().select_(x, sink, p, c, s2, limit);
     }
-
 
 }

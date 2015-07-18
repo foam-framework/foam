@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import foam.core.Expression;
+import foam.core.FObject;
 import foam.core.Property;
 import foam.core.PropertyComparator;
 import foam.core.X;
@@ -34,7 +35,7 @@ public class TreeIndex implements Index {
   }
 
 
-  public Object put(Object state, Object value) {
+  public Object put(Object state, FObject value) {
     if ( state == null ) state = new TreeMap(new PropertyComparator(prop_));
 
     ((Map) state).put(prop_.get(value), value);
@@ -42,7 +43,7 @@ public class TreeIndex implements Index {
     return state;
   }
 
-  public Object remove(Object state, Object value) {
+  public Object remove(Object state, FObject value) {
     if ( state != null ) {
       ((Map) state).remove(prop_.get(value));
 
@@ -68,14 +69,14 @@ public class TreeIndex implements Index {
       if (state == null) return;
 
 
-      TreeMap map = (TreeMap) state;
+      TreeMap<Object, FObject> map = (TreeMap<Object, FObject>) state;
       if (sink instanceof MLang.CountSink && p == null) {
         ((MLang.CountSink) sink).setCount(Math.max((long) map.size() - skip, limit));
         return;
       }
 
-      Iterable i = IterableSelectHelper.decorate(map.values(), p, (Comparator<Object>) c, skip, limit);
-      for (Object o : i) {
+      Iterable<FObject> i = IterableSelectHelper.decorate(map.values(), p, (Comparator<FObject>) c, skip, limit);
+      for (FObject o : i) {
         sink.put(x, o);
       }
     }

@@ -14,9 +14,10 @@ import foam.android.core.XContext;
 import foam.android.view.DetailViewBridge;
 import foam.core.FObject;
 import foam.core.PropertyChangeEvent;
-import foam.core.PropertyChangeListener;
+import foam.core.PubSubListener;
 import foam.core.SimpleValue;
 import foam.core.Value;
+import foam.core.ValueChangeEvent;
 import foam.dao.DAO;
 import foam.dao.DAOException;
 import foam.dao.DAOInternalException;
@@ -80,9 +81,9 @@ public class DetailFragment extends FOAMFragment {
   /**
    * Listener for the whole {@link FObject} being replaced inside the data {@link Value}.
    */
-  class ValueListener implements PropertyChangeListener<FObject> {
+  private class ValueListener implements PubSubListener<ValueChangeEvent<FObject>> {
     @Override
-    public void propertyChange(PropertyChangeEvent<FObject> event) {
+    public void eventOccurred(String[] topic, ValueChangeEvent<FObject> event) {
       FObject old = event.getOldValue();
       FObject nu = event.getNewValue();
       if (old != null) old.removePropertyChangeListener(null, objectListener);
@@ -95,15 +96,17 @@ public class DetailFragment extends FOAMFragment {
    *
    * Updates the DAO whenever the contents change.
    */
-  class ObjectListener implements PropertyChangeListener {
+  private class ObjectListener implements PubSubListener {
     @Override
-    public void propertyChange(PropertyChangeEvent event) {
+    public void eventOccurred(String[] topic, Object rawEvent) {
       // TODO(braden): This might be too spammy. Add isMerged support to Android and use it here.
+      if (!(rawEvent instanceof PropertyChangeEvent)) return;
+      PropertyChangeEvent event = (PropertyChangeEvent) rawEvent;
       DAO dao = (DAO) X().get("dao");
       if (dao != null) {
         try {
-          Object nu = dao.put(X(), event.getTarget());
-          value.set((FObject) nu);
+          FObject nu = dao.put(X(), event.getTarget());
+          value.set(nu.fclone());
         } catch (DAOInternalException e) {
           Log.w(LOG_TAG, "Internal DAO error while trying to save updates: " + e.getMessage());
         } catch (DAOException e) {

@@ -18,8 +18,8 @@ import foam.android.core.XContext;
 import foam.core.FObject;
 import foam.core.Model;
 import foam.core.Property;
-import foam.core.PropertyChangeEvent;
 import foam.core.SimpleValue;
+import foam.core.ValueChangeEvent;
 import foam.core.X;
 
 /**
@@ -169,7 +169,7 @@ public class DetailViewBridge extends OneWayViewBridge<ViewGroup, FObject> {
   }
 
   @Override
-  public void propertyChange(PropertyChangeEvent<FObject> event) {
+  public void eventOccurred(String[] topic, ValueChangeEvent<FObject> event) {
     setData(event.getNewValue());
   }
 

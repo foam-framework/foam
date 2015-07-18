@@ -6,16 +6,16 @@ import android.view.View;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import foam.core.PropertyChangeEvent;
-import foam.core.PropertyChangeListener;
 import foam.core.PropertyValue;
+import foam.core.PubSubListener;
 import foam.core.Value;
+import foam.core.ValueChangeEvent;
 import foam.core.X;
 
 /**
  * Abstract base class for FOAM's Value-View adapters.
  */
-public abstract class BaseViewBridge<V extends View, T> implements PropertyChangeListener<T>, ViewBridge<T> {
+public abstract class BaseViewBridge<V extends View, T> implements ViewBridge<T>, PubSubListener<ValueChangeEvent<T>> {
   protected static final AtomicInteger nextGeneratedId = new AtomicInteger(1);
   protected V view;
   protected Value<T> value;
@@ -80,7 +80,7 @@ public abstract class BaseViewBridge<V extends View, T> implements PropertyChang
 
   protected abstract void updateViewFromValue();
 
-  public void propertyChange(PropertyChangeEvent<T> event) {
+  public void eventOccurred(String[] topic, ValueChangeEvent<T> event) {
     updateViewFromValue();
   }
 }

@@ -30,7 +30,7 @@ CLASS({
       load:          function() { console.error('Must output before loading.'); },
       unload:        function() { console.error('Must output and load before unloading.');},
       destroy:       function() { },
-      onAddCls:      function() { },
+      onSetCls:      function() { },
       onAddListener: function() { },
       onSetStyle:    function() { },
       onSetAttr:     function() { },
@@ -47,7 +47,9 @@ CLASS({
       },
       unload:        function() { console.error('Must load before unloading.'); },
       destroy:       function() { },
-      onAddCls:      function() { },
+      onSetCls:      function(cls, enabled) {
+        this.id$el.classList[enabled ? 'add' : 'remove'](cls);
+      },
       onAddListener: function(topic, listener) {
         this.id$el.addEventListener(topic, listener);
       },
@@ -66,7 +68,9 @@ CLASS({
         this.state = this.UNLOADED;
       },
       destroy:       function() { },
-      onAddCls:      function() { },
+      onSetCls:      function(cls, enabled) {
+        this.id$el.classList[enabled ? 'add' : 'remove'](cls);
+      },
       onAddListener: function(topic, listener) {
         this.id$el.addEventListener(topic, listener);
       },
@@ -83,7 +87,7 @@ CLASS({
       },
       unload:        function() { },
       destroy:       function() { },
-      onAddCls:      function() { },
+      onSetCls:      function() { },
       onAddListener: function() { },
       onSetStyle:    function() { },
       onSetAttr:     function() { },
@@ -94,7 +98,7 @@ CLASS({
       load:          function() { },
       unload:        function() { },
       destroy:       function() { },
-      onAddCls:      function() { },
+      onSetCls:      function() { },
       onAddListener: function() { },
       onSetStyle:    function() { },
       onSetAttr:     function() { },
@@ -164,6 +168,10 @@ CLASS({
       }
     },
     {
+      name: 'classes',
+      factory: function() { return []; }
+    },
+    {
       name: 'css',
       factory: function() { return []; }
     },
@@ -208,6 +216,10 @@ CLASS({
 
     function onSetStyle(key, value) {
       this.state.onSetStyle.call(this, key, value);
+    },
+
+    function onSetCls(cls, add) {
+      this.state.onSetCls.call(this, cls, add);
     },
 
     //
@@ -261,8 +273,10 @@ CLASS({
       return this;
     },
 
-    function cls(cls) {
-      this.classes[cls] = true;
+    function cls(cls, opt_enabled) {
+      var enabled = opt_enabled === undefined ? true : opt_enabled ;
+      this.classes[cls] = enabled;
+      this.onSetCls(cls, enabled);
       return this;
     },
 

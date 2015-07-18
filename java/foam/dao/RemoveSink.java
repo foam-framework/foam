@@ -17,11 +17,10 @@
 
 package foam.dao;
 
+import foam.core.FObject;
 import foam.core.X;
 
-public class RemoveSink
-  implements Sink
-{
+public class RemoveSink implements Sink {
   final DAO dao_;
 
   public RemoveSink(DAO dao)
@@ -29,11 +28,8 @@ public class RemoveSink
     dao_ = dao;
   }
 
-  public Object put(X x, Object obj)
-    throws DAOException, DAOInternalException
-  {
+  public FObject put(X x, FObject obj) throws DAOException, DAOInternalException {
     dao_.remove(x, obj);
-
     return obj;
   }
 

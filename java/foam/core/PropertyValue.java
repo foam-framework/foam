@@ -28,10 +28,10 @@ public class PropertyValue<T> implements Value<T> {
     return prop;
   }
 
-  public void addListener(PropertyChangeListener<T> listener) {
+  public void addListener(PubSubListener<ValueChangeEvent<T>> listener) {
     obj.addPropertyChangeListener(prop, listener);
   }
-  public void removeListener(PropertyChangeListener<T> listener) {
+  public void removeListener(PubSubListener<ValueChangeEvent<T>> listener) {
     obj.removePropertyChangeListener(prop, listener);
   }
 }

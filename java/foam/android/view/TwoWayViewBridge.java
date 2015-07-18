@@ -2,8 +2,8 @@ package foam.android.view;
 
 import android.view.View;
 
-import foam.core.PropertyChangeEvent;
 import foam.core.Value;
+import foam.core.ValueChangeEvent;
 
 /**
  * Abstract base class for two-value binding FOAM {@link Value}s to Android {@link View}s.
@@ -22,7 +22,7 @@ public abstract class TwoWayViewBridge<V extends View, T> extends BaseViewBridge
     feedback = false;
   }
 
-  public void propertyChange(PropertyChangeEvent<T> event) {
+  public void eventOccurred(String[] topic, ValueChangeEvent<T> event) {
     if (!feedback) updateViewFromValue();
   }
 }

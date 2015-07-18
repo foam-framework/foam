@@ -6,6 +6,6 @@ package foam.core;
 public interface Value<T> {
   T get();
   void set(T newValue);
-  void addListener(PropertyChangeListener<T> listener);
-  void removeListener(PropertyChangeListener<T> listener);
+  void addListener(PubSubListener<ValueChangeEvent<T>> listener);
+  void removeListener(PubSubListener<ValueChangeEvent<T>> listener);
 }

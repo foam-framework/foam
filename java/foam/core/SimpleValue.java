@@ -11,9 +11,10 @@ import java.util.List;
  * data have separate listeners! Be careful.
  */
 public class SimpleValue<T> implements Value<T> {
+  private static final String[] TOPIC = new String[] { "value" };
   protected T data = null;
   // TODO(braden): Switch to WeakReferences here to prevent memory leaks?
-  protected List<PropertyChangeListener<T>> listeners;
+  protected List<PubSubListener<ValueChangeEvent<T>>> listeners;
 
   public SimpleValue() {
   }
@@ -34,15 +35,15 @@ public class SimpleValue<T> implements Value<T> {
   }
 
   @Override
-  public void addListener(PropertyChangeListener<T> listener) {
+  public void addListener(PubSubListener<ValueChangeEvent<T>> listener) {
     if (listeners == null) listeners = new LinkedList<>();
     listeners.add(listener);
   }
 
   @Override
-  public void removeListener(PropertyChangeListener<T> listener) {
+  public void removeListener(PubSubListener<ValueChangeEvent<T>> listener) {
     if (listeners == null) return;
-    Iterator<PropertyChangeListener<T>> it = listeners.iterator();
+    Iterator<PubSubListener<ValueChangeEvent<T>>> it = listeners.iterator();
     while(it.hasNext()) {
       if (it.next() == listener) it.remove();
     }
@@ -52,9 +53,9 @@ public class SimpleValue<T> implements Value<T> {
   private void maybeFireListeners(T old, T nu) {
     if (listeners != null && (old != null || nu != null) &&
         ((nu != null && !nu.equals(old)) || !old.equals(nu))) {
-      PropertyChangeEvent<T> event = new PropertyChangeEvent<>(null, null, old, nu);
-      for (PropertyChangeListener<T> p : listeners) {
-        p.propertyChange(event);
+      ValueChangeEvent<T> event = new ValueChangeEvent<>(old, nu);
+      for (PubSubListener<ValueChangeEvent<T>> p : listeners) {
+        p.eventOccurred(TOPIC, event);
       }
     }
   }

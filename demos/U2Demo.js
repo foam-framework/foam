@@ -4,7 +4,7 @@ E('b').c(
   'color: ',
   E('font').attr('color', 'red').c('red', E('br'))).write(document);
 
-var e = E('font').c('text');
+var e = E('font').c('text', E('br'));
 console.log('id: ', e.id);
 
 e.write(document);
@@ -15,3 +15,7 @@ e.style('fontWeight', 'bold');
 e.style('fontSize', '32pt');
 
 e.on('click', function() { console.log('clicked'); });
+
+var e2 = E('font').c('important text');
+e2.write(document);
+e2.cls('important');

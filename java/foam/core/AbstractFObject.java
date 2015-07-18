@@ -17,16 +17,11 @@
 
 package foam.core;
 
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+public abstract class AbstractFObject extends PubSubSource implements FObject {
+  private static final String[] EMPTY_PROPERTY_TOPIC = new String[] { "property", PubSubSource.ANY };
 
-public abstract class AbstractFObject
-    implements FObject
-{
+  private boolean frozen = false;
+
   public int compare(boolean o1, boolean o2) {
     return o1 == o2 ? 0 : o1 ? 1 : 0;
   }
@@ -34,18 +29,32 @@ public abstract class AbstractFObject
   public int compare(String o1, String o2) {
     return o1 == o2 ? 0 : o1 == null ? -1 : o2 == null ? 1 : o1.compareTo(o2);
   }
-  
-  public int compare(short  o1, short  o2) { return o1 == o2 ? 0 : o1 < o2 ? -1 : 1; }
-  public int compare(int    o1, int    o2) { return o1 == o2 ? 0 : o1 < o2 ? -1 : 1; }
-  public int compare(long   o1, long   o2) { return o1 == o2 ? 0 : o1 < o2 ? -1 : 1; }
-  public int compare(float  o1, float  o2) { return o1 == o2 ? 0 : o1 < o2 ? -1 : 1; }
-  public int compare(double o1, double o2) { return o1 == o2 ? 0 : o1 < o2 ? -1 : 1; }
+
+  public int compare(short o1, short o2) {
+    return o1 == o2 ? 0 : o1 < o2 ? -1 : 1;
+  }
+
+  public int compare(int o1, int o2) {
+    return o1 == o2 ? 0 : o1 < o2 ? -1 : 1;
+  }
+
+  public int compare(long o1, long o2) {
+    return o1 == o2 ? 0 : o1 < o2 ? -1 : 1;
+  }
+
+  public int compare(float o1, float o2) {
+    return o1 == o2 ? 0 : o1 < o2 ? -1 : 1;
+  }
+
+  public int compare(double o1, double o2) {
+    return o1 == o2 ? 0 : o1 < o2 ? -1 : 1;
+  }
 
   public int compare(Object o1, Object o2) {
     if (o1 instanceof FObject && o2 instanceof FObject) {
       FObject f1 = (FObject) o1;
       FObject f2 = (FObject) o2;
-      if (! f1.model().equals(f2.model())) {
+      if (!f1.model().equals(f2.model())) {
         // Hack that gives unstable order  for non-identical models with the same
         // name. Since that shouldn't happen, this shouldn't cause a problem.
         int c = f1.model().getName().compareTo(f2.model().getName());
@@ -53,7 +62,7 @@ public abstract class AbstractFObject
       } else {
         // Compare each of the properties, in order.
         Property[] props = f1.model().getProperties();
-        for ( Property p : props ) {
+        for (Property p : props) {
           int c = p.compare(f1, f2);
           if (c != 0) return c;
         }
@@ -65,16 +74,39 @@ public abstract class AbstractFObject
       return 1;
     }
   }
-  
-  
-  public int hash(boolean b) { return b ? 1 : 0; }
-  public int hash(String s)  { return s == null ? 0 : s.hashCode(); }
-  public int hash(short s)   { return s; }
-  public int hash(int i)     { return i; }
-  public int hash(long l)    { return (int)(l^(l>>>32)); }
-  public int hash(float f)   { return hash(Float.floatToIntBits(f)); }
-  public int hash(double d)  { return hash(Double.doubleToLongBits(d)); }
-  public int hash(Object o)  { return o == null ? 0 : o.hashCode(); }
+
+
+  public int hash(boolean b) {
+    return b ? 1 : 0;
+  }
+
+  public int hash(String s) {
+    return s == null ? 0 : s.hashCode();
+  }
+
+  public int hash(short s) {
+    return s;
+  }
+
+  public int hash(int i) {
+    return i;
+  }
+
+  public int hash(long l) {
+    return (int) (l ^ (l >>> 32));
+  }
+
+  public int hash(float f) {
+    return hash(Float.floatToIntBits(f));
+  }
+
+  public int hash(double d) {
+    return hash(Double.doubleToLongBits(d));
+  }
+
+  public int hash(Object o) {
+    return o == null ? 0 : o.hashCode();
+  }
 
 
   public int compareTo(Object other) {
@@ -98,7 +130,7 @@ public abstract class AbstractFObject
     b.append("model_:\"");
     b.append(model().getName());
     b.append("\"");
-    for ( Property p : model().getProperties() ) {
+    for (Property p : model().getProperties()) {
       // TODO: do not output default values
       if (p.isTransient()) continue;
       b.append(",");
@@ -117,56 +149,28 @@ public abstract class AbstractFObject
   }
 
 
-  private Map<String, List<WeakReference<PropertyChangeListener>>> listeners;
-
-  public void addPropertyChangeListener(Property prop, PropertyChangeListener listener) {
-    if (listener == null) return;
-    if (listeners == null) {
-      listeners = new HashMap<>();
-    }
-    String key = prop == null ? "" : prop.getName();
-    if (listeners.containsKey(key)) {
-      listeners.get(key).add(new WeakReference<PropertyChangeListener>(listener));
-    } else {
-      List<WeakReference<PropertyChangeListener>> list = new LinkedList<>();
-      list.add(new WeakReference<PropertyChangeListener>(listener));
-      listeners.put(key, list);
-    }
+  public <T> void addPropertyChangeListener(Property<T> prop, PubSubListener<ValueChangeEvent<T>> listener) {
+    if (isFrozen()) return;
+    if (prop == null) subscribe(EMPTY_PROPERTY_TOPIC, listener);
+    else subscribe(prop.getPropertyTopic(), listener);
   }
 
-  public void removePropertyChangeListener(Property prop, PropertyChangeListener listener) {
-    String key = prop == null ? "" : prop.getName();
-    if (listener == null || listeners == null || !listeners.containsKey(key)) return;
-    Iterator<WeakReference<PropertyChangeListener>> iterator = listeners.get(key).iterator();
-    while (iterator.hasNext()) {
-      WeakReference<PropertyChangeListener> ref = iterator.next();
-      PropertyChangeListener l = ref.get();
-      if (l == null || l.equals(listener)) {
-        iterator.remove();
-      }
-    }
+  public <T> void removePropertyChangeListener(Property<T> prop, PubSubListener<ValueChangeEvent<T>> listener) {
+    if (prop == null) unsubscribe(EMPTY_PROPERTY_TOPIC, listener);
+    else unsubscribe(prop.getPropertyTopic(), listener);
   }
 
-  public void firePropertyChange(Property prop, Object oldValue, Object newValue) {
-    if (listeners == null ||
-        !(listeners.containsKey("") || listeners.containsKey(prop.getName())))
-      return;
-    PropertyChangeEvent event = new PropertyChangeEvent(this, prop, oldValue, newValue);
-    if (listeners.containsKey(prop.getName()))
-      callListeners(event, listeners.get(prop.getName()).iterator());
-    if (listeners.containsKey(""))
-      callListeners(event, listeners.get("").iterator());
+  public <T> void firePropertyChange(Property<T> prop, T oldValue, T newValue) {
+    publish(prop.getPropertyTopic(), new PropertyChangeEvent<T>(this, prop, oldValue, newValue));
   }
 
-  private void callListeners(PropertyChangeEvent event, Iterator<WeakReference<PropertyChangeListener>> iterator) {
-    while (iterator.hasNext()) {
-      WeakReference<PropertyChangeListener> ref = iterator.next();
-      PropertyChangeListener l = ref.get();
-      if (l == null) {
-        iterator.remove();
-      } else {
-        l.propertyChange(event);
-      }
-    }
+
+  public void freeze() {
+    frozen = true;
+    unsubscribeAll();
+  }
+
+  public boolean isFrozen() {
+    return frozen;
   }
 }

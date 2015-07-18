@@ -27,11 +27,11 @@ public abstract class AbstractProperty<T> implements Property<T> {
     return new PropertyValue<T>(obj, this);
   }
 
-  public void addListener(PropertyChangeSupport obj, PropertyChangeListener<T> listener) {
+  public void addListener(PropertyChangeSupport obj, PubSubListener<ValueChangeEvent<T>> listener) {
     obj.addPropertyChangeListener(this, listener);
   }
 
-  public void removeListener(PropertyChangeSupport obj, PropertyChangeListener<T> listener) {
+  public void removeListener(PropertyChangeSupport obj, PubSubListener<ValueChangeEvent<T>> listener) {
     obj.removePropertyChangeListener(this, listener);
   }
 
@@ -43,5 +43,11 @@ public abstract class AbstractProperty<T> implements Property<T> {
   }
   public String getHelp() {
     return null;
+  }
+
+  private String[] topic;
+  public String[] getPropertyTopic() {
+    if (topic == null) topic = new String[] { "property", getName() };
+    return topic;
   }
 }
