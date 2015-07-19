@@ -19,7 +19,29 @@ MODEL({
   package: 'foam.demos.sevenguis',
   name: 'FlightBooker',
   properties: [
+    {
+      name: 'oneWay',
+      view: {
+        factory_: 'foam.ui.ChoiceListView',
+        defaultValue: true,
+        choices: [
+          [ true, 'one-way flight' ],
+          [ false, 'return flight' ]
+        ]
+      }
+    },
+    {
+      model_: 'DateProperty',
+      name: 'departDate'
+    },
+    {
+      model_: 'DateProperty',
+      name: 'returnDate'
+    }
   ],
-  methods: {
-  }
+  methods: [
+  ],
+  actions: [
+    { name: 'book', action: function() { } }
+  ]
 });
