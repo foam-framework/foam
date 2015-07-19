@@ -29,6 +29,10 @@ MODEL({
       defaultValue: 10000,
     },
     {
+      name: 'progress',
+      mode: 'read-only'
+    },
+    {
       name: 'lastTick_',
       hidden: true,
       defaultValue: 0
@@ -37,6 +41,7 @@ MODEL({
   methods: [
     function init() {
       this.SUPER();
+      this.X.dynamic(function() { this.progress = Math.min(1, this.elapsedTime / this.duration);  }.bind(this));
       this.tick();
     }
   ],
