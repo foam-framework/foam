@@ -17,7 +17,14 @@
 
 MODEL({
   package: 'foam.demos.sevenguis',
-  name: 'Counter',
-  properties: [ { model_: 'IntProperty', name: 'value' } ],
-  actions: [ { name: 'Count', action: function() { this.value++; } } ]
+  name: 'TempConv',
+  properties: [
+    { name: 'c', model_: 'FloatProperty', view: { factory_: 'foam.ui.FloatFieldView', onKeyMode: true, precision: 4 } },
+    { name: 'f', model_: 'FloatProperty', view: { factory_: 'foam.ui.FloatFieldView', onKeyMode: true, precision: 4 } }
+  ],
+  methods: {
+    init: function() { Events.relate(this.c$, this.f$, this.c2f, this.f2c); },
+    c2f: function(f) { return 9/5 * f + 32; },
+    f2c: function(c) { return 5/9 * ( c - 32 ); }
+  }
 });
