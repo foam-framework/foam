@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+// https://www.artima.com/pins1ed/the-scells-spreadsheet.html
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'Cells',
