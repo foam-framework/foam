@@ -17,7 +17,20 @@
 
 package foam.dao;
 
-public class DAOInternalException extends Exception
-{
+public class DAOInternalException extends Exception {
+  public DAOInternalException() {
+    super();
+  }
 
+  public DAOInternalException(String message) {
+    super(message);
+  }
+
+  public DAOInternalException(String message, Throwable t) {
+    super(message, t);
+  }
+
+  public DAOInternalException(Throwable t) {
+    super(t);
+  }
 }
