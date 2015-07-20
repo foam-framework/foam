@@ -18,24 +18,37 @@
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'Person',
-  properties: [ 'name', 'surname' ]
+  properties: [ 'id', 'name', 'surname' ]
 });
 
 
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'CRUD',
+  requires: [
+    'foam.demos.sevenguis.Person',
+    'foam.dao.EasyDAO',
+    'foam.dao.IDBDAO'
+  ],
   properties: [
     {
       name: 'prefix',
       label: 'Filter prefix'
     },
     {
-      model_: 'DAOProperty',
-      name: 'dao'
+      model_: 'foam.core.types.DAOProperty',
+      name: 'dao',
+      factory: function() {
+        return foam.dao.EasyDAO.create({
+          model: foam.demos.sevenguis.Person,
+          daoType: 'IDB',
+          cache: true:
+          seqNo: true
+        });
+      }
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'filteredDAO'
     },
     {
@@ -48,17 +61,28 @@ MODEL({
     {
       name: 'createItem',
       label: 'Create',
-      action: function() { }
+      action: function() {
+        var self = this;
+        this.dao.put(this.data, {
+          put: function(data) { self.data = data; }
+        });
+      }
     },
     {
       name: 'updateItem',
       label: 'Update',
-      action: function() { }
+      action: function() {
+        this.dao.put(this.data, {
+          put: function(data) { self.data = data; }
+        });
+      }
     },
     {
       name: 'deleteItem',
       label: 'Delete',
-      action: function() { }
+      action: function() {
+        this.dao.remove(this.data));
+      }
     },
   ]
 });
