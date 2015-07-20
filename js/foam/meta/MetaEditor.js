@@ -32,8 +32,9 @@ CLASS({
       name: 'modelDefinition',
       mode: 'read-write',
       view: 'foam.meta.MetaModelView',
+      metaEditLevel: 0,
       factory: function() {
-        return this.Model.create({ name: 'NewModel' });
+        return this.Model.create({ name: 'NewModel', extendsModel: 'foam.meta.MetaEditor' });
       },
     }
   ],
@@ -42,7 +43,7 @@ CLASS({
     {
       name: 'addProperty',
       action: function() {
-        this.modelDefinition.properties.put(this.Property.create({}));
+        this.modelDefinition.properties.put(this.Property.create({ name: '_newProperty_' }));
       }
     },
     {

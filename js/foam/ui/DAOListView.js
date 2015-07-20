@@ -155,7 +155,10 @@ CLASS({
           o.addPropertyListener(null, function(o, topic) {
             var prop = o.model_.getProperty(topic[1]);
             // TODO(kgr): remove the deepClone when the DAO does this itself.
-            if ( ! prop.transient ) view.DAO.put(o.deepClone());
+            if ( ! prop.transient ) {
+              // TODO: if o.id changed, remove the old one?
+              view.DAO.put(o.deepClone());
+            }
           });
         }
         this.addChild(view);
