@@ -22,7 +22,9 @@ CLASS({
 
   requires: [
     'foam.graphics.PositionedCViewView',
-    'foam.graphics.CViewView'
+    'foam.graphics.CViewView',
+    'foam.graphics.webgl.CViewGLView'
+
   ],
 
   traits: [ 'foam.patterns.ChildTreeTrait' ],
@@ -68,13 +70,6 @@ CLASS({
       transient: true,
       hidden: true,
       documentation: function() {/* Safe getter for the canvas view this scene draws into */ }
-    },
-    {
-      name:  'gl',
-      getter: function() { return this.view && this.view.gl; },
-      transient: true,
-      hidden: true,
-      documentation: function() {/* Safe getter for the webGL view this scene draws into */ }
     },
     {
       name:  '$',
@@ -214,6 +209,9 @@ CLASS({
         this.view = this.CViewView.create(params);
       }
       return this.view;
+    },
+    toGLView_: function() { /* internal, creates a CViewGLView wrapper for 3d canvases */
+      return this.CViewGLView.create({ sourceView: this });
     },
 
     toPositionedView_: function() { /* Internal. Creates a PositionedCViewView wrapper. */

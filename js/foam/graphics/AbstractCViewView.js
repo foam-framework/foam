@@ -94,25 +94,7 @@ CLASS({
     {
       name: 'gl',
       getter: function() {
-        if ( this.instance_.gl ) return this.instance_.gl;
-        
-        var glc = null;
-        try {
-          glc = this.$ && (this.$.getContext("webgl") || this.$.getContext("experimental-webgl"));
-        } catch(e) {}
-        
-        if (glc) {
-          glc.clearColor(0.0, 0.0, 0.0, 0.0); // Set clear color to black, fully transparent
-          glc.enable(gl.DEPTH_TEST); // Enable depth testing
-          glc.depthFunc(gl.LEQUAL); // Near things obscure far things
-          glc.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT); // Clear the color/depth buffer.
-          glc.viewport(0,0,this.canvasHeight(), this.canvasWidth()); // 
-          this.instance_.gl = glc;
-        } else {
-          console.warn("WebGL requested but not supported.")
-        }
-        
-        return glc;
+        return null;
       }
     }
   ],
@@ -129,8 +111,7 @@ CLASS({
         this.$.height          = this.canvasHeight();
         this.$.style.height    = this.styleHeight();
         this.$.style.minHeight = this.styleHeight();
-        this.instance_.gl && this.instance_.gl.viewport(0,0,this.canvasHeight(), this.canvasWidth());
-        
+
         this.paint();
       },
       documentation: 'Reacts to resize events to fix the size of the canvas.'
