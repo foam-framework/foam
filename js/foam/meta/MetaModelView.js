@@ -17,43 +17,35 @@
 
 
 CLASS({
-  name: 'MetaEditor',
-  package: 'foam.demos',
+  name: 'MetaModelView',
+  package: 'foam.meta',
+
+  extendsModel: 'foam.ui.DetailView',
 
   requires: [
     'foam.ui.DetailView',
     'foam.ui.TableView',
     'Model',
     'Property',
+    'foam.meta.PropertyView as PropertyView',
   ],
 
   properties: [
     {
-      name: 'modelDefinition',
-      mode: 'read-write',
-      view: 'foam.ui.DetailView',
-      factory: function() {
-        return this.Model.create({ name: 'NewModel' });
-      },
+      name: 'metaEditLevel',
+      help: 'Specifies the highest metaEditLevel to show. Properties with higher metaEditLevels are hidden.',
+      defaultValue: 3,
     }
   ],
 
-  actions: [
-    {
-      name: 'addProperty',
-      action: function() {
-        this.modelDefinition.properties.push(this.Property.create({}));
-      }
-    },
-    {
-      name: 'refresh',
-      action: function() {
-        var tmp = this.modelDefinition;
-        this.modelDefinition = this.Model.create();
-        this.modelDefinition = tmp;
-      }
-    },
-  ]
+  methods: [
+
+
+
+
+
+
+  ],
 
 });
 
