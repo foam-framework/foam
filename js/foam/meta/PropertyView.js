@@ -42,9 +42,6 @@ CLASS({
         The optional name of the desired sub-$$DOC{ref:'foam.ui.View'}. If not specified,
         prop.$$DOC{ref:'Property.metaEditView'} is used. DEPRECATED. Use $$DOC{ref:'.model'} instead.
       */},
-      postSet: function(old,nu) {
-        this.model = nu;
-      }
     },
   ],
 

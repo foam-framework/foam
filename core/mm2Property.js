@@ -118,6 +118,24 @@ var Property = {
           'URL'
         ]
       },
+//       metaEditView: { // Need to select the model_, not just the .type for these
+//         factory_: 'foam.ui.ChoiceView',
+//         choices: [
+//           'StringProperty',
+//           'BooleanProperty',
+//           'DateProperty',
+//           'DateTimeProperty',
+//           'IntProperty',
+//           'FloatProperty',
+//           'StringArrayProperty',
+//           'EMailProperty',
+//           'URLProperty',
+//           'ImageProperty',
+//           'ColorProperty',
+//           'PasswordProperty',
+//           'PhoneNumberProperty',
+//         ]
+//       },
       defaultValue: 'String',
       help: 'The type of the property.',
       documentation: function() { /* <p>The type of the $$DOC{ref:'.'}, either a primitive type or

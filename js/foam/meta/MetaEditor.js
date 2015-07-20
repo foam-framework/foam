@@ -25,6 +25,7 @@ CLASS({
     'foam.ui.TableView',
     'Model',
     'Property',
+    'BooleanProperty',
   ],
 
   properties: [
@@ -34,16 +35,28 @@ CLASS({
       view: 'foam.meta.MetaModelView',
       metaEditLevel: 0,
       factory: function() {
-        return this.Model.create({ name: 'NewModel', extendsModel: 'foam.meta.MetaEditor' });
+        return this.Model.create({ name: 'NewModel' });
       },
+    },
+    {
+      name: 'modelView',
+      mode: 'read-only',
+      view: 'foam.ui.DetailView',
     }
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+      this.modelView$ = this.modelDefinition$;
+    },
   ],
 
   actions: [
     {
       name: 'addProperty',
       action: function() {
-        this.modelDefinition.properties.put(this.Property.create({ name: '_newProperty_' }));
+        this.modelDefinition.properties.put(this.BooleanProperty.create({ name: '_newProperty_' }));
       }
     },
     {
