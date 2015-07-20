@@ -34,17 +34,20 @@ CLASS({
     {
       name: 'metaEditLevel',
       help: 'Specifies the highest metaEditLevel to show. Properties with higher metaEditLevels are hidden.',
-      defaultValue: 3,
+      defaultValue: 0,
     }
   ],
 
   methods: [
-
-
-
-
-
-
+    function getDefaultProperties() {
+      var props = this.model.getRuntimeProperties();
+      var ret = [];
+      for (var i = 0; i < props.length; ++i) {
+        var p = props[i];
+        if ( p.metaEditLevel <= this.metaEditLevel ) ret.push(p);
+      }
+      return ret;
+    },
   ],
 
 });
