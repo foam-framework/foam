@@ -223,7 +223,7 @@ public class MLang {
     }
 
     public FObject put(X x, FObject obj) {
-      if (prop.compare(obj, maxHolder) > 0) { // obj is bigger, replace.
+      if (maxHolder == null || prop.compare(obj, maxHolder) > 0) {
         maxHolder = obj;
       }
       return obj;
