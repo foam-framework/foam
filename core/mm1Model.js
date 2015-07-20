@@ -156,6 +156,7 @@ var Model = {
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
+      metaEditLevel: 0,
       help: 'The coding identifier for the entity.',
       documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
         $$DOC{ref:'Model.name'} should generally only contain identifier-safe characters.
@@ -389,6 +390,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       factory: function() { return []; },
       defaultValue: [],
       help: 'Properties associated with the entity.',
+      metaEditLevel: 0,
       preSet: function(oldValue, newValue) {
         // Convert Maps to Properties if required
         for ( var i = 0 ; i < newValue.length ; i++ ) {
@@ -417,9 +419,9 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
         return newValue;
       },
       postSet: function(_, newValue) {
-	for ( var i = 0 ; i < newValue.length ; i++ ) {
-	  newValue[i].modelId = this.id;
-	}
+        for ( var i = 0 ; i < newValue.length ; i++ ) {
+          newValue[i].modelId = this.id;
+        }
       },
       documentation: function() { /*
         <p>The $$DOC{ref:'Property',usePlural:true} of a $$DOC{ref:'Model'} act as data members

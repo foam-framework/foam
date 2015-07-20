@@ -659,6 +659,29 @@ var Property = {
       type: 'Boolean',
       help: 'True if this value should be included in a memento for this object.',
       defaultValue: false
+    },
+    {
+      name: 'metaEditLevel',
+      help: 'How basic this property is when using a property definition editor. 0 - most basic, always allow editing, 1 - usually shown, 2 - more advanced, 3+ increasingly advanced.',
+      defaultValue: 3,
+      view: {
+        factory_: 'foam.ui.ChoiceView',
+        choices: [
+          'Basic',
+          'Simple',
+          'Advanced',
+        ]
+      },
+      preSet: function(old,nu) {
+        if ( typeof nu == 'string') {
+          if ( nu == 'Basic' ) return 0;
+          if ( nu == 'Simple' ) return 1;
+          if ( nu == 'Advanced' ) return 2;
+          return parseInt(nu);
+        } else {
+          return nu;
+        }
+      },
     }
   ],
 
@@ -670,7 +693,7 @@ var Property = {
     },
     readResolve: function() {
       return this.modelId ?
-	this.X.lookup(this.modelId)[constantize(this.name)] : this;
+        this.X.lookup(this.modelId)[constantize(this.name)] : this;
     },
     toSQL: function() { return this.name; },
     toMQL: function() { return this.name; },
