@@ -50,6 +50,7 @@ var Property = {
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
+      metaEditLevel: 0,
       help: 'The coding identifier for the property.',
       documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
         $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
@@ -93,6 +94,7 @@ var Property = {
     {
       name: 'type',
       type: 'String',
+      metaEditLevel: 0,
       required: true,
       // todo: curry arguments
       view: {

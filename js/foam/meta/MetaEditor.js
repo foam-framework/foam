@@ -42,7 +42,7 @@ CLASS({
     {
       name: 'addProperty',
       action: function() {
-        this.modelDefinition.properties.push(this.Property.create({}));
+        this.modelDefinition.properties.put(this.Property.create({}));
       }
     },
     {

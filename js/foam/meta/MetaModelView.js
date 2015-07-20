@@ -39,6 +39,13 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+
+      // nested DetailViews become meta
+      this.Y.registerModel(this.model_, 'foam.ui.DetailView');
+    },
+
     function getDefaultProperties() {
       var props = this.model.getRuntimeProperties();
       var ret = [];
