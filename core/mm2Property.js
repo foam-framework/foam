@@ -696,7 +696,7 @@ var Property = {
     {
       name: 'metaEditView',
       help: 'The model to use when editing the definition of this property. Each property type should specify a default editor.',
-      defaultValue: 'foam.meta.DetailView',
+      defaultValue: 'foam.ui.TextFieldView',
     }
   ],
 

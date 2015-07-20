@@ -21,7 +21,7 @@ CLASS({
   package: 'foam.meta',
 
   requires: [
-    'foam.meta.MetaModelView',
+    'foam.meta.DetailView',
     'foam.ui.TableView',
     'Model',
     'Property',
@@ -32,7 +32,7 @@ CLASS({
     {
       name: 'modelDefinition',
       mode: 'read-write',
-      view: 'foam.meta.MetaModelView',
+      view: 'foam.meta.DetailView',
       metaEditLevel: 0,
       factory: function() {
         return this.Model.create({ name: 'NewModel' });
