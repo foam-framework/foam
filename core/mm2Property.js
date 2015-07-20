@@ -683,30 +683,20 @@ var Property = {
     {
       name: 'metaEditLevel',
       help: 'How basic this property is when using a property definition editor. 0 - most basic, always allow editing, 1 - usually shown, 2 - more advanced, 3+ increasingly advanced.',
-      defaultValue: 3,
+      defaultValue: 2,
       view: {
         factory_: 'foam.ui.ChoiceView',
         choices: [
-          'Basic',
-          'Simple',
-          'Advanced',
+          [0,'Basic'],
+          [1,'Simple'],
+          [2,'Advanced'],
         ]
-      },
-      preSet: function(old,nu) {
-        if ( typeof nu == 'string') {
-          if ( nu == 'Basic' ) return 0;
-          if ( nu == 'Simple' ) return 1;
-          if ( nu == 'Advanced' ) return 2;
-          return parseInt(nu);
-        } else {
-          return nu;
-        }
       },
     },
     {
       name: 'metaEditView',
       help: 'The model to use when editing the definition of this property. Each property type should specify a default editor.',
-      defaultValue: 'foam.ui.TextFieldView',
+      defaultValue: 'foam.meta.DetailView',
     }
   ],
 

@@ -17,13 +17,12 @@
 
 
 CLASS({
-  name: 'MetaModelView',
+  name: 'DetailView',
   package: 'foam.meta',
 
   extendsModel: 'foam.ui.DetailView',
 
   requires: [
-    'foam.ui.DetailView',
     'foam.ui.TableView',
     'Model',
     'Property',
