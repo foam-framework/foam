@@ -17,9 +17,48 @@
 
 MODEL({
   package: 'foam.demos.sevenguis',
+  name: 'Person',
+  properties: [ 'name', 'surname' ]
+});
+
+
+MODEL({
+  package: 'foam.demos.sevenguis',
   name: 'CRUD',
   properties: [
+    {
+      name: 'prefix',
+      label: 'Filter prefix'
+    },
+    {
+      model_: 'DAOProperty',
+      name: 'dao'
+    },
+    {
+      model_: 'DAOProperty',
+      name: 'filteredDAO'
+    },
+    {
+      name: 'data'
+    },
   ],
-  methods: {
-  }
+  methods: [
+  ],
+  actions: [
+    {
+      name: 'createItem',
+      label: 'Create',
+      action: function() { }
+    },
+    {
+      name: 'updateItem',
+      label: 'Update',
+      action: function() { }
+    },
+    {
+      name: 'deleteItem',
+      label: 'Delete',
+      action: function() { }
+    },
+  ]
 });
