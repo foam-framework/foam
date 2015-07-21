@@ -29,7 +29,7 @@ CLASS({
     {
       name: 'overridesDAO',
       model_: 'foam.core.types.DAOProperty',
-      defaultValue: []
+      defaultValueFn: function() { return []; },
     },
     {
       name: 'extraClassName',
