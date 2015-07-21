@@ -24,26 +24,26 @@ CLASS({
     Pulls the view to use from the property's metaView rather than view.
   */},
 
-  properties: [
-    {
-      name: 'prop',
-      type: 'Property',
-      documentation: function() {/*
-          The $$DOC{ref:'Property'} for which to generate a $$DOC{ref:'foam.ui.View'}.
-      */},
-      postSet: function(old, nu) {
-        this.model = this.innerView || nu.metaView;
-      }
-    },
-    {
-      name: 'innerView',
-      help: 'Override for prop.metaView',
-      documentation: function() {/*
-        The optional name of the desired sub-$$DOC{ref:'foam.ui.View'}. If not specified,
-        prop.$$DOC{ref:'Property.metaView'} is used. DEPRECATED. Use $$DOC{ref:'.model'} instead.
-      */},
-    },
-  ],
+//   properties: [
+//     {
+//       name: 'prop',
+//       type: 'Property',
+//       documentation: function() {/*
+//           The $$DOC{ref:'Property'} for which to generate a $$DOC{ref:'foam.ui.View'}.
+//       */},
+//       postSet: function(old, nu) {
+//         this.model = this.innerView || (nu.model_.name && "foam.meta.types."+nu.model_.name+"View") || nu.metaView;
+//       }
+//     },
+//     {
+//       name: 'innerView',
+//       help: 'Override for prop.metaView',
+//       documentation: function() {/*
+//         The optional name of the desired sub-$$DOC{ref:'foam.ui.View'}. If not specified,
+//         prop.$$DOC{ref:'Property.metaView'} is used. DEPRECATED. Use $$DOC{ref:'.model'} instead.
+//       */},
+//     },
+//   ],
 
 
 });

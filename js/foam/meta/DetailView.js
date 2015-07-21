@@ -22,12 +22,7 @@ CLASS({
 
   extendsModel: 'foam.ui.md.DetailView',
 
-  requires: [
-    'foam.ui.TableView',
-    'Model',
-    'Property',
-    'foam.meta.PropertyView as PropertyView',
-  ],
+  requires: ['foam.meta.MetaSelectorView'],
 
   properties: [
     {
@@ -42,19 +37,50 @@ CLASS({
       this.SUPER();
 
       // nested DetailViews become meta
-      this.Y.registerModel(this.model_, 'foam.ui.DetailView');
+      //this.Y.registerModel(this.model_, 'foam.ui.DetailView');
     },
 
-    function getDefaultProperties() {
-      var props = this.model.getRuntimeProperties();
-      var ret = [];
-      for (var i = 0; i < props.length; ++i) {
-        var p = props[i];
-        if ( p.metaPriority <= this.metaPriority ) ret.push(p);
-      }
-      return ret;
-    },
+//     function getDefaultProperties() {
+//       var props = this.model.getRuntimeProperties();
+//       var ret = [];
+//       for (var i = 0; i < props.length; ++i) {
+//         var p = props[i];
+//         if ( p.metaPriority <= this.metaPriority ) ret.push(p);
+//       }
+//       return ret;
+//     },
+//       metaView: { // Need to select the model_, not just the .type for these
+//         factory_: 'foam.ui.ChoiceView',
+//         choices: [
+//           'StringProperty',
+//           'BooleanProperty',
+//           'DateProperty',
+//           'DateTimeProperty',
+//           'IntProperty',
+//           'FloatProperty',
+//           'StringArrayProperty',
+//           'EMailProperty',
+//           'URLProperty',
+//           'ImageProperty',
+//           'ColorProperty',
+//           'PasswordProperty',
+//           'PhoneNumberProperty',
+//         ]
+//       },
+
   ],
+
+  templates: [
+    function toHTML() {/*
+      <div id="%%id">
+        $$name
+        $$properties{ model_:'foam.ui.DAOListView', rowView: 'foam.meta.MetaSelectorView' }
+      </div>
+    */},
+
+
+  ]
+
 
 });
 

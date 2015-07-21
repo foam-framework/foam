@@ -50,7 +50,6 @@ var Property = {
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
-      metaPriority: 0,
       help: 'The coding identifier for the property.',
       documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
         $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
@@ -94,7 +93,6 @@ var Property = {
     {
       name: 'type',
       type: 'String',
-      metaPriority: 0,
       required: true,
       // todo: curry arguments
       view: {
@@ -118,24 +116,6 @@ var Property = {
           'URL'
         ]
       },
-//       metaView: { // Need to select the model_, not just the .type for these
-//         factory_: 'foam.ui.ChoiceView',
-//         choices: [
-//           'StringProperty',
-//           'BooleanProperty',
-//           'DateProperty',
-//           'DateTimeProperty',
-//           'IntProperty',
-//           'FloatProperty',
-//           'StringArrayProperty',
-//           'EMailProperty',
-//           'URLProperty',
-//           'ImageProperty',
-//           'ColorProperty',
-//           'PasswordProperty',
-//           'PhoneNumberProperty',
-//         ]
-//       },
       defaultValue: 'String',
       help: 'The type of the property.',
       documentation: function() { /* <p>The type of the $$DOC{ref:'.'}, either a primitive type or
@@ -680,24 +660,6 @@ var Property = {
       help: 'True if this value should be included in a memento for this object.',
       defaultValue: false
     },
-    {
-      name: 'metaPriority',
-      help: 'How basic this property is when using a property definition editor. 0 - most basic, always allow editing, 1 - usually shown, 2 - more advanced, 3+ increasingly advanced.',
-      defaultValue: 2,
-      view: {
-        factory_: 'foam.ui.ChoiceView',
-        choices: [
-          [0,'Basic'],
-          [1,'Simple'],
-          [2,'Advanced'],
-        ]
-      },
-    },
-    {
-      name: 'metaView',
-      help: 'The model to use when editing the definition of this property. Each property type should specify a default editor.',
-      defaultValue: 'foam.ui.TextFieldView',
-    }
   ],
 
   methods: {
