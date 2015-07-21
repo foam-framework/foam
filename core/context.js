@@ -16,6 +16,7 @@
  */
 
 GLOBAL.lookupCache_ = {};
+GLOBAL.modelForModel_ = {};
 
 function lookup(key) {
   if ( ! key ) return undefined;
@@ -43,6 +44,37 @@ function lookup(key) {
   return ret;
 }
 
+function registerModelForModel(baseModel, specifierModel, newModel) {
+  // Accepts string names or Model instances. Only strings are stored.
+  //
+  // Registration replaces the base model with the new model, when
+  // the given specifier is indicated (such as .create() using the .model
+  // argument as a specifier). Only cases where modelForModel() is consulted
+  // will result in replacement.
+  //
+  // E.g. MetaEditor might register:
+  //      foam.ui.DetailView + IntProperty => foam.meta.types.IntPropertyView
+  //      base                 specifier      new
+  if ( ! baseModel || ! specifierModel ) return;
+  var base = baseModel.id || baseModel;
+  var specifier = specifierModel.id || specifierModel;
+
+  // isolate model-for-model registrations in subcontexts the same way as lookupCache_
+  if ( ! Object.hasOwnProperty.call(this, 'modelForModel_') ) {
+    this.modelForModel_ = Object.create(this.modelForModel_ || Object.prototype);
+  }
+  this.modelForModel_[base+"_"+specifier] = (newModel.id || newModel);
+}
+
+function modelForModel(baseModel, specifierModel) {
+  // Accepts strings or Model instances. A string model id is returned, or null.
+  if ( ! baseModel ) return null;
+  var base = baseModel.id || baseModel;
+  var specifier = specifierModel.id || specifierModel || "";
+
+  var model = this.modelForModel_[base+"_"+specifier];
+  return model || baseModel; // if not found, return base model
+}
 
 /** Update a Context binding. **/
 function set(key, value) {
@@ -107,12 +139,12 @@ var X = sub({});
 
 var foam = X.foam = {};
 
+
+
+
+
 var registerFactory = function(model, factory) {
   // TODO
-};
-
-var registerModelForModel = function(modelType, targetModel, model) {
-
 };
 
 var registerFactoryForModel = function(factory, targetModel, model) {

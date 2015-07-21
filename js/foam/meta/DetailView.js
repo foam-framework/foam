@@ -26,10 +26,12 @@ CLASS({
 
   properties: [
     {
-      name: 'metaPriority',
-      help: 'Specifies the highest metaPriority to show. Properties with higher metaPrioritys are hidden.',
-      defaultValue: 0,
-    }
+      name: 'replaces',
+      model_: 'foam.core.types.ModelForModelProperty',
+      replaces: [
+        'foam.ui.DetailView and foam.meta.MetaEditor'
+      ]
+    },
   ],
 
   methods: [
