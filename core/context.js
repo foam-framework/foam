@@ -81,8 +81,16 @@ function modelForModel(baseModel, specifierModel) {
   if ( ! baseModel ) return null;
   var base = baseModel.id || baseModel;
   var specifier = specifierModel.id || specifierModel || "";
-
   var model = this.modelForModel_[base+"_"+specifier];
+
+  if (! model ) {
+    // try the super of specifierModel
+    var spModel = this.lookup(specifier);
+    if (spModel && spModel.extendsModel) {
+      return this.modelForModel(baseModel, spModel.extendsModel);
+    }
+  }
+
   return model || baseModel; // if not found, return base model
 }
 
