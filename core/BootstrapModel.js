@@ -472,9 +472,6 @@ var BootstrapModel = {
     this.templates.forEach(setModel);
     this.listeners.forEach(setModel);
 
-    // do not include 'this'
-    delete requires[this.id];
-
     return Object.keys(requires);
   },
 
