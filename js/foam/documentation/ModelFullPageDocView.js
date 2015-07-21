@@ -26,6 +26,16 @@ CLASS({
               'foam.documentation.FeatureListDocView',
   ],
 
+  properties: [
+    {
+      name: 'replacements',
+      model_: 'foam.core.types.ModelForModelProperty',
+      replaces: [
+        'foam.documentation.FullPageDocView and Model',
+      ]
+    },
+  ],
+
   templates: [
 
     function toInnerHTML()    {/*

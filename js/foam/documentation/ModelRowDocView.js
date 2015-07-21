@@ -24,6 +24,16 @@ CLASS({
 
   documentation: "A row documentation view for $$DOC{ref:'Model'} instances.",
 
+  properties: [
+    {
+      name: 'replacements',
+      model_: 'foam.core.types.ModelForModelProperty',
+      replaces: [
+        'foam.documentation.RowDocView and Model',
+      ]
+    },
+  ],
+
  templates: [
     function toInnerHTML() {/*
       <div id="scrollTarget_<%=this.data.name%>">

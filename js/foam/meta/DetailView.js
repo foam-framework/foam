@@ -24,16 +24,6 @@ CLASS({
 
   requires: ['foam.meta.MetaSelectorView'],
 
-  properties: [
-    {
-      name: 'replaces',
-      model_: 'foam.core.types.ModelForModelProperty',
-      replaces: [
-        'foam.ui.DetailView and foam.meta.MetaEditor'
-      ]
-    },
-  ],
-
   methods: [
     function init() {
       this.SUPER();
@@ -76,7 +66,7 @@ CLASS({
     function toHTML() {/*
       <div id="%%id">
         $$name
-        $$properties{ model_:'foam.ui.DAOListView', rowView: 'foam.meta.MetaSelectorView' }
+        $$properties{ model_:'foam.ui.DAOListView', rowView: 'foam.ui.CitationView' }
       </div>
     */},
 

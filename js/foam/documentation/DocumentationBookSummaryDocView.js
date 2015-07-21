@@ -25,6 +25,16 @@ CLASS({
 
   properties: [
     {
+      name: 'replacements',
+      model_: 'foam.core.types.ModelForModelProperty',
+      replaces: [
+        'foam.documentation.SummaryDocView and foam.documentation.DocumentationBook',
+      ]
+    },
+  ],
+
+  properties: [
+    {
       name: 'data',
       postSet: function(old, nu) {
         this.updateHTML();

@@ -25,10 +25,15 @@ CLASS({
     'foam.ui.TableView',
     'Model',
     'Property',
+    'foam.meta.types.BooleanPropertyView',
     'BooleanProperty',
   ],
 
   properties: [
+    {
+      model_: 'foam.core.types.ModelForModelProperty',
+      name: 'replacements',
+    },
     {
       name: 'modelDefinition',
       mode: 'read-write',
@@ -54,7 +59,7 @@ CLASS({
       this.SUPER();
       this.modelView$ = this.modelDefinition$;
 
-      this.DetailView.REPLACES.register(this.X);
+      //this.model_.REPLACEMENTS.registerMyRequires(this.X);
     },
   ],
 

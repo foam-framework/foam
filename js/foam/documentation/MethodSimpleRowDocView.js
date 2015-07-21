@@ -20,4 +20,13 @@ CLASS({
   name: 'MethodSimpleRowDocView',
   extendsModel: 'foam.documentation.SimpleRowDocView',
   help: 'A view for documentation of each item in a list of methods, without using featureDAO.',
+  properties: [
+    {
+      name: 'replacements',
+      model_: 'foam.core.types.ModelForModelProperty',
+      replaces: [
+        'foam.documentation.RowDocView and Method',
+      ]
+    },
+  ],
 });

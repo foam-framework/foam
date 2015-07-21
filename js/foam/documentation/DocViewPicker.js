@@ -28,7 +28,7 @@ CLASS({
               'foam.documentation.DocumentationBookFullPageDocView',
 
               'foam.documentation.PropertyRowDocView',
-              'foam.documentation.MethodRowDocView',
+//              'foam.documentation.MethodRowDocView',
               'foam.documentation.ActionRowDocView',
               'foam.documentation.RelationshipRowDocView',
               'foam.documentation.IssueRowDocView',
@@ -44,8 +44,14 @@ CLASS({
 
               'foam.documentation.SubModelOptionalView',
               'foam.documentation.TraitUsersOptionalView'
+  ],
 
-
+  properties: [
+    {
+      model_: 'foam.core.types.ModelForModelProperty',
+      name: 'replacements',
+      help: 'This property will cause our model-for-model replacements to be registered',
+    }
   ],
 
   documentation: function() {/*

@@ -45,7 +45,7 @@ CLASS({
       postSet: function(old,nu) {
         this.processModelChange();
       }
-    }
+    },
   ],
 
   methods: {

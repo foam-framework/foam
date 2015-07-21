@@ -20,4 +20,13 @@ CLASS({
   name: 'MethodRowDocView',
   extendsModel: 'foam.documentation.DocFeatureView',
   help: 'A view for documentation of each item in a list of methods.',
+  properties: [
+    {
+      name: 'replacements',
+      model_: 'foam.core.types.ModelForModelProperty',
+      replaces: [
+        'foam.documentation.RowDocView and Method',
+      ]
+    },
+  ],
 });

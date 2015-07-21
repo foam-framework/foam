@@ -302,7 +302,7 @@ var Property = {
     },
     {
 //      model_: 'ViewFactoryProperty',
-      name: 'detailView',
+      name: 'detailView', // TODO(jacksonic) REMOVE: remove this in favor of model-for-model?
       type: 'view',
       defaultValueFn: function() { return this.view; },
       help: 'View component for the property when rendering within a DetailView.',
@@ -314,7 +314,7 @@ var Property = {
     },
     {
 //      model_: 'ViewFactoryProperty',
-      name: 'citationView',
+      name: 'citationView', // TODO(jacksonic) REMOVE: remove this in favor of model-for-model?
       type: 'view',
       defaultValueFn: function() { return this.view; },
       help: 'View component for the property when rendering within a CitationView.',
@@ -326,7 +326,7 @@ var Property = {
     },
     {
 //      model_: 'FunctionProperty',
-      name: 'detailViewPreRow',
+      name: 'detailViewPreRow', // TODO(jacksonic) REMOVE: remove this as nobody is using it?
       defaultValue: function() { return ""; },
       help: 'Inject HTML before row in DetailView.',
       documentation: function() { /*
@@ -336,7 +336,7 @@ var Property = {
     },
     {
 //      model_: 'FunctionProperty',
-      name: 'detailViewPostRow',
+      name: 'detailViewPostRow', // TODO(jacksonic) REMOVE: remove this as nobody is using it?
       defaultValue: function() { return ""; },
       help: 'Inject HTML before row in DetailView.',
       documentation: function() { /*

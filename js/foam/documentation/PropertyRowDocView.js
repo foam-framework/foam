@@ -23,6 +23,16 @@ CLASS({
 
   requires: ['foam.documentation.DocFeatureOverridesRefView'],
 
+  properties: [
+    {
+      name: 'replacements',
+      model_: 'foam.core.types.ModelForModelProperty',
+      replaces: [
+        'foam.documentation.RowDocView and Property',
+      ]
+    },
+  ],
+
   templates: [
     function toInnerHTML() {/*
       <div id="scrollTarget_<%=this.data.name%>">

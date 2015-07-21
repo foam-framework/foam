@@ -25,6 +25,16 @@ CLASS({
 
   documentation: "A full-page documentation view for $$DOC{ref:'Interface'} instances.",
 
+  properties: [
+    {
+      name: 'replacements',
+      model_: 'foam.core.types.ModelForModelProperty',
+      replaces: [
+        'foam.documentation.FullPageDocView and Interface',
+      ]
+    },
+  ],
+
   templates: [
 
     function toInnerHTML()    {/*

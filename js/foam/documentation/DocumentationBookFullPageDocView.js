@@ -24,6 +24,16 @@ CLASS({
   requires: ['foam.documentation.DocumentationBookSummaryDocView',
              'foam.documentation.DocChaptersView'],
 
+  properties: [
+    {
+      name: 'replacements',
+      model_: 'foam.core.types.ModelForModelProperty',
+      replaces: [
+        'foam.documentation.FullPageDocView and DocumentationBook',
+      ]
+    },
+  ],
+
   templates: [
 
     function toInnerHTML()    {/*

@@ -20,10 +20,22 @@ CLASS({
   name: 'BooleanPropertyView',
   package: 'foam.meta.types',
 
+  requires: [
+    'foam.ui.DetailView',
+    'foam.ui.CitationView',
+  ],
+
   extendsModel: 'foam.ui.md.DetailView',
 
   properties: [
-
+    {
+      name: 'replacements',
+      model_: 'foam.core.types.ModelForModelProperty',
+      replaces: [
+        'foam.ui.CitationView and BooleanProperty',
+        'foam.ui.DetailView and BooleanProperty',
+      ]
+    },
   ],
 
   methods: [

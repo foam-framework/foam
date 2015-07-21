@@ -21,6 +21,16 @@ CLASS({
   extendsModel: 'foam.documentation.RowDocView',
   documentation: 'Displays the documentation of the given book.',
 
+  properties: [
+    {
+      name: 'replacements',
+      model_: 'foam.core.types.ModelForModelProperty',
+      replaces: [
+        'foam.documentation.RowDocView and foam.documentation.DocumentationBook',
+      ]
+    },
+  ],
+
   templates: [
 
     function toInnerHTML()    {/*

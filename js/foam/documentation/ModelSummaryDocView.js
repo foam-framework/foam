@@ -38,6 +38,13 @@ CLASS({
         this.updateHTML();
       }
     },
+    {
+      name: 'replacements',
+      model_: 'foam.core.types.ModelForModelProperty',
+      replaces: [
+        'foam.documentation.SummaryDocView and Model',
+      ]
+    },
   ],
 
   templates: [

@@ -59,11 +59,21 @@ function registerModelForModel(baseModel, specifierModel, newModel) {
   var base = baseModel.id || baseModel;
   var specifier = specifierModel.id || specifierModel;
 
+  // we return true if we created a new subcontext cache, or stored a new value
+  var changed = false;
+
   // isolate model-for-model registrations in subcontexts the same way as lookupCache_
   if ( ! Object.hasOwnProperty.call(this, 'modelForModel_') ) {
     this.modelForModel_ = Object.create(this.modelForModel_ || Object.prototype);
+    changed = true;
   }
-  this.modelForModel_[base+"_"+specifier] = (newModel.id || newModel);
+  var newId = (newModel.id || newModel);
+  if ( this.modelForModel_[base+"_"+specifier] !== newId ) {
+    changed = true;
+  }
+  this.modelForModel_[base+"_"+specifier] = newId;
+
+  return changed;
 }
 
 function modelForModel(baseModel, specifierModel) {
