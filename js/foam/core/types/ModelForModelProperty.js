@@ -39,6 +39,13 @@ CLASS({
 
   methods: [
     {
+      name: 'register',
+      code: function(X) {
+        var model = X.lookup(this.modelId);
+        if (model) return this.register_(model, X);
+      }
+    },
+    {
       name: 'initPropertyAgents',
       code: function(proto, fastInit) {
         this.SUPER(proto, fastInit);
@@ -46,13 +53,13 @@ CLASS({
         // add the agent for this model
         proto.addInitAgent(1, ': registerModelForModel ', function(o, X, m) {
           // o is a a newly created instance of a model that has a ModelForModelProperty
-          this.register(proto.model_, X);
+          this.register_(proto.model_, X);
 
         }.bind(this));
       }
     },
     {
-      name: 'register',
+      name: 'register_',
       code: function(model, X) {
         // call on the property: DetailView.REPLACEMENTS.register(DetailView, this.X);
         // register the given models

@@ -54,7 +54,7 @@ CLASS({
       this.SUPER();
       this.modelView$ = this.modelDefinition$;
 
-      this.DetailView.REPLACES.register(this.DetailView, this.X);
+      this.DetailView.REPLACES.register(this.X);
     },
   ],
 
