@@ -44,23 +44,44 @@ public class DetailFragment extends FOAMFragment {
     X x = findX(context);
     if (x == null) return null;
 
+    // Try to fetch the data from the context. Failing that, load from the memento.
     Object selection = x.get("selection");
+    FObject data = null;
     if (selection != null) {
-      if (! (selection instanceof Value)) {
+      if (!(selection instanceof Value)) {
         Log.e(LOG_TAG, "Expected \"X.selection\" to be a Value.");
         return null;
       }
-
-      Value<FObject> v = (Value<FObject>) selection;
-      FObject data = v.get().fclone();
-      value = new SimpleValue<>(data);
-      X(x.put("data", value));
-
-      valueListener = new ValueListener();
-      value.addListener(valueListener);
-      objectListener = new ObjectListener();
-      data.addPropertyChangeListener(null, objectListener);
+      data = ((Value<FObject>) selection).get();
+      if (data == null) selection = null;
     }
+
+    // Deliberately not the "else" of the above "if".
+    if (selection == null) {
+      selection = getMemento().getSerializable("data");
+      if (selection == null) {
+        Log.e(LOG_TAG, "Expected either \"X.selection\" to be defined, or the memento to contain \"data\".");
+        return null;
+      }
+
+      try {
+        DAO dao = (DAO) x.get("dao");
+        data = dao.find(x, selection);
+      } catch (DAOException e) {
+        Log.e(LOG_TAG, "Error retrieving " + selection + " from the DAO", e);
+      } catch (DAOInternalException e) {
+        Log.e(LOG_TAG, "Internal DAO error retrieving " + selection + " from the DAO", e);
+      }
+    }
+
+    data = data.fclone(); // Clone to get an unfrozen, editable object.
+    value = new SimpleValue<>(data);
+    X(x.put("data", value));
+
+    valueListener = new ValueListener();
+    value.addListener(valueListener);
+    objectListener = new ObjectListener();
+    data.addPropertyChangeListener(null, objectListener);
 
     container.removeAllViews();
 

@@ -33,15 +33,19 @@ CLASS({
       name: 'modelDefinition',
       mode: 'read-write',
       view: 'foam.meta.DetailView',
-      metaEditLevel: 0,
       factory: function() {
-        return this.Model.create({ name: 'NewModel' });
+        return this.Model.create({
+          name: 'NewModel',
+          properties: [
+            this.BooleanProperty.create({ name: '_newProperty_' })
+          ]
+        });
       },
     },
     {
       name: 'modelView',
       mode: 'read-only',
-      view: 'foam.ui.DetailView',
+      view: 'foam.ui.md.DetailView',
     }
   ],
 

@@ -156,7 +156,6 @@ var Model = {
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
-      metaEditLevel: 0,
       help: 'The coding identifier for the entity.',
       documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
         $$DOC{ref:'Model.name'} should generally only contain identifier-safe characters.
@@ -388,11 +387,9 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       type: 'Array[Property]',
       subType: 'Property',
       view: 'foam.ui.ArrayView',
-      metaEditView: 'foam.ui.DAOListView',
       factory: function() { return []; },
       defaultValue: [],
       help: 'Properties associated with the entity.',
-      metaEditLevel: 0,
       preSet: function(oldValue, newValue) {
         // Convert Maps to Properties if required
         for ( var i = 0 ; i < newValue.length ; i++ ) {

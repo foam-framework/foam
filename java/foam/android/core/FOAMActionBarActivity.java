@@ -16,7 +16,7 @@ import foam.core.X;
 /**
  *
  */
-public class FOAMActionBarActivity extends AppCompatActivity implements HasX {
+public abstract class FOAMActionBarActivity extends AppCompatActivity implements HasX, Memorable {
   protected X x_ = EmptyX.instance();
   public X X() {
     return x_;
@@ -30,6 +30,10 @@ public class FOAMActionBarActivity extends AppCompatActivity implements HasX {
     X(X().put("propertyViews", new LinkedList<ViewBridge>()));
     LayoutInflaterCompat.setFactory(getLayoutInflater(), new LayoutFactory(getDelegate()));
     super.onCreate(bundle);
+
+    Bundle mem = bundle == null ? null : bundle.getBundle("memento");
+    if (mem == null) mem = defaultMemento();
+    setMemento(mem);
   }
 
   @Override
@@ -40,4 +44,11 @@ public class FOAMActionBarActivity extends AppCompatActivity implements HasX {
     }
     super.onDestroy();
   }
+
+  /**
+   * Returns the default memento.
+   *
+   * @return A complete memento, ready to be passed to {@link #setMemento(Bundle)}.
+   */
+  protected abstract Bundle defaultMemento();
 }
