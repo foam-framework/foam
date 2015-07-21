@@ -2,6 +2,7 @@ package foam.android.core;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -10,7 +11,8 @@ import foam.core.EmptyX;
 import foam.core.HasX;
 import foam.core.X;
 
-public class FOAMActivity extends Activity implements HasX {
+public class FOAMActivity extends Activity implements HasX, Memorable {
+  protected Bundle memento;
   protected X x_ = EmptyX.instance();
   public X X() {
     return x_;
@@ -24,5 +26,14 @@ public class FOAMActivity extends Activity implements HasX {
     View ret = LayoutFactory.tryToCreateFoamView(parent, name, context, attrs);
     if (ret != null) return ret;
     else return super.onCreateView(parent, name, context, attrs);
+  }
+
+  @Override
+  public void setMemento(Bundle bundle) {
+    memento = bundle;
+  }
+  @Override
+  public Bundle getMemento() {
+    return memento;
   }
 }
