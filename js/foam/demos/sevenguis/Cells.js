@@ -18,9 +18,57 @@
 // https://www.artima.com/pins1ed/the-scells-spreadsheet.html
 MODEL({
   package: 'foam.demos.sevenguis',
-  name: 'Cells',
+  name: 'Cell',
   properties: [
   ],
-  methods: {
-  }
+  methods: [
+  ]
 });
+
+
+MODEL({
+  package: 'foam.demos.sevenguis',
+  name: 'Cells',
+  extendsModel: 'foam.ui.View',
+  properties: [
+    {
+      name: 'cells',
+      factory: function() { return {}; }
+    }
+  ],
+  methods: [
+    function getCell(col, row) {
+      var row = this.cells[row] || ( this.cells[row] = {} );
+      return row[col] || ( row[col] = this.Cell.create() );
+    }
+  ],
+  templates: [
+    function CSS() {/*
+      .cells {
+        overflow: auto;
+      }
+      .cell {
+        min-width: 60px;
+      }
+    */},
+    function toHTML() {/*
+      <table border class="cells">
+        <tr>
+          <td></td>
+          <% for ( var i = 65 ; i <= 90 ; i++ ) { %>
+            <th><%= String.fromCharCode(i) %></th>
+          <% } %>
+        </tr>
+        <% for ( i = 0 ; i <= 99 ; i++ ) { %>
+          <tr>
+            <th><%= i %></th>
+            <% for ( var j = 65 ; j <= 90 ; j++ ) { %>
+              <td class="cell"><%= ' ' %></td>
+            <% } %>
+          </tr>
+        <% } %>
+      </table>
+    */}
+  ]
+});
+
