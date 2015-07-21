@@ -33,7 +33,7 @@ CLASS({
       name: 'modelDefinition',
       mode: 'read-write',
       view: 'foam.meta.DetailView',
-      metaEditLevel: 0,
+      metaPriority: 0,
       factory: function() {
         return this.Model.create({
           name: 'NewModel',

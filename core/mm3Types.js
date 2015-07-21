@@ -93,7 +93,7 @@ CLASS({
     {
       name: 'view',
       defaultValue: 'foam.ui.BooleanView',
-      metaEditLevel: 0,
+      metaPriority: 0,
       metaView: {
         factory_: 'foam.ui.ChoiceView',
         choices: [
@@ -104,7 +104,7 @@ CLASS({
     },
     {
       name: 'defaultValue',
-      metaEditLevel: 0,
+      metaPriority: 0,
       metaView: 'foam.ui.BooleanView',
       defaultValue: false
     },
@@ -262,7 +262,7 @@ CLASS({
     },
     {
       name: 'defaultValue',
-      metaEditLevel: 0,
+      metaPriority: 0,
       defaultValue: 0
     },
     {

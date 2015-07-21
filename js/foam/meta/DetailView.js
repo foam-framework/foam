@@ -31,8 +31,8 @@ CLASS({
 
   properties: [
     {
-      name: 'metaEditLevel',
-      help: 'Specifies the highest metaEditLevel to show. Properties with higher metaEditLevels are hidden.',
+      name: 'metaPriority',
+      help: 'Specifies the highest metaPriority to show. Properties with higher metaPrioritys are hidden.',
       defaultValue: 0,
     }
   ],
@@ -50,7 +50,7 @@ CLASS({
       var ret = [];
       for (var i = 0; i < props.length; ++i) {
         var p = props[i];
-        if ( p.metaEditLevel <= this.metaEditLevel ) ret.push(p);
+        if ( p.metaPriority <= this.metaPriority ) ret.push(p);
       }
       return ret;
     },

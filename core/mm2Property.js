@@ -50,7 +50,7 @@ var Property = {
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
-      metaEditLevel: 0,
+      metaPriority: 0,
       help: 'The coding identifier for the property.',
       documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
         $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
@@ -94,7 +94,7 @@ var Property = {
     {
       name: 'type',
       type: 'String',
-      metaEditLevel: 0,
+      metaPriority: 0,
       required: true,
       // todo: curry arguments
       view: {
@@ -681,7 +681,7 @@ var Property = {
       defaultValue: false
     },
     {
-      name: 'metaEditLevel',
+      name: 'metaPriority',
       help: 'How basic this property is when using a property definition editor. 0 - most basic, always allow editing, 1 - usually shown, 2 - more advanced, 3+ increasingly advanced.',
       defaultValue: 2,
       view: {
