@@ -28,7 +28,7 @@ var CellParser = {
   __proto__: grammar,
 
   START: simpleAlt(
-    //      sym('number'),
+    sym('number'),
     sym('formula'),
     sym('string')
   ),
@@ -51,11 +51,11 @@ var CellParser = {
   
   digit: range('0', '9'),
   
-  number: seq(
+  number: str(seq(
     optional('-'),
-    alt(
+    str(alt(
       plus(sym('digit')),
-      seq(repeat(sym('digit')), '.', plus(sym('digit'))))),
+      seq(repeat(sym('digit')), '.', plus(sym('digit'))))))),
   
   cell: seq(sym('col'), sym('row')),
   
@@ -71,6 +71,8 @@ var CellParser = {
 }.addActions({
   az: function(c) { return c.charCodeAt(0) - 'a'.charCodeAt(0); },
   AZ: function(c) { return c.charCodeAt(0) - 'A'.charCodeAt(0); },
+  number: function(s) { var f = parseFloat(s); return function() { return f; }; },
+  string: function(s) { return function() { return s; }; }
 });
 //});
 
@@ -133,7 +135,9 @@ MODEL({
       var self = this;
       function t(s) {
         try {
-        console.log(s, self.parser.parseString(s));
+          var ret = self.parser.parseString(s);
+        console.log(s, ret);
+          console.log(ret());
         } catch (x) {
         }
       }
