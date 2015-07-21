@@ -15,12 +15,18 @@
  * limitations under the License.
  */
 
+/*
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'CellParser',
   extendsModel: 'foam.parse.Grammar',
 
   methods: {
+*/
+
+var CellParser = {
+  __proto__: grammar,
+
     START: sym('cell'),
 
     cell: alt(
@@ -55,13 +61,19 @@ MODEL({
 
     cell: seq(sym('col'), sym('row')),
 
-    col: alt(range('A', 'Z'), range('a', 'z')),
+    col: alt(sym('az'), sym('AZ')),
+    
+    az: range('a', 'z'),
+
+    AZ: range('A', 'Z'),
 
     row: repeat(sym('digit'), 1, 2),
 
     string: repeat(anyChar)
-  }
+}.addActions({
+
 });
+//});
 
 
 // https://www.artima.com/pins1ed/the-scells-spreadsheet.html
@@ -95,13 +107,16 @@ MODEL({
   name: 'Cells',
   extendsModel: 'foam.ui.View',
   requires: [
-    'foam.demos.sevenguis.CellParser',
+//    'foam.demos.sevenguis.CellParser',
     'foam.demos.sevenguis.Cell'
   ],
   exports: [
     'as cells',
     'parser'
   ],
+  constants: {
+    ROWS: 10 /* 99 */
+  },
   properties: [
     {
       name: 'cells',
@@ -109,10 +124,23 @@ MODEL({
     },
     {
       name: 'parser',
-      factory: function() { return this.CellParser.create(); }
+      factory: function() { return /*this.*/CellParser/*.create()*/; }
     }
   ],
   methods: [
+    function init() {
+      this.SUPER();
+
+      var self = this;
+      function t(s) {
+        try {
+        console.log(s, self.parser.parseString(s));
+        } catch (x) {
+        }
+      }
+
+      t('1');
+    },
     function cell(col, row) {
       var row = this.cells[row] || ( this.cells[row] = {} );
       return row[col] || ( row[col] = this.Cell.create() );
@@ -131,7 +159,7 @@ MODEL({
             <th><%= String.fromCharCode(i) %></th>
           <% } %>
         </tr>
-        <% for ( i = 0 ; i <= 99 ; i++ ) { %>
+        <% for ( i = 0 ; i <= this.ROWS ; i++ ) { %>
           <tr>
             <th><%= i %></th>
             <% for ( var j = 65 ; j <= 90 ; j++ ) { %>
@@ -144,3 +172,4 @@ MODEL({
   ]
 });
 
+// 9-12
