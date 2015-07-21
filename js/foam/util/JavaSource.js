@@ -66,6 +66,7 @@ public<%= this.abstract ? ' abstract' : '' %> class <%= className %>
 
   final static Model model__ = new AbstractModel(new Property[] {<% for ( var key in this.properties ) { var prop = this.properties[key]; %> <%= constantize(prop.name) %>,<% } %> }) {
     public String getName() { return "<%= this.id %>"; }
+    public String getShortName() { return "<%= this.name %>"; }
     public String getLabel() { return "<%= this.label %>"; }
     public Property getID() { return <%= this.ids.length ? constantize(this.ids[0]) : 'null' %>; }
     public FObject newInstance() { return new <%= className %>(); }

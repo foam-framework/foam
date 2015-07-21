@@ -1,6 +1,8 @@
 package foam.android.core;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 
 import foam.core.HasX;
@@ -21,5 +23,17 @@ public class FOAMFragment extends Fragment implements HasX {
    */
   protected LayoutInflater decorateInflater(LayoutInflater inflater) {
     return inflater.cloneInContext(new XContext(getActivity(), X()));
+  }
+
+  protected X findX(Context context) {
+    X x = null;
+    if (context instanceof HasX) {
+      x = ((HasX) context).X();
+    } else if (getActivity() instanceof HasX) {
+      x = ((HasX) getActivity()).X();
+    }
+
+    if (x == null) Log.e("FOAMFragment", "Could not locate X");
+    return x;
   }
 }

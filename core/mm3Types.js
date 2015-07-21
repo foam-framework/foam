@@ -92,10 +92,20 @@ CLASS({
     },
     {
       name: 'view',
-      defaultValue: 'foam.ui.BooleanView'
+      defaultValue: 'foam.ui.BooleanView',
+      metaEditLevel: 0,
+      metaEditView: {
+        factory_: 'foam.ui.ChoiceView',
+        choices: [
+          ['foam.ui.md.CheckBoxView', 'Check Box' ],
+          ['foam.ui.md.ToggleView', 'Toggle' ],
+        ]
+      },
     },
     {
       name: 'defaultValue',
+      metaEditLevel: 0,
+      metaEditView: 'foam.ui.BooleanView',
       defaultValue: false
     },
     {
@@ -252,6 +262,7 @@ CLASS({
     },
     {
       name: 'defaultValue',
+      metaEditLevel: 0,
       defaultValue: 0
     },
     {

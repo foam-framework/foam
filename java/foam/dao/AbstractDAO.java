@@ -17,23 +17,26 @@
 
 package foam.dao;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import foam.core.Expression;
 import foam.core.FObject;
 import foam.core.Model;
 import foam.core.X;
 
-public abstract class AbstractDAO
-  implements DAO
-{
+public abstract class AbstractDAO implements DAO {
+  protected static final int NOTIFY_PUT = 1;
+  protected static final int NOTIFY_REMOVE = 2;
+
   final Model model_;
+  private final List<DAOListener> listeners_ = new LinkedList<>();
   
-  public AbstractDAO(Model model)
-  {
+  public AbstractDAO(Model model) {
     model_ = model;
   }
   
-  public Model getModel()
-  {
+  public Model getModel() {
     return model_;
   }
 
@@ -99,26 +102,27 @@ public abstract class AbstractDAO
   
   /*****************************/
   
-  public void listen(DAOListener listener)
-  {
-    throw new UnsupportedOperationException("listen");
+  public void listen(DAOListener listener) {
+    listeners_.add(listener);
   }
-  
-  
-  public void unlisten(DAOListener listener)
-  {
-    throw new UnsupportedOperationException("unlisten");
+
+  public void unlisten(DAOListener listener) {
+    listeners_.remove(listener);
   }
-  
-  
-  public void pipe(DAOListener listener)
-    throws DAOException, DAOInternalException
-  {
+
+  public void pipe(DAOListener listener) throws DAOException, DAOInternalException {
     // TODO:  Create an EmptyX?  Allow a supplied X?
     // KGR: We'll have to add X as a parameter to pipe() and listen(), but we don't need
     // to do it until we have authentication
     select(null, listener);
     listen(listener);
   }
-  
+
+  protected void notify_(int type, X x, FObject obj) throws DAOException, DAOInternalException {
+    if (type == NOTIFY_PUT) {
+      for (DAOListener l : listeners_) l.put(x, obj);
+    } else if (type == NOTIFY_REMOVE) {
+      for (DAOListener l : listeners_) l.remove(x, obj);
+    }
+  }
 }

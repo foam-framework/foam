@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import foam.android.core.FOAMFragment;
 import foam.core.FObject;
 import foam.core.Value;
+import foam.core.X;
 import foam.dao.DAO;
 import foam.tutorials.todo.R;
 
@@ -17,10 +18,13 @@ import foam.tutorials.todo.R;
  * A placeholder fragment containing a simple view.
  */
 public class ListFragment extends FOAMFragment implements View.OnClickListener {
-
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
+    X x = findX(container.getContext());
+    if (x == null) return null;
+    X(x.put("data", x.get("dao")));
+
     container.removeAllViews();
     View view = decorateInflater(inflater).inflate(R.layout.fragment_main, container, false);
 

@@ -19,16 +19,16 @@ package foam.dao;
 
 import java.util.Comparator;
 
-public class ReverseComparator implements Comparator {
+public class ReverseComparator<T> implements Comparator<T> {
     
-    public final Comparator delegate_;
+    public final Comparator<T> delegate_;
 
-    public ReverseComparator(Comparator delegate)
+    public ReverseComparator(Comparator<T> delegate)
     {
         delegate_ = delegate;
     }
 
-    public int compare(Object o1, Object o2)
+    public int compare(T o1, T o2)
     {
         return delegate_.compare(o2, o1);
     }

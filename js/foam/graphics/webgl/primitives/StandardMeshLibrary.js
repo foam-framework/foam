@@ -272,6 +272,14 @@ CLASS({
           vertices: this._sphere_(segs)
       });
     },
+    function sphere_normals(segments) {
+      var segs = segments || 64;
+
+      return this.ArrayBuffer.create({
+          drawMode: 'points',
+          vertices: this._sphere_(segs)
+      });
+    },
 
     function _sphere_(s) {
       var v = [].slice();

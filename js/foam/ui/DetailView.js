@@ -177,6 +177,10 @@ CLASS({
       return (this.model.getPrototype().toDetailHTML || this.defaultToHTML).call(this);
     },
 
+    getDefaultProperties: function() {
+      return this.model.getRuntimeProperties();
+    },
+
     defaultToHTML: function() {
       /* For $$DOC{ref:'Model',usePlural:true} that don't supply a .toDetailHTML()
         $$DOC{ref:'Method'} or $$DOC{ref:'Template'}, a default listing of
@@ -190,7 +194,7 @@ CLASS({
       str += this.startForm();
       str += this.titleHTML();
 
-      var properties = model.getRuntimeProperties();
+      var properties = this.getDefaultProperties();
       for ( var i = 0 ; i < properties.length ; i++ ) {
         var prop = properties[i];
 

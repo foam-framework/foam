@@ -51,11 +51,13 @@ public class MDAO extends AbstractDAO {
       root_ = index_.put(root_, cloned);
     }
 
+    notify_(NOTIFY_PUT, x, cloned);
     return cloned;
   }
 
   public void remove(X x, FObject obj) throws DAOException, DAOInternalException {
     root_ = index_.remove(root_, obj);
+    notify_(NOTIFY_REMOVE, x, obj);
   }
 
   public FObject find(X x, Object where) throws DAOException, DAOInternalException {
