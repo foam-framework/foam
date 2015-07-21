@@ -18,17 +18,32 @@
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'CellParser',
-  extendsModel: 'grammar',
+  extendsModel: 'foam.parse.Grammar',
 
   methods: {
-    START: sym('expr'),
+    START: sym('cell'),
+
+    cell: alt(
+//      sym('number'),
+      sym('formula'),
+      sym('string')
+    ),
+
+    formula: seq('=', sym('expr')),
 
     expr: alt(
       sym('number'),
-//      sym('fn'),
       sym('cell'),
-      sym('string')
+      seq('add(', sym('expr'), ',', sym('expr'), ')'),
+      seq('sub(', sym('expr'), ',', sym('expr'), ')'),
+      seq('mul(', sym('expr'), ',', sym('expr'), ')'),
+      seq('div(', sym('expr'), ',', sym('expr'), ')'),
+      seq('mod(', sym('expr'), ',', sym('expr'), ')'),
+      seq('sum(', sym('range'), ')'),
+      seq('prod(', sym('range'), ')')
     ),
+
+    range: seq(sym('cell'), ':', sym('cell')),
 
     digit: range('0', '9'),
 
@@ -54,7 +69,7 @@ MODEL({
   package: 'foam.demos.sevenguis',
   name: 'Cell',
   extendsModel: 'foam.ui.View',
-  imports: [ 'cells' ],
+  imports: [ 'cells', 'parser' ],
   properties: [
     {
       name: 'src',
@@ -69,7 +84,7 @@ MODEL({
   ],
   templates: [
     function toHTML() {/*
-      $$src
+      $$src - $$value{mode: 'read-only'}
     */}
   ]
 });
@@ -80,13 +95,21 @@ MODEL({
   name: 'Cells',
   extendsModel: 'foam.ui.View',
   requires: [
+    'foam.demos.sevenguis.CellParser',
     'foam.demos.sevenguis.Cell'
   ],
-  exports: [ 'as cells' ],
+  exports: [
+    'as cells',
+    'parser'
+  ],
   properties: [
     {
       name: 'cells',
       factory: function() { return {}; }
+    },
+    {
+      name: 'parser',
+      factory: function() { return this.CellParser.create(); }
     }
   ],
   methods: [
@@ -97,12 +120,8 @@ MODEL({
   ],
   templates: [
     function CSS() {/*
-      .cells {
-        overflow: auto;
-      }
-      .cell {
-        min-width: 60px;
-      }
+      .cells { overflow: auto; }
+      .cell { min-width: 60px; }
     */},
     function toHTML() {/*
       <table border class="cells">
