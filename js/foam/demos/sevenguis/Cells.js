@@ -15,13 +15,62 @@
  * limitations under the License.
  */
 
+MODEL({
+  package: 'foam.demos.sevenguis',
+  name: 'CellParser',
+  extendsModel: 'grammar',
+
+  methods: {
+    START: sym('expr'),
+
+    expr: alt(
+      sym('number'),
+//      sym('fn'),
+      sym('cell'),
+      sym('string')
+    ),
+
+    digit: range('0', '9'),
+
+    number: seq(
+      optional('-'),
+      alt(
+        plus(sym('digit')),
+        seq(repeat(sym('digit')), '.', plus(sym('digit'))))),
+
+    cell: seq(sym('col'), sym('row')),
+
+    col: alt(range('A', 'Z'), range('a', 'z')),
+
+    row: repeat(sym('digit'), 1, 2),
+
+    string: repeat(anyChar)
+  }
+});
+
+
 // https://www.artima.com/pins1ed/the-scells-spreadsheet.html
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'Cell',
+  extendsModel: 'foam.ui.View',
+  imports: [ 'cells' ],
   properties: [
+    {
+      name: 'src',
+      displayWidth: 12
+    },
+    {
+      name: 'value',
+      displayWidth: 12
+    }
   ],
   methods: [
+  ],
+  templates: [
+    function toHTML() {/*
+      $$src
+    */}
   ]
 });
 
@@ -30,6 +79,10 @@ MODEL({
   package: 'foam.demos.sevenguis',
   name: 'Cells',
   extendsModel: 'foam.ui.View',
+  requires: [
+    'foam.demos.sevenguis.Cell'
+  ],
+  exports: [ 'as cells' ],
   properties: [
     {
       name: 'cells',
@@ -37,7 +90,7 @@ MODEL({
     }
   ],
   methods: [
-    function getCell(col, row) {
+    function cell(col, row) {
       var row = this.cells[row] || ( this.cells[row] = {} );
       return row[col] || ( row[col] = this.Cell.create() );
     }
@@ -63,7 +116,7 @@ MODEL({
           <tr>
             <th><%= i %></th>
             <% for ( var j = 65 ; j <= 90 ; j++ ) { %>
-              <td class="cell"><%= ' ' %></td>
+              <td class="cell"><%= this.cell(i, j) %></td>
             <% } %>
           </tr>
         <% } %>
