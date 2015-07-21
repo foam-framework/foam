@@ -27,51 +27,50 @@ MODEL({
 var CellParser = {
   __proto__: grammar,
 
-    START: sym('cell'),
-
-    cell: alt(
-//      sym('number'),
-      sym('formula'),
-      sym('string')
-    ),
-
-    formula: seq('=', sym('expr')),
-
-    expr: alt(
-      sym('number'),
-      sym('cell'),
-      seq('add(', sym('expr'), ',', sym('expr'), ')'),
-      seq('sub(', sym('expr'), ',', sym('expr'), ')'),
-      seq('mul(', sym('expr'), ',', sym('expr'), ')'),
-      seq('div(', sym('expr'), ',', sym('expr'), ')'),
-      seq('mod(', sym('expr'), ',', sym('expr'), ')'),
-      seq('sum(', sym('range'), ')'),
-      seq('prod(', sym('range'), ')')
-    ),
-
-    range: seq(sym('cell'), ':', sym('cell')),
-
-    digit: range('0', '9'),
-
-    number: seq(
-      optional('-'),
-      alt(
-        plus(sym('digit')),
-        seq(repeat(sym('digit')), '.', plus(sym('digit'))))),
-
-    cell: seq(sym('col'), sym('row')),
-
-    col: alt(sym('az'), sym('AZ')),
-    
-    az: range('a', 'z'),
-
-    AZ: range('A', 'Z'),
-
-    row: repeat(sym('digit'), 1, 2),
-
-    string: repeat(anyChar)
+  START: simpleAlt(
+    //      sym('number'),
+    sym('formula'),
+    sym('string')
+  ),
+  
+  formula: seq('=', sym('expr')),
+  
+  expr: simpleAlt(
+    sym('number'),
+//    sym('cell'),
+    seq('add(',  sym('expr'), ',', sym('expr'), ')'),
+    seq('sub(',  sym('expr'), ',', sym('expr'), ')'),
+    seq('mul(',  sym('expr'), ',', sym('expr'), ')'),
+    seq('div(',  sym('expr'), ',', sym('expr'), ')'),
+    seq('mod(',  sym('expr'), ',', sym('expr'), ')'),
+    seq('sum(',  sym('range'), ')'),
+    seq('prod(', sym('range'), ')')
+  ),
+  
+  range: seq(sym('cell'), ':', sym('cell')),
+  
+  digit: range('0', '9'),
+  
+  number: seq(
+    optional('-'),
+    alt(
+      plus(sym('digit')),
+      seq(repeat(sym('digit')), '.', plus(sym('digit'))))),
+  
+  cell: seq(sym('col'), sym('row')),
+  
+  col: alt(sym('az'), sym('AZ')),
+  
+  az: range('a', 'z'),
+  
+  AZ: range('A', 'Z'),
+  
+  row: str(repeat(sym('digit'), 1, 2)),
+  
+  string: str(repeat(anyChar))
 }.addActions({
-
+  az: function(c) { return c.charCodeAt(0) - 'a'.charCodeAt(0); },
+  AZ: function(c) { return c.charCodeAt(0) - 'A'.charCodeAt(0); },
 });
 //});
 
@@ -140,6 +139,10 @@ MODEL({
       }
 
       t('1');
+      t('10');
+      t('10.1');
+      t('-10.1');
+      t('foobar');
     },
     function cell(col, row) {
       var row = this.cells[row] || ( this.cells[row] = {} );
