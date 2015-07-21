@@ -118,7 +118,7 @@ var Property = {
           'URL'
         ]
       },
-//       metaEditView: { // Need to select the model_, not just the .type for these
+//       metaView: { // Need to select the model_, not just the .type for these
 //         factory_: 'foam.ui.ChoiceView',
 //         choices: [
 //           'StringProperty',
@@ -694,7 +694,7 @@ var Property = {
       },
     },
     {
-      name: 'metaEditView',
+      name: 'metaView',
       help: 'The model to use when editing the definition of this property. Each property type should specify a default editor.',
       defaultValue: 'foam.ui.TextFieldView',
     }

@@ -388,7 +388,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       type: 'Array[Property]',
       subType: 'Property',
       view: 'foam.ui.ArrayView',
-      metaEditView: 'foam.ui.DAOListView',
+      metaView: 'foam.ui.DAOListView',
       factory: function() { return []; },
       defaultValue: [],
       help: 'Properties associated with the entity.',

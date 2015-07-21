@@ -94,7 +94,7 @@ CLASS({
       name: 'view',
       defaultValue: 'foam.ui.BooleanView',
       metaEditLevel: 0,
-      metaEditView: {
+      metaView: {
         factory_: 'foam.ui.ChoiceView',
         choices: [
           ['foam.ui.md.CheckBoxView', 'Check Box' ],
@@ -105,7 +105,7 @@ CLASS({
     {
       name: 'defaultValue',
       metaEditLevel: 0,
-      metaEditView: 'foam.ui.BooleanView',
+      metaView: 'foam.ui.BooleanView',
       defaultValue: false
     },
     {

@@ -21,7 +21,7 @@ CLASS({
   extendsModel: 'foam.ui.PropertyView',
 
   documentation: function() {/*
-    Pulls the view to use from the property's metaEditView rather than view.
+    Pulls the view to use from the property's metaView rather than view.
   */},
 
   properties: [
@@ -32,15 +32,15 @@ CLASS({
           The $$DOC{ref:'Property'} for which to generate a $$DOC{ref:'foam.ui.View'}.
       */},
       postSet: function(old, nu) {
-        this.model = this.innerView || nu.metaEditView;
+        this.model = this.innerView || nu.metaView;
       }
     },
     {
       name: 'innerView',
-      help: 'Override for prop.metaEditview',
+      help: 'Override for prop.metaView',
       documentation: function() {/*
         The optional name of the desired sub-$$DOC{ref:'foam.ui.View'}. If not specified,
-        prop.$$DOC{ref:'Property.metaEditView'} is used. DEPRECATED. Use $$DOC{ref:'.model'} instead.
+        prop.$$DOC{ref:'Property.metaView'} is used. DEPRECATED. Use $$DOC{ref:'.model'} instead.
       */},
     },
   ],

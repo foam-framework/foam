@@ -20,7 +20,7 @@ CLASS({
   name: 'DetailView',
   package: 'foam.meta',
 
-  extendsModel: 'foam.ui.DetailView',
+  extendsModel: 'foam.ui.md.DetailView',
 
   requires: [
     'foam.ui.TableView',
