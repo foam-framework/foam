@@ -33,20 +33,26 @@ var CellParser = {
     sym('string')
   ),
   
-  formula: seq('=', sym('expr')),
+  formula: seq1(1, '=', sym('expr')),
   
   expr: simpleAlt(
     sym('number'),
-//    sym('cell'),
-    seq('add(',  sym('expr'), ',', sym('expr'), ')'),
-    seq('sub(',  sym('expr'), ',', sym('expr'), ')'),
-    seq('mul(',  sym('expr'), ',', sym('expr'), ')'),
-    seq('div(',  sym('expr'), ',', sym('expr'), ')'),
-    seq('mod(',  sym('expr'), ',', sym('expr'), ')'),
+    sym('cell'),
+    sym('add'),
+    sym('sub'),
+    sym('mul'),
+    sym('div'),
+    sym('mod'),
     seq('sum(',  sym('range'), ')'),
     seq('prod(', sym('range'), ')')
   ),
   
+  add: seq('add(', sym('expr'), ',', sym('expr'), ')'),
+  sub: seq('sub(', sym('expr'), ',', sym('expr'), ')'),
+  mul: seq('mul(', sym('expr'), ',', sym('expr'), ')'),
+  div: seq('div(', sym('expr'), ',', sym('expr'), ')'),
+  mod: seq('mod(', sym('expr'), ',', sym('expr'), ')'),
+
   range: seq(sym('cell'), ':', sym('cell')),
   
   digit: range('0', '9'),
@@ -69,6 +75,11 @@ var CellParser = {
   
   string: str(repeat(anyChar))
 }.addActions({
+  add: function(a) { return function() { return a[1]() + a[3](); }; },
+  sub: function(a) { return function() { return a[1]() - a[3](); }; },
+  mul: function(a) { return function() { return a[1]() * a[3](); }; },
+  div: function(a) { return function() { return a[1]() / a[3](); }; },
+  mod: function(a) { return function() { return a[1]() % a[3](); }; },
   az: function(c) { return c.charCodeAt(0) - 'a'.charCodeAt(0); },
   AZ: function(c) { return c.charCodeAt(0) - 'A'.charCodeAt(0); },
   number: function(s) { var f = parseFloat(s); return function() { return f; }; },
@@ -85,7 +96,7 @@ MODEL({
   imports: [ 'cells', 'parser' ],
   properties: [
     {
-      name: 'src',
+      name: 'formula',
       displayWidth: 12
     },
     {
@@ -97,7 +108,7 @@ MODEL({
   ],
   templates: [
     function toHTML() {/*
-      $$src - $$value{mode: 'read-only'}
+      $$formula - $$value{mode: 'read-only'}
     */}
   ]
 });
@@ -147,6 +158,12 @@ MODEL({
       t('10.1');
       t('-10.1');
       t('foobar');
+      t('=add(1,2)');
+      t('=sub(2,1)');
+      t('=mul(2,3)');
+      t('=div(9,3)');
+      t('=mod(8,3)');
+      t('=add(mul(2,3),div(3,2))');
     },
     function cell(col, row) {
       var row = this.cells[row] || ( this.cells[row] = {} );
