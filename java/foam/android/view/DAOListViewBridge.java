@@ -12,8 +12,8 @@ import android.util.Log;
 import android.view.View;
 
 import foam.android.core.AttributeUtils;
-import foam.dao.DAO;
 import foam.core.X;
+import foam.dao.DAO;
 
 /**
  * FOAM wrapper for presenting a DAO's data in a RecyclerView in list mode.
@@ -25,6 +25,7 @@ public class DAOListViewBridge extends OneWayViewBridge<RecyclerView, DAO> {
   private DAOAdapter adapter;
   private Context context;
   private String rowView;
+  private boolean decorators;
 
   public DAOListViewBridge(Context context) {
     this(context, null);
@@ -35,6 +36,7 @@ public class DAOListViewBridge extends OneWayViewBridge<RecyclerView, DAO> {
 
     // Look in the attrs for a row_view setting.
     rowView = AttributeUtils.find(attrs, "row_view");
+    decorators = AttributeUtils.findBoolean(attrs, "dividers", true);
     tryToBuildView();
   }
 
@@ -67,7 +69,7 @@ public class DAOListViewBridge extends OneWayViewBridge<RecyclerView, DAO> {
     final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
     layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
     view.setLayoutManager(layoutManager);
-    view.addItemDecoration(new RowDecoration(context));
+    if (decorators) view.addItemDecoration(new RowDecoration(context));
   }
 
   @Override
