@@ -1,0 +1,37 @@
+{
+  "version": "2.0.0",
+  "manifest_version": 2,
+  "minimum_chrome_version": "37.0.0.0",
+  "name": "App Builder",
+  "offline_enabled": true,
+  "default_locale": "en",
+  "app": {
+    "background": {
+      "scripts": [
+        "foam.js",
+        "config.js",
+        "bg.js"
+      ]
+    }
+  },
+  "permissions": [
+    "webview",
+    "power",
+    "storage",
+    "videoCapture",
+    "geolocation",
+    "pointerLock",
+    "system.display",
+    { "fileSystem": [
+      "write",
+      "retainEntries",
+      "directory"
+    ] },
+    "accessibilityFeatures.read",
+    "accessibilityFeatures.modify"
+  ],
+  "icons": {
+    "128": "128.png"
+  },
+  "kiosk_enabled": true
+}
