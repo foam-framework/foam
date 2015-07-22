@@ -29,4 +29,9 @@ public interface StackManager extends Memorable {
    * Generally not called directly; more often called in response to a Back action by the user.
    */
   void popMemento();
+
+  /**
+   * Drops everything from the back stack. Does NOT change the current memento.
+   */
+  void clearMementoStack();
 }
