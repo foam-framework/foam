@@ -25,5 +25,8 @@ public interface Model
   public Property   getID();
   public Property[] getProperties();
   public Property   getProperty(String propertyName);
+  public Relationship[] getRelationships();
+  public Relationship getRelationship(String relationshipName);
+  public Feature    getFeature(String name);
   public FObject    newInstance();
 }

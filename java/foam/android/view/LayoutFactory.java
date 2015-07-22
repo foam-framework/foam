@@ -18,9 +18,11 @@ import foam.core.FObject;
 import foam.core.HasX;
 import foam.core.Model;
 import foam.core.Property;
+import foam.core.Relationship;
 import foam.core.SimpleValue;
 import foam.core.Value;
 import foam.core.X;
+import foam.dao.DAO;
 
 /**
  * Should be installed in onCreate of all FOAM-friendly Activities.
@@ -50,6 +52,7 @@ public class LayoutFactory implements LayoutInflaterFactory {
    * There are several possible sets of paramters to give a FOAM XML tag. The correct forms are:
    * <ul>
    *   <li><code>prop</code> and <code>data</code> or <code>model</code></li>
+   *   <li><code>relationship</code> and <code>data</code></li>
    *   <li><code>view</code> and optionally <code>data</code> (without <code>data</code>, it
    *     constructs the View without any bindings, which is fine for some standalone views.</li>
    *   <li><code>data</code> alone - constructs a default {@link DetailViewBridge}, a vertical
@@ -78,6 +81,7 @@ public class LayoutFactory implements LayoutInflaterFactory {
     // See the documentation above for the possible values to supply. First step is to try to
     // retrieve all the relevant properties from the XML.
     String propName = AttributeUtils.find(attrs, "prop");
+    String relName = AttributeUtils.find(attrs, "relationship");
     String modelName = AttributeUtils.find(attrs, "model");
     String dataName = AttributeUtils.find(attrs, "data");
     String viewName = AttributeUtils.find(attrs, "view");
@@ -85,8 +89,12 @@ public class LayoutFactory implements LayoutInflaterFactory {
     Object data = x.get(dataName == null ? "data" : dataName);
     if (propName != null && (data != null || modelName != null)) {
       ViewBridge b = buildViewForProperty(x, context, attrs, propName, dataName, modelName, viewName);
-      View v = b.getView();
-      return v;
+      return b == null ? null : b.getView();
+    }
+
+    if (relName != null && data != null) {
+      ViewBridge b = buildViewForRelationship(x, context, attrs, data, relName, viewName);
+      return b == null ? null : b.getView();
     }
 
     Value value = null;
@@ -131,12 +139,16 @@ public class LayoutFactory implements LayoutInflaterFactory {
     X sub = augmentContext(x, attrs);
     if (modelName != null) {
       model = modelFromName(modelName);
-      if (model == null) return null;
+      if (model == null) {
+        Log.e(LOG_TAG, "Could not load model: " + modelName);
+        return null;
+      }
     } else {
       Object rawObj = x.get(dataName == null ? "data" : dataName);
       if (rawObj instanceof Value) {
         value = (Value) rawObj;
         rawObj = value.get();
+        if (rawObj != null) model = ((FObject) rawObj).model();
       } else if (rawObj instanceof FObject) {
         value = new SimpleValue<FObject>((FObject) rawObj);
         model = ((FObject) value.get()).model();
@@ -180,7 +192,10 @@ public class LayoutFactory implements LayoutInflaterFactory {
     XContext subcontext = new XContext(context, sub);
     if (viewName != null) {
       child = viewNameToViewBridge(viewName, subcontext, attrs);
-      if (child == null) return null;
+      if (child == null) {
+        Log.e(LOG_TAG, "Could not load view: " + viewName);
+        return null;
+      }
     } else {
       child = PropertyViewFactory.create(p, subcontext, attrs);
     }
@@ -197,6 +212,40 @@ public class LayoutFactory implements LayoutInflaterFactory {
     return child;
   }
 
+  private static ViewBridge buildViewForRelationship(X x, Context context, AttributeSet attrs,
+      Object o, String relName, String viewName) {
+    X sub = augmentContext(x, attrs);
+
+    FObject data = (FObject) (o instanceof Value ? ((Value) o).get() : o);
+    if (data == null) {
+      Log.e(LOG_TAG, "Could not load data object for relationship: " + relName);
+      return null;
+    }
+
+    Relationship rel = data.model().getRelationship(relName);
+    if (rel == null) {
+      Log.e(LOG_TAG, "Failed to load relationship \"" + relName + "\"");
+      return null;
+    }
+    DAO relatedDAO = rel.get(data);
+
+    ViewBridge child = null;
+    sub = sub.put("relationship", relatedDAO).put("dao", relatedDAO);
+    XContext subcontext = new XContext(context, sub);
+    if (viewName != null) {
+      child = viewNameToViewBridge(viewName, subcontext, attrs);
+    } else {
+      child = new DAOListViewBridge(subcontext, attrs);
+    }
+
+    List<ViewBridge> list = (List<ViewBridge>) x.get("propertyViews");
+    if (list != null) {
+      list.add(child);
+    }
+
+    child.X(sub);
+    return child;
+  }
 
   /**
    * Adds parameters to a FOAM {@link X} context from an AttributeSet.
