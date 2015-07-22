@@ -21,23 +21,31 @@ CLASS({
   package: 'foam.meta',
 
   requires: [
-    'foam.meta.DetailView',
-    'foam.ui.TableView',
-    'Model',
-    'Property',
     'BooleanProperty',
+    'StringProperty',
+    'IntProperty',
+    'FloatProperty',
+    'DateProperty',
+    'Model',
+    'foam.meta.types.ModelEditView',
+    'foam.ui.TableView',
+    'foam.ui.md.SharedStyles',
   ],
 
   properties: [
     {
       name: 'modelDefinition',
       mode: 'read-write',
-      view: 'foam.meta.DetailView',
+      view: 'foam.meta.types.ModelEditView',
       factory: function() {
         return this.Model.create({
           name: 'NewModel',
           properties: [
-            this.BooleanProperty.create({ name: '_newProperty_' })
+            this.BooleanProperty.create({ name: 'boolprop' }),
+            this.StringProperty.create({ name: 'stringprop' }),
+            this.IntProperty.create({ name: 'intprop' }),
+            this.FloatProperty.create({ name: 'floatprop' }),
+            this.DateProperty.create({ name: 'dateprop' }),
           ]
         });
       },
@@ -52,7 +60,14 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.modelView$ = this.modelDefinition$;
+
+      this.SharedStyles.getProperty('installCSS').documentInstallFn.call(
+        this.SharedStyles.getPrototype(), this.X);
+
+      this.modelDefinition.addListener(this.refresh);
+      this.modelDefinition.properties.dao.listen({ put: this.refresh.bind(this) });
+
+      this.refresh();
     },
   ],
 
@@ -66,11 +81,25 @@ CLASS({
     {
       name: 'refresh',
       action: function() {
-        var tmp = this.modelDefinition;
-        this.modelDefinition = this.Model.create();
-        this.modelDefinition = tmp;
+        delete this.modelDefinition.instance_.prototype_;
+        this.modelView = this.Model.create();
+        this.modelView = this.modelDefinition.create();
+
       }
     },
+  ],
+
+  templates: [
+    function toDetailHTML() {/*
+      <div id="%%id" style="display: flex">
+        <div style="padding: 20px; flex-grow: 1">
+          $$modelDefinition
+        </div>
+        <div style="padding: 20px; flex-grow: 1">
+          $$modelView
+        </div>
+      </div>
+    */}
   ]
 
 });

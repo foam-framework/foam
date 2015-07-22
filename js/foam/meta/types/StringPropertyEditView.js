@@ -17,19 +17,10 @@
 
 
 CLASS({
-  name: 'StringPropertyView',
+  name: 'StringPropertyEditView',
   package: 'foam.meta.types',
 
   extendsModel: 'foam.ui.md.DetailView',
-
-  properties: [
-
-  ],
-
-  methods: [
-
-
-  ],
 
   templates: [
     function toHTML() {/*
@@ -38,13 +29,11 @@ CLASS({
         <div>
           $$name{ model_: 'foam.ui.TextFieldView' }
         </div>
-
-
-
+        <div>
+          $$defaultValue{ model_: 'foam.ui.TextFieldView' }
+        </div>
       </div>
     */},
-
-
   ]
 
 });

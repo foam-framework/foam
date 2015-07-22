@@ -17,7 +17,7 @@
 
 
 CLASS({
-  name: 'ModelView',
+  name: 'PropertyEditView',
   package: 'foam.meta.types',
 
   extendsModel: 'foam.ui.md.DetailView',
@@ -28,18 +28,14 @@ CLASS({
 
   methods: [
 
-
   ],
 
   templates: [
     function toHTML() {/*
       <div id="%%id">
-        <h2>Model</h2>
+        <h2>Untyped Property</h2>
         <div>
-          $$name{ model_: 'foam.ui.TextFieldView' }
-        </div>
-        <div>
-          $$properties{ model_: 'foam.ui.DAOListView', rowView: 'foam.meta.MetaSelectorView' }
+          $$data{ model_: 'foam.ui.TextFieldView' }
         </div>
       </div>
     */},
