@@ -27,7 +27,7 @@ MODEL({
 var CellParser = {
   __proto__: grammar,
 
-  START: simpleAlt(
+  START: alt(
     sym('number'),
     sym('formula'),
     sym('string')
@@ -35,7 +35,7 @@ var CellParser = {
   
   formula: seq1(1, '=', sym('expr')),
   
-  expr: simpleAlt(
+  expr: alt(
     sym('number'),
     sym('cell'),
     sym('add'),
@@ -71,7 +71,7 @@ var CellParser = {
   
   AZ: range('A', 'Z'),
   
-  row: str(repeat(sym('digit'), 1, 2)),
+  row: str(repeat(sym('digit'), null, 1, 2)),
   
   string: str(repeat(anyChar))
 }.addActions({
@@ -82,7 +82,9 @@ var CellParser = {
   mod: function(a) { return function() { return a[1]() % a[3](); }; },
   az: function(c) { return c.charCodeAt(0) - 'a'.charCodeAt(0); },
   AZ: function(c) { return c.charCodeAt(0) - 'A'.charCodeAt(0); },
+  row: function(c) { return parseInt(c); },
   number: function(s) { var f = parseFloat(s); return function() { return f; }; },
+  cell: function(a) { return function(cells) { return cells.cell(a[0], a[1]).value; }; },
   string: function(s) { return function() { return s; }; }
 });
 //});
@@ -108,7 +110,7 @@ MODEL({
   ],
   templates: [
     function toHTML() {/*
-      $$formula - $$value{mode: 'read-only'}
+      $$formula $$value{mode: 'read-only'}
     */}
   ]
 });
@@ -146,12 +148,17 @@ MODEL({
       var self = this;
       function t(s) {
         try {
+          console.log('parsing: ', s);
           var ret = self.parser.parseString(s);
-        console.log(s, ret);
-          console.log(ret());
+        console.log(ret);
+          console.log(ret(self));
         } catch (x) {
         }
       }
+
+      this.cell(0,1).value = 42;
+      this.cell(1,1).value = 1;
+      this.cell(2,2).value = 2;
 
       t('1');
       t('10');
@@ -164,6 +171,7 @@ MODEL({
       t('=div(9,3)');
       t('=mod(8,3)');
       t('=add(mul(2,3),div(3,2))');
+      t('=A1')
     },
     function cell(col, row) {
       var row = this.cells[row] || ( this.cells[row] = {} );
