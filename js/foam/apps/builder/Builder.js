@@ -25,6 +25,8 @@ CLASS({
     'foam.ui.md.DetailView',
     'foam.ui.md.PopupChoiceView',
     'foam.ui.md.TextFieldView',
+    'foam.apps.builder.questionnaire.AppConfig as QuestionnaireAppConfig',
+    'foam.apps.builder.questionnaire.DesignerView as QuestionnaireDesignerView',
   ],
   exports: [
     'menuSelection$',
@@ -56,6 +58,13 @@ CLASS({
             model: this.KioskAppConfig,
             dao: this.browserDAOFactory(this.KioskAppConfig),
             innerDetailView: 'foam.apps.builder.KioskDesignerView'
+          }),
+          this.BrowserConfig.create({
+            title: 'Questionnaire Apps',
+            label: 'Questionnaire App',
+            model: this.QuestionnaireAppConfig,
+            dao: this.browserDAOFactory(this.QuestionnaireAppConfig),
+            innerDetailView: 'foam.apps.builder.questionnaire.DesignerView'
           }),
         ].dao;
         dao.model = this.BrowserConfig;
