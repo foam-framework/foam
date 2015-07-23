@@ -14,26 +14,34 @@ CLASS({
   name: 'AppConfig',
   extendsModel: 'foam.apps.builder.AppConfig',
 
-  requires: ['Model'],
+  requires: [
+    'BooleanProperty',
+    'StringProperty',
+    'IntProperty',
+    'FloatProperty',
+    'DateProperty',
+    'Model',
+    'foam.ui.md.DetailView',
+    'foam.ui.TableView',
+  ],
 
   properties: [
     {
       name: 'model',
       label: 'Data Model',
-      view: 'foam.meta.types.ModelView',
-      factory: function() {
-        return this.Model.create({
-          name: 'NewModel',
-          properties: [
-            this.BooleanProperty.create({ name: 'boolprop' }),
-            this.StringProperty.create({ name: 'stringprop' }),
-            this.IntProperty.create({ name: 'intprop' }),
-            this.FloatProperty.create({ name: 'floatprop' }),
-            this.DateProperty.create({ name: 'dateprop' }),
-          ]
-        });
-      },
-
+//      view: 'foam.ui.md.DetailView',
+//       factory: function() {
+//         return this.Model.create({
+//           name: 'NewModel',
+//           properties: [
+//             this.BooleanProperty.create({ name: 'boolprop' }),
+//             this.StringProperty.create({ name: 'stringprop' }),
+//             this.IntProperty.create({ name: 'intprop' }),
+//             this.FloatProperty.create({ name: 'floatprop' }),
+//             this.DateProperty.create({ name: 'dateprop' }),
+//           ]
+//         });
+//      },
     }
   ]
 });

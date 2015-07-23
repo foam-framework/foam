@@ -17,6 +17,7 @@ CLASS({
   requires: [
     'foam.apps.builder.Panel',
     'foam.ui.md.DetailView',
+    'foam.apps.builder.questionnaire.EditView',
   ],
 
   constants: {
@@ -32,7 +33,7 @@ CLASS({
   templates: [
     function toHTML() {/*
       <kiosk-designer id="%%id" <%= this.cssClassAttr() %>>
-        $$data{ model_: 'foam.apps.builder.Panel' }
+        $$data{ model_: 'foam.apps.builder.Panel', innerView: 'foam.apps.builder.questionnaire.EditView' }
         $$data{ model_: 'foam.ui.md.DetailView' }
       </kiosk-designer>
     */},

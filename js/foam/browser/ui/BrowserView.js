@@ -51,13 +51,22 @@ CLASS({
       ],
       exports: [
         'selection$',
+        'editView$',
+        'innerEditView$',
       ],
       properties: [
+        { name: 'editView' },
+        { name: 'innerEditView' },
         {
           name: 'data',
           postSet: function(old, nu) {
             if (old) old.unsubscribe(old.MENU_CLOSE, this.onMenuTouch);
             if (nu) nu.subscribe(nu.MENU_CLOSE, this.onMenuTouch);
+            this.editView = this.data.detailView;
+            this.innerEditView = this.data.innerDetailView;
+
+            this.updateHTML();
+            this.onMenuTouch();
           },
         },
         {
@@ -69,15 +78,19 @@ CLASS({
           documentation: 'Used in the list view.',
           postSet: function(old, nu) {
             if (nu) {
-              this.data.dao.find(nu.id, {
-                put: function(obj) {
-                  this.stack.pushView(this.data.detailView({
-                    data: obj,
-                    innerView: this.data.innerDetailView
-                  }, this.Y.sub({ dao: this.data.dao })));
-                }.bind(this)
-              });
-              this.selection = '';
+                this.data.dao.find(nu.id, {
+                  put: function(obj) {
+                      if (this.data.editOnSelect) {
+                        this.stack.pushView(this.data.detailView({
+                          data: obj,
+                          innerView: this.data.innerDetailView
+                        }, this.Y.sub({ dao: this.data.dao })));
+                      } else {
+                        this.X.stack.popView(this);
+                      }
+                  }.bind(this)
+                });
+                this.selection = '';
             }
           }
         },
@@ -182,6 +195,13 @@ CLASS({
           action: function() {
             this.searchMode = false;
             this.data.search = '';
+          }
+        },
+        {
+          name: 'exitButton',
+          iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAPUlEQVQ4y2NgGLbgf8P/BtKU////+78WacpDSFMeSlPlYaQo/0OacjyAcg1wJ4WTGmHDS4sWaVrqhm/mBQAoLpX9t+4i2wAAAABJRU5ErkJggg==',
+          action: function() {
+            this.X.stack.popView(this);
           }
         },
         {
@@ -342,11 +362,14 @@ CLASS({
 
             <div id="<%= this.id %>-header" class="browser-header browser-header-color">
               $$menuButton
+              <% console.log("back?", this.data.showBack, this.data); if ( this.data.showBack ) { %>
+                $$exitButton
+              <% } %>
               $$title{ mode: 'read-only', extraClassName: 'expand title' }
               <% if ( this.spinner ) { %>
                 <span class="browser-spinner">%%spinner</span>
               <% } %>
-              <% for ( var i = 0; i < this.parent.model_.actions.length; i++) {
+              <% for ( var i = 0; i < (this.parent && this.parent.model_.actions.length); i++) {
                 var v = this.createActionView(this.parent.model_.actions[i]);
                 v.data = this.parent;
                 out(v);
@@ -367,7 +390,7 @@ CLASS({
                   this.id + '-header-search');
             %>
             <div class="browser-body">
-              <%= this.listView_ = this.data.listView({ data$: this.data.filteredDAO$ }, this.Y) %>
+              <%= this.listView_ = this.data.listView({ data$: this.data.filteredDAO$ }, this.Y.sub({ dao: this.data.dao })) %>
             </div>
             <% if (this.data.showAdd) { %>
               <div class="floating-action">
@@ -428,7 +451,7 @@ CLASS({
       this.stack.initHTML();
       this.stack.pushView_(-1, this.InnerBrowserView.create({
         parent: this,
-        data: this.data
+        data$: this.data$
       }, this.Y));
     }
   ],

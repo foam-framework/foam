@@ -238,11 +238,26 @@ CLASS({
     },
     {
       model_: 'BooleanProperty',
+      name: 'showBack',
+      documentation: 'A back button will be rendered on the main list if' +
+           'this is set to true. Enable this option if your browser view is' +
+           'nested inside another browser.',
+      defaultValue: false,
+    },
+    {
+      model_: 'BooleanProperty',
       name: 'searchWithinCannedQuery',
       documentation: 'By default, searches are against all of the DAO. To ' +
           'restrict searches to the currently selected canned query, set ' +
           'this to true.',
       defaultValue: false,
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'editOnSelect',
+      documentation: 'When true, selecting an item will open an editor for that' +
+          'item. Set to false if manual editing is desired.',
+      defaultValue: true,
     },
   ],
 
