@@ -20,6 +20,8 @@ import foam.dao.DAO;
  *
  * The view to use for the row is specified in XML as foam:row_view and its value can either be a
  * <code>@layout/foobar</code> layout reference or a class name.
+ *
+ * Set <code>foam:dividers="false"</code> to disable the row separators.
  */
 public class DAOListViewBridge extends OneWayViewBridge<RecyclerView, DAO> {
   private DAOAdapter adapter;
