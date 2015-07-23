@@ -89,7 +89,7 @@ this.on('mouseout', this.onMouseOut))) %>" <% if ( choice[0] === this.data ) { %
     {
       name: 'onClick',
       code: function(e) {
-        this.data = this.prev = this.choices[e.target.value][0];
+        this.data = this.prev = this.choices[this.index][0];
       }
     }
   ]
