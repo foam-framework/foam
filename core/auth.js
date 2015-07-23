@@ -179,6 +179,7 @@ CLASS({
       // So there will never be a notify_ for an action we later disallow.
       this.relay_ = {
         put:    function() { this.notify_('put', arguments); }.bind(this),
+        reset: function() { this.notify_('reset', arguments); }.bind(this),
         remove: function() { this.notify_('remove', arguments); }.bind(this)
       };
 

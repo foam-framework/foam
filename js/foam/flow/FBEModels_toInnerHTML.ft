@@ -1,0 +1,1664 @@
+<section title="Models (FOAM Classes)">
+
+  <section title="Create a Model">
+    <aside>
+      <code-sample openSnippets="-2,-1">
+        <title>Define the "Person" Model</title>
+        <source>
+          <code-snippet name="Person" title="Person Model">
+            <src language="javascript">
+              <code>CLASS({
+  // Model looked up in conteXt object as 'foam.sandbox.Person'.
+  name: 'Person',
+  package: 'foam.sandbox',
+
+  // Store data members as "properties".
+  properties: [ 'firstName', 'lastName', 'children' ],
+
+  // Store member functions as "methods".
+  methods: [
+    function fullName() { return this.firstName + ' ' + this.lastName; },
+    function invertedName() { return this.lastName + ', ' + this.firstName; }
+  ]
+});</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Example">
+            <src language="javascript">
+              <code>// In general, FOAM loads a model and its dependencies asynchronously. This
+// allows for fast page load and all round high performance.
+
+// Let's asynchronously require -- "arequire" -- our model into our conteXt
+// object -- "X" -- to ensure it's ready before we do anything with it.
+X.arequire('foam.sandbox.Person')(function(Person) {
+  // Use FOAM JSONUtil's prettyModel formatter to output the model.
+  console.log(JSONUtil.prettyModel.stringify(Person));
+});</code>
+            </src>
+          </code-snippet>
+        </source>
+      </code-sample>
+    </aside>
+  </section>
+
+  <section title="Create a Modelled Object (Class Instance)">
+    <aside>
+      <code-sample>
+        <title>Create Two "Person" Instances</title>
+        <source>
+          <code-snippet ref="Person" title="Person Model" />
+          <code-snippet title="Example">
+            <src language="javascript">
+              <code>X.arequire('foam.sandbox.Person')(function(Person) {
+  // The first argument to [SomeModel].create specifies property values.
+  // The second argument is the conteXt object where the instance is created.
+  // Both arguments are optional, and the second is usually omitted; we include
+  // it in our examples because each code sample runs in its own context.
+  var suzy = Person.create({ firstName: 'Suzy', lastName: 'Smith' }, X);
+  var ali = Person.create({ firstName: 'Ali', lastName: 'Sharif' }, X);
+  console.log.json(suzy);
+  console.log.json(ali);
+});</code>
+            </src>
+          </code-snippet>
+        </source>
+      </code-sample>
+    </aside>
+  </section>
+
+  <section title="Working with Modelled Object">
+
+    <section title="Generate JSON">
+      <aside>
+        <code-sample>
+          <title>Generate JSON Description of a "Person" Instance</title>
+          <source>
+            <code-snippet ref="Person" title="Person Model" />
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
+  var xi = Person.create({ firstName: 'Xi', lastName: 'Han' }, X);
+  console.log('Let console decide how to JSONify object:');
+  console.log.json(xi);
+  console.log('Let object model decide how to JSONify object:');
+  console.log(xi.toJSON());
+  console.log('Directly invoke FOAM JSONUtil to get pretty JSON:');
+  console.log(JSONUtil.pretty.stringify(xi));
+  console.log('Directly invoke FOAM JSONUtil to get compact JSON:');
+  console.log(JSONUtil.compact.stringify(xi));
+});</code>
+              </src>
+            </code-snippet>
+            <code-snippet ref="Person" title="Person Model" />
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+    <section title="Create Modelled Object from JSON">
+      <aside>
+        <code-sample title="Generate a clone using JSON">
+          <title>Generate a "Person" Clone with JSON</title>
+          <source>
+            <code-snippet ref="Person" title="Person Model" />
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
+  var bondString = '{"model_":"foam.sandbox.Person",' +
+      '"firstName":"James",' +
+      '"lastName":"Bond"}';
+  console.log(bondString);
+  var jamesBond = JSONUtil.parse(X, bondString);
+  console.log(jamesBond.lastName + ', ' + jamesBond.fullName() + '.');
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+    <section title="Compare Modelled Objects with equals()">
+      <aside>
+        <code-sample>
+          <title>Compare John and Jon</title>
+          <source>
+            <code-snippet ref="Person" title="Person Model" />
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
+  var john = Person.create({ firstName: 'John', lastName: 'Smith' }, X);
+  var jon = Person.create({ firstName: 'Jon', lastName: 'Smith' }, X);
+  console.log('Is John the same as Jon? ' + john.equals(jon));
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+    <section title="Compare Modelled Objects with compareTo()">
+      <aside>
+        <code-sample>
+          <title>Compare members of the "Je_ Crew"</title>
+          <source>
+            <code-snippet ref="Person" title="Person Model" />
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
+  var jen = Person.create({ firstName: 'Jen' }, X);
+  var jem = Person.create({ firstName: 'Jem' }, X);
+  var jemAgain = Person.create({ firstName: 'Jem' }, X);
+  console.log('Compare (Jen, Jem) ' + jen.compareTo(jem));
+  console.log('Compare (Jem, Jen) ' + jem.compareTo(jen));
+  console.log('Compare (one Jem, another Jem) ' + jem.compareTo(jemAgain));
+  var jeb = Person.create({ firstName: 'Jeb' }, X);
+  var jed = Person.create({ firstName: 'Jed' }, X);
+  var jeCrew = [jen, jed, jem, jeb];
+  console.log('Je_ Crew: ' + JSONUtil.compact.stringify(
+      jeCrew.map(function(j) { return j.firstName; })));
+  jeCrew.sort(function(a, b) { return a.compareTo(b); });
+  var crewNames2 = jeCrew.map(function(je_) { return je_.firstName; });
+  console.log('Sorted Je_ Crew: ' +
+      jeCrew.map(function(j) { return j.firstName; }));
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+    <section title="Object Hash with hashCode()">
+      <aside>
+        <code-sample>
+          <title>Hashing Krishnams</title>
+          <source>
+            <code-snippet ref="Person" title="Person Model" />
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
+  var krishnam = Person.create({ firstName: 'Krishnam', lastName: 'Patel' }, X);
+  console.log('Mr. Patel hashCode: ' + krishnam.hashCode());
+  // Changing the data changes the hash.
+  krishnam.lastName = 'Kumar';
+  console.log('Mr. Kumar hashCode: ' + krishnam.hashCode());
+  // Two objects can have the same hash if they store the same data.
+  var krishnam2 = Person.create({
+    firstName: 'Krishnam',
+    lastName: 'Kumar'
+  }, X);
+  console.log('Mr. Kumar 2 hashCode: ' + krishnam2.hashCode());
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+    <section title="Copy Modelled Objects with clone()">
+      <aside>
+        <code-sample>
+          <title>Cloning Yuki</title>
+          <source>
+            <code-snippet ref="Person" title="Person Model" />
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
+  var sota = Person.create({ firstName: 'Sota', lastName: 'Itou' }, X);
+  var yuki = Person.create({
+    firstName: 'Yuki',
+    lastName: 'Itou',
+    children: [sota]
+  }, X);
+  var yukiClone = yuki.clone();
+  // Changing properties on clone doesn't affect yuki.
+  yukiClone.lastName = 'Tanaka';
+  console.log('Y.I.: ' + yuki.fullName());
+  console.log('Y.T.: ' + yukiClone.fullName());
+  // Changing data nested within a property affects both because the copy is
+  // shallow.
+  sota.lastName = 'Tanaka';
+  console.log('Y.I. children: ' + JSONUtil.compact.stringify(yuki.children));
+  console.log('Y.T. children: ' + JSONUtil.compact.stringify(yukiClone.children));
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+    <section title="Copy Modelled Objects with deepClone()">
+      <aside>
+        <code-sample>
+          <title>Cloning Lidiya</title>
+          <source>
+            <code-snippet ref="Person" title="Person Model" />
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
+  var marta = Person.create({ firstName: 'Marta', lastName: 'Makarov' }, X);
+  var lidiya = Person.create({
+    firstName: 'Lidiya',
+    lastName: 'Makarov',
+    children: [marta]
+  }, X);
+  var lidiyaClone = lidiya.deepClone();
+  // Changing properties on clone doesn't affect lidiya.
+  lidiyaClone.lastName = 'Pankov';
+  console.log('L.M.: ' + lidiya.fullName());
+  console.log('L.P.: ' + lidiyaClone.fullName());
+  // Changing data nested within a property doesn't affect lidiyaClone because
+  // the copy is shallow.
+  var lidiyaCloneChild = lidiyaClone.children[0];
+  lidiyaCloneChild.lastName = 'Pankov';
+  console.log('L.M. children: ' + JSONUtil.compact.stringify(lidiya.children));
+  console.log('L.P. children: ' + JSONUtil.compact.stringify(lidiyaClone.children));
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+    <section title="Copy Data Between Modelled Objects with copyFrom()">
+      <aside>
+        <code-sample>
+          <title>Copy Hercules to Zeus</title>
+          <source>
+            <code-snippet ref="Person" title="Person Model" />
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
+                  var greekName = Person.create({ firstName: 'Zeus', lastName: 'The Deity' }, X);
+  var greekChildren = Person.create({
+    children: [Person.create({
+      firstName: 'Hercules',
+      lastName: 'The Demi-Deity'
+    })]
+  }, X);
+  // Copy data from greekChildren to greekName. The firstName and lastName of
+  // greekChildren are not copied because they have the default value (i.e.,
+  // names are "not set").
+  greekName.copyFrom(greekChildren);
+  console.log.json(greekName);
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+    <section title="Output a Default View of a Modelled Object using write()">
+      <aside>
+        <code-sample hasHTML="true">
+          <title>Write Morticia Addams</title>
+          <source>
+            <code-snippet name="PersonWithView" title="Person Model">
+              <src language="javascript">
+                <code>CLASS({
+  name: 'Person',
+  package: 'foam.sandbox',
+
+  properties: [
+    'firstName',
+    'lastName',
+    {
+      name: 'children',
+      // Tell FOAM to use a suitable list view -- "foam.ui.DAOListView" -- to
+      // for the default view of the "children" property.
+      view: 'foam.ui.DAOListView',
+      // Format table cells that contain children: List first names.
+      tableFormatter: function(children) {
+        if ( ! children ) return '';
+        return children.map(function(c) { return c.firstName; }).join(', ');
+      }
+    }
+  ]
+});</code>
+              </src>
+            </code-snippet>
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
+  var morticia = Person.create({
+    firstName: 'Morticia',
+    lastName: 'Addams',
+    children: [
+      Person.create({ firstName: 'Wednesday', lastName: 'Addams' }),
+      Person.create({ firstName: 'Pugsley', lastName: 'Addams' })
+    ]
+  }, X);
+  // Write the default view of the modelled object out to this conteXt's
+  // document.
+  morticia.write(X.document);
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+    <section title="Output a DetailView of a Modelled Object">
+      <aside>
+        <code-sample>
+          <title>Details of Will Smith</title>
+          <source>
+            <code-snippet ref="PersonWithView" title="Person Model" />
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>apar(
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.ui.DetailView')
+)(function(Person, DetailView) {
+  var will = Person.create({
+    firstName: 'Will',
+    lastName: 'Smith',
+    children: [
+      Person.create({ firstName: 'Jaden', lastName: 'Smith' }, X),
+      Person.create({ firstName: 'Willow', lastName: 'Smith' }, X)
+    ]
+  }, X);
+  // Same as previous example, but we manually construct a "DetailView" and
+  // render that.
+  DetailView.create({ data: will }, X).write(X.document);
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+    <section title="Output a TableView of several Modelled Objects">
+      <aside>
+        <code-sample>
+          <title>Table of the Smith Family</title>
+          <source>
+            <code-snippet ref="PersonWithView" title="Person Model" />
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>apar(
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.ui.TableView')
+)(function(Person, TableView) {
+  var smithChildren = [
+    Person.create({ firstName: 'Jaden', lastName: 'Smith' }, X),
+    Person.create({ firstName: 'Willow', lastName: 'Smith' }, X)
+  ];
+  var smithParents = [
+    Person.create({
+      firstName: 'Will',
+      lastName: 'Smith',
+      children: smithChildren
+    }, X),
+    Person.create({
+      firstName: 'Jada',
+      lastName: 'Smith',
+      children: smithChildren
+    }, X)
+  ];
+  var smithFamily = smithParents.concat(smithChildren);
+  // Same as "DetailView" example with a "TableView" instead.
+  TableView.create({
+    model: Person,
+    data: smithFamily
+  }, X).write(X.document);
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+    <section title="Add/Remove a Listener to a Modelled Object">
+      <aside>
+        <code-sample>
+          <title>Listening to Darth Vardar Character Development</title>
+          <source>
+            <code-snippet ref="Person" title="Person Model" />
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
+                  var luke = Person.create({ firstName: 'Luke', lastName: 'Skywalker' }, X);
+  var leia = Person.create({ firstName: 'Leia', lastName: 'Skywalker' }, X);
+  var darth = Person.create({ firstName: 'Anakin', lastName: 'Skywalker' }, X);
+
+  // Listen to all "topics" published by darth object.
+  darth.addListener(function(obj, topics, old, nu) {
+    console.log('New darth ' + topics.join('.') + ': ' +
+        JSONUtil.pretty.stringify(nu));
+  });
+
+  darth.children = [luke, leia];
+  darth.firstName = 'Darth';
+  darth.lastName = 'Vadar';
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+    <section title="Listen to a Property on a Modelled Object">
+      <aside>
+        <code-sample>
+          <title>Listening to Tom Riddle's First Name</title>
+          <source>
+            <code-snippet ref="Person" title="Person Model" />
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
+  var theDarkLord = Person.create({
+    firstName: 'Tom',
+    lastName: 'Riddle'
+  }, X);
+
+  // Just listen to changes to first name.
+  var listener = function(obj, topics, old, nu) {
+    console.log('Mr. ' + obj.lastName + ' has abandoned the name ' + old);
+  };
+  theDarkLord.addPropertyListener('firstName', listener);
+
+  theDarkLord.lastName = 'Voldemort';
+  theDarkLord.firstName = 'Lord';
+
+  theDarkLord.removePropertyListener('firstName', listener);
+
+  // Changes no longer logged.
+  theDarkLord.lastName = 'Dead';
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+    <section title="Working with Property Value References">
+      <aside>
+        <code-sample>
+          <title>Working with the Wicked Witch of the West</title>
+          <source>
+            <code-snippet ref="Person" title="Person Model" />
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
+                  var witch = Person.create({ firstName: 'Elphaba', lastName: 'Thropp' }, X);
+
+  // obj.propertyName$ is a "Value" reference to the property named
+  // "propertyName" on "obj". Its interface supports get(), set(newValue),
+  // getting/setting via "value", addListener/removeListener synonymous with
+  // object's addPropertyListener/removePropertyListener.
+  var firstNameReference = witch.firstName$;
+  console.log('Witch first name: ' + firstNameReference.get());
+  console.log('Witch first name: ' + firstNameReference.value);
+
+  var listener = function(obj) {
+    console.log(obj.fullName() + ', she\'s a witch!');
+  };
+  firstNameReference.addListener(listener);
+
+  firstNameReference.set('Wicked');
+  console.log('Witch first name: ' + witch.firstName);
+  firstNameReference.value = 'Elphaba';
+  console.log('Witch first name: ' + witch.firstName);
+
+  firstNameReference.removeListener(listener);
+
+  // Changes no longer logged.
+  firstNameReference.value = 'Melted';
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+    <section title="Bind Property Values">
+      <aside>
+        <code-sample>
+          <title>Binding Prime Ministers</title>
+          <source>
+            <code-snippet ref="Person" title="Person Model" />
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
+  var pm1 = Person.create({ firstName: 'Lester', lastName: 'Pearson' }, X);
+  var pm2 = Person.create({ firstName: 'Pierre', lastName: 'Trudeau' }, X);
+
+  /* 1 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+
+  // One-way binding: pm2 follows pm1's first name.
+  Events.follow(pm1.firstName$, pm2.firstName$);
+  /* 2 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+  pm1.firstName = 'Les';
+  /* 3 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+  // pm1 isn't following pm2.
+  pm2.firstName = 'Pierre';
+  /* 4 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+  // Remove one-way binding.
+  Events.unfollow(pm1.firstName$, pm2.firstName$);
+
+  // Two-way binding. Equivalent to Events.follow(a, b); Events.follow(b, a).
+  Events.link(pm1.lastName$, pm2.lastName$);
+  /* 5 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+  pm1.lastName = 'MacDonald';
+  /* 6 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+  pm2.lastName = 'Trudeau';
+  /* 7 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+  // Remove two-way binding.
+  Events.unlink(pm1.lastName$, pm2.lastName$);
+
+  // One-way binding that maps to a different value.
+  Events.map(pm1.lastName$, pm2.lastName$, function(lastName) {
+    return '"The Boss" ' + lastName;
+  });
+  /* 8 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+  pm1.lastName = 'Harper';
+  /* 9 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+
+  // Two-way binding that maps to different values.
+  Events.relate(pm2.firstName$, pm1.firstName$,
+      function(firstName) {
+        return '"D.J." ' + firstName;
+      },
+      function(firstName) {
+        return firstName.replace('"D.J." ', '');
+      });
+  /* 10 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+  pm1.firstName = 'Stephen';
+  /* 11 */ console.log(pm1.fullName() + ', ' + pm2.fullName());
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+    <section title="Bind to Values with Multiple dependencies">
+      <aside>
+        <code-sample hasHTML="true" openSnippets="-2,-1">
+          <title>Combining Strings</title>
+          <source>
+            <code-snippet title="StringCombos model">
+              <src language="javascript">
+                <code>CLASS({
+  name: 'StringCombos',
+  package: 'foam.sandbox',
+
+  properties: [ 's1', 's2', 's3',
+                { name: 'combinations', view: 'foam.ui.TextAreaView' },
+                { name: 'symmetricPermutations', view: 'foam.ui.TextAreaView' }
+              ],
+
+  methods: [
+    function init() {
+      // Dynamically update string combos based on strings: s1, s2, s3.
+      Events.dynamic(function() {
+        // Ensure that dependencies are referenced.
+        this.s1;
+        this.s2;
+        this.s3;
+
+        var strs = [this.s1, this.s2, this.s3];
+
+        var combinations = [];
+        var symmetricPermutations = [];
+        for ( var i = 0; i !== 3; ++i ) {
+          combinations.push(strs[i]);
+          symmetricPermutations.push(strs[i]);
+          for ( var j = 0; j !== 3; ++j ) {
+            if ( j === i ) continue;
+            combinations.push(strs[i] + strs[j]);
+            symmetricPermutations.push(strs[i] + strs[j] + strs[i]);
+            for ( var k = 0; k !== 3; ++k ) {
+              if ( k == j || k == i ) continue;
+              combinations.push(strs[i] + strs[j] + strs[k]);
+              symmetricPermutations.push(strs[i] + strs[j] + strs[k] +
+                  strs[j] + strs[i]);
+            }
+          }
+        }
+        this.combinations = combinations;
+        this.symmetricPermutations = symmetricPermutations;
+      }.bind(this));
+    }
+  ]
+});</code>
+              </src>
+            </code-snippet>
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.StringCombos')(function(StringCombos) {
+  // Try changing the values of S1, S2, S3 in the detail view. Notice automatic
+  // changes in Combinations and Symmetric Permutations.
+  // NOTE: The text box where you make a change needs to lose focus before the
+  // change takes effect.
+  StringCombos.create({ s1: 'a', s2: 'B', s3: 'c' }, X).write(X.document);
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+  </section>
+
+  <section title="Properties as Modelled Objects">
+
+    <section title="Type -- i.e., Property Model -- Annotations">
+      <aside>
+        <code-sample openSnippets="-2,-1">
+          <title>Coercing Types on 007</title>
+          <source>
+            <code-snippet title="Person Model">
+              <src language="javascript">
+                <code>CLASS({
+                  name: 'Person',
+  package: 'foam.sandbox',
+
+  properties: [
+    // Just like classes are modelled, properties are too.
+    // Rather than defining the "type" of the data in the model, you can declare
+    // the model of the property. FOAM provides several common property models
+    // such as StringProperty, IntProperty, FloatProperty, ArrayProperty.
+    {
+      model_: 'StringProperty',
+      name: 'name'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'age'
+    },
+    // Use "subType" to identify the model of array elements.
+    {
+      model_: 'ArrayProperty',
+      subType: 'foam.sandbox.Person',
+      name: 'children'
+    },
+    // Only use "type" when no property model is available for the type you
+    // need.
+    {
+      type: 'foam.sandbox.Person',
+      name: 'spouse'
+    }
+  ]
+});</code>
+              </src>
+            </code-snippet>
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.Person')(function(Person) {
+  var bond = Person.create({ name: 007, age: '42, but he never dies' }, X);
+  console.log('typeof (Bond name: ' + bond.name + ') is ' + (typeof bond.name));
+  console.log('typeof (Bond age: ' + bond.age + ') is ' + (typeof bond.age));
+  console.log('We did not specify children. Is it still an array? ' + Array.isArray(bond.children));
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+    <section title="Defaults on Properties">
+      <aside>
+        <code-sample openSnippets="-2,-1">
+          <title>Defaults for Doctor Who</title>
+          <source>
+            <code-snippet title="TimeLord Model">
+              <src language="javascript">
+                <code>CLASS({
+  name: 'TimeLord',
+  package: 'foam.sandbox',
+
+  requires: [ 'foam.util.Timer' ],
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'name',
+      // Use "defaultValue" for primitive value defaults.
+      defaultValue: 'The Doctor'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'age',
+      // Use "defaultValueFn" to specify a value-generating function that runs
+      // every time we read the value and it has never been set.
+      defaultValueFn: function() {
+        return Math.floor(Math.random() * 1000);
+      }
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'companions',
+      // Use "lazyFactory" to specify a value-generating function that will run
+      // once the first time the property is accessed. This is usually what you
+      // want for properties with non-primitive values (including arrays).
+      lazyFactory: function() {
+        return [ 'Amy Pond', 'Rory Williams', 'Clara Oswald' ];
+      }
+    },
+    {
+      type: 'foam.util.Timer',
+      name: 'lifetime',
+      // Use "factory" to specify a value-generating function that will run once
+      // when the object is constructed. This is useful when the factory has
+      // side-effects that should take effect as soon as the object is created.
+      factory: function() {
+        return this.Timer.create({}, this.X);
+      }
+    }
+  ]
+});</code>
+              </src>
+            </code-snippet>
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.TimeLord')(function(TimeLord) {
+  // Rely entirely on defaults.
+  var doc = TimeLord.create({}, X);
+  // Since "defaultValueFn" will run every time, age is not constant!
+  console.log('Age of ' + doc.name + ' the first time we check: ' + doc.age);
+  console.log('Age of ' + doc.name + ' the second time we check: ' + doc.age);
+  console.log('Time travel is complicated!');
+  console.log('Companions of ' + doc.name + ': ' + doc.companions.join(', '));
+  var doc2Companions = [ 'Clara Oswald' ];
+  var doc2 = TimeLord.create({
+    name: 'The 12th Doctor',
+    age: 934,
+    companions: doc2Companions
+  }, X);
+  // Age is now constant because we have set it to 934.
+  console.log('Age of ' + doc2.name + ' the first time we check: ' + doc2.age);
+  console.log('Age of ' + doc2.name + ' the second time we check: ' + doc2.age);
+  // Companions were also specified, so our array (rather than the "lazyFactory"
+  // array) is used.
+  console.log('Companions of ' + doc2.name + ': ' + doc2.companions.join(', '));
+  console.log('Companions array is a copy of original array? ' +
+      (doc2.companions !== doc2Companions));
+  console.log('Time since creating ' + doc.name + ': ' + doc.lifetime.interval);
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+    <section title="Influence Property Changes with preSet(), adapt(), and postSet()">
+      <aside>
+        <code-sample openSnippets="-2,-1">
+          <title>Adapting an Array of "Person" Modelled Objects</title>
+          <source>
+            <code-snippet ref="Person" title="Person Model" />
+            <code-snippet title="PeopleContainer Model">
+              <src language="javascript">
+                <code>CLASS({
+  name: 'PeopleContainer',
+  package: 'foam.sandbox',
+
+  requires: [ 'foam.sandbox.Person' ],
+
+  // Note: See below "properties: [...]" for complete property change logic.
+  properties: [
+    {
+      name: 'people',
+      // Use "adapt" to reinterpret the new value, and, if necessary, change its
+      // type. The property will actually be changed to the value returned by
+      // adapt (and/or returned by preSet -- see below for details). In this
+      // example, setting "people" to a string interprets the string as a
+      // comma-separted list of firstNames for new Person instances.
+      adapt: function(old, nu) {
+        if ( old === nu ) return nu;
+        if ( typeof nu !== 'string' ) return nu;
+        var names = nu.split(',');
+        return names.map(function(n) {
+          return this.Person.create({ firstName: n }, this.X);
+        }.bind(this));
+      },
+      // Use "preSet" in a similar way to "adapt". The preSet function is
+      // called after adapt, with the new value set to adapt's return value
+      // (see below "properties: [...]" for clarifying code). This function is
+      // intended to do work with side-effects that should take place before the
+      // property actually changes. By convention, any changes made to the new
+      // value should not change the value type (such changes belong in adapt).
+      preSet: function(old, nu) {
+        if ( old === nu ) return nu;
+        nu = nu.map(function(p) {
+          p.lastName = p.lastName || 'Person';
+          return p;
+        });
+        console.log('About to change people from ' +
+            JSONUtil.compact.stringify(old) +
+            ' to ' +
+            JSONUtil.compact.stringify(nu));
+        return nu;
+      },
+      // Use "postSet" to respond to data changes after the data has changed.
+      // The return value of this function is ignored.
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        console.log('Just changed people from ' +
+            JSONUtil.compact.stringify(old) +
+            ' to ' +
+            JSONUtil.compact.stringify(nu));
+      }
+    }
+  ]
+  // Property change logic (run with "this" as the modelled object that has the
+  // property):
+  //
+  // function doPropertyChange(newValue, propertyObject) {
+  //   var name = propertyObject.name;
+  //   var oldValue = this[name];
+  //   var realNewValue = property.preSet(oldValue,
+  //       property.adapt(oldValue, newValue));
+  //   this[name] = realNewValue;
+  //   property.postSet(oldValue, realNewValue);
+  // }
+});</code>
+              </src>
+            </code-snippet>
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.PeopleContainer')(function(PeopleContainer) {
+  var pc = PeopleContainer.create({}, X);
+  pc.people = 'Nima,Sina,Tina';
+  console.log.json(pc);
+});</code>
+              </src>
+            </code-snippet>
+          </source>
+        </code-sample>
+      </aside>
+    </section>
+
+  </section>
+
+  <section>
+    <title>Dependency injection with "requires"</title>
+    <aside>
+      <code-sample openSnippets="-2,-1">
+        <title>The Addams Family Requires Persons</title>
+        <source>
+          <code-snippet ref="Person" title="Person Model" />
+          <code-snippet title="Family Model">
+            <src language="javascript">
+              <code>CLASS({
+  name: 'Family',
+  package: 'foam.sandbox',
+
+  // Use "requires" to list dependencies that will be available on instances
+  // using their unqualified name.
+  requires: [ 'foam.sandbox.Person' ],
+
+  properties: [
+    {
+      model_: 'ArrayProperty',
+      name: 'members',
+      lazyFactory: function () {
+        // Access the foam.sandbox.Person model using this.Person.
+        return [
+          this.Person.create({ firstName: 'Morticia', lastName: 'Addams' }),
+          this.Person.create({ firstName: 'Gomez', lastName: 'Addams' }),
+          this.Person.create({ firstName: 'Wednesday', lastName: 'Addams' }),
+          this.Person.create({ firstName: 'Pugsley', lastName: 'Addams' }),
+          this.Person.create({ firstName: 'Uncle Fester', lastName: 'Addams' }),
+          this.Person.create({ firstName: 'Cousin Itt', lastName: 'Addams' }),
+          this.Person.create({ firstName: 'Lurch', lastName: 'The Butler' })
+        ];
+      },
+      view: 'foam.ui.DAOListView'
+    }
+  ]
+});</code>
+              </src>
+            </code-snippet>
+            <code-snippet title="Example">
+              <src language="javascript">
+                <code>X.arequire('foam.sandbox.Family')(function(Family) {
+  Family.create({}, X).write(X.document);
+});</code>
+              </src>
+            </code-snippet>
+        </source>
+      </code-sample>
+    </aside>
+  </section>
+
+  <section title="Add Methods">
+    <aside>
+      <code-sample openSnippets="-2,-1">
+        <title>Rectangular Methods</title>
+        <source>
+          <code-snippet title="Rectangle Model">
+            <src language="javascript">
+              <code>CLASS({
+  name: 'Rectangle',
+  package: 'foam.sandbox',
+
+  methods: [
+    // Named function defines method with no metadata.
+    function scale(factor) {
+      this.width *= factor;
+      this.height *= factor;
+    },
+    // Use "name", "code", et al., to provide metadata about the method.
+    {
+      name: 'randomize',
+      documentation: 'Randomize width and height over range: [0, max]',
+      args: [ { name: 'max', type: 'number', required: true } ],
+      code: function(max) {
+        this.width = Math.random() * max;
+        this.height = Math.random() * max;
+      }
+    }
+  ],
+
+  properties: [
+    { model_: 'StringProperty', name: 'name', required: true },
+    { model_: 'FloatProperty', name: 'width', defaultValue: Math.PI },
+    { model_: 'FloatProperty', name: 'height', defaultValue: Math.E }
+  ]
+});</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Example">
+            <src language="javascript">
+              <code>X.arequire('foam.sandbox.Rectangle')(function(Rectangle) {
+  var defaultRect = Rectangle.create({ name: 'Default' }, X);
+  var randomRect = Rectangle.create({ name: 'Random' }, X);
+  var square = Rectangle.create({ name: 'Square', width: 1, height: 1 }, X);
+  randomRect.randomize(1000);
+  square.scale(2 * Math.PI);
+
+  defaultRect.write(X.document);
+  randomRect.write(X.document);
+  square.write(X.document);
+});</code>
+            </src>
+          </code-snippet>
+        </source>
+      </code-sample>
+    </aside>
+  </section>
+
+  <section>
+    <title>Inherit from Model with "extendsModel"</title>
+    <aside>
+      <code-sample openSnippets="-2,-1">
+        <title>Employees are People Too</title>
+        <source>
+          <code-snippet ref="Person" title="Person Model" />
+          <code-snippet name="Employee" title="Employee Model">
+            <src language="javascript">
+              <code>CLASS({
+  name: 'Employee',
+  package: 'foam.sandbox',
+  // Classical inheritance: All properties, methods, etc. from Person apply to
+  // Employee.
+  extendsModel: 'foam.sandbox.Person',
+
+  properties: [
+    {
+      model_: 'IntProperty',
+      name: 'id',
+      factory: function() {
+        return Math.abs(this.hashCode() * Math.floor(Math.random() * 99 + 1));
+      }
+    }
+  ]
+});</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Example">
+            <src language="javascript">
+              <code>X.arequire('foam.sandbox.Employee')(function(Employee) {
+  // The Boss is employee #1.
+  var theBoss = Employee.create({
+    firstName: 'Bruce',
+    lastName: 'Springsteen',
+    id: 1
+  });
+  // Auto-generate Doug's ID.
+  var doug = Employee.create({ firstName: 'Douglas', lastName: 'Alderman' });
+  theBoss.write(X.document);
+  doug.write(X.document);
+});</code>
+            </src>
+          </code-snippet>
+        </source>
+      </code-sample>
+    </aside>
+  </section>
+
+  <section title="Invoke Super-Class Implementation with this.SUPER()">
+    <aside>
+      <code-sample openSnippets="-2,-1">
+        <title>Nicknames in Full Names</title>
+        <source>
+          <code-snippet ref="Person" title="Person Model" />
+          <code-snippet title="Nicknamed Model">
+            <src language="javascript">
+              <code>CLASS({
+  name: 'Nicknamed',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.sandbox.Person',
+
+  methods: [
+    function fullName() {
+      // Use this.SUPER([args]) to invoke super-class's implementation of
+      // fullName().
+      var realName = this.SUPER();
+      if ( this.nickname) {
+        return realName + ', A.K.A., "' +  this.nickname + '"';
+      } else {
+        return realName;
+      }
+    }
+  ],
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'nickname'
+    }
+  ]
+});</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Example">
+            <src language="javascript">
+              <code>X.arequire('foam.sandbox.Nicknamed')(function(Nicknamed) {
+  var theBoss = Nicknamed.create({
+    firstName: 'Bruce',
+    lastName: 'Springsteen',
+    nickname: 'The Boss'
+  });
+  var sam = Nicknamed.create({ firstName: 'Sam', lastName: 'Roberts' });
+  console.log(theBoss.fullName());
+  console.log(sam.fullName());
+});</code>
+            </src>
+          </code-snippet>
+        </source>
+      </code-sample>
+    </aside>
+  </section>
+
+  <section title="Type Introspection with isInstance()">
+    <aside>
+      <code-sample>
+        <title>Joe is an Employee and a Person, but Not a Mongoose</title>
+        <source>
+          <code-snippet ref="Person" title="Person Model" />
+          <code-snippet ref="Employee" title="Employee Model" />
+          <code-snippet name="Mongoose" title="Mongoose Model">
+            <src language="javascript">
+              <code>CLASS({ name: 'Mongoose', package: 'foam.sandbox' });</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Example">
+            <src language="javascript">
+              <code>apar(
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.sandbox.Employee'),
+    X.arequire('foam.sandbox.Mongoose'))(function(Person, Employee, Mongoose) {
+  var joe = Employee.create({ firstName: 'Joseph', lastName: 'Fernando' });
+  console.log('Joe is an employee?', Employee.isInstance(joe));
+  console.log('Joe is a person?', Person.isInstance(joe));
+  console.log('Joe is a mongoose?', Mongoose.isInstance(joe));
+});</code>
+            </src>
+          </code-snippet>
+        </source>
+      </code-sample>
+    </aside>
+  </section>
+
+  <section title="Meta-Type Introspection with isSubModel()">
+    <aside>
+      <code-sample>
+        <title>People, Employees, and Supervisors</title>
+        <source>
+          <code-snippet ref="Person" title="Person Model" />
+          <code-snippet ref="Employee" title="Employee Model" />
+          <code-snippet name="Supervisor" title="Supervisor Model">
+            <src language="javascript">
+              <code>CLASS({
+  name: 'Supervisor',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.sandbox.Employee',
+
+  properties: [
+    {
+      model_: 'ArrayProperty',
+      subType: 'foam.sandbox.Employee',
+      name: 'directReports'
+    }
+  ]
+});</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Example">
+            <src language="javascript">
+              <code>apar(
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.sandbox.Employee'),
+    X.arequire('foam.sandbox.Supervisor'))
+(function(Person, Employee, Supervisor) {
+  console.log('All employees are people?', Person.isSubModel(Employee));
+  console.log('All people are employees?', Employee.isSubModel(Person));
+  console.log('All supervisors are employees?', Employee.isSubModel(Supervisor));
+  console.log('All supervisors are people?', Person.isSubModel(Supervisor));
+});</code>
+            </src>
+          </code-snippet>
+        </source>
+      </code-sample>
+    </aside>
+  </section>
+
+  <section>
+    <title>Mixins with "traits"</title>
+    <aside>
+      <code-sample openSnippets="3,4,5">
+        <title>Compounds and Friends</title>
+        <source>
+          <code-snippet ref="Person" title="Person Model" />
+          <code-snippet title="Nickname Trait">
+            <src language="javascript">
+              <code>CLASS({
+  name: 'Nicknamed',
+  package: 'foam.sandbox',
+
+  methods: [
+    function fullName() {
+      var realName = this.SUPER();
+      if ( this.nickname) {
+        return realName + ', A.K.A., "' +  this.nickname + '"';
+      } else {
+        return realName;
+      }
+    }
+  ],
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'nickname'
+    }
+  ]
+});</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Formal Compound Model">
+            <src language="javascript">
+              <code>CLASS({
+  name: 'FormalCompound',
+  package: 'foam.sandbox',
+
+  methods: [ function fullName() { return this.iupacName; } ],
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'iupacName',
+      required: true
+    }
+  ]
+});</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Compound Model (Formal Compound with Nicknamed trait)">
+            <src language="javascript">
+              <code><![CDATA[CLASS({
+  name: 'Compound',
+  package: 'foam.sandbox',
+  // Compound has the Nicknamed trait, and is a FormalCompound.
+  extendsModel: 'foam.sandbox.FormalCompound',
+  traits: [ 'foam.sandbox.Nicknamed' ]
+});]]></code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Friend Model (Person with Nicknamed trait)">
+            <src language="javascript">
+              <code><![CDATA[CLASS({
+  name: 'Friend',
+  package: 'foam.sandbox',
+  // Friend has the Nicknamed trait, and is a Person.
+  extendsModel: 'foam.sandbox.Person',
+  traits: [ 'foam.sandbox.Nicknamed' ]
+});]]></code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Example">
+            <src language="javascript">
+              <code><![CDATA[apar(
+    X.arequire('foam.sandbox.Compound'),
+    X.arequire('foam.sandbox.Friend'))(function(Compound, Friend) {
+  var water = Compound.create({ iupacName: 'oxidane', nickname: 'water' });
+  var theBoss = Friend.create({
+    firstName: 'Bruce',
+    lastName: 'Springsteen',
+    nickname: 'The Boss'
+  });
+  console.log('Compound: ' + water.fullName());
+  console.log('Friend: ' + theBoss.fullName());
+});]]></code>
+            </src>
+          </code-snippet>
+        </source>
+      </code-sample>
+    </aside>
+  </section>
+
+  <section title="Add Listeners: Methods Intended as Callbacks">
+    <aside>
+      <code-sample hasHTML="true" openSnippets="-2,-1">
+        <title>Friendly People with Framed Listeners</title>
+        <source>
+          <code-snippet ref="Person" title="Person Model" />
+          <code-snippet title="Friendly Model">
+            <src language="javascript">
+              <code>CLASS({
+  name: 'Friendly',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.sandbox.Person',
+
+  listeners: [
+    // Listeners bind "this" to the current instance. This is especially helpful
+    // when listening to DOM events.
+    {
+      name: 'onHello',
+      code: function() {
+        console.log("Hi, I'm " + this.firstName);
+      }
+    },
+    // Framed listeners (isFramed: true) only fire once per animation frame.
+    {
+      name: 'onLastNameUpdate',
+      isFramed: true,
+      code: function() { ++this.framedLastNameUpdates; }
+    },
+    // Unframed listener gets "spammed" with back-to-back updates.
+    {
+      name: 'onSpammyLastNameUpdate',
+      code: function() { ++this.unframedLastNameUpdates; }
+    }
+  ],
+
+  methods: [
+    function brokenOnHello() { console.log("Hi, I'm " + this.firstName); },
+    function init() {
+      this.SUPER.apply(this, arguments);
+      this.lastName$.addListener(this.onLastNameUpdate);
+      this.lastName$.addListener(this.onSpammyLastNameUpdate);
+    }
+  ],
+
+  properties: [
+    {
+      model_: 'IntProperty',
+      name: 'framedLastNameUpdates',
+      defaultValue: 0
+    },
+    {
+      model_: 'IntProperty',
+      name: 'unframedLastNameUpdates',
+      defaultValue: 0
+    }
+  ]
+});</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Example">
+            <src language="javascript">
+              <code>X.arequire('foam.sandbox.Friendly')(function(Friendly) {
+  var lua = Friendly.create({ firstName: 'Lua' }, X);
+  // Listener works correctly, even when we attempt to apply it to a different
+  // object.
+  console.log('Invoking listener');
+  lua.onHello.apply(window);
+  // Method will not work correctly when applied to a different object.
+  console.log('Invoking method that should be a listener');
+  lua.brokenOnHello.apply(window);
+  // Multiple unframed updates; single framed update.
+  ['Johnson', 'Jamison', 'Johanson'].forEach(function(lastName) {
+    lua.lastName = lastName;
+  });
+  lua.write(X.document);
+});</code>
+            </src>
+          </code-snippet>
+        </source>
+      </code-sample>
+    </aside>
+  </section>
+
+  <section title="Add Actions: Methods Intended as User Actions">
+    <aside>
+      <code-sample openSnippets="-2,-1">
+        <title>A Runner with Actions</title>
+        <source>
+          <code-snippet title="Runner Model">
+            <src language="javascript">
+              <code>CLASS({
+  name: 'Runner',
+  package: 'foam.sandbox',
+
+  // Actions can be annotated with useful data such as:
+  // label: A text label for action buttons
+  // iconUrl: An icon for action buttons
+  // isAvailable: A function to determine whether the action is available to
+  //     the user
+  // isEnabled: A function to determine whether the action is currently enabled
+  // keyboardShortcuts: A list of keys that trigger the action.
+  //
+  // NOTE: The code for an action is the "action", not the "code".
+  actions: [
+    {
+      name: 'go',
+      label: 'Start running',
+      iconUrl: 'https://www.gstatic.com/images/icons/material/system/1x/directions_run_black_24dp.png',
+      isAvailable: function() { return !this.isRetired; },
+      isEnabled: function() { return !this.isRunning; },
+      keyboardShortcuts: [ 'r', '=' ],
+      action: function() { this.isRunning = true; }
+    },
+    {
+      name: 'stop',
+      label: 'Stop running',
+      iconUrl: 'https://www.gstatic.com/images/icons/material/system/1x/stop_black_24dp.png',
+      keyboardShortcuts: [ 's', '-' ],
+      isAvailable: function() { return !this.isRetired; },
+      isEnabled: function() { return this.isRunning; },
+      action: function() { this.isRunning = false; }
+    },
+    {
+      name: 'step',
+      label: 'Take a step',
+      iconUrl: 'https://www.gstatic.com/images/icons/material/system/1x/directions_walk_black_24dp.png',
+      keyboardShortcuts: [ 'S', ' ' ],
+      isAvailable: function() { return true; },
+      isEnabled: function() { return !this.isRunning; },
+      action: function() { this.distance += this.strideLength; }
+    },
+    {
+      name: 'retire',
+      iconUrl: 'https://www.gstatic.com/images/icons/material/system/1x/directions_bus_black_24dp.png',
+      isAvailable: function() { return true; },
+      isEnabled: function() { return !this.isRetired; },
+      keyboardShortcuts: [ '/' ],
+      action: function() { this.isRunning = false; this.isRetired = true; }
+    },
+    {
+      name: 'retrain',
+      iconUrl: 'https://www.gstatic.com/images/icons/material/system/1x/directions_bike_black_24dp.png',
+      isAvailable: function() { return true; },
+      isEnabled: function() { return this.isRetired; },
+      keyboardShortcuts: [ '\\' ],
+      action: function() { this.isRetired = false; }
+    }
+  ],
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'instructions',
+      view: {
+        factory_: 'foam.ui.TextFieldView',
+        displayHeight: 10,
+        displayWidth: 80
+      },
+      factory: function() {
+        var str = 'Use action buttons to commit actions with the mouse.\n\n' +
+            'To use keyboard shortcuts, focus on this textarea.\n\n' +
+            'Keyboard shortcuts:';
+        var actions = this.model_.actions;
+        for ( var i = 0; i !== actions.length; ++i ) {
+          var action = actions[i];
+          if ( action.keyboardShortcuts.length !== 0 ) {
+            str += '\n' + action.label + ': "' +
+                action.keyboardShortcuts.join('" or "') + '"';
+          }
+        }
+        return str;
+      }
+    },
+    {
+      model_: 'FloatProperty',
+      name: 'strideLength',
+      defaultValue: 0.0625
+    },
+    {
+      model_: 'FloatProperty',
+      name: 'distance',
+      defaultValue: 0
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'isRunning',
+      hidden: true,
+      defaultValue: false
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'isRetired',
+      hidden: true,
+      defaultValue: false
+    }
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER.apply(this, arguments);
+      this.isRunning$.addListener(this.onStep);
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onStep',
+      isFramed: true,
+      code: function() {
+        if ( this.isRunning ) {
+          this.distance += this.strideLength;
+          this.onStep();
+        }
+      }
+    }
+  ]
+});</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Example">
+            <src language="javascript">
+              <code>X.arequire('foam.sandbox.Runner')(function(Runner) {
+  Runner.create({}, X).write(X.document);
+});
+</code>
+            </src>
+          </code-snippet>
+        </source>
+      </code-sample>
+    </aside>
+  </section>
+
+  <section>
+    <title>Deep Dependency Injection with "exports" and "imports"</title>
+    <aside>
+      <code-sample openSnippets="2,3,4,5">
+        <title>Corporate Structure of Bruce, Inc.</title>
+        <source>
+          <code-snippet ref="Person" title="Person Model" />
+          <code-snippet ref="Employee" title="Base Employee Model" />
+          <code-snippet title="Company Employee (Contextualized Employee) Model">
+            <src language="javascript">
+              <code>CLASS({
+  name: 'CompanyEmployee',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.sandbox.Employee',
+
+  // Import company and division information from the conteXt.
+  // Since contexts inherit from each other, company information is available
+  // without the division having to explicitly pass it on.
+  imports: [
+    'companyName',
+    'divisionName',
+    'parentCompany'
+  ],
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'companyName',
+      defaultValue: 'Unemployed'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'divisionName',
+      defaultValue: 'N/A'
+    },
+    {
+      type: 'foam.sandbox.Company',
+      name: 'parentCompany',
+      defaultValue: null
+    }
+  ]
+});</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Division Model">
+            <src language="javascript">
+              <code>CLASS({
+  name: 'Division',
+  package: 'foam.sandbox',
+
+  requires: [ 'foam.sandbox.CompanyEmployee' ],
+  // Export division-level data into the the division's conteXt.
+  exports: [ 'name as divisionName' ],
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'name'
+    },
+    {
+      model_: 'ArrayProperty',
+      subType: 'foam.sandbox.CompanyEmployee',
+      name: 'employees',
+      view: 'foam.ui.DAOListView'
+    }
+  ],
+
+  methods: [
+    function addEmployee(employeeSpec) {
+      // Create employee in this division's conteXt.
+      var employee = this.CompanyEmployee.create(employeeSpec, this.Y);
+      this.employees.push(employee);
+      return employee;
+    }
+  ]
+});</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Company Model">
+            <src language="javascript">
+              <code>CLASS({
+  name: 'Company',
+  package: 'foam.sandbox',
+
+  requires: [ 'foam.sandbox.Division' ],
+  // Export company-level data into the the company's conteXt.
+  exports: [
+    'parentCompany',
+    'name as companyName'
+  ],
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'name'
+    },
+    {
+      type: 'foam.sandbox.Company',
+      name: 'parentCompany',
+      defaultValue: null
+    },
+    {
+      model_: 'ArrayProperty',
+      subType: 'foam.sandbox.Division',
+      name: 'divisions',
+      view: 'foam.ui.DAOListView'
+    }
+  ],
+
+  methods: [
+    function addDivision(divisionSpec) {
+      var division = this.Division.create(divisionSpec, this.Y);
+      // Create division in this company's conteXt.
+      this.divisions.push(division);
+      return division;
+    },
+    function toString() { return 'Company{ ' + this.name + ' }'; }
+  ]
+});</code>
+            </src>
+          </code-snippet>
+          <code-snippet title="Example">
+            <src language="javascript">
+              <code>apar(
+    X.arequire('foam.sandbox.Company'),
+    X.arequire('foam.sandbox.Division'),
+    X.arequire('foam.sandbox.CompanyEmployee'))
+(function(Company, Division, CompanyEmployee) {
+  // Joe is created outside the context of a company. He's unemployed.
+  CompanyEmployee.create({ firstName: 'Joe' }, X).write(X.document);
+
+  // Pretty much everyone at Bruce, Unltd. is a shell corporation.
+  var bruceUnltd = Company.create({ name: 'Bruce, Unltd.' }, X);
+
+  var bruceInc = Company.create({
+    name: 'Bruce, Inc.',
+    parentCompany: bruceUnltd
+  }, X);
+  // Pretty much everyone at Bruce, Inc. is named Bruce...
+  var division = bruceInc.addDivision({ name: 'Bureaucracy' });
+  division.addEmployee({ firstName: 'Bruce' });
+  division.addEmployee({ firstName: 'Bruce' });
+  division = bruceInc.addDivision({ name: 'Paper Pushing' });
+  division.addEmployee({ firstName: 'Bruce' });
+  // ... except for this shady character.
+  // Notice that we can override values imported from the context by injecting
+  // them directly.
+  division.addEmployee({
+    firstName: 'Frank',
+    companyName: 'Frank, Inc.',
+    divisionName: 'Corporate Espionage'
+  });
+
+  bruceInc.write(X.document);
+});</code>
+            </src>
+          </code-snippet>
+        </source>
+      </code-sample>
+    </aside>
+  </section>
+
+</section>

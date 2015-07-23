@@ -1,11 +1,24 @@
 var VIDEO_PATH = 'https://x20web.corp.google.com/~kgr/power/videos/DemoDen/';
 
+
 CLASS({
   name: 'Demo',
   properties: [
     'name', 'path', 'keywords', 'image', 'video', 'description',
     {
+      name: 'model',
+      postSet: function(_, m) {
+        this.path = '../index.html?model=' + m;
+        if ( ! this.hasOwnProperty('src') ) this.src = '../js/' + m.replace(/\./g, '/') + '.js';
+      }
+    },
+    {
       name: 'src',
+      preSet: function(_, src) {
+        return src.endsWith('/') ?
+          'https://github.com/foam-framework/foam/tree/master/' + src :
+          src ;
+      },
       defaultValueFn: function() {
         var i = window.location.href.indexOf('DemoCat.html');
         var path = window.location.href.substring(0, i);
@@ -16,26 +29,43 @@ CLASS({
 });
 
 
-var demos = JSONUtil.arrayToObjArray(X, [
+CLASS({
+  name: 'Controller',
+  traits: ['foam.ui.CSSLoaderTrait'],
+  requires: [
+    'Demo',
+    'foam.ui.DAOListView',
+    'foam.ui.TextFieldView'
+  ],
+  properties: [
+    { name: 'search', view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true } },
+    { name: 'dao', factory: function() {
+return JSONUtil.arrayToObjArray(X, [
+  {
+    name: 'Googley Eyes',
+    model: 'foam.demos.graphics.EyesDemo',
+    description: 'A Googley version of the old xeyes app.  Follows your mouse.',
+    keywords: ['graphics', 'reactive'],
+    image: 'Eyes.png',
+  },
   {
     name: 'Solar System',
-    path: 'SolarSystem.html',
-    description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.  This was the first graphical FOAM demo to be written (in 2011) and while it still runs, it isn\'t the best coding example.  I\'ve added the <b>old</b> keyword to this, and other older, non-modernized demos.',
+    model: 'foam.demos.SolarSystem',
+    description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.  This was the first graphical FOAM demo to be written (in 2011).  I\'ve added the <b>old</b> keyword to this, and other older, non-modernized demos.',
     keywords: ['animation', 'reactive', 'old'],
-    src: 'SolarSystem.js',
     image: 'SolarSystem.png',
-  },/*
-  {
-    name: 'Canvas Scrolling',
-    path: 'canvasscrolling.html',
-    description: 'A demonstration of high-performance canvas (DOM-less) scrolling..',
-    keywords: ['canvas'],
-    src: 'canvasscrolling.js',
-    image: 'canvasscrolling.png',
   },
-  */{
+  {
+    name: 'Minesweeper',
+    model: 'com.google.sweeper.Game',
+    description: 'A Minesweeper game.',
+    keywords: ['game'],
+    src: 'js/com/google/sweeper/',
+    image: 'Minesweeper.png',
+  },
+  {
     name: 'Reactive Clocks',
-    path: 'ReactiveClocks.html',
+    model: 'foam.demos.ReactiveClocks',
     description: 'A simple demo of reactive programming.  The first clocks reacts to the position of the mouse while the second clock reacts to the position of the first clock and to time.  Reacting to time essentially gives you an animation system for free.',
     keywords: ['animation', 'reactive'],
     image: 'ReactiveClocks.png',
@@ -47,6 +77,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
     description: "A simulator which demonstrates the advantage of UNIX's architecture over previous operating-sytems.",
     keywords: ['simulation', 'animation', 'architecture', 'old'],
     image: 'UnixSimulator.png',
+    src: 'UnixSimulator.js',
     video: 'part1.ogv'
   },
   {
@@ -59,7 +90,7 @@ var demos = JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Fading Circles',
-    path: 'FadingCircles.html',
+    model: 'foam.demos.graphics.FadingCircles',
     description: 'An reactive-programming animation which demonstrates the use of Events.dynamic() and Movement.animate().',
     keywords: ['animation'],
     image: 'FadingCircles.png'
@@ -73,14 +104,14 @@ var demos = JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'InterpolatedClocks',
-    path: 'InterpolatedClocks.html',
+    model: 'foam.demos.InterpolatedClocks',
     description: 'A demonstration of animation interpolators.  Click to animate the clocks.  Notice how the different clocks use different acceleration curves to reach their targets.',
     keywords: ['animation'],
     image: 'InterpolatedClocks.png'
   },
   {
     name: 'FOAM Architecture Diagram',
-    path: 'demoBlockDiagram.html',
+    model: 'foam.demos.ArchitectureDiagram',
     description: 'An animated diagram of FOAM\'s architecture.  Notice the reflections.',
     keywords: ['architecture', 'animation'],
     image: 'DemoBlockDiagram.png',
@@ -88,57 +119,66 @@ var demos = JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'Dragon Live-Coding',
-    path: 'DragonLiveCoding.html',
+    model: 'foam.demos.DragonLiveCoding',
     description: 'A version of the dragon animation that you can live-code.  Use the Model editor to update methods while the animation is running.',
     keywords: ['animation', 'live-coding'],
-    src: 'DragonLiveCoding.js',
     image: 'LiveDragon.png',
     video: 'part12.ogv'
   },
   {
     name: 'Pong',
-    path: 'Pong.html',
+    model: 'foam.demos.pong.Pong',
     description: 'A simple pong game which demonstrates the both the use of graphical traits (motion blur and shadow) and of the physics engine.',
-    keywords: ['animation', 'game', 'physics', 'traits', '14'],
-    src: 'Pong.js',
+    keywords: ['animation', 'game', 'physics', 'traits'],
     image: 'Pong.png'
   },
   {
     name: 'DAO Samples',
     path: 'dao.html',
     description: 'An extensive set of DAO (Data-Access-Object) samples.  A must read for learning FOAM.',
-    keywords: ['DAO', 'database', '14'],
+    keywords: ['DAO', 'database'],
     image: 'DAO.png'
   },
   {
     name: 'Collision',
-    path: 'Collision.html',
+    model: 'foam.demos.physics.Collision',
     description: 'Demonstration of the physics engine and collision-detection.',
-    keywords: ['physics', '14'],
-    src: 'Collision.js',
+    keywords: ['physics'],
     image: 'Collision.png'
   },
   {
     name: 'Collision With Spring',
-    path: 'CollisionWithSpring.html',
+    model: 'foam.demos.physics.CollisionWithSpring',
     description: 'A simple physics simulation which shows the use of springs and collision detection.',
-    keywords: ['physics', '14'],
-    src: 'CollisionWithSpring.js',
+    keywords: ['physics'],
     image: 'CollisionWithSpring.png'
   },
   {
     name: 'Spring',
-    path: 'Spring.html',
+    model: 'foam.demos.physics.Spring',
     description: 'Addictive spring physics simulation.',
-    keywords: ['physics', '14'],
-    src: 'Spring.js',
+    keywords: ['physics'],
     image: 'Spring.png'
+  },
+  {
+    name: 'Baloons',
+    model: 'foam.demos.physics.Baloons',
+    description: 'Collision detection with inflatable baloons.',
+    keywords: ['physics'],
+    image: 'Baloons.png'
+  },
+  {
+    name: 'Bubbles',
+    model: 'foam.demos.physics.Bubbles',
+    description: 'Demonstrates use of gravity.  Negative gravity makes bubbles rise.',
+    keywords: ['physics'],
+    image: 'Bubbles.png'
   },
   {
     name: 'Trait Graphics',
     path: 'TraitGraphics.html',
     description: 'Demonstrates the use of graphical Traits.  The circles on the left have shadows and those on the right have motion-blur.  Traits are not limited to graphics and are a generalized method for safely providing multiple inheritance.',
-    keywords: ['traits','graphics', '14'],
+    keywords: ['traits','graphics'],
     src: 'TraitGraphics.js',
     image: 'TraitGraphics.png'
   },
@@ -154,95 +194,106 @@ var demos = JSONUtil.arrayToObjArray(X, [
     name: 'Crop Circles',
     path: 'CropCircle.html',
     description: 'Crop Circle inspired fractals graphics. Can take 10-20 seconds to load on slow machines. Each fractal is implemented in only one line of code.  Just started: needs animation and a graphical live-coding system.',
-    keywords: ['graphics', '14'],
+    keywords: ['graphics'],
     src: 'CropCircle.js',
     image: 'CropCircle.png'
   },
   {
     name: 'Complements',
-    path: 'Complements.html',
-    description: 'An animated colour wheel.  Ported from the Elm demo.  Shows use of Events.dynamic().',
-    keywords: ['animation', '14'],
+    model: 'foam.demos.graphics.Complements',
+    description: 'An animated colour wheel.  Shows use of Events.dynamic().<br>Ported from the <a href="http://elm-lang.org/edit/examples/Intermediate/Complements.elm">Elm demo</a>.',
+    keywords: ['animation'],
     image: 'Complements.png'
   },
   {
     name: 'Dragon',
     path: 'Tags.html',
     description: 'Demonstrates use of the FOAM tag to instantiate three views: an animated dragon, a time-wheel, and a DetailView of time.  Use the time-wheel to control the animation.',
-    keywords: ['animation', '14'],
+    keywords: ['animation'],
     image: 'Dragon.png'
   },
   {
     name: 'Two-Way Data-Binding',
     path: 'TwoWayDataBinding.html',
     description: 'Demonstrates how to do two way data-binding in FOAM. See the same demo implemented <a href="http://n12v.com/2-way-data-binding/?hn">with other JS libraries</a>.',
-    keywords: ['tutorial', '14'],
+    keywords: ['tutorial'],
     image: 'TwoWayDataBinding.png'
   },
   {
-    name: 'Calculator',
+    name: 'Calculator (pure FOAM)',
     path: '../apps/calc/Calc.html',
     description: 'A simple calculator application.  Demonstrates the use of templates to completely change the appearance of a DetailView.',
-    keywords: ['app', '14'],
-    src: '../apps/calc/',
+    keywords: ['app'],
+    src: 'apps/calc/',
     image: 'Calc.png'
   },
   {
     name: 'Calculator (Material-Design)',
     path: '../apps/acalc/Calc.html',
     description: 'A calculator application with an animated Material-Design interface.',
-    keywords: ['app', 'material-design', '14'],
-    src: '../apps/acalc/',
+    keywords: ['app', 'material-design'],
+    src: 'apps/acalc/',
+    image: 'ACalc.png'
+  },
+  {
+    name: 'Calculator (Material-Design, FOAM + Polymer)',
+    path: '../apps/pcalc/Calc.html',
+    description: 'A calculator applications that uses Polymer component views.',
+    keywords: ['app', 'material-design', 'polymer', '15'],
+    src: 'apps/pcalc/',
     image: 'ACalc.png'
   },
   {
     name: 'GMail (Material-Design)',
-    path: '../apps/gmail/main.html',
+    path: 'http://foam-framework.github.io/foam/apps/gmail/main.html',
     description: 'A simple mobile GMail client with a Material-Design interface, in less than 1k lines of code.',
-    keywords: ['app', 'material-design', 'gmail', 'mobile', '14'],
-    src: '../apps/gmail/',
+    keywords: ['app', 'material-design', 'gmail', 'mobile'],
+    src: 'apps/gmail/',
     image: 'GMail.png'
   },
   {
     name: 'QuickBug',
     path: 'https://chrome.google.com/webstore/detail/quickbug/hmdcjljmcglpjnmmbjhpialomleabcmg',
     description: 'A Chrome packaged-app clone of the crbug.com issue tracker.  Provides many extra features and improved performance.  Be sure to try out grid-view\'s drag-and-drop tiles and PIE charts with warped scrolling features. See: <a href="http://quickbug.foamdev.com">http://quickbug.foamdev.com</a>',
-    keywords: ['app', '14'],
-    src: '../apps/quickbug/',
+    keywords: ['app'],
+    src: 'apps/quickbug/',
     image: 'QuickBug.png'
   },
   {
     name: 'Issue Tracker (Material-Design)',
-    path: '../apps/mbug/main.html',
+    path: 'http://foam-framework.github.io/foam/apps/mbug/main.html',
     description: 'A simple mobile code.google.com issue-tracker client with a Material-Design interface.  Triage your Crbugs on the go.  See: <a href="http://mbug.foamdev.com">http://mbug.foamdev.com</a>',
-    keywords: ['app', 'material-design', 'mobile', '14', 'android'],
-    src: '../apps/mbug/',
+    keywords: ['app', 'material-design', 'mobile', 'android'],
+    src: 'apps/mbug/',
     image: 'MBug.png'
   },
   {
     name: 'Phone Catalog',
-    path: '../apps/phonecat/Cat.html',
+    model: 'foam.tutorials.phonecat.Controller',
     description: 'A port of an Angular application for browsing a Cellphone catalog.  Create this app yourself by following the <a href="http://foam-framework.github.io/foam/tutorial/0-intro/">tutorial</a>.',
-    keywords: ['tutorial', '14'],
-    src: '../apps/phonecat/',
+    keywords: ['tutorial'],
+    src: 'js/foam/tutorials/phonecat/',
     image: 'PhoneCat.png'
   },
+  /*
   {
     name: 'Quick-Compose',
     path: 'https://chrome.google.com/webstore/detail/quickcompose/elckoikggmpkacmbmpbgdepginigahja',
     description: 'A Chrome App for composing (and sending) quick GMails.  Compose emails while offline and have them delivered when you eventually get a network connection.',
-    keywords: ['app', '14'],
+    keywords: ['app'],
     src: '../apps/quickcompose/',
     image: 'QuickCompose.png'
   },
+  */
   {
     name: 'Todo',
-    path: '../apps/todo/Todo.html',
+    path: '../apps/todo/index.html',
     description: 'A FOAM implementation of the <a href="http://todomvc.com">http://todomvc.com</a> comparison application.  Notice that the FOAM implementation is by far the shortest listed on the TodoMVC site.',
-    keywords: ['tutorial', '14'],
-    src: '../apps/todo/',
+    keywords: ['tutorial'],
+    src: 'apps/todo/',
     image: 'Todo.png'
   },
+  /*
   {
     name: 'FOAM Code Browser',
     path: '../core/fobrowser.html',
@@ -251,13 +302,68 @@ var demos = JSONUtil.arrayToObjArray(X, [
     src: '../core/fobrowser.js',
     image: 'FOBrowser.png'
   },
+*/
   {
     name: 'FOAM Documentation Browser',
     path: '../apps/docs/docbrowser.html',
     description: 'A FOAM Document browser.',
     keywords: ['tool', 'dev', 'docs'],
-    src: '../apps/docs/',
+    src: 'apps/docs/',
     image: '../../apps/docs/images/Model_runtime2.png'
+  },
+  /*
+  {
+    name: 'DAO Sync',
+    path: 'SyncDemo.html',
+    description: 'Demonstration of the sync protocol/implementation do synchronize two DAOs.',
+    keywords: ['dao', 'sync'],
+    image: 'sync.png',
+    src: 'SyncDemo.js',
+  },
+  */
+  {
+    name: 'FOAM Logo',
+    model: 'foam.demos.graphics.Logo',
+    description: 'Animated FOAM logo. Uses trick that only works in Chrome.',
+    keywords: ['demo', 'animation'],
+    image: 'Logo.png'
+  },
+  {
+    name: 'FOAM-Overflow',
+    path: '../apps/overflow/Overflow.html',
+    description: 'A simple searchable FOAM Question and Answer database.',
+    keywords: ['docs', 'demo'],
+    src: 'apps/overflow/',
+    image: 'Overflow.png'
+  },
+  /*
+  {
+    name: 'FOAM Modeller',
+    path: '../index.html?model=foam.apps.Modeller',
+    description: 'A demo of the IDE potential for FOAM due to its meta-modelling.',
+    keywords: ['dev', 'ide', 'model'],
+    src: '/js/foam/apps/Modeller.js'
+  }    */
+  {
+    name: 'Olympic Medals',
+    model: 'foam.demos.olympics.Controller',
+    description: 'Browse an olympic medal database.  With reciprocal search.<br>Ported from the <a href="https://google.github.io/lovefield/demos/olympia_db/demo_angular.html">Lovefield demo</a>.',
+    keywords: [ 'DAO', 'database', 'search' ],
+    image: 'Olympics.png'
+  },
+  {
+    name: 'Snake Game',
+    model: 'foam.demos.supersnake.Game',
+    description: 'Simple snake game.  Not finished, but the source makes a good example.  Move with either the a,w,s,d or arrow keys and fire with either x or the spacebar.',
+    keywords: [ 'animation', 'graphics', 'game' ],
+    image: 'Snake.png'
+  },
+  {
+    name: 'Task Manager',
+    model: 'foam.apps.ctm.TaskManager',
+    description: 'Prototype Chrome Task Manager that adds Material Design, search, and graphing.',
+    keywords: [ 'graphics' ],
+    image: 'TaskManager.png'
   },
   {
     name: 'FOAM Demo Catalog',
@@ -266,31 +372,29 @@ var demos = JSONUtil.arrayToObjArray(X, [
     keywords: ['docs', 'demo'],
     src: 'DemoCat.js',
     image: 'DemoCat.png'
-  },
-], Demo).dao;
-
-
-CLASS({
-  name: 'Controller',
-  properties: [
-    { name: 'search', view: { factory_: 'TextFieldView', onKeyMode: true } },
-    { name: 'dao', defaultValue: demos },
+  }
+  ], this.Demo).dao;
+    } },
     {
       name: 'filteredDAO',
-      model_: 'DAOProperty',
-      view: { factory_: 'DAOListView', mode: 'read-only' },
-      dynamicValue: function() {
+      model_: 'foam.core.types.DAOProperty',
+      view: { factory_: 'foam.ui.DAOListView', mode: 'read-only' },
+      dynamicValue: [ function() { this.dao; this.search; }, function() {
         return this.dao.where(CONTAINS_IC(SEQ(Demo.NAME, Demo.DESCRIPTION, Demo.KEYWORDS), this.search));
-      }
-    }
+      } ]
+    },
   ],
-  methods: {
-    init: function() {
+  methods: { init: function init() {
+      this.SUPER();
+      var i = window.location.href.indexOf('?q=');
+      if ( i != -1 ) this.search = window.location.href.substring(i+3);
+    }}/* [
+    function init() {
       this.SUPER();
       var i = window.location.href.indexOf('?q=');
       if ( i != -1 ) this.search = window.location.href.substring(i+3);
     }
-  },
+  ]*/,
   templates: [
     function CSS() {/*
       .thumbnail { margin-bottom: 40px; }
@@ -299,6 +403,7 @@ CLASS({
         box-shadow: 5px 5px 15px gray;
         margin-left: 30px;
         margin-top: -38px;
+        max-height: 300px;
       }
       span[name="description"] {
         margin-top: 24px;
@@ -312,7 +417,7 @@ CLASS({
           <li class="thumbnail">
             <a href="%%data.path" class="thumb">$$name{mode: 'read-only'}</a>
             <br>
-            <% if ( this.data.image ) { %> <br><a href="%%data.path"><img class="screenshot" width=250 height=250 src="democat/%%data.image"></a> <% } %>
+            <% if ( this.data.image ) { %> <br><a href="%%data.path"><img class="screenshot" src="democat/%%data.image"></a> <% } %>
             <p>$$description{mode: 'read-only', escapeHTML: false}</p>
             <b>Keywords:</b> <%= this.data.keywords.join(', ') %><br>
             <b>Source:</b> <a href="%%data.src">here</a><br>

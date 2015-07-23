@@ -6,7 +6,13 @@
  </head>
  <body>
   <script language="javascript">
-    var timer = Timer.create({});
+    apar(
+    arequire('foam.graphics.CView'),
+    arequire('foam.input.Mouse'),
+    arequire('foam.util.Timer'),
+    arequire('foam.graphics.Circle'))(function() {
+
+    var timer = foam.util.Timer.create({});
     var space = foam.graphics.CView.create({
       width: 2000,
       height: 1000,
@@ -15,7 +21,7 @@
     space.write(document);
     // space.erase = function() {}; // uncomment for nice effect
 
-    var mouse = Mouse.create();
+    var mouse = foam.input.Mouse.create();
     mouse.connect(space.$);
 
     var COUNT = 100;
@@ -37,6 +43,7 @@
 
     space.paint();
     timer.start();
+    });
   </script>
 
  </body>

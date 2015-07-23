@@ -18,6 +18,7 @@
 
 // See: https://developers.google.com/chart/interactive/docs/index
 
+// TODO: Finish moving to foam.glang
 CLASS({
   name: 'PieGraph',
 
@@ -27,7 +28,7 @@ CLASS({
     {
       name:  'r',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       postSet: function(_, r) { this.width = this.height = 2*r+2; },
       defaultValue: 50
     },

@@ -32,11 +32,11 @@
 
 function defineLocalProperty(cls, name, factory) {
   Object.defineProperty(cls, name, { get: function() {
-    if ( this == cls ) return null;
+    console.assert(this !== cls, 'Called property getter from prototype: ' + name);
     var value = factory.call(this);
-    Object.defineProperty(this, name, { value: value });
+    Object.defineProperty(this, name, { configurable: true, value: value });
     return value;
-  } });
+  }, configurable: true });
 }
 
 this.Constant = null;
@@ -85,6 +85,99 @@ var BootstrapModel = {
 
   name_: 'BootstrapModel <startup only, error if you see this>',
 
+  addTraitToModel_: function(traitModel, parentModel) {
+    var parentName = parentModel && parentModel.id ? parentModel.id.replace(/\./g, '__') : '';
+    var traitName  = traitModel.id ? traitModel.id.replace(/\./g, '__') : '';
+    var name       = parentName + '_ExtendedWith_' + traitName;
+
+    if ( ! lookup(name) ) {
+      var model = traitModel.clone();
+      model.package = '';
+      model.name = name;
+      model.extendsModel = parentModel && parentModel.id;
+      model.models = traitModel.models; // unclone sub-models, we don't want multiple copies of them floating around
+      GLOBAL.X.registerModel(model);
+    }
+
+    var ret = GLOBAL.X.lookup(name);
+    console.assert(ret, 'Error adding Trait to Model, unknown name: ', name);
+    return ret;
+  },
+
+  buildProtoImports_: function(props) {
+    // build imports as psedo-properties
+    Object_forEach(this.instance_.imports_, function(i) {
+      var imp   = i.split(' as ');
+      var key   = imp[0];
+      var alias = imp[1] || imp[0];
+
+      if ( alias.length && alias.charAt(alias.length-1) == '$' )
+        alias = alias.slice(0, alias.length-1);
+
+      if ( ! this.getProperty(alias) ) {
+        var prop = Property.create({
+          name:      alias,
+          transient: true,
+          hidden:    true
+        });
+        // Prevent imports from being cloned.
+        prop.cloneProperty = prop.deepCloneProperty = null;
+        props.push(prop);
+      }
+    }.bind(this));
+  },
+
+  buildProtoProperties_: function(cls, extendsModel, props) {
+    // build properties
+    for ( var i = 0 ; i < props.length ; i++ ) {
+      var p = props[i];
+      if ( extendsModel ) {
+        var superProp = extendsModel.getProperty(p.name);
+        if ( superProp ) {
+          var p0 = p;
+          p = superProp.clone().copyFrom(p);
+          // A more elegant way to do this would be to have a ModelProperty
+          // which has a ModelPropertyProperty called 'reduceWithSuper'.
+          if ( p0.adapt && superProp.adapt ) {
+//            console.log('(DEBUG) sub adapt: ', this.name + '.' + p.name);
+            p.adapt = (function(a1, a2) { return function(oldValue, newValue, prop) {
+              return a2.call(this, oldValue, a1.call(this, oldValue, newValue, prop), prop);
+            };})(p0.adapt, superProp.adapt);
+          }
+          if ( p0.preSet && superProp.preSet ) {
+//            console.log('(DEBUG) sub preSet: ', this.name + '.' + p.name);
+            p.preSet = (function(a1, a2) { return function(oldValue, newValue, prop) {
+              return a2.call(this, oldValue, a1.call(this, oldValue, newValue, prop), prop);
+            };})(p0.preSet, superProp.preSet);
+          }
+          if ( p0.postSet && superProp.postSet ) {
+//            console.log('(DEBUG) sub postSet: ', this.name + '.' + p.name);
+            p.postSet = (function(a1, a2) { return function(oldValue, newValue, prop) {
+              a2.call(this, oldValue, newValue, prop);
+              a1.call(this, oldValue, newValue, prop);
+            };})(p0.postSet, superProp.postSet);
+          }
+          props[i] = p;
+          this[constantize(p.name)] = p;
+        }
+      }
+      cls.defineProperty(p);
+    }
+    this.propertyMap_ = null;
+  },
+
+  buildProtoMethods_: function(cls) {
+    // add methods
+    for ( key in this.methods ) {
+      var m = this.methods[key];
+      if ( Method && Method.isInstance(m) ) {
+        cls.addMethod(m.name, m.generateFunction());
+      } else {
+        cls.addMethod(key, m);
+      }
+    }
+  },
+
   buildPrototype: function() { /* Internal use only. */
     // save our pure state
     // Note: Only documentation browser uses this, and it will be replaced
@@ -92,36 +185,18 @@ var BootstrapModel = {
     // extra memory in DEBUG mode.
     if ( DEBUG ) BootstrapModel.saveDefinition(this);
 
-    function addTraitToModel(traitModel, parentModel) {
-      var parentName = parentModel && parentModel.id ? parentModel.id.replace(/\./g, '__') : '';
-      var traitName  = traitModel.id ? traitModel.id.replace(/\./g, '__') : ''
-      var name       = parentName + '_ExtendedWith_' + traitName;
+    if ( this.extendsModel && ! this.X.lookup(this.extendsModel) ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
 
-      if ( ! FOAM.lookup(name) ) {
-        var model = traitModel.deepClone();
-        model.package = "";
-        model.name = name;
-        model.extendsModel = parentModel && parentModel.id;
-        GLOBAL.X.registerModel(model);
-      }
-
-      var ret = FOAM.lookup(name);
-      if ( ! ret ) debugger;
-      return ret;
-    }
-
-    if ( this.extendsModel && ! FOAM.lookup(this.extendsModel, this.X) ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
-
-    var extendsModel = this.extendsModel && FOAM.lookup(this.extendsModel, this.X);
+    var extendsModel = this.extendsModel && this.X.lookup(this.extendsModel);
 
     if ( this.traits ) for ( var i = 0 ; i < this.traits.length ; i++ ) {
       var trait      = this.traits[i];
-      var traitModel = FOAM.lookup(trait, this.X);
+      var traitModel = this.X.lookup(trait);
 
-      console.assert(traitModel, 'Unknow trait: ' + trait);
+      console.assert(traitModel, 'Unknown trait: ' + trait);
 
       if ( traitModel ) {
-        extendsModel = addTraitToModel(traitModel, extendsModel);
+        extendsModel = this.addTraitToModel_(traitModel, extendsModel);
       } else {
         console.warn('Missing trait: ', trait, ', in Model: ', this.name);
       }
@@ -136,19 +211,11 @@ var BootstrapModel = {
     // Install a custom constructor so that Objects are named properly
     // in the JS memory profiler.
     // Doesn't work for Model because of some Bootstrap ordering issues.
+    /*
     if ( this.name && this.name !== 'Model' && ! ( window.chrome && chrome.runtime && chrome.runtime.id ) ) {
       var s = '(function() { var XXX = function() { }; XXX.prototype = this; return function() { return new XXX(); }; })'.replace(/XXX/g, this.name);
       try { cls.create_ = eval(s).call(cls); } catch (e) { }
-    }
-
-    /** Add a method to 'cls' and set it's name. **/
-    function addMethod(name, method) {
-      if ( cls.__proto__[name] ) {
-        override(cls, name, method);
-      } else {
-        cls[name] = method;
-      }
-    }
+    }*/
 
     // add sub-models
     //        this.models && this.models.forEach(function(m) {
@@ -156,10 +223,12 @@ var BootstrapModel = {
     //        });
     // Workaround for crbug.com/258552
     this.models && Object_forEach(this.models, function(m) {
-      cls.model_[m.name] = cls[m.name] = JSONUtil.mapToObj(X, m, Model);
-    });
+      //cls.model_[m.name] = cls[m.name] = JSONUtil.mapToObj(X, m, Model);
+      if ( this[m.name] ) cls[m.name] = this[m.name];
+    }.bind(this));
 
-    if ( extendsModel ) this.requires = this.requires.concat(extendsModel.requires);
+// TODO(adamvy): This shouldn't be required, commenting out for now.
+//    if ( extendsModel ) this.requires = this.requires.concat(extendsModel.requires);
     // build requires
     Object_forEach(this.requires, function(i) {
       var imp  = i.split(' as ');
@@ -168,96 +237,51 @@ var BootstrapModel = {
       var key  = imp[1] || path[path.length-1];
 
       defineLocalProperty(cls, key, function() {
-        var Y     = this.X;
-        var model = FOAM.lookup(m, this.X);
-        var proto = model.getPrototype();
+        var Y     = this.Y;
+        var model = this.X.lookup(m);
+        console.assert(model, 'Unknown Model: ' + m + ' in ' + this.name_);
         return {
           __proto__: model,
-          create: function(args, X) { return proto.create(args, X || Y); }
+          create: function(args, X) { return model.create(args, X || Y); }
         };
       });
     });
 
-    if ( ! this.properties ) this.properties = [];
-    var props = this.properties;
+    var props = this.instance_.properties_ = this.properties ? this.properties.clone() : [];
 
-    function findProp(name) {
-      for ( var i = 0 ; i < props.length ; i++ ) {
-        if ( props[i].name == name ) return i;
-      }
+    this.instance_.imports_ = this.imports;
+    if ( extendsModel ) this.instance_.imports_ = this.instance_.imports_.concat(extendsModel.instance_.imports_);
 
-      return -1;
-    }
+    this.buildProtoImports_(props);
+    this.buildProtoProperties_(cls, extendsModel, props);
 
-    if ( extendsModel ) this.imports = this.imports.concat(extendsModel.imports);
-    // build imports as psedo-properties
-    Object_forEach(this.imports, function(i) {
-      var imp   = i.split(' as ');
-      var key   = imp[0];
-      var alias = imp[1] || imp[0];
-
-      if ( alias.length && alias.charAt(alias.length-1) == '$' )
-        alias = alias.slice(0, alias.length-1);
-
-      var i = findProp(alias);
-
-      if ( i == -1 ) {
-        props.push(Property.create({
-          name:      alias,
-//          transient: true,
-//          hidden:    true
-        }));
-      }/*
-         TODO(kgr): Do I need to do anything in this case?
-         else {
-        var p = props[i];
-      }*/
-    });
-
-    // build properties
-    for ( var i = 0 ; i < props.length ; i++ ) {
-      var p = props[i];
-      if ( extendsModel ) {
-        var superProp = extendsModel.getProperty(p.name);
-        if ( superProp ) {
-          p = superProp.clone().copyFrom(p);
-          props[i] = p;
-          this[p.name.constantize()] = p;
-        }
-      }
-      cls.defineProperty(p);
-    }
-    this.propertyMap_ = null;
-
-    // Copy parent Model's Property Contants to this Model.
+    // Copy parent Model's Property and Relationship Contants to this Model.
     if ( extendsModel ) {
-      for ( var i = 0 ; i < extendsModel.properties.length ; i++ ) {
-        var p = extendsModel.properties[i];
-        var name = p.name.constantize();
+      for ( var i = 0 ; i < extendsModel.instance_.properties_.length ; i++ ) {
+        var p = extendsModel.instance_.properties_[i];
+        var name = constantize(p.name);
 
         if ( ! this[name] ) this[name] = p;
       }
       for ( i = 0 ; i < extendsModel.relationships.length ; i++ ) {
         var r = extendsModel.relationships[i];
-        var name = r.name.constantize();
+        var name = constantize(r.name);
 
         if ( ! this[name] ) this[name] = r;
       }
     }
 
     // Handle 'exports'
-    if ( extendsModel ) this.exports = this.exports.concat(extendsModel.exports);
+    this.instance_.exports_ = this.exports ? this.exports.clone() : [];
+    if ( extendsModel ) this.instance_.exports_ = this.instance_.exports_.concat(extendsModel.instance_.exports_);
 
     // templates
     this.templates && Object_forEach(this.templates, function(t) {
-      addMethod(t.name, TemplateUtil.lazyCompile(t));
+      cls.addMethod(t.name, t.code ? t.code : TemplateUtil.lazyCompile(t));
     });
 
-    // mix-in mixins
-    // Workaround for crbug.com/258522
-    // this.mixins && Object_forEach(this.mixins, function(m) { /* TODO: something */ });
-
-    // add action
+    // add actions
+    this.instance_.actions_ = this.actions ? this.actions.clone() : [];
     if ( this.actions ) {
       for ( var i = 0 ; i < this.actions.length ; i++ ) {
         (function(a) {
@@ -265,65 +289,76 @@ var BootstrapModel = {
             var superAction = extendsModel.getAction(a.name);
             if ( superAction ) {
               a = superAction.clone().copyFrom(a);
-              this.actions[i] = a;
             }
           }
-          addMethod(a.name, function(opt_x) { a.callIfEnabled(opt_x || this.X, this); });
+          this.instance_.actions_[i] = a;
+          if ( ! Object.prototype.hasOwnProperty.call(cls, constantize(a.name)) )
+            cls[constantize(a.name)] = a;
+          this[constantize(a.name)] = a;
+          cls.addMethod(a.name, function(opt_x) { a.maybeCall(opt_x || this.X, this); });
         }.bind(this))(this.actions[i]);
       }
     }
 
+    var key;
+
     // add constants
-    for ( var key in this.constants ) {
-      var c = this.constants[key];
-      if ( Constant ) {
-        if ( ! Constant.isInstance(c) ) {
-          c = this.constants[key] = Constant.create(c);
-        }
-        // TODO(kgr): only add to Proto when Model cleanup done.
-        Object.defineProperty(cls, c.name, {value: c.value});
-        Object.defineProperty(this, c.name, {value: c.value});
-        // cls[c.name] = this[c.name] = c.value;
-      } else {
-        debugger;
+    if ( this.constants ) {
+      for ( var i = 0 ; i < this.constants.length ; i++ ) {
+        var c = this.constants[i];
+        cls[c.name] = this[c.name] = c.value;
       }
     }
 
-    // add methods
-    for ( var key in this.methods ) {
-      var m = this.methods[key];
-      if ( Method && Method.isInstance(m) ) {
-        addMethod(m.name, m.generateFunction());
-      } else {
-        addMethod(key, m);
-      }
+    // add messages
+    if ( this.messages && this.messages.length > 0 && Message ) {
+      Object_forEach(this.messages, function(m, key) {
+        if ( ! Message.isInstance(m) ) {
+          m = this.messages[key] = Message.create(m);
+        }
+        var clsProps = {}, mdlProps = {}, constName = constantize(m.name);
+        clsProps[m.name] = { get: function() { return m.value; } };
+        clsProps[constName] = { value: m };
+        mdlProps[constName] = { value: m };
+        Object.defineProperties(cls, clsProps);
+        Object.defineProperties(this, mdlProps);
+      }.bind(this));
     }
+
+    this.buildProtoMethods_(cls);
 
     var self = this;
     // add relationships
     this.relationships && this.relationships.forEach(function(r) {
       // console.log('************** rel: ', r, r.name, r.label, r.relatedModel, r.relatedProperty);
 
-      //           this[r.name.constantize()] = r;
-      var name = r.name.constantize();
+      var name = constantize(r.name);
       if ( ! self[name] ) self[name] = r;
       defineLazyProperty(cls, r.name, function() {
-        var m = this.X[r.relatedModel];
-        var dao = this.X[m.name + 'DAO'] || this.X[m.plural];
+        var m = this.X.lookup(r.relatedModel);
+        var lcName = m.name[0].toLowerCase() + m.name.substring(1);
+        var dao = this.X[lcName + 'DAO'] || this.X[m.name + 'DAO'] ||
+            this.X[m.plural];
         if ( ! dao ) {
           console.error('Relationship ' + r.name + ' needs ' + (m.name + 'DAO') + ' or ' +
               m.plural + ' in the context, and neither was found.');
         }
 
+        dao = RelationshipDAO.create({
+          delegate: dao,
+          relatedProperty: m.getProperty(r.relatedProperty),
+          relativeID: this.id
+        });
+
         return {
-          get: function() { return dao.where(EQ(m.getProperty(r.relatedProperty), this.id)); },
+          get: function() { return dao; },
           configurable: true
         };
       });
     });
 
-    // todo: move this somewhere better
-    var createListenerTrampoline = function(cls, name, fn, isMerged, isFramed) {
+    // TODO: move this somewhere better
+    var createListenerTrampoline = function(cls, name, fn, isMerged, isFramed, whenIdle) {
       // bind a trampoline to the function which
       // re-binds a bound version of the function
       // when first called
@@ -338,15 +373,17 @@ var BootstrapModel = {
             console.log('*********************** ', this.model_.name);
           }
           */
-          if ( isFramed )
+          if ( whenIdle ) l = Movement.whenIdle(l);
+
+          if ( isFramed ) {
             l = EventService.framed(l, this.X);
-          else if ( isMerged ) {
+          } else if ( isMerged ) {
             l = EventService.merged(
               l,
               (isMerged === true) ? undefined : isMerged, this.X);
           }
 
-          Object.defineProperty(this, name, { value: l});
+          Object.defineProperty(this, name, { configurable: true, value: l });
 
           return l;
         },
@@ -358,14 +395,15 @@ var BootstrapModel = {
     if ( Array.isArray(this.listeners) ) {
       for ( var i = 0 ; i < this.listeners.length ; i++ ) {
         var l = this.listeners[i];
-        createListenerTrampoline(cls, l.name, l.code, l.isMerged, l.isFramed);
+        createListenerTrampoline(cls, l.name, l.code, l.isMerged, l.isFramed, l.whenIdle);
       }
-    } else if ( this.listeners )
+    } else if ( this.listeners ) {
       //          this.listeners.forEach(function(l, key) {
       // Workaround for crbug.com/258522
       Object_forEach(this.listeners, function(l, key) {
         createListenerTrampoline(cls, key, l);
       });
+    }
 
     // add topics
     //        this.topics && this.topics.forEach(function(t) {
@@ -376,17 +414,34 @@ var BootstrapModel = {
 
     // copy parent model's properties and actions into this model
     if ( extendsModel ) {
-      for ( var i = extendsModel.properties.length-1 ; i >= 0 ; i-- ) {
-        var p = extendsModel.properties[i];
-        if ( ! ( this.getProperty && this.getPropertyWithoutCache_(p.name) ) )
-          this.properties.unshift(p);
+      this.getProperty('');
+      var ips = []; // inherited properties
+      var ps  = extendsModel.instance_.properties_;
+      for ( var i = 0 ; i < ps.length ; i++ ) {
+        var p = ps[i];
+        if ( ! this.getProperty(p.name) ) {
+          ips.push(p);
+          this.propertyMap_[p.name] = p;
+        }
       }
-      this.propertyMap_ = null;
-      this.actions = extendsModel.actions.concat(this.actions);
+      if ( ips.length ) {
+        this.instance_.properties_ = ips.concat(this.instance_.properties_);
+      }
+
+      var ias = [];
+      var as = extendsModel.instance_.actions_;
+      for ( var i = 0 ; i < as.length ; i++ ) {
+        var a = as[i];
+        if ( ! ( this.getAction && this.getAction(a.name) ) )
+          ias.push(a);
+      }
+      if ( ias.length ) {
+        this.instance_.actions_ = ias.concat(this.instance_.actions_);
+      }
     }
 
     // build primary key getter and setter
-    if ( this.properties.length > 0 && ! cls.__lookupGetter__('id') ) {
+    if ( this.instance_.properties_.length > 0 && ! cls.__lookupGetter__('id') ) {
       var primaryKey = this.ids;
 
       if ( primaryKey.length == 1 ) {
@@ -403,8 +458,32 @@ var BootstrapModel = {
     return cls;
   },
 
+  // ???(kgr): Who uses this?  If it's the build tool, then better putting it there.
+  getAllRequires: function() {
+    var requires = {};
+    this.requires.forEach(function(r) { requires[r.split(' ')[0]] = true; });
+    this.traits.forEach(function(t) { requires[t] = true; });
+    if ( this.extendsModel ) requires[this.extendsModel] = true;
+
+    function setModel(o) { if ( o && o.model_ ) requires[o.model_.id] = true; }
+
+    this.properties.forEach(setModel);
+    this.actions.forEach(setModel);
+    this.templates.forEach(setModel);
+    this.listeners.forEach(setModel);
+
+    return Object.keys(requires);
+  },
+
   getPrototype: function() { /* Returns the definition $$DOC{ref:'Model'} of this instance. */
-    return this.instance_.prototype_ || ( this.instance_.prototype_ = this.buildPrototype() );
+    if ( ! this.instance_.prototype_ ) {
+      //console.profile('getPrototype' + this.name);
+      //for ( var i = 0 ; i < 0 ; i++ ) this.buildPrototype();
+      //console.profileEnd();
+    return this.instance_.prototype_ = this.buildPrototype();
+    }
+    return this.instance_.prototype_;
+//    return this.instance_.prototype_ || ( this.instance_.prototype_ = this.buildPrototype() );
   },
 
   saveDefinition: function(self) {
@@ -442,33 +521,32 @@ var BootstrapModel = {
 
   isSubModel: function(model) {
     /* Returns true if the given instance extends this $$DOC{ref:'Model'} or a descendant of this. */
-    try {
-      return model && model.getPrototype && ( model.getPrototype() === this.getPrototype() || this.isSubModel(model.getPrototype().__proto__.model_) );
-    } catch (x) {
-      return false;
+
+    if ( ! model || ! model.getPrototype ) return false;
+
+    var subModels_ = this.subModels_ || ( this.subModels_ = {} );
+
+    if ( ! subModels_.hasOwnProperty(model.id) ) {
+      subModels_[model.id] = ( model.getPrototype() === this.getPrototype() || this.isSubModel(model.getPrototype().__proto__.model_) );
     }
+
+    return subModels_[model.id];
   },
 
-  getPropertyWithoutCache_: function(name) { /* Internal use only. */
-    for ( var i = 0 ; i < this.properties.length ; i++ ) {
-      var p = this.properties[i];
-
-      if ( p.name === name ) return p;
-    }
-
-    return null;
+  getRuntimeProperties: function() {
+    if ( ! this.instance_.properties_ ) this.getPrototype();
+    return this.instance_.properties_;
   },
 
   getProperty: function(name) { /* Returns the requested $$DOC{ref:'Property'} of this instance. */
     // NOTE: propertyMap_ is invalidated in a few places
     // when properties[] is updated.
     if ( ! this.propertyMap_ ) {
-      if ( ! this.properties.length ) return undefined;
+      var m = this.propertyMap_ = {};
 
-      var m = {};
-
-      for ( var i = 0 ; i < this.properties.length ; i++ ) {
-        var prop = this.properties[i];
+      var properties = this.getRuntimeProperties();
+      for ( var i = 0 ; i < properties.length ; i++ ) {
+        var prop = properties[i];
         m[prop.name] = prop;
       }
 
@@ -479,14 +557,15 @@ var BootstrapModel = {
   },
 
   getAction: function(name) { /* Returns the requested $$DOC{ref:'Action'} of this instance. */
-    for ( var i = 0 ; i < this.actions.length ; i++ )
-      if ( this.actions[i].name === name ) return this.actions[i];
+    for ( var i = 0 ; i < this.instance_.actions_.length ; i++ )
+      if ( this.instance_.actions_[i].name === name ) return this.instance_.actions_[i];
   },
 
   hashCode: function() {
-    var string = "";
-    for ( var key in this.properties ) {
-      string += this.properties[key].toString();
+    var string = '';
+    var properties = this.getRuntimeProperties();
+    for ( var key in properties ) {
+      string += properties[key].toString();
     }
     return string.hashCode();
   },
@@ -495,13 +574,198 @@ var BootstrapModel = {
     return obj && obj.model_ && this.isSubModel(obj.model_);
   },
 
-  toString: function() { return "BootstrapModel(" + this.name + ")"; }
-};
+  toString: function() { return "BootstrapModel(" + this.name + ")"; },
 
-/*
- * Ex.
- * OR(EQ(Issue.ASSIGNED_TO, 'kgr'), EQ(Issue.SEVERITY, 'Minor')).toSQL();
- *   -> "(assignedTo = 'kgr' OR severity = 'Minor')"
- * OR(EQ(Issue.ASSIGNED_TO, 'kgr'), EQ(Issue.SEVERITY, 'Minor')).f(Issue.create({assignedTo: 'kgr'}));
- *   -> true
- */
+  arequire: function() {
+    if ( this.required__ ) return this.required__;
+
+    var future = afuture();
+    this.required__ = future.get;
+
+    var go = function() {
+      var args = [];
+
+      if ( this.extendsModel ) args.push(this.X.arequire(this.extendsModel));
+
+      var i;
+      if ( this.traits ) {
+        for ( i = 0; i < this.traits.length; i++ ) {
+          args.push(this.X.arequire(this.traits[i]));
+        }
+      }
+      var model = this;
+      if ( this.templates ) for ( i = 0 ; i < this.templates.length ; i++ ) {
+        var t = this.templates[i];
+        args.push(
+          aif(!t.code,
+              aseq(
+                aevalTemplate(this.templates[i], this),
+                (function(t) { return function(ret, m) {
+                  t.code = m;
+                  ret();
+                };})(t))));
+      }
+      if ( args.length ) args = [aseq.apply(null, args)];
+
+      if ( this.requires ) {
+        for ( var i = 0 ; i < this.requires.length ; i++ ) {
+          var r = this.requires[i];
+          var m = r.split(' as ');
+          if ( m[0] == this.id ) {
+            console.warn("Model requires itself: " + this.id);
+          } else {
+            args.push(this.X.arequire(m[0]));
+          }
+        }
+      }
+
+      args.push(function(ret) {
+        if ( this.X.i18nModel )
+          this.X.i18nModel(ret, this, this.X);
+        else
+          ret();
+      }.bind(this));
+
+      aseq.apply(null, args)(function() {
+        this.finished__ = true;
+        future.set(this);
+      }.bind(this));
+    }.bind(this);
+
+    if ( this.extra__ )
+      this.extra__(go);
+    else
+      go();
+
+    return this.required__
+  },
+
+  getMyFeature: function(featureName) {
+    /* Returns the feature with the given name from the runtime
+      object (the features available to an instance of the model). */
+    if ( ! Object.prototype.hasOwnProperty.call(this, 'featureMap_') ) {
+      var map = this.featureMap_ = {};
+      function add(a) {
+        if ( ! a ) return;
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          var f = a[i];
+          map[f.name.toUpperCase()] = f;
+        }
+      }
+      add(this.getRuntimeProperties());
+      add(this.instance_.actions_);
+      add(this.methods);
+      add(this.listeners);
+      add(this.templates);
+      add(this.models);
+      add(this.tests);
+      add(this.relationships);
+      add(this.issues);
+    }
+    return this.featureMap_[featureName.toUpperCase()];
+  },
+
+  getRawFeature: function(featureName) {
+    /* Returns the raw (not runtime, not inherited, non-buildPrototype'd) feature
+      from the model definition. */
+    if ( ! Object.prototype.hasOwnProperty.call(this, 'rawFeatureMap_') ) {
+      var map = this.featureMap_ = {};
+      function add(a) {
+        if ( ! a ) return;
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          var f = a[i];
+          map[f.name.toUpperCase()] = f;
+        }
+      }
+      add(this.properties);
+      add(this.actions);
+      add(this.methods);
+      add(this.listeners);
+      add(this.templates);
+      add(this.models);
+      add(this.tests);
+      add(this.relationships);
+      add(this.issues);
+    }
+    return this.featureMap_[featureName.toUpperCase()];
+  },
+
+  getAllMyRawFeatures: function() {
+    /* Returns the raw (not runtime, not inherited, non-buildPrototype'd) list
+      of features from the model definition. */
+    var featureList = [];
+    var arrayOrEmpty = function(arr) {
+      return ( arr && Array.isArray(arr) ) ? arr : [];
+    };
+    [
+      arrayOrEmpty(this.properties),
+      arrayOrEmpty(this.actions),
+      arrayOrEmpty(this.methods),
+      arrayOrEmpty(this.listeners),
+      arrayOrEmpty(this.templates),
+      arrayOrEmpty(this.models),
+      arrayOrEmpty(this.tests),
+      arrayOrEmpty(this.relationships),
+      arrayOrEmpty(this.issues)
+    ].map(function(list) {
+      featureList = featureList.concat(list);
+    });
+    return featureList;
+  },
+
+  getFeature: function(featureName) {
+    /* Returns the feature with the given name, including
+       inherited features. */
+    var feature = this.getMyFeature(featureName);
+
+    if ( ! feature && this.extendsModel ) {
+      var ext = this.X.lookup(this.extendsModel);
+      if ( ext ) return ext.getFeature(featureName);
+    } else {
+      return feature;
+    }
+  },
+
+  // getAllFeatures accounts for inheritance through extendsModel
+  getAllRawFeatures: function() {
+    var featureList = this.getAllMyRawFeatures();
+
+    if ( this.extendsModel ) {
+      var ext = this.X.lookup(this.extendsModel);
+      if ( ext ) {
+        ext.getAllFeatures().map(function(subFeat) {
+          var subName = subFeat.name.toUpperCase();
+          if ( ! featureList.mapFind(function(myFeat) { // merge in features we don't already have
+            return myFeat && myFeat.name && myFeat.name.toUpperCase() === subName;
+          }) ) {
+            featureList.push(subFeat);
+          }
+        });
+      }
+    }
+    return featureList;
+  },
+
+  atest: function() {
+    var seq = [];
+    var allPassed = true;
+
+    for ( var i = 0 ; i < this.tests.length ; i++ ) {
+      seq.push(
+        (function(test, model) {
+          return function(ret) {
+            test.atest(model)(function(passed) {
+              if ( ! passed ) allPassed = false;
+              ret();
+            })
+          };
+        })(this.tests[i], this));
+    }
+
+    seq.push(function(ret) {
+      ret(allPassed);
+    });
+
+    return aseq.apply(null, seq);
+  }
+};

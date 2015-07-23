@@ -35,7 +35,7 @@ function $removeWindow(w) {
 /** Replacement for getElementById **/
 // TODO(kgr): remove this is deprecated, use X.$ instead()
 var $ = function (id) {
-//  console.log('Deprecated use of GLOBAL.$.');
+  console.log('Deprecated use of GLOBAL.$.');
   for ( var i = 0 ; i < $documents.length ; i++ ) {
     if ( document.FOAM_OBJECTS && document.FOAM_OBJECTS[id] )
       return document.FOAM_OBJECTS[id];
@@ -49,7 +49,7 @@ var $ = function (id) {
 /** Replacement for getElementByClassName **/
 // TODO(kgr): remove this is deprecated, use X.$$ instead()
 var $$ = function (cls) {
-//  console.log('Deprecated use of GLOBAL.$$.');
+  console.log('Deprecated use of GLOBAL.$$.');
   for ( var i = 0 ; i < $documents.length ; i++ ) {
     var ret = $documents[i].getElementsByClassName(cls);
 
@@ -59,8 +59,8 @@ var $$ = function (cls) {
 };
 
 
-var FOAM = function(map, opt_X) {
-   var obj = JSONUtil.mapToObj(opt_X || X, map);
+var FOAM = function(map, opt_X, seq) {
+   var obj = JSONUtil.mapToObj(opt_X || X, map, undefined, seq);
    return obj;
 };
 
@@ -93,11 +93,10 @@ FOAM.browse = function(model, opt_dao, opt_X) {
    var dao = opt_dao || Y[model.name + 'DAO'] || Y[model.plural];
 
    if ( ! dao ) {
-      dao = Y.StorageDAO.create({ model: model });
-      Y[model.name + 'DAO'] = dao;
+      Y[model.name + 'DAO'] = [].dao;
    }
 
-   var ctrl = Y.DAOController.create({
+   var ctrl = Y.foam.ui.DAOController.create({
      model:     model,
      dao:       dao,
      useSearchView: false
@@ -105,10 +104,10 @@ FOAM.browse = function(model, opt_dao, opt_X) {
 
   if ( ! Y.stack ) {
     var w = opt_X ? opt_X.window : window;
-    var win = Y.Window.create({ window: w });
-
-    Y.stack = Y.StackView.create();
-    win.view = Y.stack;
+    Y.stack = Y.foam.ui.StackView.create();
+    var win = Y.foam.ui.layout.Window.create({ window: w, data: Y.stack }, Y);
+    document.body.insertAdjacentHTML('beforeend', win.toHTML());
+    win.initHTML();
     Y.stack.setTopView(ctrl);
   } else {
     Y.stack.pushView(ctrl);
@@ -116,113 +115,78 @@ FOAM.browse = function(model, opt_dao, opt_X) {
 };
 
 
-FOAM.lookup = function(key, opt_X) {
-  if ( ! ( typeof key === 'string' ) ) return key;
+var arequire = function(modelName) {
+  // If arequire is called as a global function, default to the
+  // top level context X.
+  var THIS = this === GLOBAL ? X : this;
 
-  var path = key.split('.');
-  var root = opt_X || X;
-  for ( var i = 0 ; root && i < path.length ; i++ ) root = root[path[i]];
-
-  return root;
-};
-
-
-function arequire(modelName, opt_X) {
-  var X = opt_X || X;
-  var model = FOAM.lookup(modelName, X);
-
+  var model = THIS.lookup(modelName);
   if ( ! model ) {
-    console.warn('Unknown Model in arequire: ', modelName);
-    return aconstant(undefined);
-  }
-
-  /** This is so that if the model is arequire'd concurrently the
-   *  initialization isn't done more than once.
-   **/
-  if ( ! model ) { console.log(modelName, 'not found'); return; }
-
-  return arequireModel(model, X);
-}
-
-
-function arequireModel(model, X) {
-  if ( ! model.required__ ) {
-    var args = [];
-
-    if ( model.extendsModel ) args.push(arequire(model.extendsModel, X));
-
-    // TODO(kgr): eventually this should just call the arequire() method on the Model
-    if ( model.templates ) for ( var i = 0 ; i < model.templates.length ; i++ ) {
-      var t = model.templates[i];
-      args.push(aseq(
-        aevalTemplate(model.templates[i]),
-        (function(t) { return function(ret, m) {
-          model.getPrototype()[t.name] = m;
-          ret();
-        };})(t)
-      ));
+    if ( ! THIS.ModelDAO ) {
+      // if ( modelName !== 'Template' ) console.warn('Unknown Model in arequire: ', modelName);
+      return aconstant();
     }
 
-    // Also arequire required Models.
-    for ( var i = 0 ; i < model.requires.length ; i++ ) {
-      var r = model.requires[i];
-      var m = r.split(' as ');
-      args.push(arequire(m[0]));
+    // check whether we have already hit the ModelDAO to load the model
+    if ( ! THIS.arequire$ModelLoadsInProgress ) {
+      THIS.set('arequire$ModelLoadsInProgress', {} );
+    } else {
+      if ( THIS.arequire$ModelLoadsInProgress[modelName] ) {
+        return THIS.arequire$ModelLoadsInProgress[modelName];
+      }
     }
 
-    model.required__ = amemo(aseq(
-      apar.apply(apar, args),
-      aconstant(model)));
+    var future = afuture();
+    THIS.arequire$ModelLoadsInProgress[modelName] = future.get;
+
+    THIS.ModelDAO.find(modelName, {
+      put: function(m) {
+        // Contextualize the model for THIS context
+        m.X = THIS;
+
+        m.arequire()(function(m) {
+          THIS.arequire$ModelLoadsInProgress[modelName] = false;
+          THIS.GLOBAL.X.registerModel(m);
+          if ( ! THIS.lookupCache_[m.id] )
+            THIS.lookupCache_[m.id] = m;
+          future.set(m);
+        });
+      },
+      error: function() {
+        var args = argsToArray(arguments);
+        console.warn.apply(console, ['Could not load model: ', modelName].concat(args));
+        THIS.arequire$ModelLoadsInProgress[modelName] = false;
+        future.set(undefined);
+      }
+    });
+
+    return future.get;
   }
 
-  return model.required__;
+  return model.arequire();
 }
-
 
 var FOAM_POWERED = '<a style="text-decoration:none;" href="https://github.com/foam-framework/foam/" target="_blank">\
 <font size=+1 face="catull" style="text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">\
 <font color="#3333FF">F</font><font color="#FF0000">O</font><font color="#FFCC00">A</font><font color="#33CC00">M</font>\
 <font color="#555555" > POWERED</font></font></a>';
 
-
+/** Lookup a '.'-separated package path, creating sub-packages as required. **/
 function packagePath(X, path) {
   function packagePath_(Y, path, i) {
-    return i == path.length ? Y : packagePath_(Y[path[i]] || ( Y[path[i]] = {} ), path, i+1);
+    if ( i === path.length ) return Y;
+    if ( ! Y[path[i]] ) {
+      Y[path[i]] = {};
+      // console.log('************ Creating sub-path: ', path[i]);
+      if ( i == 0 ) GLOBAL[path[i]] = Y[path[i]];
+    }
+    return packagePath_(Y[path[i]], path, i+1);
   }
-  return path ? packagePath_(X, path.split('.'), 0) : X;
+  return path ? packagePath_(X, path.split('.'), 0) : GLOBAL;
 }
 
-
-function registerModel(model, opt_name) {
-  var root = this;
-
-  function contextualizeModel(path, model, name) {
-    if ( ! model.getPrototype ) debugger;
-
-//    console.log('contextulizeModel: ', model.name, ' in ', this.toString());
-
-    // Model which creates Objects with Context X
-    var xModel = root == X ? model : {
-      __proto__: model,
-      create: function(args, opt_X) {
-        return model.create(args, opt_X || root);
-      }
-    };
-
-    Object.defineProperty(
-      path,
-      name,
-      {
-        get: function() {
-          var THIS = this.__this__ || this;
-          if ( THIS === root ) return xModel;
-          THIS.registerModel(model, name);
-          return THIS[name];
-        },
-        configurable: true
-      });
-  }
-
+function registerModel(model, opt_name, fastMode) {
+  var root    = model.package ? this : GLOBAL;
   var name    = model.name;
   var package = model.package;
 
@@ -232,37 +196,92 @@ function registerModel(model, opt_name) {
     package = a.join('.');
   }
 
-  if ( package ) {
+  var modelRegName = (package ? package + '.' : '') + name;
+
+  if ( root === GLOBAL || root === X ) {
     var path = packagePath(root, package);
-    Object.defineProperty(path, name, { value: model, configurable: true });
-  } else {
-    contextualizeModel(root, model, name)
+    if ( fastMode )
+      path[name] = model;
+    else
+      Object.defineProperty(path, name, { value: model, configurable: true });
   }
 
-  this.registerModel_(model);
+  if ( ! Object.hasOwnProperty.call(this, 'lookupCache_') ) {
+    this.lookupCache_ = Object.create(this.lookupCache_ || Object.prototype);
+  }
+  this.lookupCache_[modelRegName] = model;
+
+  this.onRegisterModel(model);
 }
 
 
-function CLASS(m) {
+var CLASS = function(m) {
+
+  // Don't Latch these Models, as we know that we'll need them on startup
+  var EAGER = {
+    'Method': true,
+    'BooleanProperty': true,
+    'Action': true,
+    'FunctionProperty': true,
+    'Constant': true,
+    'Message': true,
+    'ArrayProperty': true,
+    'StringArrayProperty': true,
+    'Template': true,
+    'Arg': true,
+    'Relationship': true,
+    'ViewFactoryProperty': true,
+    'FactoryProperty': true,
+    'foam.ui.Window': true,
+    'StringProperty': true,
+    'foam.html.Element': true,
+    'Expr': true,
+    'AbstractDAO': true
+  };
 
   /** Lazily create and register Model first time it's accessed. **/
   function registerModelLatch(path, m) {
     var id = m.package ? m.package + '.' + m.name : m.name;
 
+    if ( EAGER[id] ) {
+      USED_MODELS[id] = true;
+      var work = [];
+      var model = JSONUtil.mapToObj(X, m, Model, work);
+      if ( work.length > 0 ) {
+        model.extra__ = aseq.apply(null, work);
+      }
+
+      X.registerModel(model, undefined, true);
+
+      return model;
+    }
+
+    GLOBAL.lookupCache_[id] = undefined;
     UNUSED_MODELS[id] = true;
+    var triggered = false;
 
-    // TODO(adamvy): Remove this once we no longer have code depending on models to being in the global scope.
-    if ( ! m.package )
-      Object.defineProperty(GLOBAL, m.name, { get: function() { return path[m.name]; }, configurable: true });
-
-    Object.defineProperty(path, m.name, {
-      get: function () {
+    //console.log("Model Getting defined: ", m.name, X.NAME);
+    Object.defineProperty(m.package ? path : GLOBAL, m.name, {
+      get: function triggerModelLatch() {
+        if ( triggered ) return null;
+        triggered = true;
+        // console.time('registerModel: ' + id);
         USED_MODELS[id] = true;
-        delete UNUSED_MODELS[id];
-        Object.defineProperty(path, m.name, {value: null, configurable: true});
-        // TODO: Workaround for apps that redefine the top level X
-        _ROOT_X.registerModel(JSONUtil.mapToObj(X, m, Model));
-        return this[m.name];
+        UNUSED_MODELS[id] = undefined;
+
+        var work = [];
+        // console.time('buildModel: ' + id);
+        var model = JSONUtil.mapToObj(X, m, Model, work);
+        // console.timeEnd('buildModel: ' + id);
+
+        if ( work.length > 0 ) {
+          model.extra__ = aseq.apply(null, work);
+        }
+
+        X.registerModel(model);
+
+        // console.timeEnd('registerModel: ' + id);
+        return model;
       },
       configurable: true
     });
@@ -287,6 +306,6 @@ function INTERFACE(imodel) {
 
 
 /** Called when a Model is registered. **/
-function registerModel_(m) {
+function onRegisterModel(m) {
   // NOP
 }

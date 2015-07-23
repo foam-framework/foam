@@ -16,7 +16,7 @@
  */
 
 // TODO: standardize on either get()/set() or .value
-var SimpleValue = Model.create({
+CLASS({
   name: 'SimpleValue',
 
   properties: [ { name: 'value' } ],
@@ -26,5 +26,34 @@ var SimpleValue = Model.create({
     get: function() { return this.value; },
     set: function(val) { this.value = val; },
     toString: function() { return "SimpleValue(" + this.value + ")"; }
+  }
+});
+
+CLASS({
+  name: 'SimpleReadOnlyValue',
+  extendsModel: 'SimpleValue',
+
+  documentation: "A simple value that can only be set during initialization.",
+  
+  properties: [
+    { 
+      name: 'value',
+      preSet: function(old, nu) {
+        if ( typeof this.instance_.value == 'undefined' ) {
+          return nu;
+        }
+        return old;
+      }
+    } 
+  ],
+  
+  methods: {
+    set: function(val) {
+      /* Only allow set once. The first initialized value is the only one. */
+      if ( typeof this.instance_.value == 'undefined' ) {
+        this.SUPER(val);
+      }
+    },
+    toString: function() { return "SimpleReadOnlyValue(" + this.value + ")"; }
   }
 });

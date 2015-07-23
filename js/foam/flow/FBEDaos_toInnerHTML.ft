@@ -1,0 +1,189 @@
+<section title="DAOs (FOAM Classes)">
+  <!-- TODO: Add examples for DAOs -->
+
+  <section title="Create a DAO">
+        <aside>
+          <code-sample openSnippets="-2,-1">
+            <title>Define the "Person" Model</title>
+            <source>
+              <code-snippet name="Person" title="Person Model">
+                <src language="javascript">
+                  <code>CLASS({
+  // Model looked up in context object as 'foam.sandbox.Person'.
+  name: 'Person',
+  package: 'foam.sandbox',
+
+  // Store data members as "properties".
+  properties: [ 'id', 'firstName', 'lastName' ],
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>apar(
+  X.arequire('foam.sandbox.Person'),
+  X.arequire('foam.dao.EasyDAO'),
+  X.arequire('MDAO'),
+  X.arequire('foam.ui.DAOListView')
+)(function(Person, EasyDAO, MDAO, DAOListView) {
+  // Create an IndexedDB table with caching.
+  var dao = X.lookup('foam.dao.EasyDAO').create({model: Person, seqNo: true, daoType: 'MDAO'}, X);
+
+  // Add your test data.
+  [
+    Person.create({firstName: 'johnny', lastName: 'olivas'}, X),
+    Person.create({firstName: 'jonas',  lastName: 'torres'}, X),
+    Person.create({firstName: 'jon',    lastName: 'jonatis'}, X),
+    Person.create({firstName: 'alec',   lastName: 'jonhson'}, X)
+  ].select(dao);
+
+  // Display DAO, index will be assigned automatically
+  DAOListView.create({data: dao}, X).write(X.document);
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
+  <section title="Query DAO by CONTAINS">
+        <aside>
+          <code-sample openSnippets="-2,-1">
+            <title>Define the "Person" Model</title>
+            <source>
+              <code-snippet name="Person" title="Person Model">
+                <src language="javascript">
+                  <code>CLASS({
+  // Model looked up in context object as 'foam.sandbox.Person'.
+  name: 'Person',
+  package: 'foam.sandbox',
+
+  // Store data members as "properties".
+  properties: [ 'id', 'firstName', 'lastName' ],
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>apar(
+  X.arequire('foam.sandbox.Person'),
+  X.arequire('foam.dao.EasyDAO'),
+  X.arequire('MDAO'),
+  X.arequire('foam.ui.DAOListView')
+)(function(Person, EasyDAO, MDAO, DAOListView) {
+  // Create an IndexedDB table with caching.
+  var dao = X.lookup('foam.dao.EasyDAO').create({model: Person, daoType: 'MDAO'}, X);
+
+  // Add your test data.
+  [
+    Person.create({id: 1, firstName: 'johnny', lastName: 'olivas'}, X),
+    Person.create({id: 2, firstName: 'jonas',  lastName: 'torres'}, X),
+    Person.create({id: 3, firstName: 'jon',    lastName: 'jonatis'}, X),
+    Person.create({id: 4, firstName: 'alec',   lastName: 'jonhson'}, X)
+  ].select(dao);
+
+  // Select id from Person Where lastName CONTAINS 'jon'
+  DAOListView.create({data: dao.where(CONTAINS(Person.LAST_NAME, 'jon'))}, X).write(X.document);
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
+  <section title="Query DAO by AND and EQ">
+        <aside>
+          <code-sample openSnippets="-2,-1">
+            <title>Define the "Person" Model</title>
+            <source>
+              <code-snippet name="Person" title="Person Model">
+                <src language="javascript">
+                  <code>CLASS({
+  // Model looked up in context object as 'foam.sandbox.Person'.
+  name: 'Person',
+  package: 'foam.sandbox',
+
+  // Store data members as "properties".
+  properties: [ 'id', 'firstName', 'lastName' ],
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>apar(
+  X.arequire('foam.sandbox.Person'),
+  X.arequire('foam.dao.EasyDAO'),
+  X.arequire('MDAO'),
+  X.arequire('foam.ui.DAOListView')
+)(function(Person, EasyDAO, MDAO, DAOListView) {
+  // Create an IndexedDB table with caching.
+  var dao = X.lookup('foam.dao.EasyDAO').create({model: Person, daoType: 'MDAO'}, X);
+
+  // Add your test data.
+  [
+    Person.create({id: 1, firstName: 'johnny', lastName: 'olivas'}, X),
+    Person.create({id: 2, firstName: 'jonas',  lastName: 'torres'}, X),
+    Person.create({id: 3, firstName: 'jon',    lastName: 'jonatis'}, X),
+    Person.create({id: 4, firstName: 'alec',   lastName: 'jonhson'}, X)
+  ].select(dao);
+
+  // Select id from Person Where lastName CONTAINS 'jon' and firstName EQ 'alec'
+  DAOListView.create({data: dao.where(AND(CONTAINS(Person.LAST_NAME, 'jon'), EQ(Person.FIRST_NAME, 'alec')))}, X).write(X.document);
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
+  <section title="Update DAO">
+        <aside>
+          <code-sample openSnippets="-2,-1">
+            <title>Define the "Person" Model</title>
+            <source>
+              <code-snippet name="Person" title="Person Model">
+                <src language="javascript">
+                  <code>CLASS({
+  // Model looked up in context object as 'foam.sandbox.Person'.
+  name: 'Person',
+  package: 'foam.sandbox',
+
+  // Store data members as "properties".
+  properties: [ 'id', 'firstName', 'lastName', 'age' ],
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>apar(
+  X.arequire('foam.sandbox.Person'),
+  X.arequire('foam.dao.EasyDAO'),
+  X.arequire('MDAO'),
+  X.arequire('foam.ui.DAOListView')
+)(function(Person, EasyDAO, MDAO, DAOListView) {
+  // Create an IndexedDB table with caching.
+  var dao = X.lookup('foam.dao.EasyDAO').create({model: Person, daoType: 'MDAO'}, X);
+
+  // Add your test data.
+  [
+    Person.create({id: 1, firstName: 'johnny', lastName: 'olivas',  age: 21}, X),
+    Person.create({id: 2, firstName: 'jonas',  lastName: 'torres',  age: 28}, X),
+    Person.create({id: 3, firstName: 'jon',    lastName: 'jonatis', age: 19}, X),
+    Person.create({id: 4, firstName: 'alec',   lastName: 'jonhson', age: 32}, X)
+  ].select(dao);
+
+  // Add 1 to the 'age' field of Person in the DAO
+  dao.select(UPDATE(SET(Person.AGE, ADD(Person.AGE, 1)), dao));
+  DAOListView.create({data: dao}, X).write(X.document);
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
+</section>

@@ -18,7 +18,7 @@ CLASS({
 });
 
 // Create an IndexedDB table with caching.
-var dao = EasyDAO.create({model: Tabla, daoType: 'IDBDAO', cache: true});
+var dao = X.lookup('foam.dao.EasyDAO').create({model: Tabla, daoType: 'foam.dao.IDBDAO', cache: true});
 
 // Add your test data.
 [
@@ -43,8 +43,8 @@ CLASS({
   properties: [ 'id', 'columnA', 'columnB' ]
 });
 
-//var MyTableDAO = EasyDAO.create({model: MyTable, seqNo: true, daoType: 'IDBDAO', cache: true});
-var MyTableDAO = EasyDAO.create({model: MyTable, seqNo: true, daoType: 'MDAO', cache: true});
+//var MyTableDAO = X.lookup('foam.dao.EasyDAO').create({model: MyTable, seqNo: true, daoType: 'IDBDAO', cache: true});
+var MyTableDAO = X.lookup('foam.dao.EasyDAO').create({model: MyTable, seqNo: true, daoType: 'MDAO', cache: true});
 
 [
   MyTable.create({columnA: 'ABC', columnB: '123thd'}),
@@ -104,7 +104,7 @@ dao = MDAO.create({model: Person})/*.addIndex(Person.AGE)*/.addIndex(Person.NAME
 
 // Add some People
 dao.put(Person.create({id:'1', name:'John',  age:21}));
-dao.put(Person.create({id:'2', name:'Dave',  age:20}));
+dao.put(Person.create({id:'2', name:'Dave',  age:21}));
 dao.put(Person.create({id:'3', name:'Steve', age:19}));
 dao.put(Person.create({id:'4', name:'Andy',  age:18}));
 
@@ -118,12 +118,12 @@ dao.select(console.log);
 dao.select(console.log.json);
 
 // Update expression allows for easy bulk updates.
-dao.select(UPDATE(SET(Person.AGE, ADD(Person.AGE, 12)), dao));
+dao.select(UPDATE(SET(Person.AGE, ADD(Person.AGE, 1)), dao));
 
 dao.select(console.log.json);
 
 // Select directly to an Array
-var a = [];
+var a = [].sink;
 dao.select(a);
 console.log(a);
 
@@ -147,9 +147,9 @@ dao.find(GT(Person.AGE, 19), console.log.json);
 [
   Person.create({id:'5', name:'Jane',  age:18, sex:'F'}),
   Person.create({id:'6', name:'Daniel',age:19, sex:'F'}),
-  Person.create({id:'7', name:'Suzy',  age:20, sex:'F'}),
-  Person.create({id:'8', name:'Alice', age:16, sex:'F'}),
-  Person.create({id:'9', name:'Kim',   age:18, sex:'F'}),
+  Person.create({id:'7', name:'Suzy',  age:19, sex:'F'}),
+  Person.create({id:'8', name:'Alice', age:22, sex:'F'}),
+  Person.create({id:'9', name:'Kim',   age:22, sex:'F'}),
 ].select(dao);
 
 dao.select(COUNT())(console.log);
@@ -199,7 +199,7 @@ dao.select(MAX(Person.AGE))(console.log);
 dao.select(SEQ(MIN(Person.AGE), SUM(Person.AGE), AVG(Person.AGE), MAX(Person.AGE), COUNT()))(console.log);
 
 // Group By
-dao.select(GROUP_BY(Person.AGE, MAP(Person.NAME, [])))(console.log.json);
+dao.select(GROUP_BY(Person.AGE, MAP(Person.NAME, [].sink)))(console.log.json);
 
 // Group By, with COUNT
 dao.select(GROUP_BY(Person.AGE, COUNT()))(console.log.json);
@@ -223,20 +223,20 @@ dao.select(GROUP_BY(Person.AGE, PIE(Person.SEX, {colorMap: {M: 'lightblue', F: '
 dao.select(GRID_BY(Person.SEX, Person.AGE, COUNT()))(function(g) { console.log(g.toHTML()); });
 
 // Or:
-dao.select(GRID_BY(Person.SEX, Person.AGE, MAP(Person.NAME, [])))(function(g) { console.log(g.toHTML()); g.initHTML(); });
+dao.select(GRID_BY(Person.SEX, Person.AGE, MAP(Person.NAME, [].sink)))(function(g) { console.log(g.toHTML()); g.initHTML(); });
 
 // MAP
-dao.select(MAP(Person.NAME, []))(console.log);
+dao.select(MAP(Person.NAME, [].sink))(console.log);
 
 // EXPLAIN
 
-dao.select(EXPLAIN([]))(console.log);
+dao.select(EXPLAIN([].sink))(console.log);
 
-dao.orderBy(Person.AGE).select(EXPLAIN([]))(console.log);
+dao.orderBy(Person.AGE).select(EXPLAIN([].sink))(console.log);
 
-dao.orderBy(Person.SEX).select(EXPLAIN([]))(console.log);
+dao.orderBy(Person.SEX).select(EXPLAIN([].sink))(console.log);
 
-dao.orderBy(Person.SEX).select(EXPLAIN([]))(console.log);
+dao.orderBy(Person.SEX).select(EXPLAIN([].sink))(console.log);
 
 dao.select(EXPLAIN(COUNT()))(console.log);
 
@@ -248,8 +248,8 @@ dao.remove('3');
 dao.select(COUNT())(console.log);
 
 // Remove by mLang query
-dao.where(LT(Person.AGE, 20)).removeAll();
-dao.select(MAP(Person.AGE, []))(console.log);
+dao.where(LT(Person.AGE, 19)).removeAll();
+dao.select(MAP(Person.AGE, [].sink))(console.log);
 
 
 // Materialized Views / mLang Indices
@@ -276,7 +276,7 @@ var newDAO = [].dao;
 
 // Pipe from old DAO to newDAO
 dao.pipe(newDAO);
-newDAO.select(MAP(Person.NAME, []))(console.log);
+newDAO.select(MAP(Person.NAME, [].sink))(console.log);
 
 // Listen for all future updates
 dao.listen({
@@ -296,7 +296,7 @@ dao.put(Person.create({id:'12', name:'Angelina',age:22, sex:'F'}));
 dao.remove('11');
 
 // New DAO should contain updates made to dao
-newDAO.select(MAP(Person.NAME, []))(console.log);
+newDAO.select(MAP(Person.NAME, [].sink))(console.log);
 
 CLASS({
   name: 'PayStub',
@@ -311,7 +311,7 @@ CLASS({
 
 dao = MDAO.create({model: Person});
 dao.put(Person.create({id:'1', name:'John',  age:21}));
-dao.put(Person.create({id:'2', name:'Dave',  age:21}));
+dao.put(Person.create({id:'2', name:'Dave',  age:22}));
 
 var PayStubDAO = MDAO.create({model: PayStub});
 
@@ -337,13 +337,13 @@ var PayStubDAO = MDAO.create({model: PayStub});
 dao.select(MAP(JOIN(
   PayStubDAO.where(AND(EQ(PayStub.YEAR, 2013), EQ(PayStub.MONTH, 6))),
   PayStub.PID,
-  SUM(PayStub.AMOUNT)), []))(console.log);
+  SUM(PayStub.AMOUNT)), [].sink))(console.log);
 
 // 'distinct'
-PayStubDAO.select(DISTINCT(PayStub.PID, []))(console.log);
+PayStubDAO.select(DISTINCT(PayStub.PID, [].sink))(console.log);
 
 // 'distinct' multi-part
-PayStubDAO.select(DISTINCT(SEQ(PayStub.PID, PayStub.YEAR,PayStub.MONTH), []))(console.log);
+PayStubDAO.select(DISTINCT(SEQ(PayStub.PID, PayStub.YEAR,PayStub.MONTH), [].sink))(console.log);
 
 // Join and Relationships
 
@@ -372,6 +372,7 @@ var OrderItemDAO = [
   OrderItem.create({id: 4, orderId: 2, title: 'Item 2', amount: 999.99}),
   OrderItem.create({id: 5, orderId: 2, title: 'Item 3', amount: 62.45})
 ].dao;
+X.OrderItemDAO = OrderItemDAO;
 
 OrderHeaderDAO.select(function(header) {
   console.log(header.id, ' ', header.title);
@@ -408,7 +409,7 @@ ModelDAO.select(console.log.json);
 // WEB UI
 
 // Output in a TableView
-TableView.create({model: Person, dao: dao}).write(document);
+X.foam.ui.TableView.create({model: Person, dao: dao}).write(document);
 
 // Document is also a Sink
 dao.select(document);
@@ -418,12 +419,21 @@ dao.select(document);
   <div id='output'></div>
 
   <script language="javascript">
-    var demo = $('demo');
-    var out  = $('output');
+  apar(arequire('foam.ui.TableView'),
+       arequire('foam.ui.DetailView'),
+       arequire('foam.glang.PieExpr'),
+       arequire('foam.dao.ProxyDAO'),
+       arequire('foam.dao.FutureDAO'),
+       arequire('foam.dao.EasyDAO'),
+       arequire('foam.dao.IDBDAO'),
+       arequire('foam.dao.NullDAO')
+    )(function() {
+    var demo = X.$('demo');
+    var out  = X.$('output');
     var log_ = function(o) {
       if ( o.indexOf('<') != 0 ) o = o.replace(/\n/g, '<br>').replace(/ /g,'&nbsp;');
 //      out.innerHTML = out.innerHTML + o + '<br/>';
-      document.writeln(o + '<br/>');
+      document.body.insertAdjacentHTML('beforeend', o + '<br/>');
     }
     var oldLog = console.log;
     console.log = function() { log_([].join.call(arguments, '')); };
@@ -438,6 +448,8 @@ dao.select(document);
       log_(' <br><code>' + l + '</code>');
       eval(l);
     }
+  });
+
   </script>
 
  </body>

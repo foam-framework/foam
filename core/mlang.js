@@ -41,34 +41,31 @@ function compileArray_(args) {
 CLASS({
   name: 'Expr',
 
-  // package: 'foam.mlang',
-
   documentation: 'Parent model for all mLang expressions. Contains default implementations for many methods.',
 
-  methods: {
-    // Mustang Query Language
-    toMQL: function() { /* Outputs Mustang Query Language for this expression. */ return this.label_; },
-    toSQL: function() { /* Outputs SQL for this expression. */ return this.label_; },
-    toBQL: function() { /* Outputs yet another query language for this expression. */ return this.label_; },
-    toString: function() {
+  methods: [
+    function toMQL() { /* Outputs MQL for this expression. */ return this.label_; },
+    function toSQL() { /* Outputs SQL for this expression. */ return this.label_; },
+    function toBQL() { /* Outputs yet another query language for this expression. */ return this.label_; },
+    function toString() {
       /* Converts to a string form for debugging; defaults to $$DOC{ref: ".toMQL", text: "MQL"}. */
       return this.toMQL();
     },
-    collectInputs: function(terms) {
+    function collectInputs(terms) {
       /* Recursively adds all inputs of an expression to an array. */
       terms.push(this);
     },
-    partialEval: function() {
+    function partialEval() {
       /* <p>Simplifies the expression by eliminating unnecessary clauses and combining others.</p>
        <p>Can sometimes reduce whole (sub)expressions to TRUE or FALSE.</p>
       */
       return this;
     },
-    minterm: function(index, term) {
+    function minterm(index, term) {
       // True if this bit is set in the minterm number.
       return !!((term >>> index[0]--) & 1 );
     },
-    normalize: function() {
+    function normalize() {
       return this;
       // Each input term to the expression.
       var inputs = [];
@@ -96,7 +93,7 @@ CLASS({
       console.log(this.toMQL(),' normalize-> ', ret.toMQL());
       return ret;
     },
-    pipe: function(sink) {
+    function pipe(sink) {
       /* Returns a $$DOC{ref: "Sink"} which applies this expression to every value <tt>put</tt> or <tt>remove</tt>d, calling the provided <tt>sink</tt> only for those values which match the expression. */
       var expr = this;
       return {
@@ -105,35 +102,39 @@ CLASS({
         remove: function(obj) { if ( expr.f(obj) ) sink.remove(obj); }
       };
     }
-  }
+  ]
 });
 
 
 var TRUE = (FOAM({
   model_: 'Model',
-  name: 'TRUE',
+  name: 'TrueExpr',
   extendsModel: 'Expr',
 
   documentation: 'Model for the primitive true value.',
 
   methods: {
-    toString: function() { return '<true>'; },
-    toSQL:    function() { return '( 1 = 1 )'; },
-    toMQL:    function() { return ''; },
-    toBQL:    function() { return ''; },
-    f:        function() { return true; }
+    clone:     function() { return this; },
+    deepClone: function() { return this; },
+    toString:  function() { return '<true>'; },
+    toSQL:     function() { return '( 1 = 1 )'; },
+    toMQL:     function() { return ''; },
+    toBQL:     function() { return ''; },
+    f:         function() { return true; }
   }
 })).create();
 
 
 var FALSE = (FOAM({
   model_: 'Model',
-  name: 'FALSE',
+  name: 'FalseExpr',
   extendsModel: 'Expr',
 
   documentation: 'Model for the primitive false value.',
 
   methods: {
+    clone:     function() { return this; },
+    deepClone: function() { return this; },
     toSQL: function(out) { return '( 1 <> 1 )'; },
     toMQL: function(out) { return '<false>'; },
     toBQL: function(out) { return '<false>'; },
@@ -141,14 +142,17 @@ var FALSE = (FOAM({
   }
 })).create();
 
+
 var IDENTITY = (FOAM({
   model_: 'Model',
-  name: 'IDENTITY',
+  name: 'IdentityExpr',
   extendsModel: 'Expr',
 
   documentation: 'The identity expression, which passes through its input unchanged.',
 
   methods: {
+    clone:     function() { return this; },
+    deepClone: function() { return this; },
     f: function(obj) { return obj; },
     toString: function() { return 'IDENTITY'; }
   }
@@ -225,6 +229,11 @@ CLASS({
 });
 
 
+// Allow Singleton mLang's to be desearialized to properly.
+var TrueExpr     = { finished__: true, arequire: function(ret) { return afuture().set(this).get; }, create: function() { return TRUE;  } };
+var FalseExpr    = { finished__: true, arequire: function(ret) { return afuture().set(this).get; }, create: function() { return FALSE; } };
+var IdentityExpr = { finished__: true, arequire: function(ret) { return afuture().set(this).get; }, create: function() { return IDENTITY; } };
+
 /** An unary function. **/
 CLASS({
   name: 'UNARY',
@@ -294,85 +303,6 @@ CLASS({
 
 
 CLASS({
-  name: 'MaxExpr',
-
-  extendsModel: 'UNARY',
-
-  properties: [
-    {
-      name:  'max',
-      type:  'int',
-      help:  'Maximum value.',
-      defaultValue: undefined
-    }
-  ],
-
-  methods: {
-    maximum: function(o1, o2) {
-      return o1.compareTo(o2) > 0 ? o1 : o2;
-    },
-    reduce: function(other) {
-      return MaxExpr.create({max: this.maximum(this.max, other.max)});
-    },
-    reduceI: function(other) {
-      this.max = this.maximum(this.max, other.max);
-    },
-    pipe: function(sink) { sink.put(this); },
-    put: function(obj) {
-      var v = this.arg1.f(obj);
-      this.max = this.max === undefined ? v : this.maximum(this.max, v);
-    },
-    remove: function(obj) { },
-    toString: function() { return this.max; }
-  }
-});
-
-
-function MAX(expr) {
-  return MaxExpr.create({arg1: expr});
-}
-
-
-CLASS({
-  name: 'ExplainExpr',
-
-  extendsModel: 'UNARY',
-
-  documentation: 'Pseudo-expression which outputs a human-readable description of its subexpression, and the plan for evaluating it.',
-
-  properties: [
-    {
-      name:  'plan',
-      help:  'Execution Plan',
-      defaultValue: ""
-    }
-  ],
-
-  methods: {
-    toString: function() { return this.plan; },
-    toSQL: function() { return this.arg1.toSQL(); },
-    toMQL: function() { return this.arg1.toMQL(); },
-    toBQL: function() { return this.arg1.toBQL(); },
-    partialEval: function() {
-      var newArg = this.arg1.partialEval();
-
-      return this.arg1 === newArg ? this : EXPLAIN(newArg);
-    },
-    f: function(obj) { return this.arg1.f(obj); }
-  }
-});
-
-
-function EXPLAIN(arg) {
-  return ExplainExpr.create({arg1: arg});
-}
-
-
-function COUNT() {
-  return CountExpr.create();
-}
-
-CLASS({
   name: 'CountExpr',
 
   extendsModel: 'Expr',
@@ -399,50 +329,8 @@ CLASS({
   }
 });
 
-
-CLASS({
-  name: 'InExpr',
-
-  extendsModel: 'BINARY',
-
-  documentation: 'Binary expression which is true if its first argument is EQ to any element of its second argument, which is an array.',
-
-  properties: [
-    {
-      name:  'arg2',
-      label: 'Argument',
-      type:  'Expr',
-      help:  'Sub-expression',
-      postSet: function() { this.valueSet_ = undefined; }
-    }
-  ],
-
-  methods: {
-    partialEval: function() {
-      if ( this.arg2.length == 1 ) return EQ(this.arg1, this.arg2[0]);
-      return this;
-    },
-    valueSet: function() {
-      if ( ! this.valueSet_ ) {
-        var s = {};
-        for ( var i = 0 ; i < this.arg2.length ; i++ ) s[this.arg2[i]] = true;
-        this.valueSet_ = s;
-      }
-      return this.valueSet_;
-    },
-    toSQL: function() { return this.arg1.toSQL() + ' IN ' + this.arg2; },
-    toMQL: function() { return this.arg1.toMQL() + '=' + this.arg2.join(',') },
-    toBQL: function() { return this.arg1.toBQL() + ':(' + this.arg2.join('|') + ')' },
-
-    f: function(obj) {
-      return this.valueSet().hasOwnProperty(this.arg1.f(obj));
-    }
-  }
-});
-
-
-function IN(arg1, arg2) {
-  return InExpr.create({arg1: compile_(arg1), arg2: arg2 });
+function COUNT() {
+  return CountExpr.create();
 }
 
 
@@ -491,9 +379,16 @@ CLASS({
       var arg2 = this.arg2.f(obj);
 
       if ( Array.isArray(arg1) ) {
-        return arg1.some(function(arg) {
-          return arg == arg2;
-        });
+        if ( ! Array.isArray(arg2) ) {
+          return arg1.some(function(arg) {
+            return arg == arg2;
+          });
+        }
+        if ( arg1.length !== arg2.length ) return false;
+        for ( var i = 0; i < arg1.length; i++ ) {
+          if ( arg1[i] != arg2[i] ) return false;
+        }
+        return true;
       }
 
       if ( arg2 === TRUE ) return !! arg1;
@@ -511,139 +406,6 @@ function EQ(arg1, arg2) {
   eq.instance_.arg2 = compile_(arg2);
   return eq;
   //  return EqExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
-}
-
-
-CLASS({
-  name: 'LtExpr',
-
-  extendsModel: 'BINARY',
-  abstract: true,
-
-  methods: {
-    toSQL: function() { return this.arg1.toSQL() + '<' + this.arg2.toSQL(); },
-    toMQL: function() { return this.arg1.toMQL() + '-before:' + this.arg2.toMQL(); },
-    toBQL: function() { return this.arg1.toBQL() + '<' + this.arg2.toBQL(); },
-
-    partialEval: function() {
-      var newArg1 = this.arg1.partialEval();
-      var newArg2 = this.arg2.partialEval();
-
-      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-        return compile_(newArg1.f() < newArg2.f());
-      }
-
-      return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
-        LtExpr.create({arg1: newArg1, arg2: newArg2}) :
-      this;
-    },
-
-    f: function(obj) { return this.arg1.f(obj) < this.arg2.f(obj); }
-  }
-});
-
-function LT(arg1, arg2) {
-  return LtExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
-}
-
-
-CLASS({
-  name: 'GtExpr',
-
-  extendsModel: 'BINARY',
-  abstract: true,
-
-  methods: {
-    toSQL: function() { return this.arg1.toSQL() + '>' + this.arg2.toSQL(); },
-    toMQL: function() { return this.arg1.toMQL() + '-after:' + this.arg2.toMQL(); },
-    toBQL: function() { return this.arg1.toBQL() + '>' + this.arg2.toBQL(); },
-
-    partialEval: function() {
-      var newArg1 = this.arg1.partialEval();
-      var newArg2 = this.arg2.partialEval();
-
-      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-        return compile_(newArg1.f() > newArg2.f());
-      }
-
-      return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
-        GtExpr.create({arg1: newArg1, arg2: newArg2}) :
-      this;
-    },
-
-    f: function(obj) { return this.arg1.f(obj) > this.arg2.f(obj); }
-  }
-});
-
-function GT(arg1, arg2) {
-  return GtExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
-}
-
-CLASS({
-  name: 'LteExpr',
-
-  extendsModel: 'BINARY',
-  abstract: true,
-
-  methods: {
-    toSQL: function() { return this.arg1.toSQL() + '<=' + this.arg2.toSQL(); },
-    toMQL: function() { return this.arg1.toMQL() + '-before:' + this.arg2.toMQL(); },
-    toBQL: function() { return this.arg1.toBQL() + '<=' + this.arg2.toBQL(); },
-
-    partialEval: function() {
-      var newArg1 = this.arg1.partialEval();
-      var newArg2 = this.arg2.partialEval();
-
-      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-        return compile_(newArg1.f() <= newArg2.f());
-      }
-
-      return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
-        LtExpr.create({arg1: newArg1, arg2: newArg2}) :
-      this;
-    },
-
-    f: function(obj) { return this.arg1.f(obj) <= this.arg2.f(obj); }
-  }
-});
-
-
-function LTE(arg1, arg2) {
-  return LteExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
-}
-
-
-CLASS({
-  name: 'GteExpr',
-
-  extendsModel: 'BINARY',
-  abstract: true,
-
-  methods: {
-    toSQL: function() { return this.arg1.toSQL() + '>=' + this.arg2.toSQL(); },
-    toMQL: function() { return this.arg1.toMQL() + '-after:' + this.arg2.toMQL(); },
-    toBQL: function() { return this.arg1.toBQL() + '>=' + this.arg2.toBQL(); },
-
-    partialEval: function() {
-      var newArg1 = this.arg1.partialEval();
-      var newArg2 = this.arg2.partialEval();
-
-      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-        return compile_(newArg1.f() >= newArg2.f());
-      }
-
-      return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
-        GtExpr.create({arg1: newArg1, arg2: newArg2}) :
-      this;
-    },
-
-    f: function(obj) { return this.arg1.f(obj) >= this.arg2.f(obj); }
-  }
-});
-
-
-function GTE(arg1, arg2) {
-  return GteExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
 }
 
 
@@ -876,3 +638,97 @@ CLASS({
 function AND() {
   return AndExpr.create({args: compileArray_.call(null, arguments)});
 }
+
+CLASS({
+  name: 'NeqExpr',
+
+  extendsModel: 'BINARY',
+  abstract: true,
+
+  methods: {
+    toSQL: function() { return this.arg1.toSQL() + '<>' + this.arg2.toSQL(); },
+    toMQL: function() { return '-' + this.arg1.toMQL() + '=' + this.arg2.toMQL(); },
+    toBQL: function() { return '-' + this.arg1.toBQL() + ':' + this.arg2.toBQL(); },
+
+    partialEval: function() {
+      var newArg1 = this.arg1.partialEval();
+      var newArg2 = this.arg2.partialEval();
+
+      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
+        return compile_(newArg1.f() != newArg2.f());
+      }
+
+      return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
+        NeqExpr.create({arg1: newArg1, arg2: newArg2}) :
+      this;
+    },
+
+    f: function(obj) {
+      var arg1 = this.arg1.f(obj);
+      var arg2 = this.arg2.f(obj);
+
+      if ( Array.isArray(arg1) ) {
+        if ( ! Array.isArray(arg2) ) {
+          return ! arg1.some(function(arg) {
+            return arg == arg2;
+          });
+        }
+        if ( arg1.length !== arg2.length ) return true;
+        for ( var i = 0; i < arg1.length; i++ ) {
+          if ( arg1[i] != arg2[i] ) return true;
+        }
+        return false;
+      }
+
+      if ( arg2 === TRUE ) return ! arg1;
+      if ( arg2 === FALSE ) return !! arg1;
+
+      return arg1 != arg2;
+    }
+  }
+});
+
+function NEQ(arg1, arg2) {
+  return NeqExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
+}
+
+
+CLASS({
+  name: 'UpperExpr',
+
+  extendsModel: 'UNARY',
+
+  properties: [
+    { name: 'label_', defaultValue: 'UPPER' }
+  ],
+  methods: [
+    function partialEval() {
+      var newArg1 = this.arg1.partialEval();
+
+      if ( ConstantExpr.isInstance(newArg1) ) {
+        var val = newArg1.f();
+        if ( typeof val === 'string' ) return compile_(val.toUpperCase());
+      } else if ( Array.isArray(newArg1) ) {
+        debugger;
+      }
+
+      return this;
+    },
+    function f(obj) {
+      var a = this.arg1.f(obj);
+      if ( Array.isArray(a) )
+        return a.map(function(s) { return s.toUpperCase ? s.toUpperCase() : s; });
+
+      return a && a.toUpperCase ? a.toUpperCase() : a ;
+    },
+    function toMQL() {
+      if ( ConstantExpr.isInstance(this.arg1) && typeof this.arg1.arg1 == 'string' )
+        return this.arg1.arg1.toUpperCase();
+      return this.arg1.toMQL();
+    }
+  ]
+});
+
+function UPPER(arg1) { return UpperExpr.create({arg1: compile_(arg1)}); }
+function EQ_IC(arg1, arg2) { return EQ(UPPER(arg1), UPPER(arg2)); }
+function IN_IC(arg1, arg2) { return IN(UPPER(arg1), arg2.map(UPPER)); }

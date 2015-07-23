@@ -1,16 +1,16 @@
 {
   "name": "MBug",
-  "version": "1.0.6",
+  "version": "1.1.4",
   "manifest_version": 2,
 
   "permissions": [
     "https://www.googleapis.com/*",
     "https://code.google.com/p/*",
     "https://accounts.google.com/*",
+    "http://www.google-analytics.com/*",
     "webview",
     "identity",
     "storage",
-    "https://www.google-analytics.com/",
     "unlimitedStorage"
   ],
 

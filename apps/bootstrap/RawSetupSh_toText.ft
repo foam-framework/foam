@@ -1,0 +1,9 @@
+#!/bin/bash
+
+export BUILD_DIR=<%= self.data.buildDir %>
+<% self.data.foamCSS.forEach(function(cssFileName) { %>
+  cp <%= self.data.foamSourceDir %>/core/<%= cssFileName %> $BUILD_DIR/
+<% }); %>
+cat \\ <% self.data.foamSources.forEach(function(sourceFileName) { %>
+  <%= self.data.foamSourceDir %>/<%= sourceFileName %> \\ <% }); %>
+  > "$BUILD_DIR/foam.js"

@@ -1,7 +1,7 @@
 CLASS({
   name: 'DoubleClickWrapper',
 
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {

@@ -21,7 +21,7 @@ if ( ! Number.name ) {
   Object.defineProperty(Function.prototype, 'name', {
     get: function() {
       var text = this.toString();
-      return text.substring(text.indexOf('function')+ 9, text.indexOf('(')).trim();
+      return text.substring(text.indexOf('function') + 9, text.indexOf('(')).trim();
     },
     configurable: true,
     enumerable: true

@@ -410,6 +410,8 @@ var TreeIndex = {
     var prop = this.prop;
 
     var isExprMatch = function(model) {
+      if ( ! model ) return undefined;
+
       if ( query ) {
 
         if ( model.isInstance(query) && query.arg1 === prop ) {
@@ -442,7 +444,7 @@ var TreeIndex = {
 
     var index = this;
 
-    var arg2 = isExprMatch(InExpr);
+    var arg2 = isExprMatch(GLOBAL.InExpr);
     if ( arg2 &&
          // Just scan if that would be faster.
          Math.log(this.size(s))/Math.log(2) * arg2.length < this.size(s) ) {
@@ -486,7 +488,7 @@ var TreeIndex = {
       };
     }
 
-    arg2 = isExprMatch(EqExpr);
+    arg2 = isExprMatch(GLOBAL.EqExpr);
     if ( arg2 != undefined ) {
       var key = arg2.f();
       var result = this.get(s, key);
@@ -513,7 +515,7 @@ var TreeIndex = {
       };
     }
 
-    arg2 = isExprMatch(GtExpr);
+    arg2 = isExprMatch(GLOBAL.GtExpr);
     if ( arg2 != undefined ) {
       var key = arg2.f();
       var pos = this.findPos(s, key, false);
@@ -524,7 +526,7 @@ var TreeIndex = {
       options = newOptions;
     }
 
-    arg2 = isExprMatch(GteExpr);
+    arg2 = isExprMatch(GLOBAL.GteExpr);
     if ( arg2 != undefined ) {
       var key = arg2.f();
       var pos = this.findPos(s, key, true);
@@ -535,7 +537,7 @@ var TreeIndex = {
       options = newOptions;
     }
 
-    arg2 = isExprMatch(LtExpr);
+    arg2 = isExprMatch(GLOBAL.LtExpr);
     if ( arg2 != undefined ) {
       var key = arg2.f();
       var pos = this.findPos(s, key, true);
@@ -547,7 +549,7 @@ var TreeIndex = {
       options = newOptions;
     }
 
-    arg2 = isExprMatch(LteExpr);
+    arg2 = isExprMatch(GLOBAL.LteExpr);
     if ( arg2 != undefined ) {
       var key = arg2.f();
       var pos = this.findPos(s, key, false);
@@ -566,7 +568,7 @@ var TreeIndex = {
     if ( options && options.order ) {
       if ( options.order === prop ) {
         // sort not required
-      } else if ( DescExpr.isInstance(options.order) && options.order.arg1 === prop ) {
+      } else if ( GLOBAL.DescExpr && DescExpr.isInstance(options.order) && options.order.arg1 === prop ) {
         // reverse-sort, sort not required
         reverseSort = true;
       } else {
@@ -830,6 +832,8 @@ var PositionIndex = {
 
   put: function(s, newValue) {
     if ( s.feedback === newValue.id ) return s;
+    if ( this.query && ! this.query.f(newValue) ) return s;
+
     var compare = toCompare(this.order);
 
     for ( var i = 0; i < s.length; i++ ) {
@@ -967,7 +971,7 @@ var AltIndex = {
 
   addIndex: function(s, index) {
     // Populate the index
-    var a = [];
+    var a = [].sink;
     this.plan(s, a).execute(s, a);
 
     s.push(index.bulkLoad(a));
@@ -1118,7 +1122,7 @@ var AutoIndex = {
   },
 
   addIndex: function(prop) {
-    if ( DescExpr.isInstance(prop) ) prop = prop.arg1;
+    if ( GLOBAL.DescExpr && DescExpr.isInstance(prop) ) prop = prop.arg1;
 
     console.log('Adding AutoIndex : ', prop.name);
     this.properties[prop.name] = true;
@@ -1182,7 +1186,7 @@ var MDAO = Model.create({
       // Add on the primary key(s) to make the index unique.
       for ( var i = 0 ; i < this.model.ids.length ; i++ ) {
         props.push(this.model.getProperty(this.model.ids[i]));
-        if (!props[props.length - 1]) throw "Undefined index property";
+        if ( ! props[props.length - 1] ) throw "Undefined index property";
       }
 
       return this.addUniqueIndex.apply(this, props);
@@ -1309,7 +1313,7 @@ var MDAO = Model.create({
           sink && sink.remove && sink.remove(a[i]);
         }
         sink && sink.eof && sink.eof();
-        future.set();
+        future.set(sink);
       }.bind(this));
       return future.get;
     },
@@ -1319,7 +1323,7 @@ var MDAO = Model.create({
       // Clone the options to prevent 'limit' from being mutated in the original.
       if ( options ) options = {__proto__: options};
 
-      if ( ExplainExpr.isInstance(sink) ) {
+      if ( GLOBAL.ExplainExpr && GLOBAL.ExplainExpr.isInstance(sink) ) {
         var plan = this.index.plan(this.root, sink.arg1, options);
         sink.plan = 'cost: ' + plan.cost + ', ' + plan.toString();
         sink && sink.eof && sink.eof();

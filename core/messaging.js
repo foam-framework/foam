@@ -54,7 +54,7 @@ CLASS({
           if ( self.responseType === "json" && typeof xhr.response == "string" )
             var response = JSON.parse(xhr.response);
           else response = xhr.response;
-          ret(response, xhr);
+          ret(response, xhr, (xhr.status >= 200 && xhr.status < 300));
         }
       }
     },
@@ -168,7 +168,7 @@ CLASS({
 
   methods: {
     put: function(obj, sink) {
-      var xhr = this.X.XHR.create();
+      var xhr = this.Y.XHR.create();
       xhr.asend(function(response, xhr) {
         if ( xhr.status >= 200 && xhr.status < 300 ) {
           sink && sink.put && sink.put(response);

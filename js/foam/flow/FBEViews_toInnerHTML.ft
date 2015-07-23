@@ -1,0 +1,568 @@
+<section title="Views">
+
+      <section title="Custom DetailView with toDetailHTML()">
+        <aside>
+          <code-sample openSnippets="-2,-1">
+            <title>Implement a toDetailHTML() template</title>
+            <source>
+              <code-snippet name="Person" title="Person Model">
+                <src language="javascript">
+                  <code>CLASS({
+      // Model looked up in conteXt object as 'foam.sandbox.Person'.
+      name: 'Person',
+      package: 'foam.sandbox',
+
+      // Store data members as "properties".
+      properties: [ 'firstName', 'lastName', 'children' ],
+
+      // Store member functions as "methods".
+      methods: [
+        function fullName() { return this.firstName + ' ' + this.lastName; },
+        function invertedName() { return this.lastName + ', ' + this.firstName; }
+      ]
+    });</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Detailed Person Model">
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'DetailedPerson',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.sandbox.Person',
+
+  // Implement the toDetailHTML() template to supply a custom view of your
+  // data model. Your model isn't actually a view, but DetailView can grab
+  // the template you supply and use it to render.
+  templates: [
+    {
+      name: 'toDetailHTML',
+      template: function() {/*
+        <p>
+        Person Description
+        <% if ( this.data ) { %>
+        <p>$$firstName{mode:'read-only'} <b>$$lastName{mode:'read-only'}</b></p>
+        <% } %>
+        <p>
+      */}
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>apar(
+    X.arequire('foam.sandbox.DetailedPerson'),
+    X.arequire('foam.ui.DetailView')
+)(function(DetailPerson, DetailView) {
+  var lawyer = DetailPerson.create({
+    firstName: 'Harvey',
+    lastName: 'Birdman',
+  }, X);
+  // Though we are creating a DetailView as before, it will check for a toDetailHTML()
+  // template on its data, and render that instead of the default view.
+  DetailView.create({ data: lawyer }, X).write(X.document);
+});
+                  </code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
+
+      <section title="Custom Views">
+        <aside>
+          <code-sample openSnippets="-2,-1">
+            <title>A Custom View</title>
+            <source>
+              <code-snippet ref="Person" title="Person Model"></code-snippet>
+              <code-snippet name="RedPersonView" title="Red Person View">
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'RedPersonView',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.ui.DetailView',
+
+  templates: [
+    {
+      // output 'id' in your outer element.
+      name: 'toHTML',
+      template: function() {/*
+        <div id="%%id" style="background: #ffeeee; padding: 1em;">
+          <h3>Person Custom View</h3>
+          <% if ( this.data ) { %>
+          <p>$$firstName{mode:'read-only'} $$lastName $$lastName{mode:'read-only'}</p>
+          <% } %>
+        </div>
+      */}
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>apar(
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.sandbox.RedPersonView')
+)(function(Person, RedPersonView) {
+
+  // Create a person
+  var person = Person.create({
+    firstName: 'Harvey',
+    lastName: 'Birdman',
+  }, X);
+
+  // Create an instance of our custom view and set the person as 'data'
+  var view = RedPersonView.create({
+    data: person
+  }, X);
+
+  // The view will render the data we have set on it
+  view.write(X.document);
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
+      <section title="Custom View using toHTML()">
+        <aside>
+          <code-sample openSnippets="-2,-1">
+            <title>A Custom View</title>
+            <source>
+              <code-snippet ref="Person" title="Person Model"></code-snippet>
+              <code-snippet title="Manual Person View">
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'ManualPersonView',
+  package: 'foam.sandbox',
+  // DetailView lets us override toHTML() and still re-render when necessary
+  extendsModel: 'foam.ui.DetailView',
+
+  templates: [
+    {
+      // All views are identified in the DOM by their id. You must output an
+      // id when you override toHTML().
+      name: 'toHTML',
+      template: function() {/*
+
+        <div style="color: red; border: 1px solid black">
+          <p>This appears in the DOM, but will not be in the element referenced by the '$'
+          property of your view.</p>
+          <p>Always keep your content inside a properly id'd element, or use toInnerHTML().</p>
+        </div>
+
+        <div id="%%id">
+          Official contents:
+          <h3>Person Manual View</h3>
+          <p><%# this.data.lastName %>, <%# this.data.firstName %>. View id: <%# this.id %></p>
+        </div>
+      */}
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>apar(
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.sandbox.ManualPersonView')
+)(function(Person, ManualPersonView) {
+
+  // Create a person
+  var person = Person.create({
+    firstName: 'Harvey',
+    lastName: 'Birdman',
+  }, X);
+
+  // Create an instance of our custom view and set the person as 'data'
+  var view = ManualPersonView.create({
+    data: person
+  }, X);
+
+  // The view will render the data we have set on it
+  view.write(X.document);
+
+  // The view does not have a way to reference the extra content
+  // that appears outside its id'd element.
+  console.log("View contents: ", view.$.outerHTML);
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
+      <section title="View Template Syntax">
+        <aside>
+          <code-sample openSnippets="-2,-1">
+            <title>Template Playground</title>
+            <source>
+              <code-snippet ref="Person" title="Person Model"></code-snippet>
+              <code-snippet ref="RedPersonView" title="Red Person View"></code-snippet>
+              <code-snippet name="BluePersonView" title="Blue Person View">
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'BluePersonView',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.ui.DetailView',
+
+  templates: [
+    {
+      name: 'toHTML',
+      template: function() {/*
+        <div id="%%id" style="background: #eeeeff; padding: 1em;">
+          <h3>Another way to view a person:</h3>
+          <% if ( this.data ) { %>
+          <p>$$lastName{mode:'read-only'}, $$firstName{mode:'read-only'}</p>
+          <% } %>
+        </div>
+      */}
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Template Playground View">
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'TemplatePlaygroundView',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.ui.DetailView',
+  requires: ['foam.ui.md.TextFieldView'],
+
+  properties: [
+    {
+      name: 'primaryContact',
+      view: 'foam.sandbox.RedPersonView',
+      postSet: function(old, nu) {
+        // clean up
+        if ( old ) Events.unfollow(old.lastName$, this.primaryLastName$);
+        // bind part of the new primaryContact to our property
+        if ( nu )  Events.follow(nu.lastName$, this.primaryLastName$);
+      }
+    },
+    { name: 'primaryLastName' }
+  ],
+
+  methods: [
+    function printSomething() {
+      return "Hello world.";
+    }
+  ],
+
+  templates: [
+    {
+      name: 'toHTML',
+      template: function() {/*
+        <div id="%%id">
+          <h2>Basic Output</h2>
+
+          <h3>Output a method result from this view</h3>
+          <%= this.printSomething() %>
+
+          <h3>Output a method result from our data</h3>
+          <%= this.data.invertedName() %>
+
+          <h3>Output a dynamically updated property value</h3>
+          <%# this.primaryLastName %>
+
+          <h2>Displaying properties of your data</h2>
+          <h3>Data's properties are implicitly available</h3>
+          $$firstName
+
+          <h3>Specifying the view to use</h3>
+          $$firstName{ model_: 'foam.ui.md.TextFieldView', onKeyMode:true }
+
+          <h2>Displaying properties of this view</h2>
+          <h3>This View's properties are also available. We specified a default
+          'view' for primaryContact in its definition above.</h3>
+          $$primaryContact
+
+          <h3>Create a subview with an explicit view</h3>
+          $$primaryContact{ model_: 'foam.sandbox.BluePersonView' }
+        </div>
+
+      */}
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>apar(
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.sandbox.TemplatePlaygroundView')
+)(function(Person, TemplatePlaygroundView) {
+
+  // Create a person
+  var person = Person.create({
+    firstName: 'Harvey',
+    lastName: 'Birdman',
+  }, X);
+  var person2 = Person.create({
+    firstName: 'H',
+    lastName: 'Potamus',
+  }, X);
+
+  // Create an instance of our custom view and set the person as 'data'
+  var view = TemplatePlaygroundView.create({
+    data: person
+  }, X);
+
+  // The view will render the data we have set on it
+  view.write(X.document);
+
+  // set this property and the sub-views based on it will update
+  view.primaryContact = person2;
+  });</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
+
+      <section title="Passing Data to child views">
+        <aside>
+          <code-sample openSnippets="-2,-1">
+            <title>Data Passing</title>
+            <source>
+              <code-snippet ref="Person" title="Person Model"></code-snippet>
+              <code-snippet ref="RedPersonView" title="Red Person View"></code-snippet>
+              <code-snippet ref="BluePersonView" title="Blue Person View"></code-snippet>
+              <code-snippet title="GreenPersonView">
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'GreenPersonView',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.ui.DetailView',
+  requires: ['foam.sandbox.RedPersonView'],
+
+  templates: [
+    {
+      // Your data can be referenced directly, creating a subview with the
+      //   same data that you have.
+      // For other properties, data is extracted from the property and
+      //   passed into property views automatically. In this case, each
+      //   child of the Person data is passed into a RedPersonView.
+      // Your data's properties are checked first, and if it doesn't have the
+      //   given property your view is checked.
+      name: 'toHTML',
+      template: function() {/*
+        <div id="%%id" style="background: #eeffee; padding: 1em;">
+          <h2>Person Info</h2>
+          $$data{ model_: 'foam.sandbox.BluePersonView' }
+          <h2>Reports:</h2>
+          $$children{ model_: 'foam.ui.DAOListView', rowView: 'foam.sandbox.RedPersonView' }
+        </div>
+      */}
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>apar(
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.sandbox.GreenPersonView')
+)(function(Person, GreenPersonView) {
+
+  // Create a person
+  var theBoss = Person.create({
+    firstName: 'Phil Ken',
+    lastName: 'Sebben',
+    children: [
+      Person.create({ firstName: 'Harvey',  lastName: 'Birdman' }),
+      Person.create({ firstName: 'Elliott', lastName: 'Taggart' }),
+      Person.create({ firstName: 'Myron',   lastName: 'Reducto' }),
+    ]
+  }, X);
+
+  // Create an instance of our custom view and set the person as 'data'
+  var view = GreenPersonView.create({
+    data: theBoss
+  }, X);
+
+  // The view will render the data we have set on it
+  view.write(X.document);
+
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
+
+      <section title="CSS Template">
+        <aside>
+          <code-sample openSnippets="-2,-1">
+            <title>Including a CSS() template in your view</title>
+            <source>
+              <code-snippet ref="Person" title="Person Model"></code-snippet>
+              <code-snippet ref="RedPersonView" title="Red Person View"></code-snippet>
+              <code-snippet name="CardPersonView" title="Card Person View">
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'CardPersonView',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.ui.DetailView',
+
+  templates: [
+    {
+      // Views will automatically install the result of any 'CSS' template
+      // into the document when an instance of your view is created. If you
+      // inherit a CSS template from a base model, that will be installed as
+      // well.
+      name: 'CSS',
+      template: function() {/*
+        .md-card {
+          background: #fff;
+          display: block;
+          margin: 10px;
+          padding: 10px;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
+          margin: 10px;
+          border-radius: 3px;
+        }
+        .md-card h2 {
+           text-transform: uppercase;
+        }
+      */}
+    },
+    {
+      name: 'toHTML',
+      template: function() {/*
+        <div id="%%id" class="md-card">
+          <h2>Card View</h2>
+          $$data{ model_: 'foam.sandbox.RedPersonView' }
+        </div>
+      */}
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>apar(
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.sandbox.RedPersonView'),
+    X.arequire('foam.sandbox.CardPersonView')
+)(function(Person, RedPersonView, CardPersonView) {
+
+  // Create a person
+  var person = Person.create({
+    firstName: 'Harvey',
+    lastName: 'Birdman',
+  }, X);
+
+  // Create a card view, set the person as its data
+  var view = CardPersonView.create({ data: person }, X);
+
+  // The view will render the data we have set on it
+  view.write(X.document);
+
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
+
+
+      <section title="Dynamically Toggling CSS Classes">
+        <aside>
+          <code-sample openSnippets="-2,-1">
+            <title>Using setClass()</title>
+            <source>
+              <code-snippet ref="Person" title="Person Model"></code-snippet>
+              <code-snippet ref="RedPersonView" title="Red Person View"></code-snippet>
+              <code-snippet ref="CardPersonView" title="Card Person View">
+              <code-snippet title="Toggle Card Person View">
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'ToggleCardPersonView',
+  package: 'foam.sandbox',
+  extendsModel: 'foam.sandbox.CardPersonView',
+  requires: ['foam.ui.md.CheckboxView'],
+
+  properties: [
+    {
+      model_: 'BooleanProperty',
+      name: 'isCardStyle'
+    }
+  ],
+
+  templates: [
+    {
+      // Call setClass() from your toHTML() template.
+
+      // Specify the CSS class name, a predicate function that returns true
+      // to apply the class and false to remove the class, and the element id
+      // to apply it to. For convenience, 'self' is defined automatically in
+      // templates so you can use it in your functions instead of .bind(this).
+
+      // Your predicate function will be dynamically evaluated using
+      // Events.dynamic(), so changes in properties referenced by the function
+      // will cause the function to be re-evaluated and the CSS class updated.
+      name: 'toHTML',
+      template: function() {/*
+        <div id="%%id">
+          <h2>Toggle Card View</h2>
+          $$data{ model_: 'foam.sandbox.RedPersonView' }
+          <div style="display: flex; align-items: flex-start; margin: 1em;">
+            $$isCardStyle{ model_: 'foam.ui.md.CheckboxView',  label: 'Toggle Card Styling' }
+          </div>
+        </div>
+        <% this.setClass('md-card', function() { return self.isCardStyle }, self.id); %>
+      */}
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+              <code-snippet title="Example">
+                <src language="javascript">
+                  <code>apar(
+    X.arequire('foam.sandbox.Person'),
+    X.arequire('foam.sandbox.RedPersonView'),
+    X.arequire('foam.sandbox.ToggleCardPersonView')
+)(function(Person, RedPersonView, ToggleCardPersonView) {
+
+  // Create a person
+  var person = Person.create({
+    firstName: 'Harvey',
+    lastName: 'Birdman',
+  }, X);
+
+  // Create a card view, set the person as its data
+  var view = ToggleCardPersonView.create({ data: person }, X);
+
+  // The view will render the data we have set on it
+  view.write(X.document);
+
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+      </section>
+
+
+</section>

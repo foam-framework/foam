@@ -1,0 +1,87 @@
+body.flex-table-view-col-resize * {
+  cursor: ew-resize ! important;
+}
+flex-table-head,
+flex-table-row {
+  display: flex;
+  flex-shrink: 0;
+}
+flex-table-head {
+  flex-grow: 1;
+}
+flex-table-row {
+  flex-grow: 0;
+}
+flex-table,
+flex-table-body,
+flex-col-label {
+  display: flex;
+  flex-shrink: 1;
+  flex-grow: 1;
+}
+flex-table-cell {
+  display: flex;
+  position: relative;
+  align-items: center;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+flex-table-cell.numeric {
+  justify-content: flex-end;
+}
+flex-table-cell,
+flex-table-cell * {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+flex-table-cell img {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+flex-table,
+flex-table-head,
+flex-table-body {
+  flex-direction: column;
+}
+flex-table {
+  width: 100%;
+}
+flex-table-head {
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+flex-table-body {
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+flex-col-label {
+  align-items: center;
+}
+flex-table-cell flex-col-resize-handle {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0px;
+  width: 3px;
+  height: 100%;
+  z-index: 9;
+  cursor: ew-resize;
+}
+flex-table .numeric {
+  text-align: right;
+}
+flex-table .numeric flex-col-label {
+  flex-direction: row-reverse;
+}
+flex-table .sort {
+  font-weight: bold;
+}
+flex-col-label label,
+flex-col-label span {
+  flex-grow: 0;
+}
+flex-col-label span {
+  flex-shrink: 0;
+}

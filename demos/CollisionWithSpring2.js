@@ -1,3 +1,5 @@
+arequire('foam.graphics.Circle')(function() {
+
 CLASS({
   name: 'Circ',
   extendsModel: 'foam.graphics.Circle',
@@ -82,3 +84,5 @@ collider.collide = function(c1, c2) {
 Movement.strut(mouse, bumper, 0, 0);
 collider.add(bumper);
 collider.start();
+
+});

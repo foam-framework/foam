@@ -16,7 +16,7 @@
  */
 CLASS({
   name: 'DemoView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   properties: ['childView', 'resultsCallback', 'childrenCallback', 'initHTMLFuture'],
   templates: [ { name: 'toHTML' } ],
   methods: {
@@ -72,7 +72,7 @@ CLASS({
 
 CLASS({
   name: 'TestsView',
-  extendsModel: 'AbstractDAOView',
+  extendsModel: 'foam.ui.AbstractDAOView',
 
   properties: [
     {
@@ -144,7 +144,7 @@ function asendjson(path) {
 }
 
 // This fetches all the tests up front.
-var clientDAO = ClientDAO.create({
+var clientDAO = X.foam.core.dao.ClientDAO.create({
   asend: asendjson(window.location.origin + '/api'),
   model: Model
 });
@@ -167,20 +167,23 @@ setTimeout(function() {
   // to wait for each model's tests to complete before moving on to the next.
   baseDAO.select({
     put: function(model) {
-      if ( model.tests && model.tests.length ) {
-        var X = window.X.sub({
-          asyncCallback: function() {
-            console.log('done tests for ' + model.name);
-          },
-          childTestsFilter: TEST_FILTER,
-          testUpdateListener: function(){ debugger; baseDAO.put(model); }
-        });
-        var view = X.TestsView.create({
-          dao: model.tests.dao.where(TEST_FILTER)
-        });
-        document.body.insertAdjacentHTML('beforeend', view.toHTML());
-        view.initHTML();
-      }
+      _ROOT_X.registerModel(model);
+      arequire(model.id)(function() {
+        if ( model.tests && model.tests.length ) {
+          var X = window.X.sub({
+            asyncCallback: function() {
+              console.log('done tests for ' + model.name);
+            },
+            childTestsFilter: TEST_FILTER,
+            testUpdateListener: function(){ debugger; baseDAO.put(model); }
+          });
+          var view = X.TestsView.create({
+            dao: model.tests.dao.where(TEST_FILTER)
+          });
+          document.body.insertAdjacentHTML('beforeend', view.toHTML());
+          view.initHTML();
+        }
+      });
     }
   });
 }, 500);

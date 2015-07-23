@@ -1,6 +1,3 @@
-var space   = foam.graphics.CView.create({width: 2000, height: 1700});
-var mouse   = Mouse.create();
-
 CLASS({
   name: 'ShadowCircle',
   extendsModel: 'foam.graphics.Circle',
@@ -13,6 +10,18 @@ CLASS({
   traits: ['foam.physics.Physical', 'foam.graphics.MotionBlur']
 });
 
+apar(
+  arequire('foam.graphics.Circle'),
+  arequire('foam.graphics.MotionBlur'),
+  arequire('foam.graphics.Shadow'),
+  arequire('ShadowCircle'),
+  arequire('BlurCircle'),
+  arequire('foam.input.Mouse')
+  )(function() {
+
+
+var space   = foam.graphics.CView.create({width: 2000, height: 1700});
+var mouse   = foam.input.Mouse.create();
 
 space.write(document);
 mouse.connect(space.$);
@@ -49,3 +58,5 @@ for ( var x = 0 ; x < N ; x++ ) {
     Movement.friction(c, 0.9);
   }
 }
+
+});

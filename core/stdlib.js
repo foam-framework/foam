@@ -15,11 +15,23 @@
  * limitations under the License.
  */
 
-var DEBUG  = DEBUG || false;
+var DEBUG  = DEBUG  || false;
 var GLOBAL = GLOBAL || this;
+
+Object.defineProperty_ = Object.defineProperty;
+Object.defineProperty = function() {
+  this.defineProperty_.apply(this, arguments);
+};
 
 function MODEL(model) {
   var proto;
+
+  function defineProperty(proto, key, map) {
+    if ( ! map.value || proto === Object.prototype || proto === Array.prototype )
+      Object.defineProperty_.apply(this, arguments);
+    else
+      proto[key] = map.value;
+  }
 
   if ( model.name ) {
     if ( ! GLOBAL[model.name] ) {
@@ -35,35 +47,38 @@ function MODEL(model) {
                                  GLOBAL[model.extendsObject] ;
   }
 
-  model.properties && model.properties.forEach(function(p) {
-    Object.defineProperty(
+  if ( model.properties ) for ( var i = 0 ; i < model.properties.length ; i++ ) {
+    var p = model.properties[i];
+    defineProperty(
       proto,
       p.name,
       { get: p.getter, enumerable: false });
-  });
+  }
 
   for ( key in model.constants )
-    Object.defineProperty(
+    defineProperty(
       proto,
       key,
       { value: model.constants[key], writable: true, enumerable: false });
 
   if ( Array.isArray(model.methods) ) {
-    model.methods.forEach(function(m) {
-      Object.defineProperty(
+    for ( var i = 0 ; i < model.methods.length ; i++ ) {
+      var m = model.methods[i];
+      defineProperty(
         proto,
         m.name,
         { value: m, writable: true, enumerable: false });
-    });
+    }
   } else {
     for ( var key in model.methods )
-      Object.defineProperty(
+      defineProperty(
         proto,
         key,
         { value: model.methods[key], writable: true, enumerable: false });
   }
 }
 
+var MODEL0 = MODEL;
 
 MODEL({
   extendsObject: 'GLOBAL',
@@ -71,16 +86,44 @@ MODEL({
   methods: [
     function memoize(f) {
       var cache = {};
-      return function() {
+      var g = function() {
         var key = argsToArray(arguments).toString();
         if ( ! cache.hasOwnProperty(key) ) cache[key] = f.apply(this, arguments);
         return cache[key];
       };
+      g.name = f.name;
+      return g;
+    },
+
+    function memoize1(f) {
+      /** Faster version of memoize() when only dealing with one argument. **/
+      var cache = {};
+      var g = function(arg) {
+        var key = arg ? arg.toString() : '';
+        if ( ! cache.hasOwnProperty(key) ) cache[key] = f.call(this, arg);
+        return cache[key];
+      };
+      g.name = f.name;
+      return g;
     },
 
     function constantFn(v) {
       /* Create a function which always returns the supplied constant value. */
       return function() { return v; };
+    },
+
+    function latchFn(f) {
+      var tripped = false;
+      var val;
+      /* Create a function which always returns the supplied constant value. */
+      return function() {
+        if ( ! tripped ) {
+          tripped = true;
+          val = f();
+          f = undefined;
+        }
+        return val;
+      };
     },
 
     function argsToArray(args) {
@@ -92,6 +135,13 @@ MODEL({
     function StringComparator(s1, s2) {
       if ( s1 == s2 ) return 0;
       return s1 < s2 ? -1 : 1;
+    },
+
+    function equals(a, b) {
+      if ( a === b ) return true;
+      if ( ! a || ! b ) return false;
+      if ( a.equals ) return a.equals(b);
+      return a == b;
     },
 
     function toCompare(c) {
@@ -147,7 +197,7 @@ MODEL({
 
     // Workaround for crbug.com/258552
     function Object_forEach(obj, fn) {
-      for (var key in obj) if (obj.hasOwnProperty(key)) fn(obj[key], key);
+      for ( var key in obj ) if ( obj.hasOwnProperty(key) ) fn(obj[key], key);
     },
 
     function predicatedSink(predicate, sink) {
@@ -162,6 +212,9 @@ MODEL({
         remove: function(obj, s, fc) {
           if ( sink.remove && ( ! obj || predicate.f(obj) ) ) sink.remove(obj, s, fc);
         },
+        reset: function() {
+          sink.reset();
+        },
         toString: function() {
           return 'PredicatedSink(' +
             sink.$UID + ', ' + predicate + ', ' + sink + ')';
@@ -173,6 +226,7 @@ MODEL({
       var i = 0;
       return {
         __proto__: sink,
+        $UID: sink.$UID,
         put: function(obj, s, fc) {
           if ( i++ >= count && fc ) {
             fc.stop();
@@ -190,6 +244,7 @@ MODEL({
       var i = 0;
       return {
         __proto__: sink,
+        $UID: sink.$UID,
         put: function(obj, s, fc) {
           if ( i++ >= skip ) sink.put(obj, s, fc);
         }
@@ -200,6 +255,7 @@ MODEL({
       comparator = toCompare(comparator);
       return {
         __proto__: sink,
+        $UID: sink.$UID,
         i: 0,
         arr: [],
         put: function(obj, s, fc) {
@@ -259,8 +315,57 @@ MODEL({
       return [rect.left, rect.top];
     },
 
-    function nop() { /** NOP function. **/ }
+    function nop() { /** NOP function. **/ },
+
+    function stringtoutf8(str) {
+      var res = [];
+      for (var i = 0; i < str.length; i++) {
+        var code = str.charCodeAt(i);
+
+        var count = 0;
+        if ( code < 0x80 ) {
+          res.push(code);
+          continue;
+        }
+
+        // while(code > (0x40 >> count)) {
+        //     res.push(code & 0x3f);
+        //     count++;
+        //     code = code >> 7;
+        // }
+        // var header = 0x80 >> count;
+        // res.push(code | header)
+      }
+      return res;
+    },
+
+    function createGUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+      });
+    }
   ]
+});
+
+var labelize = memoize1(function(str) {
+  if ( str === '' ) return str;
+  return capitalize(str.replace(/[a-z][A-Z]/g, function (a) { return a.charAt(0) + ' ' + a.charAt(1); }));
+});
+
+var constantize = memoize1(function(str) {
+  // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
+  // TODO: add property to specify constantization. For now catch special case to avoid conflict with context this.X and this.Y.
+  if ( str === 'x' ) return 'X_';
+  if ( str === 'y' ) return 'Y_';
+  return str.replace(/[a-z_][^0-9a-z_]/g, function(a) {
+    return a.substring(0,1) + '_' + a.substring(1,2);
+  }).toUpperCase();
+});
+
+var capitalize = memoize1(function(str) {
+  // switchFromProperyName to //SwitchFromPropertyName
+  return str[0].toUpperCase() + str.substring(1);
 });
 
 
@@ -272,16 +377,17 @@ MODEL({
       name: '$UID',
       getter: (function() {
         var id = 1;
-        return function() { return this.$UID__ || (this.$UID__ = id++); };
+        return function() {
+          if ( Object.hasOwnProperty.call(this, '$UID__') ) return this.$UID__;
+          this.$UID__ = id;
+          id++;
+          return this.$UID__;
+        };
       })()
     }
   ],
 
   methods: [
-    function clone() { return this; },
-
-    function deepClone() { return this.clone(); },
-
     function become(other) {
       var local = Object.getOwnPropertyNames(this);
       for ( var i = 0; i < local.length; i++ ) {
@@ -309,12 +415,39 @@ MODEL({
   },
 
   methods: [
+    function clone() { return this.slice(); },
+
+    function deepClone() {
+      var a = this.clone();
+      for ( var i = 0 ; i < a.length ; i++ ) {
+        var o = a[i];
+        if ( o && o.deepClone ) a[i] = o.deepClone();
+      }
+      return a;
+    },
+
     function forEach(f, opt_this) {
       /* Replace Array.forEach with a faster version. */
       if ( ! this || ! f || opt_this ) return this.oldForEach_.call(this, f, opt_this);
 
       var l = this.length;
       for ( var i = 0 ; i < l ; i++ ) f(this[i], i, this);
+    },
+
+    function diff(other) {
+      var added = other.slice(0);
+      var removed = [];
+      for ( var i = 0 ; i < this.length ; i++ ) {
+        for ( var j = 0 ; j < added.length ; j++ ) {
+          if ( this[i].compareTo(added[j]) == 0 ) {
+            added.splice(j, 1);
+            j--;
+            break;
+          }
+        }
+        if ( j == added.length ) removed.push(this[i]);
+      }
+      return { added: added, removed: removed };
     },
 
     function binaryInsert(item) {
@@ -367,7 +500,7 @@ MODEL({
       var i = 0;
       var j = 0;
       var k = 0;
-      while(i < this.length && j < arr.length) {
+      while ( i < this.length && j < arr.length ) {
         var a = compare(this[i], arr[j]);
         if ( a < 0 ) {
           result[k++] = this[i++];
@@ -403,7 +536,7 @@ MODEL({
        * Search for a single element in an array.
        * @param predicate used to determine element to find
        */
-      for (var i = 0;  i < this.length ; i++ ) {
+      for ( var i = 0 ;  i < this.length ; i++ ) {
         var result = map(this[i], i);
         if ( result ) return result;
       }
@@ -420,6 +553,15 @@ MODEL({
       var func = args.shift();
       return this.map(function(x) { return x[func] && x[func].apply(x[func], args); });
     }
+  ],
+
+  properties: [
+    {
+      name: 'memento',
+      getter: function() {
+        throw "Array's can not be memorized properly as a memento.";
+      }
+    }
   ]
 });
 
@@ -428,31 +570,21 @@ MODEL({
   extendsProto: 'String',
 
   methods: [
-    function indexOfIC(a) { return ( a.length > this.length ) ? -1 : this.toUpperCase().indexOf(a.toUpperCase()); },
+    function indexOfIC(a) {
+      return ( a.length > this.length ) ? -1 : this.toUpperCase().indexOf(a.toUpperCase());
+    },
 
     function equals(other) { return this.compareTo(other) === 0; },
 
     function equalsIC(other) { return other && this.toUpperCase() === other.toUpperCase(); },
 
+    // deprecated, use global instead
     function capitalize() { return this.charAt(0).toUpperCase() + this.slice(1); },
 
-    function capitalize() { return this.charAt(0).toUpperCase() + this.slice(1); },
-
+    // deprecated, use global instead
     function labelize() {
       return this.replace(/[a-z][A-Z]/g, function (a) { return a.charAt(0) + ' ' + a.charAt(1); }).capitalize();
     },
-
-    function constantize() {
-      // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
-      // TODO: add property to specify constantization. For now catch special case to avoid conflict with context this.X.
-      return this == "x" ?
-        "X_" :
-        this.replace(/[a-z_][^0-9a-z_]/g, function(a) {
-          return a.substring(0,1) + '_' + a.substring(1,2);
-        }).toUpperCase();
-    },
-
-    function clone() { return this.toString(); },
 
     function compareTo(o) { return ( o == this ) ? 0 : this < o ? -1 : 1; },
 
@@ -460,6 +592,11 @@ MODEL({
     String.prototype.startsWith || function startsWith(a) {
       // This implementation is very slow for some reason
       return 0 == this.lastIndexOf(a, 0);
+    },
+
+    // Polyfil
+    String.prototype.endsWith || function endsWith(a) {
+      return (this.length - a.length) == this.lastIndexOf(a);
     },
 
     function startsWithIC(a) {
@@ -510,11 +647,14 @@ MODEL({
     (function() {
       var oldBind    = Function.prototype.bind;
       var simpleBind = function(f, self) {
+        return function() { return f.apply(self, arguments); };
+        /*
         var ret = function() { return f.apply(self, arguments); };
         ret.toString = function bind() {
           return f.toString();
         };
         return ret;
+        */
       };
 
       return function bind(arg) {
@@ -536,6 +676,15 @@ MODEL({
         return f1.call(this, f2.apply(this, argsToArray(arguments)));
       };
     }
+  ]
+});
+
+
+MODEL({
+  extendsObject: 'Math',
+
+  methods: [
+    function sign(n) { return n > 0 ? 1 : -1; }
   ]
 });
 
@@ -567,11 +716,17 @@ MODEL({
 
       if ( days < 365 ) {
         var year = 1900+this.getYear();
-        var noyear = this.toDateString().replace(" " + year, "");
+        var noyear = this.toDateString().replace(' ' + year, '');
         return noyear.substring(4);
       }
 
       return this.toDateString().substring(4);
+    },
+
+    function equals(o) {
+      if ( ! o ) return false;
+      if ( ! o.getTime ) return false;
+      return this.getTime() === o.getTime();
     },
 
     function compareTo(o){
@@ -598,8 +753,6 @@ MODEL({
 
   methods: [
     function compareTo(o) { return ( o == this ) ? 0 : this < o ? -1 : 1; },
-
-    function clone() { return +this; }
   ]
 });
 
@@ -622,21 +775,6 @@ MODEL({
     }
   ]
 });
-
-
-function defineProperties(proto, fns) {
-  for ( var key in fns ) {
-    try {
-      Object.defineProperty(proto, key, {
-        value: fns[key],
-        configurable: true,
-        writable: true
-      });
-    } catch (x) {
-      console.log('Warning: ' + x);
-    }
-  }
-}
 
 
 console.log.json = function() {
@@ -678,12 +816,14 @@ document.put = function(obj) {
 };
 
 
-// Promote webkit apis
+// Promote webkit apis; fallback on Node.js alternatives
 // TODO(kgr): this should be somewhere web specific
 
-window.requestFileSystem     = window.requestFileSystem || window.webkitRequestFileSystem;
-window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
-
+window.requestFileSystem     = window.requestFileSystem ||
+  window.webkitRequestFileSystem;
+window.requestAnimationFrame = window.requestAnimationFrame ||
+  window.webkitRequestAnimationFrame ||
+  window.setImmediate;
 if ( window.Blob ) {
   Blob.prototype.slice = Blob.prototype.slice || Blob.prototype.webkitSlice;
 }
@@ -703,3 +843,33 @@ if ( window.XMLHttpRequest ) {
     xhr.send(opt_data);
   };
 }
+
+String.fromCharCode = (function() {
+  var oldLookup = String.fromCharCode;
+  var lookupTable = [];
+  return function(a) {
+    if ( arguments.length == 1 ) return lookupTable[a] || (lookupTable[a] = oldLookup(a));
+    var result = '';
+    for ( var i = 0 ; i < arguments.length ; i++ )
+      result += lookupTable[arguments[i]] || (lookupTable[arguments[i]] = oldLookup(arguments[i]));
+    return result;
+  };
+})();
+
+var MementoProto = {};
+Object.defineProperty(MementoProto, 'equals', {
+  enumerable: false,
+  configurable: true,
+  value: function(o) {
+    var keys = Object.keys(this);
+    var otherKeys = Object.keys(o);
+    if ( keys.length != otherKeys.length ) {
+      return false;
+    }
+    for ( var i = 0 ; i < keys.length ; i++ ) {
+      if ( ! equals(this[keys[i]], o[keys[i]]) )
+        return false;
+    }
+    return true;
+  }
+});

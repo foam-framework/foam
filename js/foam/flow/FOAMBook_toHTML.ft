@@ -1,0 +1,861 @@
+<book-container id="%%id">
+  <book>
+
+    <watermark><text>draft</text></watermark>
+
+    <title-page>
+      <book-title>
+        <foam style="margin-left: -95px; margin-top: -122px; min-height:70px;
+                     height:70px; position: absolute;"
+              model="foam.demos.graphics.Logo" width="300" height="100"
+              font="70px Georgia" duration="15000">
+          <colours>
+            <colour>#555</colour>
+            <colour>#666</colour>
+            <colour>#777</colour>
+            <colour>#888</colour>
+            <colour>#444</colour>
+          </colours>
+        </foam>
+      </book-title>
+      <sub-title>
+        The Documented Parts
+      </sub-title>
+      <author>
+        <firstName>Kevin</firstName>
+        <middleName>Glen</middleName>
+        <middleName>Roy</middleName>
+        <lastName>Greer</lastName>
+      </author>
+      <author>
+        <firstName>Mark</firstName>
+        <middleName>Stephen</middleName>
+        <lastName>Dittmer</lastName>
+      </author>
+    </title-page>
+
+    <toc />
+
+    <section enumerate="false">
+      <title>Foreword</title>
+      <p>
+        This book is a gentle introduction to FOAM programming. The book
+        assumes that you have some experience programming in
+        Javascript. Experience with object-oriented languages such as Java or
+        C++ is helpful, but not necessary. Whenever possible, the book
+        teaching FOAM programming through interactive examples. So, let's get
+        to it.
+      </p>
+
+      <section enumerate="false">
+        <title>First Steps</title>
+        <p>
+          Take a look at <b>Your First FOAM Class</b>. Start by just
+          skimming over the whole class. You'll notice that the structure and
+          meaning of the class is quite intuitive. The class has
+          a <code>name</code>; it lives in a <code>package</code> (i.e., a
+          namespace); it has several <code>properties</code>, each with
+          a <code>name</code> and some other information.
+        </p>
+        <p>
+          From a technical perspective, here the key things to note:
+        </p>
+
+        <ul>
+          <li>Classes are declared by invoking the <glossary-term>
+            <term>CLASS()</term>
+            <definition>
+              The global function used for registering a new FOAM class. The
+              function gets passed a class model, i.e., a Javascript object
+              that describes the class.
+            </definition>
+          </glossary-term> function,
+            and passing it an object that describes the class model.</li>
+          <li>Every class must have a <code>name</code>, and optionally
+            (though strongly encouraged), a <code>package</code>.</li>
+          <li>After that, classes have a variety of collections, modelled
+            using Javascript arrays.</li>
+        </ul>
+
+        <aside extraClassName="wide">
+          <code-sample>
+            <title>Your First FOAM Class</title>
+            <source>
+              <code-snippet>
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'Person',
+  package: 'foam.sandbox',
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'firstName',
+      label: 'Given Name(s)',
+      defaultValue: 'John'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'lastName',
+      label: 'Surname',
+      defaultValue: 'Smith'
+    },
+    {
+      model_: 'DateProperty',
+      name: 'dateOfBirth',
+      factory: function() {
+        return 'January 1, 2000';
+      }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'age',
+      getter: function() {
+        // Thanks to André Snede Hansen on Stackoverflow for
+        // this procedure. It's not perfect, but close enough.
+        var ageDifMs = Date.now() -
+            this.dateOfBirth.getTime();
+        var ageDate = new Date(ageDifMs);
+        return Math.abs(ageDate.getUTCFullYear() -
+            1970);
+      }
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+
+        <p>
+          For this simple example, the only collection on the model
+          is <code>properties</code>. It's worth noting that, by convention,
+          this class would live in the
+          file <code>js/foam/sandbox/Person.js</code>; classes modelled in
+          Javascript live in <code>js/</code>, and files are stored according
+          to their <code>package</code> and <code>name</code>.
+        </p>
+        <p>
+          Let's take a look at the properties. That <glossary-term>
+            <term>model_</term>
+            <definition>
+              This is the object key to attach to a model definition to
+              describe the class of FOAM object to build. This can be a
+              string containing a package + model name, or a
+              FOAM <code>Model</code> object.
+            </definition>
+          </glossary-term> annotation might be the first thing that looks a
+          bit strange. It's kind of like a type annotation, but
+          different. The <glossary-term><term>model_</term></glossary-term> key denotes the model to use for
+          construcing the current object. In this case, that object is a
+          property, so <code><glossary-term><term>model_</term></glossary-term>: 'StringProperty'</code> denotes the type
+          of property, not the type of data stored in the property (hence
+          the <code>Property</code> postfix). The rest of the property
+          annotations are as follows:
+        </p>
+
+          <ul>
+            <li><glossary-term>
+            <term>name</term>
+            <definition>
+              The object key for the in-code name of a modelled object.
+            </definition>
+          </glossary-term>: The name of the property in code; e.g., in
+              a <code>Person</code> method, we may refer
+              to <code>this.firstName</code>.</li>
+            <li><glossary-term>
+            <term>label</term>
+            <definition>
+              The object key for the user-facing name (i.e., text label) of a modelled object.
+            </definition>
+          </glossary-term>: The text label to use when creating a
+              view of the property in the application's UI.</li>
+            <li><glossary-term>
+            <term>defaultValue</term>
+            <definition>
+              The object key for the default value of a modelled object
+              (usually a property). Note that default values are shared by
+              all instances of an object. As such, most default values that
+              are not of a primitive type should be declared
+              using <code>factory</code>,
+              and <b>not</b> <code>defaultValue</code>. Both <code>defaultValue</code>
+              and <code>defaultValueFn</code> do not emit property change
+              events.
+            </definition>
+          </glossary-term>: The value to use when no value is
+              provided.</li>
+            <li><glossary-term>
+            <term>factory</term>
+            <definition>
+              The object key for the default factory a modelled object
+              (usually a property). Note that the factory is only invoked if
+              no value is injected at creation time. Factories should return
+              the intended value for the object/property. Also note that
+              factories trigger property change events,
+              whereas <code>defaultValue</code>
+              and <code>defaultValueFn</code> do not.
+            </definition>
+          </glossary-term>: Like <code>defaultValue</code>, except
+              the provided function is run every time an instance is created
+              with no value provided.</li>
+            <li><glossary-term>
+            <term>getter</term>
+            <definition>
+              The object key for the getter for a modelled object (usually a
+              property). When the object is looked up, the getter will be
+              invoked and its return value will be delivered to the code
+              looking for the object.
+            </definition>
+          </glossary-term>: A function to run when retrieving the
+              property value; similar to Java
+              convention <code>getSomeProperty()</code>, or
+              the <code>get</code> key used in
+              Javascript's <code>Object.defineProperty()</code>.</li>
+          </ul>
+
+        <p>
+          This example illustrates several powerful features of FOAM. FOAM
+          encourages a declarative style of modelling applications as
+          data. No need for manually coding up getters and setters that
+          procedurally inject defaults, UI labels, or other values <i>for
+          every member variable</i>. You provide a concise description via
+          the class model and the framework wires everything up for
+          you. Notice that the <code>dateOfBirth</code> factory returns
+          a <code>String</code>. However, it's a <code>DateProperty</code>,
+          so is automatically adapted into a Javascript <code>Date</code>
+          object for easy use in our <code>age</code> getter.
+        </p>
+        <section enumerate="false">
+          <title>Try It Out</title>
+          <p>
+            Let's try making some changes to Your First FOAM Class.. First
+            we'll add support for middle names. Add a property
+            named <code>middleNames</code> with <code><glossary-term><term>model_</term></glossary-term>:
+            'StringArrayProperty'</code>; give it a factory that returns the
+            empty array, a label of <code>'Middle Name'</code> and annotate
+            it with <code><glossary-term>
+                <term>plural</term>
+                <definition>
+                  The object key for the plural form of a user-facing name
+                  (i.e., text label) of a modelled object.
+                </definition>
+              </glossary-term>: 'Middle Names'</code>. Don't forget to drop
+            the <code>(s)</code> in the <code>firstName</code> label to keep
+            things consistent.
+          </p>
+          <p>
+            Now let's make the class behaviour a little more efficient. Right
+            now, the <code>age</code> getter recomputes the age every
+            time. That's silly. The age really only needs to be recomputed
+            when we set the date of birth. This can be achieved using FOAM's
+            support for reactive programming. Cut the <code>age</code> getter
+            to the clipboard. (You may want to paste it somewhere else in
+            case you do more cutting or copying along the way.). Now, on
+            the <code>dateOfBirth</code> property, add <code><glossary-term>
+                <term>postSet</term>
+                <definition>
+                  The object key for a function to run after the value of a
+                  modelled object (usually a property) is set. The function
+                  is passed two parameters: the old and new values.
+                </definition>
+              </glossary-term>: function(old, nu) { this.age = this.computeAge(); }</code>. This
+            callback will fire every time <code>dateOfBirth</code>
+            changes, <i>after</i> the change has taken place. The callback is
+            be passed the old and nu (or
+            "<code>nu</code>") <code>dateOfBirth</code> values.
+          </p>
+          <p>
+            Before we can declare our efficient age calculating code
+            complete, we need a <code>computeAge</code> method. Beneath
+            the <code>properties</code> array, add a <code>methods</code>
+            array with one element
+            with <code><glossary-term><term>name</term></glossary-term>: 'computeAge'</code>. Finally, add a <code>code</code>
+            annotation to your one-and-only method and paste the function for
+            the old <code>age</code> getter. That's it! Now, if we ever have
+            code that repeatedly accesses that <code>age</code> property, we
+            won't be slowed down by redundant computations.
+          </p>
+
+        <aside extraClassName="wide">
+          <code-sample>
+            <title>Working with the Person Class</title>
+            <source>
+              <code-snippet>
+                <title>Person Class</title>
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'Person',
+  package: 'foam.sandbox',
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'firstName',
+      label: 'Given Name',
+      defaultValue: 'John'
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'middleNames',
+      singular: 'middleName',
+      plural: 'Middle Names'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'lastName',
+      label: 'Surname',
+      defaultValue: 'Smith'
+    },
+    {
+      model_: 'DateProperty',
+      name: 'dateOfBirth',
+      factory: function() {
+        return 'January 1, 2000';
+      },
+      postSet: function(old, nu) {
+        this.age = this.computeAge();
+      }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'age'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'computeAge',
+      code: function() {
+        // Thanks to André Snede Hansen on Stackoverflow for
+        // this procedure. It's not perfect, but close enough.
+        var ageDifMs = Date.now() -
+            this.dateOfBirth.getTime();
+        var ageDate = new Date(ageDifMs);
+        return Math.abs(ageDate.getUTCFullYear() -
+            1970);
+      }
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+            <source>
+              <code-snippet>
+                <title>Javascript</title>
+                <src language="javascript">
+                  <code>console.log.json.put(
+  X.foam.sandbox.Person.create()
+);</code>
+                </src>
+              </code-snippet>
+            </source>
+            <source>
+              <code-snippet>
+                <title>HTML</title>
+                <src language="html">
+                  <code><foam-tag model="foam.sandbox.Person"></foam-tag></code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+
+          <p>
+            So we have this <code>Person</code> class. What can we do with
+            it? To start, let's just try instantiating one and printing one
+            to the console. Take a look at <b>Working with the Person
+            Class</b>. Notice that FOAM has decorated <code>console</code>
+            with a JSON-logging object. <glossary-term>
+              <term>console.log.json</term>
+              <definition>
+                The pretty-printed JSON <code>Sink</code>
+              </definition>
+            </glossary-term> behaves as a <glossary-term>
+              <term>Sink</term>
+              <definition>
+                An interface for receiving events related to
+                a <code>DAO</code>. Sinks are notified of new objects coming
+                into the <code>DAO</code> via their <code>put(obj)</code>
+                method; similarly notification of object removal occurs via
+                the <code>remove(obj)</code> method. Sinks are also notified
+                that a sequence of puts is complete via
+                the <code>eof()</code> method, and notified of errors via
+                the <code>error(err)</code> method. Note that Sinks recieve a
+                copy of the object from the DAO; modifying the object passed
+                to the <code>put(obj)</code> or <code>remove(obj)</code> Sink
+                methods will not affect the collection stored in the DAO.
+              </definition>
+            </glossary-term>. A <glossary-term><term>Sink</term></glossary-term>
+            is anything that receives events from a data storage collection
+            in FOAM. In this case, the collection is messages written to the
+            console. Notice that JSON output to the console is missing
+            several properties (e.g., <code>firstName</code>
+            and <code>lastName</code>). This is because the class stores the
+            default values for these fields, and the current values match the
+            defaults. This optimization is useful to, for example, save
+            bandwidth when sending a large number of FOAM objects over the
+            network; chances are, many of the objects will contain at
+            least <i>some</i> values that match the defaults.
+          </p>
+          <p>
+            We pass in the return value
+            from <code>X.foam.sandbox.Person.create()</code>.
+            <glossary-term>
+              <term>X</term>
+              <definition>
+                A FOAM conteXt object. Contexts form a tree of prototypes or
+                sub-contexts. As a result, values from parent contexts appear
+                in the child context, and overwritten values in child
+                contexts do not affect parent contexts. Contexts are intended
+                to avoid polluting the Javascript global namespace and
+                facilitate passing values between related components that do
+                not have immediate references to each other. The
+                unqualified <code>X</code> is the global context,
+                whereas <code>this.X</code> within a FOAM method (or similar)
+                refers to the modelled object's context. FOAM views
+                automatically construct a sub-context for each of their child
+                views. Other sub-contexts must be constructed manually
+                using <code>X.sub()</code>.
+              </definition>
+            </glossary-term> is the global conteXt object. FOAM context
+            objects are used to encapsulate shared state without polluting
+            the global namespace. In this case, we look up the
+            package-qualified model (<code>foam.sandbox.Person</code>) and
+            invoke the <glossary-term>
+              <term>create()</term>
+              <definition>
+                The <code>create()</code> method attached to a FOAM class is
+                the class instance constructor function. This method is
+                optionally passed an object containing key/value pairs that
+                describe initial property values for the object.
+              </definition>
+            </glossary-term> method to instantiate a new <code>Person</code>
+            object. Note that FOAM classes are <b>not</b> constructor
+            functions for use with the <code>new</code> keyword. All FOAM
+            object instances are constructed by
+            invoking <glossary-term><term>create()</term></glossary-term>. The
+            create method can be passed an object containing values for
+            object properties. Try passing an object literal
+            to <glossary-term><term>create()</term></glossary-term> in the
+            <b>Javascript</b> example code; you can set any of the properties
+            listed in the <b>Person Class</b> code snippet.
+          </p>
+          <p>
+            The HTML portion of this example renders a view of a person. FOAM
+            has a whole suite of views. The default view of a FOAM object is
+            a <code>foam.ui.DetailView</code>, which renders labels and
+            values for each property. FOAM also supports specifying property
+            values as <code>foam-tag</code> attributes, or as tags inside
+            the <code>foam-tag</code>. Try replacing the <b>HTML</b> code
+            with this:
+          </p>
+
+            <blockquote>
+              <pre>&lt;foam-tag model="foam.sandbox.Person"&gt;
+  &lt;firstName&gt;James&lt;/firstName&gt;
+  &lt;lastName&gt;Dean&lt;/lastName&gt;
+&lt;/foam-tag&gt;</pre></blockquote>
+
+          <p>
+            Run the code again and you'll see that the view has changed to
+            show you James Dean. FOAM views support two-way data binding, so
+            if you render a view of a FOAM object, the view and the object
+            will stay in sync.
+          </p>
+        </section>
+        <section enumerate="false">
+          <title>DAOs, Events, and Reactive Programming</title>
+          <p>
+            Have you worked on a Javascript project where you needed to fetch
+            data over the wire from multiple sources, then wire up a bunch of
+            callbacks to deal with data arriving, network and data extraction
+            errors, and view updates? Then you want to try adding offline
+            support and you have to shim in a mess of <code>IndexedDB</code>
+            callbacks between your network code and your views. What a mess.
+          </p>
+          <p>
+            FOAM provides several tools for dealing with common application
+            development issues like these. One of the more powerful tools is
+            a unified interface for data collections. We call this interface
+            a <glossary-term>
+              <term>DAO</term>
+              <definition>
+                Short for Data Access Object. This is FOAM's unified data
+                collection interface. The <code>DAO</code> interface extends
+                the <code>Sink</code> interface. In addition
+                to <code>put(obj)</code>, <code>remove(obj)</code>, <code>eof()</code>,
+                and <code>error(err)</code>, DAOs
+                support <code>find(id)</code> for locating an object by ID,
+                and <code>select(sink, options)</code> for processing
+                queries, and <code>removeAll()</code> for emptying the
+                collection. Of course, in the case of a
+                DAO, <code>put(obj)</code> and <code>remove(obj)</code> are
+                treated as commands to modify the underlying collection,
+                whereas for a Sink, these methods serve as notifications of
+                events occurring on the underlying DAO. Most DAOs also
+                implement convenience functions for attaching query options
+                such
+                as <code>skip(num)</code>, <code>limit(num)</code>, <code>orderBy(expr)</code>,
+                and <code>groupBy(expr)</code>.
+              </definition>
+            </glossary-term>, or Data Access Object. DAOs provide a simple
+            interface for reading from collections
+            (<code>find(id)</code>, <code>select(sink, options)</code>) and
+            writing to collections
+            (<code>put(obj)</code>, <code>remove(obj)</code>, <code>removeAll()</code>). What's
+            more, FOAM provides DAO implementations for a wide variety of
+            data storage modes, including an indexed in-memory store for
+            caching (<code>MDAO</code>), IndexedDB for client-side
+            persistence (<code>foam.dao.IDBDAO</code>), REST for network
+            requests (<code>foam.core.dao.RestDAO</code>), and MongoDB for
+            server code (<code>MongoDAO</code>). Since DAOs are often chained
+            together in common patterns, FOAM also provides a high-level DAO
+            setup interface called <code>EasyDAO</code>.
+          </p>
+
+        <aside extraClassName="wide">
+          <code-sample>
+            <title>Your First DAO</title>
+            <source>
+              <code-snippet>
+                <title>Person Class</title>
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'Person',
+  package: 'foam.sandbox',
+
+
+  properties: [
+    {
+      model_: 'IntProperty',
+      name: 'id',
+      defaultValue: 0,
+      hidden: true
+    },
+    {
+      model_: 'StringProperty',
+      name: 'firstName',
+      label: 'Given Name',
+      defaultValue: 'John'
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'middleNames',
+      plural: 'Middle Names'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'lastName',
+      label: 'Surname',
+      defaultValue: 'Smith'
+    },
+    {
+      model_: 'DateProperty',
+      name: 'dateOfBirth',
+      factory: function() {
+        return 'January 1, 2000';
+      },
+      postSet: function(old, nu) {
+        this.age = this.computeAge();
+      }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'age'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'computeAge',
+      code: function() {
+        // Thanks to André Snede Hansen on Stackoverflow for
+        // this procedure. It's not perfect, but close enough.
+        var ageDifMs = Date.now() -
+            this.dateOfBirth.getTime();
+        var ageDate = new Date(ageDifMs);
+        return Math.abs(ageDate.getUTCFullYear() -
+            1970);
+      }
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+            <source>
+              <code-snippet>
+                <title>Person DAO Controller</title>
+                <src language="javascript">
+                  <code>CLASS({
+  name: 'PersonDAOController',
+  package: 'foam.sandbox',
+
+  requires: [
+    'foam.dao.EasyDAO',
+    'foam.dao.IDBDAO',
+    'foam.core.types.DAOProperty',
+    'foam.ui.DAOListView',
+    'foam.sandbox.Person'
+  ],
+
+  properties: [
+    {
+      model_: 'ArrayProperty',
+      name: 'people',
+      hidden: true,
+      factory: function() {
+        return [
+          this.Person.create({ firstName: 'Margaret', lastName: 'Atwood' }),
+          this.Person.create({ firstName: 'Robertson', lastName: 'Davies' }),
+          this.Person.create({ firstName: 'Joseph', lastName: 'Boyden' }),
+          this.Person.create({ firstName: 'Alice', lastName: 'Munro' })
+        ];
+      }
+    },
+    {
+      name: 'loadedFromArray',
+      defaultValue: false
+    },
+    {
+      model_: 'foam.core.types.DAOProperty',
+      name: 'dao',
+      factory: function() {
+        return this.EasyDAO.create({
+          daoType: 'IDB',
+          model: this.Person,
+          seqNo: true
+        });
+      },
+      view: 'foam.ui.DAOListView'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'init',
+      code: function() {
+        this.SUPER.apply(this, arguments);
+        var self = this;
+        this.dao.select(COUNT())(function(c) {
+          if ( c.count === 0 ) {
+            self.people.forEach(function(person) {
+              self.dao.put(person);
+            });
+            self.loadedFromArray = true;
+          }
+        });
+      }
+    }
+  ]
+});</code>
+                </src>
+              </code-snippet>
+            </source>
+            <source>
+              <code-snippet>
+                <title>HTML</title>
+                <src language="html">
+                  <code><foam-tag model="foam.sandbox.PersonDAOController"></foam-tag></code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+        </aside>
+
+          <p>
+            Take a look at <b>Your First DAO</b>.
+          </p>
+        </section>
+      </section>
+    </section>
+
+    <section>
+      <title>Introduction</title>
+      <p>
+        Welcome to the wonderful world of FOAM!
+      </p>
+      <section>
+        <title>What is FOAM?</title>
+        <p>
+          FOAM is a Javascipt framework for rapid application development. FOAM
+          emphasizes detailed class specification, reactive programming, and
+          modular design. If you're unfamiliar with any of these concepts,
+          don't worry. There will be lots of chances for learning-by-doing as
+          we go along.
+        </p>
+      </section>
+      <section>
+        <title>What FOAM Isn't</title>
+        <p>
+          <b>FOAM is not a language.</b> FOAM, the framework, and FOAM
+          applications are written in Javascript. No extension required
+          (ECMAScript 6, or otherwise).
+        </p>
+        <p>
+          <b>FOAM is not a transpiler.</b> FOAM does support some simple
+          templating for HTML and CSS, but these templates very lightweight;
+          their syntax is straightforward and they are translated by the
+          framework to HTML/CSS/Javascript lightning fast.
+        </p>
+      </section>
+    </section>
+
+    <section>
+      <title>Errors, Omissions, and Lies</title>
+      <aside class="tldr">
+        FOAM is a meta-programming framework, implemented in Javascript, for
+        modelling applications and their components at a high level. This
+        facilitates rapid development and deployment across various languages
+        and platforms. FOAM is a framework, not a language, compiler, or
+        transpiler.
+      </aside>
+      <p>
+        If you've spent time poking around in the FOAM codebase, you might
+        think that there's more to this FOAM thing than
+        yet-another-Javascript-framework. You'd be right. This section
+        contains some truths about FOAM that are difficult to introduce
+        before you're familiar with the basics of the framework.
+      </p>
+      <section>
+        <title>What is FOAM, <i>Really</i>?</title>
+        <p>
+          "FOAM" is, in fact, an acronym. FOAM stands for Feature-Oriented
+          Active Modeller. FOAM is a meta-programming framework for rapid
+          software development. FOAM is implemented in Javascript, but the
+          framework is language agnostic (more on that in the next
+          section). For now, let's spell it out.
+        </p>
+        <p class="first-cap">
+          F is for <i>feature</i>. In FOAM, a
+          <glossary-term>
+            <term>Feature</term>
+            <definition>
+              Features are units of data and behaviour, made as small as
+              possible, to facilitate reuse through composition of many
+              features.
+            </definition>
+          </glossary-term> is a fine-grained unit of encapsulation for data
+          and behaviours. Behaviours are really a special sort of data in
+          FOAM, but let's not get ahead of ourselves. Features should be as
+          small as possible to facilitate flexible composition of features
+          into <glossary-term>
+            <term>Models</term>
+            <definition>
+              Models are essentially collections of
+              <glossary-term><term>features</term></glossary-term>. FOAM's
+              core model builder supports a variety of standard features,
+              such as
+              <glossary-term><term>properties</term></glossary-term>,
+              <glossary-term><term>methods</term></glossary-term>,
+              <glossary-term><term>actions</term></glossary-term>
+              (user-initiated methods),
+              <glossary-term><term>listeners</term></glossary-term>
+              (pre-bound methods),
+              <glossary-term><term>templates</term></glossary-term> (HTML,
+              CSS, and others),
+              <glossary-term><term>packages</term></glossary-term> (with
+              dependency injection).
+            </definition>
+          </glossary-term>.
+        </p>
+        <p class="first-cap">
+          O is for <i>oriented</i> (as in <i>feature-oriented</i>). Not
+          featureful (bloated with features). Not feature-driven
+          (everything's a feature). Feature-oriented. This means that FOAM is
+          strongly encourages encapsulating things into simple features that
+          can be composed to give rise to complex things. Truth be told, FOAM
+          is model-driven, but that's jumping ahead again.
+        </p>
+        <aside>
+          In addition to being <i>active</i>, FOAM is
+          also <i>reactive</i>. Many of the tools in the FOAM toolbox
+          encourage reactive programming. This allows developers to define
+          their application in terms of responding to data changes or events
+          when it is natural to do so.
+        </aside>
+        <p class="first-cap">
+          A is for <i>active</i>. To understand what this means, we need to
+          understand FOAM's perspective on data and behaviours. By data we
+          mean represented information (constants, variables, numbers,
+          strings, and the like). By behavoiurs we mean something that's
+          runnable (code, functions, procedures, methods, and so on). FOAM
+          deliberately blurs the line between the two. After all, behaviours
+          need to be represented; so behaviours are simply data represented
+          for a special purpose: computationally manipulating other data. In
+          FOAM, there is virtually no distinction between the two. Code is
+          simply data that can manipulate other data. In this sense, FOAM
+          code changes itself. For example, all FOAM classes --
+          called <glossary-term><term>Models</term></glossary-term> -- are
+          actually data objects that can be modified and extended at run
+          time.
+        </p>
+        <p class="first-cap">
+          M is for <i>modeller</i>. As mentioned above, FOAM objects are
+          instances of FOAM
+          <glossary-term><term>Models</term></glossary-term>, which are
+          composed of features.
+          <glossary-term><term>Models</term></glossary-term> are the basic
+          building block for developing FOAM applications, hence the FOAM
+          framework is a toolset for <i>modelling</i> applications. It's
+          worth noting that FOAM makes heavy use of the <i>MVC pattern</i> to
+          structure an environment for modelling applications. We have found
+          this approach to be a flexible and concise means for expressing
+          common patterns that arise in developing applications. If you are
+          unfamiliar with MVC, we encourage you to learn the basics before
+          reading this book. Not only is much of FOAM itself written using
+          MVC, but the toolset encourages developers to adopt this approach
+          when appropriate.
+        </p>
+        <p>
+          Make sense? Some of these terms are probably unfamiliar, so let's
+          recap. FOAM is a modelling framework for expressing <i>concepts</i>
+          at a high level. These <i>concepts</i> are realized by constructing
+          FOAM
+          <glossary-term><term>Models</term></glossary-term>, which resemble
+          classes in languages like Java and C++. FOAM encourages
+          expressing <i>concepts</i> through small
+          <glossary-term><term>Features</term></glossary-term> that can be
+          combined to give rise to a
+          <glossary-term><term>Model</term></glossary-term> of
+          the <i>concept</i> you have in mind.
+        </p>
+        <p>
+          When you start building something with FOAM, remember this:
+        </p>
+        <p class="center">
+          <b><i>Model the concept. Express it through features.</i></b>
+        </p>
+      </section>
+      <section enumerate="false">
+        <title>What FOAM Isn't, <i>Really</i></title>
+        <p>
+          <b>FOAM is not a language. Really.</b> FOAM's meta-programming
+          features allow it to interact with various languages and
+          environments, but that still doesn't make FOAM a language unto
+          itself. FOAM code is written in Javascript.
+        </p>
+        <p>
+          <b>FOAM is not a transpiler. Really.</b> FOAM classes are modelled
+          at a higher level than the language-level. This allows FOAM to
+          generate code in various languages, but <i>that is not what a
+          transpiler does</i>. A transpiler directly and completely simulates
+          all the features of one language in some other language. Many
+          transpilers generate inefficient code not because they are poorly
+          written, but because the source language and target language have
+          radically different opinions on how code should be written. Hence,
+          simulating one language in the other is slow. Modelling classes at
+          a high level, <i>above</i> the language-level, allows FOAM to
+          construct performant code in a variety of environments by being
+          less opinionated about the implementation details than a typical
+          programming language.
+        </p>
+      </section>
+    </section>
+
+    <glossary />
+
+  </book>
+</book-container>

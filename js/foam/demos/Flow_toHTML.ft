@@ -1,0 +1,115 @@
+<div style="margin: 10px;">
+  <h1>Flow Demo</h1>
+
+  <toc />
+
+  <section title="Chapter">
+    This is chapter 1.
+
+    <section title="Sub-Chapter">
+      Sub-Chapter Stuff<br>
+<!--    <foam model="foam.demos.graphics.EyeCView"/> -->
+    <foam model="foam.demos.graphics.EyesCView"/>
+<!--    <foam model="foam.demos.graphics.Dragon"/> -->
+
+      <section title="Sub-Sub-Chapter">
+        Sub-Sub-Chapter Stuff
+      </section>
+      <section title="Sub-Sub-Chapter">
+        Sub-Sub-Chapter Stuff
+      </section>
+    </section>
+
+    <section title="Sub-Chapter">
+      More Sub-Chapter Stuff
+    </section>
+
+  </section>
+
+  <section title="Chapter">
+    This is chapter 2.
+  </section>
+
+  <circle color="blue" x="100" y="20" r="20"/>
+
+  <!-- <solar/> -->
+
+  <section title="Chapter">
+    This is chapter 3.
+
+    <code-sample>
+      <source>
+        <code-snippet title="Code Sample 1">
+          <src language="javascript" code="console.log(1+2);">
+        </code-snippet>
+      </source>
+    </code-sample>
+
+    <code-sample>
+      <source>
+        <code-snippet title="Code Sample 2">
+          <src language="javascript" >
+            <code>console.warn("Danger, Will Robinson!");</code>
+          </src>
+        </code-snippet>
+      </source>
+    </code-sample>
+
+    <code-sample>
+      <source>
+        <code-snippet title="Code Sample 3">
+          <src language="javascript">
+            <code>console.assert(true, "Error: Truth is falsity!");
+console.assert(false, "Expected error: Falsity is falsity.");</code>
+          </src>
+        </code-snippet>
+      </source>
+    </code-sample>
+
+  </section>
+
+  Image: <foam model="foam.graphics.ImageCView" src="/apps/mbug/images/logo.png" width="200" height="200"/> :Done
+
+<foam model="foam.graphics.ImageCView" src="https://mdn.mozillademos.org/files/5397/rhino.jpg" x="10" y="10" width="200" height="200"/>
+
+<br><br>Card Grid:<br>
+  <foam model="foam.flow.Grid">
+    <card>Card1 blah</card>
+    <card>Card2 blah<br>Line2<br>Line3</card>
+    <card>Card3 blah</card>
+    <card>Card4 blah</card>
+    <card>Card5 blah</card>
+  </foam>
+<br>
+
+<br><br>Card Deck:<br>
+  <foam model="foam.flow.CardDeck">
+    <card>Card1 blah</card>
+    <card><foam model="foam.demos.ExpandingCard"/></card>
+    <card>Card2 blah<br>Line2<br>Line3</card>
+    <card>Card3 blah</card>
+    <card>Card4 blah</card>
+    <card>Card5 blah</card>
+  </foam>
+<br>
+
+Slides:
+
+  <slides style="width: 820px; height: 450px;">
+    <slide><circle color="blue"  x="200" y="45" r="40"/></slide>
+    <slide><foam model="foam.demos.physics.Bubbles" width="800" height="400"/></slide>
+    <slide><foam model="foam.demos.physics.Spring" n="10" width="800" height="400"/></slide>
+    <slide><circle color="red"   x="100" y="45" r="40"/></slide>
+    <slide><circle color="green" x="150" y="45" r="40"/></slide>
+    <slide>A Slide without a circle!</slide>
+    <slide>
+      Two to make up for the last slide:<br>
+      <circle color="yellow"  x="200" y="45" r="40"/>
+      <circle color="purple"  x="200" y="45" r="40"/>
+    </slide>
+    <slide><foam model="foam.demos.pong.Pong"/></slide>
+    <slide><foam model="foam.demos.Flow"/></slide>
+  </slides>
+
+  The end.
+</div>

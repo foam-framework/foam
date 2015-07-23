@@ -27,7 +27,7 @@ sub-component to access dependencies from the Context which were not
 dependencies of the parent.
 
 Ex. Suppose that you have an AddressView with a 'state' field which
-uses a 'TextFieldView'.  If some user of this Model wants to replace
+uses a 'foam.ui.TextFieldView'.  If some user of this Model wants to replace
 the default sub-view with a StateView and that View has a dependency
 on the StateDAO, then this would break dependency-injection because
 the AddressView was not dependent on the StateDAO.  With Contexts, the

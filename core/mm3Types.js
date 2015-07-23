@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-var StringProperty = Model.create({
+CLASS({
+  name: 'StringProperty',
   extendsModel: 'Property',
 
-  name:  'StringProperty',
-  help:  "Describes a properties of type String.",
+  help: 'Describes a properties of type String.',
 
   properties: [
     {
@@ -37,9 +37,10 @@ var StringProperty = Model.create({
       help: 'The FOAM type of this property.'
     },
     {
-      name: 'preSet',
+      name: 'adapt',
       defaultValue: function (_, v) {
-        return v === undefined || v === null ? '' : v.toString();
+        return v === undefined || v === null ? '' :
+        typeof v === 'function'              ? multiline(v) : v.toString() ;
       }
     },
     {
@@ -51,7 +52,7 @@ var StringProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'TextFieldView'
+      defaultValue: 'foam.ui.TextFieldView'
     },
     {
       name: 'pattern',
@@ -68,11 +69,11 @@ var StringProperty = Model.create({
 });
 
 
-var BooleanProperty = Model.create({
+CLASS({
+  name: 'BooleanProperty',
   extendsModel: 'Property',
 
-  name:  'BooleanProperty',
-  help:  "Describes a properties of type String.",
+  help: 'Describes a properties of type Boolean.',
 
   properties: [
     {
@@ -86,19 +87,19 @@ var BooleanProperty = Model.create({
       name: 'javaType',
       type: 'String',
       displayWidth: 70,
-      defaultValue: 'bool',
+      defaultValue: 'boolean',
       help: 'The Java type of this property.'
     },
     {
       name: 'view',
-      defaultValue: 'BooleanView'
+      defaultValue: 'foam.ui.BooleanView',
     },
     {
       name: 'defaultValue',
       defaultValue: false
     },
     {
-      name: 'preSet',
+      name: 'adapt',
       defaultValue: function (_, v) { return !!v; }
     },
     {
@@ -124,11 +125,11 @@ var BooleanProperty = Model.create({
 });
 
 
-var DateProperty = Model.create({
+CLASS({
+  name:  'DateProperty',
   extendsModel: 'Property',
 
-  name:  'DateProperty',
-  help:  "Describes a properties of type String.",
+  help:  'Describes a properties of type Date.',
 
   properties: [
     {
@@ -151,7 +152,7 @@ var DateProperty = Model.create({
     {
       name: 'view',
       // TODO: create custom DateView
-      defaultValue: 'DateFieldView'
+      defaultValue: 'foam.ui.DateFieldView'
     },
     {
       name: 'prototag',
@@ -161,9 +162,9 @@ var DateProperty = Model.create({
       help: 'The protobuf tag number for this field.'
     },
     {
-      name: 'preSet',
+      name: 'adapt',
       defaultValue: function (_, d) {
-        return typeof d === 'string' ? new Date(d) : d;
+        return (typeof d === 'string' || typeof d === 'number') ? new Date(d) : d;
       }
     },
     {
@@ -185,11 +186,11 @@ var DateProperty = Model.create({
 });
 
 
-var DateTimeProperty = Model.create({
+CLASS({
+  name: 'DateTimeProperty',
   extendsModel: 'DateProperty',
 
-  name:  'DateTimeProperty',
-  help:  "Describes a properties of type String.",
+  help: 'Describes a properties of type DateTime.',
 
   properties: [
     {
@@ -200,7 +201,7 @@ var DateTimeProperty = Model.create({
       help: 'The FOAM type of this property.'
     },
     {
-      name: 'preSet',
+      name: 'adapt',
       defaultValue: function(_, d) {
         if ( typeof d === 'number' ) return new Date(d);
         if ( typeof d === 'string' ) return new Date(d);
@@ -209,17 +210,16 @@ var DateTimeProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'DateTimeFieldView'
+      defaultValue: 'foam.ui.DateTimeFieldView'
     }
   ]
 });
 
 
-var IntProperty = Model.create({
-  extendsModel: 'Property',
-
+CLASS({
   name:  'IntProperty',
-  help:  "Describes a properties of type Int.",
+  extendsModel: 'Property',
+  help:  'Describes a properties of type Int.',
 
   properties: [
     {
@@ -242,11 +242,13 @@ var IntProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'IntFieldView'
+      defaultValue: 'foam.ui.IntFieldView'
     },
     {
-      name: 'preSet',
-      defaultValue: function (_, v) { return parseInt(v || 0); }
+      name: 'adapt',
+      defaultValue: function (_, v) {
+        return typeof v === 'number' ? Math.round(v) : v ? parseInt(v) : 0 ;
+      }
     },
     {
       name: 'defaultValue',
@@ -260,6 +262,20 @@ var IntProperty = Model.create({
       help: 'The protobuf tag number for this field.'
     },
     {
+      name: 'minValue',
+      label: 'Minimum Value',
+      type: 'Int',
+      required: false,
+      help: 'The minimum value this property accepts.'
+    },
+    {
+      name: 'maxValue',
+      label: 'Maximum Value',
+      type: 'Int',
+      required: false,
+      help: 'The maximum value this property accepts.'
+    },
+    {
       name: 'compareProperty',
       defaultValue: function(o1, o2) {
         return o1 === o2 ? 0 : o1 > o2 ? 1 : -1;
@@ -269,10 +285,9 @@ var IntProperty = Model.create({
 });
 
 
-var FloatProperty = Model.create({
-  extendsModel: 'Property',
-
+CLASS({
   name:  'FloatProperty',
+  extendsModel: 'Property',
   help:  'Describes a properties of type Float.',
 
   properties: [
@@ -300,11 +315,27 @@ var FloatProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'FloatFieldView'
+      defaultValue: 'foam.ui.FloatFieldView'
     },
     {
-      name: 'preSet',
-      defaultValue: function (_, v) { return parseFloat(v || 0.0); }
+      name: 'adapt',
+      defaultValue: function (_, v) {
+        return typeof v === 'number' ? v : v ? parseFloat(v) : 0.0 ;
+      }
+    },
+    {
+      name: 'minValue',
+      label: 'Minimum Value',
+      type: 'Float',
+      required: false,
+      help: 'The minimum value this property accepts.'
+    },
+    {
+      name: 'maxValue',
+      label: 'Maximum Value',
+      type: 'Float',
+      required: false,
+      help: 'The maximum value this property accepts.'
     },
     {
       name: 'prototag',
@@ -317,11 +348,10 @@ var FloatProperty = Model.create({
 });
 
 
-var FunctionProperty = Model.create({
-  extendsModel: 'Property',
-
+CLASS({
   name:  'FunctionProperty',
-  help:  "Describes a properties of type Function.",
+  extendsModel: 'Property',
+  help:  'Describes a properties of type Function.',
 
   properties: [
     {
@@ -344,7 +374,7 @@ var FunctionProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'FunctionView'
+      defaultValue: 'foam.ui.FunctionView'
     },
     {
       name: 'defaultValue',
@@ -361,12 +391,12 @@ var FunctionProperty = Model.create({
       }
     },
     {
-      name: 'preSet',
+      name: 'adapt',
       defaultValue: function(_, value) {
         if ( typeof value === 'string' ) {
           return value.startsWith('function') ?
-              eval('(' + value + ')') :
-              new Function(value);
+            eval('(' + value + ')') :
+            new Function(value);
         }
         return value;
       }
@@ -375,11 +405,10 @@ var FunctionProperty = Model.create({
 });
 
 
-var ArrayProperty = Model.create({
+CLASS({
+  name: 'ArrayProperty',
   extendsModel: 'Property',
-
-  name:  'ArrayProperty',
-  help:  "Describes a properties of type Array.",
+  help: 'Describes a property of type Array.',
 
   properties: [
     {
@@ -409,15 +438,17 @@ var ArrayProperty = Model.create({
       defaultValueFn: function() { return this.subType; }
     },
     {
-      name: 'preSet',
+      name: 'adapt',
       defaultValue: function(_, a, prop) {
-        var m = this.X[prop.subType] || GLOBAL[prop.subType];
+        var m = prop.subType_ || ( prop.subType_ =
+          this.X.lookup(prop.subType) || GLOBAL.lookup(prop.subType) );
 
-        // if ( ! Array.isArray(a) ) a = [a];  // ???: Is this a good idea?
-        if ( ! m ) return a;
-
-        for ( var i = 0 ; i < a.length ; i++ )
-          a[i] = a[i].model_ ? FOAM(a[i]) : m.create(a[i]);
+        if ( m ) {
+          for ( var i = 0 ; i < a.length ; i++ ) {
+            if ( ! m.isInstance(a[i]) )
+              a[i] = a[i].model_ ? FOAM(a[i]) : m.create(a[i]);
+          }
+        }
 
         return a;
       }
@@ -425,7 +456,7 @@ var ArrayProperty = Model.create({
     {
       name: 'postSet',
       defaultValue: function(oldA, a, prop) {
-        var name = prop.name + 'ArrayRelay_';
+        var name = prop.nameArrayRelay_ || ( prop.nameArrayRelay_ = prop.name + 'ArrayRelay_' );
         var l = this[name] || ( this[name] = function() {
           this.propertyChange(prop.name, null, this[prop.name]);
         }.bind(this) );
@@ -442,17 +473,24 @@ var ArrayProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'ArrayView'
+      defaultValue: 'foam.ui.ArrayView'
     },
     {
       name: 'factory',
       defaultValue: function() { return []; }
     },
     {
+      name: 'propertyToJSON',
+      defaultValue: function(visitor, output, o) {
+        if ( ! this.transient && o[this.name].length )
+          output[this.name] = visitor.visitArray(o[this.name]);
+      }
+    },
+    {
       name: 'install',
       defaultValue: function(prop) {
         defineLazyProperty(this, prop.name + '$Proxy', function() {
-          var proxy = ProxyDAO.create({delegate: this[prop.name].dao});
+          var proxy = this.X.lookup('foam.dao.ProxyDAO').create({delegate: this[prop.name].dao});
 
           this.addPropertyListener(prop.name, function(_, _, _, a) {
             proxy.delegate = a.dao;
@@ -463,15 +501,26 @@ var ArrayProperty = Model.create({
             configurable: true
           };
         });
+
+        this.addMethod('get' + capitalize(prop.singular), function(id) {
+          for ( var i = 0; i < this[prop.name].length; i++ ) {
+            if ( this[prop.name][i].id === id ) return this[prop.name][i];
+          }
+        });
       }
     },
     {
       name: 'fromElement',
       defaultValue: function(e, p) {
-        var model = FOAM.lookup(e.getAttribute('model') || p.subType, this.X);
-        var o = model.create(null, this.X);
-        o.fromElement(e);
-        this[p.name] = this[p.name].pushF(o);
+        var model = this.X.lookup(e.getAttribute('model') || p.subType);
+        var children = e.children;
+        var a = [];
+        for ( var i = 0 ; i < children.length ; i++ ) {
+          var o = model.create(null, this.Y);
+          o.fromElement(children[i], p);
+          a.push(o);
+        }
+        this[p.name] = a;
       }
     },
     {
@@ -485,11 +534,10 @@ var ArrayProperty = Model.create({
 });
 
 
-var ReferenceProperty = Model.create({
-  extendsModel: 'Property',
-
+CLASS({
   name:  'ReferenceProperty',
-  help:  "A foreign key reference to another Entity.",
+  extendsModel: 'Property',
+  help:  'A foreign key reference to another Entity.',
 
   properties: [
     {
@@ -510,20 +558,21 @@ var ReferenceProperty = Model.create({
       name: 'subKey',
       type: 'EXPR',
       displayWidth: 20,
-      factory: function() { return this.subType + '.ID'; },
+      defaultValue: 'ID',
       help: 'The foreign key that this property references.'
     },
     {
       name: 'javaType',
       type: 'String',
       displayWidth: 10,
-      // TODO: should obtain primary-key type from subType
-      defaultValueFn: function(p) { return 'Object'; },
+      defaultValueFn: function() {
+        return this.X.lookup(this.subType)[this.subKey].javaType;
+      },
       help: 'The Java type of this property.'
     },
     {
       name: 'view',
-      defaultValue: 'TextFieldView'
+      defaultValue: 'foam.ui.TextFieldView'
 // TODO: Uncomment when all usages of ReferenceProperty/ReferenceArrayProperty fixed.
 //      defaultValue: 'KeyView'
     },
@@ -538,11 +587,10 @@ var ReferenceProperty = Model.create({
 });
 
 
-var StringArrayProperty = Model.create({
+CLASS({
+  name: 'StringArrayProperty',
   extendsModel: 'Property',
-
-  name:  'StringArrayProperty',
-  help:  "An array of String values.",
+  help: 'An array of String values.',
 
   properties: [
     {
@@ -572,8 +620,10 @@ var StringArrayProperty = Model.create({
       defaultValue: 50
     },
     {
-      name: 'preSet',
-      defaultValue: function(_, v) { return Array.isArray(v) ? v : [v]; }
+      name: 'adapt',
+      defaultValue: function(_, v) {
+        return Array.isArray(v) ? v : ((v || v === 0) ? [v] : []);
+      }
     },
     {
       name: 'factory',
@@ -588,7 +638,7 @@ var StringArrayProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'StringArrayView'
+      defaultValue: 'foam.ui.StringArrayView'
     },
     {
       name: 'prototag',
@@ -602,74 +652,29 @@ var StringArrayProperty = Model.create({
       defaultValue: false
     },
     {
+      name: 'fromString',
+      defaultValue: function(s, p) {
+        this[p.name] = s.split(',');
+      }
+    },
+    {
       name: 'fromElement',
       defaultValue: function(e, p) {
-        this[p.name] = this[p.name].pushF(e.innerHTML);
+        var val = [];
+        var name = p.singular || 'item';
+        for ( var i = 0 ; i < e.children.length ; i++ )
+          if ( e.children[i].nodeName === name ) val.push(e.children[i].innerHTML);
+        this[p.name] = val;
       }
     }
   ]
 });
 
 
-var DAOProperty = Model.create({
-  extendsModel: 'Property',
-
-  name: 'DAOProperty',
-  help: "Describes a DAO property.",
-
-  properties: [
-    {
-      name: 'type',
-      defaultValue: 'DAO',
-      help: 'The FOAM type of this property.'
-    },
-    {
-      name: 'view',
-      defaultValue: 'ArrayView'
-    },
-    {
-//      model_: 'FunctionProperty',
-      name: 'onDAOUpdate'
-    },
-    {
-      name: 'install',
-      defaultValue: function(prop) {
-        defineLazyProperty(this, prop.name + '$Proxy', function() {
-          if ( ! this[prop.name] ) {
-            var future = afuture();
-            var delegate = FutureDAO.create({
-              future: future.get
-            });
-          } else
-            delegate = this[prop.name];
-
-          var proxy = ProxyDAO.create({delegate: delegate});
-
-          this.addPropertyListener(prop.name, function(_, _, _, dao) {
-            if ( future ) {
-              future.set(dao);
-              future = null;
-              return;
-            }
-            proxy.delegate = dao;
-          });
-
-          return {
-            get: function() { return proxy; },
-            configurable: true
-          };
-        });
-      }
-    }
-  ]
-});
-
-
-var ModelProperty = Model.create({
+CLASS({
   name: 'ModelProperty',
   extendsModel: 'Property',
-
-  help: "Describes a Model property.",
+  help: 'Describes a Model property.',
 
   properties: [
     {
@@ -687,35 +692,41 @@ var ModelProperty = Model.create({
           else
             value = prop.defaultValue;
         }
-        return FOAM.lookup(value, this.X);
+        return this.X.lookup(value);
+      }
+    },
+    {
+      name: 'propertyToJSON',
+      defaultValue: function(visitor, output, o) {
+        if ( ! this.transient ) output[this.name] = o[this.name].id;
       }
     }
   ]
 });
 
 
-var ViewProperty = Model.create({
+CLASS({
   name: 'ViewProperty',
   extendsModel: 'Property',
 
-  help: "Describes a View-Factory property.",
+  help: 'Describes a View-Factory property.',
 
   properties: [
     {
-      name: 'preSet',
+      name: 'adapt',
       doc: "Can be specified as either a function, a Model, a Model path, or a JSON object.",
       defaultValue: function(_, f) {
         if ( typeof f === 'function' ) return f;
 
         if ( typeof f === 'string' ) {
           return function(d, opt_X) {
-            return FOAM.lookup(f, opt_X || this.X).create(d);
+            return (opt_X || this.X).lookup(f).create(d, opt_X || this.Y);
           }.bind(this);
         }
 
         if ( typeof f.create === 'function' ) return f.create.bind(f);
         if ( typeof f.model_ === 'string' ) return function(d, opt_X) {
-          return FOAM(f, opt_X || this.X).copyFrom(d);
+          return FOAM(f, opt_X || this.Y).copyFrom(d);
         }
 
         console.error('******* Unknown view factory: ', f);
@@ -724,13 +735,13 @@ var ViewProperty = Model.create({
     },
     {
       name: 'defaultValue',
-      preSet: function(_, f) { return ViewProperty.PRE_SET.defaultValue.call(this, null, f); }
+      adapt: function(_, f) { return ViewProperty.ADAPT.defaultValue.call(this, null, f); }
     }
   ]
 });
 
 
-var FactoryProperty = Model.create({
+CLASS({
   name: 'FactoryProperty',
   extendsModel: 'Property',
 
@@ -746,7 +757,7 @@ var FactoryProperty = Model.create({
 
         // A String Path to a Model
         if ( typeof f === 'string' ) return function(map, opt_X) {
-          return FOAM.lookup(f, opt_X || this.X).create(map);
+          return (opt_X || this.X).lookup(f).create(map, opt_X || this.Y);
         }.bind(this);
 
         // An actual Model
@@ -755,9 +766,9 @@ var FactoryProperty = Model.create({
         // A JSON Model Factory: { factory_ : 'ModelName', arg1: value1, ... }
         if ( f.factory_ ) return function(map, opt_X) {
           var X = opt_X || this.X;
-          var m = FOAM.lookup(f.factory_, X);
+          var m = X.lookup(f.factory_);
           console.assert(m, 'Unknown Factory Model: ' + f.factory_);
-          return m.create(f, X);
+          return m.create(f, opt_X || this.Y);
         }.bind(this);
 
         console.error('******* Invalid Factory: ', f);
@@ -768,7 +779,7 @@ var FactoryProperty = Model.create({
 });
 
 
-var ViewFactoryProperty = Model.create({
+CLASS({
   name: 'ViewFactoryProperty',
   extendsModel: 'FactoryProperty',
 
@@ -783,7 +794,17 @@ var ViewFactoryProperty = Model.create({
   properties: [
     {
       name: 'defaultValue',
-      preSet: function(_, f) { return ViewFactoryProperty.PRE_SET.defaultValue.call(this, null, f); }
+      preSet: function(_, f) { return ViewFactoryProperty.ADAPT.defaultValue.call(this, null, f); }
+    },
+    {
+      name: 'defaultValueFn',
+      preSet: function(_, f) {
+        // return a function that will adapt the given f's return
+        return function(prop) {
+          // call the defaultValue function, adapt the result, return it
+          return ViewFactoryProperty.ADAPT.defaultValue.call(this, null, f.call(this, prop));
+        };
+      }
     },
     {
       name: 'fromElement',
@@ -792,11 +813,16 @@ var ViewFactoryProperty = Model.create({
       }
     },
     {
-      name: 'preSet',
-      doc: "Can be specified as either a function, a Model, a Model path, or a JSON object.",
+      name: 'adapt',
+      doc: "Can be specified as either a function, String markup, a Model, a Model path, or a JSON object.",
       defaultValue: function(_, f) {
+        // Undefined values
+        if ( ! f ) return f;
+
         // A Factory Function
         if ( typeof f === 'function' ) return f;
+
+        var ret;
 
         // A String Path to a Model
         if ( typeof f === 'string' ) {
@@ -810,33 +836,45 @@ var ViewFactoryProperty = Model.create({
             if ( ! viewModel ) {
                 viewModel = VIEW_CACHE[f] = Model.create({
                   name: 'InnerDetailView' + this.$UID,
-                  extendsModel: 'DetailView',
+                  extendsModel: 'foam.ui.DetailView',
                   templates:[{name: 'toHTML', template: f}]
                 });
-              // TODO(kgr): this isn't right because compiling the View
-              // template is async.  Should create a FutureView to handle this.
-              arequireModel(viewModel);
+
+              // TODO(kgr): this isn't right because compiling the View template
+              // is async.  Should add a READY state to View to handle this.
+              viewModel.arequire();
             }
-            return function(args, X) { return viewModel.create(args, X || this.X); };
+            ret = function(args, X) { return viewModel.create(args, X || this.Y); };
+          } else {
+            ret = function(map, opt_X) {
+              var model = (opt_X || this.X).lookup(f);
+              console.assert(!!model, 'Unknown model: ' + f + ' in ' + this.name + ' property');
+              return model.create(map, opt_X || this.Y);
+            }.bind(this);
           }
 
-          return function(map, opt_X) {
-            return FOAM.lookup(f, opt_X || this.X).create(map, opt_X || this.X);
-          }.bind(this);
+          ret.toString = function() { return '"' + f + '"'; };
+          return ret;
         }
 
         // An actual Model
-        if ( Model.isInstance(f) ) return f.create.bind(f);
-
-        // A JSON Model Factory: { factory_ : 'ModelName', arg1: value1, ... }
-        if ( f.factory_ ) return function(map, opt_X) {
-          var X = opt_X || this.X;
-          var m = FOAM.lookup(f.factory_, X);
-          console.assert(m, 'Unknown ViewFactory Model: ' + f.factory_);
-          return m.create(f, X);
+        if ( Model.isInstance(f) ) return function(args, opt_X) {
+          return f.create(args, opt_X || this.Y)
         }.bind(this);
 
-        if ( View.isInstance(f) ) return constantFn(f);
+        // A JSON Model Factory: { factory_ : 'ModelName', arg1: value1, ... }
+        if ( f.factory_ ) {
+          ret = function(map, opt_X) {
+            var m = (opt_X || this.X).lookup(f.factory_);
+            console.assert(m, 'Unknown ViewFactory Model: ' + f.factory_);
+            return m.create(f, opt_X || this.Y).copyFrom(map);
+          }.bind(this);
+
+          ret.toString = function() { return JSON.stringify(f); };
+          return ret;
+        }
+
+        if ( this.X.lookup('foam.ui.BaseView').isInstance(f) ) return constantFn(f);
 
         console.error('******* Invalid Factory: ', f);
         return f;
@@ -846,7 +884,7 @@ var ViewFactoryProperty = Model.create({
 });
 
 
-var ReferenceArrayProperty = Model.create({
+CLASS({
   name: 'ReferenceArrayProperty',
   extendsModel: 'ReferenceProperty',
 
@@ -863,22 +901,43 @@ var ReferenceArrayProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'StringArrayView',
+      defaultValue: 'foam.ui.StringArrayView',
 // TODO: Uncomment when all usages of ReferenceProperty/ReferenceArrayProperty fixed.
 //      defaultValue: 'DAOKeyView'
     }
   ]
 });
 
-var EMailProperty = StringProperty;
-var URLProperty = StringProperty;
+CLASS({
+  name: 'EMailProperty',
+  extendsModel: 'StringProperty'
+});
 
-var DocumentationProperty = Model.create({
-  extendsModel: 'Property',
+CLASS({
+  name: 'ImageProperty',
+  extendsModel: 'StringProperty'
+});
+
+CLASS({
+  name: 'URLProperty',
+  extendsModel: 'StringProperty'
+});
+
+CLASS({
+  name: 'ColorProperty',
+  extendsModel: 'StringProperty'
+});
+
+CLASS({
+  name: 'PasswordProperty',
+  extendsModel: 'StringProperty'
+});
+
+if ( DEBUG ) CLASS({
   name: 'DocumentationProperty',
+  extendsModel: 'Property',
   help: 'Describes the documentation properties found on Models, Properties, Actions, Methods, etc.',
   documentation: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation.",
-
 
   properties: [
     {
@@ -889,70 +948,40 @@ var DocumentationProperty = Model.create({
     { // Note: defaultValue: for the getter function didn't work. factory: does.
       name: 'getter',
       type: 'Function',
-      factory: function() { return function() {
-        var doc = this.instance_.documentation;
-        if (doc && typeof Documentation != "undefined" && Documentation // a source has to exist (otherwise we'll return undefined below)
+      debug: true,
+      defaultValue: function(name) {
+        var doc = this.instance_[name]
+        if (doc && typeof Documentation != 'undefined' && Documentation // a source has to exist (otherwise we'll return undefined below)
             && (  !doc.model_ // but we don't know if the user set model_
-               || !doc.model_.getPrototype // model_ could be a string
-               || !Documentation.isInstance(doc) // check for correct type
-            ) ) {
+                  || !doc.model_.getPrototype // model_ could be a string
+                  || !Documentation.isInstance(doc) // check for correct type
+               ) ) {
           // So in this case we have something in documentation, but it's not of the
           // "Documentation" model type, so FOAMalize it.
           if (doc.body) {
-            this.instance_.documentation = Documentation.create( doc );
+            this.instance_[name] = Documentation.create( doc );
           } else {
-            this.instance_.documentation = Documentation.create({ body: doc });
+            this.instance_[name] = Documentation.create({ body: doc });
           }
         }
         // otherwise return the previously FOAMalized model or undefined if nothing specified.
-        return this.instance_.documentation;
-      }; }
+        return this.instance_[name];
+      }
     },
     {
       name: 'view',
-      defaultValue: 'DetailView'
+      defaultValue: 'foam.ui.DetailView',
+      debug: true
     },
     {
       name: 'help',
-      defaultValue: 'Documentation for this entity.'
+      defaultValue: 'Documentation for this entity.',
+      debug: true
     },
     {
       name: 'documentation',
-      factory: function() { return "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation."; }
+      factory: function() { return "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation."; },
+      debug: true
    }
-  ]
-});
-
-CLASS({
-  name: 'EnumPropertyTrait',
-  properties: [
-    {
-      name: 'choices',
-      type: 'Array',
-      help: 'Array of [value, label] choices.',
-      preSet: function(_, a) { return a.map(function(c) { return Array.isArray(c) ? c : [c, c]; }); },
-      required: true
-    },
-    {
-      name: 'view',
-      defaultValue: 'ChoiceView'
-    }
-  ]
-});
-
-CLASS({
-  name: 'StringEnumProperty',
-  traits: ['EnumPropertyTrait'],
-  extendsModel: 'StringProperty'
-});
-
-CLASS({
-  name: 'DOMElementProperty',
-  extendsModel: 'StringProperty',
-  properties: [
-    {
-      name: 'getter',
-      defaultValue: function(name) { return this.X.document.getElementById(this.instance_[name]); }
-    }
   ]
 });

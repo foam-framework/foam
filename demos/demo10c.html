@@ -2,11 +2,15 @@
  <head>
   <link rel="stylesheet" type="text/css" href="..//core/foam.css" />
   <script language="javascript" src="../core/bootFOAM.js"></script>
-  <title>FOAM Diagram </title>
+  <title>FOAM Diagram</title>
  </head>
  <body>
   <script language="javascript">
-    var timer = Timer.create({});
+    apar(
+      arequire('foam.ui.View'),
+      arequire('foam.util.Timer')
+    )(function(view, timer) {
+    var timer = timer.create();
     var space = Canvas.create({width: 2000, height: 1200, background: 'white'});
 
     space.write(document);
@@ -24,7 +28,7 @@
     var mdao      = box('blue',   x+=120, 'Caching DAO');
     var js        = box('blue',   x+=120, '<Entity>.js');
     var ui_table  = box('blue',   x+=120, 'TableView');
-    var ui_detail = box('blue',   x,      'DetailView');
+    var ui_detail = box('blue',   x,      'foam.ui.DetailView');
     var ui_ctrl   = box('blue',   x,      'Controller');
     var foam      = box('black',  620,    'FOAM');
     var client    = box('lightgray',  620,    'Client');
@@ -81,6 +85,7 @@
        [0],
        [1000, function() { stub.y -= 140; mdao.y-=140; js.y-=140; ui_table.y-=140; ui_detail.y-=140; ui_ctrl.y-=140; client.y-=140;}]
     ])();
+    });
   </script>
  </body>
 </html>

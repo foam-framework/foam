@@ -15,11 +15,16 @@
  * limitations under the License.
  */
 
-chrome.app.runtime.onLaunched.addListener(function() {
-  chrome.app.window.create('Calc.html', {
+function launchCalc() {
+  chrome.app.window.create('AppCalc.html', {
+    id: 'Calculator',
     innerBounds: {
-      width: 392,
-      height: 500
+      minWidth: 350,
+      minHeight: 340,
+      width: 350,
+      height: 450
     }
   });
-});
+}
+
+chrome.app.runtime.onLaunched.addListener(launchCalc);

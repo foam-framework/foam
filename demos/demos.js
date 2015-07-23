@@ -14,280 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-CLASS({
-  name:  'EyeCView',
-  label: 'Eye',
-
-  extendsModel: 'CView',
-
-  properties: [
-    {
-      name:  'color',
-      type:  'String',
-      defaultValue: 'red'
-    },
-    {
-      name:  'r',
-      label: 'Radius',
-      type:  'int',
-      view:  'IntFieldView',
-      defaultValue: 100
-    },
-    {
-      name:  'lid',
-      type:  'Circle',
-      paint: true,
-      factory: function() {
-        return Circle.create({x:this.x,y:this.y,r:this.r,color:this.color,parent:this});
-      }
-    },
-    {
-      name:  'white',
-      type:  'Circle',
-      paint: true,
-      factory: function() {
-        return Circle.create({x:this.x,y:this.y,r:this.r-10,color:'white',parent:this});
-      }
-    },
-    {
-      name:  'pupil',
-      type:  'Circle',
-      paint: true,
-      factory: function() {
-        return Circle.create({x:this.x,y:this.y,r:10,color:'black',parent:this});
-      }
-    }
-  ],
-
-  methods: {
-    watch: function(target) { this.target_ = target; },
-    paint: function() {
-      this.pupil.x = this.lid.x = this.white.x = this.x;
-      this.pupil.y = this.lid.y = this.white.y = this.y;
-
-      // point pupil towards target
-      if ( this.target_ )
-        Movement.stepTowards(this.target_, this.pupil, this.r-26);
-
-      this.canvas.save();
-      this.canvas.translate(this.x,this.y);
-      this.canvas.rotate(-Math.PI/100);
-      this.canvas.scale(1.0,1.3);
-      this.canvas.translate(-this.x,-this.y);
-
-      this.lid.paint();
-      this.white.paint();
-      this.pupil.paint();
-
-      this.canvas.restore();
-    }
-  }
-});
-
 
 CLASS({
-  name:  'EyesCView',
-  label: 'Eyes',
-  extendsModel: 'CView',
+  name: 'System',
 
-  properties: [
-    {
-      name:  'leftEye',
-      label: 'Left',
-      type:  'Eye',
-      paint: true,
-      factory: function() {
-        return EyeCView.create({x:this.x+50,y:this.y+50,r:50,color:'red',parent:this});
-      }
-    },
-    {
-      name:  'rightEye',
-      label: 'Right',
-      type:  'Eye',
-      paint: true,
-      factory: function() {
-        return EyeCView.create({x:this.x+120,y:this.y+65,r:48,color:'yellow',parent:this});
-      }
-    }
-  ],
-
-  methods: {
-    watch: function(target) {
-      this.leftEye.watch(target);
-      this.rightEye.watch(target);
-    },
-    paint: function() {
-      this.leftEye.paint();
-      this.rightEye.paint();
-    }
-  }
-});
-
-
-CLASS({
-  name:  'ClockView',
-  extendsModel: 'CView',
-
-  label: 'Clock',
-
-  properties: [
-    {
-      name:  'color',
-      type:  'String',
-      defaultValue: 'yellow'
-    },
-    {
-      name:  'lid',
-      type:  'Circle',
-      paint: true,
-      factory: function() {
-        return Circle.create({x:this.x,y:this.y,r:this.r,color:this.color,parent:this});
-      }
-    },
-    {
-      name:  'white',
-      type:  'Circle',
-      paint: true,
-      factory: function() {
-        return Circle.create({x:this.x,y:this.y,r:this.r-3,color:'white',parent:this});
-      }
-    },
-    {
-      name:  'r',
-      label: 'Radius',
-      type:  'int',
-      view:  'IntFieldView',
-      defaultValue: 100
-    },
-    {
-      name:  'a',
-      label: 'Rotation',
-      type:  'float',
-      view:  'IntFieldView',
-      defaultValue: 0
-    },
-    {
-      name:  'hourHand',
-      type:  'Hand',
-      paint: true,
-      factory: function() {
-        return this.Hand.create({x:this.x,y:this.y,r:this.r-15,width:7,color:'green',parent:this});
-      }
-    },
-    {
-      name:  'minuteHand',
-      type:  'Hand',
-      paint: true,
-      factory: function() {
-        return this.Hand.create({x:this.x,y:this.y,r:this.r-6,width:5,color:'blue',parent:this});
-      }
-    },
-    {
-      name:  'secondHand',
-      type:  'Hand',
-      paint: true,
-      factory: function() {
-        return this.Hand.create({x:this.x,y:this.y,r:this.r-6,width:3,color:'red',parent:this});
-      }
-    }
-
-  ],
-
-  methods: {
-    paint: function() {
-      this.canvas.save();
-
-      this.canvas.translate(this.x, this.y);
-      this.canvas.rotate(this.a);
-      this.canvas.translate(-this.x, -this.y);
-
-      var date = new Date();
-
-      this.secondHand.x = this.hourHand.x = this.minuteHand.x = this.lid.x = this.white.x = this.x;
-      this.secondHand.y = this.hourHand.y = this.minuteHand.y = this.lid.y = this.white.y = this.y;
-
-      this.secondHand.a = Math.PI/2 - Math.PI*2 * date.getSeconds() / 60 ;
-      this.minuteHand.a = Math.PI/2 - Math.PI*2 * date.getMinutes() / 60 ;
-      this.hourHand.a   = Math.PI/2 - Math.PI*2 * (date.getHours() % 12) / 12;
-
-      this.lid.paint();
-      this.white.paint();
-      this.hourHand.paint();
-      this.minuteHand.paint();
-      this.secondHand.paint();
-
-      this.canvas.restore();
-    }
-  },
-
-  models: [
-    FOAM({
-      model_: 'Model',
-      name: 'Hand',
-      label: 'Clock Hand',
-      extendsModel: 'CView',
-      properties:
-      [
-        {
-          model_: 'Property',
-          name: 'color',
-          type: 'String',
-          defaultValue: 'blue'
-        },
-        {
-          model_: 'Property',
-          name: 'width',
-          type: 'int',
-          view: 'IntFieldView',
-          defaultValue: 5
-        },
-        {
-          model_: 'Property',
-          name: 'r',
-          label: 'Radius',
-          type: 'int',
-          view: 'IntFieldView',
-          defaultValue: 100
-        },
-        {
-          model_: 'Property',
-          name: 'a',
-          label: 'Alpha',
-          type: 'int',
-          view: 'IntFieldView',
-          defaultValue: 100
-        }
-      ],
-      methods:
-      [
-        {
-          model_: 'Method',
-          name: 'paint',
-          code: function ()
-          {
-            var canvas = this.parent.canvas;
-
-            canvas.beginPath();
-            canvas.moveTo(this.x,this.y);
-            canvas.lineTo(this.x+this.r*Math.cos(this.a),this.y-this.r*Math.sin(this.a));
-            canvas.closePath();
-
-            canvas.lineWidth = this.width;
-            canvas.strokeStyle = this.color;
-            canvas.stroke();
-          }
-        }
-      ]
-    })
-  ]
-});
-
-
-var System = FOAM({
-
-  model_: 'Model',
-
-  name:  'System',
+  requires: [ 'foam.input.Mouse' ],
 
   properties: [
     {
@@ -299,6 +30,10 @@ var System = FOAM({
       name:  'title',
       type:  'String',
       defaultValue: ''
+    },
+    {
+      name: 'font',
+      defaultValue: '20pt Arial'
     },
     {
       name:  'color',
@@ -337,14 +72,14 @@ var System = FOAM({
     {
       name: 'features',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValue: [],
       help: 'Features to be implemented be Entity.'
     },
     {
       name: 'entities',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValue: [],
       help: 'Data entities to be supported.'
     },
@@ -362,7 +97,7 @@ var System = FOAM({
       name:  'selectedX',
       type:  'int',
       preSet: function(oldX, x) {
-        return ( x < 0 || x >= this.features.length ) ? oldX : x;
+        return ( x < 0 || x > this.features.length ) ? oldX : x;
       },
       defaultValue: 0
     },
@@ -370,7 +105,7 @@ var System = FOAM({
       name:  'selectedY',
       type:  'int',
       preSet: function(oldY, y) {
-        return ( y < 0 || y >= this.entities.length ) ? oldY : y;
+        return ( y < 0 || y > this.entities.length ) ? oldY : y;
       },
       defaultValue: 0
     },
@@ -386,17 +121,17 @@ var System = FOAM({
     },
     {
       name:  'mouse',
-      type:  'Mouse',
-      view: { factory_: 'DetailView', model: Mouse },
+      type:  'foam.input.Mouse',
+      view: { factory_: 'foam.ui.DetailView', model: this.Mouse },
       factory: function() {
-        return Mouse.create();
+        return this.Mouse.create();
       }
     },
     {
       model_: 'Property',
       name: 'alpha',
       type: 'int',
-      view: 'IntFieldView',
+      view: 'foam.ui.IntFieldView',
       defaultValue: 1
     }
   ],
@@ -407,11 +142,15 @@ var System = FOAM({
       //        FObject.erase.call(this);
     },
 
-    init: function(values)
-    {
+    init: function(values) {
       this.SUPER(values);
 
+      this.code = [];
+      this.devs = [];
+
       this.parent.addChild(this);
+
+      this.l = Label.create({parent: this.parent, align: 'left', font:'18pt Arial', x:20, y:18});
 
       this.mouse.connect(this.parent.$);
 
@@ -421,9 +160,6 @@ var System = FOAM({
         this.selectedX = Math.floor((this.mouse.x-this.x)/this.width*(this.features.length+1));
         this.selectedY = Math.floor((this.mouse.y-this.y-25)/(this.height-25)*(this.entities.length+1));
       }.bind(this));
-
-      this.code = [];
-      this.devs = [];
 
       var tmp = this.numDev;
       this.numDev = 0;
@@ -440,8 +176,7 @@ var System = FOAM({
       this.utilityGraph = Graph.create({x:20, y:260, width:360, height:200, style:'Line', graphColor:null, capColor: this.devColor});
       this.efficiencyGraph = Graph.create({x:20, y:500, width:360, height:200, style:'Line', graphColor:null, capColor: this.devColor});
 
-      this.l = Label.create({parent: this.parent, align: 'left', font:'18pt Arial', x:20, y:18});
-      Events.follow(this.propertyValue('title'), this.l.propertyValue('text'));
+//      Events.follow(this.propertyValue('title'), this.l.propertyValue('text'));
     },
 
     totalUtility: function() {
@@ -488,6 +223,7 @@ var System = FOAM({
     },
 
     tick: function(timer) {
+        if ( ! this.devs ) return;
       //        for ( var i = 0 ; i < this.devs.length ; i++ ) this.architecture(this, this.devs[i]);
       for ( var i = 0 ; i < this.devs.length ; i++ ) if ( i % 20 == timer.i % 20 ) this.architecture(this, this.devs[i]); else this.addCode(this.devs[i].f, this.devs[i].e, 0.3);
     },
@@ -512,8 +248,7 @@ var System = FOAM({
         });
     },
 
-    foam: function(system, dev)
-    {
+    foam: function(system, dev) {
       var r = Math.random();
       var nx = Math.floor(Math.random() * 100000) % system.features.length + 1;
       var ny = Math.floor(Math.random() * 100000) % system.entities.length + 1;
@@ -530,18 +265,17 @@ var System = FOAM({
         4, function() {
           system.moveDev(dev, dev.f, dev.e);
         },
-        5, function() {
+        20, function() {
           system.moveDev(dev, 0, ny);
         },
-        90, function() {
+        75, function() {
           system.moveDev(dev, nx, 0);
         });
 
       system.addCode(dev.f, dev.e, 1);
     },
 
-    unix: function(system, dev)
-    {
+    unix: function(system, dev) {
       var r = Math.random();
       var nx = Math.floor(Math.random() * 100000) % system.features.length + 1;
       var ny = Math.floor(Math.random() * 100000) % system.entities.length + 1;
@@ -570,7 +304,7 @@ var System = FOAM({
     },
 
     paint: function() {
-      if ( ! this.parent ) return;
+      if ( ! this.parent || ! this.devs ) return;
       var c = this.parent.canvas;
       var w = this.parent.width-15;
       var h = this.parent.height-28;
@@ -587,23 +321,24 @@ var System = FOAM({
       c.translate(this.x, this.y);
       c.scale(this.width/this.parent.width, this.height/this.parent.height);
 
+      this.l.text = this.title;
       this.l.paint();
 
       c.translate(0, 25); // make space for the title
-
+      c.font = this.font;
       // draw feature labels along the top row
       for ( var i = 0 ; i <= fs ; i++ ) {
         c.fillStyle = 'lightGray';
         c.fillRect(i*w/(fs+1),0,w/(fs+1),h/(es+1));
         c.fillStyle = 'black';
-        if ( i > 0 ) c.fillText(this.features[i-1], i*w/(fs+1)+5 , h/(es+1)/2+5);
+        if ( i > 0 ) c.fillText(this.features[i-1], i*w/(fs+1)+5 , h/(es+1)/2+11);
       }
       // draw entity labels along the left column
       for ( var i = 0 ; i <= es ; i++ ) {
         c.fillStyle = 'lightGray';
         c.fillRect(0, i*h/(es+1),w/(fs+1),h/(es+1));
         c.fillStyle = 'black';
-        if ( i > 0 ) c.fillText(this.entities[i-1], 8, (i+0.5)*h/(es+1)+3, w/(fs+1)-15);
+        if ( i > 0 ) c.fillText(this.entities[i-1], 8, (i+0.5)*h/(es+1)+11, w/(fs+1)-15);
       }
 
       // draw grid-lines

@@ -19,7 +19,7 @@ var BinaryProtoGrammar;
 var DocumentationBootstrap = {
   name: 'documentation',
   type: 'Documentation',
-  view: function() { return DetailView.create({model: Documentation}); },
+  view: function() { return X.foam.ui.DetailView.create({model: Documentation}); },
   help: 'Documentation associated with this entity.',
   documentation: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation.",
   setter: function(nu) {
@@ -29,14 +29,14 @@ var DocumentationBootstrap = {
   getter: function() {
     if ( ! DEBUG ) return '';
     var doc = this.instance_.documentation;
-    if (doc && typeof Documentation != "undefined" && Documentation // a source has to exist (otherwise we'll return undefined below)
-        && (  !doc.model_ // but we don't know if the user set model_
-           || !doc.model_.getPrototype // model_ could be a string
-           || !Documentation.isInstance(doc) // check for correct type
+    if ( doc && typeof Documentation != "undefined" && Documentation // a source has to exist (otherwise we'll return undefined below)
+        && (  ! doc.model_ // but we don't know if the user set model_
+           || ! doc.model_.getPrototype // model_ could be a string
+           || ! Documentation.isInstance(doc) // check for correct type
         ) ) {
       // So in this case we have something in documentation, but it's not of the
       // "Documentation" model type, so FOAMalize it.
-      if (doc.body) {
+      if ( doc.body ) {
         this.instance_.documentation = Documentation.create( doc );
       } else {
         this.instance_.documentation = Documentation.create({ body: doc });
@@ -47,7 +47,6 @@ var DocumentationBootstrap = {
     return this.instance_.documentation;
   }
 }
-
 
 
 var Model = {
@@ -109,12 +108,16 @@ var Model = {
 
   properties: [
     {
-      name: 'id'
+      name: 'id',
+      hidden: true,
+      transient: true
     },
     {
       name:  'sourcePath',
       help: 'Source location of this Model.',
-      defaultValue: ''
+      defaultValue: '',
+      mode: 'read-only',
+      transient: true
     },
     {
       name:  'abstract',
@@ -166,7 +169,7 @@ var Model = {
       type: 'String',
       displayWidth: 70,
       displayHeight: 1,
-      defaultValueFn: function() { return this.name.labelize(); },
+      defaultValueFn: function() { return labelize(this.name); },
       help: 'The display label for the entity.',
       documentation: function() { /* A human readable label for the $$DOC{ref:'Model'}. May
         contain spaces or other odd characters.
@@ -184,6 +187,7 @@ var Model = {
     },
     {
       name: 'extendsModel',
+      label: 'Extends',
       type: 'String',
       displayWidth: 70,
       displayHeight: 1,
@@ -198,6 +202,15 @@ var Model = {
         <p>Like most inheritance schemes, instances of your $$DOC{ref:'Model'} may be used in place of
         instances of the $$DOC{ref:'Model'} you extend.</p>
          */}
+    },
+    {
+      name: 'traits',
+      type: 'Array[String]',
+      view: 'foam.ui.StringArrayView',
+      defaultValueFn: function() { return []; },
+      help: 'Traits to mix-into this Model.',
+      documentation: function() { /* Traits allow you to mix extra features into your $$DOC{ref:'Model'}
+         through composition, avoiding inheritance where unecesssary. */}
     },
     {
       name: 'plural',
@@ -223,11 +236,12 @@ var Model = {
       name: 'ids',
       label: 'Key Properties',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValueFn: function() {
         var id = this.getProperty('id');
         if ( id ) return ['id'];
-        return this.properties.length ? [this.properties[0].name] : [];
+        var props = this.getRuntimeProperties();
+        return props.length ? [props[0]] : [];
       },
       help: 'Properties which make up unique id.',
       documentation: function() { /* An optional list of names of $$DOC{ref:'Property',usePlural:true} from
@@ -240,7 +254,7 @@ var Model = {
     {
       name: 'requires',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Model imports.',
       documentation: function() { /*
@@ -262,7 +276,7 @@ var Model = {
     {
       name: 'imports',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Context imports.',
       documentation: function() { /*
@@ -291,7 +305,7 @@ var Model = {
     {
       name: 'exports',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Context exports.',
       documentation: function() { /*
@@ -299,7 +313,7 @@ var Model = {
            as strings of the form:
           <code>PropertyName [as Alias]</code>.</p>
           <p>Properties you wish to share with other instances you create
-            (like sub-$$DOC{ref:'View',usePlural:true})
+            (like sub-$$DOC{ref:'foam.ui.View',usePlural:true})
             can be exported automatically by listing them here.
             You are automatically sub-contexted, so your parent context does not
             see exported properties. In other words, exports are seen by children,
@@ -313,9 +327,9 @@ var Model = {
                  &nbsp;&nbsp;&nbsp;&nbsp; name: 'proper',<br/>
                 <br/>
                  &nbsp;&nbsp;&nbsp;&nbsp; // This property will create a DetailView for us<br/>
-                 &nbsp;&nbsp;&nbsp;&nbsp; view: { factory_: 'DetailView',<br/>
+                 &nbsp;&nbsp;&nbsp;&nbsp; view: { factory_: 'foam.ui.DetailView',<br/>
                 <br/>
-                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the properties our creator exported.<br/>
+v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the properties our creator exported.<br/>
                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imports: [ 'myProperty', 'parentName' ],<br/>
                 <br/>
                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; methods: { toHTML: function() {<br/>
@@ -334,27 +348,22 @@ var Model = {
     {
       name: 'implements',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       defaultValueFn: function() { return []; },
       help: 'Interfaces implemented by this Model.',
       documentation: function() { /* $$DOC{ref:'Interface',usePlural:true} implemented by this $$DOC{ref:'Model'} .*/}
     },
     {
-      name: 'traits',
-      type: 'Array[String]',
-      view: 'StringArrayView',
-      defaultValueFn: function() { return []; },
-      help: 'Traits to mix-into this Model.',
-      documentation: function() { /* Traits allow you to mix extra features into your $$DOC{ref:'Model'}
-         through composition, avoiding inheritance where unecesssary. */}
-    },
-    {
       name: 'tableProperties',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       displayWidth: 70,
       lazyFactory: function() {
-        return this.properties.map(function(o) { return o.name; });
+        return (this.properties || this.properties_).filter(function(o) {
+          return !o.hidden;
+        }).map(function(o) {
+          return o.name;
+        });
       },
       help: 'Properties to be displayed in table view. Defaults to all properties.',
       documentation: function() { /* Indicates the $$DOC{ref:'Property',usePlural:true} to display when viewing a list of instances
@@ -363,7 +372,7 @@ var Model = {
     {
       name: 'searchProperties',
       type: 'Array[String]',
-      view: 'StringArrayView',
+      view: 'foam.ui.StringArrayView',
       displayWidth: 70,
       defaultValueFn: function() {
         return this.tableProperties;
@@ -373,34 +382,45 @@ var Model = {
         of this $$DOC{ref:'Model'} in a search view. */}
     },
     {
+//      model_: 'ArrayProperty',
       name: 'properties',
       type: 'Array[Property]',
       subType: 'Property',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       defaultValue: [],
       help: 'Properties associated with the entity.',
       preSet: function(oldValue, newValue) {
-        if ( ! Property ) return;
         // Convert Maps to Properties if required
         for ( var i = 0 ; i < newValue.length ; i++ ) {
           var p = newValue[i];
 
           if ( typeof p === 'string' ) newValue[i] = p = { name: p };
 
+          if ( ( ( ! DEBUG ) && p.debug ) && ( ! p.model_ || typeof p.model_ === 'string' ) ) {
+            newValue.splice(i,1);
+            i--;
+            continue;
+          }
+
           if ( ! p.model_ ) {
             p = newValue[i] = Property.create(p);
           } else if ( typeof p.model_ === 'string' ) {
-            p = newValue[i] = FOAM(p);
+            p = newValue[i] = JSONUtil.mapToObj(this.X, p);
           }
 
           // create property constant
-          this[p.name.constantize()] = newValue[i];
+          this[constantize(p.name)] = newValue[i];
         }
 
         this.propertyMap_ = null;
 
         return newValue;
+      },
+      postSet: function(_, newValue) {
+        for ( var i = 0 ; i < newValue.length ; i++ ) {
+          newValue[i].modelId = this.id;
+        }
       },
       documentation: function() { /*
         <p>The $$DOC{ref:'Property',usePlural:true} of a $$DOC{ref:'Model'} act as data members
@@ -414,8 +434,11 @@ var Model = {
       name: 'actions',
       type: 'Array[Action]',
       subType: 'Action',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
       defaultValue: [],
       help: 'Actions associated with the entity.',
       preSet: function(_, newValue) {
@@ -432,14 +455,16 @@ var Model = {
           }
 
           // create property constant
-          this[p.name.constantize()] = newValue[i];
+          if ( p.name && ! this[constantize(p.name)] ) {
+            this[constantize(p.name)] = newValue[i];
+          }
         }
 
         return newValue;
       },
       documentation: function() { /*
         <p>$$DOC{ref:'Action',usePlural:true} implement a behavior and attach a label, icon, and typically a
-        button-like $$DOC{ref:'View'} or menu item to activate the behavior.</p>
+        button-like $$DOC{ref:'foam.ui.View'} or menu item to activate the behavior.</p>
         */}
 
     },
@@ -447,8 +472,11 @@ var Model = {
       name: 'constants',
       type: 'Array[Constant]',
       subType: 'Constant',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
       defaultValue: [],
       help: 'Constants associated with the entity.',
       preSet: function(_, newValue) {
@@ -474,47 +502,76 @@ var Model = {
       }
     },
     {
-      name: 'methods',
-      type: 'Array[Method]',
-      subType: 'Method',
-      view: 'ArrayView',
+      name: 'messages',
+      type: 'Array[Message]',
+      subType: 'Constant',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
       defaultValue: [],
-      help: 'Methods associated with the entity.',
+      help: 'Messages associated with the entity.',
       preSet: function(_, newValue) {
-        if ( ! Method ) return newValue;
+        if ( ! GLOBAL.Message ) return newValue;
 
-        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Method);
+        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Message);
 
-        // convert a map of functions to an array of Method instances
-        var methods = [];
+        // convert a map of values to an array of Message objects
+        var messages = [];
 
         for ( var key in newValue ) {
           var oldValue = newValue[key];
 
-          var method   = Method.create({
-            name: key,
-            code: oldValue
+          var message = Message.create({
+            name:  key,
+            value: oldValue
           });
 
-          // Model Feature object.
-          if ( typeof oldValue == 'function' ) {
-            if ( Arg && DEBUG ) {
-              var str = oldValue.toString();
-              method.args = str.
-                match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
-                split(',').
-                filter(function(name) { return name; }).
-                map(function(name) { return Arg.create({name: name.trim()}); });
-            }
-          } else {
-            console.warn('Constant defined as Method: ', this.name + '.' + key);
-            debugger;
-          }
-
-          methods.push(method);
+          messages.push(message);
         }
 
+        return messages;
+      }
+    },
+    {
+//      model_: 'ArrayProperty',
+      name: 'methods',
+      subType: 'Method',
+      factory: function() { return []; },
+      help: 'Methods associated with the entity.',
+      adapt: function(_, a) {
+        if ( ! Method ) return a;
+
+        function createMethod(X, name, fn) {
+          var method = Method.create({
+            name: name,
+            code: fn
+          });
+
+          if ( DEBUG && Arg ) {
+            var str = fn.toString();
+            method.args = str.
+              match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
+              split(',').
+              map(function(name) { return Arg.create({name: name.trim()}); });
+          }
+
+          return method;
+        }
+
+        if ( Array.isArray(a) ) {
+          for ( var i = 0 ; i < a.length ; i++ ) {
+            a[i] = ( typeof a[i] === 'function' ) ?
+              createMethod(this.X, a[i].name, a[i]) :
+              JSONUtil.mapToObj(this.X, a[i], Method, seq) ;
+          }
+          return a;
+        }
+
+        // convert a map of functions to an array of Method instances, DEPRECATED
+        var methods = [];
+        for ( var key in a ) methods.push(createMethod(this.X, key, a[key]));
         return methods;
       },
       documentation: function() { /*
@@ -541,8 +598,11 @@ var Model = {
       name: 'listeners',
       type: 'Array[Method]',
       subType: 'Method',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
       preSet: function(_, newValue) {
         if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Method);
         return newValue;
@@ -564,7 +624,7 @@ var Model = {
       name: 'topics',
       type: 'Array[topic]',
       subType: 'Topic',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       defaultValue: [],
       help: 'Event topics associated with the entity.'
@@ -574,17 +634,18 @@ var Model = {
       name: 'templates',
       type: 'Array[Template]',
       subType: 'Template',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
-      defaultValue: [],
-      postSet: function(_, templates) {
-        TemplateUtil.expandModelTemplates(this);
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
       },
+      defaultValue: [],
+      postSet: function(_, templates) { TemplateUtil.expandModelTemplates(this); },
       //         defaultValueFn: function() { return []; },
       help: 'Templates associated with this entity.',
       documentation: function() { /*
         The $$DOC{ref:'Template',usePlural:true} to process and install into instances of this
-        $$DOC{ref:'Model'}. $$DOC{ref:'View',usePlural:true} created inside each $$DOC{ref:'Template'}
+        $$DOC{ref:'Model'}. $$DOC{ref:'foam.ui.View',usePlural:true} created inside each $$DOC{ref:'Template'}
         using the $$DOC{ref:'.templates',text:'$$propertyName{args}'} view creation tag become available
         as <code>myInstance.propertyNameView</code>.
         */}
@@ -593,8 +654,18 @@ var Model = {
       name: 'models',
       type: 'Array[Model]',
       subType: 'Model',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
+      adapt: function(_, newValue) {
+        if ( ! Model ) return newValue;
+        return Array.isArray(newValue) ? JSONUtil.arrayToObjArray(this.X, newValue, Model) : newValue;
+      },
+      postSet: function(_, models) {
+        for ( var i = 0 ; i < models.length ; i++ ) this[models[i].name] = models[i];
+      },
       defaultValue: [],
       help: 'Sub-models embedded within this model.',
       documentation: function() { /*
@@ -608,8 +679,23 @@ var Model = {
       label: 'Unit Tests',
       type: 'Array[Unit Test]',
       subType: 'UnitTest',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
+      adapt: function(_, a) {
+        if ( ! a ) return a;
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          if ( typeof a[i] === "function" ) {
+            a[i] = UnitTest.create({
+              name: a[i].name,
+              code: a[i]
+            });
+          }
+        }
+        return a;
+      },
       defaultValue: [],
       help: 'Unit tests associated with this model.',
       documentation: function() { /*
@@ -620,8 +706,11 @@ var Model = {
     {
       name: 'relationships',
       subType: 'Relationship',
-      view: 'ArrayView',
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
       defaultValue: [],
       help: 'Relationships of this model to other models.',
       preSet: function(_, newValue) {
@@ -638,7 +727,7 @@ var Model = {
           }
 
           // create property constant
-          this[p.name.constantize()] = newValue[i];
+          this[constantize(p.name)] = newValue[i];
         }
 
         return newValue;
@@ -655,8 +744,12 @@ var Model = {
       name: 'issues',
       type: 'Array[Issue]',
       subType: 'Issue',
-      view: 'ArrayView',
+      debug: true,
+      view: 'foam.ui.ArrayView',
       factory: function() { return []; },
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
       defaultValue: [],
       help: 'Issues associated with this model.',
       documentation: function() { /*
@@ -670,7 +763,7 @@ var Model = {
       type: 'String',
       displayWidth: 70,
       displayHeight: 6,
-      view: 'TextAreaView',
+      view: 'foam.ui.TextAreaView',
       defaultValue: '',
       help: 'Help text associated with the entity.',
       documentation: function() { /*
@@ -679,19 +772,30 @@ var Model = {
         */}
 
     },
+    {
+      name: 'i18nComplete_',
+      defaultValue: false,
+      hidden: true,
+      transient: true
+    },
+    {
+      name: 'translationHint',
+      label: 'Description for Translation',
+      type: 'String',
+      defaultValueFn: function() { return this.name; }
+    },
     DocumentationBootstrap,
     {
       name: 'notes',
       type: 'String',
       displayWidth: 70,
       displayHeight: 6,
-      view: 'TextAreaView',
+      view: 'foam.ui.TextAreaView',
       defaultValue: '',
       help: 'Internal documentation associated with this entity.',
       documentation: function() { /*
           Internal documentation or implementation-specific 'todo' notes.
         */}
-
     },
     {
       name: 'createActionFactory',
@@ -700,7 +804,7 @@ var Model = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'Factory to create the action object for creating this object',
       documentation: function() { /* Factory to create the action object for creating this object  */}
@@ -712,47 +816,41 @@ var Model = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'Factory to create the action object for deleting this object',
-        documentation: function() { /* Factory to create the action object for deleting this object  */}
+      documentation: function() { /* Factory to create the action object for deleting this object  */}
     }
   ],
 
   templates:[
-    {
-      model_: 'Template',
-      name: 'javaSource',
-      description: 'Java Source',
-      "template": "// Generated by FOAM, do not modify.\u000a// Version <%= this.version %>\u000a<%\u000a  var className       = this.javaClassName;\u000a  var parentClassName = this.extendsModel ? this.extendsModel : 'FObject';\u000a\u000a  if ( GLOBAL[parentClassName] && GLOBAL[parentClassName].abstract ) parentClassName = 'Abstract' + parentClassName;\u000a\u000a%>\u000a<% if ( this.package ) { %>\\\u000apackage <%= this.package %>;\u000a\u000a<% } %>\\\u000aimport foam.core.*;\u000a\u000apublic<%= this.abstract ? ' abstract' : '' %> class <%= className %>\u000a   extends <%= parentClassName %>\u000a{\u000a   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\u000a   public final static Property <%= prop.name.constantize() %> = new Abstract<%= prop.javaType.capitalize() %>Property() {\u000a     public String getName() { return \"<%= prop.name %>_\"; }\u000a     public String getLabel() { return \"<%= prop.label %>\"; }\u000a     public Object get(Object o) { return ((<%= this.name %>) o).get<%= prop.name.capitalize() %>(); }\u000a     public void set(Object o, Object v) { ((<%= this.name %>) o).set<%= prop.name.capitalize() %>(toNative(v)); }\u000a     public int compare(Object o1, Object o2) { return compareValues(((<%= this.name%>)o1).<%= prop.name %>_, ((<%= this.name%>)o2).<%= prop.name %>_); }\u000a   };\u000a   <% } %>\u000a\u000a   final static Model model__ = new AbstractModel(new Property[] {<% for ( var key in this.properties ) { var prop = this.properties[key]; %> <%= prop.name.constantize() %>,<% } %> }) {\u000a     public String getName() { return \"<%= this.name %>\"; }\u000a     public String getLabel() { return \"<%= this.label %>\"; }\u000a     public Property id() { return <%= this.ids.length ? this.ids[0].constantize() : 'null' %>; }\u000a   };\u000a\u000a   public Model model() {\u000a     return model__;\u000a   }\u000a   public static Model MODEL() {\u000a     return model__;\u000a   }\u000a\u000a   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\u000a   private <%= prop.javaType %> <%= prop.name %>_;   <% } %>\u000a\u000a   public <%= className %>()\u000a   {\u000a   }\u000a<% if ( this.properties.length ) { %> \u000a   public <%= className %>(<% for ( var key in this.properties ) { var prop = this.properties[key]; %><%= prop.javaType, ' ', prop.name, key < this.properties.length-1 ? ', ': '' %><% } %>)\u000a   {   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\u000a      <%= prop.name %>_ = <%= prop.name %>;   <% } %>\u000a   }\u000a<% } %>\u000a\u000a   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\u000a   public <%= prop.javaType %> get<%= prop.name.capitalize() %>() {\u000a       return <%= prop.name %>_;\u000a   };\u000a   public void set<%= prop.name.capitalize() %>(<%= prop.javaType, ' ', prop.name %>) {\u000a       <%= prop.name %>_ = <%= prop.name %>;\u000a   };\u000a   <% } %>\u000a\u000a   public int hashCode() { \u000a      int hash = 1;\u000a   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\u000a      hash = hash * 31 + hash(<%= prop.name %>_);   <% } %>\u000a\u000a      return hash;\u000a   }\u000a\u000a   public int compareTo(Object obj) {\u000a      if ( obj == this ) return 0;\u000a      if ( obj == null ) return 1;\u000a\u000a      <%= this.name %> other = (<%= this.name %>) obj;\u000a \u000a      int cmp;\u000a   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\u000a      if ( ( cmp = compare(get<%= prop.name.capitalize() %>(), other.get<%= prop.name.capitalize() %>()) ) != 0 ) return cmp;   <% } %>\u000a\u000a      return 0;\u000a   }\u000a\u000a   public StringBuilder append(StringBuilder b) {\u000a      return b\u000a   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\\\u000a      .append(\"<%= prop.name %>=\").append(get<%= prop.name.capitalize() %>())<%= key < this.properties.length-1 ? '.append(\", \")' : '' %> \u000a   <% } %>      ;\u000a   }\u000a\u000a   public Object fclone() {\u000a      <%= this.name %> c = new <%= this.name %>();\u000a      <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\\\u000ac.set<%= prop.name.capitalize() %>(get<%= prop.name.capitalize() %>());\u000a      <% } %>\\\u000areturn c;\u000a   }\u000a\u000a}"
-    },
-    {
-      model_: 'Template',
-      name: 'closureExterns',
-      description: 'Closure Externs JavaScript Source',
-      template: '/**\n' +
-        ' * @constructor\n' +
-        ' */\n' +
-        '<%= this.name %> = function() {};\n' +
-        '<% for ( var i = 0 ; i < this.properties.length ; i++ ) { var prop = this.properties[i]; %>' +
-        '\n<%= prop.closureSource(undefined, this.name) %>\n' +
-        '<% } %>' +
-        '<% for ( var i = 0 ; i < this.methods.length ; i++ ) { var meth = this.methods[i]; %>' +
-        '\n<%= meth.closureSource(undefined, this.name) %>\n' +
-        '<% } %>'
-    },
-    {
-      model_: 'Template',
-      name: 'dartSource',
-      description: 'Dart Class Source',
-      template: '<% out(this.name); %>\n{\n<% for ( var key in this.properties ) { var prop = this.properties[key]; %>   var <%= prop.name %>;\n<% } %>\n\n   <%= this.name %>()\n   {\n\n   }\n\n   <%= this.name %>(<% for ( var key in this.properties ) { var prop = this.properties[key]; %>this.<%= prop.name, key < this.properties.length-1 ? ", ": "" %><% } %>)\n}'
-    },
-    {
-      model_: 'Template',
-      name: 'protobufSource',
-      description: 'Protobuf source',
-      template: 'message <%= this.name %> {\n<% for (var i = 0, prop; prop = this.properties[i]; i++ ) { if ( prop.prototag == null ) continue; if ( prop.help ) { %>  //<%= prop.help %>\n<% } %>  <% if ( prop.type.startsWith("Array") ) { %>repeated<% } else if ( false ) { %>required<% } else { %>optional<% } %>  <%= prop.protobufType %> <%= prop.name %> = <%= prop.prototag %>;\n\n<% } %>}\n'
-    }
+  //  {
+  //    model_: 'Template',
+  //    name: 'closureExterns',
+  //    description: 'Closure Externs JavaScript Source',
+  //    template: '/**\n' +
+  //      ' * @constructor\n' +
+  //      ' */\n' +
+  //      '<%= this.name %> = function() {};\n' +
+  //      '<% for ( var i = 0 ; i < this.properties.length ; i++ ) { var prop = this.properties[i]; %>' +
+  //      '\n<%= prop.closureSource(undefined, this.name) %>\n' +
+  //      '<% } %>' +
+  //      '<% for ( var i = 0 ; i < this.methods.length ; i++ ) { var meth = this.methods[i]; %>' +
+  //      '\n<%= meth.closureSource(undefined, this.name) %>\n' +
+  //      '<% } %>'
+  //  },
+  //  {
+  //    model_: 'Template',
+  //    name: 'dartSource',
+  //    description: 'Dart Class Source',
+  //    template: '<% out(this.name); %>\n{\n<% for ( var key in this.properties ) { var prop = this.properties[key]; %>   var <%= prop.name %>;\n<% } %>\n\n   <%= this.name %>()\n   {\n\n   }\n\n   <%= this.name %>(<% for ( var key in this.properties ) { var prop = this.properties[key]; %>this.<%= prop.name, key < this.properties.length-1 ? ", ": "" %><% } %>)\n}'
+  //  },
+  //  {
+  //    model_: 'Template',
+  //    name: 'protobufSource',
+  //    description: 'Protobuf source',
+  //    template: 'message <%= this.name %> {\n<% for (var i = 0, prop; prop = this.properties[i]; i++ ) { if ( prop.prototag == null ) continue; if ( prop.help ) { %>//<%= prop.help %>\n<% } %>  <% if ( prop.type.startsWith("Array") ) { %>repeated<% } else if ( false ) { %>required<% } else { %>optional<% } %>  <%= prop.protobufType %> <%= prop.name %> = <%= prop.prototag %>;\n\n<% } %>}\n'
+  //  }
   ],
 
   toString: function() { return "Model"; }

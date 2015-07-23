@@ -1,0 +1,25 @@
+{
+  "name": "Polymer Calculator",
+  "version": "1.0.0",
+  "manifest_version": 2,
+  "default_locale": "en",
+
+  "permissions": [],
+
+  "icons": {
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "64": "icons/64.png",
+    "96": "icons/96.png",
+    "128": "icons/128.png",
+    "256": "icons/256.png"
+  },
+
+  "app": {
+    "background": {
+      "scripts": [
+        "bg.js"
+      ]
+    }
+  }
+}

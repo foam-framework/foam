@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-// WeakMap Polyfill, doesn't implement the full interface, just the parts that we use
+// WeakMap Polyfill, doesn't implement the full interface, just the parts
+// that FOAM uses.
 // TODO: Use defineProperty to make hidden property
 if ( ! window.WeakMap ) {
   function WeakMap() {

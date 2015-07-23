@@ -23,7 +23,7 @@ var Models = [
   'Unit Tests',
   'Issues',
   'Timer',
-  'Mouse',
+  'foam.input.Mouse',
   'EyeCView',
   'EyesCView',
   'ClockView',
@@ -35,15 +35,13 @@ var Models = [
   'Rect',
   'Box',
   'Label',
-  'Turntable',
   'PowerInfo',
   'Backlite',
-  'DAOController',
-  'StackView',
+  'foam.ui.DAOController',
+  'foam.ui.StackView',
   'NeedleMeter',
   'BatteryMeter',
-  'BatteryGraph',
-  'Bookmark'
+  'BatteryGraph'
 ];
 
 var sys = System.create({
@@ -136,7 +134,7 @@ function protoToString(proto) {
 Events.dynamic(function() { console.log(sys.selectedX, sys.selectedY); },
   function() {
     var MODELS = [Model, Property, Action, Method, Method, Template, UnitTest, Issue,
-                  Timer, Mouse, EyeCView, EyesCView, ClockView, Graph, System, Developer, Canvas, Circle, Rectangle, Box, Label, Turntable, Power, Screen, DAOController, StackView, NeedleMeter, BatteryMeter, BatteryGraph ];
+                  Timer, Mouse, EyeCView, EyesCView, ClockView, Graph, System, Developer, Canvas, Circle, Rectangle, Box, Label, Power, Screen, DAOController, StackView, NeedleMeter, BatteryMeter, BatteryGraph ];
     if ( sys.selectedY < 1 || sys.selectedX < 0 ) return;
 
     var model = MODELS[sys.selectedY-1];

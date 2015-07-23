@@ -1,0 +1,45 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700);
+
+book-container {
+  position: relative;
+  min-height:100%;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  background: #eee;
+}
+
+book {
+  background: #fff;
+  padding: 100px 4% 4% 4%;
+  box-shadow: 0px 0px 20px #888;
+  z-index: 2;
+  max-width: 1200px;
+}
+
+book p { padding: 10px; }
+
+book code, book code-view {
+  font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+}
+
+book expandable-section {
+  padding: 0px 30px;
+  max-width: 1200px;
+}
+
+book code-sample heading {
+  font-size: 20px;
+}
+
+book code {
+  font: 14px/normal 'Monaco', Menlo, 'Ubuntu Mono', Consolas, 'source-code-pro', monospace;
+  background: #E0E0E0;
+  border-radius: 2px;
+  padding: 0px 2px;
+}
+
+book pre {
+  font: 14px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+  white-space: pre-wrap;
+}

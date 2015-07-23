@@ -1,0 +1,230 @@
+{
+  "Calc__ActionLabel__div": {
+    "message": "÷",
+    "description": "Calculator short form for mathematical function: \"divide\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__div": {
+    "message": "делене",
+    "description": "Calculator short form for mathematical function: \"divide\" (speech label)"
+  },
+  "Calc__ActionLabel__mult": {
+    "message": "×",
+    "description": "Calculator short form for mathematical function: \"multiply\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__mult": {
+    "message": "умножаване",
+    "description": "Calculator short form for mathematical function: \"multiply\" (speech label)"
+  },
+  "Calc__ActionLabel__plus": {
+    "message": "+",
+    "description": "Calculator binary operator: plus (text label)"
+  },
+  "Calc__ActionSpeechLabel__plus": {
+    "message": "+",
+    "description": "Calculator binary operator: plus (speech label)"
+  },
+  "Calc__ActionLabel__minus": {
+    "message": "–",
+    "description": "Calculator short form for mathematical function: \"minus\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__minus": {
+    "message": "минус",
+    "description": "Calculator short form for mathematical function: \"minus\" (speech label)"
+  },
+  "Calc__ActionLabel__ac": {
+    "message": "AC",
+    "description": "Calculator all clear (calculator button label) (text label)"
+  },
+  "Calc__ActionSpeechLabel__ac": {
+    "message": "изчистване на всичко",
+    "description": "Calculator all clear (calculator button label) (speech label)"
+  },
+  "Calc__ActionLabel__backspace": {
+    "message": "backspace",
+    "description": "Calculator delete one input character (text label)"
+  },
+  "Calc__ActionSpeechLabel__backspace": {
+    "message": "изтриване назад",
+    "description": "Calculator delete one input character (speech label)"
+  },
+  "Calc__ActionLabel__inv": {
+    "message": "1/x",
+    "description": "Calculator short form for mathematical function: \"inv\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__inv": {
+    "message": "инверсия",
+    "description": "Calculator short form for mathematical function: \"inv\" (speech label)"
+  },
+  "Calc__ActionLabel__sqroot": {
+    "message": "√",
+    "description": "Calculator short form for mathematical function: \"square root\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__sqroot": {
+    "message": "√",
+    "description": "Calculator short form for mathematical function: \"square root\" (speech label)"
+  },
+  "Calc__ActionLabel__square": {
+    "message": "x²",
+    "description": "Calculator short form for mathematical function: \"x squared\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__square": {
+    "message": "x на квадрат",
+    "description": "Calculator short form for mathematical function: \"x squared\" (speech label)"
+  },
+  "Calc__ActionLabel__ln": {
+    "message": "ln",
+    "description": "Calculator short form for mathematical function: \"natural logarithm\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__ln": {
+    "message": "натурален логаритъм",
+    "description": "Calculator short form for mathematical function: \"natural logarithm\" (speech label)"
+  },
+  "Calc__ActionLabel__exp": {
+    "message": "eⁿ",
+    "description": "Calculator short form for mathematical function: \"exp\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__exp": {
+    "message": "e на n-та степен",
+    "description": "Calculator short form for mathematical function: \"exp\" (speech label)"
+  },
+  "Calc__ActionLabel__log": {
+    "message": "log",
+    "description": "Calculator short form for mathematical function: \"logarithm\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__log": {
+    "message": "десетичен логаритъм",
+    "description": "Calculator short form for mathematical function: \"logarithm\" (speech label)"
+  },
+  "Calc__ActionLabel__root": {
+    "message": "ⁿ √Y",
+    "description": "Calculator binary operator: root (text label)"
+  },
+  "Calc__ActionSpeechLabel__root": {
+    "message": "корен n-ти от y",
+    "description": "Calculator binary operator: root (speech label)"
+  },
+  "Calc__ActionLabel__pow": {
+    "message": "yⁿ",
+    "description": "Calculator binary operator: pow (text label)"
+  },
+  "Calc__ActionSpeechLabel__pow": {
+    "message": "y на n-та степен",
+    "description": "Calculator binary operator: pow (speech label)"
+  },
+  "Calc__ActionLabel__sin": {
+    "message": "sin",
+    "description": "Calculator short form for mathematical function: \"sine\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__sin": {
+    "message": "синус",
+    "description": "Calculator short form for mathematical function: \"sine\" (speech label)"
+  },
+  "Calc__ActionLabel__cos": {
+    "message": "cos",
+    "description": "Calculator short form for mathematical function: \"cosine\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__cos": {
+    "message": "косинус",
+    "description": "Calculator short form for mathematical function: \"cosine\" (speech label)"
+  },
+  "Calc__ActionLabel__tan": {
+    "message": "tan",
+    "description": "Calculator short form for mathematical function: \"tangent\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__tan": {
+    "message": "тангенс",
+    "description": "Calculator short form for mathematical function: \"tangent\" (speech label)"
+  },
+  "Calc__ActionLabel__deg": {
+    "message": "Deg",
+    "description": "Calculator short form for \"degrees\" calculator mode (text label)"
+  },
+  "Calc__ActionSpeechLabel__deg": {
+    "message": "превключване към градуси",
+    "description": "Calculator short form for \"degrees\" calculator mode (speech label)"
+  },
+  "Calc__ActionLabel__rad": {
+    "message": "Rad",
+    "description": "Calculator short form for \"radians\" calculator mode (text label)"
+  },
+  "Calc__ActionSpeechLabel__rad": {
+    "message": "превключване към радиани",
+    "description": "Calculator short form for \"radians\" calculator mode (speech label)"
+  },
+  "Calc__ActionLabel__asin": {
+    "message": "asin",
+    "description": "Calculator short form for mathematical function: \"inverse-sine\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__asin": {
+    "message": "аркуссинус",
+    "description": "Calculator short form for mathematical function: \"inverse-sine\" (speech label)"
+  },
+  "Calc__ActionLabel__acos": {
+    "message": "acos",
+    "description": "Calculator short form for mathematical function: \"inverse-cosine\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__acos": {
+    "message": "аркускосинус",
+    "description": "Calculator short form for mathematical function: \"inverse-cosine\" (speech label)"
+  },
+  "Calc__ActionLabel__atan": {
+    "message": "atan",
+    "description": "Calculator short form for mathematical function: \"inverse-tangent\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__atan": {
+    "message": "аркустангенс",
+    "description": "Calculator short form for mathematical function: \"inverse-tangent\" (speech label)"
+  },
+  "Calc__ActionLabel__fact": {
+    "message": "x!",
+    "description": "Calculator short form for mathematical function: \"factorial\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__fact": {
+    "message": "факториел",
+    "description": "Calculator short form for mathematical function: \"factorial\" (speech label)"
+  },
+  "Calc__ActionLabel__mod": {
+    "message": "mod",
+    "description": "Calculator short form for mathematical function: \"modulo\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__mod": {
+    "message": "деление по модул",
+    "description": "Calculator short form for mathematical function: \"modulo\" (speech label)"
+  },
+  "Calc__ActionLabel__p": {
+    "message": "nPr",
+    "description": "Calculator short form for mathematical function: \"permutations (n permute r)\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__p": {
+    "message": "пермутация",
+    "description": "Calculator short form for mathematical function: \"permutations (n permute r)\" (speech label)"
+  },
+  "Calc__ActionLabel__c": {
+    "message": "nCr",
+    "description": "Calculator short form for mathematical function: \"combinations (n combine r))\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__c": {
+    "message": "комбинация",
+    "description": "Calculator short form for mathematical function: \"combinations (n combine r))\" (speech label)"
+  },
+  "Calc__ActionLabel__round": {
+    "message": "rnd",
+    "description": "Calculator short form for mathematical function: \"round\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__round": {
+    "message": "закръгляване",
+    "description": "Calculator short form for mathematical function: \"round\" (speech label)"
+  },
+  "Calc__ActionLabel__store": {
+    "message": "a=",
+    "description": "Calculator short form for mathematical function: \"store in memory\" (text label)"
+  },
+  "Calc__ActionSpeechLabel__store": {
+    "message": "съхраняване в паметта",
+    "description": "Calculator short form for mathematical function: \"store in memory\" (speech label)"
+  },
+  "NumberFormatter__Message__NaN": {
+    "message": "Не е число",
+    "description": "NumberFormatter description of a value that isn't a number"
+  }
+}

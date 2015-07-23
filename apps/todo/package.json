@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "dependencies": {
+    "foam-framework": "0.4.0",
+    "todomvc-common": "^1.0.0",
+    "todomvc-app-css": "^1.0.1"
+  }
+}

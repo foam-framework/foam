@@ -15,6 +15,35 @@
  * limitations under the License.
  */
 
+GLOBAL.lookupCache_ = {};
+
+function lookup(key) {
+  if ( ! key ) return undefined;
+  if ( ! ( typeof key === 'string' ) ) return key;
+
+  var root  = this
+
+  var cache;
+
+//  if ( this.hasOwnProperty('lookupCache_') ) {
+    cache = this.lookupCache_;
+//  } else {
+//    cache = this.lookupCache_ = {};
+//  }
+
+  var ret = cache[key];
+
+  if ( ret === undefined ) {
+    var path = key.split('.');
+    for ( var i = 0 ; root && i < path.length ; i++ ) root = root[path[i]];
+    ret = root;
+    cache[key] = ret ? ret : null; // implements negative-caching
+  }
+
+  return ret;
+}
+
+
 /** Update a Context binding. **/
 function set(key, value) {
   // It looks like the chrome debug console is overwriting sub.window
@@ -46,18 +75,24 @@ function setValue(key, value) {
 
 /** Create a sub-context, populating with bindings from opt_args. **/
 function sub(opt_args, opt_name) {
-//  var sub = Object.create(this);
-  var sub = {__proto__: this};
+  var sub = Object.create(this);
 
   if ( opt_args ) for ( var key in opt_args ) {
     if ( opt_args.hasOwnProperty(key) ) {
       sub.set(key, opt_args[key]);
     }
   }
+
   if ( opt_name ) {
     sub.NAME = opt_name;
-    sub.toString = function() { return 'CONTEXT(' + opt_name + ')'; };
+    // This was commented out because it appears to be very slow
+//    sub.toString = function() { return 'CONTEXT(' + opt_name + ')'; };
+//    sub.toString = function() { return 'CONTEXT(' + opt_name + ', ' + this.toString() + ')'; };
   }
+
+//  console.assert(this.lookupCache_, 'Missing cache.');
+//  sub.lookupCache_ = Object.create(this.lookupCache_);
+
   return sub;
 }
 
@@ -65,72 +100,12 @@ function sub(opt_args, opt_name) {
 function subWindow(w, opt_name, isBackground) {
   if ( ! w ) return this.sub();
 
-  var document        = this.subDocument ? this.subDocument(w.document) : w.document;
-  var installedModels = document.installedModels || ( document.installedModels = {});
-
-  var map = {
-    registerModel_: function(model) {
-      // TODO(kgr): If Traits have CSS then it will get installed more than once.
-      // TODO(kgr): Add package support.
-      for ( var m = model ; m && m.getPrototype ; m = m.extendsModel && this[m.extendsModel] ) {
-        if ( installedModels[m.id] ) return;
-        installedModels[m.id] = true;
-        arequireModel(m)(function(m) {
-          m.getPrototype().installInDocument(this, document);
-        }.bind(this));
-      }
-    },
-    addStyle: function(css) {
-      var s = document.createElement('style');
-      s.innerHTML = css;
-      this.document.head.appendChild(s);
-    },
-    isBackground: !!isBackground,
-    window: w,
-    document: document,
-    console: w.console,
-    log: w.console.log.bind(console),
-    warn: w.console.warn.bind(console),
-    info: w.console.info.bind(console),
-    error: w.console.error.bind(console),
-    $: function(id) {
-      if ( document.FOAM_OBJECTS && document.FOAM_OBJECTS[id] )
-        return document.FOAM_OBJECTS[id];
-
-      return document.getElementById(id);
-    },
-    $$: function(cls) {
-      return document.getElementsByClassName(cls);
-    },
-    dynamic: function(fn, opt_fn) { Events.dynamic(fn, opt_fn, this); },
-    animate: function(duration, fn, opt_interp, opt_onEnd) {
-      return Movement.animate(duration, fn, opt_interp, opt_onEnd, this);
-    },
-    memento: w.WindowHashValue && w.WindowHashValue.create({window: w}),
-    setTimeout: w.setTimeout.bind(w),
-    clearTimeout: w.clearTimeout.bind(w),
-    setInterval: w.setInterval.bind(w),
-    clearInterval: w.clearInterval.bind(w),
-    requestAnimationFrame: function(f) { console.assert(w.requestAnimationFrame, 'requestAnimationFrame not defined'); return w.requestAnimationFrame(f); },
-    cancelAnimationFrame: w.cancelAnimationFrame && w.cancelAnimationFrame.bind(w)
-  };
-
-  if ( isBackground ) {
-    map.requestAnimationFrame = function(f) { return w.setTimeout(f, 16); };
-    map.cancelAnimationFrame = map.clearTimeout;
-  }
-
-  var X = this.sub(map, opt_name);
-  w.X = X;
-  return X;
+  return foam.ui.Window.create({window: w, name: opt_name, isBackground: isBackground}, this).Y;
 }
 
-// Using the existence of 'process' to determine that we're running in Node.
-var X = this.subWindow(window, 'DEFAULT WINDOW', typeof process === 'object').sub({IN_WINDOW: false}, 'TOP-X');
-var _ROOT_X = X;
+var X = sub({});
 
-var foam = {};
-X.foam = foam;
+var foam = X.foam = {};
 
 var registerFactory = function(model, factory) {
   // TODO

@@ -33,6 +33,30 @@
  **/
 
 var AbstractFormatter = {
+  keyify: function(str) { return '"' + str + '"'; },
+
+  stringify: function(obj) {
+    var buf = '';
+
+    this.output(function() {
+      for (var i = 0; i < arguments.length; i++)
+        buf += arguments[i];
+    }, obj);
+
+    return buf;
+  },
+
+  stringifyObject: function(obj, opt_defaultModel) {
+    var buf = '';
+
+    this.outputObject_(function() {
+      for (var i = 0; i < arguments.length; i++)
+        buf += arguments[i];
+    }, obj, opt_defaultModel);
+
+    return buf;
+  },
+
   /** @param p a predicate function or an mLang **/
   where: function(p) {
     return {
@@ -47,18 +71,13 @@ var AbstractFormatter = {
 
 var JSONUtil = {
 
-  keyify: function(str) {
-    // TODO: check if contains single-quote or other characters
-    return '"' + str + '"';
-  },
-
   escape: function(str) {
     return str
       .replace(/\\/g, '\\\\')
       .replace(/"/g, '\\"')
       .replace(/[\x00-\x1f]/g, function(c) {
         return "\\u00" + ((c.charCodeAt(0) < 0x10) ?
-                          "0" + c.charCodeAt(0).toString(16) :
+                          '0' + c.charCodeAt(0).toString(16) :
                           c.charCodeAt(0).toString(16));
       });
   },
@@ -67,13 +86,18 @@ var JSONUtil = {
     return eval('(' + str + ')');
   },
 
-  parse: function(X, str) {
-    return this.mapToObj(X, this.parseToMap(str));
+  parse: function(X, str, seq) {
+    return this.mapToObj(X, this.parseToMap(str), undefined, seq);
   },
 
-  arrayToObjArray: function(X, a, opt_defaultModel) {
+  arrayToObjArray: function(X, a, opt_defaultModel, seq) {
     for ( var i = 0 ; i < a.length ; i++ ) {
-      a[i] = this.mapToObj(X, a[i], opt_defaultModel);
+      if ( ( ! DEBUG ) && a[i] && a[i].debug ) {
+        a.splice(i,1);
+        i--;
+      } else {
+        a[i] = this.mapToObj(X, a[i], opt_defaultModel, seq);
+      }
     }
     return a;
   },
@@ -82,10 +106,10 @@ var JSONUtil = {
    * Convert JS-Maps which contain the 'model_' property, into
    * instances of that model.
    **/
-  mapToObj: function(X, obj, opt_defaultModel) {
+  mapToObj: function(X, obj, opt_defaultModel, seq) {
     if ( ! obj || typeof obj.model_ === 'object' ) return obj;
 
-    if ( Array.isArray(obj) ) return this.arrayToObjArray(X, obj);
+    if ( Array.isArray(obj) ) return this.arrayToObjArray(X, obj, undefined, seq);
 
     if ( obj instanceof Function ) return obj;
 
@@ -94,19 +118,36 @@ var JSONUtil = {
     if ( obj instanceof Object ) {
       var j = 0;
       for ( var key in obj ) {
-        if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(X, obj[key]);
+        if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(X, obj[key], null, seq);
         j++;
       }
-/*      var keys = Object.keys(obj);
-      for ( var j = 0, key; key = keys[j]; j++ ) {
-        if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(obj[key]);
-      }
-      */
 
       if ( opt_defaultModel && ! obj.model_ ) return opt_defaultModel.create(obj);
 
-      var newObj = FOAM.lookup(obj.model_, X);
-      return newObj ? newObj.create(obj, X) : obj;
+      if ( obj.model_ ) {
+        var newObj = X.lookup(obj.model_);
+        if ( ( ! newObj || ! newObj.finished__ ) ) {
+          var future = afuture();
+          seq && seq.push(future.get);
+
+          X.arequire(obj.model_)(function(model) {
+            if ( ! model ) {
+               if ( DEBUG && obj.model_ !== 'Template' && obj.model_ !== 'ArrayProperty' && obj.model_ !== 'ViewFactoryProperty' && obj.model_ !== 'Documentation' && obj.model_ !== 'DocumentationProperty' && obj.model_ !== 'CSSProperty' && obj.model_ !== 'FunctionProperty' )
+                 console.warn('Failed to dynamically load: ', obj.model_);
+              future.set(obj);
+              return;
+            }
+            var tmp = model.create(obj);
+            obj.become(tmp);
+            future.set(obj);
+          });
+
+          return obj;
+        }
+	var ret = newObj ? newObj.create(obj, X) : obj;
+	return ret.readResolve ? ret.readResolve() : ret;
+      }
+      return obj
     }
 
     return obj;
@@ -115,66 +156,65 @@ var JSONUtil = {
   compact: {
     __proto__: AbstractFormatter,
 
-    stringify: function(obj) {
-      var buf = "";
-
-      this.output(function() {
-        for (var i = 0; i < arguments.length; i++)
-          buf += arguments[i];
-      }, obj);
-
-      return buf;
-    },
-
-    output: function(out, obj) {
+    output: function(out, obj, opt_defaultModel) {
       if ( Array.isArray(obj) ) {
         this.outputArray_(out, obj);
       }
       else if ( typeof obj === 'string' ) {
-        out("\"");
+        out('"');
         out(JSONUtil.escape(obj));
-        out("\"");
+        out('"');
       }
       else if ( obj instanceof Function ) {
-        out(obj);
+        this.outputFunction_(out, obj);
       }
       else if ( obj instanceof Date ) {
         out(obj.getTime());
       }
+      else if ( obj instanceof RegExp ) {
+        out(obj.toString());
+      }
       else if ( obj instanceof Object ) {
         if ( obj.model_ )
-          this.outputObject_(out, obj);
+          this.outputObject_(out, obj, opt_defaultModel);
         else
           this.outputMap_(out, obj);
       }
-      else if (typeof obj === "number") {
-        if (!isFinite(obj)) obj = null;
+      else if ( typeof obj === 'number' ) {
+        if ( ! isFinite(obj) ) obj = null;
         out(obj);
       }
       else {
-        if (obj === undefined) obj = null;
-        out(obj);
+        out(obj === undefined ? null : obj);
       }
     },
 
-    outputObject_: function(out, obj) {
-      var str = "";
+    outputObject_: function(out, obj, opt_defaultModel) {
+      var str   = '';
+      var first = true;
 
       out('{');
-      this.outputModel_(out, obj);
+      if ( obj.model_.id !== opt_defaultModel ) {
+        this.outputModel_(out, obj);
+        first = false;
+     }
 
-      var first = true;
-      for ( var key in obj.model_.properties ) {
-        var prop = obj.model_.properties[key];
+      var properties = obj.model_.getRuntimeProperties();
+      for ( var key in properties ) {
+        var prop = properties[key];
 
-        if ( ! this.p(prop) ) continue;
+        if ( ! this.p(prop, obj) ) continue;
 
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
-          if ( val == prop.defaultValue ) continue;
-          if ( ! first ) out(",");
-          out(JSONUtil.keyify(prop.name), ':');
-          this.output(out, val);
+          if ( Array.isArray(val) && ! val.length ) continue;
+          if ( ! first ) out(',');
+          out(this.keyify(prop.name), ': ');
+          if ( Array.isArray(val) && prop.subType ) {
+            this.outputArray_(out, val, prop.subType);
+          } else {
+            this.output(out, val);
+          }
           first = false;
         }
       }
@@ -183,11 +223,13 @@ var JSONUtil = {
     },
 
     outputModel_: function(out, obj) {
-      out('"model_":"', obj.model_.name, '",');
+      out('model_:"')
+      if ( obj.model_.package ) out(obj.model_.package, '.')
+      out(obj.model_.name, '"');
     },
 
     outputMap_: function(out, obj) {
-      var str   = "";
+      var str   = '';
       var first = true;
 
       out('{');
@@ -195,8 +237,8 @@ var JSONUtil = {
       for ( var key in obj ) {
         var val = obj[key];
 
-        if ( ! first ) out(",");
-        out(JSONUtil.keyify(key), ':');
+        if ( ! first ) out(',');
+        out(this.keyify(key), ': ');
         this.output(out, val);
 
         first = false;
@@ -205,10 +247,10 @@ var JSONUtil = {
       out('}');
     },
 
-    outputArray_: function(out, a) {
+    outputArray_: function(out, a, opt_defaultModel) {
       if ( a.length == 0 ) { out('[]'); return out; }
 
-      var str   = "";
+      var str   = '';
       var first = true;
 
       out('[');
@@ -218,118 +260,119 @@ var JSONUtil = {
 
         if ( ! first ) out(',');
 
-        this.output(out, obj);
+        this.output(out, obj, opt_defaultModel);
       }
 
       out(']');
-    }
-  },
+    },
 
+    outputFunction_: function(out, obj) { out(obj); }
+  },
 
   pretty: {
     __proto__: AbstractFormatter,
 
-    stringify: function(obj) {
-      var buf = "";
-
-      this.output(function() {
-        for (var i = 0; i < arguments.length; i++)
-          buf += arguments[i];
-      }, obj);
-
-      return buf;
-    },
-
-    output: function(out, obj, opt_indent) {
-      var indent = opt_indent || "";
+    output: function(out, obj, opt_defaultModel, opt_indent) {
+      var indent = opt_indent || '';
 
       if ( Array.isArray(obj) ) {
-        this.outputArray_(out, obj, indent);
+        this.outputArray_(out, obj, null, indent);
       }
       else if ( typeof obj == 'string' ) {
-        out("\"");
+        out('"');
         out(JSONUtil.escape(obj));
-        out("\"");
+        out('"');
       }
       else if ( obj instanceof Function ) {
-        out(obj);
+        this.outputFunction_(out, obj, indent);
       }
       else if ( obj instanceof Date ) {
-        out("new Date('", obj, "')");
+        out(obj.getTime());
+      }
+      else if ( obj instanceof RegExp ) {
+        out(obj.toString());
       }
       else if ( obj instanceof Object ) {
         if ( obj.model_ )
-          this.outputObject_(out, obj, indent);
+          this.outputObject_(out, obj, opt_defaultModel, indent);
         else
           this.outputMap_(out, obj, indent);
-      } else if (typeof obj === "number") {
-        if (!isFinite(obj)) obj = null;
+      } else if ( typeof obj === 'number' ) {
+        if ( ! isFinite(obj) ) obj = null;
         out(obj);
       } else {
-        if (obj === undefined) obj = null;
+        if ( obj === undefined ) obj = null;
         out(obj);
       }
     },
 
-    outputObject_: function(out, obj, opt_indent) {
-      var indent       = opt_indent || "";
-      var nestedIndent = indent + "   ";
-      var str          = "";
+    outputObject_: function(out, obj, opt_defaultModel, opt_indent) {
+      var indent       = opt_indent || '';
+      var nestedIndent = indent + '   ';
+      var str          = '';
+      var first        = true;
 
       out(/*"\n", */indent, '{\n');
-      this.outputModel_(out, obj, nestedIndent);
+      if ( obj.model_.id && obj.model_.id !== opt_defaultModel ) {
+        this.outputModel_(out, obj, nestedIndent);
+        first = false;
+      }
 
-      var first = true;
-      for ( var key in obj.model_.properties ) {
-        var prop = obj.model_.properties[key];
+      var properties = obj.model_.getRuntimeProperties();
+      for ( var key in properties ) {
+        var prop = properties[key];
 
-        if ( ! this.p(prop) ) continue;
+        if ( ! this.p(prop, obj) ) continue;
 
         if ( prop.name === 'parent' ) continue;
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
-          if ( ! first ) out(",\n");
-          out(nestedIndent, "\"", prop.name, "\"", ': ');
-          this.output(out, val, nestedIndent);
+          if ( Array.isArray(val) && ! val.length ) continue;
+          if ( ! first ) out(',\n');
+          out(nestedIndent, this.keyify(prop.name), ': ');
+          if ( Array.isArray(val) && prop.subType ) {
+            this.outputArray_(out, val, prop.subType, nestedIndent);
+          } else {
+            this.output(out, val, null, nestedIndent);
+          }
           first = false;
         }
       }
 
-      out("\n", indent, '}');
+      out('\n', indent, '}');
     },
 
     outputModel_: function(out, obj, indent) {
-      out(indent, '"model_": "', obj.model_.name, '",\n');
+      out(indent, '"model_": "', obj.model_.id, '"');
     },
 
     outputMap_: function(out, obj, opt_indent) {
-      var indent       = opt_indent || "";
-      var nestedIndent = indent + "   ";
-      var str          = "";
+      var indent       = opt_indent || '';
+      var nestedIndent = indent + '   ';
+      var str          = '';
       var first        = true;
 
       out(/*"\n",*/ indent, '{\n', nestedIndent);
 
-      for ( var key in obj )
-      {
+      for ( var key in obj ) {
         var val = obj[key];
 
-        if ( ! first ) out(",\n");
-        out(nestedIndent, JSONUtil.keyify(key), ': ');
-        this.output(out, val, nestedIndent);
+        if ( ! first ) out(',\n');
+        out(nestedIndent, this.keyify(key), ': ');
+        this.output(out, val, null, nestedIndent);
 
         first = false;
       }
 
-      out("\n", indent, '}');
+      out('\n', indent, '}');
     },
 
-    outputArray_: function(out, a, opt_indent) {
+    outputArray_: function(out, a, opt_defaultModel, opt_indent) {
       if ( a.length == 0 ) { out('[]'); return out; }
 
-      var indent       = opt_indent || "";
-      var nestedIndent = indent + "   ";
-      var str          = "";
+      var indent       = opt_indent || '';
+      var nestedIndent = indent + '   ';
+      var str          = '';
       var first        = true;
 
       out('[\n');
@@ -339,14 +382,34 @@ var JSONUtil = {
 
         if ( ! first ) out(',\n');
 
-        if ( typeof obj == 'string' ) {
-          out(nestedIndent);
-        }
-
-        this.output(out, obj, nestedIndent);
+        this.output(out, obj, opt_defaultModel, nestedIndent);
       }
 
-      out("\n", indent, ']');
+      out('\n', indent, ']');
+    },
+
+    outputFunction_: function(out, obj, indent) {
+      var str = obj.toString();
+      var lines = str.split('\n');
+
+      if ( lines.length == 1 ) { out(str); return; }
+
+      var minIndent = 10000;
+      for ( var i = 0 ; i < lines.length ; i++ ) {
+        var j = 0;
+        for ( ; j < lines[i].length && lines[i].charAt(j) === ' ' && j < minIndent ; j++ );
+        if ( j > 0 && j < minIndent ) minIndent = j;
+      }
+
+      if ( minIndent === 10000 ) { out(str); return; }
+
+      for ( var i = 0 ; i < lines.length ; i++ ) {
+        if ( lines[i].length && lines[i].charAt(0) === ' ' ) {
+          lines[i] = indent + lines[i].substring(minIndent);
+        }
+        out(lines[i]);
+        if ( i < lines.length-1 ) out('\n');
+      }
     }
   },
 
@@ -365,8 +428,30 @@ var JSONUtil = {
 
 };
 
-JSONUtil.stringify = JSONUtil.pretty.stringify.bind(JSONUtil.pretty);
-JSONUtil.output = JSONUtil.pretty.output.bind(JSONUtil.pretty);;
-JSONUtil.where = JSONUtil.pretty.where.bind(JSONUtil.pretty);;
+JSONUtil.prettyModel = {
+  __proto__: JSONUtil.pretty,
+
+  outputModel_: function(out, obj, indent) {
+    out(indent, 'model_: "', obj.model_.id, '"');
+  },
+
+  keys_: {},
+
+  keyify: function(str) {
+    if ( ! this.keys_.hasOwnProperty(str) ) {
+      this.keys_[str] =
+        /^[a-zA-Z\$_][0-9a-zA-Z$_]*$/.test(str) ?
+        str :
+        '"' + str + '"';
+    }
+
+    return this.keys_[str];
+  }
+};
+
+JSONUtil.stringify       = JSONUtil.pretty.stringify.bind(JSONUtil.pretty);
+JSONUtil.stringifyObject = JSONUtil.pretty.stringifyObject.bind(JSONUtil.pretty);
+JSONUtil.output          = JSONUtil.pretty.output.bind(JSONUtil.pretty);
+JSONUtil.where           = JSONUtil.pretty.where.bind(JSONUtil.pretty);
 
 var NOT_TRANSIENT = function(prop) { return ! prop.transient; };
