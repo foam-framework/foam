@@ -35,6 +35,7 @@ CLASS({
         var view = this.DAOListView.create({
           data: this.menuDAO,
           rowView: this.BrowserConfigCitationView,
+          mode: 'read-only',
         }, this.Y.sub({
           selection$: this.menuSelection$,
         }));
