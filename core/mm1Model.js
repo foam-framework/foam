@@ -241,7 +241,7 @@ var Model = {
         var id = this.getProperty('id');
         if ( id ) return ['id'];
         var props = this.getRuntimeProperties();
-        return props.length ? props[0] : [];
+        return props.length ? [props[0]] : [];
       },
       help: 'Properties which make up unique id.',
       documentation: function() { /* An optional list of names of $$DOC{ref:'Property',usePlural:true} from
