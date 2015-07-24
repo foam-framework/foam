@@ -45,10 +45,14 @@ CLASS({
     function recalculate_() {
       /* Implement in your submodels to calculate and return the contents
           of this matrix.  */
-      return [1,0,0, 0,
-              0,1,0, 0,
-              0,0,1, 0,
-              this.x,this.y,this.z, 1      ];
+      var out = this.instance_.flat;
+             //[1,0,0, 0,
+            //  0,1,0, 0,
+            //  0,0,1, 0,
+      out[12] = this.x;
+      out[13] = this.y;
+      out[14] = this.z;
+           //1      ];
     },
   ]
 

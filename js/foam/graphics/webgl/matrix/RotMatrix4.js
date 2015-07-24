@@ -54,7 +54,7 @@ CLASS({
       if (this.angle < 0.00001) return this.SUPER();
 
       var axis = this.axis;
-      return this.rotation_(axis[0], axis[1], axis[2], this.angle);
+      this.rotation_(axis[0], axis[1], axis[2], this.angle);
       //return this.SUPER();
     },
 
@@ -63,11 +63,24 @@ CLASS({
       var cos = Math.cos(a);
       var icos = 1 - cos;
       var sin = Math.sin(a);
+      var out = this.instance_.flat;
 
-      return [ x*x*icos+cos,   x*y*icos+z*sin, x*z*icos-y*sin, 0,
-               x*y*icos-z*sin, y*y*icos+cos,   y*z*icos+x*sin, 0,
-               x*z*icos+y*sin, y*z*icos-x*sin, z*z*icos+cos,   0,
-               0,              0,              0,              1 ];
+      out[0] = x*x*icos+cos;
+      out[1] = x*y*icos+z*sin;
+      out[2] = x*z*icos-y*sin; 
+      //out[3] = 0;
+      out[4] = x*y*icos-z*sin;
+      out[5] = y*y*icos+cos;
+      out[6] = y*z*icos+x*sin;
+      //out[7] = 0;
+      out[8] = x*z*icos+y*sin;
+      out[9] = y*z*icos-x*sin;
+      out[10] = z*z*icos+cos; 
+      //out[11] = 0;
+      //out[12] = 0;
+      //out[13] = 0; 
+      //out[14] = 0;     
+      //out[15] = 1;
    },
 
 
