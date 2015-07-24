@@ -326,7 +326,7 @@ CLASS({
 
   properties: [
     { name: 'classname',  defaultValue: 'lobbyCanvas' },
-    { name: 'targetFps',  defaultValue: 30 },
+    { name: 'targetFps',  defaultValue: 50 },
     { name: 'timer' },
     { name: 'n',          defaultValue: 20 },
     { name: 'width',      defaultValue: window.innerWidth },
