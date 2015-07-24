@@ -43,7 +43,7 @@ CLASS({
           pressedAlpha: 0.2,
           startAlpha: 0.2,
           finishAlpha: 0
-        });
+        }, this.Y);
       }
     },
     {
@@ -70,7 +70,7 @@ CLASS({
       this.SUPER();
 
       this.currentColor_$.addListener(function() {
-        if ( self.$ ) self.$.style.color = this.currentColor_;
+        if ( self.$ ) self.$.style.color = self.currentColor_;
       });
       if ( self.$ ) self.$.style.color = this.currentColor_;
 
@@ -127,7 +127,7 @@ CLASS({
         display: none;
       }
 
-      .halo  {
+      .halo {
         position: absolute;
         left: 0;
         top: 0;
