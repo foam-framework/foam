@@ -28,9 +28,9 @@ CLASS({
       name: 'performance',
       postSet: function(old,nu) {
         if ( nu < 50 ) {
-          for (var i=0; i<5; ++i) {
+        //  for (var i=0; i<5; ++i) {
             this.decrease();
-          }
+        //  }
         } else if ( nu > 110 ) {
           for (var i=0; i<5; ++i) {
             this.increase();
