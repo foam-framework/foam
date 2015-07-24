@@ -61,7 +61,7 @@ CLASS({
       defaultValue: false
     },
     {
-      // model_: 'RangeDefaultIntProperty',
+      model_: 'IntProperty',
       name: 'sessionDataTimeoutTime',
       label: 'Session idle timeout',
       help: 'Time (in minutes) the app is idle before clearing browsing data.',
@@ -70,7 +70,7 @@ CLASS({
       // view: 'RangeDefaultTextFieldView'
     },
     {
-      // model_: 'RangeDefaultIntProperty',
+      model_: 'IntProperty',
       name: 'sessionTimeoutTime',
       label: 'Timeout to return home',
       help: multiline(function() {/*

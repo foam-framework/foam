@@ -40,50 +40,32 @@ CLASS({
     {
       name: 'moveToTop',
       keyboardShortcuts: ['shift-up'],
-      action: function() {
-        console.log('MOVE TO TOP');
-        this.pos = 'top';
-      },
+      action: function() { this.pos = 'top'; },
     },
     {
       name: 'moveToBottom',
       keyboardShortcuts: ['shift-down'],
-      action: function() {
-        console.log('MOVE TO BOTTOM');
-        this.pos = 'bottom';
-      },
+      action: function() { this.pos = 'bottom'; },
     },
     {
       name: 'moveToLeft',
       keyboardShortcuts: ['shift-left'],
-      action: function() {
-        console.log('MOVE TO LEFT');
-        this.pos = 'left';
-      },
+      action: function() { this.pos = 'left'; },
     },
     {
       name: 'moveToRight',
       keyboardShortcuts: ['shift-right'],
-      action: function() {
-        console.log('MOVE TO RIGHT');
-        this.pos = 'right';
-      },
+      action: function() { this.pos = 'right'; },
     },
     {
       name: 'moveToFull',
       keyboardShortcuts: ['alt-shift-up'],
-      action: function() {
-        console.log('MOVE TO FULL');
-        this.pos = 'full';
-      },
+      action: function() { this.pos = 'full'; },
     },
     {
       name: 'moveToHidden',
       keyboardShortcuts: ['alt-shift-down'],
-      action: function() {
-        console.log('MOVE TO HIDE');
-        this.pos = 'hidden';
-      },
+      action: function() { this.pos = 'hidden'; },
     },
   ],
 
@@ -126,7 +108,6 @@ CLASS({
       }
       panel.right {
         right: 0px;
-        left: 60%;
         box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.48);
       }
       panel.top {
@@ -136,7 +117,6 @@ CLASS({
       }
       panel.left {
         left: 0px;
-        right: 60%;
         box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.48);
       }
       panel.hidden {
