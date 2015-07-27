@@ -31,7 +31,7 @@ CLASS({
     {
       name: 'editButton',
       label: 'Edit',
-      //iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAH0lEQVQ4y2NgGAUw8B8IRjXgUoQLUEfDaDyQqmF4AwADqmeZrHJtnQAAAABJRU5ErkJggg==',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAZ0lEQVR4AdXOrQ2AMBRF4bMc/zOUOSrYoYI5cQQwpAieQDW3qQBO7Xebxx8bWAk5/CASmRHzRHtB+d0Bkw0W5ZiT0SYbFcl6u/2eeJHbxIHOhWO6Er6/y9syXpMul5PLefAGKZ1/rwtTimwbWLpiCgAAAABJRU5ErkJggg==',
       action: function() {
         this.stack.pushView(this.editView({
           data: this.data,
@@ -47,13 +47,16 @@ CLASS({
         <div class='md-model-citation-view-name'>
           $$id{ model_: 'foam.ui.md.TextFieldView', mode:'read-only', floatingLabel: false }
         </div>
-        $$editButton
+        <div class='md-style-trait-standard'>
+          $$editButton
+        </div>
       </div>
     */},
     function CSS() {/*
       .md-model-citation-view {
         display: flex;
-        flex-align: center;
+        align-items: center;
+
       }
       .md-model-citation-view-name {
         flex-grow: 1;
