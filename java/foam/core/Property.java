@@ -31,11 +31,8 @@ import foam.dao.Index;
  *
  * @param <T> The type of values contained in this property.
  */
-public interface Property<T> extends Function<Object, T>, Comparator<Object>, Expression<T> {
-  public String  getName();
-  public String  getLabel();
+public interface Property<T> extends Feature<T>, Comparator<Object>, Expression<T> {
   public void    set(Object obj, T value);
-  public T       get(Object obj);
   public int     compareValues(T o1, T o2);
   public void    addListener(PropertyChangeSupport obj, PubSubListener<ValueChangeEvent<T>> listener);
   public void    removeListener(PropertyChangeSupport obj, PubSubListener<ValueChangeEvent<T>> listener);

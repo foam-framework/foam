@@ -24,16 +24,20 @@ public abstract class AbstractModel
   implements Model
 {
   final Property[]            properties_;
-  final Map<String, Property> pMap_ = new HashMap<String, Property>();
+  final Relationship[]        relationships_;
+  final Map<String, Property> pMap_ = new HashMap<>();
+  final Map<String, Relationship> rMap_ = new HashMap<>();
 
-  public AbstractModel(Property[] properties) {
+  public AbstractModel(Property[] properties, Relationship[] relationships) {
     properties_ = properties;
-    for ( Property p : properties ) pMap_.put(p.getName(), p);
+    relationships_ = relationships;
+    for ( Property p : properties ) {
+      pMap_.put(p.getName(), p);
+    }
+    for (Relationship r : relationships) {
+      rMap_.put(r.getName(), r);
+    }
   }
-  /*  protected void setProperties(Property[] properties) {
-    properties_ = properties;
-    for ( Property p : properties ) pMap_.put(p.getName(), p);
-    }*/
 
   public Property[] getProperties()
   {
@@ -45,4 +49,17 @@ public abstract class AbstractModel
     return pMap_.get(propertyName);
   }
 
+  public Relationship[] getRelationships() {
+    return relationships_;
+  }
+
+  public Relationship getRelationship(String name) {
+    return rMap_.get(name);
+  }
+
+  public Feature getFeature(String name) {
+    Feature f = pMap_.get(name);
+    if (f == null) f = rMap_.get(name);
+    return f;
+  }
 }

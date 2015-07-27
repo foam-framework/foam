@@ -21,10 +21,21 @@ CLASS({
   extendsModel: 'foam.browser.ui.BrowserView',
   requires: [
     'foam.browser.BrowserConfig',
+    'foam.browser.ui.DAOController',
+    'foam.core.dao.ChromeStorageDAO',
     'foam.dao.EasyDAO',
     'foam.mlang.CannedQuery',
     'foam.tutorials.todo.model.Todo',
     'foam.tutorials.todo.ui.TodoCitationView',
+    'foam.tutorials.todo.ui.TodoDetailView',
+    'foam.ui.DAOListView',
+    'foam.ui.ProgressView',
+    'foam.ui.SpinnerView',
+    'foam.ui.TextFieldView',
+    'foam.ui.Tooltip',
+    'foam.ui.md.CannedQueryCitationView',
+    'foam.ui.md.CheckboxView',
+    'foam.ui.md.PopupView',
   ],
   properties: [
     {

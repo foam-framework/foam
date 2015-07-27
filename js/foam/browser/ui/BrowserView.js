@@ -26,6 +26,7 @@ CLASS({
     'foam.input.touch.TouchManager',
     'foam.ui.DAOListView',
     'foam.ui.PopupChoiceView',
+    'foam.ui.Tooltip',
     'foam.ui.md.DetailView',
     'foam.ui.md.SharedStyles',
     'foam.ui.md.UpdateDetailView',
@@ -39,6 +40,7 @@ CLASS({
 
   models: [
     {
+      package: 'foam.browser.ui.BrowserView',
       name: 'InnerBrowserView',
       extendsModel: 'foam.ui.DetailView',
       requires: [

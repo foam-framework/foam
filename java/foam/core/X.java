@@ -27,4 +27,5 @@ public interface X
     public Object get(X x, String name);
     public X put(String name, Object value);
     public X putFactory(String name, XFactory factory);
+    public Object newInstance(String className);
 }

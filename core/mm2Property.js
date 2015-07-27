@@ -725,14 +725,16 @@ var Property = {
         if ( Array.isArray(dynamicValue) ) {
           proto.addInitAgent(10, name + ': dynamicValue', function(o, X) {
             Events.dynamic(
-              dynamicValue[0].bind(o),
-              function() { o[name] = dynamicValue[1].call(o); });
+                dynamicValue[0].bind(o),
+                function() { o[name] = dynamicValue[1].call(o); },
+                X || this.X);
           });
         } else {
           proto.addInitAgent(10, name + ': dynamicValue', function(o, X) {
             Events.dynamic(
-              dynamicValue.bind(o),
-              function(value) { o[name] = value; });
+                dynamicValue.bind(o),
+                function(value) { o[name] = value; },
+                X || this.X);
           });
         }
       }

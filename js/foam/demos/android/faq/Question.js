@@ -14,38 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 CLASS({
-  name: 'StringPropertyView',
-  package: 'foam.meta.types',
-
-  extendsModel: 'foam.ui.md.DetailView',
+  package: 'foam.demos.android.faq',
+  name: 'Question',
+  documentation: 'Model for testing out a hierarchical FAQ browser on Android.',
 
   properties: [
-
+    {
+      model_: 'IntProperty',
+      name: 'id',
+    },
+    {
+      name: 'title',
+    },
+    {
+      name: 'body',
+    },
+    {
+      model_: 'ReferenceProperty',
+      name: 'parent',
+      subType: 'foam.demos.android.faq.Question',
+      subKey: 'ID',
+    },
   ],
 
-  methods: [
-
-
-  ],
-
-  templates: [
-    function toHTML() {/*
-      <div id="%%id">
-        <h2>String Property</h2>
-        <div>
-          $$name{ model_: 'foam.ui.TextFieldView' }
-        </div>
-
-
-
-      </div>
-    */},
-
-
+  relationships: [
+    {
+      name: 'questions',
+      relatedModel: 'foam.demos.android.faq.Question',
+      relatedProperty: 'parent',
+    }
   ]
-
 });
-

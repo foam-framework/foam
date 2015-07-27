@@ -33,7 +33,7 @@ CLASS({
       postSet: function(oldValue, action) {
         //  oldValue && oldValue.removeListener(this.render)
         // action.addListener(this.render);
-        this.bindIsAvailable();
+        this.bindIsAvailableAndEnabled();
       }
     },
     {
@@ -44,7 +44,7 @@ CLASS({
     {
       name: 'data',
       postSet: function() {
-        this.bindIsAvailable();
+        this.bindIsAvailableAndEnabled();
       }
     },
     {
@@ -70,7 +70,10 @@ CLASS({
         return this.Halo.create({
           alpha: 0,
           r: 10,
-          color: this.haloColor
+          color: this.haloColor,
+          isEnabled: function() {
+            return this.action.isEnabled.call(this.data, this.action);
+          }.bind(this)
           /* This gives a ring halo:
           , style: 'ring'
            */
@@ -158,45 +161,47 @@ CLASS({
       }
     },
 
-    bindIsAvailable: function() {
+    bindIsAvailableAndEnabled: function() {
       if ( ! this.action || ! this.data ) return;
 
       var self = this;
-      Events.dynamic(
-        function() { self.action.isAvailable.call(self.data, self.action); },
-        function() {
-          // TODO(KGR): When the Action isn't available we hide it by
-          // setting the size to zero, which isn't ideal.  Better would be
-          // to add a hidden or visibility property to CViews.  When this is done,
-          // also simplify CViewView.
-          if ( self.action.isAvailable.call(self.data, self.action) ) {
-            if ( self.oldWidth_ && self.oldHeight_ ) {
-              self.x = self.oldX_;
-              self.y = self.oldY_;
-              self.width = self.oldWidth_;
-              self.height = self.oldHeight_;
+      this.X.dynamic(
+          function() {
+            self.action.isAvailable.call(self.data, self.action);
+            self.action.isEnabled.call(self.data, self.action);
+          },
+          function() {
+            // TODO(KGR): When the Action isn't available we hide it by
+            // setting the size to zero, which isn't ideal.  Better would be
+            // to add a hidden or visibility property to CViews.  When this is done,
+            // also simplify CViewView.
+            if ( self.action.isAvailable.call(self.data, self.action) ) {
+              if ( self.oldWidth_ && self.oldHeight_ ) {
+                self.x = self.oldX_;
+                self.y = self.oldY_;
+                self.width = self.oldWidth_;
+                self.height = self.oldHeight_;
+              }
+            } else if ( self.width || self.height ) {
+              self.oldX_ = self.x;
+              self.oldY_ = self.y;
+              self.oldWidth_ = self.width;
+              self.oldHeight_ = self.height;
+              self.width = 0;
+              self.height = 0;
+              self.x = 0;
+              self.y = 0;
             }
-          } else if ( self.width || self.height ) {
-            self.oldX_ = self.x;
-            self.oldY_ = self.y;
-            self.oldWidth_ = self.width;
-            self.oldHeight_ = self.height;
-            self.width = 0;
-            self.height = 0;
-            self.x = 0;
-            self.y = 0;
-          }
-        });
+            if ( self.action.isEnabled.call(self.data, self.action) ) {
+              self.alpha = 1.0;
+            } else {
+              self.alpha = 0.5;
+            }
+            self.view.paint();
+          });
     },
 
     initCView: function() {
-      // Don't add halo as a child because we want to control
-      // its paint order, but still set it up as though we had added it.
-      // this.addChild(this.halo);
-      if ( this.halo ) {
-        this.halo.view = this.view;
-        this.halo.addListener(this.view.paint);
-      }
 
       if ( this.gestureManager )
         this.gestureManager.install(this.tapGesture);
@@ -243,7 +248,6 @@ CLASS({
 
     paintSelf: function() {
       var c = this.canvas;
-      if ( this.halo ) this.halo.paint();
 
       if ( this.font ) c.font = this.font;
 

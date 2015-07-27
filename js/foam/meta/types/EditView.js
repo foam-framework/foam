@@ -17,7 +17,7 @@
 
 
 CLASS({
-  name: 'BooleanPropertyView',
+  name: 'EditView',
   package: 'foam.meta.types',
 
   extendsModel: 'foam.ui.md.DetailView',
@@ -28,20 +28,16 @@ CLASS({
 
   methods: [
 
+
   ],
 
   templates: [
     function toHTML() {/*
       <div id="%%id">
-        <h2>Boolean Property</h2>
+        <h2>Model</h2>
         <div>
           $$name{ model_: 'foam.ui.TextFieldView' }
         </div>
-        <div>
-          $$defaultValue{ model_: 'foam.ui.md.CheckboxView' }
-        </div>
-
-
       </div>
     */},
 

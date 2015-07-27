@@ -18,7 +18,10 @@ package foam.core;
 
 // TODO: make this a function tree rather than a linked list. (for performance)
 
+import android.util.Log;
+
 abstract class AbstractX implements X {
+  private static final String LOG_TAG = "FOAM X Context";
   public Object get(String name) {
     return get(this, name);
   }
@@ -29,6 +32,21 @@ abstract class AbstractX implements X {
 
   public X putFactory(String name, XFactory factory) {
     return new FactoryXI(this, name, factory);
+  }
+
+  public Object newInstance(String className) {
+    try {
+      Class c = Class.forName(className);
+      Object obj = c.newInstance();
+      return obj;
+    } catch(ClassNotFoundException e) {
+      Log.e(LOG_TAG, "Class not found: " + className);
+    } catch(InstantiationException e) {
+      Log.e(LOG_TAG, "Error initializing a new " + className, e);
+    } catch(IllegalAccessException e) {
+      Log.e(LOG_TAG, "Could not access default constructor for " + className);
+    }
+    return null;
   }
 }
 

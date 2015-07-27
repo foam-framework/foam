@@ -17,33 +17,34 @@
 
 
 CLASS({
-  name: 'MetaSelectorView',
-  package: 'foam.meta',
+  name: 'IntPropertyEditView',
+  package: 'foam.meta.types',
 
   extendsModel: 'foam.ui.md.DetailView',
 
   properties: [
-    {
-      name: 'data',
-      postSet: function(old,nu) {
-        // TODO: model-for-model instead
-        this.viewModel = 'foam.meta.types.' + nu.model_.name + 'View';
-      }
-    },
-    {
-      model_: 'StringProperty',
-      name: 'viewModel',
-    }
+
   ],
 
   methods: [
-    function shouldDestroy() { return true; }
+
   ],
 
   templates: [
     function toHTML() {/*
       <div id="%%id">
-        $$data{ model_: this.viewModel }
+        <h2>Integer Property</h2>
+        <div>
+          $$name{ model_: 'foam.ui.TextFieldView' }
+        </div>
+        <div>
+          $$defaultValue{ model_: 'foam.ui.TextFieldView' }
+        </div>
+        <div>
+          $$minValue{ model_: 'foam.ui.TextFieldView' } $$maxValue{ model_: 'foam.ui.TextFieldView' }
+        </div>
+
+
       </div>
     */},
 
