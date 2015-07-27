@@ -429,7 +429,7 @@ CLASS({
       defaultValue: '[AnyObject]'
     },
     {
-      name: 'defaultSwiftValue',
+      name: 'swiftDefaultValue',
       defaultValue: '[]'
     },
     {
@@ -619,7 +619,7 @@ CLASS({
       defaultValue: '[String]'
     },
     {
-      name: 'defaultSwiftValue',
+      name: 'swiftDefaultValue',
       defaultValue: '[]'
     },
     {
