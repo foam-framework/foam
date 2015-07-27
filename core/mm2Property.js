@@ -141,7 +141,7 @@ var Property = {
          */}
     },
     {
-      name: 'defaultSwiftValue',
+      name: 'swiftDefaultValue',
       defaultValueFn: function() {
         switch(typeof this.defaultValue) {
         case "string":

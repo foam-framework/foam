@@ -121,7 +121,7 @@ if ( this.implements.length > 0 ) {
     init(<%
   for ( var i = 0 ; i < this.properties.length ; i++ ) {
     var prop = this.properties[i];
-    %><%= prop.name %>: <%= prop.swiftType %> = <%= prop.defaultSwiftValue %><%
+    %><%= prop.name %>: <%= prop.swiftType %> = <%= prop.swiftDefaultValue %><%
     if ( i != this.properties.length - 1 ) { %>, <% }
   } %>) {
     <%
