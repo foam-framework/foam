@@ -244,13 +244,6 @@ CLASS({
           'this to true.',
       defaultValue: false,
     },
-    {
-      model_: 'BooleanProperty',
-      name: 'editOnSelect',
-      documentation: 'When true, selecting an item will open an editor for that' +
-          'item. Set to false if manual editing is desired.',
-      defaultValue: true,
-    },
   ],
 
   constants: {
