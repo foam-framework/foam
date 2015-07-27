@@ -34,7 +34,7 @@ CLASS({
     function toHTML() {/*
       <kiosk-designer id="%%id" <%= this.cssClassAttr() %>>
         $$data{ model_: 'foam.apps.builder.Panel', innerView: 'foam.apps.builder.questionnaire.EditView' }
-        $$model{ model_: 'foam.ui.md.DetailView' }
+        $$model{ model_: 'foam.apps.builder.questionnaire.DetailView' }
       </kiosk-designer>
     */},
     function CSS() {/*

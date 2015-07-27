@@ -23,25 +23,26 @@ CLASS({
     'Model',
     'foam.ui.md.DetailView',
     'foam.ui.TableView',
+    'foam.apps.builder.questionnaire.Questionnaire',
   ],
 
   properties: [
     {
       name: 'model',
-      label: 'Data Model',
-//      view: 'foam.ui.md.DetailView',
-//       factory: function() {
-//         return this.Model.create({
-//           name: 'NewModel',
-//           properties: [
-//             this.BooleanProperty.create({ name: 'boolprop' }),
-//             this.StringProperty.create({ name: 'stringprop' }),
-//             this.IntProperty.create({ name: 'intprop' }),
-//             this.FloatProperty.create({ name: 'floatprop' }),
-//             this.DateProperty.create({ name: 'dateprop' }),
-//           ]
-//         });
-//      },
+      label: 'Questions',
+      view: 'foam.ui.md.DetailView',
+      factory: function() {
+        return this.Model.create({
+          extendsModel: 'foam.apps.builder.questionnaire.Questionnaire',
+          properties: [
+            this.BooleanProperty.create({ name: 'boolprop' }),
+            this.StringProperty.create({ name: 'stringprop' }),
+            this.IntProperty.create({ name: 'intprop' }),
+            this.FloatProperty.create({ name: 'floatprop' }),
+            this.DateProperty.create({ name: 'dateprop' }),
+          ]
+        });
+     },
     }
   ]
 });

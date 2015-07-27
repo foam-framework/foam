@@ -21,10 +21,27 @@ CLASS({
     'foam.dao.IDBDAO',
     'Model',
     'foam.apps.builder.datamodels.ModelCitationView',
+    'foam.ui.md.UpdateDetailView',
+  ],
+
+  imports: [
+    'stack'
   ],
 
   exports: [
-    'selection$'
+    ' as dao',
+  ],
+
+  methods: [
+    function put(o, sink) {
+      /* Receive update from our UpdateDetailView */
+      this.data = o;
+      sink && sink.put(o);
+    },
+    function remove(o, sink) {
+      /* Receive update from our UpdateDetailView, Nop. */
+      sink && sink.remove(o);
+    }
   ],
 
   properties: [
@@ -32,27 +49,6 @@ CLASS({
       model_: 'ModelProperty',
       name: 'baseModel',
       help: 'The list is filtered to only include models that extend baseModel.'
-    },
-    {
-      name: 'browserConfig',
-      lazyFactory: function() {
-        return this.BrowserConfig.create({
-          model: this.baseModel,
-          dao: this.IDBDAO.create({
-            model: this.Model,
-            name: 'DataModels',
-            useSimpleSerialization: false,
-          }),
-          innerDetailView: 'foam.meta.types.ModelEditView',
-          listView: {
-            factory_: 'foam.ui.DAOListView',
-            rowView: 'foam.apps.builder.datamodels.ModelCitationView',
-          },
-          showBack: true,
-          editOnSelect: false,
-          menuFactory: null,
-        });
-      }
     },
     {
       name: 'action',
@@ -74,13 +70,12 @@ CLASS({
       width: 100,
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAZ0lEQVR4AdXOrQ2AMBRF4bMc/zOUOSrYoYI5cQQwpAieQDW3qQBO7Xebxx8bWAk5/CASmRHzRHtB+d0Bkw0W5ZiT0SYbFcl6u/2eeJHbxIHOhWO6Er6/y9syXpMul5PLefAGKZ1/rwtTimwbWLpiCgAAAABJRU5ErkJggg==',
       action: function() {
-        var ibv = this.BrowserView.InnerBrowserView.create({
-          //selection$: this.data$,
-          data: this.browserConfig,
-        }, this.Y);
-        ibv.selection$.addListener(this.selectionChange);
-
-        this.X.stack.pushView(ibv);
+        // we export ourself as the dao for the editor, so when it puts the result back
+        // we react in our put() method.
+        this.stack.pushView(this.UpdateDetailView.create({
+          data: this.data,
+          innerView: 'foam.meta.types.ModelEditView',
+        }));
       }
     }
   ],

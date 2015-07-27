@@ -20,7 +20,7 @@ done
 
 cd "$BUILD_DIR"
 uglifyjs -b semicolons=false,beautify=false foam.js -c unused=false > foam-min.js
-#mv foam-min.js foam.js
+mv foam-min.js foam.js
 rm unused.html
 
 popd

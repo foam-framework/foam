@@ -80,7 +80,7 @@ CLASS({
       name: 'outstandingChanges',
       hidden: true,
       dynamicValue: function() {
-        this.version; this.immuatable;
+        this.version; this.immutable;
         return ! this.immutable && ! this.originalData.equals(this.data);
       }
     },
