@@ -18,9 +18,12 @@
 package foam.core;
 
 public abstract class AbstractDoubleProperty extends AbstractProperty<Double> {
-
   public int compareValues(Double d1, Double d2) {
-    return d1.equals(d2) ? 0 : d1 < d2 ? -1 : 1;
+    return ComparisonHelpers.compareDoubles(d1, d2);
   }
 
+  @Override
+  public int getType() {
+    return Property.TYPE_DOUBLE;
+  }
 }

@@ -11,7 +11,11 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import java.util.List;
+
+import foam.core.ArrayProperty;
 import foam.android.core.AttributeUtils;
+import foam.core.Property;
 import foam.core.X;
 import foam.dao.DAO;
 
@@ -62,8 +66,20 @@ public class DAOListViewBridge extends OneWayViewBridge<RecyclerView, DAO> {
     X x = X();
     if (x == null) return;
 
-    DAO dao = (DAO) x.get("dao");
-    if (dao == null) dao = (DAO) x.get("data");
+    DAO dao = null;
+    Object raw = x.get("data");
+    if (raw != null) {
+      if (raw instanceof DAO) {
+        dao = (DAO) raw;
+      } else {
+        if (raw instanceof List && x.get("prop") != null) {
+          Property p = (Property) x.get("prop");
+          if (p.isArray()) dao = ((ArrayProperty) p).getAsDAO(raw);
+        }
+      }
+    } else {
+      dao = (DAO) x.get("dao");
+    }
     if (dao == null) return;
 
     adapter = new DAOAdapter(x, dao, new DetailViewFactory(rowView, dao.getModel()));
