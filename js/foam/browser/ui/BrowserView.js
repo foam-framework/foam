@@ -59,6 +59,8 @@ CLASS({
           postSet: function(old, nu) {
             if (old) old.unsubscribe(old.MENU_CLOSE, this.onMenuTouch);
             if (nu) nu.subscribe(nu.MENU_CLOSE, this.onMenuTouch);
+            this.updateHTML();
+            this.onMenuTouch();
           },
         },
         {
@@ -429,7 +431,7 @@ CLASS({
       this.stack.initHTML();
       this.stack.pushView_(-1, this.InnerBrowserView.create({
         parent: this,
-        data: this.data
+        data$: this.data$
       }, this.Y));
     }
   ],
