@@ -171,6 +171,19 @@ CLASS({
           name: 'maxWidth',
           getter: function() { return this.listView_.maxWidth; }
         },
+        {
+          name: 'showBack',
+          help: 'Indicates whether to show a Back button. Importing an existing stack enables this option.',
+          defaultValue: false,
+        },
+        {
+          name: 'stack',
+          postSet: function(old,nu) {
+            if ( nu.depth ) {
+              this.showBack = nu.depth() > 0; // show back button if there's somewhere to go back to
+            }
+          }
+        }
       ],
 
       actions: [
@@ -200,8 +213,11 @@ CLASS({
         {
           name: 'exitButton',
           iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAPUlEQVQ4y2NgGLbgf8P/BtKU////+78WacpDSFMeSlPlYaQo/0OacjyAcg1wJ4WTGmHDS4sWaVrqhm/mBQAoLpX9t+4i2wAAAABJRU5ErkJggg==',
+          isAvailable: function() {
+            return this.showBack;
+          },
           action: function() {
-            this.X.stack.popView(this);
+            this.stack.popView(this);
           }
         },
         {
@@ -364,9 +380,7 @@ CLASS({
               <% if ( this.data.menuFactory ) { %>
                 $$menuButton
               <% } %>
-              <% console.log("back?", this.data.showBack, this.data); if ( this.data.showBack ) { %>
-                $$exitButton
-              <% } %>
+              $$exitButton
               $$title{ mode: 'read-only', extraClassName: 'expand title', floatingLabel: false }
               <% if ( this.spinner ) { %>
                 <span class="browser-spinner">%%spinner</span>
@@ -431,7 +445,7 @@ CLASS({
       name: 'stack',
       factory: function() {
         return this.StackView.create();
-      }
+      },
     },
   ],
 
@@ -451,9 +465,10 @@ CLASS({
     function initHTML() {
       this.SUPER();
       this.stack.initHTML();
+
       this.stack.pushView_(-1, this.InnerBrowserView.create({
         parent: this,
-        data$: this.data$
+        data$: this.data$,
       }, this.Y));
     }
   ],
