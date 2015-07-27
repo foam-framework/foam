@@ -186,6 +186,12 @@ var Model = {
         Java class to be built from this $$DOC{ref:'Model'}.*/}
     },
     {
+      name: 'swiftClassName',
+      type: 'String',
+      defaultValueFn: function() { return (this.abstract ? 'Abstract' : '') + this.name; },
+      help: 'The Swift classname of this model.'
+    },
+    {
       name: 'extendsModel',
       label: 'Extends',
       type: 'String',

@@ -293,6 +293,11 @@ CLASS({
          type to use. */}
     },
     {
+      name: 'swiftType',
+      type: 'String',
+      defaultValueFn: function() { return this.type; },
+    },
+    {
       name:  'name',
       type:  'String',
       required: true,
@@ -782,6 +787,10 @@ CLASS({
           The return type of the $$DOC{ref:'Method'}.
         */},
       debug: true
+    },
+    {
+      name: 'swiftReturnType',
+      defaultValueFn: function() { return this.returnType; }
     },
     {
       model_: 'BooleanProperty',

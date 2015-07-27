@@ -84,6 +84,12 @@ CLASS({
       help: 'The FOAM type of this property.'
     },
     {
+      name: 'swiftType',
+      type: 'String',
+      displayWidth: 70,
+      defaultValue: 'Bool'
+    },
+    {
       name: 'javaType',
       type: 'String',
       displayWidth: 70,
@@ -391,6 +397,14 @@ CLASS({
       help: 'The FOAM type of this property.'
     },
     {
+      name: 'swiftType',
+      defaultValue: '[AnyObject]'
+    },
+    {
+      name: 'defaultSwiftValue',
+      defaultValue: '[]'
+    },
+    {
       name: 'singular',
       type: 'String',
       displayWidth: 70,
@@ -569,8 +583,16 @@ CLASS({
       name: 'type',
       type: 'String',
       displayWidth: 20,
-      defaultValue: 'Array[]',
+      defaultValue: 'Array',
       help: 'The FOAM type of this property.'
+    },
+    {
+      name: 'swiftType',
+      defaultValue: '[String]'
+    },
+    {
+      name: 'defaultSwiftValue',
+      defaultValue: '[]'
     },
     {
       name: 'singular',
