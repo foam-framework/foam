@@ -361,11 +361,13 @@ CLASS({
 
 
             <div id="<%= this.id %>-header" class="browser-header browser-header-color">
-              $$menuButton
+              <% if ( this.data.menuFactory ) { %>
+                $$menuButton
+              <% } %>
               <% console.log("back?", this.data.showBack, this.data); if ( this.data.showBack ) { %>
                 $$exitButton
               <% } %>
-              $$title{ mode: 'read-only', extraClassName: 'expand title' }
+              $$title{ mode: 'read-only', extraClassName: 'expand title', floatingLabel: false }
               <% if ( this.spinner ) { %>
                 <span class="browser-spinner">%%spinner</span>
               <% } %>

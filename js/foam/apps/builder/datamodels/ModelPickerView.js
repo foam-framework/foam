@@ -50,6 +50,7 @@ CLASS({
           },
           showBack: true,
           editOnSelect: false,
+          menuFactory: null,
         });
       }
     },
