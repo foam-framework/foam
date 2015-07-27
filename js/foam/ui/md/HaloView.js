@@ -20,10 +20,10 @@ CLASS({
   package: 'foam.ui.md',
 
   extendsModel: 'foam.graphics.CView',
- 
+
   requires: [ 'foam.ui.md.Halo',
               'foam.graphics.DOMSizedCViewView as CViewView'],
-  
+
   properties: [
     {
       name: 'background',
@@ -47,7 +47,7 @@ CLASS({
           finishAlpha$:  this.finishAlpha$,
           color$:        this.color$,
           recentering$:  this.recentering$
-        });
+        }, this.Y);
       }
     },
     {

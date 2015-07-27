@@ -17,6 +17,8 @@ CLASS({
     'foam.apps.builder.BrowserConfig',
     'foam.apps.builder.KioskAppConfig',
     'foam.apps.builder.KioskDesignerView',
+    'foam.apps.builder.questionnaire.AppConfig as QuestionnaireAppConfig',
+    'foam.apps.builder.questionnaire.DesignerView as QuestionnaireDesignerView',
     'foam.browser.ui.BrowserView',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
@@ -25,8 +27,8 @@ CLASS({
     'foam.ui.md.DetailView',
     'foam.ui.md.PopupChoiceView',
     'foam.ui.md.TextFieldView',
-    'foam.apps.builder.questionnaire.AppConfig as QuestionnaireAppConfig',
-    'foam.apps.builder.questionnaire.DesignerView as QuestionnaireDesignerView',
+    'foam.input.touch.GestureManager',
+    'foam.input.touch.TouchManager',
   ],
   exports: [
     'menuSelection$',
@@ -84,6 +86,14 @@ CLASS({
         return Array.isArray(this.menuDAO) && this.menuDAO.length > 0 ?
             this.menuDAO[0] : '';
       },
+    },
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+      this.X.touchManager   = this.TouchManager.create();
+      this.X.gestureManager = this.GestureManager.create();
     },
   ],
 });
