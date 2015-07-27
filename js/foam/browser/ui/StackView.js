@@ -68,10 +68,6 @@ CLASS({
         this.popView_(0);
       }
     },
-    function depth() {
-      /* Default value is for a newly created stack. */
-      return 0;
-    },
     function destroyChildViews_(index) {
       while(this.views_.length > index) {
         var obj = this.views_.pop();
@@ -262,8 +258,7 @@ CLASS({
           __proto__: this,
           pushView: this.pushView_.bind(this, this.views_.length),
           popView: this.popView_.bind(this, this.views_.length),
-          replaceView: this.replaceView_.bind(this, this.views_.length),
-          depth: function() { return this; }.bind(this.views_.length),
+          replaceView: this.replaceView_.bind(this, this.views_.length)
         };
 
         // HACK: Replacing the values of properties on a child view is a hack
@@ -304,6 +299,5 @@ CLASS({
         this.pushView_(index - 1, view, hints);
       }
     }
-  ],
-
+  ]
 });
