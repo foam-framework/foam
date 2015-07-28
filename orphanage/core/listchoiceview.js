@@ -96,7 +96,7 @@ CLASS({
       name:  'choices',
       type:  'Array[StringField]',
       help: 'Array of choices or array of { n: name, v: value } pairs.',
-      defaultValue: [],
+      factory: function() { return []; },
       postSet: function() {
       }
     },

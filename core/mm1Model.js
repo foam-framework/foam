@@ -247,7 +247,7 @@ var Model = {
         var id = this.getProperty('id');
         if ( id ) return ['id'];
         var props = this.getRuntimeProperties();
-        return props.length ? [props[0]] : [];
+        return props.length ? [props[0].name] : [];
       },
       help: 'Properties which make up unique id.',
       documentation: function() { /* An optional list of names of $$DOC{ref:'Property',usePlural:true} from
@@ -394,7 +394,6 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       subType: 'Property',
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
-      defaultValue: [],
       help: 'Properties associated with the entity.',
       preSet: function(oldValue, newValue) {
         // Convert Maps to Properties if required
@@ -445,7 +444,6 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
       },
-      defaultValue: [],
       help: 'Actions associated with the entity.',
       preSet: function(_, newValue) {
         if ( ! Action ) return newValue;
@@ -483,7 +481,6 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
       },
-      defaultValue: [],
       help: 'Constants associated with the entity.',
       preSet: function(_, newValue) {
         if ( ! Constant ) return newValue;
@@ -516,7 +513,6 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
       },
-      defaultValue: [],
       help: 'Messages associated with the entity.',
       preSet: function(_, newValue) {
         if ( ! GLOBAL.Message ) return newValue;
@@ -613,7 +609,6 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
         if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Method);
         return newValue;
       },
-      defaultValue: [],
       help: 'Event listeners associated with the entity.',
       documentation: function() { /*
         <p>The $$DOC{ref:'Model.listeners'} $$DOC{ref:'Property'} contains a list of $$DOC{ref:'Method',usePlural:true},
@@ -632,7 +627,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       subType: 'Topic',
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
-      defaultValue: [],
+      // defaultValue: [],
       help: 'Event topics associated with the entity.'
       },
     */
@@ -645,9 +640,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
       },
-      defaultValue: [],
       postSet: function(_, templates) { TemplateUtil.expandModelTemplates(this); },
-      //         defaultValueFn: function() { return []; },
       help: 'Templates associated with this entity.',
       documentation: function() { /*
         The $$DOC{ref:'Template',usePlural:true} to process and install into instances of this
@@ -672,7 +665,6 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       postSet: function(_, models) {
         for ( var i = 0 ; i < models.length ; i++ ) this[models[i].name] = models[i];
       },
-      defaultValue: [],
       help: 'Sub-models embedded within this model.',
       documentation: function() { /*
         $$DOC{ref:'Model',usePlural:true} may be nested inside one another to better organize them.
@@ -702,7 +694,6 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
         }
         return a;
       },
-      defaultValue: [],
       help: 'Unit tests associated with this model.',
       documentation: function() { /*
           Create $$DOC{ref:'UnitTest',usePlural:true} that should run to test the functionality of this
@@ -717,7 +708,6 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
       },
-      defaultValue: [],
       help: 'Relationships of this model to other models.',
       preSet: function(_, newValue) {
         if ( ! Relationship ) return newValue;
@@ -756,7 +746,6 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
       },
-      defaultValue: [],
       help: 'Issues associated with this model.',
       documentation: function() { /*
           Bug tracking inside the FOAM system can attach $$DOC{ref:'Issue',usePlural:true} directly to the

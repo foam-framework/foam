@@ -33,7 +33,7 @@ CLASS({
     {
       name: 'models',
       type: 'Array[String]',
-      defaultValue: []
+      factory: function() { return []; }
     },
     {
       name: 'selection'

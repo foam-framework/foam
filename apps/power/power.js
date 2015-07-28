@@ -145,7 +145,7 @@ var Power = Model.create({
          type: 'Array[ApplicationPower]',
          subType: 'ApplicationPower',
          view: 'foam.ui.ArrayView',
-         defaultValue: [],
+         factory: function() { return []; },
          help: 'Application power information.'
       }
    ],

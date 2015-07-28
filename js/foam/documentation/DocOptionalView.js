@@ -37,7 +37,7 @@ CLASS({
     {
       name:  'dao',
       model_: 'foam.core.types.DAOProperty',
-      defaultValue: [],
+      factory: function() { return []; },
       onDAOUpdate: function() {
         var self = this;
         this.dao.select(COUNT())(function(c) {

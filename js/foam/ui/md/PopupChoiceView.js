@@ -152,11 +152,12 @@ CLASS({
 
       var textView = this.createTemplateView('text', {
         mode:'read-only',
-        label: this.label
+        label: this.label,
+        inlineStyle: true,
       });
       this.addChild(textView);
       out += '<div class="value">'+textView.toHTML()+'</div>';
-      // not setting the width and height here causes an initial 
+      // not setting the width and height here causes an initial
       // rendering artifact with a super-sized arrow (before CSS applies?)
       out += '<svg class="downArrow" width="12px" height="12px" viewBox="0 0 48 48"><g><path d="M0 16 l24 24 24 -24 z"></path></g></svg>';
 

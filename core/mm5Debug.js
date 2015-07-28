@@ -99,7 +99,6 @@ CLASS({
       subType: 'Method',
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
-      defaultValue: [],
       help: 'Methods associated with the interface.',
       documentation: function() { /*
         <p>The $$DOC{ref:'Method',usePlural:true} that the interface requires

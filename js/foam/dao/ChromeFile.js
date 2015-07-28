@@ -59,7 +59,7 @@ CLASS({
     {
       model_: 'ArrayProperty',
       name: 'entries',
-      defaultValue: []
+      factory: function() { return []; }
     },
     // File only:
     {
