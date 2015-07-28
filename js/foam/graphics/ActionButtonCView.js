@@ -148,17 +148,22 @@ CLASS({
     init: function() {
       this.SUPER();
 
-      if ( this.iconUrl ) {
-        this.image_ = new Image();
+      this.X.dynamic(function() {
+          this.iconUrl; this.iconWidth; this.iconHeight;
+        }.bind(this),
+        function() {
+         if ( this.iconUrl ) {
+           this.image_ = new Image();
 
-        this.image_.onload = function() {
-          if ( ! this.iconWidth  ) this.iconWidth  = this.image_.width;
-          if ( ! this.iconHeight ) this.iconHeight = this.image_.height;
-          this.view.$ && this.view.paint();
-        }.bind(this);
+           this.image_.onload = function() {
+             if ( ! this.iconWidth  ) this.iconWidth  = this.image_.width;
+             if ( ! this.iconHeight ) this.iconHeight = this.image_.height;
+             this.view.$ && this.view.paint();
+           }.bind(this);
 
-        this.image_.src = this.iconUrl;
-      }
+           this.image_.src = this.iconUrl;
+         }
+       }.bind(this));
     },
 
     bindIsAvailableAndEnabled: function() {
