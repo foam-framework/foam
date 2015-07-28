@@ -31,6 +31,7 @@ CLASS({
 
   models: [
     {
+      package: 'foam.ui.TextFieldView',
       name: 'OnEnterValue',
       properties: [
         {

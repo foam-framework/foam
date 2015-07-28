@@ -20,9 +20,13 @@ package foam.core;
 public interface Model
 {
   public String     getName();
+  public String     getShortName();
   public String     getLabel();
   public Property   getID();
   public Property[] getProperties();
   public Property   getProperty(String propertyName);
+  public Relationship[] getRelationships();
+  public Relationship getRelationship(String relationshipName);
+  public Feature    getFeature(String name);
   public FObject    newInstance();
 }

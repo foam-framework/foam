@@ -129,15 +129,11 @@ CLASS({
           'operations like creating new items.',
       factory: function() {
         var view = this.ToolbarView.create({
+          data: this.config,
           className: 'browser-action-bar',
           extraClassName: 'browser-top-actions'
         });
-        var config = this.config;
-        view.addActions(this.config.model_.actions.map(function(a) {
-          a = a.clone();
-          a.action = a.action.bind(config);
-          return a;
-        }));
+        view.addActions(this.config.model_.actions);
         return view;
       }
     },

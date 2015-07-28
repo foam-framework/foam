@@ -84,6 +84,12 @@ CLASS({
       help: 'The FOAM type of this property.'
     },
     {
+      name: 'swiftType',
+      type: 'String',
+      displayWidth: 70,
+      defaultValue: 'Bool'
+    },
+    {
       name: 'javaType',
       type: 'String',
       displayWidth: 70,
@@ -92,7 +98,7 @@ CLASS({
     },
     {
       name: 'view',
-      defaultValue: 'foam.ui.BooleanView'
+      defaultValue: 'foam.ui.BooleanView',
     },
     {
       name: 'defaultValue',
@@ -262,6 +268,20 @@ CLASS({
       help: 'The protobuf tag number for this field.'
     },
     {
+      name: 'minValue',
+      label: 'Minimum Value',
+      type: 'Int',
+      required: false,
+      help: 'The minimum value this property accepts.'
+    },
+    {
+      name: 'maxValue',
+      label: 'Maximum Value',
+      type: 'Int',
+      required: false,
+      help: 'The maximum value this property accepts.'
+    },
+    {
       name: 'compareProperty',
       defaultValue: function(o1, o2) {
         return o1 === o2 ? 0 : o1 > o2 ? 1 : -1;
@@ -308,6 +328,20 @@ CLASS({
       defaultValue: function (_, v) {
         return typeof v === 'number' ? v : v ? parseFloat(v) : 0.0 ;
       }
+    },
+    {
+      name: 'minValue',
+      label: 'Minimum Value',
+      type: 'Float',
+      required: false,
+      help: 'The minimum value this property accepts.'
+    },
+    {
+      name: 'maxValue',
+      label: 'Maximum Value',
+      type: 'Float',
+      required: false,
+      help: 'The maximum value this property accepts.'
     },
     {
       name: 'prototag',
@@ -389,6 +423,14 @@ CLASS({
       displayWidth: 20,
       defaultValue: 'Array',
       help: 'The FOAM type of this property.'
+    },
+    {
+      name: 'swiftType',
+      defaultValue: '[AnyObject]'
+    },
+    {
+      name: 'swiftDefaultValue',
+      defaultValue: '[]'
     },
     {
       name: 'singular',
@@ -569,8 +611,16 @@ CLASS({
       name: 'type',
       type: 'String',
       displayWidth: 20,
-      defaultValue: 'Array[]',
+      defaultValue: 'Array',
       help: 'The FOAM type of this property.'
+    },
+    {
+      name: 'swiftType',
+      defaultValue: '[String]'
+    },
+    {
+      name: 'swiftDefaultValue',
+      defaultValue: '[]'
     },
     {
       name: 'singular',

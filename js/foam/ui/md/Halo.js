@@ -80,6 +80,11 @@ CLASS({
     {
       name: 'recentering',
       defaultValue: true
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'isEnabled',
+      defaultValue: function() { return true; }
     }
   ],
 
@@ -120,7 +125,7 @@ CLASS({
     {
       name: 'onMouseDown',
       code: function(evt) {
-        if ( this.state_ !== 'default' ) return;
+        if ( this.state_ !== 'default' || ! this.isEnabled() ) return;
 
         this.state_ = 'pressing';
 

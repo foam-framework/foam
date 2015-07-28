@@ -141,6 +141,17 @@ var Property = {
          */}
     },
     {
+      name: 'swiftDefaultValue',
+      defaultValueFn: function() {
+        switch(typeof this.defaultValue) {
+        case "string":
+          return '"' + this.defaultValue + '"';
+        default:
+          return this.defaultValue;
+        }
+      }
+    },
+    {
       name: 'protobufType',
       type: 'String',
       required: false,
@@ -165,6 +176,13 @@ var Property = {
       help: 'The javascript type that represents the type of this property.',
       documentation: function() { /* When running FOAM in a javascript environment, specifies the javascript
          type to use. */}
+    },
+    {
+      name: 'swiftType',
+      type: 'String',
+      required: false,
+      defaultValueFn: function() { return this.type; },
+      help: 'The Swift type that represents this type of property.',
     },
     {
       name: 'shortName',
@@ -323,6 +341,12 @@ var Property = {
         as a part of a $$DOC{ref:'CitationView'}. Specify a string or an object with
         factory_ and other properties specified.
       */}
+    },
+    {
+      name: 'swiftView',
+      type: 'String',
+      defaultValueFn: function() { return this.view.substring(this.view.lastIndexOf('.')+1); },
+      help: 'The default view name for this property in swift.'
     },
     {
 //      model_: 'FunctionProperty',
@@ -659,7 +683,7 @@ var Property = {
       type: 'Boolean',
       help: 'True if this value should be included in a memento for this object.',
       defaultValue: false
-    }
+    },
   ],
 
   methods: {
@@ -670,7 +694,7 @@ var Property = {
     },
     readResolve: function() {
       return this.modelId ?
-	this.X.lookup(this.modelId)[constantize(this.name)] : this;
+        this.X.lookup(this.modelId)[constantize(this.name)] : this;
     },
     toSQL: function() { return this.name; },
     toMQL: function() { return this.name; },
@@ -701,14 +725,16 @@ var Property = {
         if ( Array.isArray(dynamicValue) ) {
           proto.addInitAgent(10, name + ': dynamicValue', function(o, X) {
             Events.dynamic(
-              dynamicValue[0].bind(o),
-              function() { o[name] = dynamicValue[1].call(o); });
+                dynamicValue[0].bind(o),
+                function() { o[name] = dynamicValue[1].call(o); },
+                X || this.X);
           });
         } else {
           proto.addInitAgent(10, name + ': dynamicValue', function(o, X) {
             Events.dynamic(
-              dynamicValue.bind(o),
-              function(value) { o[name] = value; });
+                dynamicValue.bind(o),
+                function(value) { o[name] = value; },
+                X || this.X);
           });
         }
       }
@@ -758,7 +784,8 @@ Model.methods = {
   getFeature:               BootstrapModel.getFeature,
   getAllRawFeatures:        BootstrapModel.getAllRawFeatures,
   atest:                    BootstrapModel.atest,
-  getRuntimeProperties:     BootstrapModel.getRuntimeProperties
+  getRuntimeProperties:     BootstrapModel.getRuntimeProperties,
+  create:                   BootstrapModel.create
 };
 
 // This is the coolest line of code that I've ever written

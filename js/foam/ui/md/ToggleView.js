@@ -44,7 +44,7 @@ CLASS({
     {
       name: 'halo',
       factory: function() {
-        return this.HaloView.create();
+        return this.HaloView.create({}, this.Y);
       }
     }
   ],

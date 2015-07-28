@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-if (navigator && navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
+if (navigator && navigator.userAgent.indexOf('AppleWebKit') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
   console.log('Loading Safari Support.');
 
   (function(){

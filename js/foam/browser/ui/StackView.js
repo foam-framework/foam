@@ -159,7 +159,7 @@ CLASS({
       }
 
       for (i = this.visibleEnd_; i >= this.visibleStart_; i--) {
-        this.X.$(this.views_[i].id).style.width = sizes[i];
+        this.X.$(this.views_[i].id).style.width = sizes[i] + 'px';
       }
     },
   ],
@@ -175,6 +175,7 @@ CLASS({
       .stackview-panel {
         background-color: #fff;
         height: 100%;
+        flex-grow: 1;
       }
 
       .stackview-edge {

@@ -49,7 +49,7 @@ CLASS({
     },
 
     /** Export a symbol for use in another grammar or stand-alone. **/
-    function export(str) {
+    function exportSym(str) {
       return this[str].bind(this);
     },
 

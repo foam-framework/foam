@@ -1,6 +1,5 @@
 package foam.android.app;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import foam.android.core.FOAMFragment;
 import foam.android.core.XContext;
@@ -18,6 +18,7 @@ import foam.core.PubSubListener;
 import foam.core.SimpleValue;
 import foam.core.Value;
 import foam.core.ValueChangeEvent;
+import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.DAOException;
 import foam.dao.DAOInternalException;
@@ -25,6 +26,8 @@ import foam.dao.DAOInternalException;
 /**
  * Activity that displays essentially an UpdateDetailView for a given item, which is expected
  * attached to the context, which should be a FOAM {@link XContext}.
+ *
+ * Specify detail_layout in the memento or X to override the default view with a custom layout.
  */
 public class DetailFragment extends FOAMFragment {
   private static final String LOG_TAG = "DetailFragment";
@@ -35,47 +38,88 @@ public class DetailFragment extends FOAMFragment {
   @Override
   public void onCreate(Bundle bundle) {
     super.onCreate(bundle);
-    ActionBar bar = getActivity().getActionBar();
 
-    if (X().get("dao") != null) {
-      Object raw = X().get("data");
-      if (! (raw instanceof Value)) {
-        Log.e(LOG_TAG, "Expected \"X.data\" to be a Value.");
-      }
-      value = (Value<FObject>) raw;
-      FObject data = value.get();
-      valueListener = new ValueListener();
-      value.addListener(valueListener);
-      objectListener = new ObjectListener();
-      data.addPropertyChangeListener(null, objectListener);
-    }
   }
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    container.removeAllViews();
-    // Inflating in code, the file is needlessly simple.
     Context context = container.getContext();
+    X x = findX(context);
+    if (x == null) return null;
 
-    LinearLayout layout = new LinearLayout(context);
-    layout.setOrientation(LinearLayout.VERTICAL);
-    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-        ViewGroup.LayoutParams.MATCH_PARENT));
-
-    DetailViewBridge bridge = new DetailViewBridge(context);
-    bridge.X(X());
-
-    Object raw = X().get("data");
-    Value value = null;
-    if (raw instanceof Value) {
-      value = (Value) raw;
-    } else if (raw instanceof FObject) {
-      value = new SimpleValue<FObject>((FObject) raw);
+    // Try to fetch the data from the context. Failing that, load from the memento.
+    Object selection = x.get("selection");
+    FObject data = null;
+    if (selection != null) {
+      if (!(selection instanceof Value)) {
+        Log.e(LOG_TAG, "Expected \"X.selection\" to be a Value.");
+        return null;
+      }
+      data = ((Value<FObject>) selection).get();
+      if (data == null) selection = null;
     }
-    if (value != null) bridge.setValue(value);
 
-    layout.addView(bridge.getView());
-    return layout;
+    // Deliberately not the "else" of the above "if".
+    if (selection == null) {
+      selection = getMemento().getSerializable("data");
+      if (selection == null) {
+        Log.e(LOG_TAG, "Expected either \"X.selection\" to be defined, or the memento to contain \"data\".");
+        return null;
+      }
+
+      try {
+        DAO dao = (DAO) x.get("dao");
+        data = dao.find(x, selection);
+      } catch (DAOException e) {
+        Log.e(LOG_TAG, "Error retrieving " + selection + " from the DAO", e);
+      } catch (DAOInternalException e) {
+        Log.e(LOG_TAG, "Internal DAO error retrieving " + selection + " from the DAO", e);
+      }
+    }
+
+    if (data == null) {
+      Log.w(LOG_TAG, "Failed to retrieve data for the detail fragment.");
+      TextView v = new TextView(context);
+      v.setText("Failed to load data: " + selection);
+      return v;
+    }
+
+    data = data.fclone(); // Clone to get an unfrozen, editable object.
+    value = new SimpleValue<>(data);
+    X(x.put("data", value));
+
+    valueListener = new ValueListener();
+    value.addListener(valueListener);
+    objectListener = new ObjectListener();
+    data.addPropertyChangeListener(null, objectListener);
+
+    container.removeAllViews();
+
+    int inputLayout = getInputInt("detail_layout", -1);
+    if (inputLayout > 0) {
+      return decorateInflater(inflater).inflate(inputLayout, container, false);
+    } else {
+      // Inflating in code, the file is needlessly simple.
+      LinearLayout layout = new LinearLayout(context);
+      layout.setOrientation(LinearLayout.VERTICAL);
+      layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+          ViewGroup.LayoutParams.MATCH_PARENT));
+
+      DetailViewBridge bridge = new DetailViewBridge(context);
+      bridge.X(X());
+
+      Object raw = X().get("data");
+      Value value = null;
+      if (raw instanceof Value) {
+        value = (Value) raw;
+      } else if (raw instanceof FObject) {
+        value = new SimpleValue<FObject>((FObject) raw);
+      }
+      if (value != null) bridge.setValue(value);
+
+      layout.addView(bridge.getView());
+      return layout;
+    }
   }
 
   /**

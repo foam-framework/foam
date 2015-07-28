@@ -61,7 +61,7 @@ CLASS({
         type: "fragment",
         source: function() {/*
           void main(void) {
-            gl_FragColor = vec4(0.8, 0.5, 0.5, 0.9);
+            gl_FragColor = vec4(0.6, 0.6, 0.8, 0.9);
           }
         */}
         }, prog.Y);
@@ -168,7 +168,7 @@ CLASS({
       var create = function(rad) {
         var circ3d = this.Circle.create({
           r: rad,
-          color: [0.5,rad,0.5,1.0],
+          color: [rad,rad,0.5,1.0],
           borderRatio: 0.05,
           axis: [1,1,1]
         });

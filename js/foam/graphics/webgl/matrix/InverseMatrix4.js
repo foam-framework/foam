@@ -50,7 +50,7 @@ CLASS({
       /* Implement in your submodels to calculate and return the contents
           of this matrix.  */
 
-      return this.inverse(this.source.flat);
+      this.inverse(this.source.flat);
     },
 
     function determinant(m) {
@@ -83,7 +83,7 @@ CLASS({
     },
 
     function inverse(m) {
-      var i = [];
+      var i = this.instance_.flat;
       var det = this.determinant(m);
       if (det==0) return m.slice();
 
@@ -135,7 +135,7 @@ CLASS({
       i[15]=(-m[8]* m[5]* m[2] +m[4]*m[9]* m[2] +m[8]* m[1]*m[6]
       -m[0]*m[9]* m[6] -m[4]*m[1]*m[10] +m[0]*m[5]* m[10])/det;
 
-      return i;
+      //return i;
     },
 
 

@@ -34,6 +34,12 @@ CLASS({
   constants: {
     // Keys which respond to keydown but not keypress
     KEYPRESS_CODES: { 8: true, 33: true, 34: true, 37: true, 38: true, 39: true, 40: true },
+    NAMED_CODES: {
+      '37': 'left',
+      '38': 'up',
+      '39': 'right',
+      '40': 'down'
+    },
     // TODO?: Model as Topics
     ON_HIDE: ['onHide'], // Indicates that the View has been hidden
     ON_SHOW: ['onShow']  // Indicates that the View is now being reshown
@@ -195,6 +201,12 @@ CLASS({
           'This is optional, and only used by views attempting advanced ' +
           'layouts, such as $$DOC{ref:"foam.ui.ScrollView"}.',
       defaultValue: 40
+    },
+    {
+      name: '$parent',
+      getter: function() {
+        return this.$ ? this.$.parentElement : null;
+      }
     }
   ],
 
@@ -223,8 +235,9 @@ CLASS({
     {
       name: 'onKeyboardShortcut',
       code: function(evt) {
-        // console.log(evt);
-        if ( evt.type === 'keydown' && ! this.KEYPRESS_CODES[evt.which] ) return;
+        if ( evt.srcElement !== this.$parent ||
+            (evt.type === 'keydown' && ! this.KEYPRESS_CODES[evt.which]) )
+          return;
         var action = this.keyMap_[this.evtToCharCode(evt)];
         if ( action ) {
           action();
@@ -534,7 +547,9 @@ CLASS({
       if ( evt.ctrlKey  ) s += 'ctrl-';
       if ( evt.shiftKey && evt.type === 'keydown' ) s += 'shift-';
       if ( evt.metaKey  ) s += 'meta-';
-      s += String.fromCharCode(evt.type === 'keydown' ? evt.which : evt.charCode);
+      s += evt.type === 'keydown' ?
+          this.NAMED_CODES[evt.which] || String.fromCharCode(evt.which) :
+          String.fromCharCode(evt.charCode);
       return s;
     },
 
@@ -564,11 +579,16 @@ CLASS({
         init(this.data.model_.actions, this.data$);
 
       if ( found ) {
-        // console.log('initKeyboardShortcuts ', this.name_, this.data && this.data.model_ && this.data.model_.name );
         console.assert(this.$, 'View must define outer id when using keyboard shortcuts: ' + this.name_);
         this.keyMap_ = keyMap;
-        this.$.parentElement.addEventListener('keydown',  this.onKeyboardShortcut);
-        this.$.parentElement.addEventListener('keypress', this.onKeyboardShortcut);
+        var target = this.$parent;
+
+        // Ensure that target is focusable, and therefore will capture keydown
+        // and keypress events.
+        target.setAttribute('tabindex', target.tabIndex + '');
+
+        target.addEventListener('keydown',  this.onKeyboardShortcut);
+        target.addEventListener('keypress', this.onKeyboardShortcut);
       }
     },
 

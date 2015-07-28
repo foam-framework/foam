@@ -116,6 +116,7 @@ MODEL0({
       return obj.id || obj.$UID;
     },
     put: function(obj, sink) {
+      // TODO: remove() checks obj.id for falsy, and uses obj instead of obj.id. Inconsistent!
       for ( var idx = 0; idx < this.length; idx++ ) {
         if ( this[idx].id === obj.id ) {
           this[idx] = obj;

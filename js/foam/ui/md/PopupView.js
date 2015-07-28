@@ -64,6 +64,24 @@ CLASS({
       defaultValue: "popup-view-container"
     },
     {
+      model_: 'foam.core.types.StringEnumProperty',
+      name: 'layoutMode',
+      defaultValue: 'fixed',
+      choices: [
+        ['fixed', 'Fixed'],
+        ['relative', 'Relative']
+      ]
+    },
+    {
+      model_: 'foam.core.types.StringEnumProperty',
+      name: 'blockerMode',
+      defaultValue: 'cancellable',
+      choices: [
+        ['cancellable', 'Cancellable'],
+        ['modal', 'Modal']
+      ]
+    },
+    {
       name: 'state',
       defaultValue: 'closed'
     },
@@ -77,10 +95,13 @@ CLASS({
       if ( this.closeLatch_ ) this.closeLatch_();
 
       if ( this.state == 'closed' ) {
-        this.delegateView = this.delegate({ data$: this.data$ });
+        this.delegateView = this.delegate({ data$: this.data$ }, this.Y);
+
+        this.layoutMode = sourceElement ? 'relative' : 'fixed';
 
         if ( this.$ ) this.$.outerHTML = '';  // clean up old copy, in case of rapid re-activation
-        this.document.body.insertAdjacentHTML('beforeend', this.toHTML());
+        var parentElement = sourceElement || this.document.body;
+        parentElement.insertAdjacentHTML('beforeend', this.toHTML());
         this.initializePosition();
         this.setTimeout(function() {  this.animateToExpanded(); }.bind(this), 100);
         this.initHTML();
@@ -140,14 +161,27 @@ CLASS({
   templates: [
     function toInnerHTML() {/*
       <div id="<%= this.id %>Blocker" class='popup-view-modal-blocker'></div>
-      <% this.on('click', function() { self.close(); }, this.id + 'Blocker'); %>
+      <% this.on('click', function() {
+           if ( this.blockerMode === 'cancellable' ) self.close();
+         }, this.id + 'Blocker'); %>
       <div id="<%= this.id %>Content" class='popup-view-content <%= this.cardClass %>'>
         %%delegateView
       </div>
+      <% this.setClass('fixed', function() {
+           return this.layoutMode === 'fixed';
+         }, this.id); %>
+      <% this.setClass('relative', function() {
+           return this.layoutMode === 'relative';
+         }, this.id); %>
     */},
     function CSS() {/*
-      .popup-view-modal-blocker {
+      .fixed .popup-view-modal-blocker, .fixed.popup-view-container {
         position: fixed;
+      }
+      .relative .popup-view-modal-blocker, .relative.popup-view-container {
+        position: absolute;
+      }
+      .popup-view-modal-blocker {
         top: 0px;
         left: 0px;
         bottom: 0px;
@@ -159,7 +193,6 @@ CLASS({
         display: flex;
         align-items: center;
         justify-content: center;
-        position: fixed;
         top: 0px;
         left: 0px;
         bottom: 0px;

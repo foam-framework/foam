@@ -43,7 +43,10 @@ CLASS({
 %><% if ( this.package ) { %>
 package <%= this.package %>;
 <% } %>
-import foam.core.*;
+import foam.core.*;<%
+if (this.relationships && this.relationships.length) { %>
+import foam.dao.*;
+<% } %>
 
 public<%= this.abstract ? ' abstract' : '' %> class <%= className %>
     extends <%= parentClassName %> {
@@ -63,9 +66,20 @@ public<%= this.abstract ? ' abstract' : '' %> class <%= className %>
     public int compare(Object o1, Object o2) { return compareValues(((<%= this.name%>)o1).<%= prop.name %>_, ((<%= this.name%>)o2).<%= prop.name %>_); }
 <%= extraText %>};
 <% } %>
+<% if (this.relationships && this.relationships.length) {
+  for ( var i = 0; i < this.relationships.length; i++) {
+    var rel = this.relationships[i]; %>
+  public final static Relationship <%= constantize(rel.name) %> = new AbstractRelationship() {
+    public String getName() { return "<%= rel.name %>"; }
+    public String getLabel() { return "<%= rel.label %>"; }
+    public DAO get(Object o) { return ((<%= this.name %>) o).get<%= rel.name.capitalize() %>(); }
+  };
+<% }
+} %>
 
-  final static Model model__ = new AbstractModel(new Property[] {<% for ( var key in this.properties ) { var prop = this.properties[key]; %> <%= constantize(prop.name) %>,<% } %> }) {
+final static Model model__ = new AbstractModel(new Property[] {<% for ( var key in this.properties ) { var prop = this.properties[key]; %> <%= constantize(prop.name) %>,<% } %>} , new Relationship[] {<% if (this.relationships && this.relationships.length) { for (var i = 0; i < this.relationships.length; i++) { %> <%= constantize(this.relationships[i].name) %>, <% } } %> }) {
     public String getName() { return "<%= this.id %>"; }
+    public String getShortName() { return "<%= this.name %>"; }
     public String getLabel() { return "<%= this.label %>"; }
     public Property getID() { return <%= this.ids.length ? constantize(this.ids[0]) : 'null' %>; }
     public FObject newInstance() { return new <%= className %>(); }
@@ -101,6 +115,23 @@ public<%= this.abstract ? ' abstract' : '' %> class <%= className %>
     }
   }
 <% } %>
+
+<% if (this.relationships && this.relationships.length) {
+  for (var i = 0; i < this.relationships.length; i++) {
+    var rel = this.relationships[i];
+    var shortName = rel.relatedModel.split('.').pop();
+    shortName = shortName.substring(0, 1).toLowerCase() + shortName.substring(1); %>
+  private DAO <%= rel.name %>_;
+  public DAO get<%= rel.name.capitalize() %>() {
+    if (<%= rel.name %>_ == null) {
+      Model model = <%= rel.relatedModel %>.MODEL();
+      DAO dao = new RelationshipDAO(model, "<%= shortName %>DAO");
+      <%= rel.name %>_ = dao.where(MLang.EQ(model.getProperty("<%= rel.relatedProperty %>"), model().getID().get(this)));
+    }
+    return <%= rel.name %>_;
+  }
+<% }
+} %>
 
   public int hashCode() {
     int hash = 1;

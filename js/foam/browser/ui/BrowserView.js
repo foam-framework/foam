@@ -26,6 +26,7 @@ CLASS({
     'foam.input.touch.TouchManager',
     'foam.ui.DAOListView',
     'foam.ui.PopupChoiceView',
+    'foam.ui.Tooltip',
     'foam.ui.md.DetailView',
     'foam.ui.md.SharedStyles',
     'foam.ui.md.UpdateDetailView',
@@ -39,6 +40,7 @@ CLASS({
 
   models: [
     {
+      package: 'foam.browser.ui.BrowserView',
       name: 'InnerBrowserView',
       extendsModel: 'foam.ui.DetailView',
       requires: [
@@ -57,6 +59,8 @@ CLASS({
           postSet: function(old, nu) {
             if (old) old.unsubscribe(old.MENU_CLOSE, this.onMenuTouch);
             if (nu) nu.subscribe(nu.MENU_CLOSE, this.onMenuTouch);
+            this.updateHTML();
+            this.onMenuTouch();
           },
         },
         {
@@ -427,7 +431,7 @@ CLASS({
       this.stack.initHTML();
       this.stack.pushView_(-1, this.InnerBrowserView.create({
         parent: this,
-        data: this.data
+        data$: this.data$
       }, this.Y));
     }
   ],

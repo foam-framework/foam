@@ -16,7 +16,7 @@ import foam.core.X;
 /**
  *
  */
-public class FOAMActionBarActivity extends AppCompatActivity implements HasX {
+public abstract class FOAMActionBarActivity extends AppCompatActivity implements HasX {
   protected X x_ = EmptyX.instance();
   public X X() {
     return x_;
