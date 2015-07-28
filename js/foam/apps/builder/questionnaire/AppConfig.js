@@ -14,16 +14,26 @@ CLASS({
   name: 'AppConfig',
   extendsModel: 'foam.apps.builder.AppConfig',
 
-  requires: ['Model'],
+  requires: [
+    'BooleanProperty',
+    'StringProperty',
+    'IntProperty',
+    'FloatProperty',
+    'DateProperty',
+    'Model',
+    'foam.ui.md.DetailView',
+    'foam.ui.TableView',
+    'foam.apps.builder.questionnaire.Questionnaire',
+  ],
 
   properties: [
     {
       name: 'model',
-      label: 'Data Model',
-      view: 'foam.meta.types.ModelView',
+      label: 'Questions',
+      view: 'foam.ui.md.DetailView',
       factory: function() {
         return this.Model.create({
-          name: 'NewModel',
+          extendsModel: 'foam.apps.builder.questionnaire.Questionnaire',
           properties: [
             this.BooleanProperty.create({ name: 'boolprop' }),
             this.StringProperty.create({ name: 'stringprop' }),
@@ -33,7 +43,13 @@ CLASS({
           ]
         });
       },
-
+      preSet: function(old,nu) {
+        if (nu) console.log(this.$UID, "nu pre", nu.$UID, nu.create);
+        return nu;
+      },
+      postSet: function(old,nu) {
+        if (nu) console.log(this.$UID, "nu post", nu.$UID);
+      },
     }
   ]
 });

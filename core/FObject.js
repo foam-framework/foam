@@ -80,6 +80,12 @@ var FObject = {
 
     var o = this.create_(this);
     o.instance_ = {};
+    // Safari doesn't like to actually set this variable sometimes so we loop on
+    // it until it takes.
+    // TODO: Figure out why this is necessary and fix it properly.
+    while (!o.instance_) {
+      o.instance_ = {};
+    }
     o.X = opt_X || X;
 
     if ( this.model_.instance_.imports_ && this.model_.instance_.imports_.length ) {

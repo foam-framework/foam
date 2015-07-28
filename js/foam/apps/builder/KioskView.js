@@ -40,6 +40,7 @@ CLASS({
           old.sessionTimeoutTime$.removeListener(this.onHomeTimeoutChange);
         }
         if ( nu ) {
+          this.tosData.tos = this.data.termsOfService;
           nu.termsOfService$.addListener(this.onTOSChange);
           nu.sessionDataTimeoutTime$.addListener(this.onCacheTimeoutChange);
           nu.sessionTimeoutTime$.addListener(this.onHomeTimeoutChange);
@@ -50,7 +51,7 @@ CLASS({
       type: 'foam.apps.builder.TOSData',
       name: 'tosData',
       lazyFactory: function() {
-        return this.TOSData.create();
+        return this.TOSData.create({}, this.Y);
       },
     },
     {
@@ -113,6 +114,7 @@ CLASS({
     function logout() {
       this.webview.ahome(function() {
         this.webview.clearCache();
+        this.openTOS();
       }.bind(this));
     },
     function openTOS() {
@@ -127,7 +129,10 @@ CLASS({
       name: 'onTOSChange',
       code: function() {
         this.tosData.tos = this.data.termsOfService;
-        this.openTOS();
+        if ( this.tosData.tos )
+          this.openTOS();
+        else
+          this.closeTOS();
       },
     },
     {

@@ -17,6 +17,8 @@ CLASS({
   requires: [
     'foam.apps.builder.Panel',
     'foam.ui.md.DetailView',
+    'foam.apps.builder.questionnaire.EditView',
+    'Model',
   ],
 
   constants: {
@@ -27,13 +29,23 @@ CLASS({
   },
 
   properties: [
+    {
+      name: 'instance',
+      help: 'An example of your questionnaire as a user would see it.',
+      getter: function() {
+        //this.data.model.instance_.prototype_ = undefined;
+        // return this.data.model.getPrototype().create();
+        console.log(this.data.$UID, "data model", this.data.model.$UID);
+        return this.data.model.create();
+      }
+    }
   ],
 
   templates: [
     function toHTML() {/*
       <kiosk-designer id="%%id" <%= this.cssClassAttr() %>>
-        $$data{ model_: 'foam.apps.builder.Panel' }
-        $$data{ model_: 'foam.ui.md.DetailView' }
+        $$data{ model_: 'foam.apps.builder.Panel', innerView: 'foam.apps.builder.questionnaire.EditView' }
+        $$instance{ model_: 'foam.ui.md.DetailView' }
       </kiosk-designer>
     */},
     function CSS() {/*
