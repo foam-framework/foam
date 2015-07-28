@@ -188,7 +188,9 @@ CLASS({
       .md-update-detail-view-body {
         overflow-x: hidden;
         overflow-y: auto;
-        width: 100%;
+        //width: 100%;
+        display: flex;
+
       }
     */},
     function toHTML() {/*

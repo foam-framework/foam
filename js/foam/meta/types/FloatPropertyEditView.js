@@ -32,19 +32,19 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <div id="%%id">
-        <h2>Float Property</h2>
-        <div>
-          $$name{ model_: 'foam.ui.TextFieldView' }
+      <div id="%%id" <%= this.cssClassAttr() %>>
+        <div class="md-card">
+          <h2>Float Property</h2>
+          <div>
+            $$name{ model_: 'foam.ui.TextFieldView' }
+          </div>
+          <div>
+            $$defaultValue{ model_: 'foam.ui.TextFieldView' }
+          </div>
+          <div>
+            $$minValue{ model_: 'foam.ui.TextFieldView' } $$maxValue{ model_: 'foam.ui.TextFieldView' }
+          </div>
         </div>
-        <div>
-          $$defaultValue{ model_: 'foam.ui.TextFieldView' }
-        </div>
-        <div>
-          $$minValue{ model_: 'foam.ui.TextFieldView' } $$maxValue{ model_: 'foam.ui.TextFieldView' }
-        </div>
-
-
       </div>
     */},
 
