@@ -784,7 +784,8 @@ Model.methods = {
   getFeature:               BootstrapModel.getFeature,
   getAllRawFeatures:        BootstrapModel.getAllRawFeatures,
   atest:                    BootstrapModel.atest,
-  getRuntimeProperties:     BootstrapModel.getRuntimeProperties
+  getRuntimeProperties:     BootstrapModel.getRuntimeProperties,
+  create:                   BootstrapModel.create
 };
 
 // This is the coolest line of code that I've ever written
