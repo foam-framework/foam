@@ -42,7 +42,14 @@ CLASS({
             this.DateProperty.create({ name: 'dateprop' }),
           ]
         });
-     },
+      },
+      preSet: function(old,nu) {
+        if (nu) console.log(this.$UID, "nu pre", nu.$UID, nu.create);
+        return nu;
+      },
+      postSet: function(old,nu) {
+        if (nu) console.log(this.$UID, "nu post", nu.$UID);
+      },
     }
   ]
 });

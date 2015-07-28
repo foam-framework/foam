@@ -36,6 +36,7 @@ CLASS({
     function put(o, sink) {
       /* Receive update from our UpdateDetailView */
       this.data = o;
+      this.data.instance_.prototype_ = undefined; // reset prototype so changes will be rebuilt
       sink && sink.put(o);
     },
     function remove(o, sink) {
