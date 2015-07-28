@@ -113,11 +113,9 @@ CLASS({
       documentation: function() { /* Can be 'read-only', or 'read-write'. */},
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( this.$input ) {
-          if ( nu === 'read-only' )
-            this.$input.setAttribute('disabled', 'true');
-          else
-            this.$input.removeAttribute('disabled');
+        if ( this.$ ) {
+          this.$.outerHTML = this.toHTML();
+          this.initHTML();
         }
       },
     }
