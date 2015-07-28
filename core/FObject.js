@@ -204,10 +204,6 @@ var FObject = {
         if( m ) for ( var key in m ) o[key] = m[key];
       });
       */
-      // Add shortcut create() method to Models
-//       self.addInitAgent(0, 'Add create() to Model', function(o, X) {
-//         if ( Model.isInstance(o) && o.name != 'Model' ) o.create = BootstrapModel.create;
-//       });
 
       // Works if sort is 'stable', which it isn't in Chrome
       // agents.sort(function(o1, o2) { return o1[0] - o2[0]; });
