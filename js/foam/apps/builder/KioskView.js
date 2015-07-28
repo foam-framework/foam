@@ -114,6 +114,7 @@ CLASS({
     function logout() {
       this.webview.ahome(function() {
         this.webview.clearCache();
+        this.openTOS();
       }.bind(this));
     },
     function openTOS() {
