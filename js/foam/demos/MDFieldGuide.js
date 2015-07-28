@@ -25,6 +25,7 @@ CLASS({
     'foam.graphics.ActionButtonCView',
     'foam.ui.md.CheckboxView',
     'foam.ui.md.ChoiceRadioView',
+    'foam.ui.md.EditableView',
     'foam.ui.md.FlatButton',
     'foam.ui.md.PopupChoiceView',
     'foam.ui.md.SharedStyles',
@@ -224,6 +225,11 @@ CLASS({
           <div class="example">
             <p>Note the placeholder when the field is empty.</p>
             $$textField{ floatingLabel: false }
+          </div>
+
+          <h4>Two stage view</h4>
+          <div class="example">
+            $$textField{ model_: 'foam.ui.md.EditableView' }
           </div>
 
           <h4>Text areas</h4>

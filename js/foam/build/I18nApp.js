@@ -152,7 +152,7 @@ CLASS({
         });
       }
 
-      apar(this.x.arequire(this.extractorModel),
+      apar(this.X.arequire(this.extractorModel),
            this.X.arequire(this.messageGeneratorModel),
            this.X.arequire(this.placeholderModel),
            this.X.arequire(this.messageModel),
