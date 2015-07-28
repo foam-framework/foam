@@ -765,6 +765,8 @@ var Property = {
 
 
 Model.methods = {
+  create:                   BootstrapModel.create,
+  protoCreate_:             BootstrapModel.protoCreate_,
   getProperty:              BootstrapModel.getProperty,
   getAction:                BootstrapModel.getAction,
   hashCode:                 BootstrapModel.hashCode,
@@ -787,11 +789,11 @@ Model.methods = {
   getRuntimeProperties:     BootstrapModel.getRuntimeProperties
 };
 
+Model.create = BootstrapModel.create;
 // This is the coolest line of code that I've ever written
 // or ever will write. Oct. 4, 2011 -- KGR
 Model = Model.create(Model);
 Model.model_ = Model;
-Model.create = BootstrapModel.create;
 
 Property = Model.create(Property);
 

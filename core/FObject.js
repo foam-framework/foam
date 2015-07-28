@@ -56,73 +56,6 @@ var FObject = {
 
   create_: function() { return Object.create(this); },
 
-  create: function(args, opt_X) {
-    // console.log('**** create ', this.model_.name, this.model_.count__ = (this.model_.count__ || 0)+1);
-    // check for a model-for-model replacement, only if args.model is a Model instance
-    if ( args && args.model && (opt_X || X).Model.isInstance(args.model) ) {
-      var ret = this.replaceModel_(this.model_, args.model, opt_X || X);
-      if ( ret ) return ret.create(args, opt_X);
-    }
-
-//    window.CREATES = (window.CREATES || {});
-//    var id = this.model_.id ||
-//      ((this.model_.package ? this.model_.package + '.' : '' ) + this.model_.name);
-
-//    var log = window.CREATES[id] = window.CREATES[id] || {
-//      count:0,
-//      min: Infinity,
-//      max: 0,
-//      sum: 0,
-//      all: []
-//    };
-//    log.count++;
-//    var time = window.performance.now();
-
-    var o = this.create_(this);
-    o.instance_ = {};
-    o.X = opt_X || X;
-
-    if ( this.model_.instance_.imports_ && this.model_.instance_.imports_.length ) {
-      if ( ! Object.prototype.hasOwnProperty.call(this, 'imports__') ) {
-        this.imports__ = this.model_.instance_.imports_.map(function(e) {
-          var s = e.split(' as ');
-          return [s[0], s[1] || s[0]];
-        });
-      }
-      for ( var i = 0 ; i < this.imports__.length ; i++ ) {
-        var im = this.imports__[i];
-        // Don't import from Context if explicitly passed in args
-        if ( ( ! args || ! args.hasOwnProperty(im[1]) ) && typeof o.X[im[0]] !== 'undefined' ) o[im[1]] = o.X[im[0]];
-      }
-    }
-
-//    if ( typeof args === 'object' ) o.copyFrom(args);
-
-    if ( o.model_ ) {
-      var agents = this.initAgents();
-      for ( var i = 0 ; i < agents.length ; i++ ) agents[i][1](o, o.X, args);
-    }
-
-    o.init(args);
-
-//    var end = window.performance.now();
-//    time = end - time;
-//    log.min = Math.min(time, log.min);
-//    if ( time > log.max ) {
-//      log.max = time;
-//      log.maxObj = o;
-//    }
-//    log.all.push({
-//      name: o.name,
-//      time: time,
-//      obj: o,
-//    });
-//    log.sum += time;
-//    log.avg = log.sum / log.count;
-
-    return o;
-  },
-
   init: nop,
 
   // TODO: document
@@ -272,9 +205,9 @@ var FObject = {
       });
       */
       // Add shortcut create() method to Models
-      self.addInitAgent(0, 'Add create() to Model', function(o, X) {
-        if ( Model.isInstance(o) && o.name != 'Model' ) o.create = BootstrapModel.create;
-      });
+//       self.addInitAgent(0, 'Add create() to Model', function(o, X) {
+//         if ( Model.isInstance(o) && o.name != 'Model' ) o.create = BootstrapModel.create;
+//       });
 
       // Works if sort is 'stable', which it isn't in Chrome
       // agents.sort(function(o1, o2) { return o1[0] - o2[0]; });
