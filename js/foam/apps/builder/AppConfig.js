@@ -39,7 +39,7 @@ CLASS({
       name: 'version',
       label: 'Version',
       help: multiline(function() {/*
-        This number usually needs to be incremented to re-publish/update the 
+        This number usually needs to be incremented to re-publish/update the
         application.
       */}),
       view: {
@@ -60,12 +60,12 @@ CLASS({
       issues: [
         'TODO(markdittmer): Support file upload.',
         multiline(function() {/*
-          TODO(markdittmer): Implement showing this in lightbox before 
+          TODO(markdittmer): Implement showing this in lightbox before
           revealing landing page.
         */})
       ],
       view: {
-        model_: 'foam.ui.md.TextFieldView',
+        factory_: 'foam.ui.md.TextFieldView',
         placeholder: 'TERMS OF SERVICE',
         displayHeight: 8
       }
@@ -95,7 +95,7 @@ CLASS({
       },
       issues: [
         multiline(function() {/*
-          TODO(markdittmer): Consider changing download button title based on 
+          TODO(markdittmer): Consider changing download button title based on
           this.
         */})
       ],

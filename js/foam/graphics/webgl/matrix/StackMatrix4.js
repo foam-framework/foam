@@ -77,7 +77,7 @@ CLASS({
         }
         //this.matrixCache_[m] = result;
       }
-      return result;
+      this.instance_.flat = result;
     },
 
   ],

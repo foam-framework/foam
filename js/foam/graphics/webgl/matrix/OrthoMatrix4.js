@@ -63,7 +63,7 @@ CLASS({
     function recalculate_() {
       /* Implement in your submodels to calculate and return the contents
           of this matrix.  */
-      return this.makeOrtho(this.left, this.left+this.width, (this.top+this.height), this.top, this.znear, this.zfar);
+      this.instance_.flat = this.makeOrtho(this.left, this.left+this.width, (this.top+this.height), this.top, this.znear, this.zfar);
     },
     
     //

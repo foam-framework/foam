@@ -52,7 +52,7 @@ CLASS({
 
   methods: {
     toHTML: function() {
-      var src = window.IS_CHROME_APP ?
+      var src = ( window.IS_CHROME_APP && ! this.isSupportedUrl(this.data) ) ?
         ( this.backupImage ? ' src="' + this.backupImage + '"' : '' ) :
         ' src="' + this.data + '"';
 

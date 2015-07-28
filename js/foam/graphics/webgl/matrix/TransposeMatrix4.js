@@ -51,13 +51,12 @@ CLASS({
           of this matrix.  */
       if (this.source.identity) return this.source.flat.slice();
 
-      var ret = this.transpose(this.source);
-      return ret;
+      this.transpose(this.source);
     },
 
     function transpose(matrix) {
       var m = matrix.flat;
-      var els = [];
+      var els = this.instance_.flat;
       // transpose
       for (var j=0; j < 4; ++j) {
         for (var i=0; i < 4; ++i) {

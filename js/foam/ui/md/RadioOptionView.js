@@ -67,7 +67,7 @@ CLASS({
         return this.HaloView.create({
             width: 48,
             height: 48
-        });
+        }, this.Y);
       }
     },
   ],

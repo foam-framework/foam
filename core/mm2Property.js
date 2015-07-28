@@ -141,6 +141,17 @@ var Property = {
          */}
     },
     {
+      name: 'swiftDefaultValue',
+      defaultValueFn: function() {
+        switch(typeof this.defaultValue) {
+        case "string":
+          return '"' + this.defaultValue + '"';
+        default:
+          return this.defaultValue;
+        }
+      }
+    },
+    {
       name: 'protobufType',
       type: 'String',
       required: false,
@@ -165,6 +176,13 @@ var Property = {
       help: 'The javascript type that represents the type of this property.',
       documentation: function() { /* When running FOAM in a javascript environment, specifies the javascript
          type to use. */}
+    },
+    {
+      name: 'swiftType',
+      type: 'String',
+      required: false,
+      defaultValueFn: function() { return this.type; },
+      help: 'The Swift type that represents this type of property.',
     },
     {
       name: 'shortName',
@@ -323,6 +341,12 @@ var Property = {
         as a part of a $$DOC{ref:'CitationView'}. Specify a string or an object with
         factory_ and other properties specified.
       */}
+    },
+    {
+      name: 'swiftView',
+      type: 'String',
+      defaultValueFn: function() { return this.view.substring(this.view.lastIndexOf('.')+1); },
+      help: 'The default view name for this property in swift.'
     },
     {
 //      model_: 'FunctionProperty',

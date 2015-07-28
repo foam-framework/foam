@@ -76,11 +76,16 @@ CLASS({
       name: 'version'
     },
     {
+      model_: 'BooleanProperty',
+      name: 'showModelActions',
+      defaultValue: true
+    },
+    {
       model: 'BooleanProperty',
       name: 'outstandingChanges',
       hidden: true,
       dynamicValue: function() {
-        this.version; this.immuatable;
+        this.version; this.immutable;
         return ! this.immutable && ! this.originalData.equals(this.data);
       }
     },
@@ -196,7 +201,7 @@ CLASS({
           <span id="<%= this.id %>-header-actions" class="md-update-detail-view-header-actions">
             <%
               var actions = this.data.model_.actions;
-              if (actions && actions.length) {
+              if (this.showModelActions && actions && actions.length) {
                 var namedActions = [];
                 for (var i = 0; i < actions.length; i++) {
                   if (actions[i].iconUrl) {

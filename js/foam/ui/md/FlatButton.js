@@ -14,7 +14,10 @@ CLASS({
   name: 'FlatButton',
   extendsModel: 'foam.flow.Element',
 
-  requires: [ 'foam.ui.md.HaloView' ],
+  requires: [
+    'foam.ui.ImageView',
+    'foam.ui.md.HaloView'
+  ],
 
   properties: [
     {
@@ -34,6 +37,13 @@ CLASS({
       defaultValue: true,
     },
     {
+      name: 'iconUrl',
+      defaultValueFn: function() {
+        return this.action ? this.action.iconUrl : '';
+      },
+      view: 'foam.ui.ImageView'
+    },
+    {
       name: 'halo',
       lazyFactory: function() {
         return this.HaloView.create({
@@ -43,7 +53,7 @@ CLASS({
           pressedAlpha: 0.2,
           startAlpha: 0.2,
           finishAlpha: 0
-        });
+        }, this.Y);
       }
     },
     {
@@ -70,7 +80,7 @@ CLASS({
       this.SUPER();
 
       this.currentColor_$.addListener(function() {
-        if ( self.$ ) self.$.style.color = this.currentColor_;
+        if ( self.$ ) self.$.style.color = self.currentColor_;
       });
       if ( self.$ ) self.$.style.color = this.currentColor_;
 
@@ -127,7 +137,7 @@ CLASS({
         display: none;
       }
 
-      .halo  {
+      .halo {
         position: absolute;
         left: 0;
         top: 0;
@@ -145,6 +155,7 @@ CLASS({
       }, this.id); %>
     */},
     function labelHTML() {/*
+      <% if ( this.iconUrl ) { %>$$iconUrl<% } %>
       <% if ( this.action ) { %>
         <% if ( this.escapeHtml ) { %>
           {{this.action.label}}

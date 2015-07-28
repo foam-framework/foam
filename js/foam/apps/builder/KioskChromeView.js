@@ -15,7 +15,9 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   imports: [
+    'kiosk',
     'url$',
+    'webview',
   ],
 
   properties: [
@@ -23,8 +25,14 @@ CLASS({
       name: 'data',
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( old ) old.removeListener(this.onDataChange);
-        if ( nu ) nu.addListener(this.onDataChange);
+        if ( old ) {
+          Events.unfollow(old.homepage$, this.url$);
+          old.removeListener(this.onDataPropertyChange);
+        }
+        if ( nu ) {
+          Events.follow(nu.homepage$, this.url$);
+          nu.addListener(this.onDataPropertyChange);
+        }
       },
     },
     {
@@ -35,6 +43,10 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      this.webview.subscribe(['action', 'navigate'], this.onNavigate);
+    },
     function updateInnerHTML() {
       if ( ! this.$ ) return;
       this.children = [];
@@ -46,11 +58,15 @@ CLASS({
 
   listeners: [
     {
-      name: 'onDataChange',
+      name: 'onDataPropertyChange',
       code: function() {
         this.updateInnerHTML();
         this.initHTML();
       }
+    },
+    {
+      name: 'onNavigate',
+      code: function(_, __, url) { this.url = url; },
     },
   ],
 
@@ -59,31 +75,33 @@ CLASS({
       name: 'back',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAOUlEQVR4AWMYxqABCElS/p/hN4MWacpDSFMeSlPlYaQo/0OScnyQYg0IJ4XjcsLI0KJFmpa64Zt3AdTaQlFOlKYFAAAAAElFTkSuQmCC',
       isAvailable: function() { return this.data.enableNavBttns; },
-      action: function() {}
+      isEnabled: function() { return this.webview.canGoBack; },
+      action: function() { this.webview.back(); }
     },
     {
       name: 'forward',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAOUlEQVR4AWMYxqCRoYEU5boMfxj+k6YlgnQtkXTREkW6lmjcWv7jhQ3kayDspGGrnPLE1wCEwxYAABNmQoikBfhoAAAAAElFTkSuQmCC',
       isAvailable: function() { return this.data.enableNavBttns; },
-      action: function() {}
+      isEnabled: function() { return this.webview.canGoForward; },
+      action: function() { this.webview.forward(); }
     },
     {
       name: 'home',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAAZklEQVR4AWOgIQhg8CekJJ3hDxCm4VPSyPAfChuwK2BmmAmURMAZQBE0wMmwASqJgOsZOJCVCDIcAQpiwiNAGSiQZbgKFcSEVxhkEGY5YFXiAJLCVHSAoQEID+BWhPB6w8Apoj8AADuwY8lEA+JQAAAAAElFTkSuQmCC',
       isAvailable: function() { return this.data.enableHomeBttn; },
-      action: function() {}
+      action: function() { this.webview.home(); }
     },
     {
       name: 'reload',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAwElEQVR4Ad3SP04CURDA4a8RlpNYEP5zQbBGIYT4Ck5iZbwEcStj9AQW7JrI2LLxuYmx45tuMr9uXKSJpFT7VErGgIWsnr1ozElSWIr8+ZNwtDLV1TGzUQsvIh/shVd958Y+RD6YCEd9TTciH5CElaal+D0ohalzC9EW1EJXi38Hz8LMH9wLd3K2wq0fRk4qg8y+9uVaRhLeDJ0behfWsgqPQmVtrqcwt1EJD64gnyQnzefb6mg1snNQqR3sDFygb3rVYPgYJpUVAAAAAElFTkSuQmCC',
       isAvailable: function() { return this.data.enableReloadBttn; },
-      action: function() {}
+      action: function() { this.webview.reload(); }
     },
     {
       name: 'logout',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAcklEQVR4AWMYvCCQ4SXDfzzwFYM/inqQcgLwJYp6sBAqwJCnqgZFhgMMCqRoWAnkPUBoIewCPobjCC0IDfi1nIBoweMkTAjXQrkGTMCP6SQSlBMO1lUw5cRqUMAWcfROS68IJu8XqBoCGF4SUO47aDM/AFyMnK0wQYLQAAAAAElFTkSuQmCC',
       isAvailable: function() { return this.data.enableLogoutBttn; },
-      action: function() {}
+      action: function() { this.kiosk.logout(); }
     },
   ],
 
@@ -97,11 +115,11 @@ CLASS({
       $$back
       $$forward
       $$home
-      $$reload
-      $$logout
       <% if ( this.data.enableNavBar ) { %>
         $$url
       <% } %>
+      $$reload
+      $$logout
     */},
     function CSS() {/*
       kiosk-chrome {
@@ -120,6 +138,9 @@ CLASS({
       kiosk-chrome .md-text-field-container {
         flex-grow: 1;
         flex-shrink: 1;
+      }
+      kiosk-chrome .actionButtonCView[width="0"][height="0"] {
+        margin: 0px;
       }
     */},
   ]

@@ -22,7 +22,7 @@ CLASS({
     'menuSelection$',
     'menuDAO$',
   ],
-  
+
   constants: {
     MENU_CLOSE: ['menu-close']
   },
@@ -35,6 +35,7 @@ CLASS({
         var view = this.DAOListView.create({
           data: this.menuDAO,
           rowView: this.BrowserConfigCitationView,
+          mode: 'read-only',
         }, this.Y.sub({
           selection$: this.menuSelection$,
         }));
@@ -62,6 +63,14 @@ CLASS({
       model_: 'StringProperty',
       name: 'iconUrl',
       view: 'foam.ui.ImageView',
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'detailView',
+      defaultValue: {
+        factory_: 'foam.ui.md.UpdateDetailView',
+        showModelActions: false,
+      },
     },
   ],
 });

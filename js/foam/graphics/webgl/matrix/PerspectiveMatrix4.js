@@ -57,7 +57,7 @@ CLASS({
     function recalculate_() {
       /* Implement in your submodels to calculate and return the contents
           of this matrix.  */
-      return this.makePerspective(this.fov, this.width/this.height, this.znear, this.zfar);
+      this.instance_.flat = this.makePerspective(this.fov, this.width/this.height, this.znear, this.zfar);
     },
     
     //
