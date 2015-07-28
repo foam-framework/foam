@@ -21,8 +21,10 @@ CLASS({
 
   extendsModel: 'foam.graphics.CView',
 
-  requires: [ 'foam.ui.md.Halo',
-              'foam.graphics.DOMSizedCViewView as CViewView'],
+  requires: [
+    'foam.ui.md.Halo',
+    'foam.ui.md.HaloCViewView as CViewView'
+  ],
 
   properties: [
     {
@@ -94,5 +96,4 @@ CLASS({
       this.addChild(this.haloView);
     }
   }
-
 });

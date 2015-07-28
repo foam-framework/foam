@@ -14,7 +14,10 @@ CLASS({
   name: 'FlatButton',
   extendsModel: 'foam.flow.Element',
 
-  requires: [ 'foam.ui.md.HaloView' ],
+  requires: [
+    'foam.ui.ImageView',
+    'foam.ui.md.HaloView'
+  ],
 
   properties: [
     {
@@ -32,6 +35,13 @@ CLASS({
     {
       name: 'escapeHtml',
       defaultValue: true,
+    },
+    {
+      name: 'iconUrl',
+      defaultValueFn: function() {
+        return this.action ? this.action.iconUrl : '';
+      },
+      view: 'foam.ui.ImageView'
     },
     {
       name: 'halo',
@@ -145,6 +155,7 @@ CLASS({
       }, this.id); %>
     */},
     function labelHTML() {/*
+      <% if ( this.iconUrl ) { %>$$iconUrl<% } %>
       <% if ( this.action ) { %>
         <% if ( this.escapeHtml ) { %>
           {{this.action.label}}

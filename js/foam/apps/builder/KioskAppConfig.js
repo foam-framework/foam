@@ -23,7 +23,7 @@ CLASS({
         Initial page for the app that is also associated with 'going home.'
       */}),
       view: {
-        model_: 'foam.ui.md.TextFieldView',
+        factory_: 'foam.ui.md.TextFieldView',
         placeholder: 'http://www.example.com',
         type: 'url',
         required: true
