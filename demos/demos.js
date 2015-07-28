@@ -73,14 +73,14 @@ CLASS({
       name: 'features',
       type: 'Array[String]',
       view: 'foam.ui.StringArrayView',
-      defaultValue: [],
+      factory: function() { return []; },
       help: 'Features to be implemented be Entity.'
     },
     {
       name: 'entities',
       type: 'Array[String]',
       view: 'foam.ui.StringArrayView',
-      defaultValue: [],
+      factory: function() { return []; },
       help: 'Data entities to be supported.'
     },
     {

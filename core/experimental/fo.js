@@ -1493,7 +1493,6 @@ var featureDAO = [
     type: 'Array[Template]',
     subType: 'Template',
     view: 'foam.ui.ArrayView',
-    defaultValue: [],
     help: 'Sub-templates of this template.'
     }]*/
   ['Template', 'Method', function install(model, proto, prototype) {

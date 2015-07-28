@@ -204,7 +204,7 @@ var Property = {
       name: 'aliases',
       type: 'Array[String]',
       view: 'foam.ui.StringArrayView',
-      defaultValue: [],
+      factory: function() { return []; },
       help: 'Alternate names for this property.',
       documentation: function() { /*
         Aliases can be used as synonyms for this $$DOC{ref:'Property'} in code or to look it up by name.

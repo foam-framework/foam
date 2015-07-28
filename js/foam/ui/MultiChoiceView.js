@@ -32,7 +32,7 @@ CLASS({
       name:  'choices',
       type:  'Array[StringField]',
       documentation: 'Array of [value, text] choices.  Simple String values will be upgraded to [value, value]. Can also be a map, in which case this becomes a [key, value] map in enumeration order.',
-      defaultValue: [],
+      factory: function() { return []; },
       preSet: function(_, a) {
         // If a is a map, instead of an array, we make [key, value] pairs.
         if ( typeof a === 'object' && ! Array.isArray(a) ) {

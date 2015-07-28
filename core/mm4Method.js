@@ -473,7 +473,6 @@ CLASS({
       subType: 'Arg',
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
-      defaultValue: [],
       help: 'Method arguments.',
       documentation: function() { /*
           The $$DOC{ref:'Arg',text:'Arguments'} for the $$DOC{ref:'Template'}.
@@ -509,7 +508,7 @@ CLASS({
        type: 'Array[Template]',
        subType: 'Template',
        view: 'foam.ui.ArrayView',
-       defaultValue: [],
+       // defaultValue: [],
        help: 'Sub-templates of this template.'
        },*/
     {
@@ -808,7 +807,6 @@ CLASS({
       subType: 'Arg',
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
-      defaultValue: [],
       help: 'Method arguments.',
       documentation: function() { /*
           The $$DOC{ref:'Arg',text:'Arguments'} for the method.
@@ -978,7 +976,6 @@ CLASS({
       subtype: 'Documentation',
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
-      defaultValue: [],
       help: 'Sub-documents comprising the full body of this document.',
       documentation: "Optional sub-documents to be included in this document. A viewer may choose to provide an index or a table of contents.",
       debug: true,

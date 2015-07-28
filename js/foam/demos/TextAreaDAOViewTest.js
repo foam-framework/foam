@@ -171,14 +171,14 @@ CLASS({
       name: 'dao',
       label: 'FOAM',
       view: 'TextAreaDAOView',
-      defaultValue: []
+      factory: function() { return []; }
     },
     {
       model_: 'ArrayProperty',
       name: 'dao2',
       label: 'Standard',
       view: 'StandardTextAreaDAOView',
-      defaultValue: []
+      factory: function() { return []; }
     }
   ],
 
