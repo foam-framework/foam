@@ -22,6 +22,7 @@ CLASS({
     'foam.browser.ui.BrowserView',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
+    'foam.dao.SeqNoDAO',
     'foam.ui.DAOListView',
     'foam.ui.ImageView',
     'foam.ui.md.DetailView',
@@ -66,10 +67,13 @@ CLASS({
             title: 'Questionnaire Apps',
             label: 'Questionnaire App',
             model: this.QuestionnaireAppConfig,
-            dao: this.IDBDAO.create({
-              model: this.QuestionnaireAppConfig,
-              name: 'QuestionnaireAppConfigs',
-              useSimpleSerialization: false,
+            dao:
+            this.SeqNoDAO.create({ delegate:
+              this.IDBDAO.create({
+                model: this.QuestionnaireAppConfig,
+                name: 'QuestionnaireAppConfigs',
+                useSimpleSerialization: false,
+              })
             }),
             innerDetailView: 'foam.apps.builder.questionnaire.DesignerView'
           }),

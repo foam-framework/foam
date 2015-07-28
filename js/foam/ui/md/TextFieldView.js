@@ -327,7 +327,8 @@ CLASS({
     {
       name: 'onKeyDown',
       code: function(e) {
-        if ( e.keyCode === 13 )
+        // Do not update-on-enter when growable and/or displayHeight > 1.
+        if ( e.keyCode === 13 && ! this.growable && this.displayHeight <= 1 )
           this.data = this.softData;
       }
     },
