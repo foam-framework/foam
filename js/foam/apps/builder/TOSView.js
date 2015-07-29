@@ -74,10 +74,12 @@ CLASS({
       tos-popup tos-content tos-actions {
         justify-content: flex-end;
       }
+      tos-popup tos-content tos .md-text-field-container {
+        flex-grow: 1;
+      }
       tos-popup tos-content tos label.md-text-field-label {
         font-weight: bold;
         font-size: 120%;
-        width: 100%;
       }
       tos-popup tos-content tos .md-text-field-input {
         white-space: pre-wrap;
