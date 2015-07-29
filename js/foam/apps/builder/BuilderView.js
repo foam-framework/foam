@@ -27,8 +27,8 @@ CLASS({
       model_: 'ViewFactoryProperty',
       name: 'menuSelectionFuture',
       documentation: function() {/*
-        Create a FutureView for a BrowserView. Resolve future and unhook 
-        listener when $$DOC{ref:'.data.menuSelection'} is set. If not data 
+        Create a FutureView for a BrowserView. Resolve future and unhook
+        listener when $$DOC{ref:'.data.menuSelection'} is set. If not data
         arrives within 10 seconds, then just clean up the listener.
       */},
       defaultValue: function() {
@@ -47,7 +47,7 @@ CLASS({
         return this.FutureView.create({
           future: future.get,
           innerView: this.BrowserView,
-        });
+        }, this.Y);
       }
     }
   ],
