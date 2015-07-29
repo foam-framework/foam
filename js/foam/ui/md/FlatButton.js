@@ -146,6 +146,7 @@ CLASS({
     function toHTML() {/*
       <<%= self.tagName %> id="%%id" <%= this.cssClassAttr() %> >
         %%halo
+        <% if ( this.iconUrl ) { %>$$iconUrl<% } %>
         <span><% this.labelHTML(out) %></span>
       </%%tagName>
       <% this.on('click', function(e) {
@@ -155,7 +156,6 @@ CLASS({
       }, this.id); %>
     */},
     function labelHTML() {/*
-      <% if ( this.iconUrl ) { %>$$iconUrl<% } %>
       <% if ( this.action ) { %>
         <% if ( this.escapeHtml ) { %>
           {{this.action.label}}
