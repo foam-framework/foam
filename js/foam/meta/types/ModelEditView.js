@@ -82,8 +82,10 @@ CLASS({
     function put(o, sink) {
       var prop = o.model.create({ name: o.name });
       this.data.properties.put(prop);
+      prop.addListener(this.subObjectChange);
+      this.subObjectChange();
+
       sink && sink.put(prop);
-      //this.stack.popView();
     },
     function remove(o, sink) {
       this.data.properties.remove(o, sink);
